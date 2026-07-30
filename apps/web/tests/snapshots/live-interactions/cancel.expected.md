@@ -1,0 +1,30 @@
+- banner:
+  - navigation "Session hierarchy":
+    - button "Reply with a one-sentence description" [disabled]
+  - tablist:
+    - tab "Chat" [selected]
+    - tab "Trajectory"
+- text: Reply with a one-sentence description of event sourcing, then stop. {{clock}}
+- button "复制":
+  - img
+- button "在新对话中分支":
+  - img
+- button "编辑":
+  - img
+- paragraph: partial
+- text: 已停止
+- button "复制":
+  - img
+- button "在新对话中分支":
+  - img
+- text: {{clock}}
+- textbox "Message the agent"
+- button "Add attachment":
+  - img
+- 'button "Access mode, current: Danger Full Access"': Danger Full Access
+- button "Plan mode off, press to turn on": Plan off
+- button "Select model, current DeepSeek-V4-Flash":
+  - text: DeepSeek-V4-Flash
+  - img
+- button "Send message" [disabled]
+- text: 1 turns · 1 steps Input 0 tok · Output 0 tok
