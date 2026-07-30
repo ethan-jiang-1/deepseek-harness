@@ -1,0 +1,320 @@
+// @vitest-environment jsdom
+// ConversationRoot skeleton behavior: the ONE resident composer across the
+// hero (blank session) and active phases — same textarea DOM node, machine-
+// owned draft, and the hero workspace picker (switching = retargetWorkspace).
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, cleanup, fireEvent, render } from '@testing-library/react'
+import { bindSnapshotSelector } from '@deepseek-ai/dsh-client-web-react'
+import { createSnapshotStore } from '@deepseek-ai/dsh-client-runtime/client'
+import type {
+  ConversationSnapshot, SessionId, SessionListState, WorkspaceId, WorkspaceListState, WorkspaceView,
+} from '@deepseek-ai/dsh-client-runtime/client'
+import type { ConversationRootProps } from '../src/client/skeleton/ConversationRoot.tsx'
+import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
+import { createChatStore } from '../src/client/stores.ts'
+import { SessionInputShell } from '../src/client/input/facade.ts'
+import { ConversationRoot } from '../src/client/skeleton/ConversationRoot.tsx'
+import { ConversationSession } from '../src/client/skeleton/ConversationSession.tsx'
+import { InputBar } from '../src/client/skeleton/InputBar.tsx'
+import type { InputBarProps } from '../src/client/skeleton/InputBar.tsx'
+import type {
+  ComposerBarOwnerProps,
+} from '../src/client/contract/slots.ts'
+
+/** Machine-backed wiring over a sink spy. */
+function fakeWiring() {
+  const sink = vi.fn()
+  const shell = new SessionInputShell({ actx: {} as ClientContext, defaultSink: sink })
+  return { wiring: shell, sink, shell }
+}
+
+/** jsdom has no ResizeObserver; the composer seat publishes its height through one. */
+class ResizeObserverStub {
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
+}
+
+afterEach(() => {
+  cleanup()
+  vi.unstubAllGlobals()
+})
+beforeEach(() => {
+  localStorage.clear()
+  vi.stubGlobal('ResizeObserver', ResizeObserverStub)
+})
+
+const sid = (id: string) => id as SessionId
+const wid = (id: string) => id as WorkspaceId
+const SID = sid('s1')
+
+function workspace(id = 'w1'): WorkspaceView {
+  return {
+    workspaceId: wid(id), path: `/projects/${id}`, title: id, sessionIds: [],
+    createdAt: '2026-01-01T00:00:00.000Z', updatedAt: '2026-01-01T00:00:00.000Z',
+  }
+}
+
+const workspaceState = (items: readonly WorkspaceView[]): WorkspaceListState => ({
+  items, state: 'idle', phase: 'ready', error: null,
+  baselinesReady: true, recentWorkspaceId: undefined,
+})
+
+function conversationSnapshot(overrides: Partial<ConversationSnapshot> = {}): ConversationSnapshot {
+  return {
+    sessionId: SID, nodes: [], foldDegraded: false, partial: null, runningCalls: [], codeDispatches: new Map(),
+    pending: [], queue: [], running: false, composerPhase: 'active', removed: false,
+    openState: 'open', openError: null, hasMore: false, loadingOlder: false,
+    promptError: null, blank: false, lastAgentError: null,
+    ...overrides,
+  }
+}
+
+function mount(
+  snapshot: ConversationSnapshot,
+  workspaceRows: WorkspaceView[] = [{ ...workspace('one'), sessionIds: [SID] }],
+  retargetWorkspace = vi.fn(async (_workspaceId: WorkspaceId) => {}),
+  /** When true, mimic overlay:true chain siblings (hidden fallback + takeover). */
+  overlayTakeover = false,
+) {
+  const root = sid('root')
+  const sessions = createSnapshotStore<SessionListState>({
+    ids: [root, SID],
+    byId: {
+      [root]: { id: root, displayTitle: 'Root', running: false, waitingApproval: false, blank: false, updatedAt: 1 },
+      [SID]: { id: SID, displayTitle: 'Child', parentId: root, cwd: '/projects/one', running: false, waitingApproval: false, blank: false, updatedAt: 2 },
+    },
+    current: SID,
+    phase: 'ready',
+  })
+  const workspaces = createSnapshotStore<WorkspaceListState>(workspaceState(workspaceRows))
+  const session = createSnapshotStore<ConversationSnapshot>(snapshot)
+  const useSession = bindSnapshotSelector(session)
+  const chat = createChatStore().create()
+  chat.actions.setDraft('ordinary draft')
+  const { wiring, sink } = fakeWiring()
+  const useInput = bindSnapshotSelector(wiring.state)
+  const inputActions = wiring.actions
+  const stop = vi.fn()
+  const open = vi.fn()
+  const slotCalls: string[] = []
+  let pickerOwner: unknown
+  const renderSlot = ((key: string, owner: object, opts?: { only?: string }) => {
+    slotCalls.push(key)
+    if (key === 'conversation.hero.workspace') { pickerOwner = owner; return null }
+    if (key === 'conversation.session') {
+      return (
+        <ConversationSession
+          sessionId={SID}
+          SessionProvider={({ children }) => children(SID)}
+          useSession={useSession}
+          useSessions={props.useSessions}
+          useWorkspaces={props.useWorkspaces}
+          useProjection={(() => undefined)}
+          useInput={useInput}
+          inputActions={inputActions}
+          useStore={bindSnapshotSelector(chat)}
+          actions={chat.actions}
+          renderSlot={renderSlot as never}
+          views={{
+            list: () => [
+              { id: 'chat', label: 'Chat' },
+              { id: 'trajectory', label: 'Trajectory' },
+            ],
+            subscribe: () => () => {},
+            version: () => 1,
+          }}
+          bindDraftMirror={write => wiring.bindMirror(write)}
+          open={open}
+          {...owner}
+        />
+      )
+    }
+    if (key === 'conversation.composer.bar') {
+      // The real entry, mounted the way the outlet composes it: standard kit
+      // (shared with the root's props below) + this entry's inject + owner.
+      const bar = owner as ComposerBarOwnerProps
+      return (
+        <InputBar
+          sessionId={SID}
+          SessionProvider={({ children }) => children(SID)}
+          useSession={useSession}
+          useSessions={props.useSessions}
+          useWorkspaces={props.useWorkspaces}
+          useProjection={(() => undefined)}
+          useInput={useInput}
+          inputActions={inputActions}
+          keyboard={wiring}
+          useNotices={bindSnapshotSelector(wiring.notices)}
+          useLexicon={bindSnapshotSelector(wiring.lexicon)}
+          stop={stop}
+          command={() => Promise.resolve(true)}
+          translateHint={(key: string) => key}
+          renderSlot={(() => null) as InputBarProps['renderSlot']}
+          {...bar}
+        />
+      )
+    }
+    return <div data-testid={`view-${opts?.only ?? key}`} />
+  }) as ConversationRootProps['renderSlot']
+  const renderSlotChain = ((_key, _owner, opts) => (
+    overlayTakeover
+      ? (
+        <>
+          <div data-chain-overlay-fallback="conversation.composer" style={{ display: 'none' }}>
+            {opts?.fallback ?? null}
+          </div>
+          <div data-testid="composer-takeover">TAKEOVER</div>
+        </>
+      )
+      : (opts?.fallback ?? null)
+  )) as ConversationRootProps['renderSlotChain']
+  const props: ConversationRootProps = {
+    sessionId: SID,
+    SessionProvider: ({ children }) => children(SID),
+    useSession,
+    useSessions: bindSnapshotSelector(sessions),
+    useWorkspaces: bindSnapshotSelector(workspaces),
+    useProjection: (() => undefined),
+    useInput,
+    inputActions,
+    renderSlot,
+    renderSlotChain,
+    selectWorkspace: retargetWorkspace,
+  }
+  const view = render(<ConversationRoot {...props} />)
+  return {
+    view, chat, sink, open, retargetWorkspace, session, slotCalls,
+    pickerOwner: () => pickerOwner,
+    rerender: () => { view.rerender(<ConversationRoot {...props} />) },
+  }
+}
+
+describe('ConversationRoot resident composer', () => {
+  it('keeps composer text in the machine, mirrors to the chat store, and submits through the sink', () => {
+    const b = mount(conversationSnapshot())
+    const box = b.view.getByRole('textbox')
+    expect((box as HTMLTextAreaElement).value).toBe('ordinary draft')
+    fireEvent.change(box, { target: { value: 'ordinary revised' } })
+    expect(b.chat.store.getSnapshot().draft).toBe('ordinary revised')
+    fireEvent.keyDown(box, { key: 'Enter' })
+    expect(b.sink).toHaveBeenCalledWith('ordinary revised', 'queue')
+    fireEvent.click(b.view.getByRole('button', { name: 'Root' }))
+    expect(b.open).toHaveBeenCalledWith(sid('root'))
+  })
+
+  it('active phase: fixed header outside the scrollport; sticky composer seat inside it', () => {
+    const b = mount(conversationSnapshot())
+    const host = b.view.container.querySelector('[data-conversation-scroll]')
+    const seat = b.view.container.querySelector('[data-composer-seat]')
+    const header = b.view.container.querySelector('header')
+    const textarea = b.view.container.querySelector('textarea')
+    expect(host).not.toBeNull()
+    expect(seat).not.toBeNull()
+    expect(header).not.toBeNull()
+    // Header is column chrome above the scrollport; the seat sticks inside it.
+    expect(host?.contains(header)).toBe(false)
+    expect(host?.contains(seat)).toBe(true)
+    expect(seat?.contains(textarea)).toBe(true)
+  })
+
+  it('sticky composer seat wraps the whole overlay chain, not only the fallback stack', () => {
+    const b = mount(conversationSnapshot(), undefined, undefined, true)
+    const seat = b.view.container.querySelector('[data-composer-seat]')
+    const takeover = b.view.getByTestId('composer-takeover')
+    const fallback = b.view.container.querySelector('[data-chain-overlay-fallback="conversation.composer"]')
+    expect(seat?.contains(takeover)).toBe(true)
+    expect(seat?.contains(fallback)).toBe(true)
+  })
+
+  it('hero phase: same textarea, hero chrome, no header, picker switches the workspace', () => {
+    const b = mount(
+      conversationSnapshot({ composerPhase: 'blank', blank: true }),
+      [
+        { ...workspace('one'), sessionIds: [SID] },
+        { ...workspace('second'), title: 'Selected Folder' },
+      ],
+    )
+    // Hero chrome present, view ring absent; scroll host already wraps the
+    // resident composer so the blank → active flip does not remount it.
+    const host = b.view.container.querySelector('[data-conversation-scroll]')
+    const header = b.view.container.querySelector('header')
+    expect(host).not.toBeNull()
+    expect(header?.getAttribute('aria-hidden')).toBe('true')
+    expect(b.view.getByText("Let's start building")).toBeTruthy()
+    expect(b.view.queryByTestId('view-chat')).toBeNull()
+    // The same machine-backed textarea is live in the hero, and the
+    // persistence mirror stays bound (ConversationSession mounts chrome-hidden
+    // for blank sessions): hero typing reaches the chat store.
+    const box = b.view.getByRole('textbox')
+    expect(host?.contains(box)).toBe(true)
+    fireEvent.change(box, { target: { value: 'draft in hero' } })
+    expect(b.chat.store.getSnapshot().draft).toBe('draft in hero')
+    // Picker: open through the chip; a pick switches to the other
+    // workspace's blank session (draft carry is apply-layer wiring).
+    fireEvent.click(b.view.getByRole('button', { name: 'Choose workspace' }))
+    const owner = b.pickerOwner() as { open: boolean; onPick(id: WorkspaceId): void }
+    expect(owner.open).toBe(true)
+    act(() => { owner.onPick(wid('second')) })
+    expect(b.retargetWorkspace).toHaveBeenCalledWith(wid('second'))
+    expect(b.view.getByText('Selected Folder')).toBeTruthy()
+  })
+
+  it('same textarea DOM node survives the hero → active flip into the sticky scrollport', () => {
+    const b = mount(conversationSnapshot({ composerPhase: 'blank', blank: true }))
+    const before = b.view.getByRole('textbox')
+    fireEvent.change(before, { target: { value: 'kept across flip' } })
+    // First message landed: content exists, phase leaves blank. Composer
+    // already sat in the Session scrollport during hero, so the textarea
+    // node and InputHub draft both survive.
+    b.session.set(conversationSnapshot({ composerPhase: 'active', blank: false }))
+    b.rerender()
+    const after = b.view.getByRole('textbox') as HTMLTextAreaElement
+    expect(after).toBe(before)
+    expect(after.value).toBe('kept across flip')
+    expect(b.chat.store.getSnapshot().draft).toBe('kept across flip')
+    expect(b.view.container.querySelector('[data-conversation-scroll]')?.contains(after)).toBe(true)
+    expect(b.view.queryByText("Let's start building")).toBeNull()
+    expect(b.view.getByTestId('view-chat')).toBeTruthy()
+  })
+
+  it('keeps pending takeover interaction accessible outside the Chat view', () => {
+    const b = mount(conversationSnapshot({ pending: [{} as never] }))
+    act(() => { b.chat.actions.setView('trajectory') })
+    expect(b.view.getByTestId('view-trajectory')).toBeTruthy()
+    expect(b.view.getByRole('textbox')).toBeTruthy()
+  })
+
+  it('rolls the pending workspace label back when switching fails', async () => {
+    const selectWorkspace = vi.fn(async () => { throw new Error('connect failed') })
+    const b = mount(
+      conversationSnapshot({ composerPhase: 'blank', blank: true }),
+      [
+        { ...workspace('one'), sessionIds: [SID] },
+        { ...workspace('second'), title: 'Selected Folder' },
+      ],
+      selectWorkspace,
+    )
+    fireEvent.click(b.view.getByRole('button', { name: 'Choose workspace' }))
+    const owner = b.pickerOwner() as { onPick(id: WorkspaceId): void }
+    await act(async () => { owner.onPick(wid('second')); await Promise.resolve() })
+    expect(selectWorkspace).toHaveBeenCalledWith(wid('second'))
+    expect(b.view.queryByText('Selected Folder')).toBeNull()
+    expect(b.view.getByText('one')).toBeTruthy()
+  })
+
+  it('blank session keeps the interactive picker chip (workspace switchable until the first message)', () => {
+    const b = mount(conversationSnapshot({ composerPhase: 'blank', blank: true }))
+    const chip = b.view.getByRole('button', { name: 'Choose workspace' })
+    expect((chip as HTMLButtonElement).disabled).toBe(false)
+    expect(b.slotCalls).toContain('conversation.hero.workspace')
+  })
+
+  it('prompt failure renders the promptError strip (ordinary failure, no transaction UI)', () => {
+    const b = mount(conversationSnapshot({
+      promptError: { op: 'send', error: { code: 'offline', message: 'Message send failed' } as never },
+    }))
+    expect(b.view.getByRole('alert').textContent).toContain('Message send failed (offline)')
+    expect(b.view.queryByRole('button', { name: 'Retry' })).toBeNull()
+  })
+})
