@@ -1,0 +1,300 @@
+/**
+ * `DeepSeekAdapter`: fetch + SSE against a DeepSeek (OpenAI-compatible)
+ * chat-completions endpoint, emitting harness StreamChunks.
+ *
+ * @module dsh-llm-deepseek/adapter
+ */
+
+import { attributionHeaders, CONTEXT_WINDOW_EXCEEDED_CODE, isContextWindowExceededError, isQuotaExceededError, LlmAdapter, LlmError, ProviderRequestId, QUOTA_EXCEEDED_CODE, ReasoningEffortId, resolveRetryPolicy } from '@deepseek-ai/dsh-llm'
+import type {
+  GenerateOptions,
+  LlmModelInfo,
+  LlmProviderInfo,
+  LlmResolvedModelInfo,
+  ResolvedRetryPolicy,
+  RetryPolicyConfig,
+  StreamChunk,
+} from '@deepseek-ai/dsh-llm'
+import { idleWatchdog, MAX_TIMER_DELAY_MS, timeoutOf } from '@deepseek-ai/dsh-timeout'
+import { serializeRequest } from './serialize.ts'
+import type { RequestDefaults } from './serialize.ts'
+import { parseSse } from './sse.ts'
+import { translate } from './translate.ts'
+import type { WireError } from './types.ts'
+
+/** One optional model entry advertised by the direct-fetch adapter. */
+export interface DeepSeekCatalogModel {
+  /** Wire model id accepted by the configured endpoint. */
+  id: string
+  /** Selector label; defaults to {@link id}. */
+  name?: string
+  /** Optional selector detail for deployments with similar model variants. */
+  description?: string
+  /** Known combined request/response context capacity; omitted when deployment metadata is unavailable. */
+  contextWindow?: number
+}
+
+/** Constructor options for {@link DeepSeekAdapter}; the plugin's `apply` resolves them from Config + environment. */
+export interface DeepSeekAdapterOptions {
+  /** Bearer token sent in the `authorization` header on every request. */
+  apiKey: string
+  /** Endpoint base; `/chat/completions` is appended. */
+  baseURL: string
+  /** Request defaults applied to every call (thinking mode, effort). */
+  defaults?: RequestDefaults
+  /** Positive context capacity used when the selected model has no exact value. */
+  defaultContextWindow?: number
+  /** Advisory models exposed to discovery consumers; requests remain unrestricted. */
+  models?: readonly DeepSeekCatalogModel[]
+  /** Maximum provider idle time while one stream read is outstanding. */
+  streamIdleTimeoutMs?: number
+  /** Provider-owned model-request retry policy; omission uses normal defaults. */
+  retryPolicy?: RetryPolicyConfig
+}
+
+/** Default maximum idle interval while an adapter stream read is outstanding. */
+export const DEFAULT_STREAM_IDLE_TIMEOUT_MS = 300_000
+const STREAM_IDLE_TIMEOUT_CODE = 'LLM_STREAM_IDLE_TIMEOUT'
+const OFF_REASONING_EFFORT = ReasoningEffortId('off')
+const HIGH_REASONING_EFFORT = ReasoningEffortId('high')
+const MAX_REASONING_EFFORT = ReasoningEffortId('max')
+const REASONING_EFFORTS = [
+  { id: OFF_REASONING_EFFORT, name: 'Off' },
+  { id: HIGH_REASONING_EFFORT, name: 'High' },
+  { id: MAX_REASONING_EFFORT, name: 'Max' },
+] as const
+const OFF_ONLY_REASONING_EFFORTS = [
+  { id: OFF_REASONING_EFFORT, name: 'Off' },
+] as const
+
+function modelInfo(provider: string, model: DeepSeekCatalogModel): LlmModelInfo {
+  return {
+    provider,
+    id: model.id,
+    name: model.name ?? model.id,
+    ...model.description === undefined ? {} : { description: model.description },
+  }
+}
+
+function providerRetryAfterMs(value: string | null): number | undefined {
+  if (value === null) return undefined
+  if (/^\d+$/.test(value)) {
+    const delay = Number(value) * 1_000
+    return Number.isFinite(delay) && delay > 0 ? delay : undefined
+  }
+  const delay = Date.parse(value) - Date.now()
+  return Number.isFinite(delay) && delay > 0 ? delay : undefined
+}
+
+function requestId(headers: Headers): ReturnType<typeof ProviderRequestId> | undefined {
+  const value = headers.get('x-request-id') ?? headers.get('x-deepseek-request-id')
+  return value === null || value.length === 0 ? undefined : ProviderRequestId(value)
+}
+
+/**
+ * Map an HTTP status to a stable LlmError code.
+ * @param status - status of a non-2xx provider response.
+ * @param error - parsed provider error body, when available.
+ * @returns the normalized harness error code.
+ */
+export function httpErrorCode(status: number, error?: WireError['error']): string {
+  if (status === 401 || status === 403) return 'AUTH'
+  const detail = [error?.code, error?.type, error?.message].filter(Boolean).join(' ')
+  if (isQuotaExceededError(detail)) return QUOTA_EXCEEDED_CODE
+  if (status === 429) return 'RATE_LIMIT'
+  if (status === 400) {
+    if (isContextWindowExceededError(detail)) return CONTEXT_WINDOW_EXCEEDED_CODE
+    return 'INVALID_REQUEST'
+  }
+  if (status >= 500) return 'SERVER'
+  return `HTTP_${status}`
+}
+
+/**
+ * The first real `LlmAdapter`. One instance serves every model name it was
+ * registered under (the harness model name IS the wire model name).
+ *
+ * One stable signal reaches both initial fetch and body reads. Caller aborts
+ * map to `ABORTED`; the configured per-read idle watchdog maps to `TIMEOUT`.
+ */
+export class DeepSeekAdapter extends LlmAdapter {
+  private readonly streamIdleTimeoutMs: number
+  private readonly retryPolicy: ResolvedRetryPolicy
+
+  constructor(private readonly options: DeepSeekAdapterOptions) {
+    super()
+    if (options.defaults?.thinking === 'disabled'
+      && options.defaults.reasoningEffort !== undefined
+      && options.defaults.reasoningEffort !== 'off') {
+      throw new Error('llm-deepseek: only reasoningEffort "off" can be configured when thinking is disabled')
+    }
+    if (options.defaultContextWindow !== undefined
+      && (!Number.isInteger(options.defaultContextWindow) || options.defaultContextWindow <= 0)) {
+      throw new Error('llm-deepseek: defaultContextWindow must be a positive integer')
+    }
+    this.streamIdleTimeoutMs = options.streamIdleTimeoutMs ?? DEFAULT_STREAM_IDLE_TIMEOUT_MS
+    if (!Number.isFinite(this.streamIdleTimeoutMs)
+      || this.streamIdleTimeoutMs <= 0
+      || this.streamIdleTimeoutMs > MAX_TIMER_DELAY_MS) {
+      throw new Error(
+        `llm-deepseek: streamIdleTimeoutMs must be a positive finite number no greater than ${MAX_TIMER_DELAY_MS}`,
+      )
+    }
+    this.retryPolicy = resolveRetryPolicy(options.retryPolicy, 'llm-deepseek: retryPolicy')
+  }
+
+  override providerInfo(provider: string): LlmProviderInfo {
+    return { id: provider, name: 'DeepSeek' }
+  }
+
+  override providerRetryPolicy(_provider: string): ResolvedRetryPolicy {
+    return this.retryPolicy
+  }
+
+  override listModels(provider: string): Promise<readonly LlmModelInfo[]> {
+    return Promise.resolve((this.options.models ?? []).map(model => modelInfo(provider, model)))
+  }
+
+  override resolveModel(
+    provider: string,
+    model: string,
+    _signal?: AbortSignal,
+  ): Promise<LlmResolvedModelInfo> {
+    const configured = this.options.models?.find(entry => entry.id === model)
+    const contextWindow = configured?.contextWindow
+      ?? this.options.defaultContextWindow
+    return Promise.resolve({
+      ...configured === undefined
+        ? { provider, id: model, name: model }
+        : modelInfo(provider, configured),
+      ...contextWindow === undefined ? {} : { context: { contextWindow } },
+      ...this.options.defaults?.thinking === 'disabled'
+        ? {
+          reasoning: {
+            efforts: OFF_ONLY_REASONING_EFFORTS,
+            defaultEffort: OFF_REASONING_EFFORT,
+          },
+        }
+        : {
+          reasoning: {
+            efforts: REASONING_EFFORTS,
+            defaultEffort: this.options.defaults?.reasoningEffort === 'off'
+              ? OFF_REASONING_EFFORT
+              : this.options.defaults?.reasoningEffort === 'max'
+                ? MAX_REASONING_EFFORT
+                : HIGH_REASONING_EFFORT,
+          },
+        },
+    })
+  }
+
+  async * stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
+    const consumer = new AbortController()
+    const upstream = options.signal === undefined
+      ? consumer.signal
+      : AbortSignal.any([options.signal, consumer.signal])
+    using watchdog = idleWatchdog(upstream, this.streamIdleTimeoutMs, STREAM_IDLE_TIMEOUT_CODE)
+    const iterator = this.request(options, watchdog.signal)[Symbol.asyncIterator]()
+    let exhausted = false
+    try {
+      while (true) {
+        const result = await watchdog.next(iterator)
+        if (result.done) {
+          exhausted = true
+          return
+        }
+        yield result.value
+      }
+    } catch (error: unknown) {
+      if (timeoutOf(watchdog.signal, STREAM_IDLE_TIMEOUT_CODE) !== undefined) {
+        throw new LlmError(
+          `DeepSeek stream idle timeout after ${this.streamIdleTimeoutMs}ms`,
+          'TIMEOUT',
+          { cause: error },
+        )
+      }
+      if (options.signal?.aborted) {
+        throw new LlmError('DeepSeek request aborted by caller', 'ABORTED', { cause: error })
+      }
+      if (error instanceof LlmError) throw error
+      throw new LlmError(`DeepSeek API stream from ${this.options.baseURL} failed`, 'TRANSPORT', { cause: error })
+    } finally {
+      consumer.abort('DeepSeek stream consumer stopped')
+      if (!exhausted && iterator.return !== undefined) {
+        try {
+          await iterator.return()
+        } catch (_abortedTransportTeardown) {
+          // The consumer controller already owns termination; a return-time abort cannot add a second outcome.
+        }
+      }
+    }
+  }
+
+  private async * request(options: GenerateOptions, signal: AbortSignal): AsyncIterable<StreamChunk> {
+    const body = serializeRequest(options, this.options.defaults ?? {})
+    // Prepared outside the try so the TRANSPORT label below covers exactly the
+    // transport boundary, never a serialization failure.
+    const payload = JSON.stringify(body)
+    const headers = {
+      'authorization': `Bearer ${this.options.apiKey}`,
+      'content-type': 'application/json',
+      'accept': 'text/event-stream',
+      ...attributionHeaders(),
+      ...options.sessionId !== undefined
+        ? { 'x-deepseek-harness-session-id': String(options.sessionId) }
+        : {},
+      ...options.purpose === 'compaction'
+        ? { 'x-deepseek-harness-compact': '1' }
+        : {},
+    }
+
+    // TODO(http): adopt the Cordis HTTP service when shared transport configuration
+    // outweighs its additional runtime dependencies.
+    let response: Response
+    try {
+      response = await fetch(`${this.options.baseURL}/chat/completions`, {
+        method: 'POST',
+        headers,
+        body: payload,
+        signal,
+      })
+    } catch (error: unknown) {
+      // The outer stream distinguishes caller cancellation and watchdog expiry.
+      if (signal.aborted) throw error
+      // fetch wraps every transport failure (DNS, refused connection, TLS,
+      // proxy) in a bare `TypeError: fetch failed` whose actionable detail
+      // lives on `cause`. Wrapping with the endpoint and chaining the cause
+      // lets `errorChain` render the full diagnosis at every reporting seam.
+      throw new LlmError(
+        `DeepSeek API request to ${this.options.baseURL} failed`,
+        'TRANSPORT',
+        { cause: error },
+      )
+    }
+
+    if (!response.ok) {
+      let message = `DeepSeek API error (HTTP ${response.status})`
+      let providerError: WireError['error']
+      try {
+        const parsed = await response.json() as WireError
+        providerError = parsed.error
+        if (providerError?.message) message = providerError.message
+      } catch {
+        // Only swallow error-body parsing: the HTTP status still identifies the
+        // failure, so malformed gateway JSON must not mask it.
+      }
+      const delay = providerRetryAfterMs(response.headers.get('retry-after'))
+      const id = requestId(response.headers)
+      throw new LlmError(message, httpErrorCode(response.status, providerError), {
+        status: response.status,
+        ...delay === undefined ? {} : { providerRetryAfterMs: delay },
+        ...id === undefined ? {} : { requestId: id },
+      })
+    }
+    if (!response.body) {
+      throw new LlmError('DeepSeek API returned no response body', 'EMPTY_RESPONSE')
+    }
+
+    yield* translate(parseSse(response.body))
+  }
+}
