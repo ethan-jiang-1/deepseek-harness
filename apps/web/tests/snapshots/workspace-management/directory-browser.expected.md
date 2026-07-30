@@ -1,0 +1,23 @@
+- dialog "Select Workspace Directory":
+  - heading "Select Workspace Directory" [level=2]
+  - navigation:
+    - button "Home"
+    - img
+    - button "browse-golden"
+  - button "Edit path"
+  - list:
+    - listitem:
+      - button "alpha":
+        - img
+        - text: alpha
+        - img
+    - listitem:
+      - button "beta":
+        - img
+        - text: beta
+        - img
+  - button "New folder":
+    - img
+    - text: New folder
+  - button "Cancel"
+  - button "Open"
