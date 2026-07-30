@@ -1,0 +1,32 @@
+- banner:
+  - navigation "Session hierarchy":
+    - button "Reply with the single word" [disabled]
+  - tablist:
+    - tab "Chat" [selected]
+    - tab "Trajectory"
+- text: Reply with the single word LIGHTHOUSE and stop. {{clock}}
+- button "Copy":
+  - img
+- button "Branch into a new conversation":
+  - img
+- button "Edit":
+  - img
+- button "Think The user wants me to reply with a single word. Let me comply.":
+  - img
+  - img
+  - text: Think The user wants me to reply with a single word. Let me comply.
+- paragraph: LIGHTHOUSE
+- button "Copy":
+  - img
+- button "Branch into a new conversation":
+  - img
+- text: {{clock}}
+- textbox "Message the agent"
+- button "Commands":
+  - img
+- 'button "Access mode, current: Full access"': Full access
+- button "Select model, current DeepSeek-V4-Flash":
+  - text: DeepSeek-V4-Flash
+  - img
+- button "Send message" [disabled]
+- text: 1 turns · 1 steps Cache hit 99% Input 7.8K tok · Output 21 tok
