@@ -1,0 +1,35 @@
+/* Full-bleed, fixed-height host for the trajectory ledger. */
+.root {
+  --dsh-trajectory-toolbar-height: 32px;
+
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-bg-layer-1);
+}
+
+/* Trajectory keeps the ledger and details panel inside the remaining
+ * conversation height. Only the ledger pane scrolls; the composer remains
+ * the fixed flex sibling below this view. */
+:global([data-conversation-scroll]):has(.root) {
+  overflow: hidden;
+}
+
+:global([data-conversation-scroll]):has(.root) > :first-child {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ledger {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
