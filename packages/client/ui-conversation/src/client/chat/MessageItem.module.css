@@ -1,0 +1,150 @@
+/* User bubble: right-aligned column (bubble + IconActions). Figma
+   User_Bubble/message_container 659:38813 — r22 fill, actions gap 6 below. */
+
+.userRow {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.bubble {
+  /* 525px cap inside the 736 column; percentage keeps narrow windows sane. */
+  max-width: min(525px, 82%);
+  background: var(--dsw-specific-bubble);
+  border-radius: 22px;
+  /* 44px single-line bubble: 24 line + 10 vertical padding each side. */
+  padding: 10px 16px;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.badge {
+  display: inline-block;
+  margin-bottom: 4px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: var(--dsw-alias-state-warn-primary);
+  color: var(--dsw-alias-label-primary-foreground);
+  font-size: 11px;
+}
+
+.contextRow {
+  padding: 2px 0;
+}
+
+.retryRow {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.retrySummary {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 2px 0;
+  gap: 7px;
+  border-radius: 3px;
+  color: inherit;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.retrySummary::-webkit-details-marker {
+  display: none;
+}
+
+.retrySummary::after {
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentcolor;
+  border-bottom: 1.5px solid currentcolor;
+  content: '';
+  opacity: 0.8;
+  transform: rotate(-45deg);
+  transition: transform 120ms ease;
+}
+
+.retrySummary:hover {
+  color: var(--dsw-alias-label-secondary);
+}
+
+.retrySummary:focus-visible {
+  outline: 1.5px solid var(--dsw-alias-button-info-fill);
+  outline-offset: 2px;
+}
+
+.retryText {
+  color: inherit;
+}
+
+.retryRow[data-active] .retryText {
+  background:
+    linear-gradient(
+      90deg,
+      var(--dsw-alias-label-tertiary) 0%,
+      var(--dsw-alias-label-tertiary) 40%,
+      var(--dsw-alias-label-secondary) 50%,
+      var(--dsw-alias-label-tertiary) 60%,
+      var(--dsw-alias-label-tertiary) 100%
+    );
+  background-position: 100% 50%;
+  background-size: 200% 100%;
+  background-clip: text;
+  color: transparent;
+  animation: retry-shimmer 1.6s ease-in-out infinite;
+}
+
+.retryRow[open] .retrySummary::after {
+  transform: rotate(45deg);
+}
+
+.retryDetails {
+  display: grid;
+  gap: 2px;
+  margin-top: 3px;
+  padding-left: 14px;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.retryDetailLabel {
+  color: var(--dsw-alias-label-secondary);
+}
+
+@keyframes retry-shimmer {
+  from {
+    background-position: 100% 50%;
+  }
+
+  to {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retryRow[data-active] .retryText {
+    background: none;
+    color: inherit;
+    animation: none;
+  }
+}
+
+/* Reference chip projection inside a user bubble (`<skill>name</skill>` model
+   spans render as chips; free geometry — no textarea pairing here). */
+.refChip {
+  display: inline-block;
+  margin: 0 2px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: rgba(97, 135, 216, 0.22);
+  color: var(--dsw-alias-label-primary);
+  font-size: 0.85em;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
