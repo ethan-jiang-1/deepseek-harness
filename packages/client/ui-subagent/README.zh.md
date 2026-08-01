@@ -1,0 +1,34 @@
+# @deepseek-ai/dsh-client-ui-subagent
+
+[English](README.md) | 中文
+
+Web subagent 功能 owner：向 `conversation.session.header.actions` 贡献可懒加载展开的目录树，向会话编辑器链贡献按原因区分的只读替代呈现，并保留注册到 `ctx.slash` 的既有 `@` 引用 source。
+
+页头操作通过标准 `useSessions` 钩子读取 `subagentsByParent` 与会话摘要。非空目录到达后，它会显示健康的直接 child 数量，并按服务顺序显示一棵紧凑树。可继续和 one-shot 行会显示 mode、`running`／`inactive` 活动状态、由日志支撑的可选 title 与会话摘要中的活动时间；没有 label 的 one-shot 行会回退到其会话 id。损坏、不受支持或不可用的行仍保持可读但禁用。每个健康行的 `hasChildren` 提示会在交互前决定是否显示展开控件，因此已知叶子节点从不显示箭头；展开分支时仍会懒加载该 child 的权威直接目录，并向运行时报告每个可见分支，使成员帧只在树正被消费的位置触发去抖动刷新。选择任意深度的条目都会使用该行的确切地址 `{parentSessionId, childSessionId, mode}` 调用 `SessionsService.openSubagent()`。组件局部状态负责树的可见性、已展开分支与键盘焦点。ArrowRight／ArrowLeft 展开和折叠分支；ArrowUp／ArrowDown、Home、End 与 Escape 用于导航或关闭树；关闭后焦点返回触发器。样式只使用 token。
+
+one-shot child 始终选用只读编辑器，并将 transcript（文本记录）说明为已完成的执行记录。可继续 child 仅在其确切 parent 不可用时选用只读编辑器，并以文案说明恢复路径。确切 parent 存活时，可继续 child 保留普通输入 chrome，其 Session 会通过 `subagent.prompt` 路由；child 运行期间，输入操作仍为 Send，因为每条后续消息都会进入 child 的 FIFO inbox，且已寻址会话绝不公开 Stop。本包绝不接收宿主 context，也不调用面向模型的工具。目录与编辑器行为由 [Web subagent 对话 Agent Note](../../../.agents/notes/implemented/feature/2026-07-27-web-subagent-conversations.md)规定。
+
+普通侧边栏会省略带 subagent origin 的 Session 行，因此 parent 页头目录是它们的导航入口。普通 fork 仍保留在侧边栏中。
+
+`@` source 仍然刻意保持独立且惰性。候选是从 `ctx.sessions.list` 零 RPC 得到的运行中 child；pick 会插入字面文本 `@label `，codec 投影为 `@label`。它不参与命令裁决，也不会把 label 解析成继续执行地址。
+
+## 模型体验
+
+### 用户提示词中的 subagent label 文本
+
+#### 模型看到的内容
+
+只有旧有 `@` 引用 source 会影响模型输入：pick 的候选以字面文本 `@label` 进入普通用户消息，没有专用内容块或宿主侧解析。浏览目录、导航 child 与查看持久化 transcript 都不会添加提示词 section；获准进入的继续交互内容会经宿主 subagent 适配器成为普通 FIFO 用户消息。
+
+#### Token 影响
+
+有条件且仅追加：字面 `@label` 或用户后续消息只会向对应的新用户消息增加 token。目录与 transcript 操作增加零模型 token。
+
+#### KV Cache 影响
+
+仅追加。本包绝不改写更早的请求 token。
+
+## 已知限制与暂缓事项
+
+- **目录只有粗粒度活动状态**：它不能显示持久化结果、耗时、Activation 身份或具备安全授权的取消按钮。
+- **`@` 引用仍是显示标题文本**：重复或改名后的 label 会有歧义，因此它们刻意不获得继续执行语义。
