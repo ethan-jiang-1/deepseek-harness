@@ -1,0 +1,6 @@
+# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
+# side as of the last confirmed-consistent state. Both languages carry equal authority;
+# after editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/defensive-patterns.md
+defensive-patterns.md: 3754e02d4f0754fdd711310775c0177ee7c313b1
+defensive-patterns.zh.md: 884ed404820d64afdb5237f8121992bcb107cb0f
