@@ -1,0 +1,6 @@
+# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
+# side as of the last confirmed-consistent state. Both languages carry equal authority;
+# after editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write docs/cordis-primer.md
+cordis-primer.md: c57055e9657ebc8a0c3f537825ddcbdda1ced68a
+cordis-primer.zh.md: 45cce2abb2117aef44028ab53a9836d24fab91d6
