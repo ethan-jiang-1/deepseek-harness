@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="440" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">共用 applyEntryPatches；dump 的层列表 ≠ runProfile 的层列表</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">算法保真 ≠ 每一层都打印。launcher 派生的补丁只在 boot 路径上。</text>
+
+  <rect x="40" y="68" width="420" height="240" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="250" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">--dump-config</text>
+  <text x="56" y="124" font-size="12" fill="#166534">空 cordis.yml</text>
+  <text x="56" y="146" font-size="12" fill="#15803d">+ 每个 bundle 一层</text>
+  <text x="56" y="168" font-size="12" fill="#15803d">+ profile cordis.patch.yml</text>
+  <text x="56" y="190" font-size="12" fill="#15803d">+ home cordis.patch.yml</text>
+  <text x="56" y="212" font-size="12" fill="#15803d">+ --patch 文件</text>
+  <text x="56" y="244" font-size="12" fill="#14532d">不求值 !!js，原文打出</text>
+  <text x="56" y="266" font-size="12" fill="#14532d"># == 注释标来源，仍是一份可加载 YAML</text>
+  <text x="56" y="288" font-size="11" fill="#16a34a">--dump-default-config 跳过用户层</text>
+
+  <rect x="500" y="68" width="420" height="240" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="710" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">runProfile / boot</text>
+  <text x="516" y="124" font-size="12" fill="#1e40af">同一份空 cordis.yml</text>
+  <text x="516" y="146" font-size="12" fill="#2563eb">上面那四类层，再加：</text>
+  <text x="516" y="176" font-size="12" fill="#1e3a8a">agent-presets.roots 的 shipped 路径</text>
+  <text x="516" y="198" font-size="12" fill="#1e3a8a">（仅当组合里有这一行）</text>
+  <text x="516" y="226" font-size="12" fill="#1e3a8a">DSH_TELEMETRY_DISABLED 非空</text>
+  <text x="516" y="248" font-size="12" fill="#1e3a8a">→ disabled: true 那一行</text>
+  <text x="516" y="280" font-size="12" fill="#1d4ed8">!!js 在 inject 齐了之后才求值</text>
+
+  <rect x="40" y="328" width="880" height="80" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="60" y="358" font-size="12" fill="#9a3412">测试钉住的是：同一 parser + 同一 applyEntryPatches + !!js 不求值。不是「dump 文本等于进程里每条 launcher 补丁」。读 dump 时别把缺失的 telemetry disable 当成 bug。</text>
+  <text x="60" y="382" font-size="12" fill="#7c2d12">打不中的 patch 两边都是 warn，不 fail。缺 bundle 声明才 fail loud。</text>
+</svg>

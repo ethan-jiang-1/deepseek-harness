@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="340" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">installFailLoud：先报错，再还终端，再 exit 1</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">packages/boot/app-boot/src/index.ts · FAIL_LOUD_RELEASE_TIMEOUT_MS = 2000</text>
+
+  <rect x="40" y="70" width="200" height="70" rx="8" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="140" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#b91c1c">unhandledRejection</text>
+  <text x="140" y="120" text-anchor="middle" font-size="11" fill="#991b1b">插件后挂的失败</text>
+  <line x1="240" y1="105" x2="278" y2="105" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="280" y="70" width="200" height="70" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="380" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">stderr 一行</text>
+  <text x="380" y="120" text-anchor="middle" font-size="11" fill="#c2410c">dsh: fatal load failure</text>
+  <line x1="480" y1="105" x2="518" y2="105" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="520" y="70" width="200" height="70" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="620" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">release() ≤ 2s</text>
+  <text x="620" y="120" text-anchor="middle" font-size="11" fill="#2563eb">dispose 树，还终端</text>
+  <line x1="720" y1="105" x2="758" y2="105" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="760" y="70" width="160" height="70" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="840" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">exit(1)</text>
+  <text x="840" y="120" text-anchor="middle" font-size="11" fill="#4b5563">卡住也要退出</text>
+
+  <rect x="40" y="170" width="880" height="140" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="198" font-size="12" fill="#374151">assertEntriesActivated 已经折进诊断的 rejection，在 checkpoint 窗口里被忽略，避免 Loader 再丢一次同样的 promise 变成第二条 fatal。</text>
+  <text x="60" y="222" font-size="12" fill="#374151">latch：第一个 rejection 是报告的那个。release 期间 handler 仍装着，后来的（含 teardown 自己的）吞掉，以免中途被 Node 杀掉、终端卡在 raw mode。</text>
+  <text x="60" y="246" font-size="12" fill="#374151">timer 保持 referenced：永不结束的 disposer 不能让事件循环空转成 exit 0。</text>
+  <text x="60" y="278" font-size="11" fill="#6b7280">stdout 不动，给 ACP。profile-boot 的 release 是 dispose 整棵 root fiber。</text>
+</svg>

@@ -2,7 +2,7 @@
 
 维护用索引，不是专题正文。用来判断哪些子系统已经有机制级消化，哪些只在介绍里出现，哪些还没进 `_digested/`。
 
-当前阶段：各专题 `00-map.md` 是图文介绍。机制级正文尚未写。
+当前阶段：各专题 `00-map.md` 是图文介绍。`cordis-runtime/` 与 `composition/` 已有机制级正文；其余专题仍是介绍级。
 
 ## 状态
 
@@ -20,7 +20,7 @@
 |------|------|----|----------------|
 | `system/` | 介绍级 | `six-layers` · `event-domains` · `extend-not-patch` | [`docs/architecture.md`](../../docs/architecture.md) |
 | `cordis-runtime/` | 部分覆盖（01–04 机制级） | 介绍三图 + `primitives-source` · `waterfall-compose` · `pre-step-chain` · `js-eval-timing` · `insert-then-patch` | `vendor/cordis/`、`vendor/loader/`、`vendor/include/` |
-| `composition/` | 介绍级 | `patch-layers` · `profile-home` | `packages/boot/app-boot/`、`packages/bundle/` |
+| `composition/` | 部分覆盖（01–03 机制级） | 介绍两图 + `boot-sequence` · `fail-loud` · `dump-vs-boot` · `live-recompose` · `last-good-tree` | `packages/boot/app-boot/`、`apps/cli/src/profile-boot.ts` |
 | `session-and-loop/` | 介绍级 | `turn-step` · `model-visible-logged` · `agent-scope` | `packages/core/{session,agent,agent-loop,scope}/` |
 | `capability-seams/` | 介绍级 | `three-roles` · `execution-world` | [`docs/capability-seams.md`](../../docs/capability-seams.md) |
 | `tools-prompt-llm/` | 介绍级 | `request-assembly` · `tool-pipeline` | `packages/core/{tools,system-prompt}/`、`packages/llm/` |

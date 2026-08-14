@@ -1,0 +1,111 @@
+# `boot()` 时序
+
+> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`apps/cli/src/profile-boot.ts`、`packages/boot/app-boot/src/index.ts`、`packages/boot/app-boot/src/profile.ts`。路径和符号，不用行号。
+
+介绍篇把组合讲成「从空列表叠 patch」。这篇把一次 `dsh --profile` 钉到函数调用顺序：先准备磁盘上的空根，再算出层列表，再 `boot()` 把 Include 挂上去，最后审计每一行都活了。失败分两段标签；boot 看不见的后挂 rejection 走 `installFailLoud`。
+
+![一次 dsh --profile 怎么变成一棵活树](./figures/boot-sequence.svg)
+
+## 入口是 `runProfile`，不是直接 `boot`
+
+产品 bin 走 `apps/cli/src/bin.ts` → `runProfile`。`boot()` 不知道 profile、bundle、home patch；它只收一份绝对路径的根 YAML 和一份已经展平的 `patches`。
+
+`runProfile` 做四件事，再把树交给插件自己过一辈子（或一次性 runner 自己退出）：
+
+1. `composeProfile`：heal 模块回退、加载 profile、叠层、加 launcher 派生补丁。
+2. `installFailLoud`：后挂失败时先报错、再还终端、再 `exit(1)`。
+3. `boot(NAME, rootConfig, structuredClone(allPatches), prepare)`。
+4. 树还活着就挂用户层 HMR（见 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)）。
+
+`prepare` 在任何配置树行 mount **之前**跑：把 `ctx` 存进 shutdown 闭包、`provide` 启动环境快照、`provideCmdline`。命令行参数和环境不是 patch 列表的一部分，活过 recomposition。
+
+## `prepareProfile`：根文件每次都写成 `[]`
+
+`PROFILE_ROOT_FILENAME = 'cordis.yml'`。内容是注释加 `[]`。`prepareProfile` **每次** `writeFileSync` 覆盖它。
+
+原因：Loader 的树写回会把已经组合好的行烤进这个文件。下次再当根 include，bundle 的 `insert` 会插第二遍。dump 也锚定同一份空文件，boot 和 dump 才共用同一个 base。
+
+`healProfilesModuleFallback` 在加载之前：把安装闭包 BFS（含 peer）链到 `$DSH_HOME/profiles/node_modules`。profile 目录里的裸插件名才能解析。bundle 解析：**安装锚点优先**，再到 profile 目录。列出的包没有 `dsh.bundle` 声明 → fail loud，不会默默跳过。
+
+## 层列表：用户层之上还有 launcher 派生
+
+`composeProfile` 算出的 `allPatches`：
+
+```text
+bundle patches（dsh.profile.bundles 声明顺序）
+  + profile 的 cordis.patch.yml
+  + $DSH_HOME/cordis.patch.yml（压过 profile）
+  + --patch 文件（argv 顺序）
+  + 仅 boot：agent-presets.roots 的 shipped 路径
+  + 仅 boot：DSH_TELEMETRY_DISABLED 非空 → { id, disabled: true }
+```
+
+后两层不进 `--dump-config`。算法仍是 `composeEntries` → `applyEntryPatches([], structuredClone(flat))`。层集合不同，见 [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md)。
+
+`resolveTelemetryPatch`：环境变量**任意非空**（含 `'0'` / `'false'`）都关掉。组合里没有 `session-telemetry-otel` 这一行就不生成补丁。隐私开关宁可误关，不误开。
+
+`agent-presets` 的 shipped root 只有 launcher 解得出（源码和 built 布局都在 app config 旁边）。可写的用户 preset 根是 `dsh-agent-presets` 自己的；没走到这条补丁的启动仍能找到人写的 preset。
+
+## `boot()` 本身
+
+```text
+new Context()
+  ctx.baseUrl = 根 YAML 所在目录的 file URL
+  provide('dshHomePath', dshHomePath)     // !!js 能写 home
+  plugin(Loader)
+  prepare(ctx)                            // 阶段标签仍是 host preparation
+  mountRootInclude(...)                   // 之后失败改称 plugin tree failed to load
+  loader.await()
+  若 loader 已消失 → 直接返回 ctx
+  assertEntriesActivated
+```
+
+`mountRootInclude` 静态 import Include / Group，钉死 id `'include'`，config 是 `{ path: fileURL, patches }`。诊断和 snapshot 才稳定。Group 一起注册，才能给 provider 和 consumers 同一个 `isolate` realm。
+
+裸模块名默认对着 config 目录解析；打包运行时可以传 `bareModuleBaseUrl`，让主机而不是配置工程拥有整套插件。
+
+## 两段失败标签
+
+`stage` 在 `prepare` 之前是 `host preparation failed`，Include mount 之后是 `plugin tree failed to load`。catch 里 `await ctx.fiber.dispose()`——根 fiber 的清理按观察者隔离，重复 dispose 返回已结算的单次结果，这个 await 不会再抛、盖掉原来的 `cause`。
+
+诊断把最深 `cause` 的 stack 拼上去。Loader 事务会按树层各包一层消息；真正的激活现场在最里面那个 Error。
+
+树在 `await` 中途被表面 dispose：Loader 服务跟着走。再读 `ctx.loader` 会 TypeError，而应用其实是按请求退出的。所以每个 await 之后重查；loader 没了就返回，不做 activation 审计。
+
+## 结算审计
+
+`assertEntriesActivated` 先 `assertEntriesLoaded`：enabled 却没有 fiber → 解析失败，点名 `options.name`。
+
+然后扫 fiber 状态（数值与 `tool-cordis` / web client 对齐，Cordis const enum 没有可 import 的运行时对象）：
+
+| 状态 | 处理 |
+|------|------|
+| ACTIVE | 通过 |
+| 无 fiber / disabled | 跳过 |
+| FAILED | `await fiber.await()` 收回原 rejection，保留原 stack |
+| PENDING | 在**该 fiber 自己的 ctx** 上点名还缺的服务 |
+| 其它数字 | 原样写进诊断 |
+
+FAILED 的 rejection 会先经过 process checkpoint，让 Loader 再丢一次同样的 promise 时被 `installFailLoud` 忽略，避免第二条 fatal。
+
+## `installFailLoud`：先报错，再还终端
+
+![installFailLoud：先报错，再还终端，再 exit 1](./figures/fail-loud.svg)
+
+boot 的 `throw` 覆盖启动窗口。插件后挂的失败走 `unhandledRejection`：
+
+1. stderr 一行 `dsh: fatal load failure:`（stdout 不动，留给 ACP）。
+2. `release()` 与 2000ms 超时赛跑。timer **保持 referenced**：永不结束的 disposer 不能让事件循环空转成 exit 0。
+3. `exit(1)`。release 自己失败也吞掉——致命退出已经拥有结局。
+
+latch：第一个 rejection 是报告的那个。handler 在 release 期间仍装着，后来的（含 teardown 自己的）吞掉，以免 Node 中途杀掉、终端卡在 raw mode。profile-boot 的 `release` 是 dispose 整棵 root fiber。
+
+启动窗口里 SIGTERM / SIGINT 已经接上：插入的 provider 可能在兄弟行还没 mount 完就对外服务。SIGTERM 退出 0（监督者普通停止）；SIGINT 退出 130。
+
+## 环境分层，在树 mount 之前冻住
+
+`loadLayeredEnv`：继承的 `process.env` > 项目目录 `.env` > home `.env`。两个文件都校验完才往 `process.env` 写，且**不覆盖**已有名字。Harness home 在读文件之前就从继承环境解析。
+
+bootstrap-only 名字（`PATH`、代理、`DEEPSEEK_BASE_URL`、一切 `DSH_` 前缀等）不允许来自文件，声明即抛。这是启动方式 / 代码从哪来 / 网络怎么走，不是应用配置。
+
+快照经 `prepare` provide，插件读同一份不可变出处，不自己再扫一遍 `.env`。

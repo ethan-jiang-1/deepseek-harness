@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">热更新只换用户层；bundle 和 --patch 不许被用户文件挤掉</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">watchUserPatches + composeLive · 每次 structuredClone 全列表</text>
+
+  <rect x="40" y="68" width="880" height="52" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="480" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">bundle patches（冻结在首次 composeProfile）</text>
+
+  <rect x="40" y="132" width="430" height="52" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="255" y="164" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">每次重读 profile cordis.patch.yml</text>
+
+  <rect x="490" y="132" width="430" height="52" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="705" y="164" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">每次重读 home cordis.patch.yml</text>
+
+  <rect x="40" y="196" width="880" height="52" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="480" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">overlays（--patch + telemetry + shipped presets）首次算完就冻结</text>
+
+  <rect x="40" y="268" width="880" height="100" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="296" font-size="12" fill="#374151">两个 watcher 都调同一个 composeLive。HMR 只交出「刚变的那份」；两边都重读，避免把对方的旧拷贝缝进去。</text>
+  <text x="60" y="320" font-size="12" fill="#374151">Include 按引用 push insert 行，后续 id patch 会原地改这些对象。不 clone 的话，用户覆盖会烤进 bundle 的内存行，删掉覆盖也无法回到 bundle 默认。</text>
+  <text x="60" y="344" font-size="12" fill="#374151">cmdline / 环境快照不在 patch 列表里：它们是 prepare 里 provide 的服务，活过 recomposition。</text>
+</svg>
