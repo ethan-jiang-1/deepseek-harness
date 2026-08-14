@@ -2,7 +2,7 @@
 
 > 基线 `47f943859bef60e4160492346772ded9b24f765a`。`packages/core/agent/src/index.ts` `AgentRegistry` / `AgentFactory`、`packages/core/agent/src/runtime-types.ts` `Agent`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`、`packages/core/agent-loop/src/index.ts` `AgentLoop`。
 
-介绍篇写 UI / hook / 工具依赖 `dsh-agent`，不依赖具体 loop。这是**产品合同方向**。这篇把接口、工厂、以及今天谁仍 import `dsh-agent-loop` 写清楚。
+介绍篇写 UI / hook / 工具依赖 `dsh-agent`，不依赖具体 loop。对照 `package.json` 之后，这条作为**运行时合同**成立：那些包的 peer 停在 `dsh-agent`，`dsh-agent-loop` 多半只在测试里。
 
 ![产品面对 ctx.agents](./figures/factory-radius.svg)
 
@@ -32,14 +32,14 @@ loop 插件（`AgentLoop`）构造时 `setFactory(this)`。没有 factory：`no 
 3. 仍发同一类活扩展点：`agent/pre-step`（waterfall）、`agent/turn-stopping`（serial）、`agent/request`、`agent/status`、inbox 通知。
 4. `deriveMessages()` 仍是请求历史的唯一来源。
 
-渲染面、多数 tool、`ctx.commands` 可以不动。
+渲染面、多数 tool、`ctx.commands` 可以不动。`ReactLoopAgent` 私有的 `kick` / `turn` / `step` 不必出现在公开 `Agent` 上。
 
-## 今天真实半径大于介绍句
+## 今天谁真的依赖 loop 包
 
-`dsh-base` 把 `@deepseek-ai/dsh-agent-loop` 挂进默认树——换 loop 至少要 patch 掉这一行。
+`dsh-base` 把 `@deepseek-ai/dsh-agent-loop` 写进 **dependencies** 并挂进默认树——换 loop 至少要 patch 掉这一行。`python/sdk-runtime` 和若干 `examples/` 同样生产依赖它。
 
-生产包里**直接依赖** `dsh-agent-loop` 的，不止测试工具。例如：`goal-round-driver`、`compaction-basic`、`hooks-claude-code` / `hooks-codex`、若干 subagent provider、`session-checkpoint-policy`、`plan-mode`。它们有的听 loop 假设的 turn 节奏，有的用 `dsh-agent-loop-testkit` 当 devDependency 但 runtime 也写了 loop 包。
+hooks、compaction、`goal-round-driver`、多数 tool 的 **`dsh-agent-loop` / testkit 在 `devDependencies`**。peer 停在 `dsh-agent`。UI（`client/ui-*`）、`dsh-commands` 同理。换 Factory 不必改这些包的 import。
 
-UI 包（`client/ui-*`）、`dsh-commands`、多数 tool 的 runtime 依赖停在 `dsh-agent`。这才是「换 loop 渲染面不动」的那一批。
+`ReactLoopAgent.scope` 不在公开 `Agent` 接口上；消费者用 `agent.ctx` 和 `scopeOf()`。scope 原语支持 `bindScopeParent`，默认 agent **不**绑父链。
 
-所以：换 loop **不是**改一个文件。半径 = Factory 合同 + 仍写同一条 log + 把默认 bundle 里的 loop 行换掉 + 审计那些 import 了 `@deepseek-ai/dsh-agent-loop` 的生产包。介绍句是设计目标；`package.json` 是当前耦合图。
+半径 = 实现 Factory + 同一套 log / `agent/*` 语义 + 换掉 bundle 里的 loop 行。介绍句作为产品合同是对的；别把测试依赖当成运行时耦合。

@@ -29,7 +29,7 @@ ACP demo：`node --import tsx packages/examples/acp-demo/src/bin.ts --config exa
 
 浏览器半边（`packages/client/`）订阅读这些帧，slots / `ConversationNodeDefinition` 渲染。client **没有**另一份 append-only log。刷新 / 重连从持久化再 hydrate，仍然是同一条 session 的事件。
 
-加 Web Chat 节点：登记 definition + keyed renderer。不要在 host 里再跑一套 loop。
+加 Web Chat 节点：在 **client** 上登记 `ConversationNodeDefinition` + keyed renderer（`ctx.conversationEvents` / `ctx.conversationViews`）。host 没有这个 ctx。不要在入口里再跑一套 loop。
 
 ## 三条命令平面（入口侧怎么接）
 

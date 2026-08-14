@@ -24,7 +24,7 @@
 - `-100` 附近：产品身份，几乎不变。
 - `0`：部署 persona，随 profile 变，不随每一步变。
 - `100–199`：工具指导，随 **restrict / 本 agent 可见工具集** 变——换工具集本来就会换前缀。
-- 更大的正数：易变动态上下文。`PromptContext` 另有自己的 order，装配进 runtime context 快照，经 `inject` 路径变成 `user/message`，不塞进 system 前缀（loop 把 `joinContextSections` 的结果 project 进 inbox，见 session 专题）。
+- 更大的正数：易变动态上下文。`systemPrompt.context()`（如 `approval:policy` order 115、`sandbox:policy`）**不进 system 前缀**。loop 的 `RuntimeContextProjection` 把 `joinContextSections` 收成 `user/message` 快照，拼进下一次获准 enter；政策切换因此不打乱 KV 前缀。这不是 `agent.inject()`。
 
 `config.toolOrder` 排 schema 名字；未列出的走保留名 `TOOL_ORDER_REST`。provider 返回这个保留名会让 assembly 失败。
 

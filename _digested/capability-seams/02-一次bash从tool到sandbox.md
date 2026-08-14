@@ -9,8 +9,8 @@
 ## 调用链
 
 1. 模型发出 `tool/call`，name 是 bash 工具，`arguments` 是原始 JSON 字符串（未解析）。loop 记入 log。
-2. `tools/pre-execute`：审批、改 argv。必须 `next()`。deny / 缺 answerer 的 ask → 不 spawn。
-3. `dsh-tool-bash` 把解析后的参数收成 `ShellExecRequest`（command、cwd、timeout……），调用 `ctx.shell.resolve(request)` 得到 `ShellExecSpec`。
+2. `tools/pre-execute`：hooks 等可 allow / deny / ask。必须 `next()`。deny / 缺 answerer 的 ask → 不进 body。
+3. `dsh-tool-bash` `execute`：校验 args → `sandboxPolicy.resolve` → **升权审批在这里**（`approveEscalation` + `ctx.approval`，不是 Definition 方法）→ 收成 `ShellExecRequest` → `ctx.shell.resolve` 得到 Spec。`stdin` / `env` / `stdoutMaxBytes` 不进模型 schema。
 4. 前台 `ctx.shell.run(spec)` 或后台 `start(spec)`。
 5. **bash-local**：`spawnSpec` 把 Spec 映成 `bash -c …` 的 `SubprocessSpawnSpec`，`this.ctx.subprocess.spawn(...)`。环境先合并 `ENV_OVERRIDES`（`NO_COLOR`、`TERM=dumb`、pager=cat），调用方显式 env 仍能盖掉。
 6. **bash-sandbox**（子类）：在 spawn 前 `ctx.sandbox.confine(argv, policy)`，用包装后的 argv 再交给 subprocess。Windows 走另一套 ACL runner，合同仍是 confine → spawn。
@@ -27,7 +27,9 @@
 
 | 层 | 管什么 |
 |----|--------|
-| `tools/pre-execute` / `approval/request` | 准不准跑、ask 人 |
+| `tools/pre-execute` | hooks 等：准不准进 body |
+| Consumer `execute` 里的 `approveEscalation` | sandbox 升权；走 `ctx.approval`，不在 `ShellExecutor` 上 |
+| `approval/request` | 审批 seam；缺 answerer fail-closed |
 | `ctx.sandbox.confine` | argv 怎么包（bwrap / seatbelt / windows-acl） |
 | `ctx.shell.resolve` | cwd、timeout 默认与上限（实现拥有的 caps） |
 | `ctx.subprocess.spawn` | 真正创建进程（本地或 E2B） |

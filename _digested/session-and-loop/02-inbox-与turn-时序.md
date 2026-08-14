@@ -26,15 +26,17 @@
 
 唤醒输入不能加入已经 abort 的活动：若 `wakeup &&` 当前非 idle 且 abort 已触发，target 改成 `next-turn`。这个分类在插入**之前**拍板，以免 splice 观察者里的可重入 cancel 把它改类。
 
-idle 时 wakeup **一定**开 turn 边界，即使消息随后被清掉。只有 latch 住的重放会在队列不再持有 wake 时被抑制。维护中或已 abort 的驱动把 `wakeRequested` latch 住，收敛后再 `wakeDriver`。`disposed` 原因不 latch，teardown 不等模型 turn。
+idle 时 wakeup **一定**开 turn 边界，即使消息随后被清掉。只有 latch 住的重放会在队列不再持有 wake 时被抑制。维护中或已 abort 的驱动把 `wakeRequested` latch 住，收敛后再 `wakeDriver`。`runMaintenance` 期间 `status` 仍是 `idle`。`disposed` 原因不 latch，teardown 不等模型 turn。
+
+runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造一条 `UserMessage`（`source.plugin = '@deepseek-ai/dsh-system-prompt'`），只在文本相对上次保留快照有变化时交给 pre-step 的 enter 批次。`inject` 是插件往 `next-step` 塞材料、不唤醒；两者都会在获准后变成 `user/message`，入队路径不同。
 
 `cancel({ keepInbox })`：默认 `inbox.clear()`（先 next-step 再 next-turn）。`keepInbox` 只 abort 活动，不记 canceled splice。
 
 ## `turn()` 里实际发生的事
 
 1. `session.append('turn/start', { turn })` —— 在 claim 和 pre-step **之前**。所以拒绝也有打开的 turn。
-2. `preStep`：`claim` → `systemPrompt.assemble` → 把 runtime context 快照拼进消息 → `waterfall('agent/pre-step')`。inner 默认 `{ kind: 'enter', messages: claimed + context? }`。
-3. `reject` → `turnEnds = { kind: 'blocked' }`，没有 step。
+2. `preStep`：**先 `claim`**（消息已从 inbox 耐久删掉并 `agent/inbox/claimed`），再 `systemPrompt.assemble`，再把 runtime context 快照（若与上次不同）拼进 inner 的 `messages`，最后 `waterfall('agent/pre-step')`。inner 默认 `{ kind: 'enter', messages: claimed + context? }`。
+3. `reject` → `turnEnds = { kind: 'blocked' }`，没有 step，也**没有** `user/message`。claimed 的条目不会回到 inbox。
 4. 首次 step 且 `messages.length === 0`（唤醒消息被拿掉，或 enter 被改写成空）→ `completed`，仍无 step。
 5. 否则 `step/start`，逐条 `user/message`（`surfaceOp: 'append'`），再 `step()`。
 6. 工具还欠一次请求，或 `next-step` 又有货 → 下一 step 的 target 是 `next-step`。

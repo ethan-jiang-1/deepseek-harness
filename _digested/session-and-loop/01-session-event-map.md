@@ -54,4 +54,8 @@
 
 `Session.deriveMessages()` 只折叠有序 surface 节点。返回的数组每次是新的；里面的 `Message` 对象共享且深冻结。`assistant/chunk` 的 seq 出现在对应 `assistant/message` 的 `sourceEventSeqs` 里，投影本身不用 chunk。
 
-所以「给模型加一种新输入」= 扩展 `SessionEventMap`，并且让它成为 surface 或走已有 surface 的折叠（`inject` 最终变成 `user/message`）。只在 prompt 组装里偷偷加一段，reload 后模型会看见幽灵上下文。
+人看的 transcript 不是同一份投影：UI 常用 **append-origin** 的 surface 事件；`deriveMessages()` 走 compaction `replace` 之后的有序 surface。像素级回放读 chunk；模型下一请求读 assembled message。
+
+两套「source」不要混：`sourceEventSeqs` 是 log 里更早事件的 seq；`UserMessage.source` 是语义来源（`user` / `plugin` / …），不参与 surface fold。
+
+所以「给模型加一种新输入」= 扩展 `SessionEventMap`，并且让它成为 surface 或走已有 surface 的折叠（`inject` 和 runtime-context 快照最终都变成 `user/message`）。只在 prompt 组装里偷偷加一段，reload 后模型会看见幽灵上下文。
