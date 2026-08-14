@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="520" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">组合：从空列表开始，一层层 patch 出一棵插件树</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">每一层都是 Include 的 patch 列表。id 命中则整份替换该行 config；insert 加新行。不跨 include 边界。</text>
+
+  <rect x="300" y="68" width="360" height="44" rx="8" fill="#f3f4f6" stroke="#d1d5db" stroke-dasharray="5,3"/>
+  <text x="480" y="96" text-anchor="middle" font-size="13" fill="#6b7280">空 entry list</text>
+  <line x1="480" y1="112" x2="480" y2="128" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="220" y="132" width="520" height="52" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="480" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">bundle 层（profile 声明的顺序）</text>
+  <text x="480" y="172" text-anchor="middle" font-size="11" fill="#16a34a">dsh-base → dsh-web-app 或 dsh-headless · 每包一份 cordis.patch.yml</text>
+  <line x1="480" y1="184" x2="480" y2="200" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="220" y="204" width="520" height="44" rx="8" fill="#bbf7d0" stroke="#4ade80"/>
+  <text x="480" y="232" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">profile 的 cordis.patch.yml</text>
+  <line x1="480" y1="248" x2="480" y2="264" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="220" y="268" width="520" height="44" rx="8" fill="#86efac" stroke="#22c55e"/>
+  <text x="480" y="296" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">Harness home 的 cordis.patch.yml（压过 profile）</text>
+  <line x1="480" y1="312" x2="480" y2="328" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="220" y="332" width="520" height="44" rx="8" fill="#4ade80" stroke="#16a34a"/>
+  <text x="480" y="360" text-anchor="middle" font-size="13" font-weight="700" fill="#052e16">命令行 --patch overlay</text>
+  <line x1="480" y1="376" x2="480" y2="392" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="220" y="396" width="520" height="52" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="480" y="418" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">boot 出来的插件树 = dump-config 打印的树</text>
+  <text x="480" y="436" text-anchor="middle" font-size="11" fill="#2563eb">composeEntries / boot / renderConfigDump 共用 applyEntryPatches</text>
+
+  <text x="480" y="474" text-anchor="middle" font-size="12" fill="#374151">整行替换：要保留的字段必须重写。空文件或只有注释会解析成「不是列表」，直接失败。</text>
+  <text x="480" y="496" text-anchor="middle" font-size="12" fill="#374151">列出的 bundle 若没有 dsh.bundle 声明：fail loud，不会默默跳过。</text>
+</svg>

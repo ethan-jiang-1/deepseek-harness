@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">四个入口，同一棵插件树。不是四套 agent 实现</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">它们 boot 不同的 bundle，但都驱动 ctx.agents，并从 session/event 渲染或投影。</text>
+
+  <rect x="30" y="70" width="210" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="135" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">CLI  dsh</text>
+  <text x="135" y="128" text-anchor="middle" font-size="11" fill="#475569">apps/cli · pnpm dsh / 安装包</text>
+  <text x="135" y="146" text-anchor="middle" font-size="11" fill="#475569">源码走 tsx ESM hook</text>
+
+  <rect x="260" y="70" width="210" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="365" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Web</text>
+  <text x="365" y="128" text-anchor="middle" font-size="11" fill="#475569">host API + client 壳</text>
+  <text x="365" y="146" text-anchor="middle" font-size="11" fill="#475569">ConversationNode 渲染</text>
+
+  <rect x="490" y="70" width="210" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="595" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">ACP</text>
+  <text x="595" y="128" text-anchor="middle" font-size="11" fill="#475569">自动化协议服务器</text>
+  <text x="595" y="146" text-anchor="middle" font-size="11" fill="#475569">不是完整 IDE</text>
+
+  <rect x="720" y="70" width="210" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="825" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">JSON-RPC SDK</text>
+  <text x="825" y="128" text-anchor="middle" font-size="11" fill="#475569">进程外协议 / TS client</text>
+  <text x="825" y="146" text-anchor="middle" font-size="11" fill="#475569">server 仍是树上的插件</text>
+
+  <line x1="135" y1="160" x2="135" y2="198" stroke="#4b5563"/>
+  <line x1="365" y1="160" x2="365" y2="198" stroke="#4b5563"/>
+  <line x1="595" y1="160" x2="595" y2="198" stroke="#4b5563"/>
+  <line x1="825" y1="160" x2="825" y2="198" stroke="#4b5563"/>
+  <line x1="135" y1="198" x2="825" y2="198" stroke="#4b5563"/>
+  <line x1="480" y1="198" x2="480" y2="220" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="200" y="224" width="560" height="130" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="480" y="256" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">同一棵 Cordis 树</text>
+  <text x="480" y="282" text-anchor="middle" font-size="12" fill="#1d4ed8">ctx.agents  ·  ctx.sessions  ·  session/event</text>
+  <text x="480" y="304" text-anchor="middle" font-size="12" fill="#2563eb">web 叠 dsh-base + dsh-web-app；headless 叠 dsh-base + dsh-headless</text>
+  <text x="480" y="326" text-anchor="middle" font-size="12" fill="#1e3a8a">入口不同，是因为 bundle 不同，不是因为各写了一套 loop</text>
+
+  <text x="480" y="380" text-anchor="middle" font-size="12" fill="#374151">加 UI：驱动 ctx.agents，从 session/event 渲染。加 Chat 节点：ConversationNodeDefinition + keyed renderer。</text>
+</svg>

@@ -6,6 +6,8 @@
 
 `_digested/` 面向已熟悉 agent harness / plugin 运行时，但尚未建立 DeepSeek Harness 概念体系的读者。这里先抓住思想主轴，再进入源码机制——而不是把 `packages/` 目录平铺成分类货架。
 
+当前阶段各专题的 `00-map.md` 是**图文介绍**：把这一层是什么、不是什么、和谁接、图在哪，讲清楚。机制级深挖以后另开章节。图一律放在该专题目录下的 `figures/`。
+
 文件不叫 `README.md`：仓库的 bilingual pairing 门禁会把任意 `README.md` 当成产品文档语料。研究目录用 `00-index.md` / `00-map.md`。
 
 ## 分支纪律
@@ -44,6 +46,8 @@
 
 ## 阅读路径
 
+![消化阅读主干](./figures/topics.svg)
+
 - **熟悉 agent / plugin 运行时，但不熟 dsh** → `system/00-map.md`
 - **想先搞懂 Cordis 在这棵树里到底是什么** → `cordis-runtime/00-map.md`，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
 - **想搞懂一次 `dsh --profile web` 怎么变成插件树** → `composition/00-map.md`
@@ -63,4 +67,4 @@ system/
   → surfaces/
 ```
 
-骨架阶段各专题只有地图。机制级正文随源码阅读补上；地图里标「待消化」的条目不是结论。
+读完介绍再深挖。各篇末尾的「以后深挖」是待开的源码专题，不是本阶段的结论。

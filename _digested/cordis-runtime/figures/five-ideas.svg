@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arrBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#1d4ed8"/></marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#b91c1c"/></marker>
+    <marker id="arrGreen" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#15803d"/></marker>
+  </defs>
+  <rect width="960" height="430" fill="#fafafa" rx="6"/>
+  <text x="480" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">Cordis 五条原语（产品插件作者先记住这些）</text>
+  <g>
+    <rect x="24" y="56" width="176" height="250" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="112" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">1. Plugin</text>
+    <text x="40" y="120" font-size="12" fill="#9a3412">函数插件：</text>
+    <text x="40" y="138" font-size="11" fill="#c2410c">name / inject / apply</text>
+    <text x="40" y="168" font-size="12" fill="#9a3412">或 Service 子类</text>
+    <text x="40" y="186" font-size="11" fill="#c2410c">挂进当前 ctx</text>
+    <text x="40" y="220" font-size="11" fill="#7c2d12">两种形态不要混用</text>
+    <text x="40" y="238" font-size="11" fill="#7c2d12">default export 会让</text>
+    <text x="40" y="254" font-size="11" fill="#7c2d12">函数插件的 namespace</text>
+    <text x="40" y="270" font-size="11" fill="#7c2d12">被 Loader 丢掉</text>
+  </g>
+  <g>
+    <rect x="212" y="56" width="176" height="250" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+    <text x="300" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">2. Context</text>
+    <text x="228" y="120" font-size="12" fill="#1e40af">服务仓库</text>
+    <text x="228" y="148" font-size="12" fill="#1e40af">ctx.tools</text>
+    <text x="228" y="166" font-size="12" fill="#1e40af">ctx.llm</text>
+    <text x="228" y="184" font-size="12" fill="#1e40af">ctx.sessions</text>
+    <text x="228" y="216" font-size="11" fill="#1d4ed8">按 key 找服务</text>
+    <text x="228" y="234" font-size="11" fill="#1d4ed8">不要 import 具体实现</text>
+    <text x="228" y="266" font-size="11" fill="#1e3a8a">可选服务用 ctx.get</text>
+  </g>
+  <g>
+    <rect x="400" y="56" width="176" height="250" rx="10" fill="#dcfce7" stroke="#86efac"/>
+    <text x="488" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">3. inject</text>
+    <text x="416" y="120" font-size="12" fill="#166534">声明依赖的服务</text>
+    <text x="416" y="148" font-size="12" fill="#166534">没有它们就等</text>
+    <text x="416" y="180" font-size="11" fill="#15803d">加载顺序由服务</text>
+    <text x="416" y="198" font-size="11" fill="#15803d">需求表达</text>
+    <text x="416" y="216" font-size="11" fill="#15803d">不是手写 boot 序列</text>
+    <text x="416" y="250" font-size="11" fill="#14532d">!!js 配置也是在</text>
+    <text x="416" y="268" font-size="11" fill="#14532d">inject 激活后才求值</text>
+  </g>
+  <g>
+    <rect x="588" y="56" width="176" height="250" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+    <text x="676" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">4. Events</text>
+    <text x="604" y="120" font-size="12" fill="#6d28d9">声明合并的事件名</text>
+    <text x="604" y="148" font-size="12" fill="#6d28d9">emit 观察</text>
+    <text x="604" y="166" font-size="12" fill="#6d28d9">waterfall 包装</text>
+    <text x="604" y="184" font-size="12" fill="#6d28d9">parallel 扇出</text>
+    <text x="604" y="202" font-size="12" fill="#6d28d9">serial 按序</text>
+    <text x="604" y="234" font-size="11" fill="#7c3aed">模式是事件合同</text>
+    <text x="604" y="252" font-size="11" fill="#7c3aed">用 @mode 写进 JSDoc</text>
+  </g>
+  <g>
+    <rect x="776" y="56" width="160" height="250" rx="10" fill="#ccfbf1" stroke="#5eead4"/>
+    <text x="856" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#115e59">5. Effects</text>
+    <text x="792" y="120" font-size="12" fill="#115e59">注册必须可逆</text>
+    <text x="792" y="148" font-size="12" fill="#0f766e">ctx.effect()</text>
+    <text x="792" y="166" font-size="12" fill="#0f766e">ctx.on()</text>
+    <text x="792" y="198" font-size="11" fill="#0d9488">reload / 卸载时</text>
+    <text x="792" y="216" font-size="11" fill="#0d9488">按登记顺序撤掉</text>
+    <text x="792" y="250" font-size="11" fill="#134e4a">register() 返回</text>
+    <text x="792" y="268" font-size="11" fill="#134e4a">的就是 disposer</text>
+  </g>
+  <text x="480" y="340" text-anchor="middle" font-size="12" fill="#374151">这五条够用来读 harness 插件。vendor 树里还有 Fiber、Loader、Include；那是启动和热更新的机械层。</text>
+  <text x="480" y="362" text-anchor="middle" font-size="12" fill="#374151">官方入门仍是 docs/cordis-primer.md。本专题要分清：上游原语、本仓库本地修改、产品如何使用它们。</text>
+  <text x="480" y="400" text-anchor="middle" font-size="11" fill="#6b7280">基线 0.1.0-rc.5 · 细节以 vendor/ 与 primer 为准</text>
+</svg>
