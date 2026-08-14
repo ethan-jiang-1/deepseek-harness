@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="360" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">三角色何时分包装：Definition 不该认识 tool schema</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">shell 家族是范本：dsh-shell / dsh-bash-local / dsh-tool-bash</text>
+  <rect x="40" y="68" width="280" height="130" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="180" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">Definition</text>
+  <text x="56" y="122" font-size="12" fill="#1e40af">ctx.shell · resolve/run/start</text>
+  <text x="56" y="144" font-size="12" fill="#2563eb">对着所有 Consumer 设计</text>
+  <text x="56" y="166" font-size="12" fill="#1e3a8a">不 import dsh-tool-bash</text>
+  <rect x="340" y="68" width="280" height="130" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="480" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Provider</text>
+  <text x="356" y="122" font-size="12" fill="#166534">bash-local / bash-sandbox</text>
+  <text x="356" y="144" font-size="12" fill="#15803d">subprocess-e2b / fs-e2b</text>
+  <text x="356" y="166" font-size="12" fill="#14532d">实现世界，不写 schema</text>
+  <rect x="640" y="68" width="280" height="130" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="780" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">Consumer</text>
+  <text x="656" y="122" font-size="12" fill="#9a3412">dsh-tool-bash 的 JSON schema</text>
+  <text x="656" y="144" font-size="12" fill="#c2410c">UI presentResult</text>
+  <text x="656" y="166" font-size="12" fill="#7c2d12">inject: ['shell', …]</text>
+  <rect x="40" y="218" width="880" height="112" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="246" font-size="12" fill="#374151">合包合法：dsh-llm 的 Definition 和 Consumer 同包，因为消息词汇就是同一件事。分包装是因为角色会独立演化。</text>
+  <text x="60" y="270" font-size="12" fill="#374151">反味：公开服务方法只有一个内部调用者，或 Definition 开始认识 tool 参数字段。那是 Consumer 倒灌。</text>
+  <text x="60" y="294" font-size="12" fill="#374151">换 E2B：换 ctx.subprocess + ctx.fs（加共享 ctx.e2b）。dsh-tool-bash / dsh-tool-fs / LSP 源码不改，它们只 inject Definition。</text>
+</svg>

@@ -64,8 +64,12 @@ fork、resume、transcript、遥测、持久化（JSONL / SQLite）都从这一�
 | [`docs/subsystems/scope.md`](../../docs/subsystems/scope.md) | | scope 语义 |
 | [`docs/subsystems/core.md`](../../docs/subsystems/core.md) | | Agent handle、取消与恢复 |
 
-## 以后深挖
+## 机制级正文
 
-- `SessionEventMap`、required-on-read、`ignorable`、`SESSION_FORMAT_VERSION`。
-- 上图逐事件对源码；inbox 唤醒与 inject 的调度。
-- `dsh-agent` 与 `dsh-agent-loop` 的依赖方向，以及换 loop 的真实半径。
+| 文件 | 内容 |
+|------|------|
+| [`01-session-event-map.md`](./01-session-event-map.md) | 信封、surface 三类、required-on-read、`SESSION_FORMAT_VERSION = 0` |
+| [`02-inbox-与turn-时序.md`](./02-inbox-与turn-时序.md) | followup / steer / inject；claim；拒绝仍关 turn |
+| [`03-换loop的半径.md`](./03-换loop的半径.md) | `AgentFactory`；介绍句是方向，`package.json` 是当前耦合 |
+
+下一专题：[`../capability-seams/00-map.md`](../capability-seams/00-map.md) 或 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。

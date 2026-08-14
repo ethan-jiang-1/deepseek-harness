@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="320" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">section 按 order 升序拼接；稳定前缀在前，易变的往后放</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">harness:identity = -100 · deployment:persona = 0 · tool 指导约定 100–199</text>
+  <rect x="40" y="68" width="200" height="64" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="140" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">-100 identity</text>
+  <text x="140" y="114" text-anchor="middle" font-size="11" fill="#15803d">几乎不变</text>
+  <rect x="260" y="68" width="200" height="64" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="360" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">0 persona</text>
+  <text x="360" y="114" text-anchor="middle" font-size="11" fill="#2563eb">部署配置</text>
+  <rect x="480" y="68" width="200" height="64" rx="8" fill="#e0e7ff" stroke="#a5b4fc"/>
+  <text x="580" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#3730a3">100–199 tools</text>
+  <text x="580" y="114" text-anchor="middle" font-size="11" fill="#4338ca">随工具集变</text>
+  <rect x="700" y="68" width="220" height="64" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="810" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">更大：易变上下文</text>
+  <text x="810" y="114" text-anchor="middle" font-size="11" fill="#c2410c">时间、cwd、…</text>
+  <rect x="40" y="152" width="880" height="140" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="180" font-size="12" fill="#374151">KV cache 命中靠请求前缀稳定。把每步都变的时间戳塞进 -100 前面，等于每步作废缓存。约定负 order 在 persona 之前，且应仍是稳定文本。</text>
+  <text x="60" y="204" font-size="12" fill="#374151">complete: true 的 section 在 waterfall 之后被恢复成唯一 prompt section，不能用来「再加一段」。多于一个 complete 则 assembly 失败。</text>
+  <text x="60" y="228" font-size="12" fill="#374151">system-prompt/assemble 是 waterfall，返回值是权威的。但已注册的 complete section 会被恢复，监听器加不进、也换不掉该 scope 的系统提示词本体。</text>
+  <text x="60" y="260" font-size="11" fill="#6b7280">工具 schema 另有 config.toolOrder；未列出的名字走 TOOL_ORDER_REST。restrict 先滤全局集。</text>
+</svg>
