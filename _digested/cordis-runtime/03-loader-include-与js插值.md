@@ -70,4 +70,4 @@ return run
 
 ## 和 composition 专题的分工
 
-profile / bundle 层顺序、`$DSH_HOME` 布局在 [`../composition/00-map.md`](../composition/00-map.md)。本篇只回答：那几层 patch **为什么能叠在同一套算法上**，以及 `!!js` 何时变成值。
+profile / bundle 层顺序、`$DSH_HOME` 布局在 [`../composition/00-map.md`](../composition/00-map.md)；`boot()` 时序和 dump 保真在 [`../composition/01-boot-时序.md`](../composition/01-boot-时序.md)、[`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)。本篇只回答：那几层 patch **为什么能叠在同一套算法上**，以及 `!!js` 何时变成值。

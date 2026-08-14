@@ -27,13 +27,13 @@
 
 列出的 bundle 若没有 `dsh.bundle` 声明，启动失败，不会默默跳过。空的或只有注释的 patch 文件会解析成「不是列表」，同样失败。要关掉某一层，写 `[]`。
 
-`composeEntries`、`boot()`、`renderConfigDump` 共用 Include 的 `applyEntryPatches`。所以：
+`composeEntries`、`boot()`、`renderConfigDump` 共用 Include 的 `applyEntryPatches`。所以 dump 和 boot 对用户层是同一套算法。launcher 派生的两层（shipped `agent-presets.roots`、`DSH_TELEMETRY_DISABLED`）只在 `runProfile` 里追加，不进 `--dump-config`；`!!js` 在 dump 里原文打出。细节见 [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md)。
 
 ```sh
 dsh --profile web --dump-config
 ```
 
-打印出的就是将要 boot 的树。看到的每一行都可以被你自己的 patch 整行替换。
+看到的每一行都可以被你自己的 patch 整行替换。不要把 dump 里缺的 telemetry disable 当成算法漏了。
 
 ## Profile 住在 home，不在 git 仓库根
 
@@ -59,8 +59,12 @@ dsh --profile web --dump-config
 | `apps/cli/` | 产品 bin `dsh` |
 | [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md) | profile 机器合同 |
 
-## 以后深挖
+## 机制级正文
 
-- `boot()` 时序：Loader、prepare、include mount、fail-loud、终端释放。
-- dump 与 boot 保真如何被测试钉住。
-- 用户 patch 的 HMR：失败为何保留上一棵好树。
+| 文件 | 内容 |
+|------|------|
+| [`01-boot-时序.md`](./01-boot-时序.md) | `runProfile` → `prepareProfile` → `boot()`；两段失败标签；`installFailLoud` |
+| [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md) | 同一 `applyEntryPatches`；dump 不含 launcher 派生层；`!!js` 不求值 |
+| [`03-user-patch-hmr.md`](./03-user-patch-hmr.md) | `composeLive` 夹住用户层；候选失败保留上一棵好树 |
+
+介绍篇建立直觉。机制级正文对源码。下一专题是 [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md)。
