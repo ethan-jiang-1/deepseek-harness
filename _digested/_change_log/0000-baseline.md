@@ -1,0 +1,17 @@
+# 基线 0000：开始消化
+
+**日期**：2026-08-15
+
+**upstream**：`deepseek-ai/deepseek-harness` `master`
+
+**钉住的 commit**：`47f943859bef60e4160492346772ded9b24f765a`（`Merge pull request #2519 from deepseek-harness/feat/npm-public`）
+
+**发布版本**：`0.1.0-rc.5`（根 `package.json`）
+
+**本地状态**：`origin/master`、`upstream/master`、`ethan` 起点三方重合。`ethan` 上此后只叠加 `_digested/` 与 `_faq_on_digested/`。
+
+## 这一条不是 sync
+
+还没有从更旧的 checkout 合入过新 upstream。本文件只回答：消化材料最初对着哪一次源码说话。
+
+下一次 `git merge upstream/master` 进 `ethan` 之后，写 `0001-…`，并审计地图与正文里过期的结论。
