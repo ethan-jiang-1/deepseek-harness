@@ -87,6 +87,7 @@ DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用
 
 ## 以后深挖
 
-- 「没有特权内核」在 Loader / fiber 卸载路径上具体如何兑现。
 - architecture 那张扩展表逐项对到源码注册点。
 - 和「单一 loop + tools 数组」类 harness 的对照，方便迁移直觉。
+
+「没有特权内核」在 Loader / fiber 卸载上如何兑现，已写在 [`../cordis-runtime/04-vendor-本地修改.md`](../cordis-runtime/04-vendor-本地修改.md) 与 [`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md)。

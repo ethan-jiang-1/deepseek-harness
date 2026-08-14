@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="460" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">!!js 在两处求值，时机和 ctx 都不同</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">YAML 由 Include 收成 __jsExpr 节点。真正 eval 在 Loader。其它 entry 元数据保持字面量。</text>
+
+  <rect x="30" y="68" width="440" height="250" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="250" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">entry.config</text>
+  <text x="50" y="130" font-size="12" fill="#1e40af">何时：fiber 的 inject 齐了、即将 _reload</text>
+  <text x="50" y="152" font-size="12" fill="#1e40af">谁：internal/config waterfall</text>
+  <text x="50" y="174" font-size="12" fill="#1e40af">对着哪个 ctx：这个插件 fiber 的 ctx</text>
+  <text x="50" y="196" font-size="12" fill="#1d4ed8">所以可以写 ctx.serviceName</text>
+  <text x="50" y="226" font-size="12" fill="#1e3a8a">例外：Group / Include 是 tree carrier</text>
+  <text x="50" y="248" font-size="12" fill="#1e3a8a">它们的 config（entry 列表、patch 列表）保持字面量</text>
+  <text x="50" y="270" font-size="12" fill="#1e3a8a">嵌套行的 !!js 等那一行自己的 fiber 再求</text>
+  <text x="50" y="296" font-size="11" fill="#2563eb">fiber.ts _resolveConfig → Loader 监听器 interpolate()</text>
+
+  <rect x="490" y="68" width="440" height="250" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="710" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">entry.disabled</text>
+  <text x="510" y="130" font-size="12" fill="#9a3412">何时：每一次 mount 判定</text>
+  <text x="510" y="152" font-size="12" fill="#9a3412">谁：Entry.disabledOf()</text>
+  <text x="510" y="174" font-size="12" fill="#9a3412">对着哪个 ctx：Entry.ctx</text>
+  <text x="510" y="196" font-size="12" fill="#c2410c">= loader.ctx.extend(entry 标记)</text>
+  <text x="510" y="226" font-size="12" fill="#7c2d12">不是插件 fiber 的 ctx</text>
+  <text x="510" y="248" font-size="12" fill="#7c2d12">原始 __jsExpr 留在 options 里</text>
+  <text x="510" y="270" font-size="12" fill="#7c2d12">写回配置仍是 !!js，不会变成 true/false</text>
+  <text x="510" y="296" font-size="11" fill="#ea580c">目前唯一被插值的 metadata 字段</text>
+
+  <rect x="30" y="338" width="900" height="90" rx="10" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="50" y="368" font-size="13" font-weight="700" fill="#b91c1c">不要把环境选择写进别的字段</text>
+  <text x="50" y="392" font-size="12" fill="#991b1b">name、id、inject、group 都是字面量。条件组合用 overlay / patch / disabled: !!js。</text>
+  <text x="50" y="412" font-size="12" fill="#991b1b">eval 是 with (ctx) { return eval(expr) }。表达式看得到 ctx 上的服务，不是 Node 全局随便跑。</text>
+</svg>

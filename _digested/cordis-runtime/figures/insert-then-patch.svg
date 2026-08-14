@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="380" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">同一次 patch 列表：先 insert 的行，后面必须打得中</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">applyEntryPatches · vendor/include/src/index.ts · 这是 dsh 能叠 bundle 的前提。</text>
+
+  <rect x="40" y="70" width="200" height="80" rx="8" fill="#f3f4f6" stroke="#d1d5db" stroke-dasharray="5,3"/>
+  <text x="140" y="104" text-anchor="middle" font-size="13" fill="#6b7280">空 entry list</text>
+  <text x="140" y="126" text-anchor="middle" font-size="11" fill="#9ca3af">compose 的起点</text>
+  <line x1="240" y1="110" x2="278" y2="110" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="280" y="70" width="280" height="80" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="420" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">patch 1 · insert</text>
+  <text x="420" y="122" text-anchor="middle" font-size="11" fill="#16a34a">加入 id=tools 的行</text>
+  <text x="420" y="140" text-anchor="middle" font-size="11" fill="#15803d">buildMap(insert) 立刻建索引</text>
+  <line x1="560" y1="110" x2="598" y2="110" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="600" y="70" width="320" height="80" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="760" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">patch 2 · id: tools</text>
+  <text x="760" y="122" text-anchor="middle" font-size="11" fill="#2563eb">整份替换该行 config</text>
+  <text x="760" y="140" text-anchor="middle" font-size="11" fill="#1d4ed8">打得中，因为索引已更新</text>
+
+  <rect x="40" y="180" width="880" height="160" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="60" y="212" font-size="13" font-weight="700" fill="#9a3412">上游若只在循环开始前建一次 id 索引</text>
+  <text x="60" y="240" font-size="12" fill="#9a3412">insert 进去的行对后续 patch 是隐形的。dsh 把每个 bundle、profile patch、home patch、--patch</text>
+  <text x="60" y="262" font-size="12" fill="#9a3412">当成同一层 Include 上的兄弟列表，后一层必须能改前一层刚插入的行。</text>
+  <text x="60" y="292" font-size="12" fill="#7c2d12">dump-config 调用同一函数。产品里再写一份 patch 算法，会和 boot 立刻漂移。</text>
+  <text x="60" y="316" font-size="12" fill="#7c2d12">patch 不跨 include 边界。子 Include 文件里的行，外层列表打不中。</text>
+</svg>

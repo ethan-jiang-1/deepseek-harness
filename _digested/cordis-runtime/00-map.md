@@ -53,8 +53,13 @@ dsh 里最容易踩的事件合同就是 waterfall。它是 around-middleware，
 | [`docs/cordis-primer.md`](../../docs/cordis-primer.md) | 作者向的五条思想 |
 | [`docs/cordis-tutorial/`](../../docs/cordis-tutorial/index.md) | 同一套思想的动手教程 |
 
-## 以后深挖
+## 机制级正文
 
-- 五条原语对到 `vendor/cordis/src/` 的类型与方法。
-- fiber 卸载、Loader 事务、HMR 与 Include 队列——逐条核验 `vendor/README.md` 的本地修改。
-- `!!js` 在 entry `config` 与 `disabled` 上的求值时机。
+| 文件 | 内容 |
+|------|------|
+| [`01-五条原语对照源码.md`](./01-五条原语对照源码.md) | Plugin / Context / inject / Events / Effects 对到 `vendor/cordis/src/` |
+| [`02-waterfall-与事件合同.md`](./02-waterfall-与事件合同.md) | `waterfall` 源码算法；`agent/pre-step` vs `agent/turn-stopping` |
+| [`03-loader-include-与js插值.md`](./03-loader-include-与js插值.md) | `!!js` 两处求值；`applyEntryPatches` 为何能叠 bundle |
+| [`04-vendor-本地修改.md`](./04-vendor-本地修改.md) | 产品真正踩着的 vendor 补丁，不是把清单抄一遍 |
+
+介绍篇建立直觉。机制级正文对源码。composition 的 profile / boot 时序仍在 [`../composition/00-map.md`](../composition/00-map.md)。
