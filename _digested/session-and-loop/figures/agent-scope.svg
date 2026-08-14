@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">Scope：每个 agent 自己的注册世界，两层扁平，不向下继承</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">scoped 注册对子 agent 不可见。父子关系是 lineage 数据，不是 scope 树。</text>
+
+  <rect x="40" y="68" width="430" height="280" rx="10" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="255" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#374151">全局 ctx</text>
+  <text x="60" y="128" font-size="12" fill="#4b5563">对每个 agent 都可见的贡献</text>
+  <rect x="60" y="148" width="390" height="36" rx="6" fill="#fff" stroke="#d1d5db"/>
+  <text x="255" y="172" text-anchor="middle" font-size="12" fill="#374151">tools · prompt sections · 变量 · 监听器</text>
+  <text x="60" y="214" font-size="12" fill="#4b5563">tools.restrict 先过滤全局工具集（交集）</text>
+  <text x="60" y="236" font-size="12" fill="#4b5563">被滤掉的全局工具：提示词里没有，执行也会拒</text>
+  <text x="60" y="258" font-size="12" fill="#4b5563">看起来就像这个工具根本不存在</text>
+  <text x="60" y="292" font-size="11" fill="#6b7280">setup window：agent 已存在、尚未发布</text>
+  <text x="60" y="310" font-size="11" fill="#6b7280">只注册，不驱动。persona / 工具变体在这里挂上</text>
+  <text x="60" y="328" font-size="11" fill="#6b7280">preset 给单个 session 另一套能力，服务行要 isolate</text>
+
+  <rect x="500" y="68" width="420" height="280" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="710" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">agent.ctx （某个 agent 的 scope）</text>
+  <text x="520" y="128" font-size="12" fill="#1e40af">可见性 = 生命周期，同一件事</text>
+  <rect x="520" y="148" width="380" height="50" rx="6" fill="#fff" stroke="#93c5fd"/>
+  <text x="710" y="170" text-anchor="middle" font-size="12" fill="#1e40af">shadowing：同名覆盖全局孪生</text>
+  <text x="710" y="188" text-anchor="middle" font-size="11" fill="#2563eb">只对该 scope 生效 · 最具体者获胜</text>
+  <text x="520" y="224" font-size="12" fill="#1e40af">scope-local 注册在 restrict 之后合并</text>
+  <text x="520" y="250" font-size="12" fill="#1d4ed8">关于该 agent 活动的事件：带它的 carrier 分发</text>
+  <text x="520" y="272" font-size="12" fill="#1d4ed8">关于注册表本身的事件：不过滤</text>
+  <text x="520" y="304" font-size="11" fill="#1e3a8a">lineage（parentSession、delegationDepth）</text>
+  <text x="520" y="322" font-size="11" fill="#1e3a8a">只是数据，不改变谁看得见谁的工具</text>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="340" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">三条「命令」平面，不要混为一谈</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">人敲的 slash、模型调的 tool、shell 里跑的进程，走三条完全不同的路。</text>
+
+  <rect x="30" y="72" width="290" height="220" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="175" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">Human command</text>
+  <text x="46" y="140" font-size="12" fill="#1e40af">斜杠指令，ctx.commands</text>
+  <text x="46" y="162" font-size="12" fill="#1d4ed8">人面向适配器直接分派</text>
+  <text x="46" y="190" font-size="12" fill="#1e3a8a">不经过模型 turn</text>
+  <text x="46" y="214" font-size="12" fill="#1e3a8a">输出默认是 UI 状态</text>
+  <text x="46" y="232" font-size="12" fill="#1e3a8a">除非 handler 另写持久域</text>
+  <text x="46" y="264" font-size="11" fill="#2563eb">例子：/goal</text>
+
+  <rect x="335" y="72" width="290" height="220" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="480" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">Model-facing tool</text>
+  <text x="351" y="140" font-size="12" fill="#6d28d9">模型在 step 里调用</text>
+  <text x="351" y="162" font-size="12" fill="#7c3aed">ctx.tools + 执行管道</text>
+  <text x="351" y="190" font-size="12" fill="#5b21b6">schema 进入 prompt 组装</text>
+  <text x="351" y="214" font-size="12" fill="#5b21b6">call / result 写入 session log</text>
+  <text x="351" y="242" font-size="12" fill="#5b21b6">模型可见 ⟺ 已记录</text>
+  <text x="351" y="264" font-size="11" fill="#7c3aed">例子：bash · read_file · job_*</text>
+
+  <rect x="640" y="72" width="290" height="220" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="785" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Shell execution</text>
+  <text x="656" y="140" font-size="12" fill="#166534">ctx.shell 后端跑进程</text>
+  <text x="656" y="162" font-size="12" fill="#15803d">本地经 ctx.subprocess spawn</text>
+  <text x="656" y="190" font-size="12" fill="#14532d">可被 sandbox 包装 argv</text>
+  <text x="656" y="214" font-size="12" fill="#14532d">PTY 走 ctx.terminals</text>
+  <text x="656" y="242" font-size="12" fill="#14532d">这是执行世界，不是 slash</text>
+  <text x="656" y="264" font-size="11" fill="#16a34a">例子：bash 工具背后的那次 spawn</text>
+
+  <text x="480" y="318" text-anchor="middle" font-size="12" fill="#374151">三种都可能在一次产品使用里出现。分不清，就会把 /goal 当成 tool，或把 bash spawn 当成 human command。</text>
+</svg>

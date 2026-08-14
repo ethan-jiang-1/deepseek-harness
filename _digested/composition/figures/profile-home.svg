@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="420" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">Harness home 与 profile 目录</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">$DSH_HOME，否则 ~/.dsh。profile 是具名组合，不是 git 仓库里的一份 cordis.yml。</text>
+
+  <rect x="40" y="68" width="420" height="320" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="250" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">$DSH_HOME / ~/.dsh</text>
+  <text x="60" y="130" font-size="12" fill="#9a3412">.env                     用户环境（低于继承环境）</text>
+  <text x="60" y="150" font-size="12" fill="#9a3412">cordis.patch.yml         home 级 patch，压过 profile</text>
+  <text x="60" y="170" font-size="12" fill="#9a3412">.credentials.yaml        凭据（不是 .env 里的密钥）</text>
+  <text x="60" y="200" font-size="12" fill="#9a3412">profiles/</text>
+  <text x="80" y="222" font-size="12" fill="#c2410c">web/                     模板，首次使用自动初始化</text>
+  <text x="80" y="242" font-size="12" fill="#c2410c">headless/                一次性 runner，无 server</text>
+  <text x="80" y="262" font-size="12" fill="#c2410c">&lt;custom&gt;/              必须先 initProfile，否则失败</text>
+  <text x="60" y="294" font-size="12" fill="#9a3412">profiles/node_modules/   扁平 symlink，给裸包名解析</text>
+  <text x="60" y="330" font-size="11" fill="#7c2d12">项目目录的 .env 高于 home 的 .env</text>
+  <text x="60" y="348" font-size="11" fill="#7c2d12">两者都低于进程继承来的环境变量</text>
+  <text x="60" y="366" font-size="11" fill="#7c2d12">bootstrap-only 变量不允许来自文件</text>
+
+  <rect x="500" y="68" width="420" height="320" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="710" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">profiles/web/</text>
+  <text x="520" y="130" font-size="12" fill="#166534">package.json</text>
+  <text x="540" y="150" font-size="12" fill="#15803d">dependencies     树外插件</text>
+  <text x="540" y="168" font-size="12" fill="#15803d">dsh.profile.bundles  有序列表</text>
+  <text x="520" y="200" font-size="12" fill="#166534">cordis.patch.yml      用户自己的层</text>
+  <text x="520" y="232" font-size="12" fill="#14532d">bundle 包自己声明</text>
+  <text x="540" y="252" font-size="12" fill="#15803d">"dsh": {"bundle": {"patch": "./cordis.patch.yml"}}</text>
+  <text x="520" y="284" font-size="12" fill="#166534">解析顺序：安装树优先，再 profile 目录</text>
+  <text x="520" y="316" font-size="11" fill="#15803d">web / headless 是 PROFILE_TEMPLATES</text>
+  <text x="520" y="334" font-size="11" fill="#15803d">其它名字不会自动创建</text>
+  <text x="520" y="360" font-size="11" fill="#14532d">看实际树：dsh --profile web --dump-config</text>
+</svg>

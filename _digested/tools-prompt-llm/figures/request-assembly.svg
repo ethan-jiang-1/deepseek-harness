@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一步模型请求：当场组装，而不是一份写死的 prompt 文件</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">section 和 schema 都来自插件注册表，再按这个 agent 的 scope 过滤。</text>
+
+  <rect x="40" y="70" width="260" height="200" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="170" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">ctx.systemPrompt</text>
+  <text x="56" y="132" font-size="12" fill="#1e40af">插件注册的 sections</text>
+  <text x="56" y="154" font-size="12" fill="#1d4ed8">身份 · persona · 技能</text>
+  <text x="56" y="172" font-size="12" fill="#1d4ed8">工作区指令 · 时间…</text>
+  <text x="56" y="200" font-size="12" fill="#1e3a8a">按顺序拼接</text>
+  <text x="56" y="222" font-size="12" fill="#1e3a8a">按 scope 过滤</text>
+  <text x="56" y="250" font-size="11" fill="#2563eb">面向模型的文字从模型视角写</text>
+
+  <rect x="350" y="70" width="260" height="200" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="480" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">ctx.tools</text>
+  <text x="366" y="132" font-size="12" fill="#6d28d9">当前 scope 可见的 schema</text>
+  <text x="366" y="154" font-size="12" fill="#7c3aed">restrict 过滤全局集</text>
+  <text x="366" y="172" font-size="12" fill="#7c3aed">shadowing 覆盖同名</text>
+  <text x="366" y="200" font-size="12" fill="#5b21b6">过滤掉的工具</text>
+  <text x="366" y="218" font-size="12" fill="#5b21b6">提示词没有、执行也拒</text>
+  <text x="366" y="250" font-size="11" fill="#7c3aed">和「不存在」无法区分</text>
+
+  <rect x="660" y="70" width="260" height="200" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="790" y="102" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">session log 投影</text>
+  <text x="676" y="132" font-size="12" fill="#9a3412">deriveMessages()</text>
+  <text x="676" y="154" font-size="12" fill="#c2410c">历史消息从 log 来</text>
+  <text x="676" y="186" font-size="12" fill="#7c2d12">inject 的上下文</text>
+  <text x="676" y="204" font-size="12" fill="#7c2d12">等下一次获准请求</text>
+  <text x="676" y="236" font-size="11" fill="#ea580c">不在 log 里的东西</text>
+  <text x="676" y="254" font-size="11" fill="#ea580c">不该出现在请求里</text>
+
+  <rect x="40" y="290" width="880" height="70" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="480" y="318" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">ctx.llm  ·  adapter 流出 · llm/stream waterfall · 写入 assistant/chunk 与 assistant/message</text>
+  <text x="480" y="342" text-anchor="middle" font-size="12" fill="#15803d">加模型提供方 = 在 ctx.llm 上注册 adapter，不是改 loop。</text>
+</svg>

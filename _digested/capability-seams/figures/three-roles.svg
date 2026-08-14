@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一条 seam = 三个角色齐全。单独一个角色不是 seam</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">扩展插件依赖 Service Definition，绝不依赖具体 Provider。Consumer 常常是面向模型的 tool。</text>
+
+  <rect x="36" y="72" width="280" height="250" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="176" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">Service Definition</text>
+  <text x="52" y="140" font-size="12" fill="#1e40af">Cordis Service，占住 ctx.&lt;key&gt;</text>
+  <text x="52" y="162" font-size="12" fill="#1e40af">拥有词汇类型</text>
+  <text x="52" y="190" font-size="12" fill="#1d4ed8">是抽象类或具体注册表</text>
+  <text x="52" y="208" font-size="12" fill="#1d4ed8">不是 TypeScript interface</text>
+  <text x="52" y="240" font-size="12" fill="#1e3a8a">例子：dsh-shell 的</text>
+  <text x="52" y="258" font-size="12" fill="#1e3a8a">ShellExecutor</text>
+  <text x="52" y="290" font-size="11" fill="#2563eb">为所有当前 Consumer 设计</text>
+  <text x="52" y="306" font-size="11" fill="#2563eb">不要让某一个 tool 倒灌合同</text>
+
+  <rect x="340" y="72" width="280" height="250" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="480" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#166534">Service Provider</text>
+  <text x="356" y="140" font-size="12" fill="#166534">实现 Definition</text>
+  <text x="356" y="162" font-size="12" fill="#15803d">本地、沙箱、远程…</text>
+  <text x="356" y="190" font-size="12" fill="#166534">例子：dsh-bash-local</text>
+  <text x="356" y="208" font-size="12" fill="#166534">dsh-bash-sandbox</text>
+  <text x="356" y="240" font-size="12" fill="#14532d">换 provider 不改</text>
+  <text x="356" y="258" font-size="12" fill="#14532d">Definition 和 Consumer</text>
+  <text x="356" y="290" font-size="11" fill="#16a34a">这就是「换一个后端</text>
+  <text x="356" y="306" font-size="11" fill="#16a34a">改变整面产品」的原因</text>
+
+  <rect x="644" y="72" width="280" height="250" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="784" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#6d28d9">Consumer</text>
+  <text x="660" y="140" font-size="12" fill="#6d28d9">注入服务并使用它</text>
+  <text x="660" y="162" font-size="12" fill="#7c3aed">常见：模型可见的 tool</text>
+  <text x="660" y="190" font-size="12" fill="#6d28d9">例子：dsh-tool-bash</text>
+  <text x="660" y="220" font-size="12" fill="#5b21b6">tool-schema、UI、传输</text>
+  <text x="660" y="238" font-size="12" fill="#5b21b6">放在 Consumer 里</text>
+  <text x="660" y="270" font-size="11" fill="#7c3aed">不要放进 Definition</text>
+  <text x="660" y="290" font-size="11" fill="#7c3aed">一个包可以兼多个角色</text>
+  <text x="660" y="306" font-size="11" fill="#7c3aed">（dsh-llm 兼 Definition+Consumer）</text>
+
+  <text x="480" y="352" text-anchor="middle" font-size="12" fill="#374151">教科书：packages/shell = dsh-shell + local/sandbox providers + dsh-tool-bash。</text>
+  <text x="480" y="374" text-anchor="middle" font-size="12" fill="#374151">看到新的 ctx.&lt;key&gt; 先问：spine 服务、一条 seam、还是 bundle 组合点？</text>
+</svg>
