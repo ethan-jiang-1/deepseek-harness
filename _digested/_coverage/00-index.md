@@ -19,7 +19,7 @@
 | 专题 | 状态 | 图 | 源码入口（粗） |
 |------|------|----|----------------|
 | `system/` | 介绍级 | `six-layers` · `event-domains` · `extend-not-patch` | [`docs/architecture.md`](../../docs/architecture.md) |
-| `cordis-runtime/` | 介绍级 | `five-ideas` · `waterfall` · `vendor-stack` | `vendor/cordis/`、`vendor/loader/`、`vendor/include/` |
+| `cordis-runtime/` | 部分覆盖（01–04 机制级） | 介绍三图 + `primitives-source` · `waterfall-compose` · `pre-step-chain` · `js-eval-timing` · `insert-then-patch` | `vendor/cordis/`、`vendor/loader/`、`vendor/include/` |
 | `composition/` | 介绍级 | `patch-layers` · `profile-home` | `packages/boot/app-boot/`、`packages/bundle/` |
 | `session-and-loop/` | 介绍级 | `turn-step` · `model-visible-logged` · `agent-scope` | `packages/core/{session,agent,agent-loop,scope}/` |
 | `capability-seams/` | 介绍级 | `three-roles` · `execution-world` | [`docs/capability-seams.md`](../../docs/capability-seams.md) |

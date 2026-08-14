@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="420" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">dsh 怎么用：pre-step 是 waterfall，turn-stopping 是 serial</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">packages/core/agent-loop/src/agent.ts preStep() / turn() · 声明在 dsh-agent 的 Events 合并里。</text>
+
+  <rect x="30" y="64" width="900" height="160" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="50" y="92" font-size="14" font-weight="700" fill="#1e40af">agent/pre-step  waterfall</text>
+  <text x="50" y="116" font-size="12" fill="#1e40af">loop 先 claim inbox、assemble prompt，再 waterfall。</text>
+  <text x="50" y="140" font-size="12" fill="#1e40af">inner：Promise.resolve({ kind: enter, messages: claimed + 投影出的 context })</text>
+  <text x="50" y="164" font-size="12" fill="#1d4ed8">监听器可改 messages，或直接 return { kind: reject }（不 next）。</text>
+  <text x="50" y="188" font-size="12" fill="#1d4ed8">reject 或首次 enter 空消息：关掉不含 step 的持久 turn。log 仍有 turn/start…turn/end。</text>
+  <text x="50" y="208" font-size="11" fill="#2563eb">thisArg 是 scope carrier（scopeTarget(agent, agent)），所以 scoped 监听器只接到自己的 agent。</text>
+
+  <rect x="30" y="240" width="900" height="140" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="50" y="268" font-size="14" font-weight="700" fill="#6d28d9">agent/turn-stopping  serial</text>
+  <text x="50" y="292" font-size="12" fill="#6d28d9">一轮已经决定结束、next-step inbox 已空，才 serial 这个事件。</text>
+  <text x="50" y="316" font-size="12" fill="#7c3aed">没有 next。监听器按登记顺序 await。返回 isBailed 值可以提前停后面的监听器。</text>
+  <text x="50" y="340" font-size="12" fill="#7c3aed">用途：停轮次、收尾。不是包装模型请求。</text>
+  <text x="50" y="364" font-size="11" fill="#5b21b6">和 tools/pre-execute · execute · post-execute、llm/stream 一样，那些才是 waterfall。</text>
+</svg>

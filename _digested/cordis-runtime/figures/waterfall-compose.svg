@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="480" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">waterfall 源码在做什么：把监听器包在 inner next 外面</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">EventsService.waterfall · vendor/cordis/src/events.ts · 同步返回最外层的返回值，自己不 await。</text>
+
+  <rect x="40" y="64" width="880" height="70" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="60" y="92" font-size="13" fill="#111827">cbs = dispatch(...)           // 登记顺序；prepend 的 unshift 到更外层</text>
+  <text x="60" y="114" font-size="13" fill="#111827">inner = args.pop()            // 调用方传入的「内建行为」</text>
+
+  <rect x="40" y="150" width="200" height="64" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="140" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">监听器 C</text>
+  <text x="140" y="196" text-anchor="middle" font-size="11" fill="#2563eb">prepend · 最外层</text>
+  <line x1="240" y1="182" x2="278" y2="182" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="259" y="172" font-size="10" fill="#4b5563">next()</text>
+
+  <rect x="280" y="150" width="200" height="64" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="380" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">监听器 A</text>
+  <text x="380" y="196" text-anchor="middle" font-size="11" fill="#2563eb">先登记 · 更外</text>
+  <line x1="480" y1="182" x2="518" y2="182" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="499" y="172" font-size="10" fill="#4b5563">next()</text>
+
+  <rect x="520" y="150" width="200" height="64" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="620" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">监听器 B</text>
+  <text x="620" y="196" text-anchor="middle" font-size="11" fill="#2563eb">后登记 · 靠近内建</text>
+  <line x1="720" y1="182" x2="758" y2="182" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="760" y="150" width="160" height="64" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="840" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">inner</text>
+  <text x="840" y="196" text-anchor="middle" font-size="11" fill="#16a34a">调用方的 next</text>
+
+  <rect x="40" y="236" width="880" height="200" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="60" y="264" font-size="13" font-weight="700" fill="#9a3412">三件容易读错的事</text>
+  <text x="60" y="292" font-size="12" fill="#9a3412">1. waterfall 本身不 await。监听器若是 async，返回 Promise，由调用方 await。primer 表里 Awaited=No 指的是框架，不是「不能写 async」。</text>
+  <text x="60" y="316" font-size="12" fill="#9a3412">2. 不调用 next() 连 inner 都不跑。这是 veto。agent/pre-step 返回 reject 就是这条路。</text>
+  <text x="60" y="340" font-size="12" fill="#9a3412">3. 返回值沿 next() 的返回值往外走。替换结果：return other，不要先 next() 再丢掉。</text>
+  <text x="60" y="372" font-size="12" fill="#7c2d12">对照 serial：await 每个监听器，碰到 isBailed(非 null/false/undefined) 就停。没有 next 参数。</text>
+  <text x="60" y="396" font-size="12" fill="#7c2d12">agent/turn-stopping 是 serial。写成 waterfall 风格（等 next）会永远等不到。</text>
+  <text x="60" y="420" font-size="11" fill="#c2410c">next 闭包每次 shift 一个 cb；同一轮 dispatch 里每个监听器至多被请出来一次。</text>
+</svg>
