@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="300" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">流：llm.stream → assistant/chunk* → BlockAssembler → assistant/message</text>
+  <rect x="30" y="56" width="170" height="70" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="115" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">agent/request</text>
+  <text x="115" y="106" text-anchor="middle" font-size="11" fill="#2563eb">waterfall 改请求</text>
+  <line x1="200" y1="91" x2="228" y2="91" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="230" y="56" width="170" height="70" rx="8" fill="#e0e7ff" stroke="#a5b4fc"/>
+  <text x="315" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#3730a3">llm.stream</text>
+  <text x="315" y="106" text-anchor="middle" font-size="11" fill="#4338ca">adapter 流出 chunk</text>
+  <line x1="400" y1="91" x2="428" y2="91" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="430" y="56" width="200" height="70" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="530" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">每 chunk append</text>
+  <text x="530" y="106" text-anchor="middle" font-size="11" fill="#15803d">assistant/chunk · 记 seq</text>
+  <line x1="630" y1="91" x2="658" y2="91" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="660" y="56" width="270" height="70" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="795" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">assistant/message</text>
+  <text x="795" y="106" text-anchor="middle" font-size="11" fill="#c2410c">surfaceOp append · sourceEventSeqs=chunk seqs</text>
+  <rect x="40" y="148" width="880" height="124" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="176" font-size="12" fill="#374151">deriveMessages 用 assembled message，不用 raw chunk。chunk 是像素级 UI / 回放保真。空 content 的 assistant/message（只带 usage 的 max-tokens）派生为 null，不进 transcript。</text>
+  <text x="60" y="200" font-size="12" fill="#374151">timeout 挂在 tools/execute：dsh-tool-call-timeout-policy 读 definition.timeoutMs，deadline(exec.signal)。审批是另一条 waterfall approval/request；pre-execute 的 ask 缺 answerer 则否决。</text>
+  <text x="60" y="224" font-size="12" fill="#374151">agent/request-error 也是 waterfall：retry 则同一 step 再 stream，不新开 step。ACP 故意不把 chunk 漏到线上，只发 committed message。</text>
+  <text x="60" y="248" font-size="11" fill="#6b7280">usage 跟 assistant/message 走，没有单独的 usage 事件。</text>
+</svg>

@@ -48,8 +48,11 @@ CLI、Web、ACP、JSON-RPC 是同一棵插件树的**不同入口**，不是四�
 | [`docs/user/guide/index.md`](../../docs/user/guide/index.md) | Web UI 指南 |
 | [`docs/cookbook/adding-a-conversation-node.md`](../../docs/cookbook/adding-a-conversation-node.md) | Chat node |
 
-## 以后深挖
+## 机制级正文
 
-- `pnpm dsh` 与 built bin 的解析差异、`--dump-config` 与真实 boot。
-- host / client 如何共享同一条 session 流。
-- ACP 与 JSON-RPC 各自保证什么、故意不保证什么。
+| 文件 | 内容 |
+|------|------|
+| [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；host mux 推 `session/event` |
+| [`02-acp与jsonrpc.md`](./02-acp与jsonrpc.md) | ACP 只要 committed 文本；SDK 推每条耐久事实 |
+
+dump 与 boot 的层差不在入口，在 [`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)。

@@ -46,8 +46,11 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 | `packages/subagent/` | 差异极大的 provider，同一接口 |
 | `.agents/notes/implemented/architecture/2026-06-13-capability-seams.md` | 为什么这样切 |
 
-## 以后深挖
+## 机制级正文
 
-- 何时必须分包装：Consumer 把 schema 倒灌进 Definition 的味道。
-- 换 E2B / 远程 sandbox 时，哪些 Consumer 的源码可以一字不改。
-- 顺着 shell 家族把一次 spawn 从 tool 调用追到 sandbox argv。
+| 文件 | 内容 |
+|------|------|
+| [`01-三角色与分包装.md`](./01-三角色与分包装.md) | 分包装的味道；换 E2B 时 tool 源码不动 |
+| [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md) | resolve → confine → spawn；run 的失败合同 |
+
+模型可见的 tool 管道在 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。

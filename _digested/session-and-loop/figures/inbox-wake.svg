@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">两个队列，三种入口：followup / steer 唤醒，inject 只排队</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">InboxTarget = next-turn | next-step · 持久事件 agent/inbox/spliced</text>
+  <rect x="40" y="68" width="280" height="100" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="180" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">followup</text>
+  <text x="180" y="118" text-anchor="middle" font-size="12" fill="#15803d">next-turn + wakeup</text>
+  <text x="180" y="140" text-anchor="middle" font-size="11" fill="#14532d">人敲的下一条</text>
+  <rect x="340" y="68" width="280" height="100" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="480" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">steer</text>
+  <text x="480" y="118" text-anchor="middle" font-size="12" fill="#2563eb">next-step + wakeup</text>
+  <text x="480" y="140" text-anchor="middle" font-size="11" fill="#1e3a8a">本 turn 内插一嘴</text>
+  <rect x="640" y="68" width="280" height="100" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="780" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">inject</text>
+  <text x="780" y="118" text-anchor="middle" font-size="12" fill="#c2410c">next-step，不 wakeup</text>
+  <text x="780" y="140" text-anchor="middle" font-size="11" fill="#7c2d12">等下一次获准请求带走</text>
+  <rect x="40" y="188" width="880" height="180" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="216" font-size="12" fill="#374151">claim：先抽空 next-step，若 target 是 next-turn 再取队列头一条。pre-step 拿到的就是这批。</text>
+  <text x="60" y="240" font-size="12" fill="#374151">splice 先 append 持久事件，再改内存投影。同步的 session/event 观察者看到的是 splice 前的列表。</text>
+  <text x="60" y="264" font-size="12" fill="#374151">idle 时 wakeup 一定开 turn 边界，即使消息随后被清掉。维护 / 已 abort 的驱动把 wake latch 住，收敛后再放。</text>
+  <text x="60" y="288" font-size="12" fill="#374151">pre-step reject，或首次 enter 改写成空：仍有 turn/start 与 turn/end，没有 step。拒绝记 blocked；空记 completed。</text>
+  <text x="60" y="320" font-size="11" fill="#6b7280">runtime context 快照会拼进 enter 的 messages（跟在 claimed 后面），所以模型看见的「环境」也走同一条获准路径。</text>
+</svg>

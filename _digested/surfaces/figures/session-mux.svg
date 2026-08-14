@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="320" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">host 把 session/event 推上 mux；client 只渲染，不另做一份 log</text>
+  <rect x="40" y="56" width="280" height="90" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="180" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">运行时</text>
+  <text x="180" y="108" text-anchor="middle" font-size="12" fill="#15803d">Session.append → emit session/event</text>
+  <line x1="320" y1="101" x2="358" y2="101" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="360" y="56" width="280" height="90" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="500" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">host apiproxy</text>
+  <text x="500" y="108" text-anchor="middle" font-size="12" fill="#2563eb">frame type session/event + 可选 view</text>
+  <line x1="640" y1="101" x2="678" y2="101" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="680" y="56" width="240" height="90" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="800" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">browser client</text>
+  <text x="800" y="108" text-anchor="middle" font-size="12" fill="#c2410c">slots / conversation nodes</text>
+  <rect x="40" y="168" width="880" height="124" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="196" font-size="12" fill="#374151">同一条 Cordis 事件。host 可以附 tool view（terminal/diff 卡片），那是展示投影，不是第二份事实。</text>
+  <text x="60" y="220" font-size="12" fill="#374151">JSON-RPC SDK 把每条耐久事实打成 session.event，生命周期打成 session.status。不把 prompt 绑到某条 assistant/message 或 turn/end。</text>
+  <text x="60" y="244" font-size="12" fill="#374151">ACP 相反：只把 committed assistant/message 的非空文本块打成 agent_message_chunk。chunk、推理、工具活动故意不上线。</text>
+  <text x="60" y="268" font-size="11" fill="#6b7280">加 Chat 节点：ConversationNodeDefinition + keyed renderer。不要在入口里再实现 loop。</text>
+</svg>

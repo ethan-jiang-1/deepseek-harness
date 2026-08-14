@@ -55,8 +55,11 @@ tool 的 UI 渲染意图是设计的一部分，一开始就要定：`generic` /
 | [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md) | | 加 tool |
 | [`docs/cookbook/adding-an-llm-adapter.md`](../../docs/cookbook/adding-an-llm-adapter.md) | | 加 adapter |
 
-## 以后深挖
+## 机制级正文
 
-- section 注册顺序、与 KV cache 有关的前缀稳定性。
-- 管道上审批与 timeout 的具体监听器。
-- streaming chunk 如何变成 log 里的 `assistant/chunk` / `assistant/message`。
+| 文件 | 内容 |
+|------|------|
+| [`01-section顺序与前缀.md`](./01-section顺序与前缀.md) | `order` 约定、complete section、KV 前缀 |
+| [`02-管道审批timeout与chunk.md`](./02-管道审批timeout与chunk.md) | `tools/*` 与 `approval/request`；chunk 入 log、message 进 surface |
+
+入口如何投影同一条流：[`../surfaces/00-map.md`](../surfaces/00-map.md)。

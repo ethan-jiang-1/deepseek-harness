@@ -11,7 +11,7 @@ DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用
 
 本篇只建立整机图。Cordis 原语、boot 组合、turn 时序、seam 三角色，各有自己的专题；读完这里再往下走。
 
-机制级结论仍以源码为准。下面的分层来自 [`docs/architecture.md`](../../docs/architecture.md)，用来建立直觉，不是已经对过每一处实现的核验报告。
+机制级结论仍以源码为准。下面的分层来自 [`docs/architecture.md`](../../docs/architecture.md)，用来建立直觉。扩展表对源码、以及和「单一 loop」的对照见文末机制级正文。
 
 ## 先看整机
 
@@ -85,9 +85,11 @@ DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用
 - [`docs/glossary.md`](../../docs/glossary.md)
 - [`packages/README.md`](../../packages/README.md)
 
-## 以后深挖
+## 机制级正文
 
-- architecture 那张扩展表逐项对到源码注册点。
-- 和「单一 loop + tools 数组」类 harness 的对照，方便迁移直觉。
+| 文件 | 内容 |
+|------|------|
+| [`01-扩展表对源码.md`](./01-扩展表对源码.md) | architecture「Where new behavior goes」逐行登记点 |
+| [`02-对照单一loop.md`](./02-对照单一loop.md) | 从「一个 loop + tools 数组」迁过来时落在哪一层 |
 
 「没有特权内核」在 Loader / fiber 卸载上如何兑现，已写在 [`../cordis-runtime/04-vendor-本地修改.md`](../cordis-runtime/04-vendor-本地修改.md) 与 [`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md)。

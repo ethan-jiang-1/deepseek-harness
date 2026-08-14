@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 280" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="280" fill="#fafafa" rx="6"/>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一次 bash：tool → resolve → sandbox.confine → subprocess.spawn</text>
+  <rect x="20" y="56" width="150" height="70" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="95" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">dsh-tool-bash</text>
+  <text x="95" y="106" text-anchor="middle" font-size="11" fill="#c2410c">模型 JSON → request</text>
+  <line x1="170" y1="91" x2="198" y2="91" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="200" y="56" width="150" height="70" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="275" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">ctx.shell.resolve</text>
+  <text x="275" y="106" text-anchor="middle" font-size="11" fill="#2563eb">request → Spec</text>
+  <line x1="350" y1="91" x2="378" y2="91" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="380" y="56" width="170" height="70" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="465" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">bash-sandbox</text>
+  <text x="465" y="106" text-anchor="middle" font-size="11" fill="#15803d">ctx.sandbox.confine(argv)</text>
+  <line x1="550" y1="91" x2="578" y2="91" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="580" y="56" width="170" height="70" rx="8" fill="#e0e7ff" stroke="#a5b4fc"/>
+  <text x="665" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#3730a3">ctx.subprocess</text>
+  <text x="665" y="106" text-anchor="middle" font-size="11" fill="#4338ca">spawn(confined argv)</text>
+  <line x1="750" y1="91" x2="778" y2="91" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="780" y="56" width="160" height="70" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="860" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">本机或 E2B</text>
+  <text x="860" y="106" text-anchor="middle" font-size="11" fill="#4b5563">同一 spawn 合同</text>
+  <rect x="40" y="150" width="880" height="100" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="178" font-size="12" fill="#374151">bash-local 不 sandbox：直接 subprocess.spawn(bash -c …)。政策在 tools/pre-execute 或换成 bash-sandbox 子类。</text>
+  <text x="60" y="202" font-size="12" fill="#374151">run 只对基础设施失败 reject；非零退出、超时杀、abort 杀都 resolve 成 ShellRunResult。Consumer 面对的是 Spec，不是哪台机器。</text>
+  <text x="60" y="226" font-size="12" fill="#374151">explicit &gt; implicit：默认化是 resolve(request): Spec，不是藏在 run() 里的 ?? default。</text>
+</svg>
