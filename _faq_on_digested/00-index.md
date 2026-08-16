@@ -43,6 +43,7 @@ _faq_on_digested/
 | 编号 | 问题 | 主回答 |
 |------|------|--------|
 | 01 | [DSH 的目录为什么这样组织，应该怎样读？](./01_repository-organization/question.md) | [目录设计总模型](./01_repository-organization/answer.md) |
+| 02 | [DSH 所谓 Spec-Driven Development 大概怎样运作？](./02_spec-driven-development/question.md) | [分层规格、生命周期与可执行验收](./02_spec-driven-development/answer.md) |
 
 ## 引用规范
 
