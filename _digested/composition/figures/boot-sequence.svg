@@ -43,9 +43,10 @@
 
   <rect x="40" y="288" width="880" height="200" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
   <text x="60" y="316" font-size="13" font-weight="700" fill="#111827">两段失败标签</text>
-  <text x="60" y="344" font-size="12" fill="#374151">prepare 之前：host preparation failed。Include mount 之后：plugin tree failed to load。dispose 之后把最深 cause 的 stack 拼上去。</text>
-  <text x="60" y="368" font-size="12" fill="#374151">assertEntriesLoaded：enabled 却没有 fiber → 解析失败。assertEntriesActivated：FAILED 等原错误；PENDING 点名缺的服务。</text>
-  <text x="60" y="400" font-size="12" fill="#374151">Loader 并发 mount。表面可能已经占住终端。boot 失败走 dispose；boot 看不见的后挂 rejection 走 installFailLoud 的 release。</text>
-  <text x="60" y="424" font-size="12" fill="#374151">树在 await 中途被表面 dispose：loader 消失则直接返回 ctx，不再做 activation 审计。</text>
-  <text x="60" y="456" font-size="11" fill="#6b7280">根 Include id 钉死为 include，诊断和 snapshot 才稳定。</text>
+  <text x="60" y="340" font-size="12" fill="#374151">prepare 抛出：host preparation failed。</text>
+  <text x="60" y="362" font-size="12" fill="#374151">prepare 成功后立即切换标签；mountRootInclude 及之后失败：plugin tree failed to load。</text>
+  <text x="60" y="390" font-size="12" fill="#374151">assertEntriesLoaded：enabled 却没有 fiber → 解析失败。assertEntriesActivated：FAILED 等原错误；PENDING 点名缺的服务。</text>
+  <text x="60" y="416" font-size="12" fill="#374151">Loader 并发 mount。boot 失败走 dispose；后挂 rejection 走 installFailLoud 的 release。</text>
+  <text x="60" y="440" font-size="12" fill="#374151">树在 await 中途被表面 dispose：loader 消失则直接返回 ctx，不再做 activation 审计。</text>
+  <text x="60" y="468" font-size="11" fill="#6b7280">dispose 后把最深 cause 的 stack 拼上；根 Include id 固定为 include。</text>
 </svg>

@@ -16,8 +16,8 @@
 
   <rect x="30" y="240" width="900" height="140" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
   <text x="50" y="268" font-size="14" font-weight="700" fill="#6d28d9">agent/turn-stopping  serial</text>
-  <text x="50" y="292" font-size="12" fill="#6d28d9">一轮已经决定结束、next-step inbox 已空，才 serial 这个事件。</text>
-  <text x="50" y="316" font-size="12" fill="#7c3aed">没有 next。监听器按登记顺序 await。返回 isBailed 值可以提前停后面的监听器。</text>
-  <text x="50" y="340" font-size="12" fill="#7c3aed">用途：停轮次、收尾。不是包装模型请求。</text>
-  <text x="50" y="364" font-size="11" fill="#5b21b6">和 tools/pre-execute · execute · post-execute、llm/stream 一样，那些才是 waterfall。</text>
+  <text x="50" y="292" font-size="12" fill="#6d28d9">一轮已有结束原因、next-step inbox 已空，才 serial 这个事件。</text>
+  <text x="50" y="316" font-size="12" fill="#7c3aed">没有 next。监听器按登记顺序 await；公开返回类型是 Promise&lt;void&gt; | void。</text>
+  <text x="50" y="340" font-size="12" fill="#7c3aed">监听器可 agent.steer()；链结束后 loop 重读 inbox，有新工作就继续下一 step。</text>
+  <text x="50" y="364" font-size="11" fill="#5b21b6">inbox 仍为空才关闭 turn。它不是包装模型请求的 waterfall。</text>
 </svg>

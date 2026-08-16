@@ -2,11 +2,11 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **当前源码基线**：本文档集以 DeepSeek Harness `0.1.0-rc.5`（commit `47f943859bef60e4160492346772ded9b24f765a`，与 `upstream/master` 重合）为准。版本演进只记录在 [`_change_log/`](./_change_log/00-index.md)；正文中的机制结论描述当前 checkout。
+> **产品源码审计基线**：DeepSeek Harness `0.1.0-rc.5`，commit `47f943859bef60e4160492346772ded9b24f765a`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。
 
 `_digested/` 面向已熟悉 agent harness / plugin 运行时，但尚未建立 DeepSeek Harness 概念体系的读者。这里先抓住思想主轴，再进入源码机制——而不是把 `packages/` 目录平铺成分类货架。
 
-当前阶段各专题的 `00-map.md` 是**图文介绍**：把这一层是什么、不是什么、和谁接、图在哪，讲清楚。机制级正文对源码。图一律放在该专题目录下的 `figures/`。
+每个专题的 `00-map.md` 是按主干顺序阅读的**概念导读**，只建立职责、关系和阅读入口；同目录编号正文是按问题查找的**机制参考**，记录状态对象、算法、失败行为和源码入口。图放在该专题的 `figures/`。
 
 文件不叫 `README.md`：仓库的 bilingual pairing 门禁会把任意 `README.md` 当成产品文档语料。研究目录用 `00-index.md` / `00-map.md`。
 
@@ -15,9 +15,9 @@
 | 分支 | 上面有什么 |
 |------|------------|
 | `master` | 干净的 upstream 镜像。不放研究材料，不改产品代码。 |
-| `ethan` | 研究分支。源码随 `upstream/master` merge 进来；研究只进 `_digested/` 和 `_faq_on_digested/`。 |
+| `ethan` | 研究分支。源码随 `upstream/master` merge 进来；研究材料位于 `_digested/`、`_faq_on_digested/` 和 `_architecture_referenced/`。 |
 
-同步方式：在 `ethan` 上非快进 merge `upstream/master`，让源码对齐新基线，保留这两个研究目录，再按 `_change_log/` 审计过期结论。
+同步方式：在 `ethan` 上非快进 merge `upstream/master`，让产品源码对齐新基线并保留研究目录，再按 `_change_log/` 审计过期结论。
 
 ## 与同级目录的关系
 
@@ -25,6 +25,7 @@
 |------|------|------|
 | **`_digested/`** | 源码消化，机制剖析 | 想彻底搞懂背后发生了什么的人 |
 | `_faq_on_digested/` | 跨消化材料的二次研究 | 我自己（产出者） |
+| `_architecture_referenced/` | 外部架构材料的本地参考副本 | 需要对照其它分析的人 |
 
 本仓库不另做用户手册。官方怎么用、怎么扩展，仍读 `docs/` 和 package README。
 
@@ -38,7 +39,7 @@
 | `cordis-runtime/` | 被 vendor 的框架 | `ctx` / plugin / effect / event / waterfall / fiber / Loader |
 | `composition/` | 启动组合 | profile、bundle、patch 层、Harness home、`dsh --dump-config` |
 | `session-and-loop/` | 会话与驱动 | session log、turn/step、agent-loop、model-visible ⟺ logged、agent scope |
-| `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色，以及为什么换一个 provider 能带走一整面执行世界 |
+| `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色，以及如何组合一致的 fs / subprocess provider |
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 组装、LLM adapter、tool 执行瀑布 |
 | `surfaces/` | 人对机器的入口 | CLI、Web host/client、ACP、JSON-RPC SDK |
 | `_coverage/` | 覆盖矩阵 | 维护用索引，按源码组追踪 digest 覆盖状态 |
@@ -54,7 +55,7 @@
 - **想搞懂一轮对话怎么跑** → `session-and-loop/00-map.md`
 - **想加能力或换后端** → `capability-seams/00-map.md`
 - **想搞懂模型看见什么** → `tools-prompt-llm/00-map.md`
-- **想搞懂 CLI / Web / ACP 怎么接到同一棵树上** → `surfaces/00-map.md`
+- **想搞懂 CLI / Web / ACP 怎么复用同一套 runtime spine** → `surfaces/00-map.md`
 
 推荐主干顺序：
 
@@ -67,4 +68,14 @@ system/
   → surfaces/
 ```
 
-读完介绍再深挖。主干七个专题都已有机制级正文（覆盖各篇「以后深挖」）。按包组再拆、以及 `_faq_on_digested/` 的跨切问题，仍是后续。
+按推荐顺序读 `00-map.md`，遇到具体机制再进入编号正文。专题承诺的核验范围以 [`_coverage/00-index.md`](./_coverage/00-index.md) 为准；未列问题不隐含完整覆盖。跨专题研究放在 `_faq_on_digested/`。
+
+## 验证
+
+修改本目录后运行：
+
+```sh
+node _digested/verify.mjs
+```
+
+该检查验证 Markdown / SVG / 校验脚本的严格 UTF-8 与单个结尾换行、Markdown 相对链接和锚点，以及 SVG 的 XML 结构与实体。

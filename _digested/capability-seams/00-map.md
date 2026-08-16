@@ -22,15 +22,15 @@
 
 看到新的 `ctx.<key>`，先问它是 spine 服务、一条 seam、还是 bundle 组合点。只有三角色齐全才叫 seam。
 
-## 执行世界
+## 远程执行世界与本地 confinement
 
-![执行世界绑在一起](./figures/execution-world.svg)
+![E2B 远程执行世界与本地 argv confinement](./figures/execution-world.svg)
 
-文件系统提供方和进程提供方共享**同一个执行世界**。把它们指向远程沙箱，Bash、PTY、LSP 一起走，不必为远程再 fork 一份 bash 实现。
+在 E2B 组合里，`dsh-fs-e2b` 与 `dsh-subprocess-e2b` 注入同一个 `ctx.e2b`，因此共享一棵远程 Linux 目录树和进程世界。依赖 `ctx.fs` / `ctx.subprocess` 的 Consumer 随 provider 组合切换，不必为远程再 fork 一份实现。
 
-本地 shell 经 `ctx.subprocess` spawn；`ctx.sandbox` 在 spawn 前包装 argv。Consumer 面对的是 Definition，不是「我在哪台机器上」。
+本地 shell 经 `ctx.subprocess` spawn；`ctx.sandbox` 在 spawn 前包装 argv。这种 confinement 约束一次本地进程启动，不会自行迁移 `ctx.fs`，也不等于一套完整的远程执行世界。Consumer 面对的是 Definition，不是「我在哪台机器上」。
 
-subagent 是同一模式的另一个例子：一个接口后面，可以是进程内新建的 child agent，也可以把一轮委托给另一个产品。
+subagent 是同一模式的另一个例子：一个接口后面，可以是进程内 child agent，也可以是经 ACP 或 JSON-RPC 驱动的独立进程。
 
 教科书路径：顺着 `packages/shell/` 走完 Definition → provider → `dsh-tool-bash`。组级 README 拥有「这个组有哪些包、对应哪个 `ctx` key」——本专题不手抄完整包表，完整图在生成的 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
@@ -41,7 +41,8 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 | [`docs/glossary.md`](../../docs/glossary.md) `capability-seam` | 术语合同 |
 | [`docs/capability-seams.md`](../../docs/capability-seams.md) | 生成的包 / key / 实现 / 消费者图 |
 | `packages/shell/` | 范本家族 |
-| `packages/fs/`、`packages/subprocess/`、`packages/sandbox/` | 执行世界 |
+| `packages/fs/`、`packages/subprocess/` | 执行世界的文件与进程能力 |
+| `packages/sandbox/` | 本地进程 argv confinement |
 | `packages/llm/` | Definition 与 Consumer 可同包 |
 | `packages/subagent/` | 差异极大的 provider，同一接口 |
 | `.agents/notes/implemented/architecture/2026-06-13-capability-seams.md` | 为什么这样切 |

@@ -1,6 +1,6 @@
 # Prompt section 顺序与前缀稳定
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`packages/core/system-prompt/src/index.ts`。
+源码核验入口：`packages/core/system-prompt/src/index.ts`。
 
 模型每一步的 system 文本是注册表当场拼的。顺序就是 KV cache 能不能命中前缀的机械原因。
 
@@ -8,7 +8,7 @@
 
 ## 谁在拼
 
-`SystemPrompt.section` / `context` / tool-schema provider 都走 `dsh-scope` 的层。scoped 同名盖掉全局孪生。重复名或非有限 `order` 抛。登记和卸都会 `emit('system-prompt/change')`（不过滤：全局变化影响每个 scope）。
+`SystemPrompt.section` / `context` / tool-schema provider 都走 `dsh-scope` 的层。全局层之后按 scope parent chain 从远到近合并，同名由最近层覆盖。重复名或非有限 `order` 抛。登记和卸都会 `emit('system-prompt/change')`（不过滤：全局变化影响每个 scope）。
 
 内置（构造时，与选哪个 loop 无关）：
 
@@ -36,4 +36,4 @@
 
 ## 和模型可见不变量的交接
 
-拼出来的 system 字符串写入 `request/header`。历史仍是 `deriveMessages()`。下一步若 header 变了，reason 是 `'change'`；新 loop 实例面对已有 header 事件时是 `'resume'`。不在 log 里的片段不该出现在请求里——section 的**文本**每次 assemble 现算，但必须能从当时挂着的插件 + header 快照重建。reload 后若插件树不同，那是 composition 问题，不是「偷偷加了一段没入 log」。
+拼出来的 system 字符串和完整 tool schemas 与生效的模型配置一起写入 `request/header`。重建某次历史请求时，在该请求开始流出前的日志前缀中取最后一份完整快照，不需要重新运行当时的插件树；消息历史仍由同一前缀的 surface 投影。下一步若 header 变了，reason 是 `'change'`；新 loop 实例面对已有 header 事件时是 `'resume'`。section 可以在每次 assembly 时重新计算，但进入模型的结果必须先落进这份快照。

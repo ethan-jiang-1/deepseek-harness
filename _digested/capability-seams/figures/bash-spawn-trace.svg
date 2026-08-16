@@ -23,8 +23,9 @@
   <rect x="780" y="56" width="160" height="70" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
   <text x="860" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">本机或 E2B</text>
   <text x="860" y="106" text-anchor="middle" font-size="11" fill="#4b5563">同一 spawn 合同</text>
-  <rect x="40" y="150" width="880" height="100" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="60" y="178" font-size="12" fill="#374151">bash-local 不 sandbox：直接 subprocess.spawn(bash -c …)。政策在 tools/pre-execute 或换成 bash-sandbox 子类。</text>
-  <text x="60" y="202" font-size="12" fill="#374151">run 只对基础设施失败 reject；非零退出、超时杀、abort 杀都 resolve 成 ShellRunResult。Consumer 面对的是 Spec，不是哪台机器。</text>
-  <text x="60" y="226" font-size="12" fill="#374151">explicit &gt; implicit：默认化是 resolve(request): Spec，不是藏在 run() 里的 ?? default。</text>
+  <rect x="40" y="144" width="880" height="116" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="168" font-size="12" fill="#374151">tools/execute 包住整个 tool body：校验 → 审批 → shell.resolve → run/start → 结算。</text>
+  <text x="60" y="190" font-size="12" fill="#374151">bash-local 不 sandbox：直接 subprocess.spawn(bash -c …)。执行政策在 tools/pre-execute 或 bash-sandbox。</text>
+  <text x="60" y="212" font-size="12" fill="#374151">run 只对基础设施失败 reject；非零退出、超时杀、abort 杀都 resolve 成 ShellRunResult。</text>
+  <text x="60" y="234" font-size="12" fill="#374151">explicit &gt; implicit：默认化是 resolve(request): Spec，不是藏在 run() 里的 ?? default。</text>
 </svg>

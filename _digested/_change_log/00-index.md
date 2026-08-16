@@ -15,4 +15,11 @@ _change_log/
 └── 0001-<from>-to-<to>.md    # 之后每次合入写一条
 ```
 
-编号递增。`0000` 只钉住开始消化时的 checkout；真正的 sync 从 `0001` 起。
+编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
+
+每次 sync 同时执行以下维护动作：
+
+1. 在本目录新增一条记录，写清产品源码 commit 范围和触及的专题。
+2. 更新 [`../00-index.md`](../00-index.md) 的产品源码审计基线。
+3. 在 [`../_coverage/00-index.md`](../_coverage/00-index.md) 将受影响专题标为“需复核”；完成源码、图和链接审计后再更新其最近核验 commit。
+4. 运行 `node _digested/verify.mjs`。

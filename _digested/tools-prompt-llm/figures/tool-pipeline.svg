@@ -13,14 +13,14 @@
 
   <rect x="250" y="80" width="190" height="80" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
   <text x="345" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">tools/pre-execute</text>
-  <text x="345" y="130" text-anchor="middle" font-size="11" fill="#2563eb">waterfall · 审批 / 改 argv</text>
-  <text x="345" y="146" text-anchor="middle" font-size="11" fill="#2563eb">必须 next()</text>
+  <text x="345" y="130" text-anchor="middle" font-size="11" fill="#2563eb">waterfall · allow / deny / ask</text>
+  <text x="345" y="146" text-anchor="middle" font-size="11" fill="#2563eb">next() 委托；也可直接决策</text>
   <line x1="440" y1="120" x2="478" y2="120" stroke="#4b5563" marker-end="url(#arr)"/>
 
   <rect x="480" y="80" width="190" height="80" rx="8" fill="#f3e8ff" stroke="#d8b4fe"/>
   <text x="575" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">tools/execute</text>
-  <text x="575" y="130" text-anchor="middle" font-size="11" fill="#7c3aed">waterfall · 真正执行</text>
-  <text x="575" y="146" text-anchor="middle" font-size="11" fill="#7c3aed">timeout 也挂在这</text>
+  <text x="575" y="130" text-anchor="middle" font-size="11" fill="#7c3aed">waterfall · 包住 tool body</text>
+  <text x="575" y="146" text-anchor="middle" font-size="11" fill="#7c3aed">timeout / checkpoint 挂在这</text>
   <line x1="670" y1="120" x2="708" y2="120" stroke="#4b5563" marker-end="url(#arr)"/>
 
   <rect x="710" y="80" width="210" height="80" rx="8" fill="#dcfce7" stroke="#86efac"/>

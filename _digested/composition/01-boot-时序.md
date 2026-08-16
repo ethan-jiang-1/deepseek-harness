@@ -1,8 +1,8 @@
 # `boot()` 时序
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`apps/cli/src/profile-boot.ts`、`packages/boot/app-boot/src/index.ts`、`packages/boot/app-boot/src/profile.ts`。路径和符号，不用行号。
+源码核验入口：`apps/cli/src/profile-boot.ts`、`packages/boot/app-boot/src/index.ts`、`packages/boot/app-boot/src/profile.ts`。
 
-介绍篇把组合讲成「从空列表叠 patch」。这篇把一次 `dsh --profile` 钉到函数调用顺序：先准备磁盘上的空根，再算出层列表，再 `boot()` 把 Include 挂上去，最后审计每一行都活了。失败分两段标签；boot 看不见的后挂 rejection 走 `installFailLoud`。
+一次 `dsh --profile` 先准备磁盘上的空根，再计算层列表，由 `boot()` 挂载 Include，最后审计每一行是否激活。启动失败分两段标签；boot 结算后出现的 rejection 由 `installFailLoud` 处理。
 
 ![一次 dsh --profile 怎么变成一棵活树](./figures/boot-sequence.svg)
 
@@ -54,19 +54,20 @@ new Context()
   provide('dshHomePath', dshHomePath)     // !!js 能写 home
   plugin(Loader)
   prepare(ctx)                            // 阶段标签仍是 host preparation
-  mountRootInclude(...)                   // 之后失败改称 plugin tree failed to load
+  stage = 'plugin tree failed to load'    // prepare 成功后立即切换
+  mountRootInclude(...)
   loader.await()
   若 loader 已消失 → 直接返回 ctx
   assertEntriesActivated
 ```
 
-`mountRootInclude` 静态 import Include / Group，钉死 id `'include'`，config 是 `{ path: fileURL, patches }`。诊断和 snapshot 才稳定。Group 一起注册，才能给 provider 和 consumers 同一个 `isolate` realm。
+`mountRootInclude` 静态 import Include / Group，固定 id `'include'`，config 是 `{ path: fileURL, patches }`。稳定 id 使诊断和 snapshot 可重复。Group 一起注册，才能给 provider 和 consumers 同一个 `isolate` realm。
 
 裸模块名默认对着 config 目录解析；打包运行时可以传 `bareModuleBaseUrl`，让主机而不是配置工程拥有整套插件。
 
 ## 两段失败标签
 
-`stage` 在 `prepare` 之前是 `host preparation failed`，Include mount 之后是 `plugin tree failed to load`。catch 里 `await ctx.fiber.dispose()`——根 fiber 的清理按观察者隔离，重复 dispose 返回已结算的单次结果，这个 await 不会再抛、盖掉原来的 `cause`。
+`stage` 初始为 `host preparation failed`。`prepare` 成功返回后、调用 `mountRootInclude` 之前切成 `plugin tree failed to load`，所以 Include 自身的解析和挂载失败属于插件树。catch 里 `await ctx.fiber.dispose()`——根 fiber 的清理按观察者隔离，重复 dispose 返回已结算的单次结果，这个 await 不会再抛、盖掉原来的 `cause`。
 
 诊断把最深 `cause` 的 stack 拼上去。Loader 事务会按树层各包一层消息；真正的激活现场在最里面那个 Error。
 

@@ -1,8 +1,8 @@
 # waterfall 与事件合同
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。框架实现：`vendor/cordis/src/events.ts` `EventsService.waterfall`。产品用法：`packages/core/agent-loop/src/agent.ts`、`packages/core/agent/src/runtime-types.ts`。
+源码核验入口：`vendor/cordis/src/events.ts` `EventsService.waterfall`、`packages/core/agent-loop/src/agent.ts`、`packages/core/agent/src/runtime-types.ts`。
 
-介绍篇说「必须调用 `next()`」。这篇把源码算法和 dsh 两条最容易混的事件钉死。
+本篇说明 waterfall 的组合算法，并区分 `agent/pre-step` 与 `agent/turn-stopping`。
 
 ## 框架算法
 
@@ -60,17 +60,17 @@ loop 的 `preStep()`：
 - 合作：改 `messages`（或等 `next()` 再包一层），然后 `return next()`。
 - 决策：直接 `return { kind: 'reject' }`，不调 `next()`。模型请求不会发生。
 
-loop 看到 `reject`，或**第一个 step** 的 enter 消息长度为 0：关掉一个不含 step 的持久 turn。`turn/start` 已经写入 log，最后仍有 `turn/end`。这就是介绍里「拒绝也记一笔」的源码位置。
+loop 看到 `reject`，或**第一个 step** 的 enter 消息长度为 0：关掉一个不含 step 的持久 turn。`turn/start` 已经写入 log，最后仍有 `turn/end`，因此没有发起模型请求的尝试也可从日志重建。
 
 只想观察、不拥有决策的监听器必须 `next()`。否则你把整条链（含 inner 的默认 enter）否决了。
 
 ### `agent/turn-stopping`
 
-一轮已经决定结束、且 `inbox.nextStep` 为空，loop 才 `serial('agent/turn-stopping', { turn, signal })`。
+一轮已有结束原因、且 `inbox.nextStep` 为空时，loop 才 `serial('agent/turn-stopping', { turn, signal })`。
 
-没有 `next`。按登记顺序 await。返回 bail 值可以让后面的 turn-stopping 监听器不再跑，但**不能**把 turn 重新打开——调用点在结束路径上。
+没有 `next`，监听器按登记顺序 await，声明返回 `Promise<void> | void`。监听器若调用 `agent.steer()`，驱动会在 serial 链结束后重读 `inbox.nextStep` 并继续下一 step；inbox 仍为空才写 `turn/end`。
 
-把 turn-stopping 写成 `async (_, next) => next()` 是错的：没有人会传入 next，监听器拿到的参数对不上。
+不要依赖 Cordis `serial` 的通用 bail 返回值：该事件的公开返回类型是 void。把它写成 `async (_, next) => next()` 也会因没有 `next` 参数而出错。
 
 ### 同家族的 waterfall
 

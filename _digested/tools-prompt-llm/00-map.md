@@ -13,8 +13,10 @@
 三股汇合：
 
 1. **Prompt sections** — 插件往 `ctx.systemPrompt` 注册片段（身份、persona、工作区指令、时间……），按顺序、按这个 agent 的 scope 过滤后拼起来。
-2. **Tool schemas** — `ctx.tools` 里该 scope 还看得见的工具。`restrict` 先过滤全局集，shadowing 再覆盖同名，scope-local 最后合并。被滤掉的工具：提示词里没有，执行也拒绝，和「不存在」无法区分。
-3. **历史** — `deriveMessages()` 从 log 投影。`inject` 的材料等下一次获准请求。不在 log 里的东西不该出现在请求里。
+2. **Tool schemas** — `ctx.tools` 里该 scope chain 仍可见的工具。全局层和祖先层按远到近合并，chain 上的 `restrict` 过滤这份继承面，当前 agent 自有层最后覆盖或补充。被过滤的工具在提示词和执行中都表现为不存在。
+3. **历史** — `deriveMessages()` 从 surface 投影。`inject` 的材料等下一次获准请求，获准后写成 `user/message`。
+
+组装完成后，loop 先把生效的模型配置、system 和 tools 写入完整的 `request/header`，再分派请求。因此普通 section 可以动态计算，不需要单独新增事件类型；可重建的是它实际进入请求的结果。
 
 面向模型的文字从**模型视角**写：提示词、schema、结果、诊断里只有任务相关概念，没有 UI、传输、实现词汇。
 
@@ -26,13 +28,13 @@
 
 ```text
 tool/call（入 log）
-  → tools/pre-execute     审批、改 argv，必须 next()
-  → tools/execute         真正执行；timeout 也挂在这
+  → tools/pre-execute     allow / deny / ask；next() 委托下游
+  → tools/execute         包住 tool body；timeout 也挂在这
   → tools/post-execute    包装结果
 tool/result（入 log）
 ```
 
-守卫在管道上统一执行，不散落在每个 tool 里。拒绝路径要穿过执行器来测，不能只靠「schema 里不写这个字段」假装禁掉。
+参数在进入 `pre-execute` 前已经解析、记录并冻结；这条事件只作 `allow` / `deny` / `ask` 决策，不改写参数。监听器调用 `next()` 表示委托下游，也可以直接返回自己拥有的决定。`tools/execute` 是 around-dispatch，timeout 和 checkpoint 包住 tool body。守卫在管道上统一执行，不散落在每个 tool 里。
 
 和人相关的两条容易混：
 

@@ -1,8 +1,8 @@
 # 工具管道、审批、timeout，以及 chunk 如何入 log
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`packages/core/tools/src/index.ts` 事件、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
+源码核验入口：`packages/core/tools/src/index.ts` 事件、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
 
-介绍篇画了三条 waterfall。这篇钉监听器挂在哪，以及流式 chunk 怎样变成两条不同的 log 事件。
+本篇说明工具监听器的挂载位置，以及流式 chunk 如何形成 raw chunk 与 assembled message 两类日志事件。
 
 ![流：chunk 入 log，message 进 surface](./figures/chunk-to-message.svg)
 
@@ -16,7 +16,7 @@ tool/call（log）
 tool/result（log，surface）
 ```
 
-都是 waterfall，必须 `next()`。scope 过滤：agent-scoped 监听器只收到该 agent 的调用。
+三条都是 waterfall：调用 `next()` 委托内层；拥有政策结果的监听器可以直接返回决定、dispatch 结果或 post-decision。只做观察或包装的监听器必须委托。scope 过滤：agent-scoped 监听器只收到该 agent 的调用。
 
 `pre-execute` 默认 inner 是 allow。`ask` 没有审批支持 → 否决。异步门必须看 `exec.signal`；注册表在它们结算后复核取消，但**不丢弃**它们的 promise。
 

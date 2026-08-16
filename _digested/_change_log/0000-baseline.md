@@ -4,7 +4,7 @@
 
 **upstream**：`deepseek-ai/deepseek-harness` `master`
 
-**钉住的 commit**：`47f943859bef60e4160492346772ded9b24f765a`（`Merge pull request #2519 from deepseek-harness/feat/npm-public`）
+**基线 commit**：`47f943859bef60e4160492346772ded9b24f765a`（`Merge pull request #2519 from deepseek-harness/feat/npm-public`）
 
 **发布版本**：`0.1.0-rc.5`（根 `package.json`）
 
@@ -12,6 +12,6 @@
 
 ## 这一条不是 sync
 
-还没有从更旧的 checkout 合入过新 upstream。本文件只回答：消化材料最初对着哪一次源码说话。
+这条记录没有 from commit；它只标识消化材料最初核验的源码版本。
 
 下一次 `git merge upstream/master` 进 `ethan` 之后，写 `0001-…`，并审计地图与正文里过期的结论。

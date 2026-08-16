@@ -2,11 +2,11 @@
 
 ## 一句话
 
-CLI、Web、ACP、JSON-RPC 是同一棵插件树的**不同入口**，不是四套 agent 实现。它们 boot 不同的 bundle，但都驱动 `ctx.agents`，并从 `session/event` 渲染或投影。
+CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 session 事件模型，不是四套 agent 实现。不同入口可以启动不同进程和不同插件组合；每棵组合后的树都通过 `ctx.agents` 驱动 agent，并从 `session/event` 渲染或投影。
 
-## 四个门，一棵树
+## 四个入口，一套运行时模型
 
-![四个入口，同一棵插件树](./figures/one-tree-many-doors.svg)
+![四个入口复用同一套运行时模型](./figures/shared-runtime-spine.svg)
 
 | 入口 | 它是什么 | 典型组合 |
 |------|----------|----------|
@@ -29,7 +29,7 @@ CLI、Web、ACP、JSON-RPC 是同一棵插件树的**不同入口**，不是四�
 |------|------|------------|
 | **Human command** | `ctx.commands`，人面向适配器直接分派 | 不过模型 turn |
 | **Model-facing tool** | `ctx.tools` + 执行管道 | 在 step 里，call/result 入 log |
-| **Shell execution** | `ctx.shell` / `ctx.subprocess` / 可选 sandbox | 是 tool 背后的执行世界 |
+| **Shell execution** | `ctx.shell` / `ctx.subprocess` / 可选 sandbox | 是 tool 背后的进程执行层；sandbox 可包装 argv |
 
 `/goal` 是 human command。模型调用的 `bash` 是 tool。那次实际 spawn 是 shell execution。分不清，就会把斜杠指令当成 tool schema，或把沙箱策略塞进人命令里。
 
@@ -53,6 +53,6 @@ CLI、Web、ACP、JSON-RPC 是同一棵插件树的**不同入口**，不是四�
 | 文件 | 内容 |
 |------|------|
 | [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；host mux 推 `session/event` |
-| [`02-acp与jsonrpc.md`](./02-acp与jsonrpc.md) | ACP 只要 committed 文本；SDK 推每条耐久事实 |
+| [`02-acp与jsonrpc.md`](./02-acp与jsonrpc.md) | ACP 只要 committed 文本；SDK 推 Context 内全部耐久事实 |
 
 dump 与 boot 的层差不在入口，在 [`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)。

@@ -1,8 +1,8 @@
 # ACP 与 JSON-RPC 各自保证什么
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`packages/acp/acp/README.md`、`packages/sdk/server/README.md`。
+源码核验入口：`packages/acp/acp/README.md`、`packages/sdk/server/README.md`。
 
-两个都是「进程外驱动同一棵树」的门。保证的输出完全相反：一个要干净的自动化结果，一个要完整耐久流。
+两个都是进程外驱动 Harness runtime 的协议入口，可以挂在不同的插件组合上。它们复用 `ctx.agents` 和 session 语义，但输出保证相反：一个提供精简的自动化结果，一个推送完整耐久流。
 
 ## ACP：自动化适配器，不是 IDE
 
@@ -33,7 +33,7 @@
 **保证：**
 
 - `session/prompt` **立刻**返回 `{ messageId }`（inbox 准入 id），不等 idle。
-- 每条耐久事实 `session.event`，每次整 agent 生命周期 `session.status`。
+- 同一 Context 内每条 `session/event` 都转成 `session.event`，每条 `agent/status` 都转成 `session.status`；订阅不按「是否由 SDK 创建」过滤。
 - `initialize.maxTokens` 可变成该 SDK 创建的 agent 及其进程内后代的输出上限。
 - `shutdown`：刷新响应，dispose 根 ctx，exit 0。
 
@@ -51,7 +51,7 @@
 | | ACP | JSON-RPC SDK |
 |--|-----|----------------|
 | prompt 返回 | 等到 idle，带 `stopReason` | 立刻 `messageId` |
-| 线上可见 | committed 文本块 | 每条 log 事件 |
+| 线上可见 | committed 文本块 | Context 内每条 log 事件与 agent 状态 |
 | resume / fork | 无 | 无（session 由运行时拥有，线协议不暴露） |
 | 取消 | `session/cancel` 对准该 agent | 无 per-prompt cancel |
 | 典型消费者 | 另一个产品里的 subagent | 进程外 SDK / 脚本 |
