@@ -58,12 +58,13 @@
     <text x="792" y="120" font-size="12" fill="#115e59">注册必须可逆</text>
     <text x="792" y="148" font-size="12" fill="#0f766e">ctx.effect()</text>
     <text x="792" y="166" font-size="12" fill="#0f766e">ctx.on()</text>
-    <text x="792" y="198" font-size="11" fill="#0d9488">reload / 卸载时</text>
-    <text x="792" y="216" font-size="11" fill="#0d9488">按登记顺序撤掉</text>
-    <text x="792" y="250" font-size="11" fill="#134e4a">register() 返回</text>
-    <text x="792" y="268" font-size="11" fill="#134e4a">的就是 disposer</text>
+    <text x="792" y="194" font-size="11" fill="#0d9488">reload / 卸载时</text>
+    <text x="792" y="212" font-size="11" fill="#0d9488">同一 effect 内</text>
+    <text x="792" y="230" font-size="11" fill="#0d9488">按登记逆序撤掉</text>
+    <text x="792" y="258" font-size="11" fill="#134e4a">register() 返回</text>
+    <text x="792" y="276" font-size="11" fill="#134e4a">的就是 disposer</text>
   </g>
   <text x="480" y="340" text-anchor="middle" font-size="12" fill="#374151">这五条够用来读 harness 插件。vendor 树里还有 Fiber、Loader、Include；那是启动和热更新的机械层。</text>
   <text x="480" y="362" text-anchor="middle" font-size="12" fill="#374151">官方入门仍是 docs/cordis-primer.md。本专题要分清：上游原语、本仓库本地修改、产品如何使用它们。</text>
-  <text x="480" y="400" text-anchor="middle" font-size="11" fill="#6b7280">基线 0.1.0-rc.5 · 细节以 vendor/ 与 primer 为准</text>
+  <text x="480" y="400" text-anchor="middle" font-size="11" fill="#6b7280">细节以当前 vendor/ 与 docs/cordis-primer.md 为准</text>
 </svg>

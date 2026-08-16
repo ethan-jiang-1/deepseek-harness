@@ -1,45 +1,43 @@
 # `dsh-agent` 与 `dsh-agent-loop`：换 loop 的半径
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`packages/core/agent/src/index.ts` `AgentRegistry` / `AgentFactory`、`packages/core/agent/src/runtime-types.ts` `Agent`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`、`packages/core/agent-loop/src/index.ts` `AgentLoop`。
+源码核验入口：`packages/core/agent/src/index.ts` `AgentRegistry` / `AgentFactory`、`packages/core/agent/src/runtime-types.ts` `Agent`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`、`packages/core/agent-loop/src/index.ts` `AgentLoop`。
 
-介绍篇写 UI / hook / 工具依赖 `dsh-agent`，不依赖具体 loop。对照 `package.json` 之后，这条作为**运行时合同**成立：那些包的 peer 停在 `dsh-agent`，`dsh-agent-loop` 多半只在测试里。
+运行时消费者面向 `dsh-agent` 的 `Agent` 与 `AgentFactory` 编程；composition、demo 和测试包可以显式选择默认 `dsh-agent-loop`。
 
 ![产品面对 ctx.agents](./figures/factory-radius.svg)
 
 ## 接口在 agent，驱动在 loop
 
-`ctx.agents` 是 `AgentRegistry`（`dsh-agent`）。它跟踪活着的 agent，做 process-local initiator（`AsyncLocalStorage`），**不**实现 turn。创建委托给 `AgentFactory`：
+`ctx.agents` 是 `AgentRegistry`（`dsh-agent`）。它跟踪活着的 agent，提供 process-local initiator（`AsyncLocalStorage`），但不实现 turn。创建委托给 `AgentFactory`：
 
-- `createAgent(ownerCtx, options)` — 调用方提供 `sessionId`；setup 窗口 → commit → 登记 session 与 agent → `agent/session-start` → 才启动驱动。
+- `createAgent(ownerCtx, options)` — 调用方提供 `sessionId`；setup 窗口 → commit → 登记 session 与 agent → `agent/session-start`。该事件是第一个允许提交启动输入的扩展点；真正的 turn 由 waking input 驱动。
 - `resume(ownerCtx, options)` — 先 `sessionPersistence.prepare`。
 
-loop 插件（`AgentLoop`）构造时 `setFactory(this)`。没有 factory：`no agent factory registered (load an agent-loop plugin)`。ACP 等消费者对着 `ctx.agents` 编程，package 依赖写 `dsh-agent`。
+默认 loop 插件在构造时调用 `ctx.agents.setFactory(this)`。没有 factory 时，`create` / `resume` 抛出 `no agent factory registered (load an agent-loop plugin)`。ACP 等消费者对着 `ctx.agents` 编程，不需要导入 `ReactLoopAgent`。
 
-`Agent` 句柄（loop 必须实现）包括：`id` / `options` / `session` / `inbox` / `status` / `ctx`，以及 `followup` / `steer` / `inject` / `cancel` / `runMaintenance` / `whenIdle`。`agent.ctx` 是 `createScope(loopCtx, this)` 之后 `extend({ agent: this })`。scope key 就是这个活对象；没有树状继承。
+`Agent` 句柄的字段、驱动方法和生命周期语义由 `dsh-agent` 的公开接口定义。`agent.ctx` 是该 agent 的注册 scope；工具、提示词和监听器在这里登记即可获得 agent-local 生命周期，不应依赖 `ReactLoopAgent` 的私有 `kick` / `turn` / `step`。
 
 ## setup 窗口
 
-`CreateAgentOptions.setup` 在 agent **未发布**时跑。这里只注册（preset 的 isolate 服务行、scoped 工具），不 `followup`。失败则回滚：已经发出去的 `agent` / `session` 创建通知，会有配对的 `agent/disposed` / `session/disposed`。
+`CreateAgentOptions.setup` 在 agent 和 session 都未发布时运行。这里只组合 preset 的 isolate 服务行、scoped 工具等贡献，不驱动 agent。setup 或同步 publication commit 失败会撤销 scope，且不会发布任何 id；若后续创建通知或 `agent/session-start` 监听器失败，已经开始的 `session/created` / `agent/created` 通知会由配对的 disposed 通知收束。
 
 `ownerCtx` 是 `create()` 调用方的 fiber，不是 factory 自己的注册 ctx。所有权跟调用方走。
 
-## 换 loop 要保住什么
+## 兼容现有 surface 的义务
 
-新驱动只要：
+替换驱动必须：
 
-1. 实现 `Agent` + `AgentFactory`，`setFactory`。
-2. 仍往同一条 session log 写（同一套 `SessionEventMap` 核心键，同一 surface 规则）。
-3. 仍发同一类活扩展点：`agent/pre-step`（waterfall）、`agent/turn-stopping`（serial）、`agent/request`、`agent/status`、inbox 通知。
-4. `deriveMessages()` 仍是请求历史的唯一来源。
+1. 实现 `AgentFactory` 和公开 `Agent` 接口，并用 `ctx.agents.setFactory()` 注册唯一 factory。
+2. 保持 session 生命周期和日志语义：turn / step、模型可见输入、tool call / result 与 `request/header` 仍可从同一日志重建。
+3. 按 `AgentEventMap` 声明的 mode 和 agent scope 派发实时事件；尤其不能把 waterfall 与 serial 互换。
+4. 从 `session.deriveMessages()` 取得请求历史，并让 loop 的请求重建 invariant 能把实际 LLM 请求对回日志。
 
-渲染面、多数 tool、`ctx.commands` 可以不动。`ReactLoopAgent` 私有的 `kick` / `turn` / `step` 不必出现在公开 `Agent` 上。
+满足这些接口后，渲染面、按 `agent.ctx` 登记的插件与人类 command 无需知道私有驱动结构。
 
-## 今天谁真的依赖 loop 包
+## 组合与包依赖
 
-`dsh-base` 把 `@deepseek-ai/dsh-agent-loop` 写进 **dependencies** 并挂进默认树——换 loop 至少要 patch 掉这一行。`python/sdk-runtime` 和若干 `examples/` 同样生产依赖它。
+默认 profile 由 [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml) 的 `agent-loop` 行挂载 `@deepseek-ai/dsh-agent-loop`，相应安装依赖在 [`packages/bundle/base/package.json`](../../packages/bundle/base/package.json)。替换默认驱动必须一起替换组合行并确保新包可由 profile 解析。
 
-hooks、compaction、`goal-round-driver`、多数 tool 的 **`dsh-agent-loop` / testkit 在 `devDependencies`**。peer 停在 `dsh-agent`。UI（`client/ui-*`）、`dsh-commands` 同理。换 Factory 不必改这些包的 import。
+其它包是否直接依赖默认 loop，以各自 `package.json` 和 import 为准；生成的 [`docs/module-graph.md`](../../docs/module-graph.md) 提供源码依赖索引。测试为了组装真实驱动而声明的 devDependency 不会扩大运行时 `Agent` 接口。
 
-`ReactLoopAgent.scope` 不在公开 `Agent` 接口上；消费者用 `agent.ctx` 和 `scopeOf()`。scope 原语支持 `bindScopeParent`，默认 agent **不**绑父链。
-
-半径 = 实现 Factory + 同一套 log / `agent/*` 语义 + 换掉 bundle 里的 loop 行。介绍句作为产品合同是对的；别把测试依赖当成运行时耦合。
+替换半径因此由三部分组成：公开 factory / agent 接口、日志与 `agent/*` 语义、默认 profile 的组合行。私有 loop 方法和测试装配不属于兼容接口。

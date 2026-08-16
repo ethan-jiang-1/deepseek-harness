@@ -41,8 +41,8 @@
   <text x="656" y="184" font-size="12" fill="#1d4ed8">composeEntries 走</text>
   <text x="656" y="202" font-size="12" fill="#1d4ed8">同一套 patch 算法</text>
   <text x="656" y="230" font-size="12" fill="#1e3a8a">dsh --dump-config</text>
-  <text x="656" y="248" font-size="12" fill="#1e3a8a">必须等于 boot 结果</text>
-  <text x="656" y="280" font-size="11" fill="#2563eb">不要在产品里再写一份</text>
-  <text x="656" y="298" font-size="11" fill="#2563eb">「类似 Include 的 patch」</text>
-  <text x="656" y="330" font-size="11" fill="#1d4ed8">那会和真树立刻漂移</text>
+  <text x="656" y="248" font-size="12" fill="#1e3a8a">共用算法，层集合不同</text>
+  <text x="656" y="272" font-size="11" fill="#2563eb">dump 不含 launcher 派生层</text>
+  <text x="656" y="298" font-size="11" fill="#2563eb">不要另写一份 patch 算法</text>
+  <text x="656" y="330" font-size="11" fill="#1d4ed8">否则组合语义会漂移</text>
 </svg>

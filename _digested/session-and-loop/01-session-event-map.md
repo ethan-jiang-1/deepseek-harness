@@ -1,8 +1,8 @@
 # SessionEventMap、required-on-read 与版本
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`packages/core/session/src/types.ts`、`known-event-types.ts`、`.agents/notes/implemented/architecture/2026-08-10-session-log-version-mechanism.md`。
+源码核验入口：`packages/core/session/src/types.ts`、`known-event-types.ts`、`.agents/notes/implemented/architecture/2026-08-10-session-log-version-mechanism.md`。
 
-介绍篇说「模型可见 ⟺ 已记录」。这篇钉信封、surface 三类、未知类型怎么拒、以及 `SESSION_FORMAT_VERSION` 什么时候才加一。
+本篇说明事件信封、三种 surface 事件、未知类型的读时拒绝，以及 `SESSION_FORMAT_VERSION` 的递增条件。
 
 ![信封：type / seq / time / data](./figures/event-envelope.svg)
 
@@ -21,7 +21,8 @@
 | `assistant/message` | 是（surface；空 content 派生为 null） |
 | `tool/call` | 否 |
 | `tool/result` | 是（surface） |
-| `request/header` · `request/context` | 否（最新 header 重建请求） |
+| `request/header` | 否（单独重建 config、system 与 tools） |
+| `request/context` | 否（只记录 provider、model 与 context window） |
 | `todo/write` | 否（log-only UI） |
 | `session/end-seed` | 否（种子与 live 的分界） |
 
@@ -36,7 +37,7 @@
 - 没有标记 → 拒绝重建整份会话。未识别的 required 事件可能改变其余 log 怎么读（`session/end-seed` 是现成例子）。
 - `ignorable: true` → 可以跳过。写者只给「丢了也不影响重建」的信息性记录打这个标。
 
-默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型可见内容只走三个 surface 类型，外加 `request/header` / `request/context` 折叠，所以真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
+默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型请求的消息由三个 surface 类型投影，config、system 与 tools 由 `request/header` 折叠；`request/context` 不参与请求重建。真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
 
 已知集合是生成的 `KNOWN_SESSION_EVENT_TYPES`（`gen-persistence-catalog` 扫本仓库每一次 `SessionEventMap` 合并）。同一版本、不同插件组合，读规则仍一致。仓外插件事件按构造不在表里；预发布接受「第一方读者拒 resume」，且拒绝是大声的。
 
@@ -48,9 +49,11 @@
 
 一个单调整数，没有 major/minor。**写者决定 bump**，不是「新读者能吞什么」。只有旧运行时无法对**新** log 做语义正确的读时才 bump。「解析不报错」不够：静默跳过会塑造重建的内容，就是错读。够格的是结构变化：header 形状、信封、核心事件语义、surface 机制（`SurfaceEventType` 集合、`SurfaceOp` 变体）。**加一个普通事件类型不 bump**——那是 `ignorable` 的工作。拿不准就 bump。
 
-方向：版本更新 → 拒，说明「更新的 harness 写的，请升级」，并指出原始 log，好让人仍能看文本。更旧 → 将来走 n→n+1 upgrader 链做内存转换；真正 continue 才落盘。v0 的 upgrader 链还没上，因为还没有真实的 v0→v1 步可测。
+当前后端只加载 `SESSION_FORMAT_VERSION = 0`。版本更高时拒绝并说明该 log 由更新的 harness 写入；版本更低时同样拒绝，因为预发布格式没有迁移路径。原始 log 保留在磁盘上供检查。
 
-## `deriveMessages()`
+## 完整记录不等于完整发送
+
+原始 session log 仅追加，记录完整的耐久事实；下一次模型请求使用的消息则是当前有序 surface 的投影。compaction 会追加 summary 和 replacement 事件，`surfaceOp: replace` 只让被覆盖的 surface 节点退出后续 `deriveMessages()` 结果，不会从 raw log 删除旧事件。持久化、审计和精确回放因而仍能读取完整历史，模型则只接收当前投影。
 
 `Session.deriveMessages()` 只折叠有序 surface 节点。返回的数组每次是新的；里面的 `Message` 对象共享且深冻结。`assistant/chunk` 的 seq 出现在对应 `assistant/message` 的 `sourceEventSeqs` 里，投影本身不用 chunk。
 
@@ -58,4 +61,4 @@
 
 两套「source」不要混：`sourceEventSeqs` 是 log 里更早事件的 seq；`UserMessage.source` 是语义来源（`user` / `plugin` / …），不参与 surface fold。
 
-所以「给模型加一种新输入」= 扩展 `SessionEventMap`，并且让它成为 surface 或走已有 surface 的折叠（`inject` 和 runtime-context 快照最终都变成 `user/message`）。只在 prompt 组装里偷偷加一段，reload 后模型会看见幽灵上下文。
+对话内容必须成为 surface；`inject` 和 runtime-context 快照最终都写成 `user/message`。动态 prompt section、tool schema 与模型配置走另一条现成路径：实际结果在分派前进入完整的 `request/header`，无需为每个 section 新增事件类型。只有现有 surface 与 header 都无法表达的新语义，才扩展 `SessionEventMap` 和相应的重建规则。

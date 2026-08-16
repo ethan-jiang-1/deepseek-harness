@@ -2,16 +2,16 @@
 
 ## 一句话
 
-DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用 Cordis 装起来的**插件树**：循环、会话日志、模型适配器、工具注册表本身都是插件，都可以被配置换掉。
+DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用 Cordis 装起来的**插件树**：循环、会话服务、模型适配器和工具注册表本身都是插件，都可以由组合替换。
 
 ```text
-没有特权内核可打补丁。
+Cordis 先建立运行时基座；产品能力由插件树组合。
 新行为挂到已有扩展点上，而不是去改 agent-loop。
 ```
 
-本篇只建立整机图。Cordis 原语、boot 组合、turn 时序、seam 三角色，各有自己的专题；读完这里再往下走。
+本页只建立整机图。Cordis 原语、boot 组合、turn 时序和 seam 三角色分别由后续专题解释。
 
-机制级结论仍以源码为准。下面的分层来自 [`docs/architecture.md`](../../docs/architecture.md)，用来建立直觉。扩展表对源码、以及和「单一 loop」的对照见文末机制级正文。
+下面的分层来自 [`docs/architecture.md`](../../docs/architecture.md)。非显然扩展落点和「单一 loop」对照见文末机制参考。
 
 ## 先看整机
 
@@ -23,7 +23,17 @@ DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用
 - **seam** 决定某项能力由谁实现（第 4 层）。
 - **loop** 只消费已经挂上的服务和事件（第 5 层）。它不是整台机器。
 
-从下往上看，是运行时如何撑起产品；从上往下看，是人通过某个入口如何用到同一棵树。
+从下往上看，是运行时如何撑起产品；从上往下看，是不同入口如何复用同一套 runtime spine 和事件语义。
+
+「一切皆插件」描述的是产品能力的组织方式，不是无限递归的启动过程。`new Context()` 直接建立 root Fiber、服务反射、插件注册表、事件服务和日志器；`boot()` 随后安装 Loader，再挂载配置中的应用插件树。第 1 层是插件系统的运行时基座，第 2 层以上才是一次进程的可变产品组合。
+
+## 活插件图与耐久事件流
+
+![运行时同时维护活插件图与耐久事件流](./figures/runtime-graph-session-log.svg)
+
+运行中的 harness 同时维护两种状态。Cordis 的 Fiber、服务、监听器与 effect 组成**活插件图**，回答当前挂着什么、某个 `ctx` 能看见哪些贡献以及卸载时撤掉什么；session 的仅追加事件流记录**已经发生的事实**，供 resume、fork、模型请求重建和各类投影读取。
+
+默认 loop 在每个 step 从活插件图读取当时可见的模型、提示词、工具和策略，在有效请求头变化时追加快照，并把随后产生的消息与工具结果写入 session log。reload 可以改变下一 step 读取的贡献，但不会改写已经写入日志的会话事实；两种状态因此分工，而不是互相替代。
 
 ## 它不是什么
 
@@ -31,13 +41,13 @@ DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用
 |------------------|--------------|
 | 一个 loop + `tools: []` | 循环是默认驱动插件，工具来自带 scope 的注册表 |
 | 改功能 = 改 loop 源码 | 改功能 = 在 `ctx` 或事件上再挂一个插件 |
-| Web / CLI / ACP 各有一套 agent | 它们是同一棵树的不同入口，都驱动 `ctx.agents` |
+| Web / CLI / ACP 各有一套 agent | 它们可以有不同插件组合，但都驱动 `ctx.agents` 并遵守同一套 session 语义 |
 | session 是 UI 状态 | session log 是模型上下文的源，UI 从它投影 |
-| 换沙箱只要换 bash 实现 | fs 与 subprocess 共享执行世界，Bash / PTY / LSP 一起走 |
+| 远程执行只要换 bash 实现 | 远程组合要让 fs 与 subprocess provider 共享同一 runtime owner；本地 sandbox 只包装 spawn argv |
 
-![没有特权内核：挂插件，不要去改 loop](./figures/extend-not-patch.svg)
+![新行为挂到扩展点，而不是直接修改 loop](./figures/extend-not-patch.svg)
 
-官方那张「新行为的归属位置」表，就是右图的清单：加模型注册到 `ctx.llm`，加工具注册到 `ctx.tools`，拦截一轮对话用 `agent/*` 或 `tools/*`。只有在改循环合同本身时，才去动 `agent-loop`，并且必须同步改 architecture 地图。
+新行为的完整归属表由 [`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 维护。只有改变循环合同本身时才修改 `agent-loop`，并同步更新该架构地图。
 
 ## 扩展点的第一刀：事件落在哪个域
 
@@ -45,13 +55,11 @@ DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用
 
 ![扩展点的第一刀：事件落在哪个域](./figures/event-domains.svg)
 
-三件立刻有用的细节：
+三个域的关键区别：
 
 1. `turn/*`、`step/*`、`user/message`、`assistant/*`、`tool/*` 是**持久会话事件**。其余大多是三个域里的实时扩展点。
-2. `agent/pre-step`、`agent/request`、`llm/stream`、以及三条 `tools/*` 是 **waterfall**：监听器必须调用 `next()` 才能把链传下去；不调用就是短路。
-3. `agent/turn-stopping` 是 **serial**，没有 `next()`。它用来结束一轮，不是用来包装请求。
-
-`agent/pre-step` 决定模型看见什么。监听器可以改写已领取的消息，也可以直接拒绝。首次领取被拒绝或被改写成空，仍然会关掉一个**不含步骤的持久轮次**——日志会记下这次尝试。这就是「模型可见即已记录」在边界情况下的样子：连一次没真正问模型的 turn，也要留下痕迹。
+2. `agent/pre-step`、`agent/request`、`llm/stream`、以及三条 `tools/*` 是 **waterfall**：`next()` 把决定委托给下游；不调用就是由当前监听器短路并拥有结果。
+3. `agent/turn-stopping` 是 **serial**，没有 `next()`；监听器可用 `agent.steer()` 增加下一步工作，驱动随后重读 inbox。
 
 ## 每层回答什么，细节去哪读
 
@@ -62,10 +70,10 @@ DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用
 | Product spine | 会话、提示词、工具、Agent 句柄归谁 | 本篇 + [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md) |
 | Capability seams | 换后端时哪些东西必须一起走 | [`../capability-seams/00-map.md`](../capability-seams/00-map.md) |
 | Turn loop | 一轮用户输入如何变成模型和工具调用 | [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md) |
-| Surfaces | 人 / 自动化客户端怎么接到同一棵树 | [`../surfaces/00-map.md`](../surfaces/00-map.md) |
+| Surfaces | 人 / 自动化客户端怎么接到同一套 runtime spine | [`../surfaces/00-map.md`](../surfaces/00-map.md) |
 | 模型看见的请求 | section、schema、adapter、tool 管道 | [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md) |
 
-脊梁上几个 `ctx` 键，先记住名字：
+产品主干使用这些 `ctx` 键：
 
 | 包 | 职责 | `ctx` 键 |
 |----|------|----------|
@@ -89,7 +97,7 @@ DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用
 
 | 文件 | 内容 |
 |------|------|
-| [`01-扩展表对源码.md`](./01-扩展表对源码.md) | architecture「Where new behavior goes」逐行登记点 |
+| [`01-扩展表非显然落点.md`](./01-扩展表非显然落点.md) | architecture 扩展表中不能从 `ctx` 键直接看出的落点 |
 | [`02-对照单一loop.md`](./02-对照单一loop.md) | 从「一个 loop + tools 数组」迁过来时落在哪一层 |
 
-「没有特权内核」在 Loader / fiber 卸载上如何兑现，已写在 [`../cordis-runtime/04-vendor-本地修改.md`](../cordis-runtime/04-vendor-本地修改.md) 与 [`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md)。
+Loader / fiber 如何卸载插件贡献，见 [`../cordis-runtime/04-vendor-本地修改.md`](../cordis-runtime/04-vendor-本地修改.md) 与 [`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md)。

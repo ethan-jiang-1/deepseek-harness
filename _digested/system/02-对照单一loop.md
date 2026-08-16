@@ -1,8 +1,6 @@
 # 对照「单一 loop + tools 数组」
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。给从那类 harness 迁过来的人：旧直觉落到 dsh 的哪一层。
-
-介绍篇那张「它不是什么」表的展开。不是价值判断，是搬家地图。
+本篇面向熟悉“单一 loop + tools 数组”架构的读者，映射原有职责在 dsh 中的归属。
 
 ![从单一 loop 迁过来时东西落在哪](./figures/vs-single-loop.svg)
 
@@ -11,20 +9,20 @@
 | 你原来可能写的 | 在 dsh |
 |----------------|--------|
 | 一个 `while` 里调 llm 再跑 tools | `ReactLoopAgent` 插件。换驱动实现 `AgentFactory`，不要 fork 这份源码来加功能。 |
-| `tools: [{ name, parameters, execute }]` | `ctx.tools.register`。可见性有全局 / scoped / restrict / shadowing。执行有三条 waterfall，审批和 timeout 是别人的插件。 |
+| `tools: [{ name, parameters, execute }]` | `ctx.tools.register`。可见性沿全局层、显式 scope 祖先层和 agent 自有层解析；`restrict` 过滤继承面，同名项由更近层覆盖。执行有三条 waterfall，审批和 timeout 是别人的插件。 |
 | `messages` 数组既给 UI 又给下一请求 | `Session` log。UI 订 `session/event`；模型看 `deriveMessages()`。chunk 与 assembled message 不是同一份。 |
 | `const system = \`You are…\`` | `ctx.systemPrompt.section({ name, order, text })`。稳定前缀在前。persona 是配置，不是 loop 常量。 |
-| `if (useDocker) bash = dockerBash` | 换 `ctx.subprocess` + `ctx.fs` 的 provider（执行世界），或换 `ctx.shell` 的 sandbox 子类。tool-bash 源码不动。 |
-| CLI `main()` 里 `await loop.run(prompt)` | 表面 `ctx.agents` → `followup`。CLI / Web / ACP / SDK 是不同 bundle，同一句柄。 |
-| 加功能 = 改 `agent.ts` 中间那段 | 对照 [`01-扩展表对源码.md`](./01-扩展表对源码.md) 找挂点。改 loop 要同步改 architecture.md。 |
+| `if (useDocker) bash = dockerBash` | 远程组合同时替换 `ctx.subprocess` 与 `ctx.fs` provider，并共享 runtime owner；本地 confinement 则换 `ctx.shell` 的 sandbox 子类。tool-bash 源码不动。 |
+| CLI `main()` 里 `await loop.run(prompt)` | 各入口都经 `ctx.agents` → `followup`。CLI / Web / ACP / SDK 可以处于不同进程和插件树，但复用 `Agent` 接口与 session 语义。 |
+| 加功能 = 改 `agent.ts` 中间那段 | 对照 [`01-扩展表非显然落点.md`](./01-扩展表非显然落点.md) 找挂点。改 loop 要同步改 architecture.md。 |
 | 换模型 = 换那个 `openai.chat.completions` 调用 | `ctx.llm` 登记 adapter。请求词汇在 `dsh-llm`，不在 loop。 |
-| 子 agent = 递归调用同一个 loop 函数 | `ctx.subagent` seam：进程内 child、fork、或 ACP 到另一个产品。lineage 在 session header，可见性不继承。 |
+| 子 agent = 递归调用同一个 loop 函数 | `ctx.subagents` seam：provider 可以运行进程内 child，也可以通过 ACP / JSON-RPC 驱动独立进程。session header 的 lineage 不会自动建立 scope 父链；进程内 child 可加入父 agent 正在使用的同一 preset generation，但不继承父 agent 自有层。 |
 | 配置 = 一大份 JSON | 空 `cordis.yml` + 有序 patch 层（profile / bundle / home / `--patch`）。 |
 
 ## 三条最容易带错的不变量
 
-1. **模型看见的必须能从 log 重建。** 原来在闭包里塞的「额外 context」这里要 `inject` 或新的 `SessionEventMap` 成员。
-2. **waterfall 必须 `next()`。** 原来的 middleware 若是「通知一下」，在 `pre-step` / `tools/execute` 上会把链掐死。
-3. **没有特权内核。** 原来「我改 harness 核心吧」的补丁，在这里变成一个插件行。卸载必须能撤掉贡献（`ctx.effect`）。
+1. **模型看见的必须能从 log 重建。** 对话内容写成 surface；实际 config、system 与 tools 写进 `request/header`。只有这两种现有表示都容纳不了的新语义，才新增 `SessionEventMap` 成员。
+2. **waterfall 用 `next()` 委托。** 只观察或包装的 middleware 必须调用它；拥有 deny、retry、路由或替换结果的监听器可以直接返回并短路。
+3. **产品能力不集中在 loop。** 普通功能注册到所属服务、注册表或事件；贡献由 `ctx.effect` 绑定生命周期，插件卸载时一并撤销。
 
 读完对照，具体机制仍回各专题：runtime 原语、composition 叠层、session 信封、seam 三角色、模型可见面、四个入口。

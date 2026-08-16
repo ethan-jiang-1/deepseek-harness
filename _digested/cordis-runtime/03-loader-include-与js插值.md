@@ -1,18 +1,18 @@
 # Loader、Include 与 `!!js` 插值
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`vendor/loader/src/index.ts`、`vendor/loader/src/config/entry.ts`、`vendor/loader/src/config/utils.ts`、`vendor/include/src/index.ts`。
+源码核验入口：`vendor/loader/src/index.ts`、`vendor/loader/src/config/entry.ts`、`vendor/loader/src/config/utils.ts`、`vendor/include/src/index.ts`。
 
-介绍篇说「`disabled: !!js` 是唯一被插值的 metadata」。这篇把求值时机、对着哪个 ctx、以及 patch 为什么必须能打中刚 insert 的行写清楚。
+本篇说明 `!!js` 的求值时机和 context，以及 patch 如何命中同一列表中刚 insert 的行。
 
 ## YAML 里的 `!!js` 变成什么
 
-Include 把 `!!js expr` 收成 `{ __jsExpr: "expr" }`（`isJsExpr`）。真正跑表达式的是 Loader 的 `evaluate`：
+Include 把 `!!js expr` 收成 `{ __jsExpr: "expr" }`（`isJsExpr`）。Loader 的 `evaluate` 执行表达式：
 
 ```text
 with (ctx) { return eval(expr) }
 ```
 
-表达式看得到传入的那个 `ctx` 上的属性（服务、以及 Loader 挂上去的东西），不是任意 Node 全局。这是配置插值，不是通用脚本主机。
+`with (ctx)` 让表达式直接按名字访问传入 `ctx` 上的服务和 Loader 属性，但不隔离 Node 全局；表达式仍可访问 `process`、`Buffer` 和 `globalThis`。`!!js` 是在宿主进程中执行的受信配置代码，不是安全沙箱。
 
 ## 两处求值，两个 ctx
 

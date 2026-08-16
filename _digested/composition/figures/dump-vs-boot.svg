@@ -27,7 +27,8 @@
   <text x="516" y="248" font-size="12" fill="#1e3a8a">→ disabled: true 那一行</text>
   <text x="516" y="280" font-size="12" fill="#1d4ed8">!!js 在 inject 齐了之后才求值</text>
 
-  <rect x="40" y="328" width="880" height="80" rx="10" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="60" y="358" font-size="12" fill="#9a3412">测试钉住的是：同一 parser + 同一 applyEntryPatches + !!js 不求值。不是「dump 文本等于进程里每条 launcher 补丁」。读 dump 时别把缺失的 telemetry disable 当成 bug。</text>
-  <text x="60" y="382" font-size="12" fill="#7c2d12">打不中的 patch 两边都是 warn，不 fail。缺 bundle 声明才 fail loud。</text>
+  <rect x="40" y="328" width="880" height="92" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="480" y="352" text-anchor="middle" font-size="12" fill="#9a3412">保真的是同一 parser、同一 applyEntryPatches，以及 dump 保留 !!js 原文。</text>
+  <text x="480" y="378" text-anchor="middle" font-size="12" fill="#9a3412">dump 不承诺包含 boot 的 launcher 派生补丁；缺 telemetry disable 不是 bug。</text>
+  <text x="480" y="404" text-anchor="middle" font-size="12" fill="#7c2d12">打不中的 patch 两边都 warning；缺 bundle 声明才 fail loud。</text>
 </svg>

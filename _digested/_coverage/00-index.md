@@ -1,29 +1,27 @@
-# `_coverage` — 源码消化覆盖矩阵
+# `_coverage` — 源码消化核验矩阵
 
-维护用索引，不是专题正文。用来判断哪些子系统已经有机制级消化，哪些只在介绍里出现，哪些还没进 `_digested/`。
+本页记录 `_digested` 明确回答了哪些问题、结论住在哪篇机制参考、最后对哪个产品源码 commit 复核。它不按篇数估算“完成度”，也不承诺覆盖未列出的包或行为；完整包组清单由 [`packages/README.md`](../../packages/README.md) 维护。
 
-当前阶段：主干七个专题的 `00-map.md` 均为图文介绍，且都已有机制级正文（覆盖「以后深挖」列出的点）。按 `packages/<group>/` 再拆细表仍未做。
+产品源码基线：`47f943859bef60e4160492346772ded9b24f765a`。
 
 ## 状态
 
 | 状态 | 含义 |
 |------|------|
-| 机制级覆盖 | 有专题正文解释状态对象、关键算法/数据流、源码入口和边界 |
-| 介绍级覆盖 | `00-map.md` 把这一层讲清楚了，并配了 `figures/`，但还没有对源码逐函数核验 |
-| 地图级覆盖 | 只在总览或官方文档入口中出现 |
-| 部分覆盖 | 有若干机制点被解释，但子系统仍缺完整专题 |
-| 待补 | 基本没有进入 `_digested/` |
+| 已核验 | 结论页已按“最近核验”所列产品 commit 对照源码 |
+| 需复核 | 上游同步触及来源，结论尚未重新核验 |
+| 未覆盖 | 问题已登记，但还没有机制参考 |
 
-## 按专题
+## 核验矩阵
 
-| 专题 | 状态 | 图 | 源码入口（粗） |
-|------|------|----|----------------|
-| `system/` | 部分覆盖（01–02 机制级） | 介绍三图 + `vs-single-loop` | [`docs/architecture.md`](../../docs/architecture.md) |
-| `cordis-runtime/` | 部分覆盖（01–04 机制级） | 介绍三图 + `primitives-source` · `waterfall-compose` · `pre-step-chain` · `js-eval-timing` · `insert-then-patch` | `vendor/cordis/`、`vendor/loader/`、`vendor/include/` |
-| `composition/` | 部分覆盖（01–03 机制级） | 介绍两图 + `boot-sequence` · `fail-loud` · `dump-vs-boot` · `live-recompose` · `last-good-tree` | `packages/boot/app-boot/`、`apps/cli/src/profile-boot.ts` |
-| `session-and-loop/` | 部分覆盖（01–03 机制级） | 介绍三图 + `event-envelope` · `inbox-wake` · `factory-radius` | `packages/core/{session,agent,agent-loop,scope}/` |
-| `capability-seams/` | 部分覆盖（01–02 机制级） | 介绍两图 + `roles-split` · `bash-spawn-trace` | `packages/shell/`、`packages/{fs,subprocess,e2b}/` |
-| `tools-prompt-llm/` | 部分覆盖（01–02 机制级） | 介绍两图 + `section-order` · `chunk-to-message` | `packages/core/{tools,system-prompt}/`、`packages/llm/`、`packages/guard/` |
-| `surfaces/` | 部分覆盖（01–02 机制级） | 介绍两图 + `source-vs-built` · `session-mux` | `apps/cli/`、`packages/{host,client,sdk,acp}/` |
+| 专题 | 已核验问题 | 结论页 | 状态 | 最近核验 |
+|------|------------|--------|------|----------|
+| `system/` | 扩展表中非显然的落点；从单体 loop 迁移时各职责归属 | [`01`](../system/01-扩展表非显然落点.md) · [`02`](../system/02-对照单一loop.md) | 已核验 | `47f943859bef60e4160492346772ded9b24f765a` |
+| `cordis-runtime/` | 五条原语；waterfall 派发；Loader/Include 与 `!!js`；产品依赖的 vendor 修改 | [`01`](../cordis-runtime/01-五条原语对照源码.md) · [`02`](../cordis-runtime/02-waterfall-与事件合同.md) · [`03`](../cordis-runtime/03-loader-include-与js插值.md) · [`04`](../cordis-runtime/04-vendor-本地修改.md) | 已核验 | `47f943859bef60e4160492346772ded9b24f765a` |
+| `composition/` | profile boot 时序；dump 与 boot 的共同算法和层差；用户 patch HMR 事务 | [`01`](../composition/01-boot-时序.md) · [`02`](../composition/02-dump-与boot-保真.md) · [`03`](../composition/03-user-patch-hmr.md) | 已核验 | `47f943859bef60e4160492346772ded9b24f765a` |
+| `session-and-loop/` | session 信封与读时版本；inbox/turn/step 时序；替换默认 loop 的运行时义务 | [`01`](../session-and-loop/01-session-event-map.md) · [`02`](../session-and-loop/02-inbox-与turn-时序.md) · [`03`](../session-and-loop/03-换loop的半径.md) | 已核验 | `47f943859bef60e4160492346772ded9b24f765a` |
+| `capability-seams/` | 三种角色与分包装；E2B provider 组合；bash 的本地 confinement 调用链 | [`01`](../capability-seams/01-三角色与分包装.md) · [`02`](../capability-seams/02-一次bash从tool到sandbox.md) | 已核验 | `47f943859bef60e4160492346772ded9b24f765a` |
+| `tools-prompt-llm/` | prompt section 与稳定前缀；工具审批/timeout；chunk 与 message 的日志关系 | [`01`](../tools-prompt-llm/01-section顺序与前缀.md) · [`02`](../tools-prompt-llm/02-管道审批timeout与chunk.md) | 已核验 | `47f943859bef60e4160492346772ded9b24f765a` |
+| `surfaces/` | 源码与 built 启动面；host session 流；ACP 与 JSON-RPC 的不同投影保证 | [`01`](../surfaces/01-启动面与session流.md) · [`02`](../surfaces/02-acp与jsonrpc.md) | 已核验 | `47f943859bef60e4160492346772ded9b24f765a` |
 
-按 `packages/<group>/` 的细表等机制级正文出现后再拆。不要在这里手抄 [`packages/README.md`](../../packages/README.md) 的完整组清单。
+上游同步先按变更路径定位受影响行，将其改为“需复核”；复核结论、源码入口和图后，再写入新的产品 commit。未受影响的行保留原最近核验值。

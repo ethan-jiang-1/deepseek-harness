@@ -1,32 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <defs>
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
-  <rect width="960" height="400" fill="#fafafa" rx="6"/>
-  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">Scope：每个 agent 自己的注册世界，两层扁平，不向下继承</text>
-  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">scoped 注册对子 agent 不可见。父子关系是 lineage 数据，不是 scope 树。</text>
+  <rect width="960" height="430" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">Scope：全局 → preset 祖先层 → agent 自有层</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">scope parent 是显式运行时关系；session lineage 不会自动建立它。</text>
 
-  <rect x="40" y="68" width="430" height="280" rx="10" fill="#f3f4f6" stroke="#d1d5db"/>
-  <text x="255" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#374151">全局 ctx</text>
-  <text x="60" y="128" font-size="12" fill="#4b5563">对每个 agent 都可见的贡献</text>
-  <rect x="60" y="148" width="390" height="36" rx="6" fill="#fff" stroke="#d1d5db"/>
-  <text x="255" y="172" text-anchor="middle" font-size="12" fill="#374151">tools · prompt sections · 变量 · 监听器</text>
-  <text x="60" y="214" font-size="12" fill="#4b5563">tools.restrict 先过滤全局工具集（交集）</text>
-  <text x="60" y="236" font-size="12" fill="#4b5563">被滤掉的全局工具：提示词里没有，执行也会拒</text>
-  <text x="60" y="258" font-size="12" fill="#4b5563">看起来就像这个工具根本不存在</text>
-  <text x="60" y="292" font-size="11" fill="#6b7280">setup window：agent 已存在、尚未发布</text>
-  <text x="60" y="310" font-size="11" fill="#6b7280">只注册，不驱动。persona / 工具变体在这里挂上</text>
-  <text x="60" y="328" font-size="11" fill="#6b7280">preset 给单个 session 另一套能力，服务行要 isolate</text>
+  <rect x="30" y="76" width="260" height="246" rx="10" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="160" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#374151">全局层</text>
+  <text x="50" y="136" fill="#4b5563">每个 scope 都先看见</text>
+  <text x="50" y="162" fill="#4b5563">tools · prompt sections</text>
+  <text x="50" y="184" fill="#4b5563">变量 · 全局监听器</text>
+  <text x="50" y="222" fill="#4b5563">同名贡献可被更近层覆盖</text>
+  <text x="50" y="254" font-size="11" fill="#6b7280">不是 scope key；注册在普通 ctx</text>
 
-  <rect x="500" y="68" width="420" height="280" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="710" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">agent.ctx （某个 agent 的 scope）</text>
-  <text x="520" y="128" font-size="12" fill="#1e40af">可见性 = 生命周期，同一件事</text>
-  <rect x="520" y="148" width="380" height="50" rx="6" fill="#fff" stroke="#93c5fd"/>
-  <text x="710" y="170" text-anchor="middle" font-size="12" fill="#1e40af">shadowing：同名覆盖全局孪生</text>
-  <text x="710" y="188" text-anchor="middle" font-size="11" fill="#2563eb">只对该 scope 生效 · 最具体者获胜</text>
-  <text x="520" y="224" font-size="12" fill="#1e40af">scope-local 注册在 restrict 之后合并</text>
-  <text x="520" y="250" font-size="12" fill="#1d4ed8">关于该 agent 活动的事件：带它的 carrier 分发</text>
-  <text x="520" y="272" font-size="12" fill="#1d4ed8">关于注册表本身的事件：不过滤</text>
-  <text x="520" y="304" font-size="11" fill="#1e3a8a">lineage（parentSession、delegationDepth）</text>
-  <text x="520" y="322" font-size="11" fill="#1e3a8a">只是数据，不改变谁看得见谁的工具</text>
+  <line x1="290" y1="198" x2="328" y2="198" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="330" y="76" width="286" height="246" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="473" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#6d28d9">preset standing scope</text>
+  <text x="350" y="136" fill="#6d28d9">显式 bindScopeParent 的祖先层</text>
+  <text x="350" y="162" fill="#7c3aed">同 preset 的 agent 共享这一代组合</text>
+  <text x="350" y="184" fill="#7c3aed">工具、提示词、监听器向下可见</text>
+  <text x="350" y="222" fill="#7c3aed">子 agent 可加入父正在用的同一代</text>
+  <text x="350" y="244" fill="#7c3aed">但不把父 agent key 设成祖先</text>
+  <text x="350" y="282" font-size="11" fill="#5b21b6">服务行仍需 isolate realm 防止泄漏</text>
+
+  <line x1="616" y1="198" x2="654" y2="198" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="656" y="76" width="274" height="246" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="793" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">agent.ctx 自有层</text>
+  <text x="676" y="136" fill="#1e40af">key 是这个活 Agent 对象</text>
+  <text x="676" y="162" fill="#1e40af">最靠近读取者，同名最终获胜</text>
+  <text x="676" y="184" fill="#1e40af">生命周期随 agent scope 卸载</text>
+  <text x="676" y="222" fill="#1d4ed8">restrict 过滤全局 + 祖先继承面</text>
+  <text x="676" y="244" fill="#1d4ed8">自有工具最后合并，不被自己过滤</text>
+  <text x="676" y="282" font-size="11" fill="#1e3a8a">setup window 先组合，发布后再驱动</text>
+
+  <rect x="90" y="350" width="780" height="46" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="480" y="378" text-anchor="middle" fill="#9a3412">parentSession / delegationDepth 只记录 lineage；可见性由 scope parent chain 单独决定。</text>
 </svg>

@@ -1,6 +1,6 @@
 # 一次 bash：从 tool 调用到 sandbox argv
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`packages/shell/tool-bash/`、`packages/shell/shell/`、`packages/shell/bash-local/`、`packages/shell/bash-sandbox/`、`packages/sandbox/sandbox/`、`packages/subprocess/`。
+源码核验入口：`packages/shell/tool-bash/`、`packages/shell/shell/`、`packages/shell/bash-local/`、`packages/shell/bash-sandbox/`、`packages/sandbox/sandbox/`、`packages/subprocess/`。
 
 教科书路径：顺着 shell 家族把一次 spawn 追完。Consumer 始终面对 Definition。
 
@@ -9,13 +9,13 @@
 ## 调用链
 
 1. 模型发出 `tool/call`，name 是 bash 工具，`arguments` 是原始 JSON 字符串（未解析）。loop 记入 log。
-2. `tools/pre-execute`：hooks 等可 allow / deny / ask。必须 `next()`。deny / 缺 answerer 的 ask → 不进 body。
-3. `dsh-tool-bash` `execute`：校验 args → `sandboxPolicy.resolve` → **升权审批在这里**（`approveEscalation` + `ctx.approval`，不是 Definition 方法）→ 收成 `ShellExecRequest` → `ctx.shell.resolve` 得到 Spec。`stdin` / `env` / `stdoutMaxBytes` 不进模型 schema。
-4. 前台 `ctx.shell.run(spec)` 或后台 `start(spec)`。
-5. **bash-local**：`spawnSpec` 把 Spec 映成 `bash -c …` 的 `SubprocessSpawnSpec`，`this.ctx.subprocess.spawn(...)`。环境先合并 `ENV_OVERRIDES`（`NO_COLOR`、`TERM=dumb`、pager=cat），调用方显式 env 仍能盖掉。
-6. **bash-sandbox**（子类）：在 spawn 前 `ctx.sandbox.confine(argv, policy)`，用包装后的 argv 再交给 subprocess。Windows 走另一套 ACL runner，合同仍是 confine → spawn。
-7. `tools/execute` 包装（timeout 政策读的是 **tool** 的 `timeoutMs`，不是 shell 的 foreground timeout；两者都存在，别混）。
-8. `tools/post-execute` 包装结果 → `tool/result` 入 log。
+2. 工具注册表解析并冻结参数；`tools/pre-execute` 只作 allow / deny / ask 决策。deny 或缺 answerer 的 ask 不进 body。
+3. `tools/execute` 包住下面的 tool body。timeout 政策读 **tool** 的 `timeoutMs`；checkpoint 也在这一层先 flush。
+4. `dsh-tool-bash` `execute`：校验 args → `sandboxPolicy.resolve` → **升权审批在这里**（`approveEscalation` + `ctx.approval`，不是 Definition 方法）→ 收成 `ShellExecRequest` → `ctx.shell.resolve` 得到 Spec。`stdin` / `env` / `stdoutMaxBytes` 不进模型 schema。
+5. 前台 `ctx.shell.run(spec)` 或后台 `start(spec)`。
+6. **bash-local**：`spawnSpec` 把 Spec 映成 `bash -c …` 的 `SubprocessSpawnSpec`，`this.ctx.subprocess.spawn(...)`。环境先合并 `ENV_OVERRIDES`（`NO_COLOR`、`TERM=dumb`、pager=cat），调用方显式 env 仍能盖掉。
+7. **bash-sandbox**（子类）：在 spawn 前 `ctx.sandbox.confine(argv, policy)`，用包装后的 argv 再交给 subprocess。Windows 走另一套 ACL runner，合同仍是 confine → spawn。
+8. body 结算后进入 `tools/post-execute`，随后 `tool/result` 入 log。
 
 ## `run` 的失败合同
 

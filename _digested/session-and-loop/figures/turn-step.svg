@@ -3,11 +3,11 @@
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
   <rect width="960" height="560" fill="#fafafa" rx="6"/>
-  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一轮 turn：零个或多个 step；一个 step 是一次模型请求加它调用的工具</text>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一轮 turn：零个或多个 step；step 是逻辑请求周期加它调用的工具</text>
   <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">橙色是写入 session log 的持久事件。蓝色是活的扩展点。圆角框是 waterfall。</text>
 
   <rect x="40" y="62" width="880" height="470" rx="12" fill="#ecfeff" stroke="#5eead4"/>
-  <text x="60" y="88" font-size="13" font-weight="700" fill="#0f766e">turn/start  ·  领取 inbox 里下一条输入</text>
+  <text x="60" y="88" font-size="13" font-weight="700" fill="#0f766e">turn/start  ·  随后 claim 全部 next-step 与至多一条 next-turn</text>
 
   <rect x="70" y="106" width="820" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
   <text x="480" y="128" text-anchor="middle" font-size="12" fill="#1e40af">组装 prompt sections + tool schemas    →    agent/pre-step（waterfall：改写或拒绝）</text>
@@ -19,8 +19,8 @@
   <text x="110" y="258" font-size="12" fill="#1e40af">agent/request  →  llm/stream  →  assistant/chunk*  →  assistant/message</text>
   <text x="110" y="286" font-size="12" fill="#6d28d9">若有 tool/call*：tools/pre-execute → tools/execute → tools/post-execute → tool/result*</text>
   <text x="110" y="314" font-size="12" fill="#9a3412">step/end</text>
-  <text x="110" y="348" font-size="11" fill="#7c2d12">pre-step 拒绝、或首次 enter 被改写成空：关掉一个不含 step 的持久 turn。</text>
-  <text x="110" y="368" font-size="11" fill="#7c2d12">日志仍记录这次尝试。模型可见即已记录，连「没问成模型」也算。</text>
+  <text x="110" y="348" font-size="11" fill="#7c2d12">request-error retry：同一 step 再 stream，不追加新的 step/start。</text>
+  <text x="110" y="368" font-size="11" fill="#7c2d12">pre-step 拒绝、或首次 enter 被改写成空：关掉一个不含 step 的持久 turn。</text>
   <text x="110" y="388" font-size="11" fill="#9a3412">输入走同一个 inbox。有的消息立刻唤醒；inject 的上下文等到另一条消息来才被带走。</text>
 
   <text x="60" y="430" font-size="13" font-weight="700" fill="#0f766e">agent/turn-stopping  ·  serial，没有 next()</text>

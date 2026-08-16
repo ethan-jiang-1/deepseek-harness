@@ -34,5 +34,5 @@
   <line x1="480" y1="404" x2="480" y2="420" stroke="#4b5563" marker-end="url(#tarr)"/>
   <rect x="220" y="424" width="520" height="52" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
   <text x="480" y="446" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">surfaces/</text>
-  <text x="480" y="464" text-anchor="middle" font-size="11" fill="#475569">CLI · Web · ACP · JSON-RPC 接到同一棵树</text>
+  <text x="480" y="464" text-anchor="middle" font-size="11" fill="#475569">CLI · Web · ACP · JSON-RPC 复用同一套 runtime spine</text>
 </svg>

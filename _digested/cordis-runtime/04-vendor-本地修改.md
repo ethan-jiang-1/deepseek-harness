@@ -1,8 +1,8 @@
 # vendor 本地修改：产品踩在哪些补丁上
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。权威清单是 [`vendor/README.md`](../../vendor/README.md)「Local modifications」，同步上游时必须逐条重放或退役。这里不抄清单，只解释 **dsh 组合模型真正依赖的几条**。
+源码核验入口：[`vendor/README.md`](../../vendor/README.md)「Local modifications」及其列出的 vendored 文件。上游同步必须逐条重放或退役；本篇只解释 dsh 组合模型直接依赖的修改。
 
-介绍篇把本地修改画成中间那一栏。这篇说明：没有它们，profile 叠层、dump 保真、热更新失败回滚会直接坏掉。
+这些修改支撑 profile 叠层、dump 保真和热更新失败回滚。
 
 ## 先登记 effect wrapper，再跑 setup
 
@@ -43,6 +43,6 @@ setup 期间插件会再 `ctx.on` / `ctx.effect`。若此时有人开始卸（�
 
 清单第 18 条。`disabled` 是唯一插值的 metadata。原始节点留在 options，写回仍是 `!!js`。
 
-## 同步时怎么对待这篇
+## 上游同步要求
 
-上游若合入了等价行为，退役对应清单条目，并改这篇的「产品依赖」段落。不要在产品包里绕过这些补丁另写生命周期——那是在复制一份会漂的 Cordis。
+上游合入等价行为时，退役 [`vendor/README.md`](../../vendor/README.md) 中对应的本地修改，并同步更新本页的产品依赖。产品包不得绕过这些修改另写一套 Cordis 生命周期。

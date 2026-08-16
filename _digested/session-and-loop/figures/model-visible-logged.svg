@@ -1,45 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <defs>
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
-  <rect width="960" height="380" fill="#fafafa" rx="6"/>
-  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">模型可见 ⟺ 已记录</text>
-  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">任何到达模型请求的东西，必须能从 session log 重建。运行时不变量会断言这一点。</text>
+  <rect width="960" height="440" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">模型请求的每一部分都能从 session log 重建</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">消息与请求头走两条投影；request/context 只是路由容量记录。</text>
 
-  <rect x="50" y="72" width="260" height="220" rx="10" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="180" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">session log</text>
-  <text x="70" y="136" font-size="12" fill="#9a3412">仅追加的 SessionEvent</text>
-  <text x="70" y="158" font-size="12" fill="#c2410c">turn / step / message / tool</text>
-  <text x="70" y="180" font-size="12" fill="#c2410c">assistant/chunk 保回放与 UI</text>
-  <text x="70" y="210" font-size="12" fill="#7c2d12">fork · resume · transcript</text>
-  <text x="70" y="228" font-size="12" fill="#7c2d12">telemetry · 持久化</text>
-  <text x="70" y="250" font-size="12" fill="#7c2d12">都从这一条流派生</text>
-  <text x="70" y="272" font-size="11" fill="#ea580c">权威源，不是 UI 的副本</text>
+  <rect x="36" y="76" width="250" height="90" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="161" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">surface 事件</text>
+  <text x="161" y="128" text-anchor="middle" font-size="12" fill="#c2410c">user/message · assistant/message</text>
+  <text x="161" y="148" text-anchor="middle" font-size="12" fill="#c2410c">tool/result · SurfaceOp</text>
+  <line x1="286" y1="121" x2="334" y2="121" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="336" y="76" width="250" height="90" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="461" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">deriveMessages()</text>
+  <text x="461" y="136" text-anchor="middle" font-size="12" fill="#2563eb">重建 request.messages</text>
+  <line x1="586" y1="121" x2="634" y2="121" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="636" y="76" width="288" height="90" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="780" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">消息历史</text>
+  <text x="780" y="136" text-anchor="middle" font-size="12" fill="#15803d">compaction 后的有序 surface</text>
 
-  <line x1="310" y1="182" x2="358" y2="182" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="36" y="190" width="250" height="90" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="161" y="218" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">完整 request/header 快照</text>
+  <text x="161" y="242" text-anchor="middle" font-size="12" fill="#c2410c">effective config · system · tools</text>
+  <text x="161" y="262" text-anchor="middle" font-size="11" fill="#ea580c">分派前写入；变化时追加</text>
+  <line x1="286" y1="235" x2="334" y2="235" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="336" y="190" width="250" height="90" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="461" y="222" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">foldRequestHeader()</text>
+  <text x="461" y="250" text-anchor="middle" font-size="12" fill="#2563eb">取日志前缀内最后快照</text>
+  <line x1="586" y1="235" x2="634" y2="235" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="636" y="190" width="288" height="90" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="780" y="222" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">请求其余字段</text>
+  <text x="780" y="250" text-anchor="middle" font-size="12" fill="#15803d">config · system · tools</text>
 
-  <rect x="360" y="72" width="240" height="220" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="480" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">deriveMessages()</text>
-  <text x="376" y="140" font-size="12" fill="#1e40af">从 log 投影模型历史</text>
-  <text x="376" y="168" font-size="12" fill="#1d4ed8">prompt sections</text>
-  <text x="376" y="186" font-size="12" fill="#1d4ed8">当前 scope 的 tool schema</text>
-  <text x="376" y="220" font-size="12" fill="#1e3a8a">这才是一步请求里</text>
-  <text x="376" y="238" font-size="12" fill="#1e3a8a">模型真正看见的东西</text>
-  <text x="376" y="268" font-size="11" fill="#2563eb">新的模型可见输入</text>
-  <text x="376" y="286" font-size="11" fill="#2563eb">必须先有新的 session event</text>
+  <rect x="36" y="304" width="550" height="64" rx="10" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="311" y="330" text-anchor="middle" font-size="13" font-weight="700" fill="#374151">request/context</text>
+  <text x="311" y="352" text-anchor="middle" font-size="12" fill="#4b5563">provider · model · contextWindow；供路由与容量观察，不参与请求重建</text>
+  <rect x="636" y="304" width="288" height="64" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="780" y="330" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">运行时 invariant</text>
+  <text x="780" y="352" text-anchor="middle" font-size="12" fill="#7c3aed">实际冻结请求 = 两条重建结果</text>
 
-  <line x1="600" y1="182" x2="648" y2="182" stroke="#4b5563" marker-end="url(#arr)"/>
-
-  <rect x="650" y="72" width="260" height="220" rx="10" fill="#dcfce7" stroke="#86efac"/>
-  <text x="780" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">要加上下文？</text>
-  <text x="666" y="140" font-size="12" fill="#166534">agent.inject()</text>
-  <text x="666" y="158" font-size="12" fill="#15803d">进入 inbox，等下一次获准请求</text>
-  <text x="666" y="190" font-size="12" fill="#166534">或扩展 SessionEventMap</text>
-  <text x="666" y="208" font-size="12" fill="#15803d">从 log 渲染，不要另藏一份</text>
-  <text x="666" y="240" font-size="12" fill="#14532d">不要：只改 prompt 组装</text>
-  <text x="666" y="258" font-size="12" fill="#14532d">却不写 log —— 不变量会抓</text>
-  <text x="666" y="280" font-size="11" fill="#16a34a">回放对不上的东西，模型也不该看见</text>
-
-  <text x="480" y="330" text-anchor="middle" font-size="12" fill="#374151">agent-loop 只是默认驱动，实现 Agent 接口。UI / hook / 工具插件依赖 dsh-agent，不依赖具体 loop。</text>
-  <text x="480" y="352" text-anchor="middle" font-size="12" fill="#374151">换 loop 时，只要仍往同一条 log 写、仍发同一类 session/event，渲染面可以不动。</text>
+  <rect x="36" y="390" width="888" height="32" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="480" y="411" text-anchor="middle" font-size="11" fill="#374151">普通 prompt section 可动态组装，实际结果由 header 记录；只有现有 surface 与 header 都无法表示的新语义才新增事件。</text>
 </svg>

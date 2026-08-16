@@ -24,8 +24,9 @@
   <text x="656" y="162" font-size="12" fill="#991b1b">默认 required：忘标宁可拒</text>
   <text x="656" y="184" font-size="11" fill="#7f1d1d">KNOWN_SESSION_EVENT_TYPES</text>
   <rect x="40" y="224" width="880" height="128" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="60" y="252" font-size="12" fill="#374151">加普通事件类型不 bump 版本。bump 只在：header 形状、信封、核心语义、SurfaceEventType / SurfaceOp。写者决定，不是读者能吞什么。</text>
-  <text x="60" y="276" font-size="12" fill="#374151">deriveMessages() 只折叠有序 surface。assistant/chunk、request/header、todo/write 是 log-only：回放和 UI 用，不进模型历史。</text>
-  <text x="60" y="300" font-size="12" fill="#374151">未知类型守卫在读侧。append 不查词汇表：活会话中途拒写，比下次加载时大声拒绝更糟。</text>
-  <text x="60" y="328" font-size="11" fill="#6b7280">仓外插件事件默认不在 KNOWN 集合里；预发布接受「拒 resume」而不是静默掏空。</text>
+  <text x="60" y="250" font-size="12" fill="#374151">普通事件类型不 bump；header、信封、核心语义或 surface 机制的结构变化才 bump。</text>
+  <text x="60" y="274" font-size="12" fill="#374151">deriveMessages() 只折叠有序 surface。</text>
+  <text x="60" y="296" font-size="12" fill="#374151">request/header 单独重建 config / system / tools；request/context 只记录路由容量。</text>
+  <text x="60" y="320" font-size="12" fill="#374151">未知类型守卫在读侧；append 不查词汇表，避免活会话中途拒写。</text>
+  <text x="60" y="340" font-size="11" fill="#6b7280">仓外插件事件默认不在 KNOWN 集合里；预发布接受拒 resume，而不是静默掏空。</text>
 </svg>

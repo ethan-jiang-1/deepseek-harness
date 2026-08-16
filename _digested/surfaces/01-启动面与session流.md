@@ -1,8 +1,8 @@
 # 源码启动、built bin，以及 host 如何推同一条 session 流
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。根 `package.json` 的 `dsh` script、`apps/cli/package.json` `bin`、`apps/cli/src/bin.ts`、`packages/host/apiproxy/src/api-proxy.ts`。
+源码核验入口：根 `package.json` 的 `dsh` script、`apps/cli/package.json` `bin`、`apps/cli/src/bin.ts`、`packages/host/apiproxy/src/api-proxy.ts`。
 
-四个入口 boot 不同 bundle，但都进 `runProfile` 或叶子 `cordis.yml`，都驱动 `ctx.agents`。
+四个入口可以 boot 不同的 bundle 或叶子 `cordis.yml`，因此不一定共享同一进程或同一棵 Cordis 树；它们复用 `ctx.agents`、session log 和事件语义。
 
 ![pnpm dsh 走 tsx ESM](./figures/source-vs-built.svg)
 
@@ -29,7 +29,7 @@ ACP demo：`node --import tsx packages/examples/acp-demo/src/bin.ts --config exa
 
 浏览器半边（`packages/client/`）订阅读这些帧，slots / `ConversationNodeDefinition` 渲染。client **没有**另一份 append-only log。刷新 / 重连从持久化再 hydrate，仍然是同一条 session 的事件。
 
-加 Web Chat 节点：在 **client** 上登记 `ConversationNodeDefinition` + keyed renderer（`ctx.conversationEvents` / `ctx.conversationViews`）。host 没有这个 ctx。不要在入口里再跑一套 loop。
+加 Web Chat 节点：在 **client** 上把 `ConversationNodeDefinition` 登记到 `ctx.conversationEvents`，并把 keyed renderer 登记到 `conversation.chat.node` slot。聚合快照视图才登记到 `ctx.conversationViews`；host 没有这些 client registry。不要在入口里再跑一套 loop。
 
 ## 三条命令平面（入口侧怎么接）
 

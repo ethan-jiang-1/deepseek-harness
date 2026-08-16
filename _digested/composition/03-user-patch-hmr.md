@@ -1,6 +1,6 @@
 # 用户 patch 的 HMR
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`apps/cli/src/profile-boot.ts` `composeLive`、`packages/boot/app-boot/src/index.ts` `watchUserPatches`、`packages/boot/app-boot/tests/user-patches.spec.ts`。
+源码核验入口：`apps/cli/src/profile-boot.ts` `composeLive`、`packages/boot/app-boot/src/index.ts` `watchUserPatches`、`packages/boot/app-boot/tests/user-patches.spec.ts`。
 
 boot 叠完的树不是一次性的。profile 和 home 的 `cordis.patch.yml` 改了要热更新。失败的候选不能把正在服务的树拆掉。bundle 层和 `--patch` / launcher overlays 不许被用户文件挤掉。
 
@@ -50,7 +50,7 @@ Include 把 `insert` 行**按引用**推进挂上的树，后面的 id patch 会
 
 `hmr.registerConfig(filename, refresh)`。refresh：
 
-1. 从根 Include 的当前 `options.config` 拆掉 `patches`，保留其余 Include 选项（今天没人在刷新之间改这些字段，但不能默默还原）。
+1. 从根 Include 的当前 `options.config` 拆掉 `patches`，保留其余 Include 选项，避免刷新把非 patch 配置还原。
 2. `loadOptionalPatches`：ENOENT → `[]`（没有这一层）。文件在场但坏 → 抛，进失败路径。
 3. `compose(...)` 得到完整 patch 列表。
 4. `entry.update({ config: { ...includeConfig, patches } })`。
@@ -61,7 +61,7 @@ Include 把 `insert` 行**按引用**推进挂上的树，后面的 id patch 会
 
 ![候选失败：上一棵好树继续跑](./figures/last-good-tree.svg)
 
-`user-patches.spec.ts`「add / failure / recovery / removal」钉住的序列：
+候选配置按以下状态转换：
 
 | 事件 | 树上的 `value` | 副作用 |
 |------|----------------|--------|

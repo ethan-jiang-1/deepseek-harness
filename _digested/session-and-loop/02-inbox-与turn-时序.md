@@ -1,8 +1,8 @@
 # Inbox、唤醒与 turn 时序
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`packages/core/agent/src/inbox.ts`、`packages/core/agent/src/runtime-types.ts`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`。
+源码核验入口：`packages/core/agent/src/inbox.ts`、`packages/core/agent/src/runtime-types.ts`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`。
 
-介绍篇的 turn 骨架图在 architecture 里。这篇对到默认驱动里的队列、claim、`pre-step` 拒绝仍关 turn。
+本篇说明默认驱动中的 inbox 队列、claim，以及 `pre-step` 拒绝后仍关闭持久 turn 的时序。
 
 ![两个队列，三种入口](./figures/inbox-wake.svg)
 
@@ -40,7 +40,7 @@ runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造�
 4. 首次 step 且 `messages.length === 0`（唤醒消息被拿掉，或 enter 被改写成空）→ `completed`，仍无 step。
 5. 否则 `step/start`，逐条 `user/message`（`surfaceOp: 'append'`），再 `step()`。
 6. 工具还欠一次请求，或 `next-step` 又有货 → 下一 step 的 target 是 `next-step`。
-7. 该停时 `serial('agent/turn-stopping')`（没有 `next()`）。
+7. 有结束原因且 `next-step` 为空时，`serial('agent/turn-stopping')`（没有 `next()`）；监听器可 `agent.steer()`，驱动随后重读 inbox，有新工作就继续下一 step。
 8. `finally` 里 `turn/end`。loop **不等** turn 边界上的 flush；checkpoint 策略另挂。
 
 `turn/end` 的 `interrupted` 只给持久化后端关崩溃孤儿 turn；loop 从不发这个标记。
@@ -61,8 +61,8 @@ assembler.finish
   有 → executeToolCalls；可往 next-step splice 上下文
 ```
 
-请求头：`request/header` 在 dispatch 前写入。最新一份重建 config / system / tools。`request/context` 只在路由或容量变时写，不参与 header 相等。
+请求头：`request/header` 在 dispatch 前写入。对截至某次请求的日志前缀取最后一份，即可重建当时的 config / system / tools。`request/context` 只在路由或容量变时写，不参与 header 相等。
 
-## 和介绍图的一处对齐
+## `claim` 与 architecture 的对应
 
 architecture 写「claim next-step 加上一条排队消息」。源码是：第一步 `target = 'next-turn'`（抽空 next-step **并且**取一条 next-turn）；后续 step 只 claim next-step。inject 的材料若在第一步之前就已经在 next-step 里，会和这条 followup **同一 step** 进入模型。

@@ -1,12 +1,12 @@
 # dump 与 boot 保真
 
-> 基线 `47f943859bef60e4160492346772ded9b24f765a`。`apps/cli/src/dump-config.ts`、`packages/boot/app-boot/src/index.ts` `renderConfigDump`、`packages/boot/app-boot/src/profile.ts` `composeEntries`、`packages/boot/app-boot/tests/config-dump.spec.ts`。
+源码核验入口：`apps/cli/src/dump-config.ts`、`packages/boot/app-boot/src/index.ts` `renderConfigDump`、`packages/boot/app-boot/src/profile.ts` `composeEntries`、`packages/boot/app-boot/tests/config-dump.spec.ts`。
 
-介绍篇写「`--dump-config` 打印的就是将要 boot 的树」。更精确的合同是：**同一份空根、同一个 `applyEntryPatches`、同一份 YAML dialect**；dump 的层列表比 `runProfile` 少 launcher 派生的两层，并且**不求值** `!!js`。
+`--dump-config` 与 boot 共用空根、`applyEntryPatches` 和 YAML dialect；dump 的层列表比 `runProfile` 少 launcher 派生的两层，并且不求值 `!!js`。
 
 ![共用 applyEntryPatches；dump 的层列表 ≠ runProfile 的层列表](./figures/dump-vs-boot.svg)
 
-## 钉住的是算法，不是「进程里每一层都印出来」
+## 保真对象是组合算法
 
 `composeEntries(layers)` 是 `applyEntryPatches([], structuredClone(layers.flat()), warn)`。boot 的根 Include 对同一份空 `cordis.yml` 再调一次 `applyEntryPatches`。dump 的 `renderConfigDump` 对同一文件、同一函数、同一 `entryListSchema`。
 
