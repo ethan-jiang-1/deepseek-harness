@@ -40,7 +40,9 @@ _faq_on_digested/
 
 ## 已有问题
 
-（还没有单独开题。主干七个专题的机制级正文已经写完；跨条目的困惑出现后再按上面的结构建子目录。）
+| 编号 | 问题 | 主回答 |
+|------|------|--------|
+| 01 | [DSH 的目录为什么这样组织，应该怎样读？](./01_repository-organization/question.md) | [目录设计总模型](./01_repository-organization/answer.md) |
 
 ## 引用规范
 

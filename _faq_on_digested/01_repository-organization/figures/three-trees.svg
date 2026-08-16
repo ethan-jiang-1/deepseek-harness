@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#2563eb"/></marker>
+  </defs>
+  <rect width="1080" height="620" rx="8" fill="#fafafa"/>
+  <text x="540" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#111827">同一个 DSH，要同时看三张结构图</text>
+  <text x="540" y="54" text-anchor="middle" font-size="11" fill="#64748b">目录回答“在哪里维护”，依赖回答“静态上连接什么”，配置与 Cordis 回答“这次运行什么”。</text>
+
+  <rect x="30" y="78" width="310" height="430" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="185" y="110" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">① 仓库目录树</text>
+  <text x="185" y="132" text-anchor="middle" fill="#2563eb">所有权 · 维护 · 发布边界</text>
+  <rect x="58" y="158" width="254" height="48" rx="7" fill="#fff" stroke="#60a5fa"/>
+  <text x="76" y="178" font-weight="700" fill="#1e3a8a">vendor/</text>
+  <text x="76" y="195" fill="#2563eb">Cordis 与框架基础</text>
+  <rect x="58" y="218" width="254" height="64" rx="7" fill="#fff" stroke="#60a5fa"/>
+  <text x="76" y="239" font-weight="700" fill="#1e3a8a">packages/&lt;group&gt;/&lt;pkg&gt;/</text>
+  <text x="76" y="257" fill="#2563eb">产品能力与角色 package</text>
+  <text x="76" y="274" fill="#2563eb">Definition · Provider · Consumer</text>
+  <rect x="58" y="294" width="254" height="48" rx="7" fill="#fff" stroke="#60a5fa"/>
+  <text x="76" y="314" font-weight="700" fill="#1e3a8a">apps/ · examples/ · python/</text>
+  <text x="76" y="331" fill="#2563eb">入口、可运行叶子与发行载体</text>
+  <rect x="58" y="354" width="254" height="48" rx="7" fill="#fff" stroke="#60a5fa"/>
+  <text x="76" y="374" font-weight="700" fill="#1e3a8a">docs/ · scripts/ · website/</text>
+  <text x="76" y="391" fill="#2563eb">文档、生成与工程系统</text>
+  <text x="185" y="444" text-anchor="middle" font-size="11" fill="#1e40af">权威线索</text>
+  <text x="185" y="465" text-anchor="middle" fill="#334155">目录 + 组 README</text>
+  <text x="185" y="484" text-anchor="middle" fill="#334155">pnpm-workspace.yaml</text>
+
+  <rect x="385" y="78" width="310" height="430" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="540" y="110" text-anchor="middle" font-size="15" font-weight="700" fill="#166534">② package 依赖图</text>
+  <text x="540" y="132" text-anchor="middle" fill="#16a34a">import 方向 · 合同 · 发布闭包</text>
+  <rect x="465" y="235" width="150" height="78" rx="9" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="540" y="259" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">Definition</text>
+  <text x="540" y="280" text-anchor="middle" fill="#15803d">例如 @dsh/fs</text>
+  <text x="540" y="299" text-anchor="middle" fill="#15803d">ctx.fs + fs/*</text>
+  <rect x="412" y="165" width="112" height="46" rx="7" fill="#fff" stroke="#4ade80"/>
+  <text x="468" y="185" text-anchor="middle" font-weight="700" fill="#166534">Provider</text>
+  <text x="468" y="202" text-anchor="middle" fill="#15803d">fs-local</text>
+  <line x1="491" y1="211" x2="513" y2="229" stroke="#475569" marker-end="url(#arrow)"/>
+  <rect x="556" y="165" width="112" height="46" rx="7" fill="#fff" stroke="#4ade80"/>
+  <text x="612" y="185" text-anchor="middle" font-weight="700" fill="#166534">Consumer</text>
+  <text x="612" y="202" text-anchor="middle" fill="#15803d">tool-fs</text>
+  <line x1="589" y1="211" x2="567" y2="229" stroke="#475569" marker-end="url(#arrow)"/>
+  <rect x="427" y="345" width="226" height="58" rx="7" fill="#fff" stroke="#4ade80"/>
+  <text x="540" y="367" text-anchor="middle" font-weight="700" fill="#166534">package.json / peerDependencies</text>
+  <text x="540" y="388" text-anchor="middle" fill="#15803d">生成 docs/module-graph.md</text>
+  <line x1="540" y1="313" x2="540" y2="337" stroke="#475569" marker-end="url(#arrow)"/>
+  <text x="540" y="444" text-anchor="middle" font-size="11" fill="#166534">它不保证某个插件已被挂载</text>
+  <text x="540" y="465" text-anchor="middle" fill="#334155">“可解析、可依赖”</text>
+  <text x="540" y="484" text-anchor="middle" fill="#334155">不等于“当前可见”</text>
+
+  <rect x="740" y="78" width="310" height="430" rx="12" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="895" y="110" text-anchor="middle" font-size="15" font-weight="700" fill="#9a3412">③ 运行时插件树</text>
+  <text x="895" y="132" text-anchor="middle" fill="#ea580c">本次组合 · realm · 生命周期</text>
+  <rect x="820" y="156" width="150" height="52" rx="8" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="895" y="178" text-anchor="middle" font-weight="700" fill="#9a3412">Root Context</text>
+  <text x="895" y="197" text-anchor="middle" fill="#c2410c">Loader + root Fiber</text>
+  <line x1="895" y1="208" x2="895" y2="229" stroke="#475569"/>
+  <line x1="797" y1="229" x2="993" y2="229" stroke="#475569"/>
+  <line x1="797" y1="229" x2="797" y2="247" stroke="#475569"/>
+  <line x1="895" y1="229" x2="895" y2="247" stroke="#475569"/>
+  <line x1="993" y1="229" x2="993" y2="247" stroke="#475569"/>
+  <rect x="755" y="247" width="84" height="66" rx="7" fill="#fff" stroke="#fb923c"/>
+  <text x="797" y="269" text-anchor="middle" font-weight="700" fill="#9a3412">Provider</text>
+  <text x="797" y="289" text-anchor="middle" fill="#c2410c">ctx.fs</text>
+  <text x="797" y="305" text-anchor="middle" fill="#c2410c">ctx.llm</text>
+  <rect x="853" y="247" width="84" height="66" rx="7" fill="#fff" stroke="#fb923c"/>
+  <text x="895" y="269" text-anchor="middle" font-weight="700" fill="#9a3412">Registries</text>
+  <text x="895" y="289" text-anchor="middle" fill="#c2410c">tools</text>
+  <text x="895" y="305" text-anchor="middle" fill="#c2410c">agents</text>
+  <rect x="951" y="247" width="84" height="66" rx="7" fill="#fff" stroke="#fb923c"/>
+  <text x="993" y="269" text-anchor="middle" font-weight="700" fill="#9a3412">Surface</text>
+  <text x="993" y="289" text-anchor="middle" fill="#c2410c">Web</text>
+  <text x="993" y="305" text-anchor="middle" fill="#c2410c">Headless</text>
+  <rect x="775" y="346" width="240" height="58" rx="8" fill="#fff" stroke="#fb923c"/>
+  <text x="895" y="368" text-anchor="middle" font-weight="700" fill="#9a3412">Fiber / effect / event / isolate</text>
+  <text x="895" y="389" text-anchor="middle" fill="#c2410c">mount · reload · unload</text>
+  <line x1="895" y1="313" x2="895" y2="338" stroke="#475569" marker-end="url(#arrow)"/>
+  <text x="895" y="444" text-anchor="middle" font-size="11" fill="#9a3412">权威线索</text>
+  <text x="895" y="465" text-anchor="middle" fill="#334155">bundle/profile/preset 配置</text>
+  <text x="895" y="484" text-anchor="middle" fill="#334155">dump-config + runtime inspection</text>
+
+  <line x1="340" y1="286" x2="377" y2="286" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <text x="359" y="273" text-anchor="middle" font-size="10" fill="#2563eb">manifests</text>
+  <line x1="695" y1="286" x2="732" y2="286" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <text x="714" y="273" text-anchor="middle" font-size="10" fill="#2563eb">composition</text>
+
+  <rect x="30" y="535" width="1020" height="56" rx="9" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="540" y="558" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">最常见的误判：磁盘上存在 ≠ 静态依赖 ≠ 本次进程已经加载</text>
+  <text x="540" y="579" text-anchor="middle" fill="#64748b">阅读一个行为时，分别找到 owner directory、dependency contract 和 mounting row。</text>
+</svg>

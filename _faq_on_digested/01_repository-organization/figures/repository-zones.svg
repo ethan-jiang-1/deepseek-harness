@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#64748b"/></marker>
+  </defs>
+  <rect width="1080" height="700" rx="8" fill="#fafafa"/>
+  <text x="540" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#111827">DSH 仓库顶层目录按职责与发布边界分区</text>
+  <text x="540" y="54" text-anchor="middle" font-size="11" fill="#64748b">这些区域不是一条调用栈；它们分别管理框架、产品、装配、发行、工程和研究。</text>
+
+  <rect x="410" y="76" width="260" height="58" rx="10" fill="#1e293b"/>
+  <text x="540" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">deepseek-harness/</text>
+  <text x="540" y="120" text-anchor="middle" fill="#cbd5e1">monorepo + 多种发布边界</text>
+
+  <line x1="540" y1="134" x2="540" y2="158" stroke="#64748b"/>
+  <line x1="270" y1="158" x2="810" y2="158" stroke="#64748b"/>
+  <line x1="270" y1="158" x2="270" y2="178" stroke="#64748b" marker-end="url(#arrow)"/>
+  <line x1="810" y1="158" x2="810" y2="178" stroke="#64748b" marker-end="url(#arrow)"/>
+
+  <rect x="35" y="184" width="470" height="132" rx="12" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="60" y="212" font-size="14" font-weight="700" fill="#9a3412">框架与平台基础</text>
+  <rect x="60" y="230" width="115" height="34" rx="6" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="117" y="252" text-anchor="middle" font-weight="700" fill="#9a3412">vendor/</text>
+  <rect x="186" y="230" width="115" height="34" rx="6" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="243" y="252" text-anchor="middle" font-weight="700" fill="#9a3412">native/</text>
+  <text x="60" y="287" fill="#7c2d12">Cordis pinned source、本地修改、Landlock launcher 与平台 artifact。</text>
+  <text x="60" y="305" fill="#c2410c">独立同步或 release 纪律；不要当作普通产品 package 随手改。</text>
+
+  <rect x="575" y="184" width="470" height="132" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="600" y="212" font-size="14" font-weight="700" fill="#1e40af">产品能力</text>
+  <rect x="600" y="230" width="180" height="34" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="690" y="252" text-anchor="middle" font-weight="700" fill="#1e40af">packages/&lt;group&gt;/&lt;pkg&gt;/</text>
+  <text x="600" y="287" fill="#1e3a8a">Service Definition、Provider、Consumer、policy、UI 与支持 package。</text>
+  <text x="600" y="305" fill="#2563eb">绝大多数可复用产品行为的 owner；每个 package 有独立发布/测试边界。</text>
+
+  <rect x="35" y="338" width="470" height="132" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="60" y="366" font-size="14" font-weight="700" fill="#166534">应用与组合</text>
+  <rect x="60" y="384" width="110" height="34" rx="6" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="115" y="406" text-anchor="middle" font-weight="700" fill="#166534">apps/</text>
+  <rect x="181" y="384" width="185" height="34" rx="6" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="273" y="406" text-anchor="middle" font-weight="700" fill="#166534">packages/bundle/</text>
+  <text x="60" y="441" fill="#14532d">最终 CLI/浏览器入口 + 可发布的 profile patch layers。</text>
+  <text x="60" y="459" fill="#15803d">入口负责启动事实，bundle 负责选择 rows；可复用行为仍回到 packages。</text>
+
+  <rect x="575" y="338" width="470" height="132" rx="12" fill="#fdf4ff" stroke="#e879f9"/>
+  <text x="600" y="366" font-size="14" font-weight="700" fill="#86198f">可运行叶子与跨语言发行</text>
+  <rect x="600" y="384" width="115" height="34" rx="6" fill="#fae8ff" stroke="#d946ef"/>
+  <text x="657" y="406" text-anchor="middle" font-weight="700" fill="#86198f">examples/</text>
+  <rect x="726" y="384" width="115" height="34" rx="6" fill="#fae8ff" stroke="#d946ef"/>
+  <text x="783" y="406" text-anchor="middle" font-weight="700" fill="#86198f">python/</text>
+  <text x="600" y="441" fill="#701a75">真实 cordis.yml 示例、e2e/快照场景、Python SDK 与 runtime carrier。</text>
+  <text x="600" y="459" fill="#a21caf">示例只留装配；Python 通过 stdio JSON-RPC 驱动捆绑 runtime。</text>
+
+  <rect x="35" y="492" width="470" height="142" rx="12" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="60" y="520" font-size="14" font-weight="700" fill="#334155">文档与工程系统</text>
+  <text x="60" y="550" font-weight="700" fill="#334155">docs/ · website/ · scripts/ · .agents/ · .github/</text>
+  <text x="60" y="578" fill="#475569">权威文档、站点投影、生成器/门禁、决策记录与 CI/release。</text>
+  <text x="60" y="598" fill="#64748b">源码 owner → 生成 artifact → 网站 route；不要反向手改派生物。</text>
+  <text x="60" y="618" fill="#64748b">assets/ 放根文档静态图，patches/ 放 pnpm dependency patches。</text>
+
+  <rect x="575" y="492" width="470" height="142" rx="12" fill="#fefce8" stroke="#fde047"/>
+  <text x="600" y="520" font-size="14" font-weight="700" fill="#854d0e">研究覆盖层 · ethan 分支</text>
+  <text x="600" y="550" font-weight="700" fill="#854d0e">_digested/ · _faq_on_digested/ · _architecture_referenced/</text>
+  <text x="600" y="578" fill="#713f12">源码消化、跨专题 FAQ 与外部架构参考。</text>
+  <text x="600" y="598" fill="#a16207">非 pnpm workspace、非产品 runtime、非官方文档站来源。</text>
+  <text x="600" y="618" fill="#a16207">产品基线变化后，结论必须重新对照源码核验。</text>
+
+  <rect x="35" y="654" width="1010" height="28" rx="7" fill="#fff" stroke="#cbd5e1"/>
+  <text x="540" y="673" text-anchor="middle" font-size="11" fill="#475569">顶层目录先判断“谁维护、怎样发布”；运行时调用关系再看 package graph 与 Cordis composition。</text>
+</svg>
