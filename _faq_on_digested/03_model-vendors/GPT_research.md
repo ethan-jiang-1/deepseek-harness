@@ -1,4 +1,4 @@
-# Research Notes: MICU GPT-5.6 中转样本
+# GPT Research Notes: MICU GPT-5.6 中转样本
 
 本稿先核验本机样本和当前 DSH 源码，随后用已在进程环境中提供的 `CODEX_API_KEY_MICU` 发起了最小真实请求。未读取、打印、写入或复制凭据值。它区分本次实测、历史本机记录和配置推断。
 
@@ -14,13 +14,13 @@
 
 | 模型 | `/v1/models` | 文本流 | 工具调用 + 工具结果回传 | replay | `xhigh` | 本次状态 |
 |---|---|---|---|---|---|---|
-| `gpt-5.6-luna` | 列出 | 两次均在请求开始前得到 `503 model:rate_limited` | 未测 | 无 | 未测 | 当前受中转限流，不应作为默认 route 模型 |
+| `gpt-5.6-luna` | 列出 | 曾两次得到 `503 model:rate_limited`，随后一次隔离 route 的最小文本请求通过 | 未测 | 未测 | 仅该次使用 `xhigh` 通过 | 可用性仍不稳定，暂不作为日常 route 模型 |
 | `gpt-5.6-sol` | 列出 | 通过，带 usage 和 replay | 通过；第一轮以 `tool-calls` 结束，回传结果后第二轮 `stop` | 通过 | 通过，DSH 公开并发送 `xhigh` 后完成文本流 | 可按纯配置接入 |
 | `gpt-5.6-terra` | 列出 | 工具试验的两轮流均通过 | 通过；第一轮 `tool-calls`，结果回传后第二轮 `stop` | 通过 | 未测 | 可按纯配置接入；先不声明未测能力 |
 
-`GET /v1/models` 返回 HTTP 200，模型列表为 `codex-auto-review`、`gpt-5.3-codex-spark`、`gpt-5.5`、`gpt-5.6-luna`、`gpt-5.6-sol`、`gpt-5.6-terra`。目录存在不代表当前可调用：`luna` 的两次请求都得到相同的 `503` 和 `model:rate_limited`，DSH 将其归类为 `RATE_LIMIT`。这支持保留独立 route 并启用 route 内常规重试，但不证明跨 vendor 自动故障切换已经存在。
+`GET /v1/models` 返回 HTTP 200，模型列表为 `codex-auto-review`、`gpt-5.3-codex-spark`、`gpt-5.5`、`gpt-5.6-luna`、`gpt-5.6-sol`、`gpt-5.6-terra`。目录存在不保证稳定可调用：`luna` 曾两次得到相同的 `503` 和 `model:rate_limited`，DSH 将其归类为 `RATE_LIMIT`，但随后一次最小请求成功。这支持保留独立 route 并启用 route 内常规重试，但不证明跨 vendor 自动故障切换已经存在。
 
-本次没有验证图片输入、上下文窗口、最大输出、取消、中断后的恢复、`luna` 工具调用、`terra` 的 `xhigh`、其他推理档位或服务端数据保留政策。它们仍须单独验证，不能从成功路径外推。
+本次没有验证图片输入、上下文窗口、最大输出、取消、中断后的恢复、`luna` 工具调用或稳定性、`terra` 的 `xhigh`、其他推理档位或服务端数据保留政策。它们仍须单独验证，不能从成功路径外推。
 
 ## 样本能证明什么
 
@@ -35,7 +35,7 @@ DSH 手工 route 当前可选的协议正好包括 `openai-responses`、`openai-
 
 `apiKeyEnv` 在 DSH 中是逐请求解析的凭据引用，不把 key 写入 settings [适配器说明](../../packages/llm/llm-pi-ai/README.md:9)。对 OpenAI-compatible route，DSH 的模型发现会请求 `<baseURL>/models`，并在有 key 时使用 `Authorization: Bearer …` [发现实现](../../packages/llm/llm-pi-ai/src/discovery.ts:232)。这是 DSH probe 的发送行为，不是 MICU 接受该报头或其 Responses 请求完全兼容的证据。
 
-安装的 pi-ai 目录确实含有官方 `openai` route 的 `gpt-5.6-luna`、`gpt-5.6-sol` 和 `gpt-5.6-terra` 定义，均为 `openai-responses`，并列出 `xhigh`/`max`、272,000 context 和 128,000 output [本地依赖目录](../../node_modules/@earendil-works/pi-ai/dist/providers/data/openai.json:1)。这些是当前依赖对官方 route 的目录数据，不能直接继承给 MICU；手工 route 应只写中转实际广告并验证过的模型能力。
+本机安装的 `pi-ai` 内置 `openai` catalog 含有 `gpt-5.6-luna`、`gpt-5.6-sol` 和 `gpt-5.6-terra` 定义，均为 `openai-responses`，并列出 `xhigh`/`max`、272,000 context 和 128,000 output [本地依赖目录](../../node_modules/@earendil-works/pi-ai/dist/providers/data/openai.json:1)。这是当前依赖的目录数据，不是 OpenAI 官方文档，不能直接继承给 MICU；手工 route 应只写中转实际广告并验证过的模型能力。
 
 ## 需要实测的最小集合
 

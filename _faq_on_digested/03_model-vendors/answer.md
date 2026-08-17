@@ -2,11 +2,11 @@
 
 ## 结论
 
-MICU 的 GPT-5.6 当前应走**纯配置的独立 `micu` route**。本次已通过 DSH 的真实 `openai-responses` 适配器验证 `gpt-5.6-sol` 和 `gpt-5.6-terra` 的工具调用、工具结果回传和 replay；不需要改 `agent-loop`，也不需要为 MICU 新建 vendor 包。配置示例和逐项实验记录在 [research.md](./research.md)。
+MICU 的 GPT-5.6 当前应走**纯配置的独立 `micu` route**。本次已通过 DSH 的真实 `openai-responses` 适配器验证 `gpt-5.6-sol` 和 `gpt-5.6-terra` 的工具调用、工具结果回传和 replay；不需要改 `agent-loop`，也不需要为 MICU 新建 vendor 包。配置示例和逐项实验记录在 [GPT_research.md](./GPT_research.md)。
 
 不要把 MICU 覆盖成 `openai`。`micu` 是持久会话、模型选择和凭据引用中的 route identity；保留独立名称，官方 OpenAI 和多个中转站才能同时存在且能追溯请求来源。
 
-独立 `npx @deepseek-ai/dsh web` 的已应用配置、effort 策略和精确回退步骤见 [dsh-web-micu-configuration.md](./dsh-web-micu-configuration.md)。
+独立 `npx @deepseek-ai/dsh web` 的已应用配置、effort 策略和精确回退步骤见 [GPT_dsh-web-micu-configuration.md](./GPT_dsh-web-micu-configuration.md)。
 
 ## 选择表
 
@@ -36,15 +36,15 @@ llm-pi-ai:
         - id: gpt-5.6-terra
 ```
 
-`gpt-5.6-sol` 的 `xhigh` 已在本次 DSH 路径中接受；`terra` 的工具往返已通过，但尚未单独测试 `xhigh`，所以示例不宣称它支持。`luna` 虽在 `/models` 中出现，但本次连续两次返回 `503 model:rate_limited`，暂不放进默认配置。上下文窗口、最大输出、图片和其他推理等级也不能从模型名或官方目录抄入；只有在该中转实际验证后才在对应模型项声明。
+`gpt-5.6-sol` 的 `xhigh` 已在本次 DSH 路径中接受；`terra` 的工具往返已通过，但尚未单独测试 `xhigh`，所以示例不宣称它支持。`luna` 虽在 `/models` 中出现，且后来有一次最小请求成功，但此前连续两次返回 `503 model:rate_limited`，暂不放进日常配置。上下文窗口、最大输出、图片和其他推理等级也不能从模型名或本机 `pi-ai` catalog 抄入；只有在该中转实际验证后才在对应模型项声明。
 
-模型选择器中选择 `micu / gpt-5.6-sol` 即会成为新会话默认选择。也可在 `agent-default-model` 设置中保存 `{ provider: micu, model: gpt-5.6-sol, reasoningEffort: xhigh }`。已发生模型请求的会话保留其日志中的 route/model，不会因以后改默认值而改写历史。
+模型选择器会先把 `micu / gpt-5.6-sol` 应用于当前会话，再尝试保存为新会话默认选择；保存失败时，当前会话仍会保持已选模型。也可在 `agent-default-model` 设置中保存 `{ provider: micu, model: gpt-5.6-sol, reasoningEffort: xhigh }`。已发生模型请求的会话保留其日志中的 route/model，不会因以后改默认值而改写历史。
 
 这也是接入多个 OpenAI-compatible 中转站的标准做法：每家一条 route，例如 `micu`、`company-gateway`、`openrouter-prod`，各自一个 `apiKeyEnv` 和独立模型列表。手动选择哪个模型是现有产品能力，不需要写插件。
 
 ## 方案 2：用已安装 provider 目录
 
-如果实际是官方 OpenAI endpoint，或一个确定要作为官方 OpenAI 替身的部署，可以配置已安装的 `openai` route。它会继承 pi-ai 的官方模型目录与协议默认值。这适合“同一身份的 endpoint 覆盖”，不适合长期并存的中转站：会话日志和模型列表会把实际中转误标为 `openai`，以后排障、计费和切换都不清楚。
+如果实际是官方 OpenAI endpoint，或一个确定要作为官方 OpenAI 替身的部署，可以配置已安装的 `openai` route。它会继承本机 `pi-ai` 内置 `openai` 目录与协议默认值。这适合“同一身份的 endpoint 覆盖”，不适合长期并存的中转站：会话日志和模型列表会把实际中转误标为 `openai`，以后排障、计费和切换都不清楚。
 
 因此，MICU 应使用方案 1 的未知 route，而不是方案 2。
 
