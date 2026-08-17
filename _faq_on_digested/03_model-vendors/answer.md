@@ -6,6 +6,8 @@ MICU 的 GPT-5.6 当前应走**纯配置的独立 `micu` route**。本次已通�
 
 不要把 MICU 覆盖成 `openai`。`micu` 是持久会话、模型选择和凭据引用中的 route identity；保留独立名称，官方 OpenAI 和多个中转站才能同时存在且能追溯请求来源。
 
+独立 `npx @deepseek-ai/dsh web` 的已应用配置、effort 策略和精确回退步骤见 [dsh-web-micu-configuration.md](./dsh-web-micu-configuration.md)。
+
 ## 选择表
 
 | 方案 | 何时使用 | DSH 要做什么 | 适合 MICU 吗 | 代价 |
