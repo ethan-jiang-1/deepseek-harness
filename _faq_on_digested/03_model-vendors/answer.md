@@ -2,11 +2,11 @@
 
 ## 结论
 
-MICU 的 GPT-5.6 当前应走**纯配置的独立 `micu` route**。本次已通过 DSH 的真实 `openai-responses` 适配器验证 `gpt-5.6-sol` 和 `gpt-5.6-terra` 的工具调用、工具结果回传和 replay；不需要改 `agent-loop`，也不需要为 MICU 新建 vendor 包。配置示例和逐项实验记录在 [GPT_research.md](./GPT_research.md)。
+- **MICU：** GPT-5.6 用纯配置的独立 `micu` route，协议为 `openai-responses`。不要覆盖 `openai`，这样官方 OpenAI、中转站及其会话记录才能并存且可追溯。已验证模型、配置和安全回退见 [GPT_dsh-web-micu-configuration.md](./GPT_dsh-web-micu-configuration.md) 与 [GPT_research.md](./GPT_research.md)。
+- **GLM：** 当前 `dsh web` 已内置 Z.ai 的 `zai`、`zai-coding-cn` provider；属于纯配置接入，只需配置对应的 `apiKeyEnv`，不需要新插件。标准 API 与 Coding endpoint 不能混用，内置模型和待验证范围见 [GLM_research.md](./GLM_research.md)。
+- **KIMI：** 当前 `dsh web` 也内置 Kimi/Moonshot provider；应根据 API 产品选择 `moonshotai`、`moonshotai-cn` 或 `kimi-coding` route，只配置该 route 的凭据引用，不伪装为 `openai`。模型、endpoint 和验证边界见 [KIMI_research.md](./KIMI_research.md)。
 
-不要把 MICU 覆盖成 `openai`。`micu` 是持久会话、模型选择和凭据引用中的 route identity；保留独立名称，官方 OpenAI 和多个中转站才能同时存在且能追溯请求来源。
-
-独立 `npx @deepseek-ai/dsh web` 的已应用配置、effort 策略和精确回退步骤见 [GPT_dsh-web-micu-configuration.md](./GPT_dsh-web-micu-configuration.md)。
+这三类 route 已作为可回退的纯配置写入实际 DSH Web settings；route 清单、未验证范围与恢复步骤见 [DSH_web-multi-vendor-configuration.md](./DSH_web-multi-vendor-configuration.md)。
 
 ## 选择表
 

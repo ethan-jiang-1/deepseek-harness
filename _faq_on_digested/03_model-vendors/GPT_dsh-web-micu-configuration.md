@@ -51,9 +51,9 @@ DSH 的通用 pi-ai adapter 可识别 7 个规范 effort：`off`、`minimal`、`
 
 这是本机依赖的目录数据，不是 OpenAI 官方文档，也不等于 MICU 一定接受相同参数。
 
-当前 MICU 配置只公开 `gpt-5.6-sol / xhigh`，因为它已经经 DSH 的 `openai-responses` 路径验证可用。
+当前 MICU 配置对 `gpt-5.6-sol` 与 `gpt-5.6-terra` 对称公开 `off`、`low`、`medium`、`high`、`xhigh`、`max` 六档，并使用 OpenAI Responses 目录中的 wire spelling：`off: none`，其余档位同名透传。`minimal` 不在该目录的映射中，因此不提供。
 
-`gpt-5.6-terra` 已验证文本、工具往返和 replay，但尚未单独验证 effort，因此配置不提供 effort 选项，DSH 会保留中转站的默认行为。
+此前只有 `sol / xhigh` 和未配置 effort 的 `terra`，会导致 Web 选择器显示不对称；现已修正为两模型相同目录。`sol / xhigh` 是唯一已单独完成真实请求验证的档位；其余档位是与本机 OpenAI Responses catalog 一致的可选配置，仍应在 MICU 上按需实际验证。
 
 `gpt-5.6-luna` 曾在两次请求中返回限流；随后一次隔离 route 的最小请求成功。它的稳定性和其他能力仍未完成验证，所以暂不写入日常 route。
 
@@ -110,3 +110,5 @@ echo 'MICU configuration rolled back'
 ```
 
 如果 DSH 正在运行，恢复后的文件会被热加载；需要时重启 Web 服务以排除旧进程状态。
+
+完整 effort 目录写入前还创建了 `/Users/bowhead/.dsh/settings.yaml.bak-20260817-181435-before-micu-efforts`。它保留了当时的默认模型和全部其他 vendor route；恢复它只会撤销本次 MICU effort 扩展。

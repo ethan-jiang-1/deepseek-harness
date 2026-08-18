@@ -16,11 +16,11 @@
 |---|---|---|---|---|---|---|
 | `gpt-5.6-luna` | 列出 | 曾两次得到 `503 model:rate_limited`，随后一次隔离 route 的最小文本请求通过 | 未测 | 未测 | 仅该次使用 `xhigh` 通过 | 可用性仍不稳定，暂不作为日常 route 模型 |
 | `gpt-5.6-sol` | 列出 | 通过，带 usage 和 replay | 通过；第一轮以 `tool-calls` 结束，回传结果后第二轮 `stop` | 通过 | 通过，DSH 公开并发送 `xhigh` 后完成文本流 | 可按纯配置接入 |
-| `gpt-5.6-terra` | 列出 | 工具试验的两轮流均通过 | 通过；第一轮 `tool-calls`，结果回传后第二轮 `stop` | 通过 | 未测 | 可按纯配置接入；先不声明未测能力 |
+| `gpt-5.6-terra` | 列出 | 工具试验的两轮流均通过 | 通过；第一轮 `tool-calls`，结果回传后第二轮 `stop` | 通过 | 未测 | 可按纯配置接入；其余 effort 待实测 |
 
 `GET /v1/models` 返回 HTTP 200，模型列表为 `codex-auto-review`、`gpt-5.3-codex-spark`、`gpt-5.5`、`gpt-5.6-luna`、`gpt-5.6-sol`、`gpt-5.6-terra`。目录存在不保证稳定可调用：`luna` 曾两次得到相同的 `503` 和 `model:rate_limited`，DSH 将其归类为 `RATE_LIMIT`，但随后一次最小请求成功。这支持保留独立 route 并启用 route 内常规重试，但不证明跨 vendor 自动故障切换已经存在。
 
-本次没有验证图片输入、上下文窗口、最大输出、取消、中断后的恢复、`luna` 工具调用或稳定性、`terra` 的 `xhigh`、其他推理档位或服务端数据保留政策。它们仍须单独验证，不能从成功路径外推。
+本次没有验证图片输入、上下文窗口、最大输出、取消、中断后的恢复、`luna` 工具调用或稳定性、`terra` 的 `xhigh`、其他推理档位或服务端数据保留政策。它们仍须单独验证，不能从成功路径外推。后续 Web 配置按本机 OpenAI Responses catalog 对 `sol` 与 `terra` 对称提供 `off`、`low`、`medium`、`high`、`xhigh`、`max`；这改善了选择器一致性，不构成对尚未实际请求的档位的验证。
 
 ## 样本能证明什么
 
