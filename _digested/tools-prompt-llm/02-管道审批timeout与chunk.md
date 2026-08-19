@@ -1,6 +1,6 @@
 # 工具管道、审批、timeout，以及 chunk 如何入 log
 
-源码核验入口：`packages/core/tools/src/index.ts` 事件、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
+源码核验入口：`packages/core/tools/src/index.ts` 事件、`packages/core/tools/src/code-mode.ts`、`packages/llm/llm/src/assembler.ts`、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
 
 本篇说明工具监听器的挂载位置，以及流式 chunk 如何形成 raw chunk 与 assembled message 两类日志事件。
 
@@ -50,4 +50,8 @@ hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-exec
 
 `deriveMessages` 折叠 message，不折叠 chunk。UI 若要打字机效果，读 chunk；模型下一请求读 assembled message。空 content（只带 usage 的 max-tokens）派生为 null。
 
-ACP 故意不把 chunk 漏到线上，只发 committed message 的非空文本块。SDK JSON-RPC 相反：每条耐久事实都 `session.event`。见 [`../surfaces/02-acp与jsonrpc.md`](../surfaces/02-acp与jsonrpc.md)。
+max-tokens 截断时，assembler 丢掉未完成的 `tool-call` block。`ReplayEnvelope` 把 adapter 私有 replay 拆成 `response` 与可选的 per-block `blocks`；assembly 按同一套 keep/drop 裁 `blocks`，两半不能各裁各的。长度对不上就丢弃整份 envelope。
+
+code-mode：子工具结果里的 image block 不嵌进 `run_code` 的程序输出。成功的 image-bearing result 在 run 结束后 `deferContext` 成 plugin 来源的 user message，进入下一轮获准请求。`read_image` 只把图像放进自己的 tool result；由 code-mode 在父 run 结束后统一 defer。
+
+ACP 在已提交 `assistant/message` 上按块投影非空文本**或**图像；chunk 仍不上线。SDK JSON-RPC 相反：每条耐久事实都 `session.event`。见 [`../surfaces/02-acp与jsonrpc.md`](../surfaces/02-acp与jsonrpc.md)。

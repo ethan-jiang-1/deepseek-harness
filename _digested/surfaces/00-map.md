@@ -15,7 +15,7 @@ CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 ses
 | **ACP** | 自动化用的 Agent Client Protocol 服务器 | 不是完整 IDE |
 | **JSON-RPC SDK** | 进程外协议、TS client、树上的 server 插件 | 会话仍由运行时拥有 |
 
-加 UI 或编辑器集成：驱动 `ctx.agents`，从 `session/event` 渲染。加 Web Chat 节点：注册 `ConversationNodeDefinition` + keyed renderer。不要在入口里再实现一套 loop。
+加 UI 或编辑器集成：驱动 `ctx.agents`，从 `session/event` 渲染。加 Web Chat 节点：注册 `ConversationNodeDefinition` + keyed renderer。加 Web 设置卡：Host `installSettingsSection` + 浏览器 `settings.plugin.item`，见 [`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md)。不要在入口里再实现一套 loop。
 
 源码启动（`pnpm dsh`）把 workspace 包映射到 TypeScript 源；它碰到的模块必须保持 ESM。built 路径则是普通 Node 解析。两条启动面不要混着假设。
 
@@ -47,6 +47,7 @@ CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 ses
 | `packages/api/` | Remote BFF、Typert RPC |
 | [`docs/user/guide/index.md`](../../docs/user/guide/index.md) | Web UI 指南 |
 | [`docs/cookbook/adding-a-conversation-node.md`](../../docs/cookbook/adding-a-conversation-node.md) | Chat node |
+| [`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md) | 插件自有 settings 卡片 |
 
 ## 机制级正文
 

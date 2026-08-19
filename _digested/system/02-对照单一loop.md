@@ -16,7 +16,7 @@
 | CLI `main()` 里 `await loop.run(prompt)` | 各入口都经 `ctx.agents` → `followup`。CLI / Web / ACP / SDK 可以处于不同进程和插件树，但复用 `Agent` 接口与 session 语义。 |
 | 加功能 = 改 `agent.ts` 中间那段 | 对照 [`01-扩展表非显然落点.md`](./01-扩展表非显然落点.md) 找挂点。改 loop 要同步改 architecture.md。 |
 | 换模型 = 换那个 `openai.chat.completions` 调用 | `ctx.llm` 登记 adapter。请求词汇在 `dsh-llm`，不在 loop。 |
-| 子 agent = 递归调用同一个 loop 函数 | `ctx.subagents` seam：provider 可以运行进程内 child，也可以通过 ACP / JSON-RPC 驱动独立进程。session header 的 lineage 不会自动建立 scope 父链；进程内 child 可加入父 agent 正在使用的同一 preset generation，但不继承父 agent 自有层。 |
+| 子 agent = 递归调用同一个 loop 函数 | `ctx.subagents` seam：provider 可以运行进程内 child，也可以通过 ACP / JSON-RPC 驱动独立进程。Codex / Claude Code 这类产品 provider 要由 opt-in profile 在 host 平面挂一次；preset 只决定要不要露出对应 tool 行。`backgroundMode` 在一次性 Job 与可续 child 之间选择，见 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/03-subagent后台与产品provider.md)。session header 的 lineage 不会自动建立 scope 父链；进程内 child 可加入父 agent 正在使用的同一 preset generation，但不继承父 agent 自有层。 |
 | 配置 = 一大份 JSON | 空 `cordis.yml` + 有序 patch 层（profile / bundle / home / `--patch`）。 |
 
 ## 三条最容易带错的不变量

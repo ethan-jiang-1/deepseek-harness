@@ -11,17 +11,19 @@
 **保证：**
 
 - `session/new`：新鲜 agent，绝对 `cwd`。空的 `additionalDirectories` / `mcpServers` 接受，非空拒绝。
-- `session/prompt`：文本块拼接成一条 user message；baseline resource link 变成 `[resource_link name=… uri=…]`。每会话一个 in-flight。等到 **整个 agent idle**。正常静默 → `end_turn`；ACP 取消 / dispose / 未被准入的 turnless slot → `cancelled`。
-- `session/update`：每条 **已提交** `assistant/message` 里每个非空文本块一个 `agent_message_chunk`。
+- `initialize`：仅当挂了 durable attachment store、且配置的精确 provider/model 声明了 image input 时，才广告图像 prompt；音频和 embedded context 恒为 false。
+- `session/prompt`：按线序保留文本与受支持的 inline 图像；resource link 变成 `[resource_link name=… uri=…]`。整批图像先校验、再按最新精确 route 复核，然后在 user 事件之前全部 commit。inline base64 准入后丢弃，日志里只留 attachment 引用。每会话一个 in-flight。等到准入、整个 agent idle、以及有序输出投递。正常静默 → `end_turn`；ACP 取消 / dispose / 未被准入的 turnless slot → `cancelled`。
+- `session/cancel`：先中止尚未进 inbox 的 admission，不取消无关 agent 工作；prompt 一旦进 inbox，才取消该 agent 并等到所拥有区间静默。没有 in-flight prompt 时取消自主工作。
+- `session/update`：每条 **已提交** `assistant/message` 里每个非空文本或图像块一个 `agent_message_chunk`，保序。图像投递前再读并校验完整性；缺失或损坏会使这次 prompt 失败，而不是发占位符。
 - `session/request_permission`：带 tool call id 的、桥拥有的审批，一次性 allow/reject。客户端可自动答。
-- 拆连接与 Cordis dispose 共用一份 teardown：先拒新 session/prompt，结算 pending，只排空本连接拥有的可续后代，再并行 dispose。别的前端共用 Context 时，它们的森林还在。
+- 拆连接与 Cordis dispose 共用一份 teardown：先拒新 session/prompt，取消并排空 admission / agent 活动 / 有序输出，只排空本连接拥有的可续后代，再并行 dispose。别的前端共用 Context 时，它们的森林还在。
 
 **故意不保证：**
 
 - 加载、列表、resume、删除、fork。只有新鲜 session。
-- 图像、音频、embedded resources、非空 extra dirs、MCP。
+- 音频、embedded resources、非空 extra dirs、MCP。图像仅 PNG / JPEG / WebP / GIF，且依赖 attachment store 与声明了 image input 的精确 route。
 - 把 raw `assistant/chunk`、推理、工具活动、plan、title、usage 打到线上。它们留在 session log，走别的入口观察。
-- prompt 级的 turn 结局。token-limit 的 turn 在 ACP 里仍是 `end_turn`；相关 turn 上的模型错误才立刻拒 prompt。
+- prompt 级的 turn 结局。操作区间从 prompt 进入 inbox 起到 idle 与输出投递都静默；token-limit 仍是 `end_turn`；相关模型错误也在同一静默边界才拒 prompt。
 - 编辑器导航、commands、modes、配置选择器、elicitation。
 
 用它：父 harness 经 `dsh-subagent-acp` spawn；或任何只需要上述核心方法的 ACP 客户端。
@@ -51,9 +53,9 @@
 | | ACP | JSON-RPC SDK |
 |--|-----|----------------|
 | prompt 返回 | 等到 idle，带 `stopReason` | 立刻 `messageId` |
-| 线上可见 | committed 文本块 | Context 内每条 log 事件与 agent 状态 |
+| 线上可见 | committed 文本块与图像块 | Context 内每条 log 事件与 agent 状态 |
 | resume / fork | 无 | 无（session 由运行时拥有，线协议不暴露） |
 | 取消 | `session/cancel` 对准该 agent | 无 per-prompt cancel |
 | 典型消费者 | 另一个产品里的 subagent | 进程外 SDK / 脚本 |
 
-两者都驱动 `ctx.agents`，都不在入口里实现 loop。差别是投影：ACP 为了自动化干净故意丢中间态；SDK 把 log 当产品。
+两者都驱动 `ctx.agents`，都不在入口里实现 loop。差别是投影：ACP 为了自动化干净故意丢中间态，但在广告了图像能力时投递已提交的光栅图；SDK 把 log 当产品。
