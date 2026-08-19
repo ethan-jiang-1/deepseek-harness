@@ -1,5 +1,7 @@
 # Answer · 多 vendor 接入 DSH 的选择
 
+产品源码核验基线：DeepSeek Harness `0.1.0-rc.7`，commit `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`。手工 route 实测仍以各 vendor 研究笔记为准。
+
 ## 结论
 
 - **MICU：** GPT-5.6 用纯配置的独立 `micu` route，协议为 `openai-responses`。不要覆盖 `openai`，这样官方 OpenAI、中转站及其会话记录才能并存且可追溯。已验证模型、配置和安全回退见 [GPT_dsh-web-micu-configuration.md](./GPT_dsh-web-micu-configuration.md) 与 [GPT_research.md](./GPT_research.md)。
@@ -58,7 +60,9 @@ llm-pi-ai:
 - 需要 provider 特有的签名、response id、会话 token 或思考参数，通用 replay 不能恢复；
 - 需要模型发现、容量、图片或错误码的 vendor 专有逻辑。
 
-实现位置是新的 `packages/llm/llm-<vendor>/`：它作为 `LlmAdapter` 注册自己的 route，把 vendor 流转换为 DSH 的 `StreamChunk`，并提供 `resolveModel()`、凭据配置与 replay state。不要改 `agent-loop`；它只消费 provider-neutral 流。新增 adapter 是完整 capability 工作，需要单元测试、真实 API e2e、文档和 Agent Note，而不是一段 fetch 封装。
+实现位置是新的 `packages/llm/llm-<vendor>/`：它作为 `LlmAdapter` 注册自己的 route，把 vendor 流转换为 DSH 的 `StreamChunk`，并提供 `resolveModel()`、凭据配置与 `ReplayEnvelope`（`response` 加可选 per-block `blocks`；max-tokens 丢掉 tool-call 时 assembly 按同一套 keep/drop 裁 replay）。不要改 `agent-loop`；它只消费 provider-neutral 流。新增 adapter 是完整 capability 工作，需要单元测试、真实 API e2e、文档和 Agent Note，而不是一段 fetch 封装。
+
+官方 `dsh-llm-deepseek` 的 thinking effort 是 `off` / `low` / `high` / `max`（省略默认 `high`）。这与 pi-ai 手工 route 上自填的 `reasoningEfforts` 映射无关：中转站仍须逐档验证后再写入 settings。
 
 若 MICU 的 Responses 后续出现一项兼容性失败，先检查能否改用 `openai-completions` 配置；只有两种 OpenAI 协议都不能满足时，才升级到新 adapter。
 

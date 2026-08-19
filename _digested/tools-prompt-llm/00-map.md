@@ -14,13 +14,13 @@
 
 1. **Prompt sections** — 插件往 `ctx.systemPrompt` 注册片段（身份、persona、工作区指令、时间……），按顺序、按这个 agent 的 scope 过滤后拼起来。
 2. **Tool schemas** — `ctx.tools` 里该 scope chain 仍可见的工具。全局层和祖先层按远到近合并，chain 上的 `restrict` 过滤这份继承面，当前 agent 自有层最后覆盖或补充。被过滤的工具在提示词和执行中都表现为不存在。
-3. **历史** — `deriveMessages()` 从 surface 投影。`inject` 的材料等下一次获准请求，获准后写成 `user/message`。
+3. **历史** — `deriveMessages()` 从 surface 投影。`inject` 的材料等下一次获准请求，获准后写成 `user/message`。图像以 durable attachment 引用进 content block，不把 inline base64 留在日志里。code-mode 子工具若返回 image block，会在本次 `run_code` 结束之后 `deferContext` 成一条 user message，而不是嵌在父 tool 结果里。
 
 组装完成后，loop 先把生效的模型配置、system 和 tools 写入完整的 `request/header`，再分派请求。因此普通 section 可以动态计算，不需要单独新增事件类型；可重建的是它实际进入请求的结果。
 
 面向模型的文字从**模型视角**写：提示词、schema、结果、诊断里只有任务相关概念，没有 UI、传输、实现词汇。
 
-加模型提供方：在 `ctx.llm` 上注册 adapter。加面向模型的能力：在 `ctx.tools` 上注册，它的 schema 会自动加入组装。都不必改 loop。
+加模型提供方：在 `ctx.llm` 上注册 adapter。官方 DeepSeek adapter 的 thinking effort 是 `off` / `low` / `high` / `max`（省略默认 `high`）；`off` 在线上发 `thinking.type: disabled`，其余发同名 `reasoning_effort`。加面向模型的能力：在 `ctx.tools` 上注册，它的 schema 会自动加入组装。都不必改 loop。
 
 ## 工具执行管道
 
@@ -62,6 +62,6 @@ tool 的 UI 渲染意图是设计的一部分，一开始就要定：`generic` /
 | 文件 | 内容 |
 |------|------|
 | [`01-section顺序与前缀.md`](./01-section顺序与前缀.md) | `order` 约定、complete section、KV 前缀 |
-| [`02-管道审批timeout与chunk.md`](./02-管道审批timeout与chunk.md) | `tools/*` 与 `approval/request`；chunk 入 log、message 进 surface |
+| [`02-管道审批timeout与chunk.md`](./02-管道审批timeout与chunk.md) | `tools/*` 与 `approval/request`；chunk 入 log、message 进 surface；ReplayEnvelope；code-mode 图像 defer |
 
 入口如何投影同一条流：[`../surfaces/00-map.md`](../surfaces/00-map.md)。

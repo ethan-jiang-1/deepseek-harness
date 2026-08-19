@@ -1,6 +1,6 @@
 # 02 · 顶层目录按什么边界划分
 
-源码核验基线：DeepSeek Harness `0.1.0-rc.5`，commit `47f943859bef60e4160492346772ded9b24f765a`。
+源码核验基线：DeepSeek Harness `0.1.0-rc.7`，commit `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`。
 
 ## 总图
 

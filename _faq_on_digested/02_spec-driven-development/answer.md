@@ -1,6 +1,6 @@
 # Answer · DSH 的 SDD：分层规格、生命周期与可执行验收
 
-产品源码核验基线：DeepSeek Harness `0.1.0-rc.5`，commit `47f943859bef60e4160492346772ded9b24f765a`。
+产品源码核验基线：DeepSeek Harness `0.1.0-rc.7`，commit `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`。
 
 ## 结论先行
 

@@ -1,6 +1,6 @@
 # 一次 bash：从 tool 调用到 sandbox argv
 
-源码核验入口：`packages/shell/tool-bash/`、`packages/shell/shell/`、`packages/shell/bash-local/`、`packages/shell/bash-sandbox/`、`packages/sandbox/sandbox/`、`packages/subprocess/`。
+源码核验入口：`packages/shell/tool-bash/`、`packages/shell/shell/`、`packages/shell/bash-local/`、`packages/shell/bash-sandbox/`、`packages/shell/tool-bash-persistent/`、`packages/terminal/terminal-bash/`、`packages/sandbox/sandbox/`、`packages/subprocess/`。
 
 教科书路径：顺着 shell 家族把一次 spawn 追完。Consumer 始终面对 Definition。
 
@@ -36,6 +36,14 @@
 | tool `timeoutMs` + timeout-policy | 整次 tool 调用的协作截止 |
 
 local executor 注释写：command defaulting、deadline 分类、模型友好终端环境、后台 stdout/stderr 合并，归它；执行政策不归它。
+
+## 持久 bash 怎样判定「命令结束了」
+
+`dsh-tool-bash-persistent` 把命令包进 start/end marker，再 `eval`。它**不**把 `PS1` 改成自己的提示符：setup 只做 `stty -echo`，好让后端自己的 prompt 就绪检测继续工作。
+
+真正的受控 prompt 在 `dsh-terminal-bash`：`PS1` 仍是 `CONTROLLED_PROMPT`，`PROMPT_COMMAND` 先打 OSC 133 结束标记，再重新赋上同一份 `PS1`。命令若改写了 `PS1`，下一轮 prompt 渲染前会被改回来。
+
+命令若没打出 end marker、却已经再次读 stdin（自己的 prompt，或前台子进程的 read），`waitReason === 'stdin_read'` 时返回已捕获输出，而不是空转到 tool deadline。`exec`、中断、交互式子进程走这条路。
 
 ## 和 jobs 的分界
 

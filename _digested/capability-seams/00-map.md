@@ -30,7 +30,7 @@
 
 本地 shell 经 `ctx.subprocess` spawn；`ctx.sandbox` 在 spawn 前包装 argv。这种 confinement 约束一次本地进程启动，不会自行迁移 `ctx.fs`，也不等于一套完整的远程执行世界。Consumer 面对的是 Definition，不是「我在哪台机器上」。
 
-subagent 是同一模式的另一个例子：一个接口后面，可以是进程内 child agent，也可以是经 ACP 或 JSON-RPC 驱动的独立进程。
+subagent 是同一模式的另一个例子：一个接口后面，可以是进程内 child agent，也可以是经 ACP 或 JSON-RPC 驱动的独立进程。产品 Codex / Claude Code provider 不在 `dsh-base` 里默认安装；opt-in profile 把它们挂在 host 平面，preset 的 tool 行再用 `backgroundMode` 选择一次性 Job 还是可续 child。见 [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md)。
 
 教科书路径：顺着 `packages/shell/` 走完 Definition → provider → `dsh-tool-bash`。组级 README 拥有「这个组有哪些包、对应哪个 `ctx` key」——本专题不手抄完整包表，完整图在生成的 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
@@ -52,6 +52,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 | 文件 | 内容 |
 |------|------|
 | [`01-三角色与分包装.md`](./01-三角色与分包装.md) | 分包装的味道；换 E2B 时 tool 源码不动 |
-| [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md) | resolve → confine → spawn；run 的失败合同 |
+| [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md) | resolve → confine → spawn；run 的失败合同；持久 bash 的 prompt 就绪 |
+| [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md) | `backgroundMode` one-shot / continuable；产品 provider 的 host 平面 opt-in |
 
 模型可见的 tool 管道在 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。
