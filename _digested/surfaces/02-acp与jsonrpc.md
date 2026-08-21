@@ -35,6 +35,7 @@
 **保证：**
 
 - `session/prompt` **立刻**返回 `{ messageId }`（inbox 准入 id），不等 idle。
+- `initialize` 是就绪边界：处理前先 `ctx.get('loader')?.await()` 等整棵当前树结算，避免异步 sibling Loader 条目（如 MCP 工具发现）未完成时宣称 ready。
 - 同一 Context 内每条 `session/event` 都转成 `session.event`，每条 `agent/status` 都转成 `session.status`；订阅不按「是否由 SDK 创建」过滤。
 - `initialize.maxTokens` 可变成该 SDK 创建的 agent 及其进程内后代的输出上限。
 - `shutdown`：刷新响应，dispose 根 ctx，exit 0。

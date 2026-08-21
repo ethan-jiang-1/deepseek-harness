@@ -54,4 +54,6 @@ max-tokens 截断时，assembler 丢掉未完成的 `tool-call` block。`ReplayE
 
 code-mode：子工具结果里的 image block 不嵌进 `run_code` 的程序输出。成功的 image-bearing result 在 run 结束后 `deferContext` 成 plugin 来源的 user message，进入下一轮获准请求。`read_image` 只把图像放进自己的 tool result；由 code-mode 在父 run 结束后统一 defer。
 
+`llm-deepseek` 的图像序列化：模型要在 catalog 里声明 `inputModalities` 含 `image` 才收图像输入，否则 `UNSUPPORTED_CONTENT`；序列化时把 durable attachment 转成 base64 data URL。累计 base64 负载受 `maxRequestImageBytes`（默认 20 MiB）约束，`offloadRequestImages` 按最旧优先把图像替换成占位文本 `OFFLOADED_IMAGE_TEXT`；这是请求期瞬态变换，不写回 durable log。413 映射为 `INVALID_REQUEST`。
+
 ACP 在已提交 `assistant/message` 上按块投影非空文本**或**图像；chunk 仍不上线。SDK JSON-RPC 相反：每条耐久事实都 `session.event`。见 [`../surfaces/02-acp与jsonrpc.md`](../surfaces/02-acp与jsonrpc.md)。
