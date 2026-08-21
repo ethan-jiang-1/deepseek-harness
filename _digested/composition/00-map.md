@@ -40,7 +40,7 @@ dsh --profile web --dump-config
 ![Harness home 与 profile 目录](./figures/profile-home.svg)
 
 - **profile**：`$DSH_HOME/profiles/<name>`（未设 `DSH_HOME` 则为 `~/.dsh`）。里面有 `package.json`（`dsh.profile.bundles` + 树外插件）和用户自己的 `cordis.patch.yml`。
-- **bundle**：npm 包，清单里写 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`。`dsh-base` 是每个 profile 的第一层；其它 bundle 增加 Web 或 headless 等产品组合。`dsh-base` 不依赖、也不挂载可选的 Codex / Claude Code provider；要启用时由 opt-in profile 在 host 平面安装并挂一次，agent preset 再决定要不要露出对应的 model-facing tool 行。
+- **bundle**：npm 包，清单里写 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`。`dsh-base` 是每个 profile 的第一层；其它 bundle 增加 Web 或 headless 等产品组合。`dsh-base` 不依赖、也不挂载可选的 Codex / Claude Code provider；它们是独立的 Profile Bundle，用 `dsh plugin --profile <name> add` 装进 profile 并 restart，各自在 host 平面注册一个 dormant 默认 provider，agent preset 再决定要不要露出对应的 model-facing tool 行——host 可用不等于 tool 暴露。
 - **模板**：`web` 和 `headless` 首次使用会自动初始化。其它名字必须先 `initProfile`，否则 fail loud。
 - **preset id 与显示名**：shipped 目录仍是 `code` / `standard` / `cordis`。Web 把 `code` 显示成 PTC mode / PTC 模式，那是 `ui-agent-preset` 的 locale 字符串，不是另一份 preset 文件。
 

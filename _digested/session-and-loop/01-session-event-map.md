@@ -18,7 +18,7 @@
 | `step/start` · `step/end` | 否 |
 | `user/message` | 是（surface） |
 | `assistant/chunk` | 否（回放 / UI） |
-| `assistant/message` | 是（surface；空 content 派生为 null） |
+| `assistant/message` | 是（surface；空 content 派生为 null；可带 `interrupted: true`） |
 | `tool/call` | 否 |
 | `tool/result` | 是（surface） |
 | `request/header` | 否（单独重建 config、system 与 tools） |

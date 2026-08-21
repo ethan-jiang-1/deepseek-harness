@@ -21,9 +21,9 @@ shipped preset 里，`subagent_fork` 用 `backgroundMode: continuable`；Codex /
 
 ## 产品 provider 挂在哪
 
-生产 `dsh` 的 `dsh-base` 不依赖、也不挂载可选的 Codex / Claude Code provider。要启用时：
+生产 `dsh` 的 `dsh-base` 不依赖、也不挂载可选的 Codex / Claude Code provider。它们是独立的 Profile Bundle，用 `dsh plugin --profile <name> add @deepseek-ai/dsh-subagent-codex` 装进 profile；每个 Bundle 拥有自己的 host 可用性，restart 后在 host 平面注册一个 dormant 默认 provider，且只使用它自己 pin 的包内平台 CLI。要启用时：
 
-1. opt-in profile 在 **host 平面**安装并挂载该 provider 一次（进程级单例）。
+1. 安装对应 Bundle 并 restart，让 Host 注册该 provider（进程级单例）。
 2. 复制 shipped preset，去掉对应 tool 行的 `disabled`，让从这个 preset 组成的 agent 看见委托工具。
 
-不要把产品 provider 再插进每个 agent 的 isolate realm。tool 行只决定「这个 agent 能不能调用」，不负责再 mount 一份 provider。
+不要把产品 provider 再插进每个 agent 的 isolate realm。tool 行只决定「这个 agent 能不能调用」，不负责再 mount 一份 provider。安装 Bundle 或组合 preset 行都不会启动产品、认证账号、选模型或探测凭据。

@@ -43,16 +43,18 @@ runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造�
 7. 有结束原因且 `next-step` 为空时，`serial('agent/turn-stopping')`（没有 `next()`）；监听器可 `agent.steer()`，驱动随后重读 inbox，有新工作就继续下一 step。
 8. `finally` 里 `turn/end`。loop **不等** turn 边界上的 flush；checkpoint 策略另挂。
 
-`turn/end` 的 `interrupted` 只给持久化后端关崩溃孤儿 turn；loop 从不发这个标记。
+`turn/end` 的 `interrupted` 只给持久化后端关崩溃孤儿 turn；loop 从不发这个标记。别和 `assistant/message.interrupted` 混：那是 loop 在取消时主动写的前缀定稿（见 `step()` 一节），不是 `turn/end` 的字段。
 
 ## `step()` 与历史
 
 `buildRequest(..., this.session.deriveMessages(), ...)`。流：
 
 ```text
-llm.stream / preparedCall.stream
+llm.stream / preparedCall.stream（整个 for-await 包在 try/catch）
   每个 chunk → append assistant/chunk，记下 seq
   BlockAssembler.push
+  signal.aborted 且 assembler 有已送达前缀 → 先 append assistant/message（interrupted: true，
+    sourceEventSeqs = chunk seqs；未派发的 tool-call 不在），再 rethrow
 assembler.finish
   error/aborted → waterfall agent/request-error；retry 则同一 step 再来，不新开 step
   否则 createAssistantMessage → assistant/message（surfaceOp append，sourceEventSeqs = chunk seqs）
