@@ -4,7 +4,7 @@
 
 简单说：**一子目录 = 一个探究过的问题，答案是自己综合出来的，不是从某一份材料里直接抄的。**
 
-> **当前研究基线**：涉及运行时行为的结论以 DeepSeek Harness `0.1.0-rc.7`（`99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`）为准；旧 checkout 只用于变更史，不能替代当前源码验证。
+> **当前研究基线**：涉及运行时行为的结论以 DeepSeek Harness `0.1.1-rc.1`（`528c682e061696f5a160f363f236ecbf53cbd006`）为准；旧 checkout 只用于变更史，不能替代当前源码验证。
 
 文件不叫 `README.md`：仓库的 bilingual pairing 门禁会把任意 `README.md` 当成产品文档语料。
 

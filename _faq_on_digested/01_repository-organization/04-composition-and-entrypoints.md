@@ -1,6 +1,6 @@
 # 04 · 从入口和配置看目录怎样变成运行时
 
-源码核验基线：DeepSeek Harness `0.1.0-rc.7`，commit `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`。
+源码核验基线：DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。
 
 ## 总链路
 
@@ -63,7 +63,7 @@ launcher hard switch（例如 telemetry opt-out）
 
 后层可以配置、禁用或替换前层用稳定 `id` 插入的 row。bundle 的 `package.json` 通过 `dsh.bundle.patch` 指向自己的 `cordis.patch.yml`；profile 的 `dsh.profile.bundles` 决定 bundle 顺序。
 
-`dsh-base` 提供模型 adapter、核心 registries、持久化、sandbox/approval 与大量基础插件，但不安装可选的 Codex / Claude Code provider；要启用时由 opt-in profile 在 host 平面挂一次，agent preset 再决定是否露出对应 tool 行。`dsh-web-app` 增加 Web Host/Client 组合；`dsh-headless` 增加一次性 runner。bundle 只声明 rows 和默认 config，真正行为仍由 row 指向的 package 拥有。Web 把 shipped `code` preset 显示成 PTC mode，preset id 仍是 `code`。
+`dsh-base` 提供模型 adapter、核心 registries、持久化、sandbox/approval 与大量基础插件，但不安装可选的 Codex / Claude Code provider；它们是独立 Profile Bundle，用 `dsh plugin --profile <name> add` 装进 profile 并 restart，agent preset 再决定是否露出对应 tool 行。`dsh-web-app` 增加 Web Host/Client 组合；`dsh-headless` 增加一次性 runner。bundle 只声明 rows 和默认 config，真正行为仍由 row 指向的 package 拥有。Web 把 shipped `code` preset 显示成 PTC mode，preset id 仍是 `code`。
 
 ## `dsh web` 怎样跨目录
 

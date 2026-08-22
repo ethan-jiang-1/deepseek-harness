@@ -1,6 +1,6 @@
 # Answer · 多 vendor 接入 DSH 的选择
 
-产品源码核验基线：DeepSeek Harness `0.1.0-rc.7`，commit `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`。手工 route 实测仍以各 vendor 研究笔记为准。
+产品源码核验基线：DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。手工 route 实测仍以各 vendor 研究笔记为准。
 
 ## 结论
 
