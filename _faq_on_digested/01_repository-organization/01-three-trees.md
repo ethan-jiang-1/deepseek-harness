@@ -1,6 +1,6 @@
 # 01 · 先分清三棵树
 
-源码核验基线：DeepSeek Harness `0.1.0-rc.7`，commit `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`。
+源码核验基线：DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。
 
 ## 为什么目录越看越乱
 
