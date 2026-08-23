@@ -43,6 +43,7 @@
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 组装、LLM adapter、tool 执行瀑布 |
 | `surfaces/` | 人对机器的入口 | CLI、Web host/client、ACP、JSON-RPC SDK |
 | `_coverage/` | 覆盖矩阵 | 维护用索引，按源码组追踪 digest 覆盖状态 |
+| `harness-idea/` | 消化后的理解与判断 | dsh 作为 harness 做对了什么：为什么容易读懂、读了就做对、与背后智能无关 |
 | `_change_log/` | 上游同步记录 | 每次 upstream 合入后的变更摘要与资料审计 |
 
 ## 阅读路径
@@ -56,6 +57,7 @@
 - **想加能力或换后端** → `capability-seams/00-map.md`
 - **想搞懂模型看见什么** → `tools-prompt-llm/00-map.md`
 - **想搞懂 CLI / Web / ACP 怎么复用同一套 runtime spine** → `surfaces/00-map.md`
+- **想搞懂 dsh 为什么对读者友好（harness 思想）** → `harness-idea/00-map.md`
 
 推荐主干顺序：
 
