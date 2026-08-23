@@ -45,6 +45,7 @@ _faq_on_digested/
 | 01 | [DSH 的目录为什么这样组织，应该怎样读？](./01_repository-organization/question.md) | [目录设计总模型](./01_repository-organization/answer.md) |
 | 02 | [DSH 所谓 Spec-Driven Development 大概怎样运作？](./02_spec-driven-development/question.md) | [分层规格、生命周期与可执行验收](./02_spec-driven-development/answer.md) |
 | 03 | [多个模型 vendor 应怎样接入 DSH？](./03_model-vendors/question.md) | [配置、adapter 与自动路由的选择](./03_model-vendors/answer.md) |
+| 04 | [DSH 的根入口文档为什么能让模型按图索骥？](./04_root-entry-documentation/question.md) | [根入口分流、tier 路由、预算门禁与可迁移原则](./04_root-entry-documentation/answer.md) |
 
 ## 引用规范
 
