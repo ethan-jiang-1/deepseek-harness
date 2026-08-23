@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="430" viewBox="0 0 960 430" font-family="sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="480" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#24364d">dsh 对 coding agent 可读：是生产方式的结果，不是设计宣言</text>
+
+  <rect x="30" y="60" width="200" height="145" rx="10" fill="#f2f6fc" stroke="#4a6fa5"/>
+  <text x="130" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#24364d">写作者 = coding agent</text>
+  <text x="130" y="114" text-anchor="middle" font-size="12" fill="#333">没有部落知识通道：</text>
+  <text x="130" y="134" text-anchor="middle" font-size="12" fill="#333">不能问、不能体感、</text>
+  <text x="130" y="154" text-anchor="middle" font-size="12" fill="#333">不能「在这仓库干三年」</text>
+  <text x="130" y="178" text-anchor="middle" font-size="11" fill="#555">想继续工作 → 知识必须外置</text>
+
+  <rect x="280" y="60" width="200" height="145" rx="10" fill="#fdf6ec" stroke="#b07818"/>
+  <text x="380" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#5c3a08">被迫外置（生存需要）</text>
+  <text x="380" y="114" text-anchor="middle" font-size="12" fill="#333">门禁：规则写成红灯</text>
+  <text x="380" y="134" text-anchor="middle" font-size="12" fill="#333">Agent Notes：意图写成记录</text>
+  <text x="380" y="154" text-anchor="middle" font-size="12" fill="#333">扩展表：归属写成决策表</text>
+  <text x="380" y="174" text-anchor="middle" font-size="12" fill="#333">vendor 进树：框架写成源码</text>
+
+  <rect x="530" y="60" width="200" height="145" rx="10" fill="#f0f7f0" stroke="#2f6b3a"/>
+  <text x="630" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e4026">产物是 agent 形状</text>
+  <text x="630" y="114" text-anchor="middle" font-size="12" fill="#333">规则可执行，不是劝告</text>
+  <text x="630" y="134" text-anchor="middle" font-size="12" fill="#333">「为什么」有记录</text>
+  <text x="630" y="154" text-anchor="middle" font-size="12" fill="#333">连框架都在树里</text>
+  <text x="630" y="178" text-anchor="middle" font-size="11" fill="#555">读者模型和写作者模型是同一种</text>
+
+  <rect x="780" y="60" width="150" height="145" rx="10" fill="#f2f6fc" stroke="#4a6fa5"/>
+  <text x="855" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#24364d">新 coding agent</text>
+  <text x="855" y="110" text-anchor="middle" font-size="14" font-weight="bold" fill="#24364d">能参与</text>
+  <text x="855" y="136" text-anchor="middle" font-size="12" fill="#333">读合同</text>
+  <text x="855" y="156" text-anchor="middle" font-size="12" fill="#333">照模板</text>
+  <text x="855" y="176" text-anchor="middle" font-size="12" fill="#333">过门禁</text>
+
+  <line x1="230" y1="125" x2="276" y2="125" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="480" y1="125" x2="526" y2="125" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="730" y1="125" x2="776" y2="125" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <path d="M855 205 L855 260 L130 260 L130 209" fill="none" stroke="#8a8a8a" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <text x="492" y="278" text-anchor="middle" font-size="12" fill="#666">参与 → 产出更多 note → 语料库越厚，新 agent 越好参与（正反馈闭环）</text>
+
+  <rect x="30" y="310" width="900" height="116" rx="10" fill="#fafafa" stroke="#999"/>
+  <text x="60" y="336" font-size="13" font-weight="bold" fill="#333">源头（repo 最早的 note 之一）</text>
+  <text x="60" y="356" font-size="11" fill="#555">“This codebase is developed primarily by coding agents. Agents follow enforced gates far</text>
+  <text x="60" y="374" font-size="11" fill="#555">more reliably than prose conventions, and ‘a lot of work’ is not a cost argument when</text>
+  <text x="60" y="392" font-size="11" fill="#555">agents do the labor.” —— 2026-06-11 quality-gates</text>
+  <text x="60" y="412" font-size="12" fill="#555">「推荐用 agent 探索代码库」（docs/architecture.md）是事后注脚，不是设计源头。</text>
+</svg>

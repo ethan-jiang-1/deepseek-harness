@@ -4,13 +4,13 @@
 
 可读不等于做对。很多系统文档写清楚了，动手还是错：因为**正确做法与错误做法的摩擦一样小，甚至错误做法更显眼**——正确写法藏在某个没写下来的约定里，错误写法反而有现成的复制粘贴来源。英文设计词汇里这被称为 paved road（铺好的路）或 pit of success（成功之坑）：正确做法是唯一好走的路。
 
-dsh 的设计让正确做法的摩擦最小。六个机制：
+dsh 的设计让正确做法的摩擦最小。七个机制，编号只为引用：
 
 ## 机制一：注册即效果（registrations are effects），只有一种写法
 
 插件的每个贡献都走 `ctx.effect()` / `ctx.on()`，注册返回 disposer，fiber 卸载时贡献一并撤销（HMR 安全由测试证明）。正确写法 = 生命周期正确的写法，**不存在「先这么写、回头补清理」的第二套写法**。
 
-对比：如果一个系统里「正式注册」和「临时挂上去」是两种写法，读者每次都要判断该用哪种——判断就是犯错点。dsh 把判断删掉了。
+诚实说明强制力在哪：这一条是**惯例 + 测试 + review 强制**，不是机械门禁——静态分析管不到「每个贡献是否都走了 effect」。dsh 的对策是把惯例写成 standing order（`AGENTS.md`），把生命周期正确性交给 HMR 测试与运行时 invariant（见机制五）。对比：如果一个系统里「正式注册」和「临时挂上去」是两种写法，读者每次都要判断该用哪种——判断就是犯错点。dsh 把判断删掉了。
 
 ## 机制二：默认正确，少做即对
 
@@ -35,11 +35,21 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 - required-on-read 在编译期拒绝未知事件类型；
 - 误配置在 load 时 fail loud；
-- 运行时 invariant 在 loop 构建的每次 `llm/stream` 上重建请求并与日志比对（非 loop 请求不检查），不一致立刻 fail（`packages/core/agent-loop/src/invariant.ts`）。
+- 运行时 invariant 在请求发出时比对（见机制五）。
 
 错误发生在源头、消息指明违反的规则（「diverges from the folded request header」）。agent 不需要猜测「哪里错了」，只需要按错误消息修。每轮试错都有信息增量。
 
-## 机制五：门禁即教学（gates as teaching），反馈延迟趋近于零
+## 机制五：运行时 invariant 体系——规则写成断言，不写成劝告
+
+这是 dsh 独有的、比「门禁」更狠的一层：
+
+- **每个包必须登记自己的运行时 invariant**：`verify-package-invariants` 门禁强制，没登记就是红的（[`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)）。`packages/core/agent-loop/src/invariant.ts` 只是最著名的一个实例。
+- **invariant 断言的是有所有权的关系**（`AGENTS.md` 的纪律）：检查权威事件流或可变数据，不检查 service 存在性、不检查插件元数据——「存在」不代表「关系成立」，断错了对象等于没断。
+- **实例**：`dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致立刻 fail（非 loop 请求不检查）。
+
+「模型可见 ⟺ 已记录」如果只是文档里的劝告，一定会在某次重构中失效；它是运行时断言，所以它活着。门禁管「提交前」，invariant 管「运行时」——两条线都断，错误才可能漏出去。正确性由系统证明，不由读者自觉。
+
+## 机制六：门禁即教学（gates as teaching），反馈延迟趋近于零
 
 门禁把合同变成可执行的检查，错误信息告诉你怎么补：
 
@@ -50,7 +60,9 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 做错不是等人类 review 打回（延迟以天计），而是被机器当场纠正（延迟以秒计）。对 coding agent 而言，门禁就是「资深开发者的即时批注」——不会漏、不会累。
 
-## 机制六：对称消除歧义（ambiguity）
+**门禁本身要学。** 诚实的一面：`run-gates.ts` 聚合 54 个具名门禁，选「该跑哪几个」本身是一个判断。dsh 没有假装这个判断不存在，而是**把它拆小并配工具**：[`dsh-pre-push-checks`](../../.agents/skills/dsh-pre-push-checks/SKILL.md) skill 就是「按改动面选最小检查集」的外置。判断门槛没有被移除，只是从「凭经验」变成「照 skill 走」——这同时回答了 [`04`](./04-intelligence-agnostic.md) 的边界问题。
+
+## 机制七：对称消除歧义（ambiguity）
 
 歧义是犯错之源。dsh 系统性封死「这里也可以、那里也可以」的岔路口：
 
@@ -75,6 +87,8 @@ dsh 把「正确」编码进系统的**形状**（形状上只有一条路），
 
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（tool 合同与最小 shape）
 - [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（运行时 invariant）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（invariant 体系的设计决策）
+- [`../../.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（选门禁的判断被外置成 skill）
 - [`docs/tool-execution-pipeline.md`](../../docs/tool-execution-pipeline.md)（三条 waterfall 管道）
 - [`../composition/00-map.md`](../composition/00-map.md)（patch 层：误配置 fail loud）
 - [`../session-and-loop/01-session-event-map.md`](../session-and-loop/01-session-event-map.md)（required-on-read）

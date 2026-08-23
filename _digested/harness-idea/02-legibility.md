@@ -4,7 +4,7 @@
 
 coding agent 与人类读者有一个关键差别：它没有部落知识（tribal knowledge）通道。它不能问资深开发者、看不懂团队氛围、没有「在这个仓库干过三年」的体感。它只有一件事做得极好——**读字面材料**；有一件事完全做不到——**读言外之意**。
 
-所以「一个仓库对 agent 可读」有一个可检验的定义：**它的全部参与知识都以字面形式存在**。dsh 的六个机制共同凑出这个性质。
+所以「一个仓库对 agent 可读」有一个可检验的定义：**它的全部参与知识都以字面形式存在**。dsh 的六个机制共同凑出这个性质。编号只为引用方便：机制之间边界故意重叠（词汇、类型、规则是同一件事的三个切面），不是六块拼图——重叠是证据收敛，不是设计对称。
 
 ## 机制一：词汇就是合同（vocabulary as contract）
 
@@ -36,27 +36,29 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 - 每个包有 README + JSDoc 合同 + `./invariant` 登记（`verify-package-invariants` 强制）。
 - 目录（`tool-catalog`、`config-catalog`、`module-graph`、`event-producer-consumer`）全部**从源码生成、freshness-gated**：文档不可能与代码漂移，读文档就是读代码。
 
-手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。
+手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
 
-## 机制五：机制写成规则，不写成历史
+## 机制五：机制写成规则，意图写成记录
 
 - `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果（registrations are effects）、模型可见 ⟺ 已记录（model-visible ⟺ logged）、显式优于隐式（explicit over implicit）。
 - 文档标准禁止「previously / now / renamed」这类变迁史（change history）；当前状态散文（current-state prose），一个事实一个家（one home per fact）（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
-- 设计意图单独住在 Agent Notes（`为什么`、`放弃了什么`、`怎么验证`），且 implemented 状态用现在时描述已落地的现实。
+- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：1124 条 implemented、50 条 proposed、22 条 rejected、287 条 archived；每条有分类、双语、归档纪律（archived 冻结，不当现行权威）；「非平凡改动必须带 note」本身是一条门禁（[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)）；归档有专门的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) skill。note 记的是「为什么、放弃了什么、怎么验证」——被拒方案也在。
+
+为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。这是本专题「分布外知识靠搬运、不靠生成」的最直接例证——1486 个 note 文件（含目录说明）就是仓库自己的分布外语料库。
 
 读者不需要从 git log 或代码注释反推设计意图——意图是显式交付物。这同时消除了文档自相矛盾的可能：一个事实只有一个家，两个版本不可能并存。
 
 ## 机制六：读者模型就是 agent
 
-- `docs/architecture.md` 开篇明说：「We recommend using an agent to explore the codebase and understand its architecture.」
+- `docs/architecture.md` 开篇明说：「We recommend using an agent to explore the codebase and understand its architecture.」——但这是注脚；源头是 [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)：开发主力就是 agent，所以规则按 agent 的读法写。
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) 把根 `AGENTS.md` 定位为「rules an agent needs in context in every session」——仓库为 agent 的上下文预算写的规则。
-- 仓库里存在 `writing-for-agents`、`dsh-prose-standard` 等技能：**写文档给 agent 读**是仓库内的正式工作流。
+- 仓库内存在 [`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md) 等技能：**写文档给 agent 读**是仓库内的正式工作流。
 
-这不是「顺手对 agent 友好」，是把 agent 当作一等读者来设计文档。
+这不是「顺手对 agent 友好」，是**写作者和读者是同一种 reader**——文档被写成什么形状，取决于写作者需要什么形状。
 
 ## 可读 ≠ 简单
 
-dsh 不简单：机制多、包多、事件多。但「可读」来自组织，不来自简化——复杂系统里，把知识组织成可查的表、可验证的合同、可复制的范本，比把系统做小更可行。读 dsh 的正确姿势是查表，不是通读。
+dsh 不简单：机制多、包多、事件多。但「可读」来自组织，不来自简化——复杂系统里，把知识组织成可查的表、可验证的合同、可复制的范本，比把系统做小更可行。读 dsh 的正确姿势是查表，不是通读；六个机制是同一事实的六个侧面，不是六块拼图。
 
 ## 证据入口
 
@@ -64,6 +66,8 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 - [`docs/architecture.md`](../../docs/architecture.md)（扩展表、事件域、推荐用 agent 探索）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件矩阵）
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders 本身）
+- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（读者模型的因果来源）
+- [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（note 语料库的门禁）
 - [`../session-and-loop/01-session-event-map.md`](../session-and-loop/01-session-event-map.md)（required-on-read 机制）
 - [`../cordis-runtime/02-waterfall-与事件合同.md`](../cordis-runtime/02-waterfall-与事件合同.md)（waterfall 合同）
 - [`../capability-seams/01-三角色与分包装.md`](../capability-seams/01-三角色与分包装.md)（seam 三角色）
