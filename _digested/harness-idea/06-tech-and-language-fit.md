@@ -10,6 +10,10 @@ TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最�
 
 [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md) 明说，对于一个 **built primarily by agents** 的仓库，「the package manager most tools and people expect」有真实价值：更少的意外、更常见的失败路径、更多可复制粘贴的答案。
 
+> For a repo that is built primarily by agents and read by occasional human contributors, "the package manager most tools and people expect" has real value: fewer surprises, better-trodden failure paths, more copy-pasteable answers.
+>
+> —— `.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md:9`（基线 `528c682e…`）
+
 但注意证据边界：`2026-06-17-ts-build-config` 也常被拿来当「技术选型」证据，它的实际理由是 **tsc 与 oxc/tsdown 的编译语义差异和 declaration 正确性**，不是「agent 更熟 TypeScript」。不要把每个技术决定都归因为 agent 友好。
 
 ## 第二层：语义贴合——语言特性和运行时模型同构
@@ -23,13 +27,17 @@ TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最�
 - async iterable → LLM chunk、工具更新与异步 disposer 使用同一模型；
 - TS across host/client → Host、Web client 共享协议类型与 schema。
 
-本专题把这条作为**分析框架**，不是源码事实；具体语义要回 [`../cordis-runtime/00-map.md`](../cordis-runtime/00-map.md) 核。它的可迁移结论是：**当架构的主要词汇（服务解析、作用域、开放类型、可逆生命周期）能被语言原生表达时，读者要跨的翻译层就少一层。** 这也是「容易读懂」的一部分，且与「LLM 熟不熟 TS」是两回事。
+本专题把这条作为**分析框架**，不是源码事实；具体语义要回 [`docs/cordis-primer.md`](../../docs/cordis-primer.md) 核。它的可迁移结论是：**当架构的主要词汇（服务解析、作用域、开放类型、可逆生命周期）能被语言原生表达时，读者要跨的翻译层就少一层。** 这也是「容易读懂」的一部分，且与「LLM 熟不熟 TS」是两回事。
 
 ## 第三层：低密度但承重的技术，本地化或生成化
 
 dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的部分，用了两种策略：
 
 1. **vendor 进树并本地拥有**：Cordis 被 vendor 进 `vendor/`，带 upstream SHA、本地修改日志和 sync 流程。`[原文]` 注意 [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md) 的决策理由是 **RC 框架 internals 的正确性、可 pin、可修**，不是「Cordis 太 niche、agent 不会」。把动机说成「分布外所以搬进来」是事后解释；更准确的效果是：搬进来之后，agent 不需要依赖模糊的外部知识，框架层可审计、可修。
+
+> DeepSeek Harness is built on the Cordis framework. Cordis core was at 4.0.0-rc.6 (a release candidate) when this repo started; the harness depends on framework internals (fiber lifecycle, effect disposal, waterfall dispatch) whose exact behavior matters to the agent loop's correctness guarantees.
+>
+> —— `.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md:9`（基线 `528c682e…`）
 2. **生成合同面**：把源码事实变成 freshness-gated 的 catalog（[`02`](./02-legibility.md) 机制五）。agent 不需要懂全部 Cordis 或全部包，只需要查生成的 API、事件、配置与模块图。
 
 `[外部观点]` native Landlock、Python SDK 等边界同样显式分层：TS 控制平面之外的东西放在 seam 之后或独立发行物里，不混进插件模型。仓库侧可见的是 `native/`、`python/` 顶层边界，以及 vendor / npm 依赖的分离（[`vendor/README.md`](../../vendor/README.md)）。
@@ -51,11 +59,11 @@ dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的�
 
 ## 证据入口
 
-- [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md)（先验密度的直接证据）
-- [`2026-06-17-ts-build-config`](../../.agents/notes/implemented/process/2026-06-17-ts-build-config.md)（技术决定但理由不是 agent 友好：证据边界）
-- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md)（vendor 的真实理由）
+- [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md)（第 9 行；生态熟悉度的直接证据）
+- [`2026-06-17-ts-build-config`](../../.agents/notes/implemented/process/2026-06-17-ts-build-config.md)（第 11 行；技术决定但理由不是 agent 友好：证据边界）
+- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md)（第 9 行；vendor 的真实理由）
 - [`../../vendor/README.md`](../../vendor/README.md)（manifest 与本地修改日志）
-- [`../cordis-runtime/00-map.md`](../cordis-runtime/00-map.md)（语义贴合要回这里核）
-- [`../composition/00-map.md`](../composition/00-map.md)（ESM / 配置 / 分发单元的实际机制）
+- [`docs/cordis-primer.md`](../../docs/cordis-primer.md)（五条原语的语义落点）
+- [`docs/architecture.md`](../../docs/architecture.md)（插件树与组合层）
+- [`docs/development.md`](../../docs/development.md)（TypeScript 构建边界）
 - [`../../package.json`](../../package.json)（pnpm / TS / vitest / lefthook 的仓库落点）
-- [`../../_architecture_referenced/lencx/lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)（「Node.js 是语义选择」的外部分析）

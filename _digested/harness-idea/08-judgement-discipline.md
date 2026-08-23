@@ -6,7 +6,7 @@
 
 ## 基线
 
-全部判断对照 DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。上游同步后，按 [`../_change_log/00-index.md`](../_change_log/00-index.md) 复核本专题证据锚点；外部参考（lencx）只提供问题框架，事实仍以本基线为准。
+全部判断对照 DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。上游同步后，按 `_change_log/` 复核本专题证据锚点；外部技术分享只作背景，不进入证据，事实仍以本基线为准。
 
 ## 出处分级
 
@@ -68,16 +68,15 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 | id | claim | 状态 | 主要证据 | 什么会证伪它 |
 |----|-------|------|----------|--------------|
 | C1 | 可参与性 = 参与规则被字面外置并可执行的程度 | `[框架]` | 本文框架 | 找到一个规则大量在人脑但 agent 仍稳定做对的系统 |
-| C2 | dsh 的基底是插件图 + 事件流，loop 位于两者之间 | `[源码]` | [`../system/00-map.md`](../system/00-map.md) · [`docs/architecture.md`](../../docs/architecture.md) | 源码显示 loop 不写日志或直接构造应用状态 |
+| C2 | dsh 的基底是插件图 + 事件流，loop 位于两者之间 | `[源码]` | [`docs/architecture.md`](../../docs/architecture.md) · [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md) | 源码显示 loop 不写日志或直接构造应用状态 |
 | C3 | quality-gates note 自称开发主力是 coding agent，并选择 gates over prose | `[原文]` | [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) | 原文被修改或归档且不再指向当前门禁 |
 | C4 | 没有部落知识通道 → 知识必须外置 | `[推断]` | 本文因果节 | 找到同时期、同压力、但知识未外置的纯 agent 仓库 |
 | C5 | 「推荐用 agent 探索」是事后注脚 | `[推断]` | architecture 原文 + quality-gates note 的时间先后 | 找到更早的官方设计记录把 agent 读者当作源头 |
 | C6 | 门禁与 invariant 让关键规则可执行 | `[源码]` | `scripts/run-gates.ts` · invariant 源码 | 关键规则存在且长期只有 prose、无红灯 |
-| C7 | 正确路径分四层：patch / 扩展点 / seam / loop | `[推断]` | [`04`](./04-participation-paths.md) 的证据 | dsh 官方或源码显示某层参与不成立 |
-| C8 | Node.js 选择同时受先验密度与语义贴合影响 | `[推断]` + `[外部观点]` | pnpm note · lencx | 出现更早的官方记录明确只考虑生态或只考虑语义 |
-| C9 | dsh 形状的性价比由组合压力决定 | `[推断]` + `[外部观点]` | lencx 对比 · 本文成本清单 | 低组合压力场景下 dsh 形状仍被证明普遍更划算 |
-| C10 | 本专题的可执行化做到 prose + 出处 + claims.json 的路径与数字检查 | `[源码]` | `_digested/verify.mjs` · claims.json | 本专题加入更多机器可核验 claim 后需更新 |
-| C11 | lencx 转引的社区估计只用于降低「primarily」的置信度，不当作普查事实 | `[外部观点]` | [`DSH架构解析.md`](../../_architecture_referenced/lencx/DSH架构解析.md) | 原转引被撤回、原文修订，或出现更可靠的全量统计 |
+| C7 | 正确路径分四层：patch / 扩展点 / seam / loop | `[推断]` | [`docs/architecture.md`](../../docs/architecture.md) · [`extension-cookbook`](../../docs/cookbook/extension-cookbook.md) · [`AGENTS.md`](../../AGENTS.md) | dsh 官方或源码显示某层参与不成立 |
+| C8 | pnpm note 明确把生态熟悉度作为 package manager 选型理由 | `[原文]` | [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md) | pnpm note 被修订，删除了 agent 生态熟悉度作为理由 |
+| C9 | dsh 形状的性价比由组合压力决定 | `[推断]` | [`docs/architecture.md`](../../docs/architecture.md) · [`docs/capability-seams.md`](../../docs/capability-seams.md) | 低组合压力场景下 dsh 形状仍被证明普遍更划算 |
+| C10 | 本专题的可执行化做到 prose + 出处 + claims.json 的路径与数字检查 | `[源码]` | 本专题 verify 脚本 · claims.json | 本专题加入更多机器可核验 claim 后需更新 |
 
 ## 自我适用：用三个问题检验本专题
 
@@ -89,12 +88,15 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 
 判断一篇消化材料有没有价值，问的不是「写得漂不漂亮」，是「哪几句是 fresh agent 写不出来的，并且它们经得起复核」。分布之外的知识不能幻想写出来；它只能通过检索搬运、人类播种、三角核验和可执行检查进入文本。本专题目前做到的是**出处可追、状态可分、数字与路径可机器核对**；还做不到的是**判断语义真伪的自动验证**——后者仍由人读与上游同步复核承担。
 
-## 证据入口
+## 证据入口（DSH 官方）
 
-- [`../_change_log/00-index.md`](../_change_log/00-index.md)（同步纪律）
-- [`../../_architecture_referenced/lencx/lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)（外部观点来源）
-- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（C3）
-- [`../../scripts/run-gates.ts`](../../scripts/run-gates.ts)（C6）
-- [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（C6）
-- [`../../_digested/verify.mjs`](../../_digested/verify.mjs)（本专题当前可执行检查的真实边界）
-- [`./claims.json`](./claims.json)（机器核对的 claim register）
+- [`../../AGENTS.md`](../../AGENTS.md)（standing orders：可机械检查的规则优先）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文与一个事实一个家）
+- [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
+- [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期与格式）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；空 invariant 的“显式结论”纪律）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；元验证与 snapshot 政策）
+
+## 本专题内部产物（非 DSH 证据）
+
+- [`./claims.json`](./claims.json)（机器核对路径与数字的 claim register）
