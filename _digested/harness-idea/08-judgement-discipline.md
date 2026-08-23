@@ -71,12 +71,13 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 | C2 | dsh 的基底是插件图 + 事件流，loop 位于两者之间 | `[源码]` | [`../system/00-map.md`](../system/00-map.md) · [`docs/architecture.md`](../../docs/architecture.md) | 源码显示 loop 不写日志或直接构造应用状态 |
 | C3 | quality-gates note 自称开发主力是 coding agent，并选择 gates over prose | `[原文]` | [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) | 原文被修改或归档且不再指向当前门禁 |
 | C4 | 没有部落知识通道 → 知识必须外置 | `[推断]` | 本文因果节 | 找到同时期、同压力、但知识未外置的纯 agent 仓库 |
-| C5 | 「推荐用 agent 探索」是事后注脚 | `[原文]` | note 与 architecture 时间先后 | 找到更早的官方设计记录把 agent 读者当作源头 |
+| C5 | 「推荐用 agent 探索」是事后注脚 | `[推断]` | architecture 原文 + quality-gates note 的时间先后 | 找到更早的官方设计记录把 agent 读者当作源头 |
 | C6 | 门禁与 invariant 让关键规则可执行 | `[源码]` | `scripts/run-gates.ts` · invariant 源码 | 关键规则存在且长期只有 prose、无红灯 |
 | C7 | 正确路径分四层：patch / 扩展点 / seam / loop | `[推断]` | [`04`](./04-participation-paths.md) 的证据 | dsh 官方或源码显示某层参与不成立 |
 | C8 | Node.js 选择同时受先验密度与语义贴合影响 | `[推断]` + `[外部观点]` | pnpm note · lencx | 出现更早的官方记录明确只考虑生态或只考虑语义 |
 | C9 | dsh 形状的性价比由组合压力决定 | `[推断]` + `[外部观点]` | lencx 对比 · 本文成本清单 | 低组合压力场景下 dsh 形状仍被证明普遍更划算 |
 | C10 | 本专题的可执行化做到 prose + 出处 + claims.json 的路径与数字检查 | `[源码]` | `_digested/verify.mjs` · claims.json | 本专题加入更多机器可核验 claim 后需更新 |
+| C11 | lencx 转引的社区估计只用于降低「primarily」的置信度，不当作普查事实 | `[外部观点]` | [`DSH架构解析.md`](../../_architecture_referenced/lencx/DSH架构解析.md) | 原转引被撤回、原文修订，或出现更可靠的全量统计 |
 
 ## 自我适用：用三个问题检验本专题
 

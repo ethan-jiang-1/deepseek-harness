@@ -10,7 +10,7 @@ dsh 把这些路径做成**阶梯**，而不是一个统一的「插件 API」�
 
 | 层 | 入口 | 典型动作 | 必须会的知识 | 检查半径 |
 |----|------|----------|--------------|----------|
-| L0 配置组合 | Profile / Bundle / `cordis.patch.yml` / `--patch` | 换 provider、改默认参数、关插件、插新行 | YAML 语法、entry id、`dsh --dump-config` | `verify-cordis-config`；boot fail loud |
+| L0 配置组合 | Profile / Bundle / `cordis.patch.yml` / `--patch` | 换 provider、改默认参数、关插件、插新行 | cordis.yml 语法（含 `!!js`）、entry id、`dsh --dump-config` | `verify-cordis-config`；boot fail loud |
 | L1 扩展点插件 | `ctx.tools` / `ctx.commands` / 事件监听 | 加 tool、加 hook、加 section | 插件 shape、`ctx.effect`、事件合同 | JSDoc、coverage、HMR 测试、snapshot（如模型可见） |
 | L2 capability seam | Service Definition / Provider / Consumer | 加执行后端、加模型能力、替换整个执行世界 | seam 三角色、Definition 对全部 Consumer 设计 | 三角色完整性、真实组合测试、双 SDK（如碰 loop/session） |
 | L3 loop / session 合同 | `agent-loop`、`SessionEventMap` | 改驱动、加持久事件、改请求头语义 | loop 义务、日志投影、版本机制 | invariant、双 SDK 投影、snapshot、architecture 同步 |

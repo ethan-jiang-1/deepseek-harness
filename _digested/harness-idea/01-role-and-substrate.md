@@ -53,9 +53,9 @@ Agent loop 位于两者之间：从插件图取模型、工具、提示词与会
 
 lencx 更长的解析稿转引过社区对仓库痕迹的估计：约 20% 提交/PR 与 Codex worktree 有关（[`DSH架构解析.md`](../../_architecture_referenced/lencx/DSH架构解析.md)）。该数字是二手估计，不能当事实；它只提醒我们：**「开发主力是 coding agent」是仓库的第一方自我描述，不应被升级为人口普查结论。** 因此本专题把因果写成「生产方式自称 + 可解释的机制」，不再写成斩钉截铁的既成事实。
 
-### `[原文]` 「推荐用 agent 探索」是注脚
+### `[原文]` architecture 说了什么；`[推断]` 它是注脚
 
-[`docs/architecture.md`](../../docs/architecture.md) 开篇说「We recommend using an agent to explore the codebase and understand its architecture」。这是后来的注脚，不是设计源头；源头是生产方式带来的机械门禁偏好。
+[`docs/architecture.md`](../../docs/architecture.md) 开篇说「We recommend using an agent to explore the codebase and understand its architecture」。这句话是原文；「它是后来的注脚、不是设计源头」是本专题从 note 时间先后推出的判断——源头是生产方式带来的机械门禁偏好。
 
 ## 参与规则的三层载体
 

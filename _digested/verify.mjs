@@ -485,11 +485,16 @@ const claimMetrics = new Set([
 ])
 
 function gitOutput(args) {
-  return execFileSync('git', args, {
-    cwd: repositoryRoot,
-    encoding: 'utf8',
-    maxBuffer: 16 * 1024 * 1024,
-  })
+  try {
+    return execFileSync('git', args, {
+      cwd: repositoryRoot,
+      encoding: 'utf8',
+      maxBuffer: 16 * 1024 * 1024,
+    })
+  } catch (error) {
+    report(claimsPath, undefined, `git ${args[0]} failed: ${error instanceof Error ? error.message : String(error)}`)
+    return ''
+  }
 }
 
 function gitTrackedLines(commit, prefix) {
@@ -540,6 +545,10 @@ function checkClaimRegister() {
     report(claimsPath, undefined, `not valid JSON (${error instanceof Error ? error.message : String(error)})`)
     return
   }
+  if (register === null || typeof register !== 'object' || Array.isArray(register)) {
+    report(claimsPath, undefined, 'claim register root must be a JSON object')
+    return
+  }
 
   try {
     execFileSync('git', ['cat-file', '-e', `${EXPECTED_BASELINE}^{commit}`], {
@@ -554,6 +563,8 @@ function checkClaimRegister() {
     report(claimsPath, undefined, `baseline must be ${EXPECTED_BASELINE}, got ${JSON.stringify(register.baseline)}`)
   }
 
+  if (!Array.isArray(register.claims)) report(claimsPath, undefined, 'claims must be an array')
+  if (!Array.isArray(register.metrics)) report(claimsPath, undefined, 'metrics must be an array')
   const entries = Array.isArray(register.claims) ? register.claims : []
   const metrics = Array.isArray(register.metrics) ? register.metrics : []
   const seen = new Set()
