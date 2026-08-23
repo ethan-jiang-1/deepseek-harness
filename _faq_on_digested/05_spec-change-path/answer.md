@@ -15,7 +15,7 @@ Issue 模板（意图/验收）
   → review / archive（语义兜底与生命周期收敛）
 ```
 
-`docs/` 在这条路径里是**结果，不是源头**。
+`docs/` 在这条路径里是**当前合同层**。
 
 ## 完整路径的阶段
 
@@ -30,7 +30,7 @@ Issue 模板（意图/验收）
 | 交付决定 | `implemented/` Agent Note | 最终交付了什么，代价是什么 |
 | 语义兜底 | `dsh-code-review`、prose skills | 机器查不到的语义是否正确 |
 
-## 为什么 `docs/` 是结果
+## `docs/` 在路径中的位置
 
 DSH 的文档规则明确：
 
@@ -49,7 +49,7 @@ proposed Note（未来式）
   → implemented Note（现在式决定）
 ```
 
-`docs/` 是这条链落地的投影，不是起点。
+`docs/` 是这条链落地的当前合同投影。
 
 ## 最关键的机制
 

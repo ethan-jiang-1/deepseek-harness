@@ -53,7 +53,7 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
   → tests / snapshots / invariants
 ```
 
-`docs/` 在这里出现，但它是实现后的投影，不是设计源。
+`docs/` 在这里作为实现后的当前合同被写回。
 
 ## 证据入口
 
