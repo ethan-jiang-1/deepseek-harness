@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="500" viewBox="0 0 960 500" font-family="sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <text x="480" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#24364d">本专题自己的知识从哪来：分布之内靠框架，分布之外靠搬运</text>
+
+  <rect x="30" y="60" width="330" height="200" rx="10" fill="#f2f6fc" stroke="#4a6fa5"/>
+  <text x="195" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#24364d">LM 喜欢的分布（谁都能写）</text>
+  <text x="195" y="114" text-anchor="middle" font-size="12" fill="#333">框架性通式：</text>
+  <text x="195" y="136" text-anchor="middle" font-size="12" fill="#333">知识外置 · paved road · 六/七个机制 · 三问检验</text>
+  <text x="195" y="162" text-anchor="middle" font-size="12" fill="#333">特点：换一个 fresh agent 也写得出来</text>
+  <text x="195" y="188" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a1f1f">风险：噪音——漂亮，但不一定是 dsh</text>
+  <text x="195" y="212" text-anchor="middle" font-size="11" fill="#555">应对：标为「框架性通式」，可信度最低档</text>
+  <text x="195" y="238" text-anchor="middle" font-size="11" fill="#555">新鲜感不是证据；出处才是</text>
+
+  <rect x="600" y="60" width="330" height="200" rx="10" fill="#fdf6ec" stroke="#b07818"/>
+  <text x="765" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#5c3a08">分布之外（只能搬，不能生成）</text>
+  <text x="765" y="114" text-anchor="middle" font-size="12" fill="#333">dsh 的具体事实：</text>
+  <text x="765" y="136" text-anchor="middle" font-size="12" fill="#333">因果反转（quality-gates note）· vendor manifest 门禁</text>
+  <text x="765" y="158" text-anchor="middle" font-size="12" fill="#333">required-on-read · 约 1500 条 note 的出处</text>
+  <text x="765" y="188" text-anchor="middle" font-size="12" font-weight="bold" fill="#5c3a08">价值：fresh agent 写不出来的那几句才是信息</text>
+  <text x="765" y="212" text-anchor="middle" font-size="11" fill="#555">来源：挖证据、核对源码，或人类播种</text>
+  <text x="765" y="238" text-anchor="middle" font-size="11" fill="#555">幻想写不出来——必须读证据</text>
+
+  <rect x="382" y="90" width="196" height="150" rx="10" fill="#f0f7f0" stroke="#2f6b3a"/>
+  <text x="480" y="116" text-anchor="middle" font-size="14" font-weight="bold" fill="#1e4026">搬运通道</text>
+  <text x="480" y="140" text-anchor="middle" font-size="11" fill="#333">挖 provenance（Agent Notes）</text>
+  <text x="480" y="160" text-anchor="middle" font-size="11" fill="#333">钉基线（commit）</text>
+  <text x="480" y="180" text-anchor="middle" font-size="11" fill="#333">反事实标记：fresh agent 会写吗</text>
+  <text x="480" y="200" text-anchor="middle" font-size="11" fill="#333">缺席 / 不对称清单</text>
+  <text x="480" y="220" text-anchor="middle" font-size="11" fill="#333">人类播种，标注出处</text>
+
+  <line x1="600" y1="150" x2="582" y2="150" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="566" y="142" text-anchor="end" font-size="11" fill="#555">事实</text>
+  <line x1="480" y1="240" x2="480" y2="302" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="492" y="278" font-size="11" fill="#555">挖 → 核对 → 标注</text>
+  <line x1="195" y1="260" x2="195" y2="302" stroke="#8a8a8a" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <text x="208" y="288" font-size="11" fill="#666">通式（标为低可信档）</text>
+
+  <rect x="30" y="306" width="900" height="120" rx="10" fill="#fafafa" stroke="#999"/>
+  <text x="60" y="332" font-size="14" font-weight="bold" fill="#333">本专题（消化材料）</text>
+  <text x="60" y="356" font-size="13" fill="#333">框架性通式 + 搬进来的事实；每条判断带出处（挖自 note / 播种自人 / 通式）</text>
+  <text x="60" y="380" font-size="13" fill="#333">反事实标记：fresh agent 写不出来的那几句，才是这份材料的信息量</text>
+  <text x="60" y="404" font-size="12" fill="#555">本专题不幻想生成分布外知识：判断只从证据锚点里搬（[00-map.md]「判断纪律」）</text>
+
+  <text x="480" y="470" text-anchor="middle" font-size="13" font-weight="bold" fill="#24364d">读证据，或人类播种——分布之外的知识没有第三条路</text>
+</svg>
