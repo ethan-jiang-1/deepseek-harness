@@ -29,6 +29,14 @@ TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最�
 
 本专题把这条作为**分析框架**，不是源码事实；具体语义要回 [`docs/cordis-primer.md`](../../docs/cordis-primer.md) 核。它的可迁移结论是：**当架构的主要词汇（服务解析、作用域、开放类型、可逆生命周期）能被语言原生表达时，读者要跨的翻译层就少一层。** 这也是「容易读懂」的一部分，且与「LLM 熟不熟 TS」是两回事。
 
+> A context is a proxy: normal property reads go through the service resolver, while `extend()`, `isolate()`, and `intercept()` create scoped child contexts without mutating their parent.
+>
+> —— `docs/cordis-api/context.md:10`（基线 `528c682e…`）
+
+> **Typed events use declaration merging** and merge-extensible maps.
+>
+> —— `AGENTS.md:105`（基线 `528c682e…`）
+
 ## 第三层：低密度但承重的技术，本地化或生成化
 
 dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的部分，用了两种策略：

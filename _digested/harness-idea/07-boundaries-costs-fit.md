@@ -55,6 +55,14 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 **组合压力**决定值不值：dsh 选择「组合一个运行时」而不是「扩展一个产品」。这个选择只有在多宿主、多 provider、会话级隔离、运行时装卸和第三方生态同时出现时才划算。`[推断]` 与常见的「产品内环 + 扩展 API」方案相比，dsh 的取舍是：没有统一胜负，只有「你要承受哪种变化」。
 
+> A running `dsh` is a plugin tree composed at boot from ordered layers.
+>
+> —— `docs/architecture.md:17`（基线 `528c682e…`）
+
+> A **seam** is a swappable capability with three roles: a **Service Definition**, one or more **Service Providers**, and one or more **Consumers**.
+>
+> —— `docs/glossary.md:7`（基线 `528c682e…`）
+
 所以准确的说法不是「与智能无关」，而是：**原则与智能无关；形状与生产方式有关；形状的性价比与组合压力有关。**
 
 ## 什么会杀死可参与性：反面清单

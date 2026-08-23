@@ -26,6 +26,10 @@ dsh 把这些路径做成**参与阶梯（participation ladder）**，而不是�
 
 Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以承载不同 preset 的会话。参与时要先分清自己改的是「所有会话都受影响」还是「某一类会话」。`[推断]` 这个两轴读法来自 DSH 文档；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 与 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
+> Give one session a different capability set | compose an agent preset; a service row there needs an `isolate` realm.
+>
+> —— `docs/architecture.md:114`（基线 `528c682e…`）
+
 ## 部署时替换是系统能力，不是源码习惯
 
 L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件」那么简单：**替换实现不需要改启动代码，替换本身成为系统提供的能力。**
