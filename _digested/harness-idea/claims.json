@@ -1,0 +1,121 @@
+{
+  "baseline": "528c682e061696f5a160f363f236ecbf53cbd006",
+  "claims": [
+    {
+      "id": "C1",
+      "claim": "可参与性 = 参与规则被字面外置并可执行的程度",
+      "status": "框架",
+      "sources": [
+        "_digested/harness-idea/08-judgement-discipline.md"
+      ],
+      "falsified_by": "找到一个规则大量留在人脑、但无背景 agent 仍能长期稳定做对的系统"
+    },
+    {
+      "id": "C2",
+      "claim": "dsh 的基底是插件图 + 事件流，loop 位于两者之间",
+      "status": "源码",
+      "sources": [
+        "_digested/system/00-map.md",
+        "docs/architecture.md"
+      ],
+      "falsified_by": "源码显示 loop 直接构造应用状态或不写 session log"
+    },
+    {
+      "id": "C3",
+      "claim": "quality-gates note 自称开发主力是 coding agent，并选择 gates over prose",
+      "status": "原文",
+      "sources": [
+        ".agents/notes/implemented/process/2026-06-11-quality-gates.md"
+      ],
+      "falsified_by": "该 note 原文被修改、归档或不再指向当前门禁体系"
+    },
+    {
+      "id": "C4",
+      "claim": "没有免费部落知识通道 → 知识必须外置，产物因此呈 agent 形状",
+      "status": "推断",
+      "sources": [
+        ".agents/notes/implemented/process/2026-06-11-quality-gates.md",
+        "_digested/harness-idea/01-role-and-substrate.md"
+      ],
+      "falsified_by": "找到同时期、同组合压力、但知识未外置且仍能由 agent 持续开发的仓库"
+    },
+    {
+      "id": "C5",
+      "claim": "「推荐用 agent 探索代码库」是事后注脚，不是设计源头",
+      "status": "推断",
+      "sources": [
+        "docs/architecture.md",
+        ".agents/notes/implemented/process/2026-06-11-quality-gates.md"
+      ],
+      "falsified_by": "找到更早的官方设计记录，把 agent 读者当作架构选择的源头"
+    },
+    {
+      "id": "C6",
+      "claim": "门禁与 invariant 让关键规则可执行",
+      "status": "源码",
+      "sources": [
+        "scripts/run-gates.ts",
+        "packages/core/agent-loop/src/invariant.ts"
+      ],
+      "falsified_by": "关键规则长期只有 prose、没有红灯，且仍能在 CI 中存活"
+    },
+    {
+      "id": "C7",
+      "claim": "正确路径分四层：patch / 扩展点 / seam / loop",
+      "status": "推断",
+      "sources": [
+        "_digested/harness-idea/04-participation-paths.md"
+      ],
+      "falsified_by": "官方文档或源码显示某一层参与不成立，或层间升级条件不存在"
+    },
+    {
+      "id": "C8",
+      "claim": "Node.js 选择同时受先验密度与语义贴合影响",
+      "status": "推断 + 外部观点",
+      "sources": [
+        ".agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md",
+        "_architecture_referenced/lencx/lencx-dsh.md"
+      ],
+      "falsified_by": "出现更早的官方记录，明确只考虑生态熟悉度或只考虑运行时语义"
+    },
+    {
+      "id": "C9",
+      "claim": "dsh 形状的性价比由组合压力决定",
+      "status": "推断 + 外部观点",
+      "sources": [
+        "_architecture_referenced/lencx/lencx-dsh.md",
+        "_digested/harness-idea/07-boundaries-costs-fit.md"
+      ],
+      "falsified_by": "在低组合压力场景下，dsh 形状仍被证明普遍比产品内环 + 扩展 API 更划算"
+    },
+    {
+      "id": "C10",
+      "claim": "本专题的可执行化目前做到 prose + 出处 + claim register 路径检查",
+      "status": "源码",
+      "sources": [
+        "_digested/verify.mjs"
+      ],
+      "falsified_by": "本专题加入更多机器可核验 claim 后，本条目需要更新"
+    }
+  ],
+  "metrics": [
+    {
+      "id": "N1",
+      "description": "baseline 下 .agents/notes 的 .md 文件总数",
+      "metric": "notes-md-total",
+      "expected": 1486
+    },
+    {
+      "id": "N2",
+      "description": "baseline 下 .agents/notes/implemented 的 .md 文件数",
+      "metric": "notes-implemented-md",
+      "expected": 1124
+    },
+    {
+      "id": "N3",
+      "description": "docs/architecture.md 扩展表行数",
+      "metric": "architecture-extension-rows",
+      "expected": 18
+    }
+  ]
+}

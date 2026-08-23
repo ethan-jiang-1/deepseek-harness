@@ -1,73 +1,92 @@
 # 可读性（legibility）从哪来：为什么 coding agent 容易读懂 dsh
 
-## 读者模型：会读，不会问
+## 读者模型：有问的通道，但没有免费的部落知识通道
 
-coding agent 与人类读者有一个关键差别：它没有部落知识（tribal knowledge）通道。它不能问资深开发者、看不懂团队氛围、没有「在这个仓库干过三年」的体感。它只有一件事做得极好——**读字面材料**；有一件事完全做不到——**读言外之意**。
+coding agent 与人类读者的关键差别，不是「完全不能问」——dsh 里就有 approval、AskUserQuestion、human command，agent 可以问人。差别是：**它没有零成本、非正式、默认存在的部落知识通道**。它不能靠「在这个仓库干过三年」补出没人写下来的约定；每一次提问都有成本，而真正危险的部落知识往往连问题都形不成。
 
-所以「一个仓库对 agent 可读」有一个可检验的定义：**它的全部参与知识都以字面形式存在**。dsh 的六个机制共同凑出这个性质。编号只为引用方便：机制之间边界故意重叠（词汇、类型、规则是同一件事的三个切面），不是六块拼图——重叠是证据收敛，不是设计对称。
+所以「一个仓库对 agent 可读」有一个可检验的定义：**它的全部参与知识都以字面形式存在**，包括「这里没有检查」和「这条路已被否掉」这类负知识。dsh 的八个机制共同凑出这个性质。编号只为引用方便：机制之间边界故意重叠，不是八块拼图。
 
-## 机制一：词汇就是合同（vocabulary as contract）
+## 机制一：运行时语法就是词汇
 
-`docs/glossary.md` 规定一个概念一个词（one canonical term per concept）：seam 指三角色完整能力、turn / step / round 严格分层、scope 与 lineage 是两回事。prose 与代码用同一批词（`ctx.tools`、waterfall、`request/header`），文档与源码之间没有翻译层。
+参与 dsh 只需要反复使用五个词：Context、Plugin、Fiber、Event、Effect。它们不是五个孤立 API，而是一套语法：能力地址空间、最小贡献单元、运行时实例、有控制权的扩展点、带所有者的可逆副作用（[`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md)）。读者不需要为每个子系统学习一套新的注册、作用域与卸载协议。
 
-读者不需要「领域翻译」这一步。看到 `ctx.agents`，glossary 和架构文档说的是同一件事，源码里也是同一件事。翻译层是常见的可读性杀手：文档说「组件」、代码叫 `Component`、review 里叫「那个东西」。
+这比「词汇表统一」更深一层：同一套原语贯穿工具、provider、策略、UI、loop，所以学会一个插件形状，就能在整棵树上迁移。
 
-## 机制二：合同外显为类型
+## 机制二：一词一义，文档与代码没有翻译层
+
+[`docs/glossary.md`](../../docs/glossary.md) 规定一个概念一个词（one canonical term per concept）：seam 指三角色完整能力、turn / step / round 严格分层、scope 与 lineage 是两回事。prose 与代码用同一批词（`ctx.tools`、waterfall、`request/header`），文档与源码之间没有翻译层。
+
+读者看到 `ctx.agents`，glossary、架构文档和源码说的是同一件事。翻译层是常见的可读性杀手：文档说「组件」、代码叫 `Component`、review 里叫「那个东西」。
+
+## 机制三：合同外显为类型
 
 - Service Definition 是 Cordis `Service`（抽象类或注册表），**不是 TypeScript `interface`**——抽象类有运行时存在、可注入、可被 `ctx.get` 找到；interface 只活在类型空间，合同因此无处安放。
 - 事件经声明合并成为类型化 map（`SessionEventMap`），`emit` / `waterfall` / `serial` 是调用合同的一部分。
-- `SessionEventMap` 成员默认 **required-on-read**：构建时不知道新事件类型的代码，拒绝读取该日志（除非事件携带 `ignorable: true`）。类型即文档，且由编译器强制执行。
+- `SessionEventMap` 成员默认 **required-on-read**：构建时不知道新事件类型的代码，拒绝读取该日志（除非事件携带 `ignorable: true`）。
 
 类型是给编译器读的文档。dsh 把合同放进类型里，等于让编译器当第一个 reviewer——它比任何人类 reviewer 都严格、都即时。
 
-## 机制三：归属有决策表（decision table）
+## 机制四：归属有决策表，事件有控制权表
 
-agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」。dsh 用一张表显式回答：
+agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」和「**这段代码有什么控制权**」。dsh 用两张表显式回答：
 
-- `docs/architecture.md` 的扩展表：18 行「目标 → 机制」（加模型提供方 → 在 `ctx.llm` 注册 adapter；加模型面向能力 → 在 `ctx.tools` 注册；加人类命令 → 在 `ctx.commands` 注册……）。
-- 消化后的三分法：看到一个 `ctx.<key>`，先问它是 spine 服务、一条 seam、还是 bundle 组合点（见 [`../capability-seams/00-map.md`](../capability-seams/00-map.md)）。
-- 事件目录把每个事件的 dispatcher / listener 列成矩阵（`docs/event-producer-consumer.md`）——「谁在听这个事件」直接查表，不用读代码。
+- [`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的扩展表：18 行「目标 → 机制」（加模型提供方 → 在 `ctx.llm` 注册 adapter；加人类命令 → 在 `ctx.commands` 注册……）。更细的 feature → mechanism 表在 [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)。
+- [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md) 把每个事件的 dispatcher / listener 列成矩阵，并带分发模式。
 
-「放哪」从猜测题变成查表题，是 agent 可读性的最大单项提升。
+「放哪」从猜测题变成查表题。分发模式本身也是合同的一部分：事件名说「发生什么」，`waterfall` / `serial` / `parallel` / `emit` 说「插件拥有什么控制权」。读者不需要从调用栈反推自己能不能截断这条链（[`../cordis-runtime/02-waterfall-与事件合同.md`](../cordis-runtime/02-waterfall-与事件合同.md)）。
 
-## 机制四：结构同构，文档不漂移
+## 机制五：结构同构，生成目录不漂移
 
 - 每个包同样布局：`src/types.ts` 只放类型、测试在包级 `tests/`、同一 tsconfig 模板、注册进恰好一个 aggregate（[`docs/development.md`](../../docs/development.md)）。学会一个包 = 学会全部包。
 - 每个包有 README + JSDoc 合同 + `./invariant` 登记（`verify-package-invariants` 强制）。
-- 目录（`tool-catalog`、`config-catalog`、`module-graph`、`event-producer-consumer`）全部**从源码生成、freshness-gated**：文档不可能与代码漂移，读文档就是读代码。
+- 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
 
 手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
 
-## 机制五：机制写成规则，意图写成记录
+## 机制六：机制写成规则，意图写成记录
 
-- `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果（registrations are effects）、模型可见 ⟺ 已记录（model-visible ⟺ logged）、显式优于隐式（explicit over implicit）。
-- 文档标准禁止「previously / now / renamed」这类变迁史（change history）；当前状态散文（current-state prose），一个事实一个家（one home per fact）（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
-- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：1124 条 implemented、50 条 proposed、22 条 rejected、287 条 archived；每条有分类、双语、归档纪律（archived 冻结，不当现行权威）；「非平凡改动必须带 note」本身是一条门禁（[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)）；归档有专门的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) skill。note 记的是「为什么、放弃了什么、怎么验证」——被拒方案也在。
+- `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果、模型可见 ⟺ 已记录、显式优于隐式。
+- 文档标准禁止「previously / now / renamed」这类变迁史；当前状态散文（current-state prose），一个事实一个家（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
+- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：baseline 共 1486 个 `.md` 文件，其中 1124 个在 `implemented/`；每条有分类、双语、归档纪律；「非平凡改动必须带 note」本身是一条规则（[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)）；归档有专门的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) skill。note 记的是「为什么、放弃了什么、怎么验证」。
 
-为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。这是本专题「分布外知识靠搬运、不靠生成」的最直接例证——1486 个 note 文件（含目录说明）就是仓库自己的分布外语料库。
+为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。
 
-读者不需要从 git log 或代码注释反推设计意图——意图是显式交付物。这同时消除了文档自相矛盾的可能：一个事实只有一个家，两个版本不可能并存。
+## 机制七：负知识也被外置
 
-## 机制六：读者模型就是 agent
+fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的路**。dsh 有四类显式负知识：
 
-- `docs/architecture.md` 开篇明说：「We recommend using an agent to explore the codebase and understand its architecture.」——但这是注脚；源头是 [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)：开发主力就是 agent，所以规则按 agent 的读法写。
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 把根 `AGENTS.md` 定位为「rules an agent needs in context in every session」——仓库为 agent 的上下文预算写的规则。
-- 仓库内存在 [`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md) 等技能：**写文档给 agent 读**是仓库内的正式工作流。
+- `rejected/` Agent Notes 保留被否提案及其失败理由；
+- `archived/` 冻结历史，不当现行权威，文档门禁也跳过它；
+- `./invariant` 的空 companion 必须写 `No runtime invariant:` 并解释「这个包为什么没有可观察的运行时关系」——absence 是一个显式结论，不是漏写；
+- package README 的 `## Known Limitations and Deferred Work` 由 `verify-package-readme-limitations` 门禁检查。
 
-这不是「顺手对 agent 友好」，是**写作者和读者是同一种 reader**——文档被写成什么形状，取决于写作者需要什么形状。
+负知识让读者能查到「这里没有检查」和「这条路已被否掉」，而不是靠试错重新发现。
+
+## 机制八：上下文预算内的渐进入口
+
+coding agent 的真实约束不只有「读不读得懂」，还有**上下文预算内能否找到对的入口**。dsh 的文档 tier 为此分层：
+
+- 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 1600 词），细节链接到 home；
+- [`docs/architecture.md`](../../docs/architecture.md) 是 1800 词以内的有序地图；
+- 生成的 catalog 提供穷举查询，不要求读者通读；
+- skills 提供可调用的程序化工作流，如 [`dsh-doc-standards`](../../.agents/skills/dsh-doc-standards/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。
+
+`verify-doc-budgets` 把字数预算钉成门禁。可读性因此来自组织，不来自把系统做小；正确读法是查表，不是通读。
 
 ## 可读 ≠ 简单
 
-dsh 不简单：机制多、包多、事件多。但「可读」来自组织，不来自简化——复杂系统里，把知识组织成可查的表、可验证的合同、可复制的范本，比把系统做小更可行。读 dsh 的正确姿势是查表，不是通读；六个机制是同一事实的六个侧面，不是六块拼图。
+dsh 不简单：机制多、包多、事件多。但「可读」来自组织，不来自简化——复杂系统里，把知识组织成可查的表、可验证的合同、可复制的范本、可调用的 skill，比把系统做小更可行。八个机制是同一事实的不同侧面，不是八块拼图。
 
 ## 证据入口
 
 - [`docs/glossary.md`](../../docs/glossary.md)（一词一义）
 - [`docs/architecture.md`](../../docs/architecture.md)（扩展表、事件域、推荐用 agent 探索）
-- [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件矩阵）
+- [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件矩阵与分发模式）
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders 本身）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（tier taxonomy、字数预算）
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（读者模型的因果来源）
-- [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（note 语料库的门禁）
+- [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（note 语料库的规则）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（空 invariant 的纪律）
 - [`../session-and-loop/01-session-event-map.md`](../session-and-loop/01-session-event-map.md)（required-on-read 机制）
 - [`../cordis-runtime/02-waterfall-与事件合同.md`](../cordis-runtime/02-waterfall-与事件合同.md)（waterfall 合同）
 - [`../capability-seams/01-三角色与分包装.md`](../capability-seams/01-三角色与分包装.md)（seam 三角色）
