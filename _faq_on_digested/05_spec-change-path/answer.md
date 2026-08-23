@@ -85,4 +85,5 @@ d01f5f73b7 Add web capability seam: ctx.web, search/fetch providers, web tools
 - [`03-implementation-to-current-contract.md`](./03-implementation-to-current-contract.md)
 - [`04-implemented-note-and-review.md`](./04-implemented-note-and-review.md)
 - [`05-example-web-capability-seam.md`](./05-example-web-capability-seam.md)
+- [`06-human-and-agent-roles.md`](./06-human-and-agent-roles.md)
 - [`research.md`](./research.md)
