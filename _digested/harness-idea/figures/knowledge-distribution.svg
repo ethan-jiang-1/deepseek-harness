@@ -42,7 +42,7 @@
 
   <rect x="30" y="306" width="900" height="120" rx="10" fill="#fafafa" stroke="#999"/>
   <text x="60" y="332" font-size="14" font-weight="bold" fill="#333">本专题（消化材料）</text>
-  <text x="60" y="356" font-size="13" fill="#333">框架性通式 + 仓库证据 + 人类播种；每条判断带出处（原文 / 源码 / 推断 / 框架 / 外部观点）</text>
+  <text x="60" y="356" font-size="13" fill="#333">框架性通式 + 仓库证据 + 人类播种；每条判断带出处（原文 / 源码 / 推断 / 框架）</text>
   <text x="60" y="380" font-size="13" fill="#333">反事实标记只测新颖性：fresh agent 写不出来，不等于已核对为真</text>
   <text x="60" y="404" font-size="12" fill="#555">分布外知识靠检索搬运、人类播种与可执行核对进入文本（[08]「判断纪律」）</text>
 

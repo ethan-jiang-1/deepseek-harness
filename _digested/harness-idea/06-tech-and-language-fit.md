@@ -18,7 +18,7 @@ TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最�
 
 ## 第二层：语义贴合——语言特性和运行时模型同构
 
-`[外部观点]` lencx 的判断是：dsh 的主成本在 **dynamic control plane**，不在 CPU hot path；Node.js/TypeScript 的价值首先不是生态，而是语言语义与插件模型处在同一种语言里：
+`[推断]` 本专题从 DSH 的语言特性和插件模型中观察到：dsh 的主成本在 **dynamic control plane**，不在 CPU hot path；Node.js/TypeScript 的价值首先不是生态，而是语言语义与插件模型处在同一种语言里：
 
 - `Proxy` → `ctx.foo` 的读取进入作用域化服务解析器；
 - prototype → 子 Context 廉价继承能力，局部 shadow 而不复制容器；
@@ -40,7 +40,7 @@ dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的�
 > —— `.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md:9`（基线 `528c682e…`）
 2. **生成合同面**：把源码事实变成 freshness-gated 的 catalog（[`02`](./02-legibility.md) 机制五）。agent 不需要懂全部 Cordis 或全部包，只需要查生成的 API、事件、配置与模块图。
 
-`[外部观点]` native Landlock、Python SDK 等边界同样显式分层：TS 控制平面之外的东西放在 seam 之后或独立发行物里，不混进插件模型。仓库侧可见的是 `native/`、`python/` 顶层边界，以及 vendor / npm 依赖的分离（[`vendor/README.md`](../../vendor/README.md)）。
+`[推断]` native Landlock、Python SDK 等边界在仓库布局中同样显式分层：TS 控制平面之外的东西放在独立发行物或 seam 之后，不混进插件模型。仓库侧可见的是 `native/`、`python/` 顶层边界，以及 vendor / npm 依赖的分离（[`vendor/README.md`](../../vendor/README.md)）。
 
 ## 三层的合成判断
 
