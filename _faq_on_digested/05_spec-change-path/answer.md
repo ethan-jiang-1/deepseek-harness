@@ -1,62 +1,88 @@
-# Answer · `docs/` 不是 SDD 源头，它是“当前合同层”
+# Answer · DSH 修改系统时，spec 从意图一路走到当前合同
 
 ## 一句话答案
 
-DSH 没有把 `docs/` 当作 Spec Driven Development 的源头。
+DSH 的 spec 不是一份文档，而是一条**从意图到当前合同、再到交付决定和 review** 的路径：
 
-`docs/` 是 spec 链路里的**当前合同层**：它回答“系统现在是什么”。真正的修改 spec 从 Issue 模板和 Agent Note 开始，经过 Plan、代码、类型、README、测试与快照，最后又回到 `docs/` 与 Agent Note 的“现在式改写”。
+```text
+Issue 模板（意图/验收）
+  → proposed Agent Note（决策 spec）
+  → Plan Mode（实施 spec）
+  → implementation（实现）
+  → docs / types / JSDoc / package README（当前合同）
+  → tests / snapshots / invariants（行为 spec）
+  → implemented Agent Note（交付后的决定）
+  → review / archive（语义兜底与生命周期收敛）
+```
 
-## 一次修改的 spec 链路
+`docs/` 在这条路径里是**结果，不是源头**。
 
-| 阶段 | 载体 | 回答 |
+## 完整路径的阶段
+
+| 阶段 | 主要载体 | 回答 |
 |---|---|---|
-| 意图与验收 | `.github/ISSUE_TEMPLATE/*.md` | 要改变什么可观察结果，怎样算完成 |
-| 设计决策 | `proposed/` Agent Note | 为什么这样设计，什么方案输了，风险是什么 |
-| 实施计划 | Plan Mode / plan review | 改哪些子系统、API、schema、失败路径、测试 |
-| 实现与当前合同 | 代码、types、JSDoc、README、`docs/` | 现在必须遵守什么 |
-| 行为规格 | tests、keyless snapshots、real composition、invariants | 真实入口和外部可见行为是否满足 |
-| 交付后的决定 | `implemented/` Agent Note | 实际交付了什么，代价是什么 |
-| 语义兜底 | `dsh-code-review`、`dsh-prose-standard` | 机器门禁查不到的语义是否正确 |
+| 意图与验收 | `.github/ISSUE_TEMPLATE/feature.md` 等 | 要改变什么可观察结果，怎样算完成 |
+| 决策 | `proposed/` Agent Note | 为什么这样设计，什么方案输了，风险是什么 |
+| 计划 | Plan Mode | 改哪些子系统、API、schema、失败路径、测试 |
+| 实现 | `packages/`、`vendor/`、`python/` 等源码 | 实际改变行为 |
+| 当前合同 | `docs/`、types、JSDoc、package README | 系统现在是什么 |
+| 行为规格 | tests、snapshots、real composition、invariants | 行为是否真的成立 |
+| 交付决定 | `implemented/` Agent Note | 最终交付了什么，代价是什么 |
+| 语义兜底 | `dsh-code-review`、prose skills | 机器查不到的语义是否正确 |
 
-## 为什么 `docs/` 看起来像源头
+## 为什么 `docs/` 是结果
 
-因为 `docs/` 是模型最容易看到、也最常被引用的“系统真相”。但 DSH 的规则明确说：
+DSH 的文档规则明确：
 
 > **Document current state, not change history.**
 
 来源：`docs/AGENTS.md:38`
 
-也就是说，`docs/` 被设计成**不承载变更过程**。变更理由在 Agent Notes，变更历史在 git，当前状态才在 `docs/`。
+`docs/` 被设计成**只写 now**。变更理由在 Agent Notes，变更过程在 git/PR，最终留下的当前状态才写进 docs。
 
-## 真正的“源头”在哪里
+所以：
 
-更准确地说，DSH 没有一个单文件源头。它有多个“规格面”，每个面拥有一种事实：
+```text
+proposed Note（未来式）
+  → 实现 + 测试
+  → docs/types/README（现在式合同）
+  → implemented Note（现在式决定）
+```
 
-- 意图：Issue；
-- 选择：proposed Agent Note；
-- 计划：Plan Mode；
-- 当前合同：`docs/` + types + JSDoc + package README；
-- 行为：tests / snapshots / invariants；
-- 交付决定：implemented Agent Note；
-- 语义判定：skills + review。
-
-这正好和 `04_root-entry-documentation` 的“一个事实一个家”接上了：**修改的每个阶段也有一个家，不能都塞进 `docs/`。**
+`docs/` 是这条链落地的投影，不是起点。
 
 ## 最关键的机制
 
-DSH 的 spec 流程最独特的地方，不是“先写文档再写代码”，而是：
+1. **Issue 先固定外部可观察结果**；
+2. **重大工作先写 proposed Note**；
+3. **Plan Mode 把提案细化到可实现**；
+4. **实现同时更新代码、docs、README、JSDoc**；
+5. **测试和快照作为行为 spec**；
+6. **proposed → implemented 必须改写时态**；
+7. **review 检查机器门禁之外的语义**。
 
-1. **proposed 是未来式，implemented 必须改写成现在式。**
-2. **代码、docs、README、JSDoc 必须同 PR 更新。**
-3. **测试和快照是行为 spec，不只是验证。**
-4. **门禁把“当前合同”和源码锁在一起。**
+## 真实例子
 
-所以 `docs/` 是这条链的**投影终点**，不是源头。
+Web capability seam 能看到完整的两步历史：
+
+```text
+a4091daa3d docs: propose web capability seam
+  → docs/rfc/proposed/architecture/2026-06-24-web-capability-seam.md
+
+d01f5f73b7 Add web capability seam: ctx.web, search/fetch providers, web tools
+  → docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md
+  → docs/architecture.md
+  → packages/README.md
+  → packages/web/** + tests/**
+```
+
+详细见 [`05-example-web-capability-seam.md`](./05-example-web-capability-seam.md)。
 
 ## 继续阅读
 
-- [`01-docs-is-current-contract.md`](./01-docs-is-current-contract.md)
-- [`02-spec-layers.md`](./02-spec-layers.md)
-- [`03-change-lifecycle.md`](./03-change-lifecycle.md)
-- [`04-example-web-capability-seam.md`](./04-example-web-capability-seam.md)
+- [`01-spec-path-overview.md`](./01-spec-path-overview.md)
+- [`02-intent-decision-plan.md`](./02-intent-decision-plan.md)
+- [`03-implementation-to-current-contract.md`](./03-implementation-to-current-contract.md)
+- [`04-implemented-note-and-review.md`](./04-implemented-note-and-review.md)
+- [`05-example-web-capability-seam.md`](./05-example-web-capability-seam.md)
 - [`research.md`](./research.md)
