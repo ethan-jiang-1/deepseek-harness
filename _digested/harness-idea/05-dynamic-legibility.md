@@ -53,7 +53,7 @@
 - 真正使模型面失效的是变化穿透到请求：工具集改变、section 改写、模型切换、compaction 替换历史；
 - `request/header` 快照记录实际生效的请求面，模型可见 ⟺ 已记录由 invariant 断言。
 
-`[外部观点]` 这个「动态控制平面（dynamic control plane） vs 稳定模型面（stable model surface）」的区分在 lencx 的分享里有专门一节；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 的 turn flow。它说明 dsh 的运行时动态没有牺牲读者最需要的稳定性——变化有明确的可见边界。
+`[推断]` 这个「动态控制平面（dynamic control plane） vs 稳定模型面（stable model surface）」的区分可以从 DSH 的 turn flow 与 request/header 机制推出；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 的 turn flow。它说明 dsh 的运行时动态没有牺牲读者最需要的稳定性——变化有明确的可见边界。
 
 > **Model-visible means logged.** Anything that reaches a model request must be reconstructable from the log, and a runtime invariant asserts it.
 >

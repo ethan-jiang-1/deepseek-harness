@@ -23,7 +23,7 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 ## 机制二：四条设计哲学，约束所有新增功能
 
-`[外部观点]` lencx 把 dsh 的工程选择压成四条，本专题认为它们能经受源码检验：
+`[推断]` 本专题从 DSH 文档中提炼出四条设计哲学，并认为它们能经受源码检验：
 
 1. **组合优于继承**：用 Profile / Bundle / Patch 组装产品表层，而不是扩展一个巨型 Application 类（[`docs/architecture.md`](../../docs/architecture.md)）。
 2. **扩展点必须有语义**：事件域与分发模式共同定义控制权，不是到处散落的回调（[`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)）。

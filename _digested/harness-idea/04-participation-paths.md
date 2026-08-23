@@ -24,7 +24,7 @@ dsh 把这些路径做成**参与阶梯（participation ladder）**，而不是�
 - **Runtime Profile**：`web` / `headless` 决定这个进程以什么表层运行。
 - **Agent Preset**：`standard` / `code` / `minimal` / `cordis` 决定单个会话看到哪些工具、提示词与局部能力。
 
-Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以承载不同 preset 的会话。参与时要先分清自己改的是「所有会话都受影响」还是「某一类会话」。`[外部观点]` 这个两轴读法来自 lencx；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 与 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
+Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以承载不同 preset 的会话。参与时要先分清自己改的是「所有会话都受影响」还是「某一类会话」。`[推断]` 这个两轴读法来自 DSH 文档；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 与 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
 ## 部署时替换是系统能力，不是源码习惯
 
