@@ -9,13 +9,13 @@
 
   <rect x="30" y="60" width="200" height="145" rx="10" fill="#f2f6fc" stroke="#4a6fa5"/>
   <text x="130" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#24364d">写作者 = coding agent</text>
-  <text x="130" y="114" text-anchor="middle" font-size="12" fill="#333">没有部落知识通道：</text>
+  <text x="130" y="114" text-anchor="middle" font-size="12" fill="#333">没有免费的部落知识通道：</text>
   <text x="130" y="134" text-anchor="middle" font-size="12" fill="#333">不能问、不能体感、</text>
   <text x="130" y="154" text-anchor="middle" font-size="12" fill="#333">不能「在这仓库干三年」</text>
-  <text x="130" y="178" text-anchor="middle" font-size="11" fill="#555">想继续工作 → 知识必须外置</text>
+  <text x="130" y="178" text-anchor="middle" font-size="11" fill="#555">[推断] 想继续工作 → 知识必须外置</text>
 
   <rect x="280" y="60" width="200" height="145" rx="10" fill="#fdf6ec" stroke="#b07818"/>
-  <text x="380" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#5c3a08">被迫外置（生存需要）</text>
+  <text x="380" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#5c3a08">门禁偏好（原文直接支持）</text>
   <text x="380" y="114" text-anchor="middle" font-size="12" fill="#333">门禁：规则写成红灯</text>
   <text x="380" y="134" text-anchor="middle" font-size="12" fill="#333">Agent Notes：意图写成记录</text>
   <text x="380" y="154" text-anchor="middle" font-size="12" fill="#333">扩展表：归属写成决策表</text>
@@ -40,10 +40,10 @@
   <line x1="730" y1="125" x2="776" y2="125" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
 
   <path d="M855 205 L855 260 L130 260 L130 209" fill="none" stroke="#8a8a8a" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
-  <text x="492" y="278" text-anchor="middle" font-size="12" fill="#666">参与 → 产出更多 note → 语料库越厚，新 agent 越好参与（正反馈闭环）</text>
+  <text x="492" y="278" text-anchor="middle" font-size="12" fill="#666">参与 → 产出 note，但 archive / budget 同时修剪：外置有成本，不是单调正反馈</text>
 
   <rect x="30" y="310" width="900" height="116" rx="10" fill="#fafafa" stroke="#999"/>
-  <text x="60" y="336" font-size="13" font-weight="bold" fill="#333">源头（repo 最早的 note 之一）</text>
+  <text x="60" y="336" font-size="13" font-weight="bold" fill="#333">源头（repo 最早的 note 之一；第一方自述，非普查）</text>
   <text x="60" y="356" font-size="11" fill="#555">“This codebase is developed primarily by coding agents. Agents follow enforced gates far</text>
   <text x="60" y="374" font-size="11" fill="#555">more reliably than prose conventions, and ‘a lot of work’ is not a cost argument when</text>
   <text x="60" y="392" font-size="11" fill="#555">agents do the labor.” —— 2026-06-11 quality-gates</text>

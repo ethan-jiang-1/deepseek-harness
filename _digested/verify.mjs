@@ -2,9 +2,13 @@
  * Self-contained integrity checks for the source-digestion corpus.
  *
  * Validates strict UTF-8 and one trailing LF for corpus text, relative
- * Markdown links and fragments, plus every SVG figure's XML and entities.
+ * Markdown links and fragments, every SVG figure's XML and entities, and the
+ * harness-idea claim register in harness-idea/claims.json.
  */
 
+import {
+  execFileSync,
+} from 'node:child_process'
 import {
   existsSync,
   readFileSync,
@@ -464,10 +468,165 @@ function checkSvg(path, source) {
   if (stack.length > 0) report(path, undefined, `unclosed XML tag <${stack.at(-1)}>`)
 }
 
+const EXPECTED_BASELINE = '528c682e061696f5a160f363f236ecbf53cbd006'
+const claimsPath = resolve(corpusRoot, 'harness-idea', 'claims.json')
+const claimStatuses = new Set([
+  '原文',
+  '源码',
+  '推断',
+  '框架',
+  '外部观点',
+  '推断 + 外部观点',
+])
+const claimMetrics = new Set([
+  'notes-md-total',
+  'notes-implemented-md',
+  'architecture-extension-rows',
+])
+
+function gitOutput(args) {
+  return execFileSync('git', args, {
+    cwd: repositoryRoot,
+    encoding: 'utf8',
+    maxBuffer: 16 * 1024 * 1024,
+  })
+}
+
+function gitTrackedLines(commit, prefix) {
+  return gitOutput(['ls-tree', '-r', '--name-only', commit, prefix])
+    .split('\n')
+    .filter(line => line.length > 0)
+}
+
+function computeClaimMetric(metric) {
+  if (metric === 'notes-md-total') {
+    return gitTrackedLines(EXPECTED_BASELINE, '.agents/notes')
+      .filter(line => line.endsWith('.md')).length
+  }
+  if (metric === 'notes-implemented-md') {
+    return gitTrackedLines(EXPECTED_BASELINE, '.agents/notes/implemented')
+      .filter(line => line.endsWith('.md')).length
+  }
+  if (metric === 'architecture-extension-rows') {
+    const source = gitOutput(['show', `${EXPECTED_BASELINE}:docs/architecture.md`])
+    const lines = source.split(/\r?\n/)
+    const header = lines.findIndex(line => line.startsWith('| Goal | Mechanism |'))
+    if (header === -1) return null
+    let count = 0
+    for (let index = header + 2; index < lines.length; index += 1) {
+      const line = lines[index]
+      if (!line.startsWith('|')) break
+      if (/^\|[\s:|-]+\|$/.test(line)) continue
+      count += 1
+    }
+    return count
+  }
+  return undefined
+}
+
+function checkClaimRegister() {
+  if (!existsSync(claimsPath)) {
+    report(claimsPath, undefined, 'harness-idea claim register is missing')
+    return
+  }
+  const source = decodeText(claimsPath)
+  if (source === undefined) return
+  checkFileEnding(claimsPath, source)
+
+  let register
+  try {
+    register = JSON.parse(source)
+  } catch (error) {
+    report(claimsPath, undefined, `not valid JSON (${error instanceof Error ? error.message : String(error)})`)
+    return
+  }
+
+  try {
+    execFileSync('git', ['cat-file', '-e', `${EXPECTED_BASELINE}^{commit}`], {
+      cwd: repositoryRoot,
+      stdio: 'ignore',
+    })
+  } catch {
+    report(claimsPath, undefined, `baseline commit does not exist in this checkout: ${EXPECTED_BASELINE}`)
+  }
+
+  if (register.baseline !== EXPECTED_BASELINE) {
+    report(claimsPath, undefined, `baseline must be ${EXPECTED_BASELINE}, got ${JSON.stringify(register.baseline)}`)
+  }
+
+  const entries = Array.isArray(register.claims) ? register.claims : []
+  const metrics = Array.isArray(register.metrics) ? register.metrics : []
+  const seen = new Set()
+
+  for (const entry of entries) {
+    const id = entry?.id
+    if (typeof id !== 'string' || id.length === 0) {
+      report(claimsPath, undefined, 'claim entry is missing a string id')
+      continue
+    }
+    if (seen.has(id)) {
+      report(claimsPath, undefined, `duplicate claim id ${JSON.stringify(id)}`)
+      continue
+    }
+    seen.add(id)
+
+    if (typeof entry.claim !== 'string' || entry.claim.trim().length === 0) {
+      report(claimsPath, undefined, `${id}: claim must be a non-empty string`)
+    }
+    if (!claimStatuses.has(entry.status)) {
+      report(claimsPath, undefined, `${id}: unknown status ${JSON.stringify(entry.status)}`)
+    }
+    if (typeof entry.falsified_by !== 'string' || entry.falsified_by.trim().length === 0) {
+      report(claimsPath, undefined, `${id}: falsified_by must be a non-empty string`)
+    }
+    if (!Array.isArray(entry.sources) || entry.sources.length === 0) {
+      report(claimsPath, undefined, `${id}: sources must be a non-empty array`)
+      continue
+    }
+    for (const sourcePath of entry.sources) {
+      if (typeof sourcePath !== 'string' || sourcePath.length === 0) {
+        report(claimsPath, undefined, `${id}: source path must be a non-empty string`)
+        continue
+      }
+      const target = resolve(repositoryRoot, sourcePath)
+      if (!pathInsideRepository(target)) {
+        report(claimsPath, undefined, `${id}: source escapes the repository: ${JSON.stringify(sourcePath)}`)
+        continue
+      }
+      if (!existsSync(target) || !statSync(target).isFile()) {
+        report(claimsPath, undefined, `${id}: source target does not exist: ${JSON.stringify(sourcePath)}`)
+      }
+    }
+  }
+
+  for (const metric of metrics) {
+    const id = metric?.id
+    if (typeof id !== 'string' || id.length === 0) {
+      report(claimsPath, undefined, 'metric entry is missing a string id')
+      continue
+    }
+    if (!claimMetrics.has(metric.metric)) {
+      report(claimsPath, undefined, `${id}: unknown metric ${JSON.stringify(metric.metric)}`)
+      continue
+    }
+    if (typeof metric.expected !== 'number') {
+      report(claimsPath, undefined, `${id}: expected must be a number`)
+      continue
+    }
+    const actual = computeClaimMetric(metric.metric)
+    if (actual !== metric.expected) {
+      report(claimsPath, undefined, `${id}: ${metric.metric} expected ${metric.expected}, computed ${String(actual)}`)
+    }
+  }
+
+  return { claims: entries.length, metrics: metrics.length }
+}
+
 const files = corpusFiles(corpusRoot)
 let markdownCount = 0
 let scriptCount = 0
 let svgCount = 0
+let claimRegister = null
 
 for (const path of files) {
   const source = decodeText(path)
@@ -484,10 +643,13 @@ for (const path of files) {
   }
 }
 
+claimRegister = checkClaimRegister()
+
 if (failures.length > 0) {
   console.error(`_digested verification failed with ${failures.length} problem(s):`)
   for (const failure of failures) console.error(`  ${failure}`)
   process.exitCode = 1
 } else {
-  console.log(`_digested verification passed: ${markdownCount} Markdown files, ${scriptCount} scripts, and ${svgCount} SVG files.`)
+  const claims = claimRegister === null ? 'no claim register' : `${claimRegister.claims} claims and ${claimRegister.metrics} computed metrics`
+  console.log(`_digested verification passed: ${markdownCount} Markdown files, ${scriptCount} scripts, ${svgCount} SVG files, and ${claims}.`)
 }
