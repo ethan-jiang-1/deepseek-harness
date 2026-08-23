@@ -1,0 +1,549 @@
+/** Node-half composition diagnostics for package metadata and built client bundles. */
+
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import type { IncomingMessage, ServerResponse } from 'node:http'
+import { SourceMap } from 'node:module'
+import { tmpdir } from 'node:os'
+import { dirname, join } from 'node:path'
+import { pathToFileURL } from 'node:url'
+import { runInNewContext } from 'node:vm'
+import { Context } from '@deepseek-ai/cordis'
+import { afterEach, describe, expect, it } from 'vitest'
+import { renderIndexInjections, type WebServer, type WebRoute } from '@deepseek-ai/dsh-host-webserver'
+import * as modulesClient from '../src/client/index.ts'
+import { ClientModuleRegistry, bootInjections, orderByModuleGraph } from '../src/index.ts'
+import type { ClientModuleLoaderTarget, WebBootEntry, WebBootGraph } from '../src/client/index.ts'
+
+const MODULES_ID = '@deepseek-ai/dsh-client-modules'
+const UI_RENDERER_ID = '@deepseek-ai/dsh-client-ui-renderer'
+const BOOTSTRAP_URL = '/plugins/_batch/bootstrap/boot/client.js'
+const APPLICATION_URL = '/plugins/_batch/application/app/client.js'
+
+let root: string | undefined
+
+afterEach(() => {
+  if (root !== undefined) rmSync(root, { recursive: true, force: true })
+  root = undefined
+})
+
+/** Create a resolvable package whose client export points at the returned path. */
+function writePackage(
+  packageName: string,
+  metadata: Record<string, unknown> = { dsh: { client: { platform: 'web' } } },
+): string {
+  root ??= realpathSync(mkdtempSync(join(tmpdir(), 'dsh-client-modules-')))
+  const pkgRoot = join(root, 'node_modules', ...packageName.split('/'))
+  const clientPath = join(pkgRoot, 'lib', 'client.js')
+  mkdirSync(pkgRoot, { recursive: true })
+  writeFileSync(join(pkgRoot, 'package.json'), JSON.stringify({
+    name: packageName,
+    exports: {
+      './client': './lib/client.js',
+      './package.json': './package.json',
+    },
+    ...metadata,
+  }))
+  return clientPath
+}
+
+/** Create a built package with the supplied client declaration. */
+function writeBuiltPackage(packageName: string, client: Record<string, unknown>): void {
+  const clientPath = writePackage(packageName, { dsh: { client: { platform: 'web', ...client } } })
+  mkdirSync(dirname(clientPath), { recursive: true })
+  writeFileSync(clientPath, 'module.exports = {}\n')
+}
+
+/** Construct the node-half service and capture its plugin-bundle route. */
+function constructWithRoute(packageNames: string[]): { service: ClientModuleRegistry; route: WebRoute } {
+  const ctx = new Context()
+  ctx.baseUrl = pathToFileURL(root!).href + '/'
+  ctx.provide('loader', {
+    *entries() {
+      for (const packageName of packageNames) {
+        yield { options: { name: packageName }, fiber: {}, disabled: false }
+      }
+    },
+  })
+  let route: WebRoute | undefined
+  const webServer: Pick<WebServer, 'port' | 'register' | 'tapIndex'> = {
+    port: 0,
+    register: (candidate) => {
+      if (candidate.path === '/plugins') route = candidate
+      return () => {}
+    },
+    tapIndex: () => () => {},
+  }
+  ctx.provide('webServer', webServer as WebServer)
+  const service = new ClientModuleRegistry(ctx)
+  if (route === undefined) throw new Error('client bundle route was not registered')
+  return { service, route }
+}
+
+/** Construct the node-half service over the enabled fixture entries. */
+function construct(packageNames: string[]): ClientModuleRegistry {
+  return constructWithRoute(packageNames).service
+}
+
+/** Invoke the registered plugin route and capture status, headers, and bytes. */
+async function routeRequest(route: WebRoute, url: string, method = 'GET'): Promise<{
+  status: number
+  headers: Record<string, string> | undefined
+  body: Buffer
+}> {
+  let status = 0
+  let headers: Record<string, string> | undefined
+  let body = Buffer.alloc(0)
+  const response = {
+    writeHead(nextStatus: number, nextHeaders?: Record<string, string>) {
+      status = nextStatus
+      headers = nextHeaders
+      return response
+    },
+    end(chunk?: Uint8Array) {
+      body = chunk === undefined ? Buffer.alloc(0) : Buffer.from(chunk)
+      return response
+    },
+  } as unknown as ServerResponse
+  await route.handler({ method, url } as IncomingMessage, response)
+  return { status, headers, body }
+}
+
+/** Execute the exact first inline script emitted by the Host boot rows. */
+function injectedFacade(graph: WebBootGraph): { html: string; target: ClientModuleLoaderTarget } {
+  const html = renderIndexInjections(
+    '<html><head></head><body><script type="module" src="/index.js"></script></body></html>',
+    bootInjections(graph),
+  )
+  const source = /<head><script>([\s\S]*?)<\/script>/.exec(html)?.[1]
+  if (source === undefined) throw new Error('missing injected ModuleLoader facade script')
+  const window: { __ModuleLoader__?: ClientModuleLoaderTarget } = {}
+  runInNewContext(source, { window })
+  if (window.__ModuleLoader__ === undefined) throw new Error('facade script did not install __ModuleLoader__')
+  return { html, target: window.__ModuleLoader__ }
+}
+
+const bootGraph = (): WebBootGraph => ({
+  rev: 'graph',
+  entries: [
+    { id: MODULES_ID, url: '/plugins/modules.js?rev=m', rev: 'm' },
+    { id: UI_RENDERER_ID, url: '/plugins/ui-renderer.js?rev=r', rev: 'r' },
+  ],
+  batches: [
+    {
+      phase: 'bootstrap',
+      url: BOOTSTRAP_URL,
+      rev: 'boot',
+      entries: [MODULES_ID],
+    },
+    {
+      phase: 'application',
+      url: APPLICATION_URL,
+      rev: 'app',
+      entries: [UI_RENDERER_ID],
+    },
+  ],
+})
+
+describe('HTML bootstrap facade', () => {
+  it('precedes blocking preloads and the boot graph, then becomes the live registration target', async () => {
+    const graph = bootGraph()
+    const { html, target } = injectedFacade(graph)
+    const facadeAt = html.indexOf('window.__ModuleLoader__=')
+    const applicationAt = html.indexOf(
+      `<link rel="preload" as="script" href="${APPLICATION_URL}">`,
+    )
+    const bootstrapAt = html.indexOf(`<script src="${BOOTSTRAP_URL}"></script>`)
+    const graphAt = html.indexOf('globalThis["__DSH_BOOT__"] = ')
+    const entryAt = html.indexOf('<script type="module" src="/index.js"></script>')
+    expect([facadeAt, applicationAt, bootstrapAt, graphAt, entryAt]).toEqual([...new Set([
+      facadeAt, applicationAt, bootstrapAt, graphAt, entryAt,
+    ])].sort((a, b) => a - b))
+
+    target.load({ id: MODULES_ID, factory: () => modulesClient })
+    const system = target.create({
+      boot: graph,
+      staticModules: {},
+      loadBundle: async (url) => {
+        expect(url).toBe(APPLICATION_URL)
+        target.load({ id: UI_RENDERER_ID, factory: () => ({ marker: 'ui-renderer' }) })
+      },
+    })
+
+    expect(target.mode).toBe('live')
+    expect(target.pendingQueue).toEqual([])
+    expect(system.manifest.rev).toBe('graph')
+    expect(await system.import(MODULES_ID)).toBe(modulesClient)
+    expect(await system.import(`${UI_RENDERER_ID}/client`)).toEqual({ marker: 'ui-renderer' })
+    expect(() => target.create({ boot: graph, staticModules: {} }))
+      .toThrow('create called after module-system boot')
+  })
+
+  it('rejects a page that did not preload the modules bundle', () => {
+    const graph = bootGraph()
+    const { target } = injectedFacade(graph)
+    expect(() => target.create({ boot: graph, staticModules: {} }))
+      .toThrow(`HTML did not preload ${MODULES_ID}/client.js`)
+  })
+
+  it('rejects a bootstrap bundle with a runtime external', () => {
+    const graph = bootGraph()
+    const { target } = injectedFacade(graph)
+    target.load({
+      id: MODULES_ID,
+      factory: (require) => {
+        require('react')
+        return modulesClient
+      },
+    })
+    expect(() => target.create({ boot: graph, staticModules: {} }))
+      .toThrow(`${MODULES_ID}/client.js requested external "react"`)
+  })
+
+  it.each([
+    null,
+    { ...modulesClient, createClientModuleSystem: undefined },
+    { ...modulesClient, apply: undefined },
+  ])('rejects a bootstrap bundle without the complete module face', (exports) => {
+    const graph = bootGraph()
+    const { target } = injectedFacade(graph)
+    target.load({ id: MODULES_ID, factory: () => exports as unknown as Record<string, unknown> })
+    expect(() => target.create({ boot: graph, staticModules: {} }))
+      .toThrow(`${MODULES_ID}/client.js did not export the bootstrap module face`)
+  })
+})
+
+describe('client bundle activation', () => {
+  it('allows sibling dsh roles', () => {
+    const currentName = '@fixture/current-client-field'
+    const clientPath = writePackage(currentName, {
+      dsh: {
+        bundle: { patch: './cordis.patch.yml' },
+        client: { platform: 'web' },
+        profile: { bundles: [] },
+      },
+    })
+    mkdirSync(dirname(clientPath), { recursive: true })
+    writeFileSync(clientPath, 'module.exports = {}\n')
+    expect(construct([currentName]).graph().entries.map(entry => entry.id)).toEqual([currentName])
+  })
+
+  it('groups missing bundles under one source-build instruction with a package/path list', () => {
+    const firstName = '@fixture/missing-first'
+    const secondName = '@fixture/missing-second'
+    const firstPath = writePackage(firstName)
+    const secondPath = writePackage(secondName)
+    expect(() => construct([firstName, secondName])).toThrow([
+      'client-modules: 2 client packages failed to compose:',
+      '  client bundles not found; run `pnpm run build` before launch:',
+      `    - package: ${firstName}`,
+      `      path: ${firstPath}`,
+      `    - package: ${secondName}`,
+      `      path: ${secondPath}`,
+    ].join('\n'))
+  })
+
+  it('does not report other bundle read failures as missing builds', () => {
+    const packageName = '@fixture/unreadable-client'
+    const clientPath = writePackage(packageName)
+    mkdirSync(clientPath, { recursive: true })
+    let thrown: unknown
+    try {
+      construct([packageName])
+    } catch (error) {
+      thrown = error
+    }
+    expect(String(thrown)).toContain('client-modules: 1 client package failed to compose:')
+    expect(String(thrown)).toContain('  other failures:')
+    expect(String(thrown)).toContain('EISDIR')
+    expect(String(thrown)).not.toContain('pnpm run build')
+  })
+
+  it('omits a torn or malformed source map without blocking composition', async () => {
+    const packageName = '@fixture/malformed-source-map'
+    const clientPath = writePackage(packageName)
+    mkdirSync(dirname(clientPath), { recursive: true })
+    writeFileSync(clientPath, 'module.exports = {}\n')
+    writeFileSync(`${clientPath}.map`, '{')
+    const torn = constructWithRoute([packageName])
+    const tornRow = torn.service.graph().entries[0]!
+    expect((await routeRequest(torn.route, tornRow.url)).body.toString('utf8'))
+      .not.toContain('sourceMappingURL')
+    expect((await routeRequest(torn.route, `${torn.service.graph().batches[0]!.url}.map`)).status).toBe(404)
+
+    writeFileSync(`${clientPath}.map`, '{"version":3,"sources":[null]}\n')
+    expect(() => construct([packageName])).not.toThrow()
+  })
+
+  it('retains one prior immutable batch generation across rebuild recomposition', async () => {
+    const packageName = '@fixture/batch-rebuild-race'
+    const clientPath = writePackage(packageName)
+    mkdirSync(dirname(clientPath), { recursive: true })
+    writeFileSync(clientPath, 'module.exports = { generation: 1 }\n')
+    const { service, route } = constructWithRoute([packageName])
+    const first = service.graph().batches[0]!.url
+    const firstSize = service.artifactBaseline(packageName)!.size
+
+    writeFileSync(clientPath, 'module.exports = { generation: 200 }\n')
+    service.rebuilt(packageName)
+    const second = service.graph().batches[0]!.url
+    expect(second).not.toBe(first)
+    expect(service.artifactBaseline(packageName)!.size).toBeGreaterThan(firstSize)
+    expect((await routeRequest(route, first)).status).toBe(200)
+    expect((await routeRequest(route, second)).status).toBe(200)
+
+    writeFileSync(clientPath, 'module.exports = { generation: 3 }\n')
+    service.rebuilt(packageName)
+    const third = service.graph().batches[0]!.url
+    expect((await routeRequest(route, first)).status).toBe(404)
+    expect((await routeRequest(route, second)).status).toBe(200)
+    expect((await routeRequest(route, third)).status).toBe(200)
+  })
+
+  it('assigns opaque startup revisions instead of deriving them from artifact content', () => {
+    const firstName = '@fixture/startup-revision-first'
+    const secondName = '@fixture/startup-revision-second'
+    writeBuiltPackage(firstName, {})
+    writeBuiltPackage(secondName, {})
+
+    const service = construct([firstName, secondName])
+    const [first, second] = service.graph().entries
+    const firstMatch = /^(?<nonce>[a-f\d]{16})-(?<sequence>\d+)$/.exec(first!.rev)
+    const secondMatch = /^(?<nonce>[a-f\d]{16})-(?<sequence>\d+)$/.exec(second!.rev)
+    expect(firstMatch?.groups).toMatchObject({ sequence: '0' })
+    expect(secondMatch?.groups).toMatchObject({ nonce: firstMatch?.groups?.nonce, sequence: '1' })
+    const firstPath = service.clientPath(firstName)!
+    const firstStat = statSync(firstPath)
+    expect(service.artifactBaseline(firstName)).toEqual({
+      path: firstPath,
+      mtimeMs: firstStat.mtimeMs,
+      size: firstStat.size,
+      mapMtimeMs: null,
+      mapSize: null,
+    })
+    expect(service.artifactBaseline('@fixture/unknown')).toBeUndefined()
+  })
+
+  it('serves the source map beside a registered client bundle', async () => {
+    const packageName = '@fixture/source-map'
+    const clientPath = writePackage(packageName)
+    mkdirSync(dirname(clientPath), { recursive: true })
+    writeFileSync(clientPath, 'module.exports = {}\n//# sourceMappingURL=client.js.map')
+    const map = '{"version":3,"names":[],"mappings":"AAAA","sources":["../../../packages/client/demo/src/index.tsx","https://cdn.example.test/library.js"]}\n'
+    writeFileSync(`${clientPath}.map`, map)
+    const { service, route } = constructWithRoute([packageName])
+    const row = service.graph().entries[0]!
+    const individualScript = await routeRequest(route, row.url)
+    expect(individualScript.body.toString('utf8')).toContain(`sourceMappingURL=client.js.map?rev=${row.rev}`)
+    const individual = await routeRequest(route, row.url.replace('/client.js?', '/client.js.map?'))
+    expect(individual.status).toBe(200)
+    expect(individual.headers).toEqual({
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'public, max-age=31536000, immutable',
+    })
+    expect(individual.body.toString('utf8')).toBe(map)
+
+    const batch = service.graph().batches[0]!
+    expect(batch).toMatchObject({ phase: 'application', entries: [packageName] })
+    const batchScript = await routeRequest(route, batch.url)
+    expect(batchScript.status).toBe(200)
+    expect(batchScript.headers?.['cache-control']).toBe('public, max-age=31536000, immutable')
+    expect(batchScript.body.toString('utf8')).toContain('//# sourceMappingURL=client.js.map')
+    expect(batchScript.body.toString('utf8')).not.toContain('sourceMappingURL=client.js.map?rev=')
+    expect((await routeRequest(route, batch.url, 'HEAD')).body).toHaveLength(0)
+    expect((await routeRequest(route, batch.url, 'POST')).status).toBe(405)
+    const batchMap = await routeRequest(route, `${batch.url}.map`)
+    const parsedBatchMap = JSON.parse(batchMap.body.toString('utf8')) as unknown
+    const parsedIndividualMap = JSON.parse(map) as Record<string, unknown>
+    expect(parsedBatchMap).toMatchObject({
+      version: 3,
+      file: 'client.js',
+      sections: [{
+        offset: { line: 0, column: 0 },
+        map: {
+          ...parsedIndividualMap,
+          sources: ['/packages/client/demo/src/index.tsx', 'https://cdn.example.test/library.js'],
+        },
+      }],
+    })
+    expect((await routeRequest(route, `${row.url}&stale=1`.replace(`rev=${row.rev}`, 'rev=stale'))).status).toBe(404)
+
+    writeFileSync(`${clientPath}.map`, '{"version":3,"names":[],"mappings":"AAAA","sources":["src/changed.tsx"]}\n')
+    const nextRev = service.rebuilt(packageName)
+    expect(nextRev).not.toBe(row.rev)
+    const nextMap = await routeRequest(route, `/plugins/${packageName}/client.js.map?rev=${String(nextRev)}`)
+    expect(JSON.parse(nextMap.body.toString('utf8'))).toMatchObject({ sources: ['src/changed.tsx'] })
+  })
+
+  it('applies sourceRoot before relocating absolute-looking section sources', async () => {
+    const packageName = '@fixture/source-root'
+    const clientPath = writePackage(packageName)
+    mkdirSync(dirname(clientPath), { recursive: true })
+    writeFileSync(clientPath, 'module.exports = {}\n')
+    writeFileSync(`${clientPath}.map`, JSON.stringify({
+      version: 3,
+      names: [],
+      mappings: 'AAAA',
+      sourceRoot: '../root',
+      sources: ['/absolute.ts'],
+    }))
+    const { service, route } = constructWithRoute([packageName])
+    const response = await routeRequest(route, `${service.graph().batches[0]!.url}.map`)
+    const map = JSON.parse(response.body.toString('utf8')) as {
+      sections: { map: { sourceRoot?: string; sources: string[] } }[]
+    }
+    expect(map.sections[0]?.map).toMatchObject({
+      sources: ['/plugins/@fixture/root/absolute.ts'],
+    })
+    expect(map.sections[0]?.map).not.toHaveProperty('sourceRoot')
+  })
+
+  it('maps a non-zero second batch section through a standard source-map consumer', async () => {
+    const firstName = '@fixture/offset-first'
+    const secondName = '@fixture/offset-second'
+    const firstPath = writePackage(firstName)
+    const secondPath = writePackage(secondName)
+    for (const [path, source] of [
+      [firstPath, '../../../packages/demo/first.ts'],
+      [secondPath, '../../../packages/demo/second.ts'],
+    ] as const) {
+      mkdirSync(dirname(path), { recursive: true })
+      writeFileSync(path, 'window.first = true\nwindow.second = true\n')
+      writeFileSync(`${path}.map`, JSON.stringify({
+        version: 3,
+        names: [],
+        mappings: 'AAAA',
+        sources: [source],
+        sourcesContent: ['export {}\n'],
+      }))
+    }
+    const { service, route } = constructWithRoute([firstName, secondName])
+    const response = await routeRequest(route, `${service.graph().batches[0]!.url}.map`)
+    const payload = JSON.parse(response.body.toString('utf8')) as ConstructorParameters<typeof SourceMap>[0]
+    const sections = (payload as unknown as {
+      sections: { offset: { line: number; column: number } }[]
+    }).sections
+    expect(sections.map(section => section.offset)).toEqual([
+      { line: 0, column: 0 },
+      { line: 3, column: 0 },
+    ])
+    const consumer = new SourceMap(payload)
+    expect(consumer.findEntry(0, 0)).toMatchObject({ originalSource: '/packages/demo/first.ts' })
+    expect(consumer.findEntry(3, 0)).toMatchObject({ originalSource: '/packages/demo/second.ts' })
+  })
+
+  it('keeps a later source-map section usable when an earlier bundle has no map', async () => {
+    const unmappedName = '@fixture/unmapped-first'
+    const mappedName = '@fixture/mapped-second'
+    const unmappedPath = writePackage(unmappedName)
+    const mappedPath = writePackage(mappedName)
+    mkdirSync(dirname(unmappedPath), { recursive: true })
+    mkdirSync(dirname(mappedPath), { recursive: true })
+    writeFileSync(unmappedPath, 'window.unmapped = true\n')
+    writeFileSync(mappedPath, 'window.mapped = true\n')
+    writeFileSync(`${mappedPath}.map`, JSON.stringify({
+      version: 3,
+      names: [],
+      mappings: 'AAAA',
+      sources: ['../../../packages/demo/mapped.ts'],
+      sourcesContent: ['export {}\n'],
+    }))
+
+    const { service, route } = constructWithRoute([unmappedName, mappedName])
+    const response = await routeRequest(route, `${service.graph().batches[0]!.url}.map`)
+    const payload = JSON.parse(response.body.toString('utf8')) as ConstructorParameters<typeof SourceMap>[0]
+    const consumer = new SourceMap(payload)
+    expect(consumer.findEntry(2, 0)).toMatchObject({ originalSource: '/packages/demo/mapped.ts' })
+  })
+})
+
+describe('shared module declarations', () => {
+  it('accepts external requests and carries them onto the graph row', () => {
+    const packageName = '@fixture/shared-declared'
+    writeBuiltPackage(packageName, { external: ['react'] })
+    expect(construct([packageName]).graph().entries).toEqual([{
+      id: packageName,
+      url: expect.stringContaining(`/plugins/${packageName}/client.js?rev=`) as unknown as string,
+      rev: expect.any(String) as unknown as string,
+      external: ['react'],
+    }])
+  })
+
+  it('omits external when the package declares no requests', () => {
+    const packageName = '@fixture/shared-absent'
+    writeBuiltPackage(packageName, {})
+    const [row] = construct([packageName]).graph().entries
+    expect(row).not.toHaveProperty('external')
+  })
+
+  it('rejects a non-array external', () => {
+    const packageName = '@fixture/external-not-array'
+    writeBuiltPackage(packageName, { external: 'react' })
+    expect(() => construct([packageName]))
+      .toThrow(`client-modules: ${packageName} dsh.client.external must be a string array`)
+  })
+})
+
+describe('module graph order', () => {
+  const entry = (id: string, fields: Partial<WebBootEntry> = {}): WebBootEntry =>
+    ({ id, url: `/plugins/${id}/client.js?rev=0`, rev: '0', ...fields })
+  const ids = (entries: readonly WebBootEntry[]): string[] => entries.map(row => row.id)
+
+  it('places every requested package row before its consumers along a chain', () => {
+    expect(ids(orderByModuleGraph([
+      entry('ui', { external: ['slots'] }),
+      entry('slots', { external: ['render'] }),
+      entry('render'),
+    ]))).toEqual(['render', 'slots', 'ui'])
+  })
+
+  it('places a shared package row before both arms of a diamond', () => {
+    expect(ids(orderByModuleGraph([
+      entry('app', { external: ['left', 'right'] }),
+      entry('left', { external: ['vendor'] }),
+      entry('right', { external: ['vendor'] }),
+      entry('vendor'),
+    ]))).toEqual(['vendor', 'left', 'right', 'app'])
+  })
+
+  it('resolves a /client request onto the requested package row', () => {
+    expect(ids(orderByModuleGraph([
+      entry('ui', { external: ['runtime/client'] }),
+      entry('runtime'),
+    ]))).toEqual(['runtime', 'ui'])
+  })
+
+  it('leaves a request no row answers to the static assembly channel', () => {
+    expect(ids(orderByModuleGraph([
+      entry('consumer', { external: ['@deepseek-ai/cordis'] }),
+      entry('other'),
+    ]))).toEqual(['consumer', 'other'])
+  })
+
+  it('rejects a cycle and names the packages on it', () => {
+    expect(() => orderByModuleGraph([
+      entry('a', { external: ['b'] }),
+      entry('b', { external: ['a'] }),
+    ])).toThrow('client-modules: module graph cycle a -> b -> a')
+  })
+
+  it('rejects a row requesting its own package name', () => {
+    expect(() => orderByModuleGraph([entry('solo', { external: ['solo'] })]))
+      .toThrow('client-modules: "solo" requests module "solo" that it answers itself')
+  })
+
+  it('composes the served graph in module-graph order', () => {
+    const consumerName = '@fixture/order-consumer'
+    const dependencyName = '@fixture/order-dependency'
+    writeBuiltPackage(consumerName, { external: [dependencyName] })
+    writeBuiltPackage(dependencyName, {})
+    expect(ids(construct([consumerName, dependencyName]).graph().entries))
+      .toEqual([dependencyName, consumerName])
+  })
+
+  it('fails activation loud when scanned packages form a module cycle', () => {
+    writeBuiltPackage('@fixture/cycle-a', { external: ['@fixture/cycle-b'] })
+    writeBuiltPackage('@fixture/cycle-b', { external: ['@fixture/cycle-a'] })
+    expect(() => construct(['@fixture/cycle-a', '@fixture/cycle-b']))
+      .toThrow('module graph cycle @fixture/cycle-a -> @fixture/cycle-b -> @fixture/cycle-a')
+  })
+})
