@@ -86,7 +86,11 @@
 
 来源：`docs/event-producer-consumer.md:1-2`（基线 `528c682e…`）
 
-## 9. package README 的标准合同形状
+## 9. package README 是 agent 的合同，不是只给人看的
+
+> A package's README and JSDoc are part of the change: altered behavior (config keys, defaults, error codes, wire fields) updates them in the same commit.
+
+来源：`packages/AGENTS.md:25`（基线 `528c682e…`）
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 

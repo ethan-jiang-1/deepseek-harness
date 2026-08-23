@@ -20,7 +20,7 @@ DSH 没有试图直接解决“渐进式披露多少才合适”这个主观问�
 | `docs/architecture.md` | 要改 `packages/` 的人/agent | 有序架构地图 | 不放类型细节、包细节、决策理由 |
 | `docs/AGENTS.md` | 要写/审文档的人/agent | 文档的 tier taxonomy 与写作规则 | 不放产品合同 |
 | 生成目录 | 查询者 | 穷举索引：tool/config/persistence/event/module graph/cordis API | 不承载叙事 |
-| package README | 要改/用某个包的人 | 该包合同、Model Experience、限制 | 不重复生成目录和 JSDoc |
+| package README | 要改/用某个包的人或 coding agent | 该包合同、Model Experience、限制 | 不重复生成目录和 JSDoc |
 
 ## 模型第一次进入时的实际路径
 

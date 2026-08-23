@@ -17,7 +17,9 @@
 2. DSH 的根入口到 `docs/architecture.md`、`docs/AGENTS.md`、生成目录、package README 之间形成了怎样的导航结构？
 3. 这套组织做了什么，使模型第一次进入时至少能按图索骥？
 4. DSH 为什么能处理“渐进式披露难以度量”的问题？它度量的是什么？
-5. 有哪些独特且可迁移的设计判断？
+5. 大多数 package 没有自己的 `AGENTS.md`，只有 `README.md`；给 coding agent 看的到底是什么？
+6. Coding agent 会主动读 package `README.md` 吗？DSH 怎么保证它被读到、并且被维护？
+7. 有哪些独特且可迁移的设计判断？
 
 ## 证据边界
 
