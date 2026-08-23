@@ -45,6 +45,10 @@ Plan Mode 把“边写边设计”压缩掉：
 
 这层的 spec 不是 prose 文档，而是**计划 + 审批边界 + 会话日志记录**。
 
+> Make the plan decision-complete: state the goal and success criteria; group implementation changes by subsystem; identify public API, schema, and data-flow changes; cover edge cases, failure modes, tests, acceptance criteria, and explicit assumptions. Keep it concise enough to review but detailed enough that another engineer can implement it without making design decisions.
+
+来源：`apps/cli/config/agent-presets/code/agent.cordis.yml:129`（基线 `528c682e…`）
+
 ## 上游小结
 
 ```text
