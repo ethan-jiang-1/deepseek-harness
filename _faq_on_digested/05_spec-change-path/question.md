@@ -29,4 +29,5 @@ Issue → proposed Note → Plan → implementation → docs/types/README
 - [`03-implementation-to-current-contract.md`](./03-implementation-to-current-contract.md)：中游：实现、docs/types/README、tests/snapshots
 - [`04-implemented-note-and-review.md`](./04-implemented-note-and-review.md)：下游：implemented Note、review、归档
 - [`05-example-web-capability-seam.md`](./05-example-web-capability-seam.md)：真实例子：Web capability seam
+- [`06-human-and-agent-roles.md`](./06-human-and-agent-roles.md)：这条路径里人干什么，coding agent 干什么
 - [`research.md`](./research.md)：证据原文与 git 历史
