@@ -93,9 +93,19 @@
       "claim": "本专题的可执行化目前做到 prose + 出处 + claim register 路径检查",
       "status": "源码",
       "sources": [
-        "_digested/verify.mjs"
+        "_digested/verify.mjs",
+        "_digested/harness-idea/claims.json"
       ],
       "falsified_by": "本专题加入更多机器可核验 claim 后，本条目需要更新"
+    },
+    {
+      "id": "C11",
+      "claim": "lencx 转引的社区估计（约 20% 提交/PR 与 Codex worktree 有关）只用于降低「primarily」的置信度，不当作普查事实",
+      "status": "外部观点",
+      "sources": [
+        "_architecture_referenced/lencx/DSH架构解析.md"
+      ],
+      "falsified_by": "原转引被撤回、原文修订，或出现更可靠的全量统计推翻该估计"
     }
   ],
   "metrics": [

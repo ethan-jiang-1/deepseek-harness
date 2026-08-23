@@ -28,7 +28,7 @@
 
 ## 试验面：`cordis_mount` / `cordis_unmount`
 
-查询之后可以试验：模型可以在当前进程挂一个内存临时 Plugin，然后卸载到 quiescence。
+查询之后可以试验：在显式启用 `dsh-tool-cordis` 的组合里，模型可以在当前进程挂一个内存临时 Plugin，然后卸载到 quiescence。这不是默认能力。
 
 - 挂载代码经过统一 schema 校验；错误在边界处失败，并给出可接受写法。
 - 临时插件通过普通 `provide` / `inject` 语义互相组合，卸载后所有 contribution 消失。

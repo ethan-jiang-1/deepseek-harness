@@ -6,7 +6,7 @@
 
 ## 第一层：先验密度——骑在 LLM 熟悉的高密度区
 
-TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最可能已经见过的工具。这一层的证据最直接：
+TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最可能已经见过的工具——这一句是 `[框架]` 分布假设，不是源码事实。仓库内能直接作为证据的是生态熟悉度：
 
 [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md) 明说，对于一个 **built primarily by agents** 的仓库，「the package manager most tools and people expect」有真实价值：更少的意外、更常见的失败路径、更多可复制粘贴的答案。
 
@@ -32,7 +32,7 @@ dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的�
 1. **vendor 进树并本地拥有**：Cordis 被 vendor 进 `vendor/`，带 upstream SHA、本地修改日志和 sync 流程。`[原文]` 注意 [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md) 的决策理由是 **RC 框架 internals 的正确性、可 pin、可修**，不是「Cordis 太 niche、agent 不会」。把动机说成「分布外所以搬进来」是事后解释；更准确的效果是：搬进来之后，agent 不需要依赖模糊的外部知识，框架层可审计、可修。
 2. **生成合同面**：把源码事实变成 freshness-gated 的 catalog（[`02`](./02-legibility.md) 机制五）。agent 不需要懂全部 Cordis 或全部包，只需要查生成的 API、事件、配置与模块图。
 
-native Landlock、Python SDK 等边界同样显式分层：TS 控制平面之外的东西放在 seam 之后或独立发行物里，不混进插件模型。
+`[外部观点]` native Landlock、Python SDK 等边界同样显式分层：TS 控制平面之外的东西放在 seam 之后或独立发行物里，不混进插件模型。仓库侧可见的是 `native/`、`python/` 顶层边界，以及 vendor / npm 依赖的分离（[`vendor/README.md`](../../vendor/README.md)）。
 
 ## 三层的合成判断
 

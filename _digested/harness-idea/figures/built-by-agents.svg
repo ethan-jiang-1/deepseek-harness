@@ -5,10 +5,10 @@
     </marker>
   </defs>
 
-  <text x="480" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#24364d">dsh 对 coding agent 可读：是生产方式的结果，不是设计宣言</text>
+  <text x="480" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#24364d">dsh 对 coding agent 可读：生产方式的结果（自述 + 推断），不是设计宣言</text>
 
   <rect x="30" y="60" width="200" height="145" rx="10" fill="#f2f6fc" stroke="#4a6fa5"/>
-  <text x="130" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#24364d">写作者 = coding agent</text>
+  <text x="130" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#24364d">写作者 = coding agent（第一方自述）</text>
   <text x="130" y="114" text-anchor="middle" font-size="12" fill="#333">没有免费的部落知识通道：</text>
   <text x="130" y="134" text-anchor="middle" font-size="12" fill="#333">不能问、不能体感、</text>
   <text x="130" y="154" text-anchor="middle" font-size="12" fill="#333">不能「在这仓库干三年」</text>
