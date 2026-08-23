@@ -10,6 +10,10 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 参与 dsh 只需要反复使用五个词：Context、Plugin、Fiber、Event、Effect。它们不是五个孤立 API，而是一套语法：能力地址空间、最小贡献单元、运行时实例、有控制权的扩展点、带所有者的可逆副作用（[`docs/cordis-primer.md`](../../docs/cordis-primer.md)）。读者不需要为每个子系统学习一套新的注册、作用域与卸载协议。
 
+> A fiber is one loaded plugin instance: its lifecycle state, validated config, and registered effects. `ctx.fiber` is the current fiber, and `ctx.effect()` delegates to it.
+>
+> —— `docs/cordis-api/fiber.md:6`（基线 `528c682e…`）
+
 这比「词汇表统一」更深一层：同一套原语贯穿工具、provider、策略、UI、loop，所以学会一个插件形状，就能在整棵树上迁移。
 
 > Domain vocabulary for DeepSeek Harness uses one canonical term per concept.
@@ -42,6 +46,10 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md) 把每个事件的 dispatcher / listener 列成矩阵，并带分发模式。
 
 「放哪」从猜测题变成查表题。分发模式本身也是合同的一部分：事件名说「发生什么」，`waterfall` / `serial` / `parallel` / `emit` 说「插件拥有什么控制权」。读者不需要从调用栈反推自己能不能截断这条链（[`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)）。
+
+> Services declare event names through TypeScript declaration merging, then dispatch them as `emit`, `waterfall`, `parallel`, or `serial` depending on whether listeners observe, wrap, fan out, or run in order.
+>
+> —— `docs/cordis-primer.md:12`（基线 `528c682e…`）
 
 ## 机制五：结构同构，生成目录不漂移
 

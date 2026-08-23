@@ -13,6 +13,10 @@ dsh 把这些路径做成**参与阶梯（participation ladder）**，而不是�
 | L0 配置组合 | Profile / Bundle / `cordis.patch.yml` / `--patch` | 换 provider、改默认参数、关插件、插新行 | cordis.yml 语法（含 `!!js`）、entry id、`dsh --dump-config` | `verify-cordis-config`；boot fail loud |
 | L1 扩展点插件 | `ctx.tools` / `ctx.commands` / 事件监听 | 加 tool、加 hook、加 section | 插件 shape、`ctx.effect`、事件合同 | JSDoc、coverage、HMR 测试、snapshot（如模型可见） |
 | L2 capability seam | Service Definition / Provider / Consumer | 加执行后端、加模型能力、替换整个执行世界 | seam 三角色、Definition 对全部 Consumer 设计 | 三角色完整性、真实组合测试、双 SDK（如碰 loop/session） |
+
+> A **seam** is a swappable capability with three roles: a **Service Definition**, one or more **Service Providers**, and one or more **Consumers**.
+>
+> —— `docs/glossary.md:7`（基线 `528c682e…`）
 | L3 loop / session 合同 | `agent-loop`、`SessionEventMap` | 改驱动、加持久事件、改请求头语义 | loop 义务、日志投影、版本机制 | invariant、双 SDK 投影、snapshot、architecture 同步 |
 
 阶梯的要点不是「层级越高越难」，而是**每层都有明确的升级条件**：L0 解决不了才去 L1；扩展点表达不了才设计 seam；只有改变循环合同本身才改 L3。这正是 [`03`](./03-paved-road.md) 的四问路由在参与者视角的投影。

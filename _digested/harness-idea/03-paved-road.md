@@ -36,6 +36,10 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 插件的每个贡献都走 `ctx.effect()` / `ctx.on()`，注册返回 disposer，fiber 卸载时贡献一并撤销（HMR 安全由测试证明）。正确写法 = 生命周期正确的写法，**不存在「先这么写、回头补清理」的第二套写法**。
 
+> `execute` runs immediately; the disposers it produces are collected and run (in reverse order) either when the returned disposer is called or when the fiber unloads, whichever comes first.
+>
+> —— `docs/cordis-api/fiber.md:30`（基线 `528c682e…`）
+
 诚实说明强制力在哪：这一条是**惯例 + 测试 + review 强制**，不是静态门禁——静态分析管不到「每个贡献是否都走了 effect」。dsh 的对策是把惯例写成 standing order（`AGENTS.md`），把生命周期正确性交给 HMR 测试与运行时 invariant（见机制六）。
 
 > **Registrations are effects**: every contribution goes through `ctx.effect()` / `ctx.on()`; a registry's `register()` returns the disposer.
@@ -65,6 +69,10 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 - `cordis_mount` 的边界错误会指出违反的规则与可接受写法。
 
 错误发生在源头、消息指明违反的规则。agent 不需要猜测「哪里错了」，只需要按错误消息修。每轮试错都有信息增量。
+
+> **Waterfall listeners MUST call `next()`** to delegate; returning without it short-circuits the chain.
+>
+> —— `AGENTS.md:107`（基线 `528c682e…`）
 
 ## 机制六：运行时 invariant 体系——规则写成断言，不写成劝告
 
