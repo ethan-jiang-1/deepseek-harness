@@ -59,6 +59,46 @@ DSH 最独特的一点是：**需要穷举的参考内容不由人写，也不�
 
 这些文件是查询面，不是阅读面。模型按图索骥时，索引永远存在且与源码一致；但索引不进入根 AGENTS 或 architecture 的预算，因为它按需加载。
 
+## 大多数 package 没有 AGENTS.md，为什么 agent 仍会读 README.md
+
+`packages/` 下实际只有少数 AGENTS.md（`packages/AGENTS.md`、`client/AGENTS.md`、`web/AGENTS.md`、`experimental/AGENTS.md`、`schedule/AGENTS.md`），绝大多数 package 只有 README.md。这不是缺口，而是 DSH 的有意分工：
+
+- **子树规则由 `packages/AGENTS.md` 统一承载**，不需要每个包重复一遍；
+- **每个包的合同由 package README 承载**，这是 tier taxonomy 明确规定的 home；
+- **group README 负责组内 package 与 `ctx` key 地图**，例如 `packages/README.md` 开头的 group 表。
+
+`packages/AGENTS.md` 明确把 README 纳入 agent 的工作合同：
+
+> A package's README and JSDoc are part of the change: altered behavior (config keys, defaults, error codes, wire fields) updates them in the same commit.
+>
+> —— `packages/AGENTS.md:25`（基线 `528c682e…`）
+
+> Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
+>
+> —— `packages/AGENTS.md:26`（基线 `528c682e…`）
+
+所以“coding agent 是否主动读 README”在 DSH 里不是靠模型自觉回答的问题，而是被路由链强制出来的：
+
+```text
+根 AGENTS.md
+  → read architecture before changing packages
+  → package groups: packages/README.md
+
+packages/README.md
+  → group READMEs own package/ctx-key maps
+
+packages/AGENTS.md
+  → README and JSDoc are part of the change
+
+某个 package
+  → README.md 就是该包的 agent 合同
+```
+
+模型不读 README 时，至少有两道兜底：
+
+1. `doc-sync` 检查 README / JSDoc / 生成目录是否同步；
+2. `dsh-code-review` 与 `dsh-prose-standard` 语义 review 会把“改了代码没改 README”判为问题。
+
 ## 链接必须是相对链接，且必须能解析
 
 DSH 的文档规则要求用可检查的链接，而不是自由 prose 文件名：
