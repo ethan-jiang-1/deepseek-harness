@@ -15,8 +15,8 @@
       "claim": "dsh 的基底是插件图 + 事件流，loop 位于两者之间",
       "status": "源码",
       "sources": [
-        "_digested/system/00-map.md",
-        "docs/architecture.md"
+        "docs/architecture.md",
+        ".agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md"
       ],
       "falsified_by": "源码显示 loop 直接构造应用状态或不写 session log"
     },
@@ -64,27 +64,28 @@
       "claim": "正确路径分四层：patch / 扩展点 / seam / loop",
       "status": "推断",
       "sources": [
-        "_digested/harness-idea/04-participation-paths.md"
+        "docs/architecture.md",
+        "docs/cookbook/extension-cookbook.md",
+        "AGENTS.md"
       ],
       "falsified_by": "官方文档或源码显示某一层参与不成立，或层间升级条件不存在"
     },
     {
       "id": "C8",
-      "claim": "Node.js 选择同时受先验密度与语义贴合影响",
-      "status": "推断 + 外部观点",
+      "claim": "pnpm note 明确把生态熟悉度作为 package manager 选型理由",
+      "status": "原文",
       "sources": [
-        ".agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md",
-        "_architecture_referenced/lencx/lencx-dsh.md"
+        ".agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md"
       ],
-      "falsified_by": "出现更早的官方记录，明确只考虑生态熟悉度或只考虑运行时语义"
+      "falsified_by": "pnpm note 被修订，删除了 agent 生态熟悉度作为理由"
     },
     {
       "id": "C9",
       "claim": "dsh 形状的性价比由组合压力决定",
-      "status": "推断 + 外部观点",
+      "status": "推断",
       "sources": [
-        "_architecture_referenced/lencx/lencx-dsh.md",
-        "_digested/harness-idea/07-boundaries-costs-fit.md"
+        "docs/architecture.md",
+        "docs/capability-seams.md"
       ],
       "falsified_by": "在低组合压力场景下，dsh 形状仍被证明普遍比产品内环 + 扩展 API 更划算"
     },
@@ -97,15 +98,6 @@
         "_digested/harness-idea/claims.json"
       ],
       "falsified_by": "本专题加入更多机器可核验 claim 后，本条目需要更新"
-    },
-    {
-      "id": "C11",
-      "claim": "lencx 转引的社区估计（约 20% 提交/PR 与 Codex worktree 有关）只用于降低「primarily」的置信度，不当作普查事实",
-      "status": "外部观点",
-      "sources": [
-        "_architecture_referenced/lencx/DSH架构解析.md"
-      ],
-      "falsified_by": "原转引被撤回、原文修订，或出现更可靠的全量统计推翻该估计"
     }
   ],
   "metrics": [

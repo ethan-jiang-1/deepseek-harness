@@ -4,7 +4,7 @@
 
 有些系统文档齐全、注释规范，新来的人（或 coding agent）仍然上不了手。原因不是文档写得差，而是**参与规则（participation rules）的位置不对**：规则住在资深开发者的脑子里，文档只描述了局部，系统的形状没有约束任何人。
 
-dsh 的做法不是写更多散文，而是把「怎么参与」下沉成**运行时语法**。参与一个 dsh 插件时最关键的五个问题，在运行时里都有确定答案，而不是靠读者猜。
+dsh 的做法不是写更多散文，而是把「怎么参与」下沉成**运行时语法（runtime grammar）**。参与一个 dsh 插件时最关键的五个问题，在运行时里都有确定答案，而不是靠读者猜。
 
 ## 框架给原语，harness 给参与规则
 
@@ -18,7 +18,7 @@ dsh 的做法不是写更多散文，而是把「怎么参与」下沉成**运�
 | 插件退出时谁清理注册项、监听器、进程和句柄 | `ctx.effect()` / `ctx.on()` 注册带所有者的副作用；Fiber 卸载时逆序执行 disposer；HMR 复用同一条卸载路径 |
 | 静态配置怎样变成可检查的运行时插件树 | Profile / Bundle / Patch 按固定顺序从空根叠加，Loader 逐条挂载；`dsh --dump-config` 输出该机器实际会挂的树 |
 
-这五个问题的答案不是「文档写清楚了」，而是**运行时的形状本身就执行了它们**。`[框架]` 这是 harness 与框架的差别：框架不承诺这五问，承诺它们的是 harness 对框架的使用方式。`[外部观点]` lencx 把这一点表述为「DSH 不是『在 Cordis 上运行』；DSH 的产品结构就是一棵 Cordis 插件树」（[`lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)）。
+这五个问题的答案不是「文档写清楚了」，而是**运行时的形状本身就执行了它们**。`[框架]` 这是 harness 与框架的差别：框架不承诺这五问，承诺它们的是 harness 对框架的使用方式。`[外部观点]` 这也是外部技术分享提出的观察；本专题不把它当作 DSH 证据，只借它作为思考框架。
 
 ## 基底：两套同时运行的系统
 
@@ -27,9 +27,9 @@ dsh 的主体不是 loop，而是两套系统 `[推断]`：
 1. **插件图（live plugin graph）**：Cordis 维护当前有哪些能力、它们依赖谁、在哪个作用域生效、卸载时怎样清理。它回答「系统现在由什么组成」。
 2. **事件流（session event log）**：Session 维护仅追加的会话事实，模型历史、UI 轨迹、fork、遥测、持久化都从它投影。它回答「系统刚才做过什么」。
 
-Agent loop 位于两者之间：从插件图取模型、工具、提示词与会话服务，再把执行过程写回事件流。这个分工使「当前组成」与「已发生事实」成为两个可分别查询的字面平面，读者不需要从一段控制流里同时还原两者。`[源码]` 对应机制见 [`../system/00-map.md`](../system/00-map.md) 与 [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md)。
+Agent loop 位于两者之间：从插件图取模型、工具、提示词与会话服务，再把执行过程写回事件流。这个分工使「当前组成」与「已发生事实」成为两个可分别查询的字面平面，读者不需要从一段控制流里同时还原两者。`[源码]` 对应机制见 [`docs/architecture.md`](../../docs/architecture.md) 的 `## Session log` 与 `## Turn flow`。
 
-一句话记法：**服务回答「能力是什么」，事件回答「何时可以介入」，会话日志回答「发生过什么」。** `[外部观点]` 这句来自 lencx 的分享；本专题接受它作为判断框架，源码落点仍以 `_digested/` 各专题为准。
+一句话记法：**服务回答「能力是什么」，事件回答「何时可以介入」，会话日志回答「发生过什么」。** `[外部观点]` 这句来自外部技术分享；本专题接受它作为判断框架，但证据仍回 DSH 官方源码核对。
 
 ## 因果：为什么 dsh 长成 agent 的形状
 
@@ -41,7 +41,7 @@ Agent loop 位于两者之间：从插件图取模型、工具、提示词与会
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions, and "a lot of work" is not a cost argument when agents do the labor.
 >
-> —— [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
+> —— `.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`（基线 `528c682e…`）
 
 直接支持的因果是：**agent 更可靠地服从机械门禁，且 agent 劳动力便宜 → 用 enforced gates 替代 prose conventions。** 这是「门禁为什么这么多」的一手解释。
 
@@ -51,11 +51,15 @@ Agent loop 位于两者之间：从插件图取模型、工具、提示词与会
 
 ### `[外部观点]` 「primarily」是自述，不是普查
 
-lencx 更长的解析稿转引过社区对仓库痕迹的估计：约 20% 提交/PR 与 Codex worktree 有关（[`DSH架构解析.md`](../../_architecture_referenced/lencx/DSH架构解析.md)）。该数字是二手估计，不能当事实；它只提醒我们：**「开发主力是 coding agent」是仓库的第一方自我描述，不应被升级为人口普查结论。** 因此本专题把因果写成「生产方式自称 + 可解释的机制」，不再写成斩钉截铁的既成事实。
+外部技术分享转引过社区对仓库痕迹的估计，约 20% 提交/PR 与 Codex worktree 有关。该数字是二手估计，不能当事实，也不进入本专题证据；它只提醒我们：**「开发主力是 coding agent」是仓库的第一方自我描述，不应被升级为人口普查结论。** 因此本专题把因果写成「生产方式自称 + 可解释的机制」，不再写成斩钉截铁的既成事实。
 
 ### `[原文]` architecture 说了什么；`[推断]` 它是注脚
 
 [`docs/architecture.md`](../../docs/architecture.md) 开篇说「We recommend using an agent to explore the codebase and understand its architecture」。这句话是原文；「它是后来的注脚、不是设计源头」是本专题从 note 时间先后推出的判断——源头是生产方式带来的机械门禁偏好。
+
+> We recommend using an agent to explore the codebase and understand its architecture.
+>
+> —— `docs/architecture.md:9`（基线 `528c682e…`）
 
 ## 参与规则的三层载体
 
@@ -80,15 +84,12 @@ harness 的职责 = 让「正确参与」不依赖参与者的背景知识。做
 
 ## 证据入口
 
-- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（因果原文：开发主力自述与 gates over prose）
-- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md)（框架层被搬进仓库的真实理由：pin / internals / 可修）
-- [`docs/architecture.md`](../../docs/architecture.md)（扩展表、事件域、两套系统的一句话入口）
-- [`../system/00-map.md`](../system/00-map.md)（插件图与事件流的分工）
-- [`../cordis-runtime/00-map.md`](../cordis-runtime/00-map.md)（五条原语）
-- [`../composition/00-map.md`](../composition/00-map.md)（配置如何变成树）
-- [`docs/glossary.md`](../../docs/glossary.md)（一词一义）
+- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；因果原文）
+- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md)（第 9 行；框架层被搬进仓库的真实理由）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 9 行；扩展表、事件域、推荐用 agent 探索）
+- [`docs/cordis-primer.md`](../../docs/cordis-primer.md)（五条原语）
+- [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders：面向 agent 的规则本身）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件 dispatcher / listener 矩阵）
 - [`../../scripts/run-gates.ts`](../../scripts/run-gates.ts)（门禁聚合器）
 - [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（运行时 invariant 实例）
-- [`../../_architecture_referenced/lencx/lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)（外部视角：五个运行时问题的框架）

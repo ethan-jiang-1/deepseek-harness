@@ -4,7 +4,7 @@
 
 「读懂」和「做对」默认了一个读者模型：写 TypeScript 插件的 fresh agent。真实参与 dsh 的人不止这一类：有人只想换掉某个 provider，有人只想给模型加个工具，有人要设计一条全新能力，有人要改 loop 合同。不同参与半径的门、合同、检查半径与爆炸半径都不同。
 
-dsh 把这些路径做成**阶梯**，而不是一个统一的「插件 API」。这也是它比一般插件系统更可参与的原因：参与者可以选摩擦最小的那层。
+dsh 把这些路径做成**参与阶梯（participation ladder）**，而不是一个统一的「插件 API」。这也是它比一般插件系统更可参与的原因：参与者可以选摩擦最小的那层。
 
 ## 四层阶梯
 
@@ -24,22 +24,30 @@ dsh 把这些路径做成**阶梯**，而不是一个统一的「插件 API」�
 - **Runtime Profile**：`web` / `headless` 决定这个进程以什么表层运行。
 - **Agent Preset**：`standard` / `code` / `minimal` / `cordis` 决定单个会话看到哪些工具、提示词与局部能力。
 
-Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以承载不同 preset 的会话。参与时要先分清自己改的是「所有会话都受影响」还是「某一类会话」。`[外部观点]` 这个两轴读法来自 lencx；仓库落点见 [`../composition/00-map.md`](../composition/00-map.md) 与 [`../capability-seams/00-map.md`](../capability-seams/00-map.md)。
+Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以承载不同 preset 的会话。参与时要先分清自己改的是「所有会话都受影响」还是「某一类会话」。`[外部观点]` 这个两轴读法来自 lencx；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 与 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
 ## 部署时替换是系统能力，不是源码习惯
 
 L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件」那么简单：**替换实现不需要改启动代码，替换本身成为系统提供的能力。**
 
+> A running `dsh` is a plugin tree composed at boot from ordered layers.
+>
+> —— `docs/architecture.md:17`（基线 `528c682e…`）
+
+> Layers apply to an empty entry list in this order: each bundle in the profile's listed order, then the profile's `cordis.patch.yml`, then the home-level one, then any `--patch` overlay. A patch targets a row by id and replaces its whole config, or inserts new rows.
+>
+> —— `docs/architecture.md:27`（基线 `528c682e…`）
+
 - 配置从空 entry list 开始，按 Bundle → Profile patch → home patch → `--patch` 的顺序叠加；顺序就是数据。
 - 后层按 entry id 整份替换 config，或插入新行。
-- `dsh --dump-config` 输出的不是「可能加载什么」，而是**这台机器实际会挂什么**；dump 与 boot 共用同一 `applyEntryPatches`（[`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)）。
-- 用户 patch 的 HMR 是事务性的：候选配置失败时保留上一棵好树（[`../composition/03-user-patch-hmr.md`](../composition/03-user-patch-hmr.md)）。
+- `dsh --dump-config` 输出的不是「可能加载什么」，而是**这台机器实际会挂什么**；dump 与 boot 共用同一 `applyEntryPatches`（官方落点：`docs/architecture.md:29` 的 dump 命令与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
+- 用户 patch 的 HMR 是事务性的：候选配置失败时保留上一棵好树（[`vendor/README.md`](../../vendor/README.md) 本地修改清单第 8 条：restores the previous plugin or config when candidate application fails）。
 
 因此静态 import 图只能说明「可能加载什么」，最终配置树才说明「实际是什么」。参与 L0 的最低可核查动作就是读 `dump-config`，而不是读源码目录猜组合。
 
 ## 一次贡献的完整生命周期
 
-四层阶梯只回答「从哪扇门进」。进了门之后，非平凡贡献还有一条制度化的生命周期。`_digested` 的 FAQ 已经把这条链从仓库事实里重建出来（[`02 分层规格开发`](../../_faq_on_digested/02_spec-driven-development/answer.md)），harness-idea 只引用判断，不重复机制：
+四层阶梯只回答「从哪扇门进」。进了门之后，非平凡贡献还有一条制度化的生命周期。这条链可以从 DSH 的 `.agents/notes/README.md`、`docs/AGENTS.md` 和 `docs/testing.md` 中直接重建，harness-idea 只引用判断，不重复机制：
 
 ```text
 Issue 验收条件
@@ -68,15 +76,13 @@ Issue 验收条件
 
 ## 证据入口
 
-- [`../composition/00-map.md`](../composition/00-map.md)（profile / bundle / patch 与 dump 保真）
-- [`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)（dump 与 boot 共用同一算法）
-- [`../composition/03-user-patch-hmr.md`](../composition/03-user-patch-hmr.md)（用户 patch 的事务 HMR）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 17、27 行；profile / bundle / patch 与 dump）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（L1 范本）
-- [`../capability-seams/00-map.md`](../capability-seams/00-map.md)（L2 三角色）
-- [`../session-and-loop/03-换loop的半径.md`](../session-and-loop/03-换loop的半径.md)（L3 义务）
+- [`docs/cookbook/adding-a-package.md`](../../docs/cookbook/adding-a-package.md)（L2/L3 涉及的新包与同步义务）
+- [`docs/development.md`](../../docs/development.md)（包结构、tsconfig、aggregate）
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders 与各层检查）
 - [`../../packages/AGENTS.md`](../../packages/AGENTS.md)（包级参与规则）
-- [`../../docs/testing.md`](../../docs/testing.md)（完成标准与验证政策）
-- [`../../_faq_on_digested/02_spec-driven-development/answer.md`](../../_faq_on_digested/02_spec-driven-development/answer.md)（贡献生命周期）
-- [`../../_architecture_referenced/lencx/lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)（两轴与部署时替换的外部表述）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；完成标准与验证政策）
+- [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期）
+- [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；seam / scope / preset 术语）

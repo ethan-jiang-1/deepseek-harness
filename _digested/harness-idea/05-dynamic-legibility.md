@@ -6,7 +6,7 @@
 
 ## 查询面一：`dsh --dump-config` 输出实际运行的树
 
-静态 import 图只说明「可能加载什么」；Profile、Bundle、Patch、realm 与条件表达式共同决定实际拓扑。`dsh --dump-config` 把 boot 会用到的组合按 `applyEntryPatches` 打印出来，且与 boot 共用同一算法，不另写一份会漂移的实现（[`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)）。
+静态 import 图只说明「可能加载什么」；Profile、Bundle、Patch、realm 与条件表达式共同决定实际拓扑。`dsh --dump-config` 把 boot 会用到的组合按 `applyEntryPatches` 打印出来，且与 boot 共用同一算法，不另写一份会漂移的实现（官方落点：`docs/architecture.md:29` 与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
 
 对读者来说，这是**部署时组合的运行时答案**：不知道哪个 provider 生效，先 dump；问题报告缺最终配置树，常常连复现对象都没描述完整。
 
@@ -16,7 +16,7 @@
 
 ## 查询面三：`cordis_inspect` 问活运行时
 
-静态索引只覆盖源码平面；运行时可能还有临时插件、pending fiber、实际服务提供者。[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 给了模型一个只读的 `cordis_inspect`：
+静态索引只覆盖源码平面；运行时可能还有临时插件、pending fiber、实际服务提供者（service provider）。[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 给了模型一个只读的 `cordis_inspect`：
 
 - `plugins`：当前每个活 fiber；
 - `services`：每个 `ctx` 服务的提供者；
@@ -37,6 +37,14 @@
 
 这条试验面让「不懂行」的读者可以用最小代价验证「如果我这样注册，会发生什么」，而不必猜源码。`[原文]` 同时要记住它是 **opt-in、bash-equivalent trust**，不是安全边界，也不应进默认产品组合。
 
+> This is an opt-in development tool with bash-equivalent trust, not a security boundary or product default.
+>
+> —— `.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md:17`（基线 `528c682e…`）
+
+> `cordis_inspect` sections are `services` ... `api` ... `events` ... and `temporary` ...
+>
+> —— 同上文件 `:27`（基线 `528c682e…`）
+
 ## 动态不等于模型面不稳定
 
 一个常见怀疑：运行时动态装卸插件，是否会让每轮 prompt 都变、缓存全废。dsh 的处理是**把「动态变化」和「模型可见变化」分开**：
@@ -45,7 +53,11 @@
 - 真正使模型面失效的是变化穿透到请求：工具集改变、section 改写、模型切换、compaction 替换历史；
 - `request/header` 快照记录实际生效的请求面，模型可见 ⟺ 已记录由 invariant 断言。
 
-`[外部观点]` 这个「动态控制平面 vs 稳定模型面」的区分在 lencx 的分享里有专门一节；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 的 turn flow 与 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。它说明 dsh 的运行时动态没有牺牲读者最需要的稳定性——变化有明确的可见边界。
+`[外部观点]` 这个「动态控制平面（dynamic control plane） vs 稳定模型面（stable model surface）」的区分在 lencx 的分享里有专门一节；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 的 turn flow。它说明 dsh 的运行时动态没有牺牲读者最需要的稳定性——变化有明确的可见边界。
+
+> **Model-visible means logged.** Anything that reaches a model request must be reconstructable from the log, and a runtime invariant asserts it.
+>
+> —— `docs/architecture.md:96`（基线 `528c682e…`）
 
 ## 结论
 
@@ -53,11 +65,10 @@
 
 ## 证据入口
 
-- [`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)（dump 与 boot 共用算法）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 96 行；model-visible ⟺ logged）
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) / [`docs/tool-catalog.md`](../../docs/tool-catalog.md) / [`docs/persistence-catalog.md`](../../docs/persistence-catalog.md)（生成目录实例）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件索引）
-- [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（inspect / mount / unmount 的合同与边界）
+- [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17、23、27 行；inspect / mount / unmount 的合同与边界）
 - [`../../packages/extensions/tool-cordis/README.md`](../../packages/extensions/tool-cordis/README.md)（工具包合同）
-- [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)（模型可见面组装）
+- [`docs/tool-execution-pipeline.md`](../../docs/tool-execution-pipeline.md)（工具执行管道）
 - [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md)（请求面变化与重建）
-- [`../../_architecture_referenced/lencx/lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)（动态控制平面与模型面稳定的外部视角）

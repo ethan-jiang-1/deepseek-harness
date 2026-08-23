@@ -8,7 +8,7 @@
 
 ![合同面：多个消费者，漂移先撞机器](./figures/contract-surface.svg)
 
-「LLM 读懂」常被当成对合同面的一次测试。但更准确的说法是：**合同面从来不是只给 LLM 读的**。同一面被这些消费者同时消费：
+「LLM 读懂」常被当成对合同面（contract surface）的一次测试。但更准确的说法是：**合同面从来不是只给 LLM 读的**。同一面被这些消费者同时消费：
 
 - **编译器**：类型、`assertNever`、declaration merging——编译期拒绝；
 - **门禁与生成器**：`verify-*`、freshness gates——提交前红灯，目录从源码生成；
@@ -16,7 +16,11 @@
 - **harness 自身**：self-modification——agent 检视、挂载自己的插件（[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)）；
 - **人类读者与 LLM 读者**。
 
-这个结构带来一个比「LLM 探针」更硬的检验：**规则漂移会先撞上机器，而不是先撞上读者。** LLM 的可读性只是这个面完整性的一个读数，而且是个宽松的读数——LLM 读不懂只说明「参与规则不在系统里」；机器消费不到才说明「规则根本没法执行」。
+这个结构带来一个比「LLM 探针」更硬的检验：**规则漂移会先撞上机器，而不是先撞上读者。** LLM 的可读性只是这个面完整性的一个读数，而且是个宽松的读数——机器消费不到才说明「规则根本没法执行」。
+
+> Events are the extension points, and picking the right domain is the first decision in most changes.
+>
+> —— `docs/architecture.md:55`（基线 `528c682e…`）
 
 ## LLM 是合同面的探针之一
 
@@ -88,11 +92,11 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 | 成本 | 表现 | dsh 侧证据 |
 |------|------|-----------|
-| 静态代码 ≠ 实际系统 | import 图只说明可能性，最终拓扑要看 profile/patch/realm | `dsh --dump-config` 是排障第一证据；[`../composition/00-map.md`](../composition/00-map.md) |
-| 动态依赖放大因果链 | provider 变化引发一组 consumer 重载，排障要看 fiber epoch 与收敛 | HMR 事务与生命周期测试；[`../composition/03-user-patch-hmr.md`](../composition/03-user-patch-hmr.md) |
-| 可逆 ≠ 事务 | effect 能回收声明过的资源，不能补偿网络消息、文件写入、支付 | Cordis effect 语义；[`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md) |
+| 静态代码 ≠ 实际系统 | import 图只说明可能性，最终拓扑要看 profile/patch/realm | `dsh --dump-config` 是排障第一证据；[`docs/architecture.md`](../../docs/architecture.md) |
+| 动态依赖放大因果链 | provider 变化引发一组 consumer 重载，排障要看 fiber epoch 与收敛 | HMR 事务与生命周期测试；[`vendor/README.md`](../../vendor/README.md) 本地修改清单第 8、12 条 |
+| 可逆 ≠ 事务 | effect 能回收声明过的资源，不能补偿网络消息、文件写入、支付 | Cordis effect 语义；[`docs/cordis-primer.md`](../../docs/cordis-primer.md) |
 | 插件化 ≠ 安全 | `inject` 约束 Context 使用，阻止不了同进程代码直接 import Node API | self-modification 明确是 opt-in、bash-equivalent trust；[`05`](./05-dynamic-legibility.md) |
-| 元框架与本地分叉成为新核心 | Cordis 根、Loader、Boot 必须先存在；vendor 带本地修改与 sync 成本 | [`vendor/README.md`](../../vendor/README.md)；[`../cordis-runtime/04-vendor-本地修改.md`](../cordis-runtime/04-vendor-本地修改.md) |
+| 元框架与本地分叉成为新核心 | Cordis 根、Loader、Boot 必须先存在；vendor 带本地修改与 sync 成本 | [`docs/architecture.md`](../../docs/architecture.md) 的 Cordis 段与 [`vendor/README.md`](../../vendor/README.md) |
 | 性能代价仍缺少量化 | 没有运行时开销或大规模插件图的对照基准 | 本专题不补数字，只记为开放问题 |
 | 外置本身有维护税 | 1486 个 note 文件、门禁、100% coverage、根 AGENTS 上下文预算 | 本页保留判断：可参与性 = 外置程度 ÷ 外置成本 |
 
@@ -100,7 +104,11 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 ## 「一切皆插件」的边界
 
-「一切皆插件」适合描述 dsh 的应用能力组织方式，不适合当作递归到底的字面事实：Cordis 根 Context 在构造时直接建立根 Fiber、Reflect、Registry、Events 与 Logger service；Boot 与 Loader 也先于应用插件树存在。核心没有消失，而是从 Agent 业务逻辑下沉成了**组合内核**。`[外部观点]` 这个边界由 lencx 明确，本专题把它当作对 [`01`](./01-role-and-substrate.md) 的必要修正。
+「一切皆插件」适合描述 dsh 的应用能力组织方式，不适合当作递归到底的字面事实：Cordis 根 Context 在构造时直接建立根 Fiber、Reflect、Registry、Events 与 Logger service；Boot 与 Loader 也先于应用插件树存在。核心没有消失，而是从 Agent 业务逻辑下沉成了**组合内核（composition kernel）**。
+
+> There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
+>
+> —— `docs/architecture.md:13`（基线 `528c682e…`）
 
 ## 结论
 
@@ -114,15 +122,16 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 ## 证据入口
 
-- [`../capability-seams/00-map.md`](../capability-seams/00-map.md)（换 provider 不换 Consumer：合同在 Definition）
-- [`../composition/00-map.md`](../composition/00-map.md)（不写代码的组合层：patch 与 `!!js`）
-- [`docs/architecture.md`](../../docs/architecture.md)（扩展表：文档到规则的机器可查路径）
-- [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（harness 自身消费合同面与安全边界）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 13 行；无特权核心、注册即效果）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 55 行；事件是扩展点）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 96 行；model-visible ⟺ logged）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 106 行；扩展表）
+- [`docs/capability-seams.md`](../../docs/capability-seams.md)（Definition / Provider / Consumer）
+- [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
+- [`../../AGENTS.md`](../../AGENTS.md)（第 103、108、114 行；注册即效果、waterfall、fail loud）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；tier taxonomy、一个事实一个家）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；元验证与 snapshot 政策）
+- [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17 行；harness 自身消费合同面与安全边界）
 - [`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/implemented/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)（双 SDK 投影同一 loop）
-- [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md)（「模型可见 ⟺ 已记录」作为设计决策而非纪律）
-- [`../../AGENTS.md`](../../AGENTS.md)（不变量陈述与门禁清单）
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)（tier taxonomy：一个事实一个家；字数预算）
-- [`../cordis-runtime/02-waterfall-与事件合同.md`](../cordis-runtime/02-waterfall-与事件合同.md)（waterfall 合同被违反时的行为）
-- [`../composition/01-boot-时序.md`](../composition/01-boot-时序.md)（fail loud 的两段失败标签）
-- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（门禁成本的源头记录）
-- [`../../_architecture_referenced/lencx/lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)（成本清单、Pi 对比、一切皆插件边界的外部表述）
+- [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md)（「模型可见 ⟺ 已记录」作为设计决策）
+- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；门禁成本的源头记录）

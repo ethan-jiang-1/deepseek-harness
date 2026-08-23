@@ -8,23 +8,27 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 ## 机制一：扩展点路由——先定落点，再动手
 
-任何新行为先过四问 `[框架]`：
+任何新行为先过四问（extension routing）`[框架]`：
 
 1. **它是必须回放的事实吗？** 是 → 扩展 `SessionEventMap`，从日志投影。
 2. **它要拦截进行中的工作吗？** 是 → `agent/*`、`tools/*` 或能力事件。
 3. **它是一项可替换能力吗？** 是 → Service Definition / Provider / Consumer 三角色。
 4. **它需要改 Agent Loop 吗？** 通常不需要；先证明现有扩展点无法表达。
 
-这是把 [`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的 18 行扩展表压缩成判定顺序。`[外部观点]` 四问的表述借自 lencx（[`lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)）；仓库自身的权威表仍是 architecture 与 [`extension-cookbook`](../../docs/cookbook/extension-cookbook.md)。路由把「放哪」从查表题进一步变成判定题，而且每一步判定都有字面合同。
+这是把 [`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的 18 行扩展表压缩成判定顺序。仓库自身的权威表是 architecture 与 [`extension-cookbook`](../../docs/cookbook/extension-cookbook.md)。路由把「放哪」从查表题进一步变成判定题，而且每一步判定都有字面合同。
+
+> New behavior attaches to a documented extension point. Changing the loop itself updates this map.
+>
+> —— `docs/architecture.md:108`（基线 `528c682e…`）
 
 ## 机制二：四条设计哲学，约束所有新增功能
 
 `[外部观点]` lencx 把 dsh 的工程选择压成四条，本专题认为它们能经受源码检验：
 
-1. **组合优于继承**：用 Profile / Bundle / Patch 组装产品表层，而不是扩展一个巨型 Application 类（[`../composition/00-map.md`](../composition/00-map.md)）。
-2. **扩展点必须有语义**：事件域与分发模式共同定义控制权，不是到处散落的回调（[`../cordis-runtime/02-waterfall-与事件合同.md`](../cordis-runtime/02-waterfall-与事件合同.md)）。
-3. **副作用必须有所有者**：服务、监听器与长任务随 Fiber 生命周期存在，卸载路径可验证（[`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md)）。
-4. **事实先于视图**：会话日志是唯一真源；模型上下文、UI、fork 与遥测从事件派生（[`../session-and-loop/00-map.md`](../session-and-loop/00-map.md)）。
+1. **组合优于继承**：用 Profile / Bundle / Patch 组装产品表层，而不是扩展一个巨型 Application 类（[`docs/architecture.md`](../../docs/architecture.md)）。
+2. **扩展点必须有语义**：事件域与分发模式共同定义控制权，不是到处散落的回调（[`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)）。
+3. **副作用必须有所有者**：服务、监听器与长任务随 Fiber 生命周期存在，卸载路径可验证（[`docs/cordis-primer.md`](../../docs/cordis-primer.md)）。
+4. **事实先于视图**：会话日志是唯一真源；模型上下文、UI、fork 与遥测从事件派生（[`docs/architecture.md`](../../docs/architecture.md#session-log)）。
 
 这四条的共同效果是：**每个改动都有位置、有边界、有退路。**
 
@@ -32,7 +36,13 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 插件的每个贡献都走 `ctx.effect()` / `ctx.on()`，注册返回 disposer，fiber 卸载时贡献一并撤销（HMR 安全由测试证明）。正确写法 = 生命周期正确的写法，**不存在「先这么写、回头补清理」的第二套写法**。
 
-诚实说明强制力在哪：这一条是**惯例 + 测试 + review 强制**，不是静态门禁——静态分析管不到「每个贡献是否都走了 effect」。dsh 的对策是把惯例写成 standing order（`AGENTS.md`），把生命周期正确性交给 HMR 测试与运行时 invariant（见机制六）。对比：如果一个系统里「正式注册」和「临时挂上去」是两种写法，读者每次都要判断该用哪种——判断就是犯错点。
+诚实说明强制力在哪：这一条是**惯例 + 测试 + review 强制**，不是静态门禁——静态分析管不到「每个贡献是否都走了 effect」。dsh 的对策是把惯例写成 standing order（`AGENTS.md`），把生命周期正确性交给 HMR 测试与运行时 invariant（见机制六）。
+
+> **Registrations are effects**: every contribution goes through `ctx.effect()` / `ctx.on()`; a registry's `register()` returns the disposer.
+>
+> —— `AGENTS.md:103`（基线 `528c682e…`）
+
+对比：如果一个系统里「正式注册」和「临时挂上去」是两种写法，读者每次都要判断该用哪种——判断就是犯错点。
 
 ## 机制四：默认正确，显式优于隐式
 
@@ -60,7 +70,15 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 这是 dsh 独有的、比「门禁」更狠的一层：
 
-- **每个包必须登记自己的运行时 invariant**：`verify-package-invariants` 门禁强制。但注意另一半纪律：103 个包里有 **21 个可执行 companion、82 个有理由的空 companion**；空 companion 必须写 `No runtime invariant:` 并解释为什么没有可观察的运行时关系。**不造无意义断言，和必须有断言一样重要**（[`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)）。
+- **每个包必须登记自己的运行时 invariant**：`verify-package-invariants` 门禁强制。但注意另一半纪律：103 个包里有 **21 个可执行 companion、82 个有理由的空 companion**；空 companion 必须写 `No runtime invariant:` 并解释为什么没有可观察的运行时关系。**不造无意义断言，和必须有断言一样重要**。
+
+> The current 103-package workspace has 21 executable companions and 82 justified empty companions.
+>
+> —— `.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md:30`（基线 `528c682e…`）
+
+> The empty form is an explicit architectural conclusion, not a generated placeholder.
+>
+> —— 同上文件 `:24`（基线 `528c682e…`）
 - **invariant 断言的是有所有权的关系**（`AGENTS.md` 的纪律）：检查权威事件流或可变数据，不检查 service 存在性、不检查插件元数据——「存在」不代表「关系成立」，断错了对象等于没断。
 - **实例**：`dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致立刻 fail（非 loop 请求不检查）。
 
@@ -75,6 +93,10 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 更关键的是**元验证**：dsh 不只相信门禁，还测试门禁本身（[`docs/testing.md`](../../docs/testing.md)）：
 
 - 「A guard only guards if the regression actually fails it」——新守卫必须证明引入回归会变红；
+
+  > A guard only guards if the regression actually fails it. ... prove it: introduce the regression, watch red, revert.
+  >
+  > —— `docs/testing.md:34`（基线 `528c682e…`）
 - 「Verify the world, not the self-report」——e2e 要重新执行命令或读文件，不能相信 agent 自己的输出；
 - 真实入口路径：built artifact smoke、Loader 真实组合、snapshot 必须来自可运行示例；
 - 每个非平凡模型/协议/人类可见变化，同 PR 更新 keyless snapshot。
@@ -89,14 +111,13 @@ dsh 把「正确」编码进系统的**形状**与**检查**：扩展点路由�
 
 ## 证据入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)（扩展表与事件域）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 106 行；扩展表与事件域）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（tool 合同与最小 shape）
 - [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（运行时 invariant）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（21 可执行 / 82 有理由空的纪律）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24、30 行；21 可执行 / 82 有理由空的纪律）
 - [`../../.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（选门禁的判断被外置成 guidance）
-- [`../../docs/testing.md`](../../docs/testing.md)（coverage、snapshot 与元验证）
-- [`../composition/00-map.md`](../composition/00-map.md)（patch 层：误配置 fail loud）
-- [`../session-and-loop/01-session-event-map.md`](../session-and-loop/01-session-event-map.md)（required-on-read）
-- [`../cordis-runtime/02-waterfall-与事件合同.md`](../cordis-runtime/02-waterfall-与事件合同.md)（waterfall 控制权）
-- [`../../_architecture_referenced/lencx/lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)（四问路由与四条设计哲学的外部表述）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；coverage、snapshot 与元验证）
+- [`../../AGENTS.md`](../../AGENTS.md)（第 103 行；注册即效果、waterfall、model-visible、fail loud）
+- [`../../packages/AGENTS.md`](../../packages/AGENTS.md)（包级参与规则）
+- [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 控制权）

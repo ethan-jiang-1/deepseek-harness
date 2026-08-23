@@ -4,19 +4,27 @@
 
 coding agent 与人类读者的关键差别，不是「完全不能问」——dsh 里就有 approval、AskUserQuestion、human command，agent 可以问人。差别是：**它没有零成本、非正式、默认存在的部落知识通道**。它不能靠「在这个仓库干过三年」补出没人写下来的约定；每一次提问都有成本，而真正危险的部落知识往往连问题都形不成。
 
-所以「一个仓库对 agent 可读」有一个可检验的标尺：**它的参与知识尽可能以字面形式存在**，包括「这里没有检查」和「这条路已被否掉」这类负知识。没有仓库能真正做到 100%；dsh 的八个机制共同把这一比例推到很高，并把剩下的判断拆小、配工具。编号只为引用方便：机制之间边界故意重叠，不是八块拼图。
+所以「一个仓库对 agent 可读」（legibility）有一个可检验的标尺：**它的参与知识尽可能以字面形式存在**，包括「这里没有检查」和「这条路已被否掉」这类负知识。没有仓库能真正做到 100%；dsh 的八个机制共同把这一比例推到很高，并把剩下的判断拆小、配工具。编号只为引用方便：机制之间边界故意重叠，不是八块拼图。
 
 ## 机制一：运行时语法就是词汇
 
-参与 dsh 只需要反复使用五个词：Context、Plugin、Fiber、Event、Effect。它们不是五个孤立 API，而是一套语法：能力地址空间、最小贡献单元、运行时实例、有控制权的扩展点、带所有者的可逆副作用（[`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md)）。读者不需要为每个子系统学习一套新的注册、作用域与卸载协议。
+参与 dsh 只需要反复使用五个词：Context、Plugin、Fiber、Event、Effect。它们不是五个孤立 API，而是一套语法：能力地址空间、最小贡献单元、运行时实例、有控制权的扩展点、带所有者的可逆副作用（[`docs/cordis-primer.md`](../../docs/cordis-primer.md)）。读者不需要为每个子系统学习一套新的注册、作用域与卸载协议。
 
 这比「词汇表统一」更深一层：同一套原语贯穿工具、provider、策略、UI、loop，所以学会一个插件形状，就能在整棵树上迁移。
+
+> Domain vocabulary for DeepSeek Harness uses one canonical term per concept.
+>
+> —— `docs/glossary.md:5`（基线 `528c682e…`）
 
 ## 机制二：一词一义，文档与代码没有翻译层
 
 [`docs/glossary.md`](../../docs/glossary.md) 规定一个概念一个词（one canonical term per concept）：seam 指三角色完整能力、turn / step / round 严格分层、scope 与 lineage 是两回事。prose 与代码用同一批词（`ctx.tools`、waterfall、`request/header`），文档与源码之间没有翻译层。
 
 读者看到 `ctx.agents`，glossary、架构文档和源码说的是同一件事。翻译层是常见的可读性杀手：文档说「组件」、代码叫 `Component`、review 里叫「那个东西」。
+
+> A `SessionEventMap` member is required-on-read by default — builds that do not know its type refuse the log unless the event carries the envelope's `ignorable: true`.
+>
+> —— `AGENTS.md:105`（基线 `528c682e…`）
 
 ## 机制三：合同外显为类型
 
@@ -33,7 +41,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 - [`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的扩展表：18 行「目标 → 机制」（加模型提供方 → 在 `ctx.llm` 注册 adapter；加人类命令 → 在 `ctx.commands` 注册……）。更细的 feature → mechanism 表在 [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)。
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md) 把每个事件的 dispatcher / listener 列成矩阵，并带分发模式。
 
-「放哪」从猜测题变成查表题。分发模式本身也是合同的一部分：事件名说「发生什么」，`waterfall` / `serial` / `parallel` / `emit` 说「插件拥有什么控制权」。读者不需要从调用栈反推自己能不能截断这条链（[`../cordis-runtime/02-waterfall-与事件合同.md`](../cordis-runtime/02-waterfall-与事件合同.md)）。
+「放哪」从猜测题变成查表题。分发模式本身也是合同的一部分：事件名说「发生什么」，`waterfall` / `serial` / `parallel` / `emit` 说「插件拥有什么控制权」。读者不需要从调用栈反推自己能不能截断这条链（[`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)）。
 
 ## 机制五：结构同构，生成目录不漂移
 
@@ -73,20 +81,24 @@ coding agent 的真实约束不只有「读不读得懂」，还有**上下文�
 
 `verify-doc-budgets` 把字数预算钉成门禁。可读性因此来自组织，不来自把系统做小；正确读法是查表，不是通读。
 
+> **Document current state, not change history.** Avoid "previously/now/no longer", PRs, commits, and stack positions in durable prose; name the live mechanism.
+>
+> —— `docs/AGENTS.md:38`（基线 `528c682e…`）
+
 ## 可读 ≠ 简单
 
 dsh 不简单：机制多、包多、事件多。但「可读」来自组织，不来自简化——复杂系统里，把知识组织成可查的表、可验证的合同、可复制的范本、可调用的 skill，比把系统做小更可行。八个机制是同一事实的不同侧面，不是八块拼图。
 
 ## 证据入口
 
-- [`docs/glossary.md`](../../docs/glossary.md)（一词一义）
-- [`docs/architecture.md`](../../docs/architecture.md)（扩展表、事件域、推荐用 agent 探索）
+- [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 106 行；扩展表、事件域）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件矩阵与分发模式）
-- [`../../AGENTS.md`](../../AGENTS.md)（standing orders 本身）
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)（tier taxonomy、字数预算）
-- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（读者模型的因果来源）
+- [`../../AGENTS.md`](../../AGENTS.md)（第 105 行；required-on-read 与 standing orders）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文、tier taxonomy、字数预算）
+- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；读者模型的因果来源）
 - [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（note 语料库的规则）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（空 invariant 的纪律）
-- [`../session-and-loop/01-session-event-map.md`](../session-and-loop/01-session-event-map.md)（required-on-read 机制）
-- [`../cordis-runtime/02-waterfall-与事件合同.md`](../cordis-runtime/02-waterfall-与事件合同.md)（waterfall 合同）
-- [`../capability-seams/01-三角色与分包装.md`](../capability-seams/01-三角色与分包装.md)（seam 三角色）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；空 invariant 的纪律）
+- [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
+- [`docs/development.md`](../../docs/development.md)（包结构同构）
+- [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）

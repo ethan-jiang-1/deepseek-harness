@@ -108,17 +108,12 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 
 本专题不进 `_coverage/` 核验矩阵：它不追踪机制覆盖度，只记录消化后的判断。替代纪律在 [`08-judgement-discipline.md`](./08-judgement-discipline.md)，核心是四条：
 
-1. **钉基线**：全部判断对照 DeepSeek Harness `0.1.1-rc.1`（commit `528c682e061696f5a160f363f236ecbf53cbd006`），与 `_digested/` 其它专题同一基线。上游同步后按 [`../_change_log/00-index.md`](../_change_log/00-index.md) 复核本专题的证据锚点。
+1. **钉基线**：全部判断对照 DeepSeek Harness `0.1.1-rc.1`（commit `528c682e061696f5a160f363f236ecbf53cbd006`），与 `_digested/` 其它专题同一基线。上游同步后按 `_change_log/` 复核本专题的证据锚点。
 2. **出处分级**：每条判断标注来源——`[原文]`、`[源码]`、`[推断]`、`[框架]`、`[外部观点]`；后两类可信度最低，只提供结构或假设。
 3. **反事实标记**：写判断时自问「一个没读过本仓库的 fresh agent 会不会自然写出这句」；会，是分布内通式；不会，才可能是信息。
 4. **自我适用**：[`08`](./08-judgement-discipline.md) 末尾用「三个问题」检验本专题自身，并维护一个核心 claim register。
 
 ## 与其它专题的关系
 
-- 机制总览：[`../system/00-map.md`](../system/00-map.md)（六层叠加、活插件图与耐久事件流）
-- 参与规则的原语：[`../cordis-runtime/00-map.md`](../cordis-runtime/00-map.md)（五条原语、waterfall 合同）
-- 组合与替换：[`../composition/00-map.md`](../composition/00-map.md)、[`../capability-seams/00-map.md`](../capability-seams/00-map.md)
-- 会话与模型可见面：[`../session-and-loop/00-map.md`](../session-and-loop/00-map.md)、[`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)
-- 入口投影：[`../surfaces/00-map.md`](../surfaces/00-map.md)
-- 二次研究（问题导向，非判断导向）：[`../../_faq_on_digested/00-index.md`](../../_faq_on_digested/00-index.md)，尤其 [`01 目录阅读模型`](../../_faq_on_digested/01_repository-organization/answer.md) 与 [`02 分层规格开发`](../../_faq_on_digested/02_spec-driven-development/answer.md)
-- 外部架构视角：[`../../_architecture_referenced/lencx/lencx-dsh.md`](../../_architecture_referenced/lencx/lencx-dsh.md)（lencx 的技术分享，本专题借其问题框架，事实仍回源码核对）
+- 机制详情可继续读 `_digested/` 的对应专题，但它们只作研究上下文，不进入证据引用。
+- 本专题的证据一律以 DSH 官方文件（`docs/`、`AGENTS.md`、`.agents/notes/`、`packages/`、`scripts/`）为准。
