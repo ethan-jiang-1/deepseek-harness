@@ -1,0 +1,9 @@
+# Oversized source files stay out of git. Keep extracted/condensed text copies
+# (for example lencx-dsh.md derived from lencx-dsh.pdf) as the committed reference.
+*.pdf
+*.PDF
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
