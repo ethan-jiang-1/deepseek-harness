@@ -59,9 +59,15 @@
 >
 > —— `docs/architecture.md:96`（基线 `528c682e…`）
 
+> The loop builds each request from logged state. `EpochHeader` records call config, ... and records the rendered prompt and authoritative returned tool order ... through full `request/header` snapshots. Together with derived history, this makes the request reconstructable from the session log.
+>
+> —— `docs/subsystems/llm-streaming.md:629`（基线 `528c682e…`）
+
 ## 结论
 
 静态可读性（[`02`](./02-legibility.md)）解决「知道有什么」；动态可读性解决「这次运行是什么」和「我的假设成不成立」。dump 问组合，生成目录问源码合同，`cordis_inspect` 问活运行时，`cordis_mount` 做最小试验。四者合起来，coding agent 就有了一个不需要资深同事在场的问答回路。
+
+`[推断]` 一个可执行的阅读路径是：先看 `dsh --dump-config` 输出的配置树，再追踪 `ctx.provide` / `inject`、Context realm 与 Fiber effect，最后沿 Session event 到 `deriveMessages()` 检查模型实际看到什么。落点分别在 [`docs/architecture.md`](../../docs/architecture.md)、[`docs/cordis-api/context.md`](../../docs/cordis-api/context.md)、[`docs/cordis-api/fiber.md`](../../docs/cordis-api/fiber.md)、[`docs/subsystems/session.md`](../../docs/subsystems/session.md)。
 
 ## 证据入口
 
