@@ -57,6 +57,10 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 四层阶梯只回答「从哪扇门进」。进了门之后，非平凡贡献还有一条制度化的生命周期。这条链可以从 DSH 的 `.agents/notes/README.md`、`docs/AGENTS.md` 和 `docs/testing.md` 中直接重建，harness-idea 只引用判断，不重复机制：
 
+> **Every non-trivial change includes at least one Agent Note in the same PR.** Update the owning note or add one; only mechanical/local edits are exempt.
+>
+> —— `docs/AGENTS.md:39`（基线 `528c682e…`）
+
 ```text
 Issue 验收条件
   → proposed Agent Note（问题、提案、替代方案、验收、风险）

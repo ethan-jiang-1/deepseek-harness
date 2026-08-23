@@ -54,7 +54,11 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 ## 机制五：结构同构，生成目录不漂移
 
 - 每个包同样布局：`src/types.ts` 只放类型、测试在包级 `tests/`、同一 tsconfig 模板、注册进恰好一个 aggregate（[`docs/development.md`](../../docs/development.md)）。学会一个包 = 学会全部包。
-- 每个包有 README + JSDoc 合同 + `./invariant` 登记（`verify-package-invariants` 强制）。
+- 每个包有 README + JSDoc 合同 + `./invariant` 登记（`verify-package-invariants` 强制）；README 还必须写 Model Experience 和 Known Limitations（`verify-package-readme-model-experience` / `verify-package-readme-limitations`）。
+
+> Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
+>
+> —— `packages/AGENTS.md:26`（基线 `528c682e…`）
 - 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
 
 手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
@@ -86,6 +90,11 @@ coding agent 的真实约束不只有「读不读得懂」，还有**上下文�
 - [`docs/architecture.md`](../../docs/architecture.md) 是 1800 词以内的有序地图；
 - 生成的 catalog 提供穷举查询，不要求读者通读；
 - skills 提供可调用的程序化工作流，如 [`dsh-doc-standards`](../../.agents/skills/dsh-doc-standards/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。
+- 双语文档由配对门禁管理：`docs/AGENTS.md` 要求“Pairs update together”，`verify-translation-pairing` 把英文/中文/记录三方钉在一起。
+
+> **Pairs update together**: Terminology-guided, single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records.
+>
+> —— `docs/AGENTS.md:43`（基线 `528c682e…`）
 
 `verify-doc-budgets` 把字数预算钉成门禁。可读性因此来自组织，不来自把系统做小；正确读法是查表，不是通读。
 
