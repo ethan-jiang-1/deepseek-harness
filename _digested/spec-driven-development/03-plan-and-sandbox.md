@@ -1,53 +1,62 @@
-# 03 · Plan Mode：把计划变成可审批对象
+# 03 · Plan Mode：可审批计划，不是权限系统
 
 ## 一句话
 
-Plan Mode 是 DSH 产品原生的“先规格、后执行”模式：agent 在计划态里只读探索，把计划写成另一位工程师无需再做设计决定即可实现的 decision-complete 文本，再通过 `exit_plan_mode` 交给用户审批。它是**可选**能力，并且是**软引导**——真正的写权限限制由 sandbox 和 approval policy 独立执行。
+Plan Mode 是可选、按 agent 记录的协作状态：激活时把 deployment-owned guidance 加进模型请求，`exit_plan_mode` 把完整计划交给用户审批。它不限制文件或命令；sandbox mode 和 approval policy 独立执行访问规则。
 
-## 1. 可选与软引导
+![Plan guidance、用户审批与权限执行彼此独立](./figures/plan-vs-enforcement.svg)
 
-- `dsh-plan-mode` 是独立包，agent loop 不依赖它。
-- 文档明确说 Plan mode 是 soft guidance；sandbox 和 approval policy 不读也不写 plan state，需要强限制时必须单独配置。
-- 它贡献 `plan:policy` prompt section、`exit_plan_mode` 工具和 `/plan` 命令。
+## 1. 三个机制不能合并理解
 
-来源：`docs/subsystems/plan.md:5`、`packages/plan/plan-mode/README.md:5,94`
+| 机制 | 拥有什么 | 不拥有 |
+|---|---|---|
+| Plan Mode | `plan/mode` 日志状态、`plan:policy` prompt section、`exit_plan_mode`、`/plan` | 文件/网络/进程权限 |
+| Sandbox mode | 运行环境允许的文件、网络和进程范围 | 计划正文或用户是否认可设计 |
+| Approval policy | 哪类受限操作需要用户批准 | plan state 或计划质量 |
 
-## 2. coding preset 中的计划合同
+Plan guidance 可以要求 agent 只读探索，但违反这段 prompt 的模型行为只有在 sandbox/approval 也拒绝操作时才被强制阻止。部署需要硬限制时必须单独配置后两者。
 
-`apps/cli/config/agent-presets/code/agent.cordis.yml` 的 plan section 要求：
+## 2. coding preset 定义计划质量
 
-- 先只读探索，不改文件、不跑会重写文件的 formatter/codegen、不提交。
-- 计划必须 decision-complete：目标与成功标准、按 subsystem 分组的修改、public API/schema/data-flow 变化、edge cases/failure modes/tests/acceptance criteria/explicit assumptions。
-- 详细到另一位工程师可以不由他来重做设计决定。
-- `todo_write` 只在批准后的实现阶段使用；完整计划必须通过 `exit_plan_mode` 提交。
-- 如果 review channel 不可用或用户保持 planning，agent 必须留在 plan mode，不能继续实现。
+`apps/cli/config/agent-presets/code/agent.cordis.yml` 的 `plan:policy` 要求：
 
-来源：`apps/cli/config/agent-presets/code/agent.cordis.yml:121-131`（同款规则也出现在 standard/cordis preset）
+- 先只读探索，不改文件、不运行会重写文件的 formatter/codegen、不提交；
+- 计划包含目标与成功标准、按 subsystem 分组的修改、public API/schema/data-flow 变化、失败与边界、测试、验收和显式假设；
+- 详细到另一位工程师可以实现，而无需重新作设计决定；
+- 实现期 task list 不替代完整计划；完整计划必须通过 `exit_plan_mode` 提交；
+- review channel 不可用或用户选择继续计划时，不退出 plan mode。
 
-## 3. exit_plan_mode 审批
+这些是该 deployment 的 prompt 合同，不是 `dsh-plan-mode` 包硬编码的通用计划模板；包只要求配置的 section 是合法非空字符串。
 
-`exit_plan_mode` 的 execute 路径：
+## 3. 状态来自 session log
 
-1. 要求存在 calling agent；
-2. 要求当前 plan mode active；
-3. 校验 plan 是非空 Markdown 且以 `#` 标题开头；
-4. 通过 `ctx.userQuestions` 的 `plan-review` 交互展示计划；
-5. 只有用户选择 `Approve` 才返回 `{ approved: true }` 并安排退出；
-6. `Keep planning` 或自定义反馈是失败调用，把用户反馈带回模型。
+`plan/mode` 的 payload 只有 `{ active: boolean }`。`foldPlanMode()` 读取日志前缀中最后一个值，无记录时为 false，因此 resume、fork 和 compaction 可以恢复已提交状态，UI 通过 `session/event` 观察变化。
 
-来源：`packages/plan/plan-mode/src/index.ts:346-414`、`docs/subsystems/plan.md:33`
+运行中的状态选择先保持 pending，在下一次被 downstream 接受的 in-turn `agent/pre-step` 才追加到日志；agent idle 时可以立即追加。选择本身不强制继续 turn，所以最后一个 pre-step 之后的 pending 状态可能等到下一 turn；进程在追加前退出会丢失这段 process-local pending selection。
 
-## 4. 计划在会话里的位置
+计划正文**不在 `plan/mode` event 中**。它是 `exit_plan_mode` 的 tool input；Plan Mode 只拥有激活状态和 review 交互，tool call 怎样进入会话记录由 tools/session 机制拥有。
 
-- `plan/mode` 是 session log 中的持久状态事件，只记录 `{ active: boolean }`，resume/fork 可恢复。
-- 计划正文作为 `exit_plan_mode` 的 `plan` 参数和 review 结果进入 conversation history，不是独立文件 home。
-- 因此 Plan Mode 的“spec”不是一份仓库文档，而是一次可审批、可恢复、可留在会话历史的计划对象。
+## 4. `exit_plan_mode` 的审批时序
 
-来源：`packages/plan/plan-mode/README.md:9,86`
+工具始终注册，使进入和离开 Plan Mode 不改变模型看到的 tool schema。执行时它要求 calling agent、active plan mode，以及以 `#` 标题开头的非空 Markdown plan，然后通过 `ctx.userQuestions` 发出 `plan-review`：
+
+1. 用户选择 `Approve` 后返回 `{ approved: true }`，并记录一个 silent pending exit；
+2. pending exit 在下一次 accepted in-turn pre-step 才写成 `plan/mode { active: false }`；
+3. 当前 tool batch 的其余部分仍受原 plan guidance；工具结果会明确告知转换时机；
+4. `Keep planning` 或自定义反馈作为失败 tool call 把意见返回模型；
+5. 缺少 interaction channel 或 review 期间 service reload 也失败并保持 plan mode。
+
+用户还可以通过 `/plan off` 直接选择退出。这个用户命令和 plan review 都不同于 agent 自行绕过审批。
+
+## 5. 在分布式规格中的位置
+
+Plan 是一次会话内、面向即将实施工作的可审批对象；Agent Note 是仓库内、面向未来维护者的决定记录。Plan 可以包含尚未稳定的文件级步骤，implemented Note 只保留交付决定、替代方案与后果。两者可能来自同一个设计过程，但不能互相替代。
 
 ## 证据入口
 
-- [`docs/subsystems/plan.md`](../../docs/subsystems/plan.md)
-- [`packages/plan/plan-mode/README.md`](../../packages/plan/plan-mode/README.md)
-- [`packages/plan/plan-mode/src/index.ts`](../../packages/plan/plan-mode/src/index.ts)
-- [`apps/cli/config/agent-presets/code/agent.cordis.yml`](../../apps/cli/config/agent-presets/code/agent.cordis.yml)
+- [Plan subsystem](../../docs/subsystems/plan.md)
+- [Plan Mode package README](../../packages/plan/plan-mode/README.md)
+- [Plan Mode implementation](../../packages/plan/plan-mode/src/index.ts)
+- [Coding preset](../../apps/cli/config/agent-presets/code/agent.cordis.yml)
+- [Sandbox subsystem](../../docs/subsystems/sandbox.md)
+- [Approval subsystem](../../docs/subsystems/approval.md)

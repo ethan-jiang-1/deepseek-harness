@@ -1,94 +1,78 @@
-# 01 · Agent Note：DSH 的决策主键
+# 01 · Agent Note：决定、提案与冻结历史
 
 ## 一句话
 
-Agent Note 是 DSH 里最接近“spec”的持久记录：它保存代码和文档无法承载的 **why 与 what we gave up**，并且用路径、格式、门禁把一个决策从 `proposed/` 推进到 `implemented/`、必要时进入 `rejected/` 或冻结到 `archived/`。
+Agent Note 保存代码和当前文档无法承载的 **why 与 what we gave up**。每个非平凡变更都要新增或更新一个 owner Note，但 Note 不必从 `proposed/` 开始，也不会在实现后自动进入 archive。
 
-## 1. 路径编码
+![Agent Note 的状态转换与禁止路径](./figures/agent-note-lifecycle.svg)
 
-每条 Agent Note 的路径都是 `{lifecycle}/{class}/yyyy-mm-dd-topic-title.md`：
+## 1. 先决定从哪里开始
 
-- `lifecycle`：`proposed/`、`implemented/`、`rejected/`、`archived/`
-- `class`：`feature`、`bug-fix`、`simplification`、`architecture`、`process`、`testing`
-- 日期是主题**首次提出**的日期，不是实现日期
+| 当前事实 | 动作 |
+|---|---|
+| 重大工作尚未构建，决定需要先评审 | 在 `proposed/<class>/` 新建 Note |
+| 决定已经做出并随当前变更交付 | 直接在 `implemented/<class>/` 新建 Note |
+| 现有 Note 已拥有同一个决定 | 更新 owner，不创建重复 Note |
+| 新决定只部分取代旧决定 | 保留双方并交叉链接，更新仍然有效的事实 |
+| 新决定完整取代旧决定 | 新 owner 吸收所有独有 rationale、alternative、consequence、verification 和 coverage gap 后，旧 implemented Note 才可删除 |
 
-来源：`.agents/notes/README.md:9`
+“每个非平凡变更必须有 Note”约束的是**决定覆盖**，不是要求每次先写 proposal。
 
-## 2. 生命周期
+## 2. 路径同时编码状态和类别
 
-| 状态 | 含义 | 是否当前权威 |
+活动树使用 `{lifecycle}/{class}/yyyy-mm-dd-topic-title.md`：
+
+- `lifecycle` 是 `proposed/`、`implemented/` 或 `rejected/`；低未来价值的 implemented triplet 另行移动到冻结的 `archived/` 树；
+- `class` 是 `feature`、`bug-fix`、`simplification`、`architecture`、`process` 或 `testing`；
+- 日期是主题首次提出的日期，不是实现或归档日期。
+
+分类是 `scripts/agent-note-tree.ts` 中的封闭集合，门禁拒绝未知目录。`refactor` 不在集合中；不增加能力的删除或收缩归 `simplification`。
+
+## 3. 四个状态服务不同读者任务
+
+| 状态 | 内容 | 读者怎样使用 |
 |---|---|---|
-| `proposed/` | 重大未来工作；尚未构建或只部分构建 | 是提案 |
-| `implemented/` | 已交付，且随代码事实保持 current | 是当前决定 |
-| `rejected/` | 被否决，保留仅当能阻止诱人的错误 | 否 |
-| `archived/` | 已封存的 implemented 历史快照 | 否，冻结 |
+| `proposed/` | 未完成或仅部分完成的重大未来工作 | 评审问题、方案、验收和风险，不能当成已交付功能 |
+| `implemented/` | 已交付决定及其替代方案和后果 | 作为当前 rationale owner，并随路径、名称、默认值和机制保持 current |
+| `rejected/` | 被否决的提案及一行拒绝原因 | 仅在仍能阻止一个可信错误时保留 |
+| `archived/` | 未来决策价值低的 implemented 历史快照 | 只作历史引用，永久冻结，不是当前权威 |
 
-关键规则：
+`proposed → rejected` 冻结提案；`proposed → implemented` 必须改写成已交付事实；`implemented → archived` 只在未来决策价值低时发生。Proposed Note 永不归档，过时提案应转 rejected；rejected Note 失去防错价值后删除完整 triplet。
 
-- 每个**非平凡变更**必须在同一 PR 中新增或更新至少一个 Agent Note。
-- 更新已经拥有该决策的 Note 即可，不重复创建。
-- 完全被取代的 implemented note 可合并到当前 owner 并删除，但必须保留独有 rationale/alternatives/consequences/verification，并修复入站链接。
-- 只有 implemented note 能进 archive；proposed 过时应该转 rejected。
-- archive 后永久冻结，视为历史而非现行权威。
+## 4. 文件格式让状态转换可检查
 
-来源：`.agents/notes/README.md:11-13, 38-42, 46-52`
+`pnpm run verify-agent-note-format` 是 `doc-sync` 的一部分，强制：
 
-## 3. 分类
+- 前三行是 `# Agent Note: <title>`、空行、`Status: <status>`，且 status 与目录一致；
+- body 以 `## Problem` 开头；
+- proposed 使用 `## Proposal / ## Alternatives considered / ## Acceptance criteria / ## Risks`；
+- implemented 使用 `## Decision / ## Alternatives considered / ## Consequences`，拒绝 proposal-era 的 `Proposal / Plan / Migration plan / Acceptance criteria` 标题；
+- rejected 保留提案体，拒绝结论写在 `Status:` 行；
+- 每个活动 Note 都有 `## Alternatives considered`，只有规则生效前且无法重建 alternatives 的 Note 可使用固定 grandfather 注释。
 
-分类是封闭集合，由 `scripts/agent-note-tree.ts` 门禁拒绝未知目录：
+格式门禁只证明结构满足规则，不证明决定正确、替代方案真实或 shipped facts 与代码一致；这些仍需语义 review。
 
-- `feature`：新的用户/模型可见能力
-- `bug-fix`：修正缺陷或 postmortem 暴露的缺口
-- `simplification`：不增加能力地移除代码/行为/范围
-- `architecture`：交付源码的结构性决定
-- `process`：代码周边的工作流/工具/门禁
-- `testing`：测试基础设施与策略
+## 5. `proposed → implemented` 是正文改写
 
-`refactor` 被有意排除，因为它与 `simplification` 重叠。
+移动和改写必须在同一变更完成：
 
-来源：`.agents/notes/README.md:21-34`
+- `Proposal` 改成现在式 `Decision`；
+- acceptance 与 risks 中仍有维护价值的事实进入 `Consequences` 或现在式 `Testing / Verification`；
+- 删除迁移计划和未来时态，记录实际交付内容；
+- 同一 diff 更新源码、当前文档和行为证据。
 
-## 4. 文件格式门禁
+只修改路径和 `Status:` 会让未来计划伪装成当前事实，因此格式 gate 和 code review 都检查这次改写。
 
-`pnpm run verify-agent-note-format` 作为 `doc-sync` 的一部分强制：
+## 6. supersession 与 archive 是两种不同收敛
 
-- 前三行固定为 `# Agent Note: <title>`、空行、`Status: <status>`；
-- 状态必须与所在 lifecycle 文件夹一致；
-- body 必须以 `## Problem` 开头；
-- **proposed** 用 `## Proposal / ## Alternatives considered / ## Acceptance criteria / ## Risks`；
-- **implemented** 用 `## Decision / ## Alternatives considered / ## Consequences`，禁止 `Proposal / Plan / Migration plan / Acceptance criteria`；
-- **rejected** 保留提案体，仅在 `Status:` 行加拒绝原因；
-- `## Alternatives considered` 是强制节，除非是 pre-format 的合法 grandfather 注释。
+Supersession 判断“哪个活动 Note 继续拥有决定”；archive 判断“一个已完成决定是否仍值得留在活动语料”。新建 Note 时要主动搜索相同决定、机制和被拒替代方案：完整取代才允许合并 owner，部分取代保持双方活动并交叉链接。
 
-来源：`.agents/notes/README.md:56-103`
-
-## 5. proposed → implemented：同一变更里改写时态
-
-> Moving a file between lifecycle folders means updating the `Status:` line and re-satisfying that folder's skeleton in the same change — the gate fails the move otherwise.
-
-来源：`.agents/notes/README.md:121`
-
-也就是说：
-
-- 未来式 `Proposal` 改成现在式 `Decision`
-- `Acceptance criteria` 和 `Risks` 折入 `Consequences`，或现在式 `Testing / Verification`
-- 计划/迁移步骤删除，只保留实际交付内容
-
-这不是“实现完顺手改个状态”的仪式；它是让 implemented note 描述 shipped reality 的关键机制。相关 enforce 在 `dsh-code-review` 的 manual check 中也有：实现 proposed note 时必须在同一 diff 移动并改写。
-
-## 6. archive 与 supersession
-
-- archive 必须是完整 triplet（`.md`、`.zh.md`、`.i18n.yaml`）一起移动。
-- 归档只允许插入 `Archived: YYYY-MM-DD` 并重录 sidecar hash，不编辑正文。
-- `verify-archived-agent-notes` 用 append-only manifest 封存每个文件 SHA-256；文档门禁跳过 archive 源。
-- **写新 note 时必须做 supersession check**：主动找覆盖同一决策/机制的旧 note，完整取代的 implemented 在同 PR 归档，部分取代的保留并 cross-link，过时 proposal 转 rejected。
-
-来源：`.agents/notes/README.md:36-42`、`.agents/notes/archived/AGENTS.md`、`.agents/skills/dsh-archive-agent-notes/SKILL.md`
+Archive 只移动完整 `.md`、`.zh.md`、`.i18n.yaml` triplet，在两种语言的 status 下插入相同 `Archived: YYYY-MM-DD`，重录 sidecar，并修复活动 prose 的入站链接。`verify-archived-agent-notes` 把归档内容写入 append-only hash manifest；封存后不得编辑、翻译、移动或删除。
 
 ## 证据入口
 
-- [`.agents/notes/README.md`](../../.agents/notes/README.md)
-- [`.agents/notes/implemented/AGENTS.md`](../../.agents/notes/implemented/AGENTS.md)
-- [`.agents/notes/archived/AGENTS.md`](../../.agents/notes/archived/AGENTS.md)
-- [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)
-- [`.agents/notes/implemented/process/2026-07-05-uniform-agent-note-format.md`](../../.agents/notes/implemented/process/2026-07-05-uniform-agent-note-format.md)
+- [Agent Note 规则](../../.agents/notes/README.md)
+- [Implemented Note 维护规则](../../.agents/notes/implemented/AGENTS.md)
+- [Archived Note 冻结规则](../../.agents/notes/archived/AGENTS.md)
+- [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)
+- [统一格式决定](../../.agents/notes/implemented/process/2026-07-05-uniform-agent-note-format.md)

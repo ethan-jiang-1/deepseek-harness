@@ -1,57 +1,81 @@
-# 07 · Push、改写历史与 stacked PR
+# 07 · Push、历史改写与官方 GitHub stack
 
 ## 一句话
 
-DSH 对 git 历史的操作不是“随便 force push”，而是：**普通 push 前用 `dsh-pre-push-checks` 选最小证据；改写历史只允许 `--force-with-lease`，禁止 raw `--force`；依赖 PR 链必须走 GitHub 官方 stack 对象和 `gh stack merge`**。
+普通 push 在发布前完成相关证据；历史改写只用 exact `--force-with-lease` 或 GitHub stack 自带的 lease protection；同仓库依赖 PR 链必须先成为官方 stack，再由 `gh stack merge` 按依赖顺序落地。
 
-## 1. 历史改写规则
+![官方 stack 从识别、刷新、验证到落地](./figures/stack-landing.svg)
 
-根 `AGENTS.md` 明确：
+## 1. 普通 push 的闭环
 
-- Standalone PR 和 official stacks 可以在 review 后 merge-forward 或 rebase。
-- Rewrites use `--force-with-lease`；abort on remote movement，never raw `--force`。
-- 在 merge-forward 进行中如果 base 前进了，保留 checkpoint 后再合入新 tip。
-- 不重复运行已通过的 check；push 后要验证 remote ref 匹配 local HEAD。
+1. 验证 live base，解析 outgoing scope，运行尚未通过且覆盖该 diff 的相关证据。
+2. 正常 commit；pre-commit fixer 若改了 staged files，检查实际结果。
+3. 正常 push，让 pre-push incremental typecheck 运行。
+4. Fetch 并确认 remote branch ref 与 local `HEAD` 一致。
+5. 有 PR 时读取 `gh pr checks`；pending 仍是 pending，failure 先诊断。
 
-来源：`AGENTS.md:128`、`.agents/skills/dsh-pre-push-checks/SKILL.md`
+若 GitHub 没有创建 workflow run，先读 mergeability。`CONFLICTING/DIRTY` 的 PR 不产生 `pull_request` workflow run；空 commit、draft/ready toggle 或 revert-and-restore 不能修复这个状态。
 
-## 2. dsh-merging-stacked-prs：官方 stack 优先
+## 2. Standalone branch 的历史改写
 
-skill 的核心约束：
+Rebase 在 review 后仍允许，但会使旧 commit OID、inline comment anchor、approval 和 check assumptions 失效。改写前 fetch remote branch 并记录 exact OID，发布时使用：
 
-- 依赖 PR 必须使用 GitHub 官方 stacked-PR 特性，不能靠手动 merge + retarget 模拟。
-- 如果 `gh stack` 不可用或跨 fork，硬停，不用 fallback。
-- 用 GraphQL 查询 `PullRequest.stack` 和 `stackEntry.position` 作为 stack membership 权威，不能只靠 base branch 推断。
-- `gh stack link` 只能自动处理同作者且可加的链；不同作者/冲突顺序先问用户。
-- 刷新优先用 native cascading rebase（`gh stack sync`）或 incremental merge-forward，二选一。
-- merge 使用 `gh stack merge <stack-number> --yes --merge`，不要逐 PR `gh pr merge`。
-- 合并后核对每个 PR `MERGED`；删除分支必须在对应 PR 已 merged 且没有 open PR 还以它为 base 之后。
+```sh
+git push --force-with-lease=<branch>:<observed-oid>
+```
 
-来源：`.agents/skills/dsh-merging-stacked-prs/SKILL.md`
+Remote head 已前进就让 push 失败，重新读取状态；raw `--force` 永不允许。改写后重新 fetch heads，并审计 unresolved review threads、approvals、mergeability 与 checks。
 
-## 3. Post-sync validation
+## 3. 先确认依赖链是官方 stack
 
-`gh stack sync` 是一次性 fetch、rebase、push，所以不能在发布前插入本地验证。skill 要求：
+同仓库 A ← B ← C 的依赖 PR 不能靠逐个 `gh pr merge` 和手工 retarget 模拟 stack。Landing 前：
 
-1. 先清空 worktree、记录官方 stack order 和 exact remote heads；
-2. sync 后重新查询每个 branch head、官方 stack order；
-3. 对每个被改写的 layer 跑相关证据；
-4. 全部通过前 keep PR unmerged，报告验证 pending；
-5. 如果失败，保留 lease-protected published heads，修复后发布 correction。
+- `gh stack --version` 必须可用；cross-fork chain 直接停止；
+- 从 live PR bases 建立 bottom-to-top 顺序：底层指向 trunk，每个上层指向正下方 head branch；
+- GraphQL 的 `PullRequest.stack` 与 `stackEntry.position` 是 membership 权威，不能只看 base branch；
+- 一个已有 stack 若含冲突顺序、意外 entry 或出现多个 stack number，变更 GitHub 状态前请求用户决定；
+- 缺失成员且作者完全一致时，可按 bottom-to-top 用 `gh stack link` 自动加入；作者不同或未知时先问用户。
 
-来源：`.agents/skills/dsh-pre-push-checks/SKILL.md` 的 Post-sync validation 段
+不自动 dissolve、reorder 或 rebuild 现有 stack。
 
-## 4. 相关 process notes
+## 4. 只在需要时刷新
 
-- `2026-08-02-native-github-stacks-and-optional-rebases`：为什么选 native stacks 和允许 rebase 的边界。
-- `2026-07-26-incremental-pr-base-retargeting`：merge-forward 时 base 前移的 checkpoint 规则。
-- `2026-08-10-event-directed-pr-review-status`：review 事件如何驱动 Project 状态。
+Live merge state 或 repository rules 要求更新 trunk 时，二选一：
 
-来源：`.agents/notes/implemented/process/2026-08-02-native-github-stacks-and-optional-rebases.md`、`.agents/notes/implemented/process/2026-07-26-incremental-pr-base-retargeting.md`、`.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md`
+- **Native cascading rebase**：`gh stack sync` 可能改写并推送每层；冲突进入 `gh stack rebase`，解决、验证后用 `gh stack push` 发布；
+- **Incremental merge-forward**：先把 trunk merge 到最底受影响层，再 bottom-to-top 把更新后的 parent merge 进 child；base 在进行中前进时先保留 checkpoint，再合入新 tip。
+
+不要因为存在 refresh 命令就无条件改写 branch。`gh stack sync` 的 publication-before-validation 例外要求 sync 前 clean worktree、记录 official order 与 exact heads；返回后重查 stack，逐层重算 scope 并验证。全部通过前不得 merge 或声称 ready。
+
+## 5. 通过 stack API 落地
+
+Merge 前重新查询 official stack，要求 selected PR 各自 open、non-draft、顺序正确，并满足自己的 review/check requirements。Ready top layer 不能证明 dependencies ready。
+
+“Land the stack”默认选择整个 stack：
+
+```sh
+gh stack merge <stack-number> --yes --merge
+```
+
+部分落地必须由用户明确 boundary PR，并包含 bottom 到 boundary 的连续 prefix：
+
+```sh
+gh stack merge <boundary-pr> --yes --merge
+```
+
+不传 `--delete-branch`，不手工 retarget dependents，不逐 PR merge。Native API 按 bottom-up 处理选择范围，并负责剩余上层的 retarget/rebase；merge queue 可能分组落地，但 queued 不等于 merged。
+
+## 6. 落地后验证再清理
+
+等待每个 selected PR 报告 `MERGED`。Partial landing 后重新查询 official stack，确认剩余 PR 保持预期顺序和 base，并重新检查 GitHub 可能改写后的 heads、review 与 CI。
+
+Branch deletion 是独立最后一步：对应 PR 已 `MERGED`，且 `gh pr list --state open --base <branch>` 返回零个依赖 PR，才能删除。
 
 ## 证据入口
 
-- [`.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)
-- [`.agents/skills/dsh-merging-stacked-prs/SKILL.md`](../../.agents/skills/dsh-merging-stacked-prs/SKILL.md)
+- [`dsh-pre-push-checks`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)
+- [`dsh-merging-stacked-prs`](../../.agents/skills/dsh-merging-stacked-prs/SKILL.md)
+- [Stack review guide](../../docs/cookbook/responding-to-pr-review-on-a-stack.md)
 - [根 `AGENTS.md`](../../AGENTS.md)
-- `.agents/notes/implemented/process/2026-08-02-native-github-stacks-and-optional-rebases.md`
+- [Native stacks 与 optional rebase 决定](../../.agents/notes/implemented/process/2026-08-02-native-github-stacks-and-optional-rebases.md)
+- [Incremental retargeting 决定](../../.agents/notes/implemented/process/2026-07-26-incremental-pr-base-retargeting.md)

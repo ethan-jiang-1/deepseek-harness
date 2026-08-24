@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#15803d"/></marker>
+  </defs>
+  <rect width="1120" height="700" rx="6" fill="#fafafa"/>
+  <text x="560" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">一次变更：三个条件入口汇入同一个交付核心</text>
+  <text x="560" y="51" text-anchor="middle" font-size="11" fill="#667085">Issue、proposed Note、Plan Mode 由不同条件触发；非平凡变更必须有 implemented decision owner。</text>
+
+  <text x="52" y="91" font-size="12" font-weight="700" fill="#475569">条件入口</text>
+  <rect x="52" y="108" width="300" height="112" rx="8" fill="#e8f1fb" stroke="#6b9ac4"/>
+  <text x="202" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#244e73">Issue / task context</text>
+  <text x="202" y="162" text-anchor="middle" fill="#355f82">外部结果 · 复现 · 验收</text>
+  <text x="202" y="184" text-anchor="middle" font-size="11" fill="#54748f">human-authored PR 进入 review policy 时强制引用</text>
+  <text x="202" y="203" text-anchor="middle" font-size="11" fill="#54748f">否则按协作需要出现</text>
+
+  <rect x="410" y="108" width="300" height="112" rx="8" fill="#f7ecda" stroke="#c68b2c"/>
+  <text x="560" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#744d0f">proposed Agent Note</text>
+  <text x="560" y="162" text-anchor="middle" fill="#805915">问题 · 提案 · alternatives · 验收 · 风险</text>
+  <text x="560" y="184" text-anchor="middle" font-size="11" fill="#916d32">重大未来工作在实现前需要评审时出现</text>
+  <text x="560" y="203" text-anchor="middle" font-size="11" fill="#916d32">已做出的决定可直接从 implemented 开始</text>
+
+  <rect x="768" y="108" width="300" height="112" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="918" y="137" text-anchor="middle" font-size="14" font-weight="700" fill="#245d35">Plan Mode</text>
+  <text x="918" y="162" text-anchor="middle" fill="#326c42">只读探索 · decision-complete plan · 用户审批</text>
+  <text x="918" y="184" text-anchor="middle" font-size="11" fill="#4f775a">部署启用且用户选择规划时出现</text>
+  <text x="918" y="203" text-anchor="middle" font-size="11" fill="#4f775a">sandbox / approval policy 独立执行权限</text>
+
+  <line x1="202" y1="220" x2="384" y2="273" stroke="#64748b" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <line x1="560" y1="220" x2="560" y2="270" stroke="#64748b" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <line x1="918" y1="220" x2="736" y2="273" stroke="#64748b" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+
+  <rect x="108" y="272" width="904" height="190" rx="12" fill="#fff" stroke="#334155" stroke-width="1.5"/>
+  <text x="560" y="301" text-anchor="middle" font-size="15" font-weight="700" fill="#1e293b">共享交付核心 · 同一变更保持一致</text>
+  <rect x="136" y="323" width="196" height="104" rx="7" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="234" y="351" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">实现</text>
+  <text x="234" y="376" text-anchor="middle" fill="#475569">source · types · config</text>
+  <text x="234" y="398" text-anchor="middle" font-size="11" fill="#64748b">实际改变系统</text>
+
+  <rect x="353" y="323" width="196" height="104" rx="7" fill="#e8f1fb" stroke="#6b9ac4"/>
+  <text x="451" y="351" text-anchor="middle" font-size="13" font-weight="700" fill="#244e73">当前合同</text>
+  <text x="451" y="376" text-anchor="middle" fill="#355f82">docs · README · JSDoc</text>
+  <text x="451" y="398" text-anchor="middle" font-size="11" fill="#54748f">只写 shipped state</text>
+
+  <rect x="570" y="323" width="196" height="104" rx="7" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="668" y="351" text-anchor="middle" font-size="13" font-weight="700" fill="#245d35">行为证据</text>
+  <text x="668" y="376" text-anchor="middle" fill="#326c42">tests · snapshots · invariants</text>
+  <text x="668" y="398" text-anchor="middle" font-size="11" fill="#4f775a">正例、负例与真实入口</text>
+
+  <rect x="787" y="323" width="196" height="104" rx="7" fill="#f7ecda" stroke="#c68b2c"/>
+  <text x="885" y="351" text-anchor="middle" font-size="13" font-weight="700" fill="#744d0f">implemented Note</text>
+  <text x="885" y="376" text-anchor="middle" fill="#805915">decision · alternatives</text>
+  <text x="885" y="398" text-anchor="middle" font-size="11" fill="#916d32">每个非平凡变更必须覆盖</text>
+
+  <line x1="332" y1="375" x2="349" y2="375" stroke="#475569" marker-end="url(#arrow)"/>
+  <line x1="549" y1="375" x2="566" y2="375" stroke="#475569" marker-end="url(#arrow)"/>
+  <line x1="766" y1="375" x2="783" y2="375" stroke="#475569" marker-end="url(#arrow)"/>
+
+  <line x1="560" y1="462" x2="560" y2="501" stroke="#475569" marker-end="url(#arrow)"/>
+  <rect x="52" y="503" width="1016" height="133" rx="12" fill="#f5f3ff" stroke="#8b7bb8"/>
+  <text x="78" y="530" font-size="12" font-weight="700" fill="#554879">.github/ 远端协作与执行</text>
+  <rect x="84" y="548" width="210" height="62" rx="7" fill="#fff" stroke="#a89bc9"/>
+  <text x="189" y="573" text-anchor="middle" font-weight="700" fill="#554879">本地相关证据</text>
+  <text x="189" y="594" text-anchor="middle" font-size="11" fill="#746894">按 outgoing diff 选择</text>
+  <rect x="326" y="548" width="210" height="62" rx="7" fill="#fff" stroke="#a89bc9"/>
+  <text x="431" y="573" text-anchor="middle" font-weight="700" fill="#554879">PR policy + CI</text>
+  <text x="431" y="594" text-anchor="middle" font-size="11" fill="#746894">metadata · matrix · platforms</text>
+  <rect x="568" y="548" width="210" height="62" rx="7" fill="#fff" stroke="#a89bc9"/>
+  <text x="673" y="573" text-anchor="middle" font-weight="700" fill="#554879">语义 review</text>
+  <text x="673" y="594" text-anchor="middle" font-size="11" fill="#746894">意图 · owner · failure · prose</text>
+  <rect x="810" y="548" width="210" height="62" rx="7" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="915" y="573" text-anchor="middle" font-weight="700" fill="#245d35">merge / delivery state</text>
+  <text x="915" y="594" text-anchor="middle" font-size="11" fill="#4f775a">checks 与 review 均满足</text>
+  <line x1="294" y1="579" x2="322" y2="579" stroke="#475569" marker-end="url(#arrow)"/>
+  <line x1="536" y1="579" x2="564" y2="579" stroke="#475569" marker-end="url(#arrow)"/>
+  <line x1="778" y1="579" x2="806" y2="579" stroke="#15803d" marker-end="url(#arrow-green)"/>
+
+  <path d="M885 427 L885 476 L1042 476 L1042 656 L812 656" fill="none" stroke="#c68b2c" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <text x="927" y="474" font-size="11" fill="#805915">未来决策价值低时</text>
+  <text x="700" y="662" font-size="11" fill="#805915">archive（冻结历史，不是每次 merge 的步骤）</text>
+  <text x="560" y="682" text-anchor="middle" font-size="11" fill="#667085">每层只证明自己实际检查的属性；任何一层都不能替代其它 owner。</text>
+</svg>

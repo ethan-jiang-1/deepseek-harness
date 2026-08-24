@@ -1,77 +1,73 @@
-# 06 · Code review 与人的边界
+# 06 · Code review：检查结果、语义判断与人的权限
 
 ## 一句话
 
-DSH 的 review 分为两层：机器门禁证明“可判定结构没坏”，`dsh-code-review` 负责机器查不到的语义判断。仓库没有一张“人 vs agent”分工总表，但 Issue policy 明确存在 **human-review policy**——非 Draft、非 Bot/App、已请求或已有 review 的人类 PR 必须满足更强约束。
+DSH 的 review 不是“机器查结构、人查语义”的固定人员分工。自动检查只能建立它们实际验证的属性；人或 agent 都可以按 `dsh-code-review` 做语义 review；只有 interaction/approval 机制明确要求用户选择的动作不能由 agent 代答，超出既有授权的产品取舍也要请求方向。
 
-## 1. dsh-code-review 的 sources of truth
+## 1. 三层证据不要互相冒充
 
-skill 要求 reviewer 先验证 live base/head，运行 `change-scope`，然后对照：
+| 层 | 能建立 | 不能建立 |
+|---|---|---|
+| static gates、tests、snapshots、CI | 类型、格式、链接、指定场景行为、coverage、build 与平台结果 | 意图是否合理、抽象是否必要、prose 是否准确、测试场景是否选对 |
+| semantic review | 实现与 Issue/PR/Agent Note 是否一致，生命周期、安全、owner、失败、模型视角和真实入口是否完整 | 替代实际运行的检查或用户授权 |
+| explicit user interaction | 批准 Plan、授权受限操作、回答交互问题 | 自动证明代码、文档和全部平台已经通过 |
 
-- `AGENTS.md` 与 `packages/AGENTS.md`
-- `docs/defensive-patterns.md`
-- `docs/AGENTS.md`
-- `dsh-prose-standard`
-- `docs/testing.md` 与 quality-gates note
-- Agent Notes：与 Note 冲突是 design discussion，不自动否决
+`human-review policy` 是 `.github/issue-management/policy.mjs` 对人类作者 PR 的 metadata 适用条件；它没有规定 reviewer 身份，也不应被拿来证明 semantic review 已由人执行。
 
-来源：`.agents/skills/dsh-code-review/SKILL.md:8-17`
+仓库规则同样没有把所有产品判断永久保留给人。Agent 可以在任务授权和当前规则内作实现决定；只有需要扩大范围、改变用户意图或取得显式 approval 的选择必须交还用户。
 
-## 2. Blocking requirements
+## 2. review 从 live diff 和 owner 开始
 
-1. **New prose receives semantic review.** automated checks do not establish those properties.
-2. **Docs match the code.** config/defaults/errors/wire fields/events/public behavior 更新 README 和 JSDoc 在同一 diff。
-3. **Core type docs match.** spine/seam vocabulary 更新 subsystems 和 type-equiv。
-4. **Registrations clean up.** registry contribution 要过 disposal tests。
-5. **Invariant companions are semantic.** 不为了消除空而发明检查。
-6. **Required evidence exists.** 作者跑了相关本地检查，CI 覆盖穷举矩阵。
+`dsh-code-review` 要求先验证并 fetch PR 的 live base 与 exact head，再运行 `change-scope`。Retarget 或 base merge 后重新建立 scope。Reviewer 读取 diff、surrounding code 和对应 owner：
 
-来源：`.agents/skills/dsh-code-review/SKILL.md:20-27`
+- root/subtree `AGENTS.md` 与 defensive patterns；
+- owning package README、subsystem page 与 public JSDoc；
+- Agent Notes 的 rationale；与 Note 不同是 design discussion，不是自动 veto；
+- testing policy、snapshot 场景和当前 PR CI；
+- bilingual changes 的两种语言，而不只 pairing hash。
 
-## 3. Manual checks 核心清单
+Skill 是 guidance，不是完整 checklist；review 优先 correctness、lifecycle、security 和 required behavior，不用绿色 gate 已经可靠拒绝的格式问题填充 findings。
 
-- Intent and interface：实现是否匹配 PR 和 Agent Note，包括 error/cancellation/ownership/disposal。
-- Lifecycle/concurrency：races、cancellation、cleanup、quiescent disposal。
-- Capability/consumer fit：consumer-specific behavior 不能泄漏进通用接口。
-- Scope/ownership/necessity：每个抽象都要映射到 current contract / production consumer / owner。
-- Model perspective：模型实际看到的 prompts/tool schemas/results/diagnostics。
-- Enforcement：直接与替代调用路径都要测试 denial。
-- Borrowed/derived state：通知、cache、prompt、UI echo 都从权威 success point 派生。
-- Real entry path：shipped Loader、bin、worker、ACP bridge 或 subprocess。
-- Test strength：断言必须在预期 regression 上失败，不能 restate implementation。
-- Implemented Agent Notes match shipped reality：实现 proposed note 的 PR 必须在同 diff 移动并改写为 present-tense。
-- Transcript changes：editor/model-visible 变化要更新 snapshot 或解释为什么不需要。
+## 3. blocking requirements
 
-来源：`.agents/skills/dsh-code-review/SKILL.md:29-45`
+以下事实缺失时 review 应阻止合并：
 
-## 4. 人类 PR review 边界
+- 新增或改动 prose 已接受语义审查；
+- config、defaults、errors、wire fields、events 和 public behavior 同 diff 更新 owning README/JSDoc；
+- spine 或 capability seam 的 public types 同步 subsystem/type-equivalence owner；
+- registry contribution 具有 disposal evidence；
+- invariant companion 检查 owned event stream 或 mutable-data relationship，不用 service/method presence 充数；没有可观察关系时允许有解释的空 installer；
+- 作者运行覆盖 diff 的相关本地证据，CI 提供远端矩阵。
 
-`.github/issue-management/policy.mjs` 定义：
+## 4. 高风险语义检查
 
-```js
-const automated = authorType === 'Bot' || authorType === 'App'
-return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
-```
+Reviewer 沿实际 consumer 和执行入口检查：
 
-- 只有返回 true 时，PR 才必须引用 Issue、满足 kind/area/priority 等约束。
-- 这称为 “human-review policy”。
-- `dsh-code-review` 本身没有明文写执行者必须是人；因此更准确的说法是：**进入 review 的人类 PR 被 policy 单独约束，语义 review 不能由自动化替代**。
+- interface 的 error、cancellation、ownership 与 disposal；
+- async setup、callback、process 和 teardown 的 race、reentry、detach 与 quiescent disposal；
+- consumer-specific behavior 是否泄漏到 generic service，或单一内部 consumer 是否造成多余 public API；
+- default、option、compatibility path 和 defensive copy 是否有当前 consumer 或明确决定支持；
+- 模型实际看到的 prompt、tool schema、result、diagnostic 和 transcript；
+- denial 是否在直接与替代调用路径都到达最终 operation；
+- derived state、cache、UI echo 和 replay 是否来自 authoritative success point；
+- byte/size limit 是否覆盖 wrapper 与 metadata 后的最终结果；
+- Loader、bin、worker、ACP bridge、subprocess 和 built artifact 是否走 shipped entry path；
+- assertion 是否会在目标 regression 上失败，negative control 是否通过真实 runner 被拒绝；
+- proposed Note 被实现时是否在同 diff 移动并改写为 present-tense shipped reality。
 
-来源：`.github/issue-management/policy.mjs:158-170`、`.github/pull_request_template.md:2`
+这份列表解释语义维度，精确 review 范围仍由 diff 决定。
 
-## 5. 收到 review 后
+## 5. Findings 与反馈闭环
 
-skill 对“被 review 的一方”也有明确指令：
+Finding 要给出 defect、location、impact 和 evidence；局部问题放最窄 diff range，跨文件 owner 或设计问题放 PR-level comment。Blocker 与 suggestion 分开，pending check 继续报告 pending。
 
-> When receiving review, verify each claim and fix or rebut it on technical grounds without performative agreement.
-
-来源：`.agents/skills/dsh-code-review/SKILL.md:49`
-
-也就是说，agent 不是无脑接受 comment；要逐条验证、修复或用技术理由反驳。
+收到 review 后逐条复核 claim：成立就修复并补证据，不成立就用技术事实反驳，不作表演式同意。历史改写会让旧 commit OID、inline anchor、approval 和 check 证据失效；push 后重新审计 unresolved threads、approvals、mergeability 和 current checks。
 
 ## 证据入口
 
-- [`.agents/skills/dsh-code-review/SKILL.md`](../../.agents/skills/dsh-code-review/SKILL.md)
-- [`.github/issue-management/policy.mjs`](../../.github/issue-management/policy.mjs)
-- [`.github/pull_request_template.md`](../../.github/pull_request_template.md)
-- [`.agents/notes/implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
+- [`dsh-code-review`](../../.agents/skills/dsh-code-review/SKILL.md)
+- [Defensive patterns](../../docs/defensive-patterns.md)
+- [测试策略](../../docs/testing.md)
+- [Issue/PR policy](../../.github/issue-management/policy.mjs)
+- [PR template](../../.github/pull_request_template.md)
+- [Quality gates 决定](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)

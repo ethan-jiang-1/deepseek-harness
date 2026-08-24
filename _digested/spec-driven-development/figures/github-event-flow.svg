@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+    <marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#15803d"/></marker>
+  </defs>
+  <rect width="1100" height="650" rx="6" fill="#fafafa"/>
+  <text x="550" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">.github/：协作事件被投影成 policy、Project 状态与远端证据</text>
+  <text x="550" y="51" text-anchor="middle" font-size="11" fill="#667085">模板提供输入；workflow 拥有触发和权限；policy / repository scripts 拥有规则。</text>
+
+  <rect x="38" y="82" width="250" height="120" rx="8" fill="#e8f1fb" stroke="#6b9ac4"/>
+  <text x="163" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#244e73">协作输入</text>
+  <text x="58" y="139" fill="#355f82">Issue templates：结果 / 复现 / 验收</text>
+  <text x="58" y="162" fill="#355f82">PR template：Issue / 变更 / 验证</text>
+  <text x="58" y="185" font-size="11" fill="#54748f">Dependabot 也创建 PR，但 authorType = Bot</text>
+
+  <rect x="38" y="244" width="250" height="150" rx="8" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="163" y="272" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">GitHub events</text>
+  <text x="58" y="302" fill="#475569">issues：opened / edited / closed ...</text>
+  <text x="58" y="326" fill="#475569">pull_request：opened / sync / labels ...</text>
+  <text x="58" y="350" fill="#475569">review_requested</text>
+  <text x="58" y="374" fill="#475569">pull_request_review：submitted</text>
+  <line x1="163" y1="202" x2="163" y2="240" stroke="#475569" marker-end="url(#a)"/>
+
+  <rect x="350" y="82" width="330" height="188" rx="10" fill="#f7ecda" stroke="#c68b2c"/>
+  <text x="515" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#744d0f">Issue policy workflow</text>
+  <text x="372" y="139" fill="#805915">检出 default branch 的 trusted policy</text>
+  <text x="372" y="162" fill="#805915">persist-credentials: false</text>
+  <rect x="378" y="184" width="274" height="60" rx="6" fill="#fff" stroke="#d6ae6b"/>
+  <text x="515" y="207" text-anchor="middle" font-weight="700" fill="#744d0f">requiresPullRequestPolicy</text>
+  <text x="515" y="228" text-anchor="middle" font-size="11" fill="#916d32">non-draft + human author + review entered</text>
+
+  <rect x="350" y="306" width="330" height="198" rx="10" fill="#ede9f7" stroke="#8b7bb8"/>
+  <text x="515" y="334" text-anchor="middle" font-size="14" font-weight="700" fill="#554879">Issue lifecycle workflow</text>
+  <text x="372" y="363" fill="#665a87">policy.mjs lifecycle 解释 Issue / PR / review event</text>
+  <text x="372" y="386" fill="#665a87">只在需要写 Project 时创建 App token</text>
+  <rect x="378" y="411" width="274" height="66" rx="6" fill="#fff" stroke="#a89bc9"/>
+  <text x="515" y="434" text-anchor="middle" font-weight="700" fill="#554879">Project projection</text>
+  <text x="515" y="455" text-anchor="middle" font-size="11" fill="#746894">Inbox → In progress → In review ↔ changes requested</text>
+
+  <rect x="744" y="82" width="318" height="188" rx="10" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="903" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#245d35">PR metadata result</text>
+  <text x="766" y="141" fill="#326c42">同仓库 Issue reference</text>
+  <text x="766" y="165" fill="#326c42">exactly one kind/* + area/*</text>
+  <text x="766" y="189" fill="#326c42">priority consistency</text>
+  <text x="766" y="218" font-size="11" fill="#4f775a">不检查 Issue 语义质量，也不规定 reviewer 身份</text>
+  <line x1="680" y1="176" x2="740" y2="176" stroke="#15803d" marker-end="url(#ag)"/>
+
+  <rect x="744" y="306" width="318" height="198" rx="10" fill="#e8f1fb" stroke="#6b9ac4"/>
+  <text x="903" y="334" text-anchor="middle" font-size="14" font-weight="700" fill="#244e73">PR CI workflow</text>
+  <text x="766" y="363" fill="#355f82">pull_request only · superseded run cancelled</text>
+  <text x="766" y="387" fill="#355f82">static · coverage · consumers · compatibility</text>
+  <text x="766" y="411" fill="#355f82">Python runtime · Windows signals</text>
+  <rect x="772" y="435" width="262" height="43" rx="6" fill="#fff" stroke="#8ab0d2"/>
+  <text x="903" y="462" text-anchor="middle" font-weight="700" fill="#244e73">all checks passed</text>
+
+  <line x1="288" y1="301" x2="346" y2="196" stroke="#475569" marker-end="url(#a)"/>
+  <line x1="288" y1="334" x2="346" y2="389" stroke="#475569" marker-end="url(#a)"/>
+  <path d="M288 368 L316 368 L316 286 L710 286 L710 405 L740 405" fill="none" stroke="#475569" marker-end="url(#a)"/>
+
+  <rect x="38" y="548" width="1024" height="70" rx="8" fill="#fff" stroke="#cbd5e1"/>
+  <text x="60" y="576" font-size="12" font-weight="700" fill="#334155">相邻但非通用主链</text>
+  <text x="60" y="600" fill="#475569">secret-backed real API e2e · E2B/provider manual workflows · docs Pages deployment · native/Python/npm release workflows</text>
+  <text x="550" y="638" text-anchor="middle" font-size="11" fill="#667085">GitHub 保存远端状态；Agent Note、源码、当前文档和测试仍各有自己的 repository owner。</text>
+</svg>
