@@ -1,4 +1,4 @@
-# Answer · DSH 根入口文档让模型按图索骥的方式
+# Answer · DSH 根入口文档的静态设计
 
 ## 一句话结论
 
@@ -9,6 +9,8 @@ DSH 没有试图直接解决“渐进式披露多少才合适”这个主观问�
 3. **查不到时能不能机器证明地图没坏？** —— 生成目录 freshness-gated，Markdown 链接由 `verify-md-links` 检查，文档预算由 `verify-doc-budgets` 检查。
 
 当这三个问题都有机械答案后，“按图索骥”就不再依赖模型的理解力或运气，而是变成一个可执行的路由过程。
+
+（这是**静态**结论：它说的是“图”本身长什么样、怎么保证不坏。图在运行时怎么被注入、被走完、超预算怎么回收，见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)。）
 
 ## 根入口的分工
 
@@ -22,7 +24,7 @@ DSH 没有试图直接解决“渐进式披露多少才合适”这个主观问�
 | 生成目录 | 查询者 | 穷举索引：tool/config/persistence/event/module graph/cordis API | 不承载叙事 |
 | package README | 要改/用某个包的人或 coding agent | 该包合同、Model Experience、限制 | 不重复生成目录和 JSDoc |
 
-## 模型第一次进入时的实际路径
+## 这张地图的路由结构
 
 ```text
 README.md
@@ -43,7 +45,7 @@ AGENTS.md
        查怎么做 → docs/cookbook/ 或 .agents/skills/
 ```
 
-这不是一篇长文的线性展开，而是一个**两层路由**：根 `AGENTS.md` 是常驻内存的总路由表，目标文档按需加载。
+这不是一篇长文的线性展开，而是一个**两层路由**：根 `AGENTS.md` 是常驻内存的总路由表，目标文档按需加载。这条路由在运行时由谁执行（`dsh-agent-instructions` 注入、模型用 read/grep/glob 导航、skill 按需加载），见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)。
 
 ## 最核心的三件事
 
@@ -69,3 +71,4 @@ DSH 没有度量“读者懂了没有”，而是度量了更稳定、更可检�
 - [`03-progressive-disclosure-as-cache.md`](./03-progressive-disclosure-as-cache.md)
 - [`04-unique-and-transferable.md`](./04-unique-and-transferable.md)
 - [`research.md`](./research.md)
+- 运行时消费（另一半）：[`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)

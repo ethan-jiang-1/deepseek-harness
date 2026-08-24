@@ -55,7 +55,7 @@ DSH 用 rejected note、README 的 `## Known Limitations`、说明理由的空 i
 
 （上句出处同上，语料归纳。）
 
-对一个普通项目，这就是「入口文件要短、要只做路由」的直接理由——也是和 `04_root-entry-documentation` 讲过的根入口分流共用同一个原则。这条原则落到物理文件上，是一条明确的入口链：`CLAUDE.md`（symlink）→ 根 `AGENTS.md` → 少数子树 `AGENTS.md` → 各 `README.md`；它把「渐进披露」变成仓库里真实存在的骨架，详见 [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)。但注意这只是**静态层**——「按需」的「需」在运行时由谁决定、模型每轮实际看到什么、超预算怎么回收、子代理能看到什么，是另一整块，详见 [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)。
+对一个普通项目，这就是「入口文件要短、要只做路由」的直接理由——也是和 `04_root-entry-doc-design` 讲过的根入口分流共用同一个原则。这条原则落到物理文件上，是一条明确的入口链：`CLAUDE.md`（symlink）→ 根 `AGENTS.md` → 少数子树 `AGENTS.md` → 各 `README.md`；它把「渐进披露」变成仓库里真实存在的骨架，详见 [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)。但注意这只是**静态层**——「按需」的「需」在运行时由谁决定、模型每轮实际看到什么、超预算怎么回收、子代理能看到什么，是另一整块，详见 [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)。
 
 ## 可迁移要点
 

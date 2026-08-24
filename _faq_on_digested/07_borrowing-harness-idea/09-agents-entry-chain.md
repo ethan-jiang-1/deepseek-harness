@@ -72,4 +72,4 @@ tier taxonomy 的第一行规定根 `AGENTS.md` 的职责和禁区：
 - [`../../AGENTS.md`](../../AGENTS.md)：根 standing orders + Repository layout 怎样 link 到各 README 与核心文档。
 - [`../../docs/architecture.md`](../../docs/architecture.md)：从 AGENTS.md 进入的有序地图。
 - [`../../docs/cookbook/adding-a-package.md`](../../docs/cookbook/adding-a-package.md)：package README 应写什么（contract 的范本）。
-- 既有 FAQ 的相关面：[`04_root-entry-documentation`](../04_root-entry-documentation/answer.md)（根入口分流与预算）。
+- 既有 FAQ 的相关面：[`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)（根入口分流与预算）。

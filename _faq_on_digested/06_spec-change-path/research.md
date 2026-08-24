@@ -151,5 +151,5 @@ Status: implemented
 ## 相关消化材料
 
 - `_faq_on_digested/02_spec-driven-development/answer.md`
-- `_faq_on_digested/04_root-entry-documentation/answer.md`
+- `_faq_on_digested/04_root-entry-doc-design/answer.md`
 - `_digested/harness-idea/04-participation-paths.md`
