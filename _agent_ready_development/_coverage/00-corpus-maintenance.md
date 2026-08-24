@@ -1,10 +1,10 @@
-# `_spec_driven_development` 语料证据与维护说明
+# `_agent_ready_development` 语料证据与维护说明
 
 > 复核日期：2026-08-24。产品源码基线：`528c682e061696f5a160f363f236ecbf53cbd006`。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
 
 ## 1. 专题定位
 
-`_spec_driven_development/` 是根级 SDD、GitHub Flow 与 Development Harness 学习语料，并使用 DSH 作为固定版本的一手机制参考；它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法。语料把可观察机制综合为“分布式规格”：Issue/任务意图、Agent Note 决定、可选 Plan、当前源码与文档、行为证据，以及 GitHub 远端协作状态分别有自己的 owner。
+`_agent_ready_development/` 是根级 SDD、GitHub Flow 与 Development Harness 学习语料，并使用 DSH 作为固定版本的一手机制参考；它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法。语料把可观察机制综合为“分布式规格”：Issue/任务意图、Agent Note 决定、可选 Plan、当前源码与文档、行为证据，以及 GitHub 远端协作状态分别有自己的 owner。
 
 `00-index.md` 是面向新读者的入口；顶层 `01` 至 `05` 用一个普通变更递进讲解 SDD、GitHub Flow、实现证据与 review/merge。`advanced/` 中的 `01` 至 `07` 按问题提供 Advanced SDD Flow 精确 reference，`08` 是明确限定证据范围的 git 历史案例。`development-harness/` 中的 `01` 是 fresh-agent tutorial，`02` 至 `07` 分别拥有知识归属、Skills、参与路径、可执行反馈、运行时查询和适用边界。
 
@@ -50,9 +50,9 @@
 ## 4. 图示
 
 ```text
-_spec_driven_development/figures/
+_agent_ready_development/figures/
 └── first-change.svg
-_spec_driven_development/advanced/figures/
+_agent_ready_development/advanced/figures/
 ├── change-control-map.svg
 ├── agent-note-lifecycle.svg
 ├── github-event-flow.svg
@@ -60,7 +60,7 @@ _spec_driven_development/advanced/figures/
 ├── evidence-routing.svg
 ├── stack-landing.svg
 └── web-seam-history.svg
-_spec_driven_development/development-harness/figures/
+_agent_ready_development/development-harness/figures/
 ├── two-harnesses.svg
 ├── fresh-agent-loop.svg
 ├── knowledge-owners.svg
@@ -89,6 +89,6 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 ## 6. 验证
 
-- `node _spec_driven_development/verify.mjs` 检查严格 UTF-8、结尾换行、内部链接与锚点、固定 DSH 外链、研究语料隔离、目录 README、图示归属、孤立 SVG 和 SVG XML；当前语料包含 31 个 Markdown、1 个脚本和 15 个 SVG。
-- 每次结构或图示变更还要运行 `node --check _spec_driven_development/verify.mjs`、`git diff --check`，并将 15 张 SVG 全部渲染后检查文字、连线和缩放。
+- `node _agent_ready_development/verify.mjs` 检查严格 UTF-8、结尾换行、内部链接与锚点、固定 DSH 外链、研究语料隔离、目录 README、图示归属、孤立 SVG 和 SVG XML；当前语料包含 31 个 Markdown、1 个脚本和 15 个 SVG。
+- 每次结构或图示变更还要运行 `node --check _agent_ready_development/verify.mjs`、`git diff --check`，并将 15 张 SVG 全部渲染后检查文字、连线和缩放。
 - Repository-level 文档校验运行 `pnpm run doc-sync`；若 host build、lint 或 doc-typecheck 被 DSH 基线问题阻断，本节记录 exact command 与原始错误，不把它写成语料通过。

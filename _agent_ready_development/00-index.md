@@ -4,11 +4,11 @@
 
 这组文档写给已经知道 git 可以提交代码，但还不熟悉 Spec-driven Development（SDD，规格驱动开发）和 GitHub Flow（GitHub 协作流）的读者。读完新手主线后，你应该能回答三个问题：一次变更为什么要先说明结果，代码之外还要一起提交什么，以及 GitHub 为什么不只是存放代码的地方。
 
-掌握普通流程后，你还可以沿两条高级路径继续：一条核对复杂 SDD/GitHub Flow 的精确条件；另一条理解 DSH 怎样把仓库本身组织成 development harness（开发 Harness），让 fresh coding agent 能够理解、修改和验证 DSH。
+掌握普通流程后，你还可以沿两条高级路径继续：一条核对复杂 SDD/GitHub Flow 的精确条件；另一条理解 DSH 怎样把仓库本身组织成 development harness（开发 Harness），让 fresh coding agent（初次进入项目的编码代理）能够理解、修改和验证 DSH。
 
 DSH 没有正式声明采用一套名为 SDD 的方法。本专题借用 SDD 的视角解释仓库已经存在的规则：**先把意图、决定和验收说清楚，再让实现、文档、测试与这些规格一起演进。**
 
-`_spec_driven_development/` 是可以独立发行的学习与研究语料。它先讲通用的 SDD 和 GitHub Flow，再用 DSH 的 Agent Note、Plan Mode、`.github/` policy、CI 和 Development Harness 作为具体案例；所需概念都在本目录中引入，目录外链接只指向 DSH 自己的源码、文档与规则作为一手证据。
+`_agent_ready_development/` 是可以独立发行的学习与研究语料。它先讲通用的 SDD 和 GitHub Flow，再用 DSH 的 Agent Note、Plan Mode、`.github/` policy、CI 和 Development Harness 作为具体案例；所需概念都在本目录中引入，目录外链接只指向 DSH 自己的源码、文档与规则作为一手证据。
 
 ## 先分清两个概念
 
@@ -80,7 +80,7 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 修改本目录后运行：
 
 ```sh
-node _spec_driven_development/verify.mjs
+node _agent_ready_development/verify.mjs
 ```
 
 该命令检查严格 UTF-8、单个结尾换行、Markdown 相对链接和锚点，以及 SVG 的 XML 结构与实体。流程事实的准确性仍由语义复核和 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md) 中记录的来源范围保证。

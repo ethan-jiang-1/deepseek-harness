@@ -2,7 +2,7 @@
 
 ## 两种 Harness
 
-DeepSeek Harness（DSH）首先是一个 coding harness（编码代理运行框架）：它把模型、工具、会话和交互组合成可运行的 agent。这个专题关心它的另一面：DSH 也把自己的仓库组织成 development harness（开发 Harness），让不熟悉项目的 coding agent 能找到规则、定位修改位置、选择工作方法、验证结果，并把决定留给下一轮参与者。
+DeepSeek Harness（DSH）首先是一个 coding harness（编码代理运行框架）：它把模型、工具、会话和交互组合成可运行的 agent。这个专题关心它的另一面：DSH 也把自己的仓库组织成 development harness（开发 Harness），让不熟悉项目的 coding agent 能找到规则、定位修改位置、选择工作方法、验证结果，并把决定留给后续参与者。
 
 这不是说仓库能够自动完成开发，也不是说 agent 不再需要判断。更准确的说法是：DSH 把尽可能多的参与知识从个人经验移入可搜索文件、类型、检查命令和运行时状态，让剩余判断有明确输入和反馈。
 
@@ -14,7 +14,7 @@ DeepSeek Harness（DSH）首先是一个 coding harness（编码代理运行框�
 
 ## Development Harness 解决什么问题
 
-一个 fresh coding agent（没有项目经历的新编码代理）进入大型仓库时，通常缺少五类信息：必须遵守什么、系统由什么组成、改动应该落在哪里、当前任务应采用什么工作流程，以及怎样知道自己真的做对了。
+一个 fresh coding agent（初次进入这个项目的编码代理）进入大型仓库时，通常缺少五类信息：必须遵守什么、系统由什么组成、改动应该落在哪里、当前任务应采用什么工作流程，以及怎样知道自己真的做对了。
 
 DSH 分别给出可查入口：
 

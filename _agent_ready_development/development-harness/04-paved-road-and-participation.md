@@ -4,7 +4,7 @@
 
 文档能让 agent 理解系统，却不能自动减少错误入口。Paved road（正确路径）指仓库为常见变化提供首选扩展点、生产范本、生命周期规则和对应证据；读者不必先创造一种接入方式，再等待 review 告诉它方向错了。
 
-DSH 的正确路径建立在插件模型上。模型 adapter、工具注册表、session log 和 agent loop 都作为 Cordis Plugin 参与同一棵运行时树；新行为优先挂到现有 plugin、event 或 capability service，而不是修改一个不可替换的中央循环。
+DSH 的正确路径建立在插件模型上。Model adapter（模型适配器）、tool registry（工具注册表）、session log（会话日志）和 agent loop（代理循环）都作为 Cordis Plugin（Cordis 插件）参与同一棵运行时树；新行为优先挂到现有 plugin（插件）、event（事件）或 capability service（能力服务），而不是修改一个不可替换的中央循环。
 
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 >

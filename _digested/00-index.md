@@ -15,7 +15,7 @@
 | 分支 | 上面有什么 |
 |------|------------|
 | `master` | 干净的 upstream 镜像。不放研究材料，不改产品代码。 |
-| `ethan` | 研究分支。源码随 `upstream/master` merge 进来；研究材料位于 `_digested/`、`_spec_driven_development/`、`_faq_on_digested/` 和 `_architecture_referenced/`。 |
+| `ethan` | 研究分支。源码随 `upstream/master` merge 进来；研究材料位于 `_digested/`、`_agent_ready_development/`、`_faq_on_digested/` 和 `_architecture_referenced/`。 |
 
 同步方式：在 `ethan` 上非快进 merge `upstream/master`，让产品源码对齐新基线并保留研究目录，再按 `_change_log/` 审计过期结论。
 
@@ -24,7 +24,7 @@
 | 目录 | 本质 | 受众 |
 |------|------|------|
 | **`_digested/`** | 源码消化，机制剖析 | 想彻底搞懂背后发生了什么的人 |
-| `_spec_driven_development/` | SDD 与 GitHub Flow 的独立教程和 DSH 机制参考 | 对规格驱动开发和 GitHub 协作还不熟悉的读者 |
+| `_agent_ready_development/` | 面向 coding agent 的 SDD、GitHub Flow 与 Development Harness 独立教程 | 想理解规格、交付流程和仓库开发 Harness 怎样协作的读者 |
 | `_faq_on_digested/` | 跨消化材料的二次研究 | 我自己（产出者） |
 | `_architecture_referenced/` | 外部架构材料的本地参考副本 | 需要对照其它分析的人 |
 

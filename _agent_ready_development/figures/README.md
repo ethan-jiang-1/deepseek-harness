@@ -1,6 +1,6 @@
 # 顶层教程图示
 
-本目录只保存 `_spec_driven_development/` 顶层教程使用的 SVG 图示。Advanced SDD Flow 和 Development Harness 的图分别由各自的 `figures/` 目录拥有。
+本目录只保存 `_agent_ready_development/` 顶层教程使用的 SVG 图示。Advanced SDD Flow 和 Development Harness 的图分别由各自的 `figures/` 目录拥有。
 
 ## 主入口
 

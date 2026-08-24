@@ -2,7 +2,7 @@
 
 ## Development Harness 不只提供阅读材料
 
-如果规则只能被阅读，agent 做错后仍要等 review 才知道。DSH 把可机械判断的规则接到类型、load validation、测试、runtime invariant 和 repository gate，让错误在距离来源较近的位置出现；无法机械判断的语义仍交给 review。
+如果规则只能被阅读，agent 做错后仍要等 review 才知道。DSH 把可机械判断的规则接到类型、load validation（加载校验）、测试、runtime invariant（运行时不变量检查）和 repository gate（仓库检查），让错误在距离来源较近的位置出现；无法机械判断的语义仍交给 review。
 
 > Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects.
 >
