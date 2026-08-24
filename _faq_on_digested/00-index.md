@@ -47,6 +47,7 @@ _faq_on_digested/
 | 03 | [多个模型 vendor 应怎样接入 DSH？](./03_model-vendors/question.md) | [配置、adapter 与自动路由的选择](./03_model-vendors/answer.md) |
 | 04 | [DSH 的根入口文档为什么能让模型按图索骥？](./04_root-entry-documentation/question.md) | [根入口分流、tier 路由、预算门禁与可迁移原则](./04_root-entry-documentation/answer.md) |
 | 05 | [DSH 修改系统的完整 SPEC 路径是什么？](./05_spec-change-path/question.md) | [docs 是当前合同层；Issue / Note / Plan / 实现 / 合同 / 行为 / implemented Note / review 的主路径与强制边界](./05_spec-change-path/answer.md) |
+| 06 | [另一个项目想借鉴 DSH 的 Harness 思路，尤其 coding agent 怎么探索、理解项目而不糊涂、不乱发挥，可迁移的东西是什么？](./06_borrowing-harness-idea/question.md) | [把「糊涂/乱发挥」拆成知识外置、正确路径、可执行反馈三条腿；按优先级迁移，并给一步一步落地路径](./06_borrowing-harness-idea/answer.md) |
 
 ## 引用规范
 
