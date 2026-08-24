@@ -38,6 +38,14 @@ function corpusFiles(directory) {
   return files.sort()
 }
 
+function corpusDirectories(directory) {
+  const directories = [directory]
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (entry.isDirectory()) directories.push(...corpusDirectories(resolve(directory, entry.name)))
+  }
+  return directories.sort()
+}
+
 function displayPath(path) {
   return relative(repositoryRoot, path)
 }
@@ -269,6 +277,15 @@ function pathInsideCorpus(path) {
   return fromRoot !== '..' && !fromRoot.startsWith(`..${sep}`) && !isAbsolute(fromRoot)
 }
 
+const referencedSvgPaths = new Set()
+
+function owningFiguresDirectory(markdownPath) {
+  const fromRoot = relative(corpusRoot, markdownPath).split(sep)
+  if (fromRoot[0] === 'advanced') return resolve(corpusRoot, 'advanced/figures')
+  if (fromRoot[0] === 'development-harness') return resolve(corpusRoot, 'development-harness/figures')
+  return resolve(corpusRoot, 'figures')
+}
+
 function checkMarkdown(path, source) {
   for (const forbidden of forbiddenResearchReferences) {
     if (source.includes(forbidden)) report(path, undefined, `references sibling research corpus ${JSON.stringify(forbidden)}`)
@@ -293,6 +310,12 @@ function checkMarkdown(path, source) {
       if (!existsSync(target)) {
         report(path, line, `relative link target does not exist: ${JSON.stringify(url)}`)
         continue
+      }
+      if (extname(target).toLowerCase() === '.svg') {
+        referencedSvgPaths.add(target)
+        if (dirname(target) !== owningFiguresDirectory(path)) {
+          report(path, line, `SVG must come from this Markdown subtree's figures directory: ${JSON.stringify(url)}`)
+        }
       }
       if (parts.fragment === undefined || extname(target).toLowerCase() !== '.md') continue
       if (!statSync(target).isFile() || !markdownAnchors(target).has(parts.fragment)) {
@@ -467,9 +490,15 @@ function checkSvg(path, source) {
 }
 
 const files = corpusFiles(corpusRoot)
+const directories = corpusDirectories(corpusRoot)
 let markdownCount = 0
 let scriptCount = 0
 let svgCount = 0
+
+for (const directory of directories) {
+  const readme = resolve(directory, 'README.md')
+  if (!existsSync(readme) || !statSync(readme).isFile()) report(directory, undefined, 'directory must contain README.md')
+}
 
 for (const path of files) {
   const source = decodeText(path)
@@ -484,6 +513,10 @@ for (const path of files) {
   } else {
     scriptCount += 1
   }
+}
+
+for (const path of files) {
+  if (extname(path) === '.svg' && !referencedSvgPaths.has(path)) report(path, undefined, 'SVG is not referenced by Markdown')
 }
 
 if (failures.length > 0) {
