@@ -2,7 +2,7 @@
 
 ## 说明
 
-本 FAQ 的证据主体是两份本地研究语料（同一基线 `528c682e…`）：`_agent_ready_development/development-harness/`（教程式）和 `_digested/harness-idea/`（判断式）。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；行号以当前 checkout 为准，仅在需要精确定位时给出。
+本 FAQ 的证据主体是两份本地研究语料（同一基线 `528c682e…`）：`_agent_ready_development/development-harness/`（教程式）和 `_digested/harness-idea/`（判断式）。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；行号以当前 checkout 为准，仅在需要精确定位时给出。条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文。
 
 ## 1. 仓库以 coding agent 为主、机械门禁优于 prose 约定
 

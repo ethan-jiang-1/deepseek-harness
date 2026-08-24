@@ -38,7 +38,7 @@
 - 根文件里没有教程、没有历史故事、没有该 link 出去的细节；
 - `CLAUDE.md` 是 symlink 而非副本；子树 `AGENTS.md` 只出现在「有专属常驻规则」处，没有为放而放。
 
-**对应**：不糊涂（知识外置 + 一个事实一个 owner）。入口链的完整骨架见 [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)。
+**对应**：不糊涂（知识外置 + 一个事实一个 owner）。入口链的完整骨架见 [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)（内容是 02 的深化，编号靠后）。
 
 ---
 
@@ -140,5 +140,5 @@
 ## 证据入口
 
 - 顺序与优先级：本目录 [`07-transfer-playbook.md`](./07-transfer-playbook.md)。
-- 每个 Phase 的机制依据，回看对应章节：[`02`](./02-legibility-ownership.md)、[`03`](./03-paved-road-and-ladder.md)、[`04`](./04-executable-feedback.md)、[`05`](./05-skills-as-procedural-memory.md)、[`06`](./06-runtime-inspection.md)。
+- 每个 Phase 的机制依据，回看对应章节：[`02`](./02-legibility-ownership.md)、[`03`](./03-paved-road-and-ladder.md)、[`04`](./04-executable-feedback.md)、[`05`](./05-skills-as-procedural-memory.md)、[`06`](./06-runtime-inspection.md)；Phase 1 的入口链骨架见 [`09`](./09-agents-entry-chain.md)，长任务上下文回收见 [`10`](./10-progressive-disclosure-pipeline.md)。
 - 语料原始结论： [`../../_agent_ready_development/development-harness/07-boundaries-and-costs.md`](../../_agent_ready_development/development-harness/07-boundaries-and-costs.md)。

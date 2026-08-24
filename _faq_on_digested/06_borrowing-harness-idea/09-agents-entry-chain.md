@@ -7,7 +7,7 @@
 DSH 的入口链长这样：
 
 ```text
-CLAUDE.md（symlink → AGENTS.md，同一份真实文件）
+CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件）
   └─ 根 AGENTS.md（standing orders + 布局 + 命令，每条 link 到 home）
        ├─ 子树 AGENTS.md（只在「该子树有专属常驻规则」时才有，数量刻意克制）
        │    └─ 按需 link 到各 package README.md（当前合同的事实层）
@@ -19,7 +19,7 @@ CLAUDE.md（symlink → AGENTS.md，同一份真实文件）
 
 ## 环节一：CLAUDE.md 是 symlink，不产生第二份事实
 
-`CLAUDE.md` 在根、`packages/`、`examples/` 等处都指向同一份 `AGENTS.md`。原因是：不同 agent host 有不同入口文件名约定（Claude 类读 `CLAUDE.md`，其它读 `AGENTS.md`），但**事实只该有一份**。用 symlink 而不是复制，让「改规则」只有一个动作、一个 home，不会出现两份内容漂移。
+`CLAUDE.md` 在根、`packages/`、`examples/`（以及 `vendor/`、`.agents/notes/implemented/`）等处，都是**同目录** `AGENTS.md` 的 symlink。原因是：不同 agent host 有不同入口文件名约定（Claude 类读 `CLAUDE.md`，其它读 `AGENTS.md`），但**每个目录里事实只该有一份**。用 symlink 而不是复制，让「改规则」只有一个动作、一个 home，不会出现两份内容漂移。
 
 > `CLAUDE.md` symlinks `AGENTS.md` at root, `packages/`, and `examples/`; edit the real file.
 

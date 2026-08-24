@@ -6,6 +6,8 @@
 
 > Legibility 不是把大型仓库压缩成一篇总览。更准确的定义是：遇到一个问题时，能以有限上下文找到正确 owner，区分当前事实与设计理由，并知道下一层应该读什么。
 
+（上句是 [`_agent_ready_development/development-harness/02-legibility-and-ownership.md`](../../_agent_ready_development/development-harness/02-legibility-and-ownership.md) 的归纳，不是 DSH 原文。）
+
 也就是说，**「不糊涂」的度量不是「读了多少」，而是「能不能便宜地找到那份最小且权威的材料」。** 这直接可迁移，不需要任何插件架构。
 
 ## 一个事实一个家（one home per fact）
@@ -44,6 +46,8 @@ DSH 用 rejected note、README 的 `## Known Limitations`、说明理由的空 i
 根 `AGENTS.md` 只保留每轮需要的 standing orders（每条一两行、链到 home）；architecture 给有序地图；catalog 支持查询；Skill 在任务命中时才加载全文。这叫 progressive disclosure（渐进披露）：
 
 > 可读性因此不是「把一切写进上下文」，而是「让读者知道下一份最小且权威的材料在哪里」。
+
+（上句出处同上，语料归纳。）
 
 对一个普通项目，这就是「入口文件要短、要只做路由」的直接理由——也是和 `04_root-entry-documentation` 讲过的根入口分流共用同一个原则。这条原则落到物理文件上，是一条明确的入口链：`CLAUDE.md`（symlink）→ 根 `AGENTS.md` → 少数子树 `AGENTS.md` → 各 `README.md`；它把「渐进披露」变成仓库里真实存在的骨架，详见 [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)。但注意这只是**静态层**——「按需」的「需」在运行时由谁决定、模型每轮实际看到什么、超预算怎么回收、子代理能看到什么，是另一整块，详见 [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)。
 

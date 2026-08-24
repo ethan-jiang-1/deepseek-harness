@@ -28,7 +28,7 @@ Skill 与根文档共用同一个原则——**摘要负责发现，正文才拥
 
 > This catalog contains summaries only; do not infer or follow a skill's instructions until it has been loaded.
 
-对普通项目，这意味着：**不要把所有流程文档都塞进常驻上下文，而是给一个「任务 → 文档」的目录，任务命中才加载全文。** 这一条同时省上下文、又避免 agent 从摘要脑补流程。
+对普通项目，这意味着：**不要把所有流程文档都塞进常驻上下文，而是给一个「任务 → 文档」的目录，任务命中才加载全文。** 这一条同时省上下文、又避免 agent 从摘要脑补流程。这一节只讲「仓库开发侧」的按需加载；DSH 在**运行时/模型可见面**上如何实现同样的原则（skill catalog 只给摘要、prompt 按 scope 组装、compaction 回收），是另一整块，见 [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)。
 
 ## 为什么这也能治「乱发挥」
 
