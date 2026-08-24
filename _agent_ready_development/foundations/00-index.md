@@ -1,14 +1,10 @@
-# 从规格到合并，再到可持续参与
+# 从规格到合并：跟完一次普通变更
 
 ## 这组文档写给谁
 
 这组文档写给已经知道 git 可以提交代码，但还不熟悉 Spec-driven Development（SDD，规格驱动开发）和 GitHub Flow（GitHub 协作流）的读者。读完新手主线后，你应该能回答三个问题：一次变更为什么要先说明结果，代码之外还要一起提交什么，以及 GitHub 为什么不只是存放代码的地方。
 
-掌握普通流程后，你还可以沿两条高级路径继续：一条核对复杂 SDD/GitHub Flow 的精确条件；另一条理解 DSH 怎样把仓库本身组织成 development harness（开发 Harness），让 fresh coding agent（初次进入项目的编码代理）能够理解、修改和验证 DSH。
-
 DSH 没有正式声明采用一套名为 SDD 的方法。本专题借用 SDD 的视角解释仓库已经存在的规则：**先把意图、决定和验收说清楚，再让实现、文档、测试与这些规格一起演进。**
-
-`_agent_ready_development/` 是可以独立发行的学习与研究语料。它先讲通用的 SDD 和 GitHub Flow，再用 DSH 的 Agent Note、Plan Mode、`.github/` policy、CI 和 Development Harness 作为具体案例；所需概念都在本目录中引入，目录外链接只指向 DSH 自己的源码、文档与规则作为一手证据。
 
 ## 先分清两个概念
 
@@ -30,9 +26,9 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 
 这五步是一条学习主线，不是一条所有变更都必须逐项出现的固定流水线。Issue 和 Plan Mode 都有适用条件；非平凡变更必须有 owning Agent Note（拥有该决定的 Agent Note）。
 
-## 三条阅读路径
+## 阅读顺序
 
-**路径一：先学会跟一次普通变更。** 按顺序阅读下面五篇，每篇只增加一层概念：
+按顺序阅读下面五篇，每篇只增加一层概念：
 
 | 章节 | 读完能回答 |
 |---|---|
@@ -42,11 +38,7 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 | [`04-implementation-and-evidence.md`](./04-implementation-and-evidence.md) | 实现时要带上哪些证据，本地检查与远端 CI 怎样分工 |
 | [`05-review-and-merge.md`](./05-review-and-merge.md) | 自动检查、语义评审、用户授权与最终合并分别负责什么 |
 
-第一次阅读可以在 `05` 结束。
-
-**路径二：核对 Advanced SDD Flow（高级 SDD 流程）。** 需要查精确 policy、内部状态或例外流程时，进入 [Advanced SDD Flow 参考](./advanced/00-index.md)。它回答复杂变更怎样流转。
-
-**路径三：理解 DSH Development Harness。** 想知道 DSH 为什么容易被 coding agent 理解和修改，以及 `AGENTS.md`、Agent Notes、Skills、gates、runtime inspection 和 `.github/` 怎样共同工作时，进入 [Development Harness 专题](./development-harness/00-index.md)。它回答仓库怎样帮助参与者完成流程。
+第一次阅读可以在 `05` 结束。需要查精确 policy、内部状态或例外流程时，再进入 [Advanced SDD Flow 参考](../advanced-sdd-flow/00-index.md)。想知道 DSH 为什么容易被 coding agent 理解和修改，以及 `AGENTS.md`、Agent Notes、Skills、gates、runtime inspection 和 `.github/` 怎样共同工作时，进入 [Development Harness 专题](../development-harness/00-index.md)。
 
 ## 核心术语
 
@@ -62,9 +54,6 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 | Continuous Integration / CI | 持续集成 | 在远端自动运行仓库定义的检查 |
 | semantic review | 语义评审 | 判断实现是否真的符合意图、决定和使用场景 |
 | merge | 合并 | 把通过检查与评审的变更纳入目标分支 |
-| development harness | 开发 Harness | 帮助参与者理解、修改和验证代码库的仓库级机制 |
-| Skill | 可调用任务知识 | 面向特定任务、带适用条件与验证要求的工作流程 |
-
 后文保留这些英文名称，因为它们也是 GitHub、命令和仓库文件中的可搜索词；中文解释负责建立含义，不另造一套无法对应源码的术语。
 
 ## 怎样阅读 DSH 引用
@@ -73,14 +62,6 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 
 ## 一句话记忆
 
-**SDD 管“变更应该成为什么”，GitHub Flow 管“变更怎样安全到达主分支”，Development Harness 管“参与者怎样看懂规则、做出修改并获得反馈”。**
+**SDD 管“变更应该成为什么”，GitHub Flow 管“变更怎样安全到达主分支”。**
 
-## 验证
-
-修改本目录后运行：
-
-```sh
-node _agent_ready_development/verify.mjs
-```
-
-该命令检查严格 UTF-8、单个结尾换行、Markdown 相对链接和锚点，以及 SVG 的 XML 结构与实体。流程事实的准确性仍由语义复核和 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md) 中记录的来源范围保证。
+返回[语料总入口](../README.md)，或继续阅读 [Advanced SDD Flow](../advanced-sdd-flow/00-index.md) 与 [Development Harness](../development-harness/00-index.md)。
