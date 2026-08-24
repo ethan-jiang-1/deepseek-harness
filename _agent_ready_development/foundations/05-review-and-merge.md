@@ -2,13 +2,13 @@
 
 ## 三种判断不能互相替代
 
-一个变更能否交付，需要区分三种不同判断。前两种适用于每个 PR；显式用户批准只在 Plan 或受限操作需要授权时出现：
+一个变更能否交付，需要区分三种不同判断。前两种适用于每个 PR；显式用户交互只在 Plan、受限操作或交互机制要求用户决定时出现：
 
 | 判断 | 主要回答 | 不能替代 |
 |---|---|---|
 | automated checks（自动检查） | 类型、格式、测试、构建和平台结果是否满足规则 | 意图和设计是否正确 |
-| semantic review（语义评审） | 实现、文档和证据是否真的符合 Issue 与 Agent Note | 实际运行检查或用户授权 |
-| explicit user approval（显式用户批准） | Plan 或受限操作是否得到授权 | 代码质量与 CI 结果 |
+| semantic review（语义评审） | 实现、文档和证据是否真的符合任务意图、适用时的 Issue 与 Agent Note | 实际运行检查或用户决定 |
+| explicit user interaction（显式用户交互） | Plan 是否批准、受限操作是否授权、交互问题是否回答 | 代码质量与 CI 结果 |
 
 Semantic review 可以由具备上下文的人或 agent 执行。`.github` 中的 human-review policy（人类作者 PR 策略）描述哪些 PR metadata 进入强制范围，不规定 reviewer 必须是人。
 
@@ -16,8 +16,8 @@ Semantic review 可以由具备上下文的人或 agent 执行。`.github` 中�
 
 Reviewer 不只读变更行，还要连接四类上下文：
 
-1. Issue 或任务意图：外部结果是什么；
-2. Agent Note：为什么选择当前方案；
+1. Issue（如有）或任务上下文：外部结果是什么；
+2. 非平凡变更的 owning Agent Note：为什么选择当前方案；
 3. 源码与当前文档：系统交付后怎样工作和失败；
 4. Tests、snapshots 和 CI：哪些场景已经建立可重复证据。
 

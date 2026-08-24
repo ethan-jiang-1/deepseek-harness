@@ -48,11 +48,11 @@
 
 ## 4. 图示
 
-15 张 SVG 分属 [Foundations](../foundations/figures/README.md)、[Advanced SDD Flow](../advanced-sdd-flow/figures/README.md) 和 [Development Harness](../development-harness/figures/README.md) 三个清单；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`title` 和 `desc` 组成的无障碍元数据。
+15 张 SVG 分属 [Foundations](../foundations/figures/README.md)、[Advanced SDD Flow](../advanced-sdd-flow/figures/README.md) 和 [Development Harness](../development-harness/figures/README.md) 三个清单；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
 
 ## 5. 重审触发路径
 
-以下路径在上游同步中变化时，将 coverage row 标为“需复核”，再检查对应章节与图：
+以下路径在上游同步中变化时，将对应章节与图列为“需复核”，再检查它们：
 
 - `.agents/notes/**`、`.agents/skills/**`；
 - `.github/AGENTS.md`、`.github/ISSUE_TEMPLATE/**`、`.github/pull_request_template.md`、`.github/issue-management/**`、`.github/workflows/{ci,issue-policy,issue-lifecycle,e2e}.yml`、`.github/dependabot.yml`；

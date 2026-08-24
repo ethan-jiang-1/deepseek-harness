@@ -13,7 +13,7 @@ DSH 的 code review（代码评审）不是“机器查结构、人查语义”�
 | 层 | 能建立 | 不能建立 |
 |---|---|---|
 | static gates、tests、snapshots、CI | 类型、格式、链接、指定场景行为、coverage、build 与平台结果 | 意图是否合理、抽象是否必要、prose 是否准确、测试场景是否选对 |
-| semantic review | 实现与 Issue/PR/Agent Note 是否一致，生命周期、安全、owner、失败、模型视角和真实入口是否完整 | 替代实际运行的检查或用户授权 |
+| semantic review | 实现是否符合任务意图、PR 描述，以及适用时的 Issue 与 owning Agent Note；生命周期、安全、owner、失败、模型视角和真实入口是否完整 | 替代实际运行的检查或用户决定 |
 | explicit user interaction | 批准 Plan、授权受限操作、回答交互问题 | 自动证明代码、文档和全部平台已经通过 |
 
 `human-review policy` 是 `.github/issue-management/policy.mjs` 对人类作者 PR 的 metadata 适用条件；它没有规定 reviewer 身份，也不应被拿来证明 semantic review 已由人执行。
@@ -73,5 +73,5 @@ Finding 要给出 defect、location、impact 和 evidence；局部问题放最�
 - DSH [Defensive patterns](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/defensive-patterns.md)：生命周期、并发、subprocess 与 teardown 的高风险缺陷模式。
 - DSH [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/testing.md)：测试实际能够建立什么证据，以及真实入口与负例要求。
 - DSH [Issue/PR policy](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/issue-management/policy.mjs)：`human-review policy` 的适用条件，不是 reviewer 身份规则。
-- DSH [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/pull_request_template.md)：PR 作者应呈现的 Issue 关联、摘要与已运行验证。
+- DSH [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/pull_request_template.md)：提示 PR 作者呈现适用的 Issue 关联、摘要与已运行验证。
 - DSH [Quality gates Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：自动化检查的设计理由与能力边界。

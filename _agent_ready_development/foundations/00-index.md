@@ -19,7 +19,7 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 ## 用五步理解普通变更
 
 1. **说明意图。** 在 Issue（GitHub 工作项）或任务上下文中写清外部结果和验收条件。
-2. **记录决定。** 非平凡变更新增或更新 Agent Note（仓库决策记录）；设计复杂时可以先使用 Plan Mode（计划模式）。
+2. **记录决定。** 非平凡变更新增或更新 Agent Note（仓库决策记录）；需要先评审实施计划时可以使用 Plan Mode（计划模式）。
 3. **完成变更。** 在分支上同时更新代码、当前文档和能抓住回归的测试或其它 evidence（验证证据）。
 4. **发起协作。** Push（推送）分支并创建 PR；GitHub workflow（工作流）运行 CI，reviewer 检查自动化无法判断的语义。
 5. **合并交付。** Required checks（必需检查）和 review 状态满足后 merge；主分支成为新的当前状态。
@@ -36,7 +36,7 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 | [`02-specs-and-decisions.md`](./02-specs-and-decisions.md) | Issue、Agent Note、Plan、代码、文档和测试为什么不能互相替代 |
 | [`03-github-flow.md`](./03-github-flow.md) | branch、PR、CI、review、merge 怎样组成普通 GitHub Flow |
 | [`04-implementation-and-evidence.md`](./04-implementation-and-evidence.md) | 实现时要带上哪些证据，本地检查与远端 CI 怎样分工 |
-| [`05-review-and-merge.md`](./05-review-and-merge.md) | 自动检查、语义评审、用户授权与最终合并分别负责什么 |
+| [`05-review-and-merge.md`](./05-review-and-merge.md) | 自动检查、语义评审、用户交互与最终合并分别负责什么 |
 
 第一次阅读可以在 `05` 结束。需要查精确 policy、内部状态或例外流程时，再进入 [Advanced SDD Flow 参考](../advanced-sdd-flow/00-index.md)。想知道 DSH 为什么容易被 coding agent 理解和修改，以及 `AGENTS.md`、Agent Notes、Skills、gates、runtime inspection 和 `.github/` 怎样共同工作时，进入 [Development Harness 专题](../development-harness/00-index.md)。
 
@@ -59,10 +59,10 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 
 ## 怎样阅读 DSH 引用
 
-本专题先在正文内给出完整解释，再把 DSH 链接作为一手证据。关键规则会摘录为 Markdown blockquote，并标明它来自 DSH 的哪个子系统、workflow、规则文件或 Agent Note；页末“证据入口”进一步说明每个链接能够核对什么。读者不需要先打开这些链接才能理解正文，只有核查当前实现或继续深入时才需要进入 DSH 仓库。
+本专题先在正文内给出完整解释，再把 DSH 链接作为一手证据。关键规则会摘录为 Markdown blockquote，并标明它来自 DSH 的哪个子系统、workflow、规则文件或 Agent Note；页末“证据入口”进一步说明每个链接能够核对什么。读者不需要先打开这些链接才能理解正文，只有核查固定基线的实现或继续深入时才需要进入 DSH 仓库。
 
 ## 一句话记忆
 
 **SDD 管“变更应该成为什么”，GitHub Flow 管“变更怎样安全到达主分支”。**
 
-返回[语料总入口](../README.md)，或继续阅读 [Advanced SDD Flow](../advanced-sdd-flow/00-index.md) 与 [Development Harness](../development-harness/00-index.md)。
+返回 [语料总入口](../README.md)，或继续阅读 [Advanced SDD Flow](../advanced-sdd-flow/00-index.md) 与 [Development Harness](../development-harness/00-index.md)。

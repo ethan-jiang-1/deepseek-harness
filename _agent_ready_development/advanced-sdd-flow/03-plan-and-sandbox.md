@@ -30,7 +30,7 @@ Plan guidance 可以要求 agent 只读探索，但违反这段 prompt 的模型
 - 实现期 task list 不替代完整计划；完整计划必须通过 `exit_plan_mode` 提交；
 - review channel 不可用或用户选择继续计划时，不退出 plan mode。
 
-这些是该 deployment 的 prompt 合同，不是 `dsh-plan-mode` 包硬编码的通用计划模板；包只要求配置的 section 是合法非空字符串。
+这些是该 deployment 的 prompt 要求，不是 `dsh-plan-mode` 包硬编码的通用计划模板；包只要求配置的 section 是合法非空字符串。
 
 ## 3. 状态来自 session log
 

@@ -14,7 +14,7 @@ branch → commits → push → Pull Request → CI + review → merge
 
 Branch（分支）让一个变更在不直接修改主分支的情况下演进。作者可以反复提交和本地验证；目标分支仍保持可交付状态。
 
-分支不是规格的 owner。它只是承载这次变更的代码、文档、测试和 Agent Note。
+分支不是规格的 owner。它只是承载这次变更的代码、文档、测试，以及非平凡变更的 Agent Note。
 
 ## 2. Push 把分支发布到远端
 
@@ -34,7 +34,7 @@ CI 不能判断需求是否合理、错误信息是否清楚、抽象是否多�
 
 ## 5. Review 让人或 agent 检查含义
 
-Reviewer 阅读任务意图、Agent Note、diff、当前文档和测试证据，判断它们是否一致。Review 提出问题后，作者继续修改同一分支并 push；PR 自动显示新 diff，CI 也会针对新 head 重新运行。
+Reviewer 阅读任务意图、适用时的 Agent Note、diff、当前文档和测试证据，判断它们是否一致。Review 提出问题后，作者继续修改同一分支并 push；PR 自动显示新 diff，CI 也会针对新 head 重新运行。
 
 ## 6. Merge 让目标分支接收变更
 
@@ -56,4 +56,4 @@ Reviewer 阅读任务意图、Agent Note、diff、当前文档和测试证据，
 
 Trusted policy（可信策略）、Project 状态转换和 CI job 拆分见 [`.github/` 高级参考](../advanced-sdd-flow/02-issue-pr-lifecycle.md)。普通开发先掌握本页主线即可。
 
-下一篇解释实现和验证：[`04-implementation-and-evidence.md`](./04-implementation-and-evidence.md)。
+下一篇解释实现和验证：[实现与证据](./04-implementation-and-evidence.md)。

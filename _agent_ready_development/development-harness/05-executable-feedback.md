@@ -37,7 +37,7 @@
 
 同一原则也要求 e2e “verify the world, not the self-report”：测试重新读取文件、运行命令或观察持久状态，而不相信 agent 声称自己完成了任务。
 
-## 本地检查与 CI 不重复承担同一成本
+## 本地检查与 CI 按成本和范围分工
 
 `dsh-pre-push-checks` 先解析 outgoing scope（待推送范围），再为受影响行为选择最小可信证据。Git hooks 保留低延迟检查；GitHub CI 执行穷举 coverage、平台矩阵和较重的真实入口检查。
 

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="650" viewBox="0 0 1120 650" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
-  <title id="title">从配置组合到 loop 合同的参与阶梯</title>
-  <desc id="desc">四级阶梯展示配置组合、扩展点、capability seam 和 loop/session contract，修改半径与同步义务逐级增加，每级都有升级条件。</desc>
+  <title id="title">从配置组合到核心 loop，并横切 session 持久化义务的参与阶梯</title>
+  <desc id="desc">四级阶梯展示配置组合、扩展点、capability seam 和核心 loop，修改半径与同步义务逐级增加；session 持久化是横切各级的独立义务。</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#475569"/></marker>
     <marker id="arrow-red" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#b45353"/></marker>
@@ -8,6 +8,8 @@
   <rect width="1120" height="650" fill="#ffffff"/>
   <text x="560" y="38" text-anchor="middle" font-size="21" font-weight="700" fill="#172033">参与阶梯：先选最小可表达入口</text>
   <text x="560" y="64" text-anchor="middle" font-size="12" fill="#5f6b7a">升级不是奖励；它表示现有层级无法表达需求，并带来更大同步范围</text>
+  <rect x="172" y="82" width="776" height="28" rx="6" fill="#f7f9fc" stroke="#98a6b8"/>
+  <text x="560" y="101" text-anchor="middle" font-size="10" fill="#475569">横切义务：任何层级新增模型可见事实 → SessionEventMap → 从日志投影与重建</text>
 
   <rect x="72" y="450" width="250" height="126" rx="8" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
   <text x="96" y="480" font-size="15" font-weight="700" fill="#173f67">L0 · 配置组合</text>
@@ -40,21 +42,21 @@
   <text x="697" y="483" text-anchor="middle" font-size="9" fill="#744408">设计面向全部 Consumer</text>
   <text x="697" y="498" text-anchor="middle" font-size="9" fill="#744408">不泄漏具体 Provider</text>
   <rect x="596" y="538" width="202" height="26" rx="6" fill="#ffffff" stroke="#d9ad65"/>
-  <text x="697" y="555" text-anchor="middle" font-size="9" fill="#744408">升级：扩展点无法表达 loop 义务</text>
+  <text x="697" y="555" text-anchor="middle" font-size="9" fill="#744408">升级：无法表达 loop 驱动</text>
 
   <rect x="822" y="126" width="226" height="450" rx="8" fill="#f3efff" stroke="#8269bd" stroke-width="1.5"/>
-  <text x="846" y="156" font-size="15" font-weight="700" fill="#513b85">L3 · Loop / session</text>
-  <text x="846" y="182" font-size="11" fill="#526175">agent-loop · SessionEventMap</text>
-  <text x="846" y="212" font-size="11" fill="#675293">改变循环或持久事实合同</text>
+  <text x="846" y="156" font-size="15" font-weight="700" fill="#513b85">L3 · Core loop</text>
+  <text x="846" y="182" font-size="11" fill="#526175">agent-loop</text>
+  <text x="846" y="212" font-size="11" fill="#675293">改变默认循环驱动</text>
   <rect x="846" y="238" width="178" height="88" rx="7" fill="#ffffff" stroke="#a89bc9"/>
   <text x="935" y="260" text-anchor="middle" font-size="9" fill="#513b85">证据：runtime invariant</text>
   <text x="935" y="277" text-anchor="middle" font-size="9" fill="#513b85">双 SDK projection</text>
   <text x="935" y="294" text-anchor="middle" font-size="9" fill="#513b85">keyless snapshots</text>
   <text x="935" y="311" text-anchor="middle" font-size="9" fill="#513b85">architecture 同步</text>
   <rect x="846" y="350" width="178" height="78" rx="7" fill="#ffffff" stroke="#a89bc9"/>
-  <text x="935" y="372" text-anchor="middle" font-size="9" fill="#513b85">模型可见内容必须可重建</text>
-  <text x="935" y="390" text-anchor="middle" font-size="9" fill="#513b85">durable format 与 version</text>
-  <text x="935" y="408" text-anchor="middle" font-size="9" fill="#513b85">按现行机制处理</text>
+  <text x="935" y="372" text-anchor="middle" font-size="9" fill="#513b85">只处理 loop 驱动变化</text>
+  <text x="935" y="390" text-anchor="middle" font-size="9" fill="#513b85">持久事实走横切路径</text>
+  <text x="935" y="408" text-anchor="middle" font-size="9" fill="#513b85">不因日志义务直接升级</text>
   <rect x="846" y="468" width="178" height="64" rx="7" fill="#fff0f0" stroke="#c86b6b"/>
   <text x="935" y="491" text-anchor="middle" font-size="9" font-weight="700" fill="#8f3535">最后入口</text>
   <text x="935" y="509" text-anchor="middle" font-size="9" fill="#8f3535">先证明 L0-L2 均不适用</text>

@@ -71,7 +71,7 @@
     <path d="M700 518 H762" stroke="#475569" marker-end="url(#arrow)"/>
     <rect x="766" y="480" width="300" height="76" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
     <text x="916" y="511" text-anchor="middle" font-weight="700" fill="#27364a">可重复工作方法</text>
-    <text x="916" y="535" text-anchor="middle" fill="#526175">不拥有产品合同</text>
+    <text x="916" y="535" text-anchor="middle" fill="#526175">不拥有产品 API/行为</text>
   </g>
 
   <rect x="214" y="584" width="692" height="34" rx="7" fill="#f8fafc" stroke="#94a3b8"/>
