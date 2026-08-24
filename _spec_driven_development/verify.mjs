@@ -26,7 +26,7 @@ const forbiddenResearchReferences = [
   '_digested',
   '_faq_on_digested',
 ]
-const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness(?:[/?#]|$)/
+const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:blob|tree)\/528c682e061696f5a160f363f236ecbf53cbd006(?:[/?#]|$)/
 
 function corpusFiles(directory) {
   const files = []
@@ -264,8 +264,8 @@ function markdownAnchors(path) {
   return anchors
 }
 
-function pathInsideRepository(path) {
-  const fromRoot = relative(repositoryRoot, path)
+function pathInsideCorpus(path) {
+  const fromRoot = relative(corpusRoot, path)
   return fromRoot !== '..' && !fromRoot.startsWith(`..${sep}`) && !isAbsolute(fromRoot)
 }
 
@@ -286,8 +286,8 @@ function checkMarkdown(path, source) {
         continue
       }
       const target = parts.path === '' ? path : resolve(dirname(path), parts.path)
-      if (!pathInsideRepository(target)) {
-        report(path, line, `relative link escapes the DSH repository: ${JSON.stringify(url)}`)
+      if (!pathInsideCorpus(target)) {
+        report(path, line, `relative link escapes the corpus; use a pinned DSH URL for DSH evidence: ${JSON.stringify(url)}`)
         continue
       }
       if (!existsSync(target)) {

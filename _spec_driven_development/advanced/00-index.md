@@ -1,10 +1,12 @@
-# Advanced · 精确机制与例外流程
+# Advanced SDD Flow · 精确机制与例外流程
 
 ## 什么时候读这里
 
-这里是 advanced reference（高级机制参考），面向已经理解 [新手主线](../00-index.md)，并需要核对精确条件、内部状态或少见流程的读者。各页支持按问题查找，不要求从 `01` 顺序读到 `08`。
+这里是 Advanced SDD Flow reference（高级 SDD 流程参考），面向已经理解 [新手主线](../00-index.md)，并需要核对精确条件、内部状态或少见流程的读者。各页支持按问题查找，不要求从 `01` 顺序读到 `08`。
 
 普通 branch → PR → CI/review → merge 流程在顶层教程已经完整说明。这里保留实现细节，是为了回答“具体由哪个文件执行”“边界条件是什么”“失败后怎样处理”，不是为了给第一次阅读增加前置知识。
+
+本目录只拥有复杂变更的流程机制。DSH 怎样通过仓库结构、Skills、可执行反馈和运行时查询帮助 coding agent 修改自身，由独立的 [Development Harness 专题](../development-harness/00-index.md) 说明；流程页只在任务需要时链接相应概念，不重复那条叙事。
 
 ![条件入口、共享交付核心与远端协作状态](./figures/change-control-map.svg)
 

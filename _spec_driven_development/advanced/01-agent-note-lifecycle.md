@@ -6,7 +6,7 @@ Agent Note 保存代码和当前文档无法承载的 rationale（决定理由�
 
 > Every non-trivial change MUST add or update at least one Agent Note in the same PR. [...] A proposal for substantial future work starts in `proposed/`; a decision already made starts in `implemented/`.
 >
-> — DSH [`.agents/notes/README.md` 的 “When to write one”](../../.agents/notes/README.md#when-to-write-one)。这段原文同时建立“非平凡变更必须有 owner”和“implemented 不必经过 proposed”两个条件。
+> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/README.md#when-to-write-one)。这段原文同时建立“非平凡变更必须有 owner”和“implemented 不必经过 proposed”两个条件。
 
 ![Agent Note 的状态转换与禁止路径](./figures/agent-note-lifecycle.svg)
 
@@ -73,10 +73,12 @@ Supersession 判断“哪个活动 Note 继续拥有决定”；archive 判断�
 
 Archive 只移动完整 `.md`、`.zh.md`、`.i18n.yaml` triplet，在两种语言的 status 下插入相同 `Archived: YYYY-MM-DD`，重录 sidecar，并修复活动 prose 的入站链接。`verify-archived-agent-notes` 把归档内容写入 append-only hash manifest；封存后不得编辑、翻译、移动或删除。
 
+`dsh-archive-agent-notes` 在这里拥有具体的保留、归档与删除判断；Skill 为什么适合承载这类情境化流程、又为什么不能替代格式 gate，见 [Development Harness 的 Skills 章节](../development-harness/03-skills-as-procedural-memory.md)。
+
 ## 证据入口
 
-- DSH [`.agents/notes/README.md`](../../.agents/notes/README.md)：生命周期、分类、统一正文结构、完整取代与归档条件。
-- DSH [implemented Note 子树规则](../../.agents/notes/implemented/AGENTS.md)：implemented Note 如何随已交付路径、名称和机制保持当前。
-- DSH [archived Note 子树规则](../../.agents/notes/archived/AGENTS.md)：归档 triplet 的冻结与 seal 约束。
-- DSH [`dsh-archive-agent-notes` skill](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)：何时保留、归档或删除 Note 的判定流程。
-- DSH [统一格式 Agent Note](../../.agents/notes/implemented/process/2026-07-05-uniform-agent-note-format.md)：为什么三种活动 lifecycle 使用一套可检查格式。
+- DSH [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/README.md)：生命周期、分类、统一正文结构、完整取代与归档条件。
+- DSH [implemented Note 子树规则](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/implemented/AGENTS.md)：implemented Note 如何随已交付路径、名称和机制保持当前。
+- DSH [archived Note 子树规则](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/archived/AGENTS.md)：归档 triplet 的冻结与 seal 约束。
+- DSH [`dsh-archive-agent-notes` skill](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-archive-agent-notes/SKILL.md)：何时保留、归档或删除 Note 的判定流程。
+- DSH [统一格式 Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/implemented/process/2026-07-05-uniform-agent-note-format.md)：为什么三种活动 lifecycle 使用一套可检查格式。

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">错误从编译期到语义评审逐层被发现</title>
+  <desc id="desc">六个反馈层展示编译、加载、局部测试、组装证据、运行时不变量和语义评审，各层拥有不同观察对象，反馈延迟逐步增加。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1120" height="680" fill="#ffffff"/>
+  <text x="560" y="38" text-anchor="middle" font-size="21" font-weight="700" fill="#172033">反馈层：让错误靠近它的来源</text>
+  <text x="560" y="64" text-anchor="middle" font-size="12" fill="#5f6b7a">越靠左越快，越靠右观察范围越完整；绿色结果不能跨层证明</text>
+
+  <line x1="94" y1="112" x2="1026" y2="112" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="94" y="96" font-size="10" fill="#526175">即时反馈</text>
+  <text x="1026" y="96" text-anchor="end" font-size="10" fill="#526175">共享与语义反馈</text>
+
+  <rect x="54" y="146" width="322" height="190" rx="8" fill="#edf5ff" stroke="#5791c9"/>
+  <circle cx="88" cy="178" r="17" fill="#276da8"/>
+  <text x="88" y="184" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">1</text>
+  <text x="215" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#173f67">Compile · 编译期</text>
+  <text x="80" y="216" font-size="11" fill="#526175">观察：类型、closed union、导出</text>
+  <text x="80" y="240" font-size="11" fill="#39709f">发现：接口不匹配、分支未穷举</text>
+  <line x1="80" y1="258" x2="350" y2="258" stroke="#b7c4d4"/>
+  <text x="80" y="282" font-size="11" fill="#526175">不能证明：实际 Loader 组合与产品输出</text>
+  <rect x="80" y="300" width="270" height="22" rx="6" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="215" y="315" text-anchor="middle" font-size="9" fill="#244e73">strict TypeScript · assertNever</text>
+
+  <rect x="399" y="146" width="322" height="190" rx="8" fill="#edf8f1" stroke="#55a36f"/>
+  <circle cx="433" cy="178" r="17" fill="#2f8550"/>
+  <text x="433" y="184" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">2</text>
+  <text x="560" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#1f6139">Load · 解析与加载</text>
+  <text x="425" y="216" font-size="11" fill="#526175">观察：config、引用、依赖与启动</text>
+  <text x="425" y="240" font-size="11" fill="#397a50">发现：误配置、缺失 referent、无效导出</text>
+  <line x1="425" y1="258" x2="695" y2="258" stroke="#b7c4d4"/>
+  <text x="425" y="282" font-size="11" fill="#526175">不能证明：行为满足用户意图</text>
+  <rect x="425" y="300" width="270" height="22" rx="6" fill="#ffffff" stroke="#87bd99"/>
+  <text x="560" y="315" text-anchor="middle" font-size="9" fill="#245d35">schema validation · fail loud</text>
+
+  <rect x="744" y="146" width="322" height="190" rx="8" fill="#fff5e6" stroke="#d99939"/>
+  <circle cx="778" cy="178" r="17" fill="#b66d12"/>
+  <text x="778" y="184" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">3</text>
+  <text x="905" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#744408">Local behavior · 局部行为</text>
+  <text x="770" y="216" font-size="11" fill="#526175">观察：模块、错误路径、dispose</text>
+  <text x="770" y="240" font-size="11" fill="#805915">发现：回归、竞态、HMR 残留</text>
+  <line x1="770" y1="258" x2="1040" y2="258" stroke="#b7c4d4"/>
+  <text x="770" y="282" font-size="11" fill="#526175">不能证明：发行入口已正确装配</text>
+  <rect x="770" y="300" width="270" height="22" rx="6" fill="#ffffff" stroke="#d9ad65"/>
+  <text x="905" y="315" text-anchor="middle" font-size="9" fill="#744408">unit · focused coverage · HMR tests</text>
+
+  <path d="M905 336 V370" stroke="#475569" marker-end="url(#arrow)"/>
+
+  <rect x="744" y="374" width="322" height="190" rx="8" fill="#eaf7f6" stroke="#3b9a91"/>
+  <circle cx="778" cy="406" r="17" fill="#237a72"/>
+  <text x="778" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">4</text>
+  <text x="905" y="408" text-anchor="middle" font-size="15" font-weight="700" fill="#1d5f59">Assembled evidence · 组装证据</text>
+  <text x="770" y="444" font-size="11" fill="#526175">观察：真实入口、模型与用户输出</text>
+  <text x="770" y="468" font-size="11" fill="#2f7770">发现：配置、bridge、artifact 集成错误</text>
+  <line x1="770" y1="486" x2="1040" y2="486" stroke="#b7c4d4"/>
+  <text x="770" y="510" font-size="11" fill="#526175">不能证明：设计取舍合理</text>
+  <rect x="770" y="528" width="270" height="22" rx="6" fill="#ffffff" stroke="#73aaa5"/>
+  <text x="905" y="543" text-anchor="middle" font-size="9" fill="#1d5f59">snapshot · real composition · e2e</text>
+
+  <rect x="399" y="374" width="322" height="190" rx="8" fill="#f3efff" stroke="#8269bd"/>
+  <circle cx="433" cy="406" r="17" fill="#6950a4"/>
+  <text x="433" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">5</text>
+  <text x="560" y="408" text-anchor="middle" font-size="15" font-weight="700" fill="#513b85">Runtime invariant · 运行时关系</text>
+  <text x="425" y="444" font-size="11" fill="#526175">观察：owner event stream 与 mutable data</text>
+  <text x="425" y="468" font-size="11" fill="#675293">发现：活系统关系不再成立</text>
+  <line x1="425" y1="486" x2="695" y2="486" stroke="#b7c4d4"/>
+  <text x="425" y="510" font-size="11" fill="#526175">不能证明：无可观察关系的纯性质</text>
+  <rect x="425" y="528" width="270" height="22" rx="6" fill="#ffffff" stroke="#a89bc9"/>
+  <text x="560" y="543" text-anchor="middle" font-size="9" fill="#513b85">model-visible means logged</text>
+
+  <rect x="54" y="374" width="322" height="190" rx="8" fill="#fff0f0" stroke="#c86b6b"/>
+  <circle cx="88" cy="406" r="17" fill="#a94747"/>
+  <text x="88" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">6</text>
+  <text x="215" y="408" text-anchor="middle" font-size="15" font-weight="700" fill="#8f3535">Semantic review · 语义评审</text>
+  <text x="80" y="444" font-size="11" fill="#526175">观察：需求、owner、风险、完整 diff</text>
+  <text x="80" y="468" font-size="11" fill="#8f3535">发现：错误问题、错误设计、证据缺口</text>
+  <line x1="80" y1="486" x2="350" y2="486" stroke="#b7c4d4"/>
+  <text x="80" y="510" font-size="11" fill="#526175">不能替代：未运行的机械检查</text>
+  <rect x="80" y="528" width="270" height="22" rx="6" fill="#ffffff" stroke="#c86b6b"/>
+  <text x="215" y="543" text-anchor="middle" font-size="9" fill="#8f3535">intent · lifecycle · security · prose</text>
+
+  <path d="M744 469 H725" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M399 469 H380" stroke="#475569" marker-end="url(#arrow)"/>
+  <rect x="208" y="602" width="704" height="42" rx="7" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="560" y="628" text-anchor="middle" font-size="11" fill="#526175">CI 调度跨平台与穷举检查；PR 状态汇集结果，但不改变每层能证明的范围</text>
+</svg>

@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">规则、Skills、检查与 GitHub workflow 的职责分工</title>
+  <desc id="desc">任务进入 Skill，Skill读取规则、文档和 Agent Notes 后组织操作；确定条件由 gate 检查，GitHub workflow 负责远端调度，语义 review 处理无法机械判断的部分。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#475569"/></marker>
+    <marker id="arrow-purple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#6950a4"/></marker>
+  </defs>
+  <rect width="1120" height="680" fill="#ffffff"/>
+  <text x="560" y="38" text-anchor="middle" font-size="21" font-weight="700" fill="#172033">Skill 组织判断，但不替代 owner 和 enforcement</text>
+  <text x="560" y="64" text-anchor="middle" font-size="12" fill="#5f6b7a">摘要负责匹配，完整 Skill 负责流程，机器检查和语义 review 各自验证</text>
+
+  <rect x="424" y="88" width="272" height="58" rx="8" fill="#fff5e6" stroke="#d99939"/>
+  <text x="560" y="113" text-anchor="middle" font-size="14" font-weight="700" fill="#744408">具体任务 + 当前仓库状态</text>
+  <text x="560" y="133" text-anchor="middle" font-size="11" fill="#805915">例如 review、pre-push、文档重构</text>
+  <path d="M560 146 V183" stroke="#6950a4" stroke-width="2" marker-end="url(#arrow-purple)"/>
+
+  <rect x="358" y="187" width="404" height="130" rx="8" fill="#f3efff" stroke="#8269bd" stroke-width="1.5"/>
+  <text x="560" y="218" text-anchor="middle" font-size="16" font-weight="700" fill="#513b85">Development Skill</text>
+  <text x="560" y="244" text-anchor="middle" font-size="12" fill="#675293">触发范围 · 所需来源 · 判断标准 · 操作步骤 · 验证与报告</text>
+  <rect x="389" y="267" width="150" height="30" rx="7" fill="#ffffff" stroke="#a89bc9"/>
+  <text x="464" y="287" text-anchor="middle" font-size="11" fill="#513b85">guidance</text>
+  <rect x="581" y="267" width="150" height="30" rx="7" fill="#ffffff" stroke="#a89bc9"/>
+  <text x="656" y="287" text-anchor="middle" font-size="11" fill="#513b85">not a complete checklist</text>
+
+  <rect x="52" y="190" width="250" height="124" rx="8" fill="#edf5ff" stroke="#5791c9"/>
+  <text x="177" y="219" text-anchor="middle" font-size="14" font-weight="700" fill="#173f67">读取 owner</text>
+  <text x="177" y="248" text-anchor="middle" font-size="11" fill="#526175">AGENTS：常驻规则</text>
+  <text x="177" y="270" text-anchor="middle" font-size="11" fill="#526175">Docs / source：当前事实</text>
+  <text x="177" y="292" text-anchor="middle" font-size="11" fill="#526175">Agent Notes：决定理由</text>
+  <path d="M302 252 H354" stroke="#475569" marker-end="url(#arrow)"/>
+
+  <rect x="818" y="190" width="250" height="124" rx="8" fill="#eaf7f6" stroke="#3b9a91"/>
+  <text x="943" y="219" text-anchor="middle" font-size="14" font-weight="700" fill="#1d5f59">产生行动</text>
+  <text x="943" y="248" text-anchor="middle" font-size="11" fill="#526175">调查真实 scope</text>
+  <text x="943" y="270" text-anchor="middle" font-size="11" fill="#526175">应用情境化判断</text>
+  <text x="943" y="292" text-anchor="middle" font-size="11" fill="#526175">运行并报告证据</text>
+  <path d="M762 252 H814" stroke="#475569" marker-end="url(#arrow)"/>
+
+  <path d="M943 314 V356 H235 V382" fill="none" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M943 314 V356 H560 V382" fill="none" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M943 314 V356 H885 V382" fill="none" stroke="#475569" marker-end="url(#arrow)"/>
+
+  <rect x="72" y="386" width="326" height="160" rx="8" fill="#edf8f1" stroke="#55a36f"/>
+  <text x="235" y="416" text-anchor="middle" font-size="15" font-weight="700" fill="#1f6139">Repository gate / test</text>
+  <text x="235" y="445" text-anchor="middle" font-size="11" fill="#526175">确定输入 → pass / fail</text>
+  <line x1="104" y1="462" x2="366" y2="462" stroke="#b7c4d4"/>
+  <text x="235" y="488" text-anchor="middle" font-size="11" fill="#397a50">拥有检查逻辑和错误诊断</text>
+  <text x="235" y="512" text-anchor="middle" font-size="11" fill="#526175">不能判断需求与设计质量</text>
+
+  <rect x="397" y="386" width="326" height="160" rx="8" fill="#fff5e6" stroke="#d99939"/>
+  <text x="560" y="416" text-anchor="middle" font-size="15" font-weight="700" fill="#744408">.github/ workflow</text>
+  <text x="560" y="445" text-anchor="middle" font-size="11" fill="#526175">事件 · 权限 · runner · jobs</text>
+  <line x1="429" y1="462" x2="691" y2="462" stroke="#b7c4d4"/>
+  <text x="560" y="488" text-anchor="middle" font-size="11" fill="#805915">远端调度并汇总检查状态</text>
+  <text x="560" y="512" text-anchor="middle" font-size="11" fill="#526175">不拥有检查语义</text>
+
+  <rect x="722" y="386" width="326" height="160" rx="8" fill="#f3efff" stroke="#8269bd"/>
+  <text x="885" y="416" text-anchor="middle" font-size="15" font-weight="700" fill="#513b85">Semantic review</text>
+  <text x="885" y="445" text-anchor="middle" font-size="11" fill="#526175">意图 · lifecycle · security · owner</text>
+  <line x1="754" y1="462" x2="1016" y2="462" stroke="#b7c4d4"/>
+  <text x="885" y="488" text-anchor="middle" font-size="11" fill="#675293">判断自动化无法证明的性质</text>
+  <text x="885" y="512" text-anchor="middle" font-size="11" fill="#526175">不重复绿色 gate 已覆盖的细节</text>
+
+  <path d="M235 546 V582 H548" fill="none" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M560 546 V582" fill="none" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M885 546 V582 H572" fill="none" stroke="#475569" marker-end="url(#arrow)"/>
+  <rect x="374" y="586" width="372" height="58" rx="8" fill="#f8fafc" stroke="#64748b"/>
+  <text x="560" y="611" text-anchor="middle" font-size="14" font-weight="700" fill="#27364a">可信的完成判断</text>
+  <text x="560" y="632" text-anchor="middle" font-size="11" fill="#526175">执行证据 + 远端状态 + 语义判断</text>
+</svg>
