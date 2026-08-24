@@ -33,7 +33,13 @@ DSH 的文档层级规则只有一条主线：每个事实住在「负责它的�
 - **当前文档**（源码、类型、README、`docs/`）回答「系统**现在**做什么」；
 - **决策记录**（Agent Note / ADR）回答「为什么这样决定、什么方案输了、后果是什么」。
 
-两者混在一起会产生两个相反的失败：只读代码会**重走已否定的路径**，只读记录会把**历史实现细节误当成当前 API**。DSH 还进一步给决策记录加生命周期（`proposed` → `implemented` → `rejected`/`archived`），让「已否决」「已过时」和「现行」一眼可分。普通项目至少要做的是：**把 `docs/` 定位成 current state，把「为什么」放进单独的 `notes/` 或 `docs/adr/`。**
+两者混在一起会产生两个相反的失败：只读代码会**重走已否定的路径**，只读记录会把**历史实现细节误当成当前 API**。DSH 还进一步给决策记录加生命周期（`proposed` → `implemented` → `rejected`/`archived`），让「已否决」「已过时」和「现行」一眼可分。
+
+> Document current state, not change history.
+
+（来源：`docs/AGENTS.md` 的 Writing rules）
+
+普通项目至少要做的是：**把 `docs/` 定位成 current state，把「为什么」放进单独的 `notes/` 或 `docs/adr/`。**
 
 ## 负知识也需要 owner
 

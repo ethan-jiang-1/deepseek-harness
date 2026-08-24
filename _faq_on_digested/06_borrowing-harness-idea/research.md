@@ -2,7 +2,7 @@
 
 ## 说明
 
-本 FAQ 的证据主体是两份本地研究语料（同一基线 `528c682e…`）：`_agent_ready_development/development-harness/`（教程式）和 `_digested/harness-idea/`（判断式）。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；行号以当前 checkout 为准，仅在需要精确定位时给出。条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文。
+本 FAQ 的证据主体是两份本地研究语料，都钉在固定基线 DSH `0.1.1-rc.1`（commit `528c682e061696f5a160f363f236ecbf53cbd006`）上。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文。当前 checkout（HEAD `61c31ac`）已领先该基线，但本 FAQ 引用的全部 DSH 文件在 `528c682e..HEAD` 之间均无变化（2026-08 核对）；上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
 
 ## 1. 仓库以 coding agent 为主、机械门禁优于 prose 约定
 
@@ -92,6 +92,8 @@
 
 > Package README — The per-package contract: config, semantics, limitations, extension points, and Model Experience.
 
+> Skills (`.agents/skills/`) — Reusable workflows and specialized decision standards.
+
 来源：`docs/AGENTS.md`（The tier taxonomy 表）
 
 字数预算：root `AGENTS.md` ≤ 1,600 词；subtree `AGENTS.md` ≤ 600 词（`packages/AGENTS.md` ≤ 650）；`packages/README.md` ≤ 600 词，由 `verify-doc-budgets` 检查。来源：`docs/AGENTS.md`（Wordcount Budgets 一节）
@@ -142,7 +144,7 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 ## 已核对的相关消化材料
 
-- `_agent_ready_development/development-harness/00-index.md`：五类信息缺口与五类 owner 总表
+- `_agent_ready_development/development-harness/00-index.md`：五类信息缺口与五类 owner 总表（本 FAQ 正文扩为六缺口，见 01）
 - `_agent_ready_development/development-harness/01-follow-a-fresh-agent.md`：fresh agent 六问闭环
 - `_agent_ready_development/development-harness/02-legibility-and-ownership.md`：可读性与知识归属
 - `_agent_ready_development/development-harness/03-skills-as-procedural-memory.md`：Skills 的定位与边界
