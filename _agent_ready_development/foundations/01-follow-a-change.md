@@ -57,7 +57,7 @@ Push 前不机械地运行所有命令，而是选择能覆盖当前 diff（变�
 - reviewer 的问题、建议和批准状态；
 - 最终能否 merge 的 GitHub 状态。
 
-`.github/` 在这里开始执行远端规则：workflow 接收 PR 事件，调用仓库脚本运行检查，policy 检查适用的 metadata（元数据），lifecycle automation（生命周期自动化）更新 Project 状态。
+`.github/` 在这里接管远端协作：workflow 接收 PR 事件并运行仓库检查，具体的 policy、Project lifecycle（项目生命周期）和 CI 分工在 [`03-github-flow.md`](./03-github-flow.md) 中展开。
 
 ## 第五步：检查、评审、修正、合并
 
@@ -65,15 +65,14 @@ CI 检查类型、测试、构建和平台结果；semantic review 检查实现�
 
 Required checks 和 review requirements（评审要求）满足后，PR merge 到目标分支。此时源码、当前文档、行为证据和 implemented Agent Note 共同描述交付后的系统。
 
-## 哪些步骤不是每次都有
+## 哪些机制按条件出现
 
 | 机制 | 普通规则 |
 |---|---|
-| Issue | 需要外部跟踪时使用；进入特定 human-review policy 的 PR 必须引用同仓库 Issue |
+| Issue | 需要外部跟踪，或适用的仓库 policy 要求关联时使用 |
 | proposed Agent Note | 重大未来工作需要先评审决定时使用 |
 | Plan Mode | 用户或部署选择先计划后实现时使用 |
-| implemented Agent Note | 每个非平凡变更都必须新增或更新 |
-| archive（归档） | 决定的未来维护价值已经很低时才发生，不是 merge 后的固定步骤 |
+| owning Agent Note | 每个非平凡变更都必须新增或更新；可以直接从 implemented 状态开始 |
 
 ## 读完这一篇应记住
 

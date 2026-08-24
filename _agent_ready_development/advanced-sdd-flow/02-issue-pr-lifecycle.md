@@ -59,7 +59,7 @@ Inbox → Backlog → Ready → In progress → In review → Done / No action
 
 `.github/workflows/ci.yml` 只监听 `pull_request`，新 head 会取消同一 ref 的旧 run。Workflow 负责 runner、权限、并发、缓存和 job 聚合；实际检查集合由 `package.json` 与 `scripts/run-gates.ts` 的顶层命令拥有。
 
-当前拓扑把 Node 24 static、coverage、snapshot/artifact consumers、Node 兼容性、Python SDK/runtime 和 Windows 信号分开。`all checks passed` 聚合 required jobs；native Windows 是独立信号，`.github/AGENTS.md` 明确说明 Wine job 才是该聚合中的 blocking Windows check。完整检查路由见 [`04-gates-and-local-checks.md`](./04-gates-and-local-checks.md)。
+具体 job 分层、required 聚合、本地证据与 Windows 信号的关系由 [`04-gates-and-local-checks.md`](./04-gates-and-local-checks.md) 统一说明；本页只保留 PR 事件怎样进入 CI，以及 workflow 与仓库检查逻辑怎样分工。
 
 真实 API e2e 使用独立 workflow 和 secrets 条件，E2B 与其它 provider e2e 还要求手动 dispatch。它们为适用变更提供真实 provider 证据，不是无凭据 PR CI 的通用替代。
 
@@ -71,7 +71,6 @@ Dependabot 按 npm、Python `uv` 和 GitHub Actions 三个 ecosystem 创建依�
 
 ## 证据入口
 
-- DSH [`.github/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/AGENTS.md)：PR CI 中 Wine 与 native Windows 信号的阻塞关系。
 - DSH [Issue templates](https://github.com/deepseek-ai/deepseek-harness/tree/528c682e061696f5a160f363f236ecbf53cbd006/.github/ISSUE_TEMPLATE) 与 [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/pull_request_template.md)：作者被提示提供哪些意图、验收、Issue 关联和验证信息。
 - DSH [Issue management policy](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/issue-management/policy.mjs)：PR metadata 适用条件、Issue 校验和 Project 状态转换函数。
 - DSH [Issue policy workflow](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/workflows/issue-policy.yml)：哪些 PR 事件触发 policy，以及为什么检出默认分支的可信实现。

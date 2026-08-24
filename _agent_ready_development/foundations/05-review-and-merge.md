@@ -2,7 +2,7 @@
 
 ## 三种判断不能互相替代
 
-一个 PR 能否交付，至少经过三种不同判断：
+一个变更能否交付，需要区分三种不同判断。前两种适用于每个 PR；显式用户批准只在 Plan 或受限操作需要授权时出现：
 
 | 判断 | 主要回答 | 不能替代 |
 |---|---|---|
@@ -27,22 +27,17 @@ Reviewer 不只读变更行，还要连接四类上下文：
 
 Finding（评审发现）应指出 defect（缺陷）、location（位置）、impact（影响）和 evidence（证据）。作者逐条核验：成立就修改并补证据，不成立就用可验证事实解释。
 
-新的 push 会更新 PR head。依赖旧 commit、旧 diff anchor（行内锚点）或旧 checks 的 review 状态可能失效，因此合并前要读取当前 head、当前 unresolved threads（未解决讨论）和当前 checks。
+新的 push 会更新 PR head，也可能使旧的 review 结论或 checks 失效。因此合并前要重新读取当前 diff、unresolved threads（未解决讨论）和 checks，而不是沿用上一次查看的状态。
 
 ## 普通 PR 怎样结束
 
 Required checks 通过、review requirements 满足、PR 不再是 Draft 且 GitHub 报告可合并时，普通 PR 才进入 merge。合并后目标分支成为当前交付状态。
 
-Agent Note 不会因为 merge 自动 archive（归档）。只有 implemented Note 的未来决策价值已经很低时，才按归档规则冻结；仍能解释替代方案、安全规则或重新引入条件的 Note 继续保持 active（活动状态）。
+Merge 只改变分支和 PR 状态，不会自动改变 Agent Note 的生命周期；精确的归档条件由 [Agent Note 高级参考](../advanced-sdd-flow/01-agent-note-lifecycle.md) 说明。
 
-## 什么时候进入高级流程
+## 需要深入时
 
-普通变更在这里结束。只有出现下面情况时，才需要进入高级参考：
-
-- 多个 PR 存在同仓库依赖关系：阅读 [Stacked Pull Requests（依赖式 PR 栈）](../advanced-sdd-flow/07-push-merge-stacked-prs.md)；
-- 需要改写已经发布的 branch history（分支历史）：阅读同一篇中的 force-with-lease（带租约强制推送）规则；
-- 需要核对某个机制从 proposal 到 implemented 的历史证据：阅读 [Web capability seam 历史案例](../advanced-sdd-flow/08-example-web-seam.md)；
-- 需要维护文档 owner、双语配对或站点投影：阅读 [文档高级参考](../advanced-sdd-flow/05-prose-doc-standards.md)。
+普通变更在这里结束。需要核对精确 policy、Agent Note 状态、Plan 审批、证据路由、高风险 review、分支改写或依赖式 PR 栈时，从 [Advanced SDD Flow 目录](../advanced-sdd-flow/00-index.md) 按问题进入对应参考页。
 
 ## 完成后的心智模型
 
