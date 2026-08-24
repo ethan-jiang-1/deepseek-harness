@@ -1,4 +1,4 @@
-# `_spec_driven_development` 语料复核记录
+# `_spec_driven_development` 语料证据与维护说明
 
 > 复核日期：2026-08-24。产品源码基线：`528c682e061696f5a160f363f236ecbf53cbd006`。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
 

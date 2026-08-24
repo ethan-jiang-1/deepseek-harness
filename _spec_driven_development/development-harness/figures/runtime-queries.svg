@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="620" viewBox="0 0 1120 620" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">从配置、生成索引到活运行时的三种查询面</title>
+  <desc id="desc">三列展示 dump-config 查询最终组合、generated catalogs 查询源码声明、cordis-inspect 查询活运行时，模型可见变化最终进入 session log。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#475569"/></marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#2f8550"/></marker>
+  </defs>
+  <rect width="1120" height="620" fill="#ffffff"/>
+  <text x="560" y="38" text-anchor="middle" font-size="21" font-weight="700" fill="#172033">不要从源码猜实际运行状态</text>
+  <text x="560" y="64" text-anchor="middle" font-size="12" fill="#5f6b7a">配置组合、源码声明和活进程分别有查询 owner</text>
+
+  <rect x="52" y="112" width="310" height="280" rx="8" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+  <circle cx="88" cy="148" r="18" fill="#276da8"/>
+  <text x="88" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">1</text>
+  <text x="207" y="150" text-anchor="middle" font-size="16" font-weight="700" fill="#173f67">最终配置</text>
+  <text x="207" y="176" text-anchor="middle" font-size="11" fill="#39709f">What will boot?</text>
+  <rect x="80" y="206" width="254" height="62" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="207" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#244e73">dsh --profile ... --dump-config</text>
+  <text x="207" y="252" text-anchor="middle" font-size="10" fill="#526175">Profile + Bundle + Patch</text>
+  <text x="80" y="302" font-size="11" fill="#526175">回答：哪些 row 与 config 将生效</text>
+  <text x="80" y="328" font-size="11" fill="#526175">适用：部署复现、provider 选择</text>
+  <rect x="80" y="350" width="254" height="24" rx="6" fill="#dcecff" stroke="#8bb3d7"/>
+  <text x="207" y="366" text-anchor="middle" font-size="9" fill="#244e73">不回答 live Fiber 当前状态</text>
+
+  <rect x="405" y="112" width="310" height="280" rx="8" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
+  <circle cx="441" cy="148" r="18" fill="#b66d12"/>
+  <text x="441" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">2</text>
+  <text x="560" y="150" text-anchor="middle" font-size="16" font-weight="700" fill="#744408">源码声明</text>
+  <text x="560" y="176" text-anchor="middle" font-size="11" fill="#805915">What can the repository do?</text>
+  <rect x="433" y="206" width="254" height="62" rx="7" fill="#ffffff" stroke="#d9ad65"/>
+  <text x="560" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#744408">Generated catalogs</text>
+  <text x="560" y="252" text-anchor="middle" font-size="10" fill="#526175">tools · config · events · API</text>
+  <text x="433" y="302" font-size="11" fill="#526175">回答：schema、signature 与关系索引</text>
+  <text x="433" y="328" font-size="11" fill="#526175">适用：查完整集合与调用合同</text>
+  <rect x="433" y="350" width="254" height="24" rx="6" fill="#ffead0" stroke="#d9ad65"/>
+  <text x="560" y="366" text-anchor="middle" font-size="9" fill="#744408">freshness 一致，不等于语义正确</text>
+
+  <rect x="758" y="112" width="310" height="280" rx="8" fill="#edf8f1" stroke="#55a36f" stroke-width="1.5"/>
+  <circle cx="794" cy="148" r="18" fill="#2f8550"/>
+  <text x="794" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">3</text>
+  <text x="913" y="150" text-anchor="middle" font-size="16" font-weight="700" fill="#1f6139">活运行时</text>
+  <text x="913" y="176" text-anchor="middle" font-size="11" fill="#397a50">What is running now?</text>
+  <rect x="786" y="206" width="254" height="62" rx="7" fill="#ffffff" stroke="#87bd99"/>
+  <text x="913" y="232" text-anchor="middle" font-size="11" font-weight="700" fill="#245d35">cordis_inspect</text>
+  <text x="913" y="252" text-anchor="middle" font-size="10" fill="#526175">live store ∩ API catalog</text>
+  <text x="786" y="302" font-size="11" fill="#526175">回答：fibers、services、tools、events</text>
+  <text x="786" y="328" font-size="11" fill="#526175">适用：运行时诊断与受控试验</text>
+  <rect x="786" y="350" width="254" height="24" rx="6" fill="#dff2e5" stroke="#87bd99"/>
+  <text x="913" y="366" text-anchor="middle" font-size="9" fill="#245d35">opt-in；不是 security boundary</text>
+
+  <path d="M362 252 H401" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M715 252 H754" stroke="#475569" marker-end="url(#arrow)"/>
+
+  <path d="M207 392 V438 H506" fill="none" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M560 392 V438" fill="none" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M913 392 V438 H614" fill="none" stroke="#475569" marker-end="url(#arrow)"/>
+  <rect x="308" y="442" width="504" height="96" rx="8" fill="#f3efff" stroke="#8269bd"/>
+  <text x="560" y="472" text-anchor="middle" font-size="15" font-weight="700" fill="#513b85">模型实际看到了什么？</text>
+  <text x="560" y="497" text-anchor="middle" font-size="11" fill="#526175">Session event log + request/header reconstruction</text>
+  <text x="560" y="520" text-anchor="middle" font-size="11" fill="#675293">model-visible means logged</text>
+  <path d="M560 538 V568" stroke="#2f8550" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <rect x="371" y="572" width="378" height="30" rx="7" fill="#edf8f1" stroke="#55a36f"/>
+  <text x="560" y="592" text-anchor="middle" font-size="10" fill="#1f6139">动态变化有运行时 owner，也有持久证据 owner</text>
+</svg>

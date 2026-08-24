@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="640" viewBox="0 0 1120 640" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">DSH 仓库知识按问题分配给不同 owner</title>
+  <desc id="desc">五行展示常驻规则、当前系统、术语索引、设计理由和任务流程分别由 AGENTS、文档源码、生成目录、Agent Notes 和 Skills 拥有。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1120" height="640" fill="#ffffff"/>
+  <text x="560" y="38" text-anchor="middle" font-size="21" font-weight="700" fill="#172033">一个问题先找到一个 owner</text>
+  <text x="560" y="64" text-anchor="middle" font-size="12" fill="#5f6b7a">短入口负责路由，详细事实留在所属层级</text>
+
+  <text x="84" y="103" font-size="12" font-weight="700" fill="#475569">读者问题</text>
+  <text x="468" y="103" font-size="12" font-weight="700" fill="#475569">首要 owner</text>
+  <text x="850" y="103" font-size="12" font-weight="700" fill="#475569">取得的知识</text>
+
+  <g font-size="12">
+    <rect x="54" y="120" width="300" height="76" rx="8" fill="#edf5ff" stroke="#5791c9"/>
+    <text x="204" y="151" text-anchor="middle" font-weight="700" fill="#173f67">每轮必须遵守什么？</text>
+    <text x="204" y="175" text-anchor="middle" fill="#526175">常驻且高频</text>
+    <path d="M354 158 H416" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="420" y="120" width="280" height="76" rx="8" fill="#dcecff" stroke="#5791c9"/>
+    <text x="560" y="151" text-anchor="middle" font-weight="700" fill="#173f67">root / subtree AGENTS.md</text>
+    <text x="560" y="175" text-anchor="middle" fill="#39709f">standing orders + owner links</text>
+    <path d="M700 158 H762" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="766" y="120" width="300" height="76" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    <text x="916" y="151" text-anchor="middle" font-weight="700" fill="#27364a">约束、入口、不可跳过的规则</text>
+    <text x="916" y="175" text-anchor="middle" fill="#526175">不承载长教程</text>
+
+    <rect x="54" y="210" width="300" height="76" rx="8" fill="#edf8f1" stroke="#55a36f"/>
+    <text x="204" y="241" text-anchor="middle" font-weight="700" fill="#1f6139">系统现在怎样工作？</text>
+    <text x="204" y="265" text-anchor="middle" fill="#526175">当前事实</text>
+    <path d="M354 248 H416" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="420" y="210" width="280" height="76" rx="8" fill="#dff2e5" stroke="#55a36f"/>
+    <text x="560" y="241" text-anchor="middle" font-weight="700" fill="#1f6139">architecture · README · source</text>
+    <text x="560" y="265" text-anchor="middle" fill="#397a50">subsystems · JSDoc</text>
+    <path d="M700 248 H762" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="766" y="210" width="300" height="76" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    <text x="916" y="241" text-anchor="middle" font-weight="700" fill="#27364a">组成、API、失败与所有权</text>
+    <text x="916" y="265" text-anchor="middle" fill="#526175">不保存完整变更故事</text>
+
+    <rect x="54" y="300" width="300" height="76" rx="8" fill="#eaf7f6" stroke="#3b9a91"/>
+    <text x="204" y="331" text-anchor="middle" font-weight="700" fill="#1d5f59">完整清单和关系在哪里？</text>
+    <text x="204" y="355" text-anchor="middle" fill="#526175">查询入口</text>
+    <path d="M354 338 H416" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="420" y="300" width="280" height="76" rx="8" fill="#dff2f0" stroke="#3b9a91"/>
+    <text x="560" y="331" text-anchor="middle" font-weight="700" fill="#1d5f59">glossary · generated catalogs</text>
+    <text x="560" y="355" text-anchor="middle" fill="#2f7770">module · event · config · API</text>
+    <path d="M700 338 H762" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="766" y="300" width="300" height="76" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    <text x="916" y="331" text-anchor="middle" font-weight="700" fill="#27364a">规范术语与源码投影</text>
+    <text x="916" y="355" text-anchor="middle" fill="#526175">freshness 可检查</text>
+
+    <rect x="54" y="390" width="300" height="76" rx="8" fill="#fff5e6" stroke="#d99939"/>
+    <text x="204" y="421" text-anchor="middle" font-weight="700" fill="#744408">为什么这样决定？</text>
+    <text x="204" y="445" text-anchor="middle" fill="#526175">理由与负知识</text>
+    <path d="M354 428 H416" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="420" y="390" width="280" height="76" rx="8" fill="#ffead0" stroke="#d99939"/>
+    <text x="560" y="421" text-anchor="middle" font-weight="700" fill="#744408">active Agent Notes</text>
+    <text x="560" y="445" text-anchor="middle" fill="#805915">decision · alternatives · consequences</text>
+    <path d="M700 428 H762" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="766" y="390" width="300" height="76" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    <text x="916" y="421" text-anchor="middle" font-weight="700" fill="#27364a">取舍、失败路径、重审条件</text>
+    <text x="916" y="445" text-anchor="middle" fill="#526175">不替代当前 API 文档</text>
+
+    <rect x="54" y="480" width="300" height="76" rx="8" fill="#f3efff" stroke="#8269bd"/>
+    <text x="204" y="511" text-anchor="middle" font-weight="700" fill="#513b85">这类任务怎样执行？</text>
+    <text x="204" y="535" text-anchor="middle" fill="#526175">情境化判断</text>
+    <path d="M354 518 H416" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="420" y="480" width="280" height="76" rx="8" fill="#e9e2fb" stroke="#8269bd"/>
+    <text x="560" y="511" text-anchor="middle" font-weight="700" fill="#513b85">development Skills · cookbooks</text>
+    <text x="560" y="535" text-anchor="middle" fill="#675293">scope · steps · validation</text>
+    <path d="M700 518 H762" stroke="#475569" marker-end="url(#arrow)"/>
+    <rect x="766" y="480" width="300" height="76" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    <text x="916" y="511" text-anchor="middle" font-weight="700" fill="#27364a">可重复工作方法</text>
+    <text x="916" y="535" text-anchor="middle" fill="#526175">不拥有产品合同</text>
+  </g>
+
+  <rect x="214" y="584" width="692" height="34" rx="7" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="560" y="606" text-anchor="middle" font-size="11" fill="#526175">其它层只链接 owner；不维护第二份会漂移的完整说明</text>
+</svg>

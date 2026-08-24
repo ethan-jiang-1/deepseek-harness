@@ -6,7 +6,7 @@ DSH 把机械可检查的 invariant（不变量）接到会失败的顶层命令
 
 > Match evidence to the surface: focused tests for behavior, snapshots for model or user output, `doc-sync` for docs, build/hygiene and built smokes for published paths, and real-API e2e for provider behavior.
 >
-> — DSH [根 `AGENTS.md` 的 “Run relevant checks locally”](../../AGENTS.md#run-relevant-checks-locally)。这条 standing order 定义本地证据按改动面选择，而不是默认运行全部检查。
+> — DSH [根 `AGENTS.md` 的 “Run relevant checks locally”](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/AGENTS.md#run-relevant-checks-locally)。这条 standing order 定义本地证据按改动面选择，而不是默认运行全部检查。
 
 ![从 outgoing diff 到本地证据、PR CI 与语义 review](./figures/evidence-routing.svg)
 
@@ -21,6 +21,8 @@ DSH 把机械可检查的 invariant（不变量）接到会失败的顶层命令
 | reviewer | 判断意图、设计、prose 和测试场景是否真的匹配；绿色检查不建立这些语义属性 |
 
 `.github/` 因而是流程的一部分，但不是检查清单的唯一 owner。Workflow 调用 `check:ci:*`，具体 gate inventory 继续由仓库脚本维护。
+
+Skill、repository gate、GitHub workflow 和 semantic review 的一般职责分工由 [Development Harness 的 Skills 章节](../development-harness/03-skills-as-procedural-memory.md) 统一说明；本页只保留 push 前与 PR CI 的精确证据路由。
 
 ## 2. 先解析 outgoing scope
 
@@ -57,7 +59,7 @@ pnpm --silent run change-scope --base <verified-base-ref>
 - Python SDK 与 release-shaped runtime；
 - blocking Wine Windows signal 和独立 native Windows complete signal。
 
-`all checks passed` 聚合 required job 结果；`.github/AGENTS.md` 明确 native Windows 独立报告，不属于该聚合。精确 job 和命令以 [`ci.yml`](../../.github/workflows/ci.yml) 与 [`run-gates.ts`](../../scripts/run-gates.ts) 为准，专题不复制完整 gate inventory。
+`all checks passed` 聚合 required job 结果；`.github/AGENTS.md` 明确 native Windows 独立报告，不属于该聚合。精确 job 和命令以 DSH 的 [`ci.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/workflows/ci.yml) 与 [`run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/scripts/run-gates.ts) 为准，专题不复制完整 gate inventory。
 
 Secret-backed e2e 在独立 workflow 里运行；无 key 时的本地命令 self-skip，不应被描述为真实 provider 已验证。产品可见 GUI 变更还需要从 PR 的真实 server/model flow 录制 GIF，这份证据不由普通 unit test 或 mock fixture 替代。
 
@@ -75,10 +77,10 @@ Secret-backed e2e 在独立 workflow 里运行；无 key 时的本地命令 self
 
 ## 证据入口
 
-- DSH [根 `AGENTS.md`](../../AGENTS.md#run-relevant-checks-locally)：本地 relevant checks 与 CI exhaustive matrix 的职责分配。
-- DSH [`dsh-pre-push-checks` skill](../../.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样解析 outgoing scope 并选择最小可信证据。
-- DSH [PR CI workflow](../../.github/workflows/ci.yml)：远端 runner、job 依赖和 `all checks passed` 聚合。
-- DSH [`.github/AGENTS.md`](../../.github/AGENTS.md)：PR Windows signals 中哪个阻塞 required 聚合。
-- DSH [gate scheduler](../../scripts/run-gates.ts)：顶层 gate 的命令、依赖与并行调度真源。
-- DSH [测试策略](../../docs/testing.md)：coverage、snapshot、真实入口和 negative control 的证据要求。
-- DSH [Quality gates Agent Note](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)：为什么仓库优先把规则接成可执行检查。
+- DSH [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/AGENTS.md#run-relevant-checks-locally)：本地 relevant checks 与 CI exhaustive matrix 的职责分配。
+- DSH [`dsh-pre-push-checks` skill](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样解析 outgoing scope 并选择最小可信证据。
+- DSH [PR CI workflow](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/workflows/ci.yml)：远端 runner、job 依赖和 `all checks passed` 聚合。
+- DSH [`.github/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.github/AGENTS.md)：PR Windows signals 中哪个阻塞 required 聚合。
+- DSH [gate scheduler](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/scripts/run-gates.ts)：顶层 gate 的命令、依赖与并行调度真源。
+- DSH [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/testing.md)：coverage、snapshot、真实入口和 negative control 的证据要求。
+- DSH [Quality gates Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：为什么仓库优先把规则接成可执行检查。

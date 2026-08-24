@@ -6,7 +6,9 @@
 
 > Land dependent PRs through GitHub's native stack object and `gh stack merge`. Do not reproduce stack semantics by merging and retargeting individual PRs with `gh pr merge` and `gh pr edit`.
 >
-> — DSH [`dsh-merging-stacked-prs` skill 的开篇`](../../.agents/skills/dsh-merging-stacked-prs/SKILL.md)。这条规则确定官方 stack object 才拥有依赖顺序、retarget 和 merge 状态。
+> — DSH [`dsh-merging-stacked-prs` skill 的开篇](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-merging-stacked-prs/SKILL.md)。这条规则确定官方 stack object 才拥有依赖顺序、retarget 和 merge 状态。
+
+本页展开两个交付 Skills 的精确操作；它们为什么以 Skill 而不是 standing rule 或 gate 承载，见 [Development Harness 的 Skills 章节](../development-harness/03-skills-as-procedural-memory.md)。
 
 ![官方 stack 从识别、刷新、验证到落地](./figures/stack-landing.svg)
 
@@ -77,9 +79,9 @@ Branch deletion 是独立最后一步：对应 PR 已 `MERGED`，且 `gh pr list
 
 ## 证据入口
 
-- DSH [`dsh-pre-push-checks` skill](../../.agents/skills/dsh-pre-push-checks/SKILL.md)：普通 push、history rewrite 和 `gh stack sync` 后的证据顺序。
-- DSH [`dsh-merging-stacked-prs` skill](../../.agents/skills/dsh-merging-stacked-prs/SKILL.md)：官方 membership、link、sync、merge 与落地后验证流程。
-- DSH [stack review guide](../../docs/cookbook/responding-to-pr-review-on-a-stack.md)：review 修复怎样沿依赖层传播。
-- DSH [根 `AGENTS.md`](../../AGENTS.md)：允许的 merge-forward、rebase、lease 与 history 规则。
-- DSH [Native stacks Agent Note](../../.agents/notes/implemented/process/2026-08-02-native-github-stacks-and-optional-rebases.md)：为什么同仓依赖链必须交给 GitHub 官方 stack。
-- DSH [Incremental retargeting Agent Note](../../.agents/notes/implemented/process/2026-07-26-incremental-pr-base-retargeting.md)：merge-forward 时怎样保留中间 checkpoint 并逐层推进。
+- DSH [`dsh-pre-push-checks` skill](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-pre-push-checks/SKILL.md)：普通 push、history rewrite 和 `gh stack sync` 后的证据顺序。
+- DSH [`dsh-merging-stacked-prs` skill](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-merging-stacked-prs/SKILL.md)：官方 membership、link、sync、merge 与落地后验证流程。
+- DSH [stack review guide](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/cookbook/responding-to-pr-review-on-a-stack.md)：review 修复怎样沿依赖层传播。
+- DSH [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/AGENTS.md)：允许的 merge-forward、rebase、lease 与 history 规则。
+- DSH [Native stacks Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/implemented/process/2026-08-02-native-github-stacks-and-optional-rebases.md)：为什么同仓依赖链必须交给 GitHub 官方 stack。
+- DSH [Incremental retargeting Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/implemented/process/2026-07-26-incremental-pr-base-retargeting.md)：merge-forward 时怎样保留中间 checkpoint 并逐层推进。

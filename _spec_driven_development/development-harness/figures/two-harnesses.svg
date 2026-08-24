@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="620" viewBox="0 0 1120 620" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">DSH 同时提供运行时 Harness 与仓库开发 Harness</title>
+  <desc id="desc">左侧展示模型、工具和会话组成的运行时 Harness，右侧展示规则、知识、工作流和反馈组成的仓库开发 Harness，两者通过可检查的代码与运行状态连接。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#475569"/></marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#276da8"/></marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#2f8550"/></marker>
+  </defs>
+  <rect width="1120" height="620" fill="#ffffff"/>
+  <text x="560" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#172033">DSH 的两个 Harness 角色</text>
+  <text x="560" y="64" text-anchor="middle" font-size="13" fill="#5f6b7a">一个帮助 agent 完成任务，一个帮助 agent 理解并修改承载任务的仓库</text>
+
+  <rect x="436" y="92" width="248" height="72" rx="8" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/>
+  <text x="560" y="121" text-anchor="middle" font-size="17" font-weight="700" fill="#27364a">DeepSeek Harness</text>
+  <text x="560" y="145" text-anchor="middle" font-size="12" fill="#526175">共享源码 · 插件模型 · 会话证据</text>
+
+  <path d="M494 164 L328 210" fill="none" stroke="#276da8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <path d="M626 164 L792 210" fill="none" stroke="#2f8550" stroke-width="2" marker-end="url(#arrow-green)"/>
+
+  <rect x="54" y="210" width="470" height="270" rx="8" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+  <text x="289" y="244" text-anchor="middle" font-size="17" font-weight="700" fill="#173f67">Runtime Coding Harness</text>
+  <text x="289" y="268" text-anchor="middle" font-size="12" fill="#39709f">运行时编码 Harness</text>
+
+  <rect x="82" y="298" width="124" height="78" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="144" y="327" text-anchor="middle" font-size="13" font-weight="700" fill="#244e73">模型</text>
+  <text x="144" y="350" text-anchor="middle" font-size="11" fill="#526175">LLM providers</text>
+  <rect x="227" y="298" width="124" height="78" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="289" y="327" text-anchor="middle" font-size="13" font-weight="700" fill="#244e73">能力</text>
+  <text x="289" y="350" text-anchor="middle" font-size="11" fill="#526175">tools · seams</text>
+  <rect x="372" y="298" width="124" height="78" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="434" y="327" text-anchor="middle" font-size="13" font-weight="700" fill="#244e73">会话</text>
+  <text x="434" y="350" text-anchor="middle" font-size="11" fill="#526175">event log</text>
+  <path d="M206 337 H223" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M351 337 H368" stroke="#475569" marker-end="url(#arrow)"/>
+  <rect x="117" y="404" width="344" height="50" rx="7" fill="#dcecff" stroke="#5791c9"/>
+  <text x="289" y="435" text-anchor="middle" font-size="13" font-weight="700" fill="#173f67">输出：agent 完成用户任务</text>
+
+  <rect x="596" y="210" width="470" height="270" rx="8" fill="#edf8f1" stroke="#55a36f" stroke-width="1.5"/>
+  <text x="831" y="244" text-anchor="middle" font-size="17" font-weight="700" fill="#1f6139">Repository Development Harness</text>
+  <text x="831" y="268" text-anchor="middle" font-size="12" fill="#397a50">仓库开发 Harness</text>
+
+  <rect x="624" y="298" width="124" height="78" rx="7" fill="#ffffff" stroke="#87bd99"/>
+  <text x="686" y="327" text-anchor="middle" font-size="13" font-weight="700" fill="#245d35">入口</text>
+  <text x="686" y="350" text-anchor="middle" font-size="11" fill="#526175">AGENTS · docs</text>
+  <rect x="769" y="298" width="124" height="78" rx="7" fill="#ffffff" stroke="#87bd99"/>
+  <text x="831" y="327" text-anchor="middle" font-size="13" font-weight="700" fill="#245d35">工作方法</text>
+  <text x="831" y="350" text-anchor="middle" font-size="11" fill="#526175">Notes · Skills</text>
+  <rect x="914" y="298" width="124" height="78" rx="7" fill="#ffffff" stroke="#87bd99"/>
+  <text x="976" y="327" text-anchor="middle" font-size="13" font-weight="700" fill="#245d35">反馈</text>
+  <text x="976" y="350" text-anchor="middle" font-size="11" fill="#526175">gates · CI</text>
+  <path d="M748 337 H765" stroke="#475569" marker-end="url(#arrow)"/>
+  <path d="M893 337 H910" stroke="#475569" marker-end="url(#arrow)"/>
+  <rect x="659" y="404" width="344" height="50" rx="7" fill="#dff2e5" stroke="#55a36f"/>
+  <text x="831" y="435" text-anchor="middle" font-size="13" font-weight="700" fill="#1f6139">输出：可理解、可验证的仓库变更</text>
+
+  <path d="M461 429 H655" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="558" y="417" text-anchor="middle" font-size="11" fill="#526175">修改产品实现</text>
+  <path d="M659 458 H559 Q540 458 540 477 V512 Q540 530 521 530 H301 Q282 530 282 511 V484" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="560" y="555" text-anchor="middle" font-size="12" fill="#526175">运行时提供可查询状态；仓库机制把运行时变化转成可维护交付</text>
+  <rect x="246" y="574" width="628" height="28" rx="7" fill="#fff7e8" stroke="#d5a54e"/>
+  <text x="560" y="593" text-anchor="middle" font-size="11" fill="#744d0f">共同基础：明确 owner、可搜索术语、可执行规则和可重建事实</text>
+</svg>
