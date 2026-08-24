@@ -2,9 +2,9 @@
 
 ## 1. proposed → implemented：从未来式改成现在式
 
-实现完成后，proposed note 不能原样留在原地。生命周期规则要求：
+实现 PR 落地时，proposed note 必须**在同一变更**移动并改写，不能原样留在原地：
 
-> `proposed/` → `implemented/` rewrites `## Proposal` into a present-tense `## Decision`, folds `## Acceptance criteria` and `## Risks` into `## Consequences` ... and drops plans in favor of what shipped.
+> Moving a file between lifecycle folders means updating the `Status:` line and re-satisfying that folder's skeleton in the same change — the gate fails the move otherwise. Concretely, `proposed/` → `implemented/` rewrites `## Proposal` into a present-tense `## Decision`, folds `## Acceptance criteria` and `## Risks` into `## Consequences` ... and drops plans in favor of what shipped.
 
 来源：`.agents/notes/README.md:121`
 
@@ -33,17 +33,18 @@ implemented note 的结构：
 
 - 实现是否符合 PR 和 Agent Note；
 - 两侧接口；
+- 生命周期、并发、清理；
 - 模型实际看到的内容；
-- 真实入口和负例；
-- 持久状态；
+- 真实入口、负例与测试强度；
+- 借出/派生状态与可重建的持久历史；
 - 所需验证证据；
 - proposed note 是否在同一 diff 中移动并改写为 implemented。
 
-机器门禁证明“结构没坏”；review 证明“语义没歪”。
+机器门禁守住可判定的结构；review 检查机器查不到的语义是否歪。
 
-## 4. archive 是生命周期收敛
+## 4. archive 是可选的生命周期收敛
 
-低未来价值的 implemented note 会归档：
+只有低未来价值的 implemented note 才会归档（不是每次修改的必经阶段）：
 
 - archived note 冻结，不做现行权威；
 - 文档门禁跳过 archived；
@@ -60,7 +61,7 @@ implemented Note（现在式决定）
   → 低价值时 archive / consolidate
 ```
 
-到这一步，一次修改的 spec 生命周期才真正收束。
+对一次修改而言，前四步收束交付；archive 只在该 note 失去未来价值时发生。
 
 ## 证据入口
 
