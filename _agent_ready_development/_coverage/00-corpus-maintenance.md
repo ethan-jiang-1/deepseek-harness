@@ -38,39 +38,17 @@
 6. 本地 relevant evidence 与 PR CI matrix 分离；repository scripts 拥有检查逻辑，workflow 拥有触发、runner、权限、并发和聚合。
 7. Semantic review 不被描述成人类独占动作。`dsh-code-review` 可由人或 agent 执行；human-review policy 约束的是人类作者 PR 的 metadata 适用范围。
 8. Web seam 案例只证明 commit tree 中的 proposal、delivery bundle 和 implemented record，不证明 Issue、Plan、review、local commands 或 GitHub checks。
-9. Prose 高级参考明确根级语料不是 bilingual product docs 或 website source，避免把 product documentation workflow 错套到研究语料。
-10. 专题作为独立发行单元，不引用其它研究语料，也不从其它语料加载校验逻辑；引用 DSH 时先在正文讲清结论，再用 blockquote 摘录关键原文，并标明 DSH 中的具体 owner 与可核对事实。
+9. 本页拥有独立研究语料的发行边界：这些文件不是 bilingual product docs 或 website source，不创建 pairing sidecar 或站点投影。
+10. 专题不引用其它研究语料，也不从其它语料加载校验逻辑；引用 DSH 时先在正文讲清结论，再用 blockquote 摘录关键原文，并标明 DSH 中的具体 owner 与可核对事实。
 11. `advanced-sdd-flow/` 只拥有相对于 Foundations 更深入的 SDD/GitHub 变更流；`development-harness/` 独立回答 DSH 怎样帮助 coding agent 理解、修改和验证 DSH。两条平级叙事通过内部链接协作而不重复全文。
 12. Development Harness 从一个 fresh-agent 场景起步，再引入 legibility、procedural memory、paved road 与 inspectability；抽象术语不能成为新读者的前置条件。
 13. `.agents/skills/` 的 repository development Skills 与 `packages/skill/` 的 runtime Skill capability 分开说明；相似的按需知识思想不能被误写成共享同一 registry 或调用机制。
 14. Skills 拥有情境化工作流程，`AGENTS.md` 拥有 standing orders，repository gates 拥有确定性检查，`.github/` workflows 拥有远端调度，Agent Notes 拥有决定理由，current docs/source 拥有当前行为。
-15. `_coverage/00-corpus-maintenance.md` 是语料维护 owner；文件名不使用含义不清的 `handoff`。
-16. 每个目录必须有 `README.md`；README 负责目录导航，不复制 `00-index.md` 的教学叙事或本页的维护细节。
+15. 每个目录必须有 `README.md`；README 负责目录导航，不复制 `00-index.md` 的教学叙事或本页的维护细节。
 
 ## 4. 图示
 
-```text
-_agent_ready_development/foundations/figures/
-└── first-change.svg
-_agent_ready_development/advanced-sdd-flow/figures/
-├── change-control-map.svg
-├── agent-note-lifecycle.svg
-├── github-event-flow.svg
-├── plan-vs-enforcement.svg
-├── evidence-routing.svg
-├── stack-landing.svg
-└── web-seam-history.svg
-_agent_ready_development/development-harness/figures/
-├── two-harnesses.svg
-├── fresh-agent-loop.svg
-├── knowledge-owners.svg
-├── skill-and-enforcement.svg
-├── participation-ladder.svg
-├── feedback-layers.svg
-└── runtime-queries.svg
-```
-
-`foundations/figures/` 只服务新手主线；`advanced-sdd-flow/figures/` 只服务高级 SDD Flow；`development-harness/figures/` 只服务 Development Harness。三个主题的 Markdown 不跨目录引用图；根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。
+15 张 SVG 分属 [Foundations](../foundations/figures/README.md)、[Advanced SDD Flow](../advanced-sdd-flow/figures/README.md) 和 [Development Harness](../development-harness/figures/README.md) 三个清单；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`title` 和 `desc` 组成的无障碍元数据。
 
 ## 5. 重审触发路径
 
@@ -89,6 +67,8 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 ## 6. 验证
 
-- `node _agent_ready_development/verify.mjs` 检查严格 UTF-8、结尾换行、内部链接与锚点、固定 DSH 外链、研究语料隔离、目录 README、图示归属、孤立 SVG 和 SVG XML；当前语料包含 32 个 Markdown、1 个脚本和 15 个 SVG。
-- 每次结构或图示变更还要运行 `node --check _agent_ready_development/verify.mjs`、`git diff --check`，并将 15 张 SVG 全部渲染后检查文字、连线和缩放。
-- Repository-level 文档校验运行 `pnpm run doc-sync`；若 host build、lint 或 doc-typecheck 被 DSH 基线问题阻断，本节记录 exact command 与原始错误，不把它写成语料通过。
+- 每次改动运行 `node _agent_ready_development/verify.mjs`、`pnpm run verify-md-links`、`pnpm run verify-md-wrap` 和 `git diff --check`。目录 verifier 检查严格 UTF-8、结尾换行、内部链接与锚点、固定 DSH 外链、研究语料隔离、目录 README、图示归属、孤立 SVG，以及 SVG 的固有尺寸、无障碍元数据和 XML。
+- 修改 `verify.mjs` 时再运行 `node --check _agent_ready_development/verify.mjs`，并确认代表性无效输入会被拒绝；修改 SVG 时渲染受影响文件，检查文字、连线和缩放。
+- Repository-level 文档校验运行 `pnpm run doc-sync`；被 host toolchain、build prerequisite 或目录外规则阻断时，交付报告记录 exact command 与错误，不把结果写成绿色证据。
+
+2026-08-24 的 repository-level 复核没有建立绿色 `doc-sync` 结果：`corepack pnpm run doc-sync` 完成 28 项中的 25 项，`doc-typecheck` 缺少 `lib/types/{index,invariant,startup}.js` 构建入口，documentation build 命中 host Corepack 的 `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`，translation pairing 因仓库 scope 包含本语料而拒绝 8 个 README。前两项需要目录外构建或工具链修复；pairing exclusion 由目录外的 `scripts/translation-pairing.manifest.json` 拥有。目录级检查通过不能替代这三项 repository-level 结果。

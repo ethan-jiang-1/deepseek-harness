@@ -1,4 +1,4 @@
-/** Self-contained integrity checks for the SDD learning corpus. */
+/** Self-contained integrity checks for the Agent-ready Development corpus. */
 
 import {
   existsSync,
@@ -385,6 +385,35 @@ function parseAttributes(path, source, body, bodyOffset, root) {
   if (root && attributes.get('xmlns') !== 'http://www.w3.org/2000/svg') {
     report(path, xmlLocation(source, bodyOffset), 'root <svg> must declare xmlns="http://www.w3.org/2000/svg"')
   }
+  return attributes
+}
+
+function checkSvgRoot(path, source, attributes) {
+  const width = attributes.get('width')
+  const height = attributes.get('height')
+  const viewBox = attributes.get('viewBox')?.trim().split(/\s+/).map(Number)
+  if (width === undefined || !/^\d+(?:\.\d+)?$/.test(width) || Number(width) <= 0) {
+    report(path, 1, 'root <svg> must declare a positive numeric width')
+  }
+  if (height === undefined || !/^\d+(?:\.\d+)?$/.test(height) || Number(height) <= 0) {
+    report(path, 1, 'root <svg> must declare a positive numeric height')
+  }
+  if (viewBox === undefined || viewBox.length !== 4 || viewBox.some(value => !Number.isFinite(value)) || viewBox[2] <= 0 || viewBox[3] <= 0) {
+    report(path, 1, 'root <svg> must declare a valid viewBox')
+  } else if (width !== undefined && height !== undefined && (Number(width) !== viewBox[2] || Number(height) !== viewBox[3])) {
+    report(path, 1, 'root width and height must match the viewBox dimensions')
+  }
+  if (attributes.get('role') !== 'img') report(path, 1, 'root <svg> must declare role="img"')
+  if (attributes.get('aria-labelledby') !== 'title desc') {
+    report(path, 1, 'root <svg> must declare aria-labelledby="title desc"')
+  }
+
+  for (const name of ['title', 'desc']) {
+    const element = source.match(new RegExp(`<${name}\\b([^>]*)>([^<]*)<\\/${name}>`))
+    if (element === null || !new RegExp(`\\bid=(["'])${name}\\1`).test(element[1]) || element[2].trim() === '') {
+      report(path, undefined, `<${name}> must be non-empty and declare id="${name}"`)
+    }
+  }
 }
 
 function findTagEnd(source, start) {
@@ -483,7 +512,8 @@ function checkSvg(path, source) {
       rootSeen = true
       if (name !== 'svg') report(path, xmlLocation(source, open), `root element must be <svg>, got <${name}>`)
     }
-    parseAttributes(path, source, tag.slice(nameStart + name.length), open + 1 + nameStart + name.length, isRoot)
+    const attributes = parseAttributes(path, source, tag.slice(nameStart + name.length), open + 1 + nameStart + name.length, isRoot)
+    if (isRoot && attributes !== undefined) checkSvgRoot(path, source, attributes)
     if (!selfClosing) stack.push(name)
     else if (isRoot) rootClosed = true
     index = end + 1

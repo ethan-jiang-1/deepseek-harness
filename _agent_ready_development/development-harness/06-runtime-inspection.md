@@ -16,7 +16,7 @@ Inspectability（可检查性）要求系统提供查询入口，让 agent 用�
 
 当 provider 是否生效、某个 config 为什么被替换或一个 row 从哪里进入系统不清楚时，最终配置树比扫描 import 更接近问题对象。它也为 bug report 提供可复现输入。
 
-## 查询二：仓库声明了哪些合同
+## 查询二：仓库有哪些静态接口与注册项
 
 生成的 tool catalog、config catalog、persistence catalog、event producer/consumer map、capability graph 和 Cordis API reference 把源码声明变成可搜索索引。Freshness gate 会在源码变化而生成物未同步时失败。
 

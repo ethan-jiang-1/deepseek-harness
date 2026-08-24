@@ -46,4 +46,4 @@ Agent-ready Development 指一套让人类与 coding agent（编码代理）都�
 node _agent_ready_development/verify.mjs
 ```
 
-该命令检查严格 UTF-8、单个结尾换行、Markdown 相对链接和锚点、目录 README、固定 DSH 外链，以及 SVG 结构、归属和引用。语义准确性与来源范围由 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md) 记录。
+该命令检查严格 UTF-8、单个结尾换行、Markdown 相对链接和锚点、目录 README、固定 DSH 外链，以及 SVG 的固有尺寸、无障碍元数据、结构、归属和引用。语义准确性与来源范围由 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md) 记录。
