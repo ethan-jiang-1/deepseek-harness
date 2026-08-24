@@ -26,13 +26,13 @@ Local checks（本地检查）针对当前 outgoing diff（待推送差异）选
 
 PR CI 在远端运行更完整的 matrix（检查矩阵），覆盖共享规则、构建消费者和平台信号。它防止本地环境或证据选择遗漏仓库级问题。
 
-两者不是二选一：本地检查提供快速、针对性的反馈；CI 提供统一、远端和更广的信号。精确 scope 解析、coverage 选择和 CI job 拓扑见 [证据路由高级参考](./advanced/04-gates-and-local-checks.md)。
+两者不是二选一：本地检查提供快速、针对性的反馈；CI 提供统一、远端和更广的信号。精确 scope 解析、coverage 选择和 CI job 拓扑见 [证据路由高级参考](../advanced-sdd-flow/04-gates-and-local-checks.md)。
 
 ## Plan Mode 不执行权限
 
 Plan Mode 可以要求 agent 先探索、写完整计划并等待用户审批。它影响协作方式和模型 guidance（引导文本），不直接阻止文件、网络或进程操作。
 
-Sandbox mode（沙箱模式）决定环境允许访问什么，approval policy（审批策略）决定哪些操作需要用户授权。这三个机制彼此配合，但职责不同。内部 event（事件）和审批时序见 [Plan Mode 高级参考](./advanced/03-plan-and-sandbox.md)。
+Sandbox mode（沙箱模式）决定环境允许访问什么，approval policy（审批策略）决定哪些操作需要用户授权。这三个机制彼此配合，但职责不同。内部 event（事件）和审批时序见 [Plan Mode 高级参考](../advanced-sdd-flow/03-plan-and-sandbox.md)。
 
 ## Push 前的完成判断
 

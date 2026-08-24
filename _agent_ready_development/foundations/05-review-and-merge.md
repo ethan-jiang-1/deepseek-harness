@@ -21,7 +21,7 @@ Reviewer 不只读变更行，还要连接四类上下文：
 3. 源码与当前文档：系统交付后怎样工作和失败；
 4. Tests、snapshots 和 CI：哪些场景已经建立可重复证据。
 
-高风险变更还要沿真实 consumer（消费方）和 entry path（入口路径）检查错误、取消、资源释放、并发、安全限制、模型可见内容与发布产物。完整语义维度见 [code review 高级参考](./advanced/06-review-and-human-role.md)。
+高风险变更还要沿真实 consumer（消费方）和 entry path（入口路径）检查错误、取消、资源释放、并发、安全限制、模型可见内容与发布产物。完整语义维度见 [code review 高级参考](../advanced-sdd-flow/06-review-and-human-role.md)。
 
 ## Review 是一个反馈循环
 
@@ -39,10 +39,10 @@ Agent Note 不会因为 merge 自动 archive（归档）。只有 implemented No
 
 普通变更在这里结束。只有出现下面情况时，才需要进入高级参考：
 
-- 多个 PR 存在同仓库依赖关系：阅读 [Stacked Pull Requests（依赖式 PR 栈）](./advanced/07-push-merge-stacked-prs.md)；
+- 多个 PR 存在同仓库依赖关系：阅读 [Stacked Pull Requests（依赖式 PR 栈）](../advanced-sdd-flow/07-push-merge-stacked-prs.md)；
 - 需要改写已经发布的 branch history（分支历史）：阅读同一篇中的 force-with-lease（带租约强制推送）规则；
-- 需要核对某个机制从 proposal 到 implemented 的历史证据：阅读 [Web capability seam 历史案例](./advanced/08-example-web-seam.md)；
-- 需要维护文档 owner、双语配对或站点投影：阅读 [文档高级参考](./advanced/05-prose-doc-standards.md)。
+- 需要核对某个机制从 proposal 到 implemented 的历史证据：阅读 [Web capability seam 历史案例](../advanced-sdd-flow/08-example-web-seam.md)；
+- 需要维护文档 owner、双语配对或站点投影：阅读 [文档高级参考](../advanced-sdd-flow/05-prose-doc-standards.md)。
 
 ## 完成后的心智模型
 

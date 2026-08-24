@@ -24,7 +24,7 @@ Agent-ready Development 指一套让人类与 coding agent（编码代理）都�
 
 正文会先用本目录内的文字和图解释概念，再把 DSH 固定版本中的源码、文档、`.agents/`、`.github/`、Skills、workflows 和 Agent Notes 作为一手证据。关键规则尽量以 Markdown blockquote 摘录，并说明它来自 DSH 的哪个部分以及能证明什么；读者不需要先理解 DSH 才能读懂主线。
 
-本语料不引用 `_digested/` 或其它研究语料。目录外链接只指向固定 commit 的 DSH 内容，因此可以独立发行，同时保留回到原始证据的路径。
+本语料不引用其它研究语料。目录外链接只指向固定 commit 的 DSH 内容，因此可以独立发行，同时保留回到原始证据的路径。
 
 ## 目录
 

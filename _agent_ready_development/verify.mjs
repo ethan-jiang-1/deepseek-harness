@@ -281,9 +281,10 @@ const referencedSvgPaths = new Set()
 
 function owningFiguresDirectory(markdownPath) {
   const fromRoot = relative(corpusRoot, markdownPath).split(sep)
-  if (fromRoot[0] === 'advanced') return resolve(corpusRoot, 'advanced/figures')
+  if (fromRoot[0] === 'foundations') return resolve(corpusRoot, 'foundations/figures')
+  if (fromRoot[0] === 'advanced-sdd-flow') return resolve(corpusRoot, 'advanced-sdd-flow/figures')
   if (fromRoot[0] === 'development-harness') return resolve(corpusRoot, 'development-harness/figures')
-  return resolve(corpusRoot, 'figures')
+  return undefined
 }
 
 function checkMarkdown(path, source) {
@@ -313,7 +314,10 @@ function checkMarkdown(path, source) {
       }
       if (extname(target).toLowerCase() === '.svg') {
         referencedSvgPaths.add(target)
-        if (dirname(target) !== owningFiguresDirectory(path)) {
+        const figuresDirectory = owningFiguresDirectory(path)
+        if (figuresDirectory === undefined) {
+          report(path, line, `Markdown outside a topic cannot reference SVGs: ${JSON.stringify(url)}`)
+        } else if (dirname(target) !== figuresDirectory) {
           report(path, line, `SVG must come from this Markdown subtree's figures directory: ${JSON.stringify(url)}`)
         }
       }

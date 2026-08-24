@@ -2,9 +2,9 @@
 
 ## 什么时候读这里
 
-这里是 Advanced SDD Flow reference（高级 SDD 流程参考），面向已经理解 [新手主线](../00-index.md)，并需要核对精确条件、内部状态或少见流程的读者。各页支持按问题查找，不要求从 `01` 顺序读到 `08`。
+这里是 Advanced SDD Flow reference（高级 SDD 流程参考），面向已经理解 [Foundations 新手主线](../foundations/00-index.md)，并需要核对精确条件、内部状态或少见流程的读者。各页支持按问题查找，不要求从 `01` 顺序读到 `08`。
 
-普通 branch → PR → CI/review → merge 流程在顶层教程已经完整说明。这里保留实现细节，是为了回答“具体由哪个文件执行”“边界条件是什么”“失败后怎样处理”，不是为了给第一次阅读增加前置知识。
+普通 branch → PR → CI/review → merge 流程在 Foundations 教程已经完整说明。这里保留实现细节，是为了回答“具体由哪个文件执行”“边界条件是什么”“失败后怎样处理”，不是为了给第一次阅读增加前置知识。
 
 本目录只拥有复杂变更的流程机制。DSH 怎样通过仓库结构、Skills、可执行反馈和运行时查询帮助 coding agent 修改自身，由独立的 [Development Harness 专题](../development-harness/00-index.md) 说明；流程页只在任务需要时链接相应概念，不重复那条叙事。
 
@@ -25,4 +25,4 @@
 
 ## 使用方式
 
-先从顶层教程找到你不确定的概念，再进入一篇对应 reference。页面末尾的“证据入口”链接到 owning source、policy、workflow、skill 或 Agent Note；需要判断当前仓库事实时，以这些来源为准。
+先从 Foundations 教程找到你不确定的概念，再进入一篇对应 reference。页面末尾的“证据入口”链接到 owning source、policy、workflow、skill 或 Agent Note；需要判断当前仓库事实时，以这些来源为准。

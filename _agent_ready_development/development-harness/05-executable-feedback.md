@@ -41,13 +41,13 @@
 
 `dsh-pre-push-checks` 先解析 outgoing scope（待推送范围），再为受影响行为选择最小可信证据。Git hooks 保留低延迟检查；GitHub CI 执行穷举 coverage、平台矩阵和较重的真实入口检查。
 
-这不是降低本地标准，而是把反馈按成本和适用范围分工：开发循环先得到相关红灯，远端再验证跨平台和仓库级完整性。精确选择方法见 [Evidence routing 高级参考](../advanced/04-gates-and-local-checks.md)。
+这不是降低本地标准，而是把反馈按成本和适用范围分工：开发循环先得到相关红灯，远端再验证跨平台和仓库级完整性。精确选择方法见 [Evidence routing 高级参考](../advanced-sdd-flow/04-gates-and-local-checks.md)。
 
 ## `.github/` 是远端反馈执行层
 
 Repository scripts 拥有“检查什么”；`.github/workflows/` 拥有“在什么事件、权限、runner、并发和 job 依赖下运行”。PR status 汇集这些结果，branch protection 或 merge policy 再消费状态。
 
-因此 `.github/` 属于 Development Harness，但不替代本地规则和源码检查。它把仓库已经拥有的证据放入共享协作状态。具体 Issue、PR 和 CI lifecycle 见 [GitHub automation 高级参考](../advanced/02-issue-pr-lifecycle.md)。
+因此 `.github/` 属于 Development Harness，但不替代本地规则和源码检查。它把仓库已经拥有的证据放入共享协作状态。具体 Issue、PR 和 CI lifecycle 见 [GitHub automation 高级参考](../advanced-sdd-flow/02-issue-pr-lifecycle.md)。
 
 ## Skill、gate 与 review 形成闭环
 

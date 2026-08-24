@@ -1,6 +1,6 @@
 # Development Harness 图示
 
-本目录只保存 `development-harness/` 正文使用的 SVG 图示，不向顶层教程或 Advanced SDD Flow 提供共享图。
+本目录只保存 `development-harness/` 正文使用的 SVG 图示，不向 Foundations 或 Advanced SDD Flow 提供共享图。
 
 ## 主入口
 

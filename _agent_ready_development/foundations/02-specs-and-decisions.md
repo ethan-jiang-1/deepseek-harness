@@ -28,7 +28,7 @@ Agent Note 有两个常见起点：
 - 决定仍需在实现前评审：创建 proposed Agent Note；
 - 决定已经明确并随当前变更交付：直接创建或更新 implemented Agent Note。
 
-因此，“必须有 Agent Note”不等于“必须先写 proposed Note”。生命周期、取代和冻结归档规则属于高级机制，见 [Agent Note lifecycle（生命周期）](./advanced/01-agent-note-lifecycle.md)。
+因此，“必须有 Agent Note”不等于“必须先写 proposed Note”。生命周期、取代和冻结归档规则属于高级机制，见 [Agent Note lifecycle（生命周期）](../advanced-sdd-flow/01-agent-note-lifecycle.md)。
 
 ## Plan 与 Agent Note 面向不同时间
 

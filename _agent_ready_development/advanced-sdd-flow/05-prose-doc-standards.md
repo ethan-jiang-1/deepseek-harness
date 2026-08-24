@@ -72,4 +72,4 @@ Durable prose 直接陈述当前 actor、行为、条件、时机、modality、�
 - DSH [`dsh-trim-cot-leakage` skill](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-trim-cot-leakage/SKILL.md)：怎样识别并移除作者会话视角。
 - DSH [`dsh-translate-docs` skill](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-translate-docs/SKILL.md)：只有显式调用才进入的整篇翻译扩展流程。
 - DSH [`dsh-doc-site-sync` skill](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-doc-site-sync/SKILL.md)：canonical docs 到 VitePress projection 的发布路径。
-- [独立语料入口](../00-index.md)
+- [独立语料入口](../README.md)
