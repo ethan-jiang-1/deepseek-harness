@@ -6,9 +6,9 @@
 
 `_agent_ready_development/` 是根级 SDD、GitHub Flow 与 Development Harness 学习语料，并使用 DSH 作为固定版本的一手机制参考；它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法。语料把可观察机制综合为“分布式规格”：Issue/任务意图、Agent Note 决定、可选 Plan、当前源码与文档、行为证据，以及 GitHub 远端协作状态分别有自己的 owner。
 
-`00-index.md` 是面向新读者的入口；顶层 `01` 至 `05` 用一个普通变更递进讲解 SDD、GitHub Flow、实现证据与 review/merge。`advanced/` 中的 `01` 至 `07` 按问题提供 Advanced SDD Flow 精确 reference，`08` 是明确限定证据范围的 git 历史案例。`development-harness/` 中的 `01` 是 fresh-agent tutorial，`02` 至 `07` 分别拥有知识归属、Skills、参与路径、可执行反馈、运行时查询和适用边界。
+根 `README.md` 是独立语料的介绍与三路径入口。`foundations/` 中的 `01` 至 `05` 用一个普通变更递进讲解 SDD、GitHub Flow、实现证据与 review/merge。`advanced-sdd-flow/` 中的 `01` 至 `07` 按问题提供高级 SDD Flow 精确 reference，`08` 是明确限定证据范围的 git 历史案例。`development-harness/` 中的 `01` 是 fresh-agent tutorial，`02` 至 `07` 分别拥有知识归属、Skills、参与路径、可执行反馈、运行时查询和适用边界。
 
-每个目录都有 `README.md`，只说明本层职责、直接内容与主入口；各层 `00-index.md` 继续拥有面向读者的完整导读和阅读顺序。图示目录的 README 还标明每张 SVG 的正文 owner。
+每个目录都有 `README.md`。三个主题目录的 README 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 README 还标明每张 SVG 的正文 owner。
 
 专题所需的教学上下文、图与维护说明都在本目录内；目录外引用只指向固定 commit 的 DSH 源码、文档、规则、Skills 与 Agent Notes，不依赖其它研究语料。本页拥有语料的层级、证据范围、`.github/` 纳入原则、独立发行约束、图文分工与重审入口；这些是研究语料自身的维护信息，不写入或修改 DSH 的 Agent Notes。
 
@@ -30,7 +30,7 @@
 
 ## 3. 结构与叙事约束
 
-1. 阅读顺序是 tutorial-first：先用一个 CLI 变更讲完普通路径，再拆解规格、GitHub Flow、证据与 review；精确机制和少见流程进入 `advanced/`。
+1. 阅读顺序是 tutorial-first：先在 `foundations/` 用一个 CLI 变更讲完普通路径，再拆解规格、GitHub Flow、证据与 review；精确机制和少见流程进入 `advanced-sdd-flow/`。
 2. 重要术语在新手层首次出现时同时给出英文名称和中文解释；后文保留仓库与 GitHub 中可搜索的英文名称。
 3. 主链不把 Issue、proposed Note 和 Plan Mode 画成统一必经顺序；三者是条件入口，非平凡变更的共同义务是 owning Agent Note。
 4. `.github/` 是远端执行面，而非只在 Issue 小节中出现：模板、trusted policy、Project lifecycle、PR CI、自动依赖 PR 和相邻发布 workflow 各自标明职责。
@@ -40,7 +40,7 @@
 8. Web seam 案例只证明 commit tree 中的 proposal、delivery bundle 和 implemented record，不证明 Issue、Plan、review、local commands 或 GitHub checks。
 9. Prose 高级参考明确根级语料不是 bilingual product docs 或 website source，避免把 product documentation workflow 错套到研究语料。
 10. 专题作为独立发行单元，不引用其它研究语料，也不从其它语料加载校验逻辑；引用 DSH 时先在正文讲清结论，再用 blockquote 摘录关键原文，并标明 DSH 中的具体 owner 与可核对事实。
-11. `advanced/` 只拥有 Advanced SDD Flow；`development-harness/` 独立回答 DSH 怎样帮助 coding agent 理解、修改和验证 DSH，两条高级叙事通过内部链接协作而不重复全文。
+11. `advanced-sdd-flow/` 只拥有相对于 Foundations 更深入的 SDD/GitHub 变更流；`development-harness/` 独立回答 DSH 怎样帮助 coding agent 理解、修改和验证 DSH。两条平级叙事通过内部链接协作而不重复全文。
 12. Development Harness 从一个 fresh-agent 场景起步，再引入 legibility、procedural memory、paved road 与 inspectability；抽象术语不能成为新读者的前置条件。
 13. `.agents/skills/` 的 repository development Skills 与 `packages/skill/` 的 runtime Skill capability 分开说明；相似的按需知识思想不能被误写成共享同一 registry 或调用机制。
 14. Skills 拥有情境化工作流程，`AGENTS.md` 拥有 standing orders，repository gates 拥有确定性检查，`.github/` workflows 拥有远端调度，Agent Notes 拥有决定理由，current docs/source 拥有当前行为。
@@ -50,9 +50,9 @@
 ## 4. 图示
 
 ```text
-_agent_ready_development/figures/
+_agent_ready_development/foundations/figures/
 └── first-change.svg
-_agent_ready_development/advanced/figures/
+_agent_ready_development/advanced-sdd-flow/figures/
 ├── change-control-map.svg
 ├── agent-note-lifecycle.svg
 ├── github-event-flow.svg
@@ -70,7 +70,7 @@ _agent_ready_development/development-harness/figures/
 └── runtime-queries.svg
 ```
 
-顶层 `first-change.svg` 只服务新手主线；`advanced/figures/` 只服务 Advanced SDD Flow；`development-harness/figures/` 只服务 Development Harness。三个目录的 Markdown 不跨目录引用图；正文引用图后继续提供可搜索的机制与来源。
+`foundations/figures/` 只服务新手主线；`advanced-sdd-flow/figures/` 只服务高级 SDD Flow；`development-harness/figures/` 只服务 Development Harness。三个主题的 Markdown 不跨目录引用图；根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。
 
 ## 5. 重审触发路径
 
@@ -89,6 +89,6 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 ## 6. 验证
 
-- `node _agent_ready_development/verify.mjs` 检查严格 UTF-8、结尾换行、内部链接与锚点、固定 DSH 外链、研究语料隔离、目录 README、图示归属、孤立 SVG 和 SVG XML；当前语料包含 31 个 Markdown、1 个脚本和 15 个 SVG。
+- `node _agent_ready_development/verify.mjs` 检查严格 UTF-8、结尾换行、内部链接与锚点、固定 DSH 外链、研究语料隔离、目录 README、图示归属、孤立 SVG 和 SVG XML；当前语料包含 32 个 Markdown、1 个脚本和 15 个 SVG。
 - 每次结构或图示变更还要运行 `node --check _agent_ready_development/verify.mjs`、`git diff --check`，并将 15 张 SVG 全部渲染后检查文字、连线和缩放。
 - Repository-level 文档校验运行 `pnpm run doc-sync`；若 host build、lint 或 doc-typecheck 被 DSH 基线问题阻断，本节记录 exact command 与原始错误，不把它写成语料通过。

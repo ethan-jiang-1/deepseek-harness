@@ -42,7 +42,7 @@ DSH 分别给出可查入口：
 | [`06-runtime-inspection.md`](./06-runtime-inspection.md) | agent 怎样查询实际配置和活运行时，而不是只猜源码 |
 | [`07-boundaries-and-costs.md`](./07-boundaries-and-costs.md) | 哪些原则可以迁移，哪些 DSH 成本不能忽略 |
 
-第一次阅读建议按顺序进行。只想理解复杂 PR 怎样经过 GitHub 时，应回到 [Advanced SDD Flow](../advanced/00-index.md)；那里讲流程的精确条件，这里讲仓库为什么能让 agent 参与这些流程。
+第一次阅读建议按顺序进行。只想理解复杂 PR 怎样经过 GitHub 时，应进入 [Advanced SDD Flow](../advanced-sdd-flow/00-index.md)；那里讲流程的精确条件，这里讲仓库为什么能让 agent 参与这些流程。
 
 ## 核心术语
 
