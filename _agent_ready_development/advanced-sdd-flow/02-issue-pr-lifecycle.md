@@ -2,7 +2,7 @@
 
 ## 一句话
 
-`.github/` 是开发流程的远端执行面：模板收集意图，trusted policy（可信策略）校验进入 review 的 PR，lifecycle workflow（生命周期工作流）推进 Project 状态，PR CI 调用仓库脚本建立远端证据。它既不替代 Agent Note，也不决定实现细节。
+`.github/` 是开发流程的远端执行面：模板收集意图，trusted policy（可信策略）校验已进入 review 且适用该规则的 PR，lifecycle workflow（生命周期工作流）推进 Project 状态，PR CI 调用仓库脚本建立远端证据。它既不替代 Agent Note，也不决定实现细节。
 
 本页拥有 `.github/` 的精确事件与 policy；它为什么构成仓库 Development Harness 的远端反馈层，见 [可执行反馈](../development-harness/05-executable-feedback.md)。
 
@@ -59,7 +59,7 @@ Inbox → Backlog → Ready → In progress → In review → Done / No action
 
 `.github/workflows/ci.yml` 只监听 `pull_request`，新 head 会取消同一 ref 的旧 run。Workflow 负责 runner、权限、并发、缓存和 job 聚合；实际检查集合由 `package.json` 与 `scripts/run-gates.ts` 的顶层命令拥有。
 
-具体 job 分层、required 聚合、本地证据与 Windows 信号的关系由 [`04-gates-and-local-checks.md`](./04-gates-and-local-checks.md) 统一说明；本页只保留 PR 事件怎样进入 CI，以及 workflow 与仓库检查逻辑怎样分工。
+具体 job 分层、required 聚合、本地证据与 Windows 信号的关系由 [Evidence routing](./04-gates-and-local-checks.md) 统一说明；本页只保留 PR 事件怎样进入 CI，以及 workflow 与仓库检查逻辑怎样分工。
 
 真实 API e2e 使用独立 workflow 和 secrets 条件，E2B 与其它 provider e2e 还要求手动 dispatch。它们为适用变更提供真实 provider 证据，不是无凭据 PR CI 的通用替代。
 

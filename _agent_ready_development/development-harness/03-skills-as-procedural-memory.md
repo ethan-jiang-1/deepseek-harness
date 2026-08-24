@@ -8,7 +8,7 @@
 
 > Skills (`.agents/skills/`) | Reusable workflows and specialized decision standards
 >
-> — DSH [`docs/AGENTS.md` 的层级表](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这一定义把 Skill 定位为可复用工作流和专门判断标准，而不是产品合同的 owner。
+> — DSH [`docs/AGENTS.md` 的层级表](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这一定义把 Skill 定位为可复用工作流和专门判断标准，而不是产品 API 或运行时行为的 owner。
 
 ![规则、Skills、检查与 GitHub workflow 的职责分工](./figures/skill-and-enforcement.svg)
 
@@ -21,7 +21,7 @@ DSH 仓库同时出现两类同名概念，读者必须先区分：
 | repository development Skills | `.agents/skills/` | 修改 DSH 的 coding agent | 提供任务触发条件、判断标准、操作流程和验证要求 |
 | runtime Skill capability | `packages/skill/` | 运行在 DSH 中的产品 agent | 发现、选择并加载项目、用户或 provider 提供的 Skill 内容 |
 
-二者都使用“按需加载任务知识”的思想，但不是同一套执行机制。前者属于仓库开发环境；后者是 DSH 产品本身的 Service Definition、filesystem provider 和 model-facing consumer。不能用产品包 README 替代仓库开发 Skill，也不能把 `.agents/skills/` 当成 `ctx.skills` 的完整运行时合同。
+二者都使用“按需加载任务知识”的思想，但不是同一套执行机制。前者属于仓库开发环境；后者是 DSH 产品本身的 Service Definition、filesystem provider 和 model-facing consumer。不能用产品包 README 替代仓库开发 Skill，也不能把 `.agents/skills/` 当成 `ctx.skills` 的完整运行时 API 与行为说明。
 
 ## DSH 的 development Skills 覆盖哪些判断
 
@@ -56,7 +56,7 @@ DSH 仓库同时出现两类同名概念，读者必须先区分：
 | 载体 | 擅长回答 | 不能替代 |
 |---|---|---|
 | `AGENTS.md` | 每轮必须遵守什么 | 情境化长流程 |
-| Skill | 面对某类任务怎样调查、判断和验证 | 确定性 pass/fail 与产品合同 |
+| Skill | 面对某类任务怎样调查、判断和验证 | 确定性 pass/fail 与产品 API/行为 |
 | repository script / gate | 一个可机械条件是否满足 | 意图和设计质量 |
 | `.github/` workflow | 何时、以何权限、在哪个 runner 执行检查 | 检查逻辑本身和本地判断 |
 | Agent Note | 为什么选择这一决定 | 具体执行步骤 |

@@ -28,7 +28,7 @@
 
 决定已经明确时，可以直接写 implemented Agent Note（已实现决定记录）。只有重大工作需要先独立评审方案时，才从 proposed Agent Note（待评审提案）开始。
 
-如果实现路径仍有多个未解决选择，可以先进入 Plan Mode，把一次性的 implementation plan（实施计划）交给用户审批。Plan Mode 是可选协作步骤，不是每个变更都必须生成的文件。
+如果实现路径仍有多个未解决选择，且需要先评审实施计划，可以进入 Plan Mode，把一次性的 implementation plan（实施计划）交给用户审批。Plan Mode 是可选协作步骤，不是每个变更都必须生成的文件。
 
 ## 第三步：在一个分支上完成交付组合
 
@@ -52,18 +52,18 @@ Push 前不机械地运行所有命令，而是选择能覆盖当前 diff（变�
 实施者 push 分支并创建 Pull Request。PR 把以下内容聚在一起：
 
 - 与目标分支相比的 diff；
-- 关联 Issue、变更摘要和已运行的验证；
+- 适用时关联的 Issue、变更摘要和已运行的验证；
 - CI workflows 产生的 checks；
 - reviewer 的问题、建议和批准状态；
 - 最终能否 merge 的 GitHub 状态。
 
-`.github/` 在这里接管远端协作：workflow 接收 PR 事件并运行仓库检查，具体的 policy、Project lifecycle（项目生命周期）和 CI 分工在 [`03-github-flow.md`](./03-github-flow.md) 中展开。
+`.github/` 在这里接管远端协作：workflow 接收 PR 事件并运行仓库检查，具体的 policy、Project lifecycle（项目生命周期）和 CI 分工在 [GitHub Flow](./03-github-flow.md) 中展开。
 
 ## 第五步：检查、评审、修正、合并
 
 CI 检查类型、测试、构建和平台结果；semantic review 检查实现是否真正满足意图，错误是否在正确位置处理，文档和测试是否覆盖真实使用方式。任何一边失败，作者都继续修改同一分支，新的 push 会更新 PR。
 
-Required checks 和 review requirements（评审要求）满足后，PR merge 到目标分支。此时源码、当前文档、行为证据和 implemented Agent Note 共同描述交付后的系统。
+Required checks 和 review requirements（评审要求）满足后，PR merge 到目标分支。此时源码和当前文档描述交付后的系统，行为证据验证关键结果，implemented Agent Note 保存决定理由。
 
 ## 哪些机制按条件出现
 
@@ -78,4 +78,4 @@ Required checks 和 review requirements（评审要求）满足后，PR merge �
 
 一次变更不是“写代码，然后让 CI 看看”。它先有可观察结果，再把决定、实现、当前文档和证据装进同一个 PR，最后由自动检查和语义评审共同判断能否交付。
 
-下一篇解释这些内容为什么分散在不同位置：[`02-specs-and-decisions.md`](./02-specs-and-decisions.md)。
+下一篇解释这些内容为什么分散在不同位置：[规格与决定](./02-specs-and-decisions.md)。

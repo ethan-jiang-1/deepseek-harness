@@ -25,4 +25,4 @@
 
 ## 使用方式
 
-先从 Foundations 教程找到你不确定的概念，再进入一篇对应 reference。页面末尾的“证据入口”链接到 owning source、policy、workflow、skill 或 Agent Note；需要判断当前仓库事实时，以这些来源为准。
+先从 Foundations 教程找到你不确定的概念，再进入一篇对应 reference。页面末尾的“证据入口”链接到 owning source、policy、workflow、skill 或 Agent Note；需要判断固定基线中的仓库事实时，以这些来源为准。

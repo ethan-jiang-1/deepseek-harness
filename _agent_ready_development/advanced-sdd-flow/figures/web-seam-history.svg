@@ -6,7 +6,7 @@
   </defs>
   <rect width="1080" height="470" rx="6" fill="#fafafa"/>
   <text x="540" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">Web seam 历史：四个 commit 证明核心交付段，不证明完整协作流程</text>
-  <text x="540" y="51" text-anchor="middle" font-size="11" fill="#667085">现行规则从当前 Agent Note contract 与 gates 读取；历史 commit 只证明其 tree 中可观察到的事实。</text>
+  <text x="540" y="51" text-anchor="middle" font-size="11" fill="#667085">现行规则从当前 Agent Note 的决定与 gates 读取；历史 commit 只证明其 tree 中可观察到的事实。</text>
 
   <line x1="118" y1="146" x2="962" y2="146" stroke="#94a3b8" stroke-width="2"/>
   <circle cx="140" cy="146" r="8" fill="#c68b2c"/>

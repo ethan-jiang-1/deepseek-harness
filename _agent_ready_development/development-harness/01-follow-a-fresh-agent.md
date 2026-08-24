@@ -2,7 +2,7 @@
 
 ## 场景
 
-假设一个从未参与 DSH 的 coding agent 收到任务：“新增一个会出现在模型请求中的工具，并让 Web 界面正确展示它。”这个场景不是某个历史 PR 的复述，而是用 DSH 当前规则串起一次典型参与过程。
+假设一个从未参与 DSH 的 coding agent 收到任务：“新增一个会出现在模型请求中的工具，并让 Web 界面正确展示它。”这个场景不是某个历史 PR 的复述，而是用 DSH 固定基线的规则串起一次典型参与过程。
 
 目标不是记住所有命令，而是看清一个新参与者如何连续回答六个问题：先读什么、代码放哪、为什么这样放、采用哪项工作流程、什么算完成，以及结果怎样进入主分支。
 
@@ -36,11 +36,11 @@ agent 接着读取 adding-a-tool cookbook（添加工具操作指南）、工具
 
 根级规则只适合放每轮都需要的 standing orders（常驻指令）。当任务进入文档结构、push 前检查或 PR review 等具体场景时，agent 加载对应 development Skill：例如 `dsh-doc-standards`、`dsh-pre-push-checks` 和 `dsh-code-review`。
 
-Skill 不替 agent 决定产品需求，也不自动证明实现正确。它把该任务的输入、检查顺序、例外和输出格式集中起来，让 agent 不必从多份规则重新拼装流程。Skills 的完整分工见 [`03`](./03-skills-as-procedural-memory.md)。
+Skill 不替 agent 决定产品需求，也不自动证明实现正确。它把该任务的输入、检查顺序、例外和输出格式集中起来，让 agent 不必从多份规则重新拼装流程。Skills 的完整分工见 [Skills 专章](./03-skills-as-procedural-memory.md)。
 
 ## 4. 完成一个交付组合
 
-“工具能运行”只是实现的一部分。模型可见或产品用户可见的非平凡变化还要让当前合同、行为证据和决策记录一起更新：
+“工具能运行”只是实现的一部分。模型可见或产品用户可见的非平凡变化还要让当前接口与行为、行为证据和决策记录一起更新：
 
 1. 源码和类型实现功能，并通过 `ctx.effect()` 或注册表 disposer 保持生命周期归属。
 2. package README 和 JSDoc 说明参数、结果、失败、模型可见内容和展示意图。
@@ -55,7 +55,7 @@ Skill 不替 agent 决定产品需求，也不自动证明实现正确。它把�
 
 实现过程中，TypeScript 先检查静态接口，配置加载检查可解析的误配置，unit tests 检查局部行为，runtime invariant（运行时不变量检查）比较真实关系，focused local checks（聚焦本地检查）覆盖待推送差异。每一层只证明自己观察到的性质。
 
-agent 不应因为一个检查为绿就跳过其它层：coverage 只能说明代码执行过，snapshot 才能固定组装后的外部输出，semantic review（语义评审）仍要判断实现是否符合需求和设计 owner。证据分层见 [`05`](./05-executable-feedback.md)。
+agent 不应因为一个检查为绿就跳过其它层：coverage 只能说明代码执行过，snapshot 才能固定组装后的外部输出，semantic review（语义评审）仍要判断实现是否符合需求和设计 owner。证据分层见 [可执行反馈](./05-executable-feedback.md)。
 
 ## 6. 把结果交给 GitHub 协作
 

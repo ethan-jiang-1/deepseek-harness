@@ -23,7 +23,7 @@ Agent loop 位于两者之间：从当前插件树取得能力，把模型和工
 
 ## 四级参与阶梯
 
-![从配置组合到 loop 合同的参与阶梯](./figures/participation-ladder.svg)
+![从配置组合到核心 loop，并横切 session 持久化义务的参与阶梯](./figures/participation-ladder.svg)
 
 不同改动半径有不同首选入口。下面的 participation ladder（参与阶梯）是本文根据 DSH architecture、cookbooks 和仓库规则归纳的学习模型，不是 DSH 的正式分级名称。
 
@@ -31,20 +31,22 @@ Agent loop 位于两者之间：从当前插件树取得能力，把模型和工
 |---|---|---|---|
 | L0 组合 | Profile、Bundle、Patch、Preset | 换 provider、改参数、改变某类会话能力 | 配置无法表达新行为 |
 | L1 扩展点 | tool、command、prompt section、typed event listener | 新增模型工具、命令或拦截策略 | 变化是一项需要替换实现的完整能力 |
-| L2 capability seam | Service Definition、Provider、Consumer | 新 filesystem、shell、LLM 或 sandbox backend | 现有 seam 与事件都不能表达 loop 义务 |
-| L3 loop / session contract | `agent-loop`、`SessionEventMap` | 改变循环驱动或新增必须持久的模型可见事实 | 只有需求确实改变核心时进入 |
+| L2 capability seam | Service Definition、Provider、Consumer | 新 filesystem、shell、LLM 或 sandbox backend | 现有扩展点和 seam 都不能表达 loop 驱动 |
+| L3 core loop | `agent-loop` | 改变默认循环驱动 | 现有扩展点和 capability seam 都无法表达所需行为 |
 
 阶梯不是价值排序。L0 的部署替换是完整系统能力，不是“较低级的代码”；L3 也不是更先进，只是影响范围最大、同步义务最多。
+
+Session 持久化是横切义务，不是从 L0、L1 或 L2 升级到 L3 的判据。任何层级新增模型可见事实时，都要同时扩展 `SessionEventMap`，并从日志投影和重建该事实。
 
 ## 先用归属问题缩小选择
 
 面对新行为，可以依次询问：
 
 1. 它只是替换配置或组合吗？优先留在 L0。
-2. 它是必须在 reload、resume 或 fork 后存在的事实吗？扩展 `SessionEventMap` 并从 log 投影。
-3. 它要观察或拦截进行中的 request、tool 或 turn 吗？选择相应 typed event 和 dispatch mode。
-4. 它是一项多个 Provider 可替换、多个 Consumer 共同使用的能力吗？设计完整 capability seam。
-5. 现有扩展点都不能表达所需义务吗？此时才论证 loop 修改。
+2. 它能由现有 tool、command、prompt section 或 typed event listener 表达吗？优先留在 L1；观察或拦截 request、tool 或 turn 时选择相应 dispatch mode。
+3. 它是一项需要可替换 Provider，并由 Consumer 通过稳定 Service Definition 使用的完整能力吗？设计完整 capability seam，进入 L2。
+4. 无论选择哪一层，它是否新增模型可见、且必须在 reload、resume 或 fork 后重建的事实？若是，扩展 `SessionEventMap` 并从 log 投影。
+5. 现有扩展点和 capability seam 都不能表达所需的循环驱动吗？此时才论证 L3 core loop 修改。
 
 Architecture 的“Where new behavior goes”把常见目标列成可查询表；extension cookbook 再把 feature 映射到实施指南。这些入口把“改哪里”从仓库经验转成可核对的设计判断。
 
@@ -56,13 +58,13 @@ Architecture 的“Where new behavior goes”把常见目标列成可查询表�
 
 ## Seam 是完整能力，不是一个接口文件
 
-DSH 把 capability seam 定义为 Service Definition、一个或多个 Service Providers、一个或多个 Consumers 三种角色。Definition 必须服务全部当前 Consumer，而不是为一个实现暴露方便方法；Consumer 依赖能力合同，而不是具体 Provider。
+DSH 把 capability seam 定义为 Service Definition、一个或多个 Service Providers、一个或多个 Consumers 三种角色。Definition 必须服务全部当前 Consumer，而不是为一个实现暴露方便方法；Consumer 依赖 Service Definition 暴露的能力接口，而不是具体 Provider。
 
 这个分工让“换 provider”成为部署选择，但也增加设计和真实组合测试成本。只有当变化确实需要替换能力时才进入 L2，避免为局部工具制造多包结构。
 
 ## 正确路径怎样帮助 agent
 
-Agent 在每层都能找到三种东西：明确入口、可复制的生产范本、与影响半径匹配的检查。错误路径不是完全不可能，但通常更早遇到类型、load failure、test、invariant 或 review 反馈；正确路径则顺着仓库已有词汇和 owner 前进。
+Agent 在每层都能找到三种东西：明确入口、可复制的生产范本、与影响半径匹配的检查。错误路径不是完全不可能，但通常更早遇到类型、load failure、test、invariant 或 review 反馈；正确路径则沿着既有机制名称和 owner 前进。
 
 ## 证据入口
 

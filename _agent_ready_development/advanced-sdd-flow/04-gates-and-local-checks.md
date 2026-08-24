@@ -38,7 +38,7 @@ pnpm --silent run change-scope --base <verified-base-ref>
 
 | 改动面 | 本地相关证据 |
 |---|---|
-| package 或 script 行为 | owning Vitest file/test name；shared contract 再扩到相邻 package |
+| package 或 script 行为 | owning Vitest file/test name；跨包共享行为再扩到相邻 package |
 | docs、Agent Notes、catalog、doc-linked comments | `pnpm run doc-sync`；文档 workflow 要求时加 full lint |
 | model、editor、CLI、terminal 可见输出 | owning keyless snapshot 或真实 runnable-example scenario |
 | manifest、public export、build config、worker/bin、built runtime | build、相关 hygiene 与 built-artifact smoke |
@@ -50,7 +50,7 @@ pnpm --silent run change-scope --base <verified-base-ref>
 
 ## 4. PR CI 承担穷举与平台信号
 
-`ci.yml` 在每个 pull request 上运行，并在同一 ref 出现新 head 时取消旧 run。当前 job 拆分覆盖：
+`ci.yml` 在每个 pull request 上运行，并在同一 ref 出现新 head 时取消旧 run。下面是本页需要说明的证据类别，不是逐 job inventory：
 
 - Node 24 static gates；
 - exhaustive per-file coverage；

@@ -20,7 +20,7 @@ DSH 通过分层减少两种错误：一是同一规则在多个地方各写一�
 | 系统当前怎样组成 | architecture、subsystem docs、package README、源码 | 设计取舍的完整理由 |
 | 术语与代码位置是什么 | glossary、生成目录、module/event/capability catalogs | 手工维护的第二份清单 |
 | 为什么选择这一方案 | active Agent Note | 当前 API 的唯一说明 |
-| 某类任务怎样执行 | `.agents/skills/` 与 cookbook | 产品运行时合同 |
+| 某类任务怎样执行 | `.agents/skills/` 与 cookbook | 产品运行时 API 与行为 |
 
 这张表不是要求读者依次通读五层，而是给每个问题一个首选入口。一个 Agent Note 可以链接当前源码，architecture 可以链接 subsystem reference，但它们不复制对方拥有的详细事实。
 
@@ -55,3 +55,5 @@ DSH 使用 rejected Agent Notes、README 的 Known Limitations、说明理由的
 - DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/README.md)：决策理由、替代方案、生命周期和 archive 的 owner。
 - DSH [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/module-graph.md)：从源码生成的仓库关系索引实例。
 - DSH [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/event-producer-consumer.md)：事件 producer、consumer 和 dispatch mode 的生成索引实例。
+- DSH [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/capability-seams.md)：Service Definition、providers 与 consumers 的生成关系索引。
+- DSH [`docs/persistence-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/persistence-catalog.md)：可写入 session log 的事件及其声明位置的生成索引。

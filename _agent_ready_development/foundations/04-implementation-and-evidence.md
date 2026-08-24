@@ -33,9 +33,9 @@ PR CI 在远端运行更完整的 matrix（检查矩阵），覆盖共享规则�
 准备 push 时，至少能清楚回答：
 
 - 外部结果和验收条件在哪里；
-- 哪个 Agent Note 拥有决定；
+- 非平凡变更的哪个 Agent Note 拥有决定；
 - 当前文档是否描述交付后的行为；
 - 哪项证据会在目标回归上失败；
 - 实际运行了哪些相关命令，哪些证据仍交给 CI。
 
-下一篇进入评审和合并：[`05-review-and-merge.md`](./05-review-and-merge.md)。
+下一篇进入评审和合并：[Review 与 merge](./05-review-and-merge.md)。
