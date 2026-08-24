@@ -1,8 +1,12 @@
-# 03 · Plan Mode：可审批计划，不是权限系统
+# Advanced 03 · Plan Mode 的状态与权限分工
 
 ## 一句话
 
-Plan Mode 是可选、按 agent 记录的协作状态：激活时把 deployment-owned guidance 加进模型请求，`exit_plan_mode` 把完整计划交给用户审批。它不限制文件或命令；sandbox mode 和 approval policy 独立执行访问规则。
+Plan Mode（计划模式）是可选、按 agent 记录的协作状态：激活时把 deployment-owned guidance（部署提供的引导文本）加进模型请求，`exit_plan_mode` 把完整计划交给用户审批。它不限制文件或命令；sandbox mode（沙箱模式）和 approval policy（审批策略）独立执行访问规则。
+
+> Plan mode is soft guidance; sandbox mode and approval policy enforce restrictions independently and do not read or write plan state.
+>
+> — DSH [`packages/plan/plan-mode/README.md` 的开篇定义](../../packages/plan/plan-mode/README.md)。这句话直接划开计划协作状态与强制权限机制。
 
 ![Plan guidance、用户审批与权限执行彼此独立](./figures/plan-vs-enforcement.svg)
 
@@ -54,9 +58,9 @@ Plan 是一次会话内、面向即将实施工作的可审批对象；Agent Not
 
 ## 证据入口
 
-- [Plan subsystem](../../docs/subsystems/plan.md)
-- [Plan Mode package README](../../packages/plan/plan-mode/README.md)
-- [Plan Mode implementation](../../packages/plan/plan-mode/src/index.ts)
-- [Coding preset](../../apps/cli/config/agent-presets/code/agent.cordis.yml)
-- [Sandbox subsystem](../../docs/subsystems/sandbox.md)
-- [Approval subsystem](../../docs/subsystems/approval.md)
+- DSH [Plan subsystem](../../docs/subsystems/plan.md)：`plan/mode` event、service、command 与工具的公开语义。
+- DSH [Plan Mode package README](../../packages/plan/plan-mode/README.md)：durable state、pending selection、review exchange 和已知限制。
+- DSH [Plan Mode implementation](../../packages/plan/plan-mode/src/index.ts)：event 提交和 `exit_plan_mode` 审批时序的实际实现。
+- DSH [coding preset](../../apps/cli/config/agent-presets/code/agent.cordis.yml)：当前 deployment 提供给模型的 plan guidance，而不是包级通用模板。
+- DSH [Sandbox subsystem](../../docs/subsystems/sandbox.md)：访问限制由谁执行。
+- DSH [Approval subsystem](../../docs/subsystems/approval.md)：哪些操作需要显式用户授权。

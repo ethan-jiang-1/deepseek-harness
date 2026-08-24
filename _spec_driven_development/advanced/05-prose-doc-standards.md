@@ -1,8 +1,12 @@
-# 05 · 当前文档、决定理由与发布投影
+# Advanced 05 · Documentation ownership（文档所有权）
 
 ## 一句话
 
-DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 API、行为与限制进入 owning docs/README/JSDoc，rationale 与 alternatives 进入 Agent Notes，变更过程留在 git/PR。翻译和文档站都从 canonical Markdown 派生，不创建第二个内容 owner。
+DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 API、行为与限制进入 owning documentation（拥有该事实的文档）、README 或 JSDoc，rationale（决定理由）与 alternatives（备选方案）进入 Agent Notes，变更过程留在 git/PR。翻译和文档站都从 canonical Markdown（规范 Markdown 源）派生，不创建第二个内容 owner。
+
+> Each fact has one home: the tier whose job it is; elsewhere, link there.
+>
+> — DSH [`docs/AGENTS.md` 的 “The tier taxonomy”](../../docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这条规则解释为什么当前行为、决定理由、操作步骤和生成目录必须分属不同 owner。
 
 ## 1. 一个事实先找 owner
 
@@ -50,18 +54,18 @@ Durable prose 直接陈述当前 actor、行为、条件、时机、modality、�
 
 一个 repo-relative link 若指向 manifest 页面会改写为站点 route；未发布但存在的目标会变成 GitHub source link；图片复制到生成树；不存在的目标使 projection 失败。发布、移动或删除页面才需要 `dsh-doc-site-sync`，普通未映射文档编辑不需要改网站 manifest。
 
-## 6. `_digested/` 的边界
+## 6. 独立研究语料的边界
 
-`_digested/` 是研究分支上的源码消化语料，不是 official product docs、双语 pair 或网站发布源。它沿用 current-state、one-home、可核验链接和完整命题纪律，但由 `_digested/verify.mjs` 维护自身 Markdown/SVG 完整性，不应为了这批研究页创建 `docs/*.zh.md`、pairing sidecar 或 `website/docs.ts` entry。
+`_spec_driven_development/` 是根级学习与研究语料，不是 source digest（源码消化专题）、official product docs（正式产品文档）、双语 pair 或网站发布源。它沿用 current-state、one-home、可核验链接和完整命题纪律，并通过自己的 `verify.mjs` 入口检查 Markdown/SVG 完整性；不应为这些研究页创建 `docs/*.zh.md`、pairing sidecar 或 `website/docs.ts` entry。
 
 历史案例是这个语料的明确例外类型：它可以叙述 commit 顺序，但必须标出能证明和不能证明的事实，不能让旧格式冒充现行规则。
 
 ## 证据入口
 
-- [文档标准](../../docs/AGENTS.md)
-- [`dsh-doc-standards`](../../.agents/skills/dsh-doc-standards/SKILL.md)
-- [`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)
-- [`dsh-trim-cot-leakage`](../../.agents/skills/dsh-trim-cot-leakage/SKILL.md)
-- [`dsh-translate-docs`](../../.agents/skills/dsh-translate-docs/SKILL.md)
-- [`dsh-doc-site-sync`](../../.agents/skills/dsh-doc-site-sync/SKILL.md)
-- [`_digested` index](../00-index.md)
+- DSH [文档标准](../../docs/AGENTS.md)：tier owner、tutorial/reference 区分、当前状态写作与字数预算。
+- DSH [`dsh-doc-standards` skill](../../.agents/skills/dsh-doc-standards/SKILL.md)：文档放置、语料审计和校验流程。
+- DSH [`dsh-prose-standard` skill](../../.agents/skills/dsh-prose-standard/SKILL.md)：完整命题与各类 prose 必须覆盖的行为、失败和所有权。
+- DSH [`dsh-trim-cot-leakage` skill](../../.agents/skills/dsh-trim-cot-leakage/SKILL.md)：怎样识别并移除作者会话视角。
+- DSH [`dsh-translate-docs` skill](../../.agents/skills/dsh-translate-docs/SKILL.md)：只有显式调用才进入的整篇翻译扩展流程。
+- DSH [`dsh-doc-site-sync` skill](../../.agents/skills/dsh-doc-site-sync/SKILL.md)：canonical docs 到 VitePress projection 的发布路径。
+- [独立语料入口](../00-index.md)

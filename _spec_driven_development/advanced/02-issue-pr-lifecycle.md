@@ -1,8 +1,12 @@
-# 02 · `.github/`：协作状态与远端执行
+# Advanced 02 · `.github/` automation（仓库自动化）
 
 ## 一句话
 
-`.github/` 是开发流程的远端执行面：模板收集意图，trusted policy 校验进入 review 的 PR，lifecycle workflow 推进 Project 状态，PR CI 调用仓库脚本建立远端证据。它既不替代 Agent Note，也不决定实现细节。
+`.github/` 是开发流程的远端执行面：模板收集意图，trusted policy（可信策略）校验进入 review 的 PR，lifecycle workflow（生命周期工作流）推进 Project 状态，PR CI 调用仓库脚本建立远端证据。它既不替代 Agent Note，也不决定实现细节。
+
+> Decide whether the human-review policy applies to a PR: `return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)`.
+>
+> — DSH [`.github/issue-management/policy.mjs` 的 `requiresPullRequestPolicy()`](../../.github/issue-management/policy.mjs)。这里的条件说明 policy 管的是“已经进入 review 的人类作者 PR”，不是所有 PR，也不是 reviewer 身份。
 
 ![GitHub 事件如何进入 policy、Project 和 CI](./figures/github-event-flow.svg)
 
@@ -65,11 +69,10 @@ Dependabot 按 npm、Python `uv` 和 GitHub Actions 三个 ecosystem 创建依�
 
 ## 证据入口
 
-- [`.github/AGENTS.md`](../../.github/AGENTS.md)
-- [Issue templates](../../.github/ISSUE_TEMPLATE/)
-- [PR template](../../.github/pull_request_template.md)
-- [Issue management policy](../../.github/issue-management/policy.mjs)
-- [Issue policy workflow](../../.github/workflows/issue-policy.yml)
-- [Issue lifecycle workflow](../../.github/workflows/issue-lifecycle.yml)
-- [PR CI workflow](../../.github/workflows/ci.yml)
-- [Dependabot configuration](../../.github/dependabot.yml)
+- DSH [`.github/AGENTS.md`](../../.github/AGENTS.md)：PR CI 中 Wine 与 native Windows 信号的阻塞关系。
+- DSH [Issue templates](../../.github/ISSUE_TEMPLATE/) 与 [PR template](../../.github/pull_request_template.md)：作者被提示提供哪些意图、验收、Issue 关联和验证信息。
+- DSH [Issue management policy](../../.github/issue-management/policy.mjs)：PR metadata 适用条件、Issue 校验和 Project 状态转换函数。
+- DSH [Issue policy workflow](../../.github/workflows/issue-policy.yml)：哪些 PR 事件触发 policy，以及为什么检出默认分支的可信实现。
+- DSH [Issue lifecycle workflow](../../.github/workflows/issue-lifecycle.yml)：哪些 Issue、PR 和 review 事件可以写 Project 状态。
+- DSH [PR CI workflow](../../.github/workflows/ci.yml)：PR runner、权限、并发、job 依赖与 required 聚合。
+- DSH [Dependabot configuration](../../.github/dependabot.yml)：自动依赖 PR 的 ecosystem 与预置 labels。

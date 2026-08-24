@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520" role="img" aria-labelledby="title desc">
+  <title id="title">一次普通变更从意图到合并</title>
+  <desc id="desc">五步流程展示意图、规格与决定、分支实现、Pull Request 协作和合并，并区分 SDD 与 GitHub Flow 的职责。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#4b5563"/>
+    </marker>
+  </defs>
+  <rect width="1120" height="520" fill="#ffffff"/>
+  <text x="560" y="44" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#172033">一次普通变更：从意图到合并</text>
+  <text x="560" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#5f6b7a">先说明结果和决定，再让实现通过 GitHub 协作流进入主分支</text>
+
+  <g font-family="Arial, sans-serif">
+    <rect x="38" y="128" width="180" height="144" rx="8" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+    <circle cx="70" cy="158" r="17" fill="#276da8"/>
+    <text x="70" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">1</text>
+    <text x="128" y="158" text-anchor="middle" font-size="17" font-weight="700" fill="#173f67">说明意图</text>
+    <text x="128" y="184" text-anchor="middle" font-size="13" fill="#2f5f8c">Intent / Issue</text>
+    <text x="128" y="218" text-anchor="middle" font-size="13" fill="#475569">外部结果</text>
+    <text x="128" y="240" text-anchor="middle" font-size="13" fill="#475569">验收条件</text>
+
+    <rect x="254" y="128" width="180" height="144" rx="8" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
+    <circle cx="286" cy="158" r="17" fill="#b66d12"/>
+    <text x="286" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">2</text>
+    <text x="344" y="158" text-anchor="middle" font-size="17" font-weight="700" fill="#744408">记录决定</text>
+    <text x="344" y="184" text-anchor="middle" font-size="13" fill="#8c5b1d">Spec / Agent Note</text>
+    <text x="344" y="218" text-anchor="middle" font-size="13" fill="#475569">为什么这样做</text>
+    <text x="344" y="240" text-anchor="middle" font-size="13" fill="#475569">Plan 可选</text>
+
+    <rect x="470" y="128" width="180" height="144" rx="8" fill="#edf8f1" stroke="#55a36f" stroke-width="1.5"/>
+    <circle cx="502" cy="158" r="17" fill="#2f8550"/>
+    <text x="502" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">3</text>
+    <text x="560" y="158" text-anchor="middle" font-size="17" font-weight="700" fill="#1f6139">完成变更</text>
+    <text x="560" y="184" text-anchor="middle" font-size="13" fill="#397a50">Branch / commits</text>
+    <text x="560" y="218" text-anchor="middle" font-size="13" fill="#475569">代码 + 文档</text>
+    <text x="560" y="240" text-anchor="middle" font-size="13" fill="#475569">测试 + 证据</text>
+
+    <rect x="686" y="128" width="180" height="144" rx="8" fill="#f3efff" stroke="#8269bd" stroke-width="1.5"/>
+    <circle cx="718" cy="158" r="17" fill="#6950a4"/>
+    <text x="718" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">4</text>
+    <text x="776" y="158" text-anchor="middle" font-size="17" font-weight="700" fill="#513b85">发起协作</text>
+    <text x="776" y="184" text-anchor="middle" font-size="13" fill="#675293">Pull Request</text>
+    <text x="776" y="218" text-anchor="middle" font-size="13" fill="#475569">CI checks</text>
+    <text x="776" y="240" text-anchor="middle" font-size="13" fill="#475569">semantic review</text>
+
+    <rect x="902" y="128" width="180" height="144" rx="8" fill="#eaf7f6" stroke="#3b9a91" stroke-width="1.5"/>
+    <circle cx="934" cy="158" r="17" fill="#237a72"/>
+    <text x="934" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">5</text>
+    <text x="992" y="158" text-anchor="middle" font-size="17" font-weight="700" fill="#1d5f59">合并交付</text>
+    <text x="992" y="184" text-anchor="middle" font-size="13" fill="#2f7770">Merge</text>
+    <text x="992" y="218" text-anchor="middle" font-size="13" fill="#475569">required checks</text>
+    <text x="992" y="240" text-anchor="middle" font-size="13" fill="#475569">目标分支更新</text>
+
+    <path d="M218 200 H248" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M434 200 H464" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M650 200 H680" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M866 200 H896" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="38" y="326" width="612" height="96" rx="8" fill="#fbfcfe" stroke="#b7c4d4"/>
+    <text x="62" y="355" font-size="15" font-weight="700" fill="#28384d">SDD（规格驱动开发）</text>
+    <text x="62" y="384" font-size="13" fill="#526175">贯穿步骤 1–3：明确做什么、为什么这样决定、用什么证据证明完成。</text>
+    <text x="62" y="406" font-size="13" fill="#526175">实现、当前文档、测试与 Agent Note 在同一个变更中保持一致。</text>
+
+    <rect x="686" y="326" width="396" height="96" rx="8" fill="#fbfcfe" stroke="#b7c4d4"/>
+    <text x="710" y="355" font-size="15" font-weight="700" fill="#28384d">GitHub Flow（GitHub 协作流）</text>
+    <text x="710" y="384" font-size="13" fill="#526175">贯穿步骤 3–5：发布分支、创建 PR、</text>
+    <text x="710" y="406" font-size="13" fill="#526175">运行 CI、完成 review，再 merge。</text>
+
+    <text x="560" y="474" text-anchor="middle" font-size="13" fill="#6b7280">Issue 和 Plan 按条件出现；非平凡变更必须有 owning Agent Note。</text>
+  </g>
+</svg>
