@@ -1,8 +1,12 @@
-# 01 · Agent Note：决定、提案与冻结历史
+# Advanced 01 · Agent Note lifecycle（生命周期）
 
 ## 一句话
 
-Agent Note 保存代码和当前文档无法承载的 **why 与 what we gave up**。每个非平凡变更都要新增或更新一个 owner Note，但 Note 不必从 `proposed/` 开始，也不会在实现后自动进入 archive。
+Agent Note 保存代码和当前文档无法承载的 rationale（决定理由）与 alternatives（放弃的备选方案）。每个非平凡变更都要新增或更新一个 owning Note，但 Note 不必从 `proposed/` 开始，也不会在实现后自动进入 archive（归档）。
+
+> Every non-trivial change MUST add or update at least one Agent Note in the same PR. [...] A proposal for substantial future work starts in `proposed/`; a decision already made starts in `implemented/`.
+>
+> — DSH [`.agents/notes/README.md` 的 “When to write one”](../../.agents/notes/README.md#when-to-write-one)。这段原文同时建立“非平凡变更必须有 owner”和“implemented 不必经过 proposed”两个条件。
 
 ![Agent Note 的状态转换与禁止路径](./figures/agent-note-lifecycle.svg)
 
@@ -71,8 +75,8 @@ Archive 只移动完整 `.md`、`.zh.md`、`.i18n.yaml` triplet，在两种语�
 
 ## 证据入口
 
-- [Agent Note 规则](../../.agents/notes/README.md)
-- [Implemented Note 维护规则](../../.agents/notes/implemented/AGENTS.md)
-- [Archived Note 冻结规则](../../.agents/notes/archived/AGENTS.md)
-- [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)
-- [统一格式决定](../../.agents/notes/implemented/process/2026-07-05-uniform-agent-note-format.md)
+- DSH [`.agents/notes/README.md`](../../.agents/notes/README.md)：生命周期、分类、统一正文结构、完整取代与归档条件。
+- DSH [implemented Note 子树规则](../../.agents/notes/implemented/AGENTS.md)：implemented Note 如何随已交付路径、名称和机制保持当前。
+- DSH [archived Note 子树规则](../../.agents/notes/archived/AGENTS.md)：归档 triplet 的冻结与 seal 约束。
+- DSH [`dsh-archive-agent-notes` skill](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)：何时保留、归档或删除 Note 的判定流程。
+- DSH [统一格式 Agent Note](../../.agents/notes/implemented/process/2026-07-05-uniform-agent-note-format.md)：为什么三种活动 lifecycle 使用一套可检查格式。

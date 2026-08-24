@@ -15,7 +15,7 @@
 | 分支 | 上面有什么 |
 |------|------------|
 | `master` | 干净的 upstream 镜像。不放研究材料，不改产品代码。 |
-| `ethan` | 研究分支。源码随 `upstream/master` merge 进来；研究材料位于 `_digested/`、`_faq_on_digested/` 和 `_architecture_referenced/`。 |
+| `ethan` | 研究分支。源码随 `upstream/master` merge 进来；研究材料位于 `_digested/`、`_spec_driven_development/`、`_faq_on_digested/` 和 `_architecture_referenced/`。 |
 
 同步方式：在 `ethan` 上非快进 merge `upstream/master`，让产品源码对齐新基线并保留研究目录，再按 `_change_log/` 审计过期结论。
 
@@ -24,6 +24,7 @@
 | 目录 | 本质 | 受众 |
 |------|------|------|
 | **`_digested/`** | 源码消化，机制剖析 | 想彻底搞懂背后发生了什么的人 |
+| `_spec_driven_development/` | SDD 与 GitHub Flow 的独立教程和 DSH 机制参考 | 对规格驱动开发和 GitHub 协作还不熟悉的读者 |
 | `_faq_on_digested/` | 跨消化材料的二次研究 | 我自己（产出者） |
 | `_architecture_referenced/` | 外部架构材料的本地参考副本 | 需要对照其它分析的人 |
 
@@ -42,7 +43,6 @@
 | `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色，以及如何组合一致的 fs / subprocess provider |
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 组装、LLM adapter、tool 执行瀑布 |
 | `surfaces/` | 人对机器的入口 | CLI、Web host/client、ACP、JSON-RPC SDK |
-| `spec-driven-development/` | 开发流程 | 分布式规格、Agent Note 生命周期、`.github/` 协作/CI、Plan/权限分离、证据路由、review 与 stacked PR |
 | `_coverage/` | 覆盖矩阵 | 维护用索引，按源码组追踪 digest 覆盖状态 |
 | `harness-idea/` | 消化后的理解与判断 | dsh 作为 harness 做对了什么：插件图 + 事件流构成的运行时基底、可读性与正确路径、参与阶梯、动态可读性、技术选型与语言贴合、边界与成本，以及本专题自身的判断纪律 |
 | `_change_log/` | 上游同步记录 | 每次 upstream 合入后的变更摘要与资料审计 |
@@ -58,7 +58,6 @@
 - **想加能力或换后端** → `capability-seams/00-map.md`
 - **想搞懂模型看见什么** → `tools-prompt-llm/00-map.md`
 - **想搞懂 CLI / Web / ACP 怎么复用同一套 runtime spine** → `surfaces/00-map.md`
-- **想搞懂 DSH 如何被修改、spec/开发流程怎么走** → `spec-driven-development/00-map.md`
 - **想搞懂 dsh 为什么对读者友好（harness 思想）** → `harness-idea/00-map.md`
 
 推荐主干顺序：
@@ -70,7 +69,6 @@ system/
   → session-and-loop/
   → capability-seams/ 或 tools-prompt-llm/
   → surfaces/
-  → spec-driven-development/
 ```
 
 按推荐顺序读 `00-map.md`，遇到具体机制再进入编号正文。专题承诺的核验范围以 [`_coverage/00-index.md`](./_coverage/00-index.md) 为准；未列问题不隐含完整覆盖。跨专题研究放在 `_faq_on_digested/`。

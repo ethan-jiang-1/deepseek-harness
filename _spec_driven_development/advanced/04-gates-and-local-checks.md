@@ -1,8 +1,12 @@
-# 04 · 证据路由：本地相关检查与远端矩阵
+# Advanced 04 · Evidence routing（证据路由）
 
 ## 一句话
 
-DSH 把机械可检查的 invariant 接到会失败的顶层命令；push 前按 outgoing diff 选择最小可信证据，pull request CI 再运行远端矩阵。Focused evidence 与 exhaustive CI 是先后两层，不是二选一。
+DSH 把机械可检查的 invariant（不变量）接到会失败的顶层命令；push 前按 outgoing diff（待推送差异）选择最小可信证据，Pull Request CI 再运行远端矩阵。Focused evidence（聚焦证据）与 exhaustive CI（穷举式 CI）是先后两层，不是二选一。
+
+> Match evidence to the surface: focused tests for behavior, snapshots for model or user output, `doc-sync` for docs, build/hygiene and built smokes for published paths, and real-API e2e for provider behavior.
+>
+> — DSH [根 `AGENTS.md` 的 “Run relevant checks locally”](../../AGENTS.md#run-relevant-checks-locally)。这条 standing order 定义本地证据按改动面选择，而不是默认运行全部检查。
 
 ![从 outgoing diff 到本地证据、PR CI 与语义 review](./figures/evidence-routing.svg)
 
@@ -71,10 +75,10 @@ Secret-backed e2e 在独立 workflow 里运行；无 key 时的本地命令 self
 
 ## 证据入口
 
-- [根 `AGENTS.md`](../../AGENTS.md)
-- [`dsh-pre-push-checks`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)
-- [PR CI workflow](../../.github/workflows/ci.yml)
-- [`.github/AGENTS.md`](../../.github/AGENTS.md)
-- [Gate scheduler](../../scripts/run-gates.ts)
-- [测试策略](../../docs/testing.md)
-- [Quality gates 决定](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
+- DSH [根 `AGENTS.md`](../../AGENTS.md#run-relevant-checks-locally)：本地 relevant checks 与 CI exhaustive matrix 的职责分配。
+- DSH [`dsh-pre-push-checks` skill](../../.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样解析 outgoing scope 并选择最小可信证据。
+- DSH [PR CI workflow](../../.github/workflows/ci.yml)：远端 runner、job 依赖和 `all checks passed` 聚合。
+- DSH [`.github/AGENTS.md`](../../.github/AGENTS.md)：PR Windows signals 中哪个阻塞 required 聚合。
+- DSH [gate scheduler](../../scripts/run-gates.ts)：顶层 gate 的命令、依赖与并行调度真源。
+- DSH [测试策略](../../docs/testing.md)：coverage、snapshot、真实入口和 negative control 的证据要求。
+- DSH [Quality gates Agent Note](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)：为什么仓库优先把规则接成可执行检查。

@@ -1,8 +1,12 @@
-# 08 · 历史案例：Web capability seam 能证明什么
+# Advanced 08 · Historical evidence（历史证据）的边界
 
 ## 一句话
 
-Web capability seam 的 git 历史直接证明了“提案 → 代码/文档/测试交付 + implemented 记录”这一核心段；它没有仓库内证据证明对应 Issue、Plan Mode、GitHub review 或当时运行的 checks，不能被当作现行全流程的完整样本。
+Web capability seam（Web 能力 seam）的 git 历史直接证明了“提案 → 代码/文档/测试交付 + implemented 记录”这一核心段；它没有仓库内证据证明对应 Issue、Plan Mode、GitHub review 或当时运行的 checks，不能被当作现行全流程的完整样本。
+
+> The model-facing API must stay stable while backends change. [...] Providers do not register tools. Providers register capabilities.
+>
+> — DSH Web capability seam Agent Note 的 [“Problem”](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md#problem) 与 [“Decision”](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md#decision)。这两句给出案例真正拥有的设计问题和已交付决定；git 历史只用来核对它在各 commit 中处于什么状态。
 
 ![Web seam 记录从 proposal 到现行 Agent Note 的四个 commit](./figures/web-seam-history.svg)
 
@@ -68,6 +72,6 @@ git show e8eddc7ef8 --name-status
 
 ## 证据入口
 
-- [Current Web seam Agent Note](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)
-- [Agent Note 规则](../../.agents/notes/README.md)
-- [Web packages](../../packages/web/)
+- DSH [当前 Web seam Agent Note](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)：现行 rationale、三角色职责、provider selection 和稳定 tool schema 决定。
+- DSH [Agent Note 规则](../../.agents/notes/README.md)：当前 lifecycle 与 implemented 正文格式，用来解释历史文件为什么不能充当现行规范。
+- DSH [Web packages](../../packages/web/)：Definition、Providers、Consumer、README 与 tests 的当前源码落点。

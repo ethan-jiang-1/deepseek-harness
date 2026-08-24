@@ -1,8 +1,12 @@
-# 06 · Code review：检查结果、语义判断与人的权限
+# Advanced 06 · Semantic review（语义评审）
 
 ## 一句话
 
-DSH 的 review 不是“机器查结构、人查语义”的固定人员分工。自动检查只能建立它们实际验证的属性；人或 agent 都可以按 `dsh-code-review` 做语义 review；只有 interaction/approval 机制明确要求用户选择的动作不能由 agent 代答，超出既有授权的产品取舍也要请求方向。
+DSH 的 code review（代码评审）不是“机器查结构、人查语义”的固定人员分工。自动检查只能建立它们实际验证的属性；人或 agent 都可以按 `dsh-code-review` 做 semantic review（语义评审）；只有 interaction/approval（交互与审批）机制明确要求用户选择的动作不能由 agent 代答，超出既有授权的产品取舍也要请求方向。
+
+> The report identifies paths and dirty layers but does not replace semantic review. [...] Prioritize correctness, lifecycle, security, and broken required behavior over style.
+>
+> — DSH [`dsh-code-review` skill 的开篇`](../../.agents/skills/dsh-code-review/SKILL.md)。这里把 scope 工具、自动检查与语义判断明确分开。
 
 ## 1. 三层证据不要互相冒充
 
@@ -65,9 +69,9 @@ Finding 要给出 defect、location、impact 和 evidence；局部问题放最�
 
 ## 证据入口
 
-- [`dsh-code-review`](../../.agents/skills/dsh-code-review/SKILL.md)
-- [Defensive patterns](../../docs/defensive-patterns.md)
-- [测试策略](../../docs/testing.md)
-- [Issue/PR policy](../../.github/issue-management/policy.mjs)
-- [PR template](../../.github/pull_request_template.md)
-- [Quality gates 决定](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
+- DSH [`dsh-code-review` skill](../../.agents/skills/dsh-code-review/SKILL.md)：review scope、阻塞条件、语义维度和 finding 格式。
+- DSH [Defensive patterns](../../docs/defensive-patterns.md)：生命周期、并发、subprocess 与 teardown 的高风险缺陷模式。
+- DSH [测试策略](../../docs/testing.md)：测试实际能够建立什么证据，以及真实入口与负例要求。
+- DSH [Issue/PR policy](../../.github/issue-management/policy.mjs)：`human-review policy` 的适用条件，不是 reviewer 身份规则。
+- DSH [PR template](../../.github/pull_request_template.md)：PR 作者应呈现的 Issue 关联、摘要与已运行验证。
+- DSH [Quality gates Agent Note](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)：自动化检查的设计理由与能力边界。
