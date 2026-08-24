@@ -16,6 +16,20 @@ PR 模板：
 
 来源：`.github/pull_request_template.md:5-10`
 
+
+Issue 引用的机器强制边界：
+
+> const automated = authorType === 'Bot' || authorType === 'App'
+> return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
+
+来源：`.github/issue-management/policy.mjs:162-170`
+
+> if (input.references.all.length === 0) errors.push('PR 正文必须引用至少一个同仓库 Issue')
+
+来源：`.github/issue-management/policy.mjs:343`
+
+限制：policy 检查引用和元数据，不检查“验收条件/测试证据”是否写得充分。
+
 ## 2. 决策 spec：Agent Note
 
 > A proposal for substantial future work starts in `proposed/`; a decision already made starts in `implemented/`.
@@ -38,9 +52,26 @@ proposed 骨架：
 
 来源：`.agents/notes/README.md:80-90`
 
+
+## 2.1 Plan Mode：原生支持但可选、软引导
+
+> The package is optional, and the agent loop does not depend on it.
+
+来源：`docs/subsystems/plan.md:5`
+
+> Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
+
+来源：`apps/cli/config/agent-presets/code/agent.cordis.yml:129`
+
+> Plan mode guides rather than enforces; deployments that need enforced restrictions must configure sandbox and approval controls independently.
+
+来源：`packages/plan/plan-mode/README.md:94`
+
+限制：Plan Mode 能证明 DSH 原生支持 spec-first workflow；git 历史不能证明每个 PR 都使用过它。
+
 ## 3. 提案 → 实现：时态改写
 
-> `proposed/` → `implemented/` rewrites `## Proposal` into a present-tense `## Decision`, folds `## Acceptance criteria` and `## Risks` into `## Consequences` ... and drops plans in favor of what shipped.
+> Moving a file between lifecycle folders means updating the `Status:` line and re-satisfying that folder's skeleton in the same change ... Concretely, `proposed/` → `implemented/` rewrites `## Proposal` into a present-tense `## Decision`, folds `## Acceptance criteria` and `## Risks` into `## Consequences` ... and drops plans in favor of what shipped.
 
 来源：`.agents/notes/README.md:121`
 
@@ -52,7 +83,7 @@ proposed 骨架：
 
 > The owning subsystems page updates in the same change that reshapes a documented type.
 
-来源：`docs/AGENTS.md:45`
+来源：`docs/AGENTS.md:42`
 
 ## 5. package README / JSDoc 随代码更新
 
@@ -81,16 +112,31 @@ proposed 骨架：
 ```text
 a4091daa3d docs: propose web capability seam
 docs/rfc/proposed/architecture/2026-06-24-web-capability-seam.md
+docs/rfc/README.md（proposed 索引条目）
 ```
 
-实现：
+实现（同一 commit，主要文件，非穷举）：
 
 ```text
 d01f5f73b7 Add web capability seam: ctx.web, search/fetch providers, web tools
+docs/rfc/README.md（条目移入 implemented）
 docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md
 docs/architecture.md
 packages/README.md
-packages/web/** and tests/**
+packages/web/**（README/package/src/tests）
+```
+
+统一 RFC 格式（后来才把该 implemented RFC 改写为 Decision/Testing/Consequences）：
+
+```text
+e6fad266a6 docs(rfc): define and enforce a uniform RFC format; adopt it across the corpus
+```
+
+RFC → Agent Note 重命名：
+
+```text
+e8eddc7ef8 Rename RFCs to Agent Notes
+docs/rfc/implemented/... → .agents/notes/implemented/...
 ```
 
 当前权威：
@@ -99,6 +145,8 @@ packages/web/** and tests/**
 .agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md
 Status: implemented
 ```
+
+限制：这个例子实证 proposed → implemented 核心段；d01 时代尚无今天的 Note 格式规则，Decision/Consequences 是 e6fad266a6 才落到这份文件；Issue、Plan、review 不在 git tree，不能用它声称八阶段全链路。
 
 ## 相关消化材料
 

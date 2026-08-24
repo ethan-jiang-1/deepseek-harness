@@ -46,7 +46,7 @@ _faq_on_digested/
 | 02 | [DSH 所谓 Spec-Driven Development 大概怎样运作？](./02_spec-driven-development/question.md) | [分层规格、生命周期与可执行验收](./02_spec-driven-development/answer.md) |
 | 03 | [多个模型 vendor 应怎样接入 DSH？](./03_model-vendors/question.md) | [配置、adapter 与自动路由的选择](./03_model-vendors/answer.md) |
 | 04 | [DSH 的根入口文档为什么能让模型按图索骥？](./04_root-entry-documentation/question.md) | [根入口分流、tier 路由、预算门禁与可迁移原则](./04_root-entry-documentation/answer.md) |
-| 05 | [`docs/` 是 SDD 源头吗？修改系统的 spec 链路是什么？](./05_spec-change-path/question.md) | [docs 是当前合同层；Issue → proposed Note → Plan → 实现 → 合同 → 行为 → implemented Note → review](./05_spec-change-path/answer.md) |
+| 05 | [DSH 修改系统的完整 SPEC 路径是什么？](./05_spec-change-path/question.md) | [docs 是当前合同层；Issue / Note / Plan / 实现 / 合同 / 行为 / implemented Note / review 的主路径与强制边界](./05_spec-change-path/answer.md) |
 
 ## 引用规范
 

@@ -10,7 +10,7 @@
 
 > The owning subsystems page updates in the same change that reshapes a documented type.
 
-来源：`docs/AGENTS.md:45`
+来源：`docs/AGENTS.md:42`
 
 也就是说，`docs/`、package README、JSDoc 是在这里作为**结果**被写回。
 
@@ -45,20 +45,20 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
 ## 中游小结
 
 ```text
-实现
-  → types / JSDoc
-  → package README
-  → architecture / subsystems
-  → generated catalogs
-  → tests / snapshots / invariants
+实现（源码行为）
+  + types / JSDoc
+  + package README
+  + architecture / subsystems
+  + generated catalogs
+  + tests / snapshots / invariants
 ```
 
-`docs/` 在这里作为实现后的当前合同被写回。
+这些都是同一变更的多个面，不是依次补交的多个 PR。`docs/` 在这里作为实现后的当前合同被写回。
 
 ## 证据入口
 
 - [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 25-27 行
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 38、45 行
+- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 38、42 行
 - [`docs/testing.md`](../../docs/testing.md) 第 27-49 行
 - [`docs/tool-catalog.md`](../../docs/tool-catalog.md) 第 1-2 行
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) 第 1-2 行

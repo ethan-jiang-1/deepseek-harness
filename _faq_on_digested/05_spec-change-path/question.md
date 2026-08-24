@@ -2,12 +2,14 @@
 
 ## 背景
 
-`04_root-entry-documentation` 回答了 DSH 如何**说清楚自己**。但“看懂系统”和“修改系统”是两件事。本问题聚焦修改系统时，DSH 的 spec 如何从头走到尾：
+`04_root-entry-documentation` 回答了 DSH 如何**说清楚自己**。但“看懂系统”和“修改系统”是两件事。本问题聚焦修改系统时，DSH 的 spec 如何从头走到尾。仓库规则与历史样本共同指向一条主路径：
 
 ```text
 Issue → proposed Note → Plan → implementation → docs/types/README
       → tests/snapshots → implemented Note → review
 ```
+
+但这条链只是待核验的候选模型：哪些段对每次修改都强制、哪些段只在特定条件出现，正文必须依据 DSH 仓库事实逐段判定，不能默认它是流水线。
 
 要回答：
 
@@ -18,7 +20,7 @@ Issue → proposed Note → Plan → implementation → docs/types/README
 
 ## 证据边界
 
-- 证据只使用 DSH 仓库本身：`.github/`、`.agents/notes/`、`docs/`、`AGENTS.md`、`packages/`、`scripts/`。
+- 证据只使用 DSH 仓库本身：`.github/`（含 `issue-management/policy.mjs`）、`.agents/notes/`、`.agents/skills/`、`docs/`、根 `AGENTS.md`、`packages/`、`apps/cli/config/agent-presets/`、`scripts/`、`CONTRIBUTING.md`。
 - 当前基线：`0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`；历史 commit 只用于展示提案 → 实现的生命周期。
 
 ## 文件

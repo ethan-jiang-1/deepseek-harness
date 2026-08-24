@@ -5,7 +5,7 @@
 DSH 没有一个单独的“人/agent 分工表”，但它把分工写进了权限边界和流程规则里。可以重建出：
 
 - **Coding Agent 负责生产**：探索、提案、计划、实现、文档、测试、门禁、推送前检查、收到 review 后修改。
-- **人负责边界**：外部问题与生态、计划审批、语义 review、需要人工判断的翻译、sandbox 无法解决的主机环境问题。
+- **人负责边界**：外部问题与生态、计划审批、human-review policy 下的语义 review、需显式用户调用的翻译扩展、sandbox 之外的主机升级。
 
 下面每条判断都附 DSH 原文。
 
@@ -23,7 +23,7 @@ DSH 没有一个单独的“人/agent 分工表”，但它把分工写进了权
 
 根 `AGENTS.md` 直接给 agent 下指令：
 
-> Run checks before pushes via [dsh-pre-push-checks](.agents/skills/dsh-pre-push-checks/SKILL.md); report only commands run.
+> Run checks before pushes via [dsh-pre-push-checks](../../.agents/skills/dsh-pre-push-checks/SKILL.md); report only commands run.
 
 来源：`AGENTS.md:89`
 
@@ -33,7 +33,7 @@ DSH 没有一个单独的“人/agent 分工表”，但它把分工写进了权
 
 ### 2. 提案、计划、实现、合同同步
 
-Agent Note 规则要求 agent 自己做决策记录：
+Agent Note 规则要求变更本身带决策记录：
 
 > Every non-trivial change MUST add or update at least one Agent Note in the same PR.
 
@@ -65,7 +65,7 @@ Plan prompt 给 agent 的规则是：
 
 `exit_plan_mode` 把计划交给用户：
 
-> In plan mode it requires a complete markdown plan starting with a `#` heading and presents it for review through the [user-questions seam](user-questions.md). Approval returns `{ approved: true }`.
+> In plan mode it requires a complete markdown plan starting with a `#` heading and presents it for review through the [user-questions seam](../../docs/subsystems/user-questions.md). Approval returns `{ approved: true }`.
 
 来源：`docs/subsystems/plan.md:33`
 
@@ -87,13 +87,22 @@ Plan prompt 给 agent 的规则是：
 
 来源：`.agents/skills/dsh-code-review/SKILL.md:29`
 
-PR 模板也明确存在“人类 PR”：
+PR 模板明确存在“人类 PR”：
 
 > 进入评审的非 Draft 人类 PR 至少引用一个同仓库 Issue。
 
 来源：`.github/pull_request_template.md:2`
 
-所以 review 这一层是给人保留的：机器管结构，人管语义。
+issue policy 则把这种约束命名得更直接：
+
+> Decide whether the human-review policy applies to a PR.
+>
+> const automated = authorType === 'Bot' || authorType === 'App'
+> return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
+
+来源：`.github/issue-management/policy.mjs:158-170`
+
+因此更严谨的结论是：机器管结构；语义 review 不能由自动化替代；进入 review 的人类 PR 被单独纳入 human-review policy。`dsh-code-review` 本身没有明文写执行者必须是人，所以“人管语义”是从这套 policy 和 PR 模板反推的边界，不是 DSH 有一张明文分工表。
 
 ### 3. 需要显式用户调用的工作
 
@@ -105,7 +114,7 @@ PR 模板也明确存在“人类 PR”：
 
 ### 4. sandbox 无法解决的主机环境问题
 
-当命令被 agent sandbox 挡住时，规则要求人做最窄的主机升级：
+当命令被 agent sandbox 挡住时，规则要求先做最窄主机升级；原文没有写执行者，但 sandbox 之外的主机操作通常只能由人批准执行：
 
 > When required `gh`, `pnpm`, build, test, or generator commands fail because the agent sandbox blocks credentials, network, IPC, file watching, or nested `sandbox-exec`, retry unchanged with the narrowest host escalation.
 
@@ -129,14 +138,14 @@ PR 模板也明确存在“人类 PR”：
 
 来源：`.agents/skills/dsh-code-review/SKILL.md:49`
 
-这补上了闭环：人 review，agent 修或 rebut，而不是无脑接受。
+这补上了闭环：review 反馈回来后，agent 修或 rebut，而不是无脑接受。
 
 ## 五、DSH 说得清楚吗？
 
 **部分清楚，但不是一张表说清楚的。**
 
 - Coding Agent 的职责非常清楚：root AGENTS、packages/AGENTS、skills、Agent Note 规则几乎都是直接指令。
-- 人的职责也清楚，但分散在 approval、review、translation、host escalation、CONTRIBUTING 这些边界里。
+- 人的职责也清楚，但分散在 approval、human-review policy、translation、host escalation、CONTRIBUTING 这些边界里。
 - DSH 没有写“Human responsibilities vs Agent responsibilities”这种总表；它是**用权限边界反向定义角色**的：哪里需要 approval，哪里就是人。
 
 ## 证据入口
@@ -149,4 +158,5 @@ PR 模板也明确存在“人类 PR”：
 - `docs/subsystems/plan.md:33`
 - `.agents/skills/dsh-code-review/SKILL.md:22`、`:29`、`:49`
 - `.github/pull_request_template.md:2`
+- `.github/issue-management/policy.mjs:158-170`、`:343`
 - `CONTRIBUTING.md:9`、`:11`
