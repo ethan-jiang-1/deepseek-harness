@@ -24,17 +24,17 @@ Inspectability（可检查性）要求系统提供查询入口，让 agent 用�
 
 ## 查询三：当前进程里有什么
 
-DSH 的 opt-in `@deepseek-ai/dsh-tool-cordis` 提供 `cordis_inspect`。它把 live service store（活服务存储）与生成 API catalog 求交：运行状态来自当前进程，方法签名与 JSDoc 来自源码生成物。
+DSH 的 opt-in `@deepseek-ai/dsh-tool-cordis` 在固定基线注册三个只读查询工具：`cordis_inspect_list` 发现 Host 与 Client Inspect Providers 及其方法，`cordis_inspect_query` 按 provider 声明的 schema 执行精确查询，`cordis_inspect_self` 检查当前 session 的 dynamic Plugins、Packages、源码和诊断。
 
-> `src/inspect.ts` intersects that catalog with the LIVE service store: what is RUNNING comes from the store, what each service CAN DO comes from the catalog [...].
+> `cordis_inspect_list`: discover the current Host and Client Providers and their read-only query methods. [...] `cordis_inspect_query`: use the returned platform, provider, method, and schema to query exact Service, Event, Builtin, Slot, Theme token, or Tool information.
 >
-> — DSH [`@deepseek-ai/dsh-tool-cordis` README](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/packages/extensions/tool-cordis/README.md#where-the-api-report-comes-from)。这段原文区分了运行时事实与编译期 API 事实的 owner。
+> — DSH [`tool-cordis` model prompt source](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/packages/extensions/tool-cordis/src/prompt.ts)。这段当前源码说明查询先发现 provider 与方法，再按返回 schema 查询，不能猜名称或把只读 Inspect method 当成业务 Service。
 
-`cordis_inspect` 可以报告 live fibers、services、tools、API、events 和当前 session 定义的 dynamic packages。宽查询保持摘要，精确名称查询才附带完整合同，从而兼顾探索和上下文成本。
+Inspect Provider 可以把 Host service、event、builtin 与 tool 信息，以及 Client slot tree、props 和 theme tokens 暴露为只读查询。`cordis_inspect_self` 则拥有 dynamic Plugin 自身的版本、源码与诊断视图；两类问题不再挤进一个无边界的文本 dump。
 
 ## 从查询进入可撤销试验
 
-固定基线的 package contract 还提供 `cordis_define`、`cordis_run`、`cordis_stop` 和 `cordis_undefine`：agent 可以定义一个只存在于当前 DSH 进程的 dynamic package，运行 host/browser halves，再停止或忘记它。
+固定基线的源码和生成 tool catalog 还列出 `cordis_define`、`cordis_run`、`cordis_stop` 和 `cordis_undefine`。与三个只读查询工具合计七个 model-facing tools：agent 可以定义一个 dynamic package，运行 host/browser halves，再停止或永久删除它。
 
 这些动作适合验证“按这个 Plugin 方式注册会发生什么”，不等于修改仓库：dynamic package 不创建文件、不改变 `cordis.yml`、不自动晋升为正式插件，也不跨 DSH restart 保留。需要永久保存时，仍要回到普通开发流程完成源码、文档、测试和决策记录。
 
@@ -53,7 +53,8 @@ Plugin set 可以变化，但任何真正进入模型请求的 tool schema、pro
 ## 证据入口
 
 - DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/architecture.md)：ordered config layers、`--dump-config`、session log 和 model-visible means logged。
-- DSH [`@deepseek-ai/dsh-tool-cordis` README](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/packages/extensions/tool-cordis/README.md)：五个 model-facing tools、dynamic package 生命周期、信任边界和 live/catalog 交集。
-- DSH [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/tool-catalog.md)：生成的工具 schema 索引。
+- DSH [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/packages/extensions/tool-cordis/src/index.ts)：固定基线实际注册的三个 inspect 与四个 lifecycle tools。
+- DSH [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/tool-catalog.md#deepseek-aidsh-tool-cordis)：从源码生成的七个工具 schema 及 opt-in 说明。
+- DSH [`@deepseek-ai/dsh-tool-cordis` README 的 Trust stance](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/packages/extensions/tool-cordis/README.md#trust-stance)：dynamic package 的进程权限和非安全边界。
 - DSH [`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/config-catalog.md)：生成的配置字段索引。
 - DSH [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/event-producer-consumer.md)：生成的事件 producer、consumer 和 dispatch mode 索引。
