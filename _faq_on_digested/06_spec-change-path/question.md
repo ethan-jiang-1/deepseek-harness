@@ -1,8 +1,8 @@
-# Question 05 · DSH 修改系统的完整 SPEC 路径是什么？
+# Question 06 · DSH 修改系统的完整 SPEC 路径是什么？
 
 ## 背景
 
-`04_root-entry-documentation` 回答了 DSH 如何**说清楚自己**。但“看懂系统”和“修改系统”是两件事。本问题聚焦修改系统时，DSH 的 spec 如何从头走到尾。仓库规则与历史样本共同指向一条主路径：
+`04_root-entry-doc-design` 回答了 DSH 如何**说清楚自己**。但“看懂系统”和“修改系统”是两件事。本问题聚焦修改系统时，DSH 的 spec 如何从头走到尾。仓库规则与历史样本共同指向一条主路径：
 
 ```text
 Issue → proposed Note → Plan → implementation → docs/types/README

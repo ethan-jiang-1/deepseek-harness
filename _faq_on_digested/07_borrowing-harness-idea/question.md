@@ -1,4 +1,4 @@
-# Question 06 · 另一个项目想借鉴 DSH 的 Harness 思路，尤其 coding agent 怎么探索、理解项目而不糊涂、不乱发挥，可迁移的东西是什么？
+# Question 07 · 另一个项目想借鉴 DSH 的 Harness 思路，尤其 coding agent 怎么探索、理解项目而不糊涂、不乱发挥，可迁移的东西是什么？
 
 ## 背景
 
@@ -28,7 +28,7 @@ DSH 自己的仓库就是它最好的样板：它的开发主力自称是 coding
 - 源码事实需要锚定时，用 DSH 固定基线文件的相对路径或固定 commit 的 GitHub 链接，不重抄 `docs/` 正文充数。
 - 正文中的具体数字（词数预算、catalog 描述上限、symlink 处数、context 插件数等）以基线 `528c682e` 的对应文件为准；上游合入后需按 `_digested/_change_log/` 复核。
 - 本目录自带 [`verify.mjs`](../verify.mjs) 机械兜底（严格 UTF-8、单个结尾换行、相对链接与锚点）；修改本目录后运行 `node _faq_on_digested/verify.mjs`。
-- 与既有 FAQ 的分工：`04_root-entry-documentation` 只覆盖「根入口/文档组织」；本问题覆盖「知识归属 + 正确路径 + 可执行反馈 + Skills + 运行时查询 + AGENTS.md 入口链 + 渐进披露管线」整体，并明确跨到「迁移到另一个项目」。不重复 `_digested/harness-idea/` 里对机制判据的逐条论证，只引用其结论。
+- 与既有 FAQ 的分工：`04_root-entry-doc-design` 只覆盖「根入口/文档的静态设计」，`05_root-entry-doc-navigation` 只覆盖「跑起来之后这些文档怎么被消费」；本问题覆盖「知识归属 + 正确路径 + 可执行反馈 + Skills + 运行时查询 + AGENTS.md 入口链 + 渐进披露管线」整体，并明确跨到「迁移到另一个项目」。不重复 `_digested/harness-idea/` 里对机制判据的逐条论证，只引用其结论。
 
 ## 文件
 
