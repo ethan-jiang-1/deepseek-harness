@@ -1,6 +1,6 @@
 # 语料维护目录
 
-本目录只保存 `_spec_driven_development/` 的 corpus maintenance（语料维护）信息，包括证据基线、结构约束、重审路径和验证要求；教学正文不放在这里。
+本目录只保存 `_agent_ready_development/` 的 corpus maintenance（语料维护）信息，包括证据基线、结构约束、重审路径和验证要求；教学正文不放在这里。
 
 ## 主入口
 

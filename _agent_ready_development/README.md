@@ -1,4 +1,4 @@
-# 规格驱动开发专题目录
+# Agent-ready Development（面向 Agent 的开发体系）
 
 本目录是一套可独立发行的 Spec-driven Development（SDD，规格驱动开发）、GitHub Flow（GitHub 协作流）与 Development Harness（开发 Harness）学习语料。正文先建立新手所需概念，再把复杂流程和 DSH 自开发机制分到两个独立专题。
 

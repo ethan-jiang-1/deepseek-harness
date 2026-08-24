@@ -2,7 +2,7 @@
 
 ## 一句话
 
-DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 API、行为与限制进入 owning documentation（拥有该事实的文档）、README 或 JSDoc，rationale（决定理由）与 alternatives（备选方案）进入 Agent Notes，变更过程留在 git/PR。翻译和文档站都从 canonical Markdown（规范 Markdown 源）派生，不创建第二个内容 owner。
+DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 API、行为与限制进入 owning documentation（拥有该事实的文档）、README 或 JSDoc，rationale（决定理由）与 alternatives（备选方案）进入 Agent Notes，变更过程留在 git/PR。Bilingual pairing（双语配对）让两种语言同步演进，文档站从 manifest（清单）指定的 canonical Markdown source（规范 Markdown 源）投影；两者都不创建脱离原 owner 的第二套手编事实。
 
 > Each fact has one home: the tier whose job it is; elsewhere, link there.
 >
@@ -60,7 +60,7 @@ Durable prose 直接陈述当前 actor、行为、条件、时机、modality、�
 
 ## 6. 独立研究语料的边界
 
-`_spec_driven_development/` 是根级学习与研究语料，不是 source digest（源码消化专题）、official product docs（正式产品文档）、双语 pair 或网站发布源。它沿用 current-state、one-home、可核验链接和完整命题纪律，并通过自己的 `verify.mjs` 入口检查 Markdown/SVG 完整性；不应为这些研究页创建 `docs/*.zh.md`、pairing sidecar 或 `website/docs.ts` entry。
+`_agent_ready_development/` 是根级学习与研究语料，不是 source digest（源码消化专题）、official product docs（正式产品文档）、双语 pair 或网站发布源。它沿用 current-state、one-home、可核验链接和完整命题纪律，并通过自己的 `verify.mjs` 入口检查 Markdown/SVG 完整性；不应为这些研究页创建 `docs/*.zh.md`、pairing sidecar 或 `website/docs.ts` entry。
 
 历史案例是这个语料的明确例外类型：它可以叙述 commit 顺序，但必须标出能证明和不能证明的事实，不能让旧格式冒充现行规则。
 

@@ -520,9 +520,9 @@ for (const path of files) {
 }
 
 if (failures.length > 0) {
-  console.error(`_spec_driven_development verification failed with ${failures.length} problem(s):`)
+  console.error(`_agent_ready_development verification failed with ${failures.length} problem(s):`)
   for (const failure of failures) console.error(`  ${failure}`)
   process.exitCode = 1
 } else {
-  console.log(`_spec_driven_development verification passed: ${markdownCount} Markdown files, ${scriptCount} scripts, ${svgCount} SVG files.`)
+  console.log(`_agent_ready_development verification passed: ${markdownCount} Markdown files, ${scriptCount} scripts, ${svgCount} SVG files.`)
 }

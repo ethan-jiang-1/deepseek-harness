@@ -1,4 +1,4 @@
-# 01 · 跟着一个 fresh coding agent 进入 DSH
+# 01 · 跟着一个 fresh coding agent（新编码代理）进入 DSH
 
 ## 场景
 
@@ -63,9 +63,9 @@ Push 和 Pull Request（PR）把本地交付组合放进 GitHub Flow。`.github/
 
 这部分的精确 policy 和失败状态由 [Advanced SDD Flow](../advanced/00-index.md) 拥有。Development Harness 只强调一件事：远端反馈不是仓库知识之外的附加步骤，它是同一套规则的另一个执行环境。
 
-## 这一轮 agent 留下了什么
+## 任务完成后留下了什么
 
-任务结束后，下一轮 agent 不需要读取上一轮对话。它可以从当前源码和 README 得到行为，从 Agent Note 得到理由，从测试和 snapshots 得到可重复证据，从 Skills 得到任务流程，从 PR 与 CI 得到远端状态。这就是 development harness 的可观察结果：参与知识留在仓库和协作系统中，而不是只留在参与者记忆里。
+任务结束后，后续 agent 不需要读取本次任务的对话。它可以从当前源码和 README 得到行为，从 Agent Note 得到理由，从测试和 snapshots 得到可重复证据，从 Skills 得到任务流程，从 PR 与 CI 得到远端状态。这就是 development harness 的可观察结果：参与知识留在仓库和协作系统中，而不是只留在参与者记忆里。
 
 ## 证据入口
 
