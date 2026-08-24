@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 610" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+    <marker id="arrg" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#15803d"/></marker>
+  </defs>
+  <rect width="1080" height="610" rx="6" fill="#fafafa"/>
+  <text x="540" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">官方 GitHub stack：先确认对象，再刷新、逐层验证和 bottom-up 落地</text>
+  <text x="540" y="51" text-anchor="middle" font-size="11" fill="#667085">Base branch 只能提示依赖链；PullRequest.stack 与 stackEntry.position 才是 membership 权威。</text>
+
+  <rect x="40" y="88" width="202" height="92" rx="8" fill="#e8f1fb" stroke="#6b9ac4"/>
+  <text x="141" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#244e73">1. 读取 live chain</text>
+  <text x="141" y="141" text-anchor="middle" fill="#355f82">PR bases · exact head OIDs</text>
+  <text x="141" y="162" text-anchor="middle" font-size="11" fill="#54748f">bottom → top</text>
+
+  <rect x="306" y="88" width="202" height="92" rx="8" fill="#f7ecda" stroke="#c68b2c"/>
+  <text x="407" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#744d0f">2. 验证 official stack</text>
+  <text x="407" y="141" text-anchor="middle" fill="#805915">GraphQL stack number / order</text>
+  <text x="407" y="162" text-anchor="middle" font-size="11" fill="#916d32">缺成员时按 author 规则 link</text>
+
+  <rect x="572" y="88" width="202" height="92" rx="8" fill="#ede9f7" stroke="#8b7bb8"/>
+  <text x="673" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#554879">3. 必要时刷新</text>
+  <text x="673" y="141" text-anchor="middle" fill="#665a87">gh stack sync / merge-forward</text>
+  <text x="673" y="162" text-anchor="middle" font-size="11" fill="#746894">不要无条件 rewrite</text>
+
+  <rect x="838" y="88" width="202" height="92" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="939" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#245d35">4. 逐层重新验证</text>
+  <text x="939" y="141" text-anchor="middle" fill="#326c42">scope · evidence · review · CI</text>
+  <text x="939" y="162" text-anchor="middle" font-size="11" fill="#4f775a">全部通过前保持 unmerged</text>
+
+  <line x1="242" y1="134" x2="302" y2="134" stroke="#475569" marker-end="url(#arr)"/>
+  <line x1="508" y1="134" x2="568" y2="134" stroke="#475569" marker-end="url(#arr)"/>
+  <line x1="774" y1="134" x2="834" y2="134" stroke="#475569" marker-end="url(#arr)"/>
+
+  <rect x="40" y="232" width="536" height="280" rx="12" fill="#fff" stroke="#cbd5e1"/>
+  <text x="62" y="261" font-size="13" font-weight="700" fill="#334155">依赖链与 landing 顺序</text>
+  <rect x="100" y="288" width="416" height="52" rx="7" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="122" y="320" font-weight="700" fill="#245d35">PR A · bottom</text>
+  <text x="494" y="320" text-anchor="end" fill="#326c42">base: master</text>
+  <rect x="140" y="362" width="376" height="52" rx="7" fill="#e8f1fb" stroke="#6b9ac4"/>
+  <text x="162" y="394" font-weight="700" fill="#244e73">PR B</text>
+  <text x="494" y="394" text-anchor="end" fill="#355f82">base: branch A</text>
+  <rect x="180" y="436" width="336" height="52" rx="7" fill="#f7ecda" stroke="#c68b2c"/>
+  <text x="202" y="468" font-weight="700" fill="#744d0f">PR C · top</text>
+  <text x="494" y="468" text-anchor="end" fill="#805915">base: branch B</text>
+  <line x1="308" y1="436" x2="308" y2="418" stroke="#475569" marker-end="url(#arr)"/>
+  <line x1="308" y1="362" x2="308" y2="344" stroke="#475569" marker-end="url(#arr)"/>
+  <text x="78" y="390" text-anchor="middle" font-size="11" fill="#667085" transform="rotate(-90 78 390)">GitHub bottom-up merge</text>
+
+  <rect x="616" y="232" width="424" height="280" rx="12" fill="#f5f3ff" stroke="#8b7bb8"/>
+  <text x="638" y="261" font-size="13" font-weight="700" fill="#554879">Merge range</text>
+  <rect x="648" y="288" width="360" height="72" rx="7" fill="#fff" stroke="#a89bc9"/>
+  <text x="828" y="314" text-anchor="middle" font-weight="700" fill="#554879">Whole stack</text>
+  <text x="828" y="339" text-anchor="middle" fill="#665a87">gh stack merge &lt;stack-number&gt; --yes --merge</text>
+  <rect x="648" y="382" width="360" height="72" rx="7" fill="#fff" stroke="#a89bc9"/>
+  <text x="828" y="408" text-anchor="middle" font-weight="700" fill="#554879">Explicit partial landing</text>
+  <text x="828" y="433" text-anchor="middle" fill="#665a87">bottom → boundary 的连续 prefix</text>
+  <text x="828" y="482" text-anchor="middle" font-size="11" fill="#746894">不逐 PR merge · 不手工 retarget · 不在 merge 命令删 branch</text>
+
+  <line x1="540" y1="512" x2="540" y2="548" stroke="#15803d" marker-end="url(#arrg)"/>
+  <rect x="150" y="550" width="780" height="38" rx="7" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="540" y="574" text-anchor="middle" font-weight="700" fill="#245d35">每个 selected PR = MERGED → 重查剩余 stack → 零 dependent PR 后另行删除 branch</text>
+  <text x="540" y="604" text-anchor="middle" font-size="11" fill="#667085">Queued 不是 merged；partial landing 可能改写剩余 heads，因此 review 和 CI 要读当前状态。</text>
+</svg>

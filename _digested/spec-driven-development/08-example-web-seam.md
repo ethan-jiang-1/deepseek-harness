@@ -1,103 +1,73 @@
-# 08 · 真实改动：Web capability seam 的生命周期
+# 08 · 历史案例：Web capability seam 能证明什么
 
 ## 一句话
 
-从 git 历史能完整看到一次改动如何经过 `proposed/` → 实现 commit → `implemented/` → 统一格式 → Agent Note 迁移。但要注意：**这个历史样本发生在今天的 Agent Note 格式规则之前**，所以它不能把“同一 commit 完成 Decision 改写”当成事实；改写是后续 commit 才做的。
+Web capability seam 的 git 历史直接证明了“提案 → 代码/文档/测试交付 + implemented 记录”这一核心段；它没有仓库内证据证明对应 Issue、Plan Mode、GitHub review 或当时运行的 checks，不能被当作现行全流程的完整样本。
 
-## 1. 提案 commit
+![Web seam 记录从 proposal 到现行 Agent Note 的四个 commit](./figures/web-seam-history.svg)
 
-```text
-a4091daa3d docs: propose web capability seam
-```
+## 1. 四个 commit 各自提供什么证据
 
-该 commit 新增：
+| commit | 可观察变更 | 能证明 |
+|---|---|---|
+| `a4091daa3d` | 新增 proposed Web seam RFC，并登记 proposed 索引 | 实现前存在一份仓库内提案 |
+| `d01f5f73b7` | RFC 移到 implemented；新增 `packages/web/**`、tests、README，并更新 architecture/package map | 代码、当前文档、行为测试和 implemented 记录在同一 commit 交付 |
+| `e6fad266a6` | 统一 RFC 格式，把 `Proposal/Tests/Risks` 改成 `Decision/Testing/Consequences` | 现行 implemented skeleton 的正文改写发生在独立格式变更中 |
+| `e8eddc7ef8` | `docs/rfc/**` 迁到 `.agents/notes/**` 并改名 Agent Note | 当前记录路径和术语来自后续 corpus migration |
 
-```text
-docs/rfc/proposed/architecture/2026-06-24-web-capability-seam.md
-```
+## 2. 实现 commit 还不符合现行 Note 格式
 
-并在 `docs/rfc/README.md` 登记 proposed 索引条目。提案开头是：
-
-> # RFC: Web capability seam - stable tools over multiple providers
-> Status: proposed
-> ## Problem
-> ...
-
-## 2. 实现 commit
+`d01f5f73b7` 确实把 proposed RFC 移到 implemented 并将 status 改为 implemented，但正文仍保留：
 
 ```text
-d01f5f73b7 Add web capability seam: ctx.web, search/fetch providers, web tools
+## Proposal
+## Tests
+## Migration plan
+## Risks
 ```
 
-同一 commit 的主要落地：
+`e6fad266a6` 才把它改写成 implemented 记录的现在式 skeleton。现行 `verify-agent-note-format` 会拒绝只移动路径和 status 的做法；这个历史差异说明案例不能反推“当时已经执行现行规则”。当前规则应从 `.agents/notes/README.md` 和 verifier 读取。
 
-```text
-docs/rfc/README.md（条目移入 implemented）
-docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md
-docs/architecture.md
-packages/README.md
-packages/web/**（README/package/src/tests）
-```
+## 3. 核心交付段的文件证据
 
-这印证“代码、docs、README、tests 同一变更交付”，但当时只是把文件从 proposed 移到 implemented、把 `Status` 改成 implemented；正文仍是旧 RFC 的 `## Proposal / ## Risks`。
+`d01f5f73b7` 同时包含：
 
-## 3. 格式统一 commit
+- `packages/web/web` 的 capability definition 与 tests；
+- Exa、Perplexity 和 local fetch providers 的 source、README 与 tests/e2e；
+- model-facing `tool-web` consumer 的 source、README、integration/load-path/tool tests；
+- `docs/architecture.md` 与 `packages/README.md` 更新；
+- proposed RFC 到 implemented RFC 的 move。
 
-```text
-e6fad266a6 docs(rfc): define and enforce a uniform RFC format; adopt it across the corpus
-```
+这组文件足以支持“交付 bundle 同时更新实现、当前文档、行为证据和决定记录”，但不能证明每一种现行 required evidence 都已经存在。例如现行 product-visible snapshot 义务、Agent Note triplet 和格式 gate 是别处拥有的当前规则。
 
-该 commit 才把这份 implemented RFC 的 `Proposal/Tests/Risks` 改写为 `Decision/Testing/Consequences`。也就是说，今天 `proposed → implemented` 的“同一 diff 强制度”是后来机制化的。
+## 4. 明确缺失的证据
 
-## 4. Agent Note 迁移 commit
-
-```text
-e8eddc7ef8 Rename RFCs to Agent Notes
-```
-
-路径从：
-
-```text
-docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md
-```
-
-迁到：
-
-```text
-.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md
-```
-
-当前文件开头已经是：
-
-```text
-# Agent Note: Web capability seam - stable tools over multiple providers
-Status: implemented
-## Problem
-...
-## Decision
-...
-## Consequences
-...
-```
-
-## 5. 对应 spec 阶段
-
-| 阶段 | 落点 |
+| 流程问题 | 这个 git 样本能否回答 |
 |---|---|
-| 意图/验收 | Issue 层（不在 git tree，本样本不追） |
-| 决策 spec | proposed RFC |
-| 计划 | 无仓库证据证明该 commit 使用 Plan Mode |
-| 实现 | d01f5f73b7 的 `packages/web/**` |
-| 当前合同 | `docs/architecture.md`、package READMEs |
-| 行为 spec | `packages/web/**/tests/**` |
-| 交付决定 | d01 移动并置 implemented；Decision/Consequences 由 e6fad266a6 改写；路径由 e8eddc7ef8 迁移 |
-| review | GitHub PR review（不在 git tree） |
-| archive | 尚未发生；当前仍在 `.agents/notes/implemented/` |
+| 是否有 Issue 固定验收 | 不能；Issue 不在 repository git tree |
+| 是否使用 Plan Mode | 不能；没有相关 session log |
+| 是否经过 GitHub semantic review | 不能；review thread 不在 commit tree |
+| push 前运行了哪些命令 | 不能；commit 不记录本地 command evidence |
+| 哪些 CI jobs 通过 | 不能；需要对应 GitHub run 状态 |
+| 是否完成代码、README、architecture、tests 和 decision record 的共同交付 | 能；同一 commit tree 可核对 |
+| 当前 Web seam 的 authoritative rationale 在哪里 | 能；现行 Agent Note 路径可核对 |
+
+## 5. 现行记录
+
+当前文件位于 [`.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md`](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)，使用 `Agent Note` 标题、`Status: implemented`、`Decision`、`Testing`、`Alternatives considered` 和 `Consequences`。它是当前 rationale owner；旧 commit 只用于解释记录怎样到达现行位置。
+
+## 复核命令
+
+```sh
+git show a4091daa3d -- docs/rfc/README.md docs/rfc/proposed/architecture/2026-06-24-web-capability-seam.md
+git show --stat d01f5f73b7
+git show d01f5f73b7:docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md
+git show e6fad266a6:docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md
+git show e8eddc7ef8 --name-status
+```
 
 ## 证据入口
 
-- `git show a4091daa3d -- docs/rfc/README.md`
-- `git show d01f5f73b7 -- docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md`
-- `git show e6fad266a6 -- docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md`
-- `git show e8eddc7ef8 --name-status`
-- [`.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md`](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)
+- [Current Web seam Agent Note](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)
+- [Agent Note 规则](../../.agents/notes/README.md)
+- [Web packages](../../packages/web/)
