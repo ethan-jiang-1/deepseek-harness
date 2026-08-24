@@ -62,6 +62,18 @@ _faq_on_digested/
 
 引用官方文档用仓库内相对路径，不要把 `docs/` 的正文抄进答案里充数。
 
+## 验证
+
+修改本目录后运行：
+
+```sh
+node _faq_on_digested/verify.mjs
+```
+
+它检查严格 UTF-8、LF 换行与单个结尾换行、相对链接和锚点。兼容三种历史引用写法：`file.md:47` 行号后缀、仓库根视角裸路径（`docs/…`）、从 DSH 文档摘录的 `docs/` 内裸链接；`node_modules` 内与仓库外的引用降级为警告，不判失败。
+
+数字类事实的新鲜度与基线同步复核仍是人工步骤：上游合入后，按 `_digested/_change_log/` 复核各 answer/research 的节名与数字，不把「当前 checkout」当成新基线。
+
 ## 一个子目录该长什么样
 
 - **问题要明确** — 不是「Harness 是怎么工作的」，而是「换掉 `dsh-agent-loop` 而不换 `dsh-agent` 时，Web UI 还能否从 `session/event` 渲染完整一轮 turn？」

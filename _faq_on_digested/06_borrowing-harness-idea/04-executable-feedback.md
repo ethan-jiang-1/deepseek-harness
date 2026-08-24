@@ -2,7 +2,7 @@
 
 ## 规则只可读，乱发挥就得等 review 才被抓
 
-正确路径只能降低「改错地方」的概率，拦不住「改错了还自认为对」。DSH 的解法是把「可机械判断的规则」接到真实执行路径，让错误在离来源最近的地方出现。这是本 FAQ 里**「不乱发挥」一侧杠杆最高、收益最直接**的一条——在整体实施顺序里，它排在「立规矩的 owner」之后（[`08`](./08-step-by-step-guide.md) Phase 4 标注为「回报第二高」，Phase 1 第一）。
+正确路径只能降低「改错地方」的概率，拦不住「改错了还自认为对」。DSH 的解法是把「可机械判断的规则」接到真实执行路径，让错误在离来源最近的地方出现。这是本 FAQ 里**「不乱发挥」一侧杠杆最高、收益最直接**的一条（在 [`08`](./08-step-by-step-guide.md) 的实施顺序里，它排在「立规矩的 owner」之后：Phase 1「收益最高」，Phase 4「回报第二高」）。
 
 > Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects.
 

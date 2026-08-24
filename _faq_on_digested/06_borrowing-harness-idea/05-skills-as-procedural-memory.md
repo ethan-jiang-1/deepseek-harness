@@ -20,6 +20,12 @@ DSH 把这层知识放进 **development Skill**。它既不是普通文档，也
 | ADR / Agent Note | 为什么选择这一决定 | 具体执行步骤 |
 | current docs / README | 系统现在怎样工作 | 决策历史和临时 review 流程 |
 
+DSH 的 Skill 自己声明这个边界：
+
+> This skill is guidance, not a complete checklist. […] The report identifies paths and dirty layers but does not replace semantic review.
+
+（来源：`.agents/skills/dsh-code-review/SKILL.md`）
+
 一个典型 Skill 的调用过程是五步：**Match（命中）→ Load（先读全文，不从摘要猜）→ Resolve sources（读任务所需 owner）→ Apply judgment（按实际 diff/风险选择动作）→ Verify and report（只报告真正执行过的证据）。** Skill 的价值不是「自动执行一切」，而是让复杂判断有稳定入口、明确来源、可重复过程和诚实的适用边界。
 
 ## 渐进披露：摘要负责发现，正文才拥有指令
