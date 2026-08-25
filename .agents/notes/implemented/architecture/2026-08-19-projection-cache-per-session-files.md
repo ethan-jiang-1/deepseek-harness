@@ -1,0 +1,30 @@
+# Agent Note: Projection cache as per-session files
+
+Status: implemented
+
+English | [中文](2026-08-19-projection-cache-per-session-files.zh.md)
+
+## Problem
+
+The persisted projection cache was one global `session_projcache.json` — a `sessions` table in a single file at the storage root. Every throttled checkpoint rewrote the whole file containing every session's rows, so write amplification grew with session count, and one malformed file took the entire cache down at once.
+
+## Decision
+
+The cache opens the `session_projcache` storage domain in the new `per-record` layout, added to the json backend: one version-stamped document per session at `<root>/session_projcache/sessions/<id>.json`, owned by the storage stack — `storage` / `storage-json` / `storage-domain` live in the shared base bundle alongside the cache, and the cache itself is a plain domain consumer again. The cache never consults the persistence layer: no `locate`, no dependency on which backend is mounted.
+
+Reads and writes share ONE coherent state: every read (`cachedSnapshot`) is a synchronous lookup in the domain's in-memory tables (zero I/O), and every write queues on the domain's per-unit write chain, mutating memory only after durability — no direct disk reads that could lag the throttled writes. The cache keeps every other responsibility: checkpoint fold, write policy (turn/end + disposal mandatory, count/interval throttle), fail-soft durability, and the listing read. `cachedSnapshot(meta)` is synchronous. The cache runs no cold-refold ladder (that would require reading the session log, which belongs to the persistence layer); a consumer that needs a guaranteed cold snapshot refolds from the log itself. The json backend creates its tree owner-only (`0o700`).
+
+## Consequences
+
+- Per-session write isolation: each throttled write replaces only that session's small document, removing the global write amplification. The domain write chain serializes writes, so a newer cut never lands before an older one; domain close drains in-flight writes.
+- Listing is a synchronous in-memory read; a session without a record document simply lacks the projection column.
+- The per-record contract scopes failure: a malformed or stale-version document reads as an absent record at open, so one bad file never bricks the cache, and a checkpoint schema bump discards stale sessions per record instead of rejecting the whole domain.
+- No migration: the cache is derived data, never an authority. An obsolete cache (any earlier format) is never read — the first cold read refolds from the log and writes the current format.
+- The cache record is bound to the same log lifecycle as before: the stored `{createdAt, cwd}` identity guards against a recreated id.
+
+## Alternatives considered
+
+- **Keep the global sessions table.** Preserves one-load listing, but keeps the global write amplification and single-file blast radius that motivated the change.
+- **Cache-owned per-session files** (`<root>/<session-id>/projection_cache.json`, the first revision of this change). Tried and reverted in review: the cache hand-rolled the medium — paths, per-path write chains, in-flight tracking, owner-only file modes, and a sqlite no-path special case — and its listing read hit the disk directly on every call while writes were throttled, so reads and writes were never consistent.
+- **Resolve the path through `sessionPersistence.locate(meta)`** (the file beside the session log). Rejected: the cache would have to guess "beside the log" from a log artifact path (`dirname` + fixed filename), coupling the cache to the persistence service and to a backend's layout.
+- **Make `per-record` a mode of the existing unit instead of a separate unit class.** Rejected: the two layouts have genuinely different state models — `single` is memory-authoritative with whole-file publish, `per-record` is stateless (the directory is the state; `loadAll` re-reads the tree) — so they are separate small classes behind one backend, with record keys validated path-safe instead of encoded.
