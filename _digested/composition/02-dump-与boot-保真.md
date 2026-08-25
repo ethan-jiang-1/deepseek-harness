@@ -53,7 +53,7 @@ dump 不 boot，没有 inject 齐了的插件 ctx，不能求值。`entryListSch
 
 Include 对「目标 id 不在当前索引」记一条 patch skip。dump 没有 logger，把 `%C` 替成 JSON，前面加上 `[layer.label]`。继续 compose。一条 overlay 可以在 web / headless 之间共用，不必每棵树都有每一行。
 
-缺 bundle 声明、根 YAML 缺失 / 解析失败 / 不是数组：抛。用户 patch 文件**存在**但读不了、不是数组：`loadOptionalPatches` / `parsePatchList` 抛——在场的坏层不是「没有这一层」。关掉某一层写 `[]`。只有注释的文件解析出来不是数组，同样抛。
+缺 bundle 声明、根 YAML 缺失 / 解析失败 / 不是数组：抛。用户 patch 文件**存在**但读不了、不是数组：`loadOptionalPatches` / `parsePatchList` 抛——在场的坏层不是「没有这一层」。关掉某一层要写字面上的 `[]`（一个空数组 entry 列表）；解析成数组的东西都合法。解析出来**不是数组**才抛——例如只有注释的文件（YAML 里只有注释、没有任何 entry 行）解析成非数组，同样抛。
 
 `--patch` 走 `loadOverlayPatches`：文件是调用者点名的，缺失也抛，不是 ENOENT → 空层。
 
@@ -61,7 +61,7 @@ Include 对「目标 id 不在当前索引」记一条 patch skip。dump 没有 
 
 `renderConfigDump` 按前缀做 snapshot：`snapshot_k` = 前 k 层展平后的一次 `applyEntryPatches`。相邻行若 origin / patchedBy 相同，合成一条 `# == file, patched by ...`。stdout 仍是 entry 列表，可以再被 Loader 吃进去。
 
-每层 snapshot 都 `structuredClone` 那一段 patches。`applyEntryPatches` 把 entry 列表拆出来，但 `insert` 行是从 patch 列表**按引用**推进去的。跨 snapshot 共用同一批对象，后面 snapshot 的原地修改会漏进前面的结果。
+每层 snapshot 都 `structuredClone` 那一段 patches。`applyEntryPatches` 把 entry 列表拆出来，但 `insert` 行是从 patch 列表**按引用**推进去的——所以每次 snapshot 都 clone 一份 patches，正是为了挡住「跨 snapshot 共用同一批对象、后面 snapshot 的原地修改漏进前面的结果」。这是已知且有意的防护：如果共享对象，dump 的 snapshot_k 前缀会互相污染。
 
 ## 和 boot 对齐时该对哪张表
 

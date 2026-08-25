@@ -45,7 +45,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 | `packages/sandbox/` | 本地进程 argv confinement |
 | `packages/llm/` | Definition 与 Consumer 可同包 |
 | `packages/subagent/` | 差异极大的 provider，同一接口 |
-| `.agents/notes/implemented/architecture/2026-06-13-capability-seams.md` | 为什么这样切 |
+| [`2026-06-13-capability-seams`](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.md) | 为什么这样切 |
 
 ## 机制级正文
 

@@ -78,15 +78,11 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 这是 dsh 独有的、比「门禁」更狠的一层：
 
-- **每个包必须登记自己的运行时 invariant**：`verify-package-invariants` 门禁强制。但注意另一半纪律：103 个包里有 **21 个可执行 companion、82 个有理由的空 companion**；空 companion 必须写 `No runtime invariant:` 并解释为什么没有可观察的运行时关系。**不造无意义断言，和必须有断言一样重要**。
-
-> The current 103-package workspace has 21 executable companions and 82 justified empty companions.
->
-> —— `.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md:30`（基线 `528c682e…`）
+- **每个包必须登记自己的运行时 invariant**：`verify-package-invariants` 门禁强制。但注意另一半纪律：基线工作区有 **227 个包所有者**，其中 **37 个可执行 companion、190 个有理由的空 companion**（prose 里不手写固定总数，[`claims.json`](./claims.json) 的 N4–N6 用 `git ls-tree` 在基线上重算）；空 companion 必须写 `No runtime invariant:` 并解释为什么没有可观察的运行时关系。**不造无意义断言，和必须有断言一样重要**。
 
 > The empty form is an explicit architectural conclusion, not a generated placeholder.
 >
-> —— 同上文件 `:24`（基线 `528c682e…`）
+> —— `.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md:24`（基线 `528c682e…`）
 - **invariant 断言的是有所有权的关系**（`AGENTS.md` 的纪律）：检查权威事件流或可变数据，不检查 service 存在性、不检查插件元数据——「存在」不代表「关系成立」，断错了对象等于没断。
 - **实例**：`dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致立刻 fail（非 loop 请求不检查）。
 
@@ -111,7 +107,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 这意味着「正确路径可信」不只是因为阻力小，而是因为**路径本身的负例被持续验证**。
 
-**门禁本身要学。** 诚实的一面：`run-gates.ts` 聚合了数十个具名 gate（准确口径以脚本为准，本专题不手写固定总数），选「该跑哪几个」本身是一个判断。[`dsh-pre-push-checks`](../../.agents/skills/dsh-pre-push-checks/SKILL.md) skill 把它拆小并配工具，但它是 guidance，不是门禁；真正的兜底是 review + CI exhaustive。判断门槛没有被移除，只是从「凭经验」变成「照 skill 走，review 兜底」。
+**门禁本身要学。** 诚实的一面：[`run-gates.ts`](../../scripts/run-gates.ts) 聚合了数十个具名 gate（准确口径以脚本为准，本专题不手写固定总数），选「该跑哪几个」本身是一个判断。[`dsh-pre-push-checks`](../../.agents/skills/dsh-pre-push-checks/SKILL.md) skill 把它拆小并配工具，但它是 guidance，不是门禁；真正的兜底是 review + CI exhaustive。判断门槛没有被移除，只是从「凭经验」变成「照 skill 走，review 兜底」。
 
 ## 总结
 
