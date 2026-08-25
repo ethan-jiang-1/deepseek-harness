@@ -1,5 +1,7 @@
 # 06 · 运行时查询（不靠猜源码）
 
+> **状态：动态主导** —— 核心是「问活运行时」，不靠猜源码；对照面「声明面」（生成 catalog）是静态的，属 04 的 L4 穷举索引（见 [`04_root-entry-doc-design/02-tier-routing-and-indexes.md`](../04_root-entry-doc-design/02-tier-routing-and-indexes.md)）。
+
 ## 源码只能说明可能性
 
 静态 import 和目录树能说明仓库**可能**提供哪些能力，却不能回答某台机器、某个 profile、某个 session **实际**加载了什么。「糊涂」的一个隐蔽来源，就是 agent 拿着源码结构去猜部署结果，然后按猜错的结果行动。

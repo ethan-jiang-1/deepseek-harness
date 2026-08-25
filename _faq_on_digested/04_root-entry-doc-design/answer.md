@@ -72,3 +72,4 @@ DSH 没有度量“读者懂了没有”，而是度量了更稳定、更可检�
 - [`04-unique-and-transferable.md`](./04-unique-and-transferable.md)
 - [`research.md`](./research.md)
 - 运行时消费（另一半）：[`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)
+- 迁移视角（借用者怎么搬）：[`07_borrowing-harness-idea/09-agents-entry-chain.md`](../07_borrowing-harness-idea/09-agents-entry-chain.md)

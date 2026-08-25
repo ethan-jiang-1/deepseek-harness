@@ -12,16 +12,18 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 ## 总览表：困惑类型 → 借用机制 → 在你的项目里怎么落地
 
-| 你的症状 | DSH 的机制 | 不依赖「一切皆插件」的部分 | 落地动作（章节目录） |
-|---|---|---|---|
-| agent 读完还是抓不住主线 | 分层入口 + 根指令只放 standing orders | 是 | 写一份短 `AGENTS.md`（`CLAUDE.md` 用 symlink 指向它），只放常驻规则 + 布局 + 命令，其余 link 出去（见 09） |
-| agent 分不清「现在的事实」和「当初的理由」 | 当前文档 vs Agent Note 分开 | 是 | 决策理由单独进 `docs/adr/` 或 `notes/`，文档只写 now（见 02） |
-| agent 反复提出已否定的方案 | 负知识外置（rejected note、Known Limitations） | 是 | 记下「为什么不做 X」，而不是只记「做了什么」（见 02） |
-| agent 改错地方 / 造出新接入方式 | 正确路径 + 参与阶梯 + 归属路由 | 部分（阶梯需要扩展点，但「改哪里先问归属」通用） | 写一张「目标 → 机制」归属表，cookbook 给出范本（见 03） |
-| agent 做了坏事要等 review 才知道 | 可执行反馈：类型 / load / 测试 / snapshot / invariant / CI | 是（invariant 可选） | 把可机械判断的规则做成 `exit non-zero` 的脚本，并证明负例会失败（见 04） |
-| agent 一次读太多上下文、记不住 | 渐进披露 + 按需加载 Skill | 是 | 规则分层，任务命中才加载对应流程文档（见 05、10） |
-| agent 每轮看到的上下文爆炸、长任务活不下来 | 按需注入 + 运行时组装 + compaction 回收 | 部分 | 注入给预算/去重；catalog 只给摘要；超预算压缩且保留 tool-call/result 配对（见 10） |
-| agent 靠猜源码而不是问实际状态 | `--dump-config`、生成 catalog、inspect 工具 | 部分（catalog/inspect 需要一定工程） | 至少提供一条「查实际配置/注册项」的命令（见 06） |
+| 你的症状 | DSH 的机制 | 状态 | 不依赖「一切皆插件」的部分 | 落地动作（章节目录） |
+|---|---|---|---|---|
+| agent 读完还是抓不住主线 | 分层入口 + 根指令只放 standing orders | 静态 | 是 | 写一份短 `AGENTS.md`（`CLAUDE.md` 用 symlink 指向它），只放常驻规则 + 布局 + 命令，其余 link 出去（见 09） |
+| agent 分不清「现在的事实」和「当初的理由」 | 当前文档 vs Agent Note 分开 | 静态 | 是 | 决策理由单独进 `docs/adr/` 或 `notes/`，文档只写 now（见 02） |
+| agent 反复提出已否定的方案 | 负知识外置（rejected note、Known Limitations） | 静态 | 是 | 记下「为什么不做 X」，而不是只记「做了什么」（见 02） |
+| agent 改错地方 / 造出新接入方式 | 正确路径 + 参与阶梯 + 归属路由 | 跨状态 | 部分（阶梯需要扩展点，但「改哪里先问归属」通用） | 写一张「目标 → 机制」归属表，cookbook 给出范本（见 03） |
+| agent 做了坏事要等 review 才知道 | 可执行反馈：类型 / load / 测试 / snapshot / invariant / CI | 跨状态 | 是（invariant 可选） | 把可机械判断的规则做成 `exit non-zero` 的脚本，并证明负例会失败（见 04） |
+| agent 一次读太多上下文、记不住 | 渐进披露 + 按需加载 Skill | 跨状态 | 是 | 规则分层，任务命中才加载对应流程文档（见 05、10） |
+| agent 每轮看到的上下文爆炸、长任务活不下来 | 按需注入 + 运行时组装 + compaction 回收 | 动态 | 部分 | 注入给预算/去重；catalog 只给摘要；超预算压缩且保留 tool-call/result 配对（见 10） |
+| agent 靠猜源码而不是问实际状态 | `--dump-config`、生成 catalog、inspect 工具 | 动态 | 部分（catalog/inspect 需要一定工程） | 至少提供一条「查实际配置/注册项」的命令（见 06） |
+
+「状态」列与 04/05 同轴：**静态 = 仓库/文件面**（地图怎么画，归 04），**动态 = 运行时/会话面**（跑起来怎么被消费，根入口文档的消费归 05），**跨状态 = 一章内同时含两面的机制**（各章顶部有声明）。
 
 ## 最核心的三件事
 
@@ -38,9 +40,15 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 ## 阅读路径
 
 - **主线**：按 `01 → 08` 读，是一条「拆问题 → 讲机制 → 给落地顺序」的完整叙事；`08` 是落地总纲。
-- **两条深化**：`09`（AGENTS.md 入口链）是 `02`「渐进披露」的物理落地，读完 `02` 即可读；`10`（渐进披露管线）是 `02/05/09` 的运行时补全，读完 `09` 再读。它们排在后面只是编号顺序，不是依赖顺序。
+- **两条深化**：`09`（AGENTS.md 入口链：文件态归 04、会话态归 05）是 `02`「渐进披露」的物理落地，读完 `02` 即可读；`10`（渐进披露管线）是 `02/05/09` 的运行时补全，读完 `09` 再读。它们排在后面只是编号顺序，不是依赖顺序。
 - **证据**：`research.md` 是全部 blockquote 的出处总表，写的时候逐条核对过。
 - **兜底**：本目录自带 [`verify.mjs`](../verify.mjs)（UTF-8 / 换行 / 链接 / 锚点），基线钉在 `research.md`；防漂移纪律的完整落地清单见 `08` Phase 7——这个 FAQ 讲的机制，自己也在用。
+
+**按状态读（与 04/05 的静态/动态轴对齐）**：
+
+- **静态（仓库/文件面）**：02（可读性）、03（归属地图）、09（入口链文件态）、05 的仓库面——DSH 侧设计归 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)；
+- **动态（运行时/会话面）**：06（运行时查询）、10（运行时管线）、09（入口链会话态）、05 的模型可见面——根入口文档的消费归 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)；
+- **元/行动**：01（问题框架）、07（迁移清单）、08（落地顺序）——不贴状态标签，它们管「问什么、先搬什么、怎么做」。
 
 ## 继续阅读
 
@@ -52,6 +60,6 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 - [`06-runtime-inspection.md`](./06-runtime-inspection.md)：不靠猜源码
 - [`07-transfer-playbook.md`](./07-transfer-playbook.md)：优先级、三问框架与边界
 - [`08-step-by-step-guide.md`](./08-step-by-step-guide.md)：**一步一步怎么做**
-- [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)：AGENTS.md 层级骨架（CLAUDE.md symlink → 根 → 少数子树 → README）
+- [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)：AGENTS.md 入口链（文件态骨架 → 04、会话态加载 → 05、迁移顺序）
 - [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)：渐进披露的完整五层管线（静态 + 按需注入 + 运行时组装 + 溢出回收 + 隔离）
 - [`research.md`](./research.md)：证据原文与来源

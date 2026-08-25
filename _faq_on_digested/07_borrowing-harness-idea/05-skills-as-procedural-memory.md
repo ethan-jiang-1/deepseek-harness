@@ -1,5 +1,7 @@
 # 05 · Skills 与渐进披露（省上下文、稳住判断）
 
+> **状态：跨状态** —— Skill 文件是**仓库面（静态）**（「任务 → 流程文档」目录）；模型可见面（catalog 只给摘要、正文按需）是**运行时（动态）**，机制见 [`05_root-entry-doc-navigation/02-on-demand-navigation.md`](../05_root-entry-doc-navigation/02-on-demand-navigation.md) 与 [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)。
+
 ## 规则与检查之间还缺一层
 
 `AGENTS.md` 适合放每轮都需要的常驻规则，gate 适合对确定条件给通过/失败。但很多任务既不能靠一句规则、也不能靠一个布尔结果完成——例如「怎样选最小可信的 push 前证据」「怎样判断一个决策记录该保留还是归档」。这些任务需要：读上下文、应用判断标准、执行若干步骤、报告结果。

@@ -32,15 +32,15 @@ DSH 自己的仓库就是它最好的样板：它的开发主力自称是 coding
 
 ## 文件
 
-- [`answer.md`](./answer.md)：一句话结论与总览
-- [`01-two-failures-as-missing-info.md`](./01-two-failures-as-missing-info.md)：把「糊涂 / 乱发挥」拆成可操作的信息缺口
-- [`02-legibility-ownership.md`](./02-legibility-ownership.md)：可读性 = 一个事实一个 owner；解决「糊涂」
-- [`03-paved-road-and-ladder.md`](./03-paved-road-and-ladder.md)：正确路径 + 参与阶梯；解决「乱发挥」的改哪里
-- [`04-executable-feedback.md`](./04-executable-feedback.md)：可执行反馈；解决「乱发挥」的做错被抓住
-- [`05-skills-as-procedural-memory.md`](./05-skills-as-procedural-memory.md)：Skills 与渐进披露；省上下文、稳住判断
-- [`06-runtime-inspection.md`](./06-runtime-inspection.md)：运行时查询；不靠猜源码
-- [`07-transfer-playbook.md`](./07-transfer-playbook.md)：可迁移优先级、三问框架与边界成本
-- [`08-step-by-step-guide.md`](./08-step-by-step-guide.md)：综合的、一步一步怎么做（重点）
-- [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)：AGENTS.md 层级骨架——CLAUDE.md symlink、合适个数的子树 AGENTS.md、串起 README 的渐进披露入口链
-- [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)：渐进披露的完整五层管线——静态组织 + 按需注入 + 运行时组装 + 溢出回收 + 隔离边界
+- [`answer.md`](./answer.md)：一句话结论与总览（含状态轴）
+- [`01-two-failures-as-missing-info.md`](./01-two-failures-as-missing-info.md)：把「糊涂 / 乱发挥」拆成可操作的信息缺口【元：问题框架】
+- [`02-legibility-ownership.md`](./02-legibility-ownership.md)：可读性 = 一个事实一个 owner；解决「糊涂」【静态】
+- [`03-paved-road-and-ladder.md`](./03-paved-road-and-ladder.md)：正确路径 + 参与阶梯；解决「乱发挥」的改哪里【跨状态：代码面归属地图 + 判定顺序】
+- [`04-executable-feedback.md`](./04-executable-feedback.md)：可执行反馈；解决「乱发挥」的做错被抓住【跨状态：反馈时点光谱】
+- [`05-skills-as-procedural-memory.md`](./05-skills-as-procedural-memory.md)：Skills 与渐进披露；省上下文、稳住判断【跨状态：仓库面 + 模型可见面】
+- [`06-runtime-inspection.md`](./06-runtime-inspection.md)：运行时查询；不靠猜源码【动态】
+- [`07-transfer-playbook.md`](./07-transfer-playbook.md)：可迁移优先级、三问框架与边界成本【元：迁移清单】
+- [`08-step-by-step-guide.md`](./08-step-by-step-guide.md)：综合的、一步一步怎么做（重点）【元：落地顺序；Phase 1–5 静态为主、Phase 6 动态】
+- [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)：AGENTS.md 入口链——文件态骨架（→04）+ 会话态加载（→05）+ 迁移顺序【文件态=静态 / 会话态=动态】
+- [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)：渐进披露的完整五层管线【层 1=静态 / 层 2–5=动态】
 - [`research.md`](./research.md)：证据原文与来源
