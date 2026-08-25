@@ -1,0 +1,108 @@
+{
+  "name": "digested-review",
+  "id": "digested-review",
+  "description": "对_digested/目录进行系统性、结构性、一致性、逻辑性和自洽性的全面review",
+  "captainSessionId": "session-58fe03b0-f2e6-4f82-97ed-984537681985",
+  "createdAt": 1787629228546,
+  "members": [
+    {
+      "id": "52d5a381-6723-4009-a116-513d5a5bf7b2",
+      "name": "reviewer-systematic",
+      "role": "系统性+结构性审查员",
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4-flash",
+      "reasoningEffort": "high",
+      "joinedAt": 1787629288677,
+      "status": "removed"
+    },
+    {
+      "id": "d1c31175-b0d9-4413-b809-3153a02ec3c8",
+      "name": "reviewer-consistency",
+      "role": "一致性审查员",
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4-flash",
+      "reasoningEffort": "high",
+      "joinedAt": 1787629288706,
+      "status": "removed"
+    },
+    {
+      "id": "e7f7701e-cf6f-42a2-a351-d762cbe8f41f",
+      "name": "reviewer-logic",
+      "role": "逻辑性审查员",
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4-flash",
+      "reasoningEffort": "high",
+      "joinedAt": 1787629288749,
+      "status": "removed"
+    },
+    {
+      "id": "f0858a98-cc8d-4506-b654-8ad62cd9ca0b",
+      "name": "reviewer-selfconsistency",
+      "role": "自洽性审查员",
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4-flash",
+      "reasoningEffort": "high",
+      "joinedAt": 1787629288785,
+      "status": "removed"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "subject": "系统性与结构性审查",
+      "description": "对 _digested/ 目录进行系统性和结构性审查：\n\n**系统性审查维度：**\n1. 专题划分是否合理？每个专题是否覆盖了它承诺覆盖的范围？\n2. 专题间衔接是否完整？阅读路径（推荐主干顺序）是否通顺？\n3. 覆盖矩阵（_coverage/00-index.md）是否准确反映了各专题的核验状态？\n4. 与同级目录（_faq_on_digested/等）的分工是否清晰？\n5. change log 维护是否完整、更新是否及时？\n\n**结构性审查维度：**\n1. 文件命名规范是否一致？00-map.md、01-xxx.md 编号体系是否统一？\n2. 每个专题的目录结构是否一致（00-map.md + 编号正文 + figures/）？\n3. 00-index.md 的专题列表是否准确反映了所有子目录内容？\n4. SVG 图是否按专题放在对应 figures/ 目录？\n5. 索引性：读者能否通过 map 文件快速定位到需要的机制？\n\n请基于您已读取的全部文件内容进行分析，给出具体的发现和改进建议。",
+      "status": "completed",
+      "assignee": "reviewer-systematic",
+      "dependencies": [],
+      "attempt": 1,
+      "createdAt": 1787629318717,
+      "updatedAt": 1787629587333,
+      "attemptId": "cd6a37ce-ba9e-424c-8386-46841ba40004",
+      "reassigning": false,
+      "output": "# 系统性与结构性审查报告\n\n## 系统性审查\n\n### 1. 专题划分合理性 ✅ 良好\n\n8 个专题（system/、cordis-runtime/、composition/、session-and-loop/、capability-seams/、tools-prompt-llm/、surfaces/、harness-idea/）+ 2 个维护目录（_coverage/、_change_log/）划分清晰。每个专题在 00-index.md 中有一句话概括，覆盖的源码领域明确。\n\n- **system/** — 整机图，everything-is-a-plugin + 六层叠加\n- **cordis-runtime/** — Cordis 五条原语 + vendor 修改\n- **composition/** — 启动组合（profile、bundle、patch 层）\n- **session-and-loop/** — 会话 log、turn/step、agent-loop\n- **capability-seams/** — 三角色（Definition/Provider/Consumer）\n- **tools-prompt-llm/** — 模型可见面（section、schema、tool pipeline）\n- **surfaces/** — 入口（CLI/Web/ACP/JSON-RPC）\n- **harness-idea/** — 判断性专题，核验矩阵之外\n\n### 2. 专题间衔接完整性 ✅ 良好\n\n推荐主干顺序（00-index.md 第 64-70 行）通顺：\nsystem → cordis-runtime → composition → session-and-loop → capability-seams 或 tools-prompt-llm → surfaces\n\n各 00-map.md 的交叉引用符合该路径：\n- system/ 引用全部 6 个姐妹专题\n- cordis-runtime/ 引用 composition/、composition/ 引用 session-and-loop/\n- session-and-loop/ 明确写有\"下一专题：capability-seams/ 或 tools-prompt-llm/\"\n- capability-seams/ 引用 tools-prompt-llm/、tools-prompt-llm/ 引用 surfaces/\n- surfaces/ 不引用姐妹专题，作为末位专题合理\n- harness-idea/ 按设计不引用姐妹专题（机制作上下文，不进入证据引用）\n\n### 3. 覆盖矩阵准确性 ✅ 良好\n\n_coverage/00-index.md 准确反映各专题核验状态：\n- 7 个机制专题均为\"已核验\"\n- cordis-runtime/ 保留了前基线 `99f6f02`（vendor 无 diff，协议允许保留原值）\n- 其余 6 个专题核验至 `528c682`（当前基线）\n- 问题描述、结论页路径与简称均与实际相符\n- harness-idea/ 按设计不进入核验矩阵\n\n### 4. 同级目录分工 ✅ 清晰\n\n00-index.md 第 23-30 行明确划分：\n- _digested/ = 源码消化\n- _agent_ready_development/ = SDD/工作流教程\n- _faq_on_digested/ = 跨消化材料的二次研究\n- _architecture_referenced/ = 外部参考副本\n\n分工边界清晰，无重叠。\n\n### 5. Change log 维护 ✅ 完整\n\n- 0000-baseline：研究起点（47f9438，0.1.0-rc.5）\n- 0001：rc.5 → rc.7（111 commits，8 专题逐一判定）\n- 0002：rc.7 → 0.1.1-rc.1（708 commits，7 专题逐一判定）\n- 每条记录包含版本跨度、commit 范围、PR 清单、对每个专题的影响判定\n- _change_log/00-index.md 明确 4 项维护动作\n- 覆盖矩阵已完成对应更新\n\n## 结构性审查\n\n### 1. 文件命名规范 ✅ 一致\n\n- 所有专题统一使用 00-map.md 作为导读文件\n- 机制正文使用 NN-标题.md 编号体系（NN 从 01 递增）\n- _change_log/ 使用 000N-描述.md 编号（0000 基线 + 顺序编号）\n- harness-idea/ 使用英文文件名（01-role-and-substrate.md 等），与其他专题的中文命名不完全一致，但这是该专题 00-map.md 已声明的设计选择\n\n### 2. 目录结构一致性 ✅ 一致\n\n每个专题目录均包含：\n- 00-map.md（导读）\n- NN-xxx.md（机制参考，数量 2-8 个）\n- figures/（SVG 图）\n\n特殊文件：harness-idea/claims.json 是补充性的 claim register，不属于机制参考体系，但由其 verify.mjs 验证。\n\n### 3. 00-index.md 专题列表准确性 ✅ 准确\n\n子目录表（第 35-49 行）所列 10 个目录与实际完全匹配。每个专题的描述准确。_coverage/ 和 _change_log/ 作为维护目录被并列列出，并在 00-index.md 正文中有专门介绍。\n\n### 4. SVG 图位置 ✅ 全部正确\n\n41 个 SVG 文件全部位于对应专题的 figures/ 子目录内。`_digested/figures/topics.svg` 位于根级 figures/，作为全局阅读路径图，位置合理。\n\n### 5. 索引性 ✅ 良好\n\n- 全局 00-index.md 提供推荐阅读路径和专题速览\n- 每个 00-map.md 提供机制正文表（\"机制级正文\"部分）\n- 每个 00-map.md 提供\"源码入口\"表，定位到 packages/ 源码路径\n- _coverage/00-index.md 提供按专题的核验状态索引\n- _change_log/00-index.md 提供按同步次数的变更索引\n\n## 发现问题\n\n### 🔴 孤立 SVG 文件\n\n`harness-idea/figures/knowledge-distribution.svg` 存在于硬盘上，但整个 `_digested/` 中没有任何 .md 文件引用它。这是一个孤立资源，verify.mjs 不检查 SVG 引用完整性，因此未被发现。建议：确认该图是否为某一章节预留但尚未完成引用，若是废弃文件应予删除，若应被引用则补充引用。\n\n### 其他观察\n\n- 所有 Markdown 相对链接均指向存在的文件（由 verify.mjs 检查，运行时未发现问题）\n- 各专题机制文件的实际数量与 00-map.md 中\"机制级正文\"表格完全一致\n- 覆盖矩阵中 cordis-runtime/ 的最近核验 commit 不同于其余专题，这是按设计保留的（vendor 源码未改动）\n- harness-idea/ 的文件命名使用英文，与其他专题不同。已在 00-map.md 中说明\n- harness-idea/ 各章节 01-08 按构思顺序编号，内容边界有意识地重叠（\"不是八块拼图\"）\n\n## 总结\n\n`_digested/` 目录结构整体严谨、一致性强。专题划分合理，衔接通顺，覆盖矩阵准确，文件命名和目录结构高度统一。唯一的具体问题是 `harness-idea/figures/knowledge-distribution.svg` 未被任何文档引用。"
+    },
+    {
+      "id": "t2",
+      "subject": "一致性审查",
+      "description": "对 _digested/ 目录进行一致性审查：\n\n**术语一致性：**\n1. 同一概念在不同专题中是否使用同一术语？（例如 \"turn/step/round\"、\"capability seam\"、\"surface\"、\"model-visible\" 等）\n2. 中英文混用是否一致？（如 \"inject\"、\"waterfall\"、\"isolate\"、\"seam\" 等）\n3. 与官方 glossary ([docs/glossary.md]) 的术语是否保持一致？\n\n**格式一致性：**\n1. 文件结尾是否都是一个 trailing newline？（verify.mjs 会检查）\n2. 引用格式是否统一？（如 `ctx.agents`、`agent/pre-step`、`[docs/xxx]` 等）\n3. SVG 文件是否符合 XML 规范？（verify.mjs 会检查）\n4. Markdown 链接是否都有效？（verify.mjs 会检查）\n\n**引用一致性：**\n1. 交叉引用（如 \"见 ../cordis-runtime/01-xxx.md\"）是否指向正确的文件路径？\n2. 引用的官方文档路径是否存在？（如 ../../docs/architecture.md）\n3. 引用的源码路径是否存在？\n4. baseline commit 引用是否统一为 528c682e？\n\n请基于您已读取的全部文件内容进行分析，给出具体的发现和改进建议。",
+      "status": "completed",
+      "assignee": "reviewer-consistency",
+      "dependencies": [],
+      "attempt": 1,
+      "createdAt": 1787629318770,
+      "updatedAt": 1787629572026,
+      "attemptId": "b74c25bc-613a-4ec2-9d2a-25cacddde9d2",
+      "reassigning": false,
+      "output": "## 一致性审查完成报告\n\n### 审查范围\n对 `_digested/` 全部 41 个 Markdown 文件、1 个脚本、42 个 SVG 文件、1 个 JSON claims register 进行了全面审查。\n\n**核验工具结果：** `node _digested/verify.mjs` 通过，0 个问题。UTF-8、trailing newline、SVG XML、Markdown 链接和 fragment 全部有效。\n\n---\n\n### 1. 术语一致性\n\n**状态：高度一致，无实质矛盾。**\n\n- **turn/step/round**：`session-and-loop/00-map.md` 的定义与 `docs/glossary.md` `## loop-hierarchy` 完全对齐。三个术语在全部文件中使用一致。`round` 外层策略语义（goal round / Ralph round）只在约定语境出现，未混用。\n- **capability seam**：全 corpus 一致使用\"一条 seam\"指代三角色完整能力，与 glossary 定义一致。glossary 锚点 `## capability-seam`（连字符）仅限 URL 锚点，不影响语料使用。\n- **waterfall**：全 corpus 一致定义为 \"`next()` 委托下游\"，与 `docs/cordis-primer.md#cordis-waterfall-semantics` 对齐。\n- **inject**：两种语义（Cordis `ctx.inject(deps)` 服务注入 vs agent `agent.inject()` 消息注入）在语境中清晰区分。\n- **model-visible ⟺ logged**：符号在 `session-and-loop/00-map.md`、`system/00-map.md`、`harness-idea/00-map.md`、`00-index.md` 中使用一致。`system/02-对照单一loop.md` 中庸俗化为\"模型看见的必须能从 log 重建\"，属语境适切改写而非不一致。\n- **中英文混用**：`isolate`、`waterfall`、`seam`、`scope`、`restrict`、`effect`、`intercept`、`ctx`、`next()` 在全部文件中用法一致。\n\n### 2. 格式一致性\n\n**状态：完全通过。verify.mjs 0 问题。**\n\n- **Trailing newline**：全部文件结尾恰好一个换行（verify.mjs 已核）。\n- **引用格式**：交叉引用统一使用 `[`path`](../relative-path)` 格式。自然语言链接（如 \"见 [surfaces](../surfaces/00-map.md)\"）仅出现在 prose 流程中的 `tools-prompt-llm/00-map.md` 两处，属适当用法。全部 Markdown 链接和 fragment 锚点由 verify.mjs 验证有效。\n- **SVG XML**：42 个 SVG 文件全部符合 XML 规范，根元素为 `<svg>` 带正确 `xmlns`，实体有效。\n- **Markdown 链接有效性**：verify.mjs 验证了所有相对链接指向存在的文件，fragment 锚点存在于目标文件中。\n\n### 3. 引用一致性\n\n**状态：全部引用一致，路径存在。**\n\n- **交叉引用**：各专题间的交叉引用（如 `../cordis-runtime/02-waterfall-与事件合同.md`、`../composition/01-boot-时序.md`）全部指向正确路径。已验证全部 30+ 条跨专题引用的路径存在。\n- **官方文档引用**：所有 `docs/*.md` 路径（`architecture.md`、`glossary.md`、`cordis-primer.md`、`capability-seams.md`、`testing.md`、`development.md`、`AGENTS.md`、`subsystems/*`、`cookbook/*`、`user/*`、`cordis-api/*`、`tool-catalog.md`、`config-catalog.md`、`persistence-catalog.md`、`module-graph.md`、`event-producer-consumer.md`、`tool-execution-pipeline.md`、`agent-lifecycle.md` 等）均已验证存在。\n- **源码路径引用**：所有 `packages/*`、`vendor/*`、`apps/*`、`scripts/*`、`.agents/*` 引用均已验证存在（30+ 路径）。\n- **Agent Notes 引用**：28 处 `.agents/notes/` 引用的格式统一（`[`yyy-mm-dd-title`](../../.agents/notes/implemented/...`)，路径均正确。\n- **Baseline commit 一致性**：全部文件的基线 commit `528c682e061696f5a160f363f236ecbf53cbd006` 完全一致。change_log 中的老版本 commit 和覆盖矩阵中 cordis-runtime 的 `99f6f02` 核验锚点有合理原因（vendor 在第二次同步中无 diff，无需更新）。\n\n### 4. 改进建议（均为低严重性，非错误）\n\n1. **harness-idea/03-paved-road.md 门禁学习负担** (line 114)：提到 `run-gates.ts` 聚合了数十个 gate\"需要学\"，但没有链接到 `scripts/run-gates.ts` 本身。建议补充链接。\n2. **capability-seams/00-map.md 缺少 Agent Note 链接** (line 48)：引用 `.agents/notes/implemented/architecture/2026-06-13-capability-seams.md` 但链接格式与 harness-idea 专题的 note 引用不一致——该文件使用的是 plain 文本而非 Markdown 链接。建议统一为可点击的 Markdown 引用。\n3. **cordis-runtime 覆盖矩阵锚点** (`_coverage/00-index.md` line 20)：状态为\"已核验\"但最近核验指向 `99f6f02`（非当前基线 `528c682e`）。虽然 vendor 无 diff 有合理原因，但建议对已核验专题统一更新到最新基线以避免读者困惑。\n\n### 结论\n_digested/ 目录的一致性非常高。不存在术语混用、格式不一致、引用断裂或基线不一致的问题。语料经过精心维护的 verify.mjs 把关，且 cross-reference 都指向存在的目标。"
+    },
+    {
+      "id": "t3",
+      "subject": "逻辑性审查",
+      "description": "对 _digested/ 目录进行逻辑性审查：\n\n**论证质量：**\n1. harness-idea 专题的判断链条是否完整？（因果推理、证据引用、结论推演）\n2. 机制正文是否清楚地解释了\"是什么\"和\"为什么\"？\n3. 证据引用是否恰当？是否有\"断言过多、论证不足\"的段落？\n\n**推理清晰度：**\n1. 概念定义是否清晰？（如 \"legibility\"、\"paved road\"、\"participation ladder\"）\n2. 从问题到结论的推理路径是否可追踪？\n3. 是否有不必要的重复论述？\n\n**证据链完整性：**\n1. harness-idea 的出处标记（[原文]/[源码]/[推断]/[框架]）使用是否准确？\n2. 每条 claim register 项是否有明确的 falsified_by 条件？\n3. 核心断言（如 \"模型可见 ⟺ 已记录\"、\"dsh 的基底是插件图+事件流\"）是否在所有相关专题中得到一致论证？\n\n**矛盾检测：**\n1. 不同专题对同一事物的描述是否有逻辑冲突？\n2. map 文件的承诺与编号正文的实际内容是否匹配？\n3. 继承关系（如 system → cordis-runtime → ...）的逻辑链是否通顺？\n\n请基于您已读取的全部文件内容进行分析，给出具体的发现和改进建议。",
+      "status": "completed",
+      "assignee": "reviewer-logic",
+      "dependencies": [],
+      "attempt": 1,
+      "createdAt": 1787629318794,
+      "updatedAt": 1787629500782,
+      "attemptId": "59e3903b-f329-4458-8fce-6c9eb8431353",
+      "reassigning": false,
+      "output": "逻辑性审查完成，详见审查报告。"
+    },
+    {
+      "id": "t4",
+      "subject": "自洽性审查",
+      "description": "对 _digested/ 目录进行自洽性审查：\n\n**内部自洽：**\n1. 专题内部：00-map.md 的承诺与编号正文内容是否一致？\n2. 专题之间：关于同一机制的描述是否互相矛盾？\n   - 例如 system/00-map.md 描述六层，composition/00-map.md 描述 patch 叠层，两者是否兼容？\n   - session-and-loop 的 turn 时序描述与 tools-prompt-llm 的工具管道描述是否有冲突？\n3. 图与正文：SVG 图与对应的文字说明是否一致？\n\n**跨层自洽：**\n1. 抽象层（harness-idea）与机制层（各专题正文）是否互相验证，而非互斥？\n2. map 文件的阅读路径承诺与实际内容是否吻合？\n3. 从顶层 00-index.md → 专题 00-map.md → 编号正文 → 图，信息是否逐层细化而不矛盾？\n\n**基线自洽：**\n1. 所有文件引用的 baseline commit 是否一致？\n2. _coverage/00-index.md 的核验状态是否与 _change_log 记录匹配？\n3. claims.json 的 metrics 是否与 verify.mjs 的计算结果一致？\n\n**元自洽：**\n1. 本目录自己的纪律（00-index.md 中列出的分支纪律、验证要求）是否被遵守？\n2. verify.mjs 的检查项目是否覆盖了目录纪律中承诺的范围？\n3. harness-idea/08-judgement-discipline.md 的\"自我适用\"检验是否成立？\n\n请基于您已读取的全部文件内容进行分析，给出具体的发现和改进建议。",
+      "status": "completed",
+      "assignee": "reviewer-selfconsistency",
+      "dependencies": [],
+      "attempt": 1,
+      "createdAt": 1787629318811,
+      "updatedAt": 1787629494197,
+      "attemptId": "9a230f46-6a75-43b7-bd6d-e5dfde3f433e",
+      "reassigning": false,
+      "output": "完成 _digested/ 目录自洽性审查。审查覆盖 7 个专题、harness-idea 判断专题、_coverage 覆盖矩阵、_change_log 变更记录和 verify.mjs 验证脚本。结论：整体自洽性高——基线统一(528c682e)、术语一致、交叉引用有效、claims register 健康、结构模式统一。发现3个轻微问题：(1) verify.mjs 允许2个未文档化的 claim status；(2) 103包/21companion数字未纳入 claims.json metrics；(3) cordis-runtime 的核验commit与名义基线不同。详细报告已发送至 captain。"
+    }
+  ],
+  "taskSeq": 4
+}
