@@ -73,7 +73,7 @@ Include 把 `insert` 行**按引用**推进挂上的树，后面的 id patch 会
 
 boot 时坏文件：`loadOptionalPatches` / `parsePatchList` 直接抛，进程起不来。热更新时坏文件：正在跑的请求还在用上一棵树。HMR 把 refresh 的异常收掉记日志，再 `parallel('hmr/config-update-failed', filename, error)`。观察者自己失败也被 HMR 吞掉记日志，不从 watcher 逃出去。
 
-删除用户文件是合法的新一代：compose 不再含那一层。空文件 `[]` 同样是「这一层关掉」，不是解析失败。只有注释、不是数组、读不了：在场的坏层，抛。
+删除用户文件是合法的新一代：compose 不再含那一层。写字面上的 `[]`（空数组 entry 列表）同样是「这一层关掉」，解析成空数组，不是解析失败。只有注释的文件（解析成非数组）、不是数组、读不了：在场的坏层，抛。
 
 ## 和 boot 时序的分工
 

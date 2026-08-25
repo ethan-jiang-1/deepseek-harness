@@ -470,18 +470,21 @@ function checkSvg(path, source) {
 
 const EXPECTED_BASELINE = '528c682e061696f5a160f363f236ecbf53cbd006'
 const claimsPath = resolve(corpusRoot, 'harness-idea', 'claims.json')
+// 出处标记与 08-judgement-discipline.md 的出处分级表一致：本专题不使用外部
+// 资料作为证据，事实一律以 DSH 官方文件与基线为准。
 const claimStatuses = new Set([
   '原文',
   '源码',
   '推断',
   '框架',
-  '外部观点',
-  '推断 + 外部观点',
 ])
 const claimMetrics = new Set([
   'notes-md-total',
   'notes-implemented-md',
   'architecture-extension-rows',
+  'invariant-total',
+  'invariant-executable',
+  'invariant-empty',
 ])
 
 function gitOutput(args) {
@@ -501,6 +504,28 @@ function gitTrackedLines(commit, prefix) {
   return gitOutput(['ls-tree', '-r', '--name-only', commit, prefix])
     .split('\n')
     .filter(line => line.length > 0)
+}
+
+/** Every owner package (packages/<group>/<pkg>/package.json) at a commit. */
+function gitPackageOwners(commit) {
+  return gitOutput(['ls-tree', '-r', '--name-only', commit, 'packages'])
+    .split('\n')
+    .filter(line => /^packages\/[^/]+\/[^/]+\/package\.json$/.test(line))
+}
+
+/** Invariant companion owners and the executable / empty split at a commit. */
+function invariantCompanionCounts(commit) {
+  const counts = { total: 0, executable: 0, empty: 0 }
+  for (const manifest of gitPackageOwners(commit)) {
+    const sourcePath = `${manifest.replace(/package\.json$/, '')}src/invariant.ts`
+    counts.total += 1
+    const source = gitOutput(['show', `${commit}:${sourcePath}`])
+    // Empty installers must carry the "No runtime invariant:" marker
+    // (scripts/package-invariants.ts NO_RUNTIME_INVARIANT_MARKER).
+    if (source.includes('No runtime invariant:')) counts.empty += 1
+    else counts.executable += 1
+  }
+  return counts
 }
 
 function computeClaimMetric(metric) {
@@ -525,6 +550,14 @@ function computeClaimMetric(metric) {
       count += 1
     }
     return count
+  }
+  if (metric === 'invariant-total'
+    || metric === 'invariant-executable'
+    || metric === 'invariant-empty') {
+    const counts = invariantCompanionCounts(EXPECTED_BASELINE)
+    return metric === 'invariant-total' ? counts.total
+      : metric === 'invariant-executable' ? counts.executable
+        : counts.empty
   }
   return undefined
 }

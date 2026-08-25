@@ -118,6 +118,24 @@
       "description": "docs/architecture.md 扩展表行数",
       "metric": "architecture-extension-rows",
       "expected": 18
+    },
+    {
+      "id": "N4",
+      "description": "baseline 下 invariant companion 的所有者包总数（packages/*/*/package.json）",
+      "metric": "invariant-total",
+      "expected": 227
+    },
+    {
+      "id": "N5",
+      "description": "baseline 下可执行 invariant companion 的数量（install 函数非空且不使用 \\\"No runtime invariant:\\\" 标记）",
+      "metric": "invariant-executable",
+      "expected": 37
+    },
+    {
+      "id": "N6",
+      "description": "baseline 下有理由的空 invariant companion 的数量（\\\"No runtime invariant:\\\" 标记）",
+      "metric": "invariant-empty",
+      "expected": 190
     }
   ]
 }
