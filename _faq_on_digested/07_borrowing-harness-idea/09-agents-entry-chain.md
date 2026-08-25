@@ -1,10 +1,17 @@
-# 09 · AGENTS.md 层级骨架：从根到 README 的渐进披露入口链
+# 09 · AGENTS.md 入口链：文件态骨架 + 会话态加载
 
-## 这条线为什么值得单独立一章
+## 先纠正一个隐含误解：入口链不是单态对象
 
-前面 [`02`](./02-legibility-ownership.md) 讲了「一个事实一个 owner」和「渐进披露」，[`08`](./08-step-by-step-guide.md) 的 Phase 1 让你「写一份短的 AGENTS.md」。这一篇把这条线**钉成一条物理入口链**——它是渐进披露在仓库文件系统里的真实骨架，也是「agent 不糊涂」第一落地的东西。
+前面 [`02`](./02-legibility-ownership.md) 讲了「一个事实一个 owner」和「渐进披露」，[`08`](./08-step-by-step-guide.md) 的 Phase 1 让你「写一份短的 AGENTS.md」。这一篇钉的是**入口链本身**——但这条链不是一件扁平的东西，它是**同一根链条的两种存在状态**：
 
-DSH 的入口链长这样：
+| 状态 | 对象 | 链条长什么样 | 归属 | 对借用者的成本 |
+|---|---|---|---|---|
+| **文件态（静态）** | 磁盘上的文件 | `CLAUDE.md`（symlink）→ 根 `AGENTS.md` → 合适个数的子树 `AGENTS.md` → 各 `README.md` | [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)（地图怎么画） | 低：写短文件 + symlink + 预算；宿主自动加载让第一环不写代码就生效 |
+| **会话态（动态）** | 活 session 里的上下文 | baseline push → touch-driven nested push → README pull → 预算/去重/回收 | [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)（跑起来怎么被消费） | 高：需要一个 `dsh-agent-instructions` 级别的加载插件 |
+
+DSH 两种状态都做全了；普通项目可以先只做文件态。下面分开讲。
+
+## 状态一 · 文件态（静态骨架）
 
 ```text
 CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件）
@@ -15,61 +22,37 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
             cookbook/（怎么做）、.agents/notes/（为什么）
 ```
 
-四个环节各有分工，缺一个都不成立。
+四个环节的分工，设计理由都在 04，这里只给结论：
 
-## 环节一：CLAUDE.md 是 symlink，不产生第二份事实
+1. **CLAUDE.md 是 symlink，不产生第二份事实**：不同 agent host 有不同入口文件名约定（Claude 类读 `CLAUDE.md`，其它读 `AGENTS.md`），但每个目录里事实只该有一份；symlink 让「改规则」只有一个动作、一个 home。→ 04 的[读者分流](../04_root-entry-doc-design/01-root-split-and-map.md)。
+2. **根 AGENTS.md 只放 standing orders**：每轮都要在上下文里的规则，每条 1–3 行、链到 home；教程、故事、流程一律不写。→ 04 的[常驻层硬预算](../04_root-entry-doc-design/03-progressive-disclosure-as-cache.md)。
+3. **子树 AGENTS.md 是「合适个数」**：只在「有子树专属常驻规则」时放，宁可少放；大多数 package 只有 README.md 是正确结果，不是缺口。→ 04 的 [tier 分工](../04_root-entry-doc-design/02-tier-routing-and-indexes.md)。
+4. **AGENTS.md 串起 README.md，而不是吞掉它**：AGENTS 是路由/常驻指令层，README 是「当前合同」事实层；AGENTS 通过 link 把它串进地图。→ 04 的 tier taxonomy。
 
-`CLAUDE.md` 在根、`packages/`、`examples/`（以及 `vendor/`、`.agents/notes/implemented/`）等处，都是**同目录** `AGENTS.md` 的 symlink。原因是：不同 agent host 有不同入口文件名约定（Claude 类读 `CLAUDE.md`，其它读 `AGENTS.md`），但**每个目录里事实只该有一份**。用 symlink 而不是复制，让「改规则」只有一个动作、一个 home，不会出现两份内容漂移。
+**文件态的可迁移结论**：这是「写文件」的工程，几乎零架构依赖——`CLAUDE.md` 直接 `ln -s AGENTS.md`，根文件只写 standing orders，子树只在必要时放，并给常驻层设字数预算。而且宿主自动加载（Claude Code 读 `CLAUDE.md`）意味着**第一环不写代码就免费生效**。这就是 [`08`](./08-step-by-step-guide.md) Phase 1 的完整内容。
 
-> `CLAUDE.md` symlinks `AGENTS.md` at root, `packages/`, and `examples/`; edit the real file.
+## 状态二 · 会话态（运行时加载）
 
-可迁移结论：**你的项目里，`CLAUDE.md` 直接 `ln -s AGENTS.md`，永远只编辑 `AGENTS.md`。**
+文件态是「地图」，会话态是「地图在活 session 里怎么被走」。DSH 的运行时把文件态变成三件机器执行的事（机制细节都在 05）：
 
-## 环节二：根 AGENTS.md 只放 standing orders
+- **注入（push）**：`dsh-agent-instructions` 在会话第一步注入根 AGENTS 链（baseline），模型触达更深目录后再注入子树 AGENTS（touch-driven nested）；有 `maxBytes` 预算、按 digest 去重。→ 05 的 [`01-runtime-injection.md`](../05_root-entry-doc-navigation/01-runtime-injection.md)。
+- **导航（pull）**：不在注入链里的 README / catalog / skill 正文，由模型用 read/grep/glob 按需拉取；skill 只给摘要、正文按需不缓存。→ 05 的 [`02-on-demand-navigation.md`](../05_root-entry-doc-navigation/02-on-demand-navigation.md)。
+- **回收（recycle）**：超预算由 token meter 度量、compaction 压缩回收，保留 tool-call/result 配对。→ 05 的 [`03-budget-and-guarantee.md`](../05_root-entry-doc-navigation/03-budget-and-guarantee.md)。
 
-tier taxonomy 的第一行规定根 `AGENTS.md` 的职责和禁区：
+**会话态的可迁移结论**：这是「写加载插件」的工程，贵且 DSH 特有。普通项目不写这个也能受益——文件态 + 宿主自动加载已经覆盖了「不糊涂」的大头；会话态（触达才加载、预算去重、回收）是上下文吃紧或长任务时的增量。
 
-| 属于它 | 不属于它 |
-|---|---|
-| 每轮都要在上下文里的规则（每条 1–3 行，链到 home） | 故事、worked example、情境化流程、任何从 linked home restate 的内容 |
+## 迁移顺序：先文件态，后会话态
 
-根 `AGENTS.md` 的「Repository layout」正是「内容串起 README」的范例：它用 `packages/README.md`、`python/README.md`、`native/README.md`、`vendor/README.md`、`docs/architecture.md`、`docs/AGENTS.md` 等 link 把布局讲完，**不复制任何一方的正文**。
+两种状态的成本差直接给出迁移顺序：
 
-## 环节三：子树 AGENTS.md 是「合适个数」，不是每个目录一份
+1. **先文件态**：写短 AGENTS.md、symlink、预算、tier 表——这是 [`08`](./08-step-by-step-guide.md) Phase 1，几乎零成本，收益立竿见影。
+2. **后会话态**：确认组合压力（上下文爆炸、长任务活不下来）之后再考虑加载插件——这是 [`10`](./10-progressive-disclosure-pipeline.md) 的注入层。
 
-这是最容易照抄错的点。DSH 的子树 `AGENTS.md` 只出现在「该子树有专属常驻规则」的地方，tier taxonomy 点名的只有 `packages/`、`examples/`、`docs/`、`.agents/notes/`：
-
-> Subtree `AGENTS.md` — Orders specific to that subtree. Does NOT belong there: repo-wide rules the root file already carries.
-
-也就是说，子树 `AGENTS.md` 的判定标准是：**这里有没有「只在这个子树成立、且每轮都该在上下文里」的规则？** 有，才放；没有，就靠 README 按需加载。大多数 package 只有 `README.md`，没有 `AGENTS.md`——这不是偷懒，而是「合适个数」的正确结果。
-
-## 环节四：AGENTS.md 串起 README.md，而不是吞掉它
-
-分工是严格的：**`AGENTS.md` 是路由/常驻指令层，`README.md` 是「当前合同」事实层。** package README 的职责是 per-package contract——config、语义、限制、扩展点、Model Experience；它按任务加载，不进常驻上下文。`AGENTS.md` 通过 link 把它串进地图，agent 命中某个包才读它的 README。
-
-> Package README — The per-package contract: config, semantics, limitations, extension points, and Model Experience.
-
-## 为什么这就是好的渐进披露
-
-四环节合起来，得到一个「常驻层极小、详情按需加载、host 无关、且有机械规则」的骨架：
-
-1. **常驻层极小**：根 `AGENTS.md` ≤ 1600 词、子树 ≤ 600 词（`packages/AGENTS.md` ≤ 650）、`packages/README.md` ≤ 600 词，全部由 `verify-doc-budgets` 机械检查——「该进的进得来，不该进的进不来」。
-2. **host 无关**：symlink 让不同 agent host 读同一份事实。
-3. **「该放哪」有机器可查的规则**：tier taxonomy 说清哪种事实住哪层，`verify-md-links` 保证每条 link 真能走到。
-
-## 可迁移要点
-
-1. `CLAUDE.md` → `ln -s AGENTS.md`，永远只编辑真实文件。
-2. 根 `AGENTS.md` 只写 standing orders + 布局 + 命令，每条一两行、link 到 home；其余（教程/故事/流程）一律不写。
-3. 子树 `AGENTS.md` 只在「有子树专属常驻规则」时才放，宁可少放；多数目录/包只留 README。
-4. `README.md` 是「当前合同」，被 `AGENTS.md` link 串起来、按任务加载。
-5. 给「哪种事实住哪层」写一张 tier 表，并把常驻层的字数设个预算——这比「写很多文档」更能治「不糊涂」。
+只做文件态不是残缺：宿主自动加载让第一环免费；会话态是 DSH 把「按需」从写作纪律升级成运行时保证的那一步，普通项目按需取用。
 
 ## 证据入口
 
-- 入口链的机制来源：本目录 [`02-legibility-ownership.md`](./02-legibility-ownership.md)、[`08-step-by-step-guide.md`](./08-step-by-step-guide.md) Phase 1。
-- [`../../docs/AGENTS.md`](../../docs/AGENTS.md)：tier taxonomy（root/subtree AGENTS.md、package README 的职责与禁区）与字数预算。
-- [`../../AGENTS.md`](../../AGENTS.md)：根 standing orders + Repository layout 怎样 link 到各 README 与核心文档。
-- [`../../docs/architecture.md`](../../docs/architecture.md)：从 AGENTS.md 进入的有序地图。
-- [`../../docs/cookbook/adding-a-package.md`](../../docs/cookbook/adding-a-package.md)：package README 应写什么（contract 的范本）。
-- 既有 FAQ 的相关面：[`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)（根入口分流与预算）。
+- 文件态（设计）：[`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md) 及其子章节
+- 会话态（机制）：[`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md) 及其子章节
+- 本目录的关联：[`02-legibility-ownership.md`](./02-legibility-ownership.md)、[`08-step-by-step-guide.md`](./08-step-by-step-guide.md) Phase 1、[`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)
+- 源码：[`../../AGENTS.md`](../../AGENTS.md)、[`../../packages/context/agent-instructions/README.md`](../../packages/context/agent-instructions/README.md)

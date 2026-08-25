@@ -1,5 +1,7 @@
 # 02 · 可读性 = 一个事实一个 owner（解决「糊涂」的地基）
 
+> **状态：静态（仓库/文件面）** —— 讲的是地图怎么画（one home、tier、当前 vs 决策、负知识）；DSH 侧设计细节归 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)，运行时消费见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)。
+
 ## 可读 ≠ 文件少
 
 「让 agent 不糊涂」的朴素冲动是：写一份大而全的总览，让 agent 一次读完。DSH 明确不这么干。它对可读性的定义更实用：
@@ -55,7 +57,7 @@ DSH 用 rejected note、README 的 `## Known Limitations`、说明理由的空 i
 
 （上句出处同上，语料归纳。）
 
-对一个普通项目，这就是「入口文件要短、要只做路由」的直接理由——也是和 `04_root-entry-doc-design` 讲过的根入口分流共用同一个原则。这条原则落到物理文件上，是一条明确的入口链：`CLAUDE.md`（symlink）→ 根 `AGENTS.md` → 少数子树 `AGENTS.md` → 各 `README.md`；它把「渐进披露」变成仓库里真实存在的骨架，详见 [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)。但注意这只是**静态层**——「按需」的「需」在运行时由谁决定、模型每轮实际看到什么、超预算怎么回收、子代理能看到什么，是另一整块，详见 [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)。
+对一个普通项目，这就是「入口文件要短、要只做路由」的直接理由——也是和 `04_root-entry-doc-design` 讲过的根入口分流共用同一个原则。这条原则落到物理文件上，是一条明确的入口链：`CLAUDE.md`（symlink）→ 根 `AGENTS.md` → 少数子树 `AGENTS.md` → 各 `README.md`；它把「渐进披露」变成仓库里真实存在的骨架，详见 [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)。但注意这只是**静态层**——「按需」的「需」在运行时由谁决定、模型每轮实际看到什么、超预算怎么回收、子代理能看到什么，是另一整块，详见 [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)（完整管线）与 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)（根入口文档的运行时消费）。
 
 ## 可迁移要点
 

@@ -2,7 +2,7 @@
 
 ## 先纠正一个误解
 
-前面 [`02`](./02-legibility-ownership.md)、[`05`](./05-skills-as-procedural-memory.md)、[`09`](./09-agents-entry-chain.md) 讲的渐进披露，其实只覆盖了**静态/仓库层**——文档怎么分层、AGENTS.md 骨架怎么搭、Skills 怎么按需加载。但 DSH 的渐进披露不是「把文档写短」这一件事，它是一条**贯穿五层的管线**：
+前面 [`02`](./02-legibility-ownership.md)、[`05`](./05-skills-as-procedural-memory.md)、[`09`](./09-agents-entry-chain.md) 讲的渐进披露，其实只覆盖了**静态/仓库层**——文档怎么分层、AGENTS.md 骨架怎么搭、Skills 怎么按需加载（静态层在语料层的完整设计见 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)）。但 DSH 的渐进披露不是「把文档写短」这一件事，它是一条**贯穿五层的管线**——运行时的根入口文档消费见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)：
 
 | 层 | 回答的问题 | DSH 机制 | 可迁移性 |
 |---|---|---|---|
@@ -22,7 +22,7 @@
 
   > Rendering preserves the most specific instruction files first. It drops whole broader files before truncating the most-specific file and emits a visible budget notice… The rendered bytes never exceed `maxBytes`.
 
-  这一条是「AGENTS.md 骨架」（09）在运行时的真实实现：文件层面「合适个数」，运行时层面「触达才加载 + 有预算 + 去重」。
+  这一条是「AGENTS.md 骨架」（09 的会话态）在运行时的真实实现：文件层面「合适个数」，运行时层面「触达才加载 + 有预算 + 去重」（机制见 [`05_root-entry-doc-navigation/01-runtime-injection.md`](../05_root-entry-doc-navigation/01-runtime-injection.md)）。
 
 - **`file-reference`**：`@file` grammar，模型按需引用具体文件。
 - **`session-reference`**：其它会话的 bounded snapshot（有界快照，不是整段搬）。
