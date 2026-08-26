@@ -1,0 +1,60 @@
+/**
+ * Pure types of the permission domain: the ONE home of the `permissions`
+ * projection-key declaration plus its payload types, free of this package's
+ * host-side value imports (cordis, schemastery). Two namespace projections
+ * serve it — the package root re-export for host consumers and `./client` for
+ * client aggregates — with zero content duplication.
+ *
+ * @module @deepseek-ai/dsh-permission-presets/types
+ */
+
+import type { SandboxMode } from '@deepseek-ai/dsh-sandbox'
+import type { ApprovalPolicy } from '@deepseek-ai/dsh-user-approval'
+
+/** The select-option shape a presentation layer advertises for one preset (or for the derived `custom` state). */
+export interface PresetOption {
+  /** Stable option value: the table key, or `custom`. */
+  value: string
+  /** The display label. */
+  name: string
+  /** One user-facing sentence on what the value means; omitted when not configured. */
+  description?: string
+}
+
+/**
+ * Whole `permissions` projection value: every switchable preset in table
+ * order (plus the derived current-only `custom` when the knobs match no
+ * entry) and the effective current value.
+ */
+export interface PermissionSelect {
+  /** Switchable presets, plus `custom` appended exactly while it is current. */
+  options: PresetOption[]
+  /** The effective current value: a preset table key, or `custom`. */
+  currentValue: string
+}
+
+/** Latest logged permission overrides. */
+export interface KnobState {
+  /** Last `permission/preset` payload, or null. */
+  preset: string | null
+  /** Last `sandbox/mode` payload, or null. */
+  sandbox: SandboxMode | null
+  /** Last `approval/policy` payload, or null. */
+  approval: ApprovalPolicy | null
+}
+
+declare module '@deepseek-ai/dsh-session-projection/types' {
+  interface SessionProjectionStateMap {
+    /** Latest logged permission overrides. */
+    permissions: KnobState
+  }
+  interface SessionProjectionMap {
+    /**
+     * The session's permission select, folded from the three whole-value
+     * knob events (`permission/preset`, `sandbox/mode`, `approval/policy`)
+     * over the composition defaults. Key absence means no permission service
+     * is composed — clients hide the control.
+     */
+    permissions: PermissionSelect
+  }
+}

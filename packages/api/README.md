@@ -1,0 +1,56 @@
+---
+description: "Package map for the application's Remote layer: typed Client-to-Host capability calls, results, and forwarded events, for users and maintainers navigating the group."
+kind: "package-group"
+---
+
+# api/ — Remote API layers
+
+English | [中文](README.zh.md)
+
+## Summary
+
+The `api/` group provides the application's Remote layer: a Client environment can call the business capabilities running on the Host — manage goals, run commands, list the plugin inventory, discover file and session references — as typed method calls, and receive the results or forwarded Host events. `remotes` decides which capabilities are exposed and how each call reaches the right session's agent; `gateway` carries the calls and their results between Client and Host. The stack runs over the application's shared Connection; streaming session data is deliberately outside it.
+
+## Table of Contents
+
+- [Packages](#packages)
+- [Related documentation](#related-documentation)
+- [Dev Note](#dev-note)
+
+-----
+
+<a id="packages"></a>
+## Packages
+
+The packages below provide the Remote layer; the package READMEs own the exhaustive contracts.
+
+| Package | Role | ctx key |
+|---|---|---|
+| [`remotes/`](remotes/README.md) | Chooses which Host capabilities and events the Client can consume. | — |
+| [`gateway/`](gateway/README.md) | Carries typed unary calls, multiplexed streams, and forwarded Host events. | `ctx.typertGateway` / `ctx.remote` |
+| [`session-controller/`](session-controller/README.md) | Owns Session commands, history streams, live control state, and Agent/Session identity policy. | `ctx.sessionController` / `ctx.remote.session` |
+| [`workspace-controller/`](workspace-controller/README.md) | Owns Workspace mutations and the complete Client Workspace projection. | `ctx.workspaceController` / `ctx.remote.workspace` |
+
+Remote calls run Client → Host over the application's shared Connection. API Gateway owns Remote transport, while the two controller packages own Session and Workspace behavior. Endpoints without a Remote definition fall through to the application's API Proxy.
+
+-----
+
+<a id="related-documentation"></a>
+## Related documentation
+
+Start with the API Gateway reference to see the Remote model end to end, then the Typert subsystem page for the shared definitions, and the carrier and fallback packages for how calls travel and how endpoints without Remote definitions are served.
+
+- [API Gateway reference](../../docs/api-gateway.md) — the current-state reference for the Typert API Gateway: programming model, generation pipeline, and runtime invocation.
+- [Typert subsystem reference](../../docs/subsystems/typert.md) — the public contracts shared by protocol, Gateway, and consumer assemblies.
+- [Connection](../client/connection/README.md) — the RPC carrier, `/api` trust fence, and response envelopes behind every Remote call.
+- [API Proxy](../host/apiproxy/README.md) — the fallback for endpoints without Remote descriptors.
+
+<a id="dev-note"></a>
+## Dev Note
+
+<details>
+<summary>Working context for maintainers — click to expand</summary>
+
+None.
+
+</details>
