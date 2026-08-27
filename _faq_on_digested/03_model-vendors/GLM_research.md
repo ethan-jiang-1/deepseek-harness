@@ -1,5 +1,7 @@
 # GLM Research Notes: Z.ai 的直接支持与纯配置边界
 
+> **2026-08-27 更新**：`dsh web` 的 zai route 已裁剪为 `glm-5.3` 与 `glm-5.3-flash` 两个 1M 上下文模型，且实际生效层是 profile 补丁层而非本文所述 settings.yaml；本文其余目录快照仍以当时的 `pi-ai@0.82.1` 为准。见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md)。
+
 ## 结论
 
 独立安装的 `npx @deepseek-ai/dsh web` 当前使用 `@deepseek-ai/dsh@0.1.0-rc.6` 与 `@earendil-works/pi-ai@0.82.1`。该版本已经内置 `zai` 和 `zai-coding-cn` provider，不需要为 Z.ai/GLM 新建 DSH 插件，也不应把它伪装成 `openai` 或 `micu` route。

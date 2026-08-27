@@ -1,5 +1,7 @@
 # DSH Web · 多 vendor 纯配置与安全回退
 
+> **2026-08-27 勘误**：对 `web` profile，`llm-pi-ai` 实际生效的是补丁层 `/Users/bowhead/.dsh/profiles/web/cordis.patch.yml`（`--dump-config` 证实组合结果不含 settings.yaml 独有的 openrouter），本文所述 settings.yaml 仅是镜像；zai 模型也已裁剪为 glm-5.3 与 glm-5.3-flash。机制、最终条目与恢复步骤见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md)。
+
 ## 已应用的配置
 
 本记录对应独立安装的 `npx @deepseek-ai/dsh web`，其默认 `DSH_HOME` 为 `/Users/bowhead/.dsh`，实际设置文件为 `/Users/bowhead/.dsh/settings.yaml`。本次只补充 `llm-pi-ai.providers`，不安装插件、不修改 DSH 代码、不改变已有 MICU route。默认模型可由 Web 随时改写；本记录不把它当作 vendor 配置的一部分。
