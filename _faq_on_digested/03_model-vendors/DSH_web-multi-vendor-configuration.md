@@ -1,6 +1,8 @@
 # DSH Web · 多 vendor 纯配置与安全回退
 
 > **2026-08-27 勘误**：对 `web` profile，`llm-pi-ai` 实际生效的是补丁层 `/Users/bowhead/.dsh/profiles/web/cordis.patch.yml`（`--dump-config` 证实组合结果不含 settings.yaml 独有的 openrouter），本文所述 settings.yaml 仅是镜像；zai 模型也已裁剪为 glm-5.3 与 glm-5.3-flash。机制、最终条目与恢复步骤见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md)。
+>
+> **2026-08-28 增补**：openrouter route 已进入补丁层，现含 3 个模型（deepseek-v4-pro / deepseek-v4-flash / deepseek-v4-flash-vision-exp，当日加过 8 个后剔除 5 个）；下表不含该 route。现状与流程见 [DSH_howto-add-vendor-models.md](./DSH_howto-add-vendor-models.md)，实测证据见 [OPENROUTER_research.md](./OPENROUTER_research.md)。
 
 ## 已应用的配置
 
