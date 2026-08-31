@@ -22,6 +22,7 @@
    - 新 vendor → 新增独立 route id（独立 identity，不伪装 `openai`，日志与计费才可追溯）；
    - 已有 vendor → 在该 route 的 `models:` 数组里加条目；数组**整体替换**内置目录，列出什么就只有什么；
    - 条目可用字段：`id` `name` `contextWindow` `maxTokens` `input` `reasoningEfforts` `compat`；effort 合法档位 `off/minimal/low/medium/high/xhigh/max`，省略某档等价于显式关闭该档；
+   - **`off` 不是万能档**：声明 `off:`（空）会让 pi-ai 在选 off 或未选 effort 时发 `reasoning: { effort: "none" }`（openrouter thinkingFormat 路径）——对**强制思考**的模型（GLM-5.3 系：thinking 只能 enabled，深度由 `reasoning_effort` 控制）直接 400 `Reasoning is mandatory`。这种模型的条目**不要声明 `off`**：省略后 `thinkingLevelMap.off = null`，pi-ai 不发 reasoning 参数，模型以自己的默认思考强度运行。判定一个模型是否强制思考：官方文档写明 `thinking` 不可关（GLM-5.3），或实测发 `reasoning: { effort: "none" }` 返回 400。zai 直连 route 的 GLM-5.3 两条目即无 `off`，是正确先例（见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md)）。
    - 模型 id 不在安装目录里 → 必须显式写 `contextWindow` 与 `maxTokens`（数据来源：vendor 官方模型页或其 `/models` 端点，写入时注明日期）。
 3. **同步镜像**：`~/.dsh/settings.yaml` 同一段保持逐字一致；它对 web 不生效，只服务人工阅读与历史记录。
 4. **凭据**（仅新 vendor）：真实 key 写 `~/.dsh/.credentials.yaml`（`0600`；credentials 服务热加载，运行中的 web 进程无需重启）。settings/patch 只留 `apiKeyEnv` 环境变量名；key 不进 settings、不进 `headers`、不再复制到 shell 启动脚本。
@@ -39,8 +40,8 @@ openrouter route 在 `~/.dsh/profiles/web/cordis.patch.yml`（settings.yaml 为�
 - `deepseek/deepseek-v4-pro`
 - `deepseek/deepseek-v4-flash`
 - `deepseek/deepseek-v4-flash-vision-exp`（text+image）
-- `z-ai/glm-5.3`（2026-08-31 重新加入，effort 七档全实测）
-- `z-ai/glm-5.3-flash`（2026-08-31 重新加入，text+image，effort 七档全实测）
+- `z-ai/glm-5.3`（2026-08-31 重新加入，六档 effort 全实测，无 `off`——强制思考）
+- `z-ai/glm-5.3-flash`（2026-08-31 重新加入，text+image，六档 effort 全实测，无 `off`）
 
 2026-08-28 曾加入 8 个（含带日期 id 与 nemotron/glm/minimax 跨家三个），随后用户剔除 5 个：带日期 id 与无日期别名同义、别名跟随最新版；跨家三个弃用；2026-08-31 用户决定将 glm-5.3 两个重新暴露（走 OpenRouter）。`agent-default-model` 为 `openrouter / deepseek/deepseek-v4-flash`。全部实测证据、剔除清单与备份记录见 [OPENROUTER_research.md](./OPENROUTER_research.md)。
 

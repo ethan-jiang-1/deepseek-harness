@@ -2,7 +2,7 @@
 
 基线：DSH `0.1.1-rc.2`（npx 缓存直跑），`@earendil-works/pi-ai@0.82.1`，OpenRouter `GET /models` 共 387 个模型。凭据 `OPENROUTER_API_KEY` 同时在 `~/.zshenv` 与受管 `~/.dsh/.credentials.yaml`（`0600`，热加载），`GET /models` 返回 200。
 
-> **2026-08-31 更新**：重新加入 `z-ai/glm-5.3` 与 `z-ai/glm-5.3-flash` 两个模型（用户在 08-28 弃用后决定重新暴露，走 OpenRouter 而非 Z.ai 直连）。全部 effort 档位（含 minimal/low/medium/xhigh）与工具往返逐项实测通过；flash 图片输入经 OpenRouter 实测通过、5.3 图片被拒。见「2026-08-31 增补」一节。
+> **2026-08-31 更新**：重新加入 `z-ai/glm-5.3` 与 `z-ai/glm-5.3-flash` 两个模型（用户在 08-28 弃用后决定重新暴露，走 OpenRouter 而非 Z.ai 直连）。六档 effort（minimal/low/medium/high/xhigh/max）与工具往返逐项实测通过；flash 图片输入经 OpenRouter 实测通过、5.3 图片被拒。**不声明 `off`**：GLM-5.3 系强制思考，`off` 会发 `reasoning: { effort: "none" }` 导致 400（先加 `off` 实测失败后移除，教训见 [DSH_howto-add-vendor-models.md](./DSH_howto-add-vendor-models.md)）。见「2026-08-31 增补」一节。
 
 ## Route 结构
 
@@ -62,16 +62,23 @@ context / max output 取自 `/models` 的 `context_length` 与 `top_provider.max
 ### 实测证据（2026-08-31，真实 key 直连 OpenRouter）
 
 - **最小文本**：两模型均 200、正文正确。flash 是 thinking 模型：`max_tokens: 64` 时全被 reasoning 吃光（finish `length`），正文在 `max_tokens: 256` 下正常。
-- **effort 全档位**：两模型 `none`（= 不发送参数）/ `minimal` / `low` / `medium` / `high` / `xhigh` / `max` 全部 200、正文正确，`reasoning_tokens` 随档位出现（0–85）。与 08-28 只测三档不同，本次七档全测，故条目声明全七档（`off` 空 / 六档 1:1），`z-ai/glm-5.3` 不再沿用 zai 直连的低/中→high 折叠映射。
+- **effort 全档位**：两模型 `none`（= 不发送参数）/ `minimal` / `low` / `medium` / `high` / `xhigh` / `max` 全部 200、正文正确，`reasoning_tokens` 随档位出现（0–85）。与 08-28 只测三档不同，本次七档全测。
 - **工具往返**：两模型 `tools` + `tool_choice: auto` 均正确返回 `tool_calls`（calculator `{"a":2,"b":2}`）。这补上了 08-28 遗留的「工具未实测」缺口（至少 curl 层）。
 - **图片输入**：flash 实测接受图片并正确描述（`image_tokens` 计入）；`z-ai/glm-5.3` 被拒，错误 404 `No endpoints found that support image input`——与 08-30 Z.ai 直连的 code 1210 同义。故 flash 声明 `input: [text, image]`，5.3 不声明。
 - 备注：`glm-5.3` 的 `low` 档首次请求偶发空响应（网络抖动，非参数拒绝），重试 200。
+
+### `off` 实测失败与移除（2026-08-31 下午）
+
+首次写入时给两模型都声明了 `off:`（空）。DSH 实测暴露失败：选 `off` 或**不选 effort**（UI 默认路径，settings.yaml 的 `agent-default-model` 即此形态）时，pi-ai 的 openrouter thinkingFormat 路径把空 `off` 翻译成 `reasoning: { effort: "none" }`，Z.ai 返回 400 `Reasoning is mandatory for this endpoint and cannot be disabled.`（curl 复现同一 body；与 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md) 记载的「GLM-5.3 thinking 只能 enabled」一致）。
+
+修复：从两 GLM 条目移除 `off` 声明（`*.bak-20260831-115735-before-remove-glm53-off`，补丁层与 settings.yaml 各一份）。移除后 `thinkingLevelMap.off = null`，pi-ai 不发 reasoning 参数，模型以自己的默认思考强度运行；DSH 实测两模型不选 effort 均 `turn/end completed`（assistant 消息带 `reasoning` block），选择器只显示六档。
 
 ### 写入
 
 1. 备份：`*.bak-20260831-114108-before-add-openrouter-glm53`（补丁层与 settings.yaml 各一份，`0600`）。
 2. 补丁层 `~/.dsh/profiles/web/cordis.patch.yml` openrouter route `models:` 数组追加两条目（`[text, image]` 无空格格式）；settings.yaml 镜像同步（`[ text, image ]` 带空格格式，与文件既有风格一致）。
-3. 校验：两文件 YAML 可解析；`DSH_HOME=~/.dsh dsh --profile web --dump-config` 退出 0，openrouter route 组合结果恰含 5 个 id（原 3 个 DeepSeek + 新 2 个 GLM），其余 route 未动。
+3. 移除 `off` 声明：`*.bak-20260831-115735-before-remove-glm53-off`（见上节）。
+4. 校验：两文件 YAML 可解析；`DSH_HOME=~/.dsh dsh --profile web --dump-config` 退出 0，openrouter route 组合结果恰含 5 个 id（原 3 个 DeepSeek + 新 2 个 GLM），其余 route 未动。
 
 ## 仍未验证（不要据此宣称能力）
 
@@ -85,5 +92,6 @@ context / max output 取自 `/models` 的 `context_length` 与 `top_provider.max
 2. 跨家 4 模型 + displayName 改名：`*.bak-20260828-165202-before-add-openrouter-cross-vendor`
 3. 剔除 5 个、留 3 个：`*.bak-20260828-170030-before-remove-openrouter-models`
 4. 重新加入 z-ai/glm-5.3 两个模型：`*.bak-20260831-114108-before-add-openrouter-glm53`
+5. 移除两 GLM 条目的 `off` 档（强制思考模型，见上节）：`*.bak-20260831-115735-before-remove-glm53-off`
 
 校验：`DSH_HOME=~/.dsh dsh --profile web --dump-config` 退出 0，组合结果含预期模型 id。当日全程有一个 `dsh web` 实例在跑（0.1.1-rc.2），补丁 watcher 热加载；剔除时若某会话正选着被剔除的模型，该会话需在选择器里重选。
