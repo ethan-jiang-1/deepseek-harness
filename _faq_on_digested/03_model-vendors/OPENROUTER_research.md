@@ -2,13 +2,17 @@
 
 基线：DSH `0.1.1-rc.2`（npx 缓存直跑），`@earendil-works/pi-ai@0.82.1`，OpenRouter `GET /models` 共 387 个模型。凭据 `OPENROUTER_API_KEY` 同时在 `~/.zshenv` 与受管 `~/.dsh/.credentials.yaml`（`0600`，热加载），`GET /models` 返回 200。
 
+> **2026-08-31 更新**：重新加入 `z-ai/glm-5.3` 与 `z-ai/glm-5.3-flash` 两个模型（用户在 08-28 弃用后决定重新暴露，走 OpenRouter 而非 Z.ai 直连）。全部 effort 档位（含 minimal/low/medium/xhigh）与工具往返逐项实测通过；flash 图片输入经 OpenRouter 实测通过、5.3 图片被拒。见「2026-08-31 增补」一节。
+
 ## Route 结构
 
 route id `openrouter` 命中 pi-ai 内置 provider（内置目录仅 `ai21/jamba-large-1.7` 一个模型），条目未写 `api:` → 整体复用内置 provider，协议 **openai-completions**（dsh-llm-pi-ai `lib/index.js`：`api = request.api ?? base?.api ?? routeApi`；命中目录且未声明 `api` 时 `reuseCatalogProvider`）。`baseURL` 显式 `https://openrouter.ai/api/v1`。`compat.thinkingFormat: openrouter` 是受支持取值，但本 route 模型均直接接受标准 `reasoning_effort`（下方实测），无需 compat 声明。`input` 字段合法取值仅 `text` / `image`（`MODALITIES`），OpenRouter 的 video 输入无法在 DSH 声明，不宣称。
 
 displayName 为 **"OpenRouter"**：曾因加入跨家模型从 "OpenRouter DeepSeek" 改名，剔除后未改回，保持对后续新增中性。
 
-## 当前配置（3 个模型，2026-08-28 剔除后）
+## 当前配置（2026-08-28 时点为 3 个模型）
+
+> 现状见下方「2026-08-31 增补」；本节保留 08-28 剔除后的历史快照。
 
 context / max output 取自 `/models` 的 `context_length` 与 `top_provider.max_completion_tokens`（2026-08-28）；价格为 prompt / completion 每百万 token。
 
@@ -42,16 +46,44 @@ context / max output 取自 `/models` 的 `context_length` 与 `top_provider.max
 
 首次实测（2026-08-28 下午）：`/models` 列出该模型，但请求 404 `No endpoints available matching your guardrail restrictions and data policy. Configure: https://openrouter.ai/settings/privacy`——账号隐私/数据策略过滤了全部 endpoint，其余 DeepSeek 模型不受影响。用户随后在 openrouter.ai/settings/privacy 放宽设置，重测三档全 200。
 
+## 2026-08-31 增补：重新加入 z-ai/glm-5.3 两个模型
+
+用户在 08-28 弃用跨家模型后，决定将 `z-ai/glm-5.3` 与 `z-ai/glm-5.3-flash` 重新暴露，且走 OpenRouter（同一把 `OPENROUTER_API_KEY`，不新增凭据）。按 [DSH_howto-add-vendor-models.md](./DSH_howto-add-vendor-models.md) 流程：先实测后写入。
+
+### /models 数据（2026-08-31 抓取）
+
+两个模型均不在 pi-ai@0.82.1 内置 openrouter 目录（目录内 z-ai 型号止于 `glm-5.2`），必须显式写 `contextWindow`/`maxTokens`，否则静默吃路由默认 262144 / 32768。
+
+| id | context | max out | 输入 | 价格 ($/M) |
+|---|---|---|---|---|
+| `z-ai/glm-5.3` | 1310720 | 131072 | text | 0.0000014 / 0.0000044 |
+| `z-ai/glm-5.3-flash` | 1310720 | 131072 | text+image | 0.000000075 / 0.00000025 |
+
+### 实测证据（2026-08-31，真实 key 直连 OpenRouter）
+
+- **最小文本**：两模型均 200、正文正确。flash 是 thinking 模型：`max_tokens: 64` 时全被 reasoning 吃光（finish `length`），正文在 `max_tokens: 256` 下正常。
+- **effort 全档位**：两模型 `none`（= 不发送参数）/ `minimal` / `low` / `medium` / `high` / `xhigh` / `max` 全部 200、正文正确，`reasoning_tokens` 随档位出现（0–85）。与 08-28 只测三档不同，本次七档全测，故条目声明全七档（`off` 空 / 六档 1:1），`z-ai/glm-5.3` 不再沿用 zai 直连的低/中→high 折叠映射。
+- **工具往返**：两模型 `tools` + `tool_choice: auto` 均正确返回 `tool_calls`（calculator `{"a":2,"b":2}`）。这补上了 08-28 遗留的「工具未实测」缺口（至少 curl 层）。
+- **图片输入**：flash 实测接受图片并正确描述（`image_tokens` 计入）；`z-ai/glm-5.3` 被拒，错误 404 `No endpoints found that support image input`——与 08-30 Z.ai 直连的 code 1210 同义。故 flash 声明 `input: [text, image]`，5.3 不声明。
+- 备注：`glm-5.3` 的 `low` 档首次请求偶发空响应（网络抖动，非参数拒绝），重试 200。
+
+### 写入
+
+1. 备份：`*.bak-20260831-114108-before-add-openrouter-glm53`（补丁层与 settings.yaml 各一份，`0600`）。
+2. 补丁层 `~/.dsh/profiles/web/cordis.patch.yml` openrouter route `models:` 数组追加两条目（`[text, image]` 无空格格式）；settings.yaml 镜像同步（`[ text, image ]` 带空格格式，与文件既有风格一致）。
+3. 校验：两文件 YAML 可解析；`DSH_HOME=~/.dsh dsh --profile web --dump-config` 退出 0，openrouter route 组合结果恰含 5 个 id（原 3 个 DeepSeek + 新 2 个 GLM），其余 route 未动。
+
 ## 仍未验证（不要据此宣称能力）
 
-通过 DSH 的工具往返（`tools` 在全部模型的 `supported_parameters` 中，但未走 DSH 实测）、replay/历史恢复、流式下的 effort 行为、context/maxTokens 真实边界（声明值来自 `/models` 自述）、图片输入路径（vision-exp 声明了 image 输入，未实测图片请求）。
+通过 DSH 的工具往返（curl 层已验证两 GLM 模型的 `tools`，但未走 DSH 实测）、replay/历史恢复、流式下的 effort 行为、context/maxTokens 真实边界（声明值来自 `/models` 自述）、图片输入路径（flash 经 OpenRouter 实测通过，未走 DSH 实测）。
 
 ## 变更与恢复
 
-三批写入，各自带写入前备份（均 `0600`；恢复 = 逐字节拷回）：
+各批写入均带写入前备份（均 `0600`；恢复 = 逐字节拷回）：
 
 1. DeepSeek 4 模型首次进补丁层（含修复原有 2 条目缺 contextWindow/maxTokens）：`*.bak-20260828-164737-before-add-openrouter-deepseek`
 2. 跨家 4 模型 + displayName 改名：`*.bak-20260828-165202-before-add-openrouter-cross-vendor`
 3. 剔除 5 个、留 3 个：`*.bak-20260828-170030-before-remove-openrouter-models`
+4. 重新加入 z-ai/glm-5.3 两个模型：`*.bak-20260831-114108-before-add-openrouter-glm53`
 
-校验：`DSH_HOME=~/.dsh dsh --profile web --dump-config` 退出 0，组合结果仅含 3 个模型 id。当日全程有一个 `dsh web` 实例在跑（0.1.1-rc.2），补丁 watcher 热加载；剔除时若某会话正选着被剔除的模型，该会话需在选择器里重选。
+校验：`DSH_HOME=~/.dsh dsh --profile web --dump-config` 退出 0，组合结果含预期模型 id。当日全程有一个 `dsh web` 实例在跑（0.1.1-rc.2），补丁 watcher 热加载；剔除时若某会话正选着被剔除的模型，该会话需在选择器里重选。
