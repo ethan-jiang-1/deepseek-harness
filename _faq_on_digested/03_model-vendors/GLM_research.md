@@ -1,6 +1,8 @@
 # GLM Research Notes: Z.ai 的直接支持与纯配置边界
 
 > **2026-08-27 更新**：`dsh web` 的 zai route 已裁剪为 `glm-5.3` 与 `glm-5.3-flash` 两个 1M 上下文模型，且实际生效层是 profile 补丁层而非本文所述 settings.yaml；本文其余目录快照仍以当时的 `pi-ai@0.82.1` 为准。见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md)。
+>
+> **2026-08-30 更新**：两个 endpoint 的 `/models` 实测同列 10 个在售 id；`glm-5.3-flash` 实测接受图片输入，`glm-5.3` 服务端拒绝（仅文本）；官方 OpenAPI enum 已含 `glm-5.3`。见下方「2026-08-30 实测」一节与变更记录的同日增补。
 
 ## 结论
 
@@ -54,7 +56,13 @@ llm-pi-ai:
 
 Z.ai Quick Start 指定标准 API 的 `POST https://api.z.ai/api/paas/v4/chat/completions`、`Authorization: Bearer …`、模型 `glm-5.2`，并提供 OpenAI SDK 兼容示例：[Quick Start](https://docs.z.ai/guides/overview/quick-start.md)。官方 Function Calling 文档使用 OpenAI 格式的 `tools`、`tool_calls`、`tool_call_id` 回传：[Function Calling](https://docs.z.ai/guides/capabilities/function-calling.md)。官方流式文档说明 SSE 与 `data: [DONE]`：[Streaming Messages](https://docs.z.ai/guides/capabilities/streaming.md)。
 
-官方 OpenAPI 当前列出 `glm-5.2`、`glm-5.1`、`glm-5-turbo`、`glm-5`、`glm-4.7`、`glm-4.7-flash`、`glm-4.7-flashx`、`glm-4.6`、`glm-4.5`、`glm-4.5-air`、`glm-4.5-x`、`glm-4.5-airx`、`glm-4.5-flash` 与 `glm-4-32b-0414-128k`；它声明 `reasoning_effort` 只由 `glm-5.2` 支持。该枚举与本机 Coding catalog 不同，不能跨 endpoint 互相抄写：[Chat Completion OpenAPI](https://docs.z.ai/api-reference/llm/chat-completion.md)。
+官方 OpenAPI 当前（2026-08-30 抓取）列出 `glm-5.3`、`glm-5.2`、`glm-5.1`、`glm-5-turbo`、`glm-5`、`glm-4.7`、`glm-4.7-flash`、`glm-4.7-flashx`、`glm-4.6`、`glm-4.5`、`glm-4.5-air`、`glm-4.5-x`、`glm-4.5-airx`、`glm-4.5-flash` 与 `glm-4-32b-0414-128k` 共 15 个文本 id，另列 6 个视觉 id（`glm-5v-turbo`、`glm-4.6v`、`glm-4.6v-flash`、`glm-4.6v-flashx`、`glm-4.5v`、`autoglm-phone-multilingual`）；`reasoning_effort` 由 GLM-5.2 及以上支持，`glm-5.3` 只接受 `low`/`high`/`max`，`glm-5.2` 将 `none`/`minimal` 映射为跳过思考、`low`/`medium` 映射为 `high`、`xhigh` 映射为 `max`，默认 `max`；GLM-5.3 的 `thinking` 只能 enabled，深度由 `reasoning_effort` 控制。该枚举与本机 Coding catalog 不同，不能跨 endpoint 互相抄写：[Chat Completion OpenAPI](https://docs.z.ai/api-reference/llm/chat-completion.md)。
+
+## 2026-08-30 实测：/models 目录与图片输入
+
+两个 endpoint 的 `GET /models`（Coding `/api/coding/paas/v4/models` 与标准 `/api/paas/v4/models`）当日返回同一份 10 个 id 的在售列表：`glm-4.5` 与 `glm-4.5-air`（created 2025-07-27）、`glm-4.6`（2025-10-01）、`glm-4.7`（2025-12-21）、`glm-5`（2026-02-10）、`glm-5-turbo`（2026-03-14）、`glm-5.1`（2026-03-27）、`glm-5.2`（2026-06-16）、`glm-5.3` 与 `glm-5.3-flash`（均为 2026-08-13）；括号为响应的 `created` 字段。`/models` 不返回视觉模型，也不返回 `glm-4.7-flash`/`glm-4.5-x` 等仍在文档 enum 内的旧型号和 `glm-5.2-highspeed`（pi-ai@0.84.3 catalog 新增项）：`/models` 是在售清单，不是官方接受过的请求全集。
+
+图片输入经 Coding endpoint 用同一张图（Z.ai 文档示例 `register.png`）实测：`glm-5.3-flash` 返回 HTTP `200` 并正确描述图片（`prompt_tokens: 5608`，图片真实进入上下文；`thinking` 禁用时 `reasoning_tokens: 0`）；`glm-5.3` 返回 HTTP `400`、代码 `1210`（`messages.content.type is invalid, allowed values: ['text']`）。即 flash 能收图、5.3 服务端只收文本，且该差别官方 OpenAPI 未记载（flash 不在任何 enum）。据此 zai route 仅给 flash 条目声明 `input: [text, image]`，见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md) 的 2026-08-30 增补。只验证了 `image_url` 输入；`video_url`、`file_url` 未验证，不宣称。
 
 ## 本机实测与待验证项
 

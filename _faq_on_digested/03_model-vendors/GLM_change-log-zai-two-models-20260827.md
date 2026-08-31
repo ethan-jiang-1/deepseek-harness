@@ -71,3 +71,13 @@ flash 曾长期不在任何 pi-ai 目录里，但端点真实存在：`GET /api/
 ## 仍未验证（不要据此宣称能力）
 
 工具往返、replay/历史恢复、流式下的 effort 差异、上下文/输出上限的真实边界、`/models` 中其余目录外型号；这些沿用 [GLM_research.md](./GLM_research.md) 的逐项验证纪律：每个公开档位单独验过才允许写进条目声明。
+
+## 2026-08-30 增补：flash 条目声明 `input: [text, image]`
+
+同一张图（Z.ai 文档示例 `register.png`）直接 curl Coding endpoint：`glm-5.3-flash` 返回 `200` 且描述正确（`prompt_tokens: 5608`，图真实进入上下文）；`glm-5.3` 返回 `400`、代码 `1210`（`messages.content.type is invalid, allowed values: ['text']`）。flash 能收图、5.3 服务端只收文本，且 flash 不在任何官方 enum 里，这一能力只能实测得知。因此只给 flash 条目加一行 `input: [text, image]`（`~/.dsh/profiles/web/cordis.patch.yml` 与 `~/.dsh/settings.yaml` 同步，备份后缀 `.bak-20260830-214705-before-flash-image-input`，权限 0600）；5.3 不加。
+
+为什么必须显式声明：`models:` 整体替换目录后，条目 `input` 的解析顺序为 条目声明 → 同 id 内置条目（flash 不在 `pi-ai@0.82.1` 目录，不存在）→ 路由 `defaultInput`（默认 `['text']`，`dsh-llm-pi-ai` 的 `DEFAULT_INPUT`）；adapter 在发请求前检查消息是否含图与 `input.includes('image')`，不满足直接抛 `UNSUPPORTED_CONTENT`。这与 `contextWindow`/`maxTokens` 静默吃路由默认值是同一族坑，但 `input` 是发请求前的显式拒绝，不是静默降级。声明后图片走既有 attachment 服务（`dsh-llm-pi-ai` 插件已接 `resolveAttachments`），无需其他配置；openrouter 的 `deepseek/deepseek-v4-flash-vision-exp` 条目是同一写法的先例。
+
+同日其他证据：两个 endpoint 的 `/models` 返回同一份 10 个在售 id（`glm-5.3` 与 `glm-5.3-flash` 的 `created` 均为 2026-08-13）；官方 OpenAPI 文本 enum 已含 `glm-5.3`（共 15 个 id）但仍无 `glm-5.3-flash`；官方 `reasoning_effort` 文档写明 GLM-5.2 及以上支持、GLM-5.3 仅 `low`/`high`/`max`——与本文 5.3 粗映射一致，粗映射不动。
+
+仍未验证（新增）：DSH route 内（非裸 curl）的图片请求往返、带图请求的流式与工具调用行为、`video_url`/`file_url` 输入。
