@@ -31,6 +31,7 @@
 2. 保持 session 生命周期和日志语义：turn / step、模型可见输入、tool call / result 与 `request/header` 仍可从同一日志重建。
 3. 按 `AgentEventMap` 声明的 mode 和 agent scope 派发实时事件；尤其不能把 waterfall 与 serial 互换。
 4. 从 `session.deriveMessages()` 取得请求历史，并让 loop 的请求重建 invariant 能把实际 LLM 请求对回日志。
+5. **维护 session projection**：projection 已从可选变为强制（`init(header)` 签名）。替换 loop 必须确保投影在 session 生命周期内正确运行，否则毁坏客户端状态。
 
 满足这些接口后，渲染面、按 `agent.ctx` 登记的插件与人类 command 无需知道私有驱动结构。
 

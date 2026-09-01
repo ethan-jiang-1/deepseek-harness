@@ -2,44 +2,40 @@
 
 ## 一句话
 
-`dsh-acp-demo --config ./cordis.yml` 启动一个常驻 stdio ACP 服务，供进程外程序化客户端（另一个 Harness 实例的 `dsh-subagent-acp`、标准 ACP 客户端）驱动 agent。stdout 是纯协议帧，不能装 logger。
+`dsh --profile acp` 启动一个常驻 stdio ACP 服务，供进程外程序化客户端（另一个 Harness 实例的 `dsh-subagent-acp`、标准 ACP 客户端）驱动 agent。stdout 是纯协议帧，不能装 logger。
 
 ## 怎么跑
 
 ```sh
-# 产品 bin
-dsh-acp-demo --config ./cordis.yml
-
-# 源码启动
-pnpm exec tsx packages/examples/acp-demo/src/bin.ts --config examples/acp-agent/cordis.yml
+# 产品 bin（launcher profile）
+dsh --profile acp
 
 # 快照模式（不读 .env，不触发模型调用）
-DSH_SNAPSHOT=replay dsh-acp-demo --config cordis.snapshot.yml
+DSH_SNAPSHOT=replay dsh --profile acp
 ```
 
-acp 也不是 `PROFILE_TEMPLATES` 中的一个名字。它是独立的 app 二进制 `dsh-acp-demo`，需要自己提供 `cordis.yml`。`packages/examples/acp-demo/src/index.ts` 是组合插件。
+acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）。走 bundle 层叠。
 
 ## 组合构成
 
-`@deepseek-ai/dsh-acp-demo` 是一个组合插件，通过 `ctx.plugin()` 顺序挂载：
+`dsh-acp-app` bundle 包含：
 
-| 顺序 | 插件 | 作用 |
-|------|------|------|
-| 1 | `@deepseek-ai/dsh-agent-spine-demo` | agent 核心（timer、llm、session、system-prompt、tools、agent-loop 等） |
-| 2 | `@deepseek-ai/dsh-session-persistence-jsonl` | JSONL 持久化（`packChunks` 可选） |
-| 3 | `@deepseek-ai/dsh-session-checkpoint-policy` | 耐久检查点 |
-| 4 | `@deepseek-ai/dsh-session-query-sqlite` | SQLite 会话查询索引 |
-| 5 | `@deepseek-ai/dsh-acp` | ACP 桥，`inject: ['agents']` |
+| 插件 | 作用 |
+|------|------|
+| `@deepseek-ai/dsh-acp` | ACP 桥，`inject: ['agents']` |
+| `@deepseek-ai/dsh-session-persistence-jsonl` | JSONL 持久化 |
+| `@deepseek-ai/dsh-session-checkpoint-policy` | 耐久检查点 |
+| `@deepseek-ai/dsh-session-query-sqlite` | SQLite 会话查询索引 |
 
-`ctx.effect()` 包装顺序使卸载顺序相反：ACP 先停，再拆查询 → 检查点 → 持久化 → spine，保证 checkpoint 和 persistence 监听器在 ACP agent 冲洗完关闭事件后才拆。
+`ctx.effect()` 包装顺序使卸载顺序相反：ACP 先停，再拆查询 → 检查点 → 持久化，保证 checkpoint 和 persistence 监听器在 ACP agent 冲洗完关闭事件后才拆。
 
 ## 进程模型
 
 ```
-dsh-acp-demo --config ./cordis.yml
-  → boot() 加载 cordis.yml
-  → acp-demo 组合插件 apply
-    → mount spine → persistence → checkpoint → query → ACP transport
+dsh --profile acp
+  → runProfile → composeProfile → boot()
+  → acp-app 组合 apply
+    → mount dsh-base → ACP transport 等
   → ACP 插件创建 AgentSideConnection(process.stdin, process.stdout)
   → 等待客户端连接
   → initialize: 返回 protocolVersion、agentCapabilities（图像能力取决于精确 route）
@@ -80,7 +76,6 @@ dsh-acp-demo --config ./cordis.yml
 | `packages/acp/acp/src/index.ts` | ACP 桥插件 |
 | `packages/acp/acp/src/content.ts` | 内容准入（`admitAcpPrompt`、`assistantBlockToAcp`） |
 | `packages/acp/acp/src/codec.ts` | turn 结局到 ACP stopReason 编解码 |
-| `packages/examples/acp-demo/src/index.ts` | ACP demo 组合插件 |
-| `packages/examples/acp-demo/src/bin.ts` | ACP demo bin |
+| `packages/bundle/acp-app/cordis.patch.yml` | ACP 应用的 bundle 组合 |
 | `packages/test-support/acp-snapshot/` | ACP 快照测试工具 |
 | `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证详细对照 |

@@ -1,6 +1,6 @@
 # Answer · DSH 目录设计的总模型
 
-源码核验基线：DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。
+源码核验基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`。
 
 ## 一句话答案
 

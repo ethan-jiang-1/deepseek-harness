@@ -1,6 +1,6 @@
 # Research Notes: DSH 可能采用的 Spec-Driven Development
 
-产品源码核验基线：DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。
+产品源码核验基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`（与 `_digested/` 相同）。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。
 
 ## 核心结论
 
@@ -14,13 +14,13 @@
 
 Feature Issue 模板要求一句话预期结果，并在折叠区写“验收条件、用户或模型可见变化、测试证据” [`.github/ISSUE_TEMPLATE/feature.md:11`](../../.github/ISSUE_TEMPLATE/feature.md)。Task 模板要求“验收条件、交付物、测试证据” [`.github/ISSUE_TEMPLATE/task.md:11`](../../.github/ISSUE_TEMPLATE/task.md)。Bug 模板要求复现、实际结果、预期结果和验收条件 [`.github/ISSUE_TEMPLATE/bug.md:11`](../../.github/ISSUE_TEMPLATE/bug.md)。Research 模板则把问题、证据标准和交付结论分开 [`.github/ISSUE_TEMPLATE/research.md:11`](../../.github/ISSUE_TEMPLATE/research.md)。
 
-非 Draft 的人类 PR 进入评审时，PR 模板要求关联同仓库 Issue，并列出变更和验证 [`.github/pull_request_template.md:1`](../../.github/pull_request_template.md)。Issue policy 会解析同仓库引用，并在适用时拒绝没有 Issue 引用的 PR [`.github/issue-management/policy.mjs:157`](../../.github/issue-management/policy.mjs)、[`.github/issue-management/policy.mjs:331`](../../.github/issue-management/policy.mjs)；Issue lifecycle 又把普通实现事件映射到 `In progress`，把 review request 映射到 `In review`，把 changes requested 映射回 `In progress` [`.github/issue-management/policy.mjs:178`](../../.github/issue-management/policy.mjs)、[`.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md:13`](../../.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md)。
+非 Draft 的人类 PR 进入评审时，PR 模板要求关联同仓库 Issue，并列出变更和验证 [`.github/pull_request_template.md:1`](../../.github/pull_request_template.md)。Issue policy 会解析同仓库引用，并在适用时拒绝没有 Issue 引用的 PR [`.github/issue-management/policy.mjs:63`](../../.github/issue-management/policy.mjs)、[`.github/issue-management/policy.mjs:361`](../../.github/issue-management/policy.mjs)；Issue lifecycle 又把普通实现事件映射到 `In progress`，把 review request 映射到 `In review`，把 changes requested 映射回 `In progress` [`.github/issue-management/policy.mjs:185`](../../.github/issue-management/policy.mjs)、[`.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md:13`](../../.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md)。
 
-限制：机器 policy 并不解析“验收条件”或“测试证据”是否填写充分。`validateBody()` 机械检查的是折叠区、外露长度和 Owner/Assignees 一致性 [`.github/issue-management/policy.mjs:122`](../../.github/issue-management/policy.mjs)，PR policy 强制的是 Issue 引用和元数据，不是 Issue 规格质量。因此 Issue 层的语义质量仍由作者和 review 负责。
+限制：机器 policy 并不解析“验收条件”或“测试证据”是否填写充分。`validateBody()` 机械检查的是折叠区、外露长度和 Owner/Assignees 一致性 [`.github/issue-management/policy.mjs:63`](../../.github/issue-management/policy.mjs)，PR policy 强制的是 Issue 引用和元数据，不是 Issue 规格质量。因此 Issue 层的语义质量仍由作者和 review 负责。
 
 ### 2. Agent Note 是 proposal/decision 的生命周期记录
 
-Agent Note 的自我定义是记录影响代码库的“决定或提案”，保存代码和普通文档无法承载的 why 与 trade-off [`.agents/notes/README.md:1`](../../.agents/notes/README.md)。每个非平凡变更必须在同一 PR 新增或更新至少一个 Agent Note；非平凡包括行为、架构、跨文件/包义务、流程、测试策略以及磁盘、wire、配置格式等 [`.agents/notes/README.md:44`](../../.agents/notes/README.md)、[`AGENTS.md:121`](../../AGENTS.md)。
+Agent Note 的自我定义是记录影响代码库的“决定或提案”，保存代码和普通文档无法承载的 why 与 trade-off [`.agents/notes/README.md:1`](../../.agents/notes/README.md)。每个非平凡变更必须在同一 PR 新增或更新至少一个 Agent Note；非平凡包括行为、架构、跨文件/包义务、流程、测试策略以及磁盘、wire、配置格式等 [`.agents/notes/README.md:44`](../../.agents/notes/README.md)、[`AGENTS.md:123`](../../AGENTS.md)。
 
 `proposed/` 明确表示实施前评审、尚未构建或只部分构建；`implemented/` 表示已经交付且必须随真实实现保持当前；`rejected/` 保存被否决的提案 [`.agents/notes/README.md:7`](../../.agents/notes/README.md)。但规则同时明确：重大未来工作从 `proposed/` 开始，已经做出的决定可以直接从 `implemented/` 开始 [`.agents/notes/README.md:44`](../../.agents/notes/README.md)。所以它不是“所有代码都必须先有一份 proposal”的刚性瀑布流程。
 
@@ -32,9 +32,9 @@ Agent Note 的存在性边界不是 CI 自动分类。该政策的 owning Note �
 
 ### 3. Plan Mode 把“先规格、后执行”做成产品行为
 
-Code preset 的 Plan Mode 提示明确要求先只读探索，禁止编辑、写配置、运行会改文件的 formatter/codegen 或实施计划 [apps/cli config:121](../../apps/cli/config/agent-presets/code/agent.cordis.yml)。计划必须是 decision-complete：写目标和成功标准，按 subsystem 分组修改，指出 public API、schema、data flow，覆盖边界、失败模式、测试、验收条件和显式假设，并详细到另一位工程师无需再做设计决策即可实施 [apps/cli config:127](../../apps/cli/config/agent-presets/code/agent.cordis.yml)。
+Code preset 的 Plan Mode 提示明确要求先只读探索，禁止编辑、写配置、运行会改文件的 formatter/codegen 或实施计划 [apps/cli config:121](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)。计划必须是 decision-complete：写目标和成功标准，按 subsystem 分组修改，指出 public API、schema、data flow，覆盖边界、失败模式、测试、验收条件和显式假设，并详细到另一位工程师无需再做设计决策即可实施 [apps/cli config:127](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)。
 
-同一提示把计划与实施清楚分开：`todo_write` 只跟踪批准后的实施，完整计划必须通过 `exit_plan_mode` 提交；实现只能在批准后的后续 step 开始；拒绝后要吸收反馈重新提交；review channel 不可用时必须保持 Plan Mode 而不能继续实施 [apps/cli config:125](../../apps/cli/config/agent-presets/code/agent.cordis.yml)、[apps/cli config:131](../../apps/cli/config/agent-presets/code/agent.cordis.yml)。
+同一提示把计划与实施清楚分开：`todo_write` 只跟踪批准后的实施，完整计划必须通过 `exit_plan_mode` 提交；实现只能在批准后的后续 step 开始；拒绝后要吸收反馈重新提交；review channel 不可用时必须保持 Plan Mode 而不能继续实施 [apps/cli config:125](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)、[apps/cli config:131](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)。
 
 这不只是一段软提示。Plan Mode 状态写入 session log，resume/fork 可恢复 [packages/plan/plan-mode/src/index.ts:1](../../packages/plan/plan-mode/src/index.ts)；`exit_plan_mode` 要求完整 Markdown 计划，校验 H1，通过 user-questions channel 展示计划，提供 Approve/Keep planning，只有严格批准才安排退出模式，其他回答返回模型继续修订 [packages/plan/plan-mode/src/index.ts:305](../../packages/plan/plan-mode/src/index.ts)。真实 Web e2e 会进入 Plan Mode、等待 review 卡片、点击 Approve，并验证工具结果、后续 `DONE`、模式退出和 keyless golden [apps/web/tests/plan-review.e2e.ts:66](../../apps/web/tests/plan-review.e2e.ts)。
 
@@ -42,7 +42,7 @@ Code preset 的 Plan Mode 提示明确要求先只读探索，禁止编辑、写
 
 ### 4. “规格”实施后分散到当前代码义务、文档和可执行证据中
 
-根规则要求测试描述 behavior 而非抽象“正确性”，改变旧行为时要连同测试一起改 [AGENTS.md:121](../../AGENTS.md)。代码变更必须同步更新受影响 README 和 JSDoc；所有 public export 的非显然义务必须有 JSDoc，并由 `verify-export-jsdoc` 检查 [AGENTS.md:135](../../AGENTS.md)。Review 要追踪接口两端，确认实现符合 PR 和 Agent Note，包括错误、取消、所有权和 disposal [`.agents/skills/dsh-code-review/SKILL.md:29`](../../.agents/skills/dsh-code-review/SKILL.md)。
+根规则要求测试描述 behavior 而非抽象“正确性”，改变旧行为时要连同测试一起改 [AGENTS.md:121](../../AGENTS.md)。代码变更必须同步更新受影响 README 和 JSDoc；所有 public export 的非显然义务必须有 JSDoc，并由 `verify-export-jsdoc` 检查 [AGENTS.md:135](../../AGENTS.md)。Review 要追踪接口两端，确认实现符合 PR 和 Agent Note，包括错误、取消、所有权和 disposal [`.agents/skills/dsh-code-review/SKILL.md:31`](../../.agents/skills/dsh-code-review/SKILL.md)。
 
 模型或用户可见行为有更强的 executable-spec 要求：每个非平凡 model/protocol/human-visible 变更都要在同一 PR 通过真实 runnable example 新增或更新 keyless scenario，package tests、mock-only 组合和 PR rationale 都不能替代 assembled transcript [docs/testing.md:47](../../docs/testing.md)、[AGENTS.md:123](../../AGENTS.md)。新 capability、lifecycle variant 或 transcript surface 要在计划阶段点名 unit、e2e、snapshot 层，并先确认 harness 能表达它 [docs/testing.md:47](../../docs/testing.md)。
 
@@ -52,15 +52,15 @@ Code preset 的 Plan Mode 提示明确要求先只读探索，禁止编辑、写
 
 根规则要求把可机械检查的不变量接入执行中的顶层 gate，并为每条改变的 acceptance path 证明无效输入会被拒绝 [AGENTS.md:139](../../AGENTS.md)。质量门禁决策说明其出发点：代码库主要由 coding agents 开发，agent 对 enforced gates 比 prose conventions 更可靠，因此每个可机械检查的 AGENTS promise 都应有非零退出命令，CI 运行完整集合 [`.agents/notes/implemented/process/2026-06-11-quality-gates.md:9`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)。
 
-`run-gates.ts` 的 CI 聚合包含 typecheck、lint、duplication、coverage、snapshot、doc-sync、module graph、knip、build、publint、built-package invariants 和真实 build-entry smokes [`scripts/run-gates.ts:256`](../../scripts/run-gates.ts)。`doc-sync` 本身包含源码导出的 Cordis/client/tool/config/persistence catalogs、新鲜度检查、export JSDoc、scoped events、Markdown links、package paths、Agent Note classification/format、type equivalence、translation pairing 和 docs build [`scripts/run-gates.ts:571`](../../scripts/run-gates.ts)。
+`run-gates.ts` 的 CI 聚合包含 typecheck、lint、duplication、coverage、snapshot、doc-sync、module graph、knip、build、publint、built-package invariants 和真实 build-entry smokes [`scripts/run-gates.ts:281`](../../scripts/run-gates.ts)。`doc-sync` 本身包含源码导出的 Cordis/client/tool/config/persistence catalogs、新鲜度检查、export JSDoc、scoped events、Markdown links、package paths、Agent Note classification/format、type equivalence、translation pairing 和 docs build [`scripts/run-gates.ts:496`](../../scripts/run-gates.ts)。
 
 生成物在这里是 derivative evidence，不是另一个人工维护的 spec。文档规范把 Cordis API、tool/config/persistence catalog、module graph 定义为从源码生成且 freshness-gated 的 reference，禁止手改生成源 [docs/AGENTS.md:25](../../docs/AGENTS.md)。相应 `package.json` 脚本以 `gen-*.ts --check` 验证 Cordis、tool、config、persistence 和 module graph 是否与源一致 [package.json:104](../../package.json)。这更接近“源码类型/JSDoc 是可执行接口说明，生成物是投影”，而不是“先写外部 schema 再生成全部实现”。
 
 ### 6. Review 负责 spec 与实现之间机器不能判断的部分
 
-Review 的 sources of truth 包括 AGENTS、defensive patterns、testing policy、quality-gates Note 和 Agent Notes [`.agents/skills/dsh-code-review/SKILL.md:10`](../../.agents/skills/dsh-code-review/SKILL.md)。Blocking requirements 要求 docs 与 code 同步、必要证据存在；manual checks 要求实现匹配 PR 与 Agent Note、检查真实入口、确认断言真的观察外部状态、让 invalid case 在真实 runner 中失败，并在实现 proposal 时同 diff 移动和改写 Agent Note [`.agents/skills/dsh-code-review/SKILL.md:20`](../../.agents/skills/dsh-code-review/SKILL.md)、[`.agents/skills/dsh-code-review/SKILL.md:40`](../../.agents/skills/dsh-code-review/SKILL.md)。Editor/model-visible 变更必须更新 snapshot 或解释为什么不需要，expected output diff 被当作 behavior change 审阅 [`.agents/skills/dsh-code-review/SKILL.md:43`](../../.agents/skills/dsh-code-review/SKILL.md)。
+Review 的 sources of truth 包括 AGENTS、defensive patterns、testing policy、quality-gates Note 和 Agent Notes [`.agents/skills/dsh-code-review/SKILL.md:10`](../../.agents/skills/dsh-code-review/SKILL.md)。Blocking requirements 要求 docs 与 code 同步、必要证据存在；manual checks 要求实现匹配 PR 与 Agent Note、检查真实入口、确认断言真的观察外部状态、让 invalid case 在真实 runner 中失败，并在实现 proposal 时同 diff 移动和改写 Agent Note [`.agents/skills/dsh-code-review/SKILL.md:21`](../../.agents/skills/dsh-code-review/SKILL.md)、[`.agents/skills/dsh-code-review/SKILL.md:42`](../../.agents/skills/dsh-code-review/SKILL.md)。Editor/model-visible 变更必须更新 snapshot 或解释为什么不需要，expected output diff 被当作 behavior change 审阅 [`.agents/skills/dsh-code-review/SKILL.md:46`](../../.agents/skills/dsh-code-review/SKILL.md)。
 
-因此，DSH 的闭环不是“有绿灯就等于符合规格”。Review skill 明说 automated checks 不能证明 prose 的准确性和语义质量 [`.agents/skills/dsh-code-review/SKILL.md:20`](../../.agents/skills/dsh-code-review/SKILL.md)，testing policy 也明说 coverage 不能证明 feature 按发布形态工作 [docs/testing.md:9](../../docs/testing.md)。机器负责可判定一致性，人负责 scope、intent、trade-off 和 evidence strength。
+因此，DSH 的闭环不是“有绿灯就等于符合规格”。Review skill 明说 automated checks 不能证明 prose 的准确性和语义质量 [`.agents/skills/dsh-code-review/SKILL.md:21`](../../.agents/skills/dsh-code-review/SKILL.md)，testing policy 也明说 coverage 不能证明 feature 按发布形态工作 [docs/testing.md:9](../../docs/testing.md)。机器负责可判定一致性，人负责 scope、intent、trade-off 和 evidence strength。
 
 ## Git 历史实例
 

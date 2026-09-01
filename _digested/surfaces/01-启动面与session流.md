@@ -2,7 +2,7 @@
 
 源码核验入口：根 `package.json` 的 `dsh` script、`apps/cli/package.json` `bin`、`apps/cli/src/bin.ts`、`packages/host/apiproxy/src/api-proxy.ts`。
 
-四个入口可以 boot 不同的 bundle 或叶子 `cordis.yml`，因此不一定共享同一进程或同一棵 Cordis 树；它们复用 `ctx.agents`、session log 和事件语义。
+五个入口可以 boot 不同的 bundle 或组合，因此不一定共享同一进程或同一棵 Cordis 树；它们复用 `ctx.agents`、session log 和事件语义。
 
 ![pnpm dsh 走 tsx ESM](./figures/source-vs-built.svg)
 
@@ -17,7 +17,7 @@
 
 `bin.ts` 分发：普通任务 `runProfile`，`--dump-config` `runDumpConfig`。dump 与 boot 的层差（launcher 派生层、不求值 `!!js`）不是入口差异，见 [`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)。
 
-ACP demo：`node --import tsx packages/examples/acp-demo/src/bin.ts --config examples/acp-agent/cordis.yml`。叶子配置，不是 `web`/`headless` 模板。stdout 留给协议帧。
+ACP：`dsh --profile acp`。launcher profile，stdout 留给协议帧。
 
 ## host / client 共享 `session/event`
 

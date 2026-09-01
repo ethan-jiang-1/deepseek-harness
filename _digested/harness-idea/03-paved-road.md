@@ -19,7 +19,7 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 > New behavior attaches to a documented extension point. Changing the loop itself updates this map.
 >
-> —— `docs/architecture.md:108`（基线 `528c682e…`）
+> —— `docs/architecture.md:121`（基线 `dd6322d6…`）
 
 ## 机制二：四条设计哲学，约束所有新增功能
 
@@ -38,13 +38,13 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 > `execute` runs immediately; the disposers it produces are collected and run (in reverse order) either when the returned disposer is called or when the fiber unloads, whichever comes first.
 >
-> —— `docs/cordis-api/fiber.md:30`（基线 `528c682e…`）
+> —— `docs/cordis-api/fiber.md:30`（基线 `dd6322d6…`）
 
 诚实说明强制力在哪：这一条是**惯例 + 测试 + review 强制**，不是静态门禁——静态分析管不到「每个贡献是否都走了 effect」。dsh 的对策是把惯例写成 standing order（`AGENTS.md`），把生命周期正确性交给 HMR 测试与运行时 invariant（见机制六）。
 
 > **Registrations are effects**: every contribution goes through `ctx.effect()` / `ctx.on()`; a registry's `register()` returns the disposer.
 >
-> —— `AGENTS.md:103`（基线 `528c682e…`）
+> —— `AGENTS.md:105`（基线 `dd6322d6…`）
 
 对比：如果一个系统里「正式注册」和「临时挂上去」是两种写法，读者每次都要判断该用哪种——判断就是犯错点。
 
@@ -72,7 +72,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 > **Waterfall listeners MUST call `next()`** to delegate; returning without it short-circuits the chain.
 >
-> —— `AGENTS.md:107`（基线 `528c682e…`）
+> —— `AGENTS.md:109`（基线 `dd6322d6…`）
 
 ## 机制六：运行时 invariant 体系——规则写成断言，不写成劝告
 
@@ -82,7 +82,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 > The empty form is an explicit architectural conclusion, not a generated placeholder.
 >
-> —— `.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md:24`（基线 `528c682e…`）
+> —— `.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md:24`（基线 `dd6322d6…`）
 - **invariant 断言的是有所有权的关系**（`AGENTS.md` 的纪律）：检查权威事件流或可变数据，不检查 service 存在性、不检查插件元数据——「存在」不代表「关系成立」，断错了对象等于没断。
 - **实例**：`dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致立刻 fail（非 loop 请求不检查）。
 
@@ -100,7 +100,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
   > A guard only guards if the regression actually fails it. ... prove it: introduce the regression, watch red, revert.
   >
-  > —— `docs/testing.md:34`（基线 `528c682e…`）
+  > —— `docs/testing.md:38`（基线 `dd6322d6…`）
 - 「Verify the world, not the self-report」——e2e 要重新执行命令或读文件，不能相信 agent 自己的输出；
 - 真实入口路径：built artifact smoke、Loader 真实组合、snapshot 必须来自可运行示例；
 - 每个非平凡模型/协议/人类可见变化，同 PR 更新 keyless snapshot。

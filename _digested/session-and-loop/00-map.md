@@ -38,7 +38,19 @@
 
 `deriveMessages()` 只从当前有序 surface 投影消息历史；`request/header` 单独重建 config、system 与 tools。`request/context` 只记录 provider、model 和 context window，不参与请求重建。完整记录不等于全部发送：compaction 在仅追加日志中保留旧事件，只让 replacement 在后续消息投影中遮蔽旧 surface。原始 `assistant/chunk` 也会保留，用于回放和 UI 保真。精确折叠规则见 [`01-session-event-map.md`](./01-session-event-map.md#完整记录不等于完整发送)。
 
-fork、resume、transcript、遥测、持久化（JSONL / SQLite）都从这一条流派生。所以 loop 可以换：只要新驱动仍往同一条 log 写、仍发同一类 `session/event`，渲染面可以不动。
+fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条流派生。所以 loop 可以换：只要新驱动仍往同一条 log 写、仍发同一类 `session/event`，渲染面可以不动。
+
+> **持久化后端变化**：上游 #2698 和 #3339 将 session 持久化调整为 JSONL-only。SQLite 代码路径已删除。`session-persistence-sqlite` 不再存在；`session-persistence-jsonl` 承担全部持久化职责。压缩使用 zstd 单帧格式。格式迁移框架（`formatRegistry`）支持 one-to-one 版本升级。
+
+> **ToolCallId 重命名**：上游 #2731 将 `CallId` 统一重命名为 `ToolCallId`（`llm`、`session` 及相关包）。事件字段和类型名已更新，不影响语义。
+
+## Projection 必须化
+
+上游 #2774 和 #2742 将 session projection 从可选机制变为强制要求：
+
+- 每个 projection 定义必须实现 `init(header: SessionHeader)` 方法（接收 session 的不可变元数据），不再允许无参 `init()`
+- 视图发布使用 `Object.is` 比较：两次 fold 结果若引用相同则跳过发布，避免无效 UI 更新
+- `projection` 层现在位于 `session` 与 `session-persistence` 之间，作为 session 状态的规范投影源
 
 ## 每个 agent 的 scope chain
 
@@ -59,7 +71,7 @@ fork、resume、transcript、遥测、持久化（JSONL / SQLite）都从这一�
 | `packages/core/agent-loop/` | `ctx.agentLoop` | 默认驱动 |
 | `packages/core/scope/` | （库） | per-agent 注册原语 |
 | `packages/preset/` | | 从 preset `cordis.yml` 组合 |
-| `packages/session/` | 持久化 seam | JSONL / SQLite、projection、title |
+| `packages/session/` | 持久化 seam | JSONL、projection、title |
 | [`docs/agent-lifecycle.md`](../../docs/agent-lifecycle.md) | | 官方时序图 |
 | [`docs/subsystems/session.md`](../../docs/subsystems/session.md) | | session 语义 |
 | [`docs/subsystems/scope.md`](../../docs/subsystems/scope.md) | | scope 语义 |

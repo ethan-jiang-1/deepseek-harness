@@ -43,6 +43,15 @@ setup 期间插件会再 `ctx.on` / `ctx.effect`。若此时有人开始卸（�
 
 清单第 18 条。`disabled` 是唯一插值的 metadata。原始节点留在 options，写回仍是 `!!js`。
 
+## vendor 4.0.2：Loader `fromInternal` 改进
+
+上游 #3318 将 Cordis vendor 整体升级到 4.0.2。主要改动在 `vendor/loader/src/internal.ts`：
+
+- **Node 原生加载器探测不再依赖版本号**：旧实现根据 `process.versions.node` 的 major version 判断加载器 API 版本（`>=24 → v2`、`>=22 → v1`），这对 `24.0~24.11.1` 误判——它们属于 `>=24` 的 major 值但实际是 v1 API。新实现改为检查加载器拥有的 API 方法（`getOrCreateModuleJob` → v2、`getModuleJobForImport` → v1），不存在则返回 `undefined`。
+- 包版本号更新：`vendor/logger-console`、`vendor/schemastery`、`vendor/timer` 各自 patch 版本 bump。不影响行为。
+
+这项修改支撑 Node 24.x 范围兼容性（上游 #3311）。
+
 ## 上游同步要求
 
 上游合入等价行为时，退役 [`vendor/README.md`](../../vendor/README.md) 中对应的本地修改，并同步更新本页的产品依赖。产品包不得绕过这些修改另写一套 Cordis 生命周期。

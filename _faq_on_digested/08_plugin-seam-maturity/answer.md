@@ -62,7 +62,7 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 
 ## 被数字推翻的三个印象
 
-1. **审批不是"完整 seam 所以饱和"。** Provider 只有 1 个（ACP 自动化桥）；GUI 的交互 answerer 走 host apiproxy 的 wire 派发，不注册成 Provider。运行时语义确实完备——`asked/decided` 成对审计、缺 answerer fail-closed、取消语义与审计 id 认领（见 [`user-approval` README](../../packages/interaction/user-approval/README.md) 与 [`apiproxy` 源码](../../packages/host/apiproxy/src/api-proxy.ts)）——但人类形状只有 diff/文字问答，无表单、多选项、确认单渲染；且 README 明说 sibling listener 的先后顺序不是策略优先级机制，**多方审批编排（谁先看、谁能否决）今天不支持**。真正的缺口是交互形状与多方治理，不是"地基"。
+1. **审批不是"完整 seam 所以饱和"。** Provider 只有 1 个（ACP 自动化桥）；GUI 的交互 answerer 走 host apiproxy 的 wire 派发，不注册成 Provider。运行时语义确实完备——`asked/decided` 成对审计、缺 answerer fail-closed、取消语义与审计 id 认领（见 [`user-approval` README](../../packages/interaction/user-approval/README.md) 与 [`apiproxy` 源码](../../packages/api/remotes/src/index.ts)）——但人类形状只有 diff/文字问答，无表单、多选项、确认单渲染；且 README 明说 sibling listener 的先后顺序不是策略优先级机制，**多方审批编排（谁先看、谁能否决）今天不支持**。真正的缺口是交互形状与多方治理，不是"地基"。
 2. **组织/团队编排不是空白。** `ctx.agentTeams`（core）+ tool 已进树（[note](../../.agents/notes/implemented/feature/2026-08-05-agent-teams.md)），晚于消化基线；第三方目录更早出现了该方向的项目。把它列进空白区是过期读数——上游每次同步后，空白判断必须随 `_change_log/` 重核。
 3. **web 不算饱和。** 4 个 Provider 同构、Consumer 只有 `tool-web` 一个面、共用同一失效模式（vendor API 可用性）。准确评级是"商品化但无差异化"，不是"做完了"。
 

@@ -41,7 +41,7 @@ Agent loop 位于两者之间：从插件图取模型、工具、提示词与会
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions, and "a lot of work" is not a cost argument when agents do the labor.
 >
-> —— `.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`（基线 `528c682e…`）
+> —— `.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`（基线 `dd6322d6…`）
 
 直接支持的因果是：**agent 更可靠地服从机械门禁，且 agent 劳动力便宜 → 用 enforced gates 替代 prose conventions。** 这是「门禁为什么这么多」的一手解释。
 
@@ -59,7 +59,7 @@ quality-gates note 是仓库的第一方自我描述；本专题不把它当作�
 
 > We recommend using an agent to explore the codebase and understand its architecture.
 >
-> —— `docs/architecture.md:9`（基线 `528c682e…`）
+> —— `docs/architecture.md:7`（基线 `dd6322d6…`）
 
 ## 参与规则的三层载体
 

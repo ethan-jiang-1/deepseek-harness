@@ -14,7 +14,9 @@
 
 1. **Prompt sections** — 插件往 `ctx.systemPrompt` 注册片段（身份、persona、工作区指令、时间……），按顺序、按这个 agent 的 scope 过滤后拼起来。
 2. **Tool schemas** — `ctx.tools` 里该 scope chain 仍可见的工具。全局层和祖先层按远到近合并，chain 上的 `restrict` 过滤这份继承面，当前 agent 自有层最后覆盖或补充。被过滤的工具在提示词和执行中都表现为不存在。
-3. **历史** — `deriveMessages()` 从 surface 投影。`inject` 的材料等下一次获准请求，获准后写成 `user/message`。图像以 durable attachment 引用进 content block，不把 inline base64 留在日志里；请求序列化时才把 durable 图像解析成 provider 的 file id（DeepSeek Files API 优先，失败回退 base64 data URL），并受每请求图像字节/数量上限约束。code-mode 子工具若返回 image block，会在本次 `run_code` 结束之后 `deferContext` 成一条 user message，而不是嵌在父 tool 结果里。
+3. **历史** — `deriveMessages()` 从 surface 投影。`inject` 的材料等下一次获准请求，获准后写成 `user/message`。图像以 durable attachment 引用进 content block，不把 inline base64 留在日志里；请求序列化时才把 durable 图像解析成 provider 的 file id（DeepSeek Files API 优先，失败回退 base64 data URL），并受每请求图像字节/数量上限约束。`llm-deepseek` 的 `DeepSeekFileStore` 按 `variantId` 索引复用已上传文件，带过期与配额回收；provider 拒绝 file id 时 invalidate 该映射并在同一请求重试一次。413 映射为 `INVALID_REQUEST`。PTC 模式（原 code-mode）子工具若返回 image block，会在本次 `run_code` 结束之后 `deferContext` 成一条 user message，而不是嵌在父 tool 结果里。
+
+> **图像编码管线**：上游 #2676 引入了统一的 encoding ladder（`attachment-local` 的 `encoding.ts`、`normalization.ts`、`compression-limiter.ts`、`request-image.ts`）。`saveImage` 返回 canonical ref 与 source facts。Alpha 感知编码：透明通道走独立 quality ladder。`read_image` 上报降采样后的尺寸与坐标比例。`llm/llm` 的 `content.ts` 支持多模态 image 内容装配。
 
 组装完成后，loop 先把生效的模型配置、system 和 tools 写入完整的 `request/header`，再分派请求。因此普通 section 可以动态计算，不需要单独新增事件类型；可重建的是它实际进入请求的结果。
 
@@ -62,6 +64,6 @@ tool 的 UI 渲染意图是设计的一部分，一开始就要定：`generic` /
 | 文件 | 内容 |
 |------|------|
 | [`01-section顺序与前缀.md`](./01-section顺序与前缀.md) | `order` 约定、complete section、KV 前缀 |
-| [`02-管道审批timeout与chunk.md`](./02-管道审批timeout与chunk.md) | `tools/*` 与 `approval/request`；chunk 入 log、message 进 surface；ReplayEnvelope；code-mode 图像 defer |
+| [`02-管道审批timeout与chunk.md`](./02-管道审批timeout与chunk.md) | `tools/*` 与 `approval/request`；chunk 入 log、message 进 surface；ReplayEnvelope；PTC 图像 defer |
 
 入口如何投影同一条流：[`../surfaces/00-map.md`](../surfaces/00-map.md)。

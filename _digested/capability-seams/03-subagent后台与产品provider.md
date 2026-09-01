@@ -27,3 +27,9 @@ shipped preset 里，`subagent_fork` 用 `backgroundMode: continuable`；Codex /
 2. 复制 shipped preset，去掉对应 tool 行的 `disabled`，让从这个 preset 组成的 agent 看见委托工具。
 
 不要把产品 provider 再插进每个 agent 的 isolate realm。tool 行只决定「这个 agent 能不能调用」，不负责再 mount 一份 provider。安装 Bundle 或组合 preset 行都不会启动产品、认证账号、选模型或探测凭据。
+
+## Subagent model routing 通过 DSH SDK
+
+上游 #2868 使 subagent 可通过 DSH SDK 进行动态 model routing。`subagent-dsh-sdk` provider 将 child model 选择委托给 SDK 内置路由，而不是在 provider 实现中硬编码 DeepSeek 或 Claude 的名称。这使 `send_message` 继承父 agent 的 model 选择，而不再依赖 provider 的默认 model。
+
+`subagent-dsh-sdk` provider 在 `packages/subagent/subagent-dsh-sdk/` 中实现，`packages/subagent/tool-subagent/` 的 `backgroundMode` 策略不受影响。

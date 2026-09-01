@@ -1,5 +1,5 @@
 {
-  "baseline": "528c682e061696f5a160f363f236ecbf53cbd006",
+  "baseline": "dd6322d604e00eec1ba5e0c8541159906a21094a",
   "claims": [
     {
       "id": "C1",
@@ -105,37 +105,37 @@
       "id": "N1",
       "description": "baseline 下 .agents/notes 的 .md 文件总数",
       "metric": "notes-md-total",
-      "expected": 1486
+      "expected": 1680
     },
     {
       "id": "N2",
       "description": "baseline 下 .agents/notes/implemented 的 .md 文件数",
       "metric": "notes-implemented-md",
-      "expected": 1124
+      "expected": 1264
     },
     {
       "id": "N3",
       "description": "docs/architecture.md 扩展表行数",
       "metric": "architecture-extension-rows",
-      "expected": 18
+      "expected": 19
     },
     {
       "id": "N4",
       "description": "baseline 下 invariant companion 的所有者包总数（packages/*/*/package.json）",
       "metric": "invariant-total",
-      "expected": 227
+      "expected": 250
     },
     {
       "id": "N5",
       "description": "baseline 下可执行 invariant companion 的数量（install 函数非空且不使用 \\\"No runtime invariant:\\\" 标记）",
       "metric": "invariant-executable",
-      "expected": 37
+      "expected": 40
     },
     {
       "id": "N6",
       "description": "baseline 下有理由的空 invariant companion 的数量（\\\"No runtime invariant:\\\" 标记）",
       "metric": "invariant-empty",
-      "expected": 190
+      "expected": 210
     }
   ]
 }

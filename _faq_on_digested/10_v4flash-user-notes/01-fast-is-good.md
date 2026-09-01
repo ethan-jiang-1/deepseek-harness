@@ -27,7 +27,7 @@
 
 `<goal_round>` 每轮注入给模型的提示词是固定的（`packages/goal/goal-round-driver/src/prompt.ts:12-26`），要点：以当前 workspace、工具结果与持久会话状态为权威，"inspect them instead of assuming earlier narration is still current"；完成前必须收集客观已达成的证据并读当前 goal 再 `complete`。配套的授权设计：
 
-- **自动续轮预算**：`maxGoalRounds` 正 safe integer，部署默认 **256**（`packages/goal/goal/src/index.ts:187`）；轮次记账只认 goal 来源消息，**人的插话与澄清永不消耗预算**（`fold.ts:321-332` 校验 `source.kind==='goal'` 且 round 连续）。
+- **自动续轮预算**：`maxGoalRounds` 正 safe integer，部署默认 **256**（`packages/goal/goal/src/index.ts:240`）；轮次记账只认 goal 来源消息，**人的插话与澄清永不消耗预算**（`fold.ts:321-332` 校验 `source.kind==='goal'` 且 round 连续）。
 - **blocked 下限**：同因阻塞不足 3 个连续轮次时，机械拒绝 `blocked`（`GOAL_TOOL_BLOCK_THRESHOLD`），语义判断留给模型——"difficulty, uncertainty, or useful remaining work is not blocked"（`tool:goal` section，order 114，`tool-goal/src/index.ts:113-123`）。
 - **自动性永远锚在人类权威上**：重启/fork 后持久 phase 还原但 activation 一律 disarm（`agent/session-start` 边沿统一 disarm，`goal/src/index.ts:198-200`），人类一句"继续" → 模型 `update_goal resume` 重新武装。设计笔记把这拆成两个不同事实：*"durable lifecycle 与'继续的许可（activation）'是两个不同事实"*（`2026-07-19-persisted-same-session-goal-domain.md:17`）。
 

@@ -468,7 +468,7 @@ function checkSvg(path, source) {
   if (stack.length > 0) report(path, undefined, `unclosed XML tag <${stack.at(-1)}>`)
 }
 
-const EXPECTED_BASELINE = '528c682e061696f5a160f363f236ecbf53cbd006'
+const EXPECTED_BASELINE = 'dd6322d604e00eec1ba5e0c8541159906a21094a'
 const claimsPath = resolve(corpusRoot, 'harness-idea', 'claims.json')
 // 出处标记与 08-judgement-discipline.md 的出处分级表一致：本专题不使用外部
 // 资料作为证据，事实一律以 DSH 官方文件与基线为准。

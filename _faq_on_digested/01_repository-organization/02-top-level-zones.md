@@ -1,6 +1,6 @@
 # 02 · 顶层目录按什么边界划分
 
-源码核验基线：DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。
+源码核验基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`。
 
 ## 总图
 
@@ -119,5 +119,4 @@ TypeScript 特别区分 Host 与 Client 两个 compiler face。普通 package �
 - [`vendor/README.md`](../../vendor/README.md)
 - [`native/README.md`](../../native/README.md)
 - [`python/README.md`](../../python/README.md)
-- [`examples/AGENTS.md`](../../examples/AGENTS.md)
 - [`website/docs.ts`](../../website/docs.ts)

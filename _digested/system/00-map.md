@@ -85,12 +85,15 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 | `core/scope` | 按 agent 划分的注册原语 | 库，无 ctx 键 |
 | `llm/llm` | 消息与流式词汇 + adapter seam | `ctx.llm` |
 
+| `webhook/webhook` | `ctx.webhookRuntime` | 认证投递分发与 Workspace Session 创建 |
+
 ## 官方文档入口
 
 - [`docs/architecture.md`](../../docs/architecture.md) / [`docs/architecture.zh.md`](../../docs/architecture.zh.md)
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md)
 - [`docs/capability-seams.md`](../../docs/capability-seams.md)
 - [`docs/glossary.md`](../../docs/glossary.md)
+- [`docs/subsystems/webhook.md`](../../docs/subsystems/webhook.md)
 - [`packages/README.md`](../../packages/README.md)
 
 ## 机制级正文

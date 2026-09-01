@@ -4,7 +4,7 @@
 
 简单说：**一子目录 = 一个探究过的问题，答案是自己综合出来的，不是从某一份材料里直接抄的。**
 
-> **当前研究基线**：涉及运行时行为的结论以 DeepSeek Harness `0.1.1-rc.2`（`b150a551b8d465e31e418e1b2eaf5e79bbb7d28e`）为准；旧 checkout 只用于变更史，不能替代当前源码验证。FAQ 08 的 seam 计数是唯一声明过的例外：行集在基线之后新增了 `ctx.agentTeams`、`ctx.authorization` 等，故按其写作时树（`3b1a213e9e`）重数并在文中声明（见该 answer 的方法节）。
+> **当前研究基线**：涉及运行时行为的结论以 DeepSeek Harness `dsh-v0.1.2-alpha.3`（`dd6322d604e00eec1ba5e0c8541159906a21094a`）为准，与 `_digested/` 同一基线。旧 checkout 只用于变更史，不能替代当前源码验证。FAQ 08 的 seam 计数是唯一声明过的例外：行集在基线之后新增了 `ctx.agentTeams`、`ctx.authorization` 等，故按其写作时树（`3b1a213e9e`）重数并在文中声明（见该 answer 的方法节）。
 
 文件不叫 `README.md`：仓库的 bilingual pairing 门禁会把任意 `README.md` 当成产品文档语料。
 

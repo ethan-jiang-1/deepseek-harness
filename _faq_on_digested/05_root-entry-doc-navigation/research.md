@@ -46,15 +46,15 @@
 
 > Use the read tool — not shell commands like cat — to inspect text files. Results include line numbers. Use offset and limit to continue reading large files.
 
-来源：`packages/fs/tool-fs/src/read.ts:73`
+来源：`packages/fs/tool-fs/src/read.ts:72`
 
 > Use the grep tool — not shell grep or rg — to search file contents. Use read on a matched file when you need surrounding context.
 
-来源：`packages/fs/tool-fs-search/src/grep.ts:279`
+来源：`packages/fs/tool-fs-search/src/grep.ts:278`
 
 > Use the glob tool — not shell find — to discover files by path pattern. …
 
-来源：`packages/fs/tool-fs-search/src/glob.ts:304`
+来源：`packages/fs/tool-fs-search/src/glob.ts:303`
 
 ## 7. skill：摘要先给，正文按需、不缓存
 
@@ -88,11 +88,11 @@
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 
-来源：`packages/AGENTS.md:26`
+来源：`packages/AGENTS.md:27`
 
 > Package READMEs put durable consumer gaps and non-obvious maintainer constraints under `## Known Limitations and Deferred Work`.
 
-来源：`packages/AGENTS.md:27`
+来源：`packages/AGENTS.md:28`
 
 ## 已核对的相关消化材料
 

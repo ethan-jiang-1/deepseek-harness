@@ -34,6 +34,8 @@ dsh 里最容易踩的事件合同就是 waterfall。它是 around-middleware，
 
 [`vendor/README.md`](../../vendor/README.md) 是本地修改的权威清单。Harness 直接依赖其中的 effect 卸载时序、Loader / Include 事务、共享 patch 算法和延迟配置插值；profile 组合、dump 与 HMR 都建立在这些行为上。产品依赖和对应源码见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
 
+> **vendor 4.0.2**（上游 #3318）：`vendor/loader/src/internal.ts` 有实质性修改（+28/-17，影响 Loader 的行为），包版本号更新（`logger-console`、`schemastery`、`timer`）。具体修改内容见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
+
 ## 源码入口
 
 | 路径 | 角色 |

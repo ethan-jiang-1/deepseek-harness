@@ -6,15 +6,15 @@
 
 > Use the read tool — not shell commands like cat — to inspect text files. Results include line numbers. Use offset and limit to continue reading large files.
 >
-> —— `packages/fs/tool-fs/src/read.ts:73`
+> —— `packages/fs/tool-fs/src/read.ts:72`
 
 > Use the grep tool — not shell grep or rg — to search file contents. Use read on a matched file when you need surrounding context.
 >
-> —— `packages/fs/tool-fs-search/src/grep.ts:279`
+> —— `packages/fs/tool-fs-search/src/grep.ts:278`
 
 > Use the glob tool — not shell find — to discover files by path pattern. …
 >
-> —— `packages/fs/tool-fs-search/src/glob.ts:304`
+> —— `packages/fs/tool-fs-search/src/glob.ts:303`
 
 所以“怎么走图”在运行时是被工具提示词约束的：读文件用 read（带行号、可 offset/limit），搜内容用 grep，找文件用 glob——不是 shell 的 cat/rg/find。这本身也是“按图索骥”的一部分：工具给的是结构化、有界的结果，而不是 shell 的自由文本。
 

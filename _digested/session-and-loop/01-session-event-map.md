@@ -39,9 +39,17 @@
 
 默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型请求的消息由三个 surface 类型投影，config、system 与 tools 由 `request/header` 折叠；`request/context` 不参与请求重建。真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
 
+> **ignorable 机制的历史**：上游 #3087（`worktree/remove-ignorable-session-events`）曾删除 ignorable 机制，要求所有 event 必须被已知。但 #3325 随后回滚了这次删除，恢复了 ignorable。当前（`dd6322d604`）ignorable 仍在，但 `known-event-types.ts` 在两次改动之间新增的事件以 required 注册。
+
 已知集合是生成的 `KNOWN_SESSION_EVENT_TYPES`（`gen-persistence-catalog` 扫本仓库每一次 `SessionEventMap` 合并）。同一版本、不同插件组合，读规则仍一致。仓外插件事件按构造不在表里；预发布接受「第一方读者拒 resume」，且拒绝是大声的。
 
 守卫在**读**侧。`append` 不查词汇表：活会话中途拒写，比下次加载时大声拒绝代价更大。
+
+## 持久化与格式迁移
+
+当前持久化使用 JSONL-only（上游 #2698、#3339）。`session-persistence-jsonl` 使用 zstd 单帧压缩，包含格式版本化机制（`session-format-01` 分支）。`session-persistence-sqlite` 已删除。
+
+`formatRegistry` 维护 one-to-one 格式迁移函数：每个版本只需要知道如何从上一个版本迁移，不跳跃。`SESSION_FORMAT_VERSION` 在 header 中记录，加载时检查。
 
 ## `SESSION_FORMAT_VERSION = 0`
 

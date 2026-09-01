@@ -12,7 +12,7 @@
 
 > 面向 agent：请遵循 [AGENTS.md](AGENTS.md)。
 
-来源：`README.zh.md:74`（基线 `528c682e…`）
+来源：`README.zh.md:78`（基线 `528c682e…`）
 
 ## 2. 根 AGENTS 的路由与常驻内核
 
@@ -94,11 +94,11 @@
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 
-来源：`packages/AGENTS.md:26`（基线 `528c682e…`）
+来源：`packages/AGENTS.md:27`（基线 `528c682e…`）
 
 > Package READMEs put durable consumer gaps and non-obvious maintainer constraints under `## Known Limitations and Deferred Work`.
 
-来源：`packages/AGENTS.md:27`（基线 `528c682e…`）
+来源：`packages/AGENTS.md:28`（基线 `528c682e…`）
 
 ## 10. 双语文档配对
 

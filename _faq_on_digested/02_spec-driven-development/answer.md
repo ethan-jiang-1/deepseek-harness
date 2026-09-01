@@ -1,6 +1,6 @@
 # Answer · DSH 的 SDD：分层规格、生命周期与可执行验收
 
-产品源码核验基线：DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。
+产品源码核验基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`（与 `_digested/` 相同）。
 
 ## 结论先行
 
@@ -43,7 +43,7 @@
 
 ### 3. Plan Mode 把提案细化成可执行计划
 
-DSH 自己的 coding-agent preset 把 Plan Mode 规则写进系统提示。它要求先用只读搜索、阅读和静态分析了解真实仓库，不得在计划阶段修改文件；最终计划必须包含目标和成功标准、按子系统分组的修改、公开 API/schema/数据流变化、边界和失败模式、测试、验收条件与显式假设，并详细到另一位工程师无需再做设计决定即可实现。相同规则见 [`code` preset](../../apps/cli/config/agent-presets/code/agent.cordis.yml)和 [`standard` preset](../../apps/cli/config/agent-presets/standard/agent.cordis.yml)。
+DSH 自己的 coding-agent preset 把 Plan Mode 规则写进系统提示。它要求先用只读搜索、阅读和静态分析了解真实仓库，不得在计划阶段修改文件；最终计划必须包含目标和成功标准、按子系统分组的修改、公开 API/schema/数据流变化、边界和失败模式、测试、验收条件与显式假设，并详细到另一位工程师无需再做设计决定即可实现。相同规则见 [`code` preset](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)和 [`standard` preset](../../packages/preset/agent-presets/presets/standard/agent.cordis.yml)。
 
 [`dsh-plan-mode`](../../packages/plan/plan-mode/README.md)不只显示一段提示词。`exit_plan_mode` 会把完整计划提交到 `plan-review` 交互，只有用户选择精确的 `Approve` 才退出；选择继续规划或给出反馈时，agent 必须留在 Plan Mode 修改计划。Plan Mode 状态写进 session log，因此 resume 和 fork 可以恢复；但 README 也明确说明它是 soft guidance，真正的写权限仍由 sandbox 和 approval policy 独立执行。
 
