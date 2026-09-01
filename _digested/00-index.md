@@ -39,6 +39,7 @@
 | `system/` | 总体系统专题 | everything-is-a-plugin、组合层、循环、seam、扩展点怎么拼成一台运行中的 `dsh` |
 | `cordis-runtime/` | 被 vendor 的框架 | `ctx` / plugin / effect / event / waterfall / fiber / Loader |
 | `composition/` | 启动组合 | profile、bundle、patch 层、Harness home、`dsh --dump-config` |
+| `runtime-profiles/` | 运行时配置 | web、headless、sdk、sdk-minimal、acp 五个 Runtime Profile 的共同基底与各自差异 |
 | `session-and-loop/` | 会话与驱动 | session log、turn/step、agent-loop、model-visible ⟺ logged、agent scope |
 | `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色，以及如何组合一致的 fs / subprocess provider |
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 组装、LLM adapter、tool 执行瀑布 |
@@ -53,6 +54,7 @@
 
 - **熟悉 agent / plugin 运行时，但不熟 dsh** → `system/00-map.md`
 - **想先搞懂 Cordis 在这棵树里到底是什么** → `cordis-runtime/00-map.md`，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
+- **想搞懂 `dsh --profile web` 怎么变成进程的** → `runtime-profiles/00-map.md`
 - **想搞懂一次 `dsh --profile web` 怎么变成插件树** → `composition/00-map.md`
 - **想搞懂一轮对话怎么跑** → `session-and-loop/00-map.md`
 - **想加能力或换后端** → `capability-seams/00-map.md`
