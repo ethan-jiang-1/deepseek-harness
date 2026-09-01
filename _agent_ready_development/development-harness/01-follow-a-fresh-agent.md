@@ -14,7 +14,7 @@ agent 从根级 `AGENTS.md` 得到常驻规则和仓库布局；任务涉及 `pa
 
 > New behavior attaches to a documented extension point. Changing the loop itself updates this map.
 >
-> — DSH [`docs/architecture.md` 的行为归属表](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/architecture.md#where-new-behavior-goes)。原文说明新增行为先寻找已有扩展点；修改 `agent-loop` 是需要额外说明的例外。
+> — DSH [`docs/architecture.md` 的行为归属表](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/architecture.md#where-new-behavior-goes)。原文说明新增行为先寻找已有扩展点；修改 `agent-loop` 是需要额外说明的例外。
 
 表中“Add a model-facing capability”指向 `ctx.tools`。因此 agent 的第一项设计判断不是“在哪个 loop 函数里插代码”，而是“这个功能是否属于工具注册”。如果需求其实是一项可替换能力，它还需要检查 Service Definition、Provider、Consumer 三个角色，而不能把一个工具包误称为完整 capability seam（能力接缝）。
 
@@ -34,7 +34,7 @@ agent 接着读取 adding-a-tool cookbook（添加工具操作指南）、工具
 
 ## 3. 为具体任务加载 Skills
 
-根级规则只适合放每轮都需要的 standing orders（常驻指令）。当任务进入文档结构、push 前检查或 PR review 等具体场景时，agent 加载对应 development Skill：例如 `dsh-doc-standards`、`dsh-pre-push-checks` 和 `dsh-code-review`。
+根级规则只适合放每轮都需要的 standing orders（常驻指令）。当任务进入文档结构、push 前检查或 PR review 等具体场景时，agent 加载对应 development Skill：例如 `dsh-doc`、`dsh-pre-push-checks` 和 `dsh-code-review`。
 
 Skill 不替 agent 决定产品需求，也不自动证明实现正确。它把该任务的输入、检查顺序、例外和输出格式集中起来，让 agent 不必从多份规则重新拼装流程。Skills 的完整分工见 [Skills 专章](./03-skills-as-procedural-memory.md)。
 
@@ -49,7 +49,7 @@ Skill 不替 agent 决定产品需求，也不自动证明实现正确。它把�
 
 > Every non-trivial change includes at least one Agent Note in the same PR.
 >
-> — DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/AGENTS.md)。这条规则把设计记忆纳入同一个交付单元，而不是把它留在某一轮 agent 的上下文里。
+> — DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/AGENTS.md)。这条规则把设计记忆纳入同一个交付单元，而不是把它留在某一轮 agent 的上下文里。
 
 ## 5. 让错误尽早出现
 
@@ -69,8 +69,8 @@ Push 和 Pull Request（PR）把本地交付组合放进 GitHub Flow。`.github/
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/architecture.md)：工具注册、seam、session event 与 loop 修改的归属入口。
-- DSH [`adding-a-tool cookbook`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/cookbook/adding-a-tool.md)：新增模型工具的真实实施入口和验证义务。
-- DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/README.md)：决策记录的职责、生命周期与格式。
-- DSH [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样从 outgoing diff 选择相关本地证据，并把穷举矩阵留给 CI。
-- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/skills/dsh-code-review/SKILL.md)：review 需要覆盖的语义、生命周期、安全和真实入口问题。
+- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/architecture.md)：工具注册、seam、session event 与 loop 修改的归属入口。
+- DSH [`adding-a-tool cookbook`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/cookbook/adding-a-tool.md)：新增模型工具的真实实施入口和验证义务。
+- DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.agents/notes/README.md)：决策记录的职责、生命周期与格式。
+- DSH [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样从 outgoing diff 选择相关本地证据，并把穷举矩阵留给 CI。
+- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.agents/skills/dsh-code-review/SKILL.md)：review 需要覆盖的语义、生命周期、安全和真实入口问题。

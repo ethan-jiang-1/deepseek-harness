@@ -6,7 +6,7 @@ Plan Mode（计划模式）是可选、按 agent 记录的协作状态：激活�
 
 > Plan mode is soft guidance; sandbox mode and approval policy enforce restrictions independently and do not read or write plan state.
 >
-> — DSH [`packages/plan/plan-mode/README.md` 的开篇定义](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/packages/plan/plan-mode/README.md)。这句话直接划开计划协作状态与强制权限机制。
+> — DSH [`packages/plan/plan-mode/README.md` 的开篇定义](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/packages/plan/plan-mode/README.md)。这句话直接划开计划协作状态与强制权限机制。
 
 ![Plan guidance、用户审批与权限执行彼此独立](./figures/plan-vs-enforcement.svg)
 
@@ -22,7 +22,7 @@ Plan guidance 可以要求 agent 只读探索，但违反这段 prompt 的模型
 
 ## 2. coding preset 定义计划质量
 
-`apps/cli/config/agent-presets/code/agent.cordis.yml` 的 `plan:policy` 要求：
+`packages/preset/agent-presets/presets/ptc/agent.cordis.yml` 的 `plan:policy` 要求：
 
 - 先只读探索，不改文件、不运行会重写文件的 formatter/codegen、不提交；
 - 计划包含目标与成功标准、按 subsystem 分组的修改、public API/schema/data-flow 变化、失败与边界、测试、验收和显式假设；
@@ -58,9 +58,9 @@ Plan 是一次会话内、面向即将实施工作的可审批对象；Agent Not
 
 ## 证据入口
 
-- DSH [Plan subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/subsystems/plan.md)：`plan/mode` event、service、command 与工具的公开语义。
-- DSH [Plan Mode package README](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/packages/plan/plan-mode/README.md)：durable state、pending selection、review exchange 和已知限制。
-- DSH [Plan Mode implementation](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/packages/plan/plan-mode/src/index.ts)：event 提交和 `exit_plan_mode` 审批时序的实际实现。
-- DSH [coding preset](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/apps/cli/config/agent-presets/code/agent.cordis.yml)：当前 deployment 提供给模型的 plan guidance，而不是包级通用模板。
-- DSH [Sandbox subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/subsystems/sandbox.md)：访问限制由谁执行。
-- DSH [Approval subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/subsystems/approval.md)：哪些操作需要显式用户授权。
+- DSH [Plan subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/subsystems/plan.md)：`plan/mode` event、service、command 与工具的公开语义。
+- DSH [Plan Mode package README](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/packages/plan/plan-mode/README.md)：durable state、pending selection、review exchange 和已知限制。
+- DSH [Plan Mode implementation](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/packages/plan/plan-mode/src/index.ts)：event 提交和 `exit_plan_mode` 审批时序的实际实现。
+- DSH [coding preset](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/packages/preset/agent-presets/presets/ptc/agent.cordis.yml)：当前 deployment 提供给模型的 plan guidance，而不是包级通用模板。
+- DSH [Sandbox subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/subsystems/sandbox.md)：访问限制由谁执行。
+- DSH [Approval subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/subsystems/approval.md)：哪些操作需要显式用户授权。
