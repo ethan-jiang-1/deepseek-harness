@@ -1,6 +1,6 @@
 # `_agent_ready_development` 语料证据与维护说明
 
-> 复核日期：2026-08-24。产品源码基线：`528c682e061696f5a160f363f236ecbf53cbd006`。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
+> 复核日期：2026-09-01。产品源码基线：`dd6322d604e00eec1ba5e0c8541159906a21094a`。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
 
 ## 1. 专题定位
 
@@ -26,7 +26,7 @@
 - `scripts/run-gates.ts`、testing policy 和相关 process Agent Notes；
 - Web capability seam 的四个历史 commit 与当前 Agent Note。
 
-固定基线的 self-referential Cordis 资料存在可核验冲突：implemented Agent Note 描述 `cordis_inspect/mount/unmount` 三个工具，package README 概括 `cordis_inspect/define/run/stop/undefine` 五个工具，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/packages/extensions/tool-cordis/src/index.ts) 与生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 一致列出 `inspect_list/inspect_query/inspect_self/define/run/stop/undefine` 七个工具。`development-harness/06` 以源码和生成 catalog 说明当前工具集合，只使用 Note 与 README 中仍与源码相容的信任和生命周期边界。
+固定基线的 self-referential Cordis 资料存在可核验冲突：implemented Agent Note 描述 `cordis_inspect/mount/unmount` 三个工具，package README 概括 `cordis_inspect/define/run/stop/undefine` 五个工具，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/packages/extensions/tool-cordis/src/index.ts) 与生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 一致列出 `inspect_list/inspect_query/inspect_self/define/run/stop/undefine` 七个工具。`development-harness/06` 以源码和生成 catalog 说明当前工具集合，只使用 Note 与 README 中仍与源码相容的信任和生命周期边界。
 
 ## 3. 结构与叙事约束
 

@@ -8,7 +8,7 @@ DSH 通过分层减少两种错误：一是同一规则在多个地方各写一�
 
 > Each fact has one home: the tier whose job it is; elsewhere, link there.
 >
-> — DSH [`docs/AGENTS.md` 的文档层级规则](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这段原文建立了“一个事实一个 owner”的组织原则。
+> — DSH [`docs/AGENTS.md` 的文档层级规则](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这段原文建立了“一个事实一个 owner”的组织原则。
 
 ![DSH 仓库知识按问题分配给不同 owner](./figures/knowledge-owners.svg)
 
@@ -50,10 +50,10 @@ DSH 使用 rejected Agent Notes、README 的 Known Limitations、说明理由的
 
 ## 证据入口
 
-- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/AGENTS.md)：文档层级、一个事实一个 owner、tutorial/reference 分工和 Skills 的位置。
-- DSH [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/glossary.md)：一个概念使用一个 canonical term（规范术语）的规则。
-- DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/.agents/notes/README.md)：决策理由、替代方案、生命周期和 archive 的 owner。
-- DSH [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/module-graph.md)：从源码生成的仓库关系索引实例。
-- DSH [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/event-producer-consumer.md)：事件 producer、consumer 和 dispatch mode 的生成索引实例。
-- DSH [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/capability-seams.md)：Service Definition、providers 与 consumers 的生成关系索引。
-- DSH [`docs/persistence-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/528c682e061696f5a160f363f236ecbf53cbd006/docs/persistence-catalog.md)：可写入 session log 的事件及其声明位置的生成索引。
+- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/AGENTS.md)：文档层级、一个事实一个 owner、tutorial/reference 分工和 Skills 的位置。
+- DSH [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/glossary.md)：一个概念使用一个 canonical term（规范术语）的规则。
+- DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.agents/notes/README.md)：决策理由、替代方案、生命周期和 archive 的 owner。
+- DSH [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/module-graph.md)：从源码生成的仓库关系索引实例。
+- DSH [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/event-producer-consumer.md)：事件 producer、consumer 和 dispatch mode 的生成索引实例。
+- DSH [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/capability-seams.md)：Service Definition、providers 与 consumers 的生成关系索引。
+- DSH [`docs/persistence-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/docs/persistence-catalog.md)：可写入 session log 的事件及其声明位置的生成索引。
