@@ -41,6 +41,7 @@
 | `composition/` | 启动组合 | profile、bundle、patch 层、Harness home、`dsh --dump-config` |
 | `runtime-profiles/` | 运行时配置 | web、headless、sdk、sdk-minimal、acp 五个 Runtime Profile 的共同基底与各自差异 |
 | `session-and-loop/` | 会话与驱动 | session log、turn/step、agent-loop、model-visible ⟺ logged、agent scope |
+| `agent-loop/` | 推进、边界与 Goal 驱动 | step/turn/activity/goal 四层结束边界、Goal 状态机、Round Driver 自动续轮 |
 | `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色，以及如何组合一致的 fs / subprocess provider |
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 组装、LLM adapter、tool 执行瀑布 |
 | `surfaces/` | 人对机器的入口 | CLI、Web host/client、ACP、JSON-RPC SDK |
