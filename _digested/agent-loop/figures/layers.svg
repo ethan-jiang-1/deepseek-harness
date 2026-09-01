@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#666"/>
+    </marker>
+    <marker id="arrow-goal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#d4380d"/>
+    </marker>
+  </defs>
+
+  <!-- Layer boxes -->
+  <rect x="60" y="40" width="680" height="70" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="80" y="78" font-size="15" font-weight="bold" fill="#1677ff">step</text>
+  <text x="130" y="78" font-size="13" fill="#333">一次模型请求 + 它所调用的工具</text>
+  <text x="130" y="96" font-size="12" fill="#666">模型不再调工具 / max-tokens → step/end（不决定任务结束）</text>
+
+  <rect x="60" y="130" width="680" height="70" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="80" y="168" font-size="15" font-weight="bold" fill="#52c41a">turn</text>
+  <text x="130" y="168" font-size="13" fill="#333">一个输入被抽干，可含多个 step</text>
+  <text x="130" y="186" font-size="12" fill="#666">pre-step 拒绝 / turn-stopping 无人 steer → turn/end（不决定任务结束）</text>
+
+  <rect x="60" y="220" width="680" height="70" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="80" y="258" font-size="15" font-weight="bold" fill="#fa8c16">driver activity</text>
+  <text x="198" y="258" font-size="13" fill="#333">一段连续运行的 agent 活动</text>
+  <text x="130" y="276" font-size="12" fill="#666">kick() 退出 + inbox 无待唤醒消息 → status === 'idle'（仍不决定任务结束）</text>
+
+  <rect x="60" y="310" width="680" height="70" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
+  <text x="80" y="348" font-size="15" font-weight="bold" fill="#d4380d">goal</text>
+  <text x="130" y="348" font-size="13" fill="#333">持久目标达成或被放弃</text>
+  <text x="130" y="366" font-size="12" fill="#666">model complete/blocked / round-limit 自动 block → goal/change（这才是真正的结束）</text>
+
+  <!-- Arrow between layers -->
+  <line x1="400" y1="110" x2="400" y2="125" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="400" y1="200" x2="400" y2="215" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="400" y1="290" x2="400" y2="305" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Right column: who decides -->
+  <text x="560" y="78" font-size="12" fill="#999">对谁可见：step/end</text>
+  <text x="560" y="168" font-size="12" fill="#999">对谁可见：turn/end</text>
+  <text x="560" y="258" font-size="12" fill="#999">对谁可见：status='idle'</text>
+  <text x="560" y="348" font-size="12" fill="#999">对谁可见：goal/change</text>
+
+  <!-- Bottom annotation -->
+  <text x="60" y="420" font-size="13" fill="#666" font-style="italic">Agent idle 不代表任务完成——Goal 如果还是 active + armed，</text>
+  <text x="60" y="440" font-size="13" fill="#666" font-style="italic">Goal Round Driver 会在 idle 时自动发起新一轮。</text>
+</svg>
