@@ -14,7 +14,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 
 | 问题 | 答案 |
 |------|------|
-| 谁驱动 | `ReactLoopAgent.step()`（agent.ts:332-419） |
+| 谁驱动 | `ReactLoopAgent.step()`（agent.ts:332-420） |
 | 什么时候结束 | 流式 chunk 收完 → `BlockAssembler.finish` 判断：`completed`（无 tool-call）、入工具执行（可能 `concludesTurn`）、`max-tokens`、`error` |
 | 对谁可见 | `step/start` → `step/end` 事件写入 session |
 | 关键细节 | 请求错误（`agent/request-error`）可以 `retry`，同一 step 内重发请求，不新开 step |
@@ -42,9 +42,9 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 | 问题 | 答案 |
 |------|------|
 | 谁驱动 | `Goal Round Driver` 监听 `agent/status === 'idle'` |
-| 什么时候结束 | `goal/change` operation = `complete` / `blocked` / `clear`；或自动 `round-limit` block；或 `disarm` |
+| 什么时候结束 | `goal/change` operation = `complete` / `blocked` / `clear`；或自动 `round-limit` block（disarm 只是收回自动续轮，不是结束） |
 | 对谁可见 | `goal/change` 事件写入 session，`goal` projection 单元对外暴露 |
-| 关键细节 | agent idle 不代表 goal 结束。只有 goal 不再 `active + armed` 才算正经结束 |
+| 关键细节 | agent idle 不代表 goal 结束。goal 真正结束是 phase 离开 active（complete / blocked / clear）；active + disarmed 只是失去自动续轮，仍可 resume |
 
 ## turn/end 的 reason 对照
 
@@ -56,7 +56,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 | `{ kind: 'max-tokens' }` | 输出达到 token 上限 | **disarm** goal！不再自动续轮 | 消息截断 |
 | `{ kind: 'aborted', reason }` | 被取消（user / parent / disposed） | attempt 标记 cancelled，driver 重新评估 | 中途打断 |
 | `{ kind: 'blocked' }` | pre-step 拒绝，无 step 被处理 | 不特别处理（pre-step hook 可能已 block goal） | 未产生回复 |
-| `{ kind: 'error', error }` | 执行出错 | disarm | 错误提示 |
+| `{ kind: 'error', error }` | 执行出错 | disarm（经 `agent/error` 事件，`goal-round-driver/src/index.ts:246-249`） | 错误提示 |
 
 ## 崩溃恢复
 
@@ -74,12 +74,25 @@ turn/end (turn=5, reason={ kind: 'interrupted' })  ← 恢复时补的
 
 ## Goal 的持久化保障
 
-Goal 不依赖进程内存：所有 `goal/change` 事件写入 session log。进程重启后，fold 函数（`fold.ts`）从 log 重放所有 goal 事件，重建 goal 状态。如果进程崩溃时 goal 是 active + armed，重启后 driver 重新订阅，仍在 active 状态的 goal 会继续得到自动续轮。
+![崩溃重启后必须 re-arm](./figures/restart-rearm.svg)
 
-Goal 与 Agent Loop 之间没有直接耦合——loop 不检查 goal，driver 不干涉 turn/step。它们只通过两件事通信：
+`phase` 不依赖进程内存：所有 `goal/change` 事件写入 session log，进程重启后 fold（`fold.ts`）从 log 重放，重建 goal 状态。但 **`activation`（armed / disarmed）从不持久化**（`goal/src/types.ts:81-82`）：`agent/session-start` 时 `GoalService` 把 activation 重置为 `disarmed`（`goal/src/index.ts:198-200`），Round Driver 装载时也会 disarm 全部现存 agent（`goal-round-driver/src/index.ts:416-421`）。
 
-1. `agent.followup()` — driver 往 inbox 写消息，loop 从 inbox 读消息
-2. `agent/status === 'idle'` — driver 监听这个信号决定要不要写
+所以崩溃重启后，goal 停在 active + **disarmed**——**自动续轮不会自动恢复**，必须 human re-arm（模型 `update_goal resume`，或 `/goal resume`）之后，driver 才从 `roundsStarted + 1` 继续；round 计数完全重建自 log，不会漏也不会超前。测试直接断言此行为（`goal-round-driver.spec.ts:866-878`）。
+
+## Goal 与 Agent Loop 的通信通道
+
+Goal 与 Agent Loop 之间没有直接耦合：driver 不 import loop 内部，loop 也不感知 goal，双方只经由事件与 inbox 交互——但通道不止 followup 和 status 两条：
+
+![loop ↔ driver 通信通道](./figures/loop-driver-channels.svg)
+
+1. `agent.followup()` — driver 往 inbox 写 round 消息，loop 在 pre-step 时 claim
+2. `agent/status === 'idle'` — driver 监听这个信号决定要不要推进下一轮
+3. `agent/pre-step` waterfall — driver 验证 reservation，可返回 `reject`（round 消息的准入闸）
+4. `goal/changed` — mutation 提交后触发 checkpoint 标记与重新排程
+5. `turn/end` — `max-tokens` 触发 disarm；`aborted` 把 claimed/admitted 的 attempt 标记 cancelled
+6. `agent/error` — 触发 disarm
+7. `agent/inbox/inserted` / `claimed` / `discarded` — competing / stale 簿记
 
 ## 场景：一次完整的 goal 生命周期
 
@@ -117,7 +130,7 @@ agent idle → driver 检查 goal.phase === 'complete'
 
 | 层 | 关停操作 | 源码位置 |
 |----|---------|---------|
-| step | `step()` 内 `return { kind: 'completed' }` 或 `{ kind: 'max-tokens' }` | agent.ts:410, 412 |
+| step | `step()` 内 `return { kind: 'max-tokens' }` 或 `{ kind: 'completed' }` | agent.ts:410, 413 |
 | turn | `return false` 且 inbox 无 pending | agent.ts:324-329 |
 | activity | `kick()` finally 块 `setPhase({ kind: 'idle' })` | agent.ts:217-221 |
 | goal | `ctx.goals.complete()` / `block()` / `clear()` | goal/src/index.ts:245-400<br>goal-round-driver:166-172（auto block） |

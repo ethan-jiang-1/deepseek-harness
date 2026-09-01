@@ -21,18 +21,20 @@ DSH 没有隐藏的「意图理解引擎」来自动创建 goal。goal 只能通
 **这就是你体验到的效果**：你给了一个需求（比如「把这个模块重构了」），模型在自己的 system prompt 里看到 `tool:goal` 的政策说明，判断这是长期任务，**自己调用** `create_goal` tool。不是系统自动推断的，是 LLM 在 tool description 引导下自主决策。
 
 `create_goal` 执行前还有一个守卫（`authority.ts`）：
+
 ```
 requireDirectHuman(ctx, execution)  // 只允许在 human 发起的 turn 中创建
 ```
+
 所以 subagent 或自动场景不能创建 goal。
 
 ### 路径二：用户手敲 `/goal <objective>`
 
-`packages/goal/command-goal/src/index.ts:188-195` 注册了 `/goal` 命令。解析很简单（第 34-43 行）：不以 `clear`/`pause`/`resume`/`edit` 开头的字符串都视为创建：
+`packages/goal/command-goal/src/index.ts:188-196` 注册了 `/goal` 命令。解析（第 34-44 行）是**整词匹配，不是前缀匹配**：`clear`/`pause`/`resume`/`edit` 必须与整个输入相等（`edit` 也可以是 `edit ` 加空白加 objective），其余一切输入——包括 `cleanup` 这种恰好「以 clea 开头」的词——都视为创建：
 
 ```ts
 if (/^edit(?=\s)/iu.test(input)) return { kind: 'edit', objective: input.slice(4).trim() }
-return { kind: 'create', objective: input }  // 其他所有输入 = 创建
+return { kind: 'create', objective: input }  // 其余所有输入 = 创建；空输入 = show
 ```
 
 调用 `ctx.goals.create(invocation.agent, { objective: command.objective })`。
@@ -58,31 +60,21 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 
 ## Goal 状态机
 
-```
-                    create()
-                        │
-                        ▼
-                 ┌────────────┐
-         ┌──────→│  active    │←────── resume() ───┐
-         │       │  (armed)   │                    │
-         │       └─────┬──────┘                    │
-         │             │                           │
-         │    ┌────────┼────────┬──────────┐       │
-         │    │        │        │          │       │
-         │    ▼        ▼        ▼          ▼       │
-         │  pause()  complete()  block()  round-   │
-         │    │        │         │        driver   │
-         │    ▼        ▼         ▼        ────►    │
-         │  paused   complete  blocked             │
-         │    │                                     │
-         └────┘                                     │
-                                                   │
-         ┌──────────────────────────────────────────┘
-         │
-         ▼
-    （完成、阻塞或暂停的 goal 可以 resume 回到 active）
-    完成的 goal 也可以用 create() 替换新 goal
-```
+![Goal 状态机：phase × activation](./figures/goal-state-machine.svg)
+
+`phase`（active / paused / blocked / complete）持久化于 session log；`activation`（armed / disarmed）是进程内状态，从不持久化。全部转换与守卫：
+
+| 操作 | 允许的当前 phase | 结果 | 权限 |
+|------|-----------------|------|------|
+| `create()` | 无 goal，或 `complete`（替换，新 goal id） | active + armed | direct-human |
+| `edit()` | 任意当前 | phase 不变，revision+1 | direct-human |
+| `pause()` | 仅 active | paused + disarmed | direct-human |
+| `resume()` | `active·disarmed` / paused / blocked | active + armed（需剩余 round 预算） | direct-human |
+| `complete()` | active / paused / blocked | complete + disarmed | direct-human 或 goal-round |
+| `block()` | 仅 active | blocked + disarmed（带 blockedReason） | direct-human 或 goal-round |
+| `clear()` | 任意当前 | 墓碑 tombstone（revision+1） | human 命令 |
+
+两个容易记错的点：**`complete` 是终态，不可 resume**——`resume` 的允许集只有 `['active', 'paused', 'blocked']`（`goal/src/index.ts:314-317`，严格 fold 同 `fold.ts:227-231`），complete goal 只能被 `create()` 替换；**blocked 可以手动 resume**（需 human 权限），只是不会被 round driver 自动续轮。
 
 ### 各状态的含义
 
@@ -92,7 +84,7 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 | `active (disarmed)` | 目标在进行中，但自动续轮已关闭 | 否（需要手动 resume 或 `/goal clear`） |
 | `paused` | 暂停，agent 不再为此工作 | 否 |
 | `complete` | 目标已达成 | 否 |
-| `blocked` | 目标被阻塞（**不能**自动 resume） | 否 |
+| `blocked` | 目标被阻塞；不会被自动续轮，但可由 human 手动 resume | 否（等待 human） |
 
 ### 驱动 goal 往前走的两种机制
 
@@ -114,6 +106,7 @@ Goal 的所有变更通过 session log 的 `goal/change` 事件持久化。系�
 - `fold.ts` 的 `applyGoalChange()` 严格验证：只能从 revision N 到 N+1
 - 同一会话、同一时间只允许一个 goal（completed 后可替换）
 - 回放时从 session log 的 `goal/change` 事件重建 goal 状态
+- `roundsStarted` 由 goal 来源（`source.kind === 'goal'`）的 `user/message` 推进，fold 严格验证 round 归属（`fold.ts:321-331`）
 
 ### 默认配置
 
