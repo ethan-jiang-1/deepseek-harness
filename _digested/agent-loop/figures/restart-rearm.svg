@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">崩溃 / 重启后的真相：active goal 不会自动续轮</text>
+  <text x="40" y="54" font-size="12" fill="#8c8c8c">armed 是进程内状态，从不持久化；重启后必须 human re-arm 才会恢复自动推进</text>
+
+  <rect x="520" y="76" width="340" height="72" rx="6" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="536" y="98" font-size="11" font-weight="bold" fill="#d4380d">✗ 常见误解：重启后 active goal 会自动续轮</text>
+  <text x="536" y="114" font-size="11" fill="#d4380d">✓ 实际：armed 从不持久化，重启即 disarmed，</text>
+  <text x="536" y="130" font-size="11" fill="#d4380d">自动续轮要等 human re-arm 才恢复</text>
+
+  <rect x="60" y="90" width="440" height="54" rx="8" fill="#fff" stroke="#d9d9d9" stroke-width="1.5"/>
+  <rect x="60" y="90" width="6" height="54" fill="#1677ff"/>
+  <text x="80" y="112" font-size="12.5" font-weight="bold" fill="#333">① Round N 运行中</text>
+  <text x="80" y="130" font-size="11" fill="#595959">goal = active · armed（armed 只存在于本进程内存）</text>
+
+  <line x1="280" y1="144" x2="280" y2="164" stroke="#666" stroke-width="2" marker-end="url(#a)"/>
+  <text x="290" y="160" font-size="10.5" fill="#8c8c8c">进程消失</text>
+
+  <rect x="60" y="168" width="440" height="54" rx="8" fill="#fff" stroke="#d9d9d9" stroke-width="1.5"/>
+  <rect x="60" y="168" width="6" height="54" fill="#fa8c16"/>
+  <text x="80" y="190" font-size="12.5" font-weight="bold" fill="#333">② 进程崩溃</text>
+  <text x="80" y="208" font-size="11" fill="#595959">session log 停在未闭合的 turn/start…（无 turn/end）</text>
+
+  <line x1="280" y1="222" x2="280" y2="242" stroke="#666" stroke-width="2" marker-end="url(#a)"/>
+  <text x="290" y="238" font-size="10.5" fill="#8c8c8c">重新启动 / resume</text>
+
+  <rect x="60" y="246" width="440" height="54" rx="8" fill="#fff" stroke="#d9d9d9" stroke-width="1.5"/>
+  <rect x="60" y="246" width="6" height="54" fill="#722ed1"/>
+  <text x="80" y="268" font-size="12.5" font-weight="bold" fill="#333">③ 持久化层恢复 log 平衡</text>
+  <text x="80" y="286" font-size="11" fill="#595959">为孤儿 turn 合成 turn/end { kind: 'interrupted' }（仅加载时）</text>
+
+  <line x1="280" y1="300" x2="280" y2="320" stroke="#666" stroke-width="2" marker-end="url(#a)"/>
+  <text x="290" y="316" font-size="10.5" fill="#8c8c8c">agent/session-start 发布</text>
+
+  <rect x="60" y="324" width="440" height="54" rx="8" fill="#fff" stroke="#d9d9d9" stroke-width="1.5"/>
+  <rect x="60" y="324" width="6" height="54" fill="#d4380d"/>
+  <text x="80" y="346" font-size="12.5" font-weight="bold" fill="#d4380d">④ phase 重建，activation 重置</text>
+  <text x="80" y="364" font-size="11" fill="#595959">GoalService 折叠 log 得 phase=active；activation = disarmed</text>
+
+  <line x1="280" y1="378" x2="280" y2="398" stroke="#666" stroke-width="2" marker-end="url(#a)"/>
+  <text x="290" y="394" font-size="10.5" fill="#8c8c8c">driver 装载</text>
+
+  <rect x="60" y="402" width="440" height="54" rx="8" fill="#fff" stroke="#d9d9d9" stroke-width="1.5"/>
+  <rect x="60" y="402" width="6" height="54" fill="#d4380d"/>
+  <text x="80" y="424" font-size="12.5" font-weight="bold" fill="#d4380d">⑤ Round Driver 装载即 disarm 全部现存 agent</text>
+  <text x="80" y="442" font-size="11" fill="#595959">drive() 因 activation !== 'armed' 直接 return —— 不续轮，静默等待</text>
+
+  <line x1="280" y1="456" x2="280" y2="476" stroke="#666" stroke-width="2" marker-end="url(#a)"/>
+  <text x="290" y="472" font-size="10.5" fill="#8c8c8c">human 说「继续」</text>
+
+  <rect x="60" y="480" width="440" height="54" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <rect x="60" y="480" width="6" height="54" fill="#52c41a"/>
+  <text x="80" y="502" font-size="12.5" font-weight="bold" fill="#389e0d">⑥ human re-arm：update_goal resume（或 /goal resume）</text>
+  <text x="80" y="520" font-size="11" fill="#595959">armed 恢复，driver 重新排程 round = roundsStarted + 1</text>
+
+  <text x="520" y="176" font-size="10.5" fill="#595959">types.ts:81-82 「never persisted」</text>
+  <text x="520" y="254" font-size="10.5" fill="#595959">session-persistence/coordinator.ts:902-903</text>
+  <text x="520" y="332" font-size="10.5" fill="#595959">goal/src/index.ts:198-200 · cache():428</text>
+  <text x="520" y="410" font-size="10.5" fill="#595959">goal-round-driver/index.ts:416-421 · drive():165</text>
+  <text x="520" y="488" font-size="10.5" fill="#595959">tool-goal guidance（index.ts:117-119）</text>
+
+  <rect x="60" y="560" width="780" height="52" rx="6" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="76" y="582" font-size="11.5" font-weight="bold" fill="#389e0d">✓ 测试直接断言该行为：goal-round-driver.spec.ts:866-878</text>
+  <text x="76" y="600" font-size="11.5" fill="#389e0d">session-start 后 activation==='disarmed' 且零请求；仅显式 resume 后 driver 才再次排程。</text>
+</svg>

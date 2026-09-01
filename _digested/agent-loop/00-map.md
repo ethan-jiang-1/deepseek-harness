@@ -51,8 +51,10 @@ create() ──→ active (armed)
      │      │         │           │
      ▼      ▼         ▼           └─→ active (再次)
   paused  complete  blocked
-     │
-  resume() ───→ active (re-armed)
+     │                 │
+     └── resume() ─────┘ ──→ active (re-armed)
+
+  complete 是终态：不可 resume，只能被 create() 替换（新 goal id）
 ```
 
 详细的状态机、每个转换的代码入口、CAS 机制见 [`01-goal-lifecycle.md`](./01-goal-lifecycle.md)。
@@ -105,7 +107,7 @@ Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/se
 | `packages/goal/goal/src/types.ts` | GoalId、GoalSnapshot、GoalPhase、GoalView、GoalProjection 类型 |
 | `packages/goal/goal/src/fold.ts` | 严格的纯函数 fold（回放时重建 goal 状态） |
 | `packages/goal/goal/src/invariant.ts` | goal stream 不变量（回放时校验） |
-| `packages/goal/tool-goal/src/authority.ts` | 谁可以操作 goal：direct human / goal-round / subagent |
+| `packages/goal/tool-goal/src/authority.ts` | 谁可以操作 goal：direct human 或当前 goal round；subagent 被拒绝 |
 | `packages/bundle/base/cordis.patch.yml` | `goal`、`goal-round-driver`、`command-goal`、`tool-goal` 都在 base bundle 的 insert 里 |
 | `_digested/session-and-loop/00-map.md` | turn/step 基础词汇和事件骨架 |
 | `_digested/session-and-loop/02-inbox-与turn-时序.md` | turn() 内部时序、claim、pre-step |

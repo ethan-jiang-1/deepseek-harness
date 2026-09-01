@@ -32,7 +32,7 @@ goal round N
   │      │
   │      └─ drive() 执行（第 138 行）
   │
-  ├─ 3. drive() 做六道检查（第 140-165 行）
+  ├─ 3. drive() 做六道检查（第 140-172 行）
   │      │
   │      ├─ readyToDrive(state)？→ ctx.fiber.active、未 stopping、
   │      │   agent 仍存活、agent status === idle、无 competing 消息
@@ -85,7 +85,9 @@ goal round N
   │      │   ├─ goal 仍存在、id/revision 匹配、phase active、armed
   │      │   └─ source.round === goal.roundsStarted + 1
   │      │
-  │      ├─ 验证失败 → attempt.stale = true、消息退回 inbox、
+  │      ├─ 验证失败 → attempt.stale = true 并作废（goal round 消息
+  │      │   本身不退回 inbox，下轮重新构造；其他被一并 claim 的消息
+  │      │   经 restoreOtherClaimed 退回 next-step）、
   │      │   requestDrive() 重新排程、pre-step 返回 reject
   │      │
   │      └─ 验证通过 → 调用 next() 让 step 继续
@@ -166,5 +168,5 @@ while (state.requested && !state.stopping) {
 
 每一轮开始前，driver 先等持久化写完（第 142-153 行）再发下一轮。这样可以保证：
 
-- 如果进程在 round N 工作期间崩溃，恢复后从 session log 重建 goal 状态，driver 从 round N 重来
-- 不会漏 round 也不会计数超前
+- round 计数（`roundsStarted`）完全重建自 session log，不会漏 round 也不会计数超前
+- 但注意：崩溃重启后 phase 重建为 active，而 activation 不持久化、重启即 disarmed——driver 要等 human re-arm（`update_goal resume`）之后才会「从 round N 重来」（见 [`03-activity-vs-goal-boundaries.md`](./03-activity-vs-goal-boundaries.md) 与 [`figures/restart-rearm.svg`](./figures/restart-rearm.svg)）
