@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>"轻松"的三个机制来源</title>
+  <desc>三个机制来源：记忆外包（门禁替你记得规则）、反馈延迟最小（分层延迟）、犯错代价低（敢改）。三者合流使正确路径与最省力路径对齐；注意分主语——执行面的轻按 agent 经济设计，指挥面的轻才属于人。</desc>
+
+  <rect width="1200" height="640" rx="8" fill="#f8fafc"/>
+  <text x="600" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">"轻松"的三个机制来源</text>
+  <text x="600" y="64" text-anchor="middle" font-size="13" fill="#64748b">轻松不是因为约束少，而是正确路径与最省力路径被制度对齐。</text>
+
+  <rect x="40" y="96" width="360" height="420" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <path d="M40,136 L40,106 Q40,96 50,96 L390,96 Q400,96 400,106 L400,136 Z" fill="#2563eb"/>
+  <text x="220" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">记忆外包 · 门禁替你记得规则</text>
+  <text x="62" y="176" font-size="14" font-weight="700" fill="#1d4ed8">一次事实一个家</text>
+  <text x="62" y="198" font-size="12.5" fill="#475569">要找某个规则的权威出处，结构告诉你去哪。</text>
+  <text x="62" y="246" font-size="14" font-weight="700" fill="#1d4ed8">规则以 gate 形式存在</text>
+  <text x="62" y="268" font-size="12.5" fill="#475569">违反被机器拒绝，不依赖记忆。</text>
+  <text x="62" y="316" font-size="14" font-weight="700" fill="#1d4ed8">程序按需加载</text>
+  <text x="62" y="338" font-size="12.5" fill="#475569">skills 目录摘要常驻，全文按需载入。</text>
+  <text x="62" y="386" font-size="14" font-weight="700" fill="#1d4ed8">反面教材在册</text>
+  <text x="62" y="408" font-size="12.5" fill="#475569">"别加依赖"从未成文却被 agent 推断且更严。</text>
+  <text x="62" y="452" font-size="12" fill="#1d4ed8">规则要么写成 gate，要么写成 Note，</text>
+  <text x="62" y="470" font-size="12" fill="#1d4ed8">绝不留在空气里。</text>
+
+  <rect x="420" y="96" width="360" height="420" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <path d="M420,136 L420,106 Q420,96 430,96 L770,96 Q780,96 780,106 L780,136 Z" fill="#15803d"/>
+  <text x="600" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">反馈延迟 · 延迟工程分层</text>
+  <text x="442" y="176" font-size="14" font-weight="700" fill="#166534">hooks 管秒级本地缺陷</text>
+  <text x="442" y="198" font-size="12.5" fill="#475569">lint、空白、vendor；pre-push 增量 typecheck。</text>
+  <text x="442" y="246" font-size="14" font-weight="700" fill="#166534">最窄测试管分钟级行为证据</text>
+  <text x="442" y="268" font-size="12.5" fill="#475569">只跑"会为回归而失败"的那一个。</text>
+  <text x="442" y="316" font-size="14" font-weight="700" fill="#166534">CI owns 全量 + 平台矩阵</text>
+  <text x="442" y="338" font-size="12.5" fill="#475569">本地永远不全套。</text>
+  <text x="442" y="386" font-size="14" font-weight="700" fill="#166534">便宜才有人真跑</text>
+  <text x="442" y="408" font-size="12.5" fill="#475569">宽仪式验证反而诱导跳过。</text>
+  <text x="442" y="452" font-size="12" fill="#166534">把单位成本做小，用更多步数换总质量。</text>
+  <text x="442" y="470" font-size="12" fill="#166534">（与 FAQ 10 "快而小模型优秀"同思想）</text>
+
+  <rect x="800" y="96" width="360" height="420" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <path d="M800,136 L800,106 Q800,96 810,96 L1150,96 Q1160,96 1160,106 L1160,136 Z" fill="#c2410c"/>
+  <text x="980" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">犯错代价低 · 敢改</text>
+  <text x="822" y="176" font-size="14" font-weight="700" fill="#9a3412">整 PR 回滚文化</text>
+  <text x="822" y="198" font-size="12.5" fill="#475569">#2903 用 67 文件镜像回滚 #2608，无 hotfix。</text>
+  <text x="822" y="246" font-size="14" font-weight="700" fill="#9a3412">coverage 的删除解释权</text>
+  <text x="822" y="268" font-size="12.5" fill="#475569">未覆盖的默认读法是"这段该删"。</text>
+  <text x="822" y="316" font-size="14" font-weight="700" fill="#9a3412">测试与 Note 都不是金科玉律</text>
+  <text x="822" y="338" font-size="12.5" fill="#475569">行为变了改测试；被取代就 supersede。</text>
+  <text x="822" y="386" font-size="14" font-weight="700" fill="#9a3412">pre-release 立场</text>
+  <text x="822" y="408" font-size="12.5" fill="#475569">无外部消费者，改名/重构自由。</text>
+  <text x="822" y="452" font-size="12" fill="#92400e">大改动的风险被切成小赌注；</text>
+  <text x="822" y="470" font-size="12" fill="#92400e">改错是原子操作，不是考古。</text>
+
+  <rect x="40" y="540" width="1120" height="76" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="600" y="568" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">三者合流 → 正确路径 = 最省力路径</text>
+  <text x="600" y="594" text-anchor="middle" font-size="12.5" fill="#334155">执行面的"轻"按 agent 经济设计；指挥面的"轻"才属于人——两个回路的划分见 two-loops 图。</text>
+</svg>

@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>两个回路：指挥者在外，执行者在内</title>
+  <desc>人类指挥者的回路在外面：切窄片、说清意图、委派执行、审最小证据，通过则合并、偏离则整 PR 回滚。agent 执行者的六步闭环在里面。右侧说明"轻松"分主语，并给出仓库自述与两个回路的接口。</desc>
+  <defs>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
+  <text x="600" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">两个回路：指挥者在外，执行者在内</text>
+  <text x="600" y="64" text-anchor="middle" font-size="13" fill="#64748b">六步闭环是 agent 的执行回路；人类开发者的体验在它外面一圈——轻松要分两个主语。</text>
+
+  <text x="40" y="92" font-size="12" font-weight="700" fill="#1e40af">人类指挥者的回路（外圈）</text>
+  <line x1="240" y1="160" x2="258" y2="160" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <line x1="460" y1="160" x2="478" y2="160" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <line x1="680" y1="160" x2="698" y2="160" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <line x1="800" y1="212" x2="800" y2="236" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <rect x="40" y="105" width="200" height="110" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <circle cx="64" cy="128" r="11" fill="#2563eb"/>
+  <text x="64" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">1</text>
+  <text x="140" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">切窄片</text>
+  <text x="140" y="162" text-anchor="middle" font-size="12" fill="#334155">一个垂直切片：</text>
+  <text x="140" y="182" text-anchor="middle" font-size="12" fill="#334155">代码+测试+文档+Note</text>
+  <text x="140" y="202" text-anchor="middle" font-size="12" fill="#334155">同 PR</text>
+
+  <rect x="260" y="105" width="200" height="110" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <circle cx="284" cy="128" r="11" fill="#2563eb"/>
+  <text x="284" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">2</text>
+  <text x="360" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">说清意图</text>
+  <text x="360" y="162" text-anchor="middle" font-size="12" fill="#334155">只声明不可派生的</text>
+  <text x="360" y="182" text-anchor="middle" font-size="12" fill="#334155">本质；衍生面交给</text>
+  <text x="360" y="202" text-anchor="middle" font-size="12" fill="#334155">制度生成</text>
+
+  <rect x="480" y="105" width="200" height="110" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <circle cx="504" cy="128" r="11" fill="#2563eb"/>
+  <text x="504" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">3</text>
+  <text x="580" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">委派执行</text>
+  <text x="580" y="162" text-anchor="middle" font-size="12" fill="#334155">agent 走完六步</text>
+  <text x="580" y="182" text-anchor="middle" font-size="12" fill="#334155">闭环（第一节）</text>
+  <text x="580" y="202" text-anchor="middle" font-size="12" fill="#334155">门禁替它记得规则</text>
+
+  <rect x="700" y="105" width="200" height="110" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <circle cx="724" cy="128" r="11" fill="#2563eb"/>
+  <text x="724" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">4</text>
+  <text x="800" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">审最小证据</text>
+  <text x="800" y="162" text-anchor="middle" font-size="12" fill="#334155">只看"会为这次回归</text>
+  <text x="800" y="182" text-anchor="middle" font-size="12" fill="#334155">而失败"的那个检查</text>
+  <text x="800" y="202" text-anchor="middle" font-size="12" fill="#334155">+ 对应报告</text>
+
+  <rect x="700" y="240" width="200" height="110" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="800" y="268" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">通过？</text>
+  <text x="800" y="296" text-anchor="middle" font-size="12" fill="#7f1d1d">通过 → 合并</text>
+  <text x="800" y="318" text-anchor="middle" font-size="12" fill="#7f1d1d">偏离 → 整 PR 回滚</text>
+  <text x="800" y="340" text-anchor="middle" font-size="11" fill="#b91c1c">↺ 撤销一次原子操作，回到①</text>
+
+  <text x="40" y="270" font-size="12" font-weight="700" fill="#334155">agent 执行者的回路（内圈 = 第一节六步）</text>
+
+  <rect x="270" y="417" width="120" height="66" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="330" y="444" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">执行者 = agent</text>
+  <text x="330" y="468" text-anchor="middle" font-size="11.5" fill="#334155">六步闭环</text>
+
+  <line x1="390" y1="304" x2="410" y2="370" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <line x1="460" y1="405" x2="460" y2="505" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <line x1="408" y1="540" x2="392" y2="580" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <line x1="266" y1="592" x2="252" y2="545" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <line x1="200" y1="505" x2="200" y2="405" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <line x1="252" y1="370" x2="268" y2="308" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+
+  <rect x="270" y="283" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="330" y="305" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">① 核对现场</text>
+  <rect x="400" y="358" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="460" y="380" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">② 判定窄 diff</text>
+  <rect x="400" y="508" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="460" y="530" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">③ 原子改 owner</text>
+  <rect x="270" y="583" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="330" y="605" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">④ 最小证据</text>
+  <rect x="140" y="508" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="200" y="530" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">⑤ 沉淀 gate/Note</text>
+  <rect x="140" y="358" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="200" y="380" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">⑥ 只报跑过的</text>
+
+  <rect x="930" y="105" width="230" height="190" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="950" y="132" font-size="15" font-weight="700" fill="#166534">"轻松"分主语</text>
+  <text x="950" y="162" font-size="13" font-weight="700" fill="#15803d">对人（指挥者）</text>
+  <text x="950" y="182" font-size="12" fill="#334155">· 记规则交给门禁</text>
+  <text x="950" y="200" font-size="12" fill="#334155">· 只审最小证据</text>
+  <text x="950" y="218" font-size="12" fill="#334155">· 改错整 PR 回滚</text>
+  <text x="950" y="248" font-size="13" font-weight="700" fill="#15803d">对 agent（执行者）</text>
+  <text x="950" y="268" font-size="12" fill="#334155">· 默认即正确路径</text>
+  <text x="950" y="286" font-size="12" fill="#334155">· 反馈秒级 · 判断沉淀</text>
+
+  <rect x="930" y="315" width="230" height="140" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="950" y="342" font-size="15" font-weight="700" fill="#9a3412">仓库自述</text>
+  <text x="950" y="370" font-size="12" fill="#334155">"developed primarily by</text>
+  <text x="950" y="388" font-size="12" fill="#334155">coding agents"（quality-gates</text>
+  <text x="950" y="406" font-size="12" fill="#334155">Note 第一句）</text>
+  <text x="950" y="430" font-size="11.5" fill="#78350f">作者统计测不出 agent 占比：</text>
+  <text x="950" y="448" font-size="11.5" fill="#78350f">机器辅助的活记在操作者名下。</text>
+
+  <rect x="930" y="475" width="230" height="140" rx="10" fill="#eef2ff" stroke="#a5b4fc"/>
+  <text x="950" y="502" font-size="15" font-weight="700" fill="#3730a3">两个回路的接口</text>
+  <text x="950" y="532" font-size="13" font-weight="700" fill="#4f46e5">人 → agent</text>
+  <text x="950" y="552" font-size="12" fill="#334155">窄片意图（不可派生的本质）</text>
+  <text x="950" y="580" font-size="13" font-weight="700" fill="#4f46e5">agent → 人</text>
+  <text x="950" y="600" font-size="12" fill="#334155">最小证据报告（只报跑过的）</text>
+
+  <rect x="40" y="632" width="850" height="52" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="465" y="654" text-anchor="middle" font-size="12.5" fill="#334155">人声明窄片意图 → agent 走六步 → 人只审最小证据；</text>
+  <text x="465" y="676" text-anchor="middle" font-size="11.5" fill="#64748b">其余（三件套、双语配对、全套门禁）都在执行面内部消化。</text>
+</svg>
