@@ -2,7 +2,7 @@
 
 ## 一句话
 
-sdk-minimal 是 SDK 的极简版本，工具面大幅收窄，用于 Python SDK 的捆绑单文件运行时（`dsh-jsonrpc-agent-pkg`）。模型只看到 persistent bash + str_replace_editor，没有 subagent、tool-fs、todo_write、compaction。
+`sdk-minimal` 是 SDK 的极简版本，工具面大幅收窄，用于 Python SDK 的捆绑单文件运行时（`dsh --profile sdk-minimal`）。模型只看到 persistent bash + str_replace_editor，没有 subagent、tool-fs、todo_write、compaction。
 
 ## 怎么跑
 
@@ -10,15 +10,15 @@ sdk-minimal 是 SDK 的极简版本，工具面大幅收窄，用于 Python SDK 
 # Python SDK 捆绑运行时
 python -m dsh run --scenario sdk-minimal --exe dist-exe/dsh-jsonrpc-agent-pkg-macos-arm64
 
-# 直接通过 cordis.yml
-dsh-jsonrpc-agent ./minimal.cordis.yml
+# 直接通过 profile
+dsh --profile sdk-minimal
 ```
 
-sdk-minimal 也不是 `PROFILE_TEMPLATES` 中的一个名字。它是一个具体的 `cordis.yml` 组合（`examples/jsonrpc-agent/minimal.cordis.yml`），与 sdk 共用同一个 `dsh-jsonrpc-agent` bin。
+`sdk-minimal` 是 `PROFILE_TEMPLATES` 中的一个名字（只挂 `@deepseek-ai/dsh-sdk-minimal` 一个 bundle）。它是唯一**不叠 `dsh-base`** 的 profile：`dsh-sdk-minimal` bundle 自己持有完整的极简工具树。
 
 ## 组合构成
 
-`examples/jsonrpc-agent/minimal.cordis.yml` 是完整的 standalone 组合：
+`dsh-sdk-minimal` bundle 的 `cordis.patch.yml` 是完整的 standalone 组合：
 
 | id | 插件 | 作用 |
 |----|------|------|
@@ -30,20 +30,6 @@ sdk-minimal 也不是 `PROFILE_TEMPLATES` 中的一个名字。它是一个具�
 | `pty` | `@deepseek-ai/dsh-terminal` | 持久 PTY |
 | `terminal-bash` | `@deepseek-ai/dsh-terminal-bash` | 持久 bash（5 分钟 timeout） |
 | `fs-local` | `@deepseek-ai/dsh-fs-local` | 裸本地文件系统 |
-| `agent-spine` | `@deepseek-ai/dsh-agent-spine-demo` | agent 核心，但配置大幅收窄 |
-
-其中 `agent-spine` 的配置：
-
-```yaml
-includeHarnessIdentity: false     # 不加 DSH 身份标识
-includeRuntimeContext: false      # 不加运行时上下文快照
-persona: "You are a helpful software engineer assistant."
-workspaceContext: false           # 不加 AGENTS.md/CLAUDE.md
-skills:
-  enabled: false                  # 无技能系统
-toolBash: false                   # 不用 base 的 bash（用 persistent bash）
-toolJobs: false                   # 无 job 工具
-```
 
 以及独有的工具行：
 
@@ -83,8 +69,7 @@ toolJobs: false                   # 无 job 工具
 
 | 路径 | 角色 |
 |------|------|
-| `examples/jsonrpc-agent/minimal.cordis.yml` | 极简组合定义 |
-| `examples/jsonrpc-agent/minimal.py` | Python SDK 运行脚本 |
+| `packages/bundle/sdk-minimal/cordis.patch.yml` | 极简组合定义 |
 | `scripts/smoke-python-runtime.py` | smoke 测试（含 `minimal/model-visible.json` 快照） |
 | `python/development.md` | 开发说明 |
 | `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |

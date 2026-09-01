@@ -32,6 +32,40 @@
 
 subagent 是同一模式的另一个例子：一个接口后面，可以是进程内 child agent，也可以是经 ACP 或 JSON-RPC 驱动的独立进程。产品 Codex / Claude Code provider 不在 `dsh-base` 里默认安装；它们是独立 Profile Bundle，装进 profile 后各自注册一个 dormant 默认 provider，preset 的 tool 行再用 `backgroundMode` 选择一次性 Job 还是可续 child。见 [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md)。
 
+> **subagent model routing**：上游 #2868 使 subagent 可通过 DSH SDK 进行动态 model routing。`subagent-dsh-sdk` provider 将 child model 选择委托给 SDK 内置路由，不再硬编码 provider 名称。
+
+## 新增 seam：Schedule
+
+`packages/schedule/schedule/` 提供了 `ctx.schedule` 的定时调度能力。这是一个完整 seam：
+
+- **Definition**：`ScheduleService` 声明调度接口（`ctx.schedule`）
+- **Provider**：`schedule` 包自身同时提供基于时间的调度实现
+- **Consumer**：插件通过 `ctx.schedule.schedule()` 注册定时任务，任务触发后生成 session 事件
+
+Schedule 在 Web UI 中有 `schedule-catalog` 展示和管理界面。
+
+## 新增 seam：Webhook
+
+`packages/webhook/webhook/` 和 `packages/webhook/webhook-github/` 提供了 webhook ingress 能力：
+
+- **Definition**（`webhook/`）：`ctx.webhookRuntime` — 认证投递分发、Workspace Session 创建
+- **Provider**（`webhook-github/`）：GitHub webhook 事件处理和签名验证
+- **Consumer**：webhook ingress 插件，通过 `ctx.webhookRuntime` 接收外部事件
+
+## 非三角色 seam：API Remote 架构
+
+上游 #3073 等系列 PR 引入了一个**不是传统三角色**的新模式：**API Remote 控制器**。`packages/api/remotes/` + `packages/typert/` 替代了 `packages/host/apiproxy/` 中的 unary RPC 路由。
+
+| 角色 | 它是什么 | 典型落点 |
+|------|----------|----------|
+| **Remote 声明** | Host 侧声明 Remote 控制器及其 schema（typert generator） | `packages/api/remotes/` |
+| **Client stub** | 生成器自动导出的 client 侧 stub | `packages/api/remotes/src/client/` |
+| **Transit** | 类型安全的序列化/反序列化层 | `packages/typert/` |
+
+Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定义。它纯粹是 BFF 层的**通信协议模式**：Host 提供一组 Remote 控制器、Client 消费生成的 stub，双方通过 Typert 的 schema 保持类型安全。
+
+迁移路径：settings、credentials、directory-picker、subagent control、agent-presets 已全部从 apiproxy 迁移到 Remote。`packages/host/apiproxy/` 中的遗留 unary RPC 已删除。
+
 教科书路径：顺着 `packages/shell/` 走完 Definition → provider → `dsh-tool-bash`。组级 README 拥有「这个组有哪些包、对应哪个 `ctx` key」——本专题不手抄完整包表，完整图在生成的 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
 ## 源码入口
@@ -45,6 +79,10 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 | `packages/sandbox/` | 本地进程 argv confinement |
 | `packages/llm/` | Definition 与 Consumer 可同包 |
 | `packages/subagent/` | 差异极大的 provider，同一接口 |
+| `packages/schedule/schedule/` | `ctx.schedule` 定时调度 |
+| `packages/webhook/webhook/` | `ctx.webhookRuntime` 认证投递 |
+| `packages/api/remotes/` | Remote 控制器（非传统 seam） |
+| `packages/typert/` | 类型安全的 Remote 序列化 |
 | [`2026-06-13-capability-seams`](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.md) | 为什么这样切 |
 
 ## 机制级正文
@@ -54,5 +92,6 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 | [`01-三角色与分包装.md`](./01-三角色与分包装.md) | 分包装的味道；换 E2B 时 tool 源码不动 |
 | [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md) | resolve → confine → spawn；run 的失败合同；持久 bash 的 prompt 就绪 |
 | [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md) | `backgroundMode` one-shot / continuable；产品 provider 的 host 平面 opt-in |
+| [`04-新增seam与Remote.md`](./04-新增seam与Remote.md) | Schedule、Webhook 新 seam；API Remote 非三角色通信模式 |
 
 模型可见的 tool 管道在 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。

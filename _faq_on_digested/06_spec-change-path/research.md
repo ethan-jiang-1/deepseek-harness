@@ -26,7 +26,7 @@ Issue 引用的机器强制边界：
 
 > if (input.references.all.length === 0) errors.push('PR 正文必须引用至少一个同仓库 Issue')
 
-来源：`.github/issue-management/policy.mjs:343`
+来源：`.github/issue-management/policy.mjs:373`
 
 限制：policy 检查引用和元数据，不检查“验收条件/测试证据”是否写得充分。
 
@@ -61,7 +61,7 @@ proposed 骨架：
 
 > Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
 
-来源：`apps/cli/config/agent-presets/code/agent.cordis.yml:129`
+来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:129`
 
 > Plan mode guides rather than enforces; deployments that need enforced restrictions must configure sandbox and approval controls independently.
 
@@ -93,7 +93,7 @@ proposed 骨架：
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 
-来源：`packages/AGENTS.md:26`
+来源：`packages/AGENTS.md:27`
 
 ## 6. 行为 spec：测试与快照
 
@@ -103,7 +103,7 @@ proposed 骨架：
 
 > Every non-trivial model-, protocol-, or human-visible change adds or updates a keyless scenario in the same PR through a runnable example's owning snapshot suite.
 
-来源：`docs/testing.md:49`
+来源：`docs/testing.md:54`
 
 ## 7. git 历史例子
 

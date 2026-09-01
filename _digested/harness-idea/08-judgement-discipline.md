@@ -6,7 +6,7 @@
 
 ## 基线
 
-全部判断对照 DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。上游同步后，按 `_change_log/` 复核本专题证据锚点；本专题不使用外部资料作为证据，事实一律以 DSH 官方文件与本基线为准。
+全部判断对照 DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`。上游同步后，按 `_change_log/` 复核本专题证据锚点；本专题不使用外部资料作为证据，事实一律以 DSH 官方文件与本基线为准。
 
 ## 出处分级
 

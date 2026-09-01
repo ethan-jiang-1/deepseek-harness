@@ -2,7 +2,7 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **产品源码审计基线**：DeepSeek Harness `0.1.1-rc.2`，commit `b150a551b8d465e31e418e1b2eaf5e79bbb7d28e`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0003-0.1.1-rc.1-to-0.1.1-rc.2.md`](./_change_log/0003-0.1.1-rc.1-to-0.1.1-rc.2.md)。
+> **产品源码审计基线**：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0004-0.1.1-rc.2-to-0.1.2-alpha.3.md`](./_change_log/0004-0.1.1-rc.2-to-0.1.2-alpha.3.md)。
 
 `_digested/` 面向已熟悉 agent harness / plugin 运行时，但尚未建立 DeepSeek Harness 概念体系的读者。这里先抓住思想主轴，再进入源码机制——而不是把 `packages/` 目录平铺成分类货架。
 
@@ -39,7 +39,7 @@
 | `system/` | 总体系统专题 | everything-is-a-plugin、组合层、循环、seam、扩展点怎么拼成一台运行中的 `dsh` |
 | `cordis-runtime/` | 被 vendor 的框架 | `ctx` / plugin / effect / event / waterfall / fiber / Loader |
 | `composition/` | 启动组合 | profile、bundle、patch 层、Harness home、`dsh --dump-config` |
-| `runtime-profiles/` | 运行时配置 | web、headless、sdk、sdk-minimal、acp 五个 Runtime Profile 的共同基底与各自差异 |
+| `runtime-profiles/` | 运行时配置 | web、headless、sdk、sdk-minimal、acp 五个 Launcher Profile 的共同基底与各自差异 |
 | `session-and-loop/` | 会话与驱动 | session log、turn/step、agent-loop、model-visible ⟺ logged、agent scope |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | step/turn/activity/goal 四层结束边界、Goal 状态机、Round Driver 自动续轮 |
 | `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色，以及如何组合一致的 fs / subprocess provider |

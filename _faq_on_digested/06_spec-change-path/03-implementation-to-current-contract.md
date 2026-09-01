@@ -40,7 +40,7 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
 
 > Every non-trivial model-, protocol-, or human-visible change adds or updates a keyless scenario in the same PR through a runnable example's owning snapshot suite.
 
-来源：`docs/testing.md:49`
+来源：`docs/testing.md:54`
 
 ## 中游小结
 

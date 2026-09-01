@@ -25,11 +25,11 @@ DSH 没有一个单独的“人/agent 分工表”，但它把分工写进了权
 
 > Run checks before pushes via [dsh-pre-push-checks](../../.agents/skills/dsh-pre-push-checks/SKILL.md); report only commands run.
 
-来源：`AGENTS.md:89`
+来源：`AGENTS.md:91`
 
 > Never default to the full suite or repeat a passing check for commit or push. CI owns exhaustive coverage and the platform matrix.
 
-来源：`AGENTS.md:92`
+来源：`AGENTS.md:94`
 
 ### 2. 提案、计划、实现、合同同步
 
@@ -51,11 +51,11 @@ Plan prompt 给 agent 的规则是：
 
 > Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
 
-来源：`apps/cli/config/agent-presets/code/agent.cordis.yml:129`
+来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:129`
 
 > implementation begins only in a later step after approval.
 
-来源：`apps/cli/config/agent-presets/code/agent.cordis.yml:131`
+来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:131`
 
 这说明：**agent 负责把计划做到 decision-complete，但不能自己批准实施。**
 
@@ -81,11 +81,11 @@ Plan prompt 给 agent 的规则是：
 
 > automated checks do not establish those properties.
 
-来源：`.agents/skills/dsh-code-review/SKILL.md:22`
+来源：`.agents/skills/dsh-code-review/SKILL.md:23`
 
 > ## Manual checks
 
-来源：`.agents/skills/dsh-code-review/SKILL.md:29`
+来源：`.agents/skills/dsh-code-review/SKILL.md:31`
 
 PR 模板明确存在“人类 PR”：
 
@@ -110,7 +110,7 @@ issue policy 则把这种约束命名得更直接：
 
 > only explicit user invocation may run `dsh-translate-docs`.
 
-来源：`AGENTS.md:143`
+来源：`AGENTS.md:146`
 
 ### 4. sandbox 无法解决的主机环境问题
 
@@ -136,7 +136,7 @@ issue policy 则把这种约束命名得更直接：
 
 > When receiving review, verify each claim and fix or rebut it on technical grounds without performative agreement.
 
-来源：`.agents/skills/dsh-code-review/SKILL.md:49`
+来源：`.agents/skills/dsh-code-review/SKILL.md:52`
 
 这补上了闭环：review 反馈回来后，agent 修或 rebut，而不是无脑接受。
 
@@ -154,9 +154,9 @@ issue policy 则把这种约束命名得更直接：
 - `AGENTS.md:85`、`:89`、`:92`、`:143`
 - `packages/AGENTS.md:25`
 - `.agents/notes/README.md:46`
-- `apps/cli/config/agent-presets/code/agent.cordis.yml:129`、`:131`
+- `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:129`、`:131`
 - `docs/subsystems/plan.md:33`
-- `.agents/skills/dsh-code-review/SKILL.md:22`、`:29`、`:49`
+- `.agents/skills/dsh-code-review/SKILL.md:23`、`:29`、`:49`
 - `.github/pull_request_template.md:2`
 - `.github/issue-management/policy.mjs:158-170`、`:343`
 - `CONTRIBUTING.md:9`、`:11`

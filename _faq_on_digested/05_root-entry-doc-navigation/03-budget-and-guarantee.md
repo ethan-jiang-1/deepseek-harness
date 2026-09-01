@@ -28,7 +28,7 @@
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
-> —— `packages/AGENTS.md:26`
+> —— `packages/AGENTS.md:27`
 
 两道机器兜底：
 

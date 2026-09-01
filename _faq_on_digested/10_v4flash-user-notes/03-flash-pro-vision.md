@@ -12,7 +12,7 @@
 
 三个关键机制事实：
 
-1. **vision 是模型条目的属性，不是开关**。catalog 条目以 `inputModalities: [text, image]` 声明图片能力（`README.md:55`）；路由是否收图由"确切模型能力"决定，而非会话配置。catalog 是 advisory：未列出的模型 id 原样透传、按纯文本路由——所以"用 vision"必须真的把路由切到 vision 条目，不是开个设置。
+1. **vision 是模型条目的属性，不是开关**。catalog 条目以 `inputModalities: [text, image]` 声明图片能力（`README.md:59`）；路由是否收图由"确切模型能力"决定，而非会话配置。catalog 是 advisory：未列出的模型 id 原样透传、按纯文本路由——所以"用 vision"必须真的把路由切到 vision 条目，不是开个设置。
 2. **`read_image` 工具的存在本身依赖两道门**：`ctx.attachments` 持久附件服务挂载（没挂则工具根本不注册，`packages/fs/tool-fs/src/index.ts:67` 条件注入）；执行时 `assertImageCapableRoute` 解析会话最新 `request/header` 的路由并要求 `inputModalities` 显式含 `'image'`，否则拒——"model … does not declare image input"（`tool-fs/src/read-image.ts:87-99`）。
 3. **切换路由有缓存代价**：`request/header` 记录 provider/model/effort 为会话级状态；模型路由一变，装配前缀的 DeepSeek cache 从第一个变更 token 起失效（`README.md:120`）。"干活用 Flash、关键验证切 vision"在长会话里每次都是一次前缀清零，值得按节而不是按请求切换。
 
@@ -41,7 +41,7 @@ DSH 对 UI/前端类工作的验证有一个结构性事实：**模型没有"指
 
 （依据：`packages/attachment/attachment-local/README.md:7`、`packages/llm/llm-deepseek/README.md:55-63`。）
 
-第五级的 offload 占位文本值得读一遍：`[image omitted to keep the request within its image limit; older images are omitted first. …]`（`README.md:57`）——**旧图先出局**，且高水位投影让前缀不因每张新图改写。这就是长会话反复看截图的机制告诫：`read_image` 是"看一眼"，不是"存档"；同一张图要反复引用时，靠的是重新读文件，而不是指望历史里的图永远在场。
+第五级的 offload 占位文本值得读一遍：`[image omitted to keep the request within its image limit; older images are omitted first. …]`（`README.md:61`）——**旧图先出局**，且高水位投影让前缀不因每张新图改写。这就是长会话反复看截图的机制告诫：`read_image` 是"看一眼"，不是"存档"；同一张图要反复引用时，靠的是重新读文件，而不是指望历史里的图永远在场。
 
 ## 第四节 V4 Pro 的真实位置："别用"是经济学，不是机制
 

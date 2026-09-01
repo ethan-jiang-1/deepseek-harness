@@ -18,7 +18,7 @@
 
 ## 范围
 
-源码核验基线为 DeepSeek Harness `0.1.1-rc.1`，commit `528c682e061696f5a160f363f236ecbf53cbd006`。本 FAQ 解释组织原则和阅读方法，不逐个复述所有 package；完整 package 表以 [`packages/README.md`](../../packages/README.md) 和生成的 [`docs/module-graph.md`](../../docs/module-graph.md) 为准。
+源码核验基线为 DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`。本 FAQ 解释组织原则和阅读方法，不逐个复述所有 package；完整 package 表以 [`packages/README.md`](../../packages/README.md) 和生成的 [`docs/module-graph.md`](../../docs/module-graph.md) 为准。
 
 `_digested/`、`_faq_on_digested/` 和 `_architecture_referenced/` 是 `ethan` 分支上的研究覆盖层，不属于产品 pnpm workspace，也不会进入 DSH 运行时。答案会把它们标出来，避免和产品本体混读。
 

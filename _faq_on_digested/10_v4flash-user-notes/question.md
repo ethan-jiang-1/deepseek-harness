@@ -18,4 +18,4 @@
 2. "要自己改造" 的清单里，哪些官方其实已有（diff 预览、markdown 渲染、多路并行、workflow）、哪些是 `model-visible ⟺ logged` 硬税下的真缺口（word/ppt 预览、侧边栏产出物）？自己造的正确路径是什么（新增 `SessionEventMap` 成员 / render intent / Chat node / bundle patch）？
 3. "别用 V4 Pro、多用 vision" 的机制依据是什么？默认 catalog 里三个模型各自的定位是什么？vision 为什么是验证手段而不只是"看得见图"？
 
-答案要求：每条判定挂源码或 `_digested/` 证据，明确基线（消化基线 `0.1.1-rc.2`，commit `b150a55…`；复核树 commit `08b582ea02…`）。
+答案要求：每条判定挂源码或 `_digested/` 证据，明确基线（消化基线 `dsh-v0.1.2-alpha.3`，commit `dd6322d6…`；复核树 commit `08b582ea02…`）。

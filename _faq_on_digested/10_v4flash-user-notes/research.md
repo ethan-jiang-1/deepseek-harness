@@ -2,7 +2,7 @@
 
 ## 基线
 
-- 消化基线：DeepSeek Harness `0.1.1-rc.2`，commit `b150a551b8d465e31e418e1b2eaf5e79bbb7d28e`（[`_digested/00-index.md`](../../_digested/00-index.md)）。
+- 消化基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`（[`_digested/00-index.md`](../../_digested/00-index.md)）。
 - 本文写入与复核树：commit `08b582ea02cf16812d48e6323c91d784210cf38e`（2026-08-31）。文中行号以此树为准；模型名、默认 catalog、49 种事件词表等部署事实随上游漂移。
 
 ## 方法
@@ -34,7 +34,7 @@
 - workflow：`packages/workflow/workflow/README.md`（"No saved or nested workflows"）、`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/tool-ralph/README.md`。
 - vision：`packages/fs/tool-fs/src/read-image.ts`、`packages/attachment/attachment-local/`（README + `normalization.ts`）、`packages/llm/llm-deepseek/{README.md,src/serialize.ts}`、`.agents/skills/record-browser-gif/SKILL.md`。
 - 预览/产出物：`docs/cookbook/adding-a-tool.md`（render intent 纪律）、`packages/core/tools/src/presentation.ts`、`packages/client/ui-{tool,primitives,deliverables,workflow-run,attachment,conversation}/README.md`、`packages/host/apiproxy/README.md`（session.export ZIP）。
-- 硬税：`docs/architecture.md:96`、`packages/core/agent-loop/src/invariant.ts:39-42`、`packages/core/session/src/{types,known-event-types}.ts`、notes `2026-08-10-session-log-version-mechanism.md`。
+- 硬税：`docs/architecture.md:107`、`packages/core/agent-loop/src/invariant.ts:39-42`、`packages/core/session/src/{types,known-event-types}.ts`、notes `2026-08-10-session-log-version-mechanism.md`。
 - 定制：`packages/preset/agent-presets/README.md`、`packages/bundle/README.md`、`packages/extensions/tool-cordis/README.md`、`packages/client/ui-slots/README.md`、`docs/cookbook/adding-a-conversation-node.md`、`docs/subsystems/skills.md`。
 
 ## 已知边界

@@ -138,7 +138,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
   [`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md) + `doc-standards`
   （owning source then regenerate）、[`dsh-trim-cot-leakage`](../../.agents/skills/dsh-trim-cot-leakage/SKILL.md)
   （HEAD, no-session reader test）、Agent-Note 规则（[`.agents/notes/README.md`](../../.agents/notes/README.md)）
-  和 `AGENTS.md:89`（"report only commands run"）的忠实投影。每个 skill 具体化了同一个骨架。
+  和 `AGENTS.md:91`（"report only commands run"）的忠实投影。每个 skill 具体化了同一个骨架。
 - **作为排名未证实。** 问题是问哪条路径*最自然 / 最被强化*。Answer
   从*三个证据流的汇聚*推断出"窄证据切片闭环"，但没有为任何竞争对手分配一个可证伪的排名；
   "三个机制"（§2–4）是提出的*解释*，而不是测量的原因。Answer 甚至承认这个闭环不是唯一路径：
@@ -163,7 +163,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
 
 ### 1.8 §3 "验证本身便宜 / validation is cheap"（§3, 第 51 行）— 类别 **(B)/(C)** — **unsupported gloss on the quoted source（对所引来源的不可支持的修饰）**
 
-来源：[`docs/testing.md:19`](../../docs/testing.md) — "We are DeepSeek — do not ration real-API tests.
+来源：[`docs/testing.md:24`](../../docs/testing.md) — "We are DeepSeek — do not ration real-API tests.
 A no-key test proves plumbing; only a with-key run proves the agent works against a real model." Answer
 引用此作为"验证本身便宜"的证据。
 
@@ -203,7 +203,7 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 
 - **只在权威边界问，从不问检查可发现的事实。** Plan-mode 姿态节，answer 引用了它但也只是作为"姿态条款"，
   实际上是 (A) 面对的契约："A user's conversational agreement — including an answer confirming something you asked — **approves nothing**"
-  （[`packages/bundle/base/cordis.patch.yml:269`](../../packages/bundle/base/cordis.patch.yml)）；"Resolve
+  （[`packages/bundle/base/cordis.patch.yml:311`](../../packages/bundle/base/cordis.patch.yml)）；"Resolve
   discoverable facts by inspection. Use `ask_user_question` only for user-owned choices or material
   ambiguity that inspection cannot answer. **Do not ask the user where code lives**"（`:275`）。工具自身的描述
   进一步缩小范围："when you need confirmation, a choice, or missing information"
@@ -288,28 +288,28 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 ## 4. 核实附录（已读取的原始来源）
 
 - [`answer.md`](./answer.md), [`research.md`](./research.md), [`question.md`](./question.md) — 被审计的文本。
-- [`lefthook.yml`](../../lefthook.yml:5-55) — pre-commit jobs, pre-push typecheck。
+- [`lefthook.yml`](../../lefthook.yml) — pre-commit jobs, pre-push typecheck。
 - [`package.json`](../../package.json) — `typecheck` = host build + client typecheck。
-- [`docs/development.md`](../../docs/development.md:103-119) — Git integrations, "hooks intentionally do not run…"。
-- [`docs/testing.md`](../../docs/testing.md:10,19) — coverage gate（"uncovered line often dead code"）、
+- [`docs/development.md`](../../docs/development.md) — Git integrations, "hooks intentionally do not run…"。
+- [`docs/testing.md`](../../docs/testing.md) — coverage gate（"uncovered line often dead code"）、
   real-API policy（"do not ration"）。
-- [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md:38-49,61-63,86) — 最小形状、
+- [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md) — 最小形状、
   execute contract、Code Mode free、purity hard rule。
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) — tier taxonomy、one-home-per-fact、"never hand-edited"。
-- [`AGENTS.md`](../../AGENTS.md:89-92) — "report only commands run", "Never default to the full suite"。
-- [`.agents/notes/implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md:11,15,26)
+- [`AGENTS.md`](../../AGENTS.md) — "report only commands run", "Never default to the full suite"。
+- [`.agents/notes/implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
   — "developed primarily by coding agents", "Every mechanically checkable…", "gates are code to maintain"。
-- [`.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md`](../../.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md:15,23,34)
+- [`.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md`](../../.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md)
   — 当前 hook 集、取代 quality-gates、无延迟保证。
-- [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml:269,275) — plan-mode posture。
-- [`packages/interaction/tool-ask-user/src/index.ts`](../../packages/interaction/tool-ask-user/src/index.ts:16) — ask_user_question 契约。
+- [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml) — plan-mode posture。
+- [`packages/interaction/tool-ask-user/src/index.ts`](../../packages/interaction/tool-ask-user/src/index.ts) — ask_user_question 契约。
 - [`packages/skill/tool-skill/src/index.ts`](../../packages/skill/tool-skill/src/index.ts) — 两层披露、catalog hash。
-- [`packages/core/system-prompt/src/index.ts`](../../packages/core/system-prompt/src/index.ts:58) — section order convention。
-- [`packages/workflow/tool-workflow/src/index.ts`](../../packages/workflow/tool-workflow/src/index.ts:210-211) — tool guidance lives in tool plugins。
-- [`packages/subagent/tool-subagent-report/src/index.ts`](../../packages/subagent/tool-subagent-report/src/index.ts:57-71) — 自包含 report。
-- [`packages/subagent/tool-subagent/src/index.ts`](../../packages/subagent/tool-subagent/src/index.ts:473) — background-first delegation。
-- [`packages/guard/repeat-tool-reminder/src/index.ts`](../../packages/guard/repeat-tool-reminder/src/index.ts:29-46,209-224) — advisory thresholds。
-- [`packages/todo/tool-todo/src/index.ts`](../../packages/todo/tool-todo/src/index.ts:45-66) — todo as visible skeleton。
+- [`packages/core/system-prompt/src/index.ts`](../../packages/core/system-prompt/src/index.ts) — section order convention。
+- [`packages/workflow/tool-workflow/src/index.ts`](../../packages/workflow/tool-workflow/src/index.ts) — tool guidance lives in tool plugins。
+- [`packages/subagent/tool-subagent-report/src/index.ts`](../../packages/subagent/tool-subagent-report/src/index.ts) — 自包含 report。
+- [`packages/subagent/tool-subagent/src/index.ts`](../../packages/subagent/tool-subagent/src/index.ts) — background-first delegation。
+- [`packages/guard/repeat-tool-reminder/src/index.ts`](../../packages/guard/repeat-tool-reminder/src/index.ts) — advisory thresholds。
+- [`packages/todo/tool-todo/src/index.ts`](../../packages/todo/tool-todo/src/index.ts) — todo as visible skeleton。
 - Git 历史（`upstream/master`, tip `0a53fb55be`）：reverts `#2903`/`#2608`（67-file mirror）、`#3000`、
   `#3054`、`#2577`、`#544`、`#3325`、`#3326`（re-revert）；作者计数；checkpoint mentions；
   `fz@dsh.dev` = 92；`Co-authored-by` = 4。

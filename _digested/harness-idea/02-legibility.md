@@ -12,13 +12,13 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 > A fiber is one loaded plugin instance: its lifecycle state, validated config, and registered effects. `ctx.fiber` is the current fiber, and `ctx.effect()` delegates to it.
 >
-> —— `docs/cordis-api/fiber.md:6`（基线 `528c682e…`）
+> —— `docs/cordis-api/fiber.md:6`（基线 `dd6322d6…`）
 
 这比「词汇表统一」更深一层：同一套原语贯穿工具、provider、策略、UI、loop，所以学会一个插件形状，就能在整棵树上迁移。
 
 > Domain vocabulary for DeepSeek Harness uses one canonical term per concept.
 >
-> —— `docs/glossary.md:5`（基线 `528c682e…`）
+> —— `docs/glossary.md:5`（基线 `dd6322d6…`）
 
 ## 机制二：一词一义，文档与代码没有翻译层
 
@@ -28,7 +28,7 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 > A `SessionEventMap` member is required-on-read by default — builds that do not know its type refuse the log unless the event carries the envelope's `ignorable: true`.
 >
-> —— `AGENTS.md:105`（基线 `528c682e…`）
+> —— `AGENTS.md:107`（基线 `dd6322d6…`）
 
 ## 机制三：合同外显为类型
 
@@ -49,7 +49,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 > Services declare event names through TypeScript declaration merging, then dispatch them as `emit`, `waterfall`, `parallel`, or `serial` depending on whether listeners observe, wrap, fan out, or run in order.
 >
-> —— `docs/cordis-primer.md:12`（基线 `528c682e…`）
+> —— `docs/cordis-primer.md:12`（基线 `dd6322d6…`）
 
 ## 机制五：结构同构，生成目录不漂移
 
@@ -58,7 +58,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
-> —— `packages/AGENTS.md:26`（基线 `528c682e…`）
+> —— `packages/AGENTS.md:27`（基线 `dd6322d6…`）
 - 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
 
 手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
@@ -89,18 +89,18 @@ coding agent 的真实约束不只有「读不读得懂」，还有**上下文�
 - 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 1600 词），细节链接到 home；
 - [`docs/architecture.md`](../../docs/architecture.md) 是 1800 词以内的有序地图；
 - 生成的 catalog 提供穷举查询，不要求读者通读；
-- skills 提供可调用的程序化工作流，如 [`dsh-doc-standards`](../../.agents/skills/dsh-doc-standards/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。
+- skills 提供可调用的程序化工作流，如 [`dsh-doc`](../../.agents/skills/dsh-doc/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。
 - 双语文档由配对门禁管理：`docs/AGENTS.md` 要求“Pairs update together”，`verify-translation-pairing` 把英文/中文/记录三方钉在一起。
 
 > **Pairs update together**: Terminology-guided, single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records.
 >
-> —— `docs/AGENTS.md:43`（基线 `528c682e…`）
+> —— `docs/AGENTS.md:43`（基线 `dd6322d6…`）
 
 `verify-doc-budgets` 把字数预算钉成门禁。可读性因此来自组织，不来自把系统做小；正确读法是查表，不是通读。
 
 > **Document current state, not change history.** Avoid "previously/now/no longer", PRs, commits, and stack positions in durable prose; name the live mechanism.
 >
-> —— `docs/AGENTS.md:38`（基线 `528c682e…`）
+> —— `docs/AGENTS.md:38`（基线 `dd6322d6…`）
 
 ## 可读 ≠ 简单
 

@@ -12,7 +12,7 @@ TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最�
 
 > For a repo that is built primarily by agents and read by occasional human contributors, "the package manager most tools and people expect" has real value: fewer surprises, better-trodden failure paths, more copy-pasteable answers.
 >
-> —— `.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md:9`（基线 `528c682e…`）
+> —— `.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md:9`（基线 `dd6322d6…`）
 
 但注意证据边界：`2026-06-17-ts-build-config` 也常被拿来当「技术选型」证据，它的实际理由是 **tsc 与 oxc/tsdown 的编译语义差异和 declaration 正确性**，不是「agent 更熟 TypeScript」。不要把每个技术决定都归因为 agent 友好。
 
@@ -31,11 +31,11 @@ TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最�
 
 > A context is a proxy: normal property reads go through the service resolver, while `extend()`, `isolate()`, and `intercept()` create scoped child contexts without mutating their parent.
 >
-> —— `docs/cordis-api/context.md:10`（基线 `528c682e…`）
+> —— `docs/cordis-api/context.md:10`（基线 `dd6322d6…`）
 
 > **Typed events use declaration merging** and merge-extensible maps.
 >
-> —— `AGENTS.md:105`（基线 `528c682e…`）
+> —— `AGENTS.md:107`（基线 `dd6322d6…`）
 
 ## 第三层：低密度但承重的技术，本地化或生成化
 
@@ -45,7 +45,7 @@ dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的�
 
 > DeepSeek Harness is built on the Cordis framework. Cordis core was at 4.0.0-rc.6 (a release candidate) when this repo started; the harness depends on framework internals (fiber lifecycle, effect disposal, waterfall dispatch) whose exact behavior matters to the agent loop's correctness guarantees.
 >
-> —— `.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md:9`（基线 `528c682e…`）
+> —— `.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md:9`（基线 `dd6322d6…`）
 2. **生成合同面**：把源码事实变成 freshness-gated 的 catalog（[`02`](./02-legibility.md) 机制五）。agent 不需要懂全部 Cordis 或全部包，只需要查生成的 API、事件、配置与模块图。
 
 `[推断]` native Landlock、Python SDK 等边界在仓库布局中同样显式分层：TS 控制平面之外的东西放在独立发行物或 seam 之后，不混进插件模型。仓库侧可见的是 `native/`、`python/` 顶层边界，以及 vendor / npm 依赖的分离（[`vendor/README.md`](../../vendor/README.md)）。

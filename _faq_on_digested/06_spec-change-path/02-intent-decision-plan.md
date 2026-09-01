@@ -20,7 +20,7 @@ Bug 模板要求复现、实际、预期、环境、验收。Task 模板要求�
 > const automated = authorType === 'Bot' || authorType === 'App'
 > return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
 
-来源：`.github/issue-management/policy.mjs:162-170`；引用检查在 `validatePullRequest()`，见 `.github/issue-management/policy.mjs:343`。
+来源：`.github/issue-management/policy.mjs:162-170`；引用检查在 `validatePullRequest()`，见 `.github/issue-management/policy.mjs:373`。
 
 ## 2. proposed Agent Note 固定设计决策
 
@@ -67,7 +67,7 @@ Plan Mode 把“边写边设计”压缩掉：
 
 > Make the plan decision-complete: state the goal and success criteria; group implementation changes by subsystem; identify public API, schema, and data-flow changes; cover edge cases, failure modes, tests, acceptance criteria, and explicit assumptions. Keep it concise enough to review but detailed enough that another engineer can implement it without making design decisions.
 
-来源：`apps/cli/config/agent-presets/code/agent.cordis.yml:129`（基线 `528c682e…`）；plan/review 留在会话历史见 `packages/plan/plan-mode/README.md:86`。
+来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:129`（基线 `528c682e…`）；plan/review 留在会话历史见 `packages/plan/plan-mode/README.md:170`。
 
 ## 上游小结
 
