@@ -128,6 +128,18 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 因此 harness-idea 的最终判断不是「所有 harness 都该学 dsh」，而是：**如果你的主要复杂度是组合关系，dsh 的形状值得学；如果只是想要一个清晰的 loop + 扩展 API，先学它的外置纪律，不必搬它的运行时。**
 
+## 外部验证：Google 产品的 5 个模式
+
+Google Cloud Senior AI Product Manager Shubham Saboo 在2026-08 发表了一篇《5 Patterns to Learn from DeepSeek's Open-Source Agent Harness》，从外部观察者视角提炼了 DSH 的五个设计模式（[原文存档](../../_architecture_referenced/Google/original-5-patterns.md)）：
+
+1. **Derive the model's context from a log instead of maintaining it** → 即"模型可见 ⟺ 已记录"不变量
+2. **Loops get broken with reminders, not blocks** → `repeat-tool-reminder` 插件（渐进提醒，不硬阻断）
+3. **Tell the model what it didn't see** → 工具结果截断的显式披露（`file-search` 采样+路径、sandbox 拒绝的"do not retry"）
+4. **Code execution that can't dodge your permission layer** → `run_code` 调用仍经过完整审批管道
+5. **Kill the context, keep the workspace** → Ralph loop / Goal Round Driver 的跨轮手写协议
+
+这五个模式全部被 `_digested/` 各专题覆盖，但 Saboo 的提取提供了一个外部验证：**DSH 的工程选择不只是内部自洽，而且对外部有经验的读者也是可识别、可命名、可迁移的。** 这不是"dsh 被 Google 看上了"的证明，而是"该系列的合同面让外部观察者也能提取出稳定模式"的证据。
+
 ## 证据入口
 
 - [`docs/architecture.md`](../../docs/architecture.md)（第 13 行；无特权核心、注册即效果）
