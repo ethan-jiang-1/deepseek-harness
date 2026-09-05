@@ -74,7 +74,7 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 | `block()` | 仅 active | blocked + disarmed（带 blockedReason） | direct-human 或 goal-round |
 | `clear()` | 任意当前 | 墓碑 tombstone（revision+1） | human 命令 |
 
-两个容易记错的点：**`complete` 是终态，不可 resume**——`resume` 的允许集只有 `['active', 'paused', 'blocked']`（`goal/src/index.ts:314-317`，严格 fold 同 `fold.ts:227-231`），complete goal 只能被 `create()` 替换；**blocked 可以手动 resume**（需 human 权限），只是不会被 round driver 自动续轮。
+两个容易记错的点：**`complete` 是终态，不可 resume**——`resume` 的允许集只有 `['active', 'paused', 'blocked']`（`goal/src/index.ts:366`，严格 fold 同 `fold.ts:227-231`），complete goal 只能被 `create()` 替换；**blocked 可以手动 resume**（需 human 权限），只是不会被 round driver 自动续轮。
 
 ### 各状态的含义
 
