@@ -41,8 +41,8 @@ CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 ses
 |------|------|
 | `apps/cli/` | 产品 bin `dsh` |
 | `packages/boot/` | 各 profile 共用的 boot 胶水 |
-| `packages/host/` | Web-GUI 的 API gateway + HTTP |
-| `packages/host/apiproxy/` | 遗留 RPC 代理（已迁移至 Remote） |
+| `packages/host/` | webserver / frontend-static / directory-picker / plugin-inventory |
+| `packages/api/session-controller/` | Web host 会话流（`session/event` 转发、activity；替代已删除的 apiproxy） |
 | `packages/client/` | 浏览器壳、wire、slots |
 | `packages/sdk/` | JSON-RPC protocol / server / TS client |
 | `packages/acp/` | ACP 自动化服务器 |

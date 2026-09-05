@@ -1,6 +1,6 @@
 # 源码启动、built bin，以及 host 如何推同一条 session 流
 
-源码核验入口：根 `package.json` 的 `dsh` script、`apps/cli/package.json` `bin`、`apps/cli/src/bin.ts`、`packages/host/apiproxy/src/api-proxy.ts`。
+源码核验入口：根 `package.json` 的 `dsh` script、`apps/cli/package.json` `bin`、`apps/cli/src/bin.ts`、`packages/api/session-controller/`（Web host 会话流；`packages/host/apiproxy/` 已整体删除）。
 
 五个入口可以 boot 不同的 bundle 或组合，因此不一定共享同一进程或同一棵 Cordis 树；它们复用 `ctx.agents`、session log 和事件语义。
 
@@ -25,11 +25,11 @@ ACP：`dsh --profile acp`。launcher profile，stdout 留给协议帧。
 
 运行时：`Session.append` 之后 Cordis `emit('session/event', session, event)`。这不是 log 事件本身——catalog 写明 log 事件经这一次 emit 到达监听器。
 
-`dsh-host-apiproxy` 听同一条事件，打成 mux 帧 `{ type: 'session/event', sessionId, event, view? }`。`view` 是 tool 展示投影（terminal / diff 卡片），从 `presentResult` 一类纯函数来，不是第二份事实。
+`packages/api/session-controller/` 订阅同一条 `session/event`（rc.1 起 apiproxy 包已删除），按白名单 `API_REMOTE_FORWARDED_EVENTS` 转发给浏览器/Web；tool 展示投影（terminal / diff 卡片）仍从 `presentResult` 一类纯函数派生，不是第二份事实。
 
 浏览器半边（`packages/client/`）订阅读这些帧，slots / `ConversationNodeDefinition` 渲染。client **没有**另一份 append-only log。刷新 / 重连从持久化再 hydrate，仍然是同一条 session 的事件。
 
-Host 把每一个已登记的 settings namespace 交给 Web；插件自己登记 Host schema 与浏览器卡片，apiproxy 不再维护一份暴露白名单。含图的 Web prompt 走 `attachments.admitEncodedImages` 批量准入（含 canonical base64 校验），再写成带 attachment 引用的 content block。历史分页按 `sourceEventSeqs` 取分组起点，避免大 transcript 上的调用栈溢出。
+Host 把每一个已登记的 settings namespace 交给 Web；插件自己登记 Host schema 与浏览器卡片。事件转发白名单集中在 `API_REMOTE_FORWARDED_EVENTS`（`packages/api/session-controller/src/remote-events.ts`），不再有 apiproxy 的自维护暴露面。含图的 Web prompt 走 `attachments.admitEncodedImages` 批量准入（含 canonical base64 校验），再写成带 attachment 引用的 content block。历史分页按 `sourceEventSeqs` 取分组起点，避免大 transcript 上的调用栈溢出。
 
 Python 捆绑 runtime 的 `minimal` smoke 把组装后的 system prompt、tool schema 和 model-visible messages 钉在 `scripts/snapshots/python-sdk-single-exe/minimal/model-visible.json`。
 

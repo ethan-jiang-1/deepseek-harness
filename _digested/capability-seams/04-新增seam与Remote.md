@@ -1,27 +1,30 @@
-# 新增 seam：Schedule、Webhook 与 API Remote 架构
+# 新能力对照：Schedule（非 seam）、Webhook 与 API Remote 架构
 
-本篇记录上游同步 0004（`0.1.1-rc.2` → `0.1.2-alpha.3`）引入的**新能力 seam**，以及一种**非三角色**的 BFF 通信模式（API Remote）。传统三角色（Definition / Provider / Consumer）仍见 [`01-三角色与分包装.md`](./01-三角色与分包装.md)。
+本篇记录上游同步 0004（`0.1.1-rc.2` → `0.1.2-alpha.3`）引入的**新能力**，以及一种**非三角色**的 BFF 通信模式（API Remote）。其中 Schedule 是刻意不切三角色的插件式能力（对照反例），Webhook 才是真 seam。传统三角色（Definition / Provider / Consumer）仍见 [`01-三角色与分包装.md`](./01-三角色与分包装.md)。
 
 源码核验入口：`packages/schedule/schedule/`、`packages/webhook/`、`packages/api/remotes/`、`packages/typert/`。
 
-## Schedule：`ctx.schedule`
+## Schedule：不是 seam 的 agent 作用域提醒（反例）
 
-`packages/schedule/schedule/` 提供一个完整的定时调度 seam：
+`packages/schedule/schedule/` 提供 **session-local durable reminders**，是「能力不必都切三角色」的对照例——**没有** `ctx.schedule`、没有 `ScheduleService`、没有 Provider 可替换性：
 
-- **Definition**：`ScheduleService` 声明调度接口，作为 `ctx.schedule` 挂载
-- **Provider**：`schedule` 包自身同时提供基于时间的调度实现（`domain.ts`、`projection.ts`）
-- **Consumer**：插件通过 `ctx.schedule.schedule()` 注册定时任务；`projection.ts` 提供调度状态的投影，供 Web UI（`schedule-catalog`）读取
+- 它是自足插件：`ScheduleRuntime` 按每个 root agent 实例化，`inject: ['agents','sessions','tools','sessionPersistence']`
+- 模型经普通工具创建/列出/取消提醒：`schedule_create` / `schedule_list` / `schedule_delete`（`tools.ts`），触发后以 follow-up 消息回到同一会话
+- 提醒经 session event log 持久化并 `scheduleProjectionDefinition` 投影（`projection.ts`）；Web 侧只读 active-reminder catalog 在独立包 `client/ui-schedule`
+- 模块 doc 直述其边界：「Session-local durable reminders」——不是调度服务，也不承诺跨会话推送
 
 关键源码：
 
 | 文件 | 角色 |
 |------|------|
-| `packages/schedule/schedule/src/domain.ts` | 调度领域模型 |
-| `packages/schedule/schedule/src/projection.ts` | 调度状态的投影（Web 展示用） |
-| `packages/schedule/schedule/src/client.ts` | 客户端（Web）侧访问调度 |
+| `packages/schedule/schedule/src/runtime.ts` | `ScheduleRuntime`：每 root agent 的投递/持久化 |
+| `packages/schedule/schedule/src/tools.ts` | `schedule_create` / `schedule_list` / `schedule_delete` |
+| `packages/schedule/schedule/src/persistence.ts` · `transaction.ts` | 提醒的持久化与原子事务 |
+| `packages/schedule/schedule/src/projection.ts` | `scheduleProjectionDefinition`（catalog 数据源） |
 | `packages/schedule/schedule/src/types.ts` | `ScheduleId` 等类型 |
+| `packages/client/ui-schedule/` | Web 只读提醒 catalog（经 `useProjection('schedule')`） |
 
-Schedule 是「Definition + Provider 同包」的例子（与 `dsh-llm` 一样）。
+对照：Webhook（下节）是真正的 Definition + Provider 分包 seam；schedule 提醒机制刻意不这么做。
 
 ## Webhook：`ctx.webhookRuntime`
 
@@ -50,13 +53,12 @@ Schedule 是「Definition + Provider 同包」的例子（与 `dsh-llm` 一样�
 | 域 | 迁移 PR | 旧落点（apiproxy） |
 |----|---------|-------------------|
 | settings | #3073 (`worktree-apire-a`) | `apiproxy` settings RPC |
-| directory-picker | #3082 (`worktree-apire-a2`) | `apiproxy` directory-picker RPC |
 | subagent control | #3085 (`worktree-apire-c`) | `apiproxy` subagent RPC |
 | workspace-controller | #3086 (`worktree-apire-d2`) | `apiproxy` workspace RPC |
 | agent-presets | #3074 / #3082 | preset browser 操作 |
 | session-controller | #3293 (`worktree-apiremote`) | `apiproxy` session RPC |
 
-迁移完成后，`packages/host/apiproxy/` 中对应的 unary RPC 已删除（`refactor(apiproxy)!: remove ...` 提交）。`client/*` 消费迁移后的 Remote namespace。
+迁移完成后 `packages/host/apiproxy/` 包整体删除（`refactor(api): remove ApiProxy package`）。`client/*` 消费迁移后的 Remote namespace。directory-picker **不在**迁移表里：它是 `ctx.directoryPicker` Service seam（native/browse 后端），不是 Remote。
 
 ### 为什么这很重要
 
