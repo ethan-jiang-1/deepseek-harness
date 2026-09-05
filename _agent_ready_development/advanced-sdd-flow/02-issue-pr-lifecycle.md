@@ -8,7 +8,7 @@
 
 > Decide whether the human-review policy applies to a PR: `return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)`.
 >
-> — DSH [`.github/issue-management/policy.mjs` 的 `requiresPullRequestPolicy()`](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.github/issue-management/policy.mjs)。这里的条件说明 policy 管的是“已经进入 review 的人类作者 PR”，不是所有 PR，也不是 reviewer 身份。
+> — DSH [`.github/issue-management/policy.mjs` 的 `requiresPullRequestPolicy()`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/issue-management/policy.mjs)。这里的条件说明 policy 管的是“已经进入 review 的人类作者 PR”，不是所有 PR，也不是 reviewer 身份。
 
 ![GitHub 事件如何进入 policy、Project 和 CI](./figures/github-event-flow.svg)
 
@@ -71,9 +71,9 @@ Dependabot 按 npm、Python `uv` 和 GitHub Actions 三个 ecosystem 创建依�
 
 ## 证据入口
 
-- DSH [Issue templates](https://github.com/deepseek-ai/deepseek-harness/tree/dd6322d604e00eec1ba5e0c8541159906a21094a/.github/ISSUE_TEMPLATE) 与 [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.github/pull_request_template.md)：作者被提示提供哪些意图、验收、Issue 关联和验证信息。
-- DSH [Issue management policy](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.github/issue-management/policy.mjs)：PR metadata 适用条件、Issue 校验和 Project 状态转换函数。
-- DSH [Issue policy workflow](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.github/workflows/issue-policy.yml)：哪些 PR 事件触发 policy，以及为什么检出默认分支的可信实现。
-- DSH [Issue lifecycle workflow](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.github/workflows/issue-lifecycle.yml)：哪些 Issue、PR 和 review 事件可以写 Project 状态。
-- DSH [PR CI workflow](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.github/workflows/ci.yml)：PR runner、权限、并发、job 依赖与 required 聚合。
-- DSH [Dependabot configuration](https://github.com/deepseek-ai/deepseek-harness/blob/dd6322d604e00eec1ba5e0c8541159906a21094a/.github/dependabot.yml)：自动依赖 PR 的 ecosystem 与预置 labels。
+- DSH [Issue templates](https://github.com/deepseek-ai/deepseek-harness/tree/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/ISSUE_TEMPLATE) 与 [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/pull_request_template.md)：作者被提示提供哪些意图、验收、Issue 关联和验证信息。
+- DSH [Issue management policy](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/issue-management/policy.mjs)：PR metadata 适用条件、Issue 校验和 Project 状态转换函数。
+- DSH [Issue policy workflow](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/workflows/issue-policy.yml)：哪些 PR 事件触发 policy，以及为什么检出默认分支的可信实现。
+- DSH [Issue lifecycle workflow](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/workflows/issue-lifecycle.yml)：哪些 Issue、PR 和 review 事件可以写 Project 状态。
+- DSH [PR CI workflow](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/workflows/ci.yml)：PR runner、权限、并发、job 依赖与 required 聚合。
+- DSH [Dependabot configuration](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/dependabot.yml)：自动依赖 PR 的 ecosystem 与预置 labels。
