@@ -38,10 +38,10 @@ acp:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
 | 会话 | 事件日志、持久化、投影 | `dsh-base` 的 `session`、`session-persistence-jsonl`、`session-projection` |
 | Agent 核心 | 注册表、loop、提示词 | `dsh-base` 的 `agent`、`agent-loop`、`system-prompt` |
 | 工具管线 | 注册、执行、审批 | `dsh-base` 的 `tools`、`tool-*` |
-| 沙箱与策略 | 文件系统策略、弹窗审批 | `dsh-base` 的 `sandbox`、`sandbox-policy`、`approval`（sdk-minimal 使用 `fs-local` 代替 sandbox） |
+| 沙箱与策略 | 文件系统策略、弹窗审批 | `dsh-base` 的 `sandbox`、`sandbox-policy`、`approval`（sdk-minimal 的 sandbox 策略为 `danger-full-access` 且另挂 `fs-local`） |
 | 子进程 | 进程树管理 | `dsh-base` 的 `subprocess` |
 | 子 agent | 后台 / fork 子 agent | `dsh-base` 的 `subagent`、`tool-subagent`（sdk-minimal 无） |
-| Goal | 持久完成目标 | `dsh-base` 的 `goal`、`goal-round-driver`、`tool-goal`（sdk/sdk-minimal 无 goal） |
+| Goal | 持久完成目标 | `dsh-base` 的 `goal`、`goal-round-driver`、`tool-goal`（sdk 继承 base；仅 sdk-minimal 无） |
 | 文件系统 | 受限文件访问 | `dsh-base` 的 `fs-sandbox`、`fs-observation-policy` |
 
 **进程级重用**：五个入口都通过 `ctx.agents` 驱动 agent，从 `session/event` 渲染或投影。不是五套 Agent 实现。
@@ -93,11 +93,11 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 
 | Profile | 独有插件 / bundle |
 |---------|------------------|
-| **web** | `dsh-web-app` bundle：webserver、client-*（浏览器壳、wire、slots、ui-*、connection）、storage、workspace、host 工具（apiproxy、host-runner、plugin-inventory）、agent-presets |
+| **web** | `dsh-web-app` bundle：webserver、web-runtime、client-*（浏览器壳、wire、slots、ui-*）、session-controller 等 Remote 控制器、directory-picker、plugin-inventory、agent-presets（storage/sandbox/typert-gateway 等基础设施在 base） |
 | **headless** | `dsh-headless` bundle：`headless-startup`（命令行解析）、`headless-runner`（驱动任务、打印结果） |
-| **sdk** | `dsh-sdk-app` bundle：JSON-RPC 协议处理器、`inject: ['agents']`、get-or-create agent 按 sessionId |
-| **sdk-minimal** | `dsh-sdk-minimal` bundle：同 SDK server + 工具面大幅收窄——只有 persistent bash + str_replace_editor；无 subagent、todo、tool-fs、compaction、web search |
-| **acp** | `dsh-acp-app` bundle：ACP 协议处理器（`AgentSideConnection`）、`inject: ['agents']`、session/new 创建 agent、session/prompt 等到 idle 才返回 |
+| **sdk** | `dsh-sdk-app` bundle：base + 薄协议层（persona override + `sdk-app-startup` + `sdk-jsonrpc-server`，`inject: [sdkAppStartup, loader]`）；工具面**不收窄**，继承 base |
+| **sdk-minimal** | `dsh-sdk-minimal` bundle：独立树不叠 base——工具面收窄到 persistent bash + str_replace_editor；无 subagent、todo、tool-fs、compaction、web search |
+| **acp** | `dsh-acp-app` bundle：base + 薄自动化层（persona override + `acp-app-startup` + `acp`，`inject: [acpAppStartup]`）；持久化/检查点/查询在 base，不自持 |
 
 ## 阅读路径
 

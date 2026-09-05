@@ -18,16 +18,15 @@ acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）�
 
 ## 组合构成
 
-`dsh-acp-app` bundle 包含：
+`dsh-acp-app` bundle 是叠在 `dsh-base` 上的**薄自动化层**，`cordis.patch.yml` 只做三件事：
 
-| 插件 | 作用 |
+| 改动 | 内容 |
 |------|------|
-| `@deepseek-ai/dsh-acp` | ACP 桥，`inject: ['agents']` |
-| `@deepseek-ai/dsh-session-persistence-jsonl` | JSONL 持久化 |
-| `@deepseek-ai/dsh-session-checkpoint-policy` | 耐久检查点 |
-| `@deepseek-ai/dsh-session-query-sqlite` | SQLite 会话查询索引 |
+| `system-prompt` override | persona → `You are a coding agent powered by the {{model}} model…` |
+| `session-title-llm` `disabled: true` | stdout 只归 ACP 协议 |
+| `insert` | `acp-app-startup` + `acp`（ACP 桥；bundle `inject: [acpAppStartup]`，插件自身 `inject: ['agents','llm','sessionPersistence','sessions']`，config 定 provider/model） |
 
-`ctx.effect()` 包装顺序使卸载顺序相反：ACP 先停，再拆查询 → 检查点 → 持久化，保证 checkpoint 和 persistence 监听器在 ACP agent 冲洗完关闭事件后才拆。
+JSONL 持久化（`session-persistence-jsonl`）、`session-checkpoint-policy`、`session-query-sqlite` 都在 `dsh-base`——acp-app 不自持，digest 旧版写的「effect 卸载顺序：先拆查询 → 检查点 → 持久化」那层不存在。
 
 ## 进程模型
 

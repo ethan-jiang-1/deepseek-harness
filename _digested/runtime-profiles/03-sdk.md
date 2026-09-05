@@ -15,22 +15,15 @@ sdk 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-sdk-app`）�
 
 ## 组合构成
 
-`dsh-sdk-app` bundle 的 `cordis.patch.yml` 包含：
+`dsh-sdk-app` bundle 是叠在 `dsh-base` 上的**薄协议层**，`cordis.patch.yml` 只做三件事：
 
-| 层级 | 插件 | 作用 |
-|------|------|------|
-| dsh-base | 核心插件 | 见 `dsh-base` 清单 |
-| dsh-sdk-app | `sdk-jsonrpc-server` | JSON-RPC 协议处理器，`inject: ['agents']` |
-| dsh-sdk-app | 其他工具行 | 参考 `dsh-base` 的继承 |
+| 改动 | 内容 |
+|------|------|
+| `system-prompt` override | persona → `You are a coding agent powered by the {{model}} model. Your working directory is {{cwd}}.` |
+| `session-title-llm` `disabled: true` | stdout 只归 JSON-RPC 协议，标题生成关掉 |
+| `insert` | `sdk-app-startup` + `sdk-jsonrpc-server`（协议处理器，bundle `inject: [sdkAppStartup, loader]`） |
 
-sdk 组合与 `dsh-base` 的关键差异：
-
-- **没有 `sandbox` / `sandbox-policy`**（用 `fs-local` 直接暴露文件系统）
-- **没有 `web` / `web-search-deepseek` / `tool-web`**（无网络搜索）
-- **没有 `plan-mode`**（无计划模式）
-- **没有 `goal` / `goal-round-driver` / `tool-goal`**（无持久目标）
-- **没有 `skill` 系统**
-- `tool-bash` 配置 `enableRunInBackground: false`
+**sdk 的工具面不收窄**：`dsh-sdk-app` 没有禁用任何 base 工具行——bash / sandbox / web / goal / plan / skill / str-replace-editor 全部从 `dsh-base` 继承。真正把工具面收窄到「persistent bash + str_replace_editor」的是 [`sdk-minimal`](./04-sdk-minimal.md)，它是唯一不叠 base 的 profile。
 
 ## 进程模型
 
@@ -51,7 +44,7 @@ dsh --profile sdk
 ## 独特之处
 
 - **stdout 是纯数据管道**：任何 stdout logger 都会污染协议帧。诊断只能走 stderr。
-- **`inject: ['agents']`**：server 插件直接依赖 agent 注册表，按 sessionId get-or-create。
+- **协议层接线**：bundle `inject: [sdkAppStartup, loader]`；server 按 sessionId get-or-create agent，经 `ctx.agents` 驱动。
 - **推送所有耐久事实**：每条 `session/event` 转成 `session.event` 通知，每条 `agent/status` 转成 `session.status`。
 - **`initialize.maxTokens`** 可变成 SDK 创建的 agent 及其后代的输出上限。
 - **无 per-prompt 结果**：`session/prompt` 立刻返回 `messageId`（inbox 准入 id），不等 idle。自动化区间由客户端自己定义。

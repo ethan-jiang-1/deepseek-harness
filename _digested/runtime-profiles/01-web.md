@@ -37,7 +37,8 @@ dsh --profile web --patch my.yml       # 叠加 patch
 ### `dsh-web-app` 的 insert 行
 
 **Layer 1 — 基础设施：**
-`code-runtime`（PTC worker）、`storage`/`storage-json`/`storage-domain`（结构化存储）、`message-feedback`、`session-log-download`、`workspace`、`session-projection-cache`、`session-reference`、`file-reference-local`、`session-stats`、`directory-picker`、`plugin-inventory`、`api-gateway`、`cordis-host-runner`
+`subagent-model-selection-settings`、`code-runtime`（PTC worker）、`message-feedback`、`session-log-download`、`workspace`、`session-reference`、`file-reference-local`、`session-stats`、`session-turn-outline`、`directory-picker`、`plugin-inventory`、`session-controller` / `settings-controller` / `workspace-controller`（Remote 控制器）、`cordis-host-runner`
+（storage / session-projection-cache / typert-gateway 等结构化存储与 RPC 网关基础设施在 `dsh-base`，非 web-app insert。）
 
 **Layer 2 — 传输层：**
 `web-startup`（解析命令行 flag）、`webserver`（HTTP 服务，默认 `127.0.0.1:3080`）、`web-runtime`（前端 dist 分发、URL 打印、LAN trust）、`client-hmr`（client 插件热重载）

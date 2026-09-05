@@ -42,7 +42,7 @@ dsh --profile web --dump-config
 - **profile**：`$DSH_HOME/profiles/<name>`（未设 `DSH_HOME` 则为 `~/.dsh`）。里面有 `package.json`（`dsh.profile.bundles` + 树外插件）和用户自己的 `cordis.patch.yml`。
 - **bundle**：npm 包，清单里写 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`。`dsh-base` 是每个 profile 的第一层；其它 bundle 增加 Web 或 headless 等产品组合。`dsh-base` 不依赖、也不挂载可选的 Codex / Claude Code provider；它们是独立的 Profile Bundle，用 `dsh plugin --profile <name> add` 装进 profile 并 restart，各自在 host 平面注册一个 dormant 默认 provider，agent preset 再决定要不要露出对应的 model-facing tool 行——host 可用不等于 tool 暴露。
 - **模板**：`web`、`headless`、`sdk`、`sdk-minimal`、`acp` 五个内置 profile 首次使用会自动初始化（`PROFILE_TEMPLATES` 登记）。其它名字必须先 `initProfile`，否则 fail loud。`sdk-minimal` 是唯一不叠 `dsh-base` 的 bundle（自己持有完整工具树）。
-- **preset id 与显示名**：shipped 目录仍是 `code` / `standard` / `cordis`。Web 把 `code` 显示成 PTC mode / PTC 模式，那是 `ui-agent-preset` 的 locale 字符串，不是另一份 preset 文件。
+- **preset id 与显示名**：shipped 目录是 `ptc` / `minimal` / `standard` / `cordis`（`packages/preset/agent-presets/presets/`；rc.1 前 `code` 改名 `ptc` 并新增 `minimal`）。显示名来自各 `preset.yml` 的 `name` 字段（如 `ptc` → PTC 模式），不是 locale 映射。
 
 启动环境分层：进程继承 > 项目目录 `.env` > home `.env`；bootstrap-only 变量不允许来自文件。`ctx.credentials` 的本地 provider 对同名引用使用启动环境 > `$DSH_HOME/.credentials.yaml` > 项目 `.env` > home `.env`，其中凭据文件是可由产品写入的持久层。
 
