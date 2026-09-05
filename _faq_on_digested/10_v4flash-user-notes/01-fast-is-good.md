@@ -11,7 +11,7 @@
 | 评审层 | plan 模式：执行前的人类审批姿态 | 唯一持久事实是会话事件 `plan/mode {active}`（`packages/plan/plan-mode/src/index.ts:46-55`）；`exit_plan_mode` 经 `ctx.userQuestions.ask` 提交 `Approve / Keep planning` 评审（`plan-mode/src/index.ts:371-399`） |
 | 编排层 | `workflow` 工具：一个 JS 脚本 fan-out 多个子代理 | `ctx.workflowEngine`（worker-thread Provider）+ `tool-workflow` Consumer；脚本 hooks：`agent()/pipeline()/parallel()/phase()/log()`（`packages/workflow/workflow/README.md`） |
 
-关键在**层间关系：四层互相不知道彼此存在**。goal 续轮驱动器只挂在公共扩展点上（`agent/status idle`、`agent/pre-step` waterfall、`session/event`、`goal/changed`），与 `agent-loop` 零耦合——round-driver 设计笔记记录了被否掉的备选方案 *"Add a goal loop inside dsh-agent-loop — rejected"*（note :78），这是 AGENTS.md *"Plugins, not loop changes"* 约定的正面案例。plan 模式同理："plan 只是协作姿态，不读不写 sandbox/approval"（`packages/plan/plan-mode` 模块 doc :4-7）。所以"开箱已有 goal、plan"这句话在机制上是严谨的：它们都在 `dsh-base` 第一层 bundle 里（`packages/bundle/base/cordis.patch.yml:256-374` 的 `goal`、`goal-round-driver`、`plan-mode`、`tool-workflow`、`tool-todo`、`tool-goal` 行），但它们不是内核分支，是六行默认组合配置。**换掉它们 = patch 一行**，这正是 [`capability-seams/00-map`](../../_digested/capability-seams/00-map.md) 说的"可替换"的另一种含义。
+关键在**层间关系：四层互相不知道彼此存在**。goal 续轮驱动器只挂在公共扩展点上（`agent/status idle`、`agent/pre-step` waterfall、`session/event`、`goal/changed`），与 `agent-loop` 零耦合——round-driver 设计笔记记录了被否掉的备选方案 *"Add a goal loop inside dsh-agent-loop — rejected"*（note :78），这是 AGENTS.md *"Plugins, not loop changes"* 约定的正面案例。plan 模式同理："plan 只是协作姿态，不读不写 sandbox/approval"（`packages/plan/plan-mode` 模块 doc :4-7）。所以"开箱已有 goal、plan"这句话在机制上是严谨的：它们都在 `dsh-base` 第一层 bundle 里（`packages/bundle/base/cordis.patch.yml:298-414` 的 `goal`、`goal-round-driver`、`plan-mode`、`tool-workflow`、`tool-todo`、`tool-goal` 行），但它们不是内核分支，是六行默认组合配置。**换掉它们 = patch 一行**，这正是 [`capability-seams/00-map`](../../_digested/capability-seams/00-map.md) 说的"可替换"的另一种含义。
 
 ## 第二节 "思考开在 Max"的机制，与它 hidden 的 token 账
 
@@ -27,7 +27,7 @@
 
 `<goal_round>` 每轮注入给模型的提示词是固定的（`packages/goal/goal-round-driver/src/prompt.ts:12-26`），要点：以当前 workspace、工具结果与持久会话状态为权威，"inspect them instead of assuming earlier narration is still current"；完成前必须收集客观已达成的证据并读当前 goal 再 `complete`。配套的授权设计：
 
-- **自动续轮预算**：`maxGoalRounds` 正 safe integer，部署默认 **256**（`packages/goal/goal/src/index.ts:240`）；轮次记账只认 goal 来源消息，**人的插话与澄清永不消耗预算**（`fold.ts:321-332` 校验 `source.kind==='goal'` 且 round 连续）。
+- **自动续轮预算**：`maxGoalRounds` 正 safe integer，部署默认 **256**（`packages/goal/goal/src/index.ts:244`）；轮次记账只认 goal 来源消息，**人的插话与澄清永不消耗预算**（`fold.ts:321-332` 校验 `source.kind==='goal'` 且 round 连续）。
 - **blocked 下限**：同因阻塞不足 3 个连续轮次时，机械拒绝 `blocked`（`GOAL_TOOL_BLOCK_THRESHOLD`），语义判断留给模型——"difficulty, uncertainty, or useful remaining work is not blocked"（`tool:goal` section，order 114，`tool-goal/src/index.ts:113-123`）。
 - **自动性永远锚在人类权威上**：重启/fork 后持久 phase 还原但 activation 一律 disarm（`agent/session-start` 边沿统一 disarm，`goal/src/index.ts:198-200`），人类一句"继续" → 模型 `update_goal resume` 重新武装。设计笔记把这拆成两个不同事实：*"durable lifecycle 与'继续的许可（activation）'是两个不同事实"*（`2026-07-19-persisted-same-session-goal-domain.md:17`）。
 
