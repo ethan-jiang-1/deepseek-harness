@@ -22,7 +22,7 @@ DSH 自己的仓库就是它最好的样板：它的开发主力自称是 coding
 
 ## 证据边界
 
-- 主证据是两份本地研究语料，都在同一基线（DSH `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`）上：
+- 主证据是两份本地研究语料，都在同一基线（DSH `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`）上：
   - `_agent_ready_development/development-harness/`（01–07）——教程式拆解「仓库怎样帮 coding agent 修改仓库自身」；
   - `_digested/harness-idea/`（01–08）——判断式拆解「dsh 为什么对参与者友好」。
 - 源码事实需要锚定时，用 DSH 固定基线文件的相对路径或固定 commit 的 GitHub 链接，不重抄 `docs/` 正文充数。

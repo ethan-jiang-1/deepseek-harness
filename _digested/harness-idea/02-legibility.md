@@ -12,13 +12,13 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 > A fiber is one loaded plugin instance: its lifecycle state, validated config, and registered effects. `ctx.fiber` is the current fiber, and `ctx.effect()` delegates to it.
 >
-> —— `docs/cordis-api/fiber.md:6`（基线 `dd6322d6…`）
+> —— `docs/cordis-api/fiber.md:6`（基线 `a66e4702…`）
 
 这比「词汇表统一」更深一层：同一套原语贯穿工具、provider、策略、UI、loop，所以学会一个插件形状，就能在整棵树上迁移。
 
 > Domain vocabulary for DeepSeek Harness uses one canonical term per concept.
 >
-> —— `docs/glossary.md:5`（基线 `dd6322d6…`）
+> —— `docs/glossary.md:5`（基线 `a66e4702…`）
 
 ## 机制二：一词一义，文档与代码没有翻译层
 
@@ -26,9 +26,9 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 读者看到 `ctx.agents`，glossary、架构文档和源码说的是同一件事。翻译层是常见的可读性杀手：文档说「组件」、代码叫 `Component`、review 里叫「那个东西」。
 
-> A `SessionEventMap` member is required-on-read by default — builds that do not know its type refuse the log unless the event carries the envelope's `ignorable: true`.
+> `SessionEventMap` members are required-on-read by default — builds that do not know a type refuse the log unless the event carries the envelope's `ignorable: true`.
 >
-> —— `AGENTS.md:107`（基线 `dd6322d6…`）
+> —— `AGENTS.md:107`（基线 `a66e4702…`）
 
 ## 机制三：合同外显为类型
 
@@ -49,16 +49,16 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 > Services declare event names through TypeScript declaration merging, then dispatch them as `emit`, `waterfall`, `parallel`, or `serial` depending on whether listeners observe, wrap, fan out, or run in order.
 >
-> —— `docs/cordis-primer.md:12`（基线 `dd6322d6…`）
+> —— `docs/cordis-primer.md:12`（基线 `a66e4702…`）
 
 ## 机制五：结构同构，生成目录不漂移
 
 - 每个包同样布局：`src/types.ts` 只放类型、测试在包级 `tests/`、同一 tsconfig 模板、注册进恰好一个 aggregate（[`docs/development.md`](../../docs/development.md)）。学会一个包 = 学会全部包。
-- 每个包有 README + JSDoc 合同 + `./invariant` 登记（`verify-package-invariants` 强制）；README 还必须写 Model Experience 和 Known Limitations（`verify-package-readme-model-experience` / `verify-package-readme-limitations`）。
+- 每个包有 README + JSDoc 合同；`./invariant` 只在有独立可观察关系时登记（`verify-package-invariants` 强制，空/忽略 reporter 判 fail）；README 还必须写 Model Experience 和 Known Limitations（`verify-package-readme-model-experience` / `verify-package-readme-limitations`）。
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
-> —— `packages/AGENTS.md:27`（基线 `dd6322d6…`）
+> —— `packages/AGENTS.md:27`（基线 `a66e4702…`）
 - 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
 
 手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
@@ -67,7 +67,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 - `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果、模型可见 ⟺ 已记录、显式优于隐式。
 - 文档标准禁止「previously / now / renamed」这类变迁史；当前状态散文（current-state prose），一个事实一个家（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
-- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：baseline 共 1486 个 `.md` 文件，其中 1124 个在 `implemented/`；每条有分类、双语、归档纪律；「非平凡改动必须带 note」本身是一条规则（[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)）；归档有专门的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) skill。note 记的是「为什么、放弃了什么、怎么验证」。
+- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模见 [`claims.json`](./claims.json) 的 N1–N2（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）；每条有分类、双语、归档纪律；「非平凡改动必须带 note」本身是一条规则（[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)）；归档有专门的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) skill。note 记的是「为什么、放弃了什么、怎么验证」。
 
 为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。
 
@@ -77,7 +77,7 @@ fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的
 
 - `rejected/` Agent Notes 保留被否提案及其失败理由；
 - `archived/` 冻结历史，不当现行权威，文档门禁也跳过它；
-- `./invariant` 的空 companion 必须写 `No runtime invariant:` 并解释「这个包为什么没有可观察的运行时关系」——absence 是一个显式结论，不是漏写；
+- `./invariant` 的空 companion（带 `No runtime invariant:` 标记）曾是负知识的一种——「这里没有可观察的运行时关系」是显式结论；rc.1 上游裁定空 companion 是噪音并全部删除，改由省略 + 写进 README 承担（[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）——负知识的载体从「强制文件」变成「省略即默认，例外进 README」；
 - package README 的 `## Known Limitations and Deferred Work` 由 `verify-package-readme-limitations` 门禁检查。
 
 负知识让读者能查到「这里没有检查」和「这条路已被否掉」，而不是靠试错重新发现。
@@ -94,13 +94,13 @@ coding agent 的真实约束不只有「读不读得懂」，还有**上下文�
 
 > **Pairs update together**: Terminology-guided, single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records.
 >
-> —— `docs/AGENTS.md:43`（基线 `dd6322d6…`）
+> —— `docs/AGENTS.md:43`（基线 `a66e4702…`）
 
 `verify-doc-budgets` 把字数预算钉成门禁。可读性因此来自组织，不来自把系统做小；正确读法是查表，不是通读。
 
 > **Document current state, not change history.** Avoid "previously/now/no longer", PRs, commits, and stack positions in durable prose; name the live mechanism.
 >
-> —— `docs/AGENTS.md:38`（基线 `dd6322d6…`）
+> —— `docs/AGENTS.md:38`（基线 `a66e4702…`）
 
 ## 可读 ≠ 简单
 
@@ -115,7 +115,8 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文、tier taxonomy、字数预算）
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；读者模型的因果来源）
 - [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（note 语料库的规则）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；空 invariant 的纪律）
+- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（rc.1 废除空 companion，现行权威）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；空 invariant 纪律的起源，rc.1 起被 2026-08-28 裁定取代）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
 - [`docs/development.md`](../../docs/development.md)（包结构同构）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）

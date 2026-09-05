@@ -41,7 +41,7 @@ Agent loop 位于两者之间：从插件图取模型、工具、提示词与会
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions, and "a lot of work" is not a cost argument when agents do the labor.
 >
-> —— `.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`（基线 `dd6322d6…`）
+> —— `.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`（基线 `a66e4702…`）
 
 直接支持的因果是：**agent 更可靠地服从机械门禁，且 agent 劳动力便宜 → 用 enforced gates 替代 prose conventions。** 这是「门禁为什么这么多」的一手解释。
 
@@ -59,7 +59,7 @@ quality-gates note 是仓库的第一方自我描述；本专题不把它当作�
 
 > We recommend using an agent to explore the codebase and understand its architecture.
 >
-> —— `docs/architecture.md:7`（基线 `dd6322d6…`）
+> —— `docs/architecture.md:7`（基线 `a66e4702…`）
 
 ## 参与规则的三层载体
 
@@ -75,8 +75,8 @@ quality-gates note 是仓库的第一方自我描述；本专题不把它当作�
 - **合同**：Service Definition 是 Cordis `Service`（抽象类或注册表，不是 `interface`）；事件经声明合并成为类型化 map；`SessionEventMap` 成员默认 required-on-read。
 - **门禁（gates）**：`verify-export-jsdoc`、`verify-package-invariants`、`doc-typecheck`、`test:coverage`（per-file 100%）。规则不是劝告，是红灯。
 - **词汇**：[`docs/glossary.md`](../../docs/glossary.md) 规定一个概念一个词；文档标准规定「一个事实一个家」（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
-- **设计意图**：`为什么` 单独住在 Agent Notes——baseline 共 1486 个 `.md` 文件，其中 1124 个在 `implemented/`；被分类、双语、归档政策管辖。`docs/` 只写当前状态，读者不用从 git log 反推意图。
-- **负知识**：被拒方案住在 `rejected/`；归档 note 冻结且不当现行权威；package 的 `./invariant` 允许「有理由的空 companion」；README 的 Known Limitations 被门禁检查。读者不只查到「怎么做」，也查到「什么不要做」。
+- **设计意图**：`为什么` 单独住在 Agent Notes——语料库规模见 [`claims.json`](./claims.json) 的 N1–N2（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）；被分类、双语、归档政策管辖。`docs/` 只写当前状态，读者不用从 git log 反推意图。
+- **负知识**：被拒方案住在 `rejected/`；归档 note 冻结且不当现行权威；package 的 `./invariant` 只在有独立可观察关系时存在（rc.1 起空 companion 判 fail，无关系即省略 + README 原因）；README 的 Known Limitations 被门禁检查。读者不只查到「怎么做」，也查到「什么不要做」。
 
 ## 结论
 
