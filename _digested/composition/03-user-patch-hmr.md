@@ -32,7 +32,7 @@ structuredClone([
   ...bundlePatches,                          // 首次 composeProfile 冻结
   ...loadOptionalPatches(profile.patchPath), // 每次重读
   ...loadOptionalPatches(homePatchPath()),   // 每次重读
-  ...overlays,                               // --patch + telemetry + shipped presets，冻结
+  ...overlays,                               // --patch + telemetry，冻结
 ])
 ```
 

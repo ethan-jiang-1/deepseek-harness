@@ -36,15 +36,14 @@ bundle patches（dsh.profile.bundles 声明顺序）
   + profile 的 cordis.patch.yml
   + $DSH_HOME/cordis.patch.yml（压过 profile）
   + --patch 文件（argv 顺序）
-  + 仅 boot：agent-presets.roots 的 shipped 路径
   + 仅 boot：DSH_TELEMETRY_DISABLED 非空 → { id, disabled: true }
 ```
 
-后两层不进 `--dump-config`。算法仍是 `composeEntries` → `applyEntryPatches([], structuredClone(flat))`。层集合不同，见 [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md)。
+只有 telemetry 这一层是 launcher 派生的 boot-only 层、不进 `--dump-config`。算法仍是 `composeEntries` → `applyEntryPatches([], structuredClone(flat))`。层集合不同，见 [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md)。
 
 `resolveTelemetryPatch`：环境变量**任意非空**（含 `'0'` / `'false'`）都关掉。组合里没有 `session-telemetry-otel` 这一行就不生成补丁。隐私开关宁可误关，不误开。
 
-`agent-presets` 的 shipped root 只有 launcher 解得出（源码和 built 布局都在 app config 旁边）。可写的用户 preset 根是 `dsh-agent-presets` 自己的；没走到这条补丁的启动仍能找到人写的 preset。
+shipped preset root **不是** launcher 派生层：`dsh-agent-presets` 包自己以 `includeShippedRoot: true`（默认）+ 常量 `SHIPPED_PRESET_ROOT`（`packages/preset/agent-presets/src/discovery.ts`）解析 `../presets/`，不经 `composeProfile`。可写的用户 preset 根是 Harness home 下 `dsh-agent-presets` 自己的目录。
 
 ## `boot()` 本身
 

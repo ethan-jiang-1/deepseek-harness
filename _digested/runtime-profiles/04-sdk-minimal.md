@@ -46,11 +46,11 @@ dsh --profile sdk-minimal
 | `maxTokensAsSuccess` | `true`（环境变量控制） | `false` |
 | `tool-bash` | 普通 foreground bash | persistent bash（PTY，5 分钟） |
 | `tool-fs` | `read` / `write` / `edit` 完整工具 | **无**（用 str_replace_editor 代替） |
-| `str_replace_editor` | 无（sdk 没有 `str-replace-editor` 行，靠 `tool-fs` 读写文件） | 有（且是 editor 的唯一来源） |
+| `str_replace_editor` | 有（sdk 继承 base 的 `tool-str-replace-editor`，与 `tool-fs` 并存） | 有（editor 的唯一来源） |
 | `subagent` | 有 | **无** |
 | `tool-todo` | 有 | **无** |
 | `compaction` | `compaction-basic` | **无** |
-| `sandbox` 策略 | 无（`fs-local` 直接暴露） | `danger-full-access` |
+| `sandbox` 策略 | 有（sdk 继承 base：sandbox-policy 默认 `workspace-write`） | `danger-full-access`（另挂 `fs-local`） |
 | `session-checkpoint` | 有 | **无** |
 | `token-meter` | 有 | **无** |
 | 系统提示词 | `"You are a coding agent."` | `"You are a helpful software engineer assistant."` |

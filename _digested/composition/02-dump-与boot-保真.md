@@ -38,10 +38,11 @@ prepareProfile（同样重写空 cordis.yml）
 
 | 层 | 谁加 | dump 有没有 |
 |----|------|-------------|
-| `agent-presets.roots` 的 shipped 路径 | `runProfile`，组合里有 `agent-presets` 行时 | 无 |
-| `DSH_TELEMETRY_DISABLED` → `disabled: true` | 同上，且组合里有 `session-telemetry-otel` | 无 |
+| `DSH_TELEMETRY_DISABLED` → `disabled: true` | `runProfile`，且组合里有 `session-telemetry-otel` | 无 |
 
-读 dump 时不要把「没看到 telemetry disable」当成 dump bug。那是 launcher 派生层，不是用户 patch 算法漏了。
+（shipped preset root 是 `dsh-agent-presets` 包内解析，不经 `composeProfile`，不是派生层。）
+
+读 dump 时不要把「没看到 telemetry disable」当成 dump bug。那是 launcher 唯一的派生层，不是用户 patch 算法漏了。
 
 ## `!!js` 原文打出
 
@@ -67,7 +68,7 @@ Include 对「目标 id 不在当前索引」记一条 patch skip。dump 没有 
 
 | 该对齐 | 不该假设对齐 |
 |--------|----------------|
-| 空 `cordis.yml` 作为 base | launcher 派生的 shipped presets / telemetry switch |
+| 空 `cordis.yml` 作为 base | launcher 派生的 telemetry switch |
 | `applyEntryPatches` 单次展平 | `!!js` 求值后的运行时值 |
 | 打不中 → warn 并继续 | dump 文本等于 `ctx.loader` 里每一行的当前 config |
 | insert 立刻进索引（vendor 本地修改） | `--dump-default-config` 含用户层 |
