@@ -34,15 +34,9 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 
 > **subagent model routing**：上游 #2868 使 subagent 可通过 DSH SDK 进行动态 model routing。`subagent-dsh-sdk` provider 将 child model 选择委托给 SDK 内置路由，不再硬编码 provider 名称。
 
-## 新增 seam：Schedule
+## 不是 seam 的调度：schedule（agent 作用域持久提醒）
 
-`packages/schedule/schedule/` 提供了 `ctx.schedule` 的定时调度能力。这是一个完整 seam：
-
-- **Definition**：`ScheduleService` 声明调度接口（`ctx.schedule`）
-- **Provider**：`schedule` 包自身同时提供基于时间的调度实现
-- **Consumer**：插件通过 `ctx.schedule.schedule()` 注册定时任务，任务触发后生成 session 事件
-
-Schedule 在 Web UI 中有 `schedule-catalog` 展示和管理界面。
+`packages/schedule/schedule/` 提供 **session-local durable reminders**，不是 Service seam——没有 `ctx.schedule`、没有 Definition/Provider 可分包装。模型经 `schedule_create` / `schedule_list` / `schedule_delete` 三个工具创建一次性或固定间隔提醒，触发后以普通 follow-up 消息回到同一会话；提醒经 session event log 持久化，重启后仍会投递。它是自足插件（`ScheduleRuntime` 按 root agent 实例化）+ `scheduleProjectionDefinition` + Web 侧只读 catalog（`client/ui-schedule`）。它说明：能力可以按需装成插件，不必都切三角色（对照见 [`04`](./04-新增seam与Remote.md)）。
 
 ## 新增 seam：Webhook
 
@@ -64,7 +58,7 @@ Schedule 在 Web UI 中有 `schedule-catalog` 展示和管理界面。
 
 Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定义。它纯粹是 BFF 层的**通信协议模式**：Host 提供一组 Remote 控制器、Client 消费生成的 stub，双方通过 Typert 的 schema 保持类型安全。
 
-迁移路径：settings、credentials、directory-picker、subagent control、agent-presets 已全部从 apiproxy 迁移到 Remote。`packages/host/apiproxy/` 中的遗留 unary RPC 已删除。
+迁移路径：settings、credentials、subagent control、agent-presets、workspace-controller、session-controller 已从 apiproxy 迁移到 Remote；`packages/host/apiproxy/` 包已整体删除。directory-picker 不是 Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端，[`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/implemented/architecture/2026-07-28-directory-picker-capability-seam.md)）。
 
 教科书路径：顺着 `packages/shell/` 走完 Definition → provider → `dsh-tool-bash`。组级 README 拥有「这个组有哪些包、对应哪个 `ctx` key」——本专题不手抄完整包表，完整图在生成的 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
@@ -79,7 +73,7 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 | `packages/sandbox/` | 本地进程 argv confinement |
 | `packages/llm/` | Definition 与 Consumer 可同包 |
 | `packages/subagent/` | 差异极大的 provider，同一接口 |
-| `packages/schedule/schedule/` | `ctx.schedule` 定时调度 |
+| `packages/schedule/schedule/` | agent 作用域持久提醒（`schedule_*` 工具，非 seam） |
 | `packages/webhook/webhook/` | `ctx.webhookRuntime` 认证投递 |
 | `packages/api/remotes/` | Remote 控制器（非传统 seam） |
 | `packages/typert/` | 类型安全的 Remote 序列化 |

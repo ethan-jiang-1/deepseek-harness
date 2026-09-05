@@ -1,6 +1,6 @@
 # Subagent 后台策略与产品 provider opt-in
 
-源码核验入口：`packages/subagent/tool-subagent/`、`packages/bundle/base/README.md`、`apps/cli/config/agent-presets/*/agent.cordis.yml`。
+源码核验入口：`packages/subagent/tool-subagent/`、`packages/bundle/base/README.md`、`packages/preset/agent-presets/presets/*/agent.cordis.yml`。
 
 Consumer 仍然只 inject `ctx.subagents`。后台生命周期和「这个产品 provider 装没装」是两件独立的组合决定，不要写进 Definition。
 
