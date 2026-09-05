@@ -43,6 +43,7 @@
 | `session-and-loop/` | 会话与驱动 | session log、turn/step、agent-loop、model-visible ⟺ logged、agent scope |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | step/turn/activity/goal 四层结束边界、Goal 状态机、Round Driver 自动续轮 |
 | `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色，以及如何组合一致的 fs / subprocess provider |
+| `experimental/` | 实验原型面 | `packages/experimental/` 的三种原型合同：code-runtime 的 CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面——都不在 shipped 组合，合同随时会变 |
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 组装、LLM adapter、tool 执行瀑布 |
 | `surfaces/` | 人对机器的入口 | CLI、Web host/client、ACP、JSON-RPC SDK |
 | `_coverage/` | 覆盖矩阵 | 维护用索引，按源码组追踪 digest 覆盖状态 |
@@ -59,6 +60,7 @@
 - **想搞懂一次 `dsh --profile web` 怎么变成插件树** → `composition/00-map.md`
 - **想搞懂一轮对话怎么跑** → `session-and-loop/00-map.md`
 - **想加能力或换后端** → `capability-seams/00-map.md`
+- **想研究实验原型** → `experimental/00-map.md`
 - **想搞懂模型看见什么** → `tools-prompt-llm/00-map.md`
 - **想搞懂 CLI / Web / ACP 怎么复用同一套 runtime spine** → `surfaces/00-map.md`
 - **想搞懂 dsh 为什么对读者友好（harness 思想）** → `harness-idea/00-map.md`

@@ -26,5 +26,6 @@
 | `tools-prompt-llm/` | prompt section 与稳定前缀；工具审批/timeout；chunk 与 message 的日志关系 | [`01`](../tools-prompt-llm/01-section顺序与前缀.md) · [`02`](../tools-prompt-llm/02-管道审批timeout与chunk.md) | 已核验 | `a66e4702047846cdaa10c66c9d3df3951f5ea70d` |
 | `surfaces/` | 源码与 built 启动面；host session 流；ACP 与 JSON-RPC 的不同投影保证 | [`01`](../surfaces/01-启动面与session流.md) · [`02`](../surfaces/02-acp与jsonrpc.md) | 已核验 | `a66e4702047846cdaa10c66c9d3df3951f5ea70d` |
 | `agent-loop/` | step/turn/activity/goal 四层结束边界；goal 创建的三条路径与状态机；Goal Round Driver 的自动续轮、竞态栅栏与重启后 re-arm | [`00`](../agent-loop/00-map.md) · [`01`](../agent-loop/01-goal-lifecycle.md) · [`02`](../agent-loop/02-goal-round-driver.md) · [`03`](../agent-loop/03-activity-vs-goal-boundaries.md) | 已核验 | `a66e4702047846cdaa10c66c9d3df3951f5ea70d` |
+| `experimental/` | python 子进程后端；Agent Teams 服务/工具/双 profile；Inspector CDP 调试面 | [`00`](../experimental/00-map.md) · [`01`](../experimental/01-code-runtime-python.md) · [`02`](../experimental/02-agent-teams.md) · [`03`](../experimental/03-inspector.md) | 已核验 | `a66e4702047846cdaa10c66c9d3df3951f5ea70d` |
 
 上游同步先按变更路径定位受影响行，将其改为“需复核”；复核结论、源码入口和图后，再写入新的产品 commit。未受影响的行保留原最近核验值。

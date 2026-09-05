@@ -73,6 +73,7 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 | `packages/sandbox/` | 本地进程 argv confinement |
 | `packages/llm/` | Definition 与 Consumer 可同包 |
 | `packages/subagent/` | 差异极大的 provider，同一接口 |
+| `packages/experimental/code-runtime-python/` | code-runtime 的第二 provider（CPython 子进程后端），见 [`../experimental/01-code-runtime-python.md`](../experimental/01-code-runtime-python.md) |
 | `packages/schedule/schedule/` | agent 作用域持久提醒（`schedule_*` 工具，非 seam） |
 | `packages/webhook/webhook/` | `ctx.webhookRuntime` 认证投递 |
 | `packages/api/remotes/` | Remote 控制器（非传统 seam） |
