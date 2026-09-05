@@ -48,7 +48,7 @@ dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的�
 > —— `.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md:9`（基线 `a66e4702…`）
 2. **生成合同面**：把源码事实变成 freshness-gated 的 catalog（[`02`](./02-legibility.md) 机制五）。agent 不需要懂全部 Cordis 或全部包，只需要查生成的 API、事件、配置与模块图。
 
-`[推断]` native Landlock、Python SDK 等边界在仓库布局中同样显式分层：TS 控制平面之外的东西放在独立发行物或 seam 之后，不混进插件模型。仓库侧可见的是 `native/`、`python/` 顶层边界，以及 vendor / npm 依赖的分离（[`vendor/README.md`](../../vendor/README.md)）。
+`[推断]` native Landlock、Python SDK 等边界在仓库布局中同样显式分层：TS 控制平面之外的东西放在独立发行物或 seam 之后，不混进插件模型。仓库侧可见的是 `native/`、`python/` 顶层边界，以及 vendor / npm 依赖的分离（[`vendor/README.md`](../../vendor/README.md)）。新实例是 [`packages/experimental/code-runtime-python`](../../packages/experimental/code-runtime-python/README.md)（#1148）：CPython 子进程后端实现 `dsh-code-runtime` seam，把 TS 控制平面之外的执行世界放进独立包边界——experimental 分组的私有原型，不进默认组合。
 
 ## 三层的合成判断
 

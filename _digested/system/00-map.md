@@ -84,8 +84,7 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 | `core/agent-loop` | 实现该接口的默认驱动 | `ctx.agentLoop` |
 | `core/scope` | 按 agent 划分的注册原语 | 库，无 ctx 键 |
 | `llm/llm` | 消息与流式词汇 + adapter seam | `ctx.llm` |
-
-| `webhook/webhook` | `ctx.webhookRuntime` | 认证投递分发与 Workspace Session 创建 |
+| `webhook/webhook` | 认证投递分发与 Workspace Session 创建 | `ctx.webhookRuntime` |
 
 ## 官方文档入口
 

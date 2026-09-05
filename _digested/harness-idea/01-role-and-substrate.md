@@ -71,7 +71,7 @@ quality-gates note 是仓库的第一方自我描述；本专题不把它当作�
 
 注意最后一行不再写「系统不会漂移」：系统也会漂移，只是被多个机器消费者消费，漂移更早暴露。dsh 三层都用，但把关键规则下沉到第三层：
 
-- **归属**：[`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的 18 行「目标 → 机制」直接回答「这段代码放哪」；[`extension cookbook`](../../docs/cookbook/extension-cookbook.md) 还有更细的 feature → mechanism 表。
+- **归属**：[`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的扩展表「目标 → 机制」（行数见 [`claims.json`](./claims.json) 的 N3）直接回答「这段代码放哪」；[`extension cookbook`](../../docs/cookbook/extension-cookbook.md) 还有更细的 feature → mechanism 表。
 - **合同**：Service Definition 是 Cordis `Service`（抽象类或注册表，不是 `interface`）；事件经声明合并成为类型化 map；`SessionEventMap` 成员默认 required-on-read。
 - **门禁（gates）**：`verify-export-jsdoc`、`verify-package-invariants`、`doc-typecheck`、`test:coverage`（per-file 100%）。规则不是劝告，是红灯。
 - **词汇**：[`docs/glossary.md`](../../docs/glossary.md) 规定一个概念一个词；文档标准规定「一个事实一个家」（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
@@ -86,7 +86,7 @@ harness 的职责 = 让「正确参与」不依赖参与者的背景知识。做
 
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；因果原文）
 - [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md)（第 9 行；框架层被搬进仓库的真实理由）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 9 行；扩展表、事件域、推荐用 agent 探索）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 7、66、123 行；推荐用 agent 探索、事件域、扩展表）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md)（五条原语）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders：面向 agent 的规则本身）

@@ -45,12 +45,12 @@ setup 期间插件会再 `ctx.on` / `ctx.effect`。若此时有人开始卸（�
 
 ## vendor 4.0.2：Loader `fromInternal` 改进
 
-上游 #3318 将 Cordis vendor 整体升级到 4.0.2。主要改动在 `vendor/loader/src/internal.ts`：
+vendor 4.0.2 = 本地修改 + 纯版本 bump，两笔独立改动：行为修改是清单第 19 条——`vendor/loader/src/internal.ts` 的 Node 原生加载器探测（PR #3311，675efe73f2 `fix: node 24.9 internal issue`，diff +20/-8）；#3318（release/vendor-4.0.2）只把九个 vendored `package.json` 的版本号 bump，vendor 源码与 manifest SHA 未动。
 
-- **Node 原生加载器探测不再依赖版本号**：旧实现根据 `process.versions.node` 的 major version 判断加载器 API 版本（`>=24 → v2`、`>=22 → v1`），这对 `24.0~24.11.1` 误判——它们属于 `>=24` 的 major 值但实际是 v1 API。新实现改为检查加载器拥有的 API 方法（`getOrCreateModuleJob` → v2、`getModuleJobForImport` → v1），不存在则返回 `undefined`。
-- 包版本号更新：`vendor/logger-console`、`vendor/schemastery`、`vendor/timer` 各自 patch 版本 bump。不影响行为。
+- **Node 原生加载器探测不再依赖版本号**：旧实现根据 `process.versions.node` 的 major version 判断加载器 API 版本（`major>=24 → v2`、`major>=22 → v1`），这对 `24.0~24.11.1` 误判——它们属于 `>=24` 的 major 值但实际是 v1 API。新实现改为检查加载器拥有的 API 方法（`getOrCreateModuleJob` → v2、`getModuleJobForImport` → v1），不存在则返回 `undefined`。上游 4.0.2 的判断本身仍是版本号——探测改进是本地修改，不是上游行为。
+- 包版本号 bump（#3318）：`cordis` 4.0.1→4.0.2、`cosmokit` 1.8.2→1.8.3、`group` 1.0.1→1.0.2、`hmr` 1.0.16→1.0.17、`include` 1.0.6→1.0.7、`loader` 1.0.2→1.0.3、`logger-console` 1.0.1→1.0.2、`schemastery` 3.18.1→3.18.2、`timer` 1.1.3→1.1.4。不影响行为。
 
-这项修改支撑 Node 24.x 范围兼容性（上游 #3311）。
+这项修改支撑 Node 24.x 范围兼容性。另提醒：[`vendor/README.md`](../../vendor/README.md) manifest 的版本列（`4.0.0-rc.7` / `1.0.0-rc.5` / `1.0.0` / `3.18.0` / `1.1.2`）自初始导入后未与各 `vendor/*/package.json`（`4.0.2` / `1.0.3` / `1.0.2` / `3.18.2` / `1.1.4`）同步，后续 vendor 同步应以 package.json + manifest SHA 双核对，README 版本列不作权威。
 
 ## 上游同步要求
 

@@ -11,7 +11,7 @@
 - 它是自足插件：`ScheduleRuntime` 按每个 root agent 实例化，`inject: ['agents','sessions','tools','sessionPersistence']`
 - 模型经普通工具创建/列出/取消提醒：`schedule_create` / `schedule_list` / `schedule_delete`（`tools.ts`），触发后以 follow-up 消息回到同一会话
 - 提醒经 session event log 持久化并 `scheduleProjectionDefinition` 投影（`projection.ts`）；Web 侧只读 active-reminder catalog 在独立包 `client/ui-schedule`
-- 模块 doc 直述其边界：「Session-local durable reminders」——不是调度服务，也不承诺跨会话推送
+- 包 README description 直述其边界：「Session-local durable reminders」（`packages/schedule/schedule/README.md:2`）；`src/index.ts` 模块 doc 为 "Agent-scoped durable one-shot and fixed-rate reminders over the session event log"——不是调度服务，也不承诺跨会话推送
 
 关键源码：
 
@@ -55,10 +55,12 @@
 | settings | #3073 (`worktree-apire-a`) | `apiproxy` settings RPC |
 | subagent control | #3085 (`worktree-apire-c`) | `apiproxy` subagent RPC |
 | workspace-controller | #3086 (`worktree-apire-d2`) | `apiproxy` workspace RPC |
-| agent-presets | #3074 / #3082 | preset browser 操作 |
+| agent-presets | #3082 (`worktree-apire-a2`) | preset browser 操作 |
 | session-controller | #3293 (`worktree-apiremote`) | `apiproxy` session RPC |
 
 迁移完成后 `packages/host/apiproxy/` 包整体删除（`refactor(api): remove ApiProxy package`）。`client/*` 消费迁移后的 Remote namespace。directory-picker **不在**迁移表里：它是 `ctx.directoryPicker` Service seam（native/browse 后端），不是 Remote。
+
+全集：`packages/api/remotes/src/client/index.ts` 现组装 **12 个** Remote namespace——agent-presets、commands、settings-controller（含 credentials 子命名空间）、goal、llm、cordis-host-runner、plugin-inventory、message-feedback、session-reference、subagents、session-controller、workspace-controller。其中 goal / llm / message-feedback / session-reference 等是原生 Remote（Service 本身即 `TypertRemoteService`），不是 apiproxy 迁移产物。
 
 ### 为什么这很重要
 

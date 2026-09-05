@@ -34,7 +34,7 @@ hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-exec
 
 `tools/post-execute`：抛错的 tool 也作为 error 进入这条链。caller 取消在结算后只替换「已接受的成功结果」。
 
-还有 `tools/code-dispatch-log`：只改 `run_code` 子调度写入 log 的副本（spill 预览），程序已经拿到完整值，模型也看不见这段。
+还有 `tools/ptc-dispatch-log`（3ca9c7d489 随 PTC 改名，旧名 `tools/code-dispatch-log`；`packages/core/tools/src/index.ts:181,343,1289-1290`）：只改 `run_code` 子调度写入 log 的副本（spill 预览），程序已经拿到完整值，模型也看不见这段。底层 log 事件名 `tool/code-dispatch` 保留旧词表，只有 waterfall 名随 PTC 改名。
 
 ## chunk → message
 
@@ -48,7 +48,7 @@ hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-exec
 6. `createAssistantMessage` 从 assembler blocks + provider/model/replayState。
 7. `assistant/message`，`surfaceOp: 'append'`，`sourceEventSeqs: chunkSeqs`。`usage` 有则跟这条走，没有单独 usage 事件。
 
-`deriveMessages` 折叠 message，不折叠 chunk。UI 若要打字机效果，读 chunk；模型下一请求读 assembled message。空 content（只带 usage 的 max-tokens）派生为 null。
+`deriveMessages` 折叠 message，不折叠 chunk。UI 若要打字机效果，读 chunk；模型下一请求读 assembled message。空 content（只带 usage 的 max-tokens）派生为 null。chunk 的 seq 是品牌化 `SessionSeq`（`packages/core/session/src/types.ts:29`），`assistant/message` 的 `sourceEventSeqs` 必须严格早于 message seq——token-meter 按引用的 chunk seq 重组 provider 输出，依赖该序（`packages/llm/token-meter/src/index.ts:314-317`）；`27bf1039` 把事件 seq 与日志 offset 分型后，按 seq 读取走 `snapshotEvents()` / `eventAt()`。
 
 max-tokens 截断时，assembler 丢掉全部 `tool-call` block（无论完成与否，`assembler.assembled()` 直接裁）。`ReplayEnvelope` 把 adapter 私有 replay 拆成 `response` 与可选的 per-block `blocks`；assembly 按同一套 keep/drop 裁 `blocks`，两半不能各裁各的。长度对不上就丢弃整份 envelope。
 

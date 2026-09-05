@@ -51,7 +51,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 ## 形状与生产方式有关，也与组合压力有关
 
-**生产方式**塑形：gates over prose、Agent Notes 语料库、vendor 进树、skills，这些是 agent 写作主体留下的形状；`[推断]` 纯人类团队同样想外置知识，大概率不会长出 1486 个 note 文件和几十个 gate。
+**生产方式**塑形：gates over prose、Agent Notes 语料库、vendor 进树、skills，这些是 agent 写作主体留下的形状；`[推断]` 纯人类团队同样想外置知识，大概率不会长出上千个 note 文件（总数见 [`claims.json`](./claims.json) 的 N1）和几十个 gate。
 
 **组合压力**决定值不值：dsh 选择「组合一个运行时」而不是「扩展一个产品」。这个选择只有在多宿主、多 provider、会话级隔离、运行时装卸和第三方生态同时出现时才划算。`[推断]` 与常见的「产品内环 + 扩展 API」方案相比，dsh 的取舍是：没有统一胜负，只有「你要承受哪种变化」。
 
@@ -106,7 +106,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 | 插件化 ≠ 安全 | `inject` 约束 Context 使用，阻止不了同进程代码直接 import Node API | self-modification 明确是 opt-in、bash-equivalent trust；[`05`](./05-dynamic-legibility.md) |
 | 元框架与本地分叉成为新核心 | Cordis 根、Loader、Boot 必须先存在；vendor 带本地修改与 sync 成本 | [`docs/architecture.md`](../../docs/architecture.md) 的 Cordis 段与 [`vendor/README.md`](../../vendor/README.md) |
 | 性能代价仍缺少量化 | 没有运行时开销或大规模插件图的对照基准 | 本专题不补数字，只记为开放问题 |
-| 外置本身有维护税 | 1486 个 note 文件、门禁、100% coverage、根 AGENTS 上下文预算 | 本页保留判断：可参与性 = 外置程度 ÷ 外置成本 |
+| 外置本身有维护税 | 上千个 note 文件（见 [`claims.json`](./claims.json) 的 N1）、门禁、100% coverage、根 AGENTS 上下文预算 | 本页保留判断：可参与性 = 外置程度 ÷ 外置成本 |
 
 成本不为零，dsh 的选择是把分母花在「机器可检查」上，而不是花在「人可读不可执行」的散文上。但这个选择只在组合压力足够大时划算。
 
@@ -143,12 +143,12 @@ Google Cloud Senior AI Product Manager Shubham Saboo 在2026-08 发表了一篇�
 ## 证据入口
 
 - [`docs/architecture.md`](../../docs/architecture.md)（第 13 行；无特权核心、注册即效果）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 55 行；事件是扩展点）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 96 行；model-visible ⟺ logged）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 106 行；扩展表）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 66 行；事件是扩展点）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 107 行；model-visible ⟺ logged）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 123 行；扩展表）
 - [`docs/capability-seams.md`](../../docs/capability-seams.md)（Definition / Provider / Consumer）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
-- [`../../AGENTS.md`](../../AGENTS.md)（第 103、108、114 行；注册即效果、waterfall、fail loud）
+- [`../../AGENTS.md`](../../AGENTS.md)（第 105、109、116 行；注册即效果、waterfall、fail loud）
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；tier taxonomy、一个事实一个家）
 - [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；元验证与 snapshot 政策）
 - [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17 行；harness 自身消费合同面与安全边界）

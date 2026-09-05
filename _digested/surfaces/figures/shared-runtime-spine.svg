@@ -3,40 +3,34 @@
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
   <rect width="960" height="420" fill="#fafafa" rx="6"/>
-  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">五个入口复用一套 runtime spine，不是五套 agent 实现</text>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">四个入口复用一套 runtime spine，不是四套 agent 实现</text>
   <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">它们启动不同进程和插件组合，但都驱动 ctx.agents，并遵守同一套 session 语义。</text>
 
-  <rect x="20" y="70" width="170" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="105" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">CLI dsh</text>
-  <text x="105" y="128" text-anchor="middle" font-size="11" fill="#475569">apps/cli · pnpm dsh</text>
-  <text x="105" y="146" text-anchor="middle" font-size="11" fill="#475569">源码走 tsx ESM hook</text>
+  <rect x="110" y="70" width="170" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="195" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">CLI dsh</text>
+  <text x="195" y="128" text-anchor="middle" font-size="11" fill="#475569">apps/cli · pnpm dsh</text>
+  <text x="195" y="146" text-anchor="middle" font-size="11" fill="#475569">源码走 tsx ESM hook</text>
 
-  <rect x="210" y="70" width="170" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="295" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Web</text>
-  <text x="295" y="128" text-anchor="middle" font-size="11" fill="#475569">host API + client 壳</text>
-  <text x="295" y="146" text-anchor="middle" font-size="11" fill="#475569">ConversationNode 渲染</text>
+  <rect x="300" y="70" width="170" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="385" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">Web</text>
+  <text x="385" y="128" text-anchor="middle" font-size="11" fill="#475569">host API + client 壳</text>
+  <text x="385" y="146" text-anchor="middle" font-size="11" fill="#475569">ConversationNode 渲染</text>
 
-  <rect x="400" y="70" width="170" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="485" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">ACP</text>
-  <text x="485" y="128" text-anchor="middle" font-size="11" fill="#475569">自动化协议服务器</text>
-  <text x="485" y="146" text-anchor="middle" font-size="11" fill="#475569">标准 ACP 协议</text>
+  <rect x="490" y="70" width="170" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="575" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">ACP</text>
+  <text x="575" y="128" text-anchor="middle" font-size="11" fill="#475569">自动化协议服务器</text>
+  <text x="575" y="146" text-anchor="middle" font-size="11" fill="#475569">标准 ACP 协议</text>
 
-  <rect x="590" y="70" width="170" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="675" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">SDK</text>
-  <text x="675" y="128" text-anchor="middle" font-size="11" fill="#475569">JSON-RPC 协议 / TS client</text>
-  <text x="675" y="146" text-anchor="middle" font-size="11" fill="#475569">server 仍是树上的插件</text>
+  <rect x="680" y="70" width="170" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="765" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">SDK</text>
+  <text x="765" y="128" text-anchor="middle" font-size="11" fill="#475569">JSON-RPC 协议 / TS client</text>
+  <text x="765" y="146" text-anchor="middle" font-size="11" fill="#475569">server 仍是树上的插件</text>
 
-  <rect x="780" y="70" width="160" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="860" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e293b">SDK Minimal</text>
-  <text x="860" y="128" text-anchor="middle" font-size="11" fill="#475569">极简工具面</text>
-  <text x="860" y="146" text-anchor="middle" font-size="11" fill="#475569">捆绑运行时</text>
-
-  <line x1="105" y1="160" x2="105" y2="198" stroke="#4b5563"/>
-  <line x1="295" y1="160" x2="295" y2="198" stroke="#4b5563"/>
-  <line x1="485" y1="160" x2="485" y2="198" stroke="#4b5563"/>
-  <line x1="675" y1="160" x2="675" y2="198" stroke="#4b5563"/>
-  <line x1="860" y1="160" x2="860" y2="198" stroke="#4b5563"/>
-  <line x1="105" y1="198" x2="860" y2="198" stroke="#4b5563"/>
+  <line x1="195" y1="160" x2="195" y2="198" stroke="#4b5563"/>
+  <line x1="385" y1="160" x2="385" y2="198" stroke="#4b5563"/>
+  <line x1="575" y1="160" x2="575" y2="198" stroke="#4b5563"/>
+  <line x1="765" y1="160" x2="765" y2="198" stroke="#4b5563"/>
+  <line x1="195" y1="198" x2="765" y2="198" stroke="#4b5563"/>
   <line x1="480" y1="198" x2="480" y2="220" stroke="#4b5563" marker-end="url(#arr)"/>
 
   <rect x="200" y="224" width="560" height="130" rx="10" fill="#dbeafe" stroke="#93c5fd"/>

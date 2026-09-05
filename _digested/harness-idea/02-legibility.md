@@ -33,7 +33,7 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 ## 机制三：合同外显为类型
 
 - Service Definition 是 Cordis `Service`（抽象类或注册表），**不是 TypeScript `interface`**——抽象类有运行时存在、可注入、可被 `ctx.get` 找到；interface 只活在类型空间，合同因此无处安放。
-- 事件经声明合并成为类型化 map（`SessionEventMap`），`emit` / `waterfall` / `serial` 是调用合同的一部分。
+- 事件经声明合并成为类型化 map（`SessionEventMap`），`emit` / `waterfall` / `serial` / `bail` 是调用合同的一部分。
 - `SessionEventMap` 成员默认 **required-on-read**：构建时不知道新事件类型的代码，拒绝读取该日志（除非事件携带 `ignorable: true`）。
 
 类型是给编译器读的文档。dsh 把合同放进类型里，等于让编译器当第一个 reviewer——它比任何人类 reviewer 都严格、都即时。
@@ -42,12 +42,12 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」和「**这段代码有什么控制权**」。dsh 用两张表显式回答：
 
-- [`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的扩展表：18 行「目标 → 机制」（加模型提供方 → 在 `ctx.llm` 注册 adapter；加人类命令 → 在 `ctx.commands` 注册……）。更细的 feature → mechanism 表在 [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)。
+- [`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的扩展表：「目标 → 机制」（行数见 [`claims.json`](./claims.json) 的 N3；加模型提供方 → 在 `ctx.llm` 注册 adapter；加人类命令 → 在 `ctx.commands` 注册……）。更细的 feature → mechanism 表在 [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)。
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md) 把每个事件的 dispatcher / listener 列成矩阵，并带分发模式。
 
-「放哪」从猜测题变成查表题。分发模式本身也是合同的一部分：事件名说「发生什么」，`waterfall` / `serial` / `parallel` / `emit` 说「插件拥有什么控制权」。读者不需要从调用栈反推自己能不能截断这条链（[`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)）。
+「放哪」从猜测题变成查表题。分发模式本身也是合同的一部分：事件名说「发生什么」，`waterfall` / `serial` / `parallel` / `emit` / `bail` 说「插件拥有什么控制权」——`bail` 在第一个返回值的监听器处短路，结果归它。读者不需要从调用栈反推自己能不能截断这条链（[`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)）。
 
-> Services declare event names through TypeScript declaration merging, then dispatch them as `emit`, `waterfall`, `parallel`, or `serial` depending on whether listeners observe, wrap, fan out, or run in order.
+> Services declare event names through TypeScript declaration merging, then dispatch them as `emit`, `waterfall`, `parallel`, `serial`, or `bail` depending on whether listeners observe, wrap, fan out, run in order, or stop at the first bail value.
 >
 > —— `docs/cordis-primer.md:12`（基线 `a66e4702…`）
 
@@ -86,8 +86,8 @@ fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的
 
 coding agent 的真实约束不只有「读不读得懂」，还有**上下文预算内能否找到对的入口**。dsh 的文档 tier 为此分层：
 
-- 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 1600 词），细节链接到 home；
-- [`docs/architecture.md`](../../docs/architecture.md) 是 1800 词以内的有序地图；
+- 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 1950 词），细节链接到 home；
+- [`docs/architecture.md`](../../docs/architecture.md) 是 2400 词以内的有序地图；
 - 生成的 catalog 提供穷举查询，不要求读者通读；
 - skills 提供可调用的程序化工作流，如 [`dsh-doc`](../../.agents/skills/dsh-doc/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。
 - 双语文档由配对门禁管理：`docs/AGENTS.md` 要求“Pairs update together”，`verify-translation-pairing` 把英文/中文/记录三方钉在一起。
@@ -109,14 +109,14 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 ## 证据入口
 
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 106 行；扩展表、事件域）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 66、123 行；事件域、扩展表）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件矩阵与分发模式）
-- [`../../AGENTS.md`](../../AGENTS.md)（第 105 行；required-on-read 与 standing orders）
+- [`../../AGENTS.md`](../../AGENTS.md)（第 107 行；required-on-read 与 standing orders）
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文、tier taxonomy、字数预算）
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；读者模型的因果来源）
 - [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（note 语料库的规则）
 - [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（rc.1 废除空 companion，现行权威）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；空 invariant 纪律的起源，rc.1 起被 2026-08-28 裁定取代）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 rc.1 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」，原「空 invariant 纪律」的显式结论表述只剩历史意义，rc.1 起被 2026-08-28 裁定取代）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
 - [`docs/development.md`](../../docs/development.md)（包结构同构）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）

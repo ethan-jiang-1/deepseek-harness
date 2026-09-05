@@ -35,7 +35,7 @@ dsh --profile acp
   → runProfile → composeProfile → boot()
   → acp-app 组合 apply
     → mount dsh-base → ACP transport 等
-  → ACP 插件创建 AgentSideConnection(process.stdin, process.stdout)
+  → ACP 插件经 @agentclientprotocol/sdk 接线 stdio：createAcpAgentApp + ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin))（packages/acp/acp/src/index.ts:21-47 导入、:372-377 接线）
   → 等待客户端连接
   → initialize: 返回 protocolVersion、agentCapabilities（图像能力取决于精确 route）
   → session/new: 创建新鲜 agent（绝对 cwd）

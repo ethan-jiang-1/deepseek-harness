@@ -26,7 +26,7 @@ dsh 把这些路径做成**参与阶梯（participation ladder）**，而不是�
 「四种模式」容易被读成四套互斥产品。实际是两条轴 `[源码]`：
 
 - **Runtime Profile**：`web` / `headless` 决定这个进程以什么表层运行。
-- **Agent Preset**：`standard` / `code` / `minimal` / `cordis` 决定单个会话看到哪些工具、提示词与局部能力。
+- **Agent Preset**：`standard` / `ptc` / `minimal` / `cordis` 决定单个会话看到哪些工具、提示词与局部能力。
 
 Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以承载不同 preset 的会话。参与时要先分清自己改的是「所有会话都受影响」还是「某一类会话」。`[推断]` 这个两轴读法来自 DSH 文档；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 与 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
@@ -48,7 +48,7 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 - 配置从空 entry list 开始，按 Bundle → Profile patch → home patch → `--patch` 的顺序叠加；顺序就是数据。
 - 后层按 entry id 整份替换 config，或插入新行。
-- `dsh --dump-config` 输出的不是「可能加载什么」，而是**这台机器实际会挂什么**；dump 与 boot 共用同一 `applyEntryPatches`（官方落点：`docs/architecture.md:29` 的 dump 命令与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
+- `dsh --dump-config` 输出的不是「可能加载什么」，而是**这台机器实际会挂什么**；dump 与 boot 共用同一 `applyEntryPatches`（官方落点：`docs/architecture.md:34` 的 dump 命令与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
 - 用户 patch 的 HMR 是事务性的：候选配置失败时保留上一棵好树（[`vendor/README.md`](../../vendor/README.md) 本地修改清单第 8 条：restores the previous plugin or config when candidate application fails）。
 
 因此静态 import 图只能说明「可能加载什么」，最终配置树才说明「实际是什么」。参与 L0 的最低可核查动作就是读 `dump-config`，而不是读源码目录猜组合。

@@ -8,7 +8,7 @@
 
 ```sh
 # Python SDK 捆绑运行时
-python -m dsh run --scenario sdk-minimal --exe dist-exe/dsh-jsonrpc-agent-pkg-macos-arm64
+python -m dsh run --scenario sdk-minimal --exe dist-exe/deepseek-harness-sdk-runtime-macos-arm64
 
 # 直接通过 profile
 dsh --profile sdk-minimal
@@ -23,12 +23,13 @@ dsh --profile sdk-minimal
 | id | 插件 | 作用 |
 |----|------|------|
 | `sdk-jsonrpc-server` | `@deepseek-ai/dsh-sdk-jsonrpc-server` | JSON-RPC 协议处理器，`maxTokensAsSuccess: false` |
-| `llm-deepseek` | `@deepseek-ai/dsh-llm-deepseek` | LLM 适配器，`DSH_MODEL` 选模型 |
+| `llm-deepseek` | `@deepseek-ai/dsh-llm-deepseek` | LLM 适配器，实配 `apiKeyEnv: DEEPSEEK_API_KEY`、`defaultContextWindow`（`DSH_CONTEXT_WINDOW`）、`streamIdleTimeoutMs: 172800000`；模型选择不在 bundle——Python 示例脚本把它作 `--model` 默认值（`python/sdk/examples/minimal.py:27`） |
 | `sandbox` | `@deepseek-ai/dsh-sandbox-local` | 沙箱 |
 | `sandbox-policy` | `@deepseek-ai/dsh-sandbox-policy` | `mode: danger-full-access` |
 | `subprocess` | `@deepseek-ai/dsh-subprocess-local` | 子进程管理 |
 | `pty` | `@deepseek-ai/dsh-terminal` | 持久 PTY |
 | `terminal-bash` | `@deepseek-ai/dsh-terminal-bash` | 持久 bash（5 分钟 timeout） |
+| `terminal-pwsh` / `persistent-pwsh` | `@deepseek-ai/dsh-terminal-bash`（`shellDialect: pwsh`）/ `@deepseek-ai/dsh-tool-pwsh-persistent` | win32 平台孪生行：`disabled: !!js process.platform !== 'win32'`，bash 侧反向 `=== 'win32'` |
 | `fs-local` | `@deepseek-ai/dsh-fs-local` | 裸本地文件系统 |
 
 以及独有的工具行：
@@ -53,7 +54,7 @@ dsh --profile sdk-minimal
 | `sandbox` 策略 | 有（sdk 继承 base：sandbox-policy 默认 `workspace-write`） | `danger-full-access`（另挂 `fs-local`） |
 | `session-checkpoint` | 有 | **无** |
 | `token-meter` | 有 | **无** |
-| 系统提示词 | `"You are a coding agent."` | `"You are a helpful software engineer assistant."` |
+| 系统提示词 | `"You are a coding agent powered by the {{model}} model. Your working directory is {{cwd}}."` | `DSH_SYSTEM_PROMPT` 覆盖，缺省 `"You are a helpful software engineer assistant."` |
 | `includeHarnessIdentity` | 默认 true | `false` |
 | `includeRuntimeContext` | 默认 true | `false` |
 

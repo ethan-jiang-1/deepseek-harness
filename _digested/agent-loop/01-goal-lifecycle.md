@@ -10,11 +10,11 @@ DSH 没有隐藏的「意图理解引擎」来自动创建 goal。goal 只能通
 
 ### 路径一：模型通过 `create_goal` tool 创建 ← 你看到的效果
 
-`packages/goal/tool-goal/src/index.ts:207-232` 注册了 `create_goal` tool。关键的引导在于 tool 的 `description`（第 46-49 行）：
+`packages/goal/tool-goal/src/index.ts:206-231` 注册了 `create_goal` tool。关键的引导在于 tool 的 `description`（第 44-48 行）：
 
 > "Create one persisted same-session completion goal when the current direct human request is a long-running objective that should continue across autonomous goal rounds. **You may infer that intent without requiring the user to say 'create a goal'.** Do not use this for trivial single-turn work."
 
-加上 system prompt 的 `tool:goal` section（第 189-193 行，order 114）进一步给模型同样的授权：
+加上 system prompt 的 `tool:goal` section（`tool-goal/src/index.ts:188-192`，order 2400）进一步给模型同样的授权：
 
 > "**create_goal may infer goal intent from a direct human request in any language**; do not create a goal for routine single-turn work."
 
@@ -93,7 +93,7 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 **模型**通过 `update_goal` tool 可以 `complete`、`blocked`、`edit`、`pause`、`resume`。其中 `complete` 和 `blocked` 不需要 human origin（在 goal-round 中被授权），因为这是模型自己报告任务状态：
 
 ```ts
-// tool-goal/src/index.ts 第 285 行
+// tool-goal/src/index.ts 第 284 行
 const authority = completionAuthority(ctx, execution)
 // authority.kind === 'goal-round' 时允许 complete/blocked
 ```

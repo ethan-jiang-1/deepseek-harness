@@ -28,14 +28,13 @@ dsh --profile headless --help
 | id | 做了什么 |
 |----|---------|
 | `system-prompt` | 设 persona 文本 |
-| `hmr` | **disable**（一次性任务不需要 HMR） |
 | `tools` | 透传 `DSH_TOOLS_MODE` |
 
 ### `dsh-headless` 的 insert 行
 
 | id | 插件 | 作用 |
 |----|------|------|
-| `code-runtime` | `@deepseek-ai/dsh-code-runtime-worker-thread` | PTC 程序执行器 |
+| `code-runtime` | `@deepseek-ai/dsh-code-runtime-worker-thread` | PTC 程序执行器；产品 bin 另依赖 `@deepseek-ai/dsh-experimental-code-runtime-python`（CPython 子进程后端，experimental，7f84a825c9），PTC 的 code-runtime 呈双 provider 形态（worker-thread + 实验性 Python），本 patch 挂载的仍是 worker-thread 行 |
 | `headless-startup` | `@deepseek-ai/dsh-headless/startup` | 解析 `"<task>"` 位置参数，提供 `headlessStartup` 服务 |
 | `headless-runner` | `@deepseek-ai/dsh-headless` | 注入 `headlessStartup`，读取 task，创建 Agent，驱动到完成，打印结果 |
 
@@ -51,6 +50,8 @@ dsh --profile headless "run the tests"
   → headless-runner 读取 task，创建 Agent，推进到完成
   → 打印最终 assistant 消息 → exit 0
 ```
+
+最终消息的读取是逐 seq 的：runner 的 `summarize` 按 `session.eventAt(SessionSeq(seq))` 从首个 seq 读到捕获长度，读不到即 fail loud（`dsh: headless summary cannot read seq N below captured length M`；`packages/bundle/headless/src/index.ts:64-73`，`tests/headless.spec.ts` 有对应用例）。
 
 ## 独特之处
 
