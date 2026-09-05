@@ -20,7 +20,7 @@
 
 对子代理报告中的强论断逐条 grep 复核：
 
-1. "`dsh-base` 默认挂载 goal/plan/workflow 工具" → `packages/bundle/base/cordis.patch.yml:256-374` 命中 `goal`、`goal-round-driver`、`plan-mode`、`tool-workflow`、`tool-todo`、`tool-goal`。**证实**。
+1. "`dsh-base` 默认挂载 goal/plan/workflow 工具" → `packages/bundle/base/cordis.patch.yml:298-414` 命中 `goal`、`goal-round-driver`、`plan-mode`、`tool-workflow`、`tool-todo`、`tool-goal`。**证实**。
 2. "`ui-tool` 全包无 `'image'` 渲染分支" → grep `packages/client/ui-tool/src/` 对 `image` 零命中。**证实**（源码层；运行时间接路径未排除）。
 3. 默认 catalog 三模型与 1M 窗口 → `packages/llm/llm-deepseek/README.md:53`。**证实**。
 4. `reasoningEffort: off|low|high|max`、省略回退 `high` → `README.md:20,69`。**证实**。
@@ -30,7 +30,7 @@
 ## 关键证据文件
 
 - goal：`packages/goal/goal/src/{index,fold,types,domain}.ts`、`packages/goal/goal-round-driver/src/{index,prompt}.ts`、`packages/goal/tool-goal/src/{index,authority}.ts`；notes：`2026-07-19-persisted-same-session-goal-domain.md`、`2026-07-19-same-session-goal-round-driver.md`、`2026-07-19-model-facing-goal-tools.md`（均在 `.agents/notes/implemented/feature/`）。
-- plan：`packages/plan/plan-mode/src/index.ts`；plan 策略 section 出厂文本 `packages/bundle/base/cordis.patch.yml:265-280`。
+- plan：`packages/plan/plan-mode/src/index.ts`；plan 策略 section 出厂文本 `packages/bundle/base/cordis.patch.yml:308-331`。
 - workflow：`packages/workflow/workflow/README.md`（"No saved or nested workflows"）、`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/tool-ralph/README.md`。
 - vision：`packages/fs/tool-fs/src/read-image.ts`、`packages/attachment/attachment-local/`（README + `normalization.ts`）、`packages/llm/llm-deepseek/{README.md,src/serialize.ts}`、`.agents/skills/record-browser-gif/SKILL.md`。
 - 预览/产出物：`docs/cookbook/adding-a-tool.md`（render intent 纪律）、`packages/core/tools/src/presentation.ts`、`packages/client/ui-{tool,primitives,deliverables,workflow-run,attachment,conversation}/README.md`、`packages/host/apiproxy/README.md`（session.export ZIP）。

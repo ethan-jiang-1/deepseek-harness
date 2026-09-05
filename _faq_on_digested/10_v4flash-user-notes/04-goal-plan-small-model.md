@@ -4,7 +4,7 @@
 
 > "开箱已有 goal、plan"，但它们**不是内核分支**——goal 续轮驱动器与 `agent-loop` 零耦合，设计笔记里 *"Add a goal loop inside dsh-agent-loop — rejected"* 是正面记录。
 
-这句话里的每个词都对应一个可展开的机制层：**"开箱"** 是组合层决定（`dsh-base` 第一层 bundle 的六个插件行，`packages/bundle/base/cordis.patch.yml:256-374`）；**"goal、plan"** 是两个互不相识的日志化状态机；**"不是内核分支"** 是扩展点纪律（AGENTS.md *"Plugins, not loop changes"*）；**"rejected 备选"** 是决策记录制度（note :78 记录了否掉的理由）。本篇把前两者展开到源码级，然后回答真正的解释目标：**为什么这套东西配上一个快而小的模型，反而构成优秀的开发体验**——这是三条体感最直接的根（但不是唯一的根：反例检验与另外两条根见 [05](./05-other-roots.md)），其余（预览清单、模型 catalog、预算表）都是这个根上的投影。
+这句话里的每个词都对应一个可展开的机制层：**"开箱"** 是组合层决定（`dsh-base` 第一层 bundle 的六个插件行，`packages/bundle/base/cordis.patch.yml:298-414`）；**"goal、plan"** 是两个互不相识的日志化状态机；**"不是内核分支"** 是扩展点纪律（AGENTS.md *"Plugins, not loop changes"*）；**"rejected 备选"** 是决策记录制度（note :78 记录了否掉的理由）。本篇把前两者展开到源码级，然后回答真正的解释目标：**为什么这套东西配上一个快而小的模型，反而构成优秀的开发体验**——这是三条体感最直接的根（但不是唯一的根：反例检验与另外两条根见 [05](./05-other-roots.md)），其余（预览清单、模型 catalog、预算表）都是这个根上的投影。
 
 ## 第二节 goal 的完整机制：从一条人类消息到自动续轮的闭环
 
@@ -35,7 +35,7 @@
 
 **`exit_plan_mode` 是一次真实的人类评审，不是模型自说自话。** 工具常驻注册（模式无关，理由见下节 cache 那段）；执行要求 plan 以 `#` 标题开头；然后经 `ctx.userQuestions.ask` 提交 question id `'plan-review'` 的评审——选项 `Approve` / `Keep planning` 加自由文本；评审通道缺失 fail-closed；用户取消 → "stay in plan mode, stop here"。批准走 **silent pending** `{active:false, narrate:false}`：本工具批内 plan 指导仍然生效，下一次请求装配前由 pre-step 落 `plan/mode {active:false}`；工具结果文本固定 `"Plan approved — plan mode exited; carry out the plan starting with your next step."`；未批准 → 工具抛错，评审反馈原样带回给模型（`index.ts:356-399, :407-416`）。
 
-**plan 的规则是提示词层的，且这条设计是明说的。** 出厂 `plan:policy` section（order 50，`packages/bundle/base/cordis.patch.yml:265-280`）的关键句：
+**plan 的规则是提示词层的，且这条设计是明说的。** 出厂 `plan:policy` section（order 50，`packages/bundle/base/cordis.patch.yml:308-331`）的关键句：
 
 > The tool catalog stays the same across modes for request-cache stability. These plan-mode rules override any later tool description or guidance that suggests using mutation tools; those tools remain listed only to keep the request shape stable.
 >

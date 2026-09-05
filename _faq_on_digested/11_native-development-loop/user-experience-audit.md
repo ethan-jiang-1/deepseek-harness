@@ -221,10 +221,11 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
   [`packages/guard/repeat-tool-reminder/src/index.ts:46`](../../packages/guard/repeat-tool-reminder/src/index.ts)）
   且是 advisory（`:209-224`），注册在 post-execute 正是为了让*被拒绝的*调用获得指导。
   卡住 → 被引导，而非被杀。
-- **自包含的最终答案。** 委派的工作被要求返回自包含的 `report`，因为
-  调用者"does not automatically receive your transcript… so closing with 'done' leaves it nothing"
-  （[`packages/subagent/tool-subagent-report/src/index.ts:57-71`](../../packages/subagent/tool-subagent-report/src/index.ts)）。
-  对 (A) 用户而言，最顶层的对应物是可读的完成报告，而不是六步循环。
+- **可读的最终交付。** 后台子会话 settle 时，运行时把 outcome 与 final message 作为 notice 交回父会话
+  （"When a background run settles, the runtime sends you a notice containing its outcome and any final
+  assistant message"，[`packages/subagent/tool-subagent/src/index.ts:596`](../../packages/subagent/tool-subagent/src/index.ts)）。
+  rc.1 删除了独立的自足 `report` 工具（`tool-subagent-report`）。
+  对 (A) 用户而言，最顶层的对应物仍是可读的完成报告，而不是六步循环。
 - **可重放性 / 对 transcript 的信任。** `model-visible ⟺ logged` 不变量
   （[`AGENTS.md`](../../AGENTS.md) — "anything that reaches a model request must be reconstructable from the
   session log"）是让人信任并重新检查发生了什么的机制。这是一个关于*审计 agent* 的运行时不变量，

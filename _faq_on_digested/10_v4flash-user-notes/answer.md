@@ -11,7 +11,7 @@
 | # | 体感 | 判定 | 一句话依据 |
 |---|---|---|---|
 | 1a | "快就是好，V4 Flash 足够优秀，思考开在 Max" | **机制使然 + 需补成本账** | Flash 是默认 catalog 首位、`reasoningEffort` 支持 `off\|low\|high\|max`（省略回退 `high`），且生效值落 `request/header`；但 max 档在长会话里背着 reasoning 回传税（[01](./01-fast-is-good.md#第二节-思考开在-max的机制与它-hidden-的-token-账)） |
-| 1b | "开箱已有 goal、plan" | **逐字成立** | `dsh-base` 第一层 bundle 就挂 `goal`/`goal-round-driver`/`tool-goal`/`tool-todo`/`tool-workflow`/`plan-mode`（`packages/bundle/base/cordis.patch.yml:256-374`） |
+| 1b | "开箱已有 goal、plan" | **逐字成立** | `dsh-base` 第一层 bundle 就挂 `goal`/`goal-round-driver`/`tool-goal`/`tool-todo`/`tool-workflow`/`plan-mode`（`packages/bundle/base/cordis.patch.yml:298-414`） |
 | 1c | "用 plan 打造 dynamic workflow" | **可复述但需校正** | "dynamic workflow" 不是官方术语；官方原语是 `workflow` 工具（只接受 caller-supplied script）+ plan 模式（日志化评审姿态）+ goal 续轮（自动驾驶），三者零耦合，"dynamic" 发生在模型把批准后的 plan 翻译成一次性编排脚本的那一步（[01](./01-fast-is-good.md#第四节-dynamic-workflow这个造词的机制解读)） |
 | 1d | "重构 3 小时看到效果，在 codex 简直是做梦" | **机制上可解释，不代为裁判** | 3 小时的**下限**由 harness 结构给出：goal 轮次默认 256 轮自动续、workflow `parallel()/pipeline()` fan-out、后台 subagent、会话持久可恢复；harness 保证的是"不空转、可并行、可恢复"，上限仍归模型（[01](./01-fast-is-good.md#第五节-3-小时的下限与上限)） |
 | 2a | "多路并行、diff 预览、markdown 预览要自己打造" | **已存在，无需自造** | 并行有三层（workflow 编排 / 后台 subagent / 工具池 `maxParallelToolCalls`）；diff 与 markdown 渲染是官方 render intent + `ui-primitives` 已交付能力（[02](./02-self-built-previews.md#第一节-逐项判定用户清单里哪些已经是官方交付)） |
