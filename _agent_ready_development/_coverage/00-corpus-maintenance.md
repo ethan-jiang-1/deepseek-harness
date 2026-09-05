@@ -1,6 +1,6 @@
 # `_agent_ready_development` 语料证据与维护说明
 
-> 复核日期：2026-09-01。产品源码基线：`a66e4702047846cdaa10c66c9d3df3951f5ea70d`。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
+> 复核日期：2026-09-05。产品源码基线：`a66e4702047846cdaa10c66c9d3df3951f5ea70d`。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
 
 ## 1. 专题定位
 
@@ -72,3 +72,5 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 - Repository-level 文档校验运行 `pnpm run doc-sync`；被 host toolchain、build prerequisite 或目录外规则阻断时，交付报告记录 exact command 与错误，不把结果写成绿色证据。
 
 2026-08-24 的 repository-level 复核没有建立绿色 `doc-sync` 结果：`corepack pnpm run doc-sync` 完成 28 项中的 25 项，`doc-typecheck` 缺少 `lib/types/{index,invariant,startup}.js` 构建入口，documentation build 命中 host Corepack 的 `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`，translation pairing 因仓库 scope 包含本语料而拒绝 8 个 README。前两项需要目录外构建或工具链修复；pairing exclusion 由目录外的 `scripts/translation-pairing.manifest.json` 拥有。目录级检查通过不能替代这三项 repository-level 结果。
+
+2026-09-05 的 rc.1（`a66e470204`）复核：全部目录外 DSH 引用 URL re-pin 到 rc.1；机制扫描（invariant 空 companion 废除、subagent report 工具删除、schedule 非 seam、apiproxy 删除、profile 组合变薄层、agent preset 改名 ptc、session header 去 seedLength）在本语料正文无命中，证据正文无需修订。目录级 verify 通过。
