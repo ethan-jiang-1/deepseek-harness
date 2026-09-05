@@ -2,7 +2,7 @@
 
 ## 说明
 
-本 FAQ 的证据主体是两份本地研究语料，都钉在与 `_digested/` 同一基线 DSH `dsh-v0.1.2-alpha.3`（commit `dd6322d604e00eec1ba5e0c8541159906a21094a`）上。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文。当前 checkout（HEAD `61c31ac`）已领先该基线，但本 FAQ 引用的全部 DSH 文件在 `528c682e..HEAD` 之间均无变化（2026-08 核对）；上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
+本 FAQ 的证据主体是两份本地研究语料，都钉在与 `_digested/` 同一基线 DSH `dsh-v0.1.2-rc.1`（commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`）上。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文。当前 checkout（HEAD `61c31ac`）已领先该基线，但本 FAQ 引用的全部 DSH 文件在 `528c682e..HEAD` 之间均无变化（2026-08 核对）；上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
 
 ## 1. 仓库以 coding agent 为主、机械门禁优于 prose 约定
 

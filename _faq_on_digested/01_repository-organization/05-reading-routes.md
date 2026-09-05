@@ -1,6 +1,6 @@
 # 05 · 用什么路线读 DSH
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d604e00eec1ba5e0c8541159906a21094a`。
+源码核验基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`。
 
 ## 不要从 `packages/` 第一项顺序读到最后一项
 

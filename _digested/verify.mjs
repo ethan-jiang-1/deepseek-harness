@@ -468,7 +468,7 @@ function checkSvg(path, source) {
   if (stack.length > 0) report(path, undefined, `unclosed XML tag <${stack.at(-1)}>`)
 }
 
-const EXPECTED_BASELINE = 'dd6322d604e00eec1ba5e0c8541159906a21094a'
+const EXPECTED_BASELINE = 'a66e4702047846cdaa10c66c9d3df3951f5ea70d'
 const claimsPath = resolve(corpusRoot, 'harness-idea', 'claims.json')
 // 出处标记与 08-judgement-discipline.md 的出处分级表一致：本专题不使用外部
 // 资料作为证据，事实一律以 DSH 官方文件与基线为准。
@@ -483,8 +483,8 @@ const claimMetrics = new Set([
   'notes-implemented-md',
   'architecture-extension-rows',
   'invariant-total',
-  'invariant-executable',
-  'invariant-empty',
+  'invariant-published',
+  'invariant-omitted',
 ])
 
 function gitOutput(args) {
@@ -513,17 +513,25 @@ function gitPackageOwners(commit) {
     .filter(line => /^packages\/[^/]+\/[^/]+\/package\.json$/.test(line))
 }
 
-/** Invariant companion owners and the executable / empty split at a commit. */
+/**
+ * Invariant companion owners split by publish / omit at a commit.
+ * rc.1 起政策改为「只在有独立可观察关系时 publish ./invariant，否则省略」，
+ * 带 "No runtime invariant:" 标记的空 companion 已被废除（见
+ * .agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md）。
+ * 空/忽略 reporter 由 verify-package-invariants 判 fail，因此 publish 即真实。
+ */
 function invariantCompanionCounts(commit) {
-  const counts = { total: 0, executable: 0, empty: 0 }
-  for (const manifest of gitPackageOwners(commit)) {
+  const manifests = gitPackageOwners(commit)
+  const publishedPaths = new Set(
+    gitOutput(['ls-tree', '-r', '--name-only', commit, 'packages'])
+      .split('\n')
+      .filter(line => line.endsWith('/src/invariant.ts'))
+  )
+  const counts = { total: manifests.length, published: 0, omitted: 0 }
+  for (const manifest of manifests) {
     const sourcePath = `${manifest.replace(/package\.json$/, '')}src/invariant.ts`
-    counts.total += 1
-    const source = gitOutput(['show', `${commit}:${sourcePath}`])
-    // Empty installers must carry the "No runtime invariant:" marker
-    // (scripts/package-invariants.ts NO_RUNTIME_INVARIANT_MARKER).
-    if (source.includes('No runtime invariant:')) counts.empty += 1
-    else counts.executable += 1
+    if (publishedPaths.has(sourcePath)) counts.published += 1
+    else counts.omitted += 1
   }
   return counts
 }
@@ -552,12 +560,12 @@ function computeClaimMetric(metric) {
     return count
   }
   if (metric === 'invariant-total'
-    || metric === 'invariant-executable'
-    || metric === 'invariant-empty') {
+    || metric === 'invariant-published'
+    || metric === 'invariant-omitted') {
     const counts = invariantCompanionCounts(EXPECTED_BASELINE)
     return metric === 'invariant-total' ? counts.total
-      : metric === 'invariant-executable' ? counts.executable
-        : counts.empty
+      : metric === 'invariant-published' ? counts.published
+        : counts.omitted
   }
   return undefined
 }

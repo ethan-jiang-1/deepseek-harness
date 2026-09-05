@@ -19,7 +19,7 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 > New behavior attaches to a documented extension point. Changing the loop itself updates this map.
 >
-> —— `docs/architecture.md:121`（基线 `dd6322d6…`）
+> —— `docs/architecture.md:121`（基线 `a66e4702…`）
 
 ## 机制二：四条设计哲学，约束所有新增功能
 
@@ -38,13 +38,13 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 > `execute` runs immediately; the disposers it produces are collected and run (in reverse order) either when the returned disposer is called or when the fiber unloads, whichever comes first.
 >
-> —— `docs/cordis-api/fiber.md:30`（基线 `dd6322d6…`）
+> —— `docs/cordis-api/fiber.md:30`（基线 `a66e4702…`）
 
 诚实说明强制力在哪：这一条是**惯例 + 测试 + review 强制**，不是静态门禁——静态分析管不到「每个贡献是否都走了 effect」。dsh 的对策是把惯例写成 standing order（`AGENTS.md`），把生命周期正确性交给 HMR 测试与运行时 invariant（见机制六）。
 
 > **Registrations are effects**: every contribution goes through `ctx.effect()` / `ctx.on()`; a registry's `register()` returns the disposer.
 >
-> —— `AGENTS.md:105`（基线 `dd6322d6…`）
+> —— `AGENTS.md:105`（基线 `a66e4702…`）
 
 对比：如果一个系统里「正式注册」和「临时挂上去」是两种写法，读者每次都要判断该用哪种——判断就是犯错点。
 
@@ -72,19 +72,15 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 > **Waterfall listeners MUST call `next()`** to delegate; returning without it short-circuits the chain.
 >
-> —— `AGENTS.md:109`（基线 `dd6322d6…`）
+> —— `AGENTS.md:109`（基线 `a66e4702…`）
 
 ## 机制六：运行时 invariant 体系——规则写成断言，不写成劝告
 
 这是 dsh 独有的、比「门禁」更狠的一层：
 
-- **每个包必须登记自己的运行时 invariant**：`verify-package-invariants` 门禁强制。但注意另一半纪律：基线工作区有 **227 个包所有者**，其中 **37 个可执行 companion、190 个有理由的空 companion**（prose 里不手写固定总数，[`claims.json`](./claims.json) 的 N4–N6 用 `git ls-tree` 在基线上重算）；空 companion 必须写 `No runtime invariant:` 并解释为什么没有可观察的运行时关系。**不造无意义断言，和必须有断言一样重要**。
-
-> The empty form is an explicit architectural conclusion, not a generated placeholder.
->
-> —— `.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md:24`（基线 `dd6322d6…`）
-- **invariant 断言的是有所有权的关系**（`AGENTS.md` 的纪律）：检查权威事件流或可变数据，不检查 service 存在性、不检查插件元数据——「存在」不代表「关系成立」，断错了对象等于没断。
-- **实例**：`dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致立刻 fail（非 loop 请求不检查）。
+- **invariant 只登记「独立观察会分叉」的运行时关系**：publish `./invariant` 仅在该包有可独立观察、会分叉的关系时成立；它检查有所有权的关系——权威事件流或可变数据，不检查 service 存在性、不检查插件元数据——「存在」不代表「关系成立」，断错了对象等于没断。空/忽略 reporter 判 fail（`verify-package-invariants` 强制，纪律见 [`packages/AGENTS.md`](../../packages/AGENTS.md)）。
+- **「每个包都登记」的普遍制已被上游废除**：早期纪律是每个包必须带 companion，没有可观察关系就写带 `No runtime invariant:` 标记的空 companion——「absence 是显式结论，不是漏写」是当时被赞美的装置。`0.1.2-rc.1` 上游反转了这个决定：带标记的空 companion 全部删除，无独立关系的包改省略并写进 README 原因（[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）。对 digest 这是一条罕见的实证：连「显式空断言」都会被上游当噪音裁掉——可执行化的正确形状是「只在有真关系处断言」，不是「处处有断言」。计数口径见 [`claims.json`](./claims.json) 的 N4–N6（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）。
+- **实例**：`dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致立刻 fail（非 loop 请求不检查）——它有真实的分叉关系，所以在这次废除中幸存。
 
 「模型可见 ⟺ 已记录」如果只是文档里的劝告，一定会在某次重构中失效；它是运行时断言，所以它活着。门禁管「提交前」，invariant 管「运行时」——两条线都断，错误才可能漏出去。
 
@@ -100,7 +96,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
   > A guard only guards if the regression actually fails it. ... prove it: introduce the regression, watch red, revert.
   >
-  > —— `docs/testing.md:38`（基线 `dd6322d6…`）
+  > —— `docs/testing.md:38`（基线 `a66e4702…`）
 - 「Verify the world, not the self-report」——e2e 要重新执行命令或读文件，不能相信 agent 自己的输出；
 - 真实入口路径：built artifact smoke、Loader 真实组合、snapshot 必须来自可运行示例；
 - 每个非平凡模型/协议/人类可见变化，同 PR 更新 keyless snapshot。
@@ -118,8 +114,9 @@ dsh 把「正确」编码进系统的**形状**与**检查**：扩展点路由�
 - [`docs/architecture.md`](../../docs/architecture.md)（第 106 行；扩展表与事件域）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（tool 合同与最小 shape）
-- [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（运行时 invariant）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24、30 行；21 可执行 / 82 有理由空的纪律）
+- [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（运行时 invariant 幸存实例）
+- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（rc.1 废除空 companion 的裁定，现行权威）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24、30 行；普遍 companion 制的起源，rc.1 起被 2026-08-28 裁定取代）
 - [`../../.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（选门禁的判断被外置成 guidance）
 - [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；coverage、snapshot 与元验证）
 - [`../../AGENTS.md`](../../AGENTS.md)（第 103 行；注册即效果、waterfall、model-visible、fail loud）

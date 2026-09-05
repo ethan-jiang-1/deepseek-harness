@@ -20,7 +20,7 @@
 
 > Events are the extension points, and picking the right domain is the first decision in most changes.
 >
-> —— `docs/architecture.md:66`（基线 `dd6322d6…`）
+> —— `docs/architecture.md:66`（基线 `a66e4702…`）
 
 ## LLM 是合同面的探针之一
 
@@ -57,11 +57,11 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 > A running `dsh` is a plugin tree composed at boot from ordered layers.
 >
-> —— `docs/architecture.md:17`（基线 `dd6322d6…`）
+> —— `docs/architecture.md:17`（基线 `a66e4702…`）
 
-> A **seam** is a swappable capability with three roles: a **Service Definition**, one or more **Service Providers**, and one or more **Consumers**.
+> **seam** — a *swappable capability* with three roles: a **Service Definition** (…never a TypeScript `interface`), one or more **Service Providers**, and one or more **Consumers** that inject the service.
 >
-> —— `docs/glossary.md:9`（基线 `dd6322d6…`）
+> —— `docs/glossary.md:9`（基线 `a66e4702…`）
 
 所以准确的说法不是「与智能无关」，而是：**原则与智能无关；形状与生产方式有关；形状的性价比与组合压力有关。**
 
@@ -81,9 +81,9 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 | 无范本 | 正确写法只存在于某个 300 行文件里 | `defineTool` 最小 shape；shell 三包生产级范本 |
 | 判断二选一 | 正式注册与临时挂载是两种写法 | 注册即效果，只有一种生命周期写法 |
 | 无元验证 | 门禁能被刷绿、测试相信自报 | 「guard 必须被负例证明」；verify the world；真实入口 smoke |
-| 负知识缺失 | 被否方案和已知限制只在人脑里 | rejected notes；空 invariant 显式理由；README Known Limitations |
+| 负知识缺失 | 被否方案和已知限制只在人脑里 | rejected notes；README Known Limitations；省略的 invariant 在 README 写原因 |
 | 上下文预算爆炸 | 规则多到读不完、装不进上下文 | 规则分层 + 一个事实一个家 + `verify-doc-budgets` 字数预算 |
-| 无基线漂移 | 判断不钉 commit，上游改了没法复核 | 本专题：全部判断钉 `dd6322d6…` 基线 + 证据锚点 |
+| 无基线漂移 | 判断不钉 commit，上游改了没法复核 | 本专题：全部判断钉 `a66e4702…` 基线 + 证据锚点 |
 | 分布洗钱 | 人类播种的洞察被磨成模型输出，出处丢失 | 本专题：判断标注出处（`[原文]` / `[源码]` / `[推断]` / `[框架]`） |
 
 ## 用三个问题检验一个 harness
@@ -116,7 +116,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 >
-> —— `docs/architecture.md:13`（基线 `dd6322d6…`）
+> —— `docs/architecture.md:13`（基线 `a66e4702…`）
 
 ## 结论
 
