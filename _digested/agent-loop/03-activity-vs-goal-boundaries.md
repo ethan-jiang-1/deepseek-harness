@@ -76,7 +76,7 @@ turn/end (turn=5, reason={ kind: 'interrupted' })  ← 恢复时补的
 
 ![崩溃重启后必须 re-arm](./figures/restart-rearm.svg)
 
-`phase` 不依赖进程内存：所有 `goal/change` 事件写入 session log，进程重启后 fold（`fold.ts`）从 log 重放，重建 goal 状态。但 **`activation`（armed / disarmed）从不持久化**（`goal/src/types.ts:81-82`）：`agent/session-start` 时 `GoalService` 把 activation 重置为 `disarmed`（`goal/src/index.ts:198-200`），Round Driver 装载时也会 disarm 全部现存 agent（`goal-round-driver/src/index.ts:416-421`）。
+`phase` 不依赖进程内存：所有 `goal/change` 事件写入 session log，进程重启后 fold（`fold.ts`）从 log 重放，重建 goal 状态。但 **`activation`（armed / disarmed）从不持久化**（`goal/src/types.ts:81-82`）：`agent/session-start` 时 `GoalService` 把 activation 重置为 `disarmed`（`goal/src/index.ts:255-256`），Round Driver 装载时也会 disarm 全部现存 agent（`goal-round-driver/src/index.ts:416-421`）。
 
 所以崩溃重启后，goal 停在 active + **disarmed**——**自动续轮不会自动恢复**，必须 human re-arm（模型 `update_goal resume`，或 `/goal resume`）之后，driver 才从 `roundsStarted + 1` 继续；round 计数完全重建自 log，不会漏也不会超前。测试直接断言此行为（`goal-round-driver.spec.ts:866-878`）。
 
