@@ -44,6 +44,8 @@ acp:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
 | Goal | 持久完成目标 | `dsh-base` 的 `goal`、`goal-round-driver`、`tool-goal`（sdk 继承 base；仅 sdk-minimal 无） |
 | 文件系统 | 受限文件访问 | `dsh-base` 的 `fs-sandbox`、`fs-observation-policy` |
 
+**消息通道**：rc.1 起子代理回传统一为 settle notice + `send_message` steer（`tool-subagent-report` 已删除）；fork continuable 不再有 child-only section 的 KV 前缀代价。
+
 **进程级重用**：五个入口都通过 `ctx.agents` 驱动 agent，从 `session/event` 渲染或投影。不是五套 Agent 实现。
 
 ### Bundle 层叠（所有 profile 共享）

@@ -40,7 +40,7 @@
 
 fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条流派生。所以 loop 可以换：只要新驱动仍往同一条 log 写、仍发同一类 `session/event`，渲染面可以不动。
 
-> **持久化后端变化**：上游 #2698 和 #3339 将 session 持久化调整为 JSONL-only。SQLite 代码路径已删除。`session-persistence-sqlite` 不再存在；`session-persistence-jsonl` 承担全部持久化职责。压缩使用 zstd 单帧格式。格式迁移框架（`formatRegistry`）支持 one-to-one 版本升级。
+> **持久化后端变化**：上游 #2698 和 #3339 将 session 持久化调整为 JSONL-only。SQLite 代码路径已删除。`session-persistence-sqlite` 不再存在；`session-persistence-jsonl` 承担全部持久化职责。zstd 后端拥有拼接多帧容器，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。版本只有一道拒收闸：单一 `SESSION_FORMAT_VERSION = 0`，任何 ≠0 的版本抛 `SessionFormatUnsupportedError`（`packages/session/session-persistence-jsonl/src/format.ts:305-312` 的 `refuseForeignFormatVersion`），没有迁移框架，与 [`01-session-event-map.md`](./01-session-event-map.md#持久化与格式迁移) 的表述一致。
 
 > **ToolCallId 重命名**：上游 #2731 将 `CallId` 统一重命名为 `ToolCallId`（`llm`、`session` 及相关包）。事件字段和类型名已更新，不影响语义。
 
@@ -48,8 +48,8 @@ fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条�
 
 上游 #2774 和 #2742 将 session projection 从可选机制变为强制要求：
 
-- 每个 projection 定义必须实现 `init(header: SessionHeader)` 方法（接收 session 的不可变元数据），不再允许无参 `init()`
-- 视图发布使用 `Object.is` 比较：两次 fold 结果若引用相同则跳过发布，避免无效 UI 更新
+- 每个 projection 定义必须实现 `init(header: SessionHeader, inheritedEventCount: SessionLogOffset)` 方法（`packages/session/session-projection/src/index.ts:62,143`；`header` 仍是 session 的不可变元数据），不再允许无参 `init()`。`inheritedEventCount` 决定 fork/resume 时投影从哪条 seq 起算自有事件（与 `ownEvents()` 的种子前缀切分一致）
+- 视图发布使用 `Object.is` 比较：两次 fold 结果若引用相同则跳过发布，避免无效 UI 更新（`packages/session/session-projection/src/index.ts:66,78,96,186`）
 - `projection` 层现在位于 `session` 与 `session-persistence` 之间，作为 session 状态的规范投影源
 
 ## 每个 agent 的 scope chain

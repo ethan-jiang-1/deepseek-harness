@@ -12,18 +12,18 @@
 
 内置（构造时，与选哪个 loop 无关）：
 
-- `harness:identity`，`order: -100`（可用 config 关掉）
-- `deployment:persona`，`PERSONA_ORDER = 0`，文本来自 config.persona
+- `harness:identity`，`SECTION_ORDERS.HARNESS_IDENTITY = -1000`（可用 config 关掉，注册在 `packages/core/system-prompt/src/index.ts:410-412`）
+- `deployment:persona`，`SECTION_ORDERS.DEPLOYMENT_PERSONA = 0`（`packages/core/system-prompt/src/index.ts:125,417`），文本来自 config.persona
 
-工具包自己登记 `tool:bash` 这类跨调用指导，约定 100–199。其它负 order 也渲染在 persona 之前，所以**更负 = 更靠前 = 更应该稳定**。
+工具包自己登记 `tool:bash` 这类跨调用指导，主体约定 1000–2900：`SECTION_ORDERS` 里 `TOOL_BASH` 1000、`TOOL_PWSH` 1010、…、`TOOL_REPORT` 2900，另有 `TOOLS_SDK` 5000、`STRUCTURED_OUTPUT` 9900（`packages/core/system-prompt/src/index.ts:122-152`）；`tool:bash` 实际经 `getSectionOrder('TOOL_BASH')` 注册（`packages/shell/tool-bash/src/index.ts:235-239`）。其它负 order 也渲染在 persona 之前，所以**更负 = 更靠前 = 更应该稳定**。
 
 ## 为什么前缀要稳
 
 提供方 KV cache 按请求前缀匹配。每步都变的东西（时钟、随机提示）若插到 identity 前面，等于每步作废缓存。约定：
 
-- `-100` 附近：产品身份，几乎不变。
+- `-1000` 附近：产品身份，几乎不变。
 - `0`：部署 persona，随 profile 变，不随每一步变。
-- `100–199`：工具指导，随 **restrict / 本 agent 可见工具集** 变——换工具集本来就会换前缀。
+- `1000–2900`（另有 `TOOLS_SDK` 5000、`STRUCTURED_OUTPUT` 9900）：工具指导，随 **restrict / 本 agent 可见工具集** 变——换工具集本来就会换前缀。
 - 更大的正数：易变动态上下文。`systemPrompt.context()`（如 `approval:policy` order 115、`sandbox:policy`）**不进 system 前缀**。loop 的 `RuntimeContextProjection` 把 `joinContextSections` 收成 `user/message` 快照，拼进下一次获准 enter；政策切换因此不打乱 KV 前缀。这不是 `agent.inject()`。
 
 `config.toolOrder` 排 schema 名字；未列出的走保留名 `TOOL_ORDER_REST`。provider 返回这个保留名会让 assembly 失败。

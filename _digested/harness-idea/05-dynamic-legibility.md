@@ -6,7 +6,7 @@
 
 ## 查询面一：`dsh --dump-config` 输出实际运行的树
 
-静态 import 图只说明「可能加载什么」；Profile、Bundle、Patch、realm 与条件表达式共同决定实际拓扑。`dsh --dump-config` 把 boot 会用到的组合按 `applyEntryPatches` 打印出来，且与 boot 共用同一算法，不另写一份会漂移的实现（官方落点：`docs/architecture.md:29` 与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
+静态 import 图只说明「可能加载什么」；Profile、Bundle、Patch、realm 与条件表达式共同决定实际拓扑。`dsh --dump-config` 把 boot 会用到的组合按 `applyEntryPatches` 打印出来，且与 boot 共用同一算法，不另写一份会漂移的实现（官方落点：`docs/architecture.md:34` 与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
 
 对读者来说，这是**部署时组合的运行时答案**：不知道哪个 provider 生效，先 dump；问题报告缺最终配置树，常常连复现对象都没描述完整。
 
@@ -25,6 +25,10 @@
 - `temporary`：`cordis_mount` 挂载的临时插件子集。
 
 它服务的 API 目录不是手写表，而是由源码生成、`verify-cordis-api` freshness-gated 的 catalog，运行时再与 live runtime 求交集。**读者不是只能读文档，还能问系统「现在有什么、签名是什么」。**
+
+## 查询面四：Session 读意图 API
+
+会话日志的读取同样有显式定价：rc.1 起 `session.events` 数组读取退役，读操作按成本拆开——`seq` 以 O(1) 读当前事件数，`eventAt(seq)` 以 O(1) 读单个事件，`snapshotEvents(from, to)` 显式物化冻结数组，全量快照缓存到下次 append。事件 seq 与日志 offset 也分成两个品牌类型（`SessionSeq` / `SessionLogOffset`，commit `27bf1039`）：一个指已存在的事件，一个指日志间隙或读取位置，混用会被编译器拒绝（[`2026-08-21-session-log-read-intent`](../../.agents/notes/implemented/architecture/2026-08-21-session-log-read-intent.md)）。
 
 ## 试验面：`cordis_mount` / `cordis_unmount`
 
@@ -65,13 +69,13 @@
 
 ## 结论
 
-静态可读性（[`02`](./02-legibility.md)）解决「知道有什么」；动态可读性解决「这次运行是什么」和「我的假设成不成立」。dump 问组合，生成目录问源码合同，`cordis_inspect` 问活运行时，`cordis_mount` 做最小试验。四者合起来，coding agent 就有了一个不需要资深同事在场的问答回路。
+静态可读性（[`02`](./02-legibility.md)）解决「知道有什么」；动态可读性解决「这次运行是什么」和「我的假设成不成立」。dump 问组合，生成目录问源码合同，`cordis_inspect` 问活运行时，读意图 API 问日志，`cordis_mount` 做最小试验。五者合起来，coding agent 就有了一个不需要资深同事在场的问答回路。
 
 `[推断]` 一个可执行的阅读路径是：先看 `dsh --dump-config` 输出的配置树，再追踪 `ctx.provide` / `inject`、Context realm 与 Fiber effect，最后沿 Session event 到 `deriveMessages()` 检查模型实际看到什么。落点分别在 [`docs/architecture.md`](../../docs/architecture.md)、[`docs/cordis-api/context.md`](../../docs/cordis-api/context.md)、[`docs/cordis-api/fiber.md`](../../docs/cordis-api/fiber.md)、[`docs/subsystems/session.md`](../../docs/subsystems/session.md)。
 
 ## 证据入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)（第 96 行；model-visible ⟺ logged）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 107 行；model-visible ⟺ logged）
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) / [`docs/tool-catalog.md`](../../docs/tool-catalog.md) / [`docs/persistence-catalog.md`](../../docs/persistence-catalog.md)（生成目录实例）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件索引）
 - [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17、23、27 行；inspect / mount / unmount 的合同与边界）

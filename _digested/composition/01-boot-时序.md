@@ -25,7 +25,7 @@
 
 原因：Loader 的树写回会把已经组合好的行烤进这个文件。下次再当根 include，bundle 的 `insert` 会插第二遍。dump 也锚定同一份空文件，boot 和 dump 才共用同一个 base。
 
-`healProfilesModuleFallback` 在加载之前：把安装闭包 BFS（含 peer）链到 `$DSH_HOME/profiles/node_modules`。profile 目录里的裸插件名才能解析。bundle 解析：**安装锚点优先**，再到 profile 目录。列出的包没有 `dsh.bundle` 声明 → fail loud，不会默默跳过。
+`healProfilesModuleFallback` 在 `loadProfile` 之后、插件模块加载之前执行（`apps/cli/src/profile-boot.ts:160-161`）：把安装闭包 BFS（含 peer）链到 `$DSH_HOME/profiles/node_modules`。profile 目录里的裸插件名才能解析。bundle 解析：**安装锚点优先**，再到 profile 目录。列出的包没有 `dsh.bundle` 声明 → fail loud，不会默默跳过。
 
 ## 层列表：用户层之上还有 launcher 派生
 

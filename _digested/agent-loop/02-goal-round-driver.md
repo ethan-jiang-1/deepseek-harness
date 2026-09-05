@@ -20,7 +20,7 @@ goal round N
   ├─ 1. agent 回到 idle（上一轮结束）
   │      │
   │      ├─ 触发 agent/status({ status: 'idle' }) 事件
-  │      │   （agent-loop/src/agent.ts:107-110, setPhase 发出）
+  │      │   （agent-loop/src/agent.ts:108-110 get status；:113-120 setPhase 定义，:118 emit）
   │      │
   │      └─ goal-round-driver 监听器收到通知
   │         （goal-round-driver/src/index.ts:259-277）
@@ -68,7 +68,7 @@ goal round N
   │      │
   │      └─ wakeDriver() → 创建新 activity → kick() 循环启动
   │
-  ├─ 6. turn() 开始新 turn（agent-loop/src/agent.ts:246）
+  ├─ 6. turn() 开始新 turn（agent-loop/src/agent.ts:255）
   │      │
   │      ├─ turn/start 事件写入 session
   │      ├─ preStep('next-turn') → inbox.claim() 取出 round 消息
@@ -104,7 +104,7 @@ goal round N
   │
   ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:295-325）
   │      │
-  │      ├─ completionAuthority() 检查（authority.ts:101-107）
+  │      ├─ completionAuthority() 检查（authority.ts:110-117）
   │      │   ├─ direct human input？→ 允许
   │      │   └─ goal round？→ 检查 isMatchingGoalRound
   │      │      → 当前 turn 中有带 correct goalId/revision/round 的 goal 消息

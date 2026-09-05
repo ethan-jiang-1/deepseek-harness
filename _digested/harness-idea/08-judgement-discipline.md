@@ -2,7 +2,7 @@
 
 ## 问题
 
-本专题主张「关键规则要下沉到可执行层」，但它自己主要是 prose。`_digested/verify.mjs` 只查链接、UTF-8 与 SVG 结构，不查判断真伪。所以本专题需要一套替代纪律，并且要诚实说明它的边界。
+本专题主张「关键规则要下沉到可执行层」，但它自己主要是 prose。`_digested/verify.mjs` 查链接、UTF-8 与 SVG 结构，还读取 [`claims.json`](./claims.json) 核对基线与每个 claim 的证据路径，并用 `git ls-tree` / `git show` 重算六项指标，但不查判断真伪。所以本专题需要一套替代纪律，并且要诚实说明它的边界。
 
 ## 基线
 
@@ -95,7 +95,7 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文与一个事实一个家）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期与格式）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；空 invariant 的“显式结论”纪律）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 rc.1 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」；曾有过的「空 invariant 是显式结论」纪律已作废，被 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md) 取代）
 - [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；元验证与 snapshot 政策）
 
 ## 本专题内部产物（非 DSH 证据）

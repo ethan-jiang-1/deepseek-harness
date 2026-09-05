@@ -4,9 +4,9 @@
 
 CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 session 事件模型，不是四套 agent 实现。不同入口可以启动不同进程和不同插件组合；每棵组合后的树都通过 `ctx.agents` 驱动 agent，并从 `session/event` 渲染或投影。
 
-## 五个入口，一套运行时模型
+## 四个入口，一套运行时模型
 
-![五个入口复用同一套运行时模型](./figures/shared-runtime-spine.svg)
+![四个入口复用同一套运行时模型](./figures/shared-runtime-spine.svg)
 
 | 入口 | 它是什么 | 典型组合 |
 |------|----------|----------|
@@ -17,7 +17,7 @@ CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 ses
 
 > **重要变化**：从 `0.1.2-alpha.1` 起，sdk 和 acp 不再是独立 app 二进制，而是 `dsh --profile` 下的 launcher profile。所有入口统一走 bundle 层叠。详见 [`../runtime-profiles/00-map.md`](../runtime-profiles/00-map.md)。
 
-加 UI 或编辑器集成：驱动 `ctx.agents`，从 `session/event` 渲染。加 Web Chat 节点：注册 `ConversationNodeDefinition` + keyed renderer。加 Web 设置卡：Host `installSettingsSection` + 浏览器 `settings.plugin.item`，见 [`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md)。不要在入口里再实现一套 loop。
+加 UI 或编辑器集成：驱动 `ctx.agents`，从 `session/event` 渲染。加 Web Chat 节点：注册 `ConversationNodeDefinition` + keyed renderer。加 Web 设置卡：Host `ctx.settings.installSection()` + 浏览器 `settings.plugin.item`，见 [`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md)。不要在入口里再实现一套 loop。
 
 源码启动（`pnpm dsh`）把 workspace 包映射到 TypeScript 源；它碰到的模块必须保持 ESM。built 路径则是普通 Node 解析。两条启动面不要混着假设。
 

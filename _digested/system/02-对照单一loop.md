@@ -25,4 +25,4 @@
 2. **waterfall 用 `next()` 委托。** 只观察或包装的 middleware 必须调用它；拥有 deny、retry、路由或替换结果的监听器可以直接返回并短路。
 3. **产品能力不集中在 loop。** 普通功能注册到所属服务、注册表或事件；贡献由 `ctx.effect` 绑定生命周期，插件卸载时一并撤销。
 
-读完对照，具体机制仍回各专题：runtime 原语、composition 叠层、session 信封、seam 三角色、模型可见面、五个入口。
+读完对照，具体机制仍回各专题：runtime 原语、composition 叠层、session 信封、seam 三角色、模型可见面、四个入口。

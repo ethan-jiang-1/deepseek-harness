@@ -12,7 +12,7 @@
 
 > **rc.1 事件 seq 与日志 offset 分型**：上游 `27bf1039`（`refactor(session)!`）把同一 `number` 的两种含义拆成品牌类型——`SessionSeq` 命名一条已存在的事件，`SessionLogOffset` 命名空隙/前缀长/读切。信封 `seq`、surface 替换端点与 provenance 用 `SessionSeq`；`Session.seq`、`firstLiveSeq` 与正文读偏移用 `SessionLogOffset`（[`2026-08-31-session-sequence-and-log-offset-brands`](../../.agents/notes/implemented/architecture/2026-08-31-session-sequence-and-log-offset-brands.md)）。v0 JSONL header 与线上数值不变；`seedLength` 从逻辑 header 移除，改为 `isSeeded` + 正文侧 `inheritedEventCount`。digest 里「seq 连续」指事件身份，与日志物理偏移无关。
 
-核心地图（插件用 `declare module '@deepseek-ai/dsh-session/types'` 往里加键）里，loop 自己写的是：
+核心地图（插件用 `declare module '@deepseek-ai/dsh-session/types'` 往里加键）里，loop 自己写的是（标注了写者的两行除外）：
 
 | type | 进 `deriveMessages`？ |
 |------|------------------------|
@@ -25,8 +25,8 @@
 | `tool/result` | 是（surface） |
 | `request/header` | 否（单独重建 config、system 与 tools） |
 | `request/context` | 否（只记录 provider、model 与 context window） |
-| `todo/write` | 否（log-only UI） |
-| `session/end-seed` | 否（种子与 live 的分界） |
+| `todo/write` | 否（log-only UI；非 loop 写——`packages/todo/tool-todo/src/index.ts:210`） |
+| `session/end-seed` | 否（种子与 live 的分界；非 loop 写——Session 构造器是唯一合法写者，`packages/core/session/src/types.ts:351-353`） |
 
 `SurfaceEventType` 只有三种：`user/message`、`assistant/message`、`tool/result`。只有它们可以带 `surfaceOp` / `sourceEventSeqs`。编译器在 `Session.append` 调用点强制：log-only 事件不许带 surface 字段。
 
@@ -49,9 +49,9 @@
 
 ## 持久化与格式迁移
 
-当前持久化使用 JSONL-only（上游 #2698、#3339）。`session-persistence-jsonl` 使用 zstd 单帧压缩，包含格式版本化机制（`session-format-01` 分支）。`session-persistence-sqlite` 已删除。
+当前持久化使用 JSONL-only（上游 #2698、#3339）。`session-persistence-jsonl` 使用 zstd 拼接多帧容器压缩，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。`session-persistence-sqlite` 已删除。
 
-`formatRegistry` 维护 one-to-one 格式迁移函数：每个版本只需要知道如何从上一个版本迁移，不跳跃。`SESSION_FORMAT_VERSION` 在 header 中记录，加载时检查。
+没有 `formatRegistry` 这样的迁移框架：`SESSION_FORMAT_VERSION` 在 header 中记录，加载时只做拒收式检查——任何 ≠0 的版本抛 `SessionFormatUnsupportedError`（`packages/session/session-persistence-jsonl/src/format.ts:305-312` 的 `refuseForeignFormatVersion`），与下节「写者决定 bump、只拒无迁移、高低版本都拒」一致。
 
 ## `SESSION_FORMAT_VERSION = 0`
 
@@ -60,6 +60,8 @@
 一个单调整数，没有 major/minor。**写者决定 bump**，不是「新读者能吞什么」。只有旧运行时无法对**新** log 做语义正确的读时才 bump。「解析不报错」不够：静默跳过会塑造重建的内容，就是错读。够格的是结构变化：header 形状、信封、核心事件语义、surface 机制（`SurfaceEventType` 集合、`SurfaceOp` 变体）。**加一个普通事件类型不 bump**——那是 `ignorable` 的工作。拿不准就 bump。
 
 当前后端只加载 `SESSION_FORMAT_VERSION = 0`。版本更高时拒绝并说明该 log 由更新的 harness 写入；版本更低时同样拒绝，因为预发布格式没有迁移路径。原始 log 保留在磁盘上供检查。
+
+带 `seedLength` 的旧 header 在加载时直接抛 `'session header has invalid field "seedLength"'`（`packages/core/session/src/index.ts:99-100`）——旧格式拒载是 rc.1 明确行为。
 
 ## 完整记录不等于完整发送
 
