@@ -95,3 +95,17 @@ context / max output 取自 `/models` 的 `context_length` 与 `top_provider.max
 5. 移除两 GLM 条目的 `off` 档（强制思考模型，见上节）：`*.bak-20260831-115735-before-remove-glm53-off`
 
 校验：`DSH_HOME=~/.dsh dsh --profile web --dump-config` 退出 0，组合结果含预期模型 id。当日全程有一个 `dsh web` 实例在跑（0.1.1-rc.2），补丁 watcher 热加载；剔除时若某会话正选着被剔除的模型，该会话需在选择器里重选。
+
+## 2026-09-07 增补：模型补 vendor 前缀 name（仅展示）＋ 默认模型迁出
+
+同一天接入 teamorouter route（见 [TEAMOROUTER_research.md](./TEAMOROUTER_research.md)）时，为消除「多家 vendor 同挂 DeepSeek/GLM」的视觉歧义，给 openrouter 这 5 个模型条目补了 `name`（此前无 name、UI 按 id 显示）：
+
+| id | name |
+|---|---|
+| `deepseek/deepseek-v4-pro-0813` | OpenRouter DeepSeek V4 Pro |
+| `deepseek/deepseek-v4-flash-0731` | OpenRouter DeepSeek V4 Flash |
+| `deepseek/deepseek-v4-flash-vision-exp` | OpenRouter DeepSeek V4 Flash Vision |
+| `z-ai/glm-5.3` | OpenRouter GLM 5.3 |
+| `z-ai/glm-5.3-flash` | OpenRouter GLM 5.3 Flash |
+
+机制说明：DSH 选中后的当前模型标签只显示 `model.name`（不带 vendor 徽标），选前靠 provider `displayName` 分组标题。要「选完也认出 vendor」，办法是 vendor 前缀进 `name`（id 不变）。settings.yaml 的 `agent-default-model` 已由用户改为 `teamorouter / deepseek-v4-pro / high`（原 openrouter 默认不再生效）。改动在补丁层 + settings 镜像，dump-config 校验通过。

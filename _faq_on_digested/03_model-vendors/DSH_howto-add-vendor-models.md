@@ -48,3 +48,9 @@ openrouter route 在 `~/.dsh/profiles/web/cordis.patch.yml`（settings.yaml 为�
 ## 五、OpenRouter 剩余待验证
 
 通过 DSH 的工具往返、replay/历史恢复、流式下 effort 行为、context/maxTokens 真实边界、图片输入路径——均未实测，不宣称。验证后更新 [OPENROUTER_research.md](./OPENROUTER_research.md)。
+
+## 六、2026-09-07 现状更新
+
+- **新 route `teamorouter`**：`api: openai-completions` + `baseURL https://api.teamorouter.com/v1` + `apiKeyEnv: TEAMOROUTER_API_KEY`，4 个付费模型 `deepseek-v4-pro`/`deepseek-v4-flash`/`glm-5.3`/`glm-5.3-flash`，六档恒等 + `off:` 空档，`contextWindow`/`maxTokens` 为官方口径占位值。TeamoRouter 对 GLM-5.3 **非强制思考**（与 Z.ai 直连/OpenRouter 不同），故保留 `off` 是安全的。全档实测、凭据/环境变量与备份记录见 [TEAMOROUTER_research.md](./TEAMOROUTER_research.md)。
+- **命名约定（多 vendor 同挂 DeepSeek/GLM）**：DSH 选中后的模型标签只显示 `model.name`（无 vendor 徽标）。凡是可能与其他 vendor 同 id 的模型，一律在 `name` 前加 vendor 品牌前缀（`OpenRouter …`/`TeamoRouter …`/`Z.ai …`），id 不变；provider `displayName` 只负责选择器分组标题。当前 openrouter 5 条、zai 2 条、teamorouter 4 条均已按此命名。
+- **默认模型**：`agent-default-model = teamorouter / deepseek-v4-pro / high`（settings.yaml）。
