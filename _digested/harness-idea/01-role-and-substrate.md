@@ -85,7 +85,7 @@ harness 的职责 = 让「正确参与」不依赖参与者的背景知识。做
 ## 证据入口
 
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；因果原文）
-- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md)（第 9 行；框架层被搬进仓库的真实理由）
+- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md)（第 9 行；框架层被搬进仓库的真实理由）
 - [`docs/architecture.md`](../../docs/architecture.md)（第 7、66、123 行；推荐用 agent 探索、事件域、扩展表）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md)（五条原语）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）

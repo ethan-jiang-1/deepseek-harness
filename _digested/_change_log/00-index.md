@@ -18,6 +18,7 @@ _change_log/
 ├── 0004-0.1.1-rc.2-to-0.1.2-alpha.3.md   # 第四次合入（最大，1155 commits）
 ├── 0004-plan-digest-revision.md          # 第四次同步的消化材料修订计划
 ├── 0005-0.1.2-alpha.3-to-0.1.2-rc.1.md   # 第五次合入（305 commits）
+├── 0006-0.1.2-rc.1-to-0.1.5-rc.1.md      # 第六次合入（1512 commits，含 5 个发布 tag）
 ```
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。

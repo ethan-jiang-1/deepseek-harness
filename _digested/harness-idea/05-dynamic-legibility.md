@@ -28,7 +28,7 @@
 
 ## 查询面四：Session 读意图 API
 
-会话日志的读取同样有显式定价：rc.1 起 `session.events` 数组读取退役，读操作按成本拆开——`seq` 以 O(1) 读当前事件数，`eventAt(seq)` 以 O(1) 读单个事件，`snapshotEvents(from, to)` 显式物化冻结数组，全量快照缓存到下次 append。事件 seq 与日志 offset 也分成两个品牌类型（`SessionSeq` / `SessionLogOffset`，commit `27bf1039`）：一个指已存在的事件，一个指日志间隙或读取位置，混用会被编译器拒绝（[`2026-08-21-session-log-read-intent`](../../.agents/notes/implemented/architecture/2026-08-21-session-log-read-intent.md)）。
+会话日志的读取同样有显式定价：rc.1 起 `session.events` 数组读取退役，读操作按成本拆开——`seq` 以 O(1) 读当前事件数，`eventAt(seq)` 以 O(1) 读单个事件，`snapshotEvents(from, to)` 显式物化冻结数组，全量快照缓存到下次 append。事件 seq 与日志 offset 也分成两个品牌类型（`SessionSeq` / `SessionLogOffset`，commit `27bf1039`）：一个指已存在的事件，一个指日志间隙或读取位置，混用会被编译器拒绝（[`2026-08-21-session-log-read-intent`](../../.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md)）。
 
 ## 试验面：`cordis_mount` / `cordis_unmount`
 

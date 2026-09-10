@@ -41,7 +41,7 @@ TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最�
 
 dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的部分，用了两种策略：
 
-1. **vendor 进树并本地拥有**：Cordis 被 vendor 进 `vendor/`，带 upstream SHA、本地修改日志和 sync 流程。`[原文]` 注意 [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md) 的决策理由是 **RC 框架 internals 的正确性、可 pin、可修**，不是「Cordis 太 niche、agent 不会」。把动机说成「分布外所以搬进来」是事后解释；更准确的效果是：搬进来之后，agent 不需要依赖模糊的外部知识，框架层可审计、可修。
+1. **vendor 进树并本地拥有**：Cordis 被 vendor 进 `vendor/`，带 upstream SHA、本地修改日志和 sync 流程。`[原文]` 注意 [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md) 的决策理由是 **RC 框架 internals 的正确性、可 pin、可修**，不是「Cordis 太 niche、agent 不会」。把动机说成「分布外所以搬进来」是事后解释；更准确的效果是：搬进来之后，agent 不需要依赖模糊的外部知识，框架层可审计、可修。
 
 > DeepSeek Harness is built on the Cordis framework. Cordis core was at 4.0.0-rc.6 (a release candidate) when this repo started; the harness depends on framework internals (fiber lifecycle, effect disposal, waterfall dispatch) whose exact behavior matters to the agent loop's correctness guarantees.
 >
@@ -69,7 +69,7 @@ dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的�
 
 - [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md)（第 9 行；生态熟悉度的直接证据）
 - [`2026-06-17-ts-build-config`](../../.agents/notes/implemented/process/2026-06-17-ts-build-config.md)（第 11 行；技术决定但理由不是 agent 友好：证据边界）
-- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/implemented/process/2026-06-11-vendor-cordis-as-source.md)（第 9 行；vendor 的真实理由）
+- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md)（第 9 行；vendor 的真实理由）
 - [`../../vendor/README.md`](../../vendor/README.md)（manifest 与本地修改日志）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md)（五条原语的语义落点）
 - [`docs/architecture.md`](../../docs/architecture.md)（插件树与组合层）
