@@ -32,7 +32,7 @@
 
 subagent 是同一模式的另一个例子：一个接口后面，可以是进程内 child agent，也可以是经 ACP 或 JSON-RPC 驱动的独立进程。产品 Codex / Claude Code provider 不在 `dsh-base` 里默认安装；它们是独立 Profile Bundle，装进 profile 后各自注册一个 dormant 默认 provider，preset 的 tool 行再用 `backgroundMode` 选择一次性 Job 还是可续 child。见 [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md)。
 
-> **subagent model routing**：上游 #2868 给 `SubagentProvider` 增加可选 `agentRouteDefaults`（`packages/subagent/subagent/src/types.ts:361`），dsh-sdk provider 据此声明配置化的 route 默认值（`deepseek-official` / `deepseek-v4-flash`，`packages/subagent/subagent-dsh-sdk/src/index.ts:136`）。调用未指名 provider/model 时落到这组 provider 默认，不是「继承父 agent」；机制是逐调用 `agentOptions` 白名单（provider / model / reasoningEffort / maxTokens，`packages/subagent/subagent/src/child-agent.ts:98`）加 route preflight（`packages/subagent/tool-subagent/src/model-selection.ts:176`），没有「SDK 内置路由」这个对应物。`subagent-dsh-sdk` 无 `prepareContinuable`，不走 `send_message` / continuable 路径。详见 [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md)。
+> **subagent model routing**：`SubagentProvider` 有可选 `agentRouteDefaults`（`packages/subagent/subagent/src/types.ts:361`），dsh-sdk provider 据此声明配置化的 route 默认值（`deepseek-official` / `deepseek-v4-flash`，`packages/subagent/subagent-dsh-sdk/src/index.ts:136`）。调用未指名 provider/model 时落到这组 provider 默认，不是「继承父 agent」；机制是逐调用 `agentOptions` 白名单（provider / model / reasoningEffort / maxTokens，`packages/subagent/subagent/src/child-agent.ts:98`）加 route preflight（`packages/subagent/tool-subagent/src/model-selection.ts:176`），没有「SDK 内置路由」这个对应物。`subagent-dsh-sdk` 无 `prepareContinuable`，不走 `send_message` / continuable 路径。详见 [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md)。
 
 ## 不是 seam 的调度：schedule（agent 作用域持久提醒）
 
@@ -48,7 +48,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 
 ## 非三角色 seam：API Remote 架构
 
-上游 #3073 等系列 PR 引入了一个**不是传统三角色**的新模式：**API Remote 控制器**。`packages/api/remotes/` + `packages/typert/` 替代了 `packages/host/apiproxy/` 中的 unary RPC 路由。
+**API Remote 控制器**是一个**不是传统三角色**的新模式：`packages/api/remotes/` + `packages/typert/` 提供 Remote 控制器架构，`packages/host/apiproxy/` 已整体删除。
 
 | 角色 | 它是什么 | 典型落点 |
 |------|----------|----------|
@@ -58,7 +58,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 
 Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定义。它纯粹是 BFF 层的**通信协议模式**：Host 提供一组 Remote 控制器、Client 消费生成的 stub，双方通过 Typert 的 schema 保持类型安全。
 
-迁移路径：settings、credentials、subagent control、agent-presets、workspace-controller、session-controller 已从 apiproxy 迁移到 Remote；`packages/host/apiproxy/` 包已整体删除。directory-picker 不是 Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端，[`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/archived/architecture/2026-07-28-directory-picker-capability-seam.md)）。
+settings、credentials、subagent control、agent-presets、workspace-controller、session-controller 现由 Remote 控制器提供；`packages/host/apiproxy/` 包已整体删除。directory-picker 不是 Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端，[`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/archived/architecture/2026-07-28-directory-picker-capability-seam.md)）。
 
 教科书路径：顺着 `packages/shell/` 走完 Definition → provider → `dsh-tool-bash`。组级 README 拥有「这个组有哪些包、对应哪个 `ctx` key」——本专题不手抄完整包表，完整图在生成的 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
@@ -88,5 +88,6 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 | [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md) | resolve → confine → spawn；run 的失败合同；持久 bash 的 prompt 就绪 |
 | [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md) | `backgroundMode` one-shot / continuable；产品 provider 的 host 平面 opt-in |
 | [`04-新增seam与Remote.md`](./04-新增seam与Remote.md) | Schedule、Webhook 新 seam；API Remote 非三角色通信模式 |
+| [`05-进程遏制与宿主边界.md`](./05-进程遏制与宿主边界.md) | 非 seam 的宿主边界：子进程 OS 级所有权、native 层、出站代理策略 |
 
 模型可见的 tool 管道在 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。

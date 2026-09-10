@@ -35,7 +35,7 @@ dsh --profile acp
   → runProfile → composeProfile → boot()
   → acp-app 组合 apply
     → mount dsh-base → ACP transport 等
-  → ACP 插件经 @agentclientprotocol/sdk 接线 stdio：createAcpAgentApp + ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin))（packages/acp/acp/src/index.ts:21-47 导入、:372-377 接线）
+  → ACP 插件经 @agentclientprotocol/sdk 接线 stdio：createAcpAgentApp + ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin))（packages/acp/acp/src/index.ts:21-47 导入、:373-377 接线）
   → 等待客户端连接
   → initialize: 返回 protocolVersion、agentCapabilities（图像能力取决于精确 route）
   → session/new: 创建新鲜 agent（绝对 cwd）
@@ -76,5 +76,5 @@ dsh --profile acp
 | `packages/acp/acp/src/content.ts` | 内容准入（`admitAcpPrompt`、`assistantBlockToAcp`） |
 | `packages/acp/acp/src/codec.ts` | turn 结局到 ACP stopReason 编解码 |
 | `packages/bundle/acp-app/cordis.patch.yml` | ACP 应用的 bundle 组合 |
-| `packages/test-support/acp-snapshot/` | ACP 快照测试工具 |
+| `packages/test-support/session-snapshot/` | ACP 快照测试工具 |
 | `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证详细对照 |

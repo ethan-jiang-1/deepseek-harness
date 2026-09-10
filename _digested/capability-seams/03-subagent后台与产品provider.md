@@ -17,7 +17,7 @@ Consumer 仍然只 inject `ctx.subagents`。后台生命周期和「这个产品
 
 `enableRunInBackground: false` 隐藏参数，并拒绝强制后台调用。取消不能把产品 provider 的启动/回滚 `AggregateError` 改写成干净的 `killed` Job。
 
-shipped preset 里，主 `subagent` 行（`provider: spawn`）与 `subagent_fork` 行都用 `backgroundMode: continuable`（`packages/preset/agent-presets/presets/cordis/agent.cordis.yml:175`，alpha.3 起即如此）；Codex / Claude Code 的 tool 行用 `one-shot`，并且默认 `disabled: true`。
+shipped preset 里，主 `subagent` 行（`provider: spawn`）与 `subagent_fork` 行都用 `backgroundMode: continuable`（`packages/preset/agent-presets/presets/cordis/agent.cordis.yml:175`）；Codex / Claude Code 的 tool 行用 `one-shot`，并且默认 `disabled: true`。
 
 ## 相邻 Agent 消息与 steer
 
@@ -25,7 +25,7 @@ shipped preset 里，主 `subagent` 行（`provider: spawn`）与 `subagent_fork
 
 标准 `send_message` 工具由 `packages/subagent/tool-subagent-control/` 注册，并经 `packages/subagent/subagent/src/internal.ts` 的 `markAdjacentAgentSendMessageTool` 以 symbol 打上标准工具标记（`packages/subagent/tool-subagent-control/src/index.ts:28`）；同文件还提供 `HostPromptDeliverer` 与 `queueHostSubagentPrompt` / `steerHostSubagentPrompt`，host 侧协议消息经 symbol-keyed 方法按 `SubagentDelivery`（`steer` / `queue`）投递成 child turn，不扩大公开 Definition。
 
-`tool-subagent-report` 包整体删除（merge b91e7ce3）：后台子代理跑完后的回传改由 runtime settle notice 承担（`packages/subagent/tool-subagent/src/index.ts:386`："When that run settles, the runtime sends the parent a notice containing its outcome and any final assistant message"），child 不再需要 child-only `report` tool。随之消失的还有 fork continuable 的 KV 前缀代价机制：`packages/bundle/base/cordis.patch.yml` 的 `tool-subagent-fork` 注释由「continuable 引入 child-only `report` tool + prompt section 使继承前缀失效」改为「preset 层可选 continuable，无需 child-only section」。
+后台子代理跑完后的回传由 runtime settle notice 承担（`packages/subagent/tool-subagent/src/index.ts:386`："When that run settles, the runtime sends the parent a notice containing its outcome and any final assistant message"），child 不需要 child-only `report` tool。`packages/bundle/base/cordis.patch.yml` 的 `tool-subagent-fork` 注释说明 preset 层可选 continuable，无需 child-only section。
 
 ## continuable 编排与 child catalog
 
@@ -44,6 +44,6 @@ continuable 编排住在 `packages/subagent/subagent/src/continuation.ts`（`Sub
 
 ## Subagent model routing 通过 DSH SDK
 
-上游 #2868 给 `SubagentProvider` 增加可选 `agentRouteDefaults`（`packages/subagent/subagent/src/types.ts:361`）：provider 据此声明配置化的 route 默认值，`subagent-dsh-sdk` 即其配置的 `deepseek-official` / `deepseek-v4-flash`（`packages/subagent/subagent-dsh-sdk/src/index.ts:136`）。调用未指名 provider/model 时落到这组 provider 默认，不是「继承父 agent」；解析走逐调用 `agentOptions` 白名单（provider / model / reasoningEffort / maxTokens，`packages/subagent/subagent/src/child-agent.ts:98`）加 route preflight（`packages/subagent/tool-subagent/src/model-selection.ts:176`），没有「SDK 内置路由」这个对应物。`subagent-dsh-sdk` 无 `prepareContinuable`，它的 child 不进 `send_message` / continuable 路径。
+`SubagentProvider` 有可选 `agentRouteDefaults`（`packages/subagent/subagent/src/types.ts:361`）：provider 据此声明配置化的 route 默认值，`subagent-dsh-sdk` 即其配置的 `deepseek-official` / `deepseek-v4-flash`（`packages/subagent/subagent-dsh-sdk/src/index.ts:136`）。调用未指名 provider/model 时落到这组 provider 默认，不是「继承父 agent」；解析走逐调用 `agentOptions` 白名单（provider / model / reasoningEffort / maxTokens，`packages/subagent/subagent/src/child-agent.ts:98`）加 route preflight（`packages/subagent/tool-subagent/src/model-selection.ts:176`），没有「SDK 内置路由」这个对应物。`subagent-dsh-sdk` 无 `prepareContinuable`，它的 child 不进 `send_message` / continuable 路径。
 
 `subagent-dsh-sdk` provider 在 `packages/subagent/subagent-dsh-sdk/` 中实现，`packages/subagent/tool-subagent/` 的 `backgroundMode` 策略不受影响。

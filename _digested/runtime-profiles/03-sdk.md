@@ -23,7 +23,7 @@ sdk 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-sdk-app`）�
 | `session-title-llm` `disabled: true` | stdout 只归 JSON-RPC 协议，标题生成关掉 |
 | `insert` | `sdk-app-startup` + `sdk-jsonrpc-server`（协议处理器，bundle `inject: [sdkAppStartup, loader]`） |
 
-**sdk 的工具面不收窄**：`dsh-sdk-app` 没有禁用任何 base 工具行——bash / sandbox / web / goal / plan / skill / str-replace-editor 全部从 `dsh-base` 继承；base 默认暴露 `web_fetch`（#3382，`packages/bundle/base/cordis.patch.yml:461-465`）后，sdk 工具面随之多出 `web_fetch`（`dsh-sdk-app` 无反向覆盖）。真正把工具面收窄到「persistent bash + str_replace_editor」的是 [`sdk-minimal`](./04-sdk-minimal.md)，它是唯一不叠 base 的 profile。
+**sdk 的工具面不收窄**：`dsh-sdk-app` 没有禁用任何 base 工具行——bash / sandbox / web / goal / plan / skill 全部从 `dsh-base` 继承；base 默认暴露 `web_fetch`（#3382，`packages/bundle/base/cordis.patch.yml:450-454`）后，sdk 工具面随之多出 `web_fetch`（`dsh-sdk-app` 无反向覆盖）。真正把工具面收窄到「persistent bash（win32 为 persistent pwsh）」的是 [`sdk-minimal`](./04-sdk-minimal.md)，它是唯一不叠 base 的 profile。
 
 ## 进程模型
 

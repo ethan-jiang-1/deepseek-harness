@@ -6,7 +6,7 @@
 
 ## 基线
 
-全部判断对照 DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`。上游同步后，按 `_change_log/` 复核本专题证据锚点；本专题不使用外部资料作为证据，事实一律以 DSH 官方文件与本基线为准。
+全部判断对照 DeepSeek Harness `dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`。上游同步后，按 `_change_log/` 复核本专题证据锚点；本专题不使用外部资料作为证据，事实一律以 DSH 官方文件与本基线为准。
 
 ## 出处分级
 
@@ -15,7 +15,7 @@
 | 标记 | 含义 | 可信度 | 用法 |
 |------|------|--------|------|
 | `[原文]` | Agent Note / AGENTS.md / 官方文档的直接陈述 | 高 | 可以引用为事实，但「原文说的是什么」与「我们推出的结论」必须分开 |
-| `[源码]` | 从 `a66e4702` 源码或生成物核对过的事实 | 高 | 可作为机制事实 |
+| `[源码]` | 从 `183f08e9c6` 源码或生成物核对过的事实 | 高 | 可作为机制事实 |
 | `[推断]` | 从事实推出的解释或因果 | 中 | 必须能指出让它变假的观察 |
 | `[框架]` | 不依赖 dsh 的通式（paved road、知识外置） | 低 | 只提供结构，压缩使用，不得冒充 dsh 发现 |
 
@@ -95,8 +95,8 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文与一个事实一个家）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期与格式）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 rc.1 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」；曾有过的「空 invariant 是显式结论」纪律已作废，被 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md) 取代）
-- [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；元验证与 snapshot 政策）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；现文是「无独立关系即省略 companion 并在 README 记原因」）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 35 行；元验证与 snapshot 政策）
 
 ## 本专题内部产物（非 DSH 证据）
 

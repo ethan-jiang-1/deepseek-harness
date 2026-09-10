@@ -19,7 +19,7 @@
   <text x="780" y="140" text-anchor="middle" font-size="11" fill="#7c2d12">等下一次获准请求带走</text>
   <rect x="40" y="188" width="880" height="180" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
   <text x="60" y="216" font-size="12" fill="#374151">claim：先抽空 next-step，若 target 是 next-turn 再取队列头一条。pre-step 拿到的就是这批。</text>
-  <text x="60" y="240" font-size="12" fill="#374151">splice 先 append 持久事件，再改内存投影。同步的 session/event 观察者看到的是 splice 前的列表。</text>
+  <text x="60" y="240" font-size="12" fill="#374151">splice append 持久事件；投影注册表在 session/event 驱动里同步折叠，append 返回时投影已是新列表。inserted/discarded 通知随后发出。</text>
   <text x="60" y="264" font-size="12" fill="#374151">idle 时 wakeup 一定开 turn 边界，即使消息随后被清掉。维护 / 已 abort 的驱动把 wake latch 住，收敛后再放。</text>
   <text x="60" y="288" font-size="12" fill="#374151">pre-step reject，或首次 enter 改写成空：仍有 turn/start 与 turn/end，没有 step。拒绝记 blocked；空记 completed。</text>
   <text x="60" y="320" font-size="11" fill="#6b7280">runtime context 快照会拼进 enter 的 messages（跟在 claimed 后面），所以模型看见的「环境」也走同一条获准路径。</text>

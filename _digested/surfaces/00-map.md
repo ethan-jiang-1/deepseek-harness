@@ -50,7 +50,7 @@ CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 ses
 | `packages/acp/` | ACP 自动化服务器 |
 | `packages/interaction/` | 审批、permission、commands、ask-user |
 | `packages/api/` | Remote BFF（`api/remotes`）、Typert RPC 网关（`api/gateway`） |
-| `packages/api/remotes/` | Remote 控制器声明 + client stub（替代 apiproxy RPC） |
+| `packages/api/remotes/` | Remote 控制器声明 + client stub |
 | `packages/typert/` | 类型安全的 Remote 序列化 |
 | [`docs/user/guide/index.md`](../../docs/user/guide/index.md) | Web UI 指南 |
 | [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md) | 扩展 cookbook（含 Chat node、settings 卡片等） |
@@ -62,5 +62,6 @@ CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 ses
 |------|------|
 | [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；host mux 推 `session/event` |
 | [`02-acp与jsonrpc.md`](./02-acp与jsonrpc.md) | ACP 只要 committed 文本；SDK 推 Context 内全部耐久事实 |
+| [`03-客户端资源与侧栏.md`](./03-客户端资源与侧栏.md) | `ctx.resources` 地址协议、dockkit 布局引擎、`ctx.sidebarRight` 与 tab 类型注册 |
 
 dump 与 boot 的层差不在入口，在 [`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)。

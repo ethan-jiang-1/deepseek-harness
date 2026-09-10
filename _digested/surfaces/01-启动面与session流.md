@@ -31,7 +31,7 @@ ACP：`dsh --profile acp`。launcher profile，stdout 留给协议帧。
 
 浏览器半边（`packages/client/`）订阅读这些帧，slots / `ConversationNodeDefinition` 渲染。client **没有**另一份 append-only log。刷新 / 重连从持久化再 hydrate，仍然是同一条 session 的事件。
 
-Host 把每一个已登记的 settings namespace 交给 Web；插件自己登记 Host schema 与浏览器卡片。事件转发白名单集中在 `API_REMOTE_FORWARDED_EVENTS`（`packages/api/remotes/src/remote-events.ts:16`，19 条转发事件），`packages/api/session-controller/src/remote-events.ts` 的同名文件只是 5 个 `api-session/*` 事件的 `TypertRemoteEventSelection` 模块扩充声明，不是白名单。不再有 apiproxy 的自维护暴露面。含图的 Web prompt 走 `attachments.admitEncodedImages` 批量准入（含 canonical base64 校验），再写成带 attachment 引用的 content block。历史分页按 `sourceEventSeqs` 取分组起点，避免大 transcript 上的调用栈溢出。
+Host 把每一个已登记的 settings namespace 交给 Web；插件自己登记 Host schema 与浏览器卡片。事件转发白名单集中在 `API_REMOTE_FORWARDED_EVENTS`（`packages/api/remotes/src/remote-events.ts:16`，19 条转发事件），`packages/api/session-controller/src/remote-events.ts` 的同名文件只是 5 个 `api-session/*` 事件的 `TypertRemoteEventSelection` 模块扩充声明，不是白名单。含图的 Web prompt 走 `attachments.admitEncodedImages` 批量准入（含 canonical base64 校验），再写成带 attachment 引用的 content block。历史分页按 `sourceEventSeqs` 取分组起点，避免大 transcript 上的调用栈溢出。
 
 Python 捆绑 runtime 的 `minimal` smoke 把组装后的 system prompt、tool schema 和 model-visible messages 钉在 `scripts/snapshots/python-sdk-single-exe/minimal/model-visible.json`。
 

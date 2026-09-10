@@ -58,13 +58,13 @@
   <text x="80" y="502" font-size="12.5" font-weight="bold" fill="#389e0d">⑥ human re-arm：update_goal resume（或 /goal resume）</text>
   <text x="80" y="520" font-size="11" fill="#595959">armed 恢复，driver 重新排程 round = roundsStarted + 1</text>
 
-  <text x="520" y="176" font-size="10.5" fill="#595959">types.ts:81-82 「never persisted」</text>
-  <text x="520" y="254" font-size="10.5" fill="#595959">session-persistence/coordinator.ts:902-903</text>
-  <text x="520" y="332" font-size="10.5" fill="#595959">goal/src/index.ts:255-256 · cache():428</text>
-  <text x="520" y="410" font-size="10.5" fill="#595959">goal-round-driver/index.ts:416-421 · drive():165</text>
+  <text x="520" y="176" font-size="10.5" fill="#595959">types.ts:97-98 「never persisted」</text>
+  <text x="520" y="254" font-size="10.5" fill="#595959">core/session/src/repair.ts:29 interruptedTurnClosers</text>
+  <text x="520" y="332" font-size="10.5" fill="#595959">goal/src/index.ts:255-256 · fold.ts:339</text>
+  <text x="520" y="410" font-size="10.5" fill="#595959">goal-round-driver/index.ts:430-433 · drive():165</text>
   <text x="520" y="488" font-size="10.5" fill="#595959">tool-goal guidance（index.ts:117-119）</text>
 
   <rect x="60" y="560" width="780" height="52" rx="6" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
-  <text x="76" y="582" font-size="11.5" font-weight="bold" fill="#389e0d">✓ 测试直接断言该行为：goal-round-driver.spec.ts:866-878</text>
+  <text x="76" y="582" font-size="11.5" font-weight="bold" fill="#389e0d">✓ 测试直接断言该行为：goal-round-driver.spec.ts:937-949</text>
   <text x="76" y="600" font-size="11.5" fill="#389e0d">session-start 后 activation==='disarmed' 且零请求；仅显式 resume 后 driver 才再次排程。</text>
 </svg>

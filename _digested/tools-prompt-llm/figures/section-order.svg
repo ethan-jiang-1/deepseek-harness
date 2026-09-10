@@ -16,7 +16,7 @@
   <text x="580" y="114" text-anchor="middle" font-size="11" fill="#4338ca">随工具集变</text>
   <rect x="700" y="68" width="220" height="64" rx="8" fill="#fff7ed" stroke="#fdba74"/>
   <text x="810" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">10000–10200 尾部</text>
-  <text x="810" y="114" text-anchor="middle" font-size="11" fill="#c2410c">source · surface · 后缀</text>
+  <text x="810" y="114" text-anchor="middle" font-size="11" fill="#c2410c">source · web-surface · 后缀</text>
   <rect x="40" y="152" width="880" height="140" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
   <text x="60" y="180" font-size="12" fill="#374151">KV cache 命中靠请求前缀稳定。把每步都变的时间戳塞进 identity 前面，等于每步作废缓存。稳定文本在前；动态上下文走 context() → user/message，不进 system 前缀。</text>
   <text x="60" y="204" font-size="12" fill="#374151">complete: true 的 section 在 waterfall 之后被恢复成唯一 prompt section，不能用来「再加一段」。多于一个 complete 则 assembly 失败。</text>

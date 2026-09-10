@@ -8,8 +8,8 @@
 
   <rect x="36" y="76" width="250" height="90" rx="10" fill="#fff7ed" stroke="#fdba74"/>
   <text x="161" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">surface 事件</text>
-  <text x="161" y="128" text-anchor="middle" font-size="12" fill="#c2410c">user/message · assistant/message</text>
-  <text x="161" y="148" text-anchor="middle" font-size="12" fill="#c2410c">tool/result · SurfaceOp</text>
+  <text x="161" y="126" text-anchor="middle" font-size="12" fill="#c2410c">system/message · user/message</text>
+  <text x="161" y="146" text-anchor="middle" font-size="12" fill="#c2410c">assistant/message · tool/result</text>
   <line x1="286" y1="121" x2="334" y2="121" stroke="#4b5563" marker-end="url(#arr)"/>
   <rect x="336" y="76" width="250" height="90" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
   <text x="461" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">deriveMessages()</text>
