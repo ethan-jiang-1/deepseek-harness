@@ -18,7 +18,7 @@
 
 ## 范围
 
-产品源码核验基线为 DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`（与 `_digested/` 相同）。开发过程另查该 commit 之前的 git 历史；研究覆盖层只用于综合结论，不作为产品权威来源。
+产品源码核验基线为 DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`（与 `_digested/` 相同）。开发过程另查该 commit 之前的 git 历史；研究覆盖层只用于综合结论，不作为产品权威来源。 **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
 
 本 FAQ 回答“从当前仓库能合理重建出怎样的 SDD”，不声称 DeepSeek 官方给这套流程下过同样定义。仓库中没有检索到 `spec-driven development`、`specification-driven development` 或独立 `SDD` 方法声明。
 

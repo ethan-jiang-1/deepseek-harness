@@ -20,12 +20,12 @@ goal round N
   ├─ 1. agent 回到 idle（上一轮结束）
   │      │
   │      ├─ 触发 agent/status({ status: 'idle' }) 事件
-  │      │   （agent-loop/src/agent.ts:108-110 get status；:113-120 setPhase 定义，:118 emit）
+  │      │   （agent-loop/src/agent.ts:114-116 get status；:119-126 setPhase 定义，:124 emit）
   │      │
   │      └─ goal-round-driver 监听器收到通知
-  │         （goal-round-driver/src/index.ts:259-277）
+  │         （goal-round-driver/src/index.ts:259-282）
   │
-  ├─ 2. requestDrive(state) 被调用（第 275 行）
+  ├─ 2. requestDrive(state) 被调用（第 280 行）
   │      │
   │      ├─ 串行：state.run 保证同一 agent 不会并发两个 drive 循环
   │      │   （第 212 行：if (state.run !== undefined) return）
@@ -68,17 +68,17 @@ goal round N
   │      │
   │      └─ wakeDriver() → 创建新 activity → kick() 循环启动
   │
-  ├─ 6. turn() 开始新 turn（agent-loop/src/agent.ts:255）
+  ├─ 6. turn() 开始新 turn（agent-loop/src/agent.ts:269）
   │      │
   │      ├─ turn/start 事件写入 session
   │      ├─ preStep('next-turn') → inbox.claim() 取出 round 消息
   │      │
   │      └─ agent/pre-step waterfall 启动
   │
-  ├─ 7. goal-round-driver 的 pre-step 拦截（第 349-414 行）
+  ├─ 7. goal-round-driver 的 pre-step 拦截（第 361-426 行）
   │      │
   │      ├─ 在消息列表中找到 source.kind === 'goal' 的那条
-  │      ├─ validReservation() 验证（第 334-347 行）：
+  │      ├─ validReservation() 验证（第 346-359 行）：
   │      │   ├─ state.attempt.phase === 'claimed'（刚被 claim 的）
   │      │   ├─ !attempt.stale（未被标记为过期）
   │      │   ├─ sameQueued（内容和 source 与预约完全一致）
@@ -102,7 +102,7 @@ goal round N
   │      ├─ 场景 B：模型调用 update_goal blocked → 进入 wrapup
   │      └─ 场景 C：模型没调 goal tool 直接 final message
   │
-  ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:295-325）
+  ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:292-332）
   │      │
   │      ├─ completionAuthority() 检查（authority.ts:110-117）
   │      │   ├─ direct human input？→ 允许
@@ -137,11 +137,11 @@ goal round N
 | 模型 `update_goal complete` | 模型 tool | `goal/change` operation='complete'，phase→complete | `drive()` 第 165 行检查 `phase !== 'active'` → return |
 | 模型 `update_goal blocked` | 模型 tool | `goal/change` operation='blocked'，phase→blocked | 同上 |
 | 达最大 round 上限 | driver 自动 | driver 第 166-172 行调用 `ctx.goals.block(agent, ref, { code: 'round-limit' })` | block 后不再续 |
-| `max-tokens` turn 结束 | agent-loop | driver 第 318-319 行监听 `turn/end` reason='max-tokens' → `disarm(state)` | disarm 后 `activation !== 'armed'` → 无 round |
-| 人插入新消息 | 用户 | driver 第 284-290 行 `agent/inbox/inserted` → `competingQueued = true` | `readyToDrive()` 第 108 行检查 `!state.competingQueued` → 不推进 |
+| `max-tokens` turn 结束 | agent-loop | driver 第 329-333 行监听 `turn/end` reason='max-tokens' → `disarm(state)` | disarm 后 `activation !== 'armed'` → 无 round |
+| 人插入新消息 | 用户 | driver 第 296-303 行 `agent/inbox/inserted` → `competingQueued = true` | `readyToDrive()` 第 108 行检查 `!state.competingQueued` → 不推进 |
 | 人 `/goal clear` | human 命令 | `goal/change` operation='clear'，goal 被清除 | `currentGoal()` 返回 undefined → return |
 | goal pause/disarm | 各种路径 | `goal/change` phase→paused 或 activation→disarmed | drive 第 165 行检查不通过 |
-| pre-step 验证失败 | driver 主动 | 第 390-398 行调用 `ctx.goals.block()` code='prompt-rejected' | block 后不再续 |
+| pre-step 验证失败 | driver 主动 | 第 400-410 行调用 `ctx.goals.block()` code='prompt-rejected' | block 后不再续 |
 
 ## 并发安全
 

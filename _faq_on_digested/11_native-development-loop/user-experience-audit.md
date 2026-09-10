@@ -40,7 +40,7 @@ answer 详细阐述的机制是**仓库流程**属性（gates、hooks、窄测�
 
 - **反证。** "Seconds" 的表述将本地 hooks 作为反馈步骤，但唯一的 *始终开启的* push 时本地门禁是
   **完整的 host build + bundle + client typecheck**（`build:lib:host`），而不是亚秒级检查。Superseding note
-  [`2026-07-22-fast-local-git-hooks.md:34`](../../.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md)
+  [`2026-07-22-fast-local-git-hooks.md:34`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   明确说：*"Hook latency is observed in development and PR evidence rather than enforced by a
   timing test whose result would depend on host load and cache state."* 仓库**故意拒绝承诺持续时间**。
   所以"痛在秒级"（`answer.md:43`）和"秒到分钟级"（`answer.md:47`）
@@ -88,7 +88,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
   本身是无门禁的 prose。
 - **反证 (c)。门禁的记忆在 CI，而引用的 note 本身将其标记为已取代。**
   Quality-gates note 的 hook/CI 对称性已被
-  [`fast-local-git-hooks`](../../.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md)
+  [`fast-local-git-hooks`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   取代（`:23`，"supersedes the hook/CI symmetry"），而 answer 引用 *quality-gates* note 时仿佛它
   描述了当前的 hook 集。当前的 hook 集是 `lefthook.yml`，比 quality-gates note 的 prose 暗示的更窄。
 - **裁定。** 对机械规则为真，且仅在本地狭窄 hook 子集上；作为 blanket "你可以忘记规则"**unsupported**。
@@ -300,7 +300,7 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 - [`AGENTS.md`](../../AGENTS.md) — "report only commands run", "Never default to the full suite"。
 - [`.agents/notes/implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
   — "developed primarily by coding agents", "Every mechanically checkable…", "gates are code to maintain"。
-- [`.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md`](../../.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md)
+- [`.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   — 当前 hook 集、取代 quality-gates、无延迟保证。
 - [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml) — plan-mode posture。
 - [`packages/interaction/tool-ask-user/src/index.ts`](../../packages/interaction/tool-ask-user/src/index.ts) — ask_user_question 契约。

@@ -25,6 +25,7 @@ DSH 自己的仓库就是它最好的样板：它的开发主力自称是 coding
 - 主证据是两份本地研究语料，都在同一基线（DSH `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`）上：
   - `_agent_ready_development/development-harness/`（01–07）——教程式拆解「仓库怎样帮 coding agent 修改仓库自身」；
   - `_digested/harness-idea/`（01–08）——判断式拆解「dsh 为什么对参与者友好」。
+- **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
 - 源码事实需要锚定时，用 DSH 固定基线文件的相对路径或固定 commit 的 GitHub 链接，不重抄 `docs/` 正文充数。
 - 正文中的具体数字（词数预算、catalog 描述上限、symlink 处数、context 插件数等）以基线 `528c682e` 的对应文件为准；上游合入后需按 `_digested/_change_log/` 复核。
 - 本目录自带 [`verify.mjs`](../verify.mjs) 机械兜底（严格 UTF-8、单个结尾换行、相对链接与锚点）；修改本目录后运行 `node _faq_on_digested/verify.mjs`。

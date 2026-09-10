@@ -31,10 +31,10 @@
   <text x="676" y="186" font-size="12" fill="#7c2d12">inject 的上下文</text>
   <text x="676" y="204" font-size="12" fill="#7c2d12">等下一次获准请求</text>
   <text x="676" y="236" font-size="11" fill="#ea580c">这一路只负责消息</text>
-  <text x="676" y="254" font-size="11" fill="#ea580c">system / tools 由 header 记录</text>
+  <text x="676" y="254" font-size="11" fill="#ea580c">tools 进 request/header · system 进 system/message</text>
 
   <rect x="40" y="290" width="880" height="94" rx="10" fill="#dcfce7" stroke="#86efac"/>
   <text x="480" y="316" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">agent-loop 先写 request/header，再把冻结请求交给 ctx.llm / prepared adapter</text>
-  <text x="480" y="340" text-anchor="middle" font-size="12" fill="#15803d">ctx.llm / llm/stream 产出 chunk；agent-loop 写 assistant/chunk 并组装 assistant/message</text>
+  <text x="480" y="340" text-anchor="middle" font-size="12" fill="#15803d">ctx.llm / llm/stream 产出 chunk；agent-loop 折成 compact stream 并组装 assistant/message / attempt</text>
   <text x="480" y="366" text-anchor="middle" font-size="11" fill="#14532d">加模型提供方 = 在 ctx.llm 上注册 adapter，不是改 loop。</text>
 </svg>

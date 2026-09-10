@@ -2,7 +2,7 @@
 
 ## 基线
 
-- 消化基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`（[`_digested/00-index.md`](../../_digested/00-index.md)）。
+- 消化基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`（[`_digested/00-index.md`](../../_digested/00-index.md)）。 **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
 - 本文写入与复核树：commit `08b582ea02cf16812d48e6323c91d784210cf38e`（2026-08-31）。文中行号以此树为准；模型名、默认 catalog、49 种事件词表等部署事实随上游漂移。
 
 ## 方法

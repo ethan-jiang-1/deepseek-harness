@@ -38,7 +38,7 @@
   <rect x="626" y="204" width="266" height="42" rx="6" fill="#fff" stroke="#fb923c"/>
   <text x="759" y="230" text-anchor="middle" fill="#9a3412">request/header · request/context</text>
   <rect x="626" y="258" width="266" height="42" rx="6" fill="#fff" stroke="#fb923c"/>
-  <text x="759" y="284" text-anchor="middle" fill="#9a3412">assistant/* · tool/* · step/end</text>
+  <text x="759" y="284" text-anchor="middle" fill="#9a3412">assistant/message · assistant/attempt · tool/*</text>
   <rect x="626" y="318" width="266" height="52" rx="7" fill="#ffedd5" stroke="#fb923c"/>
   <text x="759" y="340" text-anchor="middle" font-weight="700" fill="#9a3412">resume · fork · 请求重建</text>
   <text x="759" y="359" text-anchor="middle" fill="#c2410c">transcript · UI · telemetry</text>

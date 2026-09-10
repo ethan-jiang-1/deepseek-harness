@@ -57,7 +57,7 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 
 三个域的关键区别：
 
-1. `turn/*`、`step/*`、`user/message`、`assistant/*`、`tool/*` 是**持久会话事件**。其余大多是三个域里的实时扩展点。
+1. `turn/*`、`step/*`、`system/message`、`user/message`、`assistant/message`、`assistant/attempt`、`tool/*` 是**持久会话事件**；其余是三个域里的实时扩展点。`agent/assistant-stream` 发布进程本地的 start、transient chunk、end 帧；loop 在提交 end 帧前把完整紧凑流写成一条 message 或仅日志的 attempt，Web Session-follow 适配器是该实时事件的唯一远程消费者。
 2. `agent/pre-step`、`agent/request`、`llm/stream`、以及三条 `tools/*` 是 **waterfall**：`next()` 把决定委托给下游；不调用就是由当前监听器短路并拥有结果。
 3. `agent/turn-stopping` 是 **serial**，没有 `next()`；监听器可用 `agent.steer()` 增加下一步工作，驱动随后重读 inbox。
 

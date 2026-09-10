@@ -16,7 +16,7 @@
   <text x="110" y="184" font-size="13" font-weight="700" fill="#9a3412">step/start  （可重复：工具还欠一次请求，或又来了新输入）</text>
   <text x="110" y="210" font-size="12" fill="#c2410c">把获准的消息追加为 user/message</text>
   <text x="110" y="230" font-size="12" fill="#c2410c">deriveMessages() 从 log 投影模型历史</text>
-  <text x="110" y="258" font-size="12" fill="#1e40af">agent/request  →  llm/stream  →  assistant/chunk*  →  assistant/message</text>
+  <text x="110" y="258" font-size="12" fill="#1e40af">agent/request  →  llm/stream  →  compact stream  →  assistant/message|attempt</text>
   <text x="110" y="286" font-size="12" fill="#6d28d9">若有 tool/call*：tools/pre-execute → tools/execute → tools/post-execute → tool/result*</text>
   <text x="110" y="314" font-size="12" fill="#9a3412">step/end</text>
   <text x="110" y="348" font-size="11" fill="#7c2d12">request-error retry：同一 step 再 stream，不追加新的 step/start。</text>

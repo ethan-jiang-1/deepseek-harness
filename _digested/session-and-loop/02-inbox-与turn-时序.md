@@ -1,6 +1,6 @@
 # Inbox、唤醒与 turn 时序
 
-源码核验入口：`packages/core/agent/src/inbox.ts`、`packages/core/agent/src/runtime-types.ts`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`。
+源码核验入口：`packages/core/agent/src/types.ts`、`packages/core/agent/src/runtime-types.ts`、`packages/core/agent-loop/src/inbox.ts`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`。
 
 本篇说明默认驱动中的 inbox 队列、claim，以及 `pre-step` 拒绝后仍关闭持久 turn 的时序。
 
@@ -8,9 +8,9 @@
 
 ## 两个列表，一份持久 splice
 
-`InboxTarget`：`'next-turn'` | `'next-step'`。内存投影从 `session.ownEvents()` 里的 `agent/inbox/spliced` 重放——rc.1 起 `Session.ownEvents()` / `Session.isOwnSeq()` 对普通消费者隐藏继承前缀比较（机制见 [`2026-08-31-session-sequence-and-log-offset-brands`](../../.agents/notes/archived/architecture/2026-08-31-session-sequence-and-log-offset-brands.md)）。种子里的 splice 不算进这个 agent 生命周期的队列。
+`InboxTarget`：`'next-turn'` | `'next-step'`。inbox 是 session-projection 的一个单元（key `inbox`，`packages/core/agent-loop/src/inbox.ts`），由投影注册表折叠 `agent/inbox/spliced` 事件重建（`Session.ownEvents()` / `Session.isOwnSeq()` 对普通消费者隐藏继承前缀比较，机制见 [`2026-08-31-session-sequence-and-log-offset-brands`](../../.agents/notes/archived/architecture/2026-08-31-session-sequence-and-log-offset-brands.md)）。
 
-`splice` **先** `session.append('agent/inbox/spliced', …)`，再改投影。同步的 `session/event` 观察者看到的是 splice **前**的列表，可以用归一化坐标找回被删的消息。
+`splice` 通过 `session.append('agent/inbox/spliced', …)` 持久化；投影注册表在 `append` 的 `session/event` 驱动中同步折叠该事件，`append` 返回时投影已是新列表。实时 `agent/inbox/inserted` 与 `agent/inbox/discarded` 通知在 `append` 之后发出。
 
 `claim(target, turn)`：抽空 `next-step`；若 `target === 'next-turn'` 再取 `next-turn` 的头一条。返回值按这个顺序。loop 的 step 边界操作，不是插件扩展点。
 
@@ -38,7 +38,7 @@ runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造�
 2. `preStep`：**先 `claim`**（消息已从 inbox 耐久删掉并 `agent/inbox/claimed`），再 `systemPrompt.assemble`，再把 runtime context 快照（若与上次不同）拼进 inner 的 `messages`，最后 `waterfall('agent/pre-step')`。inner 默认 `{ kind: 'enter', messages: claimed + context? }`。
 3. `reject` → `turnEnds = { kind: 'blocked' }`，没有 step，也**没有** `user/message`。claimed 的条目不会回到 inbox。
 4. 首次 step 且 `messages.length === 0`（唤醒消息被拿掉，或 enter 被改写成空）→ `completed`，仍无 step。
-5. 否则 `step/start`，逐条 `user/message`（`surfaceOp: 'append'`），再 `step()`。
+5. 否则 `step/start`，逐条 `system/message`（surface 节点 0）与 `user/message`（`surfaceOp: 'append'`），再 `step()`。
 6. 工具还欠一次请求，或 `next-step` 又有货 → 下一 step 的 target 是 `next-step`。
 7. 有结束原因且 `next-step` 为空时，`serial('agent/turn-stopping')`（没有 `next()`）；监听器可 `agent.steer()`，驱动随后重读 inbox，有新工作就继续下一 step。
 8. `finally` 里 `turn/end`。loop **不等** turn 边界上的 flush；checkpoint 策略另挂。
@@ -50,20 +50,19 @@ runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造�
 `buildRequest(..., this.session.deriveMessages(), ...)`。流：
 
 ```text
-llm.stream / preparedCall.stream（整个 for-await 包在 try/catch）
-  每个 chunk → append assistant/chunk，记下 seq
-  BlockAssembler.push
-  signal.aborted 且 assembler 有已送达前缀 → 先 append assistant/message（interrupted: true，
-    sourceEventSeqs = chunk seqs；未派发的 tool-call 不在），再 rethrow
-assembler.finish
-  error/aborted → waterfall agent/request-error；retry 则同一 step 再来，不新开 step
-  否则 createAssistantMessage → assistant/message（surfaceOp append，sourceEventSeqs = chunk seqs）
+llm.stream / preparedCall.stream（整个 for-await 包在 try/catch，流经 AssistantStreamAttempt 累积）
+  signal.aborted 且有已送达前缀 → append assistant/message（interrupted: true，内嵌 stream；
+    未派发的 tool-call 不在），再 rethrow
+  signal.aborted 但无内容 → append assistant/attempt
+finish 为 error/aborted → append assistant/attempt，waterfall agent/request-error；
+  retry 则同一 step 再来，不新开 step
+  否则 createAssistantMessage → assistant/message（surfaceOp append，内嵌 stream 与 usage）
   max-tokens → 该 step 结束，turn 上 sticky
   无 tool-call → completed
   有 → executeToolCalls；可往 next-step splice 上下文
 ```
 
-请求头：`request/header` 在 dispatch 前写入。对截至某次请求的日志前缀取最后一份，即可重建当时的 config / system / tools。`request/context` 只在路由或容量变时写，不参与 header 相等。
+请求头：`request/header` 在 dispatch 前写入。对截至某次请求的日志前缀取最后一份，即可重建当时的 config 与 tools（system prompt 是 surface 节点）。`request/context` 只在路由或容量变时写，不参与 header 相等。
 
 ## `claim` 与 architecture 的对应
 

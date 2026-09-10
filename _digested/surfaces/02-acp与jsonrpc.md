@@ -6,16 +6,16 @@
 
 ## ACP：自动化适配器，不是 IDE
 
-`dsh-acp` 在 stdio 上用 `createAcpAgentApp(...).onRequest(...).connect(stream)` 接线（@agentclientprotocol/sdk 1.4.0；`packages/acp/acp/src/index.ts:377-390`，stdout/stdin 经 `ndJsonStream` 接线 `:373-375`），驱动 `ctx.agents`。stdout 只给协议帧。它**不是** UI 集成，也不是 capability seam。
+`dsh-acp` 在 stdio 上用 `createAcpAgentApp(...).onRequest(...).connect(stream)` 接线（@agentclientprotocol/sdk 1.4.0；`packages/acp/acp/src/index.ts:378-391`，stdout/stdin 经 `ndJsonStream` 接线 `:374-377`），驱动 `ctx.agents`。stdout 只给协议帧。它**不是** UI 集成，也不是 capability seam。
 
 **保证：**
 
-- `session/new`：新鲜 agent，绝对 `cwd`。非空 `additionalDirectories` 拒绝（`packages/acp/acp/src/index.ts:515`）；`mcpServers` 非空则**接受并验证**（`:209` 传入 `AcpSession.create`），配置错抛 `AcpMcpConfigError` → invalidParams（`:216`），`initialize` 广告 `mcpCapabilities: { http: true }`（`:184`）。
-- `session/list` / `session/resume` / `session/close` / `session/set_config_option`：均已实现并在 `initialize` 广告（`packages/acp/acp/src/index.ts:186`、`:384-387`）。list 是确定性 newest-first 分页（`sessionListPageSize` 可配），按物理目录身份过滤 `cwd`，只列持久化的 root 会话（排除活跃、subagent origin、带 parent 的条目，`:303-313`）；resume 校验同目录后才恢复持久 log，排除 origin / parentSession（`:247-253`）；set_config_option 序列化更新广告的 `model` / `reasoning_effort`。
+- `session/new`：新鲜 agent，绝对 `cwd`。非空 `additionalDirectories` 拒绝（`packages/acp/acp/src/index.ts:523`）；`mcpServers` 非空则**接受并验证**（`:209` 传入 `AcpSession.create`），配置错抛 `AcpMcpConfigError` → invalidParams（`:216`），`initialize` 广告 `mcpCapabilities: { http: true }`（`:184`）。
+- `session/list` / `session/resume` / `session/close` 均在 `initialize` 广告（`packages/acp/acp/src/index.ts:186`）并接线（`:384-387`）；`session/set_config_option` 同样接线（`:388`）但不在 capabilities 里。list 是确定性 newest-first 分页（`sessionListPageSize` 可配），按物理目录身份过滤 `cwd`，只列持久化的 root 会话（排除活跃、subagent origin、带 parent 的条目，`:303-313`）；resume 校验同目录后才恢复持久 log，排除 origin / parentSession（`:247-253`）；set_config_option 序列化更新广告的 `model` / `reasoning_effort`。
 - `initialize`：仅当挂了 durable attachment store、且配置的精确 provider/model 声明了 image input 时，才广告图像 prompt；音频和 embedded context 恒为 false。
-- `session/prompt`：按线序保留文本与受支持的 inline 图像；resource link 变成 `[resource_link name=… uri=…]`。整批图像先校验、再按最新精确 route 复核，然后在 user 事件之前全部 commit。inline base64 准入后丢弃，日志里只留 attachment 引用。每会话一个 in-flight。等到准入、整个 agent idle、以及有序输出投递。正常静默 → `end_turn`；ACP 取消 / dispose / 未被准入的 turnless slot → `cancelled`。
+- `session/prompt`：按线序保留文本与受支持的 inline 图像；resource link 变成 `[resource_link name=… uri=…]`。整批图像先校验、再按最新精确 route 复核，然后在 user 事件之前全部 commit。inline base64 准入后丢弃，日志里只留 attachment 引用。每会话一个 in-flight。等到准入、整个 agent idle、以及有序输出投递。正常静默 → `end_turn`，token-limit → `max_tokens`；ACP 取消 / dispose / 未被准入的 turnless slot → `cancelled`。
 - `session/cancel`：先中止尚未进 inbox 的 admission，不取消无关 agent 工作；prompt 一旦进 inbox，才取消该 agent 并等到所拥有区间静默。没有 in-flight prompt 时取消自主工作。
-- `session/update`：每条 **已提交** `assistant/message` 里每个非空文本或图像块一个 `agent_message_chunk`，保序。图像投递前再读并校验完整性；缺失或损坏会使这次 prompt 失败，而不是发占位符。
+- `session/update`：只投影 **已提交** 事件——`assistant/message` 的 reasoning 块 → `agent_thought_chunk`、非空文本/图像块 → `agent_message_chunk`，按块序；`tool/call` → `tool_call`、`tool/result` → `tool_call_update`；拓扑变化 → `config_option_update`；上下文占用 → `usage_update`。图像投递前再读并校验完整性；缺失或损坏会使这次 prompt 失败，而不是发占位符。
 - `session/request_permission`：带 tool call id 的、桥拥有的审批，一次性 allow/reject。客户端可自动答。
 - 拆连接与 Cordis dispose 共用一份 teardown：先拒新 session/prompt，取消并排空 admission / agent 活动 / 有序输出，只排空本连接拥有的可续后代，flush persistence，再并行 dispose。别的前端共用 Context 时，它们的森林还在。
 
@@ -23,8 +23,8 @@
 
 - 删除、fork、`session/load`（transcript replay）。`session/resume` 恢复持久 log 但不重放旧 update。
 - 音频、embedded resources、非空 `additionalDirectories`。图像仅 PNG / JPEG / WebP / GIF，且依赖 attachment store 与声明了 image input 的精确 route。
-- 把 raw `assistant/chunk`、推理、工具活动、plan、title、usage 打到线上。它们留在 session log，走别的入口观察。
-- prompt 级的 turn 结局。操作区间从 prompt 进入 inbox 起到 idle 与输出投递都静默；token-limit 仍是 `end_turn`；相关模型错误也在同一静默边界才拒 prompt。
+- 把 raw provider delta、重试尝试、DSH 展示数据（plan、title、terminal 卡）打到线上。
+- prompt 级的 turn 结局。操作区间从 prompt 进入 inbox 起到 idle 与输出投递都静默；相关模型错误也在同一静默边界才拒 prompt。
 - 编辑器导航、commands、modes、elicitation 等交互式 UI surfaces。
 
 用它：父 harness 经 `dsh-subagent-acp` spawn；或任何只需要上述核心方法的 ACP 客户端。

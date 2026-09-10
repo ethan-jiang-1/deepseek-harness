@@ -1,6 +1,6 @@
 # Research Notes: DSH 可能采用的 Spec-Driven Development
 
-产品源码核验基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`（与 `_digested/` 相同）。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。
+产品源码核验基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`（与 `_digested/` 相同）。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。 **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
 
 ## 核心结论
 
@@ -28,7 +28,7 @@ Agent Note 的自我定义是记录影响代码库的“决定或提案”，保
 
 实现期的骨架改为 `Problem -> Decision -> Alternatives considered -> Consequences`，并允许现在时的 Testing/Verification；Proposal、Plan、Migration plan、Acceptance criteria 这些提案期标题在 implemented Note 中被禁止 [`.agents/notes/README.md:93`](../../.agents/notes/README.md)。`proposed -> implemented` 必须在同一变更中把未来态 Proposal 改写成当前态 Decision，并把 acceptance/risk 折入 Consequences 或 Verification/Testing [`.agents/notes/README.md:119`](../../.agents/notes/README.md)。`verify-agent-note-format` 机械要求 proposed 的 Acceptance criteria、implemented 的 Decision/Consequences，并拒绝 implemented 中的 proposal-era 标题 [`scripts/verify-agent-note-format.ts:21`](../../scripts/verify-agent-note-format.ts)。
 
-Agent Note 的存在性边界不是 CI 自动分类。该政策的 owning Note 明说“Review enforces the semantic boundary”，不会由自动 gate 判断一个 diff 是否 non-trivial [`.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md:21`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)。机器能保证格式、状态、分类和配对，不能保证“这个 PR 本来就应该有 Note”。
+Agent Note 的存在性边界不是 CI 自动分类。该政策的 owning Note 明说“Review enforces the semantic boundary”，不会由自动 gate 判断一个 diff 是否 non-trivial [`.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md:21`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)。机器能保证格式、状态、分类和配对，不能保证“这个 PR 本来就应该有 Note”。
 
 ### 3. Plan Mode 把“先规格、后执行”做成产品行为
 
@@ -90,7 +90,7 @@ git show --stat 7f2769c529b10a6d174447555e02aac29666e0b7
 
 ### 决定已定，implemented Note 与实现同提交：Plan review presentation
 
-`2363ef01eb14560ecce3cdede09b48a3280122e5`（`feat(web): render a plan review as a decision card, not a quiz`）直接新增 implemented Agent Note，同时新增 UI 实现、221 行 component tests、真实 Web e2e、session fixture 和 waiting/approved 两份 golden；它符合“decision already made starts in implemented”的合法路径。`6d7bd7e703a024d4a437a28ba1e5f151ec77b2a2` 后续修复 presentation narrowing 时又同步更新同一 Note、文档和 tests。当前 Note 的 Testing 仍明确列出 unit/schema/plan-mode/Web e2e 各层钉住的行为 [plan-review Note:51](../../.agents/notes/implemented/feature/2026-07-30-plan-review-presentation-intent.md)。验证命令：
+`2363ef01eb14560ecce3cdede09b48a3280122e5`（`feat(web): render a plan review as a decision card, not a quiz`）直接新增 implemented Agent Note，同时新增 UI 实现、221 行 component tests、真实 Web e2e、session fixture 和 waiting/approved 两份 golden；它符合“decision already made starts in implemented”的合法路径。`6d7bd7e703a024d4a437a28ba1e5f151ec77b2a2` 后续修复 presentation narrowing 时又同步更新同一 Note、文档和 tests。当前 Note 的 Testing 仍明确列出 unit/schema/plan-mode/Web e2e 各层钉住的行为 [plan-review Note:51](../../.agents/notes/archived/feature/2026-07-30-plan-review-presentation-intent.md)。验证命令：
 
 ```sh
 git show --stat 2363ef01eb14560ecce3cdede09b48a3280122e5

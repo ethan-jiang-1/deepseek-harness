@@ -8,7 +8,7 @@ boot 叠完的树不是一次性的。profile 和 home 的 `cordis.patch.yml` �
 
 ## 谁在看哪两个文件
 
-`runProfile` 在 `boot()` 结算之后，先判 `composed.profile.patchReload === 'live'`（`apps/cli/src/profile-boot.ts:270-273`）——非 live 直接不挂 watcher；live 之下若信号没中止、根 fiber 仍 ACTIVE、loader 还在，就挂两个 `watchUserPatches`：
+`runProfile` 在 `boot()` 结算之后，先判 `composed.profile.patchReload === 'live'`（`apps/cli/src/profile-boot.ts:355-358`）——非 live 直接不挂 watcher；live 之下若信号没中止、根 fiber 仍 ACTIVE、loader 还在，就挂两个 `watchUserPatches`：
 
 - `composed.profile.patchPath`（该 profile 的 `cordis.patch.yml`）
 - `homePatchPath()`（`$DSH_HOME/cordis.patch.yml`）
@@ -19,9 +19,9 @@ boot 叠完的树不是一次性的。profile 和 home 的 `cordis.patch.yml` �
 
 ## 组合里可能没有 `hmr` 行
 
-关掉共享模块热更新 `hmr` 行的不是 web bundle——web-app 的 cordis.patch.yml 本身没有 `hmr` 行（#2796/d18f4ed3de 已移除），`disabled: true` 的 `hmr` 行在 dsh-base（`packages/bundle/base/cordis.patch.yml:19-26`，行上注释：Module reload is opt-in per profile，`patchReload: live` 的 config watching 走 launcher 的 watch-only 兜底、不依赖该行）。没有 HMR 服务时，profile-boot 再挂一个 `{ root: [] }` 的 watch-only 实例，只为 patch 文件。HMR 还 inject timer；光秃的自定义 profile 可能连 timer 都没有，就先 `loader.create` timer。
+关掉共享模块热更新 `hmr` 行的不是 web bundle——web-app 的 cordis.patch.yml 本身没有 `hmr` 行，`disabled: true` 的 `hmr` 行在 dsh-base（`packages/bundle/base/cordis.patch.yml:19-25`，行上注释：Module reload is opt-in per profile，`patchReload: live` 的 config watching 走 launcher 的 watch-only 兜底、不依赖该行）。没有 HMR 服务时，profile-boot 再挂一个 `{ root: [] }` 的 watch-only 实例，只为 patch 文件。HMR 还 inject timer；光秃的自定义 profile 可能连 timer 都没有，就先 `loader.create` timer。
 
-一次性表面走有界 shutdown，会在事件循环排空前 dispose 这些 watcher。watching 不按「是不是 web」分支跳过，而是按 `patchReload === 'live'` 门控（`apps/cli/src/profile-boot.ts:270-273`）：shipped 模板仅 web 为 live，headless / sdk / sdk-minimal / acp 均为 startup（`packages/boot/app-boot/src/profile.ts:137-158`），自定义 profile 默认 live（`profile.ts:169`）；该门控 alpha.3 已存在。
+一次性表面走有界 shutdown，会在事件循环排空前 dispose 这些 watcher。watching 不按「是不是 web」分支跳过，而是按 `patchReload === 'live'` 门控（`apps/cli/src/profile-boot.ts:355-358`）：shipped 模板仅 web 为 live，headless / sdk / sdk-minimal / acp 均为 startup（`packages/boot/app-boot/src/profile.ts:110-131`），自定义 profile 默认 live（`profile.ts:142`）。
 
 表面在 watcher 还没 ready 时 dispose 整棵树：HMR 登记 effect 抛 `INACTIVE_EFFECT`。那是应用按请求退出，不是 watch 失败 → 返回空 disposer。其它登记失败照样抛；若 shutdown 已经拥有这棵树（信号或 `appExit`），`suppressShutdownError` 吞掉。
 
