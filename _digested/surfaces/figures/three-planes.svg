@@ -22,7 +22,7 @@
   <text x="351" y="190" font-size="12" fill="#5b21b6">schema 进入 prompt 组装</text>
   <text x="351" y="214" font-size="12" fill="#5b21b6">call / result 写入 session log</text>
   <text x="351" y="242" font-size="12" fill="#5b21b6">模型可见 ⟺ 已记录</text>
-  <text x="351" y="264" font-size="11" fill="#7c3aed">例子：bash · read_file · job_*</text>
+  <text x="351" y="264" font-size="11" fill="#7c3aed">例子：bash · read · job_*</text>
 
   <rect x="640" y="72" width="290" height="220" rx="10" fill="#dcfce7" stroke="#86efac"/>
   <text x="785" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">Shell execution</text>

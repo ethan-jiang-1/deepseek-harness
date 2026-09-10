@@ -12,7 +12,7 @@
 
 ## 模型侧工具
 
-`tool-agent-team` 注册九个工具——`spawn_teammate`、`send_message`、`list_agents`、`wait_agent`、`interrupt_agent`、`team_task_create` / `team_task_list` / `team_task_get` / `team_task_update`（`packages/experimental/tool-agent-team/src/index.ts:174`-`:380`），外加每个成员 scope 里的固定 `team:policy` prompt 段（`:165`）；`followup_task` 已并入 `send_message`，一次 Steer 投递同时覆盖唤醒与冷恢复。注册是成员级而非全局：`maybeInstall` 检查 Agent 的 Team membership，非 Team 子代理跳过（`:397`-`:402`）；与全局 continuable 子代理控制同名的 `list_agents` / `send_message` / `interrupt_agent` 只在 Team 成员 scope 内遮蔽全局定义，宿主和非 Team 子代理仍用默认目录。
+`tool-agent-team` 注册九个工具——`spawn_teammate`、`send_message`、`list_agents`、`wait_agent`、`interrupt_agent`、`team_task_create` / `team_task_list` / `team_task_get` / `team_task_update`（`packages/experimental/tool-agent-team/src/index.ts:174`-`:380`），外加每个成员 scope 里的固定 `team:policy` prompt 段（`:165`）。注册是成员级而非全局：`maybeInstall` 检查 Agent 的 Team membership，非 Team 子代理跳过（`:397`-`:402`）；与全局 continuable 子代理控制同名的 `list_agents` / `send_message` / `interrupt_agent` 只在 Team 成员 scope 内遮蔽全局定义，宿主和非 Team 子代理仍用默认目录。
 
 ## 两个 profile bundle 的差异
 

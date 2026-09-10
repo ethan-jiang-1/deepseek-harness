@@ -26,7 +26,7 @@ acp:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
 | **sdk-minimal** | JSON-RPC · 工具面收窄 | `dsh --profile sdk-minimal` | profile 目录 + bundle 层叠 | JSON-RPC 帧 | 常驻 |
 | **acp** | Agent Client Protocol 服务 | `dsh --profile acp` | profile 目录 + bundle 层叠 | ACP 帧 | 常驻 |
 
-> **历史背景**：在 `0.1.2-alpha.1`（#3248）之前，sdk 和 acp 走独立 app 二进制（`dsh-jsonrpc-agent`、`dsh-acp-demo`），不经过 launcher profile。从 `0.1.2-alpha.1` 起它们被统一到 `dsh --profile <name>`。旧二进制不再存在；SDK 最小示例使用 `sdk-minimal` profile。所有 profile 现在共享同一套 bundle 层叠、profile 目录、`dsh plugin` 管理等基础设施。
+> sdk 和 acp 都是 launcher profile（`dsh --profile <name>`），没有独立的 app 二进制；SDK 最小示例使用 `sdk-minimal` profile。所有 profile 共享同一套 bundle 层叠、profile 目录、`dsh plugin` 管理等基础设施。
 
 ## 共同基底
 
@@ -38,13 +38,13 @@ acp:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
 | 会话 | 事件日志、持久化、投影 | `dsh-base` 的 `session`、`session-persistence-jsonl`、`session-projection` |
 | Agent 核心 | 注册表、loop、提示词 | `dsh-base` 的 `agent`、`agent-loop`、`system-prompt` |
 | 工具管线 | 注册、执行、审批 | `dsh-base` 的 `tools`、`tool-*` |
-| 沙箱与策略 | 文件系统策略、弹窗审批 | `dsh-base` 的 `sandbox`、`sandbox-policy`、`approval`（sdk-minimal 的 sandbox 策略为 `danger-full-access` 且另挂 `fs-local`） |
+| 沙箱与策略 | 文件系统策略、弹窗审批 | `dsh-base` 的 `sandbox`、`sandbox-policy`、`approval`（sdk-minimal 的 sandbox 策略为 `danger-full-access`） |
 | 子进程 | 进程树管理 | `dsh-base` 的 `subprocess` |
 | 子 agent | 后台 / fork 子 agent | `dsh-base` 的 `subagent`、`tool-subagent`（sdk-minimal 无） |
 | Goal | 持久完成目标 | `dsh-base` 的 `goal`、`goal-round-driver`、`tool-goal`（sdk 继承 base；仅 sdk-minimal 无） |
 | 文件系统 | 受限文件访问 | `dsh-base` 的 `fs-sandbox`、`fs-observation-policy` |
 
-**消息通道**：rc.1 起子代理回传统一为 settle notice + `send_message` steer（`tool-subagent-report` 已删除）；fork continuable 不再有 child-only section 的 KV 前缀代价。
+**消息通道**：子代理回传是 `subagent-settled` notice 消息源，可继续子代理由 `send_message` steer（`tool-subagent-control`）；fork 可继续子代理的请求头不含 child-only 字段，继承前缀可被 provider 前缀复用。
 
 **进程级重用**：五个入口都通过 `ctx.agents` 驱动 agent，从 `session/event` 渲染或投影。不是五套 Agent 实现。
 
@@ -98,7 +98,7 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 | **web** | `dsh-web-app` bundle：webserver、web-runtime、client-*（浏览器壳、wire、slots、ui-*）、session-controller 等 Remote 控制器、directory-picker、plugin-inventory、agent-presets（storage/sandbox/typert-gateway 等基础设施在 base） |
 | **headless** | `dsh-headless` bundle：`headless-startup`（命令行解析）、`headless-runner`（驱动任务、打印结果） |
 | **sdk** | `dsh-sdk-app` bundle：base + 薄协议层（persona override + `sdk-app-startup` + `sdk-jsonrpc-server`，`inject: [sdkAppStartup, loader]`）；工具面**不收窄**，继承 base |
-| **sdk-minimal** | `dsh-sdk-minimal` bundle：独立树不叠 base——工具面收窄到 persistent bash + str_replace_editor；无 subagent、todo、tool-fs、compaction、web search |
+| **sdk-minimal** | `dsh-sdk-minimal` bundle：独立树不叠 base——工具面收窄到 persistent bash（win32 为 persistent pwsh）；无 subagent、todo、tool-fs、compaction、web search |
 | **acp** | `dsh-acp-app` bundle：base + 薄自动化层（persona override + `acp-app-startup` + `acp`，`inject: [acpAppStartup]`）；持久化/检查点/查询在 base，不自持 |
 
 ## 阅读路径
@@ -126,7 +126,7 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 | `packages/bundle/acp-app/cordis.patch.yml` | ACP 协议层 |
 | `packages/sdk/server/src/index.ts` | JSON-RPC SDK server 插件 |
 | `packages/acp/acp/src/index.ts` | ACP 桥插件 |
-| `packages/examples/acp-demo/src/index.ts` | ACP demo 组合的示例（已不是运行时入口） |
-| `packages/examples/jsonrpc-demo/` | 旧 SDK demo（已不是运行时入口） |
+| `packages/bundle/acp-app/src/index.ts` | ACP profile 应用组合源 |
+| `python/sdk/examples/` | Python SDK / JSON-RPC 使用示例 |
 | `_digested/composition/00-map.md` | 启动组合机制（profile 目录、bundle 层叠） |
 | `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |

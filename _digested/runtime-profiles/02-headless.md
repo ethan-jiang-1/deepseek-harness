@@ -51,7 +51,7 @@ dsh --profile headless "run the tests"
   → 打印最终 assistant 消息 → exit 0
 ```
 
-最终消息的读取是逐 seq 的：runner 的 `summarize` 按 `session.eventAt(SessionSeq(seq))` 从首个 seq 读到捕获长度，读不到即 fail loud（`dsh: headless summary cannot read seq N below captured length M`；`packages/bundle/headless/src/index.ts:64-73`，`tests/headless.spec.ts` 有对应用例）。
+最终消息的读取是逐 seq 的：runner 的 `summarize` 按 `session.eventAt(SessionSeq(seq))` 从首个 seq 读到捕获长度，读不到即 fail loud（`dsh: headless summary cannot read seq N below captured length M`；`packages/bundle/headless/src/index.ts:64-73`，`packages/bundle/headless/tests/headless.spec.ts` 有对应用例）。
 
 ## 独特之处
 

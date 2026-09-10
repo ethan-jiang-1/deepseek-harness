@@ -78,5 +78,6 @@ fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条�
 | [`01-session-event-map.md`](./01-session-event-map.md) | 信封、surface 四类、required-on-read、`SESSION_FORMAT_VERSION = 3` |
 | [`02-inbox-与turn-时序.md`](./02-inbox-与turn-时序.md) | followup / steer / inject；claim；拒绝仍关 turn |
 | [`03-换loop的半径.md`](./03-换loop的半径.md) | `AgentFactory`、日志与事件义务、默认组合替换点 |
+| [`04-持久化seam与互斥写.md`](./04-持久化seam与互斥写.md) | `SessionPersistence` 五方法、`SessionHandle`、进程内单写者与跨进程租约、崩溃补全 |
 
 下一专题：[`../capability-seams/00-map.md`](../capability-seams/00-map.md) 或 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。

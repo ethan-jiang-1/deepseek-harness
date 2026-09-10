@@ -31,9 +31,9 @@ dsh --profile web --patch my.yml       # 叠加 patch
 | `system-prompt` | 设 persona 文本 |
 | `session-query-sqlite` | 设 `:memory:` + `openAt: never`（按需才开 SQLite） |
 | `tools` | 透传 `DSH_TOOLS_MODE` 环境变量 |
-| `tool-bash`, `tool-pwsh`, `tool-fs`, `tool-skill`, `tool-goal` 等 | **disable** 所有 model-facing 工具行——这些交给 `agent-presets` 在会话级别挂载。base 双开 `search`+`fetch`（#3382）后，`tool-web` 的语义是 host 行整行 disable、由 agent-presets 按 preset 组合两工具（base patch 注释，`packages/bundle/base/cordis.patch.yml:436-438`）；shipped 各 preset（cordis/ptc/standard）的 `tool-web` 均 `fetch: true`，可作对照 |
+| `tool-bash`, `tool-pwsh`, `tool-fs`, `tool-skill`, `tool-goal` 等 | **disable** 所有 model-facing 工具行——这些交给 `agent-presets` 在会话级别挂载。base 双开 `search`+`fetch`（#3382）后，`tool-web` 的语义是 host 行整行 disable、由 agent-presets 按 preset 组合两工具（base patch 注释，`packages/bundle/base/cordis.patch.yml:425-427`）；shipped 各 preset（cordis/ptc/standard）的 `tool-web` 均 `fetch: true`，可作对照 |
 
-`hmr` 不在上表：web-app 自身没有 `hmr` 行，模块热更新的 disable 来自 base 层（`packages/bundle/base/cordis.patch.yml:19-26`）；Web 的 client 侧热重载由独立的 `client-hmr` 行负责（`packages/bundle/web-app/cordis.patch.yml:148-149`）。
+`hmr` 不在上表：web-app 自身没有 `hmr` 行，模块热更新的 disable 来自 base 层（`packages/bundle/base/cordis.patch.yml:19-25`）；Web 的 client 侧热重载由独立的 `client-hmr` 行负责（`packages/bundle/web-app/cordis.patch.yml:167-168`）。
 
 ### `dsh-web-app` 的 insert 行
 
@@ -65,7 +65,7 @@ dsh --profile web
 
 ## 独特之处
 
-- **shipped 模板中唯一支持运行时 patch 重载的 Profile**：`composeLive` 夹住用户层，候选失败保留上一棵好树。该「唯一」限 shipped 模板——自定义 profile 默认同样是 live（`packages/boot/app-boot/src/profile.ts:169`）。
+- **shipped 模板中唯一支持运行时 patch 重载的 Profile**：`composeLive` 夹住用户层，候选失败保留上一棵好树。该「唯一」限 shipped 模板——自定义 profile 默认同样是 live（`packages/boot/app-boot/src/profile.ts:142`）。
 - **唯一有 browser 侧的 Profile**：browser 半边（`packages/client/`）通过 `window.__DSH_BOOT__` 初始化，经 `dsh.client` 插件罗盘构造核。
 - **唯一使用 `agent-presets` 的 Profile**：session 级别选择 standard / ptc / minimal / cordis，host 平面不直接挂 model-facing 工具。
 - **stdout 给用户**：可以装 logger、打印 URL、输出诊断信息。

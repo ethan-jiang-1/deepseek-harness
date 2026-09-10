@@ -101,5 +101,6 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 |------|------|
 | [`01-扩展表非显然落点.md`](./01-扩展表非显然落点.md) | architecture 扩展表中不能从 `ctx` 键直接看出的落点 |
 | [`02-对照单一loop.md`](./02-对照单一loop.md) | 从「一个 loop + tools 数组」迁过来时落在哪一层 |
+| [`03-门禁与性能基准.md`](./03-门禁与性能基准.md) | `run-gates` 聚合器与 leaf 家族；`benchmarks/` 性能门禁树 |
 
 Loader / fiber 如何卸载插件贡献，见 [`../cordis-runtime/04-vendor-本地修改.md`](../cordis-runtime/04-vendor-本地修改.md) 与 [`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md)。

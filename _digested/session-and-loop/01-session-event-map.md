@@ -28,6 +28,7 @@
 | `request/context` | 否（只记录 provider、model 与 context window） |
 | `todo/write` | 否（log-only UI；非 loop 写——`packages/todo/tool-todo/src/index.ts:210`） |
 | `session/end-seed` | 否（种子与 live 的分界；非 loop 写——Session 构造器是唯一合法写者，`packages/core/session/src/types.ts:389-391`） |
+| `deliverables/presented` | 否（记录该 turn 声明为交付物的 workspace 文件；非 loop 写——`packages/fs/tool-present/src/index.ts:99-107`） |
 
 `SurfaceEventType` 有四种：`system/message`、`user/message`、`assistant/message`、`tool/result`。只有它们可以带 `surfaceOp` / `sourceEventSeqs`。编译器在 `Session.append` 调用点强制：log-only 事件不许带 surface 字段。
 

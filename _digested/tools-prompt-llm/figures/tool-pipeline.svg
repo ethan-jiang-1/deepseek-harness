@@ -29,7 +29,7 @@
   <text x="815" y="146" text-anchor="middle" font-size="11" fill="#16a34a">然后 tool/result 入 log</text>
 
   <rect x="40" y="190" width="880" height="110" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="60" y="220" font-size="12" fill="#334155">dsh-guard：循环卫生提醒 + execute 截止时间。策略在管道上统一执行，测试拒绝路径也走执行器，而不是只靠 schema 省略。</text>
+  <text x="60" y="220" font-size="12" fill="#334155">guard 组（repeat-tool-reminder + timeout-policy）：循环卫生提醒 + execute 截止时间。策略在管道上统一执行，测试拒绝路径也走执行器，而不是只靠 schema 省略。</text>
   <text x="60" y="244" font-size="12" fill="#334155">interaction：人的审批、permission preset、ask-user。人发的 slash command 走 ctx.commands，不经过模型 turn。</text>
   <text x="60" y="268" font-size="12" fill="#334155">tool 的 UI 渲染意图是设计的一部分（generic / terminal / diff / search / read / web）。展示方法是 args 的纯函数。</text>
   <text x="60" y="288" font-size="11" fill="#64748b">详情：docs/tool-execution-pipeline.md · docs/cookbook/adding-a-tool.md</text>
