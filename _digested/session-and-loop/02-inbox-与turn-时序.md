@@ -8,7 +8,7 @@
 
 ## 两个列表，一份持久 splice
 
-`InboxTarget`：`'next-turn'` | `'next-step'`。内存投影从 `session.ownEvents()` 里的 `agent/inbox/spliced` 重放——rc.1 起 `Session.ownEvents()` / `Session.isOwnSeq()` 对普通消费者隐藏继承前缀比较（机制见 [`2026-08-31-session-sequence-and-log-offset-brands`](../../.agents/notes/implemented/architecture/2026-08-31-session-sequence-and-log-offset-brands.md)）。种子里的 splice 不算进这个 agent 生命周期的队列。
+`InboxTarget`：`'next-turn'` | `'next-step'`。内存投影从 `session.ownEvents()` 里的 `agent/inbox/spliced` 重放——rc.1 起 `Session.ownEvents()` / `Session.isOwnSeq()` 对普通消费者隐藏继承前缀比较（机制见 [`2026-08-31-session-sequence-and-log-offset-brands`](../../.agents/notes/archived/architecture/2026-08-31-session-sequence-and-log-offset-brands.md)）。种子里的 splice 不算进这个 agent 生命周期的队列。
 
 `splice` **先** `session.append('agent/inbox/spliced', …)`，再改投影。同步的 `session/event` 观察者看到的是 splice **前**的列表，可以用归一化坐标找回被删的消息。
 

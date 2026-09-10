@@ -67,7 +67,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 - `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果、模型可见 ⟺ 已记录、显式优于隐式。
 - 文档标准禁止「previously / now / renamed」这类变迁史；当前状态散文（current-state prose），一个事实一个家（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
-- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模见 [`claims.json`](./claims.json) 的 N1–N2（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）；每条有分类、双语、归档纪律；「非平凡改动必须带 note」本身是一条规则（[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)）；归档有专门的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) skill。note 记的是「为什么、放弃了什么、怎么验证」。
+- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模见 [`claims.json`](./claims.json) 的 N1–N2（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）；每条有分类、双语、归档纪律；「非平凡改动必须带 note」本身是一条规则（[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)）；归档有专门的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) skill。note 记的是「为什么、放弃了什么、怎么验证」。
 
 为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。
 
@@ -114,7 +114,7 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 - [`../../AGENTS.md`](../../AGENTS.md)（第 107 行；required-on-read 与 standing orders）
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文、tier taxonomy、字数预算）
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；读者模型的因果来源）
-- [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（note 语料库的规则）
+- [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（note 语料库的规则）
 - [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（rc.1 废除空 companion，现行权威）
 - [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 rc.1 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」，原「空 invariant 纪律」的显式结论表述只剩历史意义，rc.1 起被 2026-08-28 裁定取代）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
