@@ -27,7 +27,7 @@
 
 列出的 bundle 若没有 `dsh.bundle` 声明，启动失败，不会默默跳过。Patch 文件必须是列表；要保留一个空层，写 `[]`。
 
-base 工具面是这两条规则的现成例子（#3382）：base 层 `tool-web` 默认 `search`+`fetch` 双开（`packages/bundle/base/cordis.patch.yml:461-465`，`fetch: false→true`，0a0f9e59），web-app 反而把该行整行 disable、由 agent preset 逐 preset 组合两工具（base patch 注释，`packages/bundle/base/cordis.patch.yml:436-438`）。
+base 工具面是这两条规则的现成例子（#3382）：base 层 `tool-web` 默认 `search`+`fetch` 双开（`packages/bundle/base/cordis.patch.yml:450-454`，`fetch: true`），web-app 反而把该行整行 disable、由 agent preset 逐 preset 组合两工具（base patch 注释，`packages/bundle/base/cordis.patch.yml:425-435`）。
 
 `composeEntries`、`boot()` 与 `renderConfigDump` 共用 Include 的 `applyEntryPatches`。`--dump-config` 展示用户可编辑层，launcher 派生层只在启动时追加；差异和 `!!js` 保真见 [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md)。
 
@@ -44,9 +44,10 @@ dsh --profile web --dump-config
 - **profile**：`$DSH_HOME/profiles/<name>`（未设 `DSH_HOME` 则为 `~/.dsh`）。里面有 `package.json`（`dsh.profile.bundles` + 树外插件）和用户自己的 `cordis.patch.yml`。
 - **bundle**：npm 包，清单里写 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`。`dsh-base` 是每个 profile 的第一层；其它 bundle 增加 Web 或 headless 等产品组合。`dsh-base` 不依赖、也不挂载可选的 Codex / Claude Code provider；它们是独立的 Profile Bundle，用 `dsh plugin --profile <name> add` 装进 profile 并 restart，各自在 host 平面注册一个 dormant 默认 provider，agent preset 再决定要不要露出对应的 model-facing tool 行——host 可用不等于 tool 暴露。
 - **模板**：`web`、`headless`、`sdk`、`sdk-minimal`、`acp` 五个内置 profile 首次使用会自动初始化（`PROFILE_TEMPLATES` 登记）。其它名字必须先 `initProfile`，否则 fail loud。`sdk-minimal` 是唯一不叠 `dsh-base` 的 bundle（自己持有完整工具树）。
-- **preset id 与显示名**：shipped 目录是 `ptc` / `minimal` / `standard` / `cordis`（`packages/preset/agent-presets/presets/`；`code` 改名 `ptc`（3ca9c7d489）与 `minimal` preset 入包（f94495e527）均发生在 alpha.3 之前（merge-base 已验证），不是 rc.1 周期内的变化）。显示名来自各 `preset.yml` 的 `name` 字段（如 `ptc` → PTC 模式），不是 locale 映射。
+- **desktop 保留 profile**：`$DSH_HOME/profiles/desktop` 由 Electron 应用（`apps/desktop`）独占，不属于五个内置模板；经 `loadProfileDirectory` 加载（不走 `loadProfile` 的模板自动初始化），不开监听端口，`dsh-app://` 协议经 `apps/desktop-host` 的字节管道承载 API 与 Web 资产。
+- **preset id 与显示名**：shipped 目录是 `ptc` / `minimal` / `standard` / `cordis`（`packages/preset/agent-presets/presets/`）。显示名来自各 `preset.yml` 的 `name` 字段（如 `ptc` → PTC 模式），不是 locale 映射。
 
-PTC 相对 standard 的唯一实质差异（#3425）：`ptc/agent.cordis.yml` 对 `tool-workflow` 新增 `disabled: true`（`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:233-237`）——保留 `workflow-worker-thread` 引擎给 `ralph`，不在 `run_code` 之外发布第二个模型侧编排面；shipped-root.spec 钉住「仅 PTC 禁 workflow、standard/cordis 不禁、引擎与 `tool-ralph` 保留」（`packages/preset/agent-presets/tests/shipped-root.spec.ts:141-149`）。
+PTC 相对 standard 的唯一实质差异（#3425）：`ptc/agent.cordis.yml` 对 `tool-workflow` 设置 `disabled: true`（`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:234-238`）——保留 `workflow-worker-thread` 引擎给 `ralph`，不在 `run_code` 之外发布第二个模型侧编排面；shipped-root.spec 钉住「仅 PTC 禁 workflow、standard/cordis 不禁、引擎与 `tool-ralph` 保留」（`packages/preset/agent-presets/tests/shipped-root.spec.ts:144-153`）。
 
 启动环境分层：进程继承 > 项目目录 `.env` > home `.env`；bootstrap-only 变量不允许来自文件。`ctx.credentials` 的本地 provider 对同名引用使用启动环境 > `$DSH_HOME/.credentials.yaml` > 项目 `.env` > home `.env`，其中凭据文件是可由产品写入的持久层。
 
@@ -56,7 +57,7 @@ PTC 相对 standard 的唯一实质差异（#3425）：`ptc/agent.cordis.yml` �
 
 | 路径 | 角色 |
 |------|------|
-| `packages/boot/app-boot/` | `boot`、`loadProfile`、`composeEntries`、`renderConfigDump` |
+| `packages/boot/app-boot/` | `boot`、`loadProfile`、`loadProfileDirectory`、`composeEntries`、`renderConfigDump` |
 | `packages/boot/cmdline/` | CLI 如何选 profile / patch |
 | `packages/bundle/base/` | 每个 profile 的第一层（web、headless、sdk、acp 共享） |
 | `packages/bundle/web-app/` | Web 应用层 |
@@ -67,6 +68,8 @@ PTC 相对 standard 的唯一实质差异（#3425）：`ptc/agent.cordis.yml` �
 | `packages/experimental/agent-team-profile/` | Agent Teams CLI 实验性 profile |
 | `packages/experimental/agent-team-web-profile/` | Agent Teams Web 实验性 profile |
 | `apps/cli/` | 产品 bin `dsh`（所有 profile 的入口） |
+| `apps/desktop/` | Electron 主进程：注册 `dsh-app://` 协议，独占保留 profile `$DSH_HOME/profiles/desktop` |
+| `apps/desktop-host/` | Electron 子进程：`loadProfileDirectory`、无监听端口、字节管道承载 API 与 Web 资产 |
 | [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md) | profile 机器合同 |
 
 ## 机制级正文

@@ -2,9 +2,9 @@
 
 源码核验入口：`packages/core/tools/src/index.ts` 事件、`packages/core/tools/src/ptc.ts`、`packages/llm/llm/src/assembler.ts`、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
 
-本篇说明工具监听器的挂载位置，以及流式 chunk 如何形成 raw chunk 与 assembled message 两类日志事件。
+本篇说明工具监听器的挂载位置，以及流式 chunk 如何折成 durable compact stream 与实时 `agent/assistant-stream` 帧。
 
-![流：chunk 入 log，message 进 surface](./figures/chunk-to-message.svg)
+![流：stream 入 log，message 进 surface](./figures/chunk-to-message.svg)
 
 ## 三条 `tools/*` 加上一条 `approval/*`
 
@@ -34,28 +34,27 @@ hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-exec
 
 `tools/post-execute`：抛错的 tool 也作为 error 进入这条链。caller 取消在结算后只替换「已接受的成功结果」。
 
-还有 `tools/ptc-dispatch-log`（3ca9c7d489 随 PTC 改名，旧名 `tools/code-dispatch-log`；`packages/core/tools/src/index.ts:181,343,1289-1290`）：只改 `run_code` 子调度写入 log 的副本（spill 预览），程序已经拿到完整值，模型也看不见这段。底层 log 事件名 `tool/code-dispatch` 保留旧词表，只有 waterfall 名随 PTC 改名。
+还有 `tools/ptc-dispatch-log`（`packages/core/tools/src/index.ts:181,343,1289-1290`）：只改 `run_code` 子调度写入 log 的副本（spill 预览），程序已经拿到完整值，模型也看不见这段。子调度落 log 用 `tool/ptc-dispatch`（开始是 `tool/ptc-dispatch-start`），subCallId 形如 `<parent>:ptc:<n>`；defer 的 plugin 来源是 `tools-ptc`。
 
-## chunk → message
+## chunk → message / attempt
 
 默认 loop 的 `step()`：
 
 1. `agent/request` waterfall 得到冻结请求。
 2. `preparedCall?.stream(request) ?? ctx.llm.stream(request)`。
-3. 每个 `StreamChunk`：`session.append('assistant/chunk', { turn, step, chunk })`，seq 推进数组。
-4. `BlockAssembler.push(chunk)`。
-5. finish 若 error/aborted：`agent/request-error` waterfall；`retry` 则 **同一 step** 再 stream。
-6. `createAssistantMessage` 从 assembler blocks + provider/model/replayState。
-7. `assistant/message`，`surfaceOp: 'append'`，`sourceEventSeqs: chunkSeqs`。`usage` 有则跟这条走，没有单独 usage 事件。
+3. 每个 `StreamChunk` 交给 `AssistantStreamAttempt`：`push()` 折进 `AssistantStreamAccumulator`（compact timed stream）、喂 `BlockAssembler`，并发布一条 `agent/assistant-stream` chunk 帧；start / end 帧分别在流前后。
+4. finish 若 error/aborted：`agent/request-error` waterfall；`retry` 则 **同一 step** 再 stream。
+5. `createAssistantMessage` 从 assembler blocks + provider/model/replayState。
+6. `assistant/message`，`surfaceOp: 'append'`，内嵌 `stream: AssistantStreamRecord[]`；`usage` 有则跟这条走，没有单独 usage 事件。未产出 surface message 的失败/重试/取消 attempt 落 `assistant/attempt`，同样内嵌 stream。
 
-`deriveMessages` 折叠 message，不折叠 chunk。UI 若要打字机效果，读 chunk；模型下一请求读 assembled message。空 content（只带 usage 的 max-tokens）派生为 null。chunk 的 seq 是品牌化 `SessionSeq`（`packages/core/session/src/types.ts:29`），`assistant/message` 的 `sourceEventSeqs` 必须严格早于 message seq——token-meter 按引用的 chunk seq 重组 provider 输出，依赖该序（`packages/llm/token-meter/src/index.ts:314-317`）；`27bf1039` 把事件 seq 与日志 offset 分型后，按 seq 读取走 `snapshotEvents()` / `eventAt()`。
+`deriveMessages` 折叠 message，不折叠 attempt。UI 若要打字机效果，读 `agent/assistant-stream` 帧；模型下一请求读 assembled message。空 content（只带 usage 的 max-tokens）派生为 null。token-meter 按 `assistant/message` 内嵌的 stream 重组 provider 输出（`assembleAssistantStream(...).blocks()`，`packages/llm/token-meter/src/index.ts:323`）；事件 seq 与日志 offset 分型后，按 seq 读取走 `snapshotEvents()` / `eventAt()`。
 
 max-tokens 截断时，assembler 丢掉全部 `tool-call` block（无论完成与否，`assembler.assembled()` 直接裁）。`ReplayEnvelope` 把 adapter 私有 replay 拆成 `response` 与可选的 per-block `blocks`；assembly 按同一套 keep/drop 裁 `blocks`，两半不能各裁各的。长度对不上就丢弃整份 envelope。
 
-PTC 模式（原 code-mode）：子工具结果里的 image block 不嵌进 `run_code` 的程序输出。成功的 image-bearing result 在 run 结束后 `deferContext` 成 plugin 来源的 user message，进入下一轮获准请求。`read_image` 只把图像放进自己的 tool result；由 PTC 在父 run 结束后统一 defer。
+PTC 模式：子工具结果里的 image block 不嵌进 `run_code` 的程序输出。成功的 image-bearing result 在 run 结束后 `deferContext` 成 plugin 来源的 user message，进入下一轮获准请求。`read_image` 只把图像放进自己的 tool result；由 PTC 在父 run 结束后统一 defer。
 
-`llm-deepseek` 的图像序列化：模型要在 catalog 里声明 `inputModalities` 含 `image` 才收图像输入，否则 `UNSUPPORTED_CONTENT`（门控在 adapter 序列化时，不在 host model-switch 预检）；序列化时把 durable attachment 解析成 DeepSeek Files API 的 file id（`{type:'file', file_id}`），经 `DeepSeekFileStore` 上传、按 `variantId` 索引复用并带过期与配额回收；Files API 解析失败才回退 base64 data URL（`{type:'image_url'}`）。文件引用路径的累计负载受 `maxRequestFilesBytes`（默认 128 MiB）、每请求图像数受 `maxImagesPerRequest`（默认 600）约束；base64 回退受 `maxInlineRequestImageBytes`（默认 20 MiB）约束。超出预算时 `offloadRequestImagesWithPolicy` 按最旧优先、按整数量子把图像替换成占位文本 `OFFLOADED_IMAGE_TEXT`；这是请求期瞬态变换，不写回 durable log。provider 拒绝 file id 时 invalidate 该映射并在同一请求重试一次。413 映射为 `INVALID_REQUEST`。
+`llm-deepseek` 的图像序列化：模型要在 catalog 里声明 `inputModalities` 含 `image` 才收图像输入，否则 `UNSUPPORTED_CONTENT`（门控在 adapter 序列化时，不在 host model-switch 预检）；序列化时把 durable attachment 解析成 DeepSeek Files API 的 file id（`{type:'file', file_id}`），经 `DeepSeekFileStore` 上传、按 `variantId` 索引复用并带过期与配额回收；Files API 解析失败才回退 base64 data URL（`{type:'image_url'}`）。文件引用路径的累计负载受 `maxRequestFilesBytes`（默认 128 MiB）、每请求图像数受 `maxImagesPerRequest`（默认 600）约束；base64 回退受 `maxInlineRequestImageBytes`（默认 20 MiB）约束。超出预算时 `offloadRequestImagesWithPolicy` 按最旧优先、按整数量子把图像替换成占位文本（`offloadedImageText()`）；这是请求期瞬态变换，不写回 durable log。provider 拒绝 file id 时 invalidate 该映射并在同一请求重试一次。413 映射为 `INVALID_REQUEST`。
 
 > **图像编码管线（上游 #2676 / rc.1 核对）**：`attachment-local` 统一 encoding ladder：`encoding.ts` 定义编码参数、`normalization.ts` 标准化输入、`compression-limiter.ts` 限**并发**（FIFO 限制同时图像变换任务数，不是字节预算）、`request-image.ts` 组装请求路径。`saveImage` 返回 canonical ref 与 source facts（尺寸、格式等；`hasAlpha` 只在内部 `DetectedImage`，不入 ref）。Alpha 感知：`encodingLadder(prepared, hasAlpha)` 按 `hasAlpha ? 'image/webp' : 'image/jpeg'` 选编解码器（`IMAGE_ENCODING_QUALITIES = [85, 75, 60]`）。**只有**「干净、单帧、无元数据」的输入才直通；动画压成单帧 8-bit sRGB、带元数据的重编码剥离（`canPassThroughNormalization` 对 animated/metadata 返回 false）。`maxBytes` 是质量阶梯的**目标**而非硬上限——所有阶梯输出都超预算时保留最小输出；provider 字节硬上限在传输路由处才强制。`llm/llm` 的 `content.ts` 支持多模态 image 内容装配；`tool-fs` 的 `read_image` 上报降采样后的尺寸与坐标比例。
 
-ACP 在已提交 `assistant/message` 上按块投影非空文本**或**图像；chunk 仍不上线。SDK JSON-RPC 相反：每条耐久事实都 `session.event`。见 [`../surfaces/02-acp与jsonrpc.md`](../surfaces/02-acp与jsonrpc.md)。
+ACP 在已提交 `assistant/message` 上按块投影非空文本**或**图像；raw stream / attempt 不上 ACP。SDK JSON-RPC 相反：每条耐久事实都 `session.event`。见 [`../surfaces/02-acp与jsonrpc.md`](../surfaces/02-acp与jsonrpc.md)。

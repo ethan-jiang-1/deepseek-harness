@@ -69,12 +69,12 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 | `create()` | 无 goal，或 `complete`（替换，新 goal id） | active + armed | direct-human |
 | `edit()` | 任意当前 | phase 不变，revision+1 | direct-human |
 | `pause()` | 仅 active | paused + disarmed | direct-human |
-| `resume()` | `active·disarmed` / paused / blocked | active + armed（需剩余 round 预算） | direct-human |
+| `resume()` | `active·disarmed` / paused / blocked | active + armed（需剩余 round 预算） | direct-human；模型 `update_goal resume` 拒 paused（`GOAL_TOOL_RESUME_PAUSED`） |
 | `complete()` | active / paused / blocked | complete + disarmed | direct-human 或 goal-round |
 | `block()` | 仅 active | blocked + disarmed（带 blockedReason） | direct-human 或 goal-round |
 | `clear()` | 任意当前 | 墓碑 tombstone（revision+1） | human 命令 |
 
-两个容易记错的点：**`complete` 是终态，不可 resume**——`resume` 的允许集只有 `['active', 'paused', 'blocked']`（`goal/src/index.ts:366`，严格 fold 同 `fold.ts:227-231`），complete goal 只能被 `create()` 替换；**blocked 可以手动 resume**（需 human 权限），只是不会被 round driver 自动续轮。
+两个容易记错的点：**`complete` 是终态，不可 resume**——`resume` 的领域允许集只有 `['active', 'paused', 'blocked']`（`goal/src/index.ts:368`，严格 fold 同 `fold.ts:227-231`），complete goal 只能被 `create()` 替换；**blocked 可以 resume**（模型或 human），只是不会被 round driver 自动续轮。**paused 只有 human 能 resume**：模型 `update_goal resume` 会抛 `GOAL_TOOL_RESUME_PAUSED`（`tool-goal/src/index.ts:280-286`）。
 
 ### 各状态的含义
 
@@ -93,7 +93,7 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 **模型**通过 `update_goal` tool 可以 `complete`、`blocked`、`edit`、`pause`、`resume`。其中 `complete` 和 `blocked` 不需要 human origin（在 goal-round 中被授权），因为这是模型自己报告任务状态：
 
 ```ts
-// tool-goal/src/index.ts 第 284 行
+// tool-goal/src/index.ts 第 292 行
 const authority = completionAuthority(ctx, execution)
 // authority.kind === 'goal-round' 时允许 complete/blocked
 ```

@@ -2,7 +2,7 @@
 
 源码核验入口：`apps/cli/src/dump-config.ts`、`packages/boot/app-boot/src/index.ts` `renderConfigDump`、`packages/boot/app-boot/src/profile.ts` `composeEntries`、`packages/boot/app-boot/tests/config-dump.spec.ts`。
 
-`--dump-config` 与 boot 共用空根、`applyEntryPatches` 和 YAML dialect；dump 的层列表比 `runProfile` 少 launcher 派生的两层，并且不求值 `!!js`。
+`--dump-config` 与 boot 共用空根、`applyEntryPatches` 和 YAML dialect；dump 的层列表比 `runProfile` 少 launcher 派生的 telemetry 这一层，并且不求值 `!!js`。
 
 ![共用 applyEntryPatches；dump 的层列表 ≠ runProfile 的层列表](./figures/dump-vs-boot.svg)
 

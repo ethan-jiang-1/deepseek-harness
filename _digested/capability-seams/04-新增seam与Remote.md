@@ -2,7 +2,7 @@
 
 本篇记录上游同步 0004（`0.1.1-rc.2` → `0.1.2-alpha.3`）引入的**新能力**，以及一种**非三角色**的 BFF 通信模式（API Remote）。其中 Schedule 是刻意不切三角色的插件式能力（对照反例），Webhook 才是真 seam。传统三角色（Definition / Provider / Consumer）仍见 [`01-三角色与分包装.md`](./01-三角色与分包装.md)。
 
-源码核验入口：`packages/schedule/schedule/`、`packages/webhook/`、`packages/api/remotes/`、`packages/typert/`。
+源码核验入口：`packages/schedule/schedule/`、`packages/webhook/`、`packages/api/remotes/`、`packages/api/workspace-files/`、`packages/typert/`。
 
 ## Schedule：不是 seam 的 agent 作用域提醒（反例）
 
@@ -60,7 +60,9 @@
 
 迁移完成后 `packages/host/apiproxy/` 包整体删除（`refactor(api): remove ApiProxy package`）。`client/*` 消费迁移后的 Remote namespace。directory-picker **不在**迁移表里：它是 `ctx.directoryPicker` Service seam（native/browse 后端），不是 Remote。
 
-全集：`packages/api/remotes/src/client/index.ts` 现组装 **12 个** Remote namespace——agent-presets、commands、settings-controller（含 credentials 子命名空间）、goal、llm、cordis-host-runner、plugin-inventory、message-feedback、session-reference、subagents、session-controller、workspace-controller。其中 goal / llm / message-feedback / session-reference 等是原生 Remote（Service 本身即 `TypertRemoteService`），不是 apiproxy 迁移产物。
+全集：`packages/api/remotes/src/client/index.ts` 现组装 **15 个** Remote namespace——agent-presets、commands、settings-controller（含 credentials 子命名空间）、goal、llm、cordis-host-runner、plugin-inventory、message-feedback、sessionFeedback、fileUploads、session-reference、subagents、session-controller、workspace-controller、workspaceFiles。其中 goal / llm / message-feedback / session-reference / sessionFeedback / fileUploads / workspaceFiles 是原生 Remote（Service 本身即 `TypertRemoteService`），不是 apiproxy 迁移产物。
+
+`workspaceFiles` 由 `packages/api/workspace-files/` 提供：`WorkspaceFiles` 继承 `TypertRemoteService`，是 BFF/Remote 型能力而非三角色 seam——只读文件预览、目录列表与 `fs/observed` 变更观察，`inject: ['fs','sandboxPolicy','sessions','typert']`，不写文件。
 
 ### 为什么这很重要
 

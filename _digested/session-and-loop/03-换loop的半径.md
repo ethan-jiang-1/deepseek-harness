@@ -1,6 +1,6 @@
 # `dsh-agent` 与 `dsh-agent-loop`：换 loop 的半径
 
-源码核验入口：`packages/core/agent/src/index.ts` `AgentRegistry` / `AgentFactory`、`packages/core/agent/src/runtime-types.ts` `Agent`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`、`packages/core/agent-loop/src/index.ts` `AgentLoop`。
+源码核验入口：`packages/core/agent/src/index.ts` `AgentRegistry` / `AgentFactory`、`packages/core/agent/src/types.ts` / `runtime-types.ts` `Agent`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`、`packages/core/agent-loop/src/index.ts` `AgentLoop`。
 
 运行时消费者面向 `dsh-agent` 的 `Agent` 与 `AgentFactory` 编程；composition、demo 和测试包可以显式选择默认 `dsh-agent-loop`。
 
@@ -11,7 +11,7 @@
 `ctx.agents` 是 `AgentRegistry`（`dsh-agent`）。它跟踪活着的 agent，提供 process-local initiator（`AsyncLocalStorage`），但不实现 turn。创建委托给 `AgentFactory`：
 
 - `createAgent(ownerCtx, options)` — 调用方提供 `sessionId`；setup 窗口 → commit → 登记 session 与 agent → `agent/session-start`。该事件是第一个允许提交启动输入的扩展点；真正的 turn 由 waking input 驱动。
-- `resume(ownerCtx, options)` — 先 `sessionPersistence.prepare`。
+- `resume(ownerCtx, options)` — 先 `persistence.open(id, 'write')` 取写句柄并读取/修复持久化日志，再 setup 窗口与发布。
 
 默认 loop 插件在构造时调用 `ctx.agents.setFactory(this)`。没有 factory 时，`create` / `resume` 抛出 `no agent factory registered (load an agent-loop plugin)`。ACP 等消费者对着 `ctx.agents` 编程，不需要导入 `ReactLoopAgent`。
 
@@ -29,10 +29,10 @@
 
 1. 实现 `AgentFactory` 和公开 `Agent` 接口，并用 `ctx.agents.setFactory()` 注册唯一 factory。
 2. 保持 session 生命周期和日志语义：turn / step、模型可见输入、tool call / result 与 `request/header` 仍可从同一日志重建。
-3. 按 `AgentEventMap` 声明的 mode 和 agent scope 派发实时事件；尤其不能把 waterfall 与 serial 互换。
+3. 按 Cordis `Events` 里 `agent/*` 事件声明的 mode 和 agent scope 派发实时事件；尤其不能把 waterfall 与 serial 互换。
 4. 从 `session.deriveMessages()` 取得请求历史，并让 loop 的请求重建 invariant 能把实际 LLM 请求对回日志。
-5. **维护 session projection**：projection 已从可选变为强制（`init(header: SessionHeader, inheritedEventCount: SessionLogOffset)` 签名）。替换 loop 必须确保投影在 session 生命周期内正确运行，否则毁坏客户端状态。
-6. **按成本定价的 session 读意图**：rc.1（PR #2907，`27bf1039` 波及）删除了 `session.events` 数组读取；`packages/core/session/src/index.ts` 现暴露三个读操作——`seq`（O(1) 长度）、`eventAt(seq)`（O(1) 单事件，`packages/core/session/src/index.ts:588`）、`snapshotEvents(fromSeq?, toSeqExclusive?)`（显式物化冻结数组；全量快照缓存到下次 append，区间快照不缓存，`packages/core/session/src/index.ts:600-603`）。替换默认 loop 的消费者与驱动不得再假设 `session.events` 存在；机制依据见官方 Agent Note [`.agents/notes/implemented/architecture/2026-08-21-session-log-read-intent.md`](../../.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md)。
+5. **维护 session projection**：投影是强制 seam，每个定义实现 `init(header: SessionHeader, inheritedEventCount: SessionLogOffset)`。替换 loop 必须确保投影在 session 生命周期内正确运行，否则毁坏客户端状态。
+6. **按成本定价的 session 读意图**：`Session` 不暴露 `events` 数组；读操作是 `seq`（O(1) 长度，`packages/core/session/src/index.ts:662`）、`eventAt(seq)`（O(1) 单事件，`packages/core/session/src/index.ts:621`）、`snapshotEvents(fromSeq?, toSeqExclusive?)`（显式物化冻结数组；全量快照缓存到下次 append，区间快照不缓存，`packages/core/session/src/index.ts:633-642`）。替换默认 loop 的消费者与驱动不得假设 `session.events` 存在；机制依据见 [`.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md`](../../.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md)。
 
 满足这些接口后，渲染面、按 `agent.ctx` 登记的插件与人类 command 无需知道私有驱动结构。
 

@@ -33,7 +33,7 @@ ruofei 说「Agent Loop 管推进，结束却分好几层」。Loop 不是「模
 
 > "**You may infer that intent without requiring the user to say 'create a goal'.** Do not use this for trivial single-turn work. Execution rejects non-human and subagent authority."
 
-加上 system prompt 里 `tool:goal` section（order 2400，`packages/core/system-prompt/src/index.ts:143` 的 `SECTION_ORDERS.TOOL_GOAL`）进一步引导：
+加上 system prompt 里 `tool:goal` section（order 2400，`packages/core/system-prompt/src/index.ts:141` 的 `SECTION_ORDERS.TOOL_GOAL`）进一步引导：
 
 > "create_goal may infer goal intent from a direct human request in any language; do not create a goal for routine single-turn work."
 

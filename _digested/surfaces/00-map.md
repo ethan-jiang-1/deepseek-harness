@@ -15,7 +15,7 @@ CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 ses
 | **ACP** | 自动化用的 Agent Client Protocol 服务器 | `dsh --profile acp`（launcher profile） |
 | **JSON-RPC SDK** | 进程外协议、TS client、树上的 server 插件 | `dsh --profile sdk` 或 `sdk-minimal` |
 
-> **重要变化**：从 `0.1.2-alpha.1` 起，sdk 和 acp 不再是独立 app 二进制，而是 `dsh --profile` 下的 launcher profile。所有入口统一走 bundle 层叠。详见 [`../runtime-profiles/00-map.md`](../runtime-profiles/00-map.md)。
+> **入口形状**：sdk 与 acp 不是独立 app 二进制，而是 `dsh --profile` 下的 launcher profile。所有入口统一走 bundle 层叠。详见 [`../runtime-profiles/00-map.md`](../runtime-profiles/00-map.md)。
 
 加 UI 或编辑器集成：驱动 `ctx.agents`，从 `session/event` 渲染。加 Web Chat 节点：注册 `ConversationNodeDefinition` + keyed renderer。加 Web 设置卡：Host `ctx.settings.installSection()` + 浏览器 `settings.plugin.item`，见 [`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md)。不要在入口里再实现一套 loop。
 
@@ -40,9 +40,11 @@ CLI、Web、ACP、JSON-RPC 复用同一套 runtime spine、`Agent` 接口和 ses
 | 路径 | 角色 |
 |------|------|
 | `apps/cli/` | 产品 bin `dsh` |
+| `apps/desktop/` | Electron 壳包住 Web UI；`dsh-app://` 供资源、不开端口，独占 `$DSH_HOME/profiles/desktop` |
+| `apps/desktop-host/` | private upstream-Node 子进程 host |
 | `packages/boot/` | 各 profile 共用的 boot 胶水 |
 | `packages/host/` | webserver / frontend-static / directory-picker / plugin-inventory |
-| `packages/api/session-controller/` | Web host 会话流（`session/event` 转发、activity；替代已删除的 apiproxy） |
+| `packages/api/session-controller/` | Web host 会话流（`session/event` 转发、activity） |
 | `packages/client/` | 浏览器壳、wire、slots |
 | `packages/sdk/` | JSON-RPC protocol / server / TS client |
 | `packages/acp/` | ACP 自动化服务器 |
