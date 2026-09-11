@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 500" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <title>L0–L3 参与阶梯：从一个人到自己的一队</title>
+  <desc>四级台阶，从左到右升高：L0 单人配置（工具能站，缺点选化界面）、L1 复用（persona/预设一次做次次有，缺官方目录+审核）、L2 组织化（一小队共一棵树，缺多 answerer/组织策略）、L3 替代外包（一人干一小队的量，缺审批+渠道+记忆+编排成体系）。每级台阶下沿红字标"缺什么（产品工程）"，并标注对应 03 品类编号。</desc>
+  <rect width="780" height="500" fill="#ffffff"/>
+  <text x="390" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">L0–L3 参与阶梯：从一个人到自己的一队</text>
+  <text x="390" y="46" text-anchor="middle" font-size="12" fill="#888">台阶越高 = 承接的活越成体系；每级下沿红字 = 缺什么（产品工程，不是赠品）；〔编号〕= 04 四件缺的</text>
+
+  <!-- L0 -->
+  <rect x="40" y="330" width="165" height="90" rx="8" fill="#eff4fe" stroke="#4a6fd4" stroke-width="1.5"/>
+  <text x="52" y="354" font-size="13" font-weight="700" fill="#2f4fa8">L0 · 单人配置</text>
+  <text x="52" y="374" font-size="10" fill="#555">你：一个人把配置跑起来</text>
+  <text x="52" y="391" font-size="10" fill="#2f4fa8" font-weight="600">拿到：工具能站</text>
+  <text x="52" y="409" font-size="9.5" fill="#a33a3a">缺：点选化界面（一整笔工程）</text>
+
+  <!-- L1 -->
+  <rect x="222" y="260" width="165" height="160" rx="8" fill="#dde9fb" stroke="#4a6fd4" stroke-width="1.5"/>
+  <text x="234" y="284" font-size="13" font-weight="700" fill="#2f4fa8">L1 · 复用</text>
+  <text x="234" y="304" font-size="10" fill="#555">你：把验证过的打法做成</text>
+  <text x="234" y="320" font-size="10" fill="#555">persona / 预设</text>
+  <text x="234" y="340" font-size="10" fill="#2f4fa8" font-weight="600">拿到：一次做、次次有</text>
+  <text x="234" y="360" font-size="9.5" fill="#a33a3a">缺：官方"目录+审核"</text>
+  <text x="234" y="376" font-size="9.5" fill="#a33a3a">（可 install ≠ 可信）〔④〕</text>
+  <text x="234" y="396" font-size="9.5" fill="#555">今天就能做，不用等谁</text>
+
+  <!-- L2 -->
+  <rect x="404" y="190" width="165" height="230" rx="8" fill="#c9dcfa" stroke="#4a6fd4" stroke-width="1.5"/>
+  <text x="416" y="214" font-size="13" font-weight="700" fill="#2f4fa8">L2 · 组织化</text>
+  <text x="416" y="234" font-size="10" fill="#334155">你：和一小队共用一棵树</text>
+  <text x="416" y="252" font-size="10" fill="#2f4fa8" font-weight="600">拿到：不用给每个人</text>
+  <text x="416" y="268" font-size="10" fill="#2f4fa8" font-weight="600">从头教学</text>
+  <text x="416" y="288" font-size="9.5" fill="#a33a3a">缺：多 answerer / 组织策略〔②〕</text>
+  <text x="416" y="304" font-size="9.5" fill="#a33a3a">多方审批编排今天不支持</text>
+  <text x="416" y="318" font-size="9" fill="#888">（user-approval README）</text>
+
+  <!-- L3 -->
+  <rect x="586" y="120" width="165" height="300" rx="8" fill="#b3cff7" stroke="#2f4fa8" stroke-width="1.5"/>
+  <text x="600" y="144" font-size="13" font-weight="700" fill="#1d3a80">L3 · 替代外包</text>
+  <text x="600" y="164" font-size="10" fill="#334155">你：一人干一个小分队的活</text>
+  <text x="600" y="182" font-size="10" fill="#1d3a80" font-weight="600">拿到：一个人的体量</text>
+  <text x="600" y="198" font-size="10" fill="#1d3a80" font-weight="600">做出一小队的量</text>
+  <text x="600" y="218" font-size="9.5" fill="#a33a3a">缺：审批+渠道+记忆</text>
+  <text x="600" y="234" font-size="9.5" fill="#a33a3a">+编排成体系〔①②③④〕</text>
+  <text x="600" y="252" font-size="9.5" fill="#555">即 04 表四件缺的全部</text>
+
+  <!-- 底部进度轴 -->
+  <line x1="40" y1="434" x2="751" y2="434" stroke="#999" stroke-width="1.5"/>
+  <polygon points="751,434 743,430 743,438" fill="#999"/>
+  <text x="396" y="452" text-anchor="middle" font-size="12" fill="#888">参与深度：一个人的配置 → 自己的一队（不是升级打怪——L1 今天就能做，L2/L3 卡在上面红字）</text>
+
+  <text x="40" y="476" font-size="10" fill="#888">三道门槛现状：知识外置 ✓ · 识字门槛部分降低 · 判断门槛仍被拆小（_digested/harness-idea/07-boundaries-costs-fit.md）</text>
+  <text x="40" y="490" font-size="10" fill="#888">〔①②③④〕= 04 四件缺的编号：①渠道 ②审批形状 ③可重建消费 ④可复用预设——L2/L3 缺的就是它们</text>
+</svg>

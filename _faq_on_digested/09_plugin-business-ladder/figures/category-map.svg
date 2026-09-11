@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 440" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <title>自用 owner 的品类地图（细分版）：官方给了多少 × 对你值多少</title>
+  <desc>左图为散点图：横轴为官方机制完备度（按 FAQ 08 缺口 taxonomy），纵轴为对自用 owner 的价值，15 个品类泡按目录站 11 分类与 FAQ 08 的 28 条 seam P/C 点数定位，气泡大小 = 目录站对应分类项目数（站方自报）。右列为逐泡读法：①–④ 是四件缺的（渠道/审批形状/可重建消费/可复用预设），记忆无编号但同属高价值缺口，右上为已有商品化区，左下为热闹但与 owner 无关的赛场。</desc>
+  <rect width="780" height="440" fill="#ffffff"/>
+  <text x="390" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">自用 owner 的品类地图（细分）：官方给了多少 × 对你值多少</text>
+  <text x="390" y="46" text-anchor="middle" font-size="12" fill="#888">左图：横轴 = FAQ 08 缺口 taxonomy，纵轴 = 对 owner 的价值（本文判断），泡大小 = 目录站分类项目数；右列 = 逐泡读法</text>
+
+  <!-- 象限参考线 -->
+  <line x1="265" y1="70" x2="265" y2="340" stroke="#dddddd" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="60" y1="205" x2="470" y2="205" stroke="#dddddd" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- 区域提示 -->
+  <text x="66" y="64" font-size="10.5" fill="#b03a3a">左上 = 自己投入区（四件缺的）</text>
+  <text x="440" y="64" font-size="10.5" fill="#2d7049">挑着用</text>
+
+  <!-- 轴 -->
+  <line x1="60" y1="340" x2="470" y2="340" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="70" x2="60" y2="340" stroke="#333" stroke-width="1.5"/>
+  <g font-size="9.5" fill="#666" text-anchor="middle">
+    <text x="60"  y="356">三角色全缺</text>
+    <text x="162" y="356">缺 Definition/Provider</text>
+    <text x="265" y="356">缺 Consumer/转正</text>
+    <text x="367" y="356">运行时完备</text>
+    <text x="470" y="356">商品化 P≥2</text>
+  </g>
+  <text x="265" y="374" text-anchor="middle" font-size="11" fill="#888">官方机制完备度 →</text>
+  <g font-size="10" fill="#666" text-anchor="end">
+    <text x="54" y="344">低</text>
+    <text x="54" y="209">中</text>
+    <text x="54" y="101">高</text>
+  </g>
+  <text x="20" y="205" font-size="11" fill="#888" transform="rotate(-90 20 205)">↑ 对自用 owner 的价值</text>
+
+  <!-- ===== 左图气泡 ===== -->
+  <!-- ① 渠道（目录"消息通讯"171） -->
+  <circle cx="81" cy="97" r="20" fill="#d4704a" fill-opacity="0.8" stroke="#a84f2f"/>
+  <text x="81" y="95" text-anchor="middle" font-size="9.5" fill="#fff" font-weight="700">① 渠道</text>
+  <text x="81" y="108" text-anchor="middle" font-size="8.5" fill="#fff">171</text>
+
+  <!-- 记忆（目录无此类） -->
+  <circle cx="126" cy="84" r="19" fill="#4a6fd4" fill-opacity="0.25" stroke="#2f4fa8" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="126" y="88" text-anchor="middle" font-size="9.5" fill="#2f4fa8" font-weight="700">记忆</text>
+  <text x="126" y="99" text-anchor="middle" font-size="7.5" fill="#2f4fa8">≥5 产品</text>
+
+  <!-- ④ 可复用预设 -->
+  <circle cx="273" cy="102" r="18" fill="#8a5fd0" fill-opacity="0.25" stroke="#6a43a8" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="273" y="106" text-anchor="middle" font-size="9" fill="#6a43a8" font-weight="700">④ 预设</text>
+
+  <!-- ② 审批形状 -->
+  <circle cx="335" cy="119" r="17" fill="#c94f7c" fill-opacity="0.25" stroke="#9c3a5e" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="335" y="123" text-anchor="middle" font-size="9" fill="#9c3a5e" font-weight="700">② 审批</text>
+
+  <!-- ③ 可重建消费 -->
+  <circle cx="240" cy="156" r="15" fill="#5fa7c9" fill-opacity="0.25" stroke="#3f7c99" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="240" y="160" text-anchor="middle" font-size="11" fill="#3f7c99" font-weight="700">③</text>
+
+  <!-- 安全/治理（124） -->
+  <circle cx="191" cy="173" r="15" fill="#9a9a4f" fill-opacity="0.75" stroke="#74743a"/>
+  <text x="191" y="175" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">安全</text>
+  <text x="191" y="185" text-anchor="middle" font-size="7.5" fill="#fff">124</text>
+
+  <!-- UI/界面增强（362） -->
+  <circle cx="290" cy="221" r="24" fill="#d0a53f" fill-opacity="0.78" stroke="#a87f2a"/>
+  <text x="290" y="219" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">UI/界面</text>
+  <text x="290" y="234" text-anchor="middle" font-size="8.5" fill="#fff">362</text>
+
+  <!-- 生活/娱乐（165） -->
+  <circle cx="191" cy="289" r="16" fill="#c98f7f" fill-opacity="0.75" stroke="#9c6a5e"/>
+  <text x="191" y="291" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">生活</text>
+  <text x="191" y="301" text-anchor="middle" font-size="7.5" fill="#fff">165</text>
+
+  <!-- 学习/研究（57） -->
+  <circle cx="208" cy="254" r="11" fill="#7fa653" fill-opacity="0.8" stroke="#5d7d3a"/>
+  <text x="208" y="257" text-anchor="middle" font-size="7.5" fill="#fff" font-weight="600">57</text>
+
+  <!-- 观测/SaaS（目录无此类） -->
+  <circle cx="138" cy="297" r="13" fill="#666666" fill-opacity="0.3" stroke="#444" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="138" y="301" text-anchor="middle" font-size="8" fill="#444" font-weight="600">观测</text>
+
+  <!-- backlog 小泡 -->
+  <circle cx="150" cy="230" r="9" fill="#999" fill-opacity="0.6" stroke="#777"/>
+  <text x="166" y="234" font-size="8.5" fill="#888">backlog 5–8</text>
+
+  <!-- 开发/编码工具（460） -->
+  <circle cx="428" cy="146" r="28" fill="#3f9d6b" fill-opacity="0.75" stroke="#2d7049"/>
+  <text x="428" y="143" text-anchor="middle" font-size="10" fill="#fff" font-weight="700">开发工具</text>
+  <text x="428" y="158" text-anchor="middle" font-size="9" fill="#fff">460</text>
+
+  <!-- 编排/委派（382） -->
+  <circle cx="364" cy="162" r="28" fill="#3f9d6b" fill-opacity="0.55" stroke="#2d7049"/>
+  <text x="364" y="160" text-anchor="middle" font-size="9.5" fill="#1f5035" font-weight="700">编排/委派</text>
+  <text x="364" y="173" text-anchor="middle" font-size="9" fill="#1f5035">382</text>
+
+  <!-- 模型/MCP client（230） -->
+  <circle cx="396" cy="205" r="22" fill="#3f9d6b" fill-opacity="0.42" stroke="#2d7049"/>
+  <text x="396" y="203" text-anchor="middle" font-size="9" fill="#1f5035" font-weight="700">模型·MCP</text>
+  <text x="396" y="215" text-anchor="middle" font-size="8.5" fill="#1f5035">230</text>
+
+  <!-- 文件/数据（316） -->
+  <circle cx="452" cy="200" r="20" fill="#3f9d6b" fill-opacity="0.55" stroke="#2d7049"/>
+  <text x="452" y="198" text-anchor="middle" font-size="9" fill="#1f5035" font-weight="700">文件/数据</text>
+  <text x="452" y="211" text-anchor="middle" font-size="8" fill="#1f5035">316</text>
+
+  <!-- 部署/E2B（183） -->
+  <circle cx="440" cy="243" r="19" fill="#3f9d6b" fill-opacity="0.45" stroke="#2d7049"/>
+  <text x="440" y="241" text-anchor="middle" font-size="9" fill="#1f5035" font-weight="700">部署/E2B</text>
+  <text x="440" y="252" text-anchor="middle" font-size="8.5" fill="#1f5035">183</text>
+
+  <!-- 会话底座（目录无此类） -->
+  <circle cx="460" cy="104" r="14" fill="#3f9d6b" fill-opacity="0.3" stroke="#2d7049" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="460" y="101" text-anchor="middle" font-size="7.5" fill="#2d7049" font-weight="700">会话</text>
+  <text x="460" y="111" text-anchor="middle" font-size="7.5" fill="#2d7049" font-weight="700">底座</text>
+
+  <!-- ===== 右列：逐泡读法 ===== -->
+  <text x="492" y="66" font-size="11" font-weight="700" fill="#333">读图（①–④ = 四件缺的，同 ladder / experiments 图）</text>
+  <g font-size="9.5" fill="#444">
+    <text x="492" y="86">① 渠道——官方三角色全缺，无 Definition 可依</text>
+    <text x="504" y="100">第三方 ≥8 个互不兼容方言（目录：消息通讯 171）</text>
+    <text x="492" y="118">记忆——官方 seam 为零，第三方最热（≥5 互竞产品）</text>
+    <text x="492" y="136">② 审批——运行时完备，缺表单/多方（聊天审批已现货）</text>
+    <text x="492" y="154">③ 重建消费——不变式已有，缺复盘界面（目录无此类）</text>
+    <text x="492" y="172">④ 预设——preset/scope 已有，缺目录+审核（压缩率 2.6%）</text>
+  </g>
+  <text x="492" y="194" font-size="10" font-weight="700" fill="#2d7049">右上（已有商品化）＝挑着用：</text>
+  <g font-size="9.5" fill="#555">
+    <text x="504" y="208">开发 460 · 编排 382 · 模型/MCP 230 · 文件 316 · 部署 183</text>
+    <text x="504" y="224">会话底座（虚线）目录无此类，persistence 已 P≥2</text>
+    <text x="504" y="238">饱和 ≠ 值钱：能换 39.3% 只是"至少能换"的下界</text>
+  </g>
+  <text x="492" y="260" font-size="10" font-weight="700" fill="#888">左下（热闹但不痛）＝别投入：</text>
+  <g font-size="9.5" fill="#666">
+    <text x="504" y="276">UI 362 · 生活 165 · 学习 57 · 观测（SaaS 买家不是 owner）</text>
+    <text x="504" y="290">安全/治理 124——mount 不是安全边界（FAQ 08 边界 2）</text>
+  </g>
+  <g font-size="9" fill="#888">
+    <text x="492" y="312">泡大小 = 目录站对应分类项目数（站方自报，2026-08-27）</text>
+    <text x="492" y="325">虚线泡 = 目录还没有对应分类；目录 58% 落在"其他"，</text>
+    <text x="492" y="338">生态信号是脏的——数字只作量级，不作精确值</text>
+  </g>
+
+  <text x="60" y="394" font-size="10" fill="#888">横轴定位 = FAQ 08 缺口 backlog 的角色 taxonomy（每条缺什么角色见该文）；纵轴 = 本文的 owner 价值判断（排序理由见 03 正文）</text>
+  <text x="60" y="410" font-size="10" fill="#888">分类细化依据 = 目录站 11 分类快照（01-生态证据与历史先例）+ FAQ 08 的 28 条 seam P/C 点数（执行世界 / 会话底座 / LLM 注册面 / 编排的官方供给读数）</text>
+</svg>

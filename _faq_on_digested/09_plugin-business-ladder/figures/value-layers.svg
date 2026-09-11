@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 500" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <title>三层生产力价值：能用（省手）→ 敢用（敢放手）→ 复利（可复用）</title>
+  <desc>三层堆叠图，自下而上：省手（装了就能跑、换底座不改调用）、敢放手（审批成对、fail-closed、可重建，加粗强调为第一价值）、可复用（preset/bundle/patch 一处配好处处照搬）。每层内列出挂在哪条机制不变式上。</desc>
+  <rect width="780" height="500" fill="#ffffff"/>
+  <text x="390" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">三层生产力价值：能用 → 敢用 → 复利</text>
+  <text x="390" y="46" text-anchor="middle" font-size="12" fill="#888">卡点不是 agent 不够强，是我不敢离开；三层都是运行时不变式（机制事实见 FAQ 08），不是文档承诺</text>
+
+  <!-- 左侧阶段词 -->
+  <g font-size="14" font-weight="700" text-anchor="middle">
+    <text x="38" y="124" fill="#2d7049">复利</text>
+    <text x="38" y="262" fill="#c94f4f">敢用</text>
+    <text x="38" y="396" fill="#2f4fa8">能用</text>
+  </g>
+
+  <!-- 顶带：可复用 -->
+  <rect x="72" y="64" width="668" height="110" rx="10" fill="#eef7ee" stroke="#3f9d6b" stroke-width="1.5"/>
+  <text x="88" y="90" font-size="13.5" font-weight="700" fill="#2d7049">可复用——一次配好，处处照搬</text>
+  <text x="88" y="112" font-size="10.5" fill="#555">preset + bundle + patch：一棵树从一个人带到整个队、从一个项目带到另一个项目，diff 不进 packages/</text>
+  <text x="88" y="130" font-size="10.5" fill="#555">今天配的每一样，明天三个人同一套底座；persona / 预设是这层落到工具包的形态</text>
+  <text x="88" y="148" font-size="10" fill="#888">反面：不装则只能靠 git 各自剪一半（见 04 四件缺的）</text>
+
+  <!-- 箭头：能/build-up -->
+  <line x1="406" y1="336" x2="406" y2="324" stroke="#999" stroke-width="2"/>
+  <line x1="406" y1="192" x2="406" y2="180" stroke="#999" stroke-width="2"/>
+
+  <!-- 中带：敢放手（强调） -->
+  <rect x="72" y="196" width="668" height="124" rx="10" fill="#fdf1ee" stroke="#c94f4f" stroke-width="2"/>
+  <rect x="646" y="210" width="78" height="20" rx="10" fill="#c94f4f"/>
+  <text x="685" y="224" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">第一价值</text>
+  <text x="88" y="222" font-size="13.5" font-weight="700" fill="#a33a3a">敢放手——过夜 / 批量 / 危险动作，你敢离开</text>
+  <text x="88" y="244" font-size="10.5" fill="#555">model-visible ⟺ logged 是 loop 构建期检查；会话格式有版本纪律，冷读可恢复</text>
+  <text x="88" y="262" font-size="10.5" fill="#555">审批 asked/decided 成对审计；没有 answerer 时 fail-closed；审计写入失败拒签，不留未记录的决策</text>
+  <text x="88" y="280" font-size="10.5" fill="#555">这三样不是"卖合规"，是给 owner 自己一份回放——它干了什么、谁批的、能不能恢复</text>
+  <text x="88" y="302" font-size="10" fill="#a33a3a">所以"信任"不是销售词，是"过夜把手交给它，心里有底"的那个"底"</text>
+
+  <!-- 底带：省手 -->
+  <rect x="72" y="340" width="668" height="104" rx="10" fill="#eef3fd" stroke="#4a6fd4" stroke-width="1.5"/>
+  <text x="88" y="366" font-size="13.5" font-weight="700" fill="#2f4fa8">省手——装了就能跑，换底座不改调用</text>
+  <text x="88" y="382" font-size="10.5" fill="#555">执行世界 / 持久化 / subagents：28 条 seam 中 11 条已有 ≥2 真实 Provider（39.3%，"至少能换"的下界）</text>
+  <text x="88" y="400" font-size="10.5" fill="#555">装一个 = 雇一个能换底座的劳力：本地 ↔ 云沙箱（E2B），Consumer 一行不改</text>
+  <text x="88" y="418" font-size="10" fill="#888">饱和区不用你投入——直接挑 Provider；单 Provider 区才是你该等的（FAQ 08）</text>
+
+  <text x="72" y="466" font-size="10" fill="#888">出处：构建期检查（session-and-loop/00-map）· asked/decided 成对 + fail-closed + 拒签（user-approval README）· 版本纪律（FAQ 08 边界 3）</text>
+  <text x="72" y="482" font-size="10" fill="#888">39.3% = 11/28 条 seam 有 ≥2 个真实 Provider（FAQ 08 当前树点数）——只回答"今天能不能无痛换"，不等于"换出差异"</text>
+</svg>
