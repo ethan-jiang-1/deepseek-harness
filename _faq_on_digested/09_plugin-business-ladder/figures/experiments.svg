@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 520" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif">
+  <title>值不值，自己证：三个体感判据 × 四个实验</title>
+  <desc>上排三块是"值不值"的体感判据（自动化赢了手动、敢放手、可换可查）；下排四张实验卡 A–D，各写练的是哪条缝、通过判据（owner 口径）与停止条件。停止条件停的是那条路，不是底座。</desc>
+  <rect width="780" height="520" fill="#ffffff"/>
+  <text x="390" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">值不值，自己证：三个体感判据 × 四个实验</text>
+  <text x="390" y="46" text-anchor="middle" font-size="12" fill="#888">判据是 owner 体感口径（比"杀档线"更贴自己）；每张实验卡下沿是停止条件——停的是那条路，不是底座</text>
+
+  <!-- 判据条 -->
+  <text x="40" y="76" font-size="12" font-weight="700" fill="#333">先判（三句全真才算值，缺一句回 05 失效边界）</text>
+  <g>
+    <rect x="40" y="86" width="226" height="44" rx="14" fill="#4a6fd4" fill-opacity="0.13" stroke="#4a6fd4"/>
+    <text x="56" y="105" font-size="11.5" font-weight="700" fill="#2f4fa8">① 自动化赢了手动</text>
+    <text x="56" y="121" font-size="9.5" fill="#555">某条真实流程你不再回到手工</text>
+    <rect x="285" y="86" width="226" height="44" rx="14" fill="#c94f4f" fill-opacity="0.12" stroke="#c94f4f"/>
+    <text x="301" y="105" font-size="11.5" font-weight="700" fill="#a33a3a">② 敢放手</text>
+    <text x="301" y="121" font-size="9.5" fill="#555">夜里 / 批量的真活，你真放手让它跑</text>
+    <rect x="535" y="86" width="225" height="44" rx="14" fill="#3f9d6b" fill-opacity="0.13" stroke="#3f9d6b"/>
+    <text x="541" y="105" font-size="11.5" font-weight="700" fill="#2d7049">③ 可换可查</text>
+    <text x="541" y="121" font-size="9.5" fill="#555">换渠道 / 模型 / 沙箱，diff 一看就懂、账本不散</text>
+  </g>
+
+  <!-- 实验卡 A -->
+  <rect x="40" y="152" width="172" height="252" rx="10" fill="#fdf4f0" stroke="#d4704a" stroke-width="1.5"/>
+  <rect x="40" y="152" width="172" height="30" rx="10" fill="#d4704a" fill-opacity="0.16"/>
+  <text x="52" y="172" font-size="12" font-weight="700" fill="#a84f2f">实验 A · IM 审批</text>
+  <text x="52" y="200" font-size="9.5" fill="#a84f2f">练的是：渠道 + 审批形状</text>
+  <text x="52" y="224" font-size="10" font-weight="700" fill="#2d7049">通过</text>
+  <text x="52" y="240" font-size="10" fill="#555">一件真活手机上全程推进完</text>
+  <text x="52" y="256" font-size="10" fill="#555">asked/decided 成对可重建</text>
+  <text x="52" y="272" font-size="10" fill="#555">重建 &lt;15 分钟（注明会话规模）</text>
+  <text x="52" y="296" font-size="10" font-weight="700" fill="#a33a3a">停</text>
+  <text x="52" y="314" font-size="10" fill="#555">你发现仍寸步不离 /</text>
+  <text x="52" y="330" font-size="10" fill="#555">完全没省时</text>
+  <text x="52" y="360" font-size="9" fill="#888">复用 approval + userQuestions</text>
+  <text x="52" y="376" font-size="9" fill="#888">和 apiproxy 的 wire 派发</text>
+
+  <!-- 实验卡 B -->
+  <rect x="226" y="152" width="172" height="252" rx="10" fill="#f0f7f2" stroke="#3f9d6b" stroke-width="1.5"/>
+  <rect x="226" y="152" width="172" height="30" rx="10" fill="#3f9d6b" fill-opacity="0.16"/>
+  <text x="238" y="172" font-size="12" font-weight="700" fill="#2d7049">实验 B · E2B 转正</text>
+  <text x="238" y="200" font-size="9.5" fill="#2d7049">练的是：执行世界换底座</text>
+  <text x="238" y="224" font-size="10" font-weight="700" fill="#2d7049">通过</text>
+  <text x="238" y="240" font-size="10" fill="#555">同一任务本地 → 云端</text>
+  <text x="238" y="256" font-size="10" fill="#555">零工具 diff 跑通</text>
+  <text x="238" y="296" font-size="10" font-weight="700" fill="#a33a3a">停</text>
+  <text x="238" y="314" font-size="10" fill="#555">生命周期成本 &gt; 自建维护，</text>
+  <text x="238" y="330" font-size="10" fill="#555">或平台不可控</text>
+  <text x="238" y="360" font-size="9" fill="#888">fs-e2b / subprocess-e2b</text>
+  <text x="238" y="376" font-size="9" fill="#888">已注入同一 ctx.e2b</text>
+
+  <!-- 实验卡 C -->
+  <rect x="412" y="152" width="172" height="252" rx="10" fill="#f6f1fb" stroke="#8a5fd0" stroke-width="1.5"/>
+  <rect x="412" y="152" width="172" height="30" rx="10" fill="#8a5fd0" fill-opacity="0.16"/>
+  <text x="424" y="172" font-size="12" font-weight="700" fill="#6a43a8">实验 C · persona 复用</text>
+  <text x="424" y="200" font-size="9.5" fill="#6a43a8">练的是：可复用预设〔④〕</text>
+  <text x="424" y="224" font-size="10" font-weight="700" fill="#2d7049">通过</text>
+  <text x="424" y="240" font-size="10" fill="#555">同一串验证过的操作</text>
+  <text x="424" y="256" font-size="10" fill="#555">换到下一岗位 / 项目：</text>
+  <text x="424" y="272" font-size="10" fill="#555">零 diff 进 packages/，</text>
+  <text x="424" y="288" font-size="10" fill="#555">HMR 回退 live</text>
+  <text x="424" y="312" font-size="10" font-weight="700" fill="#a33a3a">停</text>
+  <text x="424" y="330" font-size="10" fill="#555">打包一次比我从头写</text>
+  <text x="424" y="346" font-size="10" fill="#555">一遍还慢</text>
+
+  <!-- 实验卡 D -->
+  <rect x="598" y="152" width="172" height="252" rx="10" fill="#eef3fd" stroke="#4a6fd4" stroke-width="1.5"/>
+  <rect x="598" y="152" width="172" height="30" rx="10" fill="#4a6fd4" fill-opacity="0.16"/>
+  <text x="610" y="172" font-size="12" font-weight="700" fill="#2f4fa8">实验 D · 可替换率入闸</text>
+  <text x="610" y="200" font-size="9.5" fill="#2f4fa8">练的是：把"能换"变成门禁数</text>
+  <text x="610" y="224" font-size="10" font-weight="700" fill="#2d7049">通过</text>
+  <text x="610" y="240" font-size="10" fill="#555">并入 gen-doc-graphs，</text>
+  <text x="610" y="256" font-size="10" fill="#555">每 rc 自动重算</text>
+  <text x="610" y="272" font-size="9" fill="#888">（第一版 39.3% 已手工算出）</text>
+  <text x="610" y="296" font-size="10" font-weight="700" fill="#a33a3a">停</text>
+  <text x="610" y="314" font-size="10" fill="#555">连续两个 rc 没人参照</text>
+  <text x="610" y="330" font-size="10" fill="#555">这个数</text>
+
+  <text x="40" y="438" font-size="10" fill="#888">判据全部 owner 口径；实验 A 的差异化不在聊天窗口本身（从聊天审批已是竞争现货），在"成对 ask/decide 审计 + fail-closed + 整请求可重建"</text>
+  <text x="40" y="456" font-size="10" fill="#888">实验 B 的底：seam 已通，Consumer 一行不改换整个执行世界；沙箱已被逐项比价（E2B $21M / Daytona $24M 融资）</text>
+  <text x="40" y="474" font-size="10" fill="#888">三个失效边界（装好仍要盯 / 该手动就手动 / 别家零配置同等强制+可重建+可查）见 05 正文——任何一条成立，对应价值主张作废</text>
+</svg>
