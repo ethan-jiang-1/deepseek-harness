@@ -2,7 +2,7 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **产品源码审计基线**：DeepSeek Harness `dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`](./_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md)。同步 0006 只做了变更定位与受影响判定，结论页深核仍挂账；专题核验状态以 [`_coverage/`](./_coverage/00-index.md) 为准。
+> **产品源码审计基线**：DeepSeek Harness `dsh-v0.1.5-rc.2`，commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md`](./_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md)。0006 深核轮已把九专题全部对齐 rc.1；0007 跨度未触及任何专题入口，九行沿用 rc.1 核验值。专题核验状态以 [`_coverage/`](./_coverage/00-index.md) 为准。
 
 `_digested/` 面向已熟悉 agent harness / plugin 运行时，但尚未建立 DeepSeek Harness 概念体系的读者。这里先抓住思想主轴，再进入源码机制——而不是把 `packages/` 目录平铺成分类货架。
 
