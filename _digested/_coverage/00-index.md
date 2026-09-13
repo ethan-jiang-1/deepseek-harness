@@ -2,9 +2,11 @@
 
 本页记录 `_digested` 明确回答了哪些问题、结论住在哪篇机制参考、最后对哪个产品源码 commit 复核。它不按篇数估算“完成度”，也不承诺覆盖未列出的包或行为；完整包组清单由 [`packages/README.md`](../../packages/README.md) 维护。
 
-产品源码基线：`183f08e9c6dde7e36cd2318eaee70b0da08fb35e`（`dsh-v0.1.5-rc.1`）。受影响行的判定见 [`../_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`](../_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md)。
+产品源码基线：`fb2c4b9e698e30edb738bca4cf0618587db7d203`（`dsh-v0.1.5-rc.2`）。受影响行的判定见 [`../_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md`](../_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md)。
 
 同步 0006 的深核轮把九行全部对齐 `183f08e9c6`。核验方式为逐锚重验：提取每页的每一个 `source:line` 引用与事实断言，对照当前工作树逐条核实，范围覆盖行号漂移、引文措辞与机制改写（跨专题点名的 `assistant/chunk`、`tool/code-dispatch` 等过期词表一并清除）。`cordis-runtime/` 本跨度 `vendor/` 零文件变更，但仍逐锚复核，结论无矛盾。
+
+同步 0007（rc.1 → rc.2，纯 backport + release bump）未触及任何专题的源码入口（无 `cordis.yml` / profile / `packages/core` / `packages/api` / `packages/host` src 变更，harness-idea 锚点引用文件逐文件 diff 为空），九行状态与最近核验值沿用 rc.1，不随基线推进。
 
 「最近核验」列写的是该专题最后对到的产品 commit，可能**小于等于**产品源码基线：上游同步并未触及某个专题时，其核验值沿用上一轮，不会被基线更新。这不是口径不一致，只说明该专题的入口在本次同步中无 diff（0005 复核后八行全部对齐 `a66e470204`；后续同步若未触及某专题，其值会再次落后于新基线）。
 

@@ -43,11 +43,11 @@
 
 > This is an opt-in development tool with bash-equivalent trust, not a security boundary or product default.
 >
-> —— `.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md:17`（基线 `183f08e9c6…`）
+> —— `.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md:17`（基线 `fb2c4b9e69…`）
 
 > `cordis_inspect` sections are `services` ... `api` ... `events` ... and `temporary` ...
 >
-> —— 同上文件 `:27`（基线 `183f08e9c6…`）
+> —— 同上文件 `:27`（基线 `fb2c4b9e69…`）
 
 ## 动态不等于模型面不稳定
 
@@ -61,11 +61,11 @@
 
 > **Model-visible means logged.** Anything that reaches a model request must be reconstructable from the log, and a runtime invariant asserts it.
 >
-> —— `docs/architecture.md:121`（基线 `183f08e9c6…`）
+> —— `docs/architecture.md:121`（基线 `fb2c4b9e69…`）
 
 > The loop builds each request from logged state. `EpochHeader` records call config, marks the fields supplied by adapter defaults, and records the authoritative returned tool order ... through full `request/header` snapshots. The rendered prompt is derived history ... so the header and the derived history together make the request reconstructable from the session log.
 >
-> —— `docs/subsystems/llm-streaming.md:704`（基线 `183f08e9c6…`）
+> —— `docs/subsystems/llm-streaming.md:704`（基线 `fb2c4b9e69…`）
 
 ## 结论
 
