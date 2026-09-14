@@ -53,6 +53,7 @@ _faq_on_digested/
 | 09 | [同一棵插件树对一个自用 owner（个人 / 小团队）的生产力在哪，怎样讲清楚？（自用生产力视角）](./09_plugin-business-ladder/question.md) | [敢放手 + 省手 + 可复用三层价值；自用 owner 最值的几类插件；L0–L3 参与阶梯；四个 owner 能自证的实验](./09_plugin-business-ladder/answer.md) |
 | 10 | [一位烧了 10 亿 token 的用户给 DSH 的三条体感（快就是好 / 要自己改造 / 别用 Pro 多用 vision），在 harness 机制层面对得上什么？](./10_v4flash-user-notes/question.md) | [根本体验 = 一条体验皮（goal/plan）+ 三条根（日志基底 / 委派 spine / 组合层）；主篇展开 goal/plan 机制与"快而小模型为何优秀"的职责拆分论证](./10_v4flash-user-notes/answer.md) |
 | 11 | [DSH 支持的开发习惯很多，但哪一种是它"最自然"的？为什么驾驭它写东西会感觉轻松？](./11_native-development-loop/question.md) | [窄证据切片闭环：六步马达 + "轻松"三来源（记忆外包 / 反馈秒级 / 原子回滚）；spec 感是闭环沉淀物而非上游输入；git 历史量化与运行时助推的三路独立验证](./11_native-development-loop/answer.md) |
+| 12 | [dsh web 多开窗口卡住：第 4 个就卡，是启动有并发限制吗？](./12_dsh-web-stuck-windows/question.md) | [不是并发：rev 轮换 + 陈旧缓存 index → 动态模块全 404；修复 = index 加 `no-store`；附每次升级后手动重打补丁/重启/验证/回滚的完整 runbook](./12_dsh-web-stuck-windows/answer.md) |
 
 ## 引用规范
 
