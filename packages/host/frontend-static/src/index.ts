@@ -6,9 +6,12 @@
  * unknown extensions ship as octet-stream, and non-GET/HEAD is 405. Every
  * index response first passes Connection's browser authentication, then the
  * webserver's index render (structured injection rows, then raw taps).
- * Non-index assets stay public. The dist location is workspace knowledge of
- * the composing application, so `distIndex` is typically supplied through a
- * `!!js` expression, never hardcoded by a deployment.
+ * Non-index assets stay public. The index itself is uncacheable: the
+ * client-bundle revisions it names are per-activation, so a browser holding a
+ * cached index requests revisions that no longer resolve. The dist location is
+ * workspace knowledge of the composing application, so `distIndex` is
+ * typically supplied through a `!!js` expression, never hardcoded by a
+ * deployment.
  * @module @deepseek-ai/dsh-host-frontend-static
  */
 
@@ -84,11 +87,19 @@ export async function serveStatic(
   }
   let body: string | Buffer
   let type: string
+  let cacheControl: string | undefined
   try {
     if (target === distRoot || target === distIndex) {
       if (!authorizeIndex()) return
       body = await renderIndex()
       type = HTML_MIME
+      // The rendered index names the client-bundle revisions of this
+      // activation. Those bundles are served immutable and a request for any
+      // other revision is rejected, so an index served from cache leaves the
+      // browser asking for revisions this process no longer answers and the
+      // page never boots. Assets keep their own caching: their names or
+      // revisions already change with their bytes.
+      cacheControl = 'no-store'
     } else {
       body = await readFile(target)
       type = MIME[extname(target)] ?? 'application/octet-stream'
@@ -101,7 +112,9 @@ export async function serveStatic(
     res.end()
     return
   }
-  res.writeHead(200, { 'content-type': type })
+  res.writeHead(200, cacheControl === undefined
+    ? { 'content-type': type }
+    : { 'content-type': type, 'cache-control': cacheControl })
   res.end(body)
 }
 
