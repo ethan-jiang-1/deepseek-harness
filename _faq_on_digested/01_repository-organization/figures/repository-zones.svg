@@ -21,7 +21,7 @@
   <text x="117" y="252" text-anchor="middle" font-weight="700" fill="#9a3412">vendor/</text>
   <rect x="186" y="230" width="115" height="34" rx="6" fill="#ffedd5" stroke="#fb923c"/>
   <text x="243" y="252" text-anchor="middle" font-weight="700" fill="#9a3412">native/</text>
-  <text x="60" y="287" fill="#7c2d12">Cordis pinned source、本地修改、原生 system 原语（Landlock / flock）与平台 artifact。</text>
+  <text x="60" y="287" font-size="10.5" fill="#7c2d12">Cordis pinned source、本地修改、原生 system 原语（Landlock / flock）与平台 artifact。</text>
   <text x="60" y="305" fill="#c2410c">独立同步或 release 纪律；不要当作普通产品 package 随手改。</text>
 
   <rect x="575" y="184" width="470" height="132" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
@@ -47,7 +47,7 @@
   <rect x="726" y="384" width="115" height="34" rx="6" fill="#fae8ff" stroke="#d946ef"/>
   <text x="783" y="406" text-anchor="middle" font-weight="700" fill="#86198f">python/</text>
   <text x="600" y="441" fill="#701a75">仓库级性能门禁、bench-only 依赖、Python SDK 与 runtime carrier。</text>
-  <text x="600" y="459" fill="#a21caf">可选 overlay 组合在 apps/cli/config/examples/；Python 经 stdio JSON-RPC 驱动捆绑 runtime。</text>
+  <text x="600" y="459" font-size="10" fill="#a21caf">可选 overlay 组合在 apps/cli/config/examples/；Python 经 stdio JSON-RPC 驱动捆绑 runtime。</text>
 
   <rect x="35" y="492" width="470" height="142" rx="12" fill="#f8fafc" stroke="#94a3b8"/>
   <text x="60" y="520" font-size="14" font-weight="700" fill="#334155">文档与工程系统</text>
