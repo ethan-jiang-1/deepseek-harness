@@ -194,7 +194,7 @@ Note 是制度上的"插件"——它不是加载到运行时，而是沉淀到�
     mode: danger-full-access
 ```
 
-通过 `dsh --patch custom-profile.patch.yml` 加载。这也是一种"用配置而不是代码"的插件。
+通过 `dsh --profile <name> --patch custom-profile.patch.yml` 加载。这也是一种"用配置而不是代码"的插件。
 
 ---
 

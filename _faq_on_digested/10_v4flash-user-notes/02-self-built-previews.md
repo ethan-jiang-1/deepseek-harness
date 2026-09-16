@@ -26,7 +26,7 @@
 两项真缺口，按"离现有制度多远"排序：
 
 1. **word/ppt/pdf 等文档产物的读取与预览**。`tool-fs` README 明说 "`read` handles UTF-8 text files only — PDF, audio, and video remain deferred"（`packages/fs/tool-fs/README.md:242`）；`packages/web` 的 `WebFetchBody` 是封闭 union（`html | text`），无 `pdf` arm；全仓 "artifact" 命中只指会话日志文件，与 Claude 式 artifacts 无关。这是**读取侧 + 渲染侧双缺口**。
-2. **侧边栏 artifacts / 产出物面板**。`deliverables/presented` 已是 `KNOWN_SESSION_EVENT_TYPES` 的成员（`packages/core/session/src/known-event-types.ts:36`；`packages/fs/tool-present/src/index.ts:104` 追加，声明在 `packages/fs/tool-present/src/types.ts:15`），`tool-present` 与 `ui-deliverables` 已把它渲染成 Produced files 行；但 `ui-sidebar` 有品牌行、会话浏览器与 Settings，没有产出物面板。缺的不是事件词表，是**侧边栏面板**——该事件在本页写作基线尚未存在，在复核树 `fb2c4b9e69` 上已交付。
+2. **侧边栏 artifacts / 产出物面板**。`deliverables/presented` 已是 `KNOWN_SESSION_EVENT_TYPES` 的成员（`packages/core/session/src/known-event-types.ts:36`；`packages/fs/tool-present/src/index.ts:104` 追加，声明在 `packages/fs/tool-present/src/types.ts:15`），`ui-deliverables` 已把它渲染成独立的「已交付文件」行（`Deliverables.tsx:61-64` 的 `data-presented-files-row`），与由 mutation 派生的 "Files changed" 行是两块——`turn-deliverables.ts:45-49` 的 `mutationPath` 只认 `write`/`edit`/`str_replace_editor`，`present` 不产生那一行；但 `ui-sidebar` 有品牌行、会话浏览器与 Settings，没有产出物面板。缺的不是事件词表，是**侧边栏面板**——该事件在本页写作基线尚未存在，在复核树 `fb2c4b9e69` 上已交付。
 
 补任何一个，都会先撞上同一条硬税——**`model-visible ⟺ logged` 的 UI 侧镜像**：
 
