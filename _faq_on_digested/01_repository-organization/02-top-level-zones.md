@@ -60,7 +60,7 @@ bundle 的 `cordis.patch.yml` 解决“默认装配是什么”，`apps/cli/conf
 
 文档实行“一事实一归属”。高层架构只说明顺序、职责和扩展点；类型与事件语义属于 `docs/subsystems/`；package 消费合同属于 package README；生成 catalog 由 scripts 从源码再生；网站只投影这些来源。
 
-根 [`AGENTS.md`](../../AGENTS.md) 是顶层区域的文字总览，但它的 `packages/` 布局块有两处已过期的条目：列出的 `self-modification/` 与 `support/` 并不存在，实际归属是 `packages/extensions/`（自省与运行时挂载工具面）和 `packages/test-support/`（跨 package 测试基础设施）。以 [`packages/README.md`](../../packages/README.md) 的组清单为准。
+根 [`AGENTS.md`](../../AGENTS.md) 是顶层区域的文字总览。它的 `packages/` 布局块曾经有两处过期条目——列出的 `self-modification/` 与 `support/` 并不存在，实际归属是 `packages/extensions/`（自省与运行时挂载工具面）和 `packages/test-support/`（跨 package 测试基础设施）；该缺口已就地修正（根 `AGENTS.md:38`、`:49`），组清单始终以 [`packages/README.md`](../../packages/README.md) 为准。
 
 ## Workspace 与非 Workspace
 

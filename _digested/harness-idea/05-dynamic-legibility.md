@@ -14,15 +14,11 @@
 
 生成的 `tool-catalog`、`config-catalog`、`persistence-catalog`、`event-producer-consumer`、`module-graph`、`graph-atlas`、`capability-seams`、`cordis-api` 都是 freshness-gated 的索引。它们的作用不是给人通读，而是让「查」成为可靠动作：读者不必记住包清单或事件表，只要知道去哪查。
 
-## 查询面三：`cordis_inspect` 问活运行时
+## 查询面三：`cordis_inspect_*` 问活运行时
 
-静态索引只覆盖源码平面；运行时可能还有临时插件、pending fiber、实际服务提供者（service provider）。[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 给了模型一个只读的 `cordis_inspect`：
+静态索引只覆盖源码平面；运行时可能还有临时插件、pending fiber、实际服务提供者（service provider）。[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 给了模型一组**只读**的 inspect 工具——注意该 note 里写的「current names are cordis_inspect, cordis_mount, cordis_unmount」已经过期，当前树注册的是七个名字：`cordis_inspect_list`、`cordis_inspect_query`、`cordis_inspect_self` 三个只读工具加 `cordis_define`、`cordis_run`、`cordis_stop`、`cordis_undefine` 四个变更工具（`packages/extensions/tool-cordis/src/index.ts:45,64,100,152,244,333,355`；`docs/tool-catalog.md`）。
 
-- `plugins`：当前每个活 fiber；
-- `services`：每个 `ctx` 服务的提供者；
-- `tools`：模型现在能调用什么；
-- `api` / `events`：带签名和原始 JSDoc 的服务与事件合同；
-- `temporary`：`cordis_mount` 挂载的临时插件子集。
+三个只读工具各有分工：`cordis_inspect_list` 列当前有哪些 Provider 与插件；`cordis_inspect_query` 按 `platform`（host / client）+ `provider` + `method`（+ 可选 `input`）向某个 Provider 的 manifest 方法发起**参数化查询**；`cordis_inspect_self` 不带参数列全部当前 Plugin，带 `pluginId`/`packageId` 则返回该 Plugin 的源码与诊断。旧版那种「一次调用列出 `plugins`/`services`/`tools`/`api`/`events`/`temporary` 各节」的单一 `cordis_inspect` 已不存在。
 
 它服务的 API 目录不是手写表，而是由源码生成、freshness-gated 的 catalog（`pnpm run verify-cordis-catalog`，`doc-sync` 的一员），运行时再与 live runtime 求交集。**读者不是只能读文档，还能问系统「现在有什么、签名是什么」。**
 
@@ -30,7 +26,7 @@
 
 会话日志的读取同样有显式定价：`0.1.2-rc.1` 起 `session.events` 数组读取退役，读操作按成本拆开——`seq` 以 O(1) 读当前事件数，`eventAt(seq)` 以 O(1) 读单个事件，`snapshotEvents(from, to)` 显式物化冻结数组，全量快照缓存到下次 append。事件 seq 与日志 offset 也分成两个品牌类型（`SessionSeq` / `SessionLogOffset`，commit `27bf1039`）：一个指已存在的事件，一个指日志间隙或读取位置，混用会被编译器拒绝（[`2026-08-21-session-log-read-intent`](../../.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md)，已归档，历史快照；这套读取 API 的现行 owner 是 [`docs/subsystems/session.md`](../../docs/subsystems/session.md) 与 [`packages/core/session/src/index.ts`](../../packages/core/session/src/index.ts)）。
 
-## 试验面：`cordis_mount` / `cordis_unmount`
+## 试验面：`cordis_define` → `cordis_run` → `cordis_stop` / `cordis_undefine`
 
 查询之后可以试验：在显式启用 `dsh-tool-cordis` 的组合里，模型可以在当前进程挂一个内存临时 Plugin，然后卸载到 quiescence。这不是默认能力。
 
@@ -48,6 +44,8 @@
 > `cordis_inspect` sections are `services` ... `api` ... `events` ... and `temporary` ...
 >
 > —— 同上文件 `:27`（基线 `fb2c4b9e69…`）
+
+**这段引文已不代表当前工具面**：该 note 是 `implemented/` 的现行记录，但它描述的单一 `cordis_inspect` 加 `cordis_mount` / `cordis_unmount` 在本树上都不存在（`git log -S` 也查不到这些名字曾注册过），当前注册的是上面列的七个 `cordis_inspect_*` / `cordis_*` 名字。引文保留是为忠实于出处，实际接口以 `packages/extensions/tool-cordis/src/index.ts` 与 `docs/tool-catalog.md` 为准——这条上游 note 与新工具集脱节，属上游文档缺口。
 
 ## 动态不等于模型面不稳定
 
@@ -69,7 +67,7 @@
 
 ## 结论
 
-静态可读性（[`02`](./02-legibility.md)）解决「知道有什么」；动态可读性解决「这次运行是什么」和「我的假设成不成立」。dump 问组合，生成目录问源码合同，`cordis_inspect` 问活运行时，读意图 API 问日志，`cordis_mount` 做最小试验。五者合起来，coding agent 就有了一个不需要资深同事在场的问答回路。
+静态可读性（[`02`](./02-legibility.md)）解决「知道有什么」；动态可读性解决「这次运行是什么」和「我的假设成不成立」。dump 问组合，生成目录问源码合同，`cordis_inspect_*` 问活运行时，读意图 API 问日志，`cordis_define` / `cordis_run` 做最小试验。五者合起来，coding agent 就有了一个不需要资深同事在场的问答回路。
 
 `[推断]` 一个可执行的阅读路径是：先看 `dsh --dump-config` 输出的配置树，再追踪 `ctx.provide` / `inject`、Context realm 与 Fiber effect，最后沿 Session event 到 `deriveMessages()` 检查模型实际看到什么。落点分别在 [`docs/architecture.md`](../../docs/architecture.md)、[`docs/cordis-api/context.md`](../../docs/cordis-api/context.md)、[`docs/cordis-api/fiber.md`](../../docs/cordis-api/fiber.md)、[`docs/subsystems/session.md`](../../docs/subsystems/session.md)。
 

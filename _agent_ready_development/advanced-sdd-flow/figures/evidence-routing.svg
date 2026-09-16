@@ -43,7 +43,7 @@
   <text x="64" y="381" font-size="13" font-weight="700" fill="#554879">Pull request remote evidence · .github/workflows/ci.yml</text>
   <rect x="70" y="406" width="168" height="76" rx="6" fill="#fff" stroke="#a89bc9"/>
   <text x="154" y="432" text-anchor="middle" font-weight="700" fill="#554879">static</text>
-  <text x="154" y="454" text-anchor="middle" font-size="11" fill="#746894">type · lint · docs · hygiene</text>
+  <text x="154" y="454" text-anchor="middle" font-size="11" fill="#746894">invariants · docs · module graph</text>
   <text x="154" y="471" text-anchor="middle" font-size="11" fill="#746894">owned by run-gates</text>
   <rect x="262" y="406" width="168" height="76" rx="6" fill="#fff" stroke="#a89bc9"/>
   <text x="346" y="432" text-anchor="middle" font-weight="700" fill="#554879">coverage</text>

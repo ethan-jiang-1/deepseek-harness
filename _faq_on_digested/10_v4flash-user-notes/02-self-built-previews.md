@@ -26,7 +26,7 @@
 两项真缺口，按"离现有制度多远"排序：
 
 1. **word/ppt/pdf 等文档产物的读取与预览**。`tool-fs` README 明说 "`read` handles UTF-8 text files only — PDF, audio, and video remain deferred"（`packages/fs/tool-fs/README.md:242`）；`packages/web` 的 `WebFetchBody` 是封闭 union（`html | text`），无 `pdf` arm；全仓 "artifact" 命中只指会话日志文件，与 Claude 式 artifacts 无关。这是**读取侧 + 渲染侧双缺口**。
-2. **侧边栏 artifacts / 产出物面板**。`KNOWN_SESSION_EVENT_TYPES` 当前 56 种事件里没有任何 artifact/preview 族（`packages/core/session/src/known-event-types.ts:23-78`）；`ui-sidebar` 有品牌行、会话浏览器与 Settings，但没有产出物面板。缺的不是面板，是**事件词表**。
+2. **侧边栏 artifacts / 产出物面板**。`KNOWN_SESSION_EVENT_TYPES` 当前 56 种事件里没有任何 artifact/preview 族（`packages/core/session/src/known-event-types.ts:23-78`）；`ui-sidebar` 有品牌行、会话浏览器与 Settings，但没有产出物面板。缺的不是事件词表，是**侧边栏面板**。
 
 补任何一个，都会先撞上同一条硬税——**`model-visible ⟺ logged` 的 UI 侧镜像**：
 

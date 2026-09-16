@@ -4,7 +4,7 @@
 
 ## 一句话
 
-两条桥都只做「翻译 + 注册」，不改 loop：MCP client 把外部 server 的 tools 以 `mcp__<serverName>__<rawName>` 注册进 `ctx.tools`，只桥 tools、不桥 resources/prompts；hook 桥把 Claude Code 与 Codex 的 command hook 映射到已有的拦截扩展点，并额外写一对 **log-only** 的 `hook/invoked` / `hook/result` 会话事件。两者都不在任何 shipped bundle 里，默认不启用。
+两条桥都只做「翻译 + 注册」，不改 loop：MCP client 把外部 server 的 tools 以 `mcp__<serverName>__<rawName>` 注册进 `ctx.tools`，只桥 tools、不桥 resources/prompts；hook 桥把 Claude Code 与 Codex 的 command hook 映射到已有的拦截扩展点，并额外写一对 **log-only** 的 `hook/invoked` / `hook/result` 会话事件。两者都默认不启用、都没有 bundle patch 行直接挂载（MCP 另有一条经 ACP 按会话声明动态挂载的路径，见下）。
 
 ## MCP：把外部 server 的 tools 注入 `ctx.tools`
 
@@ -60,7 +60,9 @@ post 侧同构：`tools/post-execute` 的监听器可以把结果 block 成 feed
 
 ## 默认启用还是 opt-in
 
-两条桥都是 **opt-in**，不在任何 shipped bundle 里。六个 bundle 各自的 `cordis.patch.yml`（`packages/bundle/base/cordis.patch.yml` 等）没有任何一行挂 `@deepseek-ai/dsh-mcp-client`、`@deepseek-ai/dsh-hooks-claude-code` 或 `@deepseek-ai/dsh-hooks-codex`；这些包名只出现在快照 fixture 与文档示例 overlay 里，例如 `snapshots/session/text-turn/cordis.yml:73`、`snapshots/session/text-turn/cordis.yml:78` 与 `apps/cli/config/examples/mcp-memory/engram.cordis.yml:5`。
+两条桥都**默认不启用**，但要分清「没有 bundle 的 patch 行直接挂它们」与「没有任何出货路径会挂它们」——后者对 MCP 不成立。六个 bundle（`acp-app`/`base`/`headless`/`sdk-app`/`sdk-minimal`/`web-app`）各自的 `cordis.patch.yml` **确实没有任何一行**挂 `@deepseek-ai/dsh-mcp-client`、`@deepseek-ai/dsh-hooks-claude-code` 或 `@deepseek-ai/dsh-hooks-codex`；作为 cordis 挂载行，这些包名只出现在快照 fixture（`snapshots/session/text-turn/cordis.yml:73`、`:78`）与文档示例 overlay（`apps/cli/config/examples/mcp-memory/engram.cordis.yml:5`）里。
+
+**hooks 侧到此为止**：仓库内没有任何动态挂载路径，只能显式 opt-in。**MCP 侧还有第二条路径**：`acp-app` patch 挂的 `@deepseek-ai/dsh-acp` 会按 ACP session 声明的 `mcpServers` 动态挂载 MCP client——`packages/acp/acp/src/session.ts:135`、`:159` 调 `mountAcpMcpServers(agentCtx, options.mcpServers, options.cwd)`，后者在 `packages/acp/acp/src/mcp.ts:33`-`:34` 对每个声明的 server 执行 `agentCtx.plugin(McpClient, config)`。所以「ACP 客户端主动声明 MCP server」时 MCP 桥是走的；这也解释了该包名为何还出现在 `apps/cli/package.json`、`python/sdk-runtime/package.json`、`packages/acp/acp/package.json` 与 `tsconfig.base.json` 的依赖/引用列表里。owner 文档仍成立：`packages/mcp/README.md:12` 写 "nothing ships enabled, so you opt in per server"，`packages/mcp/mcp-client/README.md:12` 写 "no server is enabled by default"——「没有 server 默认启用」与「存在一条按声明动态挂载的路径」并不矛盾。
 
 MCP 侧的 owner 文档把这点写成合同：group README 写「nothing ships enabled, so you opt in per server」（`packages/mcp/README.md:12`），包 README 写「no server is enabled by default」（`packages/mcp/mcp-client/README.md:12`）。hooks 侧的 owner 文档没有 "shipped" 承诺，反而给出组合证据：生成的 `docs/capability-seams.md` 把两个 bridge 列为 `ctx.shell` 的消费者（`docs/capability-seams.md:525`，对应它们声明的 `inject = ['shell', 'sessionProjections']`，`packages/hooks/hooks-claude-code/src/index.ts:41`），也列为 `ctx.sessionPersistence` 的消费者（`docs/capability-seams.md:495`）；被列进生成表只说明依赖关系，不等于默认安装。
 

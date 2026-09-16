@@ -28,7 +28,7 @@ dsh --profile sdk-minimal
 | `llm-deepseek` | `@deepseek-ai/dsh-llm-deepseek` | `:26-31` | LLM 适配器，实配 `apiKeyEnv: DEEPSEEK_API_KEY`、`defaultContextWindow`（`DSH_CONTEXT_WINDOW`）、`streamIdleTimeoutMs: 172800000`；模型选择不在 bundle——Python 示例脚本把它作 `--model` 默认值（`python/sdk/examples/minimal.py:27`） |
 | `deepseek-llm-api-extensions` / `session-log-deepseek` / `plugin-package-inventory-deepseek` | `@deepseek-ai/dsh-deepseek-llm-api-extensions` / `@deepseek-ai/dsh-session-log-deepseek` / `@deepseek-ai/dsh-plugin-package-inventory-deepseek` | `:17-18`、`:20-21`、`:23-24` | DeepSeek 专属的请求扩展、会话日志元数据与插件清单行，只在这份独立树里显式自持 |
 | `sandbox` | `@deepseek-ai/dsh-sandbox-local` | `:33-34` | 沙箱 |
-| `session-projection` | `@deepseek-ai/dsh-session-projection` | `:38-39` | **本次跨度新增**：共享投影注册表，`sandbox-policy` 与 `terminal-bash` 通过它的 units 折叠 sandbox-mode 状态，并把它作为硬注入 |
+| `session-projection` | `@deepseek-ai/dsh-session-projection` | `:38-39` | 共享投影注册表（早于本跨度，OLD 基线里已有且逐字相同），`sandbox-policy` 与 `terminal-bash` 通过它的 units 折叠 sandbox-mode 状态，并把它作为硬注入 |
 | `sandbox-policy` | `@deepseek-ai/dsh-sandbox-policy` | `:41-45` | `mode: danger-full-access`、`workspaceRoot: !!js process.cwd()` |
 | `subprocess` | `@deepseek-ai/dsh-subprocess-local` | `:47-48` | 子进程管理 |
 | `pty` | `@deepseek-ai/dsh-terminal` | `:50-51` | 持久 PTY |

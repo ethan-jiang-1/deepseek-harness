@@ -50,7 +50,7 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 ## 机制四：默认正确，显式优于隐式
 
-- 在 `ctx.tools` 注册一个 tool：schema 自动进 prompt 组装、自动进 Code Mode 的 `ToolArgsMap`、自动有 UI fallback 卡片。什么都不用再碰。
+- 在 `ctx.tools` 注册一个 tool：schema 自动进 prompt 组装、自动进 PTC 模式的 `ToolArgsMap`、自动有 UI fallback 卡片。什么都不用再碰。
 - 换一个 provider：整面产品跟着变，Consumer 一行不改（seam 三角色的承诺）。
 - `resolve(request): Spec` 是显式步骤，没有埋在 `run()` 里的 `?? default`。
 - 没有 hardcoded tunables：部署参数都是 `Config` 字段，可从 `cordis.yml` 改。
@@ -66,7 +66,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 - required-on-read 在编译期拒绝未知事件类型；
 - 误配置在 load 时 fail loud；
 - 运行时 invariant 在请求发出时比对（见机制六）；
-- `cordis_mount` 的边界错误会指出违反的规则与可接受写法。
+- `cordis_define` / `cordis_run` 的边界错误会指出违反的规则与可接受写法。
 
 错误发生在源头、消息指明违反的规则。agent 不需要猜测「哪里错了」，只需要按错误消息修。每轮试错都有信息增量。
 

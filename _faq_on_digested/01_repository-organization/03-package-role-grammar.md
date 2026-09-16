@@ -68,7 +68,7 @@ Definition 位于中间，Provider 和 Consumer 都朝它依赖；Composition �
 | `packages/fs/tool-fs` | Consumer | 向 `ctx.tools` 注册 `read`、`read_image`、`write`、`edit` |
 | `packages/fs/tool-fs-search` | 相邻 Consumer | 通过 `ctx.subprocess` 运行 packaged ripgrep；不扩张 `ctx.fs` 合同 |
 | `packages/fs/tool-str-replace-editor` | 相邻 Consumer | 独立的 `str_replace_editor` 工具（`view` / `create` / `str_replace` / `insert`），同样只依赖 `ctx.fs` |
-| `packages/fs/tool-present` | 相邻 Consumer | 把已交付文件固化为显式不可变快照 |
+| `packages/fs/tool-present` | 相邻 Consumer | 把已交付文件登记为 Session 交付物（只记路径与描述，不复制内容） |
 
 这里有两个重要细节。
 
@@ -108,7 +108,7 @@ packages/session/*
   telemetry service + OTEL backend
 ```
 
-`core/session` 是 agent spine 必须依赖的交互事实模型，但“把它存到哪里”“怎样做查询投影”“是否生成标题或遥测”可以独立演化和替换，所以进入相邻的 `session/` capability family。持久化后端现在只有 JSONL：`session-persistence-jsonl` 每个 Session 保留不可变的规范世代文件并独占发布后继世代，`session-format` 与 `session-format-v0-to-v1` / `v1-to-v2` / `v2-to-v3` 加生成的 `session-format-catalog` 组成格式迁移包组（`packages/session/README.md` 的包表漏登记 `session-format-v2-to-v3`，是本基线的上游缺口；该目录真实存在，且是 v2→v3 这条首个非恒等规范化边的唯一规格）；SQLite **持久化**后端已不存在，SQLite 现在只在查询侧的 `session-query/session-query-sqlite`（FTS5 索引）。`session-query/` 再单独成组，因为查询 corpus、SQLite FTS 和模型查询工具的消费者与持久化内部实现不同。
+`core/session` 是 agent spine 必须依赖的交互事实模型，但“把它存到哪里”“怎样做查询投影”“是否生成标题或遥测”可以独立演化和替换，所以进入相邻的 `session/` capability family。持久化后端现在只有 JSONL：`session-persistence-jsonl` 每个 Session 保留不可变的规范世代文件并独占发布后继世代，`session-format` 与 `session-format-v0-to-v1` / `v1-to-v2` / `v2-to-v3` 加生成的 `session-format-catalog` 组成格式迁移包组（`packages/session/README.md` 的包表曾漏登记 `session-format-v2-to-v3`（该目录真实存在，且是 v2→v3 这条首个非恒等规范化边的唯一规格），该缺口已由本轮就地补齐）；**会话持久化**的 SQLite 后端已不存在，会话侧只剩 `session-persistence-jsonl`，SQLite 现在只在查询侧的 `session-query/session-query-sqlite`（FTS5 索引）；另注意 `packages/storage/storage-sqlite/` 是另一个仍然活着的 SQLite 后端，它服务 `ctx.storage` 而不是会话持久化。`session-query/` 再单独成组，因为查询 corpus、SQLite FTS 和模型查询工具的消费者与持久化内部实现不同。
 
 ## Host、Client、API 与 Typert
 

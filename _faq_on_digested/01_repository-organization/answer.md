@@ -24,7 +24,7 @@ DSH 的目录不是按“控制器、服务、工具类”这种实现层次来�
 
 `packages/fs/`、`packages/subagent/`、`packages/session/`、`packages/llm/` 各自拥有一个能力家族。某项能力需要接口、后端、模型工具、策略和 UI 时，这些角色优先放在同一个领域附近，而不是分别塞进全局 `services/`、`adapters/`、`tools/`、`controllers/` 目录。
 
-这使阅读者可以先找到“谁拥有这件事”，再在该组内辨认角色。组 README 负责给出 package 与 `ctx` key 的地图，根 [`packages/README.md`](../../packages/README.md) 只维护组级索引（本基线里 `session/` 与 `client/` 两个组的包表各有漏登记，见 [`03-package-role-grammar.md`](./03-package-role-grammar.md)）。
+这使阅读者可以先找到“谁拥有这件事”，再在该组内辨认角色。组 README 负责给出 package 与 `ctx` key 的地图，根 [`packages/README.md`](../../packages/README.md) 只维护组级索引（`session/` 与 `client/` 两个组的包表曾各有漏登记，已由本轮就地补齐，见 [`03-package-role-grammar.md`](./03-package-role-grammar.md)）。
 
 ### 2. 可替换能力按角色拆 package
 
@@ -128,7 +128,7 @@ DSH 把传统单体里隐含的选择显式化了：哪个后端、哪条策略�
 
 ## 第一次熟悉仓库的推荐顺序
 
-1. 读根 [`AGENTS.md`](../../AGENTS.md) 的目录图和核心约束（它的 `packages/` 布局块仍写已不存在的 `self-modification/` 与 `support/`，实际是 `packages/extensions/` 与 `packages/test-support/`；以 [`packages/README.md`](../../packages/README.md) 为准）。
+1. 读根 [`AGENTS.md`](../../AGENTS.md) 的目录图和核心约束（它的 `packages/` 布局块曾写已不存在的 `self-modification/` 与 `support/`，实际是 `packages/extensions/` 与 `packages/test-support/`，该缺口已就地修正；以 [`packages/README.md`](../../packages/README.md) 为准）。
 2. 读 [`docs/architecture.md`](../../docs/architecture.md)，建立 Cordis、composition、core、events、loop、session、seam 的顺序。
 3. 读 [`packages/README.md`](../../packages/README.md)，只识别 group，不背 package 清单。
 4. 从一个实际入口追踪：`apps/cli/src/bin.ts` → `profile-boot.ts` → bundle patch → 一个被挂载的 package（桌面入口例外，从 `apps/desktop` 的 Electron 主进程开始）。

@@ -7,7 +7,7 @@
   </defs>
   <rect width="960" height="380" fill="#fafafa" rx="6"/>
   <text x="480" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">waterfall 是 around-middleware：调用 next() 才会委托下游</text>
-  <text x="480" y="50" text-anchor="middle" font-size="11" fill="#6b7280">agent/pre-step、agent/request、llm/stream、tools/pre-execute · execute · post-execute 都是这种模式。</text>
+  <text x="480" y="50" text-anchor="middle" font-size="11" fill="#6b7280">agent/pre-step、agent/request、agent/request-error、llm/stream、tools/pre-execute · execute · post-execute、tools/ptc-dispatch-log 等，都是这种模式。</text>
 
   <rect x="40" y="80" width="160" height="70" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
   <text x="120" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">监听器 A</text>
