@@ -2,9 +2,9 @@
 
 ## Conclusion
 
-This is supported by configuration alone when the relay accepts one of DSH's hand-declared protocols: `openai-completions`, `openai-responses`, or `anthropic-messages`. Give the relay a new provider route such as `deepseek-relay`; keep the official route unchanged. DSH identifies a model by its provider route and model id, so `deepseek-relay / <model-id>` and `deepseek / <model-id>` are distinct selections even when `<model-id>` is byte-for-byte identical.
+This is supported by configuration alone when the relay accepts one of DSH's hand-declared protocols: `openai-completions`, `openai-responses`, or `anthropic-messages`. Give the relay a new provider route such as `deepseek-relay`; keep the official route unchanged. DSH identifies a model by its provider route and model id, so `deepseek-relay / <model-id>` and `deepseek-official / <model-id>` are distinct selections even when `<model-id>` is byte-for-byte identical.
 
-Do not repoint the existing `deepseek` route by changing its `baseURL` or `apiKeyEnv`. That would make every selection and session record under that route refer to the relay, concealing whether a request used the official service or the relay. A separate route keeps credentials, model selection, retry policy, and recorded provider identity independent.
+Do not repoint the existing `deepseek-official` route by changing its `baseURL` or `apiKeyEnv`. That would make every selection and session record under that route refer to the relay, concealing whether a request used the official service or the relay. A separate route keeps credentials, model selection, retry policy, and recorded provider identity independent.
 
 The installed `dsh-llm-pi-ai` configuration treats the `providers` map key as the provider route [configuration](../../packages/llm/llm-pi-ai/src/config.ts:90). Unknown route keys are intentional: they are built from their configured protocol, endpoint, model list, and credential reference [provider construction](../../packages/llm/llm-pi-ai/src/provider.ts:177). The route registry accepts the same model id on different routes; the model lookup always receives both provider and model [dynamic configuration test](../../packages/llm/llm-pi-ai/tests/dynamic-config.spec.ts:125).
 
@@ -32,7 +32,7 @@ The example deliberately omits `reasoningEfforts`. A hand-declared model with no
 
 The relay must provide all of the following before its route can be called working:
 
-1. The complete base URL, including any required `/v1` or other path prefix. DSH preserves that prefix when it forms `GET <baseURL>/models` [listing URL](../../packages/llm/llm-pi-ai/src/discovery.ts:84).
+1. The complete base URL, including any required `/v1` or other path prefix. DSH preserves that prefix when it forms `GET <baseURL>/models` [listing URL](../../packages/llm/llm-pi-ai/src/discovery.ts:117).
 2. Its wire protocol. Most DeepSeek relays use OpenAI Chat Completions, which means `api: openai-completions`; do not infer this from a matching model name. A relay that exposes `/v1/responses` instead needs `api: openai-responses`.
 3. Its authentication method. The template assumes `Authorization: Bearer <key>`, which is the API-key behavior of DSH's OpenAI-compatible provider. A relay needing a different signing scheme cannot be represented by this configuration alone.
 4. The exact model ids from its own `GET /models` response or documentation. Do not copy the official catalog merely because names overlap.
@@ -142,7 +142,7 @@ The effort change is recoverable from the `0600` backups `/Users/bowhead/.dsh/se
 
 ## Final DSH Web State
 
-The active MICU DeepSeek configuration contains one route only: `micu-deepseek-openai`, displayed as `MICU DeepSeek (OpenAI)`. It is an independent MICU vendor route, not the official `deepseek` route, and uses `https://www.micuapi.ai/v1`, `openai-completions`, and the credential reference `MICU_DEEPSEEK_API_KEY`.
+The active MICU DeepSeek configuration contains one route only: `micu-deepseek-openai`, displayed as `MICU DeepSeek (OpenAI)`. It is an independent MICU vendor route, not the official `deepseek-official` route, and uses `https://www.micuapi.ai/v1`, `openai-completions`, and the credential reference `MICU_DEEPSEEK_API_KEY`.
 
 The configured models are `deepseek-v4-flash-0731` and `deepseek-v4-pro-0813`. Both expose exactly `off`, `high`, and `max`; the DeepSeek compatibility settings send `thinking: { type: disabled }` for `off` and `thinking: { type: enabled }` with the corresponding `reasoning_effort` for the other two levels. No official DeepSeek model directory, credentials, or route configuration is modified.
 

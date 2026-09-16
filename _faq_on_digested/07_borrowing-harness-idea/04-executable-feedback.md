@@ -35,7 +35,7 @@
 
 ## invariant 检查「关系」，不检查「存在」
 
-一个有效的 runtime invariant 比较 package 拥有的权威事件流或可变数据关系（例如 `model-visible ⟺ logged`：模型可见内容必须能被 session log 重建）。没有这类关系时 DSH **不发布** `./invariant`，而是在包 README 写明该包特有的省略原因——因为**「这里没有可观察关系」和「漏了检查」是两种不同状态**，前者用「省略 + README 理由」表达而不是留一个空 companion；空 installer、以及为满足形式而断言 service 存在，都被 `verify-package-invariants` 拒绝（`packages/AGENTS.md:19`、[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）。
+一个有效的 runtime invariant 比较 package 拥有的权威事件流或可变数据关系（例如 `model-visible ⟺ logged`：模型可见内容必须能被 session log 重建）。没有这类关系时 DSH **不发布** `./invariant`，而是在包 README 写明该包特有的省略原因——因为**「这里没有可观察关系」和「漏了检查」是两种不同状态**，前者用「省略 + README 理由」表达而不是留一个空 companion；空 installer 被 `verify-package-invariants` 拒绝；而「为满足形式去断言 service 存在、插件元数据、effect 或固定例子」是 `AGENTS.md` 的成文纪律（`docs/subsystems/invariants.md` 称之为 convention），门禁本身不检查这四类（`packages/AGENTS.md:19`、[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）。
 
 ## 可迁移要点
 

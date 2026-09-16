@@ -1,6 +1,6 @@
 # DSH Web · 多 vendor 纯配置与安全回退
 
-> **2026-08-27 勘误**：对 `web` profile，`llm-pi-ai` 实际生效的是补丁层 `/Users/bowhead/.dsh/profiles/web/cordis.patch.yml`（`--dump-config` 证实组合结果不含 settings.yaml 独有的 openrouter），本文所述 settings.yaml 仅是镜像；zai 模型也已裁剪为 glm-5.3 与 glm-5.3-flash。机制、最终条目与恢复步骤见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md)。
+> **2026-08-27 勘误**：对 `web` profile，`llm-pi-ai` 的补丁层 `/Users/bowhead/.dsh/profiles/web/cordis.patch.yml` 与 `settings.yaml` 的用户 `llm-pi-ai:` 段都生效（按 provider 合并，下个请求即可见）；`--dump-config` 只组合补丁层，所以看不出 settings.yaml 独有的 openrouter。zai 模型也已裁剪为 glm-5.3 与 glm-5.3-flash。机制、最终条目与恢复步骤见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md)。
 >
 > **2026-08-28 增补**：openrouter route 已进入补丁层，现含 3 个模型（deepseek-v4-pro / deepseek-v4-flash / deepseek-v4-flash-vision-exp，当日加过 8 个后剔除 5 个）；下表不含该 route。现状与流程见 [DSH_howto-add-vendor-models.md](./DSH_howto-add-vendor-models.md)，实测证据见 [OPENROUTER_research.md](./OPENROUTER_research.md)。
 
@@ -13,7 +13,7 @@
 | route | 用途 | endpoint / 协议来源 | 凭据引用 | Web 中保留的模型 |
 |---|---|---|---|---|
 | `micu` | GPT-5.6 MICU 中转 | 手工 `openai-responses` route | `CODEX_API_KEY_MICU` | `gpt-5.6-sol`、`gpt-5.6-terra` |
-| `zai` | Z.ai Coding API | 内置 `zai` catalog，`https://api.z.ai/api/coding/paas/v4` | `ZAI_API_KEY` | `glm-5.1`、`glm-5.2`、`glm-5.3`、`glm-5-turbo` |
+| `zai` | Z.ai Coding API | 内置 `zai` catalog，`https://api.z.ai/api/coding/paas/v4` | `ZAI_API_KEY` | `glm-5.3`、`glm-5.3-flash` |
 | `moonshotai-cn` | Kimi 中国 Open Platform | 内置 OpenAI Chat Completions catalog，`https://api.moonshot.cn/v1` | `KIMI_CN_API_KEY` | `kimi-k3`、`kimi-k2.7-code`、`kimi-k2.7-code-highspeed`、`kimi-k2.6` |
 
 每一条 `apiKeyEnv` 都只是环境变量名，settings 文件不含 API key 或 `Authorization` header。新 route 在没有对应环境变量时会在网络请求前失败为 `MISSING_CREDENTIAL`，不会自动取用另一家 vendor 的 key。当前配置解析已通过 `dsh web --dump-config`。

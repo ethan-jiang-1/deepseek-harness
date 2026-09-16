@@ -6,7 +6,7 @@
 
 `codex_micu.sh` 把 MICU 配成 `https://www.micuapi.ai/v1` 上的 API-key 供应商，模型为 `gpt-5.6-sol`，推理级别为 `xhigh` [样本调用](../../../ait_exam_docker/cli_codex/final/codex_micu.sh:57)。它调用的生成器固定写入 `wire_api = "responses"` [生成器](../../../ait_exam_docker/cli_codex/final/generate_config.py:65)。本次真实 DSH 请求进一步验证：手工 `micu` route 通过 `openai-responses` 成功完成 `gpt-5.6-sol` 和 `gpt-5.6-terra` 的文本流、工具调用、工具结果回传和 replay；`sol` 的 `xhigh` 也已接受。
 
-因此 MICU 当前无须开发新的 vendor 包：已挂载的通用 `dsh-llm-pi-ai` 能以一个手工 route 声明 `openai-responses`、endpoint、凭据引用和模型列表 [适配器说明](../../packages/llm/llm-pi-ai/README.md:47)。基础 bundle 默认将它以零 route 的休眠状态挂载，`$DSH_HOME/settings.yaml` 的 `llm-pi-ai` 段即可启用 [基础组合](../../packages/bundle/base/cordis.patch.yml:75)。
+因此 MICU 当前无须开发新的 vendor 包：已挂载的通用 `dsh-llm-pi-ai` 能以一个手工 route 声明 `openai-responses`、endpoint、凭据引用和模型列表 [适配器说明](../../packages/llm/llm-pi-ai/README.md:47)。基础 bundle 默认将它以零 route 的休眠状态挂载，`$DSH_HOME/settings.yaml` 的 `llm-pi-ai` 段即可启用 [基础组合](../../packages/bundle/base/cordis.patch.yml:107)。
 
 ## 本次真实实验（2026-08-17）
 

@@ -27,11 +27,11 @@
 
 一个有效 invariant（不变量检查）比较 package 拥有的权威事件流或可变数据关系。例如 model-visible means logged（模型可见内容必须被记录）由 agent-loop invariant 重建请求并和 session log 派生结果比较。
 
-并非每个包都有有意义的运行时关系。DSH 在这种情况下不发布 `./invariant`，而是在 package README 记录原因；为了满足形式而留下空 installer，或断言 service 存在、plugin metadata、effect 和固定例子，都会被 `verify-package-invariants` 拒绝。缺少检查和明确判定“这里没有可观察关系”是两种不同状态。
+并非每个包都有有意义的运行时关系。DSH 在这种情况下不发布 `./invariant`，而是在 package README 记录原因；为了满足形式而留下空 installer，或断言 service 存在、plugin metadata、effect 和固定例子，都违反 `AGENTS.md` 的成文纪律（`docs/subsystems/invariants.md` 称其为 convention）；门禁 `verify-package-invariants` 拒的是空/忽略 reporter 与 publish/omit 不一致这类机械可判的形态。缺少检查和明确判定“这里没有可观察关系”是两种不同状态。
 
 ## 负例证明检查真的会失败
 
-> A guard only guards if the regression actually fails it. [...] introduce the regression, watch red, revert.
+> A guard only guards if the regression fails it. [...] introduce the regression, watch red, revert.
 >
 > — DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/testing.md#test-the-real-entry-path)。这段规则要求新检查经过 negative control（负例控制），避免一个永远为绿的脚本被误认为保护。
 

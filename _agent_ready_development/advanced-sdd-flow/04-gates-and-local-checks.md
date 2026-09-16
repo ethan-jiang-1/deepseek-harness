@@ -4,7 +4,7 @@
 
 DSH 把机械可检查的 invariant（不变量）接到会失败的顶层命令；push 前按 outgoing diff（待推送差异）选择最小可信证据，Pull Request CI 再运行远端矩阵。Focused evidence（聚焦证据）与 exhaustive CI（穷举式 CI）是先后两层，不是二选一。
 
-> Match evidence to the surface: focused tests for behavior, snapshots for model or user output, `doc-sync` for docs, build/hygiene and built smokes for published paths, and real-API e2e for provider behavior.
+> Match evidence to the surface: focused behavior tests, model/user-output snapshots, `doc-sync` for docs, built smokes for published paths, and real-API e2e for providers.
 >
 > — DSH [根 `AGENTS.md` 的 “Run relevant checks locally”](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/AGENTS.md#run-relevant-checks-locally)。这条 standing order 定义本地证据按改动面选择，而不是默认运行全部检查。
 

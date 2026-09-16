@@ -16,7 +16,7 @@
 
 ## 两次注入：baseline 与 touch-driven
 
-1. **baseline**：每个 live session 的第一个 `agent/pre-step` 组合 baseline。加载顺序是 `$DSH_HOME/AGENTS.md`，再按从项目根到 `session.header.cwd` 的每个目录，加载每个候选文件（默认 `AGENTS.md`、`CLAUDE.md`）。
+1. **baseline**：每个 live session 的第一个 `agent/pre-step` 组合 baseline。加载顺序是 `$DSH_HOME/AGENTS.md`，再按从项目根到 `session.header.cwd` 的每个目录，加载每个候选文件（基础候选 `AGENTS.md`、`CLAUDE.md`，外加叠加的 `AGENTS.local.md`、`CLAUDE.local.md`）。
 2. **touch-driven nested**：插件观察成功的 `read`/`write`/`edit` 调用；触达更深目录后，把该目录的 AGENTS.md 作为“Additional instructions”注入。
 
 > After a successful `read`, `write`, or `edit` call reaches a deeper directory, the next request includes the newly applicable instruction file; a changed file replaces its content, and a file that disappears or duplicates an earlier candidate produces a removal notice.

@@ -41,7 +41,7 @@ return { kind: 'create', objective: input }  // 其余所有输入 = 创建；�
 
 ### 路径三：Goal Round Driver — 不创建，只延续
 
-Goal Round Driver（`goal-round-driver/src/index.ts`）不会自动创建 goal。`drive()` 在 `readyToDrive()`（`:140`）与持久化检查点（`:142-154`）都通过之后的第一道状态检查就是 goal（`:164-165`）：
+Goal Round Driver（`goal-round-driver/src/index.ts`）不会自动创建 goal。`drive()` 在 `readyToDrive()`（`:140`）与持久化检查点（`:142-154`）都通过之后在 attempt 结算之后检查 goal（`:164-165`）：
 
 ```ts
 const goal = currentGoal(state)

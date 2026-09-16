@@ -10,7 +10,7 @@ Inspectability（可检查性）要求系统提供查询入口，让 agent 用�
 
 ## 查询一：最终配置树是什么
 
-> To see the tree your machine actually boots: `dsh --profile web --dump-config`
+> To see the tree your machine boots: `dsh --profile web --dump-config`
 >
 > — DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/architecture.md#profiles-and-bundles)。这条命令回答 profile、bundle 和 patch 叠加后的实际 boot 配置，而不是源码中可能出现的所有插件。
 

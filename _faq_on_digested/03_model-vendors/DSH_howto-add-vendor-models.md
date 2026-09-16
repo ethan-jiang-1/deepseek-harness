@@ -7,8 +7,8 @@
 | # | 看哪里 | 回答什么问题 |
 |---|---|---|
 | 1 | 本 folder 的 `*_research.md` 与 `GLM_change-log-*` | 该 vendor 用哪种已有协议（`openai-responses` / `openai-completions` / `anthropic-messages`，或内置 catalog route）；哪些模型、哪些 effort 档已逐项验证 |
-| 2 | `~/.dsh/profiles/web/cordis.patch.yml` | **web profile 唯一生效层**。现有 route 的格式样例；要加的条目最终必须出现在这里 |
-| 3 | `~/.dsh/settings.yaml` | 镜像层。检查是否已有人写过该 vendor，避免两份漂移（openrouter 即教训，见第四节） |
+| 2 | `~/.dsh/profiles/web/cordis.patch.yml` | **补丁（组合）层**：注册 adapter 与 route 的组合来源，现有 route 的格式样例；`--dump-config` 只能看到这一层 |
+| 3 | `~/.dsh/settings.yaml` | **用户设置层**：其中 `llm-pi-ai:` 段与补丁层按 provider 合并，下个请求即生效，dump 看不到它。检查是否已有人写过该 vendor，避免两份漂移（openrouter 即教训，见第四节） |
 | 4 | 安装的 pi-ai 目录（当前 `@earendil-works/pi-ai@0.82.1`，位于 dsh 安装的 node_modules） | route id 是否命中内置 provider：命中且条目未写 `api` 时整体复用内置 provider 的协议与 baseURL；模型 id 不在目录时必须显式写 `contextWindow`/`maxTokens`，否则静默吃路由默认 262144 / 32768 |
 | 5 | `~/.dsh/.credentials.yaml` 与 `~/.zshenv` | `apiKeyEnv` 指向的变量能否解析；运行中的 web 进程不继承 shell 环境，只认受管凭据文件（热加载） |
 | 6 | `DSH_HOME=~/.dsh dsh --profile web --dump-config` | 组合结果终裁：结构错误 fail loud，grep 目标模型 id 确认真正生效 |
@@ -18,13 +18,13 @@
 ## 二、改哪里（固定顺序）
 
 1. **备份**：把要改的两个文件各 `cp` 一份 `*.bak-$(date +%Y%m%d-%H%M%S)-before-<原因>` 并 `chmod 0600`；恢复就是逐字节拷回。
-2. **改补丁层** `~/.dsh/profiles/web/cordis.patch.yml`（唯一生效位置）：
+2. **改补丁层** `~/.dsh/profiles/web/cordis.patch.yml`（它与 settings.yaml 用户层同时生效，dump 只显示本层）：
    - 新 vendor → 新增独立 route id（独立 identity，不伪装 `openai`，日志与计费才可追溯）；
    - 已有 vendor → 在该 route 的 `models:` 数组里加条目；数组**整体替换**内置目录，列出什么就只有什么；
    - 条目可用字段：`id` `name` `contextWindow` `maxTokens` `input` `reasoningEfforts` `compat`；effort 合法档位 `off/minimal/low/medium/high/xhigh/max`，省略某档等价于显式关闭该档；
    - **`off` 不是万能档**：声明 `off:`（空）会让 pi-ai 在选 off 或未选 effort 时发 `reasoning: { effort: "none" }`（openrouter thinkingFormat 路径）——对**强制思考**的模型（GLM-5.3 系：thinking 只能 enabled，深度由 `reasoning_effort` 控制）直接 400 `Reasoning is mandatory`。这种模型的条目**不要声明 `off`**：省略后 `thinkingLevelMap.off = null`，pi-ai 不发 reasoning 参数，模型以自己的默认思考强度运行。判定一个模型是否强制思考：官方文档写明 `thinking` 不可关（GLM-5.3），或实测发 `reasoning: { effort: "none" }` 返回 400。zai 直连 route 的 GLM-5.3 两条目即无 `off`，是正确先例（见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md)）。
    - 模型 id 不在安装目录里 → 必须显式写 `contextWindow` 与 `maxTokens`（数据来源：vendor 官方模型页或其 `/models` 端点，写入时注明日期）。
-3. **同步镜像**：`~/.dsh/settings.yaml` 同一段保持逐字一致；它对 web 不生效，只服务人工阅读与历史记录。
+3. **同步用户层**：`~/.dsh/settings.yaml` 同一段保持逐字一致；它的 `llm-pi-ai:` 段按 provider 与补丁层合并并在下个请求生效，`--dump-config` 看不到它。
 4. **凭据**（仅新 vendor）：真实 key 写 `~/.dsh/.credentials.yaml`（`0600`；credentials 服务热加载，运行中的 web 进程无需重启）。settings/patch 只留 `apiKeyEnv` 环境变量名；key 不进 settings、不进 `headers`、不再复制到 shell 启动脚本。
 5. **验证**（顺序固定）：`dump-config` 退出 0 → grep 组合结果含目标 id → 用真实 key `curl` 该 endpoint 协议级实测（最小文本 → 工具往返 → 逐个 effort 档）→ 通过的才写进条目声明。有实例在跑则补丁 watcher 热加载，否则下次启动生效。
 6. **记录**：验证证据记入对应 vendor 的 `*_research.md`（没有就新建）；改了什么、验过什么、还差什么，写进本 folder 的 change-log，保持可追溯。
@@ -37,7 +37,7 @@
 
 ## 四、OpenRouter 现状快照（2026-08-31：route 在补丁层，5 个模型）
 
-openrouter route 在 `~/.dsh/profiles/web/cordis.patch.yml`（settings.yaml 为镜像），displayName "OpenRouter"，协议继承内置 provider 的 openai-completions，`apiKeyEnv: OPENROUTER_API_KEY`（凭据有效）。5 个模型全部带显式 `contextWindow`/`maxTokens` 与实测过的 effort 档位：
+openrouter route 在 `~/.dsh/profiles/web/cordis.patch.yml`（settings.yaml 同步同一段，两层都生效），displayName "OpenRouter"，协议继承内置 provider 的 openai-completions，`apiKeyEnv: OPENROUTER_API_KEY`（凭据有效）。5 个模型全部带显式 `contextWindow`/`maxTokens` 与实测过的 effort 档位：
 
 - `deepseek/deepseek-v4-pro`
 - `deepseek/deepseek-v4-flash`
