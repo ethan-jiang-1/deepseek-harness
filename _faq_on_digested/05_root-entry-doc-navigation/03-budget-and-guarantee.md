@@ -4,7 +4,7 @@
 
 注入有 `maxBytes`（01 已述），整个上下文还有 `ctx.tokenMeter` 度量，超了由 compaction 回收：
 
-> Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns.
+> Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns, allowing early closed steps of one oversized turn to compact.
 >
 > —— `docs/subsystems/compaction.md:86`
 

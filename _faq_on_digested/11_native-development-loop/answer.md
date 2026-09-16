@@ -1,6 +1,6 @@
 # Answer · 窄证据切片闭环：DSH 最自然的开发习惯，以及"轻松"从哪来
 
-基线：制度与文档以 checkout `08b582ea02` 为准；git 量化取自 `upstream/master` tip `0a53fb55be`（0.1.2-alpha.2）最近 100 个 PR landing merge。三路调查的原始材料见 [research.md](./research.md)。
+基线：制度与文档以 `dsh-v0.1.5-rc.1`（commit `183f08e9c6`）复核（写作时为 checkout `08b582ea02`）；git 量化取自 `upstream/master` tip `0a53fb55be`（0.1.2-alpha.2）最近 100 个 PR landing merge，本次未重算。三路调查的原始材料见 [research.md](./research.md)。
 
 ## 结论先行
 
@@ -18,7 +18,7 @@ DSH 支持很多开发习惯——spec-first、TDD、plan-first、全量验证�
 
 **第 2 步：判定窄 diff。** 只看本次改动真正触达的行为面。change-scope 输出的 JSON 按 committed/staged/untracked 分层，review 与 push 共用同一份"这次改了什么"的事实（[dsh-code-review](../../.agents/skills/dsh-code-review/SKILL.md) 第一步也是先跑 change-scope，"before reading the diff"）。
 
-**第 3 步：原子修改 owner 面。** 改源头，不改编生物："Edit the owning source or scenario first, then regenerate the artifact"（[dsh-prose-standard](../../.agents/skills/dsh-prose-standard/SKILL.md)）；"Generated catalogs are never hand-edited; if the fact belongs there, change the generator's source"（[dsh-doc-standards](../../.agents/skills/dsh-doc/SKILL.md)）；移动是原子的（"A move is atomic"）。同时，写下的每个字都以"HEAD 处的无会话读者"为唯一视角——[dsh-trim-cot-leakage](../../.agents/skills/dsh-trim-cot-leakage/SKILL.md) 的一句测试："could a reader at HEAD, with no access to any session transcript, PR thread, or uncommitted draft, resolve every reference and verify every claim?" 禁止叙述自己的工作过程。
+**第 3 步：原子修改 owner 面。** 改源头，不改编生物："Edit the owning source or scenario first, then regenerate the artifact"（[dsh-prose-standard](../../.agents/skills/dsh-prose-standard/SKILL.md)）；"generated catalogs are never hand-edited; a move is atomic with every inbound link repaired in the same change"（[dsh-doc](../../.agents/skills/dsh-doc/SKILL.md)，原 dsh-doc-standards 已并入）；同时，写下的每个字都以"HEAD 处的无会话读者"为唯一视角——[dsh-trim-cot-leakage](../../.agents/skills/dsh-trim-cot-leakage/SKILL.md) 的一句测试："could a reader at HEAD, with no access to any session transcript, PR thread, or uncommitted draft, resolve every reference and verify every claim?" 禁止叙述自己的工作过程。
 
 **第 4 步：最小匹配证据。** 这是最能定义这个习惯的一步。"There is no universal local baseline beyond the hooks. Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression"（pre-push-checks）；"Never default to the full suite or repeat a passing check for commit or push"（根 [AGENTS.md](../../AGENTS.md)，原文限定 commit/push 场景）；甚至明令禁止重复劳动："do not run typecheck immediately before pushing solely to duplicate the pre-push hook"。coverage 也可以按文件显式圈定范围（vitest `--coverage.include` 指到单个源文件）。hooks 本身被刻意保持极窄：pre-commit 只做 staged lint/空白/vendor 清单，pre-push 只跑增量 typecheck（[development.md](../../docs/development.md) 的 Git integrations 一节，理由明说："the hooks intentionally do not run tests, snapshots, documentation checks, builds, or hygiene"）。
 
@@ -26,7 +26,7 @@ DSH 支持很多开发习惯——spec-first、TDD、plan-first、全量验证�
 
 **第 6 步：只报告实际跑过的。** "report only commands run"（AGENTS.md）；"Report pending checks as pending"（pre-push-checks）；"Report the inspected scope, clear changes, deliberate keeps, deferred cases, and checks actually run"（prose-standard）。报告与证据一一对应，不多说，不少说。
 
-这六步就是每个 `dsh-*` skill 反复展开的同一个骨架——仓库共 10 个 `dsh-*` skill，各自是它在某个场景（push 前、review 时、写 prose、找简化、归档、落地栈、双语流程）上的实例化；其中 dsh-translate-docs 仅限用户显式调用（docs/AGENTS.md），开发习惯闭环的语料分析以其余 9 个为对象。
+这六步就是每个 `dsh-*` skill 反复展开的同一个骨架——写作树上是 10 个 `dsh-*` skill（语料分析取其中 9 个，排除仅限用户显式调用的 dsh-translate-docs），到 `183f08e9c6` 已是 11 个：`dsh-doc` 合并了原 doc-standards 与 doc-site-sync，OLD 之前新增 `dsh-ci-test-reliability`，本次跨度新增 `dsh-speed-up-perf`。
 
 ## 第二节 "轻松"的来源一：记忆外包——门禁替你记得规则
 
@@ -57,13 +57,13 @@ DSH 支持很多开发习惯——spec-first、TDD、plan-first、全量验证�
 - **整 PR 回滚文化**：git 历史里 merged slice 被 revert 时是整个切片反向——代码、测试、快照、Note 三件套、文档目录一起退（如 #2903 `577bb71418` 回滚 #2608 的全部六个面），没有 patch-forward hotfix 的模式。改错了，撤销是一次原子操作，不是考古。
 - **coverage gate 的删除解释权**："An uncovered line is often dead code the gate is correctly flagging for deletion, not a missing test to bolt on"（testing.md 的 coverage gate 节）。100% 覆盖率在这里的默认读法是"这段代码该删"，不是"这段代码该补测"。
 - **tests are not golden truth**："Tests describe behavior, not correctness. Change obsolete behavior with its tests"（AGENTS.md）；Note 也不是金科玉律——被取代就 supersede、被归档就冻结（"archived notes are frozen history, never current authority"）。
-- **pre-release 立场**：没有外部消费者，所以"rename or repackage freely and update every reference together"，删兼容 shim 换正确地基（AGENTS.md 开篇）。
+- **pre-stable 立场**：公开 API 尚未稳定（"Public APIs are pre-stable; update every consumer"），已发布的 Session 数据则受版本纪律保护——相邻迁移只能新增后继代，不得移动、覆盖或删除已提交代。前者仍然支持"删兼容 shim 换正确地基"；后者给"敢改"划出数据面的边界（[AGENTS.md](../../AGENTS.md) 开篇的"Pre-stable APIs and released Session data"；原文引的"rename or repackage freely"随该节在本次跨度内更名而消失）。
 
 这四条合起来的效果：仓库不供奉任何已有代码。新人（或新 agent）进场不需要"先读懂全部再动手"——窄 diff + 原子回滚 + 可重生成的目录，意味着大改动的风险被切成了一堆小赌注。**"敢改"才是"轻松"最深的那个来源**：轻松不是没有风险，而是风险被结构吸收了。
 
 ## 第五节 为什么"写东西"本身也轻松：声明本质，其余派生
 
-上面说的是开发流程；把范围缩小到"在 DSH 上写一个工具/插件"，同样的哲学换了个出口。看 [adding-a-tool](../../docs/cookbook/adding-a-tool.md) 的最小定义：一个 `defineTool` 声明了名字、schema、`execute`、`render` 之后，以下全部免费获得——args 类型化并在执行前自动验证；schema 自动流入 system prompt 组装；effect 式注册，dispose fiber 即注销；Code Mode 免费可达（"Code Mode reaches your tool for free"，生成的类型从同一 schema 推导）；UI 卡片由一个声明的 render intent（`generic`/`terminal`/`diff` + `locations`）派生，且是 `args` 的纯函数、重放安全。
+上面说的是开发流程；把范围缩小到"在 DSH 上写一个工具/插件"，同样的哲学换了个出口。看 [adding-a-tool](../../docs/cookbook/adding-a-tool.md) 的最小定义：一个 `defineTool` 声明了名字、schema、`execute`、`render` 之后，以下全部免费获得——args 类型化并在执行前自动验证；schema 自动流入 system prompt 组装；effect 式注册，dispose fiber 即注销；PTC 模式免费可达（"PTC mode reaches your tool for free"，生成的类型从同一 schema 推导）；UI 卡片由一个声明的 render intent（`generic`/`terminal`/`diff` + `locations`）派生，且是 `args` 的纯函数、重放安全。
 
 写的人在两种情况下（在仓库内开发 DSH、在仓库上写扩展）都只写一样东西：**不可派生的本质**。其余义务在仓库内由 gate 派生，其余能力在仓库面由 harness 派生。"生成物永不手编"（doc-standards）是同一原则的第三面：能从源头推导的，永远不维护第二份。诚实边界也要讲：声明之外仍有 DSL 表达不了、必须手检的约束（非空串、正数、跨字段规则——adding-a-tool.md 的 execute contract 明列），且契约面本身有 90 余行宽度；它不免费，而是"由 harness 执行、由 agent 消化、人只需在读契约时过一遍"。
 
