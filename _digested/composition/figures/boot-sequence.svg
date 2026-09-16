@@ -8,25 +8,25 @@
 
   <rect x="40" y="64" width="280" height="200" rx="10" fill="#dcfce7" stroke="#86efac"/>
   <text x="180" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">1. prepareProfile</text>
-  <text x="56" y="118" font-size="11" fill="#166534">healProfilesModuleFallback</text>
-  <text x="56" y="136" font-size="11" fill="#15803d">loadProfile（缺模板则 init）</text>
-  <text x="56" y="154" font-size="11" fill="#15803d">重写 profiles/&lt;name&gt;/cordis.yml</text>
-  <text x="56" y="172" font-size="11" fill="#15803d">成空列表 []</text>
-  <text x="56" y="200" font-size="11" fill="#14532d">Loader 写回会把已组合的行</text>
-  <text x="56" y="216" font-size="11" fill="#14532d">烤进这个文件；下次会重复 insert</text>
-  <text x="56" y="240" font-size="11" fill="#14532d">所以每次 boot 都覆盖回去</text>
+  <text x="56" y="118" font-size="11" fill="#15803d">loadProfile（缺模板则 init）</text>
+  <text x="56" y="136" font-size="11" fill="#15803d">重写 profiles/&lt;name&gt;/cordis.yml</text>
+  <text x="56" y="154" font-size="11" fill="#15803d">成空列表 []</text>
+  <text x="56" y="182" font-size="11" fill="#14532d">Loader 写回会把已组合的行</text>
+  <text x="56" y="198" font-size="11" fill="#14532d">烤进这个文件；下次会重复 insert</text>
+  <text x="56" y="222" font-size="11" fill="#14532d">所以每次 boot 都覆盖回去</text>
 
   <line x1="320" y1="164" x2="358" y2="164" stroke="#4b5563" marker-end="url(#arr)"/>
 
   <rect x="360" y="64" width="280" height="200" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
   <text x="500" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">2. composeProfile</text>
-  <text x="376" y="118" font-size="11" fill="#1e40af">bundle patches（声明顺序）</text>
-  <text x="376" y="136" font-size="11" fill="#2563eb">+ profile cordis.patch.yml</text>
-  <text x="376" y="154" font-size="11" fill="#2563eb">+ home cordis.patch.yml</text>
-  <text x="376" y="172" font-size="11" fill="#2563eb">+ --patch 文件</text>
-  <text x="376" y="200" font-size="11" fill="#1e3a8a">再加 launcher 派生层（唯一一层）：</text>
-  <text x="376" y="218" font-size="11" fill="#1e3a8a">DSH_TELEMETRY_DISABLED 补丁</text>
-  <text x="376" y="236" font-size="11" fill="#1e3a8a">shipped preset root 不在层列表里</text>
+  <text x="376" y="118" font-size="11" fill="#2563eb">healProfilesModuleFallback（loadProfile 之后）</text>
+  <text x="376" y="136" font-size="11" fill="#1e40af">bundle patches（声明顺序）</text>
+  <text x="376" y="154" font-size="11" fill="#2563eb">+ profile cordis.patch.yml</text>
+  <text x="376" y="172" font-size="11" fill="#2563eb">+ home cordis.patch.yml</text>
+  <text x="376" y="190" font-size="11" fill="#2563eb">+ --patch 文件</text>
+  <text x="376" y="218" font-size="11" fill="#1e3a8a">再加 launcher 派生层（唯一一层）：</text>
+  <text x="376" y="236" font-size="11" fill="#1e3a8a">DSH_TELEMETRY_DISABLED 补丁</text>
+  <text x="376" y="254" font-size="11" fill="#1e3a8a">shipped preset root 不在层列表里</text>
 
   <line x1="640" y1="164" x2="678" y2="164" stroke="#4b5563" marker-end="url(#arr)"/>
 

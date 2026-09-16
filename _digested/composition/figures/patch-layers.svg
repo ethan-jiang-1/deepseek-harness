@@ -12,7 +12,7 @@
 
   <rect x="220" y="132" width="520" height="52" rx="8" fill="#dcfce7" stroke="#86efac"/>
   <text x="480" y="154" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">bundle 层（profile 声明的顺序）</text>
-  <text x="480" y="172" text-anchor="middle" font-size="11" fill="#16a34a">dsh-base → dsh-web-app 或 dsh-headless · 每包一份 cordis.patch.yml</text>
+  <text x="480" y="172" text-anchor="middle" font-size="11" fill="#16a34a">dsh-base → web-app/headless/sdk-app/acp-app · sdk-minimal 不叠 base · 每包一份 cordis.patch.yml</text>
   <line x1="480" y1="184" x2="480" y2="200" stroke="#4b5563" marker-end="url(#arr)"/>
 
   <rect x="220" y="204" width="520" height="44" rx="8" fill="#bbf7d0" stroke="#4ade80"/>
@@ -31,6 +31,6 @@
   <text x="480" y="418" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">这些用户可编辑层形成 dump-config 的树</text>
   <text x="480" y="436" text-anchor="middle" font-size="11" fill="#2563eb">boot 复用 applyEntryPatches，再追加 launcher 派生层</text>
 
-  <text x="480" y="474" text-anchor="middle" font-size="12" fill="#374151">整行替换：要保留的字段必须重写。空文件或只有注释会解析成「不是列表」，直接失败。</text>
+  <text x="480" y="474" text-anchor="middle" font-size="12" fill="#374151">patch 只覆盖它写到的 key：config 整份替换，id / name / inject 原样保留。空文件或只有注释会解析成「不是列表」，直接失败。</text>
   <text x="480" y="496" text-anchor="middle" font-size="12" fill="#374151">列出的 bundle 若没有 dsh.bundle 声明：fail loud，不会默默跳过。</text>
 </svg>

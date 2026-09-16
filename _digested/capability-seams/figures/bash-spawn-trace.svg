@@ -14,7 +14,7 @@
   <line x1="350" y1="91" x2="378" y2="91" stroke="#4b5563" marker-end="url(#arr)"/>
   <rect x="380" y="56" width="170" height="70" rx="8" fill="#dcfce7" stroke="#86efac"/>
   <text x="465" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">bash-sandbox</text>
-  <text x="465" y="106" text-anchor="middle" font-size="11" fill="#15803d">ctx.sandbox.confine(argv)</text>
+  <text x="465" y="106" text-anchor="middle" font-size="11" fill="#15803d">ctx.sandbox.confine(argv, policy)</text>
   <line x1="550" y1="91" x2="578" y2="91" stroke="#4b5563" marker-end="url(#arr)"/>
   <rect x="580" y="56" width="170" height="70" rx="8" fill="#e0e7ff" stroke="#a5b4fc"/>
   <text x="665" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#3730a3">ctx.subprocess</text>

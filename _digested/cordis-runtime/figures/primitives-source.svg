@@ -49,9 +49,10 @@
   <rect x="30" y="240" width="900" height="220" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
   <text x="50" y="270" font-size="13" font-weight="700" fill="#111827">旁边两份，不是第五条原语的一部分</text>
   <text x="50" y="300" font-size="12" fill="#374151">service.ts  Service 子类：构造里 reflect.provide(name, this)，fiber 卸掉时服务一起撤。</text>
-  <text x="50" y="324" font-size="12" fill="#374151">fiber.ts    Fiber = 一次 ctx.plugin() 的运行实例。PENDING 等 inject，LOADING 跑插件，ACTIVE 提供服务，UNLOADING 跑 disposer，DISPOSED 不能重启。</text>
-  <text x="50" y="348" font-size="12" fill="#374151">一个 plugin callback 可以有多条 fiber（Registry.Runtime.fibers）。HMR / 配置更新卸的是 fiber，不一定删 runtime。</text>
-  <text x="50" y="380" font-size="12" fill="#374151">函数插件不要 default export：Loader 认 named export 的 name/inject/apply。混用会丢掉 namespace（postmortem 0001）。</text>
-  <text x="50" y="412" font-size="12" fill="#374151">可选服务用 ctx.get(name)。ctx.&lt;key&gt; 走 Proxy，拓扑敏感；get 读全局服务表。</text>
-  <text x="50" y="436" font-size="11" fill="#6b7280">隔离：ctx.isolate(name) 给某个服务换 label；cordis:group 的 isolate realm 就是它。</text>
+  <text x="50" y="324" font-size="12" fill="#374151">fiber.ts    Fiber = 一次 ctx.plugin() 的运行实例。PENDING 等 inject，LOADING 跑插件，</text>
+  <text x="50" y="342" font-size="12" fill="#374151">ACTIVE 提供服务，FAILED 回调或配置抛错，UNLOADING 跑 disposer，DISPOSED 不能重启。</text>
+  <text x="50" y="366" font-size="12" fill="#374151">一个 plugin callback 可以有多条 fiber（Registry.Runtime.fibers）。HMR / 配置更新卸的是 fiber，不一定删 runtime。</text>
+  <text x="50" y="392" font-size="12" fill="#374151">函数插件不要 default export：Loader 认 named export 的 name/inject/apply。混用会丢掉 namespace（postmortem 0001）。</text>
+  <text x="50" y="424" font-size="12" fill="#374151">可选服务用 ctx.get(name)。ctx.&lt;key&gt; 走 Proxy，拓扑敏感；get 读全局服务表。</text>
+  <text x="50" y="448" font-size="11" fill="#6b7280">隔离：ctx.isolate(name) 给某个服务换 label；cordis:group 的 isolate realm 就是它。</text>
 </svg>

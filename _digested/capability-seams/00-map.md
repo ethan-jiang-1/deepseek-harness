@@ -15,10 +15,10 @@
 | 角色 | 它是什么 | 典型落点 |
 |------|----------|----------|
 | **Service Definition** | 声明 `ctx.<key>` 和词汇的 Cordis `Service`（抽象类或注册表，不是 `interface`） | `dsh-shell` 的 `ShellExecutor` |
-| **Service Provider** | 实现它 | `dsh-bash-local` / `dsh-bash-sandbox` |
+| **Service Provider** | 实现它 | `dsh-bash-local` / `dsh-bash-sandbox` / `dsh-pwsh-local` |
 | **Consumer** | 注入并使用；常见是面向模型的 tool | `dsh-tool-bash` |
 
-一个包可以兼多个角色——`dsh-llm` 同时拥有 Definition 和 Consumer。角色分包装，是因为它们会独立演化；合在一个包里，是因为它们就是同一件事。
+一个包可以兼多个角色——`dsh-llm` 同时拥有 Definition 和 Adapter 注册点，而它的 Consumer 是 loop 本身（`agent-loop`、`compaction-basic`）。角色分包装，是因为它们会独立演化；合在一个包里，是因为它们就是同一件事。
 
 **设计 Definition 时对着所有当前 Consumer。** tool-schema、Loader、UI、传输、某个 provider 的癖好，放在 Consumer 或 provider 里。反味：一个公开服务方法只有一个内部调用者——那多半该是私有闭包，不该抬成合同。
 
@@ -96,7 +96,7 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 | [`01-三角色与分包装.md`](./01-三角色与分包装.md) | 分包装的味道；换 E2B 时 tool 源码不动 |
 | [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md) | resolve → confine → spawn；run 的失败合同；受管范围与原生 containment |
 | [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md) | `backgroundMode` one-shot / continuable；产品 provider 的 host 平面 opt-in |
-| [`04-新增seam与Remote.md`](./04-新增seam与Remote.md) | Schedule、Webhook 新 seam；API Remote 非三角色通信模式；三个新 core 服务 |
+| [`04-新增seam与Remote.md`](./04-新增seam与Remote.md) | Schedule（刻意不成 seam）与 Webhook（`core` 服务 + 适配器消费者）两个对照；API Remote 非三角色通信模式；三个新 core 服务 |
 | [`05-subagent-catalog与host交付.md`](./05-subagent-catalog与host交付.md) | parent-owned direct-child 目录（`subagent/catalog` + projection）；宿主消息的 Queue / Steer 双交付 |
 | [`06-外发代理策略.md`](./06-外发代理策略.md) | 进程级外发代理库；唯一安装点、`.env` 豁免与 egress 证据 |
 | [`07-原生containment与native-system.md`](./07-原生containment与native-system.md) | 受管范围、Linux scope / Windows Job 两条 native 路径；flock 与 session 写租约 |

@@ -43,10 +43,10 @@
 | `runtime-profiles/` | 运行时配置 | web、headless、sdk、sdk-minimal、acp 五个 Launcher Profile 的共同基底与各自差异，以及不经 `dsh` 启动的桌面组合 |
 | `session-and-loop/` | 会话与驱动 | session log、格式世代与相邻迁移、turn/step、model-visible ⟺ logged、agent scope |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | step/turn/activity/goal 四层结束边界、Goal 状态机、Round Driver 自动续轮 |
-| `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色、如何组合一致的 fs / subprocess provider，以及进程级库（外发代理、原生 containment）这类「刻意不是 seam」的形状 |
+| `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色、如何组合一致的 fs / subprocess provider，进程级库（外发代理、原生 containment）这类「刻意不是 seam」的形状，以及默认不挂的外部生态桥（MCP 客户端、Claude Code / Codex hook 桥） |
 | `experimental/` | 实验原型面 | `packages/experimental/` 的三种原型合同：code-runtime 的 CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面——都不在 shipped 组合，合同随时会变 |
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 作为 surface 节点、in-history 替换、LLM adapter、tool 执行瀑布、chunk 到 settlement、内容块投影 |
-| `surfaces/` | 人对机器的入口 | CLI、Web host/client、桌面（Electron）、ACP、JSON-RPC SDK，以及客户端资源模型与右栏 |
+| `surfaces/` | 人对机器的入口 | CLI、Web host/client、桌面（Electron）、ACP、JSON-RPC SDK、客户端资源模型与右栏、客户端分层与插件纪律，以及 Typert 类型图到 Remote stub 的生成链 |
 | `_coverage/` | 覆盖矩阵 | 维护用索引，按源码组追踪 digest 覆盖状态 |
 | `harness-idea/` | 消化后的理解与判断 | dsh 作为 harness 做对了什么：插件图 + 事件流构成的运行时基底、可读性与正确路径、参与阶梯、动态可读性、技术选型与语言贴合、边界与成本，以及本专题自身的判断纪律 |
 | `_change_log/` | 上游同步记录 | 每次 upstream 合入后的变更摘要与资料审计 |
@@ -65,6 +65,8 @@
 - **想研究实验原型** → `experimental/00-map.md`
 - **想搞懂模型看见什么** → `tools-prompt-llm/00-map.md`
 - **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → `surfaces/00-map.md`
+- **想给 Web UI 加功能、或新增一个 `packages/client/*` 插件包** → [`surfaces/05-客户端架构与插件纪律.md`](./surfaces/05-客户端架构与插件纪律.md)
+- **想搞懂一个 `@Remote` 方法怎么变成 `ctx.remote.<ns>` 上的类型化 stub** → [`surfaces/06-Typert类型图与Remote生成.md`](./surfaces/06-Typert类型图与Remote生成.md)
 - **想搞懂 dsh 为什么对读者友好（harness 思想）** → `harness-idea/00-map.md`
 
 推荐主干顺序：

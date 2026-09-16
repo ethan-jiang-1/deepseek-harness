@@ -15,7 +15,7 @@ Plan Mode（计划模式）是可选、按 agent 记录的协作状态：激活�
 | 机制 | 拥有什么 | 不拥有 |
 |---|---|---|
 | Plan Mode | `plan/mode` 日志状态、`plan:policy` prompt section、`exit_plan_mode`、`/plan` | 文件/网络/进程权限 |
-| Sandbox mode | 运行环境允许的文件、网络和进程范围 | 计划正文或用户是否认可设计 |
+| Sandbox mode | 运行环境允许的文件效果范围 | 计划正文、用户是否认可设计，以及网络/进程等受限操作 |
 | Approval policy | 哪类受限操作需要用户批准 | plan state 或计划质量 |
 
 Plan guidance 可以要求 agent 只读探索，但违反这段 prompt 的模型行为只有在 sandbox/approval 也拒绝操作时才被强制阻止。部署需要硬限制时必须单独配置后两者。

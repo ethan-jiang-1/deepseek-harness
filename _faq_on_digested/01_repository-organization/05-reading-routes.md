@@ -10,7 +10,7 @@ DSH 的 package 数量多，按目录字母顺序阅读会失去运行时关系�
 
 ## 15 分钟建立全局坐标
 
-1. 看根 [`AGENTS.md`](../../AGENTS.md) 的 repository layout，只识别顶层区域；它的 `packages/` 块仍列着已不存在的 `self-modification/` 与 `support/`（实际是 `packages/extensions/` 与 `packages/test-support/`），组清单以 [`packages/README.md`](../../packages/README.md) 为准。
+1. 看根 [`AGENTS.md`](../../AGENTS.md) 的 repository layout，只识别顶层区域；它的 `packages/` 块曾把 `self-modification/` 与 `support/` 列成组名（实际是 `packages/extensions/` 与 `packages/test-support/`），该缺口已就地修正，组清单以 [`packages/README.md`](../../packages/README.md) 为准。
 2. 看 [`docs/architecture.md`](../../docs/architecture.md) 的章节顺序：Cordis → profiles/bundles → core → events → turn → session → seams → extension points。
 3. 看 [`packages/README.md`](../../packages/README.md)，只记 group 与角色，不背所有 package。
 4. 打开 [`docs/module-graph.md`](../../docs/module-graph.md)，知道静态依赖有生成图，不需要靠猜。

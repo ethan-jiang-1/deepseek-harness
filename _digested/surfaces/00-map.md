@@ -75,7 +75,7 @@ CLI、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`Agent` 接�
 | [`03-桌面入口.md`](./03-桌面入口.md) | Electron 壳 + 私有 host；`dsh-app://`、分帧字节管道、无监听端口、打包与更新 |
 | [`04-客户端资源模型与右栏.md`](./04-客户端资源模型与右栏.md) | `dsh-resource://` 地址、provider 契约、holder / pin 生命周期、右栏 tab 类型与 slot |
 | [`05-客户端架构与插件纪律.md`](./05-客户端架构与插件纪律.md) | 六层归属与单向依赖链、slot/props 四 share、`/client` export 与 ctx 纪律、`PLATFORM_MODULES` 与 `dsh.client.external`、Conversation Node、包内目录、依赖声明、样式与本地化、测试阶梯、三道 client gate |
-| [`06-Typert类型图与Remote生成.md`](./06-Typert类型图与Remote生成.md) | 四个 typert 包与两个 `core` 服务；声明期的 `@Remote` / namespace / 声明合并；build 期的 `TypeGraph` 与三类产物 + `typert-contracts` 门禁；运行期的 Gateway 派发、`rpcId` / 逻辑流与 `ctx.remote.<namespace>` mount |
+| [`06-Typert类型图与Remote生成.md`](./06-Typert类型图与Remote生成.md) | 四个 typert 包与两个 `core` 服务；声明期的 `@Remote` / namespace / 声明合并；build 期的 `TypeGraph` 与 `typert.host.*` / `typert.remote-client.*` 两族产物 + `typert-contracts` 门禁；运行期的 Gateway 派发、`rpcId` / 逻辑流与 `ctx.remote.<namespace>` mount |
 
 上游权威正文：[`docs/subsystems/client-resources.md`](../../docs/subsystems/client-resources.md) 管资源模型的地址语法、provider 与四态；[`docs/subsystems/sidebar-right.md`](../../docs/subsystems/sidebar-right.md) 管右栏的 tab 类型、导航服务、slot 与出货类型。
 

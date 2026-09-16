@@ -89,7 +89,7 @@
   <text x="560" y="608" font-size="10.5" fill="#8c8c8c">driver 卸载/重载 · session-start（重启/恢复）</text>
   <text x="560" y="624" font-size="10.5" fill="#8c8c8c">blocked codes：model-reported · round-limit ·</text>
   <text x="560" y="640" font-size="10.5" fill="#8c8c8c">prompt-rejected · queue-failed</text>
-  <text x="560" y="660" font-size="10.5" fill="#8c8c8c">权限：create_goal / edit / pause 需 direct-human；模型 resume 仅限</text>
+  <text x="560" y="660" font-size="10.5" fill="#8c8c8c">权限：create_goal / edit / pause / resume 需 direct-human；模型 resume 仅限</text>
   <text x="560" y="676" font-size="10.5" fill="#8c8c8c">active-disarmed 与 blocked（paused 只由 human）；complete / blocked</text>
   <text x="560" y="692" font-size="10.5" fill="#8c8c8c">在匹配的 goal-round 中亦被授权（tool-goal/authority.ts · completionAuthority）</text>
 </svg>
