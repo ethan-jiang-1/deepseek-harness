@@ -20,7 +20,7 @@
 
 读这张图时抓住三件事：
 
-1. **橙色是持久的。** `turn/*`、`step/*`、`user/message`、`assistant/*`、`tool/*` 写入 log，reload / fork / 回放都靠它们。
+1. **橙色是持久的。** `turn/*`、`step/*`、`system/message`、`user/message`、`assistant/*`、`tool/*` 写入 log，reload / fork / 回放都靠它们。
 2. **蓝色是活的扩展点。** `agent/pre-step`、`agent/request`、`llm/stream`、三条 `tools/*` 是 waterfall；`next()` 委托下游，拥有最终决定的监听器可以直接返回并短路。`agent/turn-stopping` 是 serial，没有 `next()`；需要继续时由监听器 `agent.steer()`。
 3. **拒绝也记一笔。** `pre-step` 拒绝、或首次 enter 被改写成空，仍关掉一个不含 step 的持久 turn。日志记录这次尝试。
 
@@ -33,14 +33,14 @@
 这条不变量决定了模型请求各部分如何落日志：
 
 - 对话内容用 `agent.inject()` 或其它消息入口；获准后写成 surface `user/message`。
-- prompt section、tool schema 和模型配置可以在请求前动态组装；loop 会把实际结果写入完整的 `request/header`，然后才分派。
+- prompt section、tool schema 和模型配置可以在请求前动态组装；loop 把 system prompt 写成 `system/message` 节点，把 config、adapterDefaults 与 tools 写入 `request/header`，然后才分派。
 - 只有现有 surface 与 `request/header` 都无法表达的新语义，才需要扩展 `SessionEventMap` 并补上对应的重建规则。
 
-`deriveMessages()` 只从当前有序 surface 投影消息历史；`request/header` 单独重建 config、system 与 tools。`request/context` 只记录 provider、model 和 context window，不参与请求重建。完整记录不等于全部发送：compaction 在仅追加日志中保留旧事件，只让 replacement 在后续消息投影中遮蔽旧 surface。原始 `assistant/chunk` 也会保留，用于回放和 UI 保真。精确折叠规则见 [`01-session-event-map.md`](./01-session-event-map.md#完整记录不等于完整发送)。
+`deriveMessages()` 只从当前有序 surface 投影消息历史；`request/header` 单独重建 config、adapterDefaults 与 tools，system prompt 是 surface 节点 `system/message`。`request/context` 只记录 provider、model 和 context window，不参与请求重建。完整记录不等于全部发送：compaction 在仅追加日志中保留旧事件，只让 replacement 在后续消息投影中遮蔽旧 surface。每次模型尝试的逐 chunk 时序作为内嵌 `stream` 留在它的结算事件里（`assistant/message` 或 `assistant/attempt`），当前格式不再有顶层 chunk 事件。精确折叠规则见 [`01-session-event-map.md`](./01-session-event-map.md#完整记录不等于完整发送)。
 
-fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条流派生。所以 loop 可以换：只要新驱动仍往同一条 log 写、仍发同一类 `session/event`，渲染面可以不动。
+fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条流派生；持久化按格式世代寻址，更旧的 log 在打开时经相邻链迁移到当前写者版本，机制见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。所以 loop 可以换：只要新驱动仍往同一条 log 写、仍发同一类 `session/event`，渲染面可以不动。
 
-> **持久化后端变化**：上游 #2698 和 #3339 将 session 持久化调整为 JSONL-only。SQLite 代码路径已删除。`session-persistence-sqlite` 不再存在；`session-persistence-jsonl` 承担全部持久化职责。zstd 后端拥有拼接多帧容器，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。版本只有一道拒收闸：单一 `SESSION_FORMAT_VERSION = 0`，任何 ≠0 的版本抛 `SessionFormatUnsupportedError`（`packages/session/session-persistence-jsonl/src/format.ts:305-312` 的 `refuseForeignFormatVersion`），没有迁移框架，与 [`01-session-event-map.md`](./01-session-event-map.md#持久化与格式迁移) 的表述一致。
+> **持久化后端与格式世代**：上游 #2698 和 #3339 将 session 持久化调整为 JSONL-only。SQLite 代码路径已删除，`session-persistence-sqlite` 不再存在；`session-persistence-jsonl` 承担全部持久化职责。zstd 后端拥有拼接多帧容器，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。格式侧不再是一道拒收闸：`SESSION_FORMAT_VERSION` 是唯一手维护的写者权威（当前为 3），`packages/session/session-format*` 的 build-static catalog 提供从最早支持世代到 current 的完整相邻链；只对**更新**版本拒收并给出「升级 harness」的方向，**更旧**版本走迁移，跨历史格式边时未知事件比同版本读更严。世代、权威与读准备/写发布时序见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
 
 > **ToolCallId 重命名**：上游 #2731 将 `CallId` 统一重命名为 `ToolCallId`（`llm`、`session` 及相关包）。事件字段和类型名已更新，不影响语义。
 
@@ -71,7 +71,7 @@ fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条�
 | `packages/core/agent-loop/` | `ctx.agentLoop` | 默认驱动 |
 | `packages/core/scope/` | （库） | per-agent 注册原语 |
 | `packages/preset/` | | 从 preset `cordis.yml` 组合 |
-| `packages/session/` | 持久化 seam | JSONL、projection、title |
+| `packages/session/` | 持久化 seam | JSONL、projection、title、格式包组与世代迁移 |
 | [`docs/agent-lifecycle.md`](../../docs/agent-lifecycle.md) | | 官方时序图 |
 | [`docs/subsystems/session.md`](../../docs/subsystems/session.md) | | session 语义 |
 | [`docs/subsystems/scope.md`](../../docs/subsystems/scope.md) | | scope 语义 |
@@ -81,8 +81,9 @@ fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条�
 
 | 文件 | 内容 |
 |------|------|
-| [`01-session-event-map.md`](./01-session-event-map.md) | 信封、surface 三类、required-on-read、`SESSION_FORMAT_VERSION = 0` |
-| [`02-inbox-与turn-时序.md`](./02-inbox-与turn-时序.md) | followup / steer / inject；claim；拒绝仍关 turn |
+| [`01-session-event-map.md`](./01-session-event-map.md) | 信封、surface 四类、required-on-read 与 ignorable |
+| [`02-inbox-与turn-时序.md`](./02-inbox-与turn-时序.md) | followup / steer / inject；claim；拒绝仍关 turn；settlement 与 `system/message` |
 | [`03-换loop的半径.md`](./03-换loop的半径.md) | `AgentFactory`、日志与事件义务、默认组合替换点 |
+| [`04-格式世代与迁移.md`](./04-格式世代与迁移.md) | 四个世代、相邻迁移链、权威与门禁、读方向与读准备/写发布 |
 
 下一专题：[`../capability-seams/00-map.md`](../capability-seams/00-map.md) 或 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。

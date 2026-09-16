@@ -33,6 +33,8 @@
 
 模型选择器可见 ≠ 一次文本请求可用 ≠ 工具往返可用 ≠ 持续运行（replay/历史恢复）可用。每一层单独实测；条目里声明的每个字段对应一次通过的实测。第三方中转会收到完整系统提示、用户输入、工具 schema 与工具结果——接入前独立评估数据保留、地域与费用（见 [answer.md](./answer.md) 末节）。
 
+还有一格不在条目字段里：**提示词如何在历史里表示**。内置 catalog 只有 `deepseek-flash` 声明 `systemPromptUpdate: 'in-history'`（prompt 变化追加在缓存历史之后）；手工 route 无法声明该能力，一律走「重写 message 0」的 replace 语义。中转若重写或重排 system 消息会静默破坏追加语义，表现为缓存命中率下降。见 [DSH_systemPromptUpdate能力面.md](./DSH_systemPromptUpdate能力面.md)。
+
 ## 四、OpenRouter 现状快照（2026-08-31：route 在补丁层，5 个模型）
 
 openrouter route 在 `~/.dsh/profiles/web/cordis.patch.yml`（settings.yaml 为镜像），displayName "OpenRouter"，协议继承内置 provider 的 openai-completions，`apiKeyEnv: OPENROUTER_API_KEY`（凭据有效）。5 个模型全部带显式 `contextWindow`/`maxTokens` 与实测过的 effort 档位：

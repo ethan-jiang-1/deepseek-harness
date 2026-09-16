@@ -27,7 +27,7 @@ dsh --profile headless --help
 
 | id | 做了什么 |
 |----|---------|
-| `system-prompt` | 设 persona 文本 |
+| `system-prompt` | 设 persona 两段：`personaSuffix`（`Your working directory is {{cwd}}.`）+ `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/headless/cordis.patch.yml:7-11`） |
 | `tools` | 透传 `DSH_TOOLS_MODE` |
 
 ### `dsh-headless` 的 insert 行
@@ -51,7 +51,7 @@ dsh --profile headless "run the tests"
   → 打印最终 assistant 消息 → exit 0
 ```
 
-最终消息的读取是逐 seq 的：runner 的 `summarize` 按 `session.eventAt(SessionSeq(seq))` 从首个 seq 读到捕获长度，读不到即 fail loud（`dsh: headless summary cannot read seq N below captured length M`；`packages/bundle/headless/src/index.ts:64-73`，`tests/headless.spec.ts` 有对应用例）。
+最终消息的读取是逐 seq 的：runner 的 `summarize` 按 `session.eventAt(SessionSeq(seq))` 从首个 seq 读到捕获长度，读不到即 fail loud（`dsh: headless summary cannot read seq N below captured length M`；`packages/bundle/headless/src/index.ts:64-89`，fail-loud 抛在 `:72`，`tests/headless.spec.ts` 有对应用例）。进程中的推理进度另走 `streamReasoning`：它订阅 `agent/assistant-stream` 这个 process-local 帧（不是 WAL），只把非空 `reasoning-delta` 打到 stderr（`packages/bundle/headless/src/index.ts:99-155`，`:112` 是订阅点）——最终结局仍从耐久日志推导，两路不混。
 
 ## 独特之处
 

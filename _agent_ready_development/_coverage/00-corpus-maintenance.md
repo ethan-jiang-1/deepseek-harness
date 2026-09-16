@@ -1,6 +1,6 @@
 # `_agent_ready_development` 语料证据与维护说明
 
-> 复核日期：2026-09-05。产品源码基线：`a66e4702047846cdaa10c66c9d3df3951f5ea70d`。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
+> 复核日期：2026-09-05。产品源码基线：`a66e4702047846cdaa10c66c9d3df3951f5ea70d`（本语料自钉的固定基线；工作树已随上游合入前进到 `183f08e9c6`（`dsh-v0.1.5-rc.1`），自身 re-pin 尚未执行，见文末维护日志）。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
 
 ## 1. 专题定位
 
@@ -74,3 +74,12 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 2026-08-24 的 repository-level 复核没有建立绿色 `doc-sync` 结果：`corepack pnpm run doc-sync` 完成 28 项中的 25 项，`doc-typecheck` 缺少 `lib/types/{index,invariant,startup}.js` 构建入口，documentation build 命中 host Corepack 的 `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`，translation pairing 因仓库 scope 包含本语料而拒绝 8 个 README。前两项需要目录外构建或工具链修复；pairing exclusion 由目录外的 `scripts/translation-pairing.manifest.json` 拥有。目录级检查通过不能替代这三项 repository-level 结果。
 
 2026-09-05 的 rc.1（`a66e470204`）复核：全部目录外 DSH 引用 URL re-pin 到 rc.1；机制扫描（invariant 空 companion 废除、subagent report 工具删除、schedule 非 seam、apiproxy 删除、profile 组合变薄层、agent preset 改名 ptc、session header 去 seedLength）在本语料正文无命中，证据正文无需修订。目录级 verify 通过。
+
+2026-09-16 的 0.1.5-rc.1（`183f08e9c6`）同步：本语料的工作树基线随上游合入前进，但**语料自身的固定基线仍是 `a66e470204`**，正文未重验，URL 仍钉在旧 commit（该 commit 仍可解析）。已知会冲掉本语料的机制，留给下一次 re-pin 逐条处理：
+
+1. `.github/ISSUE_TEMPLATE/` 从五种（Idea/Feature/Bug/Research/Task，含折叠区验收与测试证据）改为三种（Bug/Feature/Task），并删除折叠区、可见正文长度、标题语言/前缀与 `Owner:` 行的 policy 检查 → `advanced-sdd-flow/02` §1 与 §2 的模板清单、`package.json` 之外的 policy 描述会失实。
+2. `.agents/notes/` 大归档（implemented 1288 → 582 篇，archived 341 → 1257 篇）→ `advanced-sdd-flow/01`、`04`、`06`、`development-harness/00`、`05` 中钉在 implemented 子树的 URL 可能指向已归档路径。
+3. `.github/AGENTS.md` 的平台矩阵与 self-hosted/standby 策略改写（新增 master-only platform CI 决策）→ `advanced-sdd-flow/04` §平台一节需重验。
+4. `docs/` 新增 `session-format-status.md`、`subsystems/client-resources.md`、`subsystems/sidebar-right.md`、`user/guide/network-proxy.md`，并删除 apiproxy 面 → `development-harness/06` 的 catalog 清单需重验。
+
+本轮只做语料隔离性验证：`node _agent_ready_development/verify.mjs` 通过（32 Markdown、1 scripts、15 SVG）。

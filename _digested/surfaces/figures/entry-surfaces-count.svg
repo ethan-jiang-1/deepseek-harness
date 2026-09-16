@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="960" height="430" fill="#fafafa" rx="6"/>
+  <text x="480" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">「五个入口」是两个口径：产品应用面 ≠ dsh launcher profile</text>
+  <text x="480" y="52" text-anchor="middle" font-size="11" fill="#6b7280">两组各自都是 5 个，但不一一对应；混用会同时读错 CLI 与 Desktop 的位置。</text>
+
+  <rect x="50" y="76" width="400" height="272" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="250" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">产品应用面 · 5</text>
+  <text x="74" y="142" font-size="11.5" fill="#1e3a8a">CLI dsh —— 产品 bin，不是 profile</text>
+  <text x="74" y="176" font-size="11.5" fill="#1e3a8a">Web —— dsh web（--profile web 的别名）</text>
+  <text x="74" y="210" font-size="11.5" fill="#1e3a8a">ACP —— dsh --profile acp</text>
+  <text x="74" y="244" font-size="11.5" fill="#1e3a8a">JSON-RPC SDK —— sdk / sdk-minimal</text>
+  <text x="74" y="278" font-size="11.5" fill="#1e3a8a">Desktop —— Electron 壳 + 私有 host</text>
+  <text x="74" y="312" font-size="11" fill="#2563eb">唯一不经 dsh CLI 启动；dsh-app:// · 无监听端口</text>
+
+  <rect x="510" y="76" width="400" height="272" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="710" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">dsh launcher profile · 5</text>
+  <text x="534" y="142" font-size="11.5" fill="#14532d">web —— dsh web（别名）</text>
+  <text x="534" y="176" font-size="11.5" fill="#14532d">headless —— dsh --profile headless</text>
+  <text x="534" y="210" font-size="11.5" fill="#14532d">sdk —— dsh --profile sdk</text>
+  <text x="534" y="244" font-size="11.5" fill="#14532d">sdk-minimal —— dsh --profile sdk-minimal</text>
+  <text x="534" y="278" font-size="11.5" fill="#14532d">acp —— dsh --profile acp</text>
+  <text x="534" y="312" font-size="11" fill="#15803d">PROFILE_TEMPLATES 只有这 5 个模板</text>
+
+  <text x="480" y="378" text-anchor="middle" font-size="11" fill="#374151">PROFILE_TEMPLATES（packages/boot/app-boot/src/profile.ts:110-131）只有 5 个模板；</text>
+  <text x="480" y="400" text-anchor="middle" font-size="11" fill="#374151">dsh --profile desktop 被 apps/cli/src/args.ts:68-71 显式拒绝，CLI 不是桌面的启动面。</text>
+</svg>

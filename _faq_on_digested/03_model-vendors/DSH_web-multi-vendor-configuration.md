@@ -8,6 +8,8 @@
 
 本记录对应独立安装的 `npx @deepseek-ai/dsh web`，其默认 `DSH_HOME` 为 `/Users/bowhead/.dsh`，实际设置文件为 `/Users/bowhead/.dsh/settings.yaml`。本次只补充 `llm-pi-ai.providers`，不安装插件、不修改 DSH 代码、不改变已有 MICU route。默认模型可由 Web 随时改写；本记录不把它当作 vendor 配置的一部分。
 
+修配置的路径现在更宽：`llm-pi-ai` 的 `assertServiceable(config, previous?)` 只 resolve **改动的** provider（`packages/llm/llm-pi-ai/src/config.ts:360-364`），`resolveProfiles` 也区分 `'strict'`（写入）与 `'deferred'`（存量读取）（`:406-409`）。因此某个存量 profile 失效（例如 catalog 升级后字段不再合法、或 headers 非法）不会再让整段 namespace 注册失败、模型页变空；可以只修出问题的那条 route，其他 route 保持可用。
+
 | route | 用途 | endpoint / 协议来源 | 凭据引用 | Web 中保留的模型 |
 |---|---|---|---|---|
 | `micu` | GPT-5.6 MICU 中转 | 手工 `openai-responses` route | `CODEX_API_KEY_MICU` | `gpt-5.6-sol`、`gpt-5.6-terra` |

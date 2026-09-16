@@ -40,7 +40,7 @@ answer 详细阐述的机制是**仓库流程**属性（gates、hooks、窄测�
 
 - **反证。** "Seconds" 的表述将本地 hooks 作为反馈步骤，但唯一的 *始终开启的* push 时本地门禁是
   **完整的 host build + bundle + client typecheck**（`build:lib:host`），而不是亚秒级检查。Superseding note
-  [`2026-07-22-fast-local-git-hooks.md:34`](../../.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md)
+  [`2026-07-22-fast-local-git-hooks.md:35`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   明确说：*"Hook latency is observed in development and PR evidence rather than enforced by a
   timing test whose result would depend on host load and cache state."* 仓库**故意拒绝承诺持续时间**。
   所以"痛在秒级"（`answer.md:43`）和"秒到分钟级"（`answer.md:47`）
@@ -88,7 +88,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
   本身是无门禁的 prose。
 - **反证 (c)。门禁的记忆在 CI，而引用的 note 本身将其标记为已取代。**
   Quality-gates note 的 hook/CI 对称性已被
-  [`fast-local-git-hooks`](../../.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md)
+  [`fast-local-git-hooks`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   取代（`:23`，"supersedes the hook/CI symmetry"），而 answer 引用 *quality-gates* note 时仿佛它
   描述了当前的 hook 集。当前的 hook 集是 `lefthook.yml`，比 quality-gates note 的 prose 暗示的更窄。
 - **裁定。** 对机械规则为真，且仅在本地狭窄 hook 子集上；作为 blanket "你可以忘记规则"**unsupported**。
@@ -155,7 +155,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
 - 在*机械*意义上得到支持：只运行最窄失败检查的 agent 每 token 做更多正确工作，
   CI 后盾覆盖了穷举性违规。这是一个连贯的设计主张，由
   [`quality-gates:15`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
-  和 `fast-local-git-hooks:9-19` 支持。
+  和 `fast-local-git-hooks:10-20` 支持。
 - **反证。** 对齐仅适用于"正确"是*机械强制执行的*地方。当规则是 prose（循环顺序、Note 必要性判断、
   `report-only-commands-run`、tier 放置）时，最省力路径**不**自动是正确路径——
   你仍然必须阅读并遵循 prose。所以这个"对齐"是一个**部分的**对齐，而 answer 在没有限定词的情况下陈述了它。
@@ -203,9 +203,9 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 
 - **只在权威边界问，从不问检查可发现的事实。** Plan-mode 姿态节，answer 引用了它但也只是作为"姿态条款"，
   实际上是 (A) 面对的契约："A user's conversational agreement — including an answer confirming something you asked — **approves nothing**"
-  （[`packages/bundle/base/cordis.patch.yml:311`](../../packages/bundle/base/cordis.patch.yml)）；"Resolve
+  （[`packages/bundle/base/cordis.patch.yml:305`](../../packages/bundle/base/cordis.patch.yml)）；"Resolve
   discoverable facts by inspection. Use `ask_user_question` only for user-owned choices or material
-  ambiguity that inspection cannot answer. **Do not ask the user where code lives**"（`:275`）。工具自身的描述
+  ambiguity that inspection cannot answer. **Do not ask the user where code lives**"（`:311`）。工具自身的描述
   进一步缩小范围："when you need confirmation, a choice, or missing information"
   （[`packages/interaction/tool-ask-user/src/index.ts:16`](../../packages/interaction/tool-ask-user/src/index.ts)）。
   这是 (A) 体验感觉轻松的确切原因：**人只在为他们拥有的决策时被打断**，
@@ -223,7 +223,7 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
   卡住 → 被引导，而非被杀。
 - **可读的最终交付。** 后台子会话 settle 时，运行时把 outcome 与 final message 作为 notice 交回父会话
   （"When a background run settles, the runtime sends you a notice containing its outcome and any final
-  assistant message"，[`packages/subagent/tool-subagent/src/index.ts:596`](../../packages/subagent/tool-subagent/src/index.ts)）。
+  assistant message"，[`packages/subagent/tool-subagent/src/index.ts:603`](../../packages/subagent/tool-subagent/src/index.ts)）。
   rc.1 删除了独立的自足 `report` 工具（`tool-subagent-report`）。
   对 (A) 用户而言，最顶层的对应物仍是可读的完成报告，而不是六步循环。
 - **可重放性 / 对 transcript 的信任。** `model-visible ⟺ logged` 不变量
@@ -247,7 +247,7 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 >
 > **对于 agent (B) 和手动贡献者 (C)，** 轻松是一个*流程*属性：正确和
 > 便宜在*机械强制执行*的子集上重合。本地 hooks 保持狭窄（`lefthook.yml`,
-> [`docs/development.md:109-119`](../../docs/development.md)），agent 选择会为其回归而失败的最窄检查
+> [`docs/development.md:117-125`](../../docs/development.md)），agent 选择会为其回归而失败的最窄检查
 > （`dsh-pre-push-checks:29`）；变更的正确性被委派给 CI
 > 因此本地成本保持低。整 PR revert 是真实的（`#2903` 镜像 `#2608`, 67 文件），但只有在没有后续碰撞时才是干净的
 > 单次撤销。这**不是**一个"你可以忘记规则"的主张：门禁覆盖一个*机械*子集，而被推崇的六步循环本身是无门禁的 prose。
@@ -255,9 +255,11 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 >
 > **对于通过 Web/CLI 指挥 DSH 的人类 (A)，** 轻松是一个*产品*属性，不在 git 层中。
 > 人只在为他们拥有的决策时被打断（"conversational agreement approves nothing",
-> "do not ask where code lives", [`cordis.patch.yml:269,275`](../../packages/bundle/base/cordis.patch.yml)）；
-> 知识按需加载；工作被脚手架化（todo + plan）和引导（advisory guard）；结果以自包含、会话可重建的报告送达
-> （[`tool-subagent-report:57-71`](../../packages/subagent/tool-subagent-report/src/index.ts)）。对 (A) 而言，
+> "do not ask where code lives", [`cordis.patch.yml:305,311`](../../packages/bundle/base/cordis.patch.yml)）；
+> 知识按需加载；工作被脚手架化（todo + plan）和引导（advisory guard）；结果由运行时在子会话 settle 时
+> 以 notice 交回父会话，而不是由子会话自己交一份报告
+> （[`continuation-messages.ts:130`](../../packages/subagent/subagent/src/continuation-messages.ts)、
+> [`docs/subsystems/subagent.md:202`](../../docs/subsystems/subagent.md)）。对 (A) 而言，
 > "轻松"意味着 **"harness 处理流程，只在需要我选择时中断我。"**
 >
 > 两种"轻松"**不是**同一现象。如果问题是"为什么对一个人来说驾驶 DSH 很容易"，答案是其 **运行时姿态**，
@@ -272,7 +274,7 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
    （`lefthook.yml`）和取代中的 `fast-local-git-hooks` note，而不是已取代的 quality-gates hook/CI
    对称性。
 3. **将"seconds"降级**为"local is much faster than CI"；仓库拒绝保证持续时间
-   （`fast-local-git-hooks:34`），pre-push 运行完整的 host build + client typecheck。
+   （`fast-local-git-hooks:35`），pre-push 运行完整的 host build + client typecheck。
 4. **限定"one or two checks"** 加上始终开启的 hook 基线和横切异常。
 5. **重做 §3 中"validation is cheap"的修饰**："do not ration real-API tests" 是一个反成本借口，
    而不是成本主张；真实模型 e2e 是仓库中最昂贵的验证。
@@ -300,14 +302,14 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 - [`AGENTS.md`](../../AGENTS.md) — "report only commands run", "Never default to the full suite"。
 - [`.agents/notes/implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
   — "developed primarily by coding agents", "Every mechanically checkable…", "gates are code to maintain"。
-- [`.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md`](../../.agents/notes/implemented/process/2026-07-22-fast-local-git-hooks.md)
+- [`.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   — 当前 hook 集、取代 quality-gates、无延迟保证。
 - [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml) — plan-mode posture。
 - [`packages/interaction/tool-ask-user/src/index.ts`](../../packages/interaction/tool-ask-user/src/index.ts) — ask_user_question 契约。
 - [`packages/skill/tool-skill/src/index.ts`](../../packages/skill/tool-skill/src/index.ts) — 两层披露、catalog hash。
 - [`packages/core/system-prompt/src/index.ts`](../../packages/core/system-prompt/src/index.ts) — section order convention。
 - [`packages/workflow/tool-workflow/src/index.ts`](../../packages/workflow/tool-workflow/src/index.ts) — tool guidance lives in tool plugins。
-- [`packages/subagent/tool-subagent-report/src/index.ts`](../../packages/subagent/tool-subagent-report/src/index.ts) — 自包含 report。
+- [`packages/subagent/subagent/src/continuation-messages.ts`](../../packages/subagent/subagent/src/continuation-messages.ts) — settle notice（rc.1 起取代 `tool-subagent-report`）。
 - [`packages/subagent/tool-subagent/src/index.ts`](../../packages/subagent/tool-subagent/src/index.ts) — background-first delegation。
 - [`packages/guard/repeat-tool-reminder/src/index.ts`](../../packages/guard/repeat-tool-reminder/src/index.ts) — advisory thresholds。
 - [`packages/todo/tool-todo/src/index.ts`](../../packages/todo/tool-todo/src/index.ts) — todo as visible skeleton。

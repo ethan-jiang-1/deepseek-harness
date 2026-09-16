@@ -17,9 +17,9 @@
 ```text
 vendor/                 Cordis 框架与基础库
 packages/<group>/<pkg>  产品 package
-apps/                   最终可执行入口
-examples/               可运行组合叶子
-native/                 原生 launcher 家族
+apps/                   最终可执行入口（CLI、Web、桌面壳与私有 host）
+benchmarks/             仓库级性能门禁与 bench-only 依赖
+native/system/          原生 system 原语（Landlock / flock）与平台包
 python/                 Python SDK 与 runtime 发行物
 docs/ + website/        权威文档与站点投影
 scripts/                生成器与仓库门禁
@@ -83,12 +83,14 @@ base bundle ───→ 具体插件 package 的发布闭包
 
 `dsh web` 的 Host 是 Node 进程中的 Cordis 树，包含 session、agent、Provider、API gateway 和 HTTP server。浏览器不是简单加载一个静态 React 单体；`apps/web/src/main.ts` 启动 `@deepseek-ai/dsh-client-web`，后者根据 Host 推送的 client entry graph 建立浏览器侧模块系统和 Cordis 插件树，再让 `ui-*` package 向 slots 和 client services 注册贡献。
 
+到 0.1.5-rc.1，`packages/client/` 已从“壳 + slots”扩成含内容寻址资源模型的 UI 平台：`ctx.resources` 把 `dsh-resource://<type>/…` 地址变成任何 slot component 都能读的活值，`useResource` 是每个组件都有的全局标准 prop，右栏 docking 是它的第一个消费者。读 Web 代码时，「某个组件的数据从哪来」因此多了一层答案：不是只有 Remote 调用，还可能是「协议 + provider + 地址」。机制见 [`_digested/surfaces/04-客户端资源模型与右栏.md`](../../_digested/surfaces/04-客户端资源模型与右栏.md)。
+
 因此 Web 阅读时至少要标明自己位于哪一边：
 
 | 平面 | 典型目录 | 主要状态 |
 |------|----------|----------|
 | Host / Node | `packages/host/`、`packages/api/` 的 Host 面、产品 capability packages | Agent、Session、Provider、HTTP/RPC 服务 |
-| Client / Browser | `packages/client/`、`packages/api/` 的 Client 面、`apps/web` | Client object services、slots、React UI 插件 |
+| Client / Browser | `packages/client/`、`packages/api/` 的 Client 面、`apps/web` | Client object services、资源模型（`ctx.resources` / `useResource`）、slots、右栏 docking、React UI 插件 |
 
 两边通过类型化 Remote/RPC 与事件投影连接，不共享同一个 JavaScript Context 对象。`apps/web` 很薄，是因为客户端装配逻辑也被拆回可复用的 `packages/client/*`。
 

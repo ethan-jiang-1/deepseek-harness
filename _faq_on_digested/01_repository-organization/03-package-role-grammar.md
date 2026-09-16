@@ -99,13 +99,13 @@ packages/core/session
   活的内存 Session / SessionStore / SessionEventMap / surface projection
 
 packages/session/*
-  persistence seam + JSONL/SQLite
+  persistence seam + JSONL（世代寻址）+ 格式迁移包组
   projection registry + cache + stats
   title service + model providers
   telemetry service + OTEL backend
 ```
 
-`core/session` 是 agent spine 必须依赖的交互事实模型，但“把它存到哪里”“怎样做查询投影”“是否生成标题或遥测”可以独立演化和替换，所以进入相邻的 `session/` capability family。`session-query/` 再单独成组，因为查询 corpus、SQLite FTS 和模型查询工具的消费者与持久化内部实现不同。
+`core/session` 是 agent spine 必须依赖的交互事实模型，但“把它存到哪里”“怎样做查询投影”“是否生成标题或遥测”可以独立演化和替换，所以进入相邻的 `session/` capability family。持久化后端现在只有 JSONL：`session-persistence-jsonl` 每个 Session 保留不可变的规范世代文件并独占发布后继世代，`session-format` 与 `session-format-v0-to-v1` / `v1-to-v2` / `v2-to-v3` 加生成的 `session-format-catalog` 组成格式迁移包组；SQLite **持久化**后端已不存在，SQLite 现在只在查询侧的 `session-query/session-query-sqlite`（FTS5 索引）。`session-query/` 再单独成组，因为查询 corpus、SQLite FTS 和模型查询工具的消费者与持久化内部实现不同。
 
 ## Host、Client、API 与 Typert
 
@@ -113,13 +113,15 @@ Web GUI 不是一个 `frontend/` 加一个 `backend/` 大目录，而是多个�
 
 | Group | 所有权 |
 |-------|--------|
-| `host/` | Node 侧 HTTP server、legacy API proxy、静态前端服务、Host-only capability |
-| `client/` | 浏览器 Cordis shell、connection、object services、slots 和 `ui-*` 插件 |
+| `host/` | Node 侧 HTTP server、静态前端服务、Host-only capability（`webserver`、`frontend-static`、`directory-picker*`、`plugin-inventory`、`open-in-app`） |
+| `client/` | 浏览器 Cordis shell、connection、object services、slots、资源模型与 `ui-*` 插件 |
 | `api/` | Host/Client 共用的 Remote/BFF 与 RPC gateway 机制 |
 | `typert/` | 类型图生成、artifact loading 与 runtime registry |
 | `apps/web` | 最薄浏览器 entry，调用 `AppWebEntry` |
 
 这种拆法把“传输”“业务 Remote”“浏览器模块加载”“具体 UI 功能”分开。读一个 UI 时，不能只停在 React component；还要沿 Remote 或 session projection 找到 Host 侧事实来源。
+
+`apps/` 这一层另有 `apps/desktop`（Electron 壳）与 `apps/desktop-host`（私有 host），两者都不带 `bin`、也不从 `dsh --profile` 启动，而是复用 `dsh-base + dsh-web-app` 与同一份前端产物；见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。`client/` 在 0.1.5-rc.1 也已不只“壳 + slots”：`ctx.resources` / `useResource` 构成内容寻址的资源模型，`ui-dockkit` 是平台静态模块而非 Loader row，右栏、file-upload 与 open-in-app 都在这一组，见 [`_digested/surfaces/04-客户端资源模型与右栏.md`](../../_digested/surfaces/04-客户端资源模型与右栏.md)。
 
 ## 一个普通 package 的内部结构
 

@@ -1,12 +1,11 @@
 # Research · DSH 修改系统的完整 spec 路径
 
-## 1. 意图与验收：Issue 模板
+## 1. 意图与可观察行为：Issue 模板
 
-> - 验收条件：
-> - 用户或模型可见变化：
-> - 测试证据：
+> ## Motivation
+> ## Behavior
 
-来源：`.github/ISSUE_TEMPLATE/feature.md:16-18`
+来源：`.github/ISSUE_TEMPLATE/feature.md:1-14`（Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板不再承载验收与测试证据）
 
 PR 模板：
 

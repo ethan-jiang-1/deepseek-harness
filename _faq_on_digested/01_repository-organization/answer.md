@@ -4,7 +4,7 @@
 
 ## 一句话答案
 
-DSH 的目录不是按“控制器、服务、工具类”这种实现层次来切，而是按**所有权、可替换角色、运行时组合和发布边界**来切：可复用产品能力放在 `packages/`，一项能力再拆成 Definition、Provider、Consumer 和策略插件；`bundle`、profile 与 agent preset 只选择这些插件如何组合；`apps/` 保留最终可执行入口；框架、原生组件、Python 发行物、示例、文档和工程工具各有独立边界。
+DSH 的目录不是按“控制器、服务、工具类”这种实现层次来切，而是按**所有权、可替换角色、运行时组合和发布边界**来切：可复用产品能力放在 `packages/`，一项能力再拆成 Definition、Provider、Consumer 和策略插件；`bundle`、profile 与 agent preset 只选择这些插件如何组合；`apps/` 保留最终可执行入口；框架、原生组件、Python 发行物、性能门禁、文档和工程工具各有独立边界。
 
 因此，熟悉 DSH 不能只背一棵目录树。需要同时看三张图：
 
@@ -50,7 +50,7 @@ package 实现
 
 ### 4. 发布和平台边界在顶层显式出现
 
-`vendor/` 是被钉住并本地维护的 Cordis 框架层；`native/` 是原生 launcher 的源码与 npm 家族；`python/` 是 Python SDK 与捆绑 runtime；`website/` 是文档站投影和构建；根 `examples/` 是可运行组合；`apps/` 是产品应用。它们的构建、发布和消费者不同，因此不强行藏进 `packages/`。
+`vendor/` 是被钉住并本地维护的 Cordis 框架层；`native/system/` 是原生 system 原语（Landlock / POSIX flock）的源码与 npm 家族；`python/` 是 Python SDK 与捆绑 runtime；`website/` 是文档站投影和构建；`benchmarks/` 是仓库级性能门禁；`apps/` 是产品应用。它们的构建、发布和消费者不同，因此不强行藏进 `packages/`。
 
 顶层目录不是“杂项分类”，而是维护与发行责任的边界。详细地图见 [`02-top-level-zones.md`](./02-top-level-zones.md)。
 
@@ -71,7 +71,7 @@ package 的手写源码位于 `src/`，测试位于同级 `tests/`，构建产�
 | 框架与平台基础 | `vendor/`、`native/` | DSH 依赖但独立维护或发布的底座 |
 | 产品能力 | `packages/` | 插件、服务合同、Provider、Consumer、策略 |
 | 应用与组合 | `apps/`、`packages/bundle/` | 入口启动组合，bundle 选择默认插件行 |
-| 可运行与跨语言发行 | `examples/`、`python/` | 示例叶子和 Python 驱动/捆绑 runtime |
+| 门禁与跨语言发行 | `benchmarks/`、`python/` | 性能门禁和 Python 驱动/捆绑 runtime |
 | 文档与工程系统 | `docs/`、`website/`、`scripts/`、`.github/`、`.agents/` | 说明、生成、校验、CI、决策记录 |
 | 研究覆盖层 | `_digested/`、`_faq_on_digested/`、`_architecture_referenced/` | `ethan` 分支上的源码消化与二次研究 |
 
@@ -97,7 +97,7 @@ packages/fs/                  # 文件系统能力家族
 - `packages/session/` 不是 `core/session` 的重复。`core/session` 拥有活的内存日志；`session/` 家族围绕它增加持久化、投影、标题和遥测。
 - `packages/host/` 与 `packages/client/` 是 Web GUI 的两半；`apps/web` 只是很薄的浏览器入口，`apps/cli` 的 web profile 负责启动 Host 并提供前端产物。
 - `packages/api/` 与 `packages/typert/` 负责 Host/Client 之间的类型化 Remote/RPC 机制，不是另一个独立产品入口。
-- `packages/examples/` 保存可复用的 demo bundle，根 `examples/` 保存真正可运行的 `cordis.yml` 叶子，两者不是同一个层次。
+- 组合叶子不再有顶层 `examples/`：可选 overlay 是 `apps/cli/config/examples/*/cordis.yml`（产品资产，`dsh --patch` 才挂），agent preset 的根是 `packages/preset/agent-presets/presets/*/agent.cordis.yml`。
 - `packages/test-support/` 是跨 package 的测试基础设施；普通行为测试仍跟随自己的 package 放在 `tests/`。
 
 ## 一个 package 内部应该怎样读

@@ -99,16 +99,16 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 ## 我的判断
 
 - **判断一：prose 是索引，执行才是保证。** dsh 的规则文档（`docs/`、`AGENTS.md`）写得克制，是因为每一条关键规则都有机器可执行的落点：`verify-export-jsdoc`、`verify-package-invariants`、`doc-typecheck`、coverage 门禁、运行时 invariant。文档负责「告诉你往哪看」，系统负责「证明你做对了」。
-- **判断二：「模型可见 ⟺ 已记录」能成立，是因为它被写成了运行时检查。** `dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致直接 fail（机制见 [`03`](./03-paved-road.md)，源码在 `packages/core/agent-loop/src/invariant.ts`）。它是 invariant 体系的一个实例；invariant 体系的另一半纪律是「只在有独立可观察关系时 publish，不造无意义断言」——rc.1 连「显式空断言」都裁掉了（见机制六）。agent-loop 实例因有真实关系而在废除中幸存。
+- **判断二：「模型可见 ⟺ 已记录」能成立，是因为它被写成了运行时检查。** `dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致直接 fail（机制见 [`03`](./03-paved-road.md)，源码在 `packages/core/agent-loop/src/invariant.ts`）。它是 invariant 体系的一个实例；invariant 体系的另一半纪律是「只在有独立可观察关系时 publish，不造无意义断言」——`0.1.2-rc.1` 连「显式空断言」都裁掉了（见机制六）。agent-loop 实例因有真实关系而在废除中幸存。
 - **判断三（反转但有分级）：LLM 读得懂 dsh 不是设计目标，是生产方式残留。** [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) 的第一句是仓库对自身生产方式的自述；`docs/architecture.md` 那句「推荐用 agent 探索代码库」是后来的注脚。但「开发主力就是 agent」应标为第一方自述，不等同于外部普查；本专题按“自述 + 机制推断”处理。
 - **判断四：dsh 的形状还要过「组合压力」检验。** 生产方式解释它为什么是 agent 形状，组合压力解释这个形状何时值得模仿。两者都是判断，不是源码能直接证明的定律（[`07`](./07-boundaries-costs-fit.md)）。
-- **判断五：本专题自己也要过分布纪律。** 框架性通式（知识外置、paved road、三问检验）落在 LM 喜欢的分布内，谁都能写；挖出来的事实（因果反转、vendor manifest 门禁、required-on-read、invariant 只在有真关系处断言而「显式空断言」被 rc.1 裁掉、note 语料库的出处）在分布外，必须带出处。执行办法在 [`08`](./08-judgement-discipline.md)。
+- **判断五：本专题自己也要过分布纪律。** 框架性通式（知识外置、paved road、三问检验）落在 LM 喜欢的分布内，谁都能写；挖出来的事实（因果反转、vendor manifest 门禁、required-on-read、invariant 只在有真关系处断言而「显式空断言」被 `0.1.2-rc.1` 裁掉、note 语料库的出处）在分布外，必须带出处。执行办法在 [`08`](./08-judgement-discipline.md)。
 
 ## 判断纪律（摘要）
 
 本专题不进 `_coverage/` 核验矩阵：它不追踪机制覆盖度，只记录消化后的判断。替代纪律在 [`08-judgement-discipline.md`](./08-judgement-discipline.md)，核心是四条：
 
-1. **钉基线**：全部判断对照 DeepSeek Harness `dsh-v0.1.2-rc.1`（commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`），与 `_digested/` 其它专题同一基线。上游同步后按 `_change_log/` 复核本专题的证据锚点。
+1. **钉基线**：全部判断对照 DeepSeek Harness `dsh-v0.1.5-rc.1`（commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`），与 `_digested/` 其它专题同一基线。上游同步后按 `_change_log/` 复核本专题的证据锚点。
 2. **出处分级**：每条判断标注来源——`[原文]`、`[源码]`、`[推断]`、`[框架]`；后两类可信度最低，只提供结构或假设。
 3. **反事实标记**：写判断时自问「一个没读过本仓库的 fresh agent 会不会自然写出这句」；会，是分布内通式；不会，才可能是信息。
 4. **自我适用**：[`08`](./08-judgement-discipline.md) 末尾用「三个问题」检验本专题自身，并维护一个核心 claim register。

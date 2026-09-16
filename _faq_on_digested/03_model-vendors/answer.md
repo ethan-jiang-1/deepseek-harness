@@ -1,6 +1,6 @@
 # Answer · 多 vendor 接入 DSH 的选择
 
-产品源码核验基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`。手工 route 实测仍以各 vendor 研究笔记为准。
+产品源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.1`，commit `183f08e9c6`。手工 route 实测仍以各 vendor 研究笔记为准。
 
 ## 结论
 
@@ -68,7 +68,7 @@ llm-pi-ai:
 
 ## 方案 4：自动路由或跨 vendor 故障切换
 
-这不是“多配置几个 route”自然得到的能力。当前 `dsh-llm-retry` 只会在**原 provider**上重试；`agent/request-error` 的现有动作也只有 `{ kind: 'retry' }`，不能通过配置把下一次请求换成另一个 route。
+这不是“多配置几个 route”自然得到的能力。当前 `dsh-llm-retry` 只会在**原 provider**上重试；`agent/request-error` 的现有动作也只有 `{ kind: 'retry' }`，不能通过配置把下一次请求换成另一个 route（`RequestErrorAction = { kind: 'retry' } | undefined`，`packages/core/agent/src/runtime-types.ts:122`）。
 
 有两条合理路线：
 
@@ -76,6 +76,20 @@ llm-pi-ai:
 2. **DSH 外统一网关。** 让网关自己根据策略选择后端，DSH 只看到一个 OpenAI-compatible route。这最容易上线，但 DSH 无法看到真实后端、真实成本或实际模型；会话日志也只能记录网关 identity。适合集中运维和多个客户端共用同一政策。
 
 如果目标只是“手动在几个 vendor 之间切换”，不要做方案 4。若目标是“一个模型挂了自动换另一个”，先写一份策略设计：明确什么错误允许切换、同一模型如何映射、工具和上下文是否等价、是否允许重发完整 prompt，以及如何记录并向用户展示实际后端。此时不能只给 `llm-retry` 增一个 fallback 字段，因为当前 loop 的恢复动作没有承载新的模型选择。
+
+## 选 route 也选提示词表示
+
+模型能力不只决定思考档位，还决定**提示词如何在历史里表示**。`dsh-llm` 定义可选能力 `SystemPromptUpdate = 'in-history'`（`packages/llm/llm/src/types.ts:347`）：声明它的 route 可以把变更后的 system prompt 追加在已缓存历史之后；不声明的 route 每次 prompt 变化都要重写 message 0，前缀缓存整段失效。**唯一内置声明者是 `deepseek-flash`**（`packages/llm/llm-deepseek/src/index.ts:94-100`）；`llm-pi-ai` 全目录不声明，所以所有手工 route（MICU、OpenRouter、公司网关等）一律走 replace 语义。机制细节与 decision rule 见 [04-in-history提示词替换.md](../../_digested/tools-prompt-llm/04-in-history提示词替换.md)，本节只讲它对多 vendor 选择的影响。
+
+结论有三条。其一，route 身份与协议族**不能推断**该能力：官方 DeepSeek 只有 `deepseek-flash` 声明，同族的其他模型仍走 replace；手工 route 目前**无法**通过 settings 声明它。其二，代价是缓存而不是正确性：两种语义下模型最终都读到最新 prompt，差别在是否每步作废前缀、以及多花的 token 与延迟。其三，中转最隐蔽的风险是代理侧行为——若中转会重写、重排或合并 system 消息，即使上游模型支持 in-history，追加语义也会被静默破坏，表现为缓存命中率下降而非报错。面向多 vendor 决策的完整版见 [DSH_systemPromptUpdate能力面.md](./DSH_systemPromptUpdate能力面.md)。
+
+检测器是真实 API e2e：`packages/llm/llm-deepseek/tests/adapter.e2e.ts:358-444` 比较追加 prompt 与重写 message 0 两种策略的 `cacheReadTokens`，断言前者不低于热前缀、且严格高于 replace 基线；由 `DEEPSEEK_IN_HISTORY_MODEL` 指定模型，变量未设时跳过。部署若想为某个模型开启该能力，只能用 `cordis.yml` 的 `models` 列表替换 catalog（`packages/llm/llm-deepseek/src/adapter.ts:72,417`），并且必须自己承担“该模型确实这样读 system 消息”的验证责任。
+
+## 两个横切事实
+
+**文件从不原生发给任何 provider。** 模型历史里的 `FileBlock` 在每次 dispatch 前被 `projectFilesToText` **无条件**替换成确定性 handle 文本——文件名、字节数、sha256 前缀、只读保存路径与读取指引；嵌套在 tool result 里的文件也一样。图像是**条件式**的：只有 route 没声明 `image` 输入模态时才投影成文本。所以中转即使支持原生文件输入，DSH 也不会把文件字节发过去；反过来，手工 route 也无法通过配置开启原生文件。详见 [06-文件块与内容块投影.md](../../_digested/tools-prompt-llm/06-文件块与内容块投影.md)。
+
+**出网代理统一覆盖 provider 请求。** `dsh` 在任何插件挂载之前按 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` / `NO_PROXY` 解析一份策略并装成 undici 的 global dispatcher（`apps/cli/src/profile-boot.ts:282-291`），因此裸 `fetch()` 的 pi-ai model discovery 与 DeepSeek 请求都会走代理，不需要各家 adapter 自己实现；这四个名字允许来自 `$DSH_HOME/.env`，但调用目录的 `.env` 会被拒绝（`packages/boot/app-boot/src/index.ts:120-126`）。例外是 session telemetry 的日志导出：它为了解析自己的 collector 而故意直连、绕过 global dispatcher，并有反向断言（`packages/session/session-telemetry-otel/tests/egress.spec.ts:75-120`）。
 
 ## 建议的推进顺序
 

@@ -96,6 +96,25 @@ apps/web/src/main.ts
 
 `apps/web` 只有薄入口和 Vite build，是因为浏览器 shell、connection、runtime、slots 和 UI feature 都需要作为可测试、可组合的 client packages 存在。Host 与 Client 通过 gateway/connection/Remote 和 session event 投影通信。
 
+## `apps/desktop` 怎样跨目录
+
+桌面是唯一不经 `dsh` CLI 的产品入口，它的链路从 Electron 主进程开始：
+
+```text
+Electron 主进程（apps/desktop）
+  → 单实例锁；独占 $DSH_HOME/profiles/desktop 与 $DSH_HOME/desktop/**
+  → spawn 捆绑的上游 Node.js，跑 apps/desktop-host/lib/index.js
+       → packages/boot/app-boot 的 boot()
+       → base + web-app bundles + config/desktop.cordis.patch.yml overlay
+       → Host Cordis tree（无 webserver / web-runtime / client-hmr / directory-picker）
+       → connection.createSharedFetchHandler('/api') + clientModules.fetchBundle
+       → @deepseek-ai/dsh-web-frontend/dist 资产
+  请求帧 fd3 / 响应帧 fd4 / 生命周期走 Node IPC
+  → dsh-app:// 与 __DSH_TRANSPORT__.openStream → /.dsh/remote-stream（NDJSON）
+```
+
+它不装 `packages/host/webserver`，因为壳自己就是那个 server：`dsh-app://` 把请求编成分帧字节交给 host 子进程，host 再交给同一套 Connection 处理。所以上一节的 Host 半边几乎整体复用，换掉的只有端口、WebSocket mux 和前端静态服务那一层；`dsh --profile desktop` 被 `apps/cli/src/args.ts:68-71` 显式拒绝，CLI 不是它的启动面。完整机制见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。
+
 ## `dsh --profile headless` 怎样跨目录
 
 ```text
@@ -134,7 +153,9 @@ base bundle 可以先插入全局工具，web-app bundle 再禁用其中部分�
 | home patch | 所有 profile 共用的机器级覆盖 | `$DSH_HOME/cordis.patch.yml` | 否 |
 | `--patch` | 单次调用的最高优先级 overlay | 任意用户文件 | 否 |
 | agent preset | 一个 session/agent 的 scoped composition | app shipped roots 或用户 preset roots | 可随部署/插件分发 |
-| example leaf | 一份仓库内可运行参考配置 | 根 `examples/<leaf>/` | 不是产品 profile |
+| shipped overlay | 随产品出货的一份可选组合叶子 | `apps/cli/config/examples/<name>/cordis.yml` | 产品资产，永不进默认 profile |
+
+顶层 `examples/` 已整体退役；要读“一份完整组合长什么样”，现在看 `apps/cli/config/examples/` 的四个 overlay，或 `packages/preset/agent-presets/presets/*/agent.cordis.yml` 的 preset 根。
 
 ## 为什么 `--dump-config` 很重要
 
@@ -163,6 +184,8 @@ dump 仍不是活插件图：它只合成 entry rows，不执行插件生命周�
 - [`apps/cli/src/bin.ts`](../../apps/cli/src/bin.ts)
 - [`apps/cli/src/profile-boot.ts`](../../apps/cli/src/profile-boot.ts)
 - [`apps/cli/README.md`](../../apps/cli/README.md)
+- [`apps/desktop/README.md`](../../apps/desktop/README.md)
+- [`apps/desktop-host/config/desktop.cordis.patch.yml`](../../apps/desktop-host/config/desktop.cordis.patch.yml)
 - [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md)
 - [`packages/bundle/README.md`](../../packages/bundle/README.md)
 - [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml)

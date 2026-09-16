@@ -12,7 +12,7 @@
 
 - **编译器**：类型、`assertNever`、declaration merging——编译期拒绝；
 - **门禁与生成器**：`verify-*`、freshness gates——提交前红灯，目录从源码生成；
-- **双 SDK**：TypeScript 与 Python 都必须投影同一个 loop 与 `SessionEventMap`（[`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/implemented/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)）；
+- **双 SDK**：TypeScript 与 Python 都必须投影同一个 loop 与 `SessionEventMap`（[`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/archived/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)，已归档，历史快照；现行 owner 是 [`AGENTS.md:131`](../../AGENTS.md) 与 [`docs/testing.md#when-a-snapshot-test-is-required`](../../docs/testing.md#when-a-snapshot-test-is-required)）；
 - **harness 自身**：self-modification——agent 检视、挂载自己的插件（[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)）；
 - **人类读者与 LLM 读者**。
 
@@ -20,7 +20,7 @@
 
 > Events are the extension points, and picking the right domain is the first decision in most changes.
 >
-> —— `docs/architecture.md:66`（基线 `a66e4702…`）
+> —— `docs/architecture.md:72`（基线 `183f08e9c6…`）
 
 ## LLM 是合同面的探针之一
 
@@ -57,11 +57,11 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 > A running `dsh` is a plugin tree composed at boot from ordered layers.
 >
-> —— `docs/architecture.md:17`（基线 `a66e4702…`）
+> —— `docs/architecture.md:17`（基线 `183f08e9c6…`）
 
 > **seam** — a *swappable capability* with three roles: a **Service Definition** (…never a TypeScript `interface`), one or more **Service Providers**, and one or more **Consumers** that inject the service.
 >
-> —— `docs/glossary.md:9`（基线 `a66e4702…`）
+> —— `docs/glossary.md:9`（基线 `183f08e9c6…`）
 
 所以准确的说法不是「与智能无关」，而是：**原则与智能无关；形状与生产方式有关；形状的性价比与组合压力有关。**
 
@@ -83,7 +83,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 | 无元验证 | 门禁能被刷绿、测试相信自报 | 「guard 必须被负例证明」；verify the world；真实入口 smoke |
 | 负知识缺失 | 被否方案和已知限制只在人脑里 | rejected notes；README Known Limitations；省略的 invariant 在 README 写原因 |
 | 上下文预算爆炸 | 规则多到读不完、装不进上下文 | 规则分层 + 一个事实一个家 + `verify-doc-budgets` 字数预算 |
-| 无基线漂移 | 判断不钉 commit，上游改了没法复核 | 本专题：全部判断钉 `a66e4702…` 基线 + 证据锚点 |
+| 无基线漂移 | 判断不钉 commit，上游改了没法复核 | 本专题：全部判断钉 `183f08e9c6…` 基线 + 证据锚点 |
 | 分布洗钱 | 人类播种的洞察被磨成模型输出，出处丢失 | 本专题：判断标注出处（`[原文]` / `[源码]` / `[推断]` / `[框架]`） |
 
 ## 用三个问题检验一个 harness
@@ -116,7 +116,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 >
-> —— `docs/architecture.md:13`（基线 `a66e4702…`）
+> —— `docs/architecture.md:13`（基线 `183f08e9c6…`）
 
 ## 结论
 
@@ -143,15 +143,15 @@ Google Cloud Senior AI Product Manager Shubham Saboo 在2026-08 发表了一篇�
 ## 证据入口
 
 - [`docs/architecture.md`](../../docs/architecture.md)（第 13 行；无特权核心、注册即效果）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 66 行；事件是扩展点）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 107 行；model-visible ⟺ logged）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 123 行；扩展表）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 72 行；事件是扩展点）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 121 行；model-visible ⟺ logged）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 137 行；扩展表）
 - [`docs/capability-seams.md`](../../docs/capability-seams.md)（Definition / Provider / Consumer）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
-- [`../../AGENTS.md`](../../AGENTS.md)（第 105、109、116 行；注册即效果、waterfall、fail loud）
+- [`../../AGENTS.md`](../../AGENTS.md)（第 106、110、117 行；注册即效果、waterfall、fail loud）
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；tier taxonomy、一个事实一个家）
-- [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；元验证与 snapshot 政策）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 35 行；元验证与 snapshot 政策）
 - [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17 行；harness 自身消费合同面与安全边界）
-- [`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/implemented/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)（双 SDK 投影同一 loop）
+- [`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/archived/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)（已归档，历史快照；双 SDK 投影同一 loop 的历史来源。现行 owner 是 [`AGENTS.md:131`](../../AGENTS.md) 与 [`docs/testing.md`](../../docs/testing.md)）
 - [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md)（「模型可见 ⟺ 已记录」作为设计决策）
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；门禁成本的源头记录）

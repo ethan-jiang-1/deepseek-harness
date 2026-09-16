@@ -4,11 +4,11 @@
 
 注入有 `maxBytes`（01 已述），整个上下文还有 `ctx.tokenMeter` 度量，超了由 compaction 回收：
 
-> Pressure compaction runs at serial `agent/pre-step` before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns.
+> Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns.
 >
 > —— `docs/subsystems/compaction.md:86`
 
-> `ctx.tokenMeter` … exposes one detached replay snapshot for request pressure and positional surface pricing.
+> `@deepseek-ai/dsh-token-meter` exposes one detached replay snapshot for request pressure and positional surface pricing.
 >
 > —— `docs/subsystems/token-meter.md:5`
 
@@ -22,9 +22,9 @@
 
 **被维护**——靠门禁，不靠自觉：
 
-> A package's README and JSDoc are part of the change: altered behavior (config keys, defaults, error codes, wire fields) updates them in the same commit.
+> Update package README and JSDoc contracts in the same commit as behavior, and verify them against code with dsh-prose-standard.
 >
-> —— `packages/AGENTS.md:25`
+> —— `packages/AGENTS.md:26`
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
@@ -39,10 +39,10 @@
 
 ## 静态预算与运行时预算是一回事
 
-04 的字数预算（根 AGENTS ≤ 1600 词）和 05 的 `maxBytes` 是同一个约束的两端：静态层决定“每层最多放多少”，运行时层决定“每次最多注入多少”。两者都不度量“模型懂没懂”，而是度量**容量**——一个是文档的容量，一个是上下文的容量。
+04 的字数预算（根 AGENTS ≤ 1950 词）和 05 的 `maxBytes` 是同一个约束的两端：静态层决定“每层最多放多少”，运行时层决定“每次最多注入多少”。两者都不度量“模型懂没懂”，而是度量**容量**——一个是文档的容量，一个是上下文的容量。
 
 ## 证据入口
 
 - [`docs/subsystems/compaction.md`](../../docs/subsystems/compaction.md) 第 86 行
 - [`docs/subsystems/token-meter.md`](../../docs/subsystems/token-meter.md) 第 5 行
-- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 25-27 行
+- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 26-28 行
