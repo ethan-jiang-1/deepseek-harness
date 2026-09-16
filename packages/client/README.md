@@ -46,7 +46,7 @@ The kernel packages boot and serve the page; the UI feature packages present it.
 | [`resources/`](resources/README.md) | Unified resource model: protocol providers behind the `useResource` session standard hook | `ctx.resources` |
 | [`ui-sidebar-right/`](ui-sidebar-right/README.md) | The right Sidebar: one docking surface per session, two presentations, and the Tab domain | `ctx.sidebarRight` / `ctx.sidebarRightTabs` |
 | [`ui-sidebar-files/`](ui-sidebar-files/README.md) | Right-Sidebar workspace file tree tab type | — |
-| [`ui-sidebar-documentpreview/`](ui-sidebar-documentpreview/README.md) | Right-Sidebar document previews: Markdown, code, image, PDF, and HTML renderers with a text fallback | registers on `ctx.sidebarRightTabs` |
+| [`ui-sidebar-documentpreview/`](ui-sidebar-documentpreview/README.md) | Right-Sidebar document previews: Markdown, code, image, PDF, and HTML renderers with a text fallback | `ctx.documentPreviews` |
 | [`ui-brand-official/`](ui-brand-official/README.md) | Fills the generic browser-brand slots with the official name and marks | — |
 | [`ui-workspace/`](ui-workspace/README.md) | Provides workspace selection and creation surfaces | — |
 | [`ui-conversation/`](ui-conversation/README.md) | Presents the active conversation and its input surface | — |
