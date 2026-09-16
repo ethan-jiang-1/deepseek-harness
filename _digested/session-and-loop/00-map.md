@@ -1,5 +1,7 @@
 # Session and loop · 会话与驱动
 
+产品源码基线：`183f08e9c6`（`dsh-v0.1.5-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）。
+
 ## 一句话
 
 **session log 是模型请求的可重建来源。** `agent-loop` 只是默认驱动，实现 `Agent` 接口。UI、hook、工具插件依赖 `dsh-agent`，不依赖具体 loop。
@@ -36,7 +38,7 @@
 - prompt section、tool schema 和模型配置可以在请求前动态组装；loop 把 system prompt 写成 `system/message` 节点，把 config、adapterDefaults 与 tools 写入 `request/header`，然后才分派。
 - 只有现有 surface 与 `request/header` 都无法表达的新语义，才需要扩展 `SessionEventMap` 并补上对应的重建规则。
 
-`deriveMessages()` 只从当前有序 surface 投影消息历史；`request/header` 单独重建 config、adapterDefaults 与 tools，system prompt 是 surface 节点 `system/message`。`request/context` 只记录 provider、model 和 context window，不参与请求重建。完整记录不等于全部发送：compaction 在仅追加日志中保留旧事件，只让 replacement 在后续消息投影中遮蔽旧 surface。每次模型尝试的逐 chunk 时序作为内嵌 `stream` 留在它的结算事件里（`assistant/message` 或 `assistant/attempt`），当前格式不再有顶层 chunk 事件。精确折叠规则见 [`01-session-event-map.md`](./01-session-event-map.md#完整记录不等于完整发送)。
+`deriveMessages()` 只从当前有序 surface 投影消息历史；`request/header` 单独重建 config、adapterDefaults 与 tools，system prompt 是 surface 节点 `system/message`。`request/context` 只记录 provider、model、context window 与 `systemPromptUpdate` 能力，不参与请求重建。完整记录不等于全部发送：compaction 在仅追加日志中保留旧事件，只让 replacement 在后续消息投影中遮蔽旧 surface。每次模型尝试的逐 chunk 时序作为内嵌 `stream` 留在它的结算事件里（`assistant/message` 或 `assistant/attempt`），当前格式不再有顶层 chunk 事件。精确折叠规则见 [`01-session-event-map.md`](./01-session-event-map.md#完整记录不等于完整发送)。
 
 fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条流派生；持久化按格式世代寻址，更旧的 log 在打开时经相邻链迁移到当前写者版本，机制见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。所以 loop 可以换：只要新驱动仍往同一条 log 写、仍发同一类 `session/event`，渲染面可以不动。
 

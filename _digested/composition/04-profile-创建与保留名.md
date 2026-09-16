@@ -69,6 +69,6 @@ dsh --profile rescue --from-default-profile web --dump-config
 
 依据 note（均在 `implemented/`）：[`2026-08-05-profile-plugin-bundles`](../../.agents/notes/implemented/architecture/2026-08-05-profile-plugin-bundles.md)、[`2026-08-22-single-dsh-application-launcher`](../../.agents/notes/implemented/architecture/2026-08-22-single-dsh-application-launcher.md)、[`2026-08-25-electron-desktop-packaging-and-updates`](../../.agents/notes/implemented/architecture/2026-08-25-electron-desktop-packaging-and-updates.md)。
 
-## 待人工判断
+## launcher 的父选项归属
 
-`dsh web --from-default-profile x` **不会**被 launcher 拒绝：`web` 子命令用 `allowUnknownOption()` + `passThroughOptions()`，该选项会作为 app 参数落到 `ctx.cmdlineArgs`（`apps/cli/src/args.ts:164-173` 的 `rejectParentOptions` 只管「父选项出现在子命令之前」的情形）。`dsh --from-default-profile x web` 则被拒绝。这是否是期望行为，未见测试或 note 说明。
+`dsh web --from-default-profile x` **不会**被 launcher 拒绝：`web` 子命令用 `allowUnknownOption()` + `passThroughOptions()`，父选项出现在子命令之后时作为 app 参数进入 `ctx.cmdlineArgs`（`apps/cli/src/args.ts:163-173` 的 `rejectParentOptions` 只覆盖「父选项出现在子命令之前」）。该行为有测试固定：`apps/cli/tests/args.spec.ts:55-56` 断言 `parse(['web', '--from-default-profile', 'web'])` 得到 `args: ['--from-default-profile', 'web']`。`dsh --from-default-profile x web` 则被拒绝。

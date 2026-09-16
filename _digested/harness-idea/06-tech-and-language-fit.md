@@ -68,7 +68,7 @@ dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的�
 ## 证据入口
 
 - [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md)（第 9 行；生态熟悉度的直接证据）
-- [`2026-06-17-ts-build-config`](../../.agents/notes/implemented/process/2026-06-17-ts-build-config.md)（第 11 行；技术决定但理由不是 agent 友好：证据边界）
+- [`2026-06-17-ts-build-config`](../../.agents/notes/implemented/process/2026-06-17-ts-build-config.md)（第 20-23 行；技术决定但理由不是 agent 友好：证据边界）
 - [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md)（已归档，历史快照；第 10 行；vendor 的真实理由。现行 owner 是 [`vendor/README.md`](../../vendor/README.md) 的 manifest 与本地修改日志）
 - [`../../vendor/README.md`](../../vendor/README.md)（manifest 与本地修改日志）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md)（五条原语的语义落点）

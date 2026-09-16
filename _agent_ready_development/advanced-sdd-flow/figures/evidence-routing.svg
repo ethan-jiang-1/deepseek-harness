@@ -59,8 +59,8 @@
   <text x="730" y="471" text-anchor="middle" font-size="11" fill="#746894">supported engines</text>
   <rect x="838" y="406" width="168" height="76" rx="6" fill="#fff" stroke="#a89bc9"/>
   <text x="922" y="432" text-anchor="middle" font-weight="700" fill="#554879">Windows</text>
-  <text x="922" y="454" text-anchor="middle" font-size="11" fill="#746894">Wine blocking</text>
-  <text x="922" y="471" text-anchor="middle" font-size="11" fill="#746894">native independent signal</text>
+  <text x="922" y="454" text-anchor="middle" font-size="11" fill="#746894">native build · tests</text>
+  <text x="922" y="471" text-anchor="middle" font-size="11" fill="#746894">required · Wine on master</text>
   <text x="540" y="520" text-anchor="middle" font-size="11" fill="#746894">all checks passed 聚合 required jobs；real API e2e 使用独立 secret-backed workflow。</text>
 
   <rect x="170" y="575" width="260" height="42" rx="7" fill="#f7ecda" stroke="#c68b2c"/>

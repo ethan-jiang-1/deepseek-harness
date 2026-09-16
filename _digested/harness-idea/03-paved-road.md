@@ -119,7 +119,7 @@ dsh 把「正确」编码进系统的**形状**与**检查**：扩展点路由�
 - [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（`0.1.2-rc.1` 废除空 companion 的裁定，现行权威）
 - [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24、30 行；note 已被 `0.1.2-rc.1` 原地改写——现 :24 是「无独立关系即省略 companion 并在 README 记原因」、:30 是「publish 由 `verify-package-invariants` 机械枚举」，原「普遍 companion 制」表述只剩历史意义，`0.1.2-rc.1` 起被 2026-08-28 裁定取代）
 - [`../../.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（选门禁的判断被外置成 guidance）
-- [`../../docs/testing.md`](../../docs/testing.md)（第 35 行；coverage、snapshot 与元验证）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 10、35、37-41、53-55 行；coverage、元验证、真实入口与 snapshot 政策）
 - [`../../AGENTS.md`](../../AGENTS.md)（第 106、110、111、117 行；注册即效果、waterfall、model-visible、fail loud）
 - [`../../packages/AGENTS.md`](../../packages/AGENTS.md)（包级参与规则）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 控制权）

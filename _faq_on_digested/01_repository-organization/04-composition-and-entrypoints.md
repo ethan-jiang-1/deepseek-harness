@@ -1,6 +1,6 @@
 # 04 · 从入口和配置看目录怎样变成运行时
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`。
+源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`。
 
 ## 总链路
 
@@ -63,7 +63,7 @@ launcher hard switch（例如 telemetry opt-out）
 
 后层可以配置、禁用或替换前层用稳定 `id` 插入的 row。bundle 的 `package.json` 通过 `dsh.bundle.patch` 指向自己的 `cordis.patch.yml`；profile 的 `dsh.profile.bundles` 决定 bundle 顺序。
 
-`dsh-base` 提供模型 adapter、核心 registries、持久化、sandbox/approval 与大量基础插件，但不安装可选的 Codex / Claude Code provider；它们是独立 Profile Bundle，用 `dsh plugin --profile <name> add` 装进 profile 并 restart，agent preset 再决定是否露出对应 tool 行。`dsh-web-app` 增加 Web Host/Client 组合；`dsh-headless` 增加一次性 runner。bundle 只声明 rows 和默认 config，真正行为仍由 row 指向的 package 拥有。Web 把 shipped `code` preset 显示成 PTC mode，preset id 仍是 `code`。
+`dsh-base` 提供模型 adapter、核心 registries、持久化、sandbox/approval 与大量基础插件，但不安装可选的 Codex / Claude Code provider；它们是独立 Profile Bundle，用 `dsh plugin --profile <name> add` 装进 profile 并 restart，agent preset 再决定是否露出对应 tool 行。其余四个 shipped application 各有自己的 bundle：`dsh-web-app` 增加 Web Host/Client 组合，`dsh-headless` 增加一次性 runner，`dsh-sdk-app` 与 `dsh-sdk-minimal` 承载 SDK 的两种组合，`dsh-acp-app` 承载 ACP server。bundle 只声明 rows 和默认 config，真正行为仍由 row 指向的 package 拥有。Web 把 shipped `ptc` preset 显示成 PTC mode，preset id 就是 `ptc`。
 
 ## `dsh web` 怎样跨目录
 
@@ -106,7 +106,7 @@ Electron 主进程（apps/desktop）
   → spawn 捆绑的上游 Node.js，跑 apps/desktop-host/lib/index.js
        → packages/boot/app-boot 的 boot()
        → base + web-app bundles + config/desktop.cordis.patch.yml overlay
-       → Host Cordis tree（无 webserver / web-runtime / client-hmr / directory-picker）
+       → Host Cordis tree（禁用 web-startup / webserver / web-runtime / client-hmr / open-in-app / ui-open-in-app / directory-picker，改用 directory-picker-native 与 ui-directory-picker-native）
        → connection.createSharedFetchHandler('/api') + clientModules.fetchBundle
        → @deepseek-ai/dsh-web-frontend/dist 资产
   请求帧 fd3 / 响应帧 fd4 / 生命周期走 Node IPC
@@ -155,7 +155,7 @@ base bundle 可以先插入全局工具，web-app bundle 再禁用其中部分�
 | agent preset | 一个 session/agent 的 scoped composition | app shipped roots 或用户 preset roots | 可随部署/插件分发 |
 | shipped overlay | 随产品出货的一份可选组合叶子 | `apps/cli/config/examples/<name>/cordis.yml` | 产品资产，永不进默认 profile |
 
-顶层 `examples/` 已整体退役；要读“一份完整组合长什么样”，现在看 `apps/cli/config/examples/` 的四个 overlay，或 `packages/preset/agent-presets/presets/*/agent.cordis.yml` 的 preset 根。
+顶层 `examples/` 与 `packages/examples/` 都已退役；要读“一份完整组合长什么样”，现在看 `apps/cli/config/examples/` 的四个 overlay 目录（`cordis`、`github-review`、`mcp-memory`——内含 `engram` / `mcp-reference-memory` / `memorix` 三份——与 `schedule`），或 `packages/preset/agent-presets/presets/*/agent.cordis.yml` 的 preset 根。
 
 ## 为什么 `--dump-config` 很重要
 

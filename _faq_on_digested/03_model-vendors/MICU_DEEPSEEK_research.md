@@ -6,11 +6,11 @@ This is supported by configuration alone when the relay accepts one of DSH's han
 
 Do not repoint the existing `deepseek` route by changing its `baseURL` or `apiKeyEnv`. That would make every selection and session record under that route refer to the relay, concealing whether a request used the official service or the relay. A separate route keeps credentials, model selection, retry policy, and recorded provider identity independent.
 
-The installed `dsh-llm-pi-ai` configuration treats the `providers` map key as the provider route [configuration](../../packages/llm/llm-pi-ai/src/config.ts:64). Unknown route keys are intentional: they are built from their configured protocol, endpoint, model list, and credential reference [provider construction](../../packages/llm/llm-pi-ai/src/provider.ts:150). The route registry accepts the same model id on different routes; the model lookup always receives both provider and model [dynamic configuration test](../../packages/llm/llm-pi-ai/tests/dynamic-config.spec.ts:78).
+The installed `dsh-llm-pi-ai` configuration treats the `providers` map key as the provider route [configuration](../../packages/llm/llm-pi-ai/src/config.ts:90). Unknown route keys are intentional: they are built from their configured protocol, endpoint, model list, and credential reference [provider construction](../../packages/llm/llm-pi-ai/src/provider.ts:177). The route registry accepts the same model id on different routes; the model lookup always receives both provider and model [dynamic configuration test](../../packages/llm/llm-pi-ai/tests/dynamic-config.spec.ts:125).
 
 ## Recommended Configuration
 
-Start with a new entry in `/Users/bowhead/.dsh/settings.yaml` only. The web bundle's dormant `llm-pi-ai` adapter reads that settings section on the next request; adding a separate route does not require modifying `/Users/bowhead/.dsh/profiles/web/cordis.patch.yml` [adapter behavior](../../packages/llm/llm-pi-ai/README.md:106). Replace the placeholders only after the relay supplies its exact endpoint, protocol, and model ids.
+Start with a new entry in `/Users/bowhead/.dsh/settings.yaml` only. The web bundle's dormant `llm-pi-ai` adapter reads that settings section on the next request; adding a separate route does not require modifying `/Users/bowhead/.dsh/profiles/web/cordis.patch.yml` [adapter behavior](../../packages/llm/llm-pi-ai/README.md:107). Replace the placeholders only after the relay supplies its exact endpoint, protocol, and model ids.
 
 ```yaml
 llm-pi-ai:
@@ -42,11 +42,11 @@ DSH can interrogate a hand-declared OpenAI-compatible route with `GET /models`, 
 
 ## When Configuration Is Not Enough
 
-A new DSH LLM adapter is required only if the relay fails both OpenAI-compatible protocol options because of a non-Bearer authentication method, custom streaming events, incompatible tool/history messages, or a vendor-specific required request signature. Automatic fallback from the official DeepSeek route to the relay is also not a configuration feature: DSH retries the selected route and does not silently change the recorded provider identity [retry behavior](../../packages/llm/llm-retry/README.md:5).
+A new DSH LLM adapter is required only if the relay fails both OpenAI-compatible protocol options because of a non-Bearer authentication method, custom streaming events, incompatible tool/history messages, or a vendor-specific required request signature. Automatic fallback from the official DeepSeek route to the relay is also not a configuration feature: DSH retries the selected route and does not silently change the recorded provider identity [retry behavior](../../packages/llm/llm-retry/README.md:12).
 
 ## Safe Adoption
 
-Before adding the route, make a dated `0600` backup of `settings.yaml`. Add only the new `deepseek-relay` key, then use `dsh web --dump-config` and an isolated minimal request to validate it. A rejected settings update leaves the last working route set registered, but an external invalid YAML edit can still prevent the new value from loading; the backup remains the explicit rollback path [settings validation](../../packages/llm/llm-pi-ai/README.md:108).
+Before adding the route, make a dated `0600` backup of `settings.yaml`. Add only the new `deepseek-relay` key, then use `dsh web --dump-config` and an isolated minimal request to validate it. A rejected settings update leaves the last working route set registered, but an external invalid YAML edit can still prevent the new value from loading; the backup remains the explicit rollback path [settings validation](../../packages/llm/llm-pi-ai/README.md:117).
 
 No relay URL or relay key was provided for this investigation. This record establishes the supported design and the exact inputs required for a real connectivity test; it does not claim that any third-party DeepSeek relay has passed one.
 

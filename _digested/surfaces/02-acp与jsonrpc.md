@@ -2,9 +2,9 @@
 
 源码核验入口：`packages/acp/acp/README.md`、`packages/sdk/server/README.md`。
 
-两个都是进程外驱动 Harness runtime 的协议入口，可以挂在不同的插件组合上。它们复用 `ctx.agents` 和 session 语义，但输出保证相反：一个提供精简的自动化结果，一个推送完整耐久流。
+两个都是进程外驱动 Harness runtime 的协议入口，可以挂在不同的插件组合上。它们复用 `ctx.agents` 和 session 语义，但输出保证相反：一个只把 committed 事实重新表达成标准语义更新，一个推送完整耐久流。
 
-`dsh-v0.1.2-rc.1 → dsh-v0.1.5-rc.1` 这个跨度内，ACP 的 `src/` 只有内部 API 适配（`persistence.ensureMaterialized` → `ctx.sessions.flush`、`persistence.list(signal)` → `persistence.list({ signal })`、resume 改走 `persistence.stat(...)`、`setup(agentCtx, agent)` 签名），方法面与能力广告未变；`packages/sdk/` 的 `src/` 一行未改。下面两节的保证清单据此只需核对行号。
+`a66e470204`（`dsh-v0.1.2-rc.1`）→ `183f08e9c6`（`dsh-v0.1.5-rc.1`）这个跨度内，ACP 的 `src/` 只有内部 API 适配（`persistence.ensureMaterialized` → `ctx.sessions.flush`、`persistence.list(signal)` → `persistence.list({ signal })`、resume 改走 `persistence.stat(...)`、`setup(agentCtx, agent)` 签名），方法面与能力广告未变；`packages/sdk/` 的 `src/` 一行未改。下面两节的保证清单据此只需核对行号。
 
 ## ACP：自动化适配器，不是 IDE
 
@@ -17,7 +17,7 @@
 - `initialize`：仅当挂了 durable attachment store、且配置的精确 provider/model 声明了 image input 时，才广告图像 prompt；音频和 embedded context 恒为 false。
 - `session/prompt`：按线序保留文本与受支持的 inline 图像；resource link 变成 `[resource_link name=… uri=…]`。整批图像先校验、再按最新精确 route 复核，然后在 user 事件之前全部 commit。inline base64 准入后丢弃，日志里只留 attachment 引用。每会话一个 in-flight。等到准入、整个 agent idle、以及有序输出投递。正常静默 → `end_turn`；ACP 取消 / dispose / 未被准入的 turnless slot → `cancelled`。
 - `session/cancel`：先中止尚未进 inbox 的 admission，不取消无关 agent 工作；prompt 一旦进 inbox，才取消该 agent 并等到所拥有区间静默。没有 in-flight prompt 时取消自主工作。
-- `session/update`：每条 **已提交** `assistant/message` 里每个非空文本或图像块一个 `agent_message_chunk`，保序。图像投递前再读并校验完整性；缺失或损坏会使这次 prompt 失败，而不是发占位符。
+- `session/update`：只投递 committed 事实的语义更新，保序、每会话串行化——已提交 `assistant/message` 里每个非空文本或图像块一个 `agent_message_chunk`、每个非空 reasoning 块一个 `agent_thought_chunk`、已提交 `tool/call` / `tool/result` 一对 `tool_call` / `tool_call_update`、可用时一条 `usage_update`，以及 model / reasoning_effort 的配置更新（`packages/acp/acp/src/updates.ts:36`、`:54`、`:80`、`:98`）。图像投递前再读并校验完整性；缺失或损坏会使这次 prompt 失败，而不是发占位符。
 - `session/request_permission`：带 tool call id 的、桥拥有的审批，一次性 allow/reject。客户端可自动答。
 - 拆连接与 Cordis dispose 共用一份 teardown：先拒新 session/prompt，取消并排空 admission / agent 活动 / 有序输出，只排空本连接拥有的可续后代，flush persistence，再并行 dispose。别的前端共用 Context 时，它们的森林还在。
 
@@ -25,7 +25,7 @@
 
 - 删除、fork、`session/load`（transcript replay）。`session/resume` 恢复持久 log 但不重放旧 update。
 - 音频、embedded resources、非空 `additionalDirectories`。图像仅 PNG / JPEG / WebP / GIF，且依赖 attachment store 与声明了 image input 的精确 route。
-- 把 raw `assistant/chunk`、推理、工具活动、plan、title、usage 打到线上。当前格式把它们内嵌在 attempt 结算里；另有 process-local 的 `agent/assistant-stream` 帧不落盘，走别的入口观察。
+- 把 raw provider delta（`assistant/chunk`）、retry attempt 或 DSH 展示面（plan、title、todo、terminal、编辑器导航）打到线上。线上只有 committed 事实的语义投影，raw chunk 另有 process-local 的 `agent/assistant-stream` 帧不落盘，走别的入口观察。
 - prompt 级的 turn 结局。操作区间从 prompt 进入 inbox 起到 idle 与输出投递都静默；token-limit 仍是 `end_turn`；相关模型错误也在同一静默边界才拒 prompt。
 - 编辑器导航、commands、modes、elicitation 等交互式 UI surfaces。
 
@@ -59,9 +59,9 @@
 | | ACP | JSON-RPC SDK |
 |--|-----|----------------|
 | prompt 返回 | 等到 idle，带 `stopReason` | 立刻 `messageId` |
-| 线上可见 | committed 文本块与图像块 | Context 内每条 log 事件与 agent 状态 |
+| 线上可见 | committed 事实的语义更新：文本 / 图像 / reasoning 块、通用 tool 生命周期、usage、配置更新 | Context 内每条 log 事件与 agent 状态 |
 | resume / fork | `session/resume`；无 fork | 无（session 由运行时拥有，线协议不暴露） |
 | 取消 | `session/cancel` 对准该 agent | 无 per-prompt cancel |
 | 典型消费者 | 另一个产品里的 subagent | 进程外 SDK / 脚本 |
 
-两者都驱动 `ctx.agents`，都不在入口里实现 loop。差别是投影：ACP 为了自动化干净故意丢中间态，但在广告了图像能力时投递已提交的光栅图；SDK 把 log 当产品。
+两者都驱动 `ctx.agents`，都不在入口里实现 loop。差别是投影：ACP 只把 committed 事实重新表达成标准 ACP 语义更新，raw delta、retry attempt 与 DSH 展示面留在 session log，但在广告了图像能力时投递已提交的光栅图；SDK 把 log 当产品。

@@ -55,14 +55,14 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 ## 一次贡献的完整生命周期
 
-四层阶梯只回答「从哪扇门进」。进了门之后，非平凡贡献还有一条制度化的生命周期。这条链可以从 DSH 的 `.agents/notes/README.md`、`docs/AGENTS.md` 和 `docs/testing.md` 中直接重建，harness-idea 只引用判断，不重复机制：
+四层阶梯只回答「从哪扇门进」。进了门之后，非平凡贡献还有一条制度化的生命周期。这条链可以从 DSH 的 `.agents/notes/README.md`、`docs/AGENTS.md`、`docs/testing.md`、`.github/ISSUE_TEMPLATE/` 与 `.github/pull_request_template.md` 中直接重建，harness-idea 只引用判断，不重复机制：
 
 > **Every non-trivial change includes at least one Agent Note in the same PR.** Update the owning note or add one; only mechanical/local edits are exempt.
 >
 > —— `docs/AGENTS.md:39`（基线 `183f08e9c6…`）
 
 ```text
-Issue 验收条件
+Issue 意图与预期行为（验收证据在 PR 的 Testing 节）
   → proposed Agent Note（问题、提案、替代方案、验收、风险）
   → Plan Mode 计划评审（完整到另一工程师可直接实现）
   → 实现 + 当前合同（类型 / JSDoc / README / architecture 同步）
@@ -88,13 +88,13 @@ Issue 验收条件
 
 ## 证据入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)（第 17、27 行；profile / bundle / patch 与 dump）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 17、27、34 行；profile / bundle / patch 与 dump 命令）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（L1 范本）
 - [`docs/cookbook/adding-a-package.md`](../../docs/cookbook/adding-a-package.md)（L2/L3 涉及的新包与同步义务）
-- [`docs/development.md`](../../docs/development.md)（包结构、tsconfig、aggregate）
+- [`docs/development.md`](../../docs/development.md#typescript-project-layout)（tsconfig 面与 aggregate 布局）
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders 与各层检查）
 - [`../../packages/AGENTS.md`](../../packages/AGENTS.md)（包级参与规则）
-- [`../../docs/testing.md`](../../docs/testing.md)（第 35 行；完成标准与验证政策）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 35、37-41、53-55 行；完成标准与验证政策）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；seam / scope / preset 术语）

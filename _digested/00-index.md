@@ -16,8 +16,9 @@
 |------|------------|
 | `master` | 干净的 upstream 镜像。不放研究材料，不改产品代码。 |
 | `ethan` | 研究分支。源码随 `upstream/master` merge 进来；研究材料位于 `_digested/`、`_agent_ready_development/`、`_faq_on_digested/` 和 `_architecture_referenced/`。 |
+| `ethan2` | `ethan` 的工作副本，两者在每次同步后保持指向同一提交（0006 及以后在此分支上执行同步，随后把 `ethan` 快进对齐）。 |
 
-同步方式：在 `ethan` 上非快进 merge `upstream/master`，让产品源码对齐新基线并保留研究目录，再按 `_change_log/` 审计过期结论。
+同步方式：在 `ethan2`（或 `ethan`）上非快进 merge 目标 upstream 提交，让产品源码对齐新基线并保留研究目录，再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。
 
 ## 与同级目录的关系
 
@@ -44,7 +45,7 @@
 | `agent-loop/` | 推进、边界与 Goal 驱动 | step/turn/activity/goal 四层结束边界、Goal 状态机、Round Driver 自动续轮 |
 | `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色、如何组合一致的 fs / subprocess provider，以及进程级库（外发代理、原生 containment）这类「刻意不是 seam」的形状 |
 | `experimental/` | 实验原型面 | `packages/experimental/` 的三种原型合同：code-runtime 的 CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面——都不在 shipped 组合，合同随时会变 |
-| `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 组装、LLM adapter、tool 执行瀑布 |
+| `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 作为 surface 节点、in-history 替换、LLM adapter、tool 执行瀑布、chunk 到 settlement、内容块投影 |
 | `surfaces/` | 人对机器的入口 | CLI、Web host/client、桌面（Electron）、ACP、JSON-RPC SDK，以及客户端资源模型与右栏 |
 | `_coverage/` | 覆盖矩阵 | 维护用索引，按源码组追踪 digest 覆盖状态 |
 | `harness-idea/` | 消化后的理解与判断 | dsh 作为 harness 做对了什么：插件图 + 事件流构成的运行时基底、可读性与正确路径、参与阶梯、动态可读性、技术选型与语言贴合、边界与成本，以及本专题自身的判断纪律 |

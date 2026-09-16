@@ -22,7 +22,7 @@
 
 ## Windows：私有 runner + kill-on-close Job
 
-父进程用 bootstrap cwd/env 起私有 runner（`packages/subprocess/subprocess-local/src/spawn-runner.ts:445`），等到 runner 的 spawn 事件后才发恰好一条 start 请求；runner 把目标以 suspended 创建、分配给一个 unnamed kill-on-close Job 后再 resume（`packages/subprocess/subprocess-local/src/windows-job.ts:124`）。fd 3 走 Node IPC，fd 4–6 送目标的 stdin/stdout/stderr，用户字节不经过 IPC。runner 是目标进程句柄与 Job 的唯一 owner：只有在直接结果经 IPC 回调送出、且 Job 报告活跃进程数为零之后才正常退出；父进程只把这一次干净退出映射为成功的 `waitForExit()`。
+父进程用 bootstrap cwd/env 起私有 runner（`packages/subprocess/subprocess-local/src/windows-job.ts:124` 的 `launchWindowsJob`），等到 runner 的 spawn 事件后才发恰好一条 start 请求；runner 收到 start 后把目标以 `CREATE_SUSPENDED` 创建、分配给一个 unnamed kill-on-close Job 再 resume（`packages/subprocess/subprocess-local/src/spawn-runner.ts:306` 调 `spawnCurrentTokenJobProcess`；实现与 `AssignProcessToJobObject` / `ResumeThread` 在 `packages/subprocess/win32-process/src/process.ts:399-487`）。fd 3 走 Node IPC，fd 4–6 送目标的 stdin/stdout/stderr，用户字节不经过 IPC。runner 是目标进程句柄与 Job 的唯一 owner：只有在直接结果经 IPC 回调送出、且 Job 报告活跃进程数为零之后才正常退出；父进程只把这一次干净退出映射为成功的 `waitForExit()`。
 
 选择器是每次 spawn 的 `DSH_SUBPROCESS_RUNNER`（`packages/subprocess/subprocess-local/src/runner-launch.ts:12`），协议与请求/结果记录在 `packages/subprocess/subprocess-local/src/runner-protocol.ts:17`。三种形态进入同一个 runner core：源码态走 TypeScript source launcher，built 态经包导出的 `./runner`（`packages/subprocess/subprocess-local/package.json:21`），Python SDK 单文件可执行经 `python/sdk-runtime/runtime-bootstrap.mjs`。公开 `dsh` CLI 没有隐藏的 runner 模式，打包也不额外附带第二个 Node 可执行文件。
 

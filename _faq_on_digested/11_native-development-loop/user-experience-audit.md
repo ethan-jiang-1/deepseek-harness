@@ -139,7 +139,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
   [`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md) + `doc-standards`
   （owning source then regenerate）、[`dsh-trim-cot-leakage`](../../.agents/skills/dsh-trim-cot-leakage/SKILL.md)
   （HEAD, no-session reader test）、Agent-Note 规则（[`.agents/notes/README.md`](../../.agents/notes/README.md)）
-  和 `AGENTS.md:91`（"report only commands run"）的忠实投影。每个 skill 具体化了同一个骨架。
+  和 `AGENTS.md:92`（"report only commands run"）的忠实投影。每个 skill 具体化了同一个骨架。
 - **作为排名未证实。** 问题是问哪条路径*最自然 / 最被强化*。Answer
   从*三个证据流的汇聚*推断出"窄证据切片闭环"，但没有为任何竞争对手分配一个可证伪的排名；
   "三个机制"（§2–4）是提出的*解释*，而不是测量的原因。Answer 甚至承认这个闭环不是唯一路径：
@@ -164,7 +164,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
 
 ### 1.8 §3 "验证本身便宜 / validation is cheap"（§3, 第 51 行）— 类别 **(B)/(C)** — **unsupported gloss on the quoted source（对所引来源的不可支持的修饰）**
 
-来源：[`docs/testing.md:24`](../../docs/testing.md) — "We are DeepSeek — do not ration real-API tests.
+来源：[`docs/testing.md:25`](../../docs/testing.md) — "We are DeepSeek — do not ration real-API tests.
 A no-key test proves plumbing; only a with-key run proves the agent works against a real model." Answer
 引用此作为"验证本身便宜"的证据。
 
@@ -240,6 +240,8 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 ---
 
 ## 3. 推荐的修正论点
+
+> **落地状态（0006 复核补记）**：本节是审计当时的建议清单。后续的 FAQ 11 修订已部分采纳——最明确的是双重主语：`answer.md` 现在区分「agent 执行者的六步闭环」与「人类指挥者回路」，并配 `figures/two-loops.svg`；第 7 条的历史数值改为带基线的复核注记。本节其余各条的采纳情况未逐条标注，读的时候请以 `answer.md` 的当前正文为准，不要把它当成一份未处理的待办。
 
 当前 answer 的论点将 **repo-process ease（仓库流程轻松）**（agent/contributor）与 **product-usage ease（产品使用轻松）**
 （指挥 DSH 的人）混为一谈。替换为**双重主语**论点，并将每个机制重新锚定到其实际所有者：

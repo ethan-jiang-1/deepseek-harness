@@ -24,7 +24,7 @@
 - `api` / `events`：带签名和原始 JSDoc 的服务与事件合同；
 - `temporary`：`cordis_mount` 挂载的临时插件子集。
 
-它服务的 API 目录不是手写表，而是由源码生成、`verify-cordis-api` freshness-gated 的 catalog，运行时再与 live runtime 求交集。**读者不是只能读文档，还能问系统「现在有什么、签名是什么」。**
+它服务的 API 目录不是手写表，而是由源码生成、freshness-gated 的 catalog（`pnpm run verify-cordis-catalog`，`doc-sync` 的一员），运行时再与 live runtime 求交集。**读者不是只能读文档，还能问系统「现在有什么、签名是什么」。**
 
 ## 查询面四：Session 读意图 API
 
@@ -78,7 +78,7 @@
 - [`docs/architecture.md`](../../docs/architecture.md)（第 121 行；model-visible ⟺ logged）
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) / [`docs/tool-catalog.md`](../../docs/tool-catalog.md) / [`docs/persistence-catalog.md`](../../docs/persistence-catalog.md)（生成目录实例）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件索引）
-- [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17、23、27 行；inspect / mount / unmount 的合同与边界）
+- [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17、23、27、37、43、59 行；inspect / mount / unmount 的合同、边界校验与进程内存语义）
 - [`../../packages/extensions/tool-cordis/README.md`](../../packages/extensions/tool-cordis/README.md)（工具包合同）
 - [`docs/tool-execution-pipeline.md`](../../docs/tool-execution-pipeline.md)（工具执行管道）
 - [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md)（请求面变化与重建）

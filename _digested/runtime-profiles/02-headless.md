@@ -16,7 +16,7 @@ dsh --profile headless --help
 
 `PROFILE_TEMPLATES.headless` = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']`
 
-**注意**：`INSTALLATION_OWNED_PROFILE_TUPLES.headless` = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@deepseek-ai/dsh-headless']`，但 `loadProfile` 中的 `normalizeShippedProfile` 会在首次加载时把它**整理回** `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']`，因为 `dsh-web-app` 是安装时用于 headless 的旧靠模，实际启动时不需要 web 层。这是安装升级路径的兼容性调整。
+**注意**：`INSTALLATION_OWNED_PROFILE_TUPLES.headless` = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@deepseek-ai/dsh-headless']`（`packages/boot/app-boot/src/profile.ts:135`），但 `loadProfile` 中的 `normalizeShippedProfile` 会在首次加载时把它**整理回** `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']`：代码把这个 tuple 登记为「installation-owned」，即安装方曾写下的旧值，加载时按 shipped 模板重写并补上缺省的 `patchReload`；用户自己改过的 bundle 列表不会被触碰（`packages/boot/app-boot/src/profile.ts:688-716`）。
 
 | 层 | 从哪里来 | 作用 |
 |----|---------|------|

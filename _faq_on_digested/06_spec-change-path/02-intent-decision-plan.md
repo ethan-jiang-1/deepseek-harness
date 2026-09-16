@@ -13,7 +13,6 @@ Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implem
 
 模板只问意图与可观察行为，不问内部类名或函数列表；这让后续设计可以变化，但不丢掉最初要解决的问题。
 
-
 但要划清机器边界：模板只定义字段，Issue policy 不解析“验收条件”是否写得足够好；它对 PR 的强制只发生在 `requiresPullRequestPolicy()` 返回 true 时——**非 Draft、非 Bot/App 作者、已请求或已产生 review 的人类 PR**——然后要求至少引用一个同仓库 Issue。
 
 > const automated = authorType === 'Bot' || authorType === 'App'

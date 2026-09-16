@@ -1,6 +1,6 @@
 # Answer · DSH 目录设计的总模型
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`。
+源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`。
 
 ## 一句话答案
 
@@ -24,7 +24,7 @@ DSH 的目录不是按“控制器、服务、工具类”这种实现层次来�
 
 `packages/fs/`、`packages/subagent/`、`packages/session/`、`packages/llm/` 各自拥有一个能力家族。某项能力需要接口、后端、模型工具、策略和 UI 时，这些角色优先放在同一个领域附近，而不是分别塞进全局 `services/`、`adapters/`、`tools/`、`controllers/` 目录。
 
-这使阅读者可以先找到“谁拥有这件事”，再在该组内辨认角色。组 README 负责给出 package 与 `ctx` key 的地图，根 [`packages/README.md`](../../packages/README.md) 只维护组级索引。
+这使阅读者可以先找到“谁拥有这件事”，再在该组内辨认角色。组 README 负责给出 package 与 `ctx` key 的地图，根 [`packages/README.md`](../../packages/README.md) 只维护组级索引（本基线里 `session/` 与 `client/` 两个组的包表各有漏登记，见 [`03-package-role-grammar.md`](./03-package-role-grammar.md)）。
 
 ### 2. 可替换能力按角色拆 package
 
@@ -97,7 +97,8 @@ packages/fs/                  # 文件系统能力家族
 - `packages/session/` 不是 `core/session` 的重复。`core/session` 拥有活的内存日志；`session/` 家族围绕它增加持久化、投影、标题和遥测。
 - `packages/host/` 与 `packages/client/` 是 Web GUI 的两半；`apps/web` 只是很薄的浏览器入口，`apps/cli` 的 web profile 负责启动 Host 并提供前端产物。
 - `packages/api/` 与 `packages/typert/` 负责 Host/Client 之间的类型化 Remote/RPC 机制，不是另一个独立产品入口。
-- 组合叶子不再有顶层 `examples/`：可选 overlay 是 `apps/cli/config/examples/*/cordis.yml`（产品资产，`dsh --patch` 才挂），agent preset 的根是 `packages/preset/agent-presets/presets/*/agent.cordis.yml`。
+- 组合叶子不再有 `examples/` 包组：可选 overlay 是 `apps/cli/config/examples/*/cordis.yml`（产品资产，`dsh --patch` 才挂），agent preset 的根是 `packages/preset/agent-presets/presets/*/agent.cordis.yml`。
+- `packages/client/` 已不只是 Web 壳：`resources` 提供 `ctx.resources` 资源模型，`ui-dockkit` 是平台静态模块，右栏与文件树各由 `ui-sidebar-*` 拥有。
 - `packages/test-support/` 是跨 package 的测试基础设施；普通行为测试仍跟随自己的 package 放在 `tests/`。
 
 ## 一个 package 内部应该怎样读
@@ -127,10 +128,10 @@ DSH 把传统单体里隐含的选择显式化了：哪个后端、哪条策略�
 
 ## 第一次熟悉仓库的推荐顺序
 
-1. 读根 [`AGENTS.md`](../../AGENTS.md) 的目录图和核心约束。
+1. 读根 [`AGENTS.md`](../../AGENTS.md) 的目录图和核心约束（它的 `packages/` 布局块仍写已不存在的 `self-modification/` 与 `support/`，实际是 `packages/extensions/` 与 `packages/test-support/`；以 [`packages/README.md`](../../packages/README.md) 为准）。
 2. 读 [`docs/architecture.md`](../../docs/architecture.md)，建立 Cordis、composition、core、events、loop、session、seam 的顺序。
 3. 读 [`packages/README.md`](../../packages/README.md)，只识别 group，不背 package 清单。
-4. 从一个实际入口追踪：`apps/cli/src/bin.ts` → `profile-boot.ts` → bundle patch → 一个被挂载的 package。
+4. 从一个实际入口追踪：`apps/cli/src/bin.ts` → `profile-boot.ts` → bundle patch → 一个被挂载的 package（桌面入口例外，从 `apps/desktop` 的 Electron 主进程开始）。
 5. 再从一个能力追踪：group README → Definition → Provider → Consumer → bundle/preset row → 测试。
 6. Web 功能另走 Host/Client 路线；持久数据另走 `core/session` → `session/` 路线。
 

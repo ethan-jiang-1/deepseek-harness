@@ -1,5 +1,7 @@
 # Tools, prompt, LLM · 模型可见面
 
+产品源码基线：`183f08e9c6`（`dsh-v0.1.5-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）。
+
 ## 一句话
 
 模型每一步看见的东西由插件注册表**当场组装**：`ctx.systemPrompt` 的 section，加上 `ctx.tools` 里当前 scope 可见的 schema，历史则从 session log 投影。请求经 `ctx.llm` 的 adapter 流出；工具调用走三条 waterfall 管道。
@@ -24,7 +26,7 @@
 
 加模型提供方：在 `ctx.llm` 上注册 adapter。官方 DeepSeek adapter 的 thinking effort 是 `off` / `low` / `high` / `max`（省略默认 `high`）；`off` 在线上发 `thinking.type: disabled`，其余发同名 `reasoning_effort`。route 还按模型能力分路提示词替换：`deepseek-flash` 在 catalog 里声明 `systemPromptUpdate: 'in-history'`，其余内置 route（含全部手工 pi-ai route）走 replace（见 [`04-in-history提示词替换.md`](./04-in-history提示词替换.md)）。加面向模型的能力：在 `ctx.tools` 上注册，它的 schema 会自动加入组装。都不必改 loop。
 
-llm 配置面在 rc.1 收紧两处（PR #3403）：provider profile 的 `headers` 在 resolve 时按 Fetch `Headers` 语义校验，非法字段名/值载入即拒（`packages/llm/llm-pi-ai/src/config.ts:385-396` 的 `assertValidHeaders`，由 `resolveProfiles` 逐 profile 调用，`:424`）；model discovery 新增 `StoredModelDiscoveryProfile`（部署 headers + 惰性 `resolveApiKey`，`packages/llm/llm-pi-ai/src/discovery.ts:252-257`），探测请求携带已配置路由的 headers，不再裸探测打 401（`packages/llm/llm-pi-ai/src/index.ts:243-274`）。`resolveProfiles(providers, validation)` 新增 `'strict' | 'deferred'`（`config.ts:406-409`）：写入走 strict、存量读取走 deferred，且 `assertServiceable(config, previous?)` 只 resolve 改动的 provider（`:360-364`），所以存量失效 profile 不再让整段 namespace 注册失败，用户可以去修别的 provider。
+llm 配置面在 rc.1 收紧两处（PR #3403）：provider profile 的 `headers` 在 resolve 时按 Fetch `Headers` 语义校验，非法字段名/值载入即拒（`packages/llm/llm-pi-ai/src/config.ts:385-396` 的 `assertValidHeaders`，由 `resolveProfiles` 逐 profile 调用，`:424`）；model discovery 新增 `StoredModelDiscoveryProfile`（部署 headers + 惰性 `resolveApiKey`，`packages/llm/llm-pi-ai/src/discovery.ts:252-257`），探测请求携带已配置路由的 headers，不再裸探测打 401（`packages/llm/llm-pi-ai/src/index.ts:243-274`）。`resolveProfiles(providers, validation)` 新增 `'strict' | 'deferred'`（`packages/llm/llm-pi-ai/src/config.ts:406-409`）：写入走 strict、存量读取走 deferred，且 `assertServiceable(config, previous?)` 只 resolve 改动的 provider（同文件 `:360-364`），所以存量失效 profile 不再让整段 namespace 注册失败，用户可以去修别的 provider。
 
 ## 工具执行管道
 
@@ -45,7 +47,7 @@ tool/result（入 log）
 - **审批 / permission / ask-user** 挂在 interaction 与这条管道上，仍然是模型 turn 的一部分。
 - **人敲的 slash command** 走 `ctx.commands`，**不经过模型 turn**。那是另一个平面，见 [surfaces](../surfaces/00-map.md)。
 
-tool 的 UI 渲染意图是设计的一部分，一开始就要定：`generic` / `terminal` / `diff` / `search`（`packages/core/tools/src/presentation.ts:217,239`）。展示方法是 `args` 的纯函数。
+tool 的 UI 渲染意图是设计的一部分，一开始就要定：call-time 三种 `generic` / `terminal` / `diff`（`packages/core/tools/src/presentation.ts:46`），result-time 另有 `search` / `read` / `web`，共六种（`:140`）。展示方法是 `args` 的纯函数。
 
 ## 源码入口
 

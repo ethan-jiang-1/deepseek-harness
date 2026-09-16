@@ -25,7 +25,7 @@ sdk 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-sdk-app`）�
 
 `sdk-app-startup` 的 `profile` config 只影响 `dsh --profile <name> --help` 打印的命令语法，不改变组合（`packages/bundle/sdk-app/src/index.ts:25`、`:30`、`:38-45`）。
 
-**sdk 的工具面不收窄**：`dsh-sdk-app` 没有禁用任何 base 工具行——bash / sandbox / web / goal / plan / skill 全部从 `dsh-base` 继承；base 默认暴露 `web_fetch`（#3382，`packages/bundle/base/cordis.patch.yml:450-454`）后，sdk 工具面随之多出 `web_fetch`（`dsh-sdk-app` 无反向覆盖）。**`str_replace_editor` 不在这份继承清单里**：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`），`tool-str-replace-editor` 行在**本次跨度（`a66e470204` → `183f08e9c6`）内**从所有 shipped `cordis.patch.yml` 下线（OLD 基线里 base 的该行在 `packages/bundle/base/cordis.patch.yml:424-425`）；包 `@deepseek-ai/dsh-tool-str-replace-editor` 仍在，任何组合（含 sdk）想要它都必须显式 `insert`（仓库里的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。真正把工具面收窄到「一个持久 shell」的是 [`sdk-minimal`](./04-sdk-minimal.md)，它是唯一不叠 base 的 profile。
+**sdk 的工具面不收窄**：`dsh-sdk-app` 没有禁用任何 base 工具行——bash / sandbox / web / goal / plan / skill 全部从 `dsh-base` 继承；base 默认暴露 `web_fetch`（#3382，`packages/bundle/base/cordis.patch.yml:450-454`）后，sdk 工具面随之多出 `web_fetch`（`dsh-sdk-app` 无反向覆盖）。**`str_replace_editor` 不在这份继承清单里**：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`），`tool-str-replace-editor` 行在**本次跨度（`a66e470204` → `183f08e9c6`）内**从所有 shipped `cordis.patch.yml` 下线（OLD 基线里 base 的该行在 `a66e470204:packages/bundle/base/cordis.patch.yml:424-425`；同一提交 `36a4665144` 也删掉了 sdk-app 与 web-app 的对应行）；包 `@deepseek-ai/dsh-tool-str-replace-editor` 仍在，任何组合（含 sdk）想要它都必须显式 `insert`（仓库里的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。真正把工具面收窄到「一个持久 shell」的是 [`sdk-minimal`](./04-sdk-minimal.md)，它是唯一不叠 base 的 profile。
 
 ## 进程模型
 

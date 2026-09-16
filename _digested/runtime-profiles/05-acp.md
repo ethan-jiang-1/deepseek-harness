@@ -10,9 +10,11 @@
 # 产品 bin（launcher profile）
 dsh --profile acp
 
-# 快照模式（不读 .env，不触发模型调用）
-DSH_SNAPSHOT=replay dsh --profile acp
+# 快照回放：由 snapshot harness 驱动，不是 CLI 自己认 DSH_SNAPSHOT
+pnpm run test:snapshot
 ```
+
+回放时 `snapshots/acp/*/snapshot.yml` 声明 `profile: acp`，harness 把选中的 replay patch 以 `--patch` 交给 `dsh --profile acp`，并用 `DSH_SNAPSHOT=replay` 在 base patch 与 replay sibling 之间选择（`packages/test-support/session-snapshot/src/launcher.ts:344-363`）；`DSH_SNAPSHOT` 由测试工具读取，`apps/cli/src/bin.ts` 不消费它。
 
 acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）。走 bundle 层叠。
 
@@ -28,7 +30,7 @@ acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）�
 
 JSONL 持久化（`session-persistence-jsonl`）、`session-checkpoint-policy`、`session-query-sqlite` 都在 `dsh-base`——acp-app 不自持，digest 旧版写的「effect 卸载顺序：先拆查询 → 检查点 → 持久化」那层不存在。
 
-**一处与 base 不一致的默认模型**（rc.1 现状，需产品侧确认）：`acp` 行仍硬编码 `provider: deepseek-official` / `model: deepseek-v4-flash`（`packages/bundle/acp-app/cordis.patch.yml:19-21`），而 base 的 `agent-default-model` 已改成 `deepseek-flash`（`packages/bundle/base/cordis.patch.yml:75-79`）。两者在新基线下并存，从源码看不出哪个是当前有效别名：若 `deepseek-v4-flash` 已失效，则 acp profile 的默认模型是回归；若仍有效，则只是不一致。
+**与 base 不一致的默认模型**：`acp` 行硬编码 `provider: deepseek-official` / `model: deepseek-v4-flash`（`packages/bundle/acp-app/cordis.patch.yml:19-21`），而 base 的 `agent-default-model` 用 `deepseek-flash`（`packages/bundle/base/cordis.patch.yml:75-79`）。两个 id 都是 provider 目录里的合法条目——`packages/llm/llm-deepseek/src/index.ts:94` 定义 `deepseek-flash`（name `DeepSeek-V41-Flash`），`:103` 定义 `deepseek-v4-flash`（name `DeepSeek-V4-Flash`）——因此这不是别名失效，而是两个 profile 各自选了不同的模型条目；同一个仓库里两处默认值不统一，改模型目录时需同时看这两处。
 
 ## 进程模型
 
@@ -37,12 +39,12 @@ dsh --profile acp
   → runProfile → composeProfile → boot()
   → acp-app 组合 apply
     → mount dsh-base → ACP transport 等
-  → ACP 插件经 @agentclientprotocol/sdk 接线 stdio：createAcpAgentApp + ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin))（packages/acp/acp/src/index.ts:21-47 导入、:374-378 接线）
+  → ACP 插件经 @agentclientprotocol/sdk 接线 stdio：createAcpAgentApp + ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin))（`packages/acp/acp/src/index.ts:21-47` 导入、`:374-378` 接线）
   → 等待客户端连接
   → initialize: 返回 protocolVersion、agentCapabilities（图像能力取决于精确 route）
   → session/new: 创建新鲜 agent（绝对 cwd）
   → session/prompt: 准入 → 写入 inbox → 等到 idle + 输出静默 → 返回 stopReason
-  → session/update: 推送 committed agent_message_chunk
+  → session/update: 推送 committed 语义更新（文本 / 图像块、reasoning、tool 生命周期、usage）
   → session/request_permission: 一次性 allow/reject
   → stdin end / dispose: 排空所有 session → 退出
 ```
@@ -53,7 +55,7 @@ dsh --profile acp
 |------|-----|-----|
 | 协议 | 自定义 JSON-RPC（`dsh-sdk-protocol`） | 标准 Agent Client Protocol |
 | prompt 返回 | 立刻 `messageId` | 等到 idle，带 `stopReason` |
-| 线上内容 | 每条 `session/event` + `agent/status` | 仅 committed `assistant/message` 的文本与图像块 |
+| 线上内容 | 每条 `session/event` + `agent/status` | 只投递 committed 事实的语义更新：文本与图像块、非空 reasoning、通用 tool 生命周期、context usage（`packages/acp/acp/src/updates.ts`） |
 | 取消 | 无 per-prompt cancel | `session/cancel` 对准该 prompt |
 | 会话创建 | get-or-create 按 `sessionId` | `session/new` 始终创建新 agent |
 | 审批 | 运行时控制（通过 approval 插件） | `session/request_permission` 发送到客户端 |
@@ -63,7 +65,7 @@ dsh --profile acp
 ## 独特之处
 
 - **标准化协议**：ACP 是 Agent Client Protocol 标准实现，为跨平台 agent 互操作设计。
-- **只投递 committed 输出**：raw chunks、推理、工具活动、plan、title 都留在 session log，不上协议线。
+- **只投递 committed 事实**：`session/update` 发的是已提交 `assistant/message` 的文本 / 图像块与 reasoning 块（`agent_message_chunk` / `agent_thought_chunk`）、已提交 `tool/call` 与 `tool/result` 的通用 tool 生命周期（`tool_call` / `tool_call_update`）、以及可用时的一条 `usage_update`（`packages/acp/acp/src/updates.ts:36`、`:54`、`:80`、`:98`）；raw provider delta、retry attempt、plan、title、todo、terminal 这类 DSH 展示面不上线。
 - **每会话一个 in-flight prompt**：`session/prompt` 排他，不能同时有两个 prompt 互窜。
 - **图像处理**：支持 PNG / JPEG / WebP / GIF，inline base64 准入后丢弃，日志只留 attachment 引用。图像投递前再读并校验完整性。
 - **审批转发**：`approval/request` 事件转发为 `session/request_permission` 到客户端，客户端可自动答。
@@ -78,5 +80,5 @@ dsh --profile acp
 | `packages/acp/acp/src/content.ts` | 内容准入（`admitAcpPrompt`、`assistantBlockToAcp`） |
 | `packages/acp/acp/src/codec.ts` | turn 结局到 ACP stopReason 编解码 |
 | `packages/bundle/acp-app/cordis.patch.yml` | ACP 应用的 bundle 组合 |
-| `packages/test-support/acp-snapshot/` | ACP 快照测试工具 |
+| `packages/test-support/session-snapshot/` | 快照测试工具（含 ACP 场景的 suite/normalize） |
 | `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证详细对照 |

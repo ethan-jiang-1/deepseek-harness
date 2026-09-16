@@ -1,5 +1,7 @@
 # Runtime Profiles · 运行时配置
 
+产品源码基线：`183f08e9c6`（`dsh-v0.1.5-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）。
+
 ## 一句话
 
 Runtime Profile 决定一个 `dsh` 进程**启动时装入什么**：浏览器应用、一次性无界面任务、JSON-RPC 服务、极简 SDK 还是自动化 ACP 服务。会话存在哪里、用哪个模型、是否接沙箱和审批，也在这里定下来。
@@ -30,7 +32,7 @@ rc.1 没有增删任何模板、也没有改名：新增的是从模板派生自
 | **sdk-minimal** | JSON-RPC · 工具面收窄 | `dsh --profile sdk-minimal` | profile 目录 + bundle 层叠 | JSON-RPC 帧 | 常驻 |
 | **acp** | Agent Client Protocol 服务 | `dsh --profile acp` | profile 目录 + bundle 层叠 | ACP 帧 | 常驻 |
 
-> **历史背景**：在 `0.1.2-alpha.1`（#3248）之前，sdk 和 acp 走独立 app 二进制（`dsh-jsonrpc-agent`、`dsh-acp-demo`），不经过 launcher profile。从 `0.1.2-alpha.1` 起它们被统一到 `dsh --profile <name>`。旧二进制不再存在；SDK 最小示例使用 `sdk-minimal` profile。所有 profile 现在共享同一套 bundle 层叠、profile 目录、`dsh plugin` 管理等基础设施。
+> **历史背景**：在 `0.1.2-alpha.1`（#3248）之前，sdk 和 acp 走独立 app 二进制（`dsh-jsonrpc-agent`、`dsh-acp-demo`），不经过 launcher profile（`dsh-v0.1.1-rc.2:packages/examples/jsonrpc-demo/package.json:16`、`dsh-v0.1.1-rc.2:packages/examples/acp-demo/package.json:16`，两个目录在 `183f08e9c6` 已不存在）。从 `0.1.2-alpha.1` 起它们被统一到 `dsh --profile <name>`。旧二进制不再存在；SDK 最小示例使用 `sdk-minimal` profile。所有 profile 现在共享同一套 bundle 层叠、profile 目录、`dsh plugin` 管理等基础设施。
 
 ## 共同基底
 
@@ -48,7 +50,7 @@ rc.1 没有增删任何模板、也没有改名：新增的是从模板派生自
 | Goal | 持久完成目标 | `dsh-base` 的 `goal`、`goal-round-driver`、`tool-goal`（sdk 继承 base；仅 sdk-minimal 无） |
 | 文件系统 | 受限文件访问 | `dsh-base` 的 `fs-sandbox`、`fs-observation-policy` |
 
-**消息通道**：rc.1 起子代理回传统一为 settle notice + `send_message` steer（`tool-subagent-report` 已删除）；fork continuable 不再有 child-only section 的 KV 前缀代价。
+**消息通道**：子代理回传统一为 settle notice + `send_message` steer，fork continuable 没有 child-only section 的 KV 前缀代价——这两条都早于本跨度基线（`a66e470204` 里 `tool-subagent-report` 已不存在，`tool-subagent-fork` 注释已是「preset 层可选 continuable，无需 child-only section」），不是 rc.1 周期内的变化。
 
 **进程级重用**：五个入口都通过 `ctx.agents` 驱动 agent，从 `session/event` 渲染或投影。不是五套 Agent 实现。
 
@@ -113,7 +115,7 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 | **sdk-minimal** | `dsh-sdk-minimal` bundle：独立树不叠 base——工具面收窄到**平台选定的一个持久 shell**（非 win32 `persistent-bash` / win32 `persistent-pwsh`）；无 subagent、todo、compaction、web search，也没有任何文件系统工具或服务 |
 | **acp** | `dsh-acp-app` bundle：base + 薄自动化层（persona override + `acp-app-startup` + `acp`，`inject: [acpAppStartup]`）；持久化/检查点/查询在 base，不自持 |
 
-共同点变更：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`），`tool-str-replace-editor` 在**本次跨度（`a66e470204` → `183f08e9c6`）内**从全仓 shipped bundle 下线（OLD 基线里 base 仍有该行，`:424-425`）——包还在，但任何 profile 想要 `str_replace_editor` 都必须显式 `insert`（仓库里现存的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。各 bundle 的 `system-prompt` 也从单个 `persona` 字段拆成 `personaPrefix`（模型介绍，section 序 0）+ `personaSuffix`（`Your working directory is {{cwd}}.`，`deployment:persona-suffix`，序 10200）两段（`packages/core/system-prompt/src/index.ts:174`、`:177`、`:251`、`:256`）——拆分的目的是把 cwd 这类随机器变化的文本挪到 first-party 复用指令之后、保持 prompt 前缀稳定，不是同义改写（依据 note [`2026-09-06-environment-prompt-suffix`](../../.agents/notes/implemented/bug-fix/2026-09-06-environment-prompt-suffix.md)）。
+共同点变更：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`），`tool-str-replace-editor` 在**本次跨度（`a66e470204` → `183f08e9c6`）内**从全仓 shipped bundle 下线（OLD 基线里 base 仍有该行，`a66e470204:packages/bundle/base/cordis.patch.yml:424-425`；同一提交 `36a4665144` 也删掉了 sdk-app 与 web-app 的对应行）——包还在，但任何 profile 想要 `str_replace_editor` 都必须显式 `insert`（仓库里现存的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。各 bundle 的 `system-prompt` 也在本次跨度内从单个 `persona` 字段拆成 `personaPrefix`（模型介绍，section 序 0）+ `personaSuffix`（`Your working directory is {{cwd}}.`，`deployment:persona-suffix`，序 10200）两段（`packages/core/system-prompt/src/index.ts:174`、`:177`、`:251`、`:256`；拆分的 `40792330c0` 是 NEW 的祖先、不是 OLD 的祖先）——拆分的目的是把 cwd 这类随机器变化的文本挪到 first-party 复用指令之后、保持 prompt 前缀稳定，不是同义改写（依据 note [`2026-09-06-environment-prompt-suffix`](../../.agents/notes/implemented/bug-fix/2026-09-06-environment-prompt-suffix.md)）。
 
 ## 阅读路径
 
@@ -145,8 +147,6 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 | `packages/sdk/server/src/index.ts` | JSON-RPC SDK server 插件 |
 | `packages/acp/acp/src/index.ts` | ACP 桥插件 |
 | `apps/desktop/`、`apps/desktop-host/` | Electron 桌面应用与应用私有的 profile 装载入口（保留名 `desktop`） |
-| `packages/examples/acp-demo/src/index.ts` | ACP demo 组合的示例（已不是运行时入口） |
-| `packages/examples/jsonrpc-demo/` | 旧 SDK demo（已不是运行时入口） |
 | `_digested/composition/00-map.md` | 启动组合机制（profile 目录、bundle 层叠） |
 | `_digested/composition/04-profile-创建与保留名.md` | profile 创建路径与 `desktop` 保留名 |
 | `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |
