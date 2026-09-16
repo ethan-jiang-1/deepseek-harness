@@ -28,3 +28,4 @@ DSH 是一个规则密度很高的仓库（AGENTS.md、双层 AGENTS、门禁脚
 
 - 主回答：[窄证据切片闭环：最自然的开发习惯与"轻松"的机制](./answer.md)
 - 三路调查原始发现：[研究底稿](./research.md)
+- 分角色与分层的展开：[开发结构总览](./developer-journey-structure.md)、[插件旅程实例推演](./developer-journey.md)、[传统代码插件](./developer-journey-plugin.md)、[智能体工作流插件](./developer-journey-workflow.md)、[运行时用户旅程](./runtime-user-journey.md)

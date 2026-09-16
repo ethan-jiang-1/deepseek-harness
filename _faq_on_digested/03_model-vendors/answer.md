@@ -4,7 +4,7 @@
 
 ## 结论
 
-- **MICU：** GPT-5.6 用纯配置的独立 `micu` route，协议为 `openai-responses`。不要覆盖 `openai`，这样官方 OpenAI、中转站及其会话记录才能并存且可追溯。已验证模型、配置和安全回退见 [GPT_dsh-web-micu-configuration.md](./GPT_dsh-web-micu-configuration.md) 与 [GPT_research.md](./GPT_research.md)。
+- **MICU：** GPT-5.6 用纯配置的独立 `micu` route，协议为 `openai-responses`。不要覆盖 `openai`，这样官方 OpenAI、中转站及其会话记录才能并存且可追溯。已验证模型、配置和安全回退见 [GPT_dsh-web-micu-configuration.md](./GPT_dsh-web-micu-configuration.md)、[GPT_research.md](./GPT_research.md) 与 [MICU_DEEPSEEK_research.md](./MICU_DEEPSEEK_research.md)。
 - **GLM：** 当前 `dsh web` 已内置 Z.ai 的 `zai`、`zai-coding-cn` provider；属于纯配置接入，只需配置对应的 `apiKeyEnv`，不需要新插件。标准 API 与 Coding endpoint 不能混用，内置模型和待验证范围见 [GLM_research.md](./GLM_research.md)。
 - **KIMI：** 当前 `dsh web` 也内置 Kimi/Moonshot provider；应根据 API 产品选择 `moonshotai`、`moonshotai-cn` 或 `kimi-coding` route，只配置该 route 的凭据引用，不伪装为 `openai`。模型、endpoint 和验证边界见 [KIMI_research.md](./KIMI_research.md)。
 
