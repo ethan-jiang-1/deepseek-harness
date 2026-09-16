@@ -26,7 +26,7 @@
 两项真缺口，按"离现有制度多远"排序：
 
 1. **word/ppt/pdf 等文档产物的读取与预览**。`tool-fs` README 明说 "`read` handles UTF-8 text files only — PDF, audio, and video remain deferred"（`packages/fs/tool-fs/README.md:242`）；`packages/web` 的 `WebFetchBody` 是封闭 union（`html | text`），无 `pdf` arm；全仓 "artifact" 命中只指会话日志文件，与 Claude 式 artifacts 无关。这是**读取侧 + 渲染侧双缺口**。
-2. **侧边栏 artifacts / 产出物面板**。`KNOWN_SESSION_EVENT_TYPES` 当前 56 种事件里没有任何 artifact/preview 族（`packages/core/session/src/known-event-types.ts:23-78`）；`ui-sidebar` 有品牌行、会话浏览器与 Settings，但没有产出物面板。缺的不是事件词表，是**侧边栏面板**。
+2. **侧边栏 artifacts / 产出物面板**。`deliverables/presented` 已是 `KNOWN_SESSION_EVENT_TYPES` 的成员（`packages/core/session/src/known-event-types.ts:36`；`packages/fs/tool-present/src/index.ts:104` 追加，声明在 `packages/fs/tool-present/src/types.ts:15`），`tool-present` 与 `ui-deliverables` 已把它渲染成 Produced files 行；但 `ui-sidebar` 有品牌行、会话浏览器与 Settings，没有产出物面板。缺的不是事件词表，是**侧边栏面板**——该事件在本页写作基线尚未存在，在复核树 `fb2c4b9e69` 上已交付。
 
 补任何一个，都会先撞上同一条硬税——**`model-visible ⟺ logged` 的 UI 侧镜像**：
 
@@ -45,7 +45,7 @@
 | `cordis_define`/`cordis_run` 动态包浏览器半部 | 零打包、运行时试验 | `packages/extensions/tool-cordis/README.md`（原 self-modification 包，[D 路报告更正](../08_plugin-seam-maturity/answer.md)：命名契约笔记 `2026-08-11` 已更名）；`cordis_inspect_query platform:"client"` 直接列出可用 seat 清单；注意动态包**仅进程内存、不落盘、不跨重启** |
 | 固定策略 workflow 消费者插件 | 可复用可分发的编排模板 | 仿 `dsh-tool-ralph`（见下节） |
 
-第 2 条体感的隐含判断——"DSH 还是要有很多自己改造的地方"——严格说对了一半：**改造是必然的，但"自己造"的大部分内容官方已把路铺到 slot 级**；真正要从零立制度的是 artifacts 事件词表（缺口 2）与文档产物读取（缺口 1 的读取半边）。
+第 2 条体感的隐含判断——"DSH 还是要有很多自己改造的地方"——严格说对了一半：**改造是必然的，但"自己造"的大部分内容官方已把路铺到 slot 级**；真正要从零立制度的是 artifacts 侧栏面板（缺口 2）与文档产物读取（缺口 1 的读取半边）。
 
 ## 第五节 workflow 模板的正确载体
 

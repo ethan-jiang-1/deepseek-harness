@@ -126,8 +126,8 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
   identity-protection / 不 mutate 注册的定义（`:43`）、一个规范值 + `isError` 语义（`:45-46`）、
   尊重 `exec.signal`（`:47`）、可选的 `presentationMeta`（`:48`）、用于异步通知的 `exec.agent`
   （`:49`），以及 presenters 的 **purity hard rule**（`:86`——重放时没有 I/O、没有 session state、没有 clock）。
-  "免费"的机制是真实的，但"本质"远不止一行声明。Answer 自己的"90 余行宽度"的 hedge 是模糊的；
-  execute-contract 规则本身约 10 个密集行，reference 总共有 94 行，所以"90 余行"不是契约表面的精确度量。
+  "免费"的机制是真实的，但"本质"远不止一行声明。Answer 自己的"100 余行宽度"的 hedge 是模糊的；
+  execute-contract 规则本身约 10 个密集行，reference 在写入树（`4f69e0f3b5`）共 94 行、复核树（`fb2c4b9e69`）共 101 行，所以"100 余行"不是契约表面的精确度量。
 - **裁定。** *机制*（派生其余部分）**被证实**；*程度*（仅"本质"）是**推断的且宽松的**。
 
 ### 1.6 六步闭环（"核对现场 → 判定窄 diff → 原子修改 owner 面 → 最小匹配证据 → 沉淀 → 只报告实际跑过的"）（§1）— 类别 **(B)** — **PROVEN as a description of what skills say; NOT proven as "the most natural path"（作为 skills 陈述的描述被证实；未证实为"最自然的路径"）**

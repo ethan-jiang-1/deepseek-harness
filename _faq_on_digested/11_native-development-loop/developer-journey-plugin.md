@@ -99,7 +99,8 @@ packages/<group>/<pkg>/
 **加载**：
 
 ```bash
-dsh --plugin ./dist/index.js "记一个决策"
+# 包声明 dsh.bundle 后，用 plugin 子命令装进目标 profile（bundle 层随之激活）
+dsh plugin --profile <name> add ./dsh-plugin-my-tools
 ```
 
 **代价**：`defineTool` 契约（execute/purity/output-schema）**仍然必须遵守**，
@@ -107,7 +108,7 @@ dsh --plugin ./dist/index.js "记一个决策"
 
 ### 混合路径（推荐给要发 npm 包的人）
 
-模式 A 开发 + 模式 B 交付：仓库内开 PR → CI publish → `npm install @deepseek-ai/dsh-<name>` → `--plugin` 加载。
+模式 A 开发 + 模式 B 交付：仓库内开 PR → CI publish → `dsh plugin --profile <name> add @deepseek-ai/dsh-<name>` 装进 profile 加载。
 
 ---
 
@@ -144,7 +145,7 @@ dsh --plugin ./dist/index.js "记一个决策"
 |---|---|
 | 新 package 目录布局 | [cookbook/adding-a-package.md](../../docs/cookbook/adding-a-package.md) |
 | tool execute/present 契约 | [cookbook/adding-a-tool.md](../../docs/cookbook/adding-a-tool.md) |
-| 如何加载外部 plugin | `dsh --plugin <path>`（`apps/cli/src/bin.ts`） |
+| 如何加载外部 plugin | 打成声明 `dsh.bundle` 的包后用 `dsh plugin --profile <name> add <pkg>` 装进 profile；仓库内的包由 bundle/profile 的一行挂载（`apps/cli/src/args.ts:190`） |
 | workspace 依赖解析 | pnpm 自动 |
 | 外部 plugin 的 cordis.yml | [cordis-primer.md](../../docs/cordis-primer.md) |
 | 完整实例推演 | [`developer-journey.md`](./developer-journey.md)（`log_decision` 工具走完全程） |

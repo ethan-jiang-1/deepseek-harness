@@ -90,7 +90,7 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 ## 诚实边界
 
 1. **"一切皆插件"不递归到底**：Cordis 根 Context、Boot、Loader 先于插件树存在，核心下沉成组合内核而不是消失（[`harness-idea/07`](../../_digested/harness-idea/07-boundaries-costs-fit.md)）。
-2. **插件化 ≠ 安全**：`cordis_mount` 是 opt-in、bash-equivalent trust，同进程代码挡不住直接 import Node API（[`harness-idea/05`](../../_digested/harness-idea/05-dynamic-legibility.md)）。
+2. **插件化 ≠ 安全**：`cordis_define`/`cordis_run` 是 opt-in、bash-equivalent trust，同进程代码挡不住直接 import Node API（[`harness-idea/05`](../../_digested/harness-idea/05-dynamic-legibility.md)）。
 3. **model-visible ⟺ logged 是硬税**：任何让模型看见的新能力都要配日志重建规则与新的 `SessionEventMap` 成员（[`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)）。
 4. **core 不是天花板**：42 个 core 里有两类——单一实现的 core 服务（如 `tokenMeter`、`toolResultPruner`：都是公开 ctx 键，唯一消费方是 `compaction-basic`，见 `docs/capability-seams.md:481-482`）与"还没人要求换"的候补 seam。生成器不区分这两类，只能按 role 列与各自 README 自述读；饱和/缺口判断只对 29 条 seam 有效。
 

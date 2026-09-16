@@ -52,7 +52,7 @@ vendor 4.0.2 = 本地修改 + 纯版本 bump，两笔独立改动：行为修改
 
 跨度 0006（`a66e470204` → `183f08e9c6`，即 `dsh-v0.1.5-rc.1`）内 `vendor/` **零改动**：`git diff a66e470204..183f08e9c6 -- vendor/` 输出为空，九个 vendored 包的版本与上列 19 条本地修改逐条原样保留。下一次上游同步不必从本页重放任何条目，只需按下面那条双核对规则确认版本列。
 
-这项修改支撑 Node 24.x 范围兼容性。另提醒：[`vendor/README.md`](../../vendor/README.md) manifest 的版本列（`4.0.0-rc.7` / `1.0.0-rc.5` / `1.0.0` / `3.18.0` / `1.1.2`）自初始导入后未与各 `vendor/*/package.json`（`4.0.2` / `1.0.3` / `1.0.2` / `3.18.2` / `1.1.4`）同步，后续 vendor 同步应以 package.json + manifest SHA 双核对，README 版本列不作权威。
+这项修改支撑 Node 24.x 范围兼容性。另提醒：[`vendor/README.md`](../../vendor/README.md) manifest 的版本列（`4.0.0-rc.7` / `1.0.0-rc.5` / `1.0.0` / `3.18.0` / `1.1.2`）与各 `vendor/*/package.json`（`4.0.2` / `1.0.3` / `1.0.2` / `3.18.2` / `1.1.4`）**按设计就不同**：manifest 那一列记录的是 pinned 上游快照版本，`package.json` 的 `version` 是本仓的发布版本（`docs/rescope.md:25`；`scripts/release/families.ts` 的 vendor family 只 bump `vendor/*/package.json`）。后续 vendor 同步仍应以 package.json + manifest SHA 双核对，但不要把两列不一致读成漏同步。
 
 ## 上游同步要求
 
