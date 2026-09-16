@@ -14,13 +14,18 @@ DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 
 
 | tier | 拥有 |
 |---|---|
-| root/subtree `AGENTS.md` | 每次会话或子树必须遵守的 standing orders |
+| root `AGENTS.md` | 每次会话都要在场的 standing orders（每条 1-3 行，链到各自 home） |
+| 子树 `AGENTS.md`（`packages/`、`docs/`、`.agents/notes/`） | 只属于该子树的 orders |
 | `docs/architecture.md` | 组合、主干、扩展点与 capability seam 的有序地图 |
 | `docs/subsystems/` | 子系统 types、semantics 与生成的 Cordis API |
+| `.agents/notes/` | 现行决策记录：为什么、放弃了什么、需要什么验证 |
+| `docs/postmortem/` | 事故故事——唯一允许 war story 叙事的层 |
+| `docs/cookbook/` | 带编号验证步骤的 how-to |
+| `docs/user/` | 面向产品的指南，由文档站发布 |
 | package README | 每个包的 config、行为、失败、限制、extension points 与 Model Experience |
-| Agent Notes | 决定或提案的 rationale、alternatives、consequences 与 required verification |
-| generated catalogs | 从 source/JSDoc 生成的穷举 reference |
-| cookbook / `docs/user/` | contributor procedure / product-facing guide |
+| `docs/development.md` | 贡献者上手、日常工作流与 CI 摘要 |
+| 生成的 reference（`subsystems/` 的 cordis-surface 区域、`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`） | 从 source 重新生成、带 freshness 门禁的穷举英文源 |
+| Skills（`.agents/skills/`） | 可复用工作流与专门决策标准 |
 
 高层文档只概括直接子项的 purpose、responsibility 和 high-level behavior；更低层细节链接到 owning descendant。生成目录改 owner source 或 generator，不能手改产物。
 

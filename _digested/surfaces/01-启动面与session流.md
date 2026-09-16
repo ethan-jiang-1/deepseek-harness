@@ -36,7 +36,7 @@ ACP：`dsh --profile acp`。launcher profile，stdout 留给协议帧。
 
 Host 把每一个已登记的 settings namespace 交给 Web；插件自己登记 Host schema 与浏览器卡片。事件转发白名单集中在 `packages/api/remotes/src/remote-events.ts:16`，NEW 下是 **19 条**，唯一新增项是 `goal/activation-changed`（`:26`，`mode: 'emit'`）；`packages/api/session-controller/src/remote-events.ts` 的同名文件只是 5 个 `api-session/*` 事件的 `TypertRemoteEventSelection` 模块扩充声明，不是白名单。含图的 Web prompt 不再由 session-controller 直接批量准入：它经 `ctx.attachments.admitPromptContent(...)`（`packages/api/session-controller/src/commands.ts:353`）走到 attachment capability 内部（`packages/attachment/attachment/src/index.ts:113` 的 `admitPromptContent`，图像批交给 `packages/attachment/attachment/src/admission.ts:49` 的 `admitEncodedImages`），session-controller 保留图像模态检查与 `session/attachment-invalid` 映射。历史分页仍按 `sourceEventSeqs` 取分组起点，避免大 transcript 上的调用栈溢出。
 
-### Web 会话流的两类帧
+### Web 会话流的三类帧
 
 客户端 `follow` 读到的帧有三类，`packages/api/session-controller/src/types.ts:513` 的 `SessionFollowFrame` 是它们的并集：
 

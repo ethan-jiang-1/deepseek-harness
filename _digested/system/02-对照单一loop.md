@@ -13,7 +13,7 @@
 | `messages` 数组既给 UI 又给下一请求 | `Session` log。UI 订 `session/event`；模型看 `deriveMessages()`。一次 model attempt 只有一条 settlement，assembled message 与 embedded stream 是同一事件的两半；`expandAssistantStream()` 才能拿回逐 token 事实。 |
 | `const system = \`You are…\`` | `ctx.systemPrompt.section({ name, order, text })`。稳定前缀在前，但环境事实（Harness 来源路径、Web URL、cwd）已移到最尾；persona 拆成 prefix/suffix 两段。 |
 | `if (useDocker) bash = dockerBash` | 远程组合同时替换 `ctx.subprocess` 与 `ctx.fs` provider，并共享 runtime owner；本地 confinement 则换 `ctx.shell` 的 sandbox 子类。tool-bash 源码不动。 |
-| CLI `main()` 里 `await loop.run(prompt)` | 各入口都经 `ctx.agents` → `followup`。CLI / Web / ACP / SDK 可以处于不同进程和插件树，但复用 `Agent` 接口与 session 语义。 |
+| CLI `main()` 里 `await loop.run(prompt)` | 各入口都经 `ctx.agents` → `followup`。CLI / Web / Desktop / ACP / SDK 可以处于不同进程和插件树，但复用 `Agent` 接口与 session 语义。 |
 | 加功能 = 改 `agent.ts` 中间那段 | 对照 [`01-扩展表非显然落点.md`](./01-扩展表非显然落点.md) 找挂点。改 loop 要同步改 architecture.md。 |
 | 换模型 = 换那个 `openai.chat.completions` 调用 | `ctx.llm` 登记 adapter。请求词汇在 `dsh-llm`，不在 loop。 |
 | 子 agent = 递归调用同一个 loop 函数 | `ctx.subagents` seam：provider 可以运行进程内 child，也可以通过 ACP / JSON-RPC 驱动独立进程。Codex / Claude Code 这类产品 provider 是独立 Profile Bundle，装进 profile 后各自注册一个 dormant 默认 provider；preset 只决定要不要露出对应 tool 行。`backgroundMode` 在一次性 Job 与可续 child 之间选择，见 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/03-subagent后台与产品provider.md)。session header 的 lineage 不会自动建立 scope 父链；进程内 child 可加入父 agent 正在使用的同一 preset generation，但不继承父 agent 自有层。 |

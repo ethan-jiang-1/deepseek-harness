@@ -36,7 +36,7 @@ agent 的 session 就会自动发现它。
 
 ### 2.1 你写的是什么
 
-一段纯 JavaScript（不是 TypeScript），用 `workflow` tool 的五个钩子编排子 agent：
+一段纯 JavaScript（不是 TypeScript），用 `workflow` tool 的六个钩子编排子 agent：
 
 ```javascript
 // audit-deprecations.js

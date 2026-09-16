@@ -178,7 +178,7 @@ instructions 读取。Git 历史显示该 policy 被实践了（convention）。
 
 ## 6. 对 answer.md 的证伪与精炼
 
-现有的 [answer.md](./answer.md) 是一个关于"最自然的*习惯*"的论证；它与运行时大体一致，但其四个运行时主张
+现有的 [answer.md](./answer.md) 是一个关于"最自然的*习惯*"的论证；它与运行时大体一致，但其五个运行时主张
 是错误的或夸大的。
 
 1. **Plan mode 不是默认，且"explore first"不是运行时立场。** answer.md §"runtime 合成姿态"

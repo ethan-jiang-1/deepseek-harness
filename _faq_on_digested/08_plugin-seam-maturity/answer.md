@@ -74,7 +74,7 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 - **执行世界组合**（shell 3/4 + fs 3/1 + subprocess 2/7 + sandbox + sandboxPolicy）：resolve → confine → spawn 三层，本地 confinement 与 E2B 远程世界共存于同一套 Consumer（[`capability-seams/00-map`](../../_digested/capability-seams/00-map.md)、[`02-一次bash从tool到sandbox`](../../_digested/capability-seams/02-一次bash从tool到sandbox.md)）。再造一个 shell 家族等于重做它的全部消费方。
 - **会话底座**（persistence 1/7 + query + projection + title）：竞争者要抄的不是某个存储后端，是 `SESSION_FORMAT_VERSION` 版本纪律、双 SDK 同 PR 投影、冷读阶梯（[`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)）。
 - **LLM 注册面**：三 wire 协议 + pi-ai 的 route-per-provider 配置，"换 vendor 是配置不是代码"已在 FAQ 03 实证（[FAQ 03](../03_model-vendors/answer.md)）。再造是重写适配层，边际为零。
-- **四入口复用 spine**：CLI / Web / ACP / JSON-RPC 共用 `ctx.agents`，ACP 与 SDK 只是投影取舍不同（[`surfaces/02`](../../_digested/surfaces/02-acp与jsonrpc.md)）。
+- **五入口复用 spine**：CLI / Web / Desktop / ACP / JSON-RPC 共用 `ctx.agents`，ACP 与 SDK 只是投影取舍不同（[`surfaces/02`](../../_digested/surfaces/02-acp与jsonrpc.md)）。
 
 ## 缺口区：按信号强度排序的 backlog，每行写明缺什么
 

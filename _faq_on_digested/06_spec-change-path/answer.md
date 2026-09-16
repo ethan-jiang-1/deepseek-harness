@@ -74,7 +74,7 @@ d01f5f73b7 Add web capability seam: ctx.web, search/fetch providers, web tools
   → docs/architecture.md、packages/README.md、packages/web/**（README/src/tests）
 ```
 
-Issue 与 GitHub review 不在 git tree 里，这个例子不能证明 Plan Mode 被使用；它证明的是“提案 → 实现 + 合同 + 行为证据 → implemented Note”这一段，而不是八个阶段全部。所以对“能否从头看到尾”的诚实回答是：仓库内 git 对象没有能覆盖八阶段的单一例子，Web capability seam 是核心段证据最完整的例子。详细见 [`05-example-web-capability-seam.md`](./05-example-web-capability-seam.md)。
+Issue 与 GitHub review 不在 git tree 里，这个例子不能证明 Plan Mode 被使用；它证明的是“提案 → 实现 + 合同 + 行为证据 → implemented Note”这一段，而不是九个阶段全部。所以对“能否从头看到尾”的诚实回答是：仓库内 git 对象没有能覆盖九阶段的单一例子，Web capability seam 是核心段证据最完整的例子。详细见 [`05-example-web-capability-seam.md`](./05-example-web-capability-seam.md)。
 
 ## 继续阅读
 

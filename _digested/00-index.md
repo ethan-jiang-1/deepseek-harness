@@ -44,7 +44,7 @@
 | `session-and-loop/` | 会话与驱动 | session log、格式世代与相邻迁移、turn/step、model-visible ⟺ logged、agent scope |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | step/turn/activity/goal 四层结束边界、Goal 状态机、Round Driver 自动续轮 |
 | `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色、如何组合一致的 fs / subprocess provider，进程级库（外发代理、原生 containment）这类「刻意不是 seam」的形状，以及默认不挂的外部生态桥（MCP 客户端、Claude Code / Codex hook 桥） |
-| `experimental/` | 实验原型面 | `packages/experimental/` 的三种原型合同：code-runtime 的 CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面——都不在 shipped 组合，合同随时会变 |
+| `experimental/` | 实验原型面 | `packages/experimental/` 的四种原型合同：code-runtime 的 CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面、webworker 的 preview 双包——都不在 shipped 组合，合同随时会变 |
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 作为 surface 节点、in-history 替换、LLM adapter、tool 执行瀑布、chunk 到 settlement、内容块投影 |
 | `surfaces/` | 人对机器的入口 | CLI、Web host/client、桌面（Electron）、ACP、JSON-RPC SDK、客户端资源模型与右栏、客户端分层与插件纪律，以及 Typert 类型图到 Remote stub 的生成链 |
 | `_coverage/` | 覆盖矩阵 | 维护用索引，按源码组追踪 digest 覆盖状态 |

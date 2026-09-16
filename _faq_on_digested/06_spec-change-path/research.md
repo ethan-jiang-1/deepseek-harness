@@ -143,7 +143,7 @@ docs/rfc/implemented/... → .agents/notes/implemented/...
 Status: implemented
 ```
 
-限制：这个例子实证 proposed → implemented 核心段；d01 时代尚无今天的 Note 格式规则，Decision/Consequences 是 e6fad266a6 才落到这份文件；Issue、Plan、review 不在 git tree，不能用它声称八阶段全链路。
+限制：这个例子实证 proposed → implemented 核心段；d01 时代尚无今天的 Note 格式规则，Decision/Consequences 是 e6fad266a6 才落到这份文件；Issue、Plan、review 不在 git tree，不能用它声称九阶段全链路。
 
 ## 相关消化材料
 

@@ -30,7 +30,7 @@ const layers = [
 
 `loadProfileDirectory(binName, dir, installAnchor, options)`（`packages/boot/app-boot/src/profile.ts:774-804`）接受一个**已初始化的绝对 profile 目录**，不经过 Harness home 发现、不做 shipped 归一化、也不认 `PROFILE_TEMPLATES`；它只读磁盘上的 manifest，按 `dsh.profile.bundles` 逐个解析 bundle patch，再读该目录的 `cordis.patch.yml`。`loadProfile` 现在只是「解析目录 → `normalizeShippedProfile` → `loadProfileDirectory`」（`:820-836`），导出见 `packages/boot/app-boot/src/index.ts:37`。
 
-两个 desktop 特有的收紧：
+desktop 与 CLI 组合的三处差异：
 
 - **生产环境拒绝 profile 之外的 bundle**：`desktopPatches` 遍历 `profile.layers`，非链接包（`allowLinkedPackages !== true`）时要求每个 `layer.packageDir` 落在 profile 目录内，否则抛 `profile bundle … resolved outside the desktop profile`（`apps/desktop-host/src/index.ts:153-158`）。这挡住了 CLI 维护的 `$DSH_HOME/profiles/node_modules` 回落——Electron 的依赖必须来自它自己的 `node_modules`。
 - **`agent-presets` 的 roots 改写**：若组合里存在 `agent-presets` 行，把它 `roots` 指向 dsh 安装内的 `config/agent-presets`（`apps/desktop-host/src/index.ts:165-175`）。这不是 launcher 派生层，是 desktop 自己组合的结果；CLI 侧的 shipped preset root 机制不变（见 [`../composition/01-boot-时序.md`](../composition/01-boot-时序.md)）。

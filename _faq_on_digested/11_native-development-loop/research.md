@@ -19,7 +19,7 @@
 9. 冻结的历史保持冻结（PS:24；TL:41；AN:62）。
 10. 只在真正的权威边界问人（SP:63；PS:16；FS:15 保护性 seam 需用户显式否决）。
 11. 多面修改原子化（DS:33 "A move is atomic"；WS:23）。
-12. 自我限权被成文化：CR/FS/PS/DS/TL 五个 skill 以"guidance, not a script/checklist"开篇（translate-docs 为 "guidance, not a translation memory"）。
+12. 自我限权被成文化：六个 skill 以"guidance, not …"的自我限定开篇——code-review 是 "guidance, not a complete checklist"、find-simplifications 是 "guidance, not a checklist"、prose-standard 与 trim-cot-leakage 是 "guidance, not a script"、speed-up-perf 是 "guidance, not a quota or a script"、translate-docs 是 "guidance, not a translation memory"；dsh-doc 没有这句。
 
 skill 的隐含画像：默认开发者是短会话里的 LLM agent，以 stacked PR 交付；每个 skill 是对一种特定 agent 失败模式的校准反习惯（跑全套、重跑绿检查、信任过期状态、把推理过程漏进产物、让文档增生、手编生成物、手工合并平台原语能管的事）。skill 缩写：PP=pre-push-checks、CR=code-review、FS=find-simplifications、PS=prose-standard、DS=doc-standards、AN=archive-agent-notes、TL=trim-cot-leakage、SP=merging-stacked-prs、WS=doc-site-sync、NR=notes/README.md、DA=docs/AGENTS.md。
 
