@@ -58,7 +58,7 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 
 | 板块 | 已有（机制） | 缺 | 对 owner 的作用 | 不装则 |
 |---|---|---|---|---|
-| 渠道 | apiproxy 把审批 wire 派发到浏览器（[api-proxy](../../packages/api/remotes/src/index.ts)）、`asked/decided` 按 id 配对由运行时不变式机械断言（[user-approval invariant](../../packages/interaction/user-approval/src/invariant.ts)） | 官方 IM answerer 全缺 | 人在与不在场，决策都在场 | 只能从 ≥8 个第三方方言里拼一个 |
+| 渠道 | Remote 层把审批 wire 派发到浏览器（[remotes](../../packages/api/remotes/src/index.ts)）、`asked/decided` 按 id 配对由运行时不变式机械断言（[user-approval invariant](../../packages/interaction/user-approval/src/invariant.ts)） | 官方 IM answerer 全缺 | 人在与不在场，决策都在场 | 只能从 ≥8 个第三方方言里拼一个 |
 | 审批形状 | fail-closed、成对、取消（[README](../../packages/interaction/user-approval/README.md)） | 表单 / 多选项渲染、多 answerer 顺序语义 | 从"你同意吗"变成"请确认这几件事" | GUI 层离官方最近，个人没得选 |
 | 可重建消费 | 日志重建不变式 + 版本纪律 | 导出 / 检索 / 复盘界面 | 你不光存，还能复盘"这段真过程" | 只能读原始 session log |
 | 可复用预设 | preset / scope restrict（restrict 语义见 [`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)；subagent 侧见 [`capability-seams/03`](../../_digested/capability-seams/03-subagent后台与产品provider.md)） | 官方目录 + 签名 / 审核 | 一次配好，多人 / 多项目复用 | 只能靠 git 各自剪一半 |

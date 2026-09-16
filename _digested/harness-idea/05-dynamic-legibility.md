@@ -12,7 +12,7 @@
 
 ## 查询面二：生成目录是合同面的索引
 
-生成的 `tool-catalog`、`config-catalog`、`persistence-catalog`、`event-producer-consumer`、`module-graph`、`capability-seams`、`cordis-api` 都是 freshness-gated 的索引。它们的作用不是给人通读，而是让「查」成为可靠动作：读者不必记住包清单或事件表，只要知道去哪查。
+生成的 `tool-catalog`、`config-catalog`、`persistence-catalog`、`event-producer-consumer`、`module-graph`、`graph-atlas`、`capability-seams`、`cordis-api` 都是 freshness-gated 的索引。它们的作用不是给人通读，而是让「查」成为可靠动作：读者不必记住包清单或事件表，只要知道去哪查。
 
 ## 查询面三：`cordis_inspect` 问活运行时
 

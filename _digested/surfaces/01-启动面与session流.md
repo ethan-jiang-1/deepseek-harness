@@ -58,7 +58,7 @@ Web 用 `/api/remote.mux` 这一条 WebSocket 按 `streamId` 复用任意多条�
 
 Python 捆绑 runtime 的 `minimal` smoke 把组装后的 system prompt、tool schema 和 model-visible messages 钉在 `scripts/snapshots/python-sdk-single-exe/minimal/model-visible.json`。
 
-加 Web Chat 节点：在 **client** 上把 `ConversationNodeDefinition` 登记到 `ctx.conversationEvents`，并把 keyed renderer 登记到 `conversation.chat.node` slot。聚合快照视图才登记到 `ctx.conversationViews`；host 没有这些 client registry。加右栏内容类型走资源协议，见 [`04-客户端资源模型与右栏.md`](./04-客户端资源模型与右栏.md)。不要在入口里再跑一套 loop。
+加 Web Chat 节点：在 **client** 上把 `ConversationNodeDefinition` 经 `ctx.uiConversation.events.register(definition)` 登记（`packages/client/ui-chat/src/client/conversation-nodes/tool.ts:271`、`packages/client/ui-trajectory/src/client/trajectory-assistant-definition.ts:448`），并把 keyed renderer 登记到 `conversation.chat.node` slot。聚合快照视图才走 `ctx.uiConversation.views.register(...)`（`packages/client/ui-chat/src/client/conversation-nodes/chat-snapshot-builder.ts:1077`）；服务键是 `'uiConversation'`（`packages/client/ui-conversation/src/client/conversation/assembly.ts:188`），host 没有这些 client registry。加右栏内容类型走资源协议，见 [`04-客户端资源模型与右栏.md`](./04-客户端资源模型与右栏.md)。不要在入口里再跑一套 loop。
 
 ## 三条命令平面（入口侧怎么接）
 

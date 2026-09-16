@@ -93,7 +93,7 @@ Status: implemented
 | 决策 spec | proposed RFC |
 | 计划 | 无仓库证据能证明该变更使用了 Plan Mode |
 | 实现 | d01f5f73b7 的 packages/web/** |
-| 当前合同 | docs/architecture.md、package READMEs |
+| 当前合同 | docs/subsystems/web.md、package READMEs（`docs/AGENTS.md:23` 把 architecture.md 定为**有序地图**，类型/语义的参考在 `docs/subsystems/`，逐包细节在 package README） |
 | 行为 spec | packages/web/**/tests/** |
 | 交付决定 | d01 移动并置 `Status: implemented`；`Decision/Consequences` 形式由 e6fad266a6 改写，当前路径由 e8eddc7ef8 迁移 |
 | review | GitHub PR review（不在 git tree；本 FAQ 未追） |
