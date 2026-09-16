@@ -6,7 +6,7 @@
 
 **session log 是模型请求的可重建来源。** `agent-loop` 只是默认驱动，实现 `Agent` 接口。UI、hook、工具插件依赖 `dsh-agent`，不依赖具体 loop。
 
-**模型可见 ⟺ 已记录。** 消息从 surface 事件投影；生效的模型配置、system 和 tools 在分派前写入完整的 `request/header` 快照。
+**模型可见 ⟺ 已记录。** 消息从 surface 事件投影；生效的模型配置与 tools 在分派前写入 `request/header` 快照；system prompt 不在这里，它是 surface 节点 0 的 `system/message`。
 
 ## 一轮对话长什么样
 

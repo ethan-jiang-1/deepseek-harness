@@ -33,7 +33,7 @@ DSH 根目录最显眼的设计是：**README 对人，AGENTS 对模型。**
 2. **Repository layout**：每个顶层目录一行职责，例如 `packages/core/` 是 product API spine、`preset/` 是 per-session composition、`.agents/` 是 workflows 和 notes。模型看到的是分区职责，不是完整目录树。
 3. **Commands**：以命令动词表的形式给出可执行动作，不解释原理。
 
-之后的 `## Conventions` 是 standing orders：每条 1-3 行，说明规则、链接 home。例如注册规则直接链接到 `docs/glossary.md` 或 `.agents/notes/`，不把完整语义复制进来。
+之后的 `## Conventions` 是 standing orders：每条 1-3 行，说明规则、链接 home。例如 capability seam 规则链接到 `docs/glossary.md#capability-seam`，typed events 规则链接到 `.agents/notes/` 下的机制说明，不把完整语义复制进来。
 
 ## 为什么这是“地图”而不是“摘要”
 

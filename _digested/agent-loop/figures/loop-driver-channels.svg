@@ -11,7 +11,7 @@
     </marker>
   </defs>
 
-  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">Agent Loop 与 Goal Round Driver：实际通信通道（8 条）</text>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">Agent Loop 与 Goal Round Driver：实际通信通道</text>
   <text x="40" y="54" font-size="12" fill="#8c8c8c">followup + status 只是其中两条：pre-step 是 round 消息的准入闸，其余是事件簿记；goal/activation-changed 不在此列，见下方单独说明</text>
 
   <rect x="50" y="90" width="240" height="400" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
