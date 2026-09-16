@@ -1,7 +1,8 @@
 # 用户体验审计 · "为什么驾驭 DSH 感觉轻松？"（FAQ 11）
 
-严格从**用户**视角，以本次 checkout（`git HEAD 4f69e0f3b5`, branch `ethan`）的原始
-源码 / 文档 / 配置 / 测试为基准，对 [`answer.md`](./answer.md) 的审计。
+严格从**用户**视角，以写作时的 checkout（`git HEAD 4f69e0f3b5`, branch `ethan`）的原始
+源码 / 文档 / 配置 / 测试为基准，对 [`answer.md`](./answer.md) 的审计；本次上游同步复核
+（`183f08e9c6`，dsh-v0.1.5-rc.1）已把下文引用的源码/文档行号推进到当前工作树，结论未变。
 目标问题：对于每个关于感觉 **light / fast / easy / native** 的核心主张，（1）用户实际做了什么和观察到了什么，
 （2）哪个仓库原始来源/机制导致了它，（3）该主张是 **proven / inferred / unsupported**，
 以及（4）反证与局限性是什么。

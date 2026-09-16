@@ -4,9 +4,9 @@
 
 实现不是“先写代码”。DSH 要求代码和当前合同同一变更更新：
 
-> A package's README and JSDoc are part of the change: altered behavior (config keys, defaults, error codes, wire fields) updates them in the same commit.
+> Update package README and JSDoc contracts in the same commit as behavior, and verify them against code with dsh-prose-standard.
 
-来源：`packages/AGENTS.md:25`
+来源：`packages/AGENTS.md:26`
 
 > The owning subsystems page updates in the same change that reshapes a documented type.
 
@@ -16,7 +16,7 @@
 
 ## 2. docs 只写 now，不写过程
 
-> **Document current state, not change history.** Avoid "previously/now/no longer", PRs, commits, and stack positions in durable prose; name the live mechanism.
+> **Document current state, not change history.** Name live mechanisms, not PRs, commits, stack positions, or "previously/now/no longer".
 
 来源：`docs/AGENTS.md:38`
 
@@ -38,9 +38,9 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
 - 真实入口路径要测 built artifact 和真实 Loader 组合；
 - guard 必须证明引入回归会红。
 
-> Every non-trivial model-, protocol-, or human-visible change adds or updates a keyless scenario in the same PR through a runnable example's owning snapshot suite.
+> Every non-trivial model-, protocol-, or human-visible change adds or updates a keyless recorded-session scenario in the same PR.
 
-来源：`docs/testing.md:54`
+来源：`docs/testing.md:55`
 
 ## 中游小结
 
@@ -57,8 +57,8 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
 
 ## 证据入口
 
-- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 25-27 行
+- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 26-28 行
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 38、42 行
-- [`docs/testing.md`](../../docs/testing.md) 第 27-49 行
+- [`docs/testing.md`](../../docs/testing.md) 第 27-55 行
 - [`docs/tool-catalog.md`](../../docs/tool-catalog.md) 第 1-2 行
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) 第 1-2 行

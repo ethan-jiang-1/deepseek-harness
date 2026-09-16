@@ -23,7 +23,7 @@ agent 的 session 就会自动发现它。
 
 | 形态 | 你写的是 | 存放位置（仓库内） | 加载方式 |
 |---|---|---|---|
-| **workflow 脚本** | 一段纯 JS + `agent()`/`pipeline()`/`parallel()` 编排 | `.agents/workflows/<name>.js` | 通过 `workflow` tool 传进去执行 |
+| **workflow 脚本** | 一段纯 JS + `agent()`/`pipeline()`/`parallel()` 编排 | 任意路径的 `.js`（`script` 参数直接传入；仓库没有自动发现目录） | 通过 `workflow` tool 传进去执行 |
 | **skill（技能）** | 结构化 Markdown（描述 + 指令 + 元数据） | `.agents/skills/<name>/SKILL.md` | session catalog 自动发现；`skill` tool 或 `/name` 手势加载 |
 | **Agent Note** | 架构决策记录 Markdown | `.agents/notes/<category>/<name>.md` | 后续 PR 查阅（不加载到运行时） |
 | **cordis.yml 覆层** | 一段 YAML 配置 | `<custom>.patch.yml` | `dsh --patch` 或 profile 覆层 |
@@ -74,7 +74,7 @@ return { count: results.filter(Boolean).length, details: results }
 | 场景 | 存放位置 |
 |---|---|
 | 一次性分析 | 不存——在对话中当场写，用完即弃 |
-| 重复使用 | `.agents/workflows/<name>.js` |
+| 重复使用 | 自己选一个稳定路径存 `.js`（仓库不规定目录），或封装成插件/skill 固化 |
 | 分发 | 封装为 **skill**（见第 3 节） |
 
 ### 2.3 开发闭环
@@ -94,7 +94,7 @@ return { count: results.filter(Boolean).length, details: results }
 所以最小证据就是一次真实模型调用。每次迭代 5-30 秒（根据子 agent 数量）。DSH 对此的政策：
 
 > "A no-key test proves plumbing; only a with-key run proves the agent works against a real model"
-> （[docs/testing.md:19](../../docs/testing.md)）
+> （[docs/testing.md:25](../../docs/testing.md)）
 
 ---
 
@@ -202,7 +202,7 @@ plugins/sandbox-policy:
 |---|---|---|
 | 插件形式 | TypeScript Cordis plugin（`name/inject/apply`） | 脚本 / skill / Note / YAML 覆层 |
 | 开发技能 | TypeScript、Cordis API、`defineTool` | 纯 JS 编排、Markdown 写作 |
-| 存放位置 | `packages/<group>/<pkg>/` | `.agents/workflows/` / `.agents/skills/` / `.agents/notes/` |
+| 存放位置 | `packages/<group>/<pkg>/` | 任意 `.js` 路径（`script` 参数）/ `.agents/skills/` / `.agents/notes/` |
 | 验证方式 | `pnpm run test -- --run <pkg>` | 真实模型调用 |
 | 是否需打包 | ✅ TypeScript → JS | ❌ 不需要 |
 | 安装方式 | `--plugin` 或 npm 或 workspace 内置 | 放进 `.agents/` 目录 |
@@ -248,6 +248,6 @@ DSH 运行时中：
 | skill 的两层披露机制 | `packages/skill/tool-skill/src/index.ts` |
 | skill 的目录结构 | `.agents/skills/` 下已有项目可做模板 |
 | Agent Note 格式 | [`.agents/notes/README.md`](../../.agents/notes/README.md) |
-| 真实模型测试政策 | [docs/testing.md:19](../../docs/testing.md) |
+| 真实模型测试政策 | [docs/testing.md:25](../../docs/testing.md) |
 | 传统代码插件的结构和验证 | [`developer-journey-plugin.md`](./developer-journey-plugin.md) |
 | 完整实例（传统代码插件六步闭环） | [`developer-journey.md`](./developer-journey.md) |

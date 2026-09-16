@@ -130,7 +130,7 @@ dsh --plugin ./dist/index.js "记一个决策"
 | | 传统代码插件 | 智能体工作流插件 |
 |---|---|---|
 | 插件形式 | TypeScript Cordis plugin | 脚本 / skill / Note / 覆层 |
-| 存放位置 | `packages/<group>/<pkg>/` | `.agents/workflows/` / `.agents/skills/` / `.agents/notes/` |
+| 存放位置 | `packages/<group>/<pkg>/` | 任意 `.js` 路径（`script` 参数）/ `.agents/skills/` / `.agents/notes/` |
 | 验证方式 | `pnpm run test` | 真实模型调用 |
 | 组合方式 | 暴露 tool → 工作流脚本用 `agent()` 调用它 | |
 

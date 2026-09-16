@@ -7,7 +7,7 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 三句话把价值收紧：
 
 1. **敢放手**——它干过的每一件模型可见的事都能从日志重建，审批成对、无人可答就失败关闭，会话格式有版本纪律。这些是运行时不变式，不是文档承诺（机制见 [FAQ 08](../08_plugin-seam-maturity/answer.md) 边界 3 与 [`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)）。
-2. **省手**——执行世界、持久化、subagents 三簇已有 ≥2 个 Provider 可无痛替换（全树 28 条 seam 共 11 条，见 [FAQ 08](../08_plugin-seam-maturity/answer.md)）：装一个等于雇一个能换底座的劳力，换本地 / 云沙箱都不用改调它的代码。
+2. **省手**——执行世界（shell/fs/subprocess）、会话标题与 subagents 这些簇已有 ≥2 个 Provider 可无痛替换（全树 29 条 seam 共 12 条，见 [FAQ 08](../08_plugin-seam-maturity/answer.md) 的 NEW 基线读数）：装一个等于雇一个能换底座的劳力，换本地 / 云沙箱都不用改调它的代码。
 3. **可复用**——preset + bundle + patch 把一棵树从一个人带到整个队、从一个项目带到另一个项目，diff 不进 `packages/`。今天一个人用，明天三个人同一套底座。
 
 一句话说穿：**"everything is a plugin" 对自用者的意思不是建插件市场，而是我的工具链是一棵我能按需加装、能换件、能复制的树，而不是别人替我定死的一个盒子。** 下面每一条都挂在机制事实或验证实验上，不写售卖叙事——这不是一个卖软件的题。
@@ -18,7 +18,7 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 
 - model-visible ⟺ logged 是 loop 构建期检查，不是文档里的承诺（[`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)）；
 - 审批是成对的 `asked/decided` 审计事件；没有 answerer 时 **fail-closed** 到 `unavailable`，绝不静默放过；审计写入失败会拒签，而不是返回一笔未记录的决策（[`user-approval` README](../../packages/interaction/user-approval/README.md)）；
-- 会话格式有版本纪律，冷读可恢复（同 [FAQ 08](../08_plugin-seam-maturity/answer.md) 边界 3）。
+- 会话格式有版本纪律，冷读可恢复（[`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md) 的持久化与格式世代段，机制见 [`04-格式世代与迁移`](../../_digested/session-and-loop/04-格式世代与迁移.md)）。
 
 这三样不是拿来"卖合规"，而是**给 owner 自己一份回放**——"它干了什么、谁批的、能不能恢复"。所以"信任"不是一个销售词，是"我过夜把手交给它，心里有底"的那个"底"。
 
@@ -26,7 +26,7 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 
 | 层 | 你（owner）拿到什么 | 机制底色 |
 |---|---|---|
-| 省手 | 装了就能跑，换底座不改调用 | 执行世界 / 持久化 / subagents 的 5 条 seam 可无痛换（全树 28 条共 11 条，FAQ 08） |
+| 省手 | 装了就能跑，换底座不改调用 | 执行世界（shell/fs/subprocess）、会话标题与 subagents 的 5 条 seam 可无痛换（全树 29 条共 12 条，FAQ 08） |
 | 敢放手 | 过夜 / 批量 / 危险动作也有把握 | 审批成对 + fail-closed + 可重建（见上） |
 | 可复用 | 一个人 → 一队、换项目 → 换业务照搬 | preset + bundle + plugin，diff 不进 `packages/` |
 
@@ -58,10 +58,10 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 
 | 板块 | 已有（机制） | 缺 | 对 owner 的作用 | 不装则 |
 |---|---|---|---|---|
-| 渠道 | apiproxy 把审批 wire 派发到浏览器、审计 id 认领完备（[api-proxy](../../packages/api/remotes/src/index.ts)） | 官方 IM answerer 全缺 | 人在与不在场，决策都在场 | 只能从 ≥8 个第三方方言里拼一个 |
+| 渠道 | apiproxy 把审批 wire 派发到浏览器（[api-proxy](../../packages/api/remotes/src/index.ts)）、`asked/decided` 按 id 配对由运行时不变式机械断言（[user-approval invariant](../../packages/interaction/user-approval/src/invariant.ts)） | 官方 IM answerer 全缺 | 人在与不在场，决策都在场 | 只能从 ≥8 个第三方方言里拼一个 |
 | 审批形状 | fail-closed、成对、取消（[README](../../packages/interaction/user-approval/README.md)） | 表单 / 多选项渲染、多 answerer 顺序语义 | 从"你同意吗"变成"请确认这几件事" | GUI 层离官方最近，个人没得选 |
 | 可重建消费 | 日志重建不变式 + 版本纪律 | 导出 / 检索 / 复盘界面 | 你不光存，还能复盘"这段真过程" | 只能读原始 session log |
-| 可复用预设 | preset / scope restrict（[capability-seams/03](../../_digested/capability-seams/03-subagent后台与产品provider.md)） | 官方目录 + 签名 / 审核 | 一次配好，多人 / 多项目复用 | 只能靠 git 各自剪一半 |
+| 可复用预设 | preset / scope restrict（restrict 语义见 [`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)；subagent 侧见 [`capability-seams/03`](../../_digested/capability-seams/03-subagent后台与产品provider.md)） | 官方目录 + 签名 / 审核 | 一次配好，多人 / 多项目复用 | 只能靠 git 各自剪一半 |
 
 ## 三个能"自我验证"它值不值（比"杀档线"更贴 owner 自己）
 
@@ -76,7 +76,7 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 | A 用一个 IM 的审批（复用 approval + userQuestions） | 一件真活在手机上全程推进完，且 `asked/decided` 成对可重建、重建耗时 <15 分钟（注明会话规模） | 你发现自己仍寸步不离 / 完全没省时 |
 | B E2B 转正 | 同一任务本地→云端零工具 diff 跑通 | 生命周期成本 > 自建维护或平台不可控 |
 | C persona 复用 | 同一串验证过的操作，换到下一个岗位 / 项目零 diff 进 `packages/`，HMR 回退 live | 打包一次比我从头写一遍还慢 |
-| D 可替换率入闸 | 并入 gen-doc-graphs，每 rc 自动重算（第一版 39.3% 已手工算出，见 [FAQ 08](../08_plugin-seam-maturity/answer.md)） | 连续两个 rc 没人参照这个数 |
+| D 可替换率入闸 | 并入 gen-doc-graphs，每 rc 自动重算（第一版 39.3% 已手工算出，NEW 基线复点为 41.4%，见 [FAQ 08](../08_plugin-seam-maturity/answer.md)） | 连续两个 rc 没人参照这个数 |
 
 ## 三个会让这几个价值失效的边界
 

@@ -2,8 +2,8 @@
 
 ## 基线
 
-- 消化基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`（[`_digested/00-index.md`](../../_digested/00-index.md)）。
-- 本文写入与复核树：commit `08b582ea02cf16812d48e6323c91d784210cf38e`（2026-08-31）。文中行号以此树为准；模型名、默认 catalog、49 种事件词表等部署事实随上游漂移。
+- 消化基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d6…`；同步后与 `_digested/` 同一基线 `dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`（[`_digested/00-index.md`](../../_digested/00-index.md)）。
+- 本文写入树：commit `08b582ea02cf16812d48e6323c91d784210cf38e`（2026-08-31）；本次同步复核树为 `183f08e9c6`（工作树 `9c18e3f216`），文中行号已按复核树更新。模型名、默认 catalog、事件词表等部署事实随上游漂移。
 
 ## 方法
 
@@ -20,26 +20,26 @@
 
 对子代理报告中的强论断逐条 grep 复核：
 
-1. "`dsh-base` 默认挂载 goal/plan/workflow 工具" → `packages/bundle/base/cordis.patch.yml:298-414` 命中 `goal`、`goal-round-driver`、`plan-mode`、`tool-workflow`、`tool-todo`、`tool-goal`。**证实**。
-2. "`ui-tool` 全包无 `'image'` 渲染分支" → grep `packages/client/ui-tool/src/` 对 `image` 零命中。**证实**（源码层；运行时间接路径未排除）。
-3. 默认 catalog 三模型与 1M 窗口 → `packages/llm/llm-deepseek/README.md:53`。**证实**。
-4. `reasoningEffort: off|low|high|max`、省略回退 `high` → `README.md:20,69`。**证实**。
-5. `create_goal` 等工具注册于 `packages/goal/tool-goal`，Agent Note 自述 "Codex-shaped UX" → `tool-goal/README.md:5`。**证实**。
+1. "`dsh-base` 默认挂载 goal/plan/workflow 工具" → `packages/bundle/base/cordis.patch.yml:292-414` 命中 `goal`、`goal-round-driver`、`plan-mode`、`tool-workflow`、`tool-todo`、`tool-goal`。**证实**。
+2. "`ui-tool` 全包无 `'image'` 渲染分支" → 写作树 grep `packages/client/ui-tool/src/` 对 `image` 零命中；**该论断已被 0.1.5 跨度内交付推翻**：`image-card-model.ts`、`read-image-row.tsx`、`tool.call.images` slot（`src/client/contract/slots.ts:40`）都在，`ui-tool` 现在渲染工具结果图像。**已修订**（见 [02 第二节](./02-self-built-previews.md)）。
+3. 默认 catalog 四模型与 1M 窗口 → `packages/llm/llm-deepseek/README.md:49`（`deepseek-flash` 与 `deepseek-v4-flash-vision-exp` 含 image，`deepseek-v4-flash`、`deepseek-v4-pro` 为 text-only）。**证实**（写作树为三模型）。
+4. `reasoningEffort: off|low|high|max`、省略回退 `high` → `README.md:56`、`:83`。**证实**。
+5. `create_goal` 等工具注册于 `packages/goal/tool-goal`；"Codex-shaped UX" 实出自 harness 级循环笔记 `.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md:114`（goal 工具笔记 `2026-07-19-model-facing-goal-tools.md:15` 只自述遵循 "Codex's compact goal tool surface"）。**已更正归属**。
 6. "dynamic workflow" 非官方术语 → 全仓 grep 仅命中本 FAQ 自身引用的用户原文。**证实**。
 
 ## 关键证据文件
 
-- goal：`packages/goal/goal/src/{index,fold,types,domain}.ts`、`packages/goal/goal-round-driver/src/{index,prompt}.ts`、`packages/goal/tool-goal/src/{index,authority}.ts`；notes：`2026-07-19-persisted-same-session-goal-domain.md`、`2026-07-19-same-session-goal-round-driver.md`、`2026-07-19-model-facing-goal-tools.md`（均在 `.agents/notes/implemented/feature/`）。
-- plan：`packages/plan/plan-mode/src/index.ts`；plan 策略 section 出厂文本 `packages/bundle/base/cordis.patch.yml:308-331`。
+- goal：`packages/goal/goal/src/{index,fold,types,domain}.ts`、`packages/goal/goal-round-driver/src/{index,prompt}.ts`、`packages/goal/tool-goal/src/{index,authority}.ts`；notes：`2026-07-19-persisted-same-session-goal-domain.md`、`2026-07-19-model-facing-goal-tools.md` 仍在 `.agents/notes/implemented/feature/`，`2026-07-19-same-session-goal-round-driver.md` 已归档到 `.agents/notes/archived/feature/`、`2026-08-02-goal-round-wrapup-message.md` 归档到 `.agents/notes/archived/bug-fix/`（行号按归档后的正文）。
+- plan：`packages/plan/plan-mode/src/index.ts`；plan 策略 section 出厂文本 `packages/bundle/base/cordis.patch.yml:303-315`。
 - workflow：`packages/workflow/workflow/README.md`（"No saved or nested workflows"）、`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/tool-ralph/README.md`。
 - vision：`packages/fs/tool-fs/src/read-image.ts`、`packages/attachment/attachment-local/`（README + `normalization.ts`）、`packages/llm/llm-deepseek/{README.md,src/serialize.ts}`、`.agents/skills/record-browser-gif/SKILL.md`。
-- 预览/产出物：`docs/cookbook/adding-a-tool.md`（render intent 纪律）、`packages/core/tools/src/presentation.ts`、`packages/client/ui-{tool,primitives,deliverables,workflow-run,attachment,conversation}/README.md`、`packages/host/apiproxy/README.md`（session.export ZIP）。
-- 硬税：`docs/architecture.md:107`、`packages/core/agent-loop/src/invariant.ts:39-42`、`packages/core/session/src/{types,known-event-types}.ts`、notes `2026-08-10-session-log-version-mechanism.md`。
-- 定制：`packages/preset/agent-presets/README.md`、`packages/bundle/README.md`、`packages/extensions/tool-cordis/README.md`、`packages/client/ui-slots/README.md`、`docs/cookbook/adding-a-conversation-node.md`、`docs/subsystems/skills.md`。
+- 预览/产出物：`docs/cookbook/adding-a-tool.md`（render intent 纪律）、`packages/core/tools/src/presentation.ts`、`packages/client/ui-{tool,primitives,deliverables,workflow-run,attachment,conversation}/README.md`、`packages/session-query/session-log-export/`（session.export ZIP，后代打包见 `src/archive.ts:8`）。
+- 硬税：`docs/architecture.md:121`、`packages/core/agent-loop/src/invariant.ts:39-42`、`packages/core/session/src/{types,known-event-types}.ts`、notes `2026-08-10-session-log-version-mechanism.md`。
+- 定制：`packages/preset/agent-presets/README.md`、`packages/bundle/README.md`、`packages/extensions/tool-cordis/README.md`、`packages/client/ui-slots/README.md`、`docs/subsystems/conversation.md`、`docs/subsystems/skills.md`。
 
 ## 已知边界
 
 1. A 路子代理超时未回收；workflow 的 hooks/caps 细节以 `packages/workflow/workflow/README.md` 与 D 路报告为准，未做独立全读。
 2. Codex 侧（"3 小时在 codex 是做梦"）未做任何调查，本 FAQ 明确不裁判（answer.md 诚实边界第 1 条）。
-3. UI 缺口清单（word/ppt/pdf、artifacts 侧栏、工具卡 image）基于源码 grep 与 README 自述，非运行时实测；`KNOWN_SESSION_EVENT_TYPES` 计数 49 取自 C 路报告的生成文件引用，未逐条点数。
+3. UI 缺口清单（word/ppt/pdf、artifacts 侧栏）基于源码 grep 与 README 自述，非运行时实测；`KNOWN_SESSION_EVENT_TYPES` 实测 56 种（写作时为 49 种）；"工具卡 image"一项已被 0.1.5 交付移除。
 4. 用户原文为转述，说话人的具体配置（是否真开 `max`、是否自定义 catalog）无从核验；本文只判定其说法与机制的相容性。

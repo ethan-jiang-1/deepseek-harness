@@ -25,7 +25,7 @@
 
 一个只读的规则写得再漂亮也没用，关键是**它接的检查真的能拦人**。DSH 要求新检查经过 negative control：
 
-> A guard only guards if the regression actually fails it. introduce the regression, watch red, revert.
+> A guard only guards if the regression fails it. … and prove it: introduce the regression, watch red, revert.
 
 同一原则也要求 e2e 「verify the world, not the self-report」——测试重新读文件、跑命令、看持久状态，而不是相信 agent 声称自己完成了任务。这两条几乎零成本、完全可迁移，是「乱发挥」最早被抓住的地方。
 

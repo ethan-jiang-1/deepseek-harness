@@ -34,6 +34,7 @@ skill 的隐含画像：默认开发者是短会话里的 LLM agent，以 stacke
 - 整 PR revert 文化：#2903、#3000、#3054、#2577、#544、#3325、#3326（re-revert），无 patch-forward hotfix。
 - 作者：人为主（Tianyi Cui 5000 / Yichen Jiang 1666 / imccyu 1556…）；agent 疑似身份极小且产出正常切片（`fz@dsh.dev` 91 commits 仍带 README 三件套+spec）；Co-authored-by 仅 4 例——机器辅助的活记在操作者名下。
 - 分歧：文档统一描述 stacked-PR，历史里并存三种实践（lettered worktree、编号 native stack、占多数的无栈独立 PR）——文档是理想形，简单 PR 允许简单路径。
+- 本次同步复核（2026-09-16）：在新 `upstream/master` tip 上按同一 merge-base 口径复点为 90/93/95/92（"96%" 未复现），Note 文件中位数为 12、众数 6；checkpoint 密度与作者计数在本仓的浅克隆上不可复现。见 [user-experience-audit](./user-experience-audit.md) §3.7。
 
 ## 第三路：运行时助推结构（packages 源码，file:line 见下）
 
