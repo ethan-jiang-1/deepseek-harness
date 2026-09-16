@@ -88,7 +88,7 @@
 
 ## 8. 回收：度量 + compaction
 
-> Pressure compaction runs at serial `agent/pre-step` before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns.
+> Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns, allowing early closed steps of one oversized turn to compact.
 
 来源：`docs/subsystems/compaction.md:86`
 

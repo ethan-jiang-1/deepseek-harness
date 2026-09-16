@@ -8,9 +8,11 @@
 >
 > —— `packages/fs/tool-fs/src/read.ts:74`（`text: ({ scope }) =>` 在 `:72`，正文在 `:74`）
 
-> Use the grep tool — not shell grep or rg — to search file contents. Use read on a matched file when you need surrounding context.
+> Use the grep tool — not shell grep or rg — to search file contents.
 >
-> —— `packages/fs/tool-fs-search/src/grep.ts:280-281`
+> —— `packages/fs/tool-fs-search/src/grep.ts:280`
+
+只有在 `read` 也注册时，这一句才追加 “Use read on a matched file when you need surrounding context.”（同文件 `:281` 的条件分支）。
 
 > Use the glob tool — not shell find — to discover files by path pattern. …
 >
@@ -28,7 +30,7 @@
 
 只有模型调用 `skill({ name })` 时才加载完整正文：
 
-> The model-facing `skill({ name })` tool … rereads the complete definition … and returns a tool result containing `<skill_content …>`, `<skill_resources>`, and `<skill_instructions>`.
+> The model-facing `skill({ name })` tool validates the kebab-case name, … then rereads the complete definition for the calling agent cwd … and returns a tool result containing `<skill_content name="...">`, `<skill_resources>`, and `<skill_instructions>`.
 >
 > —— `docs/subsystems/skills.md:235`
 
