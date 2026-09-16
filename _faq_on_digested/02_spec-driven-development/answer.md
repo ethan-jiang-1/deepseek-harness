@@ -31,7 +31,7 @@
 
 ### 1. 先定义可观察结果
 
-当前 [Feature Issue 模板](../../.github/ISSUE_TEMPLATE/feature.md)要求一句话预期结果、验收条件、用户或模型可见变化和测试证据；[Bug 模板](../../.github/ISSUE_TEMPLATE/bug.md)要求复现、实际结果、预期结果、环境和验收条件；[PR 模板](../../.github/pull_request_template.md)要求进入评审的非 Draft 人类 PR 关联同仓库 Issue，并列出变更与验证。
+当前 [Feature Issue 模板](../../.github/ISSUE_TEMPLATE/feature.md)只固定两节——动机与预期行为（`feature.md:7`、`:11`）；[Bug 模板](../../.github/ISSUE_TEMPLATE/bug.md)要求概述、复现、实际行为、预期行为与环境（`bug.md:7`、`:11`、`:15`、`:19`、`:23`）；[Task 模板](../../.github/ISSUE_TEMPLATE/task.md)要求概述与交付物（`task.md:7`、`:11`）。[PR 模板](../../.github/pull_request_template.md)要求进入评审的非 Draft 人类 PR 关联同仓库 Issue，并列出变更与验证。0.1.5 基线起 Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task：验收条件与测试证据不再由模板承载，改由 PR 的 Testing 节承载。
 
 这一层故意不先规定内部类名或函数列表。它先固定外部结果和完成标准，让后续设计可以变化，但不能丢掉最初要解决的问题。
 
@@ -99,7 +99,7 @@ git 历史中能看到真实的生命周期迁移，而不只是当前规则：
 2. **减少开放设计问题。** Plan Mode 明确要求另一位工程师可以直接实现，这会把 coding 阶段从“边写边定架构”收窄为“执行已评审决定，并在发现事实冲突时回到 spec”。
 3. **把弱约定变成强反馈。** 类型、tests、snapshots、generators 和 CI 能立即拒绝偏离；这比希望每个 agent 记住数百条 prose 规则可靠。
 4. **让插件化改动完整落地。** capability seam、composition、session log 和 presentation 的检查项迫使 spec 覆盖完整行为，而不是只实现一个局部函数。
-5. **允许快速纠正。** 预发布立场不保留兼容 shim；当 spec 证明旧基础不对时，可以同步改代码、格式、测试、文档和引用，再让旧格式大声失败。
+5. **允许快速纠正。** pre-stable 立场不保留兼容 shim；当 spec 证明旧基础不对时，可以同步改代码、格式、测试、文档和引用，再让不支持的旧格式大声失败。已发布的 Session 数据是这条边界里的例外：[`AGENTS.md`](../../AGENTS.md) 开篇规定相邻迁移只能新增版本命名的后继代，不得移动、覆盖或删除已提交代，也不承诺回退或降级。
 
 ## 不能从仓库推出什么
 

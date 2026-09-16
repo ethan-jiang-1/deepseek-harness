@@ -1,10 +1,10 @@
 # Research Notes: DSH 可能采用的 Spec-Driven Development
 
-产品源码核验基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`（与 `_digested/` 相同）。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。
+产品源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`（与 `_digested/00-index.md` 相同）。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。
 
 ## 核心结论
 
-仓库没有明确自称采用 “Spec-Driven Development”、`spec-driven`、`specification-driven` 或 `SDD`。在当前有效的 `AGENTS.md`、`.github/`、`.agents/`、`docs/`、`packages/`、`apps/`、`scripts/` 中排除归档、快照和测试夹具后，精确搜索这些词没有结果；Git 提交主题和字符串历史也没有形成一份以 SDD 命名的方法论文档。因此，“DSH 靠 SDD”不能作为仓库明文事实，只能从实际机制反推。
+仓库没有明确自称采用 “Spec-Driven Development”、`spec-driven`、`specification-driven` 或 `SDD`。在当前有效的 `AGENTS.md`、`.github/`、`.agents/`、`docs/`、`packages/`、`apps/`、`scripts/` 中排除归档、快照和测试夹具后，精确搜索只命中一处与产品方法论无关的测试注释（`packages/client/resources/tests/resources.client.spec.ts:67` 里的 `spec-driven`）；Git 提交主题和字符串历史也没有形成一份以 SDD 命名的方法论文档。因此，“DSH 靠 SDD”不能作为仓库明文事实，只能从实际机制反推。
 
 最有根据的反推是：DSH 采用的是一套**分布式、生命周期化、可执行的规格闭环**，而不是一份大而全的 canonical spec。Issue、Agent Note、Plan Mode、代码与文档、行为证据和工程门禁分别拥有不同种类的事实，review 负责判断它们在语义上是否一致。实现完成后，proposal 不继续充当任务清单，而改写为当前态的 Decision、Consequences 和 Verification/Testing。主路径、反馈环和合法旁路见[主回答中的流程图](./answer.md#结论先行)。
 
@@ -12,7 +12,7 @@
 
 ### 1. 工作入口的问题表单：只有 Bug / Feature / Task
 
-Feature 模板要求写动机与预期行为 [`.github/ISSUE_TEMPLATE/feature.md:7`](../../.github/ISSUE_TEMPLATE/feature.md)、[`.github/ISSUE_TEMPLATE/feature.md:11`](../../.github/ISSUE_TEMPLATE/feature.md)。Task 模板要求概述与交付物 [`.github/ISSUE_TEMPLATE/task.md:7`](../../.github/ISSUE_TEMPLATE/task.md)、[`.github/ISSUE_TEMPLATE/task.md:11`](../../.github/ISSUE_TEMPLATE/task.md)。Bug 模板要求概述、复现、当前行为与预期行为 [`.github/ISSUE_TEMPLATE/bug.md:7`](../../.github/ISSUE_TEMPLATE/bug.md)。Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消，二者归入 Task；模板 frontmatter 只保留 `name`/`about`/`type`，层级由正文标题表达。所以 Issue 阶段承载的是意图与可观察行为，验收证据放在 PR 的 Testing 节（见下条）。
+Feature 模板要求写动机与预期行为 [`.github/ISSUE_TEMPLATE/feature.md:7`](../../.github/ISSUE_TEMPLATE/feature.md)、[`.github/ISSUE_TEMPLATE/feature.md:11`](../../.github/ISSUE_TEMPLATE/feature.md)。Task 模板要求概述与交付物 [`.github/ISSUE_TEMPLATE/task.md:7`](../../.github/ISSUE_TEMPLATE/task.md)、[`.github/ISSUE_TEMPLATE/task.md:11`](../../.github/ISSUE_TEMPLATE/task.md)。Bug 模板要求概述、复现、当前行为与预期行为 [`.github/ISSUE_TEMPLATE/bug.md:7-19`](../../.github/ISSUE_TEMPLATE/bug.md)。Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消，二者归入 Task；模板 frontmatter 只保留 `name`/`about`/`type`，层级由正文标题表达。所以 Issue 阶段承载的是意图与可观察行为，验收证据放在 PR 的 Testing 节（见下条）。
 
 非 Draft 的人类 PR 进入评审时，PR 模板要求关联同仓库 Issue，并列出变更和验证 [`.github/pull_request_template.md:1`](../../.github/pull_request_template.md)。PR policy 只在 `requiresPullRequestPolicy()` 判定适用时生效（非 Draft、非 bot/App、且已有 review 请求或 review）[`.github/issue-management/policy.mjs:69`](../../.github/issue-management/policy.mjs)，并在 `validatePullRequest()` 中拒绝没有同仓库 Issue 引用的 PR [`.github/issue-management/policy.mjs:255`](../../.github/issue-management/policy.mjs)、[`.github/issue-management/policy.mjs:267`](../../.github/issue-management/policy.mjs)；Issue lifecycle 又把普通实现事件映射到 `In progress`，把 review request 映射到 `In review`，把 changes requested 映射回 `In progress` [`.github/issue-management/policy.mjs:85`](../../.github/issue-management/policy.mjs)、[`.github/issue-management/policy.mjs:107`](../../.github/issue-management/policy.mjs)、[`.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md:13`](../../.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md)。
 
@@ -20,13 +20,13 @@ Feature 模板要求写动机与预期行为 [`.github/ISSUE_TEMPLATE/feature.md
 
 ### 2. Agent Note 是 proposal/decision 的生命周期记录
 
-Agent Note 的自我定义是记录影响代码库的“决定或提案”，保存代码和普通文档无法承载的 why 与 trade-off [`.agents/notes/README.md:1`](../../.agents/notes/README.md)。每个非平凡变更必须在同一 PR 新增或更新至少一个 Agent Note；非平凡包括行为、架构、跨文件/包义务、流程、测试策略以及磁盘、wire、配置格式等 [`.agents/notes/README.md:44`](../../.agents/notes/README.md)、[`AGENTS.md:123`](../../AGENTS.md)。
+Agent Note 的自我定义是记录影响代码库的“决定或提案”，保存代码和普通文档无法承载的 why 与 trade-off [`.agents/notes/README.md:1`](../../.agents/notes/README.md)。每个非平凡变更必须在同一 PR 新增或更新至少一个 Agent Note；非平凡包括行为、架构、跨文件/包义务、流程、测试策略以及磁盘、wire、配置格式等 [`.agents/notes/README.md:44`](../../.agents/notes/README.md)、[`AGENTS.md:126`](../../AGENTS.md)。
 
 `proposed/` 明确表示实施前评审、尚未构建或只部分构建；`implemented/` 表示已经交付且必须随真实实现保持当前；`rejected/` 保存被否决的提案 [`.agents/notes/README.md:7`](../../.agents/notes/README.md)。但规则同时明确：重大未来工作从 `proposed/` 开始，已经做出的决定可以直接从 `implemented/` 开始 [`.agents/notes/README.md:44`](../../.agents/notes/README.md)。所以它不是“所有代码都必须先有一份 proposal”的刚性瀑布流程。
 
 提案期的固定骨架是 `Problem -> Proposal -> Alternatives considered -> Acceptance criteria -> Risks`，其中 acceptance criteria 的定义就是“什么可观察状态意味着完成” [`.agents/notes/README.md:76`](../../.agents/notes/README.md)。当前 proposed 样本“Semantic phases for composer-chain election”把完成条件逐层分解为纯逻辑测试、组合交互矩阵、HMR/重连、keyless Web snapshot、README/JSDoc，以及模型请求头不变 [`.agents/notes/proposed/architecture/2026-08-08-semantic-composer-chain-phases.md:33`](../../.agents/notes/proposed/architecture/2026-08-08-semantic-composer-chain-phases.md)。这直接显示 acceptance criteria 会提前指定证据层级，而不只是写一句“功能可用”。
 
-实现期的骨架改为 `Problem -> Decision -> Alternatives considered -> Consequences`，并允许现在时的 Testing/Verification；Proposal、Plan、Migration plan、Acceptance criteria 这些提案期标题在 implemented Note 中被禁止 [`.agents/notes/README.md:93`](../../.agents/notes/README.md)。`proposed -> implemented` 必须在同一变更中把未来态 Proposal 改写成当前态 Decision，并把 acceptance/risk 折入 Consequences 或 Verification/Testing [`.agents/notes/README.md:119`](../../.agents/notes/README.md)。`verify-agent-note-format` 机械要求 proposed 的 Acceptance criteria、implemented 的 Decision/Consequences，并拒绝 implemented 中的 proposal-era 标题 [`scripts/verify-agent-note-format.ts:21`](../../scripts/verify-agent-note-format.ts)。
+实现期的骨架改为 `Problem -> Decision -> Alternatives considered -> Consequences`，并允许现在时的 Testing/Verification；Proposal、Plan、Migration plan、Acceptance criteria 这些提案期标题在 implemented Note 中被禁止 [`.agents/notes/README.md:93`](../../.agents/notes/README.md)。`proposed -> implemented` 必须在同一变更中把未来态 Proposal 改写成当前态 Decision，并把 acceptance/risk 折入 Consequences 或 Verification/Testing [`.agents/notes/README.md:119`](../../.agents/notes/README.md)。`verify-agent-note-format` 机械要求 proposed 的 Acceptance criteria、implemented 的 Decision/Consequences，并拒绝 implemented 中的 proposal-era 标题 [`scripts/verify-agent-note-format.ts:29-36`](../../scripts/verify-agent-note-format.ts)。
 
 Agent Note 的存在性边界不是 CI 自动分类。该政策的 owning Note 明说“Review enforces the semantic boundary”，不会由自动 gate 判断一个 diff 是否 non-trivial [`.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md:22`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)。机器能保证格式、状态、分类和配对，不能保证“这个 PR 本来就应该有 Note”。
 
