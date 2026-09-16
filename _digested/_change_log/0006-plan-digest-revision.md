@@ -49,55 +49,57 @@
 
 ## 逐专题执行清单
 
+> **执行状态：全部完成。** 下列条目在 0006 的两轮核验（首轮按上游 diff 定位、第二轮按专题穷举六路只读子代理）中逐条落地并复核，「新建」类条目的页面与图都已存在。与计划初判不同的一点：`_faq_on_digested/` 的 **04/05 并非「不动」**——两页的入口引文与三个工具提示词引用在第二轮被查出失据，已按新工作树重写（见 `0006` 的「后续完成」第 3 条与提交 `6dae831266`）。
+
 ### `session-and-loop/`
-- [ ] `01-session-event-map.md`：删三句与新基线冲突的表述（「没有 `formatRegistry`」「未发布期间不承诺兼容」「版本更低时同样拒绝」）；节标题 `## SESSION_FORMAT_VERSION = 0` 改为当前写入器版本；`SurfaceEventType` 三 → 四；`{op:'replace'}` 加 `startSeq/endSeq`；删 `sourceEventSeqs` 承载 chunk 的说法
-- [ ] `00-map.md`：第 43 行 blockquote 整段重写；机制表登记新页 `04`
-- [ ] `02-inbox-与turn-时序.md`：`step()` 伪代码按当前流程重写；源码入口改 `packages/core/agent-loop/src/inbox.ts`；删「pre-splice 观察者可用归一化坐标找回被删消息」
-- [ ] `03-换loop的半径.md`：新增「兼容当前世代规范信封」义务
-- [ ] 新建 `04-格式世代与迁移.md` 与 `figures/session-generations.svg`
-- [ ] 图：`figures/event-envelope.svg`、`figures/turn-step.svg`、`system/figures/event-domains.svg`、`tools-prompt-llm/figures/chunk-to-message.svg`、`request-assembly.svg`
+- [x] `01-session-event-map.md`：删三句与新基线冲突的表述（「没有 `formatRegistry`」「未发布期间不承诺兼容」「版本更低时同样拒绝」）；节标题 `## SESSION_FORMAT_VERSION = 0` 改为当前写入器版本；`SurfaceEventType` 三 → 四；`{op:'replace'}` 加 `startSeq/endSeq`；删 `sourceEventSeqs` 承载 chunk 的说法
+- [x] `00-map.md`：第 43 行 blockquote 整段重写；机制表登记新页 `04`
+- [x] `02-inbox-与turn-时序.md`：`step()` 伪代码按当前流程重写；源码入口改 `packages/core/agent-loop/src/inbox.ts`；删「pre-splice 观察者可用归一化坐标找回被删消息」
+- [x] `03-换loop的半径.md`：新增「兼容当前世代规范信封」义务
+- [x] 新建 `04-格式世代与迁移.md` 与 `figures/session-generations.svg`
+- [x] 图：`figures/event-envelope.svg`、`figures/turn-step.svg`、`system/figures/event-domains.svg`、`tools-prompt-llm/figures/chunk-to-message.svg`、`request-assembly.svg`
 
 ### `tools-prompt-llm/`
-- [ ] `01-section顺序与前缀.md`：persona 拆 prefix/suffix；删「其它负 order 也渲染在 persona 之前」；补 10000+ 环境事实档
-- [ ] `02-管道审批timeout与chunk.md`：PTC 日志层改名；「chunk → message」整节重写为「settlement → message」；补文件块投影
-- [ ] `00-map.md`：header 描述、provider headers 双轨、机制表登记
-- [ ] 新建 `03`–`06` 四页
-- [ ] `system/02-对照单一loop.md`：chunk/header/persona 三处
+- [x] `01-section顺序与前缀.md`：persona 拆 prefix/suffix；删「其它负 order 也渲染在 persona 之前」；补 10000+ 环境事实档
+- [x] `02-管道审批timeout与chunk.md`：PTC 日志层改名；「chunk → message」整节重写为「settlement → message」；补文件块投影
+- [x] `00-map.md`：header 描述、provider headers 双轨、机制表登记
+- [x] 新建 `03`–`06` 四页
+- [x] `system/02-对照单一loop.md`：chunk/header/persona 三处
 
 ### `agent-loop/`
-- [ ] `01-goal-lifecycle.md`：resume 允许集加限定；`GOAL_TOOL_RESUME_PAUSED`；行号族
-- [ ] `02-goal-round-driver.md`：`readyToDrive` 补 `FiberState.ACTIVE`；新增「host pause 与 revision 栅栏」小节；行号 +12
-- [ ] `03-activity-vs-goal-boundaries.md`：四层关停位置整列替换；`turn/end` reason 补 `hook`/`legacy`；通信通道补 `goal/activation-changed`
-- [ ] 新建 `04-agent-runtime-identity.md`
+- [x] `01-goal-lifecycle.md`：resume 允许集加限定；`GOAL_TOOL_RESUME_PAUSED`；行号族
+- [x] `02-goal-round-driver.md`：`readyToDrive` 补 `FiberState.ACTIVE`；新增「host pause 与 revision 栅栏」小节；行号 +12
+- [x] `03-activity-vs-goal-boundaries.md`：四层关停位置整列替换；`turn/end` reason 补 `hook`/`legacy`；通信通道补 `goal/activation-changed`
+- [x] 新建 `04-agent-runtime-identity.md`
 
 ### `capability-seams/`
-- [ ] `02-一次bash从tool到sandbox.md`：失败合同措辞 + 原生 containment
-- [ ] `04-新增seam与Remote.md`：namespace 12→15；message-feedback 改 canonical log
-- [ ] `03-subagent后台与产品provider.md`：行锚 + 时间归属修正 + 两个新小节（目录、Queue/Steer）
-- [ ] 新建 `05`、`06`、`07`
-- [ ] `experimental/00-map.md`（public 例外）、`02-agent-teams.md`（10→9 工具）、`01`（行锚）、`cordis-runtime/04`（vendor 零改动备注）
+- [x] `02-一次bash从tool到sandbox.md`：失败合同措辞 + 原生 containment
+- [x] `04-新增seam与Remote.md`：namespace 12→15；message-feedback 改 canonical log
+- [x] `03-subagent后台与产品provider.md`：行锚 + 时间归属修正 + 两个新小节（目录、Queue/Steer）
+- [x] 新建 `05`、`06`、`07`
+- [x] `experimental/00-map.md`（public 例外）、`02-agent-teams.md`（10→9 工具）、`01`（行锚）、`cordis-runtime/04`（vendor 零改动备注）
 
 ### `composition/` 与 `runtime-profiles/`
-- [ ] `sdk-minimal` 工具面重写（平台选定 shell、去 `fs-local`/`str-replace-editor`）
-- [ ] `persona` → `personaPrefix`/`personaSuffix` 覆盖 5 个 profile 页
-- [ ] home `.env` 代理名豁免；`runProfile` 第 0 步装代理
-- [ ] 新建 `composition/04`、`runtime-profiles/06-desktop.md`
-- [ ] 行号批量刷新（见专题报告清单）
+- [x] `sdk-minimal` 工具面重写（平台选定 shell、去 `fs-local`/`str-replace-editor`）
+- [x] `persona` → `personaPrefix`/`personaSuffix` 覆盖 5 个 profile 页
+- [x] home `.env` 代理名豁免；`runProfile` 第 0 步装代理
+- [x] 新建 `composition/04`、`runtime-profiles/06-desktop.md`
+- [x] 行号批量刷新（见专题报告清单）
 
 ### `surfaces/`
-- [ ] `00-map.md`：入口 4→5、三行包描述、机制表登记两页
-- [ ] `01-启动面与session流.md`：拆两条事件链路；白名单 18→19；补两类帧
-- [ ] `02-acp与jsonrpc.md`：仅行号（结论不变）
-- [ ] 新建 `03`、`04`；重绘 `figures/shared-runtime-spine.svg`（5 方框）、`figures/session-mux.svg`（去 apiproxy，OLD 即已过时）
+- [x] `00-map.md`：入口 4→5、三行包描述、机制表登记两页
+- [x] `01-启动面与session流.md`：拆两条事件链路；白名单 18→19；补两类帧
+- [x] `02-acp与jsonrpc.md`：仅行号（结论不变）
+- [x] 新建 `03`、`04`；重绘 `figures/shared-runtime-spine.svg`（5 方框）、`figures/session-mux.svg`（去 apiproxy，OLD 即已过时）
 
 ### `system/`
-- [ ] `01-扩展表非显然落点.md`：ignorable 基线锚、Remote +3 namespace、Typert identity 删除
-- [ ] `02-对照单一loop.md`：见 tools 专题
+- [x] `01-扩展表非显然落点.md`：ignorable 基线锚、Remote +3 namespace、Typert identity 删除
+- [x] `02-对照单一loop.md`：见 tools 专题
 
 ### `harness-idea/` 与 `_faq_on_digested/`
-- [ ] Note 归档事件写进判断纪律相关页（批量归档 = 冻结已实现记录，不是删除）
-- [ ] `claims.json` 六指标按新基线重算（N1–N6），baseline 更新
-- [ ] 断链与行锚复核；FAQ 01/03/08/11 内容修订；02/06/07/09/10 基线复核；**04/05 不动**
+- [x] Note 归档事件写进判断纪律相关页（批量归档 = 冻结已实现记录，不是删除）
+- [x] `claims.json` 六指标按新基线重算（N1–N6），baseline 更新
+- [x] 断链与行锚复核；FAQ 01/03/08/11 内容修订；02/06/07/09/10 基线复核；**04/05 不动**
 
 ## 执行顺序
 
@@ -117,9 +119,9 @@ harness-idea/  _faq_on_digested/
 _coverage 逐专题翻回「已核验」+ verify + 独立复审
 ```
 
-## 本轮未完成
+## 计划外收尾
 
-- 上游文档缺口五条（根 `AGENTS.md` 布局块、`packages/session/README.md` 漏登记 v2→v3、`docs/persistence-changes/` 属后续版本、`preset/agent-presets/README.md` 仍提已删的 `code` preset、`packages/client/README.md` 只登记 51 个包中的 49 个）只登记，不代上游修。
-- `0.1.5-rc.2` / `0.1.6-alpha.1` / `upstream/master`（`0d1f50007f`）未同步：本仓库按 npm `latest` 选基线。
+- ~~上游文档缺口五条只登记，不代上游修~~ → **已在 0007 就地修复**（根 `AGENTS.md` 布局块、`packages/session/README.md` 漏登记 v2→v3、`packages/preset/agent-presets/README.md` 仍提已删的 `code` preset、`packages/client/README.md` 漏登记三个包；`docs/persistence-changes/` 在本基线确实不存在，属「不要提前引用」而非缺陷）。发现时的现场记录保留在 `0006` 的「顺带核出的上游文档缺口」一节。
+- ~~`0.1.5-rc.2` / `0.1.6-alpha.1` / `upstream/master` 未同步~~ → **口径澄清**：同步到**最后一个 RC**。`0.1.5-rc.2` 已由 [`0007`](./0007-0.1.5-rc.1-to-0.1.5-rc.2.md) 合入；`0.1.6-alpha.1` 与 `upstream/master` 是 alpha / 主干，按口径**有意不同步**，不再是待办。
 
 > 本计划列出的修订项与两项曾挂账的收尾（`_agent_ready_development/` re-pin、`harness-idea/` claims 与 FAQ 逐篇复核）**均已完成**，结果见 [`0006`](./0006-0.1.2-rc.1-to-0.1.5-rc.1.md) 的「后续完成」与「第二轮全量核验」两节。

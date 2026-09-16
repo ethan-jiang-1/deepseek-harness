@@ -1,6 +1,6 @@
 # Answer · 窄证据切片闭环：DSH 最自然的开发习惯，以及"轻松"从哪来
 
-基线：制度与文档以 `dsh-v0.1.5-rc.1`（commit `183f08e9c6`）复核（写作时为 checkout `08b582ea02`）；git 量化取自 `upstream/master` tip `0a53fb55be`（0.1.2-alpha.2）最近 100 个 PR landing merge，本次未重算。三路调查的原始材料见 [research.md](./research.md)。
+基线：制度与文档以 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）复核（写作时为 checkout `08b582ea02`）；git 量化取自 `upstream/master` tip `0a53fb55be`（0.1.2-alpha.2）最近 100 个 PR landing merge，本次未重算。三路调查的原始材料见 [research.md](./research.md)。
 
 ## 结论先行
 
@@ -26,7 +26,7 @@ DSH 支持很多开发习惯——spec-first、TDD、plan-first、全量验证�
 
 **第 6 步：只报告实际跑过的。** "report only commands run"（AGENTS.md）；"Report pending checks as pending"（pre-push-checks）；"Report the inspected scope, clear changes, deliberate keeps, deferred cases, and checks actually run"（prose-standard）。报告与证据一一对应，不多说，不少说。
 
-这六步就是每个 `dsh-*` skill 反复展开的同一个骨架——写作树上是 10 个 `dsh-*` skill（语料分析取其中 9 个，排除仅限用户显式调用的 dsh-translate-docs），到 `183f08e9c6` 已是 11 个：`dsh-doc` 合并了原 doc-standards 与 doc-site-sync，OLD 之前新增 `dsh-ci-test-reliability`，本次跨度新增 `dsh-speed-up-perf`。
+这六步就是每个 `dsh-*` skill 反复展开的同一个骨架——写作树上是 10 个 `dsh-*` skill（语料分析取其中 9 个，排除仅限用户显式调用的 dsh-translate-docs），到 `fb2c4b9e69` 已是 11 个：`dsh-doc` 合并了原 doc-standards 与 doc-site-sync，OLD 之前新增 `dsh-ci-test-reliability`，本次跨度新增 `dsh-speed-up-perf`。
 
 ## 第二节 "轻松"的来源一：记忆外包——门禁替你记得规则
 

@@ -1,6 +1,6 @@
 # Research Notes: DSH 可能采用的 Spec-Driven Development
 
-产品源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`（与 `_digested/00-index.md` 相同）。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。
+产品源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.2`，commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`（与 `_digested/00-index.md` 相同）。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。
 
 ## 核心结论
 

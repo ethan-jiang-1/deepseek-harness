@@ -2,7 +2,7 @@
 
 ## 说明
 
-本 FAQ 的证据主体是两份本地研究语料，现已随 `_digested/` 同步到基线 DSH `dsh-v0.1.5-rc.1`（commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`，见 [`_digested/00-index.md`](../../_digested/00-index.md) 与 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`）。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
+本 FAQ 的证据主体是两份本地研究语料，现已随 `_digested/` 同步到基线 DSH `dsh-v0.1.5-rc.2`（commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`，见 [`_digested/00-index.md`](../../_digested/00-index.md) 与 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`）。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
 
 ## 1. 仓库以 coding agent 为主、机械门禁优于 prose 约定
 

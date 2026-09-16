@@ -16,7 +16,7 @@ dsh 把这些路径做成**参与阶梯（participation ladder）**，而不是�
 
 > **seam** — a *swappable capability* with three roles: a **Service Definition** (…never a TypeScript `interface`), one or more **Service Providers**, and one or more **Consumers** that inject the service.
 >
-> —— `docs/glossary.md:9`（基线 `183f08e9c6…`）
+> —— `docs/glossary.md:9`（基线 `fb2c4b9e69…`）
 | L3 loop / session 合同 | `agent-loop`、`SessionEventMap` | 改驱动、加持久事件、改请求头语义 | loop 义务、日志投影、版本机制 | invariant、双 SDK 投影、snapshot、architecture 同步 |
 
 阶梯的要点不是「层级越高越难」，而是**每层都有明确的升级条件**：L0 解决不了才去 L1；扩展点表达不了才设计 seam；只有改变循环合同本身才改 L3。这正是 [`03`](./03-paved-road.md) 的四问路由在参与者视角的投影。
@@ -32,7 +32,7 @@ Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以
 
 > Give one session a different capability set | compose an agent preset; a service row there needs an `isolate` realm.
 >
-> —— `docs/architecture.md:141`（基线 `183f08e9c6…`）
+> —— `docs/architecture.md:141`（基线 `fb2c4b9e69…`）
 
 ## 部署时替换是系统能力，不是源码习惯
 
@@ -40,11 +40,11 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 > A running `dsh` is a plugin tree composed at boot from ordered layers.
 >
-> —— `docs/architecture.md:17`（基线 `183f08e9c6…`）
+> —— `docs/architecture.md:17`（基线 `fb2c4b9e69…`）
 
 > Layers apply to an empty entry list in this order: each bundle in the profile's listed order, then the profile's `cordis.patch.yml`, then the home-level one, then any `--patch` overlay. A patch targets a row by id and replaces its whole config, or inserts new rows.
 >
-> —— `docs/architecture.md:27`（基线 `183f08e9c6…`）
+> —— `docs/architecture.md:27`（基线 `fb2c4b9e69…`）
 
 - 配置从空 entry list 开始，按 Bundle → Profile patch → home patch → `--patch` 的顺序叠加；顺序就是数据。
 - 后层按 entry id 整份替换 config，或插入新行。
@@ -59,7 +59,7 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 > **Every non-trivial change includes at least one Agent Note in the same PR.** Update the owning note or add one; only mechanical/local edits are exempt.
 >
-> —— `docs/AGENTS.md:39`（基线 `183f08e9c6…`）
+> —— `docs/AGENTS.md:39`（基线 `fb2c4b9e69…`）
 
 ```text
 Issue 意图与预期行为（验收证据在 PR 的 Testing 节）

@@ -2,9 +2,9 @@
 
 方法：从三个互相独立的证据面重建"最自然的开发习惯"，事先不预设答案；FAQ 02/10 的结论只作对位参考。所有路径相对仓库根。
 
-## 第一路：skills 语料（写入时 9 个进语料 dsh-* SKILL.md 全读 + Note 规则；到 `183f08e9c6` 仓库共 11 个 dsh-*，行号已按当前工作树复核）
+## 第一路：skills 语料（写入时 9 个进语料 dsh-* SKILL.md 全读 + Note 规则；到 `fb2c4b9e69` 仓库共 11 个 dsh-*，行号已按当前工作树复核）
 
-对象：`dsh-pre-push-checks`、`dsh-code-review`、`dsh-find-simplifications`、`dsh-prose-standard`、`dsh-doc`（写入时还是 `dsh-doc-standards` + `dsh-doc-site-sync` 两个 skill）、`dsh-archive-agent-notes`、`dsh-trim-cot-leakage`、`dsh-merging-stacked-prs`，加上 `.agents/notes/README.md`、`docs/AGENTS.md`。写入时全仓库共 10 个 `dsh-*` skill；`dsh-translate-docs` 仅限用户显式调用，不进入开发习惯语料，故闭环分析以其余 9 个为对象。到 `183f08e9c6` 已是 11 个：OLD 之前新增 `dsh-ci-test-reliability`、`doc-standards` 与 `doc-site-sync` 合并为 `dsh-doc`，本次跨度新增 `dsh-speed-up-perf`。
+对象：`dsh-pre-push-checks`、`dsh-code-review`、`dsh-find-simplifications`、`dsh-prose-standard`、`dsh-doc`（写入时还是 `dsh-doc-standards` + `dsh-doc-site-sync` 两个 skill）、`dsh-archive-agent-notes`、`dsh-trim-cot-leakage`、`dsh-merging-stacked-prs`，加上 `.agents/notes/README.md`、`docs/AGENTS.md`。写入时全仓库共 10 个 `dsh-*` skill；`dsh-translate-docs` 仅限用户显式调用，不进入开发习惯语料，故闭环分析以其余 9 个为对象。到 `fb2c4b9e69` 已是 11 个：OLD 之前新增 `dsh-ci-test-reliability`、`doc-standards` 与 `doc-site-sync` 合并为 `dsh-doc`，本次跨度新增 `dsh-speed-up-perf`。
 
 每个 skill 按"自动化的场景 → 规定的默认路径 → 隐含假设的摩擦 → 明说的理由"拆解。跨 skill 的公共分母（12 条）：
 

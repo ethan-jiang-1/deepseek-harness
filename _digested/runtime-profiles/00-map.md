@@ -1,6 +1,6 @@
 # Runtime Profiles · 运行时配置
 
-产品源码基线：`183f08e9c6`（`dsh-v0.1.5-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）。
+产品源码基线：`fb2c4b9e69`（`dsh-v0.1.5-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`rc.1` → `rc.2` 的增量见 [`_change_log/0007`](../_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md)。
 
 ## 一句话
 
@@ -32,7 +32,7 @@ rc.1 没有增删任何模板、也没有改名：新增的是从模板派生自
 | **sdk-minimal** | JSON-RPC · 工具面收窄 | `dsh --profile sdk-minimal` | profile 目录 + bundle 层叠 | JSON-RPC 帧 | 常驻 |
 | **acp** | Agent Client Protocol 服务 | `dsh --profile acp` | profile 目录 + bundle 层叠 | ACP 帧 | 常驻 |
 
-> **历史背景**：在 `0.1.2-alpha.1`（#3248）之前，sdk 和 acp 走独立 app 二进制（`dsh-jsonrpc-agent`、`dsh-acp-demo`），不经过 launcher profile（`dsh-v0.1.1-rc.2:packages/examples/jsonrpc-demo/package.json:16`、`dsh-v0.1.1-rc.2:packages/examples/acp-demo/package.json:16`，两个目录在 `183f08e9c6` 已不存在）。从 `0.1.2-alpha.1` 起它们被统一到 `dsh --profile <name>`。旧二进制不再存在；SDK 最小示例使用 `sdk-minimal` profile。所有 profile 现在共享同一套 bundle 层叠、profile 目录、`dsh plugin` 管理等基础设施。
+> **历史背景**：在 `0.1.2-alpha.1`（#3248）之前，sdk 和 acp 走独立 app 二进制（`dsh-jsonrpc-agent`、`dsh-acp-demo`），不经过 launcher profile（`dsh-v0.1.1-rc.2:packages/examples/jsonrpc-demo/package.json:16`、`dsh-v0.1.1-rc.2:packages/examples/acp-demo/package.json:16`，两个目录在 `fb2c4b9e69` 已不存在）。从 `0.1.2-alpha.1` 起它们被统一到 `dsh --profile <name>`。旧二进制不再存在；SDK 最小示例使用 `sdk-minimal` profile。所有 profile 现在共享同一套 bundle 层叠、profile 目录、`dsh plugin` 管理等基础设施。
 
 ## 共同基底
 
