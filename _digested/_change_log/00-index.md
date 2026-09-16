@@ -20,9 +20,12 @@ _change_log/
 ├── 0005-0.1.2-alpha.3-to-0.1.2-rc.1.md   # 第五次合入（305 commits）
 ├── 0006-0.1.2-rc.1-to-0.1.5-rc.1.md       # 第六次合入（1512 commits；session 格式升到 v3、客户端资源面、subprocess containment、约 700 篇 Note 归档）
 ├── 0006-plan-digest-revision.md           # 第六次同步的消化材料修订计划
+├── 0007-0.1.5-rc.1-to-0.1.5-rc.2.md       # 第七次合入（4 commits；最后一个 RC，feedback 提交对称化）
 ```
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
+
+**选基线的口径**：同步到**最后一个 RC**，不追 alpha、也不追 `upstream/master`。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`；0007 改成「最后一个 RC」并推进到 `0.1.5-rc.2`。
 
 每次 sync 同时执行以下维护动作：
 

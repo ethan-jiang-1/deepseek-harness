@@ -2,7 +2,7 @@
 
 ## 方法与基线
 
-机制结论以 [`_digested/`](../../_digested/00-index.md) 全部专题为底（当前基线 `dsh-v0.1.5-rc.1`，commit `183f08e9c6`）；本文最初写作时的消化基线是 `0.1.1-rc.2`（`b150a55…`），当时的行级漂移（如 `ctx.agentTeams`、`ctx.authorization` 这些晚于旧基线才出现的行）在 0006 同步后已并入基线。量化底座是 freshness-gated 的生成目录 [`docs/capability-seams.md`](../../docs/capability-seams.md)，数字一律以点数当时的生成表为准。原文写下的两次读数是"当前树读数（commit `3b1a213e9e…`，即 08/09 两篇 FAQ 提交的父提交）"与编辑复核点 `bb90e237f2…`：两处实测都是 28 条 seam、11 条 P≥2、39.3%、15 条单 Provider、2 条零 Provider、3 条零 Consumer，对这两个时点而言并没有写错。本次上游同步复核（2026-09-16）发现：**这些读数在 OLD 基线 `a66e470204`（dsh-v0.1.2-rc.1）时就已经全部过期，而 OLD 与 NEW 的 seam 层读数完全一致**——29 条 seam、12 条 P≥2、14 条单 Provider、3 条零 Provider、2 条零 Consumer。也就是说，这是本文写作时点与 OLD 之间就已存在的**存量失真，不是 `a66e470204 → 183f08e9c6` 本次跨度引入的**；跨度内只动了 core（39 → 42，seam 层五个数字 OLD = NEW）。下表已按 **NEW 基线读数（commit `183f08e9c6`，dsh-v0.1.5-rc.1，2026-09-16 实测）** 重写。
+机制结论以 [`_digested/`](../../_digested/00-index.md) 全部专题为底（当前基线 `dsh-v0.1.5-rc.2`，commit `fb2c4b9e69`）；本文最初写作时的消化基线是 `0.1.1-rc.2`（`b150a55…`），当时的行级漂移（如 `ctx.agentTeams`、`ctx.authorization` 这些晚于旧基线才出现的行）在 0006 同步后已并入基线。量化底座是 freshness-gated 的生成目录 [`docs/capability-seams.md`](../../docs/capability-seams.md)，数字一律以点数当时的生成表为准。原文写下的两次读数是"当前树读数（commit `3b1a213e9e…`，即 08/09 两篇 FAQ 提交的父提交）"与编辑复核点 `bb90e237f2…`：两处实测都是 28 条 seam、11 条 P≥2、39.3%、15 条单 Provider、2 条零 Provider、3 条零 Consumer，对这两个时点而言并没有写错。本次上游同步复核（2026-09-16）发现：**这些读数在 OLD 基线 `a66e470204`（dsh-v0.1.2-rc.1）时就已经全部过期，而 OLD 与 NEW 的 seam 层读数完全一致**——29 条 seam、12 条 P≥2、14 条单 Provider、3 条零 Provider、2 条零 Consumer。也就是说，这是本文写作时点与 OLD 之间就已存在的**存量失真，不是 `a66e470204 → fb2c4b9e69` 本次跨度引入的**；跨度内只动了 core（39 → 42，seam 层五个数字 OLD = NEW）。下表已按 **NEW 基线读数（commit `fb2c4b9e69`，dsh-v0.1.5-rc.2，2026-09-16 实测）** 重写。
 
 生成表在 NEW 基线共 **72 个 `ctx` 服务**，按其 role 列拆分：**42 core + 29 seam + 1 bundle**（`ctx.agentLoop` 是 bundle）。seam 才是"可替换能力"，本文只在 29 条 seam 上做成熟度计算，core 只在下文"诚实边界"里单独处理。
 
@@ -14,7 +14,7 @@
 - **三条反向信号**：**自消费 seam**——Provider 与唯一 Consumer 是同一个包，等于还没有市场；**零 Provider seam**——Definition 立了、连默认实现都没有，API 形状仍可能在第一个实现落地时被改；**零 Consumer seam**——生成表 direct consumers 列为空（`sessionTelemetry`、`sessionTitle` 两条），两条各有出口（telemetry 离进程、title 经 projection），所以只算"待核查"信号，不作赤字结论；同组原先也为空的 `fileReferences` 在 OLD 之前已有 direct consumer `api-session-controller`。
 - **一条单位修正**：`ctx.approval` 不能用 Provider 数衡量。answerer 是 `approval/request` waterfall 的 listener，不注册成 Provider（生成表 P 列为空正是这条修正的读数）；它的成熟单位是 answerer 多样性 × 问题形状渲染，见"三个推翻"第 1 条。
 
-## 全景：29 条 seam 的 P/C 表（NEW 基线读数 `183f08e9c6`，2026-09-16 实测）
+## 全景：29 条 seam 的 P/C 表（NEW 基线读数 `fb2c4b9e69`，2026-09-16 实测）
 
 P = implementation 包数，C = direct consumer 包数，按生成表 implementations / direct consumers 两列逗号切分计数；下表按 P 升序、C 降序排列。
 

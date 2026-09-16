@@ -1,5 +1,5 @@
 {
-  "baseline": "183f08e9c6dde7e36cd2318eaee70b0da08fb35e",
+  "baseline": "fb2c4b9e698e30edb738bca4cf0618587db7d203",
   "claims": [
     {
       "id": "C1",
@@ -105,13 +105,13 @@
       "id": "N1",
       "description": "baseline 下 .agents/notes 的 .md 文件总数",
       "metric": "notes-md-total",
-      "expected": 1910
+      "expected": 1912
     },
     {
       "id": "N2",
       "description": "baseline 下 .agents/notes/implemented 的 .md 文件数",
       "metric": "notes-implemented-md",
-      "expected": 582
+      "expected": 584
     },
     {
       "id": "N3",

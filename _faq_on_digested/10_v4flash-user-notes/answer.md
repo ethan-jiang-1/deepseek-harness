@@ -2,7 +2,7 @@
 
 ## 方法与基线
 
-用户原文是转述（见 [question.md](./question.md)），本篇不考据说话人，只把三条体感当成**待验证命题**，逐条对照源码与 [`_digested/`](../../_digested/00-index.md)。机制结论以消化基线 DeepSeek Harness `dsh-v0.1.2-alpha.3`（commit `dd6322d6…`）为底；写作时的复核树是 `08b582ea02…`，本次同步已按 `dsh-v0.1.5-rc.1`（commit `183f08e9c6`）重核，引用的行号以该树为准。调查方式：四路并行子代理分别深挖 workflow 编排、goal/plan/todo 三件套、vision 与预览产出物链路、定制扩展机制，captain 对其中的强论断逐条用 grep 抽查复核。0.1.5 复核的最大修正是写作时的一条强论断——"`ui-tool` 全包无 image 渲染分支"——已被跨度内交付推翻（见 [02 第二节](./02-self-built-previews.md)）。证据底稿在 [research.md](./research.md)。
+用户原文是转述（见 [question.md](./question.md)），本篇不考据说话人，只把三条体感当成**待验证命题**，逐条对照源码与 [`_digested/`](../../_digested/00-index.md)。机制结论以消化基线 DeepSeek Harness `dsh-v0.1.2-alpha.3`（commit `dd6322d6…`）为底；写作时的复核树是 `08b582ea02…`，本次同步已按 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）重核，引用的行号以该树为准。调查方式：四路并行子代理分别深挖 workflow 编排、goal/plan/todo 三件套、vision 与预览产出物链路、定制扩展机制，captain 对其中的强论断逐条用 grep 抽查复核。0.1.5 复核的最大修正是写作时的一条强论断——"`ui-tool` 全包无 image 渲染分支"——已被跨度内交付推翻（见 [02 第二节](./02-self-built-previews.md)）。证据底稿在 [research.md](./research.md)。
 
 三条体感恰好各落在 harness 的一层：**模型路由层**（第 1、3 条）、**驱动循环层**（第 1 条）、**宿主投影层**（第 2 条）。这个分层本身就是第一个发现：说话人没有把三件事混成一团"体验"，而 FAQ 的价值是把每一层拆到机制。
 

@@ -19,7 +19,7 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 > New behavior attaches to a documented extension point. Changing the loop itself updates this map.
 >
-> —— `docs/architecture.md:135`（基线 `183f08e9c6…`）
+> —— `docs/architecture.md:135`（基线 `fb2c4b9e69…`）
 
 ## 机制二：四条设计哲学，约束所有新增功能
 
@@ -38,13 +38,13 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 > `execute` runs immediately; the disposers it produces are collected and run (in reverse order) either when the returned disposer is called or when the fiber unloads, whichever comes first.
 >
-> —— `docs/cordis-api/fiber.md:30`（基线 `183f08e9c6…`）
+> —— `docs/cordis-api/fiber.md:30`（基线 `fb2c4b9e69…`）
 
 诚实说明强制力在哪：这一条是**惯例 + 测试 + review 强制**，不是静态门禁——静态分析管不到「每个贡献是否都走了 effect」。dsh 的对策是把惯例写成 standing order（`AGENTS.md`），把生命周期正确性交给 HMR 测试与运行时 invariant（见机制六）。
 
 > **Registrations are effects**: every contribution goes through `ctx.effect()` / `ctx.on()`; a registry's `register()` returns the disposer.
 >
-> —— `AGENTS.md:106`（基线 `183f08e9c6…`）
+> —— `AGENTS.md:106`（基线 `fb2c4b9e69…`）
 
 对比：如果一个系统里「正式注册」和「临时挂上去」是两种写法，读者每次都要判断该用哪种——判断就是犯错点。
 
@@ -72,7 +72,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 > **Waterfall listeners MUST call `next()`** to delegate; returning without it short-circuits the chain.
 >
-> —— `AGENTS.md:110`（基线 `183f08e9c6…`）
+> —— `AGENTS.md:110`（基线 `fb2c4b9e69…`）
 
 ## 机制六：运行时 invariant 体系——规则写成断言，不写成劝告
 
@@ -97,7 +97,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
   > A guard only guards if the regression fails it. ... prove it: introduce the regression, watch red, revert.
   >
-  > —— `docs/testing.md:40`（基线 `183f08e9c6…`）
+  > —— `docs/testing.md:40`（基线 `fb2c4b9e69…`）
 - 「Verify the world, not the self-report」——e2e 要重新执行命令或读文件，不能相信 agent 自己的输出；
 - 真实入口路径：built artifact smoke、Loader 真实组合、snapshot 必须来自可运行示例；
 - 每个非平凡模型/协议/人类可见变化，同 PR 更新 keyless snapshot。

@@ -20,7 +20,7 @@
 
 - 运行时机制引用 DSH 源码与子系统文档：`packages/context/agent-instructions/README.md`、`docs/subsystems/skills.md`、`docs/subsystems/compaction.md`、`docs/subsystems/token-meter.md`、`packages/fs/tool-fs/src/read.ts`、`packages/fs/tool-fs-search/src/{grep,glob}.ts`。
 - 静态设计（tier、budget、one home）只引用 04 的结论，不重证。
-- 当前源码基线：`dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`。
+- 当前源码基线：`dsh-v0.1.5-rc.2`，commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`。
 
 ## 文件
 
