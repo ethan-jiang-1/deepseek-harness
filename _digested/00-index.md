@@ -55,19 +55,19 @@
 
 ![消化阅读主干](./figures/topics.svg)
 
-- **熟悉 agent / plugin 运行时，但不熟 dsh** → `system/00-map.md`
-- **想先搞懂 Cordis 在这棵树里到底是什么** → `cordis-runtime/00-map.md`，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
-- **想搞懂 `dsh --profile web` 怎么变成进程的** → `runtime-profiles/00-map.md`
-- **想搞懂一次 `dsh --profile web` 怎么变成插件树** → `composition/00-map.md`
-- **想搞懂一轮对话怎么跑** → `session-and-loop/00-map.md`
-- **想搞懂磁盘上的 session 文件怎么跨格式世代读** → `session-and-loop/04-格式世代与迁移.md`
-- **想加能力或换后端** → `capability-seams/00-map.md`
-- **想研究实验原型** → `experimental/00-map.md`
-- **想搞懂模型看见什么** → `tools-prompt-llm/00-map.md`
-- **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → `surfaces/00-map.md`
+- **熟悉 agent / plugin 运行时，但不熟 dsh** → [`system/00-map.md`](./system/00-map.md)
+- **想先搞懂 Cordis 在这棵树里到底是什么** → [`cordis-runtime/00-map.md`](./cordis-runtime/00-map.md)，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
+- **想搞懂 `dsh --profile web` 怎么变成进程的** → [`runtime-profiles/00-map.md`](./runtime-profiles/00-map.md)
+- **想搞懂一次 `dsh --profile web` 怎么变成插件树** → [`composition/00-map.md`](./composition/00-map.md)
+- **想搞懂一轮对话怎么跑** → [`session-and-loop/00-map.md`](./session-and-loop/00-map.md)
+- **想搞懂磁盘上的 session 文件怎么跨格式世代读** → [`session-and-loop/04-格式世代与迁移.md`](./session-and-loop/04-格式世代与迁移.md)
+- **想加能力或换后端** → [`capability-seams/00-map.md`](./capability-seams/00-map.md)
+- **想研究实验原型** → [`experimental/00-map.md`](./experimental/00-map.md)
+- **想搞懂模型看见什么** → [`tools-prompt-llm/00-map.md`](./tools-prompt-llm/00-map.md)
+- **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → [`surfaces/00-map.md`](./surfaces/00-map.md)
 - **想给 Web UI 加功能、或新增一个 `packages/client/*` 插件包** → [`surfaces/05-客户端架构与插件纪律.md`](./surfaces/05-客户端架构与插件纪律.md)
 - **想搞懂一个 `@Remote` 方法怎么变成 `ctx.remote.<ns>` 上的类型化 stub** → [`surfaces/06-Typert类型图与Remote生成.md`](./surfaces/06-Typert类型图与Remote生成.md)
-- **想搞懂 dsh 为什么对读者友好（harness 思想）** → `harness-idea/00-map.md`
+- **想搞懂 dsh 为什么对读者友好（harness 思想）** → [`harness-idea/00-map.md`](./harness-idea/00-map.md)
 
 推荐主干顺序：
 

@@ -8,20 +8,18 @@
 - 核心变更分类
 - 对 `_digested/` / `_faq_on_digested/` 的影响
 
-```text
-_change_log/
-├── 00-index.md
-├── 0000-baseline.md                    # 研究起点，不是一次同步
-├── 0001-0.1.0-rc.5-to-0.1.0-rc.7.md    # 第一次合入
-├── 0002-0.1.0-rc.7-to-0.1.1-rc.1.md    # 第二次合入
-├── 0003-0.1.1-rc.1-to-0.1.1-rc.2.md    # 第三次合入
-├── 0004-0.1.1-rc.2-to-0.1.2-alpha.3.md   # 第四次合入（最大，1155 commits）
-├── 0004-plan-digest-revision.md          # 第四次同步的消化材料修订计划
-├── 0005-0.1.2-alpha.3-to-0.1.2-rc.1.md   # 第五次合入（305 commits）
-├── 0006-0.1.2-rc.1-to-0.1.5-rc.1.md       # 第六次合入（1512 commits；session 格式升到 v3、客户端资源面、subprocess containment、约 700 篇 Note 归档）
-├── 0006-plan-digest-revision.md           # 第六次同步的消化材料修订计划
-├── 0007-0.1.5-rc.1-to-0.1.5-rc.2.md       # 第七次合入（4 commits；最后一个 RC，feedback 提交对称化）
-```
+`_change_log/` 下的记录，按编号递增：
+
+- [`0000-baseline.md`](./0000-baseline.md)——研究起点，不是一次同步
+- [`0001-0.1.0-rc.5-to-0.1.0-rc.7.md`](./0001-0.1.0-rc.5-to-0.1.0-rc.7.md)——第一次合入
+- [`0002-0.1.0-rc.7-to-0.1.1-rc.1.md`](./0002-0.1.0-rc.7-to-0.1.1-rc.1.md)——第二次合入
+- [`0003-0.1.1-rc.1-to-0.1.1-rc.2.md`](./0003-0.1.1-rc.1-to-0.1.1-rc.2.md)——第三次合入
+- [`0004-0.1.1-rc.2-to-0.1.2-alpha.3.md`](./0004-0.1.1-rc.2-to-0.1.2-alpha.3.md)——第四次合入（最大，1155 commits）
+- [`0004-plan-digest-revision.md`](./0004-plan-digest-revision.md)——第四次同步的消化材料修订计划
+- [`0005-0.1.2-alpha.3-to-0.1.2-rc.1.md`](./0005-0.1.2-alpha.3-to-0.1.2-rc.1.md)——第五次合入（305 commits）
+- [`0006-0.1.2-rc.1-to-0.1.5-rc.1.md`](./0006-0.1.2-rc.1-to-0.1.5-rc.1.md)——第六次合入（1512 commits；session 格式升到 v3、客户端资源面、subprocess containment、约 700 篇 Note 归档）
+- [`0006-plan-digest-revision.md`](./0006-plan-digest-revision.md)——第六次同步的消化材料修订计划
+- [`0007-0.1.5-rc.1-to-0.1.5-rc.2.md`](./0007-0.1.5-rc.1-to-0.1.5-rc.2.md)——第七次合入（4 commits；最后一个 RC，feedback 提交对称化）
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
 
