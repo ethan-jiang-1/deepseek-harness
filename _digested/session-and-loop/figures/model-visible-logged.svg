@@ -34,7 +34,7 @@
 
   <rect x="36" y="304" width="550" height="64" rx="10" fill="#f3f4f6" stroke="#d1d5db"/>
   <text x="311" y="330" text-anchor="middle" font-size="13" font-weight="700" fill="#374151">request/context</text>
-  <text x="311" y="352" text-anchor="middle" font-size="12" fill="#4b5563">provider · model · contextWindow；供路由与容量观察，不参与请求重建</text>
+  <text x="311" y="352" text-anchor="middle" font-size="12" fill="#4b5563">provider · model · contextWindow · systemPromptUpdate；供路由与容量观察，不参与请求重建</text>
   <rect x="636" y="304" width="288" height="64" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
   <text x="780" y="330" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">运行时 invariant</text>
   <text x="780" y="352" text-anchor="middle" font-size="12" fill="#7c3aed">实际冻结请求 = 两条重建结果</text>

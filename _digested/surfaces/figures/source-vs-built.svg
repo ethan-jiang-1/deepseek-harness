@@ -16,5 +16,5 @@
   <text x="506" y="154" font-size="12" fill="#14532d">不要混用两条启动面的假设</text>
   <rect x="40" y="186" width="880" height="88" rx="10" fill="#fff7ed" stroke="#fdba74"/>
   <text x="60" y="214" font-size="12" fill="#9a3412">两条路径都进同一个 runProfile / runDumpConfig。dump 与 boot 的层差见 composition 专题，不是入口差异。</text>
-  <text x="60" y="238" font-size="12" fill="#7c2d12">ACP demo 另用 --import tsx + 叶子 cordis.yml，不是 profile 模板。stdout 留给协议帧。</text>
+  <text x="60" y="238" font-size="12" fill="#7c2d12">ACP 也是 launcher profile（dsh --profile acp），没有独立的 demo 入口；stdout 留给协议帧。</text>
 </svg>

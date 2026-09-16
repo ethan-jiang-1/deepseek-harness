@@ -66,7 +66,7 @@ llm.stream / preparedCall.stream（整个 for-await 包在 try/catch）
 
 每次 attempt 在 `live.push` 之前先结算 system prompt：`SystemPromptProjection.project()` 决定这一轮提交哪些 `system/message` 节点，然后才发请求（`packages/core/agent-loop/src/agent.ts:360-372`）。attempt 内内存累积与 process-local 帧见 `packages/core/agent-loop/src/assistant-stream.ts:59-63`；结算点见 `packages/core/agent-loop/src/agent.ts:405-429,475-476`。loop invariant 断言请求不再带 `options.system`（`packages/core/agent-loop/src/invariant.ts:44-46`）。
 
-请求头：`request/header` 在 dispatch 前写入，只承载 config、adapterDefaults 与 tools。对截至某次请求的日志前缀取最后一份，即可重建当时的 config 与 tools；system prompt 从当前有效的 `system/message` 节点取。`request/context` 只在路由或容量变时写，不参与 header 相等。
+请求头：`request/header` 在 dispatch 前写入，只承载 config、adapterDefaults 与 tools。对截至某次请求的日志前缀取最后一份，即可重建当时的 config 与 tools；system prompt 从当前有效的 `system/message` 节点取。`request/context` 只在路由、容量或 `systemPromptUpdate` 能力变时写，不参与 header 相等。
 
 ## `system/message` 与请求上下文
 

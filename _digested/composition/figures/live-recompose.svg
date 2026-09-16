@@ -16,7 +16,7 @@
   <text x="705" y="164" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">每次重读 home cordis.patch.yml</text>
 
   <rect x="40" y="196" width="880" height="52" rx="8" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="480" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">overlays（--patch + telemetry + shipped presets）首次算完就冻结</text>
+  <text x="480" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">overlays（--patch + telemetry）首次算完就冻结</text>
 
   <rect x="40" y="268" width="880" height="100" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
   <text x="60" y="296" font-size="12" fill="#374151">两个 watcher 都调同一个 composeLive。HMR 只交出「刚变的那份」；两边都重读，避免把对方的旧拷贝缝进去。</text>

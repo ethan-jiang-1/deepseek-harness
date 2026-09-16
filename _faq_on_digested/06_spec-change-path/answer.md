@@ -22,7 +22,7 @@ Issue 模板（意图/验收）
 
 | 阶段 | 主要载体 | 回答 | 约束 / 适用条件 |
 |---|---|---|---|
-| 意图与验收 | `.github/ISSUE_TEMPLATE/feature.md` 等 | 要改变什么可观察结果，怎样算完成 | 模板固定字段；`issue-management/policy.mjs` 只在非 Draft 人类 PR 进入 review 后强制引用 Issue |
+| 意图与可观察行为 | `.github/ISSUE_TEMPLATE/feature.md` 等 | 为什么要改、预期行为是什么（0.1.5 起模板只留 Motivation / Behavior；验收与测试证据改由 PR 的 Testing 节承载） | 模板固定字段；`issue-management/policy.mjs` 只在非 Draft 人类 PR 进入 review 后强制引用 Issue |
 | 决策 | `proposed/` Agent Note | 为什么这样设计，什么方案输了，风险是什么 | 重大未来工作才走 `proposed/`；已定决策可直接 `implemented/`；Agent Note 格式由 gate 检查 |
 | 计划 | Plan Mode | 改哪些子系统、API、schema、失败路径、测试 | 可选会话模式；`exit_plan_mode` 要求完整计划并取得用户批准，批准前不退出 |
 | 实现 | `packages/`、`apps/`、`python/`、`vendor/` 等源码 | 实际改变行为 | 与当前合同、行为证据、Agent Note 同一 PR 交付 |

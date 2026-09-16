@@ -10,7 +10,7 @@
   <rect x="30" y="60" width="330" height="200" rx="10" fill="#f2f6fc" stroke="#4a6fa5"/>
   <text x="195" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#24364d">训练先验（谁都能写）</text>
   <text x="195" y="114" text-anchor="middle" font-size="12" fill="#333">框架性通式：</text>
-  <text x="195" y="136" text-anchor="middle" font-size="12" fill="#333">知识外置 · paved road · 六/七个机制 · 三问检验</text>
+  <text x="195" y="136" text-anchor="middle" font-size="12" fill="#333">知识外置 · paved road · 七/八个机制 · 三问检验</text>
   <text x="195" y="162" text-anchor="middle" font-size="12" fill="#333">特点：换一个 fresh agent 也写得出来</text>
   <text x="195" y="188" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a1f1f">风险：噪音——漂亮，但不一定是 dsh</text>
   <text x="195" y="212" text-anchor="middle" font-size="11" fill="#555">应对：标为「框架性通式」，可信度最低档</text>
@@ -20,7 +20,7 @@
   <text x="765" y="88" text-anchor="middle" font-size="14" font-weight="bold" fill="#5c3a08">仓库证据（读了才写得出）</text>
   <text x="765" y="114" text-anchor="middle" font-size="12" fill="#333">dsh 的具体事实：</text>
   <text x="765" y="136" text-anchor="middle" font-size="12" fill="#333">因果分级（quality-gates note）· vendor manifest 门禁</text>
-  <text x="765" y="158" text-anchor="middle" font-size="12" fill="#333">required-on-read · 1704 个 note 文件（baseline）</text>
+  <text x="765" y="158" text-anchor="middle" font-size="12" fill="#333">required-on-read · 1910 个 note 文件（baseline）</text>
   <text x="765" y="188" text-anchor="middle" font-size="12" font-weight="bold" fill="#5c3a08">价值：fresh agent 写不出来的那几句才是信息</text>
   <text x="765" y="212" text-anchor="middle" font-size="11" fill="#555">来源：检索搬运、三角核验，或人类播种</text>
   <text x="765" y="238" text-anchor="middle" font-size="11" fill="#555">写不出来也未必为真：仍需核对</text>

@@ -6,7 +6,7 @@ DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 
 
 > Each fact has one home: the tier whose job it is; elsewhere, link there.
 >
-> — DSH [`docs/AGENTS.md` 的 “The tier taxonomy”](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这条规则解释为什么当前行为、决定理由、操作步骤和生成目录必须分属不同 owner。
+> — DSH [`docs/AGENTS.md` 的 “The tier taxonomy”](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这条规则解释为什么当前行为、决定理由、操作步骤和生成目录必须分属不同 owner。
 
 ## 1. 一个事实先找 owner
 
@@ -56,13 +56,12 @@ Durable prose 直接陈述当前 actor、行为、条件、时机、modality、�
 
 `website/docs.ts` 是公开页面 allowlist，`scripts/project-doc-site.ts` 将仓库 Markdown 投影到 disposable `website/.generated/`，VitePress 再构建页面、raw Markdown twins 和 `llms.txt`。源文件仍以 sibling English/Chinese pair 存放，不创建 `zh-CN/` source tree。
 
-一个 repo-relative link 若指向 manifest 页面会改写为站点 route；未发布但存在的目标会变成 GitHub source link；图片复制到生成树；不存在的目标使 projection 失败。发布、移动或删除页面才需要 `dsh-doc-site-sync`，普通未映射文档编辑不需要改网站 manifest。
+一个 repo-relative link 若指向 manifest 页面会改写为站点 route；未发布但存在的目标会变成 GitHub source link；图片复制到生成树；不存在的目标使 projection 失败。发布、移动或删除页面需要 `dsh-doc` 的网站发布流程，普通未映射文档编辑不需要改网站 manifest。
 
 ## 证据入口
 
-- DSH [文档标准](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/AGENTS.md)：tier owner、tutorial/reference 区分、当前状态写作与字数预算。
-- DSH [`dsh-doc` skill](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-doc/SKILL.md)：文档放置、语料审计和校验流程。
-- DSH [`dsh-prose-standard` skill](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-prose-standard/SKILL.md)：完整命题与各类 prose 必须覆盖的行为、失败和所有权。
-- DSH [`dsh-trim-cot-leakage` skill](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-trim-cot-leakage/SKILL.md)：怎样识别并移除作者会话视角。
-- DSH [`dsh-translate-docs` skill](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-translate-docs/SKILL.md)：只有显式调用才进入的整篇翻译扩展流程。
-- DSH [`dsh-doc-site-sync` skill](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-doc-site-sync/SKILL.md)：canonical docs 到 VitePress projection 的发布路径。
+- DSH [文档标准](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/AGENTS.md)：tier owner、tutorial/reference 区分、当前状态写作与字数预算。
+- DSH [`dsh-doc` skill](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/.agents/skills/dsh-doc/SKILL.md)：文档放置、语料审计、校验流程，以及 canonical docs 到 VitePress projection 的网站发布路径。
+- DSH [`dsh-prose-standard` skill](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/.agents/skills/dsh-prose-standard/SKILL.md)：完整命题与各类 prose 必须覆盖的行为、失败和所有权。
+- DSH [`dsh-trim-cot-leakage` skill](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/.agents/skills/dsh-trim-cot-leakage/SKILL.md)：怎样识别并移除作者会话视角。
+- DSH [`dsh-translate-docs` skill](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/.agents/skills/dsh-translate-docs/SKILL.md)：只有显式调用才进入的整篇翻译扩展流程。

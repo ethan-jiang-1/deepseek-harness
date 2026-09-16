@@ -54,7 +54,7 @@
   <text x="60" y="550" font-weight="700" fill="#334155">docs/ · website/ · scripts/ · .agents/ · .github/</text>
   <text x="60" y="578" fill="#475569">权威文档、站点投影、生成器/门禁、决策记录与 CI/release。</text>
   <text x="60" y="598" fill="#64748b">源码 owner → 生成 artifact → 网站 route；不要反向手改派生物。</text>
-  <text x="60" y="618" fill="#64748b">assets/ 放根文档静态图，patches/ 放 pnpm dependency patches。</text>
+  <text x="60" y="618" fill="#64748b">patches/ 放 pnpm patchedDependencies 的补丁，vendored 源码仍在 vendor/。</text>
 
   <rect x="575" y="492" width="470" height="142" rx="12" fill="#fefce8" stroke="#fde047"/>
   <text x="600" y="520" font-size="14" font-weight="700" fill="#854d0e">研究覆盖层 · ethan 分支</text>

@@ -21,10 +21,10 @@
   <text x="710" y="96" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">runProfile / boot</text>
   <text x="516" y="124" font-size="12" fill="#1e40af">同一份空 cordis.yml</text>
   <text x="516" y="146" font-size="12" fill="#2563eb">上面那四类层，再加：</text>
-  <text x="516" y="176" font-size="12" fill="#1e3a8a">agent-presets.roots 的 shipped 路径</text>
-  <text x="516" y="198" font-size="12" fill="#1e3a8a">（仅当组合里有这一行）</text>
-  <text x="516" y="226" font-size="12" fill="#1e3a8a">DSH_TELEMETRY_DISABLED 非空</text>
-  <text x="516" y="248" font-size="12" fill="#1e3a8a">→ disabled: true 那一行</text>
+  <text x="516" y="176" font-size="12" fill="#1e3a8a">DSH_TELEMETRY_DISABLED 非空</text>
+  <text x="516" y="198" font-size="12" fill="#1e3a8a">→ disabled: true 那一行</text>
+  <text x="516" y="226" font-size="12" fill="#1d4ed8">（launcher 唯一的派生层）</text>
+  <text x="516" y="248" font-size="12" fill="#1d4ed8">shipped preset root 是包内解析</text>
   <text x="516" y="280" font-size="12" fill="#1d4ed8">!!js 在 inject 齐了之后才求值</text>
 
   <rect x="40" y="328" width="880" height="92" rx="10" fill="#fff7ed" stroke="#fdba74"/>

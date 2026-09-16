@@ -1,6 +1,6 @@
 # `_agent_ready_development` 语料证据与维护说明
 
-> 复核日期：2026-09-05。产品源码基线：`a66e4702047846cdaa10c66c9d3df3951f5ea70d`（本语料自钉的固定基线；工作树已随上游合入前进到 `183f08e9c6`（`dsh-v0.1.5-rc.1`），自身 re-pin 尚未执行，见文末维护日志）。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
+> 复核日期：2026-09-16。产品源码基线：`183f08e9c6dde7e36cd2318eaee70b0da08fb35e`（`dsh-v0.1.5-rc.1`，本语料自钉的固定基线；本轮 re-pin 后语料引用的全部 DSH 路径都在该 commit 逐一复核过）。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
 
 ## 1. 专题定位
 
@@ -20,13 +20,13 @@
 - Issue/PR templates、`issue-management/policy.mjs`、config 与 policy tests；
 - `issue-policy.yml`、`issue-lifecycle.yml`、`ci.yml`、real-provider e2e、docs/release workflow 的触发边界，以及 Dependabot config；
 - Plan subsystem、package README、implementation 和 coding preset；
-- 固定基线中 `.agents/skills/` 的 11 个 repository development Skills，包括 decision corpus、docs/prose 和 delivery/review 三组；
+- 固定基线中 `.agents/skills/` 的 12 个 repository development Skills（其中 11 个以 `dsh-` 命名），包括 decision corpus、docs/prose 和 delivery/review 三组；
 - `packages/skill/{skill,skill-filesystem,tool-skill}` 的 runtime Skill registry、provider discovery 与 model-facing loading；
 - `packages/extensions/tool-cordis`、`cordis-host-runner` 源码、生成 tool catalog 与 package trust stance；
 - `scripts/run-gates.ts`、testing policy 和相关 process Agent Notes；
 - Web capability seam 的四个历史 commit 与当前 Agent Note。
 
-固定基线的 self-referential Cordis 资料存在可核验冲突：implemented Agent Note 描述 `cordis_inspect/mount/unmount` 三个工具，package README 概括 `cordis_inspect/define/run/stop/undefine` 五个工具，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/packages/extensions/tool-cordis/src/index.ts) 与生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 一致列出 `inspect_list/inspect_query/inspect_self/define/run/stop/undefine` 七个工具。`development-harness/06` 以源码和生成 catalog 说明当前工具集合，只使用 Note 与 README 中仍与源码相容的信任和生命周期边界。
+固定基线的 self-referential Cordis 资料存在可核验冲突：implemented Agent Note [`2026-07-08-self-referential-cordis-toolset`](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 仍用 `cordis_inspect` / `cordis_mount` / `cordis_unmount` 三个工具的旧词汇描述动态 Plugin，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/packages/extensions/tool-cordis/src/index.ts)、生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 与 package README 一致列出 `inspect_list/inspect_query/inspect_self/define/run/stop/undefine` 七个工具。`development-harness/06` 以源码和生成 catalog 说明当前工具集合，只使用 Note 中仍与源码相容的信任边界。
 
 ## 3. 结构与叙事约束
 
@@ -56,7 +56,7 @@
 
 - `.agents/notes/**`、`.agents/skills/**`；
 - `.github/AGENTS.md`、`.github/ISSUE_TEMPLATE/**`、`.github/pull_request_template.md`、`.github/issue-management/**`、`.github/workflows/{ci,issue-policy,issue-lifecycle,e2e}.yml`、`.github/dependabot.yml`；
-- `packages/plan/plan-mode/**`、`docs/subsystems/{plan,sandbox,approval}.md`、`apps/cli/config/agent-presets/**`；
+- `packages/plan/plan-mode/**`、`docs/subsystems/{plan,sandbox,approval}.md`、`packages/preset/agent-presets/**`；
 - `packages/skill/{skill,skill-filesystem,tool-skill}/**`；
 - `packages/extensions/{tool-cordis,cordis-host-runner}/**`；
 - `AGENTS.md`、`packages/AGENTS.md`、`docs/{AGENTS,architecture,glossary,cordis-primer,testing}.md`、`docs/cookbook/**`；
@@ -75,11 +75,21 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 2026-09-05 的 rc.1（`a66e470204`）复核：全部目录外 DSH 引用 URL re-pin 到 rc.1；机制扫描（invariant 空 companion 废除、subagent report 工具删除、schedule 非 seam、apiproxy 删除、profile 组合变薄层、agent preset 改名 ptc、session header 去 seedLength）在本语料正文无命中，证据正文无需修订。目录级 verify 通过。
 
-2026-09-16 的 0.1.5-rc.1（`183f08e9c6`）同步：本语料的工作树基线随上游合入前进，但**语料自身的固定基线仍是 `a66e470204`**，正文未重验，URL 仍钉在旧 commit（该 commit 仍可解析）。已知会冲掉本语料的机制，留给下一次 re-pin 逐条处理：
+2026-09-16 的 0.1.5-rc.1（`183f08e9c6`）re-pin 与逐条复核：118 条目录外 DSH 引用 URL 从 `a66e470204` 改钉到 `183f08e9c6`（17 个内容文件，另同步 `verify.mjs` 的钉版正则和两处正文中的 commit 说明）。旧基线列出的 58 个钉版路径逐一用 `git cat-file -e` 在该 commit 复核：57 个仍然存在，1 个已不存在（`.agents/skills/dsh-doc-site-sync/SKILL.md`，内容早先并入 `dsh-doc`），改后 57 个路径全部存在。目录级 verify 通过（32 Markdown、1 scripts、15 SVG）；11 个带 fragment 的钉版 URL 的锚点、以及全部 blockquote 引文都对照该 commit 重新核对。上一轮预告的四项处理结果：
 
-1. `.github/ISSUE_TEMPLATE/` 从五种（Idea/Feature/Bug/Research/Task，含折叠区验收与测试证据）改为三种（Bug/Feature/Task），并删除折叠区、可见正文长度、标题语言/前缀与 `Owner:` 行的 policy 检查 → `advanced-sdd-flow/02` §1 与 §2 的模板清单、`package.json` 之外的 policy 描述会失实。
-2. `.agents/notes/` 大归档（implemented 1288 → 582 篇，archived 341 → 1257 篇）→ `advanced-sdd-flow/01`、`04`、`06`、`development-harness/00`、`05` 中钉在 implemented 子树的 URL 可能指向已归档路径。
-3. `.github/AGENTS.md` 的平台矩阵与 self-hosted/standby 策略改写（新增 master-only platform CI 决策）→ `advanced-sdd-flow/04` §平台一节需重验。
-4. `docs/` 新增 `session-format-status.md`、`subsystems/client-resources.md`、`subsystems/sidebar-right.md`、`user/guide/network-proxy.md`，并删除 apiproxy 面 → `development-harness/06` 的 catalog 清单需重验。
+1. `.github/ISSUE_TEMPLATE/` 确认只剩 `Bug / Feature / Task` 三种模板且 `config.yml` 关闭空白 Issue，折叠的验收与测试证据区已删除 → 改写 `advanced-sdd-flow/02` §1；§2 的 policy 条件逐条比对 `policy.mjs` 后仍然成立。
+2. `.agents/notes/` 归档确认发生：implemented note（不含 `README.md`/`AGENTS.md`）从 644 篇降到 291 篇，archived 从 170 篇升到 628 篇，其中 445 篇按同名路径从 implemented 迁到 archived。语料钉版的 5 个 implemented note（`quality-gates`、`uniform-agent-note-format`、`web-capability-seam`、`self-referential-cordis-toolset`、`native-github-stacks-and-optional-rebases`）与 1 个 archived note（`incremental-pr-base-retargeting`）在该 commit 都仍在原位置，无需改路径；预告中的 `quality-gates`、`native-stacks`、`self-referential-cordis-toolset` 迁移并未发生。
+3. `.github/AGENTS.md` 平台矩阵确认反转：native Windows build 与 native tests 计入 PR 的 `all checks passed`（`ci.yml` 的 `needs` 含 `windows-build`、`windows-native-tests`），Wine 只在 master-only 的 `ci-master.yml` 用 hosted Linux 运行 → 改写 `advanced-sdd-flow/04` §4 与证据入口，并同步 `figures/evidence-routing.svg` 的 Windows 方框文字。
+4. `docs/` 清单：本轮跨度新增 `session-format-status.md`、`subsystems/client-resources.md`、`subsystems/sidebar-right.md`、`user/guide/network-proxy.md` 与 `cookbook/adding-a-session-format-version.md`，没有删除任何 `docs/` 文件（apiproxy 面的删除属于更早的跨度）；新增文件都不是 generated catalog，`development-harness/06` 的 catalog 清单与 `docs/cookbook/extension-cookbook.md` 的索引范围仍然成立，无需改写。
 
-本轮只做语料隔离性验证：`node _agent_ready_development/verify.mjs` 通过（32 Markdown、1 scripts、15 SVG）。
+逐条复核另外发现并修正的问题：
+
+1. `.agents/skills/dsh-doc-site-sync` 在旧基线就已不存在（内容早先并入 `dsh-doc`）→ `advanced-sdd-flow/05` 的正文与证据入口改指 `dsh-doc`；`development-harness/03` 的 Skills 表同步补正为 12 个仓库 Skills（新增 `dsh-ci-test-reliability`、`dsh-speed-up-perf`，移除不存在的项）。
+2. `packages/extensions/tool-cordis/README.md#trust-stance` 锚点在新旧两个 commit 都不存在，信任边界现在住在 “Boundaries to plan around” 一节 → `development-harness/06` 与 `07` 改锚。
+3. invariant companion 规则：`packages/AGENTS.md` 早已规定空 companion 会被 `verify-package-invariants` 拒绝，语料仍写“允许说明理由的空 installer” → 修正 `advanced-sdd-flow/06`、`development-harness/02`、`development-harness/05`；2026-09-05 条目中“invariant 空 companion 废除在本语料正文无命中”的判断有误。
+4. `advanced-sdd-flow/03` 的 plan 引文在旧基线也不是原文（含义相近但措辞不同，且归属文件不对）→ 改引 `docs/subsystems/plan.md` 的原文；同页 `foldPlanMode()` 只是测试内 helper，已改述为 `ctx.planMode` 经可选注册的 `plan` projection unit 读取。
+5. 维护页 §5 的重审触发路径 `apps/cli/config/agent-presets/**` 在旧基线已不存在 → 改为 `packages/preset/agent-presets/**`。
+
+复核后未改动的部分：`advanced-sdd-flow/02` 的 policy 函数与 workflow/Dependabot 事实、`advanced-sdd-flow/04` 的 `change-scope`、hook 与证据路由表、`advanced-sdd-flow/07` 的 stack 流程、`development-harness/01`、`04`、`06` 的机制清单、`advanced-sdd-flow/08` 的四个历史 commit 与现行 Note 结构，以及 `foundations/` 全篇，都与 `183f08e9c6` 一致。
+
+本轮只做语料级验证：`node _agent_ready_development/verify.mjs` 通过（32 Markdown、1 scripts、15 SVG），`npx tsx scripts/verify-md-wrap.ts`、`npx tsx scripts/verify-md-links.ts` 与 `git diff --check` 也都通过，且语料中没有任何 URL 仍钉在旧 commit。完整 `doc-sync` 未在本轮重跑，2026-08-24 条目记录的目录外阻断仍然适用。

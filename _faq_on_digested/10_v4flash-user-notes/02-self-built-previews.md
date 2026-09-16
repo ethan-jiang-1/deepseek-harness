@@ -6,7 +6,7 @@
 
 | 清单项 | 判定 | 官方交付位置 |
 |---|---|---|
-| 多路并行 | **已有，且有三层** | ① `workflow` 脚本内 `parallel()`（barrier）/`pipeline()`（stages 间无全局栅栏）fan-out 子代理；② 后台 subagent（`run_in_background`，完成后通知回流，不占 captain 上下文）；③ 单 turn 内无依赖工具调用按 `maxParallelToolCalls` 池并行（`packages/core/agent-loop/src/tool-calls.ts:59-101`） |
+| 多路并行 | **已有，且有三层** | ① `workflow` 脚本内 `parallel()`（barrier）/`pipeline()`（stages 间无全局栅栏）fan-out 子代理；② 后台 subagent（`run_in_background`，完成后通知回流，不占 captain 上下文）；③ 单 turn 内无依赖工具调用按 `maxParallelToolCalls` 池并行（`packages/core/agent-loop/src/tool-calls.ts:132` 读取配置、`:200` 的在飞池循环） |
 | diff 预览 | **已有** | `card: 'diff'` render intent：`tool-fs` 的 `write`（`oldText: null` 表新建）与 `edit`、`fs/tool-str-replace-editor` 都声明它；`ui-primitives/DiffBlock` 自研 hunk 渲染；chat 行截断 8 行、详情面板不截断（`packages/client/ui-tool/src/client/tool/models/diff-card-model.ts`） |
 | markdown 预览 | **已有（渲染）** | `ui-primitives/MarkdownText`：micromark 自组装 commonmark + GFM + math，代码高亮 shiki（`packages/client/ui-primitives/package.json:34-48`）；`AssistantMarkdown` 按块序渲染 text/reasoning/image |
 | dynamic workflow | **原语已有，模板载体没有** | 见第五节：seam 明确 "caller-supplied scripts only"（`packages/workflow/workflow/README.md`），可复用载体是插件或 skill，不是模板文件 |

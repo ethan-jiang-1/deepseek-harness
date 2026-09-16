@@ -6,7 +6,7 @@
 
 ## 能力面
 
-`dsh-llm` 定义能力 `SystemPromptUpdate = 'in-history'`（`packages/llm/llm/src/types.ts:347`），作为**可选兄弟字段**挂在 `LlmResolvedModelInfo`（`:358`）与 `PreparedLlmCall` 上（`packages/llm/llm/src/index.ts:169-172`）。`normalizeModelInfo` 拒绝任何其他取值，抛 `LlmError` code `INVALID_MODEL_INFO`（`:779-783`）。
+`dsh-llm` 定义能力 `SystemPromptUpdate = 'in-history'`（`packages/llm/llm/src/types.ts:347`），作为**可选兄弟字段**挂在 `LlmResolvedModelInfo`（`:358`）与 `PreparedLlmCall` 上（`packages/llm/llm/src/index.ts:173`）。`normalizeModelInfo` 拒绝任何其他取值，抛 `LlmError` code `INVALID_MODEL_INFO`（`:779-783`）。
 
 **唯一内置声明者是 `deepseek-flash`**（`packages/llm/llm-deepseek/src/index.ts:94-100`，catalog zod 用 `z.const('in-history')` 校验，`:184`）。**所有 `llm-pi-ai` route 都不声明**（`packages/llm/llm-pi-ai/src/` 全目录无 `systemPromptUpdate`），因此手工配置的 pi-ai route 一律保持「重写 message 0」的 replace 行为。部署可以用 `cordis.yml` 的 `models` 列表替换 catalog，从而显式声明该能力（`packages/llm/llm-deepseek/src/adapter.ts:72`、`:417`）。
 

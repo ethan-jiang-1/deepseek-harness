@@ -2,7 +2,7 @@
 
 ## 读者模型：有问的通道，但没有免费的部落知识通道
 
-coding agent 与人类读者的关键差别，不是「完全不能问」——dsh 里就有 approval、AskUserQuestion、human command，agent 可以问人。差别是：**它没有零成本、非正式、默认存在的部落知识通道**。它不能靠「在这个仓库干过三年」补出没人写下来的约定；每一次提问都有成本，而真正危险的部落知识往往连问题都形不成。
+coding agent 与人类读者的关键差别，不是「完全不能问」——dsh 里就有 approval、`ask_user_question`、human command，agent 可以问人。差别是：**它没有零成本、非正式、默认存在的部落知识通道**。它不能靠「在这个仓库干过三年」补出没人写下来的约定；每一次提问都有成本，而真正危险的部落知识往往连问题都形不成。
 
 所以「一个仓库对 agent 可读」（legibility）有一个可检验的标尺：**它的参与知识尽可能以字面形式存在**，包括「这里没有检查」和「这条路已被否掉」这类负知识。没有仓库能真正做到 100%；dsh 的八个机制共同把这一比例推到很高，并把剩下的判断拆小、配工具。编号只为引用方便：机制之间边界故意重叠，不是八块拼图。
 
@@ -26,7 +26,7 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 读者看到 `ctx.agents`，glossary、架构文档和源码说的是同一件事。翻译层是常见的可读性杀手：文档说「组件」、代码叫 `Component`、review 里叫「那个东西」。
 
-> `SessionEventMap` members are required-on-read by default — builds that do not know a type refuse the log unless the event carries the envelope's `ignorable: true`.
+> `SessionEventMap` members are required-on-read by default — builds that do not know a type refuse the log unless the event carries the envelope's `ignorable: true`; only structural format changes bump `SESSION_FORMAT_VERSION`.
 >
 > —— `AGENTS.md:108`（基线 `183f08e9c6…`）
 
@@ -53,7 +53,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 ## 机制五：结构同构，生成目录不漂移
 
-- 每个包同样布局：`src/types.ts` 只放类型、测试在包级 `tests/`、同一 tsconfig 模板、注册进恰好一个 aggregate（[`docs/development.md`](../../docs/development.md)）。学会一个包 = 学会全部包。
+- 每个包同样布局：`src/types.ts` 只放类型、测试在包级 `tests/`、同一 tsconfig 模板、注册进恰好一个 aggregate（包目录规则见 [`packages/AGENTS.md`](../../packages/AGENTS.md) 的 naming rules，tsconfig 面与 aggregate 见 [`docs/development.md`](../../docs/development.md#typescript-project-layout)）。学会一个包 = 学会全部包。
 - 每个包有 README + JSDoc 合同；`./invariant` 只在有独立可观察关系时登记（`verify-package-invariants` 强制，空/忽略 reporter 判 fail）；README 还必须写 Model Experience 和 Known Limitations（`verify-package-readme-model-experience` / `verify-package-readme-limitations`）。
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
@@ -93,7 +93,7 @@ coding agent 的真实约束不只有「读不读得懂」，还有**上下文�
 - skills 提供可调用的程序化工作流，如 [`dsh-doc`](../../.agents/skills/dsh-doc/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。
 - 双语文档由配对门禁管理：`docs/AGENTS.md` 要求“Pairs update together”，`verify-translation-pairing` 把英文/中文/记录三方钉在一起。
 
-> **Pairs update together**: Terminology-guided, single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records.
+> **Pairs update together**: Terminology-guided, single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records; `dsh-translate-docs` remains user-invoked.
 >
 > —— `docs/AGENTS.md:43`（基线 `183f08e9c6…`）
 
@@ -113,7 +113,7 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 - [`docs/architecture.md`](../../docs/architecture.md)（第 72、137 行；事件域、扩展表）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件矩阵与分发模式）
 - [`../../AGENTS.md`](../../AGENTS.md)（第 108 行；required-on-read 与 standing orders）
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文、tier taxonomy、字数预算）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-32、38、47-57 行；tier taxonomy 与一个事实一个家、当前状态散文、字数预算）
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；读者模型的因果来源）
 - [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照；note 语料库规则的历史来源。现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:39`](../../docs/AGENTS.md)）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（第 36-42、46 行；归档判据与记忆的 gate）
@@ -121,5 +121,5 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 - [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（`0.1.2-rc.1` 废除空 companion，现行权威）
 - [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 `0.1.2-rc.1` 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」，原「空 invariant 纪律」的显式结论表述只剩历史意义，`0.1.2-rc.1` 起被 2026-08-28 裁定取代）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
-- [`docs/development.md`](../../docs/development.md)（包结构同构）
+- [`docs/development.md`](../../docs/development.md#typescript-project-layout) / [`../../packages/AGENTS.md`](../../packages/AGENTS.md)（包结构同构：aggregate 布局与命名规则）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）

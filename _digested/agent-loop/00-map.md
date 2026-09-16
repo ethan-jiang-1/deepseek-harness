@@ -1,5 +1,7 @@
 # Agent Loop · 推进、边界与 Goal 驱动
 
+产品源码基线：`183f08e9c6`（`dsh-v0.1.5-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）。
+
 ## 一句话
 
 ruofei 说「Agent Loop 管推进，结束却分好几层」。Loop 不是「模型回答完就结束」——一次 step 结束不等于 turn 结束，agent idle 不等于任务完成，因为 Goal 可能还是 `active`，随时发起新一轮。

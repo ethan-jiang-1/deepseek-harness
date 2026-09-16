@@ -27,7 +27,7 @@
 
 - `AgentSetup` 的签名是 `(agentCtx: Context, agent: Agent)`（`packages/core/agent/src/index.ts:50-53`）：setup 回调同时拿到「注册落在哪个 Context」与「这次操作属于哪个 Agent」，不再需要从前者推后者。父创建子时，setup 回调的 Agent 参数是**子**，因果父由 initiator 边界报告。
 - `CreateAgentOptions.parentAgent`（`:66`）与 `ResumeAgentOptions.parentAgent`（`:129`）是运行时子属关系的唯一入口。
-- `AgentRegistry.register()` 固定以 root 身份进入：`yield this.enter(agent, undefined)`（`:434-436`）。也就是说，已构造 Agent 的注册永远是运行时 root；子属关系只能经 `parentAgent` 建立——loop 侧的调用点是 `loopCtx.agents.enter(agent, parentAgent)`（`packages/core/agent-loop/src/index.ts:665`）。
+- `AgentRegistry.register()` 固定以 root 身份进入：`yield this.enter(agent, undefined)`（`:434-436`）。也就是说，已构造 Agent 的注册永远是运行时 root；子属关系只能经 `parentAgent` 建立——loop 侧的调用点是 `loopCtx.agents.enter(agent, parentAgent)`（`packages/core/agent-loop/src/index.ts:667`）。
 - 后果：`AgentRegistry.roots()` 与 `isOwnedBy()` 看的是 live 属主，不是 durable 的 `parentSession` metadata。一个 fork 或 resume 出来的 Session 在没有 live Agent 拥有它时就是运行时 root，而 `SubagentContinuationManager` 建立的 continuable child 即使在私有插件 Context 里创建，也因为有精确 `parentAgent`（`packages/subagent/subagent/src/continuation-activation.ts:592`、`:599`，冷 resume 与新建两条路径都传）而不被当成顶层。
 
 ### 对 subagent 的直接后果
@@ -54,7 +54,7 @@ if (change.operation === 'pause' && agent.status === 'running'
 - **host 发起**的 pause（Web 按钮等 agent initiator 边界之外的路径）满足 `currentInitiator() !== agent`，于是正在跑的 turn 被 `agent.cancel` 直接中止——Pause 成为真正的「现在停下」，而不只是「别再开新一轮」。`keepInbox` 保留待处理输入。
 - **模型自己**的 `update_goal pause` 在自身 turn 内运行，`currentInitiator() === agent`，于是正常跑完当前 turn，pause 从下一轮起生效。
 
-initiator 在产品语义里并非全新判据：`goalToolExecution` 早就在 OLD 基线用 `ctx.agents.currentInitiator() !== agent` 拒绝「不在自己 active driver 内」的 goal tool 调用（`packages/goal/tool-goal/src/authority.ts:52-58`，本跨度未改）。driver 这条分支的新意在于：它用同一个 API 区分**两个都合法的发起者**（host 与 model）并据此决定是否中止正在跑的 turn，而不只是拒绝越权调用。相关的 goal 工具授权（`requireDirectHuman` / `completionAuthority`）仍基于 live agent 与 initiator（`authority.ts:110-117`），本跨度未改判据。被中止的 turn 与随后的 resume 时序（revision 栅栏）见 [`02-goal-round-driver.md`](./02-goal-round-driver.md) 的「host pause 与 revision 栅栏」。
+initiator 在产品语义里并非全新判据：`goalToolExecution` 早就在 OLD 基线用 `ctx.agents.currentInitiator() !== agent` 拒绝「不在自己 active driver 内」的 goal tool 调用（`packages/goal/tool-goal/src/authority.ts:52-58`，本跨度未改）。driver 这条分支的新意在于：它用同一个 API 区分**两个都合法的发起者**（host 与 model）并据此决定是否中止正在跑的 turn，而不只是拒绝越权调用。相关的 goal 工具授权（`requireDirectHuman` / `completionAuthority`）仍基于 live agent 与 initiator（`packages/goal/tool-goal/src/authority.ts:110-117`），本跨度未改判据。被中止的 turn 与随后的 resume 时序（revision 栅栏）见 [`02-goal-round-driver.md`](./02-goal-round-driver.md) 的「host pause 与 revision 栅栏」。
 
 ## 与四层边界的关系
 

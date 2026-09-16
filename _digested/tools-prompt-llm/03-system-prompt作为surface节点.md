@@ -12,7 +12,7 @@ surface 事件类型因此从三种变成四种：`system/message`、`user/messa
 
 空 `content` 表示「无 system prompt」。节点保留 surface 位置，`deriveEventMessage` 把它投影为 `null`，不产生 wire 消息（`packages/core/session/src/surface.ts:109-116`）；同一分支也让「只带 usage 的 max-tokens assistant message」不注入空 assistant turn。
 
-提交时序：loop 的 `turn()` 在 `step/start` 之后、本步 `user/message` 之前提交 `system/message`（`packages/core/agent-loop/src/agent.ts:370-376`），所以**日志顺序 = wire 顺序**。`buildRequest`（`:553-612`）不再设 `system`，请求 = `header.config` + `session.deriveMessages()`（system 在最前）+ `header.tools`；配套的 invariant 断言 loop 构造的请求 `system === undefined`（`packages/core/agent-loop/src/invariant.ts:44-46`）。
+提交时序：loop 在 `step/start` 之后、本步 `user/message` 之前提交 `system/message`（`turn()` 在 `packages/core/agent-loop/src/agent.ts:302` 落 `step/start`，`step()` 在 `:370-376` 提交 system 与首个 attempt 的 user 批次），所以**日志顺序 = wire 顺序**。`buildRequest`（`:553-612`）不再设 `system`，请求 = `header.config` + `session.deriveMessages()`（system 在最前）+ `header.tools`；配套的 invariant 断言 loop 构造的请求 `system === undefined`（`packages/core/agent-loop/src/invariant.ts:44-46`）。
 
 ## `EpochHeader` 不再有 `system`
 
@@ -20,7 +20,7 @@ surface 事件类型因此从三种变成四种：`system/message`、`user/messa
 
 `RequestHeaderReason` 本身没变，仍是 `'initial' | 'resume' | 'change' | 'series'`（`packages/core/session/src/types.ts:261`）。变的是 `change` 的含义：现在只意味着 **config 或 tools** 变了；prompt 变化不再伪装成 `change`。
 
-wire 请求不变。DeepSeek 序列化器把历史里的 `role: 'system'` 消息原样透传（`packages/llm/llm-deepseek/src/serialize.ts:250-251`、`:303-305`）；pi-ai 把 leading system history message 映射到它自己的单一 `systemPrompt` 槽（`packages/llm/llm-pi-ai/src/context.ts:140-151`）。`GenerateOptions.system` 仍保留给一次性调用者，例如 title provider（`:386-387`、`:425-426`）。
+wire 请求不变。DeepSeek 序列化器把历史里的 `role: 'system'` 消息原样透传（`packages/llm/llm-deepseek/src/serialize.ts:250-251`、`:303-305`）；pi-ai 把 leading system history message 映射到它自己的单一 `systemPrompt` 槽（`packages/llm/llm-pi-ai/src/context.ts:140-151`）。`GenerateOptions.system` 仍保留给一次性调用者（声明 `packages/llm/llm/src/types.ts:436`），例如 title provider（`packages/session/session-title-llm/src/index.ts:258` 把它放进冻结的 `GenerateOptions`）。
 
 ## 三种路由：`SystemPromptProjection`
 

@@ -15,7 +15,6 @@ PR 模板：
 
 来源：`.github/pull_request_template.md:1-10`（同仓库 Issue 的关联写在 Motivation 的注释里：`Fixes #NN` 或 `Related #NN`）
 
-
 Issue 引用的机器强制边界：
 
 > const automated = authorType === 'Bot' || authorType === 'App'
@@ -27,7 +26,7 @@ Issue 引用的机器强制边界：
 
 来源：`.github/issue-management/policy.mjs:267`
 
-限制：policy 检查引用和元数据，不检查“验收条件/测试证据”是否写得充分。
+限制：policy 只检查引用与元数据（Issue 引用、Type、Project Status、Priority、标签），不检查模板填写质量；0.1.5 起模板本身也不再要求验收条件/测试证据，那两项改由 PR 的 Testing 节承载。
 
 ## 2. 决策 spec：Agent Note
 
@@ -50,7 +49,6 @@ proposed 骨架：
 ```
 
 来源：`.agents/notes/README.md:80-90`
-
 
 ## 2.1 Plan Mode：原生支持但可选、软引导
 

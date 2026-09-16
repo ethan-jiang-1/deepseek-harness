@@ -1,5 +1,7 @@
 # Experimental · 实验原型面
 
+产品源码基线：`183f08e9c6`（`dsh-v0.1.5-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）。
+
 ## 一句话
 
 `packages/experimental/` 是九个「跑在真 Harness 上、但合同随时会变」的原型包：CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面，外加 preview 部署用的 webworker 双包。单独成专题的理由不是它们彼此相似，而是它们共享同一条真实存在的边界——**原型合同**：一种不承诺稳定性、可以在上游同步之间自由漂移的合同。跨度 0006 起，这条边界内部分出一档：五个 Agent Teams 包是**显式 public 例外**，以现有 `dsh-experimental-*` 名字进入 dsh release 家族；其余四包（code-runtime-python、inspector、webworker 双包）仍是 private 原型。
@@ -41,7 +43,7 @@
 | 文件 | 内容 |
 |------|------|
 | [`01-code-runtime-python.md`](./01-code-runtime-python.md) | `ctx.codeRuntime` 的 CPython 子进程后端：seam 合同、fd-3 帧协议、上限与失败行为 |
-| [`02-agent-teams.md`](./02-agent-teams.md) | `ctx.agentTeams` 服务、Lead Session log 持久化、十工具、双 profile 与 Web UI |
+| [`02-agent-teams.md`](./02-agent-teams.md) | `ctx.agentTeams` 服务、Lead Session log 持久化、九个成员级工具、双 profile 与 Web UI |
 | [`03-inspector.md`](./03-inspector.md) | Inspector 四个子目录、暴露面、CDP 连接方式与鉴权 |
 
 三页共同回答一个问题：不进 release 家族的能力在 DSH 里长什么样、怎么挂进来、毕业时往哪走。

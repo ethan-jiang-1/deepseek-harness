@@ -1,5 +1,7 @@
 # Composition · 启动组合
 
+产品源码基线：`183f08e9c6`（`dsh-v0.1.5-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）。
+
 ## 一句话
 
 一次正在跑的 `dsh` 是 boot 时按层**叠出来的插件树**。profile 是 Harness home 里的具名组合，bundle 是可安装的 patch 层，用户的 `cordis.patch.yml` 叠在所有 bundle 之上。

@@ -24,9 +24,9 @@
   <text x="376" y="136" font-size="11" fill="#2563eb">+ profile cordis.patch.yml</text>
   <text x="376" y="154" font-size="11" fill="#2563eb">+ home cordis.patch.yml</text>
   <text x="376" y="172" font-size="11" fill="#2563eb">+ --patch 文件</text>
-  <text x="376" y="200" font-size="11" fill="#1e3a8a">再加 launcher 派生层：</text>
-  <text x="376" y="218" font-size="11" fill="#1e3a8a">agent-presets 的 shipped root</text>
-  <text x="376" y="236" font-size="11" fill="#1e3a8a">DSH_TELEMETRY_DISABLED 补丁</text>
+  <text x="376" y="200" font-size="11" fill="#1e3a8a">再加 launcher 派生层（唯一一层）：</text>
+  <text x="376" y="218" font-size="11" fill="#1e3a8a">DSH_TELEMETRY_DISABLED 补丁</text>
+  <text x="376" y="236" font-size="11" fill="#1e3a8a">shipped preset root 不在层列表里</text>
 
   <line x1="640" y1="164" x2="678" y2="164" stroke="#4b5563" marker-end="url(#arr)"/>
 

@@ -20,7 +20,7 @@
 
 **被读到**——靠运行时注入 + standing order 的合力（见 02）：指令链 push、README pull，模型改包时 standing order 要求它读该包 README。
 
-**被维护**——靠门禁，不靠自觉：
+**被维护**——靠门禁，不靠自觉（下面两段引文抄自 `packages/AGENTS.md`，只去掉了原文里的 Markdown 链接目标，正文文字未改）：
 
 > Update package README and JSDoc contracts in the same commit as behavior, and verify them against code with dsh-prose-standard.
 >

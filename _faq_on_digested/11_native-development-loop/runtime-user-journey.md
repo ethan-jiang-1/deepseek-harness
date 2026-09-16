@@ -170,7 +170,7 @@ instructions 读取。Git 历史显示该 policy 被实践了（convention）。
 | read-before-edit / no-clobber | 源码 `fs-observation-policy/src/index.ts:65-88` | Default |
 | Pre-commit hooks | `lefthook.yml:5-38` | Default（repo-level） |
 | Pre-push = typecheck only | `lefthook.yml:52-55` | Default（repo-level） |
-| CI 拥有 coverage + platform matrix; coverage gate = test:coverage | `scripts/run-gates.ts:316-332, 612-645`; `ci.yml` lanes | Default（repo-level） |
+| CI 拥有 coverage + platform matrix; coverage gate = test:coverage | `scripts/run-gates.ts:318-340`（`ciPrimaryGates` 中的 `...coverageGates()`）与 `:612-647`（`coverageGates` 的 `test:coverage` / `test:coverage-exempt-heavy`）；`ci.yml` lanes | Default（repo-level） |
 | "Narrowest test / never full suite" | `dsh-pre-push-checks/SKILL.md:29-41` | Contributor policy |
 | "Report only commands run" | `AGENTS.md`（SKILL.md:8, 33 携带 "CI owns …" 框架）；字面句子在 AGENTS.md | Contributor policy |
 | "Agent Note per non-trivial change" | `AGENTS.md`; `.agents/notes/README.md` | Contributor policy |

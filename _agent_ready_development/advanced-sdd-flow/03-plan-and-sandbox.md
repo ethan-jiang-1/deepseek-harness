@@ -4,9 +4,9 @@
 
 Plan Mode（计划模式）是可选、按 agent 记录的协作状态：激活时把 deployment-owned guidance（部署提供的引导文本）加进模型请求，`exit_plan_mode` 把完整计划交给用户审批。它不限制文件或命令；sandbox mode（沙箱模式）和 approval policy（审批策略）独立执行访问规则。
 
-> Plan mode is soft guidance; sandbox mode and approval policy enforce restrictions independently and do not read or write plan state.
+> Plan mode is soft guidance. Sandbox mode and approval policy enforce restrictions independently; neither reads or writes plan state, so deployments configure them separately.
 >
-> — DSH [`packages/plan/plan-mode/README.md` 的开篇定义](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/packages/plan/plan-mode/README.md)。这句话直接划开计划协作状态与强制权限机制。
+> — DSH [`docs/subsystems/plan.md` 的开篇定义](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/subsystems/plan.md)。这句话直接划开计划协作状态与强制权限机制。
 
 ![Plan guidance、用户审批与权限执行彼此独立](./figures/plan-vs-enforcement.svg)
 
@@ -22,7 +22,7 @@ Plan guidance 可以要求 agent 只读探索，但违反这段 prompt 的模型
 
 ## 2. coding preset 定义计划质量
 
-`packages/preset/agent-presets/presets/ptc/agent.cordis.yml` 的 `plan:policy` 要求：
+`packages/preset/agent-presets/presets/ptc/agent.cordis.yml` 给 `dsh-plan-mode` 的 `section`（激活时渲染为 `plan:policy` prompt section）要求：
 
 - 先只读探索，不改文件、不运行会重写文件的 formatter/codegen、不提交；
 - 计划包含目标与成功标准、按 subsystem 分组的修改、public API/schema/data-flow 变化、失败与边界、测试、验收和显式假设；
@@ -34,7 +34,7 @@ Plan guidance 可以要求 agent 只读探索，但违反这段 prompt 的模型
 
 ## 3. 状态来自 session log
 
-`plan/mode` 的 payload 只有 `{ active: boolean }`。`foldPlanMode()` 读取日志前缀中最后一个值，无记录时为 false，因此 resume、fork 和 compaction 可以恢复已提交状态，UI 通过 `session/event` 观察变化。
+`plan/mode` 的 payload 只有 `{ active: boolean }`，最后一个记录值就是状态；`ctx.planMode` 通过可选注册的 `plan` projection unit 读取它，registry、`plan` key 或 `turnBoundary` key 缺失时第一次依赖访问显式失败。因为状态整体来自日志，resume、fork 和 compaction 可以恢复已提交状态，客户端从同一个 projection 观察 `{ active, pending }`。
 
 运行中的状态选择先保持 pending，在下一次被 downstream 接受的 in-turn `agent/pre-step` 才追加到日志；agent idle 时可以立即追加。选择本身不强制继续 turn，所以最后一个 pre-step 之后的 pending 状态可能等到下一 turn；进程在追加前退出会丢失这段 process-local pending selection。
 
@@ -58,9 +58,9 @@ Plan 是一次会话内、面向即将实施工作的可审批对象；Agent Not
 
 ## 证据入口
 
-- DSH [Plan subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/subsystems/plan.md)：`plan/mode` event、service、command 与工具的公开语义。
-- DSH [Plan Mode package README](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/packages/plan/plan-mode/README.md)：durable state、pending selection、review exchange 和已知限制。
-- DSH [Plan Mode implementation](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/packages/plan/plan-mode/src/index.ts)：event 提交和 `exit_plan_mode` 审批时序的实际实现。
-- DSH [coding preset](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/packages/preset/agent-presets/presets/ptc/agent.cordis.yml)：当前 deployment 提供给模型的 plan guidance，而不是包级通用模板。
-- DSH [Sandbox subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/subsystems/sandbox.md)：访问限制由谁执行。
-- DSH [Approval subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/subsystems/approval.md)：哪些操作需要显式用户授权。
+- DSH [Plan subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/subsystems/plan.md)：`plan/mode` event、service、command 与工具的公开语义。
+- DSH [Plan Mode package README](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/packages/plan/plan-mode/README.md)：durable state、pending selection、review exchange 和已知限制。
+- DSH [Plan Mode implementation](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/packages/plan/plan-mode/src/index.ts)：event 提交和 `exit_plan_mode` 审批时序的实际实现。
+- DSH [coding preset](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/packages/preset/agent-presets/presets/ptc/agent.cordis.yml)：当前 deployment 提供给模型的 plan guidance，而不是包级通用模板。
+- DSH [Sandbox subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/subsystems/sandbox.md)：访问限制由谁执行。
+- DSH [Approval subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/subsystems/approval.md)：哪些操作需要显式用户授权。

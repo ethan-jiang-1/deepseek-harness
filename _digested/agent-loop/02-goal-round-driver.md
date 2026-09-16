@@ -68,7 +68,8 @@ goal round N
   │      │
   │      └─ wakeDriver() → 创建新 activity → kick() 循环启动
   │         （loop 侧在 `ctx.agents.withInitiator(agent, …)` 内运行整段 activity，
-  │          agent.ts:207；driver 的调度任务本身则跑在 `withoutInitiator` 内，driver:215）
+  │          `packages/core/agent-loop/src/agent.ts:207`；driver 的调度任务本身则跑在
+  │          `withoutInitiator` 内，`packages/goal/goal-round-driver/src/index.ts:215`）
   │
   ├─ 6. turn() 开始新 turn（agent-loop/src/agent.ts:269）
   │      │
@@ -106,7 +107,7 @@ goal round N
   │
   ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:313-325）
   │      │
-  │      ├─ completionAuthority() 检查（authority.ts:110-117）
+  │      ├─ completionAuthority() 检查（`packages/goal/tool-goal/src/authority.ts:110-117`）
   │      │   ├─ direct human input？→ 允许
   │      │   └─ goal round？→ 检查 isMatchingGoalRound
   │      │      → 当前 turn 中有带 correct goalId/revision/round 的 goal 消息
@@ -115,7 +116,7 @@ goal round N
   │      ├─ ctx.goals.complete() / block() 持久化 goal/change
   │      │
   │      └─ deferContext() 注入 <goal_complete> 或 <goal_blocked> wrapup
-  │         （wrapup.ts:17-41）
+  │         （`packages/goal/tool-goal/src/wrapup.ts:17-41`）
   │         → "The goal is marked complete and this autonomous run is ending.
   │            Write the closing message to the user now… Do not call any
   │            more tools in this run."
@@ -176,7 +177,7 @@ while (state.requested && !state.stopping) {
 2. 若 `change.operation === 'pause'` 且 agent 正在 `running`，且 `ctx.agents.currentInitiator() !== agent`（第 289-292 行），执行 `agent.cancel({ kind: 'user' }, { keepInbox: true })`。Web 按钮在 agent initiator 边界之外运行，所以 host 的 Pause 会**中止正在跑的 turn**；模型自己的 `update_goal pause` 在自身 turn 内运行（`currentInitiator() === agent`），正常跑完自己的 turn，不被中止。`keepInbox` 保留待处理输入。
 3. 其它 mutation 只做 checkpoint 标记与重新排程。
 
-idle 分支的 pause 竞态栅栏随之收紧：旧判据只要求 attempt 处于 `queued`/`claimed`/`cancelled` 且 goal 仍 active + armed；新判据额外要求 `attempt.goalId === goal.id && attempt.revision === goal.revision`（第 265-271 行）。resume 会 bump revision，所以「pause → 在被中止的 turn 收敛到 idle 之前立刻 resume」不会被过期 attempt 二次 pause。测试分别覆盖 host pause 中止（`goal-round-driver.spec.ts:319-336`）、pause 后立即 resume（`:338-355`）、model pause 跑完自己的 turn（`:357-384`，断言 `turn/end` 含 `completed` 不含 `aborted`）。
+idle 分支的 pause 竞态栅栏随之收紧：旧判据只要求 attempt 处于 `queued`/`claimed`/`cancelled` 且 goal 仍 active + armed；新判据额外要求 `attempt.goalId === goal.id && attempt.revision === goal.revision`（第 265-271 行）。resume 会 bump revision，所以「pause → 在被中止的 turn 收敛到 idle 之前立刻 resume」不会被过期 attempt 二次 pause。测试分别覆盖 host pause 中止（`packages/goal/goal-round-driver/tests/goal-round-driver.spec.ts:319-336`）、pause 后立即 resume（同文件 `:338-355`）、model pause 跑完自己的 turn（同文件 `:357-384`，断言 `turn/end` 含 `completed` 不含 `aborted`）。
 
 ## 持久化检查点
 

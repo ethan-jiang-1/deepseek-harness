@@ -23,7 +23,7 @@ DSH 展示的是怎样组织复杂参与知识，而不是怎样让复杂系统�
 
 > This is an opt-in development tool with bash-equivalent trust, not a security boundary or product default.
 >
-> — DSH [`self-referential Cordis toolset` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)。这段原文限定了动态自省与修改能力的安全含义。
+> — DSH [`self-referential Cordis toolset` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)。这段原文限定了动态自省与修改能力的安全含义。
 
 ## 知识外置本身有维护成本
 
@@ -63,8 +63,8 @@ DSH 作为 Development Harness 的突出之处，不是拥有最多规则，而�
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/architecture.md)：插件组合、事件日志、seam 和行为归属所面对的组合复杂度。
-- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/AGENTS.md)：一个事实一个 owner、上下文预算和文档维护纪律。
-- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-code-review/SKILL.md)：Skill 的 guidance 边界和 semantic review 责任。
-- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/testing.md)：真实入口、negative control 和不同证据层的限制。
-- DSH [`@deepseek-ai/dsh-tool-cordis` README](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/packages/extensions/tool-cordis/README.md#trust-stance)：动态自省工具的权限和非安全边界。
+- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/architecture.md)：插件组合、事件日志、seam 和行为归属所面对的组合复杂度。
+- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/AGENTS.md)：一个事实一个 owner、上下文预算和文档维护纪律。
+- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/.agents/skills/dsh-code-review/SKILL.md)：Skill 的 guidance 边界和 semantic review 责任。
+- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/docs/testing.md)：真实入口、negative control 和不同证据层的限制。
+- DSH [`@deepseek-ai/dsh-tool-cordis` README 的 “Boundaries to plan around”](https://github.com/deepseek-ai/deepseek-harness/blob/183f08e9c6dde7e36cd2318eaee70b0da08fb35e/packages/extensions/tool-cordis/README.md#boundaries-to-plan-around)：动态自省工具的进程权限和非安全边界。

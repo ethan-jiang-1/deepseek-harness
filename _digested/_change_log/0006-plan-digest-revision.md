@@ -119,6 +119,7 @@ _coverage 逐专题翻回「已核验」+ verify + 独立复审
 
 ## 本轮未完成
 
-- `harness-idea/` 的 claims 重算与 FAQ 逐篇复核：见专题报告。
-- 上游文档缺口三条（根 `AGENTS.md` 布局块、`packages/session/README.md` 漏登记 v2→v3、`docs/persistence-changes/` 属后续版本）只登记，不代上游修。
-- `_agent_ready_development/` 自身 re-pin 挂账（外链仍钉 `a66e470204`）。
+- 上游文档缺口五条（根 `AGENTS.md` 布局块、`packages/session/README.md` 漏登记 v2→v3、`docs/persistence-changes/` 属后续版本、`preset/agent-presets/README.md` 仍提已删的 `code` preset、`packages/client/README.md` 只登记 51 个包中的 49 个）只登记，不代上游修。
+- `0.1.5-rc.2` / `0.1.6-alpha.1` / `upstream/master`（`0d1f50007f`）未同步：本仓库按 npm `latest` 选基线。
+
+> 本计划列出的修订项与两项曾挂账的收尾（`_agent_ready_development/` re-pin、`harness-idea/` claims 与 FAQ 逐篇复核）**均已完成**，结果见 [`0006`](./0006-0.1.2-rc.1-to-0.1.5-rc.1.md) 的「后续完成」与「第二轮全量核验」两节。

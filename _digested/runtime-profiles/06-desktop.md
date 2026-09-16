@@ -9,9 +9,9 @@
 - profile 目录：`$DSH_HOME/profiles/desktop`（`apps/desktop/src/paths.ts:34`），与 CLI profile 同属一个 Harness home 下的 `profiles/`。
 - 组合起点：`DESKTOP_PROFILE_BUNDLES = ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app']`（`apps/desktop/src/project-manager.ts:105`）——**就是 web 那两个 bundle**。GUI 安装的 desktop 插件 bundle 追加在其后（`apps/desktop/src/project-manager.ts:274-303` 校验并重写 `dsh.profile.bundles`，seed manifest 在 `:694`，开发工程元数据在 `:720`）。
 - 共享边界：CLI 与 Desktop 共享 `$DSH_HOME` 下的产品数据（会话、设置、凭据、工作区），但**从不共享**可执行包、插件激活、lockfile 或 `node_modules`；Desktop 用自带的 pnpm 与私有 store 管理自己的 profile。
-- CLI 三处一律拒绝这个名字：`rejectElectronProfile`（`apps/cli/src/args.ts:68-71`）大小写不敏感地把 `desktop` 判为 Electron 专属，调用点在根命令 action（`:159`，覆盖 boot 与 `--dump-config` / `--dump-default-config`）与 `plugin` 子命令（`:198`）。`desktop` 也**不是** `PROFILE_TEMPLATES` 成员，所以 `--from-default-profile desktop` 会以「未知模板」被拒（[`../composition/04-profile-创建与保留名.md`](../composition/04-profile-创建与保留名.md)）。
+- CLI 的三个 profile 入口一律拒绝这个名字：`rejectElectronProfile`（`apps/cli/src/args.ts:68-71`）大小写不敏感地把 `desktop` 判为 Electron 专属，调用点只有两个——根命令 action（`:159`，一次覆盖 boot 与 `--dump-config` / `--dump-default-config`）与 `plugin` 子命令（`:198`）。`desktop` 也**不是** `PROFILE_TEMPLATES` 成员，所以 `--from-default-profile desktop` 会以「未知模板」被拒（[`../composition/04-profile-创建与保留名.md`](../composition/04-profile-创建与保留名.md)）。
 
-`docs/architecture.md` 把这条归属单独写在 `## Desktop application`（`:49-53`），而 `## Application launch`（`:41-45`）仍然只列 5 个 CLI 应用、不计 Desktop。
+`docs/architecture.md` 把这条归属单独写在 `## Desktop application`（`:49-53`），而 `## Application launch`（`:41-47`）仍然只列 5 个 CLI 应用、不计 Desktop。
 
 ## 装载路径：`loadProfileDirectory`
 
@@ -86,9 +86,11 @@ desktop 的根配置文件名与 CLI profile 不同：`desktop.cordis.yml`，内
 | `agent-presets` | 挂载，`default: standard` | 同样挂载，`roots` 指向 dsh 安装内的 `config/agent-presets` |
 | client 图 | `packages/client/` 经 `window.__DSH_BOOT__` | 复用同一套，由 Electron 的 `dsh-app://` 投递 |
 
-## 待人工判断
+## 与出网代理 note 的偏差
 
-`desktop-host` **不安装出网代理**。`installProxyFromEnvironment` 目前在仓库里的唯一调用点是 `apps/cli/src/profile-boot.ts:287`；`apps/desktop-host/src/index.ts:287` 直接调 `loadLayeredEnv('dsh desktop')`，随后 `:289` 调 `boot()`，全程没有安装代理。而 note [`2026-08-27-outbound-proxy-policy`](../../.agents/notes/implemented/architecture/2026-08-27-outbound-proxy-policy.md) 写的是「`loadLayeredEnv` 只有一个调用者，所以这一处覆盖每个 profile」——这句话在新基线下已不准确（`loadLayeredEnv` 现在至少有两个调用者）。是有意让 Electron 走宿主网络栈，还是遗漏，需人工判断。
+`desktop-host` **不安装出网代理**。`apps/desktop-host/src/index.ts:287` 调 `loadLayeredEnv('dsh desktop')`，`:289` 起把该环境交给 `boot()`（`:294` 经 `DSH_LAUNCH_ENVIRONMENT_KEY` 提供），全程没有调用 `installProxyFromEnvironment`；`apps/desktop/src/` 里也没有任何代理相关代码。仓库中该函数的非测试调用点只有 `apps/cli/src/profile-boot.ts:287`，即只覆盖 `dsh --profile …` 这条路径。
+
+这与 note [`2026-08-27-outbound-proxy-policy`](../../.agents/notes/implemented/architecture/2026-08-27-outbound-proxy-policy.md) 的推论不符：note 由「`loadLayeredEnv` 只有一个调用者」推出「这一处就覆盖每个 profile」，而 `loadLayeredEnv` 现在有两个调用者（`apps/cli/src/bin.ts:35` 与 `apps/desktop-host/src/index.ts:287`）。可观察后果是 `.env` 层声明的代理对 desktop 不生效，Electron 内的模型与 web 请求走 Node 默认出网路径；note 未记录这一分歧。
 
 ## 源码入口
 

@@ -16,7 +16,7 @@
 
 ## stdio 帧协议
 
-帧在子进程 fd 3 上走 JSON-lines，一行一对象，stdout/stderr 留给程序自己的输出（`PROTOCOL_FD = 3`，`packages/experimental/code-runtime-python/src/protocol.ts:18`）。host→child：`boot` 首帧携带全部上限与命名空间声明（`:46`-`:61`），`boot-ack` 之后的 `run` 只带程序体（`:63`-`:67`）；child→host：`boot-ack` / `call` / `log` / `done`（`:69`-`:135`），宿主对每个 `call` 回恰好一个 `reply`（`:144`-`:161`）。`done.error.kind` 只有 `exception` / `invalid-output` / `output-limit` 三种（`:116`）；wall/CPU 预算、abort、进程死亡由宿主侧观察，不走帧。子进程侧的结算帧由 `py/bootstrap.py` 的 `send_done` 写出（`packages/experimental/code-runtime-python/py/bootstrap.py:1333`）——裸 except 兜底改写一帧本地捕获的字面量 done，程序重绑模块全局也丢不掉结算帧。宿主把每个入站帧当敌意输入逐字段重建：`validateChildFrame` 重建不干净就返回 `undefined` 静默丢弃（`packages/experimental/code-runtime-python/src/protocol.ts:661`），伪造的 `done` 可以同时携带 `value` 和 `error`，所以消费者必须先查 `error`、置位时忽略 `value`（`src/protocol.ts:127`-`:129`）。
+帧在子进程 fd 3 上走 JSON-lines，一行一对象，stdout/stderr 留给程序自己的输出（`PROTOCOL_FD = 3`，`packages/experimental/code-runtime-python/src/protocol.ts:18`）。host→child：`boot` 首帧携带全部上限与命名空间声明（`:46`-`:61`），`boot-ack` 之后的 `run` 只带程序体（`:63`-`:67`）；child→host：`boot-ack` / `call` / `log` / `done`（`:69`-`:135`），宿主对每个 `call` 回恰好一个 `reply`（`:144`-`:161`）。`done.error.kind` 只有 `exception` / `invalid-output` / `output-limit` 三种（`:116`）；wall/CPU 预算、abort、进程死亡由宿主侧观察，不走帧。子进程侧的结算帧由 `py/bootstrap.py` 的 `send_done` 写出（`packages/experimental/code-runtime-python/py/bootstrap.py:1333`）——裸 except 兜底改写一帧本地捕获的字面量 done，程序重绑模块全局也丢不掉结算帧。宿主把每个入站帧当敌意输入逐字段重建：`validateChildFrame` 重建不干净就返回 `undefined` 静默丢弃（`packages/experimental/code-runtime-python/src/protocol.ts:661`），伪造的 `done` 可以同时携带 `value` 和 `error`，所以消费者必须先查 `error`、置位时忽略 `value`（同文件 `:127`-`:129`）。
 
 ## 上限与失败行为
 
