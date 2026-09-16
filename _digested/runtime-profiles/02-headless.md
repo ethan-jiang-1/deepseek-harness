@@ -8,7 +8,7 @@
 
 ```sh
 dsh --profile headless "run the tests"
-dsh --profile headless "refactor this module" --patch my.yml
+dsh --profile headless --patch my.yml "refactor this module"
 dsh --profile headless --help
 ```
 

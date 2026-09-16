@@ -32,7 +32,7 @@
 |------|------|----------|
 | `packages/bundle/` | 可发布、可安装的 profile patch 层 | 位于 `packages/`，因为 bundle 自身也是 npm package |
 | `packages/preset/` | per-session agent 组合：一个 preset 目录持有一份 `agent.cordis.yml` | 决定“这个 session 的 agent 由哪些行组成”，不是进程级 profile |
-| `apps/cli/config/examples/` | 随产品出货的可选 overlay（GitHub review webhook、session 内 Schedule、memory MCP 服务、runtime Cordis 工具） | 是产品资产而非测试 fixture；用 `dsh --patch <该文件>` opt-in，永不进默认 profile |
+| `apps/cli/config/examples/` | 随产品出货的可选 overlay（GitHub review webhook、session 内 Schedule、memory MCP 服务、runtime Cordis 工具） | 是产品资产而非测试 fixture；用 `dsh --profile <name> --patch <该文件>` opt-in，永不进默认 profile |
 | `snapshots/` | committed session JSONL 作为回放输入与期望输出的场景 | 只放 session 驱动的用例；其它期望输出留在各自 owner |
 
 bundle 的 `cordis.patch.yml` 解决“默认装配是什么”，`apps/cli/config/examples/*/cordis.yml` 解决“这次额外接哪几行”。两者都是配置层，都不该沉淀可复用实现：overlay 里长出的可复用逻辑要提取回 `packages/`，让它获得自己的合同、测试、覆盖率和发布边界。
@@ -112,7 +112,7 @@ TypeScript 特别区分 Host 与 Client 两个 compiler face。普通 package �
 | 桌面入口怎么启动 | `apps/desktop/` 的 Electron 主进程与 `apps/desktop-host/` 的私有 host，不经 `dsh` |
 | 性能门禁的用例在哪里 | `benchmarks/`，由根 `vitest.bench.config.ts` 编排 |
 | 默认启用哪些插件 | `packages/bundle/*/cordis.patch.yml` 与 profile/preset config |
-| 一个可选 overlay 组合 | `apps/cli/config/examples/`，用 `dsh --patch <该文件>` 挂上 |
+| 一个可选 overlay 组合 | `apps/cli/config/examples/`，用 `dsh --profile <name> --patch <该文件>` 挂上 |
 | 一个类型或事件的权威说明 | `docs/subsystems/` 或生成 catalog |
 | 架构决策为什么这样做 | `.agents/notes/implemented/`，但先找当前文档/源码合同 |
 | 生成或校验某份文档/目录 | `scripts/` |
