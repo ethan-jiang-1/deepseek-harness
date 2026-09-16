@@ -16,16 +16,16 @@ DSH 根目录最显眼的设计是：**README 对人，AGENTS 对模型。**
 
 ## 根 AGENTS.md：常驻上下文的“内核页表”
 
-根 `AGENTS.md` 开头只有两句实质内容：
+根 `AGENTS.md` 开头第一段只有一句实质内容，但承担两条路由：
 
 > DeepSeek Harness is an all-plugin Cordis agent harness. Read [docs/architecture.md](docs/architecture.md) before changing `packages/`; follow [docs/AGENTS.md](docs/AGENTS.md) for documentation.
 >
 > —— `AGENTS.md:3`（基线 `183f08e9c6…`）
 
-这两句是根入口最重要的路由：
+这一句里是两个最重要的路由：
 
-- 第一句给出系统总模型：**all-plugin Cordis agent harness**；
-- 第二句给出两条工作路径：改 `packages/` 前读 architecture；写文档遵循 docs/AGENTS。
+- 前半句给出系统总模型：**all-plugin Cordis agent harness**；
+- 后半句给出两条工作路径：改 `packages/` 前读 architecture；写文档遵循 docs/AGENTS。
 
 然后是三段常驻内容：
 
