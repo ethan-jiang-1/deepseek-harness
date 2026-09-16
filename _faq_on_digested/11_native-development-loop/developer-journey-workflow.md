@@ -123,7 +123,7 @@ return { count: results.filter(Boolean).length, details: results }
 
 ## Metadata（可选）
 
-YAML frontmatter：provider, model, max_turns 等。
+YAML frontmatter：`name`、`description`（必填）与 `whenToUse`、`metadata`、`disable-model-invocation`、`user-invocable`（可选）。
 ```
 
 ### 3.2 加载机制（来源：`packages/skill/tool-skill/src/index.ts`）
@@ -186,8 +186,10 @@ Note 是制度上的"插件"——它不是加载到运行时，而是沉淀到�
 
 ```yaml
 # custom-profile.patch.yml
-plugins/my-tool: npm:@scope/dsh-plugin-my-tools
-plugins/sandbox-policy:
+- insert:
+    - id: my-tool
+      name: '@scope/dsh-plugin-my-tools'
+- id: sandbox-policy
   config:
     mode: danger-full-access
 ```
@@ -205,7 +207,7 @@ plugins/sandbox-policy:
 | 存放位置 | `packages/<group>/<pkg>/` | 任意 `.js` 路径（`script` 参数）/ `.agents/skills/` / `.agents/notes/` |
 | 验证方式 | `pnpm run test -- --run <pkg>` | 真实模型调用 |
 | 是否需打包 | ✅ TypeScript → JS | ❌ 不需要 |
-| 安装方式 | `--plugin` 或 npm 或 workspace 内置 | 放进 `.agents/` 目录 |
+| 安装方式 | `dsh plugin --profile <name> add <pkg>` 或 bundle/profile 行 | 放进 `.agents/` 目录 |
 | 组合方式 | 暴露 `defineTool` → 工作流脚本用 `agent()` 调用它 | |
 
 ---

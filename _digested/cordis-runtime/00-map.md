@@ -19,7 +19,7 @@ Harness 把 Cordis 源码放进 `vendor/`，rescoped 成 `@deepseek-ai/cordis`�
 | Plugin | `packages/*` 中的能力以插件装入树，并由 fiber 管理生命周期。 |
 | Context | 服务按 `ctx.tools`、`ctx.llm`、`ctx.sessions` 等 key 查找；Consumer 依赖 Definition，不导入具体 Provider。 |
 | inject | 插件声明服务依赖；缺少依赖时等待，满足后激活。 |
-| Events | 事件通过 TypeScript 声明合并扩展，`emit` / `waterfall` / `parallel` / `serial` 是调用合同的一部分。 |
+| Events | 事件通过 TypeScript 声明合并扩展，`emit` / `waterfall` / `parallel` / `serial` / `bail` 是调用合同的一部分。 |
 | Effects | 注册、监听和子插件都由 effect 拥有；fiber 卸载时贡献一并撤销。 |
 
 ## waterfall：`next()` 委托下游

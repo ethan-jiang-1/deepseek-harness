@@ -6,7 +6,7 @@
 
 ## 第二节 根 1（更深）：日志基底——goal/plan 自己就是它的下游
 
-goal/plan 的全部机制细节（[04 第二节、第三节](./04-goal-plan-small-model.md)）其实都建立在一个更早的决策上：**会话日志是唯一事实源**。证据不在别处，就在 goal 自己的设计笔记里：*"session log is the only durable source of truth"*——goal 域承认自己是日志的下游。往下再数一层：
+goal/plan 的全部机制细节（[04 第二节、第三节](./04-goal-plan-small-model.md)）其实都建立在一个更早的决策上：**会话日志是唯一事实源**。证据不在别处，就在 goal 自己的设计笔记里：*"The session log remains the only durable authority"*——goal 域承认自己是日志的下游。往下再数一层：
 
 - `goal/change`、`plan/mode`、`tool-workflow/run-start` 全部是 `SessionEventMap` 成员；**model-visible ⟺ logged** 有运行时不变量机械断言（每次 dispatch 逐字比对 `deriveMessages()`，`packages/core/agent-loop/src/invariant.ts:39-42`）。
 - 持久化是商品化最彻底的 seam 之一：persistence 单后端（`4553c9d957` 移除 sqlite 后只剩 jsonl）、7 个消费方（[FAQ 08 的 P/C 表](../08_plugin-seam-maturity/answer.md)），fork/resume/transcript/telemetry 全部从同一条流派生。

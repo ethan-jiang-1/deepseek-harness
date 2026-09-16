@@ -15,7 +15,7 @@ test/snapshot golden 文件（`apps/web/tests/`）；以下内容均非来自我
 ## 1. 入口点与会话如何启动
 
 只有一个 `dsh` 二进制文件（`apps/cli/package.json` `bin.dsh: lib/bin.js`）。`apps/cli/src/bin.ts` 解析
-`--profile` / `--plugin` / `--dump-config` 分发（bin.ts:31-61）。每个真实的面都是一个 *profile*：Web 是
+`--profile` / `plugin` 子命令 / `--dump-config` 分发（bin.ts:31-61）。每个真实的面都是一个 *profile*：Web 是
 `dsh --profile web`，CLI/headless 是另一个 profile，ACP/JSON-RPC 是各自的 profile 或运行时面
 （ACP：`dsh --profile acp` / `packages/bundle/acp-app`；JSON-RPC：`packages/sdk/`）。没有独立的 Web 二进制：浏览器由 host 提供，
 前端是一个由 Node 端组合进 `window.__DSH_BOOT__` 的模块表
