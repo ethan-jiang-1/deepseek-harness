@@ -46,7 +46,7 @@ kind: "package-group"
 | [`resources/`](resources/README.zh.md) | 统一资源模型：`useResource` 会话标准 hook 背后的协议提供者 | `ctx.resources` |
 | [`ui-sidebar-right/`](ui-sidebar-right/README.zh.md) | 右侧 Sidebar：每会话一个停靠面、两种呈现形态与 Tab 域 | `ctx.sidebarRight` / `ctx.sidebarRightTabs` |
 | [`ui-sidebar-files/`](ui-sidebar-files/README.zh.md) | 右侧 Sidebar 的工作区文件树 tab 类型 | — |
-| [`ui-sidebar-documentpreview/`](ui-sidebar-documentpreview/README.zh.md) | 右侧 Sidebar 的文档预览：Markdown、代码、图片、PDF 与 HTML 渲染器，并以纯文本兜底 | 注册到 `ctx.sidebarRightTabs` |
+| [`ui-sidebar-documentpreview/`](ui-sidebar-documentpreview/README.zh.md) | 右侧 Sidebar 的文档预览：Markdown、代码、图片、PDF 与 HTML 渲染器，并以纯文本兜底 | `ctx.documentPreviews` |
 | [`ui-brand-official/`](ui-brand-official/README.zh.md) | 用官方名称与标记填充通用浏览器品牌 slot | — |
 | [`ui-workspace/`](ui-workspace/README.zh.md) | 提供工作区选择与创建界面 | — |
 | [`ui-conversation/`](ui-conversation/README.zh.md) | 展示当前对话及其输入界面 | — |
