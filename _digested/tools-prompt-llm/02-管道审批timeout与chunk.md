@@ -6,7 +6,7 @@
 
 ![流：一次 attempt 一条 settlement，message 进 surface](./figures/chunk-to-message.svg)
 
-## 三条 `tools/*` 加上一条 `approval/*`
+## `tools/*` 调用管道的三条，加上一条 `approval/*`
 
 ```text
 tool/call（log）

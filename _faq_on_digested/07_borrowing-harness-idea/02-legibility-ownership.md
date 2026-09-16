@@ -51,7 +51,7 @@ DSH 用 rejected note、README 的 `## Known Limitations and Deferred Work`、�
 
 ## 渐进披露：先给方向，再为当前问题付细节
 
-根 `AGENTS.md` 只保留每轮需要的 standing orders（每条一两行、链到 home）；architecture 给有序地图；catalog 支持查询；Skill 在任务命中时才加载全文。这叫 progressive disclosure（渐进披露）：
+根 `AGENTS.md` 只保留每轮需要的 standing orders（每条一到三行、链到 home）；architecture 给有序地图；catalog 支持查询；Skill 在任务命中时才加载全文。这叫 progressive disclosure（渐进披露）：
 
 > 可读性因此不是「把一切写进上下文」，而是「让读者知道下一份最小且权威的材料在哪里」。
 

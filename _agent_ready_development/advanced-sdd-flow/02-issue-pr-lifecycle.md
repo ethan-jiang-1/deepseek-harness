@@ -48,7 +48,7 @@ return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
 `.github/workflows/issue-lifecycle.yml` 把 Issue、PR 和 review 事件交给同一个 `policy.mjs lifecycle` 入口。配置中的状态顺序是：
 
 ```text
-Inbox → Backlog → Ready → In progress → In review → Done / No action
+Inbox → Backlog → Ready → In progress → In review → Done 与 No action（两个终态）
 ```
 
 核心自动转换是：Issue 打开进入 `Inbox`；解决该 Issue 的 PR 开始实施时推进到 `In progress`；`review_requested` 推进到 `In review`；由 lifecycle app 写入的 `In review` 收到 `changes_requested` 时退回 `In progress`；Issue 关闭原因决定 `Done` 或 `No action`。普通 approved/commented review 不创建可写 Project token，只有需要改变状态的事件才执行写入步骤。

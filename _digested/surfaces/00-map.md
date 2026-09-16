@@ -70,7 +70,7 @@ CLI、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`Agent` 接�
 
 | 文件 | 内容 |
 |------|------|
-| [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；session-controller follow 的两类帧；桌面换掉 mux 的那一层 |
+| [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；session-controller follow 的三类帧；桌面换掉 mux 的那一层 |
 | [`02-acp与jsonrpc.md`](./02-acp与jsonrpc.md) | ACP 只把 committed 事实表达成标准语义更新；SDK 推 Context 内全部耐久事实 |
 | [`03-桌面入口.md`](./03-桌面入口.md) | Electron 壳 + 私有 host；`dsh-app://`、分帧字节管道、无监听端口、打包与更新 |
 | [`04-客户端资源模型与右栏.md`](./04-客户端资源模型与右栏.md) | `dsh-resource://` 地址、provider 契约、holder / pin 生命周期、右栏 tab 类型与 slot |

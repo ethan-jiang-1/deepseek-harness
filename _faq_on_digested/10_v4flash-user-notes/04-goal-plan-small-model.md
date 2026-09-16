@@ -35,7 +35,7 @@
 
 **`exit_plan_mode` 是一次真实的人类评审，不是模型自说自话。** 工具常驻注册（模式无关，理由见下节 cache 那段）；执行要求 plan 以 `#` 标题开头；然后经 `ctx.userQuestions.ask` 提交 question id `'plan-review'` 的评审——选项 `Approve` / `Keep planning` 加自由文本；评审通道缺失 fail-closed；用户取消 → "stay in plan mode, stop here"。批准走 **silent pending** `{active:false, narrate:false}`：本工具批内 plan 指导仍然生效，下一次请求装配前由 pre-step 落 `plan/mode {active:false}`；工具结果文本固定 `"Plan approved — plan mode exited; carry out the plan starting with your next step."`；未批准 → 工具抛错，评审反馈原样带回给模型（`index.ts:356-399, :407-416`）。
 
-**plan 的规则是提示词层的，且这条设计是明说的。** 出厂 `plan:policy` section（order 50，`packages/bundle/base/cordis.patch.yml:305-315`）的关键句：
+**plan 的规则是提示词层的，且这条设计是明说的。** 出厂 `plan:policy` section（order 500，`packages/bundle/base/cordis.patch.yml:305-315`）的关键句：
 
 > The tool catalog stays the same across modes for request-cache stability. These plan-mode rules override any later tool description or guidance that suggests using mutation tools; those tools remain listed only to keep the request shape stable.
 >
