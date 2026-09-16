@@ -76,8 +76,8 @@ generation 是 opt-in 且只发生在 build：包声明 export 条目、跑构�
 | `ctx.typert` 实现（core） | `packages/typert/registry` | 存 Host descriptor、schema 与包注册，并持有 lookup / Context provider（`docs/api-gateway.md:86`、`docs/capability-seams.md:493`） |
 | 自动注册 | `packages/typert/loader` | 消费 `ctx.loader` 与 `ctx.typert`，只发现、不实现 registry（`packages/typert/README.md:28`、`packages/typert/loader/README.md:28`） |
 | `ctx.typertGateway` 实现（core） | `packages/api/gateway` | 认领 endpoint、解析对象或 Context、调用活 Service、校验请求与返回值（`docs/api-gateway.md:88`、`docs/capability-seams.md:494`） |
-| Client `ctx.remote` 与 namespace 子服务 | `packages/api/gateway/client` | mount 生成 descriptor、发起/校验/取消调用（`docs/api-gateway.md:89`） |
-| 选择与 mount 哪些 namespace | `packages/api/remotes/client` | 显式选择应用允许的 `/remote` 贡献，并带入对应声明合并（`docs/api-gateway.md:90`） |
+| Client `ctx.remote` 与 namespace 子服务 | `packages/api/gateway/src/client` | mount 生成 descriptor、发起/校验/取消调用（`docs/api-gateway.md:89`） |
+| 选择与 mount 哪些 namespace | `packages/api/remotes/src/client` | 显式选择应用允许的 `/remote` 贡献，并带入对应声明合并（`docs/api-gateway.md:90`） |
 | 业务方法契约与 namespace 键 | 各业务包（如 `api-session-controller` 的 `session`、`goal`） | 拥有 `@Remote` 方法与自己的 `/typert`、`/remote` 导出（`packages/api/session-controller/src/index.ts:121`、`packages/goal/goal/package.json:33-40`） |
 | RPC carrier | `packages/client/connection` | 提供 RPC、request correlation、信任边界、取消、响应信封与 `/api` HTTP 桥（`docs/api-gateway.md:91`） |
 
