@@ -18,7 +18,7 @@
   <text x="810" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">10000+ 环境事实</text>
   <text x="810" y="114" text-anchor="middle" font-size="11" fill="#c2410c">HARNESS_SOURCE · WEB_SURFACE</text>
   <rect x="40" y="152" width="880" height="140" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="60" y="180" font-size="12" fill="#374151">KV cache 命中靠请求前缀稳定。逐机器/逐用户不同的事实（Harness checkout 路径、Web URL）与 persona 后缀刻意排在全部可复用指令之后；放在前面会让本可共享的前缀在开头就分叉。</text>
+  <text x="60" y="180" font-size="11" fill="#374151">KV cache 命中靠请求前缀稳定。逐机器/逐用户的事实（Harness checkout 路径、Web URL）与 persona 后缀刻意排在可复用指令之后；放前面会让共享前缀在开头分叉。</text>
   <text x="60" y="204" font-size="12" fill="#374151">complete: true 的 section 在 waterfall 之后被恢复成唯一 prompt section，不能用来「再加一段」。多于一个 complete 则 assembly 失败。</text>
   <text x="60" y="228" font-size="12" fill="#374151">system-prompt/assemble 是 waterfall，返回值是权威的。但已注册的 complete section 会被恢复，监听器加不进、也换不掉该 scope 的系统提示词本体。</text>
   <text x="60" y="260" font-size="11" fill="#6b7280">工具 schema 另有 config.toolOrder；未列出的名字走 TOOL_ORDER_REST。restrict 先滤全局集。</text>

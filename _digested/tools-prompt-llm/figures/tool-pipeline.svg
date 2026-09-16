@@ -4,7 +4,7 @@
   </defs>
   <rect width="960" height="340" fill="#fafafa" rx="6"/>
   <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">工具执行管道：守卫在管道上，不散落在每个 tool 里</text>
-  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">三条都是 waterfall。审批、超时、策略监听器挂在这里，tool 实现只做自己的事。</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">管道上的三条都是 waterfall。审批、超时、策略监听器挂在这里，tool 实现只做自己的事。</text>
 
   <rect x="40" y="80" width="170" height="80" rx="8" fill="#fff7ed" stroke="#fdba74"/>
   <text x="125" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">tool/call</text>
