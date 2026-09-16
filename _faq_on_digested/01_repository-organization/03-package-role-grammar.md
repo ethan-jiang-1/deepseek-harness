@@ -126,7 +126,7 @@ Web GUI 不是一个 `frontend/` 加一个 `backend/` 大目录，而是多个�
 
 客户端拿到的 Host 事实有两条链路，不要混：session 历史与状态走 `api/session-controller` 的 `follow` stream；其余 Host Cordis 事件走 `api/remotes` 的转发白名单 `API_REMOTE_FORWARDED_EVENTS`（本基线 19 条，是 `ctx.remote.$on` 的合法 key 集）。白名单不是 session 事件来源，两者各有自己的所有者与背压语义。
 
-`apps/` 这一层另有 `apps/desktop`（Electron 壳）与 `apps/desktop-host`（私有 host），两者都不带 `bin`、也不从 `dsh --profile` 启动，而是复用 `dsh-base + dsh-web-app` 与同一份前端产物；见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。`client/` 在 0.1.5-rc.1 也已不只“壳 + slots”：`ctx.resources` / `useResource` 构成内容寻址的资源模型，`ui-dockkit` 是平台静态模块而非 Loader row，右栏、file-upload 与 open-in-app 都在这一组，见 [`_digested/surfaces/04-客户端资源模型与右栏.md`](../../_digested/surfaces/04-客户端资源模型与右栏.md)（`packages/client/README.md` 的包表漏登记 `ui-dockkit`、`ui-sidebar-right`、`ui-sidebar-documentpreview`，同为本基线的上游缺口）。
+`apps/` 这一层另有 `apps/desktop`（Electron 壳）与 `apps/desktop-host`（私有 host），两者都不带 `bin`、也不从 `dsh --profile` 启动，而是复用 `dsh-base + dsh-web-app` 与同一份前端产物；见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。`client/` 在 `dsh-v0.1.5-rc.2` 也已不只“壳 + slots”：`ctx.resources` / `useResource` 构成内容寻址的资源模型，`ui-dockkit` 是平台静态模块而非 Loader row，右栏、file-upload 与 open-in-app 都在这一组，见 [`_digested/surfaces/04-客户端资源模型与右栏.md`](../../_digested/surfaces/04-客户端资源模型与右栏.md)（`packages/client/README.md` 的包表原先漏登记 `ui-dockkit`、`ui-sidebar-right`、`ui-sidebar-documentpreview` 三个包，0007 复核时已就地补齐，该表现覆盖全部 51 个 `packages/client/*/` 目录——52 行表体含 1 行指向 `packages/test-support/client-runtime` 的跨组行）。
 
 ## 一个普通 package 的内部结构
 

@@ -4,7 +4,7 @@
 
 ## 一句话
 
-Harness 把 Cordis 源码放进 `vendor/`，rescoped 成 `@deepseek-ai/cordis`，再在上面长产品。读 dsh 之前先分清三件事：**上游原语**、**本仓库记在 `vendor/README.md` 的本地修改**、**产品插件怎么用它们**。
+Harness 把 Cordis 源码放进 `vendor/`，rescoped 成 `@deepseek-ai/cordis`，再在上面长产品。读 dsh 之前先分清三件事：**上游原语**、**本仓库记在 `vendor/README.md` 的本地修改**、**产品插件怎么用它们**。包名映射（上游包名 ↔ `@deepseek-ai/*` 产品名）的权威是 [`docs/rescope.md`](../../docs/rescope.md)，`vendor/README.md` 只记版本与本地修改。
 
 官方教程是 [`docs/cordis-primer.md`](../../docs/cordis-primer.md)；本页只定位 Harness 依赖的运行时原语。
 

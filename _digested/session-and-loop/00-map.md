@@ -52,7 +52,7 @@ fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条�
 
 - 每个 projection 定义必须实现 `init(header: SessionHeader, inheritedEventCount: SessionLogOffset)` 方法（`packages/session/session-projection/src/index.ts:62,143`；`header` 仍是 session 的不可变元数据），不再允许无参 `init()`。`inheritedEventCount` 决定 fork/resume 时投影从哪条 seq 起算自有事件（与 `ownEvents()` 的种子前缀切分一致）
 - 视图发布使用 `Object.is` 比较：两次 fold 结果若引用相同则跳过发布，避免无效 UI 更新（`packages/session/session-projection/src/index.ts:66,78,96,186`）
-- `projection` 层现在位于 `session` 与 `session-persistence` 之间，作为 session 状态的规范投影源
+- projection 不是夹在 `session` 与 `session-persistence` 之间的一层：`session-projection` 与 `session-persistence` 之间没有依赖边（前者 peer 只有 `cordis` + `dsh-session`，后者 peer 是 `cordis` + `dsh-brand` + `dsh-session` + `dsh-timeout`），`packages/session/README.md` 的包序也是 persistence 在前、projection 在后。它是**可选注册表**：host 侧插件声明 projection unit，读方（host behavior / subagent catalog）必须自己拒绝缺失的注册表或键，否则「读投影状态却不激活该状态」就会静默发生（[`2026-08-19-session-projection-mandatory-seam`](../../.agents/notes/implemented/architecture/2026-08-19-session-projection-mandatory-seam.md)）；强制点因此在消费者一侧，不在包依赖上
 
 ## 每个 agent 的 scope chain
 

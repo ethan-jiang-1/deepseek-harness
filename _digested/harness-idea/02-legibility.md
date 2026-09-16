@@ -59,7 +59,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
 > —— `packages/AGENTS.md:27`（基线 `fb2c4b9e69…`）
-- 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
+- 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`graph-atlas`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
 
 手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
 
@@ -67,7 +67,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 - `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果、模型可见 ⟺ 已记录、显式优于隐式。
 - 文档标准禁止「previously / now / renamed」这类变迁史；当前状态散文（current-state prose），一个事实一个家（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
-- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模**三个数并报**（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）：`dsh-v0.1.5-rc.1` 上总量 1910 篇 `.md`、活跃 `implemented/` 582 篇、冻结 `archived/` 1257 篇，前两个即 [`claims.json`](./claims.json) 的 N1–N2。缺一个都会读错形状——只报总量会把「按未来决策价值裁剪」读成膨胀，只报活跃数会读成收缩；实际是同一批记录分了活跃与冻结两层，而**冻结层不是现行权威**：归档政策明文禁止把 `archived/` 当作当前行为的依据。所以「非平凡改动必须带 note」这条规则的现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:39`](../../docs/AGENTS.md)，[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照）只作为这条规则的来源记录被引用。note 记的是「为什么、放弃了什么、怎么验证」，每条有分类、双语、归档纪律。
+- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模**三个数并报**（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）：`dsh-v0.1.5-rc.2` 上总量 1912 篇 `.md`、活跃 `implemented/` 584 篇、冻结 `archived/` 1257 篇，前两个即 [`claims.json`](./claims.json) 的 N1–N2。缺一个都会读错形状——只报总量会把「按未来决策价值裁剪」读成膨胀，只报活跃数会读成收缩；实际是同一批记录分了活跃与冻结两层，而**冻结层不是现行权威**：归档政策明文禁止把 `archived/` 当作当前行为的依据。所以「非平凡改动必须带 note」这条规则的现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:39`](../../docs/AGENTS.md)，[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照）只作为这条规则的来源记录被引用。note 记的是「为什么、放弃了什么、怎么验证」，每条有分类、双语、归档纪律。
 - **记忆本身也有 gate**：连「决定忘记什么」都被写成了成文判据 + 可复用流程 + 机器封印。判据在 [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md)：归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明文要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。封印是 [`archived/manifest.json`](../../.agents/notes/archived/manifest.json)（seal 数 510 → 1884）加 [`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 门禁，后者注册在 [`scripts/run-gates.ts:756`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单。
 
 为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。

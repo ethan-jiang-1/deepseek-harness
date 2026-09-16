@@ -42,13 +42,15 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 
 `packages/schedule/schedule/` 提供 **session-local durable reminders**，不是 Service seam——没有 `ctx.schedule`、没有 Definition/Provider 可分包装。模型经 `schedule_create` / `schedule_list` / `schedule_delete` 三个工具创建一次性或固定间隔提醒，触发后以普通 follow-up 消息回到同一会话；提醒经 session event log 持久化，重启后仍会投递。它是自足插件（`ScheduleRuntime` 按 root agent 实例化）+ `scheduleProjectionDefinition` + Web 侧只读 catalog（`client/ui-schedule`）。它说明：能力可以按需装成插件，不必都切三角色（对照见 [`04`](./04-新增seam与Remote.md)）。更靠边的两个样本是 API Remote（BFF 通信模式，下节）与外发代理策略（进程级库，[`06`](./06-外发代理策略.md)）——都不是插件，也都刻意不切三角色。
 
-## 新增 seam：Webhook
+## core 而非 seam：Webhook
 
 `packages/webhook/webhook/` 和 `packages/webhook/webhook-github/` 提供了 webhook ingress 能力：
 
-- **Definition**（`webhook/`）：`ctx.webhookRuntime` — 认证投递分发、Workspace Session 创建
-- **Provider**（`webhook-github/`）：GitHub webhook 事件处理和签名验证
-- **Consumer**：webhook ingress 插件，通过 `ctx.webhookRuntime` 接收外部事件
+- **core 服务**（`webhook/`）：`ctx.webhookRuntime` — 认证投递分发、Workspace Session 创建。生成表把它的 role 列写成 `core`、implementation 列为 `-`（[`docs/capability-seams.md`](../../docs/capability-seams.md)），[`docs/architecture.md:68`](../../docs/architecture.md) 也把它列在核心包表里
+- **消费者 / 适配器**（`webhook-github/`）：`inject: ['webServer', 'webhookRuntime', 'credentials']`（`packages/webhook/webhook-github/src/index.ts:14`），验签后调 `ctx.webhookRuntime.dispatch(delivery)`（`src/handler.ts:115`）
+- **规则注册方**：受信插件在 `ctx.webhookRuntime` 上注册进程内规则，返回非 null 结果即变成普通的 Workspace-backed Session
+
+注意产品文档里的「provider adapter」指的是 **webhook 来源适配器**，不是 capability seam 的 Service Provider 角色——`ctx.webhookRuntime` 没有第二个实现包，因此它是 **core 服务 + 适配器消费者**，不是三角色 seam（FAQ 08 的 29 条 seam 表也不含它）。
 
 ## 非三角色 seam：API Remote 架构
 
@@ -98,5 +100,6 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 | [`05-subagent-catalog与host交付.md`](./05-subagent-catalog与host交付.md) | parent-owned direct-child 目录（`subagent/catalog` + projection）；宿主消息的 Queue / Steer 双交付 |
 | [`06-外发代理策略.md`](./06-外发代理策略.md) | 进程级外发代理库；唯一安装点、`.env` 豁免与 egress 证据 |
 | [`07-原生containment与native-system.md`](./07-原生containment与native-system.md) | 受管范围、Linux scope / Windows Job 两条 native 路径；flock 与 session 写租约 |
+| [`08-外部生态桥：MCP与hooks.md`](./08-外部生态桥：MCP与hooks.md) | MCP client 把外部 server 的 tools 注入 `ctx.tools`；CC/Codex hook 桥、共享 wire protocol 与 `tools/pre-execute` 拦截点；两者皆 opt-in |
 
 模型可见的 tool 管道在 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。
