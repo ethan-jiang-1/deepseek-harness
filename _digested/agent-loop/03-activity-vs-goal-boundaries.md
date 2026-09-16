@@ -98,7 +98,9 @@ Goal 与 Agent Loop 之间没有直接耦合：driver 不 import loop 内部，l
 5. `turn/end` — `max-tokens` 触发 disarm；`aborted` 把 claimed/admitted 的 attempt 标记 cancelled
 6. `agent/error` — 触发 disarm
 7. `agent/inbox/inserted` / `claimed` / `discarded` — competing / stale 簿记
-8. `goal/activation-changed` — `GoalService.setActivation()` 在 activation 真正变化时广播的进程内事件（`goal/src/index.ts:495-516`）。driver 不消费它；消费方是 Web goal bar（经 Remote 白名单转发，`packages/api/remotes/src/remote-events.ts:26`；订阅点 `packages/client/ui-goal/src/client/index.ts:95`）
+8. `agent/session-start` — driver 在 `goal-round-driver/src/index.ts:253`-`:258` 消费它，清空 `attempt` / `competingQueued` / `needsCheckpoint`，让新会话不从上一会话的调度残留里起步（派发点是 `packages/core/agent-loop/src/index.ts:675`）
+
+`goal/activation-changed` **不在这条清单里**：`GoalService.setActivation()` 在 activation 真正变化时广播的进程内事件（`goal/src/index.ts:495-516`），driver 不消费它；消费方是 Web goal bar（经 Remote 白名单转发，`packages/api/remotes/src/remote-events.ts:26`；订阅点 `packages/client/ui-goal/src/client/index.ts:95`）
 
 ## 场景：一次完整的 goal 生命周期
 
