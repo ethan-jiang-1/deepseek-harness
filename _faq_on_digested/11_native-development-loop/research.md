@@ -2,17 +2,17 @@
 
 方法：从三个互相独立的证据面重建"最自然的开发习惯"，事先不预设答案；FAQ 02/10 的结论只作对位参考。所有路径相对仓库根。
 
-## 第一路：skills 语料（9 个进语料 dsh-* SKILL.md 全读 + Note 规则；仓库共 10 个，translate-docs 仅限显式调用不进入语料）
+## 第一路：skills 语料（写入时 9 个进语料 dsh-* SKILL.md 全读 + Note 规则；到 `183f08e9c6` 仓库共 11 个 dsh-*，行号已按当前工作树复核）
 
-对象：`dsh-pre-push-checks`、`dsh-code-review`、`dsh-find-simplifications`、`dsh-prose-standard`、`dsh-doc-standards`、`dsh-archive-agent-notes`、`dsh-trim-cot-leakage`、`dsh-merging-stacked-prs`、`dsh-doc-site-sync`，加上 `.agents/notes/README.md`、`docs/AGENTS.md`。全仓库共 10 个 `dsh-*` skill；`dsh-translate-docs` 仅限用户显式调用，不进入开发习惯语料，故闭环分析以其余 9 个为对象。
+对象：`dsh-pre-push-checks`、`dsh-code-review`、`dsh-find-simplifications`、`dsh-prose-standard`、`dsh-doc`（写入时还是 `dsh-doc-standards` + `dsh-doc-site-sync` 两个 skill）、`dsh-archive-agent-notes`、`dsh-trim-cot-leakage`、`dsh-merging-stacked-prs`，加上 `.agents/notes/README.md`、`docs/AGENTS.md`。写入时全仓库共 10 个 `dsh-*` skill；`dsh-translate-docs` 仅限用户显式调用，不进入开发习惯语料，故闭环分析以其余 9 个为对象。到 `183f08e9c6` 已是 11 个：OLD 之前新增 `dsh-ci-test-reliability`、`doc-standards` 与 `doc-site-sync` 合并为 `dsh-doc`，本次跨度新增 `dsh-speed-up-perf`。
 
 每个 skill 按"自动化的场景 → 规定的默认路径 → 隐含假设的摩擦 → 明说的理由"拆解。跨 skill 的公共分母（12 条）：
 
 1. 最小匹配证据，绝不全套（PP:29 "no universal local baseline beyond the hooks… narrowest available test"；AGENTS.md "Never default to the full suite"）。
-2. 判活的 diff，不判记忆里的 diff（change-scope 出现在 PP:22、CR:8、DS:37；"The command never guesses or fetches a base" 在 PP:25）。
+2. 判活的 diff，不判记忆里的 diff（change-scope 出现在 PP:22、CR:8；"The command never guesses or fetches a base" 在 PP:25；原 DS:37 的 change-scope 段随 dsh-doc 合并被删）。
 3. 以 HEAD 视角书写，禁止叙述会话（TL:12 一句测试）。
-4. 一次事实一个家，链接代替复述（DA:17；PS:40；DS:41）。
-5. owner 先于派生物，重生成代替手编（PS:26；DS:31 "Generated catalogs are never hand-edited"）。
+4. 一次事实一个家，链接代替复述（DA:17；PS:40；DA:63）。
+5. owner 先于派生物，重生成代替手编（PS:26；DS:87 "generated catalogs are never hand-edited; a move is atomic with every inbound link repaired in the same change"）。
 6. 机械 gate 与语义判断之间没有中间态（CR:22 "automated checks do not establish those properties"；FS:72 "`knip` … is not a substitute"）。
 7. why 与 what-was-given-up 同 PR 记录（NR:46；NR:111）。
 8. 持续修剪，增生是敌人（AN:8；DA 的 relocate→condense→raise）。
