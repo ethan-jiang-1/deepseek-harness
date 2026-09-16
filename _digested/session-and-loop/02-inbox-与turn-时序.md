@@ -1,6 +1,6 @@
 # Inbox、唤醒与 turn 时序
 
-源码核验入口：`packages/core/agent-loop/src/inbox.ts`（`packages/core/agent/src/inbox.ts` 已删除，`Inbox` 不再由 `dsh-agent` 导出；测试用 `dsh-agent-loop-testkit` 的结构化 stub）、`packages/core/agent/src/types.ts`（`Inbox` 契约与 `inbox` projection 键）、`packages/core/agent/src/runtime-types.ts`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`、`packages/core/agent-loop/src/assistant-stream.ts`。
+源码核验入口：`packages/core/agent-loop/src/inbox.ts`（实现已从 `packages/core/agent/src/inbox.ts` 搬来，该文件已删除；但 `Inbox` 契约仍由 `dsh-agent` 导出——定义在 `packages/core/agent/src/runtime-types.ts:48`，经 `packages/core/agent/src/index.ts:18` 的 `export *` 透出，`packages/api/session-controller/tests/control-queue.host.spec.ts:2` 仍在 import；测试用 `dsh-agent-loop-testkit` 的结构化 stub）、`packages/core/agent/src/types.ts`（`InboxTarget` 与 `inbox` projection 键）、`packages/core/agent/src/runtime-types.ts`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`、`packages/core/agent-loop/src/assistant-stream.ts`。
 
 本篇说明默认驱动中的 inbox 队列、claim，以及 `pre-step` 拒绝后仍关闭持久 turn 的时序。
 
@@ -8,7 +8,7 @@
 
 ## 两个列表，一份持久 splice
 
-`InboxTarget`：`'next-turn'` | `'next-step'`。内存投影从 `session.ownEvents()` 里的 `agent/inbox/spliced` 重放——rc.1 起 `Session.ownEvents()` / `Session.isOwnSeq()` 对普通消费者隐藏继承前缀比较（机制见 [`2026-08-31-session-sequence-and-log-offset-brands`](../../.agents/notes/archived/architecture/2026-08-31-session-sequence-and-log-offset-brands.md)）。种子里的 splice 不算进这个 agent 生命周期的队列。
+`InboxTarget`：`'next-turn'` | `'next-step'`。队列是标准 `inbox` projection 的折叠状态，projection 建 cell 时折的是 **`session.snapshotEvents()` 的整段内存日志**（`packages/session/session-projection/src/index.ts:610,618,622` 的 `buildCell`），不是 `ownEvents()`；`session.ownEvents()` / `isOwnSeq()` 只是给普通消费者提供「本条会话自有后缀」的视图。**种子（fork 继承前缀）里的 splice 会进子会话队列**：`packages/core/agent-loop/tests/inbox.spec.ts:129,146,153` 的 "projects inherited inbox events in a forked session" 直接断言 `childInbox.nextTurn` 含继承项，且父项与自有项按序共存。
 
 `splice` 只 append 一条 `agent/inbox/spliced`；队列本身是标准 `inbox` projection 的折叠状态（`packages/core/agent-loop/src/inbox.ts:27-65`）。`Session.append()` 返回时 projection 已更新，live 通知（`agent/inbox/inserted` / `discarded`）在其后发出（`packages/core/agent-loop/src/inbox.ts:238-244`）。**pre-splice 的 `session/event` 视图不存在**：要拿被删消息请监听 `agent/inbox/claimed` / `discarded`（`packages/core/agent/src/runtime-types.ts:285,296,304`），不要依赖同步观察者里的旧列表。
 

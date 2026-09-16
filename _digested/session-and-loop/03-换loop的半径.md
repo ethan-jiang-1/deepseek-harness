@@ -11,7 +11,7 @@
 `ctx.agents` 是 `AgentRegistry`（`dsh-agent`）。它跟踪活着的 agent，提供 process-local initiator（`AsyncLocalStorage`），但不实现 turn。创建委托给 `AgentFactory`：
 
 - `createAgent(ownerCtx, options)` — 调用方提供 `sessionId`；setup 窗口 → commit → 登记 session 与 agent → `agent/session-start`。该事件是第一个允许提交启动输入的扩展点；真正的 turn 由 waking input 驱动。
-- `resume(ownerCtx, options)` — 先 `sessionPersistence.prepare`。
+- `resume(ownerCtx, options)` — 先 `ctx.sessions.prepare(...)`（`packages/core/session/src/index.ts:962`）再 `persistence.open(id, 'write')`（`packages/core/agent-loop/src/index.ts:879`）；seam 本身没有 `prepare`，它只有 `create` / `open` / `flush` / `stat` / `list`（`packages/session/session-persistence/src/index.ts:147,162,175,191,198`）。
 
 默认 loop 插件在构造时调用 `ctx.agents.setFactory(this)`。没有 factory 时，`create` / `resume` 抛出 `no agent factory registered (load an agent-loop plugin)`。ACP 等消费者对着 `ctx.agents` 编程，不需要导入 `ReactLoopAgent`。
 
@@ -32,7 +32,7 @@
 3. 按 `AgentEventMap` 声明的 mode 和 agent scope 派发实时事件；尤其不能把 waterfall 与 serial 互换。
 4. 从 `session.deriveMessages()` 取得请求历史，并让 loop 的请求重建 invariant 能把实际 LLM 请求对回日志。
 5. **维护 session projection**：projection 已从可选变为强制（`init(header: SessionHeader, inheritedEventCount: SessionLogOffset)` 签名）。替换 loop 必须确保投影在 session 生命周期内正确运行，否则毁坏客户端状态。
-6. **按成本定价的 session 读意图**：rc.1（PR #2907，`27bf1039` 波及）删除了 `session.events` 数组读取；`packages/core/session/src/index.ts` 现暴露三个读操作——`seq`（O(1) 长度）、`eventAt(seq)`（O(1) 单事件，`packages/core/session/src/index.ts:588`）、`snapshotEvents(fromSeq?, toSeqExclusive?)`（显式物化冻结数组；全量快照缓存到下次 append，区间快照不缓存，`packages/core/session/src/index.ts:600-603`）。替换默认 loop 的消费者与驱动不得再假设 `session.events` 存在；机制依据见官方 Agent Note [`.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md`](../../.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md)。
+6. **按成本定价的 session 读意图**：rc.1（PR #2907，`27bf1039` 波及）删除了 `session.events` 数组读取；`packages/core/session/src/index.ts` 现暴露三个读操作——`seq`（O(1) 长度）、`eventAt(seq)`（O(1) 单事件，`packages/core/session/src/index.ts:621`）、`snapshotEvents(fromSeq?, toSeqExclusive?)`（显式物化冻结数组；全量快照缓存到下次 append，区间快照不缓存，`packages/core/session/src/index.ts:633`，全量缓存分支在 `:637-638`）。替换默认 loop 的消费者与驱动不得再假设 `session.events` 存在；机制依据见官方 Agent Note [`.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md`](../../.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md)。
 7. **满足当前世代的规范信封**：写入的事件必须遵守当前格式的信封规则——四类 surface（`system/message`、`user/message`、`assistant/message`、`tool/result`）必需 `surfaceOp`，log-only 事件不得带 surface 字段，`assistant/message` 禁带 `sourceEventSeqs`；system prompt 必须作为 `system/message` surface 节点（首条为节点 0），不再写进 `request/header`（规则与权威见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md) 与 [`01-session-event-map.md`](./01-session-event-map.md)）。
 
 满足这些接口后，渲染面、按 `agent.ctx` 登记的插件与人类 command 无需知道私有驱动结构。

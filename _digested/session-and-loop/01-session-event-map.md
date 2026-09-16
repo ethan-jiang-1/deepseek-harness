@@ -42,7 +42,7 @@
 
 默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型请求的消息由四类 surface 类型投影，config、adapterDefaults 与 tools 由 `request/header` 折叠，system prompt 取当前有效的 `system/message` 节点；`request/context` 不参与请求重建。真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
 
-> **ignorable 机制的历史与边界**：上游 #3087（`worktree/remove-ignorable-session-events`）曾删除 ignorable 机制，要求所有 event 必须被已知。但 #3325 随后回滚了这次删除，恢复了 ignorable（依据 `.agents/notes/implemented/architecture/2026-08-30-retain-ignorable-external-session-events.md`）。当前（`9c18e3f216`）ignorable 仍在（`packages/core/session/src/types.ts:473-483`、`packages/session/session-persistence/src/storage-contract.ts:74-80`），但 `known-event-types.ts` 在两次改动之间新增的事件以 required 注册。**跨历史格式边时规则更严**：未知事件即使带 `ignorable: true` 也拒迁（`.agents/notes/implemented/architecture/2026-08-31-alpha-historical-unknown-event-refusal.md`），因为基数保持型迁移必须证明每个被保留的 payload 在目标世代仍语义有效。
+> **ignorable 机制的历史与边界**：上游 #3087（`worktree/remove-ignorable-session-events`）曾删除 ignorable 机制，要求所有 event 必须被已知。但 #3325 随后回滚了这次删除，恢复了 ignorable（依据 `.agents/notes/implemented/architecture/2026-08-30-retain-ignorable-external-session-events.md`）。当前（`183f08e9c6`）ignorable 仍在（`packages/core/session/src/types.ts:473-483`、`packages/session/session-persistence/src/storage-contract.ts:74-80`）。required 与否**只由信封的 `ignorable` 决定**，不是按事件「注册时间」区分的：`known-event-types.ts` 只是一个扁平的名字集合（该文件头部 JSDoc 自述），读路径按 `event['ignorable'] !== true` 判定必知（`packages/core/session/src/index.ts:212,225`）；`git diff d233300d55 ed9fb840d6` 显示该集合在那个窗口内只改过一次名（`model-selection-enabled`→`policy`），没有新增事件。**跨历史格式边时规则更严**：未知事件即使带 `ignorable: true` 也拒迁（`.agents/notes/implemented/architecture/2026-08-31-alpha-historical-unknown-event-refusal.md`），因为基数保持型迁移必须证明每个被保留的 payload 在目标世代仍语义有效。
 
 已知集合是生成的 `KNOWN_SESSION_EVENT_TYPES`（`gen-persistence-catalog` 扫本仓库每一次 `SessionEventMap` 合并）。同一版本、不同插件组合，读规则仍一致。集合内容随事件换代变化：当前有 `assistant/attempt` 与 `system/message`，没有 `assistant/chunk`（`packages/core/session/src/known-event-types.ts:28,61`）。仓外插件事件按构造不在表里；预发布接受「第一方读者拒 resume」，且拒绝是大声的。
 
@@ -50,7 +50,7 @@
 
 ## 持久化与格式迁移
 
-当前持久化使用 JSONL-only（上游 #2698、#3339）。`session-persistence-jsonl` 使用 zstd 拼接多帧容器压缩，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。`session-persistence-sqlite` 已删除。
+当前持久化使用 JSONL-only。SQLite 后端由 **#3339**（`4553c9d957`，`refactor(session)!: remove SQLite persistence backend`）删除，不是 #2698——后者（`3fefcdbe3f`，session-format-migration）当时仍在改 SQLite（`session-persistence-sqlite/src/store.ts` `+142`）。`session-persistence-jsonl` 使用 zstd 拼接多帧容器压缩，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。`session-persistence-sqlite` 已删除。
 
 迁移框架存在且是核心机制：`dsh-session-format` 提供 Stage / chain / catalog 协议与 `SessionFormatError` 家族，`dsh-session-format-catalog` 是生成式 build-static catalog（`packages/session/session-format-catalog/src/generated.ts:14-32`），三个 edge 包 `session-format-v0-to-v1` / `-v1-to-v2` / `-v2-to-v3` 串出从最早支持世代到 current 的相邻链。catalog 直接 import 各历史包，因此历史可读性不依赖挂载插件，profile 也不能增删或重排一条边（`packages/session/session-format-catalog/README.md:47`）。`refuseForeignFormatVersion` 仍在（`packages/session/session-persistence-jsonl/src/format.ts:339-345`），但只覆盖「被当作当前世代解码却版本不符」的路径，不是格式兼容的全部语义。
 
