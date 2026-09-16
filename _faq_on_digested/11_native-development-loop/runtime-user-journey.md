@@ -64,7 +64,7 @@ turn 以 `completed`、`max-tokens`、`aborted`、`error` 或 `blocked` 结束�
 
 - **Approval prompt**（仅在 sandbox escalation 时）：一个 composer-takeover 面板 `[data-approval-key]`，区域
   `Waiting for approval`，组 `Approval details` 含 escalation reason + command，按钮
-  `Reject` / `Allow once`；回答 `Allow once` 授予单次使用（`approval-composer.e2e.ts:107-155`,
+  `Reject` / `Allow once`；回答 `Allow once` 授予单次使用（`approval-composer.e2e.ts:81-138`,
   `snapshots/approval-composer/ui.expected.md`）。切换 access mode 显示一个 chip
   `Access mode, current: Read Only` / `Workspace Write` / `Full access`
  （`approval-composer.e2e.ts:93-98`, `permission-policy-context.e2e.ts:102-114`）。启用 `Full access`
@@ -95,8 +95,9 @@ turn 以 `completed`、`max-tokens`、`aborted`、`error` 或 `blocked` 结束�
   每个选项的 checkbox、`Type your answer`、`Skip this question`、`Submit`；侧栏 `Waiting for answer`
   （`question-composer.e2e.ts:103-192`, `snapshots/question-composer/ui.expected.md`）。
 - **Reported evidence**：tool results 携带 `isError`、一条消息和一个可选的 `meta` 呈现 payload，
-  持久化到日志（`tool-calls.ts:267-288`）；children 通过 `report` tool 交付结果，其默认
-  交付方式是 `next-step`（`tool-subagent-report/src/index.ts:33-73`）。
+  持久化到日志（`tool-calls.ts:267-288`）；子会话不再有独立的 `report` 工具（`tool-subagent-report`
+  已删除），其 epoch 结束时由运行时把 outcome 与 final assistant message 作为 settle notice
+  交回直接父会话（`continuation-messages.ts:130`、`docs/subsystems/subagent.md:202`）。
 
 ## 4. Defaults vs contributor policy vs history-based convention
 
@@ -111,8 +112,8 @@ turn 以 `completed`、`max-tokens`、`aborted`、`error` 或 `blocked` 结束�
 - Skills：catalog 摘要常驻，全文通过 `skill` tool 按需加载；`/name` 用户手势
   直接注入（`tool-skill/src/index.ts:81-160, 177-204`）。
 - 委派：`subagent` 是 `backgroundMode: continuable` → 默认 background，返回 durable id
-  （`tool-subagent/src/index.ts:271-285, 308-314`）；child 获得一个自包含的 `report` 约束
-  （`tool-subagent-report`）。
+  （`tool-subagent/src/index.ts:271-285, 308-314`）；child 的交付由运行时在 settle 时以 notice
+  送回父会话（`continuation-messages.ts:130`），不再是"子会话必须调用 `report` 工具"的约束。
 - Filesystem：`edit` 需要先前的权威 `read`（否则 `FS_NOT_OBSERVED`），而 `write` 是
   `createIfAbsent`/`replaceIfVersion` 基于已观察版本 —— 在**每种** mode 下都生效的 read-before-write 门禁
   （`fs-observation-policy/src/index.ts:65-88`）。
@@ -155,7 +156,7 @@ instructions 读取。Git 历史显示该 policy 被实践了（convention）。
 
 | 用户可观察的表面 | 证据（类型, file:line / baseline） | 层 |
 |---|---|---|
-| Approval 面板（escalation） | e2e `approval-composer.e2e.ts:107-155`; baseline `snapshots/approval-composer/ui.expected.md`（"Waiting for approval", "Reject", "Allow once"） | Default |
+| Approval 面板（escalation） | e2e `approval-composer.e2e.ts:81-138`; baseline `snapshots/approval-composer/ui.expected.md`（"Waiting for approval", "Reject", "Allow once"） | Default |
 | Access-mode chip / Full-access 风险对话框 | e2e `approval-composer.e2e.ts:93-98`; `permission-policy-context.e2e.ts:102-114`; `access-confirmation.e2e.ts:53-72` | Default |
 | 模型可见的策略语句 | `permission-policy-context.e2e.ts:133-143`（"Approval policy: ask.", "… file access denied under read-only mode"） | Default |
 | Plan review card | e2e `plan-review.e2e.ts:80-97`; baseline `snapshots/plan-review/review.expected.md`（Approve/Refuse/Chat about it; 侧栏 "Plan awaiting review"） | Default（opt-in mode） |

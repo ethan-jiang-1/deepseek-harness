@@ -2,19 +2,19 @@
 
 ## 一句话
 
-`packages/experimental/` 是九个「跑在真 Harness 上、但合同随时会变」的原型包：CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面，外加 preview 部署用的 webworker 双包。单独成专题的理由不是它们彼此相似，而是它们共享同一条真实存在的边界——**原型合同**：一种不属于任何产品 release 家族、可以在上游同步之间自由漂移的公开合同。
+`packages/experimental/` 是九个「跑在真 Harness 上、但合同随时会变」的原型包：CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面，外加 preview 部署用的 webworker 双包。单独成专题的理由不是它们彼此相似，而是它们共享同一条真实存在的边界——**原型合同**：一种不承诺稳定性、可以在上游同步之间自由漂移的合同。跨度 0006 起，这条边界内部分出一档：五个 Agent Teams 包是**显式 public 例外**，以现有 `dsh-experimental-*` 名字进入 dsh release 家族；其余四包（code-runtime-python、inspector、webworker 双包）仍是 private 原型。
 
 ## 为什么单独成专题
 
-根 `AGENTS.md` 仓库布局行给了分组定义：「private prototypes excluded from official releases」（`AGENTS.md:48`）。三条机制把这句话变成可执行的边界：组内每包用 `@deepseek-ai/dsh-experimental-*` npm 前缀、`private: true`、省略 `publishConfig`（`packages/experimental/AGENTS.md:6`）；release 包和 apps 不得在 dependencies / optionalDependencies / peerDependencies 里点名它们（`packages/experimental/AGENTS.md:7`）；release 家族的成员目录正则显式排除该目录（`scripts/check-workspace-constraints.ts:56`，`packages/(?!experimental/)`）。落点核验：`packages/bundle/` 六个 bundle 的全部 yml/json/md 中 grep 不到任何 `experimental` 引用——九包都不在任何 shipped profile/base 组合里。
+根 `AGENTS.md` 仓库布局行给了分组定义：「pre-stable prototypes; private by default with explicit public exceptions」（`AGENTS.md:48`）。三条机制把这句话变成可执行的边界：组内每包用 `@deepseek-ai/dsh-experimental-*` npm 前缀，**默认 private 并省略 `publishConfig`**；五个 Agent Teams 包是显式 public 例外，保留实验名、设 `publishConfig.access: public` 并加入 dsh release 家族（`packages/experimental/AGENTS.md:6`，名单常量 `scripts/experimental-package-policy.ts:2`）。release 包和 apps 不得在 dependencies / optionalDependencies / peerDependencies 里点名它们（`packages/experimental/AGENTS.md:7`）；普通 release 成员的目录正则 `packages/(?!experimental/)` 仍排除整个目录，public 例外由那份显式名单单独判定（`scripts/check-workspace-constraints.ts:59`；experimental 政策正则在同文件 `:55`）。落点核验：`packages/bundle/` 六个 bundle 的全部 yml/json/md 中 grep 不到任何 `experimental` 引用——九包都仍不在任何 shipped profile/base 组合里；public 只解决发布边界，不等于 promotion。
 
-组 README 的自我定位是这批包的合同声明：「they run on the real harness, but their contracts can change and they carry no support promise」「they carry no stability promise, and released products must not depend on them」（`packages/experimental/README.md:12`）。与成熟专题的合同差异在**消化侧**同样成立：产品包的机制页对的是有 release 门禁、快照锚定和 catalog 生成撑着的公开合同；experimental 包同样过测试、文档、invariant 门禁（「Experimental status does not relax engineering, security, documentation, lifecycle, testing, invariant, or snapshot requirements」，`packages/experimental/AGENTS.md:8`），但那份合同本身允许在两次上游同步之间改名、重组甚至消失。所以本专题的行锚只保证对「最近核验」那个 commit 成立，漂移时按 `_coverage/` 矩阵整专题复核，而不是像产品 seam 那样默认向后兼容。
+组 README 的自我定位是这批包的合同声明：「prototype capabilities whose contracts can change and carry no support promise」「Packages are private by default; the five Agent Teams packages are published opt-in exceptions」「Released products outside this group must not depend on experimental packages」（`packages/experimental/README.md:12`）。发布例外本身也写明不是稳定承诺：「Publishing an explicit exception does not promote it or add a stability promise」（`packages/experimental/AGENTS.md:9`）。与成熟专题的合同差异在**消化侧**同样成立：产品包的机制页对的是有 release 门禁、快照锚定和 catalog 生成撑着的公开合同；experimental 包同样过测试、文档、invariant 门禁（「Experimental status does not relax engineering, security, documentation, lifecycle, testing, invariant, or snapshot requirements」，`packages/experimental/AGENTS.md:8`），但那份合同本身允许在两次上游同步之间改名、重组甚至消失。所以本专题的行锚只保证对「最近核验」那个 commit 成立，漂移时按 `_coverage/` 矩阵整专题复核，而不是像产品 seam 那样默认向后兼容。
 
 ## 三个面
 
 **code-runtime-python —— 换 provider 形状。** `ctx.codeRuntime` seam 的第二个实现：CPython 3.10+ 子进程每次 `run()` 跑一个全新解释器，程序与宿主在 fd 3 上说 JSON-lines 帧协议，宿主把每个入站帧当敌意输入逐字段重建，全部上限在 load 时验证。这是「同一个 Service Definition、第二个 provider」的最小样本，与 worker-thread 后端的取舍（进程隔离 vs 线程内、Unix-only vs 跨平台）全在 [`01-code-runtime-python.md`](./01-code-runtime-python.md)。
 
-**Agent Teams —— 新服务 + 多包家族形状。** 一个 session 内的多代理编组：`ctx.agentTeams` 领域服务（roster / mailbox / task board，经 Lead Session log 持久化）+ 十个成员级工具 + Host/Web 两个 profile patch + Web 会话头部 UI，五包各司其职。它不是三角色 seam——没有 Provider 可替换性，消费的是「服务 + 工具 + UI」的组合；机制、事件与持久化在 [`02-agent-teams.md`](./02-agent-teams.md)。
+**Agent Teams —— 新服务 + 多包家族形状。** 一个 session 内的多代理编组：`ctx.agentTeams` 领域服务（roster / mailbox / task board，经 Lead Session log 持久化）+ 九个成员级工具 + Host/Web 两个 profile patch + Web 会话头部 UI，五包各司其职。它不是三角色 seam——没有 Provider 可替换性，消费的是「服务 + 工具 + UI」的组合；机制、事件与持久化在 [`02-agent-teams.md`](./02-agent-teams.md)。
 
 **Inspector —— 调试面形状。** Host 与 browser Client 的 CDP 调试面：Worker 线程持有全部 Chrome 协议状态，Host/Client 只发内部观察记录，Worker 校验后翻译成标准 CDP 域；每条 DevTools 连接在 Worker 里挂一条 `node:inspector.Session` 回 Host 主线程。它不改任何模型可见行为，是纯开发者观察面，见 [`03-inspector.md`](./03-inspector.md)。
 
@@ -34,7 +34,7 @@
 
 ## 启用方式总述
 
-九包都不在 shipped 组合里，启用全部走显式组合：源码 checkout 内 `dsh plugin --profile <name> add ./packages/experimental/<pkg>`，或直接往 `cordis.yml` / patch 里 insert。python 后端的样板是 keyless 快照 `snapshots/session/ptc-python-turn/cordis.yml`：先把 headless profile 挂的默认 `code-runtime`（worker-thread）行 `disabled: true`（`snapshots/session/ptc-python-turn/cordis.yml:26`），再 insert `@deepseek-ai/dsh-experimental-code-runtime-python`（`:28`-`:30`）——同一 isolate 里重复注册同一个服务名会 load 失败，所以「换后端」永远是组合层的显式决定。Agent Teams 的启用是两层：Host 侧 `pnpm dsh plugin --profile headless add ./packages/experimental/agent-team-profile`（profile 已含 `dsh-base` 时可直接加），Web 场景再按「先 Host 后 Web」顺序加 `agent-team-web-profile`。Inspector 不装包：build 后 `node apps/cli/lib/bin.js web --patch ./packages/experimental/inspector/cordis.patch.yml` 挂 built 覆盖层，或源码态 `pnpm run demo:inspector`（`cordis.source.patch.yml`）。各面的完整入口见对应机制页。
+九包都不在 shipped 组合里，启用全部走显式组合：源码 checkout 内 `dsh plugin --profile <name> add ./packages/experimental/<pkg>`，或直接往 `cordis.yml` / patch 里 insert；五个 public 例外随 dsh release 家族一起发布，另外四包不发布。python 后端的样板是 keyless 快照 `snapshots/session/ptc-python-turn/cordis.yml`：先把 headless profile 挂的默认 `code-runtime`（worker-thread）行 `disabled: true`（`snapshots/session/ptc-python-turn/cordis.yml:26`），再 insert `@deepseek-ai/dsh-experimental-code-runtime-python`（`:28`-`:30`）——同一 isolate 里重复注册同一个服务名会 load 失败，所以「换后端」永远是组合层的显式决定。Agent Teams 的启用是两层：Host 侧 `pnpm dsh plugin --profile headless add ./packages/experimental/agent-team-profile`（profile 已含 `dsh-base` 时可直接加），Web 场景再按「先 Host 后 Web」顺序加 `agent-team-web-profile`。Inspector 不装包：build 后 `node apps/cli/lib/bin.js web --patch ./packages/experimental/inspector/cordis.patch.yml` 挂 built 覆盖层，或源码态 `pnpm run demo:inspector`（`cordis.source.patch.yml`）。各面的完整入口见对应机制页。
 
 ## 阅读路径
 

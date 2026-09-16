@@ -25,7 +25,7 @@
 - 结论只引用 DSH 官方文件：根 `README.md`、根 `AGENTS.md`、`docs/AGENTS.md`、`docs/architecture.md`、生成目录、package README、`docs/development.md` 等。
 - 运行时的加载/导航机制（`dsh-agent-instructions`、skill catalog、token meter 等）不属于本问题，归 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/question.md)。
 - `_digested/harness-idea/` 只作为已有消化视角，不作为原始证据。
-- 当前源码基线：`dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`。
+- 当前源码基线：`dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`。
 
 ## 文件
 

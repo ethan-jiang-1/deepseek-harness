@@ -34,6 +34,8 @@ prepareProfile（同样重写空 cordis.yml）
 
 `--dump-default-config` 把 `userLayer` 设成 `false`：不解析损坏的用户文件，用来恢复诊断。
 
+dump 也接受 `--from-default-profile <模板>`（`apps/cli/src/dump-config.ts:35` 的第四个形参，`:37` 透传给 `prepareProfile`）：profile 缺失时先按模板建出它，再照上面的层列表 dump。它只影响「哪个 profile 被创建」，层列表一条不多、一条不少，也不 boot。
+
 缺的、只在 `composeProfile` 里追加的：
 
 | 层 | 谁加 | dump 有没有 |

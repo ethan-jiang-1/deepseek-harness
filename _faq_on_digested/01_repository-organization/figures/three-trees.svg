@@ -18,8 +18,8 @@
   <text x="76" y="257" fill="#2563eb">产品能力与角色 package</text>
   <text x="76" y="274" fill="#2563eb">Definition · Provider · Consumer</text>
   <rect x="58" y="294" width="254" height="48" rx="7" fill="#fff" stroke="#60a5fa"/>
-  <text x="76" y="314" font-weight="700" fill="#1e3a8a">apps/ · examples/ · python/</text>
-  <text x="76" y="331" fill="#2563eb">入口、可运行叶子与发行载体</text>
+  <text x="76" y="314" font-weight="700" fill="#1e3a8a">apps/ · benchmarks/ · python/</text>
+  <text x="76" y="331" fill="#2563eb">入口、性能门禁与发行载体</text>
   <rect x="58" y="354" width="254" height="48" rx="7" fill="#fff" stroke="#60a5fa"/>
   <text x="76" y="374" font-weight="700" fill="#1e3a8a">docs/ · scripts/ · website/</text>
   <text x="76" y="391" fill="#2563eb">文档、生成与工程系统</text>

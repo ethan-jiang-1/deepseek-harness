@@ -12,13 +12,13 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 > A fiber is one loaded plugin instance: its lifecycle state, validated config, and registered effects. `ctx.fiber` is the current fiber, and `ctx.effect()` delegates to it.
 >
-> —— `docs/cordis-api/fiber.md:6`（基线 `a66e4702…`）
+> —— `docs/cordis-api/fiber.md:6`（基线 `183f08e9c6…`）
 
 这比「词汇表统一」更深一层：同一套原语贯穿工具、provider、策略、UI、loop，所以学会一个插件形状，就能在整棵树上迁移。
 
 > Domain vocabulary for DeepSeek Harness uses one canonical term per concept.
 >
-> —— `docs/glossary.md:5`（基线 `a66e4702…`）
+> —— `docs/glossary.md:5`（基线 `183f08e9c6…`）
 
 ## 机制二：一词一义，文档与代码没有翻译层
 
@@ -28,7 +28,7 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 > `SessionEventMap` members are required-on-read by default — builds that do not know a type refuse the log unless the event carries the envelope's `ignorable: true`.
 >
-> —— `AGENTS.md:107`（基线 `a66e4702…`）
+> —— `AGENTS.md:108`（基线 `183f08e9c6…`）
 
 ## 机制三：合同外显为类型
 
@@ -49,7 +49,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 > Services declare event names through TypeScript declaration merging, then dispatch them as `emit`, `waterfall`, `parallel`, `serial`, or `bail` depending on whether listeners observe, wrap, fan out, run in order, or stop at the first bail value.
 >
-> —— `docs/cordis-primer.md:12`（基线 `a66e4702…`）
+> —— `docs/cordis-primer.md:12`（基线 `183f08e9c6…`）
 
 ## 机制五：结构同构，生成目录不漂移
 
@@ -58,7 +58,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
-> —— `packages/AGENTS.md:27`（基线 `a66e4702…`）
+> —— `packages/AGENTS.md:27`（基线 `183f08e9c6…`）
 - 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
 
 手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
@@ -67,7 +67,8 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 - `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果、模型可见 ⟺ 已记录、显式优于隐式。
 - 文档标准禁止「previously / now / renamed」这类变迁史；当前状态散文（current-state prose），一个事实一个家（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
-- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模见 [`claims.json`](./claims.json) 的 N1–N2（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）；每条有分类、双语、归档纪律；「非平凡改动必须带 note」本身是一条规则（[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)）；归档有专门的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) skill。note 记的是「为什么、放弃了什么、怎么验证」。
+- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模**三个数并报**（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）：`dsh-v0.1.5-rc.1` 上总量 1910 篇 `.md`、活跃 `implemented/` 582 篇、冻结 `archived/` 1257 篇，前两个即 [`claims.json`](./claims.json) 的 N1–N2。缺一个都会读错形状——只报总量会把「按未来决策价值裁剪」读成膨胀，只报活跃数会读成收缩；实际是同一批记录分了活跃与冻结两层，而**冻结层不是现行权威**：归档政策明文禁止把 `archived/` 当作当前行为的依据。所以「非平凡改动必须带 note」这条规则的现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:39`](../../docs/AGENTS.md)，[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照）只作为这条规则的来源记录被引用。note 记的是「为什么、放弃了什么、怎么验证」，每条有分类、双语、归档纪律。
+- **记忆本身也有 gate**：连「决定忘记什么」都被写成了成文判据 + 可复用流程 + 机器封印。判据在 [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md)：归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明文要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。封印是 [`archived/manifest.json`](../../.agents/notes/archived/manifest.json)（seal 数 510 → 1884）加 [`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 门禁，后者注册在 [`scripts/run-gates.ts:756`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单。
 
 为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。
 
@@ -77,7 +78,7 @@ fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的
 
 - `rejected/` Agent Notes 保留被否提案及其失败理由；
 - `archived/` 冻结历史，不当现行权威，文档门禁也跳过它；
-- `./invariant` 的空 companion（带 `No runtime invariant:` 标记）曾是负知识的一种——「这里没有可观察的运行时关系」是显式结论；rc.1 上游裁定空 companion 是噪音并全部删除，改由省略 + 写进 README 承担（[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）——负知识的载体从「强制文件」变成「省略即默认，例外进 README」；
+- `./invariant` 的空 companion（带 `No runtime invariant:` 标记）曾是负知识的一种——「这里没有可观察的运行时关系」是显式结论；`0.1.2-rc.1` 上游裁定空 companion 是噪音并全部删除，改由省略 + 写进 README 承担（[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）——负知识的载体从「强制文件」变成「省略即默认，例外进 README」；
 - package README 的 `## Known Limitations and Deferred Work` 由 `verify-package-readme-limitations` 门禁检查。
 
 负知识让读者能查到「这里没有检查」和「这条路已被否掉」，而不是靠试错重新发现。
@@ -94,13 +95,13 @@ coding agent 的真实约束不只有「读不读得懂」，还有**上下文�
 
 > **Pairs update together**: Terminology-guided, single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records.
 >
-> —— `docs/AGENTS.md:43`（基线 `a66e4702…`）
+> —— `docs/AGENTS.md:43`（基线 `183f08e9c6…`）
 
 `verify-doc-budgets` 把字数预算钉成门禁。可读性因此来自组织，不来自把系统做小；正确读法是查表，不是通读。
 
-> **Document current state, not change history.** Avoid "previously/now/no longer", PRs, commits, and stack positions in durable prose; name the live mechanism.
+> **Document current state, not change history.** Name live mechanisms, not PRs, commits, stack positions, or "previously/now/no longer".
 >
-> —— `docs/AGENTS.md:38`（基线 `a66e4702…`）
+> —— `docs/AGENTS.md:38`（基线 `183f08e9c6…`）
 
 ## 可读 ≠ 简单
 
@@ -109,14 +110,16 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 ## 证据入口
 
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 66、123 行；事件域、扩展表）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 72、137 行；事件域、扩展表）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件矩阵与分发模式）
-- [`../../AGENTS.md`](../../AGENTS.md)（第 107 行；required-on-read 与 standing orders）
+- [`../../AGENTS.md`](../../AGENTS.md)（第 108 行；required-on-read 与 standing orders）
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文、tier taxonomy、字数预算）
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；读者模型的因果来源）
-- [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（note 语料库的规则）
-- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（rc.1 废除空 companion，现行权威）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 rc.1 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」，原「空 invariant 纪律」的显式结论表述只剩历史意义，rc.1 起被 2026-08-28 裁定取代）
+- [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照；note 语料库规则的历史来源。现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:39`](../../docs/AGENTS.md)）
+- [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（第 36-42、46 行；归档判据与记忆的 gate）
+- [`../../.agents/notes/archived/manifest.json`](../../.agents/notes/archived/manifest.json) / [`../../scripts/verify-archived-agent-notes.ts`](../../scripts/verify-archived-agent-notes.ts)（冻结清单与封印门禁）
+- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（`0.1.2-rc.1` 废除空 companion，现行权威）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 `0.1.2-rc.1` 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」，原「空 invariant 纪律」的显式结论表述只剩历史意义，`0.1.2-rc.1` 起被 2026-08-28 裁定取代）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
 - [`docs/development.md`](../../docs/development.md)（包结构同构）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）

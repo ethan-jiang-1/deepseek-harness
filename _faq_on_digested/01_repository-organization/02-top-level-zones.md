@@ -6,7 +6,7 @@
 
 ![DSH 仓库顶层职责分区](./figures/repository-zones.svg)
 
-顶层目录主要表达维护、构建和发布边界，而不是一条从底到顶的运行时调用栈。`vendor/`、`packages/`、`apps/` 之间确实存在基础到应用的方向，但 `docs/`、`scripts/`、`examples/` 和研究目录是围绕产品工作的其它平面。
+顶层目录主要表达维护、构建和发布边界，而不是一条从底到顶的运行时调用栈。`vendor/`、`packages/`、`apps/` 之间确实存在基础到应用的方向，但 `docs/`、`scripts/`、`benchmarks/` 和研究目录是围绕产品工作的其它平面。
 
 ## 产品与框架源码
 
@@ -14,34 +14,37 @@
 |------|----------|------------|----------|
 | `vendor/` | 钉住的 Cordis、Loader、Include、HMR 及基础库源码；上游 commit 与本地修改清单 | DSH 产品能力；普通第三方 npm 依赖 | [`vendor/README.md`](../../vendor/README.md) |
 | `packages/` | `@deepseek-ai/dsh-*` 产品和支持 packages；Service、Provider、Consumer、策略、UI、bundle | 最终产品 bin；根示例的运行配置 | [`packages/README.md`](../../packages/README.md) |
-| `apps/` | 最终应用入口：发布的 `dsh` CLI 与浏览器 Vite entry | 可复用能力实现；完整业务模块 | [`apps/cli/README.md`](../../apps/cli/README.md)、`apps/web/src/main.ts` |
+| `apps/` | 最终应用入口：发布的 `dsh` CLI、浏览器 Vite entry，以及桌面 Electron 壳与它的私有 host | 可复用能力实现；完整业务模块 | [`apps/cli/README.md`](../../apps/cli/README.md)、`apps/web/src/main.ts`、[`apps/desktop/README.md`](../../apps/desktop/README.md) |
 
 `vendor/` 被纳入 pnpm workspace，因为 DSH 要从源码构建并发布自己重命名后的 Cordis 框架层；但它仍保持单独的 upstream manifest、同步流程和本地修改日志。不要像普通 `packages/` 代码一样顺手重构它。
 
 `packages/` 是主产品层。绝大多数功能修改最终落在这里，但准确落点仍由能力所有者和角色决定，不是看到一个功能就新建 group。
 
-`apps/cli` 的职责是解析启动模式、组合 profile、提供进程级启动事实和收敛 shutdown；`apps/web` 只寻找 DOM mount point 并启动 client shell。入口保持薄，才能让 JSON-RPC、ACP、Headless 与 Web 复用相同的产品 packages。
+`apps/cli` 的职责是解析启动模式、组合 profile、提供进程级启动事实和收敛 shutdown；`apps/web` 只寻找 DOM mount point 并启动 client shell；`apps/desktop` 是 Electron 壳，`apps/desktop-host` 只负责组合并启动 `desktop` profile。入口保持薄，才能让 JSON-RPC、ACP、Headless 与 Web 复用相同的产品 packages——桌面是同一论点的第 4 个例证，它复用的正是 Web 那份 client 产物。
 
-## 组合与可运行叶子
+桌面也是 `apps/` 里唯一**不**经 `dsh` CLI 启动的入口：CLI 用 `rejectElectronProfile()` 明确拒绝 `desktop` 这个 profile 名（`apps/cli/src/args.ts:68-71`），上游 [`docs/architecture.md`](../../docs/architecture.md) 也把桌面单列在 `## Desktop application`（`:49-53`），而不是并进 `## Application launch`（`:41-47`）。所以「`apps/` 保留最终可执行入口」这条描述仍然成立，但它不等于「`apps/` 里的每个入口都由 `dsh --profile` 启动」。
+
+## 组合、预设与可选 overlay
+
+“组合”有三个落点，没有一个是顶层 `examples/`：那个目录已被 `refactor(repo): retire top-level examples` 整体退役，`packages/examples/` 也从未存在。
 
 | 目录 | 角色 | 关键区别 |
 |------|------|----------|
 | `packages/bundle/` | 可发布、可安装的 profile patch 层 | 位于 `packages/`，因为 bundle 自身也是 npm package |
-| `packages/examples/` | 可复用的 demo bundle packages | 是 package 层的参考装配，不是最终运行目录 |
-| 根 `examples/` | 真正可运行的 `cordis.yml` 叶子、fixtures、快照与 e2e 场景 | 整个根 `examples` 作为一个 pnpm workspace member，不逐叶构建发布 |
+| `packages/preset/` | per-session agent 组合：一个 preset 目录持有一份 `agent.cordis.yml` | 决定“这个 session 的 agent 由哪些行组成”，不是进程级 profile |
+| `apps/cli/config/examples/` | 随产品出货的可选 overlay（GitHub review webhook、session 内 Schedule、memory MCP 服务、runtime Cordis 工具） | 是产品资产而非测试 fixture；用 `dsh --patch <该文件>` opt-in，永不进默认 profile |
+| `snapshots/` | committed session JSONL 作为回放输入与期望输出的场景 | 只放 session 驱动的用例；其它期望输出留在各自 owner |
 
-`packages/examples/agent-spine-demo` 可以被多个示例复用；`examples/headless-agent/cordis.yml` 才是一个可直接启动的组合叶子。前者解决“复用哪段装配”，后者解决“这次 demo 从哪个配置启动”。
-
-根 `examples/` 不应沉淀可复用业务逻辑。若一个 demo 中出现可复用实现，应提取回 `packages/`，让 package 获得自己的合同、测试、覆盖率和发布边界。
+bundle 的 `cordis.patch.yml` 解决“默认装配是什么”，`apps/cli/config/examples/*/cordis.yml` 解决“这次额外接哪几行”。两者都是配置层，都不该沉淀可复用实现：demo 里长出的可复用逻辑要提取回 `packages/`，让它获得自己的合同、测试、覆盖率和发布边界。
 
 ## 跨语言与平台发行
 
 | 目录 | 角色 | 为什么不放进普通 `packages/` |
 |------|------|------------------------------|
-| `native/` | Landlock 自限制 launcher 的原生源码与三-package npm 家族 | 有独立平台矩阵、native artifact 和 release workflow |
+| `native/` | `native/system` 工作区：`@deepseek-ai/node-addon-system` 的 Linux Landlock 限制器与 POSIX flock 绑定、平台包与发布流程 | 有独立平台矩阵、native artifact 和 release workflow |
 | `python/` | Python SDK 与捆绑 DSH runtime 的发行载体 | 使用 Python packaging；SDK 通过 stdio JSON-RPC 驱动 runtime |
 
-`native/landlock-run` 仍加入根 pnpm workspace，以便 Harness consumer 与 launcher 合同在同一仓库联调；它的 release 边界仍独立。`python/sdk` 是 Python package，`python/sdk-runtime` 同时承担 Python runtime carrier 与 pnpm deploy-root manifest 的角色。
+`native/system` 及其平台包仍加入根 pnpm workspace，以便 Harness consumer 与 launcher 合同在同一仓库联调；它的 release 边界仍独立。`python/sdk` 是 Python package，`python/sdk-runtime` 同时承担 Python runtime carrier 与 pnpm deploy-root manifest 的角色。
 
 ## 文档、站点与工程系统
 
@@ -50,6 +53,7 @@
 | `docs/` | 架构、subsystem reference、cookbook、用户文档、生成目录、postmortem | 误以为所有 package 细节都应复制到架构页 |
 | `website/` | `website/docs.ts` publication manifest、VitePress 配置和站点资产 | 误以为网站 route 下有另一份权威 Markdown |
 | `scripts/` | 生成器、校验器、构建和发布脚本、fixtures/snapshots | 把生成文件手改，而不是修改 owner 或 generator |
+| `benchmarks/` | 仓库级性能门禁：按被测用户路径分目录的 bench 用例、私有的 `@deepseek-ai/dsh-benchmarks` 工作区与 bench-only 依赖，由根 `vitest.bench.config.ts` 编排 | 把 package 局部诊断也搬进来；它们留在各自 owner 旁用 `.perf.ts`，不进 `test:bench` |
 | `.agents/` | Agent Notes 与仓库专用 skills | 把决策理由写进当前行为 reference，或把 archived note 当现行合同 |
 | `.github/` | CI、release、issue/PR policy 与模板 | 把 CI workflow 当成本地日常命令清单 |
 | `assets/` | 根文档使用的少量静态图片 | 通用前端资产仓；产品 UI 资产应由所属 package/app 管理 |
@@ -64,18 +68,18 @@
 ```text
 vendor/*
 packages/*/*
-native/landlock-run
-native/landlock-run/packages/*
+native/system
+native/system/packages/*
 apps/*
+benchmarks
 website
-examples
 python/sdk-runtime
 ```
 
 这份清单透露了几个设计选择：
 
 - `packages/` 必须保持两级 `group/package`，workspace glob 才能统一发现。
-- 根 `examples/` 是一个 dependency-resolution root，不是把每个 example 变成发布 package。
+- `benchmarks/` 是私有的 workspace member（`@deepseek-ai/dsh-benchmarks`），只为 bench-only 依赖与 worker 构建存在，不发布。
 - Python SDK 本身由 Python 工具管理，只有 runtime carrier 进入 pnpm 部署闭包。
 - `docs/`、`scripts/`、`.agents/` 和研究目录不是独立 workspace package，但可由根脚本消费。
 
@@ -105,12 +109,12 @@ TypeScript 特别区分 Host 与 Client 两个 compiler face。普通 package �
 | `dsh` 命令怎么启动 | `apps/cli/` |
 | Web 页面最初从哪里挂载 | `apps/web/`，随后进入 `packages/client/` |
 | 默认启用哪些插件 | `packages/bundle/*/cordis.patch.yml` 与 profile/preset config |
-| 一个可运行组合 | 根 `examples/` |
+| 一个可选 overlay 组合 | `apps/cli/config/examples/`，用 `dsh --patch <该文件>` 挂上 |
 | 一个类型或事件的权威说明 | `docs/subsystems/` 或生成 catalog |
 | 架构决策为什么这样做 | `.agents/notes/implemented/`，但先找当前文档/源码合同 |
 | 生成或校验某份文档/目录 | `scripts/` |
 | Python 用户怎么驱动 DSH | `python/sdk/` |
-| 原生 sandbox launcher | `native/landlock-run/` |
+| 原生 system 原语（Landlock / flock） | `native/system/` |
 
 ## 核验入口
 

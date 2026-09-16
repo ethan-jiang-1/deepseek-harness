@@ -7,7 +7,7 @@
 | 层 | 机制 | 证据 |
 |---|---|---|
 | 模型层 | Flash 路由 + `reasoningEffort: max` | `llm-deepseek` 省略 `models` 时默认公布 `deepseek-v4-flash`、`deepseek-v4-pro`、`deepseek-v4-flash-vision-exp`，各 1,000,000 token 上下文（`packages/llm/llm-deepseek/README.md:53`）；档位集 `off\|low\|high\|max`，省略回退 `high`（`README.md:20,69`），`low/high/max` 都启用思考、以官方顶层 `reasoning_effort` 序列化 |
-| 驱动层 | goal 续轮：一个目标跨 turn 自主推进 | `create_goal/get_goal/update_goal` 三工具 + `goal-round-driver`；层级 **Goal → Round → Turn → Step**，一轮 = 一条 `source.kind==='goal'` 的 `user/message` 开的普通 turn（`.agents/notes/implemented/feature/2026-07-19-same-session-goal-round-driver.md:17`） |
+| 驱动层 | goal 续轮：一个目标跨 turn 自主推进 | `create_goal/get_goal/update_goal` 三工具 + `goal-round-driver`；层级 **Goal → Round → Turn → Step**，一轮 = 一条 `source.kind==='goal'` 的 `user/message` 开的普通 turn（`.agents/notes/archived/feature/2026-07-19-same-session-goal-round-driver.md:18`） |
 | 评审层 | plan 模式：执行前的人类审批姿态 | 唯一持久事实是会话事件 `plan/mode {active}`（`packages/plan/plan-mode/src/index.ts:46-55`）；`exit_plan_mode` 经 `ctx.userQuestions.ask` 提交 `Approve / Keep planning` 评审（`plan-mode/src/index.ts:371-399`） |
 | 编排层 | `workflow` 工具：一个 JS 脚本 fan-out 多个子代理 | `ctx.workflowEngine`（worker-thread Provider）+ `tool-workflow` Consumer；脚本 hooks：`agent()/pipeline()/parallel()/phase()/log()`（`packages/workflow/workflow/README.md`） |
 

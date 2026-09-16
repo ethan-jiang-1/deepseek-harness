@@ -30,7 +30,7 @@ requireDirectHuman(ctx, execution)  // 只允许在 human 发起的 turn 中创�
 
 ### 路径二：用户手敲 `/goal <objective>`
 
-`packages/goal/command-goal/src/index.ts:188-196` 注册了 `/goal` 命令。解析（第 34-44 行）是**整词匹配，不是前缀匹配**：`clear`/`pause`/`resume`/`edit` 必须与整个输入相等（`edit` 也可以是 `edit ` 加空白加 objective），其余一切输入——包括 `cleanup` 这种恰好「以 clea 开头」的词——都视为创建：
+`packages/goal/command-goal/src/index.ts:190-196` 注册了 `/goal` 命令。解析（第 34-44 行）是**整词匹配，不是前缀匹配**：`clear`/`pause`/`resume`/`edit` 必须与整个输入相等（`edit` 也可以是 `edit ` 加空白加 objective），其余一切输入——包括 `cleanup` 这种恰好「以 clea 开头」的词——都视为创建：
 
 ```ts
 if (/^edit(?=\s)/iu.test(input)) return { kind: 'edit', objective: input.slice(4).trim() }
@@ -69,12 +69,14 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 | `create()` | 无 goal，或 `complete`（替换，新 goal id） | active + armed | direct-human |
 | `edit()` | 任意当前 | phase 不变，revision+1 | direct-human |
 | `pause()` | 仅 active | paused + disarmed | direct-human |
-| `resume()` | `active·disarmed` / paused / blocked | active + armed（需剩余 round 预算） | direct-human |
+| `resume()` | `active·disarmed` / paused / blocked | active + armed（需剩余 round 预算） | direct-human；模型 tool 仅限 `active·disarmed` 与 `blocked`，`paused` 只能由 human 经 `/goal resume` 或 Web 恢复 |
 | `complete()` | active / paused / blocked | complete + disarmed | direct-human 或 goal-round |
 | `block()` | 仅 active | blocked + disarmed（带 blockedReason） | direct-human 或 goal-round |
 | `clear()` | 任意当前 | 墓碑 tombstone（revision+1） | human 命令 |
 
-两个容易记错的点：**`complete` 是终态，不可 resume**——`resume` 的允许集只有 `['active', 'paused', 'blocked']`（`goal/src/index.ts:366`，严格 fold 同 `fold.ts:227-231`），complete goal 只能被 `create()` 替换；**blocked 可以手动 resume**（需 human 权限），只是不会被 round driver 自动续轮。
+两个容易记错的点：**`complete` 是终态，不可 resume**——`resume` 的允许集只有 `['active', 'paused', 'blocked']`（`goal/src/index.ts:368`，严格 fold 同 `fold.ts:225-236`），complete goal 只能被 `create()` 替换；**blocked 可以手动 resume**（需 human 权限），只是不会被 round driver 自动续轮。
+
+服务层的允许集与模型 tool 的允许集不同：模型 tool 不能 resume 一个 `paused` goal，仍能 re-arm `active·disarmed`（重启 / fork 后）与 resume `blocked`，所以**暂停只能由 human 解除**；`/goal resume` 走服务直调（`packages/goal/command-goal/src/index.ts:167-168`），Web 走 `@Remote('resume')`，两条 human 通道都不受限。
 
 ### 各状态的含义
 
@@ -90,10 +92,10 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 
 **Goal Round Driver** 只管在 active + armed + 未达 round limit 时发起下一轮。它不检查 objective 是否完成。
 
-**模型**通过 `update_goal` tool 可以 `complete`、`blocked`、`edit`、`pause`、`resume`。其中 `complete` 和 `blocked` 不需要 human origin（在 goal-round 中被授权），因为这是模型自己报告任务状态：
+**模型**通过 `update_goal` tool 可以 `complete`、`blocked`、`edit`、`pause`；`resume` 仅限 `active·disarmed` 与 `blocked`，`paused` 会抛 `GOAL_TOOL_RESUME_PAUSED`（"the model cannot resume a paused goal; the user must resume it"，`tool-goal/src/index.ts:279-286`）。其中 `complete` 和 `blocked` 不需要 human origin（在 goal-round 中被授权），因为这是模型自己报告任务状态：
 
 ```ts
-// tool-goal/src/index.ts 第 284 行
+// tool-goal/src/index.ts 第 292 行
 const authority = completionAuthority(ctx, execution)
 // authority.kind === 'goal-round' 时允许 complete/blocked
 ```
@@ -106,7 +108,8 @@ Goal 的所有变更通过 session log 的 `goal/change` 事件持久化。系�
 - `fold.ts` 的 `applyGoalChange()` 严格验证：只能从 revision N 到 N+1
 - 同一会话、同一时间只允许一个 goal（completed 后可替换）
 - 回放时从 session log 的 `goal/change` 事件重建 goal 状态
-- `roundsStarted` 由 goal 来源（`source.kind === 'goal'`）的 `user/message` 推进，fold 严格验证 round 归属（`fold.ts:321-331`）
+- `roundsStarted` 由 goal 来源（`source.kind === 'goal'`）的 `user/message` 推进，fold 严格验证 round 归属（`fold.ts:321-332`）
+- activation 变化不写 log，但会发进程内事件 `goal/activation-changed`（带 `sessionId` 与当前 goal 的 `{id, revision, activation}`，无 goal 时省略 `goal` 字段）——`GoalService.setActivation()` 在 activation **真正变化**时广播（`goal/src/index.ts:495-516`，类型 `types.ts:74-87`，Cordis 声明合并 `types.ts:143-152`）；`agent/session-start` 的重置、`disarm()` 与 `goal/change` 折叠三条路径都改走这个方法
 
 ### 默认配置
 

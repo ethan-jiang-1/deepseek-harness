@@ -6,7 +6,7 @@
 
 ## 基线
 
-全部判断对照 DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`。上游同步后，按 `_change_log/` 复核本专题证据锚点；本专题不使用外部资料作为证据，事实一律以 DSH 官方文件与本基线为准。
+全部判断对照 DeepSeek Harness `dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`。上游同步后，按 `_change_log/` 复核本专题证据锚点；本专题不使用外部资料作为证据，事实一律以 DSH 官方文件与本基线为准。
 
 ## 出处分级
 
@@ -15,7 +15,7 @@
 | 标记 | 含义 | 可信度 | 用法 |
 |------|------|--------|------|
 | `[原文]` | Agent Note / AGENTS.md / 官方文档的直接陈述 | 高 | 可以引用为事实，但「原文说的是什么」与「我们推出的结论」必须分开 |
-| `[源码]` | 从 `a66e4702` 源码或生成物核对过的事实 | 高 | 可作为机制事实 |
+| `[源码]` | 从 `183f08e9c6` 源码或生成物核对过的事实 | 高 | 可作为机制事实 |
 | `[推断]` | 从事实推出的解释或因果 | 中 | 必须能指出让它变假的观察 |
 | `[框架]` | 不依赖 dsh 的通式（paved road、知识外置） | 低 | 只提供结构，压缩使用，不得冒充 dsh 发现 |
 
@@ -62,6 +62,16 @@
 
 dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 是检索索引，invariants/gates 是运行时验证，rejected notes 是负样本，archive 是遗忘策略，skills 是程序化判断。本专题应当吃自己的药。
 
+### 归档事件：连「决定忘记什么」也被写成了判据
+
+`a7a5be1703`（`docs(notes): archive low-future-value Agent Notes`，作者日期 2026-09-04）一次性把 452 篇英文 + 452 篇中文 implemented note 移入 `archived/`。它是本专题在跨度内读到的最强单点证据：判断纪律不只覆盖「记住什么」，也覆盖「忘记什么」，而且两条都有可复核的外部形态。
+
+1. **判据成文，且明文排除体量与年龄。** [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md) 的归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明确要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。
+2. **动作最小，因此可证伪。** 对该提交的 452 个英文配对与 452 个中文配对逐字节比对：全部是「0 删除行、恰好新增一行 `Archived: 2026-09-04`」，正文零改动；同一提交里唯一有正文改写的是 7 篇 proposed→rejected（拒绝，不是归档）。**「归档」与「修订」因此是两个可分辨的动作**，而不是同一次编辑的副产物——这正是本页对 `[推断]` 要求的可证伪性。
+3. **封印有机器门禁。** [`archived/manifest.json`](../../.agents/notes/archived/manifest.json) 的 seal 数 510 → 1884；[`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 注册在 [`scripts/run-gates.ts:756`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单；README:42 同时规定归档件永久冻结、不得当作现行权威。
+
+这也校正了一个容易误读的读数：同一窗口内 note 总数从 1704 涨到 1910，而活跃 `implemented/` 从 1288 降到 582——**归档没有消灭记录，只是把记录移进冻结层**；判断纪律的产物不是更少的文档，而是分层更清楚的文档。
+
 ## 核心 claim register
 
 本页维护本专题最重要的 claim；每次修改正文时同步更新。
@@ -95,8 +105,8 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；当前状态散文与一个事实一个家）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期与格式）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 rc.1 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」；曾有过的「空 invariant 是显式结论」纪律已作废，被 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md) 取代）
-- [`../../docs/testing.md`](../../docs/testing.md)（第 34 行；元验证与 snapshot 政策）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 `0.1.2-rc.1` 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」；曾有过的「空 invariant 是显式结论」纪律已作废，被 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md) 取代）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 35 行；元验证与 snapshot 政策）
 
 ## 本专题内部产物（非 DSH 证据）
 

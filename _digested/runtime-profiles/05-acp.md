@@ -22,11 +22,13 @@ acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）�
 
 | 改动 | 内容 |
 |------|------|
-| `system-prompt` override | persona → `You are a coding agent powered by the {{model}} model…` |
+| `system-prompt` override | persona 两段：`personaSuffix`（`Your working directory is {{cwd}}.`）+ `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/acp-app/cordis.patch.yml:3-7`） |
 | `session-title-llm` `disabled: true` | stdout 只归 ACP 协议 |
 | `insert` | `acp-app-startup` + `acp`（ACP 桥；bundle `inject: [acpAppStartup]`，插件自身 `inject: ['agents','llm','sessionPersistence','sessions']`，config 定 provider/model） |
 
 JSONL 持久化（`session-persistence-jsonl`）、`session-checkpoint-policy`、`session-query-sqlite` 都在 `dsh-base`——acp-app 不自持，digest 旧版写的「effect 卸载顺序：先拆查询 → 检查点 → 持久化」那层不存在。
+
+**一处与 base 不一致的默认模型**（rc.1 现状，需产品侧确认）：`acp` 行仍硬编码 `provider: deepseek-official` / `model: deepseek-v4-flash`（`packages/bundle/acp-app/cordis.patch.yml:19-21`），而 base 的 `agent-default-model` 已改成 `deepseek-flash`（`packages/bundle/base/cordis.patch.yml:75-79`）。两者在新基线下并存，从源码看不出哪个是当前有效别名：若 `deepseek-v4-flash` 已失效，则 acp profile 的默认模型是回归；若仍有效，则只是不一致。
 
 ## 进程模型
 
@@ -35,7 +37,7 @@ dsh --profile acp
   → runProfile → composeProfile → boot()
   → acp-app 组合 apply
     → mount dsh-base → ACP transport 等
-  → ACP 插件经 @agentclientprotocol/sdk 接线 stdio：createAcpAgentApp + ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin))（packages/acp/acp/src/index.ts:21-47 导入、:372-377 接线）
+  → ACP 插件经 @agentclientprotocol/sdk 接线 stdio：createAcpAgentApp + ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin))（packages/acp/acp/src/index.ts:21-47 导入、:374-378 接线）
   → 等待客户端连接
   → initialize: 返回 protocolVersion、agentCapabilities（图像能力取决于精确 route）
   → session/new: 创建新鲜 agent（绝对 cwd）

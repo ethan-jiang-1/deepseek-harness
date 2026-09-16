@@ -1,18 +1,17 @@
 # 02 · 上游：Issue、proposed Note、Plan
 
-## 1. Issue 模板先固定可观察结果（有条件的入口）
+## 1. Issue 模板先固定意图与可观察行为（有条件的入口）
 
-Feature issue 模板：
+Feature issue 模板（0.1.5 基线）只有两节：
 
-> - 验收条件：
-> - 用户或模型可见变化：
-> - 测试证据：
+> ## Motivation
+> ## Behavior
 
-来源：`.github/ISSUE_TEMPLATE/feature.md:16-18`
+来源：`.github/ISSUE_TEMPLATE/feature.md:1-14`
 
-Bug 模板要求复现、实际、预期、环境、验收。Task 模板要求验收条件、交付物、测试证据。
+Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板 frontmatter 只保留 `name`/`about`/`type`，验收条件与测试证据不再写进模板，改由 PR 的 Testing 节承载。Bug 模板要求概述、复现、当前行为、预期行为与环境。
 
-模板只问外部结果和完成标准，不问内部类名或函数列表；这让后续设计可以变化，但不丢掉最初要解决的问题。
+模板只问意图与可观察行为，不问内部类名或函数列表；这让后续设计可以变化，但不丢掉最初要解决的问题。
 
 
 但要划清机器边界：模板只定义字段，Issue policy 不解析“验收条件”是否写得足够好；它对 PR 的强制只发生在 `requiresPullRequestPolicy()` 返回 true 时——**非 Draft、非 Bot/App 作者、已请求或已产生 review 的人类 PR**——然后要求至少引用一个同仓库 Issue。
@@ -81,10 +80,10 @@ Plan   = 具体改哪里，怎么验证
 
 ## 证据入口
 
-- [`.github/ISSUE_TEMPLATE/feature.md`](../../.github/ISSUE_TEMPLATE/feature.md) 第 16-18 行
+- [`.github/ISSUE_TEMPLATE/feature.md`](../../.github/ISSUE_TEMPLATE/feature.md) 第 1-14 行
 - [`.github/ISSUE_TEMPLATE/bug.md`](../../.github/ISSUE_TEMPLATE/bug.md)
 - [`.github/ISSUE_TEMPLATE/task.md`](../../.github/ISSUE_TEMPLATE/task.md)
 - [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 46、80-90 行
-- [`.github/issue-management/policy.mjs`](../../.github/issue-management/policy.mjs) 第 162-170、343 行
+- [`.github/issue-management/policy.mjs`](../../.github/issue-management/policy.mjs) 第 169、267 行
 - [`docs/subsystems/plan.md`](../../docs/subsystems/plan.md) 第 5、33 行
 - [`packages/plan/plan-mode/README.md`](../../packages/plan/plan-mode/README.md) 第 86、94 行

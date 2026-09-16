@@ -2,7 +2,7 @@
 
 ## 问题
 
-读完一部分 DeepSeek Harness 之后，仍然容易被仓库里数量很多的目录和 package 绕住：`core/`、`session/`、`apps/`、`bundle/`、`examples/`、`host/`、`client/`、`vendor/` 各自在回答什么问题？为什么一个文件系统能力会拆成 `fs`、`fs-local`、`fs-sandbox`、`fs-observation-policy`、`tool-fs`，而不是放进一个大模块？从一个命令、工具或 UI 功能出发，应该沿哪条路径读到真正的实现和运行时组合？
+读完一部分 DeepSeek Harness 之后，仍然容易被仓库里数量很多的目录和 package 绕住：`core/`、`session/`、`apps/`、`bundle/`、`benchmarks/`、`host/`、`client/`、`vendor/` 各自在回答什么问题？为什么一个文件系统能力会拆成 `fs`、`fs-local`、`fs-sandbox`、`fs-observation-policy`、`tool-fs`，而不是放进一个大模块？从一个命令、工具或 UI 功能出发，应该沿哪条路径读到真正的实现和运行时组合？
 
 这个问题表面在问磁盘目录，实际同时涉及三种结构：仓库目录树、package 依赖图、启动后的 Cordis 插件树。答案需要把三者分开，再解释它们如何连接。
 

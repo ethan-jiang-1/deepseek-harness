@@ -2,7 +2,7 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **产品源码审计基线**：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0005-0.1.2-alpha.3-to-0.1.2-rc.1.md`](./_change_log/0005-0.1.2-alpha.3-to-0.1.2-rc.1.md)。
+> **产品源码审计基线**：DeepSeek Harness `dsh-v0.1.5-rc.1`，commit `183f08e9c6dde7e36cd2318eaee70b0da08fb35e`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`](./_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md)。
 
 `_digested/` 面向已熟悉 agent harness / plugin 运行时，但尚未建立 DeepSeek Harness 概念体系的读者。这里先抓住思想主轴，再进入源码机制——而不是把 `packages/` 目录平铺成分类货架。
 
@@ -39,13 +39,13 @@
 | `system/` | 总体系统专题 | everything-is-a-plugin、组合层、循环、seam、扩展点怎么拼成一台运行中的 `dsh` |
 | `cordis-runtime/` | 被 vendor 的框架 | `ctx` / plugin / effect / event / waterfall / fiber / Loader |
 | `composition/` | 启动组合 | profile、bundle、patch 层、Harness home、`dsh --dump-config` |
-| `runtime-profiles/` | 运行时配置 | web、headless、sdk、sdk-minimal、acp 五个 Launcher Profile 的共同基底与各自差异 |
-| `session-and-loop/` | 会话与驱动 | session log、turn/step、agent-loop、model-visible ⟺ logged、agent scope |
+| `runtime-profiles/` | 运行时配置 | web、headless、sdk、sdk-minimal、acp 五个 Launcher Profile 的共同基底与各自差异，以及不经 `dsh` 启动的桌面组合 |
+| `session-and-loop/` | 会话与驱动 | session log、格式世代与相邻迁移、turn/step、model-visible ⟺ logged、agent scope |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | step/turn/activity/goal 四层结束边界、Goal 状态机、Round Driver 自动续轮 |
-| `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色，以及如何组合一致的 fs / subprocess provider |
+| `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色、如何组合一致的 fs / subprocess provider，以及进程级库（外发代理、原生 containment）这类「刻意不是 seam」的形状 |
 | `experimental/` | 实验原型面 | `packages/experimental/` 的三种原型合同：code-runtime 的 CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面——都不在 shipped 组合，合同随时会变 |
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 组装、LLM adapter、tool 执行瀑布 |
-| `surfaces/` | 人对机器的入口 | CLI、Web host/client、ACP、JSON-RPC SDK |
+| `surfaces/` | 人对机器的入口 | CLI、Web host/client、桌面（Electron）、ACP、JSON-RPC SDK，以及客户端资源模型与右栏 |
 | `_coverage/` | 覆盖矩阵 | 维护用索引，按源码组追踪 digest 覆盖状态 |
 | `harness-idea/` | 消化后的理解与判断 | dsh 作为 harness 做对了什么：插件图 + 事件流构成的运行时基底、可读性与正确路径、参与阶梯、动态可读性、技术选型与语言贴合、边界与成本，以及本专题自身的判断纪律 |
 | `_change_log/` | 上游同步记录 | 每次 upstream 合入后的变更摘要与资料审计 |
@@ -59,10 +59,11 @@
 - **想搞懂 `dsh --profile web` 怎么变成进程的** → `runtime-profiles/00-map.md`
 - **想搞懂一次 `dsh --profile web` 怎么变成插件树** → `composition/00-map.md`
 - **想搞懂一轮对话怎么跑** → `session-and-loop/00-map.md`
+- **想搞懂磁盘上的 session 文件怎么跨格式世代读** → `session-and-loop/04-格式世代与迁移.md`
 - **想加能力或换后端** → `capability-seams/00-map.md`
 - **想研究实验原型** → `experimental/00-map.md`
 - **想搞懂模型看见什么** → `tools-prompt-llm/00-map.md`
-- **想搞懂 CLI / Web / ACP 怎么复用同一套 runtime spine** → `surfaces/00-map.md`
+- **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → `surfaces/00-map.md`
 - **想搞懂 dsh 为什么对读者友好（harness 思想）** → `harness-idea/00-map.md`
 
 推荐主干顺序：

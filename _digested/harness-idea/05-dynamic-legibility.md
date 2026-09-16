@@ -28,7 +28,7 @@
 
 ## 查询面四：Session 读意图 API
 
-会话日志的读取同样有显式定价：rc.1 起 `session.events` 数组读取退役，读操作按成本拆开——`seq` 以 O(1) 读当前事件数，`eventAt(seq)` 以 O(1) 读单个事件，`snapshotEvents(from, to)` 显式物化冻结数组，全量快照缓存到下次 append。事件 seq 与日志 offset 也分成两个品牌类型（`SessionSeq` / `SessionLogOffset`，commit `27bf1039`）：一个指已存在的事件，一个指日志间隙或读取位置，混用会被编译器拒绝（[`2026-08-21-session-log-read-intent`](../../.agents/notes/implemented/architecture/2026-08-21-session-log-read-intent.md)）。
+会话日志的读取同样有显式定价：`0.1.2-rc.1` 起 `session.events` 数组读取退役，读操作按成本拆开——`seq` 以 O(1) 读当前事件数，`eventAt(seq)` 以 O(1) 读单个事件，`snapshotEvents(from, to)` 显式物化冻结数组，全量快照缓存到下次 append。事件 seq 与日志 offset 也分成两个品牌类型（`SessionSeq` / `SessionLogOffset`，commit `27bf1039`）：一个指已存在的事件，一个指日志间隙或读取位置，混用会被编译器拒绝（[`2026-08-21-session-log-read-intent`](../../.agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md)，已归档，历史快照；这套读取 API 的现行 owner 是 [`docs/subsystems/session.md`](../../docs/subsystems/session.md) 与 [`packages/core/session/src/index.ts`](../../packages/core/session/src/index.ts)）。
 
 ## 试验面：`cordis_mount` / `cordis_unmount`
 
@@ -43,11 +43,11 @@
 
 > This is an opt-in development tool with bash-equivalent trust, not a security boundary or product default.
 >
-> —— `.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md:17`（基线 `a66e4702…`）
+> —— `.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md:17`（基线 `183f08e9c6…`）
 
 > `cordis_inspect` sections are `services` ... `api` ... `events` ... and `temporary` ...
 >
-> —— 同上文件 `:27`（基线 `a66e4702…`）
+> —— 同上文件 `:27`（基线 `183f08e9c6…`）
 
 ## 动态不等于模型面不稳定
 
@@ -61,11 +61,11 @@
 
 > **Model-visible means logged.** Anything that reaches a model request must be reconstructable from the log, and a runtime invariant asserts it.
 >
-> —— `docs/architecture.md:107`（基线 `a66e4702…`）
+> —— `docs/architecture.md:121`（基线 `183f08e9c6…`）
 
-> The loop builds each request from logged state. `EpochHeader` records call config, ... and records the rendered prompt and authoritative returned tool order ... through full `request/header` snapshots. Together with derived history, this makes the request reconstructable from the session log.
+> The loop builds each request from logged state. `EpochHeader` records call config, ... and records the authoritative returned tool order ... through full `request/header` snapshots. The rendered prompt is derived history — the `system/message` at surface node 0, plus any later system node an `in-history` route appended — so the header and the derived history together make the request reconstructable from the session log.
 >
-> —— `docs/subsystems/llm-streaming.md:685`（基线 `a66e4702…`）
+> —— `docs/subsystems/llm-streaming.md:704`（基线 `183f08e9c6…`）
 
 ## 结论
 
@@ -75,7 +75,7 @@
 
 ## 证据入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)（第 107 行；model-visible ⟺ logged）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 121 行；model-visible ⟺ logged）
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) / [`docs/tool-catalog.md`](../../docs/tool-catalog.md) / [`docs/persistence-catalog.md`](../../docs/persistence-catalog.md)（生成目录实例）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件索引）
 - [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17、23、27 行；inspect / mount / unmount 的合同与边界）

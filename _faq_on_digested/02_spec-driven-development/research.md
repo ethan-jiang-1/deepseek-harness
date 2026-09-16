@@ -10,13 +10,13 @@
 
 ## 直接证据
 
-### 1. 工作入口先写可观察结果和验收证据
+### 1. 工作入口的问题表单：只有 Bug / Feature / Task
 
-Feature Issue 模板要求一句话预期结果，并在折叠区写“验收条件、用户或模型可见变化、测试证据” [`.github/ISSUE_TEMPLATE/feature.md:11`](../../.github/ISSUE_TEMPLATE/feature.md)。Task 模板要求“验收条件、交付物、测试证据” [`.github/ISSUE_TEMPLATE/task.md:11`](../../.github/ISSUE_TEMPLATE/task.md)。Bug 模板要求复现、实际结果、预期结果和验收条件 [`.github/ISSUE_TEMPLATE/bug.md:11`](../../.github/ISSUE_TEMPLATE/bug.md)。Research 模板则把问题、证据标准和交付结论分开 [`.github/ISSUE_TEMPLATE/research.md:11`](../../.github/ISSUE_TEMPLATE/research.md)。
+Feature 模板要求写动机与预期行为 [`.github/ISSUE_TEMPLATE/feature.md:7`](../../.github/ISSUE_TEMPLATE/feature.md)、[`.github/ISSUE_TEMPLATE/feature.md:11`](../../.github/ISSUE_TEMPLATE/feature.md)。Task 模板要求概述与交付物 [`.github/ISSUE_TEMPLATE/task.md:7`](../../.github/ISSUE_TEMPLATE/task.md)、[`.github/ISSUE_TEMPLATE/task.md:11`](../../.github/ISSUE_TEMPLATE/task.md)。Bug 模板要求概述、复现、当前行为与预期行为 [`.github/ISSUE_TEMPLATE/bug.md:7`](../../.github/ISSUE_TEMPLATE/bug.md)。Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消，二者归入 Task；模板 frontmatter 只保留 `name`/`about`/`type`，层级由正文标题表达。所以 Issue 阶段承载的是意图与可观察行为，验收证据放在 PR 的 Testing 节（见下条）。
 
-非 Draft 的人类 PR 进入评审时，PR 模板要求关联同仓库 Issue，并列出变更和验证 [`.github/pull_request_template.md:1`](../../.github/pull_request_template.md)。Issue policy 会解析同仓库引用，并在适用时拒绝没有 Issue 引用的 PR [`.github/issue-management/policy.mjs:63`](../../.github/issue-management/policy.mjs)、[`.github/issue-management/policy.mjs:361`](../../.github/issue-management/policy.mjs)；Issue lifecycle 又把普通实现事件映射到 `In progress`，把 review request 映射到 `In review`，把 changes requested 映射回 `In progress` [`.github/issue-management/policy.mjs:185`](../../.github/issue-management/policy.mjs)、[`.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md:13`](../../.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md)。
+非 Draft 的人类 PR 进入评审时，PR 模板要求关联同仓库 Issue，并列出变更和验证 [`.github/pull_request_template.md:1`](../../.github/pull_request_template.md)。PR policy 只在 `requiresPullRequestPolicy()` 判定适用时生效（非 Draft、非 bot/App、且已有 review 请求或 review）[`.github/issue-management/policy.mjs:69`](../../.github/issue-management/policy.mjs)，并在 `validatePullRequest()` 中拒绝没有同仓库 Issue 引用的 PR [`.github/issue-management/policy.mjs:255`](../../.github/issue-management/policy.mjs)、[`.github/issue-management/policy.mjs:267`](../../.github/issue-management/policy.mjs)；Issue lifecycle 又把普通实现事件映射到 `In progress`，把 review request 映射到 `In review`，把 changes requested 映射回 `In progress` [`.github/issue-management/policy.mjs:85`](../../.github/issue-management/policy.mjs)、[`.github/issue-management/policy.mjs:107`](../../.github/issue-management/policy.mjs)、[`.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md:13`](../../.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md)。
 
-限制：机器 policy 并不解析“验收条件”或“测试证据”是否填写充分。`validateBody()` 机械检查的是折叠区、外露长度和 Owner/Assignees 一致性 [`.github/issue-management/policy.mjs:63`](../../.github/issue-management/policy.mjs)，PR policy 强制的是 Issue 引用和元数据，不是 Issue 规格质量。因此 Issue 层的语义质量仍由作者和 review 负责。
+限制：模板只是表单，机器 policy 并不解析“动机 / 行为 / 交付物”填得是否充分。[`validateIssue()`](../../.github/issue-management/policy.mjs:218) 检查的是 Type、Project Status、Priority 与标签合法性；PR policy 强制的是 Issue 引用与元数据，不是 Issue 规格质量。0.1.5 之前上游还显式删除了折叠区、可见正文长度、标题语言/前缀与 `Owner:` 行的检查（[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)）。因此 Issue 层的语义质量仍由作者和 review 负责。
 
 ### 2. Agent Note 是 proposal/decision 的生命周期记录
 
@@ -28,7 +28,7 @@ Agent Note 的自我定义是记录影响代码库的“决定或提案”，保
 
 实现期的骨架改为 `Problem -> Decision -> Alternatives considered -> Consequences`，并允许现在时的 Testing/Verification；Proposal、Plan、Migration plan、Acceptance criteria 这些提案期标题在 implemented Note 中被禁止 [`.agents/notes/README.md:93`](../../.agents/notes/README.md)。`proposed -> implemented` 必须在同一变更中把未来态 Proposal 改写成当前态 Decision，并把 acceptance/risk 折入 Consequences 或 Verification/Testing [`.agents/notes/README.md:119`](../../.agents/notes/README.md)。`verify-agent-note-format` 机械要求 proposed 的 Acceptance criteria、implemented 的 Decision/Consequences，并拒绝 implemented 中的 proposal-era 标题 [`scripts/verify-agent-note-format.ts:21`](../../scripts/verify-agent-note-format.ts)。
 
-Agent Note 的存在性边界不是 CI 自动分类。该政策的 owning Note 明说“Review enforces the semantic boundary”，不会由自动 gate 判断一个 diff 是否 non-trivial [`.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md:21`](../../.agents/notes/implemented/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)。机器能保证格式、状态、分类和配对，不能保证“这个 PR 本来就应该有 Note”。
+Agent Note 的存在性边界不是 CI 自动分类。该政策的 owning Note 明说“Review enforces the semantic boundary”，不会由自动 gate 判断一个 diff 是否 non-trivial [`.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md:22`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)。机器能保证格式、状态、分类和配对，不能保证“这个 PR 本来就应该有 Note”。
 
 ### 3. Plan Mode 把“先规格、后执行”做成产品行为
 
@@ -90,7 +90,7 @@ git show --stat 7f2769c529b10a6d174447555e02aac29666e0b7
 
 ### 决定已定，implemented Note 与实现同提交：Plan review presentation
 
-`2363ef01eb14560ecce3cdede09b48a3280122e5`（`feat(web): render a plan review as a decision card, not a quiz`）直接新增 implemented Agent Note，同时新增 UI 实现、221 行 component tests、真实 Web e2e、session fixture 和 waiting/approved 两份 golden；它符合“decision already made starts in implemented”的合法路径。`6d7bd7e703a024d4a437a28ba1e5f151ec77b2a2` 后续修复 presentation narrowing 时又同步更新同一 Note、文档和 tests。当前 Note 的 Testing 仍明确列出 unit/schema/plan-mode/Web e2e 各层钉住的行为 [plan-review Note:51](../../.agents/notes/implemented/feature/2026-07-30-plan-review-presentation-intent.md)。验证命令：
+`2363ef01eb14560ecce3cdede09b48a3280122e5`（`feat(web): render a plan review as a decision card, not a quiz`）直接新增 implemented Agent Note，同时新增 UI 实现、221 行 component tests、真实 Web e2e、session fixture 和 waiting/approved 两份 golden；它符合“decision already made starts in implemented”的合法路径。`6d7bd7e703a024d4a437a28ba1e5f151ec77b2a2` 后续修复 presentation narrowing 时又同步更新同一 Note、文档和 tests。当前 Note 的 Testing 仍明确列出 unit/schema/plan-mode/Web e2e 各层钉住的行为 [plan-review Note:52](../../.agents/notes/archived/feature/2026-07-30-plan-review-presentation-intent.md)。验证命令：
 
 ```sh
 git show --stat 2363ef01eb14560ecce3cdede09b48a3280122e5
