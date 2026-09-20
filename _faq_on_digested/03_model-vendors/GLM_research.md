@@ -3,6 +3,8 @@
 > **2026-08-27 更新**：`dsh web` 的 zai route 已裁剪为 `glm-5.3` 与 `glm-5.3-flash` 两个 1M 上下文模型，且实际生效层是 profile 补丁层而非本文所述 settings.yaml；本文其余目录快照仍以当时的 `pi-ai@0.82.1` 为准。见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md)。
 >
 > **2026-08-30 更新**：两个 endpoint 的 `/models` 实测同列 10 个在售 id；`glm-5.3-flash` 实测接受图片输入，`glm-5.3` 服务端拒绝（仅文本）；官方 OpenAPI enum 已含 `glm-5.3`。见下方「2026-08-30 实测」一节与变更记录的同日增补。
+>
+> **2026-09-20 更新**：`/models` 出现第 11 个 id `glm-5.3-flashx`（Coding 与标准 endpoint 同列）；本机 Coding Plan 尚未包含该模型（错误码 `1311`），已按未验证状态加入 `zai` route 两层配置。见下方「2026-09-20 实测」一节。
 
 ## 结论
 
@@ -64,7 +66,37 @@ Z.ai Quick Start 指定标准 API 的 `POST https://api.z.ai/api/paas/v4/chat/co
 
 图片输入经 Coding endpoint 用同一张图（Z.ai 文档示例 `register.png`）实测：`glm-5.3-flash` 返回 HTTP `200` 并正确描述图片（`prompt_tokens: 5608`，图片真实进入上下文；`thinking` 禁用时 `reasoning_tokens: 0`）；`glm-5.3` 返回 HTTP `400`、代码 `1210`（`messages.content.type is invalid, allowed values: ['text']`）。即 flash 能收图、5.3 服务端只收文本，且该差别官方 OpenAPI 未记载（flash 不在任何 enum）。据此 zai route 仅给 flash 条目声明 `input: [text, image]`，见 [GLM_change-log-zai-two-models-20260827.md](./GLM_change-log-zai-two-models-20260827.md) 的 2026-08-30 增补。只验证了 `image_url` 输入；`video_url`、`file_url` 未验证，不宣称。
 
-## 本机实测与待验证项
+## 2026-09-20 实测：glm-5.3-flashx 出现在 /models 但套餐未含
+
+Coding 与标准两个 endpoint 的 `GET /models` 当日均列出第 11 个 id `glm-5.3-flashx`；其 `created` 与 `glm-5.3`/`glm-5.3-flash` 同为 1786636800（2026-08-13），属于追加进目录而非新 created。最小非流式文本请求返回错误码 `1311`（`Your current subscription plan does not yet include access to GLM-5.3-FlashX`），与官方模型页「GLM-5.3-FlashX is not yet available on the plan」一致（[GLM-5.3-Flash/FlashX](https://docs.z.ai/guides/vlm/glm-5.3-flash)）。
+
+官方文档口径：FlashX 是 Flash 的加速版（200 tokens/s），320B 总参 / 18B 激活，稀疏 + 线性注意力混合架构；1M context / 128K 最大输出；原生多模态（text/image/video/file 输入）；文本参数与 GLM-5.3 一致，`thinking.type` 只支持 `enabled`，推荐 `reasoning_effort: max` 与 `tool_stream: true`。价格约为 Flash 的 2.5 倍；OpenRouter 已上架 `z-ai/glm-5.3-flashx`。
+
+尽管无法实测，应用户要求已将其加入 `zai` route 两层配置（`settings.yaml` 与 `~/.dsh/profiles/web/cordis.patch.yml`，备份后缀 `bak-20260920-180800-before-add-glm-5-3-flashx`）。条目按官方「与 GLM-5.3 文本参数一致」沿用 `glm-5.3` 的保守 effort 映射（`low/medium/high→high`，`max→max`），`name` 带 `(unverified)` 后缀以便在选择器中识别；**未声明 `input`**——多模态未实测，且 5.3 系已有 flash 收图 / 5.3 拒图的分化先例，图片输入等真实访问后单独验证再声明。任何能力（文本流、工具往返、replay、各档 effort、图片）在套餐开通后仍须逐项实测。
+
+## TODO · glm-5.3-flashx 等开放后实验（2026-09-20 挂起）
+
+**触发条件**：Z.ai Coding 直连不再报 `1311`，或 OpenRouter 共享池不再报 `429/1302`。先用一行命令探路，通了再做全量实验：
+
+```sh
+set -a; source ~/.zshenv; set +a
+curl -sS -m 30 https://api.z.ai/api/coding/paas/v4/chat/completions \
+  -H "Authorization: Bearer $ZAI_API_KEY" -H "Content-Type: application/json" \
+  -d '{"model":"glm-5.3-flashx","messages":[{"role":"user","content":"hi"}]}'
+```
+
+**当时被挡的原因**：Z.ai 直连 `1311`（套餐未含，官方明说 "not yet available on the plan"）；OpenRouter `z-ai/glm-5.3-flashx`（1M ctx，in $0.37/M、out $1.25/M）连续 7 次重试全部 `429/1302` 上游共享池限流，BYOK 也无济于事（本机 Z.ai key 无 FlashX 权限）。
+
+**实验清单**（逐项通过后才更新 zai 条目、去掉 `(unverified)` 后缀）：
+
+1. 最小非流式文本请求（HTTP 200、`finish_reason: stop`、非空内容）。
+2. 流式输出与 `tool_stream: true` 工具往返。
+3. 各 effort 档逐一实测：`minimal`/`low`/`medium`/`high`/`max` 实际接受值（官方说与 GLM-5.3 一致、`thinking` 只能 `enabled`，但须实测确认配置里的 `low/medium/high→high` 映射不会被判非法）。
+4. 图片输入：官方宣称原生多模态，但 5.3 系已有 flash 收图 / 5.3 拒图分化；用 flash 当时同款 `register.png` 实测，通过才给条目补 `input: [text, image]`。
+5. DSH 内走完整链路验证：Web 选择器选 `zai / glm-5.3-flashx`，跑一轮带工具的真实任务，确认 replay 与会话日志正常；`video_url`/`file_url` 不在清单内，不宣称。
+
+
+
 
 `ZAI_API_KEY` 由运行中的 DSH credentials 服务解析为环境变量，未写入 settings 或本文档。标准 API 的 `/models` 请求成功，但 `glm-5.2` 最小文本请求返回 HTTP `429`、代码 `1113`（`Insufficient balance or no resource package`）。同一 key 调用 Coding endpoint 的 `glm-5.3` 最小非流式文本请求成功，返回 HTTP `200`、`finish_reason: stop` 和非空内容。这证明问题是 Standard 与 Coding 产品入口/资源包的区别，不是 API key 或 `/api/` 路径错误。
 
