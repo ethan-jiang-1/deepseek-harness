@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="430" viewBox="0 0 920 430" font-family="Helvetica, Arial, sans-serif">
+  <rect width="920" height="430" fill="#fafafa"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">host 源码共存的三种模型（research.md 第三节）</text>
+
+  <g font-size="13" fill="#222">
+    <!-- Model 1: same-repo workspace -->
+    <rect x="40" y="70" width="260" height="250" rx="10" fill="#fff8e6" stroke="#c9a23f"/>
+    <text x="170" y="98" text-anchor="middle" font-weight="bold">同仓 workspace</text>
+    <rect x="60" y="115" width="220" height="46" rx="6" fill="#f6e7bd"/>
+    <text x="170" y="135" text-anchor="middle">host 源码</text>
+    <text x="170" y="152" text-anchor="middle" font-size="11">（就是本 repo）</text>
+    <rect x="60" y="173" width="220" height="40" rx="6" fill="#fff" stroke="#c9a23f"/>
+    <text x="170" y="197" text-anchor="middle">插件包（workspace:）</text>
+    <text x="170" y="238" text-anchor="middle" font-size="11.5">host 与插件永远同版本</text>
+    <text x="170" y="257" text-anchor="middle" font-size="11.5">agent 一棵树看全</text>
+    <text x="170" y="276" text-anchor="middle" font-size="11.5" fill="#a33">发布耦合</text>
+    <text x="170" y="303" text-anchor="middle" font-size="12" fill="#777">OpenClaw extensions/ · gemini-cli</text>
+    <text x="170" y="321" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a6d1f">→ 方案 B</text>
+
+    <!-- Model 2: pinned vendor -->
+    <rect x="330" y="70" width="260" height="250" rx="10" fill="#e9f7ec" stroke="#3d8b4f" stroke-width="2"/>
+    <text x="460" y="98" text-anchor="middle" font-weight="bold">pinned vendor ✅</text>
+    <rect x="350" y="115" width="220" height="46" rx="6" fill="#cde9d4"/>
+    <text x="460" y="135" text-anchor="middle">专家包（自己的 repo）</text>
+    <text x="460" y="152" text-anchor="middle" font-size="11">独立发布节奏</text>
+    <rect x="350" y="173" width="220" height="40" rx="6" fill="#fff" stroke="#3d8b4f"/>
+    <text x="460" y="192" text-anchor="middle">vendor/ · submodule 钉 tag</text>
+    <text x="460" y="208" text-anchor="middle" font-size="11">+ SHA 簿记 + 升级脚本</text>
+    <text x="460" y="238" text-anchor="middle" font-size="11.5">agent 在 repo 内探索 DSH</text>
+    <text x="460" y="257" text-anchor="middle" font-size="11.5">可复现、可跟随 pre-stable 上游</text>
+    <text x="460" y="276" text-anchor="middle" font-size="11.5" fill="#a33">同步纪律自己扛</text>
+    <text x="460" y="303" text-anchor="middle" font-size="12" fill="#777">dsh-desktop · antfu/skills · DSH vendor/</text>
+    <text x="460" y="321" text-anchor="middle" font-size="12" font-weight="bold" fill="#2c6e3c">→ 方案 A（与 D 同底）</text>
+
+    <!-- Model 3: external dep -->
+    <rect x="620" y="70" width="260" height="250" rx="10" fill="#f2f2f2" stroke="#999"/>
+    <text x="750" y="98" text-anchor="middle" font-weight="bold">纯外部依赖</text>
+    <rect x="640" y="115" width="220" height="46" rx="6" fill="#e0e0e0"/>
+    <text x="750" y="135" text-anchor="middle">专家包</text>
+    <text x="750" y="152" text-anchor="middle" font-size="11">无 host 源码</text>
+    <rect x="640" y="173" width="220" height="40" rx="6" fill="#fff" stroke="#999"/>
+    <text x="750" y="197" text-anchor="middle">npm 依赖 host SDK</text>
+    <text x="750" y="238" text-anchor="middle" font-size="11.5">repo 最干净</text>
+    <text x="750" y="257" text-anchor="middle" font-size="11.5">peer + 兼容矩阵可救依赖面</text>
+    <text x="750" y="276" text-anchor="middle" font-size="11.5" fill="#a33">agent 探索跳出去，断链</text>
+    <text x="750" y="303" text-anchor="middle" font-size="12" fill="#777">MCP servers · whalehub-dsh</text>
+    <text x="750" y="321" text-anchor="middle" font-size="12" font-weight="bold" fill="#666">→ 方案 C（仅过渡）</text>
+  </g>
+
+  <text x="460" y="366" text-anchor="middle" font-size="12.5" fill="#555">（第四种 catalog-only：repo 只钉别人的 repo 做分发索引 —— claude-plugins-official，不是开发形态，未画出）</text>
+  <text x="460" y="396" text-anchor="middle" font-size="12.5" fill="#777">依赖姿态对应：同仓用 workspace:；发布插件用 peerDependencies + dsh.compatibility 矩阵；UI 插件加 devDep + 自打包 client + dsh.client.inject</text>
+</svg>

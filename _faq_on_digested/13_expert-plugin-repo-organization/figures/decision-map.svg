@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="600" viewBox="0 0 920 600" font-family="Helvetica, Arial, sans-serif">
+  <rect width="920" height="600" fill="#fafafa"/>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">FAQ 13 · 五个决策 × 四个方案</text>
+
+  <!-- Decision column -->
+  <text x="60" y="72" font-size="14" font-weight="bold" fill="#555">决策（DSH 已有载体）</text>
+  <g font-size="13" fill="#222">
+    <rect x="40" y="86" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
+    <text x="52" y="107" font-weight="bold">1 入口形态</text>
+    <text x="52" y="126">agent preset + dsh.bundle（非新程序）</text>
+
+    <rect x="40" y="150" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
+    <text x="52" y="171" font-weight="bold">2 包粒度</text>
+    <text x="52" y="190">单包起步；缝有第二消费方再拆</text>
+
+    <rect x="40" y="214" width="300" height="52" rx="8" fill="#fdeeea" stroke="#c9654a"/>
+    <text x="52" y="235" font-weight="bold">3 DSH 源码放哪（分水岭）</text>
+    <text x="52" y="254">不进 / pinned submodule / 同仓</text>
+
+    <rect x="40" y="278" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
+    <text x="52" y="299" font-weight="bold">4 UI 走哪层</text>
+    <text x="52" y="318">卡片层 → client.inject 注入层 → 树内</text>
+
+    <rect x="40" y="342" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
+    <text x="52" y="363" font-weight="bold">5 spec 流程</text>
+    <text x="52" y="382">借 DSH 的 docs/notes 纪律；OpenSpec 后置</text>
+  </g>
+
+  <!-- Option column -->
+  <text x="620" y="72" font-size="14" font-weight="bold" fill="#555">方案（repo 形态）</text>
+  <g font-size="13" fill="#222">
+    <rect x="470" y="86" width="410" height="74" rx="8" fill="#e9f7ec" stroke="#3d8b4f" stroke-width="2"/>
+    <text x="482" y="108" font-weight="bold" fill="#2c6e3c">A 独立 repo + pinned DSH submodule ✅推荐</text>
+    <text x="482" y="127">submodule 钉 tag 并入 workspace；agent 可探索</text>
+    <text x="482" y="146">先例：dsh-desktop / antfu/skills / DSH 自身 vendor/</text>
+
+    <rect x="470" y="172" width="410" height="64" rx="8" fill="#fff8e6" stroke="#c9a23f"/>
+    <text x="482" y="194" font-weight="bold">B 在 DSH monorepo 里长</text>
+    <text x="482" y="213">门禁/snapshot/client 全借力；UI prototype 与上游贡献</text>
+
+    <rect x="470" y="248" width="410" height="58" rx="8" fill="#f2f2f2" stroke="#999"/>
+    <text x="482" y="270" font-weight="bold">C 纯外部依赖，DSH 不进 repo</text>
+    <text x="482" y="289">干净但 agent 探索断裂；只作过渡</text>
+
+    <rect x="470" y="318" width="410" height="58" rx="8" fill="#eef3fb" stroke="#7a8bb5"/>
+    <text x="482" y="340" font-weight="bold">D marketplace 式多专家 monorepo</text>
+    <text x="482" y="359">A 的规模化后继：共享骨架 + registry</text>
+  </g>
+
+  <!-- Arrows: decision 3 drives options -->
+  <path d="M340 240 C 400 240, 410 200, 470 160" fill="none" stroke="#c9654a" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M340 240 L 470 204" fill="none" stroke="#c9654a" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M340 240 L 470 277" fill="none" stroke="#c9654a" stroke-width="2" marker-end="url(#ar)"/>
+  <path d="M340 240 C 400 240, 410 330, 470 347" fill="none" stroke="#c9654a" stroke-width="2" marker-end="url(#ar)"/>
+
+  <!-- Upgrade path -->
+  <text x="60" y="440" font-size="14" font-weight="bold" fill="#555">推荐路径与升级触发</text>
+  <g font-size="12.5" fill="#333">
+    <rect x="40" y="454" width="150" height="58" rx="8" fill="#e9f7ec" stroke="#3d8b4f" stroke-width="2"/>
+    <text x="115" y="478" text-anchor="middle" font-weight="bold">A 起步</text>
+    <text x="115" y="497" text-anchor="middle">preset + 卡片层</text>
+
+    <path d="M190 483 L 268 483" stroke="#666" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="229" y="472" text-anchor="middle" font-size="11" fill="#777">UI 超卡片层</text>
+
+    <rect x="270" y="454" width="150" height="58" rx="8" fill="#fff8e6" stroke="#c9a23f"/>
+    <text x="345" y="478" text-anchor="middle" font-weight="bold">B prototype</text>
+    <text x="345" y="497" text-anchor="middle">树内卡片，验证后折回</text>
+
+    <path d="M190 500 C 260 545, 420 545, 492 510" fill="none" stroke="#666" stroke-width="2" marker-end="url(#ar)"/>
+    <text x="340" y="552" text-anchor="middle" font-size="11" fill="#777">第二个专家立项</text>
+
+    <rect x="494" y="454" width="150" height="58" rx="8" fill="#eef3fb" stroke="#7a8bb5"/>
+    <text x="569" y="478" text-anchor="middle" font-weight="bold">D 一窝专家</text>
+    <text x="569" y="497" text-anchor="middle">A 结构变子树</text>
+
+    <rect x="700" y="454" width="180" height="58" rx="8" fill="#f2f2f2" stroke="#999"/>
+    <text x="790" y="478" text-anchor="middle" font-weight="bold">B + OpenSpec</text>
+    <text x="790" y="497" text-anchor="middle">上游贡献 / 第二贡献者</text>
+    <path d="M644 483 L 698 483" stroke="#666" stroke-width="2" marker-end="url(#ar)"/>
+  </g>
+
+  <defs>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L8,3.5 L0,7 Z" fill="#666"/>
+    </marker>
+  </defs>
+</svg>
