@@ -19,7 +19,7 @@
 
     <rect x="40" y="278" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
     <text x="52" y="299" font-weight="bold">4 UI 走哪层</text>
-    <text x="52" y="318">卡片层 → client.inject 注入层 → 树内</text>
+    <text x="52" y="318">presenter → toolview 槽/inject → 树内</text>
 
     <rect x="40" y="342" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
     <text x="52" y="363" font-weight="bold">5 spec 流程</text>

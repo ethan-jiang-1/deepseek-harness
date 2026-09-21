@@ -63,16 +63,17 @@ dsh plugin --profile <p> add file:./packages/expert-pack   # 持久安装验证�
 | 可复现 | ✅ submodule 钉 tag；升级 = 同步 submodule + 跑本 repo 门禁 |
 | 插拔 | ✅ 天然走 `dsh plugin add` / patch 层级，不发明装载 |
 | 发布边界 | ✅ 自己的 repo、自己的版本节奏、自己的 CI |
-| UI 表达 | ⚠️ 可用但要自建：card render intent + `presentationMeta` 这层可 replay、零 client 依赖；更大面积 Web UI 走 `dsh.client.inject` 自带打包的 client 模块（见下） |
+| UI 表达 | ⚠️ 可用但要自建：presenter 层（card render intent + `presentationMeta`）是纯函数、可 replay，但不做事时 Web 只显示 generic fallback 卡；专属工具卡要在 client 插件里注册 `tool.call.toolview` 槽，独立 UI 面走 `dsh.client.inject`（见下） |
 | 成本 | ❌ submodule 同步纪律要自己扛；`vendor/dsh` 作为子 workspace 可能触发 DSH 仓库某些"我是根"假设的脚本，需先跑通再定型 |
 
 ### UI 表达的分层事实
 
-调研修正了一个直觉：**out-of-tree 不是没有 Web UI 通道**。第三方实证（[research.md](./research.md)）：
+out-of-tree 不是没有 Web UI 通道，但"免费"也有边界（`docs/cookbook/adding-a-tool.md`：内置 Web Client 不消费 presenter）。第三方实证（[research.md](./research.md)）：
 
-- `dsh-market`（in-harness 商店）与 `dsh-im`（九渠道 IM）都在**独立 repo** 里用 `dsh.client.inject: [dsh-client-ui-*…]` 把自带打包的 client 模块注入 web profile——dsh-market 用 tsdown、dsh-im 用 esbuild 自行打包，DSH 的 client 包只作 devDependency。
-- 因此 UI 分两档：**卡片内表达**（`presentCall`/`presentResult` + `presentationMeta`，纯函数、可 replay，模型事件消费者自动渲染）留在 expert-tools；**独立 UI 面**（自定义面板/设置页）在 expert-pack 里加 client 模块 + `dsh.client.inject`，代价是要跟着 DSH client 的注入点与 locale 约定走。
-- 方案 B 剩下的独占优势收窄为：**不做注入、直接改 client 树内卡片组件**，以及 client-modules 组装的深度定制。
+- **presenter 层**（expert-tools）：`presentCall`/`presentResult` + `presentationMeta` 是纯函数、可 replay 的卡片状态投影；不配 client 时 Web 显示 generic fallback 卡——这层保证的是状态可重建与词汇表中性，不是"自动出现专属卡"。
+- **专属工具卡**：client 插件在 `tool.call.toolview` keyed slot 注册自己的工具名，从 wire 事件 + `result.meta` 派生卡片 props——out-of-tree 可做，属于 expert-pack 的 client 模块。
+- **独立 UI 面**（自定义面板/设置页）：`dsh.client.inject` 注入自带打包的 client 模块。`dsh-market`（tsdown）与 `dsh-im`（esbuild）都在独立 repo 里这样完成注入，DSH 的 client 包只作 devDependency；代价是要跟着 DSH client 的注入点与 locale 约定走。
+- 方案 B 剩下的独占优势收窄为：**不做注入、直接改 client 树内卡片组件**，client-modules 组装的深度定制，以及自定义 View。
 
 ## 市场背书
 
@@ -95,6 +96,6 @@ dsh plugin --profile <p> add file:./packages/expert-pack   # 持久安装验证�
 
 ## 何时离开这个方案
 
-- 需要**专门 Web 卡片或自定义 View**：把该部分先在 DSH 树内长（方案 B），成熟后看能否抽回 card 词汇表。
+- 需要**专属 Web 卡片或独立 UI 面**：按升级阶梯走——先 `tool.call.toolview` 槽注册（单工具卡），再 `dsh.client.inject`（整块 UI 面），两者都不够才把该部分放 DSH 树内长（方案 B），成熟后看能否折回 presenter 词汇表。
 - 专家长成一窝（多个领域共享骨架）：升到方案 D，方案 A 的结构原样变成其中一个子树。
 - 反过来想给 DSH 提 seam（如长期记忆、通知 Definition）：以方案 B 的方式在 DSH 内做，expert repo 只留消费者。
