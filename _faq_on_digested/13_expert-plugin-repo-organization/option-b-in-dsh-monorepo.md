@@ -18,8 +18,8 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 │       └── ui-expert/          # ✅ B 真正的独占面：改内置卡片组件本体 / 深度 client-modules 组装
 │                               #   （单工具卡走 toolview 槽、整块 UI 面走 inject、View 走注册，皆 out-of-tree 可做）
 ├── docs/subsystems/expert.md   # 第 4/7 阶段的当前合同：进 DSH 正式文档体系 + doc-sync 门禁
-├── snapshots/                  # 第 5 阶段：官方 snapshot harness，你的场景加 snapshot.yml 条目即可
-├── .agents/notes/              # 第 2 阶段 proposed/ 与第 7 阶段 implemented/ 用 DSH 现成的目录与 gate
+├── snapshots/                  # 第 5 阶段：官方 snapshot harness；你的场景 = snapshots/<lane>/ 下一个目录，自带 session JSONL + 自己的 snapshot.yml
+├── .agents/notes/              # 第 2 阶段 proposed/；implemented/ 随交付同 diff 改写（第 4 阶段，见 dev-loop）；归档 gate 现成
 └── scripts/run-gates.ts        # 第 7 阶段：checks 选择走 DSH 现成闸门，不另造 verify
 ```
 
@@ -30,7 +30,7 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 - **门禁全开**：`test:coverage`（per-file 100%）、`doc-sync`、`duplication`、`hygiene`、module-graph / capability-seams 生成目录会自动把你的 ctx 键收进图里。
 - **snapshot harness**：model-visible 行为的 keyless recorded-session replay 是 DSH 一等公民；out-of-tree 自己搭这个最费劲。
 - **client 包**：树内可直接改内置卡片组件本体与 client-modules 深度组装；单工具卡（`tool.call.toolview` 槽）、独立 UI 面（`dsh.client.inject`）与自定义 View（views 注册通道）out-of-tree 均有通道（见方案 A），B 的独占面只在"改本体"。
-- **preset 就在旁边**：`agent-presets` 的 shipped presets（`standard`/`ptc`/`minimal`）是专家 preset 的现成范本。
+- **preset 就在旁边**：`agent-presets` 的 shipped presets（`standard`/`ptc`/`cordis`/`minimal`）是专家 preset 的现成范本；`cordis` 自带 `agent.cordis.yml` + 专属 skills，与"领域专家自持上下文"的形态最近。
 
 ## 取舍
 
@@ -51,7 +51,7 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 
 共享细节见 [dev-loop.md](./dev-loop.md)。本形态的差异：**证据基础设施全部现成**，代价是换成了上游同步税。
 
-- 插拔/调试用 DSH 自己的流程：插件行进 `bundle/base` 或自组 profile，`--dump-config`、live reload、官方 snapshot harness（`snapshot.yml` 直接声明你的场景）全在树上。
+- 插拔/调试用 DSH 自己的流程：插件行进 `bundle/base` 或自组 profile，`--dump-config`、live reload、官方 snapshot harness（一场景一目录、各带自己的 `snapshot.yml` 声明 profile/recording 等）全在树上。
 - 门禁照单全收：`test:coverage` per-file 100%、`doc-sync`（含双语）、`duplication`、非平凡变更必备 Agent Note、model-visible 变更必配快照——这些在 A/C/D 里是"自建最小版"，这里是义务。
 - 日常多了一个新环：**上游同步**。每次 rc 同步按 `_change_log/` 复核自己的包与文档结论（FAQ 01/08 都吃过漂移的亏），compatibility 影响写进自己包的 README。
 - 驱动 agent 最顺：AGENTS.md/CLAUDE.md、skills、生成目录全是现成的，agent 的六步闭环直接在 DSH 语境里跑。

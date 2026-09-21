@@ -20,7 +20,7 @@ expert-suite/
 │   ├── finance-expert/…
 │   └── shared/                   # 共享骨架：流引擎基座、卡片投影、测试夹具（有自己的 AGENTS.md 与 Note）
 ├── templates/
-│   └── expert-scaffold/          # "新专家 = 填模板"（dev-loop 第 4 阶段）的脚手架原样
+│   └── expert-scaffold/          # "新专家 = 填模板"的脚手架（见下"开发过程差异"）
 ├── scripts/
 │   ├── verify.mjs                # 校验 registry.json 与目录/版本/兼容矩阵一致（仿 dsh-market validate-registry）
 │   ├── release-smoke.mjs         # 单专家真实安装形状
