@@ -73,7 +73,7 @@ out-of-tree 不是没有 Web UI 通道，但"免费"也有边界（`docs/cookboo
 - **presenter 层**（expert-tools）：`presentCall`/`presentResult` + `presentationMeta` 是纯函数、可 replay 的卡片状态投影；不配 client 时 Web 显示 generic fallback 卡——这层保证的是状态可重建与词汇表中性，不是"自动出现专属卡"。
 - **专属工具卡**：client 插件在 `tool.call.toolview` keyed slot 注册自己的工具名，从 wire 事件 + `result.meta` 派生卡片 props——out-of-tree 可做，属于 expert-pack 的 client 模块。
 - **独立 UI 面**（自定义面板/设置页）：`dsh.client.inject` 注入自带打包的 client 模块。`dsh-market`（tsdown）与 `dsh-im`（esbuild）都在独立 repo 里这样完成注入，DSH 的 client 包只作 devDependency；代价是要跟着 DSH client 的注入点与 locale 约定走。
-- 方案 B 剩下的独占优势收窄为：**不做注入、直接改 client 树内卡片组件**，client-modules 组装的深度定制，以及自定义 View。
+- 方案 B 剩下的独占优势收窄为：**改内置 client 包的卡片组件本体**与 client-modules 的深度组装；自定义 View 不算——它经 `ctx.uiConversation.views` 注册通道 out-of-tree 可参与（`docs/subsystems/conversation.md`）。
 
 ## 市场背书
 
@@ -96,6 +96,6 @@ out-of-tree 不是没有 Web UI 通道，但"免费"也有边界（`docs/cookboo
 
 ## 何时离开这个方案
 
-- 需要**专属 Web 卡片或独立 UI 面**：按升级阶梯走——先 `tool.call.toolview` 槽注册（单工具卡），再 `dsh.client.inject`（整块 UI 面），两者都不够才把该部分放 DSH 树内长（方案 B），成熟后看能否折回 presenter 词汇表。
+- 需要**专属 Web 卡片、独立 UI 面或自定义 View**：按升级阶梯走——先 `tool.call.toolview` 槽注册（单工具卡），再 `dsh.client.inject`（整块 UI 面；View 走 `ctx.uiConversation.views` 注册），只有要改**内置卡片组件本体**或深度 client-modules 组装才进方案 B，成熟后看能否折回 presenter 词汇表。
 - 专家长成一窝（多个领域共享骨架）：升到方案 D，方案 A 的结构原样变成其中一个子树。
 - 反过来想给 DSH 提 seam（如长期记忆、通知 Definition）：以方案 B 的方式在 DSH 内做，expert repo 只留消费者。

@@ -15,6 +15,7 @@ expert-suite/
 │   ├── legal-expert/             # 每个专家 = 同一形状：
 │   │   ├── src/flows/ …          #   flows + tools + pack
 │   │   ├── tests/ + snapshots/   #   专家级证据（第 4/5 阶段）
+│   │   ├── notes/                #   专家级决策（proposed/implemented）
 │   │   └── pack/                 #   自含的 cordis.patch.yml + preset + compatibility 矩阵
 │   ├── finance-expert/…
 │   └── shared/                   # 共享骨架：流引擎基座、卡片投影、测试夹具（有自己的 AGENTS.md 与 Note）
@@ -23,7 +24,9 @@ expert-suite/
 ├── scripts/
 │   ├── verify.mjs                # 校验 registry.json 与目录/版本/兼容矩阵一致（仿 dsh-market validate-registry）
 │   ├── release-smoke.mjs         # 单专家真实安装形状
-│   └── smoke-all.mjs             # shared/ 变更后的全专家冒烟（本方案新增的证据面）
+│   ├── smoke-all.mjs             # shared/ 变更后的全专家冒烟（本方案新增的证据面）
+│   └── sync-dsh.mjs              # 继承方案 A 的升级环（vendor/dsh 换 tag + SHA 簿记）
+├── dev/                          # 开发 home：repo 外（~/dsh-dev）或继承方案 A 的 dev/harness-home/
 ├── notes/                        # 仓库级 intents + proposed/implemented；专家级决策放各自 packages/<expert>/notes/
 └── vendor/dsh/                   # pinned submodule + scripts/sync-dsh.mjs（继承方案 A）
 ```
@@ -49,7 +52,8 @@ expert-suite/
 
 - 插拔以 registry.json 为入口：一个专家 = 清单一行 + 一个自含目录；`dsh plugin add` 逐专家装。给 registry 配 validate 脚本（id/目录/版本/兼容矩阵一致性），仿 dsh-market 的 `validate-registry`。
 - 调试按专家隔离：每个专家一个 preset，`--dump-config` 按 profile/preset 对照；共享骨架（shared/）的变更要跑"全部专家冒烟"——这是本形态新增的证据面。
-- 驱动 agent 靠**形状一致性**：每个专家目录同构 + 一份"新专家脚手架清单"，agent 加新专家就是填模板；vendor/dsh 与升级脚本沿用方案 A。
+- 驱动 agent 靠**形状一致性**：每个专家目录同构 + `templates/expert-scaffold/` 脚手架，agent 加新专家就是填模板；vendor/dsh 与升级脚本沿用方案 A。
+- snapshot 义务按专家分摊：每专家自带 `tests/ + snapshots/`（第 4/5 阶段证据），shared/ 变更另跑 smoke-all；不设仓库级统一 snapshot。
 - CI 用矩阵：专家 × compatibility 里声明的 DSH 版本，逐格冒烟。
 
 ## 定位

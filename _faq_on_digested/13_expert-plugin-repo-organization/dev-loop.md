@@ -16,7 +16,7 @@
 
 **做什么**：把开发环境立起来，让后面每个环都能"秒级反馈"。
 
-**DSH 原生**：`pnpm install`（顺带装好 lefthook 本地钩子）→ `pnpm run typecheck` 通过即就绪（`development.md` 的验收标准）。钩子是快检查：pre-commit 验 staged 配对记录、staged lint、THIRD_PARTY_NOTICES 再生、whitespace、vendor manifest guard；**pre-push 跑 `pnpm run typecheck`**。除此之外钩子刻意不跑测试、snapshot、文档检查和构建——这些的穷举归 CI。
+**DSH 原生**：`pnpm install`（顺带装好 lefthook 本地钩子）→ `pnpm run typecheck` 通过即就绪（`development.md` 的验收标准）。钩子是快检查：pre-commit 六个作业（translation pairing、archived notes 检查、staged lint、THIRD_PARTY_NOTICES 再生、whitespace、vendor manifest guard）加 pre-merge-commit 的配对检查；**pre-push 跑 `pnpm run typecheck`**。除此之外钩子刻意不跑测试、snapshot、文档检查和构建——这些的穷举归 CI。
 
 **专家 repo 落地**：同样的准备加两件——① `git submodule update --init` 拉下 `vendor/dsh`（方案 A/D）并确认 `pnpm install` 后 typecheck 解析到 DSH 源码；② 写根 `AGENTS.md`（几百词：常驻规则、布局、命令表、`vendor/dsh` 在哪、探索路由 `docs/architecture.md → capability-seams → 包 README`），`CLAUDE.md` 做 symlink。这是给 coding agent 铺的路，第 4 阶段起它每次都走。
 
@@ -34,7 +34,7 @@
 
 ## 第 2 阶段 · 讨论与决策：让输掉的方案留下尸体
 
-**做什么**：人和 agent 把可选做法摆开（"这条流的上下文放 preset prompt 还是 spill store？事件还是服务方法？"），选定一个，**记录输掉的方案和代价**。
+**做什么**：人和 agent 把可选做法摆开（"这条流的上下文放 preset prompt 还是 spill store（`ctx.spillStore`，见 FAQ 08 的 seam 表）？事件还是服务方法？"），选定一个，**记录输掉的方案和代价**。
 
 **DSH 原生**：重大未来工作先写 **proposed Agent Note**（决策 spec：为什么这样设计、什么方案输了、风险是什么）；已经定的小决策可直接跳到 implemented。约束只有一条是强制的：**非平凡变更必须带 Agent Note**。
 
@@ -50,7 +50,7 @@
 
 1. **占哪个 ctx 键 / 发哪些事件**？每条流一个自己的键，`inject` 声明依赖，不劫持别人的。
 2. **模型会看见什么新状态**？model-visible ⟺ logged（下称**日志税**）——每个新的模型可见输入都要配 `SessionEventMap` 成员（并决定 `ignorable`），否则日志重建不出来。这问漏了，第 5 阶段调试时会以"日志读不全"的形式还债。
-3. **UI 走哪层**？presenter 层（`presentCall`/`presentResult` + `presentationMeta`，纯函数、可 replay；注意内置 Web Client 不消费它，不配 client 时显示 generic fallback 卡）→ 专属 Web 卡的 `tool.call.toolview` 槽注册 / 独立 UI 面的 `dsh.client.inject` 注入层 → 树内定制（仅方案 B）。
+3. **UI 走哪层**？presenter 层（`presentCall`/`presentResult` + `presentationMeta`，纯函数、可 replay；注意内置 Web Client 不消费它，不配 client 时显示 generic fallback 卡）→ 专属 Web 卡的 `tool.call.toolview` 槽注册 / 独立 UI 面的 `dsh.client.inject` / 自定义 View 的 `ctx.uiConversation.views` 注册 → 改内置卡片组件本体（仅方案 B）。
 4. **证据是什么**？"会为这次回归而失败"的那个测试长什么样——现在就点名，第 4 阶段写它。
 
 ## 第 4 阶段 · 落地：窄证据切片闭环
@@ -106,6 +106,7 @@
 | 阶段 | DSH 原生载体 | 专家 repo 落地 |
 |---|---|---|
 | 0 准备 | `pnpm install` + typecheck + lefthook | + submodule、AGENTS.md 入口链 |
+| 0.5 双 home | home 解析：显式 → `$DSH_HOME` → `~/.dsh` | 开发与日用分 home，见 [dual-home-isolation.md](./dual-home-isolation.md) |
 | 1 意图 | Issue 模板（Motivation/Behavior） | 一行动机 + 一行外部可观察行为 |
 | 2 决策 | proposed Agent Note | `notes/proposed/`（含输掉的方案） |
 | 3 设计 | Plan Mode，decision-complete | 固定四问：ctx 键/日志税/UI 层/证据 |

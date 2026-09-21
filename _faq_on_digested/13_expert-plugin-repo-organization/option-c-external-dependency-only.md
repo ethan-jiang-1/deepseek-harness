@@ -15,6 +15,7 @@ my-expert/
 ├── scripts/
 │   ├── verify.mjs
 │   └── release-smoke.mjs         # 本方案比 A 更必要：依赖声明错误没有 workspace 兜底
+│                                 # （兼容环不设脚本：C 没有 SHA 簿记，靠 typecheck 硬扛）
 ├── snapshots/                    # 自建最小 replay（dev-loop 第 5 阶段派给 A/C/D 的义务）
 ├── docs/
 │   ├── …                         # 当前合同

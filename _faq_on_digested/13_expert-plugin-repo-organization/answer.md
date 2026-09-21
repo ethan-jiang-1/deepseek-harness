@@ -2,7 +2,7 @@
 
 ## 一句话答案
 
-专家插件的 repo 不是"一个目录怎么摆"的问题，而是五个决策的组合：**入口形态**（DSH 已有答案：preset + bundle，不要新程序）、**包粒度**（单包起步）、**DSH 源码放哪**（pinned submodule 进 repo）、**UI 走哪层**（卡片层免费、面板层走 `dsh.client.inject`）、**spec 流程**（先借 DSH 的 docs-as-contract 纪律）。四个 repo 方案是这五个决策的不同取值组合；推荐**方案 A（独立 repo + pinned DSH submodule）为长期形态**，方案 B 留给 UI prototype 和上游贡献，方案 C 只作过渡，方案 D 是 A 的规模化后继。
+专家插件的 repo 不是"一个目录怎么摆"的问题，而是五个决策的组合：**入口形态**（DSH 已有答案：preset + bundle，不要新程序）、**包粒度**（单包起步）、**DSH 源码放哪**（pinned submodule 进 repo）、**UI 走哪层**（卡片起步是 generic fallback，专属工具卡走 `tool.call.toolview` 槽、独立面板走 `dsh.client.inject`）、**spec 流程**（先借 DSH 的 docs-as-contract 纪律）。四个 repo 方案是这五个决策的不同取值组合；推荐**方案 A（独立 repo + pinned DSH submodule）为长期形态**，方案 B 留给改内置卡片组件本体与上游贡献，方案 C 只作过渡，方案 D 是 A 的规模化后继。
 
 ![五个决策与四个方案的映射](./figures/decision-map.svg)
 
@@ -35,7 +35,7 @@ DSH 的 capability seam 语法（Definition / Provider / Consumer）是**演化�
 
 - **Host presenter 层**：工具的 `presentCall`/`presentResult` card render intent + `presentationMeta`——纯函数、可 replay 的中性词汇表（`docs/cookbook/adding-a-tool.md`）。注意它的边界：内置 Web Client **不消费** presenter，不做事时 UI 显示 generic fallback 卡；presenter 的价值是把卡片状态定义为可从日志重建的纯投影，供任何 host UI 与自建 client 消费。
 - **Web 卡片 / 注入层**：让 Web 出现专属工具有两条 out-of-tree 通道——client 插件在 `tool.call.toolview` keyed slot 注册自己的工具卡（从 wire 事件 + `result.meta` 派生 props）；或 `dsh.client.inject` 注入整块 client 模块（自定义面板/设置页）。后者有第三方实证：dsh-market（tsdown）与 dsh-im（esbuild）都在独立 repo 里完成注入，DSH client 包只作 devDependency。
-- **树内定制**（方案 B 独占）：直接改 client 卡片组件、client-modules 深度组装，或自定义 View（第三方 View 经 selection/activation 通道参与，`docs/subsystems/conversation.md`）。做完要评估能否折回前两层。
+- **树内定制**：直接改**内置 client 包的源码**（卡片组件本体、shell/layout、client-modules 深度组装）——这是方案 B 真正的独占面。注意"自定义 View"不在此列：第三方 View 经 `ctx.uiConversation.views` 的 selection/activation 通道注册，out-of-tree 可参与（`docs/subsystems/conversation.md`、`packages/client/ui-conversation/README.md`）；树内做的价值是深度组装与就地演进。做完要评估能否折回前两层。
 
 ## 决策 5 · spec 流程：先借 DSH 的，OpenSpec 留触发条件
 
@@ -54,6 +54,6 @@ DSH 的原生开发环（FAQ 11 结论：这是它"最自然"的习惯）搬到�
 1. **第 0 天**：按方案 A 起 repo；专家全部行为压在 preset + bundle + presenter 层（generic fallback 卡起步）；`AGENTS.md` 写清入口链与 `vendor/dsh` 簿记。
 2. **需要专属 Web 卡片或独立 UI 面**：先试 `tool.call.toolview` 槽注册（单工具卡）或 `dsh.client.inject`（整块 UI 面）；两者不够再进方案 B 长树内卡片，验证后折回。
 3. **第二个专家立项且要复用骨架**：升方案 D（A 的结构原样变成子树）。
-4. **向 DSH 上游提 seam 或引入第二贡献者**：方案 B + OpenSpec 一起上。
+4. **向 DSH 上游提 seam**：方案 B + OpenSpec 一起上；**仅引入第二贡献者**则留在 A，只加 OpenSpec。
 
 每个方案的完整目录树、装法、取舍表与市场背书见各自文件（各自的"开发过程差异"一节只写形态带来的增量）；**插拔、调试、驱动 coding agent 与 DSH 推荐流程的共享细节**收敛在 [dev-loop.md](./dev-loop.md)，**官方安装的 DSH 与插件开发的隔离**（双 home）在 [dual-home-isolation.md](./dual-home-isolation.md)；全部外部证据与 URL 在 [research.md](./research.md)。
