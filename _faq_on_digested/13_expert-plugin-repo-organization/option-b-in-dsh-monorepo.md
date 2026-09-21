@@ -15,7 +15,8 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 │   │   ├── expert-tools/       # 工具 Consumer
 │   │   └── expert-pack/        # bundle + presets
 │   └── client/
-│       └── ui-expert/          # ✅ 只有在这个方案里能做：专门 Web 卡片 / View
+│       └── ui-expert/          # ✅ B 真正的独占面：改内置卡片组件本体 / 深度 client-modules 组装
+│                               #   （单工具卡走 toolview 槽、整块 UI 面走 inject、View 走注册，皆 out-of-tree 可做）
 ├── docs/subsystems/expert.md   # 第 4/7 阶段的当前合同：进 DSH 正式文档体系 + doc-sync 门禁
 ├── snapshots/                  # 第 5 阶段：官方 snapshot harness，你的场景加 snapshot.yml 条目即可
 ├── .agents/notes/              # 第 2 阶段 proposed/ 与第 7 阶段 implemented/ 用 DSH 现成的目录与 gate
@@ -28,7 +29,7 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 
 - **门禁全开**：`test:coverage`（per-file 100%）、`doc-sync`、`duplication`、`hygiene`、module-graph / capability-seams 生成目录会自动把你的 ctx 键收进图里。
 - **snapshot harness**：model-visible 行为的 keyless recorded-session replay 是 DSH 一等公民；out-of-tree 自己搭这个最费劲。
-- **client 包**：树内可直接改卡片组件与 View（client-modules 组装）；out-of-tree 的 `dsh.client.inject` 通道（dsh-market、dsh-im 实证可用，见方案 A）覆盖不到的深度定制只有这里能做。
+- **client 包**：树内可直接改内置卡片组件本体与 client-modules 深度组装；单工具卡（`tool.call.toolview` 槽）、独立 UI 面（`dsh.client.inject`）与自定义 View（views 注册通道）out-of-tree 均有通道（见方案 A），B 的独占面只在"改本体"。
 - **preset 就在旁边**：`agent-presets` 的 shipped presets（`standard`/`ptc`/`minimal`）是专家 preset 的现成范本。
 
 ## 取舍
@@ -36,7 +37,7 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 | | 评价 |
 |---|---|
 | 借力 DSH 流程 | ✅✅ 全部：门禁、文档、snapshot、client、生成目录 |
-| UI 表达上限 | ✅ 最高：专门卡片 + View 可做 |
+| UI 表达上限 | ✅ 最高：改内置卡片组件本体与深度组装只有这里可做 |
 | coding agent 探索 | ✅ 天然（整个 repo 就是 DSH） |
 | 发布与身份 | ❌ 你的代码绑死 DSH 发布节奏；上游每次同步要按 `_change_log/` 复核自己的结论（FAQ 01/08 都吃过这个税） |
 | 语义 | ❌ 这是"改 DSH"，不是"做专家包"；第三方用户没法 `dsh plugin add` 一个 fork 里的包 |
@@ -59,5 +60,7 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 
 1. **UI prototype**：专门卡片/View 先在这里做，验证后把可通用的部分折回 card render intent 词汇表（那是 out-of-tree 可用的层）。
 2. **上游贡献**：给 DSH 提新 seam（Definition 立在官方，Provider 可以是你的 expert repo）。
+
+注意：answer 推荐路径 4 的"引入第二贡献者"**不触发 B**——那是 OpenSpec 的触发条件，主 repo 停在方案 A；只有贡献目标是 DSH 上游（上面第 2 条）时才进 B。
 
 其余时间主 repo 停在方案 A。
