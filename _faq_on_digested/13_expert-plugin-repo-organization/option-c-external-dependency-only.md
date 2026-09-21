@@ -14,8 +14,9 @@ my-expert/
 ├── dev/harness-home/             # 同方案 A：npm pack 冒烟与 JSONL 调试日志的落点
 ├── scripts/
 │   ├── verify.mjs
-│   └── release-smoke.mjs         # 本方案比 A 更必要：依赖声明错误没有 workspace 兜底
-│                                 # （兼容环不设脚本：C 没有 SHA 簿记，靠 typecheck 硬扛）
+│   ├── release-smoke.mjs         # 本方案比 A 更必要：依赖声明错误没有 workspace 兜底
+│   └── sync-deps.mjs             # 兼容环脚本（dev-loop 第 6 阶段）：依赖更新 → typecheck → 矩阵加列 → 安装冒烟
+│                                 # （与 A 的差别：无 SHA 簿记，升级粒度是 npm 版本范围而非 submodule tag）
 ├── snapshots/                    # 自建最小 replay（dev-loop 第 5 阶段派给 A/C/D 的义务）
 ├── docs/
 │   ├── …                         # 当前合同
@@ -23,14 +24,14 @@ my-expert/
 └── notes/                        # intents.md + proposed/ + implemented/
 ```
 
-相比方案 A 缺的两样（`vendor/dsh` 与 SHA 簿记、workspace 直跑）正是"只作过渡"的机制原因：第 0 步的准备与第 6 步的兼容环都要靠 `$DSH_REPO` 指针和 npm 解析硬扛。
+相比方案 A 缺的两样（`vendor/dsh` 与 SHA 簿记、workspace 直跑）正是"只作过渡"的机制原因：第 0 阶段的准备与第 6 阶段的兼容环都要靠 `$DSH_REPO` 指针和 npm 解析硬扛。
 
 ## 取舍
 
 | | 评价 |
 |---|---|
 | repo 卫生 | ✅ 最干净：无 submodule、无子 workspace、无同步纪律 |
-| coding agent 探索 | ❌ 核心诉求不成立：探索是"跳出去"的——typecheck 的 `paths` 不解析到 DSH `src/`，链接检查、跳转、grep 全断；`AGENTS.md` 指针依赖每台机器手工配置 |
+| coding agent 探索 | ❌ "repo 能看到 DSH 本身"落空：探索是"跳出去"的——typecheck 的 `paths` 不解析到 DSH `src/`，链接检查、跳转、grep 全断；`AGENTS.md` 指针依赖每台机器手工配置 |
 | 可复现 | ⚠️ 依赖 npm 解析的版本范围；peer 范围写错要到运行期才炸 |
 | 插拔 | ✅ 与方案 A 相同（`dsh plugin add`） |
 
@@ -52,4 +53,4 @@ my-expert/
 
 ## 定位
 
-适合：专家很小（一两个工具）、维护者不想背 submodule 纪律、且不需要 agent 深读 DSH 源码。对"专家要很好控制上下文、要多流编排"这个目标来说，agent 读不懂 DSH 源码就意味着每个设计决策都要人肉判断，长期成本反而高。**作为起步快、后期必然迁去方案 A 的过渡形态可以；作为终点不推荐。**
+适合：专家很小（一两个工具）、维护者不想背 submodule 纪律、且不需要 agent 深读 DSH 源码——注意这已等于接受"repo 能看到 DSH"落空，是 [answer](./answer.md) 决策 3 升格判据下的降级目标（question 的核心诉求"很好控制的上下文"在 C 里不受影响：preset 照常工作）。对"专家要很好控制上下文、要多流编排"这个目标来说，agent 读不懂 DSH 源码就意味着每个设计决策都要人肉判断，长期成本反而高。**作为起步快、后期必然迁去方案 A 的过渡形态可以；作为终点不推荐。**

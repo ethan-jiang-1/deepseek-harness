@@ -14,22 +14,22 @@
 
 ## 决策 2 · 包粒度：单包起步，缝出现第二消费方再拆
 
-DSH 的 capability seam 语法（Definition / Provider / Consumer）是**演化目标**不是起步要求。生态证据：90%+ 的第三方插件是单包 repo。DSH 自己的纪律也反对预防性拆分——拆分只在角色独立演化时发生；FAQ 08 的判据更直接：Provider 与唯一 Consumer 同包 = 还没有市场。方案 A/D 树里的 `flows / tools / pack` 三个薄包**不是 seam 角色拆分**：依据是发布边界——pack 是唯一发布载体（自包含），flows/tools 是它背后的内部实现包；哪怕收成一个包（生态主流的单包形态）也成立。seam 级拆分（立自己的 Definition、允许别的 Consumer）等某条缝真的有第二个消费方再做。
+DSH 的 capability seam 语法（Definition / Provider / Consumer）是**演化目标**不是起步要求。生态证据：90%+ 的第三方插件是单包 repo。DSH 自己的纪律也反对预防性拆分——拆分只在角色独立演化时发生；FAQ 08 的判据更直接：Provider 与唯一 Consumer 同包 = 还没有市场。方案 A/D 树里的 `flows / tools / pack` 三个薄包**不是 seam 角色拆分**：依据是发布边界——pack 是唯一发布载体（自包含），flows/tools 是它背后的内部实现包；树按三包画只是把发布边界摆显眼，第 0 天收成一个包（生态主流的单包形态）同样合法，树不是起跑的硬要求。seam 级拆分（立自己的 Definition、允许别的 Consumer）等某条缝真的有第二个消费方再做。
 
 ## 决策 3 · DSH 源码放哪：四个方案的分水岭
 
-这是"coding agent 能不能在 repo 内探索 DSH"的开关，也是四个方案的根本差异：
+这是"coding agent 能不能在 repo 内探索 DSH"的开关，也是四个方案的根本差异。question 把"repo 能看到 DSH 本身"列为"也希望"，本篇把它升格为一级判据——dev-loop 的整条开发环（驱动 agent、设计四问、逐层调试）都压在这条能力上，下文对方案 C 的否决均按此判据：
 
 | 方案 | DSH 源码 | 一句话 |
 |---|---|---|
 | [A 独立 repo + pinned submodule](./option-a-standalone-with-pinned-dsh.md) ✅推荐 | submodule 钉 tag，并入 pnpm workspace | agent 探索 + 可复现 + 独立发布；生态已有完整先例（dsh-desktop、antfu/skills、DSH 自己的 `vendor/`） |
 | [B 在 DSH monorepo 里长](./option-b-in-dsh-monorepo.md) | 就是 DSH repo | 借力最大（门禁/snapshot/client），但身份变成"改 DSH"；留作 UI prototype 与上游贡献通道 |
-| [C 纯外部依赖](./option-c-external-dependency-only.md) | 不进 repo | 最干净但核心诉求不成立；只作过渡 |
+| [C 纯外部依赖](./option-c-external-dependency-only.md) | 不进 repo | 最干净但"repo 能看到 DSH 本身"落空；只作过渡 |
 | [D marketplace 式 monorepo](./option-d-marketplace-monorepo.md) | 同 A | 一窝专家 + 共享骨架 + registry；A 的规模化后继，非竞争者 |
 
 ![host 源码共存模型：三种开发形态（catalog-only 见 research.md 第三节）](./figures/coexistence-models.svg)
 
-生态已收敛出开发型 repo 的三种共存模型——**pinned vendor**（A）、**同仓 workspace**（B）、**纯外部依赖**（C）——另有不做开发的 catalog-only 分发形态（见 [research.md 第三节](./research.md)与上图）。选择依据就一条：**公开 API 仍 pre-stable，专家必须能低成本跟随上游**——pinned vendor 用 tag + SHA 簿记（antfu/skills 的 `GENERATION.md` 纪律）把跟随成本压到最低，且不放弃 agent 探索。
+生态已收敛出开发型 repo 的三种共存模型——**pinned vendor**（A）、**同仓 workspace**（B）、**纯外部依赖**（C）——另有不做开发的 catalog-only 分发形态（见 [research.md 第三节](./research.md)与上图）。另注意四方案不在同一根轴上：A/B/C 回答"DSH 源码放哪"，D 回答"一个 repo 装几个专家"（其源码答案=同 A）——这是"D 是 A 的规模化后继而非并列选项"的结构原因。选择依据就一条：**公开 API 仍 pre-stable，专家必须能低成本跟随上游**——pinned vendor 用 tag + SHA 簿记（antfu/skills 的 `GENERATION.md` 纪律）把跟随成本压到最低，且不放弃 agent 探索。
 
 ## 决策 4 · UI 表达：分层认领，不要一步到顶
 
@@ -51,7 +51,7 @@ DSH 的原生开发环（FAQ 11 结论：这是它"最自然"的习惯）搬到�
 
 ## 推荐路径
 
-1. **第 0 天**：按方案 A 起 repo；专家全部行为压在 preset + bundle + presenter 层（generic fallback 卡起步）；`AGENTS.md` 写清入口链与 `vendor/dsh` 簿记。
+1. **第 0 天**：按方案 A 起 repo（包粒度按决策 2：单包起步即可）；专家全部行为压在 preset + bundle + presenter 层（generic fallback 卡起步）；`AGENTS.md` 写清入口链与 `vendor/dsh` 簿记。
 2. **需要专属 Web 卡片或独立 UI 面**：先试 `tool.call.toolview` 槽注册（单工具卡）或 `dsh.client.inject`（整块 UI 面）；两者不够再进方案 B 长树内卡片，验证后折回。
 3. **第二个专家立项且要复用骨架**：升方案 D（A 的结构原样变成子树）。
 4. **向 DSH 上游提 seam**：方案 B + OpenSpec 一起上；**仅引入第二贡献者**则留在 A，只加 OpenSpec。

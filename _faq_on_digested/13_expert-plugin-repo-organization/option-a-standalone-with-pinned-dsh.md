@@ -21,7 +21,7 @@ my-expert/
 │   └── expert-pack/              # 发布载体（自包含：产物不得引用 repo 内其他目录）：
 │       ├── package.json          # "dsh" 字段：dsh.bundle.patch + 可选 dsh.client.inject + compatibility 矩阵
 │       ├── cordis.patch.yml      # dsh.bundle 指向的默认插件行
-│       └── presets/<name>/       # agent.cordis.yml —— 专家的"入口"形态
+│       └── presets/<name>/       # agent.cordis.yml —— 专家的"入口"形态（怎么进 roster 见下节）
 ├── vendor/
 │   └── dsh/                      # git submodule，钉在 dsh release tag（如 dsh-v0.1.5-rc.2）
 ├── dev/
@@ -36,6 +36,8 @@ my-expert/
 └── figures/
 ```
 
+三个包是把**发布边界**画显眼的终形：pack 是唯一发布载体，flows/tools 是内部实现包。第 0 天收成一个包（生态主流形态）同样成立——见 [answer](./answer.md) 决策 2；长出第二条流或独立工具面时再按此形状展开。
+
 ## 为什么"入口"是 preset + bundle，而不是新程序
 
 DSH 的组合链是固定的：package 实现 → bundle 给默认插件行 → profile / patch 覆盖部署选择 → app 启动 Loader（见 `docs/architecture.md`）。专家不产生新的可执行入口，它产生：
@@ -43,6 +45,8 @@ DSH 的组合链是固定的：package 实现 → bundle 给默认插件行 → 
 - **一个 agent preset**（`agent.cordis.yml` 目录）：会话挂上它，专家的工具、prompt sections、skills 只在这个会话生效，其他会话不受影响——这正是"专家有很好控制的上下文"的现成机制（`ctx.agentPresets`，用户根 `<dshHome>/.agent-presets` 或配置 `roots` 带 `trust`）。
 - **一个 bundle 层**（`package.json` 的 `dsh.bundle` 字段指向 `cordis.patch.yml`）：声明默认插件行，让部署方可以 `dsh plugin add` 或 patch 替换。
 - 多条信息处理流 = 多个插件，各占自己的 ctx 键、声明 `inject` 依赖；跨流编排用 `ctx.workflowEngine` / `ctx.subagents`，不自造调度器。
+
+注意 pack 里带的 `presets/` **不会自动进 roster**：`agent-presets` 只扫三处根——自己的 shipped 根、组合配置的 `roots`、用户根 `<dshHome>/.agent-presets`（根推导见 `packages/preset/agent-presets/src/index.ts`）。两条落法：① 部署组合给 `dsh-agent-presets` 加一条指向 pack 安装后 `presets/` 目录的 `roots`（带 `trust`——preset 是受信配置，授权它所选插件的能力；注意 patch 对一行是**整行配置替换**，在 pack 自己的 `cordis.patch.yml` 里动这行就得连 base 的配置一起重述，更稳的位置是 profile/home 层的 patch）；② 把目录 copy 进用户根（preset 的 authoring 本来就是 copy-only）。
 
 ## 装法与开发环
 
@@ -52,6 +56,8 @@ pnpm install                         # workspace: 协议解析到 DSH 源码
 pnpm dsh --profile headless "…"      # 从源码起一个会话，挂专家 preset
 dsh plugin --profile <p> add file:./packages/expert-pack   # 持久安装验证真实装法
 ```
+
+`pnpm dsh` 有一个隐含前提：根 `package.json` 要有一条等价于 DSH 根的 `dsh` script（DSH 根是 `node --import tsx/esm apps/cli/src/bin.ts`），在专家 repo 里指向 `vendor/dsh/apps/cli/src/bin.ts` 或等价入口。
 
 测试策略借 OpenClaw 的教训（见 [research.md](./research.md)）：**除了源码 checkout 直跑，必须用 `npm pack` + `dsh plugin add` 的真实安装形状测一遍**，因为源码测试会掩盖依赖声明错误（runtime 依赖漏进 devDependencies、peer 范围写错）。
 
@@ -90,7 +96,7 @@ out-of-tree 不是没有 Web UI 通道，但"免费"也有边界（`docs/cookboo
 
 - **升级环是第一公民**：`vendor/dsh` 换 tag → 记 SHA（antfu/skills 的簿记）→ 跑 typecheck（workspace 协议直解析 DSH `src/`，API 漂移在编译期暴露）→ compatibility matrix 加列 → `dsh plugin add file:` 重装验证。把这套做成一个脚本，agent 每次升级只触发它。
 - **真实安装形状必须自测**：`npm pack` → 干净 profile → `dsh plugin add` → 冒烟会话；源码直跑会掩盖依赖声明错误（OpenClaw 教训）。
-- **证据基础设施自建最小版**：typecheck + 行为测试 + 自己的 verify 脚本；snapshot 想要 keyless replay 得仿 `snapshot.yml` 自建，或先用 JSONL 日志 diff 顶着，够用再升。
+- **证据基础设施自建最小版**：typecheck + 行为测试 + 自己的 verify 脚本；snapshot 想要 keyless replay 得仿 DSH 的"一场景一目录 + 自己的 `snapshot.yml`"形状自建，或先用 JSONL 日志 diff 顶着，够用再升。
 - **agent 探索红利是本形态最大杠杆**：AGENTS.md 里明写"DSH 文档从 `vendor/dsh/docs/architecture.md` 读起"，agent 的每个设计决策都能现场查到 DSH 的合同原文。
 - **子 workspace 风险自查**：DSH 仓库脚本假设自己是根；首次接好 workspace 后跑一遍它的 `typecheck`/`test` 确认没被误触发，把结论写进 AGENTS.md 或干脆用 `file:`/`link:` 依赖绕开子 workspace。
 

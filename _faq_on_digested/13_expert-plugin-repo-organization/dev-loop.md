@@ -12,15 +12,15 @@
 
 依据：`docs/development.md`（环境与日常命令）、`docs/testing.md`（测试分层）、FAQ 02/06（[spec 从意图走到当前合同的完整路径](../06_spec-change-path/answer.md)）、FAQ 11（[六步执行闭环与两个回路](../11_native-development-loop/answer.md)）、根 `AGENTS.md`（checks 匹配面纪律）。
 
-## 第 0 步 · 一次性准备（只做一次）
+## 第 0 阶段 · 一次性准备（只做一次）
 
 **做什么**：把开发环境立起来，让后面每个环都能"秒级反馈"。
 
-**DSH 原生**：`pnpm install`（顺带装好 lefthook 本地钩子）→ `pnpm run typecheck` 通过即就绪（`development.md` 的验收标准）。钩子是快检查：pre-commit 六个作业（translation pairing、archived notes 检查、staged lint、THIRD_PARTY_NOTICES 再生、whitespace、vendor manifest guard）加 pre-merge-commit 的配对检查；**pre-push 跑 `pnpm run typecheck`**。除此之外钩子刻意不跑测试、snapshot、文档检查和构建——这些的穷举归 CI。
+**DSH 原生**：`pnpm install`（顺带装好 lefthook 本地钩子）→ `pnpm run typecheck` 通过即就绪（`development.md` 的验收标准）。钩子是快检查：pre-commit 六个作业（translation pairing、archived notes 检查、staged lint、THIRD_PARTY_NOTICES 再生、whitespace、vendor manifest guard），pre-merge-commit 重跑其中 translation pairing 与 archived notes 两项；**pre-push 跑 `pnpm run typecheck`**。除此之外钩子刻意不跑测试、snapshot、文档检查和构建——这些的穷举归 CI。
 
 **专家 repo 落地**：同样的准备加两件——① `git submodule update --init` 拉下 `vendor/dsh`（方案 A/D）并确认 `pnpm install` 后 typecheck 解析到 DSH 源码；② 写根 `AGENTS.md`（几百词：常驻规则、布局、命令表、`vendor/dsh` 在哪、探索路由 `docs/architecture.md → capability-seams → 包 README`），`CLAUDE.md` 做 symlink。这是给 coding agent 铺的路，第 4 阶段起它每次都走。
 
-### 第 0.5 步 · 双 home 隔离
+### 第 0.5 阶段 · 双 home 隔离
 
 已在用官方安装的 DSH 时，开发插件**不要**直接插进日用 home：日用留在默认 `~/.dsh` 原样不动，开发用 `DSH_HOME=~/dsh-dev` 起第二个 home，并让专家 repo 的环境脚本自动 export 它（coding agent 不会自己想起来这个区别）。机制依据、崩溃半径、向日用 home 的迁移方向见专篇 [dual-home-isolation.md](./dual-home-isolation.md)。
 
@@ -28,7 +28,7 @@
 
 **做什么**：人用一两句话说清动机和预期行为——"专家在收到 X 类输入时应产出 Y，现在是 Z"。
 
-**DSH 原生**：Issue 模板只留两个字段：**Motivation / Behavior**（为什么改、预期的外部可观察行为是什么）。验收和测试证据不写在这里——它们由后面 PR 的 Testing 部分承载。机器只在 PR 进入 review 时强制引用 Issue，不检查意图质量。
+**DSH 原生**：Feature Issue 模板只留两个字段：**Motivation / Behavior**（为什么改、预期的外部可观察行为是什么；bug/task 模板另有 Reproduction、Deliverables 等字段，"意图钉在外部可观察行为上"这条纪律以 Feature 模板为代表）。验收和测试证据不写在这里——它们由后面 PR 的 Testing 部分承载。机器只在 PR 进入 review 时强制引用 Issue，不检查意图质量。
 
 **专家 repo 落地**：不需要 GitHub Issue 也能走同构路径：在 `notes/intents.md`（或直接在对话里）写一行动机 + 一行预期行为。关键是**行为必须是外部可观察的**——"日志里出现事件 E"、"工具返回卡片 K"、"preset 挂上后其他会话无感"，而不是"代码要优雅"。
 
@@ -99,7 +99,7 @@
 
 **DSH 原生**：`dsh-pre-push-checks` skill 明确"匹配证据面：行为测试对行为、`doc-sync` 对文档、快照对用户可见变更、e2e 对 provider；CI 拥有穷举"。`.agents/notes/` 归档低未来价值的 implemented note（可选的生命周期收敛）。
 
-**专家 repo 落地**：同纪律自带三件套收尾——docs 更新为当前状态（无 change history）、Note 已从 proposed 改成 implemented、验证清单与实际执行一致。仓库级的机械检查（链接、结构、UTF-8）学 `_faq_on_digested/verify.mjs` 写成自己的 verify 脚本，让"文档不烂"也成为门禁而不是约定。
+**专家 repo 落地**：同纪律自带三件套收尾——docs 更新为当前状态（无 change history）、Note 已从 proposed 改成 implemented、验证清单与实际执行一致。仓库级的机械检查（链接、结构、UTF-8）学 `_faq_on_digested/verify.mjs` 写成自己的 verify 脚本，让"文档不烂"也成为门禁而不是约定（方案 B 例外：repo 就是 DSH，直接用现成 `run-gates`，见其差异节）。
 
 ## 全周期速览
 
@@ -107,7 +107,7 @@
 |---|---|---|
 | 0 准备 | `pnpm install` + typecheck + lefthook | + submodule、AGENTS.md 入口链 |
 | 0.5 双 home | home 解析：显式 → `$DSH_HOME` → `~/.dsh` | 开发与日用分 home，见 [dual-home-isolation.md](./dual-home-isolation.md) |
-| 1 意图 | Issue 模板（Motivation/Behavior） | 一行动机 + 一行外部可观察行为 |
+| 1 意图 | Feature Issue 模板（Motivation/Behavior） | 一行动机 + 一行外部可观察行为 |
 | 2 决策 | proposed Agent Note | `notes/proposed/`（含输掉的方案） |
 | 3 设计 | Plan Mode，decision-complete | 固定四问：ctx 键/日志税/UI 层/证据 |
 | 4 落地 | 六步闭环 + 垂直切片 PR + 同 diff 改写 Note | + 真实安装形状验证 |
@@ -126,4 +126,4 @@
 | profile 内持久 | `dsh plugin --profile <p> add file:./packages/expert-pack` | 验证真实安装形状；日常体验 Web |
 | 正式分发 | `dsh plugin --profile <p> add <npm-name>` / `github:<owner>/<repo>` | 用户视角；CI 测兼容矩阵 |
 
-**拔法**：会话不挂 preset（最轻）→ patch 里 `disabled: true`（行还在）→ 卸载（registrations are effects，无残留）。
+**拔法**：会话不挂 preset（最轻）→ patch 里 `disabled: true`（行还在）→ 卸载（registrations are effects，无残留）。（`disabled` 是正式机制：Loader 在每次 mount 决策时求值它，shipped `bundle/base` 自己就在用；FAQ 12 记录过个别 client 行不生效的未解观察，异常时先用 `--dump-config` 对照实际组合再下结论。）
