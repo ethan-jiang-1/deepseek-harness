@@ -15,6 +15,7 @@ my-expert/
 ├── scripts/
 │   ├── verify.mjs
 │   └── release-smoke.mjs         # 本方案比 A 更必要：依赖声明错误没有 workspace 兜底
+├── snapshots/                    # 自建最小 replay（dev-loop 第 5 阶段派给 A/C/D 的义务）
 ├── docs/
 │   ├── …                         # 当前合同
 │   └── dsh-notes/                # 知识内化：层级顺序/dump-config/preset 语义/日志税的自持摘录
@@ -46,6 +47,7 @@ my-expert/
 - `AGENTS.md` 里的 `DSH_REPO` 指针必须配一个"知识内化"目录（`docs/dsh-notes/`）：把常用合同（层级顺序、dump-config、preset 语义、日志税）摘成自己的短文档，否则 agent 每次都要跳出去且可能查不到。
 - 真实安装形状测试（`npm pack` → `dsh plugin add`）在本形态**更加必要**，因为依赖声明错误没有 workspace 兜底。
 - 上游跟随成本最高：没有 SHA 簿记、没有源码 diff，版本漂移只能靠测试失败发现——这是"只作过渡"的机制原因。
+- snapshot 自建义务照担（dev-loop 第 5 阶段派给 A/C/D）：`snapshots/` 收录制会话与预期，先用 JSONL 日志 diff 顶着，够用再升级。
 
 ## 定位
 

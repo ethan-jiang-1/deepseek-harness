@@ -16,7 +16,7 @@
 
 **做什么**：把开发环境立起来，让后面每个环都能"秒级反馈"。
 
-**DSH 原生**：`pnpm install`（顺带装好 lefthook 本地钩子）→ `pnpm run typecheck` 通过即就绪（`development.md` 的验收标准）。钩子刻意只做快检查（staged lint、whitespace、vendor manifest），**不跑测试和构建**——全量归 CI。
+**DSH 原生**：`pnpm install`（顺带装好 lefthook 本地钩子）→ `pnpm run typecheck` 通过即就绪（`development.md` 的验收标准）。钩子是快检查：pre-commit 验 staged 配对记录、staged lint、THIRD_PARTY_NOTICES 再生、whitespace、vendor manifest guard；**pre-push 跑 `pnpm run typecheck`**。除此之外钩子刻意不跑测试、snapshot、文档检查和构建——这些的穷举归 CI。
 
 **专家 repo 落地**：同样的准备加两件——① `git submodule update --init` 拉下 `vendor/dsh`（方案 A/D）并确认 `pnpm install` 后 typecheck 解析到 DSH 源码；② 写根 `AGENTS.md`（几百词：常驻规则、布局、命令表、`vendor/dsh` 在哪、探索路由 `docs/architecture.md → capability-seams → 包 README`），`CLAUDE.md` 做 symlink。这是给 coding agent 铺的路，第 4 阶段起它每次都走。
 
@@ -49,8 +49,8 @@
 **专家 repo 落地**：专家的设计清单有固定四问（这是"plugins, not loop changes"纪律的专家版）：
 
 1. **占哪个 ctx 键 / 发哪些事件**？每条流一个自己的键，`inject` 声明依赖，不劫持别人的。
-2. **模型会看见什么新状态**？model-visible ⟺ logged——每个新的模型可见输入都要配 `SessionEventMap` 成员（并决定 `ignorable`），否则日志重建不出来。这问漏了，第 5 阶段调试时会以"日志读不全"的形式还债。
-3. **UI 走哪层**？卡片层（`presentCall`/`presentResult` + `presentationMeta`，免费且可 replay）→ `dsh.client.inject` 注入层 → 树内定制（仅方案 B）。
+2. **模型会看见什么新状态**？model-visible ⟺ logged（下称**日志税**）——每个新的模型可见输入都要配 `SessionEventMap` 成员（并决定 `ignorable`），否则日志重建不出来。这问漏了，第 5 阶段调试时会以"日志读不全"的形式还债。
+3. **UI 走哪层**？presenter 层（`presentCall`/`presentResult` + `presentationMeta`，纯函数、可 replay；注意内置 Web Client 不消费它，不配 client 时显示 generic fallback 卡）→ 专属 Web 卡的 `tool.call.toolview` 槽注册 / 独立 UI 面的 `dsh.client.inject` 注入层 → 树内定制（仅方案 B）。
 4. **证据是什么**？"会为这次回归而失败"的那个测试长什么样——现在就点名，第 4 阶段写它。
 
 ## 第 4 阶段 · 落地：窄证据切片闭环
@@ -73,7 +73,7 @@
 **专家 repo 落地的两条特有纪律**：
 
 - **插拔验证**（速查表见文末附录）：日常用 workspace 直跑；每次交付前用**真实安装形状**验一遍——`npm pack` → 干净 profile → `dsh plugin add` → 冒烟会话。源码直跑会掩盖依赖声明错误（OpenClaw 文档明示的坑）。
-- **快检查在本地，穷举在 CI**：本地只跑 lefthook 钩子 + 选中的最小检查（DSH 的 `dsh-pre-push-checks` skill 就是"推送前选最小检查集"的流程），coverage/doc-sync/平台矩阵归 CI。
+- **快检查在本地，穷举在 CI**：本地跑 lefthook 钩子（含 pre-push 的 typecheck）+ 选中的最小检查（DSH 的 `dsh-pre-push-checks` skill 就是"推送前选最小检查集"的流程）；测试、snapshot、doc-sync、平台矩阵的穷举归 CI。
 
 ## 第 5 阶段 · 调试：从组合层到会话层，逐层排除
 

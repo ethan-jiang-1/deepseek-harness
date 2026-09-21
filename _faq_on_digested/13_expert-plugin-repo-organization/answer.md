@@ -8,7 +8,7 @@
 
 ## 决策 1 · 入口形态：preset + bundle，DSH 已经回答了
 
-专家需要的"自己的工具、提示词、技能、隔离上下文"恰好是 agent preset 的定义：一个 `agent.cordis.yml` 目录，会话挂上它就运行它的工具/prompt sections/skills，其他会话不受影响（`ctx.agentPresets`，见 `packages/preset/README.md`）。可插拔性由 bundle 层承担：package.json 的 `dsh` 字段声明 `dsh.bundle.patch`（+ Web UI 时 `dsh.client.inject`），装进任何 profile。**不需要新的可执行入口**——DSH 的五入口（CLI/Web/Desktop/ACP/SDK）共用 `ctx.agents` spine，专家是这棵树上的组合物，不是第六个入口。
+专家需要的"自己的工具、提示词、技能、隔离上下文"恰好是 agent preset 的定义：一个 `agent.cordis.yml` 目录，会话挂上它就运行它的工具/prompt sections/skills，其他会话不受影响（`ctx.agentPresets`，见 `packages/preset/README.md`）。可插拔性由 bundle 层承担：package.json 的 `dsh` 字段声明 `dsh.bundle.patch`（+ Web UI 时 `dsh.client.inject`），装进任何 profile。**不需要新的可执行入口**——DSH 的 shipped 应用（web/headless/sdk/sdk-minimal/acp）加 Electron Desktop 共用 `ctx.agents` spine，CLI 只是共享启动器；专家是这棵树上的组合物，不是新入口。
 
 这不是本 FAQ 的发明，是整个第三方生态的事实契约：[research.md](./research.md) 核实的四个第三方插件（dsh-im、dsh-market、dsh-routing-suite、chatnode-wechat）全部用 `dsh.bundle.patch: "./cordis.patch.yml"` + `dsh plugin add`，awesome 列表的收录规则也是这两条。
 
@@ -29,13 +29,13 @@ DSH 的 capability seam 语法（Definition / Provider / Consumer）是**演化�
 
 ![host 源码共存模型：三种开发形态（catalog-only 见 research.md 第三节）](./figures/coexistence-models.svg)
 
-生态已收敛出开发型 repo 的三种共存模型——**pinned vendor**（A）、**同仓 workspace**（B）、**纯外部依赖**（C）——另有不做开发的 catalog-only 分发形态（见 [research.md 第三节](./research.md)与下图）。选择依据就一条：**公开 API 仍 pre-stable，专家必须能低成本跟随上游**——pinned vendor 用 tag + SHA 簿记（antfu/skills 的 `GENERATION.md` 纪律）把跟随成本压到最低，且不放弃 agent 探索。
+生态已收敛出开发型 repo 的三种共存模型——**pinned vendor**（A）、**同仓 workspace**（B）、**纯外部依赖**（C）——另有不做开发的 catalog-only 分发形态（见 [research.md 第三节](./research.md)与上图）。选择依据就一条：**公开 API 仍 pre-stable，专家必须能低成本跟随上游**——pinned vendor 用 tag + SHA 簿记（antfu/skills 的 `GENERATION.md` 纪律）把跟随成本压到最低，且不放弃 agent 探索。
 
 ## 决策 4 · UI 表达：分层认领，不要一步到顶
 
-- **卡片内表达**（免费层）：工具的 `presentCall`/`presentResult` card render intent + `presentationMeta`——纯函数、可 replay、零 client 依赖，任何 host UI 自动渲染（`docs/cookbook/adding-a-tool.md`）。专家的大部分 UI 需求应压在这一层。
-- **独立 UI 面**（注入层）：`dsh.client.inject` + 自带打包的 client 模块。曾以为这是树内专属，第三方实证推翻了它：dsh-market（tsdown）与 dsh-im（esbuild）都在独立 repo 里把自己的 Web 面注入 web profile，DSH client 包只作 devDependency。
-- **树内定制**（方案 B 独占）：直接改 client 卡片组件、client-modules 深度组装。只在 B 里做，且做完要评估能否折回前两层。
+- **Host presenter 层**：工具的 `presentCall`/`presentResult` card render intent + `presentationMeta`——纯函数、可 replay 的中性词汇表（`docs/cookbook/adding-a-tool.md`）。注意它的边界：内置 Web Client **不消费** presenter，不做事时 UI 显示 generic fallback 卡；presenter 的价值是把卡片状态定义为可从日志重建的纯投影，供任何 host UI 与自建 client 消费。
+- **Web 卡片 / 注入层**：让 Web 出现专属工具有两条 out-of-tree 通道——client 插件在 `tool.call.toolview` keyed slot 注册自己的工具卡（从 wire 事件 + `result.meta` 派生 props）；或 `dsh.client.inject` 注入整块 client 模块（自定义面板/设置页）。后者有第三方实证：dsh-market（tsdown）与 dsh-im（esbuild）都在独立 repo 里完成注入，DSH client 包只作 devDependency。
+- **树内定制**（方案 B 独占）：直接改 client 卡片组件、client-modules 深度组装，或自定义 View（第三方 View 经 selection/activation 通道参与，`docs/subsystems/conversation.md`）。做完要评估能否折回前两层。
 
 ## 决策 5 · spec 流程：先借 DSH 的，OpenSpec 留触发条件
 
@@ -51,8 +51,8 @@ DSH 的原生开发环（FAQ 11 结论：这是它"最自然"的习惯）搬到�
 
 ## 推荐路径
 
-1. **第 0 天**：按方案 A 起 repo；专家全部行为压在 preset + bundle + 卡片层；`AGENTS.md` 写清入口链与 `vendor/dsh` 簿记。
-2. **UI 需求超出卡片层**：先试 `dsh.client.inject`；注入点不够再进方案 B 长树内卡片，验证后折回。
+1. **第 0 天**：按方案 A 起 repo；专家全部行为压在 preset + bundle + presenter 层（generic fallback 卡起步）；`AGENTS.md` 写清入口链与 `vendor/dsh` 簿记。
+2. **需要专属 Web 卡片或独立 UI 面**：先试 `tool.call.toolview` 槽注册（单工具卡）或 `dsh.client.inject`（整块 UI 面）；两者不够再进方案 B 长树内卡片，验证后折回。
 3. **第二个专家立项且要复用骨架**：升方案 D（A 的结构原样变成子树）。
 4. **向 DSH 上游提 seam 或引入第二贡献者**：方案 B + OpenSpec 一起上。
 
