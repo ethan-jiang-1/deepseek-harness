@@ -14,7 +14,7 @@
 
 ## 决策 2 · 包粒度：单包起步，缝出现第二消费方再拆
 
-DSH 的 capability seam 语法（Definition / Provider / Consumer）是**演化目标**不是起步要求。生态证据：90%+ 的第三方插件是单包 repo。DSH 自己的纪律也反对预防性拆分——拆分只在角色独立演化时发生；FAQ 08 的判据更直接：Provider 与唯一 Consumer 同包 = 还没有市场。起步用 `flows / tools / pack` 三个**模块目录**（不是三个包），等某条内部缝真的有第二个消费方再升格成 workspace 包。
+DSH 的 capability seam 语法（Definition / Provider / Consumer）是**演化目标**不是起步要求。生态证据：90%+ 的第三方插件是单包 repo。DSH 自己的纪律也反对预防性拆分——拆分只在角色独立演化时发生；FAQ 08 的判据更直接：Provider 与唯一 Consumer 同包 = 还没有市场。方案 A/D 树里的 `flows / tools / pack` 三个薄包**不是 seam 角色拆分**：依据是发布边界——pack 是唯一发布载体（自包含），flows/tools 是它背后的内部实现包；哪怕收成一个包（生态主流的单包形态）也成立。seam 级拆分（立自己的 Definition、允许别的 Consumer）等某条缝真的有第二个消费方再做。
 
 ## 决策 3 · DSH 源码放哪：四个方案的分水岭
 
@@ -27,7 +27,7 @@ DSH 的 capability seam 语法（Definition / Provider / Consumer）是**演化�
 | [C 纯外部依赖](./option-c-external-dependency-only.md) | 不进 repo | 最干净但核心诉求不成立；只作过渡 |
 | [D marketplace 式 monorepo](./option-d-marketplace-monorepo.md) | 同 A | 一窝专家 + 共享骨架 + registry；A 的规模化后继，非竞争者 |
 
-![三种 host 源码共存模型](./figures/coexistence-models.svg)
+![host 源码共存模型：三种开发形态（catalog-only 见 research.md 第三节）](./figures/coexistence-models.svg)
 
 生态已收敛出开发型 repo 的三种共存模型——**pinned vendor**（A）、**同仓 workspace**（B）、**纯外部依赖**（C）——另有不做开发的 catalog-only 分发形态（见 [research.md 第三节](./research.md)与下图）。选择依据就一条：**公开 API 仍 pre-stable，专家必须能低成本跟随上游**——pinned vendor 用 tag + SHA 簿记（antfu/skills 的 `GENERATION.md` 纪律）把跟随成本压到最低，且不放弃 agent 探索。
 

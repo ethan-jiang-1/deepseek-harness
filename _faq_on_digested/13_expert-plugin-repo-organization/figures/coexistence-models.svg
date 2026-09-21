@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="920" height="430" viewBox="0 0 920 430" font-family="Helvetica, Arial, sans-serif">
   <rect width="920" height="430" fill="#fafafa"/>
-  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">host 源码共存的三种模型（research.md 第三节）</text>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">host 源码共存模型：三种开发形态（research.md 第三节，含第四种 catalog-only）</text>
 
   <g font-size="13" fill="#222">
     <!-- Model 1: same-repo workspace -->
