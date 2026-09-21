@@ -12,7 +12,7 @@
 
 - **编译器**：类型、`assertNever`、declaration merging——编译期拒绝；
 - **门禁与生成器**：`verify-*`、freshness gates——提交前红灯，目录从源码生成；
-- **双 SDK**：TypeScript 与 Python 都必须投影同一个 loop 与 `SessionEventMap`（[`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/archived/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)）；
+- **双 SDK**：TypeScript 与 Python 都必须投影同一个 loop 与 `SessionEventMap`（[`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/archived/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)，已归档，历史快照；现行 owner 是 [`AGENTS.md:131`](../../AGENTS.md) 与 [`docs/testing.md#when-a-snapshot-test-is-required`](../../docs/testing.md#when-a-snapshot-test-is-required)）；
 - **harness 自身**：self-modification——agent 检视、挂载自己的插件（[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)）；
 - **人类读者与 LLM 读者**。
 
@@ -105,7 +105,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 | 可逆 ≠ 事务 | effect 能回收声明过的资源，不能补偿网络消息、文件写入、支付 | Cordis effect 语义；[`docs/cordis-primer.md`](../../docs/cordis-primer.md) |
 | 插件化 ≠ 安全 | `inject` 约束 Context 使用，阻止不了同进程代码直接 import Node API | self-modification 明确是 opt-in、bash-equivalent trust；[`05`](./05-dynamic-legibility.md) |
 | 元框架与本地分叉成为新核心 | Cordis 根、Loader、Boot 必须先存在；vendor 带本地修改与 sync 成本 | [`docs/architecture.md`](../../docs/architecture.md) 的 Cordis 段与 [`vendor/README.md`](../../vendor/README.md) |
-| 性能代价仍缺少量化 | 没有运行时开销或大规模插件图的对照基准 | 本专题不补数字，只记为开放问题 |
+| 性能代价只被部分量化 | 用户路径已有基准，插件图规模与运行时开销没有对照基准 | [`benchmarks/AGENTS.md`](../../benchmarks/AGENTS.md)（`test:bench` 按用户路径组织，required Linux PR gate）；插件模型自身的开销仍记为开放问题 |
 | 外置本身有维护税 | 上千个 note 文件（见 [`claims.json`](./claims.json) 的 N1）、门禁、100% coverage、根 AGENTS 上下文预算 | 本页保留判断：可参与性 = 外置程度 ÷ 外置成本 |
 
 成本不为零，dsh 的选择是把分母花在「机器可检查」上，而不是花在「人可读不可执行」的散文上。但这个选择只在组合压力足够大时划算。
@@ -134,11 +134,11 @@ Google Cloud Senior AI Product Manager Shubham Saboo 在2026-08 发表了一篇�
 
 1. **Derive the model's context from a log instead of maintaining it** → 即"模型可见 ⟺ 已记录"不变量
 2. **Loops get broken with reminders, not blocks** → `repeat-tool-reminder` 插件（渐进提醒，不硬阻断）
-3. **Tell the model what it didn't see** → 工具结果截断的显式披露（`file-search` 采样+路径、sandbox 拒绝的"do not retry"）
+3. **Tell the model what it didn't see** → 工具结果截断的显式披露（`glob` 的超限采样 + 完整清单落盘路径、sandbox 拒绝的"do not retry"）
 4. **Code execution that can't dodge your permission layer** → `run_code` 调用仍经过完整审批管道
 5. **Kill the context, keep the workspace** → Ralph loop / Goal Round Driver 的跨轮手写协议
 
-这五个模式全部被 `_digested/` 各专题覆盖，但 Saboo 的提取提供了一个外部验证：**DSH 的工程选择不只是内部自洽，而且对外部有经验的读者也是可识别、可命名、可迁移的。** 这不是"dsh 被 Google 看上了"的证明，而是"该系列的合同面让外部观察者也能提取出稳定模式"的证据。
+这五个模式里，1、4、5 在 `_digested/` 有机制级页面（`session-and-loop/`、`tools-prompt-llm/` 的管道、`agent-loop/` 的 Goal Round Driver），2 只到 `tools-prompt-llm/` 的包清单与管道图，3 尚未被专题正文覆盖。但 Saboo 的提取仍提供了一个外部验证：**DSH 的工程选择不只是内部自洽，而且对外部有经验的读者也是可识别、可命名、可迁移的。** 这不是"dsh 被 Google 看上了"的证明，而是"该系列的合同面让外部观察者也能提取出稳定模式"的证据。
 
 ## 证据入口
 
@@ -149,9 +149,9 @@ Google Cloud Senior AI Product Manager Shubham Saboo 在2026-08 发表了一篇�
 - [`docs/capability-seams.md`](../../docs/capability-seams.md)（Definition / Provider / Consumer）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
 - [`../../AGENTS.md`](../../AGENTS.md)（第 106、110、117 行；注册即效果、waterfall、fail loud）
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 38 行；tier taxonomy、一个事实一个家）
-- [`../../docs/testing.md`](../../docs/testing.md)（第 35 行；元验证与 snapshot 政策）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-32、38 行；tier taxonomy、一个事实一个家、当前状态散文）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 10、13、35、40、53-55 行；元验证、性能基准与 snapshot 政策）
 - [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17 行；harness 自身消费合同面与安全边界）
-- [`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/archived/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)（双 SDK 投影同一 loop）
+- [`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/archived/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)（已归档，历史快照；双 SDK 投影同一 loop 的历史来源。现行 owner 是 [`AGENTS.md:131`](../../AGENTS.md) 与 [`docs/testing.md`](../../docs/testing.md)）
 - [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md)（「模型可见 ⟺ 已记录」作为设计决策）
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；门禁成本的源头记录）

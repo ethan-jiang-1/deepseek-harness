@@ -63,8 +63,8 @@ README 明确把人引导到产品和贡献入口，把模型引导到 AGENTS。
 
 ## 证据入口
 
-- [`README.md`](../../README.md) 第 49-53 行
-- [`AGENTS.md`](../../AGENTS.md) 第 1-3 行、第 9-57 行
+- [`README.md`](../../README.md) 第 55-57 行
+- [`AGENTS.md`](../../AGENTS.md) 第 3 行、第 5-9 行、第 102 行起
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 15-57 行、第 75 行
 - [`docs/architecture.md`](../../docs/architecture.md) 第 5 行
 - [`package.json`](../../package.json)：文档门禁脚本

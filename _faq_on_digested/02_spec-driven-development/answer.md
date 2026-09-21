@@ -1,6 +1,6 @@
 # Answer · DSH 的 SDD：分层规格、生命周期与可执行验收
 
-产品源码核验基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`（与 `_digested/` 相同）。 **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
+产品源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.2`，commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`（与 `_digested/` 相同）。
 
 ## 结论先行
 
@@ -18,7 +18,7 @@
 
 | 层 | 主要载体 | 回答的问题 | 约束方式 |
 |----|----------|------------|----------|
-| 意图规格 | GitHub Issue | 要改变什么可观察结果，怎样算完成 | Feature、Bug、Task 模板要求验收条件；Feature 另问用户或模型可见变化与测试证据 |
+| 意图规格 | GitHub Issue | 要改变什么可观察结果，怎样算完成 | Bug / Feature / Task 三份模板固定各自的填写节；“怎样算完成”的验收条件由 PR 的 Testing 节承载，不再由模板承载 |
 | 决策规格 | proposed Agent Note | 为什么这样设计，什么方案输了，接受什么风险 | 固定的 `Problem`、`Proposal`、`Alternatives considered`、`Acceptance criteria`、`Risks` 结构 |
 | 实现规格 | Plan Mode 提交的 plan | 哪些子系统、API、schema、数据流、失败路径和测试要改 | 先只读勘察；`exit_plan_mode` 要求完整 Markdown 计划并取得用户明确批准 |
 | 当前合同 | 类型、配置 schema、事件声明、README、JSDoc、architecture/subsystem 文档 | 调用方和实现方现在必须遵守什么 | strict TypeScript、生成目录、类型等价、README/JSDoc 与文档同步检查 |
@@ -31,7 +31,7 @@
 
 ### 1. 先定义可观察结果
 
-当前 [Feature Issue 模板](../../.github/ISSUE_TEMPLATE/feature.md)要求一句话预期结果、验收条件、用户或模型可见变化和测试证据；[Bug 模板](../../.github/ISSUE_TEMPLATE/bug.md)要求复现、实际结果、预期结果、环境和验收条件；[PR 模板](../../.github/pull_request_template.md)要求进入评审的非 Draft 人类 PR 关联同仓库 Issue，并列出变更与验证。
+当前 [Feature Issue 模板](../../.github/ISSUE_TEMPLATE/feature.md)只固定两节——动机与预期行为（`feature.md:7`、`:11`）；[Bug 模板](../../.github/ISSUE_TEMPLATE/bug.md)要求概述、复现、实际行为、预期行为与环境（`bug.md:7`、`:11`、`:15`、`:19`、`:23`）；[Task 模板](../../.github/ISSUE_TEMPLATE/task.md)要求概述与交付物（`task.md:7`、`:11`）。[PR 模板](../../.github/pull_request_template.md)要求进入评审的非 Draft 人类 PR 关联同仓库 Issue，并列出变更与验证。0.1.5 基线起 Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task：验收条件与测试证据不再由模板承载，改由 PR 的 Testing 节承载；policy 仍把五种原生 Issue Type 视为合法（[`.github/issue-management/policy.mjs:226`](../../.github/issue-management/policy.mjs)），取消的只是模板入口。
 
 这一层故意不先规定内部类名或函数列表。它先固定外部结果和完成标准，让后续设计可以变化，但不能丢掉最初要解决的问题。
 
@@ -43,7 +43,7 @@
 
 ### 3. Plan Mode 把提案细化成可执行计划
 
-DSH 自己的 coding-agent preset 把 Plan Mode 规则写进系统提示。它要求先用只读搜索、阅读和静态分析了解真实仓库，不得在计划阶段修改文件；最终计划必须包含目标和成功标准、按子系统分组的修改、公开 API/schema/数据流变化、边界和失败模式、测试、验收条件与显式假设，并详细到另一位工程师无需再做设计决定即可实现。相同规则见 [`code` preset](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)和 [`standard` preset](../../packages/preset/agent-presets/presets/standard/agent.cordis.yml)。
+DSH 自己的 coding-agent preset 把 Plan Mode 规则写进系统提示。它要求先用只读搜索、阅读和静态分析了解真实仓库，不得在计划阶段修改文件；最终计划必须包含目标和成功标准、按子系统分组的修改、公开 API/schema/数据流变化、边界和失败模式、测试、验收条件与显式假设，并详细到另一位工程师无需再做设计决定即可实现。相同规则见 [`ptc` preset](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)和 [`standard` preset](../../packages/preset/agent-presets/presets/standard/agent.cordis.yml)（shipped preset id 是 `ptc`，Web 把它显示成 PTC mode）。
 
 [`dsh-plan-mode`](../../packages/plan/plan-mode/README.md)不只显示一段提示词。`exit_plan_mode` 会把完整计划提交到 `plan-review` 交互，只有用户选择精确的 `Approve` 才退出；选择继续规划或给出反馈时，agent 必须留在 Plan Mode 修改计划。Plan Mode 状态写进 session log，因此 resume 和 fork 可以恢复；但 README 也明确说明它是 soft guidance，真正的写权限仍由 sandbox 和 approval policy 独立执行。
 
@@ -99,7 +99,7 @@ git 历史中能看到真实的生命周期迁移，而不只是当前规则：
 2. **减少开放设计问题。** Plan Mode 明确要求另一位工程师可以直接实现，这会把 coding 阶段从“边写边定架构”收窄为“执行已评审决定，并在发现事实冲突时回到 spec”。
 3. **把弱约定变成强反馈。** 类型、tests、snapshots、generators 和 CI 能立即拒绝偏离；这比希望每个 agent 记住数百条 prose 规则可靠。
 4. **让插件化改动完整落地。** capability seam、composition、session log 和 presentation 的检查项迫使 spec 覆盖完整行为，而不是只实现一个局部函数。
-5. **允许快速纠正。** 预发布立场不保留兼容 shim；当 spec 证明旧基础不对时，可以同步改代码、格式、测试、文档和引用，再让旧格式大声失败。
+5. **允许快速纠正。** 公开 API 是 pre-stable：[`AGENTS.md`](../../AGENTS.md) 开篇的 “Pre-stable APIs and released Session data” 要求更新每一个消费方，而不是为旧形态保留兼容层；当 spec 证明旧基础不对时，可以同步改代码、格式、测试、文档和引用。已发布的 Session 数据是这条边界里的例外：相邻迁移只能新增版本命名的后继代，不得移动、覆盖或删除已提交代，也不承诺回退或降级，SQLite 走单调的 `SCHEMA_VERSION`。
 
 ## 不能从仓库推出什么
 

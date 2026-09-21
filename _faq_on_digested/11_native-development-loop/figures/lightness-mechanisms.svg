@@ -43,8 +43,8 @@
   <text x="822" y="268" font-size="12.5" fill="#475569">未覆盖的默认读法是"这段该删"。</text>
   <text x="822" y="316" font-size="14" font-weight="700" fill="#9a3412">测试与 Note 都不是金科玉律</text>
   <text x="822" y="338" font-size="12.5" fill="#475569">行为变了改测试；被取代就 supersede。</text>
-  <text x="822" y="386" font-size="14" font-weight="700" fill="#9a3412">pre-release 立场</text>
-  <text x="822" y="408" font-size="12.5" fill="#475569">无外部消费者，改名/重构自由。</text>
+  <text x="822" y="386" font-size="14" font-weight="700" fill="#9a3412">pre-stable 立场</text>
+  <text x="822" y="408" font-size="12.5" fill="#475569">公开 API 尚未稳定；更新每个消费者。</text>
   <text x="822" y="452" font-size="12" fill="#92400e">大改动的风险被切成小赌注；</text>
   <text x="822" y="470" font-size="12" fill="#92400e">改错是原子操作，不是考古。</text>
 

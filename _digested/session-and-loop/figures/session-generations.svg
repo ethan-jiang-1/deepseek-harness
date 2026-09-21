@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="500" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">格式世代：写者常量 3，三条相邻边，读准备与写发布分离</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">build-static catalog：profile 挂载不能增删或重排任何一条边，历史可读性不依赖挂载插件。</text>
+
+  <rect x="40" y="72" width="180" height="120" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="130" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">物理行解码</text>
+  <text x="56" y="126" font-size="11" fill="#1e40af">v0 / v1：packed row</text>
+  <text x="56" y="146" font-size="11" fill="#1e40af">v2 起：一行一事件</text>
+  <text x="56" y="172" font-size="11" fill="#2563eb">session.jsonl</text>
+  <text x="56" y="188" font-size="11" fill="#2563eb">session.vN.jsonl[.zstd]</text>
+
+  <line x1="220" y1="132" x2="248" y2="132" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="250" y="72" width="130" height="120" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="315" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">v0 → v1</text>
+  <text x="266" y="126" font-size="11" fill="#15803d">→ v1（机制世代）</text>
+  <text x="266" y="146" font-size="11" fill="#15803d">legacy 规范化</text>
+  <text x="266" y="166" font-size="11" fill="#15803d">有界、可审计</text>
+
+  <line x1="380" y1="132" x2="408" y2="132" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="410" y="72" width="130" height="120" rx="10" fill="#fef9c3" stroke="#fde047"/>
+  <text x="475" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#854d0e">v1 → v2</text>
+  <text x="426" y="126" font-size="11" fill="#a16207">基数变化</text>
+  <text x="426" y="146" font-size="11" fill="#a16207">chunk 内嵌</text>
+  <text x="426" y="166" font-size="11" fill="#a16207">幸存事件重编号</text>
+
+  <line x1="540" y1="132" x2="568" y2="132" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="570" y="72" width="130" height="120" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="635" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">v2 → v3</text>
+  <text x="586" y="126" font-size="11" fill="#7c3aed">规范信封</text>
+  <text x="586" y="146" font-size="11" fill="#7c3aed">system 成节点</text>
+  <text x="586" y="166" font-size="11" fill="#7c3aed">PTC 改名</text>
+
+  <line x1="700" y1="132" x2="728" y2="132" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="730" y="72" width="190" height="120" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="825" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">current collector</text>
+  <text x="746" y="126" font-size="11" fill="#c2410c">只收当前世代事件</text>
+  <text x="746" y="146" font-size="11" fill="#c2410c">validateStoredEvents</text>
+  <text x="746" y="166" font-size="11" fill="#c2410c">未知且非 ignorable 拒</text>
+
+  <rect x="40" y="216" width="430" height="140" rx="10" fill="#ecfeff" stroke="#5eead4"/>
+  <text x="60" y="244" font-size="13" font-weight="700" fill="#0f766e">读 open：只到内存</text>
+  <text x="60" y="270" font-size="12" fill="#115e59">解码与迁移在内存准备，不发布、不落盘。</text>
+  <text x="60" y="292" font-size="12" fill="#115e59">header-only 列目录不开正文。</text>
+  <text x="60" y="314" font-size="12" fill="#0f766e">更旧世代：走完整相邻链迁移。</text>
+  <text x="60" y="336" font-size="12" fill="#0f766e">更新世代：SessionFormatUnsupportedError。</text>
+
+  <rect x="490" y="216" width="430" height="140" rx="10" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="510" y="244" font-size="13" font-weight="700" fill="#b91c1c">写 open：发布当前世代</text>
+  <text x="510" y="270" font-size="12" fill="#991b1b">encode + sync + Worker 校验 + 无覆盖发布，</text>
+  <text x="510" y="292" font-size="12" fill="#991b1b">全部完成之后才返回可写句柄。</text>
+  <text x="510" y="314" font-size="12" fill="#b91c1c">源世代字节保持不变。</text>
+  <text x="510" y="336" font-size="12" fill="#b91c1c">迁移从不移动、覆盖或删除已提交世代。</text>
+
+  <text x="60" y="392" font-size="12" fill="#374151">写入器常量 SESSION_FORMAT_VERSION 是代码中唯一手维护的 current-writer 数字；catalog 生成器强制每条边相邻、每步唯一包、</text>
+  <text x="60" y="412" font-size="12" fill="#374151">链正好止于 current。只有结构变化（header 形状、信封、核心事件语义、surface 机制）才够格 bump；加普通事件类型走 ignorable。</text>
+  <text x="60" y="440" font-size="12" fill="#6b7280">发布记录只写 latestReleasedVersion 与 evidenceTag；版本状态由写者常量与记录比较推导，没有 released 旗标。</text>
+  <text x="60" y="468" font-size="12" fill="#6b7280">projection-cache 把 fold 绑定到 header 的格式世代，换代不能绕过基数变化型迁移；保留旧世代不等于降级兼容。</text>
+</svg>

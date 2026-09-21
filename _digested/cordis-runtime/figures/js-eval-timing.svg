@@ -31,5 +31,5 @@
   <rect x="30" y="338" width="900" height="90" rx="10" fill="#fee2e2" stroke="#fca5a5"/>
   <text x="50" y="368" font-size="13" font-weight="700" fill="#b91c1c">不要把环境选择写进别的字段</text>
   <text x="50" y="392" font-size="12" fill="#991b1b">name、id、inject、group 都是字面量。条件组合用 overlay / patch / disabled: !!js。</text>
-  <text x="50" y="412" font-size="12" fill="#991b1b">eval 是 with (ctx) { return eval(expr) }。表达式看得到 ctx 上的服务，不是 Node 全局随便跑。</text>
+  <text x="50" y="412" font-size="12" fill="#991b1b">eval 是 with (ctx) { return eval(expr) }：能按名字读到 ctx 服务，但不隔离 Node 全局——process / Buffer / globalThis 仍可达，是受信配置代码。</text>
 </svg>

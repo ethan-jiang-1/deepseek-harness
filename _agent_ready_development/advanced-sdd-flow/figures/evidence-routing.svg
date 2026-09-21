@@ -19,16 +19,16 @@
   <text x="540" y="107" text-anchor="middle" font-size="14" font-weight="700" fill="#244e73">按改动面选择本地相关证据</text>
   <rect x="336" y="129" width="196" height="70" rx="6" fill="#fff" stroke="#8ab0d2"/>
   <text x="434" y="153" text-anchor="middle" font-weight="700" fill="#244e73">package / script behavior</text>
-  <text x="434" y="176" text-anchor="middle" font-size="11" fill="#54748f">focused tests + affected coverage include</text>
+  <text x="434" y="176" text-anchor="middle" font-size="11" fill="#54748f">focused tests + affected coverage</text>
   <rect x="548" y="129" width="196" height="70" rx="6" fill="#fff" stroke="#8ab0d2"/>
   <text x="646" y="153" text-anchor="middle" font-weight="700" fill="#244e73">docs / Agent Notes</text>
   <text x="646" y="176" text-anchor="middle" font-size="11" fill="#54748f">doc-sync + required lint</text>
   <rect x="336" y="216" width="196" height="70" rx="6" fill="#fff" stroke="#8ab0d2"/>
   <text x="434" y="240" text-anchor="middle" font-weight="700" fill="#244e73">visible output</text>
-  <text x="434" y="263" text-anchor="middle" font-size="11" fill="#54748f">keyless snapshot / runnable scenario</text>
+  <text x="434" y="263" text-anchor="middle" font-size="10.5" fill="#54748f">keyless snapshot / runnable scenario</text>
   <rect x="548" y="216" width="196" height="70" rx="6" fill="#fff" stroke="#8ab0d2"/>
   <text x="646" y="240" text-anchor="middle" font-weight="700" fill="#244e73">published / real provider</text>
-  <text x="646" y="263" text-anchor="middle" font-size="11" fill="#54748f">build smoke / hygiene / credentialed e2e</text>
+  <text x="646" y="263" text-anchor="middle" font-size="11" fill="#54748f">build smoke / hygiene / real e2e</text>
   <line x1="250" y1="140" x2="306" y2="140" stroke="#475569" marker-end="url(#arr)"/>
 
   <rect x="830" y="88" width="210" height="104" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
@@ -43,7 +43,7 @@
   <text x="64" y="381" font-size="13" font-weight="700" fill="#554879">Pull request remote evidence · .github/workflows/ci.yml</text>
   <rect x="70" y="406" width="168" height="76" rx="6" fill="#fff" stroke="#a89bc9"/>
   <text x="154" y="432" text-anchor="middle" font-weight="700" fill="#554879">static</text>
-  <text x="154" y="454" text-anchor="middle" font-size="11" fill="#746894">type · lint · docs · hygiene</text>
+  <text x="154" y="454" text-anchor="middle" font-size="10.5" fill="#746894">invariants · docs · module graph</text>
   <text x="154" y="471" text-anchor="middle" font-size="11" fill="#746894">owned by run-gates</text>
   <rect x="262" y="406" width="168" height="76" rx="6" fill="#fff" stroke="#a89bc9"/>
   <text x="346" y="432" text-anchor="middle" font-weight="700" fill="#554879">coverage</text>
@@ -59,8 +59,8 @@
   <text x="730" y="471" text-anchor="middle" font-size="11" fill="#746894">supported engines</text>
   <rect x="838" y="406" width="168" height="76" rx="6" fill="#fff" stroke="#a89bc9"/>
   <text x="922" y="432" text-anchor="middle" font-weight="700" fill="#554879">Windows</text>
-  <text x="922" y="454" text-anchor="middle" font-size="11" fill="#746894">Wine blocking</text>
-  <text x="922" y="471" text-anchor="middle" font-size="11" fill="#746894">native independent signal</text>
+  <text x="922" y="454" text-anchor="middle" font-size="11" fill="#746894">native build · tests</text>
+  <text x="922" y="471" text-anchor="middle" font-size="11" fill="#746894">required · Wine on master</text>
   <text x="540" y="520" text-anchor="middle" font-size="11" fill="#746894">all checks passed 聚合 required jobs；real API e2e 使用独立 secret-backed workflow。</text>
 
   <rect x="170" y="575" width="260" height="42" rx="7" fill="#f7ecda" stroke="#c68b2c"/>

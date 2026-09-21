@@ -21,7 +21,7 @@
   <text x="117" y="252" text-anchor="middle" font-weight="700" fill="#9a3412">vendor/</text>
   <rect x="186" y="230" width="115" height="34" rx="6" fill="#ffedd5" stroke="#fb923c"/>
   <text x="243" y="252" text-anchor="middle" font-weight="700" fill="#9a3412">native/</text>
-  <text x="60" y="287" fill="#7c2d12">Cordis pinned source、本地修改、Landlock launcher 与平台 artifact。</text>
+  <text x="60" y="287" font-size="10.5" fill="#7c2d12">Cordis pinned source、本地修改、原生 system 原语（Landlock / flock）与平台 artifact。</text>
   <text x="60" y="305" fill="#c2410c">独立同步或 release 纪律；不要当作普通产品 package 随手改。</text>
 
   <rect x="575" y="184" width="470" height="132" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
@@ -37,24 +37,24 @@
   <text x="115" y="406" text-anchor="middle" font-weight="700" fill="#166534">apps/</text>
   <rect x="181" y="384" width="185" height="34" rx="6" fill="#dcfce7" stroke="#4ade80"/>
   <text x="273" y="406" text-anchor="middle" font-weight="700" fill="#166534">packages/bundle/</text>
-  <text x="60" y="441" fill="#14532d">最终 CLI/浏览器入口 + 可发布的 profile patch layers。</text>
+  <text x="60" y="441" fill="#14532d">最终 CLI / 浏览器 / 桌面入口 + 可发布的 profile patch layers。</text>
   <text x="60" y="459" fill="#15803d">入口负责启动事实，bundle 负责选择 rows；可复用行为仍回到 packages。</text>
 
   <rect x="575" y="338" width="470" height="132" rx="12" fill="#fdf4ff" stroke="#e879f9"/>
-  <text x="600" y="366" font-size="14" font-weight="700" fill="#86198f">可运行叶子与跨语言发行</text>
+  <text x="600" y="366" font-size="14" font-weight="700" fill="#86198f">门禁与跨语言发行</text>
   <rect x="600" y="384" width="115" height="34" rx="6" fill="#fae8ff" stroke="#d946ef"/>
-  <text x="657" y="406" text-anchor="middle" font-weight="700" fill="#86198f">examples/</text>
+  <text x="657" y="406" text-anchor="middle" font-weight="700" fill="#86198f">benchmarks/</text>
   <rect x="726" y="384" width="115" height="34" rx="6" fill="#fae8ff" stroke="#d946ef"/>
   <text x="783" y="406" text-anchor="middle" font-weight="700" fill="#86198f">python/</text>
-  <text x="600" y="441" fill="#701a75">真实 cordis.yml 示例、e2e/快照场景、Python SDK 与 runtime carrier。</text>
-  <text x="600" y="459" fill="#a21caf">示例只留装配；Python 通过 stdio JSON-RPC 驱动捆绑 runtime。</text>
+  <text x="600" y="441" fill="#701a75">仓库级性能门禁、bench-only 依赖、Python SDK 与 runtime carrier。</text>
+  <text x="600" y="459" font-size="10" fill="#a21caf">可选 overlay 组合在 apps/cli/config/examples/；Python 经 stdio JSON-RPC 驱动捆绑 runtime。</text>
 
   <rect x="35" y="492" width="470" height="142" rx="12" fill="#f8fafc" stroke="#94a3b8"/>
   <text x="60" y="520" font-size="14" font-weight="700" fill="#334155">文档与工程系统</text>
   <text x="60" y="550" font-weight="700" fill="#334155">docs/ · website/ · scripts/ · .agents/ · .github/</text>
   <text x="60" y="578" fill="#475569">权威文档、站点投影、生成器/门禁、决策记录与 CI/release。</text>
   <text x="60" y="598" fill="#64748b">源码 owner → 生成 artifact → 网站 route；不要反向手改派生物。</text>
-  <text x="60" y="618" fill="#64748b">assets/ 放根文档静态图，patches/ 放 pnpm dependency patches。</text>
+  <text x="60" y="618" fill="#64748b">patches/ 放 pnpm patchedDependencies 的补丁，vendored 源码仍在 vendor/。</text>
 
   <rect x="575" y="492" width="470" height="142" rx="12" fill="#fefce8" stroke="#fde047"/>
   <text x="600" y="520" font-size="14" font-weight="700" fill="#854d0e">研究覆盖层 · ethan 分支</text>

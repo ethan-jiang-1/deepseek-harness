@@ -98,7 +98,7 @@
   <text x="950" y="342" font-size="15" font-weight="700" fill="#9a3412">仓库自述</text>
   <text x="950" y="370" font-size="12" fill="#334155">"developed primarily by</text>
   <text x="950" y="388" font-size="12" fill="#334155">coding agents"（quality-gates</text>
-  <text x="950" y="406" font-size="12" fill="#334155">Note 第一句）</text>
+  <text x="950" y="406" font-size="12" fill="#334155">Note 的 Problem 段第一句）</text>
   <text x="950" y="430" font-size="11.5" fill="#78350f">作者统计测不出 agent 占比：</text>
   <text x="950" y="448" font-size="11.5" fill="#78350f">机器辅助的活记在操作者名下。</text>
 

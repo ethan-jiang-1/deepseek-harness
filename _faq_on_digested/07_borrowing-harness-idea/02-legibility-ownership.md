@@ -47,11 +47,11 @@ DSH 的文档层级规则只有一条主线：每个事实住在「负责它的�
 
 「乱发挥」有一半是「负知识」没有外置导致的：agent 不知道「为什么不走某条路」「这里为什么没有 runtime invariant」「这个能力有哪些已知限制」，于是**把明确的缺席当成遗漏，反复提出已否定的方案**。
 
-DSH 用 rejected note、README 的 `## Known Limitations`、说明理由的空 invariant companion 来存负知识。普通项目最便宜的做法是：**在 README / ADR 里记「为什么不做 X」，而不只是「做了什么」。**
+DSH 用 rejected note、README 的 `## Known Limitations and Deferred Work`、以及「没有可观察关系」时写进包 README 的省略理由来存负知识——无关系就省略 `./invariant`，不写空 shell（`packages/AGENTS.md:19`；空 companion 与空 installer 由 `verify-package-invariants` 判 fail）。普通项目最便宜的做法是：**在 README / ADR 里记「为什么不做 X」，而不只是「做了什么」。**
 
 ## 渐进披露：先给方向，再为当前问题付细节
 
-根 `AGENTS.md` 只保留每轮需要的 standing orders（每条一两行、链到 home）；architecture 给有序地图；catalog 支持查询；Skill 在任务命中时才加载全文。这叫 progressive disclosure（渐进披露）：
+根 `AGENTS.md` 只保留每轮需要的 standing orders（每条一到三行、链到 home）；architecture 给有序地图；catalog 支持查询；Skill 在任务命中时才加载全文。这叫 progressive disclosure（渐进披露）：
 
 > 可读性因此不是「把一切写进上下文」，而是「让读者知道下一份最小且权威的材料在哪里」。
 

@@ -4,7 +4,7 @@
 
 简单说：**一子目录 = 一个探究过的问题，答案是自己综合出来的，不是从某一份材料里直接抄的。**
 
-> **当前研究基线**：涉及运行时行为的结论以 DeepSeek Harness `dsh-v0.1.2-rc.1`（`a66e4702047846cdaa10c66c9d3df3951f5ea70d`）为准，与 `_digested/` 同一基线。旧 checkout 只用于变更史，不能替代当前源码验证。FAQ 08 的 seam 计数是唯一声明过的例外：行集在基线之后新增了 `ctx.agentTeams`、`ctx.authorization` 等，故按其写作时树（`3b1a213e9e`）重数并在文中声明（见该 answer 的方法节）。 **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
+> **当前研究基线**：涉及运行时行为的结论以 DeepSeek Harness `dsh-v0.1.5-rc.2`（`fb2c4b9e698e30edb738bca4cf0618587db7d203`）为准，与 `_digested/` 同一基线。旧 checkout 只用于变更史，不能替代当前源码验证。各篇文件头声明的「源码核验基线」是该篇结论最后一次逐条对过的 commit；0006/0007 两轮同步已把全部篇目的声明推进到当前基线，正文里仍会出现旧 commit（例如 FAQ 08 方法段说明旧读数发生在哪个基线、FAQ 10/06 标注本仓库工作树 `9c18e3f216`），那些都是历史引用而不是未复核。FAQ 08 的 seam 计数曾按其写作时树（`3b1a213e9e`）声明为例外；0006 复核已按当前生成表重测（72 = 42 core + 29 seam + 1 bundle，可替换率 12/29 = 41.4%），并认定旧读数（28 条 / 39.3%）是 OLD 基线之前就存在的存量失真，见该 answer 的方法节。
 
 文件不叫 `README.md`：仓库的 bilingual pairing 门禁会把任意 `README.md` 当成产品文档语料。
 
@@ -49,7 +49,7 @@ _faq_on_digested/
 | 05 | [DSH 跑起来之后，根入口文档是怎么被消费的？](./05_root-entry-doc-navigation/question.md) | [指令注入、工具导航、按需加载与运行时预算](./05_root-entry-doc-navigation/answer.md) |
 | 06 | [DSH 修改系统的完整 SPEC 路径是什么？](./06_spec-change-path/question.md) | [docs 是当前合同层；Issue / Note / Plan / 实现 / 合同 / 行为 / implemented Note / review 的主路径与强制边界](./06_spec-change-path/answer.md) |
 | 07 | [另一个项目想借鉴 DSH 的 Harness 思路，尤其 coding agent 怎么探索、理解项目而不糊涂、不乱发挥，可迁移的东西是什么？](./07_borrowing-harness-idea/question.md) | [把「糊涂/乱发挥」拆成知识外置、正确路径、可执行反馈三条腿；按优先级迁移，并给一步一步落地路径](./07_borrowing-harness-idea/answer.md) |
-| 08 | ["Everything is a plugin" 落到源码：哪些插件领域已饱和，哪里仍是缺口？（纯技术视角）](./08_plugin-seam-maturity/question.md) | [28 条 seam 的 P/C 全景表与可替换率 39.3%、三个被数字推翻的印象、按信号强度排序的缺口 backlog](./08_plugin-seam-maturity/answer.md) |
+| 08 | ["Everything is a plugin" 落到源码：哪些插件领域已饱和，哪里仍是缺口？（纯技术视角）](./08_plugin-seam-maturity/question.md) | [29 条 seam 的 P/C 全景表与可替换率 41.4%（72 = 42 core + 29 seam + 1 bundle，2026-09-16 按生成表实测）、三个被数字推翻的印象、按信号强度排序的缺口 backlog](./08_plugin-seam-maturity/answer.md) |
 | 09 | [同一棵插件树对一个自用 owner（个人 / 小团队）的生产力在哪，怎样讲清楚？（自用生产力视角）](./09_plugin-business-ladder/question.md) | [敢放手 + 省手 + 可复用三层价值；自用 owner 最值的几类插件；L0–L3 参与阶梯；四个 owner 能自证的实验](./09_plugin-business-ladder/answer.md) |
 | 10 | [一位烧了 10 亿 token 的用户给 DSH 的三条体感（快就是好 / 要自己改造 / 别用 Pro 多用 vision），在 harness 机制层面对得上什么？](./10_v4flash-user-notes/question.md) | [根本体验 = 一条体验皮（goal/plan）+ 三条根（日志基底 / 委派 spine / 组合层）；主篇展开 goal/plan 机制与"快而小模型为何优秀"的职责拆分论证](./10_v4flash-user-notes/answer.md) |
 | 11 | [DSH 支持的开发习惯很多，但哪一种是它"最自然"的？为什么驾驭它写东西会感觉轻松？](./11_native-development-loop/question.md) | [窄证据切片闭环：六步马达 + "轻松"三来源（记忆外包 / 反馈秒级 / 原子回滚）；spec 感是闭环沉淀物而非上游输入；git 历史量化与运行时助推的三路独立验证](./11_native-development-loop/answer.md) |

@@ -1,8 +1,10 @@
 # Cordis runtime · 被 vendor 的框架
 
+产品源码基线：`fb2c4b9e69`（`dsh-v0.1.5-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`rc.1` → `rc.2` 的增量见 [`_change_log/0007`](../_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md)。
+
 ## 一句话
 
-Harness 把 Cordis 源码放进 `vendor/`，rescoped 成 `@deepseek-ai/cordis`，再在上面长产品。读 dsh 之前先分清三件事：**上游原语**、**本仓库记在 `vendor/README.md` 的本地修改**、**产品插件怎么用它们**。
+Harness 把 Cordis 源码放进 `vendor/`，rescoped 成 `@deepseek-ai/cordis`，再在上面长产品。读 dsh 之前先分清三件事：**上游原语**、**本仓库记在 `vendor/README.md` 的本地修改**、**产品插件怎么用它们**。包名映射（上游包名 ↔ `@deepseek-ai/*` 产品名）的权威是 [`docs/rescope.md`](../../docs/rescope.md)，`vendor/README.md` 只记版本与本地修改。
 
 官方教程是 [`docs/cordis-primer.md`](../../docs/cordis-primer.md)；本页只定位 Harness 依赖的运行时原语。
 
@@ -17,7 +19,7 @@ Harness 把 Cordis 源码放进 `vendor/`，rescoped 成 `@deepseek-ai/cordis`�
 | Plugin | `packages/*` 中的能力以插件装入树，并由 fiber 管理生命周期。 |
 | Context | 服务按 `ctx.tools`、`ctx.llm`、`ctx.sessions` 等 key 查找；Consumer 依赖 Definition，不导入具体 Provider。 |
 | inject | 插件声明服务依赖；缺少依赖时等待，满足后激活。 |
-| Events | 事件通过 TypeScript 声明合并扩展，`emit` / `waterfall` / `parallel` / `serial` 是调用合同的一部分。 |
+| Events | 事件通过 TypeScript 声明合并扩展，`emit` / `waterfall` / `parallel` / `serial` / `bail` 是调用合同的一部分。 |
 | Effects | 注册、监听和子插件都由 effect 拥有；fiber 卸载时贡献一并撤销。 |
 
 ## waterfall：`next()` 委托下游

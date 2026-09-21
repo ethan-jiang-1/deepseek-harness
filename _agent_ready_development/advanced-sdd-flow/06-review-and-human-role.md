@@ -6,7 +6,7 @@ DSH 的 code review（代码评审）不是“机器查结构、人查语义”�
 
 > The report identifies paths and dirty layers but does not replace semantic review. [...] Prioritize correctness, lifecycle, security, and broken required behavior over style.
 >
-> — DSH [`dsh-code-review` skill 的开篇](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-code-review/SKILL.md)。这里把 scope 工具、自动检查与语义判断明确分开。
+> — DSH [`dsh-code-review` skill 的开篇](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.agents/skills/dsh-code-review/SKILL.md)。这里把 scope 工具、自动检查与语义判断明确分开。
 
 ## 1. 三层证据不要互相冒充
 
@@ -40,7 +40,7 @@ Skill 是 guidance，不是完整 checklist；review 优先 correctness、lifecy
 - config、defaults、errors、wire fields、events 和 public behavior 同 diff 更新 owning README/JSDoc；
 - spine 或 capability seam 的 public types 同步 subsystem/type-equivalence owner；
 - registry contribution 具有 disposal evidence；
-- invariant companion 检查 owned event stream 或 mutable-data relationship，不用 service/method presence 充数；没有可观察关系时允许有解释的空 installer；
+- invariant companion 用独立观察比较 owned 关系，不用 service/method presence、plugin metadata、effect 或固定例子充数；没有可观察关系时省略 `./invariant` 接线并在 package README 记录原因，空 installer 会被 `verify-package-invariants` 拒绝；
 - 作者运行覆盖 diff 的相关本地证据，CI 提供远端矩阵。
 
 ## 4. 高风险语义检查
@@ -69,9 +69,9 @@ Finding 要给出 defect、location、impact 和 evidence；局部问题放最�
 
 ## 证据入口
 
-- DSH [`dsh-code-review` skill](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-code-review/SKILL.md)：review scope、阻塞条件、语义维度和 finding 格式。
-- DSH [Defensive patterns](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/defensive-patterns.md)：生命周期、并发、subprocess 与 teardown 的高风险缺陷模式。
-- DSH [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/testing.md)：测试实际能够建立什么证据，以及真实入口与负例要求。
-- DSH [Issue/PR policy](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/issue-management/policy.mjs)：`human-review policy` 的适用条件，不是 reviewer 身份规则。
-- DSH [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/pull_request_template.md)：提示 PR 作者呈现适用的 Issue 关联、摘要与已运行验证。
-- DSH [Quality gates Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：自动化检查的设计理由与能力边界。
+- DSH [`dsh-code-review` skill](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.agents/skills/dsh-code-review/SKILL.md)：review scope、阻塞条件、语义维度和 finding 格式。
+- DSH [Defensive patterns](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/defensive-patterns.md)：生命周期、并发、subprocess 与 teardown 的高风险缺陷模式。
+- DSH [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/testing.md)：测试实际能够建立什么证据，以及真实入口与负例要求。
+- DSH [Issue/PR policy](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.github/issue-management/policy.mjs)：`human-review policy` 的适用条件，不是 reviewer 身份规则。
+- DSH [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.github/pull_request_template.md)：提示 PR 作者呈现适用的 Issue 关联、摘要与已运行验证。
+- DSH [Quality gates Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：自动化检查的设计理由与能力边界。

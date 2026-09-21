@@ -1,10 +1,10 @@
 # Answer · DSH 目录设计的总模型
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`。 **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
+源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.2`，commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`。
 
 ## 一句话答案
 
-DSH 的目录不是按“控制器、服务、工具类”这种实现层次来切，而是按**所有权、可替换角色、运行时组合和发布边界**来切：可复用产品能力放在 `packages/`，一项能力再拆成 Definition、Provider、Consumer 和策略插件；`bundle`、profile 与 agent preset 只选择这些插件如何组合；`apps/` 保留最终可执行入口；框架、原生组件、Python 发行物、示例、文档和工程工具各有独立边界。
+DSH 的目录不是按“控制器、服务、工具类”这种实现层次来切，而是按**所有权、可替换角色、运行时组合和发布边界**来切：可复用产品能力放在 `packages/`，一项能力再拆成 Definition、Provider、Consumer 和策略插件；`bundle`、profile 与 agent preset 只选择这些插件如何组合；`apps/` 保留最终可执行入口；框架、原生组件、Python 发行物、性能门禁、文档和工程工具各有独立边界。
 
 因此，熟悉 DSH 不能只背一棵目录树。需要同时看三张图：
 
@@ -24,7 +24,7 @@ DSH 的目录不是按“控制器、服务、工具类”这种实现层次来�
 
 `packages/fs/`、`packages/subagent/`、`packages/session/`、`packages/llm/` 各自拥有一个能力家族。某项能力需要接口、后端、模型工具、策略和 UI 时，这些角色优先放在同一个领域附近，而不是分别塞进全局 `services/`、`adapters/`、`tools/`、`controllers/` 目录。
 
-这使阅读者可以先找到“谁拥有这件事”，再在该组内辨认角色。组 README 负责给出 package 与 `ctx` key 的地图，根 [`packages/README.md`](../../packages/README.md) 只维护组级索引。
+这使阅读者可以先找到“谁拥有这件事”，再在该组内辨认角色。组 README 负责给出 package 与 `ctx` key 的地图，根 [`packages/README.md`](../../packages/README.md) 只维护组级索引（`session/` 与 `client/` 两个组的包表曾各有漏登记，已由本轮就地补齐，见 [`03-package-role-grammar.md`](./03-package-role-grammar.md)）。
 
 ### 2. 可替换能力按角色拆 package
 
@@ -50,7 +50,7 @@ package 实现
 
 ### 4. 发布和平台边界在顶层显式出现
 
-`vendor/` 是被钉住并本地维护的 Cordis 框架层；`native/` 是原生 launcher 的源码与 npm 家族；`python/` 是 Python SDK 与捆绑 runtime；`website/` 是文档站投影和构建；根 `examples/` 是可运行组合；`apps/` 是产品应用。它们的构建、发布和消费者不同，因此不强行藏进 `packages/`。
+`vendor/` 是被钉住并本地维护的 Cordis 框架层；`native/system/` 是原生 system 原语（Landlock / POSIX flock）的源码与 npm 家族；`python/` 是 Python SDK 与捆绑 runtime；`website/` 是文档站投影和构建；`benchmarks/` 是仓库级性能门禁；`apps/` 是产品应用。它们的构建、发布和消费者不同，因此不强行藏进 `packages/`。
 
 顶层目录不是“杂项分类”，而是维护与发行责任的边界。详细地图见 [`02-top-level-zones.md`](./02-top-level-zones.md)。
 
@@ -71,7 +71,7 @@ package 的手写源码位于 `src/`，测试位于同级 `tests/`，构建产�
 | 框架与平台基础 | `vendor/`、`native/` | DSH 依赖但独立维护或发布的底座 |
 | 产品能力 | `packages/` | 插件、服务合同、Provider、Consumer、策略 |
 | 应用与组合 | `apps/`、`packages/bundle/` | 入口启动组合，bundle 选择默认插件行 |
-| 可运行与跨语言发行 | `examples/`、`python/` | 示例叶子和 Python 驱动/捆绑 runtime |
+| 门禁与跨语言发行 | `benchmarks/`、`python/` | 性能门禁和 Python 驱动/捆绑 runtime |
 | 文档与工程系统 | `docs/`、`website/`、`scripts/`、`.github/`、`.agents/` | 说明、生成、校验、CI、决策记录 |
 | 研究覆盖层 | `_digested/`、`_faq_on_digested/`、`_architecture_referenced/` | `ethan` 分支上的源码消化与二次研究 |
 
@@ -97,7 +97,8 @@ packages/fs/                  # 文件系统能力家族
 - `packages/session/` 不是 `core/session` 的重复。`core/session` 拥有活的内存日志；`session/` 家族围绕它增加持久化、投影、标题和遥测。
 - `packages/host/` 与 `packages/client/` 是 Web GUI 的两半；`apps/web` 只是很薄的浏览器入口，`apps/cli` 的 web profile 负责启动 Host 并提供前端产物。
 - `packages/api/` 与 `packages/typert/` 负责 Host/Client 之间的类型化 Remote/RPC 机制，不是另一个独立产品入口。
-- `packages/examples/` 保存可复用的 demo bundle，根 `examples/` 保存真正可运行的 `cordis.yml` 叶子，两者不是同一个层次。
+- 组合叶子不再有 `examples/` 包组：可选 overlay 是 `apps/cli/config/examples/*/cordis.yml`（产品资产，`dsh --patch` 才挂），agent preset 的根是 `packages/preset/agent-presets/presets/*/agent.cordis.yml`。
+- `packages/client/` 已不只是 Web 壳：`resources` 提供 `ctx.resources` 资源模型，`ui-dockkit` 是平台静态模块，右栏与文件树各由 `ui-sidebar-*` 拥有。
 - `packages/test-support/` 是跨 package 的测试基础设施；普通行为测试仍跟随自己的 package 放在 `tests/`。
 
 ## 一个 package 内部应该怎样读
@@ -127,10 +128,10 @@ DSH 把传统单体里隐含的选择显式化了：哪个后端、哪条策略�
 
 ## 第一次熟悉仓库的推荐顺序
 
-1. 读根 [`AGENTS.md`](../../AGENTS.md) 的目录图和核心约束。
+1. 读根 [`AGENTS.md`](../../AGENTS.md) 的目录图和核心约束（它的 `packages/` 布局块曾写已不存在的 `self-modification/` 与 `support/`，实际是 `packages/extensions/` 与 `packages/test-support/`，该缺口已就地修正；以 [`packages/README.md`](../../packages/README.md) 为准）。
 2. 读 [`docs/architecture.md`](../../docs/architecture.md)，建立 Cordis、composition、core、events、loop、session、seam 的顺序。
 3. 读 [`packages/README.md`](../../packages/README.md)，只识别 group，不背 package 清单。
-4. 从一个实际入口追踪：`apps/cli/src/bin.ts` → `profile-boot.ts` → bundle patch → 一个被挂载的 package。
+4. 从一个实际入口追踪：`apps/cli/src/bin.ts` → `profile-boot.ts` → bundle patch → 一个被挂载的 package（桌面入口例外，从 `apps/desktop` 的 Electron 主进程开始）。
 5. 再从一个能力追踪：group README → Definition → Provider → Consumer → bundle/preset row → 测试。
 6. Web 功能另走 Host/Client 路线；持久数据另走 `core/session` → `session/` 路线。
 

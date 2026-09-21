@@ -33,9 +33,9 @@
   <text x="52" y="136" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">1</text>
   <text x="100" y="138" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">Issue</text>
   <text x="100" y="166" text-anchor="middle" font-weight="700" fill="#1d4ed8">意图规格</text>
-  <text x="100" y="194" text-anchor="middle" fill="#334155">可观察结果</text>
-  <text x="100" y="216" text-anchor="middle" fill="#334155">验收条件</text>
-  <text x="100" y="238" text-anchor="middle" fill="#334155">测试证据目标</text>
+  <text x="100" y="194" text-anchor="middle" fill="#334155">意图与可观察行为</text>
+  <text x="100" y="216" text-anchor="middle" fill="#334155">Bug / Feature / Task</text>
+  <text x="100" y="238" text-anchor="middle" fill="#334155">证据目标 → PR Testing</text>
 
   <rect x="190" y="110" width="140" height="152" rx="8" fill="#fff7ed" stroke="#fdba74"/>
   <circle cx="212" cy="132" r="12" fill="#c2410c"/>

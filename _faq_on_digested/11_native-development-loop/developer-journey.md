@@ -36,7 +36,7 @@ tool 必须走 `defineTool`，UI card 必须走 `presentCall`/`presentResult` + 
 
 你打开：
 
-1. **[cookbook/adding-a-tool.md](../../docs/cookbook/adding-a-tool.md)** —— 94 行的参考。你发现全部"免费"的东西：
+1. **[cookbook/adding-a-tool.md](../../docs/cookbook/adding-a-tool.md)** —— 101 行的参考。你发现全部"免费"的东西：
    - args 自动类型化 + 验证
    - schema 自动流入 system prompt
    - effect 式注册，dispose 即注销
@@ -47,7 +47,7 @@ tool 必须走 `defineTool`，UI card 必须走 `presentCall`/`presentResult` + 
 2. **[docs/development.md](../../docs/development.md)** —— 确认新 package 的 tsconfig 注册流程。你发现
    packages 分 Host/Client 两个 aggregate，一个普通 tool plugin 属于 Host，只需要加一行 `references` 到 `tsconfig.host.json`。
 
-3. **一个真实的最小 plugin 做模板** —— 你 `cat packages/goal/tool-goal/src/index.ts` 看了下结构。大概 100 行，
+3. **一个真实的最小 plugin 做模板** —— 你 `cat packages/goal/tool-goal/src/index.ts` 看了下结构。大概 345 行，
    和你想要的东西规模相当。
 
 **你做了一件事，但没写任何代码**：把需要读的源头读完了。这不是浪费时间——后面每步的判断都基于这里的权威信息，
@@ -140,7 +140,7 @@ presentResult(args, { content, isError, meta? }): ToolResultView {
 }
 ```
 
-**纯函数规则**（adding-a-tool.md:86）：你不在 presenter 里读文件、不读 session state、不用 `Date.now()`。
+**纯函数规则**（adding-a-tool.md:87）：你不在 presenter 里读文件、不读 session state、不用 `Date.now()`。
 presenter 只从 `args` 和 `result` 派生。UI 适配器负责加时间戳上下文。
 
 ### 4.4 持久化与 execute 体
@@ -341,14 +341,14 @@ Pending: CI will run coverage gate + platform matrix.
    不是"秒级"。但后续增量 typecheck 很快，而且大部分开发在增量上。
 
 2. **Note 的篇幅税**：你只写了一小段 Note。但如果这是一个更大的变更（比如改了 capabilty seam），
-   Note 三件套（.md + reasoning 过程 + 验收条件）可能比代码本身还长。88% PR 含 Note，
+   Note 三件套（.md + .zh.md + .i18n.yaml sidecar，`.agents/notes/README.md:40`）可能比代码本身还长。88% PR 含 Note，
    意味着大多数变更要付这个税。
 
 3. **纯函数 presenter 的约束是硬的**：你不能在 presenter 里读文件系统来获取"当前文件内容"来生成 diff。
    正确的做法是把 diff 信息放在 `presentationMeta` 里持久化。这个约束是对的，但初次接触时会觉得反直觉。
 
 4. **"窄证据"是 median，不是 guarantee**：横切变更（比如改整个 capabilty seam）需要跑更多检查。
-   pre-push-checks SKILL.md:62-64 有专门的 Full local rehearsal 路径。
+   pre-push-checks SKILL.md:66-68 有专门的 Full local rehearsal 路径。
 
 5. **这个 plugin 的"decision"持久化用了 session event**，但 session event 不是数据库。
    如果后面需要跨 session 查询"所有 accepted 的决策"，需要换持久化方案。没有"免费"地获得查询能力。
@@ -362,9 +362,9 @@ Pending: CI will run coverage gate + platform matrix.
 | 先读 cookbook 再写代码 | 核心认识论：**任何叙述不是权威，外部可验证状态才是**（继承自 FAQ 10 goal 轮提示词 == trim-cot-leakage HEAD 测试） |
 | 只加新 package，不改已有的 | 窄 diff 原则：`change-scope NEVER guesses or fetches a base`（pre-push-checks SKILL.md:25） |
 | output schema 设计成可编程 API | `output.schema` is a useful programmatic API（adding-a-tool.md:65） |
-| presenter 是纯函数 | `Purity — these run on live streaming AND on session-log REPLAY`（adding-a-tool.md:86） |
+| presenter 是纯函数 | `Purity — these run on live streaming AND on session-log REPLAY`（adding-a-tool.md:87） |
 | 只跑 owning test + typecheck + doc-sync | `Never default to the full suite`（AGENTS.md） |
-| 只记一条 Note，不记全部 | accretion 是敌人（AGENTS.md / dsh-archive-agent-notes） |
+| 只记一条 Note，不记全部 | 增生（accretion）是被预算与归档制度点名的敌人（[2026-07-04-doc-tiers-and-budgets](../../.agents/notes/implemented/process/2026-07-04-doc-tiers-and-budgets.md)、dsh-archive-agent-notes） |
 | PR 描述列检查清单 | `report only commands run`（AGENTS.md） |
 | 错了整 PR 回滚 | git 历史证据（#2903 67-file mirror revert #2608） |
 | schema 默认放 execute 不放 schema | 契约设计原则：`Explicit > implicit at package boundaries`（AGENTS.md），且 token 经济：模型可见即成本 |

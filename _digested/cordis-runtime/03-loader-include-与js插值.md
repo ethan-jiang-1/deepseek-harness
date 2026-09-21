@@ -25,7 +25,7 @@ fiber `_reload()` 里 `_resolveConfig(raw)`：
 1. `ctx.waterfall(fiber, 'internal/config', raw, () => raw)`
 2. 再用插件的 `Config` schema `resolveConfig`
 
-Loader 在 `internal/config` 上挂了全局监听器：先 `next()` 拿到下游结果，再 `interpolate(this.ctx, config)`。这里的 `this` 是 **Fiber**，`this.ctx` 是**这个插件**的 context。inject 已经激活，所以表达式可以写 `ctx.tools` 这类服务名。
+Loader 在 `internal/config` 上挂了全局监听器：先 `next()` 拿到下游结果，再按三道分支决定是否插值——`vendor/loader/src/index.ts:92`-`:101`：没有 entry、或该 fiber 就是 entry 自己的根 fiber 时**原样返回**；插件带 `EntryGroup.key`（行内挂载的子插件）时也**原样返回**；只有走到最后的 entry 根 fiber 才 `interpolate(this.ctx, config)`。这里的 `this` 是 **Fiber**，`this.ctx` 是**这个插件**的 context。inject 已经激活，所以表达式可以写 `ctx.tools` 这类服务名。
 
 **Tree carrier 例外。** 插件若带 `EntryGroup.key`（Group、Include），监听器原样返回 config，不 interpolate。它们的 config 是「别人的行」：entry 列表、patch 列表。那些行里的 `!!js` 属于**目标行自己的 fiber**，现在求值会用错 ctx，也会把表达式提前吃掉。
 
