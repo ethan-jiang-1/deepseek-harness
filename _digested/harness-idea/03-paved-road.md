@@ -50,7 +50,7 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 ## 机制四：默认正确，显式优于隐式
 
-- 在 `ctx.tools` 注册一个 tool：schema 自动进 prompt 组装、自动进 Code Mode 的 `ToolArgsMap`、自动有 UI fallback 卡片。什么都不用再碰。
+- 在 `ctx.tools` 注册一个 tool：schema 自动进 prompt 组装、自动进 PTC 模式的 `ToolArgsMap`、自动有 UI fallback 卡片。什么都不用再碰。
 - 换一个 provider：整面产品跟着变，Consumer 一行不改（seam 三角色的承诺）。
 - `resolve(request): Spec` 是显式步骤，没有埋在 `run()` 里的 `?? default`。
 - 没有 hardcoded tunables：部署参数都是 `Config` 字段，可从 `cordis.yml` 改。
@@ -66,7 +66,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 - required-on-read 在编译期拒绝未知事件类型；
 - 误配置在 load 时 fail loud；
 - 运行时 invariant 在请求发出时比对（见机制六）；
-- `cordis_mount` 的边界错误会指出违反的规则与可接受写法。
+- `cordis_define` / `cordis_run` 的边界错误会指出违反的规则与可接受写法。
 
 错误发生在源头、消息指明违反的规则。agent 不需要猜测「哪里错了」，只需要按错误消息修。每轮试错都有信息增量。
 
@@ -79,8 +79,8 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 这是 dsh 独有的、比「门禁」更狠的一层：
 
 - **invariant 只登记「独立观察会分叉」的运行时关系**：publish `./invariant` 仅在该包有可独立观察、会分叉的关系时成立；它检查有所有权的关系——权威事件流或可变数据，不检查 service 存在性、不检查插件元数据——「存在」不代表「关系成立」，断错了对象等于没断。空/忽略 reporter 判 fail（`verify-package-invariants` 强制，纪律见 [`packages/AGENTS.md`](../../packages/AGENTS.md)）。
-- **invariant 只在有独立可观察关系处断言**：无独立可观察关系的包省略 companion 并在 README 记录原因，空/忽略 reporter 判 fail（[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）。可执行化的正确形状是「只在有真关系处断言」，不是「处处有断言」——连「显式空断言」都被当作噪音。计数口径见 [`claims.json`](./claims.json) 的 N4–N6（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）。
-- **实例**：`dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致立刻 fail（非 loop 请求不检查）——它有真实的分叉关系，所以保留。
+- **「每个包都登记」的普遍制已被上游废除**：早期纪律是每个包必须带 companion，没有可观察关系就写带 `No runtime invariant:` 标记的空 companion——「absence 是显式结论，不是漏写」是当时被赞美的装置。`0.1.2-rc.1` 上游反转了这个决定：带标记的空 companion 全部删除，无独立关系的包改省略并写进 README 原因（[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）。对 digest 这是一条罕见的实证：连「显式空断言」都会被上游当噪音裁掉——可执行化的正确形状是「只在有真关系处断言」，不是「处处有断言」。计数口径见 [`claims.json`](./claims.json) 的 N4–N6（用 `git ls-tree` 在基线上重算，prose 不手写固定总数），`0.1.2-rc.1` → `0.1.5-rc.1` 的读数是：包总数 249 → 267（+18，0 删除）、publish `./invariant` **恒为 39**、省略数 210 → 228。这三个数要一起看：**本次新增的 18 个包无一登记 companion，publish 集合逐路径完全没变**，这是「只在有真关系处断言」的正面读数；反过来，本跨度并没有再发生一次批量废除——publish 不动是真实读数，不是口径掩盖（两个基线上那 39 个 companion 里都没有 `No runtime invariant:` 标记）。
+- **实例**：`dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致立刻 fail（非 loop 请求不检查）——它有真实的分叉关系，所以在这次废除中幸存。
 - **publish 由双层门把守**：`verify-package-invariants` 的结构门先用 AST 拒掉 `@generated` 标记、default export、空 install 函数和未使用的 failure reporter；结构门通过后，artifact 门把 manifest 声明的 `lib/` 产物放到 staging，在 plain Node 下导入编译产物并复验 Loader 形状——导入了未声明运行时 chunk 的 companion 在发布前就变红（[`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)）。
 
 「模型可见 ⟺ 已记录」如果只是文档里的劝告，一定会在某次重构中失效；它是运行时断言，所以它活着。门禁管「提交前」，invariant 管「运行时」——两条线都断，错误才可能漏出去。
@@ -115,11 +115,11 @@ dsh 把「正确」编码进系统的**形状**与**检查**：扩展点路由�
 - [`docs/architecture.md`](../../docs/architecture.md)（第 72、137 行；事件域与扩展表）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（tool 合同与最小 shape）
-- [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（运行时 invariant 实例）
-- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（省略非必要 companion 的裁定，现行权威）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24、30 行；现 :24 是「无独立关系即省略 companion 并在 README 记原因」、:30 是「publish 由 `verify-package-invariants` 机械枚举」）
+- [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（运行时 invariant 幸存实例）
+- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（`0.1.2-rc.1` 废除空 companion 的裁定，现行权威）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24、30 行；note 已被 `0.1.2-rc.1` 原地改写——现 :24 是「无独立关系即省略 companion 并在 README 记原因」、:30 是「publish 由 `verify-package-invariants` 机械枚举」，原「普遍 companion 制」表述只剩历史意义，`0.1.2-rc.1` 起被 2026-08-28 裁定取代）
 - [`../../.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（选门禁的判断被外置成 guidance）
-- [`../../docs/testing.md`](../../docs/testing.md)（第 35 行；coverage、snapshot 与元验证）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 10、35、37-41、53-55 行；coverage、元验证、真实入口与 snapshot 政策）
 - [`../../AGENTS.md`](../../AGENTS.md)（第 106、110、111、117 行；注册即效果、waterfall、model-visible、fail loud）
 - [`../../packages/AGENTS.md`](../../packages/AGENTS.md)（包级参与规则）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 控制权）

@@ -34,11 +34,11 @@ goal round N
   │
   ├─ 3. drive() 做六道检查（第 140-172 行）
   │      │
-  │      ├─ readyToDrive(state)？→ ctx.fiber.active、未 stopping、
+  │      ├─ readyToDrive(state)？→ ctx.fiber.state === FiberState.ACTIVE、未 stopping、
   │      │   agent 仍存活、agent status === idle、无 competing 消息
-  │      │   缺任一 → 直接 return 不做事
+  │      │   （第 103-109 行）缺任一 → 直接 return 不做事
   │      │
-  │      ├─ needsCheckpoint？→ 先刷持久化，确保上一轮写完
+  │      ├─ needsCheckpoint？→ 先刷持久化，确保上一轮写完（第 142-154 行）
   │      │
   │      ├─ attempt 未完成？→ （上一轮的 attempt 状态处理）
   │      │
@@ -67,6 +67,9 @@ goal round N
   │      ├─ send('next-turn', true)
   │      │
   │      └─ wakeDriver() → 创建新 activity → kick() 循环启动
+  │         （loop 侧在 `ctx.agents.withInitiator(agent, …)` 内运行整段 activity，
+  │          `packages/core/agent-loop/src/agent.ts:207`；driver 的调度任务本身则跑在
+  │          `withoutInitiator` 内，`packages/goal/goal-round-driver/src/index.ts:215`）
   │
   ├─ 6. turn() 开始新 turn（agent-loop/src/agent.ts:269）
   │      │
@@ -78,7 +81,7 @@ goal round N
   ├─ 7. goal-round-driver 的 pre-step 拦截（第 361-426 行）
   │      │
   │      ├─ 在消息列表中找到 source.kind === 'goal' 的那条
-  │      ├─ validReservation() 验证（第 346-359 行）：
+  │      ├─ validReservation() 验证（第 345-359 行）：
   │      │   ├─ state.attempt.phase === 'claimed'（刚被 claim 的）
   │      │   ├─ !attempt.stale（未被标记为过期）
   │      │   ├─ sameQueued（内容和 source 与预约完全一致）
@@ -102,9 +105,9 @@ goal round N
   │      ├─ 场景 B：模型调用 update_goal blocked → 进入 wrapup
   │      └─ 场景 C：模型没调 goal tool 直接 final message
   │
-  ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:292-332）
+  ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:313-325）
   │      │
-  │      ├─ completionAuthority() 检查（authority.ts:110-117）
+  │      ├─ completionAuthority() 检查（`packages/goal/tool-goal/src/authority.ts:110-117`）
   │      │   ├─ direct human input？→ 允许
   │      │   └─ goal round？→ 检查 isMatchingGoalRound
   │      │      → 当前 turn 中有带 correct goalId/revision/round 的 goal 消息
@@ -113,7 +116,7 @@ goal round N
   │      ├─ ctx.goals.complete() / block() 持久化 goal/change
   │      │
   │      └─ deferContext() 注入 <goal_complete> 或 <goal_blocked> wrapup
-  │         （wrapup.ts:17-39）
+  │         （`packages/goal/tool-goal/src/wrapup.ts:17-41`）
   │         → "The goal is marked complete and this autonomous run is ending.
   │            Write the closing message to the user now… Do not call any
   │            more tools in this run."
@@ -137,11 +140,11 @@ goal round N
 | 模型 `update_goal complete` | 模型 tool | `goal/change` operation='complete'，phase→complete | `drive()` 第 165 行检查 `phase !== 'active'` → return |
 | 模型 `update_goal blocked` | 模型 tool | `goal/change` operation='blocked'，phase→blocked | 同上 |
 | 达最大 round 上限 | driver 自动 | driver 第 166-172 行调用 `ctx.goals.block(agent, ref, { code: 'round-limit' })` | block 后不再续 |
-| `max-tokens` turn 结束 | agent-loop | driver 第 329-333 行监听 `turn/end` reason='max-tokens' → `disarm(state)` | disarm 后 `activation !== 'armed'` → 无 round |
+| `max-tokens` turn 结束 | agent-loop | driver 第 329-331 行监听 `turn/end` reason='max-tokens' → `disarm(state)` | disarm 后 `activation !== 'armed'` → 无 round |
 | 人插入新消息 | 用户 | driver 第 296-303 行 `agent/inbox/inserted` → `competingQueued = true` | `readyToDrive()` 第 108 行检查 `!state.competingQueued` → 不推进 |
 | 人 `/goal clear` | human 命令 | `goal/change` operation='clear'，goal 被清除 | `currentGoal()` 返回 undefined → return |
-| goal pause/disarm | 各种路径 | `goal/change` phase→paused 或 activation→disarmed | drive 第 165 行检查不通过 |
-| pre-step 验证失败 | driver 主动 | 第 400-410 行调用 `ctx.goals.block()` code='prompt-rejected' | block 后不再续 |
+| goal pause/disarm | 各种路径 | `goal/change` phase→paused 或 activation→disarmed | drive 第 165 行检查不通过；host pause 还会中止在跑的 turn（见下节） |
+| pre-step 验证失败 | driver 主动 | 第 400-409 行调用 `ctx.goals.block()` code='prompt-rejected' | block 后不再续 |
 
 ## 并发安全
 
@@ -164,9 +167,21 @@ while (state.requested && !state.stopping) {
 
 多种事件都能触发 `requestDrive`：`agent/status` idle、`goal/changed`、pre-step 验证失败后重新排程。但它们都走同一条串行队列。
 
+`requestDrive` 现在把整个 `while` 循环包进 `ctx.agents.withoutInitiator(...)`（第 215 行）：driver 的调度任务不属于任何 agent 的因果边界，所以 host 侧的 pause 判定（下一节）不会把这个后台任务误认成模型自己的 turn。
+
+## host pause 与 revision 栅栏
+
+`goal/changed` 监听器（第 283-294 行）现在解构 `change`，在一个事件里做三件事：
+
+1. 置 `state.needsCheckpoint = true` 并 `requestDrive(state)`——所有 mutation 的共同反应。
+2. 若 `change.operation === 'pause'` 且 agent 正在 `running`，且 `ctx.agents.currentInitiator() !== agent`（第 289-292 行），执行 `agent.cancel({ kind: 'user' }, { keepInbox: true })`。Web 按钮在 agent initiator 边界之外运行，所以 host 的 Pause 会**中止正在跑的 turn**；模型自己的 `update_goal pause` 在自身 turn 内运行（`currentInitiator() === agent`），正常跑完自己的 turn，不被中止。`keepInbox` 保留待处理输入。
+3. 其它 mutation 只做 checkpoint 标记与重新排程。
+
+idle 分支的 pause 竞态栅栏随之收紧：旧判据只要求 attempt 处于 `queued`/`claimed`/`cancelled` 且 goal 仍 active + armed；新判据额外要求 `attempt.goalId === goal.id && attempt.revision === goal.revision`（第 265-271 行）。resume 会 bump revision，所以「pause → 在被中止的 turn 收敛到 idle 之前立刻 resume」不会被过期 attempt 二次 pause。测试分别覆盖 host pause 中止（`packages/goal/goal-round-driver/tests/goal-round-driver.spec.ts:319-336`）、pause 后立即 resume（同文件 `:338-355`）、model pause 跑完自己的 turn（同文件 `:357-384`，断言 `turn/end` 含 `completed` 不含 `aborted`）。
+
 ## 持久化检查点
 
-每一轮开始前，driver 先等持久化写完（第 142-153 行）再发下一轮。这样可以保证：
+每一轮开始前，driver 先等持久化写完（第 142-154 行）再发下一轮。这样可以保证：
 
 - round 计数（`roundsStarted`）完全重建自 session log，不会漏 round 也不会计数超前
-- 但注意：崩溃重启后 phase 重建为 active，而 activation 不持久化、重启即 disarmed——driver 要等 human re-arm（`update_goal resume`）之后才会「从 round N 重来」（见 [`03-activity-vs-goal-boundaries.md`](./03-activity-vs-goal-boundaries.md) 与 [`figures/restart-rearm.svg`](./figures/restart-rearm.svg)）
+- 但注意：崩溃重启后 phase 重建为 active，而 activation 不持久化、重启即 disarmed——driver 要等 human re-arm 之后才会「从 round N 重来」（见 [`03-activity-vs-goal-boundaries.md`](./03-activity-vs-goal-boundaries.md) 与 [`figures/restart-rearm.svg`](./figures/restart-rearm.svg)）。re-arm 通道有两条：模型 `update_goal resume` 只对 `active·disarmed` 与 `blocked` 有效，若 goal 是 `paused` 则必须走 human 的 `/goal resume` 或 Web 恢复（`tool-goal/src/index.ts:279-286`）

@@ -76,7 +76,7 @@ quality-gates note 是仓库的第一方自我描述；本专题不把它当作�
 - **门禁（gates）**：`verify-export-jsdoc`、`verify-package-invariants`、`doc-typecheck`、`test:coverage`（per-file 100%）。规则不是劝告，是红灯。
 - **词汇**：[`docs/glossary.md`](../../docs/glossary.md) 规定一个概念一个词；文档标准规定「一个事实一个家」（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
 - **设计意图**：`为什么` 单独住在 Agent Notes——语料库规模见 [`claims.json`](./claims.json) 的 N1–N2（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）；被分类、双语、归档政策管辖。`docs/` 只写当前状态，读者不用从 git log 反推意图。
-- **负知识**：被拒方案住在 `rejected/`；归档 note 冻结且不当现行权威；package 的 `./invariant` 只在有独立可观察关系时存在（空 companion 判 fail，无关系即省略 + README 原因）；README 的 Known Limitations 被门禁检查。读者不只查到「怎么做」，也查到「什么不要做」。
+- **负知识**：被拒方案住在 `rejected/`；归档 note 冻结且不当现行权威；package 的 `./invariant` 只在有独立可观察关系时存在（`0.1.2-rc.1` 起空 companion 判 fail，无关系即省略 + README 原因）；README 的 Known Limitations 被门禁检查。读者不只查到「怎么做」，也查到「什么不要做」。
 
 ## 结论
 
@@ -85,7 +85,7 @@ harness 的职责 = 让「正确参与」不依赖参与者的背景知识。做
 ## 证据入口
 
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；因果原文）
-- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md)（第 10 行；框架层被搬进仓库的真实理由）
+- [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md)（已归档，历史快照；第 10 行；框架层被搬进仓库的真实理由。这条决定的现行 owner 是 [`vendor/README.md`](../../vendor/README.md) 的 manifest 与本地修改日志，不是这份冻结记录）
 - [`docs/architecture.md`](../../docs/architecture.md)（第 7、72、137 行；推荐用 agent 探索、事件域、扩展表）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md)（五条原语）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）

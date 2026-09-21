@@ -14,9 +14,9 @@ DSH 没有正面度量“理解程度”，而是把披露问题转成了三个�
 
 `docs/AGENTS.md` 的 Wordcount Budgets 给常驻层设了硬上限：
 
-> Targets: root `AGENTS.md` ≤ 1,600 words; `architecture.md` ≤ 1,800; subtree `AGENTS.md` ≤ 600, except `packages/AGENTS.md` ≤ 650 and this file ≤ 1,250; `packages/README.md` ≤ 600.
+> Targets: root `AGENTS.md` ≤ 1,950; `architecture.md` ≤ 2,400; subtree `AGENTS.md` ≤ 600, except `packages/AGENTS.md` ≤ 750 and this file ≤ 1,320; `packages/README.md` ≤ 994; …
 >
-> —— `docs/AGENTS.md:57`（基线 `528c682e…`）
+> —— `docs/AGENTS.md:57`（基线 `fb2c4b9e69…`）
 
 预算超了以后，处理顺序不是“写短一点”：
 
@@ -24,7 +24,7 @@ DSH 没有正面度量“理解程度”，而是把披露问题转成了三个�
 > 2. **Condense** content that belongs here but can be shorter.
 > 3. **Raise** the ceiling only when the words need the space; justify the manifest diff in the PR.
 >
-> —— `docs/AGENTS.md:53-55`（基线 `528c682e…`）
+> —— `docs/AGENTS.md:53-55`（基线 `fb2c4b9e69…`）
 
 这等于给渐进式披露定义了一个操作顺序：**先重新路由，再压缩，最后才扩预算。** “该披露多少”被替换成“这一层最多能放多少，放不下就必须归位”。
 
@@ -34,9 +34,9 @@ DSH 没有正面度量“理解程度”，而是把披露问题转成了三个�
 
 | 层 | 内容 | 加载时机 | 上限 |
 |---|---|---|---|
-| L1 常驻 | 根 `AGENTS.md` | 每个 agent session | 1600 words |
-| L2 区域入口 | `architecture.md`、子树 `AGENTS.md` | 进入对应区域 | 1800 / 600-650 words |
-| L3 按需合同 | package README、subsystems、cookbook | 定位到具体包/任务 | package README ≤ 600 words |
+| L1 常驻 | 根 `AGENTS.md` | 每个 agent session | 1950 words |
+| L2 区域入口 | `architecture.md`、子树 `AGENTS.md` | 进入对应区域 | 2400 / 600-750 words |
+| L3 按需合同 | package README、subsystems、cookbook | 定位到具体包/任务 | 无统一的字数预算：`packages/README.md` ≤ 994；单个 package README 由 Summary ≤ 100 words、Model Experience 与 limitations 三道门禁管 |
 | L4 穷举索引 | generated catalogs、cordis API、module graph | 查询时 | 无人工预算，但由生成器维护 |
 | L5 理由与流程 | Agent Notes、skills | 决策或执行时 | Agent Notes 不设总预算，但有归档/分类/格式门禁 |
 
@@ -70,4 +70,6 @@ DSH 做对的不是“写得循序渐进”，而是**把披露顺序编码成�
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 47-57 行：budget 与 relocate/condense/raise
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 75 行：verify-md-links
 - [`package.json`](../../package.json)：`verify-doc-budgets`、`verify-md-links`、`verify-tool-catalog` 等脚本
+- [`scripts/doc-budgets.manifest.json`](../../scripts/doc-budgets.manifest.json)：各常驻文档的实际 ceiling
+- [`scripts/verify-package-readme-summaries.ts`](../../scripts/verify-package-readme-summaries.ts)：package README Summary 的 100 词上限
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 15-33 行：tier taxonomy

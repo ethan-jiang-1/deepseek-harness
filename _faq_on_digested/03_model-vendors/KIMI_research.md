@@ -50,7 +50,7 @@ llm-pi-ai:
 
 这是对已有 provider catalog 的收窄，不会改变对应 route 的 endpoint、协议、工具兼容设置或模型能力。声明 `models` 会替换该 route 的完整目录，所以每个要在 Web 中保留的模型都必须列出；若希望直接使用本机 catalog 的全部模型，可完全省略 `models`。
 
-不要把 `moonshotai` / `moonshotai-cn` 改为 `kimi-coding` 的 endpoint 或协议。前两者是 OpenAI Chat Completions，后者是 Anthropic Messages；`kimi-coding` 的订阅 OAuth 虽由 pi-ai 提供，但当前 DSH 的 `llm-pi-ai` 不执行 OAuth 登录或刷新，纯配置接入应使用 Kimi Coding API key。
+不要把 `moonshotai` / `moonshotai-cn` 改为 `kimi-coding` 的 endpoint 或协议。前两者是 OpenAI Chat Completions，后者是 Anthropic Messages；`kimi-coding` 的订阅 OAuth 可以经 harness 的授权 seam 登录——pi-ai 提供 login 的 provider 走 OAuth 或交互式 key（key 在 pi-ai 自己的登录提示里输入，不落在 DSH 配置里），凭据存到 `llm-pi-ai/<provider id>` 并在跨进程锁下自动刷新（`packages/llm/llm-pi-ai/README.md:12`、`:93`，实现见 `src/login.ts`、`src/auth.ts`）。`apiKeyEnv` 仍是并列可用的接入路径，纯配置接入选它。
 
 ## 模型与 effort
 

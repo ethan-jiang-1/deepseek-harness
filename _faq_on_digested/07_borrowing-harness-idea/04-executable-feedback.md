@@ -25,7 +25,7 @@
 
 一个只读的规则写得再漂亮也没用，关键是**它接的检查真的能拦人**。DSH 要求新检查经过 negative control：
 
-> A guard only guards if the regression actually fails it. introduce the regression, watch red, revert.
+> A guard only guards if the regression fails it. … and prove it: introduce the regression, watch red, revert.
 
 同一原则也要求 e2e 「verify the world, not the self-report」——测试重新读文件、跑命令、看持久状态，而不是相信 agent 声称自己完成了任务。这两条几乎零成本、完全可迁移，是「乱发挥」最早被抓住的地方。
 
@@ -35,7 +35,7 @@
 
 ## invariant 检查「关系」，不检查「存在」
 
-一个有效的 runtime invariant 比较 package 拥有的权威事件流或可变数据关系（例如 `model-visible ⟺ logged`：模型可见内容必须能被 session log 重建）。DSH 允许「说明理由的空 invariant companion」，因为**「这里没有可观察关系」和「漏了检查」是两种不同状态**——为满足形式而断言 service 存在，只会制造假安全感。
+一个有效的 runtime invariant 比较 package 拥有的权威事件流或可变数据关系（例如 `model-visible ⟺ logged`：模型可见内容必须能被 session log 重建）。没有这类关系时 DSH **不发布** `./invariant`，而是在包 README 写明该包特有的省略原因——因为**「这里没有可观察关系」和「漏了检查」是两种不同状态**，前者用「省略 + README 理由」表达而不是留一个空 companion；空 installer 被 `verify-package-invariants` 拒绝；而「为满足形式去断言 service 存在、插件元数据、effect 或固定例子」是 `AGENTS.md` 的成文纪律（`docs/subsystems/invariants.md` 称之为 convention），门禁本身不检查这四类（`packages/AGENTS.md:19`、[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）。
 
 ## 可迁移要点
 

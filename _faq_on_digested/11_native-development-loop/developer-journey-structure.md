@@ -1,12 +1,12 @@
 # 开发结构 · 总览
 
-DSH 上一切皆插件（AGENTS.md: "everything is a plugin"）。插件分两个不同的品种：
+DSH 上一切皆插件（AGENTS.md 开篇 "all-plugin Cordis agent harness"；"everything is a plugin" 这一措辞现见 [`docs/i18n/style-samples.md:9`](../../docs/i18n/style-samples.md)）。插件分两个不同的品种：
 
 | | **传统代码插件** | **智能体工作流插件** |
 |---|---|---|
 | 本质 | 用 TypeScript 扩展 DSH 运行时 | 用编排或文档定义 agent 行为 |
 | 插件形式 | Cordis plugin（`name/inject/apply + defineTool`） | 脚本 / skill / Note / 覆层 |
-| 存放位置 | `packages/<group>/<pkg>/` | `.agents/workflows/` / `.agents/skills/` / `.agents/notes/` |
+| 存放位置 | `packages/<group>/<pkg>/` | 任意路径的 `.js`（`workflow` 工具的 `script` 参数直接传入，仓库没有约定的自动发现目录） / `.agents/skills/` / `.agents/notes/` |
 | 是否需打包 | ✅ 是（TypeScript → JS） | ❌ 不需要 |
 | 验证方式 | `pnpm run test -- --run <pkg>` | 真实模型调用 |
 

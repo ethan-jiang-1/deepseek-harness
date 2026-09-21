@@ -6,7 +6,7 @@
 
 > Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects.
 >
-> — DSH [`Mechanical quality gates over prose guidelines` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/notes/implemented/process/2026-06-11-quality-gates.md)。这段决定说明规则怎样从文字进入本地与 CI 的可执行路径。
+> — DSH [`Mechanical quality gates over prose guidelines` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.agents/notes/implemented/process/2026-06-11-quality-gates.md)。这段决定说明规则怎样从文字进入本地与 CI 的可执行路径。
 
 ![错误从编译期到语义评审逐层被发现](./figures/feedback-layers.svg)
 
@@ -27,13 +27,13 @@
 
 一个有效 invariant（不变量检查）比较 package 拥有的权威事件流或可变数据关系。例如 model-visible means logged（模型可见内容必须被记录）由 agent-loop invariant 重建请求并和 session log 派生结果比较。
 
-并非每个包都有有意义的运行时关系。DSH 允许说明理由的空 invariant companion；这比为了满足形式而断言 service 存在或固定纯例子更诚实。缺少检查和明确判定“这里没有可观察关系”是两种不同状态。
+并非每个包都有有意义的运行时关系。DSH 在这种情况下不发布 `./invariant`，而是在 package README 记录原因；为了满足形式而留下空 installer，或断言 service 存在、plugin metadata、effect 和固定例子，都违反 `AGENTS.md` 的成文纪律（`docs/subsystems/invariants.md` 称其为 convention）；门禁 `verify-package-invariants` 拒的是空/忽略 reporter 与 publish/omit 不一致这类机械可判的形态。缺少检查和明确判定“这里没有可观察关系”是两种不同状态。
 
 ## 负例证明检查真的会失败
 
-> A guard only guards if the regression actually fails it. [...] introduce the regression, watch red, revert.
+> A guard only guards if the regression fails it. [...] introduce the regression, watch red, revert.
 >
-> — DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/testing.md#test-the-real-entry-path)。这段规则要求新检查经过 negative control（负例控制），避免一个永远为绿的脚本被误认为保护。
+> — DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/testing.md#test-the-real-entry-path)。这段规则要求新检查经过 negative control（负例控制），避免一个永远为绿的脚本被误认为保护。
 
 同一原则也要求 e2e “verify the world, not the self-report”：测试重新读取文件、运行命令或观察持久状态，而不相信 agent 声称自己完成了任务。
 
@@ -57,9 +57,9 @@ Skill 帮 agent 决定该查什么和跑什么；gate 对确定条件给出红�
 
 ## 证据入口
 
-- DSH [`quality-gates Agent Note`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：机械规则、本地 hooks 和 CI 穷举路径的决策理由。
-- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/docs/testing.md)：test tiers、真实入口、negative control 和 snapshot 义务。
-- DSH [`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/scripts/run-gates.ts)：仓库检查逻辑的聚合入口。
-- DSH [`.github/workflows/ci.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.github/workflows/ci.yml)：PR CI 的触发、job、runner 和依赖关系。
-- DSH [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-pre-push-checks/SKILL.md)：按实际差异选择本地证据的程序化判断。
-- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/a66e4702047846cdaa10c66c9d3df3951f5ea70d/.agents/skills/dsh-code-review/SKILL.md)：自动检查之外的 correctness、lifecycle、security 与 semantic review。
+- DSH [`quality-gates Agent Note`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：机械规则、本地 hooks 和 CI 穷举路径的决策理由。
+- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/testing.md)：test tiers、真实入口、negative control 和 snapshot 义务。
+- DSH [`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/scripts/run-gates.ts)：仓库检查逻辑的聚合入口。
+- DSH [`.github/workflows/ci.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.github/workflows/ci.yml)：PR CI 的触发、job、runner 和依赖关系。
+- DSH [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.agents/skills/dsh-pre-push-checks/SKILL.md)：按实际差异选择本地证据的程序化判断。
+- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.agents/skills/dsh-code-review/SKILL.md)：自动检查之外的 correctness、lifecycle、security 与 semantic review。

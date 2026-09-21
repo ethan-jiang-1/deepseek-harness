@@ -12,12 +12,12 @@
   <rect x="60" y="40" width="680" height="70" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
   <text x="80" y="78" font-size="15" font-weight="bold" fill="#1677ff">step</text>
   <text x="130" y="78" font-size="13" fill="#333">一次模型请求 + 它所调用的工具</text>
-  <text x="130" y="96" font-size="12" fill="#666">模型不再调工具 / max-tokens → step/end（不决定任务结束）</text>
+  <text x="130" y="96" font-size="12" fill="#666">模型不再调工具 / max-tokens / error → step/end（不决定任务结束）</text>
 
   <rect x="60" y="130" width="680" height="70" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
   <text x="80" y="168" font-size="15" font-weight="bold" fill="#52c41a">turn</text>
   <text x="130" y="168" font-size="13" fill="#333">一个输入被抽干，可含多个 step</text>
-  <text x="130" y="186" font-size="12" fill="#666">pre-step 拒绝 / turn-stopping 无人 steer → turn/end（不决定任务结束）</text>
+  <text x="130" y="186" font-size="12" fill="#666">pre-step 拒绝 / 工具结果 concludesTurn / agent/turn-stopping 无人 steer → turn/end（不决定任务结束）</text>
 
   <rect x="60" y="220" width="680" height="70" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
   <text x="80" y="258" font-size="15" font-weight="bold" fill="#fa8c16">driver activity</text>

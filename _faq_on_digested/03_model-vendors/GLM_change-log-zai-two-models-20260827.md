@@ -2,11 +2,11 @@
 
 ## 结论
 
-当前 `npx @deepseek-ai/dsh@0.1.0-rc.7 web` 的 Z.ai Coding route 只提供两个 1M 上下文模型：`zai / glm-5.3` 与 `zai / glm-5.3-flash`，其余 GLM 型号已从目录中移除。生效文件是 **`~/.dsh/profiles/web/cordis.patch.yml`**（profile 补丁层），不是 `~/.dsh/settings.yaml`；两份文件的 zai 段已改成完全一致以避免混淆。会话默认模型同时由用户改为 `{ provider: zai, model: glm-5.3-flash, reasoningEffort: medium }`。
+当前 `npx @deepseek-ai/dsh@0.1.0-rc.7 web` 的 Z.ai Coding route 只提供两个 1M 上下文模型：`zai / glm-5.3` 与 `zai / glm-5.3-flash`，其余 GLM 型号已从目录中移除。两层都生效：**`~/.dsh/profiles/web/cordis.patch.yml`**（profile 补丁层，也是 `--dump-config` 唯一可见的一层）与 `~/.dsh/settings.yaml` 的用户 `llm-pi-ai:` 段按 provider 合并，下个请求即生效；两份文件的 zai 段已改成完全一致以避免混淆。会话默认模型同时由用户改为 `{ provider: zai, model: glm-5.3-flash, reasoningEffort: medium }`。
 
 ## 关键勘误：哪一层说了算
 
-`dsh --profile web --dump-config` 显示组合后的 `llm-pi-ai.providers` 只包含补丁层声明的 micu、zai、moonshotai-cn；用户层 `~/.dsh/settings.yaml` 里独有的 openrouter 根本没进 web 组合。此前 [DSH_web-multi-vendor-configuration.md](./DSH_web-multi-vendor-configuration.md) 把 `settings.yaml` 描述为生效位置，对 `web` profile 并不完整：loader 补丁条目按 id 覆盖，`providers.<id>.models` 这类数组由靠后的层整体替换。改配置时先想清楚目标 profile 读哪层，再用 dump-config 验证；本次两个文件的修改都有同后缀 `.bak-20260827-*-before-trim-zai-two-models` 备份（权限 0600）。
+`dsh --profile web --dump-config` 只组合补丁层，因此输出里的 `llm-pi-ai.providers` 只包含补丁层声明的 micu、zai、moonshotai-cn；用户层 `~/.dsh/settings.yaml` 里独有的 openrouter 不在其中，但仍由设置 seam 按 provider 合并、下个请求生效。此前 [DSH_web-multi-vendor-configuration.md](./DSH_web-multi-vendor-configuration.md) 把 `settings.yaml` 描述为唯一生效位置，对 `web` profile 并不完整：loader 补丁条目按 id 覆盖，`providers.<id>.models` 这类数组由靠后的层整体替换。改配置时两层都要对齐，dump-config 只能验证补丁层；本次两个文件的修改都有同后缀 `.bak-20260827-*-before-trim-zai-two-models` 备份（权限 0600）。
 
 ## `models` 字段语义与三个坑（来自 dsh-llm-pi-ai lib/index.js）
 
@@ -61,7 +61,7 @@ flash 曾长期不在任何 pi-ai 目录里，但端点真实存在：`GET /api/
 ## 复现与恢复流程
 
 1. 改前备份：`cp <file> <file>.bak-$(date +%Y%m%d-%H%M%S)-before-<原因>` 并 `chmod 0600`。
-2. 只改 `~/.dsh/profiles/web/cordis.patch.yml`（要让其他 profile 一致就同步对应文件）；`settings.yaml` 仅作镜像保持人工可读。
+2. 改 `~/.dsh/profiles/web/cordis.patch.yml`（要让其他 profile 一致就同步对应文件），并同步 `settings.yaml` 的同一段；两层都生效，dump-config 只显示补丁层。
 3. 校验加载：`DSH_HOME=~/.dsh dsh --profile web --dump-config`（非交互，结构或 schema 错误会 fail loud）。
 4. 校验组合结果：dump 输出里 grep 目标 id 数量。
 5. 协议级实测：用 `$ZAI_API_KEY` 直接 curl `/chat/completions`（`thinking` 与 `reasoning_effort` 字段），不启动 UI。

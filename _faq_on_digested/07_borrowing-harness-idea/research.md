@@ -2,7 +2,7 @@
 
 ## 说明
 
-本 FAQ 的证据主体是两份本地研究语料，都钉在与 `_digested/` 同一基线 DSH `dsh-v0.1.2-rc.1`（commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`）上。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文。当前 checkout（HEAD `61c31ac`）已领先该基线，但本 FAQ 引用的全部 DSH 文件在 `528c682e..HEAD` 之间均无变化（2026-08 核对）；上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。 **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
+本 FAQ 的证据主体是两份本地研究语料，现已随 `_digested/` 同步到基线 DSH `dsh-v0.1.5-rc.2`（commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`，见 [`_digested/00-index.md`](../../_digested/00-index.md) 与 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`）。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
 
 ## 1. 仓库以 coding agent 为主、机械门禁优于 prose 约定
 
@@ -48,7 +48,7 @@
 
 ## 8. 负例控制：门禁必须先被证明会失败
 
-> A guard only guards if the regression actually fails it. introduce the regression, watch red, revert.
+> A guard only guards if the regression fails it. … and prove it: introduce the regression, watch red, revert.
 
 来源：`docs/testing.md`（test the real entry path 一节；语料 `development-harness/05-executable-feedback.md` 引用）
 
@@ -60,7 +60,7 @@
 
 ## 10. 最终配置树的查询入口
 
-> To see the tree your machine actually boots: `dsh --profile web --dump-config`
+> To see the tree your machine boots: `dsh --profile web --dump-config`
 
 来源：`docs/architecture.md`（profiles and bundles 一节；语料 `development-harness/06-runtime-inspection.md` 引用）
 
@@ -78,17 +78,17 @@
 
 ## 13. CLAUDE.md 是 symlink，编辑真实文件
 
-> `CLAUDE.md` symlinks `AGENTS.md` at root, `packages/`, and `examples/`; edit the real file.
+> `CLAUDE.md` symlinks `AGENTS.md` at root and `packages/`; edit the real file.
 
 来源：根 `AGENTS.md`（Editing these instructions 一节）
 
-仓库实际有 5 处 `CLAUDE.md` symlink（root、`packages/`、`examples/`、`vendor/`、`.agents/notes/implemented/`），均指向同目录的 `AGENTS.md`。
+仓库实际有 4 处 `CLAUDE.md` symlink（root、`packages/`、`vendor/`、`.agents/notes/implemented/`），均指向同目录的 `AGENTS.md`；`examples/` 已在上游删除，不再是受跟踪目录。
 
 ## 14. tier taxonomy：root / subtree AGENTS.md 与 package README 的分工
 
 > Root `AGENTS.md` — Standing orders: rules an agent needs in context in every session, one to three lines each, linking its home.
 
-> Subtree `AGENTS.md` (`packages/`, `examples/`, `docs/`, `.agents/notes/`) — Orders specific to that subtree. Does NOT belong there: repo-wide rules the root file already carries.
+> Subtree `AGENTS.md` (`packages/`, `docs/`, `.agents/notes/`) — Orders specific to that subtree. Does NOT belong there: repo-wide rules the root file already carries.
 
 > Package README — The per-package contract: config, semantics, limitations, extension points, and Model Experience.
 
@@ -96,7 +96,7 @@
 
 来源：`docs/AGENTS.md`（The tier taxonomy 表）
 
-字数预算：root `AGENTS.md` ≤ 1,600 词；subtree `AGENTS.md` ≤ 600 词（`packages/AGENTS.md` ≤ 650）；`packages/README.md` ≤ 600 词，由 `verify-doc-budgets` 检查。来源：`docs/AGENTS.md`（Wordcount Budgets 一节）
+字数预算：root `AGENTS.md` ≤ 1,950 词；subtree `AGENTS.md` ≤ 600 词（`packages/AGENTS.md` ≤ 750、`docs/AGENTS.md` ≤ 1,320）；`packages/README.md` ≤ 994 词；`verify-doc-budgets` 只校验 `scripts/doc-budgets.manifest.json` 里逐文件列出的 8 个上限（root `AGENTS.md` 1,950、`docs/AGENTS.md` 1,320、`docs/architecture.md` 2,400、`docs/cordis-primer.md` 600、`docs/defensive-patterns.md` 550、`docs/testing.md` 1,350、`packages/AGENTS.md` 750、`packages/README.md` 994），"subtree ≤ 600" 这条通则本身只在 `docs/AGENTS.md` 里，没有对应的机器条目。来源：`docs/AGENTS.md`（Wordcount Budgets 一节）
 
 ## 15. 根 AGENTS.md 的 Repository layout 用 link 串起 README
 
@@ -124,15 +124,15 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 ## 19. agent-instructions：有界加载、去重、touch-driven
 
-> Rendering preserves the most specific instruction files first. It drops whole broader files before truncating the most-specific file and emits a visible budget notice… The rendered bytes never exceed `maxBytes`.
+> Rendering keeps the most specific files first: it drops whole broader files before truncating the most-specific file, and emits a visible `Workspace instruction budget ...` notice naming the omitted and truncated paths. The rendered bytes never exceed `maxBytes`.
 
 > Instruction content is bounded, not summarized — over-budget broad files are omitted and the most-specific file may be truncated; the plugin never asks a model to compress instruction prose.
 
-来源：`packages/context/agent-instructions/README.md`（Budgeting / Known Limitations 一节）
+来源：`packages/context/agent-instructions/README.md`（Observing the budget / Known Limitations and Deferred Work 一节）
 
 ## 20. compaction：压力/溢出触发，保留 tool-call/result 配对
 
-> Pressure compaction runs at serial `agent/pre-step` before request derivation. Once pressure or canonical overflow qualifies, compaction-basic invokes optional `ctx.toolResultPruner` before range selection, remeasures through `ctx.tokenMeter`, and can advance the surface without a summary. … Region boundaries preserve tool-call/result pairing but not whole turns.
+> Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. Once pressure or canonical overflow qualifies, compaction-basic invokes optional `ctx.toolResultPruner` before range selection, remeasures through `ctx.tokenMeter`, and can advance the surface without a summary. … Region boundaries preserve tool-call/result pairing but not whole turns.
 
 来源：`docs/subsystems/compaction.md`（The service 一节）
 
@@ -140,7 +140,7 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 > The shared driver sends the task verbatim as the child's user message … Spawn supplies no history; fork supplies its balanced seed.
 
-来源：`packages/subagent/subagent-in-process-driver/README.md`（delegated policy 一节）
+来源：`packages/subagent/subagent-in-process-driver/README.md`（Model Experience / Child-agent request 一节）
 
 ## 已核对的相关消化材料
 

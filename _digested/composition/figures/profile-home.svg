@@ -15,10 +15,10 @@
   <text x="80" y="222" font-size="12" fill="#c2410c">web/                     模板，首次使用自动初始化</text>
   <text x="80" y="242" font-size="12" fill="#c2410c">headless/                一次性 runner，无 server</text>
   <text x="80" y="262" font-size="12" fill="#c2410c">&lt;custom&gt;/              必须先 initProfile，否则失败</text>
-  <text x="60" y="294" font-size="12" fill="#9a3412">profiles/node_modules/   扁平 symlink，给裸包名解析</text>
+  <text x="60" y="294" font-size="12" fill="#9a3412">profiles/node_modules/   symlink 解析裸包名；打包时是 ESM proxy</text>
   <text x="60" y="330" font-size="11" fill="#7c2d12">项目目录的 .env 高于 home 的 .env</text>
   <text x="60" y="348" font-size="11" fill="#7c2d12">两者都低于进程继承来的环境变量</text>
-  <text x="60" y="366" font-size="11" fill="#7c2d12">bootstrap-only 变量不允许来自文件</text>
+  <text x="60" y="366" font-size="11" fill="#7c2d12">bootstrap-only 变量不允许来自项目 .env（home .env 例外放行四个代理名）</text>
 
   <rect x="500" y="68" width="420" height="320" rx="10" fill="#dcfce7" stroke="#86efac"/>
   <text x="710" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">profiles/web/</text>

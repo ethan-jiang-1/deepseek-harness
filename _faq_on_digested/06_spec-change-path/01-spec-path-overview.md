@@ -17,7 +17,7 @@ DSH 的修改 spec 不是单文件，而是按阶段流动。这是**主路径�
 
 | 阶段 | home | 适用边界 / 约束 |
 |---|---|---|
-| 意图/验收 | `.github/ISSUE_TEMPLATE/feature.md`、`bug.md`、`task.md` | 模板入口；非 Draft 人类 PR 进入 review 后由 issue policy 强制引用 Issue |
+| 意图与可观察行为 | `.github/ISSUE_TEMPLATE/feature.md`、`bug.md`、`task.md` | 模板入口（0.1.5 起只有 Bug / Feature / Task）；非 Draft 人类 PR 进入 review 后由 issue policy 强制引用 Issue |
 | 设计决策 | `.agents/notes/proposed/` | 重大未来工作；已做出的决定可直接进 `implemented/` |
 | 实施计划 | Plan Mode、plan review | 可选会话模式；批准才经 `exit_plan_mode` 退出 |
 | 实现 | `packages/`、`apps/`、`vendor/`、`python/` 等 | 与合同/证据/note 同一变更 |
@@ -71,7 +71,7 @@ Issue 的家是 .github；
 
 - [`.github/ISSUE_TEMPLATE/feature.md`](../../.github/ISSUE_TEMPLATE/feature.md)
 - [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 12、46、80-121 行
-- [`.github/issue-management/policy.mjs`](../../.github/issue-management/policy.mjs) 第 162-170、343 行
+- [`.github/issue-management/policy.mjs`](../../.github/issue-management/policy.mjs) 第 64-77、267 行
 - [`docs/subsystems/plan.md`](../../docs/subsystems/plan.md) 第 5、33 行
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 38、42 行
-- [`docs/testing.md`](../../docs/testing.md) 第 27-49 行
+- [`docs/testing.md`](../../docs/testing.md) 第 27-55 行

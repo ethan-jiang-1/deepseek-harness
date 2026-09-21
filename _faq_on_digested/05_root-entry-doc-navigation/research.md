@@ -2,59 +2,75 @@
 
 ## 1. agent-instructions：入口链被注入，不是被主动读
 
-> Per-session workspace instruction loading for `AGENTS.md`-compatible files. The plugin injects the initial user-global and project instruction chain into durable history, then discovers nested files and reports later changes or removals after successful filesystem tool calls.
+> `dsh-agent-instructions` gives agents workspace guidance from user-global and project-level `AGENTS.md`-compatible files. It loads the applicable chain for the first request. It does not watch external edits continuously: successful filesystem operations discover newly relevant nested files and make later changes or removals visible, while session resume reconciles the baseline.
 
-来源：`packages/context/agent-instructions/README.md:5`（基线 `528c682e…`）
+来源：`packages/context/agent-instructions/README.md:12`（基线 `fb2c4b9e69…`）
 
 ## 2. baseline 注入的时机与顺序
 
-> The first eligible `agent/pre-step` of each live session composes the baseline. … The loader reads `$DSH_HOME/AGENTS.md` followed by, in each directory from the project root to `agent.session.header.cwd`, every existing base candidate and then every existing local-overlay candidate.
+> At the first eligible `agent/pre-step` of a session, the plugin composes the baseline and folds it into the entering batch right after the claimed messages.
 
-来源：`packages/context/agent-instructions/README.md:9`
+来源：`packages/context/agent-instructions/README.md:102`（基线 `fb2c4b9e69…`）
+
+> The first request includes one durable baseline message with the user-global `$DSH_HOME/AGENTS.md` followed by the project chain — every existing candidate file from the project root down to the session working directory, in broad-to-specific order.
+
+来源：`packages/context/agent-instructions/README.md:32`（基线 `fb2c4b9e69…`）
 
 ## 3. touch-driven：触达更深目录才注入 nested
 
-> The plugin also observes immutable `tools/result` outcomes for successful first-party `read`, `write`, and `edit` calls. Each accepted touch checks newly reached descendant scopes and every previously loaded scope.
+> After a successful `read`, `write`, or `edit` call reaches a deeper directory, the next request includes the newly applicable instruction file; a changed file replaces its content, and a file that disappears or duplicates an earlier candidate produces a removal notice.
 
-来源：`packages/context/agent-instructions/README.md:11`
+来源：`packages/context/agent-instructions/README.md:32`（基线 `fb2c4b9e69…`）
+
+> Successful first-party `read`, `write`, and `edit` calls contribute touches that bubble up through parent execution tokens; once the enclosing step is durable, a projection reconciles the visible session state against the inbox and queues additions, replacements, or removals.
+
+来源：`packages/context/agent-instructions/README.md:102`（基线 `fb2c4b9e69…`）
 
 ## 4. 注入的模型可见形状
 
-> Baseline instructions are durable user-role messages framed with the familiar system-reminder pattern … Instructions from: AGENTS.md …
+> The plugin owns the complete `<system-reminder>` framing and every injected message reaches the model verbatim.
 
-来源：`packages/context/agent-instructions/README.md:17-31`
+来源：`packages/context/agent-instructions/README.md:86`（基线 `fb2c4b9e69…`）
+
+> The following workspace instructions may be relevant to your work. Use them as guidance when applicable. More specific instructions take precedence over broader ones. They do not override system, developer, or direct user instructions.
+
+来源：`packages/context/agent-instructions/README.md:135-147`（Baseline instruction template）（基线 `fb2c4b9e69…`）
 
 ## 5. 预算与去重
 
-> `maxBytes` is required so each deployment makes its prompt-budget choice explicitly.
+> Only `maxBytes` is required — it caps the complete rendered baseline so each deployment chooses its prompt budget explicitly.
 
-来源：`packages/context/agent-instructions/README.md:70`
+来源：`packages/context/agent-instructions/README.md:36`（基线 `fb2c4b9e69…`）
 
-> Rendering preserves the most specific instruction files first. It drops whole broader files before truncating the most-specific file and emits a visible `Workspace instruction budget …` notice… The rendered bytes never exceed `maxBytes`.
+> Rendering keeps the most specific files first: it drops whole broader files before truncating the most-specific file, and emits a visible `Workspace instruction budget ...` notice naming the omitted and truncated paths. The rendered bytes never exceed `maxBytes`.
 
-来源：`packages/context/agent-instructions/README.md:76`
+来源：`packages/context/agent-instructions/README.md:72`（基线 `fb2c4b9e69…`）
 
-> An unchanged path and SHA-1 content digest is not injected again.
+> An unchanged path with an unchanged digest is never injected again.
 
-来源：`packages/context/agent-instructions/README.md:53`
+来源：`packages/context/agent-instructions/README.md:102`（基线 `fb2c4b9e69…`）
 
-> There is no file watcher, so an on-disk change becomes visible at the next successful `read`, `write`, or `edit` touch…
+> Sibling files whose content matches after trimming render once, so a `CLAUDE.md` that duplicates its `AGENTS.md` is not repeated.
 
-来源：`packages/context/agent-instructions/README.md:55`
+来源：`packages/context/agent-instructions/README.md:32`（基线 `fb2c4b9e69…`）
+
+> **Refresh is touch-driven** — there is no watcher; external edits become visible on the next successful first-party `read`, `write`, or `edit`, when resume reconciles a visible baseline, or when an entering pre-step restores a shadowed baseline.
+
+来源：`packages/context/agent-instructions/README.md:215`（基线 `fb2c4b9e69…`）
 
 ## 6. 导航工具把自己的纪律写进提示词
 
 > Use the read tool — not shell commands like cat — to inspect text files. Results include line numbers. Use offset and limit to continue reading large files.
 
-来源：`packages/fs/tool-fs/src/read.ts:72`
+来源：`packages/fs/tool-fs/src/read.ts:74`
 
 > Use the grep tool — not shell grep or rg — to search file contents. Use read on a matched file when you need surrounding context.
 
-来源：`packages/fs/tool-fs-search/src/grep.ts:278`
+来源：`packages/fs/tool-fs-search/src/grep.ts:280-281`
 
 > Use the glob tool — not shell find — to discover files by path pattern. …
 
-来源：`packages/fs/tool-fs-search/src/glob.ts:303`
+来源：`packages/fs/tool-fs-search/src/glob.ts:305-306`
 
 ## 7. skill：摘要先给，正文按需、不缓存
 
@@ -72,7 +88,7 @@
 
 ## 8. 回收：度量 + compaction
 
-> Pressure compaction runs at serial `agent/pre-step` before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns.
+> Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns, allowing early closed steps of one oversized turn to compact.
 
 来源：`docs/subsystems/compaction.md:86`
 
@@ -82,9 +98,9 @@
 
 ## 9. README 是被维护出来的
 
-> A package's README and JSDoc are part of the change: altered behavior (config keys, defaults, error codes, wire fields) updates them in the same commit.
+> Update package README and JSDoc contracts in the same commit as behavior, and verify them against code with dsh-prose-standard.
 
-来源：`packages/AGENTS.md:25`
+来源：`packages/AGENTS.md:26`
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 

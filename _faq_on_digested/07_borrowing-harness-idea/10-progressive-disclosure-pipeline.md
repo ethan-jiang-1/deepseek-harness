@@ -20,7 +20,7 @@
 
 - **`agent-instructions`**：把 `AGENTS.md`/`CLAUDE.md` 链注入历史。关键是它的加载是 **touch-driven** 的——首次注入 baseline，之后只在成功的 `read`/`write`/`edit` 触达更深目录时才注入 nested 指令；`maxBytes` 限制整条链、`maxSourceBytes` 限制单文件；同目录里 `CLAUDE.md` 与 `AGENTS.md` 内容相同就**只渲染一次**；digest 未变化的文件**不重复注入**。
 
-  > Rendering preserves the most specific instruction files first. It drops whole broader files before truncating the most-specific file and emits a visible budget notice… The rendered bytes never exceed `maxBytes`.
+  > Rendering keeps the most specific files first: it drops whole broader files before truncating the most-specific file, and emits a visible `Workspace instruction budget ...` notice naming the omitted and truncated paths. The rendered bytes never exceed `maxBytes`.
 
   这一条是「AGENTS.md 骨架」（09 的会话态）在运行时的真实实现：文件层面「合适个数」，运行时层面「触达才加载 + 有预算 + 去重」（机制见 [`05_root-entry-doc-navigation/01-runtime-injection.md`](../05_root-entry-doc-navigation/01-runtime-injection.md)）。
 
@@ -59,7 +59,7 @@ skill 与 tool 的「摘要 vs 正文」也在这层：
 - remeasure 后，若仍需压缩，把选定范围替换为一个 summary；
 - **region 边界保留 tool-call/result 配对**（不拆散一个工具的调用与结果）。
 
-  > Pressure compaction runs at serial `agent/pre-step` before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns.
+  > Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns.
 
 这层的意义：**披露不是单向的。** 上下文有预算，超了会被压缩/替换，而不是无限增长或直接报错死掉。
 
@@ -99,6 +99,6 @@ skill 与 tool 的「摘要 vs 正文」也在这层：
 - [`../../docs/subsystems/compaction.md`](../../docs/subsystems/compaction.md)：pressure/overflow 触发、tool-result pruning、tool-call/result 配对、token meter。
 - [`../../docs/subsystems/token-meter.md`](../../docs/subsystems/token-meter.md)：`ctx.tokenMeter` 的估算与回放。
 - [`../../packages/context/agent-instructions/README.md`](../../packages/context/agent-instructions/README.md)：touch-driven 加载、`maxBytes`/`maxSourceBytes`、per-directory dedup、digest 抑制。
-- [`../../packages/context/README.md`](../../packages/context/README.md)：五个 context 插件的角色与 opt-in。
+- [`../../packages/context/README.md`](../../packages/context/README.md)：六个 context 插件的角色与 opt-in（`agent-instructions` 随 `dsh-base` 默认装载，其余 opt-in）。
 - [`../../docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)：`ctx.tools.restrict()` 的 ToolSearch / progressive disclosure 定位。
 - [`../../packages/subagent/subagent-in-process-driver/README.md`](../../packages/subagent/subagent-in-process-driver/README.md)：spawn 不带父历史、fork 只带 balanced seed。

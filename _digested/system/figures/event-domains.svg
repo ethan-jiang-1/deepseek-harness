@@ -8,9 +8,9 @@
   <text x="44" y="158" font-weight="700" fill="#7c2d12">生命周期</text>
   <text x="44" y="180" fill="#9a3412">活过 reload、resume 与 fork</text>
   <text x="44" y="210" font-weight="700" fill="#7c2d12">代表事件</text>
-  <text x="44" y="234" fill="#9a3412">turn/* · step/* · system/message</text>
-  <text x="44" y="256" fill="#9a3412">user/message · assistant/message</text>
-  <text x="44" y="278" fill="#9a3412">assistant/attempt · tool/*</text>
+  <text x="44" y="234" fill="#9a3412">turn/* · step/* · user/message</text>
+  <text x="44" y="256" fill="#9a3412">assistant/attempt · assistant/message</text>
+  <text x="44" y="278" fill="#9a3412">tool/call · tool/result</text>
   <text x="44" y="316" font-weight="700" fill="#7c2d12">消费方式</text>
   <text x="44" y="340" fill="#9a3412">deriveMessages() 投影模型历史</text>
   <text x="44" y="362" fill="#9a3412">session/event 通知实时观察者</text>

@@ -6,15 +6,17 @@
 
 > Use the read tool — not shell commands like cat — to inspect text files. Results include line numbers. Use offset and limit to continue reading large files.
 >
-> —— `packages/fs/tool-fs/src/read.ts:72`
+> —— `packages/fs/tool-fs/src/read.ts:74`（`text: ({ scope }) =>` 在 `:72`，正文在 `:74`）
 
-> Use the grep tool — not shell grep or rg — to search file contents. Use read on a matched file when you need surrounding context.
+> Use the grep tool — not shell grep or rg — to search file contents.
 >
-> —— `packages/fs/tool-fs-search/src/grep.ts:278`
+> —— `packages/fs/tool-fs-search/src/grep.ts:280`
+
+只有在 `read` 也注册时，这一句才追加 “Use read on a matched file when you need surrounding context.”（同文件 `:281` 的条件分支）。
 
 > Use the glob tool — not shell find — to discover files by path pattern. …
 >
-> —— `packages/fs/tool-fs-search/src/glob.ts:303`
+> —— `packages/fs/tool-fs-search/src/glob.ts:305-306`
 
 所以“怎么走图”在运行时是被工具提示词约束的：读文件用 read（带行号、可 offset/limit），搜内容用 grep，找文件用 glob——不是 shell 的 cat/rg/find。这本身也是“按图索骥”的一部分：工具给的是结构化、有界的结果，而不是 shell 的自由文本。
 
@@ -28,7 +30,7 @@
 
 只有模型调用 `skill({ name })` 时才加载完整正文：
 
-> The model-facing `skill({ name })` tool … rereads the complete definition … and returns a tool result containing `<skill_content …>`, `<skill_resources>`, and `<skill_instructions>`.
+> The model-facing `skill({ name })` tool validates the kebab-case name, … then rereads the complete definition for the calling agent cwd … and returns a tool result containing `<skill_content name="...">`, `<skill_resources>`, and `<skill_instructions>`.
 >
 > —— `docs/subsystems/skills.md:235`
 
@@ -43,13 +45,13 @@
 package README 不在注入链里（注入只认 `AGENTS.md`/`CLAUDE.md` 候选）。它靠两条运行时路径被拉到：
 
 1. **路由**：注入的根/子树 AGENTS 把模型指到 `packages/<group>/<pkg>/README.md`（04 的地图）；
-2. **standing order**：注入的 `packages/AGENTS.md` 说“README and JSDoc are part of the change”——模型改某个包时，这条 standing order 让它去读该包 README。
+2. **standing order**：注入的 `packages/AGENTS.md:26` 要求在同一个 commit 里更新 package README 与 JSDoc 合同——模型改某个包时，这条 standing order 让它去读该包 README。
 
 所以“agent 会不会主动读 README”的诚实答案是：**指令链（AGENTS）是 push 的，合同（README）是 pull 的**。前者不靠模型自觉，后者靠 standing order + 路由把模型引到正确文件前。
 
 ## 证据入口
 
-- [`packages/fs/tool-fs/src/read.ts`](../../packages/fs/tool-fs/src/read.ts) 第 73 行
-- [`packages/fs/tool-fs-search/src/grep.ts`](../../packages/fs/tool-fs-search/src/grep.ts) 第 279 行
-- [`packages/fs/tool-fs-search/src/glob.ts`](../../packages/fs/tool-fs-search/src/glob.ts) 第 304 行
+- [`packages/fs/tool-fs/src/read.ts`](../../packages/fs/tool-fs/src/read.ts) 第 74 行
+- [`packages/fs/tool-fs-search/src/grep.ts`](../../packages/fs/tool-fs-search/src/grep.ts) 第 280-281 行
+- [`packages/fs/tool-fs-search/src/glob.ts`](../../packages/fs/tool-fs-search/src/glob.ts) 第 305-306 行
 - [`docs/subsystems/skills.md`](../../docs/subsystems/skills.md) 第 194、231、235 行

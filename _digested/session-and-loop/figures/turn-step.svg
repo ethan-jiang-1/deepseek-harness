@@ -4,7 +4,7 @@
   </defs>
   <rect width="960" height="560" fill="#fafafa" rx="6"/>
   <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一轮 turn：零个或多个 step；step 是逻辑请求周期加它调用的工具</text>
-  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">橙色是写入 session log 的持久事件。蓝色是活的扩展点。圆角框是 waterfall。</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">橙色是写入 session log 的持久事件。蓝色是活的扩展点。紫色是 tools/* 执行管道（waterfall）。</text>
 
   <rect x="40" y="62" width="880" height="470" rx="12" fill="#ecfeff" stroke="#5eead4"/>
   <text x="60" y="88" font-size="13" font-weight="700" fill="#0f766e">turn/start  ·  随后 claim 全部 next-step 与至多一条 next-turn</text>
@@ -16,7 +16,7 @@
   <text x="110" y="184" font-size="13" font-weight="700" fill="#9a3412">step/start  （可重复：工具还欠一次请求，或又来了新输入）</text>
   <text x="110" y="210" font-size="12" fill="#c2410c">把获准的消息追加为 user/message</text>
   <text x="110" y="230" font-size="12" fill="#c2410c">deriveMessages() 从 log 投影模型历史</text>
-  <text x="110" y="258" font-size="12" fill="#1e40af">agent/request  →  llm/stream  →  compact stream  →  assistant/message|attempt</text>
+  <text x="110" y="258" font-size="12" fill="#c2410c">（蓝色部分不落盘）agent/request  →  llm/stream  →  live.push(chunk)  →  （橙色部分持久）结算 assistant/message ｜ assistant/attempt</text>
   <text x="110" y="286" font-size="12" fill="#6d28d9">若有 tool/call*：tools/pre-execute → tools/execute → tools/post-execute → tool/result*</text>
   <text x="110" y="314" font-size="12" fill="#9a3412">step/end</text>
   <text x="110" y="348" font-size="11" fill="#7c2d12">request-error retry：同一 step 再 stream，不追加新的 step/start。</text>
@@ -25,6 +25,6 @@
 
   <text x="60" y="430" font-size="13" font-weight="700" fill="#0f766e">agent/turn-stopping  ·  serial，没有 next()</text>
   <text x="60" y="454" font-size="13" font-weight="700" fill="#0f766e">turn/end</text>
-  <text x="60" y="490" font-size="12" fill="#115e59">turn / step / user / assistant / tool 是持久的。其余是三域里的实时扩展点。</text>
+  <text x="60" y="490" font-size="12" fill="#115e59">turn / step / system / user / assistant / tool/* 是持久的（system prompt 作为 system/message surface 节点 0）。其余是三域里的实时扩展点。</text>
   <text x="60" y="512" font-size="12" fill="#115e59">round 是外层策略计数（goal round、Ralph round），不是 session 里每一 turn 都算一轮。</text>
 </svg>

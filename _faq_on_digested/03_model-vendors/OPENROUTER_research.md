@@ -22,7 +22,7 @@ context / max output 取自 `/models` 的 `context_length` 与 `top_provider.max
 | `deepseek/deepseek-v4-flash` | 1048576 | 384000 | text | 0.000000088606 / 0.000000177212 | none/high/max 全 200 |
 | `deepseek/deepseek-v4-flash-vision-exp` | 1048576 | 384000 | text+image | 0.00000044 / 0.00000132 | none/high/max 全 200（改 policy 后） |
 
-`agent-default-model`（settings.yaml 用户键）为 `openrouter / deepseek/deepseek-v4-flash`：用户曾在 Web 选过 `z-ai/glm-5.3-flash` 为默认，该模型剔除时默认改到同类 flash 档。注意 dump-config 里 `agent-default-model` 插件显示的是 base bundle 静态默认（`deepseek-official / deepseek-v4-flash`），settings.yaml 的键由 settings 能力运行时消费，dump 看不到它。
+`agent-default-model`（settings.yaml 用户键）为 `openrouter / deepseek/deepseek-v4-flash`：用户曾在 Web 选过 `z-ai/glm-5.3-flash` 为默认，该模型剔除时默认改到同类 flash 档。注意 dump-config 里 `agent-default-model` 插件显示的是 base bundle 静态默认（`deepseek-official / deepseek-flash`，`packages/bundle/base/cordis.patch.yml:78-79`；2026-09-10 的 `bc5fd3b8dc` 起由 `deepseek-v4-flash` 切到 `deepseek-flash`，两者在 `packages/llm/llm-deepseek/src/index.ts:94`/`:103` 都是合法目录项），settings.yaml 的键由 settings 能力运行时消费，dump 看不到它。
 
 ## effort 档位实测（2026-08-28，固定小题，max_tokens 200–300）
 

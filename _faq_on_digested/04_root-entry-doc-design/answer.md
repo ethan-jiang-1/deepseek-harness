@@ -23,6 +23,11 @@ DSH 没有试图直接解决“渐进式披露多少才合适”这个主观问�
 | `docs/AGENTS.md` | 要写/审文档的人/agent | 文档的 tier taxonomy 与写作规则 | 不放产品合同 |
 | 生成目录 | 查询者 | 穷举索引：tool/config/persistence/event/module graph/cordis API | 不承载叙事 |
 | package README | 要改/用某个包的人或 coding agent | 该包合同、Model Experience、限制 | 不重复生成目录和 JSDoc |
+| `CONTRIBUTING.md` / `.zh.md` | 想贡献的人类 | 贡献流程与社区约定 | 不承载 agent 的 standing orders |
+| `SAFETY.md` / `.zh.md` | 想运行它的人类 | 实验性状态、sandbox 限制、responsible use、免责 | 不是运行时保证，也不描述机制 |
+| `BRAND_GUIDELINES.md` / `.zh.md` | 下游项目作者 | 名称与品牌资产的使用边界（“DeepSeek Harness”是注册商标） | 与代码行为无关 |
+| `BENCHMARK.md` | 要跑基准的人 | 基准怎么跑（指向 Python SDK 指南） | 不是性能门禁的 owner，门禁在 `benchmarks/` 与 CI |
+| `THIRD_PARTY_NOTICES.md` | 合规查询者 | 生成式第三方许可清单（`gen-third-party-notices`） | 不承载叙事，也不手改 |
 
 ## 这张地图的路由结构
 
@@ -32,7 +37,7 @@ README.md
   └─ For agents: follow AGENTS.md
 
 AGENTS.md
-  ├─ 第一段：everything is a plugin；改 packages 前读 architecture；文档规则看 docs/AGENTS
+  ├─ 第一段：all-plugin Cordis agent harness；改 packages 前读 architecture；文档规则看 docs/AGENTS
   ├─ Repository layout：每个顶层区域一句话
   ├─ Commands：动词表
   ├─ Conventions：standing orders，每条链接 home
@@ -50,7 +55,7 @@ AGENTS.md
 ## 最核心的三件事
 
 1. **一个事实一个家**：`docs/AGENTS.md` 的 tier taxonomy 规定了哪种事实住在哪一层；其它层只 link。
-2. **常驻层有硬预算**：根 `AGENTS.md ≤ 1600 words`，`architecture.md ≤ 1800 words`，子树 AGENTS 和 package README 也各有预算；超了先 relocate，再 condense，最后才允许 raise。
+2. **常驻层有硬预算**：根 `AGENTS.md ≤ 1950 words`，`architecture.md ≤ 2400 words`，子树 AGENTS 与 `packages/README.md` 也各有 ceiling，单个 package README 另受 Summary 词数与 Model Experience / limitations 门禁约束；超了先 relocate，再 condense，最后才允许 raise。
 3. **地图是机器检查的**：相对链接必须存在，生成目录必须和源码一致，文档里的 TypeScript 必须能编译，中英双语必须配对。
 
 ## 为什么这能缓解“渐进式披露难以度量”

@@ -1,34 +1,32 @@
 # Research · DSH 修改系统的完整 spec 路径
 
-## 1. 意图与验收：Issue 模板
+## 1. 意图与可观察行为：Issue 模板
 
-> - 验收条件：
-> - 用户或模型可见变化：
-> - 测试证据：
+> ## Motivation
+> ## Behavior
 
-来源：`.github/ISSUE_TEMPLATE/feature.md:16-18`
+来源：`.github/ISSUE_TEMPLATE/feature.md:1-13`（Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板不再承载验收与测试证据）
 
 PR 模板：
 
-> 关联 Issue：
->
-> 变更与验证
+> ## Motivation
+> ## Changes
+> ## Testing
 
-来源：`.github/pull_request_template.md:5-10`
-
+来源：`.github/pull_request_template.md:1-10`（同仓库 Issue 的关联写在 Motivation 的注释里：`Fixes #NN` 或 `Related #NN`）
 
 Issue 引用的机器强制边界：
 
 > const automated = authorType === 'Bot' || authorType === 'App'
 > return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
 
-来源：`.github/issue-management/policy.mjs:162-170`
+来源：`.github/issue-management/policy.mjs:69-76`
 
 > if (input.references.all.length === 0) errors.push('PR 正文必须引用至少一个同仓库 Issue')
 
-来源：`.github/issue-management/policy.mjs:373`
+来源：`.github/issue-management/policy.mjs:267`
 
-限制：policy 检查引用和元数据，不检查“验收条件/测试证据”是否写得充分。
+限制：policy 只检查引用与元数据（Issue 引用、Type、Project Status、Priority、标签），不检查模板填写质量；0.1.5 起模板本身也不再要求验收条件/测试证据，那两项改由 PR 的 Testing 节承载。
 
 ## 2. 决策 spec：Agent Note
 
@@ -52,7 +50,6 @@ proposed 骨架：
 
 来源：`.agents/notes/README.md:80-90`
 
-
 ## 2.1 Plan Mode：原生支持但可选、软引导
 
 > The package is optional, and the agent loop does not depend on it.
@@ -61,11 +58,11 @@ proposed 骨架：
 
 > Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:129`
+来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130`
 
-> Plan mode guides rather than enforces; deployments that need enforced restrictions must configure sandbox and approval controls independently.
+> **Guidance, not enforcement** — plan mode restrains through text only; deployments that need enforced restrictions configure sandbox mode and approval policy independently.
 
-来源：`packages/plan/plan-mode/README.md:94`
+来源：`packages/plan/plan-mode/README.md:183`
 
 限制：Plan Mode 能证明 DSH 原生支持 spec-first workflow；git 历史不能证明每个 PR 都使用过它。
 
@@ -77,7 +74,7 @@ proposed 骨架：
 
 ## 4. docs 是当前状态，不是变更史
 
-> **Document current state, not change history.** Avoid "previously/now/no longer", PRs, commits, and stack positions in durable prose; name the live mechanism.
+> **Document current state, not change history.** Name live mechanisms, not PRs, commits, stack positions, or "previously/now/no longer".
 
 来源：`docs/AGENTS.md:38`
 
@@ -87,9 +84,9 @@ proposed 骨架：
 
 ## 5. package README / JSDoc 随代码更新
 
-> A package's README and JSDoc are part of the change.
+> Update package README and JSDoc contracts in the same commit as behavior.
 
-来源：`packages/AGENTS.md:25`
+来源：`packages/AGENTS.md:26`
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 
@@ -97,13 +94,13 @@ proposed 骨架：
 
 ## 6. 行为 spec：测试与快照
 
-> A guard only guards if the regression actually fails it. ... prove it: introduce the regression, watch red, revert.
+> A guard only guards if the regression fails it. ... prove it: introduce the regression, watch red, revert.
 
-来源：`docs/testing.md:34`
+来源：`docs/testing.md:40`
 
-> Every non-trivial model-, protocol-, or human-visible change adds or updates a keyless scenario in the same PR through a runnable example's owning snapshot suite.
+> Every non-trivial model-, protocol-, or human-visible change adds or updates a keyless recorded-session scenario in the same PR.
 
-来源：`docs/testing.md:54`
+来源：`docs/testing.md:55`
 
 ## 7. git 历史例子
 
@@ -146,7 +143,7 @@ docs/rfc/implemented/... → .agents/notes/implemented/...
 Status: implemented
 ```
 
-限制：这个例子实证 proposed → implemented 核心段；d01 时代尚无今天的 Note 格式规则，Decision/Consequences 是 e6fad266a6 才落到这份文件；Issue、Plan、review 不在 git tree，不能用它声称八阶段全链路。
+限制：这个例子实证 proposed → implemented 核心段；d01 时代尚无今天的 Note 格式规则，Decision/Consequences 是 e6fad266a6 才落到这份文件；Issue、Plan、review 不在 git tree，不能用它声称九阶段全链路。
 
 ## 相关消化材料
 

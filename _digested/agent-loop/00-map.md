@@ -1,5 +1,7 @@
 # Agent Loop · 推进、边界与 Goal 驱动
 
+产品源码基线：`fb2c4b9e69`（`dsh-v0.1.5-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`rc.1` → `rc.2` 的增量见 [`_change_log/0007`](../_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md)。
+
 ## 一句话
 
 ruofei 说「Agent Loop 管推进，结束却分好几层」。Loop 不是「模型回答完就结束」——一次 step 结束不等于 turn 结束，agent idle 不等于任务完成，因为 Goal 可能还是 `active`，随时发起新一轮。
@@ -12,7 +14,7 @@ ruofei 说「Agent Loop 管推进，结束却分好几层」。Loop 不是「模
 |----|---------|-------|---------|
 | **step** | 一次模型请求 + 它所调用的工具 | 模型不再调工具 / `max-tokens` / error | `step/end` 事件 |
 | **turn** | 一个输入被抽干（可含多个 step） | 工具结果 `concludesTurn` / `agent/turn-stopping` 无人 `steer` | `turn/end` 事件 |
-| **driver activity** | 一段连续运行的 agent 活动 | Agent 回到 idle，且 inbox 无待唤醒消息 | `agent/status === 'idle'` |
+| **driver activity** | 一段连续运行的 agent 活动 | Agent 回到 idle，且 inbox 无待唤醒消息；整段活动运行在以该 agent 为 initiator 的因果边界内（`packages/core/agent-loop/src/agent.ts:207`） | `agent/status === 'idle'` |
 | **goal** | 一个持久目标达成或被放弃 | 模型调用 `update_goal` complete/blocked，或 round-driver 自动 block | `goal/change` 事件 |
 
 **Agent idle 不代表任务完成**——它只说明此刻没有待处理的消息。Goal 如果还是 `active + armed`，Goal Round Driver 会在 idle 时自动发起下一轮。
@@ -55,6 +57,7 @@ create() ──→ active (armed)
      └── resume() ─────┘ ──→ active (re-armed)
 
   complete 是终态：不可 resume，只能被 create() 替换（新 goal id）
+  paused 的 resume 只能由 human 发起（模型 update_goal resume 抛 GOAL_TOOL_RESUME_PAUSED）
 ```
 
 详细的状态机、每个转换的代码入口、CAS 机制见 [`01-goal-lifecycle.md`](./01-goal-lifecycle.md)。
@@ -73,11 +76,12 @@ create() ──→ active (armed)
 ├─────────────────────────────────────────┤
 │           dsh-agent                     │  ← Agent 接口
 │  AgentRegistry / AgentFactory          │
-│  inbox / status / followup / steer     │
+│  inbox 契约 / status / followup / steer│
 ├─────────────────────────────────────────┤
 │           session                       │  ← 仅追加事件流
 │  turn/* / step/* / user/message /      │
-│  assistant/* / tool/* / goal/change    │
+│  system/message / assistant/* /        │
+│  tool/* / goal/change                  │
 └─────────────────────────────────────────┘
 ```
 
@@ -90,6 +94,7 @@ create() ──→ active (armed)
 | [`01-goal-lifecycle.md`](./01-goal-lifecycle.md) | Goal 状态机、三种创建路径详解、「模型推断 vs 手动敲」的透彻答案 |
 | [`02-goal-round-driver.md`](./02-goal-round-driver.md) | Round Driver 如何监听 idle、注入 round prompt、pre-step 验证 |
 | [`03-activity-vs-goal-boundaries.md`](./03-activity-vs-goal-boundaries.md) | step/turn/activity/goal 四层分别在哪结束、崩溃恢复时序 |
+| [`04-agent-runtime-identity.md`](./04-agent-runtime-identity.md) | Agent 运行时身份如何显式传递、initiator 边界为何成为权限判据 |
 
 Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/session-and-loop/02-inbox-与turn-时序.md`](../session-and-loop/02-inbox-与turn-时序.md) 覆盖，这里不再重复。
 
@@ -99,6 +104,7 @@ Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/se
 |------|------|
 | `packages/core/agent-loop/src/agent.ts` | `ReactLoopAgent`：`turn()`、`step()`、tool 执行 |
 | `packages/core/agent-loop/src/index.ts` | loop 插件：`ctx.agents.setFactory(this)` |
+| `packages/core/agent/src/index.ts` | `AgentRegistry` / `AgentFactory`：`AgentSetup`、`parentAgent` 属主关系 |
 | `packages/goal/goal/src/index.ts` | `GoalService`：create / pause / resume / complete / block / clear |
 | `packages/goal/tool-goal/src/index.ts` | `create_goal` / `get_goal` / `update_goal` 三个 model-facing tool |
 | `packages/goal/command-goal/src/index.ts` | `/goal` human command |

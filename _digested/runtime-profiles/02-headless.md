@@ -8,7 +8,7 @@
 
 ```sh
 dsh --profile headless "run the tests"
-dsh --profile headless "refactor this module" --patch my.yml
+dsh --profile headless --patch my.yml "refactor this module"
 dsh --profile headless --help
 ```
 
@@ -16,7 +16,7 @@ dsh --profile headless --help
 
 `PROFILE_TEMPLATES.headless` = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']`
 
-**注意**：`INSTALLATION_OWNED_PROFILE_TUPLES.headless` = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@deepseek-ai/dsh-headless']`，但 `loadProfile` 中的 `normalizeShippedProfile` 会在首次加载时把它**整理回** `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']`，因为 `dsh-web-app` 是安装时用于 headless 的旧靠模，实际启动时不需要 web 层。这是安装升级路径的兼容性调整。
+**注意**：`INSTALLATION_OWNED_PROFILE_TUPLES.headless` = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@deepseek-ai/dsh-headless']`（`packages/boot/app-boot/src/profile.ts:135`），但 `loadProfile` 中的 `normalizeShippedProfile` 会在首次加载时把它**整理回** `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']`：代码把这个 tuple 登记为「installation-owned」，即安装方曾写下的旧值，加载时按 shipped 模板重写并补上缺省的 `patchReload`；用户自己改过的 bundle 列表不会被触碰（`packages/boot/app-boot/src/profile.ts:688-716`）。
 
 | 层 | 从哪里来 | 作用 |
 |----|---------|------|
@@ -27,7 +27,7 @@ dsh --profile headless --help
 
 | id | 做了什么 |
 |----|---------|
-| `system-prompt` | 设 persona 文本 |
+| `system-prompt` | 设 persona 两段：`personaSuffix`（`Your working directory is {{cwd}}.`）+ `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/headless/cordis.patch.yml:7-11`） |
 | `tools` | 透传 `DSH_TOOLS_MODE` |
 
 ### `dsh-headless` 的 insert 行
@@ -51,7 +51,7 @@ dsh --profile headless "run the tests"
   → 打印最终 assistant 消息 → exit 0
 ```
 
-最终消息的读取是逐 seq 的：runner 的 `summarize` 按 `session.eventAt(SessionSeq(seq))` 从首个 seq 读到捕获长度，读不到即 fail loud（`dsh: headless summary cannot read seq N below captured length M`；`packages/bundle/headless/src/index.ts:64-73`，`packages/bundle/headless/tests/headless.spec.ts` 有对应用例）。
+最终消息的读取是逐 seq 的：runner 的 `summarize` 按 `session.eventAt(SessionSeq(seq))` 从首个 seq 读到捕获长度，读不到即 fail loud（`dsh: headless summary cannot read seq N below captured length M`；`packages/bundle/headless/src/index.ts:64-89`，fail-loud 抛在 `:72`，`tests/headless.spec.ts` 有对应用例）。进程中的推理进度另走 `streamReasoning`：它订阅 `agent/assistant-stream` 这个 process-local 帧（不是 WAL），只把非空 `reasoning-delta` 打到 stderr（`packages/bundle/headless/src/index.ts:99-155`，`:112` 是订阅点）——最终结局仍从耐久日志推导，两路不混。
 
 ## 独特之处
 

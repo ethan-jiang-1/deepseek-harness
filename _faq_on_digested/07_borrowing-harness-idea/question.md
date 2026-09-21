@@ -22,12 +22,12 @@ DSH 自己的仓库就是它最好的样板：它的开发主力自称是 coding
 
 ## 证据边界
 
-- 主证据是两份本地研究语料，都在同一基线（DSH `dsh-v0.1.2-rc.1`，commit `a66e4702047846cdaa10c66c9d3df3951f5ea70d`）上：
+- 主证据是两份本地研究语料，现随 `_digested/` 同步到基线（DSH `dsh-v0.1.5-rc.2`，commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`）；同步范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`：
   - `_agent_ready_development/development-harness/`（01–07）——教程式拆解「仓库怎样帮 coding agent 修改仓库自身」；
   - `_digested/harness-idea/`（01–08）——判断式拆解「dsh 为什么对参与者友好」。
 - **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
 - 源码事实需要锚定时，用 DSH 固定基线文件的相对路径或固定 commit 的 GitHub 链接，不重抄 `docs/` 正文充数。
-- 正文中的具体数字（词数预算、catalog 描述上限、symlink 处数、context 插件数等）以基线 `528c682e` 的对应文件为准；上游合入后需按 `_digested/_change_log/` 复核。
+- 正文中的具体数字（词数预算、catalog 描述上限、symlink 处数、context 插件数等）以基线 `fb2c4b9e69`（`dsh-v0.1.5-rc.2`）的对应文件为准，词数预算的机器权威是 `scripts/doc-budgets.manifest.json`、context 插件清单是 `packages/context/README.md`；上游合入后需按 `_digested/_change_log/` 复核。
 - 本目录自带 [`verify.mjs`](../verify.mjs) 机械兜底（严格 UTF-8、单个结尾换行、相对链接与锚点）；修改本目录后运行 `node _faq_on_digested/verify.mjs`。
 - 与既有 FAQ 的分工：`04_root-entry-doc-design` 只覆盖「根入口/文档的静态设计」，`05_root-entry-doc-navigation` 只覆盖「跑起来之后这些文档怎么被消费」；本问题覆盖「知识归属 + 正确路径 + 可执行反馈 + Skills + 运行时查询 + AGENTS.md 入口链 + 渐进披露管线」整体，并明确跨到「迁移到另一个项目」。不重复 `_digested/harness-idea/` 里对机制判据的逐条论证，只引用其结论。
 
@@ -45,3 +45,4 @@ DSH 自己的仓库就是它最好的样板：它的开发主力自称是 coding
 - [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)：AGENTS.md 入口链——文件态骨架（→04）+ 会话态加载（→05）+ 迁移顺序【文件态=静态 / 会话态=动态】
 - [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)：渐进披露的完整五层管线【层 1=静态 / 层 2–5=动态】
 - [`research.md`](./research.md)：证据原文与来源
+- [`ppt-deck.md`](./ppt-deck.md)：把本篇压成 5 页 PPT 稿（抬头 + 要点 + 一行口播稿），用于对外讲「DSH 怎样组织项目」

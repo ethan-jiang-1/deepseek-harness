@@ -6,7 +6,7 @@
 
 `codex_micu.sh` 把 MICU 配成 `https://www.micuapi.ai/v1` 上的 API-key 供应商，模型为 `gpt-5.6-sol`，推理级别为 `xhigh` [样本调用](../../../ait_exam_docker/cli_codex/final/codex_micu.sh:57)。它调用的生成器固定写入 `wire_api = "responses"` [生成器](../../../ait_exam_docker/cli_codex/final/generate_config.py:65)。本次真实 DSH 请求进一步验证：手工 `micu` route 通过 `openai-responses` 成功完成 `gpt-5.6-sol` 和 `gpt-5.6-terra` 的文本流、工具调用、工具结果回传和 replay；`sol` 的 `xhigh` 也已接受。
 
-因此 MICU 当前无须开发新的 vendor 包：已挂载的通用 `dsh-llm-pi-ai` 能以一个手工 route 声明 `openai-responses`、endpoint、凭据引用和模型列表 [适配器说明](../../packages/llm/llm-pi-ai/README.md:47)。基础 bundle 默认将它以零 route 的休眠状态挂载，`$DSH_HOME/settings.yaml` 的 `llm-pi-ai` 段即可启用 [基础组合](../../packages/bundle/base/cordis.patch.yml:75)。
+因此 MICU 当前无须开发新的 vendor 包：已挂载的通用 `dsh-llm-pi-ai` 能以一个手工 route 声明 `openai-responses`、endpoint、凭据引用和模型列表 [适配器说明](../../packages/llm/llm-pi-ai/README.md:47)。基础 bundle 默认将它以零 route 的休眠状态挂载，`$DSH_HOME/settings.yaml` 的 `llm-pi-ai` 段即可启用 [基础组合](../../packages/bundle/base/cordis.patch.yml:107)。
 
 ## 本次真实实验（2026-08-17）
 
@@ -31,9 +31,9 @@
 
 ## DSH 对应能力与边界
 
-DSH 手工 route 当前可选的协议正好包括 `openai-responses`、`openai-completions` 和 `anthropic-messages` [协议表](../../packages/llm/llm-pi-ai/src/provider.ts:47)。未知 route 必须完整提供 `api`、`baseURL` 和非空 `models`，否则配置在写入时被拒绝 [适配器说明](../../packages/llm/llm-pi-ai/README.md:98)。因此 MICU 应命名为独立 route，而不是覆盖 `openai`；这保留了官方 OpenAI 与中转站的可选性和会话来源。
+DSH 手工 route 当前可选的协议正好包括 `openai-responses`、`openai-completions` 和 `anthropic-messages` [协议表](../../packages/llm/llm-pi-ai/src/provider.ts:47)。未知 route 必须完整提供 `api`、`baseURL` 和非空 `models`，否则配置在写入时被拒绝 [适配器说明](../../packages/llm/llm-pi-ai/README.md:115)。因此 MICU 应命名为独立 route，而不是覆盖 `openai`；这保留了官方 OpenAI 与中转站的可选性和会话来源。
 
-`apiKeyEnv` 在 DSH 中是逐请求解析的凭据引用，不把 key 写入 settings [适配器说明](../../packages/llm/llm-pi-ai/README.md:9)。对 OpenAI-compatible route，DSH 的模型发现会请求 `<baseURL>/models`，并在有 key 时使用 `Authorization: Bearer …` [发现实现](../../packages/llm/llm-pi-ai/src/discovery.ts:232)。这是 DSH probe 的发送行为，不是 MICU 接受该报头或其 Responses 请求完全兼容的证据。
+`apiKeyEnv` 在 DSH 中是逐请求解析的凭据引用，不把 key 写入 settings [适配器说明](../../packages/llm/llm-pi-ai/README.md:36)。对 OpenAI-compatible route，DSH 的模型发现会请求 `<baseURL>/models`，并在有 key 时使用 `Authorization: Bearer …` [发现实现](../../packages/llm/llm-pi-ai/src/discovery.ts:323)。这是 DSH probe 的发送行为，不是 MICU 接受该报头或其 Responses 请求完全兼容的证据。
 
 本机安装的 `pi-ai` 内置 `openai` catalog 含有 `gpt-5.6-luna`、`gpt-5.6-sol` 和 `gpt-5.6-terra` 定义，均为 `openai-responses`，并列出 `xhigh`/`max`、272,000 context 和 128,000 output [本地依赖目录](../../node_modules/@earendil-works/pi-ai/dist/providers/data/openai.json:1)。这是当前依赖的目录数据，不是 OpenAI 官方文档，不能直接继承给 MICU；手工 route 应只写中转实际广告并验证过的模型能力。
 
@@ -45,4 +45,4 @@ DSH 手工 route 当前可选的协议正好包括 `openai-responses`、`openai-
 4. 运行多轮对话并从持久会话恢复，确认历史和工具结果可再次发送。
 5. 分别验证 `xhigh` 与不传推理级别时的接受情况和实际语义；不要从模型名推断它一定支持该参数。
 
-如果任一项失败，先尝试该中转实际提供的 `openai-completions` 协议；若其认证、流事件或工具/历史语义又偏离这两种通用协议，才需要新增适配器或一个路由/故障切换插件。当前 `dsh-llm-retry` 只在原 provider 内重试，不会自动切换到另一个 vendor [重试说明](../../packages/llm/llm-retry/README.md:5)。
+如果任一项失败，先尝试该中转实际提供的 `openai-completions` 协议；若其认证、流事件或工具/历史语义又偏离这两种通用协议，才需要新增适配器或一个路由/故障切换插件。当前 `dsh-llm-retry` 只在原 provider 内重试，不会自动切换到另一个 vendor [重试说明](../../packages/llm/llm-retry/README.md:12)。

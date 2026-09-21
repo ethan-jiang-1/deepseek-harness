@@ -1,5 +1,7 @@
 # System · 整机介绍
 
+产品源码基线：`fb2c4b9e69`（`dsh-v0.1.5-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`rc.1` → `rc.2` 的增量见 [`_change_log/0007`](../_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md)。
+
 ## 一句话
 
 DeepSeek Harness 不是「一个 agent loop 配一堆 tools」。它是一台用 Cordis 装起来的**插件树**：循环、会话服务、模型适配器和工具注册表本身都是插件，都可以由组合替换。
@@ -57,8 +59,8 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 
 三个域的关键区别：
 
-1. `turn/*`、`step/*`、`system/message`、`user/message`、`assistant/message`、`assistant/attempt`、`tool/*` 是**持久会话事件**；其余是三个域里的实时扩展点。`agent/assistant-stream` 发布进程本地的 start、transient chunk、end 帧；loop 在提交 end 帧前把完整紧凑流写成一条 message 或仅日志的 attempt，Web Session-follow 适配器是该实时事件的唯一远程消费者。
-2. `agent/pre-step`、`agent/request`、`llm/stream`、以及三条 `tools/*` 是 **waterfall**：`next()` 把决定委托给下游；不调用就是由当前监听器短路并拥有结果。
+1. `turn/*`、`step/*`、`user/message`、`assistant/*`、`tool/*` 是**持久会话事件**。其余大多是三个域里的实时扩展点。
+2. `agent/pre-step`、`agent/request`、`llm/stream`、以及四条 `tools/*` 是 **waterfall**：`next()` 把决定委托给下游；不调用就是由当前监听器短路并拥有结果。
 3. `agent/turn-stopping` 是 **serial**，没有 `next()`；监听器可用 `agent.steer()` 增加下一步工作，驱动随后重读 inbox。
 
 ## 每层回答什么，细节去哪读

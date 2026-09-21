@@ -19,11 +19,13 @@ sdk 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-sdk-app`）�
 
 | 改动 | 内容 |
 |------|------|
-| `system-prompt` override | persona → `You are a coding agent powered by the {{model}} model. Your working directory is {{cwd}}.` |
+| `system-prompt` override | persona 两段：`personaPrefix`（`You are a coding agent powered by the {{model}} model.`）+ `personaSuffix`（`Your working directory is {{cwd}}.`）（`packages/bundle/sdk-app/cordis.patch.yml:3-7`）。这不是同义改写：prefix 占 section 序 0（模型介绍留在最前），suffix 是 `deployment:persona-suffix`、序 10200——cwd 被挪到 first-party 复用指令之后，好让跨机器的 prompt 前缀保持一致（note [`2026-09-06-environment-prompt-suffix`](../../.agents/notes/implemented/bug-fix/2026-09-06-environment-prompt-suffix.md)） |
 | `session-title-llm` `disabled: true` | stdout 只归 JSON-RPC 协议，标题生成关掉 |
-| `insert` | `sdk-app-startup` + `sdk-jsonrpc-server`（协议处理器，bundle `inject: [sdkAppStartup, loader]`） |
+| `insert` | `sdk-app-startup`（带 `config: { profile: sdk }`，`:13-16`）+ `sdk-jsonrpc-server`（协议处理器，bundle `inject: [sdkAppStartup, loader]`） |
 
-**sdk 的工具面不收窄**：`dsh-sdk-app` 没有禁用任何 base 工具行——bash / sandbox / web / goal / plan / skill 全部从 `dsh-base` 继承；base 默认暴露 `web_fetch`（#3382，`packages/bundle/base/cordis.patch.yml:450-454`）后，sdk 工具面随之多出 `web_fetch`（`dsh-sdk-app` 无反向覆盖）。真正把工具面收窄到「persistent bash（win32 为 persistent pwsh）」的是 [`sdk-minimal`](./04-sdk-minimal.md)，它是唯一不叠 base 的 profile。
+`sdk-app-startup` 的 `profile` config 只影响 `dsh --profile <name> --help` 打印的命令语法，不改变组合（`packages/bundle/sdk-app/src/index.ts:25`、`:30`、`:38-45`）。
+
+**sdk 的工具面不收窄**：`dsh-sdk-app` 没有禁用任何 base 工具行——bash / sandbox / web / goal / plan / skill 全部从 `dsh-base` 继承；base 默认暴露 `web_fetch`（#3382，`packages/bundle/base/cordis.patch.yml:450-454`）后，sdk 工具面随之多出 `web_fetch`（`dsh-sdk-app` 无反向覆盖）。**`str_replace_editor` 不在这份继承清单里**：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`），`tool-str-replace-editor` 行在**本次跨度（`a66e470204` → `183f08e9c6`）内**从所有 shipped `cordis.patch.yml` 下线（OLD 基线里 base 的该行在 `a66e470204:packages/bundle/base/cordis.patch.yml:424-425`；同一提交 `36a4665144` 也删掉了 sdk-app 与 web-app 的对应行）；包 `@deepseek-ai/dsh-tool-str-replace-editor` 仍在，任何组合（含 sdk）想要它都必须显式 `insert`（仓库里的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。真正把工具面收窄到「一个持久 shell」的是 [`sdk-minimal`](./04-sdk-minimal.md)，它是唯一不叠 base 的 profile。
 
 ## 进程模型
 
@@ -59,4 +61,5 @@ dsh --profile sdk
 | `packages/sdk/protocol/` | 协议类型、传输层 |
 | `packages/sdk/client/` | TypeScript 客户端 |
 | `packages/bundle/sdk-app/cordis.patch.yml` | SDK 应用的 bundle 组合 |
+| `packages/bundle/sdk-app/src/index.ts` | `sdk-app-startup` 的 `profile` config 与 `--help` 命令语法 |
 | `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |

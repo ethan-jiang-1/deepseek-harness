@@ -3,23 +3,26 @@
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
   <rect width="960" height="350" fill="#fafafa" rx="6"/>
-  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">host 把 session/event 推上 mux；client 只渲染，不另做一份 log</text>
-  <rect x="40" y="56" width="280" height="90" rx="10" fill="#dcfce7" stroke="#86efac"/>
-  <text x="180" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">运行时</text>
-  <text x="180" y="108" text-anchor="middle" font-size="12" fill="#15803d">Session.append → emit session/event</text>
-  <line x1="320" y1="101" x2="358" y2="101" stroke="#4b5563" marker-end="url(#arr)"/>
-  <rect x="360" y="56" width="280" height="90" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="500" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">host Remote 转发</text>
-  <text x="500" y="108" text-anchor="middle" font-size="12" fill="#2563eb">白名单 session/event + 可选 view</text>
-  <line x1="640" y1="101" x2="678" y2="101" stroke="#4b5563" marker-end="url(#arr)"/>
-  <rect x="680" y="56" width="240" height="90" rx="10" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="800" y="84" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">browser client</text>
-  <text x="800" y="108" text-anchor="middle" font-size="12" fill="#c2410c">slots / conversation nodes</text>
-  <rect x="40" y="168" width="880" height="158" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="60" y="196" font-size="12" fill="#374151">同一条 Cordis 事件。host 可以附 tool view（terminal/diff 卡片），那是展示投影，不是第二份事实。</text>
-  <text x="60" y="220" font-size="12" fill="#374151">JSON-RPC server 订阅所在 Context 的全部 session/event 与 agent/status；</text>
-  <text x="60" y="242" font-size="12" fill="#374151">不按 SDK 创建关系过滤，分别发成 session.event / session.status。</text>
-  <text x="60" y="264" font-size="12" fill="#374151">协议不把 prompt 绑定到某条 assistant/message 或 turn/end。</text>
-  <text x="60" y="288" font-size="12" fill="#374151">ACP 只把 committed assistant/message 的非空文本块发成 agent_message_chunk。</text>
-  <text x="60" y="312" font-size="11" fill="#6b7280">加 Chat 节点：ConversationNodeDefinition + keyed renderer。不要在入口里再实现 loop。</text>
+  <text x="480" y="26" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2937">session/event 经 session-controller follow 到达浏览器；client 只渲染，不另做一份 log</text>
+  <rect x="40" y="52" width="260" height="96" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="170" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">运行时</text>
+  <text x="170" y="104" text-anchor="middle" font-size="11" fill="#15803d">Session.append</text>
+  <text x="170" y="124" text-anchor="middle" font-size="11" fill="#15803d">→ emit session/event</text>
+  <line x1="300" y1="100" x2="338" y2="100" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="340" y="52" width="300" height="96" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="490" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">session-controller follow</text>
+  <text x="490" y="104" text-anchor="middle" font-size="11" fill="#2563eb">Remote stream（每 Session 一条）</text>
+  <text x="490" y="124" text-anchor="middle" font-size="11" fill="#2563eb">snapshot / durable event / assistant-stream</text>
+  <line x1="640" y1="100" x2="678" y2="100" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="680" y="52" width="240" height="96" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="800" y="80" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">browser client</text>
+  <text x="800" y="104" text-anchor="middle" font-size="11" fill="#c2410c">slots / conversation nodes</text>
+  <text x="800" y="124" text-anchor="middle" font-size="11" fill="#c2410c">资源地址 → useResource</text>
+  <rect x="40" y="164" width="880" height="166" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="60" y="190" font-size="11" fill="#374151">同一条 Cordis 事件。host 可以附 tool view（terminal/diff 卡片），那是展示投影，不是第二份事实。</text>
+  <text x="60" y="212" font-size="11" fill="#374151">浏览器拿 session 事件走 follow 流；api/remotes 的白名单转发的是 api-session/*、审批、cordis/*、settings/* 等 Host 事件。</text>
+  <text x="60" y="234" font-size="11" fill="#374151">JSON-RPC server 订阅所在 Context 的全部 session/event 与 agent/status，不按 SDK 创建关系过滤，分别发成 session.event / session.status。</text>
+  <text x="60" y="256" font-size="11" fill="#374151">ACP 把 committed 事实发成标准更新：文本/图像块、非空 reasoning、通用 tool 生命周期、usage；raw delta 与展示面不上线。</text>
+  <text x="60" y="278" font-size="11" fill="#374151">Web 走 /api/remote.mux WebSocket；桌面没有端口，走 __DSH_TRANSPORT__.openStream + /.dsh/remote-stream NDJSON。</text>
+  <text x="60" y="306" font-size="11" fill="#6b7280">加 Chat 节点：ConversationNodeDefinition + keyed renderer。不要在入口里再实现 loop。</text>
 </svg>
