@@ -28,6 +28,7 @@ DSH 侧机制结论以本仓库工作树（`dsh-v0.1.5-rc.2` 基线之后的 `et
 ## 阅读入口
 
 - 先读：[总答案：五个决策 × 四个方案](./answer.md)
+- 哪些名字定了就难改：[身份与皮肤——包名/行 id/ctx 键/工具名/事件名/preset id/settings namespace/面板标题](./naming-and-identity.md)
 - 开发过程（四方案共享）：[插拔、调试、驱动 coding agent、DSH 推荐流程](./dev-loop.md)
 - 官方安装的 DSH 怎么保护：[双 home 隔离——开发做崩不碰日用](./dual-home-isolation.md)
 - 方案 A（推荐起点）：[独立专家 repo + pinned DSH submodule](./option-a-standalone-with-pinned-dsh.md)
