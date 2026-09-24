@@ -1,6 +1,8 @@
 # 语料维护目录
 
-本目录只保存 `_agent_ready_development/` 的 corpus maintenance（语料维护）信息，包括证据基线、结构约束、重审路径和验证要求；教学正文不放在这里。
+## 定位
+
+维护层：只保存本语料的 corpus maintenance（语料维护）信息——钉定的 DSH 基线版本、已核验的证据范围、结构约束、重审触发路径、历轮改动记录与验证要求。教学正文不放在这里。想知道"钉的哪个版本、哪些结论何时核过、更新这块从哪下手、哪些目录何时该改"，从 [`00-corpus-maintenance.md`](./00-corpus-maintenance.md) 进。
 
 ## 主入口
 

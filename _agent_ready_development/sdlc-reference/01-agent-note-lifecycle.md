@@ -1,4 +1,4 @@
-# Advanced 01 · Agent Note lifecycle（生命周期）
+# Reference 01 · Agent Note lifecycle（生命周期）
 
 ## 一句话
 

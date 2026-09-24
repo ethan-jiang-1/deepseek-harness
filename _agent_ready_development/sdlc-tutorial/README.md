@@ -1,6 +1,8 @@
 # SDLC Tutorial 目录
 
-本目录是 Spec-driven Development（SDD，规格驱动开发）与 GitHub Flow（GitHub 协作流）的基础教程。它用一次普通变更建立完整主线，面向知道 git 基本用途、但还不熟悉规格、Pull Request（PR，变更评审请求）、Continuous Integration（CI，持续集成）和 semantic review（语义评审）怎样协作的读者。
+## 定位
+
+教学层（tutorial）：用一次普通变更把 DSH 的 SDLC（Software Development Lifecycle，软件研发生命周期）主线——意图 → 决策 → 实现 → 评审 → 合并——按顺序讲完一遍，回答"一次变更从头到尾发生了什么"。只保留第一次阅读需要的内容。精确条件、状态与例外由 [SDLC Reference](../sdlc-reference/README.md) 拥有；"仓库为什么对 coding agent 友好"由 [Development Harness](../repo-harness/README.md) 拥有。
 
 ## 主入口
 
@@ -13,4 +15,4 @@
 | [`01-follow-a-change.md`](./01-follow-a-change.md) 至 [`05-review-and-merge.md`](./05-review-and-merge.md) | 从变更意图递进到规格、GitHub Flow、实现证据、评审与合并 |
 | [`figures/`](./figures/README.md) | 只服务本目录教程的图示 |
 
-读完普通路径后，需要核对精确状态或例外流程时进入 [SDLC Reference](../sdlc-reference/README.md)；需要理解仓库怎样帮助 coding agent 参与开发时进入 [Development Harness](../repo-harness/README.md)。
+读完普通路径后，需要核对精确状态或例外流程时进入 [SDLC Reference](../sdlc-reference/README.md)；想理解仓库怎样帮助 coding agent 参与开发时进入 [Development Harness](../repo-harness/README.md)。

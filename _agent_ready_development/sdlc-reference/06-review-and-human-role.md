@@ -1,4 +1,4 @@
-# Advanced 06 · Semantic review（语义评审）
+# Reference 06 · Semantic review（语义评审）
 
 ## 一句话
 
@@ -16,7 +16,7 @@ DSH 的 code review（代码评审）不是“机器查结构、人查语义”�
 | semantic review | 实现是否符合任务意图、PR 描述，以及适用时的 Issue 与 owning Agent Note；生命周期、安全、owner、失败、模型视角和真实入口是否完整 | 替代实际运行的检查或用户决定 |
 | explicit user interaction | 批准 Plan、授权受限操作、回答交互问题 | 自动证明代码、文档和全部平台已经通过 |
 
-`human-review policy` 是 `.github/issue-management/policy.mjs` 对人类作者 PR 的 metadata 适用条件；它没有规定 reviewer 身份，也不应被拿来证明 semantic review 已由人执行。branch rules 实际要求的 `weighted approval` commit status（加权批准分数与 `/delegate`）由 [Advanced 10](./10-approval-gate.md) 单独说明；它回答“谁批准了多少分”，不改变本页的语义评审义务。
+`human-review policy` 是 `.github/issue-management/policy.mjs` 对人类作者 PR 的 metadata 适用条件；它没有规定 reviewer 身份，也不应被拿来证明 semantic review 已由人执行。branch rules 实际要求的 `weighted approval` commit status（加权批准分数与 `/delegate`）由 [Reference 10](./10-approval-gate.md) 单独说明；它回答“谁批准了多少分”，不改变本页的语义评审义务。
 
 仓库规则同样没有把所有产品判断永久保留给人。Agent 可以在任务授权和当前规则内作实现决定；只有需要扩大范围、改变用户意图或取得显式 approval 的选择必须交还用户。
 

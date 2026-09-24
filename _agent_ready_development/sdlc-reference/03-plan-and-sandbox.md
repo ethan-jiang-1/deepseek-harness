@@ -1,4 +1,4 @@
-# Advanced 03 · Plan Mode 的状态与权限分工
+# Reference 03 · Plan Mode 的状态与权限分工
 
 ## 一句话
 

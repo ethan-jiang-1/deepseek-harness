@@ -1,8 +1,8 @@
-# Advanced 10 · Approval gate（加权批准与合并门槛）
+# Reference 10 · Approval gate（加权批准与合并门槛）
 
 ## 一句话
 
-一个 PR 能不能合，由三层互补门禁共同回答：issue-management policy 校验进入 review 的人类 PR 的 metadata（Advanced 02）；`weighted-approval` workflow 把批准分数发布成 commit status，branch rules 要求它 success（本页）；semantic review 由人或 agent 按 `dsh-code-review` 判断语义（Advanced 06）。分数由 write/admin 评审人的固定权重（1 或 2 分，1 分批准可被 blame 归属加权放大）与作者历史信用（封顶 1.1 分）组成，`/delegate` 命令可把一位评审人的积分转给另一位。
+一个 PR 能不能合，由三层互补门禁共同回答：issue-management policy 校验进入 review 的人类 PR 的 metadata（Reference 02）；`weighted-approval` workflow 把批准分数发布成 commit status，branch rules 要求它 success（本页）；semantic review 由人或 agent 按 `dsh-code-review` 判断语义（Reference 06）。分数由 write/admin 评审人的固定权重（1 或 2 分，1 分批准可被 blame 归属加权放大）与作者历史信用（封顶 1.1 分）组成，`/delegate` 命令可把一位评审人的积分转给另一位。
 
 > The `weighted-approval` workflow publishes an approval score for branch rules. Reviewers are chosen manually; an eligible delegation command requests review from its recipient.
 >
@@ -10,7 +10,7 @@
 
 ## 1. 评分规则
 
-Branch rules 只要求名为 `weighted approval` 的 commit status（以 GitHub Actions 为 expected source），不枚举会随 lane 演化改名的 job。评分参数住在 [`approval-policy.json`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/review-ownership/approval-policy.json)：`requiredPoints: 2`、`defaultPoints: 1`，六位评审人（`07akioni`、`imccyu`、`tianyicui`、`tianyicui-bot`、`turtle1999`、`turtle2099`)各 2 分。基础规则：
+`weighted-approval` workflow 暴露两个 PR 检查：`weighted approval publisher` job 报告评估与状态发布是否完成；名为 `weighted approval` 的 commit status 承载批准决定。Branch rules 只要求后者，且以 GitHub Actions 作为 expected source——context-only 要求可能接受其它集成发布的同名状态。评分参数住在 [`approval-policy.json`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/review-ownership/approval-policy.json)：`requiredPoints: 2`、`defaultPoints: 1`，六位评审人（`07akioni`、`imccyu`、`tianyicui`、`tianyicui-bot`、`turtle1999`、`turtle2099`）各 2 分。基础规则：
 
 | 事实 | 规则 |
 |---|---|
@@ -20,7 +20,7 @@ Branch rules 只要求名为 `weighted approval` 的 commit status（以 GitHub 
 | 生产代码定义 | `packages/`、`apps/`、`python/`、`native/` 下 `src/` 的受支持代码文件，加上 Desktop renderer、Python interpreter scripts 与 committed runtime/packer launchers；排除文档、测试、fixtures、snapshots、test support、examples、generated source、依赖、vendored 代码、声明、注释与空行 |
 | 作者信用 | `min(100, mergedPRCount) × 11 / 1000`（100 个已合并 PR 封顶 1.1 分），按不可变 account ID 统计本仓库历史、不计当前 PR；不能单独满足 2 分 |
 
-评分用未舍入值加 `1e-12` 容差判定，展示最多三位小数；归因跳过时（评审人分数已够、存在 blocking review、或作者是 2 分评审人）不查历史。Pygments lexer 区分注释与字符串的分类器在 [`blame-production.py`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/review-ownership/blame-production.py)，按 old path 归因，改名或移动文件不能把旧行移出分母。
+评分用未舍入值加 `1e-12` 容差判定，展示最多三位小数；评审人分数加作者信用已达门槛、或存在 blocking review 时，跳过 blame 归因。Pygments lexer 区分注释与字符串的分类器在 [`blame-production.py`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/review-ownership/blame-production.py)，按 old path 归因，改名或移动文件不能把旧行移出分母。
 
 ## 2. 状态机：pending、success、error
 
@@ -30,7 +30,7 @@ Branch rules 只要求名为 `weighted approval` 的 commit status（以 GitHub 
 - **success**：达到 2 分、PR ready、无上述 blocker。
 - **error**：评估或依赖安装失败（绝不保留上一次的 success）。
 
-每个评审人只贡献 GitHub 当前返回的 `APPROVED` 或 `CHANGES_REQUESTED`；`DISMISSED` 清空其standing decision，comment-only 与 pending 不构成决定。workflow 自己不按 review commit 失效旧批准——stale review 与 latest-push 要求由仓库原生 PR rules 拥有。master push 不在订阅列表里。
+每个评审人只贡献 GitHub 当前返回的 `APPROVED` 或 `CHANGES_REQUESTED`；`DISMISSED` 清空其 standing decision，comment-only 与 pending 不构成决定。workflow 自己不按 review commit 失效旧批准——stale review 与 latest-push 要求由仓库原生 PR rules 拥有。master push 不在订阅列表里。
 
 ## 3. `/delegate`：积分转移
 
@@ -50,15 +50,15 @@ Branch rules 只要求名为 `weighted approval` 的 commit status（以 GitHub 
 
 ## 5. merge 在历史上呈现的形态
 
-在可复核的 git 历史窗口内（2026-07-30 之后的产品线，约 8300 个 commit），产品变更的主落地形态是 **GitHub merge commit**：约三分之一的 commit 是 merge，PR merge 标题携带 PR 号（例如 `46a7f68b09` "Merge pull request #5073 from deepseek-harness/rel/dsh-0.1.7-rc.1"）。次要形态是自定义标题的 2 父 merge（`07ad70817f` "fix(plugins): deny incompatible bundles … (#5061)"）与少数 squash 成单 commit 的落地。PR 大小分布很宽：样本中 PR merge 的 commit 数中位数为 3、众数为 1（约三分之一的 PR 是单 commit），大 PR 可达数十个 commit。review 中途把 master merge-forward 进分支是常规操作（`312341970c` "Merge master into fix/zoom-rerender"）。分支命名并存两类前缀：类型前缀（`feat/`、`fix/`、`rel/`）与执行者命名空间（`worktree/`、`codex/`、`turtle/`、`ihsiang/`），常带日期后缀（`fix/preset-ui-20260921`）。依赖式 PR 栈的落地纪律见 [Advanced 07](./07-push-merge-stacked-prs.md)。
+在可复核的 git 历史窗口内（2026-07-30 之后的产品线，约 8300 个 commit），产品变更的主落地形态是 **GitHub merge commit**：约三分之一的 commit 是 merge，PR merge 标题携带 PR 号（例如 `46a7f68b09` "Merge pull request #5073 from deepseek-harness/rel/dsh-0.1.7-rc.1"）。次要形态是自定义标题的 2 父 merge（`07ad70817f` "fix(plugins): deny incompatible bundles … (#5061)"）与少数 squash 成单 commit 的落地。PR 大小分布很宽：最近 100 个 PR merge 的样本中，commit 数中位数为 3、众数为 1（约三分之一的 PR 是单 commit），大 PR 可达数十个 commit。review 中途把 master merge-forward 进分支是常规操作（`312341970c` "Merge master into fix/zoom-rerender"）。分支命名并存两类前缀：类型前缀（`feat/`、`fix/`、`rel/`）与执行者命名空间（`worktree/`、`codex/`、`turtle/`、`ihsiang/`），常带日期后缀（`fix/preset-ui-20260921`）。依赖式 PR 栈的落地纪律见 [Reference 07](./07-push-merge-stacked-prs.md)。
 
 ## 6. 三道门禁各管什么
 
 | 门禁 | 回答 | 不回答 |
 |---|---|---|
-| issue-management policy（Advanced 02） | 进入 review 的人类 PR 的 Issue 引用、kind/area/priority 元数据是否合规 | 批准分数、语义质量 |
+| issue-management policy（Reference 02） | 进入 review 的人类 PR 的 Issue 引用、kind/area/priority 元数据是否合规 | 批准分数、语义质量 |
 | weighted approval（本页） | 具备写权限的人是否已按加权规则累计出 2 分批准，无 blocking review | 实现是否正确、意图是否合理 |
-| semantic review（Advanced 06） | 实现、文档、证据是否真的符合意图与决定 | 替代运行检查或用户决定 |
+| semantic review（Reference 06） | 实现、文档、证据是否真的符合意图与决定 | 替代运行检查或用户决定 |
 
 三道都过，PR 才是 GitHub 眼中可 merge 的状态；任何一道失败，作者继续在同一分支修正并 push。
 

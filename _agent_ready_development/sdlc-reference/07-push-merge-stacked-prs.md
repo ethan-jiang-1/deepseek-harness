@@ -1,4 +1,4 @@
-# Advanced 07 · Branch rewrite 与 Stacked Pull Requests
+# Reference 07 · Branch rewrite 与 Stacked Pull Requests
 
 ## 一句话
 

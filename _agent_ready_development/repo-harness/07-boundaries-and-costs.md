@@ -19,11 +19,11 @@ DSH 展示的是怎样组织复杂参与知识，而不是怎样让复杂系统�
 1. **可读不等于简单。** Catalog、统一术语和 owner 让复杂系统可查询，但包、事件和生命周期仍然复杂。
 2. **Skill 不等于 enforcement（强制执行）。** Skill 是 guidance；可机械规则仍需类型、脚本或 invariant，语义仍需 review。
 3. **Plugin disposal 不等于 transaction rollback（事务回滚）。** disposer 撤销拥有的注册与资源，不会自动补偿已经发生的外部写入。
-4. **Runtime inspection 不等于 security sandbox（安全沙箱）。** `tool-cordis` 能查询和试验活运行时，但 DSH 明确把它视为 bash-equivalent trust。
+4. **Runtime inspection 不等于 security sandbox（安全沙箱）。** `tool-cordis` 只读查询活运行时；vm 隔离只防意外全局污染，注入的 filesystem、shell、network service 仍有真实权限。
 
-> This is an opt-in development tool with bash-equivalent trust, not a security boundary or product default.
+> The vm prevents accidental global pollution; injected filesystem, shell, and network services still have real authority, so it is not a security boundary.
 >
-> — DSH [`self-referential Cordis toolset` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)。这段原文限定了动态自省与修改能力的安全含义。
+> — DSH [`self-referential Cordis toolset` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（0.1.7 线改写为 "Cordis runtime inspection and runner isolation"）。这段原文限定了运行时查询能力的安全含义。
 
 ## 知识外置本身有维护成本
 
