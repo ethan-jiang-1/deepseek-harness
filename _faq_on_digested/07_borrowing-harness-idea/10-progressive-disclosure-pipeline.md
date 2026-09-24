@@ -7,7 +7,7 @@
 | 层 | 回答的问题 | DSH 机制 | 可迁移性 |
 |---|---|---|---|
 | 1 静态组织 | 每种知识住哪、多大、什么时候读 | tier taxonomy、字数预算、AGENTS.md 骨架、catalog | 高（见 02/05/09） |
-| 2 按需注入 | 这一轮该把哪些文件/会话注入上下文 | context 插件：agent-instructions、file-reference、session-reference、time/tmux | 中高 |
+| 2 按需注入 | 这一轮该把哪些文件/会话注入上下文 | context 插件：agent-instructions、file-reference(+local)、session-reference、time/tmux | 中高 |
 | 3 运行时组装 | 这一轮模型实际看到什么（sections/context/tools） | system-prompt assembly、skill catalog 只给摘要、`ctx.tools.restrict` | 中 |
 | 4 溢出回收 | 上下文超预算了怎么办 | token meter + compaction + tool-result pruning | 中 |
 | 5 隔离边界 | 谁能看到什么 | subagent spawn 不带父历史、fork 只带 seed | 高 |
@@ -24,7 +24,7 @@
 
   这一条是「AGENTS.md 骨架」（09 的会话态）在运行时的真实实现：文件层面「合适个数」，运行时层面「触达才加载 + 有预算 + 去重」（机制见 [`05_root-entry-doc-navigation/01-runtime-injection.md`](../05_root-entry-doc-navigation/01-runtime-injection.md)）。
 
-- **`file-reference`**：`@file` grammar，模型按需引用具体文件。
+- **`file-reference` / `file-reference-local`**：`@file` mention grammar 与本地工作区的补全 provider。
 - **`session-reference`**：其它会话的 bounded snapshot（有界快照，不是整段搬）。
 - **`time-context` / `tmux-context`**：当前时间 / 位置这类「便宜但有用」的事实。
 

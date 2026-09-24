@@ -30,9 +30,9 @@ DSH 的对策是 inspectability（可检查性）：提供查询入口，让 age
 
 ## 边界提醒
 
-运行时查询 ≠ 安全沙箱。DSH 把 `tool-cordis` 明确定义为 **opt-in development tool、bash-equivalent trust**：
+运行时查询 ≠ 安全沙箱。`tool-cordis` 的 Host 定义在 vm realm 里求值，但 vm 只防意外全局污染，注入的服务仍有真实权限（两只读工具本身 opt-in、不做变更；持久安装走 `plugin_manager`）：
 
-> This is an opt-in development tool with bash-equivalent trust, not a security boundary or product default.
+> The vm prevents accidental global pollution; injected filesystem, shell, and network services still have real authority, so it is not a security boundary.
 
 所以「可查询/可试验」不代表「不需要授权」，也不代表外部副作用能回滚。迁移时别把「给 agent 一个 inspect 工具」当成「给了它一个沙箱」。
 

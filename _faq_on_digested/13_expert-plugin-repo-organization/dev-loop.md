@@ -67,7 +67,7 @@
 
 1. **占哪个 ctx 键 / 发哪些事件**？每条流一个自己的键，`inject` 声明依赖（依赖 Service Definition、不依赖具体 provider——`packages/README.md` 的 Dependencies 规则），不劫持别人的。
 2. **模型会看见什么新状态**？model-visible ⟺ logged（下称**日志税**）——每个新的模型可见输入都要配 `SessionEventMap` 成员（并决定 `ignorable`），否则日志重建不出来。这问漏了，第 5 阶段调试时会以"日志读不全"的形式还债。
-3. **UI 走哪层**？presenter 层（`presentCall`/`presentResult` + `presentationMeta`，纯函数、可 replay；注意内置 Web Client 不消费它，不配 client 时显示 generic fallback 卡）→ 专属 Web 卡的 `tool.call.toolview` 槽注册 / 独立 UI 面的 `dsh.client.inject` / 自定义 View 的 `ctx.uiConversation.views` 注册 → 改内置卡片组件本体（仅方案 B）。
+3. **UI 走哪层**？presenter 层（`presentCall`/`presentResult` + `presentationMeta`，纯函数、可 replay；注意内置 Web Client 不消费它，不配 client 时显示 generic fallback 卡）→ 专属 Web 卡的 `tool.call.toolview` 槽注册 / 独立 UI 面的 `dsh.client.inject` / 自定义 View 的 `ctx.uiConversation.views` 注册 → 改内置卡片组件本体（仅方案 B）。分层事实的家：[answer](./answer.md) 决策 4。
 4. **证据是什么**？"会为这次回归而失败"的那个测试长什么样——现在就点名，第 4 阶段写它。
 
 ## 第 4 阶段 · 落地：窄证据切片闭环

@@ -36,7 +36,7 @@ DSH 没有把六类信息混写在一份总览里，而是**一个问题一个 o
 
 最容易误读的一点，是把 DSH 的成就归因于「它的 agent 很聪明，所以不会糊涂」。实际正好相反。DSH 的自述是：
 
-> This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions.
+> This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions [...].
 
 （来源：DSH [`quality-gates` Agent Note](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)，英文原文）
 
