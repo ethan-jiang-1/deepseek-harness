@@ -7,7 +7,7 @@
   </defs>
   <rect width="1120" height="700" rx="6" fill="#fafafa"/>
   <text x="560" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">一次变更：三个条件入口汇入同一个交付核心</text>
-  <text x="560" y="51" text-anchor="middle" font-size="11" fill="#667085">条件入口各有适用范围；非平凡变更必须有 owning Agent Note，交付决定进入 implemented Note。</text>
+  <text x="560" y="51" text-anchor="middle" font-size="11" fill="#667085">条件入口各有适用范围；承载持久决定理由的变更必须有 owning Agent Note（机械/局部编辑豁免）。</text>
 
   <text x="52" y="91" font-size="12" font-weight="700" fill="#475569">条件入口</text>
   <rect x="52" y="108" width="300" height="112" rx="8" fill="#e8f1fb" stroke="#6b9ac4"/>
@@ -52,7 +52,7 @@
   <rect x="787" y="323" width="196" height="104" rx="7" fill="#f7ecda" stroke="#c68b2c"/>
   <text x="885" y="351" text-anchor="middle" font-size="13" font-weight="700" fill="#744d0f">owning Agent Note</text>
   <text x="885" y="376" text-anchor="middle" fill="#805915">decision · alternatives</text>
-  <text x="885" y="398" text-anchor="middle" font-size="11" fill="#916d32">每个非平凡变更必须覆盖</text>
+  <text x="885" y="398" text-anchor="middle" font-size="11" fill="#916d32">持久决定理由变更必须覆盖</text>
 
   <line x1="332" y1="375" x2="349" y2="375" stroke="#475569" marker-end="url(#arrow)"/>
   <line x1="549" y1="375" x2="566" y2="375" stroke="#475569" marker-end="url(#arrow)"/>

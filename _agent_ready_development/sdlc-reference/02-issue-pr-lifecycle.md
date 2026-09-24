@@ -6,9 +6,9 @@
 
 本页拥有 `.github/` 的精确事件与 policy；它为什么构成仓库 Development Harness 的远端反馈层，见 [可执行反馈](../repo-harness/05-executable-feedback.md)。
 
-> Decide whether the human-review policy applies to a PR: `return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)`.
+> Decide whether the human-review policy applies to a PR.
 >
-> — DSH [`.github/issue-management/rules.mjs` 的 `requiresPullRequestPolicy()`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/issue-management/rules.mjs)（0008 复核改注：函数实现在 `rules.mjs:60`，`policy.mjs` 现只是分发入口；早期基线它住在 `policy.mjs`）。这里的条件说明 policy 管的是“已经进入 review 的人类作者 PR”，不是所有 PR，也不是 reviewer 身份。
+> — DSH [`.github/issue-management/rules.mjs` 的 `requiresPullRequestPolicy()` JSDoc](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/issue-management/rules.mjs)（0008 复核改注：函数实现在 `rules.mjs:60`，`policy.mjs` 现只是分发入口；早期基线它住在 `policy.mjs`）。适用条件由函数体 `return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)` 给出，见下节代码块；它说明 policy 管的是“已经进入 review 的人类作者 PR”，不是所有 PR，也不是 reviewer 身份。
 
 ![GitHub 事件如何进入 policy、Project 和 CI](./figures/github-event-flow.svg)
 

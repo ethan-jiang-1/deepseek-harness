@@ -10,7 +10,11 @@ Inspectability（可检查性）要求系统提供查询入口，让 agent 用�
 
 ## 查询一：最终配置树是什么
 
-> To see the tree your machine boots: `dsh --profile web --dump-config`
+> To see the tree your machine boots:
+>
+> ```sh
+> dsh --profile web --dump-config
+> ```
 >
 > — DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md#profiles-and-bundles)。这条命令回答 profile、bundle 和 patch 叠加后的实际 boot 配置，而不是源码中可能出现的所有插件。
 
@@ -26,7 +30,7 @@ Inspectability（可检查性）要求系统提供查询入口，让 agent 用�
 
 DSH 的 opt-in `@deepseek-ai/dsh-tool-cordis` 在固定基线注册两个只读查询工具（0.1.7 线 #4745 起，`cordis_inspect_self` 与四个变更工具已退役）：`cordis_inspect_list` 发现 Host 与 Client Inspect Providers 及其方法，`cordis_inspect_query` 按 provider 声明的 schema 执行精确查询。
 
-> List every Cordis Inspect Provider currently known to the Host [...]. Call this Tool before writing or configuring a plugin, then select the provider and method for `cordis_inspect_query` from its result. Do not guess names or treat an Inspect method as a business Service that Plugin code can call. [...] Run a read-only query declared by an Inspect Provider. [...] This Tool cannot invoke business Service methods or modify the runtime.
+> List every Cordis Inspect Provider currently known to the Host [...]. Call this Tool before writing or configuring a plugin, then select the provider and method for cordis_inspect_query from its result. Do not guess names or treat an Inspect method as a business Service that Plugin code can call. [...] Run a read-only query declared by an Inspect Provider. [...] This Tool cannot invoke business Service methods or modify the runtime.
 >
 > — DSH [`tool-cordis` source 的两个工具 description](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/src/index.ts)（0.1.7 线起该包只注册这两个只读工具，不再贡献 system prompt，查询纪律由工具描述自述）：查询先发现 provider 与方法，再按返回 schema 执行，不能猜名称或把只读 Inspect method 当成业务 Service。
 
