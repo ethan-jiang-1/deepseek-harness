@@ -21,7 +21,7 @@ Reviewer 不只读变更行，还要连接四类上下文：
 3. 源码与当前文档：系统交付后怎样工作和失败；
 4. Tests、snapshots 和 CI：哪些场景已经建立可重复证据。
 
-高风险变更还要沿真实 consumer（消费方）和 entry path（入口路径）检查错误、取消、资源释放、并发、安全限制、模型可见内容与发布产物。完整语义维度见 [code review 高级参考](../advanced-sdd-flow/06-review-and-human-role.md)。
+高风险变更还要沿真实 consumer（消费方）和 entry path（入口路径）检查错误、取消、资源释放、并发、安全限制、模型可见内容与发布产物。完整语义维度见 [code review 参考](../sdlc-reference/06-review-and-human-role.md)。
 
 ## Review 是一个反馈循环
 
@@ -33,11 +33,11 @@ Finding（评审发现）应指出 defect（缺陷）、location（位置）、i
 
 Required checks 通过、review requirements 满足、PR 不再是 Draft 且 GitHub 报告可合并时，普通 PR 才进入 merge。合并后目标分支成为当前交付状态。
 
-Merge 只改变分支和 PR 状态，不会自动改变 Agent Note 的生命周期；精确的归档条件由 [Agent Note 高级参考](../advanced-sdd-flow/01-agent-note-lifecycle.md) 说明。
+Merge 只改变分支和 PR 状态，不会自动改变 Agent Note 的生命周期；精确的归档条件由 [Agent Note 参考](../sdlc-reference/01-agent-note-lifecycle.md) 说明。
 
 ## 需要深入时
 
-普通变更在这里结束。需要核对精确 policy、Agent Note 状态、Plan 审批、证据路由、高风险 review、分支改写或依赖式 PR 栈时，从 [Advanced SDD Flow 目录](../advanced-sdd-flow/00-index.md) 按问题进入对应参考页。
+普通变更在这里结束。需要核对精确 policy、Agent Note 状态、Plan 审批、证据路由、高风险 review、分支改写或依赖式 PR 栈时，从 [SDLC Reference 目录](../sdlc-reference/00-index.md) 按问题进入对应参考页。
 
 ## 完成后的心智模型
 

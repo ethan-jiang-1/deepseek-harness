@@ -38,7 +38,7 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 | [`04-implementation-and-evidence.md`](./04-implementation-and-evidence.md) | 实现时要带上哪些证据，本地检查与远端 CI 怎样分工 |
 | [`05-review-and-merge.md`](./05-review-and-merge.md) | 自动检查、语义评审、用户交互与最终合并分别负责什么 |
 
-第一次阅读可以在 `05` 结束。需要查精确 policy、内部状态或例外流程时，再进入 [Advanced SDD Flow 参考](../advanced-sdd-flow/00-index.md)。想知道 DSH 为什么容易被 coding agent 理解和修改，以及 `AGENTS.md`、Agent Notes、Skills、gates、runtime inspection 和 `.github/` 怎样共同工作时，进入 [Development Harness 专题](../development-harness/00-index.md)。
+第一次阅读可以在 `05` 结束。需要查精确 policy、内部状态或例外流程时，再进入 [SDLC Reference](../sdlc-reference/00-index.md)。想知道 DSH 为什么容易被 coding agent 理解和修改，以及 `AGENTS.md`、Agent Notes、Skills、gates、runtime inspection 和 `.github/` 怎样共同工作时，进入 [Development Harness 专题](../repo-harness/00-index.md)。
 
 ## 核心术语
 
@@ -65,4 +65,4 @@ DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；
 
 **SDD 管“变更应该成为什么”，GitHub Flow 管“变更怎样安全到达主分支”。**
 
-返回 [语料总入口](../README.md)，或继续阅读 [Advanced SDD Flow](../advanced-sdd-flow/00-index.md) 与 [Development Harness](../development-harness/00-index.md)。
+返回 [语料总入口](../README.md)，或继续阅读 [SDLC Reference](../sdlc-reference/00-index.md) 与 [Development Harness](../repo-harness/00-index.md)。

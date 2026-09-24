@@ -73,7 +73,7 @@ Supersession 判断“哪个活动 Note 继续拥有决定”；archive 判断�
 
 Archive 只移动完整 `.md`、`.zh.md`、`.i18n.yaml` triplet，在两种语言的 status 下插入相同 `Archived: YYYY-MM-DD`，重录 sidecar，并修复活动 prose 的入站链接。`verify-archived-agent-notes` 把归档内容写入 append-only hash manifest；封存后不得编辑、翻译、移动或删除。
 
-`dsh-archive-agent-notes` 在这里拥有具体的保留、归档与删除判断；Skill 为什么适合承载这类情境化流程、又为什么不能替代格式 gate，见 [Development Harness 的 Skills 章节](../development-harness/03-skills-as-procedural-memory.md)。
+`dsh-archive-agent-notes` 在这里拥有具体的保留、归档与删除判断；Skill 为什么适合承载这类情境化流程、又为什么不能替代格式 gate，见 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md)。
 
 ## 证据入口
 

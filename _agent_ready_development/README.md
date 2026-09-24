@@ -4,39 +4,37 @@ Agent-ready Development 指一套让人类与 coding agent（编码代理）都�
 
 本目录是一套可独立发行的学习与研究语料。它以 Spec-driven Development（SDD，规格驱动开发）和 GitHub Flow（GitHub 协作流）建立变更主线，再以 DeepSeek Harness（DSH）说明成熟的 Development Harness（开发 Harness）怎样把规则、知识、工具和反馈组织成可参与的环境。DSH 没有正式声明采用一套名为 SDD 的方法；这里借用 SDD 视角解释其可观察机制。
 
-## 三条阅读路径
+## 三个视角，各看什么
 
-| 路径 | 适合谁 | 核心问题 |
+| 路径 | 视角：看什么 | 怎么读 |
 |---|---|---|
-| [Foundations（基础教程）](./foundations/README.md) | 尚未系统理解 SDD 或 GitHub Flow 的读者 | 一次普通变更怎样从意图走到合并？ |
-| [Advanced SDD Flow（高级 SDD 流程）](./advanced-sdd-flow/README.md) | 已理解普通流程，需要核对精确条件、状态或例外的读者 | 复杂变更和远端协作机制具体怎样运作？ |
-| [Development Harness（开发 Harness）](./development-harness/README.md) | 想理解仓库怎样帮助 coding agent 修改仓库自身的读者 | 规则、Skills、结构、检查和运行时查询怎样降低参与难度？ |
+| [SDLC Tutorial（流程教程）](./sdlc-tutorial/README.md) | 一次普通变更怎样从意图走到合并——SDD 与 GitHub Flow 的主线 | 从头到尾按顺序跟一遍 |
+| [SDLC Reference（流程参考）](./sdlc-reference/README.md) | 同一条生命周期（意图入口 → 决策 → 计划 → 实现 → 评审 → 批准 → 发布）每一步的精确条件、状态与例外 | 按问题查，不必通读 |
+| [Development Harness（开发 Harness）](./repo-harness/README.md) | 不看流程本身，看仓库怎样让 coding agent 看懂、修改、验证 DSH——AGENTS.md、Skills、gates、运行时查询的组织原理 | 在 Tutorial 之后读，或按兴趣单独进入 |
 
-第一次接触本主题时，从 Foundations 开始。Advanced SDD Flow 的“高级”只相对于 Foundations 中的普通 SDD/GitHub 变更流：它不是整个 Agent-ready Development 的杂项高级区，也不包含 Development Harness。Development Harness 是另一条平级叙事，可以在 Foundations 之后阅读，也可以按兴趣单独进入。
+三个视角的差异：前两者是**同一条 SDLC 主线的两种深度**——Tutorial 负责建立心智模型，Reference 负责精确到可核对；第三者是**另一个视角**——不看"变更怎样走"，看"仓库为参与者提供了什么"。不确定该进哪个时：想学会走流程读 Tutorial，想核对某条规则的确切条件读 Reference，想理解"为什么这个仓库对 agent 友好"读 Development Harness。
 
-三条路径共同回答一件事：
+## DSH 在这里扮演什么角色，理解从哪里来
 
-- SDD 管“变更应该成为什么”；
-- GitHub Flow 管“变更怎样经过协作进入主分支”；
-- Development Harness 管“参与者怎样看懂仓库、完成修改并获得反馈”。
+本语料对 DSH 的全部理解都只从 DSH 的 GitHub 仓库 [`deepseek-ai/deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness/tree/46a7f68b0922371ce7144b668b90e377d8e799f4) 的一手内容挖出：源码、文档、`AGENTS.md`、`.agents/`、`.github/`、Skills、workflows，以及该仓库 git 历史中的 commit 与 tag。语料不使用任何二手转述或仓库外的描述性材料；其它研究目录不参与本语料的证据链。
 
-## DSH 在这里扮演什么角色
+挖取按版本进行：当前这一轮把全部目录外引用钉在 commit `46a7f68b0922371ce7144b668b90e377d8e799f4`（tag `dsh-v0.1.7-rc.1`）——这是“本语料此刻尊敬的版本”，不是永久前提。DSH 处于 developer preview，它的研发体系本身也会继续改：Issue/PR 门禁、评审制度、发布链路这些被挖出来的机制都随上游版本演进。语料随上游版本不断 re-pin，逐条复核并改写过时的结论（历轮 re-pin 与复核记录见 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md)）；读到与本页不同的基线 commit 时，以维护页最新一轮为准。
 
-正文会先用本目录内的文字和图解释概念，再把 DSH 固定版本中的源码、文档、`.agents/`、`.github/`、Skills、workflows 和 Agent Notes 作为一手证据。关键规则尽量以 Markdown blockquote 摘录，并说明它来自 DSH 的哪个部分以及能证明什么；读者不需要先理解 DSH 才能读懂主线。
+具体做法是：结论先在正文里讲清楚，关键规则以 Markdown blockquote 摘录仓库原文，并给出来自该仓库固定 commit 的可核对链接与出处说明；读者不需要先理解 DSH 才能读懂主线，也可以顺着链接回到原文逐条核对。仓库没有声明的制度（例如它从未自称采用一套名为 SDD 的方法）在本语料中一律表述为“可观察机制的综合”，而不是官方方法名。
 
 本语料不引用其它研究语料。目录外链接只指向固定 commit 的 DSH 内容，因此可以独立发行，同时保留回到原始证据的路径。
 
-## 目录
+## 目录：每个子目录为什么存在，什么时候改它
 
-| 路径 | 职责 |
-|---|---|
-| [`foundations/`](./foundations/README.md) | SDD 与 GitHub Flow 的顺序入门教程 |
-| [`advanced-sdd-flow/`](./advanced-sdd-flow/README.md) | 高级 SDD/GitHub 变更流参考 |
-| [`development-harness/`](./development-harness/README.md) | DSH Development Harness 专题 |
-| [`_coverage/`](./_coverage/README.md) | 证据范围、结构约束与维护入口 |
-| [`verify.mjs`](./verify.mjs) | 自包含的链接、文件和图示校验脚本 |
+| 路径 | 为什么要有它 | 什么时候需要改它 |
+|---|---|---|
+| [`sdlc-tutorial/`](./sdlc-tutorial/README.md) | 新读者（人或 fresh agent）需要一条按顺序跟完的完整主线；没有它，每次都要从零散规则里自己拼流程。它用一次普通变更把"意图 → 决策 → 实现 → 评审 → 合并"串成可跟读的故事，专教第一次 | 只有当主线叙事本身错了或缺了一段普通路径时才动它；改前先确认对应精确机制在 Reference 里的表述 |
+| [`sdlc-reference/`](./sdlc-reference/README.md) | 教程为了好读省略了大量精确条件（policy 触发时机、状态机例外、加权批准公式、发布序列）；核对事实不能靠教程记忆。它是按问题可查的精确参考，也是历轮 re-pin 逐条复核的主战场 | 最常改的一卷：任何一手事实变化（workflows、policy、release、评审制度）都按 `_coverage` 的重审触发路径改对应页，并同步改写受影响的正文结论 |
+| [`repo-harness/`](./repo-harness/README.md) | 流程之外有一个独立问题：为什么这个仓库对 coding agent 特别可参与？AGENTS.md、Skills、gates、生成目录、运行时查询这些机制本身值得一个专题来回答"仓库怎样帮 agent 看懂、修改、验证自己" | 仓库机制清单变化时改（Skills 增减、gate 结构、inspect 工具面、preset 组装）；历轮教训是这类"现状清单"最容易在 re-pin 时漏改，见 `_coverage` 0008 注记 |
+| [`_coverage/`](./_coverage/README.md) | 语料的可信度取决于证据范围与复核记录：钉了哪个版本、哪些来源核过、上游什么变化要触发重审、历轮改了什么。没有它，更新就不知道从哪下手、哪些结论还站得住 | 每轮挖取/re-pin/改名都必须在这里留一条带日期的记录；改动了证据范围或结构约束时同步更新对应节 |
+| [`verify.mjs`](./verify.mjs) | 语料的结构规则（严格 UTF-8、结尾换行、相对链接与锚点、钉版 DSH 外链、目录 README、SVG 规范）用可执行脚本强制，不靠人记；它使"语料改动没有破坏结构"可以机器回答 | 只在结构规则本身变化时改；改完要确认代表性无效输入会被拒绝 |
 
-每个主题拥有自己的 `README.md`、`00-index.md` 和 `figures/`；图只服务所在主题的正文。
+三个视角（前三个目录）的关系：SDLC Tutorial 和 SDLC Reference 是**同一条变更主线的两种深度**（先学后查）；Development Harness 是**另一个视角**——不看"变更怎样走"，看"仓库为参与者提供了什么"。每个主题拥有自己的 `README.md`、`00-index.md` 和 `figures/`；图只服务所在主题的正文。目录名在 2026-09-24 轮从 `foundations/`、`advanced-sdd-flow/`、`development-harness/` 更名为现名，理由记录在 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md)。
 
 ## 验证
 

@@ -26,7 +26,7 @@ Local checks（本地检查）针对当前 outgoing diff（待推送差异）选
 
 PR CI 在远端运行更完整的 matrix（检查矩阵），覆盖共享规则、构建消费者和平台信号。它防止本地环境或证据选择遗漏仓库级问题。
 
-两者不是二选一：本地检查提供快速、针对性的反馈；CI 提供统一、远端和更广的信号。精确 scope 解析、coverage 选择和 CI job 拓扑见 [证据路由高级参考](../advanced-sdd-flow/04-gates-and-local-checks.md)。
+两者不是二选一：本地检查提供快速、针对性的反馈；CI 提供统一、远端和更广的信号。精确 scope 解析、coverage 选择和 CI job 拓扑见 [证据路由参考](../sdlc-reference/04-gates-and-local-checks.md)。
 
 ## Push 前的完成判断
 

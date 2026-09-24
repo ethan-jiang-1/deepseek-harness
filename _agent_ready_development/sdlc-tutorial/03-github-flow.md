@@ -54,6 +54,6 @@ Reviewer 阅读任务意图、适用时的 Agent Note、diff、当前文档和�
 
 仓库脚本拥有“检查什么”，GitHub workflow 拥有“何时运行、在哪里运行、怎样汇总”。这就是为什么理解 DSH 的 GitHub Flow 时必须阅读 `.github/`。
 
-Trusted policy（可信策略）、Project 状态转换和 CI job 拆分见 [`.github/` 高级参考](../advanced-sdd-flow/02-issue-pr-lifecycle.md)。普通开发先掌握本页主线即可。
+Trusted policy（可信策略）、Project 状态转换和 CI job 拆分见 [`.github/` 参考](../sdlc-reference/02-issue-pr-lifecycle.md)。普通开发先掌握本页主线即可。
 
 下一篇解释实现和验证：[实现与证据](./04-implementation-and-evidence.md)。

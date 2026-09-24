@@ -22,7 +22,7 @@ DSH 把机械可检查的 invariant（不变量）接到会失败的顶层命令
 
 `.github/` 因而是流程的一部分，但不是检查清单的唯一 owner。Workflow 调用 `check:ci:*`，具体 gate inventory 继续由仓库脚本维护。
 
-Skill、repository gate、GitHub workflow 和 semantic review 的一般职责分工由 [Development Harness 的 Skills 章节](../development-harness/03-skills-as-procedural-memory.md) 统一说明；本页只保留 push 前与 PR CI 的精确证据路由。
+Skill、repository gate、GitHub workflow 和 semantic review 的一般职责分工由 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md) 统一说明；本页只保留 push 前与 PR CI 的精确证据路由。
 
 ## 2. 先解析 outgoing scope
 

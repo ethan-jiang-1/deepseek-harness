@@ -61,7 +61,7 @@ agent 不应因为一个检查为绿就跳过其它层：coverage 只能说明�
 
 Push 和 Pull Request（PR）把本地交付组合放进 GitHub Flow。`.github/` 中的 workflow 决定远端触发、权限、runner 和检查聚合；repository scripts 拥有实际检查逻辑；reviewer 检查自动化不能判断的意图、生命周期、安全与表述。
 
-这部分的精确 policy 和失败状态由 [Advanced SDD Flow](../advanced-sdd-flow/00-index.md) 拥有。Development Harness 只强调一件事：远端反馈不是仓库知识之外的附加步骤，它是同一套规则的另一个执行环境。
+这部分的精确 policy 和失败状态由 [SDLC Reference](../sdlc-reference/00-index.md) 拥有。Development Harness 只强调一件事：远端反馈不是仓库知识之外的附加步骤，它是同一套规则的另一个执行环境。
 
 ## 任务完成后留下了什么
 
