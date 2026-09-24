@@ -34,11 +34,17 @@ Agent Note 还有 lifecycle（生命周期）：`proposed` 是待评审方案，
 
 Negative knowledge（负知识）包括“为什么不采用某条路”“这里为什么没有 runtime invariant”“这个能力有哪些已知限制”。如果这些信息只存在于 review 对话，fresh agent 很容易重复提出同一方案，或者把明确的缺席当作遗漏。
 
+> A decision recorded without what it beat invites re-litigation — the failure Agent Notes exist to prevent.
+>
+> — DSH [`.agents/notes/README.md` 的 “Alternatives considered — mandatory”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md#alternatives-considered--mandatory)。负知识的检验标准因此是防错而不是数量：一段“为什么不”的记忆只在仍能阻止可信错误时保留，这正是 rejected Note 的删除条件。
+
 DSH 使用 rejected Agent Notes、README 的 Known Limitations、README 中“为什么不发布 `./invariant`”的理由，以及冻结 archive 保存不同类型的负知识。它们的共同作用不是证明永远不能改变，而是让改变从已知理由开始。
 
 ## 生成目录降低查询成本
 
 工具、配置、持久事件、模块关系、capability seam 和 Cordis API 等清单由源码生成并检查 freshness（新鲜度）。生成目录的角色是 index（索引）：agent 可以按名称查询完整集合，而不必相信一张人工维护、可能已经漂移的表。
+
+决策语料刻意选另一端：`.agents/notes/` 不设任何集中索引，路径树（lifecycle × class × 日期 × 主题）本身就是清单，读者浏览目录或搜索仓库；Note 间的交叉引用只用相对 Markdown 链接，不用裸文字或编号，因此可机械检查、也能在目录间移动后存活。当前事实由生成目录索引，决定记忆由路径结构承载，两种方案都不维护第二份会漂移的清单。
 
 生成不等于语义正确。它能证明目录与被扫描源码一致，不能证明接口设计合理、JSDoc 准确或测试抓住了真实回归；这些仍由 owner prose、测试和 review 负责。
 

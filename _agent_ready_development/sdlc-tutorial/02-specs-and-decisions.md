@@ -21,7 +21,7 @@
 
 ## Agent Note 只拥有决定
 
-Agent Note 是仓库定义的 design decision record（设计决定记录）。承载持久决定理由的变更（源码表达不了「为什么选当前方案」与「主动放弃了什么」这两类事实的变更）都要新增或更新 owning Agent Note；机械或局部编辑（含局部 UI 呈现）豁免——0008 复核按上游收窄后的「durable decision rationale」标准改述。
+Agent Note 是仓库定义的 design decision record（设计决定记录）。承载持久决定理由的变更（代码、测试与现有文档都无法解释「为什么选当前方案」与「主动放弃了什么」这两类事实的变更）都要新增或更新 owning Agent Note；机械或局部编辑（含局部 UI 呈现）豁免——0008 复核按上游收窄后的「durable decision rationale」标准改述。
 
 Agent Note 有两个常见起点：
 

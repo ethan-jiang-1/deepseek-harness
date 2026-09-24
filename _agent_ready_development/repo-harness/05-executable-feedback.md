@@ -4,7 +4,7 @@
 
 如果规则只能被阅读，agent 做错后仍要等 review 才知道。DSH 把可机械判断的规则接到类型、load validation（加载校验）、测试、runtime invariant（运行时不变量检查）和 repository gate（仓库检查），让错误在距离来源较近的位置出现；无法机械判断的语义仍交给 review。
 
-> Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects.
+> Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects:
 >
 > — DSH [`Mechanical quality gates over prose guidelines` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/process/2026-06-11-quality-gates.md)。这段决定说明规则怎样从文字进入本地与 CI 的可执行路径。
 

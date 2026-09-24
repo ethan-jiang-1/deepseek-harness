@@ -4,7 +4,7 @@
 
 DSH 的变更意图没有统一入口：外部反馈进入 GitHub Discussions（仓库暂不接受外部 PR），内部工作项以 Bug / Feature / Task 三种 Issue 模板进入并挂到 GitHub Project 的生命周期状态机；proposed Agent Note、代码内的 FIXME/TODO 与 Dependabot 依赖 PR 是另外三类真实存在的意图载体。policy 只在特定时机强制元数据，"这个意图值不值得做"始终是语义判断。
 
-> We are sorry that we cannot accept external pull requests at the moment. However, contributing code to this repository is far from the only way to help. — Identify and report issues or bugs in GitHub Discussions.
+> We are sorry that we cannot accept external pull requests at the moment. However, contributing code to this repository is far from the only way to help. [...] Identify and report issues or bugs in GitHub Discussions:
 >
 > — DSH [`CONTRIBUTING.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/CONTRIBUTING.md)。这段话同时划定两件事：代码变更只由内部团队与 coding agent 完成；外部输入的通道是 Discussions 加 upvote，由团队监控并用于排期。
 
