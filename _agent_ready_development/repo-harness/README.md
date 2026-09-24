@@ -6,11 +6,11 @@
 
 ## 主入口
 
-从 [`00-index.md`](./00-index.md) 开始，并按 `01` 至 `07` 顺序阅读。该页拥有专题定义、阅读路径和术语；本 `README.md` 只说明目录职责。
+从 [`00-index.md`](./00-index.md) 开始，并按 `01` 至 `09` 顺序阅读。该页拥有专题定义、阅读路径和术语；本 `README.md` 只说明目录职责。
 
 ## 直接内容
 
 | 路径 | 职责 |
 |---|---|
-| [`01-follow-a-fresh-agent.md`](./01-follow-a-fresh-agent.md) 至 [`07-boundaries-and-costs.md`](./07-boundaries-and-costs.md) | 从具体参与过程进入知识归属、Skills、正确路径、反馈、运行时查询与适用边界 |
+| [`01-follow-a-fresh-agent.md`](./01-follow-a-fresh-agent.md) 至 [`09-plugin-author-entry.md`](./09-plugin-author-entry.md) | 从具体参与过程进入知识归属、Skills、正确路径、反馈、运行时查询、适用边界、仓库分类学与插件作者入口 |
 | [`figures/`](./figures/README.md) | 只服务本目录正文的机制图示 |

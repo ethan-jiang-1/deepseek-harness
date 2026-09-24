@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="510" viewBox="0 0 1000 510" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title id="title">内容的五种维护形态与 docs 分区剖面</title>
+  <desc id="desc">从手写、混合、生成、录制到投影五种维护形态各自的例子与机器边界，以及 docs 目录同时住着四种形态、website 住第五种的对齐图。</desc>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1000" height="510" rx="6" fill="#fafafa"/>
+  <text x="500" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">仓库分类学：形态由 owner 与机器边界决定，不由目录名决定</text>
+  <text x="500" y="51" text-anchor="middle" font-size="11" fill="#667085">从左到右机器参与度递增；判断一个文件属于哪种形态，看它的 owner 和 gate，不看它在哪个目录。</text>
+
+  <rect x="30" y="72" width="176" height="170" rx="8" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="118" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">手写维护</text>
+  <text x="42" y="122" font-size="11" fill="#475569">AGENTS.md · docs 正文</text>
+  <text x="42" y="140" font-size="11" fill="#475569">package README</text>
+  <text x="42" y="158" font-size="11" fill="#475569">活动 Notes · Skills</text>
+  <line x1="42" y1="196" x2="194" y2="196" stroke="#94a3b8" stroke-dasharray="4 3"/>
+  <text x="42" y="216" font-size="10.5" fill="#64748b">结构受 gate，内容人写</text>
+  <text x="42" y="232" font-size="10.5" fill="#64748b">预算 · 格式 · 配对</text>
+
+  <rect x="221" y="72" width="176" height="170" rx="8" fill="#f7ecda" stroke="#c68b2c"/>
+  <text x="309" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#744d0f">混合</text>
+  <text x="233" y="122" font-size="11" fill="#805915">subsystem 页内的</text>
+  <text x="233" y="140" font-size="11" fill="#805915">cordis-surface 生成区域</text>
+  <text x="233" y="158" font-size="11" fill="#805915">type-equiv 贴类型块</text>
+  <line x1="233" y1="196" x2="385" y2="196" stroke="#c68b2c" stroke-dasharray="4 3"/>
+  <text x="233" y="216" font-size="10.5" fill="#916d32">manifest 登记</text>
+  <text x="233" y="232" font-size="10.5" fill="#916d32">drift 检查抓漂移</text>
+
+  <rect x="412" y="72" width="176" height="170" rx="8" fill="#e8f1fb" stroke="#6b9ac4"/>
+  <text x="500" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#244e73">生成 + freshness</text>
+  <text x="424" y="122" font-size="11" fill="#355f82">tool / config /</text>
+  <text x="424" y="140" font-size="11" fill="#355f82">persistence / client</text>
+  <text x="424" y="158" font-size="11" fill="#355f82">catalog · module-graph</text>
+  <line x1="424" y1="196" x2="576" y2="196" stroke="#6b9ac4" stroke-dasharray="4 3"/>
+  <text x="424" y="216" font-size="10.5" fill="#54748f">生成器从源码再生成</text>
+  <text x="424" y="232" font-size="10.5" fill="#54748f">手改生成物被拒绝</text>
+
+  <rect x="603" y="72" width="176" height="170" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="691" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#245d35">录制</text>
+  <text x="615" y="122" font-size="11" fill="#326c42">snapshots fixture</text>
+  <text x="615" y="140" font-size="11" fill="#326c42">archived Agent Notes</text>
+  <text x="615" y="158" font-size="11" fill="#326c42">persistence releases</text>
+  <line x1="615" y1="196" x2="767" y2="196" stroke="#58a36d" stroke-dasharray="4 3"/>
+  <text x="615" y="216" font-size="10.5" fill="#4f775a">机器写 · 人审</text>
+  <text x="615" y="232" font-size="10.5" fill="#4f775a">封存后不可手改</text>
+
+  <rect x="794" y="72" width="176" height="170" rx="8" fill="#ede9f7" stroke="#8b7bb8"/>
+  <text x="882" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#554879">投影</text>
+  <text x="806" y="122" font-size="11" fill="#665a87">website/.generated/</text>
+  <text x="806" y="140" font-size="11" fill="#665a87">docs 的站点投影</text>
+  <line x1="806" y1="196" x2="958" y2="196" stroke="#8b7bb8" stroke-dasharray="4 3"/>
+  <text x="806" y="216" font-size="10.5" fill="#746894">disposable 派生物</text>
+  <text x="806" y="232" font-size="10.5" fill="#746894">只改 canonical source</text>
+
+  <text x="500" y="276" text-anchor="middle" font-size="12" font-weight="700" fill="#475569">同一个分区的剖面：docs/ 一个目录住着四种形态，website/ 住第五种</text>
+
+  <rect x="30" y="292" width="176" height="54" rx="7" fill="#fff" stroke="#94a3b8"/>
+  <text x="118" y="313" text-anchor="middle" font-size="11" fill="#334155">architecture.md 等</text>
+  <text x="118" y="332" text-anchor="middle" font-size="10.5" fill="#64748b">docs 正文（手写）</text>
+  <line x1="118" y1="292" x2="118" y2="246" stroke="#94a3b8" marker-end="url(#arr)"/>
+
+  <rect x="221" y="292" width="176" height="54" rx="7" fill="#fff" stroke="#c68b2c"/>
+  <text x="309" y="313" text-anchor="middle" font-size="11" fill="#744d0f">subsystems 页</text>
+  <text x="309" y="332" text-anchor="middle" font-size="10.5" fill="#916d32">cordis-surface 区域（混合）</text>
+  <line x1="309" y1="292" x2="309" y2="246" stroke="#c68b2c" marker-end="url(#arr)"/>
+
+  <rect x="412" y="292" width="176" height="54" rx="7" fill="#fff" stroke="#6b9ac4"/>
+  <text x="500" y="313" text-anchor="middle" font-size="11" fill="#244e73">tool-catalog 等</text>
+  <text x="500" y="332" text-anchor="middle" font-size="10.5" fill="#54748f">catalog 页（生成）</text>
+  <line x1="500" y1="292" x2="500" y2="246" stroke="#6b9ac4" marker-end="url(#arr)"/>
+
+  <rect x="603" y="292" width="176" height="54" rx="7" fill="#fff" stroke="#58a36d"/>
+  <text x="691" y="313" text-anchor="middle" font-size="11" fill="#245d35">persistence-changes/</text>
+  <text x="691" y="332" text-anchor="middle" font-size="10.5" fill="#4f775a">releases/（录制）</text>
+  <line x1="691" y1="292" x2="691" y2="246" stroke="#58a36d" marker-end="url(#arr)"/>
+
+  <rect x="794" y="292" width="176" height="54" rx="7" fill="#fff" stroke="#8b7bb8"/>
+  <text x="882" y="313" text-anchor="middle" font-size="11" fill="#554879">website/.generated/</text>
+  <text x="882" y="332" text-anchor="middle" font-size="10.5" fill="#746894">（投影）</text>
+  <line x1="882" y1="292" x2="882" y2="246" stroke="#8b7bb8" marker-end="url(#arr)"/>
+
+  <rect x="30" y="374" width="940" height="88" rx="8" fill="#fff" stroke="#cbd5e1"/>
+  <text x="52" y="400" font-size="12" font-weight="700" fill="#334155">放置规则各有 owner</text>
+  <text x="52" y="424" font-size="11" fill="#475569">包恰好属于一个组，分组表与组 README 是权威清单（packages/README.md）；测试证据跟 owning 层走，snapshots/ 只收 session 回放（snapshots/AGENTS.md）。</text>
+  <text x="52" y="446" font-size="11" fill="#475569">vendor/ 是所有权边界：框架层 owned 而非 depended，每次偏离上游在修改日志逐条留痕（vendor/README.md）。</text>
+
+  <text x="500" y="488" text-anchor="middle" font-size="11" fill="#667085">每个「放哪 / 谁维护 / 能不能手改」的问题都指向命名的 owner 或 gate；维护成本本身也是分类的一部分（字数预算与双语配对清单）。</text>
+</svg>
