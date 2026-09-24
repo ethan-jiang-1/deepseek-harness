@@ -23,7 +23,7 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 - **02 拆「读懂」**（[`02-legibility.md`](./02-legibility.md)）：静态可读性来自八个机制，共同保证「全部参与知识都以字面形式存在」，并且负知识、上下文入口也被外置。
 - **03 拆「做对」**（[`03-paved-road.md`](./03-paved-road.md)）：正确路径来自扩展点路由、控制权语义、生命周期归属、门禁与 invariant、以及**门禁自身被测试**的元验证。
 - **04 参与阶梯**（[`04-participation-paths.md`](./04-participation-paths.md)）：从改配置到改 loop，不同参与半径有不同的门、合同与检查半径；一次贡献还有完整生命周期。
-- **05 动态可读性**（[`05-dynamic-legibility.md`](./05-dynamic-legibility.md)）：dsh 不只可读，还可查询、可试验——`dump-config`、生成目录、`cordis_inspect_*` 与 `cordis_define` / `cordis_run` 让读者能问运行时。
+- **05 动态可读性**（[`05-dynamic-legibility.md`](./05-dynamic-legibility.md)）：dsh 不只可读，还可查询、可试验——`dump-config`、生成目录、两只读 `cordis_inspect_*` 工具与 `plugin_manager` 安装让读者能问运行时（0.1.7 线起 define/run 生命周期退到程序化 runner）。
 - **06 技术选型与语言贴合**（[`06-tech-and-language-fit.md`](./06-tech-and-language-fit.md)）：回答「dsh 的技术为什么容易被 coding agent 消化」——先验密度、语义贴合、低密度承重件本地化，三层共同作用。
 - **07 边界、成本与适用条件**（[`07-boundaries-costs-fit.md`](./07-boundaries-costs-fit.md)）：合同面被多重消费；原则与智能无关但形状与生产方式和组合压力有关；诚实列出 dsh 的成本与「何时不该学它」。
 - **08 判断纪律**（[`08-judgement-discipline.md`](./08-judgement-discipline.md)）：本专题自己的知识从哪来、如何标出处、如何做反事实检验，并给出核心 claim register。

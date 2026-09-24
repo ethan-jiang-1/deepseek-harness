@@ -44,7 +44,7 @@ bundle patches（dsh.profile.bundles 声明顺序）
 
 `resolveTelemetryPatch`：环境变量**任意非空**（含 `'0'` / `'false'`）都关掉。组合里没有 `session-telemetry-otel` 这一行就不生成补丁。隐私开关宁可误关，不误开。
 
-shipped preset root **不是** launcher 派生层：`dsh-agent-presets` 包自己以 `includeShippedRoot: true`（默认）+ 常量 `SHIPPED_PRESET_ROOT`（`packages/preset/agent-presets/src/discovery.ts`）解析 `../presets/`，不经 `composeProfile`。可写的用户 preset 根是 `$DSH_HOME/.agent-presets`（`USER_PRESET_DIR`）。
+**（0.1.7 线重写）** shipped preset root 机制已随 preset 声明式重设计退役：shipped presets 改由 bundle 携带（`packages/bundle/web-app/presets/*.patch.yml`），`agent-preset` 包不再有 `SHIPPED_PRESET_ROOT` / `includeShippedRoot` / `USER_PRESET_DIR` 的 discovery 常量；用户侧声明进 profile YAML。此段保留 0.1.5 线机制的原文记录。
 
 ## `boot()` 本身
 

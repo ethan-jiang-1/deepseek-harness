@@ -2,9 +2,9 @@
 
 ## 方法与基线
 
-机制结论以 [`_digested/`](../../_digested/00-index.md) 全部专题为底（当前基线 `dsh-v0.1.5-rc.2`，commit `fb2c4b9e69`）；本文最初写作时的消化基线是 `0.1.1-rc.2`（`b150a55…`），当时的行级漂移（如 `ctx.agentTeams`、`ctx.authorization` 这些晚于旧基线才出现的行）在 0006 同步后已并入基线。量化底座是 freshness-gated 的生成目录 [`docs/capability-seams.md`](../../docs/capability-seams.md)，数字一律以点数当时的生成表为准。原文写下的两次读数是"当前树读数（commit `3b1a213e9e…`，即 08/09 两篇 FAQ 提交的父提交）"与编辑复核点 `bb90e237f2…`：两处实测都是 28 条 seam、11 条 P≥2、39.3%、15 条单 Provider、2 条零 Provider、3 条零 Consumer，对这两个时点而言并没有写错。本次上游同步复核（2026-09-16）发现：**这些读数在 OLD 基线 `a66e470204`（dsh-v0.1.2-rc.1）时就已经全部过期，而 OLD 与 NEW 的 seam 层读数完全一致**——29 条 seam、12 条 P≥2、14 条单 Provider、3 条零 Provider、2 条零 Consumer。也就是说，这是本文写作时点与 OLD 之间就已存在的**存量失真，不是 `a66e470204 → fb2c4b9e69` 本次跨度引入的**；跨度内只动了 core（39 → 42，seam 层五个数字 OLD = NEW）。下表已按 **NEW 基线读数（commit `fb2c4b9e69`，dsh-v0.1.5-rc.2，2026-09-16 实测）** 重写。
+机制结论以 [`_digested/`](../../_digested/00-index.md) 全部专题为底（当前基线 `dsh-v0.1.7-rc.1`，commit `46a7f68b09`）；本文最初写作时的消化基线是 `0.1.1-rc.2`（`b150a55…`），当时的行级漂移（如 `ctx.agentTeams`、`ctx.authorization` 这些晚于旧基线才出现的行）在 0006 同步后已并入基线。量化底座是 freshness-gated 的生成目录 [`docs/capability-seams.md`](../../docs/capability-seams.md)，数字一律以点数当时的生成表为准。原文写下的两次读数是"当前树读数（commit `3b1a213e9e…`，即 08/09 两篇 FAQ 提交的父提交）"与编辑复核点 `bb90e237f2…`：两处实测都是 28 条 seam、11 条 P≥2、39.3%、15 条单 Provider、2 条零 Provider、3 条零 Consumer，对这两个时点而言并没有写错。本次上游同步复核（2026-09-16）发现：**这些读数在 OLD 基线 `a66e470204`（dsh-v0.1.2-rc.1）时就已经全部过期，而 OLD 与 NEW 的 seam 层读数完全一致**——29 条 seam、12 条 P≥2、14 条单 Provider、3 条零 Provider、2 条零 Consumer。也就是说，这是本文写作时点与 OLD 之间就已存在的**存量失真，不是 `a66e470204 → fb2c4b9e69` 本次跨度引入的**；跨度内只动了 core（39 → 42，seam 层五个数字 OLD = NEW）。下表已按 **NEW 基线读数（commit `fb2c4b9e69`，dsh-v0.1.5-rc.2，2026-09-16 实测）** 重写；0008 同步（2026-09-23）按 `46a7f68b09`（dsh-v0.1.7-rc.1）重测一轮并再次重写下表：**33 条 seam、15 条 P≥2、15 条单 Provider、3 条零 Provider、2 条零 Consumer**，总数从 72 涨到 89（54 core + 33 seam + 1 service + 1 bundle，生成表新增了 service 这一 role）。下文凡引用 29/41.4% 处均已同步推进，历史读数原样保留。
 
-生成表在 NEW 基线共 **72 个 `ctx` 服务**，按其 role 列拆分：**42 core + 29 seam + 1 bundle**（`ctx.agentLoop` 是 bundle）。seam 才是"可替换能力"，本文只在 29 条 seam 上做成熟度计算，core 只在下文"诚实边界"里单独处理。
+生成表在 0008 基线（`46a7f68b09`）共 **89 个 `ctx` 服务**，按其 role 列拆分：**54 core + 33 seam + 1 service + 1 bundle**（`ctx.agentLoop` 是 bundle；NEW 基线时为 72 = 42 core + 29 seam + 1 bundle，0008 跨度新增了 `service` role）。seam 才是"可替换能力"，本文只在 33 条 seam 上做成熟度计算，core 只在下文"诚实边界"里单独处理。
 
 ## 判据：供给侧与需求侧是两个独立的问题
 
@@ -14,7 +14,7 @@
 - **三条反向信号**：**自消费 seam**——Provider 与唯一 Consumer 是同一个包，等于还没有市场；**零 Provider seam**——Definition 立了、连默认实现都没有，API 形状仍可能在第一个实现落地时被改；**零 Consumer seam**——生成表 direct consumers 列为空（`sessionTelemetry`、`sessionTitle` 两条），两条各有出口（telemetry 离进程、title 经 projection），所以只算"待核查"信号，不作赤字结论；同组原先也为空的 `fileReferences` 在 OLD 之前已有 direct consumer `api-session-controller`。
 - **一条单位修正**：`ctx.approval` 不能用 Provider 数衡量。answerer 是 `approval/request` waterfall 的 listener，不注册成 Provider（生成表 P 列为空正是这条修正的读数）；它的成熟单位是 answerer 多样性 × 问题形状渲染，见"三个推翻"第 1 条。
 
-## 全景：29 条 seam 的 P/C 表（NEW 基线读数 `fb2c4b9e69`，2026-09-16 实测）
+## 全景：33 条 seam 的 P/C 表（0008 基线读数 `46a7f68b09`，2026-09-23 实测）
 
 P = implementation 包数，C = direct consumer 包数，按生成表 implementations / direct consumers 两列逗号切分计数；下表按 P 升序、C 降序排列。
 
@@ -24,42 +24,46 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 | `ctx.authorization` | 0 | 1 | 零 Provider（凭据获取流，晚于基线） |
 | `ctx.userQuestions` | 0 | 1 | 零 Provider（实现者在 UI 前端） |
 | `ctx.sessionPersistence` | 1 | 7 | 单 Provider（`4553c9d957` 移除 sqlite 后端后只剩 jsonl），7 个消费方 |
+| `ctx.jobs` | 1 | 6 | 单 Provider，消费全在模型工具一个面 |
 | `ctx.attachments` | 1 | 4 | 单 Provider，4 个消费方（含 Remote 会话控制器与两个 llm 适配器） |
-| `ctx.jobs` | 1 | 4 | 单 Provider，消费全在模型工具一个面 |
 | `ctx.credentials` | 1 | 3 | 配置面（`api-settings-controller` 的 Remote 投影 + 两个 llm 适配器） |
-| `ctx.settings` | 1 | 3 | 同上 |
-| `ctx.sandbox` | 1 | 2 | 组合件（bash/terminal 的 confine 前包装） |
+| `ctx.deepseekAccount` | 1 | 2 | 单 Provider（0008 复核新增：deepseek-account 账号登录面，替代裸 API key） |
 | `ctx.sessionQuery` | 1 | 2 | 单后端（sqlite） |
 | `ctx.workflowEngine` | 1 | 2 | 单引擎（worker-thread） |
 | `ctx.compaction` | 1 | 1 | **自消费：P 与 C 同一包** |
 | `ctx.fileReferences` | 1 | 1 | 单 Provider，消费方 `api-session-controller`（Remote 面） |
 | `ctx.lsp` | 1 | 1 | 单后端（stdio host） |
+| `ctx.mcpResources` | 1 | 1 | 单 Provider（0008 复核新增：mcp-resources 按需发现/读取 MCP resources） |
+| `ctx.speechToText` | 1 | 1 | 单 Provider（0008 复核新增：voice-input 语音转写族） |
 | `ctx.spillStore` | 1 | 1 | 单后端（local） |
 | `ctx.terminals` | 1 | 1 | 单后端（bash PTY） |
 | `ctx.sessionTelemetry` | 1 | 0 | 单后端，输出离开进程 |
 | `ctx.subprocess` | 2 | 7 | 组合件：本地/e2b，7 个消费方全在过程内 |
-| `ctx.codeRuntime` | 2 | 1 | 双后端（worker-thread + 实验 Python），`b75eec0967` 加入 |
+| `ctx.computerUse` | 2 | 2 | 双 Provider（0008 复核新增：CUA driver 的 mcp 与 native 两后端） |
+| `ctx.ptcRuntime` | 2 | 2 | 双 Provider（0008 复核新增：接替退役的 `ctx.codeRuntime`，PTC 命名重构） |
+| `ctx.sandbox` | 2 | 2 | 组合件（bash/terminal 的 confine 前包装） |
 | `ctx.deepseekLlmApiExtensions` | 2 | 1 | 原文整行漏收的 seam（OLD 时已是 2/1） |
 | `ctx.directoryPicker` | 2 | 1 | GUI-only seam（native/browse） |
-| `ctx.skills` | 2 | 1 | 双 provider 但**语义不可互换**：`skill-filesystem` 是通用加载器，`skill-badge` 只提供一条官方 badge 技能且出货行 `disabled: true`（`packages/bundle/base/cordis.patch.yml:281`） |
 | `ctx.storage` | 2 | 1 | 商品化（json/sqlite 并列注册） |
 | `ctx.sessionTitle` | 2 | 0 | 双 provider，经 projection 间接消费 |
 | `ctx.shell` | 3 | 4 | 商品化（bash-local/sandbox、pwsh-local） |
+| `ctx.browserUse` | 3 | 3 | 三 Provider（0008 复核新增：stagehand-native / chrome-devtools-mcp / playwright-mcp 驱动） |
 | `ctx.llm` | 3 | 2 | 含 1 个测试支持包（见下） |
 | `ctx.fs` | 3 | 1 | 商品化（local/sandbox/e2b），消费 1 面 |
+| `ctx.skills` | 3 | 1 | 双 provider 但**语义不可互换**：`skill-filesystem` 是通用加载器，`skill-badge` 只提供一条官方 badge 技能且出货行 `disabled: true`（`packages/bundle/base/cordis.patch.yml:281`） |
 | `ctx.web` | 4 | 1 | 同构三搜索 + 一 fetch（见下） |
 | `ctx.subagents` | 6 | 3 | 数量最多，语义只有三种位置 |
 
-## 可替换率 = 41.4%，量"能不能换"，不量"换出差异"
+## 可替换率 = 45.5%，量"能不能换"，不量"换出差异"
 
-12 / 29 = **41.4%**（P≥2 的 seam 占全部 seam 的比例）。它只回答一个问题：某条缝今天有没有第二个真实 Provider 可以无痛替换。至于"换掉之后有没有实质差异"，是另一个问题，没有干净的单数答案——下面四笔账说明的就是这个，它们不改变"能换"的分子，只改变"换了值不值"的解读：
+15 / 33 = **45.5%**（P≥2 的 seam 占全部 seam 的比例；NEW 基线读数 12 / 29 = 41.4%）。它只回答一个问题：某条缝今天有没有第二个真实 Provider 可以无痛替换。至于"换掉之后有没有实质差异"，是另一个问题，没有干净的单数答案——下面四笔账说明的就是这个，它们不改变"能换"的分子，只改变"换了值不值"的解读：
 
 - `ctx.llm` 3 个里 `llm-replay` 是测试支持包——删掉它仍有 deepseek / pi-ai 两个生产 Provider，能换，但生产选择不是 3 个；
 - `ctx.web` 4 个是三个同构搜索 API + 一个 fetch，同一失效模式——能换，但换不出差异化；
 - `ctx.subagents` 6 个按执行位置只有三类语义（进程内 spawn / fork、进程外 ACP / Codex / Claude Code、SDK 驱动）——能换，但 6 不等于 6 种能力；
 - `ctx.shell` 3 个里 pwsh 与 bash 是不同语族，不是同一功能的可互换替代——这条的"商品化"要单独打折。
 
-**"能换"（41.4%）与"换了有差异"是两件事；后者明显更低，且不该被压成一个拿来当标题的百分数。** 分布同样重要：多 Provider 集中在执行世界、持久化与 subagents——最难抄的基础设施；**单 Provider 区才是产品差异所在。"饱和"与"值钱"不重合**：饱和区是竞争者最该重造的，单 Provider 区才是官方该投资的。
+**"能换"（45.5%）与"换了有差异"是两件事；后者明显更低，且不该被压成一个拿来当标题的百分数。** 分布同样重要：多 Provider 集中在执行世界、持久化与 subagents——最难抄的基础设施；**单 Provider 区才是产品差异所在。"饱和"与"值钱"不重合**：饱和区是竞争者最该重造的，单 Provider 区才是官方该投资的。
 
 ## 被数字推翻的三个印象
 
@@ -69,7 +73,7 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 
 ## 饱和区：再造它必输的四个组合事实
 
-> 下面四项论证"竞争者要重造什么"，会带进 `sandboxPolicy`、`sessionProjections`、`ctx.agents` spine 几条 **core** 服务作为 seam 的相邻依赖——它们不计入 29 条 seam 的率，只说明重造这四块的门槛。
+> 下面四项论证"竞争者要重造什么"，会带进 `sandboxPolicy`、`sessionProjections`、`ctx.agents` spine 几条 **core** 服务作为 seam 的相邻依赖——它们不计入 33 条 seam 的率，只说明重造这四块的门槛。
 
 - **执行世界组合**（shell 3/4 + fs 3/1 + subprocess 2/7 + sandbox + sandboxPolicy）：resolve → confine → spawn 三层，本地 confinement 与 E2B 远程世界共存于同一套 Consumer（[`capability-seams/00-map`](../../_digested/capability-seams/00-map.md)、[`02-一次bash从tool到sandbox`](../../_digested/capability-seams/02-一次bash从tool到sandbox.md)）。再造一个 shell 家族等于重做它的全部消费方。
 - **会话底座**（persistence 1/7 + query + projection + title）：竞争者要抄的不是某个存储后端，是 `SESSION_FORMAT_VERSION` 版本纪律、双 SDK 同 PR 投影、冷读阶梯（[`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)）。
@@ -90,10 +94,10 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 ## 诚实边界
 
 1. **"一切皆插件"不递归到底**：Cordis 根 Context、Boot、Loader 先于插件树存在，核心下沉成组合内核而不是消失（[`harness-idea/07`](../../_digested/harness-idea/07-boundaries-costs-fit.md)）。
-2. **插件化 ≠ 安全**：`cordis_define`/`cordis_run` 是 opt-in、bash-equivalent trust，同进程代码挡不住直接 import Node API（[`harness-idea/05`](../../_digested/harness-idea/05-dynamic-legibility.md)）。
+2. **插件化 ≠ 安全**：`plugin_manager` 安装与 runner 挂载是 opt-in、bash-equivalent trust，同进程代码挡不住直接 import Node API；0.1.7 线起模型侧的 `cordis_define`/`cordis_run` 已退役，持久安装收进 danger 权限门控的 `plugin_manager`（[`harness-idea/05`](../../_digested/harness-idea/05-dynamic-legibility.md)）。
 3. **model-visible ⟺ logged 是硬税**：任何让模型看见的新能力都要配日志重建规则与新的 `SessionEventMap` 成员（[`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)）。
-4. **core 不是天花板**：42 个 core 里有两类——单一实现的 core 服务（如 `tokenMeter`、`toolResultPruner`：都是公开 ctx 键，唯一消费方是 `compaction-basic`，见 `docs/capability-seams.md:481-482`）与"还没人要求换"的候补 seam。生成器不区分这两类，只能按 role 列与各自 README 自述读；饱和/缺口判断只对 29 条 seam 有效。
+4. **core 不是天花板**：54 个 core 里有两类——单一实现的 core 服务（如 `tokenMeter`、`toolResultPruner`：都是公开 ctx 键，唯一消费方是 `compaction-basic`，见 `docs/capability-seams.md:481-482`）与"还没人要求换"的候补 seam。生成器不区分这两类，只能按 role 列与各自 README 自述读；饱和/缺口判断只对 33 条 seam 有效。
 
 ## 度量：数字怎么来的，下次怎么自动来
 
-P/C 从生成表 implementations / direct consumers 两列按逗号切分计数，即得 41.4%、14 条单 Provider、3 条零 Provider（`authorization`、`userQuestions`、`approval`）。四个已知坑：provider 计数会掺进测试包与同构包（所以 41.4% 只能读作"至少能换"的下界，不能读作"已商品化"）；consumer 面数需要按消费包所属面二次分类，表列给不出；direct consumers 列为空不代表没人用（`sessionTelemetry` 的输出离开进程、`sessionTitle` 经 projection 被间接消费）；行集随上游漂移（`agentTeams`、`authorization` 是晚于消化基线的两行实例，`deepseekLlmApiExtensions` 则是原文整行漏收的一条 seam）。建议方向：把 provider 角色与 consumer 面分类并入 [`scripts/gen-doc-graphs.ts`](../../scripts/gen-doc-graphs.ts) 的输出闸门，让"可替换率"变成每次 rc 同步自动重算的一行数字，而不是一次性手工点数。
+P/C 从生成表 implementations / direct consumers 两列按逗号切分计数，即得 45.5%、15 条单 Provider、3 条零 Provider（`authorization`、`userQuestions`、`approval`；NEW 基线读数 41.4%、14 条单 Provider，零 Provider 三条不变）。四个已知坑：provider 计数会掺进测试包与同构包（所以 45.5% 只能读作"至少能换"的下界，不能读作"已商品化"）；consumer 面数需要按消费包所属面二次分类，表列给不出；direct consumers 列为空不代表没人用（`sessionTelemetry` 的输出离开进程、`sessionTitle` 经 projection 被间接消费）；行集随上游漂移（`agentTeams`、`authorization` 是晚于消化基线的两行实例，`deepseekLlmApiExtensions` 则是原文整行漏收的一条 seam）。建议方向：把 provider 角色与 consumer 面分类并入 [`scripts/gen-doc-graphs.ts`](../../scripts/gen-doc-graphs.ts) 的输出闸门，让"可替换率"变成每次 rc 同步自动重算的一行数字，而不是一次性手工点数。

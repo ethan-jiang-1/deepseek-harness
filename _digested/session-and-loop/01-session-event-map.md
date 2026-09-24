@@ -23,13 +23,14 @@
 | `assistant/message` | 是（surface；空 content 派生为 null；内嵌 `stream`；可带 `interrupted: true`） |
 | `assistant/attempt` | 否（log-only；保存失败、重试、取消或流错误的尝试的内嵌 `stream`） |
 | `tool/call` | 否 |
-| `tool/result` | 是（surface） |
+| `tool/result` | 是（surface；v4 起一等 tool-role message：role `'tool'`、`toolCallId` 在 message 层、扁平 content，error 可带 `reason`——v3 的 wrapper block 迁移时提升，`packages/session/session-format-v3-to-v4/README.md:85-98`） |
 | `request/header` | 否（单独重建 config、adapterDefaults 与 tools） |
 | `request/context` | 否（只记录 provider、model、context window 与 `systemPromptUpdate` 能力） |
 | `todo/write` | 否（log-only UI；非 loop 写——`packages/todo/tool-todo/src/index.ts:210`） |
-| `session/end-seed` | 否（种子与 live 的分界；非 loop 写——Session 构造器是唯一合法写者，`packages/core/session/src/types.ts:400`；appender `packages/core/session/src/index.ts:607-609`） |
+| `developer/message` | 是（surface；v4 新增的第五类：开发者的可见消息，空节点保留位置不产生模型消息，`packages/core/session/src/types.ts:311-318`；provider/UI 显式拒绝不能表达的 developer 历史） |
+| `session/end-seed` | 否（种子与 live 的分界；非 loop 写——合法写者 = Session 构造器 + `buildForkSeed`（fork seed 可自带 tagged end-seed marker 与 child-owned synthetic closers，marker 不必在 `firstLiveSeq`，`packages/core/session/src/types.ts:405-427`）；appender `packages/core/session/src/index.ts:607-609`） |
 
-`SurfaceEventType` 有四类：`system/message`、`user/message`、`assistant/message`、`tool/result`（`packages/core/session/src/types.ts:412-416`）。只有它们可以带 `surfaceOp`；`assistant/message` **独占禁止** `sourceEventSeqs`，其余三类可引用非空、唯一、严格更早的 seq 集合。编译器在 `Session.append` 调用点强制：log-only 事件不许带 surface 字段。
+`SurfaceEventType` 有五类：`system/message`、`user/message`、`assistant/message`、`tool/result`、`developer/message`（v4 新增；`packages/core/session/src/types.ts:439-445`）。只有它们可以带 `surfaceOp`；`assistant/message` **独占禁止** `sourceEventSeqs`，其余四类可引用非空、唯一、严格更早的 seq 集合。编译器在 `Session.append` 调用点强制：log-only 事件不许带 surface 字段。
 
 `surfaceOp`：`'append'` 接到尾巴；`{ op: 'replace', startSeq, endSeq }` 换掉一段有序 surface（compaction 与 system 节点改写用）。端点按**当前 surface 顺序**、含端点解释，不是数值 seq 顺序；replace 节点的 `sourceEventSeqs` 必须覆盖被挡住的每一个 surface 节点。
 
@@ -40,11 +41,11 @@
 - 没有标记 → 拒绝重建整份会话。未识别的 required 事件可能改变其余 log 怎么读（`session/end-seed` 是现成例子）。
 - `ignorable: true` → 可以跳过。写者只给「丢了也不影响重建」的信息性记录打这个标。
 
-默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型请求的消息由四类 surface 类型投影，config、adapterDefaults 与 tools 由 `request/header` 折叠，system prompt 取当前有效的 `system/message` 节点；`request/context` 不参与请求重建。真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
+默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型请求的消息由 surface 类型投影（v4 起 `developer/message` 不进入模型请求），config、adapterDefaults 与 tools 由 `request/header` 折叠，system prompt 取当前有效的 `system/message` 节点；`request/context` 不参与请求重建。真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
 
-> **ignorable 机制的历史与边界**：上游 #3087（`worktree/remove-ignorable-session-events`）曾删除 ignorable 机制，要求所有 event 必须被已知。但 #3325 随后回滚了这次删除，恢复了 ignorable（依据 `.agents/notes/implemented/architecture/2026-08-30-retain-ignorable-external-session-events.md`）。当前（`fb2c4b9e69`）ignorable 仍在（`packages/core/session/src/types.ts:473-483`、`packages/session/session-persistence/src/storage-contract.ts:74-80`）。required 与否**只由信封的 `ignorable` 决定**，不是按事件「注册时间」区分的：`known-event-types.ts` 只是一个扁平的名字集合（该文件头部 JSDoc 自述，`packages/core/session/src/known-event-types.ts:9-13`），读侧按 `event.ignorable !== true` 判定必知（`packages/session/session-persistence/src/storage-contract.ts:75`；种子事件的信封校验同样只接受 `true`，`packages/core/session/src/index.ts:225`）；`git diff d233300d55 ed9fb840d6 -- packages/core/session/src/known-event-types.ts` 显示该集合在那个窗口内只改过一次名（`subagent/model-selection-enabled`→`subagent/model-selection-policy`），没有新增事件。**跨历史格式边时规则更严**：未知事件即使带 `ignorable: true` 也拒迁（`.agents/notes/implemented/architecture/2026-08-31-alpha-historical-unknown-event-refusal.md`），因为基数保持型迁移必须证明每个被保留的 payload 在目标世代仍语义有效。
+> **ignorable 机制的历史与边界**：上游 #3087（`worktree/remove-ignorable-session-events`）曾删除 ignorable 机制，要求所有 event 必须被已知。但 #3325 随后回滚了这次删除，恢复了 ignorable（依据 `.agents/notes/implemented/architecture/2026-08-30-retain-ignorable-external-session-events.md`）。当前（`46a7f68b09`，0.1.7-rc.1；格式已升 v4）ignorable 仍在（`packages/core/session/src/types.ts:511`、`packages/session/session-persistence/src/storage-contract.ts:74-80`）。required 与否**只由信封的 `ignorable` 决定**，不是按事件「注册时间」区分的：`known-event-types.ts` 只是一个扁平的名字集合（该文件头部 JSDoc 自述，`packages/core/session/src/known-event-types.ts:9-13`），读侧按 `event.ignorable !== true` 判定必知（`packages/session/session-persistence/src/storage-contract.ts:75`；种子事件的信封校验同样只接受 `true`，`packages/core/session/src/index.ts:225`）；`git diff d233300d55 ed9fb840d6 -- packages/core/session/src/known-event-types.ts` 显示该集合在那个窗口内只改过一次名（`subagent/model-selection-enabled`→`subagent/model-selection-policy`），没有新增事件。**跨历史格式边时规则更严**：未知事件即使带 `ignorable: true` 也拒迁（`.agents/notes/implemented/architecture/2026-08-31-alpha-historical-unknown-event-refusal.md`），因为基数保持型迁移必须证明每个被保留的 payload 在目标世代仍语义有效。
 
-已知集合是生成的 `KNOWN_SESSION_EVENT_TYPES`（`gen-persistence-catalog` 扫本仓库每一次 `SessionEventMap` 合并）。同一版本、不同插件组合，读规则仍一致。集合内容随事件换代变化：当前有 `assistant/attempt` 与 `system/message`，没有 `assistant/chunk`（`packages/core/session/src/known-event-types.ts:28,61`）。仓外插件事件按构造不在表里；预发布接受「第一方读者拒 resume」，且拒绝是大声的。
+已知集合是生成的 `KNOWN_SESSION_EVENT_TYPES`（`gen-persistence-catalog` 扫本仓库每一次 `SessionEventMap` 合并）。同一版本、不同插件组合，读规则仍一致。集合内容随事件换代变化：当前有 `assistant/attempt`、`system/message`（`:63`）与 v4 新增的 `developer/message`（`:37`），没有 `assistant/chunk`（`packages/core/session/src/known-event-types.ts:28,63`）；0008 跨度新增 `developer/message`、`image/offload`、`workspace/changes` 三个名字。仓外插件事件按构造不在表里；预发布接受「第一方读者拒 resume」，且拒绝是大声的。
 
 守卫在**读**侧。`append` 不查词汇表：活会话中途拒写，比下次加载时大声拒绝代价更大。
 
@@ -52,11 +53,11 @@
 
 当前持久化使用 JSONL-only。SQLite 后端由 **#3339**（`4553c9d957`，`refactor(session)!: remove SQLite persistence backend`）删除，不是 #2698——后者（`3fefcdbe3f`，session-format-migration）当时仍在改 SQLite（`session-persistence-sqlite/src/store.ts` `+142`）。`session-persistence-jsonl` 使用 zstd 拼接多帧容器压缩，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。`session-persistence-sqlite` 已删除。
 
-迁移框架存在且是核心机制：`dsh-session-format` 提供 Stage / chain / catalog 协议与 `SessionFormatError` 家族，`dsh-session-format-catalog` 是生成式 build-static catalog（`packages/session/session-format-catalog/src/generated.ts:14-32`），三个 edge 包 `session-format-v0-to-v1` / `-v1-to-v2` / `-v2-to-v3` 串出从最早支持世代到 current 的相邻链。catalog 直接 import 各历史包，因此历史可读性不依赖挂载插件，profile 也不能增删或重排一条边（`packages/session/session-format-catalog/README.md:47`）。`refuseForeignFormatVersion` 仍在（`packages/session/session-persistence-jsonl/src/format.ts:339-345`），但只覆盖「被当作当前世代解码却版本不符」的路径，不是格式兼容的全部语义。
+迁移框架存在且是核心机制：`dsh-session-format` 提供 Stage / chain / catalog 协议与 `SessionFormatError` 家族，`dsh-session-format-catalog` 是生成式 build-static catalog（`packages/session/session-format-catalog/src/generated.ts:17-35`），四个 edge 包 `session-format-v0-to-v1` / `-v1-to-v2` / `-v2-to-v3` / `-v3-to-v4` 串出从最早支持世代到 current 的相邻链。catalog 直接 import 各历史包，因此历史可读性不依赖挂载插件，profile 也不能增删或重排一条边（`packages/session/session-format-catalog/README.md:47`）。`refuseForeignFormatVersion` 仍在（`packages/session/session-persistence-jsonl/src/format.ts:340-347`），但只覆盖「被当作当前世代解码却版本不符」的路径，不是格式兼容的全部语义。
 
 ## 当前写入器版本
 
-`SESSION_FORMAT_VERSION` 钉在每个新 `SessionHeader` 上，每个持久化后端加载时检查；当前值为 `3`（`packages/core/session/src/types.ts:88`）。**已发布世代有不可变承诺**：commit 过的世代字节保留、发布记录与证据 tag 齐备、相邻边只增不改（`docs/session-format-status.md:17-23,38-42`；`.agents/notes/implemented/architecture/2026-08-10-session-log-version-mechanism.md`）。写作规则按 `docs/session-format-status.md:42`：通用行为用「当前格式」「下一个相邻版本」，只有固定迁移输入输出、wire schema、历史证据与测试才写死数字。
+`SESSION_FORMAT_VERSION` 钉在每个新 `SessionHeader` 上，每个持久化后端加载时检查；当前值为 `4`（`packages/core/session/src/types.ts:89`）。**已发布世代有不可变承诺**：commit 过的世代字节保留、发布记录与证据 tag 齐备、相邻边只增不改（`docs/session-format-status.md:20-27,35-39`；`.agents/notes/implemented/architecture/2026-08-10-session-log-version-mechanism.md`）。写作规则按 `docs/session-format-status.md:58`：通用行为用「当前格式」「下一个相邻版本」，只有固定迁移输入输出、wire schema、历史证据与测试才写死数字。
 
 一个单调整数，没有 major/minor。**写者决定 bump**，不是「新读者能吞什么」。只有旧运行时无法对**新** log 做语义正确的读时才 bump。「解析不报错」不够：静默跳过会塑造重建的内容，就是错读。够格的是结构变化：header 形状、信封、核心事件语义、surface 机制（`SurfaceEventType` 集合、`SurfaceOp` 变体）。**加一个普通事件类型不 bump**——那是 `ignorable` 的工作。拿不准就 bump。
 

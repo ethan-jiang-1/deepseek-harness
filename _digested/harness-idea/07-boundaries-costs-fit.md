@@ -20,7 +20,7 @@
 
 > Events are the extension points, and picking the right domain is the first decision in most changes.
 >
-> —— `docs/architecture.md:72`（基线 `46a7f68b09…`）
+> —— `docs/architecture.md:74`（基线 `46a7f68b09…`）
 
 ## LLM 是合同面的探针之一
 
@@ -143,13 +143,13 @@ Google Cloud Senior AI Product Manager Shubham Saboo 在2026-08 发表了一篇�
 ## 证据入口
 
 - [`docs/architecture.md`](../../docs/architecture.md)（第 13 行；无特权核心、注册即效果）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 72 行；事件是扩展点）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 121 行；model-visible ⟺ logged）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 137 行；扩展表）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 74 行；事件是扩展点）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 125 行；model-visible ⟺ logged）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 141 行；扩展表）
 - [`docs/capability-seams.md`](../../docs/capability-seams.md)（Definition / Provider / Consumer）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
 - [`../../AGENTS.md`](../../AGENTS.md)（第 106、110、117 行；注册即效果、waterfall、fail loud）
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-32、38 行；tier taxonomy、一个事实一个家、当前状态散文）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-33、39 行；tier taxonomy、一个事实一个家、当前状态散文）
 - [`../../docs/testing.md`](../../docs/testing.md)（第 10、13、35、40、53-55 行；元验证、性能基准与 snapshot 政策）
 - [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17 行；harness 自身消费合同面与安全边界）
 - [`2026-07-27-typescript-sdk-and-sdk-subagent-backend`](../../.agents/notes/archived/feature/2026-07-27-typescript-sdk-and-sdk-subagent-backend.md)（已归档，历史快照；双 SDK 投影同一 loop 的历史来源。现行 owner 是 [`AGENTS.md:131`](../../AGENTS.md) 与 [`docs/testing.md`](../../docs/testing.md)）

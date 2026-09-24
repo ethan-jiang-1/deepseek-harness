@@ -58,13 +58,13 @@
 
 > Targets: root `AGENTS.md` ≤ 1,950; `architecture.md` ≤ 2,400; subtree `AGENTS.md` ≤ 600, except `packages/AGENTS.md` ≤ 750 and this file ≤ 1,320; `packages/README.md` ≤ 994; …
 
-来源：`docs/AGENTS.md:57`（基线 `46a7f68b09…`）
+来源：`docs/AGENTS.md:58`（基线 `46a7f68b09…`）
 
 > 1. **Relocate** content that belongs in another tier; leave a one-line link if needed.
 > 2. **Condense** content that belongs here but can be shorter.
 > 3. **Raise** the ceiling only when the words need the space; justify the manifest diff in the PR.
 
-来源：`docs/AGENTS.md:53-55`（基线 `46a7f68b09…`）
+来源：`docs/AGENTS.md:54-56`（基线 `46a7f68b09…`）
 
 ## 7. 机器可检查的链接
 
@@ -107,11 +107,11 @@
 
 > **Pairs update together**: [Terminology-guided](docs/i18n/terminology.md), single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records; `dsh-translate-docs` remains user-invoked.
 
-来源：`docs/AGENTS.md:43`（基线 `46a7f68b09…`）
+来源：`docs/AGENTS.md:44`（基线 `46a7f68b09…`）
 
 ## 11. 非平凡改动必须带 Agent Note
 
-> **Every non-trivial change includes at least one Agent Note in the same PR.** Update the owning note or add one; only mechanical/local edits are exempt.
+> **Apply the Agent Note creation criteria in `.agents/notes/README.md`:** create a note only when a decision needs durable rationale; mechanical/local edits are exempt.
 
 来源：`docs/AGENTS.md:39`（基线 `46a7f68b09…`）
 

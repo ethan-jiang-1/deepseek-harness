@@ -61,7 +61,7 @@ packages/<group>/README.md
 
 1. [`packages/fs/README.md`](../../packages/fs/README.md) 给出角色表。
 2. `packages/fs/fs` 定义 `ctx.fs` 和 `fs/*`。
-3. `fs-local`、`fs-sandbox`、`e2b/fs-e2b` 是 Provider 选择。
+3. `fs-local`、`fs-sandbox`、`ssh/fs-ssh` 是 Provider 选择（e2b/fs-e2b 已随 0.1.7 线删除）。
 4. `tool-fs` 注册模型工具并调用 `ctx.fs`。
 5. `fs-observation-policy` 监听 `fs/*`，不是工具硬编码的本地策略。
 6. base bundle、web-app bundle 和 agent preset 决定 Host/provider 与 per-agent tool 的实际挂载。
@@ -69,7 +69,7 @@ packages/<group>/README.md
 常用搜索：
 
 ```sh
-rg -n "provide\('fs'|super\(ctx, 'fs'|ctx\.fs" packages/fs packages/e2b
+rg -n "provide\('fs'|super\(ctx, 'fs'|ctx\.fs" packages/fs packages/ssh
 rg -n "declare module '@deepseek-ai/cordis'|fs/" packages/fs
 rg -n "@deepseek-ai/dsh-tool-fs|@deepseek-ai/dsh-fs-" packages/bundle apps/cli/config
 ```

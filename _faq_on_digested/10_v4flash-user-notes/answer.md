@@ -16,7 +16,7 @@
 | 1d | "重构 3 小时看到效果，在 codex 简直是做梦" | **机制上可解释，不代为裁判** | 3 小时的**下限**由 harness 结构给出：goal 轮次默认 256 轮自动续、workflow `parallel()/pipeline()` fan-out、后台 subagent、会话持久可恢复；harness 保证的是"不空转、可并行、可恢复"，上限仍归模型（[01](./01-fast-is-good.md#第五节-3-小时的下限与上限)） |
 | 2a | "多路并行、diff 预览、markdown 预览要自己打造" | **已存在，无需自造** | 并行有三层（workflow 编排 / 后台 subagent / 工具池 `maxParallelToolCalls`）；diff 与 markdown 渲染是官方 render intent + `ui-primitives` 已交付能力（[02](./02-self-built-previews.md#第一节-逐项判定用户清单里哪些已经是官方交付)） |
 | 2b | "word 预览、ppt 预览、codex 式右侧边栏产出物要自己打造" | **真缺口，且自建有硬税** | 无对应事件、无渲染器、无挂载点；且新增一种用户可见产物 = 新增 `SessionEventMap` 成员（默认 required-on-read），这是 `model-visible ⟺ logged` 制度的 UI 侧镜像（[02](./02-self-built-previews.md#第三节-真缺口与自建的硬税)） |
-| 2c | "官方已经有了很多实践，不多多试试" | **成立，且比说话人以为的更多** | 会话流业务卡（ConversationNodeDefinition）、布局槽（`shell.overlay`/`rightbar`）、`cordis_define/cordis_run` 运行时动态挂 UI、workflow 模板的 tool-ralph 模式，四条路全是官方铺好的（[02](./02-self-built-previews.md#第四节-官方实践的位置)） |
+| 2c | "官方已经有了很多实践，不多多试试" | **成立，且比说话人以为的更多** | 会话流业务卡（ConversationNodeDefinition）、布局槽（`shell.overlay`/`rightbar`）、`plugin_manager` 安装自己的 bundle、workflow 模板的 tool-ralph 模式，四条路全是官方铺好的（`cordis_define/cordis_run` 已在 0.1.7 线退役为程序化 runner）（[02](./02-self-built-previews.md#第四节-官方实践的位置)） |
 | 3 | "别用 V4 Pro，多用 vision" | **方向成立，机制修正三点** | vision 是 catalog 条目属性（0.1.5 默认 catalog 有两个 image-capable 条目：`deepseek-flash`、`deepseek-v4-flash-vision-exp`），不是所有模型都能看图；DSH 没有"指向 URL 看一眼"的能力——视觉入口只有文件路径；V4 Pro 并未被 harness 禁用，"别用"是经济学判断不是机制限制（[03](./03-flash-pro-vision.md)） |
 
 ## 根本体验的层次：一条体验皮，三条根

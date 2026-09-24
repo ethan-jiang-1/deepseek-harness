@@ -36,7 +36,7 @@ Issue 模板（意图/验收）
 
 DSH 的文档规则明确：
 
-> **Document current state, not change history.**
+> **Document current state.**
 
 来源：`docs/AGENTS.md:38`
 

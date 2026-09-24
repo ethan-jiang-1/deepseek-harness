@@ -22,7 +22,7 @@ Plan guidance 可以要求 agent 只读探索，但违反这段 prompt 的模型
 
 ## 2. coding preset 定义计划质量
 
-`packages/preset/agent-presets/presets/ptc/agent.cordis.yml` 给 `dsh-plan-mode` 的 `section`（激活时渲染为 `plan:policy` prompt section）要求：
+`packages/bundle/web-app/presets/ptc.patch.yml`（0.1.7 线起 shipped preset 由 bundle 携带）给 `dsh-plan-mode` 的 `section`（激活时渲染为 `plan:policy` prompt section）要求：
 
 - 先只读探索，不改文件、不运行会重写文件的 formatter/codegen、不提交；
 - 计划包含目标与成功标准、按 subsystem 分组的修改、public API/schema/data-flow 变化、失败与边界、测试、验收和显式假设；
@@ -61,6 +61,6 @@ Plan 是一次会话内、面向即将实施工作的可审批对象；Agent Not
 - DSH [Plan subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/plan.md)：`plan/mode` event、service、command 与工具的公开语义。
 - DSH [Plan Mode package README](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/plan/plan-mode/README.md)：durable state、pending selection、review exchange 和已知限制。
 - DSH [Plan Mode implementation](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/plan/plan-mode/src/index.ts)：event 提交和 `exit_plan_mode` 审批时序的实际实现。
-- DSH [coding preset](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/preset/agent-presets/presets/ptc/agent.cordis.yml)：当前 deployment 提供给模型的 plan guidance，而不是包级通用模板。
+- DSH [coding preset](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/bundle/web-app/presets/ptc.patch.yml)：当前 deployment 提供给模型的 plan guidance，而不是包级通用模板。
 - DSH [Sandbox subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/sandbox.md)：访问限制由谁执行。
 - DSH [Approval subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/approval.md)：哪些操作需要显式用户授权。

@@ -66,7 +66,7 @@
 
 ## 11. 文档只写 current state，不写 change history
 
-> **Document current state, not change history.**
+> **Document current state.**
 
 来源：`docs/AGENTS.md`（语料 `_faq_on_digested/06_spec-change-path` 也引用过此条）
 
@@ -96,7 +96,7 @@
 
 来源：`docs/AGENTS.md`（The tier taxonomy 表）
 
-字数预算：root `AGENTS.md` ≤ 1,950 词；subtree `AGENTS.md` ≤ 600 词（`packages/AGENTS.md` ≤ 750、`docs/AGENTS.md` ≤ 1,320）；`packages/README.md` ≤ 994 词；`verify-doc-budgets` 只校验 `scripts/doc-budgets.manifest.json` 里逐文件列出的 8 个上限（root `AGENTS.md` 1,950、`docs/AGENTS.md` 1,320、`docs/architecture.md` 2,400、`docs/cordis-primer.md` 600、`docs/defensive-patterns.md` 550、`docs/testing.md` 1,350、`packages/AGENTS.md` 750、`packages/README.md` 994），"subtree ≤ 600" 这条通则本身只在 `docs/AGENTS.md` 里，没有对应的机器条目。来源：`docs/AGENTS.md`（Wordcount Budgets 一节）
+字数预算：root `AGENTS.md` ≤ 1,950 词；subtree `AGENTS.md` ≤ 600 词（`packages/AGENTS.md` ≤ 750、`docs/AGENTS.md` ≤ 1,320）；`packages/README.md` ≤ 994 词；`verify-doc-budgets` 只校验 `scripts/doc-budgets.manifest.json` 里逐文件列出的 8 个上限（root `AGENTS.md` 1,950、`docs/AGENTS.md` 1,320、`docs/architecture.md` 2,410、`docs/cordis-primer.md` 600、`docs/defensive-patterns.md` 550、`docs/testing.md` 1,350、`packages/AGENTS.md` 750、`packages/README.md` 994），"subtree ≤ 600" 这条通则本身只在 `docs/AGENTS.md` 里，没有对应的机器条目。来源：`docs/AGENTS.md`（Wordcount Budgets 一节）
 
 ## 15. 根 AGENTS.md 的 Repository layout 用 link 串起 README
 

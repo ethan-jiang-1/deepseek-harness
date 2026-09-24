@@ -123,7 +123,7 @@ turn 以 `completed`、`max-tokens`、`aborted`、`error`、`blocked` 或 `inter
   guard、staged lint、third-party-notices regen、whitespace、vendor-manifest guard（`lefthook.yml:5-38`）；
   `pre-push` 只运行 `pnpm run typecheck`（`lefthook.yml:52-55`）。
 - CI 拥有 exhaustive coverage 和 platform matrix；coverage gate 是 `test:coverage`（per-file 100%），不是
-  `test`（`AGENTS.md`, `docs/testing.md`, `scripts/run-gates.ts:612-645`）。
+  `test`（`AGENTS.md`, `docs/testing.md`, `scripts/run-gates.ts:671-706`）。
 
 **Contributor policy — AGENTS.md + `dsh-*` skills *建议*的内容（作为 workspace instructions 读取，不由
 harness 强制执行）。** 通过 `agent-instructions` 访问，它加载 AGENTS.md 兼容文件到 durable context

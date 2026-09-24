@@ -25,7 +25,7 @@ docs/ + website/        权威文档与站点投影
 scripts/                生成器与仓库门禁
 ```
 
-目录树不回答“本次运行加载了什么”。`packages/e2b/fs-e2b` 在仓库里存在，只说明项目维护这个 Provider；默认本地 profile 是否加载它，要看组合配置。
+目录树不回答“本次运行加载了什么”。`packages/ssh/fs-ssh` 在仓库里存在，只说明项目维护这个 Provider；默认本地 profile 是否加载它，要看组合配置。（原例 `packages/e2b/fs-e2b` 已随 0.1.7 线删除——E2B POC 组退场，远程执行族落点 ssh 组。）
 
 目录树也不完整表达 import 方向。`tool-fs` 和 `fs-local` 同处 `packages/fs/`，但两者都围绕 `fs` Definition 演化，Consumer 不应为了本地实现去依赖 `fs-local`。这要看第二棵图。
 

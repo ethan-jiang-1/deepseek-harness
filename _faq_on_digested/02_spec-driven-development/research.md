@@ -52,9 +52,9 @@ Agent Note 的存在性边界不是 CI 自动分类。该政策的 owning Note �
 
 根规则要求把可机械检查的不变量接入执行中的顶层 gate，并为每条改变的 acceptance path 证明无效输入会被拒绝 [AGENTS.md:145](../../AGENTS.md)。质量门禁决策说明其出发点：代码库主要由 coding agents 开发，agent 对 enforced gates 比 prose conventions 更可靠，因此每个可机械检查的 AGENTS promise 都应有非零退出命令，CI 运行完整集合 [`.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)。
 
-`run-gates.ts` 的 CI 聚合包含 typecheck、lint、duplication、coverage、snapshot、doc-sync、module graph、build、publint、built-package invariants 和真实 build-entry smokes [`scripts/run-gates.ts:318-345`](../../scripts/run-gates.ts)。`doc-sync` 本身包含源码导出的 Cordis/client/tool/config/persistence catalogs、新鲜度检查、export JSDoc、scoped events、Markdown links、package paths、Agent Note classification/format、type equivalence、translation pairing 和 docs build [`scripts/run-gates.ts:725-768`](../../scripts/run-gates.ts)。
+`run-gates.ts` 的 CI 聚合包含 typecheck、lint、duplication、coverage、snapshot、doc-sync、module graph、build、publint、built-package invariants 和真实 build-entry smokes [`scripts/run-gates.ts:371-398`](../../scripts/run-gates.ts)。`doc-sync` 本身包含源码导出的 Cordis/client/tool/config/persistence catalogs、新鲜度检查、export JSDoc、scoped events、Markdown links、package paths、Agent Note classification/format、type equivalence、translation pairing 和 docs build [`scripts/run-gates.ts:770-838`](../../scripts/run-gates.ts)。
 
-生成物在这里是 derivative evidence，不是另一个人工维护的 spec。文档规范把 Cordis API、tool/config/persistence catalog、module graph 定义为从源码生成且 freshness-gated 的 reference，禁止手改生成源 [docs/AGENTS.md:31](../../docs/AGENTS.md)。相应 `package.json` 脚本以 `gen-*.ts --check` 验证 Cordis、tool、config、persistence 和 module graph 是否与源一致 [package.json:143-167](../../package.json)。这更接近“源码类型/JSDoc 是可执行接口说明，生成物是投影”，而不是“先写外部 schema 再生成全部实现”。
+生成物在这里是 derivative evidence，不是另一个人工维护的 spec。文档规范把 Cordis API、tool/config/persistence catalog、module graph 定义为从源码生成且 freshness-gated 的 reference，禁止手改生成源 [docs/AGENTS.md:32](../../docs/AGENTS.md)。相应 `package.json` 脚本以 `gen-*.ts --check` 验证 Cordis、tool、config、persistence 和 module graph 是否与源一致 [package.json:143-167](../../package.json)。这更接近“源码类型/JSDoc 是可执行接口说明，生成物是投影”，而不是“先写外部 schema 再生成全部实现”。
 
 ### 6. Review 负责 spec 与实现之间机器不能判断的部分
 

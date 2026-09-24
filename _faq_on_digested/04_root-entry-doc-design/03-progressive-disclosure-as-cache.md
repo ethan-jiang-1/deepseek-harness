@@ -16,7 +16,7 @@ DSH 没有正面度量“理解程度”，而是把披露问题转成了三个�
 
 > Targets: root `AGENTS.md` ≤ 1,950; `architecture.md` ≤ 2,400; subtree `AGENTS.md` ≤ 600, except `packages/AGENTS.md` ≤ 750 and this file ≤ 1,320; `packages/README.md` ≤ 994; …
 >
-> —— `docs/AGENTS.md:57`（基线 `46a7f68b09…`）
+> —— `docs/AGENTS.md:58`（基线 `46a7f68b09…`）
 
 预算超了以后，处理顺序不是“写短一点”：
 
@@ -24,7 +24,7 @@ DSH 没有正面度量“理解程度”，而是把披露问题转成了三个�
 > 2. **Condense** content that belongs here but can be shorter.
 > 3. **Raise** the ceiling only when the words need the space; justify the manifest diff in the PR.
 >
-> —— `docs/AGENTS.md:53-55`（基线 `46a7f68b09…`）
+> —— `docs/AGENTS.md:54-56`（基线 `46a7f68b09…`）
 
 这等于给渐进式披露定义了一个操作顺序：**先重新路由，再压缩，最后才扩预算。** “该披露多少”被替换成“这一层最多能放多少，放不下就必须归位”。
 
@@ -67,7 +67,7 @@ DSH 做对的不是“写得循序渐进”，而是**把披露顺序编码成�
 
 ## 证据入口
 
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 47-57 行：budget 与 relocate/condense/raise
+- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 48-58 行：budget 与 relocate/condense/raise
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 75 行：verify-md-links
 - [`package.json`](../../package.json)：`verify-doc-budgets`、`verify-md-links`、`verify-tool-catalog` 等脚本
 - [`scripts/doc-budgets.manifest.json`](../../scripts/doc-budgets.manifest.json)：各常驻文档的实际 ceiling

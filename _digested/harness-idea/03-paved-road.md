@@ -19,7 +19,7 @@ dsh 的更强版本是：不只让正确路径好走，还让**路径本身可�
 
 > New behavior attaches to a documented extension point. Changing the loop itself updates this map.
 >
-> —— `docs/architecture.md:135`（基线 `46a7f68b09…`）
+> —— `docs/architecture.md:139`（基线 `46a7f68b09…`）
 
 ## 机制二：四条设计哲学，约束所有新增功能
 
@@ -66,7 +66,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 - required-on-read 在编译期拒绝未知事件类型；
 - 误配置在 load 时 fail loud；
 - 运行时 invariant 在请求发出时比对（见机制六）；
-- `cordis_define` / `cordis_run` 的边界错误会指出违反的规则与可接受写法。
+- `plugin_manager` 的安装校验与 runner 的 guarded registration 会在边界处指出违反的规则（`cordis_define` / `cordis_run` 模型工具已在 0.1.7 线退役，见 [`05`](./05-dynamic-legibility.md)）。
 
 错误发生在源头、消息指明违反的规则。agent 不需要猜测「哪里错了」，只需要按错误消息修。每轮试错都有信息增量。
 
@@ -112,7 +112,7 @@ dsh 把「正确」编码进系统的**形状**与**检查**：扩展点路由�
 
 ## 证据入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)（第 72、137 行；事件域与扩展表）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 74、141 行；事件域与扩展表）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（tool 合同与最小 shape）
 - [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（运行时 invariant 幸存实例）

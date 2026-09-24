@@ -10,7 +10,7 @@
 - `done` 报直接目标的结果或 provider 失败；`waitForExit()` 观察同一个受管范围，并在 provider 无法再观察该范围时 **throw**（`packages/subprocess/subprocess/src/types.ts:189`），而不是声称安静。
 - 唯一保留 `pid` 的是终端句柄 `SubprocessTerminalHandle.pid`（`packages/subprocess/subprocess/src/types.ts:235`）：PTY 身份与前台 inspection 需要它，而受管范围恰好覆盖 `setsid` 与 reparent 出去的后代。
 
-消费者同步改动：shell 的 `ShellProcess.done` 文案改为「永不 reject——provider rejection 结算为 `killed`，stderr 上是 stage-neutral error」（`packages/shell/shell/src/types.ts:168`-`:170`），bash-local 的注记是 `subprocess failed before reporting an outcome: …`（`packages/shell/bash-local/src/index.ts:294`）；lsp 删掉 `LspConnection.pid` getter，`waitForProcessTreeExit` 改名 `waitForManagedRangeExit`（`packages/lsp/lsp-stdio/src/connection.ts:217`）；e2b provider 的公开 `pid` 删除，改私有 remote process-group 跟踪（`packages/e2b/subprocess-e2b/src/process.ts:158`）。契约文档同步把小节改名为 “Handles: streams, readers, and managed-range termination”（`docs/subsystems/subprocess.md:133`）。
+消费者同步改动：shell 的 `ShellProcess.done` 文案改为「永不 reject——provider rejection 结算为 `killed`，stderr 上是 stage-neutral error」（`packages/shell/shell/src/types.ts:168`-`:170`），bash-local 的注记是 `subprocess failed before reporting an outcome: …`（`packages/shell/bash-local/src/index.ts:294`）；lsp 删掉 `LspConnection.pid` getter，`waitForProcessTreeExit` 改名 `waitForManagedRangeExit`（`packages/lsp/lsp-stdio/src/connection.ts:217`）；e2b provider 的公开 `pid` 删除，改私有 remote process-group 跟踪（当时 `packages/e2b/subprocess-e2b/src/process.ts:158`；该文件已随 E2B 组在 0.1.7 线删除，此处为那次契约变更的记录）。契约文档同步把小节改名为 “Handles: streams, readers, and managed-range termination”（`docs/subsystems/subprocess.md:135`）。
 
 ## Linux：user-systemd transient scope + 一次性 bootstrap
 

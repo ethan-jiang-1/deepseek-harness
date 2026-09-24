@@ -34,7 +34,7 @@ dsh --profile headless --help
 
 | id | 插件 | 作用 |
 |----|------|------|
-| `code-runtime` | `@deepseek-ai/dsh-code-runtime-worker-thread` | PTC 程序执行器；产品 bin 另依赖 `@deepseek-ai/dsh-experimental-code-runtime-python`（CPython 子进程后端，experimental，7f84a825c9），PTC 的 code-runtime 呈双 provider 形态（worker-thread + 实验性 Python），本 patch 挂载的仍是 worker-thread 行 |
+| `ptc-runtime` | `@deepseek-ai/dsh-ptc-runtime-node` | PTC 程序执行器（0.1.7 线自 code-runtime 随 PTC 命名重构改名，行现位于 `packages/bundle/base/cordis.patch.yml:389-390`）；产品 bin 另依赖 `@deepseek-ai/dsh-experimental-ptc-runtime-python`（CPython 子进程后端，experimental，`apps/cli/package.json:115`），PTC runtime 呈双 provider 形态（node + 实验性 Python），本 patch 挂载的仍是 node 行 |
 | `headless-startup` | `@deepseek-ai/dsh-headless/startup` | 解析 `"<task>"` 位置参数，提供 `headlessStartup` 服务 |
 | `headless-runner` | `@deepseek-ai/dsh-headless` | 注入 `headlessStartup`，读取 task，创建 Agent，驱动到完成，打印结果 |
 
@@ -59,7 +59,7 @@ dsh --profile headless "run the tests"
 - **没有 HTTP 服务、没有 browser、没有常驻 event loop**：生命周期短于任何需要等待的进程。
 - **stdout 给最终结果**：进程退出前打印 assistant 的最后一条消息，适合脚本管道。
 - **startup-only 重载**：一次性任务在运行中重载 patch 没有意义。
-- **不依赖 agent-presets**：tool-bash、tool-fs 等工具行直接在 host 平面挂载，而不是放到会话 preset 里。
+- **不依赖会话级 preset**：tool-bash、tool-fs 等工具行直接在 host 平面挂载，而不是放到会话 preset 里。
 
 ## 源码入口
 
