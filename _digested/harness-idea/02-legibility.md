@@ -68,7 +68,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 - `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果、模型可见 ⟺ 已记录、显式优于隐式。
 - 文档标准禁止「previously / now / renamed」这类变迁史；当前状态散文（current-state prose），一个事实一个家（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
 - **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模**三个数并报**（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）：`dsh-v0.1.7-rc.1` 上总量 1912 篇 `.md`、活跃 `implemented/` 584 篇、冻结 `archived/` 1257 篇，前两个即 [`claims.json`](./claims.json) 的 N1–N2。缺一个都会读错形状——只报总量会把「按未来决策价值裁剪」读成膨胀，只报活跃数会读成收缩；实际是同一批记录分了活跃与冻结两层，而**冻结层不是现行权威**：归档政策明文禁止把 `archived/` 当作当前行为的依据。所以「非平凡改动必须带 note」这条规则的现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:39`](../../docs/AGENTS.md)，[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照）只作为这条规则的来源记录被引用。note 记的是「为什么、放弃了什么、怎么验证」，每条有分类、双语、归档纪律。
-- **记忆本身也有 gate**：连「决定忘记什么」都被写成了成文判据 + 可复用流程 + 机器封印。判据在 [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md)：归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明文要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。封印是 [`archived/manifest.json`](../../.agents/notes/archived/manifest.json)（seal 数 510 → 1884）加 [`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 门禁，后者注册在 [`scripts/run-gates.ts:756`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单。
+- **记忆本身也有 gate**：连「决定忘记什么」都被写成了成文判据 + 可复用流程 + 机器封印。判据在 [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md)：归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明文要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。封印是 [`archived/manifest.json`](../../.agents/notes/archived/manifest.json)（seal 数 510 → 1884）加 [`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 门禁，后者注册在 [`scripts/run-gates.ts:819`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单。
 
 为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。
 
@@ -88,14 +88,14 @@ fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的
 coding agent 的真实约束不只有「读不读得懂」，还有**上下文预算内能否找到对的入口**。dsh 的文档 tier 为此分层：
 
 - 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 1950 词），细节链接到 home；
-- [`docs/architecture.md`](../../docs/architecture.md) 是 2400 词以内的有序地图；
+- [`docs/architecture.md`](../../docs/architecture.md) 是 2,410 词预算内（0.1.7 线 doc-budgets 上调）的有序地图；
 - 生成的 catalog 提供穷举查询，不要求读者通读；
 - skills 提供可调用的程序化工作流，如 [`dsh-doc`](../../.agents/skills/dsh-doc/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。
 - 双语文档由配对门禁管理：`docs/AGENTS.md` 要求“Pairs update together”，`verify-translation-pairing` 把英文/中文/记录三方钉在一起。
 
 > **Pairs update together**: Terminology-guided, single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records; `dsh-translate-docs` remains user-invoked.
 >
-> —— `docs/AGENTS.md:43`（基线 `46a7f68b09…`）
+> —— `docs/AGENTS.md:44`（基线 `46a7f68b09…`）
 
 `verify-doc-budgets` 把字数预算钉成门禁。可读性因此来自组织，不来自把系统做小；正确读法是查表，不是通读。
 
@@ -110,10 +110,10 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 ## 证据入口
 
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 72、137 行；事件域、扩展表）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 74、141 行；事件域、扩展表）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件矩阵与分发模式）
 - [`../../AGENTS.md`](../../AGENTS.md)（第 108 行；required-on-read 与 standing orders）
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-32、38、47-57 行；tier taxonomy 与一个事实一个家、当前状态散文、字数预算）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-33、39、48-58 行；tier taxonomy 与一个事实一个家、当前状态散文、字数预算）
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；读者模型的因果来源）
 - [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照；note 语料库规则的历史来源。现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:39`](../../docs/AGENTS.md)）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（第 36-42、46 行；归档判据与记忆的 gate）

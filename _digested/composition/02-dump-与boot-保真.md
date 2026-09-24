@@ -42,7 +42,7 @@ dump 也接受 `--from-default-profile <模板>`（`apps/cli/src/dump-config.ts:
 |----|------|-------------|
 | `DSH_TELEMETRY_DISABLED` → `disabled: true` | `runProfile`，且组合里有 `session-telemetry-otel` | 无 |
 
-（shipped preset root 是 `dsh-agent-presets` 包内解析，不经 `composeProfile`，不是派生层。）
+（0.1.7 线起 shipped preset root 机制退役，shipped presets 由 bundle 携带；原 `dsh-agent-presets` 包内解析的说法只适用于 0.1.5 线。）
 
 读 dump 时不要把「没看到 telemetry disable」当成 dump bug。那是 launcher 唯一的派生层，不是用户 patch 算法漏了。
 

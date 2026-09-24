@@ -47,7 +47,7 @@ Skill 不替 agent 决定产品需求，也不自动证明实现正确。它把�
 3. unit tests 抓住局部行为与卸载；真实组合或 snapshot 证明装配后的模型或用户输出。
 4. owning Agent Note 记录决定、替代方案和后果；非平凡变更不能只留下 PR 对话。
 
-> Every non-trivial change includes at least one Agent Note in the same PR.
+> Apply the Agent Note creation criteria (`docs/AGENTS.md:40`, owner `.agents/notes/README.md:46`): notes only for durable decision rationale; mechanical/local edits are exempt.
 >
 > — DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)。这条规则把设计记忆纳入同一个交付单元，而不是把它留在某一轮 agent 的上下文里。
 

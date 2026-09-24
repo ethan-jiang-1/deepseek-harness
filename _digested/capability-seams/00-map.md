@@ -30,7 +30,7 @@
 
 ![E2B 远程执行世界与本地 argv confinement](./figures/execution-world.svg)
 
-在 E2B 组合里，`dsh-fs-e2b` 与 `dsh-subprocess-e2b` 注入同一个 `ctx.e2b`，因此共享一棵远程 Linux 目录树和进程世界。依赖 `ctx.fs` / `ctx.subprocess` 的 Consumer 随 provider 组合切换，不必为远程再 fork 一份实现。
+在 E2B 组合里，`dsh-fs-e2b` 与 `dsh-subprocess-e2b` 注入同一个 `ctx.e2b`，因此共享一棵远程 Linux 目录树和进程世界。依赖 `ctx.fs` / `ctx.subprocess` 的 Consumer 随 provider 组合切换，不必为远程再 fork 一份实现。**（0008 复核：E2B 组已随 `dsh-v0.1.7-rc.1` 删除——本地遏制转正为 `packages/sandbox/` 组，远程执行族的新落点是 `packages/ssh/` 组；本段保留为 provider 组合卖点的机制记录）**
 
 本地 shell 经 `ctx.subprocess` spawn；`ctx.sandbox` 在 spawn 前包装 argv。这种 confinement 约束一次本地进程启动，不会自行迁移 `ctx.fs`，也不等于一套完整的远程执行世界。Consumer 面对的是 Definition，不是「我在哪台机器上」。
 
@@ -46,7 +46,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 
 `packages/webhook/webhook/` 和 `packages/webhook/webhook-github/` 提供了 webhook ingress 能力：
 
-- **core 服务**（`webhook/`）：`ctx.webhookRuntime` — 认证投递分发、Workspace Session 创建。生成表把它的 role 列写成 `core`、implementation 列为 `-`（[`docs/capability-seams.md`](../../docs/capability-seams.md)），[`docs/architecture.md:68`](../../docs/architecture.md) 也把它列在核心包表里
+- **core 服务**（`webhook/`）：`ctx.webhookRuntime` — 认证投递分发、Workspace Session 创建。生成表把它的 role 列写成 `core`、implementation 列为 `-`（[`docs/capability-seams.md`](../../docs/capability-seams.md)），[`docs/architecture.md:70`](../../docs/architecture.md) 也把它列在核心包表里
 - **消费者 / 适配器**（`webhook-github/`）：`inject: ['webServer', 'webhookRuntime', 'credentials']`（`packages/webhook/webhook-github/src/index.ts:14`），验签后调 `ctx.webhookRuntime.dispatch(delivery)`（`src/handler.ts:115`）
 - **规则注册方**：受信插件在 `ctx.webhookRuntime` 上注册进程内规则，返回非 null 结果即变成普通的 Workspace-backed Session
 
@@ -64,7 +64,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 
 Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定义。它纯粹是 BFF 层的**通信协议模式**：Host 提供一组 Remote 控制器、Client 消费生成的 stub，双方通过 Typert 的 schema 保持类型安全。
 
-迁移路径：settings（含 credentials 子命名空间）、subagent control、agent-presets、workspace-controller、session-controller 已从 apiproxy 迁移到 Remote；`packages/host/apiproxy/` 包已整体删除。directory-picker 不是 Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端，[`docs/capability-seams.md:541`](../../docs/capability-seams.md)；决策见已归档的 [`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/archived/architecture/2026-07-28-directory-picker-capability-seam.md)）。
+迁移路径：settings（含 credentials 子命名空间）、subagent control、agent-presets、workspace-controller、session-controller 已从 apiproxy 迁移到 Remote；`packages/host/apiproxy/` 包已整体删除。directory-picker 不是 Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端，[`docs/capability-seams.md:649`](../../docs/capability-seams.md)；决策见已归档的 [`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/archived/architecture/2026-07-28-directory-picker-capability-seam.md)）。
 
 教科书路径：顺着 `packages/shell/` 走完 Definition → provider → `dsh-tool-bash`。组级 README 拥有「这个组有哪些包、对应哪个 `ctx` key」——本专题不手抄完整包表，完整图在生成的 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
@@ -82,7 +82,7 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 | `packages/sandbox/` | 本地进程 argv confinement |
 | `packages/llm/` | Definition 与 Consumer 可同包 |
 | `packages/subagent/` | 差异极大的 provider，同一接口 |
-| `packages/experimental/code-runtime-python/` | code-runtime 的第二 provider（CPython 子进程后端），见 [`../experimental/01-code-runtime-python.md`](../experimental/01-code-runtime-python.md) |
+| `packages/experimental/ptc-runtime-python/` | PTC runtime 的第二 provider（CPython 子进程后端；0.1.7 线自 `code-runtime-python` 随 PTC 命名重构改名，`ctx.codeRuntime` → `ctx.ptcRuntime`），见 [`../experimental/01-code-runtime-python.md`](../experimental/01-code-runtime-python.md) |
 | `packages/schedule/schedule/` | agent 作用域持久提醒（`schedule_*` 工具，非 seam） |
 | `packages/webhook/webhook/` | `ctx.webhookRuntime` 认证投递 |
 | `packages/api/remotes/` | Remote 控制器（非传统 seam） |

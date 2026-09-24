@@ -26,17 +26,17 @@
 
 > The catalog contains sorted skill `name` and normalized, XML-escaped `description` only; it omits bodies, paths, sources, providers, and routing hints.
 >
-> —— `docs/subsystems/skills.md:231`
+> —— `docs/subsystems/skills.md:229`
 
 只有模型调用 `skill({ name })` 时才加载完整正文：
 
 > The model-facing `skill({ name })` tool validates the kebab-case name, … then rereads the complete definition for the calling agent cwd … and returns a tool result containing `<skill_content name="...">`, `<skill_resources>`, and `<skill_instructions>`.
 >
-> —— `docs/subsystems/skills.md:235`
+> —— `docs/subsystems/skills.md:233`
 
 > Full definitions are not cached by the registry. Each `get()` calls the winning provider…
 >
-> —— `docs/subsystems/skills.md:194`
+> —— `docs/subsystems/skills.md:192`
 
 这是 L5（Agent Notes / skills）在运行时的实现：常驻的只是技能名 + 一句话描述（默认 ≤500 字符），正文按需加载、不缓存、每次现取。这就是“省上下文”在运行时的手腕。
 
@@ -54,4 +54,4 @@ package README 不在注入链里（注入只认 `AGENTS.md`/`CLAUDE.md` 候选�
 - [`packages/fs/tool-fs/src/read.ts`](../../packages/fs/tool-fs/src/read.ts) 第 74 行
 - [`packages/fs/tool-fs-search/src/grep.ts`](../../packages/fs/tool-fs-search/src/grep.ts) 第 280-281 行
 - [`packages/fs/tool-fs-search/src/glob.ts`](../../packages/fs/tool-fs-search/src/glob.ts) 第 305-306 行
-- [`docs/subsystems/skills.md`](../../docs/subsystems/skills.md) 第 194、231、235 行
+- [`docs/subsystems/skills.md`](../../docs/subsystems/skills.md) 第 192、229、233 行

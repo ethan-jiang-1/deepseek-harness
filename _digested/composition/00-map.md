@@ -46,9 +46,9 @@ dsh --profile web --dump-config
 - **profile**：`$DSH_HOME/profiles/<name>`（未设 `DSH_HOME` 则为 `~/.dsh`）。里面有 `package.json`（`dsh.profile.bundles` + 树外插件）和用户自己的 `cordis.patch.yml`。
 - **bundle**：npm 包，清单里写 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`。`dsh-base` 是每个 profile 的第一层；其它 bundle 增加 Web 或 headless 等产品组合。`dsh-base` 不依赖、也不挂载可选的 Codex / Claude Code provider；它们是独立的 Profile Bundle，用 `dsh plugin --profile <name> add` 装进 profile 并 restart，各自在 host 平面注册一个 dormant 默认 provider，agent preset 再决定要不要露出对应的 model-facing tool 行——host 可用不等于 tool 暴露。
 - **模板**：`web`、`headless`、`sdk`、`sdk-minimal`、`acp` 五个内置 profile 首次使用会自动初始化（`PROFILE_TEMPLATES` 登记，`packages/boot/app-boot/src/profile.ts:110-131`）。其它名字必须先 `initProfile`，否则 fail loud——这条 fail-loud 提示的就是 `dsh plugin`；`--from-default-profile <模板>` 是另一半入口，见 [`04-profile-创建与保留名.md`](./04-profile-创建与保留名.md)。`sdk-minimal` 是唯一不叠 `dsh-base` 的 bundle（自己持有完整工具树）。
-- **preset id 与显示名**：shipped 目录是 `ptc` / `minimal` / `standard` / `cordis`（`packages/preset/agent-presets/presets/`；`code` 改名 `ptc`（3ca9c7d489）与 `minimal` preset 入包（f94495e527）均发生在 alpha.3 之前（merge-base 已验证），不是 rc.1 周期内的变化）。显示名来自各 `preset.yml` 的 `name` 字段（如 `ptc` → PTC 模式），不是 locale 映射。
+- **preset id 与显示名**：shipped preset 在 0.1.7 线改为 bundle 携带的 `packages/bundle/web-app/presets/*.patch.yml`（旧 `packages/preset/agent-presets/presets/` 目录整删，包重设计为声明式 `agent-preset` + `agent-preset-registry`；`code` 改名 `ptc`（3ca9c7d489）与 `minimal` preset 入包（f94495e527）均发生在 alpha.3 之前（merge-base 已验证），不是 rc.1 周期内的变化）。显示名来自各 `preset.yml` 的 `name` 字段（如 `ptc` → PTC 模式），不是 locale 映射。
 
-PTC 相对 standard 的唯一实质差异（#3425）：`ptc/agent.cordis.yml` 对 `tool-workflow` 新增 `disabled: true`（`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:234-238`）——保留 `workflow-worker-thread` 引擎给 `ralph`，不在 `run_code` 之外发布第二个模型侧编排面；shipped-root.spec 钉住「仅 PTC 禁 workflow、standard/cordis 不禁、引擎与 `tool-ralph` 保留」（`packages/preset/agent-presets/tests/shipped-root.spec.ts:144-153`）。
+PTC 相对 standard 的实质差异（#3425 起步，0.1.7 线重新落地）：`presets/ptc.patch.yml` 对 workflow 面 `isolate.workflowEngine: true` 并把 `workflow-ptc` 行 `disabled: true`（`packages/bundle/web-app/presets/ptc.patch.yml:84,119-121`）——不在 `run_code` 之外发布第二个模型侧编排面；旧 `shipped-root.spec.ts` 断言与 `workflow-worker-thread` 引擎叙述随 0.1.7 线的 workflow-ptc 改道退役。
 
 启动环境分层：进程继承 > 项目目录 `.env` > home `.env`。bootstrap-only 变量不允许来自**项目目录**的 `.env`；Harness home 的 `.env` 例外，只放行 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` / `NO_PROXY` 四个代理名（`packages/boot/app-boot/src/index.ts:126`、`:168-169`），因为项目 `.env` 随 clone 一起到达、不能决定出网路由，而 `DSH_HOME` 本身是 bootstrap-only、指不到仓库控制的目录。`ctx.credentials` 的本地 provider 对同名引用使用启动环境 > `$DSH_HOME/.credentials.yaml` > 项目 `.env` > home `.env`，其中凭据文件是可由产品写入的持久层。
 
@@ -69,7 +69,7 @@ PTC 相对 standard 的唯一实质差异（#3425）：`ptc/agent.cordis.yml` �
 | `packages/bundle/sdk-minimal/` | SDK 最小化 bundle（独立树，不叠 base） |
 | `packages/bundle/acp-app/` | ACP 自动化服务层 |
 | `packages/experimental/agent-team-profile/` | Agent Teams CLI 实验性 profile |
-| `packages/experimental/agent-team-web-profile/` | Agent Teams Web 实验性 profile |
+| ~~`packages/experimental/agent-team-web-profile/`~~ | Agent Teams Web 实验性 profile（0.1.7 线已删除） |
 | `apps/cli/` | 产品 bin `dsh`（CLI launcher profile 的入口） |
 | `apps/desktop/`、`apps/desktop-host/` | Electron 桌面应用：应用自有的保留 profile `desktop`，不走 `dsh`（[`../runtime-profiles/06-desktop.md`](../runtime-profiles/06-desktop.md)） |
 | [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md) | profile 机器合同 |

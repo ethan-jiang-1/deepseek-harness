@@ -68,7 +68,7 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 
 1. **判据成文，且明文排除体量与年龄。** [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md) 的归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明确要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。
 2. **动作最小，因此可证伪。** 对该提交的 452 个英文配对与 452 个中文配对逐字节比对：全部是「0 删除行、恰好新增一行 `Archived: 2026-09-04`」，正文零改动；同一提交里对其余 note 的改动只有归档政策列明的入站链接修复（链接目标改写），判断层面的改写只有 7 篇 proposed→rejected（拒绝，不是归档）。**「归档」与「修订」因此是两个可分辨的动作**，而不是同一次编辑的副产物——这正是本页对 `[推断]` 要求的可证伪性。
-3. **封印有机器门禁。** [`archived/manifest.json`](../../.agents/notes/archived/manifest.json) 的 seal 数 510 → 1884；[`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 注册在 [`scripts/run-gates.ts:756`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单；README:42 同时规定归档件永久冻结、不得当作现行权威。
+3. **封印有机器门禁。** [`archived/manifest.json`](../../.agents/notes/archived/manifest.json) 的 seal 数 510 → 1884；[`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 注册在 [`scripts/run-gates.ts:819`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单；README:42 同时规定归档件永久冻结、不得当作现行权威。
 
 这也校正了一个容易误读的读数：同一窗口内 note 总数从 1704 涨到 1912，而活跃 `implemented/` 从 1288 降到 584——**归档没有消灭记录，只是把记录移进冻结层**；判断纪律的产物不是更少的文档，而是分层更清楚的文档。
 
@@ -102,7 +102,7 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 ## 证据入口（DSH 官方）
 
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders：可机械检查的规则优先）
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-32、38 行；当前状态散文与一个事实一个家）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-33、39 行；当前状态散文与一个事实一个家）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期与格式）
 - [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 `0.1.2-rc.1` 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」；曾有过的「空 invariant 是显式结论」纪律已作废，被 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md) 取代）

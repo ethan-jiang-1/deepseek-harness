@@ -24,7 +24,7 @@ goal/plan 的全部机制细节（[04 第二节、第三节](./04-goal-plan-smal
 
 ## 第四节 根 3：组合层——"开箱"的家
 
-第三条根最朴素：profile/bundle/patch 的层序组合（bundle 层 → profile patch → home patch → `--patch`，[`composition/00-map`](../../_digested/composition/00-map.md)）。"开箱已有 goal、plan"里的"开箱"二字就住在这层——默认姿态是组合层决策，不是内核属性。它也是三条根里唯一**用户可直接指挥**的层：`--patch` overlay、`dsh plugin add`、`cordis.patch.yml`，改体验不用改代码。这层还有 DSH 最自我指涉的爱好：`packages/extensions`（原 self-modification）让 agent 用 `cordis_define/cordis_run` 挂载自己的运行时——**harness 用自己改自己**，这是官方实践里最"native"的一块，也是第 2 条体感"要自己改造"最深的技术底气。
+第三条根最朴素：profile/bundle/patch 的层序组合（bundle 层 → profile patch → home patch → `--patch`，[`composition/00-map`](../../_digested/composition/00-map.md)）。"开箱已有 goal、plan"里的"开箱"二字就住在这层——默认姿态是组合层决策，不是内核属性。它也是三条根里唯一**用户可直接指挥**的层：`--patch` overlay、`dsh plugin add`、`cordis.patch.yml`，改体验不用改代码。这层还有 DSH 最自我指涉的爱好：`packages/extensions`（原 self-modification）让 agent 用 `plugin_manager` 安装自己的 bundle、用只读 inspect 工具自省运行时（`cordis_define/cordis_run` 已在 0.1.7 线退役为程序化 runner）——**harness 用自己改自己**，这是官方实践里最"native"的一块，也是第 2 条体感"要自己改造"最深的技术底气。
 
 ## 第五节 三个根怎么拼成那三小时
 

@@ -73,5 +73,5 @@ Issue 的家是 .github；
 - [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 12、46、80-121 行
 - [`.github/issue-management/policy.mjs`](../../.github/issue-management/policy.mjs) 第 64-77、267 行
 - [`docs/subsystems/plan.md`](../../docs/subsystems/plan.md) 第 5、33 行
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 38、42 行
+- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 39、43 行
 - [`docs/testing.md`](../../docs/testing.md) 第 27-55 行

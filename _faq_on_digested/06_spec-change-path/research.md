@@ -80,7 +80,7 @@ proposed 骨架：
 
 > The owning subsystems page updates in the same change that reshapes a documented type.
 
-来源：`docs/AGENTS.md:42`
+来源：`docs/AGENTS.md:43`
 
 ## 5. package README / JSDoc 随代码更新
 

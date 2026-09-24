@@ -10,13 +10,13 @@
 
 > The owning subsystems page updates in the same change that reshapes a documented type.
 
-来源：`docs/AGENTS.md:42`
+来源：`docs/AGENTS.md:43`
 
 也就是说，`docs/`、package README、JSDoc 是在这里作为**结果**被写回。
 
 ## 2. docs 只写 now，不写过程
 
-> **Document current state, not change history.** Name live mechanisms, not PRs, commits, stack positions, or "previously/now/no longer".
+> **Document current state.** Name live mechanisms, not PRs, commits, stack positions, or "previously/now/no longer".
 
 来源：`docs/AGENTS.md:38`
 
@@ -58,7 +58,7 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
 ## 证据入口
 
 - [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 26-28 行
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 38、42 行
+- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 39、43 行
 - [`docs/testing.md`](../../docs/testing.md) 第 27-55 行
 - [`docs/tool-catalog.md`](../../docs/tool-catalog.md) 第 1-2 行
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) 第 1-2 行

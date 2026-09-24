@@ -33,7 +33,7 @@ llm-pi-ai:
 
 `apiKeyEnv` 是凭据引用的名称，不是把 key 写入配置。默认 Web profile 会先通过 DSH 的 credentials 服务解析它；优先级依次为启动进程的环境变量、`$DSH_HOME/.credentials.yaml`、启动目录的 `.env`、`$DSH_HOME/.env`。
 
-已用这份 `settings.yaml` 做过两次不泄露 key 的验证：挂载与 Web profile 相同的 `settings-file`、`credentials-local` 和 `llm-pi-ai` 后，`CODEX_API_KEY_MICU` 的来源显示为 `env`，`micu / gpt-5.6-sol / xhigh` 的最小真实请求以 `stop` 结束并返回 usage；移除该环境变量后，DSH 在网络请求前返回 `MISSING_CREDENTIAL`，不会改用无关的 key。
+已用这份 `settings.yaml` 做过两次不泄露 key 的验证：挂载与 Web profile 相同的 `settings-file`（0.1.7 线仍在 `packages/settings/settings-file/`，验证书写时的树）、`credentials-local` 和 `llm-pi-ai` 后，`CODEX_API_KEY_MICU` 的来源显示为 `env`，`micu / gpt-5.6-sol / xhigh` 的最小真实请求以 `stop` 结束并返回 usage；移除该环境变量后，DSH 在网络请求前返回 `MISSING_CREDENTIAL`，不会改用无关的 key。
 
 这证明当前启动环境中的变量可用；以后从别的终端启动 `npx @deepseek-ai/dsh web` 时，那个启动进程也必须继承该变量，或在 DSH 的凭据服务中配置同名引用。
 

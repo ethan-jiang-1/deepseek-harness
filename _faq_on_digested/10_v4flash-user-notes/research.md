@@ -34,7 +34,7 @@
 - workflow：`packages/workflow/workflow/README.md`（"No saved or nested workflows"）、`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/tool-ralph/README.md`。
 - vision：`packages/fs/tool-fs/src/read-image.ts`、`packages/attachment/attachment-local/`（README + `normalization.ts`）、`packages/llm/llm-deepseek/{README.md,src/serialize.ts}`、`.agents/skills/record-browser-gif/SKILL.md`。
 - 预览/产出物：`docs/cookbook/adding-a-tool.md`（render intent 纪律）、`packages/core/tools/src/presentation.ts`、`packages/client/ui-{tool,primitives,deliverables,workflow-run,attachment,conversation}/README.md`、`packages/session-query/session-log-export/`（session.export ZIP，后代打包见 `src/archive.ts:8`）。
-- 硬税：`docs/architecture.md:121`、`packages/core/agent-loop/src/invariant.ts:39-42`、`packages/core/session/src/{types,known-event-types}.ts`、notes `2026-08-10-session-log-version-mechanism.md`。
+- 硬税：`docs/architecture.md:125`、`packages/core/agent-loop/src/invariant.ts:39-42`、`packages/core/session/src/{types,known-event-types}.ts`、notes `2026-08-10-session-log-version-mechanism.md`。
 - 定制：`packages/preset/agent-presets/README.md`、`packages/bundle/README.md`、`packages/extensions/tool-cordis/README.md`、`packages/client/ui-slots/README.md`、`docs/subsystems/conversation.md`、`docs/subsystems/skills.md`。
 
 ## 已知边界

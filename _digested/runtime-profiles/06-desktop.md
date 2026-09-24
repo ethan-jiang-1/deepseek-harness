@@ -11,7 +11,7 @@
 - 共享边界：CLI 与 Desktop 共享 `$DSH_HOME` 下的产品数据（会话、设置、凭据、工作区），但**从不共享**可执行包、插件激活、lockfile 或 `node_modules`；Desktop 用自带的 pnpm 与私有 store 管理自己的 profile。
 - CLI 的三个 profile 入口一律拒绝这个名字：`rejectElectronProfile`（`apps/cli/src/args.ts:68-71`）大小写不敏感地把 `desktop` 判为 Electron 专属，调用点只有两个——根命令 action（`:159`，一次覆盖 boot 与 `--dump-config` / `--dump-default-config`）与 `plugin` 子命令（`:198`）。`desktop` 也**不是** `PROFILE_TEMPLATES` 成员，所以 `--from-default-profile desktop` 会以「未知模板」被拒（[`../composition/04-profile-创建与保留名.md`](../composition/04-profile-创建与保留名.md)）。
 
-`docs/architecture.md` 把这条归属单独写在 `## Desktop application`（`:49-53`），而 `## Application launch`（`:41-47`）仍然只列 5 个 CLI 应用、不计 Desktop。
+`docs/architecture.md` 把这条归属单独写在 `## Desktop application`（`:51-55`），而 `## Application launch`（`:43-49`）仍然只列 5 个 CLI 应用、不计 Desktop。
 
 ## 装载路径：`loadProfileDirectory`
 
@@ -33,7 +33,7 @@ const layers = [
 desktop 与 CLI 组合的三处差异：
 
 - **生产环境拒绝 profile 之外的 bundle**：`desktopPatches` 遍历 `profile.layers`，非链接包（`allowLinkedPackages !== true`）时要求每个 `layer.packageDir` 落在 profile 目录内，否则抛 `profile bundle … resolved outside the desktop profile`（`apps/desktop-host/src/index.ts:153-158`）。这挡住了 CLI 维护的 `$DSH_HOME/profiles/node_modules` 回落——Electron 的依赖必须来自它自己的 `node_modules`。
-- **`agent-presets` 的 roots 改写**：若组合里存在 `agent-presets` 行，把它 `roots` 指向 dsh 安装内的 `config/agent-presets`（`apps/desktop-host/src/index.ts:165-175`）。这不是 launcher 派生层，是 desktop 自己组合的结果；CLI 侧的 shipped preset root 机制不变（见 [`../composition/01-boot-时序.md`](../composition/01-boot-时序.md)）。
+- **~~`agent-presets` 的 roots 改写~~（0.1.7 线退役）**：旧机制把 `agent-presets` 行的 `roots` 改指 dsh 安装内的 `config/agent-presets`（旧基线 `apps/desktop-host/src/index.ts:165-175`）。0.1.7 线 preset 重设计后 desktop-host 改为 `loadProfileDirectory` 在安装期组装 profile（现文件仅约 100 行，无 roots 改写）；CLI 侧的 shipped preset root 机制同时消失（shipped presets 改由 bundle 携带，见 [`../composition/01-boot-时序.md`](../composition/01-boot-时序.md)）。
 - desktop 自己**不调** `runProfile`：写完根配置、`loadLayeredEnv('dsh desktop')`，再直接 `boot('dsh desktop', rootConfig, structuredClone(desktopPatches(...)), prepare)`（`apps/desktop-host/src/index.ts:283-296`）。
 
 ## 覆盖层：关掉端口，换成原生选择器

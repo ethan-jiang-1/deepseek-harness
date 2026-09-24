@@ -32,7 +32,7 @@ Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以
 
 > Give one session a different capability set | compose an agent preset; a service row there needs an `isolate` realm.
 >
-> —— `docs/architecture.md:141`（基线 `46a7f68b09…`）
+> —— `docs/architecture.md:145`（基线 `46a7f68b09…`）
 
 ## 部署时替换是系统能力，不是源码习惯
 
@@ -48,7 +48,7 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 - 配置从空 entry list 开始，按 Bundle → Profile patch → home patch → `--patch` 的顺序叠加；顺序就是数据。
 - 后层按 entry id 整份替换 config，或插入新行。
-- `dsh --dump-config` 输出的不是「可能加载什么」，而是**这台机器实际会挂什么**；dump 与 boot 共用同一 `applyEntryPatches`（官方落点：`docs/architecture.md:34` 的 dump 命令与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
+- `dsh --dump-config` 输出的不是「可能加载什么」，而是**这台机器实际会挂什么**；dump 与 boot 共用同一 `applyEntryPatches`（官方落点：`docs/architecture.md:36` 的 dump 命令与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
 - 用户 patch 的 HMR 是事务性的：候选配置失败时保留上一棵好树（[`vendor/README.md`](../../vendor/README.md) 本地修改清单第 8 条：restores the previous plugin or config when candidate application fails）。
 
 因此静态 import 图只能说明「可能加载什么」，最终配置树才说明「实际是什么」。参与 L0 的最低可核查动作就是读 `dump-config`，而不是读源码目录猜组合。
@@ -57,7 +57,7 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 四层阶梯只回答「从哪扇门进」。进了门之后，非平凡贡献还有一条制度化的生命周期。这条链可以从 DSH 的 `.agents/notes/README.md`、`docs/AGENTS.md`、`docs/testing.md`、`.github/ISSUE_TEMPLATE/` 与 `.github/pull_request_template.md` 中直接重建，harness-idea 只引用判断，不重复机制：
 
-> **Every non-trivial change includes at least one Agent Note in the same PR.** Update the owning note or add one; only mechanical/local edits are exempt.
+> **Apply the Agent Note creation criteria in `.agents/notes/README.md`:** create a note only when a decision needs durable rationale; mechanical/local edits are exempt.
 >
 > —— `docs/AGENTS.md:39`（基线 `46a7f68b09…`）
 
@@ -88,7 +88,7 @@ Issue 意图与预期行为（验收证据在 PR 的 Testing 节）
 
 ## 证据入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)（第 17、27、34 行；profile / bundle / patch 与 dump 命令）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 17、27、36 行；profile / bundle / patch 与 dump 命令）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（L1 范本）
 - [`docs/cookbook/adding-a-package.md`](../../docs/cookbook/adding-a-package.md)（L2/L3 涉及的新包与同步义务）

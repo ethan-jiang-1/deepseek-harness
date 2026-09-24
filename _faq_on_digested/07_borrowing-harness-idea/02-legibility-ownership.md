@@ -37,7 +37,7 @@ DSH 的文档层级规则只有一条主线：每个事实住在「负责它的�
 
 两者混在一起会产生两个相反的失败：只读代码会**重走已否定的路径**，只读记录会把**历史实现细节误当成当前 API**。DSH 还进一步给决策记录加生命周期（`proposed` → `implemented` → `rejected`/`archived`），让「已否决」「已过时」和「现行」一眼可分。
 
-> Document current state, not change history.
+> Document current state.
 
 （来源：`docs/AGENTS.md` 的 Writing rules）
 

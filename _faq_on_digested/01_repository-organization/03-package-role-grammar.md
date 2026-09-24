@@ -33,7 +33,7 @@ DSH 从源码维护单元走到活运行时，要经过六个不同层级：
 | 角色 | 负责什么 | 常见命名线索 |
 |------|----------|--------------|
 | Service Definition | 服务接口、请求/结果类型、事件、配置合同、`ctx` key | 领域裸名，如 `fs`、`llm`、`subprocess`、`web` |
-| Service Provider | 实现 Definition，在 Context 中提供服务或注册 backend | `-local`、`-sqlite`、`-deepseek`、`-e2b`、`-worker-thread` |
+| Service Provider | 实现 Definition，在 Context 中提供服务或注册 backend | `-local`、`-sqlite`、`-deepseek`、`-ssh`、`-ptc`、`-node`（后缀示例随组代际变化：0.1.7 线 `-e2b` 退场、`-worker-thread` 多被 `-ptc`/`-node` 接替） |
 | Consumer | 把能力呈现给模型、命令、UI 或另一应用层 | `tool-*`、`command-*`、`ui-*`，或语义明确的消费 package |
 | Policy / Adapter | 通过事件、wrapper 或注册表改变执行策略 | `*-policy`、`*-retry`、`guard/*`、观察/审批插件 |
 | Composition | 选择一组具体插件与默认配置 | `bundle/*`、profile/preset Cordis 配置、`apps/cli/config/examples/` 的 shipped overlay |
@@ -63,7 +63,7 @@ Definition 位于中间，Provider 和 Consumer 都朝它依赖；Composition �
 | `packages/fs/fs` | Definition | `ctx.fs`、文件目标/结果类型、`fs/*` 策略事件 |
 | `packages/fs/fs-local` | Provider | 本地 `FileSystem` 实现 |
 | `packages/fs/fs-sandbox` | Provider | 基于本地 IO 与 sandbox policy 的写入 fence |
-| `packages/e2b/fs-e2b` | 跨组 Provider | 共享 E2B remote runtime 的远程文件系统 |
+| `packages/ssh/fs-ssh` | 跨组 Provider | 共享 `ctx.ssh` 远程执行族的远程文件系统（0.1.7 线起；原例 `packages/e2b/fs-e2b` 已删） |
 | `packages/fs/fs-observation-policy` | Policy | 通过 `fs/*` 监听器执行 observed-state、read-before-edit、version guard |
 | `packages/fs/tool-fs` | Consumer | 向 `ctx.tools` 注册 `read`、`read_image`、`write`、`edit` |
 | `packages/fs/tool-fs-search` | 相邻 Consumer | 通过 `ctx.subprocess` 运行 packaged ripgrep；不扩张 `ctx.fs` 合同 |
@@ -72,7 +72,7 @@ Definition 位于中间，Provider 和 Consumer 都朝它依赖；Composition �
 
 这里有两个重要细节。
 
-第一，Provider 可以跨 group。`fs-e2b` 放在 `packages/e2b/`，因为它与 `subprocess-e2b` 共同依赖并共享 `ctx.e2b` 的远程执行世界；“谁拥有运行时”比“最终提供哪个 service key”更能解释它的维护归属。
+第一，Provider 可以跨 group。`fs-ssh` 放在 `packages/ssh/`，因为它与 `subprocess-ssh` / `sandbox-ssh` 共同依赖并共享 `ctx.ssh` 的远程执行世界（0.1.7 线前 counterparts 是共享 `ctx.e2b` 的 `fs-e2b`/`subprocess-e2b`）；“谁拥有运行时”比“最终提供哪个 service key”更能解释它的维护归属。
 
 第二，相关功能不一定塞进 Definition。搜索依赖实际进程和 ripgrep 工作流，所以 `tool-fs-search` 消费 `ctx.subprocess`，而不是强迫所有文件系统 Provider 实现通用 grep。Definition 只保留当前 Consumer 共同需要的能力。
 

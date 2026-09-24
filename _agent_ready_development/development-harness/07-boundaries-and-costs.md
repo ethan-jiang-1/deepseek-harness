@@ -67,4 +67,4 @@ DSH 作为 Development Harness 的突出之处，不是拥有最多规则，而�
 - DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)：一个事实一个 owner、上下文预算和文档维护纪律。
 - DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-code-review/SKILL.md)：Skill 的 guidance 边界和 semantic review 责任。
 - DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/testing.md)：真实入口、negative control 和不同证据层的限制。
-- DSH [`@deepseek-ai/dsh-tool-cordis` README 的 “Boundaries to plan around”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/README.md#boundaries-to-plan-around)：动态自省工具的进程权限和非安全边界。
+- DSH [`@deepseek-ai/dsh-tool-cordis` README 的 “Known Limitations and Deferred Work”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/README.md#known-limitations-and-deferred-work)：动态自省工具的能力边界（只读检查；不能调用业务方法、配置插件或执行生成代码）。

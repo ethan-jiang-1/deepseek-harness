@@ -6,7 +6,7 @@
 
 > Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns, allowing early closed steps of one oversized turn to compact.
 >
-> —— `docs/subsystems/compaction.md:86`
+> —— `docs/subsystems/compaction.md:101`
 
 > `@deepseek-ai/dsh-token-meter` exposes one detached replay snapshot for request pressure and positional surface pricing.
 >
@@ -43,6 +43,6 @@
 
 ## 证据入口
 
-- [`docs/subsystems/compaction.md`](../../docs/subsystems/compaction.md) 第 86 行
+- [`docs/subsystems/compaction.md`](../../docs/subsystems/compaction.md) 第 101 行
 - [`docs/subsystems/token-meter.md`](../../docs/subsystems/token-meter.md) 第 5 行
 - [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 26-28 行

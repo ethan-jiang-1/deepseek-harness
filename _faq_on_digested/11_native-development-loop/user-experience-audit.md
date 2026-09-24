@@ -76,7 +76,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
 - **证实部分。** 对于 *mechanically checkable* 子集——typecheck、per-file 100% coverage、lint、
   jscpd、knip/publint/constraints、doc-sync、translation-pairing、Note-format、whitespace、vendor manifest
   ——机器命令确实以非零退出。忘了*那些*确实会被抓住。
-- **反证 (a)。本地门禁的覆盖范围狭窄。** [`docs/development.md:117`](../../docs/development.md)：
+- **反证 (a)。本地门禁的覆盖范围狭窄。** [`docs/development.md:125`](../../docs/development.md)：
   *"the hooks intentionally do not run tests, snapshots, documentation checks, builds, or hygiene."*
   详尽的门禁集在 **CI** 中运行，即在 push 之后，即**慢**反馈——不是一个"记着"能帮你节省本地工作量的事情。
 - **反证 (b)。该主张对于它所推崇的循环是自否定的。** 六步闭环、
@@ -250,7 +250,7 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 >
 > **对于 agent (B) 和手动贡献者 (C)，** 轻松是一个*流程*属性：正确和
 > 便宜在*机械强制执行*的子集上重合。本地 hooks 保持狭窄（`lefthook.yml`,
-> [`docs/development.md:117-125`](../../docs/development.md)），agent 选择会为其回归而失败的最窄检查
+> [`docs/development.md:125-125`](../../docs/development.md)），agent 选择会为其回归而失败的最窄检查
 > （`dsh-pre-push-checks:29`）；变更的正确性被委派给 CI
 > 因此本地成本保持低。整 PR revert 是真实的（`#2903` 镜像 `#2608`, 67 文件），但只有在没有后续碰撞时才是干净的
 > 单次撤销。这**不是**一个"你可以忘记规则"的主张：门禁覆盖一个*机械*子集，而被推崇的六步循环本身是无门禁的 prose。
@@ -283,7 +283,7 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
    而不是成本主张；真实模型 e2e 是仓库中最昂贵的验证。
 6. **中立化"只写不可派生的本质"** 通过列出 tool 作者仍然写的内容（execute contract、
    `signal`、`isError`、带 purity rule 的纯 presenters）并命名 DSL 的限制
-   （[`adding-a-tool.md:40-49,86`](../../docs/cookbook/adding-a-tool.md)）。
+   （[`adding-a-tool.md:40-49,87`](../../docs/cookbook/adding-a-tool.md)）。
 7. **删除或限定精确的历史数值**，这些数值是方法依赖的或 answer 自己的研究标记为不可复现的：
    作者计数（answer 5475/1680/1556 vs research 5000/1666/1556 vs 实测 2433/869）、checkpoint 密度
    （answer "≈1.8/PR" vs research "≥1.4, 未能复现"）和 `fz@dsh.dev`

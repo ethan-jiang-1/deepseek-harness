@@ -86,7 +86,7 @@ harness 的职责 = 让「正确参与」不依赖参与者的背景知识。做
 
 - [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；因果原文）
 - [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md)（已归档，历史快照；第 10 行；框架层被搬进仓库的真实理由。这条决定的现行 owner 是 [`vendor/README.md`](../../vendor/README.md) 的 manifest 与本地修改日志，不是这份冻结记录）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 7、72、137 行；推荐用 agent 探索、事件域、扩展表）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 7、74、141 行；推荐用 agent 探索、事件域、扩展表）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md)（五条原语）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders：面向 agent 的规则本身）

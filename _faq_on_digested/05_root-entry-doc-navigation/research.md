@@ -30,7 +30,7 @@
 
 > The plugin owns the complete `<system-reminder>` framing and every injected message reaches the model verbatim.
 
-来源：`packages/context/agent-instructions/README.md:86`（基线 `46a7f68b09…`）
+来源：`packages/context/agent-instructions/README.md:101`（基线 `46a7f68b09…`）
 
 > The following workspace instructions may be relevant to your work. Use them as guidance when applicable. More specific instructions take precedence over broader ones. They do not override system, developer, or direct user instructions.
 
@@ -76,21 +76,21 @@
 
 > The catalog contains sorted skill `name` and normalized, XML-escaped `description` only; it omits bodies, paths, sources, providers, and routing hints.
 
-来源：`docs/subsystems/skills.md:231`
+来源：`docs/subsystems/skills.md:229`
 
 > The model-facing `skill({ name })` tool … rereads the complete definition … and returns a tool result containing `<skill_content …>`, `<skill_resources>`, and `<skill_instructions>`.
 
-来源：`docs/subsystems/skills.md:235`
+来源：`docs/subsystems/skills.md:233`
 
 > Full definitions are not cached by the registry. Each `get()` calls the winning provider…
 
-来源：`docs/subsystems/skills.md:194`
+来源：`docs/subsystems/skills.md:192`
 
 ## 8. 回收：度量 + compaction
 
 > Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns, allowing early closed steps of one oversized turn to compact.
 
-来源：`docs/subsystems/compaction.md:86`
+来源：`docs/subsystems/compaction.md:101`
 
 > `ctx.tokenMeter` … exposes one detached replay snapshot for request pressure and positional surface pricing.
 
