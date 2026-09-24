@@ -1,4 +1,4 @@
-# Advanced 09 · Intake（意图入口与工作项治理）
+# Reference 09 · Intake（意图入口与工作项治理）
 
 ## 一句话
 
@@ -12,7 +12,7 @@ DSH 的变更意图没有统一入口：外部反馈进入 GitHub Discussions（
 
 CONTRIBUTING 明确暂不接受外部 PR，外部参与方式是：在 GitHub Discussions 报告问题或点子并给想要的讨论 upvote（团队"monitor them and consider them when allocating resources"）、开发插件并挂 `dsh-plugin` topic、写博客与答疑。仓库被定位为 "an idea, an official showcase, and a source of inspiration, but not a mandate from us"。
 
-这直接影响对 SDLC Tutorial GitHub Flow 的读法：branch → PR → CI/review → merge 描述的是**内部团队与 agent 的协作流**，不是开放社区贡献流。外部反馈要变成变更，必须先被团队转成内部 Issue 或任务上下文；Issue 模板并不是对外开的表单——`.github/ISSUE_TEMPLATE/config.yml` 只有一行 `blank_issues_enabled: false`，空白 Issue 被关闭，但没有配置指向模板的 contact links。
+这直接影响对 SDLC Tutorial 中 GitHub Flow 的读法：branch → PR → CI/review → merge 描述的是**内部团队与 agent 的协作流**，不是开放社区贡献流。外部反馈要变成变更，必须先被团队转成内部 Issue 或任务上下文；Issue 模板并不是对外开的表单——`.github/ISSUE_TEMPLATE/config.yml` 只有一行 `blank_issues_enabled: false`，空白 Issue 被关闭，但没有配置指向模板的 contact links。
 
 ## 2. 三种 Issue 模板固定最小语义输入
 
@@ -34,7 +34,7 @@ policy 层把五种原生 Issue Type（`Idea|Feature|Bug|Research|Task`）都视
 
 [`.github/pull_request_template.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/pull_request_template.md) 固定三节：Motivation（"以 Fixes #NN 或 Related #NN 引用同仓库 Issue"）；Changes（两个相邻占位——命令/配置/API/协议/持久化格式的高层变化，与用户/模型/系统可观察行为的变化，"没有则写 None"）；Testing（"每种测试方法添加一个条目。方法保持可见，将可复核证据放进对应的 Proof 区域"，每个条目内嵌 `<details><summary>Proof</summary>` 放输出、截图、录屏或日志）。
 
-模板是写作入口，强制范围由 policy 代码决定：进入 review 的人类 PR 才被要求至少一个同仓库 Issue 引用（`Fixes/Closes/Resolves` 算 resolving，`Refs` 算 informational，只在建上下文时读取）。精确条件见 [Advanced 02](./02-issue-pr-lifecycle.md) §2，本页不重复。
+模板是写作入口，强制范围由 policy 代码决定：进入 review 的人类 PR 才被要求至少一个同仓库 Issue 引用（`Fixes/Closes/Resolves` 算 resolving，`Refs` 算 informational，只在建上下文时读取）。精确条件见 [Reference 02](./02-issue-pr-lifecycle.md) §2，本页不重复。
 
 ## 4. Project 生命周期是事件驱动的状态机
 
@@ -50,7 +50,7 @@ Inbox → Backlog → Ready → In progress → In review → Done 与 No action
 >
 > — DSH [event-directed PR review status Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/process/2026-08-10-event-directed-pr-review-status.md#decision)。review 事件是显式命令而非聚合投影：GitHub 聚合状态在作者修复并再次请求 review 后仍可能显示旧的 `CHANGES_REQUESTED`，生命周期需要的是"下一步在谁手里"的交接信号。
 
-这套自动化是事件驱动的，不是 reconciler：错过的 Events 不会被补跑，Project 变更没有 compare-and-swap，Issue 指派变化不触发任何 lifecycle 工作（[`issue-management/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/issue-management/README.md)）。`Backlog`、`Ready` 等状态由项目管理过程手工设置。
+这套自动化是事件驱动的，不是 reconciler：错过的事件不会被补跑，Project 变更没有 compare-and-swap，Issue 指派变化不触发任何 lifecycle 工作（[`issue-management/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/issue-management/README.md)）。`Backlog`、`Ready` 等状态由项目管理过程手工设置。
 
 ## 5. 标签与 Issue Type 的分工
 
@@ -58,7 +58,7 @@ Inbox → Backlog → Ready → In progress → In review → Done 与 No action
 >
 > — DSH [unified GitHub label taxonomy Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/process/2026-08-08-unified-github-label-taxonomy.md#decision)。
 
-`kind/*` 是六个封闭互斥值（`feature`、`bug-fix`、`doc`、`testing`、`cleanup`、`dependency`），记录**主导意图**——附带的测试、文档或清理不改变分类。`area/*` 命名持久的产品/工程主题（`area/web`、`area/api`、`area/planning`、`area/infra` 等），集合刻意可扩展：agent 可以不经审批新建一个简洁的 `area/<kebab-case>` 标签，但不得为一个 PR、顺带路径或临时项目建 area。Issue 用原生 Issue Type 而不用 `kind/*`，其 `area/*` 可选；`source/*` 标签记录 Issue 如何被创建，不适用于 PR；`p0`–`p3` 是操作性元数据，解决型 PR 要与其 resolving Issue 的最高优先级一致。
+`kind/*` 是六个封闭互斥值（`feature`、`bug-fix`、`doc`、`testing`、`cleanup`、`dependency`），记录**主导意图**——附带的测试、文档或清理不改变分类。`area/*` 命名持久的产品/工程主题（`area/web`、`area/api`、`area/planning`、`area/infra` 等），集合刻意可扩展：agent 可以不经审批新建一个简洁的 `area/<kebab-case>` 标签，但不得为一个 PR、顺带路径、临时项目、状态、人或团队建 area。Issue 用原生 Issue Type 而不用 `kind/*`，其 `area/*` 可选；`source/*` 标签记录 Issue 如何被创建，不适用于 PR；`p0`–`p3` 是操作性元数据，解决型 PR 要与其 resolving Issue 的最高优先级一致。
 
 ## 6. 不进 Issue 的意图载体
 
@@ -66,13 +66,13 @@ Intent 不都长成 Issue。仓库里还有三类被规则认可的载体：
 
 - **proposed Agent Note**：`.agents/notes/AGENTS.md` 开头写道 "Agent Notes are effectively RFCs written by agents: durable proposals and decision records"。重大未来工作以 `proposed/<class>/yyyy-mm-dd-topic.md` 存在，正文含 Problem / Proposal / Alternatives considered / Acceptance criteria / Risks；当前活动树有 39 篇英文提案（六个 class 目录齐全），它们是可以被 review、被拒绝、被实现的"仓库内意图"。规则见 [Agent Note lifecycle](./01-agent-note-lifecycle.md)。
 - **代码内的 TODO 标记**：`docs/development.md` 定义三档——`FIXME`（"an issue that should block a new release"，发布不应带着未决 FIXME 出门）、`TODO`（尽快修）、`XXX`（低优先级，无承诺）。
-- **Dependabot 依赖 PR**：按 ecosystem 自动创建，预置 `kind/dependency` 与 `area/infra`（见 [Advanced 02](./02-issue-pr-lifecycle.md) §6）。
+- **Dependabot 依赖 PR**：按 ecosystem 自动创建，预置 `kind/dependency` 与 `area/infra`（见 [Reference 02](./02-issue-pr-lifecycle.md) §6）。
 
 反面入口也存在：`docs/postmortem/` 收录"bug 到达了不该到达的地方（真实用户、已合并 PR、一次 release）"的事故复盘，要求链接由事故催生的 guardrails——它不产生新意图，但经常触发新的规则或测试意图。
 
 ## 7. 意图怎样到达 coding agent
 
-仓库没有 Issue→agent 的自动分派机制。coding agent 拿到工作靠三层东西：根 `AGENTS.md` 与约 20 个子树 `AGENTS.md` 的常设指令；`.agents/skills/` 下 14 个 Skill 的 frontmatter `description`（"Use when …"）按任务匹配加载；以及会话自身的任务上下文（例如 `pnpm dsh --profile headless "task"` 把任务作为 prompt 字符串交给 headless profile）。Plan Mode、goal、todo 等会话机制属于运行时协作状态，见 [Plan 与 sandbox](./03-plan-and-sandbox.md)，不是仓库工作项。
+仓库没有 Issue→agent 的自动分派机制。coding agent 拿到工作靠三层东西：根 `AGENTS.md` 与 21 个子树 `AGENTS.md` 的常设指令；`.agents/skills/` 下 14 个 Skill 的 frontmatter `description`（以 "Use …" 开头的适用条件）按任务匹配加载；以及会话自身的任务上下文（例如 `pnpm dsh --profile headless "task"` 把任务作为 prompt 字符串交给 headless profile）。Plan Mode、goal、todo 等会话机制属于运行时协作状态，见 [Plan 与 sandbox](./03-plan-and-sandbox.md)，不是仓库工作项。
 
 ## 证据入口
 

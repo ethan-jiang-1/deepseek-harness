@@ -1,4 +1,4 @@
-# Advanced 02 · `.github/` automation（仓库自动化）
+# Reference 02 · `.github/` automation（仓库自动化）
 
 ## 一句话
 
@@ -67,7 +67,7 @@ Inbox → Backlog → Ready → In progress → In review → Done 与 No action
 
 Dependabot 按 npm、Python `uv` 和 GitHub Actions 三个 ecosystem 创建依赖 PR，并预置 `kind/dependency` 与 `area/infra`；Bot 作者身份使它不进入 human-review policy 的强制范围，但仍触发普通 PR CI。
 
-文档部署、native/Python/npm release 和发布验证也住在 `.github/workflows/`。它们解释“合并后的产物怎样发布”，但不属于每次代码变更的 Issue → PR 主链；专题只在改动触及 built/release path 时把它们纳入相关证据。完整的发布与上线链路由 [Advanced 11](./11-release.md) 单独拥有。
+文档部署、native/Python/npm release 和发布验证也住在 `.github/workflows/`。它们解释“合并后的产物怎样发布”，但不属于每次代码变更的 Issue → PR 主链；专题只在改动触及 built/release path 时把它们纳入相关证据。完整的发布与上线链路由 [Reference 11](./11-release.md) 单独拥有。
 
 ## 证据入口
 

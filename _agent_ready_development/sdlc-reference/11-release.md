@@ -1,4 +1,4 @@
-# Advanced 11 · Release（merge 之后：发布与上线）
+# Reference 11 · Release（merge 之后：发布与上线）
 
 ## 一句话
 
@@ -24,11 +24,11 @@ merge 到 master 不触发任何发布。上线是一条显式的人工链：本
 
 `pnpm run release:dsh <version>`（或显式 `x.y.z[-rc.N]`）写版本进 publish set、全部 private dsh 包与 workspace 根，跑 `pnpm install --lockfile-only`，然后 commit 为 `release(dsh): <version>`。基线历史显示这个 commit 经独立分支进入 master：`rel/dsh-0.1.7-rc.1` → PR #5073 → merge commit `46a7f68b09`（tag `dsh-v0.1.7-rc.1` 就打在它上面）。bump 完成时打印的指引正是 "After this merges to master, tag it: `git tag <tag> <merge commit> && git push origin <tag>`"。
 
-tag 节奏可以从历史直接读出（截至基线共 22 个 `dsh-v*` tag，`git tag -l | wc -l`）：`dsh-v0.1.5-rc.1..rc.2` 之间 4 个 commit、`rc.2..rc.3` 之间 3 个（基本就是 bump commit 加少量随行修复），而 `dsh-v0.1.7-alpha.2..rc.1` 之间 156 个 commit（功能合流后打 RC）。相邻 tag 间隔从几小时到约 11 天。release tag 直接打在 release PR 的 merge commit 上，样本里距前一个 feature merge 只有约 19–41 分钟（`183f08e9c6`、`fb2c4b9e69`、`46a7f68b09`）；release PR 本体是单个 `release(dsh): <version>` commit（`a60af51e80`，312 个文件全是版本号 bump）。dist-tag 规则：`alpha`/`canary` 映射到同名 dist-tag，其余 prerelease（含 `rc`）→ `next`，稳定版 → npm 默认 `latest`。
+tag 节奏可以从历史直接读出（截至基线共 22 个 `dsh-v*` tag，`git tag -l | wc -l`）：`dsh-v0.1.5-rc.1..rc.2` 之间 4 个 commit、`rc.2..rc.3` 之间 3 个（基本就是 bump commit 加少量随行修复），而 `dsh-v0.1.7-alpha.2..rc.1` 之间 156 个 commit（功能合流后打 RC）。相邻 tag 间隔从几小时到约 11 天。release tag 直接打在 release PR 的 merge commit 上，样本里距前一个 merge commit 只有约 19–41 分钟（`183f08e9c6`、`fb2c4b9e69`、`46a7f68b09`）；release PR 本体是单个 `release(dsh): <version>` commit（`a60af51e80`，312 个文件全是版本号 bump）。dist-tag 规则：`alpha`/`canary` 映射到同名 dist-tag，其余 prerelease（含 `rc`）→ `next`，稳定版 → npm 默认 `latest`。
 
 ## 3. rehearsal 与 publish 是两个 workflow
 
-**Rehearsal（无凭据，常开）。** [`release.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/workflows/release.yml) 的头注说明分工："Pack and dependency-layout verification run without credentials on every pull request and master push. Publication is a manual workflow_dispatch of release-publish.yml from a dsh-v* tag."。`pack` job 以 `fetch-depth: 0` 检出（注释 "Complete history: the release scripts read tags"），依次跑 `release:verify --family dsh`、`build:official`、`release:pack`，再把 vendor 家族与 Landlock entry 一并打包——它们不发布，只供 [`release:verify-packed-install`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/scripts/release/verify-packed-install.ts) 把 tarball 装进一次性 consumer 并驱动真实入口。也就是说，**每个 PR 都在证明"release set 仍可打包、发布范围仍可安装"**。
+**Rehearsal（无凭据，常开）。** [`release.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/workflows/release.yml) 的头注说明分工："Pack and dependency-layout verification run without credentials on every pull request and master push. Publication is a manual workflow_dispatch of release-publish.yml from a dsh-v* tag." `pack` job 以 `fetch-depth: 0` 检出（注释 "Complete history: the release scripts read tags"），依次跑 `release:verify --family dsh`、`build:official`、`release:pack`，再把 vendor 家族与 Landlock entry 一并打包——它们不发布，只供 [`release:verify-packed-install`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/scripts/release/verify-packed-install.ts) 把 tarball 装进一次性 consumer 并驱动真实入口。也就是说，**每个 PR 都在证明"release set 仍可打包、发布范围仍可安装"**。
 
 **Publish（manual dispatch，环境保护）。** [`release-publish.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/workflows/release-publish.yml) 只监听 `workflow_dispatch`，"publication must always be an explicit, reviewed act from a dsh-v* tag, and it must never appear as a PR check"。它在 `RELEASE_PUBLISH=true` 下重跑 verify（追加"当前 ref 必须匹配 `dsh-v*` tag"与 `private: true` 拒绝检查）、重新 pack 当树（"so the bytes uploaded are exactly what this dispatch produced"），最后 `publish` job 挂 `npm-publish` environment（required reviewers 由 environment 持有），用全局 `Release-publish` 并发组串行执行，因为 dist-tag 是共享的 registry 状态。
 

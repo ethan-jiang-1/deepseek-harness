@@ -1,6 +1,8 @@
 # Development Harness 目录
 
-本目录解释 DSH 怎样把仓库组织成 Development Harness（开发 Harness），帮助 fresh coding agent（初次进入项目的编码代理）找到规则、理解系统、选择工作方法、修改代码并验证结果。它讨论的是参与者怎样完成开发，不重复 SDLC Reference 的精确流转条件。目录名 `repo-harness` 指"这个仓库作为开发 Harness"这一视角；正文沿用 DSH 语境中已建立的术语 Development Harness，两者指同一个对象。
+## 定位
+
+专题层：回答"DSH 仓库为什么对 coding agent 特别可参与"——AGENTS.md 规则、知识归属、Skills、正确路径、可执行反馈、运行时查询怎样共同把参与知识放进仓库。它不看单条变更怎样走（那是 SDLC 两卷的事，精确流转条件由 [SDLC Reference](../sdlc-reference/README.md) 拥有）。目录名 `repo-harness` 指"这个仓库作为开发 Harness"这一视角；正文沿用 DSH 语境中已建立的术语 Development Harness，两者指同一个对象。
 
 ## 主入口
 
