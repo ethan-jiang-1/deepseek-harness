@@ -8,7 +8,7 @@
 
 > Decide whether the human-review policy applies to a PR: `return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)`.
 >
-> — DSH [`.github/issue-management/policy.mjs` 的 `requiresPullRequestPolicy()`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/issue-management/policy.mjs)。这里的条件说明 policy 管的是“已经进入 review 的人类作者 PR”，不是所有 PR，也不是 reviewer 身份。
+> — DSH [`.github/issue-management/rules.mjs` 的 `requiresPullRequestPolicy()`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/issue-management/rules.mjs)（0008 复核改注：函数实现在 `rules.mjs:60`，`policy.mjs` 现只是分发入口；早期基线它住在 `policy.mjs`）。这里的条件说明 policy 管的是“已经进入 review 的人类作者 PR”，不是所有 PR，也不是 reviewer 身份。
 
 ![GitHub 事件如何进入 policy、Project 和 CI](./figures/github-event-flow.svg)
 
@@ -35,17 +35,17 @@ return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
 - 最多一个 `p0` 至 `p3`，解决型 PR 与所解决 Issue 的最高优先级一致；
 - 不使用 legacy、未知 `kind/*` 或 Issue-only 的 `source/*` 标签。
 
-这个名字容易产生两种误读。它约束的是**人类作者 PR 在进入 review 后的 metadata**，不表示每个 PR 都要有 Issue，也不规定语义 reviewer 必须是人。Draft、Bot 和 App PR 不进入这段校验；非平凡仓库变更仍独立受 Agent Note 规则约束。
+这个名字容易产生两种误读。它约束的是**人类作者 PR 在进入 review 后的 metadata**，不表示每个 PR 都要有 Issue，也不规定语义 reviewer 必须是人。Draft、Bot 和 App PR 不进入这段校验；非平凡仓库变更仍独立受 Agent Note 规则约束（按收窄后的标准：持久决定理由）。
 
 ## 3. policy workflow 使用默认分支的可信实现
 
-`.github/workflows/issue-policy.yml` 监听 PR 打开、编辑、同步、重开、标签、ready、review request 和 review submit 等事件。Job 不执行 PR head 中的 policy，而是检出 repository default branch 的 `.github/issue-management/policy.mjs`，并禁用 checkout credentials 持久化。
+`.github/workflows/issue-policy.yml` 监听 PR 打开、编辑、同步、重开、标签（含 `unlabeled`）、ready、review request 和 review submit 等事件（workflow `types` 列表）。Job 不执行 PR head 中的 policy，而是检出 repository default branch 的 `.github/issue-management/` 实现集（分发入口 `policy.mjs`，条件与校验函数在 `rules.mjs`），并禁用 checkout credentials 持久化。
 
 这把“待校验输入”和“执行校验的代码”分开：PR 可以改变未来的 policy，但当前 run 使用默认分支的可信版本解释 PR metadata。
 
 ## 4. Issue、PR 与 Project 是事件驱动状态机
 
-`.github/workflows/issue-lifecycle.yml` 把 Issue、PR 和 review 事件交给同一个 `policy.mjs lifecycle` 入口。配置中的状态顺序是：
+`.github/workflows/issue-lifecycle.yml` 把 Issue、PR 和 review 事件交给同一个 `policy.mjs lifecycle` 入口（实现在 `rules.mjs` / `lifecycle.mjs`）。配置中的状态顺序是：
 
 ```text
 Inbox → Backlog → Ready → In progress → In review → Done 与 No action（两个终态）
@@ -61,7 +61,7 @@ Inbox → Backlog → Ready → In progress → In review → Done 与 No action
 
 具体 job 分层、required 聚合、本地证据与 Windows 信号的关系由 [Evidence routing](./04-gates-and-local-checks.md) 统一说明；本页只保留 PR 事件怎样进入 CI，以及 workflow 与仓库检查逻辑怎样分工。
 
-真实 API e2e 使用独立 workflow 和 secrets 条件，E2B 与其它 provider e2e 还要求手动 dispatch。它们为适用变更提供真实 provider 证据，不是无凭据 PR CI 的通用替代。
+真实 API e2e 使用独立 workflow 和 secrets 条件，并支持手动 dispatch（`.github/workflows/e2e.yml:31` 的 `workflow_dispatch`；0008 复核注记：旧文提到的 E2B provider e2e 已随 0.1.7 线 E2B 组退役消失，现行为 DeepSeek 官方 API 真实请求）。它们为适用变更提供真实 provider 证据，不是无凭据 PR CI 的通用替代。
 
 ## 6. 自动 PR 和发布流程属于相邻分支
 
@@ -72,7 +72,7 @@ Dependabot 按 npm、Python `uv` 和 GitHub Actions 三个 ecosystem 创建依�
 ## 证据入口
 
 - DSH [Issue templates](https://github.com/deepseek-ai/deepseek-harness/tree/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/ISSUE_TEMPLATE) 与 [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/pull_request_template.md)：作者被提示提供哪些意图、验收、Issue 关联和验证信息。
-- DSH [Issue management policy](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/issue-management/policy.mjs)：PR metadata 适用条件、Issue 校验和 Project 状态转换函数。
+- DSH [Issue management policy](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/issue-management/policy.mjs)：PR metadata 适用条件、Issue 校验和 Project 状态转换函数（实现在 rules.mjs，policy.mjs 为分发入口）。
 - DSH [Issue policy workflow](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/workflows/issue-policy.yml)：哪些 PR 事件触发 policy，以及为什么检出默认分支的可信实现。
 - DSH [Issue lifecycle workflow](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/workflows/issue-lifecycle.yml)：哪些 Issue、PR 和 review 事件可以写 Project 状态。
 - DSH [PR CI workflow](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/workflows/ci.yml)：PR runner、权限、并发、job 依赖与 required 聚合。

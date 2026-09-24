@@ -45,7 +45,7 @@ grep -c 'no-store' "$FS"
 cp "$FS" "$FS.bak-$(date +%Y%m%d-%H%M)-before-no-store"
 ```
 
-**第 2 步 · 三处编辑**，都在编译产物 `lib/index.js` 的 `serveStatic` 函数里。三个锚点在 v0.1.5-rc.2 的产物中各只出现一次；未来版本若结构对不上，按语义定位（变量声明区、index 分支、writeHead 调用），语义以 [仓库源码的修复版](../../packages/host/frontend-static/src/index.ts) 为准：
+**第 2 步 · 三处编辑**，都在编译产物 `lib/index.js` 的 `serveStatic` 函数里。三个锚点在 v0.1.5-rc.2 的产物中各只出现一次；未来版本若结构对不上，按语义定位（变量声明区、index 分支、writeHead 调用）。注意：仓库源码 `packages/host/frontend-static/src/index.ts` **不是**修复版——0008 起按整树照搬口径，上游源码不带这些缓存头（见上文 :21 的退役记录），runbook 的锚点是当年本地修复版的历史读数，按语义定位后自行套用：
 
 2a — 声明缓存头变量：
 

@@ -1,79 +1,46 @@
 # 用户 patch 的 HMR
 
-源码核验入口：`apps/cli/src/profile-boot.ts` `composeLive`、`packages/boot/app-boot/src/index.ts` `watchUserPatches`、`packages/boot/app-boot/tests/user-patches.spec.ts`。
+源码核验入口：`packages/boot/hmr/src/index.ts`（hmr 插件本体）、`packages/boot/app-boot/src/index.ts` 的 `reconcileProfilePatches`、`packages/boot/app-boot/src/profile-resolution/`（模块解析拦截层）、`apps/cli/tests/profile-hmr.spec.ts`。
 
-boot 叠完的树不是一次性的。profile 和 home 的 `cordis.patch.yml` 改了要热更新。失败的候选不能把正在服务的树拆掉。bundle 层和 `--patch` / launcher overlays 不许被用户文件挤掉。
+boot 叠完的树不是一次性的。profile 的 `cordis.patch.yml`、home 层 patch 与 profile 的 `package.json` 改了要热更新；失败的候选不能把正在服务的树拆掉；bundle 层和 `--patch` / launcher overlays 不许被用户文件挤掉。
 
-![热更新只换用户层；bundle 和 --patch 不许被用户文件挤掉](./figures/live-recompose.svg)
+## 0.1.7 线的机制换代
 
-## 谁在看哪两个文件
+旧机制是 launcher 侧的 `composeLive` + `watchUserPatches` + `patchReload: live` 字段（compose 闭包每次重读两层、夹住用户层、失败保留上一棵好树）。0.1.7 线随「事务性 Cordis 重载」的退役整体换掉（commit `e07f41d5fd` 回滚事务重载、`2abb542a22` 适配非事务 Loader，2026-09-09；note `2026-09-09-nontransactional-loader.md`）：~~`composeLive` / `watchUserPatches` / `patchReload` / `hmr/config-update-failed` / `hmr.registerConfig`~~ 在源码中已全部不存在（重建的 vendor hmr 库文件除外）。现机制：**`hmr` 插件自己监视三份文件，经 `reconcileProfilePatches` 原子换入新 patch 集**，模块热替换与配置重载共用同一条串行队列（`packages/boot/hmr/src/index.ts:1` "Serialized module and profile-configuration reloads"）。
 
-`runProfile` 在 `boot()` 结算之后，先判 `composed.profile.patchReload === 'live'`（`apps/cli/src/profile-boot.ts:355-358`）——非 live 直接不挂 watcher；live 之下若信号没中止、根 fiber 仍 ACTIVE、loader 还在，就挂两个 `watchUserPatches`：
+## hmr 插件看哪三份文件
 
-- `composed.profile.patchPath`（该 profile 的 `cordis.patch.yml`）
-- `homePatchPath()`（`$DSH_HOME/cordis.patch.yml`）
+`hmr` 服务的 `[Service.init]`（`packages/boot/hmr/src/index.ts:198-237`）在 `profileContext` 在场时（`:206`）启动 profile 监视：
 
-两个 watcher 的 `compose` 都是同一个 `composeLive`。HMR 每次只交出「刚变的那份」；`composeLive` **两边都重读**，避免把对方的旧拷贝缝进这一代。
+- profile 的 `cordis.patch.yml`（`profile.patchPath`）；
+- home 层 patch（`$DSH_HOME/cordis.patch.yml`）；
+- profile 的 `package.json`（bundle 清单变更也触发重载——`:214` 的 `manifestPath`、`:215` 的两个 patch 路径，`refresh(manifestOnly)` 对 bundle 变化单独比对 `:222-227`）。
 
-`watchUserPatches` 要求 `ctx.get('hmr')` 和 `bootstrapIncludes` 里的根 Include。缺一就抛——静默跳过会打破「长寿命表面改 patch 文件即生效」的合同。
-
-## 组合里可能没有 `hmr` 行
-
-关掉共享模块热更新 `hmr` 行的不是 web bundle——web-app 的 `cordis.patch.yml` 里只有 `client-hmr`、没有 `hmr` 行（两个基线皆然），`disabled: true` 的 `hmr` 行在 dsh-base（`packages/bundle/base/cordis.patch.yml:19-25`，行上注释：Module reload is opt-in per profile，`patchReload: live` 的 config watching 走 launcher 的 watch-only 兜底、不依赖该行）。没有 HMR 服务时，profile-boot 再挂一个 `{ root: [] }` 的 watch-only 实例，只为 patch 文件。HMR 还 inject timer；光秃的自定义 profile 可能连 timer 都没有，就先 `loader.create` timer。
-
-一次性表面走有界 shutdown，会在事件循环排空前 dispose 这些 watcher。watching 不按「是不是 web」分支跳过，而是按 `patchReload === 'live'` 门控（`apps/cli/src/profile-boot.ts:355-358`）：shipped 模板仅 web 为 live，headless / sdk / sdk-minimal / acp 均为 startup（`packages/boot/app-boot/src/profile.ts:110-131`），自定义 profile 默认 live（`packages/boot/app-boot/src/profile.ts:142`）；该门控 alpha.3 已存在。
-
-表面在 watcher 还没 ready 时 dispose 整棵树：HMR 登记 effect 抛 `INACTIVE_EFFECT`。那是应用按请求退出，不是 watch 失败 → 返回空 disposer。其它登记失败照样抛；若 shutdown 已经拥有这棵树（信号或 `appExit`），`suppressShutdownError` 吞掉。
-
-## `composeLive`：中间两层每次重读，上下冻结
-
-```text
-structuredClone([
-  ...bundlePatches,                          // 首次 composeProfile 冻结
-  ...loadOptionalPatches(profile.patchPath), // 每次重读
-  ...loadOptionalPatches(homePatchPath()),   // 每次重读
-  ...overlays,                               // --patch + telemetry，冻结
-])
-```
-
-用户编辑永远夹在 bundle 和 overlays 之间，挤不掉它们。cmdline / 环境快照根本不在这个列表里。
-
-`composeLive` 忽略 HMR 传来的 `userPatches` 参数，自己重读两个文件。`watchUserPatches` 默认的 identity compose（用户层 = 整份 patch 列表）只给测试和没有夹层的调用方；产品路径必须把用户层嵌回去。
-
-## 为什么每次都要 `structuredClone`
-
-Include 把 `insert` 行**按引用**推进挂上的树，后面的 id patch 会原地改这些对象。boot 时若不 clone，Include 的修改会写回 `composed.bundlePatches` 里的内存行。用户覆盖一旦烤进 bundle 对象，删掉覆盖也无法回到 bundle 默认。
-
-测试里 unlink 用户文件之后，`value` 回到 `'generated'`（app-owned 那一层）。能回去，是因为每一代都从干净的 clone 再 apply。
+**前提是应用就绪**：`appReady` 不在场直接抛 `Profile HMR requires application readiness`（`:208-209`）。`appReady` 由 launcher 经 `provideCmdline({ ready })` 提供并注入 `ctx.provide('appReady', …)`（`packages/boot/cmdline/src/index.ts:88`），`runProfile` 在 `ctx.fiber` ACTIVE 且 loader 在场时 commit（`apps/cli/src/profile-boot.ts:266/:308/:315`）。这个前提就是 0.1.7 线把 headless / sdk-app / acp-app 显式 disable hmr 行之外的第二道闸：**desktop**（desktop-host 经 `runProfile` 起 profile、`profileContext` 在场但调用侧不传 `ready`）与 webworker 宿主的 HMR 初始化会命中这条抛错而不挂 watcher（desktop-host 进程自身经 IPC `{type:'ready'}` 向壳报告就绪，`apps/desktop-host/src/index.ts:82`，与 `appReady` 是两条不同的就绪信号）。
 
 ## 刷新做什么
 
-`hmr.registerConfig(filename, refresh)`。refresh：
+任一被监视文件变化 → `refresh()`（`:218-237`）：
 
-1. 从根 Include 的当前 `options.config` 拆掉 `patches`，保留其余 Include 选项，避免刷新把非 patch 配置还原。
-2. `loadOptionalPatches`：ENOENT → `[]`（没有这一层）。文件在场但坏 → 抛，进失败路径。
-3. `compose(...)` 得到完整 patch 列表。
-4. `entry.update({ config: { ...includeConfig, patches } })`。
+1. 重读三份文件内容做指纹比对，无变化直接返回；ENOENT 视为该层为空。
+2. `readProfilePatches('dsh', profile)` 组出完整 patch 列表（bundle 层 + 用户两层由 profile 读取函数统一装配，bundle 与 overlay 不会被用户文件挤掉）。
+3. `reconcileProfilePatches(root, patches, 'dsh')`（`packages/boot/app-boot/src/index.ts:271-300`）：从根 Include 的当前 config 拆掉旧 `patches`、保留其余 Include 选项，`prepareProfilePatches` 后 `entry.update({ config: { …includeConfig, patches } })` 一次提交；等旧 fiber 收束、loader 静止后清点失活条目。
+4. **失败大声**：只对「本次新引入」的失活条目抛错（`:291-294`）——启动时就坏的条目不会因为一次无关刷新把进程打死；先前已存在的失败以 warning 逐条记录（返回值）。
+5. 成功后 `ctx.emit('app-boot/config-reload')`（`:298`；声明 `app-boot/src/index.ts:52`；消费方如 `SettingsForms` 以它作失效信号，`packages/settings/settings/src/index.ts:234`）。
 
-事务在 Include / Loader 里。候选失败不提交。
+模块热替换与这条配置链共用 `watchConfig(filename, refresh)`（`:160`，同队列、重复路径抛错；watcher 失败记日志不致命）与 `hmr.runExclusive`（plugin-manager / config-editor 的写路径都从这条队列过，`packages/boot/plugin-manager/src/index.ts:759`、`packages/boot/config-editor/src/index.ts:141`）。
+
+## 门控：哪些 profile 有 HMR
+
+base bundle 的 `hmr` 行用 profileContext 门控（`packages/bundle/base/cordis.patch.yml:27-32`）：`disabled: !!js "!ctx.get('profileContext')"` + `config: { root: [] }`，行上注释 "Profile configuration reloads by default; module roots are opt-in"——即 launcher profile 默认开**配置重载**，模块热替换根（`root`）按部署显式给。headless（`:33-34`）、sdk-app（`:24-25`）、acp-app（`:23-25`）再显式 `disabled: true`；sdk-minimal 与 web-app 不带 `hmr` 行（web-app 只有 `client-hmr`，client 插件热重载归 client 资源管线）。非 launcher 语境（无 `profileContext`，如 webworker 宿主）整行关断。
 
 ## 候选失败：上一棵好树继续跑
 
 ![候选失败：上一棵好树继续跑](./figures/last-good-tree.svg)
 
-候选配置按以下状态转换：
+reconcile 的事务边界在 Include / Loader：`entry.update` 的候选失败不提交，正在服务的树继续用旧 patch 集；本次刷新**新引入**的失败抛出后，该次刷新的其余效果不半途悬挂（旧的失活条目保持原样，不重试）。boot 时坏文件：`readProfilePatches` 直接抛，进程起不来。热更新时坏文件：正在跑的请求还在用上一棵树，失败经日志与事件可见。
 
-| 事件 | 树上的 `value` | 副作用 |
-|------|----------------|--------|
-| 写入合法 override | `live` | 提交 |
-| `config.fail: true` | 仍是 `live` | `hmr/config-update-failed` |
-| YAML 解析失败 | 仍是 `live` | 再一条 failed 事件 |
-| 写入合法恢复 | `recovered` | 提交 |
-| unlink 文件 | `generated`（bundle 层） | **不是**失败 |
-
-boot 时坏文件：`loadOptionalPatches` / `parsePatchList` 直接抛，进程起不来。热更新时坏文件：正在跑的请求还在用上一棵树。HMR 把 refresh 的异常收掉记日志，再 `parallel('hmr/config-update-failed', filename, error)`。观察者自己失败也被 HMR 吞掉记日志，不从 watcher 逃出去。
-
-删除用户文件是合法的新一代：compose 不再含那一层。写字面上的 `[]`（空数组 entry 列表）同样是「这一层关掉」，解析成空数组，不是解析失败。只有注释的文件（解析成非数组）、不是数组、读不了：在场的坏层，抛。
+删除用户文件是合法的新一代：compose 不再含那一层。写字面上的 `[]`（空数组 entry 列表）同样是「这一层关掉」。只有注释的文件（解析成非数组）、不是数组、读不了：在场的坏层，按新引入失败处理。
 
 ## 和 boot 时序的分工
 
@@ -81,6 +48,6 @@ boot 时坏文件：`loadOptionalPatches` / `parsePatchList` 直接抛，进程�
 |------|----------------|
 | `composeProfile` / `boot()` | 抛，dispose 半棵树，进程起不来 |
 | 后挂 `unhandledRejection` | `installFailLoud`：报错、还终端、`exit(1)` |
-| HMR refresh | 保留好树，广播失败，进程继续 |
+| HMR refresh | 保留好树，日志/事件可见，进程继续；只有**新引入**的失败升级为抛错 |
 
-长寿命表面（web）靠第三行。一次性 runner 通常等不到用户改文件，但 watcher 仍挂着，免得合同按表面类型分叉。
+长寿命表面（web / desktop 经 `runProfile` 的启动）靠第三行；headless / sdk / acp 这类一次性表面显式关断，调试它们要重启。

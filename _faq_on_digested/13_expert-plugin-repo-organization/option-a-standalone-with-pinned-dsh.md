@@ -32,7 +32,7 @@ my-expert/
 │   └── sync-dsh.mjs              # 第 6 阶段：submodule 换 tag + SHA 簿记 + typecheck + 矩阵加列
 ├── snapshots/                    # 第 5 阶段：自建最小 replay 的录制会话与预期（够用再升级）
 ├── docs/                         # 当前合同（只写 now）：专家的 ctx 键、事件、工具、preset 语义
-├── notes/                        # 第 1/2 阶段：intents.md + proposed/ + implemented/（同 diff 改时态）
+├── notes/                        # 决策记录（dev-loop 第 2 阶段）：proposed|implemented|rejected/<class>/…，同 diff 改时态
 └── figures/
 ```
 

@@ -18,7 +18,7 @@
 
 静态索引只覆盖源码平面；运行时可能还有临时插件、pending fiber、实际服务提供者（service provider）。[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 给了模型一组**只读**的 inspect 工具——注意该 note 里写的「current names are cordis_inspect, cordis_mount, cordis_unmount」已经过期，0.1.7 线（#4745）起只注册两个只读名字：`cordis_inspect_list`、`cordis_inspect_query`（`packages/extensions/tool-cordis/src/index.ts:23,42`；`docs/tool-catalog.md`），变更类工具退役、持久安装归 plugin_manager（详见下文试验面一节）。
 
-三个只读工具各有分工：`cordis_inspect_list` 列当前有哪些 Provider 与插件；`cordis_inspect_query` 按 `platform`（host / client）+ `provider` + `method`（+ 可选 `input`）向某个 Provider 的 manifest 方法发起**参数化查询**；`cordis_inspect_self` 不带参数列全部当前 Plugin，带 `pluginId`/`packageId` 则返回该 Plugin 的源码与诊断。旧版那种「一次调用列出 `plugins`/`services`/`tools`/`api`/`events`/`temporary` 各节」的单一 `cordis_inspect` 已不存在。
+两个只读工具各有分工：`cordis_inspect_list` 列当前有哪些 Provider 与插件；`cordis_inspect_query` 按 `platform`（host / client）+ `provider` + `method`（+ 可选 `input`）向某个 Provider 的 manifest 方法发起**参数化查询**（两工具的注册与分工，`packages/extensions/tool-cordis/src/index.ts:23,42`）。~~旧 `cordis_inspect_self`（列全部 Plugin / 返回源码与诊断）~~（0.1.7 线随 #4745 收缩退役；名字只残留在 slot-catalog 帮助文案与 UI 测试的旧 key 清单里）。旧版那种「一次调用列出 `plugins`/`services`/`tools`/`api`/`events`/`temporary` 各节」的单一 `cordis_inspect` 已不存在。
 
 它服务的 API 目录不是手写表，而是由源码生成、freshness-gated 的 catalog（`pnpm run verify-cordis-catalog`，`doc-sync` 的一员），运行时再与 live runtime 求交集。**读者不是只能读文档，还能问系统「现在有什么、签名是什么」。**
 

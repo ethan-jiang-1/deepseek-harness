@@ -28,11 +28,11 @@
 | 层 | 管什么 |
 |----|--------|
 | `tools/pre-execute` | hooks 等：准不准进 body |
-| Consumer `execute` 里的 `approveEscalation` | sandbox 升权；走 `ctx.approval`，不在 `ShellExecutor` 上 |
+| Consumer `execute` 里的 `approveEscalation` | sandbox 升权；走 `ctx.approval`，不在 `ShellExecutor` 上；tool-fs 复用同一条升级链（`packages/fs/tool-fs/src/sandbox.ts:16` 导入同一组 `ESCALATION_TARGETS` / `approveEscalation`，`:45` 决定 schema 广告的升级目标，`:88`-`:98` 逐调用经 `ctx.approval` 解析；`packages/sandbox/sandbox/src/escalation.ts:3` 明说该编排骨架由每个 sandbox-enforcing tool family（tool-bash、tool-fs）共享） |
 | `approval/request` | 审批 seam；缺 answerer fail-closed |
 | `ctx.sandbox.confine` | argv 怎么包（bwrap / seatbelt / windows-acl） |
 | `ctx.shell.resolve` | cwd、timeout 默认与上限（实现拥有的 caps） |
-| `ctx.subprocess.spawn` | 真正创建进程（本地或 E2B）；provider 在 spawn 前选定受管范围，普通句柄不再暴露 pid |
+| `ctx.subprocess.spawn` | 真正创建进程（本地或远程（subprocess-ssh））；provider 在 spawn 前选定受管范围，普通句柄不再暴露 pid |
 | tool `timeoutMs` + timeout-policy | 整次 tool 调用的协作截止 |
 
 local executor 注释写：command defaulting、deadline 分类、模型友好终端环境、后台 stdout/stderr 合并，归它；执行政策不归它。

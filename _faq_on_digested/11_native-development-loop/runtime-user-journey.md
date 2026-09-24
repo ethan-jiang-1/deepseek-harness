@@ -2,7 +2,8 @@
 
 基线：行为从当前 checkout 读取。配置声明来自已发布的组合层
 （`packages/bundle/base/cordis.patch.yml` → `packages/bundle/web-app/cordis.patch.yml` →
-`packages/preset/agent-presets/presets/standard/agent.cordis.yml`），由 `apps/cli/src/profile-boot.ts` 在空 profile 根之上
+shipped preset 声明 `packages/bundle/web-app/presets/standard.patch.yml`——0.1.7 线 preset 重设计后
+`packages/preset/agent-presets/` 的 yml 目录森林已退役，preset 根改为 `agent-preset` + `agent-preset-registry`），由 `apps/cli/src/profile-boot.ts` 在空 profile 根之上
 （`PROFILE_ROOT_CONFIG`, `apps/cli/src/profile-boot.ts:84-88`）应用。UI 可见的声明仅来自
 test/snapshot golden 文件（`apps/web/tests/`）；以下内容均非来自我未读的截图推断。
 所有路径相对于仓库根。
@@ -33,8 +34,10 @@ deepseek-flash（`:75-79`），`sandbox-policy` mode = `process.env.DSH_PERMISSI
 danger-full-access+never）（`:229-241`）。
 
 在 Web 中，agent 平面移到了 **agent preset** 后面：tool-bash/fs/skill/subagent/goal/todo
-等基础行被禁用（`packages/bundle/web-app/cordis.patch.yml:368-471`），而 `agent-presets default: standard`
-（`:480-484`）选择完整的 coding agent preset（`packages/preset/agent-presets/presets/standard/agent.cordis.yml`）。
+等基础行被禁用（`packages/bundle/web-app/cordis.patch.yml` 的 disable 段），而 `agent-preset-registry`
+的 `default: standard`（`:540-544`，0008 复核时重钉）选择完整的 coding agent preset——其声明是
+shipped 的 `packages/bundle/web-app/presets/standard.patch.yml`（0.1.7 线起，旧
+`packages/preset/agent-presets/presets/standard/agent.cordis.yml` 已随重设计删除）。
 因此 *实际的* Web 默认组合是 base + web + standard preset。这点很重要：answer.md 归因于 base 的几个行为
 （plan-mode, fork background mode, tool presentation）实际上是由 standard preset 设置的，且与 base 行不同。
 

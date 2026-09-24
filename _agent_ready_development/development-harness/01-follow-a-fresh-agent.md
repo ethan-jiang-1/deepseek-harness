@@ -40,12 +40,12 @@ Skill 不替 agent 决定产品需求，也不自动证明实现正确。它把�
 
 ## 4. 完成一个交付组合
 
-“工具能运行”只是实现的一部分。模型可见或产品用户可见的非平凡变化还要让当前接口与行为、行为证据和决策记录一起更新：
+“工具能运行”只是实现的一部分。模型可见或产品用户可见的变化若携带持久决定理由还要让当前接口与行为、行为证据和决策记录一起更新：
 
 1. 源码和类型实现功能，并通过 `ctx.effect()` 或注册表 disposer 保持生命周期归属。
 2. package README 和 JSDoc 说明参数、结果、失败、模型可见内容和展示意图。
 3. unit tests 抓住局部行为与卸载；真实组合或 snapshot 证明装配后的模型或用户输出。
-4. owning Agent Note 记录决定、替代方案和后果；非平凡变更不能只留下 PR 对话。
+4. owning Agent Note 记录决定、替代方案和后果；携带持久决定理由的变更不能只留下 PR 对话。
 
 > Apply the Agent Note creation criteria (`docs/AGENTS.md:40`, owner `.agents/notes/README.md:46`): notes only for durable decision rationale; mechanical/local edits are exempt.
 >

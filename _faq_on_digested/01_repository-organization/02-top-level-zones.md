@@ -30,9 +30,9 @@
 
 | 目录 | 角色 | 关键区别 |
 |------|------|----------|
-| `packages/bundle/` | 可发布、可安装的 profile patch 层 | 位于 `packages/`，因为 bundle 自身也是 npm package |
-| `packages/preset/` | per-session agent 组合：一个 preset 目录持有一份 `agent.cordis.yml` | 决定“这个 session 的 agent 由哪些行组成”，不是进程级 profile |
-| `apps/cli/config/examples/` | 随产品出货的可选 overlay（GitHub review webhook、session 内 Schedule、memory MCP 服务、runtime Cordis 工具） | 是产品资产而非测试 fixture；用 `dsh --profile <name> --patch <该文件>` opt-in，永不进默认 profile |
+| `packages/bundle/` | 可发布、可安装的 profile patch 层；web-app 的 `presets/*.patch.yml` 携带 shipped preset 声明 | 位于 `packages/`，因为 bundle 自身也是 npm package |
+| `packages/preset/` | per-session agent 组合：`agent-preset/`（声明解析）+ `agent-preset-registry/`（`ctx.agentPresets` 注册表） | 决定“这个 session 的 agent 由哪些行组成”，不是进程级 profile；0.1.7 线起不再持 yml 目录森林 |
+| `apps/cli/config/examples/` | 随产品出货的可选 overlay（GitHub review webhook、session 内 Schedule、memory MCP 服务；旧 `cordis` overlay 已随 0.1.7 线 cordis 变更类工具退役） | 是产品资产而非测试 fixture；用 `dsh --profile <name> --patch <该文件>` opt-in，永不进默认 profile |
 | `snapshots/` | committed session JSONL 作为回放输入与期望输出的场景 | 只放 session 驱动的用例；其它期望输出留在各自 owner |
 
 bundle 的 `cordis.patch.yml` 解决“默认装配是什么”，`apps/cli/config/examples/*/cordis.yml` 解决“这次额外接哪几行”。两者都是配置层，都不该沉淀可复用实现：overlay 里长出的可复用逻辑要提取回 `packages/`，让它获得自己的合同、测试、覆盖率和发布边界。
@@ -60,7 +60,7 @@ bundle 的 `cordis.patch.yml` 解决“默认装配是什么”，`apps/cli/conf
 
 文档实行“一事实一归属”。高层架构只说明顺序、职责和扩展点；类型与事件语义属于 `docs/subsystems/`；package 消费合同属于 package README；生成 catalog 由 scripts 从源码再生；网站只投影这些来源。
 
-根 [`AGENTS.md`](../../AGENTS.md) 是顶层区域的文字总览。它的 `packages/` 布局块曾经有两处过期条目——列出的 `self-modification/` 与 `support/` 并不存在，实际归属是 `packages/extensions/`（自省与运行时挂载工具面）和 `packages/test-support/`（跨 package 测试基础设施）；该缺口已就地修正（根 `AGENTS.md:38`、`:49`），组清单始终以 [`packages/README.md`](../../packages/README.md) 为准。
+根 [`AGENTS.md`](../../AGENTS.md) 是顶层区域的文字总览。它的 `packages/` 布局块曾经有两处过期条目——列出的 `self-modification/` 与 `support/` 并不存在，实际归属是 `packages/extensions/`（自省与运行时挂载工具面）和 `packages/test-support/`（跨 package 测试基础设施）；该缺口已就地修正（根 `AGENTS.md:48`、`:68`，0008 复核时重钉行号），组清单始终以 [`packages/README.md`](../../packages/README.md) 为准。
 
 ## Workspace 与非 Workspace
 

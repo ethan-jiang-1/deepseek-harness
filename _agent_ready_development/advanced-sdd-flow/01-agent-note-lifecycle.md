@@ -2,11 +2,11 @@
 
 ## 一句话
 
-Agent Note 保存代码和当前文档无法承载的 rationale（决定理由）与 alternatives（放弃的备选方案）。每个非平凡变更都要新增或更新一个 owning Note，但 Note 不必从 `proposed/` 开始，也不会在实现后自动进入 archive（归档）。
+Agent Note 保存代码和当前文档无法承载的 rationale（决定理由）与 alternatives（放弃的备选方案）。**拥有 Note 的义务只覆盖承载持久决定理由的变更**——机械或局部编辑（含局部 UI 呈现与交互）明确豁免；Note 不必从 `proposed/` 开始，也不会在实现后自动进入 archive（归档）。（0008 复核注记：上游把 note 创建标准收窄为「durable decision rationale」并显式豁免机械/局部编辑，本页旧表述「每个非平凡变更都要」已随之修正。）
 
-> Every non-trivial change MUST add or update at least one Agent Note in the same PR. [...] A proposal for substantial future work starts in `proposed/`; a decision already made starts in `implemented/`.
+> Add or update an Agent Note in the same PR only for lasting decision rationale that code, tests, and existing documentation do not explain. [...] Mechanical or local edits, including local UI presentation and interaction changes, are exempt.
 >
-> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md#when-to-write-one)。这段原文同时建立“非平凡变更必须有 owner”和“implemented 不必经过 proposed”两个条件。
+> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md#when-to-write-one)。这段原文同时建立“只有持久决定理由才需要 owner Note”和“implemented 不必经过 proposed”两个条件。
 
 ![Agent Note 的状态转换与禁止路径](./figures/agent-note-lifecycle.svg)
 
@@ -20,7 +20,7 @@ Agent Note 保存代码和当前文档无法承载的 rationale（决定理由�
 | 新决定只部分取代旧决定 | 保留双方并交叉链接，更新仍然有效的事实 |
 | 新决定完整取代旧决定 | 新 owner 吸收所有独有 rationale、alternative、consequence、verification 和 coverage gap 后，旧 implemented Note 才可删除 |
 
-“每个非平凡变更必须有 Note”约束的是**决定覆盖**，不是要求每次先写 proposal。
+“承载持久决定理由的变更必须有 Note”约束的是**决定覆盖**，不是要求每次先写 proposal。
 
 ## 2. 路径同时编码状态和类别
 

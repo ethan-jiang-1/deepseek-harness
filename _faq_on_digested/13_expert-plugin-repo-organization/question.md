@@ -23,13 +23,13 @@
 
 ## 范围与基线
 
-DSH 侧机制结论以本仓库工作树（当前基线 `dsh-v0.1.7-rc.1`，commit `46a7f68b09…`）为准，与 FAQ 01/08 同源——00-index 的 pinned-commit 基线管运行时行为结论的新鲜度，本篇的机制表述（profile/patch 层级、preset、卡片层）均在当前工作树逐条对过源码文档（0008 复核时随 preset 重设计改述）；上游合入后按 `_digested/_change_log/` 复核。涉及的机制文档：`docs/architecture.md`（profile / bundle / patch 层级）、`packages/preset/agent-preset-registry/README.md`（agent preset 声明式注册表、bundle-patch override）、`docs/cookbook/adding-a-tool.md`（卡片渲染意图与 Web 消费边界）、`docs/subsystems/conversation.md`（View 注册通道）、`packages/boot/app-boot/README.md`（Profiles 与 profile 目录）、`docs/cordis-primer.md`（entry `disabled`）。市场调研结论来自公开 repo 与文档，来源 URL 一律记在 [research.md](./research.md)，检索时点为 2026-09；外部 repo 结构随时间漂移，引用时以 research.md 里留档的树为准。
+DSH 侧机制结论以本仓库工作树（当前基线 `dsh-v0.1.7-rc.1`，commit `46a7f68b09…`）为准，与 FAQ 01/08 同源——00-index 的 pinned-commit 基线管运行时行为结论的新鲜度，本篇的机制表述（profile/patch 层级、preset、卡片层）均在当前工作树逐条对过源码文档（0008 复核时随 preset 重设计改述）；上游合入后按 `_digested/_change_log/` 复核。涉及的机制文档：`docs/architecture.md`（profile / bundle / patch 层级）、`packages/preset/agent-preset-registry/README.md`（agent preset 声明式注册表、bundle-patch override）、`docs/cookbook/adding-a-tool.md`（卡片渲染意图与 Web 消费边界）、`docs/subsystems/conversation.md`（View 注册通道）、`packages/boot/app-boot/README.md`（Profiles 与 profile 目录）、`docs/cordis-primer.md`（entry `disabled`）、`.agents/notes/README.md` 及其各目录 `AGENTS.md`（Agent Notes 生命周期与格式）、`scripts/agent-note-tree.ts` / `scripts/verify-agent-note-format.ts`（结构与格式门禁）、`docs/postmortem/README.md`（事故层）、`docs/development.md` / `docs/testing.md` / `lefthook.yml` / `.github/ISSUE_TEMPLATE/` / `packages/plan/README.md` / `packages/todo/README.md`（开发流程与协作反馈面，dev-loop 的依据）。市场调研结论来自公开 repo 与文档，来源 URL 一律记在 [research.md](./research.md)，检索时点为 2026-09；外部 repo 结构随时间漂移，引用时以 research.md 里留档的树为准。
 
 ## 阅读入口
 
 - 先读：[总答案：五个决策 × 四个方案](./answer.md)
 - 哪些名字定了就难改：[身份与皮肤——包名/行 id/ctx 键/工具名/事件名/preset id/settings namespace/面板标题](./naming-and-identity.md)
-- 开发过程（四方案共享）：[插拔、调试、驱动 coding agent、DSH 推荐流程](./dev-loop.md)
+- 开发过程：[DSH 流程模型四方案共享；"落地"列按方案 A 的目录形状写，B/C/D 的差异见各方案"开发过程差异"节](./dev-loop.md)
 - 官方安装的 DSH 怎么保护：[双 home 隔离——开发做崩不碰日用](./dual-home-isolation.md)
 - 方案 A（推荐起点）：[独立专家 repo + pinned DSH submodule](./option-a-standalone-with-pinned-dsh.md)
 - 方案 B：[直接在 DSH monorepo 里长](./option-b-in-dsh-monorepo.md)

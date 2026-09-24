@@ -18,12 +18,12 @@
 
 | 专题 | 已核验问题 | 结论页 | 状态 | 最近核验 |
 |------|------------|--------|------|----------|
-| `system/` | 扩展表中非显然的落点；从单体 loop 迁移时各职责归属 | [`01`](../system/01-扩展表非显然落点.md) · [`02`](../system/02-对照单一loop.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
+| `system/` | 扩展表中非显然的落点；从单体 loop 迁移时各职责归属；门禁聚合器与性能基准树 | [`01`](../system/01-扩展表非显然落点.md) · [`02`](../system/02-对照单一loop.md) · [`03`](../system/03-门禁与性能基准.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
 | `cordis-runtime/` | 五条原语；waterfall 派发；Loader/Include 与 `!!js`；产品依赖的 vendor 修改 | [`01`](../cordis-runtime/01-五条原语对照源码.md) · [`02`](../cordis-runtime/02-waterfall-与事件合同.md) · [`03`](../cordis-runtime/03-loader-include-与js插值.md) · [`04`](../cordis-runtime/04-vendor-本地修改.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
 | `composition/` | profile boot 时序；dump 与 boot 的共同算法和层差；用户 patch HMR 事务；profile 创建路径与保留名 | [`01`](../composition/01-boot-时序.md) · [`02`](../composition/02-dump-与boot-保真.md) · [`03`](../composition/03-user-patch-hmr.md) · [`04`](../composition/04-profile-创建与保留名.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
 | `runtime-profiles/` | 五个 Launcher Profile 的共同基底与差异；桌面这一应用自有组合 | [`00`](../runtime-profiles/00-map.md) · [`01`](../runtime-profiles/01-web.md) · [`02`](../runtime-profiles/02-headless.md) · [`03`](../runtime-profiles/03-sdk.md) · [`04`](../runtime-profiles/04-sdk-minimal.md) · [`05`](../runtime-profiles/05-acp.md) · [`06`](../runtime-profiles/06-desktop.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
 | `session-and-loop/` | session 世代与迁移机制；inbox/turn/step 时序；替换默认 loop 的运行时义务 | [`01`](../session-and-loop/01-session-event-map.md) · [`02`](../session-and-loop/02-inbox-与turn-时序.md) · [`03`](../session-and-loop/03-换loop的半径.md) · [`04`](../session-and-loop/04-格式世代与迁移.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
-| `capability-seams/` | 三种角色与分包装；E2B provider 组合（0008 起 E2B 组退役，接替面为 sandbox 组与 ssh 组）；bash 的本地 confinement 调用链与原生 containment；subagent 后台、目录与宿主交付；外发代理这类「刻意不是 seam」的进程级策略；外部生态桥（MCP 客户端与 hook 桥，两者都 opt-in） | [`01`](../capability-seams/01-三角色与分包装.md) · [`02`](../capability-seams/02-一次bash从tool到sandbox.md) · [`03`](../capability-seams/03-subagent后台与产品provider.md) · [`04`](../capability-seams/04-新增seam与Remote.md) · [`05`](../capability-seams/05-subagent-catalog与host交付.md) · [`06`](../capability-seams/06-外发代理策略.md) · [`07`](../capability-seams/07-原生containment与native-system.md) · [`08`](../capability-seams/08-外部生态桥：MCP与hooks.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
+| `capability-seams/` | 三种角色与分包装；E2B provider 组合（0008 起 E2B 组退役，接替面为 sandbox 组与 ssh 组——ssh 族见 09）；bash 的本地 confinement 调用链与原生 containment；subagent 后台、目录与宿主交付；外发代理这类「刻意不是 seam」的进程级策略；外部生态桥（MCP 客户端与 hook 桥，两者都 opt-in）与新执行面/编排 seam 地图 | [`01`](../capability-seams/01-三角色与分包装.md) · [`02`](../capability-seams/02-一次bash从tool到sandbox.md) · [`03`](../capability-seams/03-subagent后台与产品provider.md) · [`04`](../capability-seams/04-新增seam与Remote.md) · [`05`](../capability-seams/05-subagent-catalog与host交付.md) · [`06`](../capability-seams/06-外发代理策略.md) · [`07`](../capability-seams/07-原生containment与native-system.md) · [`08`](../capability-seams/08-外部生态桥：MCP与hooks.md) · [`09`](../capability-seams/09-ssh远程执行族.md) · [`10`](../capability-seams/10-新执行面与编排seam.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
 | `tools-prompt-llm/` | prompt section 顺序与稳定前缀；system prompt 作为 surface 节点；in-history 替换能力；工具审批/timeout；chunk 到 settlement 的日志关系；内容块投影 | [`01`](../tools-prompt-llm/01-section顺序与前缀.md) · [`02`](../tools-prompt-llm/02-管道审批timeout与chunk.md) · [`03`](../tools-prompt-llm/03-system-prompt作为surface节点.md) · [`04`](../tools-prompt-llm/04-in-history提示词替换.md) · [`05`](../tools-prompt-llm/05-chunk到settlement.md) · [`06`](../tools-prompt-llm/06-文件块与内容块投影.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
 | `surfaces/` | 源码与 built 启动面；host session 流；ACP 与 JSON-RPC 的不同投影保证；桌面这一第五入口；客户端资源模型与右栏；客户端分层与插件纪律；Typert 类型图到 Remote stub 的生成链 | [`01`](../surfaces/01-启动面与session流.md) · [`02`](../surfaces/02-acp与jsonrpc.md) · [`03`](../surfaces/03-桌面入口.md) · [`04`](../surfaces/04-客户端资源模型与右栏.md) · [`05`](../surfaces/05-客户端架构与插件纪律.md) · [`06`](../surfaces/06-Typert类型图与Remote生成.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
 | `agent-loop/` | step/turn/activity/goal 四层结束边界；goal 创建的三条路径与状态机（含模型通道的 `paused` 禁令）；Goal Round Driver 的自动续轮、竞态栅栏与重启后 re-arm；Agent 运行时身份与 initiator 权限判据 | [`00`](../agent-loop/00-map.md) · [`01`](../agent-loop/01-goal-lifecycle.md) · [`02`](../agent-loop/02-goal-round-driver.md) · [`03`](../agent-loop/03-activity-vs-goal-boundaries.md) · [`04`](../agent-loop/04-agent-runtime-identity.md) | 已核验 | `46a7f68b0922371ce7144b668b90e377d8e799f4` |
@@ -42,7 +42,7 @@
 
 1. **反向**：全部 `path:line` 引用解析成仓库相对路径后逐条打开源码核对；合并校验器覆盖三语料 266 个 Markdown/SVG、1486 条 HEAD 行引用 + 6 条历史引用，并逐字核对了带引文主体的 `> ——` 引用块（校验器识别出 12 组；三语料里 `^> ——` 行共 54 条，其余是紧随正文的单行出处标注）。
 2. **正向**（0007 复核时补做）：把项目树摊开与语料求差，逐项判定。判定结果按「该机制是不是本语料会覆盖的那类机制」分三类：**已补齐**（见下表）、**登记为已知未覆盖**、**确认覆盖良好**。
-   - 生成目录差分：跨 0006 跨度新增的 18 个包与 5 篇 docs **全部**在语料中有落点，只有 3 个纯 UI 包（`client/ui-open-in-app`、`client/ui-sidebar-files`、`host/open-in-app`）未点名，而其机制由 `surfaces/03`、`surfaces/04` 承载。
+   - 生成目录差分：跨 0006 跨度新增的 18 个包与 5 篇 docs **全部**在语料中有落点，只有 3 个纯 UI 包（`client/ui-open-in-app`、`client/ui-sidebar-files`、`host/open-in-app`）未点名，而其机制由 `surfaces/03-桌面入口` 与 `surfaces/04-客户端资源模型与右栏` 承载（0008 独立复核时同名 03 旧页 `03-客户端资源与侧栏.md` 已删）。
    - 扩展面差分：跨 0006 跨度新增 3 个 `ctx` 服务（`fileUploads`/`sessionFeedback`/`workspaceFiles`）、新增工具 `present`、退役工具 `followup_task`、新增事件 `agent/assistant-stream`/`feedback/committed`/`goal/activation-changed`——逐条在语料中找到落点或已补齐。
    - 零命中的工具与服务名**全部**在跨度之前就存在（即属于既有范围选择），不是本轮同步漏掉的。
    - 文件级回归：两语料相对同步前**没有任何文件被删除**（`_digested` 108 → 126、`_faq_on_digested` 92 → 93）。
@@ -64,7 +64,7 @@
 | 未覆盖项 | 权威入口 | 为什么不在本语料 |
 |----------|----------|------------------|
 | CI 平台矩阵与 PR 阻断信号（PR-only `ci.yml` vs master-only `ci-master.yml`、Windows/Wine 分工、failover 开关） | `.github/AGENTS.md`、`.github/workflows/ci.yml`、`ci-master.yml` | 属仓库流程面，不是运行时机制 |
-| 门禁系统自身的 mode 分类与阻断语义（`scripts/run-gates.ts` 的 17 个 mode、`allowFailure`/`quick`） | `scripts/run-gates.ts`、`scripts/AGENTS.md` | 同上；语料只在「门禁」论点里引用聚合命令 |
+| 门禁系统自身的 mode 分类与阻断语义（`scripts/run-gates.ts` 的 17 个 mode、`allowFailure`/`quick`） | `scripts/run-gates.ts`、`scripts/AGENTS.md`；机制级概述已由 `system/03-门禁与性能基准.md` 承载（0008 独立复核后补挂） | mode 逐个语义仍不展开；语料只给聚合与家族图 |
 | 录制会话快照的所有权与规范化规则 | `snapshots/AGENTS.md` | 义务散见于 `harness-idea/03`、`04`，未成页 |
 | Python 发行物（SDK / runtime 拆分、单文件可执行、wheel、smoke 与 CI） | `python/README.md`、`python/development.md` | 只有区域级一行描述 |
 | PR 历史的当前契约（官方 stack 对象、`gh stack merge`、lease 重写） | `AGENTS.md` 的「Choose PR history deliberately」、`dsh-merging-stacked-prs` skill | `_faq_on_digested/11` 记的是历史观察，非当前契约 |
@@ -74,3 +74,5 @@
 | `docs/graph-atlas.md` 作为生成目录之一 | `docs/graph-atlas.md` | 生成目录枚举里漏列 |
 | `native/` 的 Windows job 名与 source-of-record 表述 | `native/README.md`、`.github/workflows/node-addon-system.yml` | 区域级已覆盖，未到 job 级 |
 | `client/hmr`、`client/locale`、`client/store` 等平台包的内部机制 | 各自 package README | 属客户端基础设施，`surfaces/05` 覆盖其对外纪律 |
+| ssh 各 provider 的逐行传输合同（master channel、TLS-PSK、心跳租约的深读） | `packages/ssh/`、`capability-seams/09-ssh远程执行族.md`（本语料已有族级页） | 0008 独立复核补的是族级机制页；逐条 wire 细节待有需要再扩 |
+| browser-use / computer-use driver 的内部契约（stagehand-native / MCP 挂载细节） | `packages/browser-use/`、`packages/computer-use/`、`capability-seams/10-新执行面与编排seam.md`（地图页） | 同上——地图先行，深读待该面有真实使用压力 |

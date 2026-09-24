@@ -42,9 +42,7 @@
 
 fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条流派生；持久化按格式世代寻址，更旧的 log 在打开时经相邻链迁移到当前写者版本，机制见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。所以 loop 可以换：只要新驱动仍往同一条 log 写、仍发同一类 `session/event`，渲染面可以不动。
 
-> **持久化后端与格式世代**：SQLite 后端已由 **#3339**（`4553c9d957`）删除，session 持久化只剩 JSONL：`session-persistence-sqlite` 不再存在，`session-persistence-jsonl` 承担全部持久化职责（注意 #2698 是格式迁移 PR，当时仍在改 SQLite，不要把它记成删除者）。zstd 后端拥有拼接多帧容器，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。格式侧不再是一道拒收闸：`SESSION_FORMAT_VERSION` 是唯一手维护的写者权威（当前为 3），`packages/session/session-format*` 的 build-static catalog 提供从最早支持世代到 current 的完整相邻链；只对**更新**版本拒收并给出「升级 harness」的方向，**更旧**版本走迁移，跨历史格式边时未知事件比同版本读更严。世代、权威与读准备/写发布时序见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
-
-## Projection 机制
+> **持久化后端与格式世代**：SQLite 后端已由 **#3339**（`4553c9d957`）删除，session 持久化只剩 JSONL：`session-persistence-sqlite` 不再存在，`session-persistence-jsonl` 承担全部持久化职责（注意 #2698 是格式迁移 PR，当时仍在改 SQLite，不要把它记成删除者）。zstd 后端拥有拼接多帧容器，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。格式侧不再是一道拒收闸：`SESSION_FORMAT_VERSION` 是唯一手维护的写者权威（当前为 4，`packages/core/session/src/types.ts:89`），`packages/session/session-format*` 的 build-static catalog 提供从最早支持世代到 current 的完整相邻链；只对**更新**版本拒收并给出「升级 harness」的方向，**更旧**版本走迁移，跨历史格式边时未知事件比同版本读更严。世代、权威与读准备/写发布时序见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
 
 ## Projection 必须化
 
@@ -62,7 +60,7 @@ fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条�
 - Agent preset 是显式祖先层：standing composition 的工具、提示词和监听器对加入它的 agent 可见。子 agent 可以加入父 agent 正在使用的同一 preset generation，但不会因此继承父 agent 自有层的注册。
 - `parentSession` / `delegationDepth` 是持久 lineage 数据，不会自动建立 scope parent；可见性只由 `bindScopeParent` 的运行时关系决定。
 - **restrict**：沿 chain 的 restriction 取交集，过滤全局与祖先贡献；当前 agent 自有层的注册最后合并，不受自己的继承面过滤。被过滤的工具在提示词和执行中都表现为不存在。
-- **setup window**：agent 对象已经有了、但还没发布、还没 `agent/session-start`。这里只注册，不驱动。preset 给**一个 session** 另一套能力，其中的服务行需要 `isolate` realm。
+- **setup window**：agent 对象已经有了、但还没发布、还没走 session-start 边。这里只注册，不驱动。preset 给**一个 session** 另一套能力，其中的服务行需要 `isolate` realm。
 
 ## 源码入口
 
@@ -83,9 +81,9 @@ fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条�
 
 | 文件 | 内容 |
 |------|------|
-| [`01-session-event-map.md`](./01-session-event-map.md) | 信封、surface 四类、required-on-read 与 ignorable |
+| [`01-session-event-map.md`](./01-session-event-map.md) | 信封、surface 五类、required-on-read 与 ignorable |
 | [`02-inbox-与turn-时序.md`](./02-inbox-与turn-时序.md) | followup / steer / inject；claim；拒绝仍关 turn；settlement 与 `system/message` |
 | [`03-换loop的半径.md`](./03-换loop的半径.md) | `AgentFactory`、日志与事件义务、默认组合替换点 |
-| [`04-格式世代与迁移.md`](./04-格式世代与迁移.md) | 四个世代、相邻迁移链、权威与门禁、读方向与读准备/写发布 |
+| [`04-格式世代与迁移.md`](./04-格式世代与迁移.md) | 五个世代、相邻迁移链、权威与门禁、读方向与读准备/写发布 |
 
 下一专题：[`../capability-seams/00-map.md`](../capability-seams/00-map.md) 或 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。

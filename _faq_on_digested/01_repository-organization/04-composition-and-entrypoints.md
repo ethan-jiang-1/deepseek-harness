@@ -98,22 +98,20 @@ apps/web/src/main.ts
 
 ## `apps/desktop` 怎样跨目录
 
-桌面是唯一不经 `dsh` CLI 的产品入口，它的链路从 Electron 主进程开始：
+桌面是唯一不经 `dsh` CLI 的产品入口，它的链路从 Electron 主进程开始（0.1.7 线 desktop-host 重构后的现形状）：
 
 ```text
 Electron 主进程（apps/desktop）
-  → 单实例锁；独占 $DSH_HOME/profiles/desktop 与 $DSH_HOME/desktop/**
-  → spawn 捆绑的上游 Node.js，跑 apps/desktop-host/lib/index.js
-       → packages/boot/app-boot 的 boot()
-       → base + web-app bundles + config/desktop.cordis.patch.yml overlay
-       → Host Cordis tree（禁用 web-startup / webserver / web-runtime / client-hmr / open-in-app / ui-open-in-app / directory-picker，改用 directory-picker-native 与 ui-directory-picker-native）
-       → connection.createSharedFetchHandler('/api') + clientModules.fetchBundle
-       → @deepseek-ai/dsh-web-frontend/dist 资产
-  请求帧 fd3 / 响应帧 fd4 / 生命周期走 Node IPC
-  → dsh-app:// 与 __DSH_TRANSPORT__.openStream → /.dsh/remote-stream（NDJSON）
+  → 单实例锁；独占 $DSH_HOME/profiles/desktop 与安装目录
+  → spawn Electron-as-Node（ELECTRON_RUN_AS_NODE=1）跑 apps/desktop-host/lib/index.js
+       → loadProfileDirectory('dsh', projectDir, installAnchor)
+       → 共享 runProfile({ profile: 'desktop', args: ['--no-open','--port','19387'] })
+       → 完整 web 应用（base + web-app bundles + webserver 监听 127.0.0.1:19387）
+       → ctx.connection.authenticatedUrl(...) 经 IPC { type:'ready', url, injections } 报给壳
+  窗口加载认证 URL；dsh-app:// 只承载壳自有页面；Node IPC 载生命周期 / update-tasks / platform-session
 ```
 
-它不装 `packages/host/webserver`，因为壳自己就是那个 server：`dsh-app://` 把请求编成分帧字节交给 host 子进程，host 再交给同一套 Connection 处理。所以上一节的 Host 半边几乎整体复用，换掉的只有端口、WebSocket mux 和前端静态服务那一层；`dsh --profile desktop` 被 `apps/cli/src/args.ts:68-71` 显式拒绝，CLI 不是它的启动面。完整机制见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。
+~~旧的「无监听端口、`desktop.cordis.patch.yml` 覆盖层、`dsh-app://` 分帧字节管道、`__DSH_TRANSPORT__.openStream`」传输~~已随 0.1.7 线 desktop-host 重构退役（`wire.ts` 与覆盖层文件均不存在）；`dsh --profile desktop` 仍被 `apps/cli/src/args.ts:83` 显式拒绝，CLI 不是它的启动面。完整机制见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。
 
 ## `dsh --profile headless` 怎样跨目录
 
@@ -155,7 +153,7 @@ base bundle 可以先插入全局工具，web-app bundle 再禁用其中部分�
 | agent preset | 一个 session/agent 的 scoped composition | app shipped roots 或用户 preset roots | 可随部署/插件分发 |
 | shipped overlay | 随产品出货的一份可选组合叶子 | `apps/cli/config/examples/<name>/cordis.yml` | 产品资产，永不进默认 profile |
 
-顶层 `examples/` 与 `packages/examples/` 都已退役；要读“一份完整组合长什么样”，现在看 `apps/cli/config/examples/` 的四个 overlay 目录（`cordis`、`github-review`、`mcp-memory`——内含 `engram` / `mcp-reference-memory` / `memorix` 三份——与 `schedule`），或 `packages/preset/agent-presets/presets/*/agent.cordis.yml` 的 preset 根。
+顶层 `examples/` 与 `packages/examples/` 都已退役；要读“一份完整组合长什么样”，现在看 `apps/cli/config/examples/` 的三个 overlay 目录（`github-review`、`mcp-memory`——内含 `engram` / `mcp-reference-memory` / `memorix` 三份——与 `schedule`；旧 `cordis` overlay 已随 0.1.7 线 cordis 变更类工具退役），以及 shipped preset 声明 `packages/bundle/web-app/presets/{standard,ptc,minimal,cordis}.patch.yml`（0.1.7 线起 preset 重设计：`packages/preset/agent-presets/` yml 森林已删，preset 根改为 `agent-preset` + `agent-preset-registry`）。
 
 ## 为什么 `--dump-config` 很重要
 

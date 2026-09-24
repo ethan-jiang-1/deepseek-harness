@@ -34,9 +34,9 @@ dsh 里最容易踩的事件合同就是 waterfall。它是 around-middleware，
 
 ![三件必须分开的事](./figures/vendor-stack.svg)
 
-[`vendor/README.md`](../../vendor/README.md) 是本地修改的权威清单。Harness 直接依赖其中的 effect 卸载时序、Loader / Include 事务、共享 patch 算法和延迟配置插值；profile 组合、dump 与 HMR 都建立在这些行为上。产品依赖和对应源码见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
+[`vendor/README.md`](../../vendor/README.md) 是本地修改的权威清单。Harness 直接依赖其中的 effect 卸载时序、Include 的解析保护与持久化写、共享 patch 算法和延迟配置插值；profile 组合、dump 与 HMR 都建立在这些行为上。产品依赖和对应源码见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
 
-> **vendor 4.0.2** = 本地修改 #3311（675efe73f2 `fix: node 24.9 internal issue`，`vendor/loader/src/internal.ts` +20/-8，影响 Loader 行为）+ 纯版本 bump（#3318 只更新九个 vendored `package.json` 版本号，vendor 源码与 manifest SHA 未动）。具体修改内容见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
+> **vendor 4.0.4**（0008 复核更新）：本地修改清单现为 **22** 条——0008 跨度新增 #16（cordis 发布 src）/ #20（entry fiber identity）/ #21（logger exporter disposal）/ #22（volatile config 四件套），第 8/9/12 条随 0.1.7 线事务重载退役而重写；发布版本 cordis 4.0.4 / loader 1.0.5 / include 1.0.9 / schemastery 3.18.4 / cosmokit 1.8.5。0006 时「vendor 零改动」的结论已被本跨度推翻，下一次同步须逐条重放。具体修改内容见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
 
 ## 源码入口
 

@@ -14,7 +14,7 @@ DSH 的对策是 inspectability（可检查性）：提供查询入口，让 age
 |---|---|---|
 | 最终配置树是什么 | profile / bundle / patch 叠加后，这台机器实际 boot 什么 | `dsh --profile web --dump-config` |
 | 仓库声明了什么静态接口与注册项 | tool schema、config 字段、event dispatch mode、service signature | 生成的 tool/config/persistence/event/capability catalog |
-| 当前进程里实际有什么 | 哪个 provider、service、tool 正在生效 | `cordis_inspect_list` / `cordis_inspect_query` / `cordis_inspect_self` |
+| 当前进程里实际有什么 | 哪个 provider、service、tool 正在生效 | `cordis_inspect_list` / `cordis_inspect_query`（0.1.7 线起只有这两个只读工具，`cordis_inspect_self` 已随 #4745 收缩退役） |
 
 三者的关键区别必须守住：**catalog 回答「仓库声明了什么」，不是「当前进程正运行什么」**；实际 provider 与 Fiber 状态要问活运行时。DSH 用 freshness gate 保证生成目录与源码无 diff，所以「声明面」是可信的索引，而不是一张可能漂移的手写清单。
 

@@ -1,6 +1,6 @@
 # Subagent 后台策略与产品 provider opt-in
 
-源码核验入口：`packages/subagent/subagent/`、`packages/subagent/tool-subagent/`、`packages/subagent/tool-subagent-control/`、`packages/bundle/base/README.md`、`packages/preset/agent-presets/presets/*/agent.cordis.yml`。
+源码核验入口：`packages/subagent/subagent/`、`packages/subagent/tool-subagent/`、`packages/subagent/tool-subagent-control/`、`packages/bundle/base/README.md`、shipped preset 声明 `packages/bundle/web-app/presets/*.patch.yml`（0.1.7 线起；旧 `packages/preset/agent-presets/presets/*/agent.cordis.yml` 已随重设计删除）。
 
 Consumer 仍然只 inject `ctx.subagents`。后台生命周期和「这个产品 provider 装没装」是两件独立的组合决定，不要写进 Definition。
 
@@ -17,7 +17,7 @@ Consumer 仍然只 inject `ctx.subagents`。后台生命周期和「这个产品
 
 `enableRunInBackground: false` 隐藏参数，并拒绝强制后台调用。取消不能把产品 provider 的启动/回滚 `AggregateError` 改写成干净的 `killed` Job。
 
-shipped preset 里，主 `subagent` 行（`provider: spawn`）与 `subagent_fork` 行都用 `backgroundMode: continuable`（`packages/preset/agent-presets/presets/cordis/agent.cordis.yml:175`，alpha.3 起即如此；同行 `:174` 现在是 `modelSelectionSettings: true`）；Codex / Claude Code 的 tool 行用 `one-shot`，并且默认 `disabled: true`。
+shipped preset 里，主 `subagent` 行（`provider: spawn`）与 `subagent_fork` 行都用 `backgroundMode: continuable`（现声明 `packages/bundle/web-app/presets/cordis.patch.yml:95/:101`，alpha.3 起即如此；旧 `packages/preset/agent-presets/presets/cordis/agent.cordis.yml:175` 已随 0.1.7 线 preset 重设计删除，其 `:174` 的 `modelSelectionSettings: true` 同迁）；Codex / Claude Code 的 tool 行用 `one-shot`，并且默认 `disabled: true`（同文件 `:108/:116`，另新增 `maxDepth: provider-managed`）。
 
 ## 相邻 Agent 消息与 steer
 
