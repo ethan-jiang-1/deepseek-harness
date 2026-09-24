@@ -4,7 +4,7 @@
 
 ## 一句话
 
-`packages/experimental/` 是九个「跑在真 Harness 上、但合同随时会变」的原型包：CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面，外加 preview 部署用的 webworker 双包。单独成专题的理由不是它们彼此相似，而是它们共享同一条真实存在的边界——**原型合同**：一种不承诺稳定性、可以在上游同步之间自由漂移的合同。跨度 0006 起，这条边界内部分出一档：五个 Agent Teams 包是**显式 public 例外**，以现有 `dsh-experimental-*` 名字进入 dsh release 家族；其余四包（code-runtime-python、inspector、webworker 双包）仍是 private 原型。
+`packages/experimental/` 是「跑在真 Harness 上、但合同随时会变」的原型包集合（0008 复核时九包中 `agent-team-web-profile` 已删除、`code-runtime-python` 改名 `ptc-runtime-python`，另新增 browser-use/computer-use 的 driver 原型与 auto-review 等——成员以仓库现树为准）：CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面，外加 preview 部署用的 webworker 双包。单独成专题的理由不是它们彼此相似，而是它们共享同一条真实存在的边界——**原型合同**：一种不承诺稳定性、可以在上游同步之间自由漂移的合同。跨度 0006 起，这条边界内部分出一档：五个 Agent Teams 包是**显式 public 例外**，以现有 `dsh-experimental-*` 名字进入 dsh release 家族；其余四包（code-runtime-python、inspector、webworker 双包）仍是 private 原型。
 
 ## 为什么单独成专题
 
@@ -14,7 +14,7 @@
 
 ## 三个面
 
-**code-runtime-python —— 换 provider 形状。** `ctx.codeRuntime` seam 的第二个实现：CPython 3.10+ 子进程每次 `run()` 跑一个全新解释器，程序与宿主在 fd 3 上说 JSON-lines 帧协议，宿主把每个入站帧当敌意输入逐字段重建，全部上限在 load 时验证。这是「同一个 Service Definition、第二个 provider」的最小样本，与 worker-thread 后端的取舍（进程隔离 vs 线程内、Unix-only vs 跨平台）全在 [`01-code-runtime-python.md`](./01-code-runtime-python.md)。
+**ptc-runtime-python（原名 code-runtime-python，0.1.7 线随 PTC 命名重构改名）—— 换 provider 形状。** `ctx.ptcRuntime` seam（原 `ctx.codeRuntime`）的第二实现：CPython 3.10+ 子进程每次 `run()` 跑一个全新解释器，程序与宿主在 fd 3 上说 JSON-lines 帧协议，宿主把每个入站帧当敌意输入逐字段重建，全部上限在 load 时验证。这是「同一个 Service Definition、第二个 provider」的最小样本，与 worker-thread 后端的取舍（进程隔离 vs 线程内、Unix-only vs 跨平台）全在 [`01-code-runtime-python.md`](./01-code-runtime-python.md)。
 
 **Agent Teams —— 新服务 + 多包家族形状。** 一个 session 内的多代理编组：`ctx.agentTeams` 领域服务（roster / mailbox / task board，经 Lead Session log 持久化）+ 九个成员级工具 + Host/Web 两个 profile patch + Web 会话头部 UI，五包各司其职。它不是三角色 seam——没有 Provider 可替换性，消费的是「服务 + 工具 + UI」的组合；机制、事件与持久化在 [`02-agent-teams.md`](./02-agent-teams.md)。
 
@@ -28,7 +28,7 @@
 
 | 面 | 预判去向 | 依据 |
 |---|---|---|
-| code-runtime-python | `packages/code-runtime/` 组，与 `code-runtime-worker-thread` 并列成正式 provider | 该组已是「Definition + worker provider」结构，Python 后端只补第二个 provider；`language`/`isolation` 字段本来就是为多后端设计的 |
+| ptc-runtime-python | `packages/ptc-runtime/` 组（0.1.7 线自 code-runtime 组改名），与 `ptc-runtime-node` 并列成正式 provider | 该组已是「Definition + node provider」结构，Python 后端只补第二个 provider；`language`/`isolation` 字段本来就是为多后端设计的 |
 | Agent Teams | 服务进产品能力组（参照 schedule / webhook 这类自足插件的位置），Web UI 进 `packages/client/`（与 ui-schedule 等 client 包并列），profile patch 转正或内化 | 上游 Dev Note 已把 nested teams、cross-process mailbox、worktree 隔离列为未承诺方向——毕业前这些不影响现有合同 |
 | Inspector | host / surfaces 面 | 插件 `inject: ['webServer']`、经 `webserver/index-inject` 注入 client bootstrap，天然是 host 侧开发者工具 |
 
@@ -36,7 +36,7 @@
 
 ## 启用方式总述
 
-九包都不在 shipped 组合里，启用全部走显式组合：源码 checkout 内 `dsh plugin --profile <name> add ./packages/experimental/<pkg>`，或直接往 `cordis.yml` / patch 里 insert；五个 public 例外随 dsh release 家族一起发布，另外四包不发布。python 后端的样板是 keyless 快照 `snapshots/session/ptc-python-turn/cordis.yml`：先把 headless profile 挂的默认 `code-runtime`（worker-thread）行 `disabled: true`（`snapshots/session/ptc-python-turn/cordis.yml:26`），再 insert `@deepseek-ai/dsh-experimental-code-runtime-python`（`:28`-`:30`）——同一 isolate 里重复注册同一个服务名会 load 失败，所以「换后端」永远是组合层的显式决定。Agent Teams 的启用是两层：Host 侧 `pnpm dsh plugin --profile headless add ./packages/experimental/agent-team-profile`（profile 已含 `dsh-base` 时可直接加），Web 场景再按「先 Host 后 Web」顺序加 `agent-team-web-profile`。Inspector 不装包：build 后 `node apps/cli/lib/bin.js web --patch ./packages/experimental/inspector/cordis.patch.yml` 挂 built 覆盖层，或源码态 `pnpm run demo:inspector`（`cordis.source.patch.yml`）。各面的完整入口见对应机制页。
+九包都不在 shipped 组合里，启用全部走显式组合：源码 checkout 内 `dsh plugin --profile <name> add ./packages/experimental/<pkg>`，或直接往 `cordis.yml` / patch 里 insert；五个 public 例外随 dsh release 家族一起发布，另外四包不发布。python 后端的启用方式不变（快照 `snapshots/session/ptc-python-turn/` 已随 0.1.7 线退役，行号引用只适用于旧基线）：把默认 PTC runtime（node）行 `disabled: true`，再 insert `@deepseek-ai/dsh-experimental-ptc-runtime-python`——同一 isolate 里重复注册同一个服务名会 load 失败，所以「换后端」永远是组合层的显式决定。Agent Teams 的启用是两层：Host 侧 `pnpm dsh plugin --profile headless add ./packages/experimental/agent-team-profile`（profile 已含 `dsh-base` 时可直接加），Web 场景的 `agent-team-web-profile` 已随 0.1.7 线删除（仅 Host 侧组合仍可用）。Inspector 不装包：build 后 `node apps/cli/lib/bin.js web --patch ./packages/experimental/inspector/cordis.patch.yml` 挂 built 覆盖层，或源码态 `pnpm run demo:inspector`（`cordis.source.patch.yml`）。各面的完整入口见对应机制页。
 
 ## 阅读路径
 
