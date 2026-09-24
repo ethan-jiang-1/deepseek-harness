@@ -39,7 +39,7 @@ my-expert/
 
 - **modelcontextprotocol/servers** 是这个形态的范本：每个 server 对 `@modelcontextprotocol/sdk` 用 npm 版本依赖，host SDK 独立发版、绝不 in-repo 链接。它成立的前提是 **SDK 面小且稳定**；DSH 的公开 API 仍是 pre-stable（AGENTS.md 明说"update every consumer"），版本漂移会持续打在这个形态的痛点上。
 - **OpenClaw 文档明说的坑**：源码 checkout 直测会掩盖依赖错误，所以即使纯外部依赖也要用 `npm pack` → 真实安装路径测一遍。
-- **anthropics/claude-code 的 fallback**：host 源码进不了 repo 时，把框架知识做成版本化 SKILL.md/文档随包走——对应到 DSH，等价物是把 `docs/architecture.md`、`cordis-primer.md` 的关键结论摘成专家 repo 自己的 `docs/dsh-notes/`。这是本方案的唯一可行加强版：**知识内化，源码外置**。
+- **anthropics/claude-code 的 fallback**：host 源码进不了 repo 时，把框架知识做成版本化 SKILL.md/文档随包走——对应到 DSH，等价物是把 `docs/user/develop/`（插件形态/配置/打包的作者结论）、`docs/architecture.md`、`cordis-primer.md` 的关键结论摘成专家 repo 自己的 `docs/dsh-notes/`。这是本方案的唯一可行加强版：**知识内化，源码外置**。
 
 ## 开发过程差异（方案 C）
 
@@ -47,7 +47,7 @@ my-expert/
 
 - 插拔与 A 完全相同（`dsh plugin add` + patch 层级），但 workspace 直跑的前提是 npm 依赖能解析——DSH 是 pre-stable，`pnpm update` 一次就可能断 API，typecheck 是你唯一的编译期防线。
 - `AGENTS.md` 里的 `DSH_REPO` 指针必须配一个"知识内化"目录（`docs/dsh-notes/`）：把常用合同（层级顺序、dump-config、preset 语义、日志税）摘成自己的短文档，否则 agent 每次都要跳出去且可能查不到。
-- 真实安装形状测试（`npm pack` → `dsh plugin add`）在本形态**更加必要**，因为依赖声明错误没有 workspace 兜底。
+- 真实安装形状测试（`npm pack` → `dsh plugin add`）在本形态**更加必要**，因为依赖声明错误没有 workspace 兜底（共享义务本体见 [dev-loop](./dev-loop.md) 第 4 阶段）。
 - 上游跟随成本最高：没有 SHA 簿记、没有源码 diff，版本漂移只能靠测试失败发现——这是"只作过渡"的机制原因。
 - snapshot 自建义务照担（dev-loop 第 5 阶段派给 A/C/D）：`snapshots/` 收录制会话与预期，先用 JSONL 日志 diff 顶着，够用再升级。
 

@@ -38,7 +38,7 @@ DSH 的对策是 inspectability（可检查性）：提供查询入口，让 age
 
 ## 证据入口
 
-- [`../../_agent_ready_development/development-harness/06-runtime-inspection.md`](../../_agent_ready_development/development-harness/06-runtime-inspection.md)：三个查询面、catalog 与活运行时的区别、tool-cordis 的 trust stance。
+- [`../../_agent_ready_development/repo-harness/06-runtime-inspection.md`](../../_agent_ready_development/repo-harness/06-runtime-inspection.md)：三个查询面、catalog 与活运行时的区别、tool-cordis 的 trust stance。
 - [`../../_digested/harness-idea/05-dynamic-legibility.md`](../../_digested/harness-idea/05-dynamic-legibility.md)：dsh 不只可读、还可查询可试验。
 - [`../../docs/architecture.md`](../../docs/architecture.md)：ordered config layers 与 `--dump-config`。
 - [`../../docs/tool-catalog.md`](../../docs/tool-catalog.md)：从源码生成的工具 schema 与 opt-in 说明。

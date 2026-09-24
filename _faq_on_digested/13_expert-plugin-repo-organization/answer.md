@@ -10,7 +10,7 @@
 
 专家需要的"自己的工具、提示词、技能、隔离上下文"恰好是 agent preset 的定义：一个 `agent.cordis.yml` 目录，会话挂上它就运行它的工具/prompt sections/skills，其他会话不受影响（`ctx.agentPresets`，见 `packages/preset/README.md`）。可插拔性由 bundle 层承担：package.json 的 `dsh` 字段声明 `dsh.bundle.patch`（+ Web UI 时 `dsh.client.inject`），装进任何 profile。**不需要新的可执行入口**——DSH 的 shipped 应用（web/headless/sdk/sdk-minimal/acp）加 Electron Desktop 共用 `ctx.agents` spine，CLI 只是共享启动器；专家是这棵树上的组合物，不是新入口。
 
-这不是本 FAQ 的发明，是整个第三方生态的事实契约：[research.md](./research.md) 核实的四个第三方插件（dsh-im、dsh-market、dsh-routing-suite、chatnode-wechat）全部用 `dsh.bundle.patch: "./cordis.patch.yml"` + `dsh plugin add`，awesome 列表的收录规则也是这两条。
+这不是本 FAQ 的发明，是整个第三方生态的事实契约：[research.md](./research.md) 核实的四个第三方插件（dsh-im、dsh-market、dsh-routing-suite、chatnode-wechat）全部用 `dsh.bundle.patch: "./cordis.patch.yml"` + `dsh plugin add`，awesome 列表的收录规则也是这两条。DSH 也把这条路径教成了正式课程：`docs/cordis-tutorial/`（七讲 keyless 可运行，末讲把模型可调用工具接进真实 harness services）与 `docs/user/develop/`（basic → framework → practice）——专家 repo 的探索路由把它们标为作者侧第一入口（[dev-loop](./dev-loop.md) 第 0 阶段）。
 
 ## 决策 2 · 包粒度：单包起步，缝出现第二消费方再拆
 
@@ -56,4 +56,4 @@ DSH 的原生开发环（FAQ 11 结论：这是它"最自然"的习惯）搬到�
 3. **第二个专家立项且要复用骨架**：升方案 D（A 的结构原样变成子树）。
 4. **向 DSH 上游提 seam**：方案 B + OpenSpec 一起上；**仅引入第二贡献者**则留在 A，只加 OpenSpec。
 
-每个方案的完整目录树、装法、取舍表与市场背书见各自文件（各自的"开发过程差异"一节只写形态带来的增量）；**插拔、调试、驱动 coding agent 与 DSH 推荐流程中四方案真正共享的机制层**收敛在 [dev-loop.md](./dev-loop.md)（它的"专家 repo 落地"列按方案 A 的目录形状写，B/C/D 的落地差异只在各自"开发过程差异"一节），**官方安装的 DSH 与插件开发的隔离**（双 home）在 [dual-home-isolation.md](./dual-home-isolation.md)；全部外部证据与 URL 在 [research.md](./research.md)。
+每个方案的完整目录树、装法、取舍表与市场背书见各自文件（各自的"开发过程差异"一节只写形态带来的增量）；**插拔、调试、驱动 coding agent 的机制层与 DSH 推荐流程**收敛在 [dev-loop.md](./dev-loop.md)（机制层四方案共享；"专家 repo 落地"列按方案 A 的形状写给 A/C/D 家族，C/D 的增量就地标记；方案 B 的 repo 就是 DSH、流程即原生件，其特有环只在 option-b 的差异节），**官方安装的 DSH 与插件开发的隔离**（双 home）在 [dual-home-isolation.md](./dual-home-isolation.md)；全部外部证据与 URL 在 [research.md](./research.md)。

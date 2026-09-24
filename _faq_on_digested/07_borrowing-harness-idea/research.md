@@ -2,13 +2,13 @@
 
 ## 说明
 
-本 FAQ 的证据主体是两份本地研究语料，现已随 `_digested/` 同步到基线 DSH `dsh-v0.1.7-rc.1`（commit `46a7f68b0922371ce7144b668b90e377d8e799f4`，见 [`_digested/00-index.md`](../../_digested/00-index.md) 与 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`）。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
+本 FAQ 的证据主体是两份本地研究语料：`_agent_ready_development/repo-harness/`（01–07；目录 2026-09-24 由 `development-harness/` 更名，更名记录见语料 [`_coverage/00-corpus-maintenance.md`](../../_agent_ready_development/_coverage/00-corpus-maintenance.md)）与 `_digested/harness-idea/`（01–08），均已同步到基线 DSH `dsh-v0.1.7-rc.1`（commit `46a7f68b0922371ce7144b668b90e377d8e799f4`，见 [`_digested/00-index.md`](../../_digested/00-index.md) 与 `_digested/_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`）；两份语料的理解都只从 DSH 仓库一手内容挖出。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
 
 ## 1. 仓库以 coding agent 为主、机械门禁优于 prose 约定
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions.
 
-来源：`.agents/notes/implemented/process/2026-06-11-quality-gates.md`（语料 `development-harness/00-index.md` 引用）
+来源：`.agents/notes/implemented/process/2026-06-11-quality-gates.md`（语料 `repo-harness/00-index.md` 引用）
 
 ## 2. 一个事实一个家
 
@@ -20,7 +20,7 @@
 
 > Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects.
 
-来源：`.agents/notes/implemented/process/2026-06-11-quality-gates.md`（语料 `development-harness/05-executable-feedback.md` 引用）
+来源：`.agents/notes/implemented/process/2026-06-11-quality-gates.md`（语料 `repo-harness/05-executable-feedback.md` 引用）
 
 ## 4. 扩展点优先，改 loop 是例外
 
@@ -32,37 +32,37 @@
 
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 
-来源：`docs/architecture.md`（语料 `development-harness/04-paved-road-and-participation.md` 引用）
+来源：`docs/architecture.md`（语料 `repo-harness/04-paved-road-and-participation.md` 引用）
 
 ## 6. Skill 是 guidance，不是 checklist
 
 > This skill is guidance, not a complete checklist. […] The report identifies paths and dirty layers but does not replace semantic review.
 
-来源：`.agents/skills/dsh-code-review/SKILL.md`（语料 `development-harness/03-skills-as-procedural-memory.md` 引用）
+来源：`.agents/skills/dsh-code-review/SKILL.md`（语料 `repo-harness/03-skills-as-procedural-memory.md` 引用）
 
 ## 7. 摘要负责发现，正文才拥有指令
 
 > This catalog contains summaries only; do not infer or follow a skill's instructions until it has been loaded.
 
-来源：`packages/skill/tool-skill/README.md`（语料 `development-harness/03-skills-as-procedural-memory.md` 引用）
+来源：`packages/skill/tool-skill/README.md`（语料 `repo-harness/03-skills-as-procedural-memory.md` 引用）
 
 ## 8. 负例控制：门禁必须先被证明会失败
 
 > A guard only guards if the regression fails it. … and prove it: introduce the regression, watch red, revert.
 
-来源：`docs/testing.md`（test the real entry path 一节；语料 `development-harness/05-executable-feedback.md` 引用）
+来源：`docs/testing.md`（test the real entry path 一节；语料 `repo-harness/05-executable-feedback.md` 引用）
 
 ## 9. 运行时查询是 opt-in 开发工具，非安全边界
 
 > This is an opt-in development tool with bash-equivalent trust, not a security boundary or product default.
 
-来源：`.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md`（语料 `development-harness/07-boundaries-and-costs.md` 引用）
+来源：`.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md`（语料 `repo-harness/07-boundaries-and-costs.md` 引用）
 
 ## 10. 最终配置树的查询入口
 
 > To see the tree your machine boots: `dsh --profile web --dump-config`
 
-来源：`docs/architecture.md`（profiles and bundles 一节；语料 `development-harness/06-runtime-inspection.md` 引用）
+来源：`docs/architecture.md`（profiles and bundles 一节；语料 `repo-harness/06-runtime-inspection.md` 引用）
 
 ## 11. 文档只写 current state，不写 change history
 
@@ -74,7 +74,7 @@
 
 > 较小项目若只有一个 loop、少量固定 adapter 和单一入口，可能只需要清晰 architecture map、少数 standing rules、任务 Skills 和针对性 tests。学习 DSH 的第一步应是知识归属与反馈纪律，而不是复制全部包结构。
 
-来源：`_agent_ready_development/development-harness/07-boundaries-and-costs.md`（语料自身的判断，非 DSH 原文）
+来源：`_agent_ready_development/repo-harness/07-boundaries-and-costs.md`（语料自身的判断，非 DSH 原文）
 
 ## 13. CLAUDE.md 是 symlink，编辑真实文件
 
@@ -144,14 +144,14 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 ## 已核对的相关消化材料
 
-- `_agent_ready_development/development-harness/00-index.md`：五类信息缺口与五类 owner 总表（本 FAQ 正文扩为六缺口，见 01）
-- `_agent_ready_development/development-harness/01-follow-a-fresh-agent.md`：fresh agent 六问闭环
-- `_agent_ready_development/development-harness/02-legibility-and-ownership.md`：可读性与知识归属
-- `_agent_ready_development/development-harness/03-skills-as-procedural-memory.md`：Skills 的定位与边界
-- `_agent_ready_development/development-harness/04-paved-road-and-participation.md`：参与阶梯与归属路由
-- `_agent_ready_development/development-harness/05-executable-feedback.md`：六层反馈与负例控制
-- `_agent_ready_development/development-harness/06-runtime-inspection.md`：运行时查询
-- `_agent_ready_development/development-harness/07-boundaries-and-costs.md`：优先级清单与三问框架
+- `_agent_ready_development/repo-harness/00-index.md`：五类信息缺口与五类 owner 总表（本 FAQ 正文扩为六缺口，见 01）
+- `_agent_ready_development/repo-harness/01-follow-a-fresh-agent.md`：fresh agent 六问闭环
+- `_agent_ready_development/repo-harness/02-legibility-and-ownership.md`：可读性与知识归属
+- `_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md`：Skills 的定位与边界
+- `_agent_ready_development/repo-harness/04-paved-road-and-participation.md`：参与阶梯与归属路由
+- `_agent_ready_development/repo-harness/05-executable-feedback.md`：六层反馈与负例控制
+- `_agent_ready_development/repo-harness/06-runtime-inspection.md`：运行时查询
+- `_agent_ready_development/repo-harness/07-boundaries-and-costs.md`：优先级清单与三问框架
 - `_digested/harness-idea/00-map.md`：harness 思想入口与核心论点
 - `_digested/harness-idea/02-legibility.md`：静态可读性
 - `_digested/harness-idea/03-paved-road.md`：正确路径

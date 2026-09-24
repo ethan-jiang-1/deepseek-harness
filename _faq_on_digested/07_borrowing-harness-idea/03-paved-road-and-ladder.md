@@ -16,7 +16,7 @@ DSH 把「改哪里」从一个仓库经验问题变成一个可核对的设计�
 
 ## 四级参与阶梯（一个可迁移的学习模型）
 
-不同改动半径有不同首选入口。下面的 participation ladder 是 development-harness 语料从 DSH 归纳出的学习模型，不是 DSH 的官方分级名称，但分级逻辑可以原样搬到任何项目：
+不同改动半径有不同首选入口。下面的 participation ladder 是 repo-harness 语料从 DSH 归纳出的学习模型，不是 DSH 的官方分级名称，但分级逻辑可以原样搬到任何项目：
 
 | 层级 | 首选入口 | 典型变化 | 升级条件 |
 |---|---|---|---|
@@ -58,7 +58,7 @@ DSH 把 capability seam 定义为三角色——Service Definition、一个或�
 
 ## 证据入口
 
-- [`../../_agent_ready_development/development-harness/04-paved-road-and-participation.md`](../../_agent_ready_development/development-harness/04-paved-road-and-participation.md)：参与阶梯、五个归属问题、生命周期单一所有权。
+- [`../../_agent_ready_development/repo-harness/04-paved-road-and-participation.md`](../../_agent_ready_development/repo-harness/04-paved-road-and-participation.md)：参与阶梯、五个归属问题、生命周期单一所有权。
 - [`../../_digested/harness-idea/03-paved-road.md`](../../_digested/harness-idea/03-paved-road.md)：正确路径为什么是阻力最小路径、路径自身被测试。
 - [`../../_digested/harness-idea/04-participation-paths.md`](../../_digested/harness-idea/04-participation-paths.md)：不同参与半径的门、合同与检查半径。
 - [`../../docs/architecture.md`](../../docs/architecture.md)：Where new behavior goes 归属表与扩展点。

@@ -8,7 +8,7 @@
 
 > Legibility 不是把大型仓库压缩成一篇总览。更准确的定义是：遇到一个问题时，能以有限上下文找到正确 owner，区分当前事实与设计理由，并知道下一层应该读什么。
 
-（上句是 [`_agent_ready_development/development-harness/02-legibility-and-ownership.md`](../../_agent_ready_development/development-harness/02-legibility-and-ownership.md) 的归纳，不是 DSH 原文。）
+（上句是 [`_agent_ready_development/repo-harness/02-legibility-and-ownership.md`](../../_agent_ready_development/repo-harness/02-legibility-and-ownership.md) 的归纳，不是 DSH 原文。）
 
 也就是说，**「不糊涂」的度量不是「读了多少」，而是「能不能便宜地找到那份最小且权威的材料」。** 这直接可迁移，不需要任何插件架构。
 
@@ -69,7 +69,7 @@ DSH 用 rejected note、README 的 `## Known Limitations and Deferred Work`、�
 
 ## 证据入口
 
-- [`../../_agent_ready_development/development-harness/02-legibility-and-ownership.md`](../../_agent_ready_development/development-harness/02-legibility-and-ownership.md)：五类问题五类 owner、当前事实 vs 决策理由、负知识。
+- [`../../_agent_ready_development/repo-harness/02-legibility-and-ownership.md`](../../_agent_ready_development/repo-harness/02-legibility-and-ownership.md)：五类问题五类 owner、当前事实 vs 决策理由、负知识。
 - [`../../_digested/harness-idea/02-legibility.md`](../../_digested/harness-idea/02-legibility.md)：静态可读性的八个机制与上下文入口外置。
 - [`../../docs/AGENTS.md`](../../docs/AGENTS.md)：文档 tier taxonomy 与 one home per fact。
 - [`../../docs/glossary.md`](../../docs/glossary.md)：一词一义的术语纪律。

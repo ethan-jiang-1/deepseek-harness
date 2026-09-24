@@ -30,7 +30,7 @@ DSH 没有把六类信息混写在一份总览里，而是**一个问题一个 o
 
 > 这些文件并非越多越好。关键在于每类事实有 owner，读者可以从短入口逐步进入详细来源，而不必先通读整个仓库。
 
-（上句是 `_agent_ready_development/development-harness/00-index.md` 的归纳，不是 DSH 原文。）
+（上句是 `_agent_ready_development/repo-harness/00-index.md` 的归纳，不是 DSH 原文。）
 
 ## 关键反转：不赌「聪明」，赌「成本结构」
 
@@ -51,7 +51,7 @@ DSH 没有把六类信息混写在一份总览里，而是**一个问题一个 o
 
 ## 证据入口
 
-- [`../../_agent_ready_development/development-harness/00-index.md`](../../_agent_ready_development/development-harness/00-index.md)：语料的五类信息缺口与五类 owner 总表（本 FAQ 在 01 正文里扩成六缺口：把「改动落在哪里」单列，与语料的「为什么这样设计」并齐）。
-- [`../../_agent_ready_development/development-harness/01-follow-a-fresh-agent.md`](../../_agent_ready_development/development-harness/01-follow-a-fresh-agent.md)：fresh agent 连续回答六个问题的完整闭环。
+- [`../../_agent_ready_development/repo-harness/00-index.md`](../../_agent_ready_development/repo-harness/00-index.md)：语料的五类信息缺口与五类 owner 总表（本 FAQ 在 01 正文里扩成六缺口：把「改动落在哪里」单列，与语料的「为什么这样设计」并齐）。
+- [`../../_agent_ready_development/repo-harness/01-follow-a-fresh-agent.md`](../../_agent_ready_development/repo-harness/01-follow-a-fresh-agent.md)：fresh agent 连续回答六个问题的完整闭环。
 - [`../../_digested/harness-idea/00-map.md`](../../_digested/harness-idea/00-map.md)：参与知识「外置 / 自带」两分与核心论点。
 - DSH [`quality-gates` Agent Note](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)：仓库以 coding agent 为主、机械门禁优于 prose 约定的一手因果自述。
