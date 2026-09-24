@@ -8,7 +8,7 @@
 
 DSH 把这层知识放进 **development Skill**。它既不是普通文档，也不是自动门禁，而是「程序化工作记忆」——把资深参与者的判断过程变成可发现、可复用、可审查的仓库文件。
 
-> Skills (`.agents/skills/`) — Reusable workflows and specialized decision standards.
+> | Skills (`.agents/skills/`) | Reusable workflows and specialized decision standards | Product and runtime contracts (→ docs or source) |
 
 ## Skill 不是 gate，也不是文档
 

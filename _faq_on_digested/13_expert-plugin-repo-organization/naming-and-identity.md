@@ -15,7 +15,7 @@
 | ctx 服务键（`inject` 名） | 与 Service Definition 声明同名 | 单个组合 | 其他插件 `inject` 它；生成目录（capability-seams / module-graph）按名收图 | 所有 Consumer 的 `inject` 断，装载等待永不满足（fail-loud，但报错在别人的仓库里） |
 | 工具 wire 名 | 无强制 regex；生态惯例短 kebab；可经 Config 暴露为部署参数（`tool-subagent` 的 `toolName` 先例：每实例不同名） | 单个组合（同名 shadow） | **会话日志逐字记录**：`tool/call` 事件带 `name` 字段（`packages/core/session/src/types.ts`）；`tool.call.toolview` slot 按工具名 keyed；agent 工具限制按名过滤 | 旧会话重放断（日志里的名字解析不回工具）、专属卡失配、用户限制规则失配 |
 | SessionEventMap 事件名 | 必须先声明 merging 进 map 才能写日志；required-on-read | 全局命名空间 | 事件名写进 JSONL；不认识事件的构建拒绝读日志（`ignorable` 除外） | 旧日志读不出 → 属结构性格式变更，走 `SESSION_FORMAT_VERSION` 相邻迁移的整套纪律 |
-| preset id | `[a-z0-9][a-z0-9-]*`，id 即目录名 | roster 内；**roots 有序遮蔽** | 会话切换 preset 记录进日志；`presetDisplayText` 以 id 为 key 映射展示文案 | 用户会话的 preset 引用断；且**起 shipped 同名会被遮蔽**（shipped 根 prepend 在最前，叫 `standard`/`ptc`/`cordis`/`minimal` 等于隐身） |
+| preset id | 必填、稳定标识符（声明式：插件行 `id` 供 Loader 编辑定位，`config.id` 是会话保存的 preset 身份） | 组合内；**重复 preset id 在声明装载期直接失败** | 会话切换 preset 记录进日志；展示文案以 id 为 key 经 locale 解析（`agent-preset-registry/src/display.ts`） | 用户会话的 preset 引用断；起与 shipped preset（`standard`/`ptc`/`cordis`/`minimal`）同 id 的声明会被 fail-loud 拒绝装载 |
 | settings namespace | 小写字母/数字/连字符，TypeScript 字面量与运行时双重校验（`packages/settings/settings/README.md`） | 设置文档内 | 用户覆盖层（`user`）按 namespace 持久化 | 用户设置被孤儿化：文档里那节还在，没有插件认领 |
 | slot 名 | `<domain>.<entry>.<hole>` 文法，镜像组合路径；声明冲突在装载期 fail（`packages/client/AGENTS.md`） | client 树内 | 注册方与消费方的合约；`dsh.client.inject` 的模块引用 DSH client 包名 | 注入方与占用方失配；占用 DSH 已声明域 = 装载失败 |
 | registry.json 专家 id（方案 D） | 建议与 preset id 同名对齐 | 本 repo | registry → 目录 → 兼容矩阵三处一致（validate 脚本的校验面） | 三处失配，`dsh plugin add` 逐专家装的入口断 |
@@ -41,7 +41,7 @@
 3. ctx 服务键前缀：一个专家一个前缀，不与 DSH 核心/其他插件撞（dev-loop 设计四问第 1 问的落点）。
 4. 工具 wire 名：短 kebab；决定是否像 `tool-subagent` 那样把 `toolName` 做成 Config（部署可换名——但记住日志记录运行时名，换名仍断旧重放，这是"可配置"不是"可反悔"）。
 5. 事件名前缀：每条流的事件带专家前缀，避开核心十三种。
-6. preset id：`[a-z0-9][a-z0-9-]*`，避开 shipped 四个；与 registry id（若有）对齐。
+6. preset id：稳定标识符（必填；重复 id 在声明装载期拒绝），避开 shipped 四个；与 registry id（若有）对齐。
 7. settings namespace：`[a-z0-9-]`；一旦有用户装了就别改（用户覆盖层按它持久化）。
 8. slot 域名：`<你的域>.<entry>.<hole>`，第一段用专家前缀，不占 DSH 已声明域。
 

@@ -2,11 +2,11 @@
 
 ## 说明
 
-本 FAQ 的证据主体是两份本地研究语料：`_agent_ready_development/repo-harness/`（01–07；目录 2026-09-24 由 `development-harness/` 更名，更名记录见语料 [`_coverage/00-corpus-maintenance.md`](../../_agent_ready_development/_coverage/00-corpus-maintenance.md)）与 `_digested/harness-idea/`（01–08），均已同步到基线 DSH `dsh-v0.1.7-rc.1`（commit `46a7f68b0922371ce7144b668b90e377d8e799f4`，见 [`_digested/00-index.md`](../../_digested/00-index.md) 与 `_digested/_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`）；两份语料的理解都只从 DSH 仓库一手内容挖出。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
+本 FAQ 的证据主体是两份本地研究语料：`_agent_ready_development/repo-harness/`（01–07；目录 2026-09-24 由 `development-harness/` 更名，更名记录见语料 [`_coverage/00-corpus-maintenance.md`](../../_agent_ready_development/_coverage/00-corpus-maintenance.md)）与 `_digested/harness-idea/`（01–08），均已同步到基线 DSH `dsh-v0.1.7-rc.1`（commit `46a7f68b0922371ce7144b668b90e377d8e799f4`，见 [`_digested/00-index.md`](../../_digested/00-index.md) 与 `_digested/_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`）；两份语料的理解都只从 DSH 仓库一手内容挖出。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写，第 1、3、9、10、14 条已按 0.1.7 基线（`46a7f68b09` 工作树）逐字重核并改写（截断补 `[...]`、恢复句尾冒号与引文内代码块、E9 换为 note 现行原文、E14 改引现行表格行）。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
 
 ## 1. 仓库以 coding agent 为主、机械门禁优于 prose 约定
 
-> This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions.
+> This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions [...].
 
 来源：`.agents/notes/implemented/process/2026-06-11-quality-gates.md`（语料 `repo-harness/00-index.md` 引用）
 
@@ -18,7 +18,7 @@
 
 ## 3. 每一条可机械判断的规则落到一个非零退出码的命令
 
-> Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects.
+> Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects:
 
 来源：`.agents/notes/implemented/process/2026-06-11-quality-gates.md`（语料 `repo-harness/05-executable-feedback.md` 引用）
 
@@ -54,13 +54,17 @@
 
 ## 9. 运行时查询是 opt-in 开发工具，非安全边界
 
-> This is an opt-in development tool with bash-equivalent trust, not a security boundary or product default.
+> The vm prevents accidental global pollution; injected filesystem, shell, and network services still have real authority, so it is not a security boundary.
 
 来源：`.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md`（语料 `repo-harness/07-boundaries-and-costs.md` 引用）
 
 ## 10. 最终配置树的查询入口
 
-> To see the tree your machine boots: `dsh --profile web --dump-config`
+> To see the tree your machine boots:
+>
+> ```text
+> dsh --profile web --dump-config
+> ```
 
 来源：`docs/architecture.md`（profiles and bundles 一节；语料 `repo-harness/06-runtime-inspection.md` 引用）
 
@@ -86,13 +90,13 @@
 
 ## 14. tier taxonomy：root / subtree AGENTS.md 与 package README 的分工
 
-> Root `AGENTS.md` — Standing orders: rules an agent needs in context in every session, one to three lines each, linking its home.
-
-> Subtree `AGENTS.md` (`packages/`, `docs/`, `.agents/notes/`) — Orders specific to that subtree. Does NOT belong there: repo-wide rules the root file already carries.
-
-> Package README — The per-package contract: config, semantics, limitations, extension points, and Model Experience.
-
-> Skills (`.agents/skills/`) — Reusable workflows and specialized decision standards.
+> | Root `AGENTS.md` | Standing orders: rules an agent needs in context in every session, one to three lines each, linking its home | Stories, worked examples, situational procedures, anything restated from a linked home |
+>
+> | Subtree `AGENTS.md` (`packages/`, `docs/`, `.agents/notes/`) | Orders specific to that subtree | Repo-wide rules the root file already carries |
+>
+> | Package README | The per-package contract: config, semantics, limitations, extension points, and Model Experience | JSDoc restatement, generated-catalog restatement (event/tool tables), other packages' concerns |
+>
+> | Skills (`.agents/skills/`) | Reusable workflows and specialized decision standards | Product and runtime contracts (→ docs or source) |
 
 来源：`docs/AGENTS.md`（The tier taxonomy 表）
 

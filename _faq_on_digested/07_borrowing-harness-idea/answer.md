@@ -29,7 +29,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 1. **一个事实一个 owner，当前状态与决策理由分开。** 这是「不糊涂」的地基：agent 遇到问题知道去哪个权威文件，而不是在过时故事里猜当前 API。
 2. **正确路径是分层的、有判定顺序的。** 新行为先问「能不能用配置/现有扩展点表达」，再逐级上升到 seam、core loop。这是「不乱发挥」的前半段。
-3. **可机械判断的规则全部落到执行，而不是只写进 prose。** 这是「不乱发挥」的后半段，也是 DSH 最值得抄的一句话：*Agents follow enforced gates far more reliably than prose conventions.*
+3. **可机械判断的规则全部落到执行，而不是只写进 prose。** 这是「不乱发挥」的后半段，也是 DSH 最值得抄的一句：*Agents follow enforced gates far more reliably than prose conventions* [...]。
 
 ## 三句话记住它
 

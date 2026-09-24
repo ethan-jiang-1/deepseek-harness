@@ -69,17 +69,12 @@ dsh plugin --profile <p> add file:./packages/expert-pack   # 持久安装验证�
 | 可复现 | ✅ submodule 钉 tag；升级 = 同步 submodule + 跑本 repo 门禁 |
 | 插拔 | ✅ 天然走 `dsh plugin add` / patch 层级，不发明装载 |
 | 发布边界 | ✅ 自己的 repo、自己的版本节奏、自己的 CI |
-| UI 表达 | ⚠️ 可用但要自建：presenter 层（card render intent + `presentationMeta`）是纯函数、可 replay，但不做事时 Web 只显示 generic fallback 卡；专属工具卡要在 client 插件里注册 `tool.call.toolview` 槽，独立 UI 面走 `dsh.client.inject`（见下） |
+| UI 表达 | ⚠️ 可用但要自建：out-of-tree 三层通道都在（分层事实与边界见 [answer](./answer.md) 决策 4，A 的落点见下） |
 | 成本 | ❌ submodule 同步纪律要自己扛；`vendor/dsh` 作为子 workspace 可能触发 DSH 仓库某些"我是根"假设的脚本，需先跑通再定型 |
 
-### UI 表达的分层事实
+### UI 表达在 A 的落点
 
-out-of-tree 不是没有 Web UI 通道，但"免费"也有边界（`docs/cookbook/adding-a-tool.md`：内置 Web Client 不消费 presenter）。第三方实证（[research.md](./research.md)）：
-
-- **presenter 层**（expert-tools）：`presentCall`/`presentResult` + `presentationMeta` 是纯函数、可 replay 的卡片状态投影；不配 client 时 Web 显示 generic fallback 卡——这层保证的是状态可重建与词汇表中性，不是"自动出现专属卡"。
-- **专属工具卡**：client 插件在 `tool.call.toolview` keyed slot 注册自己的工具名，从 wire 事件 + `result.meta` 派生卡片 props——out-of-tree 可做，属于 expert-pack 的 client 模块。
-- **独立 UI 面**（自定义面板/设置页）：`dsh.client.inject` 注入自带打包的 client 模块。`dsh-market`（tsdown）与 `dsh-im`（esbuild）都在独立 repo 里这样完成注入，DSH 的 client 包只作 devDependency；代价是要跟着 DSH client 的注入点与 locale 约定走。
-- 方案 B 剩下的独占优势收窄为：**改内置 client 包的卡片组件本体**与 client-modules 的深度组装；自定义 View 不算——它经 `ctx.uiConversation.views` 注册通道 out-of-tree 可参与（`docs/subsystems/conversation.md`）。
+分层的完整事实——presenter 词汇表（纯函数、可 replay、内置 Web Client 不消费它）、`tool.call.toolview` 槽、`dsh.client.inject`、View 注册通道、以及"改内置 client 包的卡片组件本体"是方案 B 独占——由 [answer](./answer.md) 决策 4 拥有，此处不重复。A 的形状只有三句：presenter 住 `expert-tools`；专属工具卡与注入的 client 模块住 `expert-pack`（`dsh-market`（tsdown）与 `dsh-im`（esbuild）的独立 repo 注入实证见 [research.md](./research.md)，DSH 的 client 包只作 devDependency）；代价是要跟着 DSH client 的注入点与 locale 约定走。
 
 ## 市场背书
 
