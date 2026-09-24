@@ -20,10 +20,12 @@
 - [`0006-0.1.2-rc.1-to-0.1.5-rc.1.md`](./0006-0.1.2-rc.1-to-0.1.5-rc.1.md)——第六次合入（1512 commits；session 格式升到 v3、客户端资源面、subprocess containment、约 700 篇 Note 归档）
 - [`0006-plan-digest-revision.md`](./0006-plan-digest-revision.md)——第六次同步的消化材料修订计划
 - [`0007-0.1.5-rc.1-to-0.1.5-rc.2.md`](./0007-0.1.5-rc.1-to-0.1.5-rc.2.md)——第七次合入（4 commits；最后一个 RC，feedback 提交对称化）
+- [`0008-plan-digest-revision.md`](./0008-plan-digest-revision.md)——第八次同步的消化计划（五阶段）
+- [`0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](./0008-0.1.5-rc.2-to-0.1.7-rc.1.md)——第八次合入（3304 commits，历次最大；session 格式升 v4、sandbox 组转正、整树照搬口径自本卷生效）
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
 
-**选基线的口径**：只同步 **RC 或 final release**，目标是当前的**最后一个 RC**（若该版本线已出 final release，则同步到 final release）。alpha、beta 一律**不同步**——除非明确指定，否则即使 upstream 长期停在 alpha 阶段也不追，避免同步负担失控。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`；0007 改成「最后一个 RC」并推进到 `0.1.5-rc.2`。
+**选基线的口径**：只同步 **RC 或 final release**，目标是当前的**最后一个 RC**（若该版本线已出 final release，则同步到 final release）。alpha、beta 一律**不同步**——除非明确指定，否则即使 upstream 长期停在 alpha 阶段也不追，避免同步负担失控。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`；0007 改成「最后一个 RC」并推进到 `0.1.5-rc.2`。0008 起执行方式简化为**整树照搬**：产品源码完全等于 upstream tag（不做内容合并、不留本地源码补丁），本地只维护 `_digested/`、`_faq_on_digested/`、`_agent_ready_development/`、`_architecture_referenced/` 四个目录；唯一保留的本地口径行是 pairing manifest 对 `_agent_ready_development/` 的排除。
 
 每次 sync 同时执行以下维护动作：
 

@@ -97,3 +97,9 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 2026-09-16 的 0.1.5-rc.2（`46a7f68b09`）re-pin：本语料的固定基线从 `183f08e9c6` 推进到 0.1.5 的最后一个 RC `46a7f68b09`，118 条目录外 DSH 引用 URL 全部改钉（17 个内容文件，另同步 `verify.mjs` 的钉版正则、`development-harness/00-index.md` 的 baseline 声明与本页基线行）。钉版路径与锚点**逐一**在 rc.2 用 `git cat-file -e` / 标题比对复核：57 个唯一路径全部存在，11 个带 fragment 的锚点全部解析到 rc.2 的标题或 HTML id。rc.2 相对 rc.1 只有 4 个提交、1 个内容提交（feedback 提交对称化 + `ui-deliverables`/`ui-primitives` 细化），未触及本语料引用的任何文件，因此正文机制陈述无需修订。目录级 verify 通过。
 
 **pairing exclusion 落地（同批）**：2026-08-24 条目记录的最后一项目录外阻断——translation pairing 因仓库 scope 覆盖「每个非 vendor README」而拒绝本语料的 8 个 `README.md`（另外两个研究语料没有 README，所以只有本语料命中）——已按该条目预告的方式关闭：`scripts/translation-pairing.manifest.json` 的 `excluded` 增加目录项 `"_agent_ready_development/"`（尾斜杠是路径边界），本语料整体退出双语配对 scope。此后 `npx tsx scripts/run-gates.ts doc-quick` **16 项全绿**（此前 15 通过 1 失败），`verify-translation-pairing` 报 789 对全部一致。2026-08-24 条目余下的两项（`doc-typecheck` 缺少构建入口、documentation build 的 host Corepack `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`）仍需目录外构建或工具链修复，本语料无法自行关闭。
+
+## 2026-09-23 的 0.1.7-rc.1（`46a7f68b09`）re-pin：整树照搬口径首次执行
+
+本语料的固定基线从 `fb2c4b9e69` 推进到 `dsh-v0.1.7-rc.1`（0.1.6 线未出 RC 即跳线；0.1.7-rc.1 为当前最后一个 RC）。自本卷起同步口径为**整树照搬**：产品源码完全等于 upstream tag，本地只保留四个语料目录；332 个 ethan-only 产品文件随同步退役（含 0007 的五处上游文档修复——全部被上游自行吸收，及本地 frontend-static no-store 修复——登记为上游候选缺口）。
+
+66 条目录外 DSH 引用 URL 全部改钉到 `46a7f68b09`，钉版路径与锚点逐条用 `git cat-file` / 标题比对复核：63 条直接通过；3 条按 rc.1 现实改写——`tool-cordis/src/prompt.ts`（#4745 删除，查询纪律改由工具描述自述，改钉 `src/index.ts`）、`agent-presets/presets/ptc/agent.cordis.yml`（preset 重设计，改钉 `packages/bundle/web-app/presets/ptc.patch.yml`）、tool-cordis README 的 `boundaries-to-plan-around` 锚点（节已删，改钉 `known-limitations-and-deferred-work`）。`verify.mjs` 钉版正则与 `development-harness/00-index.md` 基线声明同步。目录级 verify 通过。

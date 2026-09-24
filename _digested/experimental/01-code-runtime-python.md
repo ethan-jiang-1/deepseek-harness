@@ -1,3 +1,5 @@
+> **0008 状态注记**：本页所述包在 `dsh-v0.1.7-rc.1` 已由 `packages/experimental/code-runtime-python/` 改名为 `packages/experimental/ptc-runtime-python/`（上游 `refactor(ptc): align runtime packages and services with PTC naming`），seam 键 `ctx.codeRuntime` 相应改为 `ctx.ptcRuntime`；机制叙述（fd-3 帧协议、敌意输入重建、上限验证）继续有效，页内旧路径与行号按改名前书写。
+
 # code-runtime-python：CPython 子进程后端
 
 本页是 experimental 专题的第一个面——「换 provider」形状的定位与启用总述见 [`00-map.md`](./00-map.md)；本页只讲机制，全部行锚对 `_coverage/` 所列核验 commit 成立。
