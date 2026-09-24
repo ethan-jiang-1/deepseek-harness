@@ -8,7 +8,7 @@
 >
 > Each fact has one home: the tier whose job it is; elsewhere, link there.
 >
-> —— `docs/AGENTS.md:15-17`（基线 `fb2c4b9e69…`）
+> —— `docs/AGENTS.md:15-17`（基线 `46a7f68b09…`）
 
 它明确划分了每个 tier 的职责和“不属于这里”的内容。例如：
 
@@ -78,7 +78,7 @@ DSH 的文档规则要求用可检查的链接，而不是自由 prose 文件名
 
 > Link repository references with relative Markdown paths, never bare filenames or Agent Note numbers. `verify-md-links` rejects missing targets and dead `#fragment` anchors.
 >
-> —— `docs/AGENTS.md:75`（基线 `fb2c4b9e69…`）
+> —— `docs/AGENTS.md:75`（基线 `46a7f68b09…`）
 
 这对模型至关重要：地图上的每一条边都被机器验证过。按图索骥失败时，不是模型理解错了，而是 CI 会先红。
 

@@ -4,7 +4,7 @@
 
 ## 结论
 
-`codex_micu.sh` 把 MICU 配成 `https://www.micuapi.ai/v1` 上的 API-key 供应商，模型为 `gpt-5.6-sol`，推理级别为 `xhigh` [样本调用](../../../ait_exam_docker/cli_codex/final/codex_micu.sh:57)。它调用的生成器固定写入 `wire_api = "responses"` [生成器](../../../ait_exam_docker/cli_codex/final/generate_config.py:65)。本次真实 DSH 请求进一步验证：手工 `micu` route 通过 `openai-responses` 成功完成 `gpt-5.6-sol` 和 `gpt-5.6-terra` 的文本流、工具调用、工具结果回传和 replay；`sol` 的 `xhigh` 也已接受。
+`codex_micu.sh` 把 MICU 配成 `https://www.micuapi.ai/v1` 上的 API-key 供应商，模型为 `gpt-5.6-sol`，推理级别为 `xhigh` `codex_micu.sh:57`（仓库外本地样本 `ait_exam_docker/cli_codex/final/`，不入库）。它调用的生成器固定写入 `wire_api = "responses"` `generate_config.py:65`（仓库外本地样本，同上）。本次真实 DSH 请求进一步验证：手工 `micu` route 通过 `openai-responses` 成功完成 `gpt-5.6-sol` 和 `gpt-5.6-terra` 的文本流、工具调用、工具结果回传和 replay；`sol` 的 `xhigh` 也已接受。
 
 因此 MICU 当前无须开发新的 vendor 包：已挂载的通用 `dsh-llm-pi-ai` 能以一个手工 route 声明 `openai-responses`、endpoint、凭据引用和模型列表 [适配器说明](../../packages/llm/llm-pi-ai/README.md:47)。基础 bundle 默认将它以零 route 的休眠状态挂载，`$DSH_HOME/settings.yaml` 的 `llm-pi-ai` 段即可启用 [基础组合](../../packages/bundle/base/cordis.patch.yml:107)。
 
@@ -24,10 +24,10 @@
 
 ## 样本能证明什么
 
-- **协议意图：** MICU 脚本传入 endpoint、`gpt-5.6-sol` 和 `xhigh` [脚本](../../../ait_exam_docker/cli_codex/final/codex_micu.sh:59)；公共生成器把 provider 写成 `responses` [生成器](../../../ait_exam_docker/cli_codex/final/generate_config.py:55)。样本没有出现 `/responses` 的实际 HTTP 请求或响应。
-- **认证引用：** 脚本要求一个名为 `CODEX_API_KEY_MICU` 的环境变量 [脚本](../../../ait_exam_docker/cli_codex/final/codex_micu.sh:26)，生成器写的是 `preferred_auth_method = "apikey"` 和该变量名 [生成器](../../../ait_exam_docker/cli_codex/final/generate_config.py:55)。这不证明 MICU 接受哪一种 HTTP 认证报头。
-- **模型目录：** 生成器支持可选 `model_catalog_json`，但 MICU 调用未传该参数 [生成器](../../../ait_exam_docker/cli_codex/final/generate_config.py:61)。样本没有 `/models` 返回、其他 GPT-5.6 变体、上下文窗口或输出上限的证据。
-- **非 DSH 配置：** `CODEX_HOME` 隔离、`disable_response_storage` 和 `--dangerously-bypass-approvals-and-sandbox` 都是这份 Codex 启动脚本的行为 [脚本](../../../ait_exam_docker/cli_codex/final/codex_micu.sh:47)，不应照搬为 DSH 接入要求，也不证明中转站不留存请求数据。
+- **协议意图：** MICU 脚本传入 endpoint、`gpt-5.6-sol` 和 `xhigh` `codex_micu.sh:59`（仓库外本地样本 `ait_exam_docker/cli_codex/final/`，不入库）；公共生成器把 provider 写成 `responses` `generate_config.py:55`（仓库外本地样本，同上）。样本没有出现 `/responses` 的实际 HTTP 请求或响应。
+- **认证引用：** 脚本要求一个名为 `CODEX_API_KEY_MICU` 的环境变量 `codex_micu.sh:26`（仓库外本地样本），生成器写的是 `preferred_auth_method = "apikey"` 和该变量名 `generate_config.py:55`（仓库外本地样本，同上）。这不证明 MICU 接受哪一种 HTTP 认证报头。
+- **模型目录：** 生成器支持可选 `model_catalog_json`，但 MICU 调用未传该参数 `generate_config.py:61`（仓库外本地样本）。样本没有 `/models` 返回、其他 GPT-5.6 变体、上下文窗口或输出上限的证据。
+- **非 DSH 配置：** `CODEX_HOME` 隔离、`disable_response_storage` 和 `--dangerously-bypass-approvals-and-sandbox` 都是这份 Codex 启动脚本的行为 `codex_micu.sh:47`（仓库外本地样本），不应照搬为 DSH 接入要求，也不证明中转站不留存请求数据。
 
 ## DSH 对应能力与边界
 
@@ -35,7 +35,7 @@ DSH 手工 route 当前可选的协议正好包括 `openai-responses`、`openai-
 
 `apiKeyEnv` 在 DSH 中是逐请求解析的凭据引用，不把 key 写入 settings [适配器说明](../../packages/llm/llm-pi-ai/README.md:36)。对 OpenAI-compatible route，DSH 的模型发现会请求 `<baseURL>/models`，并在有 key 时使用 `Authorization: Bearer …` [发现实现](../../packages/llm/llm-pi-ai/src/discovery.ts:323)。这是 DSH probe 的发送行为，不是 MICU 接受该报头或其 Responses 请求完全兼容的证据。
 
-本机安装的 `pi-ai` 内置 `openai` catalog 含有 `gpt-5.6-luna`、`gpt-5.6-sol` 和 `gpt-5.6-terra` 定义，均为 `openai-responses`，并列出 `xhigh`/`max`、272,000 context 和 128,000 output [本地依赖目录](../../node_modules/@earendil-works/pi-ai/dist/providers/data/openai.json:1)。这是当前依赖的目录数据，不是 OpenAI 官方文档，不能直接继承给 MICU；手工 route 应只写中转实际广告并验证过的模型能力。
+本机安装的 `pi-ai` 内置 `openai` catalog 含有 `gpt-5.6-luna`、`gpt-5.6-sol` 和 `gpt-5.6-terra` 定义，均为 `openai-responses`，并列出 `xhigh`/`max`、272,000 context 和 128,000 output 本机安装的 `@earendil-works/pi-ai` 包内 `dist/providers/data/openai.json`（node_modules，不入库不核验）。这是当前依赖的目录数据，不是 OpenAI 官方文档，不能直接继承给 MICU；手工 route 应只写中转实际广告并验证过的模型能力。
 
 ## 需要实测的最小集合
 

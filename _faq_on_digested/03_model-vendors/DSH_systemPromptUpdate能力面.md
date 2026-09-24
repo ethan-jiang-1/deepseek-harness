@@ -1,6 +1,6 @@
 # DSH · systemPromptUpdate 能力面：选模型也在选提示词表示
 
-产品源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.2`，commit `fb2c4b9e69`。本文回答「多 vendor 接入时，为什么选一个 route 不只影响能力档位，还影响提示词在历史里的表示」，以及中转场景下这件事会怎么出问题。
+产品源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b09`。本文回答「多 vendor 接入时，为什么选一个 route 不只影响能力档位，还影响提示词在历史里的表示」，以及中转场景下这件事会怎么出问题。
 
 ## 能力是什么
 

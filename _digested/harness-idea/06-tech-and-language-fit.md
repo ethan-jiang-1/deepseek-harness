@@ -12,7 +12,7 @@ TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最�
 
 > For a repo that is built primarily by agents and read by occasional human contributors, "the package manager most tools and people expect" has real value: fewer surprises, better-trodden failure paths, more copy-pasteable answers.
 >
-> —— `.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md:9`（基线 `fb2c4b9e69…`）
+> —— `.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md:9`（基线 `46a7f68b09…`）
 
 但注意证据边界：`2026-06-17-ts-build-config` 也常被拿来当「技术选型」证据，它的实际理由是 **tsc 与 oxc/tsdown 的编译语义差异和 declaration 正确性**，不是「agent 更熟 TypeScript」。不要把每个技术决定都归因为 agent 友好。
 
@@ -31,11 +31,11 @@ TypeScript、ESM、pnpm、vitest、lefthook、oxlint，都是 coding agent 最�
 
 > A context is a proxy: normal property reads go through the service resolver, while `extend()`, `isolate()`, and `intercept()` create scoped child contexts without mutating their parent.
 >
-> —— `docs/cordis-api/context.md:10`（基线 `fb2c4b9e69…`）
+> —— `docs/cordis-api/context.md:10`（基线 `46a7f68b09…`）
 
 > **Typed events use declaration merging** and merge-extensible maps.
 >
-> —— `AGENTS.md:108`（基线 `fb2c4b9e69…`）
+> —— `AGENTS.md:108`（基线 `46a7f68b09…`）
 
 ## 第三层：低密度但承重的技术，本地化或生成化
 
@@ -45,10 +45,10 @@ dsh 不是只用主流技术。真正承重但不在 LLM 先验高密度区的�
 
 > DeepSeek Harness is built on the Cordis framework. Cordis core was at 4.0.0-rc.6 (a release candidate) when this repo started; the harness depends on framework internals (fiber lifecycle, effect disposal, waterfall dispatch) whose exact behavior matters to the agent loop's correctness guarantees.
 >
-> —— `.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md:10`（已归档，历史快照；基线 `fb2c4b9e69…`）
+> —— `.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md:10`（已归档，历史快照；基线 `46a7f68b09…`）
 2. **生成合同面**：把源码事实变成 freshness-gated 的 catalog（[`02`](./02-legibility.md) 机制五）。agent 不需要懂全部 Cordis 或全部包，只需要查生成的 API、事件、配置与模块图。
 
-`[推断]` native Landlock、Python SDK 等边界在仓库布局中同样显式分层：TS 控制平面之外的东西放在独立发行物或 seam 之后，不混进插件模型。仓库侧可见的是 `native/`、`python/` 顶层边界，以及 vendor / npm 依赖的分离（[`vendor/README.md`](../../vendor/README.md)）。新实例是 [`packages/experimental/code-runtime-python`](../../packages/experimental/code-runtime-python/README.md)（#1148）：CPython 子进程后端实现 `dsh-code-runtime` seam，把 TS 控制平面之外的执行世界放进独立包边界——experimental 分组的私有原型，不进默认组合。
+`[推断]` native Landlock、Python SDK 等边界在仓库布局中同样显式分层：TS 控制平面之外的东西放在独立发行物或 seam 之后，不混进插件模型。仓库侧可见的是 `native/`、`python/` 顶层边界，以及 vendor / npm 依赖的分离（[`vendor/README.md`](../../vendor/README.md)）。新实例是 [`packages/experimental/ptc-runtime-python`](../../packages/experimental/ptc-runtime-python/README.md)（#1148 引入时名为 `code-runtime-python`，0.1.7 线随 PTC 命名重构改名）：Python 子进程后端实现 PTC runtime seam，把 TS 控制平面之外的执行世界放进独立包边界——experimental 分组的私有原型，不进默认组合。
 
 ## 三层的合成判断
 

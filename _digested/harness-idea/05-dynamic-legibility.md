@@ -39,11 +39,11 @@
 
 > This is an opt-in development tool with bash-equivalent trust, not a security boundary or product default.
 >
-> —— `.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md:17`（基线 `fb2c4b9e69…`）
+> —— `.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md:17`（基线 `46a7f68b09…`）
 
 > `cordis_inspect` sections are `services` ... `api` ... `events` ... and `temporary` ...
 >
-> —— 同上文件 `:27`（基线 `fb2c4b9e69…`）
+> —— 同上文件 `:27`（基线 `46a7f68b09…`）
 
 **这段引文已不代表当前工具面**：该 note 是 `implemented/` 的现行记录，但它描述的单一 `cordis_inspect` 加 `cordis_mount` / `cordis_unmount` 在本树上都不存在（`git log -S` 也查不到这些名字曾注册过），当前注册的是上面列的七个 `cordis_inspect_*` / `cordis_*` 名字。引文保留是为忠实于出处，实际接口以 `packages/extensions/tool-cordis/src/index.ts` 与 `docs/tool-catalog.md` 为准——这条上游 note 与新工具集脱节，属上游文档缺口。
 
@@ -59,11 +59,11 @@
 
 > **Model-visible means logged.** Anything that reaches a model request must be reconstructable from the log, and a runtime invariant asserts it.
 >
-> —— `docs/architecture.md:121`（基线 `fb2c4b9e69…`）
+> —— `docs/architecture.md:121`（基线 `46a7f68b09…`）
 
 > The loop builds each request from logged state. `EpochHeader` records call config, ... and records the authoritative returned tool order ... through full `request/header` snapshots. The rendered prompt is derived history — the `system/message` at surface node 0, plus any later system node an `in-history` route appended — so the header and the derived history together make the request reconstructable from the session log.
 >
-> —— `docs/subsystems/llm-streaming.md:704`（基线 `fb2c4b9e69…`）
+> —— `docs/subsystems/llm-streaming.md:704`（基线 `46a7f68b09…`）
 
 ## 结论
 

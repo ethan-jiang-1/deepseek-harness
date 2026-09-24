@@ -1,6 +1,6 @@
 # 04 · 从入口和配置看目录怎样变成运行时
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.2`，commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`。
+源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。
 
 ## 总链路
 
@@ -185,7 +185,7 @@ dump 仍不是活插件图：它只合成 entry rows，不执行插件生命周�
 - [`apps/cli/src/profile-boot.ts`](../../apps/cli/src/profile-boot.ts)
 - [`apps/cli/README.md`](../../apps/cli/README.md)
 - [`apps/desktop/README.md`](../../apps/desktop/README.md)
-- [`apps/desktop-host/config/desktop.cordis.patch.yml`](../../apps/desktop-host/config/desktop.cordis.patch.yml)
+- [`apps/desktop-host/src/index.ts`](../../apps/desktop-host/src/index.ts)（0.1.7 线起 desktop profile 由 `loadProfileDirectory` 安装期组装，`config/desktop.cordis.patch.yml` 不复存在）
 - [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md)
 - [`packages/bundle/README.md`](../../packages/bundle/README.md)
 - [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml)
