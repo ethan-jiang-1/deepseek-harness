@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="580" viewBox="0 0 1120 580" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title id="title">DSH 仓库、插件仓库与运行时组合的三个结构</title>
+  <desc id="desc">DSH 仓库定义词汇与教程，插件仓库照此形态产出 bundle，bundle 装进 profile 组合并挂回同一棵运行时插件树；coding agent 同时阅读两个仓库。</desc>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1120" height="580" rx="6" fill="#fafafa"/>
+  <text x="560" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">三个结构，一套词汇：DSH 仓库 · 插件仓库 · 运行时组合</text>
+  <text x="560" y="51" text-anchor="middle" font-size="11" fill="#667085">DSH 定义词汇与教程；插件仓库照此形态产出 bundle；bundle 装进 profile，挂回同一棵运行时插件树。</text>
+  <text x="560" y="70" text-anchor="middle" font-size="10.5" fill="#94a3b8">流程：词汇与教程（apply/ctx · Service Definition 术语） → dsh plugin add → bundle 进入 profile → 挂回运行时插件树</text>
+
+  <rect x="20" y="88" width="340" height="288" rx="8" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="190" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#334155">DSH 仓库 · 词汇与机制的 owner</text>
+  <text x="36" y="142" font-size="12" font-weight="600" fill="#334155">packages/&lt;group&gt;/&lt;pkg&gt;</text>
+  <text x="44" y="160" font-size="11" fill="#64748b">每个 dsh-* 包都是 Cordis 插件</text>
+  <text x="36" y="186" font-size="12" font-weight="600" fill="#334155">apps/</text>
+  <text x="44" y="204" font-size="11" fill="#64748b">应用入口（只有 dsh profile 启动）</text>
+  <text x="36" y="230" font-size="12" font-weight="600" fill="#334155">docs/</text>
+  <text x="44" y="248" font-size="11" fill="#64748b">cordis-tutorial · user/develop</text>
+  <text x="36" y="274" font-size="12" font-weight="600" fill="#334155">.agents/</text>
+  <text x="44" y="292" font-size="11" fill="#64748b">Agent Notes · development Skills</text>
+  <text x="36" y="318" font-size="12" font-weight="600" fill="#334155">.github/ · vendor/</text>
+  <text x="44" y="336" font-size="11" fill="#64748b">远端执行面 · 框架层 owned</text>
+  <text x="44" y="360" font-size="10.5" fill="#94a3b8">教程入口：cordis-tutorial → user/develop</text>
+
+  <rect x="390" y="88" width="340" height="288" rx="8" fill="#fff5e6" stroke="#d99939"/>
+  <text x="560" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#744408">插件仓库 · 作者的世界</text>
+  <text x="406" y="142" font-size="12" font-weight="600" fill="#744408">hello-plugin/</text>
+  <text x="414" y="160" font-size="11" fill="#916d32">插件作者创建并分发的包</text>
+  <text x="406" y="186" font-size="12" font-weight="600" fill="#744408">package.json</text>
+  <text x="414" y="204" font-size="11" fill="#916d32">声明 dsh.bundle：贡献什么 patch 层</text>
+  <text x="406" y="230" font-size="12" font-weight="600" fill="#744408">cordis.patch.yml</text>
+  <text x="414" y="248" font-size="11" fill="#916d32">插入 / 覆盖 plugin rows</text>
+  <text x="406" y="274" font-size="12" font-weight="600" fill="#744408">src/index.ts</text>
+  <text x="414" y="292" font-size="11" fill="#916d32">export apply(ctx)：注册能力</text>
+  <text x="414" y="316" font-size="11" fill="#916d32">配置经 cordis.yml schema 校验</text>
+  <text x="414" y="338" font-size="11" fill="#916d32">依赖 Service Definition，不依赖具体 provider</text>
+
+  <rect x="760" y="88" width="340" height="288" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="930" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#245d35">运行时组合 · 装载的世界</text>
+  <text x="776" y="142" font-size="12" font-weight="600" fill="#245d35">$DSH_HOME/profiles/&lt;name&gt;/</text>
+  <text x="784" y="160" font-size="11" fill="#4f775a">用户启动的环境</text>
+  <text x="776" y="186" font-size="12" font-weight="600" fill="#245d35">package.json</text>
+  <text x="784" y="204" font-size="11" fill="#4f775a">声明 dsh.profile：哪些 bundle、什么顺序</text>
+  <text x="776" y="230" font-size="12" font-weight="600" fill="#245d35">bundle 层叠加</text>
+  <text x="784" y="248" font-size="11" fill="#4f775a">patch rows 决定最终配置树</text>
+  <text x="776" y="274" font-size="12" font-weight="600" fill="#245d35">插件挂进 ctx</text>
+  <text x="784" y="292" font-size="11" fill="#4f775a">与 DSH 自身包同一棵插件树</text>
+  <text x="776" y="316" font-size="12" font-weight="600" fill="#245d35">dsh --profile &lt;name&gt; --dump-config</text>
+  <text x="784" y="334" font-size="11" fill="#4f775a">查询实际启动的配置树</text>
+  <text x="784" y="358" font-size="10.5" fill="#7fa98c">bundle 作者分发 · profile 用户启动</text>
+  <text x="784" y="372" font-size="10.5" fill="#7fa98c">Nothing is both.</text>
+
+  <line x1="360" y1="232" x2="388" y2="232" stroke="#475569" marker-end="url(#arr)"/>
+  <line x1="730" y1="232" x2="758" y2="232" stroke="#475569" marker-end="url(#arr)"/>
+
+  <path d="M930 378 L930 416 L190 416 L190 382" fill="none" stroke="#475569" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+  <text x="560" y="438" text-anchor="middle" font-size="11" fill="#667085">挂回同一棵运行时插件树：同一 plugin 机制既是 DSH 的组成方式，也是外部扩展方式</text>
+
+  <rect x="20" y="452" width="1080" height="112" rx="8" fill="#fff" stroke="#cbd5e1"/>
+  <text x="40" y="478" font-size="12.5" font-weight="700" fill="#334155">coding agent 同时读两个仓库</text>
+  <text x="40" y="502" font-size="11" fill="#475569">插件仓库沿用 DSH 词汇时，同样的检索模式与判断标准在两边成立：同样的 inject 声明、同样的 ctx.tools.register、同样的能力三角色、同样的 bundle/profile。</text>
+  <text x="40" y="524" font-size="11" fill="#475569">哪边自造词汇或颠倒方向，agent 就要在哪边重新建立局部模型——冲突与困惑由此产生。</text>
+  <text x="40" y="550" font-size="11" fill="#64748b">继承边界：DSH 不要求插件仓库复制 AGENTS.md、Notes 或 gates；直接继承的是插件形态、配置与打包模型和术语。</text>
+</svg>

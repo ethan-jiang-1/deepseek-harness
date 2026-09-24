@@ -17,3 +17,5 @@
 | `participation-ladder.svg` | [`../04-paved-road-and-participation.md`](../04-paved-road-and-participation.md) |
 | `feedback-layers.svg` | [`../05-executable-feedback.md`](../05-executable-feedback.md) |
 | `runtime-queries.svg` | [`../06-runtime-inspection.md`](../06-runtime-inspection.md) |
+| `content-maintenance-forms.svg` | [`../08-repository-taxonomy.md`](../08-repository-taxonomy.md) |
+| `plugin-three-structures.svg` | [`../09-plugin-author-entry.md`](../09-plugin-author-entry.md) |
