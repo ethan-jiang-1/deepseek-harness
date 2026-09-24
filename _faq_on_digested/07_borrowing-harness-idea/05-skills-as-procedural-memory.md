@@ -51,7 +51,7 @@ Skill 与根文档共用同一个原则——**摘要负责发现，正文才拥
 
 ## 证据入口
 
-- [`../../_agent_ready_development/development-harness/03-skills-as-procedural-memory.md`](../../_agent_ready_development/development-harness/03-skills-as-procedural-memory.md)：两种 Skill 的区分、五步调用、Skill 与 gate 的边界。
+- [`../../_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md`](../../_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md)：两种 Skill 的区分、五步调用、Skill 与 gate 的边界。
 - [`../../_digested/harness-idea/02-legibility.md`](../../_digested/harness-idea/02-legibility.md)：上下文入口外置与按需加载。
 - [`../../.agents/skills/dsh-code-review/SKILL.md`](../../.agents/skills/dsh-code-review/SKILL.md)：Skill 作为 guidance、语义 review 输入和 finding 输出的实例。
 - [`../../.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据的实例。

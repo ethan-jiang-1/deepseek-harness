@@ -47,7 +47,7 @@
 
 ## 证据入口
 
-- [`../../_agent_ready_development/development-harness/05-executable-feedback.md`](../../_agent_ready_development/development-harness/05-executable-feedback.md)：六层反馈、invariant、负例控制、本地 vs CI。
+- [`../../_agent_ready_development/repo-harness/05-executable-feedback.md`](../../_agent_ready_development/repo-harness/05-executable-feedback.md)：六层反馈、invariant、负例控制、本地 vs CI。
 - [`../../_digested/harness-idea/03-paved-road.md`](../../_digested/harness-idea/03-paved-road.md)：门禁自身被测试的元验证。
 - [`../../docs/testing.md`](../../docs/testing.md)：test tiers、真实入口、negative control、snapshot 义务。
 - [`../../.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据，而不是固定跑全套。

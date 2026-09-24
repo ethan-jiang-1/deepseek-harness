@@ -2,7 +2,7 @@
 
 ## 先排序：什么值得先搬
 
-前面的机制不是同等重要、也不是同等便宜。development-harness 语料已经给出一张按优先级排序的可迁移清单，这是本 FAQ 最该直接照用的结论：
+前面的机制不是同等重要、也不是同等便宜。repo-harness 语料已经给出一张按优先级排序的可迁移清单，这是本 FAQ 最该直接照用的结论：
 
 | 优先级 | 可迁移做法 | 原因 |
 |---|---|---|
@@ -51,6 +51,6 @@
 
 ## 证据入口
 
-- [`../../_agent_ready_development/development-harness/07-boundaries-and-costs.md`](../../_agent_ready_development/development-harness/07-boundaries-and-costs.md)：优先级清单、三问框架、四个边界、成本。
+- [`../../_agent_ready_development/repo-harness/07-boundaries-and-costs.md`](../../_agent_ready_development/repo-harness/07-boundaries-and-costs.md)：优先级清单、三问框架、四个边界、成本。
 - [`../../_digested/harness-idea/07-boundaries-costs-fit.md`](../../_digested/harness-idea/07-boundaries-costs-fit.md)：哪些原则与智能无关、这个形状何时划算、代价是什么。
 - [`../../_digested/harness-idea/08-judgement-discipline.md`](../../_digested/harness-idea/08-judgement-discipline.md)：本 FAQ 判断的出处纪律（分布内通式 vs 分布外事实）。

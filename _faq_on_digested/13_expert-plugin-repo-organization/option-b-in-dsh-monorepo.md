@@ -51,8 +51,10 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 
 共享细节见 [dev-loop.md](./dev-loop.md)。本形态的差异：**证据基础设施全部现成**，代价是换成了上游同步税。
 
+- 环境与入口照 DSH 原生：`development.md` 原样做（install/typecheck/原生 lefthook 钩子），根 `AGENTS.md` 不重写——专家规则写 `packages/expert/AGENTS.md` 子树文件（见目录树）。
 - 插拔/调试用 DSH 自己的流程：插件行进 `bundle/base` 或自组 profile，`--dump-config`、live reload、官方 snapshot harness（一场景一目录、各带自己的 `snapshot.yml` 声明 profile/recording 等）全在树上。
-- 门禁照单全收：`test:coverage` per-file 100%、`doc-sync`（含双语）、`duplication`、非平凡变更必备 Agent Note、model-visible 变更必配快照——这些在 A/C/D 里是"自建最小版"，这里是义务。
+- 门禁照单全收：`test:coverage` per-file 100%、`doc-sync`（含双语）、`duplication`、非平凡变更必备 Agent Note、model-visible 变更必配快照——这些在 A/C/D 里是"自建最小版"，这里是义务；Notes 也不搬，直接写在原生 `.agents/notes/` 树，双语三件套与格式门禁现成（树内卡片组件的去留记在 repo 级 Note）。
+- 新包落位按 `packages/README.md` 的组规则：**新包优先加入既有组**——给 DSH 上游提的 seam 落在拥有它的组（如新的文件系统能力进 `fs/`）；自成一家的领域才立新组，立组要同步组 README 与 `packages/README.md` 总表，且组默认按 product 期望（stable API）发布，想要无稳定性承诺的试验场落 `packages/experimental/`。
 - 日常多了一个新环：**上游同步**。每次 rc 同步按 `_change_log/` 复核自己的包与文档结论（FAQ 01/08 都吃过漂移的亏），compatibility 影响写进自己包的 README。
 - 驱动 agent 最顺：AGENTS.md/CLAUDE.md、skills、生成目录全是现成的，agent 的六步闭环直接在 DSH 语境里跑。
 

@@ -22,10 +22,10 @@ DSH 自己的仓库就是它最好的样板：它的开发主力自称是 coding
 
 ## 证据边界
 
-- 主证据是两份本地研究语料，现随 `_digested/` 同步到基线（DSH `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`）；同步范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`：
-  - `_agent_ready_development/development-harness/`（01–07）——教程式拆解「仓库怎样帮 coding agent 修改仓库自身」；
+- 主证据是两份本地研究语料，均已同步到基线 DSH `dsh-v0.1.7-rc.1`（commit `46a7f68b0922371ce7144b668b90e377d8e799f4`），同步与复核范围见 `_digested/_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md` 与 `_digested/_change_log/0008-independent-recheck.md`：
+  - [`_agent_ready_development/repo-harness/`](../../_agent_ready_development/repo-harness/00-index.md)（01–07）——教程式拆解「仓库怎样帮 coding agent 修改仓库自身」。该目录 2026-09-24 由 `development-harness/` 更名，更名记录见语料 [`_coverage/00-corpus-maintenance.md`](../../_agent_ready_development/_coverage/00-corpus-maintenance.md)；同轮新增的 08（仓库分类学）、09（插件作者入口）两篇题域落在 FAQ 01/13，本 FAQ 未引用。语料的全部理解只从 DSH 仓库一手内容挖出、钉版随上游 re-pin（语料根 README 的声明）；语料再更名、扩篇或 re-pin 时，需要跟改的是本 FAQ 的引用路径，机制结论仍以语料钉版基线的产品源码为准。
   - `_digested/harness-idea/`（01–08）——判断式拆解「dsh 为什么对参与者友好」。
-- **注意**：产品源码基线已推进到 `dsh-v0.1.5-rc.1`（`183f08e9c6`），本页锚点尚未重核，范围见 `_digested/_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md`。
+- 0008 独立复核对本目录只做了点改（06 页删除已退役的 `cordis_inspect_self`）；01–05、07–10 各页在该轮明示未逐行重核，引用语料结论时以语料当前钉版的表述为准。
 - 源码事实需要锚定时，用 DSH 固定基线文件的相对路径或固定 commit 的 GitHub 链接，不重抄 `docs/` 正文充数。
 - 正文中的具体数字（词数预算、catalog 描述上限、symlink 处数、context 插件数等）以基线 `46a7f68b09`（`dsh-v0.1.7-rc.1`）的对应文件为准，词数预算的机器权威是 `scripts/doc-budgets.manifest.json`、context 插件清单是 `packages/context/README.md`；上游合入后需按 `_digested/_change_log/` 复核。
 - 本目录自带 [`verify.mjs`](../verify.mjs) 机械兜底（严格 UTF-8、单个结尾换行、相对链接与锚点）；修改本目录后运行 `node _faq_on_digested/verify.mjs`。

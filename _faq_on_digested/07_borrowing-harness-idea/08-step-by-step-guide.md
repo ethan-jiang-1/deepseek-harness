@@ -163,4 +163,4 @@
 
 - 顺序与优先级：本目录 [`07-transfer-playbook.md`](./07-transfer-playbook.md)。
 - 每个 Phase 的机制依据，回看对应章节：[`02`](./02-legibility-ownership.md)、[`03`](./03-paved-road-and-ladder.md)、[`04`](./04-executable-feedback.md)、[`05`](./05-skills-as-procedural-memory.md)、[`06`](./06-runtime-inspection.md)；Phase 1 的入口链骨架见 [`09`](./09-agents-entry-chain.md)，长任务上下文回收见 [`10`](./10-progressive-disclosure-pipeline.md)。
-- 语料原始结论： [`../../_agent_ready_development/development-harness/07-boundaries-and-costs.md`](../../_agent_ready_development/development-harness/07-boundaries-and-costs.md)。
+- 语料原始结论： [`../../_agent_ready_development/repo-harness/07-boundaries-and-costs.md`](../../_agent_ready_development/repo-harness/07-boundaries-and-costs.md)。

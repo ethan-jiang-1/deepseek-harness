@@ -59,7 +59,7 @@ dsh plugin --profile <p> add file:./packages/expert-pack   # 持久安装验证�
 
 `pnpm dsh` 有一个隐含前提：根 `package.json` 要有一条等价于 DSH 根的 `dsh` script（DSH 根是 `node --import tsx/esm apps/cli/src/bin.ts`），在专家 repo 里指向 `vendor/dsh/apps/cli/src/bin.ts` 或等价入口。
 
-测试策略借 OpenClaw 的教训（见 [research.md](./research.md)）：**除了源码 checkout 直跑，必须用 `npm pack` + `dsh plugin add` 的真实安装形状测一遍**，因为源码测试会掩盖依赖声明错误（runtime 依赖漏进 devDependencies、peer 范围写错）。
+测试策略借 OpenClaw 的教训（见 [research.md](./research.md)；义务的家在 [dev-loop](./dev-loop.md) 第 4 阶段）：**除了源码 checkout 直跑，必须用 `npm pack` + `dsh plugin add` 的真实安装形状测一遍**，因为源码测试会掩盖依赖声明错误（runtime 依赖漏进 devDependencies、peer 范围写错）。
 
 ## 取舍
 
@@ -95,9 +95,9 @@ out-of-tree 不是没有 Web UI 通道，但"免费"也有边界（`docs/cookboo
 插拔/调试/驱动 agent/推荐流程的共享细节见 [dev-loop.md](./dev-loop.md)。本形态的差异全部来自"DSH 源码在 repo 里但你不拥有它"：
 
 - **升级环是第一公民**：`vendor/dsh` 换 tag → 记 SHA（antfu/skills 的簿记）→ 跑 typecheck（workspace 协议直解析 DSH `src/`，API 漂移在编译期暴露）→ compatibility matrix 加列 → `dsh plugin add file:` 重装验证。把这套做成一个脚本，agent 每次升级只触发它。
-- **真实安装形状必须自测**：`npm pack` → 干净 profile → `dsh plugin add` → 冒烟会话；源码直跑会掩盖依赖声明错误（OpenClaw 教训）。
+- 插拔验证（`npm pack` → 干净 profile → `dsh plugin add` → 冒烟）是 A/C/D 的共享义务，机制与理由见 [dev-loop](./dev-loop.md) 第 4 阶段；本形态无增量。
 - **证据基础设施自建最小版**：typecheck + 行为测试 + 自己的 verify 脚本；snapshot 想要 keyless replay 得仿 DSH 的"一场景一目录 + 自己的 `snapshot.yml`"形状自建，或先用 JSONL 日志 diff 顶着，够用再升。
-- **agent 探索红利是本形态最大杠杆**：AGENTS.md 里明写"DSH 文档从 `vendor/dsh/docs/architecture.md` 读起"，agent 的每个设计决策都能现场查到 DSH 的合同原文。
+- **agent 探索红利是本形态最大杠杆**：AGENTS.md 里明写探索路由——作者侧教程线先读（`vendor/dsh/docs/cordis-tutorial/` 七讲 keyless 可运行 + `vendor/dsh/docs/user/develop/` basic/framework/practice 三层指南），组合与集成的深问再从 `vendor/dsh/docs/architecture.md` 进——agent 的每个设计决策都能现场查到 DSH 的合同原文。
 - **子 workspace 风险自查**：DSH 仓库脚本假设自己是根；首次接好 workspace 后跑一遍它的 `typecheck`/`test` 确认没被误触发，把结论写进 AGENTS.md 或干脆用 `file:`/`link:` 依赖绕开子 workspace。
 
 ## 何时离开这个方案
