@@ -37,7 +37,7 @@
 
 ## API Remote：非三角色的 BFF 通信模式
 
-**API Remote 控制器**架构承载 BFF 面的 unary RPC 路由；`packages/host/apiproxy/` 不存在。
+**API Remote 控制器**架构承载 BFF 面的 RPC 路由——unary 与 **stream** 方法都支持（0.1.7 线起 `packages/typert/protocol/src/types.ts:93` 的 `RemoteStream<Out, In>` 与 `:106-124` 的 `RemoteStreamHandle` send/end/dispose 定义流式 Remote；客户端生成器为 stream 方法产出流式 stub）；`packages/host/apiproxy/` 不存在。
 
 这不是传统 seam：它没有 `ctx.<key>`、没有 Cordis Service 定义、没有 Provider 可替换性。它是一个**通信协议模式**：
 
@@ -51,9 +51,7 @@
 
 settings、credentials、subagent control、agent-presets、workspace-controller、session-controller 现由 Remote 控制器提供；`packages/host/apiproxy/` 已整体删除，`client/*` 消费这些 Remote namespace。directory-picker **不是** Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端）。
 
-全集：`packages/api/remotes/src/client/index.ts` 现组装 **15 个** Remote namespace——agent-presets、commands、settings-controller（含 credentials 子命名空间）、goal、llm、cordis-host-runner、plugin-inventory、message-feedback、sessionFeedback、fileUploads、session-reference、subagents、session-controller、workspace-controller、workspaceFiles。其中 goal / llm / message-feedback / session-reference / sessionFeedback / fileUploads / workspaceFiles 是原生 Remote（Service 本身即 `TypertRemoteService`）。
-
-全集：`packages/api/remotes/src/client/index.ts` 现组装 **15 条 `$mount` 贡献**——agent-presets、commands、settings-controller（含 credentials 子命名空间）、goal、llm、cordis-host-runner、plugin-inventory、message-feedback、session-reference、subagents、session-controller、workspace-controller，加上跨度 0006 新增的 session-feedback（owner `packages/feedback/command-feedback/`）、file-uploads（owner `packages/client/file-upload/`）、workspace-files（owner `packages/api/workspace-files/`）。装配清单就是 `packages/api/remotes/src/client/index.ts:153-158` 的 `ctx.remote.$mount` 循环。注意「贡献数」不等于「wire namespace 数」：一条贡献可以导出多个 namespace，`session-controller` 一个包就导出 `session`（`src/index.ts:121`）、`fileReferences`（`src/file-references.ts:22`）与 `skills`（`src/skill-catalog.ts:25`）三个。其中 goal / llm / message-feedback / session-reference 等是原生 Remote（Service 本身即 `TypertRemoteService`），不是 apiproxy 迁移产物；新增的三个同样是原生 Remote。
+全集：`packages/api/remotes/src/client/index.ts` 现组装 **22 条 `$mount` 贡献**（0008 复核实数；0006 时为 15）——agentPresets、commands、settings（含 credentials 子命名空间）、account、goals、llm、dynamic（cordis-host-runner）、pluginInventory、pluginManager、pluginRegistryProbe、messageFeedback、sessionFeedback、fileUploads、sessionReferenceResolver、permissionPresets、subagents、session、job、workspace、workspaceFiles、terminal、officeToPdf。装配清单就是 `packages/api/remotes/src/client/index.ts:175-183` 的 `ctx.remote.$mount` 循环。0008 跨度新增：account（`packages/api/account-controller/`，消费 `ctx.deepseekAccount`）、pluginManager / pluginRegistryProbe（插件管理面）、permissionPresets、job（`packages/api/job-controller/`）、terminal（`packages/api/terminal-controller/`）、officeToPdf（消费 `ctx.officeToPdf`）、dynamic。注意「贡献数」不等于「wire namespace 数」：一条贡献可以导出多个 namespace，`session-controller` 一个包就导出 `session`、`fileReferences` 与 `skills` 三个。其中 goal / llm / message-feedback / session-reference 等是原生 Remote（Service 本身即 `TypertRemoteService`），不是 apiproxy 迁移产物；0006 新增的三个与 0008 新增的面同样多为原生 Remote。
 
 ### 本跨度增量（0006）：三个新 core 服务与 messageFeedback 的迁移
 

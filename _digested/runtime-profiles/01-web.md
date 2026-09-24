@@ -13,7 +13,7 @@ dsh --profile web --no-open            # 不自动打开浏览器
 dsh --profile web --patch my.yml       # 叠加 patch
 ```
 
-源码启动：`pnpm dsh --profile web`。发行 bin：`dsh web` 是 `--profile web` 的 alias（`apps/cli/src/args.ts:175`）。alias 走自己的参数直通路径，不接受 launcher 父选项 `--from-default-profile`——出现在 `dsh --from-default-profile x web` 里会被 `rejectParentOptions` 拒绝，写在 `dsh web` 之后则作为 app 参数落到 `ctx.cmdlineArgs`（见 [`../composition/04-profile-创建与保留名.md`](../composition/04-profile-创建与保留名.md) 末尾的待判项）。
+源码启动：`pnpm dsh --profile web`。发行 bin：`dsh web` 是 `--profile web` 的等价形式（help 示例 `apps/cli/src/args.ts:92`）——解析器把首个非 flag、非 `plugin` 的 positional 直通为 `['--profile', ...argv]`（`apps/cli/src/args.ts:201-206`），launcher 父选项与 app 参数按 Commander 常规规则归位（旧 `rejectParentOptions` 拦截已不存在，全仓无此函数；见 [`../composition/04-profile-创建与保留名.md`](../composition/04-profile-创建与保留名.md) 末尾的待判项）。
 
 ## Bundle 组合
 
@@ -22,7 +22,7 @@ dsh --profile web --patch my.yml       # 叠加 patch
 | 层 | 从哪里来 | 作用 |
 |----|---------|------|
 | `dsh-base` | `packages/bundle/base/` | 所有 profile 共享的核心插件（LLM、session、tools、agent-loop、sandbox、subagent、goal、web 搜索等） |
-| `dsh-web-app` | `packages/bundle/web-app/` | Web 特有层：overrides base 行 + 插入 browser client、HTTP server、storage、preset patch（0.1.7 线起 agent-presets 改造为声明式 agent-preset + agent-preset-registry，shipped presets 以 `presets/*.patch.yml` 随 bundle 携带） |
+| `dsh-web-app` | `packages/bundle/web-app/` | Web 特有层：overrides base 行 + 插入 browser client、HTTP server、storage、preset patch（0.1.7 线起旧 agent-presets 退役、改造为声明式 agent-preset + agent-preset-registry，shipped presets 以 `presets/*.patch.yml` 随 bundle 携带） |
 
 ### `dsh-web-app` 的 override 行
 
@@ -67,8 +67,8 @@ dsh --profile web
 
 ## 独特之处
 
-- **shipped 模板中唯一支持运行时 patch 重载的 Profile**：`composeLive` 夹住用户层，候选失败保留上一棵好树。该「唯一」限 shipped 模板——自定义 profile 默认同样是 live（`packages/boot/app-boot/src/profile.ts:142`）。
-- **CLI launcher profile 中唯一有 browser 侧的 Profile**：browser 半边（`packages/client/`）通过 `window.__DSH_BOOT__` 初始化，经 `dsh.client` 插件罗盘构造核。Electron desktop 复用**同一套** `dsh-web-app` 组合与匹配的 client 图（`apps/desktop/src/project-manager.ts:105`），但它不是 CLI launcher profile（[`06-desktop.md`](./06-desktop.md)）。
+- **shipped 模板中唯一支持运行时 patch 重载的 Profile**：`hmr` 插件监视 profile patch 与包清单、`reconcileProfilePatches` 调和、新失败抛错回滚（`packages/boot/hmr/src/index.ts:222-246`；机制见 [`../composition/03-user-patch-hmr.md`](../composition/03-user-patch-hmr.md)）。该「唯一」限 shipped 模板——base 行按 `profileContext` 门控，自定义 launcher profile 默认同样开启。
+- **CLI launcher profile 中唯一有 browser 侧的 Profile**：browser 半边（`packages/client/`）通过 `window.__DSH_BOOT__` 初始化，经 `dsh.client` 插件罗盘构造核。Electron desktop 复用**同一套** web 组合与匹配的 client 图（desktop-host 经 `runProfile` 起 `desktop` profile），但它不是 CLI launcher profile（[`06-desktop.md`](./06-desktop.md)）。
 - **CLI launcher profile 中唯一使用会话级 preset 的 Profile**：session 级别选择 standard / ptc / minimal / cordis，host 平面不直接挂 model-facing 工具。（desktop 的 preset roots 改写机制已随 0.1.7 线 preset 重设计退役：desktop-host 改为 `loadProfileDirectory` 在安装期组装 profile，`apps/desktop-host/src/index.ts` 现无 roots 改写。）
 - **stdout 给用户**：可以装 logger、打印 URL、输出诊断信息。
 

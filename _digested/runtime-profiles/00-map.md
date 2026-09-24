@@ -66,11 +66,11 @@ rc.1 没有增删任何模板、也没有改名：新增的是从模板派生自
 
 ## 应用自有 profile
 
-launcher profile 住在 Harness home，由 `loadProfile` 经 `$DSH_HOME/profiles/<name>` 发现并做 shipped 归一化。rc.1 起还有第二种所有者：**应用自己持有的 profile 目录**，用 `loadProfileDirectory(binName, dir, installAnchor, options)`（`packages/boot/app-boot/src/profile.ts:774-804`）直接装载一个**已初始化的绝对目录**——不经过 Harness home 发现、不做 shipped 归一化、也不认 `PROFILE_TEMPLATES`。`loadProfile` 现在只是「解析目录 → `normalizeShippedProfile` → `loadProfileDirectory`」（`:820-836`）。导出见 `packages/boot/app-boot/src/index.ts:37`。
+launcher profile 住在 Harness home，由 `loadProfile` 经 `$DSH_HOME/profiles/<name>` 发现并做 shipped 归一化。rc.1 起还有第二种所有者：**应用自己持有的 profile 目录**，用 `loadProfileDirectory(binName, dir, installAnchor, options)`（`packages/boot/app-boot/src/profile.ts:642-684`）直接装载一个**已初始化的绝对目录**——不经过 Harness home 发现、不做 shipped 归一化、也不认 `PROFILE_TEMPLATES`。`loadProfile` 现在只是「解析目录 → `normalizeShippedProfile` → `loadProfileDirectory`」（`:696-707`）。导出见 `packages/boot/app-boot/src/index.ts`。
 
-目前的唯一实例是 Electron 的 `desktop`：`$DSH_HOME/profiles/desktop` 这个路径**仍然**在 Harness home 下、仍然叫 `profiles/<name>`，但没有 CLI 能打开它——`desktop` 不是 `PROFILE_TEMPLATES` 成员，CLI 的 boot / dump / `plugin` 三条入口都被 `rejectElectronProfile` 拒绝。它由 `apps/desktop-host/` 自己用 `loadProfileDirectory` 装载，再叠自己打包的覆盖层，最后自己调 `boot()`，不走 `runProfile`。
+目前的唯一实例是 Electron 的 `desktop`：`$DSH_HOME/profiles/desktop` 这个路径**仍然**在 Harness home 下、仍然叫 `profiles/<name>`，但没有 CLI 能打开它——`desktop` 不是 `PROFILE_TEMPLATES` 成员，CLI 的 boot / dump / `plugin` 三条入口都被 `rejectElectronProfile` 拒绝（`apps/cli/src/args.ts:83`）。它由 `apps/desktop-host/` 用 `loadProfileDirectory` 装载，再交给共享的 `runProfile` 起 web 应用（0.1.7 线起；~~旧的「叠私有覆盖层、自己调 boot()、不走 runProfile」~~已随 desktop-host 重构退役）。
 
-组合本身与 web 同源（`dsh-base` + `dsh-web-app`），差异全在那层应用私有 overlay 上：disable 掉所有监听端口与浏览器启动相关行，换成 Electron 的目录选择与封装传输。细节见 [`06-desktop.md`](./06-desktop.md)。
+组合本身与 web 同源（`dsh-base` + `dsh-web-app`；desktop-host 不再叠任何 cordis 覆盖层），差异在启动方式与宿主环境：webserver 监听 `127.0.0.1:19387`、认证 URL 交给 Electron 窗口、包管理走 Electron-as-Node。细节见 [`06-desktop.md`](./06-desktop.md)。
 
 ## 决定 Profile 差异的三条轴
 
@@ -98,10 +98,12 @@ stdout 给谁，决定了能不能装 logger、能不能写 HMR 信息：
 
 | Profile | 运行时 patch 重载 |
 |---------|-----------------|
-| web | **支持**（`composeLive` 夹住用户层，候选失败保留上一棵好树） |
-| headless | startup-only（一次性任务，重载无意义） |
-| sdk / sdk-minimal | startup-only（协议已开始，重载打散生命周期） |
-| acp | startup-only（同 SDK） |
+| web | **支持**（`hmr` 插件监视 profile patch 与包清单，`reconcileProfilePatches` 调和，新失败抛错回滚，见 [`../composition/03-user-patch-hmr.md`](../composition/03-user-patch-hmr.md)） |
+| headless | startup-only（一次性任务，重载无意义；bundle 行显式 `disabled: true`，`packages/bundle/headless/cordis.patch.yml:33`） |
+| sdk / sdk-minimal | startup-only（协议已开始，重载打散生命周期；sdk-app 行 `packages/bundle/sdk-app/cordis.patch.yml:24`） |
+| acp | startup-only（同 SDK，`packages/bundle/acp-app/cordis.patch.yml:23`） |
+
+机制说明：base bundle 的 `hmr` 行用 `disabled: !!js "!ctx.get('profileContext')"` 门控（`packages/bundle/base/cordis.patch.yml:27-31`），所以只在 launcher profile 语境下默认开启。旧 `composeLive` / `patchReload` 机制已随 0.1.7 线移除。
 
 ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启动时应用一次。」
 
@@ -109,7 +111,7 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 
 | Profile | 独有插件 / bundle |
 |---------|------------------|
-| **web** | `dsh-web-app` bundle：webserver、web-runtime、client-*（浏览器壳、wire、slots、ui-*）、session-controller 等 Remote 控制器、directory-picker、plugin-inventory、preset patch（0.1.7 线起 agent-presets 重设计为声明式 agent-preset；storage/sandbox/typert-gateway 等基础设施在 base）。本次跨度新增 8 条 insert 行：`open-in-app` / `ui-open-in-app` / `workspace-files`（基础设施）、`file-upload`（传输）、`resources` / `ui-sidebar-right` / `ui-sidebar-documentpreview` / `ui-sidebar-files`（浏览器罗盘），详见 [`01-web.md`](./01-web.md) |
+| **web** | `dsh-web-app` bundle：webserver、web-runtime、client-*（浏览器壳、wire、slots、ui-*）、session-controller 等 Remote 控制器、directory-picker、plugin-inventory、preset patch（0.1.7 线起 agent-presets 已退役、重设计为声明式 agent-preset；storage/sandbox/typert-gateway 等基础设施在 base）。本次跨度新增 8 条 insert 行：`open-in-app` / `ui-open-in-app` / `workspace-files`（基础设施）、`file-upload`（传输）、`resources` / `ui-sidebar-right` / `ui-sidebar-documentpreview` / `ui-sidebar-files`（浏览器罗盘），详见 [`01-web.md`](./01-web.md) |
 | **headless** | `dsh-headless` bundle：`headless-startup`（命令行解析）、`headless-runner`（驱动任务、打印结果） |
 | **sdk** | `dsh-sdk-app` bundle：base + 薄协议层（persona override + `sdk-app-startup`（带 `config.profile: sdk`）+ `sdk-jsonrpc-server`，`inject: [sdkAppStartup, loader]`）；工具面**不收窄**，继承 base |
 | **sdk-minimal** | `dsh-sdk-minimal` bundle：独立树不叠 base——工具面收窄到**平台选定的一个持久 shell**（非 win32 `persistent-bash` / win32 `persistent-pwsh`）；无 subagent、todo、compaction、web search，也没有任何文件系统工具或服务 |

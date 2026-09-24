@@ -17,7 +17,7 @@ Semantic review 可以由具备上下文的人或 agent 执行。`.github` 中�
 Reviewer 不只读变更行，还要连接四类上下文：
 
 1. Issue（如有）或任务上下文：外部结果是什么；
-2. 非平凡变更的 owning Agent Note：为什么选择当前方案；
+2. 持久决定理由变更的 owning Agent Note：为什么选择当前方案；
 3. 源码与当前文档：系统交付后怎样工作和失败；
 4. Tests、snapshots 和 CI：哪些场景已经建立可重复证据。
 

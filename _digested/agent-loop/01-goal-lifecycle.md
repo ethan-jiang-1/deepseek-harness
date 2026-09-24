@@ -109,7 +109,7 @@ Goal 的所有变更通过 session log 的 `goal/change` 事件持久化。系�
 - 同一会话、同一时间只允许一个 goal（completed 后可替换）
 - 回放时从 session log 的 `goal/change` 事件重建 goal 状态
 - `roundsStarted` 由 goal 来源（`source.kind === 'goal'`）的 `user/message` 推进，fold 严格验证 round 归属（`packages/goal/goal/src/fold.ts:321-332`）
-- activation 变化不写 log，但会发进程内事件 `goal/activation-changed`（带 `sessionId` 与当前 goal 的 `{id, revision, activation}`，无 goal 时省略 `goal` 字段）——`GoalService.setActivation()` 在 activation **真正变化**时广播（`goal/src/index.ts:495-516`，类型 `packages/goal/goal/src/types.ts:74-87`，Cordis 声明合并同文件 `:143-152`）；`agent/session-start` 的重置、`disarm()` 与 `goal/change` 折叠三条路径都改走这个方法
+- activation 变化不写 log，但会发进程内事件 `goal/activation-changed`（带 `sessionId` 与当前 goal 的 `{id, revision, activation}`，无 goal 时省略 `goal` 字段）——`GoalService.setActivation()` 在 activation **真正变化**时广播（`goal/src/index.ts:495-516`，类型 `packages/goal/goal/src/types.ts:74-87`，Cordis 声明合并同文件 `:143-152`）；session-start 边（串行 `agent/created`）的重置、`disarm()` 与 `goal/change` 折叠三条路径都改走这个方法
 
 ### 默认配置
 

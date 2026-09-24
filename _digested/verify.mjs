@@ -470,6 +470,103 @@ function checkSvg(path, source) {
 
 const EXPECTED_BASELINE = '46a7f68b0922371ce7144b668b90e377d8e799f4'
 const claimsPath = resolve(corpusRoot, 'harness-idea', 'claims.json')
+
+/**
+ * Content-freshness gates added after the 0008 independent recheck:
+ * (1) orphan pages — a numbered mechanism page that no other corpus page or
+ *     topic map links to can silently rot (the deletion wave left three);
+ * (2) retired-term scan — a retired product name asserted in present tense
+ *     without a retirement annotation nearby is the dominant staleness shape.
+ */
+const orphanExemptPrefixes = ['_change_log', '_coverage', 'figures']
+const orphanExemptNames = new Set(['00-index.md', '00-map.md', 'README.md'])
+
+function checkOrphanPages() {
+  const files = corpusFiles(corpusRoot).filter(path => extname(path) === '.md')
+  const sources = new Map(files.map(path => [path, readFileSync(path, 'utf8')]))
+  for (const path of files) {
+    const rel = relative(corpusRoot, path)
+    const segments = rel.split('/')
+    if (segments.length !== 2) continue
+    const [topic, filename] = segments
+    if (orphanExemptPrefixes.includes(topic) || orphanExemptNames.has(filename)) continue
+    if (!/^0[1-9]/.test(filename)) continue
+    const basename = filename.replace(/\.md$/, '')
+    let referenced = false
+    for (const [other, source] of sources) {
+      if (other === path) continue
+      if (source.includes(basename)) { referenced = true; break }
+    }
+    if (!referenced) report(path, undefined, 'orphan page: no other corpus file references it (link it from the topic map or delete it)')
+  }
+}
+
+/**
+ * Terms whose product owners were retired by the 0008 span. A hit is only a
+ * finding when the surrounding lines do not mark it as history (retirement
+ * wording or strikethrough) — the corpus deliberately keeps annotated history.
+ */
+const retiredTerms = [
+  'agent-presets',
+  'code-runtime-python',
+  'dsh-e2b',
+  'fs-e2b',
+  'subprocess-e2b',
+  'ctx\\.e2b',
+  'settings-file',
+  'installSection',
+  'settings\\.plugin\\.item',
+  'cordis_define',
+  'cordis_run',
+  'cordis_stop',
+  'cordis_undefine',
+  'cordis_inspect_self',
+  'followup_task',
+  'session-persistence-sqlite',
+  'composeLive',
+  'watchUserPatches',
+  'healProfilesModuleFallback',
+  'agent/session-start',
+]
+const retirementMarkers = [
+  /退役/,
+  /已删/,
+  /已随/,
+  /改名/,
+  /历史/,
+  /旧基线/,
+  /旧名/,
+  /当时/,
+  /保留为/,
+  /已不存在/,
+  /已随 0\.1\.7/,
+  /~~/,
+  /0008 复核/,
+]
+
+function checkRetiredTerms(files) {
+  for (const path of files) {
+    if (extname(path) !== '.md') continue
+    const rel = relative(corpusRoot, path)
+    if (rel.startsWith('_change_log') || rel.startsWith('_coverage')) continue
+    const lines = readFileSync(path, 'utf8').split('\n')
+    // A page whose head carries a 0008 状态注记 declaring the rename is
+    // annotated for the whole page (mechanism pages keep pre-rename anchors).
+    const pageAnnotated = lines.slice(0, 3).some(line => line.includes('状态注记') && line.includes('改名'))
+    for (let index = 0; index < lines.length; index += 1) {
+      const line = lines[index]
+      for (const term of retiredTerms) {
+        if (!new RegExp(term).test(line)) continue
+        if (pageAnnotated) continue
+        const window = lines.slice(Math.max(0, index - 2), index + 3).join('\n')
+        if (retirementMarkers.some(marker => marker.test(window))) continue
+        report(path, index + 1, `retired term ${term.replace(/\\\\/g, '')} asserted without a nearby retirement annotation`)
+      }
+    }
+  }
+}
+
+
 // 出处标记与 08-judgement-discipline.md 的出处分级表一致：本专题不使用外部
 // 资料作为证据，事实一律以 DSH 官方文件与基线为准。
 const claimStatuses = new Set([
@@ -696,6 +793,8 @@ for (const path of files) {
 }
 
 claimRegister = checkClaimRegister()
+checkOrphanPages()
+checkRetiredTerms(files)
 
 if (failures.length > 0) {
   console.error(`_digested verification failed with ${failures.length} problem(s):`)

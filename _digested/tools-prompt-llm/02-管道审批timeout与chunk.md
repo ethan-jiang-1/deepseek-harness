@@ -34,7 +34,9 @@ hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-exec
 
 `tools/post-execute`：抛错的 tool 也作为 error 进入这条链。caller 取消在结算后只替换「已接受的成功结果」。
 
-还有 `tools/ptc-dispatch-log`（3ca9c7d489 随 PTC 改名，旧名 `tools/code-dispatch-log`；`packages/core/tools/src/index.ts:181,343,1289-1290`）：只改 `run_code` 子调度写入 log 的副本（spill 预览），程序已经拿到完整值，模型也看不见这段。log 事件名与 waterfall 名都已随 PTC 改名：`tool/ptc-dispatch-start` / `tool/ptc-dispatch`（`packages/core/tools/src/ptc.ts:534`、`:509`），sub-call id 为 `<parent>:ptc:<n>`（`:469`），deferred image 的 plugin 来源为 `tools-ptc`（`:562-564`）；旧名只作为 v2→v3 迁移的输入词表存在（`packages/session/session-format-v2-to-v3/README.zh.md:95`）。
+还有 `tools/ptc-dispatch-log`（3ca9c7d489 随 PTC 改名，旧名 `tools/code-dispatch-log`；`packages/core/tools/src/index.ts:190,364,1314-1329`）：只改 `run_code` 子调度写入 log 的副本（spill 预览），程序已经拿到完整值，模型也看不见这段。log 事件名与 waterfall 名都已随 PTC 改名：`tool/ptc-dispatch-start` / `tool/ptc-dispatch`（`packages/core/tools/src/ptc.ts:612`、`:586`），sub-call id 为 `<parent>:ptc:<n>`（`:545`），deferred image 的 plugin 来源为 `tools-ptc`；旧名只作为 v2→v3 迁移的输入词表存在（`packages/session/session-format-v2-to-v3/README.zh.md:95`）。
+
+**工具卡的 preparing 阶段**（#5053 起）：`assistant/live-chunk` 的 `tool-call-delta` 帧在 `tool/call` 落 log 之前就把工具卡的 phase 置为 `preparing`（`packages/client/ui-chat/src/client/conversation-nodes/tool.ts:41-49`），Web 过程活动行同样显示准备态（`packages/client/ui-chat/src/client/process-activity.ts:109-110`）；card 拿到的是「工具开始准备」的过程信号，不是执行结果。
 
 ## settlement → message
 

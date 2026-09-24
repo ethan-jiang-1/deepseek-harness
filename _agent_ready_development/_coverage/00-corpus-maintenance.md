@@ -1,6 +1,6 @@
 # `_agent_ready_development` 语料证据与维护说明
 
-> 复核日期：2026-09-16。产品源码基线：`46a7f68b0922371ce7144b668b90e377d8e799f4`（`dsh-v0.1.5-rc.2`，本语料自钉的固定基线；本轮 re-pin 后语料引用的全部 DSH 路径都在该 commit 逐一复核过）。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
+> 复核日期：2026-09-23。产品源码基线：`46a7f68b0922371ce7144b668b90e377d8e799f4`（`dsh-v0.1.7-rc.1`，本语料自钉的固定基线；0008 轮 re-pin 后语料引用的全部 DSH 路径都在该 commit 逐一复核过）。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。（0008 独立复核注记：本页 2026-09-16 与 09-23 两个历史条目里的 commit hash 曾被一次全局替换误改成 `46a7f68b09`——历史条目各自钉的基线应为 `183f08e9c6`（0.1.5-rc.1）与 `fb2c4b9e69`（0.1.5-rc.2），已按 git tag 证据复原；URL 计数口径统一为「唯一 URL 数」。）
 
 ## 1. 专题定位
 
@@ -20,7 +20,7 @@
 - Issue/PR templates、`issue-management/policy.mjs`、config 与 policy tests；
 - `issue-policy.yml`、`issue-lifecycle.yml`、`ci.yml`、real-provider e2e、docs/release workflow 的触发边界，以及 Dependabot config；
 - Plan subsystem、package README、implementation 和 coding preset；
-- 固定基线中 `.agents/skills/` 的 12 个 repository development Skills（其中 11 个以 `dsh-` 命名），包括 decision corpus、docs/prose 和 delivery/review 三组；
+- 固定基线中 `.agents/skills/` 的 14 个 repository development Skills（其中 12 个以 `dsh-` 命名；0008 跨度新增 `dsh-client-ui-ux` 与非 `dsh-` 前缀的 `agent-experience`，`record-browser-gif` 沿用），包括 decision corpus、docs/prose 和 delivery/review 三组；
 - `packages/skill/{skill,skill-filesystem,tool-skill}` 的 runtime Skill registry、provider discovery 与 model-facing loading；
 - `packages/extensions/tool-cordis`、`cordis-host-runner` 源码、生成 tool catalog 与 package trust stance；
 - `scripts/run-gates.ts`、testing policy 和相关 process Agent Notes；
@@ -56,7 +56,7 @@
 
 - `.agents/notes/**`、`.agents/skills/**`；
 - `.github/AGENTS.md`、`.github/ISSUE_TEMPLATE/**`、`.github/pull_request_template.md`、`.github/issue-management/**`、`.github/workflows/{ci,issue-policy,issue-lifecycle,e2e}.yml`、`.github/dependabot.yml`；
-- `packages/plan/plan-mode/**`、`docs/subsystems/{plan,sandbox,approval}.md`、`packages/preset/agent-presets/**`；
+- `packages/plan/plan-mode/**`、`docs/subsystems/{plan,sandbox,approval}.md`、`packages/preset/agent-preset/**`、`packages/preset/agent-preset-registry/**`、`packages/bundle/web-app/presets/**`（0.1.7 线起 preset 重设计：旧 `packages/preset/agent-presets/**` 已删）；
 - `packages/skill/{skill,skill-filesystem,tool-skill}/**`；
 - `packages/extensions/{tool-cordis,cordis-host-runner}/**`；
 - `AGENTS.md`、`packages/AGENTS.md`、`docs/{AGENTS,architecture,glossary,cordis-primer,testing}.md`、`docs/cookbook/**`；
@@ -75,7 +75,7 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 2026-09-05 的 rc.1（`a66e470204`）复核：全部目录外 DSH 引用 URL re-pin 到 rc.1；机制扫描（invariant 空 companion 废除、subagent report 工具删除、schedule 非 seam、apiproxy 删除、profile 组合变薄层、agent preset 改名 ptc、session header 去 seedLength）在本语料正文无命中，证据正文无需修订。目录级 verify 通过。
 
-2026-09-16 的 0.1.5-rc.1（`183f08e9c6`）re-pin 与逐条复核：118 条目录外 DSH 引用 URL 从 `a66e470204` 改钉到 `183f08e9c6`（17 个内容文件，另同步 `verify.mjs` 的钉版正则和两处正文中的 commit 说明）。旧基线列出的 58 个钉版路径逐一用 `git cat-file -e` 在该 commit 复核：57 个仍然存在，1 个已不存在（`.agents/skills/dsh-doc-site-sync/SKILL.md`，内容早先并入 `dsh-doc`），改后 57 个路径全部存在。目录级 verify 通过（32 Markdown、1 scripts、15 SVG）；11 个带 fragment 的钉版 URL 的锚点、以及全部 blockquote 引文都对照该 commit 重新核对。上一轮预告的四项处理结果：
+2026-09-16 的 0.1.5-rc.1（`183f08e9c6`）re-pin 与逐条复核：118 处目录外 DSH 引用 URL（约 57 个唯一 URL）从 `a66e470204` 改钉到 `183f08e9c6`（17 个内容文件，另同步 `verify.mjs` 的钉版正则和两处正文中的 commit 说明）。旧基线列出的 58 个钉版路径逐一用 `git cat-file -e` 在该 commit 复核：57 个仍然存在，1 个已不存在（`.agents/skills/dsh-doc-site-sync/SKILL.md`，内容早先并入 `dsh-doc`），改后 57 个路径全部存在。目录级 verify 通过（32 Markdown、1 scripts、15 SVG）；11 个带 fragment 的钉版 URL 的锚点、以及全部 blockquote 引文都对照该 commit 重新核对。上一轮预告的四项处理结果：
 
 1. `.github/ISSUE_TEMPLATE/` 确认只剩 `Bug / Feature / Task` 三种模板且 `config.yml` 关闭空白 Issue，折叠的验收与测试证据区已删除 → 改写 `advanced-sdd-flow/02` §1；§2 的 policy 条件逐条比对 `policy.mjs` 后仍然成立。
 2. `.agents/notes/` 归档确认发生：implemented note（不含 `README.md`/`AGENTS.md`）从 644 篇降到 291 篇，archived 从 170 篇升到 628 篇，其中 445 篇按同名路径从 implemented 迁到 archived。语料钉版的 5 个 implemented note（`quality-gates`、`uniform-agent-note-format`、`web-capability-seam`、`self-referential-cordis-toolset`、`native-github-stacks-and-optional-rebases`）与 1 个 archived note（`incremental-pr-base-retargeting`）在该 commit 都仍在原位置，无需改路径；预告中的 `quality-gates`、`native-stacks`、`self-referential-cordis-toolset` 迁移并未发生。
@@ -94,7 +94,7 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 本轮只做语料级验证：`node _agent_ready_development/verify.mjs` 通过（32 Markdown、1 scripts、15 SVG），`npx tsx scripts/verify-md-wrap.ts`、`npx tsx scripts/verify-md-links.ts` 与 `git diff --check` 也都通过，且语料中没有任何 URL 仍钉在旧 commit。完整 `doc-sync` 未在本轮重跑，2026-08-24 条目记录的目录外阻断仍然适用。
 
-2026-09-16 的 0.1.5-rc.2（`46a7f68b09`）re-pin：本语料的固定基线从 `183f08e9c6` 推进到 0.1.5 的最后一个 RC `46a7f68b09`，118 条目录外 DSH 引用 URL 全部改钉（17 个内容文件，另同步 `verify.mjs` 的钉版正则、`development-harness/00-index.md` 的 baseline 声明与本页基线行）。钉版路径与锚点**逐一**在 rc.2 用 `git cat-file -e` / 标题比对复核：57 个唯一路径全部存在，11 个带 fragment 的锚点全部解析到 rc.2 的标题或 HTML id。rc.2 相对 rc.1 只有 4 个提交、1 个内容提交（feedback 提交对称化 + `ui-deliverables`/`ui-primitives` 细化），未触及本语料引用的任何文件，因此正文机制陈述无需修订。目录级 verify 通过。
+2026-09-16 的 0.1.5-rc.2（`fb2c4b9e69`）re-pin：本语料的固定基线从 `183f08e9c6` 推进到 0.1.5 的最后一个 RC `fb2c4b9e69`，118 处目录外 DSH 引用 URL（约 57 个唯一 URL）全部改钉（17 个内容文件，另同步 `verify.mjs` 的钉版正则、`development-harness/00-index.md` 的 baseline 声明与本页基线行）。钉版路径与锚点**逐一**在 rc.2 用 `git cat-file -e` / 标题比对复核：57 个唯一路径全部存在，11 个带 fragment 的锚点全部解析到 rc.2 的标题或 HTML id。rc.2 相对 rc.1 只有 4 个提交、1 个内容提交（feedback 提交对称化 + `ui-deliverables`/`ui-primitives` 细化），未触及本语料引用的任何文件，因此正文机制陈述无需修订。目录级 verify 通过。（0008 复核复原注记：本条 hash 在 0008 轮的机械 re-pin 中被误替换为 `46a7f68b09`——`dsh-v0.1.5-rc.2` 的 tag 对象是 `fb2c4b9e69`，`46a7f68b09` 是 `dsh-v0.1.7-rc.1`；已按 git tag 证据复原。）
 
 **pairing exclusion 落地（同批）**：2026-08-24 条目记录的最后一项目录外阻断——translation pairing 因仓库 scope 覆盖「每个非 vendor README」而拒绝本语料的 8 个 `README.md`（另外两个研究语料没有 README，所以只有本语料命中）——已按该条目预告的方式关闭：`scripts/translation-pairing.manifest.json` 的 `excluded` 增加目录项 `"_agent_ready_development/"`（尾斜杠是路径边界），本语料整体退出双语配对 scope。此后 `npx tsx scripts/run-gates.ts doc-quick` **16 项全绿**（此前 15 通过 1 失败），`verify-translation-pairing` 报 789 对全部一致。2026-08-24 条目余下的两项（`doc-typecheck` 缺少构建入口、documentation build 的 host Corepack `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`）仍需目录外构建或工具链修复，本语料无法自行关闭。
 
@@ -102,4 +102,4 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 本语料的固定基线从 `fb2c4b9e69` 推进到 `dsh-v0.1.7-rc.1`（0.1.6 线未出 RC 即跳线；0.1.7-rc.1 为当前最后一个 RC）。自本卷起同步口径为**整树照搬**：产品源码完全等于 upstream tag，本地只保留四个语料目录；332 个 ethan-only 产品文件随同步退役（含 0007 的五处上游文档修复——全部被上游自行吸收，及本地 frontend-static no-store 修复——登记为上游候选缺口）。
 
-66 条目录外 DSH 引用 URL 全部改钉到 `46a7f68b09`，钉版路径与锚点逐条用 `git cat-file` / 标题比对复核：63 条直接通过；3 条按 rc.1 现实改写——`tool-cordis/src/prompt.ts`（#4745 删除，查询纪律改由工具描述自述，改钉 `src/index.ts`）、`agent-presets/presets/ptc/agent.cordis.yml`（preset 重设计，改钉 `packages/bundle/web-app/presets/ptc.patch.yml`）、tool-cordis README 的 `boundaries-to-plan-around` 锚点（节已删，改钉 `known-limitations-and-deferred-work`）。`verify.mjs` 钉版正则与 `development-harness/00-index.md` 基线声明同步。目录级 verify 通过。
+66 个唯一目录外 DSH 引用 URL（115 处文本出现）全部改钉到 `46a7f68b09`，钉版路径与锚点逐条用 `git cat-file` / 标题比对复核：63 条直接通过；3 条按 rc.1 现实改写——`tool-cordis/src/prompt.ts`（#4745 删除，查询纪律改由工具描述自述，改钉 `src/index.ts`）、`agent-presets/presets/ptc/agent.cordis.yml`（preset 重设计，改钉 `packages/bundle/web-app/presets/ptc.patch.yml`）、tool-cordis README 的 `boundaries-to-plan-around` 锚点（节已删，改钉 `known-limitations-and-deferred-work`）。`verify.mjs` 钉版正则与 `development-harness/00-index.md` 基线声明同步。目录级 verify 通过。（0008 独立复核注记：本轮改钉只更新了 URL 与三处机制改写，正文若干「当前事实」陈述未同步——Agent Note 收窄标准、tier 表 Persistence history 行、skills 清单（新增 `dsh-client-ui-ux`、`agent-experience`）、preset 触发路径、`development-harness/06` 的七工具残留段——已在本轮独立复核中补正，见各页 0008 复核注记。）

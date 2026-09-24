@@ -25,12 +25,13 @@ DSH 仓库同时出现两类同名概念，读者必须先区分：
 
 ## DSH 的 development Skills 覆盖哪些判断
 
-固定基线中的仓库 Skills 可以按任务分成三组：
+固定基线中的仓库 Skills 可以按任务分成四组（0008 复核更新：`.agents/skills/` 现为 14 个目录、12 个 `dsh-` 前缀；0008 跨度新增 `dsh-client-ui-ux` 与 `agent-experience`）：
 
 | 任务组 | Skills |
 |---|---|
-| 决策语料与简化 | `dsh-archive-agent-notes`、`dsh-find-simplifications` |
+| 决策语料与简化 | `dsh-archive-agent-notes`、`dsh-find-simplifications`、`agent-experience` |
 | 文档、表达与发布 | `dsh-doc`、`dsh-prose-standard`、`dsh-trim-cot-leakage`、`dsh-translate-docs` |
+| 客户端界面 | `dsh-client-ui-ux` |
 | 交付、评审与证据可靠性 | `dsh-pre-push-checks`、`dsh-code-review`、`dsh-merging-stacked-prs`、`dsh-ci-test-reliability`、`dsh-speed-up-perf`、`record-browser-gif` |
 
 这不是要求 agent 每轮加载全部 Skill。每个 `SKILL.md` 的 frontmatter（文件头元数据）用 `name` 和 `description` 说明适用任务；命中任务后才读取完整正文及其必要 references 或 scripts。不同 agent host 如何发现和触发仓库 Skill，可以不同；DSH 仓库拥有的是 Skill 内容及其适用范围。

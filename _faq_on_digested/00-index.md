@@ -4,7 +4,7 @@
 
 简单说：**一子目录 = 一个探究过的问题，答案是自己综合出来的，不是从某一份材料里直接抄的。**
 
-> **当前研究基线**：涉及运行时行为的结论以 DeepSeek Harness `dsh-v0.1.7-rc.1`（`46a7f68b0922371ce7144b668b90e377d8e799f4`）为准，与 `_digested/` 同一基线。旧 checkout 只用于变更史，不能替代当前源码验证。各篇文件头声明的「源码核验基线」是该篇结论最后一次逐条对过的 commit；0006/0007 两轮同步已把全部篇目的声明推进到当前基线，正文里仍会出现旧 commit（例如 FAQ 08 方法段说明旧读数发生在哪个基线、FAQ 10/06 标注本仓库工作树 `9c18e3f216`），那些都是历史引用而不是未复核。FAQ 08 的 seam 计数曾按其写作时树（`3b1a213e9e`）声明为例外；0006 复核已按当前生成表重测（72 = 42 core + 29 seam + 1 bundle，可替换率 12/29 = 41.4%），并认定旧读数（28 条 / 39.3%）是 OLD 基线之前就存在的存量失真，见该 answer 的方法节。
+> **当前研究基线**：涉及运行时行为的结论以 DeepSeek Harness `dsh-v0.1.7-rc.1`（`46a7f68b0922371ce7144b668b90e377d8e799f4`）为准，与 `_digested/` 同一基线。旧 checkout 只用于变更史，不能替代当前源码验证。各篇文件头声明的「源码核验基线」是该篇结论最后一次逐条对过的 commit；0006/0007/0008 三轮同步已把全部篇目的声明推进到当前基线（0008 轮遗留的少数篇头未推进项见 `_digested/_change_log/0008-independent-recheck.md`），正文里仍会出现旧 commit（例如 FAQ 08 方法段说明旧读数发生在哪个基线、FAQ 10/06 标注本仓库工作树 `9c18e3f216`），那些都是历史引用而不是未复核。FAQ 08 的 seam 计数曾按其写作时树（`3b1a213e9e`）声明为例外；0006 复核重测为 72 = 42 core + 29 seam + 1 bundle（可替换率 12/29 = 41.4%），0008 复核再按新生成表重测为 **89 = 54 core + 33 seam + 1 service + 1 bundle（可替换率 15/33 = 45.5%，生成表新增 `service` role）**，并认定旧读数（28 条 / 39.3%）是 OLD 基线之前就存在的存量失真，见该 answer 的方法节。
 
 文件不叫 `README.md`：仓库的 bilingual pairing 门禁会把任意 `README.md` 当成产品文档语料。
 
@@ -49,11 +49,11 @@ _faq_on_digested/
 | 05 | [DSH 跑起来之后，根入口文档是怎么被消费的？](./05_root-entry-doc-navigation/question.md) | [指令注入、工具导航、按需加载与运行时预算](./05_root-entry-doc-navigation/answer.md) |
 | 06 | [DSH 修改系统的完整 SPEC 路径是什么？](./06_spec-change-path/question.md) | [docs 是当前合同层；Issue / Note / Plan / 实现 / 合同 / 行为 / implemented Note / review 的主路径与强制边界](./06_spec-change-path/answer.md) |
 | 07 | [另一个项目想借鉴 DSH 的 Harness 思路，尤其 coding agent 怎么探索、理解项目而不糊涂、不乱发挥，可迁移的东西是什么？](./07_borrowing-harness-idea/question.md) | [把「糊涂/乱发挥」拆成知识外置、正确路径、可执行反馈三条腿；按优先级迁移，并给一步一步落地路径](./07_borrowing-harness-idea/answer.md) |
-| 08 | ["Everything is a plugin" 落到源码：哪些插件领域已饱和，哪里仍是缺口？（纯技术视角）](./08_plugin-seam-maturity/question.md) | [29 条 seam 的 P/C 全景表与可替换率 41.4%（72 = 42 core + 29 seam + 1 bundle，2026-09-16 按生成表实测）、三个被数字推翻的印象、按信号强度排序的缺口 backlog](./08_plugin-seam-maturity/answer.md) |
+| 08 | ["Everything is a plugin" 落到源码：哪些插件领域已饱和，哪里仍是缺口？（纯技术视角）](./08_plugin-seam-maturity/question.md) | [33 条 seam 的 P/C 全景表与可替换率 45.5%（89 = 54 core + 33 seam + 1 service + 1 bundle，0008 按 `46a7f68b09` 生成表实测）、三个被数字推翻的印象、按信号强度排序的缺口 backlog](./08_plugin-seam-maturity/answer.md) |
 | 09 | [同一棵插件树对一个自用 owner（个人 / 小团队）的生产力在哪，怎样讲清楚？（自用生产力视角）](./09_plugin-business-ladder/question.md) | [敢放手 + 省手 + 可复用三层价值；自用 owner 最值的几类插件；L0–L3 参与阶梯；四个 owner 能自证的实验](./09_plugin-business-ladder/answer.md) |
 | 10 | [一位烧了 10 亿 token 的用户给 DSH 的三条体感（快就是好 / 要自己改造 / 别用 Pro 多用 vision），在 harness 机制层面对得上什么？](./10_v4flash-user-notes/question.md) | [根本体验 = 一条体验皮（goal/plan）+ 三条根（日志基底 / 委派 spine / 组合层）；主篇展开 goal/plan 机制与"快而小模型为何优秀"的职责拆分论证](./10_v4flash-user-notes/answer.md) |
 | 11 | [DSH 支持的开发习惯很多，但哪一种是它"最自然"的？为什么驾驭它写东西会感觉轻松？](./11_native-development-loop/question.md) | [窄证据切片闭环：六步马达 + "轻松"三来源（记忆外包 / 反馈秒级 / 原子回滚）；spec 感是闭环沉淀物而非上游输入；git 历史量化与运行时助推的三路独立验证](./11_native-development-loop/answer.md) |
-| 12 | [dsh web 多开窗口卡住：第 4 个就卡，是启动有并发限制吗？](./12_dsh-web-stuck-windows/question.md) | [不是并发：rev 轮换 + 陈旧缓存 index → 动态模块全 404；修复 = index 加 `no-store`；附每次升级后手动重打补丁/重启/验证/回滚的完整 runbook](./12_dsh-web-stuck-windows/answer.md) |
+| 12 | [dsh web 多开窗口卡住：第 4 个就卡，是启动有并发限制吗？](./12_dsh-web-stuck-windows/question.md) | [不是并发：rev 轮换 + 陈旧缓存 index → 动态模块全 404；诊断机制仍成立，但「index 加 `no-store`」修复已随 0008 整树照搬退役，登记为上游候选缺口；runbook 保留为手动处置路径](./12_dsh-web-stuck-windows/answer.md) |
 | 13 | [一个"领域专家"DSH 插件，repo 应该怎样组织？](./13_expert-plugin-repo-organization/question.md) | [五个决策（入口/粒度/DSH 源码/UI 层/spec 流程）× 四个方案（pinned submodule / 树内 / 纯外部 / marketplace），推荐方案 A；共享开发过程（插拔/调试/驱动 agent）见 dev-loop.md，官方安装的保护见 dual-home-isolation.md，命名/标识的"身份 vs 皮肤"分层见 naming-and-identity.md，市场实证见 research.md](./13_expert-plugin-repo-organization/answer.md) |
 | 14 | [DSH 有没有类似 Claude Code / Codex 的 hooks 机制？三家的 hooks 怎么比？](./14_hooks-vs-claude-code-codex/question.md) | [有，两层：原生拦截扩展点（typed Decision 插件面）+ CC/Codex 兼容桥（7/33 与 5/12 事件的 command 钩子子集）；三家按声明/事件/执行/控制力/审计五轴对照，桥的取舍是"兼容适配器不是力量工具"，外部读数留档 research.md](./14_hooks-vs-claude-code-codex/answer.md) |
 

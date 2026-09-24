@@ -27,7 +27,7 @@ expert-suite/
 │   ├── smoke-all.mjs             # shared/ 变更后的全专家冒烟（本方案新增的证据面）
 │   └── sync-dsh.mjs              # 继承方案 A 的升级环（vendor/dsh 换 tag + SHA 簿记）
 ├── dev/                          # 开发 home：repo 外（~/dsh-dev）或继承方案 A 的 dev/harness-home/
-├── notes/                        # 仓库级 intents + proposed/implemented；专家级决策放各自 packages/<expert>/notes/
+├── notes/                        # 仓库级决策（proposed|implemented|rejected/<class>/…，dev-loop 第 2 阶段）；专家级决策放各自 packages/<expert>/notes/
 └── vendor/dsh/                   # pinned submodule + scripts/sync-dsh.mjs（继承方案 A）
 ```
 

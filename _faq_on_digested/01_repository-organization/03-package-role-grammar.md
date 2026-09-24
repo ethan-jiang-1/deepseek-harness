@@ -108,7 +108,7 @@ packages/session/*
   telemetry service + OTEL backend
 ```
 
-`core/session` 是 agent spine 必须依赖的交互事实模型，但“把它存到哪里”“怎样做查询投影”“是否生成标题或遥测”可以独立演化和替换，所以进入相邻的 `session/` capability family。持久化后端现在只有 JSONL：`session-persistence-jsonl` 每个 Session 保留不可变的规范世代文件并独占发布后继世代，`session-format` 与 `session-format-v0-to-v1` / `v1-to-v2` / `v2-to-v3` 加生成的 `session-format-catalog` 组成格式迁移包组（`packages/session/README.md` 的包表曾漏登记 `session-format-v2-to-v3`（该目录真实存在，且是 v2→v3 这条首个非恒等规范化边的唯一规格），该缺口已由本轮就地补齐）；**会话持久化**的 SQLite 后端已不存在，会话侧只剩 `session-persistence-jsonl`，SQLite 现在只在查询侧的 `session-query/session-query-sqlite`（FTS5 索引）；另注意 `packages/storage/storage-sqlite/` 是另一个仍然活着的 SQLite 后端，它服务 `ctx.storage` 而不是会话持久化。`session-query/` 再单独成组，因为查询 corpus、SQLite FTS 和模型查询工具的消费者与持久化内部实现不同。
+`core/session` 是 agent spine 必须依赖的交互事实模型，但“把它存到哪里”“怎样做查询投影”“是否生成标题或遥测”可以独立演化和替换，所以进入相邻的 `session/` capability family。持久化后端现在只有 JSONL：`session-persistence-jsonl` 每个 Session 保留不可变的规范世代文件并独占发布后继世代，`session-format` 与 `session-format-v0-to-v1` / `v1-to-v2` / `v2-to-v3` / `v3-to-v4` 加生成的 `session-format-catalog` 组成格式迁移包组（0008 跨度新增 `session-format-v3-to-v4`——tool/result 提升一等 tool-role message、`source.plugin`→`source.kind`、新增 `developer/message` surface 类；`packages/session/README.md` 的包表曾漏登记 `session-format-v2-to-v3`，该缺口已由 0007 轮就地补齐）；**会话持久化**的 SQLite 后端已不存在，会话侧只剩 `session-persistence-jsonl`，SQLite 现在只在查询侧的 `session-query/session-query-sqlite`（FTS5 索引）；另注意 `packages/storage/storage-sqlite/` 是另一个仍然活着的 SQLite 后端，它服务 `ctx.storage` 而不是会话持久化。`session-query/` 再单独成组，因为查询 corpus、SQLite FTS 和模型查询工具的消费者与持久化内部实现不同。
 
 ## Host、Client、API 与 Typert
 
@@ -124,9 +124,9 @@ Web GUI 不是一个 `frontend/` 加一个 `backend/` 大目录，而是多个�
 
 这种拆法把“传输”“业务 Remote”“浏览器模块加载”“具体 UI 功能”分开。读一个 UI 时，不能只停在 React component；还要沿 Remote 或 session projection 找到 Host 侧事实来源。
 
-客户端拿到的 Host 事实有两条链路，不要混：session 历史与状态走 `api/session-controller` 的 `follow` stream；其余 Host Cordis 事件走 `api/remotes` 的转发白名单 `API_REMOTE_FORWARDED_EVENTS`（本基线 19 条，是 `ctx.remote.$on` 的合法 key 集）。白名单不是 session 事件来源，两者各有自己的所有者与背压语义。
+客户端拿到的 Host 事实有两条链路，不要混：session 历史与状态走 `api/session-controller` 的 `follow` stream；其余 Host Cordis 事件走 `api/remotes` 的转发白名单 `API_REMOTE_FORWARDED_EVENTS`（本基线 23 条，0008 跨度新增 `agent-preset/selected`、`commands/change`、`credentials/reference-updated`、`cordis/inspect-query(-resolved)`、`permission-presets/catalog-changed`、`plugin-manager/*` 三条；是 `ctx.remote.$on` 的合法 key 集）。白名单不是 session 事件来源，两者各有自己的所有者与背压语义。
 
-`apps/` 这一层另有 `apps/desktop`（Electron 壳）与 `apps/desktop-host`（私有 host），两者都不带 `bin`、也不从 `dsh --profile` 启动，而是复用 `dsh-base + dsh-web-app` 与同一份前端产物；见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。`client/` 在 `dsh-v0.1.7-rc.1` 也已不只“壳 + slots”：`ctx.resources` / `useResource` 构成内容寻址的资源模型，`ui-dockkit` 是平台静态模块而非 Loader row，右栏、file-upload 与 open-in-app 都在这一组，见 [`_digested/surfaces/04-客户端资源模型与右栏.md`](../../_digested/surfaces/04-客户端资源模型与右栏.md)（`packages/client/README.md` 的包表原先漏登记 `ui-dockkit`、`ui-sidebar-right`、`ui-sidebar-documentpreview` 三个包，0007 复核时已就地补齐，该表现覆盖全部 51 个 `packages/client/*/` 目录——52 行表体含 1 行指向 `packages/test-support/client-runtime` 的跨组行）。
+`apps/` 这一层另有 `apps/desktop`（Electron 壳）与 `apps/desktop-host`（私有 host），两者都不带 `bin`、也不从 `dsh --profile` 启动；0.1.7 线起 desktop-host 经 `runProfile` 起完整 web 应用（监听 `127.0.0.1:19387`，认证 URL 交给窗口），见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。`client/` 在 `dsh-v0.1.7-rc.1` 也已不只“壳 + slots”：`ctx.resources` / `useResource` 构成内容寻址的资源模型，`ui-dockkit` 是平台静态模块而非 Loader row，右栏、file-upload 与 open-in-app 都在这一组，见 [`_digested/surfaces/04-客户端资源模型与右栏.md`](../../_digested/surfaces/04-客户端资源模型与右栏.md)（`packages/client/README.md` 的包表原先漏登记 `ui-dockkit`、`ui-sidebar-right`、`ui-sidebar-documentpreview` 三个包，0007 复核时已就地补齐；0008 复核实测 `packages/client/` 共 59 个包目录、README 表 58 行——`ui-settings-account/` 与 `ui-sidebar-terminal/` 两个真实包仍未登记，属上游候选缺口）。
 
 ## 一个普通 package 的内部结构
 

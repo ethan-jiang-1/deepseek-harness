@@ -2,7 +2,7 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **产品源码审计基线**：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](./_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md)。自 0008 起同步口径为**整树照搬**：产品源码完全等于 upstream tag，本地只维护 `_digested/`、`_faq_on_digested/`、`_agent_ready_development/`、`_architecture_referenced/` 四个语料目录。
+> **产品源码审计基线**：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](./_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md)；0008 轮语料维护的**独立复核**（约 60 处过期断言、20 处缺落点、3 孤儿页的处置与修复记录）见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)。自 0008 起同步口径为**整树照搬**：产品源码完全等于 upstream tag，本地只维护 `_digested/`、`_faq_on_digested/`、`_agent_ready_development/`、`_architecture_referenced/` 四个语料目录。
 
 `_digested/` 面向已熟悉 agent harness / plugin 运行时，但尚未建立 DeepSeek Harness 概念体系的读者。这里先抓住思想主轴，再进入源码机制——而不是把 `packages/` 目录平铺成分类货架。
 
@@ -15,10 +15,10 @@
 | 分支 | 上面有什么 |
 |------|------------|
 | `master` | 干净的 upstream 镜像。不放研究材料，不改产品代码。 |
-| `ethan` | 研究分支。源码随 `upstream/master` merge 进来；研究材料位于 `_digested/`、`_agent_ready_development/`、`_faq_on_digested/` 和 `_architecture_referenced/`。 |
-| `ethan2` | `ethan` 的工作副本，两者在每次同步后保持指向同一提交（0006 及以后在此分支上执行同步，随后把 `ethan` 快进对齐）。 |
+| `ethan` | 研究分支。源码整树照搬 upstream tag；研究材料位于 `_digested/`、`_agent_ready_development/`、`_faq_on_digested/` 和 `_architecture_referenced/`。 |
+| `ethan2` | `ethan` 的工作副本，两者在每次同步后保持指向同一提交。 |
 
-同步方式：在 `ethan2`（或 `ethan`）上非快进 merge 目标 upstream 提交，让产品源码对齐新基线并保留研究目录，再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。
+同步方式（0008 起为**整树照搬**，见 `_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`）：把产品源码对齐到选定的 upstream tag（不做内容合并、不留本地源码补丁，四个语料目录整体保留），再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。（旧口径「非快进 merge + 逐冲突解决」在 0008 执行时退役。）
 
 ## 与同级目录的关系
 
@@ -43,8 +43,8 @@
 | `runtime-profiles/` | 运行时配置 | web、headless、sdk、sdk-minimal、acp 五个 Launcher Profile 的共同基底与各自差异，以及不经 `dsh` 启动的桌面组合 |
 | `session-and-loop/` | 会话与驱动 | session log、格式世代与相邻迁移、turn/step、model-visible ⟺ logged、agent scope |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | step/turn/activity/goal 四层结束边界、Goal 状态机、Round Driver 自动续轮 |
-| `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色、如何组合一致的 fs / subprocess provider，进程级库（外发代理、原生 containment）这类「刻意不是 seam」的形状，以及默认不挂的外部生态桥（MCP 客户端、Claude Code / Codex hook 桥） |
-| `experimental/` | 实验原型面 | `packages/experimental/` 的四种原型合同：code-runtime 的 CPython 子进程后端、Agent Teams 多代理编组、Inspector CDP 调试面、webworker 的 preview 双包——都不在 shipped 组合，合同随时会变 |
+| `capability-seams/` | 可替换能力 | Service Definition / Provider / Consumer 三角色、如何组合一致的 fs / subprocess provider（本地 sandbox 与远程 ssh 两个执行世界——0.1.7 线起 sandbox 组转正、ssh 组接替 E2B），进程级库（外发代理、原生 containment）这类「刻意不是 seam」的形状，以及默认不挂的外部生态桥（MCP 客户端、Claude Code / Codex hook 桥）与新执行面（browser-use / computer-use / speechToText 等新 seam 的地图） |
+| `experimental/` | 实验原型面 | `packages/experimental/` 的原型家族：ptc-runtime 的 CPython 子进程后端（0.1.7 线自 code-runtime 改名）、Agent Teams 多代理编组、Inspector CDP 调试面、webworker 的 preview 双包，以及 browser-use / computer-use driver、voice-input 语音转写、auto-review 等新原型——合同随时会变 |
 | `tools-prompt-llm/` | 模型可见面 | tool registry、system prompt 作为 surface 节点、in-history 替换、LLM adapter、tool 执行瀑布、chunk 到 settlement、内容块投影 |
 | `surfaces/` | 人对机器的入口 | CLI、Web host/client、桌面（Electron）、ACP、JSON-RPC SDK、客户端资源模型与右栏、客户端分层与插件纪律，以及 Typert 类型图到 Remote stub 的生成链 |
 | `_coverage/` | 覆盖矩阵 | 维护用索引，按源码组追踪 digest 覆盖状态 |

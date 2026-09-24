@@ -51,11 +51,11 @@ Plan prompt 给 agent 的规则是：
 
 > Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130`
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:54`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
 
 > implementation begins only in a later step after approval.
 
-来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:132`
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起迁至 bundle patch；旧路径 `agent.cordis.yml:132` 已删）
 
 这说明：**agent 负责把计划做到 decision-complete，但不能自己批准实施。**
 
@@ -154,7 +154,7 @@ issue policy 则把这种约束命名得更直接：
 - `AGENTS.md:88`、`:92`、`:95`、`:147`
 - `packages/AGENTS.md:26`
 - `.agents/notes/README.md:46`
-- `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130`、`:132`
+- `packages/bundle/web-app/presets/ptc.patch.yml:54`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）、`:60`
 - `docs/subsystems/plan.md:33`
 - `.agents/skills/dsh-code-review/SKILL.md:23`、`:31`、`:52`
 - `.github/pull_request_template.md:3`

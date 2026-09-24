@@ -81,7 +81,7 @@ turn/end (turn=5, reason={ kind: 'interrupted' })  ← 之后补的
 
 ![崩溃重启后必须 re-arm](./figures/restart-rearm.svg)
 
-`phase` 不依赖进程内存：所有 `goal/change` 事件写入 session log，进程重启后 fold（`fold.ts`）从 log 重放，重建 goal 状态。但 **`activation`（armed / disarmed）从不持久化**（`packages/goal/goal/src/types.ts:97` 的 `activation` 字段注释「never persisted」）：`agent/session-start` 时 `GoalService` 把 activation 重置为 `disarmed`（`goal/src/index.ts:255-257`），Round Driver 装载时也会 disarm 全部现存 agent（`goal-round-driver/src/index.ts:428-433`）。
+`phase` 不依赖进程内存：所有 `goal/change` 事件写入 session log，进程重启后 fold（`fold.ts`）从 log 重放，重建 goal 状态。但 **`activation`（armed / disarmed）从不持久化**（`packages/goal/goal/src/types.ts:97` 的 `activation` 字段注释「never persisted」）：session-start 边（串行 `agent/created`）时 `GoalService` 把 activation 重置为 `disarmed`（`goal/src/index.ts:255-257`），Round Driver 装载时也会 disarm 全部现存 agent（`goal-round-driver/src/index.ts:428-433`）。
 
 所以崩溃重启后，goal 停在 active + **disarmed**——**自动续轮不会自动恢复**，必须 human re-arm 之后，driver 才从 `roundsStarted + 1` 继续；round 计数完全重建自 log，不会漏也不会超前。re-arm 的通道要分清：模型 `update_goal resume` 只覆盖 `active·disarmed` 与 `blocked`，若 goal 处于 `paused` 则必须走 human 的 `/goal resume` 或 Web 恢复（`tool-goal/src/index.ts:279-286`）。测试直接断言 session-start 后的重置行为（`packages/goal/goal-round-driver/tests/goal-round-driver.spec.ts:937-950`）。
 
@@ -98,7 +98,7 @@ Goal 与 Agent Loop 之间没有直接耦合：driver 不 import loop 内部，l
 5. `turn/end` — `max-tokens` 触发 disarm；`aborted` 把 claimed/admitted 的 attempt 标记 cancelled
 6. `agent/error` — 触发 disarm
 7. `agent/inbox/inserted` / `claimed` / `discarded` — competing / stale 簿记
-8. `agent/session-start` — driver 在 `goal-round-driver/src/index.ts:253`-`:258` 消费它，清空 `attempt` / `competingQueued` / `needsCheckpoint`，让新会话不从上一会话的调度残留里起步（派发点是 `packages/core/agent-loop/src/index.ts:675`）
+8. `agent/created`（session-start 边）— driver 在 `goal-round-driver/src/index.ts:252-256` 消费它，清空 `attempt` / `competingQueued` / `needsCheckpoint`，让新会话不从上一会话的调度残留里起步（事件由 `AgentRegistry.announce()` 串行发出，`packages/core/agent/src/index.ts:537-559`；旧名 `agent/session-start` 已随 0.1.7 线退役）
 
 `goal/activation-changed` **不在这条清单里**：`GoalService.setActivation()` 在 activation 真正变化时广播的进程内事件（`goal/src/index.ts:495-516`），driver 不消费它；消费方是 Web goal bar（经 Remote 白名单转发，`packages/api/remotes/src/remote-events.ts:26`；订阅点 `packages/client/ui-goal/src/client/index.ts:95`）
 

@@ -34,7 +34,7 @@ Inspect Provider 可以把 Host service、event、builtin 与 tool 信息，以�
 
 ## 从查询进入可撤销试验
 
-固定基线的源码和生成 tool catalog 还列出 `cordis_define`、`cordis_run`、`cordis_stop` 和 `cordis_undefine`。与三个只读查询工具合计七个 model-facing tools：agent 可以定义一个 dynamic package，运行 host/browser halves，再停止或从当前进程永久移除其定义。
+~~固定基线的源码和生成 tool catalog 还列出 `cordis_define`、`cordis_run`、`cordis_stop` 和 `cordis_undefine`，与三个只读查询工具合计七个 model-facing tools~~（0.1.7 线 #4745 起退役：tool-cordis 只注册 `cordis_inspect_list` / `cordis_inspect_query` 两个只读工具，`packages/extensions/tool-cordis/src/index.ts:23,42`；本节留作机制记录，现行面见上文两工具与本页 :27 的说明）。dynamic package 的定义/运行/停止生命周期移入 `cordis-host-runner` / `cordis-client-runner` 的程序化 API；持久安装走 `plugin_manager` 工具 + bundle。
 
 这些动作适合验证“按这个 Plugin 方式注册会发生什么”，不等于修改仓库：dynamic package 只存在于当前 DSH 进程，不创建文件、不改变 `cordis.yml`、不自动晋升为正式插件，也不跨 DSH restart 保留。需要永久保存时，仍要回到普通开发流程完成源码、文档、测试和决策记录。
 

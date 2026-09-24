@@ -2,7 +2,7 @@
 
 ## 一个可交付变更包含什么
 
-Implementation（实现）改变系统；documentation（文档）说明交付后的系统；tests（测试）和其它 evidence（验证证据）让关键行为可以重复检查；Agent Note 保存决定理由。非平凡变更通常需要这四部分在同一个 PR 中对齐。
+Implementation（实现）改变系统；documentation（文档）说明交付后的系统；tests（测试）和其它 evidence（验证证据）让关键行为可以重复检查；Agent Note 保存决定理由。携带持久决定理由的变更通常需要这四部分在同一个 PR 中对齐。
 
 “测试通过”不等于“变更完整”。如果 public API、配置、错误行为或模型可见输出发生变化，当前 README、JSDoc 或 docs 也必须更新；如果决定改变，owning Agent Note 也必须更新。
 
@@ -33,7 +33,7 @@ PR CI 在远端运行更完整的 matrix（检查矩阵），覆盖共享规则�
 准备 push 时，至少能清楚回答：
 
 - 外部结果和验收条件在哪里；
-- 非平凡变更的哪个 Agent Note 拥有决定；
+- 哪个 Agent Note 拥有决定（持久决定理由变更）；
 - 当前文档是否描述交付后的行为；
 - 哪项证据会在目标回归上失败；
 - 实际运行了哪些相关命令，哪些证据仍交给 CI。

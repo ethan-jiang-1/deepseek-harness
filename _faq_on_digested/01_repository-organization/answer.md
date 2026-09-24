@@ -97,7 +97,7 @@ packages/fs/                  # 文件系统能力家族
 - `packages/session/` 不是 `core/session` 的重复。`core/session` 拥有活的内存日志；`session/` 家族围绕它增加持久化、投影、标题和遥测。
 - `packages/host/` 与 `packages/client/` 是 Web GUI 的两半；`apps/web` 只是很薄的浏览器入口，`apps/cli` 的 web profile 负责启动 Host 并提供前端产物。
 - `packages/api/` 与 `packages/typert/` 负责 Host/Client 之间的类型化 Remote/RPC 机制，不是另一个独立产品入口。
-- 组合叶子不再有 `examples/` 包组：可选 overlay 是 `apps/cli/config/examples/*/cordis.yml`（产品资产，`dsh --patch` 才挂），agent preset 的根是 `packages/preset/agent-presets/presets/*/agent.cordis.yml`。
+- 组合叶子不再有 `examples/` 包组：可选 overlay 是 `apps/cli/config/examples/*/cordis.yml`（产品资产，`dsh --patch` 才挂）；0.1.7 线起 agent preset 走声明式重设计——shipped preset 是 `packages/bundle/web-app/presets/{standard,ptc,minimal,cordis}.patch.yml`，声明与注册在 `packages/preset/agent-preset/` + `agent-preset-registry/`。
 - `packages/client/` 已不只是 Web 壳：`resources` 提供 `ctx.resources` 资源模型，`ui-dockkit` 是平台静态模块，右栏与文件树各由 `ui-sidebar-*` 拥有。
 - `packages/test-support/` 是跨 package 的测试基础设施；普通行为测试仍跟随自己的 package 放在 `tests/`。
 
@@ -131,7 +131,7 @@ DSH 把传统单体里隐含的选择显式化了：哪个后端、哪条策略�
 1. 读根 [`AGENTS.md`](../../AGENTS.md) 的目录图和核心约束（它的 `packages/` 布局块曾写已不存在的 `self-modification/` 与 `support/`，实际是 `packages/extensions/` 与 `packages/test-support/`，该缺口已就地修正；以 [`packages/README.md`](../../packages/README.md) 为准）。
 2. 读 [`docs/architecture.md`](../../docs/architecture.md)，建立 Cordis、composition、core、events、loop、session、seam 的顺序。
 3. 读 [`packages/README.md`](../../packages/README.md)，只识别 group，不背 package 清单。
-4. 从一个实际入口追踪：`apps/cli/src/bin.ts` → `profile-boot.ts` → bundle patch → 一个被挂载的 package（桌面入口例外，从 `apps/desktop` 的 Electron 主进程开始）。
+4. 从一个实际入口追踪：`apps/cli/src/bin.ts` → `profile-boot.ts` → bundle patch → 一个被挂载的 package（桌面入口例外，从 `apps/desktop` 的 Electron 主进程开始；desktop-host 经 `runProfile` 起完整 web 应用并监听 `127.0.0.1:19387`）。
 5. 再从一个能力追踪：group README → Definition → Provider → Consumer → bundle/preset row → 测试。
 6. Web 功能另走 Host/Client 路线；持久数据另走 `core/session` → `session/` 路线。
 

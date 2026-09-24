@@ -38,6 +38,6 @@ Web 的 follow adapter 订阅这些 frame 做打字机效果，重建时用 `exp
 
 ## 与 session 格式迁移的边界
 
-`SESSION_FORMAT_VERSION` 由 `0` 变成 `3`（`packages/core/session/src/types.ts:88`），并新增 `packages/session/session-format`、`session-format-catalog`、`session-format-v0-to-v1`、`session-format-v1-to-v2`、`session-format-v2-to-v3` 迁移族。v2→v3 这条边把系统提示词提升为消息、重映射本地事件引用、转换 PTC 与预设名称并规范化信封（`packages/session/session-format-v2-to-v3/README.zh.md`）。
+写者版本一路推进：v2 引入时 `SESSION_FORMAT_VERSION` 由 `0` 变成 `3`（当时锚点 `packages/core/session/src/types.ts:88`）；0008 跨度（0.1.7-rc.1）v4 落地，当前值为 **4**（`packages/core/session/src/types.ts:89`），迁移族扩到 `session-format`、`session-format-catalog`、`session-format-v0-to-v1` 至 `-v3-to-v4` 共六个包。v2→v3 这条边把系统提示词提升为消息、重映射本地事件引用、转换 PTC 与预设名称并规范化信封（`packages/session/session-format-v2-to-v3/README.zh.md`）；v3→v4 把 tool/result 提升为一等 tool-role message、`source.plugin` 改名 `source.kind`、新增第五类 surface 事件 `developer/message`（全链见 [`../session-and-loop/04-格式世代与迁移.md`](../session-and-loop/04-格式世代与迁移.md)）。
 
 本篇只写「chunk 不再是一等事件」的模型可见后果；格式版本与迁移机制的细节归 session 专题，见 [`../session-and-loop/01-session-event-map.md`](../session-and-loop/01-session-event-map.md)。

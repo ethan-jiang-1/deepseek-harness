@@ -21,7 +21,7 @@ my-expert/
 ├── docs/
 │   ├── …                         # 当前合同
 │   └── dsh-notes/                # 知识内化：层级顺序/dump-config/preset 语义/日志税的自持摘录
-└── notes/                        # intents.md + proposed/ + implemented/
+└── notes/                        # 决策记录：proposed|implemented|rejected/<class>/…（dev-loop 第 2 阶段）
 ```
 
 相比方案 A 缺的两样（`vendor/dsh` 与 SHA 簿记、workspace 直跑）正是"只作过渡"的机制原因：第 0 阶段的准备与第 6 阶段的兼容环都要靠 `$DSH_REPO` 指针和 npm 解析硬扛。

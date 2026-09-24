@@ -66,7 +66,7 @@ Plan Mode 把“边写边设计”压缩掉：
 
 > Make the plan decision-complete: state the goal and success criteria; group implementation changes by subsystem; identify public API, schema, and data-flow changes; cover edge cases, failure modes, tests, acceptance criteria, and explicit assumptions. Keep it concise enough to review but detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130`；plan/review 留在会话历史见 `packages/plan/plan-mode/README.md:170`。
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:54`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）；plan/review 留在会话历史见 `packages/plan/plan-mode/README.md:170`。
 
 ## 上游小结
 

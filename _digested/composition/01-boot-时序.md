@@ -12,11 +12,11 @@
 
 `runProfile` 做五件事，再把树交给插件自己过一辈子（或一次性 runner 自己退出）：
 
-0. `installProxyFromEnvironment`：在任何行 mount **之前**按启动环境快照装进程级出网代理（`apps/cli/src/profile-boot.ts:287-290`）。Node 内建 `fetch` 自己不看 `HTTP_PROXY`，不装就每个 profile 都直连；从 launcher 快照而非 `process.env` 解析，`.env` 层里声明的代理才生效。它不是 patch 层，`--dump-config` 里没有。shutdown 里 `await disposeProxy()`（`:297`）。
-1. `composeProfile`：heal 模块回退、加载 profile、叠层、加 launcher 派生补丁。
+0. `installProxyFromEnvironment`：在任何行 mount **之前**按启动环境快照装进程级出网代理（`apps/cli/src/profile-boot.ts:242-250`，dispose 在 shutdown 链 `:254-256`）。Node 内建 `fetch` 自己不看 `HTTP_PROXY`，不装就每个 profile 都直连；从 launcher 快照而非 `process.env` 解析，`.env` 层里声明的代理才生效。它不是 patch 层，`--dump-config` 里没有。desktop-host 经 `runProfile` 起树，所以桌面同样被这条路覆盖（0.1.7 线起「桌面不走代理」的旧分歧已不存在）。
+1. `composeProfile`：**先算 runtime resolution**（`composeProfile` 第一步 `await createRuntimeResolution(...)`）、加载 profile、叠层、加 launcher 派生补丁。
 2. `installFailLoud`：后挂失败时先报错、再还终端、再 `exit(1)`。
-3. `boot(NAME, rootConfig, structuredClone(allPatches), prepare)`。
-4. 树还活着就挂用户层 HMR（见 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)）。
+3. `boot(NAME, rootConfig, structuredClone(allPatches), prepare)`；`prepare` 里 `provide('profileContext')`、启动环境快照与 `PluginPackages`（resolution 交给解析拦截层）。
+4. `provideCmdline` 之后、树还活着就 commit `appReady`（`profile-boot.ts:315`）——profile HMR 的就绪前提，见 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)。
 
 `prepare` 在任何配置树行 mount **之前**跑：把 `ctx` 存进 shutdown 闭包、`provide` 启动环境快照、`provideCmdline`。命令行参数和环境不是 patch 列表的一部分，活过 recomposition。
 
@@ -26,7 +26,9 @@
 
 原因：Loader 的树写回会把已经组合好的行烤进这个文件。下次再当根 include，bundle 的 `insert` 会插第二遍。dump 也锚定同一份空文件，boot 和 dump 才共用同一个 base。
 
-`healProfilesModuleFallback` 在 `composeProfile` 内、`loadProfile` 之后、插件模块加载之前执行（`apps/cli/src/profile-boot.ts:232`；调用它的 `composeProfile` 在代理安装之后，见上）：把安装闭包 BFS（含 peer）链到 `$DSH_HOME/profiles/node_modules`。profile 目录里的裸插件名才能解析。bundle 解析：**安装锚点优先**，再到 profile 目录。列出的包没有 `dsh.bundle` 声明 → fail loud，不会默默跳过。
+## 模块解析：runtime-resolution 拦截层（0.1.7 线起）
+
+~~`healProfilesModuleFallback` 在 `composeProfile` 内把安装闭包 BFS 链到 `$DSH_HOME/profiles/node_modules`~~（0.1.7 线退役，全仓 src 无此符号；0.1.5 的 `.dsh-module-fallback` link 投影由 `removeLinkProjections` 在装载期清除，`packages/boot/app-boot/src/profile.ts:240-258`）。现机制是**解析拦截**，不写任何文件：`composeProfile` 先经 `createRuntimeResolution`（`profile.ts:406-439`，入参 `installAnchor` + profile）算出一份不可变的 `RuntimeResolution`，随 `composed.resolution` 交给 boot 后由 `PluginPackages` 服务装到 Node 的 ESM + CJS 解析器上（`packages/boot/app-boot/src/profile-resolution/resolver.ts` 的 `installRuntimeInterception`）。解析顺序：profile 本地 `node_modules` 命中优先，其次是安装锚（installation manifest 的 deps+peers 闭包，`collectInstallationScopePackages`），再按声明者位置找 linked root（profile `node_modules` 下指向共享树之外的 symlink，`linkedProfileRoots`）；missing peer（cordis 等）也由这层补齐，全部插件共享同一解析结果。bundle 解析仍是**安装锚点优先**，列出的包没有 `dsh.bundle` 声明 → fail loud，不会默默跳过。
 
 ## 层列表：用户层之上还有 launcher 派生
 
@@ -107,7 +109,7 @@ latch：第一个 rejection 是报告的那个。handler 在 release 期间仍�
 
 `loadLayeredEnv`：继承的 `process.env` > 项目目录 `.env` > home `.env`。两个文件都校验完才往 `process.env` 写，且**不覆盖**已有名字。Harness home 在读文件之前就从继承环境解析。
 
-bootstrap-only 名字（`PATH`、代理、`DEEPSEEK_BASE_URL`、一切 `DSH_` 前缀等）不允许来自**项目目录**的 `.env`，声明即抛。唯一的例外是 Harness home 的 `.env` 放行四个代理名 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` / `NO_PROXY`（`packages/boot/app-boot/src/index.ts:126`、`:168-169`）——项目 `.env` 随 clone 一起到达，不能决定出网路由；`DSH_HOME` 本身仍是 bootstrap-only，所以没有 `.env` 能把豁免改指到仓库控制的目录。这是启动方式 / 代码从哪来 / 网络怎么走，不是应用配置。
+bootstrap-only 名字（`PATH`、代理、`DEEPSEEK_BASE_URL`、一切 `DSH_` 前缀等）不允许来自**项目目录**的 `.env`，声明即抛。唯一的例外是 Harness home 的 `.env` 放行四个代理名 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` / `NO_PROXY`（`BOOTSTRAP_NAMES` 起 `packages/boot/app-boot/src/index.ts:130`、`HOME_LAYER_PROXY_NAMES` `:163`、放行判定 `:207`）——项目 `.env` 随 clone 一起到达，不能决定出网路由；`DSH_HOME` 本身仍是 bootstrap-only，所以没有 `.env` 能把豁免改指到仓库控制的目录。这是启动方式 / 代码从哪来 / 网络怎么走，不是应用配置。
 
 启动环境冻住之后、任何行 mount 之前，`runProfile` 就从这份快照装进程级出网代理（见上文第 0 步）；`.env` 里声明的代理因此在首个插件发请求前生效。
 

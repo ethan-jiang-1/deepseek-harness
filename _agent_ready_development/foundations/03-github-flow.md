@@ -14,7 +14,7 @@ branch → commits → push → Pull Request → CI + review → merge
 
 Branch（分支）让一个变更在不直接修改主分支的情况下演进。作者可以反复提交和本地验证；目标分支仍保持可交付状态。
 
-分支不是规格的 owner。它只是承载这次变更的代码、文档、测试，以及非平凡变更的 Agent Note。
+分支不是规格的 owner。它只是承载这次变更的代码、文档、测试，以及持久决定理由变更的 Agent Note。
 
 ## 2. Push 把分支发布到远端
 

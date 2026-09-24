@@ -18,6 +18,7 @@ DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 
 | 子树 `AGENTS.md`（`packages/`、`docs/`、`.agents/notes/`） | 只属于该子树的 orders |
 | `docs/architecture.md` | 组合、主干、扩展点与 capability seam 的有序地图 |
 | `docs/subsystems/` | 子系统 types、semantics 与生成的 Cordis API |
+| `docs/persistence-changes/` | 持久化类型变更的唯一 ack 入口：类型变更声明、发布对比与历史格式 schema（`docs/AGENTS.md:27` 的 Persistence history 行，0008 跨度新增） |
 | `.agents/notes/` | 现行决策记录：为什么、放弃了什么、需要什么验证 |
 | `docs/postmortem/` | 事故故事——唯一允许 war story 叙事的层 |
 | `docs/cookbook/` | 带编号验证步骤的 how-to |

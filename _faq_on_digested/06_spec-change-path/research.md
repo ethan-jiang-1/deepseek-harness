@@ -58,7 +58,7 @@ proposed 骨架：
 
 > Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130`
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:54`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
 
 > **Guidance, not enforcement** — plan mode restrains through text only; deployments that need enforced restrictions configure sandbox mode and approval policy independently.
 

@@ -56,17 +56,9 @@ Loader 在 `internal/config` 上挂了全局监听器：先 `next()` 拿到下�
 
 **不跨 include 边界。** 外层列表改不了子 Include 文件里的 id。这就是为什么用户 overlay 必须叠在同一 Include 上，而不是再套一层文件却指望 id 穿透。
 
-## Include 自己的队列
+## Include 内部的串行化（0.1.7 线现状）
 
-Group 的事务性 `update` 不可重入。Include 把初始 apply、refresh、HMR 触发的再 apply 全部 `enqueue` 成串：
-
-```text
-run = applyQueue.then(task, task)   // 前一个失败也不挡住下一个
-applyQueue = run.then(() => {}, () => {})
-return run
-```
-
-前一次失败是那次调用者的结果，不闸死后面的任务。没有这条队列，HMR 的 initial scan 会和首次 apply 交错 create/rollback，把 Include fiber 卡在卸不完的状态（vendor 清单第 12 条）。
+~~Group 的事务性 `update` 不可重入；Include 把初始 apply、refresh、HMR 触发的再 apply 全部经 `applyQueue` 串行~~（0.1.7 线事务重载退役，`applyQueue` 已从 include 源删除；本段留作机制记录，编号所指的旧「第 12 条」现指向 activation observer——`vendor/loader/src/config/entry.ts` 的 detached `Entry.init()` 完成观察者，两种结局都处理、fiber 保留激活错误供显式审计）。现存的串行点是**持久化写队列**：`writeQueue`（`vendor/include/src/index.ts:176`，`:323-328` 的链式 `then`）把配置文件的防抖写串起来、瞬时可重试、终态失败由 `Include.stop()` 重抛（vendor 清单第 14 条）。HMR 的模块替换与配置刷新改由产品侧 `packages/boot/hmr` 的同一条操作队列串行（见 [`../composition/03-user-patch-hmr.md`](../composition/03-user-patch-hmr.md)），不再依赖 include 内部的 apply 队列。
 
 ## 和 composition 专题的分工
 

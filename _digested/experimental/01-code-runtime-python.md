@@ -1,4 +1,4 @@
-> **0008 状态注记**：本页所述包在 `dsh-v0.1.7-rc.1` 已由 `packages/experimental/code-runtime-python/` 改名为 `packages/experimental/ptc-runtime-python/`（上游 `refactor(ptc): align runtime packages and services with PTC naming`），seam 键 `ctx.codeRuntime` 相应改为 `ctx.ptcRuntime`；机制叙述（fd-3 帧协议、敌意输入重建、上限验证）继续有效，页内旧路径与行号按改名前书写。
+> **0008 状态注记（覆盖全页，各节不再逐处标注）**：本页所述包在 `dsh-v0.1.7-rc.1` 已由 `packages/experimental/code-runtime-python/` 改名（0.1.7 线）为 `packages/experimental/ptc-runtime-python/`（上游 `refactor(ptc): align runtime packages and services with PTC naming`），seam 键 `ctx.codeRuntime` 相应改为 `ctx.ptcRuntime`；机制叙述（fd-3 帧协议、敌意输入重建、上限验证）继续有效，页内旧路径与行号按改名前书写。
 
 # code-runtime-python：CPython 子进程后端
 
@@ -10,7 +10,7 @@
 
 ## 与默认 worker-thread provider 的关系
 
-两者都是 `ctx.codeRuntime` 的实现，谁生效不是「后装者赢」——vendored Cordis 对同一 isolate 的重复服务注册直接抛错 `service "codeRuntime" has been registered at <fiber>`（`vendor/cordis/src/reflect.ts:290`），同时挂两个等于 load 失败，选择永远是组合层的决定。headless profile 挂的是 worker 后端（`packages/bundle/headless/cordis.patch.yml:20`-`:21`）；`apps/cli/package.json:116` 把 python 包声明为 devDependency，与 Agent Teams 的三个包并列（`:114`-`:117`），供快照与 profile 组合经真实 Loader 解析（`apps/cli/src` 无任何 import），shipped 组合无一挂载它，README 也声明「no shipped profile mounts this private package」。启用样板见 keyless 快照 `snapshots/session/ptc-python-turn/cordis.yml`：先把默认 `code-runtime` 行 `disabled: true`（`:26`），再 insert `@deepseek-ai/dsh-experimental-code-runtime-python`（`:28`-`:30`）——工具面不变，PTC 模式的 `dsh-tools` 仍只消费 `ctx.codeRuntime`。
+两者都是 `ctx.codeRuntime` 的实现，谁生效不是「后装者赢」——vendored Cordis 对同一 isolate 的重复服务注册直接抛错 `service "codeRuntime" has been registered at <fiber>`（`vendor/cordis/src/reflect.ts:290`），同时挂两个等于 load 失败，选择永远是组合层的决定。headless profile 挂的是 worker 后端（`packages/bundle/headless/cordis.patch.yml:20`-`:21`）；`apps/cli/package.json:115` 把 python 包声明为 devDependency，与 Agent Teams 的三个包并列（`:114`-`:116`，0008 复核时重钉），供快照与 profile 组合经真实 Loader 解析（`apps/cli/src` 无任何 import），shipped 组合无一挂载它，README 也声明「no shipped profile mounts this private package」。启用样板见 keyless 快照 `snapshots/session/ptc-python-turn/cordis.yml`：先把默认 PTC runtime 行 `disabled: true`（`:26`），再 insert `@deepseek-ai/dsh-experimental-ptc-runtime-python`（0.1.7 线改名后的现名；旧 `code-runtime-python` insert 行随改名退役）——工具面不变，PTC 模式的消费者仍只绑 seam 键。
 
 ## 进程模型
 

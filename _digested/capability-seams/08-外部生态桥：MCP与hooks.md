@@ -4,7 +4,7 @@
 
 ## 一句话
 
-两条桥都只做「翻译 + 注册」，不改 loop：MCP client 把外部 server 的 tools 以 `mcp__<serverName>__<rawName>` 注册进 `ctx.tools`，只桥 tools、不桥 resources/prompts；hook 桥把 Claude Code 与 Codex 的 command hook 映射到已有的拦截扩展点，并额外写一对 **log-only** 的 `hook/invoked` / `hook/result` 会话事件。两者都默认不启用、都没有 bundle patch 行直接挂载（MCP 另有一条经 ACP 按会话声明动态挂载的路径，见下）。
+两条桥都只做「翻译 + 注册」，不改 loop：MCP client 把外部 server 的 tools 以 `mcp__<serverName>__<rawName>` 注册进 `ctx.tools`（**client 只桥 tools**；resources 由同组的 `mcp-resources` 包经 `ctx.mcpResources` seam 桥接，prompts 仍不桥——见下文边界段）；hook 桥把 Claude Code 与 Codex 的 command hook 映射到已有的拦截扩展点，并额外写一对 **log-only** 的 `hook/invoked` / `hook/result` 会话事件。两者都默认不启用、都没有 bundle patch 行直接挂载（MCP 另有一条经 ACP 按会话声明动态挂载的路径，见下）。
 
 ## MCP：把外部 server 的 tools 注入 `ctx.tools`
 
@@ -20,7 +20,7 @@ stdio 子进程环境是「共享 scrub 定义、不共享 spawn 路径」：子
 
 启动与恢复由 owner 文档明确规定：`apply` 会等初始连接与首次 tool 发现完成，`outcome.error !== undefined && config.failOnStartupError` 时抛错让 Cordis 回滚该 fiber，否则只记日志并进入重连循环（`packages/mcp/mcp-client/src/index.ts:184`-`:187`）；`failOnStartupError` 默认 `false`（`packages/mcp/mcp-client/src/index.ts:122`）。reconnect 默认启用，`initialDelayMs` 500、`maxDelayMs` 30 000、`maxAttempts` 10（`packages/mcp/mcp-client/src/connection.ts:40`-`:45`），预算耗尽后 unregister 该 server 的 tools（`packages/mcp/mcp-client/src/connection.ts:12`-`:13`）。README 点明触发面：重连由 transport close 触发，崩溃的 stdio 子进程会触发它，而不可达的 Streamable HTTP server 是逐请求重试、不被 supervisor 重启（`packages/mcp/mcp-client/README.md:193`）。同步失败也不撕裂可见工具集：fetch 阶段失败保留上一代，注册冲突回滚整代（`packages/mcp/mcp-client/README.md:126`）。
 
-桥的边界是 **tools only**：Resources 与 Prompts 没有 harness 消费者机制，被明确推迟（`packages/mcp/mcp-client/README.md:191`）；group README 用同一句话收尾——只桥 Tools 能力，且「nothing ships enabled, so you opt in per server」（`packages/mcp/README.md:12`）。外部依赖只有 MCP SDK 这一项产品依赖：`@modelcontextprotocol/sdk` `^1.12.0`（`packages/mcp/mcp-client/package.json:39`）。
+桥的边界在 0.1.7 线拆成了两层：**`mcp-client` 只桥 tools**（其 `inject` 只有 `['tools']`），client 自身对 Resources 与 Prompts 没有消费者机制（`packages/mcp/mcp-client/README.md:209`：resources 由共享资源服务按需读、subscriptions 与 prompt templates 不支持）；**resources 的落点是同组的 `mcp-resources` 包**——`ctx.mcpResources` seam（`packages/mcp/mcp-resources/src/index.ts:56`）经共享工具发现与读取资源（`:96-113` 的 per-server provider 注册、`tools.ts:34/:43/:52` 的三个共享工具），mcp-client 的每条连接把 provider 注册进来（`server-context.ts:29-31`），且 **shipped profile 已默认挂载**（`packages/bundle/base/cordis.patch.yml:491-492`，sdk-minimal 同）；server instructions 作为字面文本进已记录的 system prompt，MCP prompt templates 仍不支持（`packages/mcp/mcp-client/README.md:12`）。group README 的口径随之是「tools + read server resources / shipped profiles already mount mcp-resources once」，而不是旧的 tools-only（`packages/mcp/README.md:12`）。外部依赖只有 MCP SDK 这一项产品依赖：`@modelcontextprotocol/sdk` `^1.12.0`（`packages/mcp/mcp-client/package.json:39`）。
 
 ## hooks：两条外部方言，一条共享 wire protocol
 
@@ -56,7 +56,7 @@ bridge 直接挂在这个 waterfall 上：CC 的监听器返回 `PreToolDecision
 
 决策落地：`ask` 由 registry 交给 approval seam——`gate.kind === 'ask'` 时 `await this.serviceAsk(exec, gate)`（`packages/core/tools/src/index.ts:1469`-`:1471`），而 `ctx.approval` 是 fail-closed 的、只有 `allowed-once` 才放行（`docs/subsystems/approval.md:5`）。非 allow 的决策取 `decision.reason` 作为 `denialReason`，一旦存在就把结果物化成 `content: [{ type: 'text', text: 'Error: <reason>' }], isError: true`（`packages/core/tools/src/index.ts:1476`-`:1484`），tool body 不被执行。这是 hook 决策到达 tool 管道的**实际落点**：bridge 只产 typed decision，registry 在瀑布之后、guards 之前执行它。
 
-post 侧同构：`tools/post-execute` 的监听器可以把结果 block 成 feedback，或把 `additionalContext` 折进下游 decision（`packages/hooks/hooks-claude-code/src/index.ts:246`-`:264`、`packages/hooks/hooks-codex/src/index.ts:233`-`:252`）。其余三个映射点：`agent/session-start` 注入 context、`agent/pre-step` 可 reject、`agent/turn-stopping` 用 `agent.steer()` 强制再走一步（`packages/hooks/hooks-claude-code/src/index.ts:205`、`packages/hooks/hooks-claude-code/src/index.ts:218`、`packages/hooks/hooks-claude-code/src/index.ts:269`）。`hook/*` 事件刻意不属于拦截扩展点：Service Definition 不声明这些事件，因为它们属于 `dsh-hook-protocol`，native plugin 用 typed decision 时完全不写 hook log（`.agents/notes/implemented/feature/2026-06-30-interception-extension-points.md:50`）。
+post 侧同构：`tools/post-execute` 的监听器可以把结果 block 成 feedback，或把 `additionalContext` 折进下游 decision（`packages/hooks/hooks-claude-code/src/index.ts:253` 起的 post-execute、`packages/hooks/hooks-codex/src/index.ts:244` 起的 post-execute）。其余三个映射点：`agent/created`（session-start 边，0.1.7 线自 `agent/session-start` 改名）注入 context、`agent/pre-step` 可 reject、`agent/turn-stopping` 用 `agent.steer()` 强制再走一步（`packages/hooks/hooks-claude-code/src/index.ts:209`、`packages/hooks/hooks-claude-code/src/index.ts:225`、`packages/hooks/hooks-claude-code/src/index.ts:276`）。`hook/*` 事件刻意不属于拦截扩展点：Service Definition 不声明这些事件，因为它们属于 `dsh-hook-protocol`，native plugin 用 typed decision 时完全不写 hook log（`.agents/notes/implemented/feature/2026-06-30-interception-extension-points.md:50`）。
 
 ## 默认启用还是 opt-in
 

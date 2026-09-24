@@ -28,7 +28,7 @@
 
 idle 时 wakeup **一定**开 turn 边界，即使消息随后被清掉。只有 latch 住的重放会在队列不再持有 wake 时被抑制。维护中或已 abort 的驱动把 `wakeRequested` latch 住，收敛后再 `wakeDriver`。`runMaintenance` 期间 `status` 仍是 `idle`。`disposed` 原因不 latch，teardown 不等模型 turn。
 
-runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造一条 `UserMessage`（`source.plugin = '@deepseek-ai/dsh-system-prompt'`），只在文本相对上次保留快照有变化时交给 pre-step 的 enter 批次。`inject` 是插件往 `next-step` 塞材料、不唤醒；两者都会在获准后变成 `user/message`，入队路径不同。
+runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造一条 `UserMessage`（v4 起 source 写 `kind: 'runtime-context'` 并携带 `form: 'snapshot', sections`，`packages/core/agent-loop/src/runtime-context.ts:9-14,159-165`——v3 的 `source.plugin` 属性已随 v4 改名），只在文本相对上次保留快照有变化时交给 pre-step 的 enter 批次。`inject` 是插件往 `next-step` 塞材料、不唤醒；两者都会在获准后变成 `user/message`，入队路径不同。
 
 `cancel({ keepInbox })`：默认 `inbox.clear()`（先 next-step 再 next-turn）。`keepInbox` 只 abort 活动，不记 canceled splice。
 

@@ -16,15 +16,15 @@ CLI、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`Agent` 接�
 | **Web** | host 半边（API / HTTP）+ browser 半边（壳、wire、slots、`ui-*`） | `dsh-base` + `dsh-web-app` |
 | **ACP** | 自动化用的 Agent Client Protocol 服务器 | `dsh --profile acp`（launcher profile） |
 | **JSON-RPC SDK** | 进程外协议、TS client、树上的 server 插件 | `dsh --profile sdk` 或 `sdk-minimal` |
-| **Desktop** | Electron 壳 + 私有 host 子进程，复用 Web 的 client 产物；不开监听端口 | `dsh-base` + `dsh-web-app` + 私有 `desktop.cordis.patch.yml` |
+| **Desktop** | Electron 壳 + 私有 host 子进程，复用 Web 的 client 产物与完整 web 应用（webserver 监听 `127.0.0.1:19387`，认证 URL 交给窗口） | `dsh-base` + `dsh-web-app`（经 desktop-host 的 `runProfile`；0.1.7 线起，~~私有 `desktop.cordis.patch.yml` 覆盖层~~已退役） |
 
-两个「五个」不能混着用：产品应用面是上表 5 个，`dsh` launcher profile 也是 5 个（`web` / `headless` / `sdk` / `sdk-minimal` / `acp`，`packages/boot/app-boot/src/profile.ts:110-131` 的 `PROFILE_TEMPLATES`），但两组不一一对应 —— CLI 是 bin 不是 profile，桌面是应用面不是 profile。见 [`03-桌面入口.md`](./03-桌面入口.md)。
+两个「五个」不能混着用：产品应用面是上表 5 个，`dsh` launcher profile 也是 5 个（`web` / `headless` / `sdk` / `sdk-minimal` / `acp`，`packages/boot/app-boot/src/profile.ts:158-175` 的 `PROFILE_TEMPLATES`），但两组不一一对应 —— CLI 是 bin 不是 profile，桌面是应用面不是 profile。见 [`03-桌面入口.md`](./03-桌面入口.md)。
 
 ![应用面与 launcher profile 是两套计数](./figures/entry-surfaces-count.svg)
 
 > **入口形状**：sdk 与 acp 不是独立 app 二进制，而是 `dsh --profile` 下的 launcher profile。所有入口统一走 bundle 层叠。详见 [`../runtime-profiles/00-map.md`](../runtime-profiles/00-map.md)。
 
-桌面是唯一不经 `dsh` CLI 启动的产品面：`dsh --profile desktop` 被 `apps/cli/src/args.ts:68-71` 的 `rejectElectronProfile()` 显式拒绝（大小写变体一并拦下），上游文档也把它从 `## Application launch`（`docs/architecture.md:43-49`）分到 `## Desktop application`（`:51-55`）。把桌面算作第 5 个入口是语料的口径选择，不是上游文档的原话。
+桌面是唯一不经 `dsh` CLI 启动的产品面：`dsh --profile desktop` 被 `apps/cli/src/args.ts:83` 的 `rejectElectronProfile()` 显式拒绝（大小写变体一并拦下），上游文档也把它从 `## Application launch`（`docs/architecture.md:43-49`）分到 `## Desktop application`（`:51-55`，其中 :55 明写 Desktop 默认端口 19387）。把桌面算作第 5 个入口是语料的口径选择，不是上游文档的原话。
 
 加 UI 或编辑器集成：驱动 `ctx.agents`，从 `session/event` 渲染。加 Web Chat 节点：注册 `ConversationNodeDefinition` + keyed renderer。加 Web 设置卡：按 0.1.7 线的 live configuration forms 机制——Config schema 声明 live 字段、跨插件贡献走 `plugins.detail.actions`/`badge`/`section` slots、companion 包经 `ctx.configForms.whileServed` 注册（旧 `installSection`/`settings.plugin.item` 已删），见 [`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md)。加右栏内容类型：声明资源协议 + 注册 provider + keyed `sidebar.right.pane.tab`，见 [`04-客户端资源模型与右栏.md`](./04-客户端资源模型与右栏.md)。不要在入口里再实现一套 loop。
 
@@ -70,9 +70,9 @@ CLI、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`Agent` 接�
 
 | 文件 | 内容 |
 |------|------|
-| [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；session-controller follow 的三类帧；桌面换掉 mux 的那一层 |
+| [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；session-controller follow 的三类帧；浏览器认证面（process-token URL + `dsh-auth-` cookie） |
 | [`02-acp与jsonrpc.md`](./02-acp与jsonrpc.md) | ACP 只把 committed 事实表达成标准语义更新；SDK 推 Context 内全部耐久事实 |
-| [`03-桌面入口.md`](./03-桌面入口.md) | Electron 壳 + 私有 host；`dsh-app://`、分帧字节管道、无监听端口、打包与更新 |
+| [`03-桌面入口.md`](./03-桌面入口.md) | Electron 壳 + 私有 host；desktop-host 经 `runProfile` 起完整 web 应用（`127.0.0.1:19387` 认证 URL，0.1.7 线起；~~dsh-app 分帧字节管道~~已退役）；打包与更新 |
 | [`04-客户端资源模型与右栏.md`](./04-客户端资源模型与右栏.md) | `dsh-resource://` 地址、provider 契约、holder / pin 生命周期、右栏 tab 类型与 slot |
 | [`05-客户端架构与插件纪律.md`](./05-客户端架构与插件纪律.md) | 六层归属与单向依赖链、slot/props 四 share、`/client` export 与 ctx 纪律、`PLATFORM_MODULES` 与 `dsh.client.external`、Conversation Node、包内目录、依赖声明、样式与本地化、测试阶梯、三道 client gate |
 | [`06-Typert类型图与Remote生成.md`](./06-Typert类型图与Remote生成.md) | 四个 typert 包与两个 `core` 服务；声明期的 `@Remote` / namespace / 声明合并；build 期的 `TypeGraph` 与 `typert.host.*` / `typert.remote-client.*` 两族产物 + `typert-contracts` 门禁；运行期的 Gateway 派发、`rpcId` / 逻辑流与 `ctx.remote.<namespace>` mount |

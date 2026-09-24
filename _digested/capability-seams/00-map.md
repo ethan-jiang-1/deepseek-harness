@@ -30,9 +30,9 @@
 
 ![E2B 远程执行世界与本地 argv confinement](./figures/execution-world.svg)
 
-在 E2B 组合里，`dsh-fs-e2b` 与 `dsh-subprocess-e2b` 注入同一个 `ctx.e2b`，因此共享一棵远程 Linux 目录树和进程世界。依赖 `ctx.fs` / `ctx.subprocess` 的 Consumer 随 provider 组合切换，不必为远程再 fork 一份实现。**（0008 复核：E2B 组已随 `dsh-v0.1.7-rc.1` 删除——本地遏制转正为 `packages/sandbox/` 组，远程执行族的新落点是 `packages/ssh/` 组；本段保留为 provider 组合卖点的机制记录）**
+在 E2B 组合里，`dsh-fs-e2b` 与 `dsh-subprocess-e2b` 注入同一个 `ctx.e2b`，因此共享一棵远程 Linux 目录树和进程世界。依赖 `ctx.fs` / `ctx.subprocess` 的 Consumer 随 provider 组合切换，不必为远程再 fork 一份实现。**（0008 复核：E2B 组已随 `dsh-v0.1.7-rc.1` 删除——本地遏制转正为 `packages/sandbox/` 组，远程执行族的新落点是 `packages/ssh/` 组；本段保留为 provider 组合卖点的机制记录，接替面见 [`09-ssh远程执行族.md`](./09-ssh远程执行族.md)）**
 
-本地 shell 经 `ctx.subprocess` spawn；`ctx.sandbox` 在 spawn 前包装 argv。这种 confinement 约束一次本地进程启动，不会自行迁移 `ctx.fs`，也不等于一套完整的远程执行世界。Consumer 面对的是 Definition，不是「我在哪台机器上」。
+本地 shell 经 `ctx.subprocess` spawn；`ctx.sandbox` 在 spawn 前包装 argv。这种 confinement 约束一次本地进程启动，不会自行迁移 `ctx.fs`，也不等于一套完整的远程执行世界。Consumer 面对的是 Definition，不是「我在哪台机器上」。0.1.7 线的远程接替面没有发明新的私有世界键：`packages/ssh/` 的 `fs-ssh` / `subprocess-ssh` / `sandbox-ssh` 三个 provider 共享一条部署自有的 `ctx.ssh` 连接，把三个既有 seam 各自实现到远端主机，helper 在远端就地复用本地的 fs / subprocess / sandbox 包；该组合 opt-in，任何 bundle 都不出货。机制见 [`09-ssh远程执行族.md`](./09-ssh远程执行族.md)。
 
 subagent 是同一模式的另一个例子：一个接口后面，可以是进程内 child agent，也可以是经 ACP 或 JSON-RPC 驱动的独立进程。产品 Codex / Claude Code provider 不在 `dsh-base` 里默认安装；它们是独立 Profile Bundle，装进 profile 后各自注册一个 dormant 默认 provider，preset 的 tool 行再用 `backgroundMode` 选择一次性 Job 还是可续 child。见 [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md)；本跨度新增的 parent-owned direct-child 目录与宿主 Queue / Steer 交付见 [`05-subagent-catalog与host交付.md`](./05-subagent-catalog与host交付.md)。
 
@@ -64,7 +64,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 
 Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定义。它纯粹是 BFF 层的**通信协议模式**：Host 提供一组 Remote 控制器、Client 消费生成的 stub，双方通过 Typert 的 schema 保持类型安全。
 
-迁移路径：settings（含 credentials 子命名空间）、subagent control、agent-presets、workspace-controller、session-controller 已从 apiproxy 迁移到 Remote；`packages/host/apiproxy/` 包已整体删除。directory-picker 不是 Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端，[`docs/capability-seams.md:649`](../../docs/capability-seams.md)；决策见已归档的 [`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/archived/architecture/2026-07-28-directory-picker-capability-seam.md)）。
+迁移路径：settings（含 credentials 子命名空间）、subagent control、agent-presets（0.1.7 线随 preset 重设计退役，改述：shipped 声明迁 `packages/bundle/web-app/presets/*.patch.yml`）、workspace-controller、session-controller 已从 apiproxy 迁移到 Remote；`packages/host/apiproxy/` 包已整体删除。directory-picker 不是 Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端，[`docs/capability-seams.md:649`](../../docs/capability-seams.md)；决策见已归档的 [`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/archived/architecture/2026-07-28-directory-picker-capability-seam.md)）。
 
 教科书路径：顺着 `packages/shell/` 走完 Definition → provider → `dsh-tool-bash`。组级 README 拥有「这个组有哪些包、对应哪个 `ctx` key」——本专题不手抄完整包表，完整图在生成的 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
 
@@ -80,6 +80,8 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 | `packages/util/http-proxy/` | 进程级外发代理策略（库，刻意不是 seam） |
 | `native/system/` | Landlock launcher 与 POSIX flock 的原生绑定 |
 | `packages/sandbox/` | 本地进程 argv confinement |
+| `packages/ssh/` | `ctx.ssh` 连接与 fs/subprocess/sandbox 三个既有 seam 的远程 provider（opt-in） |
+| `packages/browser-use/`、`packages/computer-use/` | 两个执行面的独占注册位；driver 全在 `packages/experimental/`，见 [`10-新执行面与编排seam.md`](./10-新执行面与编排seam.md) |
 | `packages/llm/` | Definition 与 Consumer 可同包 |
 | `packages/subagent/` | 差异极大的 provider，同一接口 |
 | `packages/experimental/ptc-runtime-python/` | PTC runtime 的第二 provider（CPython 子进程后端；0.1.7 线自 `code-runtime-python` 随 PTC 命名重构改名，`ctx.codeRuntime` → `ctx.ptcRuntime`），见 [`../experimental/01-code-runtime-python.md`](../experimental/01-code-runtime-python.md) |
@@ -101,5 +103,7 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 | [`06-外发代理策略.md`](./06-外发代理策略.md) | 进程级外发代理库；唯一安装点、`.env` 豁免与 egress 证据 |
 | [`07-原生containment与native-system.md`](./07-原生containment与native-system.md) | 受管范围、Linux scope / Windows Job 两条 native 路径；flock 与 session 写租约 |
 | [`08-外部生态桥：MCP与hooks.md`](./08-外部生态桥：MCP与hooks.md) | MCP client 把外部 server 的 tools 注入 `ctx.tools`；CC/Codex hook 桥、共享 wire protocol 与 `tools/pre-execute` 拦截点；两者皆 opt-in |
+| [`09-ssh远程执行族.md`](./09-ssh远程执行族.md) | E2B 的接替面：一条 `ctx.ssh` 连接、helper 摘要验证与 TLS-PSK 流；`fs-ssh` / `subprocess-ssh` / `sandbox-ssh` 把三个既有 seam 搬到远端；全 opt-in |
+| [`10-新执行面与编排seam.md`](./10-新执行面与编排seam.md) | 0008 新面地图：`browserUse` / `computerUse` 独占注册位（全 experimental driver）、`speechToText`、`deepseekAccount`、`mcpResources`、`officeToPdf`、deliverables 事件族、plugin_manager + config-editor |
 
 模型可见的 tool 管道在 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。

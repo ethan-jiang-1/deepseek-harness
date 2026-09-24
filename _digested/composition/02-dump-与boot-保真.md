@@ -34,7 +34,9 @@ prepareProfile（同样重写空 cordis.yml）
 
 `--dump-default-config` 把 `userLayer` 设成 `false`：不解析损坏的用户文件，用来恢复诊断。
 
-dump 也接受 `--from-default-profile <模板>`（`apps/cli/src/dump-config.ts:35` 的第四个形参，`:37` 透传给 `prepareProfile`）：profile 缺失时先按模板建出它，再照上面的层列表 dump。它只影响「哪个 profile 被创建」，层列表一条不多、一条不少，也不 boot。
+dump 也接受 `--from-default-profile <模板>`（`apps/cli/src/dump-config.ts:38` 透传给 `prepareProfile`）：profile 缺失时先按模板建出它，再照上面的层列表 dump。它只影响「哪个 profile 被创建」，层列表一条不多、一条不少，也不 boot。
+
+**第三种 dump：`--dump-config-schema`**（0.1.7 线新增；声明 `apps/cli/src/args.ts:171`，mode 分发 `:44-50`，与另两种 dump 互斥 `:119-120` 且拒绝 app 参数 `:125-127`）。`runDumpConfigSchema`（`apps/cli/src/dump-config-schema.ts:25-47`）同样先 `prepareProfile`，然后**不 mount 树**：`generateConfigSchema` 对 composed entry 生成 JSON Schema（含 `x-cordis` 诊断区），期间把 stdout 重定向到 stderr 让受信模块诊断不污染 JSON 文档；`complete: false` 时 `exitCode = 1`。`!!js` 值在该模式下被 import 但**不求值**，与 `--dump-config` 的口径一致；它回答的是「profile 条目与 patch 能写成什么形状」，而不是「这台机器会挂哪棵树」。
 
 缺的、只在 `composeProfile` 里追加的：
 
