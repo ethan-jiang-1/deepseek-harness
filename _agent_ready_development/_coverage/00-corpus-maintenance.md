@@ -1,6 +1,6 @@
 # `_agent_ready_development` 语料证据与维护说明
 
-> 复核日期：2026-09-16。产品源码基线：`fb2c4b9e698e30edb738bca4cf0618587db7d203`（`dsh-v0.1.5-rc.2`，本语料自钉的固定基线；本轮 re-pin 后语料引用的全部 DSH 路径都在该 commit 逐一复核过）。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
+> 复核日期：2026-09-16。产品源码基线：`46a7f68b0922371ce7144b668b90e377d8e799f4`（`dsh-v0.1.5-rc.2`，本语料自钉的固定基线；本轮 re-pin 后语料引用的全部 DSH 路径都在该 commit 逐一复核过）。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。
 
 ## 1. 专题定位
 
@@ -26,7 +26,7 @@
 - `scripts/run-gates.ts`、testing policy 和相关 process Agent Notes；
 - Web capability seam 的四个历史 commit 与当前 Agent Note。
 
-固定基线的 self-referential Cordis 资料存在可核验冲突：implemented Agent Note [`2026-07-08-self-referential-cordis-toolset`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 仍用 `cordis_inspect` / `cordis_mount` / `cordis_unmount` 三个工具的旧词汇描述动态 Plugin，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/packages/extensions/tool-cordis/src/index.ts)、生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 与 package README 一致列出 `inspect_list/inspect_query/inspect_self/define/run/stop/undefine` 七个工具。`development-harness/06` 以源码和生成 catalog 说明当前工具集合，只使用 Note 中仍与源码相容的信任边界。
+固定基线的 self-referential Cordis 资料存在可核验冲突：implemented Agent Note [`2026-07-08-self-referential-cordis-toolset`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 仍用 `cordis_inspect` / `cordis_mount` / `cordis_unmount` 三个工具的旧词汇描述动态 Plugin，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/src/index.ts)、生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 与 package README 一致列出 `inspect_list/inspect_query/inspect_self/define/run/stop/undefine` 七个工具。`development-harness/06` 以源码和生成 catalog 说明当前工具集合，只使用 Note 中仍与源码相容的信任边界。
 
 ## 3. 结构与叙事约束
 
@@ -90,10 +90,10 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 4. `advanced-sdd-flow/03` 的 plan 引文在旧基线也不是原文（含义相近但措辞不同，且归属文件不对）→ 改引 `docs/subsystems/plan.md` 的原文；同页 `foldPlanMode()` 只是测试内 helper，已改述为 `ctx.planMode` 经可选注册的 `plan` projection unit 读取。
 5. 维护页 §5 的重审触发路径 `apps/cli/config/agent-presets/**` 在旧基线已不存在 → 改为 `packages/preset/agent-presets/**`。
 
-复核后未改动的部分：`advanced-sdd-flow/02` 的 policy 函数与 workflow/Dependabot 事实、`advanced-sdd-flow/04` 的 `change-scope`、hook 与证据路由表、`advanced-sdd-flow/07` 的 stack 流程、`development-harness/01`、`04`、`06` 的机制清单、`advanced-sdd-flow/08` 的四个历史 commit 与现行 Note 结构，以及 `foundations/` 全篇，都与 `fb2c4b9e69` 一致。
+复核后未改动的部分：`advanced-sdd-flow/02` 的 policy 函数与 workflow/Dependabot 事实、`advanced-sdd-flow/04` 的 `change-scope`、hook 与证据路由表、`advanced-sdd-flow/07` 的 stack 流程、`development-harness/01`、`04`、`06` 的机制清单、`advanced-sdd-flow/08` 的四个历史 commit 与现行 Note 结构，以及 `foundations/` 全篇，都与 `46a7f68b09` 一致。
 
 本轮只做语料级验证：`node _agent_ready_development/verify.mjs` 通过（32 Markdown、1 scripts、15 SVG），`npx tsx scripts/verify-md-wrap.ts`、`npx tsx scripts/verify-md-links.ts` 与 `git diff --check` 也都通过，且语料中没有任何 URL 仍钉在旧 commit。完整 `doc-sync` 未在本轮重跑，2026-08-24 条目记录的目录外阻断仍然适用。
 
-2026-09-16 的 0.1.5-rc.2（`fb2c4b9e69`）re-pin：本语料的固定基线从 `183f08e9c6` 推进到 0.1.5 的最后一个 RC `fb2c4b9e69`，118 条目录外 DSH 引用 URL 全部改钉（17 个内容文件，另同步 `verify.mjs` 的钉版正则、`development-harness/00-index.md` 的 baseline 声明与本页基线行）。钉版路径与锚点**逐一**在 rc.2 用 `git cat-file -e` / 标题比对复核：57 个唯一路径全部存在，11 个带 fragment 的锚点全部解析到 rc.2 的标题或 HTML id。rc.2 相对 rc.1 只有 4 个提交、1 个内容提交（feedback 提交对称化 + `ui-deliverables`/`ui-primitives` 细化），未触及本语料引用的任何文件，因此正文机制陈述无需修订。目录级 verify 通过。
+2026-09-16 的 0.1.5-rc.2（`46a7f68b09`）re-pin：本语料的固定基线从 `183f08e9c6` 推进到 0.1.5 的最后一个 RC `46a7f68b09`，118 条目录外 DSH 引用 URL 全部改钉（17 个内容文件，另同步 `verify.mjs` 的钉版正则、`development-harness/00-index.md` 的 baseline 声明与本页基线行）。钉版路径与锚点**逐一**在 rc.2 用 `git cat-file -e` / 标题比对复核：57 个唯一路径全部存在，11 个带 fragment 的锚点全部解析到 rc.2 的标题或 HTML id。rc.2 相对 rc.1 只有 4 个提交、1 个内容提交（feedback 提交对称化 + `ui-deliverables`/`ui-primitives` 细化），未触及本语料引用的任何文件，因此正文机制陈述无需修订。目录级 verify 通过。
 
 **pairing exclusion 落地（同批）**：2026-08-24 条目记录的最后一项目录外阻断——translation pairing 因仓库 scope 覆盖「每个非 vendor README」而拒绝本语料的 8 个 `README.md`（另外两个研究语料没有 README，所以只有本语料命中）——已按该条目预告的方式关闭：`scripts/translation-pairing.manifest.json` 的 `excluded` 增加目录项 `"_agent_ready_development/"`（尾斜杠是路径边界），本语料整体退出双语配对 scope。此后 `npx tsx scripts/run-gates.ts doc-quick` **16 项全绿**（此前 15 通过 1 失败），`verify-translation-pairing` 报 789 对全部一致。2026-08-24 条目余下的两项（`doc-typecheck` 缺少构建入口、documentation build 的 host Corepack `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`）仍需目录外构建或工具链修复，本语料无法自行关闭。

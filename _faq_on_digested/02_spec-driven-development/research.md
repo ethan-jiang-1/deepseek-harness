@@ -1,6 +1,6 @@
 # Research Notes: DSH 可能采用的 Spec-Driven Development
 
-产品源码核验基线：DeepSeek Harness `dsh-v0.1.5-rc.2`，commit `fb2c4b9e698e30edb738bca4cf0618587db7d203`（与 `_digested/00-index.md` 相同）。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。
+产品源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`（与 `_digested/00-index.md` 相同）。开发过程另查该 commit 之前的 git 历史。本文件只记录一手证据、历史样本、推断等级和限制；综合回答见 [`answer.md`](./answer.md)。
 
 ## 核心结论
 
@@ -32,9 +32,9 @@ Agent Note 的存在性边界不是 CI 自动分类。该政策的 owning Note �
 
 ### 3. Plan Mode 把“先规格、后执行”做成产品行为
 
-`ptc` preset 的 Plan Mode 提示明确要求先只读探索，禁止编辑、写配置、运行会改文件的 formatter/codegen 或实施计划 [`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:124`](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)。计划必须是 decision-complete：写目标和成功标准，按 subsystem 分组修改，指出 public API、schema、data flow，覆盖边界、失败模式、测试、验收条件和显式假设，并详细到另一位工程师无需再做设计决策即可实施 [`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130`](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)。
+`ptc` preset 的 Plan Mode 提示明确要求先只读探索，禁止编辑、写配置、运行会改文件的 formatter/codegen 或实施计划 [`packages/bundle/web-app/presets/ptc.patch.yml:52`](../../packages/bundle/web-app/presets/ptc.patch.yml)。（0.1.7 线起 shipped preset 从 `packages/preset/agent-presets/presets/` 的 yml 树改为 bundle 携带的 `presets/*.patch.yml`，见 `_change_log/0008`。）计划必须是 decision-complete：写目标和成功标准，按 subsystem 分组修改，指出 public API、schema、data flow，覆盖边界、失败模式、测试、验收条件和显式假设，并详细到另一位工程师无需再做设计决策即可实施 [`packages/bundle/web-app/presets/ptc.patch.yml:60`](../../packages/bundle/web-app/presets/ptc.patch.yml)。
 
-同一提示把计划与实施清楚分开：`todo_write` 只跟踪批准后的实施，完整计划必须通过 `exit_plan_mode` 提交；实现只能在批准后的后续 step 开始；拒绝后要吸收反馈重新提交；review channel 不可用时必须保持 Plan Mode 而不能继续实施 [`packages/preset/agent-presets/presets/ptc/agent.cordis.yml:126`](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)、[`:132`](../../packages/preset/agent-presets/presets/ptc/agent.cordis.yml)。
+同一提示把计划与实施清楚分开：`todo_write` 只跟踪批准后的实施，完整计划必须通过 `exit_plan_mode` 提交；实现只能在批准后的后续 step 开始；拒绝后要吸收反馈重新提交；review channel 不可用时必须保持 Plan Mode 而不能继续实施 [`packages/bundle/web-app/presets/ptc.patch.yml:56`](../../packages/bundle/web-app/presets/ptc.patch.yml)、[`:62`](../../packages/bundle/web-app/presets/ptc.patch.yml)。
 
 这不只是一段软提示。Plan Mode 状态写入 session log，resume/fork 可恢复 [`packages/plan/plan-mode/src/index.ts:8-10`](../../packages/plan/plan-mode/src/index.ts)；`exit_plan_mode` 要求完整 Markdown 计划，校验 H1，通过 user-questions channel 展示计划，提供 Approve/Keep planning，只有严格批准才安排退出模式，其他回答返回模型继续修订 [`packages/plan/plan-mode/src/index.ts:293`](../../packages/plan/plan-mode/src/index.ts)、[`:336`](../../packages/plan/plan-mode/src/index.ts)。真实 Web e2e 会进入 Plan Mode、等待 review 卡片、点击 Approve，并验证工具结果、后续 `DONE`、模式退出和 keyless golden [`apps/web/tests/plan-review.e2e.ts:68`](../../apps/web/tests/plan-review.e2e.ts)。
 

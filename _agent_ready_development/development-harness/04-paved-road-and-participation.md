@@ -8,7 +8,7 @@ DSH 的正确路径建立在插件模型上。Model adapter（模型适配器）
 
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 >
-> — DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/architecture.md)。这段原文同时规定扩展位置和生命周期：贡献由插件拥有，插件卸载时注册效果撤销。
+> — DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)。这段原文同时规定扩展位置和生命周期：贡献由插件拥有，插件卸载时注册效果撤销。
 
 ## 两张地图回答不同问题
 
@@ -68,8 +68,8 @@ Agent 在每层都能找到三种东西：明确入口、可复制的生产范�
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/architecture.md)：plugin tree、session log、capability seam 和“Where new behavior goes”归属表。
-- DSH [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/glossary.md#capability-seam)：seam 三角色的规范定义。
-- DSH [`docs/cordis-primer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/cordis-primer.md)：Context、Plugin、Fiber、Event 与 Effect 的运行时语义。
-- DSH [`extension cookbook`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/docs/cookbook/extension-cookbook.md)：feature 到机制和操作指南的细化入口。
-- DSH [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/fb2c4b9e698e30edb738bca4cf0618587db7d203/packages/AGENTS.md)：包级能力角色、生命周期测试和 invariant 义务。
+- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)：plugin tree、session log、capability seam 和“Where new behavior goes”归属表。
+- DSH [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/glossary.md#capability-seam)：seam 三角色的规范定义。
+- DSH [`docs/cordis-primer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cordis-primer.md)：Context、Plugin、Fiber、Event 与 Effect 的运行时语义。
+- DSH [`extension cookbook`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md)：feature 到机制和操作指南的细化入口。
+- DSH [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/AGENTS.md)：包级能力角色、生命周期测试和 invariant 义务。

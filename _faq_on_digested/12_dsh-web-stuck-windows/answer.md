@@ -18,7 +18,7 @@
 2. bundle 以 `public, max-age=31536000, immutable` 服务；rev 不匹配一律 404——这是刻意的不可变资源契约，本身正确。
 3. index.html 是唯一携带"当前这一轮 rev 清单"的载体；修复前它没有任何缓存头，浏览器（无验证器时）按启发式新鲜度直接复用缓存副本。
 4. 复用到旧 index → 按旧 rev 请求全部动态模块 → 404 → 应用停在自身 loading 态。
-5. 修复：index 响应 `cache-control: no-store`。它让浏览器每次都取当前 index，rev 轮换即刻生效；资产的 `immutable` 契约不受影响。决策记录见 [Agent Note](../../.agents/notes/implemented/bug-fix/2026-09-13-served-index-must-not-be-cached.md)。
+5. 修复：index 响应 `cache-control: no-store`。它让浏览器每次都取当前 index，rev 轮换即刻生效；资产的 `immutable` 契约不受影响。该修复曾落地为本地 note `2026-09-13-served-index-must-not-be-cached`，**0.1.7-rc.1 同步（0008）起按「产品源码整树照搬上游」口径退役**——上游截至 `dsh-v0.1.7-rc.1` 没有这个修复，`packages/host/frontend-static/src/index.ts` 仍不带 index 缓存头；已在 0008 登记为上游候选缺口。
 
 ## 为什么敢排除并发（实测证据）
 
@@ -133,6 +133,6 @@ cp "$FS".bak-*-before-no-store "$FS"
 
 ## 引用
 
-- 源码：[`packages/host/frontend-static/src/index.ts`](../../packages/host/frontend-static/src/index.ts)（修复版语义）、[`packages/client/modules/src/index.ts`](../../packages/client/modules/src/index.ts)（rev 铸造）
-- 决策记录：[2026-09-13 served index must not be cached](../../.agents/notes/implemented/bug-fix/2026-09-13-served-index-must-not-be-cached.md)
+- 源码：[`packages/host/frontend-static/src/index.ts`](../../packages/host/frontend-static/src/index.ts)（诊断机制仍在；「修复版语义」随 0008 退役，仅存于本页与 0008 记录）、[`packages/client/modules/src/index.ts`](../../packages/client/modules/src/index.ts)（rev 铸造）
+- 决策记录：`2026-09-13-served-index-must-not-be-cached`（已随 0008 整树照搬退役，原文见 git 历史 `476c72fc2a` 之前版本）
 - 排除并发时读过的服务侧代码（均无连接上限）：`packages/host/webserver/src/index.ts`、`packages/api/gateway/src/stream-server.ts`、`packages/client/connection/src/browser-auth.ts`
