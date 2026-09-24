@@ -26,9 +26,9 @@
 
 ## DSH 保留面（不是你的命名空间）
 
-- **home 布局**：默认 `~/.dsh`、`$DSH_HOME`、`profiles/<name>`、`.agent-presets`、`.credentials.yaml`、`sessions/`——结构由解析顺序与隔离机制拥有，插件不改不占。
+- **home 布局**：默认 `~/.dsh`、`$DSH_HOME`、`profiles/<name>`、`.credentials.yaml`、`sessions/`——结构由解析顺序与隔离机制拥有，插件不改不占。（旧 `.agent-presets` 用户根已随 0.1.7 线 preset 重设计退役：registry 不再扫任何目录。）
 - **保留 profile 名**：shipped 模板 `web`/`headless`/`sdk`/`sdk-minimal`/`acp`；Electron 保留 `desktop`。自定义 profile 名自由（`dev`、专家名都行）。
-- **shipped preset id**：`standard`/`ptc`/`cordis`/`minimal`（shipped 根永远 prepend 且同名遮蔽）。
+- **shipped preset id**：`standard`/`ptc`/`cordis`/`minimal`（shipped 声明在 `packages/bundle/web-app/presets/*.patch.yml`，同名 override 走 bundle patch 覆盖）。
 - **`@deepseek-ai` scope 与核心 ctx 服务名**：`ctx.agents` 等 DSH 拥有；包不得带 `bin`（应用启动规则：只有 `dsh` profile 启动应用）。
 - **核心事件名**：十三种（`turn/start` … `session/end-seed`）。
 
@@ -65,4 +65,4 @@
 
 ## 机制依据
 
-`docs/architecture.md`（patch 按 id 整行替换、保留 profile）、`packages/core/session/src/types.ts`（`tool/call` 事件 `name` 字段）、`packages/core/tools/README.md` + `docs/tool-catalog.md`（工具名 model-visible、`toolName` Config、名字进生成目录）、`packages/preset/agent-presets/README.md`（preset id 文法与 roots 遮蔽、display name/copy 分离、`presetDisplayText`）、`packages/settings/settings/README.md`（namespace 文法与按 namespace 持久化）、`packages/client/AGENTS.md`（slot 文法与冲突 fail）、`packages/client/ui-settings/README.md`（`settings.section` / `settings.plugins.tab` 贡献面）、`apps/cli/src/plugin.ts`（层清单按真实安装名 reconcile）、根 `AGENTS.md`（scope/bin/事件声明/locale-owned 文案规则）、[research.md](./research.md) 第一节（生态命名样本）与第四节（五生态命名规则的一手来源）。
+`docs/architecture.md`（patch 按 id 整行替换、保留 profile）、`packages/core/session/src/types.ts`（`tool/call` 事件 `name` 字段）、`packages/core/tools/README.md` + `docs/tool-catalog.md`（工具名 model-visible、`toolName` Config、名字进生成目录）、`packages/preset/agent-preset-registry/README.md` 与 `packages/preset/agent-preset/README.md`（preset id 文法与声明式 override、显示名经 locale 键解析——`agent-preset-registry/src/display.ts`）、`packages/settings/settings/README.md`（namespace 文法与按 namespace 持久化）、`packages/client/AGENTS.md`（slot 文法与冲突 fail）、`packages/client/ui-settings/README.md`（`settings.section` / `settings.plugins.tab` 贡献面）、`apps/cli/src/plugin.ts`（层清单按真实安装名 reconcile）、根 `AGENTS.md`（scope/bin/事件声明/locale-owned 文案规则）、[research.md](./research.md) 第一节（生态命名样本）与第四节（五生态命名规则的一手来源）。

@@ -80,7 +80,7 @@
 **做什么**：行为不对时，按固定顺序排查，不跳层。
 
 1. **组合层**：`dsh --profile <p> --dump-config` 打印最终插件行——先确认"我以为挂上的行真的在最终组合里、config 是我以为的"。层级顺序 bundle → profile patch → home patch → `--patch` overlay，先想清楚该行该来自哪层。
-2. **装载层**：preset 装不上时，agent-presets 的 roster **连原因一起列出**而不是藏掉；配置错误按 fail-loud 纪律在最早可解点报错，不会静默跳过——报错信息本身就是诊断。
+2. **装载层**：preset 装不上时，`agent-preset-registry` 的 mount 审计（imports / 缺服务 / 全局泄漏，见其 README「Understand the implementation」）**连原因一起列出**而不是藏掉；配置错误按 fail-loud 纪律在最早可解点报错，不会静默跳过——报错信息本身就是诊断。
 3. **生效层**：自定义 profile 默认 **live patch reload**（改 patch 行不重启就生效；`headless`/`sdk` 这类一次性应用是启动一次成型，调试它们要重启）。
 4. **会话层**：session 是 JSONL 追加日志；model-visible ⟺ logged 保证专家流的每个模型可见状态都在日志里可重放——调试上下文组装**读日志，不猜**。如果日志读不全，回头修第 3 阶段第 2 问欠的债。
 5. **回归层**：`test:snapshot` 用录制会话无 key 重放，是回答"行为为什么变了"的最快路径（方案 B 用官方 harness；A/C/D 自建最小版，见各方案差异节）。
