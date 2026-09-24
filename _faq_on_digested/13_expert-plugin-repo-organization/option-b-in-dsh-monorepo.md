@@ -30,7 +30,7 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 - **门禁全开**：`test:coverage`（per-file 100%）、`doc-sync`、`duplication`、`hygiene`、module-graph / capability-seams 生成目录会自动把你的 ctx 键收进图里。
 - **snapshot harness**：model-visible 行为的 keyless recorded-session replay 是 DSH 一等公民；out-of-tree 自己搭这个最费劲。
 - **client 包**：树内可直接改内置卡片组件本体与 client-modules 深度组装；单工具卡（`tool.call.toolview` 槽）、独立 UI 面（`dsh.client.inject`）与自定义 View（views 注册通道）out-of-tree 均有通道（见方案 A），B 的独占面只在"改本体"。
-- **preset 就在旁边**：`agent-presets` 的 shipped presets（`standard`/`ptc`/`cordis`/`minimal`）是专家 preset 的现成范本；`cordis` 自带 `agent.cordis.yml` + 专属 skills，与"领域专家自持上下文"的形态最近。
+- **preset 就在旁边**：shipped presets（`standard`/`ptc`/`cordis`/`minimal`）是专家 preset 的现成范本——0.1.7 线起声明在 `packages/bundle/web-app/presets/*.patch.yml`，解析与注册在 `packages/preset/agent-preset/` + `agent-preset-registry/`；`cordis` 自带专属工具面与 skills，与"领域专家自持上下文"的形态最近。
 
 ## 取舍
 

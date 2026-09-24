@@ -23,7 +23,7 @@
 
 ## 范围与基线
 
-DSH 侧机制结论以本仓库工作树（`dsh-v0.1.5-rc.2` 基线之后的 `ethan` 分支工作树）为准，与 FAQ 01/08 同源——00-index 的 pinned-commit 基线管运行时行为结论的新鲜度，本篇的机制表述（profile/patch 层级、preset、卡片层）均在当前工作树逐条对过源码文档；上游合入后按 `_digested/_change_log/` 复核。涉及的机制文档：`docs/architecture.md`（profile / bundle / patch 层级）、`packages/preset/README.md` 与 `packages/preset/agent-presets/src/index.ts`（agent preset、roster 根发现）、`docs/cookbook/adding-a-tool.md`（卡片渲染意图与 Web 消费边界）、`docs/subsystems/conversation.md`（View 注册通道）、`packages/boot/app-boot/README.md`（Profiles 与 profile 目录）、`docs/cordis-primer.md`（entry `disabled`）。市场调研结论来自公开 repo 与文档，来源 URL 一律记在 [research.md](./research.md)，检索时点为 2026-09；外部 repo 结构随时间漂移，引用时以 research.md 里留档的树为准。
+DSH 侧机制结论以本仓库工作树（当前基线 `dsh-v0.1.7-rc.1`，commit `46a7f68b09…`）为准，与 FAQ 01/08 同源——00-index 的 pinned-commit 基线管运行时行为结论的新鲜度，本篇的机制表述（profile/patch 层级、preset、卡片层）均在当前工作树逐条对过源码文档（0008 复核时随 preset 重设计改述）；上游合入后按 `_digested/_change_log/` 复核。涉及的机制文档：`docs/architecture.md`（profile / bundle / patch 层级）、`packages/preset/agent-preset-registry/README.md`（agent preset 声明式注册表、bundle-patch override）、`docs/cookbook/adding-a-tool.md`（卡片渲染意图与 Web 消费边界）、`docs/subsystems/conversation.md`（View 注册通道）、`packages/boot/app-boot/README.md`（Profiles 与 profile 目录）、`docs/cordis-primer.md`（entry `disabled`）。市场调研结论来自公开 repo 与文档，来源 URL 一律记在 [research.md](./research.md)，检索时点为 2026-09；外部 repo 结构随时间漂移，引用时以 research.md 里留档的树为准。
 
 ## 阅读入口
 

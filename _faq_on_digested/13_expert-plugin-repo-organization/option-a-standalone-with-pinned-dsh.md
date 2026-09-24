@@ -42,11 +42,11 @@ my-expert/
 
 DSH 的组合链是固定的：package 实现 → bundle 给默认插件行 → profile / patch 覆盖部署选择 → app 启动 Loader（见 `docs/architecture.md`）。专家不产生新的可执行入口，它产生：
 
-- **一个 agent preset**（`agent.cordis.yml` 目录）：会话挂上它，专家的工具、prompt sections、skills 只在这个会话生效，其他会话不受影响——这正是"专家有很好控制的上下文"的现成机制（`ctx.agentPresets`，用户根 `<dshHome>/.agent-presets` 或配置 `roots` 带 `trust`）。
+- **一个 agent preset**：会话挂上它，专家的工具、prompt sections、skills 只在这个会话生效，其他会话不受影响——这正是"专家有很好控制的上下文"的现成机制（`ctx.agentPresets`，`packages/preset/agent-preset-registry/`；0.1.7 线起为声明式注册表：preset 声明是 bundle patch 里的一条 `@deepseek-ai/dsh-agent-preset` 插件行）。
 - **一个 bundle 层**（`package.json` 的 `dsh.bundle` 字段指向 `cordis.patch.yml`）：声明默认插件行，让部署方可以 `dsh plugin add` 或 patch 替换。
 - 多条信息处理流 = 多个插件，各占自己的 ctx 键、声明 `inject` 依赖；跨流编排用 `ctx.workflowEngine` / `ctx.subagents`，不自造调度器。
 
-注意 pack 里带的 `presets/` **不会自动进 roster**：`agent-presets` 只扫三处根——自己的 shipped 根、组合配置的 `roots`、用户根 `<dshHome>/.agent-presets`（根推导见 `packages/preset/agent-presets/src/index.ts`）。两条落法：① 部署组合给 `dsh-agent-presets` 加一条指向 pack 安装后 `presets/` 目录的 `roots`（带 `trust`——preset 是受信配置，授权它所选插件的能力；注意 patch 对一行是**整行配置替换**，在 pack 自己的 `cordis.patch.yml` 里动这行就得连 base 的配置一起重述，更稳的位置是 profile/home 层的 patch）；② 把目录 copy 进用户根（preset 的 authoring 本来就是 copy-only）。
+注意 pack 里带的 preset **不会自动进 roster**：0.1.7 线起 `agent-preset-registry` **既不扫目录、也不接受 preset 路径**——「shipped 根 / 配置 `roots` / 用户根 `<dshHome>/.agent-presets`」的三根扫描模型已随 preset 重设计退役（registry README：「Definitions are ordinary plugin rows; the registry neither scans directories nor accepts preset paths」）。现在只有一条落法：一个新 preset 或对 shipped preset 的 override 都是 **bundle patch**——insert 一条 `@deepseek-ai/dsh-agent-preset` 行，或按该行 id 打 key 的 patch，经 `plugin_manager` 装进 profile（`packages/preset/agent-preset-registry/README.md`）。patch 对一行是**整行配置替换**，在 pack 自己的 `cordis.patch.yml` 里动 shipped 行就得连原行一起重述，更稳的位置是 profile/home 层的 patch。（旧三根模型的机制记录见 `_digested/_change_log/0008`。）
 
 ## 装法与开发环
 

@@ -12,7 +12,7 @@
 
 - **profile 存在 home 里**：`dsh --profile <p>` 用的是 `$DSH_HOME/profiles/<p>`；`dsh plugin --profile <p> add` 装进的是这个 home 里这个 profile。
 - **每个 profile 是独立的 npm 项目**：profile 住在 `$DSH_HOME/profiles/<name>`（app-boot 的 Profiles 节），有自己的 package 集、lockfile、`node_modules`、插件激活状态；`architecture.md` 明说 CLI profiles 与 Desktop profile 之间从不共享可执行包、lockfile 与 `node_modules`——隔离是物理的，不靠操作纪律。
-- **数据也在 home 里**：会话日志（`sessions/`）、settings、凭据（`$DSH_HOME/.credentials.yaml`）、用户级 `AGENTS.md`、`$DSH_HOME/.agent-presets` 各自独立。
+- **数据也在 home 里**：会话日志（`sessions/`）、settings、凭据（`$DSH_HOME/.credentials.yaml`）、用户级 `AGENTS.md` 各自独立。（旧 `$DSH_HOME/.agent-presets` 用户根已随 0.1.7 线 preset 重设计退役——registry 不扫目录，preset 经 bundle patch + `plugin_manager` 落进 profile。）
 
 ## 落地设置
 
