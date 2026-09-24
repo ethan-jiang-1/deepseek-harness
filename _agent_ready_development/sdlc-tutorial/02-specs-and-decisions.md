@@ -28,7 +28,7 @@ Agent Note 有两个常见起点：
 - 决定仍需在实现前评审：创建 proposed Agent Note；
 - 决定已经明确并随当前变更交付：直接创建或更新 implemented Agent Note。
 
-因此，“必须有 Agent Note”不等于“必须先写 proposed Note”。生命周期、取代和冻结归档规则属于高级机制，见 [Agent Note lifecycle（生命周期）](../advanced-sdd-flow/01-agent-note-lifecycle.md)。
+因此，“必须有 Agent Note”不等于“必须先写 proposed Note”。生命周期、取代和冻结归档规则属于 Reference 层机制，见 [Agent Note lifecycle（生命周期）](../sdlc-reference/01-agent-note-lifecycle.md)。
 
 ## Plan 与 Agent Note 面向不同时间
 
@@ -38,7 +38,7 @@ Agent Note 回答“仓库为什么长期采用这个决定”，保留问题、
 
 一个 Plan 可以在实施中变化；implemented Agent Note 只描述实际交付的决定。两者可能来自同一次设计讨论，但不能互相替代。
 
-Plan Mode 提供计划状态和用户审批交互，不执行文件、网络或进程访问限制；sandbox mode（沙箱模式）与 approval policy（审批策略）独立承担权限控制。精确状态和审批时序见 [Plan Mode 高级参考](../advanced-sdd-flow/03-plan-and-sandbox.md)。
+Plan Mode 提供计划状态和用户审批交互，不执行文件、网络或进程访问限制；sandbox mode（沙箱模式）与 approval policy（审批策略）独立承担权限控制。精确状态和审批时序见 [Plan Mode 参考](../sdlc-reference/03-plan-and-sandbox.md)。
 
 ## 用 CLI 例子对照
 

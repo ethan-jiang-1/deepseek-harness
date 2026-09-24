@@ -28,7 +28,7 @@ DSH 通过分层减少两种错误：一是同一规则在多个地方各写一�
 
 源码、类型、README 和当前文档回答“系统现在做什么”。Agent Note 回答“为什么这样决定、什么替代方案输了、这个决定带来什么后果”。两者混在一起会产生相反风险：只读代码会重走已否定路径，只读 Note 会把历史实现细节误当成当前 API。
 
-Agent Note 还有 lifecycle（生命周期）：`proposed` 是待评审方案，`implemented` 描述已经落地的决定，`rejected` 只在仍能阻止一个合理错误时保留，`archived` 是冻结历史而非当前权威。精确状态转换由 [Agent Note 高级参考](../advanced-sdd-flow/01-agent-note-lifecycle.md) 说明。
+Agent Note 还有 lifecycle（生命周期）：`proposed` 是待评审方案，`implemented` 描述已经落地的决定，`rejected` 只在仍能阻止一个合理错误时保留，`archived` 是冻结历史而非当前权威。精确状态转换由 [Agent Note 参考](../sdlc-reference/01-agent-note-lifecycle.md) 说明。
 
 ## 负知识也需要 owner
 

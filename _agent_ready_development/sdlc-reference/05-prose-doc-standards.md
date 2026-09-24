@@ -30,7 +30,7 @@ DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 
 
 高层文档只概括直接子项的 purpose、responsibility 和 high-level behavior；更低层细节链接到 owning descendant。生成目录改 owner source 或 generator，不能手改产物。
 
-这套 tier 怎样帮助 fresh agent 在有限上下文中找到权威知识，见 [可读性与知识归属](../development-harness/02-legibility-and-ownership.md)；本页继续拥有 DSH 文档修改的具体规则。
+这套 tier 怎样帮助 fresh agent 在有限上下文中找到权威知识，见 [可读性与知识归属](../repo-harness/02-legibility-and-ownership.md)；本页继续拥有 DSH 文档修改的具体规则。
 
 ## 2. 当前状态写作不是变更日志
 
@@ -56,7 +56,7 @@ Durable prose 直接陈述当前 actor、行为、条件、时机、modality、�
 
 `dsh-translate-docs` 是显式用户调用的扩展 workflow，不会因普通文档编辑自动运行。它用于 briefing-driven 更新或新 pair 的整篇翻译；普通审阅也不能以“需要翻译”为由自行触发它。Archived Agent Notes 的 triplet 已冻结，不属于翻译工作。
 
-这些 Skills 在各自任务中拥有具体判断步骤；Skill 作为程序化工作记忆的共同角色见 [Skills 专章](../development-harness/03-skills-as-procedural-memory.md)。
+这些 Skills 在各自任务中拥有具体判断步骤；Skill 作为程序化工作记忆的共同角色见 [Skills 专章](../repo-harness/03-skills-as-procedural-memory.md)。
 
 ## 5. 文档站只做投影
 

@@ -4,7 +4,7 @@
 
 `.github/` 是开发流程的远端执行面：模板收集意图，trusted policy（可信策略）校验已进入 review 且适用该规则的 PR，lifecycle workflow（生命周期工作流）推进 Project 状态，PR CI 调用仓库脚本建立远端证据。它既不替代 Agent Note，也不决定实现细节。
 
-本页拥有 `.github/` 的精确事件与 policy；它为什么构成仓库 Development Harness 的远端反馈层，见 [可执行反馈](../development-harness/05-executable-feedback.md)。
+本页拥有 `.github/` 的精确事件与 policy；它为什么构成仓库 Development Harness 的远端反馈层，见 [可执行反馈](../repo-harness/05-executable-feedback.md)。
 
 > Decide whether the human-review policy applies to a PR: `return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)`.
 >
@@ -67,7 +67,7 @@ Inbox → Backlog → Ready → In progress → In review → Done 与 No action
 
 Dependabot 按 npm、Python `uv` 和 GitHub Actions 三个 ecosystem 创建依赖 PR，并预置 `kind/dependency` 与 `area/infra`；Bot 作者身份使它不进入 human-review policy 的强制范围，但仍触发普通 PR CI。
 
-文档部署、native/Python/npm release 和发布验证也住在 `.github/workflows/`。它们解释“合并后的产物怎样发布”，但不属于每次代码变更的 Issue → PR 主链；专题只在改动触及 built/release path 时把它们纳入相关证据。
+文档部署、native/Python/npm release 和发布验证也住在 `.github/workflows/`。它们解释“合并后的产物怎样发布”，但不属于每次代码变更的 Issue → PR 主链；专题只在改动触及 built/release path 时把它们纳入相关证据。完整的发布与上线链路由 [Advanced 11](./11-release.md) 单独拥有。
 
 ## 证据入口
 
