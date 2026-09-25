@@ -2,7 +2,7 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **产品源码审计基线**：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](./_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md)；0008 轮语料维护的**独立复核**（约 60 处过期断言、20 处缺落点、3 孤儿页的处置与修复记录）见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)。自 0008 起同步口径为**整树照搬**：产品源码完全等于 upstream tag，本地只维护 `_digested/`、`_faq_on_digested/`、`_agent_ready_development/`、`_misc/` 四个语料目录。
+> **产品源码审计基线**：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](./_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md)；0008 轮语料维护的**独立复核**（约 60 处过期断言、20 处缺落点、3 孤儿页的处置与修复记录）见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)。自 0008 起同步口径为**整树照搬**：产品源码完全等于 upstream tag，本地只维护 `_digested/`、`_faq_on_digested/`、`_agent_ready_development/` 三个语料目录。
 
 `_digested/` 面向已熟悉 agent harness / plugin 运行时，但尚未建立 DeepSeek Harness 概念体系的读者。这里先抓住思想主轴，再进入源码机制——而不是把 `packages/` 目录平铺成分类货架。
 
@@ -15,10 +15,10 @@
 | 分支 | 上面有什么 |
 |------|------------|
 | `master` | 干净的 upstream 镜像。不放研究材料，不改产品代码。 |
-| `ethan` | 研究分支。源码整树照搬 upstream tag；研究材料位于 `_digested/`、`_agent_ready_development/`、`_faq_on_digested/` 和 `_misc/`。 |
+| `ethan` | 研究分支。源码整树照搬 upstream tag；研究材料位于 `_digested/`、`_agent_ready_development/` 和 `_faq_on_digested/`。 |
 | `ethan2` | `ethan` 的工作副本，两者在每次同步后保持指向同一提交。 |
 
-同步方式（0008 起为**整树照搬**，见 `_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`）：把产品源码对齐到选定的 upstream tag（不做内容合并、不留本地源码补丁，四个语料目录整体保留），再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。（旧口径「非快进 merge + 逐冲突解决」在 0008 执行时退役。）
+同步方式（0008 起为**整树照搬**，见 `_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`）：把产品源码对齐到选定的 upstream tag（不做内容合并、不留本地源码补丁，三个语料目录整体保留），再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。（旧口径「非快进 merge + 逐冲突解决」在 0008 执行时退役。）
 
 ## 与同级目录的关系
 
@@ -27,7 +27,6 @@
 | **`_digested/`** | 源码消化，机制剖析 | 想彻底搞懂背后发生了什么的人 |
 | `_agent_ready_development/` | 面向 coding agent 的 SDD、GitHub Flow 与 Development Harness 独立教程 | 想理解规格、交付流程和仓库开发 Harness 怎样协作的读者 |
 | `_faq_on_digested/` | 跨消化材料的二次研究 | 我自己（产出者） |
-| `_misc/` | 杂项目录：启动期外部参考存档（`_references/`）与草稿本（`_scratch/`） | 需要对照其它分析的人 |
 
 本仓库不另做用户手册。官方怎么用、怎么扩展，仍读 `docs/` 和 package README。
 

@@ -58,8 +58,8 @@
 
   <rect x="575" y="492" width="470" height="142" rx="12" fill="#fefce8" stroke="#fde047"/>
   <text x="600" y="520" font-size="14" font-weight="700" fill="#854d0e">研究覆盖层 · ethan 分支</text>
-  <text x="600" y="550" font-weight="700" fill="#854d0e">_digested/ · _faq_on_digested/ · _misc/</text>
-  <text x="600" y="578" fill="#713f12">源码消化、跨专题 FAQ、外部参考存档与草稿本。</text>
+  <text x="600" y="550" font-weight="700" fill="#854d0e">_digested/ · _faq_on_digested/</text>
+  <text x="600" y="578" fill="#713f12">源码消化与跨专题 FAQ。</text>
   <text x="600" y="598" fill="#a16207">非 pnpm workspace、非产品 runtime、非官方文档站来源。</text>
   <text x="600" y="618" fill="#a16207">产品基线变化后，结论必须重新对照源码核验。</text>
 
