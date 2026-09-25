@@ -31,7 +31,7 @@
 1. **可读 ≠ 简单。** owner、catalog、统一术语让复杂系统**可查询**，但包、事件和生命周期仍然复杂。
 2. **Skill ≠ enforcement。** Skill 是 guidance；可机械规则仍需类型/脚本/invariant，语义仍需 review。
 3. **清理 ≠ 事务回滚。** disposer 撤销它拥有的注册与资源，不会自动补偿已经发生的外部写入。
-4. **运行时查询 ≠ 安全沙箱。** `tool-cordis` 是 bash-equivalent trust，不是安全边界。
+4. **运行时查询 ≠ 安全沙箱。** `tool-cordis` 的 vm 只防意外全局污染，注入服务仍有真实权限，不是安全边界。
 
 ## 知识外置本身有维护成本
 
