@@ -45,4 +45,3 @@ DSH 自己的仓库就是它最好的样板：它的开发主力自称是 coding
 - [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)：AGENTS.md 入口链——文件态骨架（→04）+ 会话态加载（→05）+ 迁移顺序【文件态=静态 / 会话态=动态】
 - [`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)：渐进披露的完整五层管线【层 1=静态 / 层 2–5=动态】
 - [`research.md`](./research.md)：证据原文与来源
-- [`ppt-deck.md`](./ppt-deck.md)：把本篇压成 5 页 PPT 稿（抬头 + 要点 + 一行口播稿），用于对外讲「DSH 怎样组织项目」
