@@ -15,7 +15,7 @@
 | 4 | 用 Skills 保存需要上下文判断的工作流程 | 让复杂任务不依赖个人记忆 |
 | 5 | 在确有动态组合压力时引入可查询 plugin graph 和完整 seams | 让架构成本与真实需求匹配 |
 
-第 0 项是本 FAQ 补充的（垂直切片思想），第 1–5 项来自语料清单。注意第 5 项被刻意排在最后：**插件图、seam 三角色、完整运行时 inspect 是「组合压力」的产物，不是普通项目的默认项。** 第 0–3 项几乎零架构依赖，是大多数项目真正的第一桶金。垂直切片的完整操作见 [`落地总纲`](./06-step-by-step-guide.md) Phase 0.5，DSH 的标准演示见 [SDLC Tutorial 的证据地图](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/01-follow-a-change.md)。
+第 0 项是本 FAQ 补充的（垂直切片思想），第 1–5 项来自语料清单。注意第 5 项被刻意排在最后：**插件图、seam 三角色、完整运行时 inspect 是「组合压力」的产物，不是普通项目的默认项。** 第 0–3 项几乎零架构依赖，是大多数项目真正的第一桶金。垂直切片的完整操作见 [`落地总纲`](./06-step-by-step-guide.md) Phase 0.5；DSH 的标准演示（提交 5124a2a310 逐环对照）见 [`变更闭环`](./01-sdlc-change-loop.md)。
 
 ## 三个问题检验任何一个 Development Harness
 
@@ -40,7 +40,7 @@
 
 类型、文档、决策记录、Skills、生成目录、测试、invariant、CI 都要维护。**外置不是免费的**，DSH 用几样纪律控制成本：一个事实一个 owner（防漂移）、生成 freshness（防索引过期）、文档预算（防常驻层膨胀）、决策记录 lifecycle（防「过时理由仍被当权威」）、negative-control testing（防假门禁）。
 
-普通项目最容易犯的错，是**在还不存在组合压力时，提前造一整套插件/生成目录/invariant 架构**——结果维护成本吃掉了可读性收益。`07-boundaries-and-costs` 语料说得直接：
+普通项目最容易犯的错，是**在还不存在组合压力时，提前造一整套插件/生成目录/invariant 架构**——结果维护成本吃掉了可读性收益。本 FAQ 的研究语料（整理者归纳，非 DSH 原文）说得直接：
 
 > 较小项目若只有一个 loop、少量固定 adapter 和单一入口，可能只需要清晰 architecture map、少数 standing rules、任务 Skills 和针对性 tests。学习 DSH 的第一步应是知识归属与反馈纪律，而不是复制全部包结构。
 
@@ -52,8 +52,4 @@
 4. 守住四个边界：可读≠简单、Skill≠enforcement、清理≠回滚、查询≠沙箱。
 5. 防漂移是持续动作，不是一次性装修：verify 脚本 + 基线钉 + 改事实只改 home（落地清单见 [`落地总纲`](./06-step-by-step-guide.md) Phase 7）。
 
-## 证据入口
-
-- [`_agent_ready_development/repo-harness/07-boundaries-and-costs.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/07-boundaries-and-costs.md)：优先级清单、三问框架、四个边界、成本。
-- [`_digested/harness-idea/07-boundaries-costs-fit.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/07-boundaries-costs-fit.md)：哪些原则与智能无关、这个形状何时划算、代价是什么。
-- [`_digested/harness-idea/08-judgement-discipline.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/08-judgement-discipline.md)：本 FAQ 判断的出处纪律（分布内通式 vs 分布外事实）。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「08 · 迁移清单」一节）——按需核对，不读不影响理解。

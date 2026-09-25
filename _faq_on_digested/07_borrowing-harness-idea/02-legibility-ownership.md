@@ -41,7 +41,7 @@ DSH 的文档层级规则只有一条主线：**每个事实住在「负责它�
 2. **tier 分工是一张真实存在的表**（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)）：根 `AGENTS.md` 放常驻规则、子树 `AGENTS.md` 放子树专属规则、包 README 放每包合同、Skills 放可复用流程——每行同时写「放什么」和「禁放什么」。
 3. **不同工具读同一份事实，用 symlink 而不是复制**：`CLAUDE.md` 是指向 `AGENTS.md` 的软链（一条命令 `ln -s AGENTS.md CLAUDE.md`），Claude 类宿主和其它 agent 宿主各认各的入口文件名，但事实只有一份。DSH 仓库里有 4 处这样的 symlink。
 
-分家纪律的落地：决策记录带生命周期目录（`proposed` / `implemented` / `rejected` 三个状态；`archived/` 是冻结存放地），「已否决」「已过时」「现行」一眼可分——展开在 [`决策记录`](./03-decision-notes.md)。DSH 的完整形态是六类事实六类位置，见 [SDLC Tutorial 02 的六类位置表](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/02-specs-and-decisions.md)。
+分家纪律的落地：决策记录带生命周期目录（`proposed` / `implemented` / `rejected` 三个状态；`archived/` 是冻结存放地），「已否决」「已过时」「现行」一眼可分——展开在 [`决策记录`](./03-decision-notes.md)。DSH 的完整形态是六类事实六类位置：意图/决定/计划/现状/证据/交付状态，各有自己的 home（[变更闭环](./01-sdlc-change-loop.md) 的环即其位置）。
 
 ## 怎么迁移到你的项目
 
@@ -55,10 +55,4 @@ DSH 的文档层级规则只有一条主线：**每个事实住在「负责它�
 - **负知识的 DSH 落地**：rejected note、README 的 `## Known Limitations and Deferred Work`、无可观察关系时写进包 README 的省略理由（空 companion 被 `verify-package-invariants` 判 fail）；
 - **入口链与渐进披露**：归属的静态骨架（`CLAUDE.md` symlink → 根 `AGENTS.md` → 子树 → README）展开在 [`入口链`](./09-agents-entry-chain.md)；「按需」的运行时由谁决定、超预算怎么回收，展开在 [`披露管线`](./12-progressive-disclosure-pipeline.md)——「按需读取」的原则同源，但那是术的部分。
 
-## 证据入口
-
-- [`_agent_ready_development/repo-harness/02-legibility-and-ownership.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/02-legibility-and-ownership.md)：五类问题五类 owner、当前事实 vs 决策理由、负知识。
-- [`_digested/harness-idea/02-legibility.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/02-legibility.md)：静态可读性的八个机制与上下文入口外置。
-- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)：文档 tier taxonomy 与 one home per fact。
-- [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/glossary.md)：一词一义的术语纪律。
-- [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)：决策记录的生命周期与负知识 home。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「02 · 归属」一节）——按需核对，不读不影响理解。

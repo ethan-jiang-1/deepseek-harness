@@ -76,11 +76,4 @@ DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩�
 - **生命周期单一所有权**：注册 tool、service、listener 走 `ctx.effect()` / `ctx.on()`，插件卸载走同一条清理路径——「谁注册、谁负责撤销」这条纪律几乎总是适用，不需要插件架构也成立。
 - **capability seam 是完整能力不是一个接口文件**（三角色：Definition + Provider + Consumer）：只有确实需要替换能力时才进 L2；为局部工具制造多包结构是照搬 DSH 最常见的浪费，见 [`迁移清单`](./08-transfer-playbook.md)。
 
-## 证据入口
-
-- [`_agent_ready_development/repo-harness/04-paved-road-and-participation.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/04-paved-road-and-participation.md)：参与阶梯、五个归属问题、生命周期单一所有权。
-- [`_digested/harness-idea/03-paved-road.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/03-paved-road.md)：正确路径为什么是阻力最小路径、路径自身被测试。
-- [`_digested/harness-idea/04-participation-paths.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/04-participation-paths.md)：不同参与半径的门、合同与检查半径。
-- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)：Where new behavior goes 归属表与扩展点。
-- [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/glossary.md)：capability seam 三角色的规范定义。
-- [`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md)：feature 到机制与操作指南的细化入口。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「05 · 正确路径」一节）——按需核对，不读不影响理解。

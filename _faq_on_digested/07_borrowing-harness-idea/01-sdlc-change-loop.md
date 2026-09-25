@@ -1,6 +1,6 @@
 # SDLC 变更闭环：一笔变更从意图走到归位
 
-> **道 · 变更闭环。** 本页拥有「一笔变更从意图到归位」的完整逻辑：为什么需要闭环、DSH 怎么应对、怎么落地、普通项目怎么迁。DSH 侧的精确制度（生命周期状态、policy 条件、加权批准、发布 lane）由 [SDLC Reference](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-reference/00-index.md) 按问题拥有；完整的教程式走查（一笔真实变更从意图到合并）由 [SDLC Tutorial](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/00-index.md) 拥有。本页不复制 [FAQ 06](../06_spec-change-path/answer.md) 的阶段表——那篇讲 DSH 的流程本身，本页讲「普通项目怎么借」。
+> **道 · 变更闭环。** 本页拥有「一笔变更从意图到归位」的完整逻辑：为什么需要闭环、DSH 怎么应对、怎么落地、普通项目怎么迁。可打开的一手证据只有 DSH 仓库本身（钉版 `46a7f68b09` 的 GitHub URL）；本页不复制 [FAQ 06](../06_spec-change-path/answer.md) 的阶段表——那篇讲 DSH 的流程本身，本页讲「普通项目怎么借」。
 
 ## 为什么要有这道
 
@@ -33,11 +33,11 @@ DSH 用一笔 7 文件的真实提交（`5124a2a310`，PR #5004：模型选择�
 | 找 owner | 根 `AGENTS.md` → `packages/README.md` 分组表 → 包 README，三跳定位到组件 |
 | 有条件的决定 | 局部呈现修改，**豁免** Agent Note（判据：无持久取舍，见 [`决策记录`](./03-decision-notes.md)） |
 | 实现 + 文档 + 证据 | 同一提交 7 文件 +15/−14：组件、样式、组件测试、e2e、双语 README、配对 hash |
-| 回归证据 | 组件测试断言反转；实测旧行为上 **2 红 95 绿**（[Tutorial 04 实测记录](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/04-implementation-and-evidence.md)） |
+| 回归证据 | 组件测试断言反转；实测旧行为上 **2 红 95 绿**（[复现方法见落地总纲 Phase 0.5](./06-step-by-step-guide.md)） |
 | 缺口如实标注 | README 声称的等宽字体与悬停名称**没有**测试钉住，被教程如实标为证据缺口，留给 review 判断——绿灯不掩盖缺口 |
 | 知识归位 | 行为归源码与测试、当前合同归 README——合并后新 agent 不读 PR 对话也能回答三问 |
 
-逐环打开文件、标注证据边界的完整走查：[SDLC Tutorial 01 的证据地图](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/01-follow-a-change.md)。
+逐环核对的上游一手证据是[提交 `5124a2a310` 本身](https://github.com/deepseek-ai/deepseek-harness/commit/5124a2a310a904d28118609c41d89f26440b946b)：`git show 5124a2a310` 可打开全部 7 个文件、断言反转与双语 README 改述——不需要任何第二手材料。
 
 ## 怎么迁移到你的项目
 
@@ -62,10 +62,4 @@ DSH 用一笔 7 文件的真实提交（`5124a2a310`，PR #5004：模型选择�
 - 你在做 [`落地总纲`](./06-step-by-step-guide.md) 的 Phase 0.5（垂直切片），需要一张对照表打分；
 - 你怀疑自己的项目「文档、测试都有，但交付还是乱」——断点通常就在「同 PR 交付」或「缺口如实标注」这两环。
 
-## 证据入口
-
-- [SDLC Tutorial](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/00-index.md)：三条立场 + 一笔真实变更的完整走查（本页的事实来源）。
-- [SDLC Tutorial 04](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/04-implementation-and-evidence.md)：红灯对照实测（2 红 95 绿）与证据缺口的自曝。
-- [SDLC Reference](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-reference/00-index.md)：变更闭环各环节的精确条件与例外。
-- [`06_spec-change-path/answer.md`](../06_spec-change-path/answer.md)：DSH 变更流程本身的阶段表（与本页的迁移视角互补）。
-- [`落地总纲`](./06-step-by-step-guide.md) Phase 0.5：垂直切片操作——本页迁移表的实战用法。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「01 · 变更闭环」一节）——按需核对，不读不影响理解。

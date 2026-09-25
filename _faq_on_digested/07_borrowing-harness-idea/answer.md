@@ -12,7 +12,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 2. **规则是可执行的代码。** 「文档要双语相等」「PR 要引用 Issue」「评审要求是什么」——全部接成仓库里跑得起来的检查（gates、policy 脚本、CI workflow），违规直接红在检查里。DSH 的原话：*Agents follow enforced gates far more reliably than prose conventions*。写在贡献指南里靠自觉的规则，和接在 CI 里会拦人的规则，是两种东西。
 3. **每类事实有唯一的 owner。** 意图归 Issue 或任务上下文、决定理由归 Agent Note、当前行为归源码与 README、回归证据归测试、交付状态归 GitHub——一处一个权威，不重复、不漂移。一处事实两个家，早晚分叉。
 
-这三条立场在 DSH 的 SDLC Tutorial 里有完整的一次「落成动作」演示：跟着一笔真实小变更（模型选择器显示 model ID）从任务意图走到合并后知识归位，每一步打开实际文件、标注证据边界——见 [`_agent_ready_development/sdlc-tutorial/00-index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/00-index.md)。
+这三条立场落到一笔真实变更上的完整演示，就在本目录：跟着一笔真实提交（`5124a2a310`，模型选择器显示 model ID）从任务意图走到合并后知识归位，逐环打开上游可核对的产品文件——见 [`变更闭环`](./01-sdlc-change-loop.md)。
 
 ## 三层模型：精华怎样组织成可借的形态
 
@@ -94,17 +94,17 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 10. [`运行时查询`](./11-runtime-inspection.md)——做 Phase 6 时读：三个查询面。
 11. [`披露管线`](./12-progressive-disclosure-pipeline.md)——上下文吃紧时读：注入、组装、回收、隔离。
 
-### 压尾（13 + research，按需）
+### 压尾（13 + reference/research，按需）
 
-[`问题框架`](./13-two-failures-as-missing-info.md)（「糊涂/乱发挥」翻译成信息缺口——全套材料的 why）与 `research.md`（全部引文出处）——想深挖时再进。
+[`问题框架`](./13-two-failures-as-missing-info.md)（「糊涂/乱发挥」翻译成信息缺口——全套材料的 why）、[`reference.md`](./reference.md)（各章上游证据总账——想核对时读）、`research.md`（整理过程账本）——想深挖时再进。
 
 一句话：**道五篇读懂概念和实物，06 动手，术做到哪读到哪。**
 
 ## 补充入口
 
-- **想先看 DSH 精华落成动作的完整演示**：读 [SDLC Tutorial](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/00-index.md)——一笔真实变更从意图到合并的全程走查，三层模型与三条立场全部在里头现过身；本 FAQ 的角色是把它和其余机制翻译成普通项目可迁移的动作。
+- **想看 DSH 精华落成动作的完整演示**：读 [`变更闭环`](./01-sdlc-change-loop.md)——一笔真实提交从意图到归位的逐环对照表，三条立场全部在里头现过身；本 FAQ 的角色是把它和其余机制翻译成普通项目可迁移的动作。
 
-**证据与兜底**：`research.md` 是全部 blockquote 的出处总表（含钉版基线与复核方式）；本目录自带 [`verify.mjs`](../verify.mjs)（UTF-8 / 换行 / 链接 / 锚点），修改后运行 `node _faq_on_digested/verify.mjs`；防漂移纪律的落地清单见 [`落地总纲`](./06-step-by-step-guide.md) Phase 7——这个 FAQ 讲的机制，自己也在用。
+**证据与兜底**：各章声称的 DSH 事实，上游一手出处集中在 [`reference.md`](./reference.md)——按需核对，不读不影响理解（渐进披露用在 FAQ 自己身上）；[`research.md`](./research.md) 是整理过程的内部账本（复核历史与语料出处）。本目录自带 [`verify.mjs`](../verify.mjs)（UTF-8 / 换行 / 链接 / 锚点），修改后运行 `node _faq_on_digested/verify.mjs`；防漂移纪律的落地清单见 [`落地总纲`](./06-step-by-step-guide.md) Phase 7——这个 FAQ 讲的机制，自己也在用。
 
 **自包含**：整套目录可以单独拿走用。指向 DSH 仓库的引用全部是钉版在固定 commit `46a7f68b09` 的 GitHub 绝对 URL——任何人、任何机器都能点开核对，不需要 clone 这个仓库；目录间互链只在 `_faq_on_digested` 家族内部。抄走这套 FAQ 的人，唯一断不了的依赖就是公网。
 
@@ -125,4 +125,5 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 - [`11-runtime-inspection.md`](./11-runtime-inspection.md)：【术】运行时查询——不靠猜源码
 - [`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)：【术】披露管线——静态 + 注入 + 组装 + 回收 + 隔离
 - [`13-two-failures-as-missing-info.md`](./13-two-failures-as-missing-info.md)：【背景】问题框架——糊涂/乱发挥的信息缺口
-- [`research.md`](./research.md)：证据原文与来源
+- [`reference.md`](./reference.md)：各章上游证据总账（按需核对）
+- [`research.md`](./research.md)：整理过程账本（复核历史与语料出处）

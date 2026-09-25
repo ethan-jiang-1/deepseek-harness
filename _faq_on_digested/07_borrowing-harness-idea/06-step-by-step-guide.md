@@ -42,7 +42,7 @@
 
 **验收**：每一个「靠猜」和「没证据」都对应到 Phase 1–6 的某一步——这张清单就是你的定制化施工顺序，比任何通用优先级都准。
 
-**对应**：变更闭环（时间层）的完整预演。DSH 的标准演示见 [`_agent_ready_development/sdlc-tutorial/01-follow-a-change.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/01-follow-a-change.md)（一笔 7 文件真实变更的证据地图）与 [`04-implementation-and-evidence.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/04-implementation-and-evidence.md)（红灯对照实测记录）。
+**对应**：变更闭环（时间层）的完整预演。DSH 的标准演示是[提交 5124a2a310](https://github.com/deepseek-ai/deepseek-harness/commit/5124a2a310a904d28118609c41d89f26440b946b)——本目录 [变更闭环](./01-sdlc-change-loop.md) 有它的逐环对照表。
 
 ---
 
@@ -180,8 +180,4 @@
 
 **这五件事不需要任何插件架构，且第 1 件事会告诉你其余四件里哪个对你最要命。** 如果还有余力，补一个 verify 脚本（Phase 7 的第 1、5 条），让这些从此有机器兜底。
 
-## 证据入口
-
-- 顺序与优先级：本目录 [`08-transfer-playbook.md`](./08-transfer-playbook.md)。
-- 每个 Phase 的机制依据，回看对应章节：[`归属`](./02-legibility-ownership.md)、[`正确路径`](./05-paved-road-and-ladder.md)、[`可执行反馈`](./07-executable-feedback.md)、[`Skills`](./10-skills-as-procedural-memory.md)、[`运行时查询`](./11-runtime-inspection.md)；Phase 1 的入口链骨架见 [`入口链`](./09-agents-entry-chain.md)，长任务上下文回收见 [`披露管线`](./12-progressive-disclosure-pipeline.md)。
-- 语料原始结论： [`_agent_ready_development/repo-harness/07-boundaries-and-costs.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/07-boundaries-and-costs.md)。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「06 · 落地总纲」一节）——按需核对，不读不影响理解。
