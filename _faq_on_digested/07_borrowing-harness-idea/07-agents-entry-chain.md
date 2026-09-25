@@ -47,8 +47,8 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
   >
   > Rendering keeps the most specific files first: it drops whole broader files before truncating the most-specific file, and emits a visible `Workspace instruction budget ...` notice naming the omitted and truncated paths. The rendered bytes never exceed `maxBytes`.
 
-- **导航（pull）**：不在注入链里的 README / catalog / skill 正文，由模型用 read/grep/glob 按需拉取。
-- **回收（recycle）**：超预算由 token meter 度量、compaction 压缩回收，保留 tool-call/result 配对——展开在 [`披露管线`](./13-progressive-disclosure-pipeline.md) 层 4。
+- **导航（pull）**：不在注入链里的 README / catalog / skill 正文，由模型用 read/grep/glob 按需拉取。这一层的关键在**入口链的「可导航性」**：根文件里的每个链接都是 pull 的起点——agent 从 standing order 的一句话跳到 owning README，再跳到 cookbook。链接断了或指错，pull 就失败，agent 退回裸猜。所以 Phase 1 的验收里有一条「任何一条规则 10 秒内指出唯一 home」——那不只是文档卫生，是 pull 路径的健康检查。DSH 的[文档门禁](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)（`doc-sync` 的一部分）机械校验链接与锚点，保证 pull 路径不断。
+- **回收（recycle）**：超预算由 token meter 度量、compaction 压缩回收——注入的内容以 user-role 消息进历史，和普通对话一样被压缩，不享受特权通道；压缩时保留 tool-call/result 配对。完整机制展开在 [`披露管线`](./13-progressive-disclosure-pipeline.md) 层 4。
 
 ## 从哪开始
 

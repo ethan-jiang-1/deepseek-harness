@@ -38,6 +38,15 @@
 | 运行时关系 | package `./invariant` | 活系统中 owned relationship 持续成立 | 没有可观察关系的性质 |
 | 语义判断 | code review（人或 agent）、用户验收 | 意图、架构、风险对齐 | 每个机械细节都已执行 |
 
+每一层在 DSH 仓库里都有具名的真实检查，抓一个回归该去哪层一目了然：
+
+- **编译期**：`pnpm run typecheck`——max-strict（`noUncheckedIndexedAccess`、`exactOptionalPropertyTypes`…），vitest 不做类型检查这个教训就写在这层的动机里；
+- **Load/parser**：`verify-cordis-config`——配置在加载时解析校验，坏引用直接 fail loud，不带病启动；
+- **局部行为**：`pnpm run test:coverage`——per-file 100%（`packages/*/*/src`），防御性死分支要 `/* v8 ignore */` 加理由，不许删；
+- **组装行为**：`test:snapshot`——无 key 回放录制会话，走真实 profile 入口；`test:expected`——进程级期望输出；
+- **运行行时关系**：`verify-package-invariants`——各包的 `./invariant` 安装器，空壳直接判 fail（见下文）；
+- **语义判断**：`dsh-code-review` skill + 人类作者 PR 的加权批准门禁——人和 agent 都能做 reviewer，但意图判断不外包给机器。
+
 关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 绿不代表产品工作，snapshot 绿不代表 API 合理，review 也不该手工重复绿色 gate 已经精确拒绝的格式问题。
 
 ## 这样做：本地按 diff 选检查，不全跑

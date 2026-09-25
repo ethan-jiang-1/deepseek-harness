@@ -14,7 +14,9 @@
 | 仓库声明了什么静态接口与注册项 | tool schema、config 字段、event dispatch mode、service signature | 生成的 tool/config/persistence/event/capability catalog |
 | 当前进程里实际有什么 | 哪个 provider、service、tool 正在生效 | `cordis_inspect_list` / `cordis_inspect_query`（只读、opt-in；`cordis_inspect_self` 已随 #4745 退役） |
 
-三者的关键区别必须守住：**catalog 回答「仓库声明了什么」，不是「当前进程正运行什么」**；实际 provider 与 Fiber 状态要问活运行时。DSH 原话：
+三者的关键区别必须守住：**catalog 回答「仓库声明了什么」，不是「当前进程正运行什么」**；实际 provider 与 Fiber 状态要问活运行时。逐面展开：
+
+**面 1：最终配置树。** DSH 原话：
 
 > **DSH 原话 ·** 查询最终配置树（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)）
 >
@@ -24,7 +26,11 @@
 > > dsh --profile web --dump-config
 > ```
 
-声明面的可信度也是机器保证的：生成 catalog 配 freshness gate，目录与源码有 diff 就红——所以它是可信索引，不是一张可能漂移的手写清单。
+输出是叠加后的最终 YAML——profile 基座、bundle、patch 全部应用完的那棵树。agent 拿它回答「这个部署到底启用了什么」，不用去猜三层叠加的结果。
+
+**面 2：声明面（生成 catalog）。** [docs/tool-catalog.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-catalog.md) 不是手写文档，是**真启动**出来的：生成器在真实 context 上 boot 每个 tool 插件、读 `ctx.tools.schemas()`——因为工具 schema 里有运行时展开的枚举、拼接的 description、config 驱动的名字，静态 AST 扫不出来。完整性守卫 glob `packages/*/tool-*`，有包漏在生成清单外就直接 fail——**新工具不可能静默无文档**。可信度由 `verify-tool-catalog`（doc-sync 的一部分）机械保证：目录与源码有 diff 就红。
+
+**面 3：活运行时。** `cordis_inspect_list` 列出当前生效的 providers，`cordis_inspect_query` 查某个 provider 的精确方法与类型（[tool-cordis README](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/README.md)）。只读、opt-in、不做变更；持久安装走 plugin_manager。agent 拿它回答「此刻这个进程里谁在服务」——声明面答不了这个。
 
 ## 从哪开始
 

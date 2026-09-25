@@ -46,13 +46,24 @@ agent 的每次「动手」都走这条路。写一个新工具、加一道权�
 | 内容终审 | `ToolDefinition.finalizeContent` | 最后的 content-only 不变量 | 结构性结果（已归一化） |
 | 观测 | `tools/result` 同步通知 | 拿到权威结果做遥测 | 改结果（已冻结） |
 
-这张表的另一半价值在**归属表**里：architecture 的「Where new behavior goes」明确写着「Intercept a request, tool, or turn → use its `agent/*` or `tools/*` event」——**想拦执行链上的任何东西，答案永远是「挂事件」，不是「改 loop」**。
+这张表的另一半价值在**归属表**里——DSH 原话：
+
+> **DSH 原话 ·** 拦截执行链的正确位置（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md) 的 Where new behavior goes 表）
+>
+> Intercept a request, tool, or turn | use its `agent/*` or `tools/*` event; `agent/turn-stopping` stops a turn
+
+**想拦执行链上的任何东西，答案永远是「挂事件」，不是「改 loop」。**
 
 ## 工具体本身的契约（写新工具时照这个写）
 
 [`docs/subsystems/tools.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/tools.md) 定义了 `ToolDefinition` 的完整契约，写新工具前值得通读。最关键的几条：
 
-- **模型可见面是显式 allowlist**：注册表的 `schemas()` 构建模型请求里的 `ToolSchema[]`，`output`/`execute`/`projectContent`/`timeoutMs` 这类实现字段**永远不进模型请求**（原文：must never leak into a model request）。
+- **模型可见面是显式 allowlist**：注册表的 `schemas()` 构建模型请求里的 `ToolSchema[]`。DSH 原话：
+
+  > **DSH 原话 ·** 实现字段永不进模型请求（[docs/subsystems/tools.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/tools.md)）
+  >
+  > `output`/`execute`/`projectContent`/`finalizeContent`/`timeoutMs`/`isConcurrencySafe`/`presentCall`/`presentResult` must never leak into a model request.
+
 - **`execute()` 只返回 canonical JSON value**：渲染由 `output.render()` 这个纯投影完成；异步工作必须观察 `exec.signal`，且只在**自己的工作到达静止**后 settle——注册表保留取消信号但不硬杀同进程代码。
 - **结果声明是强制的**：`ToolOutputDefinition`（schema + render + 可选 presentationMeta）每个工具必填——没有「随便返回个什么」的工具。
 
