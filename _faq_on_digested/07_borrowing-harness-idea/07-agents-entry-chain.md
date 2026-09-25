@@ -48,10 +48,10 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
   > Rendering keeps the most specific files first: it drops whole broader files before truncating the most-specific file, and emits a visible `Workspace instruction budget ...` notice naming the omitted and truncated paths. The rendered bytes never exceed `maxBytes`.
 
 - **导航（pull）**：不在注入链里的 README / catalog / skill 正文，由模型用 read/grep/glob 按需拉取。
-- **回收（recycle）**：超预算由 token meter 度量、compaction 压缩回收，保留 tool-call/result 配对——展开在 [`披露管线`](./12-progressive-disclosure-pipeline.md) 层 4。
+- **回收（recycle）**：超预算由 token meter 度量、compaction 压缩回收，保留 tool-call/result 配对——展开在 [`披露管线`](./13-progressive-disclosure-pipeline.md) 层 4。
 
 ## 从哪开始
 
-今天就做文件态（半小时见效果）：`ln -s AGENTS.md CLAUDE.md`；根文件只写常驻规则+布局+命令，每条链到 home；给根文件定字数上限。会话态不急——上下文没爆炸就不用碰，文件态 + 宿主自动加载已经覆盖「不糊涂」的大头；真到长任务活不下来那天，再去 [`披露管线`](./12-progressive-disclosure-pipeline.md) 抄注入层。
+今天就做文件态（半小时见效果）：`ln -s AGENTS.md CLAUDE.md`；根文件只写常驻规则+布局+命令，每条链到 home；给根文件定字数上限。会话态不急——上下文没爆炸就不用碰，文件态 + 宿主自动加载已经覆盖「不糊涂」的大头；真到长任务活不下来那天，再去 [`披露管线`](./13-progressive-disclosure-pipeline.md) 抄注入层。
 
-本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「09 · 入口链」一节）——按需核对，不读不影响理解。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「07 · 入口链」一节）——按需核对，不读不影响理解。

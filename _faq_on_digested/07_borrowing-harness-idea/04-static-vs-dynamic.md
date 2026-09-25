@@ -1,6 +1,6 @@
 # 静与动：read-only 层与动态层的分界
 
-> **道 · 静与动。** 本页回答 agent 开发里最容易糊涂的问题：哪些东西是 read-only 的、哪些每轮都在变、边界由谁管。静态层怎么组织见 [`归属`](./02-legibility-ownership.md)；动态层在运行时怎么被消费见 [`披露管线`](./12-progressive-disclosure-pipeline.md)——本页拥有的是**分界本身**。
+> **道 · 静与动。** 本页回答 agent 开发里最容易糊涂的问题：哪些东西是 read-only 的、哪些每轮都在变、边界由谁管。静态层怎么组织见 [`归属`](./02-legibility-ownership.md)；动态层在运行时怎么被消费见 [`披露管线`](./13-progressive-disclosure-pipeline.md)——本页拥有的是**分界本身**。
 
 ## 为什么要有这道
 
@@ -59,6 +59,6 @@
 
 ## 与其它各篇的关系
 
-- 静态层的组织（tier、入口链）展开在 [`归属`](./02-legibility-ownership.md) 与 [`入口链`](./09-agents-entry-chain.md)；动态层的运行时消费展开在 [`披露管线`](./12-progressive-disclosure-pipeline.md)；「动态里的持久事实回写静态层」的完整闭环见 [`变更闭环`](./01-sdlc-change-loop.md) 最后一环。
+- 静态层的组织（tier、入口链）展开在 [`归属`](./02-legibility-ownership.md) 与 [`入口链`](./07-agents-entry-chain.md)；动态层的运行时消费展开在 [`披露管线`](./13-progressive-disclosure-pipeline.md)；「动态里的持久事实回写静态层」的完整闭环见 [`变更闭环`](./01-sdlc-change-loop.md) 最后一环。
 
 本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「04 · 静与动」一节）——按需核对，不读不影响理解。

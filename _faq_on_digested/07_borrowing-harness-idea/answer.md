@@ -34,7 +34,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 |---|---|---|---|
 | **变更闭环（时间顺序）** | 一笔变更从「要得到什么」走到「怎样证明、谁来判断、交付后留下什么」，怎样接力 | 任务/Issue 的可观察验收 → 有条件的决定 → 代码、当前文档、回归证据同一变更交付 → 聚焦本地检查、CI、语义 review、merge | 先拿一笔真实变更按此走通（见 [`变更闭环`](./01-sdlc-change-loop.md) 的迁移表、[`落地总纲`](./06-step-by-step-guide.md) Phase 0.5） |
 | **知识与决定（归属）** | 下一任 agent 如何区分现在、理由、旧方案和计划 | 现状归代码/README，持久取舍归 owning Note，单次实施步骤归 Plan，行为证据归测试 | 简明 ADR、owner、状态与取代纪律（完整章见 [`决策记录`](./03-decision-notes.md)） |
-| **渐进披露（读取时机）** | 此刻该加载哪份最小权威资料，超预算怎么办 | 短常驻规则只负责路由，任务命中才读完整流程，按需读 owner；自建 agent host 再加注入预算和回收 | 入口文件短、只做路由（见 [`入口链`](./09-agents-entry-chain.md)） |
+| **渐进披露（读取时机）** | 此刻该加载哪份最小权威资料，超预算怎么办 | 短常驻规则只负责路由，任务命中才读完整流程，按需读 owner；自建 agent host 再加注入预算和回收 | 入口文件短、只做路由（见 [`入口链`](./07-agents-entry-chain.md)） |
 
 三层不是依次建三个系统：**变更闭环管时间，知识归属管事实去向，渐进披露管读取时机和上下文成本**。最有用的检验方式，是拿一笔真实变更把三层一起跑一遍——三层在这笔变更上共同工作，才是「借鉴成功」的样子。
 
@@ -50,8 +50,8 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 ## 立即借 / 有压力再借 / 不要照搬
 
-- **立即借**（几乎零架构依赖，普通项目的第一桶金）：拿一笔真实变更跑通闭环（[`落地总纲`](./06-step-by-step-guide.md) Phase 0.5，对照表见 [`变更闭环`](./01-sdlc-change-loop.md)）；短 `AGENTS.md` 只放常驻规则（[`落地总纲`](./06-step-by-step-guide.md) Phase 1，实物见 [`归属`](./02-legibility-ownership.md) 落地实物节）；一个事实一个 owner、决策理由与当前文档分开（[`归属`](./02-legibility-ownership.md)；何时写决策记录见 [`决策记录`](./03-decision-notes.md)）；可机械规则接成 `exit non-zero` 检查并做负例控制（[`落地总纲`](./06-step-by-step-guide.md) Phase 4，六层反馈见 [`可执行反馈`](./07-executable-feedback.md)）。
-- **有压力再借**（确有对应压力才值得）：Skills 目录（同类任务反复出现；真实 Skill 文件的写法标准见 [`Skills`](./10-skills-as-procedural-memory.md) 落地实物节）；生成 catalog（声明面大到手工清单漂移）；注入预算与 compaction（上下文吃紧、长任务活不下来，[`披露管线`](./12-progressive-disclosure-pipeline.md)）。
+- **立即借**（几乎零架构依赖，普通项目的第一桶金）：拿一笔真实变更跑通闭环（[`落地总纲`](./06-step-by-step-guide.md) Phase 0.5，对照表见 [`变更闭环`](./01-sdlc-change-loop.md)）；短 `AGENTS.md` 只放常驻规则（[`落地总纲`](./06-step-by-step-guide.md) Phase 1，实物见 [`归属`](./02-legibility-ownership.md) 落地实物节）；一个事实一个 owner、决策理由与当前文档分开（[`归属`](./02-legibility-ownership.md)；何时写决策记录见 [`决策记录`](./03-decision-notes.md)）；可机械规则接成 `exit non-zero` 检查并做负例控制（[`落地总纲`](./06-step-by-step-guide.md) Phase 4，六层反馈见 [`可执行反馈`](./09-executable-feedback.md)）。
+- **有压力再借**（确有对应压力才值得）：Skills 目录（同类任务反复出现；真实 Skill 文件的写法标准见 [`Skills`](./11-skills-as-procedural-memory.md) 落地实物节）；生成 catalog（声明面大到手工清单漂移）；注入预算与 compaction（上下文吃紧、长任务活不下来，[`披露管线`](./13-progressive-disclosure-pipeline.md)）。
 - **不要照搬**：插件图与 capability seam 全家桶（那是组合压力的产物）；DSH 的 Project/标签/加权批准制度（它有特定的协作规模前提）；双语 triplet 与 hash 配对（除非你的项目真的双语平等）。
 
 ## 总览表：困惑类型 → 借用机制 → 落地动作
@@ -59,15 +59,15 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 | 你的症状 | DSH 的机制 | 段位 | 落地动作（章节） |
 |---|---|---|---|
 | agent 交付了没法验证的半成品 | 变更闭环：实现+文档+证据同 PR，缺口如实标注 | 道 | 拿一笔真实变更按证据地图逐项核对（见 [`变更闭环`](./01-sdlc-change-loop.md)、[`落地总纲`](./06-step-by-step-guide.md) Phase 0.5） |
-| agent 读完还是抓不住主线 | 分层入口 + 根指令只放 standing orders | 道 | 写一份短 `AGENTS.md`（`CLAUDE.md` 用 symlink 指向它），只放常驻规则 + 布局 + 命令，其余 link 出去（见 [`入口链`](./09-agents-entry-chain.md)） |
+| agent 读完还是抓不住主线 | 分层入口 + 根指令只放 standing orders | 道 | 写一份短 `AGENTS.md`（`CLAUDE.md` 用 symlink 指向它），只放常驻规则 + 布局 + 命令，其余 link 出去（见 [`入口链`](./07-agents-entry-chain.md)） |
 | agent 分不清「现在的事实」和「当初的理由」 | 当前文档 vs Agent Note 分开 | 道 | 决策理由单独进 `docs/adr/` 或 `notes/`，文档只写 now（见 [`归属`](./02-legibility-ownership.md)） |
 | agent 反复提出已否定的方案 | 负知识外置（rejected note、Known Limitations） | 道 | 记下「为什么不做 X」，而不是只记「做了什么」（见 [`归属`](./02-legibility-ownership.md)、[`决策记录`](./03-decision-notes.md)） |
 | 同一个事实存了两处、越跑越分叉 | 静/动分界：事实源唯一，其余派生 | 道 | 按「规则/配置/事实源/派生」四层给数据划家（见 [`静与动`](./04-static-vs-dynamic.md)） |
 | agent 改错地方 / 造出新接入方式 | 正确路径 + 参与阶梯 + 归属路由 | 道 | 写一张「目标 → 机制」归属表，cookbook 给出范本（见 [`正确路径`](./05-paved-road-and-ladder.md)） |
-| agent 做了坏事要等 review 才知道 | 可执行反馈：类型 / load / 测试 / snapshot / invariant / CI | 术 | 把可机械判断的规则做成 `exit non-zero` 的脚本，并证明负例会失败（见 [`可执行反馈`](./07-executable-feedback.md)） |
-| agent 一次读太多上下文、记不住 | 渐进披露 + 按需加载 Skill | 术 | 规则分层，任务命中才加载对应流程文档（见 [`Skills`](./10-skills-as-procedural-memory.md)） |
-| agent 每轮看到的上下文爆炸、长任务活不下来 | 按需注入 + 运行时组装 + compaction 回收 | 术 | 注入给预算/去重；catalog 只给摘要；超预算压缩且保留 tool-call/result 配对（见 [`披露管线`](./12-progressive-disclosure-pipeline.md)） |
-| agent 靠猜源码而不是问实际状态 | `--dump-config`、生成 catalog、inspect 工具 | 术 | 至少提供一条「查实际配置/注册项」的命令（见 [`运行时查询`](./11-runtime-inspection.md)） |
+| agent 做了坏事要等 review 才知道 | 可执行反馈：类型 / load / 测试 / snapshot / invariant / CI | 术 | 把可机械判断的规则做成 `exit non-zero` 的脚本，并证明负例会失败（见 [`可执行反馈`](./09-executable-feedback.md)） |
+| agent 一次读太多上下文、记不住 | 渐进披露 + 按需加载 Skill | 术 | 规则分层，任务命中才加载对应流程文档（见 [`Skills`](./11-skills-as-procedural-memory.md)） |
+| agent 每轮看到的上下文爆炸、长任务活不下来 | 按需注入 + 运行时组装 + compaction 回收 | 术 | 注入给预算/去重；catalog 只给摘要；超预算压缩且保留 tool-call/result 配对（见 [`披露管线`](./13-progressive-disclosure-pipeline.md)） |
+| agent 靠猜源码而不是问实际状态 | `--dump-config`、生成 catalog、inspect 工具 | 术 | 至少提供一条「查实际配置/注册项」的命令（见 [`运行时查询`](./12-runtime-inspection.md)） |
 
 「段位」列对应三段式结构：**道（01–05）= 概念与落地实物，术（07–12）= 执行态细节**；静态/动态轴的分界本身由 [`静与动`](./04-static-vs-dynamic.md) 拥有。
 
@@ -95,18 +95,24 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 [`落地总纲`](./06-step-by-step-guide.md)——先按**道的五个维度**评估你手上的 harness（Phase 0），再拿一笔真实变更跑垂直切片（Phase 0.5），然后按评估结果一轮一轮打磨，直到「像回事」——新来一个 agent 不靠带路，能把一笔变更从意图走到归位。**读到这里就停下读书、开始干活；后面的术，做到哪读到哪。**
 
-### 术（07–12）：执行态的细节
+### 术（07–13）：执行态的细节
 
-6. [`可执行反馈`](./07-executable-feedback.md)——做 Phase 4 时读：六层反馈 + 负例控制，知错、改错怎么被抓住。
-7. [`迁移清单`](./08-transfer-playbook.md)——做完头几个 Phase 后核对：优先级与四个不能混淆的边界，防学走形。
-8. [`入口链`](./09-agents-entry-chain.md)——深化 Phase 1 时读：AGENTS.md 的文件态与会话态。
-9. [`Skills`](./10-skills-as-procedural-memory.md)——做 Phase 5 时读：流程文档的写法标准。
-10. [`运行时查询`](./11-runtime-inspection.md)——做 Phase 6 时读：三个查询面。
-11. [`披露管线`](./12-progressive-disclosure-pipeline.md)——上下文吃紧时读：注入、组装、回收、隔离。
+**前三篇是三巨头——harness 面向 agent 的顶顶重要的三条链**：入口链管 agent **读什么**（输入侧），执行链管 agent **做什么**（输出侧），反馈管 agent**做错了会不会被抓住**（验证侧）。三者咬合，agent 的每个动作都被覆盖：
 
-### 压尾（13 + reference/research，按需）
+6. [`入口链`](./07-agents-entry-chain.md)——AGENTS.md 的文件态与会话态；agent 的第一印象。
+7. [`执行链`](./08-task-execution-chain.md)——一个 tool-call 从策略、审批、沙箱、执行到落日志的完整管线。
+8. [`反馈`](./09-executable-feedback.md)——六层反馈 + 负例控制，做 Phase 4 时读。
 
-[`问题框架`](./13-two-failures-as-missing-info.md)（「糊涂/乱发挥」翻译成信息缺口——全套材料的 why）、[`reference.md`](./reference.md)（各章上游证据总账——想核对时读）、`research.md`（整理过程账本）——想深挖时再进。
+其余四篇按需进站：
+
+9. [`迁移清单`](./10-transfer-playbook.md)——做完头几个 Phase 后核对：优先级与四个边界，防学走形。
+10. [`Skills`](./11-skills-as-procedural-memory.md)——做 Phase 5 时读：流程文档的写法标准。
+11. [`运行时查询`](./12-runtime-inspection.md)——做 Phase 6 时读：三个查询面。
+12. [`披露管线`](./13-progressive-disclosure-pipeline.md)——上下文吃紧时读：注入、组装、回收、隔离。
+
+### 压尾（14 + reference/research，按需）
+
+[`问题框架`](./14-two-failures-as-missing-info.md)（「糊涂/乱发挥」翻译成信息缺口——全套材料的 why）、[`reference.md`](./reference.md)（各章上游证据总账——想核对时读）、`research.md`（整理过程账本）——想深挖时再进。
 
 一句话：**道五篇读懂概念和实物，06 动手，术做到哪读到哪。**
 
@@ -128,12 +134,13 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 - [`04-static-vs-dynamic.md`](./04-static-vs-dynamic.md)：【道】静与动——read-only 层与动态层的分界
 - [`05-paved-road-and-ladder.md`](./05-paved-road-and-ladder.md)：【道】正确路径——归属表实物 + 参与阶梯
 - [`06-step-by-step-guide.md`](./06-step-by-step-guide.md)：【分水岭】**一步一步怎么做——落地总纲**
-- [`07-executable-feedback.md`](./07-executable-feedback.md)：【术】可执行反馈——六层反馈 + 负例控制
-- [`08-transfer-playbook.md`](./08-transfer-playbook.md)：【术】迁移清单——优先级与四个边界
-- [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)：【术】入口链——AGENTS.md 文件态与会话态
-- [`10-skills-as-procedural-memory.md`](./10-skills-as-procedural-memory.md)：【术】Skills——程序化工作记忆（含 Skill 文件落地实物）
-- [`11-runtime-inspection.md`](./11-runtime-inspection.md)：【术】运行时查询——不靠猜源码
-- [`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)：【术】披露管线——静态 + 注入 + 组装 + 回收 + 隔离
-- [`13-two-failures-as-missing-info.md`](./13-two-failures-as-missing-info.md)：【背景】问题框架——糊涂/乱发挥的信息缺口
+- [`07-agents-entry-chain.md`](./07-agents-entry-chain.md)：【术·三巨头】入口链——agent 读什么：AGENTS.md 文件态与会话态
+- [`08-task-execution-chain.md`](./08-task-execution-chain.md)：【术·三巨头】执行链——agent 做什么：tool-call 从策略到落日志的管线
+- [`09-executable-feedback.md`](./09-executable-feedback.md)：【术·三巨头】反馈——做错了会被抓住：六层反馈 + 负例控制
+- [`10-transfer-playbook.md`](./10-transfer-playbook.md)：【术】迁移清单——优先级与四个边界
+- [`11-skills-as-procedural-memory.md`](./11-skills-as-procedural-memory.md)：【术】Skills——程序化工作记忆（含 Skill 文件落地实物）
+- [`12-runtime-inspection.md`](./12-runtime-inspection.md)：【术】运行时查询——不靠猜源码
+- [`13-progressive-disclosure-pipeline.md`](./13-progressive-disclosure-pipeline.md)：【术】披露管线——静态 + 注入 + 组装 + 回收 + 隔离
+- [`14-two-failures-as-missing-info.md`](./14-two-failures-as-missing-info.md)：【背景】问题框架——糊涂/乱发挥的信息缺口
 - [`reference.md`](./reference.md)：各章上游证据总账（按需核对）
 - [`research.md`](./research.md)：整理过程账本（复核历史与语料出处）

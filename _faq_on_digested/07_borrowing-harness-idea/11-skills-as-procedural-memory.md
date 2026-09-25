@@ -78,6 +78,6 @@ catalog 只暴露 `name` + `description`（≤500 字符），正文按需加载
 >
 > This catalog contains summaries only; do not infer or follow a skill's instructions until it has been loaded.
 
-照做：给一个「任务 → 文档」的目录，模型按 name+description 选中才加载全文——同时省上下文、防脑补。运行时怎么实现这条（catalog 机制、注入预算）是 [`披露管线`](./12-progressive-disclosure-pipeline.md) 的事。
+照做：给一个「任务 → 文档」的目录，模型按 name+description 选中才加载全文——同时省上下文、防脑补。运行时怎么实现这条（catalog 机制、注入预算）是 [`披露管线`](./13-progressive-disclosure-pipeline.md) 的事。
 
-本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「10 · Skills」一节）——按需核对，不读不影响理解。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「11 · Skills」一节）——按需核对，不读不影响理解。

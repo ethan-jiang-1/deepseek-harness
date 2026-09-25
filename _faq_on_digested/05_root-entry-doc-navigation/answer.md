@@ -36,4 +36,4 @@
 - [`03-budget-and-guarantee.md`](./03-budget-and-guarantee.md)
 - [`research.md`](./research.md)
 - 静态设计（另一半）：[`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)
-- 完整五层管线（迁移视角）：[`07_borrowing-harness-idea/12-progressive-disclosure-pipeline.md`](../07_borrowing-harness-idea/12-progressive-disclosure-pipeline.md)
+- 完整五层管线（迁移视角）：[`07_borrowing-harness-idea/13-progressive-disclosure-pipeline.md`](../07_borrowing-harness-idea/13-progressive-disclosure-pipeline.md)
