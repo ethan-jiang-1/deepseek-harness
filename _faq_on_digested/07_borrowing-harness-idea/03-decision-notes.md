@@ -1,6 +1,6 @@
 # 决策记录（Notes/ADR）：受控演进的设计记忆
 
-> **道 · 决策记录。** 本页拥有决策记录的完整逻辑：为什么需要它、DSH 怎么应对、怎么落地、怎么迁。[`归属`](./02-legibility-ownership.md) 讲了当前事实与决策理由分家；DSH 侧的精确生命周期（状态目录、supersession、冻结归档）由 [Agent Note lifecycle 参考](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md) 拥有。
+> **道 · 决策记录。** 本页拥有决策记录的完整逻辑：为什么需要它、DSH 怎么应对、怎么落地、怎么迁。[`归属`](./02-legibility-ownership.md) 讲了当前事实与决策理由分家；DSH 侧的原始规则在 [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)。
 
 ## 为什么要有这道
 
@@ -73,9 +73,4 @@ DSH 的应对可以压成三条：
 
 **取代的两档**：部分取代——新旧并存、交叉链接，各自拥有自己那部分理由；完全取代——先吸收再删除，理由同上。**归档按「未来决策价值」判断**，不按字数年龄；归档的历史记录是冻结快照，永远不再编辑、不作为当前权威引用——想引用它说明历史时，链接过去并注明是历史。
 
-## 证据入口
-
-- [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)：DSH 决策记录的原始规则（豁免条款、取代、归档）。
-- [Agent Note lifecycle 参考](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md)：状态转换、supersession 与冻结的精确条件。
-- [SDLC Tutorial 02](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/02-specs-and-decisions.md)：两个对比例（局部修补豁免 vs 持久取舍必写）的完整走查，含目录树实物。
-- [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-archive-agent-notes/SKILL.md)：DSH 归档判断的校准工作流（按未来决策价值，不按字数年龄）。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「03 · 决策记录」一节）——按需核对，不读不影响理解。

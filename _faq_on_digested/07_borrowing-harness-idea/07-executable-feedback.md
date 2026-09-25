@@ -19,7 +19,7 @@
 | 运行时关系 | package invariant | 活系统中的 owner relationship 持续成立 | 没有可观察关系的纯函数性质 |
 | 语义判断 | code review、用户验收 | 意图、架构、风险是否对齐 | 每个机械细节都已执行 |
 
-关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 为绿不代表产品工作，snapshot 为绿不代表 API 合理，review 也不该手工重复已经由绿色 gate 精确拒绝的格式问题。这六层服务于交付时刻——它们围绕的是「一笔变更的证据是否与声称对齐」，DSH 有一笔真实变更的实测演示（断言反转的红灯对照、无断言行为的缺口如实标注），见 [SDLC Tutorial 04](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/04-implementation-and-evidence.md)；变更闭环的完整迁移表见 [`01-sdlc-change-loop.md`](./01-sdlc-change-loop.md)。
+关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 为绿不代表产品工作，snapshot 为绿不代表 API 合理，review 也不该手工重复已经由绿色 gate 精确拒绝的格式问题。这六层服务于交付时刻——它们围绕的是「一笔变更的证据是否与声称对齐」，DSH 有一笔真实变更的实测演示（断言反转的红灯对照、无断言行为的缺口如实标注），见 [提交 5124a2a310](https://github.com/deepseek-ai/deepseek-harness/commit/5124a2a310a904d28118609c41d89f26440b946b) 与 [变更闭环](./01-sdlc-change-loop.md) 的逐环对照；变更闭环的完整迁移表见 [`01-sdlc-change-loop.md`](./01-sdlc-change-loop.md)。
 
 ## 负例控制：证明检查真的会失败
 
@@ -45,10 +45,4 @@
 4. 本地跑相关检查、CI 跑穷举——先拿相关红灯，别一上来跑全套。
 5. invariant 是锦上添花，不是普通项目的第一步；没有可观察关系就诚实写空，不造假断言。
 
-## 证据入口
-
-- [`_agent_ready_development/repo-harness/05-executable-feedback.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/05-executable-feedback.md)：六层反馈、invariant、负例控制、本地 vs CI。
-- [`_digested/harness-idea/03-paved-road.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/03-paved-road.md)：门禁自身被测试的元验证。
-- [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/testing.md)：test tiers、真实入口、negative control、snapshot 义务。
-- [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据，而不是固定跑全套。
-- [`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/scripts/run-gates.ts)：仓库检查逻辑的聚合入口。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「07 · 可执行反馈」一节）——按需核对，不读不影响理解。

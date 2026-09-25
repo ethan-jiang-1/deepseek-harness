@@ -36,10 +36,4 @@ DSH 的对策是 inspectability（可检查性）：提供查询入口，让 age
 
 所以「可查询/可试验」不代表「不需要授权」，也不代表外部副作用能回滚。迁移时别把「给 agent 一个 inspect 工具」当成「给了它一个沙箱」。
 
-## 证据入口
-
-- [`_agent_ready_development/repo-harness/11-runtime-inspection.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/11-runtime-inspection.md)：三个查询面、catalog 与活运行时的区别、tool-cordis 的 trust stance。
-- [`_digested/harness-idea/05-dynamic-legibility.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/05-dynamic-legibility.md)：dsh 不只可读、还可查询可试验。
-- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)：ordered config layers 与 `--dump-config`。
-- [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-catalog.md)：从源码生成的工具 schema 与 opt-in 说明。
-- [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/capability-seams.md)：生成的 Service Definition / Provider / Consumer 关系索引。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「11 · 运行时查询」一节）——按需核对，不读不影响理解。

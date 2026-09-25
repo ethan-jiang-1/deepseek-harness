@@ -52,9 +52,4 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 只做文件态不是残缺：宿主自动加载让第一环免费；会话态是 DSH 把「按需」从写作纪律升级成运行时保证的那一步，普通项目按需取用。
 
-## 证据入口
-
-- 文件态（设计）：[`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md) 及其子章节
-- 会话态（机制）：[`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md) 及其子章节
-- 本目录的关联：[`02-legibility-ownership.md`](./02-legibility-ownership.md)、[`06-step-by-step-guide.md`](./06-step-by-step-guide.md) Phase 1、[`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)
-- 源码：[`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)、[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「09 · 入口链」一节）——按需核对，不读不影响理解。

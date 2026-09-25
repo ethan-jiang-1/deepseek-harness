@@ -53,10 +53,4 @@
 - **动态层走私**——上下文组装、工具结果绕过日志直接进模型。检验法：拿日志回放，回放不出模型当时看到的内容就是缺口。
 - **不回写**——会话里敲定的方案、踩过的坑，不落 Note/README。检验法：新会话的 agent 是否重复提出已否决的方案（[`决策记录`](./03-decision-notes.md) 的负知识就是防这个的）。
 
-## 证据入口
-
-- [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)：model-visible ⟺ logged 的原始规则。
-- [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/AGENTS.md)：commit point 发布与单权威源派生。
-- [session log 机制](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/session-format-status.md)：格式版本与已发布会话数据的迁移纪律。
-- [system-prompt 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/system-prompt.md)：`PromptContext` 作为 cache-safe 的动态层——变化或被压缩时才重新记录快照。
-- [SDLC Tutorial 05](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/05-review-and-merge.md)：合并后知识归位——第三条纪律的完整演示。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「04 · 静与动」一节）——按需核对，不读不影响理解。

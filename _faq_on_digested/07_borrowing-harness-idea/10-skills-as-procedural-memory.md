@@ -61,9 +61,4 @@ Skill 与根文档共用同一个原则——**摘要负责发现，正文才拥
 3. 每个流程文档：触发条件、输入、步骤、停止条件、验证、输出格式——缺一不可。
 4. 可机械判断的部分仍然下沉到 gate；Skill 只处理需要上下文判断的部分。
 
-## 证据入口
-
-- [`_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md)：两种 Skill 的区分、五步调用、Skill 与 gate 的边界。
-- [`_digested/harness-idea/02-legibility.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/02-legibility.md)：上下文入口外置与按需加载。
-- [`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-code-review/SKILL.md)：Skill 作为 guidance、语义 review 输入和 finding 输出的实例。
-- [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据的实例。
+本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「10 · Skills」一节）——按需核对，不读不影响理解。
