@@ -91,7 +91,7 @@
 | 仓库机制 | `_agent_ready_development/repo-harness/` 全 11 篇 + 三个目录的 `README`/`00-index` + `_coverage/00-corpus-maintenance.md` + `verify.mjs` | 01 的知识归位组、证据与交付组、状态与上下文组 |
 | 转移章法 | `_faq_on_digested/07_borrowing-harness-idea/` 的 01–05、07–09、11–13（11 篇） | 01/02 的开发十七维（定义在 01、探针与封顶在 02）、20 的处置卡、四条边界 |
 | 流程参考 | `_agent_ready_development/sdlc-reference/` 全 13 篇 | 01 补齐的五维：意图入口、评审与批准、发布与版本、分类学、防漂移 |
-| 运行时机制 | `_digested/` 的 `agent-loop`、`capability-seams`、`composition`、`session-and-loop`、`tools-prompt-llm`、`runtime-profiles`、`surfaces`、`system` 八组 + `_faq_on_digested/08_plugin-seam-maturity`、`09_plugin-business-ladder` | **02 的全部十一维** + 02 第 5 节的模仿判断 |
+| 运行时机制 | `_digested/` 的 `agent-loop`、`capability-seams`、`composition`、`session-and-loop`、`tools-prompt-llm`、`runtime-profiles`、`surfaces`、`system` 八组 + `_faq_on_digested/08_plugin-seam-maturity`、`09_plugin-business-ladder` | **02 的全部十一维** + 11 第 5 节的模仿判断 |
 
 ### 三、只用来核对边界的
 

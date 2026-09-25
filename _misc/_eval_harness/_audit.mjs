@@ -226,5 +226,59 @@ for (const [file, level, idPattern, expected] of [
   check('无行尾空白', trailing.length === 0, trailing.join(' '))
 }
 
+// —— 小节编号与引用自洽（拆分/搬运最容易在这里劈叉）——
+{
+  const docNum = {
+    '01': '01-evaluate-development-harness-coarse.md',
+    '02': '02-evaluate-development-harness-fine.md',
+    '11': '11-evaluate-runtime-harness.md',
+    '12': '12-evaluate-runtime-harness-fine.md',
+    '20': '20-from-gaps-to-plan.md',
+  }
+  const secsOf = (f) => (rd(f).match(/^## (\d+) · /gm) ?? []).map((s) => Number(/## (\d+)/.exec(s)[1]))
+  const appsOf = (f) => (rd(f).match(/^## 附录 ([A-C])/gm) ?? []).map((s) => /附录 ([A-C])/.exec(s)[1])
+  const secs = {}, apps = {}
+  for (const [n, f] of Object.entries(docNum)) { secs[n] = secsOf(f); apps[n] = appsOf(f) }
+
+  const notSeq = Object.entries(secs).filter(([, list]) => {
+    const want = list.map((_, i) => (list[0] === 0 ? i : i + 1))
+    return list.join(',') !== want.join(',')
+  })
+  check('小节编号连续且无重复', notSeq.length === 0, notSeq.map(([n, l]) => `${n}: ${l.join(',')}`).join(' | '))
+
+  const tocBad = []
+  for (const [n, f] of Object.entries(docNum)) {
+    const body = rd(f), from = body.indexOf('## 目录')
+    const toc = from < 0 ? '' : body.slice(from, body.indexOf('\n---', from))
+    const inToc = [...toc.matchAll(/^\s*- \[(\d+) · /gm)].map((m) => Number(m[1]))
+    if (inToc.join(',') !== secs[n].join(',')) tocBad.push(`${n}: 目录 ${inToc.join(',')} vs 正文 ${secs[n].join(',')}`)
+  }
+  check('目录覆盖且仅覆盖本文小节', tocBad.length === 0, tocBad.slice(0, 2).join(' | '))
+
+  const secRefBad = []
+  for (const [n, f] of Object.entries(docNum)) {
+    for (const m of rd(f).matchAll(/第 (\d+) 节/g)) if (!secs[n].includes(Number(m[1]))) secRefBad.push(`${n} 第 ${m[1]} 节`)
+  }
+  check('文内「第 N 节」都存在', secRefBad.length === 0, secRefBad.slice(0, 3).join(' | '))
+
+  const crossBad = []
+  for (const [n, f] of Object.entries(docNum)) {
+    for (const m of rd(f).matchAll(/\b(0[12]|1[12]|20) (§|第 )(\d+)/g)) {
+      const target = m[1], num = Number(m[3])
+      if (!secs[target].includes(num)) crossBad.push(`${n} → ${target} §${num}`)
+    }
+  }
+  check('跨文档小节引用都指向存在的小节', crossBad.length === 0, crossBad.slice(0, 3).join(' | '))
+
+  const appBad = []
+  for (const [n, f] of Object.entries(docNum)) {
+    for (const m of rd(f).matchAll(/(?:(\d\d) )?(?:的)?附录 ([A-C])/g)) {
+      const target = m[1] ?? n
+      if (!apps[target].includes(m[2])) appBad.push(`${n} → ${target} 附录 ${m[2]}`)
+    }
+  }
+  check('附录引用都指向存在的附录', appBad.length === 0, appBad.slice(0, 3).join(' | '))
+}
+
 console.log(fails ? `\n${fails} 项未通过` : '\n全部通过')
 process.exit(fails ? 1 : 0)
