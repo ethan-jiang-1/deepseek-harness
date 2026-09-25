@@ -11,3 +11,4 @@
 | 文件 | 正文 owner（拥有者） |
 |---|---|
 | `first-change.svg` | [`../00-index.md`](../00-index.md) |
+| `evidence-map.svg` | [`../01-follow-a-change.md`](../01-follow-a-change.md) |

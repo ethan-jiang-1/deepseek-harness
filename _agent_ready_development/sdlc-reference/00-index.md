@@ -4,7 +4,13 @@
 
 这里是 SDLC Reference（SDLC 流程的精确参考），面向已经理解 [SDLC Tutorial 新手主线](../sdlc-tutorial/00-index.md)，并需要核对精确条件、内部状态或少见流程的读者。各页支持按问题查找，不要求从 `01` 顺序读到 `11`。
 
-普通 branch → PR → CI/review → merge 流程在 SDLC Tutorial已经完整说明。这里保留实现细节，是为了回答“具体由哪个文件执行”“边界条件是什么”“失败后怎样处理”，不是为了给第一次阅读增加前置知识。与 Tutorial 的分工同此：Tutorial 建立心智模型，本目录负责精确到可核对。
+普通 branch → PR → CI/review → merge 流程在 SDLC Tutorial 已经完整说明。这里保留实现细节，是为了回答“具体由哪个文件执行”“边界条件是什么”“失败后怎样处理”，不是为了给第一次阅读增加前置知识。与 Tutorial 的分工同此：Tutorial 建立心智模型，本目录负责精确到可核对。
+
+**本目录记录的是“DSH 眼里的 SDLC”落到条文后的形态。** Tutorial 开篇的三条立场，在这里各有对应的一组机制：
+
+1. **agent 是一等参与者** → 面向 agent 的可发现性与状态机：Agent Note 生命周期（`01`）、意图入口与非 Issue 意图载体（`09`）、git 历史能证明什么（`08`）；
+2. **规则是可执行的代码** → 每条规则的可执行实现：trusted policy 与 workflow 拆分（`02`）、gates 与检查路由（`04`）、双语 pairing 与文档门禁（`05`）、加权批准的 policy 实现（`10`）；
+3. **每类事实有唯一的 owner** → 事实归属与不越界条件：Note 与 Plan 各自拥有什么（`01`、`03`）、文档 owner（`05`）、评审职责边界（`06`）、发布 lane 归属（`11`）。
 
 本目录只拥有复杂变更的流程机制。DSH 怎样通过仓库结构、Skills、可执行反馈和运行时查询帮助 coding agent 修改自身，由独立的 [Development Harness 专题](../repo-harness/00-index.md) 说明；流程页只在任务需要时链接相应概念，不重复那条叙事。
 
@@ -30,4 +36,4 @@
 
 ## 使用方式
 
-先从 SDLC Tutorial找到你不确定的概念，再进入一篇对应 reference。页面末尾的“证据入口”链接到 owning source、policy、workflow、skill 或 Agent Note；需要判断固定基线中的仓库事实时，以这些来源为准。
+先从 SDLC Tutorial 找到你不确定的概念，再进入一篇对应 reference。页面末尾的“证据入口”链接到 owning source、policy、workflow、skill 或 Agent Note；需要判断固定基线中的仓库事实时，以这些来源为准。

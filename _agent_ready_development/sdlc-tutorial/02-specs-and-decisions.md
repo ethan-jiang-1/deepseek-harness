@@ -8,49 +8,63 @@
 
 ## 六种问题，六类位置
 
-| 你要确认什么 | 主要位置 | 简单理解 |
-|---|---|---|
-| 为什么做、怎样算完成 | Issue 或任务上下文 | 意图与验收 |
-| 为什么这样决定 | Agent Note | 理由、替代方案与后果 |
-| 这一次准备怎样实现 | Plan Mode 会话；可选 | 一次性的实施计划 |
-| 交付后的系统是什么 | 源码、types、README、JSDoc、`docs/` | 当前行为和接口 |
-| 什么能抓住回归 | tests、snapshots、invariants | 可重复运行的行为证据 |
-| PR 现在能否推进 | GitHub checks、review 和 merge state | 远端交付状态 |
+| 你要确认什么 | 主要位置 | 主例（模型 ID 显示）中的落点 | pnpm 锁案例中的落点 |
+|---|---|---|---|
+| 为什么做、怎样算完成 | Issue 或任务上下文 | 教学重建的任务描述 | Note 的 Problem 节：22 分钟的锁持有 |
+| 为什么这样决定 | Agent Note | **豁免**：无持久取舍 | [`bounded-pnpm-runs`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/bug-fix/2026-09-23-bounded-pnpm-runs.md) |
+| 这一次准备怎样实现 | Plan Mode 会话；可选 | 未用 | 未用 |
+| 交付后的系统是什么 | 源码、README、JSDoc（代码内的文档注释） | 组件 + 样式 + 双语 README | `operations.ts` + 包 README |
+| 什么能抓住回归 | tests、snapshots（录制会话的回放证据） | 组件测试 + e2e | 真实子进程测试 |
+| PR 现在能否推进 | GitHub checks、review | `需查 GitHub` | `需查 GitHub` |
 
 这就是 distributed specification（分布式规格）：每类事实有自己的 owner（主要维护位置），它们通过同一个变更保持一致。
 
-## Agent Note 只拥有决定
+## Agent Note：目录本身就是流程
 
-Agent Note 是仓库定义的 design decision record（设计决定记录）。承载持久决定理由的变更（代码、测试与现有文档都无法解释「为什么选当前方案」与「主动放弃了什么」这两类事实的变更）都要新增或更新 owning Agent Note；机械或局部编辑（含局部 UI 呈现）豁免——0008 复核按上游收窄后的「durable decision rationale」标准改述。
+打开 `.agents/notes/` 看一眼，生命周期状态就是目录名：
 
-Agent Note 有两个常见起点：
+```text
+.agents/notes/
+├── implemented/            ← 已交付决定，按类别分家
+│   ├── architecture/  bug-fix/  feature/
+│   ├── process/  simplification/  testing/
+│   └── <name>.md + <name>.zh.md + <name>.i18n.yaml   ← 双语三件套
+├── proposed/               ← 待评审提案
+├── rejected/               ← 驳回记录（只在仍能防一个可信错误时保留）
+├── archived/               ← 冻结历史，不作当前权威
+└── README.md + README.zh.md + README.i18n.yaml        ← 规则本身也是三件套
+```
 
-- 决定仍需在实现前评审：创建 proposed Agent Note；
-- 决定已经明确并随当前变更交付：直接创建或更新 implemented Agent Note。
+三件套的第三件（`.i18n.yaml`）记录两份语言的 git blob hash——连“中英文档相等”这个纪律都被可执行配对钉住，与主例 README 的配对方式完全相同。一个 agent 不需要读完整规则就能从目录树读出：决定分五个类别、有四种状态、双语平等。
 
-因此，“必须有 Agent Note”不等于“必须先写 proposed Note”。生命周期、取代和冻结归档规则属于 Reference 层机制，见 [Agent Note lifecycle（生命周期）](../sdlc-reference/01-agent-note-lifecycle.md)。
+**Agent Note 只拥有决定**：承载持久决定理由的变更（代码、测试与现有文档都无法解释“为什么选当前方案”与“主动放弃了什么”这两类事实的变更）都要新增或更新 owning Agent Note；机械或局部编辑（含局部 UI 呈现）豁免。它有两个常见起点——决定仍需实现前评审时创建 proposed；决定已明确并随当前变更交付时直接 implemented。生命周期、取代和冻结归档规则属于 Reference 层机制，见 [Agent Note lifecycle](../sdlc-reference/01-agent-note-lifecycle.md)。
+
+## 两笔真实修改并排看
+
+**不需要 Note 的小 UI 修复**（主例，提交 `5124a2a310`）：显示从名称换成 ID，是局部呈现修改。任务、当前合同、回归证据各自有 owner（Issue/任务上下文、双语 README、组件测试与 e2e）；没有任何“为什么选当前方案、放弃了什么”的事实需要独立保存——选择器显示 ID 的理由，读完源码和 README 就完整了。
+
+**需要 Note 的进程竞态修复**（提交 `ccaa0dc11c`）：插件管理器（`packages/boot/plugin-manager`，负责安装/移除插件包）里，静默的 pnpm 子进程长期占用 profile lock（DSH profile 目录的写锁）。打开它的 [Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/bug-fix/2026-09-23-bounded-pnpm-runs.md)，看它承载了什么：
+
+- **Problem**：22 分钟的锁持有、该进程之后所有管理调用排队等待、pnpm 11.13.0 的 worker-pool 缺陷；
+- **Decision**：run 以进程退出为完成信号、2000 ms 有界排水、静默超时终止整棵进程树；
+- **真实 Alternatives**：五条被否决的路线，每条都写明否决原因（“Terminate only the pnpm process”一条还注明了复现方式）；
+- **Testing**：四个测试文件分别钉住什么行为；
+- **Consequences**：接受哪些代价（静默的健康构建会被误杀、报告最多晚 `idleTimeoutMs`）。
+
+这些事实没有别的地方可放：源码只能显示现在的行为，测试只能证明场景，README 不解释“为什么不用总耗时阈值”。**Note 是未来为什么，源码是现在是什么。** 配套的 [operations-process.spec.ts](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/boot/plugin-manager/tests/operations-process.spec.ts) 用真实子进程验证最关键的路径——一个故意占着管道不放的后代进程，会在操作返回前连同整棵进程树一起被停掉。
 
 ## Plan 与 Agent Note 面向不同时间
 
-Plan（计划）回答“这一次准备怎样做”，可以写具体文件、步骤、验证和未确定假设。它服务当前会话和即将开始的实现。
+Plan（计划）回答“这一次准备怎样做”，可以写具体文件、步骤、验证和未确定假设，服务当前会话。Agent Note 回答“仓库为什么长期采用这个决定”，服务未来维护者。一个 Plan 可以在实施中变化；implemented Note 只描述实际交付的决定。两者可能来自同一次设计讨论，但不能互相替代。
 
-Agent Note 回答“仓库为什么长期采用这个决定”，保留问题、决定、替代方案和后果。它服务未来维护者。
+Plan Mode 提供计划状态和用户审批交互，本身不限制文件、网络或进程访问；权限控制由 sandbox mode（沙箱模式）和 approval policy（审批策略）各自独立承担。精确状态和审批时序见 [Plan Mode 参考](../sdlc-reference/03-plan-and-sandbox.md)。
 
-一个 Plan 可以在实施中变化；implemented Agent Note 只描述实际交付的决定。两者可能来自同一次设计讨论，但不能互相替代。
+## 练习
 
-Plan Mode 提供计划状态和用户审批交互，不执行文件、网络或进程访问限制；sandbox mode（沙箱模式）与 approval policy（审批策略）独立承担权限控制。精确状态和审批时序见 [Plan Mode 参考](../sdlc-reference/03-plan-and-sandbox.md)。
+回到主例：如果这笔修改不是“显示 ID”而是“选择器的候选数据源从 adapter catalog（adapter 提供的已安装模型本地目录）换成网络端点”，你需要写 Note 吗？先问两个问题：这次修改是否放弃了某个正在工作的方案（catalog 直读）？一年后有人问“为什么选择器不打网络请求”，答案在源码和 README 里完整吗？
 
-## 用 CLI 例子对照
+**判据**：需要 Note 的信号是**存在真实的替代方案和持久取舍**，不是 diff 大小。
 
-| 内容 | 应放在哪里 |
-|---|---|
-| “错误提示必须指出配置字段” | Issue 或任务验收 |
-| “在配置解析层统一产生结构化错误” | Agent Note 的决定 |
-| “先改 parser，再改 renderer，最后补 CLI snapshot” | Plan；需要时使用 |
-| 具体 error type 和输出规则 | 源码、JSDoc、README 或相关 docs |
-| 输入错误配置后得到明确提示 | test 或 snapshot |
-| CI 是否通过、review 是否完成 | Pull Request |
-
-同一个句子如果同时出现在六个位置，未来很快会漂移；如果六类事实只剩一类，读者又无法判断变更是否完整。SDD 的重点不是文档越多越好，而是**每个重要问题都能找到权威答案**。
+这一页是三条立场交汇的地方：**每类事实有唯一 owner**——六类位置表就是它的完整展开；**agent 是一等参与者**——`.agents/notes/` 的目录树让没来过的 agent 不读规则全文也能读出生命周期；**规则是可执行代码**——连“中英文档相等”都被 hash 配对钉死。通用仓库把这些寄托在贡献文化和资深工程师的脑子里；DSH 把它们做进文件结构和可运行的检查。
 
 下一篇进入协作部分：[GitHub Flow](./03-github-flow.md)。

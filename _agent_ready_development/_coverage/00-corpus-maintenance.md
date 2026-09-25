@@ -6,7 +6,7 @@
 
 `_agent_ready_development/` 是根级 SDD、GitHub Flow 与 Development Harness 学习语料，并使用 DSH 作为固定版本的一手机制参考；它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法。语料把可观察机制综合为“分布式规格”：Issue/任务意图、Agent Note 决定、可选 Plan、当前源码与文档、行为证据，以及 GitHub 远端协作状态分别有自己的 owner。
 
-根 `README.md` 是独立语料的介绍、三视角定位与维护入口。`sdlc-tutorial/` 中的 `01` 至 `05` 用一个普通变更递进讲解 SDD、GitHub Flow、实现证据与 review/merge。`sdlc-reference/` 中的 `01` 至 `08` 按问题提供 SDLC 生命周期的精确 reference，`08` 是明确限定证据范围的 git 历史案例；2026-09-24 轮新增 `09`（意图入口与工作项治理）、`10`（加权批准与合并门槛）与 `11`（发布与上线），把主链在“意图进入”与“merge 之后”两端补齐。`repo-harness/` 中的 `01` 是 fresh-agent tutorial，`02` 至 `07` 分别拥有知识归属、Skills、参与路径、可执行反馈、运行时查询和适用边界。
+根 `README.md` 是独立语料的介绍、三视角定位与维护入口。`sdlc-tutorial/` 中的 `01` 至 `05` 以一笔真实小变更（模型选择器显示 model ID，提交 `5124a2a310`，PR #5004）为主例递进讲解 SDD、GitHub Flow、实现证据与 review/merge，并以 pnpm 锁修复（`ccaa0dc11c`，PR #4982，`bounded-pnpm-runs` Note）做 Note 对照；2026-09-24 重写轮把虚构 CLI 例子整体替换为这两笔真实交付，正文对每步标注 `已在提交观察` / `现行规则要求` / `需查 GitHub` 三层证据等级，任务描述明示为教学重建，PR #5004/#4982 的远端记录在钉版环境不可达、按现行规范演练呈现，红灯对照（2 红 95 绿）在钉版基线 worktree 实测。`sdlc-reference/` 中的 `01` 至 `08` 按问题提供 SDLC 生命周期的精确 reference，`08` 是明确限定证据范围的 git 历史案例；2026-09-24 轮新增 `09`（意图入口与工作项治理）、`10`（加权批准与合并门槛）与 `11`（发布与上线），把主链在“意图进入”与“merge 之后”两端补齐。`repo-harness/` 中的 `01` 是 fresh-agent tutorial，`02` 至 `07` 分别拥有知识归属、Skills、参与路径、可执行反馈、运行时查询和适用边界。
 
 每个目录都有 `README.md`。三个主题目录的 README 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 README 还标明每张 SVG 的正文 owner。
 
@@ -34,7 +34,7 @@
 
 ## 3. 结构与叙事约束
 
-1. 阅读顺序是 tutorial-first：先在 `sdlc-tutorial/` 用一个 CLI 变更讲完普通路径，再拆解规格、GitHub Flow、证据与 review；精确机制和少见流程进入 `sdlc-reference/`。
+1. 阅读顺序是 tutorial-first：先在 `sdlc-tutorial/` 用一笔真实小变更（模型选择器显示 model ID）讲完普通路径，再拆解规格、GitHub Flow、证据与 review；精确机制和少见流程进入 `sdlc-reference/`。案例事实与三层证据标注（`已在提交观察` / `现行规则要求` / `需查 GitHub`）是 tutorial 层的结构约束：教学重建的任务描述不冒充原始 Issue，不可达的远端记录不补造历史。
 2. 重要术语在新手层首次出现时同时给出英文名称和中文解释；后文保留仓库与 GitHub 中可搜索的英文名称。
 3. 主链不把 Issue、proposed Note 和 Plan Mode 画成统一必经顺序；三者是条件入口，承载持久决定理由的变更的共同义务是 owning Agent Note（机械/局部编辑豁免，与上游收窄后的标准一致）。
 4. `.github/` 是远端执行面，而非只在 Issue 小节中出现：模板、trusted policy、Project lifecycle、PR CI、自动依赖 PR 和相邻发布 workflow 各自标明职责。
@@ -52,7 +52,7 @@
 
 ## 4. 图示
 
-17 张 SVG 分属 [SDLC Tutorial](../sdlc-tutorial/figures/README.md)、[SDLC Reference](../sdlc-reference/figures/README.md) 和 [Development Harness](../repo-harness/figures/README.md) 三个清单（2026-09-24 第五段起新增 `content-maintenance-forms.svg` 与 `plugin-three-structures.svg`，均归 Development Harness）；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
+18 张 SVG 分属 [SDLC Tutorial](../sdlc-tutorial/figures/README.md)、[SDLC Reference](../sdlc-reference/figures/README.md) 和 [Development Harness](../repo-harness/figures/README.md) 三个清单（2026-09-24 第五段起新增 `content-maintenance-forms.svg` 与 `plugin-three-structures.svg`，均归 Development Harness；同日 tutorial 重写轮新增 `evidence-map.svg`，归 SDLC Tutorial 的 `01`）；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
 
 ## 5. 重审触发路径
 

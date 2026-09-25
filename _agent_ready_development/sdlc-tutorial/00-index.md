@@ -1,68 +1,67 @@
-# 从规格到合并：跟完一次普通变更
+# DSH 眼里的 SDLC：跟着一笔真实变更走完全程
+
+## 这是“DSH 眼里的 SDLC”，不是通用教材
+
+市面上的 SDLC（Software Development Lifecycle，软件研发生命周期）教材讲的是通用阶段论：需求 → 设计 → 实现 → 测试 → 发布。本专题不是那份东西的复述——它讲的是 **DSH 这个真实仓库怎样理解和安排一次变更的一生**，而 DSH 对 SDLC 有三个不同于常规仓库的立场：
+
+1. **agent 是一等参与者。** 写代码、查证据、做评审的可能是人，也可能是没参与过这个仓库的 coding agent——所以每块知识都要有可发现的入口（`AGENTS.md`、包 README、决策记录），而不是靠“入职口口相传”。
+2. **规则是可执行的代码。** “文档要双语相等”“PR 要引用 Issue”“评审要求是什么”，全部接成仓库里跑得起来的检查（gates、policy 脚本、CI workflow），不是写在贡献指南里的一句话。
+3. **每类事实有唯一的 owner。** 意图归 Issue 或任务上下文、决定理由归 Agent Note、当前行为归源码与 README、回归证据归测试、交付状态归 GitHub——一处一个权威，不重复、不漂移。
+
+带着这三个立场读后面五篇，你会发现每一步的设计都从它们推出来。
 
 ## 这组文档写给谁
 
-这组文档写给已经知道 git 可以提交代码，但还不熟悉 Spec-driven Development（SDD，规格驱动开发）和 GitHub Flow（GitHub 协作流）的读者。读完新手主线后，你应该能回答三个问题：一次变更为什么要先说明结果，代码之外还要一起提交什么，以及 GitHub 为什么不只是存放代码的地方。
+写给已经知道 git 可以提交代码、但不熟悉 DSH 开发方式的读者——包括没有参与过这个仓库的 coding agent。读完五篇后，你应该能以一笔真实的小变更走通：**任务意图 → 找 owner（改哪里、谁拥有这块行为） → 条件化决定 → 实现/文档/证据 → 本地检查 → PR/CI/review → merge 后知识归位**，并对每一步说出可打开的文件和证据边界。
 
-DSH 没有正式声明采用一套名为 SDD 的方法。本专题借用 SDD 的视角解释仓库已经存在的规则：**先把意图、决定和验收说清楚，再让实现、文档、测试与这些规格一起演进。**
+贯穿本教程的 DSH（DeepSeek Harness）是一个仍在活跃维护的开源 agent harness 仓库：TypeScript 单仓库（monorepo），由插件组成，管理 agent 会话、工具执行、沙箱、终端与 Web/Desktop 图形界面。你不必先了解它的产品功能——涉及的机制都会在出现时解释，并附上可核对的链接。
 
-## 先分清两个概念
+DSH 没有正式声明采用一套名为 Spec-driven Development（SDD，规格驱动开发）的方法。本专题借用这个视角解释仓库已经存在的规则：**先把意图、决定和验收说清楚，再让实现、文档、测试与这些规格一起演进**；GitHub Flow（GitHub 协作流）回答的则是另一个问题——一个变更怎样从个人分支出发，经过 Pull Request（变更评审请求）、CI（持续集成：在远端自动运行仓库定义的检查）和 review（评审），安全进入主分支。
 
-**Spec-driven Development（SDD，规格驱动开发）**回答“做什么、为什么这样做、怎样证明完成”。这里的 specification（规格）不是一份巨大的设计文档，而是分布在任务上下文、Agent Note、当前文档和测试中的一组可核验事实。
+## 贯穿案例
 
-**GitHub Flow（GitHub 协作流）**回答“一个变更怎样从个人分支进入主分支”。它的普通路径是 branch（分支）→ commit（提交）→ Pull Request（PR）→ Continuous Integration（CI，持续集成）与 review（评审）→ merge（合并）。
+全教程跟着**一笔真实交付**走：模型设置列表的呈现修复——选择器每行显示原始 model ID（等宽字体），悬停显示模型名称。提交 `5124a2a310`（PR #5004），7 个文件、+15/−14：组件与样式、组件测试、Web e2e（端到端测试）、双语 README 及配对记录（[01](./01-follow-a-change.md) 有逐文件链接）。
 
-DSH 把两者叠在一起：SDD 让变更有清楚的目标、决定和证据；GitHub Flow 让这些内容经过远端检查与评审后安全进入主分支。
+这笔修改没有新增 Agent Note（DSH 放在 `.agents/notes/` 的决策记录文档；此处因局部呈现豁免），正好演示**不需要 Note 的完整小交付**；[02](./02-specs-and-decisions.md) 用另一笔真实修改——包管理器 pnpm 的子进程长期占用 profile lock（配置目录的写锁）——对照**为什么需要 Note**。一正一反，比抽象地说“Note 有时可选”更能阻止机械建档。
+
+教程不伪装历史：任务描述从已交付行为重建（教学重建）；PR #5004 当时的 Issue、CI、review 与 merge 状态不在 git tree 里，涉及处标注 `需查 GitHub`，不补造。
 
 ![一次普通变更怎样从意图走到合并](./figures/first-change.svg)
 
 ## 用五步理解普通变更
 
-1. **说明意图。** 在 Issue（GitHub 工作项）或任务上下文中写清外部结果和验收条件。
-2. **记录决定。** 持久决定理由变更新增或更新 Agent Note（仓库决策记录；机械/局部编辑豁免）；需要先评审实施计划时可以使用 Plan Mode（计划模式）。
+1. **说明意图。** 在 Issue 或任务上下文中写清外部结果和验收条件。
+2. **记录决定。** 持久决定理由变更新增或更新 Agent Note（机械/局部编辑豁免）；需要先评审实施计划时可以使用 Plan Mode（计划模式）。两者都是条件入口，不是必经站。
 3. **完成变更。** 在分支上同时更新代码、当前文档和能抓住回归的测试或其它 evidence（验证证据）。
-4. **发起协作。** Push（推送）分支并创建 PR；GitHub workflow（工作流）运行 CI，reviewer 检查自动化无法判断的语义。
-5. **合并交付。** Required checks（必需检查）和 review 状态满足后 merge；主分支成为新的当前状态。
-
-这五步是一条学习主线，不是一条所有变更都必须逐项出现的固定流水线。Issue 和 Plan Mode 都有适用条件；持久决定理由变更必须有 owning Agent Note（拥有该决定的 Agent Note；机械/局部编辑豁免）。
+4. **发起协作。** Push 分支并创建 PR；GitHub workflow 运行 CI，reviewer 检查自动化无法判断的语义。
+5. **合并交付。** Required checks 和 review 状态满足后 merge；主分支成为新的当前状态。
 
 ## 阅读顺序
 
-按顺序阅读下面五篇，每篇只增加一层概念：
+按顺序读下面五篇，每篇只增加一层概念，每篇都围绕贯穿案例做一次练习：
 
 | 章节 | 读完能回答 |
 |---|---|
-| [`01-follow-a-change.md`](./01-follow-a-change.md) | 一个具体变更从想法到合并到底发生了什么 |
-| [`02-specs-and-decisions.md`](./02-specs-and-decisions.md) | Issue、Agent Note、Plan、代码、文档和测试为什么不能互相替代 |
-| [`03-github-flow.md`](./03-github-flow.md) | branch、PR、CI、review、merge 怎样组成普通 GitHub Flow |
-| [`04-implementation-and-evidence.md`](./04-implementation-and-evidence.md) | 实现时要带上哪些证据，本地检查与远端 CI 怎样分工 |
-| [`05-review-and-merge.md`](./05-review-and-merge.md) | 自动检查、语义评审、用户交互与最终合并分别负责什么 |
+| [`01-follow-a-change.md`](./01-follow-a-change.md) | 一笔具体变更交付了什么、每步证据在哪里 |
+| [`02-specs-and-decisions.md`](./02-specs-and-decisions.md) | 六类事实各归哪里；什么时候需要 Agent Note |
+| [`03-github-flow.md`](./03-github-flow.md) | 本地与 push 后分别谁拥有证据；模板、CI、policy 怎样长成代码 |
+| [`04-implementation-and-evidence.md`](./04-implementation-and-evidence.md) | 变更面怎样对应证据；红灯对照怎样做 |
+| [`05-review-and-merge.md`](./05-review-and-merge.md) | 自动检查、语义评审、用户决定各管什么；合并后知识在哪 |
 
-第一次阅读可以在 `05` 结束。需要查精确 policy、内部状态或例外流程时，再进入 [SDLC Reference](../sdlc-reference/00-index.md)。想知道 DSH 为什么容易被 coding agent 理解和修改，以及 `AGENTS.md`、Agent Notes、Skills、gates、runtime inspection 和 `.github/` 怎样共同工作时，进入 [Development Harness 专题](../repo-harness/00-index.md)。
+## 三层阅读分工
 
-## 核心术语
+- **本教程**：跟着一笔真实变更走通过程，练习判断；
+- [Development Harness 专题](../repo-harness/00-index.md)：仓库**怎样帮助 agent 参与**——AGENTS.md、Notes、Skills、gates 怎样共同工作；
+- [SDLC Reference](../sdlc-reference/00-index.md)：查**精确条件**、状态与例外流程。
 
-| English | 中文理解 | 在本专题中的作用 |
-|---|---|---|
-| specification / spec | 规格 | 对意图、决定、当前行为或验收证据的可核验描述 |
-| Spec-driven Development / SDD | 规格驱动开发 | 让实现持续服从已写明的意图、决定和证据 |
-| GitHub Flow | GitHub 协作流 | 让分支变更经过 PR、CI 和评审后进入主分支 |
-| Issue | GitHub 工作项 | 记录外部问题、目标和验收条件 |
-| Agent Note | 仓库定义的决策记录 | 保存为什么这样决定、放弃了什么以及后果 |
-| Plan Mode | 计划模式 | 在实现前让用户评审一次性的实施计划；可选 |
-| Pull Request / PR | 变更评审请求 | 汇集 diff、讨论、检查和合并状态 |
-| Continuous Integration / CI | 持续集成 | 在远端自动运行仓库定义的检查 |
-| semantic review | 语义评审 | 判断实现是否真的符合意图、决定和使用场景 |
-| merge | 合并 | 把通过检查与评审的变更纳入目标分支 |
-
-后文保留这些英文名称，因为它们也是 GitHub、命令和仓库文件中的可搜索词；中文解释负责建立含义，不另造一套无法对应源码的术语。
+首次阅读在 `05` 结束；概念首次出现时正文会给出英文与中文解释，后文保留可搜索的英文名称。需要查 policy 时按问题进 Reference，不在本页预先堆述语表。
 
 ## 怎样阅读 DSH 引用
 
-本专题先在正文内给出完整解释，再把 DSH 链接作为一手证据。关键规则会摘录为 Markdown blockquote，并标明它来自 DSH 的哪个子系统、workflow、规则文件或 Agent Note；页末“证据入口”进一步说明每个链接能够核对什么。读者不需要先打开这些链接才能理解正文，只有核查固定基线的实现或继续深入时才需要进入 DSH 仓库。
+正文先给出完整解释，再把 DSH 链接（钉版在固定基线 `46a7f68b09` 的绝对 URL）作为一手证据；关键规则摘录为 blockquote 并标明出处。证据分三层标注：`已在提交观察`（git tree 可核对）、`现行规则要求`（DSH 今天的规则文件）、`需查 GitHub`（只有远端记录能回答）。
 
 ## 一句话记忆
 
-**SDD 管“变更应该成为什么”，GitHub Flow 管“变更怎样安全到达主分支”。**
+**规格管“变更应该成为什么”，GitHub Flow 管“变更怎样安全到达主分支”；每类事实住进自己的 owner，合并后仍可再次发现。**
 
-返回 [语料总入口](../README.md)，或继续阅读 [SDLC Reference](../sdlc-reference/00-index.md) 与 [Development Harness](../repo-harness/00-index.md)。
+返回 [语料总入口](../README.md)，或继续 [Development Harness](../repo-harness/00-index.md)。
