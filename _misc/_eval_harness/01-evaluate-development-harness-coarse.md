@@ -192,7 +192,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 ### 两轴（two axes）怎么打
 
-每一维打**两个**分，因为"有"和"硬"是两件正交的事。
+每一维记**两个**档，因为"有"和"硬"是两件正交的事。
 
 **轴一 · 覆盖面（coverage）** —— 这一维有没有家
 
@@ -214,7 +214,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 **读法。** `覆盖面 2 / 约束力 1` 是最常见的形态，也是最危险的形态——看起来什么都有，实际上全靠自觉。**约束力（enforcement） 3 才是"像回事"**。
 
-**这两张表与各维锚点（anchor）的关系。** 两张表是所有维度共用的**通用轴**，粗判（coarse check）就用它们打分。每一维在 [02](./02-evaluate-development-harness-fine.md) 里另有自己的锚点阶梯（anchor ladder；同一档在不同维度上的具体判据），定档（final grade）时以锚点（anchor）为准；锚点（anchor）的约束力（enforcement） 3 一律包含本表的通用条件"做过负例控制（negative control）"。
+**这两张表与各维锚点（anchor）的关系。** 两张表是所有维度共用的**通用轴**，粗判（coarse check）就用它们记档。每一维在 [02](./02-evaluate-development-harness-fine.md) 里另有自己的锚点阶梯（anchor ladder；同一档在不同维度上的具体判据），定档（final grade）时以锚点（anchor）为准；锚点（anchor）的约束力（enforcement） 3 一律包含本表的通用条件"做过负例控制（negative control）"。
 
 ### 总分与成熟度档（maturity level）
 
@@ -265,7 +265,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 1. **看粗判（coarse check）信号。** 每条信号后的括号标着它压的轴。命中一条，就把标出的轴粗判（coarse check）记 ≤ 1（标"两轴（two axes）"的两轴（two axes）都记 ≤ 1），并记进缺口清单（gap list）。每条信号都是 02 里一条上限 ≤ 1 的封顶（cap）的一眼版本。
 2. **用上面两张通用轴表打两轴（two axes）。** 覆盖面（coverage）看有没有家、成不成体系；约束力（enforcement）用第 2 节的三级追问定——说不出在哪个文件记 0，说不出跑哪条命令记 1，说不出最近一次为红记 2。
-3. **判红绿。** 粗判档（coarse grade）足以判红绿、排优先级。粗判（coarse check）为红、这一轮要动、或要把分数写成最终结论的维度，翻 [02](./02-evaluate-development-harness-fine.md) 定档（final grade）；粗判档（coarse grade）与定档（final grade）冲突时以定档（final grade）为准（定档（final grade）通常更低）。
+3. **判红绿。** **红 = 覆盖面（coverage）或约束力（enforcement） ≤ 1，绿 = 两轴（two axes）都 ≥ 2。** 粗判档（coarse grade）足以判红绿、排优先级。粗判（coarse check）为红、这一轮要动、或要把分数写成最终结论的维度，翻 [02](./02-evaluate-development-harness-fine.md) 定档（final grade）；粗判档（coarse grade）与定档（final grade）冲突时以定档（final grade）为准（定档（final grade）通常更低）。
 
 | 维 | 它管什么 | 粗判（coarse check）信号（一眼看什么；括号里是命中后记 ≤ 1 的轴） | 通常 N/A |
 |---|---|---|---|
