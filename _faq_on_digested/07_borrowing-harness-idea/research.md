@@ -156,7 +156,7 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 > Match evidence to the surface: focused behavior tests, model/user-output snapshots, `doc-sync` for docs, built smokes for published paths, and real-API e2e for providers. … Never default to the full suite.
 
-来源：根 `AGENTS.md`（Run relevant checks locally 一节）。11/12 与 08 Phase 0.5 引用的「聚焦检查、红灯对照」纪律以此条为 DSH 侧原文；Tutorial 04 的红灯实测（2 红 95 绿）是该纪律的一次执行记录，属语料侧事实、非 DSH 原文。
+来源：根 `AGENTS.md`（Run relevant checks locally 一节）。变更闭环、可执行反馈两章引用的「聚焦检查、红灯对照」纪律以此条为 DSH 侧原文；Tutorial 04 的红灯实测（2 红 95 绿）是该纪律的一次执行记录，属语料侧事实、非 DSH 原文。
 
 ## 24. 变更闭环的三条立场（语料归纳，非 DSH 原文）
 

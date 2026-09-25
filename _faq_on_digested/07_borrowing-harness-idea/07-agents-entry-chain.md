@@ -1,6 +1,6 @@
 # AGENTS.md 入口链：文件态骨架 + 会话态加载
 
-> **术 · 入口链。** 本页是实战：入口链的文件怎么写、加载机制长什么样。五维评估里「归属」维亮红、或 [`落地总纲`](./06-step-by-step-guide.md) Phase 1 开工时，来这页抄作业。文件态的设计论证归 [FAQ 04](../04_root-entry-doc-design/answer.md)，会话态机制归 [FAQ 05](../05_root-entry-doc-navigation/answer.md)；本页拥有「两种状态各怎么落到你的仓库」。
+> **术 · 入口链。** 本页是实战：入口链的文件怎么写、加载机制长什么样。十维评估里「归属」维亮红、或 [`落地总纲`](./06-step-by-step-guide.md) Phase 2 开工时，来这页抄作业。文件态的设计论证归 [FAQ 04](../04_root-entry-doc-design/answer.md)，会话态机制归 [FAQ 05](../05_root-entry-doc-navigation/answer.md)；本页拥有「两种状态各怎么落到你的仓库」。
 
 ## 入口文件是 agent 唯一稳定的第一印象
 
@@ -35,7 +35,7 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 **4. AGENTS.md 串起 README.md，而不是吞掉它**：AGENTS 是路由/常驻指令层，README 是「当前合同」事实层，通过 link 串进地图。分工的完整规则是 [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) 的 tier taxonomy 表——根/子树/包 README/Skills 每行同时写「放什么」和「禁放什么」。
 
-**可迁移结论**：这是「写文件」的工程，几乎零架构依赖；宿主自动加载（Claude Code 读 `CLAUDE.md`）意味着**第一环不写代码就免费生效**。这就是 [`落地总纲`](./06-step-by-step-guide.md) Phase 1 的完整内容。
+**可迁移结论**：这是「写文件」的工程，几乎零架构依赖；宿主自动加载（Claude Code 读 `CLAUDE.md`）意味着**第一环不写代码就免费生效**。这就是 [`落地总纲`](./06-step-by-step-guide.md) Phase 2 的完整内容。
 
 ## 会话态：DSH 的运行时怎么加载这条链
 
