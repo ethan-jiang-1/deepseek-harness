@@ -46,8 +46,8 @@ DSH 的文档层级规则只有一条主线：**每个事实住在「负责它�
 
 ## 与其它各篇的关系
 
-- **当前事实 vs 决策理由**的分家细则、状态目录、取代与归档——展开在 [`决策记录`](./03-decision-notes.md)；
-- **负知识的 DSH 落地**：rejected note、README 的 `## Known Limitations and Deferred Work`、无可观察关系时写进包 README 的省略理由（空 companion 被 `verify-package-invariants` 判 fail）；
+- **当前事实 vs 决策理由**的分家细则、状态目录、取代与归档——展开在 [`决策记录`](./03-decision-notes.md)；「现在 vs 当初」再往深处走一步就是静态层与动态层的分界——展开在 [`静与动`](./04-static-vs-dynamic.md)。
+- **负知识的 DSH 落地**：rejected note、README 的 `## Known Limitations and Deferred Work`、无可观察关系时写进包 README 的省略理由（空 companion 被 `verify-package-invariants` 判 fail）。
 - **入口链与渐进披露**：归属的静态骨架（`CLAUDE.md` symlink → 根 `AGENTS.md` → 子树 → README）展开在 [`入口链`](./09-agents-entry-chain.md)；「按需」的运行时由谁决定、超预算怎么回收，展开在 [`披露管线`](./12-progressive-disclosure-pipeline.md)——「按需读取」的原则同源，但那是术的部分。
 
 本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「02 · 归属」一节）——按需核对，不读不影响理解。
