@@ -1,12 +1,12 @@
 // 本目录四份文档的自审脚本。用法：node _audit.mjs
 // 覆盖：链接/锚点、维度栏目与探针、封顶规则（正文↔附录、轴与档位写法、附录分组）、
-// 03 卡片栏位与验收红线、例证段数量、外链数量、引号一致性、旧标签残留、文件规范。
+// 20 卡片栏位与验收红线、例证段数量、外链数量、引号一致性、旧标签残留、文件规范。
 import { readFileSync, existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const dir = dirname(fileURLToPath(import.meta.url))
-const files = ['README.md', '01-evaluate-development-harness.md', '02-evaluate-runtime-harness.md', '03-from-gaps-to-plan.md']
+const files = ['README.md', '01-evaluate-development-harness-coarse.md', '02-evaluate-development-harness-fine.md', '11-evaluate-runtime-harness.md', '12-evaluate-runtime-harness-fine.md', '20-from-gaps-to-plan.md']
 const rd = (f) => readFileSync(resolve(dir, f), 'utf8')
 const slug = (h) => h.toLowerCase().trim().replace(/[^\p{L}\p{N}\s-]/gu, '').replace(/ /g, '-')
 
@@ -66,8 +66,8 @@ const capsOf = (lines) => {
 
 // —— 01 / 02 维度与封顶 ——
 for (const [file, level, idPattern, expected] of [
-  ['01-evaluate-development-harness.md', 4, '[A-E]\\d', 17],
-  ['02-evaluate-runtime-harness.md', 3, 'R\\d+', 11],
+  ['02-evaluate-development-harness-fine.md', 4, '(?:KN|CP|EV|ST|MT)\\d+', 17],
+  ['12-evaluate-runtime-harness-fine.md', 3, 'RT\\d+', 11],
 ]) {
   const tag = file.slice(0, 2)
   const dims = dimensions(file, level, idPattern)
@@ -78,7 +78,7 @@ for (const [file, level, idPattern, expected] of [
   const missing = ids.filter((id) => required.some((r) => !r.test(dims[id].join('\n'))))
   check(`${tag} 每维栏目齐备`, missing.length === 0, missing.join(' '))
 
-  const thin = ids.filter((id) => dims[id].filter((l) => /^\| P\d /.test(l)).length < 5)
+  const thin = ids.filter((id) => dims[id].filter((l) => /^\| PB\d /.test(l)).length < 5)
   check(`${tag} 每维 ≥5 个探针`, thin.length === 0, thin.join(' '))
 
   const appendix = {}
@@ -99,25 +99,60 @@ for (const [file, level, idPattern, expected] of [
   check(`${tag} 附录按维度连续分组`, grouped)
 }
 
-// —— 03 卡片 ——
+// —— 维度编号 ↔ 名称 对应（防止改名或搬运时张冠李戴）——
 {
-  const lines = rd('03-from-gaps-to-plan.md').split('\n')
+  const canonical = {}
+  for (const [file, level, idPattern] of [
+    ['02-evaluate-development-harness-fine.md', 4, '(?:KN|CP|EV|ST|MT)\\d+'],
+    ['12-evaluate-runtime-harness-fine.md', 3, 'RT\\d+'],
+  ]) {
+    for (const m of rd(file).matchAll(new RegExp(`^#{${level}} (${idPattern}) (.+?) · `, 'gm'))) canonical[m[1]] = m[2].trim()
+  }
+  const variantToTokens = new Map()
+  for (const [tok, name] of Object.entries(canonical)) {
+    const parts = name.split('与')
+    const variants = new Set([name.replace(/\s/g, '')])
+    for (let i = 1; i < parts.length; i++) variants.add(parts.slice(i).join('与').replace(/\s/g, ''))
+    for (const v of variants) {
+      if (v.length < 3) continue
+      variantToTokens.set(v, [...(variantToTokens.get(v) ?? []), tok])
+    }
+  }
+  const variants = [...variantToTokens.keys()].sort((a, b) => b.length - a.length)
+  const mismatches = []
+  for (const f of files) {
+    for (const m of rd(f).matchAll(/\b((?:KN|CP|EV|ST|MT|RT)\d+)[ ]*([\u4e00-\u9fa5]{3,})/g)) {
+      const [, tok, run] = m
+      for (const v of variants) {
+        if (!run.startsWith(v)) continue
+        const owners = [...new Set(variantToTokens.get(v))]
+        if (owners.length === 1 && owners[0] !== tok) mismatches.push(`${f}: ${tok} → ${v}（属 ${owners[0]}）`)
+        break
+      }
+    }
+  }
+  check(`维度编号与名称对应（${Object.keys(canonical).length} 维）`, mismatches.length === 0, mismatches.slice(0, 3).join(' | '))
+}
+
+// —— 20 卡片 ——
+{
+  const lines = rd('20-from-gaps-to-plan.md').split('\n')
   const cards = []
   for (let i = 0; i < lines.length; i++) {
-    const heading = /^#{3,4} ([A-E]\d|R\d+) .*处置卡/.exec(lines[i])
+    const heading = /^#{3,4} ((?:KN|CP|EV|ST|MT)\d+|RT\d+) .*处置卡/.exec(lines[i])
     if (!heading) continue
     const body = []
     for (let j = i + 1; j < lines.length && !/^#{3,4} /.test(lines[j]); j++) body.push(lines[j])
     cards.push({ id: heading[1], body })
   }
-  check('03 卡片数 = 28', cards.length === 28, `实为 ${cards.length}`)
+  check('20 卡片数 = 28', cards.length === 28, `实为 ${cards.length}`)
 
   const sections = (b) => b.filter((l) => /^\*\*/.test(l)).length
-  const badShape = cards.filter((c) => (/^[A-E]/.test(c.id) ? sections(c.body) !== 8 && c.id !== 'A3' : sections(c.body) < 6))
-  check('03 卡片栏位一致', badShape.length === 0, badShape.map((c) => c.id).join(' '))
+  const badShape = cards.filter((c) => (/^(?:KN|CP|EV|ST|MT)/.test(c.id) ? sections(c.body) !== 8 && c.id !== 'KN3' : sections(c.body) < 6))
+  check('20 卡片栏位一致', badShape.length === 0, badShape.map((c) => c.id).join(' '))
 
   const withoutNegativeControl = cards.filter((c) => !/\*\*一次负例控制。\*\*/.test(c.body.join('\n')))
-  check('03 每张卡都有负例控制', withoutNegativeControl.length === 0, withoutNegativeControl.map((c) => c.id).join(' '))
+  check('20 每张卡都有负例控制', withoutNegativeControl.length === 0, withoutNegativeControl.map((c) => c.id).join(' '))
 
   const redLines = (b) => {
     const start = b.findIndex((l) => /^\*\*验收红线。\*\*/.test(l))
@@ -129,19 +164,19 @@ for (const [file, level, idPattern, expected] of [
     return n
   }
   const thinRed = cards.filter((c) => redLines(c.body) < 2)
-  check('03 每张卡 ≥2 条验收红线', thinRed.length === 0, thinRed.map((c) => c.id).join(' '))
+  check('20 每张卡 ≥2 条验收红线', thinRed.length === 0, thinRed.map((c) => c.id).join(' '))
 }
 
 // —— 文档级约定 ——
 {
   const text = (f) => rd(f)
-  const exemplars = (text('01-evaluate-development-harness.md').match(/^\*\*例证\*\*/gm) ?? []).length
-  check('01 例证段 ≥7 条', exemplars >= 7, `实为 ${exemplars}`)
+  const exemplars = (text('02-evaluate-development-harness-fine.md').match(/^\*\*例证\*\*/gm) ?? []).length
+  check('02 例证段 ≥7 条', exemplars >= 7, `实为 ${exemplars}`)
 
-  for (const [f, min] of [['01-evaluate-development-harness.md', 10], ['02-evaluate-runtime-harness.md', 10]]) {
-    const start = text(f).indexOf('## 附录 C · 常见伪证清单')
+  for (const [f, min] of [['01-evaluate-development-harness-coarse.md', 10], ['11-evaluate-runtime-harness.md', 10]]) {
+    const start = text(f).indexOf('## 附录 B · 常见伪证清单')
     const rows = start < 0 ? 0 : (text(f).slice(start).match(/^\| "/gm) ?? []).length
-    check(`${f.slice(0, 2)} 附录 C 伪证清单 ≥${min} 句`, rows >= min, `实为 ${rows}`)
+    check(`${f.slice(0, 2)} 附录 B 伪证清单 ≥${min} 句`, rows >= min, `实为 ${rows}`)
   }
 
   const external = files.reduce((n, f) => n + (text(f).match(/https?:\/\//g) ?? []).length, 0)
@@ -150,8 +185,23 @@ for (const [file, level, idPattern, expected] of [
   const curly = files.reduce((n, f) => n + (text(f).match(/[“”]/g) ?? []).length, 0)
   check('无弯引号（与全文直引号一致）', curly === 0, `实为 ${curly}`)
 
-  const stale = ['A 层', 'B 层', 'C 层', 'E1 回放', 'E2 换后端', 'E3 加能力', 'E4 坏配置', 'E5 取消'].filter((s) => files.some((f) => text(f).includes(s)))
-  check('无旧标签残留', stale.length === 0, stale.join(' '))
+  // 「标识符约定」一节按设计引用旧形态（说明为什么不用），检查时跳过该节
+  const withoutConvention = (t) => {
+    const start = t.indexOf('### 标识符约定（token）')
+    if (start < 0) return t
+    const end = t.indexOf('\n---\n', start)
+    return t.slice(0, start) + (end < 0 ? '' : t.slice(end))
+  }
+  const scan = files.map((f) => [f, withoutConvention(text(f))])
+  const staleWords = ['A 层', 'B 层', 'C 层'].filter((s) => scan.some(([, t]) => t.includes(s)))
+  // 旧 token 形态：单字母+数字（A1/B2/C3/D4/E5/R6/L7/M8/P9/X1/G2），新方案一律两字母+数字
+  const legacyPatterns = [/\b[A-E]\d\b/, /\bP\d\b/, /\bX\d\b/, /\bG\d\b/, /\b[LM]\d\b/, /\bR\d+\b/]
+  const legacy = []
+  for (const [f, body] of scan) for (const re of legacyPatterns) {
+    const m = body.match(new RegExp(re.source, 'g'))
+    if (m) legacy.push(`${f}: ${[...new Set(m)].join(',')}`)
+  }
+  check('无旧标签残留', staleWords.length === 0 && legacy.length === 0, [...staleWords, ...legacy].slice(0, 3).join(' | '))
 
   // 每张 Markdown 表的表头、分隔行与数据行列数必须一致
   const tableProblems = []
