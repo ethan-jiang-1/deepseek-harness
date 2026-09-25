@@ -32,7 +32,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 | 层 | 回答什么 | DSH 的做法 | 借用的最小形态 |
 |---|---|---|---|
-| **变更闭环（时间顺序）** | 一笔变更从「要得到什么」走到「怎样证明、谁来判断、交付后留下什么」，怎样接力 | 任务/Issue 的可观察验收 → 有条件的决定 → 代码、当前文档、回归证据同一变更交付 → 聚焦本地检查、CI、语义 review、merge | 先拿一笔真实变更按此走通（见 [`变更闭环`](./01-sdlc-change-loop.md) 的迁移表、[`落地总纲`](./06-step-by-step-guide.md) Phase 0.5） |
+| **变更闭环（时间顺序）** | 一笔变更从「要得到什么」走到「怎样证明、谁来判断、交付后留下什么」，怎样接力 | 任务/Issue 的可观察验收 → 有条件的决定 → 代码、当前文档、回归证据同一变更交付 → 聚焦本地检查、CI、语义 review、merge | 先拿一笔真实变更按此走通（见 [`变更闭环`](./01-sdlc-change-loop.md) 的迁移表、[`落地总纲`](./06-step-by-step-guide.md) Phase 1 第二步） |
 | **知识与决定（归属）** | 下一任 agent 如何区分现在、理由、旧方案和计划 | 现状归代码/README，持久取舍归 owning Note，单次实施步骤归 Plan，行为证据归测试 | 简明 ADR、owner、状态与取代纪律（完整章见 [`决策记录`](./03-decision-notes.md)） |
 | **渐进披露（读取时机）** | 此刻该加载哪份最小权威资料，超预算怎么办 | 短常驻规则只负责路由，任务命中才读完整流程，按需读 owner；自建 agent host 再加注入预算和回收 | 入口文件短、只做路由（见 [`入口链`](./07-agents-entry-chain.md)） |
 
@@ -50,7 +50,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 ## 立即借 / 有压力再借 / 不要照搬
 
-- **立即借**（几乎零架构依赖，普通项目的第一桶金）：拿一笔真实变更跑通闭环（[`落地总纲`](./06-step-by-step-guide.md) Phase 0.5，对照表见 [`变更闭环`](./01-sdlc-change-loop.md)）；短 `AGENTS.md` 只放常驻规则（[`落地总纲`](./06-step-by-step-guide.md) Phase 1，实物见 [`归属`](./02-legibility-ownership.md) 落地实物节）；一个事实一个 owner、决策理由与当前文档分开（[`归属`](./02-legibility-ownership.md)；何时写决策记录见 [`决策记录`](./03-decision-notes.md)）；可机械规则接成 `exit non-zero` 检查并做负例控制（[`落地总纲`](./06-step-by-step-guide.md) Phase 4，六层反馈见 [`可执行反馈`](./09-executable-feedback.md)）。
+- **立即借**（几乎零架构依赖，普通项目的第一桶金）：拿一笔真实变更跑通闭环（[`落地总纲`](./06-step-by-step-guide.md) Phase 1 第二步，对照表见 [`变更闭环`](./01-sdlc-change-loop.md)）；短 `AGENTS.md` 只放常驻规则（[`落地总纲`](./06-step-by-step-guide.md) Phase 2，实物见 [`归属`](./02-legibility-ownership.md) 落地实物节）；一个事实一个 owner、决策理由与当前文档分开（[`归属`](./02-legibility-ownership.md)；何时写决策记录见 [`决策记录`](./03-decision-notes.md)）；可机械规则接成 `exit non-zero` 检查并做负例控制（[`落地总纲`](./06-step-by-step-guide.md) Phase 5，六层反馈见 [`可执行反馈`](./09-executable-feedback.md)）。
 - **有压力再借**（确有对应压力才值得）：Skills 目录（同类任务反复出现；真实 Skill 文件的写法标准见 [`Skills`](./11-skills-as-procedural-memory.md) 落地实物节）；生成 catalog（声明面大到手工清单漂移）；注入预算与 compaction（上下文吃紧、长任务活不下来，[`披露管线`](./13-progressive-disclosure-pipeline.md)）。
 - **不要照搬**：插件图与 capability seam 全家桶（那是组合压力的产物）；DSH 的 Project/标签/加权批准制度（它有特定的协作规模前提）；双语 triplet 与 hash 配对（除非你的项目真的双语平等）。
 
@@ -58,7 +58,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 | 你的症状 | DSH 的机制 | 段位 | 落地动作（章节） |
 |---|---|---|---|
-| agent 交付了没法验证的半成品 | 变更闭环：实现+文档+证据同 PR，缺口如实标注 | 道 | 拿一笔真实变更按证据地图逐项核对（见 [`变更闭环`](./01-sdlc-change-loop.md)、[`落地总纲`](./06-step-by-step-guide.md) Phase 0.5） |
+| agent 交付了没法验证的半成品 | 变更闭环：实现+文档+证据同 PR，缺口如实标注 | 道 | 拿一笔真实变更按证据地图逐项核对（见 [`变更闭环`](./01-sdlc-change-loop.md)、[`落地总纲`](./06-step-by-step-guide.md) Phase 1 第二步） |
 | agent 读完还是抓不住主线 | 分层入口 + 根指令只放 standing orders | 道 | 写一份短 `AGENTS.md`（`CLAUDE.md` 用 symlink 指向它），只放常驻规则 + 布局 + 命令，其余 link 出去（见 [`入口链`](./07-agents-entry-chain.md)） |
 | agent 分不清「现在的事实」和「当初的理由」 | 当前文档 vs Agent Note 分开 | 道 | 决策理由单独进 `docs/adr/` 或 `notes/`，文档只写 now（见 [`归属`](./02-legibility-ownership.md)） |
 | agent 反复提出已否定的方案 | 负知识外置（rejected note、Known Limitations） | 道 | 记下「为什么不做 X」，而不是只记「做了什么」（见 [`归属`](./02-legibility-ownership.md)、[`决策记录`](./03-decision-notes.md)） |
@@ -69,7 +69,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 | agent 每轮看到的上下文爆炸、长任务活不下来 | 按需注入 + 运行时组装 + compaction 回收 | 术 | 注入给预算/去重；catalog 只给摘要；超预算压缩且保留 tool-call/result 配对（见 [`披露管线`](./13-progressive-disclosure-pipeline.md)） |
 | agent 靠猜源码而不是问实际状态 | `--dump-config`、生成 catalog、inspect 工具 | 术 | 至少提供一条「查实际配置/注册项」的命令（见 [`运行时查询`](./12-runtime-inspection.md)） |
 
-「段位」列对应三段式结构：**道（01–05）= 概念与落地实物，术（07–12）= 执行态细节**；静态/动态轴的分界本身由 [`静与动`](./04-static-vs-dynamic.md) 拥有。
+「段位」列对应三段式结构：**道（01–05）= 概念与落地实物，术（07–13）= 执行态细节**；评估维度 = 道五维 + 术五维（Phase 1 十维表）。
 
 ## 三句话记住它
 
@@ -93,7 +93,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 ### 分水岭（06）：开始动手
 
-[`落地总纲`](./06-step-by-step-guide.md)——先按**道的五个维度**评估你手上的 harness（Phase 0），再拿一笔真实变更跑垂直切片（Phase 0.5），然后按评估结果一轮一轮打磨，直到「像回事」——新来一个 agent 不靠带路，能把一笔变更从意图走到归位。**读到这里就停下读书、开始干活；后面的术，做到哪读到哪。**
+[`落地总纲`](./06-step-by-step-guide.md)——先按**道的五维 + 术的五维**做 Phase 1 的评估（十维打分 + 垂直切片实证），然后按评估结果一轮一轮打磨，直到「像回事」——新来一个 agent 不靠带路，能把一笔变更从意图走到归位。**读到这里就停下读书、开始干活；后面的术，做到哪读到哪。**
 
 ### 术（07–13）：执行态的细节
 
@@ -120,7 +120,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 - **想看 DSH 精华落成动作的完整演示**：读 [`变更闭环`](./01-sdlc-change-loop.md)——一笔真实提交从意图到归位的逐环对照表，三条立场全部在里头现过身；本 FAQ 的角色是把它和其余机制翻译成普通项目可迁移的动作。
 
-**证据与兜底**：各章声称的 DSH 事实，上游一手出处集中在 [`reference.md`](./reference.md)——按需核对，不读不影响理解（渐进披露用在 FAQ 自己身上）；[`research.md`](./research.md) 是整理过程的内部账本（复核历史与语料出处）。本目录自带 [`verify.mjs`](../verify.mjs)（UTF-8 / 换行 / 链接 / 锚点），修改后运行 `node _faq_on_digested/verify.mjs`；防漂移纪律的落地清单见 [`落地总纲`](./06-step-by-step-guide.md) Phase 7——这个 FAQ 讲的机制，自己也在用。
+**证据与兜底**：各章声称的 DSH 事实，上游一手出处集中在 [`reference.md`](./reference.md)——按需核对，不读不影响理解（渐进披露用在 FAQ 自己身上）；[`research.md`](./research.md) 是整理过程的内部账本（复核历史与语料出处）。本目录自带 [`verify.mjs`](../verify.mjs)（UTF-8 / 换行 / 链接 / 锚点），修改后运行 `node _faq_on_digested/verify.mjs`；防漂移纪律的落地清单见 [`落地总纲`](./06-step-by-step-guide.md) Phase 8——这个 FAQ 讲的机制，自己也在用。
 
 **自包含**：整套目录可以单独拿走用。指向 DSH 仓库的引用全部是钉版在固定 commit `46a7f68b09` 的 GitHub 绝对 URL——任何人、任何机器都能点开核对，不需要 clone 这个仓库；目录间互链只在 `_faq_on_digested` 家族内部。抄走这套 FAQ 的人，唯一断不了的依赖就是公网。
 
