@@ -10,7 +10,7 @@
 
 **两份粒度。** 本文（`01`）是粗粒度（coarse-grained）：定义、两轴（two axes）、十七维粗判（coarse check）、报告格式与自检。**细粒度（fine-grained）**（[`02`](./02-evaluate-development-harness-fine.md)）才有每维的探针（probe）、锚点（anchor）与封顶规则（cap rules）——只在粗判（coarse check）为红、或要动的维度上翻它。**粗粒度（coarse-grained）定下来后基本不动，细粒度（fine-grained）会持续增补。**
 
-**配套文档。** [运行时评估粗粒度（coarse-grained）](./11-evaluate-runtime-harness.md)（仅当这个仓库本身是 agent 产品时适用）· [细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) · [从缺口到计划](./20-from-gaps-to-plan.md)
+**配套文档。** [运行时评估粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md)（仅当这个仓库本身是 agent 产品时适用）· [细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) · [从缺口到计划 · 粗](./21-from-gaps-to-plan-coarse.md) · [细](./22-from-gaps-to-plan-fine.md)
 
 ---
 
@@ -231,7 +231,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 **快诊（quick check）只给推断档。** 快诊（quick check）只评六维，算不出"多数维度"。六维里过半覆盖面（coverage） ≤ 1 时记 `MG0（推断）`——依据是上面那条"快诊（quick check）六维红了，其余十一维基本不可能绿"；否则记"MG 待全量"。正式档位只在全量模式（full mode）里给。
 
-达标线（pass line）：**至少 MG2，且你最痛的三维达到约束力（enforcement） 3。** 这是"能不能用"的下限。达标线（pass line）与档位相互独立——MG3 的仓库也可能未达标（最痛的三维没到约束力（enforcement） 3）。判断一轮打磨**能不能收工**用 [20 的收工线（stop line）](./20-from-gaps-to-plan.md#7--一轮打磨的循环与停止条件)，它包含达标线（pass line），附加条件在 20 里。
+达标线（pass line）：**至少 MG2，且你最痛的三维达到约束力（enforcement） 3。** 这是"能不能用"的下限。达标线（pass line）与档位相互独立——MG3 的仓库也可能未达标（最痛的三维没到约束力（enforcement） 3）。判断一轮打磨**能不能收工**用 [21 的收工线（stop line）](./21-from-gaps-to-plan-coarse.md#5--一轮打磨的循环与停止条件)，它包含达标线（pass line），附加条件在 21 里。
 
 **"多数"与计数的口径。** 本节所有"多数"指该档适用维度里的**超过一半**；"至少四个""至少三个"这类计数也只在适用维度里数；标了 N/A 的维度不计入分母（见[第 5 节](#5--适用性applicability裁剪tailoring)）。
 
@@ -304,7 +304,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 | **数据 / ML 仓库** | 知识归位全组、CP2 CP3、证据与交付全组、ST1 ST2、MT1 MT2 | CP4（没有需要授权的自动化动作时）、ST3（配置只有一层时） | ST1 的"事实源（source of truth） vs 派生（derived）"要覆盖数据集与特征；MT2 要覆盖数据 schema 版本 |
 | **文档站 / 知识库** | 知识归位全组、CP1 CP3、EV1 EV2 EV3、ST1、MT1 | CP2 CP4、ST3、MT2 | KN1 入口链（Entry chain）、KN2 归属（One home per fact）、MT1 防漂移（Drift prevention）是**重点**（其余按"必评"列照做）；证据与交付组查"链接与锚点（anchor）是否有检查"；ST1 看站点构建产物能不能从源头重建 |
 | **单文件脚本 / 小工具** | KN1 KN2、EV1 EV2、MT1 | 其余 | 上列五维已足够（EV2 与 MT1 对脚本最便宜也最有用）；不要为了评分卡（scorecard）去造机制 |
-| **agent 产品 / 自带 agent 运行时** | 本文全部 | — | **另加**：[运行时 Harness 粗粒度（coarse-grained）](./11-evaluate-runtime-harness.md) |
+| **agent 产品 / 自带 agent 运行时** | 本文全部 | — | **另加**：[运行时 Harness 粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md) |
 
 ### 四条裁剪（tailoring）纪律
 
@@ -315,7 +315,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 ### 与运行时评估的形态口径不同
 
-本表的"仓库形态"决定十七维里哪些要评；[11 的形态裁剪（profile tailoring）](./11-evaluate-runtime-harness.md#4--形态裁剪profile-tailoring)那套（内部 / 产品 / 平台 / 单机实验 / 多入口）决定十一维里哪些要评。两者正交：一个仓库的形态是"agent 产品"时，两套各判一次。
+本表的"仓库形态"决定十七维里哪些要评；[11 的形态裁剪（profile tailoring）](./11-evaluate-runtime-harness-coarse.md#4--形态裁剪profile-tailoring)那套（内部 / 产品 / 平台 / 单机实验 / 多入口）决定十一维里哪些要评。两者正交：一个仓库的形态是"agent 产品"时，两套各判一次。
 
 ---
 
@@ -499,7 +499,7 @@ EV2 抽检：任选 TestPaymentRetry，问"它最近一次为红是什么回归"
 
 这个仓库的问题不是"没有文档"——它有 400 行 README 和 12 篇 docs——而是**文档与代码是两个可以各自漂移（drift）的家，且没有任何检查会发现它们漂了**。切片走查（slice walkthrough）给出了确凿证据：一笔本该同时改两处的变更只改了一处，而那个看起来在保护的测试实际上什么都没保护。
 
-EV2 怎样从粗判档（coarse grade）钉成定档（final grade），见 [02 §5](./02-evaluate-development-harness-fine.md#5--细粒度fine-grained示例把-ev2-从粗判档coarse-grade钉成定档final-grade)；这份缺口清单（gap list）怎样排成施工顺序（build order），见 [20 §8](./20-from-gaps-to-plan.md#8--短例)。
+EV2 怎样从粗判档（coarse grade）钉成定档（final grade），见 [02 §5](./02-evaluate-development-harness-fine.md#5--细粒度fine-grained示例把-ev2-从粗判档coarse-grade钉成定档final-grade)；这份缺口清单（gap list）怎样排成施工顺序（build order），见 [21 §6](./21-from-gaps-to-plan-coarse.md#6--短例)。
 
 ---
 
@@ -548,6 +548,6 @@ EV2 怎样从粗判档（coarse grade）钉成定档（final grade），见 [02 
 
 ---
 
-**下一步。** 报告写完后：粗判（coarse check）为红、或这一轮要动的维度，翻 [02 细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) 走探针（probe）、锚点（anchor）与封顶（cap；封顶（cap）速查在 02 的附录 A）；缺口清单（gap list）变成施工顺序（build order），去 [20 从缺口到计划](./20-from-gaps-to-plan.md)，那里有"症状 → 缺口 → 维度 → 处置"的总对照表和十七维各一张处置卡（remediation card）。
+**下一步。** 报告写完后：粗判（coarse check）为红、或这一轮要动的维度，翻 [02 细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) 走探针（probe）、锚点（anchor）与封顶（cap；封顶（cap）速查在 02 的附录 A）；缺口清单（gap list）变成施工顺序（build order），去 [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md) 排顺序、看每维的最小一步；要做深时翻 [22](./22-from-gaps-to-plan-fine.md) 的处置卡（remediation card）。
 
-**如果这个仓库本身是 agent 产品**，另跑 [运行时 Harness 粗粒度（coarse-grained）](./11-evaluate-runtime-harness.md)——那套维度回答的是另一个问题：*这个 agent 系统本身做对了吗*，与本文的回答互不替代。
+**如果这个仓库本身是 agent 产品**，另跑 [运行时 Harness 粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md)——那套维度回答的是另一个问题：*这个 agent 系统本身做对了吗*，与本文的回答互不替代。

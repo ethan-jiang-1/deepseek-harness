@@ -12,7 +12,7 @@
 
 **两份粒度。** 本文（`11`）是粗粒度（coarse-grained）：适用性（applicability）判定、定义、通用两轴（two axes）、十一维粗判（coarse check）、五个活体实验（live experiment；§2）、形态裁剪（profile tailoring）、模仿判断、报告格式与自检。**细粒度（fine-grained）**（[`12`](./12-evaluate-runtime-harness-fine.md)）有每维的一句话定义、锚点阶梯（anchor ladder）、探针（probe）与封顶规则（cap rules）——只在粗判（coarse check）为红、或要动的维度上翻它。**粗粒度（coarse-grained）定下来后基本不动，细粒度（fine-grained）会持续增补。**
 
-**配套文档。** [01 开发粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md) · [02 开发细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) · [12 运行时细粒度（fine-grained）](./12-evaluate-runtime-harness-fine.md) · [20 从缺口到计划](./20-from-gaps-to-plan.md)
+**配套文档。** [01 开发粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md) · [02 开发细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) · [12 运行时细粒度（fine-grained）](./12-evaluate-runtime-harness-fine.md) · [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)
 
 ---
 
@@ -157,7 +157,7 @@
 
 **档位怎么记。** 记满足的最高一档。MG2、MG3 点名的维度是硬条件：点名的维度被裁为 N/A 时，那一档对这个系统不适用——单机实验档（RT9 为 N/A）不追求 MG2，AQ3 答"否"的系统（RT5 为 N/A）不追求 MG3。
 
-达标线（pass line）：**至少 MG2。** 只有要对外开放扩展时才需要 MG3。这是"能不能用"的下限。判断一轮打磨**能不能收工**用 [20 的收工线（stop line）](./20-from-gaps-to-plan.md#7--一轮打磨的循环与停止条件)，它包含达标线（pass line），附加条件在 20 里。
+达标线（pass line）：**至少 MG2。** 只有要对外开放扩展时才需要 MG3。这是"能不能用"的下限。判断一轮打磨**能不能收工**用 [21 的收工线（stop line）](./21-from-gaps-to-plan-coarse.md#5--一轮打磨的循环与停止条件)，它包含达标线（pass line），附加条件在 21 里。
 
 **"多数"与计数的口径。** 本节所有"多数"指适用维度里的**超过一半**；"至少三个"这类计数也只在适用维度里数；标了 N/A 的维度不计入分母（见[第 4 节](#4--形态裁剪profile-tailoring)）。
 
@@ -425,7 +425,7 @@ agent 按下面的格式写一份 Markdown 报告：四张表加末尾的问题�
 
 这个系统的**问题不在模型层，在事实层**：它把"发生过什么"只记了一半（对话记了，模型看到的请求没记），把"现在装了什么"交给一份会静默失败的手改配置，把"动作失败了"归一化成了空结果。三件事的共同后果是——**出了问题查不出来，而且它不会告诉你查不出来。**
 
-→ 下一步去 [20 从缺口到计划](./20-from-gaps-to-plan.md)：最痛的三维对应 RT2、RT3、RT9，按"验证手段不可信时先修验证"的顺序，RT2 与 RT9 应排在同一轮（它们共同决定"能不能信任系统报告的结果"）。
+→ 下一步去 [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)：最痛的三维对应 RT2、RT3、RT9，按"验证手段不可信时先修验证"的顺序，RT2 与 RT9 应排在同一轮（它们共同决定"能不能信任系统报告的结果"）。
 
 ---
 
@@ -476,8 +476,8 @@ agent 按下面的格式写一份 Markdown 报告：四张表加末尾的问题�
 
 ---
 
-**相关文档。** [开发 Harness 粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md)（换一个对象：任何仓库的仓库级机制）· [20 从缺口到计划](./20-from-gaps-to-plan.md)（本文的缺口清单（gap list）怎么变成施工顺序（build order））。
+**相关文档。** [开发 Harness 粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md)（换一个对象：任何仓库的仓库级机制）· [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)（本文的缺口清单（gap list）怎么变成施工顺序（build order））。
 
 ---
 
-**下一步。** 粗判（coarse check）为红、或这一轮要动的维度，翻 [12 细粒度（fine-grained）](./12-evaluate-runtime-harness-fine.md) 走探针（probe）与实验；缺口清单（gap list）变成施工顺序（build order），去 [20 从缺口到计划](./20-from-gaps-to-plan.md)。**封顶规则（cap rules）速查在 12 的附录 A。**
+**下一步。** 粗判（coarse check）为红、或这一轮要动的维度，翻 [12 细粒度（fine-grained）](./12-evaluate-runtime-harness-fine.md) 走探针（probe）与实验；缺口清单（gap list）变成施工顺序（build order），去 [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)。**封顶规则（cap rules）速查在 12 的附录 A。**

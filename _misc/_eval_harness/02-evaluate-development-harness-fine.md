@@ -10,7 +10,7 @@
 
 **本文引用 01 的定义**：信息缺口（information gap） `IG1`–`IG7`（01 §1）、证据级（evidence level） `EL0`–`EL3`（01 §2）、第一 / 第二层（01 §3）、两轴（two axes）档位与成熟度档（maturity level） `MG0`–`MG3`（01 §4），见 [01](./01-evaluate-development-harness-coarse.md)。第三层（反证 falsification）在本文 §3 定义。
 
-**配套文档。** [01 粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md) · [11 运行时粗粒度（coarse-grained）](./11-evaluate-runtime-harness.md) · [12 运行时细粒度（fine-grained）](./12-evaluate-runtime-harness-fine.md) · [20 从缺口到计划](./20-from-gaps-to-plan.md)
+**配套文档。** [01 粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md) · [11 运行时粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md) · [12 运行时细粒度（fine-grained）](./12-evaluate-runtime-harness-fine.md) · [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)
 
 ---
 
@@ -67,7 +67,7 @@
 - **第二层** → 实际怎么跑（缺口造成什么后果）
 - **第三层** → 已有的机制可信吗（低分是"没有"还是"有但假的"）
 
-第一层的缺口清单（gap list）和第二层的走查记录会合流成一张**施工顺序（build order）表**（这张表由[20 从缺口到计划](./20-from-gaps-to-plan.md)的[排序原则（ordering principles）](./20-from-gaps-to-plan.md#1--排序原则ordering-principles)与[循环](./20-from-gaps-to-plan.md#7--一轮打磨的循环与停止条件)产出，本文不提供模板）：每一个"靠猜"和"没证据"都能归到十七维里的某一维，**哪一维的案例最多最痛，就先去那份文档里找那一维的处置卡（remediation card）**。
+第一层的缺口清单（gap list）和第二层的走查记录会合流成一张**施工顺序（build order）表**（这张表由[21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)的[排序原则（ordering principles）](./21-from-gaps-to-plan-coarse.md#1--排序原则ordering-principles)与[循环](./21-from-gaps-to-plan-coarse.md#5--一轮打磨的循环与停止条件)产出，本文不提供模板）：每一个"靠猜"和"没证据"都能归到十七维里的某一维，**哪一维的案例最多最痛，就先去 [22](./22-from-gaps-to-plan-fine.md) 找那一维的处置卡（remediation card）**。
 
 ---
 
@@ -336,7 +336,7 @@
 
 **一句话（summary）**：一个自动化动作从发起到落定，走的是同一条管线；策略判在动作之前，结果只有一条出口。
 
-*适用性（applicability）：仓库里存在**需要授权的自动化动作**时适用（CI 机器人、发布与部署脚本、代码生成器、任何让 agent 直接改仓库或动用凭据的流程）。**只跑测试、不产生可授权动作的流水线不触发本维**；没有任何这类动作时标 N/A。评的是仓库自己的自动化；如果产品本身是 agent 运行时，产品里的工具执行由 [11](./11-evaluate-runtime-harness.md) 的 RT9 评。*
+*适用性（applicability）：仓库里存在**需要授权的自动化动作**时适用（CI 机器人、发布与部署脚本、代码生成器、任何让 agent 直接改仓库或动用凭据的流程）。**只跑测试、不产生可授权动作的流水线不触发本维**；没有任何这类动作时标 N/A。评的是仓库自己的自动化；如果产品本身是 agent 运行时，产品里的工具执行由 [11](./11-evaluate-runtime-harness-coarse.md) 的 RT9 评。*
 
 **探针（probe）**
 
@@ -515,7 +515,7 @@
 
 **一句话（summary）**：把仓库里会变的东西（规则、配置、记录、生成物（generated artifact））按"变得有多快 / 谁能改 / 丢了多疼"分成层，并且**每层只被上一层或显式操作修改**。
 
-*适用性（applicability）：评的是**仓库自己的开发状态**——开发与 CI 配置、生成物（generated artifact）、录制的期望输出、决策与变更记录，以及开发过程里得出的结论落在哪。被开发的产品自己的运行时状态（产品的数据库、缓存、会话）不在本维；如果产品本身是 agent 运行时，那部分由 [11](./11-evaluate-runtime-harness.md) 的 RT2 评。几乎没有配置与生成物（generated artifact）的小仓库标 N/A。*
+*适用性（applicability）：评的是**仓库自己的开发状态**——开发与 CI 配置、生成物（generated artifact）、录制的期望输出、决策与变更记录，以及开发过程里得出的结论落在哪。被开发的产品自己的运行时状态（产品的数据库、缓存、会话）不在本维；如果产品本身是 agent 运行时，那部分由 [11](./11-evaluate-runtime-harness-coarse.md) 的 RT2 评。几乎没有配置与生成物（generated artifact）的小仓库标 N/A。*
 
 **探针（probe）**
 
@@ -549,7 +549,7 @@
 
 **一句话（summary）**：仓库交给参与者（尤其是 coding agent）的知识按需披露：常驻部分有预算，其余先给摘要、命中才读全文；委派出去的子任务只带它需要的那部分说明。
 
-*适用性（applicability）：评的是**仓库供给的上下文**——常驻入口、按目录生效的规则、流程文档、委派模板。agent 工具自己怎么压缩上下文、怎么隔离子代理，不是仓库能控制的，不在本维；如果产品本身是 agent 运行时，产品的上下文组装由 [11](./11-evaluate-runtime-harness.md) 的 RT7 评。面向 agent 的常驻规则（always-loaded rules）很少、也不在增长的小仓库标 N/A。*
+*适用性（applicability）：评的是**仓库供给的上下文**——常驻入口、按目录生效的规则、流程文档、委派模板。agent 工具自己怎么压缩上下文、怎么隔离子代理，不是仓库能控制的，不在本维；如果产品本身是 agent 运行时，产品的上下文组装由 [11](./11-evaluate-runtime-harness-coarse.md) 的 RT7 评。面向 agent 的常驻规则（always-loaded rules）很少、也不在增长的小仓库标 N/A。*
 
 **探针（probe）**
 
@@ -584,7 +584,7 @@
 
 **一句话（summary）**：能用一条命令问出"这台机器/这个进程实际生效的是什么"，而不是读源码猜。
 
-*适用性（applicability）：评的是**开发环境与工具链**的实际生效值——构建、lint、测试配置叠加后的结果，工作区的包与注册项清单，被开发的程序在本地或测试环境跑起来时的状态。存在多层配置叠加、或声明面大到需要用命令查询时适用；单层配置的小仓库标 N/A。如果产品本身是 agent 运行时，产品的组合与启动由 [11](./11-evaluate-runtime-harness.md) 的 RT1 评。*
+*适用性（applicability）：评的是**开发环境与工具链**的实际生效值——构建、lint、测试配置叠加后的结果，工作区的包与注册项清单，被开发的程序在本地或测试环境跑起来时的状态。存在多层配置叠加、或声明面大到需要用命令查询时适用；单层配置的小仓库标 N/A。如果产品本身是 agent 运行时，产品的组合与启动由 [11](./11-evaluate-runtime-harness-coarse.md) 的 RT1 评。*
 
 **探针（probe）**
 
@@ -657,7 +657,7 @@
 
 **一句话（summary）**：东西怎么出去、兼容承诺是什么、坏版本怎么退、老用户的数据怎么办。
 
-*适用性（applicability）：仓库向外部发布产物（包、镜像、服务、数据格式）时适用。不发布任何东西的仓库标 N/A。评的是仓库发布物的兼容承诺；如果产品本身是 agent 运行时，产品持久数据的格式世代由 [11](./11-evaluate-runtime-harness.md) 的 RT3 评。*
+*适用性（applicability）：仓库向外部发布产物（包、镜像、服务、数据格式）时适用。不发布任何东西的仓库标 N/A。评的是仓库发布物的兼容承诺；如果产品本身是 agent 运行时，产品持久数据的格式世代由 [11](./11-evaluate-runtime-harness-coarse.md) 的 RT3 评。*
 
 **探针（probe）**
 
