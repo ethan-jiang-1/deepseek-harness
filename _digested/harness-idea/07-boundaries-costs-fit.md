@@ -130,7 +130,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 ## 外部验证：Google 产品的 5 个模式
 
-Google Cloud Senior AI Product Manager Shubham Saboo 在2026-08 发表了一篇《5 Patterns to Learn from DeepSeek's Open-Source Agent Harness》，从外部观察者视角提炼了 DSH 的五个设计模式（[原文存档](../../_misc/_references/Google/original-5-patterns.md)）：
+Google Cloud Senior AI Product Manager Shubham Saboo 在2026-08 发表了一篇《5 Patterns to Learn from DeepSeek's Open-Source Agent Harness》，从外部观察者视角提炼了 DSH 的五个设计模式：
 
 1. **Derive the model's context from a log instead of maintaining it** → 即"模型可见 ⟺ 已记录"不变量
 2. **Loops get broken with reminders, not blocks** → `repeat-tool-reminder` 插件（渐进提醒，不硬阻断）

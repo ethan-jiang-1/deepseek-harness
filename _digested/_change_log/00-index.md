@@ -26,7 +26,7 @@
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
 
-**选基线的口径**：只同步 **RC 或 final release**，目标是当前的**最后一个 RC**（若该版本线已出 final release，则同步到 final release）。alpha、beta 一律**不同步**——除非明确指定，否则即使 upstream 长期停在 alpha 阶段也不追，避免同步负担失控。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`；0007 改成「最后一个 RC」并推进到 `0.1.5-rc.2`。0008 起执行方式简化为**整树照搬**：产品源码完全等于 upstream tag（不做内容合并、不留本地源码补丁），本地只维护 `_digested/`、`_faq_on_digested/`、`_agent_ready_development/`、`_misc/` 四个目录；唯一保留的本地口径行是 pairing manifest 对 `_agent_ready_development/` 的排除。
+**选基线的口径**：只同步 **RC 或 final release**，目标是当前的**最后一个 RC**（若该版本线已出 final release，则同步到 final release）。alpha、beta 一律**不同步**——除非明确指定，否则即使 upstream 长期停在 alpha 阶段也不追，避免同步负担失控。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`；0007 改成「最后一个 RC」并推进到 `0.1.5-rc.2`。0008 起执行方式简化为**整树照搬**：产品源码完全等于 upstream tag（不做内容合并、不留本地源码补丁），本地只维护 `_digested/`、`_faq_on_digested/`、`_agent_ready_development/` 三个目录；唯一保留的本地口径行是 pairing manifest 对 `_agent_ready_development/` 的排除。
 
 每次 sync 同时执行以下维护动作：
 
