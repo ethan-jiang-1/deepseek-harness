@@ -10,11 +10,11 @@
 
 ## DSH 怎么应对
 
-DSH 的文档层级规则只有一条主线：**每个事实住在「负责它的那一层」，其它地方只放 link、不复制。**
+DSH 的文档层级规则只有一条主线：**每个事实住在「负责它的那一层」，其它地方只放 link、不复制。** DSH 原话：
 
+> **DSH 原话 ·** one home per fact（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) 的 tier taxonomy 一节）
+>
 > Each fact has one home: the tier whose job it is; elsewhere, link there.
-
-（来源：[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) 的 tier taxonomy 一节）
 
 对各类事实，这个原则落成一张归属表：
 
@@ -26,7 +26,13 @@ DSH 的文档层级规则只有一条主线：**每个事实住在「负责它�
 | 为什么选择这个方案 | 决策记录（ADR / Agent Note） | 当前 API 的唯一说明 |
 | 某类任务怎么做 | cookbook / 任务 skill | 产品运行时行为 |
 
-加上两个分家纪律：**当前事实 vs 决策理由分开**（源码/README 只写 now，理由归决策记录——DSH 的 Writing rules 原文就一句 `Document current state.`），**负知识也要有 owner**（「为什么不做 X」不记下来，agent 就把明确的缺席当成遗漏，反复提已否决的方案）。
+加上两个分家纪律：**当前事实 vs 决策理由分开**（源码/README 只写 now，理由归决策记录）——这条的 DSH 原话：
+
+> **DSH 原话 ·** 文档只写当前状态（`docs/AGENTS.md` 的 Writing rules）
+>
+> Document current state.
+
+**负知识也要有 owner**（「为什么不做 X」不记下来，agent 就把明确的缺席当成遗漏，反复提已否决的方案）。
 
 ## DSH 怎么落地
 

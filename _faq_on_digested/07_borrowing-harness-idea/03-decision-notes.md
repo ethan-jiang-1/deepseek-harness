@@ -16,9 +16,18 @@
 
 DSH 的应对可以压成三条：
 
-1. **一条判据定去留**：存在真实的替代方案和持久取舍才写——代码、测试和现有文档解释不了「为什么选当前方案、放弃了什么」的事实，才需要决策记录。diff 大小无关。
+1. **一条判据定去留**：存在真实的替代方案和持久取舍才写——代码、测试和现有文档解释不了「为什么选当前方案、放弃了什么」的事实，才需要决策记录。**diff 大小无关**，这条判据的 DSH 原话：
+
+   > **DSH 原话 ·** 豁免与判据（[`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)）
+   >
+   > Mechanical or local edits, including local UI presentation and interaction changes, are exempt. … A local bug fix, performance change, new capability, or substantive behavior decision does not qualify merely because its implementation is small.
+
 2. **目录即状态**：`proposed/`（待评审）、`implemented/`（已交付）、`rejected/`（已否决）、`archived/`（冻结历史）——「已否决」「已过时」「现行」一眼可分，过时的理由永远不会冒充当前权威。
-3. **取代有纪律**：决定反转时新增记录并交叉链接，不原地改写；完全取代前必须先吸收旧记录的全部独有内容——否则删掉的不是文档，是别人踩过的坑。
+3. **取代有纪律**：决定反转时新增记录并交叉链接，不原地改写；完全取代前必须先吸收旧记录的全部独有内容。这条的 DSH 原话：
+
+   > **DSH 原话 ·** 完全取代的吸收义务（同上文件）
+   >
+   > Before deletion, the owner must preserve every unique rationale, alternative, consequence, required verification, and named coverage gap.
 
 ## DSH 怎么落地
 

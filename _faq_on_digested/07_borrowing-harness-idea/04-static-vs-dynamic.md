@@ -24,14 +24,18 @@
 
 ## DSH 怎么落地：三条切换纪律（原话与实物）
 
-**1. 动态的只从事实源派生，不在第二处存真。** DSH 的 packages 规则原文：
+**1. 动态的只从事实源派生，不在第二处存真。** DSH 原话：
 
+> **DSH 原话 ·** 只在提交点发布状态、从单一权威源派生（[`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/AGENTS.md)）
+>
 > Publish state only at its commit point. … derive caches, prompts, UI echoes, replay, and query views from one authoritative source.
 
 落地形态：客户端的 store 全是快照派生——会话数据在对象层，store 只承载查看/交互状态；UI 回显、回放视图、查询全都从同一个权威源算出来。派生层丢了无所谓，重建就行；**两处存真才是事故**——分叉了没人知道哪边对。
 
-**2. 模型可见的必须落事实源。** 根 AGENTS.md 的规则原文：
+**2. 模型可见的必须落事实源。** DSH 原话：
 
+> **DSH 原话 ·** 模型可见 ⟺ 落日志（根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)）
+>
 > Model-visible ⟺ logged: anything that reaches a model request must be reconstructable from the session log; a new model-visible input requires a session event.
 
 落地形态：每轮组装出的 prompt 快照、工具清单，变化时重新记录进 session log——所以一次会话能整段回放，「模型当时到底看到了什么」永远答得出来。组装面再花哨（缓存、压缩、可见集收缩），只要这条在，回放就可信。
