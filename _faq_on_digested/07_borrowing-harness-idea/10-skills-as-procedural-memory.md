@@ -6,8 +6,10 @@
 
 `AGENTS.md` 适合放每轮都需要的常驻规则，gate 适合对确定条件给通过/失败。但很多任务既不能靠一句规则、也不能靠一个布尔结果完成——例如「怎样选最小可信的 push 前证据」「怎样判断一个决策记录该保留还是归档」。这些任务需要：读上下文、应用判断标准、执行若干步骤、报告结果。
 
-DSH 把这层知识放进 **development Skill**。它既不是普通文档，也不是自动门禁，而是「程序化工作记忆」——把资深参与者的判断过程变成可发现、可复用、可审查的仓库文件。
+DSH 把这层知识放进 **development Skill**。它既不是普通文档，也不是自动门禁，而是「程序化工作记忆」——把资深参与者的判断过程变成可发现、可复用、可审查的仓库文件。DSH 原话：
 
+> **DSH 原话 ·** tier 表中 Skills 的定位（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)）
+>
 > | Skills (`.agents/skills/`) | Reusable workflows and specialized decision standards | Product and runtime contracts (→ docs or source) |
 
 ## Skill 不是 gate，也不是文档
@@ -24,9 +26,9 @@ DSH 把这层知识放进 **development Skill**。它既不是普通文档，也
 
 DSH 的 Skill 自己声明这个边界：
 
+> **DSH 原话 ·** Skill 自我声明的边界（[`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-code-review/SKILL.md)）
+>
 > This skill is guidance, not a complete checklist. […] The report identifies paths and dirty layers but does not replace semantic review.
-
-（来源：`.agents/skills/dsh-code-review/SKILL.md`）
 
 一个典型 Skill 的调用过程是五步：**Match（命中）→ Load（先读全文，不从摘要猜）→ Resolve sources（读任务所需 owner）→ Apply judgment（按实际 diff/风险选择动作）→ Verify and report（只报告真正执行过的证据）。** Skill 的价值不是「自动执行一切」，而是让复杂判断有稳定入口、明确来源、可重复过程和诚实的适用边界。
 
@@ -46,6 +48,8 @@ DSH 的 Skill 自己声明这个边界：
 
 Skill 与根文档共用同一个原则——**摘要负责发现，正文才拥有指令**。DSH 的产品侧提示语把这句说得最直白：
 
+> **DSH 原话 ·** catalog 只给摘要（[`packages/skill/tool-skill/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/skill/tool-skill/README.md)）
+>
 > This catalog contains summaries only; do not infer or follow a skill's instructions until it has been loaded.
 
 对普通项目，这意味着：**不要把所有流程文档都塞进常驻上下文，而是给一个「任务 → 文档」的目录，任务命中才加载全文。** 这一条同时省上下文、又避免 agent 从摘要脑补流程。这一节只讲「仓库开发侧」的按需加载；DSH 在**运行时/模型可见面**上如何实现同样的原则（skill catalog 只给摘要、prompt 按 scope 组装、compaction 回收），是另一整块，见 [`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)。

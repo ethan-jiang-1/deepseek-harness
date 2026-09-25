@@ -1,20 +1,20 @@
 # 渐进披露的完整管线：静态分层 + 运行时按需注入、组装、回收
 
-> **术 · 披露管线。** 渐进披露不是「把文档写短」，是贯穿五层的管线。静态层的组织见 [`归属`](./02-legibility-ownership.md) 与 [`入口链`](./09-agents-entry-chain.md)，本页补注入、组装、回收、隔离四层。
+> **术 · 披露管线。** 渐进披露不是「把文档写短」，是贯穿五层的管线。静态层的组织（tier、骨架）由 [`归属`](./02-legibility-ownership.md) 与 [`入口链`](./09-agents-entry-chain.md) 拥有；本页拥有注入、组装、回收、隔离四层——运行时每一层都是 DSH 产品的真实机制，逐层配原话与文件。
 
-## 先纠正一个误解
+## 为什么要有这道
 
-前面 [`归属`](./02-legibility-ownership.md)、[`Skills`](./10-skills-as-procedural-memory.md)、[`入口链`](./09-agents-entry-chain.md) 讲的渐进披露，其实只覆盖了**静态/仓库层**——文档怎么分层、AGENTS.md 骨架怎么搭、Skills 怎么按需加载（静态层在语料层的完整设计见 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)）。但 DSH 的渐进披露不是「把文档写短」这一件事，它是一条**贯穿五层的管线**——运行时的根入口文档消费见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)：
+「把文档写短」只解决了**供给**——仓库里有了分层的好文档。但**分配**是运行时的事：这一轮注入哪些、模型看到什么、超预算了怎么回收、子代理能看什么——没有运行时机制，短文档照样会被全量塞进上下文，或长任务在上下文爆炸里死掉。DSH 把「按需」从写作纪律升级成了五层机器保证，每层管一段：
 
 | 层 | 回答的问题 | DSH 机制 | 可迁移性 |
 |---|---|---|---|
-| 1 静态组织 | 每种知识住哪、多大、什么时候读 | tier taxonomy、字数预算、AGENTS.md 骨架、catalog | 高（见 02/05/09） |
+| 1 静态组织 | 每种知识住哪、多大、什么时候读 | tier taxonomy、字数预算、AGENTS.md 骨架、catalog | 高（归归属/入口链） |
 | 2 按需注入 | 这一轮该把哪些文件/会话注入上下文 | context 插件：agent-instructions、file-reference(+local)、session-reference、time/tmux | 中高 |
 | 3 运行时组装 | 这一轮模型实际看到什么（sections/context/tools） | system-prompt assembly、skill catalog 只给摘要、`ctx.tools.restrict` | 中 |
 | 4 溢出回收 | 上下文超预算了怎么办 | token meter + compaction + tool-result pruning | 中 |
 | 5 隔离边界 | 谁能看到什么 | subagent spawn 不带父历史、fork 只带 seed | 高 |
 
-第 1 层已在前几篇写完，这一篇补第 2–5 层。它们共同回答一个之前没明说的问题：**「按需」的「需」到底由谁、在什么时刻、以什么预算决定。**
+它们共同回答一个写作纪律答不了的问题：**「按需」的「需」由谁、在什么时刻、以什么预算决定。**
 
 ## 层 2 · 按需注入：context 插件
 
@@ -22,9 +22,11 @@
 
 - **`agent-instructions`**：把 `AGENTS.md`/`CLAUDE.md` 链注入历史。关键是它的加载是 **touch-driven** 的——首次注入 baseline，之后只在成功的 `read`/`write`/`edit` 触达更深目录时才注入 nested 指令；`maxBytes` 限制整条链、`maxSourceBytes` 限制单文件；同目录里 `CLAUDE.md` 与 `AGENTS.md` 内容相同就**只渲染一次**；digest 未变化的文件**不重复注入**。
 
+  > **DSH 原话 ·** 预算与丢弃顺序（[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)）
+  >
   > Rendering keeps the most specific files first: it drops whole broader files before truncating the most-specific file, and emits a visible `Workspace instruction budget ...` notice naming the omitted and truncated paths. The rendered bytes never exceed `maxBytes`.
 
-  这一条是「AGENTS.md 骨架」（09 的会话态）在运行时的真实实现：文件层面「合适个数」，运行时层面「触达才加载 + 有预算 + 去重」（机制见 [`05_root-entry-doc-navigation/01-runtime-injection.md`](../05_root-entry-doc-navigation/01-runtime-injection.md)）。
+  这一条就是入口链「会话态」在运行时的真实实现：文件层面「合适个数」，运行时层面「触达才加载 + 有预算 + 去重」。
 
 - **`file-reference` / `file-reference-local`**：`@file` mention grammar 与本地工作区的补全 provider。
 - **`session-reference`**：其它会话的 bounded snapshot（有界快照，不是整段搬）。
@@ -45,10 +47,14 @@ skill 与 tool 的「摘要 vs 正文」也在这层：
 
 - **skill catalog 只给摘要**：`SkillCatalogSnapshot` 只含 sorted `name` + normalized `description`（默认 ≤500 字符），省略 bodies/paths/sources/providers/routing hints；`get()` 每次调用都向 provider 取完整 body，不缓存。
 
+  > **DSH 原话 ·** catalog 只给摘要（[`docs/subsystems/skills.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/skills.md)）
+  >
   > The catalog contains sorted skill `name` and normalized, XML-escaped `description` only; it omits bodies, paths, sources, providers, and routing hints. … loads full skill bodies on demand.
 
 - **tool 可见集按 scope 收缩**：`ctx.tools.restrict()` 让模型只看到当前 scope 相关的工具。
 
+  > **DSH 原话 ·** 工具可见集按 scope 收缩（[`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md)）
+  >
   > ToolSearch / progressive disclosure — replace a scoped `ctx.tools.restrict()` registration as the visible set changes.
 
 这层的意义是：**「披露多少」不是写文档时定死的，而是每次请求按 scope、按需、且只在变化时重新计算的。**
@@ -61,14 +67,18 @@ skill 与 tool 的「摘要 vs 正文」也在这层：
 - remeasure 后，若仍需压缩，把选定范围替换为一个 summary；
 - **region 边界保留 tool-call/result 配对**（不拆散一个工具的调用与结果）。
 
+  > **DSH 原话 ·** 压力压缩与配对保留（[`docs/subsystems/compaction.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/compaction.md)）
+  >
   > Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns.
 
 这层的意义：**披露不是单向的。** 上下文有预算，超了会被压缩/替换，而不是无限增长或直接报错死掉。
 
 ## 层 5 · 隔离边界：subagent
 
-披露还有「谁能看到什么」的边界。DSH 的 subagent 默认**不继承**父对话：
+披露还有「谁能看到什么」的边界。DSH 的 subagent 默认**不继承**父对话。DSH 原话：
 
+> **DSH 原话 ·** spawn 不带父历史（[`packages/subagent/subagent-in-process-driver/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/subagent/subagent-in-process-driver/README.md)）
+>
 > The shared driver sends the task verbatim as the child's user message … Spawn supplies no history; fork supplies its balanced seed.
 
 普通 `spawn` 派生的子代理不带父历史，`fork` 只继承一个平衡过的 seed。这是「乱发挥」的另一道闸：子代理不会被父上下文的全部细节带偏。

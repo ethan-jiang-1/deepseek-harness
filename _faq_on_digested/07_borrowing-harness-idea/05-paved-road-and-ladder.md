@@ -14,11 +14,11 @@ agent「读懂了系统」和「改对了地方」是两件事。知识外置解
 
 ## DSH 怎么应对
 
-DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩展点、生产范本、生命周期规则和对应证据，让「做对」成为阻力最小的路径。核心原则一句话：
+DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩展点、生产范本、生命周期规则和对应证据，让「做对」成为阻力最小的路径。核心原则一句话，DSH 原话：
 
+> **DSH 原话 ·** 新行为接在文档化的扩展点上（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md) 的 Where new behavior goes 一节）
+>
 > New behavior attaches to a documented extension point. Changing the loop itself updates this map.
-
-（来源：[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md) 的 Where new behavior goes 一节）
 
 加上两个配套设计：**参与阶梯**（改动按影响半径分层，每层有首选入口和升级条件——阻止「本可配置表达、却改到核心」）和**单一所有权**（注册即效果，谁注册谁清理，没有「临时/正式」两套协议）。
 
@@ -34,8 +34,10 @@ DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩�
 
 每行右边都是**具体的注册 API**，不是「找相关模块」这类需要再解释的指引。配套的 [extension cookbook](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md) 给每个扩展点一份「怎么做」的操作页。
 
-**没有特权核心可 patch**——扩展就是挂一个插件，注册即归属当前生命周期：
+**没有特权核心可 patch**——扩展就是挂一个插件，注册即归属当前生命周期。DSH 原话：
 
+> **DSH 原话 ·** 没有特权核心可 patch（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)）
+>
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 
 **四级参与阶梯**（repo-harness 语料从 DSH 归纳的学习模型，非官方分级名称，分级逻辑可原样搬到任何项目）：

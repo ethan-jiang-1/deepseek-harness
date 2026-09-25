@@ -18,7 +18,7 @@
 
 **DSH 原生**：`pnpm install`（顺带装好 worktree-local lefthook 钩子）→ `pnpm run typecheck` 通过即就绪（`development.md` 的验收标准）。钩子是快检查：pre-commit 六个作业（translation pairing、archived agent notes、staged lint、THIRD_PARTY_NOTICES 再生、whitespace、vendor manifest guard），pre-merge-commit 重跑其中 translation pairing 与 archived agent notes 两项；**pre-push 跑 `pnpm run typecheck`**。除此之外钩子刻意不跑测试、snapshot、文档检查和构建——这些的穷举归 CI（`lefthook.yml` 头注与 development.md「Git integrations」明说）。
 
-**专家 repo 落地（A/C/D）**：准备做同构版——`pnpm install` → 本 repo 的 typecheck 通过即就绪 + 自己的快检查钩子（学 DSH 的形状，不必照抄它那六个 DSH 专属的 pre-commit 作业清单）——再加两件：① `git submodule update --init` 拉下 `vendor/dsh`（**仅 A/D**；C 无 submodule，DSH 是 npm 依赖 + `AGENTS.md` 里 `$DSH_REPO` 指针，见其差异节）并确认 `pnpm install` 后 typecheck 解析到 DSH 源码；② 写根 `AGENTS.md`（几百词：常驻规则、布局、命令表、`vendor/dsh` 在哪、探索路由——作者侧先 `docs/cordis-tutorial/`（七讲 keyless 可运行，受众即 agent 开发者，末讲把模型可调用工具接进真实 harness services）与 `docs/user/develop/`（写 harness 插件的 basic/framework/practice 指南，从 `basic/index.md` 进），组合与集成的深问再 `docs/architecture.md → capability-seams → 包 README`），`CLAUDE.md` 做 symlink。这是给 coding agent 铺的路，第 4 阶段起它每次都走。
+**专家 repo 落地（A/C/D）**：准备做同构版——`pnpm install` → 本 repo 的 typecheck 通过即就绪 + 自己的快检查钩子（学 DSH 的形状，不必照抄它那六个 DSH 专属的 pre-commit 作业清单）——再加两件：① `git submodule update --init` 拉下 `vendor/dsh`（**仅 A/D**；C 无 submodule，DSH 是 npm 依赖 + `AGENTS.md` 里 `$DSH_REPO` 指针，见其差异节）并确认 `pnpm install` 后 typecheck 解析到 DSH 源码；② 写根 `AGENTS.md`（几百词：常驻规则、布局、命令表、`vendor/dsh` 在哪、探索路由——作者侧先 `docs/cordis-tutorial/`（七讲 keyless 可运行，受众即 agent 开发者，末讲把模型可调用工具接进真实 harness services）与 `docs/user/develop/`（写 harness 插件的 basic/framework/practice 指南，从 `basic/index.md` 进），形态与扩展点问题先查 `docs/cookbook/extension-cookbook.md`（扩展形态参考：工具/钩子/UI/协议驱动 + feature→机制映射），组合与集成的深问再 `docs/architecture.md → capability-seams → 包 README`），`CLAUDE.md` 做 symlink。这是给 coding agent 铺的路，第 4 阶段起它每次都走。
 
 ### 第 0.5 阶段 · 双 home 隔离
 
@@ -65,7 +65,7 @@
 
 **专家 repo 落地**：专家的设计清单有固定四问（这是"plugins, not loop changes"纪律的专家版）：
 
-1. **占哪个 ctx 键 / 发哪些事件**？每条流一个自己的键，`inject` 声明依赖（依赖 Service Definition、不依赖具体 provider——`packages/README.md` 的 Dependencies 规则），不劫持别人的。
+1. **占哪个 ctx 键 / 发哪些事件**？每条流一个自己的键，`inject` 声明依赖（依赖 Service Definition、不依赖具体 provider——`packages/README.md` 的 Dependencies 规则），不劫持别人的。feature→机制映射（DSH 产品功能各占哪个扩展点）的原文家是 `docs/cookbook/extension-cookbook.md`——先查表，照它的模式定自己的键与事件。
 2. **模型会看见什么新状态**？model-visible ⟺ logged（下称**日志税**）——每个新的模型可见输入都要配 `SessionEventMap` 成员（并决定 `ignorable`），否则日志重建不出来。这问漏了，第 5 阶段调试时会以"日志读不全"的形式还债。
 3. **UI 走哪层**？presenter 层（`presentCall`/`presentResult` + `presentationMeta`，纯函数、可 replay；注意内置 Web Client 不消费它，不配 client 时显示 generic fallback 卡）→ 专属 Web 卡的 `tool.call.toolview` 槽注册 / 独立 UI 面的 `dsh.client.inject` / 自定义 View 的 `ctx.uiConversation.views` 注册 → 改内置卡片组件本体（仅方案 B）。分层事实的家：[answer](./answer.md) 决策 4。
 4. **证据是什么**？"会为这次回归而失败"的那个测试长什么样——现在就点名，第 4 阶段写它。

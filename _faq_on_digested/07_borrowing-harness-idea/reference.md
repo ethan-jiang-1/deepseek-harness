@@ -2,6 +2,66 @@
 
 > **定位：证据账本。** 本目录各章声称的 DSH 事实，其上游一手出处集中登记在这里（钉版基线 `46a7f68b09`，`dsh-v0.1.7-rc.1`）。正文按渐进披露的原则不携带链接清单——想核对哪一章的事实，按章号来这里查；不核对就不必读。纯 FAQ 综合判断（施工顺序、优先级排序）在此如实标注「无独立上游证据」。整理过程的语料出处与复核历史在 [`research.md`](./research.md)（内部账本），与本页分工：research 记「这些结论怎么来的」，本页记「去哪里核对」。
 
+## 00 · DSH 原话索引（道十句 + 术十四句）
+
+道五篇与术六篇的关键原话在正文中以「**DSH 原话 ·**」标记，句句带出处。想一口气读全（真正掌握 DSH，读它自己写下的这些句子）：
+
+**道（概念的骨架）：**
+
+| 篇 | 原话（出处文件） |
+|---|---|
+| 01 | Mechanical or local edits … are exempt.（`.agents/notes/README.md`） |
+| 01 | Match evidence to the surface … A guard only guards if the regression fails it.（根 `AGENTS.md`） |
+| 02 | Each fact has one home: the tier whose job it is; elsewhere, link there.（`docs/AGENTS.md`） |
+| 02 | Document current state.（`docs/AGENTS.md`） |
+| 03 | … does not qualify merely because its implementation is small.（`.agents/notes/README.md`） |
+| 03 | Before deletion, the owner must preserve every unique rationale …（`.agents/notes/README.md`） |
+| 04 | Publish state only at its commit point. … from one authoritative source.（`packages/AGENTS.md`） |
+| 04 | Model-visible ⟺ logged …（根 `AGENTS.md`） |
+| 05 | New behavior attaches to a documented extension point.（`docs/architecture.md`） |
+| 05 | There is no privileged core to patch …（`docs/architecture.md`） |
+
+**术（实战的操作定义）：**
+
+| 篇 | 原话（出处文件） |
+|---|---|
+| 07 | This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions.（quality-gates Note） |
+| 07 | Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. …（同上） |
+| 07 | Match evidence to the surface … Never default to the full suite.（根 `AGENTS.md`，全文版） |
+| 07 | A guard only guards if the regression fails it. … introduce the regression, watch red, revert.（`docs/testing.md`） |
+| 08 | This skill is guidance, not a complete checklist. …（`dsh-code-review/SKILL.md`） |
+| 08 | There is no privileged core to patch … registrations are effects that unwind.（`docs/architecture.md`） |
+| 08 | The vm prevents accidental global pollution; … not a security boundary.（cordis toolset Note） |
+| 09 | `CLAUDE.md` symlinks `AGENTS.md` … edit the real file.（根 `AGENTS.md`） |
+| 09 | Rendering keeps the most specific files first … never exceed `maxBytes`.（`agent-instructions/README.md`） |
+| 10 | Skills: Reusable workflows and specialized decision standards.（`docs/AGENTS.md` tier 表） |
+| 10 | This catalog contains summaries only; do not infer or follow …（`tool-skill/README.md`） |
+| 11 | To see the tree your machine boots: `dsh --profile web --dump-config`.（`docs/architecture.md`） |
+| 11 | The vm … is not a security boundary.（cordis toolset Note） |
+| 12 | Spawn supplies no history; fork supplies its balanced seed.（`subagent-in-process-driver/README.md`） |
+
+各句的完整原文与上下文见各篇正文（每句都在「DSH 怎么应对/怎么做」节内）。
+
+## 00b · DSH 文档地图：最重要的几个文档在哪里、目的是什么
+
+想深入 DSH 本体时，按问题找文档。这几个是整个仓库的骨架文档，各自的目的一句话说清：
+
+| 文档（钉版链接） | 目的 | 什么时候读 |
+|---|---|---|
+| [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md) | agent 每轮的常驻指令：布局、命令、约定——所有参与的第一入口 | 想看「agent 一等参与者」落到文件是什么样 |
+| [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md) | 系统的有序地图：插件如何组成 dsh、新行为接哪里（「Read this before changing anything under `packages/`」） | 改代码前建立全局认知；归属表在这 |
+| [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) | 文档层的规则：tier 分工（one home）、字数预算、双语纪律 | 想理解 DSH 的知识为什么这样分层 |
+| [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md) | 决策记录的规则：何时写、状态、取代与归档 | 想学决策记录的完整纪律（道 03 的原文出处） |
+| [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/testing.md) | 测试政策：层级、真实入口、负例控制、快照义务 | 想学「证据与声称对齐」的完整标准（道 01 的原文出处） |
+| [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/README.md) | 包工作区地图：分组、每组拥有什么、约束它们的约定 | 从任务找 owner 的第二跳（根 AGENTS → 这里 → 包 README） |
+| [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/glossary.md) | 一词一义：一个概念一个规范术语，实现细节留给包 README 和 Note | 读其它文档碰到术语分歧时来对表 |
+| [`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md) | 每个扩展点的操作手册：怎么做、范本 | 照正确路径动手时（道 05 的配套） |
+| [`docs/defensive-patterns.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/defensive-patterns.md) | 踩过的坑变成的规则：每条是一个真出过的事故类 | 写生命周期/并发/子进程/清理代码之前 |
+| [`docs/cordis-primer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cordis-primer.md) | Cordis 框架入门：插件、服务、事件、效果的机制 | 读 architecture 前不懂 Cordis 时先来这 |
+| [`docs/development.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/development.md) | 贡献者参考：环境搭建、日常工作流、CI 组织 | 要实际参与 DSH 开发时 |
+
+三个使用提示：这张表是「按问题找文档」的索引，不是通读书单——没人需要全读；每个文档自己拥有自己的一类事实（正是道 02 讲的 one home），互相链接不复制；上游 evolve 后以钉版基线复核（见 `research.md` 的说明）。
+
 ## 01 · 变更闭环
 
 - [提交 `5124a2a310`](https://github.com/deepseek-ai/deepseek-harness/commit/5124a2a310a904d28118609c41d89f26440b946b)：本页案例的上游一手证据（7 文件、+15/−14、断言反转）。

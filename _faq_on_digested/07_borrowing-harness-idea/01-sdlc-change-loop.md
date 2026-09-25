@@ -20,8 +20,17 @@ DSH 把闭环定成一条流水线，每环有产物、有 owner、有失败信�
 
 两个关键设计：
 
-1. **条件化机制**——Issue、Agent Note、Plan Mode 都不是每笔变更的必经站，只在需要承载对应事实时出现；局部修补不带 Note 是合规，不是偷懒。
-2. **证据与声称对齐**——测试必须能在旧行为上失败（红灯对照），没被钉住的行为如实标注为缺口；绿灯的数目不是目标，证据与声称的对齐才是。
+1. **条件化机制**——Issue、Agent Note、Plan Mode 都不是每笔变更的必经站，只在需要承载对应事实时出现。局部修补不带 Note 是合规，不是偷懒——这条豁免的 DSH 原话：
+
+   > **DSH 原话 ·** 决策记录的豁免条款（[`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)）
+   >
+   > Mechanical or local edits, including local UI presentation and interaction changes, are exempt.
+
+2. **证据与声称对齐**——测试必须能在旧行为上失败（红灯对照），没被钉住的行为如实标注为缺口；绿灯的数目不是目标，证据与声称的对齐才是。这条纪律的 DSH 原话：
+
+   > **DSH 原话 ·** 本地检查按改动面选择、负例控制（根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)）
+   >
+   > Match evidence to the surface: focused behavior tests, model/user-output snapshots, `doc-sync` for docs, built smokes for published paths, and real-API e2e for providers. … A guard only guards if the regression fails it.
 
 ## DSH 怎么落地
 
