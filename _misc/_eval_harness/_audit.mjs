@@ -374,5 +374,57 @@ for (const [coarse, fine, dimCount] of [
   check(`${tag} 与细粒度之间无整行复制（≥30 字）`, shared.length === 0, shared.slice(0, 2).map((l) => l.slice(0, 40)).join(' | '))
 }
 
+// —— 语义口径：评分与施工不能各说各话 ——
+{
+  const d01 = rd('01-evaluate-development-harness-coarse.md')
+  const d02 = rd('02-evaluate-development-harness-fine.md')
+  const d11 = rd('11-evaluate-runtime-harness-coarse.md')
+  const d21 = rd('21-from-gaps-to-plan-coarse.md')
+  const d22 = rd('22-from-gaps-to-plan-fine.md')
+  const readme = rd('README.md')
+
+  const probeCount = (file, level, idPattern) => {
+    const dims = dimensions(file, level, idPattern)
+    return Object.values(dims).reduce((n, lines) => n + lines.filter((l) => /^\| PB\d /.test(l)).length, 0)
+  }
+  const devProbes = probeCount('02-evaluate-development-harness-fine.md', 4, '(?:KN|CP|EV|ST|MT)\\d+')
+  const rtProbes = probeCount('12-evaluate-runtime-harness-fine.md', 3, 'RT\\d+')
+  const probeClaims = []
+  for (const [f, body] of files.map((f) => [f, rd(f)])) {
+    for (const m of body.matchAll(/(\d+) 个探针/g)) {
+      const n = Number(m[1])
+      if (n !== devProbes && n !== rtProbes) probeClaims.push(`${f}: ${n}（开发 ${devProbes} / 运行时 ${rtProbes}）`)
+    }
+  }
+  check('「N 个探针」与实际探针行数一致', probeClaims.length === 0, probeClaims.join(' | '))
+
+  check('CP1 填 IG6', /CP1 意图入口（Work intake） \| IG6/.test(d01) && /\*\*填的缺口\*\*：IG6/.test(dimensions('02-evaluate-development-harness-fine.md', 4, 'CP1')['CP1'].join('\n')))
+  check('21 症状表里 CP1 挂 IG6', /\| IG6 \| CP1 意图入口/.test(d21))
+
+  const cap0 = [
+    ['01', d01, '覆盖面 0'],
+    ['11', d11, '覆盖面 0'],
+    ['11', d11, '约束力 0'],
+  ]
+  check('粗判信号写出封顶 0（ST3 / RT5 / RT6 / RT10）', cap0.every(([, t, s]) => t.includes(s)) && (d11.match(/覆盖面 0/g) ?? []).length >= 2)
+
+  check('EV2「最近一次为红」只在历史可见时扣分', /历史不可见/.test(d01) && /历史可见/.test(d02) && /历史不可见时这一问记证据受限/.test(d02))
+  check('LX2 只有一个实现时记 N/A，不判不及格', /只有一个实现时本实验是 N\/A，不判不及格/.test(d11))
+  check('收工线把未触发的维排除在外', /未触发/.test(d21) && /不挡收工/.test(d21) && /不计入 01 成熟度档的"多数"分母/.test(d21) && /不计入分母/.test(d01) && /不计入分母/.test(d11))
+  check('同一事实只记一条缺口', /同一侧的同一事实只记一条缺口/.test(d21))
+  check('快诊六维不是施工前置', /不要按快诊六维直接开工/.test(d21))
+  check('没有压力时记未触发而不是 N/A', /记「未触发」，不标 N\/A/.test(d01) && /记「未触发」，不标 N\/A/.test(d11))
+  check('评分卡证据状态含未触发', /未触发 \/ 未评/.test(d01) && /未触发 \/ N\/A/.test(d11))
+  check('最痛的三维不含未触发', /只在已经在评、且没有标「未触发」的维里数/.test(d01) && /只在没标「未触发」的维里数/.test(d21))
+  check('EV2 第二问只压覆盖面', /它不看 CI 历史，也不改约束力/.test(d01))
+  check('最便宜的三刀不把整维算成已触发', /不把 RT1、RT4 整维算成已触发/.test(d21))
+  check('11 没有快诊模式', !/快诊/.test(d11))
+
+  check('README 维护表指向 21 与 22', /\| `21` \|/.test(readme) && /\| `22` \|/.test(readme) && !/\| `20` \|/.test(readme))
+  check('README 计数是六份文档、八个文件', /这六份文档/.test(readme) && /八个文件/.test(readme) && !/这五份文档/.test(readme))
+  check('22 运行时处置卡是三级标题', !/^#### RT/m.test(d22) && (d22.match(/^### RT\d+ /gm) ?? []).length === 11)
+  check('RT5 处置卡用全名', /^### RT5 能力 seam 与可替换性 /m.test(d22))
+}
+
 console.log(fails ? `\n${fails} 项未通过` : '\n全部通过')
 process.exit(fails ? 1 : 0)

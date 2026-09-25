@@ -1,14 +1,14 @@
 # 缺了维度怎么办：从缺口到计划 · 粗粒度（coarse-grained）
 
-**这份文档是什么。** 评估已经指出哪一维红了。这份文档回答三件事：**先补哪一个、补成什么样算数、什么时候停。** 每维只给最小一步。做法、验收红线（acceptance red lines）、成本和走形（degradation），在 [22 细粒度（fine-grained）](./22-from-gaps-to-plan-fine.md)，只翻这一轮要动的那几张卡。
+**这份文档是什么。** 评估已经指出哪一维红了。这份文档回答两件事：**先补哪一个、什么时候停。** 某一维补成什么样、怎么做、怎么验收，只写在 [22](./22-from-gaps-to-plan-fine.md) 的那张处置卡（remediation card）里。
 
-**谁执行、谁读。** agent 拿缺口清单（gap list）按本文排施工顺序（build order），写出这一轮补哪几维、每维的最小一步。人读本文是为了同意这个顺序，读 [22](./22-from-gaps-to-plan-fine.md) 是为了看某一维怎么做深。
+**谁执行、谁读。** agent 拿缺口清单（gap list）按本文排出这一轮补哪几维。人读本文是为了同意这个顺序。某一维怎么做，agent 按 [22](./22-from-gaps-to-plan-fine.md) 的卡片施工，人读那张卡是为了看验收有没有被放宽。
 
-**可以单独使用。** 没做过评估也能用：用[第 2 节](#2--症状--缺口--维度总对照表)的症状对号入座，再到[第 3 节](#3--每维的最小一步)看怎么补。做过评估的话，从[第 1 节](#1--排序原则ordering-principles)开始。
+**可以单独使用。** 没做过评估也能用：用[第 2 节](#2--症状--缺口--维度总对照表)的症状对上维度，再打开 [22](./22-from-gaps-to-plan-fine.md) 里那一张卡。做过评估的话，从[第 1 节](#1--排序原则ordering-principles)开始。
 
 **编号约定。** 维度沿用 01/02 的两字母前缀（`KN`/`CP`/`EV`/`ST`/`MT`/`RT`），缺口用 `IG`（见 [README 的标识符约定](./README.md#标识符约定token)）。
 
-**两份粒度。** 本文（`21`）稳定：排序原则（ordering principles）、症状对照、每维最小一步、边界、收工线（stop line）。[22](./22-from-gaps-to-plan-fine.md) 会随做法增补。
+**两份粒度。** 本文（`21`）稳定：排序原则（ordering principles）、症状对照、边界、收工线（stop line）。[22](./22-from-gaps-to-plan-fine.md) 会随做法增补。
 
 **配套文档。** [01](./01-evaluate-development-harness-coarse.md) · [02](./02-evaluate-development-harness-fine.md) · [11](./11-evaluate-runtime-harness-coarse.md) · [12](./12-evaluate-runtime-harness-fine.md) · [22](./22-from-gaps-to-plan-fine.md)
 
@@ -18,10 +18,9 @@
 
 - [1 · 排序原则（ordering principles）](#1--排序原则ordering-principles)
 - [2 · 症状 → 缺口 → 维度总对照表](#2--症状--缺口--维度总对照表)
-- [3 · 每维的最小一步](#3--每维的最小一步)
-- [4 · 边界与反模式](#4--边界与反模式)
-- [5 · 一轮打磨的循环与停止条件](#5--一轮打磨的循环与停止条件)
-- [6 · 短例](#6--短例)
+- [3 · 边界与反模式](#3--边界与反模式)
+- [4 · 一轮打磨的循环与停止条件](#4--一轮打磨的循环与停止条件)
+- [5 · 短例](#5--短例)
 - [附录 · 一页速查](#附录--一页速查)
 
 ---
@@ -47,6 +46,8 @@
 前置维（prerequisite dimension）的特征：**它们的失败会让其它维度的收益归零**，而不是"它们比较重要"。
 
 **MT1 防漂移（Drift prevention）不单独排期，伴随做。** 每外置一份知识（入口、归属表（ownership table）、清单、流程），就在同一次改动里给它配上结构检查和负例控制（negative control；见 [MT1 卡](./22-from-gaps-to-plan-fine.md#mt1-防漂移drift-prevention--处置卡remediation-card)）。其余十一维归[原则三](#原则三有压力再借pressure-triggered)。
+
+快诊六维（01 §0）用来决定值不值得往下评，和这里的前置五维不是同一组：快诊含 CP2、ST1，不含 EV2；施工前置含 EV2，不含尚未触发的 CP2、ST1。不要按快诊六维直接开工。
 
 ### 原则三：有压力再借（pressure-triggered）
 
@@ -101,6 +102,13 @@
 
 **规则：两侧各自计分、各自排期，不去重，也不互相借证据**——用产品有会话记录来给开发侧 ST1 加分，或用仓库有 CI 授权来给 RT9 加分，都是拿一个系统的证据评另一个系统。判据可以互相借鉴：一侧已经做对的做法，常常是另一侧处置卡（remediation card）的现成范本。
 
+**同一侧的同一事实只记一条缺口。** 开发侧里，"两份可写拷贝"会同时撞上 KN2、ST1、MT1 的封顶。缺口清单写一条，挂在主维上，其它维的案例列只交叉引用：
+
+- 两份可写、还没定谁是 home → 主维 KN2。
+- 层被破坏、派生被当成记录 → 另记 ST1。只是第二份拷贝、层还在，不另记。
+- 已经决定外置第二份、却没有 freshness 检查 → 另记 MT1。还没决定外置，不另记。
+- "改了 A 必须改 B"和"先合并后补文档"若是同一笔滞后 → 主维 EV3，KN2 的案例列引用它。
+
 ---
 
 ### 运行时维度的排序原则（ordering principles）
@@ -119,14 +127,14 @@
 |---|---|
 | RT3 格式世代与兼容（Format generations） | 持久数据要跨版本长期存活（用户不会每次升级都丢历史）|
 | RT4 循环与终结边界（Loop and termination boundaries） | 出现"它到底是做完了还是卡住了"的争论；或取消后动作仍在后台继续 |
-| RT5 能力 seam | 第二个真实实现出现（不是"我们知道将来可能会有"）|
+| RT5 能力 seam 与可替换性（Capability seams） | 第二个真实实现出现（不是"我们知道将来可能会有"）|
 | RT6 扩展点（Extension points and interception） | 有第二个人要往上面加东西；或出现"为了加功能改了核心"的实例 |
 | RT10 可执行治理（Executable governance） | 出现写在文档里、可以机械判断却没人遵守的规则 |
 | RT8 入口与协议投影（Entry surfaces and protocol projection） | 第二个入口出现 |
 | RT11 客户端组装纪律（Client composition discipline） | 界面上出现"同一个数字两处不一样"；或改一个数据要在界面里同步好几处 |
 | RT1 组合与启动（Composition and boot） | 配置开始由多个人改；或出现过"以为开着实际没装"|
 
-**最便宜的三刀（几乎零成本，收益立刻）**——它们是原则三的例外：成本接近零、不引入新层，不必等触发条件（trigger）：
+**最便宜的三刀（几乎零成本，收益立刻）**——它们是原则三的例外：成本接近零、不引入新层，不必等触发条件（trigger）。三刀只做那一个动作，不把 RT1、RT4 整维算成已触发；整维仍可标「未触发」。不能用整维未触发来跳过这三刀。RT9 是达标线点名的维，整维不能标未触发：
 
 1. **坏配置大声失败**（RT1）：把"引用了不存在的组件"从警告改成错误。
 2. **结果单一出口**（RT9）：把所有"异常吞成空值"的地方改成明确的错误结果。
@@ -148,7 +156,7 @@
 
 ### 总对照表
 
-**从症状出发**：左边找最像你的一句，右边拿到维度，再到[第 3 节](#3--每维的最小一步)看最小一步；要做深时翻 [22](./22-from-gaps-to-plan-fine.md)。
+**从症状出发**：左边找最像你的一句，右边拿到维度，打开 [22](./22-from-gaps-to-plan-fine.md) 里那一张处置卡（remediation card）。
 
 | 你看到的症状 | 缺的缺口 | 维度 | 先去哪张卡 |
 |---|---|---|---|
@@ -158,7 +166,7 @@
 | 被否决过的方案，每隔半年被重新提一次 | IG3 | KN3 决策记录（Decision records） | [KN3](./22-from-gaps-to-plan-fine.md#kn3-决策记录decision-records--处置卡remediation-card) |
 | 同一件事改过几轮，没人说得出最后是什么、为什么改 | IG3 | KN3 决策记录（Decision records） | [KN3](./22-from-gaps-to-plan-fine.md#kn3-决策记录decision-records--处置卡remediation-card) |
 | 新文件不知道该放哪，同一个东西放三个地方 | IG2 | KN4 分类学（Repository taxonomy） | [KN4](./22-from-gaps-to-plan-fine.md#kn4-分类学repository-taxonomy--处置卡remediation-card) |
-| 做完才发现理解错了需求，返工 | IG7 | CP1 意图入口（Work intake） | [CP1](./22-from-gaps-to-plan-fine.md#cp1-意图入口work-intake--处置卡remediation-card) |
+| 做完才发现理解错了需求，返工 | IG6 | CP1 意图入口（Work intake） | [CP1](./22-from-gaps-to-plan-fine.md#cp1-意图入口work-intake--处置卡remediation-card) |
 | 有人在错误的地方插代码，或自己发明一套新接法 | IG4 | CP2 正确路径（Paved road） | [CP2](./22-from-gaps-to-plan-fine.md#cp2-正确路径paved-road--处置卡remediation-card) |
 | 同一类任务每次都用不同做法，步骤靠记忆 | IG5 | CP3 流程固化（Procedural memory） | [CP3](./22-from-gaps-to-plan-fine.md#cp3-流程固化procedural-memory--处置卡remediation-card) |
 | 同一套做法改过几轮，新旧说法并存，新人不知道该照哪一份 | IG5 | CP3 流程固化（Procedural memory） | [CP3](./22-from-gaps-to-plan-fine.md#cp3-流程固化procedural-memory--处置卡remediation-card) |
@@ -193,7 +201,7 @@
 | 模型行为异常，但事后说不清它当时看到了什么 | RT2 会话事实源（Session as the single source of truth） | [RT2](./22-from-gaps-to-plan-fine.md#rt2-会话事实源session-as-the-single-source-of-truth--处置卡remediation-card) |
 | 升级后读不了旧数据；报错一律说"文件损坏" | RT3 格式世代与兼容（Format generations） | [RT3](./22-from-gaps-to-plan-fine.md#rt3-格式世代与兼容format-generations--处置卡remediation-card) |
 | 分不清"它做完了"和"它暂时没动作了"；取消之后动作还在跑 | RT4 循环与终结边界（Loop and termination boundaries） | [RT4](./22-from-gaps-to-plan-fine.md#rt4-循环与终结边界loop-and-termination-boundaries--处置卡remediation-card) |
-| 换一个模型/沙箱/存储要改一片代码 | RT5 能力 seam | [RT5](./22-from-gaps-to-plan-fine.md#rt5-能力-seam--处置卡remediation-card) |
+| 换一个模型/沙箱/存储要改一片代码 | RT5 能力 seam 与可替换性（Capability seams） | [RT5](./22-from-gaps-to-plan-fine.md#rt5-能力-seam-与可替换性--处置卡remediation-card) |
 | 加一个新能力要动核心；说不清拦截点拦不住什么 | RT6 扩展点与拦截（Extension points and interception） | [RT6](./22-from-gaps-to-plan-fine.md#rt6-扩展点与拦截extension-points-and-interception--处置卡remediation-card) |
 | 同一个部署两次启动，模型看到的工具清单不一样 | RT7 模型可见面组装（Model-visible surface assembly） | [RT7](./22-from-gaps-to-plan-fine.md#rt7-模型可见面组装model-visible-surface-assembly--处置卡remediation-card) |
 | 加了第二个入口，语义开始分叉；日志污染协议 | RT8 入口与协议投影（Entry surfaces and protocol projection） | [RT8](./22-from-gaps-to-plan-fine.md#rt8-入口与协议投影entry-surfaces-and-protocol-projection--处置卡remediation-card) |
@@ -201,53 +209,7 @@
 | 运行时的架构规则（插件边界、注册清理）只写在文档里，没有检查拦 | RT10 可执行治理（Executable governance） | [RT10](./22-from-gaps-to-plan-fine.md#rt10-可执行治理executable-governance--处置卡remediation-card) |
 | 界面上的数字对不上；改一处要同步好几处 | RT11 客户端组装纪律（Client composition discipline） | [RT11](./22-from-gaps-to-plan-fine.md#rt11-客户端组装纪律client-composition-discipline--处置卡remediation-card) |
 
-## 3 · 每维的最小一步
-
-这一节只回答"这一维最少做成什么样"。命中的维度要往下做，翻 [22](./22-from-gaps-to-plan-fine.md) 的对应处置卡（remediation card）。
-
-### 开发 Harness
-
-| 维 | 什么时候才值得做（when it's worth doing） | 最小一步 | 做完怎么确认 |
-|---|---|---|---|
-| [KN1](./22-from-gaps-to-plan-fine.md#kn1-入口链entry-chain--处置卡remediation-card) 入口链（Entry chain） | 任何时候。 | 一份短的根入口文件（常驻规则（always-loaded rules） + 仓库布局 + 命令表），其余全部链接出去；如果宿主认多个文件名，用符号链接指向同一份。 | 故意把根文件里的一个链接改错，跑检查，看它红，然后还原。 |
-| [KN2](./22-from-gaps-to-plan-fine.md#kn2-归属one-home-per-fact--处置卡remediation-card) 归属（One home per fact） | 任何时候，与 KN1 同批。 | 一张"事实 → home"对照表，每行同时写清**放什么**和**禁放什么**；然后按表把复制出来的正文删掉，改成链接。 | 挑一个有两份拷贝的事实，只改其中一份，看有没有任何检查或流程发现。 |
-| [KN3](./22-from-gaps-to-plan-fine.md#kn3-决策记录decision-records--处置卡remediation-card) 决策记录（Decision records） | 一个已被否决的方案被第二次重新提出时。 | 一个记录目录 + 一份五节模板 + 一条判据。 | 找一条已被取代的决定，新开一个无上下文的 agent 会话，问它会怎么选。 |
-| [KN4](./22-from-gaps-to-plan-fine.md#kn4-分类学repository-taxonomy--处置卡remediation-card) 分类学（Repository taxonomy） | 出现同一事实的第二份手写清单；或者生成物（generated artifact）被人手改而没有任何检查发现；或者"这个文件该放哪"被问第三次。 | 一张顶层区域表（区域 / 拥有什么 / 规则 owner），加一张"内容的维护形态"表（手写 / 生成 / 录制 / 派生（derived）的投影），每类写清"能不能手改"。 | 手改一个生成物（generated artifact），跑检查，看它红不红，然后还原。 |
-| [CP1](./22-from-gaps-to-plan-fine.md#cp1-意图入口work-intake--处置卡remediation-card) 意图入口（Work intake） | 出现"做完才发现理解错了"的返工；或者提交无法回溯到它服务的意图。 | 一个工作项模板，第一段强制写两行：**外部可观察结果 + 如何观察**。 | 拿一个最近的小改动，把它关联的工作项描述交给一个无上下文的 agent 会话，让它说出这笔改动做了什么——说得出来吗？说不出，说明描述里只有"要做什么"，没有"怎么算做完"。 |
-| [CP2](./22-from-gaps-to-plan-fine.md#cp2-正确路径paved-road--处置卡remediation-card) 正确路径（Paved road） | 有人在错误的地方插代码，或自己发明了一套新的接法；或者一个真实需求进来，没人答得出"改哪里"。 | 一张两列的"目标 → 机制"表。 | 拿最近一次"绕过入口"的改动，看现在的规则或检查会不会拦住它。 |
-| [CP3](./22-from-gaps-to-plan-fine.md#cp3-流程固化procedural-memory--处置卡remediation-card) 流程固化（Procedural memory） | 同一类任务第三次出现，且每次做法都不一样。 | 一个"任务 → 流程文档"的目录；每份文档带触发条件（trigger）、步骤、停止条件、验证方式；只给摘要层（标题 + 适用条件），命中才读全文。 | 把一份流程文档交给一个无上下文的 agent 会话，让它照着做一遍。 |
-| [CP4](./22-from-gaps-to-plan-fine.md#cp4-执行与授权链execution-and-authorization--处置卡remediation-card) 执行与授权链（Execution and authorization） | 仓库里开始有自动化代理直接改动内容，且威胁模型清晰了。 | 三件事，各一个：动作先记录再执行；统一的执行前检查；结果的单一出口。 | 加一条新权限规则，数一数改了几个文件。 |
-| [EV1](./22-from-gaps-to-plan-fine.md#ev1-反馈分层feedback-layers--处置卡remediation-card) 反馈分层（Feedback layers） | 任何时候，与知识归位组同批。 | 一张表：每一层检查能证明什么、**不能单独证明什么**。 | 制造一个只在一个层能被发现的回归，跑一遍，确认**正确的那一层**抓住了它，其它层保持绿。 |
-| [EV2](./22-from-gaps-to-plan-fine.md#ev2-负例控制negative-control--处置卡remediation-card) 负例控制（Negative control） | 任何时候（前置维 prerequisite dimension）；最晚在你**第一次**把一条规则接成检查的同时。 | 三件事：挑最容易被违反的三条规则，各配一个非零退出的命令；给这三个检查各做一次负例控制（negative control）；本地只跑与当前改动相关的检查，远端跑全套。 | 这一步本身就是这张卡的全部内容。 |
-| [EV3](./22-from-gaps-to-plan-fine.md#ev3-闭环完整性delivery-completeness--处置卡remediation-card) 闭环完整性（Delivery completeness） | 任何时候（前置维 prerequisite dimension），排在 KN1/KN2 与 EV2 之后：同批规则要挂在归属表（ownership table）写出的 home 上，它的检查要能被证明会失败。 | 一条规则 + 一个豁免条款：实现、当前文档、回归证据在同一次交付里一起走；机械性或局部改动明确豁免，且豁免要有理由。 | 拿最近一笔变更问："文档里声称的行为，有几条**没有**任何检查钉住？"说不出，就是缺口没被管理。 |
-| [EV4](./22-from-gaps-to-plan-fine.md#ev4-评审与批准review-and-approval--处置卡remediation-card) 评审与批准（Review and approval） | 出现"评审只是点通过"或者"评审全在挑格式"。 | 一份写清的批准条件（谁、几个人、什么情况下可以放行），加上一条分工纪律：**评审不重复机器已经精确拒绝的问题**。 | 数一数最近 10 笔变更的评审评论条数与内容。 |
-| [ST1](./22-from-gaps-to-plan-fine.md#st1-静与动static-and-dynamic--处置卡remediation-card) 静与动（Static and dynamic） | 出现同一份配置或数据两处可写；或删掉派生（derived）后重建不出同样的结果。 | 一张四层表，每层写清：变化速度 / 承载者 / 谁能改 / **丢失代价**。 | 手改一个生成物（generated artifact），跑可重建性（rebuildability）检查，看它红不红，然后还原。 |
-| [ST2](./22-from-gaps-to-plan-fine.md#st2-披露与隔离progressive-disclosure-and-isolation--处置卡remediation-card) 披露与隔离（Progressive disclosure and isolation） | 常驻规则（always-loaded rules）开始膨胀时；agent 频繁漏读或读错流程时；团队开始抱怨"规则文档越塞越多"时。 | 按压力逐项加，每项独立见效：给常驻内容设上限 → 流程文档只给摘要、命中才读全文 → 子树规则放进子树 → 委派说明只带所需部分。 | 往常驻文件里加一段内容使它超出上限，跑检查，看它红不红，然后还原。 |
-| [ST3](./22-from-gaps-to-plan-fine.md#st3-运行时查询inspectability--处置卡remediation-card) 运行时查询（Inspectability） | 有人开始读源码猜"现在实际生效的是什么"；手工维护的接口清单已经维护不动；或存在多层配置叠加。 | 一条命令，dump 出最终生效的配置。 | 新增一个注册项但不改生成清单，跑检查，看它红不红。 |
-| [MT1](./22-from-gaps-to-plan-fine.md#mt1-防漂移drift-prevention--处置卡remediation-card) 防漂移（Drift prevention） | 在你**第一次**外置知识的同时。 | 一个结构检查脚本 + 一段"基线与复核方式"说明。 | 见第 2 条——**这条卡的全部价值就在于它被执行过一次**。 |
-| [MT2](./22-from-gaps-to-plan-fine.md#mt2-发布与版本纪律release-and-versioning--处置卡remediation-card) 发布与版本纪律（Release and versioning） | 开始对外发布产物，且出过一次"发错了"或"忘了 bump 版本"的事故。 | 一段成文发布序列 + 一份兼容承诺（哪些接口稳定、哪些明确不稳定）+ 一条不可逆产物的处理规则。 | 制造一次"内容改了但版本没动"，看发布流程会不会失败。 |
-
-### 运行时 Harness
-
-先做 [11 §0](./11-evaluate-runtime-harness-coarse.md#0--先做适用性applicability判定) 的适用性（applicability）判定。AQ1 答"否"时下面不适用。
-
-| 维 | 什么时候才值得做（when it's worth doing） | 最小一步 | 做完怎么确认 |
-|---|---|---|---|
-| [RT1](./22-from-gaps-to-plan-fine.md#rt1-组合与启动composition-and-boot--处置卡remediation-card) 组合与启动（Composition and boot） | 配置开始由多个人改，或者出现过"以为开着实际没装"。 | 一条"dump 出最终生效配置"的命令，且它和真正启动用的是**同一套叠加算法**；加上"引用不存在的组件必须失败"。 | 把一个组件的键名改错，启动。 |
-| [RT2](./22-from-gaps-to-plan-fine.md#rt2-会话事实源session-as-the-single-source-of-truth--处置卡remediation-card) 会话事实源（Session as the single source of truth） | 任何时候。 | 一条只追加的记录，把**进入模型请求的一切**都记进去——消息、system prompt、可见工具清单、动态上下文。 | 加一个动态注入的上下文片段，不改记录逻辑。 |
-| [RT3](./22-from-gaps-to-plan-fine.md#rt3-格式世代与兼容format-generations--处置卡remediation-card) 格式世代与兼容（Format generations） | 持久数据要跨版本长期存活时。 | 一个版本号（**唯一权威**），加三条明确路径：能读 → 正常读；版本更旧 → 迁移；版本更新 → **拒绝并提示升级**。 | 手工把一份数据的版本号改成一个更新的值，读它。 |
-| [RT4](./22-from-gaps-to-plan-fine.md#rt4-循环与终结边界loop-and-termination-boundaries--处置卡remediation-card) 循环与终结边界（Loop and termination boundaries） | 出现"它到底是做完了还是卡住了"的争论时；或者取消之后动作仍在后台继续时。 | 分层的终结概念 + **封闭的终结原因集合** + "被取消"与"已完成"的明确区分。 | 取消一个正在跑的长动作，看它在**该系统自己声明的超时预算内**是否真的停止（不是"合理时间"），并检查记录里有没有这次取消。 |
-| [RT5](./22-from-gaps-to-plan-fine.md#rt5-能力-seam--处置卡remediation-card) 能力 seam | **第二个真实实现出现时。 | 一项能力的三件套：定义（能力接口）+ 实现 + 使用方；使用方只依赖定义。 | 数一数某个"可替换点"有几个使用方、几个实现。 |
-| [RT6](./22-from-gaps-to-plan-fine.md#rt6-扩展点与拦截extension-points-and-interception--处置卡remediation-card) 扩展点与拦截（Extension points and interception） | 有第二个人要往上面加东西时；或者出现"为了加功能改了核心"的实例时。 | 一张"新行为 → 挂哪里"的表，右列是**可以直接执行的动作**；拦截点按权限分类，并写明各自拦不住什么。 | 拿一次"绕过扩展点"的历史改动，看现在的规则或检查拦不拦得住。 |
-| [RT7](./22-from-gaps-to-plan-fine.md#rt7-模型可见面组装model-visible-surface-assembly--处置卡remediation-card) 模型可见面组装（Model-visible surface assembly） | 任何时候，与 RT2 同批。 | 每一步**显式组装**模型看到的东西（工具清单、提示词、内容块），并把组装结果写进记录。 | 让一个插件在组装完成之后再往请求里追加一段提示，跑 LX1 与 LX3。 |
-| [RT8](./22-from-gaps-to-plan-fine.md#rt8-入口与协议投影entry-surfaces-and-protocol-projection--处置卡remediation-card) 入口与协议投影（Entry surfaces and protocol projection） | 第二个入口出现时。 | 所有入口通过同一套运行时接口驱动；每个协议入口有一份"故意不保证"清单。 | 往协议入口的 stdout 打一行日志，看协议还正常吗。 |
-| [RT9](./22-from-gaps-to-plan-fine.md#rt9-工具执行与授权tool-execution-and-authorization--处置卡remediation-card) 工具执行与授权（Tool execution and authorization） | 任何时候。 | 三件事：动作**先记录再执行**；统一的执行前判定；结果**单一出口**（异常归一化成明确错误）。 | 让一个工具内部抛异常，看模型收到的是什么。 |
-| [RT10](./22-from-gaps-to-plan-fine.md#rt10-可执行治理executable-governance--处置卡remediation-card) 可执行治理（Executable governance） | 第一条"写在文档里、可以机械判断却没人遵守"的规则出现时。 | 一个检查的**统一注册处**；加一条规则 = 加一个会失败的检查，而不是加一段文档。 | 引入一个该被抓住的回归，跑检查，看红，还原。 |
-| [RT11](./22-from-gaps-to-plan-fine.md#rt11-客户端组装纪律client-composition-discipline--处置卡remediation-card) 客户端组装纪律（Client composition discipline） | 界面上出现"同一个数字两处不一样"时；或者改一个数据要在界面里同步好几处时。 | 一条规则：界面状态从权威事实**派生（derived）**，不另存一份业务数据。 | 在后台直接改一次权威数据，看界面会不会自动跟上。 |
-
----
-
-## 4 · 边界与反模式
+## 3 · 边界与反模式
 
 ### 四条不能混淆的边界
 
@@ -284,7 +246,7 @@
 
 具体表现：只有一个主流程、少量固定依赖、单一入口的项目，却先建了完整的插件系统、生成目录体系、不变量（invariant）检查框架。维护成本（maintenance cost）吃掉了可读性收益，而且**没人用得上**。
 
-判据：**这一维的触发条件（trigger）出现了吗？**（见[原则三](#原则三有压力再借pressure-triggered)）没出现就记进待办，不建。
+判据：**这一维的触发条件（trigger）出现了吗？**（见[原则三](#原则三有压力再借pressure-triggered)）没出现就在评分卡上记「未触发」，不建。未触发不是 N/A。
 
 > 一个成熟样板之所以长成那样，是因为它承受过对应的压力。**照搬它的形状，而不照搬它承受过的压力，是这类工作最常见的失败。**
 
@@ -296,7 +258,7 @@
 
 ---
 
-## 5 · 一轮打磨的循环与停止条件
+## 4 · 一轮打磨的循环与停止条件
 
 ### 循环
 
@@ -320,8 +282,8 @@
 
 **收工线（stop line）** = 达标线（pass line） + 下面的附加条件。达标线（pass line；01 §4 与 11 §3）回答"这套机制能不能用"，收工线（stop line）回答"这一轮打磨能不能停"：
 
-- **开发 Harness**：先满足达标线（pass line；至少 MG2，且你最痛的三维达到 **约束力（enforcement） 3**）。另加：裁剪（tailoring）后的每一维至少 **覆盖面（coverage） 2**（有且成体系；处置卡（remediation card）写明可以长期停在较低档的维度，例如 ST3，按卡里写的上限算）；切片（slice）复测（re-evaluation）里没有"完全找不到 owner"和"声称的行为零证据"这类硬伤。
-- **运行时 Harness**：先满足达标线（pass line；至少 **MG2**：MG1，且事实源（source of truth）、模型可见面（model-visible surface）、工具执行与授权三维约束力（enforcement） ≥ 2）。另加：五个活体实验（live experiment）都跑过，被评维度对应的实验通过（MG2 的三维对应 LX1、LX3、LX5），被裁掉的维度对应的实验按 N/A 记录。**单机实验档例外**：RT9 属 N/A，这一档不追求 MG2，收工线（stop line）留到决定继续做之后再算（见 11 §4）。
+- **开发 Harness**：先满足达标线（pass line；至少 MG2，且最痛的三维达到 **约束力（enforcement） 3**）。「最痛的三维」只在没标「未触发」的维里数。另加：下面这三类维的覆盖面（coverage）至少 2——前置五维（KN1、KN2、EV1、EV2、EV3）、已经伴随外置过知识的 MT1、以及原则三里**触发条件已经出现**的维。触发条件还没出现的维记「未触发」：不挡收工，不计入 01 成熟度档的"多数"分母，也不要为了收工去建。处置卡写明可以长期停在较低档的（ST3），按卡里的上限算。切片（slice）复测（re-evaluation）里没有"完全找不到 owner"和"声称的行为零证据"这类硬伤。
+- **运行时 Harness**：先满足达标线（pass line；至少 **MG2**：MG1，且事实源（source of truth）、模型可见面（model-visible surface）、工具执行与授权三维约束力（enforcement） ≥ 2）。触发条件还没出现的运行时维同样记「未触发」，不计入 11 的"多数"分母；RT2、RT7、RT9 是达标线点名的维，不能靠「未触发」跳过。另加：五个活体实验（live experiment）都跑过，被评维度对应的实验通过（MG2 的三维对应 LX1、LX3、LX5），被裁掉的维度对应的实验按 N/A 记录。**单机实验档例外**：RT9 属 N/A，这一档不追求 MG2，收工线（stop line）留到决定继续做之后再算（见 11 §4）。
 
 **最终标志很朴素，两类各一个：**
 
@@ -333,7 +295,7 @@
 
 ---
 
-## 6 · 短例
+## 5 · 短例
 
 > 承接 [开发 Harness 粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md) §8 的构造示例。**这是演示，不是对任何真实仓库的评估。**
 
@@ -447,13 +409,15 @@
 ```
 开发 Harness：
   达标线（pass line）：MG2，且最痛的三维 = 约束力（enforcement） 3
-  另加：十七维（裁剪（tailoring）后）全部 ≥ 覆盖面（coverage） 2（卡片写明可停在较低档的按卡片上限）
+  另加：前置五维、已伴随外置的 MT1、已触发的原则三维 ≥ 覆盖面（coverage） 2
+        未触发的不挡收工，也不计入成熟度「多数」的分母；卡片写明可停在较低档的按卡片上限
   另加：切片（slice）复测（re-evaluation）无「找不到 owner」「声称零证据」
   标志：新人/新 agent 不靠带路能走完一笔变更，每步说得出证据在哪
 
 运行时 Harness：
   达标线（pass line）：MG2（可重建）：MG1，且事实源（source of truth）、模型可见面（model-visible surface）、工具执行与授权 ≥ 约束力（enforcement） 2
   另加：五个活体实验（live experiment）都跑过；被评维度对应的实验通过（MG2 的三维对应 LX1、LX3、LX5）
+  未触发的运行时维不计入「多数」分母；RT2、RT7、RT9 不能靠未触发跳过
   例外：单机实验档不追求 MG2，收工线（stop line）留到决定继续做之后再算
   标志：出问题时能只靠记录说清「它当时看到了什么、做了什么、结果是什么」
 ```

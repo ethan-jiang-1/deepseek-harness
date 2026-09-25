@@ -8,7 +8,7 @@
 
 **编号约定。** 维度用两字母前缀（知识归位 `KN` / 变更路径 `CP` / 证据与交付 `EV` / 状态与上下文 `ST` / 维护与发布 `MT`），探针（probe）用 `PB`，证据级（evidence level） `EL`，信息缺口（information gap） `IG`，成熟度档（maturity level） `MG`；完整对照见 [README 的标识符约定](./README.md#标识符约定token)。
 
-**两份粒度。** 本文（`01`）是粗粒度（coarse-grained）：定义、两轴（two axes）、十七维粗判（coarse check）、报告格式与自检。**细粒度（fine-grained）**（[`02`](./02-evaluate-development-harness-fine.md)）才有每维的探针（probe）、锚点（anchor）与封顶规则（cap rules）——只在粗判（coarse check）为红、或要动的维度上翻它。**粗粒度（coarse-grained）定下来后基本不动，细粒度（fine-grained）会持续增补。**
+**两份粒度。** 本文（`01`）是粗粒度（coarse-grained）：定义、两轴（two axes）、十七维粗判（coarse check）、报告格式与自检。**细粒度（fine-grained）**（[`02`](./02-evaluate-development-harness-fine.md)）才有每维的探针（probe）、锚点（anchor）与封顶规则（cap rules）。快诊（quick check）和全量用同一条：**只在粗判（coarse check）为红、这一轮要动、或要写成最终结论的维度上翻 02。** 全量是十七维都做粗判，不是把 02 的探针（probe）全部跑完。**粗粒度（coarse-grained）定下来后基本不动，细粒度（fine-grained）会持续增补。**
 
 **配套文档。** [运行时评估粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md)（仅当这个仓库本身是 agent 产品时适用）· [细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) · [从缺口到计划 · 粗](./21-from-gaps-to-plan-coarse.md) · [细](./22-from-gaps-to-plan-fine.md)
 
@@ -36,16 +36,23 @@
 
 | | 快诊（quick check） | 全量 |
 |---|---|---|
-| 规模 | 一次 agent 会话：六维粗判（coarse check） + 一次 EV2 抽检 + 一次切片（slice） | 通常分多次 agent 会话：十七维粗判（coarse check） + 02 的全部 88 个探针（probe） + 第三层反证（falsification） + 一次切片（slice） + 完整报告 |
+| 规模 | 一次 agent 会话：六维粗判（coarse check） + 一次 EV2 抽检 + 一次切片（slice） | 通常分多次 agent 会话：十七维粗判（coarse check） + 对红 / 要动 / 要写成最终结论的维走 02 的探针（probe）与封顶（cap） + 这些维上的第三层反证（falsification） + 一次切片（slice） + 完整报告 |
 | 做哪些维 | 六维：KN1 入口链（Entry chain）、KN2 归属（One home per fact）、CP2 正确路径（Paved road）、EV1 反馈分层（Feedback layers）、EV3 闭环完整性（Delivery completeness）、ST1 静与动（Static and dynamic）；另抽检 EV2 | 全部十七维 |
 | 做几层 | 第一层 + 第二层 | 第一、二层全做；第三层见 [02 §3](./02-evaluate-development-harness-fine.md#3--第三层反证falsification) |
-| 档位从哪来 | 本文第 4 节的粗判（coarse check；粗判档（coarse grade）） | 粗判（coarse check）之后，按 [02](./02-evaluate-development-harness-fine.md) 逐维定档（final grade；定档（final grade）） |
-| 报告 | 六行评分卡（scorecard） + EV2 抽检一行 + 缺口清单（gap list） + 切片走查（slice walkthrough）记录 + 需要人回答的问题 | 四张表齐全 + 需要人回答的问题 |
+| 档位从哪来 | 本文第 4 节的粗判（coarse check；粗判档（coarse grade））；红 / 要动 / 要写成最终结论的维再按 02 定档（final grade） | 与快诊相同：粗判（coarse check）覆盖十七维，定档（final grade）只覆盖红 / 要动 / 要写成最终结论的维 |
+| 报告 | 六行已评 + EV2 抽检一行；其余十一维证据状态写「未评」，分数留空，不进红绿和成熟度。另加缺口清单（gap list）、切片走查（slice walkthrough）记录、需要人回答的问题 | 四张表齐全 + 需要人回答的问题；未触发的维证据状态写「未触发」，分数照实记，不进「最痛的三维」 |
 | 什么时候够 | 只想判断"值不值得投入" | 要拿这张清单排施工顺序（build order） |
 
-快诊（quick check）的六维是十七维里**信息量最高的六个**：这六维里过半是红的（**红 = 该维的覆盖面（coverage）或约束力（enforcement） ≤ 1**），其余十一维基本不可能绿（**绿 = 两轴（two axes）都 ≥ 2**）。快诊（quick check）不能替代全量——它只告诉你"要不要往下做"。
+快诊（quick check）的六维是用来判断**值不值得往下评**的，不是施工顺序。施工前置是 KN1、KN2、EV1、EV2、EV3（见 [21 原则二](./21-from-gaps-to-plan-coarse.md#原则二先做前置维prerequisite-dimension)）。CP2、ST1 进快诊，是因为它们最容易暴露"改错地方"和"两处存真"；触发条件还没出现时不排期。EV2 不在六维里：六维里的 EV1 只问"有没有检查"，EV2 问"检查算不算数"，所以快诊另抽，施工时 EV2 仍是前置。
 
-**快诊（quick check）为什么要另抽检 EV2。** 六个维度里有 EV1（有没有检查）却没有 EV2（检查算不算数），而 EV2 是唯一检验其它维度真假的维度（见 [02 的 EV2 卡](./02-evaluate-development-harness-fine.md#ev2-负例控制--negative-control)）。抽检按第 4 节的三步给 EV2 粗判（coarse check）：任选一个现有检查，问"它最近一次为红是什么回归"——答不出，就命中 EV2 的约束力（enforcement）信号，而且这个检查本身只到 `EL2`（见第 2 节），这个仓库的绿灯可能不可信。再问"新检查必须做负例控制（negative control）"这条要求写在哪个文件——说不出，就命中 EV2 的覆盖面（coverage）信号，约束力（enforcement）按三级追问记 `0`。要给 EV2 定档（final grade），按 02 的 EV2 卡抽满三个检查。
+**红和覆盖面是两件事。** **红 = 覆盖面（coverage）或约束力（enforcement） ≤ 1，绿 = 两轴（two axes）都 ≥ 2。** 六维里过半**覆盖面 ≤ 1** 时，其余维要到绿所依赖的"先有家"基本不成立，快诊据此记 `MG0（推断）`（见第 4 节）。六维可以全部为红、但覆盖面过半仍 ≥ 2（常见形态是覆盖面 2 / 约束力 1）：那不是 MG0，记「MG 待全量」。快诊不能替代全量——它只告诉你"要不要往下做"。
+
+**快诊（quick check）为什么要另抽检 EV2。** EV2 是唯一检验其它维度真假的维度（见 [02 的 EV2 卡](./02-evaluate-development-harness-fine.md#ev2-负例控制--negative-control)）。抽检分两问，两问的证据来源不同：
+
+- **最近一次为红是什么回归。** 失败历史在仓库或 agent 有权看的 CI 里、仍答不出 → 命中约束力（enforcement）信号，这个检查只到 `EL2`（见第 2 节）。历史不可见 → 这一问记「证据受限（evidence-limited）」，**不套这条封顶，约束力不据缺失记 0**（见下面「拿不到的证据」）。
+- **「新检查必须做负例控制（negative control）」写在哪个文件。** 这一问只看仓库，只压覆盖面（coverage）：说不出文件，覆盖面上限是 1。它不看 CI 历史，也不改约束力（enforcement）。约束力只由上一问决定。
+
+要给 EV2 定档（final grade），按 02 的 EV2 卡抽满三个检查，封顶同样只在历史可见时套用。
 
 ### 铁律
 
@@ -57,7 +64,7 @@
 
 agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"换成"找痕迹"：`git log`、CI 历史、被 revert 的提交、注释里的 TODO/FIXME、README 的 Known Limitations。找不到痕迹、只有人知道的事实（"这条规则上次为什么改""我们当初为什么没做"），agent 不猜，写进报告末尾的[需要人回答的问题](#报告末尾--需要人回答的问题)。
 
-**凡依赖 PR / issue / CI / 发布历史的维度都会系统性低估**：至少 KN3 决策记录（Decision records；理由可能只存在于会议里）、EV2 负例控制（Negative control；为红的历史可能在 CI 里）、CP1 意图入口（Work intake；工作项的原始描述常只在 issue 里）、EV4 评审与批准（Review and approval；批准过程多在 PR 里）、MT2 发布与版本纪律（Release and versioning；发布历史在 CI/包仓库里）——这五维的证据状态一律标"证据受限（evidence-limited）"，不要据缺失的证据扣分，也不要断言机制缺失。
+**凡依赖 PR / issue / CI / 发布历史的维度都会系统性低估**：至少 KN3 决策记录（Decision records；理由可能只存在于会议里）、EV2 负例控制（Negative control；为红的历史可能在 CI 里）、CP1 意图入口（Work intake；工作项的原始描述常只在 issue 里）、EV4 评审与批准（Review and approval；批准过程多在 PR 里）、MT2 发布与版本纪律（Release and versioning；发布历史在 CI/包仓库里）。这些维里**只有依赖那段看不到的历史的轴**标「证据受限（evidence-limited）」：不要据缺失的证据扣分，也不要断言机制缺失。仓库里就能核对的轴照常记档。EV2 的分工见上面的抽检两问：覆盖面看成文要求在不在文件里，约束力的「最近一次为红」在历史不可见时不扣分。
 
 ### 产出
 
@@ -141,7 +148,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 ### 自评偏置的三种表现
 
 - **文档即事实**：把"写了"当成"做到了"。文档描述的是意图，不是当前行为。
-- **作者视角**：评估者知道东西在哪，所以觉得"很好找"。检验法是另开一个没有上下文的 agent 会话再走一遍。
+- **作者视角**：仓库的作者知道东西在哪，所以文档看起来很好找。检验法是另开一个没有上下文的 agent 会话再走一遍。
 - **例外隐身**：记得的是规程，忘的是"上次赶工期就没走"。切片走查（slice walkthrough；第 3 节第二层）专治这一条——它不看规程，看**最近这笔变更实际怎么做的**。
 
 ---
@@ -190,7 +197,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 ## 4 · 十七维粗判（coarse check）
 
-### 两轴（two axes）怎么打
+### 两轴（two axes）怎么记
 
 每一维记**两个**档，因为"有"和"硬"是两件正交的事。
 
@@ -229,11 +236,11 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 **档位怎么记。** 记满足的最高一档。每个仓库至少是 MG0，不存在落在各档之间的情形。
 
-**快诊（quick check）只给推断档。** 快诊（quick check）只评六维，算不出"多数维度"。六维里过半覆盖面（coverage） ≤ 1 时记 `MG0（推断）`——依据是上面那条"快诊（quick check）六维红了，其余十一维基本不可能绿"；否则记"MG 待全量"。正式档位只在全量模式（full mode）里给。
+**快诊（quick check）只给推断档。** 快诊只评六维，算不出"多数维度"。六维里过半**覆盖面（coverage） ≤ 1** 时记 `MG0（推断）`——依据是第 0 节那条：过半没有家，其余维到绿所依赖的"先有家"基本不成立。六维都是红、但覆盖面过半 ≥ 2 时**不记 MG0**，记「MG 待全量」（那是写下来了但拦不住，方向接近 MG1，快诊算不出多数维）。其余情形也记「MG 待全量」。正式档位只在全量模式（full mode）里给。
 
-达标线（pass line）：**至少 MG2，且你最痛的三维达到约束力（enforcement） 3。** 这是"能不能用"的下限。达标线（pass line）与档位相互独立——MG3 的仓库也可能未达标（最痛的三维没到约束力（enforcement） 3）。判断一轮打磨**能不能收工**用 [21 的收工线（stop line）](./21-from-gaps-to-plan-coarse.md#5--一轮打磨的循环与停止条件)，它包含达标线（pass line），附加条件在 21 里。
+达标线（pass line）：**至少 MG2，且最痛的三维达到约束力（enforcement） 3。** 「最痛的三维」只在已经在评、且没有标「未触发」的维里数；未触发的维不因为档位低而变成必须修到约束力 3 的对象。这是"能不能用"的下限。达标线（pass line）与档位相互独立——MG3 的仓库也可能未达标（最痛的三维没到约束力（enforcement） 3）。判断一轮打磨**能不能收工**用 [21 的收工线（stop line）](./21-from-gaps-to-plan-coarse.md#4--一轮打磨的循环与停止条件)，它包含达标线（pass line），附加条件在 21 里。
 
-**"多数"与计数的口径。** 本节所有"多数"指该档适用维度里的**超过一半**；"至少四个""至少三个"这类计数也只在适用维度里数；标了 N/A 的维度不计入分母（见[第 5 节](#5--适用性applicability裁剪tailoring)）。
+**"多数"与计数的口径。** 本节所有"多数"指该档适用维度里的**超过一半**；"至少四个""至少三个"这类计数也只在适用维度里数。两类不计入分母：标了 N/A 的维度（见[第 5 节](#5--适用性applicability裁剪tailoring)），以及 [21 原则三](./21-from-gaps-to-plan-coarse.md#原则三有压力再借pressure-triggered)里触发条件还没出现、报告标了「未触发」的维度。未触发不是 N/A：压力出现后要回来评，在那之前不把"还没到该建"算成成熟度失败。
 
 ### 十七维总表
 
@@ -243,7 +250,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 | | KN2 归属（One home per fact） | IG1 IG2 IG3 | ✅ |
 | | KN3 决策记录（Decision records） | IG3 | |
 | | KN4 分类学（Repository taxonomy） | IG2 | |
-| **变更路径（CP）** | CP1 意图入口（Work intake） | IG7 | |
+| **变更路径（CP）** | CP1 意图入口（Work intake） | IG6 | |
 | | CP2 正确路径（Paved road） | IG4 | ✅ |
 | | CP3 流程固化（Procedural memory） | IG5 | |
 | | CP4 执行与授权链（Execution and authorization） | IG1 | |
@@ -263,11 +270,11 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 **怎么用**：每一维走三步，得到**粗判档（coarse grade）**。
 
-1. **看粗判（coarse check）信号。** 每条信号后的括号标着它压的轴。命中一条，就把标出的轴粗判（coarse check）记 ≤ 1（标"两轴（two axes）"的两轴（two axes）都记 ≤ 1），并记进缺口清单（gap list）。每条信号都是 02 里一条上限 ≤ 1 的封顶（cap）的一眼版本。
-2. **用上面两张通用轴表打两轴（two axes）。** 覆盖面（coverage）看有没有家、成不成体系；约束力（enforcement）用第 2 节的三级追问定——说不出在哪个文件记 0，说不出跑哪条命令记 1，说不出最近一次为红记 2。
+1. **看粗判（coarse check）信号。** 每条信号后的括号标着它压的轴和上限。命中一条，该轴粗判不高于这个上限（默认 ≤ 1；括号写 0 的记 0；标"两轴（two axes）"的两轴都记 ≤ 1），并记进缺口清单（gap list）。每条信号都是 02 里一条封顶（cap）的一眼版本，上限与那条封顶相同。
+2. **用上面两张通用轴表打两轴（two axes）。** 覆盖面（coverage）看有没有家、成不成体系；约束力（enforcement）用第 2 节的三级追问定——说不出在哪个文件记 0，说不出跑哪条命令记 1，历史可见而说不出最近一次为红记 2。这一问的历史不可见时，该轴标证据受限，不把"说不出"当成档位（第 0 节）。第 1 步的上限压过第 2 步：第 2 步算出 2、第 1 步上限是 1，粗判记 1。
 3. **判红绿。** **红 = 覆盖面（coverage）或约束力（enforcement） ≤ 1，绿 = 两轴（two axes）都 ≥ 2。** 粗判档（coarse grade）足以判红绿、排优先级。粗判（coarse check）为红、这一轮要动、或要把分数写成最终结论的维度，翻 [02](./02-evaluate-development-harness-fine.md) 定档（final grade）；粗判档（coarse grade）与定档（final grade）冲突时以定档（final grade）为准（定档（final grade）通常更低）。
 
-| 维 | 它管什么 | 粗判（coarse check）信号（一眼看什么；括号里是命中后记 ≤ 1 的轴） | 通常 N/A |
+| 维 | 它管什么 | 粗判（coarse check）信号（一眼看什么；括号里是命中后的轴与上限，未写数字的上限是 1） | 通常 N/A |
 |---|---|---|---|
 | `KN1` 入口链（Entry chain） | 新会话先读到的最小规则集与它的路由 | 根入口有没有指向更详细 home 的链接（覆盖面 coverage）；有没有混着教程与历史（覆盖面 coverage）；链接打不打得开（约束力 enforcement） | — |
 | `KN2` 归属（One home per fact） | 每类事实只有一个家 | 同一个东西会不会在两处各写一版（覆盖面 coverage）；术语有没有两个名字指同一件事（覆盖面 coverage） | — |
@@ -278,12 +285,12 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 | `CP3` 流程固化（Procedural memory） | 反复出现的任务有没有成文流程 | 同类任务第三次出现时还在现场发明步骤（覆盖面 coverage）；流程里指到的命令跑不跑得通（约束力 enforcement） | — |
 | `CP4` 执行与授权链（Execution and authorization） | 自动化动作走同一管线，授权独立于可见性 | 加一条权限规则要改多个文件（两轴 two axes）；"部分成功"被直接交回发起者（两轴 two axes） | **没有任何需要授权的自动化动作时**（只跑测试、不产生可授权动作的流水线不算） |
 | `EV1` 反馈分层（Feedback layers） | 检查分层，每层知道证明不了什么 | 五类检查里有具名检查的够不够四类（覆盖面 coverage） | — |
-| `EV2` 负例控制（Negative control） | 检查被证明过会失败 | 随便挑一个检查，说得出它最近一次为红是什么回归吗（约束力 enforcement）；"新检查必须做负例控制（negative control）"有没有成文（覆盖面 coverage） | — |
+| `EV2` 负例控制（Negative control） | 检查被证明过会失败 | 历史可见时，随便挑一个检查仍说不出最近一次为红（约束力 enforcement）；历史不可见则这一问证据受限，不扣分。"新检查必须做负例控制（negative control）"有没有成文（覆盖面 coverage） | — |
 | `EV3` 闭环完整性（Delivery completeness） | 实现+文档+证据同批交付 | 最近 5 笔有没有"先合并后补文档"（覆盖面 coverage）；交付说明里的验证声称对不对得上（约束力 enforcement） | — |
 | `EV4` 评审与批准（Review and approval） | 批准条件与风险挂钩，作者凑不满放行线 | 最近 10 笔评审是不是清一色"LGTM"（覆盖面 coverage）；作者能不能自批（约束力 enforcement） | 单人项目（标 N/A 并写理由） |
 | `ST1` 静与动（Static and dynamic） | 仓库的开发状态分层：规则 / 配置 / 记录 / 派生（derived） | 同一份配置或生成物（generated artifact）能不能两处写（两轴 two axes）；删掉生成物（generated artifact）后能不能从源头重建（约束力 enforcement） | 几乎没有配置与生成物（generated artifact）的小仓库 |
 | `ST2` 披露与隔离（Progressive disclosure and isolation） | 仓库供给 agent 的上下文按需披露：常驻有预算、流程先给摘要、委派只带所需 | 常驻内容有没有上限（覆盖面 coverage）；规则与流程是不是只能全文常驻（覆盖面 coverage） | 面向 agent 的常驻规则（always-loaded rules）很少的小仓库 |
-| `ST3` 运行时查询（Inspectability） | 一条命令问出开发环境与工具链"实际生效的是什么" | 有没有一条命令回答"实际生效的是什么"（覆盖面 coverage）；手工维护的接口清单有没有 freshness 检查（两轴 two axes） | 单层配置的小仓库 |
+| `ST3` 运行时查询（Inspectability） | 一条命令问出开发环境与工具链"实际生效的是什么" | 没有任何命令能回答"实际生效的是什么"（覆盖面 0）；手工维护的接口清单有没有 freshness 检查（两轴 two axes） | 单层配置的小仓库 |
 | `MT1` 防漂移（Drift prevention） | 知识与现实不漂移（drift） | 有没有无 freshness 检查的手工第二份清单（覆盖面 coverage）；有没有复核触发条件（trigger；覆盖面（coverage）） | — |
 | `MT2` 发布与版本纪律（Release and versioning） | 发布序列、兼容承诺、回退路径 | 稳定与不稳定的边界写没写明（覆盖面 coverage）；发布有没有成文序列（覆盖面 coverage） | 不对外发布产物时 |
 
@@ -310,7 +317,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 1. **标 N/A 要写理由**，一行即可（"本仓库不发布产物，MT2 不适用"）。
 2. **N/A 的维度不计入"多数"的分母**，分母按实际评估的维度数算。
-3. **不确定是否适用时，先按适用处理**，评估过程中发现没有对应压力，再改标 N/A 并记录。
+3. **不确定是否适用时，先按适用处理。** 评估中发现这一维要回答的问题在本仓库不存在（不发布、没有需要授权的自动化、单人项目），再改标 N/A 并写理由。发现的是压力还没出现（21 原则三的触发条件未到），记「未触发」，不标 N/A。未触发的维仍然适用，只是现在不建。
 4. **卡片的适用性（applicability）优先于"必评"。** 02 各卡的适用性（applicability）说明（例如 CP4"没有需要授权的自动化动作"、ST2"面向 agent 的常驻规则（always-loaded rules）很少"）是事实判断，优先于本表的"必评"。
 
 ### 与运行时评估的形态口径不同
@@ -333,7 +340,7 @@ agent 按下面的格式写一份 Markdown 报告：四张表加末尾的问题�
 仓库形态：<库 / 服务 / monorepo / 插件平台 / 数据 / 文档站 / 脚本 / agent 产品>
 ```
 
-| 维 | 覆盖面（coverage） | 约束力（enforcement） | 最痛的真实案例（有则填；无则写证据受限（evidence-limited）的理由） | 证据状态（正常 / 证据受限（evidence-limited） / N/A + 理由） |
+| 维 | 覆盖面（coverage） | 约束力（enforcement） | 最痛的真实案例（有则填；无则写证据受限（evidence-limited）的理由） | 证据状态（正常 / 证据受限（evidence-limited） / 未触发 / 未评 / N/A + 理由） |
 |---|---|---|---|---|
 | KN1 入口链（Entry chain） | | | | |
 | KN2 归属（One home per fact） | | | | |
@@ -353,7 +360,7 @@ agent 按下面的格式写一份 Markdown 报告：四张表加末尾的问题�
 | MT1 防漂移（Drift prevention） | | | | |
 | MT2 发布与版本纪律（Release and versioning） | | | | |
 
-`N/A` 的维度：案例列写 `—`，证据状态列写 `N/A：<理由>`（第 5 节要求标 N/A 必须写理由）。看不到但没证据的维度，证据状态列写 `证据受限`。
+`N/A` 的维度：案例列写 `—`，证据状态列写 `N/A：<理由>`（第 5 节要求标 N/A 必须写理由）。看不到但没证据的维度，证据状态列写 `证据受限`。压力还没出现的维写 `未触发`（不是 N/A）。快诊里没评的十一维写 `未评`，两轴留空。
 
 ```
 成熟度档（maturity level）：<MG0 依赖个人 / MG1 有文档 / MG2 可核对 / MG3 可自证>
@@ -499,7 +506,7 @@ EV2 抽检：任选 TestPaymentRetry，问"它最近一次为红是什么回归"
 
 这个仓库的问题不是"没有文档"——它有 400 行 README 和 12 篇 docs——而是**文档与代码是两个可以各自漂移（drift）的家，且没有任何检查会发现它们漂了**。切片走查（slice walkthrough）给出了确凿证据：一笔本该同时改两处的变更只改了一处，而那个看起来在保护的测试实际上什么都没保护。
 
-EV2 怎样从粗判档（coarse grade）钉成定档（final grade），见 [02 §5](./02-evaluate-development-harness-fine.md#5--细粒度fine-grained示例把-ev2-从粗判档coarse-grade钉成定档final-grade)；这份缺口清单（gap list）怎样排成施工顺序（build order），见 [21 §6](./21-from-gaps-to-plan-coarse.md#6--短例)。
+EV2 怎样从粗判档（coarse grade）钉成定档（final grade），见 [02 §5](./02-evaluate-development-harness-fine.md#5--细粒度fine-grained示例把-ev2-从粗判档coarse-grade钉成定档final-grade)；这份缺口清单（gap list）怎样排成施工顺序（build order），见 [21 §5](./21-from-gaps-to-plan-coarse.md#5--短例)。
 
 ---
 
@@ -548,6 +555,6 @@ EV2 怎样从粗判档（coarse grade）钉成定档（final grade），见 [02 
 
 ---
 
-**下一步。** 报告写完后：粗判（coarse check）为红、或这一轮要动的维度，翻 [02 细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) 走探针（probe）、锚点（anchor）与封顶（cap；封顶（cap）速查在 02 的附录 A）；缺口清单（gap list）变成施工顺序（build order），去 [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md) 排顺序、看每维的最小一步；要做深时翻 [22](./22-from-gaps-to-plan-fine.md) 的处置卡（remediation card）。
+**下一步。** 报告写完后：粗判（coarse check）为红、或这一轮要动的维度，翻 [02 细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) 走探针（probe）、锚点（anchor）与封顶（cap；封顶（cap）速查在 02 的附录 A）；缺口清单（gap list）变成施工顺序（build order），去 [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md) 排顺序；要补的那一维翻 [22](./22-from-gaps-to-plan-fine.md) 的处置卡（remediation card）。
 
 **如果这个仓库本身是 agent 产品**，另跑 [运行时 Harness 粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md)——那套维度回答的是另一个问题：*这个 agent 系统本身做对了吗*，与本文的回答互不替代。

@@ -1,6 +1,6 @@
 # 缺了维度怎么办：从缺口到计划 · 细粒度（fine-grained）
 
-**什么时候用。** 先用 [21 粗粒度（coarse-grained）](./21-from-gaps-to-plan-coarse.md) 排好这一轮的一到三维。**只翻这几张卡。** 每张卡把 21 的最小一步展开成做法、验收红线（acceptance red lines）、成本，以及做成样子货时长什么样。
+**什么时候用。** 先用 [21 粗粒度（coarse-grained）](./21-from-gaps-to-plan-coarse.md) 排好这一轮的一到三维。**只翻这几张卡。** 最小形态（minimum form）、做法、验收红线（acceptance red lines）、一次负例控制（negative control）和走形（degradation）都写在卡里，不在 21 再抄一份。
 
 **谁执行、谁读。** agent 按卡片施工并做一次负例控制（negative control）。人读卡片是为了看这一维的验收是否被放宽。
 
@@ -15,7 +15,6 @@
 - [1 · 十七张处置卡（remediation card；开发 Harness）](#1--十七张处置卡remediation-card开发-harness)
 - [2 · 十一张处置卡（remediation card；运行时 Harness）](#2--十一张处置卡remediation-card运行时-harness)
 - [3 · 形态重解释：同一维在不同仓库里长什么样](#3--形态重解释同一维在不同仓库里长什么样)
-- [附录 · 每张卡的负例控制（negative control）一句话](#附录--每张卡的负例控制negative-control一句话)
 
 ---
 
@@ -567,7 +566,7 @@
 
 ---
 
-#### RT1 组合与启动（Composition and boot） · 处置卡（remediation card）
+### RT1 组合与启动（Composition and boot） · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** 配置开始由多个人改，或者出现过"以为开着实际没装"。
 
@@ -593,7 +592,7 @@
 
 ---
 
-#### RT2 会话事实源（Session as the single source of truth） · 处置卡（remediation card）
+### RT2 会话事实源（Session as the single source of truth） · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** 任何时候。运行时前置三维之一，与 RT7、RT9 同批最先做。
 
@@ -621,7 +620,7 @@
 
 ---
 
-#### RT3 格式世代与兼容（Format generations） · 处置卡（remediation card）
+### RT3 格式世代与兼容（Format generations） · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** 持久数据要跨版本长期存活时。一次性脚本不做。
 
@@ -646,7 +645,7 @@
 
 ---
 
-#### RT4 循环与终结边界（Loop and termination boundaries） · 处置卡（remediation card）
+### RT4 循环与终结边界（Loop and termination boundaries） · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** 出现"它到底是做完了还是卡住了"的争论时；或者取消之后动作仍在后台继续时。
 
@@ -672,7 +671,7 @@
 
 ---
 
-#### RT5 能力 seam · 处置卡（remediation card）
+### RT5 能力 seam 与可替换性 · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** **第二个真实实现出现时。** 在那之前，一个私有函数就够了。
 
@@ -698,7 +697,7 @@
 
 ---
 
-#### RT6 扩展点与拦截（Extension points and interception） · 处置卡（remediation card）
+### RT6 扩展点与拦截（Extension points and interception） · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** 有第二个人要往上面加东西时；或者出现"为了加功能改了核心"的实例时。
 
@@ -724,7 +723,7 @@
 
 ---
 
-#### RT7 模型可见面组装（Model-visible surface assembly） · 处置卡（remediation card）
+### RT7 模型可见面组装（Model-visible surface assembly） · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** 任何时候，与 RT2 同批。它与 RT2 是同一件事的两半。
 
@@ -752,7 +751,7 @@
 
 ---
 
-#### RT8 入口与协议投影（Entry surfaces and protocol projection） · 处置卡（remediation card）
+### RT8 入口与协议投影（Entry surfaces and protocol projection） · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** 第二个入口出现时。**只有一个入口时不要提前抽象。**
 
@@ -777,7 +776,7 @@
 
 ---
 
-#### RT9 工具执行与授权（Tool execution and authorization） · 处置卡（remediation card）
+### RT9 工具执行与授权（Tool execution and authorization） · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** 任何时候。危险动作进入系统之前就该有。
 
@@ -805,7 +804,7 @@
 
 ---
 
-#### RT10 可执行治理（Executable governance） · 处置卡（remediation card）
+### RT10 可执行治理（Executable governance） · 处置卡（remediation card）
 
 **什么时候才值得做（when it's worth doing）。** 第一条"写在文档里、可以机械判断却没人遵守"的规则出现时。
 
@@ -830,7 +829,7 @@
 
 ---
 
-#### RT11 客户端组装纪律（Client composition discipline） · 处置卡（remediation card）
+### RT11 客户端组装纪律（Client composition discipline） · 处置卡（remediation card）
 
 **仅当有 GUI 客户端时。没有 GUI 标 N/A。**
 
@@ -884,43 +883,3 @@
 **一条通用规则。** 表里没写的形态（文档站、单文件脚本、monorepo、插件平台、agent 产品），按同一条原则推：**这一维要回答的那个问题，在你这里对应哪类产物？** 这类产物在你这种仓库里根本不存在，才是 N/A；产物应该有却没有，是缺失。拿不准时先按适用处理（见 01 §5）。
 
 ---
-
-## 附录 · 每张卡的负例控制（negative control）一句话
-
-### 每张卡的负例控制（negative control）一句话（开发 Harness）
-
-| 维 | 负例控制（negative control） |
-|---|---|
-| KN1 入口链（Entry chain） | 改错一个链接，看检查红不红 |
-| KN2 归属（One home per fact） | 只改两份拷贝中的一份，看有没有检查或流程发现 |
-| KN3 决策记录（Decision records） | 让无上下文的 agent 会话选，看它会不会选到被否决的那条 |
-| KN4 分类学（Repository taxonomy） | 手改一个生成物（generated artifact），看检查红不红 |
-| CP1 意图入口（Work intake） | 让无上下文的 agent 会话只看工作项描述，说出改动做了什么 |
-| CP2 正确路径（Paved road） | 拿一次"绕过入口"的改动，看规则拦不拦 |
-| CP3 流程固化（Procedural memory） | 让无上下文的 agent 会话照着文档走一遍 |
-| CP4 执行与授权链（Execution and authorization） | 加一条权限规则，数改了几个文件（应该是 1） |
-| EV1 反馈分层（Feedback layers） | 制造只能被一层发现的回归，看是不是只有那层红 |
-| EV2 负例控制（Negative control） | 本身即是：引入违规→看红→还原→确认变绿 |
-| EV3 闭环完整性（Delivery completeness） | 问"文档声称的行为有几条没被检查钉住" |
-| EV4 评审与批准（Review and approval） | 数最近 10 笔的评审评论条数与内容 |
-| ST1 静与动（Static and dynamic） | 手改一个生成物（generated artifact），看可重建性（rebuildability）检查红不红 |
-| ST2 披露与隔离（Progressive disclosure and isolation） | 往常驻文件加内容使它超出上限，看检查红不红 |
-| ST3 运行时查询（Inspectability） | 新增一个注册项不改清单，看检查红不红 |
-| MT1 防漂移（Drift prevention） | 改坏一个链接，看脚本红不红 |
-| MT2 发布与版本（Release and versioning） | 内容改了但版本没动，看发布失不失败 |
-
-### 运行时维度的负例控制（negative control）一句话
-
-| 维 | 负例控制（negative control） |
-|---|---|
-| RT1 组合与启动（Composition and boot） | 改错一个组件键名，看启动失不失败 |
-| RT2 会话事实源（Session as the single source of truth） | 加一个动态注入的上下文，看回放能不能重建 |
-| RT3 格式世代（Format generations） | 把数据的版本号改新，看提示是"升级"还是"损坏" |
-| RT4 循环与终结（Loop and termination boundaries） | 取消一个长动作，看它在声明的超时预算内是否真停、是否留记录 |
-| RT5 能力 seam | 数使用方与实现数：1+1 就还是私有函数 |
-| RT6 扩展点（Extension points and interception） | 拿一次绕过扩展点的改动，看检查拦不拦 |
-| RT7 模型可见面（Model-visible surface assembly） | 组装之后再追加一段提示，看 LX1、LX3 能不能发现 |
-| RT8 入口与协议（Entry surfaces and protocol projection） | 往协议 stdout 打一行日志，看协议坏不坏 |
-| RT9 执行与授权 | 让工具内部抛异常，看模型收到的是错误还是空结果 |
-| RT10 治理 | 引入一个该被抓住的回归，看检查红不红 |
-| RT11 客户端（Client composition discipline） | 后台直接改权威数据，看界面跟不跟得上 |

@@ -2,7 +2,7 @@
 
 **这份文档是什么。** 运行时 Harness 评估的**细粒度（fine-grained）**一半：对粗粒度（coarse-grained；[11 粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md)）里判为红、或这一轮决定要动的维度，用探针（probe）与五个活体实验（live experiment）钉死档位，用封顶规则（cap rules）压掉虚高的分。
 
-**什么时候用。** 先跑 11：过适用性（applicability）三问 → 十一维粗判（coarse check） → 评分卡（scorecard）与缺口清单（gap list），每维得到一个粗判档（coarse grade）。**只在粗判（coarse check）为红、这一轮要动、或要写成最终结论的维度上翻到本文对应的小节**，把粗判档（coarse grade）钉成定档（final grade）。适用性（applicability）判定、维度集合、通用两轴（two axes）、成熟度档（maturity level）、五个活体实验（live experiment）、形态裁剪（profile tailoring）、报告格式与自检在 11；每维的一句话定义、锚点阶梯（anchor ladder）、探针（probe）与封顶（cap）在本文。
+**什么时候用。** 先跑 11：过适用性（applicability）三问 → 十一维粗判（coarse check） → 评分卡（scorecard）与缺口清单（gap list），每维得到一个粗判档（coarse grade）。**只在粗判（coarse check）为红、这一轮要动、或要写成最终结论的维度上翻到本文对应的小节**，把粗判档（coarse grade）钉成定档（final grade）。全量是十一维都做粗判，不是把本文的探针全部跑完。适用性（applicability）判定、维度集合、通用两轴（two axes）、成熟度档（maturity level）、五个活体实验（live experiment）、形态裁剪（profile tailoring）、报告格式与自检在 11；每维的一句话定义、锚点阶梯（anchor ladder）、探针（probe）与封顶（cap）在本文。
 
 **为什么分两份。** 粗粒度（coarse-grained）定下来之后基本不动；细粒度（fine-grained）会**持续增补**（新探针（probe）、新封顶（cap））。分开之后，加一条封顶（cap）只改本文。
 

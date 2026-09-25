@@ -2,7 +2,7 @@
 
 **这份文档是什么。** 开发 Harness 评估的**细粒度（fine-grained）**一半：对粗粒度（coarse-grained；[01 粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md)）里判为红、或这一轮决定要动的维度，用探针（probe）逐条钉死档位，用封顶规则（cap rules）压掉虚高的分。
 
-**什么时候用。** 先跑 01：出评分卡（scorecard；表 1）与缺口清单（gap list；表 2），每维得到一个粗判档（coarse grade）。**快诊（quick check）只在粗判（coarse check）为红、这一轮要动、或要写成最终结论的维度上翻到本文对应的小节**，把粗判档（coarse grade）钉成定档（final grade）；全量模式（full mode）逐维走完本文。维度集合、通用两轴（two axes）、成熟度档（maturity level）、适用性（applicability）裁剪（tailoring）、报告格式与自检在 01；每维的一句话定义、锚点阶梯（anchor ladder）、探针（probe）与封顶（cap）在本文。
+**什么时候用。** 先跑 01：出评分卡（scorecard；表 1）与缺口清单（gap list；表 2），每维得到一个粗判档（coarse grade）。快诊和全量用同一条：**只在粗判（coarse check）为红、这一轮要动、或要写成最终结论的维度上翻到本文对应的小节**，把粗判档（coarse grade）钉成定档（final grade）。全量是十七维都做粗判，不是把本文的探针全部跑完。维度集合、通用两轴（two axes）、成熟度档（maturity level）、适用性（applicability）裁剪（tailoring）、报告格式与自检在 01；每维的一句话定义、锚点阶梯（anchor ladder）、探针（probe）与封顶（cap）在本文。
 
 **为什么分两份。** 粗粒度（coarse-grained）定下来之后基本不动；细粒度（fine-grained）会**持续增补**（新探针（probe）、新封顶（cap））。分开之后，加一条封顶（cap）只改本文，不会碰到稳定的粗粒度（coarse-grained）。
 
@@ -54,7 +54,7 @@
 
 第三层检验的是**前面两层自己的可信度**。四个动作：
 
-1. **抽检一个检查**：随便挑一个现有的检查，说得出它最近一次为红是因为什么回归吗？说不出，这个检查按 EL2 记，它所属维度的约束力（enforcement）到不了 3；如果是在给 EV2 定档（final grade），按 EV2 卡抽满三个再套封顶（cap）。
+1. **抽检一个检查**：随便挑一个现有的检查，说得出它最近一次为红是因为什么回归吗？历史可见仍说不出，这个检查按 EL2 记，它所属维度的约束力（enforcement）到不了 3。历史不可见则这一问记证据受限，不把"说不出"当成档位（01 §0）。如果是在给 EV2 定档（final grade），按 EV2 卡抽满三个再套封顶（cap）；封顶里"最近一次为红"那条同样只在历史可见时套。
 2. **抽检一条规则**：随便挑一条写在文档里的规则，找一条最近违反过它的提交。找得到 → 规则没有任何东西执行（EL1）。
 3. **抽检一个链接**：从根入口文件随机点 5 个链接。打不开的记进表 4。
 4. **抽检一次"应该失败"**：故意制造一个小违规（加一个错别字进被检查的文件、破坏一个链接），跑检查，看它红不红，然后还原。**不允许跳过这一步**——判断"这个仓库的检查会不会失败"，只能靠亲手让它失败一次。
@@ -67,7 +67,7 @@
 - **第二层** → 实际怎么跑（缺口造成什么后果）
 - **第三层** → 已有的机制可信吗（低分是"没有"还是"有但假的"）
 
-第一层的缺口清单（gap list）和第二层的走查记录会合流成一张**施工顺序（build order）表**（这张表由[21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)的[排序原则（ordering principles）](./21-from-gaps-to-plan-coarse.md#1--排序原则ordering-principles)与[循环](./21-from-gaps-to-plan-coarse.md#5--一轮打磨的循环与停止条件)产出，本文不提供模板）：每一个"靠猜"和"没证据"都能归到十七维里的某一维，**哪一维的案例最多最痛，就先去 [22](./22-from-gaps-to-plan-fine.md) 找那一维的处置卡（remediation card）**。
+第一层的缺口清单（gap list）和第二层的走查记录会合流成一张**施工顺序（build order）表**（这张表由[21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)的[排序原则（ordering principles）](./21-from-gaps-to-plan-coarse.md#1--排序原则ordering-principles)与[循环](./21-from-gaps-to-plan-coarse.md#4--一轮打磨的循环与停止条件)产出，本文不提供模板）：每一个"靠猜"和"没证据"都能归到十七维里的某一维，**哪一维的案例最多最痛，就先去 [22](./22-from-gaps-to-plan-fine.md) 找那一维的处置卡（remediation card）**。
 
 ---
 
@@ -229,7 +229,7 @@
 
 #### CP1 意图入口 · Work intake
 
-**填的缺口**：IG7 交付怎样算完整
+**填的缺口**：IG6 怎么算做对（开工前：验收条件是否可观察。EV1 问有没有检查，EV2 问检查算不算数，EV3 才填 IG7「实现、文档、证据要不要一起交」）
 
 **一句话（summary）**：一个任务从"有人说要做点什么"变成"一份写得清验收条件的可开工描述"的路径。
 
@@ -424,7 +424,7 @@
 **约束力（enforcement）**：0 靠自觉 / 1 写在 prose 里 / 2 有流程要求且被抽查 / 3 且"没有负例控制（negative control）的检查"会被明确拒绝合入
 
 **封顶规则（cap rules）**
-- 抽检的 3 个检查里，没有一个说得出最近一次为红的原因 → 本维约束力（enforcement）封顶（cap） 1
+- 抽检的 3 个检查里，失败历史可见、仍没有一个说得出最近一次为红的原因 → 本维约束力（enforcement）封顶（cap） 1（历史不可见时这一问记证据受限，不套本条）
 - 存在长期未失败过的检查且无人核查 → 约束力（enforcement）封顶（cap） 1
 - 负例控制（negative control）只做了"引入违规看它红"，没有验证"还原后变绿" → 约束力（enforcement）封顶（cap） 2
 - 没有"新检查必须做一次负例控制（negative control）"的成文要求 → 覆盖面（coverage）封顶（cap） 1
@@ -759,7 +759,7 @@
 | EV1 | 本地反馈要等全套跑完 | 约束力（enforcement） 2 |
 | EV1 | 失败信息说不出违反哪条规则、去哪修 | 约束力（enforcement） 2 |
 | EV1 | 检查层不足四层 | 覆盖面（coverage） 1 |
-| EV2 | 抽检 3 个检查无一说得出最近为红原因 | 约束力（enforcement） 1 |
+| EV2 | 历史可见时，抽检 3 个检查无一说得出最近为红原因 | 约束力（enforcement） 1 |
 | EV2 | 存在长期未失败过的检查且无人核查 | 约束力（enforcement） 1 |
 | EV2 | 负例控制（negative control）只验红、不验还原后变绿 | 约束力（enforcement） 2 |
 | EV2 | 没有"新检查必须做一次负例控制（negative control）"的成文要求 | 覆盖面（coverage） 1 |
