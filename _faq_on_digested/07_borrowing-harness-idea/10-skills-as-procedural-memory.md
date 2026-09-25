@@ -1,6 +1,6 @@
-# 09 · Skills 与渐进披露（省上下文、稳住判断）
+# Skills：程序化的工作记忆
 
-> **状态：跨状态** —— Skill 文件是**仓库面（静态）**（「任务 → 流程文档」目录）；模型可见面（catalog 只给摘要、正文按需）是**运行时（动态）**，机制见 [`05_root-entry-doc-navigation/02-on-demand-navigation.md`](../05_root-entry-doc-navigation/02-on-demand-navigation.md) 与 [`11-progressive-disclosure-pipeline.md`](./11-progressive-disclosure-pipeline.md)。
+> **术 · Skills。** 本页拥有流程文档的写法标准（Skill 文件是仓库面的「任务 → 流程文档」目录）；模型可见面（catalog 只给摘要、正文按需）是运行时事，机制见 [`05_root-entry-doc-navigation/02-on-demand-navigation.md`](../05_root-entry-doc-navigation/02-on-demand-navigation.md) 与 [`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)。
 
 ## 规则与检查之间还缺一层
 
@@ -38,7 +38,7 @@ DSH 的 Skill 自己声明这个边界：
 - **步骤就是带命令的正文**——第一步「Confirm the checkout and branch」下面直接是可执行的 `git status --short --branch`；第二步给了 `pnpm --silent run change-scope --base <verified-base-ref>` 并写明「never guesses or fetches a base」。每一步都是「做什么 + 具体命令 + 边界」。
 - **判断标准写成正文规则**——「Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression」这句就在「Select relevant evidence」一节里。
 
-普通项目的流程文档照这个标准写：**frontmatter 一句触发条件、正文每步带可执行命令、判断标准写成正文规则**。六字段模板（触发条件、输入、步骤、停止条件、验证、输出格式）见 [`03`](./03-step-by-step-guide.md) Phase 5。
+普通项目的流程文档照这个标准写：**frontmatter 一句触发条件、正文每步带可执行命令、判断标准写成正文规则**。六字段模板（触发条件、输入、步骤、停止条件、验证、输出格式）见 [`落地总纲`](./06-step-by-step-guide.md) Phase 5。
 
 **学走形的检查**：流程文档写成没有命令的散文（「做好本地验证后再推送」），或写成强制 checklist（「必须依次执行 12 步」）——前者 agent 还得猜，后者把判断收走了；正确形态是「步骤 + 每步的判断标准」，判断留在执行者。
 
@@ -48,7 +48,7 @@ Skill 与根文档共用同一个原则——**摘要负责发现，正文才拥
 
 > This catalog contains summaries only; do not infer or follow a skill's instructions until it has been loaded.
 
-对普通项目，这意味着：**不要把所有流程文档都塞进常驻上下文，而是给一个「任务 → 文档」的目录，任务命中才加载全文。** 这一条同时省上下文、又避免 agent 从摘要脑补流程。这一节只讲「仓库开发侧」的按需加载；DSH 在**运行时/模型可见面**上如何实现同样的原则（skill catalog 只给摘要、prompt 按 scope 组装、compaction 回收），是另一整块，见 [`11-progressive-disclosure-pipeline.md`](./11-progressive-disclosure-pipeline.md)。
+对普通项目，这意味着：**不要把所有流程文档都塞进常驻上下文，而是给一个「任务 → 文档」的目录，任务命中才加载全文。** 这一条同时省上下文、又避免 agent 从摘要脑补流程。这一节只讲「仓库开发侧」的按需加载；DSH 在**运行时/模型可见面**上如何实现同样的原则（skill catalog 只给摘要、prompt 按 scope 组装、compaction 回收），是另一整块，见 [`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)。
 
 ## 为什么这也能治「乱发挥」
 

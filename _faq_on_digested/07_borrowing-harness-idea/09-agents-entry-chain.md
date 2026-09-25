@@ -1,8 +1,10 @@
-# 08 · AGENTS.md 入口链：文件态骨架 + 会话态加载
+# AGENTS.md 入口链：文件态骨架 + 会话态加载
+
+> **术 · 入口链。** AGENTS.md 的文件态（怎么写）与会话态（怎么被加载）。文件态的设计细节归 [FAQ 04](../04_root-entry-doc-design/answer.md)，会话态机制归 [FAQ 05](../05_root-entry-doc-navigation/answer.md)。
 
 ## 先纠正一个隐含误解：入口链不是单态对象
 
-前面 [`04`](./04-legibility-ownership.md) 讲了「一个事实一个 owner」和「渐进披露」，[`03`](./03-step-by-step-guide.md) 的 Phase 1 让你「写一份短的 AGENTS.md」。这一篇钉的是**入口链本身**——但这条链不是一件扁平的东西，它是**同一根链条的两种存在状态**：
+前面 [`归属`](./02-legibility-ownership.md) 讲了「一个事实一个 owner」和「渐进披露」，[`落地总纲`](./06-step-by-step-guide.md) 的 Phase 1 让你「写一份短的 AGENTS.md」。这一篇钉的是**入口链本身**——但这条链不是一件扁平的东西，它是**同一根链条的两种存在状态**：
 
 | 状态 | 对象 | 链条长什么样 | 归属 | 对借用者的成本 |
 |---|---|---|---|---|
@@ -29,7 +31,7 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 3. **子树 AGENTS.md 是「合适个数」**：只在「有子树专属常驻规则」时放，宁可少放；大多数 package 只有 README.md 是正确结果，不是缺口。→ FAQ 04（root-entry-doc-design）的 [tier 分工](../04_root-entry-doc-design/02-tier-routing-and-indexes.md)。
 4. **AGENTS.md 串起 README.md，而不是吞掉它**：AGENTS 是路由/常驻指令层，README 是「当前合同」事实层；AGENTS 通过 link 把它串进地图。→ 04 的 tier taxonomy。
 
-**文件态的可迁移结论**：这是「写文件」的工程，几乎零架构依赖——`CLAUDE.md` 直接 `ln -s AGENTS.md`，根文件只写 standing orders，子树只在必要时放，并给常驻层设字数预算。而且宿主自动加载（Claude Code 读 `CLAUDE.md`）意味着**第一环不写代码就免费生效**。这就是 [`03`](./03-step-by-step-guide.md) Phase 1 的完整内容。
+**文件态的可迁移结论**：这是「写文件」的工程，几乎零架构依赖——`CLAUDE.md` 直接 `ln -s AGENTS.md`，根文件只写 standing orders，子树只在必要时放，并给常驻层设字数预算。而且宿主自动加载（Claude Code 读 `CLAUDE.md`）意味着**第一环不写代码就免费生效**。这就是 [`落地总纲`](./06-step-by-step-guide.md) Phase 1 的完整内容。
 
 ## 状态二 · 会话态（运行时加载）
 
@@ -45,8 +47,8 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 两种状态的成本差直接给出迁移顺序：
 
-1. **先文件态**：写短 AGENTS.md、symlink、预算、tier 表——这是 [`03`](./03-step-by-step-guide.md) Phase 1，几乎零成本，收益立竿见影。
-2. **后会话态**：确认组合压力（上下文爆炸、长任务活不下来）之后再考虑加载插件——这是 [`11`](./11-progressive-disclosure-pipeline.md) 的注入层。
+1. **先文件态**：写短 AGENTS.md、symlink、预算、tier 表——这是 [`落地总纲`](./06-step-by-step-guide.md) Phase 1，几乎零成本，收益立竿见影。
+2. **后会话态**：确认组合压力（上下文爆炸、长任务活不下来）之后再考虑加载插件——这是 [`披露管线`](./12-progressive-disclosure-pipeline.md) 的注入层。
 
 只做文件态不是残缺：宿主自动加载让第一环免费；会话态是 DSH 把「按需」从写作纪律升级成运行时保证的那一步，普通项目按需取用。
 
@@ -54,5 +56,5 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 - 文件态（设计）：[`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md) 及其子章节
 - 会话态（机制）：[`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md) 及其子章节
-- 本目录的关联：[`04-legibility-ownership.md`](./04-legibility-ownership.md)、[`03-step-by-step-guide.md`](./03-step-by-step-guide.md) Phase 1、[`11-progressive-disclosure-pipeline.md`](./11-progressive-disclosure-pipeline.md)
+- 本目录的关联：[`02-legibility-ownership.md`](./02-legibility-ownership.md)、[`06-step-by-step-guide.md`](./06-step-by-step-guide.md) Phase 1、[`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)
 - 源码：[`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)、[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)

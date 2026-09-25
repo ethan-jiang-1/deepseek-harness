@@ -1,10 +1,10 @@
-# 06 · 可执行反馈（解决「乱发挥」的做错被抓住）
+# 可执行反馈：做错了会被抓住
 
-> **状态：跨状态（反馈时点光谱）** —— 六层反馈的轴是「错误在哪里被发现」：编译/load/snapshot 在构建与提交期（静态端），invariant 在活系统中（运行时端）；它不是文档的静态/动态轴。
+> **术 · 反馈。** 六层反馈的轴是「错误在哪一层被抓住」：编译/load/snapshot 在构建与提交期，invariant 在活系统里——执行态的事，配 [`落地总纲`](./06-step-by-step-guide.md) 的 Phase 4 用。
 
 ## 规则只可读，乱发挥就得等 review 才被抓
 
-正确路径只能降低「改错地方」的概率，拦不住「改错了还自认为对」。DSH 的解法是把「可机械判断的规则」接到真实执行路径，让错误在离来源最近的地方出现。这是本 FAQ 里**「不乱发挥」一侧杠杆最高、收益最直接**的一条（在 [`03`](./03-step-by-step-guide.md) 的实施顺序里，它排在「立规矩的 owner」之后：Phase 1「收益最高」，Phase 4「回报第二高」）。
+正确路径只能降低「改错地方」的概率，拦不住「改错了还自认为对」。DSH 的解法是把「可机械判断的规则」接到真实执行路径，让错误在离来源最近的地方出现。这是本 FAQ 里**「不乱发挥」一侧杠杆最高、收益最直接**的一条（在 [`落地总纲`](./06-step-by-step-guide.md) 的实施顺序里，它排在「立规矩的 owner」之后：Phase 1「收益最高」，Phase 4「回报第二高」）。
 
 > Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects:
 

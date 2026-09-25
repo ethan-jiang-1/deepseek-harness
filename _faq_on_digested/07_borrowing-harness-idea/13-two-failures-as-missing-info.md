@@ -1,4 +1,6 @@
-# 12 · 「糊涂」和「乱发挥」缺的到底是什么
+# 「糊涂」和「乱发挥」缺的到底是什么
+
+> **背景 · 问题框架。** 把两个症状翻译成信息缺口——全套材料要填的洞。放在最后：入门不需要先读它，想深挖「为什么是这些机制」时再读。
 
 ## 先把症状翻译成缺口
 
@@ -45,8 +47,8 @@ DSH 没有把六类信息混写在一份总览里，而是**一个问题一个 o
 
 ## 「不糊涂 / 不乱发挥」各由哪几篇回答
 
-- **不糊涂** → [`04-legibility-ownership.md`](./04-legibility-ownership.md)（知识归属：缺口 1、2、3）、[`08-agents-entry-chain.md`](./08-agents-entry-chain.md)（AGENTS.md 入口链：缺口 1 的骨架）、[`11-progressive-disclosure-pipeline.md`](./11-progressive-disclosure-pipeline.md)（披露管线的静态与注入层）、[`09-skills-as-procedural-memory.md`](./09-skills-as-procedural-memory.md)（按需加载）、[`10-runtime-inspection.md`](./10-runtime-inspection.md)（问实际状态：缺口 2 的运行时版）。
-- **不乱发挥** → [`05-paved-road-and-ladder.md`](./05-paved-road-and-ladder.md)（改哪里：缺口 4）、[`06-executable-feedback.md`](./06-executable-feedback.md)（早失败：缺口 6）、[`09-skills-as-procedural-memory.md`](./09-skills-as-procedural-memory.md)（流程固化：缺口 5）、[`11-progressive-disclosure-pipeline.md`](./11-progressive-disclosure-pipeline.md)（可见集收缩 + 子代理隔离）。
+- **不糊涂** → [`02-legibility-ownership.md`](./02-legibility-ownership.md)（知识归属：缺口 1、2、3）、[`09-agents-entry-chain.md`](./09-agents-entry-chain.md)（AGENTS.md 入口链：缺口 1 的骨架）、[`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)（披露管线的静态与注入层）、[`10-skills-as-procedural-memory.md`](./10-skills-as-procedural-memory.md)（按需加载）、[`11-runtime-inspection.md`](./11-runtime-inspection.md)（问实际状态：缺口 2 的运行时版）。
+- **不乱发挥** → [`05-paved-road-and-ladder.md`](./05-paved-road-and-ladder.md)（改哪里：缺口 4）、[`07-executable-feedback.md`](./07-executable-feedback.md)（早失败：缺口 6）、[`10-skills-as-procedural-memory.md`](./10-skills-as-procedural-memory.md)（流程固化：缺口 5）、[`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)（可见集收缩 + 子代理隔离）。
 
 这个两分不是 DSH 的官方术语，而是本 FAQ 为了「可迁移」做的归纳：**可读性解决「知不知道」，正确路径 + 反馈解决「会不会做错、做错了有没有人拦」。** 部分章节（05、10）同时服务两侧，见各章内说明。
 

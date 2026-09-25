@@ -38,25 +38,26 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 ## 立即借 / 有压力再借 / 不要照搬
 
-- **立即借**（几乎零架构依赖，普通项目的第一桶金）：拿一笔真实变更跑通闭环（[`03`](./03-step-by-step-guide.md) Phase 0.5，对照表见 [`01`](./01-sdlc-change-loop.md)）；短 `AGENTS.md` 只放常驻规则（[`03`](./03-step-by-step-guide.md) Phase 1，实物见 [`04`](./04-legibility-ownership.md) 落地实物节）；一个事实一个 owner、决策理由与当前文档分开（[`04`](./04-legibility-ownership.md)；何时写决策记录见 [`02`](./02-decision-notes.md)）；可机械规则接成 `exit non-zero` 检查并做负例控制（[`03`](./03-step-by-step-guide.md) Phase 4，六层反馈见 [`06`](./06-executable-feedback.md)）。
-- **有压力再借**（确有对应压力才值得）：Skills 目录（同类任务反复出现；真实 Skill 文件的写法标准见 [`09`](./09-skills-as-procedural-memory.md) 落地实物节）；生成 catalog（声明面大到手工清单漂移）；注入预算与 compaction（上下文吃紧、长任务活不下来，[`11`](./11-progressive-disclosure-pipeline.md)）。
+- **立即借**（几乎零架构依赖，普通项目的第一桶金）：拿一笔真实变更跑通闭环（[`落地总纲`](./06-step-by-step-guide.md) Phase 0.5，对照表见 [`变更闭环`](./01-sdlc-change-loop.md)）；短 `AGENTS.md` 只放常驻规则（[`落地总纲`](./06-step-by-step-guide.md) Phase 1，实物见 [`归属`](./02-legibility-ownership.md) 落地实物节）；一个事实一个 owner、决策理由与当前文档分开（[`归属`](./02-legibility-ownership.md)；何时写决策记录见 [`决策记录`](./03-decision-notes.md)）；可机械规则接成 `exit non-zero` 检查并做负例控制（[`落地总纲`](./06-step-by-step-guide.md) Phase 4，六层反馈见 [`可执行反馈`](./07-executable-feedback.md)）。
+- **有压力再借**（确有对应压力才值得）：Skills 目录（同类任务反复出现；真实 Skill 文件的写法标准见 [`Skills`](./10-skills-as-procedural-memory.md) 落地实物节）；生成 catalog（声明面大到手工清单漂移）；注入预算与 compaction（上下文吃紧、长任务活不下来，[`披露管线`](./12-progressive-disclosure-pipeline.md)）。
 - **不要照搬**：插件图与 capability seam 全家桶（那是组合压力的产物）；DSH 的 Project/标签/加权批准制度（它有特定的协作规模前提）；双语 triplet 与 hash 配对（除非你的项目真的双语平等）。
 
 ## 总览表：困惑类型 → 借用机制 → 落地动作
 
-| 你的症状 | DSH 的机制 | 状态 | 落地动作（章节目录） |
+| 你的症状 | DSH 的机制 | 段位 | 落地动作（章节） |
 |---|---|---|---|
-| agent 交付了没法验证的半成品 | 变更闭环：实现+文档+证据同 PR，缺口如实标注 | 跨状态 | 拿一笔真实变更按证据地图逐项核对（见 08 Phase 0.5、Tutorial 交叉引用） |
-| agent 读完还是抓不住主线 | 分层入口 + 根指令只放 standing orders | 静态 | 写一份短 `AGENTS.md`（`CLAUDE.md` 用 symlink 指向它），只放常驻规则 + 布局 + 命令，其余 link 出去（见 09） |
-| agent 分不清「现在的事实」和「当初的理由」 | 当前文档 vs Agent Note 分开 | 静态 | 决策理由单独进 `docs/adr/` 或 `notes/`，文档只写 now（见 02） |
-| agent 反复提出已否定的方案 | 负知识外置（rejected note、Known Limitations） | 静态 | 记下「为什么不做 X」，而不是只记「做了什么」（见 02） |
-| agent 改错地方 / 造出新接入方式 | 正确路径 + 参与阶梯 + 归属路由 | 跨状态 | 写一张「目标 → 机制」归属表，cookbook 给出范本（见 03） |
-| agent 做了坏事要等 review 才知道 | 可执行反馈：类型 / load / 测试 / snapshot / invariant / CI | 跨状态 | 把可机械判断的规则做成 `exit non-zero` 的脚本，并证明负例会失败（见 04） |
-| agent 一次读太多上下文、记不住 | 渐进披露 + 按需加载 Skill | 跨状态 | 规则分层，任务命中才加载对应流程文档（见 05、10） |
-| agent 每轮看到的上下文爆炸、长任务活不下来 | 按需注入 + 运行时组装 + compaction 回收 | 动态 | 注入给预算/去重；catalog 只给摘要；超预算压缩且保留 tool-call/result 配对（见 10） |
-| agent 靠猜源码而不是问实际状态 | `--dump-config`、生成 catalog、inspect 工具 | 动态 | 至少提供一条「查实际配置/注册项」的命令（见 06） |
+| agent 交付了没法验证的半成品 | 变更闭环：实现+文档+证据同 PR，缺口如实标注 | 道 | 拿一笔真实变更按证据地图逐项核对（见 [`变更闭环`](./01-sdlc-change-loop.md)、[`落地总纲`](./06-step-by-step-guide.md) Phase 0.5） |
+| agent 读完还是抓不住主线 | 分层入口 + 根指令只放 standing orders | 道 | 写一份短 `AGENTS.md`（`CLAUDE.md` 用 symlink 指向它），只放常驻规则 + 布局 + 命令，其余 link 出去（见 [`入口链`](./09-agents-entry-chain.md)） |
+| agent 分不清「现在的事实」和「当初的理由」 | 当前文档 vs Agent Note 分开 | 道 | 决策理由单独进 `docs/adr/` 或 `notes/`，文档只写 now（见 [`归属`](./02-legibility-ownership.md)） |
+| agent 反复提出已否定的方案 | 负知识外置（rejected note、Known Limitations） | 道 | 记下「为什么不做 X」，而不是只记「做了什么」（见 [`归属`](./02-legibility-ownership.md)、[`决策记录`](./03-decision-notes.md)） |
+| 同一个事实存了两处、越跑越分叉 | 静/动分界：事实源唯一，其余派生 | 道 | 按「规则/配置/事实源/派生」四层给数据划家（见 [`静与动`](./04-static-vs-dynamic.md)） |
+| agent 改错地方 / 造出新接入方式 | 正确路径 + 参与阶梯 + 归属路由 | 道 | 写一张「目标 → 机制」归属表，cookbook 给出范本（见 [`正确路径`](./05-paved-road-and-ladder.md)） |
+| agent 做了坏事要等 review 才知道 | 可执行反馈：类型 / load / 测试 / snapshot / invariant / CI | 术 | 把可机械判断的规则做成 `exit non-zero` 的脚本，并证明负例会失败（见 [`可执行反馈`](./07-executable-feedback.md)） |
+| agent 一次读太多上下文、记不住 | 渐进披露 + 按需加载 Skill | 术 | 规则分层，任务命中才加载对应流程文档（见 [`Skills`](./10-skills-as-procedural-memory.md)） |
+| agent 每轮看到的上下文爆炸、长任务活不下来 | 按需注入 + 运行时组装 + compaction 回收 | 术 | 注入给预算/去重；catalog 只给摘要；超预算压缩且保留 tool-call/result 配对（见 [`披露管线`](./12-progressive-disclosure-pipeline.md)） |
+| agent 靠猜源码而不是问实际状态 | `--dump-config`、生成 catalog、inspect 工具 | 术 | 至少提供一条「查实际配置/注册项」的命令（见 [`运行时查询`](./11-runtime-inspection.md)） |
 
-「状态」列与 04/05 同轴：**静态 = 仓库/文件面**，**动态 = 运行时/会话面**，**跨状态 = 一章内同时含两面**（各章顶部有声明）。
+「段位」列对应三段式结构：**道（01–05）= 概念与落地实物，术（07–12）= 执行态细节**；静态/动态轴的分界本身由 [`静与动`](./04-static-vs-dynamic.md) 拥有。
 
 ## 三句话记住它
 
@@ -64,59 +65,64 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 - **「不糊涂」靠外置与归属，「不乱发挥」靠正确路径加早失败——都不靠 agent 更聪明。**
 - **照搬的顺序是：先拿一笔真实变更跑通闭环，再立规矩的 owner，再接可执行反馈，最后才按需加 Skills 和运行时查询。**
 
-## 阅读次序：跟着动手顺序读
+## 阅读次序：先道后术，道要落地
 
-文件编号（01–12）是写作顺序，**不是阅读顺序**——借鉴者的读序跟着动手顺序走，每一站都在你正好需要它的时候出现。
+**全套材料的骨架是三段：道（01–05）→ 分水岭（06）→ 术（07–12）。** 文件编号就是阅读顺序；标题不带序号，以后调整次序不会让标题和内容对不上号。
 
-### 最短完整路径（三站，读完就能开工）
+### 道（01–05）：DSH 的大概念，每篇都带落地实物
 
-1. **本页**——精华三条立场、三层模型、三问自检。先有判断力，再谈借鉴。
-2. [`01`](./01-sdlc-change-loop.md) **变更闭环迁移表**——「借鉴成功」长什么样：一笔变更从意图到归位的每一环、普通项目的最小承载者、每环的验收标准。拿它对你们最近一笔真实变更打个分，立刻知道自己缺什么。
-3. [`03`](./03-step-by-step-guide.md) **落地总纲**——从 Phase 0.5 垂直切片开始的完整施工顺序。
+道有五篇，每篇讲一个概念，但**每一篇都配 DSH 的真实文件和最小迁移表**——道不落地就是虚无缥缈，所以每篇都有「落地实物」和「学走形检查」：
 
-**走完这三站就停下读书、开始干活。** 后面每一站只在做到对应 Phase 时才需要。
+1. [`变更闭环`](./01-sdlc-change-loop.md)——一笔变更从意图到归位；「借鉴成功」长什么样。
+2. [`归属`](./02-legibility-ownership.md)——一个事实一个 owner；知识的家。
+3. [`决策记录`](./03-decision-notes.md)——何时写 ADR、状态、取代与归档。
+4. [`静与动`](./04-static-vs-dynamic.md)——read-only 层与动态层的分界；agent 开发里最容易糊涂的数据与状态问题。
+5. [`正确路径`](./05-paved-road-and-ladder.md)——改哪里：归属表与参与阶梯。
 
-### 动手过程中的进站（与 08 的 Phase 对齐）
+读完五篇，开篇的三条立场就落地成了五个可核对的概念。
 
-4. [`04`](./04-legibility-ownership.md)——做 Phase 1/2（立 owner、分清现在与理由）时读：归属地基 + one home 的三个落地实物。
-5. [`02`](./02-decision-notes.md)——写第一批 ADR 时读：何时写、状态转换、最小模板 + 局部修补/持久取舍两例对照。
-6. [`05`](./05-paved-road-and-ladder.md)——做 Phase 3（铺正确路径）时读：归属表落地实物 + 四级参与阶梯。
-7. [`06`](./06-executable-feedback.md)——做 Phase 4（规则接到执行）时读：六层反馈 + 负例控制。
+### 分水岭（06）：开始动手
 
-### 防走形与进阶（基础就位后）
+[`落地总纲`](./06-step-by-step-guide.md)——从 Phase 0 给项目打分、Phase 0.5 拿一笔真实变更跑垂直切片开始，完整的施工顺序。**读到这里就停下读书、开始干活；后面的术，做到哪读到哪。**
 
-8. [`07`](./07-transfer-playbook.md)——迁移优先级清单 + 四个不能混淆的边界。
-9. [`08`](./08-agents-entry-chain.md)——AGENTS.md 入口链：文件态骨架与会话态加载。
-10. [`09`](./09-skills-as-procedural-memory.md)——Skill 文件的写法标准（frontmatter 触发条件 + 带命令的正文）。
+### 术（07–12）：执行态的细节
 
-### 深水区（按需）
+6. [`可执行反馈`](./07-executable-feedback.md)——做 Phase 4 时读：六层反馈 + 负例控制，知错、改错怎么被抓住。
+7. [`迁移清单`](./08-transfer-playbook.md)——做完头几个 Phase 后核对：优先级与四个不能混淆的边界，防学走形。
+8. [`入口链`](./09-agents-entry-chain.md)——深化 Phase 1 时读：AGENTS.md 的文件态与会话态。
+9. [`Skills`](./10-skills-as-procedural-memory.md)——做 Phase 5 时读：流程文档的写法标准。
+10. [`运行时查询`](./11-runtime-inspection.md)——做 Phase 6 时读：三个查询面。
+11. [`披露管线`](./12-progressive-disclosure-pipeline.md)——上下文吃紧时读：注入、组装、回收、隔离。
 
-[`12`](./12-two-failures-as-missing-info.md) 问题框架、[`10`](./10-runtime-inspection.md) 运行时查询、[`11`](./11-progressive-disclosure-pipeline.md) 五层管线、[`research.md`](./research.md) 出处总表——想深挖某一层时再进。
+### 压尾（13 + research，按需）
 
-一句话：**第 1–3 站先读，第 4–7 站做到哪读到哪，第 8–10 站防走形，深水区随缘。**
+[`问题框架`](./13-two-failures-as-missing-info.md)（「糊涂/乱发挥」翻译成信息缺口——全套材料的 why）与 `research.md`（全部引文出处）——想深挖时再进。
+
+一句话：**道五篇读懂概念和实物，06 动手，术做到哪读到哪。**
 
 ## 补充入口
 
 - **想先看 DSH 精华落成动作的完整演示**：读 [SDLC Tutorial](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/00-index.md)——一笔真实变更从意图到合并的全程走查，三层模型与三条立场全部在里头现过身；本 FAQ 的角色是把它和其余机制翻译成普通项目可迁移的动作。
 
-**证据与兜底**：`research.md` 是全部 blockquote 的出处总表（含钉版基线与复核方式）；本目录自带 [`verify.mjs`](../verify.mjs)（UTF-8 / 换行 / 链接 / 锚点），修改后运行 `node _faq_on_digested/verify.mjs`；防漂移纪律的落地清单见 `08` Phase 7——这个 FAQ 讲的机制，自己也在用。
+**证据与兜底**：`research.md` 是全部 blockquote 的出处总表（含钉版基线与复核方式）；本目录自带 [`verify.mjs`](../verify.mjs)（UTF-8 / 换行 / 链接 / 锚点），修改后运行 `node _faq_on_digested/verify.mjs`；防漂移纪律的落地清单见 [`落地总纲`](./06-step-by-step-guide.md) Phase 7——这个 FAQ 讲的机制，自己也在用。
 
 **自包含**：整套目录可以单独拿走用。指向 DSH 仓库的引用全部是钉版在固定 commit `46a7f68b09` 的 GitHub 绝对 URL——任何人、任何机器都能点开核对，不需要 clone 这个仓库；目录间互链只在 `_faq_on_digested` 家族内部。抄走这套 FAQ 的人，唯一断不了的依赖就是公网。
 
-**按状态读（静态/动态轴）**：静态（仓库/文件面）——04、05、08 的文件态、09 的仓库面；动态（运行时/会话面）——10、11、08 的会话态、09 的模型可见面；元/行动——12（问题框架）、07（迁移清单）、03（落地顺序）、01/02（专题迁移）。静态/动态的机制细节分别由 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md) 与 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md) 拥有。
+**按状态读（静态/动态轴）**：这条轴本身由 [`静与动`](./04-static-vs-dynamic.md) 拥有（四层分界 + 三条切换纪律）。偏静态的章——归属、正确路径、入口链文件态、Skills 仓库面；偏动态的章——静与动、运行时查询、披露管线、入口链会话态、Skills 模型可见面。根入口文档的静态设计细节归 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)，运行时消费归 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)。
 
-## 继续阅读（按文件号索引，含一句话定位）
+## 继续阅读（按文件号索引，含段位与一句话定位）
 
-- [`12-two-failures-as-missing-info.md`](./12-two-failures-as-missing-info.md)：先拆「糊涂 / 乱发挥」
-- [`04-legibility-ownership.md`](./04-legibility-ownership.md)：不糊涂的地基（含 one home 落地实物）
-- [`05-paved-road-and-ladder.md`](./05-paved-road-and-ladder.md)：不乱发挥·改哪里（含归属表落地实物）
-- [`06-executable-feedback.md`](./06-executable-feedback.md)：不乱发挥·早失败
-- [`09-skills-as-procedural-memory.md`](./09-skills-as-procedural-memory.md)：省上下文、稳住判断（含 Skill 文件落地实物）
-- [`10-runtime-inspection.md`](./10-runtime-inspection.md)：不靠猜源码
-- [`07-transfer-playbook.md`](./07-transfer-playbook.md)：优先级、三问框架与边界
-- [`03-step-by-step-guide.md`](./03-step-by-step-guide.md)：**一步一步怎么做（最短路径第 3 站）**
-- [`08-agents-entry-chain.md`](./08-agents-entry-chain.md)：AGENTS.md 入口链（文件态骨架 → 04、会话态加载 → 05、迁移顺序）
-- [`11-progressive-disclosure-pipeline.md`](./11-progressive-disclosure-pipeline.md)：渐进披露的完整五层管线（静态 + 按需注入 + 运行时组装 + 溢出回收 + 隔离）
-- [`01-sdlc-change-loop.md`](./01-sdlc-change-loop.md)：变更闭环的迁移桥（**最短路径第 2 站**）
-- [`02-decision-notes.md`](./02-decision-notes.md)：决策记录完整章（何时写、状态、取代与归档、最小 ADR 模板）
+- [`01-sdlc-change-loop.md`](./01-sdlc-change-loop.md)：【道】变更闭环——一笔变更从意图走到归位
+- [`02-legibility-ownership.md`](./02-legibility-ownership.md)：【道】归属——一个事实一个 owner（含 one home 落地实物）
+- [`03-decision-notes.md`](./03-decision-notes.md)：【道】决策记录——何时写、状态、取代与归档、最小 ADR 模板
+- [`04-static-vs-dynamic.md`](./04-static-vs-dynamic.md)：【道】静与动——read-only 层与动态层的分界
+- [`05-paved-road-and-ladder.md`](./05-paved-road-and-ladder.md)：【道】正确路径——归属表实物 + 参与阶梯
+- [`06-step-by-step-guide.md`](./06-step-by-step-guide.md)：【分水岭】**一步一步怎么做——落地总纲**
+- [`07-executable-feedback.md`](./07-executable-feedback.md)：【术】可执行反馈——六层反馈 + 负例控制
+- [`08-transfer-playbook.md`](./08-transfer-playbook.md)：【术】迁移清单——优先级与四个边界
+- [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)：【术】入口链——AGENTS.md 文件态与会话态
+- [`10-skills-as-procedural-memory.md`](./10-skills-as-procedural-memory.md)：【术】Skills——程序化工作记忆（含 Skill 文件落地实物）
+- [`11-runtime-inspection.md`](./11-runtime-inspection.md)：【术】运行时查询——不靠猜源码
+- [`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)：【术】披露管线——静态 + 注入 + 组装 + 回收 + 隔离
+- [`13-two-failures-as-missing-info.md`](./13-two-failures-as-missing-info.md)：【背景】问题框架——糊涂/乱发挥的信息缺口
 - [`research.md`](./research.md)：证据原文与来源
