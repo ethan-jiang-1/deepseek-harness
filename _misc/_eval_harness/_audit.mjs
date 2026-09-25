@@ -8,6 +8,9 @@ import { fileURLToPath } from 'node:url'
 const dir = dirname(fileURLToPath(import.meta.url))
 const files = ['README.md', '01-evaluate-development-harness-coarse.md', '02-evaluate-development-harness-fine.md', '11-evaluate-runtime-harness.md', '12-evaluate-runtime-harness-fine.md', '20-from-gaps-to-plan.md']
 const rd = (f) => readFileSync(resolve(dir, f), 'utf8')
+/** 中英对照注释：术语后紧跟的（English）。 */
+const G = '(?:（[^）]*）)?'
+const gloss = (src, flags = '') => new RegExp(src.replaceAll('~', G), flags)
 const slug = (h) => h.toLowerCase().trim().replace(/[^\p{L}\p{N}\s-]/gu, '').replace(/ /g, '-')
 
 let fails = 0
@@ -31,7 +34,7 @@ const dimensions = (file, level, idPattern) => {
 
 /** 一个维度块里的封顶规则行。 */
 const capsOf = (lines) => {
-  const start = lines.findIndex((l) => /^\*\*封顶规则\*\*/.test(l))
+  const start = lines.findIndex((l) => gloss('^\\*\\*封顶规则~\\*\\*').test(l))
   const caps = []
   for (let i = start + 1; start >= 0 && i < lines.length; i++) {
     if (lines[i].startsWith('- ')) caps.push(lines[i])
@@ -74,7 +77,7 @@ for (const [file, level, idPattern, expected] of [
   const ids = Object.keys(dims)
   check(`${tag} 维度数 = ${expected}`, ids.length === expected, ids.length !== expected ? `实为 ${ids.length}` : '')
 
-  const required = [/\*\*一句话\*\*/, /\*\*探针\*\*/, /\*\*覆盖面\*\*/, /\*\*约束力\*\*/, /\*\*封顶规则\*\*/, /\*\*常见伪证\*\*/, /\*\*走形症状\*\*/]
+  const required = ['一句话', '探针', '覆盖面', '约束力', '封顶规则', '常见伪证', '走形症状'].map((n) => gloss(`\\*\\*${n}~\\*\\*`))
   const missing = ids.filter((id) => required.some((r) => !r.test(dims[id].join('\n'))))
   check(`${tag} 每维栏目齐备`, missing.length === 0, missing.join(' '))
 
@@ -91,12 +94,12 @@ for (const [file, level, idPattern, expected] of [
     if (m) (appendix[m[1]] ??= []).push(line)
   }
   const body = Object.fromEntries(ids.map((id) => [id, capsOf(dims[id])]))
-  const pairs = (ls, kind) => ls.flatMap((l) => [...l.matchAll(kind === 'body' ? /(覆盖面|约束力)封顶\s*([0-3])/g : /(覆盖面|约束力)\s*([0-3])/g)].map((m) => `${m[1]}${m[2]}`)).sort()
+  const pairs = (ls, kind) => ls.flatMap((l) => [...l.matchAll(kind === 'body' ? gloss('(覆盖面|约束力)~封顶~\\s*([0-3])', 'g') : gloss('(覆盖面|约束力)~\\s*([0-3])', 'g'))].map((m) => `${m[1]}${m[2]}`)).sort()
   const mismatch = ids.filter((id) => pairs(body[id], 'body').join(',') !== pairs(appendix[id] ?? [], 'appendix').join(','))
   check(`${tag} 封顶正文=附录（${ids.reduce((n, id) => n + body[id].length, 0)} 条，轴与档位逐条一致）`, mismatch.length === 0,
     mismatch.slice(0, 2).map((id) => `${id}: 正文[${pairs(body[id], 'body').join(',')}] 附录[${pairs(appendix[id] ?? [], 'appendix').join(',')}]`).join(' | '))
 
-  const axisless = ids.flatMap((id) => body[id].filter((c) => !/(覆盖面|约束力)封顶 [0-3]/.test(c)).map((c) => `${id}: ${c.slice(0, 40)}`))
+  const axisless = ids.flatMap((id) => body[id].filter((c) => !gloss('(覆盖面|约束力)~封顶~ [0-3]').test(c)).map((c) => `${id}: ${c.slice(0, 40)}`))
   check(`${tag} 每条封顶都写明轴与档位`, axisless.length === 0, axisless.slice(0, 3).join(' | '))
 
   const seq = [...rd(file).matchAll(new RegExp(`^\\| (${idPattern}) \\|`, 'gm'))].map((m) => m[1])
@@ -165,7 +168,7 @@ for (const [file, level, idPattern, expected] of [
 
   const devSections = ['什么时候才值得做', '最小形态', '做法', '验收红线', '一次负例控制', '成本', '它不买什么', '学走形的样子']
   const devOptional = new Set(['不必照搬的'])
-  const sectionNames = (b) => b.flatMap((l) => { const m = /^\*\*([^*。]+)。\*\*/.exec(l); return m ? [m[1]] : [] })
+  const sectionNames = (b) => b.flatMap((l) => { const m = /^\*\*([^*。]+)。\*\*/.exec(l); return m ? [m[1].replace(/（[^）]*）/g, '')] : [] })
   const badShape = cards.filter((c) => {
     const names = sectionNames(c.body)
     if (!/^(?:KN|CP|EV|ST|MT)/.test(c.id)) return names.length < 6
@@ -174,11 +177,11 @@ for (const [file, level, idPattern, expected] of [
   check('20 卡片栏位一致（开发卡八栏按序，另可带"不必照搬的"）', badShape.length === 0,
     badShape.map((c) => `${c.id}[${sectionNames(c.body).join(',')}]`).slice(0, 2).join(' | '))
 
-  const withoutNegativeControl = cards.filter((c) => !/\*\*一次负例控制。\*\*/.test(c.body.join('\n')))
+  const withoutNegativeControl = cards.filter((c) => !gloss('\\*\\*一次负例控制~。\\*\\*').test(c.body.join('\n')))
   check('20 每张卡都有负例控制', withoutNegativeControl.length === 0, withoutNegativeControl.map((c) => c.id).join(' '))
 
   const redLines = (b) => {
-    const start = b.findIndex((l) => /^\*\*验收红线。\*\*/.test(l))
+    const start = b.findIndex((l) => gloss('^\\*\\*验收红线~。\\*\\*').test(l))
     let n = 0
     for (let i = start + 1; start >= 0 && i < b.length; i++) {
       if (b[i].startsWith('- ')) n++
@@ -193,11 +196,11 @@ for (const [file, level, idPattern, expected] of [
 // —— 文档级约定 ——
 {
   const text = (f) => rd(f)
-  const exemplars = (text('02-evaluate-development-harness-fine.md').match(/^\*\*例证\*\*/gm) ?? []).length
+  const exemplars = (text('02-evaluate-development-harness-fine.md').match(gloss('^\\*\\*例证~\\*\\*', 'gm')) ?? []).length
   check('02 例证段 ≥7 条', exemplars >= 7, `实为 ${exemplars}`)
 
   for (const [f, min] of [['01-evaluate-development-harness-coarse.md', 10], ['11-evaluate-runtime-harness.md', 10]]) {
-    const start = text(f).indexOf('## 附录 B · 常见伪证清单')
+    const start = text(f).search(gloss('^## 附录 B · 常见伪证~清单', 'm'))
     const rows = start < 0 ? 0 : (text(f).slice(start).match(/^\| "/gm) ?? []).length
     check(`${f.slice(0, 2)} 附录 B 伪证清单 ≥${min} 句`, rows >= min, `实为 ${rows}`)
   }
@@ -354,7 +357,7 @@ for (const [coarse, fine, dimCount] of [
   ['11-evaluate-runtime-harness.md', '12-evaluate-runtime-harness-fine.md', 11],
 ]) {
   const c = rd(coarse), tag = coarse.slice(0, 2)
-  check(`${tag} 含两轴与成熟度档`, /\*\*覆盖面\*\*/.test(c) && /\*\*约束力\*\*/.test(c) && /MG0/.test(c))
+  check(`${tag} 含两轴与成熟度档`, gloss('\\*\\*覆盖面~\\*\\*').test(c) && gloss('\\*\\*约束力~\\*\\*').test(c) && /MG0/.test(c))
   const rows = (c.match(/^\| `(?:KN|CP|EV|ST|MT|RT)\d+` /gm) ?? []).length
   check(`${tag} 粗判一览 ${dimCount} 行`, rows === dimCount, `实为 ${rows}`)
   const fineIds = new Set([...rd(fine).matchAll(/^#{3,4} ((?:KN|CP|EV|ST|MT|RT)\d+) /gm)].map((m) => m[1]))
@@ -362,7 +365,7 @@ for (const [coarse, fine, dimCount] of [
   check(`${tag} 粗判一览 = 细粒度维度集合`, fineIds.size === coarseIds.size && [...fineIds].every((x) => coarseIds.has(x)),
     `粗 ${coarseIds.size} / 细 ${fineIds.size}`)
   check(`${tag} 指向细粒度`, c.includes(`./${fine}`))
-  check(`${tag} 不含探针、封顶段与封顶箭头`, !/^\| PB\d /m.test(c) && !/^\*\*封顶规则\*\*/m.test(c) && !/→\s*\**(?:覆盖面|约束力)/.test(c))
+  check(`${tag} 不含探针、封顶段与封顶箭头`, !/^\| PB\d /m.test(c) && !gloss('^\\*\\*封顶规则~\\*\\*', 'm').test(c) && !/→\s*\**(?:覆盖面|约束力)/.test(c))
 
   // 粗细两份只允许名字 + 一行概述的重复；长句整行出现在两边说明复制了段落
   const fineLines = new Set(rd(fine).split('\n').map((l) => l.trim()))
