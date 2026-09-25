@@ -1,8 +1,8 @@
-# 10 · 渐进披露的完整管线：静态分层 + 运行时按需注入、组装、回收
+# 11 · 渐进披露的完整管线：静态分层 + 运行时按需注入、组装、回收
 
 ## 先纠正一个误解
 
-前面 [`02`](./02-legibility-ownership.md)、[`05`](./05-skills-as-procedural-memory.md)、[`09`](./09-agents-entry-chain.md) 讲的渐进披露，其实只覆盖了**静态/仓库层**——文档怎么分层、AGENTS.md 骨架怎么搭、Skills 怎么按需加载（静态层在语料层的完整设计见 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)）。但 DSH 的渐进披露不是「把文档写短」这一件事，它是一条**贯穿五层的管线**——运行时的根入口文档消费见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)：
+前面 [`04`](./04-legibility-ownership.md)、[`09`](./09-skills-as-procedural-memory.md)、[`08`](./08-agents-entry-chain.md) 讲的渐进披露，其实只覆盖了**静态/仓库层**——文档怎么分层、AGENTS.md 骨架怎么搭、Skills 怎么按需加载（静态层在语料层的完整设计见 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)）。但 DSH 的渐进披露不是「把文档写短」这一件事，它是一条**贯穿五层的管线**——运行时的根入口文档消费见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)：
 
 | 层 | 回答的问题 | DSH 机制 | 可迁移性 |
 |---|---|---|---|

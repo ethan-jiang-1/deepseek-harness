@@ -1,6 +1,6 @@
-# 12 · 决策记录（Notes/ADR）：受控演进的设计记忆
+# 02 · 决策记录（Notes/ADR）：受控演进的设计记忆
 
-> **定位：迁移章。** [02](./02-legibility-ownership.md) 讲了「当前事实 vs 决策理由分开」的地基；本页把决策记录本身讲完整：何时值得写、状态怎样变化、取代与归档怎么处理、普通项目的最小模板长什么样。DSH 侧的精确生命周期（状态目录、supersession、冻结归档）由 [Agent Note lifecycle 参考](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md) 拥有。
+> **定位：迁移章。** [02](./04-legibility-ownership.md) 讲了「当前事实 vs 决策理由分开」的地基；本页把决策记录本身讲完整：何时值得写、状态怎样变化、取代与归档怎么处理、普通项目的最小模板长什么样。DSH 侧的精确生命周期（状态目录、supersession、冻结归档）由 [Agent Note lifecycle 参考](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md) 拥有。
 
 ## 何时值得写：一条判据，两个对比例
 

@@ -66,7 +66,7 @@
 > dsh --profile web --dump-config
 > ```
 
-来源：`docs/architecture.md`（profiles and bundles 一节；语料 `repo-harness/06-runtime-inspection.md` 引用）
+来源：`docs/architecture.md`（profiles and bundles 一节；语料 `repo-harness/10-runtime-inspection.md` 引用）
 
 ## 11. 文档只写 current state，不写 change history
 
@@ -172,7 +172,7 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 - `_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md`：Skills 的定位与边界
 - `_agent_ready_development/repo-harness/04-paved-road-and-participation.md`：参与阶梯与归属路由
 - `_agent_ready_development/repo-harness/05-executable-feedback.md`：六层反馈与负例控制
-- `_agent_ready_development/repo-harness/06-runtime-inspection.md`：运行时查询
+- `_agent_ready_development/repo-harness/10-runtime-inspection.md`：运行时查询
 - `_agent_ready_development/repo-harness/07-boundaries-and-costs.md`：优先级清单与三问框架
 - `_digested/harness-idea/00-map.md`：harness 思想入口与核心论点
 - `_digested/harness-idea/02-legibility.md`：静态可读性
