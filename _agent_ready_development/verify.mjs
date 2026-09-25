@@ -21,10 +21,10 @@ const repositoryRoot = dirname(corpusRoot)
 const decoder = new TextDecoder('utf-8', { fatal: true })
 const failures = []
 const forbiddenResearchReferences = [
-  '_architecture_referenced',
   '_change_log',
   '_digested',
   '_faq_on_digested',
+  '_misc',
 ]
 const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:blob|tree)\/46a7f68b0922371ce7144b668b90e377d8e799f4(?:[/?#]|$)/
 

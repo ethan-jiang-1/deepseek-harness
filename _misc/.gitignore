@@ -1,0 +1,3 @@
+# Scratchpad drafts are disposable: only the directory index is tracked.
+/_scratch/*
+!/_scratch/00-index.md

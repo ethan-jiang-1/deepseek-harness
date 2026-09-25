@@ -58,7 +58,7 @@ package 实现
 
 package 的手写源码位于 `src/`，测试位于同级 `tests/`，构建产物位于被忽略的 `lib/`；生成的跨包目录位于 `docs/`，生成脚本位于 `scripts/`。官网不复制一套 Markdown，而由 `website/docs.ts` 把权威文档投影到 VitePress 路由。
 
-`_digested/`、`_faq_on_digested/`、`_architecture_referenced/` 则是研究材料：它们帮助理解产品，但不构成产品 API、workspace package、官方站点或启动组合。把研究结论与产品权威来源分开，后续同步源码时才能知道哪些材料需要重新核验。
+`_digested/`、`_faq_on_digested/`、`_misc/` 则是研究材料：它们帮助理解产品，但不构成产品 API、workspace package、官方站点或启动组合。把研究结论与产品权威来源分开，后续同步源码时才能知道哪些材料需要重新核验。
 
 ## 顶层结构应该怎样记
 
@@ -73,7 +73,7 @@ package 的手写源码位于 `src/`，测试位于同级 `tests/`，构建产�
 | 应用与组合 | `apps/`、`packages/bundle/` | 入口启动组合，bundle 选择默认插件行 |
 | 门禁与跨语言发行 | `benchmarks/`、`python/` | 性能门禁和 Python 驱动/捆绑 runtime |
 | 文档与工程系统 | `docs/`、`website/`、`scripts/`、`.github/`、`.agents/` | 说明、生成、校验、CI、决策记录 |
-| 研究覆盖层 | `_digested/`、`_faq_on_digested/`、`_architecture_referenced/` | `ethan` 分支上的源码消化与二次研究 |
+| 研究覆盖层 | `_digested/`、`_faq_on_digested/`、`_misc/` | `ethan` 分支上的源码消化与二次研究 |
 
 ## `packages/` 应该怎样记
 
