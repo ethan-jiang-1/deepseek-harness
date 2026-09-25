@@ -1,4 +1,4 @@
-// 本目录四份文档的自审脚本。用法：node _audit.mjs
+// 本目录六份文档的自审脚本。用法：node _audit.mjs
 // 覆盖：链接/锚点、维度栏目与探针、封顶规则（正文↔附录、轴与档位写法、附录分组）、
 // 20 卡片栏位与验收红线、例证段数量、外链数量、引号一致性、旧标签残留、文件规范。
 import { readFileSync, existsSync } from 'node:fs'
@@ -78,6 +78,10 @@ for (const [file, level, idPattern, expected] of [
   const missing = ids.filter((id) => required.some((r) => !r.test(dims[id].join('\n'))))
   check(`${tag} 每维栏目齐备`, missing.length === 0, missing.join(' '))
 
+  for (const id of ids) {
+    const nums = dims[id].filter((l) => /^\| PB\d /.test(l)).map((l) => Number(/^\| PB(\d+)/.exec(l)[1]))
+    check(`${id} 探针编号连续唯一`, nums.join(',') === nums.map((_, i) => i + 1).join(','), `实为 ${nums.join(',')}`)
+  }
   const thin = ids.filter((id) => dims[id].filter((l) => /^\| PB\d /.test(l)).length < 5)
   check(`${tag} 每维 ≥5 个探针`, thin.length === 0, thin.join(' '))
 
@@ -87,8 +91,10 @@ for (const [file, level, idPattern, expected] of [
     if (m) (appendix[m[1]] ??= []).push(line)
   }
   const body = Object.fromEntries(ids.map((id) => [id, capsOf(dims[id])]))
-  const mismatch = ids.filter((id) => body[id].length !== (appendix[id] ?? []).length)
-  check(`${tag} 封顶正文=附录（${ids.reduce((n, id) => n + body[id].length, 0)} 条）`, mismatch.length === 0, mismatch.join(' '))
+  const pairs = (ls, kind) => ls.flatMap((l) => [...l.matchAll(kind === 'body' ? /(覆盖面|约束力)封顶\s*([0-3])/g : /(覆盖面|约束力)\s*([0-3])/g)].map((m) => `${m[1]}${m[2]}`)).sort()
+  const mismatch = ids.filter((id) => pairs(body[id], 'body').join(',') !== pairs(appendix[id] ?? [], 'appendix').join(','))
+  check(`${tag} 封顶正文=附录（${ids.reduce((n, id) => n + body[id].length, 0)} 条，轴与档位逐条一致）`, mismatch.length === 0,
+    mismatch.slice(0, 2).map((id) => `${id}: 正文[${pairs(body[id], 'body').join(',')}] 附录[${pairs(appendix[id] ?? [], 'appendix').join(',')}]`).join(' | '))
 
   const axisless = ids.flatMap((id) => body[id].filter((c) => !/(覆盖面|约束力)封顶 [0-3]/.test(c)).map((c) => `${id}: ${c.slice(0, 40)}`))
   check(`${tag} 每条封顶都写明轴与档位`, axisless.length === 0, axisless.slice(0, 3).join(' | '))
@@ -111,17 +117,18 @@ for (const [file, level, idPattern, expected] of [
   const variantToTokens = new Map()
   for (const [tok, name] of Object.entries(canonical)) {
     const parts = name.split('与')
-    const variants = new Set([name.replace(/\s/g, '')])
+    const full = name.replace(/\s/g, '')
+    const variants = new Set([full])
     for (let i = 1; i < parts.length; i++) variants.add(parts.slice(i).join('与').replace(/\s/g, ''))
     for (const v of variants) {
-      if (v.length < 3) continue
+      if (v !== full && v.length < 3) continue
       variantToTokens.set(v, [...(variantToTokens.get(v) ?? []), tok])
     }
   }
   const variants = [...variantToTokens.keys()].sort((a, b) => b.length - a.length)
   const mismatches = []
   for (const f of files) {
-    for (const m of rd(f).matchAll(/\b((?:KN|CP|EV|ST|MT|RT)\d+)[ ]*([\u4e00-\u9fa5]{3,})/g)) {
+    for (const m of rd(f).matchAll(/\b((?:KN|CP|EV|ST|MT|RT)\d+)[\s`*]*([\u4e00-\u9fa5]{2,})/g)) {
       const [, tok, run] = m
       for (const v of variants) {
         if (!run.startsWith(v)) continue
@@ -145,7 +152,16 @@ for (const [file, level, idPattern, expected] of [
     for (let j = i + 1; j < lines.length && !/^#{3,4} /.test(lines[j]); j++) body.push(lines[j])
     cards.push({ id: heading[1], body })
   }
-  check('20 卡片数 = 28', cards.length === 28, `实为 ${cards.length}`)
+  {
+    const want = new Set()
+    for (const f of ['02-evaluate-development-harness-fine.md', '12-evaluate-runtime-harness-fine.md'])
+      for (const m of rd(f).matchAll(/^#{3,4} ((?:KN|CP|EV|ST|MT|RT)\d+) /gm)) want.add(m[1])
+    const got = new Set(cards.map((c) => c.id))
+    const missing = [...want].filter((x) => !got.has(x))
+    const extra = [...got].filter((x) => !want.has(x))
+    check(`20 卡片集合 = 维度集合（${want.size} 维）`, missing.length === 0 && extra.length === 0 && cards.length === got.size,
+      `缺 ${missing.join(',') || '—'} / 多 ${extra.join(',') || '—'}`)
+  }
 
   const sections = (b) => b.filter((l) => /^\*\*/.test(l)).length
   const badShape = cards.filter((c) => (/^(?:KN|CP|EV|ST|MT)/.test(c.id) ? sections(c.body) !== 8 && c.id !== 'KN3' : sections(c.body) < 6))
@@ -200,6 +216,16 @@ for (const [file, level, idPattern, expected] of [
   for (const [f, body] of scan) for (const re of legacyPatterns) {
     const m = body.match(new RegExp(re.source, 'g'))
     if (m) legacy.push(`${f}: ${[...new Set(m)].join(',')}`)
+  }
+  const knownPrefixes = new Set(['KN','CP','EV','ST','MT','RT','PB','LX','EL','IG','MG','AQ','FAQ','ISO','UTF','SHA','HTTP','JSON','GB','MB','KB','TB','MS','DSH'])
+  const unknown = new Map()
+  for (const [, body] of scan) for (const m of body.matchAll(/\b([A-Z]{2,4})(\d{1,3})\b/g)) {
+    if (!knownPrefixes.has(m[1])) unknown.set(m[1], (unknown.get(m[1]) ?? 0) + 1)
+  }
+  check('正文 token 前缀都已登记', unknown.size === 0, [...unknown].map(([k, v]) => `${k}×${v}`).join(', '))
+  for (const f of ['01-evaluate-development-harness-coarse.md', '11-evaluate-runtime-harness.md']) {
+    const body = rd(f)
+    check(`${f.slice(0,2)} 粗粒度不含探针与封顶段`, !/^\| PB\d /m.test(body) && !/^\*\*封顶规则\*\*/m.test(body))
   }
   check('无旧标签残留', staleWords.length === 0 && legacy.length === 0, [...staleWords, ...legacy].slice(0, 3).join(' | '))
 
@@ -262,7 +288,8 @@ for (const [file, level, idPattern, expected] of [
   check('文内「第 N 节」都存在', secRefBad.length === 0, secRefBad.slice(0, 3).join(' | '))
 
   const crossBad = []
-  for (const [n, f] of Object.entries(docNum)) {
+  const crossDocs = { ...docNum, RE: 'README.md' }
+  for (const [n, f] of Object.entries(crossDocs)) {
     for (const m of rd(f).matchAll(/\b(0[12]|1[12]|20) (§|第 )(\d+)/g)) {
       const target = m[1], num = Number(m[3])
       if (!secs[target].includes(num)) crossBad.push(`${n} → ${target} §${num}`)
@@ -278,6 +305,23 @@ for (const [file, level, idPattern, expected] of [
     }
   }
   check('附录引用都指向存在的附录', appBad.length === 0, appBad.slice(0, 3).join(' | '))
+}
+
+// —— 粗粒度文档：稳定层必须具备的导航与档位说明 ——
+for (const [coarse, fine, dimCount] of [
+  ['01-evaluate-development-harness-coarse.md', '02-evaluate-development-harness-fine.md', 17],
+  ['11-evaluate-runtime-harness.md', '12-evaluate-runtime-harness-fine.md', 11],
+]) {
+  const c = rd(coarse), tag = coarse.slice(0, 2)
+  check(`${tag} 含两轴与成熟度档`, /\*\*覆盖面\*\*/.test(c) && /\*\*约束力\*\*/.test(c) && /MG0/.test(c))
+  const rows = (c.match(/^\| `(?:KN|CP|EV|ST|MT|RT)\d+` /gm) ?? []).length
+  check(`${tag} 粗判一览 ${dimCount} 行`, rows === dimCount, `实为 ${rows}`)
+  const fineIds = new Set([...rd(fine).matchAll(/^#{3,4} ((?:KN|CP|EV|ST|MT|RT)\d+) /gm)].map((m) => m[1]))
+  const coarseIds = new Set([...c.matchAll(/^\| `((?:KN|CP|EV|ST|MT|RT)\d+)` /gm)].map((m) => m[1]))
+  check(`${tag} 粗判一览 = 细粒度维度集合`, fineIds.size === coarseIds.size && [...fineIds].every((x) => coarseIds.has(x)),
+    `粗 ${coarseIds.size} / 细 ${fineIds.size}`)
+  check(`${tag} 指向细粒度`, c.includes(`./${fine}`))
+  check(`${tag} 不含探针与封顶段`, !/^\| PB\d /m.test(c) && !/^\*\*封顶规则\*\*/m.test(c))
 }
 
 console.log(fails ? `\n${fails} 项未通过` : '\n全部通过')
