@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="560" viewBox="0 0 1150 560" role="img" aria-labelledby="title desc">
+  <title id="title">主例的证据地图</title>
+  <desc id="desc">从重建的任务描述走到源码、当前文档、行为证据和 PR，每一步标注已在提交观察、教学重建或需查 GitHub 的证据等级。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#4b5563"/>
+    </marker>
+  </defs>
+  <rect width="1150" height="560" fill="#ffffff"/>
+  <text x="575" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#172033">一笔真实变更的证据地图</text>
+  <text x="575" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#5f6b7a">模型选择器显示 model ID（提交 5124a2a310，PR #5004）</text>
+
+  <g font-family="Arial, sans-serif">
+    <rect x="40" y="110" width="330" height="120" rx="8" fill="#fef9ec" stroke="#d99939" stroke-width="1.5"/>
+    <text x="60" y="140" font-size="16" font-weight="700" fill="#744408">任务描述（教学重建）</text>
+    <text x="60" y="166" font-size="13" fill="#475569">症状：同名模型在选择器里无法区分</text>
+    <text x="60" y="188" font-size="13" fill="#475569">预期：每行显示 model ID，悬停看名称</text>
+    <rect x="60" y="202" width="96" height="18" rx="9" fill="#f4e3c0"/>
+    <text x="108" y="215" text-anchor="middle" font-size="11" fill="#744408">教学重建</text>
+
+    <rect x="430" y="110" width="330" height="120" rx="8" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+    <text x="450" y="140" font-size="16" font-weight="700" fill="#173f67">源码 + 当前文档</text>
+    <text x="450" y="166" font-size="13" fill="#475569">ModelListEditor.tsx · ModelsSection.module.css</text>
+    <text x="450" y="188" font-size="13" fill="#475569">README.md / README.zh.md + i18n 配对</text>
+    <rect x="450" y="202" width="110" height="18" rx="9" fill="#d7e7f7"/>
+    <text x="505" y="215" text-anchor="middle" font-size="11" fill="#173f67">已在提交观察</text>
+
+    <rect x="820" y="110" width="290" height="120" rx="8" fill="#edf8f1" stroke="#55a36f" stroke-width="1.5"/>
+    <text x="840" y="140" font-size="16" font-weight="700" fill="#1f6139">行为证据</text>
+    <text x="840" y="166" font-size="13" fill="#475569">组件测试（断言反转）</text>
+    <text x="840" y="188" font-size="13" fill="#475569">Web e2e（真实浏览器）</text>
+    <rect x="840" y="202" width="110" height="18" rx="9" fill="#d8efe1"/>
+    <text x="895" y="215" text-anchor="middle" font-size="11" fill="#1f6139">已在提交观察</text>
+
+    <path d="M370 170 H425" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M760 170 H815" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="40" y="290" width="500" height="180" rx="8" fill="#fbfcfe" stroke="#b7c4d4"/>
+    <text x="60" y="320" font-size="15" font-weight="700" fill="#28384d">同一个提交（5124a2a310）</text>
+    <text x="60" y="348" font-size="13" fill="#526175">7 个文件 · +15 / −14</text>
+    <text x="60" y="374" font-size="13" fill="#526175">实现、当前文档、行为证据一起交付；</text>
+    <text x="60" y="398" font-size="13" fill="#526175">双语 README 相等性由 i18n hash 配对钉住。</text>
+    <text x="60" y="428" font-size="13" fill="#8c5b1d">提交里没有 Agent Note —— 局部呈现豁免。</text>
+
+    <rect x="600" y="290" width="510" height="180" rx="8" fill="#fbfcfe" stroke="#b7c4d4"/>
+    <text x="620" y="320" font-size="15" font-weight="700" fill="#28384d">git tree 之外</text>
+    <text x="620" y="348" font-size="13" fill="#526175">PR #5004 的页面、CI 结果、review、批准</text>
+    <text x="620" y="372" font-size="13" fill="#526175">当时的 Issue 与任务上下文</text>
+    <text x="620" y="396" font-size="13" fill="#526175">作者实际运行过的命令</text>
+    <rect x="620" y="412" width="110" height="18" rx="9" fill="#e9edf3"/>
+    <text x="675" y="425" text-anchor="middle" font-size="11" fill="#3d4a5c">需查 GitHub</text>
+
+    <path d="M290 230 V285" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M965 230 V285" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+  </g>
+</svg>

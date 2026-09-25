@@ -7,8 +7,8 @@
     </marker>
   </defs>
   <rect width="1120" height="520" fill="#ffffff"/>
-  <text x="560" y="44" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#172033">一次普通变更：从意图到合并</text>
-  <text x="560" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#5f6b7a">先说明结果和决定，再让实现通过 GitHub 协作流进入主分支</text>
+  <text x="560" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#172033">一次普通变更：从意图到合并</text>
+  <text x="560" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#5f6b7a">主例：模型选择器显示 model ID（提交 5124a2a310，PR #5004）</text>
 
   <g font-family="Arial, sans-serif">
     <rect x="38" y="128" width="180" height="144" rx="8" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
@@ -66,6 +66,6 @@
     <text x="710" y="384" font-size="13" fill="#526175">贯穿步骤 3–5：发布分支、创建 PR、</text>
     <text x="710" y="406" font-size="13" fill="#526175">运行 CI、完成 review，再 merge。</text>
 
-    <text x="560" y="474" text-anchor="middle" font-size="13" fill="#6b7280">Issue 和 Plan 按条件出现；非平凡变更必须有 owning Agent Note。</text>
+    <text x="560" y="474" text-anchor="middle" font-size="13" fill="#6b7280">Issue 和 Plan 按条件出现；持久决定理由变更须有 owning Agent Note（机械/局部编辑豁免）。</text>
   </g>
 </svg>
