@@ -64,6 +64,6 @@ DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩�
 
 - **五问的完整版**（含「模型可见 ⟺ 落日志」的横切义务）：问 4 是横切检查不是升级判据——新增模型可见事实就必须同步扩展事件并从日志可回放，无论改动落在哪一层；细则见 [`静与动`](./04-static-vs-dynamic.md)。
 - **生命周期单一所有权**：注册 tool、service、listener 走 `ctx.effect()` / `ctx.on()`，插件卸载走同一条清理路径——「谁注册、谁负责撤销」这条纪律几乎总是适用，不需要插件架构也成立。
-- **capability seam 是完整能力不是一个接口文件**（三角色：Definition + Provider + Consumer）：只有确实需要替换能力时才进 L2；为局部工具制造多包结构是照搬 DSH 最常见的浪费，见 [`迁移清单`](./08-transfer-playbook.md)。
+- **capability seam 是完整能力不是一个接口文件**（三角色：Definition + Provider + Consumer）：只有确实需要替换能力时才进 L2；为局部工具制造多包结构是照搬 DSH 最常见的浪费，见 [`迁移清单`](./10-transfer-playbook.md)。
 
 本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「05 · 正确路径」一节）——按需核对，不读不影响理解。

@@ -25,20 +25,22 @@
 
 | 篇 | 原话（出处文件） |
 |---|---|
-| 07 | This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions.（quality-gates Note） |
-| 07 | Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. …（同上） |
-| 07 | Match evidence to the surface … Never default to the full suite.（根 `AGENTS.md`，全文版） |
-| 07 | A guard only guards if the regression fails it. … introduce the regression, watch red, revert.（`docs/testing.md`） |
-| 08 | This skill is guidance, not a complete checklist. …（`dsh-code-review/SKILL.md`） |
-| 08 | There is no privileged core to patch … registrations are effects that unwind.（`docs/architecture.md`） |
-| 08 | The vm prevents accidental global pollution; … not a security boundary.（cordis toolset Note） |
-| 09 | `CLAUDE.md` symlinks `AGENTS.md` … edit the real file.（根 `AGENTS.md`） |
-| 09 | Rendering keeps the most specific files first … never exceed `maxBytes`.（`agent-instructions/README.md`） |
-| 10 | Skills: Reusable workflows and specialized decision standards.（`docs/AGENTS.md` tier 表） |
-| 10 | This catalog contains summaries only; do not infer or follow …（`tool-skill/README.md`） |
-| 11 | To see the tree your machine boots: `dsh --profile web --dump-config`.（`docs/architecture.md`） |
-| 11 | The vm … is not a security boundary.（cordis toolset Note） |
-| 12 | Spawn supplies no history; fork supplies its balanced seed.（`subagent-in-process-driver/README.md`） |
+| 07 | `CLAUDE.md` symlinks `AGENTS.md` … edit the real file.（根 `AGENTS.md`） |
+| 07 | Rendering keeps the most specific files first … never exceed `maxBytes`.（`agent-instructions/README.md`） |
+| 08 | 拦执行链挂事件：Intercept a request, tool, or turn → use its `agent/*` or `tools/*` event.（`docs/architecture.md`） |
+| 08 | 工具实现的字段永不进模型请求：`output`/`execute`/… must never leak into a model request.（`docs/subsystems/tools.md`） |
+| 09 | This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions.（quality-gates Note） |
+| 09 | Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. …（同上） |
+| 09 | Match evidence to the surface … Never default to the full suite.（根 `AGENTS.md`，全文版） |
+| 09 | A guard only guards if the regression fails it. … introduce the regression, watch red, revert.（`docs/testing.md`） |
+| 10 | This skill is guidance, not a complete checklist. …（`dsh-code-review/SKILL.md`） |
+| 10 | There is no privileged core to patch … registrations are effects that unwind.（`docs/architecture.md`） |
+| 10 | The vm prevents accidental global pollution; … not a security boundary.（cordis toolset Note） |
+| 11 | Skills: Reusable workflows and specialized decision standards.（`docs/AGENTS.md` tier 表） |
+| 11 | This catalog contains summaries only; do not infer or follow …（`tool-skill/README.md`） |
+| 12 | To see the tree your machine boots: `dsh --profile web --dump-config`.（`docs/architecture.md`） |
+| 12 | The vm … is not a security boundary.（cordis toolset Note） |
+| 13 | Spawn supplies no history; fork supplies its balanced seed.（`subagent-in-process-driver/README.md`） |
 
 各句的完整原文与上下文见各篇正文（每句都在「DSH 怎么应对/怎么做」节内）。
 
@@ -96,15 +98,30 @@
 
 ## 06 · 落地总纲
 
-无独立上游证据——Phase 划分与验收标准是本 FAQ 的施工综合，不是 DSH 的既有制度。各 Phase 引用的 DSH 机制，上游出处按站查：Phase 0.5 → [01 变更闭环](#01--变更闭环)；Phase 1/2 → [02 归属](#02--归属)；Phase 3 → [05 正确路径](#05--正确路径)；Phase 4 → [07 可执行反馈](#07--可执行反馈)；Phase 5 → [10 Skills](#10--skills)；Phase 6 → [11 运行时查询](#11--运行时查询)。
+无独立上游证据——Phase 划分与验收标准是本 FAQ 的施工综合，不是 DSH 的既有制度。各 Phase 引用的 DSH 机制，上游出处按站查：Phase 0.5 → [01 变更闭环](#01--变更闭环)；Phase 1/2 → [02 归属](#02--归属)；Phase 3 → [05 正确路径](#05--正确路径)；Phase 4 → [09 可执行反馈](#09--可执行反馈)；Phase 5 → [11 Skills](#11--skills)；Phase 6 → [12 运行时查询](#12--运行时查询)。
 
-## 07 · 可执行反馈
+## 07 · 入口链
+
+- [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)：standing orders + 布局 + 命令的入口本体；`CLAUDE.md` symlink 及「edit the real file」的规则原文。
+- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)：tier taxonomy 表（根/子树 AGENTS.md 与包 README 的分工）与字数预算。
+- [`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)：会话态加载的机制——touch-driven、`maxBytes` 预算、per-directory 去重、digest 抑制。
+
+（文件态设计的兄弟篇是 FAQ 04，会话态机制是 FAQ 05——家族互链，不是证据。）
+
+## 08 · 执行链
+
+- [docs/tool-execution-pipeline.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-execution-pipeline.md)：官方管线图——pre-execute/guards/approval/execute/fs 意图门/post-execute/归一化/finalize/tools/result 的完整顺序（`gen-doc-graphs.ts` 生成）。
+- [docs/subsystems/tools.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/tools.md)：`ToolDefinition` 完整契约——模型可见面 allowlist、`execute()` 的 canonical value 与取消纪律、`ToolOutputDefinition` 强制声明。
+- [docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)：「Intercept a request, tool, or turn → use its `agent/*` or `tools/*` event」——拦执行链挂事件的归属规则。
+- [docs/agent-lifecycle.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/agent-lifecycle.md)：agent 生命周期时序图——执行链在整轮中的位置。
+
+## 09 · 可执行反馈
 
 - [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/testing.md)：test tiers、真实入口、negative control、snapshot 义务。
 - [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据，而不是固定跑全套。
 - [`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/scripts/run-gates.ts)：仓库检查逻辑的聚合入口。
 
-## 08 · 迁移清单
+## 10 · 迁移清单
 
 优先级排序、三问框架与四个边界是语料/FAQ 层的综合归纳，不是 DSH 的成文制度；四边界引用的 DSH 事实，上游一手出处：
 
@@ -113,26 +130,18 @@
 - [`.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)：运行时查询不是安全边界（边界 4 的原始表述）。
 - [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)：文档预算与 one home——「外置有维护成本」的 DSH 侧控制手段。
 
-## 09 · 入口链
-
-- [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)：standing orders + 布局 + 命令的入口本体；`CLAUDE.md` symlink 及「edit the real file」的规则原文。
-- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)：tier taxonomy 表（根/子树 AGENTS.md 与包 README 的分工）与字数预算。
-- [`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)：会话态加载的机制——touch-driven、`maxBytes` 预算、per-directory 去重、digest 抑制。
-
-（文件态设计的兄弟篇是 FAQ 04，会话态机制是 FAQ 05——家族互链，不是证据。）
-
-## 10 · Skills
+## 11 · Skills
 
 - [`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-code-review/SKILL.md)：Skill 作为 guidance、语义 review 输入和 finding 输出的实例。
 - [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据的实例。
 
-## 11 · 运行时查询
+## 12 · 运行时查询
 
 - [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)：ordered config layers 与 `--dump-config`。
 - [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-catalog.md)：从源码生成的工具 schema 与 opt-in 说明。
 - [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/capability-seams.md)：生成的 Service Definition / Provider / Consumer 关系索引。
 
-## 12 · 披露管线
+## 13 · 披露管线
 
 - [`docs/subsystems/system-prompt.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/system-prompt.md)：`PromptSection` / `PromptContext`（cache-safe，变化才 log）/ `ctx.systemPrompt.tools` / `suppressRuntimeContext`。
 - [`docs/subsystems/skills.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/skills.md)：`SkillCatalogSnapshot` summary-only（name + description ≤500）、body on-demand。
@@ -143,6 +152,6 @@
 - [`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md)：`ctx.tools.restrict()` 的 ToolSearch / progressive disclosure 定位。
 - [`packages/subagent/subagent-in-process-driver/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/subagent/subagent-in-process-driver/README.md)：spawn 不带父历史、fork 只带 balanced seed。
 
-## 13 · 问题框架
+## 14 · 问题框架
 
 - DSH [`quality-gates` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：仓库以 coding agent 为主、机械门禁优于 prose 约定的一手因果自述。
