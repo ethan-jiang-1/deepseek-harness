@@ -44,8 +44,8 @@ DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩�
 |---|---|---|---|
 | L0 组合 | 配置 / profile / patch | 换 provider、改参数 | 配置表达不了新行为 |
 | L1 扩展点 | tool / command / listener | 新增工具、命令、拦截 | 需要一项可替换的完整能力 |
-| L2 capability seam | Service Definition + Provider + Consumer | 新 filesystem / LLM / sandbox 后端 | 现有扩展点和 seam 都表达不了 loop 驱动 |
-| L3 core loop | 修改 `agent-loop` | 改变默认循环驱动 | 现有扩展点和 seam 都表达不了所需行为 |
+| L2 capability seam | Service Definition + Provider + Consumer | 新 filesystem / LLM / sandbox 后端 | 单点扩展表达不了：需要多个可替换实现由稳定接口消费 |
+| L3 core loop | 修改 `agent-loop` | 改变默认循环驱动 | 扩展点和 seam 都表达不了所需的行为驱动 |
 
 关键纪律：**阶梯不是价值排序。** L0 的部署替换是完整能力，L3 也不「更先进」，只是影响半径最大、同步义务最多。乱发挥的典型形态，就是「本可用 L0/L1 表达，却一路爬到 L3 改核心」。
 
@@ -57,7 +57,6 @@ DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩�
 
 **学走形的检查**：两种典型走形——归属表变成审批流程（「申请→批准→实施」），偏离了它「降低判断成本」的本意；或阶梯变成等级制（L3 比 L0「高级」），忘了它只按影响半径分层，不按价值排序。
 
-## 四级参与阶梯（一个可迁移的学习模型）
 
 不同改动半径有不同首选入口。下面的 participation ladder 是 repo-harness 语料从 DSH 归纳出的学习模型，不是 DSH 的官方分级名称，但分级逻辑可以原样搬到任何项目：
 
