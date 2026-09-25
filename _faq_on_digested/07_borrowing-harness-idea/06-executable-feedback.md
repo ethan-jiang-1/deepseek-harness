@@ -1,10 +1,10 @@
-# 04 · 可执行反馈（解决「乱发挥」的做错被抓住）
+# 06 · 可执行反馈（解决「乱发挥」的做错被抓住）
 
 > **状态：跨状态（反馈时点光谱）** —— 六层反馈的轴是「错误在哪里被发现」：编译/load/snapshot 在构建与提交期（静态端），invariant 在活系统中（运行时端）；它不是文档的静态/动态轴。
 
 ## 规则只可读，乱发挥就得等 review 才被抓
 
-正确路径只能降低「改错地方」的概率，拦不住「改错了还自认为对」。DSH 的解法是把「可机械判断的规则」接到真实执行路径，让错误在离来源最近的地方出现。这是本 FAQ 里**「不乱发挥」一侧杠杆最高、收益最直接**的一条（在 [`08`](./08-step-by-step-guide.md) 的实施顺序里，它排在「立规矩的 owner」之后：Phase 1「收益最高」，Phase 4「回报第二高」）。
+正确路径只能降低「改错地方」的概率，拦不住「改错了还自认为对」。DSH 的解法是把「可机械判断的规则」接到真实执行路径，让错误在离来源最近的地方出现。这是本 FAQ 里**「不乱发挥」一侧杠杆最高、收益最直接**的一条（在 [`03`](./03-step-by-step-guide.md) 的实施顺序里，它排在「立规矩的 owner」之后：Phase 1「收益最高」，Phase 4「回报第二高」）。
 
 > Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. CI invokes the exhaustive set, while Git hooks reserve their latency budget for cheap local defects:
 
@@ -19,7 +19,7 @@
 | 运行时关系 | package invariant | 活系统中的 owner relationship 持续成立 | 没有可观察关系的纯函数性质 |
 | 语义判断 | code review、用户验收 | 意图、架构、风险是否对齐 | 每个机械细节都已执行 |
 
-关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 为绿不代表产品工作，snapshot 为绿不代表 API 合理，review 也不该手工重复已经由绿色 gate 精确拒绝的格式问题。这六层服务于交付时刻——它们围绕的是「一笔变更的证据是否与声称对齐」，DSH 有一笔真实变更的实测演示（断言反转的红灯对照、无断言行为的缺口如实标注），见 [SDLC Tutorial 04](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/04-implementation-and-evidence.md)；变更闭环的完整迁移表见 [`11-sdlc-change-loop.md`](./11-sdlc-change-loop.md)。
+关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 为绿不代表产品工作，snapshot 为绿不代表 API 合理，review 也不该手工重复已经由绿色 gate 精确拒绝的格式问题。这六层服务于交付时刻——它们围绕的是「一笔变更的证据是否与声称对齐」，DSH 有一笔真实变更的实测演示（断言反转的红灯对照、无断言行为的缺口如实标注），见 [SDLC Tutorial 04](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/04-implementation-and-evidence.md)；变更闭环的完整迁移表见 [`01-sdlc-change-loop.md`](./01-sdlc-change-loop.md)。
 
 ## 负例控制：证明检查真的会失败
 

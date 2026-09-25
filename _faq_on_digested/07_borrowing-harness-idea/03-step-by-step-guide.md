@@ -1,12 +1,12 @@
-# 08 · 一步一步怎么做：把普通项目改造成「agent 不糊涂、不乱发挥」
+# 03 · 一步一步怎么做：把普通项目改造成「agent 不糊涂、不乱发挥」
 
 ## 这一篇怎么用
 
-前面七篇都在讲「是什么、为什么、可迁移什么」。这一篇把它们压成一条**可执行的落地顺序**：每一步说清楚**做什么、产出什么、怎么验收（怎么证明这一步真做对了）**，并标注它对应「不糊涂」还是「不乱发挥」。
+其余各篇讲「是什么、为什么、可迁移什么」；这一篇把它们压成一条**可执行的落地顺序**：每一步说清楚**做什么、产出什么、怎么验收（怎么证明这一步真做对了）**，并标注它对应「不糊涂」还是「不乱发挥」。
 
 原则只有一条：**按收益/成本从高到低做，每一步都能独立验收，别跳到第 5 级架构。** 对一个普通项目，做完 Phase 0–4 就覆盖了「不糊涂 + 不乱发挥」的主要来源；Phase 5–6 按需。
 
-> 顺序本身来自 [`07-transfer-playbook.md`](./07-transfer-playbook.md) 的优先级清单，这里把它展开成动作。
+> 顺序本身来自 [`07-transfer-playbook.md`](./07-transfer-playbook.md) 的优先级清单，这里把它展开成动作。每个 Phase 做完后，用 Phase 0 的三问打分 + Phase 0.5 的垂直切片复测——详见文末「收尾」。
 
 ---
 
@@ -56,7 +56,7 @@
 - 根文件里没有教程、没有历史故事、没有该 link 出去的细节；
 - `CLAUDE.md` 是 symlink 而非副本；子树 `AGENTS.md` 只出现在「有专属常驻规则」处，没有为放而放。
 
-**对应**：不糊涂（知识外置 + 一个事实一个 owner）。入口链的完整骨架见 [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)（内容是 02 的深化，编号靠后）。
+**对应**：不糊涂（知识外置 + 一个事实一个 owner）。入口链的完整骨架见 [`08-agents-entry-chain.md`](./08-agents-entry-chain.md)（04 的进阶深化）。
 
 ---
 
@@ -152,7 +152,7 @@
 - 故意引入一个坏链接 → 脚本变红 → 还原；
 - 文档里没有「以当前 checkout 为准」这类会把基线悄悄滑走的表述。
 
-**对应**：这是本 FAQ 所有章节的自我适用——[`04`](./04-executable-feedback.md) 的「机器检查兜底 + 负例控制」先用在维护这套文档自己身上；上游合入后按 `_digested/_change_log/` 复核，见 [`research.md`](./research.md) 的说明。
+**对应**：这是本 FAQ 所有章节的自我适用——[`06`](./06-executable-feedback.md) 的「机器检查兜底 + 负例控制」先用在维护这套文档自己身上；上游合入后按 `_digested/_change_log/` 复核，见 [`research.md`](./research.md) 的说明。
 
 ---
 
@@ -181,5 +181,5 @@
 ## 证据入口
 
 - 顺序与优先级：本目录 [`07-transfer-playbook.md`](./07-transfer-playbook.md)。
-- 每个 Phase 的机制依据，回看对应章节：[`02`](./02-legibility-ownership.md)、[`03`](./03-paved-road-and-ladder.md)、[`04`](./04-executable-feedback.md)、[`05`](./05-skills-as-procedural-memory.md)、[`06`](./06-runtime-inspection.md)；Phase 1 的入口链骨架见 [`09`](./09-agents-entry-chain.md)，长任务上下文回收见 [`10`](./10-progressive-disclosure-pipeline.md)。
+- 每个 Phase 的机制依据，回看对应章节：[`04`](./04-legibility-ownership.md)、[`05`](./05-paved-road-and-ladder.md)、[`06`](./06-executable-feedback.md)、[`09`](./09-skills-as-procedural-memory.md)、[`10`](./10-runtime-inspection.md)；Phase 1 的入口链骨架见 [`08`](./08-agents-entry-chain.md)，长任务上下文回收见 [`11`](./11-progressive-disclosure-pipeline.md)。
 - 语料原始结论： [`_agent_ready_development/repo-harness/07-boundaries-and-costs.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/07-boundaries-and-costs.md)。

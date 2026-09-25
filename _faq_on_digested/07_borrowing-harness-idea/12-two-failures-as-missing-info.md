@@ -1,4 +1,4 @@
-# 01 · 「糊涂」和「乱发挥」缺的到底是什么
+# 12 · 「糊涂」和「乱发挥」缺的到底是什么
 
 ## 先把症状翻译成缺口
 
@@ -45,14 +45,14 @@ DSH 没有把六类信息混写在一份总览里，而是**一个问题一个 o
 
 ## 「不糊涂 / 不乱发挥」各由哪几篇回答
 
-- **不糊涂** → [`02-legibility-ownership.md`](./02-legibility-ownership.md)（知识归属：缺口 1、2、3）、[`09-agents-entry-chain.md`](./09-agents-entry-chain.md)（AGENTS.md 入口链：缺口 1 的骨架）、[`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)（披露管线的静态与注入层）、[`05-skills-as-procedural-memory.md`](./05-skills-as-procedural-memory.md)（按需加载）、[`06-runtime-inspection.md`](./06-runtime-inspection.md)（问实际状态：缺口 2 的运行时版）。
-- **不乱发挥** → [`03-paved-road-and-ladder.md`](./03-paved-road-and-ladder.md)（改哪里：缺口 4）、[`04-executable-feedback.md`](./04-executable-feedback.md)（早失败：缺口 6）、[`05-skills-as-procedural-memory.md`](./05-skills-as-procedural-memory.md)（流程固化：缺口 5）、[`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)（可见集收缩 + 子代理隔离）。
+- **不糊涂** → [`04-legibility-ownership.md`](./04-legibility-ownership.md)（知识归属：缺口 1、2、3）、[`08-agents-entry-chain.md`](./08-agents-entry-chain.md)（AGENTS.md 入口链：缺口 1 的骨架）、[`11-progressive-disclosure-pipeline.md`](./11-progressive-disclosure-pipeline.md)（披露管线的静态与注入层）、[`09-skills-as-procedural-memory.md`](./09-skills-as-procedural-memory.md)（按需加载）、[`10-runtime-inspection.md`](./10-runtime-inspection.md)（问实际状态：缺口 2 的运行时版）。
+- **不乱发挥** → [`05-paved-road-and-ladder.md`](./05-paved-road-and-ladder.md)（改哪里：缺口 4）、[`06-executable-feedback.md`](./06-executable-feedback.md)（早失败：缺口 6）、[`09-skills-as-procedural-memory.md`](./09-skills-as-procedural-memory.md)（流程固化：缺口 5）、[`11-progressive-disclosure-pipeline.md`](./11-progressive-disclosure-pipeline.md)（可见集收缩 + 子代理隔离）。
 
 这个两分不是 DSH 的官方术语，而是本 FAQ 为了「可迁移」做的归纳：**可读性解决「知不知道」，正确路径 + 反馈解决「会不会做错、做错了有没有人拦」。** 部分章节（05、10）同时服务两侧，见各章内说明。
 
 ## 证据入口
 
-- [`_agent_ready_development/repo-harness/00-index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/00-index.md)：语料的五类信息缺口与五类 owner 总表（本 FAQ 在 01 正文里扩成六缺口：把「改动落在哪里」单列，与语料的「为什么这样设计」并齐）。
+- [`_agent_ready_development/repo-harness/00-index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/00-index.md)：语料的五类信息缺口与五类 owner 总表（本页正文扩成六缺口：把「改动落在哪里」单列，与语料的「为什么这样设计」并齐）。
 - [`_agent_ready_development/repo-harness/01-follow-a-fresh-agent.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/01-follow-a-fresh-agent.md)：fresh agent 连续回答六个问题的完整闭环。
 - [`_digested/harness-idea/00-map.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/00-map.md)：参与知识「外置 / 自带」两分与核心论点。
 - DSH [`quality-gates` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：仓库以 coding agent 为主、机械门禁优于 prose 约定的一手因果自述。
