@@ -1,6 +1,6 @@
-# 05 · 正确路径 + 参与阶梯（解决「乱发挥」的改哪里）
+# 正确路径与参与阶梯：改哪里
 
-> **状态：跨状态**，但它的静态/动态与文档轴（04/05）不是同一把尺：归属表与 L0–L3 阶梯是**代码面的静态地图**（新行为该接哪里），「五问」是**动态判定顺序**（面对新行为依次问）。
+> **道 · 正确路径。** 本页拥有「改哪里」的归属判断：归属表（代码面的静态地图）、L0–L3 参与阶梯（新行为该接哪层）与五问（面对新行为依次问）。
 
 ## 读懂了还不够，还得知道从哪里改
 
@@ -63,7 +63,7 @@ DSH 把「改哪里」从一个仓库经验问题变成一个可核对的设计�
 
 ## Seam 是完整能力，不是一个接口文件
 
-DSH 把 capability seam 定义为三角色——Service Definition、一个或多个 Provider、一个或多个 Consumer；Definition 服务全部当前 Consumer，Consumer 依赖 Definition 而非具体 Provider。这个分工让「换 provider」成为部署选择。**但要警惕过度迁移**：只有当变化确实需要替换能力时才进 L2；为局部工具制造多包结构，是普通项目照搬 DSH 时最常见的浪费（详见 [`07-transfer-playbook.md`](./07-transfer-playbook.md)）。
+DSH 把 capability seam 定义为三角色——Service Definition、一个或多个 Provider、一个或多个 Consumer；Definition 服务全部当前 Consumer，Consumer 依赖 Definition 而非具体 Provider。这个分工让「换 provider」成为部署选择。**但要警惕过度迁移**：只有当变化确实需要替换能力时才进 L2；为局部工具制造多包结构，是普通项目照搬 DSH 时最常见的浪费（详见 [`08-transfer-playbook.md`](./08-transfer-playbook.md)）。
 
 ## 可迁移要点
 

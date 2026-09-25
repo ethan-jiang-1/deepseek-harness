@@ -1,4 +1,6 @@
-# 07 · 可迁移优先级、三问框架与边界成本
+# 迁移优先级与边界：什么先搬、什么别搬
+
+> **术 · 迁移清单。** 优先级排序、三问框架、四个不能混淆的边界。做完 [`落地总纲`](./06-step-by-step-guide.md) 的头几个 Phase 后回来核对这张清单，防止学走形。
 
 ## 先排序：什么值得先搬
 
@@ -13,7 +15,7 @@
 | 4 | 用 Skills 保存需要上下文判断的工作流程 | 让复杂任务不依赖个人记忆 |
 | 5 | 在确有动态组合压力时引入可查询 plugin graph 和完整 seams | 让架构成本与真实需求匹配 |
 
-第 0 项是本 FAQ 补充的（垂直切片思想），第 1–5 项来自语料清单。注意第 5 项被刻意排在最后：**插件图、seam 三角色、完整运行时 inspect 是「组合压力」的产物，不是普通项目的默认项。** 第 0–3 项几乎零架构依赖，是大多数项目真正的第一桶金。垂直切片的完整操作见 [`03`](./03-step-by-step-guide.md) Phase 0.5，DSH 的标准演示见 [SDLC Tutorial 的证据地图](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/01-follow-a-change.md)。
+第 0 项是本 FAQ 补充的（垂直切片思想），第 1–5 项来自语料清单。注意第 5 项被刻意排在最后：**插件图、seam 三角色、完整运行时 inspect 是「组合压力」的产物，不是普通项目的默认项。** 第 0–3 项几乎零架构依赖，是大多数项目真正的第一桶金。垂直切片的完整操作见 [`落地总纲`](./06-step-by-step-guide.md) Phase 0.5，DSH 的标准演示见 [SDLC Tutorial 的证据地图](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/01-follow-a-change.md)。
 
 ## 三个问题检验任何一个 Development Harness
 
@@ -48,7 +50,7 @@
 2. 用三问框架给自己的项目打分，找出「卡在知识外置 / 正确路径 / 反馈延迟」哪一档。
 3. 每引入一样外置知识，就问一句「谁维护它、漂移了谁发现」。
 4. 守住四个边界：可读≠简单、Skill≠enforcement、清理≠回滚、查询≠沙箱。
-5. 防漂移是持续动作，不是一次性装修：verify 脚本 + 基线钉 + 改事实只改 home（落地清单见 [`03`](./03-step-by-step-guide.md) Phase 7）。
+5. 防漂移是持续动作，不是一次性装修：verify 脚本 + 基线钉 + 改事实只改 home（落地清单见 [`落地总纲`](./06-step-by-step-guide.md) Phase 7）。
 
 ## 证据入口
 

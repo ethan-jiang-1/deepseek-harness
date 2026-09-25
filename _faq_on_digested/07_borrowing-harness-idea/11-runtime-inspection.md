@@ -1,6 +1,6 @@
-# 10 · 运行时查询（不靠猜源码）
+# 运行时查询：不靠猜源码
 
-> **状态：动态主导** —— 核心是「问活运行时」，不靠猜源码；对照面「声明面」（生成 catalog）是静态的，属 FAQ 04（root-entry-doc-design）的 L4 穷举索引（见 [`04_root-entry-doc-design/02-tier-routing-and-indexes.md`](../04_root-entry-doc-design/02-tier-routing-and-indexes.md)）。
+> **术 · 运行时查询。** 核心是「问活运行时」，不靠猜源码；对照面「声明面」（生成 catalog）是静态的，属 FAQ 04（root-entry-doc-design）的 L4 穷举索引（见 [`04_root-entry-doc-design/02-tier-routing-and-indexes.md`](../04_root-entry-doc-design/02-tier-routing-and-indexes.md)）。
 
 ## 源码只能说明可能性
 
@@ -38,7 +38,7 @@ DSH 的对策是 inspectability（可检查性）：提供查询入口，让 age
 
 ## 证据入口
 
-- [`_agent_ready_development/repo-harness/10-runtime-inspection.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/10-runtime-inspection.md)：三个查询面、catalog 与活运行时的区别、tool-cordis 的 trust stance。
+- [`_agent_ready_development/repo-harness/11-runtime-inspection.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/11-runtime-inspection.md)：三个查询面、catalog 与活运行时的区别、tool-cordis 的 trust stance。
 - [`_digested/harness-idea/05-dynamic-legibility.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/05-dynamic-legibility.md)：dsh 不只可读、还可查询可试验。
 - [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)：ordered config layers 与 `--dump-config`。
 - [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-catalog.md)：从源码生成的工具 schema 与 opt-in 说明。

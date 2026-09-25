@@ -1,6 +1,6 @@
-# 04 · 可读性 = 一个事实一个 owner（解决「糊涂」的地基）
+# 一个事实一个 owner：知识的家
 
-> **状态：静态（仓库/文件面）** —— 讲的是地图怎么画（one home、tier、当前 vs 决策、负知识）；DSH 侧设计细节归 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)，运行时消费见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)。
+> **道 · 归属。** 本页拥有「一个事实一个 owner」的判据与落地实物（one home、tier、当前 vs 决策、负知识）。DSH 侧设计细节归 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)，运行时消费见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)。
 
 ## 可读 ≠ 文件少
 
@@ -53,7 +53,7 @@ DSH 的文档层级规则只有一条主线：每个事实住在「负责它的�
 
 （来源：`docs/AGENTS.md` 的 Writing rules）
 
-普通项目至少要做的是：**把 `docs/` 定位成 current state，把「为什么」放进单独的 `notes/` 或 `docs/adr/`。** DSH 侧的完整形态是六类事实六类位置（意图/决定/计划/现状/证据/交付状态各有 owner），见 [SDLC Tutorial 02 的六类位置表](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/02-specs-and-decisions.md)；决策记录本身何时写、怎样演进，展开在本目录 [`02-decision-notes.md`](./02-decision-notes.md)。
+普通项目至少要做的是：**把 `docs/` 定位成 current state，把「为什么」放进单独的 `notes/` 或 `docs/adr/`。** DSH 侧的完整形态是六类事实六类位置（意图/决定/计划/现状/证据/交付状态各有 owner），见 [SDLC Tutorial 02 的六类位置表](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/02-specs-and-decisions.md)；决策记录本身何时写、怎样演进，展开在本目录 [`03-decision-notes.md`](./03-decision-notes.md)。
 
 ## 负知识也需要 owner
 
@@ -69,7 +69,7 @@ DSH 用 rejected note、README 的 `## Known Limitations and Deferred Work`、�
 
 （上句出处同上，语料归纳。）
 
-对一个普通项目，这就是「入口文件要短、要只做路由」的直接理由——也是和 `04_root-entry-doc-design` 讲过的根入口分流共用同一个原则。这条原则落到物理文件上，是一条明确的入口链：`CLAUDE.md`（symlink）→ 根 `AGENTS.md` → 少数子树 `AGENTS.md` → 各 `README.md`；它把「渐进披露」变成仓库里真实存在的骨架，详见 [`08-agents-entry-chain.md`](./08-agents-entry-chain.md)。但注意这只是**静态层**——「按需」的「需」在运行时由谁决定、模型每轮实际看到什么、超预算怎么回收、子代理能看到什么，是另一整块，详见 [`11-progressive-disclosure-pipeline.md`](./11-progressive-disclosure-pipeline.md)（完整管线）与 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)（根入口文档的运行时消费）。
+对一个普通项目，这就是「入口文件要短、要只做路由」的直接理由——也是和 `04_root-entry-doc-design` 讲过的根入口分流共用同一个原则。这条原则落到物理文件上，是一条明确的入口链：`CLAUDE.md`（symlink）→ 根 `AGENTS.md` → 少数子树 `AGENTS.md` → 各 `README.md`；它把「渐进披露」变成仓库里真实存在的骨架，详见 [`09-agents-entry-chain.md`](./09-agents-entry-chain.md)。但注意这只是**静态层**——「按需」的「需」在运行时由谁决定、模型每轮实际看到什么、超预算怎么回收、子代理能看到什么，是另一整块，详见 [`12-progressive-disclosure-pipeline.md`](./12-progressive-disclosure-pipeline.md)（完整管线）与 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)（根入口文档的运行时消费）。
 
 ## 可迁移要点
 
@@ -77,7 +77,7 @@ DSH 用 rejected note、README 的 `## Known Limitations and Deferred Work`、�
 2. `docs/` 只写 now，决策理由进 ADR/note——先消灭「读历史误当现在」。
 3. 记下「为什么不做 X」——先消灭「反复提出已否定方案」。
 4. 入口文件短、只做路由——先消灭「上下文被无关细节淹没」。
-5. 搭好入口链：`CLAUDE.md` symlink 指向 `AGENTS.md`，子树 `AGENTS.md` 只在有专属常驻规则时放，其余靠 README 按需加载（见 [`08`](./08-agents-entry-chain.md)）。
+5. 搭好入口链：`CLAUDE.md` symlink 指向 `AGENTS.md`，子树 `AGENTS.md` 只在有专属常驻规则时放，其余靠 README 按需加载（见 [`入口链`](./09-agents-entry-chain.md)）。
 
 ## 证据入口
 

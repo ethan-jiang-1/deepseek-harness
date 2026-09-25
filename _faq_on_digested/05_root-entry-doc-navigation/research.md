@@ -113,4 +113,4 @@
 ## 已核对的相关消化材料
 
 - `_faq_on_digested/04_root-entry-doc-design/answer.md`：静态设计（本问题的另一半）
-- `_faq_on_digested/07_borrowing-harness-idea/11-progressive-disclosure-pipeline.md`：完整五层管线（迁移视角，含 context 注入、system-prompt 组装、compaction、subagent 隔离）
+- `_faq_on_digested/07_borrowing-harness-idea/12-progressive-disclosure-pipeline.md`：完整五层管线（迁移视角，含 context 注入、system-prompt 组装、compaction、subagent 隔离）
