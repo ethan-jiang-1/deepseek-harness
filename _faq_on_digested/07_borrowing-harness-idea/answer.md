@@ -38,9 +38,9 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 ## 立即借 / 有压力再借 / 不要照搬
 
-- **立即借**（几乎零架构依赖，普通项目的第一桶金）：短 `AGENTS.md` 只放常驻规则、一个事实一个 owner、决策理由与当前文档分开、可机械规则接成 `exit non-zero` 检查并做负例控制、拿一笔真实变更跑通闭环。
-- **有压力再借**（确有对应压力才值得）：Skills 目录（同类任务反复出现）、生成 catalog（声明面大到手工清单漂移）、注入预算与 compaction（上下文吃紧、长任务活不下来）。
-- **不要照搬**：插件图与 capability seam 全家桶（那是组合压力的产物）、DSH 的 Project/标签/加权批准制度（它有特定的协作规模前提）、双语 triplet 与 hash 配对（除非你的项目真的双语平等）。
+- **立即借**（几乎零架构依赖，普通项目的第一桶金）：拿一笔真实变更跑通闭环（[`08`](./08-step-by-step-guide.md) Phase 0.5，对照表见 [`11`](./11-sdlc-change-loop.md)）；短 `AGENTS.md` 只放常驻规则（[`08`](./08-step-by-step-guide.md) Phase 1，实物见 [`02`](./02-legibility-ownership.md) 落地实物节）；一个事实一个 owner、决策理由与当前文档分开（[`02`](./02-legibility-ownership.md)；何时写决策记录见 [`12`](./12-decision-notes.md)）；可机械规则接成 `exit non-zero` 检查并做负例控制（[`08`](./08-step-by-step-guide.md) Phase 4，六层反馈见 [`04`](./04-executable-feedback.md)）。
+- **有压力再借**（确有对应压力才值得）：Skills 目录（同类任务反复出现；真实 Skill 文件的写法标准见 [`05`](./05-skills-as-procedural-memory.md) 落地实物节）；生成 catalog（声明面大到手工清单漂移）；注入预算与 compaction（上下文吃紧、长任务活不下来，[`10`](./10-progressive-disclosure-pipeline.md)）。
+- **不要照搬**：插件图与 capability seam 全家桶（那是组合压力的产物）；DSH 的 Project/标签/加权批准制度（它有特定的协作规模前提）；双语 triplet 与 hash 配对（除非你的项目真的双语平等）。
 
 ## 总览表：困惑类型 → 借用机制 → 落地动作
 

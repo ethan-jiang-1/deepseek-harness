@@ -28,6 +28,18 @@ DSH 的文档层级规则只有一条主线：每个事实住在「负责它的�
 | 为什么选择这个方案 | 决策记录（ADR / Agent Note） | 当前 API 的唯一说明 |
 | 某类任务怎么做 | cookbook / 任务 skill | 产品运行时行为 |
 
+## 落地实物：one home 在 DSH 里长什么样
+
+「一个事实一个 owner」不是口号，是三个可以直接打开的形态：
+
+1. **根 `AGENTS.md` 的每条 standing order 只有一到三行，后面立刻跟链接。** 实例：「Run relevant checks locally」这条规则在根文件里只占几行，怎么选检查的完整流程链到 [dsh-pre-push-checks skill](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)——根文件负责「有这条规则」，skill 负责「怎么执行」，两层不重复。
+2. **tier 分工是一张真实存在的表**（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)）：根 `AGENTS.md` 放常驻规则、子树 `AGENTS.md` 放子树专属规则、包 README 放每包合同、Skills 放可复用流程——每行同时写「放什么」和「禁放什么」。
+3. **不同工具读同一份事实，用 symlink 而不是复制**：`CLAUDE.md` 是指向 `AGENTS.md` 的软链（一条命令 `ln -s AGENTS.md CLAUDE.md`），Claude 类宿主和其它 agent 宿主各认各的入口文件名，但事实只有一份。DSH 仓库里有 4 处这样的 symlink。
+
+普通项目的落地动作就三条：写短根文件、每条规则链到 home、`ln -s AGENTS.md CLAUDE.md`。
+
+**学走形的检查**：owner 表写了、正文却在每处全文复制——检验法是把链接以外的复制正文删掉，信息应当不丢；丢了说明 home 没写全，该补 home 而不是允许复制。
+
 ## 当前事实 vs 决策理由必须分开
 
 这是「不糊涂」里最容易漏的一条，也最能解释「agent 怎么读着读着就歪了」：
