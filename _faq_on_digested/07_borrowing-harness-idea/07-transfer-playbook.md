@@ -6,13 +6,14 @@
 
 | 优先级 | 可迁移做法 | 原因 |
 |---|---|---|
+| 0 | 先拿一笔最近的真实变更跑通垂直切片（意图 → owner → 证据 → 红灯对照） | 先知道自己缺什么，再动手建；这张清单会告诉你下面四项哪个对你最要命 |
 | 1 | 一个事实一个 owner，根指令只放 standing orders | 先减少冲突和上下文浪费 |
 | 2 | 为常见任务提供短入口、范本和明确升级条件 | 先降低「改哪里」的判断成本 |
 | 3 | 把可机械规则接入真实接受路径，并证明负例会失败 | 先让反馈可信 |
 | 4 | 用 Skills 保存需要上下文判断的工作流程 | 让复杂任务不依赖个人记忆 |
 | 5 | 在确有动态组合压力时引入可查询 plugin graph 和完整 seams | 让架构成本与真实需求匹配 |
 
-注意第 5 项被刻意排在最后：**插件图、seam 三角色、完整运行时 inspect 是「组合压力」的产物，不是普通项目的默认项。** 前三项几乎零架构依赖，是大多数项目真正的第一桶金。
+第 0 项是本 FAQ 补充的（垂直切片思想），第 1–5 项来自语料清单。注意第 5 项被刻意排在最后：**插件图、seam 三角色、完整运行时 inspect 是「组合压力」的产物，不是普通项目的默认项。** 第 0–3 项几乎零架构依赖，是大多数项目真正的第一桶金。垂直切片的完整操作见 [`08`](./08-step-by-step-guide.md) Phase 0.5，DSH 的标准演示见 [SDLC Tutorial 的证据地图](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/01-follow-a-change.md)。
 
 ## 三个问题检验任何一个 Development Harness
 
@@ -51,6 +52,6 @@
 
 ## 证据入口
 
-- [`../../_agent_ready_development/repo-harness/07-boundaries-and-costs.md`](../../_agent_ready_development/repo-harness/07-boundaries-and-costs.md)：优先级清单、三问框架、四个边界、成本。
-- [`../../_digested/harness-idea/07-boundaries-costs-fit.md`](../../_digested/harness-idea/07-boundaries-costs-fit.md)：哪些原则与智能无关、这个形状何时划算、代价是什么。
-- [`../../_digested/harness-idea/08-judgement-discipline.md`](../../_digested/harness-idea/08-judgement-discipline.md)：本 FAQ 判断的出处纪律（分布内通式 vs 分布外事实）。
+- [`_agent_ready_development/repo-harness/07-boundaries-and-costs.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/07-boundaries-and-costs.md)：优先级清单、三问框架、四个边界、成本。
+- [`_digested/harness-idea/07-boundaries-costs-fit.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/07-boundaries-costs-fit.md)：哪些原则与智能无关、这个形状何时划算、代价是什么。
+- [`_digested/harness-idea/08-judgement-discipline.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/08-judgement-discipline.md)：本 FAQ 判断的出处纪律（分布内通式 vs 分布外事实）。

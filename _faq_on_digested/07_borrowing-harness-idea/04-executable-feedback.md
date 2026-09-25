@@ -19,7 +19,7 @@
 | 运行时关系 | package invariant | 活系统中的 owner relationship 持续成立 | 没有可观察关系的纯函数性质 |
 | 语义判断 | code review、用户验收 | 意图、架构、风险是否对齐 | 每个机械细节都已执行 |
 
-关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 为绿不代表产品工作，snapshot 为绿不代表 API 合理，review 也不该手工重复已经由绿色 gate 精确拒绝的格式问题。
+关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 为绿不代表产品工作，snapshot 为绿不代表 API 合理，review 也不该手工重复已经由绿色 gate 精确拒绝的格式问题。这六层服务于交付时刻——它们围绕的是「一笔变更的证据是否与声称对齐」，DSH 有一笔真实变更的实测演示（断言反转的红灯对照、无断言行为的缺口如实标注），见 [SDLC Tutorial 04](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/04-implementation-and-evidence.md)；变更闭环的完整迁移表见 [`11-sdlc-change-loop.md`](./11-sdlc-change-loop.md)。
 
 ## 负例控制：证明检查真的会失败
 
@@ -35,7 +35,7 @@
 
 ## invariant 检查「关系」，不检查「存在」
 
-一个有效的 runtime invariant 比较 package 拥有的权威事件流或可变数据关系（例如 `model-visible ⟺ logged`：模型可见内容必须能被 session log 重建）。没有这类关系时 DSH **不发布** `./invariant`，而是在包 README 写明该包特有的省略原因——因为**「这里没有可观察关系」和「漏了检查」是两种不同状态**，前者用「省略 + README 理由」表达而不是留一个空 companion；空 installer 被 `verify-package-invariants` 拒绝；而「为满足形式去断言 service 存在、插件元数据、effect 或固定例子」是 `AGENTS.md` 的成文纪律（`docs/subsystems/invariants.md` 称之为 convention），门禁本身不检查这四类（`packages/AGENTS.md:19`、[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）。
+一个有效的 runtime invariant 比较 package 拥有的权威事件流或可变数据关系（例如 `model-visible ⟺ logged`：模型可见内容必须能被 session log 重建）。没有这类关系时 DSH **不发布** `./invariant`，而是在包 README 写明该包特有的省略原因——因为**「这里没有可观察关系」和「漏了检查」是两种不同状态**，前者用「省略 + README 理由」表达而不是留一个空 companion；空 installer 被 `verify-package-invariants` 拒绝；而「为满足形式去断言 service 存在、插件元数据、effect 或固定例子」是 `AGENTS.md` 的成文纪律（`docs/subsystems/invariants.md` 称之为 convention），门禁本身不检查这四类（`packages/AGENTS.md:19`、[`2026-08-28-omit-unneeded-invariant-companions`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）。
 
 ## 可迁移要点
 
@@ -47,8 +47,8 @@
 
 ## 证据入口
 
-- [`../../_agent_ready_development/repo-harness/05-executable-feedback.md`](../../_agent_ready_development/repo-harness/05-executable-feedback.md)：六层反馈、invariant、负例控制、本地 vs CI。
-- [`../../_digested/harness-idea/03-paved-road.md`](../../_digested/harness-idea/03-paved-road.md)：门禁自身被测试的元验证。
-- [`../../docs/testing.md`](../../docs/testing.md)：test tiers、真实入口、negative control、snapshot 义务。
-- [`../../.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据，而不是固定跑全套。
-- [`../../scripts/run-gates.ts`](../../scripts/run-gates.ts)：仓库检查逻辑的聚合入口。
+- [`_agent_ready_development/repo-harness/05-executable-feedback.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/05-executable-feedback.md)：六层反馈、invariant、负例控制、本地 vs CI。
+- [`_digested/harness-idea/03-paved-road.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/03-paved-road.md)：门禁自身被测试的元验证。
+- [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/testing.md)：test tiers、真实入口、negative control、snapshot 义务。
+- [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据，而不是固定跑全套。
+- [`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/scripts/run-gates.ts)：仓库检查逻辑的聚合入口。

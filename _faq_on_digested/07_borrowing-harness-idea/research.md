@@ -2,7 +2,7 @@
 
 ## 说明
 
-本 FAQ 的证据主体是两份本地研究语料：`_agent_ready_development/repo-harness/`（01–07；目录 2026-09-24 由 `development-harness/` 更名，更名记录见语料 [`_coverage/00-corpus-maintenance.md`](../../_agent_ready_development/_coverage/00-corpus-maintenance.md)）与 `_digested/harness-idea/`（01–08），均已同步到基线 DSH `dsh-v0.1.7-rc.1`（commit `46a7f68b0922371ce7144b668b90e377d8e799f4`，见 [`_digested/00-index.md`](../../_digested/00-index.md) 与 `_digested/_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`）；两份语料的理解都只从 DSH 仓库一手内容挖出。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写，第 1、3、9、10、14 条已按 0.1.7 基线（`46a7f68b09` 工作树）逐字重核并改写（截断补 `[...]`、恢复句尾冒号与引文内代码块、E9 换为 note 现行原文、E14 改引现行表格行）。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
+本 FAQ 的证据主体是两份本地研究语料：`_agent_ready_development/repo-harness/`（01–07；目录 2026-09-24 由 `development-harness/` 更名，更名记录见语料 [`_coverage/00-corpus-maintenance.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/_coverage/00-corpus-maintenance.md)）与 `_digested/harness-idea/`（01–08），均已同步到基线 DSH `dsh-v0.1.7-rc.1`（commit `46a7f68b0922371ce7144b668b90e377d8e799f4`，见 [`_digested/00-index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/00-index.md) 与 `_digested/_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`）；两份语料的理解都只从 DSH 仓库一手内容挖出。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写 09/10 两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写，第 1、3、9、10、14 条已按 0.1.7 基线（`46a7f68b09` 工作树）逐字重核并改写（截断补 `[...]`、恢复句尾冒号与引文内代码块、E9 换为 note 现行原文、E14 改引现行表格行）。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
 
 ## 1. 仓库以 coding agent 为主、机械门禁优于 prose 约定
 
@@ -145,6 +145,24 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 > The shared driver sends the task verbatim as the child's user message … Spawn supplies no history; fork supplies its balanced seed.
 
 来源：`packages/subagent/subagent-in-process-driver/README.md`（Model Experience / Child-agent request 一节）
+
+## 22. 局部 UI 呈现豁免 Agent Note
+
+> Mechanical or local edits, including local UI presentation and interaction changes, are exempt.
+
+来源：`.agents/notes/README.md`（创建标准一节）。11/12 两章引用的「局部修补豁免 vs 持久取舍必写」判据以此条为 DSH 侧原文；两个对比例的完整走查在 `_agent_ready_development/sdlc-tutorial/02-specs-and-decisions.md`。
+
+## 23. 本地相关检查按改动面选择
+
+> Match evidence to the surface: focused behavior tests, model/user-output snapshots, `doc-sync` for docs, built smokes for published paths, and real-API e2e for providers. … Never default to the full suite.
+
+来源：根 `AGENTS.md`（Run relevant checks locally 一节）。11/12 与 08 Phase 0.5 引用的「聚焦检查、红灯对照」纪律以此条为 DSH 侧原文；Tutorial 04 的红灯实测（2 红 95 绿）是该纪律的一次执行记录，属语料侧事实、非 DSH 原文。
+
+## 24. 变更闭环的三条立场（语料归纳，非 DSH 原文）
+
+> agent 是一等参与者；规则是可执行的代码；每类事实有唯一的 owner。
+
+来源：`_agent_ready_development/sdlc-tutorial/00-index.md`（2026-09-24 重写轮确立的归纳）。answer.md「DSH 的精华」一节直接引用此归纳；它是对 DSH 既有机制的总结，不是 DSH 的自称——DSH 从未把这三句写进自己的文档，逐条机制依据见 Tutorial 各页的钉版链接。
 
 ## 已核对的相关消化材料
 
