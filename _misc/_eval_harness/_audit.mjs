@@ -1,6 +1,6 @@
-// 本目录六份文档的自审脚本。用法：node _audit.mjs
-// 覆盖：链接/锚点、维度栏目与探针、封顶规则（正文↔附录、轴与档位写法、附录分组）、
-// 20 卡片栏位与验收红线、例证段数量、外链数量、引号一致性、旧标签残留、文件规范。
+// 本目录六份文档的自审脚本。用法：node _misc/_eval_harness/_audit.mjs（任意工作目录均可）
+// 覆盖：链接/锚点、维度栏目与探针、封顶规则（正文↔附录、轴与档位写法、附录分组）、README 计数、
+// 20 卡片栏位与验收红线、例证段数量、外链数量、引号一致性、旧标签残留、粗细两份的分工、文件规范。
 import { readFileSync, existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -57,7 +57,7 @@ const capsOf = (lines) => {
       const [path, fragment] = link.split('#')
       const target = path ? resolve(dir, dirname(f), path) : resolve(dir, f)
       if (!existsSync(target)) { console.log(`       失效文件 ${f} → ${link}`); bad++; continue }
-      const anchorSet = target === resolve(dir, f) ? own : anchorsOf(get(path ? resolve(dirname(f), path) : f))
+      const anchorSet = target === resolve(dir, f) ? own : anchorsOf(get(target))
       if (fragment && !anchorSet.has(fragment)) { console.log(`       失效锚点 ${f} → ${link}`); bad++ }
     }
   }
@@ -163,9 +163,16 @@ for (const [file, level, idPattern, expected] of [
       `缺 ${missing.join(',') || '—'} / 多 ${extra.join(',') || '—'}`)
   }
 
-  const sections = (b) => b.filter((l) => /^\*\*/.test(l)).length
-  const badShape = cards.filter((c) => (/^(?:KN|CP|EV|ST|MT)/.test(c.id) ? sections(c.body) !== 8 && c.id !== 'KN3' : sections(c.body) < 6))
-  check('20 卡片栏位一致', badShape.length === 0, badShape.map((c) => c.id).join(' '))
+  const devSections = ['什么时候才值得做', '最小形态', '做法', '验收红线', '一次负例控制', '成本', '它不买什么', '学走形的样子']
+  const devOptional = new Set(['不必照搬的'])
+  const sectionNames = (b) => b.flatMap((l) => { const m = /^\*\*([^*。]+)。\*\*/.exec(l); return m ? [m[1]] : [] })
+  const badShape = cards.filter((c) => {
+    const names = sectionNames(c.body)
+    if (!/^(?:KN|CP|EV|ST|MT)/.test(c.id)) return names.length < 6
+    return names.filter((n) => !devOptional.has(n)).join(',') !== devSections.join(',')
+  })
+  check('20 卡片栏位一致（开发卡八栏按序，另可带"不必照搬的"）', badShape.length === 0,
+    badShape.map((c) => `${c.id}[${sectionNames(c.body).join(',')}]`).slice(0, 2).join(' | '))
 
   const withoutNegativeControl = cards.filter((c) => !/\*\*一次负例控制。\*\*/.test(c.body.join('\n')))
   check('20 每张卡都有负例控制', withoutNegativeControl.length === 0, withoutNegativeControl.map((c) => c.id).join(' '))
@@ -223,10 +230,6 @@ for (const [file, level, idPattern, expected] of [
     if (!knownPrefixes.has(m[1])) unknown.set(m[1], (unknown.get(m[1]) ?? 0) + 1)
   }
   check('正文 token 前缀都已登记', unknown.size === 0, [...unknown].map(([k, v]) => `${k}×${v}`).join(', '))
-  for (const f of ['01-evaluate-development-harness-coarse.md', '11-evaluate-runtime-harness.md']) {
-    const body = rd(f)
-    check(`${f.slice(0,2)} 粗粒度不含探针与封顶段`, !/^\| PB\d /m.test(body) && !/^\*\*封顶规则\*\*/m.test(body))
-  }
   check('无旧标签残留', staleWords.length === 0 && legacy.length === 0, [...staleWords, ...legacy].slice(0, 3).join(' | '))
 
   // 每张 Markdown 表的表头、分隔行与数据行列数必须一致
@@ -250,6 +253,44 @@ for (const [file, level, idPattern, expected] of [
 
   const trailing = files.filter((f) => text(f).split('\n').some((l) => /[ \t]+$/.test(l)))
   check('无行尾空白', trailing.length === 0, trailing.join(' '))
+
+  const doubleRule = files.filter((f) => /^---\n\n---$/m.test(text(f)))
+  check('无连续两条分隔线', doubleRule.length === 0, doubleRule.join(' '))
+
+  // 代码块里的 Markdown 链接不会渲染，读者只能看到原文
+  const fencedLinks = []
+  for (const f of files) {
+    let fenced = false
+    text(f).split('\n').forEach((l, i) => {
+      if (l.startsWith('```')) { fenced = !fenced; return }
+      if (fenced && /\]\([^)]+\)/.test(l)) fencedLinks.push(`${f}:${i + 1}`)
+    })
+  }
+  check('代码块内无 Markdown 链接', fencedLinks.length === 0, fencedLinks.slice(0, 3).join(' '))
+}
+
+// —— README 里写死的计数与实际一致 ——
+{
+  const readme = rd('README.md')
+  const count = (file, level, idPattern) => {
+    const dims = dimensions(file, level, idPattern)
+    const ids = Object.keys(dims)
+    return {
+      caps: ids.reduce((n, id) => n + capsOf(dims[id]).length, 0),
+      maxProbe: Math.max(...ids.flatMap((id) => dims[id].filter((l) => /^\| PB\d /.test(l)).map((l) => Number(/^\| PB(\d+)/.exec(l)[1])))),
+    }
+  }
+  const dev = count('02-evaluate-development-harness-fine.md', 4, '(?:KN|CP|EV|ST|MT)\\d+')
+  const rt = count('12-evaluate-runtime-harness-fine.md', 3, 'RT\\d+')
+  const claims = [
+    [`02 行写 PB1–PB${dev.maxProbe}`, new RegExp(`02-evaluate[^\\n]*\`PB1\`–\`PB${dev.maxProbe}\``)],
+    [`02 行写 ${dev.caps} 条封顶`, new RegExp(`02-evaluate[^\\n]*${dev.caps} 条封顶`)],
+    [`12 行写 PB1–PB${rt.maxProbe}`, new RegExp(`12-evaluate[^\\n]*\`PB1\`–\`PB${rt.maxProbe}\``)],
+    [`12 行写 ${rt.caps} 条封顶`, new RegExp(`12-evaluate[^\\n]*${rt.caps} 条封顶`)],
+    [`校验节写开发 ${dev.caps} 条 / 运行时 ${rt.caps} 条`, new RegExp(`开发 ${dev.caps} 条 / 运行时 ${rt.caps} 条`)],
+  ]
+  const wrong = claims.filter(([, re]) => !re.test(readme)).map(([name]) => name)
+  check('README 的探针范围与封顶条数与实际一致', wrong.length === 0, wrong.length ? `应为：${wrong.join('；')}` : '')
 }
 
 // —— 小节编号与引用自洽（拆分/搬运最容易在这里劈叉）——
@@ -321,7 +362,12 @@ for (const [coarse, fine, dimCount] of [
   check(`${tag} 粗判一览 = 细粒度维度集合`, fineIds.size === coarseIds.size && [...fineIds].every((x) => coarseIds.has(x)),
     `粗 ${coarseIds.size} / 细 ${fineIds.size}`)
   check(`${tag} 指向细粒度`, c.includes(`./${fine}`))
-  check(`${tag} 不含探针与封顶段`, !/^\| PB\d /m.test(c) && !/^\*\*封顶规则\*\*/m.test(c))
+  check(`${tag} 不含探针、封顶段与封顶箭头`, !/^\| PB\d /m.test(c) && !/^\*\*封顶规则\*\*/m.test(c) && !/→\s*\**(?:覆盖面|约束力)/.test(c))
+
+  // 粗细两份只允许名字 + 一行概述的重复；长句整行出现在两边说明复制了段落
+  const fineLines = new Set(rd(fine).split('\n').map((l) => l.trim()))
+  const shared = [...new Set(c.split('\n').map((l) => l.trim()))].filter((l) => l.length >= 30 && fineLines.has(l))
+  check(`${tag} 与细粒度之间无整行复制（≥30 字）`, shared.length === 0, shared.slice(0, 2).map((l) => l.slice(0, 40)).join(' | '))
 }
 
 console.log(fails ? `\n${fails} 项未通过` : '\n全部通过')
