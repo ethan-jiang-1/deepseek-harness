@@ -22,7 +22,7 @@
 
 ## 原始材料从哪来
 
-全部素材来自本仓库的两套研究语料：`_agent_ready_development/`（面向普通仓库的 SDLC 与仓库机制）与 `_faq_on_digested/`、`_digested/`（DSH 机制解读）。**没有使用任何仓库外的二手描述**，也没有使用 [`../_references/`](../_references/00-index.md) 里那些外部文章副本。
+全部素材来自本仓库的三处研究语料：`_agent_ready_development/`（面向普通仓库的 SDLC 与仓库机制）、`_faq_on_digested/` 与 `_digested/`（DSH 机制解读）。**没有使用任何仓库外的二手描述**，也没有使用 [`../_references/`](../_references/00-index.md) 里那些外部文章副本。
 
 ### 一、直接通读的（9 份）
 
@@ -44,7 +44,7 @@
 
 | 路 | 读了什么 | 用在哪 |
 |---|---|---|
-| 仓库机制 | `_agent_ready_development/repo-harness/` 全 11 篇 + 三个目录的 `README`/`00-index` + `_coverage/00-corpus-maintenance.md` + `verify.mjs` | 01 的 A 组（入口链、归属、分类学）、C 组（反馈分层、负例控制）、D 组 |
+| 仓库机制 | `_agent_ready_development/repo-harness/` 全 11 篇 + 三个目录的 `README`/`00-index` + `_coverage/00-corpus-maintenance.md` + `verify.mjs` | 01 的 A 组、C 组、D 组 |
 | 转移章法 | `_faq_on_digested/07_borrowing-harness-idea/` 的 01–05、07–09、11–13（11 篇） | 01 全部十七维的定义与探针、03 的处置卡、四条边界 |
 | 流程参考 | `_agent_ready_development/sdlc-reference/` 全 13 篇 | 01 补齐的五维：意图入口、评审与批准、发布与版本、分类学、防漂移 |
 | 运行时机制 | `_digested/` 的 `agent-loop`、`capability-seams`、`composition`、`session-and-loop`、`tools-prompt-llm`、`runtime-profiles`、`surfaces`、`system` 八组 + `_faq_on_digested/08_plugin-seam-maturity`、`09_plugin-business-ladder` | **02 的全部十一维** + 02 第 5 节的模仿判断 |
@@ -59,7 +59,7 @@
 
 - [`_misc/_references/`](../_references/00-index.md) —— 外部架构分析文章副本，**一份都没读**。
 - `_digested/harness-idea/`、`cordis-runtime/`、`experimental/`、`_change_log/` —— 只在第四路的转述里间接出现，没有直接进入正文。
-- `_faq_on_digested/` 的其余 12 个目录（01–06、10、12–14）—— 未参与。
+- `_faq_on_digested/` 的其余 10 个目录（01–06、10、12–14）—— 未参与。
 
 ---
 
@@ -102,6 +102,7 @@
 | §2 症状 → 维度表 | FAQ07/answer 的总览表，按十七维扩充 |
 | §3 十七张处置卡 | FAQ07/06 的 Phase 2–8 验收 + 各章的"从哪开始""学走形的检查" |
 | §4 运行时处置卡 | 02 的十一维 + 第四路整理的边界与失败语义 |
+| §5 形态重解释 | **本目录新增**（把 01 §5 的形态表逐格落到各维的最小形态上） |
 | §6 四条边界与维护成本表 | FAQ07/10 + repo-harness 07 |
 | §7 循环与停止条件、§8 短例 | **本目录新增**（短例承 01 第 8 节的构造例子） |
 
@@ -135,33 +136,18 @@
 
 三份之间只允许**一行定义 + 名字**的重复（为了各自可独立阅读），不允许复制整段。跨文档链接已全部校验。
 
+**封顶规则与锚点阶梯同步。** 01/02 的封顶规则是按各自的锚点阶梯**逐条**展开的（阶梯里凡有明确判据、探针观察得到的条件，都有一条对应上限）。因此改动某一维的覆盖面/约束力阶梯时，必须同时检查该维的封顶规则要不要增删改，并在评估者验收里指出**观察它的探针**（见 01 §7 第 5 条、02 §7 第 6 条）——只改阶梯不改封顶，会立刻产生"允许拿到已违反档位"的漏洞。
+
 ### 校验
 
 本目录**不在**仓库结构门禁的扫描范围内（`scripts/verify-md-links.ts` 的 `PATTERNS` 不含 `_misc/**`），所以改完要自己跑一遍：
 
 ```sh
-# 相对链接与锚点（GitHub slug 规则）
-node - <<'EOF'
-import { readFileSync, existsSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
-const slug = h => h.toLowerCase().trim().replace(/[^\p{L}\p{N}\s-]/gu, '').replace(/ /g, '-')
-const files = ['README.md','01-evaluate-development-harness.md','02-evaluate-runtime-harness.md','03-from-gaps-to-plan.md']
-const anchorsOf = t => { const s = new Set()
-  for (const l of t.split('\n')) { const m = /^(#{1,6})\s+(.*)$/.exec(l); if (m) s.add(slug(m[2]))
-    const a = /<a id="([^"]+)"/.exec(l); if (a) s.add(a[1]) } return s }
-const cache = new Map(); const get = p => { if (!cache.has(p)) cache.set(p, readFileSync(p,'utf8')); return cache.get(p) }
-let bad = 0
-for (const f of files) { const t = get(f), own = anchorsOf(t)
-  for (const l of [...t.matchAll(/\]\(([^)]+)\)/g)].map(m => m[1])) {
-    if (/^https?:/.test(l)) continue
-    const [p, frag] = l.split('#'); const target = p ? resolve(dirname(f), p) : resolve(f)
-    if (!existsSync(target)) { console.log('MISSING FILE  ', f, l); bad++; continue }
-    if (frag && !(target === resolve(f) ? own : anchorsOf(get(target))).has(frag)) { console.log('MISSING ANCHOR', f, l); bad++ } } }
-console.log(bad ? bad + ' PROBLEMS' : 'ALL LINKS OK')
-EOF
-
-# 编码与结尾换行
-for f in *.md; do file "$f"; tail -c 1 "$f" | od -c | head -1; done
+node _audit.mjs
 ```
+
+[`_audit.mjs`](./_audit.mjs) 把这些必须保持为真的性质一次性核对完：相对链接与锚点（GitHub slug 规则）、17 / 11 维的栏目与探针数、封顶规则正文↔附录逐维相等、每条封顶写明轴与档位、附录按维度连续分组、28 张处置卡的栏位与验收红线、例证段数量、外链数量、引号与结尾换行约定、旧标签残留。退出码非零即有性质被破坏。
+
+本目录五个文件：四份文档 + 本脚本。
 
 改完本页的任一断言前，先回到它引用的来源文件确认——本页的价值全在**它是真的**。
