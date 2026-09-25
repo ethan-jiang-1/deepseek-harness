@@ -30,6 +30,18 @@ DSH 的 Skill 自己声明这个边界：
 
 一个典型 Skill 的调用过程是五步：**Match（命中）→ Load（先读全文，不从摘要猜）→ Resolve sources（读任务所需 owner）→ Apply judgment（按实际 diff/风险选择动作）→ Verify and report（只报告真正执行过的证据）。** Skill 的价值不是「自动执行一切」，而是让复杂判断有稳定入口、明确来源、可重复过程和诚实的适用边界。
 
+### 落地实物：一个真实 Skill 文件长什么样
+
+打开 DSH 的 [dsh-pre-push-checks/SKILL.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)（推送前选证据的流程），五步各有物理落点：
+
+- **触发条件就是 frontmatter 的两行**——`name: dsh-pre-push-checks` 加一句 `description:`「Use before pushing, force-pushing, marking ready for review…」。catalog 里只有这两行，模型据此决定是否命中；命中才读正文。
+- **步骤就是带命令的正文**——第一步「Confirm the checkout and branch」下面直接是可执行的 `git status --short --branch`；第二步给了 `pnpm --silent run change-scope --base <verified-base-ref>` 并写明「never guesses or fetches a base」。每一步都是「做什么 + 具体命令 + 边界」。
+- **判断标准写成正文规则**——「Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression」这句就在「Select relevant evidence」一节里。
+
+普通项目的流程文档照这个标准写：**frontmatter 一句触发条件、正文每步带可执行命令、判断标准写成正文规则**。六字段模板（触发条件、输入、步骤、停止条件、验证、输出格式）见 [`08`](./08-step-by-step-guide.md) Phase 5。
+
+**学走形的检查**：流程文档写成没有命令的散文（「做好本地验证后再推送」），或写成强制 checklist（「必须依次执行 12 步」）——前者 agent 还得猜，后者把判断收走了；正确形态是「步骤 + 每步的判断标准」，判断留在执行者。
+
 ## 渐进披露：摘要负责发现，正文才拥有指令
 
 Skill 与根文档共用同一个原则——**摘要负责发现，正文才拥有指令**。DSH 的产品侧提示语把这句说得最直白：

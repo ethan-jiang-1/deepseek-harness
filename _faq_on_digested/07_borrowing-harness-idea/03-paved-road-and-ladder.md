@@ -14,6 +14,22 @@ DSH 把「改哪里」从一个仓库经验问题变成一个可核对的设计�
 
 对一个 fresh agent，第一个设计判断不是「在哪个 loop 函数里插代码」，而是「这个功能属于哪一类」——工具注册？可替换能力？还是真的要动核心循环？**归属问题先于实现问题，这是「不乱发挥」的第一道闸。**
 
+### 落地实物：这张表真的存在，而且每行都能打开
+
+归属表不是抽象建议，它在 [docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md) 里就是一张两列的 Markdown 表，摘三行原样：
+
+| Goal | Mechanism |
+|---|---|
+| Add a model provider | register its adapter on `ctx.llm` |
+| Add a model-facing capability | register on `ctx.tools`; its schema joins prompt assembly |
+| Give one session a different capability set | compose an agent preset; a service row there needs an `isolate` realm |
+
+每行右边都是**具体的注册 API**，不是「找相关模块」这类需要再解释的指引。配套的 [extension cookbook](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md) 给每个扩展点一份「怎么做」的操作页。
+
+普通项目的归属表照这个标准写：**「目标 → 机制」两列，右边必须是新参与者能直接执行的动作**（改哪个文件、调哪个注册函数、配哪段配置），不能是「参考架构文档」这类二级指引。写完自测：拿一个真实需求问自己（或问 agent），只看这张表能不能答出改哪里。
+
+**学走形的检查**：两种典型走形——归属表变成审批流程（「申请→批准→实施」），偏离了它「降低判断成本」的本意；或阶梯变成等级制（L3 比 L0「高级」），忘了它只按影响半径分层，不按价值排序。
+
 ## 四级参与阶梯（一个可迁移的学习模型）
 
 不同改动半径有不同首选入口。下面的 participation ladder 是 repo-harness 语料从 DSH 归纳出的学习模型，不是 DSH 的官方分级名称，但分级逻辑可以原样搬到任何项目：
