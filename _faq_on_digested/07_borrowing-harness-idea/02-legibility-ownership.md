@@ -8,7 +8,7 @@
 
 > Legibility 不是把大型仓库压缩成一篇总览。更准确的定义是：遇到一个问题时，能以有限上下文找到正确 owner，区分当前事实与设计理由，并知道下一层应该读什么。
 
-（上句是 [`_agent_ready_development/repo-harness/02-legibility-and-ownership.md`](../../_agent_ready_development/repo-harness/02-legibility-and-ownership.md) 的归纳，不是 DSH 原文。）
+（上句是 [`_agent_ready_development/repo-harness/02-legibility-and-ownership.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/02-legibility-and-ownership.md) 的归纳，不是 DSH 原文。）
 
 也就是说，**「不糊涂」的度量不是「读了多少」，而是「能不能便宜地找到那份最小且权威的材料」。** 这直接可迁移，不需要任何插件架构。
 
@@ -41,7 +41,7 @@ DSH 的文档层级规则只有一条主线：每个事实住在「负责它的�
 
 （来源：`docs/AGENTS.md` 的 Writing rules）
 
-普通项目至少要做的是：**把 `docs/` 定位成 current state，把「为什么」放进单独的 `notes/` 或 `docs/adr/`。**
+普通项目至少要做的是：**把 `docs/` 定位成 current state，把「为什么」放进单独的 `notes/` 或 `docs/adr/`。** DSH 侧的完整形态是六类事实六类位置（意图/决定/计划/现状/证据/交付状态各有 owner），见 [SDLC Tutorial 02 的六类位置表](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/02-specs-and-decisions.md)；决策记录本身何时写、怎样演进，展开在本目录 [`12-decision-notes.md`](./12-decision-notes.md)。
 
 ## 负知识也需要 owner
 
@@ -69,8 +69,8 @@ DSH 用 rejected note、README 的 `## Known Limitations and Deferred Work`、�
 
 ## 证据入口
 
-- [`../../_agent_ready_development/repo-harness/02-legibility-and-ownership.md`](../../_agent_ready_development/repo-harness/02-legibility-and-ownership.md)：五类问题五类 owner、当前事实 vs 决策理由、负知识。
-- [`../../_digested/harness-idea/02-legibility.md`](../../_digested/harness-idea/02-legibility.md)：静态可读性的八个机制与上下文入口外置。
-- [`../../docs/AGENTS.md`](../../docs/AGENTS.md)：文档 tier taxonomy 与 one home per fact。
-- [`../../docs/glossary.md`](../../docs/glossary.md)：一词一义的术语纪律。
-- [`../../.agents/notes/README.md`](../../.agents/notes/README.md)：决策记录的生命周期与负知识 home。
+- [`_agent_ready_development/repo-harness/02-legibility-and-ownership.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/02-legibility-and-ownership.md)：五类问题五类 owner、当前事实 vs 决策理由、负知识。
+- [`_digested/harness-idea/02-legibility.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/02-legibility.md)：静态可读性的八个机制与上下文入口外置。
+- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)：文档 tier taxonomy 与 one home per fact。
+- [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/glossary.md)：一词一义的术语纪律。
+- [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)：决策记录的生命周期与负知识 home。

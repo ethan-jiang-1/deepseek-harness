@@ -55,4 +55,4 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 - 文件态（设计）：[`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md) 及其子章节
 - 会话态（机制）：[`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md) 及其子章节
 - 本目录的关联：[`02-legibility-ownership.md`](./02-legibility-ownership.md)、[`08-step-by-step-guide.md`](./08-step-by-step-guide.md) Phase 1、[`10-progressive-disclosure-pipeline.md`](./10-progressive-disclosure-pipeline.md)
-- 源码：[`../../AGENTS.md`](../../AGENTS.md)、[`../../packages/context/agent-instructions/README.md`](../../packages/context/agent-instructions/README.md)
+- 源码：[`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)、[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)

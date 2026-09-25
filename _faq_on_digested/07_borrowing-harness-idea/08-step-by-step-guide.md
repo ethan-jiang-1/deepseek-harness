@@ -4,7 +4,7 @@
 
 前面七篇都在讲「是什么、为什么、可迁移什么」。这一篇把它们压成一条**可执行的落地顺序**：每一步说清楚**做什么、产出什么、怎么验收（怎么证明这一步真做对了）**，并标注它对应「不糊涂」还是「不乱发挥」。
 
-原则只有一条：**按收益/成本从高到低做，每一步都能独立验收，别跳到第 5 级架构。** 对一个普通项目，走到 Phase 4 就已经覆盖了 80% 的价值。
+原则只有一条：**按收益/成本从高到低做，每一步都能独立验收，别跳到第 5 级架构。** 对一个普通项目，做完 Phase 0–4 就覆盖了「不糊涂 + 不乱发挥」的主要来源；Phase 5–6 按需。
 
 > 顺序本身来自 [`07-transfer-playbook.md`](./07-transfer-playbook.md) 的优先级清单，这里把它展开成动作。
 
@@ -23,6 +23,24 @@
 **验收**：能指着具体一个 bug/返工，说出它是「哪一档缺口」造成的。说不出来，说明还没诊断透，先别动手。
 
 **对应**：这是「不糊涂 + 不乱发挥」共同的基线。
+
+---
+
+## Phase 0.5 · 拿一笔真实变更跑通垂直切片（1 天，先于一切建设）
+
+**做什么**：在动任何「建」的动作之前，先检验一次「用」。挑你们仓库**最近已完成的一笔真实小变更**（修复或小功能，不改核心架构），按 DSH 的变更闭环标准对它做一次全程走查：
+
+1. 这笔变更的用户可观察结果是什么？写得出两行「外部结果 + 如何观察」吗？
+2. 从任务描述出发，能不能一路找到改动位置的 owner（不靠当时作者本人带路）？
+3. 交付里有没有携带持久取舍？有的话它记在哪里？没有的话，理由说得出吗？
+4. 哪项证据会在旧行为上失败？把实现回滚、保留测试，跑一次看它红不红（DSH 称为红灯对照）。
+5. 每一步标注证据状态：能指出文件的 / 只有口头说法的 / 完全没有的。
+
+**产出**：一张五行走查记录，外加三份清单——打不开的链接、要靠猜的 owner、没有证据支持的声称。
+
+**验收**：每一个「靠猜」和「没证据」都对应到 Phase 1–6 的某一步——这张清单就是你的定制化施工顺序，比任何通用优先级都准。
+
+**对应**：变更闭环（时间层）的完整预演。DSH 的标准演示见 [`_agent_ready_development/sdlc-tutorial/01-follow-a-change.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/01-follow-a-change.md)（一笔 7 文件真实变更的证据地图）与 [`04-implementation-and-evidence.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/sdlc-tutorial/04-implementation-and-evidence.md)（红灯对照实测记录）。
 
 ---
 
@@ -140,7 +158,7 @@
 
 ## 收尾：每一步完成后回到三问
 
-每做完一个 Phase，重跑 Phase 0 的三问打分，确认：
+每做完一个 Phase，重跑 Phase 0 的三问打分，并用 Phase 0.5 的那笔真实变更复测一次垂直切片，确认：
 
 1. 知识外置：规则从「人脑」搬进了「可搜索/可检查」了吗？
 2. 正确路径：新参与者能便宜地找到 owner 和范本了吗？
@@ -150,17 +168,18 @@
 
 ## 最小可用集（MVP）
 
-如果你只有一个周末，只做四件事，就已经拿到大部分收益：
+如果你只有一个周末，只做五件事，就已经拿到主要收益：
 
-1. 短 `AGENTS.md`（常驻规则 + 布局 + 命令），`CLAUDE.md` 用 symlink 指向它；
-2. 决策理由进 `docs/adr/`，`docs/` 只写 now；
-3. 一张「目标 → 机制」归属表；
-4. 2–3 条可机械规则接成 `exit non-zero` 脚本，并各做一次负例控制。
+1. 拿一笔最近的真实变更跑一次垂直切片（Phase 0.5）——先知道自己缺什么，再动手建；
+2. 短 `AGENTS.md`（常驻规则 + 布局 + 命令），`CLAUDE.md` 用 symlink 指向它；
+3. 决策理由进 `docs/adr/`，`docs/` 只写 now；
+4. 一张「目标 → 机制」归属表；
+5. 2–3 条可机械规则接成 `exit non-zero` 脚本，并各做一次负例控制。
 
-**这四件事覆盖了「不糊涂」和「不乱发挥」的八成来源，而且不需要任何插件架构。** 如果还有第 5 个半天，补一个 verify 脚本（Phase 7 的第 1、5 条），让这四件事从此有机器兜底。
+**这五件事不需要任何插件架构，且第 1 件事会告诉你其余四件里哪个对你最要命。** 如果还有第 6 个半天，补一个 verify 脚本（Phase 7 的第 1、5 条），让这些从此有机器兜底。
 
 ## 证据入口
 
 - 顺序与优先级：本目录 [`07-transfer-playbook.md`](./07-transfer-playbook.md)。
 - 每个 Phase 的机制依据，回看对应章节：[`02`](./02-legibility-ownership.md)、[`03`](./03-paved-road-and-ladder.md)、[`04`](./04-executable-feedback.md)、[`05`](./05-skills-as-procedural-memory.md)、[`06`](./06-runtime-inspection.md)；Phase 1 的入口链骨架见 [`09`](./09-agents-entry-chain.md)，长任务上下文回收见 [`10`](./10-progressive-disclosure-pipeline.md)。
-- 语料原始结论： [`../../_agent_ready_development/repo-harness/07-boundaries-and-costs.md`](../../_agent_ready_development/repo-harness/07-boundaries-and-costs.md)。
+- 语料原始结论： [`_agent_ready_development/repo-harness/07-boundaries-and-costs.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/07-boundaries-and-costs.md)。

@@ -58,9 +58,9 @@ DSH 把 capability seam 定义为三角色——Service Definition、一个或�
 
 ## 证据入口
 
-- [`../../_agent_ready_development/repo-harness/04-paved-road-and-participation.md`](../../_agent_ready_development/repo-harness/04-paved-road-and-participation.md)：参与阶梯、五个归属问题、生命周期单一所有权。
-- [`../../_digested/harness-idea/03-paved-road.md`](../../_digested/harness-idea/03-paved-road.md)：正确路径为什么是阻力最小路径、路径自身被测试。
-- [`../../_digested/harness-idea/04-participation-paths.md`](../../_digested/harness-idea/04-participation-paths.md)：不同参与半径的门、合同与检查半径。
-- [`../../docs/architecture.md`](../../docs/architecture.md)：Where new behavior goes 归属表与扩展点。
-- [`../../docs/glossary.md`](../../docs/glossary.md)：capability seam 三角色的规范定义。
-- [`../../docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)：feature 到机制与操作指南的细化入口。
+- [`_agent_ready_development/repo-harness/04-paved-road-and-participation.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_agent_ready_development/repo-harness/04-paved-road-and-participation.md)：参与阶梯、五个归属问题、生命周期单一所有权。
+- [`_digested/harness-idea/03-paved-road.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/03-paved-road.md)：正确路径为什么是阻力最小路径、路径自身被测试。
+- [`_digested/harness-idea/04-participation-paths.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/_digested/harness-idea/04-participation-paths.md)：不同参与半径的门、合同与检查半径。
+- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)：Where new behavior goes 归属表与扩展点。
+- [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/glossary.md)：capability seam 三角色的规范定义。
+- [`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md)：feature 到机制与操作指南的细化入口。
