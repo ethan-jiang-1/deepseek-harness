@@ -106,8 +106,8 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 其余四篇按需进站：
 
 9. [`迁移清单`](./10-transfer-playbook.md)——做完头几个 Phase 后核对：优先级与四个边界，防学走形。
-10. [`Skills`](./11-skills-as-procedural-memory.md)——做 Phase 5 时读：流程文档的写法标准。
-11. [`运行时查询`](./12-runtime-inspection.md)——做 Phase 6 时读：三个查询面。
+10. [`Skills`](./11-skills-as-procedural-memory.md)——做 Phase 6 时读：流程文档的写法标准。
+11. [`运行时查询`](./12-runtime-inspection.md)——做 Phase 7 时读：三个查询面与披露预算。
 12. [`披露管线`](./13-progressive-disclosure-pipeline.md)——上下文吃紧时读：注入、组装、回收、隔离。
 
 ### 压尾（14 + reference/research，按需）
