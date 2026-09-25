@@ -50,13 +50,8 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 - **导航（pull）**：不在注入链里的 README / catalog / skill 正文，由模型用 read/grep/glob 按需拉取。
 - **回收（recycle）**：超预算由 token meter 度量、compaction 压缩回收，保留 tool-call/result 配对——展开在 [`披露管线`](./12-progressive-disclosure-pipeline.md) 层 4。
 
-## 迁移顺序：先文件态，后会话态
+## 从哪开始
 
-成本差直接给出次序：
-
-1. **先文件态**：短 AGENTS.md、symlink、预算、tier 表——[`落地总纲`](./06-step-by-step-guide.md) Phase 1，几乎零成本，立竿见影。
-2. **后会话态**：确认上下文压力（爆炸、长任务活不下来）之后再考虑加载插件——普通项目不写它也能受益，文件态 + 宿主自动加载已覆盖「不糊涂」的大头。
-
-只做文件态不是残缺：会话态是 DSH 把「按需」从写作纪律升级成运行时保证的那一步，按需取用。
+今天就做文件态（半小时见效果）：`ln -s AGENTS.md CLAUDE.md`；根文件只写常驻规则+布局+命令，每条链到 home；给根文件定字数上限。会话态不急——上下文没爆炸就不用碰，文件态 + 宿主自动加载已经覆盖「不糊涂」的大头；真到长任务活不下来那天，再去 [`披露管线`](./12-progressive-disclosure-pipeline.md) 抄注入层。
 
 本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「09 · 入口链」一节）——按需核对，不读不影响理解。

@@ -1,8 +1,8 @@
 # 运行时查询：不靠猜源码
 
-> **术 · 运行时查询。** 本页是实战：三个查询面各是什么命令、声明面怎么保持可信、inspect 为什么不是沙箱。对照面「声明面」（生成 catalog）的设计归 [FAQ 04](../04_root-entry-doc-design/answer.md)。
+> **术 · 运行时查询。** 本页是实战：三个查询面各是什么命令、声明面怎么保持可信、inspect 为什么不是沙箱。五维评估里「静与动」维的「agent 靠猜源码行动」症状亮红、或 [`落地总纲`](./06-step-by-step-guide.md) Phase 6 开工时，来这页抄作业。对照面「声明面」（生成 catalog）的设计归 [FAQ 04](../04_root-entry-doc-design/answer.md)。
 
-## 为什么要有这道
+## 源码只能说明可能性，回答不了「现在」
 
 静态 import 和目录树能说明仓库**可能**提供哪些能力，却不能回答某台机器、某个 profile、某个 session **实际**加载了什么。「糊涂」的一个隐蔽来源，就是 agent 拿着源码结构去猜部署结果，然后按猜错的结果行动。DSH 的对策是 inspectability（可检查性）：**给查询入口，让 agent 用当前状态验证假设，而不是靠猜**。
 
@@ -26,11 +26,9 @@
 
 声明面的可信度也是机器保证的：生成 catalog 配 freshness gate，目录与源码有 diff 就红——所以它是可信索引，不是一张可能漂移的手写清单。
 
-## 可迁移要点（按成本排序）
+## 从哪开始
 
-1. **低成本**：给一条命令 dump 最终生效配置——`config dump`、`env` 输出或 `make show-config` 等价。
-2. **中成本**：把「声明面」做成可搜索索引，加 freshness 检查防漂移。
-3. **高成本**：运行时只读 inspect 工具——只有确有多 profile/provider/动态装卸压力时才值得，普通项目可跳过。
+先做成本最低的一档：一条命令 dump 最终生效配置（`config dump` / `env` 输出 / `make show-config` 等价），让 agent 能问「现在生效的是什么」。声明面索引（配 freshness 检查）在接口清单大到手工维护不动时再加；运行时只读 inspect 工具，多 profile/provider/动态装卸的压力真出现了才碰——普通项目可无限期跳过。
 
 ## 边界：inspect 不是沙箱
 

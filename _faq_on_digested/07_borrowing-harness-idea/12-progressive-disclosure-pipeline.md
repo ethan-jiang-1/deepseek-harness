@@ -1,10 +1,10 @@
 # 渐进披露的完整管线：静态分层 + 运行时按需注入、组装、回收
 
-> **术 · 披露管线。** 渐进披露不是「把文档写短」，是贯穿五层的管线。静态层的组织（tier、骨架）由 [`归属`](./02-legibility-ownership.md) 与 [`入口链`](./09-agents-entry-chain.md) 拥有；本页拥有注入、组装、回收、隔离四层——运行时每一层都是 DSH 产品的真实机制，逐层配原话与文件。
+> **术 · 披露管线。** 渐进披露不是「把文档写短」，是贯穿五层的管线。上下文吃紧（每轮爆炸、长任务活不下来）时来这页抄作业；静态层的组织（tier、骨架）由 [`归属`](./02-legibility-ownership.md) 与 [`入口链`](./09-agents-entry-chain.md) 拥有，本页拥有注入、组装、回收、隔离四层——每层都是 DSH 产品的真实机制，逐层配原话与文件。
 
-## 为什么要有这道
+## 「写短」只解决供给，「按需分配」是运行时的事
 
-「把文档写短」只解决了**供给**——仓库里有了分层的好文档。但**分配**是运行时的事：这一轮注入哪些、模型看到什么、超预算了怎么回收、子代理能看什么——没有运行时机制，短文档照样会被全量塞进上下文，或长任务在上下文爆炸里死掉。DSH 把「按需」从写作纪律升级成了五层机器保证，每层管一段：
+把文档写短只保证了仓库里有分层的好文档。但**分配**是运行时的事：这一轮注入哪些、模型看到什么、超预算了怎么回收、子代理能看什么——没有运行时机制，短文档照样会被全量塞进上下文，或长任务在上下文爆炸里死掉。DSH 把「按需」从写作纪律升级成了五层机器保证，每层管一段：
 
 | 层 | 回答的问题 | DSH 机制 | 可迁移性 |
 |---|---|---|---|
@@ -28,9 +28,17 @@
 
   这一条就是入口链「会话态」在运行时的真实实现：文件层面「合适个数」，运行时层面「触达才加载 + 有预算 + 去重」。
 
-- **`file-reference` / `file-reference-local`**：`@file` mention grammar 与本地工作区的补全 provider。
-- **`session-reference`**：其它会话的 bounded snapshot（有界快照，不是整段搬）。
-- **`time-context` / `tmux-context`**：当前时间 / 位置这类「便宜但有用」的事实。
+- **`file-reference` / `file-reference-local`**：`@file` mention 的发现与共享文法（`ctx.fileReferences`）+ 本地工作区的补全 provider——用户在输入里 `@` 一个文件，它的路径进入上下文，而不是整个文件被静默塞入。
+- **`session-reference`**：引用其它会话（`ctx.sessionReferenceResolver`）——mention 一个会话，它的**有界只读快照**成为上下文，不是整段搬运；快照语义与错误分类有专门的[子系统文档](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/session-reference.md)。
+- **`time-context`**：当前时间、浏览器时区、每步耗时；**`tmux-context`**：agent 所在的 tmux 会话/窗口/面板位置——「便宜但有用」的事实，每轮注入的成本极低。
+
+  为什么这些都能注入而不失控——[packages/context/README.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/README.md) 说得清楚：
+
+  > **DSH 原话 ·** 注入的持久性与边界（`packages/context/README.md`）
+  >
+  > Context is durable: injected instructions and references enter session history as user-role messages, so they persist, replay, and compact like other conversation content.
+
+  注入的内容以 user-role 消息进会话历史——**它们和普通对话一样可回放、可压缩**，不享受特权通道（这正是 [`静与动`](./04-static-vs-dynamic.md) 的「模型可见 ⟺ 落日志」在注入层的落实）。
 
 共同点：**注入是有选择、有预算、有去重的，不是把仓库全塞进上下文。**
 
@@ -97,13 +105,16 @@ skill 与 tool 的「摘要 vs 正文」也在这层：
 
 五层各管一段，落到「不糊涂 / 不乱发挥」上的映射是：静态层与注入层决定「该进得来、进不来」（不糊涂），组装层的 tool 可见集收缩与隔离层收窄「模型顺手选错工具、被父上下文带偏」的空间（不乱发挥——注意是收窄选择空间，不是授权边界），回收层决定「超了怎么办」（长任务活下来）。只做其中一层（比如只写短文档，或只做 compaction）都不完整。
 
-## 可迁移要点（按成本排序）
+## 从哪开始
 
-1. **context 注入给预算 + 去重 + 未变化不重复注入**：普通项目给「AGENTS.md 加载器」设 `maxBytes`、去重 `CLAUDE.md`、按 digest 抑制重复——等价实现，不需要插件架构。
-2. **catalog/skill 只给摘要，正文 on-demand**：任何 agent host 都能做（给模型一个 name+description 目录，选中才加载全文）。
-3. **system prompt 组装成「有序 sections + 只在变化时重算」**：多数 agent 框架都有 prompt 组装，难的是「变化才重算」这个 KV-cache 纪律。
-4. **长任务要 compaction 阈值 + 保留 tool-call/result 配对**：超预算时压缩，且绝不拆散一个工具的调用和结果。
-5. **子代理默认隔离**：spawn 不带父历史——这是防「子代理被带偏/污染」最便宜的一刀。
-6. scope / waterfall / declaration-merging / `complete` 段独占是 DSH 独有机制，普通项目不必照搬。
+按压力逐项加，每项独立见效：
+
+1. **上下文爆炸**：给「AGENTS.md 加载器」设 `maxBytes`、去重 `CLAUDE.md`、按 digest 抑制重复——不需要插件架构的等价实现。
+2. **流程文档越塞越多**：只给模型 name+description 目录，选中才加载全文（任何 agent host 都能做）。
+3. **prompt 每轮全量重算**：改成「有序 sections + 只在变化时重算」——难的是这个 KV-cache 纪律，值得。
+4. **长任务死在上下文溢出**：加 compaction 阈值，压缩时绝不拆散一个工具的调用和结果。
+5. **子代理被父上下文带偏**：spawn 不带父历史——最便宜的一刀。
+
+scope / waterfall / declaration-merging / `complete` 段独占是 DSH 独有机制，普通项目不必照搬。
 
 本页声称的 DSH 事实，上游一手出处集中登记在 [`reference.md`](./reference.md)（本章「12 · 披露管线」一节）——按需核对，不读不影响理解。
