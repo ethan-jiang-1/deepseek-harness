@@ -1,6 +1,6 @@
 # 运行时 Harness 评估 · 细粒度（fine-grained；探针（probe）、实验与封顶（cap））
 
-**这份文档是什么。** 运行时 Harness 评估的**细粒度（fine-grained）**一半：对粗粒度（coarse-grained；[11 粗粒度（coarse-grained）](./11-evaluate-runtime-harness.md)）里判为红、或这一轮决定要动的维度，用探针（probe）与五个活体实验（live experiment）钉死档位，用封顶规则（cap rules）压掉虚高的分。
+**这份文档是什么。** 运行时 Harness 评估的**细粒度（fine-grained）**一半：对粗粒度（coarse-grained；[11 粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md)）里判为红、或这一轮决定要动的维度，用探针（probe）与五个活体实验（live experiment）钉死档位，用封顶规则（cap rules）压掉虚高的分。
 
 **什么时候用。** 先跑 11：过适用性（applicability）三问 → 十一维粗判（coarse check） → 评分卡（scorecard）与缺口清单（gap list），每维得到一个粗判档（coarse grade）。**只在粗判（coarse check）为红、这一轮要动、或要写成最终结论的维度上翻到本文对应的小节**，把粗判档（coarse grade）钉成定档（final grade）。适用性（applicability）判定、维度集合、通用两轴（two axes）、成熟度档（maturity level）、五个活体实验（live experiment）、形态裁剪（profile tailoring）、报告格式与自检在 11；每维的一句话定义、锚点阶梯（anchor ladder）、探针（probe）与封顶（cap）在本文。
 
@@ -8,7 +8,7 @@
 
 **编号约定。** 维度用 `RT`，探针（probe）用 `PB`，活体实验（live experiment）用 `LX`，成熟度档（maturity level）用 `MG`（见 [README 的标识符约定](./README.md#标识符约定token)）。
 
-**配套文档。** [01 开发粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md) · [02 开发细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) · [11 运行时粗粒度（coarse-grained）](./11-evaluate-runtime-harness.md) · [20 从缺口到计划](./20-from-gaps-to-plan.md)
+**配套文档。** [01 开发粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md) · [02 开发细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) · [11 运行时粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md) · [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)
 
 ---
 
@@ -28,9 +28,9 @@
 对每个决定要动的维度，走四步：
 
 1. **走探针（probe）。** 用该维的 `PB1`–`PB5` 实际做一遍；需要实验的维度跑对应的 `LX`。
-2. **按锚点（anchor）定档（final grade）。** 用该维自己的覆盖面（coverage）/约束力（enforcement）锚点（anchor）定档（final grade；[11 §3](./11-evaluate-runtime-harness.md#3--十一维粗判coarse-check) 的两轴（two axes）表是通用轴，约束力（enforcement） 3 的通用条件见 [§2](#2--两轴two-axes与封顶cap语义)）。
+2. **按锚点（anchor）定档（final grade）。** 用该维自己的覆盖面（coverage）/约束力（enforcement）锚点（anchor）定档（final grade；[11 §3](./11-evaluate-runtime-harness-coarse.md#3--十一维粗判coarse-check) 的两轴（two axes）表是通用轴，约束力（enforcement） 3 的通用条件见 [§2](#2--两轴two-axes与封顶cap语义)）。
 3. **命中封顶（cap）就压档。** 封顶规则（cap rules）是**上限**：命中哪条，对应轴的上限就被压低，不看其它证据。
-4. **出证据。** 每个扣分都要能指到哪次实验、哪一步、看到什么（见 [11 §7](./11-evaluate-runtime-harness.md#7--报告交付前的自检)）。
+4. **出证据。** 每个扣分都要能指到哪次实验、哪一步、看到什么（见 [11 §7](./11-evaluate-runtime-harness-coarse.md#7--报告交付前的自检)）。
 
 **探针（probe）与判据的分工。** 探针（probe）用来收集证据，**改变档位的只有锚点（anchor）与封顶（cap）**。观察到的现象若不在该维的锚点（anchor）或封顶（cap）里，记进案例列即可，不要据此定档（final grade）。
 
@@ -40,7 +40,7 @@
 
 ## 2 · 两轴（two axes）与封顶（cap）语义
 
-两轴（two axes）的通用定义、成熟度档（maturity level）与计数口径在 [11 §3](./11-evaluate-runtime-harness.md#3--十一维粗判coarse-check)，这里只补三件细粒度（fine-grained）才需要的事：
+两轴（two axes）的通用定义、成熟度档（maturity level）与计数口径在 [11 §3](./11-evaluate-runtime-harness-coarse.md#3--十一维粗判coarse-check)，这里只补三件细粒度（fine-grained）才需要的事：
 
 - **每维以自己的锚点（anchor）为准。** 11 里那两张两轴（two axes）表是所有维度共用的通用轴；定档（final grade）时以该维的锚点（anchor）行为准。
 - **约束力（enforcement） 3 包含通用条件。** 每维锚点（anchor）的约束力（enforcement） 3 只写这一维特有的机制；另外一律要求它**被证明过会失败**（引入违规看它红、还原看它绿），且失败信息指出违反了什么。机制在、但从没被证明会失败，约束力（enforcement）停在 2。
@@ -53,7 +53,7 @@
 四个动作，检验前面两层自己的可信度：
 
 1. **抽一条不变量（invariant）**：系统声称的某条不变量（invariant；"模型看到的一定被记录了""每个注册都会被清理"），**它会在什么时候失败**？找得到那条会触发失败的路径吗？找不到，它可能只是一句注释。
-2. **抽一个接口的失败面**：挑一个公开接口，看它在**正常失败**时怎么表现（用户操作非法 vs 基础设施故障）。两者混在一起 = 调用方永远分不清"该重试"还是"该报 bug"。结论记进 RT9 的案例列，并进 [11 表 3](./11-evaluate-runtime-harness.md#6--报告格式agent-写人读) 的缺口清单（gap list）。
+2. **抽一个接口的失败面**：挑一个公开接口，看它在**正常失败**时怎么表现（用户操作非法 vs 基础设施故障）。两者混在一起 = 调用方永远分不清"该重试"还是"该报 bug"。结论记进 RT9 的案例列，并进 [11 表 3](./11-evaluate-runtime-harness-coarse.md#6--报告格式agent-写人读) 的缺口清单（gap list）。
 3. **抽一个"故意不保证"**：成熟的运行时 harness 会**明说自己不保证什么**。找一份这样的清单。找不到，说明它把边界藏起来了——那是把未定义行为留给使用者。
 4. **抽一次版本严格性**：拿一份用**更新版本**写的持久数据，喂给当前版本。**必须被拒绝，且提示是"版本过新，请升级"而不是"数据损坏"**。这两句话对用户的意义完全不同。
 
@@ -206,7 +206,7 @@
 
 **一句话（summary）**：一项能力由**定义 + 实现 + 使用方**三个角色构成；换一个实现，使用方一行不改。
 
-*适用性（applicability）：AQ3 答"否"时标 N/A（见 [11 §0](./11-evaluate-runtime-harness.md#0--先做适用性applicability判定)）；内部形态下只有一个实现、也不打算换后端时通常 N/A。平台形态下只有一个实现也要评，记低分，不标 N/A。*
+*适用性（applicability）：AQ3 答"否"时标 N/A（见 [11 §0](./11-evaluate-runtime-harness-coarse.md#0--先做适用性applicability判定)）；内部形态下只有一个实现、也不打算换后端时通常 N/A。平台形态下只有一个实现也要评，记低分，不标 N/A。*
 
 **探针（probe）**
 
@@ -345,7 +345,7 @@
 
 **一句话（summary）**：一个动作从发起到落定走**同一条管线**；参数在进入判定前就被冻结；结果只有一条出口；授权判定**失败时关闭**（fail-closed）。
 
-*适用性（applicability）：单机实验档（没有审批面）标 N/A（见 [11 §4](./11-evaluate-runtime-harness.md#4--形态裁剪profile-tailoring)）。*
+*适用性（applicability）：单机实验档（没有审批面）标 N/A（见 [11 §4](./11-evaluate-runtime-harness-coarse.md#4--形态裁剪profile-tailoring)）。*
 
 **探针（probe）**
 
@@ -447,7 +447,7 @@
 
 ## 5 · 短例：一次细粒度（fine-grained）复算
 
-> **构造的示意**，不是对任何真实系统的评估。承接 [11 §8](./11-evaluate-runtime-harness.md#8--短例) 的内部 agent 框架：粗判（coarse check）给出 RT9 覆盖面（coverage） 1 / 约束力（enforcement） 1、RT10 覆盖面（coverage） 1 / 约束力（enforcement） 1。这一轮决定动这两维，于是按第 1 节的四步把粗判档（coarse grade）钉成定档（final grade）。
+> **构造的示意**，不是对任何真实系统的评估。承接 [11 §8](./11-evaluate-runtime-harness-coarse.md#8--短例) 的内部 agent 框架：粗判（coarse check）给出 RT9 覆盖面（coverage） 1 / 约束力（enforcement） 1、RT10 覆盖面（coverage） 1 / 约束力（enforcement） 1。这一轮决定动这两维，于是按第 1 节的四步把粗判档（coarse grade）钉成定档（final grade）。
 
 ### 复算一：RT9 工具执行与授权（Tool execution and authorization）
 
@@ -480,7 +480,7 @@
 | RT9 工具执行与授权（Tool execution and authorization） | 覆盖面（coverage） 1 / 约束力（enforcement） 1 | 覆盖面（coverage） 1 / 约束力（enforcement） 1 |
 | RT10 可执行治理（Executable governance） | 覆盖面（coverage） 1 / 约束力（enforcement） 1 | 覆盖面（coverage） 1 / 约束力（enforcement） 0 |
 
-成熟度档（maturity level）不变（MG0）。缺口清单（gap list）改两处：RT9 那条补上"动作执行完才记录，失败的调用查不到"；新增一条 RT10"9 条可机械判断的架构规则只写在 `CONTRIBUTING.md`"。排进施工顺序（build order）时，RT9 是运行时前置维（prerequisite dimension），与 RT2 同一轮；RT10 的触发条件（trigger；出现写在文档里、可机械判断却没人遵守的规则）已经出现，见 [20 §4.1](./20-from-gaps-to-plan.md#41-运行时维度的排序原则ordering-principles)。
+成熟度档（maturity level）不变（MG0）。缺口清单（gap list）改两处：RT9 那条补上"动作执行完才记录，失败的调用查不到"；新增一条 RT10"9 条可机械判断的架构规则只写在 `CONTRIBUTING.md`"。排进施工顺序（build order）时，RT9 是运行时前置维（prerequisite dimension），与 RT2 同一轮；RT10 的触发条件（trigger；出现写在文档里、可机械判断却没人遵守的规则）已经出现，见 [21 的运行时排序](./21-from-gaps-to-plan-coarse.md#运行时维度的排序原则ordering-principles)。
 
 ---
 

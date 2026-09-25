@@ -1,8 +1,8 @@
-# `_eval_harness` · 五份评估文档的来源与职责
+# `_eval_harness` · 六份评估文档的来源与职责
 
-本目录是把 DSH 研究语料**重写**成一套可直接使用的评估方法的结果。五份文档都不要求读者读过任何来源材料——本页只交代它们**从哪儿来、改了什么、改动时改哪一份**。
+本目录是把 DSH 研究语料**重写**成一套可直接使用的评估方法的结果。六份文档都不要求读者读过任何来源材料——本页只交代它们**从哪儿来、改了什么、改动时改哪一份**。
 
-## 五份是什么
+## 六份是什么
 
 **先粗后细。** 每套评估拆成两份：**粗粒度（coarse-grained）**（第一次过、判断值不值得投入；稳定，基本不动）与**细粒度（fine-grained）**（只对粗判（coarse check）为红或这一轮要动的维度深挖；会持续增补）。
 
@@ -10,15 +10,16 @@
 |---|---|---|---|
 | [`01-evaluate-development-harness-coarse.md`](./01-evaluate-development-harness-coarse.md) | 粗 | 任何仓库的**开发 Harness**：信息缺口（information gap）、证据级（evidence level）、切片（slice）、两轴（two axes）、成熟度档（maturity level）、十七维粗判（coarse check）、报告格式、自检 | 先跑这份 |
 | [`02-evaluate-development-harness-fine.md`](./02-evaluate-development-harness-fine.md) | 细 | 同一对象：每维一句话定义、探针（probe） `PB1`–`PB6`、两轴（two axes）锚点（anchor）、88 条封顶（cap）、伪证（false evidence）与走形（degradation）、第三层反证（falsification） | 粗判（coarse check）为红 / 要动的维度 |
-| [`11-evaluate-runtime-harness.md`](./11-evaluate-runtime-harness.md) | 粗 | **运行时 Harness**（仅当这个仓库本身是 agent 产品）：适用性（applicability）三问、五个活体实验（live experiment） `LX1`–`LX5`、两轴（two axes）、成熟度档（maturity level）、十一维粗判（coarse check）、形态裁剪（profile tailoring）、模仿判断 | 仓库本身是 agent 产品时，先跑这份 |
+| [`11-evaluate-runtime-harness-coarse.md`](./11-evaluate-runtime-harness-coarse.md) | 粗 | **运行时 Harness**（仅当这个仓库本身是 agent 产品）：适用性（applicability）三问、五个活体实验（live experiment） `LX1`–`LX5`、两轴（two axes）、成熟度档（maturity level）、十一维粗判（coarse check）、形态裁剪（profile tailoring）、模仿判断 | 仓库本身是 agent 产品时，先跑这份 |
 | [`12-evaluate-runtime-harness-fine.md`](./12-evaluate-runtime-harness-fine.md) | 细 | 同一对象：每维一句话定义、探针（probe） `PB1`–`PB5`、两轴（two axes）锚点（anchor）、66 条封顶（cap）、伪证（false evidence）与走形（degradation）、第三层反证（falsification） | 粗判（coarse check）为红 / 要动的维度 |
-| [`20-from-gaps-to-plan.md`](./20-from-gaps-to-plan.md) | 处方 | 缺口清单（gap list）怎样变成施工顺序（build order） | 拿到缺口清单（gap list）之后 |
+| [`21-from-gaps-to-plan-coarse.md`](./21-from-gaps-to-plan-coarse.md) | 粗 | 缺口怎样排成施工顺序（build order）：排序、症状对照、每维最小一步、收工线（stop line） | 拿到缺口清单（gap list）之后，先跑这份 |
+| [`22-from-gaps-to-plan-fine.md`](./22-from-gaps-to-plan-fine.md) | 细 | 这一轮要动的维度：做法、验收红线（acceptance red lines）、成本、走形（degradation） | 21 排定要动的维度 |
 
 **执行者是 agent，人是读者。** agent 按这些文档跑评估、写 Markdown 报告；人读文档是为了理解判据，读报告是为了复核证据、回答报告末尾的问题、决定下一步，不打分。
 
-**关系。** 诊断（01/11 粗 → 02/12 细）→ 处方（20）。一个普通库可以开发侧满分而运行时侧完全不适用。粗粒度（coarse-grained）给每维一个**粗判档（coarse grade）**，细粒度（fine-grained）把要动的维度钉成**定档（final grade）**；两者冲突时以定档（final grade）为准。
+**关系。** 诊断（01/11 粗 → 02/12 细）→ 处方（21 粗 → 22 细）。一个普通库可以开发侧满分而运行时侧完全不适用。粗粒度（coarse-grained）给每维一个**粗判档（coarse grade）**，细粒度（fine-grained）把要动的维度钉成**定档（final grade）**；两者冲突时以定档（final grade）为准。
 
-**两套维度各评各的对象。** 开发侧评仓库自己（规则、配置、生成物（generated artifact）、开发工具链、供给 coding agent 的上下文），运行时侧评 agent 产品。判据同源的五对（CP4↔RT9、ST1↔RT2、ST2↔RT7、ST3↔RT1、MT2↔RT3）各自计分、各自排期，不去重，也不互相借证据，规则见 [20 的原则六](./20-from-gaps-to-plan.md#原则六同时评两份时相近的维度各评各的对象)。
+**两套维度各评各的对象。** 开发侧评仓库自己（规则、配置、生成物（generated artifact）、开发工具链、供给 coding agent 的上下文），运行时侧评 agent 产品。判据同源的五对（CP4↔RT9、ST1↔RT2、ST2↔RT7、ST3↔RT1、MT2↔RT3）各自计分、各自排期，不去重，也不互相借证据，规则见 [21 的原则六](./21-from-gaps-to-plan-coarse.md#原则六同时评两份时相近的维度各评各的对象)。
 
 ### 本目录的处境
 
@@ -91,7 +92,7 @@
 |---|---|---|
 | 教程与立场 | `_agent_ready_development/sdlc-tutorial/00-index.md` | 01 §1 三条立场的出处 |
 | 仓库机制 | `_agent_ready_development/repo-harness/` 全 11 篇 + 三个目录的 `README`/`00-index` + `_coverage/00-corpus-maintenance.md` + `verify.mjs` | 知识归位组、证据与交付组、状态与上下文组 |
-| 转移章法 | `_faq_on_digested/07_borrowing-harness-idea/` 的 01–05、07–09、11–13（11 篇） | 开发十七维（维度集合与粗判（coarse check）在 01，定义、探针（probe）、锚点（anchor）与封顶（cap）在 02）、20 的处置卡（remediation card）、四条边界 |
+| 转移章法 | `_faq_on_digested/07_borrowing-harness-idea/` 的 01–05、07–09、11–13（11 篇） | 开发十七维（维度集合与粗判（coarse check）在 01，定义、探针（probe）、锚点（anchor）与封顶（cap）在 02）、22 的处置卡（remediation card）、四条边界 |
 | 流程参考 | `_agent_ready_development/sdlc-reference/` 全 13 篇 | 补齐的五维：意图入口、评审与批准、发布与版本、分类学、防漂移（drift prevention） |
 | 运行时机制 | `_digested/` 的 `agent-loop`、`capability-seams`、`composition`、`session-and-loop`、`tools-prompt-llm`、`runtime-profiles`、`surfaces`、`system` 八组 + `_faq_on_digested/08_plugin-seam-maturity`、`09_plugin-business-ladder` | 11/12 的全部十一维 + 11 §5 的模仿判断 |
 
@@ -147,17 +148,17 @@
 | 12 附录 A 封顶规则（cap rules）速查 | **本目录新增** |
 | 11 §8 短例、12 §5 细粒度（fine-grained）复算 | 构造的（12 §5 承 11 §8 的例子） |
 
-### 20 从缺口到计划
+### 21 从缺口到计划
 
 | 部分 | 来源 |
 |---|---|
-| §1 排序原则（ordering principles） | FAQ07/10 的优先级 0–5 + FAQ07/06 的"先诊断后施工"；**原则六（两份评分卡（scorecard）各评各的对象）为本目录新增** |
-| §2 症状 → 维度表 | FAQ07/answer 的总览表，按十七维扩充 |
-| §3 十七张处置卡（remediation card） | FAQ07/06 的 Phase 2–8 验收 + 各章的"从哪开始""学走形（degradation）的检查" |
-| §4 运行时处置卡（remediation card） | 12 的十一维 + 运行时机制那一路整理的边界与失败语义 |
-| §5 形态重解释 | **本目录新增**（把 01 §5 的形态表（profile table）逐格落到各维的最小形态（minimum form）上） |
-| §6 四条边界与维护成本（maintenance cost）表 | FAQ07/10 + repo-harness 07 |
-| §7 循环与停止条件、§8 短例 | **本目录新增**（短例承 01 第 8 节的构造例子） |
+| 21 §1 排序原则（ordering principles） | FAQ07/10 的优先级 0–5 + FAQ07/06 的"先诊断后施工"；**原则六（两份评分卡（scorecard）各评各的对象）为本目录新增** |
+| 21 §2 症状 → 维度表、§3 每维最小一步 | FAQ07/answer 的总览表，按十七维扩充 |
+| 22 §1 十七张处置卡（remediation card） | FAQ07/06 的 Phase 2–8 验收 + 各章的"从哪开始""学走形（degradation）的检查" |
+| 22 §2 运行时处置卡（remediation card） | 12 的十一维 + 运行时机制那一路整理的边界与失败语义 |
+| 22 §3 形态重解释 | **本目录新增**（把 01 §5 的形态表（profile table）逐格落到各维的最小形态（minimum form）上） |
+| 21 §4 四条边界与维护成本（maintenance cost）表 | FAQ07/10 + repo-harness 07 |
+| 21 §5 循环与停止条件、§6 短例 | **本目录新增**（短例承 01 第 8 节的构造例子） |
 
 ---
 
