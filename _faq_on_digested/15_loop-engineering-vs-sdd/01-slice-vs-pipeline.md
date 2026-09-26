@@ -2,14 +2,24 @@
 
 ## 结论先行
 
-owner 的体感「结果还行，但把控力不够」不是错觉，也不是 DSH 的缺陷，而是**分层错位**：DSH 把把控力做满了**切片层**（每一笔交付的最小证据、机械门禁、整 PR 回滚），把**管线层**（队列、次序、在途状态、提案状态板、逐 feature 验证汇总）**刻意留白**；OpenSpec / Spec Kit 恰恰把管线层当第一公民（spec → plan → tasks 的产物链 + 每阶段人工审批门），切片层的证据反而薄。两边的「把控」不是同一种东西，所以体感对照必然是「OpenSpec 非常清楚、DSH 看不太清但结果还行」。
+owner 的体感「结果还行，但把控力不够」对上的是**分层错位**：DSH 把把控力做满了**切片层**（每一笔交付的最小证据、机械门禁、整 PR 回滚），把**管线层**（队列、次序、在途状态、提案状态板、逐 feature 验证汇总）**刻意留白**；OpenSpec / Spec Kit 把管线层当第一公民（spec → plan → tasks 的产物链 + 每阶段人工审批门），切片层的证据薄。两边的「把控」不是同一种东西，所以对照起来就是「OpenSpec 非常清楚、DSH 看不太清但结果还行」。另一句体感——「这就是 loop engineering」——官方没有说过，见第一节。
 
-## 第一节 「loop engineering」这个名字对得上什么
+## 第一节 「loop engineering」是体感用词，不是官方流程名
 
-owner 口中的 loop engineering，在两处已有正式名字：
+官方文档、插件作者指南和本目录既有 FAQ 都没有把插件开发流程命名为 loop engineering，也没有主张它是这种流程。owner 口述里的这个词，是语音转写把「logo engineering」按语境改成的体感标签：入口是一个粗目标，后面在循环，没有 OpenSpec / Spec Kit 那种「每个阶段一份产物、人审完才继续」。
 
-- **库内**：FAQ 11 命名的**窄证据切片闭环**——核对现场 → 判定窄 diff → 原子修改 owner 面 → 跑「会为这次回归而失败」的最小证据 → 沉淀 gate/Note → 只报告实际跑过的；每笔交付是一个带代码、测试、docs、Note、快照的完整垂直切片（[../11_native-development-loop/answer.md](../11_native-development-loop/answer.md)）。FAQ 11 同时画出两个回路：agent 执行者六步闭环在内圈，人类指挥者回路在外圈（切窄片 → 说清意图 → 委派执行 → 审最小证据 → 通过/整 PR 回滚）。
-- **库外**：这个名字簇在 2025–2026 被反复命名——vibe coding（Karpathy 2025-02）、Ralph Wiggum loop（Huntley 2025-07）、harness / context engineering（Anthropic 2024-12、2025-11 工程博客）、Natural Language Development（marmelab 2025-11 的二次命名）。外部叫法不一，但家族特征一致：约束写进环境（AGENTS.md、门禁、测试、signs/backpressure），而不是写进上游大 spec（详见 [02 篇](./02-external-trend-verdict.md)）。owner 的私人术语可以用，公开引用时建议对齐到 harness-first / loop-first 家族。
+这个感觉对得上两件可以单独核对的事，对不上一个官方身份：
+
+- **对得上的制度事实**在第二节、第三节：有阶段地图，没有阶段门；切片层门禁是满的，管线层是空的。
+- **对得上的运行时事实**在 [04 篇](./04-owner-control-gap.md)：人不再逐条发话之后，goal 续轮仍会往前跑。口述里的「时不时提醒他计划计划」是人还在当下一句 prompt 的作者。
+- **对不上的身份**：把上面两件事叫成「官方的 loop engineering」。官方写的是机制、Note、门禁和会话级 goal，没有这门方法的名字。
+
+2026 年的公开定义用了同一个词，指的操作比这份体感多一层。出处放在 [research.md](./research.md) D 路；这里只留分界：
+
+- LangChain，Sydney Runkle，2026-06-16：loop engineering 是叠在 harness 上的多环——模型调工具直到做完、验证失败打回、事件或定时再跑、用运行轨迹改 harness。
+- Addy Osmani，2026-08-14：loop 是 agent 反复行动、自测、调整，直到一个写清的目标达成。他转述的分层是：人每一轮自己写下一句，叫 agentic loop；`/goal` 把完成条件交给评估器打回；`/loop` 按间隔重跑。停止条件含糊，或把品味一起交出去，这套做法会出问题。他把 Huntley 的 Ralph bash loop 写成这些原语出现之前的手写形态。
+
+所以体感「有点像 loop」可以保留。把它写成官方流程的名字，多写了官方没说的话。把它写成已经是上述公开实践，又少了他们要求的两样：人能核的停止条件，以及决定下一件工作的外层系统。DSH 的 goal 续轮靠近内层原语；owner 四仓后补的 ROADMAP 才靠近外层。FAQ 11 的窄证据切片闭环是每一笔交付内部的执行环，同样不是这个公开术语。相邻的旧名字（vibe coding、Ralph、harness engineering、Natural Language Development）各自指哪一层，见 [02 篇](./02-external-trend-verdict.md)。
 
 ## 第二节 DSH 有「阶段地图」，没有「阶段门」
 
