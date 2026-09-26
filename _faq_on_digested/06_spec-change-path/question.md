@@ -25,7 +25,7 @@ Issue → proposed Note → Plan → implementation → docs/types/README
 
 ## 文件
 
-- [`answer.md`](./answer.md)：总答案
+- [`answer.md`](./answer.md)：总答案（文末有 2026-09-26 后见补记：FAQ 15 复核后的框架修正与规模律）
 - [`01-spec-path-overview.md`](./01-spec-path-overview.md)：完整 spec 路径总览
 - [`02-intent-decision-plan.md`](./02-intent-decision-plan.md)：上游：Issue、proposed Note、Plan
 - [`03-implementation-to-current-contract.md`](./03-implementation-to-current-contract.md)：中游：实现、docs/types/README、tests/snapshots
