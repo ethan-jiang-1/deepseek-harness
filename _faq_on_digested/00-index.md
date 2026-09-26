@@ -56,6 +56,7 @@ _faq_on_digested/
 | 12 | [dsh web 多开窗口卡住：第 4 个就卡，是启动有并发限制吗？](./12_dsh-web-stuck-windows/question.md) | [不是并发：rev 轮换 + 陈旧缓存 index → 动态模块全 404；诊断机制仍成立，但「index 加 `no-store`」修复已随 0008 整树照搬退役，登记为上游候选缺口；runbook 保留为手动处置路径](./12_dsh-web-stuck-windows/answer.md) |
 | 13 | [一个"领域专家"DSH 插件，repo 应该怎样组织？](./13_expert-plugin-repo-organization/question.md) | [五个决策（入口/粒度/DSH 源码/UI 层/spec 流程）× 四个方案（pinned submodule / 树内 / 纯外部 / marketplace），推荐方案 A；共享开发过程（插拔/调试/驱动 agent）见 dev-loop.md，官方安装的保护见 dual-home-isolation.md，命名/标识的"身份 vs 皮肤"分层见 naming-and-identity.md，市场实证见 research.md](./13_expert-plugin-repo-organization/answer.md) |
 | 14 | [DSH 有没有类似 Claude Code / Codex 的 hooks 机制？三家的 hooks 怎么比？](./14_hooks-vs-claude-code-codex/question.md) | [有，两层：原生拦截扩展点（typed Decision 插件面）+ CC/Codex 兼容桥（7/33 与 5/12 事件的 command 钩子子集）；三家按声明/事件/执行/控制力/审计五轴对照，桥的取舍是"兼容适配器不是力量工具"，外部读数留档 research.md](./14_hooks-vs-claude-code-codex/answer.md) |
+| 15 | [跟着 DSH 流程开发插件，体感是 loop engineering 而非 SDD：趋势还是错觉？把控力缺在哪？](./15_loop-engineering-vs-sdd/question.md) | [体感属实：DSH 切片层满、管线层留白是自觉设计；外部=中强收敛趋势（四个命名）；社区 15 仓默认 loop+门禁、spec-first 零采用；缺口沿「对话税→显性化→门禁化」已补过半，控制点清单见 05 篇；研究思路与结论攻击面单列 research-strategy.md 供复审](./15_loop-engineering-vs-sdd/answer.md) |
 
 ## 引用规范
 
