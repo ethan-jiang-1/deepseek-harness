@@ -1,4 +1,4 @@
-# 05 · 控制点清单：在 loop 风格里找回把控力，不引入 SDD 门
+# 05 · 控制点清单：补上管线层可见面，不引入 SDD 阶段门
 
 ## 结论先行
 
@@ -8,7 +8,7 @@
 
 1. **TodoPanel 当反馈门②**【上游在场 + owner 已验证】：实施期盯 todo 活清单、想改直接发消息 steer——「你看得见自己的反馈被吸收」（dsh-inround-task-surface.md:87-89）。讽刺条在先：机制一直在场却没人用，纪律化后才产出把控感。
 2. **Plan Mode 当反馈门①**【上游在场；owner 已验证的是「呈批」这个步骤本身，运行时载体见下】：队列 feature 条目默认呈批——「用户已明确批准具体计划时不重复求批，否则默认先呈批」（company ROADMAP 头注）。B4 修正：20 个采样会话中 plan mode **零进入**，呈批的实际载体是 `ask_user_question`（38 次）——把「呈批」当流程步骤时，机制名要按实际载体写（04 §3）。上游定位仍是可选审阅边界，owner 把它编码成条目生命周期的一段。
-3. **goal 的写法与 /goal 人面**【上游在场 + owner 已验证】：objective 用「交付型=按队列逐条执行（队列空即收口）/ 打磨型=预算+输入源+枯竭即收口 + 三类停止条件」（company dev-loop.md:33）；日常 inspect 用 `/goal`（不耗模型轮）。`requireDirectHuman` 保证模型不能自己 create/pause/resume——「模型不能自己 resume」（digital-twin note:185-204）。
+3. **goal 的写法与 /goal 人面**【上游在场 + owner 已验证】：objective 用「交付型=按队列逐条执行（队列空即收口）/ 打磨型=预算+输入源+枯竭即收口 + 三类停止条件」（company dev-loop.md:33）；日常 inspect 用 `/goal`（不耗模型轮）。`requireDirectHuman`（`packages/goal/tool-goal`）要求 create / edit / pause 发生在带直接人类消息的顶层轮次里，objective 仍由模型写入；暂停态的 `resume` 被工具拒绝，原文是 "the model cannot resume a paused goal; the user must resume it"。因此「模型不能自己建 goal」不成立：人说一句，模型代写 objective，goal 文本可以不在人手里。
 4. **拍板语义行内化**【owner 已验证】：`⏸ 等用户拍板`、`🔒 用户判触发（不得自行判触发、不得删行）`——把「谁决定」写成队列行的一部分（ROADMAP.md:48-52）。
 
 ## L1 · 管线层薄文件（一小时级，owner 四仓的核心补丁）
@@ -27,7 +27,7 @@
 ## L3 · 长程自主（goal 马拉松形态）的把控
 
 12. **停止条件写进 objective**【owner 已验证】：交付型「队列空即收口」、打磨型「枯竭即收口」——没有停止条件的 goal 就是「一直催着往前跑」的体感来源。
-13. **复盘 note + 事故→门禁回路**【owner 已验证】：每场马拉松留复盘（做了什么/几笔提交/门禁咬作者几次），失真显影即立门禁——这是 loop 风格的学习回路（04 篇第二节）。
+13. **复盘 note + 事故→门禁回路**【owner 已验证】：每场马拉松留复盘（做了什么/几笔提交/门禁咬作者几次），失真显影即立门禁——这是没有阶段门时的学习回路（04 篇第二节）。
 14. **行业同构对照**【外部印证】：Anthropic 的 `feature_list.json`（机械进度盘，"It is unacceptable to remove or edit tests"）、Ralph 的 fix_plan.md 与 backpressure（"Anything can be wired in as back pressure to reject invalid code generation"）、Claude Code auto mode + catch-up、OpenAI auto-review——全部是「机械进度盘 + 机械门 + 事后审」同一家族；owner 的 ROADMAP+门禁是同一设计在插件仓的实例。
 
 ## L4 · 跨仓总览（可选，尚未验证）
@@ -57,4 +57,4 @@ owner 的洞察（2026-09-26）：「DSH 肯定是多人协作，notes 的地位
 
 ## 最接近的一句话
 
-**把控力的缺口几乎全部能用「L0 用满在场机制 → L1 一张队列文件 → L2 两道门禁」补齐，成本以小时到半天计；SDD 真正不可替代的只剩「多真人审需求文本」这一种场景——而那不是 loop 的失败，是另一个问题的另一种工具。**
+**把控力的缺口几乎全部能用「L0 用满在场机制 → L1 一张队列文件 → L2 两道门禁」补齐，成本以小时到半天计。多真人要审需求文本时，SDD 的产物链仍然划算；那是另一种协调问题。**
