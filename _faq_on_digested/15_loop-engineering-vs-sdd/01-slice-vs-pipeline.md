@@ -1,53 +1,36 @@
-# 01 · 切片层 vs 管线层：DSH 和 SDD 卖的是两层不同的「把控」
+# 01 · 交付层与工作层：DSH 的执行能力如何接到项目进度
 
 ## 结论先行
 
-owner 的体感「结果还行，但把控力不够」对上的是**分层错位**：DSH 把把控力做满了**切片层**（每一笔交付的最小证据、机械门禁、整 PR 回滚），把**管线层**（队列、次序、在途状态、提案状态板、逐 feature 验证汇总）**刻意留白**；OpenSpec / Spec Kit 把管线层当第一公民（spec → plan → tasks 的产物链 + 每阶段人工审批门），切片层的证据薄。两边的「把控」不是同一种东西，所以对照起来就是「OpenSpec 非常清楚、DSH 看不太清但结果还行」。另一句体感——「这就是 loop engineering」——官方没有说过，见第一节。
+「结果还行，但把控力不够」可以先分成两个尺度：**交付层**是一笔变更的行为、测试、文档和复核证据；**工作层**是跨 feature 的取题、排序、在途状态、停止与人的批准。这个二分是本 FAQ 的分析工具，不是 DSH 或 SDD 的官方分类。DSH 运行时支持执行与会话级目标，DSH 自身仓库重视每笔交付的可检验性；但它没有为所有外部插件项目规定统一的跨 feature 工作管理方法。OpenSpec/Spec Kit 提供可选的规格与任务产物，能使工作层更容易看清，也并不保证交付质量。两层可以组合，不能说一方「满」、另一方「空」。
 
-## 第一节 「loop engineering」是体感用词，不是官方流程名
+## 第一节 你的 loop 体感有出处，但不是官方流程名
 
-官方文档、插件作者指南和本目录既有 FAQ 都没有把插件开发流程命名为 loop engineering，也没有主张它是这种流程。owner 口述里的这个词，是语音转写把「logo engineering」按语境改成的体感标签：入口是一个粗目标，后面在循环，没有 OpenSpec / Spec Kit 那种「每个阶段一份产物、人审完才继续」。
+[Addy Osmani 2026-06-07 的原文](https://addyosmani.com/blog/loop-engineering/)把 loop engineering 的关键变化说成「replacing yourself as the person who prompts the agent」，让系统发现、分配、检查、记录并接续工作。你的多轮 goal、验证反馈与插件仓队列，已在靠近这种工作方式；仍需要你反复提醒计划、检查目标和决定下一项的地方，说明工作层尚有部分靠对话维持。不能因此说「完全不算 loop」，更不能把 DSH 产品或插件作者文档命名成官方的 loop engineering 开发流程。
 
-这个感觉对得上两件可以单独核对的事，对不上一个官方身份：
+其他作者讨论了相邻但不完全相同的循环：[LangChain 2026-06-16](https://www.langchain.com/blog/the-art-of-loop-engineering)区分 agent 运行、验证反馈、事件触发与改进 harness 的多层循环；[Osmani 2026-08-14](https://addyosmani.com/blog/practical-loop-engineering/)强调清楚的停止条件与需要时亲自审代码。停止条件是可靠委托的重要设计项，不是这些文章共享的唯一术语定义。DSH 的 [goal 服务](../../packages/goal/goal/README.md)只保存单会话目标，[续轮驱动](../../packages/goal/goal-round-driver/README.md)有轮次上限与停止状态；它们本身不会选择跨 feature 的下一件工作，也不保证完成结果通过人类判断。FAQ 11 的窄证据切片闭环则描述一笔交付内的习惯，不是对整个项目编排的正式名称。
 
-- **对得上的制度事实**在第二节、第三节：有阶段地图，没有阶段门；切片层门禁是满的，管线层是空的。
-- **对得上的运行时事实**在 [04 篇](./04-owner-control-gap.md)：人不再逐条发话之后，goal 续轮仍会往前跑。口述里的「时不时提醒他计划计划」是人还在当下一句 prompt 的作者。
-- **对不上的身份**：把上面两件事叫成「官方的 loop engineering」。官方写的是机制、Note、门禁和会话级 goal，没有这门方法的名字。
+## 第二节 三种不同来源的流程事实
 
-2026 年的公开定义用了同一个词，指的操作比这份体感多一层。出处放在 [research.md](./research.md) D 路；这里只留分界：
+1. **DSH 产品**：提供可组合的插件、会话执行与 goal、todo、plan 等能力；[插件入门](../../docs/user/develop/basic/index.md)讲如何构建和挂载，[设计指南](../../docs/user/develop/practice/index.md)讲角色分工，没有要求外部作者采用统一的 Issue/Note/任务序列。
+2. **DSH 仓库**：其贡献者遵循根 [AGENTS.md](../../AGENTS.md)的测试、快照和文档纪律，重大决策记录在 [Agent Note](../../.agents/notes/README.md)；这是这个仓库的交付制度，不因别人在 DSH 上写插件就自动适用。
+3. **你的独立插件仓**：选择把 ROADMAP、提案、立卡与指针校验连起来，使下一项和在途工作可见。这是有针对性的本仓适配；它可以借 DSH 的质量原则，却不是复制 DSH 官方插件开发流程。
 
-- LangChain，Sydney Runkle，2026-06-16：loop engineering 是叠在 harness 上的多环——模型调工具直到做完、验证失败打回、事件或定时再跑、用运行轨迹改 harness。
-- Addy Osmani，2026-08-14：loop 是 agent 反复行动、自测、调整，直到一个写清的目标达成。他转述的分层是：人每一轮自己写下一句，叫 agentic loop；`/goal` 把完成条件交给评估器打回；`/loop` 按间隔重跑。停止条件含糊，或把品味一起交出去，这套做法会出问题。他把 Huntley 的 Ralph bash loop 写成这些原语出现之前的手写形态。
+FAQ 13 的 [dev-loop](../13_expert-plugin-repo-organization/dev-loop.md)把不同载体排成第 0–7 阶段，供设计独立插件仓时参考，不是产品要求按阶段停车。DSH 的 [plan mode](../../packages/plan/README.md)提供可选审阅，而非操作权限锁。在外部工具侧，[Spec Kit 的 quickstart](https://github.github.io/spec-kit/quickstart.html)推荐每步审阅；OpenSpec [README](https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/README.md)鼓励审阅计划，但 [OPSX](https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/docs/opsx.md)明说没有刚性阶段门，产物可在实施中反复修订。应分别比较产物可见性、建议审阅时点和真正强制的检查。
 
-所以体感「有点像 loop」可以保留。把它写成官方流程的名字，多写了官方没说的话。把它写成已经是上述公开实践，又少了他们要求的两样：人能核的停止条件，以及决定下一件工作的外层系统。DSH 的 goal 续轮靠近内层原语；owner 四仓后补的 ROADMAP 才靠近外层。FAQ 11 的窄证据切片闭环是每一笔交付内部的执行环，同样不是这个公开术语。相邻的旧名字（vibe coding、Ralph、harness engineering、Natural Language Development）各自指哪一层，见 [02 篇](./02-external-trend-verdict.md)。
+## 第三节 两个尺度能解释什么、不能解释什么
 
-## 第二节 DSH 有「阶段地图」，没有「阶段门」
-
-FAQ 13 的 [dev-loop](../13_expert-plugin-repo-organization/dev-loop.md) 画过第 0–7 阶段（准备/意图/决策/设计/落地/调试/调整/收尾），但它描述的是**每一步有什么现成载体可用**，不是**每一步必须停车等人审批**。上游真正强制的只有两个**交付时锚**：非 Draft 人类 PR 进 review 后必须引用 Issue（`.github/issue-management/policy.mjs`）、非平凡变更同 diff 带 Agent Note（`.agents/notes/README.md:46`）。Plan Mode 是「用户选择的审阅边界」——「guides rather than restricts: every tool stays available」（[packages/plan/README.md](../../packages/plan/README.md)），批准前不动文件是行为约定而非机制强制。
-
-对照 SDD 工具的「门」：Spec Kit 官方要求「Invoke each /speckit-* skill **one at a time, and review the result before continuing**」（specify→plan→tasks→implement 每阶段人审）；OpenSpec 的核心卖点「Your AI writes these; **you review the plan before any code is written**」。门的密度与位置，是两家 SDD 工具与 DSH 最硬的差别。
-
-## 第三节 两层模型：把控力缺口的精确定位
-
-| | 切片层（每笔交付） | 管线层（多 feature / 长周期） |
+| | 单笔交付（交付层） | 跨 feature 工作（工作层） |
 |---|---|---|
-| 上游 DSH | **制度完备**：最小匹配证据、quality gates、Note 同 diff、整 PR 回滚、`dsh-pre-push-checks` | **刻意留白**：见下 |
-| OpenSpec / Spec Kit | 薄（验收 checklist 由 AI 解释，Böckeler：「no 100% guarantee that they will be respected」） | **第一公民**：spec/plan/tasks/changes 产物链 + 每阶段人审门 + 队列可见 |
-| owner 体感 | 「结果还行」——切片层门禁是真的 | 「把控力不够」——管线层看不见 |
+| DSH 产品 | 工具与反馈支持逐步执行；goal/todo/plan 保存各自会话状态 | 不替插件仓决定项目优先级或统一的跨会话队列 |
+| DSH 自身仓库 | 代码、测试、快照、文档和决策记录随变更核对 | Issue、PR 和 Note 生命周期可追踪部分工作；没有通用的项目进度盘规定 |
+| OpenSpec / Spec Kit | 规格与场景可供验收；通过测试仍需另行核对 | change/spec/tasks 等产物使计划与进度可见；审阅密度与强制程度不同 |
+| owner 四仓 | 用验证与门禁留交付证据 | 用 ROADMAP、提案及授权标记补跨会话工作来源 |
 
-上游留白是**自觉的设计**，不是漏做，证据有四条：
+根目录没有 ROADMAP，以及 [Agent Note 规则](../../.agents/notes/README.md)禁止给 Note 树建立集中 `INDEX.md`，只说明 **DSH 仓库这样安排其记录**；不能推出上游禁止插件仓建队列，或要求用户靠记忆管理项目。另一方面，note 的 proposed/implemented/rejected 路径编码了决策生命周期，却不等于任务的「下一项、正在做、等人确认、质量可接受」；用它当进度盘需要额外的视图与纪律。[todo](../../packages/todo/README.md)和 goal 属于会话，不能仅凭它们看到四个 repo 的全貌。
 
-1. 根目录无任何 roadmap/队列文件（ls 实证）；docs/AGENTS.md 把 implementation-status 注记列为腐化（「Status rots」）。
-2. `.agents/notes/README.md:19`：「The active lifecycle tree is the working inventory… **Do not add a centralized `INDEX.md`**」——集中视图被门禁禁止。
-3. `.agents/notes/README.md:121`：生命周期搬移（proposed→implemented/rejected）是同 diff 机械改写——状态变化只活在 git 里，对不翻 git 的人**不显影**。这正是 owner「不知道他是像看板一样挪来挪去的，还是干啥的」的制度根源。
-4. 运行时反馈面都是**会话级**的：`todo_write` 清单「belongs to the agent session that created it」（[packages/todo/README.md](../../packages/todo/README.md)）；goal「Each session has only one current goal」（[packages/goal/README.md](../../packages/goal/README.md)）。跨会话、跨 feature 没有任何 harness 级的管线视图。
-
-owner 的五个体感缺口（B 路编码：队列与次序 / 在途状态 / proposal 状态语义 / 逐 feature 验证汇总 / goal 内容不可见）**全部落在管线层**；而他在切片层拿到的东西（验收：verify 31/31、tsc 0 error、整 PR 回滚）恰恰是 SDD 用户抱怨缺的（yoaviram：「Most tests were failing… it declares the sprint as done even though tests still fail」）。两边各缺一层，互为镜像。
-
-## 第四节 这个留白把成本推给了谁
-
-管线层留白不是免费的：它把「接下来做什么、做到哪了」从**外部产物**（tasks.md、changes/ 目录）搬回了**人的工作记忆与对话催促**。owner 的应对是口述复盘里的两条——时不时提醒「我们要计划计划」、要求「显性化到 notes/proposal 里头」——都是在用对话税手工补一层 DSH 刻意不维护的东西。这不是 owner 不会用工具，而是该设计下的必然体验；FAQ 11 第八节说「六步闭环是执行者的回路，指挥者的回路在它外面」，本篇补一句：**指挥者回路的进度盘，上游没有造，实践者要么自造（见 [04 篇](./04-owner-control-gap.md)：owner 四个 repo 的队列层演化），要么去买 SDD 工具的整层（带上一堆自己未必想要的门）。**
+这个模型还解释不完「质量怎么样」和「goal 是什么」：自动检查只覆盖它实际检测的行为；人未批准的范围扩大、需求理解错误、体验不够好，即使验证通过也可能存在。goal 既是会话执行状态，又牵涉谁能设定完成标准。把一切归入工作层并说交付层已满，会错过这两个判断问题。[04 篇](./04-owner-control-gap.md)把它们与进度可见性分开。
 
 ## 最接近的一句话
 
-**DSH 的把控力在切片层是满的、在管线层是空的，而且空得是故意的；SDD 工具反过来。owner 用 OpenSpec 时的「非常清楚」买的是管线层，跟 DSH 打交道的「看不太清但结果还行」用的是切片层——两个体感都真实，加起来才是一幅完整地图。**
+**DSH 让 agent 的单项执行和检查易于循环，也让自己仓库的变更留有证据；你的插件仓跨 feature 取题、进度和批准如何组织，则由你决定。SDD 的规格与任务可以成为循环的外部记忆和审阅依据。要补的既有可见状态，也有目标授权与质量判断，不能只用一张队列或一轮绿灯代替。**

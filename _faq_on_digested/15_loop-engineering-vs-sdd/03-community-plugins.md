@@ -1,31 +1,23 @@
-# 03 · 社区插件作者：默认是给个目标就开跑，把控力做在门禁、审批点与净化发布面里
+# 03 · 社区插件仓：公开痕迹能说明什么
 
 ## 结论先行
 
-15 仓抽样（样本与逐仓证据见 [research.md](./research.md) C 路）：**目标开跑 ≈10、目标开跑 + 自建计划/审批门禁 ≈3、自建 spec 体系 1、无公开过程痕迹 1**。主流工作方式是 owner 体感里的那种「给个目标就开跑」；仓库里没有人把它命名为 loop engineering，spec-first（spec-kit / OpenSpec 形态）在插件层**零采用**。spec-kit 2026-09-02 的 DSH integration 是把 `/speckit-*` 装进 `.dsh/skills/`（见 [02 篇](./02-external-trend-verdict.md)），不是这些仓库改用了 Spec Kit。社区对把控力的应对与 owner 四仓**同构不同形**：同样是管线层自建，但社区更常用「计划/评审写进 agent 指令 + 净化公开面 + 授权不变量」，而不是 owner 的队列文件 + 立卡 + 生命周期门禁。
+[research.md](./research.md) C 路抽查了 15 个公开仓库，按可见文件和提交记录做过「目标驱动痕迹约 10、兼有计划/审批约 3、自建 spec 体系 1、无公开过程痕迹 1」的**主观分类**；样本中没有发现 Spec Kit/OpenSpec 的典型目录。这些数字描述的是抽样时的**公开产物**，不是对作者实际提示、私有计划或审批过程的观测。特别是有仓库主动从发布树移除内部资料，所以不能据此宣称「社区默认给个目标就开跑」或「插件层零采用 spec-first」。
 
-## 第一节 生态有多大、把关怎么运作
+## 第一节 可以直接观察的事实
 
-上游 236,281★；发现机制 = `dsh-plugin` topic + awesome 榜单（本地 3,552 条目：ui 590 / tools 474 / dev 268 / session 224…）+ dshplugin.app（2,653 indexed）+ npm（头部月下载 112.4k）。生态自己的把关哲学值得抄进本 FAQ：awesome 榜单收录标准明说「**A green CI run is the precondition, not the decision. A maintainer reads the target repository before merging.**」「Overstating is the one thing that gets an otherwise-good plugin sent back」——**机械门 + 人工读码双轨**，与 02 篇的收敛结论在生态治理层再出现一次。
+- 有仓库把类型检查、测试、打包或发布审阅写成可执行检查；有的在模板里规定发布或文档变更先征询人。它们展示了作者如何**公开表达**某些验证和授权要求，不保证每次工作都如文档所述运行。
+- 有的提交把修复、测试和文档一起交付；这可说明提交的形状，不能倒推实现之前是否曾审阅计划。FAQ 11 的单笔交付闭环与此相容，但不是所有社区作者遵循同一方法的证据。
+- 公开项目会使用不同 coding agent 来开发 DSH 插件；插件与开发它的工具不是同一回事。DSH 产品文档没有强制插件作者继承 DSH 仓库的 Note/Issue 纪律。[产品与仓库规则之别](./01-slice-vs-pipeline.md)因而比推测社区是否「loop-first」更可靠。
 
-## 第二节 三个社区级发现
+## 第二节 与你的四仓对照
 
-1. **垂直切片是默认提交形状**：issue→修复→测试→版本号→CHANGELOG，commit body 收尾报「Checks: … npm test 64/64 pass」；没有两段式 proposal→implement 提交史（唯一例外 open-design 的自建 spec 体系，spec 与实现同库共存）。这是 FAQ 11「每笔交付是一个完整垂直切片」在社区的自然重现——没人教，形状自己收敛出来了。
-2. **验证门禁是通用底座，进阶者自建门禁类**：check-peer-range、verify-bundle、plugin-doctor、docs-drift、mutation-checked tests、打包后装进官方 DSH Web 的集成门。上游 quality-gates Note 的信条（「Agents follow enforced gates far more reliably than prose conventions」）在社区是被默认实践、而非被引用的。
-3. **开发 harness 是混用的**：同一个仓库的提交者身份含 Antigravity / Cursor / OpenCode / DSH 四种 agent；有人用 Claude Code+Serena 开发 DSH 插件（dsh-cc），有人明文 Codex=executor（ruflo）。这**弱化了「插件作者天然继承 DSH 流程」的假设**：他们继承的是通用 agent 开发常识（AGENTS.md + 验证门禁），DSH 特有的 Note 制度只有个别项目搬用（oh-story-dsh 的 `.agents/notes/implemented/process/`）。
+你在多 feature、长周期的插件仓里建立 ROADMAP、提案和指针检查；抽样中未观察到相同的 ROADMAP 文件。可能是项目更小、使用 Issue 或私有板、发布前清理文件，也可能是根本不需要这层记录；现有样本无法区分。你觉得跨会话进度不清楚，与这些公开仓库的做法之间没有可直接比较的主观量表，更不能以「没人公开抱怨失控」推断他们没有相同问题。
 
-## 第三节 与 owner 四仓对照：同构不同形，且暴露一个规模边界
+样本仍有实际用途：可从具体仓库借鉴某一种测试、审批标记或发布核对做法，回到你的项目验证是否减少追问和返工；不必因为没有见到 `.specify/` 就否定 SDD 产物作为循环记忆的价值。Spec Kit 向 DSH 添加技能适配意味着可以在 DSH 中使用那套技能，不等于插件作者已使用，也不意味着他们没用别的形式的规格。
 
-同构：把控力都做在管线层，都不外挂 SDD。差异有三，其中第三条最重要：
+## 第三节 要检验趋势，缺什么证据
 
-1. **形态**：owner 用队列文件 + 立卡 + 生命周期门禁（过程文件化）；社区主流是「计划/评审写进 agent 指令」+「净化公开树」（过程私有化——context-lens 干脆把内部 AGENTS.md/docs/plans/ 从公开树 purge 掉）+「审批点写进模板」（exoticknight 模板：文档改动需批准、npm publish 先问）。
-2. **DSH 流程惯例的扩散度**：notes 制度在社区罕见——B3 路引用的「AGENTS.md / Notes / gates 是可迁移的原则，不是继承义务」（FAQ 13）在社区数据上成立。
-3. **规模边界**：15 仓里**没有任何一个**有 ROADMAP 式队列文件（C 路明说搜过没找到）。社区插件多为小工具（一轮循环可交付），owner 跑的是多 feature、长周期、多角色专家插件——**管线层的需求与项目规模/周期正相关**。owner 觉得「把控力不够」而社区作者不喊失控，很可能不是体会深浅之别，而是项目形态之别；「失控第一人称叙事未找到」因此有两种读法（个人工作模式特有 vs 社区项目还没长到会失控的规模），现有证据无法区分——这是本篇最诚实的边界。
+下一轮至少要明确样本选取和每种文件/提交分类的判据，跨不同时长和规模的仓库抽样，并询问作者实际如何决定下一项、在哪里存放计划、由谁批准完成。重查 `.specify/` 可以跟踪**某一种工具的公开痕迹**，但零命中既不能排除私有或其他 SDD 工作流，也不能证明 loop engineering 已成为社区默认。
 
-## 第四节 Bridge 已铺、无人过桥
-
-spec-kit v1.0.4 的 #4336 说明 Spec Kit 愿意把 DSH 当成又一个可装技能的 harness；15 仓没有因此出现 `.specify/`。两个解释并存：集成太新（三周半）；插件作者以 solo 快迭代为主、无此需求。可跟踪的预言仍是：若半年后插件仓开始出现 `.specify/`，说明 SDD 流程开始被这些作者使用；若仍为零，说明插件层的默认跑法没有接上这套产物链。
-
-## 最接近的一句话
-
-**社区的默认是给个目标就开跑，把把控力做进门禁与审批点；小项目连管线层都不放进仓库。这和 owner「有点像 loop」的体感同向，但社区文本没有把这件事叫成 loop engineering，官方也没有。他的 ROADMAP 是多 feature、长周期项目自己长出来的进度盘。**
+**最稳妥的结论：部分公开插件仓展示了自动检查和人工审批的不同组合；它们无法告诉我们作者的完整开发过程，更不足以给你的体感贴上一张社区通行方法的标签。**

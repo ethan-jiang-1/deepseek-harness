@@ -86,11 +86,8 @@ Issue 与 GitHub review 不在 git tree 里，这个例子不能证明 Plan Mode
 - [`06-human-and-agent-roles.md`](./06-human-and-agent-roles.md)
 - [`research.md`](./research.md)
 
-## 后见（2026-09-26，FAQ 15 完成后补记）
+## 后见（FAQ 15 后续复核）
 
-本篇的强制边界段（"只有 Agent Note 是普遍义务"）与九阶段表在 [FAQ 15](../15_loop-engineering-vs-sdd/answer.md) 复核后仍然成立；修正四点：
+本篇九段是 **DSH 仓库自身**从意图到交付可用的载体地图，不是插件作者必须走的九道门。[FAQ 15](../15_loop-engineering-vs-sdd/answer.md)进一步区分 DSH 产品能力、这个仓库的贡献制度和独立插件仓的工作安排。Plan Mode 可选且只提供指导；owner 有意选取的 20 个较大会话未进入 Plan Mode，而曾用 `ask_user_question` 呈批，不能据此推断全部会话或把人审等同于某个模式。
 
-1. **这条"主路径"是载体地图，不是门序**。除 Agent Note 同 diff 外，没有任何机制强迫在阶段之间停车审批——上游无 roadmap/队列文件、`.agents/notes/README.md:19` 禁集中 `INDEX.md`、Plan Mode 是可选审阅边界。把九段画成一条从意图到合同的"路径"，读者会自然读出 SDD 式阶段门的暗示；那是框架带来的，不是制度事实。SDD 工具真正在卖的"门 + 队列 + tasks"整层，是 DSH 刻意不造的（FAQ 15 的 01 篇）。
-2. **行为面证据（FAQ 15 B4）**：owner 的 20 个采样会话中 plan mode 零进入；"开工即立卡 `notes/proposed/`"是 owner 09-24 因"看不见的工作等于没在做"的痛点后用规则补出来的习惯——即"proposed 先行"上游只有规则倡导（`.agents/notes/README.md:46`：「重大未来工作从 proposed/ 开始」）、无调度门禁；owner 用立卡纪律与 proposal-scheduled/graduated（company 09-22 起）把它变成机械拒绝。
-3. **适用范围的区分**：本篇描述的是 DSH **仓库自身**的贡献流程（有 git 历史证据支撑）；"跟随 DSH 开发插件 repo"时，这套路径只有惯例可迁移性（FAQ 13："可迁移的原则，不是继承义务"），不构成义务。把前者当成后者的操作指南，是 FAQ 15 的出发点之一。
-4. **「spec 地位」的去向（规模律视角）**：owner 指出「notes 的地位其实多少跟 Spec 一样」——按三职能拆分，本篇九段路径的载体各自接管其一：proposed/implemented Notes + ROADMAP 接**记忆**（读者以失忆的新 agent 会话为主）；Plan Mode 与拍板标记接**审批**（实践中实为 `ask_user_question`，见 FAQ 15 B4：20 会话 plan mode 零进入）；tests / snapshots / invariants 接**验收**。九段表因此应读作「三个职能在 DSH 里的机制分布图」，不是一条带门序的流水线。流程重量随**协调面**（失忆参与者数量）伸缩而非随人数：上游多真人 + 多 agent 全套都要；owner 单人多 agent 只留 agent 协调层——四档规模律见 [FAQ 15 · 05 篇](../15_loop-engineering-vs-sdd/05-control-points.md)。
+Agent Note 的 proposed/implemented 路径记录决策生命周期，却不保证跨 feature 的任务顺序和在途状态可见。DSH Note 树不建集中 `INDEX.md` 的仓内规则，不能推广为插件仓不准建立 ROADMAP、tasks 或规格；反过来，一张队列也不能替代人对目标范围和交付质量的判断。需求先写在 OpenSpec/Spec Kit 的产物里，再由 DSH agent 循环执行和验证，也是兼容的组合；哪一步必须审阅由本项目的风险与授权决定。
