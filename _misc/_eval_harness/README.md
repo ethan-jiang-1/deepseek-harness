@@ -74,11 +74,11 @@
 
 | 来源 | 提供了什么 |
 |---|---|
-| [`_faq_on_digested/07_borrowing-harness-idea/14-two-failures-as-missing-info.md`](../../_faq_on_digested/07_borrowing-harness-idea/14-two-failures-as-missing-info.md) | **七个信息缺口（information gap）**（01 §1）、"不赌聪明赌成本结构"的反转 |
-| [`…/07/06-step-by-step-guide.md`](../../_faq_on_digested/07_borrowing-harness-idea/06-step-by-step-guide.md) | 十维评估表、Phase 2–8 的产出与验收、垂直切片（vertical slice）走查五问 |
-| [`…/07/09-executable-feedback.md`](../../_faq_on_digested/07_borrowing-harness-idea/09-executable-feedback.md) | 六层反馈表、"检查必须先被证明会失败"、学走形（degradation）的检查 |
-| [`…/07/10-transfer-playbook.md`](../../_faq_on_digested/07_borrowing-harness-idea/10-transfer-playbook.md) | 迁移优先级、"四个不能混淆的边界"、外置知识的维护成本（maintenance cost）表 |
-| [`…/07/answer.md`](../../_faq_on_digested/07_borrowing-harness-idea/answer.md) | 三条立场、三层模型、症状 → 机制总览表 |
+| [`_faq_on_digested/07_borrowing-dsh-harness-idea/14-two-failures-as-missing-info.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/14-two-failures-as-missing-info.md) | **七个信息缺口（information gap）**（01 §1）、"不赌聪明赌成本结构"的反转 |
+| [`…/07/06-step-by-step-guide.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/06-step-by-step-guide.md) | 十维评估表、Phase 2–8 的产出与验收、垂直切片（vertical slice）走查五问 |
+| [`…/07/09-executable-feedback.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/09-executable-feedback.md) | 六层反馈表、"检查必须先被证明会失败"、学走形（degradation）的检查 |
+| [`…/07/10-transfer-playbook.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/10-transfer-playbook.md) | 迁移优先级、"四个不能混淆的边界"、外置知识的维护成本（maintenance cost）表 |
+| [`…/07/answer.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/answer.md) | 三条立场、三层模型、症状 → 机制总览表 |
 | [`_faq_on_digested/11_native-development-loop/answer.md`](../../_faq_on_digested/11_native-development-loop/answer.md) | **窄证据切片（slice）闭环六步**（01 §3 的第二层）、"轻松"的三个机制来源、代价与边界 |
 | [`…/11/question.md`](../../_faq_on_digested/11_native-development-loop/question.md) | 上述闭环的问题框架与范围声明 |
 | [`_agent_ready_development/README.md`](../../_agent_ready_development/README.md) | 三个视角的分工与语料自身的结构纪律 |
@@ -92,7 +92,7 @@
 |---|---|---|
 | 教程与立场 | `_agent_ready_development/sdlc-tutorial/00-index.md` | 01 §1 三条立场的出处 |
 | 仓库机制 | `_agent_ready_development/repo-harness/` 全 11 篇 + 三个目录的 `README`/`00-index` + `_coverage/00-corpus-maintenance.md` + `verify.mjs` | 知识归位组、证据与交付组、状态与上下文组 |
-| 转移章法 | `_faq_on_digested/07_borrowing-harness-idea/` 的 01–05、07–09、11–13（11 篇） | 开发十七维（维度集合与粗判（coarse check）在 01，定义、探针（probe）、锚点（anchor）与封顶（cap）在 02）、22 的处置卡（remediation card）、四条边界 |
+| 转移章法 | `_faq_on_digested/07_borrowing-dsh-harness-idea/` 的 01–05、07–09、11–13（11 篇） | 开发十七维（维度集合与粗判（coarse check）在 01，定义、探针（probe）、锚点（anchor）与封顶（cap）在 02）、22 的处置卡（remediation card）、四条边界 |
 | 流程参考 | `_agent_ready_development/sdlc-reference/` 全 13 篇 | 补齐的五维：意图入口、评审与批准、发布与版本、分类学、防漂移（drift prevention） |
 | 运行时机制 | `_digested/` 的 `agent-loop`、`capability-seams`、`composition`、`session-and-loop`、`tools-prompt-llm`、`runtime-profiles`、`surfaces`、`system` 八组 + `_faq_on_digested/08_plugin-seam-maturity`、`09_plugin-business-ladder` | 11/12 的全部十一维 + 11 §5 的模仿判断 |
 
