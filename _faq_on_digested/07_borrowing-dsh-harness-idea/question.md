@@ -1,5 +1,7 @@
 # Question 07 · 另一个项目想借鉴 DSH 的 Harness 思路，尤其 coding agent 怎么探索、理解项目而不糊涂、不乱发挥，可迁移的东西是什么？
 
+> **DSH = DeepSeek Harness**——DeepSeek 的「一切皆插件」agent harness，仓库在 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)，CLI 与包名写作小写 `dsh`；本目录的「DSH」都指它，所有「DSH 原话」的钉版链接都指向这个仓库。
+
 ## 背景
 
 我有一个**另一个项目**（不一定是插件架构，不一定是 agent harness，可能只是一个普通代码库）。我想借鉴 DSH 的 Harness 思路——尤其关心一件事：**怎么让一个 coding agent 第一次进入这个项目、探索和理解它之后，既不糊涂（抓不住主线、读错、脑补），也不乱发挥（改错地方、擅自绕过约束、做出无人想要的设计）**。
