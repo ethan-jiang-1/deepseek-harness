@@ -35,13 +35,22 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 **4. AGENTS.md 串起 README.md，而不是吞掉它**：AGENTS 是路由/常驻指令层，README 是「当前合同」事实层，通过 link 串进地图。分工的完整规则是 [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) 的 tier taxonomy 表——根/子树/包 README/Skills 每行同时写「放什么」和「禁放什么」。
 
+**给数值：推荐区间，不是 DSH 的现位。** 数值不迁移，门禁迁移——值得搬的不是 DSH 的某个具体数，而是「存在一个会被机器执行的数」：接成 `exit non-zero` 检查（见 [`可执行反馈`](./09-executable-feedback.md)），上限只降不升、上涨要在 PR 里论证。DSH 的棘轮语义（`verify-doc-budgets` 头注释）：`Ceilings ratchet down with at least 5% headroom; raising one requires the justification defined in docs/AGENTS.md`。区间本身是本 FAQ 的综合推荐，锚点数字以基线 `46a7f68b09` 的文件为准：
+
+| 预算点 | 推荐区间 | DSH 锚点 |
+|---|---|---|
+| 根入口文件 | 300–1,500 词起步，取下沿、只降不升 | ≤1,950 词（`scripts/doc-budgets.manifest.json`；大仓多轮棘轮的现位，不是起点） |
+| 子树入口文件 | 有专属常驻规则才放；放了的单个 ≤600 词 | 通则 ≤600 词在 `docs/AGENTS.md`（无机器条目）；manifest 里的 ≤750（packages）/ ≤1,320（docs）是逐文件例外 |
+
+中文按字符折算（字数 ≈ 词数 × 1.5–2），或直接对字符数设上限——`wc -w` 式计数对无空格文本会把整段计成 1 词，直接搬词数会虚松一个数量级。这层预算管的是常驻层信噪比的**分母**（每轮必读内容的厚度）；**分子**（每行确实都是带 home 的 standing order）由 tier taxonomy 管。两头都抓，信噪比才真的被控制住。
+
 **可迁移结论**：这是「写文件」的工程，几乎零架构依赖；宿主自动加载（Claude Code 读 `CLAUDE.md`）意味着**第一环不写代码就免费生效**。这就是 [`落地总纲`](./06-step-by-step-guide.md) Phase 2 的完整内容。
 
 ## 会话态：DSH 的运行时怎么加载这条链
 
 文件态是「地图」，会话态是「地图在活 session 里怎么被走」。DSH 用 [`packages/context/agent-instructions`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md) 插件把文件态变成三件机器执行的事：
 
-- **注入（push）**：会话第一步注入根 AGENTS 链（baseline）；模型用 read/write/edit 触达更深目录后才注入子树 AGENTS（**touch-driven**）；`maxBytes` 限制整条链；同目录 `CLAUDE.md` 与 `AGENTS.md` 内容相同只渲染一次；digest 未变不重复注入。DSH 原话：
+- **注入（push）**：会话第一步注入根 AGENTS 链（baseline）；模型用 read/write/edit 触达更深目录后才注入子树 AGENTS（**touch-driven**）；`maxBytes` 限制整条链（自建 host 从 32–128 KB 起步，锚点是 dsh-base 默认的 65,536 字节）；同目录 `CLAUDE.md` 与 `AGENTS.md` 内容相同只渲染一次；digest 未变不重复注入。DSH 原话：
 
   > **DSH 原话 ·** 预算与丢弃顺序（[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)）
   >

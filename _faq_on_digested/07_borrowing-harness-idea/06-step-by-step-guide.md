@@ -64,7 +64,7 @@
 
 **做什么**：写一份**短**的根 `AGENTS.md`，只放三类东西：常驻规则（每条一到三行）、仓库布局（每个顶层区域一句话）、命令表。其余全部 link 到各自 home，不复制。同时把 `CLAUDE.md` 用 `ln -s AGENTS.md` 指向它，并在**真正有子树专属常驻规则**的少数目录放子树 `AGENTS.md`，其余目录/包只留 README。
 
-**产出**：根 `AGENTS.md`（目标 ≤ 几百词）+ `CLAUDE.md`（symlink）+ 一张「事实 → home」对照表 + 少量子树 `AGENTS.md`（可有可无，按需）。
+**产出**：根 `AGENTS.md`（目标 ≤ 几百词；推荐区间见 [`入口链`](./07-agents-entry-chain.md)）+ `CLAUDE.md`（symlink）+ 一张「事实 → home」对照表 + 少量子树 `AGENTS.md`（可有可无，按需）。
 
 **验收（机械判断）**：
 - 任何一条规则，能在 10 秒内指出它的唯一 home；

@@ -104,6 +104,8 @@
 
 - [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)：standing orders + 布局 + 命令的入口本体；`CLAUDE.md` symlink 及「edit the real file」的规则原文。
 - [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)：tier taxonomy 表（根/子树 AGENTS.md 与包 README 的分工）与字数预算。
+- [`scripts/doc-budgets.manifest.json`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/scripts/doc-budgets.manifest.json)：字数预算的逐文件上限清单（根 `AGENTS.md` ≤1,950、`docs/AGENTS.md` ≤1,320、`docs/architecture.md` ≤2,410、`packages/AGENTS.md` ≤750 等 8 项）。
+- [`scripts/verify-doc-budgets.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/scripts/verify-doc-budgets.ts)：预算门禁的执行语义（头注释）——只列出的 standing docs 受预算；上限只降不升、下降留 ≥5% headroom，上涨需按 `docs/AGENTS.md` 论证。
 - [`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)：会话态加载的机制——touch-driven、`maxBytes` 预算、per-directory 去重、digest 抑制。
 
 （文件态设计的兄弟篇是 FAQ 04，会话态机制是 FAQ 05——家族互链，不是证据。）
