@@ -1,5 +1,7 @@
 # Answer · 借鉴 DSH Harness 思路：让 coding agent 不糊涂、不乱发挥
 
+> **DSH = DeepSeek Harness**——DeepSeek 的「一切皆插件」agent harness，仓库在 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)，CLI 与包名写作小写 `dsh`；本目录的「DSH」都指它，所有「DSH 原话」的钉版链接都指向这个仓库。
+
 ## 一句话结论
 
 DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 agent」；它做的是把这句话反过来——**让「读对、改对」变成阻力最小的路径，让「读错、改错」在离错误源头最近的地方被机器拒绝。** 而支撑这个反转的，是三条贯穿其开发全过程的立场；落到一笔变更上，则是一条从意图到交付的完整闭环。
