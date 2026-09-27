@@ -1,6 +1,8 @@
 # FAQ 15 研究底稿
 
-四路证据：A 库内基线（自查）、B owner 复盘（口述 + 三个子面：B2 仓库盘点 / B3 流程笔记深读 / B4 会话日志取证）、C 社区插件抽样（委派）、D 外部 discourse（委派）。证据强度记号：【一手】文件/提交/官方文档；【口述】owner 自述；【推断】从证据推出的结论，需说明依据。「路」是采集来源坐标；answer 与 research-strategy 里的「五层校验（现象→制度→行为→生态→行业）」是校验轴坐标，两者不冲突。
+四路证据：A 库内基线（自查）、B owner 复盘（口述 + 三个子面：B2 仓库盘点 / B3 流程笔记深读 / B4 会话日志取证）、C 社区插件抽样（委派）、D 外部 discourse（委派）。证据强度记号：【一手】文件/提交/官方文档；【口述】owner 自述；【推断】从证据推出的结论，需说明依据。
+
+以下是 2026-09-26 的采样和引文记录，保留当时的分类便于复核，**不直接作为本轮修订后的结论**。C 路由公开仓库的目录和提交推断开发过程，不能观察私有计划或提示；D 路原调查漏掉 Osmani 2026-06-07 原文，且把停止条件与外层调度写成统一的术语门槛，现按 [01 篇](./01-slice-vs-pipeline.md)、[02 篇](./02-external-trend-verdict.md)重读。旧句「上游留白管线层」「OpenSpec 每阶段人审」「社区零采用」「行业终局收敛」均不能超出各自证据范围；一手记录及时间点保留，不把当时推断悄悄改成新的观测。
 
 - 委派记录（2026-09-26）：C 路生态抽样 = `e41d02b3`；D 路外部 discourse = `5be21018`；B3 路笔记深读 = `0baa63d4`；B4 路会话日志 = `2263266e`。
 
@@ -33,7 +35,7 @@
 
 > 原来（OpenSpec 那种 SDD），我是很清楚哪个 feature 近、哪个 feature 落地的次序，这个 feature 怎么测过的、质量怎么样，通通都知道，尤其是执行的次序。但是在这回我的四个（插件）……DSH 插件开发过程中，搭框架的时候，把控力就没那么强了。我只是时不时提醒他：我们要计划计划，准备做什么内容进去。总之（进展在哪）对我来说是看不太清楚的，直到他说做好了我一看，我才知道他做了几个东西。所以我时不时要强调：你要做任何东西，别你想，你要显性化到 notes 底下的 proposal 里头。然后其实 notes 底下的好几个东西，你也不知道他是像看板一样挪来挪去的，还是干啥的。反正有时候就得提醒他。不像别的 SDD 这个东西很清楚，尤其是 OpenSpec 非常清楚，这种情况下把控力是非常好的。现在这种变成 goal 追问的这种，我甚至那个 goal 是什么都还搞不清楚，就一直催促着他往前跑。这个体感的差异其实很大。
 
-术语转写备注：owner 口中的「logo engineering」按上下文理解为 loop engineering。这是体感用词。官方文档没有这个流程名。
+术语备注：owner 使用的是 loop engineering。它描述体感，不表示 DSH 官方用这个名称规定插件开发流程。
 
 ### 初步编码 A：owner 实际动用过的控制点
 
@@ -163,7 +165,7 @@ todo_write 45 次/19 会话（1–20 项、整表替换），但 **goal 驱动�
 原底稿把前两档叫「纯 loop / loop+门禁」。复审改为「目标开跑」：这是行为标签，仓库文本没有使用 loop engineering 这个名字。
 - 垂直切片是默认提交形状（issue→修复→测试→版本号→CHANGELOG；commit body 收尾报「Checks: … npm test 64/64 pass」）；**无两段式 proposal→implement 提交史**。
 - 验证门禁是通用底座；进阶者自建门禁类：check-peer-range、verify-bundle、plugin-doctor、docs-drift、mutation-checked tests、打包后装进官方 DSH Web 的集成门（zenstory-ai/oh-story-dsh）。
-- spec-first **零采用**：15 仓+周边无 `.specify/`、`openspec/`；唯一 spec 形态是 nexu-io/open-design 自建的 specs/current+change 体系（17 个 change spec 目录，含 SuccessCriteria/Verification 的 spec.md，frontmatter `status: implemented`）。
+- 公开目录中**未观察到 Spec Kit/OpenSpec 典型产物**：这 15 仓及当时检查的周边仓库无 `.specify/`、`openspec/`；nexu-io/open-design 有自建 specs/current+change 体系（17 个 change spec 目录，含 SuccessCriteria/Verification 的 spec.md）。这不能判定作者是否在别处做 spec-first，也不能推算插件生态整体的采用率。
 - 把控力应对 = **管线层自建，不外挂 SDD**：①净化公开树（GooDAnDReaDY/dsh-context-lens purge 内部 AGENTS.md/docs/plans/：「Public tree for v0.1.23 … without internal documents」）；②计划/评审写进 agent 指令（jianxx/dsh-cc 的 CLAUDE.md 编排宪法：「Plan-first: Enter plan mode before: new features, >2-3-file changes」「parallel blind review… disagreement IS the finding」「Never patch on top of a broken plan」；exoticknight/dsh-plugin-template：「Document files need approval」「Ask first, never do: npm login/OTP, manual npm publish」）；③授权不变量（ruvnet/ruflo：「Do not commit, push, merge, release… unless authorized」）；④人工读码把关（awesome 榜单哲学，见上）。
 - 开发 harness 混用：context-lens 的提交者身份含 Antigravity / Cursor / OpenCode / DSH 四种 agent；dsh-cc 用 Claude Code+Serena 开发 DSH 插件；ruflo 明文 Codex=executor——「只用 DSH 写 DSH 插件」不成立。
 - 决策记录惯例只有个别项目搬用：oh-story-dsh 有 `.agents/notes/implemented/process/`（Problem/Decision/Alternatives/Consequences/Verification + 「编一个数字比不给更糟」）。
@@ -199,7 +201,8 @@ todo_write 45 次/19 会话（1–20 项、整表替换），但 **goal 驱动�
 - vibe coding：Karpathy 2025-02（经 simonwillison.net/2025/Mar/19/vibe-coding/ 全文引用）；Willison 收窄定义并警告语义扩散。【一手+第一人称】
 - Ralph Wiggum loop：Huntley 2025-07（ghuntley.com/ralph/）："**In its purest form, Ralph is a Bash loop**"；方法论全在环境侧：**signs**（踩坑教训写成环境里的牌子）+ **backpressure**（"Anything can be wired in as back pressure to reject invalid code generation"——类型/测试/静态分析当拒绝门）+ specs/ 与 fix_plan.md 当循环间状态 + AGENT.md 自我更新；"There's no way in heck would I use Ralph in an existing code base"；关于计划："I don't [plan]. The models know what a compiler is better than I do. I just ask it."【一手博客】注意：Huntley 不反 spec——specs 是**环境夹具**（ghuntley.com/specs/），不是上游审批物。上游 DSH 不提供这条队列。
 - Anthropic 工程博客：《Building effective agents》（2024-12-19）agents = "LLMs using tools based on environmental feedback in a loop"；《Effective harnesses for long-running agents》（2025-11-26，https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents）initializer 把一句粗目标展开成 `feature_list.json`（claude.ai clone 一例 200+ 条，初始 `passes: false`、"**It is unacceptable to remove or edit tests**"；选 JSON 因 "the model is less likely to inappropriately change or overwrite JSON files compared to Markdown files"），外加 progress 文件、git 提交、每轮先通基线再端到端验证。这是生成出来的进度规格，同构对象是 owner 后补的队列，不是上游留白的 DSH。【一手】
-- loop engineering 这个词（复审补入，调查窗口内、普通网页可取）：LangChain，Sydney Runkle，2026-06-16，https://www.langchain.com/blog/the-art-of-loop-engineering ——叠在 harness 上的四环（agent / verification / event-driven / hill-climbing）。Addy Osmani，2026-08-14，https://addyosmani.com/blog/practical-loop-engineering ——"A loop is an autonomous, self-correcting feedback cycle where an AI agent repeatedly acts, tests its results and adjusts its approach until a specific goal is met"；并转述 Claude Code 团队：人逐轮写 prompt 叫 agentic loop，`/goal` 与 `/loop` 是另外的原语；Ralph 的 bash loop 是原语出现前的手写形态。原底稿「命名簇里没有 loop engineering」作废。【一手】
+- loop engineering 的直接参照（补核）：Addy Osmani，2026-06-07，[《Loop Engineering》](https://addyosmani.com/blog/loop-engineering/)——「Loop engineering is replacing yourself as the person who prompts the agent. You design the system that does it instead.」他描述系统发现工作、分配、检查、记录并决定下一项，也强调跨会话的外部记忆。这个版本与 owner「我仍要提醒 agent 计划和检查 goal」的体感尤其贴近：执行已有循环，外层取题与授权仍部分由人临场接管。文章列举的组件并非通用方法的逐项准入条件。【一手】
+- 另两种相邻用法：LangChain，Sydney Runkle，2026-06-16，[《The Art of Loop Engineering》](https://www.langchain.com/blog/the-art-of-loop-engineering)——叠在 harness 上的 agent / verification / event-driven / hill-climbing 多环；Addy Osmani，2026-08-14，[《Practical Loop Engineering》](https://addyosmani.com/blog/practical-loop-engineering/)——强调自主反复行动、检测、调整直至目标达成，并建议事先明确停止条件和何时审查。不能从后两篇倒推「缺外层调度或停止条件就不是 loop engineering」。原底稿「命名簇里没有 loop engineering」作废。【一手】
 - AGENTS.md：官网称 "used by **over 60k open-source projects**"，OpenAI Codex/Cursor/Zed/Devin 等采纳，Linux Foundation 旗下基金会托管；关键句 "The agent will attempt to **execute relevant programmatic checks and fix failures before finishing the task**"。【一手】
 - 第二次主动命名：Zaninotto 明说这套东西 "doesn't have a name. 'Vibe coding' sounds dismissive, so let's call it **Natural Language Development**"（2025-11-12）。【第一人称】
 - 主流化聚合信号：VentureBeat "How Ralph Wiggum went from 'The Simpsons' to the **biggest name in AI** right now"；The Register 2026-01-27 专文；YC hackathon 战报（while loop 一夜 ship 6 repos）。【聚合】
@@ -214,10 +217,9 @@ loop 工具链向「补控制点」演化——方向是把同步人门换成机
 
 DSH 的外部声音：HN 大帖（2026-08-13，747 分 314 评，news.ycombinator.com/item?id=49285244），好评抽样 "Steal their testing substrate. The offline evaluation is genuinely fucking clever."；第三方生态一周爆发（dshplugin.app、desktop 包装、LLM-verifier 插件等 104 条 HN 记录）；但「在 DSH 里/为 DSH 开发数周」的第一人称工程叙事未找到——Ask HN《Anyone using DeepSeek Harness (dsh) as part of a customer-facing agent?》（2026-09-19）0 回复，缺口本身即信号。【聚合】
 
-### 5. D 路判定：趋势成色＝中强（方向成立，「取代」论不成立）
+### 5. D 路当时判定及其限制（现以 02 篇为准）
 
-支撑：① 「粗目标进循环、约束进环境」在 2025–2026 被多次命名；2026-06 起其中一个名字是 loop engineering，操作定义比 owner 体感多出可核停止条件与外层调度；② Anthropic 长程文把进度写成 `feature_list.json`，人类门禁降为可选 checkpoint；③ OpenSpec 去掉刚性阶段锁，proposal/specs/design/tasks 还在；spec-kit 收了 Ralph 扩展，并把 DSH 加成又一个可装 `/speckit-*` 的 agent（#4336 / issue #4334：`specify init --integration dsh` → `.dsh/skills/`）；④ AGENTS.md 60k 项目 = 「仓库约定承载约束」已是基础设施级共识；⑤ 实践者叙事大量倒向「给个目标就跑 + 机械门」。
-反证/边界：① SDD 未死（spec-kit 仍发 1.0、企业写作、Ask HN 真实成功者）；② 两方都缺大规模 brownfield 纵向数据，正反案例偏 solo/greenfield；③ 更准确的读法是**收敛**——机械门禁加上少量真人在环点。DSH 官方没有自称为这套方法的样本；#4336 的方向是 SDD 流程进入 DSH。原判定「先行个案 / spec-kit 反过来集成 DSH」作废。
+复核后的判定：① Osmani 2026-06-07 的「设计系统替代逐轮提示」直接支持 owner 体感的方向，不能把他八月提出的停止条件建议当成唯一术语定义；② Anthropic 在长程循环中引入进度规格，OpenSpec 保留可迭代产物，Spec Kit 推荐逐步审阅，支持**组合**循环、规格、检查与人工判断；③ 少量博客和工具发行记录既不能证明行业终局，也不能推出 DSH 官方插件流程或社区采用率。#4336 是在 DSH 里安装 SDD 技能的适配方向，非 DSH 官方改采 SDD。详见 [02 篇](./02-external-trend-verdict.md)。
 
 ### 6. 证据缺口
 

@@ -1,35 +1,51 @@
-# Answer · 判定：「像 loop」是体感，官方没有这个流程名；外部趋势是收敛；缺口在管线层
+# Answer · 执行循环已经出现，取题与判断仍要由人设计
 
 ## 结论先行
 
-四个子问题的判定，每条至少两路证据交叉：
+你的体感有外部参照，不是未经出处核实的自造标签。Addy Osmani 在 2026-06-07 的 [《Loop Engineering》](https://addyosmani.com/blog/loop-engineering/) 用一句话概括：「Loop engineering is replacing yourself as the person who prompts the agent. You design the system that does it instead.」他所说的系统发现工作、分配、检查、记录进度，再决定下一件事。你让 DSH agent 接受目标、持续工作、验证并用文件和门禁留痕，确实接近这个方向；但目前「下一件是什么」「goal 是否仍是我批准的范围」「结果质量是否值得接受」仍常靠你追问和审阅。准确说法是：**执行循环已经形成，跨 feature 的取题、进度与判断还没有被同等清楚地设计出来**，并非「官方流程就是 loop engineering」或「因为不够完整所以不算 loop」。
 
-1. **「DSH 官方流程就是 loop engineering」——不成立。** 官方文本没有这个名字，也没有这个主张。loop engineering 是 owner 的体感用词（语音转写自「logo engineering」）：入口像一个粗目标，后面在循环，不像 OpenSpec 的阶段门。体感对上的制度事实是另一组句子：插件作者文档只教机制；阶段有地图、没有门；管线层——队列、次序、在途、提案状态、逐 feature 汇总——**刻意留白**（root 无 roadmap、`.agents/notes/README.md:19` 禁集中 INDEX、`:121` 生命周期搬移只显影于 git）。公开文献里的 loop engineering（2026-06 起）还要多一层：停止条件写清，外层系统决定下一轮。DSH 运来的 goal 续轮只接近内层。→ [01 篇](./01-slice-vs-pipeline.md)
-2. **社区插件作者——默认是「给个目标就开跑」**：15 仓抽样里这种跑法 ≈10、另加自建计划/审批门禁 ≈3、自建 spec 体系仅 1（open-design）、spec-kit/OpenSpec 采用为零。这是行为画像，不是他们在实行名为 loop engineering 的方法。把控力同样自建在门禁、审批点和净化发布树上，与四仓同构不同形。→ [03 篇](./03-community-plugins.md)
-3. **「没有阶段门、约束写进环境」是趋势——成立，成色中强，终局是收敛。** 2026-06 起 loop engineering 成为公开名字，操作定义比 owner 的体感多出「可核的停止条件」和「外层调度」。Anthropic 的 `feature_list.json` 是从一句粗目标展开的进度规格，同构的是 owner 后补的队列，不是上游那张空的管线层。OpenSpec 拆掉刚性阶段锁，产物链还在。spec-kit #4336 是把 `/speckit-*` 装进 `.dsh/skills/`，让 SDD 流程在 DSH 里跑。→ [02 篇](./02-external-trend-verdict.md)
-4. **「把控力不够」——缺口精确定位在管线层，且你的四仓已经把它补了一半**：口述的五个缺口全部落在管线层；每个缺口都有对应的、带日期的补面动作（「换了对话接下来做哪一个怎么判断」→ ROADMAP 立条目制；「看不见的工作等于没在做」→ 开工即立卡；马拉松指针失活事故 → pointer-live 门禁）；残余缺口 = 双权威面对齐 + 跨仓总览 + 机制纪律化（TodoPanel「解法一直就在输入框上方」的讽刺条）。→ [04 篇](./04-owner-control-gap.md)；怎么补 → [05 控制点清单](./05-control-points.md)
+这也不是 loop 对 SDD 的取代。**Loop 描述工作怎样反复被触发、执行、检查和接续；SDD 描述需求和计划怎样先外置、供人审阅及后来验收。**一份 spec 可以成为 loop 的工作来源与验收依据；循环也可以在实施中反馈并修订 spec。你的 OpenSpec 体验更清楚，首先是因为变更目录和产物让工作与决策可见，不等于所有阶段都受强制人审锁约束。OpenSpec 的 [OPSX 说明](https://raw.githubusercontent.com/Fission-AI/OpenSpec/main/docs/opsx.md)明确允许反复修改产物、没有刚性阶段门；[Spec Kit quickstart](https://github.github.io/spec-kit/quickstart.html)才推荐逐步调用技能、审阅每步结果。详见 [01](./01-slice-vs-pipeline.md) 与 [02](./02-external-trend-verdict.md)。
 
-## 第一节 三条最重的证据（跨路互相咬合）
+## 第一节 DSH 真正提供了什么
 
-1. **制度面**：「不知道他是像看板一样挪来挪去的，还是干啥的」是上游设计的直接产物——生命周期搬移是同 diff 机械改写，状态变化只活在 git 里，对不翻 git 的人不显影。你看不清，不是因为不会用工具。
-2. **行为面**：20 个采样会话的日志——goal 在采样内无一例由 owner 亲手创建、全部由 agent 代建代管（objective 被反复 edit 吸收你的对话更正），重会话 **75% 的轮次无人类输入**（arch：98 turns 中 73 次续轮 vs 24 条人话），plan mode 零进入、批准回路实际由 `ask_user_question` 承载（38 次），控制模式五天内从「逐条盯」进化到「设定 goal + 验收制」。你在会话里自己的话：「让你设定一个沟（goal），一直往前蹦。但我看你……蹦了没两下你就说结束了」——loop 体感有了时间戳。
-3. **生态面**：awesome 榜单的把关哲学（"A green CI run is the precondition, not the decision. A maintainer reads the target repository before merging."）、context-lens 主动 purge 内部 AGENTS.md/docs/plans/ 的净化发布树、dsh-cc 的 plan-first + 盲评编排宪法——仓库行为是给个目标就开跑，加上门禁和人审点，没有 spec-first。这仍然不是一份名为 loop engineering 的官方或社区章程。
+分三层看，才不会把你在插件仓里建立的流程误认成 DSH 官方规定：
 
-## 第二节 「只给 agent 一套方法学」这个做法的判定
+1. **产品运行时给执行能力，不替项目决定需求。** [架构说明](../../docs/architecture.md#turn-flow)描述模型、工具与反馈构成的会话执行；[goal](../../packages/goal/goal/README.md)保存单会话目标，[goal-round-driver](../../packages/goal/goal-round-driver/README.md)在活跃且获准的条件下续轮；[todo](../../packages/todo/README.md)展示会话任务，[plan mode](../../packages/plan/README.md)提供可选的计划审阅。goal 有轮次上限和阻塞/暂停机制，但上限不是「交付质量已被人认可」；这些组件也不自动维护跨 feature、跨仓的优先级与批准历史。
+2. **DSH 自己的仓库把每笔变更做成可复核的交付。** 根 [AGENTS.md](../../AGENTS.md)要求按改动选择测试、文档与快照，重大决定以 [Agent Note](../../.agents/notes/README.md)保存取舍；[测试政策](../../docs/testing.md#verify-the-world-not-the-self-report)要求核对外部结果，而非信 agent 的「已经做好」。这是一套强的*单笔交付纪律*，不是按阶段审批的通用项目管理器，更不是对所有插件仓生效的继承规则。
+3. **插件作者文档讲如何构建与挂载能力。** [入门](../../docs/user/develop/basic/index.md)教插件、依赖与装载，[设计指南](../../docs/user/develop/practice/index.md)讲能力的三个角色；它们没有规定插件作者必须复制 DSH 仓库的 Note、Issue 或 ROADMAP 工作流。你的独立仓选择队列、立卡和门禁，是基于这些能力与纪律的**本仓适配**。上游不维护 Agent Note 的集中 `INDEX.md`，并不禁止你的插件仓为跨 feature 工作建立自己的队列。
 
-对，而且你的四仓做得比「反复强调遵循」更好：architect 把它做成了 8 条**可评分**的 DSH 对齐画像，开头一句边界声明——"**DSH requires none of this of a plugin repository**……This profile is a deliberate choice"；不借的清单（Issue 流、stacked PR、CI 矩阵、双语 note、词数预算）也明写了（"adds ceremony with no consumer"）。给后续 agent 的唯一增量建议：把「遵循 DSH 的开发流程」这句话**说准**——它的准确含义是 **DSH 开发纪律（不变量 + 门禁 + Note 同 diff）+ 本仓管线层（ROADMAP / 立卡 / 门禁）**；后者是你的适配、不是上游要求。写明这一点恰好防止两个方法学混淆：agent 看到的不是两套流程，而是一套流程加一份明确的偏离清单。
+所以让 agent「遵循 DSH 开发流程」会留下歧义：究竟指产品能力、DSH 仓内贡献纪律，还是你自己定的插件仓规则？把三者的来源写清，agent 才不会一面照抄不适用的仪式，一面遗漏你真正需要的工作选择和审阅点。[FAQ 11](../11_native-development-loop/answer.md)的「窄证据切片闭环」是对 DSH 仓内习惯的分析名称，不是官方对外发布的 loop engineering 章程。
 
-## 第三节 给你的下一步（全部低成本，论证见 05 篇）
+## 第二节 为什么会感觉「跑得动，却看不清」
 
-1. 把「goal = 当前 ROADMAP ▶ 条目的运行时载体」一句话写进入口链——你已经在 ROADMAP 里这么叫了（现役条目名「用户拍板的当前 Goal」），差的是把这句话写给每个新会话；偶尔用 `/goal` 看一眼，不必问 agent「goal 是不是 reach 了」。
-2. 「等人/可自主」行标与 `queue-pointer-live` 门禁推广到全部四仓（deep_research 09-26 事故的教训：静默自主跑起来后，指针失真是最先爆的真事故）。
-3. 跨仓一页索引（只放指针、不镜像状态）——四仓四张队列是目前唯一没有总览的一层。
-4. 长期跟踪一个可证伪的预言：插件仓何时开始出现 `.specify/`（03 §4）——它决定「趋势」判定往哪个方向加强。
+你描述的不是笼统的「需要更多计划」，而是两个不同尺度的工作被放在一起了。单笔交付内，agent 可以读代码、改动、测试、修复、留证据；goal 还能让同一会话多轮继续。跨 feature 时，却需要有人选择优先级、决定是否开工、维持跨会话状态，并裁定自动检查之外的范围与品质。本文用**交付层/工作层**指代这两个观察尺度，仅作分析，不是 DSH 或行业正式术语。[01 篇](./01-slice-vs-pipeline.md)给出边界。
 
-## 第四节 证据强度与复审入口
+你的[口述与四仓记录](./research.md)提供了具体线索：不断提醒「计划计划」、要求工作进 proposed、用 ROADMAP 标记下一项，说明你在为工作层补外部记忆；[20 个特意选取的较大会话](./research.md)中 goal 多由 agent 代写、plan mode 未进入而 `ask_user_question` 被用于呈批，说明机制是否存在与是否被实际使用是两回事。**这份采样不能证明全部 229 个会话都如此，更不能证明根因只有一个。**尤其「这项做得好吗」还关乎测试覆盖了什么、是否符合你的意图，不只是有无队列或机器门禁。四仓的改动在短时间内聚集，现有记录只支持「问题出现后补了控制点」的线索，不足以证明补丁永久消除了对话提醒。详见 [04 篇](./04-owner-control-gap.md)。
 
-「官方流程就是 loop engineering」已经撤回，依据在 [01 篇](./01-slice-vs-pipeline.md) 第一节。仍开放的脆弱点有三处：**n=1**（你的四仓是「管线层自建」的核心实证）、**自造分析框架**（切片层/管线层是本篇为了安放五个缺口而造的模型，不是上游术语）、**采样偏差**（会话日志只取最大 20/229）。五层证据（现象→制度→行为→生态→行业）如何互相校验、每个结论的攻击面与最小复核动作、调查中四条被证据修正的假设、若做第二轮会改什么——全部单列在 [research-strategy.md](./research-strategy.md)，供独立复审。
+用 Osmani 的术语作参照：你已经把**执行与部分检查**委托给了 agent，仍由自己临场担任**取题、范围裁决和最终质量判断**。这部分由人负责并不失败；问题在于必要的人类决定与本可外置的状态混在对话里，你得反复询问才知道自己该在哪儿介入。他在 [《Practical Loop Engineering》](https://addyosmani.com/blog/practical-loop-engineering/)强调清楚的停止条件与人工复核，是可靠委托的实践建议；它不是所有 loop engineering 用法的统一资格考试。LangChain 的[四层循环论](https://www.langchain.com/blog/the-art-of-loop-engineering)也比「一个 goal 不停跑」更宽。
 
-## 最接近的一句话
+## 第三节 与 SDD 如何并用，而非二选一
 
-**「像 loop」是你的感觉，官方没有把插件开发流程叫成 loop engineering。感觉里站得住的是：入口是粗目标，后面在循环，阶段门和管线总览是上游故意不造的。公开的 loop engineering 还要两样：人能核的停止条件，以及决定下一件工作的外层系统。DSH 的 goal 续轮只会自己接着跑，停止条件要人写进去它才有；跨 feature 的下一件要靠你的 ROADMAP。把控力缺口在管线层，四个 repo 已经用「对话税 → 显性化 → 门禁化」补出一半。**
+| 你要回答的问题 | 循环需要的内容 | SDD 产物能提供的内容 | 仍须由人决定的内容 |
+|---|---|---|---|
+| 接下来做什么 | 可读取的待办与优先级 | change/tasks 或项目队列可承载候选项 | 哪一项值得做、哪一项不做 |
+| 何时可以开工 | 可辨认的授权状态 | 人审过的意图或计划 | 需求分歧、权限和风险 |
+| 做完了吗 | 目标、验证结果与停止上限 | 需求场景与验收判据 | 检查之外的体验和质量 |
+| 下轮如何接续 | 跨会话的工作记录 | 可更新的规格和任务状态 | 目标变更是否越过原授权 |
+
+这里不要求每个 feature 都生成一套 spec，也不假设只要有 spec 就能自动验收。小改动可以一条明确任务配测试；需求多、多人要审意图或决策风险高时，再把规格和审阅做厚。OpenSpec 的产物链与迭代动作、Spec Kit 的推荐审阅序列各有取舍；[Anthropic 长程实验](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents)甚至在长程执行循环中从粗目标生成了功能清单，并用进度文件和端到端测试防止过早宣布完成。**循环不排斥规格；稳定的外部状态往往是长循环能接续的前提。**
+
+## 第四节 先试哪几个控制点
+
+先用你已有的 [ROADMAP/提案和 goal](./04-owner-control-gap.md)做一个具体试验，而不是直接搬一整套 SDD 阶段门：
+
+1. 每次启动一个工作项，人先确认**为何做、哪些不做、什么证据算完成、什么情况停下问人**；让会话 goal 引用该项，而非让 agent 在续轮中自己扩写范围。`/goal` 可以查看单会话目标；它不替代跨会话队列。
+2. 单一工作来源只维护**下一项及阻塞原因**，进行中的短任务交给会话 todo；重大取舍留在提案/Note。你自己的仓库可选择 ROADMAP、Issue 或 spec/tasks，不存在对插件仓通用的「不许 tasks.md」上游禁令。
+3. 在**开工授权、范围改变、宣布完成**三个点人工抽查；测试/类型检查负责可机械核对的条件，不能代替需求与品味判断。发现指针失效等可重复错误时，再给具体规则加校验与负例，而非先铺满门禁。
+4. 连续试几项后记录「催问次数、目标是否被擅自扩大、完工后返工原因」。若仍无法一眼识别跨仓优先级，再考虑只指向各仓工作来源的总览。这个顺序是**待检验的建议**，不是四仓已证明在数小时内能补齐所有把控力。详见 [05 篇](./05-control-points.md)。
+
+## 证据边界
+
+[03 篇](./03-community-plugins.md)的 15 个公开仓库中未观察到 Spec Kit/OpenSpec 的典型目录，但公开产物不等于作者开发现场，不能据此断言「社区默认给目标就跑」或 spec-first 在插件生态零采用。[02 篇](./02-external-trend-verdict.md)能证实多种循环与规格并存的公开写作，不能从博客与少数 release 推出统一的行业终局。[research-strategy.md](./research-strategy.md)保留了采样、编码和外推的具体限制。
+
+**最接近你体感的一句话：你确实正把逐轮提示转成能自行执行和验证的工作循环；DSH 提供执行能力和可借鉴的单笔交付纪律，却没有替独立插件仓决定跨 feature 的工作安排。OpenSpec 给你的清晰感可以作为这个循环的外部记忆与人类审阅点，而不是它的对立面。接下来要设计的不是更多自动续轮，而是让你看得见工作来源、明确授权和停止条件，并保留最后的质量判断。**

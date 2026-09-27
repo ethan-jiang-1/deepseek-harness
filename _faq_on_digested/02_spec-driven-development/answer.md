@@ -117,11 +117,8 @@ git 历史中能看到真实的生命周期迁移，而不只是当前规则：
 
 这句话是对仓库事实的综合，不是项目官方术语。逐条一手证据与历史命令见 [`research.md`](./research.md)。
 
-## 后见（2026-09-26，FAQ 15 完成后补记）
+## 后见（FAQ 15 后续复核）
 
-本篇的六层载体表、强制边界与 git 证据在 [FAQ 15](../15_loop-engineering-vs-sdd/answer.md) 复核中全部成立、被原样复用；需要修正的是**框架与重心**，不是事实：
+本篇梳理了 DSH 自身仓库的规格与验收载体，不能据此宣称它官方采用 SDD，或要求独立插件仓照搬。经 [FAQ 15](../15_loop-engineering-vs-sdd/answer.md) 复核，还要区分：DSH 产品的会话执行能力、DSH 仓库的贡献纪律、插件作者自主选择的跨 feature 工作方式。把这些载体画成序列，并不意味着每一步之间有强制审批门；在 owner 有意选择的 20 个较大会话里，plan mode 没进入，而 `ask_user_question` 承载过呈批，这不是所有会话的使用统计。
 
-1. **因果已被 FAQ 11 纠正、框架被 FAQ 15 替换**：本篇把「分层规格」呈现为过程模型（标题与"主模型"段）；FAQ 11 指出 spec 感是闭环的沉淀物而非上游输入，FAQ 15 用「切片层/管线层」模型安放它——本篇六层全部住在**切片层**（每笔交付的证据与合同），而 SDD 工具的核心产物（队列、次序、在途状态、阶段审批门）恰是 DSH **刻意留白的管线层**：root 无 roadmap、`.agents/notes/README.md:19` 禁集中 `INDEX.md`、状态变化只显影于 git。
-2. **Plan Review 被高估了**：本篇把"以 Plan Review 批准实施"列进方法脊柱（"实现规格"层），但那是 shipped capability 被读成了 practiced gate——FAQ 15 的会话取证显示 plan mode 在 owner 的 20 个采样开发会话中**零进入**，实际批准载体是 `ask_user_question`（38 次，含多次计划批准）。
-3. **提问框架的教训**：本篇问题从"据说 DeepSeek Harness 的开发依赖 SDD"出发（question.md:5）——这个"据说"来自 owner 当时的 OpenSpec 使用经验。框架本身让"队列/次序/在途在哪"这个问题**不可能被问出来**：证据清单全对，但问错的问题不会出现在清单里。
-4. **但「spec 直觉」有一半是对的，且被规模律精确化**：owner 复盘时指出「notes 的地位其实多少跟 Spec 一样」——按三职能拆分，spec 文档承载的**记忆**职能确实被 Notes + ROADMAP 接住（读者从人换成了失忆的新 agent 会话）；**审批**被 `ask_user_question` / 拍板标记 / Plan Mode 接管（实践中实为 ask_user_question，见 FAQ 15 B4）；**验收**被 tests / snapshots / invariants 接管。单一 spec 文档消失，不是不需要 spec，而是三个职能各有更机械的 owner。流程重量的决定变量也不是人数而是**协调面**（需要外部记忆的失忆参与者数量）：上游多真人 + 多 agent 所以两层都要；owner 单人 + 多 agent 只留 agent 协调层——四档规模律详见 [FAQ 15 · 05 篇](../15_loop-engineering-vs-sdd/05-control-points.md)。本篇的六层载体表因此应读作「切片层的记录分布——记忆/审批/验收三职能各有载体」，它没描到的东西（队列/次序/在途）不是不存在，而是住在管线层。
+Agent Note 保存的是重大决定的理由与取舍，不是通用任务队列；测试、快照验证可检查的行为，不会取代人对需求范围与最终质量的判断。OpenSpec 的产物可以作为长循环的外部记忆与审阅依据，不必和 DSH 续轮二选一。FAQ 15 的[交付层/工作层](../15_loop-engineering-vs-sdd/01-slice-vs-pipeline.md)是解释两种观察尺度的分析工具，不是 DSH/SDD 谁「做满」哪一层的事实判断。
