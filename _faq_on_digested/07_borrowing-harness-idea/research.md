@@ -164,6 +164,14 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 来源：`_agent_ready_development/sdlc-tutorial/00-index.md`（2026-09-24 重写轮确立的归纳）。answer.md「DSH 的精华」一节直接引用此归纳；它是对 DSH 既有机制的总结，不是 DSH 的自称——DSH 从未把这三句写进自己的文档，逐条机制依据见 Tutorial 各页的钉版链接。
 
+## 25. 字数预算门禁的棘轮语义
+
+> Enforce `wc -w`-style ceilings from `scripts/doc-budgets.manifest.json`. … Only listed standing docs are budgeted. Ceilings ratchet down with at least 5% headroom; raising one requires the justification defined in `docs/AGENTS.md`.
+
+`dsh-base` 给 agent-instructions 注入链的默认预算是 65,536 字节（`maxBytes` 必填，逐部署显式选择）。
+
+来源：`scripts/verify-doc-budgets.ts`（头注释）、`scripts/doc-budgets.manifest.json`、`packages/context/agent-instructions/README.md`（Mounting 一节）。入口链章「给数值」推荐的区间是本 FAQ 综合判断（非 DSH 官方数字）；锚点数字已按钉版基线 `46a7f68b09` 用 `git show` 逐文件核对。
+
 ## 已核对的相关消化材料
 
 - `_agent_ready_development/repo-harness/00-index.md`：五类信息缺口与五类 owner 总表（本 FAQ 正文扩为六缺口，见 01）

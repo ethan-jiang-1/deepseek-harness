@@ -48,7 +48,7 @@
 | 成本风险 | DSH 的控制实践 |
 |---|---|
 | 索引过期 | 生成 catalog 配 freshness gate——目录与源码有 diff 就红（[生成 catalog 的门禁](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-catalog.md)） |
-| 常驻层膨胀 | 文档预算进 `scripts/doc-budgets.manifest.json`，`verify-doc-budgets` 逐文件卡上限（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) 的 Wordcount Budgets） |
+| 常驻层膨胀 | 文档预算进 `scripts/doc-budgets.manifest.json`，`verify-doc-budgets` 逐文件卡上限（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) 的 Wordcount Budgets）；数值不迁移——给区间不给定值（推荐区间见 [`入口链`](./07-agents-entry-chain.md)） |
 | 过时理由冒充现行 | 决策记录带状态目录与冻结归档（[.agents/notes/README.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)） |
 | 假门禁 | 新检查必须负例控制：引入回归 → 看红 → 还原（[docs/testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/testing.md)） |
 | 双语漂移 | README 配对 hash sidecar，改一侧必须重录另一侧（`README.i18n.yaml`，[变更闭环](./01-sdlc-change-loop.md) 的 7 文件案例里就有它） |
