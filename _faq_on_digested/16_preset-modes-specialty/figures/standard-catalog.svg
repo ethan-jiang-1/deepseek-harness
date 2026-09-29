@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>Standard mode：26 个 wire 工具按家族分组，与三组刻意缺席</title>
+  <desc>Standard 预设把 26 个工具投影到 wire：shell 1 个、fs 4 个、搜索 2 个、jobs 3 个、goal 3 个、plan 1 个、todo 1 个、问询 1 个、delegation 6 个、web 2 个、skill 1 个、present 1 个。右侧列出三组刻意缺席（cordis_* 只进 Creator、mcp_* 未挂载、ralph 默认禁用）及理由，底部标注三个 isolate 隔离组（planMode、compaction、workflowEngine）。</desc>
+  <rect width="1200" height="720" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">Standard mode：26 个 wire 工具，按家族分组</text>
+  <text x="600" y="60" text-anchor="middle" font-size="13" fill="#64748b">清单被 apps/web/tests/shipped-composition.e2e.ts 逐项钉死（EXPECTED_TOOLS 24 + ripgrep 固定对 2）；加工具必须同步改测试。</text>
+
+  <!-- 家族网格：4 列 -->
+  <!-- 列1 -->
+  <rect x="40" y="86" width="200" height="96" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="140" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">shell（1）</text>
+  <text x="140" y="134" text-anchor="middle" font-size="12" fill="#334155">bash / pwsh</text>
+  <text x="140" y="156" text-anchor="middle" font-size="11" fill="#64748b">one-shot，按平台二选一</text>
+
+  <rect x="40" y="198" width="200" height="118" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="140" y="222" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">fs + 搜索（6）</text>
+  <text x="140" y="246" text-anchor="middle" font-size="12" fill="#334155">read · read_image · edit · write</text>
+  <text x="140" y="268" text-anchor="middle" font-size="12" fill="#334155">glob · grep</text>
+  <text x="140" y="292" text-anchor="middle" font-size="11" fill="#64748b">搜索对走打包的 ripgrep</text>
+
+  <rect x="40" y="332" width="200" height="118" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="140" y="356" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">jobs（3）</text>
+  <text x="140" y="380" text-anchor="middle" font-size="12" fill="#334155">job_list · job_output · job_kill</text>
+  <text x="140" y="404" text-anchor="middle" font-size="11" fill="#64748b">后台作业跟踪/收结果/终止</text>
+
+  <rect x="40" y="466" width="200" height="118" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="140" y="490" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">goal + plan + todo（5）</text>
+  <text x="140" y="514" text-anchor="middle" font-size="12" fill="#334155">create_goal · get_goal · update_goal</text>
+  <text x="140" y="536" text-anchor="middle" font-size="12" fill="#334155">exit_plan_mode · todo_write</text>
+  <text x="140" y="560" text-anchor="middle" font-size="11" fill="#64748b">体验皮：目标 / 计划模式 / 待办</text>
+
+  <!-- 列2 -->
+  <rect x="260" y="86" width="220" height="250" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="370" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">delegation（6）· isolate: workflowEngine</text>
+  <text x="370" y="138" text-anchor="middle" font-size="12" fill="#334155">subagent · subagent_fork</text>
+  <text x="370" y="160" text-anchor="middle" font-size="12" fill="#334155">list_agents · interrupt_agent</text>
+  <text x="370" y="182" text-anchor="middle" font-size="12" fill="#334155">send_message · workflow</text>
+  <text x="370" y="212" text-anchor="middle" font-size="11" fill="#64748b">workflow 跑 JS 编排脚本，</text>
+  <text x="370" y="230" text-anchor="middle" font-size="11" fill="#64748b">agent()/parallel()/pipeline() 钩子，</text>
+  <text x="370" y="248" text-anchor="middle" font-size="11" fill="#64748b">经 workflow-ptc 引擎进沙箱 Node 进程</text>
+  <text x="370" y="276" text-anchor="middle" font-size="11" fill="#64748b">codex / claude-code 两个 provider</text>
+  <text x="370" y="294" text-anchor="middle" font-size="11" fill="#64748b">行存在但 disabled: true</text>
+
+  <rect x="260" y="352" width="220" height="96" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="370" y="376" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">web（2）</text>
+  <text x="370" y="400" text-anchor="middle" font-size="12" fill="#334155">web_search · web_fetch</text>
+  <text x="370" y="422" text-anchor="middle" font-size="11" fill="#64748b">fetch 在场：公网地址限制 + 一次性审批</text>
+
+  <rect x="260" y="464" width="220" height="120" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="370" y="488" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">skill + present + 问询（3）</text>
+  <text x="370" y="512" text-anchor="middle" font-size="12" fill="#334155">skill · present · ask_user_question</text>
+  <text x="370" y="538" text-anchor="middle" font-size="11" fill="#64748b">技能目录按需加载；present 出文件卡；</text>
+  <text x="370" y="556" text-anchor="middle" font-size="11" fill="#64748b">问询走审批 seam</text>
+
+  <!-- 列3：隔离组说明 -->
+  <rect x="500" y="86" width="240" height="498" rx="10" fill="#fefce8" stroke="#fde047"/>
+  <text x="620" y="112" text-anchor="middle" font-size="13" font-weight="700" fill="#854d0e">三个 isolate 隔离组（作用域服务）</text>
+  <text x="620" y="140" text-anchor="middle" font-size="12" fill="#334155">isolate 给服务换 scope label，</text>
+  <text x="620" y="158" text-anchor="middle" font-size="12" fill="#334155">同 label 共享实现（cordis:group realm）</text>
+  <text x="520" y="192" font-size="12" font-weight="700" fill="#854d0e">① planning · isolate: planMode</text>
+  <text x="520" y="214" font-size="11" fill="#64748b">计划模式的 section 注册被圈在</text>
+  <text x="520" y="230" font-size="11" fill="#64748b">自己的 realm，不污染别的 scope</text>
+  <text x="520" y="264" font-size="12" font-weight="700" fill="#854d0e">② compaction · isolate: compaction</text>
+  <text x="520" y="286" font-size="11" fill="#64748b">compaction-basic + /compact 命令 +</text>
+  <text x="520" y="302" font-size="11" fill="#64748b">tool-result pruner（阈值 8192 字符，</text>
+  <text x="520" y="318" font-size="11" fill="#64748b">头 4096 / 尾 1024 保留）</text>
+  <text x="520" y="352" font-size="12" font-weight="700" fill="#854d0e">③ delegation · isolate: workflowEngine</text>
+  <text x="520" y="374" font-size="11" fill="#64748b">subagent 池 + workflow 引擎共享一个</text>
+  <text x="520" y="390" font-size="11" fill="#64748b">realm；Minimal 用 isolate: terminals</text>
+  <text x="520" y="406" font-size="11" fill="#64748b">圈住持久终端状态</text>
+  <text x="520" y="446" font-size="12" font-weight="700" fill="#854d0e">身份输入（三个都开）</text>
+  <text x="520" y="470" font-size="11" fill="#64748b">persona：{{model}} 前缀 + {{cwd}} 后缀</text>
+  <text x="520" y="486" font-size="11" fill="#64748b">agent-instructions：AGENTS.md，上限 64KB</text>
+  <text x="520" y="502" font-size="11" fill="#64748b">运行时上下文：cwd / 平台等动态快照</text>
+  <text x="520" y="530" font-size="11" fill="#64748b">（Minimal 把这三个全部清零）</text>
+
+  <!-- 列4：刻意缺席 -->
+  <rect x="760" y="86" width="400" height="498" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="960" y="112" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">刻意缺席（不是疏漏，e2e 注释点名理由）</text>
+  <rect x="780" y="130" width="360" height="106" rx="8" fill="#fff" stroke="#fca5a5"/>
+  <text x="796" y="156" font-size="12" font-weight="700" fill="#991b1b">cordis_inspect_list / cordis_inspect_query</text>
+  <text x="796" y="178" font-size="11" fill="#7f1d1d">执行模型写的 JavaScript，没有沙箱行能约束；</text>
+  <text x="796" y="194" font-size="11" fill="#7f1d1d">只在 Creator mode 收进这层风险，</text>
+  <text x="796" y="210" font-size="11" fill="#7f1d1d">并由审批 seam 兜底</text>
+  <rect x="780" y="250" width="360" height="90" rx="8" fill="#fff" stroke="#fca5a5"/>
+  <text x="796" y="276" font-size="12" font-weight="700" fill="#991b1b">mcp_* 工具</text>
+  <text x="796" y="298" font-size="11" fill="#7f1d1d">MCP server 在 ctx.shell 之外 spawn，</text>
+  <text x="796" y="314" font-size="11" fill="#7f1d1d">进程约束面不覆盖；需要时单独挂载</text>
+  <rect x="780" y="354" width="360" height="90" rx="8" fill="#fff" stroke="#fca5a5"/>
+  <text x="796" y="380" font-size="12" font-weight="700" fill="#991b1b">ralph 循环</text>
+  <text x="796" y="402" font-size="11" fill="#7f1d1d">无人监督多轮，完成是 worker 自报；</text>
+  <text x="796" y="418" font-size="11" fill="#7f1d1d">四份预设全部 disabled: true</text>
+  <rect x="780" y="458" width="360" height="106" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="796" y="484" font-size="12" font-weight="700" fill="#15803d">web_fetch 为什么在场</text>
+  <text x="796" y="506" font-size="11" fill="#166534">公网地址限制 + 一次性审批把模型选定的</text>
+  <text x="796" y="522" font-size="11" fill="#166534">请求目标约束住了，风险面可接受</text>
+
+  <!-- 底部 -->
+  <rect x="40" y="606" width="1120" height="80" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="600" y="636" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">Standard 的"特殊性"就是没有特殊性：三根轴都不动，因此成为其余三份的 diff 基准</text>
+  <text x="600" y="660" text-anchor="middle" font-size="12" fill="#475569">部署默认（registry default: standard）+ 模式选择器关闭时的应用默认；guide 定位："日常任务从这开始，批量任务也未必需要 PTC"。</text>
+</svg>

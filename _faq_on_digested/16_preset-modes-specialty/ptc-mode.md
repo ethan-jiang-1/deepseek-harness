@@ -1,5 +1,7 @@
 # PTC 模式分篇 · 把"模型调用工具"换成"模型写程序调用工具"
 
+![PTC 的一次往返：左=模型上下文只含 run_code 与生成的 SDK，程序在独立 Node 进程里执行并通过 await tools.xxx 调工具，每次子调用仍走完整管道与审批并记一对 tool/ptc-dispatch 日志，只有 print/return 回到上下文；右=沙箱升级路径（只读沙箱拒绝 → 审批 → workspace-write 重试）](./figures/ptc-roundtrip.svg)
+
 ## PTC 是什么？和 Cloudflare 的 Code Mode 什么关系？
 
 PTC = **Programmatic Tool Calling**（GUI 文案原话，[`guide-locales.ts`](../../packages/client/ui-agent-preset/src/client/guide-locales.ts)）。设计出发点记录在 [PTC mode Note](../../.agents/notes/implemented/feature/2026-06-15-ptc.md)：原生呈现下每个工具调用都要一次完整的模型往返，且**每个中间 `tool-result` 都整份回到上下文**；而 LLM 写代码的经验远多于写人工构造的 tool-call 轨迹（Cloudflare [Code Mode](https://blog.cloudflare.com/code-mode/) 的观察）。于是把呈现翻过来：模型写一个 TypeScript 程序，程序通过生成的 SDK 调工具，**只有程序 print 或 return 的内容回到上下文**。历史上这个能力叫 code-mode，`3ca9c7d489` 改名 ptc（会话格式的既有词汇除外）。
