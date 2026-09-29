@@ -1,5 +1,7 @@
 # Creator 模式分篇 · 把 DSH 自身的可修改性交给 agent
 
+![Creator 的四步循环：一、cordis_inspect_list / cordis_inspect_query 只读检查宿主运行时 API；二、按三个创作技能写插件或 preset 声明；三、plugin_manager 的 install_bundle 把 bundle patch 装进当前 profile（写操作过审批）；四、能力影响该 profile 此后所有会话并跨重启，新 preset 在下一个新任务可选，然后回到第一步。审批理由：profile 变更跨会话持久，装上的 Host 代码跑在工作区沙箱之外](./figures/creator-loop.svg)
+
 ## Creator 模式比 Standard 多了什么？
 
 preset id 是 `cordis`，order 4，显示名 "Creator mode / 创造模式"。它**完整保留 standard 的任务工具**（guide 原话："includes the standard task tools plus…"），只加三件东西（[`cordis.patch.yml`](../../packages/bundle/web-app/presets/cordis.patch.yml)）：

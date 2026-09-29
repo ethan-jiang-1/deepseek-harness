@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>Creator 模式：修改 DSH 自身的自举回路</title>
+  <desc>一个四步循环：一，用 cordis_inspect_list 与 cordis_inspect_query 只读检查宿主运行时 API；二，按三个创作技能写插件或 preset 声明（技能按需加载，知识源次序为检查、包 README、built lib 或源码）；三，用 plugin_manager 的 install_bundle 把 bundle patch 装进当前 profile，写操作过审批门；四，能力影响该 profile 此后所有会话并跨重启，新 preset 在下一个新任务可选，然后回到第一步。中间标出审批理由：profile 变更跨会话持久，安装的 Host 代码跑在工作区沙箱之外。</desc>
+  <defs>
+    <marker id="arrowGreen2" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">Creator 模式：修改 DSH 自身的自举回路</text>
+  <text x="600" y="60" text-anchor="middle" font-size="13" fill="#64748b">Standard/PTC/Minimal 的 agent 在用户仓库里工作；Creator 的 agent 还要把宿主本身当作业对象。</text>
+
+  <!-- 循环四步 -->
+  <!-- ① 检查 -->
+  <rect x="50" y="100" width="260" height="170" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <circle cx="76" cy="126" r="12" fill="#16a34a"/>
+  <text x="76" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">1</text>
+  <text x="180" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">看宿主（只读）</text>
+  <text x="70" y="158" font-size="12" fill="#334155">cordis_inspect_list：列出检查 provider</text>
+  <text x="70" y="178" font-size="12" fill="#334155">cordis_inspect_query：查方法与类型</text>
+  <text x="70" y="202" font-size="11" fill="#64748b">Host：生成的 Service/Event 目录 + 活</text>
+  <text x="70" y="218" font-size="11" fill="#64748b">Loader 树（行 id、Config 状态、</text>
+  <text x="70" y="234" font-size="11" fill="#64748b">packageDir）；Client：从已连接页面答</text>
+  <text x="70" y="256" font-size="11" fill="#b91c1c">Standard 刻意不给这对工具：执行模型</text>
+  <text x="70" y="270" font-size="11" fill="#b91c1c">写的 JS，无沙箱行能约束</text>
+
+  <line x1="310" y1="185" x2="360" y2="185" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreen2)"/>
+
+  <!-- ② 编写 -->
+  <rect x="365" y="100" width="260" height="170" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <circle cx="391" cy="126" r="12" fill="#16a34a"/>
+  <text x="391" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">2</text>
+  <text x="495" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">写（技能按需加载）</text>
+  <text x="385" y="158" font-size="12" fill="#334155">技能 ①：cordis-plugin-development</text>
+  <text x="385" y="174" font-size="11" fill="#64748b">　写/装/调试持久插件与 MCP 的过程</text>
+  <text x="385" y="194" font-size="12" fill="#334155">技能 ②：editing-cordis-compositions</text>
+  <text x="385" y="210" font-size="11" fill="#64748b">　preset 声明格式；四份内置预设在</text>
+  <text x="385" y="226" font-size="11" fill="#64748b">　presets/ 下，minimal 最短可当模板</text>
+  <text x="385" y="246" font-size="12" fill="#334155">技能 ③：cordis-composition-reference</text>
+  <text x="385" y="262" font-size="11" fill="#64748b">　patch 方言 + 可装包清单（门禁保鲜）</text>
+
+  <line x1="625" y1="185" x2="675" y2="185" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreen2)"/>
+
+  <!-- ③ 安装 -->
+  <rect x="680" y="100" width="260" height="170" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <circle cx="706" cy="126" r="12" fill="#16a34a"/>
+  <text x="706" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">3</text>
+  <text x="810" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">装（审批门）</text>
+  <text x="700" y="158" font-size="12" fill="#334155">plugin_manager · install_bundle</text>
+  <text x="700" y="178" font-size="12" fill="#334155">目标：当前 profile 的 user patch</text>
+  <text x="700" y="202" font-size="11" fill="#64748b">行条件 disabled: !!js "!ctx.get</text>
+  <text x="700" y="218" font-size="11" fill="#64748b">('profileContext')"——无 profile 上下</text>
+  <text x="700" y="234" font-size="11" fill="#64748b">文的进程里这行保持禁用</text>
+  <rect x="700" y="244" width="220" height="20" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="810" y="258" text-anchor="middle" font-size="10" fill="#991b1b">审批理由：Host 代码跑在沙箱之外</text>
+
+  <!-- ④ 生效 -->
+  <rect x="980" y="100" width="220" height="170" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <circle cx="1006" cy="126" r="12" fill="#16a34a"/>
+  <text x="1006" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">4</text>
+  <text x="1090" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">生效</text>
+  <text x="1000" y="158" font-size="12" fill="#334155">影响该 profile 此后所有会话</text>
+  <text x="1000" y="178" font-size="12" fill="#334155">跨重启持久</text>
+  <text x="1000" y="202" font-size="11" fill="#64748b">插件即时加载或需重启，</text>
+  <text x="1000" y="218" font-size="11" fill="#64748b">取决于改了什么；新 preset</text>
+  <text x="1000" y="234" font-size="11" fill="#64748b">在下一个新任务可选</text>
+  <text x="1000" y="256" font-size="11" fill="#166534">guide：要求 agent 完成安装</text>
+  <text x="1000" y="270" font-size="11" fill="#166534">并验证，别只要源代码</text>
+
+  <!-- 回路 -->
+  <path d="M 1090 270 C 1090 320, 200 320, 180 272" fill="none" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreen2)"/>
+  <text x="635" y="312" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">能力变多了 → 回到 ① 再检查（自举循环）</text>
+
+  <!-- 下半：机制注解 -->
+  <rect x="50" y="352" width="545" height="150" rx="10" fill="#fefce8" stroke="#fde047"/>
+  <text x="322" y="380" text-anchor="middle" font-size="13" font-weight="700" fill="#854d0e">技能是"追加"不是"替换"</text>
+  <text x="322" y="406" text-anchor="middle" font-size="12" fill="#713f12">customSkillDirs 把 dsh-agent-preset 包自带的 skills/ 目录</text>
+  <text x="322" y="424" text-anchor="middle" font-size="12" fill="#713f12">追加到默认技能根（CUSTOM_RANK）——项目/用户技能照常在场</text>
+  <text x="322" y="452" text-anchor="middle" font-size="12" fill="#713f12">渐进披露：SKILL.md 只留过程 + 知识源次序 + 索引（首载约 3.9KB），</text>
+  <text x="322" y="470" text-anchor="middle" font-size="12" fill="#713f12">recipe 在 references/、可拷贝 bundle 在 templates/，压在 8192 字符</text>
+  <text x="322" y="488" text-anchor="middle" font-size="12" fill="#713f12">pruner 阈值之下；知识源次序：检查 → 包 README → lib/源码</text>
+
+  <rect x="615" y="352" width="545" height="150" rx="10" fill="#faf5ff" stroke="#c4b5fd"/>
+  <text x="887" y="380" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">产出物都是普通声明（没有"模式专属代码"）</text>
+  <text x="887" y="406" text-anchor="middle" font-size="12" fill="#5b21b6">插件 = 普通包，preset = 一行 @deepseek-ai/dsh-agent-preset 声明</text>
+  <text x="887" y="424" text-anchor="middle" font-size="12" fill="#5b21b6">registry 不扫描目录、不接受路径；一切声明都是插件行</text>
+  <text x="887" y="452" text-anchor="middle" font-size="12" fill="#5b21b6">改 preset = 装一份 override 它的 bundle patch（没有原地编辑）</text>
+  <text x="887" y="470" text-anchor="middle" font-size="12" fill="#5b21b6">Web 编辑器保存 = 写 active profile 的 user patch，</text>
+  <text x="887" y="488" text-anchor="middle" font-size="12" fill="#5b21b6">带 revision 检查与 profile 锁防并发覆盖</text>
+
+  <!-- 底部 -->
+  <rect x="50" y="524" width="1110" height="60" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="605" y="550" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">风险兜底不在 preset（preset 不是安全边界），而在审批 seam + profile 上下文条件</text>
+  <text x="605" y="572" text-anchor="middle" font-size="12" fill="#475569">tool 写操作要求审批或 full access；profileContext 不存在时持久化管理整行禁用。Web 设置页另有"让 Agent 帮我创建预设"入口直接发起 Creator 任务。</text>
+
+  <text x="605" y="620" text-anchor="middle" font-size="12" fill="#64748b">注意：declarative-presets Note 提过的 agent_preset 工具在当前树已并入 plugin_manager 路径——</text>
+  <text x="605" y="638" text-anchor="middle" font-size="12" fill="#64748b">技能明说"没有任何东西原地编辑声明：改 preset 就是装一份声明/覆盖它的 bundle patch"。</text>
+</svg>

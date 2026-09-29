@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>Minimal 模式：身份层清零与唯一的持久终端</title>
+  <desc>左半边展示系统提示词的剥层：Standard 的完整输入栈（persona 前后缀、首方 guidance、AGENTS.md、运行时上下文、宿主后加 section）在 Minimal 里被 persona complete: true 全部抑制，只剩一句话。快照测试验证注入的额外 section 不会到达模型。右半边展示工具面从 26 个收缩到 1 个持久 bash，跨步状态从 harness 设施转移到 shell 进程状态，且没有 compaction。底部是对照实验的使用方式。</desc>
+  <defs>
+    <marker id="arrowOrange" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#ea580c"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">Minimal 模式：把"你是谁、你在哪、仓库说了什么"全部清零</text>
+  <text x="600" y="60" text-anchor="middle" font-size="13" fill="#64748b">机制核心是 persona 行的两个开关：complete: true（一句话成为完整系统提示词）+ includeRuntimeContext: false（关运行时上下文）。</text>
+
+  <!-- 左半：提示词剥层 -->
+  <text x="70" y="96" font-size="14" font-weight="700" fill="#c2410c">身份层：Standard 的输入栈 → Minimal</text>
+
+  <rect x="40" y="112" width="500" height="46" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="290" y="140" text-anchor="middle" font-size="12" fill="#334155">部署 persona 前缀（{{model}}）+ suffix（{{cwd}}）</text>
+  <text x="560" y="140" font-size="16" fill="#dc2626" font-weight="700">✕</text>
+
+  <rect x="40" y="166" width="500" height="46" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="290" y="194" text-anchor="middle" font-size="12" fill="#334155">首方 guidance / 工具用法 section</text>
+  <text x="560" y="194" font-size="16" fill="#dc2626" font-weight="700">✕</text>
+
+  <rect x="40" y="220" width="500" height="46" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="290" y="248" text-anchor="middle" font-size="12" fill="#334155">agent-instructions：AGENTS.md（Standard 上限 64KB）</text>
+  <text x="560" y="248" font-size="16" fill="#dc2626" font-weight="700">✕</text>
+
+  <rect x="40" y="274" width="500" height="46" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="290" y="302" text-anchor="middle" font-size="12" fill="#334155">运行时上下文快照（cwd / 平台 / 模型…）</text>
+  <text x="560" y="302" font-size="16" fill="#dc2626" font-weight="700">✕</text>
+
+  <rect x="40" y="328" width="500" height="46" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-dasharray="5 3"/>
+  <text x="290" y="356" text-anchor="middle" font-size="12" fill="#991b1b">宿主侧后加的任意 section（快照测试注入 "THIS TEXT MUST NOT REACH THE MODEL"）</text>
+  <text x="560" y="356" font-size="16" fill="#dc2626" font-weight="700">✕</text>
+
+  <line x1="600" y1="240" x2="640" y2="240" stroke="#ea580c" stroke-width="3" marker-end="url(#arrowOrange)"/>
+
+  <rect x="645" y="180" width="300" height="120" rx="12" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="795" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">Minimal 的完整系统提示词</text>
+  <text x="795" y="240" text-anchor="middle" font-size="12" fill="#7f1d1d" font-style="italic">"You are a helpful software</text>
+  <text x="795" y="258" text-anchor="middle" font-size="12" fill="#7f1d1d" font-style="italic">engineer assistant."</text>
+  <text x="795" y="284" text-anchor="middle" font-size="11" fill="#9a3412">complete: true — 一行抑制其余一切 section</text>
+
+  <text x="795" y="330" text-anchor="middle" font-size="11" fill="#64748b">工具 schema 不属于提示词 section：bash 的 schema 照常上 wire</text>
+
+  <!-- 右半：工具与状态 -->
+  <text x="70" y="384" font-size="14" font-weight="700" fill="#c2410c">工具面与跨步状态</text>
+
+  <rect x="40" y="400" width="240" height="110" rx="10" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="160" y="428" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">Standard：26 个工具</text>
+  <text x="160" y="452" text-anchor="middle" font-size="11" fill="#64748b">fs / 搜索 / goal / plan / todo /</text>
+  <text x="160" y="468" text-anchor="middle" font-size="11" fill="#64748b">delegation / web / skills / …</text>
+  <text x="160" y="492" text-anchor="middle" font-size="11" fill="#64748b">跨步状态由 harness 设施托管</text>
+
+  <line x1="280" y1="452" x2="330" y2="452" stroke="#ea580c" stroke-width="3" marker-end="url(#arrowOrange)"/>
+  <text x="305" y="438" text-anchor="middle" font-size="11" font-weight="700" fill="#c2410c">收缩</text>
+
+  <rect x="335" y="400" width="250" height="110" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="460" y="428" text-anchor="middle" font-size="13" font-weight="700" fill="#c2410c">Minimal：1 个 bash（持久）</text>
+  <text x="460" y="452" text-anchor="middle" font-size="11" fill="#9a3412">isolate: terminals 圈住终端 realm</text>
+  <text x="460" y="470" text-anchor="middle" font-size="11" fill="#9a3412">Windows 上换 pwsh（同名 dialect）</text>
+  <text x="460" y="492" text-anchor="middle" font-size="11" fill="#9a3412">读文件/跑脚本全靠 shell 命令</text>
+
+  <rect x="610" y="400" width="550" height="110" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="885" y="426" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">跨步状态转移到 shell 进程（快照验证）</text>
+  <text x="885" y="450" text-anchor="middle" font-size="11" fill="#166534">第 1 次调用：cd persistent-state &amp;&amp; export DSH_MINIMAL_STATE=PERSISTED</text>
+  <text x="885" y="468" text-anchor="middle" font-size="11" fill="#166534">第 2 次调用读回：PERSISTED:{{cwd}}/persistent-state —— 工作目录和环境变量都活着</text>
+  <text x="885" y="492" text-anchor="middle" font-size="11" fill="#64748b">对照：Standard 的 bash 是 one-shot，每次调用独立进程</text>
+
+  <!-- 代价带 -->
+  <rect x="40" y="530" width="1120" height="52" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="600" y="552" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">代价：无 compaction、无 goal/plan/todo、无 ask-user —— 上下文只增不减，长任务缺内置辅助</text>
+  <text x="600" y="570" text-anchor="middle" font-size="11" fill="#7f1d1d">guide 原话："工具少，不代表对新手更容易"；shell 命令照常走沙箱与审批，不是法外之地</text>
+
+  <!-- 用途带 -->
+  <rect x="40" y="598" width="1120" height="76" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="600" y="624" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">存在理由：对照实验的基线</text>
+  <text x="600" y="646" text-anchor="middle" font-size="12" fill="#475569">固定模型 / 权限 / 任务输入 / 工作区起始状态，Standard 与 Minimal 各跑一遍同一任务，对比完成情况、工具调用与最终修改。</text>
+  <text x="600" y="664" text-anchor="middle" font-size="11" fill="#64748b">回答的问题：剥掉 harness 全部助益后，同一个模型 + 一个 shell 的裸表现是什么。</text>
+</svg>

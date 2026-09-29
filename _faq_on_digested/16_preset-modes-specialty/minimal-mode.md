@@ -1,5 +1,7 @@
 # Minimal 模式分篇 · 一句话身份 + 一个持久 shell，其余全部清零
 
+![Minimal 剥掉了什么：左=Standard 的完整提示词输入栈（persona 前后缀、首方 guidance、AGENTS.md、运行时上下文、宿主后加 section）被 persona complete: true 全部抑制到只剩一句话；右=工具面从 26 个收到 1 个持久 bash，跨步状态从 harness 设施移到 shell 进程状态，且无 compaction；底部=对照实验的用法](./figures/minimal-strip.svg)
+
 ## Minimal 到底"极简"掉了什么？
 
 [`minimal.patch.yml`](../../packages/bundle/web-app/presets/minimal.patch.yml) 是四份里最短的，快照测试把它的全部行为钉死了（[`apps/web/tests/minimal-preset.snapshot.ts`](../../apps/web/tests/minimal-preset.snapshot.ts)）：

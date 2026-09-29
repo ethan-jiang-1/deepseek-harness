@@ -1,13 +1,16 @@
-# Answer 16 · 三个模式是同一机制上的三份 bundle patch，各自动宿主的一根不同的轴
+# Answer 16 · 四个模式是同一机制上的四份 bundle patch，各自动宿主的一根不同的轴
+
+![四个内置模式总览：顶部共享宿主底座（Agent loop、执行管道、权限审批、会话日志），下面 Standard/PTC/Minimal/Creator 四张卡片，各标注动的轴、wire 工具数与关键差异；紫=呈现层，橙=身份层，绿=扩展层，灰=不动](./figures/four-modes-overview.svg)
 
 ## 一句话答案
 
-四个内置模式是**同一声明式 preset 机制**上的四份 bundle patch（`packages/bundle/web-app/presets/` 下 [`standard.patch.yml`](../../packages/bundle/web-app/presets/standard.patch.yml) / [`ptc.patch.yml`](../../packages/bundle/web-app/presets/ptc.patch.yml) / [`minimal.patch.yml`](../../packages/bundle/web-app/presets/minimal.patch.yml) / [`cordis.patch.yml`](../../packages/bundle/web-app/presets/cordis.patch.yml)，见 [declarative presets Note](../../.agents/notes/implemented/architecture/2026-09-18-declarative-agent-presets.md)）。它们的"特殊性"不是工具清单的加减，而是各自动了宿主的一根不同的轴：**PTC 动呈现层**（工具目录怎么投影成模型可见的 wire 工具表），**Minimal 动身份层**（系统提示词被一句话整体替换、运行时上下文关闭、终端换成持久终端），**Creator 动扩展层**（在 Standard 之上加运行时检查、持久插件管理与创作技能，把 DSH 自身变成 agent 的工作对象）。Standard 是唯一三根轴都不动的基线。
+四个内置模式是**同一声明式 preset 机制**上的四份 bundle patch（`packages/bundle/web-app/presets/` 下 [`standard.patch.yml`](../../packages/bundle/web-app/presets/standard.patch.yml) / [`ptc.patch.yml`](../../packages/bundle/web-app/presets/ptc.patch.yml) / [`minimal.patch.yml`](../../packages/bundle/web-app/presets/minimal.patch.yml) / [`cordis.patch.yml`](../../packages/bundle/web-app/presets/cordis.patch.yml)，见 [declarative presets Note](../../.agents/notes/implemented/architecture/2026-09-18-declarative-agent-presets.md)）。它们的"特殊性"不是工具清单的加减，而是各自动了宿主的一根不同的轴：**Standard 三轴都不动**（26 个原生工具全量、完整身份输入，因此是其余三份的 diff 基准），**PTC 动呈现层**（工具目录怎么投影成模型可见的 wire 工具表），**Minimal 动身份层**（系统提示词被一句话整体替换、运行时上下文关闭、终端换成持久终端），**Creator 动扩展层**（在 Standard 之上加运行时检查、持久插件管理与创作技能，把 DSH 自身变成 agent 的工作对象）。
 
 ## 第一节 · 先分清：preset 是什么，不是什么
 
 - **Agent preset 是会话级的**：一个进程里可以同时跑不同 preset 的 Agent。registry（`dsh-agent-preset-registry`）为每份声明建 scope + 内存 Loader 树，Agent scope 挂上去，子 agent 继承同一 revision；进程的 Agent loop 与 Host 服务仍然共享（[declarative presets Note](../../.agents/notes/implemented/architecture/2026-09-18-declarative-agent-presets.md)）。这和**进程级**的 runtime profile 是两个层面——`_digested` 已经把这条线画过：profile 决定一个 `dsh` 进程启动时装入什么，preset 决定单个 Session 的 Agent 拿什么工具与提示词（[`../_digested/runtime-profiles/00-map.md`](../../_digested/runtime-profiles/00-map.md)）。
-- **preset 声明就是普通插件行**：一份 `@deepseek-ai/dsh-agent-preset` 声明带 `id` + `plugins` 子列表，由 bundle patch 携带。Web 四份预设的差别全部体现在子列表的几十行 YAML 里，没有任何模式专属的宿主代码路径。
+- **preset 声明就是普通插件行**：一份 `@deepseek-ai/dsh-agent-preset` 声明带 `id` + `plugins` 子列表，由 bundle patch 携带。四份预设的差别全部体现在子列表的几十行 YAML 里，没有任何模式专属的宿主代码路径。
+- **`isolate` 组是作用域服务隔离**：preset 子列表里的 `cordis:group` + `isolate: { planMode | compaction+toolResultPruner | workflowEngine | terminals }` 给这组服务换一个 scope label——同 label 共享实现，不同 scope 互不可见（[`../_digested/cordis-runtime/01-五条原语对照源码.md`](../../_digested/cordis-runtime/01-五条原语对照源码.md)）。这就是为什么 compaction、workflow 引擎、持久终端状态都能"每份 preset 各自一份"而不打架。
 - **preset 不是安全边界**：Note 的 Consequences 明说 "Presets do not provide a security sandbox"；权限与沙箱照旧走 tool pipeline 与 approval seam。
 - **选择器是实验性的**：`agent-preset-registry` 的部署 `default: standard`（[`packages/bundle/web-app/cordis.patch.yml`](../../packages/bundle/web-app/cordis.patch.yml)）；"新任务可选择模式"开关标注 Experimental，关掉时新任务用应用默认，已有任务不受影响（[`locales.ts`](../../packages/client/ui-agent-preset/src/client/locales.ts)）。
 
@@ -18,18 +21,18 @@
 | 维度 | standard | ptc（order 2） | minimal（order 3） | cordis（order 4，显示名 Creator mode） |
 |---|---|---|---|---|
 | persona | `{{model}}` 前缀 + `{{cwd}}` 后缀 | 同 standard | **一句话 + `complete: true` + `includeRuntimeContext: false`** | 同 standard |
-| wire 工具表 | 全部原生 schema | **只剩 `run_code` + 生成 SDK**（加一行 `dsh-agent-tool-presentation mode: ptc`） | 只剩 `bash`/`pwsh`（持久终端） | 原生 schema（同 standard） |
+| wire 工具表 | **26 个原生 schema**（e2e 钉死） | **只剩 `run_code` + 生成 SDK**（加一行 `dsh-agent-tool-presentation mode: ptc`） | 只剩 `bash`/`pwsh`（持久终端） | 26 + `cordis_inspect_*`×2 + 条件性 `plugin_manager` |
 | shell | one-shot `dsh-tool-bash`/`pwsh` | 同 standard | **`dsh-tool-bash-persistent`/`pwsh-persistent`，`isolate: terminals`** | 同 standard |
-| fs 工具 / 搜索 | read/edit/write/glob/grep | 有（经 SDK 调用） | **无**（靠 shell 命令） | 有 |
+| fs 工具 / 搜索 | read/read_image/edit/write/glob/grep | 有（经 SDK 调用） | **无**（靠 shell 命令） | 有 |
 | skills | skill-filesystem + tool-skill | 有 | **无** | 有，且 `customSkillDirs` **追加**三个创作技能 |
 | plan / goal / todo / ask-user / web / present / jobs | 全有 | 全有 | **全无** | 全有 |
 | compaction | 有（`isolate: compaction, toolResultPruner`） | 有 | **无** | 有 |
 | delegation | subagent×2 + workflow + workflow-ptc，ralph 禁 | subagent×2，**workflow 三件全禁** | 无 | 同 standard（workflow 可用） |
-| `tool-cordis`（运行时检查） | 无 | 无 | 无 | **有** |
+| `tool-cordis`（运行时检查） | 无（刻意缺席） | 无 | 无 | **有** |
 | `plugin-manager` 工具 | `disabled: true` | `disabled: true` | 无此行 | **条件启用**：`disabled: !!js "!ctx.get('profileContext')"` |
 | `agent-instructions`（AGENTS.md 注入） | 有（64KB 上限） | 有 | **无** | 有 |
 
-（逐格出处：四份 `*.patch.yml` 本身；Minimal 列另有快照钉住，见 [minimal-mode.md](./minimal-mode.md)。）
+（逐格出处：四份 `*.patch.yml` 本身；standard 列的 26 工具清单与刻意缺席见 [standard-mode.md](./standard-mode.md)；Minimal 列另有快照钉住，见 [minimal-mode.md](./minimal-mode.md)。）
 
 ## 第三节 · "特殊性"的机制定位：三根正交的轴
 
@@ -37,6 +40,8 @@
 2. **身份轴（Minimal）**：`dsh-persona` 行的 `complete: true` 让那句 prefix 成为**完整系统提示词**，抑制 suffix 和其他所有 section（[`packages/preset/persona/src/index.ts`](../../packages/preset/persona/src/index.ts)）；`includeRuntimeContext: false` 再关掉运行时上下文快照。配合砍掉 `agent-instructions`，Minimal 把"你是谁、你在哪、仓库说了什么"三个输入全部清零，只剩一个持久 shell。
 3. **扩展轴（Creator）**：加的不是"给任务用的工具"，而是**把宿主自身当作业对象**的入口——只读运行时检查（`cordis_inspect_*`）、持久插件安装（`plugin-manager`，profile 上下文存在才启用）、三个按需加载的创作技能。产出物是 bundle patch / preset 声明，落进 profile，影响此后所有会话。
 
-三根轴互不排斥——理论上可以写一份 `complete: true` 又 `mode: ptc` 的自定义 preset；内置四份只是三个单轴极端 + 一个不动轴的基线。这也解释了为什么 Creator 的 guide 文案说"模式是一份 Agent 预设"：**自定义模式没有新机制，就是再写一份声明**（[`guide-locales.ts`](../../packages/client/ui-agent-preset/src/client/guide-locales.ts)）。
+Standard 之所以值得单独立篇，恰恰因为它**三根轴都不动**：它是部署默认、模式选择器关闭时的应用默认，也是组合测试逐项钉死的参照目录（[`apps/web/tests/shipped-composition.e2e.ts`](../../apps/web/tests/shipped-composition.e2e.ts)）——其余三份的每一行 diff 都以它为基准。
 
-分篇展开：[ptc-mode.md](./ptc-mode.md)（呈现轴）、[minimal-mode.md](./minimal-mode.md)（身份轴）、[creator-mode.md](./creator-mode.md)（扩展轴）。
+三根轴互不排斥——理论上可以写一份 `complete: true` 又 `mode: ptc` 的自定义 preset；内置四份 = 三个单轴极端 + 一个不动轴的基线。这也解释了为什么 Creator 的 guide 文案说"模式是一份 Agent 预设"：**自定义模式没有新机制，就是再写一份声明**（[`guide-locales.ts`](../../packages/client/ui-agent-preset/src/client/guide-locales.ts)）。
+
+分篇展开：[standard-mode.md](./standard-mode.md)（基线目录）、[ptc-mode.md](./ptc-mode.md)（呈现轴）、[minimal-mode.md](./minimal-mode.md)（身份轴）、[creator-mode.md](./creator-mode.md)（扩展轴）。
