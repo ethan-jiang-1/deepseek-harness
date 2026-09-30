@@ -1,6 +1,6 @@
 # Capability seams · 可替换能力
 
-产品源码基线：`46a7f68b09`（`dsh-v0.1.7-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`rc.1` → `rc.2` 的增量见 [`_change_log/0007`](../_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md)。
+产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `46a7f68b09`（`dsh-v0.1.7-rc.1`），增量见 [`_change_log/0009`](../_change_log/0009-0.1.7-rc.1-to-0.2.0-rc.2.md)。
 
 ## 一句话
 
@@ -40,7 +40,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 
 ## 不是 seam 的调度：schedule（agent 作用域持久提醒）
 
-`packages/schedule/schedule/` 提供 **session-local durable reminders**，不是 Service seam——没有 `ctx.schedule`、没有 Definition/Provider 可分包装。模型经 `schedule_create` / `schedule_list` / `schedule_delete` 三个工具创建一次性或固定间隔提醒，触发后以普通 follow-up 消息回到同一会话；提醒经 session event log 持久化，重启后仍会投递。它是自足插件（`ScheduleRuntime` 按 root agent 实例化）+ `scheduleProjectionDefinition` + Web 侧只读 catalog（`client/ui-schedule`）。它说明：能力可以按需装成插件，不必都切三角色（对照见 [`04`](./04-新增seam与Remote.md)）。更靠边的两个样本是 API Remote（BFF 通信模式，下节）与外发代理策略（进程级库，[`06`](./06-外发代理策略.md)）——都不是插件，也都刻意不切三角色。
+`packages/schedule/schedule/` 提供 **session-local durable reminders**，不是 seam——没有 Definition/Provider 可分包装；0009 起以 core role 进生成表（`ctx.schedule`，单一 owner，`docs/capability-seams.md:643`）。模型经 `schedule_create` / `schedule_list` / `schedule_delete` / `schedule_update` 四个工具创建一次性或固定间隔提醒（`packages/schedule/schedule/src/tools.ts:417`-`:493`，第四个为 0.2.0 线新增），到期以普通 follow-up 消息回到原会话；任务独立于 Session activation 持久化，重启后仍投递。它是自足插件（`ScheduleRuntime` 按 root agent 实例化）+ 持久化四件套 `storage.ts` / `domain.ts` / `delivery-history.ts` / `update.ts`（0.2.0 线 persistence 重构，旧 `scheduleProjectionDefinition` 无同名继任）+ Web 侧只读 catalog（`client/ui-schedule`）。它说明：能力可以按需装成插件，不必都切三角色（对照见 [`04`](./04-新增seam与Remote.md)）。更靠边的两个样本是 API Remote（BFF 通信模式，下节）与外发代理策略（进程级库，[`06`](./06-外发代理策略.md)）——都不是插件，也都刻意不切三角色。
 
 ## core 而非 seam：Webhook
 
