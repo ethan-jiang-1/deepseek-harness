@@ -31,19 +31,19 @@
 
 > Every package lives in exactly one group; new packages join existing groups, and a new group updates its own README and this table.
 >
-> — DSH [`packages/README.md` 的 “Package groups”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/README.md#package-groups)。每个组 README 是该家族的权威包清单；新增包优先加入既有组，新组必须同时更新自己的 README 与总表。
+> — DSH [`packages/README.md` 的 “Package groups”](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/README.md#package-groups)。每个组 README 是该家族的权威包清单；新增包优先加入既有组，新组必须同时更新自己的 README 与总表。
 
 分组之上还有发布期望分层：
 
 > Most groups are product — stable API. The exceptions: `experimental/` publishes without stability or support promises, and `test-support/`, `runtime-diagnostics/`, and `util/` are support with lower compatibility expectations.
 >
-> — DSH [`packages/README.md` 的 “Release expectations”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/README.md#release-expectations)。product / support / experimental 三类承担不同的兼容义务，分类因此同时约束“放哪”与“承诺什么”。
+> — DSH [`packages/README.md` 的 “Release expectations”](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/README.md#release-expectations)。product / support / experimental 三类承担不同的兼容义务，分类因此同时约束“放哪”与“承诺什么”。
 
 依赖方向也有分类规则：
 
 > Extension plugins depend on Service Definitions, never concrete providers.
 >
-> — DSH [`packages/README.md` 的 “Dependencies”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/README.md#dependencies)。扩展插件依赖 Service Definition 而不是具体 provider，这让“换 provider”保持为部署选择；依赖图本身由生成器产出（`docs/module-graph.md`，freshness 门禁）。
+> — DSH [`packages/README.md` 的 “Dependencies”](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/README.md#dependencies)。扩展插件依赖 Service Definition 而不是具体 provider，这让“换 provider”保持为部署选择；依赖图本身由生成器产出（`docs/module-graph.md`，freshness 门禁）。
 
 ## 3. 内容的五种维护形态
 
@@ -61,7 +61,7 @@
 
 > Exhaustive English sources regenerated from source and freshness-gated; reviewed Chinese counterparts follow the pairing workflow.
 >
-> — DSH [`docs/AGENTS.md` tier 表的生成 reference 行](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。同一行同时禁止“Hand edits to generated English sources or regions”——生成物上没有人工编辑的合法位置。
+> — DSH [`docs/AGENTS.md` tier 表的生成 reference 行](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。同一行同时禁止“Hand edits to generated English sources or regions”——生成物上没有人工编辑的合法位置。
 
 混合形态把生成内容嵌进手写页：subsystem 页拥有手写叙述，页内 `cordis-surface` 区域承载生成的 Cordis API；文档里贴的类型声明用 ` ```ts type-equiv `、剥掉 body 的公共类声明用 ` ```ts public-api `，都登记进 manifest 由 `verify-type-equiv` 抓漂移。录制形态的边界见快照规则（下节）与 [archived Note 冻结](../sdlc-reference/01-agent-note-lifecycle.md)。投影细节由 [文档所有权参考](../sdlc-reference/05-prose-doc-standards.md) 拥有。
 
@@ -73,7 +73,7 @@
 
 > This tree contains only tests whose committed session JSONL is replay input and expected persisted output. Keep non-session ARIA, geometry, generator, CLI, and unit expected output with its owning app, script, or package; use `test:expected`, `test:web`, or `test` for its owning tier.
 >
-> — DSH [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/snapshots/AGENTS.md)。快照树只收 session 回放；非 session 的期望输出跟 owning 层走，不留“测试杂物间”。提交的 session 是 normalization fixed point——录制与刷新写新版本号命名的输出，不重命名、不删除已提交的世代。
+> — DSH [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/snapshots/AGENTS.md)。快照树只收 session 回放；非 session 的期望输出跟 owning 层走，不留“测试杂物间”。提交的 session 是 normalization fixed point——录制与刷新写新版本号命名的输出，不重命名、不删除已提交的世代。
 
 放置规则的精神：证据住在被它证明的对象旁边，集中目录只收真正同类的证据。
 
@@ -83,11 +83,11 @@
 
 > They are copied into this monorepo instead of being depended on via npm, so that the harness fully owns its framework layer (auditable, patchable, pinned).
 >
-> — DSH [`vendor/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/vendor/README.md)。框架层选择被仓库拥有而不是被依赖，代价是每次偏离上游都要留痕：
+> — DSH [`vendor/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/vendor/README.md)。框架层选择被仓库拥有而不是被依赖，代价是每次偏离上游都要留痕：
 
 > Keep this log exhaustive — every divergence from upstream must be listed.
 >
-> — DSH [`vendor/README.md` 的 “Local modifications”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/vendor/README.md#local-modifications)。manifest 表记录上游版本与 commit，修改日志逐条记录本地分叉；审计性是 owned 选择的直接义务。
+> — DSH [`vendor/README.md` 的 “Local modifications”](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/vendor/README.md#local-modifications)。manifest 表记录上游版本与 commit，修改日志逐条记录本地分叉；审计性是 owned 选择的直接义务。
 
 ## 6. 分类为什么对 agent 重要
 
@@ -97,9 +97,9 @@ DSH 怎样把这套逻辑延伸给外部插件作者，见 [下一篇](./09-plug
 
 ## 证据入口
 
-- DSH [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/README.md)：包分组、发布期望与依赖方向的成文规则。
-- DSH [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/AGENTS.md)：包级约定、invariant 义务与生命周期测试。
-- DSH [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/snapshots/AGENTS.md)：session 回放 fixture 的放置与世代规则。
-- DSH [`vendor/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/vendor/README.md)：vendoring manifest 与本地修改日志。
-- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)：文档 tier 分类法、生成物边界与字数预算。
-- DSH [`scripts/doc-budgets.manifest.json`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/scripts/doc-budgets.manifest.json) 与 [`scripts/translation-pairing.manifest.json`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/scripts/translation-pairing.manifest.json)：预算与双语配对的范围清单。
+- DSH [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/README.md)：包分组、发布期望与依赖方向的成文规则。
+- DSH [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/AGENTS.md)：包级约定、invariant 义务与生命周期测试。
+- DSH [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/snapshots/AGENTS.md)：session 回放 fixture 的放置与世代规则。
+- DSH [`vendor/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/vendor/README.md)：vendoring manifest 与本地修改日志。
+- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/AGENTS.md)：文档 tier 分类法、生成物边界与字数预算。
+- DSH [`scripts/doc-budgets.manifest.json`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/scripts/doc-budgets.manifest.json) 与 [`scripts/translation-pairing.manifest.json`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/scripts/translation-pairing.manifest.json)：预算与双语配对的范围清单。

@@ -1,6 +1,6 @@
 # 04 · 从入口和配置看目录怎样变成运行时
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。
+源码核验基线：DeepSeek Harness `dsh-v0.2.0-rc.2`，commit `639ed015397290b3745d163aafe02ffee4aa3f84`（0009 复核）。
 
 ## 总链路
 
@@ -111,7 +111,7 @@ Electron 主进程（apps/desktop）
   窗口加载认证 URL；dsh-app:// 只承载壳自有页面；Node IPC 载生命周期 / update-tasks / platform-session
 ```
 
-~~旧的「无监听端口、`desktop.cordis.patch.yml` 覆盖层、`dsh-app://` 分帧字节管道、`__DSH_TRANSPORT__.openStream`」传输~~已随 0.1.7 线 desktop-host 重构退役（`wire.ts` 与覆盖层文件均不存在）；`dsh --profile desktop` 仍被 `apps/cli/src/args.ts:83` 显式拒绝，CLI 不是它的启动面。完整机制见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。
+~~旧的「无监听端口、`desktop.cordis.patch.yml` 覆盖层、`dsh-app://` 分帧字节管道、`__DSH_TRANSPORT__.openStream`」传输~~已随 0.1.7 线 desktop-host 重构退役（`wire.ts` 与覆盖层文件均不存在）；`dsh --profile desktop` 仍被 `apps/cli/src/args.ts:83` 显式拒绝，CLI 不是它的启动面。（0009 跨度补充：桌面新增自带 CLI launcher——经 Electron 可执行文件以 Node 模式走普通 CLI dispatcher，仅在应用退出后管理已初始化的 `desktop` profile 与插件包，拒绝把缺失的 `desktop` profile 当普通 profile 初始化；见 `apps/desktop-host/src/cli.ts` 与 `.agents/notes/implemented/feature/2026-09-27-desktop-cli-runtime.md`。）完整机制见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。
 
 ## `dsh --profile headless` 怎样跨目录
 
@@ -153,7 +153,7 @@ base bundle 可以先插入全局工具，web-app bundle 再禁用其中部分�
 | agent preset | 一个 session/agent 的 scoped composition | app shipped roots 或用户 preset roots | 可随部署/插件分发 |
 | shipped overlay | 随产品出货的一份可选组合叶子 | `apps/cli/config/examples/<name>/cordis.yml` | 产品资产，永不进默认 profile |
 
-顶层 `examples/` 与 `packages/examples/` 都已退役；要读“一份完整组合长什么样”，现在看 `apps/cli/config/examples/` 的三个 overlay 目录（`github-review`、`mcp-memory`——内含 `engram` / `mcp-reference-memory` / `memorix` 三份——与 `schedule`；旧 `cordis` overlay 已随 0.1.7 线 cordis 变更类工具退役），以及 shipped preset 声明 `packages/bundle/web-app/presets/{standard,ptc,minimal,cordis}.patch.yml`（0.1.7 线起 preset 重设计：`packages/preset/agent-presets/` yml 森林已删，preset 根改为 `agent-preset` + `agent-preset-registry`）。
+顶层 `examples/` 与 `packages/examples/` 都已退役；要读“一份完整组合长什么样”，现在看 `apps/cli/config/examples/` 的两个 overlay 目录（`github-review` 与 `mcp-memory`——内含 `engram` / `mcp-reference-memory` / `memorix` 三份；旧 `cordis` overlay 已随 0.1.7 线 cordis 变更类工具退役，旧 `schedule` overlay 已随 0.2.0 线 Schedule 转 optional bundle 退役——见 `packages/experimental/schedule-bundle/`），以及 shipped preset 声明 `packages/bundle/web-app/presets/{standard,ptc,minimal,cordis}.patch.yml`（0.1.7 线起 preset 重设计：`packages/preset/agent-presets/` yml 森林已删，preset 根改为 `agent-preset` + `agent-preset-registry`）。
 
 ## 为什么 `--dump-config` 很重要
 

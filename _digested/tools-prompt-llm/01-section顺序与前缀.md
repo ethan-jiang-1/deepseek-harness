@@ -1,5 +1,7 @@
 # Prompt section 顺序与前缀稳定
 
+产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`，2026-09-25 同步轮核验；OLD 侧 `46a7f68b09`）。
+
 源码核验入口：`packages/core/system-prompt/src/index.ts`。
 
 模型每一步的 system 文本是注册表当场拼的。顺序就是 KV cache 能不能命中前缀的机械原因。
@@ -12,11 +14,11 @@
 
 内置（构造时，与选哪个 loop 无关）：
 
-- `harness:identity`，`SECTION_ORDERS.HARNESS_IDENTITY = -1000`（可用 config 关掉，注册在 `packages/core/system-prompt/src/index.ts:420-425`，name 在 `:421`）
-- `deployment:persona-prefix`，`SECTION_ORDERS.DEPLOYMENT_PERSONA_PREFIX = 0`（`packages/core/system-prompt/src/index.ts:123,174,427`），文本来自 `config.personaPrefix`（默认空串）
-- `deployment:persona-suffix`，`SECTION_ORDERS.DEPLOYMENT_PERSONA_SUFFIX = 10200`（`packages/core/system-prompt/src/index.ts:153,177,433`），文本来自 `config.personaSuffix`（默认空串）；它刻意排在全部可复用指令之后
+- `harness:identity`，`SECTION_ORDERS.HARNESS_IDENTITY = -1000`（可用 config 关掉，注册在 `packages/core/system-prompt/src/index.ts:424-431`，name 在 `:427`）
+- `deployment:persona-prefix`，`SECTION_ORDERS.DEPLOYMENT_PERSONA_PREFIX = 0`（`packages/core/system-prompt/src/index.ts:127,179,432`），文本来自 `config.personaPrefix`（默认空串）
+- `deployment:persona-suffix`，`SECTION_ORDERS.DEPLOYMENT_PERSONA_SUFFIX = 10200`（`packages/core/system-prompt/src/index.ts:158,182,438`），文本来自 `config.personaSuffix`（默认空串）；它刻意排在全部可复用指令之后
 
-工具包自己登记 `tool:bash` 这类跨调用指导，主体约定 1000–2900：`SECTION_ORDERS` 里 `TOOL_BASH` 1000、`TOOL_PWSH` 1010、…、`TOOL_REPORT` 2900（`packages/core/system-prompt/src/index.ts:121-154`）；`tool:bash` 实际经 `getSectionOrder('TOOL_BASH')` 注册（`packages/shell/tool-bash/src/index.ts:237`）。负 order 只剩 `HARNESS_IDENTITY`（-1000）一个，`DEPLOYMENT_PERSONA_PREFIX` 是 0，500–900 是模式与文件引用等约定（`PLAN_POLICY` 500、`TEAM_POLICY` 600、`PTC_ONLY` 800、`FILE_REFERENCE` 900），从 1000 起是工具指导，其后 `TOOLS_SDK` 5000、`DELIVERABLE_FILE_REFERENCES` 9000、`STRUCTURED_OUTPUT` 9900 仍是可复用指令；**环境事实（`HARNESS_SOURCE` 10000、`WEB_SURFACE` 10100）与 persona 后缀（10200）刻意排在全部可复用指令之后**，因为它们逐机器/逐用户不同，放在前面会让本可共享的前缀在开头就分叉。
+工具包自己登记 `tool:bash` 这类跨调用指导，主体约定 1000–2900：`SECTION_ORDERS` 里 `TOOL_BASH` 1000、`TOOL_PWSH` 1010、…、`TOOL_REPORT` 2900（`packages/core/system-prompt/src/index.ts:125-159`）；`tool:bash` 实际经 `getSectionOrder('TOOL_BASH')` 注册（`packages/shell/tool-bash/src/index.ts:261`）。负 order 只剩 `HARNESS_IDENTITY`（-1000）一个，`DEPLOYMENT_PERSONA_PREFIX` 是 0，500–900 是模式与文件引用等约定（`PLAN_POLICY` 500、`TEAM_POLICY` 600、`PTC_ONLY` 800、`FILE_REFERENCE` 900），从 1000 起是工具指导，其后 `TOOL_COMPUTER_USE` 3000、`MCP_SERVERS` 3100 与 `TOOLS_SDK` 5000、`DELIVERABLE_FILE_REFERENCES` 9000、`STRUCTURED_OUTPUT` 9900 仍是可复用指令；**环境事实（`HARNESS_SOURCE` 10000、`WEB_SURFACE` 10100）与 persona 后缀（10200）刻意排在全部可复用指令之后**，因为它们逐机器/逐用户不同，放在前面会让本可共享的前缀在开头就分叉。
 
 ## 为什么前缀要稳
 

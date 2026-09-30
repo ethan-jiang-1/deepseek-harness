@@ -20,7 +20,7 @@
 
 ## 红灯对照：实测记录
 
-“测试会在旧行为上失败”不能靠文件名承诺，要靠实测。以下是本教程写作时的一次真实对照实验（在钉版基线 `46a7f68b09` 的临时 worktree 上执行）：
+“测试会在旧行为上失败”不能靠文件名承诺，要靠实测。以下是本教程写作时的一次真实对照实验（在钉版基线 `46a7f68b09`（dsh-v0.1.7-rc.1，写作当时的固定基线）的临时 worktree 上执行）：
 
 1. **回滚实现，保留测试**：`git revert --no-commit 5124a2a310` 后把测试文件、e2e 与三份 README 恢复到交付后状态——只有 `ModelListEditor.tsx` 与 `ModelsSection.module.css` 处于旧行为；
 2. **跑聚焦组件测试**：`pnpm vitest run packages/client/ui-settings-models/tests/provider-form.client.spec.tsx`；

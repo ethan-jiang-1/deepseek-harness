@@ -2,9 +2,9 @@
 
 ## 方法与基线
 
-机制结论以 [`_digested/`](../../_digested/00-index.md) 全部专题为底（当前基线 `dsh-v0.1.7-rc.1`，commit `46a7f68b09`）；本文最初写作时的消化基线是 `0.1.1-rc.2`（`b150a55…`），当时的行级漂移（如 `ctx.agentTeams`、`ctx.authorization` 这些晚于旧基线才出现的行）在 0006 同步后已并入基线。量化底座是 freshness-gated 的生成目录 [`docs/capability-seams.md`](../../docs/capability-seams.md)，数字一律以点数当时的生成表为准。原文写下的两次读数是"当前树读数（commit `3b1a213e9e…`，即 08/09 两篇 FAQ 提交的父提交）"与编辑复核点 `bb90e237f2…`：两处实测都是 28 条 seam、11 条 P≥2、39.3%、15 条单 Provider、2 条零 Provider、3 条零 Consumer，对这两个时点而言并没有写错。本次上游同步复核（2026-09-16）发现：**这些读数在 OLD 基线 `a66e470204`（dsh-v0.1.2-rc.1）时就已经全部过期，而 OLD 与 NEW 的 seam 层读数完全一致**——29 条 seam、12 条 P≥2、14 条单 Provider、3 条零 Provider、2 条零 Consumer。也就是说，这是本文写作时点与 OLD 之间就已存在的**存量失真，不是 `a66e470204 → fb2c4b9e69` 本次跨度引入的**；跨度内只动了 core（39 → 42，seam 层五个数字 OLD = NEW）。下表已按 **NEW 基线读数（commit `fb2c4b9e69`，dsh-v0.1.5-rc.2，2026-09-16 实测）** 重写；0008 同步（2026-09-23）按 `46a7f68b09`（dsh-v0.1.7-rc.1）重测一轮并再次重写下表：**33 条 seam、15 条 P≥2、15 条单 Provider、3 条零 Provider、2 条零 Consumer**，总数从 72 涨到 89（54 core + 33 seam + 1 service + 1 bundle，生成表新增了 service 这一 role）。下文凡引用 29/41.4% 处均已同步推进，历史读数原样保留。
+机制结论以 [`_digested/`](../../_digested/00-index.md) 全部专题为底（当前基线 `dsh-v0.2.0-rc.2`，commit `639ed01539`）；本文最初写作时的消化基线是 `0.1.1-rc.2`（`b150a55…`），当时的行级漂移（如 `ctx.agentTeams`、`ctx.authorization` 这些晚于旧基线才出现的行）在 0006 同步后已并入基线。量化底座是 freshness-gated 的生成目录 [`docs/capability-seams.md`](../../docs/capability-seams.md)，数字一律以点数当时的生成表为准。原文写下的两次读数是"当前树读数（commit `3b1a213e9e…`，即 08/09 两篇 FAQ 提交的父提交）"与编辑复核点 `bb90e237f2…`：两处实测都是 28 条 seam、11 条 P≥2、39.3%、15 条单 Provider、2 条零 Provider、3 条零 Consumer，对这两个时点而言并没有写错。本次上游同步复核（2026-09-16）发现：**这些读数在 OLD 基线 `a66e470204`（dsh-v0.1.2-rc.1）时就已经全部过期，而 OLD 与 NEW 的 seam 层读数完全一致**——29 条 seam、12 条 P≥2、14 条单 Provider、3 条零 Provider、2 条零 Consumer。也就是说，这是本文写作时点与 OLD 之间就已存在的**存量失真，不是 `a66e470204 → fb2c4b9e69` 本次跨度引入的**；跨度内只动了 core（39 → 42，seam 层五个数字 OLD = NEW）。下表已按 **NEW 基线读数（commit `fb2c4b9e69`，dsh-v0.1.5-rc.2，2026-09-16 实测）** 重写；0008 同步（2026-09-23）按 `46a7f68b09`（dsh-v0.1.7-rc.1）重测一轮并再次重写下表：**33 条 seam、15 条 P≥2、15 条单 Provider、3 条零 Provider、2 条零 Consumer**，总数从 72 涨到 89（54 core + 33 seam + 1 service + 1 bundle，生成表新增了 service 这一 role）。0009 同步（2026-09-25）按 `dsh-v0.2.0-rc.2` 重测：**总数 92（55 core + 33 seam + 3 service + 1 bundle）**，seam 层四个读数不动（33 / 15 / 15 / 3），零 Consumer 仍 2 条；service role 新增 `ctx.productAnalytics` 与 `ctx.otel`（Desktop 产品遥测面），core 新增 `ctx.schedule`（Schedule 转正进默认 Web composition）；`ctx.skills` 从 3 Provider 涨到 4（`sandbox-windows-acl` 以出厂 ACL 诊断技能成为第四个 Provider）。下文凡引用 29/41.4% 处均已同步推进，历史读数原样保留。
 
-生成表在 0008 基线（`46a7f68b09`）共 **89 个 `ctx` 服务**，按其 role 列拆分：**54 core + 33 seam + 1 service + 1 bundle**（`ctx.agentLoop` 是 bundle；NEW 基线时为 72 = 42 core + 29 seam + 1 bundle，0008 跨度新增了 `service` role）。seam 才是"可替换能力"，本文只在 33 条 seam 上做成熟度计算，core 只在下文"诚实边界"里单独处理。
+生成表在 0009 基线（`dsh-v0.2.0-rc.2`）共 **92 个 `ctx` 服务**，按其 role 列拆分：**55 core + 33 seam + 3 service + 1 bundle**（`ctx.agentLoop` 是 bundle；service 三个是 `ctx.productTelemetry`、`ctx.productAnalytics`、`ctx.otel`；0008 基线时为 89 = 54 core + 33 seam + 1 service + 1 bundle，0009 跨度 core 侧新增 `ctx.schedule`）。seam 才是"可替换能力"，本文只在 33 条 seam 上做成熟度计算，core 只在下文"诚实边界"里单独处理。
 
 ## 判据：供给侧与需求侧是两个独立的问题
 
@@ -14,7 +14,7 @@
 - **三条反向信号**：**自消费 seam**——Provider 与唯一 Consumer 是同一个包，等于还没有市场；**零 Provider seam**——Definition 立了、连默认实现都没有，API 形状仍可能在第一个实现落地时被改；**零 Consumer seam**——生成表 direct consumers 列为空（`sessionTelemetry`、`sessionTitle` 两条），两条各有出口（telemetry 离进程、title 经 projection），所以只算"待核查"信号，不作赤字结论；同组原先也为空的 `fileReferences` 在 OLD 之前已有 direct consumer `api-session-controller`。
 - **一条单位修正**：`ctx.approval` 不能用 Provider 数衡量。answerer 是 `approval/request` waterfall 的 listener，不注册成 Provider（生成表 P 列为空正是这条修正的读数）；它的成熟单位是 answerer 多样性 × 问题形状渲染，见"三个推翻"第 1 条。
 
-## 全景：33 条 seam 的 P/C 表（0008 基线读数 `46a7f68b09`，2026-09-23 实测）
+## 全景：33 条 seam 的 P/C 表（0009 基线读数 `dsh-v0.2.0-rc.2`，2026-09-25 实测；与 0008 基线相比仅 `ctx.skills` 一行 P 值变化）
 
 P = implementation 包数，C = direct consumer 包数，按生成表 implementations / direct consumers 两列逗号切分计数；下表按 P 升序、C 降序排列。
 
@@ -50,7 +50,7 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 | `ctx.browserUse` | 3 | 3 | 三 Provider（0008 复核新增：stagehand-native / chrome-devtools-mcp / playwright-mcp 驱动） |
 | `ctx.llm` | 3 | 2 | 含 1 个测试支持包（见下） |
 | `ctx.fs` | 3 | 1 | 商品化（local/sandbox/e2b），消费 1 面 |
-| `ctx.skills` | 3 | 1 | 双 provider 但**语义不可互换**：`skill-filesystem` 是通用加载器，`skill-badge` 只提供一条官方 badge 技能且出货行 `disabled: true`（`packages/bundle/base/cordis.patch.yml:281`） |
+| `ctx.skills` | 4 | 1 | 四 provider 但**语义不可互换**：`skill-filesystem` 是通用加载器，`skill-badge` 只提供一条官方 badge 技能且出货行 `disabled: true`（`packages/bundle/base/cordis.patch.yml:300`），`skill-office` 提供 office 文档技能，`sandbox-windows-acl` 只提供一条 Windows ACL 诊断技能（0009 复核新增） |
 | `ctx.web` | 4 | 1 | 同构三搜索 + 一 fetch（见下） |
 | `ctx.subagents` | 6 | 3 | 数量最多，语义只有三种位置 |
 
@@ -67,7 +67,7 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 
 ## 被数字推翻的三个印象
 
-1. **审批不是"完整 seam 所以饱和"。** 生成表 Provider 列为空（0），direct consumer 3 个（`tools`、`tool-bash`、`acp`）——answerer 是 `approval/request` waterfall 的 listener（ACP 桥只为它自己的 agent 作答），GUI 的交互 answerer 经转发白名单里的 `approval/request` waterfall 到达浏览器（`packages/client/ui-approval/src/client/index.ts:90` 的 `ctx.remote.$on('approval/request', …)`，白名单条目见 `packages/api/remotes/src/remote-events.ts:18`），两者都不注册成 Provider。运行时语义确实完备——`asked/decided` 成对审计、缺 answerer fail-closed、取消语义与审计 id 认领（见 [`user-approval` README](../../packages/interaction/user-approval/README.md) 与 [`Remote 转发白名单`](../../packages/api/remotes/src/remote-events.ts)）——但人类形状只有 diff/文字问答，无表单、多选项、确认单渲染；且 README 明说 sibling listener 的先后顺序不是策略优先级机制，**多方审批编排（谁先看、谁能否决）今天不支持**。真正的缺口是交互形状与多方治理，不是"地基"。
+1. **审批不是"完整 seam 所以饱和"。** 生成表 Provider 列为空（0），direct consumer 3 个（`tools`、`tool-bash`、`acp`）——answerer 是 `approval/request` waterfall 的 listener（ACP 桥只为它自己的 agent 作答），GUI 的交互 answerer 经转发白名单里的 `approval/request` waterfall 到达浏览器（`packages/client/ui-approval/src/client/index.ts:104` 的 `ctx.remote.$on('approval/request', …)`，白名单条目见 `packages/api/remotes/src/remote-events.ts:22`），两者都不注册成 Provider。运行时语义确实完备——`asked/decided` 成对审计、缺 answerer fail-closed、取消语义与审计 id 认领（见 [`user-approval` README](../../packages/interaction/user-approval/README.md) 与 [`Remote 转发白名单`](../../packages/api/remotes/src/remote-events.ts)）——但人类形状只有 diff/文字问答，无表单、多选项、确认单渲染；且 README 明说 sibling listener 的先后顺序不是策略优先级机制，**多方审批编排（谁先看、谁能否决）今天不支持**。真正的缺口是交互形状与多方治理，不是"地基"。
 2. **组织/团队编排不是空白。** `ctx.agentTeams`（core）+ tool 已进树（[note](../../.agents/notes/implemented/feature/2026-08-05-agent-teams.md)），晚于消化基线；第三方目录更早出现了该方向的项目。把它列进空白区是过期读数——上游每次同步后，空白判断必须随 `_change_log/` 重核。
 3. **web 不算饱和。** 4 个 Provider 同构、Consumer 只有 `tool-web` 一个面、共用同一失效模式（vendor API 可用性）。准确评级是"商品化但无差异化"，不是"做完了"。
 
@@ -96,7 +96,7 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 1. **"一切皆插件"不递归到底**：Cordis 根 Context、Boot、Loader 先于插件树存在，核心下沉成组合内核而不是消失（[`harness-idea/07`](../../_digested/harness-idea/07-boundaries-costs-fit.md)）。
 2. **插件化 ≠ 安全**：`plugin_manager` 安装与 runner 挂载是 opt-in、bash-equivalent trust，同进程代码挡不住直接 import Node API；0.1.7 线起模型侧的 `cordis_define`/`cordis_run` 已退役，持久安装收进 danger 权限门控的 `plugin_manager`（[`harness-idea/05`](../../_digested/harness-idea/05-dynamic-legibility.md)）。
 3. **model-visible ⟺ logged 是硬税**：任何让模型看见的新能力都要配日志重建规则与新的 `SessionEventMap` 成员（[`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)）。
-4. **core 不是天花板**：54 个 core 里有两类——单一实现的 core 服务（如 `tokenMeter`、`toolResultPruner`：都是公开 ctx 键，唯一消费方是 `compaction-basic`，见 `docs/capability-seams.md:481-482`）与"还没人要求换"的候补 seam。生成器不区分这两类，只能按 role 列与各自 README 自述读；饱和/缺口判断只对 33 条 seam 有效。
+4. **core 不是天花板**：55 个 core 里有两类——单一实现的 core 服务（如 `tokenMeter`、`toolResultPruner`：都是公开 ctx 键，唯一消费方是 `compaction-basic`，见 `docs/capability-seams.md:593-594`）与"还没人要求换"的候补 seam。生成器不区分这两类，只能按 role 列与各自 README 自述读；饱和/缺口判断只对 33 条 seam 有效。
 
 ## 度量：数字怎么来的，下次怎么自动来
 

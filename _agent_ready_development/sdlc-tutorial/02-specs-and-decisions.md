@@ -11,7 +11,7 @@
 | 你要确认什么 | 主要位置 | 主例（模型 ID 显示）中的落点 | pnpm 锁案例中的落点 |
 |---|---|---|---|
 | 为什么做、怎样算完成 | Issue 或任务上下文 | 教学重建的任务描述 | Note 的 Problem 节：22 分钟的锁持有 |
-| 为什么这样决定 | Agent Note | **豁免**：无持久取舍 | [`bounded-pnpm-runs`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/bug-fix/2026-09-23-bounded-pnpm-runs.md) |
+| 为什么这样决定 | Agent Note | **豁免**：无持久取舍 | [`bounded-pnpm-runs`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/implemented/bug-fix/2026-09-23-bounded-pnpm-runs.md) |
 | 这一次准备怎样实现 | Plan Mode 会话；可选 | 未用 | 未用 |
 | 交付后的系统是什么 | 源码、README、JSDoc（代码内的文档注释） | 组件 + 样式 + 双语 README | `operations.ts` + 包 README |
 | 什么能抓住回归 | tests、snapshots（录制会话的回放证据） | 组件测试 + e2e | 真实子进程测试 |
@@ -43,7 +43,7 @@
 
 **不需要 Note 的小 UI 修复**（主例，提交 `5124a2a310`）：显示从名称换成 ID，是局部呈现修改。任务、当前合同、回归证据各自有 owner（Issue/任务上下文、双语 README、组件测试与 e2e）；没有任何“为什么选当前方案、放弃了什么”的事实需要独立保存——选择器显示 ID 的理由，读完源码和 README 就完整了。
 
-**需要 Note 的进程竞态修复**（提交 `ccaa0dc11c`）：插件管理器（`packages/boot/plugin-manager`，负责安装/移除插件包）里，静默的 pnpm 子进程长期占用 profile lock（DSH profile 目录的写锁）。打开它的 [Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/bug-fix/2026-09-23-bounded-pnpm-runs.md)，看它承载了什么：
+**需要 Note 的进程竞态修复**（提交 `ccaa0dc11c`）：插件管理器（`packages/boot/plugin-manager`，负责安装/移除插件包）里，静默的 pnpm 子进程长期占用 profile lock（DSH profile 目录的写锁）。打开它的 [Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/implemented/bug-fix/2026-09-23-bounded-pnpm-runs.md)，看它承载了什么：
 
 - **Problem**：22 分钟的锁持有、该进程之后所有管理调用排队等待、pnpm 11.13.0 的 worker-pool 缺陷；
 - **Decision**：run 以进程退出为完成信号、2000 ms 有界排水、静默超时终止整棵进程树；
@@ -51,7 +51,7 @@
 - **Testing**：四个测试文件分别钉住什么行为；
 - **Consequences**：接受哪些代价（静默的健康构建会被误杀、报告最多晚 `idleTimeoutMs`）。
 
-这些事实没有别的地方可放：源码只能显示现在的行为，测试只能证明场景，README 不解释“为什么不用总耗时阈值”。**Note 是未来为什么，源码是现在是什么。** 配套的 [operations-process.spec.ts](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/boot/plugin-manager/tests/operations-process.spec.ts) 用真实子进程验证最关键的路径——一个故意占着管道不放的后代进程，会在操作返回前连同整棵进程树一起被停掉。
+这些事实没有别的地方可放：源码只能显示现在的行为，测试只能证明场景，README 不解释“为什么不用总耗时阈值”。**Note 是未来为什么，源码是现在是什么。** 配套的 [operations-process.spec.ts](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/boot/plugin-manager/tests/operations-process.spec.ts) 用真实子进程验证最关键的路径——一个故意占着管道不放的后代进程，会在操作返回前连同整棵进程树一起被停掉。
 
 ## Plan 与 Agent Note 面向不同时间
 

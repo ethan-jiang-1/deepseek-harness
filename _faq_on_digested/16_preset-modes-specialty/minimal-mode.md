@@ -23,7 +23,7 @@ goalCommand: false
 
 ## 终端为什么是"持久"的？
 
-Minimal 用的是一个 `isolate: terminals` 的组，装 `dsh-terminal` + `dsh-terminal-bash` + `dsh-tool-bash-persistent`：状态跨调用保持的持久 shell，工具名就叫 `bash`（[`packages/shell/tool-bash-persistent/src/index.ts`](../../packages/shell/tool-bash-persistent/src/index.ts)）。快照验证：第一次调用里 `cd persistent-state && export DSH_MINIMAL_STATE=PERSISTED`，**后一次调用**读回 `PERSISTED:{{cwd}}/persistent-state`——工作目录和环境变量都活着。这与 standard 的 one-shot `dsh-tool-bash`（每次调用独立进程）形成对照：极简模式把"跨步状态"从 todo/goal/plan 这些 harness 设施，交还给 shell 自己的进程状态。代价是 guide 里点破的那句：**"缺少管理长任务的内置辅助能力；工具少，不代表对新手更容易"**——没有 compaction，长任务的上下文只增不减。
+Minimal 用的是一个 `isolate: terminals` 的组，装 `dsh-terminal` + `dsh-terminal-bash` + `dsh-tool-bash-persistent`：状态跨调用保持的持久 shell，工具名就叫 `bash`（[`packages/shell/tool-bash-persistent/src/index.ts`](../../packages/shell/tool-bash-persistent/src/index.ts)）。Windows 侧有个实现细节：`persistent-pwsh` 底下其实还是 `dsh-terminal-bash`，只是配了 `shellDialect: pwsh`——方言切换是配置而不是换组件。快照验证：第一次调用里 `cd persistent-state && export DSH_MINIMAL_STATE=PERSISTED`，**后一次调用**读回 `PERSISTED:{{cwd}}/persistent-state`——工作目录和环境变量都活着。这与 standard 的 one-shot `dsh-tool-bash`（每次调用独立进程）形成对照：极简模式把"跨步状态"从 todo/goal/plan 这些 harness 设施，交还给 shell 自己的进程状态。代价是 guide 里点破的那句：**"缺少管理长任务的内置辅助能力；工具少，不代表对新手更容易"**——没有 compaction，长任务的上下文只增不减。
 
 ## 它存在的理由是什么？
 

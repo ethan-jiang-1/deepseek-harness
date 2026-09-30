@@ -52,7 +52,7 @@
 
 子 agent 完成通知只在生命周期快照的 `local` 为 true 时转发。提供方名字、child id、耐久 lineage **不**构成 locality。
 
-「`src/` 没变」不等于「线上内容没变」：SDK 是无过滤透传层，而同一跨度内 `SESSION_FORMAT_VERSION` 从 `0` 走到 `3`（`packages/core/session/src/types.ts:88`），所以线上词汇表实际发生断裂（`assistant/chunk` 归零、`assistant/message` 内嵌 `data.stream`、新增 `assistant/attempt` / `system/message` / `feedback/*` / `command/*` / `tool/ptc-dispatch*`）。那是 session-format 专题的事实，这里只记它由 SDK 透传。
+「`src/` 没变」不等于「线上内容没变」：SDK 是无过滤透传层，而同一跨度内 `SESSION_FORMAT_VERSION` 从 `0` 走到 `3`（现值 `4`，`packages/core/session/src/types.ts:89`；0009 跨度仍为 v4），所以线上词汇表实际发生断裂（`assistant/chunk` 归零、`assistant/message` 内嵌 `data.stream`、新增 `assistant/attempt` / `system/message` / `feedback/*` / `command/*` / `tool/ptc-dispatch*`）。那是 session-format 专题的事实，这里只记它由 SDK 透传。
 
 ## 对照
 

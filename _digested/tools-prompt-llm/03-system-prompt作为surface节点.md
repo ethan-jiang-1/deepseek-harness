@@ -1,5 +1,7 @@
 # system prompt 作为 surface 节点
 
+产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`，2026-09-25 同步轮核验；OLD 侧 `46a7f68b09`）。
+
 源码核验入口：`packages/core/session/src/types.ts` 的事件定义、`packages/core/session/src/request-header.ts`、`packages/core/agent-loop/src/runtime-context.ts`、`packages/core/agent-loop/src/agent.ts` 的 `buildRequest`。
 
 本篇回答一个表示的搬迁：渲染后的 system prompt 从 `request/header` 的 `system` 字段，搬成一条普通的 surface 会话事件 `system/message`，占据 surface node 0。
@@ -12,7 +14,7 @@ surface 事件类型因此从三种变成四种：`system/message`、`user/messa
 
 空 `content` 表示「无 system prompt」。节点保留 surface 位置，`deriveEventMessage` 把它投影为 `null`，不产生 wire 消息（`packages/core/session/src/surface.ts:109-116`）；同一分支也让「只带 usage 的 max-tokens assistant message」不注入空 assistant turn。
 
-提交时序：loop 在 `step/start` 之后、本步 `user/message` 之前提交 `system/message`（`turn()` 在 `packages/core/agent-loop/src/agent.ts:302` 落 `step/start`，`step()` 在 `:370-376` 提交 system 与首个 attempt 的 user 批次），所以**日志顺序 = wire 顺序**。`buildRequest`（`:553-612`）不再设 `system`，请求 = `header.config` + `session.deriveMessages()`（system 在最前）+ `header.tools`；配套的 invariant 断言 loop 构造的请求 `system === undefined`（`packages/core/agent-loop/src/invariant.ts:44-46`）。
+提交时序：loop 在 `step/start` 之后、本步 `user/message` 之前提交 `system/message`（`turn()` 在 `packages/core/agent-loop/src/agent.ts:329` 落 `step/start`，`step()` 在 `:413-421` 提交 system 与首个 attempt 的 user 批次），所以**日志顺序 = wire 顺序**。`buildRequest`（`:599-687`）不再设 `system`，请求 = `header.config` + `session.deriveMessages()`（system 在最前）+ `header.tools`；配套的 invariant 断言 loop 构造的请求 `system === undefined`（`packages/core/agent-loop/src/invariant.ts:44-46`）。
 
 ## `EpochHeader` 不再有 `system`
 
@@ -20,7 +22,7 @@ surface 事件类型因此从三种变成四种：`system/message`、`user/messa
 
 `RequestHeaderReason` 本身没变，仍是 `'initial' | 'resume' | 'change' | 'series'`（`packages/core/session/src/types.ts:261`）。变的是 `change` 的含义：现在只意味着 **config 或 tools** 变了；prompt 变化不再伪装成 `change`。
 
-wire 请求不变。DeepSeek 序列化器把历史里的 `role: 'system'` 消息原样透传（`packages/llm/llm-deepseek/src/serialize.ts:250-251`、`:303-305`）；pi-ai 把 leading system history message 映射到它自己的单一 `systemPrompt` 槽（`packages/llm/llm-pi-ai/src/context.ts:140-151`）。`GenerateOptions.system` 仍保留给一次性调用者（声明 `packages/llm/llm/src/types.ts:436`），例如 title provider（`packages/session/session-title-llm/src/index.ts:258` 把它放进冻结的 `GenerateOptions`）。
+wire 请求不变。DeepSeek 序列化器把历史里的 `role: 'system'` 消息原样透传（`packages/llm/llm-deepseek/src/serialize.ts:250-251`、`:303-305`）；pi-ai 把 leading system history message 映射到它自己的单一 `systemPrompt` 槽（`packages/llm/llm-pi-ai/src/context.ts:140-151`）。`GenerateOptions.system` 仍保留给一次性调用者（声明 `packages/llm/llm/src/types.ts:511` 的接口、`:528` 的字段），例如 title provider（`packages/session/session-title-llm/src/index.ts:258` 把它放进冻结的 `GenerateOptions`）。
 
 ## 三种路由：`SystemPromptProjection`
 
@@ -48,4 +50,4 @@ wire 请求不变。DeepSeek 序列化器把历史里的 `role: 'system'` 消息
 
 `resume` 不是 series start，所以重启后改过的 prompt 在 capable route 上是 append，provider 缓存可能跨进程仍然有效；在不 capable 的 route 上则回落到归一化。
 
-`complete: true` 的 section 语义未参与这次搬迁：assembly 仍跑完 waterfall（好让 tools / contexts / variables 被解析），然后把这一段恢复成唯一 prompt section；多于一个有效 complete → assembly 失败（声明 `packages/core/system-prompt/src/index.ts:68-73`，实现 `:590-592`）。顺序与前缀细节见 [`01-section顺序与前缀.md`](./01-section顺序与前缀.md)。
+`complete: true` 的 section 语义未参与这次搬迁：assembly 仍跑完 waterfall（好让 tools / contexts / variables 被解析），然后把这一段恢复成唯一 prompt section；多于一个有效 complete → assembly 失败（声明 `packages/core/system-prompt/src/index.ts:70-75`，实现 `:597-599`）。顺序与前缀细节见 [`01-section顺序与前缀.md`](./01-section顺序与前缀.md)。

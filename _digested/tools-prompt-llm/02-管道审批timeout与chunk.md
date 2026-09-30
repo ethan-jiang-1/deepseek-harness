@@ -1,5 +1,7 @@
 # 工具管道、审批、timeout，以及 chunk 如何沉淀为 settlement
 
+产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`，2026-09-25 同步轮核验；OLD 侧 `46a7f68b09`）。
+
 源码核验入口：`packages/core/tools/src/index.ts` 事件、`packages/core/tools/src/ptc.ts`、`packages/llm/llm/src/assembler.ts`、`packages/llm/llm/src/assistant-stream.ts`、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
 
 本篇说明工具监听器的挂载位置，以及流式 chunk 如何形成一条内嵌流的 settlement 事件。
@@ -24,6 +26,10 @@ tool/result（log，surface）
 
 hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-execute` 的 allow/deny/ask。人点的 slash command 走 `ctx.commands`，不进这条管道。
 
+## 会话中途的工具面更新（0.2.0 线新增）
+
+`dsh-llm` 定义路由能力 `ToolUpdate = 'in-history' | 'addition-only'`（`packages/llm/llm/src/types.ts:407`，挂在 `LlmResolvedModelInfo` 上，`:420`）。route 声明了模式时，会话中途的工具面变化按「历史更新」走：loop 在 `request/header` 变更旁边把增删写成一条 `developer/message`（source `tool-registry`，content 是 `tool-addition` / `tool-removal` 块，`packages/core/agent-loop/src/agent.ts:633-648`），随 `headerSeq` 关联触发它的 header。dispatch 边界 `projectToolUpdates`（`packages/llm/llm/src/content.ts:424`）再按目标 route 的模式投影：`in-history` route 收到保留的 `tool-addition` / `tool-removal` 增量，`addition-only` route 的 removal 被滤掉（工具只能增不能撤），未声明模式的 route 收不到 developer 更新、拿完整工具表（`content.ts:430-436`）。DeepSeek wire 侧把保留的 developer 块序列化成 system-role 的 `tool_addition` / `tool_removal` tool 引用，`defer_loading` 声明按 schema 字段透传（`packages/llm/llm-deepseek/src/serialize.ts:46-48`、`:94-95`、`:164`）。内置唯一声明者 `deepseek-flash` 用 `addition-only`（`packages/llm/llm-deepseek/src/models.ts:13`，catalog zod 校验 `config.ts:78`）。未声明模式的 route 行为不变：可见 schema 集变化仍然使 `startsSeries` 成立（`packages/core/agent-loop/src/agent.ts:413-415` 的条件是 `preparedCall?.toolUpdate === undefined && this.toolsChanged(assembly.tools)`）。
+
 ## timeout 挂在 `tools/execute`
 
 `dsh-tool-call-timeout-policy`：读 `ctx.tools.get(name, agent)?.timeoutMs`。未声明则 `next()`。有则 `deadline(exec.signal, timeoutMs)`。超时返回模型可见的失败结果，不是抛给 loop 当基础设施错误。同一条 `tools/execute` 上还有 `dsh-session-checkpoint-policy`：先 flush 再进 tool body。`tools/post-execute` 上 `spill-policy` 处理超大文本。
@@ -36,7 +42,7 @@ hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-exec
 
 还有 `tools/ptc-dispatch-log`（3ca9c7d489 随 PTC 改名，旧名 `tools/code-dispatch-log`；`packages/core/tools/src/index.ts:190,364,1314-1329`）：只改 `run_code` 子调度写入 log 的副本（spill 预览），程序已经拿到完整值，模型也看不见这段。log 事件名与 waterfall 名都已随 PTC 改名：`tool/ptc-dispatch-start` / `tool/ptc-dispatch`（`packages/core/tools/src/ptc.ts:612`、`:586`），sub-call id 为 `<parent>:ptc:<n>`（`:545`），deferred image 的 plugin 来源为 `tools-ptc`；旧名只作为 v2→v3 迁移的输入词表存在（`packages/session/session-format-v2-to-v3/README.zh.md:95`）。
 
-**工具卡的 preparing 阶段**（#5053 起）：`assistant/live-chunk` 的 `tool-call-delta` 帧在 `tool/call` 落 log 之前就把工具卡的 phase 置为 `preparing`（`packages/client/ui-chat/src/client/conversation-nodes/tool.ts:41-49`），Web 过程活动行同样显示准备态（`packages/client/ui-chat/src/client/process-activity.ts:109-110`）；card 拿到的是「工具开始准备」的过程信号，不是执行结果。
+**工具卡的 preparing 阶段**（#5053 起）：`assistant/live-chunk` 的 `tool-call-delta` 帧在 `tool/call` 落 log 之前就把工具卡的 phase 置为 `preparing`（`packages/client/ui-chat/src/client/conversation-nodes/tool.ts:41-49`），Web 过程活动行同样显示准备态（`packages/client/ui-chat/src/client/conversation-nodes/process-activity.ts:109-110`，0.2.0 线随 ui-chat 目录整理从 `src/client/process-activity.ts` 移入 `conversation-nodes/`）；card 拿到的是「工具开始准备」的过程信号，不是执行结果。
 
 ## settlement → message
 
@@ -57,7 +63,7 @@ max-tokens 截断时，assembler 丢掉全部 `tool-call` block（无论完成�
 
 PTC 模式（原 code-mode）：子工具结果里的 image block 不嵌进 `run_code` 的程序输出。成功的 image-bearing result 在 run 结束后 `deferContext` 成 plugin 来源（`plugin: 'tools-ptc'`）的 user message，进入下一轮获准请求。`read_image` 只把图像放进自己的 tool result；由 PTC 在父 run 结束后统一 defer。
 
-`llm-deepseek` 的图像序列化：模型要在 catalog 里声明 `inputModalities` 含 `image` 才收图像输入，否则 `UNSUPPORTED_CONTENT`（门控在 adapter 序列化时，不在 host model-switch 预检）；序列化时把 durable attachment 解析成 DeepSeek Files API 的 file id（`{type:'file', file_id}`），经 `DeepSeekFileStore` 上传、按 `variantId` 索引复用并带过期与配额回收；Files API 解析失败才回退 base64 data URL（`{type:'image_url'}`）。文件引用路径的累计负载受 `maxRequestFilesBytes`（默认 128 MiB）、每请求图像数受 `maxImagesPerRequest`（默认 600）约束；base64 回退受 `maxInlineRequestImageBytes`（默认 20 MiB）约束。超出预算时 `offloadRequestImagesWithPolicy` 按最旧优先、按整数量子把图像替换成占位文本，占位文本由可注入的 `policy.placeholder` 生成（`packages/llm/llm/src/content.ts:107` 的 `offloadedImageText()`；DeepSeek 侧在 `packages/llm/llm-deepseek/src/adapter.ts:567` 绑定）；这是请求期瞬态变换，不写回 durable log。provider 拒绝 file id 时 invalidate 该映射并在同一请求重试一次。413 映射为 `INVALID_REQUEST`。
+`llm-deepseek` 的图像序列化：模型要在 catalog 里声明 `inputModalities` 含 `image` 才收图像输入，否则 `UNSUPPORTED_CONTENT`（门控在 adapter 序列化时，不在 host model-switch 预检）；序列化时把 durable attachment 解析成 DeepSeek Files API 的 file id（`{type:'file', file_id}`），经 `DeepSeekFileStore` 上传、按 `variantId` 索引复用并带过期与配额回收；Files API 解析失败才回退 base64 data URL（`{type:'image_url'}`）。文件引用路径的累计负载受 `maxRequestFilesBytes`（默认 128 MiB）、每请求图像数受 `maxImagesPerRequest`（默认 600）约束；base64 回退受 `maxInlineRequestImageBytes`（默认 20 MiB）约束。超出预算时 route 抛 `IMAGE_OFFLOAD_REQUIRED`（带 `requiredImageOffload` 算出的差额），卸载由 `packages/compaction/compaction-image-offload` 写成 durable `image/offload` 事件、图像块标 `offloaded: true`，dispatch 边界再把 offloaded 出现处投影成确定性占位文本（`packages/llm/llm/src/content.ts:108` 的 `offloadedImageText()`；机制详见 [`06-文件块与内容块投影.md`](./06-文件块与内容块投影.md)）。provider 拒绝 file id 时 invalidate 该映射并在同一请求重试一次。413 映射为 `INVALID_REQUEST`。
 
 > **图像编码管线（上游 #2676 / rc.1 核对）**：`attachment-local` 统一 encoding ladder：`encoding.ts` 定义编码参数、`normalization.ts` 标准化输入、`compression-limiter.ts` 限**并发**（FIFO 限制同时图像变换任务数，不是字节预算）、`request-image.ts` 组装请求路径。`saveImage` 返回 canonical ref 与 source facts（尺寸、格式等；`hasAlpha` 只在内部 `DetectedImage`，不入 ref）。Alpha 感知：`encodingLadder(prepared, hasAlpha)` 按 `hasAlpha ? 'image/webp' : 'image/jpeg'` 选编解码器（`IMAGE_ENCODING_QUALITIES = [85, 75, 60]`）。**只有**「干净、单帧、无元数据」的输入才直通；动画压成单帧 8-bit sRGB、带元数据的重编码剥离（`canPassThroughNormalization` 对 animated/metadata 返回 false）。`maxBytes` 是质量阶梯的**目标**而非硬上限——所有阶梯输出都超预算时保留最小输出；provider 字节硬上限在传输路由处才强制。`llm/llm` 的 `content.ts` 支持多模态 image 内容装配；`tool-fs` 的 `read_image` 上报降采样后的尺寸与坐标比例。
 

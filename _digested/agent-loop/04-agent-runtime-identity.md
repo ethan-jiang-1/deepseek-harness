@@ -38,7 +38,7 @@
 
 `withInitiator(agent, operation)` 把一段进程内操作标记为「继承自这个 Agent」，`currentInitiator()` 读当前边界，`withoutInitiator(operation)` 显式清除归属（`packages/core/agent/src/index.ts:292`、`:324`、`:339`）。契约写明 presence 既不是存活证明也不是授权——它只回答因果归属。
 
-loop 在 `wakeDriver()` 里用 `this.loopCtx.agents.withInitiator(this, () => this.kick())` 启动 driver（`packages/core/agent-loop/src/agent.ts:207`）：整个 activity（若干 turn、step、工具执行）都落在「以该 agent 为 initiator」的边界内。反过来，goal round driver 的调度任务用 `ctx.agents.withoutInitiator(async () => { … })` 包住（`packages/goal/goal-round-driver/src/index.ts:215`），因为后台调度不属于任何 agent 的 turn。
+loop 在 `wakeDriver()` 里用 `this.loopCtx.agents.withInitiator(this, () => this.kick())` 启动 driver（`packages/core/agent-loop/src/agent.ts:234`）：整个 activity（若干 turn、step、工具执行）都落在「以该 agent 为 initiator」的边界内。反过来，goal round driver 的调度任务用 `ctx.agents.withoutInitiator(async () => { … })` 包住（`packages/goal/goal-round-driver/src/index.ts:215`），因为后台调度不属于任何 agent 的 turn。
 
 ## initiator 作为 pause 来源判据
 

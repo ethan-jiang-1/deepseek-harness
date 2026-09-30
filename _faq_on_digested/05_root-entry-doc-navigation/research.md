@@ -70,7 +70,7 @@
 
 > Use the glob tool — not shell find — to discover files by path pattern. …
 
-来源：`packages/fs/tool-fs-search/src/glob.ts:305-306`
+来源：`packages/fs/tool-fs-search/src/glob.ts:302`
 
 ## 7. skill：摘要先给，正文按需、不缓存
 

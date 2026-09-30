@@ -20,8 +20,8 @@ Issue → proposed Note → Plan → implementation → docs/types/README
 
 ## 证据边界
 
-- 证据只使用 DSH 仓库本身：`.github/`（含 `issue-management/policy.mjs`）、`.agents/notes/`、`.agents/skills/`、`docs/`、根 `AGENTS.md`、`packages/`（含 `packages/preset/agent-preset/` 与 `packages/bundle/web-app/presets/`）、`scripts/`、`CONTRIBUTING.md`。
-- 当前基线：`dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`（工作树 `23aa3b253b`，0008 整树照搬同步）；历史 commit 只用于展示提案 → 实现的生命周期。
+- 证据只使用 DSH 仓库本身：`.github/`（含 `issue-management/rules.mjs`）、`.agents/notes/`、`.agents/skills/`、`docs/`、根 `AGENTS.md`、`packages/`（含 `packages/preset/agent-preset/` 与 `packages/bundle/web-app/presets/`）、`scripts/`、`CONTRIBUTING.md`。
+- 当前基线：`dsh-v0.2.0-rc.2`，commit  `639ed015397290b3745d163aafe02ffee4aa3f84`（0009 整树照搬同步）；历史 commit 只用于展示提案 → 实现的生命周期。
 
 ## 文件
 

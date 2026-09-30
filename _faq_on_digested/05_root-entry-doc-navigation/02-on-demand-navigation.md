@@ -16,7 +16,7 @@
 
 > Use the glob tool — not shell find — to discover files by path pattern. …
 >
-> —— `packages/fs/tool-fs-search/src/glob.ts:305-306`
+> —— `packages/fs/tool-fs-search/src/glob.ts:302`
 
 所以“怎么走图”在运行时是被工具提示词约束的：读文件用 read（带行号、可 offset/limit），搜内容用 grep，找文件用 glob——不是 shell 的 cat/rg/find。这本身也是“按图索骥”的一部分：工具给的是结构化、有界的结果，而不是 shell 的自由文本。
 

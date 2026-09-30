@@ -110,7 +110,7 @@
 
 **走形症状（failure symptoms）**：把根入口写成一份完整手册；或者到处放子树入口，让每个目录都要重新学一套。
 
-**例证（exemplar）**（可选核对）：DSH 的根 `AGENTS.md` 只放常驻规则（always-loaded rules）、布局与命令，每条规则 1–3 行并立刻给出链接；`CLAUDE.md` 是 `AGENTS.md` 的符号链接，四个目录各一处；根文件有字数上限（≤1,950 词），由 `verify-doc-budgets` 执行。
+**例证（exemplar）**（可选核对）：DSH 的根 `AGENTS.md` 只放常驻规则（always-loaded rules）、布局与命令，每条规则 1–3 行并立刻给出链接；`CLAUDE.md` 是 `AGENTS.md` 的符号链接，四个目录各一处；根文件有字数上限（≤1,960 词），由 `verify-doc-budgets` 执行。
 
 ---
 

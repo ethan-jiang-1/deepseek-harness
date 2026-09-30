@@ -68,7 +68,7 @@ goal round N
   │      │
   │      └─ wakeDriver() → 创建新 activity → kick() 循环启动
   │         （loop 侧在 `ctx.agents.withInitiator(agent, …)` 内运行整段 activity，
-  │          `packages/core/agent-loop/src/agent.ts:207`；driver 的调度任务本身则跑在
+  │          `packages/core/agent-loop/src/agent.ts:234`；driver 的调度任务本身则跑在
   │          `withoutInitiator` 内，`packages/goal/goal-round-driver/src/index.ts:215`）
   │
   ├─ 6. turn() 开始新 turn（agent-loop/src/agent.ts:269）
@@ -105,7 +105,7 @@ goal round N
   │      ├─ 场景 B：模型调用 update_goal blocked → 进入 wrapup
   │      └─ 场景 C：模型没调 goal tool 直接 final message
   │
-  ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:313-325）
+  ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:313-329）
   │      │
   │      ├─ completionAuthority() 检查（`packages/goal/tool-goal/src/authority.ts:110-117`）
   │      │   ├─ direct human input？→ 允许

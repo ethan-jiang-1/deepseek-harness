@@ -14,6 +14,6 @@
 使用纪律：
 
 1. 本目录内容**冻结**：不修改外部文章正文，不向上游同步看齐；需要补充视角时另开文件。
-2. 版本差异以 `_digested/_change_log/` 为对照——文中与当前源码（基线 `dsh-v0.1.7-rc.1`，`46a7f68b09`）不符的机制描述是**历史快照**，不是错误。
+2. 版本差异以 `_digested/_change_log/` 为对照——文中与当前源码（基线 `dsh-v0.2.0-rc.2`，`639ed01539`）不符的机制描述是**历史快照**，不是错误。
 3. 当前、经核验的 DSH 机制解读在 [`../../_digested/00-index.md`](../../_digested/00-index.md)；跨材料二次研究在 [`../../_faq_on_digested/00-index.md`](../../_faq_on_digested/00-index.md)。
 4. 文件名不叫 `README.md`（仓库 bilingual pairing 门禁会把任意 `README.md` 当产品文档语料），本目录自身无 verify 脚本——它不在三语料门禁范围内。

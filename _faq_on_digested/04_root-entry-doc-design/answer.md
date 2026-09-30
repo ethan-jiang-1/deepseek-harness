@@ -55,7 +55,7 @@ AGENTS.md
 ## 最核心的三件事
 
 1. **一个事实一个家**：`docs/AGENTS.md` 的 tier taxonomy 规定了哪种事实住在哪一层；其它层只 link。
-2. **常驻层有硬预算**：根 `AGENTS.md ≤ 1950 words`，`architecture.md` 的强制上限是 **2410**（`scripts/doc-budgets.manifest.json:4`），子树 AGENTS 与 `packages/README.md` 也各有 ceiling，单个 package README 另受 Summary 词数与 Model Experience / limitations 门禁约束；超了先 relocate，再 condense，最后才允许 raise。（0008 复核注记：`docs/AGENTS.md:58` 的 Targets 行仍印 ≤2,400，与 manifest 的 2410 不一致——上游自相矛盾，已登记；以 manifest 为执行口径。）
+2. **常驻层有硬预算**：根 `AGENTS.md ≤ 1960 words`，`architecture.md` 的强制上限是 **2410**（`scripts/doc-budgets.manifest.json:4`），子树 AGENTS 与 `packages/README.md` 也各有 ceiling，单个 package README 另受 Summary 词数与 Model Experience / limitations 门禁约束；超了先 relocate，再 condense，最后才允许 raise。（0008 复核注记：`docs/AGENTS.md:58` 的 Targets 行仍印 ≤2,400，与 manifest 的 2410 不一致——上游自相矛盾，已登记；以 manifest 为执行口径。）
 3. **地图是机器检查的**：相对链接必须存在，生成目录必须和源码一致，文档里的 TypeScript 必须能编译，中英双语必须配对。
 
 ## 为什么这能缓解“渐进式披露难以度量”

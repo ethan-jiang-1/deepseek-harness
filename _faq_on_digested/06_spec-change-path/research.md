@@ -20,11 +20,11 @@ Issue 引用的机器强制边界：
 > const automated = authorType === 'Bot' || authorType === 'App'
 > return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
 
-来源：`.github/issue-management/policy.mjs:69-76`
+来源：`.github/issue-management/rules.mjs:60-70`
 
 > if (input.references.all.length === 0) errors.push('PR 正文必须引用至少一个同仓库 Issue')
 
-来源：`.github/issue-management/policy.mjs:267`
+来源：`.github/issue-management/rules.mjs:265`
 
 限制：policy 只检查引用与元数据（Issue 引用、Type、Project Status、Priority、标签），不检查模板填写质量；0.1.5 起模板本身也不再要求验收条件/测试证据，那两项改由 PR 的 Testing 节承载。
 
@@ -58,7 +58,7 @@ proposed 骨架：
 
 > Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/bundle/web-app/presets/ptc.patch.yml:54`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
 
 > **Guidance, not enforcement** — plan mode restrains through text only; deployments that need enforced restrictions configure sandbox mode and approval policy independently.
 

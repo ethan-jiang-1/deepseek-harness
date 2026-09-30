@@ -2,8 +2,8 @@
 
 ## 基线
 
-- 消化基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d6…`；同步后与 `_digested/` 同一基线 `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`（[`_digested/00-index.md`](../../_digested/00-index.md)）。
-- 本文写入树：commit `08b582ea02cf16812d48e6323c91d784210cf38e`（2026-08-31）；本次同步复核树为 `46a7f68b09`（工作树 `9c18e3f216`），文中行号已按复核树更新。模型名、默认 catalog、事件词表等部署事实随上游漂移。
+- 消化基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d6…`；同步后与 `_digested/` 同一基线 `dsh-v0.2.0-rc.2`，commit `639ed015397290b3745d163aafe02ffee4aa3f84`（[`_digested/00-index.md`](../../_digested/00-index.md)）。
+- 本文写入树：commit `08b582ea02cf16812d48e6323c91d784210cf38e`（2026-08-31）；本次同步复核树为 `dsh-v0.2.0-rc.2`（`639ed01539`），文中行号已按复核树更新。模型名、默认 catalog、事件词表等部署事实随上游漂移。
 
 ## 方法
 
@@ -21,7 +21,7 @@
 对子代理报告中的强论断逐条 grep 复核：
 
 1. "`dsh-base` 默认挂载 goal/plan/workflow 工具" → `packages/bundle/base/cordis.patch.yml:292-414` 命中 `goal`、`goal-round-driver`、`plan-mode`、`tool-workflow`、`tool-todo`、`tool-goal`。**证实**。
-2. "`ui-tool` 全包无 `'image'` 渲染分支" → 写作树 grep `packages/client/ui-tool/src/` 对 `image` 零命中；**该论断已被 0.1.5 跨度内交付推翻**：`image-card-model.ts`、`read-image-row.tsx`、`tool.call.images` slot（`src/client/contract/slots.ts:40`）都在，`ui-tool` 现在渲染工具结果图像。**已修订**（见 [02 第二节](./02-self-built-previews.md)）。
+2. "`ui-tool` 全包无 `'image'` 渲染分支" → 写作树 grep `packages/client/ui-tool/src/` 对 `image` 零命中；**该论断已被 0.1.5 跨度内交付推翻**：`image-card-model.ts`、`read-image-row.tsx`、`tool.call.images` slot（`src/client/contract/slots.ts:46`）都在，`ui-tool` 现在渲染工具结果图像。**已修订**（见 [02 第二节](./02-self-built-previews.md)）。
 3. 默认 catalog 四模型与 1M 窗口 → `packages/llm/llm-deepseek/README.md:49`（`deepseek-flash` 与 `deepseek-v4-flash-vision-exp` 含 image，`deepseek-v4-flash`、`deepseek-v4-pro` 为 text-only）。**证实**（写作树为三模型）。
 4. `reasoningEffort: off|low|high|max`、省略回退 `high` → `README.md:56`、`:83`。**证实**。
 5. `create_goal` 等工具注册于 `packages/goal/tool-goal`；"Codex-shaped UX" 实出自 harness 级循环笔记 `.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md:114`（goal 工具笔记 `2026-07-19-model-facing-goal-tools.md:15` 只自述遵循 "Codex's compact goal tool surface"）。**已更正归属**。

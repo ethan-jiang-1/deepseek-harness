@@ -29,7 +29,7 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 落地就是一条命令：`ln -s AGENTS.md CLAUDE.md`。DSH 仓库有 4 处这样的 symlink（root、`packages/`、`vendor/`、`.agents/notes/implemented/`）。
 
-**2. 根 `AGENTS.md` 只放 standing orders。** 每轮都要在上下文里的规则，每条 1–3 行、链到 home；教程、故事、流程一律不写。字数预算不是建议，是门禁：`scripts/doc-budgets.manifest.json` 逐文件卡上限（根文件 ≤ 1,950 词），`verify-doc-budgets` 执行。
+**2. 根 `AGENTS.md` 只放 standing orders。** 每轮都要在上下文里的规则，每条 1–3 行、链到 home；教程、故事、流程一律不写。字数预算不是建议，是门禁：`scripts/doc-budgets.manifest.json` 逐文件卡上限（根文件 ≤ 1,960 词），`verify-doc-budgets` 执行。
 
 **3. 子树 `AGENTS.md` 是「合适个数」**：只在「有子树专属常驻规则」时放，宁可少放——大多数 package 只有 README.md 是**正确结果，不是缺口**。
 
@@ -39,7 +39,7 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 | 预算点 | 推荐区间 | DSH 锚点 |
 |---|---|---|
-| 根入口文件 | 300–1,500 词起步，取下沿、只降不升 | ≤1,950 词（`scripts/doc-budgets.manifest.json`；大仓多轮棘轮的现位，不是起点） |
+| 根入口文件 | 300–1,500 词起步，取下沿、只降不升 | ≤1,960 词（`scripts/doc-budgets.manifest.json`；大仓多轮棘轮的现位，不是起点） |
 | 子树入口文件 | 有专属常驻规则才放；放了的单个 ≤600 词 | 通则 ≤600 词在 `docs/AGENTS.md`（无机器条目）；manifest 里的 ≤750（packages）/ ≤1,320（docs）是逐文件例外 |
 
 中文按字符折算（字数 ≈ 词数 × 1.5–2），或直接对字符数设上限——`wc -w` 式计数对无空格文本会把整段计成 1 词，直接搬词数会虚松一个数量级。这层预算管的是常驻层信噪比的**分母**（每轮必读内容的厚度）；**分子**（每行确实都是带 home 的 standing order）由 tier taxonomy 管。两头都抓，信噪比才真的被控制住。

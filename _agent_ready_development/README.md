@@ -26,9 +26,9 @@ Agent-ready Development 指一套让人类与 coding agent（编码代理）都�
 
 ## DSH 在这里扮演什么角色，理解从哪里来
 
-本语料对 DSH 的全部理解都只从 DSH 的 GitHub 仓库 [`deepseek-ai/deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness/tree/46a7f68b0922371ce7144b668b90e377d8e799f4) 的一手内容挖出：源码、文档、`AGENTS.md`、`.agents/`、`.github/`、Skills、workflows，以及该仓库 git 历史中的 commit 与 tag。语料不使用任何二手转述或仓库外的描述性材料；其它研究目录不参与本语料的证据链。
+本语料对 DSH 的全部理解都只从 DSH 的 GitHub 仓库 [`deepseek-ai/deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness/tree/580646c14fb998532a6ef19bb4cc4009cd74b786) 的一手内容挖出：源码、文档、`AGENTS.md`、`.agents/`、`.github/`、Skills、workflows，以及该仓库 git 历史中的 commit 与 tag。语料不使用任何二手转述或仓库外的描述性材料；其它研究目录不参与本语料的证据链。
 
-挖取按版本进行：当前这一轮把全部目录外引用钉在 commit `46a7f68b0922371ce7144b668b90e377d8e799f4`（tag `dsh-v0.1.7-rc.1`）——这是“本语料此刻尊敬的版本”，不是永久前提。DSH 处于 developer preview，它的研发体系本身也会继续改：Issue/PR 门禁、评审制度、发布链路这些被挖出来的机制都随上游版本演进。语料随上游版本不断 re-pin，逐条复核并改写过时的结论（历轮 re-pin 与复核记录见 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md)）；读到与本页不同的基线 commit 时，以维护页最新一轮为准。
+挖取按版本进行：当前这一轮把全部目录外引用钉在 commit `580646c14fb998532a6ef19bb4cc4009cd74b786`（tag `dsh-v0.2.0-rc.2`）——这是“本语料此刻尊敬的版本”，不是永久前提。DSH 处于 developer preview，它的研发体系本身也会继续改：Issue/PR 门禁、评审制度、发布链路这些被挖出来的机制都随上游版本演进。语料随上游版本不断 re-pin，逐条复核并改写过时的结论（历轮 re-pin 与复核记录见 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md)）；读到与本页不同的基线 commit 时，以维护页最新一轮为准。
 
 具体做法是：结论先在正文里讲清楚，关键规则以 Markdown blockquote 摘录仓库原文，并给出来自该仓库固定 commit 的可核对链接与出处说明；读者不需要先理解 DSH 才能读懂主线，也可以顺着链接回到原文逐条核对。仓库没有声明的制度（例如它从未自称采用一套名为 SDD 的方法）在本语料中一律表述为“可观察机制的综合”，而不是官方方法名。
 
