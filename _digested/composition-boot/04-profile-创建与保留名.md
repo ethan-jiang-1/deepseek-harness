@@ -12,9 +12,9 @@ profile 目录不是手写的：五个 shipped 名首次使用自动建，自定
 | `--from-default-profile <模板>` | launcher 父选项（boot 与 dump 都认） | 复制 `<模板>` 的 bundles |
 | `dsh plugin --profile <name> …` | 缺 `package.json` 时先初始化 | shipped 名取模板，否则 `DEFAULT_PROFILE_BUNDLES`（只 `@deepseek-ai/dsh-base`） |
 
-三条路径最终都落到 `initProfile`（`packages/boot/app-boot/src/profile.ts:219-238`）：写 `package.json`（`dsh.profile.bundles`、空 `dependencies`）、空 `cordis.patch.yml`（内容就是模板注释加 `[]`）、hoisted 的 `pnpm-workspace.yaml`。已有文件一律不覆盖。（~~旧表里的 `patchReload` 列~~——0.1.7 线该字段连同 `DEFAULT_PROFILE_PATCH_RELOAD` 一起删除：manifest 只剩 bundle 列表，patch 重载改由 `hmr` 插件按 `profileContext` 门控承担，见 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)。）
+三条路径最终都落到 `initProfile`（`packages/boot/app-boot/src/profile.ts:244-263`）：写 `package.json`（`dsh.profile.bundles`、空 `dependencies`）、空 `cordis.patch.yml`（内容就是模板注释加 `[]`）、hoisted 的 `pnpm-workspace.yaml`。已有文件一律不覆盖。（~~旧表里的 `patchReload` 列~~——0.1.7 线该字段连同 `DEFAULT_PROFILE_PATCH_RELOAD` 一起删除：manifest 只剩 bundle 列表，patch 重载改由 `hmr` 插件按 `profileContext` 门控承担，见 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)。）
 
-`PROFILE_TEMPLATES` 仍是那五个、内容仍是 bundle-only（`packages/boot/app-boot/src/profile.ts:158-174`）：`acp`、`web`、`headless`、`sdk`、`sdk-minimal`。rc.1 没有增删改名，新增的是从模板**派生**自定义 profile 的选项；另有 `OPTIONAL_BUNDLES`（`:213-218`，voice-input-bundle、agent-team-profile、auto-review、schedule-bundle 四个 shipped-optional 包；后两个为 0009 收编，见 experimental 专题）。
+`PROFILE_TEMPLATES` 仍是那五个、内容仍是 bundle-only（`packages/boot/app-boot/src/profile.ts:179-195`）：`acp`、`web`、`headless`、`sdk`、`sdk-minimal`。rc.1 没有增删改名，新增的是从模板**派生**自定义 profile 的选项；另有 `OPTIONAL_BUNDLES`（`:213-218`，voice-input-bundle、agent-team-profile、auto-review、schedule-bundle 四个 shipped-optional 包；后两个为 0009 收编，见 experimental 专题）。
 
 ## `--from-default-profile`：复制一次，然后独立
 

@@ -8,11 +8,13 @@
 
 ## 两个列表，一份持久 splice
 
-`InboxTarget`：`'next-turn'` | `'next-step'`。队列是标准 `inbox` projection 的折叠状态，projection 建 cell 时折的是 **`session.snapshotEvents()` 的整段内存日志**（`packages/session/session-projection/src/index.ts:610,618,622` 的 `buildCell`），不是 `ownEvents()`；`session.ownEvents()` / `isOwnSeq()` 只是给普通消费者提供「本条会话自有后缀」的视图。**种子（fork 继承前缀）里的 splice 会进子会话队列**：`packages/core/agent-loop/tests/inbox.spec.ts:129,146,153` 的 "projects inherited inbox events in a forked session" 直接断言 `childInbox.nextTurn` 含继承项，且父项与自有项按序共存。
+`InboxTarget`：`'next-turn'` | `'next-step'`。队列是标准 `inbox` projection 的折叠状态，projection 建 cell 时折的是 **`session.snapshotEvents()` 的整段内存日志**（`packages/session/session-projection/src/index.ts:603,618,664` 的 `buildCell`），不是 `ownEvents()`；`session.ownEvents()` / `isOwnSeq()` 只是给普通消费者提供「本条会话自有后缀」的视图。**种子（fork 继承前缀）里的 splice 会进子会话队列**：`packages/core/agent-loop/tests/inbox.spec.ts:139,157-158,164-165` 的 "projects inherited inbox events in a forked session" 直接断言 `childInbox.nextTurn` 含继承项，且父项与自有项按序共存。
 
-`splice` 只 append 一条 `agent/inbox/spliced`；队列本身是标准 `inbox` projection 的折叠状态（`packages/core/agent-loop/src/inbox.ts:27-65`）。`Session.append()` 返回时 projection 已更新，live 通知（`agent/inbox/inserted` / `discarded`）在其后发出（`packages/core/agent-loop/src/inbox.ts:238-244`）。**pre-splice 的 `session/event` 视图不存在**：要拿被删消息请监听 `agent/inbox/claimed` / `discarded`（`packages/core/agent/src/runtime-types.ts:285,296,304`），不要依赖同步观察者里的旧列表。
+`splice` 只 append 一条 `agent/inbox/spliced`；队列本身是标准 `inbox` projection 的折叠状态（`packages/core/agent-loop/src/inbox.ts:27-65`）。`Session.append()` 返回时 projection 已更新，live 通知（`agent/inbox/inserted` / `discarded`）在其后发出（`packages/core/agent-loop/src/inbox.ts:238-244`）。**pre-splice 的 `session/event` 视图不存在**：要拿被删消息请监听 `agent/inbox/claimed` / `discarded`（`packages/core/agent/src/runtime-types.ts:288,299,307`），不要依赖同步观察者里的旧列表。
 
 `claim(target, turn)`：抽空 `next-step`；若 `target === 'next-turn'` 再取 `next-turn` 的头一条。返回值按这个顺序，并逐条发 `agent/inbox/claimed`（`packages/core/agent-loop/src/inbox.ts:111-116`）。loop 的 step 边界操作，不是插件扩展点。
+
+迟到的问题回答也走同一条队列：timed `ask_user_question` 在前台等待超时先结算 `pending`（问题保持可答，`packages/interaction/tool-ask-user/src/timed.ts:150-188` 的两种结算形状），用户随后的提交由 `dsh-user-questions` 的 answer RPC 构造一条 `user-question-reply` 消息 `steer` 进 `next-step`，claim 与获准后落 `user/message` 的路径和其它输入完全相同（`packages/interaction/user-questions/src/index.ts:164-206`）。
 
 ## 三个公开入口
 
@@ -64,7 +66,7 @@ llm.stream / preparedCall.stream（整个 for-await 包在 try/catch）
   有 → executeToolCalls；可往 next-step splice 上下文
 ```
 
-每次 attempt 在 `live.push` 之前先结算 system prompt：`SystemPromptProjection.project()` 决定这一轮提交哪些 `system/message` 节点，然后才发请求（`packages/core/agent-loop/src/agent.ts:410-418`）。attempt 内内存累积与 process-local 帧见 `packages/core/agent-loop/src/assistant-stream.ts:59-63`；结算点见 `packages/core/agent-loop/src/agent.ts:445-477`。loop invariant 断言请求不再带 `options.system`（`packages/core/agent-loop/src/invariant.ts:44-46`）。
+每次 attempt 在 `live.push` 之前先结算 system prompt：`SystemPromptProjection.project()` 决定这一轮提交哪些 `system/message` 节点，然后才发请求（`packages/core/agent-loop/src/agent.ts:410-418`）。attempt 内内存累积与 process-local 帧见 `packages/core/agent-loop/src/assistant-stream.ts:59-63`；结算点见 `packages/core/agent-loop/src/agent.ts:445-477`。loop invariant 断言请求不再带 `options.system`（`packages/core/agent-loop/src/invariant.ts:45-47`）。
 
 请求头：`request/header` 在 dispatch 前写入，只承载 config、adapterDefaults 与 tools。对截至某次请求的日志前缀取最后一份，即可重建当时的 config 与 tools；system prompt 从当前有效的 `system/message` 节点取。`request/context` 只在路由、容量或 `systemPromptUpdate` 能力变时写，不参与 header 相等。
 

@@ -20,12 +20,12 @@ goal round N
   ├─ 1. agent 回到 idle（上一轮结束）
   │      │
   │      ├─ 触发 agent/status({ status: 'idle' }) 事件
-  │      │   （agent-loop/src/agent.ts:114-116 get status；:119-126 setPhase 定义，:124 emit）
+  │      │   （agent-loop/src/agent.ts:140-143 get status；:145-152 setPhase 定义，:150 emit）
   │      │
   │      └─ goal-round-driver 监听器收到通知
-  │         （goal-round-driver/src/index.ts:259-282）
+  │         （goal-round-driver/src/index.ts:258-281）
   │
-  ├─ 2. requestDrive(state) 被调用（第 280 行）
+  ├─ 2. requestDrive(state) 被调用（第 279 行）
   │      │
   │      ├─ 串行：state.run 保证同一 agent 不会并发两个 drive 循环
   │      │   （第 212 行：if (state.run !== undefined) return）
@@ -105,7 +105,7 @@ goal round N
   │      ├─ 场景 B：模型调用 update_goal blocked → 进入 wrapup
   │      └─ 场景 C：模型没调 goal tool 直接 final message
   │
-  ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:313-329）
+  ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:291 起的 authority 检查、:313-331 的 complete/block 与 wrapup）
   │      │
   │      ├─ completionAuthority() 检查（`packages/goal/tool-goal/src/authority.ts:110-117`）
   │      │   ├─ direct human input？→ 允许
@@ -141,7 +141,7 @@ goal round N
 | 模型 `update_goal blocked` | 模型 tool | `goal/change` operation='blocked'，phase→blocked | 同上 |
 | 达最大 round 上限 | driver 自动 | driver 第 166-172 行调用 `ctx.goals.block(agent, ref, { code: 'round-limit' })` | block 后不再续 |
 | `max-tokens` turn 结束 | agent-loop | driver 第 329-331 行监听 `turn/end` reason='max-tokens' → `disarm(state)` | disarm 后 `activation !== 'armed'` → 无 round |
-| 人插入新消息 | 用户 | driver 第 296-303 行 `agent/inbox/inserted` → `competingQueued = true` | `readyToDrive()` 第 108 行检查 `!state.competingQueued` → 不推进 |
+| 人插入新消息 | 用户 | driver 第 295-302 行 `agent/inbox/inserted` → `competingQueued = true` | `readyToDrive()` 第 108 行检查 `!state.competingQueued` → 不推进 |
 | 人 `/goal clear` | human 命令 | `goal/change` operation='clear'，goal 被清除 | `currentGoal()` 返回 undefined → return |
 | goal pause/disarm | 各种路径 | `goal/change` phase→paused 或 activation→disarmed | drive 第 165 行检查不通过；host pause 还会中止在跑的 turn（见下节） |
 | pre-step 验证失败 | driver 主动 | 第 400-409 行调用 `ctx.goals.block()` code='prompt-rejected' | block 后不再续 |
@@ -171,7 +171,7 @@ while (state.requested && !state.stopping) {
 
 ## host pause 与 revision 栅栏
 
-`goal/changed` 监听器（第 283-294 行）现在解构 `change`，在一个事件里做三件事：
+`goal/changed` 监听器（第 282-294 行）现在解构 `change`，在一个事件里做三件事：
 
 1. 置 `state.needsCheckpoint = true` 并 `requestDrive(state)`——所有 mutation 的共同反应。
 2. 若 `change.operation === 'pause'` 且 agent 正在 `running`，且 `ctx.agents.currentInitiator() !== agent`（第 289-292 行），执行 `agent.cancel({ kind: 'user' }, { keepInbox: true })`。Web 按钮在 agent initiator 边界之外运行，所以 host 的 Pause 会**中止正在跑的 turn**；模型自己的 `update_goal pause` 在自身 turn 内运行（`currentInitiator() === agent`），正常跑完自己的 turn，不被中止。`keepInbox` 保留待处理输入。

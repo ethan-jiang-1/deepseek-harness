@@ -35,7 +35,7 @@
 1. **Codex 侧未验证。** "在 codex 简直是做梦"是对另一个产品的体感，本文不代为裁判；只指出一个有趣的对向事实：DSH 的 harness 级循环 Agent Note 自述 "Codex-shaped UX"（`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md:114`；goal 工具笔记只说自己 "follow Codex's compact goal tool surface"，见 `2026-07-19-model-facing-goal-tools.md:15`），且 `packages/hooks` 为 Claude Code（7/30 事件）与 Codex（5/10 事件）的 hook 配置提供了兼容桥——DSH 对这两个竞品的姿态是吸收其 UX、兼容其生态，而不是无视。
 2. **"3 小时"是单一说不通不出错的样本。** 本篇解释了机制下限，但不为具体任务的耗时背书；速度还取决于任务结构（可并行度）、上下文新鲜度与 cache 命中（路由或前缀一变即失效，`packages/llm/llm-deepseek/README.md:176`）。
 3. **UI 缺口清单基于源码与 README，非运行时实测。** 写作时的一条强论断"`ui-tool` 全包无 `'image'` 分支"已被 0.1.5 的 image 卡交付推翻（`packages/client/ui-tool/src/client/tool/models/image-card-model.ts`、`tool.call.images` slot）；保留这条修正记录，是因为它正是"源码复核必须随同步重跑"的样本。
-4. **模型命名与档位是部署事实，不是 harness 承诺。** `deepseek-flash`（text+image）与 `deepseek-v4-pro`（text-only）是 `llm-deepseek` 省略 `models` 时的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:6-21`、`README.md:52`；0009 复测——0.1.5 时的 `deepseek-v4-flash` 与 `deepseek-v4-flash-vision-exp` 两条目已移除），catalog 只提供建议，未列出 id 原样透传，上游换名时本篇的模型名会过期。
+4. **模型命名与档位是部署事实，不是 harness 承诺。** `deepseek-flash`（text+image）与 `deepseek-v4-pro`（text-only）是 `llm-deepseek` 省略 `models` 时的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:6-21`、`packages/llm/llm-deepseek/README.md:52`；0009 复测——0.1.5 时的 `deepseek-v4-flash` 与 `deepseek-v4-flash-vision-exp` 两条目已移除），catalog 只提供建议，未列出 id 原样透传，上游换名时本篇的模型名会过期。
 
 ## 分篇
 

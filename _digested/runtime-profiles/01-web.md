@@ -35,7 +35,7 @@ dsh --profile web --patch my.yml       # 叠加 patch
 
 web-app 的 disable 名单里**没有** `tool-str-replace-editor`：它随 base 的那一行一起在**本次跨度（`a66e470204` → `183f08e9c6`）内**全仓下线（OLD 基线里 web-app 自己那行是 `disabled: true`，见 `a66e470204:packages/bundle/web-app/cordis.patch.yml:350-351`），该 disable 行也随之删除（删 1 个 disable 行、增 8 条 insert 行，insert 行 60 → 68）。
 
-`hmr` 不在上表：web-app 自身没有 `hmr` 行，模块热更新的 disable 来自 base 层（`packages/bundle/base/cordis.patch.yml:21-25`）；Web 的 client 侧热重载由独立的 `client-hmr` 行负责（`packages/bundle/web-app/cordis.patch.yml:202-203`）。
+`hmr` 不在上表：web-app 自身没有 `hmr` 行，模块热更新的 disable 来自 base 层（`packages/bundle/base/cordis.patch.yml:27-32`）；Web 的 client 侧热重载由独立的 `client-hmr` 行负责（`packages/bundle/web-app/cordis.patch.yml:202-203`）。
 
 ### `dsh-web-app` 的 insert 行
 

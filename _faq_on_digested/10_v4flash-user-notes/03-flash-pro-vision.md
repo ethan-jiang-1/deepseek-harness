@@ -2,7 +2,7 @@
 
 ## 第一节 默认 catalog 里两个模型各自是什么
 
-`llm-deepseek` 省略 `models` 配置时公布的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:6-21`、`README.md:52`；0009 按 `dsh-v0.2.0-rc.2` 实测重写为两条，其中一条声明图像能力；0.1.5 时的四条目版本——含 `deepseek-v4-flash-vision-exp` 与 `deepseek-v4-flash`——已随上游同步移除）：
+`llm-deepseek` 省略 `models` 配置时公布的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:6-21`、`packages/llm/llm-deepseek/README.md:52`；0009 按 `dsh-v0.2.0-rc.2` 实测重写为两条，其中一条声明图像能力；0.1.5 时的四条目版本——含 `deepseek-v4-flash-vision-exp` 与 `deepseek-v4-flash`——已随上游同步移除）：
 
 | 模型 | 输入模态 | 定位 |
 |---|---|---|
@@ -11,9 +11,9 @@
 
 三个关键机制事实：
 
-1. **vision 是模型条目的属性，不是开关**。catalog 条目的 `inputModalities` 字段声明图片能力（类型见 `packages/llm/llm-deepseek/src/types.ts:21`；默认 catalog 唯一的 image-capable 条目见 `README.md:52`）；路由是否收图由"确切模型能力"决定，而非会话配置。catalog 是 advisory：未列出的模型 id 原样透传、按纯文本路由——所以"用 vision"必须真的把路由切到 image-capable 条目，不是开个设置。
+1. **vision 是模型条目的属性，不是开关**。catalog 条目的 `inputModalities` 字段声明图片能力（类型见 `packages/llm/llm-deepseek/src/types.ts:21`；默认 catalog 唯一的 image-capable 条目见 `packages/llm/llm-deepseek/README.md:52`）；路由是否收图由"确切模型能力"决定，而非会话配置。catalog 是 advisory：未列出的模型 id 原样透传、按纯文本路由——所以"用 vision"必须真的把路由切到 image-capable 条目，不是开个设置。
 2. **`read_image` 工具的存在本身依赖两道门**：`ctx.attachments` 持久附件服务挂载（没挂则工具根本不注册，`packages/fs/tool-fs/src/index.ts:70` 条件注入）；执行时 `assertImageCapableRoute` 解析会话最新 `request/header` 的路由并要求 `inputModalities` 显式含 `'image'`，否则拒——"model … does not declare image input"（`tool-fs/src/read-image.ts:119-131`）。
-3. **切换路由有缓存代价**：`request/header` 记录 provider/model/effort 为会话级状态；模型路由一变，装配前缀的 DeepSeek cache 从第一个变更 token 起失效（`README.md:180`）。"干活用 Flash、关键验证切 vision"在长会话里每次都是一次前缀清零，值得按节而不是按请求切换。
+3. **切换路由有缓存代价**：`request/header` 记录 provider/model/effort 为会话级状态；模型路由一变，装配前缀的 DeepSeek cache 从第一个变更 token 起失效（`packages/llm/llm-deepseek/README.md:180`）。"干活用 Flash、关键验证切 vision"在长会话里每次都是一次前缀清零，值得按节而不是按请求切换。
 
 ## 第二节 为什么 vision 是"验证手段"而不只是"看得见图"
 
