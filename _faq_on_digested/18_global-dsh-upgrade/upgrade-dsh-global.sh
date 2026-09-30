@@ -69,10 +69,16 @@ ver_ge() {
 
 clause_satisfies() {
   # 单个比较子句:返回 0 满足 / 1 不满足 / 2 语法不认识。
-  local tok="$1" ver="$2" base rest bmaj bmin vmaj vmin
+  local tok="$1" ver="$2" base rest bmaj bmin vmin
   case "$tok" in
     '*'|'x'|'X')
       return 0 ;;
+    *[xX]*)
+      # 含通配位的写法(如 22.x、~22.19.x)不逐位展开求值,统一按不认识处理:
+      # ver_ge 的数值强转会把 x 当 0,静默改变判定结果
+      return 2 ;;
+  esac
+  case "$tok" in
     '>='*)
       ver_ge "$ver" "${tok#>=}" ;;
     '>'*)
@@ -105,7 +111,8 @@ clause_satisfies() {
       [ "$bmin" = "$vmin" ] && ver_ge "$ver" "$base" && return 0
       return 1 ;;
     '~'*)
-      base="${tok#~}"
+      # 模式里的 ~ 必须转义:未加引号的 ~ 会被 tilde 展开成 $HOME,导致永远剥不掉前缀
+      base="${tok#\~}"
       bmaj="${base%%.*}"
       case "$bmaj" in ''|*[!0-9]*) return 2 ;; esac
       rest="${base#*.}"; bmin="${rest%%.*}"
@@ -116,7 +123,6 @@ clause_satisfies() {
       [ "$bmin" = "$vmin" ] && ver_ge "$ver" "$base" && return 0
       return 1 ;;
     [v0-9]*)
-      case "$tok" in *[xX]) return 2 ;; esac
       base="${tok#v}"
       if ver_ge "$ver" "$base" && ver_ge "$base" "$ver"; then return 0; fi
       return 1 ;;
@@ -128,13 +134,16 @@ clause_satisfies() {
 node_satisfies() {
   # node_satisfies RANGE VERSION:返回 0 满足 / 1 不满足 / 2 存在不认识的语法。
   # 语义:按 || 分组,组间 OR;组内空格分隔的子句间 AND(如 ">=22.19.0 <23")。
-  local range="$1" ver="$2" grp_list grp tok rc all_ok grp_unknown unknown=0
+  # 范围里任何一段语法不认识都返回 2:这是安全前置检查,宁问人,不误判通过。
+  local range="$1" ver="$2" grp_list grp tok rc all_ok grp_unknown unknown=0 matched=0 noglob_was=0
   ver="${ver#v}"
   range="${range//\"/}"
   case "$(printf '%s' "$range" | tr -d ' \t\n|')" in '') return 0 ;; esac
   grp_list="${range//||/$'\n'}"
+  case $- in *f*) noglob_was=1 ;; esac
+  set -f
   while IFS= read -r grp; do
-    [ -z "$(printf '%s' "$grp" | tr -d ' \t')" ] && continue
+    if [ -z "$(printf '%s' "$grp" | tr -d ' \t')" ]; then continue; fi
     all_ok=1
     grp_unknown=0
     for tok in $grp; do
@@ -147,14 +156,14 @@ node_satisfies() {
         all_ok=0
       fi
     done
-    [ "$grp_unknown" -eq 1 ] && unknown=1
-    if [ "$all_ok" -eq 1 ] && [ "$grp_unknown" -eq 0 ]; then
-      return 0
-    fi
+    if [ "$grp_unknown" -eq 1 ]; then unknown=1; fi
+    if [ "$all_ok" -eq 1 ] && [ "$grp_unknown" -eq 0 ]; then matched=1; fi
   done <<EOF
 $grp_list
 EOF
-  [ "$unknown" -eq 1 ] && return 2
+  if [ "$noglob_was" -eq 0 ]; then set +f; fi
+  if [ "$unknown" -eq 1 ]; then return 2; fi
+  if [ "$matched" -eq 1 ]; then return 0; fi
   return 1
 }
 
@@ -182,12 +191,15 @@ if [ -n "$NPM_GROOT" ] && [ -f "$NPM_GROOT/$PKG/package.json" ]; then
 elif [ -n "$PNPM_GROOT" ] && [ -f "$PNPM_GROOT/$PKG/package.json" ]; then
   METHOD='pnpm'; GROOT="$PNPM_GROOT"
 else
-  err "在 npm/pnpm 全局目录下都没找到 $PKG。"
+  err "在 npm/pnpm 全局目录下都没找到 ${PKG}。"
   DSH_BIN="$(command -v dsh 2>/dev/null || true)"
-  [ -n "$DSH_BIN" ] && err "但 PATH 里有 dsh:$DSH_BIN —— 安装方式可能变了,先回来更新 FAQ 18。"
+  if [ -n "$DSH_BIN" ]; then
+    err "但 PATH 里有 dsh:$DSH_BIN —— 安装方式可能变了,先回来更新 FAQ 18。"
+  fi
   exit 1
 fi
-OLD_VER="$(node -p "require('$GROOT/$PKG/package.json').version")"
+OLD_VER="$(node -p "require('$GROOT/$PKG/package.json').version")" \
+  || die "读取已安装版本失败($GROOT/$PKG/package.json)。"
 ok "安装方式:$METHOD 全局($GROOT);当前版本 $OLD_VER"
 
 # 3. 正在运行的 dsh 进程 --------------------------------------------------------
@@ -241,7 +253,7 @@ if ! probe_registry; then
       mkdir -p "$CACHE_DIR"
       CACHE_ARGS=(--cache "$CACHE_DIR")
       CACHE_NOTE="临时缓存 $CACHE_DIR"
-      warn "npm 缓存仍不可写:本次所有 npm 操作改用 $CACHE_DIR。"
+      warn "npm 缓存仍不可写:本次所有 npm 操作改用 ${CACHE_DIR}。"
       probe_registry || die "换临时缓存后仍无法访问 registry:$PROBE_ERR"
     else
       die "无法访问 npm registry。错误摘要:$(printf '%s' "$PROBE_ERR" | head -n 3 | tr '\n' ' ')"
@@ -253,16 +265,20 @@ fi
 ok "registry 可达(缓存:$CACHE_NOTE)"
 
 # 5. 目标版本(dist-tag 通道)-----------------------------------------------------
-TAGS_JSON="$(npm_with_cache view "$PKG" dist-tags --json 2>/dev/null)"
-TAGS_FLAT="$(node -e 'const t=JSON.parse(process.argv[1]);for(const k of ["latest","next","alpha"])if(t[k])console.log(k+"="+t[k])' "$TAGS_JSON")"
+TAGS_JSON="$(npm_with_cache view "$PKG" dist-tags --json 2>/dev/null)" || die '读取 dist-tags 失败。'
+[ -n "$TAGS_JSON" ] || die 'dist-tags 返回为空。'
+TAGS_FLAT="$(node -e 'const t=JSON.parse(process.argv[1]);for(const k of ["latest","next","alpha"])if(t[k])console.log(k+"="+t[k])' "$TAGS_JSON" 2>/dev/null)" \
+  || die "dist-tags 解析失败:$TAGS_JSON"
+TAGS_LINE="$(printf '%s\n' "$TAGS_FLAT" | tr '\n' ' ')"
+TAGS_LINE="${TAGS_LINE% }"
 get_tag() { printf '%s\n' "$TAGS_FLAT" | sed -n "s/^$1=//p"; }
 TARGET="$(get_tag "$TAG")"
-[ -n "$TARGET" ] || die "dist-tag $TAG 解析失败:$TAGS_FLAT"
+[ -n "$TARGET" ] || die "dist-tag $TAG 解析失败:$TAGS_LINE"
 ALPHA_TAG="$(get_tag alpha)"
 if [ -n "$ALPHA_TAG" ] && [ "$ALPHA_TAG" != "$TARGET" ]; then
-  info "dist-tags:$TAGS_FLAT —— 按策略只动 $TAG,alpha 通道($ALPHA_TAG)不会碰。"
+  info "dist-tags:$TAGS_LINE —— 按策略只动 $TAG,alpha 通道($ALPHA_TAG)不会碰。"
 else
-  info "dist-tags:$TAGS_FLAT"
+  info "dist-tags:$TAGS_LINE"
 fi
 ok "目标版本:$TARGET(dist-tag $TAG)"
 
@@ -270,7 +286,9 @@ ok "目标版本:$TARGET(dist-tag $TAG)"
 ENG_RANGE="$(npm_with_cache view "$PKG@$TARGET" engines.node --json 2>/dev/null || true)"
 ENG_RANGE="${ENG_RANGE//\"/}"
 ENG_SRC='npm metadata'
-if [ -z "$(printf '%s' "$ENG_RANGE" | tr -d ' \t\n')" ]; then
+# npm 对缺失字段可能返回空串、null 或 undefined,一律视为没有声明,用仓库默认兜底
+if [ -z "$(printf '%s' "$ENG_RANGE" | tr -d ' \t\n')" ] \
+  || [ "$ENG_RANGE" = 'null' ] || [ "$ENG_RANGE" = 'undefined' ]; then
   ENG_RANGE="$DEFAULT_ENG_RANGE"
   ENG_SRC="仓库默认(发布包 metadata 不带 engines 字段)"
 fi
@@ -283,12 +301,12 @@ case "$ENG_RC" in
     warn "engines 范围 \"$ENG_RANGE\" 有本脚本不认识的语法,请人工确认 node $NODE_VER 是否满足。"
     confirm '继续升级吗?' n || die '已取消。' ;;
   *)
-    die "node $NODE_VER 不满足目标版本要求 $ENG_RANGE。先用 nvm 升级(如:nvm install 24 && nvm use 24)再跑本脚本。" ;;
+    die "node ${NODE_VER} 不满足目标版本要求 ${ENG_RANGE}。先用 nvm 升级(如:nvm install 24 && nvm use 24)再跑本脚本。" ;;
 esac
 
 # 7. 同版本短路 -----------------------------------------------------------------
 if [ "$OLD_VER" = "$TARGET" ] && [ "$DRY_RUN" -eq 0 ]; then
-  warn "当前已是 $TAG 通道指向的 $TARGET。"
+  warn "当前已是 $TAG 通道指向的 ${TARGET}。"
   if ! confirm '仍要强制重装一遍吗?' n; then
     info '无事可做,退出。'
     exit 0
@@ -328,7 +346,7 @@ fi
 
 # 10. 升级后校验 -------------------------------------------------------------------
 if [ "$DRY_RUN" -eq 1 ]; then
-  info "[dry-run] 升级后将校验:command -v dsh 可解析、dsh --version == $TARGET、dsh --help 冒烟。"
+  info "[dry-run] 升级后将校验:command -v dsh 可解析、dsh --version == ${TARGET}、dsh --help 冒烟。"
 else
   hash -r 2>/dev/null || true
   DSH_BIN="$(command -v dsh 2>/dev/null || true)"
@@ -367,8 +385,13 @@ if [ -z "$REPO_ROOT" ]; then
 fi
 if [ -n "$REPO_ROOT" ]; then
   if [ -d "$REPO_ROOT/docs/upgrade-guide/v$TARGET" ]; then
-    warn "docs/upgrade-guide/ 有 v$TARGET 升级指南 —— 升级还没完,逐条过一遍:"
-    ls -1 "$REPO_ROOT/docs/upgrade-guide/v$TARGET" | sed 's/^/    /'
+    GUIDE_ITEMS="$(ls -1 "$REPO_ROOT/docs/upgrade-guide/v$TARGET" 2>/dev/null || true)"
+    if [ -n "$GUIDE_ITEMS" ]; then
+      warn "docs/upgrade-guide/ 有 v$TARGET 升级指南 —— 升级还没完,逐条过一遍:"
+      printf '%s\n' "$GUIDE_ITEMS" | sed 's/^/    /'
+    else
+      info "docs/upgrade-guide/v$TARGET 目录存在但为空;若本地落后,以 GitHub 仓库为准。"
+    fi
   else
     info "本地 checkout($REPO_ROOT)的 docs/upgrade-guide/ 暂无 v$TARGET 条目;若本地落后,以 GitHub 仓库为准。"
   fi
