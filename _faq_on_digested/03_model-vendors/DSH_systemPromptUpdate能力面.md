@@ -14,8 +14,8 @@
 
 | route | 是否声明 | 依据 |
 |---|---|---|
-| 内置 `deepseek-official` 的 `deepseek-flash` | **是** | `packages/llm/llm-deepseek/src/index.ts:94-100`；catalog zod 用 `z.const('in-history')` 校验（`:184`） |
-| 同 catalog 的 `deepseek-v4-flash` / `deepseek-v4-pro` / `deepseek-v4-flash-vision-exp` | 否 | `packages/llm/llm-deepseek/src/index.ts:92-122`（只有 `deepseek-flash` 带该字段） |
+| 内置 `deepseek-official` 的 `deepseek-flash` | **是** | `packages/llm/llm-deepseek/src/models.ts:7-14`；catalog zod 用 `z.const('in-history')` 校验（`config.ts:77`） |
+| 同 catalog 的 `deepseek-v4-flash` / `deepseek-v4-pro` / `deepseek-v4-flash-vision-exp` | 否 | `packages/llm/llm-deepseek/src/models.ts:6-21`（只有 `deepseek-flash` 带该字段） |
 | 全部 `llm-pi-ai` route（内置目录 route 与手工 route） | 否 | `packages/llm/llm-pi-ai/src/` 全目录无 `systemPromptUpdate`；手工 provider profile 也没有可写该能力的字段 |
 
 所以「官方 DeepSeek」「OpenAI 兼容」「Anthropic messages」这些身份或协议族**都不能推断**该能力，只有 catalog 里那一条 `deepseek-flash` 记录是权威。部署可以用 `cordis.yml` 的 `models` 列表替换 catalog 来显式声明（`packages/llm/llm-deepseek/src/adapter.ts:72`、`:417`），但那就等于自己承担「该模型确实这样读 system 消息」的验证责任；**手工 pi-ai route 目前无法声明**，只能走 replace。
@@ -29,5 +29,5 @@
 ## 怎么检查与验证
 
 - 运行时读取：`ctx.llm.resolveModelInfo(provider, model)` 的返回带 `systemPromptUpdate`；每次请求还会把实际生效值写进 `request/context`（`packages/core/agent-loop/src/agent.ts:585-597`），所以会话日志本身可以回答「这次请求用的是 replace 还是 append」。
-- 真实 API 检测器：`packages/llm/llm-deepseek/tests/adapter.e2e.ts:358-444` 用同一份 prompt 字节比较两种策略——追加 prompt 的 `cacheReadTokens` 必须不低于热前缀、且严格高于重写 message 0 的基线。由 `DEEPSEEK_IN_HISTORY_MODEL` 指定模型，变量未设时整个用例跳过。
+- 真实 API 检测器：`packages/llm/llm-deepseek/tests/adapter.e2e.ts:51` 起的用例用同一份 prompt 字节比较两种策略——追加 prompt 的 `cacheReadTokens` 必须不低于热前缀、且严格高于重写 message 0 的基线。由 `DEEPSEEK_IN_HISTORY_MODEL` 指定模型，变量未设时整个用例跳过。
 - 机制细节、decision rule 四行表与清空语义见 [_digested/tools-prompt-llm/04-in-history提示词替换.md](../../_digested/tools-prompt-llm/04-in-history提示词替换.md)。

@@ -79,11 +79,11 @@ llm-pi-ai:
 
 ## 选 route 也选提示词表示
 
-模型能力不只决定思考档位，还决定**提示词如何在历史里表示**。`dsh-llm` 定义可选能力 `SystemPromptUpdate = 'in-history'`（`packages/llm/llm/src/types.ts:347`）：声明它的 route 可以把变更后的 system prompt 追加在已缓存历史之后；不声明的 route 每次 prompt 变化都要重写 message 0，前缀缓存整段失效。**唯一内置声明者是 `deepseek-flash`**（`packages/llm/llm-deepseek/src/index.ts:94-100`）；`llm-pi-ai` 全目录不声明，所以所有手工 route（MICU、OpenRouter、公司网关等）一律走 replace 语义。机制细节与 decision rule 见 [04-in-history提示词替换.md](../../_digested/tools-prompt-llm/04-in-history提示词替换.md)，本节只讲它对多 vendor 选择的影响。
+模型能力不只决定思考档位，还决定**提示词如何在历史里表示**。`dsh-llm` 定义可选能力 `SystemPromptUpdate = 'in-history'`（`packages/llm/llm/src/types.ts:347`）：声明它的 route 可以把变更后的 system prompt 追加在已缓存历史之后；不声明的 route 每次 prompt 变化都要重写 message 0，前缀缓存整段失效。**唯一内置声明者是 `deepseek-flash`**（`packages/llm/llm-deepseek/src/models.ts:7-14`，能力字段在 `:12`）；`llm-pi-ai` 全目录不声明，所以所有手工 route（MICU、OpenRouter、公司网关等）一律走 replace 语义。机制细节与 decision rule 见 [04-in-history提示词替换.md](../../_digested/tools-prompt-llm/04-in-history提示词替换.md)，本节只讲它对多 vendor 选择的影响。
 
 结论有三条。其一，route 身份与协议族**不能推断**该能力：官方 DeepSeek 只有 `deepseek-flash` 声明，同族的其他模型仍走 replace；手工 route 目前**无法**通过 settings 声明它。其二，代价是缓存而不是正确性：两种语义下模型最终都读到最新 prompt，差别在是否每步作废前缀、以及多花的 token 与延迟。其三，中转最隐蔽的风险是代理侧行为——若中转会重写、重排或合并 system 消息，即使上游模型支持 in-history，追加语义也会被静默破坏，表现为缓存命中率下降而非报错。面向多 vendor 决策的完整版见 [DSH_systemPromptUpdate能力面.md](./DSH_systemPromptUpdate能力面.md)。
 
-检测器是真实 API e2e：`packages/llm/llm-deepseek/tests/adapter.e2e.ts:358-444` 比较追加 prompt 与重写 message 0 两种策略的 `cacheReadTokens`，断言前者不低于热前缀、且严格高于 replace 基线；由 `DEEPSEEK_IN_HISTORY_MODEL` 指定模型，变量未设时跳过。部署若想为某个模型开启该能力，只能用 `cordis.yml` 的 `models` 列表替换 catalog（`packages/llm/llm-deepseek/src/adapter.ts:72,417`），并且必须自己承担“该模型确实这样读 system 消息”的验证责任。
+检测器是真实 API e2e：`packages/llm/llm-deepseek/tests/adapter.e2e.ts:51` 起的 `updates system instructions during a conversation, in-history=%s` 用例比较追加 prompt 与重写 message 0 两种策略的 `cacheReadTokens`，断言前者不低于热前缀、且严格高于 replace 基线；由 `DEEPSEEK_IN_HISTORY_MODEL` 指定模型，变量未设时跳过。部署若想为某个模型开启该能力，只能用 `cordis.yml` 的 `models` 列表替换 catalog（`packages/llm/llm-deepseek/src/config.ts:29-30` 的 volatile `models` 字段，schema 默认 `DEFAULT_MODELS` 在 `:88`），并且必须自己承担“该模型确实这样读 system 消息”的验证责任。
 
 ## 两个横切事实
 
