@@ -22,7 +22,6 @@
 | `ctx.userQuestions` | 0 | 1 | interaction/user-questions | **零 Provider**：回答端在 Web 侧 |
 | `ctx.authorization` | 0 | 1 | credentials/authorization | **零 Provider**：凭据获取流（缺口清单） |
 | `ctx.sessionPersistence` | 1 | 7 | session/session-persistence | 单 Provider（JSONL），7 个消费方 |
-| `ctx.subprocess` | 1 | 7 | subprocess/subprocess | 本地单实现（远端走 ssh 组另接） |
 | `ctx.jobs` | 1 | 6 | jobs/jobs | 单 Provider，消费集中在 job 工具 |
 | `ctx.attachments` | 1 | 4 | attachment/attachment | 单 Provider |
 | `ctx.credentials` | 1 | 3 | credentials/credentials | env-over-.env |
@@ -38,6 +37,7 @@
 | `ctx.spillStore` | 1 | 1 | spill/spill | 单后端（local） |
 | `ctx.sessionTelemetry` | 1 | 0 | session/session-telemetry | 输出离进程（otel） |
 | `ctx.sandbox` | 2 | 2 | sandbox/sandbox | bwrap / Landlock / Seatbelt |
+| `ctx.subprocess` | 2 | 7 | subprocess/subprocess-local＋ssh/subprocess-ssh | local＋ssh 双实现 |
 | `ctx.computerUse` | 2 | 2 | computer-use/computer-use | 实现全在 experimental |
 | `ctx.ptcRuntime` | 2 | 2 | ptc-runtime/ptc-runtime | node ＋ python 双后端 |
 | `ctx.deepseekLlmApiExtensions` | 2 | 1 | llm/deepseek-llm-api-extensions | 官方 API 附加字段注册 |
