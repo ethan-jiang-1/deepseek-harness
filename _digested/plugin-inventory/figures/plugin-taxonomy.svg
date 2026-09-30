@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 660" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="960" height="660" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">插件分类全景：四种 role（服务身份）× 九种形态（货架标签）</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">role 回答「服务在 ctx 总线上是什么身份」；形态回答「这个包在货架上以什么方式被拿到」。</text>
+
+  <rect x="36" y="66" width="212" height="76" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="142" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">core（55）</text>
+  <text x="142" y="106" text-anchor="middle" fill="#1e40af">主干服务，单一实现</text>
+  <text x="142" y="124" text-anchor="middle" fill="#1e3a8a">例：ctx.sessions、ctx.tools</text>
+
+  <rect x="262" y="66" width="212" height="76" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="368" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">seam（33）</text>
+  <text x="368" y="106" text-anchor="middle" fill="#166534">三角色齐备，可替换</text>
+  <text x="368" y="124" text-anchor="middle" fill="#14532d">例：ctx.fs、ctx.shell、ctx.llm</text>
+
+  <rect x="488" y="66" width="212" height="76" rx="10" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="594" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">service（3）</text>
+  <text x="594" y="106" text-anchor="middle" fill="#92400e">独立服务</text>
+  <text x="594" y="124" text-anchor="middle" fill="#78350f">productAnalytics / otel / productTelemetry</text>
+
+  <rect x="714" y="66" width="212" height="76" rx="10" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="820" y="88" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">bundle（1）</text>
+  <text x="820" y="106" text-anchor="middle" fill="#5b21b6">组合点</text>
+  <text x="820" y="124" text-anchor="middle" fill="#4c1d95">ctx.agentLoop——唯一具体循环</text>
+
+  <rect x="36" y="158" width="890" height="40" rx="8" fill="#e5e7eb" stroke="#9ca3af"/>
+  <text x="480" y="183" text-anchor="middle" font-size="13" font-weight="700" fill="#374151">Cordis 运行时：ctx 服务总线 —— 插件经 ctx.effect() 注册，服务占住 ctx.&lt;key&gt;，消费者只认键不认实现</text>
+
+  <rect x="36" y="216" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="52" y="240" font-size="13" font-weight="700" fill="#1f2937">Def · 服务声明</text>
+  <text x="52" y="260" fill="#374151">抽象类或注册表，占住 ctx.&lt;key&gt;</text>
+  <text x="52" y="278" fill="#374151">是合同面，不是 TypeScript interface</text>
+  <text x="52" y="296" fill="#2563eb">例：dsh-fs、dsh-llm、dsh-shell</text>
+  <text x="52" y="314" fill="#6b7280">换实现不改它——可替换性的根</text>
+
+  <rect x="342" y="216" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="358" y="240" font-size="13" font-weight="700" fill="#1f2937">Impl · Provider 实现</text>
+  <text x="358" y="260" fill="#374151">实现同一个 Definition</text>
+  <text x="358" y="278" fill="#374151">本地、沙箱、远程、进程外……</text>
+  <text x="358" y="296" fill="#2563eb">例：bash-sandbox / fs-ssh / ptc-runtime-node</text>
+  <text x="358" y="314" fill="#6b7280">第二个 Provider 出现即商品化</text>
+
+  <rect x="648" y="216" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="664" y="240" font-size="13" font-weight="700" fill="#1f2937">Tool · 模型可见工具</text>
+  <text x="664" y="260" fill="#374151">defineTool 注册进 ctx.tools</text>
+  <text x="664" y="278" fill="#374151">schema 自动进 prompt 组装</text>
+  <text x="664" y="296" fill="#2563eb">例：bash、web_search、present</text>
+  <text x="664" y="314" fill="#6b7280">30 个工具包，名字稳定、Provider 可换</text>
+
+  <rect x="36" y="336" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="52" y="360" font-size="13" font-weight="700" fill="#1f2937">cmd · 人类命令</text>
+  <text x="52" y="380" fill="#374151">/goal、/compact、/export</text>
+  <text x="52" y="398" fill="#374151">人与模型共用同一运行时</text>
+  <text x="52" y="416" fill="#2563eb">入口分离：命令不走模型</text>
+  <text x="52" y="434" fill="#6b7280">例：dsh-command-goal、dsh-command-compact</text>
+
+  <rect x="342" y="336" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="358" y="360" font-size="13" font-weight="700" fill="#1f2937">UI · client 半边</text>
+  <text x="358" y="380" fill="#374151">host 行 + dsh.client 罗盘行成对</text>
+  <text x="358" y="398" fill="#374151">设置页按 Host namespace 一页一行</text>
+  <text x="358" y="416" fill="#2563eb">例：ui-goal、ui-settings-shell</text>
+  <text x="358" y="434" fill="#6b7280">63 个 client 包，全部 web 层</text>
+
+  <rect x="648" y="336" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="664" y="360" font-size="13" font-weight="700" fill="#1f2937">adapter · LLM 接入</text>
+  <text x="664" y="380" fill="#374151">ctx.llm 的 Provider</text>
+  <text x="664" y="398" fill="#374151">可休眠挂载：零 routes 待配置</text>
+  <text x="664" y="416" fill="#2563eb">例：llm-deepseek、llm-pi-ai</text>
+  <text x="664" y="434" fill="#6b7280">第三家 Provider 的现成接入位</text>
+
+  <rect x="36" y="456" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="52" y="480" font-size="13" font-weight="700" fill="#1f2937">bundle · 交付打包</text>
+  <text x="52" y="500" fill="#374151">patch 层是交付单位</text>
+  <text x="52" y="518" fill="#374151">profile 由 bundle 叠出</text>
+  <text x="52" y="536" fill="#2563eb">6 个 profile bundle + 4 optional</text>
+  <text x="52" y="554" fill="#6b7280">「bundle 与 profile 二分，Nothing is both」</text>
+
+  <rect x="342" y="456" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="358" y="480" font-size="13" font-weight="700" fill="#1f2937">lib · 纯库</text>
+  <text x="358" y="500" fill="#374151">不挂载、被 import 的支撑</text>
+  <text x="358" y="518" fill="#374151">util 组 17 包全部零运行时依赖</text>
+  <text x="358" y="536" fill="#2563eb">例：brand、chunked-list、home-paths</text>
+  <text x="358" y="554" fill="#6b7280">货架上的「原材料」，不是插件位</text>
+
+  <rect x="648" y="456" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
+  <text x="664" y="480" font-size="13" font-weight="700" fill="#1f2937">驱动 · 启动胶水</text>
+  <text x="664" y="500" fill="#374151">app 启动与进程内驱动</text>
+  <text x="664" y="518" fill="#374151">把现成服务接成一条通路</text>
+  <text x="664" y="536" fill="#2563eb">例：subagent-in-process-driver</text>
+  <text x="664" y="554" fill="#6b7280">胶水插件的官方样本位</text>
+
+  <text x="480" y="596" text-anchor="middle" font-size="12" font-weight="700" fill="#1f2937">一个包可兼多个形态：dsh-llm ＝ Def ＋ adapter 注册点；dsh-tools ＝ Def ＋ Tool（run_code）。</text>
+  <text x="480" y="618" text-anchor="middle" font-size="11" fill="#6b7280">role 是服务身份（生成表 role 列）；形态是包的货架标签（package.json exports + patch 行）。两者正交。</text>
+  <text x="480" y="640" text-anchor="middle" font-size="11" fill="#9ca3af">来源：docs/capability-seams.md:580-671（role 计数）、docs/tool-catalog.md:16-47、packages/bundle/README.md:25-30</text>
+</svg>
