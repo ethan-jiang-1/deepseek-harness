@@ -58,6 +58,7 @@ _faq_on_digested/
 | 14 | [DSH 有没有类似 Claude Code / Codex 的 hooks 机制？三家的 hooks 怎么比？](./14_hooks-vs-claude-code-codex/question.md) | [有，两层：原生拦截扩展点（typed Decision 插件面）+ CC/Codex 兼容桥（7/33 与 5/12 事件的 command 钩子子集）；三家按声明/事件/执行/控制力/审计五轴对照，桥的取舍是"兼容适配器不是力量工具"，外部读数留档 research.md](./14_hooks-vs-claude-code-codex/answer.md) |
 | 15 | [用 DSH 开发插件，为什么感觉接近 loop engineering，又不如 SDD 看得清进度？](./15_loop-engineering-vs-sdd/question.md) | [执行循环已经出现，取题与判断仍要由人设计；DSH 运行时、仓内纪律、插件仓自定流程分开看；Osmani 2026-06 原文为体感提供直接参照，SDD 产物可成为循环的记忆与审阅点；公开社区抽样不推断私有工作方式](./15_loop-engineering-vs-sdd/answer.md) |
 | 16 | [四个内置模式（Standard / PTC / Minimal / Creator）各自特殊在哪？](./16_preset-modes-specialty/question.md) | [同一声明式 preset 机制上的四份 bundle patch，各自动宿主一根轴：Standard 三轴不动（26 工具契约 + 三组刻意缺席）、PTC 动呈现层（run_code + 生成 SDK，子调用仍走完整管道）、Minimal 动身份层（complete:true 一句话提示词 + 持久 shell，其余清零）、Creator 动扩展层（运行时检查 + 条件启用 plugin_manager + 三个创作技能）；四模式各一篇分篇 + 5 张 SVG 图解](./16_preset-modes-specialty/answer.md) |
+| 17 | [开发 DSH 插件时，怎么先找到现成的轮子而不是重写？](./17_finding-existing-plugins/question.md) | [货架（316 包按组）→ 横切清单（92 服务/30 工具包×profile）→ 判形态与可见性光谱 → 四条出路按代价排序（调配置/patch 换 Provider/挂现货包/写胶水）；三个过去踩的坑（平铺 packages/、只看 base 层、以为接新模型必须写 adapter）与必须自写的缺口白名单](./17_finding-existing-plugins/answer.md) |
 
 ## 引用规范
 
