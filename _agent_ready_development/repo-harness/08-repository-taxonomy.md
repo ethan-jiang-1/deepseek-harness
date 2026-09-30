@@ -65,7 +65,7 @@
 
 混合形态把生成内容嵌进手写页：subsystem 页拥有手写叙述，页内 `cordis-surface` 区域承载生成的 Cordis API；文档里贴的类型声明用 ` ```ts type-equiv `、剥掉 body 的公共类声明用 ` ```ts public-api `，都登记进 manifest 由 `verify-type-equiv` 抓漂移。录制形态的边界见快照规则（下节）与 [archived Note 冻结](../sdlc-reference/01-agent-note-lifecycle.md)。投影细节由 [文档所有权参考](../sdlc-reference/05-prose-doc-standards.md) 拥有。
 
-分类还有两个仪表：`scripts/doc-budgets.manifest.json` 给常驻文档设字数上限（上限是 guardrail 不是压缩目标，超限要走 relocate → condense → raise 的顺序）；`scripts/translation-pairing.manifest.json` 定义双语配对范围与豁免（vendor 不配对、`AGENTS.md` 英文单语、i18n 工作文档豁免）。维护成本本身也是分类的一部分。
+分类还有两个仪表：`scripts/doc-budgets.manifest.json` 给常驻文档设字数上限（上限是 guardrail 不是压缩目标，超限要走 relocate → condense → raise 的顺序）；`scripts/translation-pairing.manifest.json` 与配对门禁的发现范围逻辑共同定义双语配对范围与豁免（manifest 的 `excluded` 只列工作文档类条目；vendor 不配对与 `AGENTS.md` 英文单语由门禁的范围逻辑实现）。维护成本本身也是分类的一部分。
 
 ## 4. 证据放置：跟 owning 层走
 

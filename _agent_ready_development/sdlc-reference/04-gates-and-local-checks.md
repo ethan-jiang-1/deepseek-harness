@@ -57,7 +57,7 @@ pnpm --silent run change-scope --base <verified-base-ref>
 - build-backed snapshots、文档类型检查和 artifact consumers；
 - supported Node compatibility；
 - Python SDK 与 release-shaped runtime；
-- required native Windows build 与 native tests，以及不进入该聚合的 Windows coverage 与 observational job。
+- required native Windows build 与 native tests（observational gates 是 required Windows build job 内的 step，计入聚合），以及不进入该聚合的 Windows coverage job。
 
 `all checks passed` 聚合 required job 结果；`.github/AGENTS.md` 明确 native Windows build 与 process 检查计入该 PR verdict，Wine 只在 master-only 的 `ci-master.yml` 里用 hosted Linux 运行 Windows Node。精确 job 和命令以 DSH 的 [`ci.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.github/workflows/ci.yml) 与 [`run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/scripts/run-gates.ts) 为准，专题不复制完整 gate inventory。
 

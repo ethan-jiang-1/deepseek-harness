@@ -363,7 +363,7 @@
 
 **走形症状（failure symptoms）**：每个脚本或工作流各自判权限（绕过统一判定层）；把"部分成功"的发布或部署当作成功交给下一步。
 
-**例证（exemplar）**（可选核对）：DSH 的 20 个 GitHub Actions 工作流都在顶层声明 `permissions`（默认只读 `contents: read`，需要写权限的工作流逐项列出，例如 `pull-requests: write`）；发布到 npm 的只有一个 job，它跑在 `npm-publish` 环境里，必需的审批人与允许的标签配在环境上，注释写明这是整个发布序列里唯一能写 registry 的 job。
+**例证（exemplar）**（可选核对）：DSH 的 20 个 GitHub Actions 工作流都在顶层声明 `permissions`（默认只读 `contents: read`，需要写权限的工作流逐项列出，例如 `pull-requests: write`）；发布到 npm 的每条发布序列只有一个 job，它跑在 `npm-publish` 环境里，必需的审批人与允许的标签配在环境上，注释写明这是整个发布序列里唯一能写 registry 的 job。
 
 ---
 

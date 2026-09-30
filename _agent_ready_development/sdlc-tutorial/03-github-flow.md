@@ -62,9 +62,9 @@ PR #5004 的原始页面本语料钉版时无法访问（`需查 GitHub`），�
 CI 的调度由 workflow（GitHub Actions 的流程定义文件）声明：何时触发、在哪些运行器上跑哪些 job（各自独立的一次运行）。打开 [.github/workflows/ci.yml](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.github/workflows/ci.yml) 看实际结构：
 
 - **触发**：只有 `pull_request`——主分支专属的平台检查放在 `ci-master.yml`，不进 PR 面板；
-- **9 个具体 job**：`node-24`（主测试）、`node-24-coverage`（覆盖率门禁）、`node-24-bench`、`node-24-consumers`（构建消费者）、`node-compat`、`python-sdk`、`python-runtime`、`windows-build`、`windows-native-tests`；
+- **10 个 job**：9 个必需 job——`node-24`（主测试）、`node-24-coverage`（覆盖率门禁）、`node-24-bench`、`node-24-consumers`（构建消费者）、`node-compat`、`python-sdk`、`python-runtime`、`windows-build`、`windows-native-tests`——外加 1 个不进聚合的 `windows-coverage`；
 - **并发取消**：同一 PR 有新 push 就自动取消旧运行；
-- **聚合**：`all-checks-passed` 这个 job `Needs`（等待）全部 9 个，把结论合成一个必需的通过判定。
+- **聚合**：`all-checks-passed` 这个 job `Needs`（等待）全部 9 个必需 job，把结论合成一个必需的通过判定。
 
 “脚本拥有检查什么，workflow 拥有何时跑、在哪跑、怎么汇总”，说的就是这个具体形态：检查逻辑在 `scripts/run-gates.ts` 等仓库代码里，workflow 只管调度和聚合。
 
