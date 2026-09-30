@@ -13,7 +13,7 @@
 | `packages/core/agent-loop/src/agent.ts` | `wakeDriver()` 用 `withInitiator` 包住整段 activity |
 | `packages/goal/goal-round-driver/src/index.ts` | host pause / model pause 的分支判据 |
 | `packages/subagent/tool-subagent/src/index.ts` | 子级 model-selection 继承改从 Session 读父 |
-| `packages/core/agent/src/runtime-types.ts` | scoped event 的 payload 自带 Agent（`:258`、`:277`） |
+| `packages/core/agent/src/runtime-types.ts` | scoped event 的 payload 自带 Agent（`:261`、`:280`） |
 
 ## 删掉的反向关联
 
@@ -26,23 +26,23 @@
 ## 身份显式传递
 
 - `AgentSetup` 的签名是 `(agentCtx: Context, agent: Agent)`（`packages/core/agent/src/index.ts:50-53`）：setup 回调同时拿到「注册落在哪个 Context」与「这次操作属于哪个 Agent」，不再需要从前者推后者。父创建子时，setup 回调的 Agent 参数是**子**，因果父由 initiator 边界报告。
-- `CreateAgentOptions.parentAgent`（`:66`）与 `ResumeAgentOptions.parentAgent`（`:129`）是运行时子属关系的唯一入口。
-- `AgentRegistry.register()` 固定以 root 身份进入：`yield this.enter(agent, undefined)`（`:434-436`）。也就是说，已构造 Agent 的注册永远是运行时 root；子属关系只能经 `parentAgent` 建立——loop 侧的调用点是 `loopCtx.agents.enter(agent, parentAgent)`（`packages/core/agent-loop/src/index.ts:667`）。
-- 后果：`AgentRegistry.roots()` 与 `isOwnedBy()` 看的是 live 属主，不是 durable 的 `parentSession` metadata。一个 fork 或 resume 出来的 Session 在没有 live Agent 拥有它时就是运行时 root，而 `SubagentContinuationManager` 建立的 continuable child 即使在私有插件 Context 里创建，也因为有精确 `parentAgent`（`packages/subagent/subagent/src/continuation-activation.ts:592`、`:599`，冷 resume 与新建两条路径都传）而不被当成顶层。
+- `CreateAgentOptions.parentAgent`（`:67`）与 `ResumeAgentOptions.parentAgent`（`:129`）是运行时子属关系的唯一入口。
+- `AgentRegistry.register()` 固定以 root 身份进入：`yield this.enter(agent, undefined)`（`:437-439`）。也就是说，已构造 Agent 的注册永远是运行时 root；子属关系只能经 `parentAgent` 建立——loop 侧的调用点是 `loopCtx.agents.enter(agent, parentAgent)`（`packages/core/agent-loop/src/index.ts:621`）。
+- 后果：`AgentRegistry.roots()` 与 `isOwnedBy()` 看的是 live 属主，不是 durable 的 `parentSession` metadata。一个 fork 或 resume 出来的 Session 在没有 live Agent 拥有它时就是运行时 root，而 `SubagentContinuationManager` 建立的 continuable child 即使在私有插件 Context 里创建，也因为有精确 `parentAgent`（`packages/subagent/subagent/src/continuation-activation.ts:636`、`:643`，冷 resume 与新建两条路径都传）而不被当成顶层。
 
 ### 对 subagent 的直接后果
 
-同一条原则决定了 subagent 的 model-selection 继承目标：`selectForSession(session)` 从 `ctx.get('sessions')` 读父 Session（`packages/subagent/tool-subagent/src/index.ts:620-650`），而不是从 Agent registry 反查父 Agent；委派工具的装载签名因此变成 `apply(ctx, config, session?)`（`:307-313`），由直接 `AgentSetup` 显式传入尚未发布的 Session。host 侧的消息交付同样显式带 parent：`deliverSubagentPrompt(parent, childId, …)`（`packages/subagent/subagent/src/internal.ts:42-55`）。机制细节见 [`../capability-seams/05-subagent-catalog与host交付.md`](../capability-seams/05-subagent-catalog与host交付.md)。
+同一条原则决定了 subagent 的 model-selection 继承目标：`selectForSession(session)` 从 `ctx.get('sessions')` 读父 Session（`packages/subagent/tool-subagent/src/index.ts:620-650`），而不是从 Agent registry 反查父 Agent；委派工具的装载签名因此变成 `apply(ctx, config, session?)`（`:313`），由直接 `AgentSetup` 显式传入尚未发布的 Session。host 侧的消息交付同样显式带 parent：`deliverSubagentPrompt(parent, childId, …)`（`packages/subagent/subagent/src/internal.ts:42-55`）。机制细节见 [`../capability-seams/05-subagent-catalog与host交付.md`](../capability-seams/05-subagent-catalog与host交付.md)。
 
 ## initiator 边界
 
-`withInitiator(agent, operation)` 把一段进程内操作标记为「继承自这个 Agent」，`currentInitiator()` 读当前边界，`withoutInitiator(operation)` 显式清除归属（`packages/core/agent/src/index.ts:292`、`:324`、`:339`）。契约写明 presence 既不是存活证明也不是授权——它只回答因果归属。
+`withInitiator(agent, operation)` 把一段进程内操作标记为「继承自这个 Agent」，`currentInitiator()` 读当前边界，`withoutInitiator(operation)` 显式清除归属（`packages/core/agent/src/index.ts:327`、`:295`、`:342`）。契约写明 presence 既不是存活证明也不是授权——它只回答因果归属。
 
 loop 在 `wakeDriver()` 里用 `this.loopCtx.agents.withInitiator(this, () => this.kick())` 启动 driver（`packages/core/agent-loop/src/agent.ts:234`）：整个 activity（若干 turn、step、工具执行）都落在「以该 agent 为 initiator」的边界内。反过来，goal round driver 的调度任务用 `ctx.agents.withoutInitiator(async () => { … })` 包住（`packages/goal/goal-round-driver/src/index.ts:215`），因为后台调度不属于任何 agent 的 turn。
 
 ## initiator 作为 pause 来源判据
 
-`goal/changed` 监听器现在解构 `change`，并用 initiator 判定 pause 的来源（`packages/goal/goal-round-driver/src/index.ts:283-294`）：
+`goal/changed` 监听器现在解构 `change`，并用 initiator 判定 pause 的来源（`packages/goal/goal-round-driver/src/index.ts:282-294`）：
 
 ```ts
 if (change.operation === 'pause' && agent.status === 'running'

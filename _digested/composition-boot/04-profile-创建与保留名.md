@@ -18,7 +18,7 @@ profile 目录不是手写的：五个 shipped 名首次使用自动建，自定
 
 ## `--from-default-profile`：复制一次，然后独立
 
-声明在 launcher 父选项上（`apps/cli/src/args.ts:168`），实现在 `initializeProfileFromDefault`（`apps/cli/src/profile-boot.ts:100-155`）：
+声明在 launcher 父选项上（`apps/cli/src/args.ts:169`），实现在 `initializeProfileFromDefault`（`apps/cli/src/profile-boot.ts:100-155`）：
 
 ```sh
 dsh --profile rescue --from-default-profile web     # 用 web 模板建 rescue，再 boot 它
@@ -28,11 +28,11 @@ dsh --profile rescue --from-default-profile web --dump-config
 - **模板名必须在 `PROFILE_TEMPLATES` 里**，否则报错并列出全部合法模板（`profile-boot.ts:106-114`）。
 - **目标名不能是 shipped 名**（`:115-121`）——想要 shipped 组合就直接用它，不必派生。
 - **目录独占抢占**：先 `mkdirSync(dirname(dir), { recursive: true })`，再 `mkdirSync(dir)`；对 `EEXIST` 分两种诊断——目录里已有 `package.json` 报「profile 已存在」，否则报「目录残留，换个名字」（`:122-139`）。两种都不修改现场。
-- **只复制 bundles**，然后调 `initProfile(dir, template.bundles)` 写出空依赖与空用户 patch（`:141`）。不读同名 shipped profile 的本地状态，也不写任何继承字段；模板列表之后再变也不会回写已建 profile。
+- **只复制 bundles**，然后调 `initProfile(dir, template.bundles)` 写出空依赖与空用户 patch（`:139`）。不读同名 shipped profile 的本地状态，也不写任何继承字段；模板列表之后再变也不会回写已建 profile。
 - **失败回滚**：`initProfile` 抛错时 `rmSync` 掉刚建的目录（`:142-152`）；若回滚本身也失败，抛 `AggregateError` 说明目录没删干净。
 - **初始化先于 bundle 解析与 boot 提交**：所以后续 boot 失败时 profile 留在盘上，重试时省掉该选项。
 
-挂接点：`prepareProfile(name, userLayer, fromDefaultProfile)`（`apps/cli/src/profile-boot.ts:166`）在两处调用——boot 经 `composeProfile` 路径（`:201`，选项从 `runProfile` 的 `fromDefaultProfile` 透传），dump 经 `runDumpConfig(... fromDefaultProfile)`（`apps/cli/src/dump-config.ts:38`，先建 profile 再按同一层列表打印）。它只改变「哪个 profile 被创建」，不改变层列表，所以 [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md) 的保真结论不动。
+挂接点：`prepareProfile(name, userLayer, fromDefaultProfile)`（`apps/cli/src/profile-boot.ts:167`）在两处调用——boot 经 `composeProfile` 路径（`:203`，选项从 `runProfile` 的 `fromDefaultProfile` 透传），dump 经 `runDumpConfig(... fromDefaultProfile)`（`apps/cli/src/dump-config.ts:38`，先建 profile 再按同一层列表打印）。它只改变「哪个 profile 被创建」，不改变层列表，所以 [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md) 的保真结论不动。
 
 ## 与 `dsh plugin` 初始化路径的分工
 
@@ -51,7 +51,7 @@ dsh --profile rescue --from-default-profile web --dump-config
 
 `rejectElectronProfile`（`apps/cli/src/args.ts:83-87`）大小写不敏感地把任何 `desktop` 变体判为 Electron 专属并 `program.error`，两个调用点覆盖 CLI 的全部入口：
 
-- 根命令 action（`apps/cli/src/args.ts:182`）——同时覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`。
+- 根命令 action（`apps/cli/src/args.ts:183`）——同时覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`。
 - `plugin` 子命令（`apps/cli/src/args.ts:194`）——CLI 不能 `pnpm add` 进这个 profile。
 
 装载路径也不一样：desktop 不走 `loadProfile` 的 Harness home 发现与 shipped 归一化，而是走 `loadProfileDirectory` + 共享的 `runProfile`（[`../runtime-profiles/06-desktop.md`](../runtime-profiles/06-desktop.md)；0.1.7 线起 desktop-host 经 `runProfile` 起完整 web 应用）。`--from-default-profile` 与它无关——它只认五个 shipped 模板名；`initializeProfileFromDefault` 对 `desktop` 目标名报「shipped and cannot be a custom profile target」同款错误语义，CLI 入口则更早被 `rejectElectronProfile` 拦下。
