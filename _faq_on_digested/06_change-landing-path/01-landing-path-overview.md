@@ -1,8 +1,8 @@
-# 01 · 完整 spec 路径总览
+# 01 · 完整落位路径总览
 
 ## 先看整条链
 
-DSH 的修改 spec 不是单文件，而是按阶段流动。这是**主路径，不是每次修改都经历的强制流水线**：
+一次修改的记录不是单文件，而是按面分散、按逻辑顺序归位。这是**主路径，不是每次修改都经历的强制流水线**：
 
 ```text
 意图/验收
@@ -15,7 +15,7 @@ DSH 的修改 spec 不是单文件，而是按阶段流动。这是**主路径�
 
 每一段都有明确 home 和适用边界：
 
-| 阶段 | home | 适用边界 / 约束 |
+| 面 | home | 适用边界 / 约束 |
 |---|---|---|
 | 意图与可观察行为 | `.github/ISSUE_TEMPLATE/feature.md`、`bug.md`、`task.md` | 模板入口（0.1.5 起只有 Bug / Feature / Task）；非 Draft 人类 PR 进入 review 后由 issue policy 强制引用 Issue |
 | 设计决策 | `.agents/notes/proposed/` | 重大未来工作；已做出的决定可直接进 `implemented/` |
@@ -31,7 +31,7 @@ DSH 的修改 spec 不是单文件，而是按阶段流动。这是**主路径�
 
 这条路径最有意思的是**时态变化**：
 
-- 前端是未来式：Issue 模板写预期结果与验收，proposed Note 写“Proposal / Acceptance criteria / Risks”；
+- 前端是未来式：Issue 模板写动机与预期行为，proposed Note 写“Proposal / Acceptance criteria / Risks”；
 - 后端是现在式：docs 写 current state，implemented Note 写 `Decision / Consequences`。
 
 `.agents/notes/README.md` 明确：
@@ -56,7 +56,7 @@ DSH 的修改 spec 不是单文件，而是按阶段流动。这是**主路径�
 04 说“一个事实一个家”；06 的完整路径等于说：
 
 ```text
-修改的每个阶段也有一个家。
+修改的每个面也有一个家。
 Issue 的家是 .github；
 决策的家是 proposed/implemented notes；
 计划的家是 Plan Mode 会话；

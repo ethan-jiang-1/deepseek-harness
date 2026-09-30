@@ -28,7 +28,7 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
 
 模型不需要手动维护这些穷举面；实现后运行生成器，再让 gate 检查没有 diff。
 
-## 4. tests / snapshots 是行为 spec
+## 4. tests / snapshots 是行为证据
 
 `docs/testing.md` 把行为验收分成多层：
 

@@ -47,7 +47,7 @@ _faq_on_digested/
 | 03 | [多个模型 vendor 应怎样接入 DSH？](./03_model-vendors/question.md) | [配置、adapter 与自动路由的选择](./03_model-vendors/answer.md) |
 | 04 | [DSH 根入口文档的静态设计：这张地图是怎么画出来的？](./04_root-entry-doc-design/question.md) | [根入口分流、tier 路由、预算门禁与可迁移原则](./04_root-entry-doc-design/answer.md) |
 | 05 | [DSH 跑起来之后，根入口文档是怎么被消费的？](./05_root-entry-doc-navigation/question.md) | [指令注入、工具导航、按需加载与运行时预算](./05_root-entry-doc-navigation/answer.md) |
-| 06 | [DSH 修改系统的完整 SPEC 路径是什么？](./06_spec-change-path/question.md) | [docs 是当前合同层；Issue / Note / Plan / 实现 / 合同 / 行为 / implemented Note / review 的主路径与强制边界](./06_spec-change-path/answer.md) |
+| 06 | [一次变更从意图到归位，经过哪些载体、哪些段强制？](./06_change-landing-path/question.md) | [docs 是当前合同层；意图 / 决策 / 计划 / 实现 / 合同 / 行为证据 / 交付决定 / review 的落位路径与强制边界](./06_change-landing-path/answer.md) |
 | 07 | [另一个项目想借鉴 DSH 的 Harness 思路，尤其 coding agent 怎么探索、理解项目而不糊涂、不乱发挥，可迁移的东西是什么？](./07_borrowing-dsh-harness-idea/question.md) | [把「糊涂/乱发挥」拆成知识外置、正确路径、可执行反馈三条腿；按优先级迁移，并给一步一步落地路径](./07_borrowing-dsh-harness-idea/answer.md) |
 | 08 | ["Everything is a plugin" 落到源码：哪些插件领域已饱和，哪里仍是缺口？（纯技术视角）](./08_plugin-seam-maturity/question.md) | [33 条 seam 的 P/C 全景表与可替换率 45.5%（92 = 55 core + 33 seam + 3 service + 1 bundle，0009 按 `dsh-v0.2.0-rc.2` 生成表实测）、三个被数字推翻的印象、按信号强度排序的缺口 backlog](./08_plugin-seam-maturity/answer.md) |
 | 09 | [同一棵插件树对一个自用 owner（个人 / 小团队）的生产力在哪，怎样讲清楚？（自用生产力视角）](./09_plugin-business-ladder/question.md) | [敢放手 + 省手 + 可复用三层价值；自用 owner 最值的几类插件；L0–L3 参与阶梯；四个 owner 能自证的实验](./09_plugin-business-ladder/answer.md) |

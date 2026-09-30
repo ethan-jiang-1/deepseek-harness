@@ -1,4 +1,4 @@
-# Research · DSH 修改系统的完整 spec 路径
+# Research · 一次变更从意图到归位的落位路径
 
 ## 1. 意图与可观察行为：Issue 模板
 
@@ -28,7 +28,7 @@ Issue 引用的机器强制边界：
 
 限制：policy 只检查引用与元数据（Issue 引用、Type、Project Status、Priority、标签），不检查模板填写质量；0.1.5 起模板本身也不再要求验收条件/测试证据，那两项改由 PR 的 Testing 节承载。
 
-## 2. 决策 spec：Agent Note
+## 2. 决策记录：Agent Note
 
 > A proposal for substantial future work starts in `proposed/`; a decision already made starts in `implemented/`.
 
@@ -64,7 +64,7 @@ proposed 骨架：
 
 来源：`packages/plan/plan-mode/README.md:183`
 
-限制：Plan Mode 能证明 DSH 原生支持 spec-first workflow；git 历史不能证明每个 PR 都使用过它。
+限制：Plan Mode 能证明 DSH 原生支持「先计划、后实施」的可选工作方式；git 历史不能证明每个 PR 都使用过它。
 
 ## 3. 提案 → 实现：时态改写
 
@@ -92,7 +92,7 @@ proposed 骨架：
 
 来源：`packages/AGENTS.md:27`
 
-## 6. 行为 spec：测试与快照
+## 6. 行为证据：测试与快照
 
 > A guard only guards if the regression fails it. ... prove it: introduce the regression, watch red, revert.
 
