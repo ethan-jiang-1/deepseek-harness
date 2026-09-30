@@ -29,7 +29,7 @@
 | `in-history` | 新 series 开始 | 先给非空后继节点记空替换，再按需重写第一个节点，即使有效文本没变 |
 | 任意 | rendering 为空 | 先给非空后继节点记空替换，再按需清空 head；没有任何 prompt 版本留在 derived messages |
 
-`startsSeries` 为 true 的三种情况：`agent/pre-step` 决定声明 `startsRequestSeries`；surface `replaceGeneration` 相对于上次请求动了（compaction 或任何其他替换）；可见 tool schema 集变了——最后这条在 0.2.0 线收窄为「route 未声明 `toolUpdate` 模式」时才成立（`packages/core/agent-loop/src/agent.ts:413-415`），声明了模式的 route 由历史更新机制接管工具面变化。**provider/model 换本身不是 series start**：目标 route capable 时变化走 append，而 route 换本来就已错过缓存，不必再归一化。
+`startsSeries` 为 true 的三种情况：`agent/pre-step` 决定声明 `startsRequestSeries`；surface `replaceGeneration` 相对于上次请求动了（compaction 或任何其他替换）；可见 tool schema 集变了——最后这条在 0.2.0 线收窄为「route 未声明 `toolUpdate` 模式」时才成立（`packages/core/agent-loop/src/agent.ts:414`），声明了模式的 route 由历史更新机制接管工具面变化。**provider/model 换本身不是 series start**：目标 route capable 时变化走 append，而 route 换本来就已错过缓存，不必再归一化。
 
 空渲染会清掉**所有**活动 system node，不只是最新的，否则更早的 prompt 会「复活」。dormant 的空尾节点既不提供有效文本，也不需要重复替换；空 head 且无活动后继节点就表示「无 prompt」。
 
