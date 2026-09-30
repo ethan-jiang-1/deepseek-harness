@@ -23,6 +23,7 @@
 - [`0008-plan-digest-revision.md`](./0008-plan-digest-revision.md)——第八次同步的消化计划（五阶段）
 - [`0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](./0008-0.1.5-rc.2-to-0.1.7-rc.1.md)——第八次合入（3304 commits，历次最大；session 格式升 v4、sandbox 组转正、整树照搬口径自本卷生效；页尾附 0008 独立复核勘误节）
 - [`0008-independent-recheck.md`](./0008-independent-recheck.md)——0008 轮语料维护的独立反查（五路并行审计 + 修复执行记录；约 60 处过期断言、20 处缺落点、3 孤儿页、4 处口径矛盾）
+- [`0009-0.1.7-rc.1-to-0.2.0-rc.2.md`](./0009-0.1.7-rc.1-to-0.2.0-rc.2.md)——第九次合入（794 commits；session 格式保持 v4、Schedule 转正为 bundle、账号/模型面大改、user-questions timed waits、llm 动态工具更新；语料反查待执行，全部专题标「需复核」）
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
 
