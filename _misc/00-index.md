@@ -11,3 +11,13 @@
 | [`_eval_harness/`](./_eval_harness/README.md) | 给任何仓库做体检的评估方法：开发 Harness（仓库对 agent 的可参与性）与运行时 Harness（agent 产品本身的运行时）；每套分**粗粒度**（先过一遍）与**细粒度**（按需深挖） | 自包含、可直接使用；评估依据与职责见其 README |
 
 当前、经核验的 DSH 机制解读在 [`../_digested/00-index.md`](../_digested/00-index.md)；跨材料二次研究在 [`../_faq_on_digested/00-index.md`](../_faq_on_digested/00-index.md)。
+
+## 验证
+
+修改本目录后运行：
+
+```sh
+node _misc/verify.mjs
+```
+
+最小卫生检查：严格 UTF-8、LF 与单个结尾换行、相对链接与锚点可解析（允许爬出到兄弟语料目录）。`_scratch/` 不检查；`_references/` 是冻结存档，只做卫生检查、内容不改。
