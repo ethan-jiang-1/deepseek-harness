@@ -19,7 +19,7 @@
 
 **可见性图例**：`base`＝在 dsh-base patch 内（headless / acp / sdk 原样继承）；`web`＝web-app 层；`min`＝sdk-minimal；`preset`＝各会话 agent preset 提供；`opt`＝OPTIONAL_BUNDLES 一键开；`—`＝不随任何 shipped profile 挂载（`dsh plugin add` / patch insert / 纯依赖）。
 
-**形态图例**：Def＝Service Definition（`ctx` 服务声明）；Impl＝Provider 实现；Tool＝模型可见工具；cmd＝人类命令插件；UI＝client UI 插件；adapter＝LLM adapter；lib＝纯库。九种形态的判定与设计逻辑见 [`05-taxonomy-and-design.md`](./05-taxonomy-and-design.md)。
+**形态图例**：Def＝Service Definition（`ctx` 服务声明）；Impl＝Provider 实现；Tool＝模型可见工具；cmd＝人类命令插件；UI＝client UI 插件；adapter＝LLM adapter；lib＝纯库；bundle＝组合清单包；驱动＝启动胶水。九种形态的判定与设计逻辑见 [`05-taxonomy-and-design.md`](./05-taxonomy-and-design.md)。
 
 ## core/（8 包）
 
@@ -349,6 +349,20 @@
 | storage-domain | Def `ctx.storageDomain` | base | 2 | host 级存储域（schedule 依赖） |
 | workspace | Def `ctx.workspaceRegistry` | web | — | 工作区注册表 |
 
+## acp/（1 包）
+
+| 包 | 形态 | 可见 | Config | 职责 |
+|---|---|---|---|---|
+| acp | App 服务插件 | acp-app | 4 | automation-only 的 ACP server：经 stdio JSON-RPC 驱动 Harness agent（`packages/bundle/acp-app/cordis.patch.yml:17` 挂载，config 定每次建 agent 的 provider/model） |
+
+## sdk/（3 包）
+
+| 包 | 形态 | 可见 | Config | 职责 |
+|---|---|---|---|---|
+| sdk-protocol | lib | — | — | SDK 线协议：newline-delimited JSON-RPC 帧与共享类型 |
+| sdk-jsonrpc-server | App 服务插件 | sdk-app+minimal | 2 | 给进程外 SDK 客户端的 stdio JSON-RPC 服务（`packages/bundle/sdk-app/cordis.patch.yml:19`、`packages/bundle/sdk-minimal/cordis.patch.yml:12` 挂载） |
+| sdk-client | lib | — | — | 驱动 Harness runtime 子进程的 TypeScript 客户端 SDK（apps/cli devDep 供测试） |
+
 ## interaction/（5 包）
 
 | 包 | 形态 | 可见 | Config | 职责 |
@@ -502,4 +516,4 @@ UI 插件（53）：
 for d in packages/*/*/; do [ -f "$d/package.json" ] && basename "$d"; done | while read n; do grep -q "$n" _digested/plugin-inventory/02-plugin-catalog.md || echo "missing: $n"; done
 ```
 
-0009 独立反查时该扫描曾抓到 32 个缺名包（缩写引用与整组漏节），已全部补齐；此后新增包只要落一个组行即保持零缺失。
+0009 独立反查时该扫描曾抓到 32 个缺名包（缩写引用与整组漏节），已全部补齐；此后新增包只要落一个组行即保持零缺失。但它是 **basename 级**匹配、有假阴性：包名（如 `acp`、`client`、`protocol`、`server`）在本页其他行出现即漏报——0010 轮实证 sdk/、acp/ 两组曾借此整组漏节（4 包零落点），复核时必须辅以「按 `##` 节清点组数与每组包数」的分组核对，不能只信本命令的零输出。
