@@ -22,8 +22,8 @@
 
 1. "`dsh-base` 默认挂载 goal/plan/workflow 工具" → `packages/bundle/base/cordis.patch.yml:292-414` 命中 `goal`、`goal-round-driver`、`plan-mode`、`tool-workflow`、`tool-todo`、`tool-goal`。**证实**。
 2. "`ui-tool` 全包无 `'image'` 渲染分支" → 写作树 grep `packages/client/ui-tool/src/` 对 `image` 零命中；**该论断已被 0.1.5 跨度内交付推翻**：`image-card-model.ts`、`read-image-row.tsx`、`tool.call.images` slot（`src/client/contract/slots.ts:46`）都在，`ui-tool` 现在渲染工具结果图像。**已修订**（见 [02 第二节](./02-self-built-previews.md)）。
-3. 默认 catalog 四模型与 1M 窗口 → `packages/llm/llm-deepseek/README.md:49`（`deepseek-flash` 与 `deepseek-v4-flash-vision-exp` 含 image，`deepseek-v4-flash`、`deepseek-v4-pro` 为 text-only）。**证实**（写作树为三模型）。
-4. `reasoningEffort: off|low|high|max`、省略回退 `high` → `README.md:56`、`:83`。**证实**。
+3. 默认 catalog 四模型与 1M 窗口 → `packages/llm/llm-deepseek/README.md:49`（`deepseek-flash` 与 `deepseek-v4-flash-vision-exp` 含 image，`deepseek-v4-flash`、`deepseek-v4-pro` 为 text-only）。**证实**（写作树为三模型）。（0009 按 `dsh-v0.2.0-rc.2` 复测：默认 catalog 已收敛为两条目——`deepseek-flash`（text+image，另声明 `systemPromptUpdate: 'in-history'` 与 `toolUpdate: 'addition-only'`）与 `deepseek-v4-pro`（text-only），各 1M 上下文，新钉 `README.md:52` 与 `src/models.ts:8-24`；旧四条目中的 vision-exp 与 `deepseek-v4-flash` 已移除。）
+4. `reasoningEffort: off|low|high|max`、省略回退 `high` → `README.md:56`、`:83`。**证实**。（0009 重钉：`README.md:44`、`:58`；`UNSUPPORTED_REASONING_EFFORT` 钉版移至 `:102`。）
 5. `create_goal` 等工具注册于 `packages/goal/tool-goal`；"Codex-shaped UX" 实出自 harness 级循环笔记 `.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md:114`（goal 工具笔记 `2026-07-19-model-facing-goal-tools.md:15` 只自述遵循 "Codex's compact goal tool surface"）。**已更正归属**。
 6. "dynamic workflow" 非官方术语 → 全仓 grep 仅命中本 FAQ 自身引用的用户原文。**证实**。
 
