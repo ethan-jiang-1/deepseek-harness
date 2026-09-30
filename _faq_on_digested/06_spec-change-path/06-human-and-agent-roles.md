@@ -25,11 +25,11 @@ DSH 没有一个单独的“人/agent 分工表”，但它把分工写进了权
 
 > Run checks before pushes via [dsh-pre-push-checks](../../.agents/skills/dsh-pre-push-checks/SKILL.md); report only commands run.
 
-来源：`AGENTS.md:92`
+来源：`AGENTS.md:116`
 
 > Never default to the full suite or repeat a passing check for commit or push. CI owns exhaustive coverage and the platform matrix.
 
-来源：`AGENTS.md:95`
+来源：`AGENTS.md:119`
 
 ### 2. 提案、计划、实现、合同同步
 
@@ -51,11 +51,11 @@ Plan prompt 给 agent 的规则是：
 
 > Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/bundle/web-app/presets/ptc.patch.yml:54`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
 
 > implementation begins only in a later step after approval.
 
-来源：`packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起迁至 bundle patch；旧路径 `agent.cordis.yml:132` 已删）
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:62`（0.1.7 线起迁至 bundle patch；旧路径 `agent.cordis.yml:132` 已删）
 
 这说明：**agent 负责把计划做到 decision-complete，但不能自己批准实施。**
 
@@ -91,7 +91,7 @@ PR 模板则把 Issue 关联写进 Motivation 的填写说明：
 
 > 以 `Fixes #NN` 或 `Related #NN` 引用同仓库 Issue。
 
-来源：`.github/pull_request_template.md:3`；强制条件见 `.github/issue-management/policy.mjs:64-77`
+来源：`.github/pull_request_template.md:3`；强制条件见 `.github/issue-management/rules.mjs:60-70`
 
 issue policy 则把这种约束命名得更直接：
 
@@ -100,9 +100,9 @@ issue policy 则把这种约束命名得更直接：
 > const automated = authorType === 'Bot' || authorType === 'App'
 > return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
 
-来源：`.github/issue-management/policy.mjs:64-77`
+来源：`.github/issue-management/rules.mjs:60-70`（0009 复核改钉：`policy.mjs` 现在只是 CLI dispatcher，`requiresPullRequestPolicy()` 等校验实现在 `rules.mjs`）
 
-因此更严谨的结论是：机器管结构；语义 review 不能由自动化替代；进入 review 的人类 PR 被单独纳入 human-review policy（强制引用 Issue 的检查在 `.github/issue-management/policy.mjs:267`）。`dsh-code-review` 本身没有明文写执行者必须是人，所以“人管语义”是从这套 policy 和 PR 模板反推的边界，不是 DSH 有一张明文分工表。
+因此更严谨的结论是：机器管结构；语义 review 不能由自动化替代；进入 review 的人类 PR 被单独纳入 human-review policy（强制引用 Issue 的检查在 `.github/issue-management/rules.mjs:265`）。`dsh-code-review` 本身没有明文写执行者必须是人，所以“人管语义”是从这套 policy 和 PR 模板反推的边界，不是 DSH 有一张明文分工表。
 
 ### 3. 需要显式用户调用的工作
 
@@ -110,7 +110,7 @@ issue policy 则把这种约束命名得更直接：
 
 > only explicit user invocation may run `dsh-translate-docs`.
 
-来源：`AGENTS.md:147`
+来源：`AGENTS.md:176`
 
 ### 4. sandbox 无法解决的主机环境问题
 
@@ -118,7 +118,7 @@ issue policy 则把这种约束命名得更直接：
 
 > If a required `gh`, `pnpm`, build, test, or generator command fails because the sandbox blocks credentials, network, IPC, watching, or nested `sandbox-exec`, retry unchanged with the narrowest host escalation.
 
-来源：`AGENTS.md:88`
+来源：`AGENTS.md:112`
 
 ### 5. 外部社区参与
 
@@ -151,12 +151,12 @@ issue policy 则把这种约束命名得更直接：
 ## 证据入口
 
 - `.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`
-- `AGENTS.md:88`、`:92`、`:95`、`:147`
+- `AGENTS.md:112`、`:116`、`:119`、`:176`
 - `packages/AGENTS.md:26`
 - `.agents/notes/README.md:46`
-- `packages/bundle/web-app/presets/ptc.patch.yml:54`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）、`:60`
+- `packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）、`:62`
 - `docs/subsystems/plan.md:33`
 - `.agents/skills/dsh-code-review/SKILL.md:23`、`:31`、`:52`
 - `.github/pull_request_template.md:3`
-- `.github/issue-management/policy.mjs:64-77`、`:267`
+- `.github/issue-management/rules.mjs:60-70`、`:265`
 - `CONTRIBUTING.md:9`、`:11`

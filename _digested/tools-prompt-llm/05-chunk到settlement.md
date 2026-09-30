@@ -1,5 +1,7 @@
 # chunk 到 settlement
 
+产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`，2026-09-25 同步轮核验；OLD 侧 `46a7f68b09`）。
+
 源码核验入口：`packages/core/session/src/types.ts` 的 assistant 事件、`packages/llm/llm/src/assistant-stream.ts`、`packages/core/agent-loop/src/{agent,assistant-stream}.ts`、`packages/llm/token-meter/src/index.ts`。
 
 本篇写 session format v2 之后「流式 chunk 如何入 log」的完整替代关系：**顶层 `assistant/chunk` 事件已不存在**，一次模型 attempt 只提交一条 settlement，流内嵌其中。
@@ -10,7 +12,7 @@ v1 的表示是：每个 `StreamChunk` 一条顶层 `assistant/chunk` session ev
 
 v2 起：每个 attempt **一条** settlement。`assistant/message`（surface）新增 `stream: AssistantStreamRecord[]`，与 assembled message、可选 `usage`、可选 `interrupted: true` 并列（`packages/core/session/src/types.ts:321-331`）；`assistant/attempt`（**新事件**，log-only）是 `{ turn, step, stream }`（`:335`），保存 failed / retried / cancelled / stream-error 且没有 surface message 的 attempt。`assistant/message` **不能**再带 chunk 的 `sourceEventSeqs`。
 
-两类 settlement 的分工：模型可见历史只由 `assistant/message` 构成；`assistant/attempt` 让诊断与记账不必伪造模型可见历史。取消但已流出可见内容时，loop 提交带 `interrupted: true` 的 `assistant/message`（只有已交付的 text/reasoning 前缀，未 dispatch 的 tool call 不在内）；取消且无可见内容、以及 error/aborted 的 attempt，走 `assistant/attempt`（`packages/core/agent-loop/src/agent.ts:398-495`）。
+两类 settlement 的分工：模型可见历史只由 `assistant/message` 构成；`assistant/attempt` 让诊断与记账不必伪造模型可见历史。取消但已流出可见内容时，loop 提交带 `interrupted: true` 的 `assistant/message`（只有已交付的 text/reasoning 前缀，未 dispatch 的 tool call 不在内）；取消且无可见内容、以及 error/aborted 的 attempt，走 `assistant/attempt`（`packages/core/agent-loop/src/agent.ts:398-544`）。
 
 ## 紧凑编码
 

@@ -16,7 +16,7 @@ Inspectability（可检查性）要求系统提供查询入口，让 agent 用�
 > dsh --profile web --dump-config
 > ```
 >
-> — DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md#profiles-and-bundles)。这条命令回答 profile、bundle 和 patch 叠加后的实际 boot 配置，而不是源码中可能出现的所有插件。
+> — DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/architecture.md#profiles-and-bundles)。这条命令回答 profile、bundle 和 patch 叠加后的实际 boot 配置，而不是源码中可能出现的所有插件。
 
 当 provider 是否生效、某个 config 为什么被替换或某个配置项从哪一层进入系统不清楚时，最终配置树比扫描 import 更接近问题对象。它也为 bug report 提供可复现输入。
 
@@ -32,7 +32,7 @@ DSH 的 opt-in `@deepseek-ai/dsh-tool-cordis` 在固定基线注册两个只读�
 
 > List every Cordis Inspect Provider currently known to the Host [...]. Call this Tool before writing or configuring a plugin, then select the provider and method for cordis_inspect_query from its result. Do not guess names or treat an Inspect method as a business Service that Plugin code can call. [...] Run a read-only query declared by an Inspect Provider. [...] This Tool cannot invoke business Service methods or modify the runtime.
 >
-> — DSH [`tool-cordis` source 的两个工具 description](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/src/index.ts)（0.1.7 线起该包只注册这两个只读工具，不再贡献 system prompt，查询纪律由工具描述自述）：查询先发现 provider 与方法，再按返回 schema 执行，不能猜名称或把只读 Inspect method 当成业务 Service。
+> — DSH [`tool-cordis` source 的两个工具 description](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/extensions/tool-cordis/src/index.ts)（0.1.7 线起该包只注册这两个只读工具，不再贡献 system prompt，查询纪律由工具描述自述）：查询先发现 provider 与方法，再按返回 schema 执行，不能猜名称或把只读 Inspect method 当成业务 Service。
 
 Inspect Provider 可以把 Host service、event、builtin 与 tool 信息，以及 Client slot tree、props 和 theme tokens 暴露为只读查询。dynamic Plugin 的版本、源码与诊断改由 Plugin Manager 面与 runner 的程序化 API 承载（工具侧不再提供 self 检查）。
 
@@ -56,11 +56,11 @@ Plugin set 可以变化，但任何真正进入模型请求的 tool schema、pro
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)：ordered config layers、`--dump-config`、session log 和 model-visible means logged。
-- DSH [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/src/index.ts)：固定基线实际注册的两个只读 inspect tools（`cordis_inspect_list`、`cordis_inspect_query`）。
-- DSH [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-catalog.md#deepseek-aidsh-tool-cordis)：从源码生成的两个只读工具 schema 及 opt-in 说明。
-- DSH [`@deepseek-ai/dsh-tool-cordis` README 的 “Known Limitations and Deferred Work”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/README.md#known-limitations-and-deferred-work)（0.1.7 线起该包只剩两个只读检查工具，改动类 cordis_define/run/stop/undefine 退役、持久修改改走 plugin_manager）：检查工具不能调用业务方法、配置插件或执行生成代码。
-- DSH [`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/config-catalog.md)：生成的配置字段索引。
-- DSH [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/event-producer-consumer.md)：生成的事件 producer、consumer 和 dispatch mode 索引。
-- DSH [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/capability-seams.md)：生成的 Service Definition、provider 与 consumer 关系索引。
-- DSH [`docs/persistence-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/persistence-catalog.md)：生成的 durable session event 声明索引。
+- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/architecture.md)：ordered config layers、`--dump-config`、session log 和 model-visible means logged。
+- DSH [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/extensions/tool-cordis/src/index.ts)：固定基线实际注册的两个只读 inspect tools（`cordis_inspect_list`、`cordis_inspect_query`）。
+- DSH [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/tool-catalog.md#deepseek-aidsh-tool-cordis)：从源码生成的两个只读工具 schema 及 opt-in 说明。
+- DSH [`@deepseek-ai/dsh-tool-cordis` README 的 “Known Limitations and Deferred Work”](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/extensions/tool-cordis/README.md#known-limitations-and-deferred-work)（0.1.7 线起该包只剩两个只读检查工具，改动类 cordis_define/run/stop/undefine 退役、持久修改改走 plugin_manager）：检查工具不能调用业务方法、配置插件或执行生成代码。
+- DSH [`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/config-catalog.md)：生成的配置字段索引。
+- DSH [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/event-producer-consumer.md)：生成的事件 producer、consumer 和 dispatch mode 索引。
+- DSH [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/capability-seams.md)：生成的 Service Definition、provider 与 consumer 关系索引。
+- DSH [`docs/persistence-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/persistence-catalog.md)：生成的 durable session event 声明索引。

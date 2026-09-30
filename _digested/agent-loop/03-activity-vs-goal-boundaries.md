@@ -35,7 +35,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 | 谁驱动 | `ReactLoopAgent.wakeDriver()` → `kick()`（packages/core/agent-loop/src/agent.ts:225-238；`wakeDriver` 本体 :187-208） |
 | 什么时候结束 | `kick()` 的 `while (await this.turn()) {}`（packages/core/agent-loop/src/agent.ts:227）返回 `false`（turn 返回 false 的三条路径：pre-step reject→`blocked`（packages/core/agent-loop/src/agent.ts:292）、首步消息为空（packages/core/agent-loop/src/agent.ts:299）、inbox 无待唤醒消息（packages/core/agent-loop/src/agent.ts:344）） |
 | 对谁可见 | `agent/status` 从 `'running'` 变回 `'idle'` |
-| 关键细节 | 整段 activity 在 `ctx.agents.withInitiator(agent, () => kick())` 的因果边界内运行（packages/core/agent-loop/src/agent.ts:207）——这是 host / model pause 判据的来源（见 [`04-agent-runtime-identity.md`](./04-agent-runtime-identity.md)）。`maintenance` 阶段 `status` 也是 `'idle'`。`kick()` catch 所有 error（packages/core/agent-loop/src/agent.ts:228-229）并 contained 在 driver 边界。activity 结束后自动重检查 `wakeRequested`（packages/core/agent-loop/src/agent.ts:235） |
+| 关键细节 | 整段 activity 在 `ctx.agents.withInitiator(agent, () => kick())` 的因果边界内运行（packages/core/agent-loop/src/agent.ts:234）——这是 host / model pause 判据的来源（见 [`04-agent-runtime-identity.md`](./04-agent-runtime-identity.md)）。`maintenance` 阶段 `status` 也是 `'idle'`。`kick()` catch 所有 error（packages/core/agent-loop/src/agent.ts:228-229）并 contained 在 driver 边界。activity 结束后自动重检查 `wakeRequested`（packages/core/agent-loop/src/agent.ts:235） |
 
 ### goal（持久目标）
 
@@ -48,7 +48,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 
 ## turn/end 的 reason 对照
 
-`turn/end` 的 `reason` 字段记录这一轮为什么结束，各方据此决定下一步行动。loop 只会写下表这五种 reason；`{ kind: 'interrupted' }` 不是 loop 发的，而是由 `interruptedTurnClosers` 在 agent-loop resume（`packages/core/agent-loop/src/index.ts:891`）与 session-query 冷读（`packages/core/session/src/repair.ts:29`）两处补写：
+`turn/end` 的 `reason` 字段记录这一轮为什么结束，各方据此决定下一步行动。loop 只会写下表这五种 reason；`{ kind: 'interrupted' }` 不是 loop 发的，而是由 `interruptedTurnClosers` 在 agent-loop resume（`packages/core/agent-loop/src/index.ts:891`）与 session-query 冷读（`packages/core/session/src/repair.ts:209`）两处补写：
 
 | reason | 含义 | round-driver 反应 | user 看到 |
 |--------|------|-------------------|-----------|
@@ -62,7 +62,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 
 ## 崩溃恢复
 
-进程崩溃时，session log 里有 `turn/start` 但没有匹配的 `turn/end`。补 closer 的实现从「持久化协调器的职责」改成由两个消费点各自调用同一个可复用函数 `interruptedTurnClosers`（`packages/core/session/src/repair.ts:29`；该函数在 OLD 基线已存在，OLD 的调用点是 `git show a66e470204:packages/session/session-persistence/src/coordinator.ts` 第 1080 行），两侧各调一次：
+进程崩溃时，session log 里有 `turn/start` 但没有匹配的 `turn/end`。补 closer 的实现从「持久化协调器的职责」改成由两个消费点各自调用同一个可复用函数 `interruptedTurnClosers`（`packages/core/session/src/repair.ts:209`；该函数在 OLD 基线已存在，OLD 的调用点是 `git show a66e470204:packages/session/session-persistence/src/coordinator.ts` 第 1080 行），两侧各调一次：
 
 ```
 turn/start (turn=5)
@@ -100,7 +100,7 @@ Goal 与 Agent Loop 之间没有直接耦合：driver 不 import loop 内部，l
 7. `agent/inbox/inserted` / `claimed` / `discarded` — competing / stale 簿记
 8. `agent/created`（session-start 边）— driver 在 `goal-round-driver/src/index.ts:252-256` 消费它，清空 `attempt` / `competingQueued` / `needsCheckpoint`，让新会话不从上一会话的调度残留里起步（事件由 `AgentRegistry.announce()` 串行发出，`packages/core/agent/src/index.ts:537-559`；旧名 `agent/session-start` 已随 0.1.7 线退役）
 
-`goal/activation-changed` **不在这条清单里**：`GoalService.setActivation()` 在 activation 真正变化时广播的进程内事件（`goal/src/index.ts:495-516`），driver 不消费它；消费方是 Web goal bar（经 Remote 白名单转发，`packages/api/remotes/src/remote-events.ts:26`；订阅点 `packages/client/ui-goal/src/client/index.ts:95`）
+`goal/activation-changed` **不在这条清单里**：`GoalService.setActivation()` 在 activation 真正变化时广播的进程内事件（`goal/src/index.ts:495-516`），driver 不消费它；消费方是 Web goal bar（经 Remote 白名单转发，`packages/api/remotes/src/remote-events.ts:33`；订阅点 `packages/client/ui-goal/src/client/index.ts:115`）
 
 ## 场景：一次完整的 goal 生命周期
 

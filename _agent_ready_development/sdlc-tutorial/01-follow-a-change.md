@@ -13,14 +13,14 @@
 
 这些内容是 intent（意图）和 acceptance criteria（验收条件）。它们约束外部结果，但不提前指定必须修改哪个函数——实施者仍要根据源码选择正确位置，评审人也因此知道最后该观察什么。
 
-这是从已交付行为**重建的教学任务描述**。本教程的主例是真实提交 `5124a2a310`（PR #5004）：用户看到等宽字体的 model ID，悬停时辨认模型名称。它当时对应的原始 Issue、作者实际跑过的命令和远端检查结果，git tree 里**不存在**，本教程不声称拥有它们；涉及“当时在 GitHub 上发生了什么”的地方，会明确标注 [`需查 GitHub`]。本页钉版链接指向固定基线 `46a7f68b09`（dsh-v0.1.7-rc.1）——该提交已在这条历史里，链接展示的是交付后的形态。
+这是从已交付行为**重建的教学任务描述**。本教程的主例是真实提交 `5124a2a310`（PR #5004）：用户看到等宽字体的 model ID，悬停时辨认模型名称。它当时对应的原始 Issue、作者实际跑过的命令和远端检查结果，git tree 里**不存在**，本教程不声称拥有它们；涉及“当时在 GitHub 上发生了什么”的地方，会明确标注 [`需查 GitHub`]。本页钉版链接指向固定基线 `580646c14f`（dsh-v0.2.0-rc.2；0009 轮自 `46a7f68b09`／dsh-v0.1.7-rc.1 re-pin）——该提交已在这条历史里，链接展示的是交付后的形态。
 
 ## 练习：这笔变更属于哪类入口
 
 仓库的 Issue 模板有两种现行入口，分节结构不同：
 
-- [Bug 模板](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/ISSUE_TEMPLATE/bug.md)：Summary / Reproduction / Current behavior / Expected behavior / Environment——为“现有预期行为的失效”设计；
-- [Feature 模板](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.github/ISSUE_TEMPLATE/feature.md)：Motivation / Behavior——为“新增或有意改变可观察行为”设计。
+- [Bug 模板](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.github/ISSUE_TEMPLATE/bug.md)：Summary / Reproduction / Current behavior / Expected behavior / Environment——为“现有预期行为的失效”设计；
+- [Feature 模板](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.github/ISSUE_TEMPLATE/feature.md)：Motivation / Behavior——为“新增或有意改变可观察行为”设计。
 
 主例该用哪份？提交标题写的是 `fix(web)`，但“显示 ID 而不是名称”更接近有意改变呈现，而不是修复失效。先自己判断一次，再体会这个张力的用处：选哪份模板，就是在逼作者讲清“这是坏了，还是要变”——Bug 模板要复现步骤和“预期行为”，Feature 模板要动机，两条路最后都落在可观察结果上。两份模板都是现行入口，本教程不声称其中一份就是 PR #5004 的真实 Issue（`需查 GitHub`）。
 
@@ -28,11 +28,11 @@
 
 实施前先回答“改哪里、谁拥有这块行为”。一个新到仓库的 agent 会走这条链：
 
-1. 根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md) 的 Repository layout 表：`packages/` 下按 `client/` 分组的 GUI 包；
-2. [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/README.md) 的分组表 → `packages/client/` → 包 README；
-3. [`packages/client/ui-settings-models/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/client/ui-settings-models/README.md)：Models 设置页的 owner，其中“Adding and deleting providers”一节正是选择器行为的当前合同。
+1. 根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/AGENTS.md) 的 Repository layout 表：`packages/` 下按 `client/` 分组的 GUI 包；
+2. [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/README.md) 的分组表 → `packages/client/` → 包 README；
+3. [`packages/client/ui-settings-models/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/client/ui-settings-models/README.md)：Models 设置页的 owner，其中“Adding and deleting providers”一节正是选择器行为的当前合同。
 
-问一个问题就够了：**这项显示修改，为什么不应当去改 agent loop（驱动模型对话与工具调用的核心循环）？** 因为它只影响一个 UI 组件的呈现，不碰任何服务、事件或模型可见的输出。反过来，如果任务要改的是可替换的能力（比如“模型目录从哪里来”），就要继续走到 [architecture 文档](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)；那类“可替换能力的接缝”（seam）本教程不展开。
+问一个问题就够了：**这项显示修改，为什么不应当去改 agent loop（驱动模型对话与工具调用的核心循环）？** 因为它只影响一个 UI 组件的呈现，不碰任何服务、事件或模型可见的输出。反过来，如果任务要改的是可替换的能力（比如“模型目录从哪里来”），就要继续走到 [architecture 文档](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/architecture.md)；那类“可替换能力的接缝”（seam）本教程不展开。
 
 还有一处要如实说明：包 README 拥有行为合同，却不点名组件文件——从 `src/client/` 的组件清单和关键词检索定位最后一跳，是 agent 的常规动作，不是缺陷。
 
@@ -42,12 +42,12 @@
 
 | 文件 | 角色 | 事实来源 |
 |---|---|---|
-| [`ModelListEditor.tsx`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/client/ui-settings-models/src/client/ModelListEditor.tsx) | 实现：候选行渲染 `{candidate.id}` 而非显示名 | `已在提交观察` |
-| [`ModelsSection.module.css`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/client/ui-settings-models/src/client/ModelsSection.module.css) | 实现：等宽字体 token、单行截断 | `已在提交观察` |
-| [`provider-form.client.spec.tsx`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/client/ui-settings-models/tests/provider-form.client.spec.tsx) | 组件测试：断言选择器显示 id、按名称搜索仍可用 | `已在提交观察` |
-| [`models-settings.e2e.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/apps/web/tests/models-settings.e2e.ts) | Web e2e：真实浏览器里勾选 `gpt-6-astra` | `已在提交观察` |
-| [`README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/client/ui-settings-models/README.md) / [`README.zh.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/client/ui-settings-models/README.zh.md) | 当前文档：两语言同步改述新行为 | `已在提交观察` |
-| [`README.i18n.yaml`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/client/ui-settings-models/README.i18n.yaml) | 配对记录：记下两份 README 各自的 git blob hash（git 对文件内容算出的校验和，内容一变就变），改动后重新记录 | `已在提交观察` |
+| [`ModelListEditor.tsx`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/client/ui-settings-models/src/client/ModelListEditor.tsx) | 实现：候选行渲染 `{candidate.id}` 而非显示名 | `已在提交观察` |
+| [`ModelsSection.module.css`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/client/ui-settings-models/src/client/ModelsSection.module.css) | 实现：等宽字体 token、单行截断 | `已在提交观察` |
+| [`provider-form.client.spec.tsx`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/client/ui-settings-models/tests/provider-form.client.spec.tsx) | 组件测试：断言选择器显示 id、按名称搜索仍可用 | `已在提交观察` |
+| [`models-settings.e2e.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/apps/web/tests/models-settings.e2e.ts) | Web e2e：真实浏览器里勾选 `gpt-6-astra` | `已在提交观察` |
+| [`README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/client/ui-settings-models/README.md) / [`README.zh.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/client/ui-settings-models/README.zh.md) | 当前文档：两语言同步改述新行为 | `已在提交观察` |
+| [`README.i18n.yaml`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/client/ui-settings-models/README.i18n.yaml) | 配对记录：记下两份 README 各自的 git blob hash（git 对文件内容算出的校验和，内容一变就变），改动后重新记录（0009 注记：上游此后把该文件改为按标题分节的双语 hash 记录——每节各记 `en`/`zh` 两值，重录命令 `pnpm run verify-translation-pairing --write <file>` 不变；主例提交当时仍是整文件 blob hash，如链接所示） | `已在提交观察` |
 
 SDD 在 DSH 的日常开发里就是这个样子：**实现、当前文档、行为证据装在同一个提交里**，连“中英文档必须相等”都被 hash 配对记录钉死——文档不是代码写完后补的，而是同一笔变更的组成部分。
 
@@ -84,7 +84,7 @@ SDD 在 DSH 的日常开发里就是这个样子：**实现、当前文档、行
 
 ## 练习：这笔修改为什么不需要 Agent Note
 
-打开 [Agent Note 规则](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md) 找到这句话的原文：
+打开 [Agent Note 规则](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/README.md) 找到这句话的原文：
 
 > Mechanical or local edits, including local UI presentation and interaction changes, are exempt.
 

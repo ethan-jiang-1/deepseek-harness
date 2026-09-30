@@ -23,7 +23,7 @@ DSH 展示的是怎样组织复杂参与知识，而不是怎样让复杂系统�
 
 > The vm prevents accidental global pollution; injected filesystem, shell, and network services still have real authority, so it is not a security boundary.
 >
-> — DSH [`self-referential Cordis toolset` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（0.1.7 线改写为 "Cordis runtime inspection and runner isolation"）。这段原文限定了运行时查询能力的安全含义。
+> — DSH [`self-referential Cordis toolset` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（0.1.7 线改写为 "Cordis runtime inspection and runner isolation"）。这段原文限定了运行时查询能力的安全含义。
 
 ## 知识外置本身有维护成本
 
@@ -63,8 +63,8 @@ DSH 作为 Development Harness 的突出之处，不是拥有最多规则，而�
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)：插件组合、事件日志、seam 和行为归属所面对的组合复杂度。
-- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)：一个事实一个 owner、上下文预算和文档维护纪律。
-- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-code-review/SKILL.md)：Skill 的 guidance 边界和 semantic review 责任。
-- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/testing.md)：真实入口、negative control 和不同证据层的限制。
-- DSH [`@deepseek-ai/dsh-tool-cordis` README 的 “Known Limitations and Deferred Work”](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/README.md#known-limitations-and-deferred-work)：动态自省工具的能力边界（只读检查；不能调用业务方法、配置插件或执行生成代码）。
+- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/architecture.md)：插件组合、事件日志、seam 和行为归属所面对的组合复杂度。
+- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/AGENTS.md)：一个事实一个 owner、上下文预算和文档维护纪律。
+- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/skills/dsh-code-review/SKILL.md)：Skill 的 guidance 边界和 semantic review 责任。
+- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/testing.md)：真实入口、negative control 和不同证据层的限制。
+- DSH [`@deepseek-ai/dsh-tool-cordis` README 的 “Known Limitations and Deferred Work”](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/extensions/tool-cordis/README.md#known-limitations-and-deferred-work)：动态自省工具的能力边界（只读检查；不能调用业务方法、配置插件或执行生成代码）。

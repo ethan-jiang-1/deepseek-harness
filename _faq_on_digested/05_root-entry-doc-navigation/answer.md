@@ -14,7 +14,7 @@
 
 | 04 的静态层 | 05 的运行时机制 |
 |---|---|
-| L1 常驻：根 `AGENTS.md` ≤ 1950 词 | baseline 注入，`maxBytes` 限整条链 |
+| L1 常驻：根 `AGENTS.md` ≤ 1960 词 | baseline 注入，`maxBytes` 限整条链 |
 | L2 区域入口：architecture、子树 AGENTS | touch-driven nested 注入（触达才加载） |
 | L3 按需合同：package README | 模型用 `read` 工具拉取 |
 | L4 穷举索引：generated catalogs | 模型用 `grep`/`glob` 查询 |

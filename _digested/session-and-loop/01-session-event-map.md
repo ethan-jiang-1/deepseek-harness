@@ -26,11 +26,11 @@
 | `tool/result` | 是（surface；v4 起一等 tool-role message：role `'tool'`、`toolCallId` 在 message 层、扁平 content，error 可带 `reason`——v3 的 wrapper block 迁移时提升，`packages/session/session-format-v3-to-v4/README.md:85-98`） |
 | `request/header` | 否（单独重建 config、adapterDefaults 与 tools） |
 | `request/context` | 否（只记录 provider、model、context window 与 `systemPromptUpdate` 能力） |
-| `todo/write` | 否（log-only UI；非 loop 写——`packages/todo/tool-todo/src/index.ts:210`） |
+| `todo/write` | 否（log-only UI；非 loop 写——`packages/todo/tool-todo/src/index.ts:199`） |
 | `workspace/changes` | 否（log-only；非 loop 写——turn 结束时的 git 快照对比：每文件行数摘要 + per-file 对比，payload `{ turn }`；写者 `packages/deliverables/workspace-changes/src/recorder.ts:354`，投影经 `registerMessageProjection` 挂 summary；无 git 或工作目录在仓库外时退化为文件工具改动清单） |
 | `image/offload` | 否（log-only 的表面修复决策；非 loop 写——路由以 `IMAGE_OFFLOAD_REQUIRED` 拒绝请求时选中最旧的保留图片出现并重试，不占重试预算，payload `{ targets }`；写者 `packages/compaction/compaction-image-offload/src/image-offload.ts:44`，后续请求对这些出现发占位文本） |
-| `developer/message` | 是（surface；v4 新增的第五类：开发者的可见消息，空节点保留位置不产生模型消息，`packages/core/session/src/types.ts:311-318`；provider/UI 显式拒绝不能表达的 developer 历史） |
-| `session/end-seed` | 否（种子与 live 的分界；非 loop 写——合法写者 = Session 构造器 + `buildForkSeed`（fork seed 可自带 tagged end-seed marker 与 child-owned synthetic closers，marker 不必在 `firstLiveSeq`，`packages/core/session/src/types.ts:405-427`）；appender `packages/core/session/src/index.ts:607-609`） |
+| `developer/message` | 是（surface；v4 新增的第五类：开发者的可见消息，空节点保留位置不产生模型消息，`packages/core/session/src/types.ts:311-317`；provider/UI 显式拒绝不能表达的 developer 历史） |
+| `session/end-seed` | 否（种子与 live 的分界；非 loop 写——合法写者 = Session 构造器 + `buildForkSeed`（fork seed 可自带 tagged end-seed marker 与 child-owned synthetic closers，marker 不必在 `firstLiveSeq`，`packages/core/session/src/types.ts:402-427`）；appender `packages/core/session/src/index.ts:619-621`） |
 
 `SurfaceEventType` 有五类：`system/message`、`user/message`、`assistant/message`、`tool/result`、`developer/message`（v4 新增；`packages/core/session/src/types.ts:439-445`）。只有它们可以带 `surfaceOp`；`assistant/message` **独占禁止** `sourceEventSeqs`，其余四类可引用非空、唯一、严格更早的 seq 集合。编译器在 `Session.append` 调用点强制：log-only 事件不许带 surface 字段。
 
@@ -43,9 +43,9 @@
 - 没有标记 → 拒绝重建整份会话。未识别的 required 事件可能改变其余 log 怎么读（`session/end-seed` 是现成例子）。
 - `ignorable: true` → 可以跳过。写者只给「丢了也不影响重建」的信息性记录打这个标。
 
-默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型请求的消息由 surface 类型投影（v4 起 `developer/message` 以 `developer` role 进入 `deriveMessages()`，不能表达该 role 的 provider 显式拒绝——`packages/llm/llm-deepseek/src/serialize.ts:90` 的 `unsupported('developer message')`、`packages/llm/llm-pi-ai/src/context.ts:53` 的 `LlmError`），config、adapterDefaults 与 tools 由 `request/header` 折叠，system prompt 取当前有效的 `system/message` 节点；`request/context` 不参与请求重建。真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
+默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型请求的消息由 surface 类型投影（v4 起 `developer/message` 以 `developer` role 进入 `deriveMessages()`，不能表达该 role 的 provider 显式拒绝——`packages/llm/llm-deepseek/src/serialize.ts:96` 的 `unsupported('developer content …')`、`packages/llm/llm-pi-ai/src/context.ts:53` 的 `LlmError`），config、adapterDefaults 与 tools 由 `request/header` 折叠，system prompt 取当前有效的 `system/message` 节点；`request/context` 不参与请求重建。真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
 
-> **ignorable 机制的历史与边界**：上游 #3087（`worktree/remove-ignorable-session-events`）曾删除 ignorable 机制，要求所有 event 必须被已知。但 #3325 随后回滚了这次删除，恢复了 ignorable（依据 `.agents/notes/implemented/architecture/2026-08-30-retain-ignorable-external-session-events.md`）。当前（`46a7f68b09`，0.1.7-rc.1；格式已升 v4）ignorable 仍在（`packages/core/session/src/types.ts:511`、`packages/session/session-persistence/src/storage-contract.ts:74-80`）。required 与否**只由信封的 `ignorable` 决定**，不是按事件「注册时间」区分的：`known-event-types.ts` 只是一个扁平的名字集合（该文件头部 JSDoc 自述，`packages/core/session/src/known-event-types.ts:9-13`），读侧按 `event.ignorable !== true` 判定必知（`packages/session/session-persistence/src/storage-contract.ts:75`；种子事件的信封校验同样只接受 `true`，`packages/core/session/src/index.ts:225`）；`git diff d233300d55 ed9fb840d6 -- packages/core/session/src/known-event-types.ts` 显示该集合在那个窗口内只改过一次名（`subagent/model-selection-enabled`→`subagent/model-selection-policy`），没有新增事件。**跨历史格式边时规则更严**：未知事件即使带 `ignorable: true` 也拒迁（`.agents/notes/implemented/architecture/2026-08-31-alpha-historical-unknown-event-refusal.md`），因为基数保持型迁移必须证明每个被保留的 payload 在目标世代仍语义有效。
+> **ignorable 机制的历史与边界**：上游 #3087（`worktree/remove-ignorable-session-events`）曾删除 ignorable 机制，要求所有 event 必须被已知。但 #3325 随后回滚了这次删除，恢复了 ignorable（依据 `.agents/notes/implemented/architecture/2026-08-30-retain-ignorable-external-session-events.md`）。当前（`46a7f68b09`，0.1.7-rc.1；格式已升 v4）ignorable 仍在（`packages/core/session/src/types.ts:511`、`packages/session/session-persistence/src/storage-contract.ts:74-80`）。required 与否**只由信封的 `ignorable` 决定**，不是按事件「注册时间」区分的：`known-event-types.ts` 只是一个扁平的名字集合（该文件头部 JSDoc 自述，`packages/core/session/src/known-event-types.ts:9-13`），读侧按 `event.ignorable !== true` 判定必知（`packages/session/session-persistence/src/storage-contract.ts:75`；种子事件的信封校验同样只接受 `true`，`packages/core/session/src/index.ts:231`）；`git diff d233300d55 ed9fb840d6 -- packages/core/session/src/known-event-types.ts` 显示该集合在那个窗口内只改过一次名（`subagent/model-selection-enabled`→`subagent/model-selection-policy`），没有新增事件。**跨历史格式边时规则更严**：未知事件即使带 `ignorable: true` 也拒迁（`.agents/notes/implemented/architecture/2026-08-31-alpha-historical-unknown-event-refusal.md`），因为基数保持型迁移必须证明每个被保留的 payload 在目标世代仍语义有效。
 
 已知集合是生成的 `KNOWN_SESSION_EVENT_TYPES`（`gen-persistence-catalog` 扫本仓库每一次 `SessionEventMap` 合并）。同一版本、不同插件组合，读规则仍一致。集合内容随事件换代变化：当前有 `assistant/attempt`、`system/message`（`:63`）与 v4 新增的 `developer/message`（`:37`），没有 `assistant/chunk`（`packages/core/session/src/known-event-types.ts:28,63`）；0008 跨度新增 `developer/message`、`image/offload`、`workspace/changes` 三个名字。仓外插件事件按构造不在表里；预发布接受「第一方读者拒 resume」，且拒绝是大声的。
 
@@ -65,7 +65,7 @@
 
 读方向不是「高低版本都拒」：**更新**版本拒绝并说明该 log 由更新的 harness 写入（用户看到的永远是 upgrade the harness，不是 corrupt）；**更旧**版本走相邻链迁移，不再拒绝（`packages/session/session-format/src/catalog.ts:52-59,139-157`）。原始 log 保留在磁盘上供检查；迁移从不移动、覆盖或删除已提交世代，只写最终 current 目标。世代、权威表与读准备 / 写发布时序见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
 
-带 `seedLength` 的旧 header 在加载时直接抛 `'session header has invalid field "seedLength"'`（`packages/core/session/src/index.ts:97-98`）。这是**当前逻辑 header 的形状约束**：历史 header 在进入 `SessionHeader` 之前已由迁移链翻译完毕，所以它不再是「旧格式拒载」的证据。
+带 `seedLength` 的旧 header 在加载时直接抛 `'session header has invalid field "seedLength"'`（`packages/core/session/src/index.ts:102-103`）。这是**当前逻辑 header 的形状约束**：历史 header 在进入 `SessionHeader` 之前已由迁移链翻译完毕，所以它不再是「旧格式拒载」的证据。
 
 ## 完整记录不等于完整发送
 

@@ -4,7 +4,7 @@
 
 **谁执行、谁读。** 评估由 coding agent 执行：它按本协议对目标仓库跑一遍，写出一份 Markdown 报告（第 6 节：评分卡（scorecard）、缺口清单（gap list）、切片走查（slice walkthrough）记录、三张清单，末尾列出需要人回答的问题；快诊（quick check）只出前三张表）。人读本文是为了理解判据；人读报告是为了复核证据、回答末尾的问题、决定下一步——**人不打分，也不填表**。
 
-**前置知识。** 无。本文不假设你读过任何其它材料，术语在本页定义。文中出现的 DeepSeek Harness（DSH）只是**例证**：钉版在 commit `46a7f68b0922371ce7144b668b90e377d8e799f4`，用来指认"这件事在成熟仓库里长什么样"。本文只有 §1 一条带链接的原文引文；其余例证在 [02](./02-evaluate-development-harness-fine.md) 各卡不带链接的"例证（可选核对）"段落里——**不打开任何链接也能核对**。
+**前置知识。** 无。本文不假设你读过任何其它材料，术语在本页定义。文中出现的 DeepSeek Harness（DSH）只是**例证**：钉版在 commit `580646c14fb998532a6ef19bb4cc4009cd74b786`，用来指认"这件事在成熟仓库里长什么样"。本文只有 §1 一条带链接的原文引文；其余例证在 [02](./02-evaluate-development-harness-fine.md) 各卡不带链接的"例证（可选核对）"段落里——**不打开任何链接也能核对**。
 
 **编号约定。** 维度用两字母前缀（知识归位 `KN` / 变更路径 `CP` / 证据与交付 `EV` / 状态与上下文 `ST` / 维护与发布 `MT`），探针（probe）用 `PB`，证据级（evidence level） `EL`，信息缺口（information gap） `IG`，成熟度档（maturity level） `MG`；完整对照见 [README 的标识符约定](./README.md#标识符约定token)。
 
@@ -106,7 +106,7 @@ agent 能直接看到的只有仓库和它有权访问的历史。先把"提问"
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions.
 >
-> — DSH [`quality-gates` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/process/2026-06-11-quality-gates.md)
+> — DSH [`quality-gates` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/implemented/process/2026-06-11-quality-gates.md)
 
 因果是反的：**因为干活的主力天然缺背景、会忘、会走捷径，仓库才被迫把成本结构整个反过来**——让"读对、改对"成为阻力最小的路径，让"读错、改错"在离错误源头最近的地方被机器拒绝。
 

@@ -1,6 +1,6 @@
 # Answer · DSH 的 SDD：分层规格、生命周期与可执行验收
 
-产品源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`（与 `_digested/` 相同）。
+产品源码核验基线：DeepSeek Harness `dsh-v0.2.0-rc.2`，commit `639ed01539`（与 `_digested/` 相同；0009 同步轮复核）。
 
 ## 结论先行
 
@@ -31,7 +31,7 @@
 
 ### 1. 先定义可观察结果
 
-当前 [Feature Issue 模板](../../.github/ISSUE_TEMPLATE/feature.md)只固定两节——动机与预期行为（`feature.md:7`、`:11`）；[Bug 模板](../../.github/ISSUE_TEMPLATE/bug.md)要求概述、复现、实际行为、预期行为与环境（`bug.md:7`、`:11`、`:15`、`:19`、`:23`）；[Task 模板](../../.github/ISSUE_TEMPLATE/task.md)要求概述与交付物（`task.md:7`、`:11`）。[PR 模板](../../.github/pull_request_template.md)要求进入评审的非 Draft 人类 PR 关联同仓库 Issue，并列出变更与验证。0.1.5 基线起 Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task：验收条件与测试证据不再由模板承载，改由 PR 的 Testing 节承载；policy 仍把五种原生 Issue Type 视为合法（[`.github/issue-management/policy.mjs:226`](../../.github/issue-management/policy.mjs)），取消的只是模板入口。
+当前 [Feature Issue 模板](../../.github/ISSUE_TEMPLATE/feature.md)只固定两节——动机与预期行为（`feature.md:7`、`:11`）；[Bug 模板](../../.github/ISSUE_TEMPLATE/bug.md)要求概述、复现、实际行为、预期行为与环境（`bug.md:7`、`:11`、`:15`、`:19`、`:23`）；[Task 模板](../../.github/ISSUE_TEMPLATE/task.md)要求概述与交付物（`task.md:7`、`:11`）。[PR 模板](../../.github/pull_request_template.md)要求进入评审的非 Draft 人类 PR 关联同仓库 Issue，并列出变更与验证。0.1.5 基线起 Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task：验收条件与测试证据不再由模板承载，改由 PR 的 Testing 节承载；policy 仍把五种原生 Issue Type 视为合法（[`.github/issue-management/rules.mjs:218`](../../.github/issue-management/rules.mjs)），取消的只是模板入口。
 
 这一层故意不先规定内部类名或函数列表。它先固定外部结果和完成标准，让后续设计可以变化，但不能丢掉最初要解决的问题。
 

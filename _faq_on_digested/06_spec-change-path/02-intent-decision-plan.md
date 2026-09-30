@@ -18,7 +18,7 @@ Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implem
 > const automated = authorType === 'Bot' || authorType === 'App'
 > return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)
 
-来源：`.github/issue-management/policy.mjs:69-76`；引用检查在 `validatePullRequest()`，见 `.github/issue-management/policy.mjs:255`。
+来源：`.github/issue-management/rules.mjs:60-70`（`requiresPullRequestPolicy()`）；引用检查在 `validatePullRequest()`，见 `.github/issue-management/rules.mjs:252`。
 
 ## 2. proposed Agent Note 固定设计决策
 
@@ -66,7 +66,7 @@ Plan Mode 把“边写边设计”压缩掉：
 
 > Make the plan decision-complete: state the goal and success criteria; group implementation changes by subsystem; identify public API, schema, and data-flow changes; cover edge cases, failure modes, tests, acceptance criteria, and explicit assumptions. Keep it concise enough to review but detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/bundle/web-app/presets/ptc.patch.yml:54`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）；plan/review 留在会话历史见 `packages/plan/plan-mode/README.md:170`。
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）；plan/review 留在会话历史见 `packages/plan/plan-mode/README.md:170`。
 
 ## 上游小结
 
@@ -84,6 +84,6 @@ Plan   = 具体改哪里，怎么验证
 - [`.github/ISSUE_TEMPLATE/bug.md`](../../.github/ISSUE_TEMPLATE/bug.md)
 - [`.github/ISSUE_TEMPLATE/task.md`](../../.github/ISSUE_TEMPLATE/task.md)
 - [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 11-13、46、80-90 行
-- [`.github/issue-management/policy.mjs`](../../.github/issue-management/policy.mjs) 第 69-76、255、267 行
+- [`.github/issue-management/rules.mjs`](../../.github/issue-management/rules.mjs) 第 60-70、252、265 行
 - [`docs/subsystems/plan.md`](../../docs/subsystems/plan.md) 第 5、33 行
 - [`packages/plan/plan-mode/README.md`](../../packages/plan/plan-mode/README.md) 第 93、170、183 行

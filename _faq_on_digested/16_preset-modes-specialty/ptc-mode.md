@@ -17,7 +17,7 @@ PTC = **Programmatic Tool Calling**（GUI 文案原话，[`guide-locales.ts`](..
     mode: ptc
 ```
 
-`mode` 是 `ToolRuntime`（`dsh-tools`）自己的配置（`'native' | 'ptc' | 'both'`，默认 native）；这个包只是把选择搬进 preset scope 的 `ctx.tools.presentAs()`。效果（Note「The registry owns the mode」节）：
+`mode` 是 `ToolRuntime`（`dsh-tools`）自己的配置（`'native' | 'ptc' | 'both'`，默认 native，[`packages/core/tools/src/index.ts`](../../packages/core/tools/src/index.ts)）；这个包只是把选择搬进 preset scope 的 `ctx.tools.presentAs()`——声明了行的 scope 用它，没声明的用部署默认。效果（Note「The registry owns the mode」节）：
 
 - **wire 工具表只剩 `run_code`**（保留的呈现传输层，带 `{ code, description }` 两个必填参数），外加系统提示词里一份生成的 `.d.ts` SDK 与用法说明；
 - `run_code` 在注册/限制层之外，**restriction 不可能误删 PTC 模式的唯一入口**；
@@ -36,7 +36,7 @@ PTC = **Programmatic Tool Calling**（GUI 文案原话，[`guide-locales.ts`](..
 
 - 每个子调用过完整 pipeline：`tools/pre-execute` → 单调 guards → `tools/execute` → `tools/post-execute` → `finalizeContent` → `tools/result`；权限插件能在程序运行前检查程序文本，子调用逐个受审批约束。
 - 每次子 dispatch 写一对 log-only 的 `tool/ptc-dispatch-start` / `tool/ptc-dispatch` 事件（父/子 call id、工具、参数、完整渲染结果），**不进模型历史但持久化**，Web 从这里渲染嵌套子行（[`apps/web/tests/ptc-round.e2e.ts`](../../apps/web/tests/ptc-round.e2e.ts)）。子 call id 形如 `<parent>:ptc:<n>`（[`packages/core/tools/src/ptc.ts`](../../packages/core/tools/src/ptc.ts)）。
-- 并发有界不串行：每run 一个 dispatch 队列，按提交顺序启动，相邻的并发安全调用可重叠至 `maxParallelSubCalls`（默认 10，`1` 即恢复串行；[`packages/core/tools/src/index.ts`](../../packages/core/tools/src/index.ts)）；互斥调用独占。
+- 并发有界不串行：每 run 一个 dispatch 队列，按提交顺序启动，相邻的并发安全调用可重叠至 `maxParallelSubCalls`（默认 10，`1` 即恢复串行；[`packages/core/tools/src/index.ts`](../../packages/core/tools/src/index.ts)）；互斥调用独占。
 - **沙箱升级走既有审批**：程序先在读只沙箱下被拒（EPERM/EROFS），显式以 `sandbox_permissions: "workspace-write"` 重试并给出 justification，批准前文件不落盘（[`apps/web/tests/ptc-escalation.e2e.ts`](../../apps/web/tests/ptc-escalation.e2e.ts)）。执行体是 fresh Node 进程，跑在调用 Session 的文件沙箱策略下（[`packages/ptc-runtime/ptc-runtime-node/README.md`](../../packages/ptc-runtime/ptc-runtime-node/README.md)）。
 
 ## 为什么 PTC 预设把 workflow 工具禁了？

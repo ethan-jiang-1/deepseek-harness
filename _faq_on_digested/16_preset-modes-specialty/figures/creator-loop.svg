@@ -13,7 +13,7 @@
 
   <!-- 循环四步 -->
   <!-- ① 检查 -->
-  <rect x="50" y="100" width="260" height="170" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <rect x="50" y="100" width="260" height="186" rx="12" fill="#f0fdf4" stroke="#86efac"/>
   <circle cx="76" cy="126" r="12" fill="#16a34a"/>
   <text x="76" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">1</text>
   <text x="180" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">看宿主（只读）</text>
@@ -22,13 +22,13 @@
   <text x="70" y="202" font-size="11" fill="#64748b">Host：生成的 Service/Event 目录 + 活</text>
   <text x="70" y="218" font-size="11" fill="#64748b">Loader 树（行 id、Config 状态、</text>
   <text x="70" y="234" font-size="11" fill="#64748b">packageDir）；Client：从已连接页面答</text>
-  <text x="70" y="256" font-size="11" fill="#b91c1c">Standard 刻意不给这对工具：执行模型</text>
-  <text x="70" y="270" font-size="11" fill="#b91c1c">写的 JS，无沙箱行能约束</text>
+  <text x="70" y="260" font-size="11" fill="#b91c1c">Standard 刻意不给这对工具：执行模型</text>
+  <text x="70" y="276" font-size="11" fill="#b91c1c">写的 JS，无沙箱行能约束</text>
 
   <line x1="310" y1="185" x2="360" y2="185" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreen2)"/>
 
   <!-- ② 编写 -->
-  <rect x="365" y="100" width="260" height="170" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <rect x="365" y="100" width="260" height="186" rx="12" fill="#f0fdf4" stroke="#86efac"/>
   <circle cx="391" cy="126" r="12" fill="#16a34a"/>
   <text x="391" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">2</text>
   <text x="495" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">写（技能按需加载）</text>
@@ -43,7 +43,7 @@
   <line x1="625" y1="185" x2="675" y2="185" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreen2)"/>
 
   <!-- ③ 安装 -->
-  <rect x="680" y="100" width="260" height="170" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <rect x="680" y="100" width="260" height="186" rx="12" fill="#f0fdf4" stroke="#86efac"/>
   <circle cx="706" cy="126" r="12" fill="#16a34a"/>
   <text x="706" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">3</text>
   <text x="810" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">装（审批门）</text>
@@ -56,7 +56,7 @@
   <text x="810" y="258" text-anchor="middle" font-size="10" fill="#991b1b">审批理由：Host 代码跑在沙箱之外</text>
 
   <!-- ④ 生效 -->
-  <rect x="980" y="100" width="220" height="170" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <rect x="980" y="100" width="220" height="186" rx="12" fill="#f0fdf4" stroke="#86efac"/>
   <circle cx="1006" cy="126" r="12" fill="#16a34a"/>
   <text x="1006" y="130" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">4</text>
   <text x="1090" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#15803d">生效</text>
@@ -65,12 +65,12 @@
   <text x="1000" y="202" font-size="11" fill="#64748b">插件即时加载或需重启，</text>
   <text x="1000" y="218" font-size="11" fill="#64748b">取决于改了什么；新 preset</text>
   <text x="1000" y="234" font-size="11" fill="#64748b">在下一个新任务可选</text>
-  <text x="1000" y="256" font-size="11" fill="#166534">guide：要求 agent 完成安装</text>
-  <text x="1000" y="270" font-size="11" fill="#166534">并验证，别只要源代码</text>
+  <text x="1000" y="262" font-size="11" fill="#166534">guide：要求 agent 完成安装</text>
+  <text x="1000" y="278" font-size="11" fill="#166534">并验证，别只要源代码</text>
 
   <!-- 回路 -->
-  <path d="M 1090 270 C 1090 320, 200 320, 180 272" fill="none" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreen2)"/>
-  <text x="635" y="312" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">能力变多了 → 回到 ① 再检查（自举循环）</text>
+  <path d="M 1090 286 C 1090 326, 200 326, 180 288" fill="none" stroke="#16a34a" stroke-width="3" marker-end="url(#arrowGreen2)"/>
+  <text x="635" y="346" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">能力变多了 → 回到 ① 再检查（自举循环）</text>
 
   <!-- 下半：机制注解 -->
   <rect x="50" y="352" width="545" height="150" rx="10" fill="#fefce8" stroke="#fde047"/>

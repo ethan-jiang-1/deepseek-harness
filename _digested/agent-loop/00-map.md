@@ -1,6 +1,6 @@
 # Agent Loop · 推进、边界与 Goal 驱动
 
-产品源码基线：`46a7f68b09`（`dsh-v0.1.7-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`rc.1` → `rc.2` 的增量见 [`_change_log/0007`](../_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md)。
+产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `46a7f68b09`（`dsh-v0.1.7-rc.1`），增量见 [`_change_log/0009`](../_change_log/0009-0.1.7-rc.1-to-0.2.0-rc.2.md)。
 
 ## 一句话
 
@@ -14,7 +14,7 @@ ruofei 说「Agent Loop 管推进，结束却分好几层」。Loop 不是「模
 |----|---------|-------|---------|
 | **step** | 一次模型请求 + 它所调用的工具 | 模型不再调工具 / `max-tokens` / error | `step/end` 事件 |
 | **turn** | 一个输入被抽干（可含多个 step） | 工具结果 `concludesTurn` / `agent/turn-stopping` 无人 `steer` | `turn/end` 事件 |
-| **driver activity** | 一段连续运行的 agent 活动 | Agent 回到 idle，且 inbox 无待唤醒消息；整段活动运行在以该 agent 为 initiator 的因果边界内（`packages/core/agent-loop/src/agent.ts:207`） | `agent/status === 'idle'` |
+| **driver activity** | 一段连续运行的 agent 活动 | Agent 回到 idle，且 inbox 无待唤醒消息；整段活动运行在以该 agent 为 initiator 的因果边界内（`packages/core/agent-loop/src/agent.ts:234`） | `agent/status === 'idle'` |
 | **goal** | 一个持久目标达成或被放弃 | 模型调用 `update_goal` complete/blocked，或 round-driver 自动 block | `goal/change` 事件 |
 
 **Agent idle 不代表任务完成**——它只说明此刻没有待处理的消息。Goal 如果还是 `active + armed`，Goal Round Driver 会在 idle 时自动发起下一轮。
@@ -31,13 +31,13 @@ ruofei 说「Agent Loop 管推进，结束却分好几层」。Loop 不是「模
 
 **你遇到的「需求进去后 DSH 理解为 ongoing goal」——这是模型（LLM）通过 `create_goal` tool 做到的**，不是系统自动推断的。
 
-`create_goal` tool 的 description（`packages/goal/tool-goal/src/index.ts:44-48`）：
+`create_goal` tool 的 description（`packages/goal/tool-goal/src/index.ts:51-54`）：
 
-> "**You may infer that intent without requiring the user to say 'create a goal'.** Do not use this for trivial single-turn work. Execution rejects non-human and subagent authority."
+> "**Use it when the direct human request is a long-running objective, even if the user did not say 'goal';** not for single-turn work."
 
-加上 system prompt 里 `tool:goal` section（order 2400，`packages/core/system-prompt/src/index.ts:141` 的 `SECTION_ORDERS.TOOL_GOAL`）进一步引导：
+加上 system prompt 里 `tool:goal` section（order 2400，`packages/core/system-prompt/src/index.ts:145` 的 `SECTION_ORDERS.TOOL_GOAL`）进一步引导：
 
-> "create_goal may infer goal intent from a direct human request in any language; do not create a goal for routine single-turn work."
+> "create_goal may infer goal intent from a direct human request in any language."
 
 所以**模型自己**读了你的需求、判断它需要跨多轮、自主调用 `create_goal`。然后 Goal Round Driver 在 agent 每次 idle 时自动推下一轮，形成持续到 objective 达成的效果。
 

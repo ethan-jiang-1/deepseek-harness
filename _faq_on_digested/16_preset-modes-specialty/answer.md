@@ -12,7 +12,7 @@
 - **preset 声明就是普通插件行**：一份 `@deepseek-ai/dsh-agent-preset` 声明带 `id` + `plugins` 子列表，由 bundle patch 携带。四份预设的差别全部体现在子列表的几十行 YAML 里，没有任何模式专属的宿主代码路径。
 - **`isolate` 组是作用域服务隔离**：preset 子列表里的 `cordis:group` + `isolate: { planMode | compaction+toolResultPruner | workflowEngine | terminals }` 给这组服务换一个 scope label——同 label 共享实现，不同 scope 互不可见（[`../_digested/cordis-runtime/01-五条原语对照源码.md`](../../_digested/cordis-runtime/01-五条原语对照源码.md)）。这就是为什么 compaction、workflow 引擎、持久终端状态都能"每份 preset 各自一份"而不打架。
 - **preset 不是安全边界**：Note 的 Consequences 明说 "Presets do not provide a security sandbox"；权限与沙箱照旧走 tool pipeline 与 approval seam。
-- **选择器是实验性的**：`agent-preset-registry` 的部署 `default: standard`（[`packages/bundle/web-app/cordis.patch.yml`](../../packages/bundle/web-app/cordis.patch.yml)）；"新任务可选择模式"开关标注 Experimental，关掉时新任务用应用默认，已有任务不受影响（[`locales.ts`](../../packages/client/ui-agent-preset/src/client/locales.ts)）。
+- **选择器入口由开发者模式控制**：`agent-preset-registry` 的部署 `default: standard`（[`packages/bundle/web-app/cordis.patch.yml`](../../packages/bundle/web-app/cordis.patch.yml)）；「新任务默认」是 General 设置里的一个 settings 字段，任务的模式选择入口随开发者工具（Developer tools）开关统一显隐，关掉时清掉共享暂存并解绑各任务的 preset seat（[`packages/client/ui-agent-preset/src/client/index.ts`](../../packages/client/ui-agent-preset/src/client/index.ts) 的 Developer tools gate；0.1.7 线时的「Experimental」开关措辞已随 0009 跨度改为开发者模式统一控制）。
 
 ## 第二节 · 四份 patch 的实差
 
@@ -24,7 +24,7 @@
 | wire 工具表 | **26 个原生 schema**（e2e 钉死） | **只剩 `run_code` + 生成 SDK**（加一行 `dsh-agent-tool-presentation mode: ptc`） | 只剩 `bash`/`pwsh`（持久终端） | 26 + `cordis_inspect_*`×2 + 条件性 `plugin_manager` |
 | shell | one-shot `dsh-tool-bash`/`pwsh` | 同 standard | **`dsh-tool-bash-persistent`/`pwsh-persistent`，`isolate: terminals`** | 同 standard |
 | fs 工具 / 搜索 | read/read_image/edit/write/glob/grep | 有（经 SDK 调用） | **无**（靠 shell 命令） | 有 |
-| skills | skill-filesystem + tool-skill | 有 | **无** | 有，且 `customSkillDirs` **追加**三个创作技能 |
+| skills | skill-filesystem + tool-skill | 有 | **无** | 有，且 `customSkillDirs` **追加**四个创作技能 |
 | plan / goal / todo / ask-user / web / present / jobs | 全有 | 全有 | **全无** | 全有 |
 | compaction | 有（`isolate: compaction, toolResultPruner`） | 有 | **无** | 有 |
 | delegation | subagent×2 + workflow + workflow-ptc，ralph 禁 | subagent×2，**workflow 三件全禁** | 无 | 同 standard（workflow 可用） |
@@ -38,7 +38,7 @@
 
 1. **呈现轴（PTC）**：工具注册表 `ToolRuntime` 本身有 `mode: 'native' | 'ptc' | 'both'` 配置；preset 通过 `dsh-agent-tool-presentation` 这一行在自己的 scope 里声明 `presentAs()`，于是**同一进程里 native Agent 与 PTC Agent 并存而不共享工具目录**（[`packages/core/agent-tool-presentation/README.md`](../../packages/core/agent-tool-presentation/README.md)）。改的是"模型看见的工具表"这一层，工具本体、权限、审计一概不动。
 2. **身份轴（Minimal）**：`dsh-persona` 行的 `complete: true` 让那句 prefix 成为**完整系统提示词**，抑制 suffix 和其他所有 section（[`packages/preset/persona/src/index.ts`](../../packages/preset/persona/src/index.ts)）；`includeRuntimeContext: false` 再关掉运行时上下文快照。配合砍掉 `agent-instructions`，Minimal 把"你是谁、你在哪、仓库说了什么"三个输入全部清零，只剩一个持久 shell。
-3. **扩展轴（Creator）**：加的不是"给任务用的工具"，而是**把宿主自身当作业对象**的入口——只读运行时检查（`cordis_inspect_*`）、持久插件安装（`plugin-manager`，profile 上下文存在才启用）、三个按需加载的创作技能。产出物是 bundle patch / preset 声明，落进 profile，影响此后所有会话。
+3. **扩展轴（Creator）**：加的不是"给任务用的工具"，而是**把宿主自身当作业对象**的入口——只读运行时检查（`cordis_inspect_*`）、持久插件安装（`plugin-manager`，profile 上下文存在才启用）、四个按需加载的创作技能（0009 起含共享的 `agent-experience`）。产出物是 bundle patch / preset 声明，落进 profile，影响此后所有会话。
 
 Standard 之所以值得单独立篇，恰恰因为它**三根轴都不动**：它是部署默认、模式选择器关闭时的应用默认，也是组合测试逐项钉死的参照目录（[`apps/web/tests/shipped-composition.e2e.ts`](../../apps/web/tests/shipped-composition.e2e.ts)）——其余三份的每一行 diff 都以它为基准。
 

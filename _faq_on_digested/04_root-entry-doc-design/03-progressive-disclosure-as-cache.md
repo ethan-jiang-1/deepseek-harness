@@ -36,7 +36,7 @@ DSH 没有正面度量“理解程度”，而是把披露问题转成了三个�
 
 | 层 | 内容 | 加载时机 | 上限 |
 |---|---|---|---|
-| L1 常驻 | 根 `AGENTS.md` | 每个 agent session | 1950 words |
+| L1 常驻 | 根 `AGENTS.md` | 每个 agent session | 1960 words |
 | L2 区域入口 | `architecture.md`、子树 `AGENTS.md` | 进入对应区域 | 2410（manifest） / 600-750 words |
 | L3 按需合同 | package README、subsystems、cookbook | 定位到具体包/任务 | 无统一的字数预算：`packages/README.md` ≤ 994；单个 package README 由 Summary ≤ 100 words、Model Experience 与 limitations 三道门禁管 |
 | L4 穷举索引 | generated catalogs、cordis API、module graph | 查询时 | 无人工预算，但由生成器维护 |

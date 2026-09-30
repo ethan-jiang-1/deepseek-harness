@@ -17,7 +17,7 @@
 
 ## 第二节 用户清单之外的一项：工具结果图像的 GUI 渲染（0.1.5 已交付）
 
-复核时曾记下一条链路不对称：**`read_image` 把图作为 image block 写进 `tool/result`，模型确实收到（序列化时工具结果图像以稳定前缀 `Attached image(s) from tool result:` 跟进一条独立 user message，`packages/llm/llm-deepseek/src/serialize.ts:323-331`），而 `ui-tool` 的 GenericToolCard 当时只派生 terminal/read/diff/search/web 卡、全包对 `'image'` 零分支**。这条不对称在 `a66e470204` 时成立，在本次跨度内被官方交付闭合：`ui-tool` 新增 image 卡模型与 `read_image` 行渲染器（`packages/client/ui-tool/src/client/tool/models/image-card-model.ts:118`、`:188`、`src/client/tool/toolviews/read-image-row.tsx`），并注册 `tool.call.images` slot（`src/client/contract/slots.ts:40`、`src/client/apply.ts:15`；跨度内提交 `a4d4404708 feat(ui-tool): render read_image results as the image` 与 `56ca8af0ee`）。
+复核时曾记下一条链路不对称：**`read_image` 把图作为 image block 写进 `tool/result`，模型确实收到（序列化时工具结果图像以稳定前缀 `Attached image(s) from tool result:` 跟进一条独立 user message，`packages/llm/llm-deepseek/src/serialize.ts:323-331`），而 `ui-tool` 的 GenericToolCard 当时只派生 terminal/read/diff/search/web 卡、全包对 `'image'` 零分支**。这条不对称在 `a66e470204` 时成立，在本次跨度内被官方交付闭合：`ui-tool` 新增 image 卡模型与 `read_image` 行渲染器（`packages/client/ui-tool/src/client/tool/models/image-card-model.ts:118`、`:188`、`src/client/tool/toolviews/read-image-row.tsx`），并注册 `tool.call.images` slot（`src/client/contract/slots.ts:46`、`packages/client/ui-attachment/src/client/index.ts:30`；跨度内提交 `a4d4404708 feat(ui-tool): render read_image results as the image` 与 `56ca8af0ee`）。
 
 也就是说：在"多用 vision"的工作流里，模型看到的截图人类现在能在会话流里直接看到。**验证回路在 0.1.5 上是双向的**——这条曾经的 UI 缺口已从 backlog 移除。
 

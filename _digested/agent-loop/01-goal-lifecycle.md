@@ -10,13 +10,13 @@ DSH 没有隐藏的「意图理解引擎」来自动创建 goal。goal 只能通
 
 ### 路径一：模型通过 `create_goal` tool 创建 ← 你看到的效果
 
-`packages/goal/tool-goal/src/index.ts:206-231` 注册了 `create_goal` tool。关键的引导在于 tool 的 `description`（第 44-48 行）：
+`packages/goal/tool-goal/src/index.ts:208-233` 注册了 `create_goal` tool。关键的引导在于 tool 的 `description`（第 51-54 行）：
 
-> "Create one persisted same-session completion goal when the current direct human request is a long-running objective that should continue across autonomous goal rounds. **You may infer that intent without requiring the user to say 'create a goal'.** Do not use this for trivial single-turn work."
+> "Create a persisted goal that keeps this session working across automatic continuation rounds. Use it when the direct human request is a long-running objective, even if the user did not say \"goal\"; not for single-turn work."
 
-加上 system prompt 的 `tool:goal` section（`tool-goal/src/index.ts:188-192`，order 2400）进一步给模型同样的授权：
+加上 system prompt 的 `tool:goal` section（`tool-goal/src/index.ts:189-193`，order 2400）进一步给模型同样的授权：
 
-> "**create_goal may infer goal intent from a direct human request in any language**; do not create a goal for routine single-turn work."
+> "**create_goal may infer goal intent from a direct human request in any language.**"
 
 **这就是你体验到的效果**：你给了一个需求（比如「把这个模块重构了」），模型在自己的 system prompt 里看到 `tool:goal` 的政策说明，判断这是长期任务，**自己调用** `create_goal` tool。不是系统自动推断的，是 LLM 在 tool description 引导下自主决策。
 
@@ -95,7 +95,7 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 **模型**通过 `update_goal` tool 可做五件事，但授权分两档：`edit` 与 `pause` 走 `requireDirectHuman`（`tool-goal/src/index.ts:263-272`），即只有当前 open turn 里真的有 `source.kind === 'user'` 的输入、且调用者是运行时 root 时才能改目标或暂停；`complete` / `blocked` 另由 `completionAuthority` 授权，direct-human 或**当前这一轮正是该 goal 的 admitted round** 都算（这也是自动续轮里模型能报告完成的原因）。`resume` 同样要求 direct-human，并且额外拒绝 `paused`：抛 `GOAL_TOOL_RESUME_PAUSED`（"the model cannot resume a paused goal; the user must resume it"，`tool-goal/src/index.ts:279-286`）。所以自动续轮中模型只有 `complete` / `blocked` 两个动作：
 
 ```ts
-// tool-goal/src/index.ts 第 292 行
+// tool-goal/src/index.ts 第 283 行
 const authority = completionAuthority(ctx, execution)
 // authority.kind === 'goal-round' 时允许 complete/blocked
 ```

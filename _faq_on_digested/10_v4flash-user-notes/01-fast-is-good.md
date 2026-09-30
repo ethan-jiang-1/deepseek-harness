@@ -21,13 +21,13 @@
 
 > 每个携带推理内容的 assistant 轮次都会把 reasoning 原文序列化回历史："Reasoning passback carries every reasoned turn's chain of thought into later requests"（`packages/llm/llm-deepseek/README.md:159`）。
 
-对一个"重构三小时、几百个工具调用轮次"的会话，这意味着**每一步的思考原文都进入后续所有请求的前缀**。缓和组织了这件事：未变的装配前缀可命中 DeepSeek cache 回报（`README.md:161-163`），但路由一换、前缀一变即从第一个变更 token 起全失效。这就是"10 亿 token"的微观结构：**不是哪里漏了，是 max 档的思考税 × 长会话回传 × 前缀敏感缓存的乘积。**"快就是好"在 token 经济学上的完整表述应该是：Flash 的单价优势要乘上 cache 命中率才成立；长会话中途换模型/改 effort/动图预算，都是对缓存的一次性清零。
+对一个"重构三小时、几百个工具调用轮次"的会话，这意味着**每一步的思考原文都进入后续所有请求的前缀**。缓和组织了这件事：未变的装配前缀可命中 DeepSeek cache 回报（`README.md:178-180`），但路由一换、前缀一变即从第一个变更 token 起全失效。这就是"10 亿 token"的微观结构：**不是哪里漏了，是 max 档的思考税 × 长会话回传 × 前缀敏感缓存的乘积。**"快就是好"在 token 经济学上的完整表述应该是：Flash 的单价优势要乘上 cache 命中率才成立；长会话中途换模型/改 effort/动图预算，都是对缓存的一次性清零。
 
 ## 第三节 goal 轮次的授权结构：为什么"敢放手"
 
 `<goal_round>` 每轮注入给模型的提示词是固定的（`packages/goal/goal-round-driver/src/prompt.ts:12-26`），要点：以当前 workspace、工具结果与持久会话状态为权威，"inspect them instead of assuming earlier narration is still current"；完成前必须收集客观已达成的证据并读当前 goal 再 `complete`。配套的授权设计：
 
-- **自动续轮预算**：`maxGoalRounds` 正 safe integer，部署默认 **256**（`packages/goal/goal/src/index.ts:244`）；轮次记账只认 goal 来源消息，**人的插话与澄清永不消耗预算**（`fold.ts:321-332` 校验 `source.kind==='goal'` 且 round 连续）。
+- **自动续轮预算**：`maxGoalRounds` 正 safe integer，部署默认 **256**（`packages/goal/goal/src/index.ts:244`）；轮次记账只认 goal 来源消息，**人的插话与澄清永不消耗预算**（`fold.ts:326-331` 校验 `source.kind==='goal'` 且 round 连续）。
 - **blocked 下限**：同因阻塞不足 3 个连续轮次时，机械拒绝 `blocked`（`GOAL_TOOL_BLOCK_THRESHOLD`），语义判断留给模型——"difficulty, uncertainty, or useful remaining work is not blocked"（`tool:goal` section，order 2400，`packages/core/system-prompt/src/index.ts:141`；文案在 `tool-goal/src/index.ts:120-121`）。
 - **自动性永远锚在人类权威上**：重启/fork 后持久 phase 还原但 activation 一律 disarm（`agent/session-start` 边沿统一 disarm，`goal/src/index.ts:255-256`），人类一句"继续" → 模型 `update_goal resume` 重新武装。设计笔记把这拆成两个不同事实：*"durable lifecycle 与'继续的许可（activation）'是两个不同事实"*（`2026-07-19-persisted-same-session-goal-domain.md:17`）。
 
@@ -37,7 +37,7 @@
 
 官方词汇表里没有 "dynamic workflow"。这个词唯一能严格对上的机制组合是：
 
-1. **plan 批准**：`exit_plan_mode` 通过评审后落 silent pending，下一次请求装配前 `plan/mode {active:false}` 提交，工具结果固定 `"Plan approved — plan mode exited; carry out the plan starting with your next step."`（`plan-mode/src/index.ts:285`、`:345`）。
+1. **plan 批准**：`exit_plan_mode` 通过评审后落 silent pending，下一次请求装配前 `plan/mode {active:false}` 提交，工具结果固定 `"Plan approved — plan mode exited; carry out the plan starting with your next step."`（`plan-mode/src/index.ts:292`、`:352`）。
 2. **模型把 plan 翻译成一次性脚本**：`workflow` 工具的 seam 契约明写 *"the seam starts caller-supplied scripts only"*、Known Limitations 第一条 *"No saved or nested workflows"*（`packages/workflow/workflow/README.md`）。没有模板存储、没有固定管道——**每个任务的编排脚本都是当场生成、跑完即弃**。"dynamic" 描述的就是这个：`meta.phases` 抄 plan 的阶段，各 `agent()` 的 prompt 写该阶段的验收标准，`args` 传 plan 产物的路径。
 3. **进度可观察**：`tool-workflow/run-start / agent-start / agent-end / run-end` 四个会话事件让 `ui-workflow-run` 面板从纯日志重建出可折叠披露视图（`packages/client/ui-workflow-run/README.md`）——又一次"事件即 UI 事实"。
 
