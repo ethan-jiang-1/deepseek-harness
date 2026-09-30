@@ -83,7 +83,7 @@ base bundle ───→ 具体插件 package 的发布闭包
 
 `dsh web` 的 Host 是 Node 进程中的 Cordis 树，包含 session、agent、Provider、API gateway 和 HTTP server。浏览器不是简单加载一个静态 React 单体；`apps/web/src/main.ts` 启动 `@deepseek-ai/dsh-client-web`，后者根据 Host 推送的 client entry graph 建立浏览器侧模块系统和 Cordis 插件树，再让 `ui-*` package 向 slots 和 client services 注册贡献。
 
-到 0.1.5-rc.1，`packages/client/` 已从“壳 + slots”扩成含内容寻址资源模型的 UI 平台：`ctx.resources` 把 `dsh-resource://<type>/…` 地址变成任何 slot component 都能读的活值，`useResource` 是每个组件都有的全局标准 prop，右栏 docking 是它的第一个消费者。读 Web 代码时，「某个组件的数据从哪来」因此多了一层答案：不是只有 Remote 调用，还可能是「协议 + provider + 地址」。机制见 [`_digested/surfaces/04-客户端资源模型与右栏.md`](../../_digested/surfaces/04-客户端资源模型与右栏.md)。
+到 0.1.5-rc.1，`packages/client/` 已从“壳 + slots”扩成含内容寻址资源模型的 UI 平台：`ctx.resources` 把 `dsh-resource://<type>/…` 地址变成任何 slot component 都能读的活值，`useResource` 是每个组件都有的全局标准 prop，右栏 docking 是它的第一个消费者。读 Web 代码时，「某个组件的数据从哪来」因此多了一层答案：不是只有 Remote 调用，还可能是「协议 + provider + 地址」。机制见 [`_digested/surfaces-entrypoints/04-客户端资源模型与右栏.md`](../../_digested/surfaces-entrypoints/04-客户端资源模型与右栏.md)。
 
 因此 Web 阅读时至少要标明自己位于哪一边：
 
@@ -123,5 +123,5 @@ base bundle ───→ 具体插件 package 的发布闭包
 - [`docs/architecture.md`](../../docs/architecture.md)
 - [`apps/cli/src/profile-boot.ts`](../../apps/cli/src/profile-boot.ts)
 - [`packages/client/web/README.md`](../../packages/client/web/README.md)
-- [`_digested/composition/00-map.md`](../../_digested/composition/00-map.md)
+- [`_digested/composition-boot/00-map.md`](../../_digested/composition-boot/00-map.md)
 - [`_digested/cordis-runtime/00-map.md`](../../_digested/cordis-runtime/00-map.md)

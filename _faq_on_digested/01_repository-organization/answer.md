@@ -162,6 +162,6 @@ DSH 把传统单体里隐含的选择显式化了：哪个后端、哪条策略�
 - [`packages/README.md`](../../packages/README.md)
 - [`pnpm-workspace.yaml`](../../pnpm-workspace.yaml)
 - [`docs/module-graph.md`](../../docs/module-graph.md)
-- [`_digested/system/00-map.md`](../../_digested/system/00-map.md)
-- [`_digested/composition/00-map.md`](../../_digested/composition/00-map.md)
+- [`_digested/system-overview/00-map.md`](../../_digested/system-overview/00-map.md)
+- [`_digested/composition-boot/00-map.md`](../../_digested/composition-boot/00-map.md)
 - [`_digested/capability-seams/00-map.md`](../../_digested/capability-seams/00-map.md)

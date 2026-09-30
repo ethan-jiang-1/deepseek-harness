@@ -49,7 +49,7 @@ DSH 自己的 coding-agent preset 把 Plan Mode 规则写进系统提示。它�
 
 ### 4. Spec 按 DSH 的能力结构展开
 
-现有消化材料说明，DSH 不是一个 loop 加 tools 数组，而是运行时插件树与耐久 session log 的组合；新行为通常挂到已有扩展点，而不是直接修改 loop（见 [`system/00-map.md`](../../_digested/system/00-map.md)）。一项可替换能力还必须同时考虑 Service Definition、Service Provider 和 Consumer 三个角色（见 [`capability-seams/00-map.md`](../../_digested/capability-seams/00-map.md)）。
+现有消化材料说明，DSH 不是一个 loop 加 tools 数组，而是运行时插件树与耐久 session log 的组合；新行为通常挂到已有扩展点，而不是直接修改 loop（见 [`system-overview/00-map.md`](../../_digested/system-overview/00-map.md)）。一项可替换能力还必须同时考虑 Service Definition、Service Provider 和 Consumer 三个角色（见 [`capability-seams/00-map.md`](../../_digested/capability-seams/00-map.md)）。
 
 所以一份真正 decision-complete 的 DSH spec，通常至少要决定这些问题：
 

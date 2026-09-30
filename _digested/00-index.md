@@ -40,9 +40,9 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 
 | 目录 | 聚焦 | 一句话 |
 |------|------|--------|
-| `system/` | 总体系统专题 | 按下回车之后，这些插件怎么拼成一次能跑的对话——先读这。 |
+| `system-overview/` | 总体系统专题 | 按下回车之后，这些插件怎么拼成一次能跑的对话——先读这。 |
 | `cordis-runtime/` | 被 vendor 的框架 | 插件框架本体：插件长什么样、`ctx` 从哪来、事件怎么派发。 |
-| `composition/` | 启动组合 | 开机那一下：配置文件怎么变成一棵运行中的插件树（profile、bundle、patch 三层）。 |
+| `composition-boot/` | 启动组合 | 开机那一下：配置文件怎么变成一棵运行中的插件树（profile、bundle、patch 三层）。 |
 | `runtime-profiles/` | 运行时配置 | 五种官方启动方式（web / headless / sdk / sdk-minimal / acp）各自带哪些插件、差在哪。 |
 | `session-and-loop/` | 会话与驱动 | 对话存在哪、怎么读回来：session log 的格式、世代与投影。 |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
@@ -50,7 +50,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `plugin-inventory/` | 现成插件货架 | 316 个包按组列成清单：能力在哪、以什么形态给、怎么拿——动手写之前先查这里。 |
 | `experimental/` | 实验原型面 | 还没承诺稳定合同的原型插件（多代理、浏览器、语音……），随时会改名或消失。 |
 | `tools-prompt-llm/` | 模型可见面 | 模型每一步看见什么：工具清单、系统提示词、历史投影怎么组装。 |
-| `surfaces/` | 人对机器的入口 | 人从哪里进去：CLI、Web、桌面、ACP、SDK 五个入口怎么复用同一台运行时。 |
+| `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、Web、桌面、ACP、SDK 五个入口怎么复用同一台运行时。 |
 | `_coverage/` | 覆盖矩阵 | 维护索引：每个专题承诺回答什么、最后对到哪个源码 commit。 |
 | `harness-idea/` | 消化后的理解与判断 | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪。 |
 | `_change_log/` | 上游同步记录 | 每次 upstream 同步的范围、审计与修复记录。 |
@@ -77,30 +77,30 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 
 ![消化阅读主干](./figures/topics.svg)
 
-- **熟悉 agent / plugin 运行时，但不熟 dsh** → [`system/00-map.md`](./system/00-map.md)
+- **熟悉 agent / plugin 运行时，但不熟 dsh** → [`system-overview/00-map.md`](./system-overview/00-map.md)
 - **想先搞懂 Cordis 在这棵树里到底是什么** → [`cordis-runtime/00-map.md`](./cordis-runtime/00-map.md)，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
 - **想搞懂 `dsh --profile web` 怎么变成进程的** → [`runtime-profiles/00-map.md`](./runtime-profiles/00-map.md)
-- **想搞懂一次 `dsh --profile web` 怎么变成插件树** → [`composition/00-map.md`](./composition/00-map.md)
+- **想搞懂一次 `dsh --profile web` 怎么变成插件树** → [`composition-boot/00-map.md`](./composition-boot/00-map.md)
 - **想搞懂一轮对话怎么跑** → [`session-and-loop/00-map.md`](./session-and-loop/00-map.md)
 - **想搞懂磁盘上的 session 文件怎么跨格式世代读** → [`session-and-loop/04-格式世代与迁移.md`](./session-and-loop/04-格式世代与迁移.md)
 - **想加能力或换后端** → [`capability-seams/00-map.md`](./capability-seams/00-map.md)
 - **想先看 dsh 已经给了什么再动手** → [`plugin-inventory/00-map.md`](./plugin-inventory/00-map.md)
 - **想研究实验原型** → [`experimental/00-map.md`](./experimental/00-map.md)
 - **想搞懂模型看见什么** → [`tools-prompt-llm/00-map.md`](./tools-prompt-llm/00-map.md)
-- **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → [`surfaces/00-map.md`](./surfaces/00-map.md)
-- **想给 Web UI 加功能、或新增一个 `packages/client/*` 插件包** → [`surfaces/05-客户端架构与插件纪律.md`](./surfaces/05-客户端架构与插件纪律.md)
-- **想搞懂一个 `@Remote` 方法怎么变成 `ctx.remote.<ns>` 上的类型化 stub** → [`surfaces/06-Typert类型图与Remote生成.md`](./surfaces/06-Typert类型图与Remote生成.md)
+- **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → [`surfaces-entrypoints/00-map.md`](./surfaces-entrypoints/00-map.md)
+- **想给 Web UI 加功能、或新增一个 `packages/client/*` 插件包** → [`surfaces-entrypoints/05-客户端架构与插件纪律.md`](./surfaces-entrypoints/05-客户端架构与插件纪律.md)
+- **想搞懂一个 `@Remote` 方法怎么变成 `ctx.remote.<ns>` 上的类型化 stub** → [`surfaces-entrypoints/06-Typert类型图与Remote生成.md`](./surfaces-entrypoints/06-Typert类型图与Remote生成.md)
 - **想搞懂 dsh 为什么对读者友好（harness 思想）** → [`harness-idea/00-map.md`](./harness-idea/00-map.md)
 
 推荐主干顺序：
 
 ```text
-system/
+system-overview/
   → cordis-runtime/
-  → composition/
+  → composition-boot/
   → session-and-loop/
   → capability-seams/ 或 tools-prompt-llm/
-  → surfaces/
+  → surfaces-entrypoints/
 ```
 
 按推荐顺序读 `00-map.md`，遇到具体机制再进入编号正文。专题承诺的核验范围以 [`_coverage/00-index.md`](./_coverage/00-index.md) 为准；未列问题不隐含完整覆盖。跨专题研究放在 `_faq_on_digested/`。

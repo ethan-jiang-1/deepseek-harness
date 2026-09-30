@@ -17,7 +17,7 @@
 
 不要混用：源码启动测到的「能 import 到 src」不代表发行物里裸插件名能解析。profile 的安装闭包解析现由 runtime-resolution 拦截层承担（runtime-resolution / LinkedRoot，`packages/boot/app-boot/src/profile.ts:431-464` 的 `createRuntimeResolution`），见 composition 专题。
 
-`bin.ts` 分发：普通任务 `runProfile`、`plugin` `runPlugin`、dump（`--dump-config`/`--dump-default-config`）`runDumpConfig`。dump 与 boot 的层差（launcher 派生层、不求值 `!!js`）不是入口差异，见 [`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)。
+`bin.ts` 分发：普通任务 `runProfile`、`plugin` `runPlugin`、dump（`--dump-config`/`--dump-default-config`）`runDumpConfig`。dump 与 boot 的层差（launcher 派生层、不求值 `!!js`）不是入口差异，见 [`../composition-boot/02-dump-与boot-保真.md`](../composition-boot/02-dump-与boot-保真.md)。
 
 ACP：`dsh --profile acp`。launcher profile，stdout 留给协议帧。
 

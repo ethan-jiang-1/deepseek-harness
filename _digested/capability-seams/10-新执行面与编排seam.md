@@ -42,7 +42,7 @@ Definition 即实现：`OfficeToPdf` 继承 `TypertRemoteService`（`packages/do
 
 `packages/boot/plugin-manager/` 提供 `ctx.pluginManager` 服务（`packages/boot/plugin-manager/src/index.ts:168`-`:171`），方法走 `@Remote`——`listPlugins` / `listVersionExemptions` / `setVersionExemption(packageVersion, runtimeVersion, enabled, acceptRisk)`（`setVersionExemption` 的声明在 `packages/boot/plugin-manager/src/index.ts:244`-`:249`）。运行时拒绝是**类型化的** `ManagementFailure`：`code` 由调用方 locale 字典渲染，`incompatible-version` 附上被当前 DSH 版本拒绝的包/运行时/peer 范围数组（`packages/boot/plugin-manager/src/failure.ts:6`-`:26`；typed refusals 见上游 PR #5061，仓库侧无本地验证途径）。豁免是显式接受风险的双字段 API：`set_version_exemption` 授予/撤销一个精确 `包名@版本` 的兼容豁免，授予必须 `acceptRisk: true`（`:241`-`:249`），保存后触发 live 重载评估。模型可见入口是 `plugin_manager` 工具（`packages/boot/plugin-manager/src/tools.ts:20`），调用走 `ctx.approval` 审批——profile 变更跨会话持久、安装的 Host 代码在 workspace sandbox 之外运行，这两条写进 justification 文案（`:41`）。
 
-`packages/boot/config-editor/` 提供 `ctx.configEditor`（`packages/boot/config-editor/src/index.ts:26`），合同是 **validate-then-write**：`edit()` 在文件锁内先 `resolveConfig` 校验下一步配置、再把 profile patch 写成原子 YAML（等值于继承层时删除 override 行），`reconcileProfilePatches` 失败即回滚写前内容（`:75`-`:138`）；整个过程经 `hmr.runExclusive` 与 Loader 热重载串行（`:141`）。编排面的组合与 boot 时序归 composition 专题，见 [`../composition/00-map.md`](../composition/00-map.md)。
+`packages/boot/config-editor/` 提供 `ctx.configEditor`（`packages/boot/config-editor/src/index.ts:26`），合同是 **validate-then-write**：`edit()` 在文件锁内先 `resolveConfig` 校验下一步配置、再把 profile patch 写成原子 YAML（等值于继承层时删除 override 行），`reconcileProfilePatches` 失败即回滚写前内容（`:75`-`:138`）；整个过程经 `hmr.runExclusive` 与 Loader 热重载串行（`:141`）。编排面的组合与 boot 时序归 composition 专题，见 [`../composition-boot/00-map.md`](../composition-boot/00-map.md)。
 
 ## 源码入口
 

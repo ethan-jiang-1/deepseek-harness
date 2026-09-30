@@ -68,11 +68,11 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 | 层 | 它回答的问题 | 专题 |
 |----|--------------|------|
 | Cordis runtime | 插件怎么注册、怎么卸、事件怎么传 | [`../cordis-runtime/00-map.md`](../cordis-runtime/00-map.md) |
-| Composition | 这一次进程里到底装着哪棵树 | [`../composition/00-map.md`](../composition/00-map.md) |
+| Composition | 这一次进程里到底装着哪棵树 | [`../composition-boot/00-map.md`](../composition-boot/00-map.md) |
 | Product spine | 会话、提示词、工具、Agent 句柄归谁 | 本篇 + [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md) |
 | Capability seams | 换后端时哪些东西必须一起走 | [`../capability-seams/00-map.md`](../capability-seams/00-map.md) |
 | Turn loop | 一轮用户输入如何变成模型和工具调用 | [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md) |
-| Surfaces | 人 / 自动化客户端怎么接到同一套 runtime spine | [`../surfaces/00-map.md`](../surfaces/00-map.md) |
+| Surfaces | 人 / 自动化客户端怎么接到同一套 runtime spine | [`../surfaces-entrypoints/00-map.md`](../surfaces-entrypoints/00-map.md) |
 | 模型看见的请求 | section、schema、adapter、tool 管道 | [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md) |
 
 产品主干使用这些 `ctx` 键：

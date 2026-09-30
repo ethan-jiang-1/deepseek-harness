@@ -81,4 +81,4 @@ dsh --profile acp
 | `packages/acp/acp/src/codec.ts` | turn 结局到 ACP stopReason 编解码 |
 | `packages/bundle/acp-app/cordis.patch.yml` | ACP 应用的 bundle 组合 |
 | `packages/test-support/session-snapshot/` | 快照测试工具（含 ACP 场景的 suite/normalize） |
-| `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证详细对照 |
+| `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证详细对照 |

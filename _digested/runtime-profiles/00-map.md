@@ -22,7 +22,7 @@ sdk-minimal: ['@deepseek-ai/dsh-sdk-minimal']  // 独立树，不叠 base
 acp:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
 ```
 
-rc.1 没有增删任何模板、也没有改名：新增的是从模板派生自定义 profile 的 `dsh --from-default-profile <模板>`（[`../composition/04-profile-创建与保留名.md`](../composition/04-profile-创建与保留名.md)），以及被 Electron 保留、CLI 一律拒绝的 `desktop` 名。
+rc.1 没有增删任何模板、也没有改名：新增的是从模板派生自定义 profile 的 `dsh --from-default-profile <模板>`（[`../composition-boot/04-profile-创建与保留名.md`](../composition-boot/04-profile-创建与保留名.md)），以及被 Electron 保留、CLI 一律拒绝的 `desktop` 名。
 
 | 名称 | 是什么 | 命令 | 启动机制 | stdout | 进程常驻？ |
 |------|--------|------|----------|--------|-----------|
@@ -98,7 +98,7 @@ stdout 给谁，决定了能不能装 logger、能不能写 HMR 信息：
 
 | Profile | 运行时 patch 重载 |
 |---------|-----------------|
-| web | **支持**（`hmr` 插件监视 profile patch 与包清单，`reconcileProfilePatches` 调和，新失败抛错回滚，见 [`../composition/03-user-patch-hmr.md`](../composition/03-user-patch-hmr.md)） |
+| web | **支持**（`hmr` 插件监视 profile patch 与包清单，`reconcileProfilePatches` 调和，新失败抛错回滚，见 [`../composition-boot/03-user-patch-hmr.md`](../composition-boot/03-user-patch-hmr.md)） |
 | headless | startup-only（一次性任务，重载无意义；bundle 行显式 `disabled: true`，`packages/bundle/headless/cordis.patch.yml:33`） |
 | sdk / sdk-minimal | startup-only（协议已开始，重载打散生命周期；sdk-app 行 `packages/bundle/sdk-app/cordis.patch.yml:24`） |
 | acp | startup-only（同 SDK，`packages/bundle/acp-app/cordis.patch.yml:23`） |
@@ -121,7 +121,7 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 
 ## 阅读路径
 
-如果对「一个进程怎么启动」还不太清楚，先读 `composition/00-map.md`。如果想知道 ACP 和 SDK 协议的具体保证，然后读 `surfaces/02-acp与jsonrpc.md`。下面每个文件的正文深入 Profile 各自的机制。
+如果对「一个进程怎么启动」还不太清楚，先读 `composition-boot/00-map.md`。如果想知道 ACP 和 SDK 协议的具体保证，然后读 `surfaces-entrypoints/02-acp与jsonrpc.md`。下面每个文件的正文深入 Profile 各自的机制。
 
 | 文件 | 内容 |
 |------|------|
@@ -149,6 +149,6 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 | `packages/sdk/server/src/index.ts` | JSON-RPC SDK server 插件 |
 | `packages/acp/acp/src/index.ts` | ACP 桥插件 |
 | `apps/desktop/`、`apps/desktop-host/` | Electron 桌面应用与应用私有的 profile 装载入口（保留名 `desktop`） |
-| `_digested/composition/00-map.md` | 启动组合机制（profile 目录、bundle 层叠） |
-| `_digested/composition/04-profile-创建与保留名.md` | profile 创建路径与 `desktop` 保留名 |
-| `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |
+| `_digested/composition-boot/00-map.md` | 启动组合机制（profile 目录、bundle 层叠） |
+| `_digested/composition-boot/04-profile-创建与保留名.md` | profile 创建路径与 `desktop` 保留名 |
+| `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |

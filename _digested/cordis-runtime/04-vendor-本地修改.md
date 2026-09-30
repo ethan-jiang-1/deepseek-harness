@@ -18,7 +18,7 @@ setup 期间插件会再 `ctx.on` / `ctx.effect`。若此时有人开始卸（�
 
 清单第 8 条（0.1.7 线重写）：Include 校验顶层 entry 数组后才缓存解析内容、记录刷新失败、文件或 Include config 变更后重放 patch、veto restart 时更新 Include config、仅 ENOENT 后才用 `initial`。这些解析保护让坏文件**保住正在跑的树**；但同一行明写：**Loader 的 entry/group/tree 变更走钉死的 eager、非事务实现，不恢复先前的插件或 options，插件激活失败可能留下部分应用的树**。~~旧第 8 条的「Include 事务：候选失败恢复上一份插件或 config、改名 entry 先 import 再 dispose」~~（0.1.7 线随事务性重载退役退役——commit `e07f41d5fd` 回滚事务重载、`2abb542a22` 适配非事务 Loader，note `2026-09-09-nontransactional-loader.md`；编号已被现第 8 条复用）。
 
-产品侧的对应物：用户 `cordis.patch.yml` 写坏时，解析保护保住树；`hmr` 插件的 `reconcileProfilePatches` 只对**本次新引入**的失活抛错（见 [`../composition/03-user-patch-hmr.md`](../composition/03-user-patch-hmr.md)），但这个「事务」是 hmr/app-boot 层的组合语义，不是 vendor Include 内置的回滚。
+产品侧的对应物：用户 `cordis.patch.yml` 写坏时，解析保护保住树；`hmr` 插件的 `reconcileProfilePatches` 只对**本次新引入**的失活抛错（见 [`../composition-boot/03-user-patch-hmr.md`](../composition-boot/03-user-patch-hmr.md)），但这个「事务」是 hmr/app-boot 层的组合语义，不是 vendor Include 内置的回滚。
 
 ## `applyEntryPatches` 导出 + insert 索引
 

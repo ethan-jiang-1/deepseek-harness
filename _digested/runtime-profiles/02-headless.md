@@ -70,4 +70,4 @@ dsh --profile headless "run the tests"
 | `packages/bundle/headless/src/startup.ts` | 命令行 flag 解析，提供 `headlessStartup` 服务 |
 | `packages/boot/app-boot/src/profile.ts` | `PROFILE_TEMPLATES.headless`、launcher 组合 |
 | `apps/cli/src/bin.ts` | 产品 bin 分发 |
-| `_digested/composition/00-map.md` | 启动组合机制 |
+| `_digested/composition-boot/00-map.md` | 启动组合机制 |
