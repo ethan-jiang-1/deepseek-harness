@@ -1,4 +1,4 @@
-# 03 · 复用四条出路与缺口清单
+# 04 · 复用四条出路与缺口清单
 
 基线 `dsh-v0.2.0-rc.2`。查到现货之后，按代价从低到高有四条出路；每条给带行号的真实例子。都走不通时，末节的缺口清单说明哪些能力现在必须自写。
 
@@ -12,6 +12,8 @@
 
 字段全集查生成目录 [`docs/config-catalog.md`](../../docs/config-catalog.md)（145 包有 config 条目、117 个有可调字段）。
 
+**改配置的三种位置**（新人最容易卡在「改哪里」）：Web 设置页与环境变量（如 `DSH_PERMISSION_MODE`）适合交互式调整；profile 的 `cordis.patch.yml` 或用户 patch 适合部署级持久化（层叠与热重载机制见 [`../composition-boot/03-user-patch-hmr.md`](../composition-boot/03-user-patch-hmr.md)）；`dsh --patch` 覆盖层适合临时试验（例子 `apps/web/tests/pin-browse-picker.overlay.yml:6-12`）。
+
 ## 出路二：patch 换 Provider（模型可见面不变）
 
 1. **搜索换 Exa**：disabled `web-search-deepseek` 行＋insert `@deepseek-ai/dsh-web-search-exa` 行（packages/web/web-search-exa/README.md:40 的挂载示例；出厂对照 base:472-484）——`web_search`/`web_fetch` 的模型可见名不变（tool-catalog.md:47）。
@@ -23,7 +25,7 @@
 
 ## 出路三：挂现成包
 
-`dsh plugin --profile <name> add <package>`（apps/cli/src/args.ts:99；README.md:18）：内置 bundle 从安装闭包解析、外部包从 profile 的 node_modules 解析（README.md:46），兼容性由 DSH peer 范围把守（README.md:39；apps/cli/src/plugin.ts:100）。货架上的现货（[`01`](./01-插件货架.md) 中「可见性＝—」的行）：`tool-str-replace-editor`、`tool-lsp`＋`lsp-stdio`、`tool-terminal`、`tool-session-query`、`web-search-exa`、`mcp-client`、`hooks-codex` 等。
+`dsh plugin --profile <name> add <package>`（apps/cli/src/args.ts:99；README.md:18）：内置 bundle 从安装闭包解析、外部包从 profile 的 node_modules 解析（README.md:46），兼容性由 DSH peer 范围把守（README.md:39；apps/cli/src/plugin.ts:100）。货架上的现货（[`02`](./02-plugin-catalog.md) 中「可见性＝—」的行）：`tool-str-replace-editor`、`tool-lsp`＋`lsp-stdio`、`tool-terminal`、`tool-session-query`、`web-search-exa`、`mcp-client`、`hooks-codex` 等。
 
 ## 出路四：写胶水插件，消费现成服务
 

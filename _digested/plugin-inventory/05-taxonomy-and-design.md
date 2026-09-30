@@ -1,4 +1,4 @@
-# 04 · 插件分类与设计思考
+# 05 · 插件分类与设计思考
 
 产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）；快照式清单的重测义务见 [`_coverage/`](../_coverage/00-index.md)。
 
@@ -14,7 +14,7 @@
 
 **Impl（Provider 实现）回答「谁在兑现合同」。** 同一 Def 可以有本地、沙箱、远程、进程外多个 Impl（bash-sandbox、fs-ssh、ptc-runtime-python）。第二个真实 Provider 出现而 Consumer 一行不改，是该能力商品化的直接读数（[`_faq_on_digested/08`](../../_faq_on_digested/08_plugin-seam-maturity/answer.md) 的供给侧判据）。
 
-**Tool（模型可见工具）回答「模型看见什么」。** `defineTool` 注册进 `ctx.tools`，schema 自动进 prompt 组装。工具名稳定、Provider 可换：`web_search` 一直叫 `web_search`，后端可从官方搜索换成 exa。30 个工具包的全集与逐 profile 暴露见 [`02`](./02-五张清单.md)。
+**Tool（模型可见工具）回答「模型看见什么」。** `defineTool` 注册进 `ctx.tools`，schema 自动进 prompt 组装。工具名稳定、Provider 可换：`web_search` 一直叫 `web_search`，后端可从官方搜索换成 exa。30 个工具包的全集与逐 profile 暴露见 [`03`](./03-reference-lists.md)。
 
 **cmd（人类命令）回答「人从哪里进」。** `/goal`、`/compact`、`/export` 与模型工具共用同一运行时但入口分离——人不说话也能用上运行时，模型不经过命令层。
 
@@ -43,9 +43,7 @@
 1. **everything-is-a-plugin → 先查货架再动手。** 对话循环、读写文件、跑命令、接模型、画界面都是树上的插件，所以「我要的能力多半已注册在 ctx 上」是默认假设，写新插件是例外而非起点。
 2. **显式优于隐式 → 换实现永远是组合层的显式动作。** 出厂 Provider 被换掉，靠的是后续层一行 disabled / insert；OPTIONAL_BUNDLES 一键开但默认关。运行时不替部署猜。
 3. **模型可见 ⟺ 已注册 → 工具面可查表。** 模型看见的一切来自 `ctx.tools` 注册与 preset patch，所以「模型能做什么」可以用 tool-catalog 与四个 preset patch 文件逐行回答，不需要跑起来试。
-4. **交付、组合、会话三层分离 → 各改各的。** bundle 管发货、profile 管启动选型、preset 管会话级模式；这解释了为什么换 Provider 不动 bundle、切模式不换 profile。
-
-![组装漏斗](./figures/assembly-funnel.svg)
+4. **交付、组合、会话三层分离 → 各改各的。** bundle 管发货、profile 管启动选型、preset 管会话级模式；这解释了为什么换 Provider 不动 bundle、切模式不换 profile。三层的收敛关系（316 包 → 10 bundle → 5 profile → 1 棵运行树）见 [`00-map`](./00-map.md) 的组装漏斗图。
 
 ## 与参与阶梯对齐
 
