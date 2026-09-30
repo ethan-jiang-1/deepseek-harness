@@ -2,7 +2,7 @@
 
 ## 方法与基线
 
-用户原文是转述（见 [question.md](./question.md)），本篇不考据说话人，只把三条体感当成**待验证命题**，逐条对照源码与 [`_digested/`](../../_digested/00-index.md)。机制结论以消化基线 DeepSeek Harness `dsh-v0.1.2-alpha.3`（commit `dd6322d6…`）为底；写作时的复核树是 `08b582ea02…`，本次同步已按 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）重核，引用的行号以该树为准。调查方式：四路并行子代理分别深挖 workflow 编排、goal/plan/todo 三件套、vision 与预览产出物链路、定制扩展机制，captain 对其中的强论断逐条用 grep 抽查复核。0.1.5 复核的最大修正是写作时的一条强论断——"`ui-tool` 全包无 image 渲染分支"——已被跨度内交付推翻（见 [02 第二节](./02-self-built-previews.md)）。证据底稿在 [research.md](./research.md)。
+用户原文是转述（见 [question.md](./question.md)），本篇不考据说话人，只把三条体感当成**待验证命题**，逐条对照源码与 [`_digested/`](../../_digested/00-index.md)。机制结论以消化基线 DeepSeek Harness `dsh-v0.1.2-alpha.3`（commit `dd6322d6…`）为底；写作时的复核树是 `08b582ea02…`，本次同步已按 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）重核，0009 同步再按 `dsh-v0.2.0-rc.2`（commit `639ed01539`）重核，引用的行号以该树为准。调查方式：四路并行子代理分别深挖 workflow 编排、goal/plan/todo 三件套、vision 与预览产出物链路、定制扩展机制，captain 对其中的强论断逐条用 grep 抽查复核。0.1.5 复核的最大修正是写作时的一条强论断——"`ui-tool` 全包无 image 渲染分支"——已被跨度内交付推翻（见 [02 第二节](./02-self-built-previews.md)）。证据底稿在 [research.md](./research.md)。
 
 三条体感恰好各落在 harness 的一层：**模型路由层**（第 1、3 条）、**驱动循环层**（第 1 条）、**宿主投影层**（第 2 条）。这个分层本身就是第一个发现：说话人没有把三件事混成一团"体验"，而 FAQ 的价值是把每一层拆到机制。
 
@@ -17,7 +17,7 @@
 | 2a | "多路并行、diff 预览、markdown 预览要自己打造" | **已存在，无需自造** | 并行有三层（workflow 编排 / 后台 subagent / 工具池 `maxParallelToolCalls`）；diff 与 markdown 渲染是官方 render intent + `ui-primitives` 已交付能力（[02](./02-self-built-previews.md#第一节-逐项判定用户清单里哪些已经是官方交付)） |
 | 2b | "word 预览、ppt 预览、codex 式右侧边栏产出物要自己打造" | **真缺口，且自建有硬税** | 无对应事件、无渲染器、无挂载点；且新增一种用户可见产物 = 新增 `SessionEventMap` 成员（默认 required-on-read），这是 `model-visible ⟺ logged` 制度的 UI 侧镜像（[02](./02-self-built-previews.md#第三节-真缺口与自建的硬税)） |
 | 2c | "官方已经有了很多实践，不多多试试" | **成立，且比说话人以为的更多** | 会话流业务卡（ConversationNodeDefinition）、布局槽（`shell.overlay`/`rightbar`）、`plugin_manager` 安装自己的 bundle、workflow 模板的 tool-ralph 模式，四条路全是官方铺好的（`cordis_define/cordis_run` 已在 0.1.7 线退役为程序化 runner）（[02](./02-self-built-previews.md#第四节-官方实践的位置)） |
-| 3 | "别用 V4 Pro，多用 vision" | **方向成立，机制修正三点** | vision 是 catalog 条目属性（0.1.5 默认 catalog 有两个 image-capable 条目：`deepseek-flash`、`deepseek-v4-flash-vision-exp`），不是所有模型都能看图；DSH 没有"指向 URL 看一眼"的能力——视觉入口只有文件路径；V4 Pro 并未被 harness 禁用，"别用"是经济学判断不是机制限制（[03](./03-flash-pro-vision.md)） |
+| 3 | "别用 V4 Pro，多用 vision" | **方向成立，机制修正三点** | vision 是 catalog 条目属性（0009 按 `dsh-v0.2.0-rc.2` 实测：默认 catalog 两条目中唯一 image-capable 的是 `deepseek-flash`，0.1.5 时的第二个 image 条目 `deepseek-v4-flash-vision-exp` 已随上游同步移除），不是所有模型都能看图；DSH 没有"指向 URL 看一眼"的能力——视觉入口只有文件路径；V4 Pro 并未被 harness 禁用，"别用"是经济学判断不是机制限制（[03](./03-flash-pro-vision.md)） |
 
 ## 根本体验的层次：一条体验皮，三条根
 
@@ -33,9 +33,9 @@
 ## 诚实边界
 
 1. **Codex 侧未验证。** "在 codex 简直是做梦"是对另一个产品的体感，本文不代为裁判；只指出一个有趣的对向事实：DSH 的 harness 级循环 Agent Note 自述 "Codex-shaped UX"（`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md:114`；goal 工具笔记只说自己 "follow Codex's compact goal tool surface"，见 `2026-07-19-model-facing-goal-tools.md:15`），且 `packages/hooks` 为 Claude Code（7/30 事件）与 Codex（5/10 事件）的 hook 配置提供了兼容桥——DSH 对这两个竞品的姿态是吸收其 UX、兼容其生态，而不是无视。
-2. **"3 小时"是单一说不通不出错的样本。** 本篇解释了机制下限，但不为具体任务的耗时背书；速度还取决于任务结构（可并行度）、上下文新鲜度与 cache 命中（路由或前缀一变即失效，`packages/llm/llm-deepseek/README.md:163`）。
+2. **"3 小时"是单一说不通不出错的样本。** 本篇解释了机制下限，但不为具体任务的耗时背书；速度还取决于任务结构（可并行度）、上下文新鲜度与 cache 命中（路由或前缀一变即失效，`packages/llm/llm-deepseek/README.md:176`）。
 3. **UI 缺口清单基于源码与 README，非运行时实测。** 写作时的一条强论断"`ui-tool` 全包无 `'image'` 分支"已被 0.1.5 的 image 卡交付推翻（`packages/client/ui-tool/src/client/tool/models/image-card-model.ts`、`tool.call.images` slot）；保留这条修正记录，是因为它正是"源码复核必须随同步重跑"的样本。
-4. **模型命名与档位是部署事实，不是 harness 承诺。** `deepseek-flash`/`deepseek-v4-flash`/`-pro`/`-flash-vision-exp` 是 `llm-deepseek` 省略 `models` 时的默认 catalog（`packages/llm/llm-deepseek/README.md:49`），catalog 只提供建议，未列出 id 原样透传，上游换名时本篇的模型名会过期。
+4. **模型命名与档位是部署事实，不是 harness 承诺。** `deepseek-flash`（text+image）与 `deepseek-v4-pro`（text-only）是 `llm-deepseek` 省略 `models` 时的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:8-24`、`README.md:52`；0009 复测——0.1.5 时的 `deepseek-v4-flash` 与 `deepseek-v4-flash-vision-exp` 两条目已移除），catalog 只提供建议，未列出 id 原样透传，上游换名时本篇的模型名会过期。
 
 ## 分篇
 
@@ -43,4 +43,4 @@
 - [05-other-roots.md](./05-other-roots.md) —— **根的修正**：goal/plan 不是唯一根；日志基底、委派 spine、组合层三根结构与反例检验。
 - [01-fast-is-good.md](./01-fast-is-good.md) —— 证据篇（论断 1）：快的三层机制、"dynamic workflow" 造词解读、3 小时的下限与上限、max 档的 token 账。
 - [02-self-built-previews.md](./02-self-built-previews.md) —— 证据篇（论断 2）：预览清单逐项判定、真缺口、自建四条路、`model-visible ⟺ logged` 的 UI 硬税。
-- [03-flash-pro-vision.md](./03-flash-pro-vision.md) —— 证据篇（论断 3）：catalog 四模型、vision 验证回路、read_image 预算全链、Pro 的真实位置。
+- [03-flash-pro-vision.md](./03-flash-pro-vision.md) —— 证据篇（论断 3）：catalog 两条目、vision 验证回路、read_image 预算全链、Pro 的真实位置。
