@@ -36,7 +36,7 @@ bash _faq_on_digested/18_global-dsh-upgrade/upgrade-dsh-global.sh --yes     # �
 | 预检 | 有没有正在运行的 dsh 进程(`pgrep -f`) | 警告 + 确认后才能继续 |
 | 预检 | registry 可达性 + npm 缓存健康(`npm view` 探测) | EPERM → 提供修复/临时缓存旁路;网络问题 → 中止 |
 | 解析 | dist-tags 全量展示,取 `latest` 为目标 | 解析失败中止 |
-| 解析 | 目标版本 engines 校验(自实现的 `^`/`~`/`>=` 求值器) | 不满足 → 中止并给 nvm 建议;语法不认识 → 警告 + 人工确认 |
+| 解析 | 目标版本 engines 校验(自实现的 npm range 求值器:`^`/`~`/比较符,`||` 组间 OR、组内 AND;不认识的语法一律人工确认) | 不满足 → 中止并给 nvm 建议;语法不认识 → 警告 + 人工确认 |
 | 确认 | 摘要(方式/版本/范围/缓存)逐项确认后才动手 | 拒绝即退出,零改动 |
 | 安装 | `npm install -g @deepseek-ai/dsh@latest`(pnpm 则 `pnpm add -g`) | 打印处置建议后退出 |
 | 校验 | `command -v dsh`、`dsh --version` 与目标一致、`dsh --help` 冒烟 | 版本不一致 → 警告并给回滚命令 |

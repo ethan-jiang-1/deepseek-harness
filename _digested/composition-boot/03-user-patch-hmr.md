@@ -26,7 +26,7 @@ boot 叠完的树不是一次性的。profile 的 `cordis.patch.yml`、home 层 
 2. `readProfilePatches('dsh', profile)` 组出完整 patch 列表（bundle 层 + 用户两层由 profile 读取函数统一装配，bundle 与 overlay 不会被用户文件挤掉）。
 3. `reconcileProfilePatches(root, patches, 'dsh')`（`packages/boot/app-boot/src/index.ts:271-300`）：从根 Include 的当前 config 拆掉旧 `patches`、保留其余 Include 选项，`prepareProfilePatches` 后 `entry.update({ config: { …includeConfig, patches } })` 一次提交；等旧 fiber 收束、loader 静止后清点失活条目。
 4. **失败大声**：只对「本次新引入」的失活条目抛错（`:291-294`）——启动时就坏的条目不会因为一次无关刷新把进程打死；先前已存在的失败以 warning 逐条记录（返回值）。
-5. 成功后 `ctx.emit('app-boot/config-reload')`（`:298`；声明 `app-boot/src/index.ts:52`；消费方如 `SettingsForms` 以它作失效信号，`packages/settings/settings/src/index.ts:234`）。
+5. 成功后 `ctx.emit('app-boot/config-reload')`（`:300`；声明 `app-boot/src/index.ts:52`；消费方如 `SettingsForms` 以它作失效信号，`packages/settings/settings/src/index.ts:234`）。
 
 模块热替换与这条配置链共用 `watchConfig(filename, refresh)`（`:160`，同队列、重复路径抛错；watcher 失败记日志不致命）与 `hmr.runExclusive`（plugin-manager / config-editor 的写路径都从这条队列过，`packages/boot/plugin-manager/src/index.ts:759`、`packages/boot/config-editor/src/index.ts:153`）。
 

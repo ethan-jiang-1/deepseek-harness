@@ -52,7 +52,7 @@ dsh --profile rescue --from-default-profile web --dump-config
 `rejectElectronProfile`（`apps/cli/src/args.ts:83-87`）大小写不敏感地把任何 `desktop` 变体判为 Electron 专属并 `program.error`，两个调用点覆盖 CLI 的全部入口：
 
 - 根命令 action（`apps/cli/src/args.ts:183`）——同时覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`。
-- `plugin` 子命令（`apps/cli/src/args.ts:194`）——CLI 不能 `pnpm add` 进这个 profile。
+- `plugin` 子命令（`apps/cli/src/args.ts:195`）——CLI 不能 `pnpm add` 进这个 profile。
 
 装载路径也不一样：desktop 不走 `loadProfile` 的 Harness home 发现与 shipped 归一化，而是走 `loadProfileDirectory` + 共享的 `runProfile`（[`../runtime-profiles/06-desktop.md`](../runtime-profiles/06-desktop.md)；0.1.7 线起 desktop-host 经 `runProfile` 起完整 web 应用）。`--from-default-profile` 与它无关——它只认五个 shipped 模板名；`initializeProfileFromDefault` 对 `desktop` 目标名报「shipped and cannot be a custom profile target」同款错误语义，CLI 入口则更早被 `rejectElectronProfile` 拦下。
 
@@ -71,4 +71,4 @@ dsh --profile rescue --from-default-profile web --dump-config
 
 ## launcher 的父选项归属
 
-launcher 参数在 0.1.7 线改为 **positional 直通**：解析器把首个非 flag、非 `plugin` 的 positional 展开成 `['--profile', ...argv]`（`apps/cli/src/args.ts:201-206`），旧 `rejectParentOptions` / `allowUnknownOption` 机制已不存在。因此 `dsh web --from-default-profile x` 现在被**接受**为 launcher 选项（与直通前 `apps/cli/tests/args.spec.ts` 钉过的 pass-through 语义相反方向），而 `dsh --from-default-profile x web` 在解析期报 `--profile <name> is required`（flag 出现在 positional 展开之前、没有显式 `--profile` 可绑定）。两种拼写的效果差异以 `parseDshArgs` 的实际展开为准，写脚本时显式用 `--profile <name> --from-default-profile <模板>` 最稳。
+launcher 参数在 0.1.7 线改为 **positional 直通**：解析器把首个非 flag、非 `plugin` 的 positional 展开成 `['--profile', ...argv]`（`apps/cli/src/args.ts:202-204`），旧 `rejectParentOptions` / `allowUnknownOption` 机制已不存在。因此 `dsh web --from-default-profile x` 现在被**接受**为 launcher 选项（与直通前 `apps/cli/tests/args.spec.ts` 钉过的 pass-through 语义相反方向），而 `dsh --from-default-profile x web` 在解析期报 `--profile <name> is required`（flag 出现在 positional 展开之前、没有显式 `--profile` 可绑定）。两种拼写的效果差异以 `parseDshArgs` 的实际展开为准，写脚本时显式用 `--profile <name> --from-default-profile <模板>` 最稳。
