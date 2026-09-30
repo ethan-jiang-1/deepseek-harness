@@ -2,7 +2,7 @@
 
 ## 为什么用这个例子
 
-它展示的是 spec 生命周期中**证据最完整的核心段**：
+它展示的是这条落位路径中**证据最完整的核心段**：
 
 ```text
 proposed RFC
@@ -85,16 +85,16 @@ Status: implemented
 
 它已经是现在式决定，不再是 proposal。
 
-## 这个例子对应的 spec 阶段
+## 这个例子对应的落位面
 
-| 阶段 | 落点 |
+| 面 | 落点 |
 |---|---|
 | 意图/验收 | Issue 层（不在 git tree；本 FAQ 不追具体 issue） |
-| 决策 spec | proposed RFC |
+| 决策记录 | proposed RFC |
 | 计划 | 无仓库证据能证明该变更使用了 Plan Mode |
 | 实现 | d01f5f73b7 的 packages/web/** |
 | 当前合同 | docs/subsystems/web.md、package READMEs（`docs/AGENTS.md:23` 把 architecture.md 定为**有序地图**，类型/语义的参考在 `docs/subsystems/`，逐包细节在 package README） |
-| 行为 spec | packages/web/**/tests/** |
+| 行为证据 | packages/web/**/tests/** |
 | 交付决定 | d01 移动并置 `Status: implemented`；`Decision/Consequences` 形式由 e6fad266a6 改写，当前路径由 e8eddc7ef8 迁移 |
 | review | GitHub PR review（不在 git tree；本 FAQ 未追） |
 | archive | 尚未发生；当前仍在 `.agents/notes/implemented/` |

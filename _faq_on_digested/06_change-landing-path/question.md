@@ -1,8 +1,8 @@
-# Question 06 · DSH 修改系统的完整 SPEC 路径是什么？
+# Question 06 · 一次变更从意图到归位，经过哪些载体、哪些段强制？
 
 ## 背景
 
-`04_root-entry-doc-design` 回答了 DSH 如何**说清楚自己**。但“看懂系统”和“修改系统”是两件事。本问题聚焦修改系统时，DSH 的 spec 如何从头走到尾。仓库规则与历史样本共同指向一条主路径：
+`04_root-entry-doc-design` 回答了 DSH 如何**说清楚自己**。但“看懂系统”和“修改系统”是两件事。本问题聚焦修改系统：一次变更的意图、决策、计划、实现、当前合同、行为证据、交付决定与 review 分别落在哪个载体。仓库规则与历史样本共同指向一条主路径：
 
 ```text
 Issue → proposed Note → Plan → implementation → docs/types/README
@@ -13,10 +13,14 @@ Issue → proposed Note → Plan → implementation → docs/types/README
 
 要回答：
 
-1. DSH 的完整 spec 路径分几个阶段？
-2. 每个阶段的 spec 住在哪里，由什么约束？
+1. 一次变更从意图到归位分几个面？
+2. 每个面的记录住在哪里，由什么约束？
 3. `docs/` 在这条路径的什么位置？
 4. 有没有真实例子能从头看到尾？
+
+## 框架演变
+
+本目录原名 `06_spec-change-path`，原题为「DSH 修改系统的完整 SPEC 路径是什么？」，正文曾以 "spec" 作统一名词（决策 spec、行为 spec、SPEC 路径）。经 [FAQ 11](../11_native-development-loop/answer.md) 复核，因果方向反转：证据与门禁先行，"spec 感"是六步闭环的沉淀物而非上游输入；经 [FAQ 15](../15_loop-engineering-vs-sdd/answer.md) 复核，交付层与工作层要分开。据此更名为 `06_change-landing-path`，并改用「变更落位/载体」框架：不是一份 spec 在流动，而是变更的每个面各回各家。
 
 ## 证据边界
 
@@ -25,8 +29,8 @@ Issue → proposed Note → Plan → implementation → docs/types/README
 
 ## 文件
 
-- [`answer.md`](./answer.md)：总答案（文末有 2026-09-26 后见补记：FAQ 15 复核后的框架修正与规模律）
-- [`01-spec-path-overview.md`](./01-spec-path-overview.md)：完整 spec 路径总览
+- [`answer.md`](./answer.md)：总答案（文末有 2026-09-26 后见补记：FAQ 15 复核后的框架修正与规模律，另附本目录更名说明）
+- [`01-landing-path-overview.md`](./01-landing-path-overview.md)：完整落位路径总览
 - [`02-intent-decision-plan.md`](./02-intent-decision-plan.md)：上游：Issue、proposed Note、Plan
 - [`03-implementation-to-current-contract.md`](./03-implementation-to-current-contract.md)：中游：实现、docs/types/README、tests/snapshots
 - [`04-implemented-note-and-review.md`](./04-implemented-note-and-review.md)：下游：implemented Note、review、归档

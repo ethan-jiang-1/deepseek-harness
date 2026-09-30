@@ -72,7 +72,7 @@
 
 > **Document current state.**
 
-来源：`docs/AGENTS.md`（语料 `_faq_on_digested/06_spec-change-path` 也引用过此条）
+来源：`docs/AGENTS.md`（语料 `_faq_on_digested/06_change-landing-path` 也引用过此条）
 
 ## 12. 较小项目不该照搬完整包结构
 
