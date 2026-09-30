@@ -45,7 +45,7 @@ tool/result（入 log）
 和人相关的两条容易混：
 
 - **审批 / permission / ask-user** 挂在 interaction 与这条管道上，仍然是模型 turn 的一部分。
-- **人敲的 slash command** 走 `ctx.commands`，**不经过模型 turn**。那是另一个平面，见 [surfaces](../surfaces/00-map.md)。
+- **人敲的 slash command** 走 `ctx.commands`，**不经过模型 turn**。那是另一个平面，见 [surfaces](../surfaces-entrypoints/00-map.md)。
 
 tool 的 UI 渲染意图是设计的一部分，一开始就要定：call-time 三种 `generic` / `terminal` / `diff`（`packages/core/tools/src/presentation.ts:46`），result-time 另有 `search` / `read` / `web`，共六种（`:140`）。展示方法是 `args` 的纯函数。
 
@@ -74,4 +74,4 @@ tool 的 UI 渲染意图是设计的一部分，一开始就要定：call-time �
 | [`05-chunk到settlement.md`](./05-chunk到settlement.md) | 顶层 chunk 事件消失、紧凑 `AssistantStreamRecord`、实时帧与耐久回放、耐久性代价与格式版本边界 |
 | [`06-文件块与内容块投影.md`](./06-文件块与内容块投影.md) | `FileBlock` 与 `FileAttachmentRef`、文件无条件投影 vs 图像条件投影、模态与内容块之分 |
 
-入口如何投影同一条流：[`../surfaces/00-map.md`](../surfaces/00-map.md)。
+入口如何投影同一条流：[`../surfaces-entrypoints/00-map.md`](../surfaces-entrypoints/00-map.md)。

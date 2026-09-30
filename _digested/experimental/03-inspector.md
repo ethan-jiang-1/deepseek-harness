@@ -25,4 +25,4 @@ Host 插件 `apply` 起 Worker、`ctx.provide('inspector', ...)`（`packages/exp
 | `packages/experimental/inspector/src/worker/realms/host/bridge.ts` | 每 DevTools 连接一条 `node:inspector.Session` |
 | `packages/experimental/inspector/src/client/plugin.ts` | Client 面：读 `__DSH_INSPECTOR__`、连 `/ingest` |
 
-Web host/client 的启动面与注入路径见 [`../surfaces/00-map.md`](../surfaces/00-map.md)。
+Web host/client 的启动面与注入路径见 [`../surfaces-entrypoints/00-map.md`](../surfaces-entrypoints/00-map.md)。

@@ -8,12 +8,12 @@
 
 ## 总体结论
 
-0009 的六路切片在「与 794-commit 变更跨度求交能命中的地方」质量高：ctx 服务 92、Remote 白名单 27、OPTIONAL_BUNDLES 4、skills 15、run-gates 18、experimental 21 包、FAQ 08 重测、surfaces 的 desktop/telemetry 新面，本轮全部复测为已同步。但独立反查确认约 **22 处过期断言、8 处新面缺落点、5 处口径矛盾/自相矛盾**，集中在三处：0009 自述「中途代理模型故障切换」的受影响切片（capability-seams/00-map、runtime-profiles/01-web、composition/04、_coverage、surfaces/05）、**跨度求交抓不到的存量过期**（0009 之前就错、本轮才被抓到：harness-idea/02 与自家 claims.json 矛盾、capability-seams/00-map 的 schedule 段整段基于 0008 前认知）、以及无机械门禁的组合枚举正文（01-web 的 web-app insert 行枚举 68 ≠ 实数 85）。
+0009 的六路切片在「与 794-commit 变更跨度求交能命中的地方」质量高：ctx 服务 92、Remote 白名单 27、OPTIONAL_BUNDLES 4、skills 15、run-gates 18、experimental 21 包、FAQ 08 重测、surfaces 的 desktop/telemetry 新面，本轮全部复测为已同步。但独立反查确认约 **22 处过期断言、8 处新面缺落点、5 处口径矛盾/自相矛盾**，集中在三处：0009 自述「中途代理模型故障切换」的受影响切片（capability-seams/00-map、runtime-profiles/01-web、composition-boot/04、_coverage、surfaces-entrypoints/05）、**跨度求交抓不到的存量过期**（0009 之前就错、本轮才被抓到：harness-idea/02 与自家 claims.json 矛盾、capability-seams/00-map 的 schedule 段整段基于 0008 前认知）、以及无机械门禁的组合枚举正文（01-web 的 web-app insert 行枚举 68 ≠ 实数 85）。
 
 ## 为什么 0009 会漏（过程层）
 
 1. **变更跨度求交是反向审计的唯一入口**。0009 用「4154 个变动文件与语料引用求交」，凡 0009 跨度没碰的断言即使已过期也不在交集里——harness-idea/02 的语料库三数（1912/584/1257）实为 0.1.5-rc.2 读数且与同目录 claims.json（N1=2360、N2=972）同仓矛盾，即属此类存量失真。
-2. **切片中途代理故障切换的尾巴**。0009 记录自述 capability-seams/tools-prompt-llm/surfaces 等切片中途换代理重跑；本轮过期断言恰好聚集在 capability-seams/00-map（schedule 段四个子断言全过期）、composition/04、_coverage、surfaces/05——与故障切换的受影响切片重合。
+2. **切片中途代理故障切换的尾巴**。0009 记录自述 capability-seams/tools-prompt-llm/surfaces 等切片中途换代理重跑；本轮过期断言恰好聚集在 capability-seams/00-map（schedule 段四个子断言全过期）、composition-boot/04、_coverage、surfaces-entrypoints/05——与故障切换的受影响切片重合。
 3. **组合枚举正文没有机械门禁**。web-app insert 行的 Layer 枚举是裸短名散文（无 path:line），链接门禁看不见它；0008-0009 的 19 个新行全部漏收。
 4. **「有落点」判定依赖名字级 grep**。89 个零命中包中 22 个靠 01-web 的裸短名枚举才「有落点」——枚举本身过期时，落点判定随之失真。
 5. **口径行是手工散文**。`_digested/00-index.md` 的「三个语料目录」与四目录现实、`_change_log/00-index.md` 的「语料反查待执行」状态句，都是上一轮写完后现实继续前进的搁浅句。
@@ -30,19 +30,19 @@
 
 ### B. 点改级
 
-- `surfaces/05:3`：client 包目录 68 → **63**（68 = 63 目录 + 5 个文件误数）。
+- `surfaces-entrypoints/05:3`：client 包目录 68 → **63**（68 = 63 目录 + 5 个文件误数）。
 - `capability-seams/04:40`、`00-map:53`：「FAQ 08 的 29 条 seam 表」→ **33 条**。
 - `capability-seams/04:67`：workspaceFiles「7 个 Remote 方法」→ **5 个**（read/readBytes/stat/list/changes）。
 - `harness-idea/02:70`：语料库三数 1912/584/1257 → **2360/972/1279**（旧数是 0.1.5-rc.2 读数，与 claims.json N1/N2 矛盾）。
 - `experimental/00-map:7`：「六个家族」→ **五个家族**（与 ：15 标题统一）。
 - `session-and-loop/01:78`：source-kind 联合锚点 `packages/core/session/src/message.ts:108-115`（文件已不存在）→ **`packages/llm/llm/src/message.ts:110-115` 的 `MessageSourceMap`**。
-- `composition/04:17`、`experimental/00-map:11`：OPTIONAL_BUNDLES「两个/`:190-193`」→ **四包/`:213-218`**（同页 `:42`/`:42` 已是现行口径，页内自相矛盾）。
-- `_coverage/00-index.md:67`：run-gates「17 个 mode」→ **18**（`ci-unit`，源码与 system/03 均已 18）。
-- `surfaces/01:39`：白名单锚点区间 `:20-46` → **`:20-47`**（27 条计数正确，区间少含末行）。
+- `composition-boot/04:17`、`experimental/00-map:11`：OPTIONAL_BUNDLES「两个/`:190-193`」→ **四包/`:213-218`**（同页 `:42`/`:42` 已是现行口径，页内自相矛盾）。
+- `_coverage/00-index.md:67`：run-gates「17 个 mode」→ **18**（`ci-unit`，源码与 system-overview/03 均已 18）。
+- `surfaces-entrypoints/01:39`：白名单锚点区间 `:20-46` → **`:20-47`**（27 条计数正确，区间少含末行）。
 
 ### C. 缺落点（补挂权威入口）
 
-- `docs/ui-radius.md`——**0009 跨度唯一新增顶层 docs 页**，四语料零命中、0009 六片审计底稿未提及；本轮挂入 `surfaces/05` 权威清单。
+- `docs/ui-radius.md`——**0009 跨度唯一新增顶层 docs 页**，四语料零命中、0009 六片审计底稿未提及；本轮挂入 `surfaces-entrypoints/05` 权威清单。
 - `docs/deepseek-llm-api-wire-extensions.md`——存量页整页零命中；挂入 `tools-prompt-llm/00-map`。
 - `load_workspace_dependencies` 工具——已挂载进 sdk profile（`sdk-app/cordis.patch.yml:31`）却零命中；挂入 `runtime-profiles/03-sdk:28`。
 
@@ -93,5 +93,5 @@
 1. **FAQ 批次**（上节五项）——等 `_faq_on_digested` 并行会话结束。
 2. **`_digested` 入口可读性**：00-index README 化（30 秒框架句 + 大白话子目录表 + 术语速查）；子目录改名最小集（`system-overview`、`composition-boot`、`surfaces-entrypoints`）——改名半径约 57 文件/目录，须在 FAQ 会话结束后独立执行。
 3. **新专题**：`_digested/plugin-inventory/`（利用现成插件的清单与复用地图）+ `_coverage` 矩阵新行 + FAQ 17。
-4. **D1 扫描固化**：本轮的全量引用反查与引文-锚点漂移脚本已固化为 [`../ref-sweep.mjs`](../ref-sweep.mjs)（`--quotes` 开启严格引文核对；报告不判失败，候选按本页三态口径人工分诊）。固化后首轮复跑即抓到三处 /tmp 版漏掉的真越界（05-acp 的 models.ts、surfaces/03 的 update-tasks、surfaces/04 的 sidebar-right），已随轮修复。
+4. **D1 扫描固化**：本轮的全量引用反查与引文-锚点漂移脚本已固化为 [`../ref-sweep.mjs`](../ref-sweep.mjs)（`--quotes` 开启严格引文核对；报告不判失败，候选按本页三态口径人工分诊）。固化后首轮复跑即抓到三处 /tmp 版漏掉的真越界（05-acp 的 models.ts、surfaces-entrypoints/03 的 update-tasks、surfaces-entrypoints/04 的 sidebar-right），已随轮修复。
 5. **`_misc` 校验脚本**：已补 [`../../_misc/verify.mjs`](../../_misc/verify.mjs)（严格 UTF-8、LF、单个结尾换行、相对链接与锚点；`_scratch` 不检查、`_references` 只查卫生）。

@@ -62,4 +62,4 @@ dsh --profile sdk
 | `packages/sdk/client/` | TypeScript 客户端 |
 | `packages/bundle/sdk-app/cordis.patch.yml` | SDK 应用的 bundle 组合 |
 | `packages/bundle/sdk-app/src/index.ts` | `sdk-app-startup` 的 `profile` config 与 `--help` 命令语法 |
-| `_digested/surfaces/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |
+| `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |

@@ -111,7 +111,7 @@ Electron 主进程（apps/desktop）
   窗口加载认证 URL；dsh-app:// 只承载壳自有页面；Node IPC 载生命周期 / update-tasks / platform-session
 ```
 
-~~旧的「无监听端口、`desktop.cordis.patch.yml` 覆盖层、`dsh-app://` 分帧字节管道、`__DSH_TRANSPORT__.openStream`」传输~~已随 0.1.7 线 desktop-host 重构退役（`wire.ts` 与覆盖层文件均不存在）；`dsh --profile desktop` 仍被 `apps/cli/src/args.ts:83` 显式拒绝，CLI 不是它的启动面。（0009 跨度补充：桌面新增自带 CLI launcher——经 Electron 可执行文件以 Node 模式走普通 CLI dispatcher，仅在应用退出后管理已初始化的 `desktop` profile 与插件包，拒绝把缺失的 `desktop` profile 当普通 profile 初始化；见 `apps/desktop-host/src/cli.ts` 与 `.agents/notes/implemented/feature/2026-09-27-desktop-cli-runtime.md`。）完整机制见 [`_digested/surfaces/03-桌面入口.md`](../../_digested/surfaces/03-桌面入口.md)。
+~~旧的「无监听端口、`desktop.cordis.patch.yml` 覆盖层、`dsh-app://` 分帧字节管道、`__DSH_TRANSPORT__.openStream`」传输~~已随 0.1.7 线 desktop-host 重构退役（`wire.ts` 与覆盖层文件均不存在）；`dsh --profile desktop` 仍被 `apps/cli/src/args.ts:83` 显式拒绝，CLI 不是它的启动面。（0009 跨度补充：桌面新增自带 CLI launcher——经 Electron 可执行文件以 Node 模式走普通 CLI dispatcher，仅在应用退出后管理已初始化的 `desktop` profile 与插件包，拒绝把缺失的 `desktop` profile 当普通 profile 初始化；见 `apps/desktop-host/src/cli.ts` 与 `.agents/notes/implemented/feature/2026-09-27-desktop-cli-runtime.md`。）完整机制见 [`_digested/surfaces-entrypoints/03-桌面入口.md`](../../_digested/surfaces-entrypoints/03-桌面入口.md)。
 
 ## `dsh --profile headless` 怎样跨目录
 
@@ -189,4 +189,4 @@ dump 仍不是活插件图：它只合成 entry rows，不执行插件生命周�
 - [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml)
 - [`packages/bundle/web-app/cordis.patch.yml`](../../packages/bundle/web-app/cordis.patch.yml)
 - [`packages/client/web/README.md`](../../packages/client/web/README.md)
-- [`_digested/composition/01-boot-时序.md`](../../_digested/composition/01-boot-时序.md)
+- [`_digested/composition-boot/01-boot-时序.md`](../../_digested/composition-boot/01-boot-时序.md)

@@ -79,4 +79,4 @@ CLI、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`Agent` 接�
 
 上游权威正文：[`docs/subsystems/client-resources.md`](../../docs/subsystems/client-resources.md) 管资源模型的地址语法、provider 与四态；[`docs/subsystems/sidebar-right.md`](../../docs/subsystems/sidebar-right.md) 管右栏的 tab 类型、导航服务、slot 与出货类型。
 
-dump 与 boot 的层差不在入口，在 [`../composition/02-dump-与boot-保真.md`](../composition/02-dump-与boot-保真.md)。
+dump 与 boot 的层差不在入口，在 [`../composition-boot/02-dump-与boot-保真.md`](../composition-boot/02-dump-与boot-保真.md)。

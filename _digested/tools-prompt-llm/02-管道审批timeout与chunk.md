@@ -69,4 +69,4 @@ PTC 模式（原 code-mode）：子工具结果里的 image block 不嵌进 `run
 
 内容块不只有图像：**文件块从不原生发给任何 provider**。`projectFilesToText` 在每次 dispatch 前**无条件**把 file block（含嵌套 tool-result 内容）替换成确定性 handle 文本，与图像「只在模型没有 image 输入模态时才投影」的**条件式**行为不对称。文件块、handle 文本两条分支与模态之分见 [`06-文件块与内容块投影.md`](./06-文件块与内容块投影.md)。
 
-ACP 在已提交 `assistant/message` 上按块投影非空文本**或**图像；chunk 仍不上线。实时展示走 process-local 的 `agent/assistant-stream` frame（start / transient chunk / end）：loop 先追加 settlement，committed end frame 再命名其类型与 seq，被放弃的 end 没有 settlement；Web 的实时 chunk 行是 Client-only 事件 `assistant/live-chunk`，不写进 session log。SDK JSON-RPC 相反：每条耐久事实都 `session.event`。见 [`../surfaces/02-acp与jsonrpc.md`](../surfaces/02-acp与jsonrpc.md)。
+ACP 在已提交 `assistant/message` 上按块投影非空文本**或**图像；chunk 仍不上线。实时展示走 process-local 的 `agent/assistant-stream` frame（start / transient chunk / end）：loop 先追加 settlement，committed end frame 再命名其类型与 seq，被放弃的 end 没有 settlement；Web 的实时 chunk 行是 Client-only 事件 `assistant/live-chunk`，不写进 session log。SDK JSON-RPC 相反：每条耐久事实都 `session.event`。见 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md)。

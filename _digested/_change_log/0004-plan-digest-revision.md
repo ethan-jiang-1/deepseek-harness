@@ -13,15 +13,15 @@
 | `00-index.md` | 改基线 + 更新目录表 | 小幅 | 基线→`dd6322d604` |
 | `_change_log/00-index.md` | 补 0004 记录 | 小幅 | 文件列表补入 0004 行 |
 | `_coverage/00-index.md` | 全部标记 "需复核" | 小幅 | 八行全部改为需复核，基线更新 |
-| `system/` | **改** + **扩** | 中幅 | 扩展表追加 webhook、API Remote、Application Launch 规则 |
+| `system-overview/` | **改** + **扩** | 中幅 | 扩展表追加 webhook、API Remote、Application Launch 规则 |
 | `cordis-runtime/` | **改** + **扩** | 中幅 | vendor 4.0.2 Loader fromInternal 改进 |
-| `composition/` | **改** | 中幅 | sdk/acp 变 launcher profile、agent-team profiles 新增 |
+| `composition-boot/` | **改** | 中幅 | sdk/acp 变 launcher profile、agent-team profiles 新增 |
 | `runtime-profiles/` | **改（大幅重写）** | 大幅 | 核心变化：old "独立 bin vs launcher profile" 二分法瓦解 |
 | `session-and-loop/` | **改** | 中幅 | JSONL-only、projection 必须化、ignorable 来回、ToolCallId 重命名 |
 | `agent-loop/` | **改（初判有误）** | 中幅 | 源码 +120/-26 行：turnBoundary projection、startsRequestSeries |
 | `capability-seams/` | **扩** | 中幅 | Schedule、Webhook 新 seam；API Remote 非三角色通信模式 |
 | `tools-prompt-llm/` | **改** | 中幅 | 图片管线 encoding ladder、code-mode→PTC 重命名、pi-ai 升级 |
-| `surfaces/` | **改** | 中幅 | 5 入口、路径更新、SVG 4→5 box、`code-mode.ts`→`ptc.ts` |
+| `surfaces-entrypoints/` | **改** | 中幅 | 5 入口、路径更新、SVG 4→5 box、`code-mode.ts`→`ptc.ts` |
 | `harness-idea/` | **改（大幅超过预期）** | 大幅 | 28 处锚点行号更新、基线声明、6 个 metrics 重算、claims.json |
 | `_faq_on_digested/` | **改（初判未覆盖）** | 中幅 | 所有 19 个子目录的基线声明头更新 |
 | `0004-plan-digest-revision.md` | 自维护 | 小幅 | 本文件自身更新 |
@@ -40,7 +40,7 @@
 - [x] 所有八行状态改为 "需复核"
 - [x] 基线更新
 
-### 4. `system/`
+### 4. `system-overview/`
 - [x] 00-map.md：扩展表新增 `webhook/webhook` → `ctx.webhookRuntime` 行
 - [x] 00-map.md：官方文档入口新增 `docs/subsystems/webhook.md`
 - [x] 01-扩展表非显然落点.md：新增 ignorable 机制历史（#3087 删除→#3325 回滚）
@@ -51,7 +51,7 @@
 - [x] 00-map.md：vendor 4.0.2 升级标注
 - [x] 04-vendor-本地修改.md：新增 `fromInternal` 改进章节（不再按 Node 版本猜 API）
 
-### 6. `composition/`
+### 6. `composition-boot/`
 - [x] 00-map.md：sdk/acp 变 launcher profile 描述
 - [x] 00-map.md：`PROFILE_TEMPLATES` 示例扩展到 5 个
 - [x] 00-map.md：新增 `dsh-sdk-app`、`dsh-sdk-minimal`、`dsh-acp-app`、`agent-team-profile` 入口
@@ -96,7 +96,7 @@
 - [x] 02-管道审批timeout与chunk.md：图像编码管线详细描述
 - [x] 02-管道审批timeout与chunk.md：`code-mode` → `PTC 模式（原 code-mode）`
 
-### 12. `surfaces/`
+### 12. `surfaces-entrypoints/`
 - [x] 00-map.md：5 入口表格（不再 4 个）
 - [x] 00-map.md：sdk/acp 变 launcher profile 说明 + 重要变化批注
 - [x] 00-map.md：源码入口新增 `packages/api/remotes/`、`packages/typert/`
@@ -120,7 +120,7 @@
 - [x] 行级引用锚点（56 处）——**0006 第二轮全量核验关闭**：`_faq_on_digested/` 全部 83 篇的行级引用由专题子代理逐条打开源码复核（FAQ 01/02 一路 80 条引用、其余篇目在更早的逐篇复核中完成），合并校验器在三语料 262 个文件上确认 1028 条 HEAD 行引用与 6 条历史引用全部可解析且在范围内
 
 ### 15. 交叉引用修复
-- [x] `system/02-对照单一loop.md`："四个入口" → "五个入口"
+- [x] `system-overview/02-对照单一loop.md`："四个入口" → "五个入口"
 - [x] 链接修复：`harness-idea/02-legibility.md` dsh-doc-standards → dsh-doc
 - [x] `verify.mjs` 基线更新 + 验证通过
 

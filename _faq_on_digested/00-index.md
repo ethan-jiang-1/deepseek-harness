@@ -64,7 +64,7 @@ _faq_on_digested/
 引用 `_digested/` 时用相对路径：
 
 ```markdown
-../_digested/system/00-map.md
+../_digested/system-overview/00-map.md
 ../_digested/session-and-loop/00-map.md
 ```
 

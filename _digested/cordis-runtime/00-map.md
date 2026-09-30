@@ -60,4 +60,4 @@ dsh 里最容易踩的事件合同就是 waterfall。它是 around-middleware，
 | [`03-loader-include-与js插值.md`](./03-loader-include-与js插值.md) | `!!js` 两处求值；`applyEntryPatches` 为何能叠 bundle |
 | [`04-vendor-本地修改.md`](./04-vendor-本地修改.md) | 产品依赖的 vendor 修改及其后果 |
 
-Profile / boot 时序见 [`../composition/01-boot-时序.md`](../composition/01-boot-时序.md)。
+Profile / boot 时序见 [`../composition-boot/01-boot-时序.md`](../composition-boot/01-boot-时序.md)。

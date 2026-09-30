@@ -32,7 +32,7 @@ macOS 普通启动、Windows ConPTY 和其他未支持宿主保留原有 PGID / 
 
 ## native/system：两个并列能力
 
-`native/landlock-run/` 目录与包改名：入口包是 `@deepseek-ai/node-addon-system`（`native/system/packages/entry/package.json:2`），平台包是 `@deepseek-ai/node-addon-system-<platform>`，workspace 根是私有的 `@deepseek-ai/node-addon-system-workspace`（`native/system/package.json:2`）。`native/README.md:5` 已改成「`system/` workspace owns the Landlock launcher and POSIX flock binding」。
+`native/landlock-run/` 目录与包改名：入口包是 `@deepseek-ai/node-addon-system`（`native/system/packages/entry/package.json:2`），平台包是 `@deepseek-ai/node-addon-system-<platform>`，workspace 根是私有的 `@deepseek-ai/node-addon-system-workspace`（`native/system/package.json:2`）。`native/README.md:5` 已改成「`system-overview/` workspace owns the Landlock launcher and POSIX flock binding」。
 
 入口包暴露两个并列的能力子路径、**没有根导出**：`./landlock-run`（`:12`）与 `./flock`（`:16`）；import 任一入口都不会加载 addon，缺 Landlock 二进制时 probe 为不可用，缺 flock 绑定时获取 reject，都不静默授予（`native/system/AGENTS.md:11`）。新增的 flock 是 `tryLockExclusive(fd): Promise<void>`（`native/system/packages/entry/src/flock.ts:46`）：Node-API v8，在异步 work 里跑一次 `flock(fd, LOCK_EX | LOCK_NB)`，只做非阻塞互斥，不提供阻塞等待或共享锁 API，调用方持有 fd 并靠 close 释放；逐条行为合同（独立 C oracle、跨进程、fd 继承、EBADF 等条件）写在 `native/system/docs/flock-contract.md:3`。
 

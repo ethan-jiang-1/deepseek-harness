@@ -96,7 +96,7 @@ dsh-resource://<type>/… 地址
   → 帧流：首帧当前状态，之后每帧一次变化
 ```
 
-第二条是 0.1.5-rc.1 新增的路线：内容寻址的资源模型。看到组件里出现 `dsh-resource://` 地址或 `useResource` 时走它，看到直接的 Remote 调用时走第一条；机制与字段表见 [`_digested/surfaces/04-客户端资源模型与右栏.md`](../../_digested/surfaces/04-客户端资源模型与右栏.md)。
+第二条是 0.1.5-rc.1 新增的路线：内容寻址的资源模型。看到组件里出现 `dsh-resource://` 地址或 `useResource` 时走它，看到直接的 Remote 调用时走第一条；机制与字段表见 [`_digested/surfaces-entrypoints/04-客户端资源模型与右栏.md`](../../_digested/surfaces-entrypoints/04-客户端资源模型与右栏.md)。
 
 具体步骤：
 
@@ -179,7 +179,7 @@ package src/index.ts 的 apply / Service constructor
 | 新增模型工具 | owner group 的 `tool-*` Consumer；注册到 `ctx.tools` |
 | 新增执行策略、审批或观察 | 能覆盖所有调用路径的 capability event / executor / policy plugin |
 | 改 turn、step、inbox、request 或持久日志义务 | `core/agent` / `core/agent-loop` / `core/session` 的明确 owner；同步 architecture |
-| 新增 Web UI feature | `packages/client/ui-*`；Host API 和 authoritative state 回到各自 owner；内容是地址化资源时先声明协议并注册 provider（见 [`_digested/surfaces/04-客户端资源模型与右栏.md`](../../_digested/surfaces/04-客户端资源模型与右栏.md)） |
+| 新增 Web UI feature | `packages/client/ui-*`；Host API 和 authoritative state 回到各自 owner；内容是地址化资源时先声明协议并注册 provider（见 [`_digested/surfaces-entrypoints/04-客户端资源模型与右栏.md`](../../_digested/surfaces-entrypoints/04-客户端资源模型与右栏.md)） |
 | 改产品默认启用项或默认 config | `packages/bundle/*` 或 profile/preset composition，不塞进实现分支 |
 | 改 CLI grammar、profile 解析或进程 shutdown | `apps/cli`，可复用 boot 合同回到 `packages/boot` |
 | 改桌面壳、桌面 profile 或 IPC 传输 | `apps/desktop` 与 `apps/desktop-host`；Host/Client 行为本身仍回到 `packages/` |
