@@ -11,7 +11,7 @@ proposed RFC
   → 当前基线里的现在式权威 note
 ```
 
-Issue 与 GitHub review 不在 git tree 里，此例也不能证明使用了 Plan Mode；它是 proposed → implemented 的实证，不是九阶段全链路实证。git 历史可核对，不是事后编造。
+Issue 与 GitHub review 不在 git tree 里，此例也不能证明使用了 Plan Mode；它是 proposed → implemented 的实证，不是九个面全链路实证。git 历史可核对，不是事后编造。
 
 ## 第一步：提案 commit
 
@@ -89,7 +89,7 @@ Status: implemented
 
 | 面 | 落点 |
 |---|---|
-| 意图/验收 | Issue 层（不在 git tree；本 FAQ 不追具体 issue） |
+| 意图 | Issue 层（不在 git tree；本 FAQ 不追具体 issue） |
 | 决策记录 | proposed RFC |
 | 计划 | 无仓库证据能证明该变更使用了 Plan Mode |
 | 实现 | d01f5f73b7 的 packages/web/** |
