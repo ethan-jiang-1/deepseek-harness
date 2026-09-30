@@ -119,7 +119,7 @@ cp "$FS".bak-*-before-no-store "$FS"
 - `packages/host/frontend-static/src/index.ts` — `no-store` 语义本体
 - `packages/host/frontend-static/tests/frontend-static.spec.ts` — 行为测试
 - `packages/host/frontend-static/README.md` / `README.zh.md` / `README.i18n.yaml` — 契约文档
-- `.agents/notes/implemented/bug-fix/2026-09-13-served-index-must-not-be-cached.md`（+ `.zh.md` / `.i18n.yaml`）— 决策记录
+- `.agents/notes/implemented/bug-fix/2026-09-13-served-index-must-not-be-cached.md`（+ `.zh.md` / `.i18n.yaml`）— 决策记录（该 note 已随 0008 整树照搬退出仓库树，仅存于 git 历史）
 
 ## 2026-09-14 现场（本 runbook 的第一次执行）
 
