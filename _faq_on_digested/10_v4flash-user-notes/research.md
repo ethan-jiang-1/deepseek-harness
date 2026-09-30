@@ -30,7 +30,7 @@
 ## 关键证据文件
 
 - goal：`packages/goal/goal/src/{index,fold,types,domain}.ts`、`packages/goal/goal-round-driver/src/{index,prompt}.ts`、`packages/goal/tool-goal/src/{index,authority}.ts`；notes：`2026-07-19-persisted-same-session-goal-domain.md`、`2026-07-19-model-facing-goal-tools.md` 仍在 `.agents/notes/implemented/feature/`，`2026-07-19-same-session-goal-round-driver.md` 已归档到 `.agents/notes/archived/feature/`、`2026-08-02-goal-round-wrapup-message.md` 归档到 `.agents/notes/archived/bug-fix/`（行号按归档后的正文）。
-- plan：`packages/plan/plan-mode/src/index.ts`；plan 策略 section 出厂文本 `packages/bundle/base/cordis.patch.yml:305-315`。
+- plan：`packages/plan/plan-mode/src/index.ts`；plan 策略 section 出厂文本 `packages/bundle/base/cordis.patch.yml:322-337`。
 - workflow：`packages/workflow/workflow/README.md`（"No saved or nested workflows"）、`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/tool-ralph/README.md`。
 - vision：`packages/fs/tool-fs/src/read-image.ts`、`packages/attachment/attachment-local/`（README + `normalization.ts`）、`packages/llm/llm-deepseek/{README.md,src/serialize.ts}`、`.agents/skills/record-browser-gif/SKILL.md`。
 - 预览/产出物：`docs/cookbook/adding-a-tool.md`（render intent 纪律）、`packages/core/tools/src/presentation.ts`、`packages/client/ui-{tool,primitives,deliverables,workflow-run,attachment,conversation}/README.md`、`packages/session-query/session-log-export/`（session.export ZIP，后代打包见 `src/archive.ts:8`）。

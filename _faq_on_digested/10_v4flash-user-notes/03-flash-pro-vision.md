@@ -1,20 +1,18 @@
 # 03 · "别用 V4 Pro，多用 vision"：模型路由的机制事实
 
-## 第一节 默认 catalog 里四个模型各自是什么
+## 第一节 默认 catalog 里两个模型各自是什么
 
-`llm-deepseek` 省略 `models` 配置时公布的默认 catalog（`packages/llm/llm-deepseek/README.md:49`；0.1.5 起为四条，其中两条声明图像能力）：
+`llm-deepseek` 省略 `models` 配置时公布的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:8-24`、`README.md:52`；0009 按 `dsh-v0.2.0-rc.2` 实测重写为两条，其中一条声明图像能力；0.1.5 时的四条目版本——含 `deepseek-v4-flash-vision-exp` 与 `deepseek-v4-flash`——已随上游同步移除）：
 
 | 模型 | 输入模态 | 定位 |
 |---|---|---|
-| `deepseek-flash` | `[text, image]` | 默认主力；体感里"快"的来源，也是默认的 image-capable 条目 |
-| `deepseek-v4-flash-vision-exp` | `[text, image]` | Flash 家族的实验性视觉变体 |
-| `deepseek-v4-flash` | text | 同族 text-only 条目 |
+| `deepseek-flash`（name DeepSeek-V41-Flash） | `[text, image]` | 默认主力；体感里"快"的来源，也是默认 catalog 唯一的 image-capable 条目，另声明 `systemPromptUpdate: 'in-history'` 与 `toolUpdate: 'addition-only'` |
 | `deepseek-v4-pro` | text | 同 catalog 的重档位；harness 未做任何限制 |
 
 三个关键机制事实：
 
-1. **vision 是模型条目的属性，不是开关**。catalog 条目的 `inputModalities` 字段声明图片能力（类型见 `packages/llm/llm/src/types.ts:311`；默认 catalog 的两个 image-capable 条目见 `README.md:52`）；路由是否收图由"确切模型能力"决定，而非会话配置。catalog 是 advisory：未列出的模型 id 原样透传、按纯文本路由——所以"用 vision"必须真的把路由切到 image-capable 条目，不是开个设置。
-2. **`read_image` 工具的存在本身依赖两道门**：`ctx.attachments` 持久附件服务挂载（没挂则工具根本不注册，`packages/fs/tool-fs/src/index.ts:67` 条件注入）；执行时 `assertImageCapableRoute` 解析会话最新 `request/header` 的路由并要求 `inputModalities` 显式含 `'image'`，否则拒——"model … does not declare image input"（`tool-fs/src/read-image.ts:119-131`）。
+1. **vision 是模型条目的属性，不是开关**。catalog 条目的 `inputModalities` 字段声明图片能力（类型见 `packages/llm/llm-deepseek/src/types.ts:21`；默认 catalog 唯一的 image-capable 条目见 `README.md:52`）；路由是否收图由"确切模型能力"决定，而非会话配置。catalog 是 advisory：未列出的模型 id 原样透传、按纯文本路由——所以"用 vision"必须真的把路由切到 image-capable 条目，不是开个设置。
+2. **`read_image` 工具的存在本身依赖两道门**：`ctx.attachments` 持久附件服务挂载（没挂则工具根本不注册，`packages/fs/tool-fs/src/index.ts:70` 条件注入）；执行时 `assertImageCapableRoute` 解析会话最新 `request/header` 的路由并要求 `inputModalities` 显式含 `'image'`，否则拒——"model … does not declare image input"（`tool-fs/src/read-image.ts:119-131`）。
 3. **切换路由有缓存代价**：`request/header` 记录 provider/model/effort 为会话级状态；模型路由一变，装配前缀的 DeepSeek cache 从第一个变更 token 起失效（`README.md:180`）。"干活用 Flash、关键验证切 vision"在长会话里每次都是一次前缀清零，值得按节而不是按请求切换。
 
 ## 第二节 为什么 vision 是"验证手段"而不只是"看得见图"
@@ -36,11 +34,11 @@ DSH 对 UI/前端类工作的验证有一个结构性事实：**模型没有"指
 |---|---|---|---|
 | 准入 | `attachment-local` 每源 | ≤20MiB、≤64,000,000 px、单边 ≤8192px；每消息 ≤20 张 / 200MiB | 拒绝进入 |
 | 规范化 | 附件存储 | 长边 2048px、4MiB 安全帽；EXIF 方向应用、转 8-bit sRGB | 按 `Math.min(1, sqrt(maxPixels / (width×height)))` 向内取整缩放（`packages/attachment/attachment/src/request-projection.ts:18`） |
-| 路由请求版本 | catalog 条目 | 总像素 640,000、编码 1MiB；`imageDetail: low` 时 512×512 | 确定性缩放（2048×1024 → 约 1130×565，不强制方形） |
+| 路由请求版本 | catalog 条目 | 默认走官方 vision token 网格（14px patch、3:1 降采样、单图 1024-token 帽，正方形最高 1302×1302、16:9 以 1708×961 发送）；条目可设 `imagePixelBudget` 总像素预算或 `'low'`（512×512）；单边 4096px 帽；编码目标默认 2MiB | 确定性缩放，不强制方形 |
 | 请求总量 | 适配器 | 文件引用 128MiB / 600 张；内联回退 20MiB | **最老图优先 offload**，替换为固定占位文本 |
 | 单文件 | Files API | 32MiB 硬限、默认 7 天过期 | 失效即重传一次，二次失败不再试 |
 
-（依据：`packages/attachment/attachment-local/README.md:41-48`、`packages/llm/llm-deepseek/README.md:77`、`:62-65`、`packages/llm/llm-deepseek/src/file-store.ts:12`、`packages/llm/llm-deepseek/src/config.ts:37-38`。）
+（依据：`packages/attachment/attachment-local/README.md:41-45`、`packages/llm/llm-deepseek/README.md:94`（token 网格与 `'low'` 预设）、`:63-65`、`packages/llm/llm-deepseek/src/request-pricing.ts:20-31`、`src/file-store.ts:12`、`src/config.ts:48` 与 `src/defaults.ts:18`。0009 按 `dsh-v0.2.0-rc.2` 实测重钉：旧 640,000 总像素 / 1MiB 编码默认已被官方 token 网格 + 2MiB 编码目标取代，Files API 过期默认仍由 `llm-deepseek/src/config.ts` 承载、未随凭据拆分外移。）
 
 第五级的 offload 占位文本值得读一遍：`[image omitted to fit request image limits; attachment sha256:…. …]`（`packages/llm/llm/src/content.ts:112`）——**旧图先出局**，且高水位投影让前缀不因每张新图改写。这就是长会话反复看截图的机制告诫：`read_image` 是"看一眼"，不是"存档"；同一张图要反复引用时，靠的是重新读文件，而不是指望历史里的图永远在场。
 
@@ -52,4 +50,4 @@ harness 层面没有任何东西阻止 `deepseek-v4-pro`：它在默认 catalog 
 - 反过来，**真该花钱的地方是 vision**：UI 工作的验收标准在像素里，文本回路再强也推不出渲染结果；
 - 唯一像"机制成本"的是缓存：切换路由清前缀缓存（第一节第 3 条），所以"别用 Pro"的机制版表述是——**别在会话中途往返切路由**，而不是"别用 Pro"。
 
-最后校一点体感里的措辞：0.1.5 的默认 catalog 里有两个 image-capable 条目——默认主力 `deepseek-flash`（本身也收图）与实验性的 `deepseek-v4-flash-vision-exp`——"多用 vision"与"V4 Flash 足够优秀"在同一条路由族上自洽；若上游未来把视觉并进正式档位，本篇的条目名随之过期（见 [answer.md 诚实边界](./answer.md) 第 4 条）。
+最后校一点体感里的措辞：0009 复测（`dsh-v0.2.0-rc.2`）的默认 catalog 只剩两条目，image-capable 的只有默认主力 `deepseek-flash`（本身也收图），实验性的 `deepseek-v4-flash-vision-exp` 已被移除——"多用 vision"与"V4 Flash 足够优秀"依然在同一条路由族上自洽，且更纯粹了：视觉能力就是 Flash 本体；上游再动条目名时，本篇的条目名随之过期（见 [answer.md 诚实边界](./answer.md) 第 4 条）。

@@ -30,7 +30,7 @@ acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）�
 
 JSONL 持久化（`session-persistence-jsonl`）、`session-checkpoint-policy`、`session-query-sqlite` 都在 `dsh-base`——acp-app 不自持，digest 旧版写的「effect 卸载顺序：先拆查询 → 检查点 → 持久化」那层不存在。
 
-**与 base 不一致的默认模型**：`acp` 行硬编码 `provider: deepseek-official` / `model: deepseek-v4-flash`（`packages/bundle/acp-app/cordis.patch.yml:19-21`），而 base 的 `agent-default-model` 用 `deepseek-flash`（`packages/bundle/base/cordis.patch.yml:75-79`）。两个 id 都是 provider 目录里的合法条目——`packages/llm/llm-deepseek/src/index.ts:94` 定义 `deepseek-flash`（name `DeepSeek-V41-Flash`），`:103` 定义 `deepseek-v4-flash`（name `DeepSeek-V4-Flash`）——因此这不是别名失效，而是两个 profile 各自选了不同的模型条目；同一个仓库里两处默认值不统一，改模型目录时需同时看这两处。
+**与 base 不一致的默认模型**：`acp` 行硬编码 `provider: deepseek-official` / `model: deepseek-v4-flash`（`packages/bundle/acp-app/cordis.patch.yml:19-21`），而 base 的 `agent-default-model` 用 `deepseek-flash`（`packages/bundle/base/cordis.patch.yml:86`）。0009 起目录语义有变：advisory catalog 收缩为两条目（`packages/llm/llm-deepseek/src/models.ts:8-24`：`deepseek-flash`（name `DeepSeek-V41-Flash`）与 `deepseek-v4-pro`），`deepseek-v4-flash` **不再是默认 catalog 条目**——acp 硬编码的 id 仍可用（未列 id 经 passthrough 作 text-only 路由提交，GUI 选择才要求 catalog 条目，`packages/llm/llm-deepseek/README.md:52`），但这不再是「目录内两个条目二选一」而是「catalog 条目 + passthrough id」的搭配；同一个仓库里两处默认值不统一，改模型目录时需同时看这两处。
 
 ## 进程模型
 

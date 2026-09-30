@@ -18,7 +18,7 @@
 
 `vendor/` 被纳入 pnpm workspace，因为 DSH 要从源码构建并发布自己重命名后的 Cordis 框架层；但它仍保持单独的 upstream manifest、同步流程和本地修改日志。不要像普通 `packages/` 代码一样顺手重构它。
 
-`packages/` 是主产品层。绝大多数功能修改最终落在这里，但准确落点仍由能力所有者和角色决定，不是看到一个功能就新建 group。（0009 跨度事实：新增 `packages/telemetry/` 组承载共享的 Cordis OTel 上报通道；`packages/llm/` 把 DeepSeek 凭据拆成 `llm-deepseek-account` / `llm-deepseek-api-key`，并新增会话中途的动态工具更新投影，见 `.agents/notes/implemented/architecture/2026-09-20-dynamic-tool-updates.md`；组清单以 [`packages/README.md`](../../packages/README.md) 为准。）
+`packages/` 是主产品层。绝大多数功能修改最终落在这里，但准确落点仍由能力所有者和角色决定，不是看到一个功能就新建 group。（0009 跨度事实：新增 `packages/telemetry/` 组承载共享的 Cordis OTel 上报通道；`packages/llm/` 把 DeepSeek 凭据拆成 `llm-deepseek-account` / `llm-deepseek-api-key`，并新增会话中途的动态工具更新投影，见 `.agents/notes/implemented/architecture/2026-09-20-dynamic-tool-updates.md`；`packages/client/` 新增 `shortcuts` + `ui-shortcuts`（快捷键编辑重做与侧栏提示）与 `ui-settings-session-log`（Session Log 上传偏好设置页）；`packages/util/` 新增 `code-language`（代码高亮语言表统一的数据源）；审批解释文案本地化（#4793）与按请求凭据区分欠费提示/充值入口（#4858）也属本跨度用户可见面；组清单以 [`packages/README.md`](../../packages/README.md) 为准。）
 
 `apps/cli` 的职责是解析启动模式、组合 profile、提供进程级启动事实和收敛 shutdown；`apps/web` 只寻找 DOM mount point 并启动 client shell；`apps/desktop` 是 Electron 壳，`apps/desktop-host` 只负责组合并启动 `desktop` profile。入口保持薄，才能让 Web、Headless、SDK（含 `sdk-minimal`）与 ACP 复用相同的产品 packages——桌面是同一论点的第 5 个例证，它复用的正是 Web 那份 client 产物。
 
