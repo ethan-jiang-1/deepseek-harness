@@ -8,27 +8,27 @@
 
 ## 事件形状
 
-`system/message` 的载荷镜像 `tool/result`，是 `{ turn, step, message }`（`packages/core/session/src/types.ts:310`）。`message` 是 `SystemMessage`（`role: 'system'`，一个 text block 装渲染后的 prompt），来源固定为 `{ kind: 'plugin', plugin: '@deepseek-ai/dsh-system-prompt' }`（构造见 `packages/llm/llm/src/message.ts:238`）。
+`system/message` 的载荷镜像 `tool/result`，是 `{ turn, step, message }`（`packages/core/session/src/types.ts:330`）。`message` 是 `SystemMessage`（`role: 'system'`，一个 text block 装渲染后的 prompt），来源固定为 `{ kind: 'system-prompt' }`（构造见 `packages/llm/llm/src/message.ts:279`，source 字段在 `:283`）。
 
-surface 事件类型因此从三种变成四种：`system/message`、`user/message`、`assistant/message`、`tool/result`（`packages/core/session/src/types.ts:412-416`）。
+surface 事件类型在这次搬迁时从三种变成四种；0.2.0 线又加入 `developer/message`（动态工具更新的载体，见 [`02-管道审批timeout与chunk.md`](./02-管道审批timeout与chunk.md)），现为五种：`system/message`、`developer/message`、`user/message`、`assistant/message`、`tool/result`（`packages/core/session/src/types.ts:439-444`）。
 
 空 `content` 表示「无 system prompt」。节点保留 surface 位置，`deriveEventMessage` 把它投影为 `null`，不产生 wire 消息（`packages/core/session/src/surface.ts:109-116`）；同一分支也让「只带 usage 的 max-tokens assistant message」不注入空 assistant turn。
 
-提交时序：loop 在 `step/start` 之后、本步 `user/message` 之前提交 `system/message`（`turn()` 在 `packages/core/agent-loop/src/agent.ts:329` 落 `step/start`，`step()` 在 `:413-421` 提交 system 与首个 attempt 的 user 批次），所以**日志顺序 = wire 顺序**。`buildRequest`（`:599-687`）不再设 `system`，请求 = `header.config` + `session.deriveMessages()`（system 在最前）+ `header.tools`；配套的 invariant 断言 loop 构造的请求 `system === undefined`（`packages/core/agent-loop/src/invariant.ts:44-46`）。
+提交时序：loop 在 `step/start` 之后、本步 `user/message` 之前提交 `system/message`（`turn()` 在 `packages/core/agent-loop/src/agent.ts:329` 落 `step/start`，`step()` 在 `:413-421` 提交 system 与首个 attempt 的 user 批次），所以**日志顺序 = wire 顺序**。`buildRequest`（`:599-687`）不再设 `system`，请求 = `header.config` + `session.deriveMessages()`（system 在最前）+ `header.tools`；配套的 invariant 断言 loop 构造的请求 `system === undefined`（`packages/core/agent-loop/src/invariant.ts:45-47`）。
 
 ## `EpochHeader` 不再有 `system`
 
 `canonicalHeader` 只规范化 `config` / `adapterDefaults` / `tools`（`packages/core/session/src/request-header.ts:21-30`），`headerEquals` 也只逐字段比这三样（`:43-52`）。一个还想读 `header.system` 的消费者在**编译期就失败**——这是这次搬迁的设计目标之一。
 
-`RequestHeaderReason` 本身没变，仍是 `'initial' | 'resume' | 'change' | 'series'`（`packages/core/session/src/types.ts:261`）。变的是 `change` 的含义：现在只意味着 **config 或 tools** 变了；prompt 变化不再伪装成 `change`。
+`RequestHeaderReason` 本身没变，仍是 `'initial' | 'resume' | 'change' | 'series'`（`packages/core/session/src/types.ts:273`）。变的是 `change` 的含义：现在只意味着 **config 或 tools** 变了；prompt 变化不再伪装成 `change`。
 
-wire 请求不变。DeepSeek 序列化器把历史里的 `role: 'system'` 消息原样透传（`packages/llm/llm-deepseek/src/serialize.ts:250-251`、`:303-305`）；pi-ai 把 leading system history message 映射到它自己的单一 `systemPrompt` 槽（`packages/llm/llm-pi-ai/src/context.ts:140-151`）。`GenerateOptions.system` 仍保留给一次性调用者（声明 `packages/llm/llm/src/types.ts:511` 的接口、`:528` 的字段），例如 title provider（`packages/session/session-title-llm/src/index.ts:258` 把它放进冻结的 `GenerateOptions`）。
+wire 请求不变。DeepSeek 序列化器把历史里的 `role: 'system'` 消息原样透传（非 in-history 路径收进 `historySystem`，`packages/llm/llm-deepseek/src/serialize.ts:105-116`）；pi-ai 把 leading system history message 映射到它自己的单一 `systemPrompt` 槽（`packages/llm/llm-pi-ai/src/context.ts:151-163`）。`GenerateOptions.system` 仍保留给一次性调用者（声明 `packages/llm/llm/src/types.ts:511` 的接口、`:528` 的字段），例如 title provider（`packages/session/session-title-llm/src/index.ts:261` 把它放进冻结的 `GenerateOptions`）。
 
 ## 三种路由：`SystemPromptProjection`
 
-`SystemPromptProjection` 现在与 `RuntimeContextProjection` 并列，前者在 `packages/core/agent-loop/src/runtime-context.ts:59-104`，后者在 `:107`。它**每次 projection 都重扫当前 surface** 的 system node（`:63-73`），因为决策取决于「留下几个」。
+`SystemPromptProjection` 现在与 `RuntimeContextProjection` 并列，前者在 `packages/core/agent-loop/src/runtime-context.ts:65-103`，后者在 `:114`。它**每次 projection 都重扫当前 surface** 的 system node（`:68-80`），因为决策取决于「留下几个」。
 
-`project(rendered, { inHistory, startsSeries })` 返回有序的 per-node commits（`:81-96`），共三条路由：
+`project(rendered, { inHistory, startsSeries })` 返回有序的 per-node commits（`:88-103`），共三条路由：
 
 1. **没有 surviving system node** → `append`。即使 rendering 为空也先占住 node 0，节点记录「无 prompt」。
 2. **`!inHistory || startsSeries || rendered === ''`** → 先把 head 之后每个非空节点逐个替换成空，再在 head 文本与 rendering 不同时重写 head。这是「把有效文本归拢到 node 0」的归一化路径。
@@ -36,9 +36,9 @@ wire 请求不变。DeepSeek 序列化器把历史里的 `role: 'system'` 消息
 
 ## node 0 保护
 
-`assertSystemHeadRewrite`（`packages/core/session/src/surface.ts:404-418`）规定：替换范围覆盖 surface node 0、而 node 0 是 `system/message` 时，除非替换者本身也是恰好覆盖该节点的 `system/message`，否则拒绝。
+`assertSystemHeadRewrite`（`packages/core/session/src/surface.ts:499-513`）规定：替换范围覆盖 surface node 0、而 node 0 是 `system/message` 时，除非替换者本身也是恰好覆盖该节点的 `system/message`，否则拒绝。
 
-后面的 system node 没有这层保护，compaction 可以遮蔽它们。`compaction-basic` 的 `selectCompactableRange` 锚在第一个非 system 节点（`packages/compaction/compaction-basic/src/region.ts:130`），所以 node 0 永不被 compaction 遮蔽，摘要输入仍以有效 prompt 开头。
+后面的 system node 没有这层保护，compaction 可以遮蔽它们。`compaction-basic` 的 `selectCompactableRange` 锚在第一个非 system 节点（`packages/compaction/compaction-basic/src/region.ts:131`，`systemHead` 判定后跳过 node 0），所以 node 0 永不被 compaction 遮蔽，摘要输入仍以有效 prompt 开头。
 
 ## 「稳定前缀是否还成立」
 
