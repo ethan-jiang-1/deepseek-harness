@@ -1,6 +1,6 @@
 # 02 · 插件货架：316 包逐组图鉴
 
-基线 `dsh-v0.2.0-rc.2`（快照式清单，重测义务见 [`_coverage/`](../_coverage/00-index.md)）；组序与 [`packages/README.md`](../../packages/README.md) 一致。总量：316 包（`packages/*/*/package.json` 枚举）、54 组 + experimental。
+基线 `dsh-v0.2.0-rc.2`（快照式清单，重测义务见 [`_coverage/`](../_coverage/00-index.md)）；组序与 [`packages/README.md`](../../packages/README.md) 一致。总量：316 包（`packages/*/*/package.json` 枚举）、55 个包组（含 experimental）。
 
 **这页是图鉴，不是教程**：先读 [`01-capability-tour.md`](./01-capability-tour.md) 建立八类地图，再按组回来查。新人最高频的十个包：
 
@@ -245,7 +245,14 @@
 | web-search-perplexity | Impl | — | 5 | 备选搜索 Provider |
 | tool-web | Tool×2 | base+preset | 7 | `web_search/web_fetch`（名字稳定） |
 
-## document / attachment / spill / todo / plan（6 包）
+## deliverables/（2 包）
+
+| 包 | 形态 | 可见 | Config | 职责 |
+|---|---|---|---|---|
+| tool-present | Tool `present` | preset(standard/ptc/cordis) | 1 | 终件交付声明（inject tools/fs/sessionProjections） |
+| workspace-changes | Def `ctx.workspaceChanges` | web | 5 | 每轮变更文件摘要（git 快照＋whole-file capture） |
+
+## document / attachment / spill / todo（7 包）
 
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
@@ -302,15 +309,21 @@
 |---|---|---|---|---|
 | session-persistence | Def seam `ctx.sessionPersistence` | — | — | 持久化 seam |
 | session-persistence-jsonl | Impl | base+min | 2 | JSONL+zstd 实现 |
-| session-projection / -cache | Def×2 | base(+min) / base | 2 | 投影注册与缓存 |
+| session-projection | Def | base+min | — | 投影注册 |
+| session-projection-cache | Def | base | 2 | 投影缓存 |
 | session-title | Def seam | base+min | — | 标题生成面 |
-| first-prompt-llm / all-prompts-llm / session-title-llm | Impl×2＋lib | base / — / lib | — | 标题 Provider（all-prompts 未挂载＝可换） |
+| session-title-first-prompt-llm | Impl | base | — | 首条 prompt 标题 Provider |
+| session-title-all-prompts-llm | Impl | — | — | 全 prompt 标题 Provider（未挂载＝patch 可换） |
+| session-title-llm | lib | — | — | 标题共享逻辑 |
 | session-log-deepseek | Impl | base+min | 2 | 上传通道（delivery-accepted 事件） |
 | session-checkpoint-policy | 策略 | base | — | checkpoint 时机 |
 | session-telemetry | Def seam | — | — | 会话遥测 seam |
 | session-telemetry-otel | Impl | base | 6 | 出厂 FEEDBACK_ONLY |
-| session-stats / session-turn-outline | web 投影 | web | — | 右栏统计与大纲 |
-| session-format-catalog / -format / v0-v1 / v1-v2 / v2-v3 / v3-v4 | lib×6 | — | — | 冻结 codec 与相邻迁移链 |
+| session-stats | web 投影 | web | — | 右栏统计 |
+| session-turn-outline | web 投影 | web | — | 右栏轮次大纲 |
+| session-format-catalog | lib | — | — | 生成式迁移 catalog |
+| session-format | lib | — | — | Stage/chain 迁移协议 |
+| session-format-v0-to-v1 / session-format-v1-to-v2 / session-format-v2-to-v3 / session-format-v3-to-v4 | lib×4 | — | — | 冻结相邻迁移边 |
 
 ## session-query/（4 包）
 
@@ -363,7 +376,9 @@
 | webserver | Def `ctx.webServer` | web | 5 | HTTP 服务（127.0.0.1:3080 回退） |
 | frontend-static | 静态分发 | web | 1 | 前端 dist |
 | directory-picker | Def seam | — | — | 目录挑选 seam |
-| directory-picker-native / -browse / -auto | Impl×3 | web 自适应 | 1 | native / 浏览器 / 自动选择 |
+| directory-picker-native | Impl | — | — | 原生对话框后端 |
+| directory-picker-browse | Impl | — | 1 | 浏览器后端 |
+| directory-picker-auto | Impl | web | — | 自动选择后端 |
 | open-in-app | 打开器 | web | 0 | Open In… 宿主解析 |
 | plugin-inventory | 只读投影 | web | — | Loader 只读插件清单 |
 | product-telemetry-otel | Def `ctx.productTelemetry` | web | 11 | 桌面遥测 OTLP |
@@ -387,33 +402,88 @@
 
 UI 插件（53）：
 
-| 包 | 一句话 | 包 | 一句话 |
+| 包 | 一句话 |
+|---|---|
+| ui-layout | 三栏 AppFrame |
+| ui-renderer | slot 绑定＋根装配 |
+| ui-session | Session 控制器适配 |
+| ui-sidebar | 会话树 |
+| ui-sidebar-right | 右栏停靠面 |
+| ui-sidebar-files | 工作区文件树 |
+| ui-sidebar-terminal | 终端页签 |
+| ui-sidebar-documentpreview | 文档预览页 |
+| ui-sidebar-browser | 沙箱浏览器页签（desktop 门控） |
+| ui-conversation | 会话装配 |
+| ui-chat | Chat 目标 |
+| ui-commands | `/` 命令面 |
+| ui-input-trigger | `/` `@` 管线 |
+| ui-tool | 工具调用树＋按工具 slot |
+| ui-cordis | 动态插件卡片 |
+| ui-approval | 审批瀑布接管 |
+| ui-user-questions | 提问接管＋计划评审 |
+| ui-attachment | 附件呈现 |
+| ui-brand-official | 品牌槽占位 |
+| ui-deliverables | 交付卡＋变更文件卡 |
+| ui-jobs | 后台 job 面板 |
+| ui-goal | GoalBar |
+| ui-message-feedback | 赞/踩面 |
+| ui-model-selection | `/model` 座位 |
+| ui-permission-presets | 权限面 |
+| ui-plan | 计划座位＋卡片 |
+| ui-agent-preset | preset 缺省座位 |
+| ui-plugin-manager | 插件页安装/启停/卸载 |
+| ui-shortcuts | 键位参考/录制 |
+| ui-open-in-app | Open In… 按钮 |
+| ui-schedule | 任务页（schedule-bundle 用） |
+| ui-workspace | 工作区选择器 |
+| ui-workflow-run | 工作流运行节点 |
+| ui-trajectory | 轨迹事件账本 |
+| ui-theme | 明暗主题（Config 2） |
+| ui-skill | skill 工具行 |
+| ui-subagent | 子代理目录＋续跑路由 |
+| ui-reference | @file/@session 引用源 |
+| ui-settings | 设置域基座 |
+| ui-settings-general | 常规页 |
+| ui-settings-models | 模型页 |
+| ui-settings-account | 账户页 |
+| ui-settings-plugins | 插件设置页 |
+| ui-settings-plugin-inventory | 只读插件清单页 |
+| ui-settings-shell | shell 设置页 |
+| ui-settings-agent-loop | agent-loop 设置页 |
+| ui-settings-subagent | subagent 设置页 |
+| ui-settings-web-search | 网搜设置页 |
+| ui-settings-session-log | 日志上传偏好 |
+| ui-directory-picker-native | 目录流原生后端 |
+| ui-directory-picker-browse | 目录流浏览器后端 |
+| ui-primitives | 纯 React 原子 |
+| ui-slots | slot 注册表核心 |
+| ui-dockkit | 停靠布局引擎 |
+
+## experimental/（21 包，九家族——合同随时会变，机制页见 [`experimental/`](../experimental/00-map.md)）
+
+| 包 | 家族 | 形态 | 入口 |
 |---|---|---|---|
-| ui-layout | 三栏 AppFrame | ui-settings | 设置域基座 |
-| ui-renderer | slot 绑定＋根装配 | ui-settings-general | 常规页 |
-| ui-session | Session 控制器适配 | ui-settings-models | 模型页 |
-| ui-sidebar | 会话树 | ui-settings-account | 账户页 |
-| ui-sidebar-right | 右栏停靠面 | ui-settings-plugins | 插件设置页 |
-| ui-sidebar-files | 工作区文件树 | ui-settings-plugin-inventory | 只读插件清单页 |
-| ui-sidebar-terminal | 终端页签 | ui-settings-shell | shell 设置页 |
-| ui-sidebar-documentpreview | 文档预览页 | ui-settings-agent-loop | agent-loop 设置页 |
-| ui-sidebar-browser | 沙箱浏览器页签（desktop 门控） | ui-settings-subagent | subagent 设置页 |
-| ui-conversation | 会话装配 | ui-settings-web-search | 网搜设置页 |
-| ui-chat | Chat 目标 | ui-settings-session-log | 日志上传偏好 |
-| ui-commands | `/` 命令面 | ui-skill | skill 工具行 |
-| ui-input-trigger | `/` `@` 管线 | ui-subagent | 子代理目录＋续跑路由 |
-| ui-tool | 工具调用树 | ui-reference | @file/@session 引用源 |
-| ui-cordis | 动态插件卡片 | ui-theme | 明暗主题（Config 2） |
-| ui-approval | 审批瀑布接管 | ui-trajectory | 轨迹事件账本 |
-| ui-user-questions | 提问接管＋计划评审 | ui-workflow-run | 工作流运行节点 |
-| ui-attachment | 附件呈现 | ui-workspace | 工作区选择器 |
-| ui-brand-official | 品牌槽占位 | ui-schedule | 任务页（schedule-bundle 用） |
-| ui-deliverables | 交付卡＋变更文件卡 | ui-open-in-app | Open In… 按钮 |
-| ui-jobs | 后台 job 面板 | ui-shortcuts | 键位参考/录制 |
-| ui-goal | GoalBar | ui-plan | 计划座位＋卡片 |
-| ui-message-feedback | 赞/踩面 | ui-permission-presets | 权限面 |
-| ui-model-selection | `/model` 座位 | ui-agent-preset | preset 缺省座位 |
-| ui-directory-picker-native / -browse | 目录流双后端 | ui-primitives / ui-slots / ui-dockkit | lib（原子/slot 表/停靠引擎） |
+| speech-to-text | 语音输入 | Def seam `ctx.speechToText` | voice-input-bundle 一键开 |
+| speech-to-text-sensevoice | 语音输入 | Impl（Config 22） | 同上 |
+| api-speech-to-text | 语音输入 | Def `ctx.speechController` | 同上 |
+| client-ui-voice-input | 语音输入 | UI | 同上 |
+| voice-input-bundle | 语音输入 | bundle | OPTIONAL_BUNDLES |
+| agent-team | Agent Teams | Def `ctx.agentTeams` | agent-team-profile 一键开 |
+| tool-agent-team | Agent Teams | Tool×9 | 同上 |
+| client-ui-agent-team | Agent Teams | UI | 同上 |
+| agent-team-profile | Agent Teams | bundle | OPTIONAL_BUNDLES |
+| auto-review | 自动审查 | tools/pre-execute 审查插件 | OPTIONAL_BUNDLES |
+| schedule-bundle | 定时 | bundle（带回 schedule 三行） | OPTIONAL_BUNDLES |
+| ptc-runtime-python | PTC | Impl `ctx.ptcRuntime`（Config 7） | patch insert 换后端 |
+| computer-use-cua-driver-mcp | 桌面控制 | Impl `ctx.computerUse` | patch insert |
+| computer-use-cua-driver-native | 桌面控制 | Impl `ctx.computerUse` | patch insert |
+| browser-use-playwright-mcp | 浏览器控制 | Impl `ctx.browserUse` | patch insert |
+| browser-use-chrome-devtools-mcp | 浏览器控制 | Impl `ctx.browserUse` | patch insert |
+| browser-use-stagehand-native | 浏览器控制 | Impl `ctx.browserUse`（6 工具） | patch insert |
+| browser-use-runtime | 浏览器控制 | lib（mountSessionMcp） | 被 driver import |
+| inspector | 调试 | Def `ctx.inspector` | 显式安装，不进 OPTIONAL_BUNDLES |
+| webworker-packer | worker 预览 | lib | apps/web build:preview |
+| webworker-runtime | worker 预览 | worker 入口 | 同上 |
 
 ## test-support / runtime-diagnostics / util（25 包）
 
@@ -423,3 +493,13 @@ UI 插件（53）：
 | llm-replay | Impl `ctx.llm` | 回放 adapter（Config 20） |
 | invariants | Def `ctx.invariants` | 运行时不变量（min） |
 | util/ 17 包（atomic-write、brand、chunked-list、code-language、crypto、deque、home-paths、http-proxy、launch-environment、lazy-require、native-command、output-retention、package-manifest、time、timeout、values、workspace-path） | lib | 零依赖支撑，不挂载 |
+
+## 覆盖复核方式
+
+本页与文件系统的一致性可机械复核（每次 upstream 同步后重跑）：
+
+```sh
+for d in packages/*/*/; do [ -f "$d/package.json" ] && basename "$d"; done | while read n; do grep -q "$n" _digested/plugin-inventory/02-plugin-catalog.md || echo "missing: $n"; done
+```
+
+0009 独立反查时该扫描曾抓到 32 个缺名包（缩写引用与整组漏节），已全部补齐；此后新增包只要落一个组行即保持零缺失。
