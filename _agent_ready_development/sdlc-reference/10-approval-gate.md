@@ -50,7 +50,7 @@
 
 ## 5. merge 在历史上呈现的形态
 
-在可复核的 git 历史窗口内（2026-07-30 之后的产品线，约 8300 个 commit），产品变更的主落地形态是 **GitHub merge commit**：约三分之一的 commit 是 merge，PR merge 标题携带 PR 号（例如 `46a7f68b09` "Merge pull request #5073 from deepseek-harness/rel/dsh-0.1.7-rc.1"）。次要形态是自定义标题的 2 父 merge（`07ad70817f` "fix(plugins): deny incompatible bundles … (#5061)"）与少数 squash 成单 commit 的落地。PR 大小分布很宽：最近 100 个 PR merge 的样本中，commit 数中位数为 3、众数为 1（约三分之一的 PR 是单 commit），大 PR 可达数十个 commit。review 中途把 master merge-forward 进分支是常规操作（`312341970c` "Merge master into fix/zoom-rerender"）。分支命名并存两类前缀：类型前缀（`feat/`、`fix/`、`rel/`）与执行者命名空间（`worktree/`、`codex/`、`turtle/`、`ihsiang/`），常带日期后缀（`fix/preset-ui-20260921`）。依赖式 PR 栈的落地纪律见 [Reference 07](./07-push-merge-stacked-prs.md)。
+在可复核的 git 历史窗口内（2026-07-30 之后的产品线，约 8300 个 commit），产品变更的主落地形态是 **GitHub merge commit**：约三分之一的 commit 是 merge，PR merge 标题携带 PR 号（例如 `46a7f68b09` "Merge pull request #5073 from deepseek-harness/rel/dsh-0.1.7-rc.1"）。次要形态是自定义标题的 2 父 merge（`07ad70817f` "fix(plugins): deny incompatible bundles … (#5061)"）与少数 squash 成单 commit 的落地。PR 大小分布很宽：最近 100 个 PR merge 的样本中，commit 数中位数为 3、众数为 2（约五分之一的 PR 是单 commit；0009 独立反查重测，旧读「众数 1、约三分之一」为该轮样本口径误差），大 PR 可达数十个 commit。review 中途把 master merge-forward 进分支是常规操作（`312341970c` "Merge master into fix/zoom-rerender"）。分支命名并存两类前缀：类型前缀（`feat/`、`fix/`、`rel/`）与执行者命名空间（`worktree/`、`codex/`、`turtle/`、`ihsiang/`），常带日期后缀（`fix/preset-ui-20260921`）。依赖式 PR 栈的落地纪律见 [Reference 07](./07-push-merge-stacked-prs.md)。
 
 ## 6. 三道门禁各管什么
 

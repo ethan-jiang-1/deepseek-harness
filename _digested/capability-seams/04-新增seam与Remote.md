@@ -37,7 +37,7 @@
 - **core 服务**（`packages/webhook/webhook/`）：`ctx.webhookRuntime` — 认证投递分发、Workspace Session 创建。生成表的 role 列是 `core`、implementation 列是 `-`，`docs/architecture.md:70` 也把它列在核心包表里
 - **消费者 / 来源适配器**（`packages/webhook/webhook-github/`）：GitHub webhook 事件处理与签名验证（`body.ts`、`handler.ts`）。它 `inject: ['webServer', 'webhookRuntime', 'credentials']`（`packages/webhook/webhook-github/src/index.ts:14`），验签后调 `ctx.webhookRuntime.dispatch(delivery)`（`src/handler.ts:115`）——按生成表的列它是 direct consumer，不是 Provider
 
-`webhook/webhook/src/session.ts` 定义了从 webhook 创建 Workspace Session 的逻辑。产品文档里的「provider adapter」（`docs/architecture.md:152`）指 **webhook 来源适配器**，不是 capability seam 的 Service Provider 角色；`ctx.webhookRuntime` 没有第二个实现包，因此这里既没有可分包的 Provider，也不构成 seam——FAQ 08 的 29 条 seam 表不含它。
+`webhook/webhook/src/session.ts` 定义了从 webhook 创建 Workspace Session 的逻辑。产品文档里的「provider adapter」（`docs/architecture.md:152`）指 **webhook 来源适配器**，不是 capability seam 的 Service Provider 角色；`ctx.webhookRuntime` 没有第二个实现包，因此这里既没有可分包的 Provider，也不构成 seam——FAQ 08 的 33 条 seam 表不含它。
 
 ## API Remote：非三角色的 BFF 通信模式
 
@@ -64,7 +64,7 @@ settings、credentials、subagent control、agent-presets、workspace-controller
 | ctx 键 | owner | 说明 |
 |--------|-------|------|
 | `ctx.fileUploads` | `packages/client/file-upload/` | 流式接收、持久化与 staged receipt 生命期；唯一直接消费者是 Session controller（`docs/capability-seams.md:590`）；服务名注册见 `packages/client/file-upload/src/index.ts:65` |
-| `ctx.workspaceFiles` | `packages/api/workspace-files/` | Session workspace 内的 stat、分页文本、字节窗口、目录列表与变更流共 7 个 Remote 方法（`docs/capability-seams.md:603`）；`WorkspaceFiles extends TypertRemoteService`（`packages/api/workspace-files/src/index.ts:182`） |
+| `ctx.workspaceFiles` | `packages/api/workspace-files/` | Session workspace 内的 stat、分页文本、字节窗口、目录列表与变更流共 5 个 Remote 方法（`docs/capability-seams.md:603`）；`WorkspaceFiles extends TypertRemoteService`（`packages/api/workspace-files/src/index.ts:182`） |
 | `ctx.sessionFeedback` | `packages/feedback/command-feedback/` | 记录一条 Session 级反馈，log-only（`docs/capability-seams.md:625`） |
 
 `ctx.messageFeedback` 改为由 **canonical Session log** 承载（`docs/capability-seams.md:624`），并且不再消费 `ctx.storageDomain`——迁移后 `:623` 的 `ctx.storageDomain` Direct consumers 只剩 `workspace`。字段级反馈落成 log-only 事件 `feedback/message-put` / `feedback/message-delete`（`packages/feedback/message-feedback/src/index.ts:196`、`:212`），写入前做 per-item version compare-and-set（`:178` 的 `ifVersion` 检查）；Session 级反馈是 `feedback/record`（`packages/feedback/command-feedback/src/index.ts:60`）。三者都留在模型历史之外。

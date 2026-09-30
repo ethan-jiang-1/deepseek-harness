@@ -35,7 +35,7 @@
 └── README.md + README.zh.md + README.i18n.yaml        ← 规则本身也是三件套
 ```
 
-三件套的第三件（`.i18n.yaml`）记录两份语言的 git blob hash——连“中英文档相等”这个纪律都被可执行配对钉住，与主例 README 的配对方式完全相同。一个 agent 不需要读完整规则就能从目录树读出：决定分五个类别、有四种状态、双语平等。
+三件套的第三件（`.i18n.yaml`）记录两份语言的 git blob hash——连“中英文档相等”这个纪律都被可执行配对钉住，与主例 README 的配对方式完全相同。一个 agent 不需要读完整规则就能从目录树读出：决定分六个类别、有四种状态、双语平等。
 
 **Agent Note 只拥有决定**：承载持久决定理由的变更（代码、测试与现有文档都无法解释“为什么选当前方案”与“主动放弃了什么”这两类事实的变更）都要新增或更新 owning Agent Note；机械或局部编辑（含局部 UI 呈现）豁免。它有两个常见起点——决定仍需实现前评审时创建 proposed；决定已明确并随当前变更交付时直接 implemented。生命周期、取代和冻结归档规则属于 Reference 层机制，见 [Agent Note lifecycle](../sdlc-reference/01-agent-note-lifecycle.md)。
 

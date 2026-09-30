@@ -72,7 +72,7 @@ Intent 不都长成 Issue。仓库里还有三类被规则认可的载体：
 
 ## 7. 意图怎样到达 coding agent
 
-仓库没有 Issue→agent 的自动分派机制。coding agent 拿到工作靠三层东西：根 `AGENTS.md` 与 21 个子树 `AGENTS.md` 的常设指令；`.agents/skills/` 下 15 个 Skill 的 frontmatter `description`（以 "Use …" 开头的适用条件）按任务匹配加载；以及会话自身的任务上下文（例如 `pnpm dsh --profile headless "task"` 把任务作为 prompt 字符串交给 headless profile）。Plan Mode、goal、todo 等会话机制属于运行时协作状态，见 [Plan 与 sandbox](./03-plan-and-sandbox.md)，不是仓库工作项。
+仓库没有 Issue→agent 的自动分派机制。coding agent 拿到工作靠三层东西：根 `AGENTS.md` 与 21 个子树 `AGENTS.md` 的常设指令；`.agents/skills/` 下 15 个 Skill 的 frontmatter `description`（多数以 "Use …" 开头，各自自述适用条件）按任务匹配加载；以及会话自身的任务上下文（例如 `pnpm dsh --profile headless "task"` 把任务作为 prompt 字符串交给 headless profile）。Plan Mode、goal、todo 等会话机制属于运行时协作状态，见 [Plan 与 sandbox](./03-plan-and-sandbox.md)，不是仓库工作项。
 
 ## 证据入口
 
