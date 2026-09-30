@@ -64,7 +64,7 @@
 | 未覆盖项 | 权威入口 | 为什么不在本语料 |
 |----------|----------|------------------|
 | CI 平台矩阵与 PR 阻断信号（PR-only `ci.yml` vs master-only `ci-master.yml`、Windows/Wine 分工、failover 开关） | `.github/AGENTS.md`、`.github/workflows/ci.yml`、`ci-master.yml` | 属仓库流程面，不是运行时机制 |
-| 门禁系统自身的 mode 分类与阻断语义（`scripts/run-gates.ts` 的 17 个 mode、`allowFailure`/`quick`） | `scripts/run-gates.ts`、`scripts/AGENTS.md`；机制级概述已由 `system/03-门禁与性能基准.md` 承载（0008 独立复核后补挂） | mode 逐个语义仍不展开；语料只给聚合与家族图 |
+| 门禁系统自身的 mode 分类与阻断语义（`scripts/run-gates.ts` 的 18 个 mode，0009 新增 `ci-unit`、`allowFailure`/`quick`） | `scripts/run-gates.ts`、`scripts/AGENTS.md`；机制级概述已由 `system/03-门禁与性能基准.md` 承载（0008 独立复核后补挂） | mode 逐个语义仍不展开；语料只给聚合与家族图 |
 | 录制会话快照的所有权与规范化规则 | `snapshots/AGENTS.md` | 义务散见于 `harness-idea/03`、`04`，未成页 |
 | Python 发行物（SDK / runtime 拆分、单文件可执行、wheel、smoke 与 CI） | `python/README.md`、`python/development.md` | 只有区域级一行描述 |
 | PR 历史的当前契约（官方 stack 对象、`gh stack merge`、lease 重写） | `AGENTS.md` 的「Choose PR history deliberately」、`dsh-merging-stacked-prs` skill | `_faq_on_digested/11` 记的是历史观察，非当前契约 |
@@ -72,6 +72,9 @@
 | 根级政策文档 `SAFETY.md` / `BRAND_GUIDELINES.md` | 仓库根 | 非机制 |
 | `docs/rescope.md` 的 vendored 包命名映射权威 | `docs/rescope.md`、`vendor/README.md` | 概念已覆盖（`cordis-runtime/00-map.md`），文件名未引 |
 | `docs/graph-atlas.md` 作为生成目录之一 | `docs/graph-atlas.md` | 生成目录枚举里漏列 |
+| `docs/ui-radius.md`（0009 新增顶层页）与 `docs/deepseek-llm-api-wire-extensions.md` 的逐条细则 | 两页本体；权威入口已挂 `surfaces/05`、`tools-prompt-llm/00-map.md` | 语料只引权威入口，不逐条展开视觉 token 与线协议字段（0009 独立反查登记） |
+| 未挂载 shipped 组合的工具族与零落点事件键：`tool-session-query` 5 工具、`tool-terminal` 6 工具、`list_subagent_models`、`lsp` 工具名；事件键 `session/title(-llm-request)`、`web/deepseek-search-llm-request`、`llm/retry(-started)` | `packages/session-query/tool-session-query/src/index.ts:65-108`、`packages/terminal/tool-terminal/src/index.ts:163-390`、`packages/subagent/tool-subagent/src/list-models.ts:87`、`packages/lsp/tool-lsp/src/index.ts:109`、`packages/core/session/src/known-event-types.ts:22-82` | 整族零落点但机制近邻有承载（`capability-seams/10`、`runtime-profiles/01:32`）；事件名零落点、机制旁及（0009 独立反查登记） |
+| 配置字段级落点：`compaction-basic` 的 `thresholdRatio`、`deepseek-account-platform` 的 `platformOrigin` | `docs/config-catalog.md` | 机制页有落点（`tools-prompt-llm/03`、`capability-seams/10:25`），字段名不逐一收录（0009 独立反查登记） |
 | `native/` 的 Windows job 名与 source-of-record 表述 | `native/README.md`、`.github/workflows/node-addon-system.yml` | 区域级已覆盖，未到 job 级 |
 | `client/hmr`、`client/locale`、`client/store` 等平台包的内部机制 | 各自 package README | 属客户端基础设施，`surfaces/05` 覆盖其对外纪律 |
 | ssh 各 provider 的逐行传输合同（master channel、TLS-PSK、心跳租约的深读） | `packages/ssh/`、`capability-seams/09-ssh远程执行族.md`（本语料已有族级页） | 0008 独立复核补的是族级机制页；逐条 wire 细节待有需要再扩 |
