@@ -87,7 +87,7 @@ fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的
 
 coding agent 的真实约束不只有「读不读得懂」，还有**上下文预算内能否找到对的入口**。dsh 的文档 tier 为此分层：
 
-- 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 1950 词），细节链接到 home；
+- 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 1960 词，0009 线上调），细节链接到 home；
 - [`docs/architecture.md`](../../docs/architecture.md) 是 2,410 词预算内（0.1.7 线 doc-budgets 上调）的有序地图；
 - 生成的 catalog 提供穷举查询，不要求读者通读；
 - skills 提供可调用的程序化工作流，如 [`dsh-doc`](../../.agents/skills/dsh-doc/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。

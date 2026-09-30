@@ -6,7 +6,7 @@
 
 | 层 | 机制 | 证据 |
 |---|---|---|
-| 模型层 | Flash 路由 + `reasoningEffort: max` | `llm-deepseek` 省略 `models` 时默认公布四个条目——`deepseek-flash` 与 `deepseek-v4-flash-vision-exp`（均含 image 模态）、`deepseek-v4-flash` 与 `deepseek-v4-pro`（text-only），各 1,000,000 token 上下文（`packages/llm/llm-deepseek/README.md:49`）；档位集 `off\|low\|high\|max`，省略回退 `high`（`README.md:56`、`:83`），`low/high/max` 都启用思考、以官方顶层 `reasoning_effort` 序列化 |
+| 模型层 | Flash 路由 + `reasoningEffort: max` | `llm-deepseek` 省略 `models` 时默认公布两条目——`deepseek-flash`（name DeepSeek-V41-Flash，text+image，且声明 `systemPromptUpdate: 'in-history'` 与 `toolUpdate: 'addition-only'`）与 `deepseek-v4-pro`（text-only），各 1,000,000 token 上下文（`packages/llm/llm-deepseek/src/models.ts:8-24` 的 `DEFAULT_CONTEXT_WINDOW`，即 `src/defaults.ts:6` 的 1,000,000；`README.md:52`）；档位集 `off\|low\|high\|max`，省略回退 `high`（`README.md:44`、`:58`），`low/high/max` 都启用思考、以官方顶层 `reasoning_effort` 序列化（`README.md:102`）（0009 按 `dsh-v0.2.0-rc.2` 实测重写：旧四条目中的 `deepseek-v4-flash-vision-exp` 与 `deepseek-v4-flash` 已不在默认 catalog） |
 | 驱动层 | goal 续轮：一个目标跨 turn 自主推进 | `create_goal/get_goal/update_goal` 三工具 + `goal-round-driver`；层级 **Goal → Round → Turn → Step**，一轮 = 一条 `source.kind==='goal'` 的 `user/message` 开的普通 turn（`.agents/notes/archived/feature/2026-07-19-same-session-goal-round-driver.md:18`） |
 | 评审层 | plan 模式：执行前的人类审批姿态 | 唯一持久事实是会话事件 `plan/mode {active}`（`packages/plan/plan-mode/src/index.ts:46-55`）；`exit_plan_mode` 经 `ctx.userQuestions.ask` 提交 `Approve / Keep planning` 评审（`plan-mode/src/index.ts:296-341`） |
 | 编排层 | `workflow` 工具：一个 JS 脚本 fan-out 多个子代理 | `ctx.workflowEngine`（worker-thread Provider）+ `tool-workflow` Consumer；脚本 hooks：`agent()/pipeline()/parallel()/phase()/log()`（`packages/workflow/workflow/README.md`） |
@@ -15,11 +15,11 @@
 
 ## 第二节 "思考开在 Max"的机制，与它 hidden 的 token 账
 
-`reasoningEffort: max` 是适配器拥有的不透明档位字符串，不是核心枚举：`resolveCallConfig()` 只接受该确切模型公布过的档位，不支持的值在**网络 I/O 之前**以 `UNSUPPORTED_REASONING_EFFORT` 失败，绝不静默钳制（`packages/llm/llm-deepseek/README.md:83`；核心侧校验发生在 `ctx.llm.prepareCall()`，`packages/core/agent-loop/README.md:93`）。生效值随 `request/header` 落日志，`agent/request` waterfall 可以每一步替换它（`packages/core/agent-loop/README.md:51`、`:93`）——所以"Max"可以是会话默认，也可以是重构关键步骤才升档的逐请求决策。
+`reasoningEffort: max` 是适配器拥有的不透明档位字符串，不是核心枚举：`resolveCallConfig()` 只接受该确切模型公布过的档位，不支持的值在**网络 I/O 之前**以 `UNSUPPORTED_REASONING_EFFORT` 失败，绝不静默钳制（`packages/llm/llm-deepseek/README.md:102`；核心侧校验发生在 `ctx.llm.prepareCall()`，`packages/core/agent-loop/README.md:93`）。生效值随 `request/header` 落日志，`agent/request` waterfall 可以每一步替换它（`packages/core/agent-loop/README.md:51`、`:93`）——所以"Max"可以是会话默认，也可以是重构关键步骤才升档的逐请求决策。
 
 但 max 档有一笔多数人不会注意的账：**reasoning 回传规则**——
 
-> 每个携带推理内容的 assistant 轮次都会把 reasoning 原文序列化回历史："Reasoning passback carries every reasoned turn's chain of thought into later requests"（`packages/llm/llm-deepseek/README.md:159`）。
+> 每个携带推理内容的 assistant 轮次都会把 reasoning 原文序列化回历史："Reasoning passback carries every reasoned turn's chain of thought into later requests"（`packages/llm/llm-deepseek/README.md:176`）。
 
 对一个"重构三小时、几百个工具调用轮次"的会话，这意味着**每一步的思考原文都进入后续所有请求的前缀**。缓和组织了这件事：未变的装配前缀可命中 DeepSeek cache 回报（`README.md:178-180`），但路由一换、前缀一变即从第一个变更 token 起全失效。这就是"10 亿 token"的微观结构：**不是哪里漏了，是 max 档的思考税 × 长会话回传 × 前缀敏感缓存的乘积。**"快就是好"在 token 经济学上的完整表述应该是：Flash 的单价优势要乘上 cache 命中率才成立；长会话中途换模型/改 effort/动图预算，都是对缓存的一次性清零。
 

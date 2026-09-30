@@ -6,6 +6,6 @@ DSH 宣称 everything is a plugin。口号之外，以当前源码为准：哪�
 
 ## 回答目标
 
-给出一条可操作的 seam 成熟度判据（三角色完整性 + Provider 数量 + Consumer 覆盖 + L0 可解决性），方法上以 `_digested/` 全部专题的机制结论为底、以 freshness-gated 的生成目录 [`docs/capability-seams.md`](../../docs/capability-seams.md) 的 89 个 `ctx` 行（54 core + 33 seam + 1 bundle + 1 service）为量化底座，把插件领域分成"饱和 / 缺口 / 空白"三层并诚实记下不可插件化的边界；业务价值判断与产品叙事不在本题范围，见 [FAQ 09](../09_plugin-business-ladder/answer.md)。
+给出一条可操作的 seam 成熟度判据（三角色完整性 + Provider 数量 + Consumer 覆盖 + L0 可解决性），方法上以 `_digested/` 全部专题的机制结论为底、以 freshness-gated 的生成目录 [`docs/capability-seams.md`](../../docs/capability-seams.md) 的 92 个 `ctx` 行（55 core + 33 seam + 1 bundle + 3 service，0009 基线）为量化底座，把插件领域分成"饱和 / 缺口 / 空白"三层并诚实记下不可插件化的边界；业务价值判断与产品叙事不在本题范围，见 [FAQ 09](../09_plugin-business-ladder/answer.md)。
 
 源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b09`；seam 计数以该时点的生成表 [`docs/capability-seams.md`](../../docs/capability-seams.md) 实测为准（2026-09-23 的 0008 复核重测）。
