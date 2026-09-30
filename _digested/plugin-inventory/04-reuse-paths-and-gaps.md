@@ -25,7 +25,7 @@
 
 ## 出路三：挂现成包
 
-`dsh plugin --profile <name> add <package>`（apps/cli/src/args.ts:99；README.md:18）：内置 bundle 从安装闭包解析、外部包从 profile 的 node_modules 解析（README.md:46），兼容性由 DSH peer 范围把守（README.md:39；apps/cli/src/plugin.ts:100）。货架上的现货（[`02`](./02-plugin-catalog.md) 中「可见性＝—」的行）：`tool-str-replace-editor`、`tool-lsp`＋`lsp-stdio`、`tool-terminal`、`tool-session-query`、`web-search-exa`、`mcp-client`、`hooks-codex` 等。
+`dsh plugin --profile <name> add <package>`（apps/cli/src/args.ts:99；apps/cli/README.md:18）：内置 bundle 从安装闭包解析、外部包从 profile 的 node_modules 解析（apps/cli/README.md:46），兼容性由 DSH peer 范围把守（apps/cli/README.md:39；apps/cli/src/plugin.ts:100）。货架上的现货（[`02`](./02-plugin-catalog.md) 中「可见性＝—」的行）：`tool-str-replace-editor`、`tool-lsp`＋`lsp-stdio`、`tool-terminal`、`tool-session-query`、`web-search-exa`、`mcp-client`、`hooks-codex` 等。
 
 ## 出路四：写胶水插件，消费现成服务
 

@@ -32,7 +32,7 @@
 | `developer/message` | 是（surface；v4 新增的第五类：开发者的可见消息，空节点保留位置不产生模型消息，`packages/core/session/src/types.ts:311-317`；provider/UI 显式拒绝不能表达的 developer 历史） |
 | `session/end-seed` | 否（种子与 live 的分界；非 loop 写——合法写者 = Session 构造器 + `buildForkSeed`（fork seed 可自带 tagged end-seed marker 与 child-owned synthetic closers，marker 不必在 `firstLiveSeq`，`packages/core/session/src/types.ts:402-427`）；appender `packages/core/session/src/index.ts:619-621`） |
 
-`SurfaceEventType` 有五类：`system/message`、`user/message`、`assistant/message`、`tool/result`、`developer/message`（v4 新增；`packages/core/session/src/types.ts:439-445`）。只有它们可以带 `surfaceOp`；`assistant/message` **独占禁止** `sourceEventSeqs`，其余四类可引用非空、唯一、严格更早的 seq 集合。编译器在 `Session.append` 调用点强制：log-only 事件不许带 surface 字段。
+`SurfaceEventType` 有五类：`system/message`、`user/message`、`assistant/message`、`tool/result`、`developer/message`（v4 新增；`packages/core/session/src/types.ts:439-444`）。只有它们可以带 `surfaceOp`；`assistant/message` **独占禁止** `sourceEventSeqs`，其余四类可引用非空、唯一、严格更早的 seq 集合。编译器在 `Session.append` 调用点强制：log-only 事件不许带 surface 字段。
 
 `surfaceOp`：`'append'` 接到尾巴；`{ op: 'replace', startSeq, endSeq }` 换掉一段有序 surface（compaction 与 system 节点改写用）。端点按**当前 surface 顺序**、含端点解释，不是数值 seq 顺序；replace 节点的 `sourceEventSeqs` 必须覆盖被挡住的每一个 surface 节点。
 
@@ -76,5 +76,7 @@
 人看的 transcript 不是同一份投影：UI 常用 **append-origin** 的 surface 事件；`deriveMessages()` 走 compaction `replace` 之后的有序 surface。像素级回放展开 settlement 的内嵌 `stream`（`expandAssistantStream()`，`packages/llm/llm/src/assistant-stream.ts:202`）；模型下一请求读 assembled message。
 
 两套「source」不要混：`sourceEventSeqs` 是 log 里更早事件的 seq；`UserMessage.source` 是语义来源（v4 起字段为 `kind`：`user` / `model` / `tool` / `system-prompt` 及各生产者合并的 kind，`packages/llm/llm/src/message.ts:110-115` 的 `MessageSourceMap`（`system-prompt` 变体在同文件 `:35-36`）——v3 的 `plugin` 属性随 v4 改名），不参与 surface fold。
+
+生产者合并 kind 的现成例子：迟到的问题回答以 `source.kind: 'user-question-reply'`（`{ callId, outcome: 'answered' }`，`packages/interaction/user-questions/src/types.ts:108-117`）写在普通 `user/message` 上——answer RPC 是唯一生产者（`packages/interaction/user-questions/src/index.ts:186-195`），`userQuestions` projection 读它关题并记录答案；加生产者 kind 不加事件类型，不 bump `SESSION_FORMAT_VERSION`（声明见 `docs/persistence-changes/2026-09-21-user-question-reply.md`）。
 
 对话内容必须成为 surface；system prompt 最终写成 `system/message` 节点，`inject` 和 runtime-context 快照最终都写成 `user/message`。动态 prompt section、tool schema 与模型配置走另一条现成路径：实际结果在分派前写入 `request/header`（system 除外），无需为每个 section 新增事件类型。只有现有 surface 与 header 都无法表达的新语义，才扩展 `SessionEventMap` 和相应的重建规则。

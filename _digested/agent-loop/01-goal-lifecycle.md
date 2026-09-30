@@ -10,7 +10,7 @@ DSH 没有隐藏的「意图理解引擎」来自动创建 goal。goal 只能通
 
 ### 路径一：模型通过 `create_goal` tool 创建 ← 你看到的效果
 
-`packages/goal/tool-goal/src/index.ts:208-233` 注册了 `create_goal` tool。关键的引导在于 tool 的 `description`（第 51-54 行）：
+`packages/goal/tool-goal/src/index.ts:207-232` 注册了 `create_goal` tool。关键的引导在于 tool 的 `description`（第 51-54 行）：
 
 > "Create a persisted goal that keeps this session working across automatic continuation rounds. Use it when the direct human request is a long-running objective, even if the user did not say \"goal\"; not for single-turn work."
 
@@ -30,7 +30,7 @@ requireDirectHuman(ctx, execution)  // 只允许在 human 发起的 turn 中创�
 
 ### 路径二：用户手敲 `/goal <objective>`
 
-`packages/goal/command-goal/src/index.ts:190-196` 注册了 `/goal` 命令。解析（第 34-44 行）是**整词匹配，不是前缀匹配**：`clear`/`pause`/`resume`/`edit` 必须与整个输入相等（`edit` 也可以是 `edit ` 加空白加 objective），其余一切输入——包括 `cleanup` 这种恰好「以 clea 开头」的词——都视为创建：
+`packages/goal/command-goal/src/index.ts:190-196` 注册了 `/goal` 命令。解析（第 35-45 行）是**整词匹配，不是前缀匹配**：`clear`/`pause`/`resume`/`edit` 必须与整个输入相等（`edit` 也可以是 `edit ` 加空白加 objective），其余一切输入——包括 `cleanup` 这种恰好「以 clea 开头」的词——都视为创建：
 
 ```ts
 if (/^edit(?=\s)/iu.test(input)) return { kind: 'edit', objective: input.slice(4).trim() }
@@ -76,7 +76,7 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 
 两个容易记错的点：**`complete` 是终态，不可 resume**——`resume` 的允许集只有 `['active', 'paused', 'blocked']`（`goal/src/index.ts:368`，严格 fold 同 `packages/goal/goal/src/fold.ts:225-236`），complete goal 只能被 `create()` 替换；**blocked 可以手动 resume**（需 human 权限），只是不会被 round driver 自动续轮。
 
-服务层的允许集与模型 tool 的允许集不同：模型 tool 的 `resume` 先要一个 direct-human turn，仍不能解除 `paused`，但能 re-arm `active·disarmed`（重启 / fork 后）与 resume `blocked`，所以**暂停只能由 human 解除**；`/goal resume` 走服务直调（`packages/goal/command-goal/src/index.ts:167-168`），Web 走 `@Remote('resume')`，两条 human 通道都不受限。
+服务层的允许集与模型 tool 的允许集不同：模型 tool 的 `resume` 先要一个 direct-human turn，仍不能解除 `paused`，但能 re-arm `active·disarmed`（重启 / fork 后）与 resume `blocked`，所以**暂停只能由 human 解除**；`/goal resume` 走服务直调（`packages/goal/command-goal/src/index.ts:167-169`），Web 走 `@Remote('resume')`，两条 human 通道都不受限。
 
 ### 各状态的含义
 
@@ -95,7 +95,7 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 **模型**通过 `update_goal` tool 可做五件事，但授权分两档：`edit` 与 `pause` 走 `requireDirectHuman`（`tool-goal/src/index.ts:263-272`），即只有当前 open turn 里真的有 `source.kind === 'user'` 的输入、且调用者是运行时 root 时才能改目标或暂停；`complete` / `blocked` 另由 `completionAuthority` 授权，direct-human 或**当前这一轮正是该 goal 的 admitted round** 都算（这也是自动续轮里模型能报告完成的原因）。`resume` 同样要求 direct-human，并且额外拒绝 `paused`：抛 `GOAL_TOOL_RESUME_PAUSED`（"the model cannot resume a paused goal; the user must resume it"，`tool-goal/src/index.ts:279-286`）。所以自动续轮中模型只有 `complete` / `blocked` 两个动作：
 
 ```ts
-// tool-goal/src/index.ts 第 283 行
+// tool-goal/src/index.ts 第 291 行
 const authority = completionAuthority(ctx, execution)
 // authority.kind === 'goal-round' 时允许 complete/blocked
 ```

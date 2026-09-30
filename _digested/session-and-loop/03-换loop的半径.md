@@ -11,7 +11,7 @@
 `ctx.agents` 是 `AgentRegistry`（`dsh-agent`）。它跟踪活着的 agent，提供 process-local initiator（`AsyncLocalStorage`），但不实现 turn。创建委托给 `AgentFactory`：
 
 - `createAgent(ownerCtx, options)` — 调用方提供 `sessionId`；setup 窗口 → commit → 登记 session 与 agent → `AgentRegistry.announce()` 发出串行 `agent/created { agent, source: SessionStartSource, signal? }`（`packages/core/agent/src/index.ts:537-559`；`SessionStartSource = 'startup' | 'resume' | 'clear' | 'compact'`，`packages/core/agent/src/runtime-types.ts:125`）。这条 session-start 边是第一个允许提交启动输入的扩展点，且逐 agent 只发一次（重复 announce 抛错）；真正的 turn 由 waking input 驱动。
-- `resume(ownerCtx, options)` — 先 `persistence.open(id, 'write')` 取得写所有权（`packages/core/agent-loop/src/index.ts:879`，注释写明 "Taking write ownership FIRST"），再读回日志，最后 `ctx.sessions.prepare(id, ...)` 构造 Session（`:893`）；seam 本身没有 `prepare`，它只有 `create` / `open` / `flush` / `stat` / `list`（`packages/session/session-persistence/src/index.ts:147,162,175,191,198`）。
+- `resume(ownerCtx, options)` — 先 `persistence.open(id, 'write')` 取得写所有权（`packages/core/agent-loop/src/index.ts:843`，注释写明 "Taking write ownership FIRST"），再读回日志，最后 `ctx.sessions.prepare(id, ...)` 构造 Session（`:857`）；seam 本身没有 `prepare`，它只有 `create` / `open` / `flush` / `stat` / `list`（`packages/session/session-persistence/src/index.ts:147,162,175,191,198`）。
 
 默认 loop 插件在构造时调用 `ctx.agents.setFactory(this)`。没有 factory 时，`create` / `resume` 抛出 `no agent factory registered (load an agent-loop plugin)`。ACP 等消费者对着 `ctx.agents` 编程，不需要导入 `ReactLoopAgent`。
 
