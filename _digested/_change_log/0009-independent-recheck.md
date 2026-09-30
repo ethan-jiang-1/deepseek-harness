@@ -93,5 +93,5 @@
 1. **FAQ 批次**（上节五项）——等 `_faq_on_digested` 并行会话结束。
 2. **`_digested` 入口可读性**：00-index README 化（30 秒框架句 + 大白话子目录表 + 术语速查）；子目录改名最小集（`system-overview`、`composition-boot`、`surfaces-entrypoints`）——改名半径约 57 文件/目录，须在 FAQ 会话结束后独立执行。
 3. **新专题**：`_digested/plugin-inventory/`（利用现成插件的清单与复用地图）+ `_coverage` 矩阵新行 + FAQ 17。
-4. **D1 扫描固化**：本轮的全量引用反查与引文-锚点漂移脚本（临时目录执行）应固化进语料目录，使每次同步后可机械复跑。
-5. **`_misc` 校验脚本**：`_misc` 目前无 verify.mjs，链接检查依赖临时扫描；后续补一个最小校验脚本。
+4. **D1 扫描固化**：本轮的全量引用反查与引文-锚点漂移脚本已固化为 [`../ref-sweep.mjs`](../ref-sweep.mjs)（`--quotes` 开启严格引文核对；报告不判失败，候选按本页三态口径人工分诊）。固化后首轮复跑即抓到三处 /tmp 版漏掉的真越界（05-acp 的 models.ts、surfaces/03 的 update-tasks、surfaces/04 的 sidebar-right），已随轮修复。
+5. **`_misc` 校验脚本**：已补 [`../../_misc/verify.mjs`](../../_misc/verify.mjs)（严格 UTF-8、LF、单个结尾换行、相对链接与锚点；`_scratch` 不检查、`_references` 只查卫生）。
