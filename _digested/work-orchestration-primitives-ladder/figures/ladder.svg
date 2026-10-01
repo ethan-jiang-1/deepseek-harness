@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 700" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="axis" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">工作编排原语阶梯：拆解 → 委派 → 编排 → 跨时间推进</text>
+  <text x="40" y="54" font-size="12" fill="#8c8c8c">从驾驶座视角看 DSH 提供的全部工作编排原语（基线 dsh-v0.2.0-rc.2）；阶梯自左下向右上，底轴为上下文隔离与扇出规模，左轴为时间跨度</text>
+
+  <line x1="70" y1="620" x2="1030" y2="620" stroke="#595959" stroke-width="2" marker-end="url(#axis)"/>
+  <text x="560" y="648" font-size="12" fill="#595959" text-anchor="middle">上下文隔离与扇出规模 →（同上下文 → 独立子上下文 → 独立持久会话）</text>
+  <line x1="70" y1="620" x2="70" y2="90" stroke="#595959" stroke-width="2" marker-end="url(#axis)"/>
+  <text x="58" y="360" font-size="12" fill="#595959" text-anchor="middle" transform="rotate(-90 58 360)">时间跨度 →（单 turn → 前台多轮 → 跨自动续轮 → 后台/定时）</text>
+
+  <rect x="90" y="540" width="130" height="56" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="155" y="564" font-size="13" font-weight="bold" fill="#1677ff" text-anchor="middle">todo_write / plan</text>
+  <text x="155" y="582" font-size="10" fill="#8c8c8c" text-anchor="middle">上下文内计划留痕</text>
+
+  <rect x="240" y="478" width="130" height="56" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="305" y="502" font-size="13" font-weight="bold" fill="#52c41a" text-anchor="middle">subagent / fork</text>
+  <text x="305" y="520" font-size="10" fill="#8c8c8c" text-anchor="middle">有界委派：一两个独立子任务</text>
+
+  <rect x="390" y="416" width="130" height="56" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="455" y="440" font-size="13" font-weight="bold" fill="#fa8c16" text-anchor="middle">workflow</text>
+  <text x="455" y="458" font-size="10" fill="#8c8c8c" text-anchor="middle">模型写 JS 编排脚本扇出</text>
+
+  <rect x="540" y="354" width="130" height="56" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="605" y="378" font-size="13" font-weight="bold" fill="#fa8c16" text-anchor="middle">ralph</text>
+  <text x="605" y="396" font-size="10" fill="#8c8c8c" text-anchor="middle">不可变目标 fresh-agent 循环</text>
+
+  <rect x="690" y="292" width="130" height="56" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
+  <text x="755" y="316" font-size="13" font-weight="bold" fill="#d4380d" text-anchor="middle">goal</text>
+  <text x="755" y="334" font-size="10" fill="#8c8c8c" text-anchor="middle">跨轮次长目标 + 自动续跑</text>
+
+  <rect x="840" y="230" width="130" height="56" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
+  <text x="905" y="254" font-size="13" font-weight="bold" fill="#d4380d" text-anchor="middle">jobs / schedule</text>
+  <text x="905" y="272" font-size="10" fill="#8c8c8c" text-anchor="middle">后台化 / 定时跟进</text>
+
+  <rect x="840" y="150" width="130" height="56" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="2" stroke-dasharray="6 3"/>
+  <text x="905" y="174" font-size="13" font-weight="bold" fill="#fa8c16" text-anchor="middle">agent-teams *</text>
+  <text x="905" y="192" font-size="10" fill="#8c8c8c" text-anchor="middle">具名队友 + 持久任务板</text>
+  <text x="905" y="222" font-size="9.5" fill="#8c8c8c" text-anchor="middle">* experimental，随时会改名或消失</text>
+
+  <rect x="90" y="100" width="620" height="120" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="106" y="126" font-size="12.5" font-weight="bold" fill="#333">官方路由规则（编码在工具描述与包 README 里）</text>
+  <text x="106" y="148" font-size="11.5" fill="#333">普通长任务 → goal 工具（不需要用户说出 goal 一词）</text>
+  <text x="106" y="168" font-size="11.5" fill="#333">有界委派（一两次）→ 普通 subagent 调用；大型多代理编排 → workflow（用户显式要求）</text>
+  <text x="106" y="188" font-size="11.5" fill="#333">Ralph 式 fresh-agent 迭代 → 仅用户显式要求；agent-teams → 实验性统一 bundle</text>
+  <text x="106" y="208" font-size="10.5" fill="#8c8c8c">出处逐条见 02-什么时候用哪个原语-官方选择决策语义全景.md</text>
+
+  <text x="90" y="530" font-size="10.5" fill="#8c8c8c">轻：留在同一对话上下文</text>
+  <text x="840" y="130" font-size="10.5" fill="#8c8c8c">重：独立会话 + 持久协调状态</text>
+</svg>
