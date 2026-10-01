@@ -46,7 +46,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `runtime-profiles/` | 运行时配置 | 五种官方启动方式（web / headless / sdk / sdk-minimal / acp）各自带哪些插件、差在哪。 |
 | `session-and-loop/` | 会话与驱动 | 对话存在哪、怎么读回来：session log 的格式、世代与投影。 |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
-| `work-orchestration-primitives-ladder/` | 工作编排原语阶梯 | 从驾驶座视角：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个、怎么组合。 |
+| `orchestration-ladder/` | 工作编排原语阶梯 | 从驾驶座视角：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个、怎么组合。 |
 | `capability-seams/` | 可替换能力 | 同一个能力（读文件、跑命令……）有多个插件实现时，怎么换实现而不改调用方——插件的竞聘位。 |
 | `plugin-inventory/` | 现成插件货架 | 316 个包按组列成清单：能力在哪、以什么形态给、怎么拿——动手写之前先查这里。 |
 | `experimental/` | 实验原型面 | 还没承诺稳定合同的原型插件（多代理、浏览器、语音……），随时会改名或消失。 |
@@ -83,7 +83,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **想搞懂 `dsh --profile web` 怎么变成进程的** → [`runtime-profiles/00-map.md`](./runtime-profiles/00-map.md)
 - **想搞懂一次 `dsh --profile web` 怎么变成插件树** → [`composition-boot/00-map.md`](./composition-boot/00-map.md)
 - **想搞懂一轮对话怎么跑** → [`session-and-loop/00-map.md`](./session-and-loop/00-map.md)
-- **想搞懂 DSH 给了哪些工作编排原语、什么时候用哪个** → [`work-orchestration-primitives-ladder/00-map.md`](./work-orchestration-primitives-ladder/00-map.md)
+- **想搞懂 DSH 给了哪些工作编排原语、什么时候用哪个** → [`orchestration-ladder/00-map.md`](./orchestration-ladder/00-map.md)
 - **想搞懂磁盘上的 session 文件怎么跨格式世代读** → [`session-and-loop/04-格式世代与迁移.md`](./session-and-loop/04-格式世代与迁移.md)
 - **想加能力或换后端** → [`capability-seams/00-map.md`](./capability-seams/00-map.md)
 - **想先看 dsh 已经给了什么再动手** → [`plugin-inventory/00-map.md`](./plugin-inventory/00-map.md)
