@@ -137,6 +137,29 @@ DSH 层（非裸 curl）的工具往返、带图请求与 `input: [text, image]`
 - **校验**：`DSH_HOME=~/.dsh dsh --profile web --dump-config` 退出 0，组合结果 teamorouter route 恰含 4 个 id、`off: null` 语义正确，其余 route（micu/openrouter/zai/moonshotai-cn）未动。
 - **默认模型**：用户已在 settings 设 `agent-default-model = teamorouter / deepseek-v4-pro / high`（运行中的 web 实例在 127.0.0.1:3080，patch/credentials 均热加载，无需重启；界面刷新/新建会话即可见新分组）。
 
+## 2026-10-01 增补：/models 快照 diff（45 → 47 个 id）+ gpt-6.1-sol 实测
+
+`GET /v1/models` 复测（真实 key 直连）。**已挂入 DSH 的 4 个付费模型不受影响**，GLM 三条与付费 DeepSeek 4 条原样保留。
+
+新增 10 个：
+
+| owned_by | 新 id |
+|---|---|
+| openai (+5) | `gpt-6-sol`、`gpt-6.1-sol`、`gpt-6-luna`、`gpt-image-2.5-flare`、`gpt-image-2.5-sunburst` |
+| anthropic (+3) | `claude-opus-5-5`、`claude-sonnet-5`、`claude-sonnet-5-5`（注意 `claude-sonnet-5-5` 的 owned_by 是大写 `Anthropic`，独立条目） |
+| deepseek (+1) | `deepseek-flash`（新线，未实测） |
+| 其他 (+1) | `typesafe-ai/jev`（新厂商，未实测） |
+
+下架 8 个：全部 7 个自营 `-fast` 别名（`gpt-5.4-fast / -mini-fast / 5.5-fast / 5.6-*-fast / sol-fast / terra-fast / gpt-6-astra-fast`）；免费档 `deepseek-v4-pro-free` 被 `deepseek-flash-free` 取代（免费档仍不用）。
+
+`gpt-6.1-sol` PONG 实测：200，约 10 s，6 个输出 token。首测 60 s 零字节超时，重试即过——疑似冷启动，未复现。注意其 `prompt_tokens` 4392（我们只发数词）且 3840 cached——后端疑似注入系统侧上下文，与 09-07 记录的 GLM Anthropic 通道疑点同类，仅记录，不据此宣称能力。
+
+### 同日挂入：7 个新模型全测全通，4 个新条目入 route
+
+PONG 实测（`POST /v1/chat/completions`，max_tokens 128）**7/7 全 200 且正文 PONG**，耗时 1.7–4.1 s：`gpt-6-sol`、`gpt-6.1-sol`、`gpt-6-luna`、`claude-opus-5-5`、`claude-sonnet-5`、`claude-sonnet-5-5`、`deepseek-flash`（rt 10，thinking 型）。sol 注入疑点仅 `gpt-6-sol` / `gpt-6.1-sol` 出现（pt 4392），`gpt-6-luna` pt 12 正常。
+
+route 层现状核对：`gpt-6-luna`、`gpt-6-sol`、`gpt-6-astra`、`claude-opus-5-5` 已于 09-24 两批加入（`bak-20260924-100219/101730`）；本日补齐 4 条 = `gpt-6.1-sol` / `claude-sonnet-5` / `claude-sonnet-5-5` / `deepseek-flash`，均带品牌全名前缀 `name` + 六档恒等映射 + `off: null` 空档，`contextWindow`/`maxTokens` 未实测前不声明（与 09-24 批次同例，吃路由默认 256K/32K，勿当真实边界）。settings.yaml 已不存在（仅补丁层），无镜像步骤。备份：`cordis.patch.yml.bak-20261001-101225-before-teamorouter-new-models`。校验：`--dump-config` 退出 0，组合结果 12 条 teamorouter 条目含 4 个新 id、effort 映射逐字正确。
+
 ## 来源
 
 - 官方 API 集成文档与 DSH 安装文档（VPN 后抓取）：`https://teamorouter.com/docs/api-integration`、`https://teamorouter.com/docs/install-deepseek-harness`
