@@ -126,7 +126,7 @@ live output 经 mirror 订阅引擎事件写进 job 的 output ring（`packages/
 - **固定脚本**：`RALPH_SCRIPT` 由部署持有，模型只供数据（objective/maxRounds），改不了 loop、provider 路由、schema 与 handoff 校验（`packages/workflow/tool-ralph/src/index.ts:88`-`175`、`:445`-`453`）。
 - **provider 预检**：必须存在、支持 `outputSchema`、`inheritsParentContext: false`（真 fresh child，`:218`-`230`）；轮数上限经 `maxTotalAgents` 与引擎总量 backstop 协调（`:449`-`450`）。
 - **前台 only**：无 job id / 后台（`packages/workflow/tool-ralph/README.md:163`）；终局 `complete`/`blocked`/`budget-limited` + 报告，普通 child 失败即终局不重试（`packages/workflow/tool-ralph/README.md:166`）。
-- **默认禁用**：shipped defaults 不含 tool-ralph 行（`packages/workflow/workflow-ptc/README.md:28`；`packages/bundle/base/cordis.patch.yml:390`-`401` 无该行，base 注释见 [`00-map.md`](./00-map.md) 默认挂载状态表）。
+- **默认关闭**：base 组合包含 `tool-ralph` 行，但将 `disabled: true`；该行保留 `subagentProvider: spawn` 与 `maxRounds: 64`，overlay 可将 `disabled` 改为 `false`（`packages/bundle/base/cordis.patch.yml:440`-`452`；默认状态见 [`00-map.md`](./00-map.md)）。
 
 ## 源码入口
 
