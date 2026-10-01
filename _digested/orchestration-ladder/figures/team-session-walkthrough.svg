@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 800" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ab" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#52c41a"/>
+    </marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#fa8c16"/>
+    </marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#d4380d"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="32" font-size="16" font-weight="bold" fill="#333">走查：一次真实的 agent-teams 会话（「开个 team，把 pay 模块迁到 TS」）</text>
+  <text x="40" y="52" font-size="11.5" fill="#8c8c8c">每一步钉在已核验事实上：explicit-ask 门槛 / fresh vs fork / 任务板 CAS / 唤醒语义 / FS_STALE_VERSION 重试 / Lead 收尾门槛（全部出处见正文）</text>
+
+  <line x1="90" y1="70" x2="90" y2="740" stroke="#d9d9d9" stroke-width="1.5"/>
+  <line x1="360" y1="70" x2="360" y2="740" stroke="#d9d9d9" stroke-width="1.5"/>
+  <line x1="650" y1="70" x2="650" y2="740" stroke="#d9d9d9" stroke-width="1.5"/>
+  <line x1="930" y1="70" x2="930" y2="740" stroke="#d9d9d9" stroke-width="1.5"/>
+
+  <rect x="40" y="66" width="100" height="30" rx="6" fill="#fafafa" stroke="#595959" stroke-width="1.5"/>
+  <text x="90" y="86" font-size="12" font-weight="bold" fill="#333" text-anchor="middle">人类（ruofei）</text>
+  <rect x="300" y="66" width="120" height="30" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="360" y="86" font-size="12" font-weight="bold" fill="#1677ff" text-anchor="middle">Lead（本会话）</text>
+  <rect x="585" y="66" width="130" height="30" rx="6" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="650" y="86" font-size="12" font-weight="bold" fill="#52c41a" text-anchor="middle">coder（fresh）</text>
+  <rect x="860" y="66" width="140" height="30" rx="6" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="930" y="86" font-size="12" font-weight="bold" fill="#fa8c16" text-anchor="middle">reviewer（fork）</text>
+
+  <line x1="90" y1="120" x2="356" y2="120" stroke="#595959" stroke-width="2" marker-end="url(#ab)"/>
+  <text x="223" y="112" font-size="11" fill="#333" text-anchor="middle">「开个 team，把 pay 模块迁到 TS」</text>
+  <text x="223" y="136" font-size="9.5" fill="#8c8c8c" text-anchor="middle">explicit-ask 门槛通过（POLICY 首句）</text>
+
+  <rect x="306" y="150" width="108" height="26" rx="5" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="360" y="167" font-size="10" fill="#1677ff" text-anchor="middle">spawn_teammate ×2</text>
+  <line x1="414" y1="163" x2="646" y2="163" stroke="#52c41a" stroke-width="2" marker-end="url(#ag)"/>
+  <text x="530" y="156" font-size="10" fill="#52c41a" text-anchor="middle">context: fresh（不需要对话历史）</text>
+  <line x1="414" y1="186" x2="926" y2="186" stroke="#fa8c16" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="670" y="179" font-size="10" fill="#fa8c16" text-anchor="middle">context: fork（继承 Lead 已完成轮次，KV 前缀可复用）</text>
+
+  <rect x="306" y="212" width="108" height="26" rx="5" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="360" y="229" font-size="10" fill="#1677ff" text-anchor="middle">team_task_create ×3</text>
+  <text x="440" y="229" font-size="10.5" fill="#333">survey（write_scope: docs/）→ migrate（blocked_by: survey，write_scope: src/pay/）→ review（blocked_by: migrate）</text>
+  <text x="440" y="246" font-size="9.5" fill="#8c8c8c">写域拆分不相交并记录在任务上；顺序用 blocked_by（写域是 advisory 不是锁）</text>
+
+  <line x1="414" y1="276" x2="646" y2="276" stroke="#1677ff" stroke-width="2" marker-end="url(#ab)"/>
+  <text x="530" y="269" font-size="10.5" fill="#333" text-anchor="middle">send_message 派 survey</text>
+  <text x="530" y="292" font-size="9.5" fill="#8c8c8c" text-anchor="middle">成功即持久（即使显示 queued），勿重发</text>
+
+  <rect x="586" y="310" width="128" height="44" rx="5" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="650" y="328" font-size="10" fill="#52c41a" text-anchor="middle">claim（CAS revision）</text>
+  <text x="650" y="344" font-size="10" fill="#52c41a" text-anchor="middle">perform → complete</text>
+
+  <rect x="306" y="376" width="260" height="44" rx="5" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="436" y="394" font-size="10" fill="#d4380d" text-anchor="middle">review 就绪，但 reviewer inactive</text>
+  <text x="436" y="410" font-size="9.5" fill="#d4380d" text-anchor="middle">task readiness never starts an owner —— 就绪不自动开工</text>
+  <line x1="566" y1="398" x2="926" y2="398" stroke="#fa8c16" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="746" y="391" font-size="10" fill="#fa8c16" text-anchor="middle">send_message 唤醒</text>
+
+  <rect x="866" y="424" width="128" height="62" rx="5" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="930" y="442" font-size="10" fill="#fa8c16" text-anchor="middle">改文件撞上</text>
+  <text x="930" y="457" font-size="10" fill="#fa8c16" text-anchor="middle">FS_STALE_VERSION</text>
+  <text x="930" y="474" font-size="9.5" fill="#8c8c8c" text-anchor="middle">read → rebase → retry</text>
+
+  <line x1="926" y1="506" x2="366" y2="506" stroke="#fa8c16" stroke-width="2" marker-end="url(#ao)"/>
+  <text x="646" y="499" font-size="10.5" fill="#333" text-anchor="middle">send_message 回话（child→parent relay）</text>
+
+  <rect x="306" y="530" width="108" height="44" rx="5" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="360" y="548" font-size="10" fill="#1677ff" text-anchor="middle">wait_agent</text>
+  <text x="360" y="564" font-size="9.5" fill="#8c8c8c" text-anchor="middle">先 list_agents 确认</text>
+  <text x="360" y="578" font-size="9.5" fill="#8c8c8c" text-anchor="middle">running；醒后 re-list</text>
+
+  <rect x="306" y="606" width="260" height="44" rx="5" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="436" y="624" font-size="10.5" fill="#1677ff" text-anchor="middle">审最终 diff + 跑测试</text>
+  <text x="436" y="640" font-size="9.5" fill="#8c8c8c" text-anchor="middle">POLICY：bash/脚本不受文件系统版本守卫保护，Lead 兜底</text>
+
+  <line x1="356" y1="682" x2="94" y2="682" stroke="#1677ff" stroke-width="2" marker-end="url(#ab)"/>
+  <text x="225" y="675" font-size="11" fill="#333" text-anchor="middle">最终答案（等齐 required teammates 之后才给）</text>
+
+  <rect x="620" y="658" width="460" height="66" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="640" y="680" font-size="10.5" font-weight="bold" fill="#333">任意时刻崩溃/重启</text>
+  <text x="640" y="698" font-size="10" fill="#333">消息与任务板都在 Lead Session 的事件日志里（log-only 事件 + 投影）</text>
+  <text x="640" y="714" font-size="10" fill="#333">→ 重启后队友 resume 时收到排队的消息，任务板原样</text>
+
+  <text x="40" y="762" font-size="10" fill="#8c8c8c">走查中每条规则的源码出处见本页各节与源码入口表；fresh/fork 的种子语义深挖见 03 页</text>
+</svg>

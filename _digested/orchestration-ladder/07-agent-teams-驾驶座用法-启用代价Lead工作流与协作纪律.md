@@ -4,6 +4,10 @@
 
 本页回答：启用 agent-teams 的组合代价是什么（你换掉了什么）？Lead 的实际工作流怎么串九个工具？`team:policy` 里的协作纪律有哪些？机制（TeamService、journal、投影、九工具注册、UI 落点）见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)；选择语义（仅显式要求、与 subagent 控制面互斥）见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；队友创建复用的 spawn/fork 语义见 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
 
+## 为什么是这个形状：设计考量
+
+**为什么需要 teams 这个原语**：subagent 委派解决「一次性把活交出去」，但**协调状态活不过一次委派**——任务清单、成员分工、相互消息在 one-shot 结束时全部蒸发；全局控制面（`list_agents`/`send_message`）是**人类驱动**的：要人（或顶层模型）逐个派活、逐个收结果。当工作是「几个人**持续**协作、互相等、共享一个任务板」时，这两者都撑不住。teams 的答案是给 Lead 一套**持久的协调状态**：具名队友（可 offline/resume）、跨崩溃的任务板与邮箱（事件日志 + 投影，见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）——**协调状态本身成为会话的可重放事实**。这个选择的代价是组合互斥（见下节启用代价表）：重名控制面必须让位、continuable 委派被压缩——**DSH 用「换掉低层原语」而不是「叠加」来表达这是一个不同的协作模式**，避免同一会话里两套控制语义打架。experimental 的包装也是考量：用户要能从 npm 一键装完整组合，而内部原型保持私有——所以它是 `OPTIONAL_BUNDLES` 里的一个独立 bundle，而非散装包（`.agents/notes/implemented/architecture/2026-08-18-experimental-agent-teams-packages.md`）。
+
 ## 启用代价：一个 bundle 换掉的东西
 
 启用方式：`dsh plugin --profile <name> add @deepseek-ai/dsh-experimental-agent-team-profile`（已发布、从 npm 装，要求 profile 已含 `dsh-base`），或 Web 插件管理器（Official 组）一键开——它是 `OPTIONAL_BUNDLES` 成员（`packages/boot/app-boot/src/profile.ts:214`）。统一 bundle 同时服务 Host 与 Web。
@@ -39,6 +43,25 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
 - **`wait_agent` 只观察不唤醒**："Wait for the next teammate status, mailbox, or shared-task change **after this call starts**. This never wakes inactive members and returns noProgress immediately when no other member is running or provisioning. **Re-list after wakeup or timeout instead of polling.**"（`timeout_ms` 10000–3600000，默认 30000）；等待前先 `list_agents` 确认有 running/provisioning 的队友，inactive 的先用 `send_message` 唤醒（`NO_ACTIVE_PEER_MESSAGE`，`:41`-`42`）；
 - **任务板是 CAS 工作流**："Shared-task workflow is list, get, **claim with the current revision**, perform the work, then complete."——`team_task_update` 用 `expected_revision` 做前置条件（"Compare-and-set a shared task action using the latest revision"，`:362`）；`team_task_list` 返回 readiness/owner/revision/blockers/**write-scope warnings**；
 - **任务就绪不自动开工**："**Task readiness never starts an owner.**"——依赖解开只是就绪，owner 不会因此开 turn，要 `send_message` 去叫。
+
+## 走查：一次完整的团队会话
+
+规则集读一遍不如演一遍。设定一个具体任务——「把 pay 模块从 JS 迁到 TS」——把上面所有规则串成时间线（图中每条规则都能在下文或前文找到源码出处）：
+
+![一次 agent-teams 会话的走查](./figures/team-session-walkthrough.svg)
+
+1. **你说「开个 team，把 pay 模块迁到 TS」**——这句话过了 explicit-ask 门槛（POLICY 首句：只在用户显式要求时才建队友）；当前会话的 agent 成为隐式 Lead，不用任何创建动作。
+2. **Lead 派两个队友**：`coder` 用 `fresh`（迁移实现不需要对话历史），`reviewer` 用 `fork`（评审要建立在 Lead 已完成的勘察轮次上，且继承前缀保 KV 复用——种子语义见 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）。
+3. **建三个任务**：`survey`（write_scope: `docs/`）→ `migrate`（`blocked_by: survey`，write_scope: `src/pay/`）→ `review`（`blocked_by: migrate`）。写域拆分不相交、顺序用依赖表达——但记住这是 **advisory 不是锁**（POLICY 纪律 1）。
+4. **`send_message` 派 survey 给 coder**——成功即持久，即使结果显示 queued 也不重发。coder 按 CAS 工作流干活：list → get → claim（带当前 revision）→ perform → complete。
+5. **`review` 就绪了，但 reviewer 是 inactive 的**——「Task readiness never starts an owner」，就绪不会自动开工；Lead 得 `send_message` 把它叫醒（这个坑是新手最容易栽的：等了半天没人动，其实要主动唤）。
+6. **reviewer 干活时撞上 `FS_STALE_VERSION`**（别人也动过那个文件）——按协议 read → rebase 到新内容 → retry；如果它用了 bash 跑 formatter，那不受版本守卫保护，风险记在 Lead 账上。
+7. **reviewer 用 `send_message` 回话给 Lead**（child→parent 的 relay 通道，消息带 sender 名）。
+8. **Lead `wait_agent`**——先 `list_agents` 确认有 running 的队友再等（否则 noProgress 立即返回）；醒来后 re-list，不轮询。
+9. **Lead 审最终 diff、跑测试**——POLICY 纪律 2 的兜底义务：bash/脚本不受守卫保护，最终一致性由 Lead 把关。
+10. **等齐 required teammates 才给最终答案**（POLICY 收尾门槛）——这就是「Lead 必须等」的字面执行。
+
+**任意一步崩溃**：消息与任务板都在 Lead Session 的事件日志里（四个 log-only 事件 + 投影，见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）——重启后队友 resume 时收到排队的消息，任务板原样。走查的每条规则出处：explicit-ask/唤醒/收尾门槛在 `packages/experimental/tool-agent-team/src/index.ts:31`-`37`；CAS 与工具描述在 `:177`-`365`；fork 种子在 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
 
 ## POLICY 的协作纪律（共享文件系统是核心假设）
 

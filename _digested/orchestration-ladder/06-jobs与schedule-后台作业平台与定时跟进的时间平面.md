@@ -4,6 +4,10 @@
 
 本页回答：JobRegistry 这个后台作业平台给了什么保证（id、隔离、结算、通知）？谁是 producer？"何时转后台"的官方边界？schedule 的时序语义与交付形态？工具描述里的跟踪纪律（不忙轮询、收尾前收集）见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；workflow 与 subagent 两个 producer 的接入细节见 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) 与 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
 
+## 为什么是这个形状：设计考量
+
+**为什么是抽象平台合同而不是各工具自己做后台**：没有统一 JobRegistry，每个工具（bash、subagent、workflow）都要自己解决「agent 继续干活时工作挂着、完成了怎么通知、谁有权读停」——四套实现、四种通知语义、四种隔离规则。DSH 把它抽成一个**合同与实现分包**的抽象服务：直接加载 `JobRegistry` 实现类即 throw（组合配错在装载时就失败，而不是运行时静默缺功能）；一个进程一个 registry、owner 相对应答；注册的 job **活得比 producer 和 controller 的 fiber 都长**（`packages/jobs/jobs/README.md` 设计哲学节）。「owner 围栏是授权不是保密」是个精确的取舍声明：id 可预测（`bash-1`），所以边界设计成权限检查而不是隐藏——它防的是**误操作与越权**，不防偷窥。schedule 的交付形态同样是考量结果：提醒**作为原会话里的普通 follow-up message** 交付（不是邮件/短信/推送）——提醒的价值在于带着会话上下文回来继续干活，而不是把你拉走；交付只在 Session 确认 `session/flush` 后 commit——**正确性优先于恰好一次**：崩溃后宁可重投一次，也不交付一个没落盘的提醒。
+
 ## JobRegistry：后台作业的平台合同
 
 jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`packages/jobs/jobs/README.md:12`）：`JobRegistry` 是抽象 Cordis 服务，直接加载实现类即 throw（组合配错在装载时就失败）；`jobs-local` 是 shipped 的进程内实现——**job 随 harness 进程死亡，跨重启的持久执行需要别的后端实现同一合同**（`README.md:33`）。
