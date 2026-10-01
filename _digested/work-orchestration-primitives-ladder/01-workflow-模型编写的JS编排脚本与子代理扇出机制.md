@@ -6,6 +6,8 @@
 
 ## 定位：三层分离
 
+![workflow 编排栈三层分离](./figures/workflow-three-layers.svg)
+
 ```text
 tool-workflow（模型可见工具：schema、tool:workflow prompt 节、结果 envelope）
         │ ctx.workflowEngine（Service Definition，一个上下文一个引擎）

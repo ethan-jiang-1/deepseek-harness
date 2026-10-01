@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#52c41a"/>
+    </marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#fa8c16"/>
+    </marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#d4380d"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">组合的结构：单一归属链、深度预算与四条注入通道</text>
+  <text x="40" y="54" font-size="12" fill="#8c8c8c">一切 child（subagent / workflow 的 agent() / teams 成员）归属发起 run 的 agent（host.ts:197-212）；四条通道汇入同一个 inbox，busy/idle 行为各异</text>
+
+  <rect x="40" y="150" width="250" height="88" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="55" y="176" font-size="12" font-weight="bold" fill="#1677ff">job 完成通知</text>
+  <text x="55" y="196" font-size="10.5" fill="#333">busy → 注入 next step</text>
+  <text x="55" y="212" font-size="10.5" fill="#333">（inbox 持有时 turn 不关闭，</text>
+  <text x="55" y="228" font-size="10.5" fill="#333">多个结算只花一个 step）</text>
+  <text x="55" y="246" font-size="10" fill="#8c8c8c">idle → 唤醒 turn · awaited 不重播</text>
+
+  <rect x="40" y="262" width="250" height="88" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="55" y="288" font-size="12" font-weight="bold" fill="#52c41a">subagent settle notice</text>
+  <text x="55" y="308" font-size="10.5" fill="#333">busy → steer 最近 step</text>
+  <text x="55" y="324" font-size="10.5" fill="#333">idle → queue 成新 turn</text>
+  <text x="55" y="340" font-size="10.5" fill="#333">父 teardown → inject 不唤醒</text>
+  <text x="55" y="358" font-size="10" fill="#8c8c8c">先于所有权释放 · 独立 source kind</text>
+
+  <rect x="40" y="374" width="250" height="72" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="55" y="400" font-size="12" font-weight="bold" fill="#fa8c16">goal round prompt</text>
+  <text x="55" y="420" font-size="10.5" fill="#333">仅 idle：Round Driver 见</text>
+  <text x="55" y="436" font-size="10.5" fill="#333">active+armed → followup turn</text>
+  <text x="55" y="452" font-size="10" fill="#8c8c8c">&lt;goal_round&gt; Objective 逐字 · Round N/256</text>
+
+  <rect x="40" y="470" width="250" height="72" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
+  <text x="55" y="496" font-size="12" font-weight="bold" fill="#d4380d">schedule follow-up</text>
+  <text x="55" y="516" font-size="10.5" fill="#333">wall-clock 到期 → Host 冷恢复</text>
+  <text x="55" y="532" font-size="10.5" fill="#333">Session → follow-up 消息</text>
+  <text x="55" y="548" font-size="10" fill="#8c8c8c">session/flush 确认后才 commit（崩溃可重投）</text>
+
+  <line x1="290" y1="194" x2="430" y2="330" stroke="#1677ff" stroke-width="2" marker-end="url(#ab)"/>
+  <line x1="290" y1="306" x2="430" y2="340" stroke="#52c41a" stroke-width="2" marker-end="url(#ag)"/>
+  <line x1="290" y1="410" x2="430" y2="352" stroke="#fa8c16" stroke-width="2" marker-end="url(#ao)"/>
+  <line x1="290" y1="506" x2="430" y2="364" stroke="#d4380d" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="436" y="290" width="220" height="120" rx="10" fill="#fafafa" stroke="#333" stroke-width="2.5"/>
+  <text x="546" y="322" font-size="14" font-weight="bold" fill="#333" text-anchor="middle">agent inbox</text>
+  <text x="546" y="346" font-size="10.5" fill="#8c8c8c" text-anchor="middle">idle 是三条通道的交汇点：</text>
+  <text x="546" y="362" font-size="10.5" fill="#8c8c8c" text-anchor="middle">goal 续轮 / jobs 唤醒 / schedule 到点</text>
+  <text x="546" y="378" font-size="10.5" fill="#8c8c8c" text-anchor="middle">竞争，先到先得</text>
+  <text x="546" y="398" font-size="10" fill="#8c8c8c" text-anchor="middle">goal round 进行中一切通知都不开新 turn</text>
+
+  <rect x="700" y="110" width="340" height="200" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="720" y="136" font-size="13" font-weight="bold" fill="#1677ff">caller agent（depth 0 · 如 goal round）</text>
+  <text x="720" y="158" font-size="10.5" fill="#333">goal round 是 goal-attributed 的普通 turn：</text>
+  <text x="720" y="174" font-size="10.5" fill="#333">模型保持完整工具集（subagent / workflow 照常）</text>
+  <text x="720" y="196" font-size="10.5" fill="#333">扇出的全部 child 都是它的 direct children</text>
+  <text x="720" y="218" font-size="10.5" fill="#8c8c8c">durable 记录写进同一 Session 日志，</text>
+  <text x="720" y="234" font-size="10.5" fill="#8c8c8c">下一轮「inspect workspace」接着用</text>
+  <text x="720" y="260" font-size="10.5" fill="#333">收尾顺序纪律：先 job_output / job_kill 清完 job，</text>
+  <text x="720" y="276" font-size="10.5" fill="#333">再 update_goal complete（wrapup 之后禁调工具）</text>
+  <text x="720" y="296" font-size="10" fill="#8c8c8c">tool-jobs/src/index.ts:253 · wrapup.ts:27</text>
+
+  <line x1="656" y1="350" x2="696" y2="320" stroke="#595959" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="700" y="334" width="340" height="96" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="720" y="360" font-size="13" font-weight="bold" fill="#52c41a">children（depth 1 · 全部归属 caller）</text>
+  <text x="720" y="382" font-size="10.5" fill="#333">subagent（continuable/one-shot）· workflow 的</text>
+  <text x="720" y="398" font-size="10.5" fill="#333">每个 agent()（最多 1000）· teams 成员（spawn/fork）</text>
+  <text x="720" y="420" font-size="10" fill="#8c8c8c">settle notice 回 caller inbox；产物落 caller Session</text>
+
+  <line x1="870" y1="310" x2="870" y2="330" stroke="#595959" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="700" y="454" width="340" height="88" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="2" stroke-dasharray="6 3"/>
+  <text x="720" y="480" font-size="13" font-weight="bold" fill="#d4380d">child 再委派 → depth 2 &gt; maxDepth 默认 1 → 拒绝</text>
+  <text x="720" y="502" font-size="10.5" fill="#333">深度预算默认「广度开放、深度关闭」：</text>
+  <text x="720" y="518" font-size="10.5" fill="#333">可扇出 1000 个 depth-1 child，但不可嵌套</text>
+  <text x="720" y="536" font-size="10" fill="#8c8c8c">例外：工具行 maxDepth: 'provider-managed'（codex 等）</text>
+
+  <line x1="870" y1="430" x2="870" y2="450" stroke="#d4380d" stroke-width="2" marker-end="url(#ar)"/>
+  <text x="882" y="446" font-size="10" fill="#d4380d">SubagentDepthError</text>
+
+  <text x="40" y="580" font-size="10.5" fill="#8c8c8c">深度双字段取大：max(header.delegationDepth, options.subagentDepth)，header 是单调 floor，冷恢复不能降（subagent/src/depth.ts:28-36）</text>
+  <text x="40" y="598" font-size="10.5" fill="#8c8c8c">通知经济学：maxConsecutiveWakes 界定自激链（醒来 turn 又启动唤醒它的 job），用户消息恢复预算（tool-jobs/README.md:42）</text>
+  <text x="40" y="616" font-size="10.5" fill="#8c8c8c">源码核验：workflow-ptc/src/host.ts:197-212 · subagent/src/index.ts:202 · continuation-activation.ts:871-888 · goal-round-driver/src/prompt.ts:14-28</text>
+</svg>

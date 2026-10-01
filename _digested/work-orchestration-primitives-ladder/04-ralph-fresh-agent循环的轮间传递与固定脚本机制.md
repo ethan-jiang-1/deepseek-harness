@@ -6,6 +6,8 @@
 
 ## 一轮 ralph 到底发生了什么
 
+![ralph 轮循环与四种终局](./figures/ralph-rounds.svg)
+
 模型提交 `{ objective, maxRounds? }`，**调用阻塞到整个 run 结算**（前台 only）。工具层做四件事（`packages/workflow/tool-ralph/src/index.ts:435`-`453`）：
 
 1. 取 `exec.agent` 作 parent（无调用 agent 即 fail loud，`:437`-`438`）；objective trim 后非空（`:440`-`441`）；
@@ -57,6 +59,8 @@ child 经 `agent(prompt, { label: 'Ralph round N', phase: 'Fresh-agent rounds', 
 round-failed 的渲染与校验在 `:281`-`331`（readRunResult）、`:383`-`390`（renderRoundFailure）、`:463`（execute 里 throw）。渲染纪律写在 JSDoc 里：**"without presenting self-report as certification"**（`:358`）——文案永远是 "worker **reported** completion"，不写成「任务完成」；同理 `stopReasonError` 把非 `completed` 的 workflow 结算一律变成错误，绝不把部分输出当部分成功（`:333`-`347`）。
 
 `maxResultChars`（默认 16384）用 `boundResult` 封顶**含 envelope 与截断标记在内的完整文本**（`:349`-`356`）。
+
+两个 Config 默认值要区分**包默认**与 **shipped 组合值**：包默认 `maxRounds` 256（`packages/workflow/tool-ralph/src/index.ts:187`），而 base 行把 shipped 值覆盖为 **64**（`packages/bundle/base/cordis.patch.yml:447`-`452` 的 `maxRounds: 64`）——启用 overlay 恢复 ralph 后，实际生效的默认轮预算是 64。
 
 ## 为什么分成 goal 与 ralph 两种策略
 
