@@ -27,7 +27,7 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 
 **归档联动**（`packages/jobs/jobs/README.md:96`）：`workspace/session-activity` 把该 Session 拥有的 running/stopping job 报成 `job` 家族；`workspace/session-stop` 以 reason `session archived` 逐个 kill（一个 producer 取消时抛错只记日志，其余 job 继续停）；无主 job 永不为某个 Session 报告或停止。
 
-## 四个 shipped producer 与 controller 要求
+## Shipped producer 与 controller 要求
 
 | producer | job kind | 接入点 |
 |----------|----------|--------|
@@ -35,8 +35,9 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 | pwsh | 同构（`packages/shell/tool-pwsh/src/index.ts:44` 的 `JobKindMap`） | 同上 |
 | subagent（one-shot 显式后台） | `subagent`（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)：`jobs.start({kind:'subagent', owner: parent.id, run})`，无 output sources） | `run_in_background` 参数 |
 | workflow | `workflow`（[`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)：`JobKindMap` 声明合并 + mirror 写 ring） | `run_in_background` 参数 |
+| terminal | `pty-send`（`packages/terminal/tool-terminal/src/index.ts:251`-`:263`） | `run_in_background` 参数 |
 
-kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 registry。**controller 是启动的闸门**（`packages/jobs/jobs/README.md:40`-`42`）：producer 只能在"有服务该 owner 的 controller 在场"时启动（加载 `tool-jobs` 即挂上一个）；没有 controller 的组合 `start()` 直接失败并**点名缺失的组件**——绝不启动一个 agent 永远收不回也停不掉的工作。
+kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 registry。上表列出当前已核验的五类 shipped producer；其他插件也可以通过同一声明合并与 `jobs.start()` 接入。**controller 是启动的闸门**（`packages/jobs/jobs/README.md:40`-`42`）：producer 只能在"有服务该 owner 的 controller 在场"时启动（加载 `tool-jobs` 即挂上一个）；没有 controller 的组合 `start()` 直接失败并**点名缺失的组件**——绝不启动一个 agent 永远收不回也停不掉的工作。
 
 **可写接口**（`packages/jobs/tool-jobs/src/index.ts:311`-`376`）：`{"job_id": "workflow-1", "wait": true, "timeout_ms": 60000}`（`job_output`；流式 job 返回自上次读取的增量，`wait` 超时返回 `[status: running]` 不算失败）；`{"job_id": "bash-2", "reason": "不再需要"}`（`job_kill`）；`job_list` 无参数。**通知模板**：`background job <id> (<kind>: <label>) finished [status: …]. Read its output with job_output.`；subagent 结算通知带 `Its closing message:` 前缀。
 
@@ -51,7 +52,7 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 
 三种不播报：`awaited`（等待者已收集）、模型自己 `job_kill` 过的、owner/service teardown 造成的（没人读）。
 
-**`maxConsecutiveWakes` 界定自激链**（`packages/jobs/tool-jobs/README.md:42`）：醒来的 turn 可能启动那个"完成时会再唤醒它"的 job——每个 owner 被唤醒这么多次后，后续通知降级为注入；**领取任何用户消息即恢复预算**；默认无上限。超过上限的通知静默等待下一次用户输入——依赖唤醒完成工作的会话会停在预算处。`completionDelivery: 'quiet'` 让 idle owner 也走注入通道（确定性 transcript 需要）。`waitTimeoutMs` 上限 600,000（模型给的更长 wait 被 clamp）；超时的 wait 返回 `[status: running]` 且 job 活着——**超时不是失败**。
+**`maxConsecutiveWakes` 界定自激链**（`packages/jobs/tool-jobs/README.md:42`）：醒来的 turn 可能启动那个"完成时会再唤醒它"的 job——每个 owner 被唤醒这么多次后，后续通知降级为注入；**领取任何用户消息即恢复预算**；默认无上限。超过上限的通知静默等待下一次用户输入——依赖唤醒完成工作的会话会停在预算处。`completionDelivery: 'quiet'` 让 idle owner 也走注入通道（确定性 transcript 需要）。`waitTimeoutMs` 默认 30,000 ms；模型提供的 `timeout_ms` 由 `maxWaitTimeoutMs` 限制，该配置默认 600,000 ms（`packages/jobs/tool-jobs/src/index.ts:42`-`:46`、`:60`-`:61`、`:192`-`:202`）。超时的 wait 返回 `[status: running]` 且 job 活着——**超时不是失败**。
 
 ## schedule：wall-clock 时间平面
 

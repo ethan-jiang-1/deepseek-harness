@@ -88,7 +88,7 @@ CAS 防写冲突：`goal_id` + `revision` 必须与 `get_goal` 返回的精确�
 
 ## goal round 里能做什么（组合触点）
 
-goal round 是一个 **goal-attributed 的普通 turn**：模型保持完整工具集——读码、subagent、workflow 照常可用（工作原语不受限），goal 工具的 authority 恰好在此时开放 `complete`/`blocked` 两个 action。组合模式全景（goal × workflow × subagent × jobs）见待写的 [`08`]；两个已核验的触点：
+goal round 是一个 **goal-attributed 的普通 turn**：模型保持完整工具集——读码、subagent、workflow 照常可用（工作原语不受限），goal 工具的 authority 恰好在此时开放 `complete`/`blocked` 两个 action。组合模式全景（goal × workflow × subagent × jobs）见 [`08`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md)；两个已核验的触点：
 
 - goal round 里起的 workflow/subagent 归属该 agent（parent = caller，见 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) 归属节）——产物落进同一 session 日志，下一轮的 "inspect workspace" 指令能接着用；
 - 子代理自己不能操作 goal（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md) 的三道门）——goal 的收敛判定永远发生在顶层会话。
