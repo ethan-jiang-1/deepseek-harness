@@ -44,24 +44,42 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
 - **任务板是 CAS 工作流**："Shared-task workflow is list, get, **claim with the current revision**, perform the work, then complete."——`team_task_update` 用 `expected_revision` 做前置条件（"Compare-and-set a shared task action using the latest revision"，`:362`）；`team_task_list` 返回 readiness/owner/revision/blockers/**write-scope warnings**；
 - **任务就绪不自动开工**："**Task readiness never starts an owner.**"——依赖解开只是就绪，owner 不会因此开 turn，要 `send_message` 去叫。
 
+**可写接口**（`packages/experimental/tool-agent-team/src/index.ts:177`-`365`）：
+
+```json
+{ "description": "审计 01-05 页引用", "context": "fresh" }
+{ "subject": "fix-out-of-bounds", "description": "修复 ref-sweep 报告的全部越界引用", "blocked_by": ["t1","t2"],
+  "write_scopes": ["_digested/orchestration-ladder/"] }
+{ "task_id": "t3", "expected_revision": 2, "action": "claim" }
+```
+
+`context`：`fresh`（无 Lead 历史）/ `fork`（继承已完成轮次）；`write_scopes` 是 **advisory** 工作区相对前缀（"Advisory workspace-relative file or directory prefixes this task expects to modify"，`:295`-`298`）；一切任务变更一律 `expected_revision` CAS。
+
 ## 走查：一次完整的团队会话
 
-规则集读一遍不如演一遍。设定一个具体任务——「把 pay 模块从 JS 迁到 TS」——把上面所有规则串成时间线（图中每条规则都能在下文或前文找到源码出处）：
+规则集读一遍不如演一遍。场景就用读者自己的世界：**本专题有 1437 条 path:line 引用，要一支小队交叉复核并修复越界**——每一步都是你刚经历过的工作。任务板长这样（外部叙事爱画订单支付的 DAG；这张是真的）：
+
+| 任务 | blocked_by | write_scope | 期望产物 |
+|------|-----------|-------------|---------|
+| audit-01-05：抽查 01-05 页引用 | —（与 audit-06-09 **天然并行**） | 只读 + `docs/audit-01-05.md` | 可疑行号清单 |
+| audit-06-09：抽查 06-09 页引用 | — | 只读 + `docs/audit-06-09.md` | 可疑行号清单 |
+| fix-out-of-bounds：修复越界 | audit-01-05、audit-06-09（**汇聚等待**） | 专题各页 | `ref-sweep` 新专题零问题 |
 
 ![一次 agent-teams 会话的走查](./figures/team-session-walkthrough.svg)
 
-1. **你说「开个 team，把 pay 模块迁到 TS」**——这句话过了 explicit-ask 门槛（POLICY 首句：只在用户显式要求时才建队友）；当前会话的 agent 成为隐式 Lead，不用任何创建动作。
-2. **Lead 派两个队友**：`coder` 用 `fresh`（迁移实现不需要对话历史），`reviewer` 用 `fork`（评审要建立在 Lead 已完成的勘察轮次上，且继承前缀保 KV 复用——种子语义见 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）。
-3. **建三个任务**：`survey`（write_scope: `docs/`）→ `migrate`（`blocked_by: survey`，write_scope: `src/pay/`）→ `review`（`blocked_by: migrate`）。写域拆分不相交、顺序用依赖表达——但记住这是 **advisory 不是锁**（POLICY 纪律 1）。
-4. **`send_message` 派 survey 给 coder**——成功即持久，即使结果显示 queued 也不重发。coder 按 CAS 工作流干活：list → get → claim（带当前 revision）→ perform → complete。
-5. **`review` 就绪了，但 reviewer 是 inactive 的**——「Task readiness never starts an owner」，就绪不会自动开工；Lead 得 `send_message` 把它叫醒（这个坑是新手最容易栽的：等了半天没人动，其实要主动唤）。
-6. **reviewer 干活时撞上 `FS_STALE_VERSION`**（别人也动过那个文件）——按协议 read → rebase 到新内容 → retry；如果它用了 bash 跑 formatter，那不受版本守卫保护，风险记在 Lead 账上。
-7. **reviewer 用 `send_message` 回话给 Lead**（child→parent 的 relay 通道，消息带 sender 名）。
-8. **Lead `wait_agent`**——先 `list_agents` 确认有 running 的队友再等（否则 noProgress 立即返回）；醒来后 re-list，不轮询。
-9. **Lead 审最终 diff、跑测试**——POLICY 纪律 2 的兜底义务：bash/脚本不受守卫保护，最终一致性由 Lead 把关。
-10. **等齐 required teammates 才给最终答案**（POLICY 收尾门槛）——这就是「Lead 必须等」的字面执行。
+1. **你说「开个 team，把引用复核一遍」**——过了 explicit-ask 门槛（POLICY 首句：只在用户显式要求时才建队友）；当前会话的 agent 成为隐式 Lead。
+2. **Lead 派两个 auditor，都用 `fresh`**——读文件核行号不需要对话历史（`fork` 留给要继承 Lead 勘察轮次的角色，比如让一个队友评审 Lead 自己的初步结论——种子语义见 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）。
+3. **建三个任务如上表**：两个 audit 无依赖并行跑，fix 汇聚等两者——顺序用 `blocked_by` 表达、写域不相交；但这是 **advisory 不是锁**（POLICY 纪律 1）。
+4. **`send_message` 各派一个 audit**——成功即持久，即使结果显示 queued 也不重发。两个 auditor 各自按 CAS 工作流认领：list → get → claim（带当前 revision）→ perform → complete。
+5. **auditor-b 写抽查记录时撞上 `FS_STALE_VERSION`**——因为 Lead 同一时刻正在改 00-map（共享文件系统、编辑即时可见，这正是 teams 的核心假设）——按协议 read → rebase 到新内容 → retry。
+6. **auditor-b 用 `send_message` 回话给 Lead**（child→parent 的 relay 通道，消息带 sender 名）：06 页有一条引用行号可疑。
+7. **Lead `wait_agent` 等两个 audit**——先 `list_agents` 确认有 running 的队友再等（否则 noProgress 立即返回）；醒来后 re-list，不轮询。两个 audit complete，fix 就绪——**但没人动**——「Task readiness never starts an owner」，就绪不会自动开工（新手最容易栽的坑：等半天没人动，其实要主动唤）。Lead 自己领 fix。
+8. **Lead 修引用、审最终 diff、跑 `node _digested/ref-sweep.mjs`**——POLICY 纪律 2 的兜底义务：bash 不受文件系统版本守卫保护，最终一致性由 Lead 把关（这就是外部叙事「Reviewer 门禁」的真实形态：没有独立评估器，Lead 兜底）。
+9. **等齐 required teammates 才给最终答案**（POLICY 收尾门槛）：哪些引用修了、哪些是其他专题的已知历史命中。
 
-**任意一步崩溃**：消息与任务板都在 Lead Session 的事件日志里（四个 log-only 事件 + 投影，见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）——重启后队友 resume 时收到排队的消息，任务板原样。走查的每条规则出处：explicit-ask/唤醒/收尾门槛在 `packages/experimental/tool-agent-team/src/index.ts:31`-`37`；CAS 与工具描述在 `:177`-`365`；fork 种子在 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
+**你会看到什么**（Web 会话头部的 Team 动作，读 Lead Session 投影）：名册里两个 auditor 的状态行 provisioning → running → inactive（注意 `inactive` 不代表完成——状态词汇表）；任务板上两个 audit 从 pending 走到 completed、fix 从 blocked → ready → in_progress → completed；写域若有重叠会显示警告。
+
+**任意一步崩溃**：消息与任务板都在 Lead Session 的事件日志里（四个 log-only 事件 + 投影，见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）——重启后队友 resume 时收到排队的消息，任务板原样；对照外部叙事虚构的 `dsh rollback --task`：真实的恢复语义是**会话级持久**，不是任务级回滚。走查中每条规则的出处：explicit-ask/唤醒/收尾门槛在 `packages/experimental/tool-agent-team/src/index.ts:31`-`37`；CAS 与工具描述在 `:177`-`365`；fork 种子在 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
 
 ## POLICY 的协作纪律（共享文件系统是核心假设）
 

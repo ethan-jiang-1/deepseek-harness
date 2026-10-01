@@ -38,6 +38,8 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 
 kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 registry。**controller 是启动的闸门**（`packages/jobs/jobs/README.md:40`-`42`）：producer 只能在"有服务该 owner 的 controller 在场"时启动（加载 `tool-jobs` 即挂上一个）；没有 controller 的组合 `start()` 直接失败并**点名缺失的组件**——绝不启动一个 agent 永远收不回也停不掉的工作。
 
+**可写接口**（`packages/jobs/tool-jobs/src/index.ts:311`-`376`）：`{"job_id": "workflow-1", "wait": true, "timeout_ms": 60000}`（`job_output`；流式 job 返回自上次读取的增量，`wait` 超时返回 `[status: running]` 不算失败）；`{"job_id": "bash-2", "reason": "不再需要"}`（`job_kill`）；`job_list` 无参数。**通知模板**：`background job <id> (<kind>: <label>) finished [status: …]. Read its output with job_output.`；subagent 结算通知带 `Its closing message:` 前缀。
+
 ## 通知经济学：完成什么时候打断你
 
 `tool-jobs` 的投递策略（`packages/jobs/tool-jobs/README.md:40`-`42`、`:55`-`57`）：
@@ -59,7 +61,18 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 - 任务**跨 Host 重启保留**；**到期交付时 Host 会冷恢复对应 Session**；一次交付只在 Session 确认 `session/flush` 后才 commit——这就是工具描述里 "Delivery can repeat after crash" 的根源（崩溃后重投）；
 - catch-up 规则：recurring 任务停机后**只交付最新一次错过的发生**。
 
-六种时序选择器（`packages/schedule/schedule/README.md:31`-`40` 的表）：`after_seconds`（正安全整数延迟）/ `at`（严格未来绝对时刻，显式时区）/ `every_seconds`（固定间隔 **≥60s**，对齐创建时刻）/ `daily` / `weekly`（ISO 星期 1-7）/ `cron`（**五字段 Vixie**，显式 IANA zone）。DST 规则：本地不存在的时刻跳过、重叠取更早且每天只一次；`every_seconds: 86400` 是固定间隔，不等于 daily 的 wall-clock 语义。`title` 必填（trim 后非空、≤120 字符、**从不从 instruction 派生**）。
+六种时序选择器（`packages/schedule/schedule/README.md:31`-`40` 的表）：`after_seconds`（正安全整数延迟）/ `at`（严格未来绝对时刻，显式时区）/ `every_seconds`（固定间隔 **≥60s**，对齐创建时刻）/ `daily` / `weekly`（ISO 星期 1-7）/ `cron`（**五字段 Vixie**，显式 IANA zone）。官方示例逐字（创建 = `title` + `prompt` + **恰好一个**选择器）：
+
+```json
+{"prompt":"Check the build","title":"Build check","after_seconds":600}
+{"prompt":"Review the release","title":"Release review","at":"2099-01-01T09:00:00+08:00"}
+{"prompt":"Check the queue","title":"Queue check","every_seconds":300}
+{"prompt":"Review today's tasks","title":"Daily review","daily":{"time":"23:00:00","time_zone":"Asia/Shanghai"}}
+{"prompt":"Review the week","title":"Weekly review","weekly":{"time":"09:00:00","time_zone":"Asia/Shanghai","weekdays":[1,3]}}
+{"prompt":"Check the deploy","title":"Deploy check","cron":{"expression":"*/15 9-17 * * 1-5","time_zone":"Asia/Shanghai"}}
+```
+
+`update` 的可写形态是 **complete-record CAS**：`{sessionId, id, expected: <编辑前完整记录>, title?, prompt?, change?}`——`change` 是判别联合（`at`/`every`/`daily`/`weekly`/`cron`），可跨 kind；等价归一化规则是 no-op。DST 规则：本地不存在的时刻跳过、重叠取更早且每天只一次；`every_seconds: 86400` 是固定间隔，不等于 daily 的 wall-clock 语义。`title` 必填（trim 后非空、≤120 字符、**从不从 instruction 派生**）。
 
 绑定与操作边界（`packages/schedule/schedule/README.md:50`-`56`）：reminder 绑定**创建它的 Agent Session**；`schedule_list` 只返 active；这些操作**不激活任何 Agent、不读 Session 日志**；显式删除 = 停未来交付 + 删任务行 + 删交付记录，**已进队列的消息不撤回**。update 是 **complete-record CAS**（与创建/删除同一 FIFO）：可跨 kind（daily 改 cron）、保留 id/绑定/状态/历史，等价归一化规则是 no-op，冲突返回 `schedule_conflict` 不覆写。
 

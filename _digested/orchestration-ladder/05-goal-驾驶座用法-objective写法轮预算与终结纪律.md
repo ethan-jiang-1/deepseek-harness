@@ -26,6 +26,14 @@ goal 的设计围绕一个核心区分展开：**durable 的生命周期 ≠ 继
 
 三个要求合成一句：**具体**（concrete，可判定）、**完成导向**（completion objective，描述终态而不是待办清单）、**从人类请求推断**（inferred，不是模型自己发明）。反例对照：`把文档整理一下` 不是具体完成目标；`校验 _digested 全部 path:line 引用并修复越界` 是。
 
+**可写接口**（`packages/goal/tool-goal/src/index.ts:207`-`260`）：
+
+```json
+{ "objective": "校验 _digested 全部引用并修复越界", "max_goal_rounds": 20 }
+{ "goal_id": "…", "revision": 3, "action": "complete" }
+{ "goal_id": "…", "revision": 3, "action": "blocked", "blocked_reason": "ref-sweep 基线 commit 不可达，持续 3 轮" }
+```
+
 objective 的**逐字持久**是它区别于 todo 的本质：每轮 prompt 注入的是同一个 JSON 序列化的 objective（`packages/goal/goal-round-driver/src/prompt.ts:17`），256 轮里轮轮相同；编辑要走 `update_goal action: edit`（需直接人类请求 + CAS revision）。
 
 ### 每轮模型看到什么：<goal_round> prompt

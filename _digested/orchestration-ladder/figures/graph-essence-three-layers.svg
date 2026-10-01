@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 760" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#fa8c16"/>
+    </marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#52c41a"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="32" font-size="16" font-weight="bold" fill="#333">图计算的本质：DSH 把「图」拆成三件事——不变量、推导、执行</text>
+  <text x="40" y="52" font-size="11.5" fill="#8c8c8c">引擎只做能机械保证的前两件（写入时校验 + 读取时推导）；图的执行（谁何时开始）交给对话——这是外部叙事的 Kahn 引擎与源码真相的分界线</text>
+
+  <rect x="40" y="70" width="330" height="240" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="60" y="96" font-size="13.5" font-weight="bold" fill="#1677ff">图一：归属树（引擎所有）</text>
+  <text x="60" y="116" font-size="10.5" fill="#333">authority / ownership / depth——一切 child 挂在</text>
+  <text x="60" y="132" font-size="10.5" fill="#333">发起 agent 上（parentSession header 递归向上）</text>
+  <circle cx="90" cy="168" r="9" fill="#1677ff"/>
+  <text x="105" y="172" font-size="10" fill="#333">caller（depth 0）</text>
+  <circle cx="70" cy="212" r="7" fill="#52c41a"/>
+  <circle cx="105" cy="212" r="7" fill="#52c41a"/>
+  <circle cx="140" cy="212" r="7" fill="#52c41a"/>
+  <line x1="90" y1="176" x2="70" y2="204" stroke="#595959" stroke-width="1.5"/>
+  <line x1="90" y1="176" x2="105" y2="204" stroke="#595959" stroke-width="1.5"/>
+  <line x1="90" y1="176" x2="140" y2="204" stroke="#595959" stroke-width="1.5"/>
+  <text x="160" y="216" font-size="9.5" fill="#8c8c8c">children（depth 1，≤1000）</text>
+  <text x="60" y="252" font-size="10" fill="#333">子节点不能再挂子节点：默认 maxDepth = 1</text>
+  <text x="60" y="270" font-size="10" fill="#333">（广度开放、深度关闭——用预算表达嵌套边界）</text>
+  <text x="60" y="292" font-size="9.5" fill="#8c8c8c">机制见 03/08 页：这是权限、通知、结算的骨架</text>
+
+  <rect x="400" y="70" width="330" height="240" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="420" y="96" font-size="13.5" font-weight="bold" fill="#fa8c16">图二：任务 DAG（协调数据）</text>
+  <text x="420" y="116" font-size="10.5" fill="#333">teams 任务板的 blocked_by——唯一的显式 DAG，</text>
+  <text x="420" y="132" font-size="10.5" fill="#333">但它是数据不是引擎：引擎只守它的不变量</text>
+  <rect x="440" y="152" width="80" height="30" rx="5" fill="#fa8c16" stroke="#fa8c16"/>
+  <text x="480" y="171" font-size="9.5" fill="#fff" text-anchor="middle">audit-01-05</text>
+  <rect x="560" y="152" width="80" height="30" rx="5" fill="#fa8c16" stroke="#fa8c16"/>
+  <text x="600" y="171" font-size="9.5" fill="#fff" text-anchor="middle">audit-06-09</text>
+  <rect x="500" y="220" width="90" height="30" rx="5" fill="#fa8c16" stroke="#fa8c16"/>
+  <text x="545" y="239" font-size="9.5" fill="#fff" text-anchor="middle">fix（汇聚）</text>
+  <line x1="480" y1="182" x2="525" y2="218" stroke="#595959" stroke-width="1.5" marker-end="url(#a)"/>
+  <line x1="600" y1="182" x2="565" y2="218" stroke="#595959" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="420" y="278" font-size="10" fill="#333">写时校验：DFS 环检测 + missing/duplicate/self</text>
+  <text x="420" y="296" font-size="10" fill="#333">读时推导：ready = 阻塞者全部 completed</text>
+  <text x="420" y="314" font-size="9.5" fill="#8c8c8c">task-graph.ts / task-view.ts——本页逐行核验</text>
+
+  <rect x="760" y="70" width="320" height="240" rx="10" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="780" y="96" font-size="13.5" font-weight="bold" fill="#52c41a">图三：脚本控制流（代码里的任意图）</text>
+  <text x="780" y="116" font-size="10.5" fill="#333">workflow 的编排图不是数据结构——是一段 JS：</text>
+  <text x="780" y="132" font-size="10.5" fill="#333">for / await / Promise.all 就是扇出与汇聚</text>
+  <text x="780" y="158" font-size="10.5" fill="#333" font-family="monospace">pipeline(items, s1, s2)  // 逐项独立、无屏障</text>
+  <text x="780" y="176" font-size="10.5" fill="#333" font-family="monospace">parallel([f, g, h])      // 全量屏障（fan-in）</text>
+  <text x="780" y="194" font-size="10.5" fill="#333" font-family="monospace">await agent(...)         // 图的一个叶子</text>
+  <text x="780" y="222" font-size="10" fill="#333">引擎不解释图——引擎执行代码，只在叶子处</text>
+  <text x="780" y="238" font-size="10" fill="#333">（agent()）提供 transport；图灵完备意味着</text>
+  <text x="780" y="254" font-size="10" fill="#333">「根据发现改图」是原生能力，不需要逃逸舱</text>
+  <text x="780" y="284" font-size="9.5" fill="#8c8c8c">脚本内甚至可以自建数据结构再遍历它</text>
+
+  <rect x="40" y="340" width="1040" height="180" rx="10" fill="#fafafa" stroke="#333" stroke-width="2"/>
+  <text x="60" y="368" font-size="13.5" font-weight="bold" fill="#333">三件事的分置：图计算被拆开，只把能机械保证的交给引擎</text>
+  <rect x="70" y="386" width="300" height="106" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="220" y="410" font-size="12" font-weight="bold" fill="#fa8c16" text-anchor="middle">① 不变量（写时，确定性）</text>
+  <text x="220" y="432" font-size="10.5" fill="#333" text-anchor="middle">assertTaskGraphCandidate：每次任务写入后全图校验</text>
+  <text x="220" y="450" font-size="10.5" fill="#333" text-anchor="middle">DFS visiting/visited 环检测；missing/duplicate/self 拒绝</text>
+  <text x="220" y="472" font-size="9.5" fill="#8c8c8c" text-anchor="middle">agent-team/src/task-graph.ts:34-77</text>
+  <rect x="410" y="386" width="300" height="106" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="560" y="410" font-size="12" font-weight="bold" fill="#1677ff" text-anchor="middle">② 推导（读时，纯函数）</text>
+  <text x="560" y="432" font-size="10.5" fill="#333" text-anchor="middle">taskReady = blockedBy.every(completed)——「入度为零」</text>
+  <text x="560" y="450" font-size="10.5" fill="#333" text-anchor="middle">条件的逐任务版本；只用于显示与过滤，不触发任何动作</text>
+  <text x="560" y="472" font-size="9.5" fill="#8c8c8c" text-anchor="middle">agent-team/src/task-view.ts:28-31</text>
+  <rect x="750" y="386" width="300" height="106" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="900" y="410" font-size="12" font-weight="bold" fill="#52c41a" text-anchor="middle">③ 执行（对话，概率性）</text>
+  <text x="900" y="432" font-size="10.5" fill="#333" text-anchor="middle">「Task readiness never starts an owner」——就绪不派发</text>
+  <text x="900" y="450" font-size="10.5" fill="#333" text-anchor="middle">派发 = send_message，由 Lead/模型按上下文决定</text>
+  <text x="900" y="472" font-size="9.5" fill="#8c8c8c" text-anchor="middle">tool-agent-team POLICY:36</text>
+
+  <rect x="40" y="544" width="1040" height="150" rx="10" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="60" y="572" font-size="13.5" font-weight="bold" fill="#d4380d">与 Kahn 的对照：为什么外部叙事会想象一个不存在的引擎</text>
+  <text x="60" y="596" font-size="11" fill="#333">Kahn 算法把 DAG 线性化为执行序——前提是存在一个中心 executor 按序取节点派工。外部叙事把 ①②③ 捏成了一个这样的引擎。</text>
+  <text x="60" y="618" font-size="11" fill="#333">DSH 只做 ①②：无环校验与就绪推导是可以机械保证的（确定性）；③ 涉及「接下来什么更值得做」的判断——那是概率组件（模型）的领地。</text>
+  <text x="60" y="640" font-size="11" fill="#333">证据：外部叙事自己的状态机里有 REPLANNING（Captain 动态改图）——静态 DAG 表达不了「根据发现重规划」，只能开逃逸舱；逃逸舱就是模型。</text>
+  <text x="60" y="662" font-size="11" fill="#333">DSH 让模型成为默认而非例外：图是知识与过程（归模型与代码），树是权威与状态（归引擎）。</text>
+  <text x="60" y="684" font-size="9.5" fill="#8c8c8c">形式化对比与 harness-idea 连接见后续深挖轮次（本页第一版）</text>
+
+  <text x="40" y="726" font-size="10" fill="#8c8c8c">源码核验：packages/experimental/agent-team/src/task-graph.ts · task-view.ts · packages/workflow/tool-workflow/src/index.ts（脚本合同）· 03/08 页（归属树）</text>
+</svg>
