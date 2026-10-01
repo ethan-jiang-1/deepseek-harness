@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="ab" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">fork 种子：balanced completed-turn 前缀与 inheritedEventCount 边界</text>
+  <text x="40" y="54" font-size="12" fill="#8c8c8c">findLast(turn/end) → slice(0, lastEnd.seq + 1)——seq 即数组下标（append contract），种子从 seq 0 起合法（subagent-fork-in-process/src/index.ts:41-55）</text>
+
+  <text x="40" y="88" font-size="13" font-weight="bold" fill="#333">父 Session 日志</text>
+  <rect x="40" y="100" width="150" height="44" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="115" y="126" font-size="11" fill="#333" text-anchor="middle">turn 1 事件</text>
+  <rect x="190" y="100" width="56" height="44" fill="#1677ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="218" y="126" font-size="10" fill="#fff" text-anchor="middle">turn/end</text>
+  <rect x="246" y="100" width="150" height="44" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="321" y="126" font-size="11" fill="#333" text-anchor="middle">turn 2 事件</text>
+  <rect x="396" y="100" width="56" height="44" fill="#1677ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="424" y="126" font-size="10" fill="#fff" text-anchor="middle">turn/end</text>
+  <rect x="452" y="100" width="150" height="44" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="527" y="126" font-size="11" fill="#333" text-anchor="middle">turn 3 事件</text>
+  <rect x="602" y="100" width="56" height="44" fill="#1677ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="630" y="126" font-size="10" fill="#fff" text-anchor="middle">turn/end</text>
+  <rect x="666" y="100" width="170" height="44" fill="#fafafa" stroke="#d4380d" stroke-width="1.5" stroke-dasharray="6 3"/>
+  <text x="751" y="118" font-size="11" fill="#d4380d" text-anchor="middle">in-flight turn</text>
+  <text x="751" y="134" font-size="9.5" fill="#d4380d" text-anchor="middle">unbalanced · 排除</text>
+
+  <path d="M45 154 L45 148 L655 148 L655 154" fill="none" stroke="#52c41a" stroke-width="2"/>
+  <text x="350" y="170" font-size="11.5" fill="#52c41a" text-anchor="middle">slice(0, lastEnd.seq + 1)：contiguous from seq 0 · lossless JSON · balanced（invariants 回放可接受）</text>
+
+  <text x="40" y="204" font-size="13" font-weight="bold" fill="#333">fork child Session</text>
+  <rect x="40" y="216" width="615" height="44" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="348" y="236" font-size="11.5" fill="#333" text-anchor="middle">种子：继承段（父的全部已完成轮次事件，一次性快照）</text>
+  <text x="348" y="252" font-size="10" fill="#8c8c8c" text-anchor="middle">创建时固化进 child 自己的 durable transcript；父的后续 turn 永不进入</text>
+  <line x1="663" y1="208" x2="663" y2="268" stroke="#d4380d" stroke-width="2.5"/>
+  <text x="672" y="228" font-size="11" font-weight="bold" fill="#d4380d">inheritedEventCount</text>
+  <text x="672" y="244" font-size="10" fill="#8c8c8c">fork 谱系边界：catalog 投影忽略</text>
+  <text x="672" y="258" font-size="10" fill="#8c8c8c">offset 以下事件；descriptor 权威</text>
+  <text x="672" y="272" font-size="10" fill="#8c8c8c">读 child 自己的后缀</text>
+  <rect x="686" y="216" width="150" height="44" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="761" y="236" font-size="11" fill="#333" text-anchor="middle">child 自己的后缀</text>
+  <text x="761" y="252" font-size="9.5" fill="#8c8c8c" text-anchor="middle">descriptor · policy 事件 · 自己的 turns</text>
+
+  <line x1="348" y1="288" x2="348" y2="330" stroke="#1677ff" stroke-width="2" marker-end="url(#ab)"/>
+  <text x="360" y="314" font-size="11" fill="#1677ff">CreateAgentOptions.seed —— 与 ctx.agents.resume() 同一原语</text>
+
+  <rect x="40" y="334" width="340" height="118" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="58" y="360" font-size="12.5" font-weight="bold" fill="#333">三个边界事实</text>
+  <text x="58" y="382" font-size="11" fill="#333">1. 无已完成 turn → 种子 [] → 等价 fresh spawn</text>
+  <text x="58" y="402" font-size="11" fill="#333">2. in-flight turn 被排除：unbalanced 无法重放</text>
+  <text x="58" y="422" font-size="11" fill="#333">3. 快照一次性：continuable 冷恢复重放的是固化</text>
+  <text x="58" y="440" font-size="11" fill="#333">   的前缀，而不是重新 fork 父的更新历史</text>
+
+  <rect x="410" y="334" width="630" height="118" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="428" y="360" font-size="12.5" font-weight="bold" fill="#333">KV Cache 前缀复用的条件（base 组合的显式设计）</text>
+  <text x="428" y="382" font-size="11" fill="#333">fork 行省略模型选择 → provider/model 与父一致 → 继承历史保持前缀复用资格</text>
+  <text x="428" y="402" font-size="11" fill="#333">persona / tool-filter / generated-SDK / 路由变更 → 继承历史之前的前缀失效</text>
+  <text x="428" y="422" font-size="11" fill="#333">continuable 回传指引排在继承历史之后 → 前缀字节稳定</text>
+  <text x="428" y="442" font-size="10.5" fill="#8c8c8c">packages/bundle/base/cordis.patch.yml:377-382 · subagent-fork-in-process/README.md:120-122</text>
+
+  <rect x="40" y="478" width="1000" height="96" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="58" y="504" font-size="12.5" font-weight="bold" fill="#52c41a">继承的只是对话历史</text>
+  <text x="58" y="526" font-size="11" fill="#333">「The seed carries conversation history only: the child still gets a fresh tool scope and none of the parent's authority」</text>
+  <text x="58" y="546" font-size="11" fill="#333">child 拿到新的 flat scope（不继承父注册）；权限在第一个 await 前捕获（approval 钉 never）；深度 = parent + 1</text>
+  <text x="58" y="564" font-size="10.5" fill="#8c8c8c">测试旁证：subagent-fork-in-process.spec.ts:93（seeds every completed turn）· :137（mid-turn excludes the open turn）· :183（不返回种子里的父输出）</text>
+
+  <text x="40" y="606" font-size="10.5" fill="#8c8c8c">源码核验：subagent-fork-in-process/src/index.ts:41-91 · subagent/src/catalog.ts:119-123 · docs/subsystems/subagent.md:462</text>
+</svg>
