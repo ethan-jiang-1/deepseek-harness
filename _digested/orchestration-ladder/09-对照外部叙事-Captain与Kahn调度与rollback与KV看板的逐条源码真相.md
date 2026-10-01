@@ -21,6 +21,8 @@
 
 ## 三条最重要的形态纠正
 
+![图计算的本质：不变量、推导、执行](./figures/graph-essence-three-layers.svg)
+
 **一、编排是原语阶梯，不是中心 DAG 引擎。** 外部叙事的能力清单基本讲对了（拆解、委派、编排、长任务、持久协调都存在），但把它们装配成了一个不存在的中心调度器。源码的答案是**显式拒绝**通用编排引擎：goal 与 ralph 的两策略决策明文否决了 `packages/loop/` 家族、`LoopDriver`、universal `StopCondition` 与 generic `loop` 工具（`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md`，[`04`](./04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md)）；编排由模型按官方路由自选原语（[`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md)），执行拓扑是脚本自身的控制流。
 
 **二、恢复是会话级，不是任务级。** 没有 task 回滚命令；durable session + resume + disarmed goal + continuable 冷恢复 + fork 一次性快照共同构成真实的恢复语义（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)、[`05`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md)）。叙事里的"外科手术式回退"是对"事件溯源可重建状态"这个真机制的过度具体化。

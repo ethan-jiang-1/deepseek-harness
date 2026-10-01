@@ -33,6 +33,32 @@ PTC fresh Node 进程（脚本 VM 只注入钩子与 args；子代理经 subagen
 - Config 三项（`:59`-`63`）：`toolName`（默认 `workflow`）、`maxResultChars`（默认 50000，超限截断并附 `[truncated: …]`，`:239`-`246`）、`enableRunInBackground`（默认 true；关闭时参数不暴露且调用被拒，`:414`-`417`）。
 - 输出 envelope 两支：后台 `{kind:'background', jobId, runId}`；前台 `{kind:'foreground', runId, agentsStarted, result}`（`:375`-`398`）。
 
+**调用形态与完整示例**（脚本 DSL 的全貌——五个钩子 + args，没有 fs/network/timer/Node API）：
+
+```json
+{ "script": "<纯 JS 函数体>", "meta": { "name": "audit-repo", "description": "逐文件审计并汇总",
+    "phases": [{ "title": "逐文件审计" }, { "title": "汇总" }] },
+  "args": { "files": ["a.ts", "b.ts"] } }
+```
+
+```js
+phase('逐文件审计')
+const results = await pipeline(args.files,
+  async (prev, file, i) => await agent(
+    `审计 ${file} 的导出与依赖，返回问题清单`,
+    { label: `audit ${file}`, schema: {
+        type: 'object',
+        properties: { file: { type: 'string' }, issues: { type: 'array', items: { type: 'string' } } },
+        required: ['file', 'issues'], additionalProperties: false } }),
+  async (report) => report === null ? null : { file: report.file, count: report.issues.length })
+phase('汇总')
+const merged = await parallel([
+  () => agent('汇总已审计文件的问题并排序', { label: 'merge', phase: '汇总' }),
+  () => agent('给出修复优先级建议', { label: 'prioritize', phase: '汇总' }),
+])
+return { audited: results.filter(Boolean).length, merge: merged[0], priorities: merged[1] }
+```
+
 `meta` 在任何脚本文本被执行前先做 schema 校验、失败即拒绝——引擎绝不为了拿 meta 而求值脚本（`docs/subsystems/workflow.md:13`）。
 
 ## 脚本钩子：能调用什么
