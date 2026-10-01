@@ -55,21 +55,21 @@ goal 的状态机与 Round Driver 深挖在 [`../agent-loop/00-map.md`](../agent
 | 模型写的 workflow 编排脚本在什么进程里跑、能调用什么钩子、失败如何结算？ | [`01-workflow-模型编写的JS编排脚本与子代理扇出机制.md`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) |
 | 官方对「什么时候用哪个原语」给了什么明文语义？原语之间怎么互相路由？ | [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md) |
 | subagent / subagent_fork：委派隔离了什么、fork 继承什么、one-shot 与 continuable 差在哪、控制面边界规则？ | [`03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md) |
+| ralph：轮间到底传什么、固定脚本锁死什么、四种终局怎么结算、为什么长任务分裂成 goal 与 ralph 两策略？ | [`04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md`](./04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md) |
+| goal 的驾驶座用法：objective 怎么写、轮预算怎么定、终结纪律、`/goal` 命令面、resume 与 disarmed 语义？ | [`05-goal-驾驶座用法-objective写法轮预算与终结纪律.md`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md) |
+| jobs / schedule：后台作业平台的保证（id/owner/first-wins/通知经济学）、四个 producer、六选择器时序与交付形态？ | [`06-jobs与schedule-后台作业平台与定时跟进的时间平面.md`](./06-jobs与schedule-后台作业平台与定时跟进的时间平面.md) |
+| agent-teams 的驾驶座用法：启用代价（组合互斥表）、Lead 工作流、POLICY 协作纪律、数字上限？ | [`07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md`](./07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md) |
+| 组合模式：归属链、深度预算、四条通知通道、五个协同形态与跨模式收尾纪律？ | [`08-组合模式-归属链深度预算通知通道与收尾纪律.md`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md) |
 
 已登记待挖（页面按「深潜不预先写」惯例，挣到再写、按到达顺序编号）：
 
 | 问题 | 计划页 |
 |------|--------|
-| ralph：轮间到底传什么、与 workflow 的分工 | 04 |
-| goal 的驾驶座用法（机制已答，怎么用好未答） | 05 |
-| jobs / schedule：后台生命周期与定时跟进的边界 | 06 |
-| agent-teams 的驾驶座用法（机制已答，怎么用好未答） | 07 |
-| 组合模式：goal × workflow × subagent × jobs 的实战协同 | 08 |
 | 对照外部叙事：Captain/Kahn DAG、`dsh rollback --task`、KV Cache 看板的源码真相 | 09 |
 
 ## 阅读路径
 
-先读本页建立阶梯全景，再按三个入口深入：想知道「这个任务该用哪个原语」直接进 [`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；想理解最重的那级原语（workflow）的完整机制进 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)；想知道委派到底隔离/继承了什么、continuable 子代理怎么续怎么停进 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
+先读本页建立阶梯全景，再按五个入口深入：想知道「这个任务该用哪个原语」直接进 [`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；想理解最重的那级原语（workflow）的完整机制进 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)；想知道委派到底隔离/继承了什么、continuable 子代理怎么续怎么停进 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)；想知道 ralph 轮间传什么、为什么长任务分成两种策略进 [`04`](./04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md)；想知道 goal 怎么用好（objective 写法、预算、终结纪律）进 [`05`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md)；想知道后台作业平台的保证、完成通知何时打断你、定时提醒怎么交付进 [`06`](./06-jobs与schedule-后台作业平台与定时跟进的时间平面.md)；想知道 agent-teams 启用要付出什么组合代价、Lead 怎么带队进 [`07`](./07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md)；想把原语叠起来用（归属链/深度预算/通知通道/收尾纪律）进 [`08`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md)。
 
 ## 源码入口
 
