@@ -73,6 +73,9 @@ goal 的状态机与 Round Driver 深挖在 [`../agent-loop/00-map.md`](../agent
 | 对照外部叙事：Captain 规划器、Kahn 调度、`dsh rollback --task`、KV Cache 看板，逐条的源码真相？ | [`09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md`](./09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md) |
 | 接受、模型可见、静止、资源处置与业务完成有什么不同？跨日志崩溃会怎样？ | [`10-完成语义与崩溃窗口-接受可见静止处置.md`](./10-完成语义与崩溃窗口-接受可见静止处置.md) |
 | Session 谱系、Agent incarnation、Activation epoch 与冷恢复如何区分？ | [`12-Session谱系与Agent实例-持久边与活体权限.md`](./12-Session谱系与Agent实例-持久边与活体权限.md) |
+| 哪些是持久事实、派生 projection，哪些只是内存 authority？ | [`13-持久事实派生投影与内存权限-状态三分法.md`](./13-持久事实派生投影与内存权限-状态三分法.md) |
+| 深度、并发、总量、owner 容量和 Teams 上限如何叠加？ | [`14-资源预算与公平性-深度并发总量与容量边界.md`](./14-资源预算与公平性-深度并发总量与容量边界.md) |
+| workflow 每次运行结果为何不可复现，取消与观察记录能保证什么？ | [`15-workflow可复现性与生命周期-动态结果取消和观察记录.md`](./15-workflow可复现性与生命周期-动态结果取消和观察记录.md) |
 | todo_write 与 plan mode 的轻量计划面？ | 分布覆盖，无独立页：选择边界与互斥句见 [`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md)（todo 的 "skip it for trivial single-step tasks"、plan 模式内不用 todo_write）；plan → todo 的顺序纪律见 [`08`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md) 收尾纪律清单；阶梯位置与默认挂载见本页两表 |
 | 图计算的本质：编排里真实的图有哪些，引擎对图做什么、拒绝什么，为什么？ | [`11-图计算的本质-不变量推导与执行的三件分置.md`](./11-图计算的本质-不变量推导与执行的三件分置.md) |
 | Agent 视角的统一重述：in-process Agent 路径如何构造上下文、驱动执行并回传结果？ | 同 [`11`](./11-图计算的本质-不变量推导与执行的三件分置.md) 的「Agent 是原子」节 |
@@ -82,13 +85,15 @@ goal 的状态机与 Round Driver 深挖在 [`../agent-loop/00-map.md`](../agent
 以下问题尚未完成源码与测试交叉核验，不作为当前结论：
 
 - ~~Session lineage 与 Agent incarnation：冷恢复、owner disposal 和 ancestry 授权的差异。~~ 已单独立页见 [`12`](./12-Session谱系与Agent实例-持久边与活体权限.md)。
-- 资源预算与公平性：depth、Activation pool、workflow FIFO 和 job owner 容量怎样共同约束工作。
-- 持久事实、派生投影和内存权限：todo/plan/goal/jobs 各自恢复哪些状态。
-- 动态 workflow 的可复现性：模型结果、未 await 的调用、启动/取消竞态及最终输出之间的关系。
+- ~~资源预算与公平性：depth、Activation pool、workflow FIFO 和 job owner 容量怎样共同约束工作。~~ 已单独立页见 [`14`](./14-资源预算与公平性-深度并发总量与容量边界.md)。
+- ~~持久事实、派生投影和内存权限：todo/plan/goal/jobs 各自恢复哪些状态。~~ 已单独立页见 [`13`](./13-持久事实派生投影与内存权限-状态三分法.md)。
+- ~~动态 workflow 的可复现性：模型结果、未 await 的调用、启动/取消竞态及最终输出之间的关系。~~ 已单独立页见 [`15`](./15-workflow可复现性与生命周期-动态结果取消和观察记录.md)。
+
+四个待核验问题已全部单独立页；若后续同步到新的产品 commit，按 [`../_coverage/00-index.md`](../_coverage/00-index.md) 的流程定位受影响行。
 
 ## 阅读路径
 
-先读本页建立阶梯全景，再按十二个入口深入：想知道「这个任务该用哪个原语」直接进 [`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；想理解最重的那级原语（workflow）的完整机制进 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)；想知道委派到底隔离/继承了什么、continuable 子代理怎么续怎么停进 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)；想知道 ralph 轮间传什么、为什么长任务分成两种策略进 [`04`](./04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md)；想知道 goal 怎么用好（objective 写法、预算、终结纪律）进 [`05`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md)；想知道后台作业平台的保证、完成通知何时打断你、定时提醒怎么交付进 [`06`](./06-jobs与schedule-后台作业平台与定时跟进的时间平面.md)；想知道 agent-teams 启用要付出什么组合代价、Lead 怎么带队进 [`07`](./07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md)；想知道怎么把原语叠起来用（归属链/深度预算/通知通道/收尾纪律）进 [`08`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md)；想核对流传的外部叙事（Captain/Kahn/rollback/KV 看板）进 [`09`](./09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md)；想分清「接受 / 模型可见 / 静止 / 资源处置 / 业务完成」五个时刻与跨日志崩溃窗口进 [`10`](./10-完成语义与崩溃窗口-接受可见静止处置.md)；想理解编排背后的本质——图的三件分置、Agent 是原子、代码-语言光谱——进 [`11`](./11-图计算的本质-不变量推导与执行的三件分置.md)；想把 Session 谱系、Agent 实例与 Activation epoch 分清进 [`12`](./12-Session谱系与Agent实例-持久边与活体权限.md)。
+先读本页建立阶梯全景，再按十五个入口深入：想知道「这个任务该用哪个原语」直接进 [`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；想理解最重的那级原语（workflow）的完整机制进 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)；想知道委派到底隔离/继承了什么、continuable 子代理怎么续怎么停进 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)；想知道 ralph 轮间传什么、为什么长任务分成两种策略进 [`04`](./04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md)；想知道 goal 怎么用好（objective 写法、预算、终结纪律）进 [`05`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md)；想知道后台作业平台的保证、完成通知何时打断你、定时提醒怎么交付进 [`06`](./06-jobs与schedule-后台作业平台与定时跟进的时间平面.md)；想知道 agent-teams 启用要付出什么组合代价、Lead 怎么带队进 [`07`](./07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md)；想知道怎么把原语叠起来用（归属链/深度预算/通知通道/收尾纪律）进 [`08`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md)；想核对流传的外部叙事（Captain/Kahn/rollback/KV 看板）进 [`09`](./09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md)；想分清「接受 / 模型可见 / 静止 / 资源处置 / 业务完成」五个时刻与跨日志崩溃窗口进 [`10`](./10-完成语义与崩溃窗口-接受可见静止处置.md)；想理解编排背后的本质——图的三件分置、Agent 是原子、代码-语言光谱——进 [`11`](./11-图计算的本质-不变量推导与执行的三件分置.md)；想把 Session 谱系、Agent 实例与 Activation epoch 分清进 [`12`](./12-Session谱系与Agent实例-持久边与活体权限.md)；想区分持久事实、派生 projection 与内存 authority 进 [`13`](./13-持久事实派生投影与内存权限-状态三分法.md)；想核对深度、并发、总量、owner 容量与 Teams 上限进 [`14`](./14-资源预算与公平性-深度并发总量与容量边界.md)；想知道 workflow 为什么无法逐次复现、取消与观察记录分别保证什么进 [`15`](./15-workflow可复现性与生命周期-动态结果取消和观察记录.md)。
 
 ## 源码入口
 
@@ -105,6 +110,7 @@ goal 的状态机与 Round Driver 深挖在 [`../agent-loop/00-map.md`](../agent
 | `packages/goal/tool-goal/` | `create_goal` / `update_goal` / `get_goal` |
 | `packages/goal/goal-round-driver/` | idle 自动续轮（深挖见 agent-loop 专题） |
 | `packages/jobs/tool-jobs/` | 后台 job 的模型可见面 |
+| `packages/jobs/jobs-local/` | process-local job registry：owner capacity、ring 与 cursor（不跨重启） |
 | `packages/terminal/tool-terminal/` | terminal 后台 producer：`pty-send` |
 | `packages/schedule/schedule/` | Host 时间任务与 Session follow-up |
 | `packages/experimental/tool-agent-team/` | Agent Teams 模型可见工具 |

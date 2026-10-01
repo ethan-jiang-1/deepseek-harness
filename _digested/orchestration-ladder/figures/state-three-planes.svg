@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#595959"/></marker>
+  </defs>
+  <text x="40" y="36" font-size="20" font-weight="700" fill="#262626">编排状态的三层：事实、投影、权限</text>
+  <text x="40" y="62" font-size="13" fill="#8c8c8c">事实可以重放；投影可以重算；内存 authority 必须重新建立</text>
+
+  <rect x="70" y="105" width="300" height="330" rx="14" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="220" y="145" text-anchor="middle" font-size="19" font-weight="700" fill="#1677ff">持久事实</text>
+  <text x="220" y="180" text-anchor="middle" font-size="13" fill="#333">Session event / Host record</text>
+  <text x="105" y="230" font-size="14" fill="#333">• goal/change</text>
+  <text x="105" y="262" font-size="14" fill="#333">• team/task、message</text>
+  <text x="105" y="294" font-size="14" fill="#333">• plan mode event</text>
+  <text x="105" y="326" font-size="14" fill="#333">• todo/write</text>
+  <text x="105" y="358" font-size="14" fill="#333">• schedule record</text>
+  <text x="105" y="405" font-size="12" fill="#595959">重启后：读取、校验、重放</text>
+
+  <rect x="440" y="105" width="300" height="330" rx="14" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="590" y="145" text-anchor="middle" font-size="19" font-weight="700" fill="#389e0d">派生投影</text>
+  <text x="590" y="180" text-anchor="middle" font-size="13" fill="#333">fold / view / query</text>
+  <text x="475" y="230" font-size="14" fill="#333">• goal view / phase</text>
+  <text x="475" y="262" font-size="14" fill="#333">• team roster / ready</text>
+  <text x="475" y="294" font-size="14" fill="#333">• todo 当前列表</text>
+  <text x="475" y="326" font-size="14" fill="#333">• job view / cursor</text>
+  <text x="475" y="358" font-size="14" fill="#333">• UI 与模型查询面</text>
+  <text x="475" y="405" font-size="12" fill="#595959">重启后：从 owner 事实重算</text>
+
+  <rect x="810" y="105" width="300" height="330" rx="14" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
+  <text x="960" y="145" text-anchor="middle" font-size="19" font-weight="700" fill="#cf1322">内存权限 / 执行态</text>
+  <text x="960" y="180" text-anchor="middle" font-size="13" fill="#333">runtime identity / capacity</text>
+  <text x="845" y="230" font-size="14" fill="#333">• goal armed</text>
+  <text x="845" y="262" font-size="14" fill="#333">• Agent / Activation</text>
+  <text x="845" y="294" font-size="14" fill="#333">• driver reservation</text>
+  <text x="845" y="326" font-size="14" fill="#333">• job cursor / dispatch</text>
+  <text x="845" y="358" font-size="14" fill="#333">• pending intent / cancel</text>
+  <text x="845" y="405" font-size="12" fill="#595959">重启后：丢弃、重建、重新授权</text>
+
+  <line x1="370" y1="270" x2="440" y2="270" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="740" y1="270" x2="810" y2="270" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="405" y="250" text-anchor="middle" font-size="11" fill="#595959">fold</text>
+  <text x="775" y="250" text-anchor="middle" font-size="11" fill="#595959">authorize</text>
+
+  <rect x="120" y="500" width="940" height="60" rx="10" fill="#fafafa" stroke="#d9d9d9"/>
+  <text x="590" y="526" text-anchor="middle" font-size="14" font-weight="700" fill="#333">不要把 active、ready、settled 或 delivered 当成同一种“完成”</text>
+  <text x="590" y="548" text-anchor="middle" font-size="12" fill="#595959">它们分别属于事实、投影、执行态或消费确认</text>
+</svg>
