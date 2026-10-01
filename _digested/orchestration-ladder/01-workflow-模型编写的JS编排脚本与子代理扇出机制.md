@@ -4,6 +4,10 @@
 
 本页回答：模型写的 workflow 编排脚本在什么进程里跑、能调用什么钩子、失败如何结算、结果如何持久化？工具的选择边界（什么时候该用）不在本页，见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)。
 
+## 为什么是这个形状：设计考量
+
+没有 workflow 时，扇出型工作（多文件审计、迁移、多角度调研）只能**逐轮委派**：每个中间结果都落进父上下文、计划无处持久、每步协调花一次模型往返（`.agents/notes/implemented/feature/2026-07-05-dynamic-workflows.md` Problem 节）。设计者的答案是让**脚本而不是对话**持有循环、分支与中间结果——模型写一段 JS 编排脚本，脚本扇出子代理、自己消化中间值，父上下文只收最终结果。这是 Claude Code dynamic workflows 的合同（meta 字段词汇对齐），但有一个**故意的分歧**：钩子滥用（写错的选项、越界的 schema、触顶）在 CC 里会溶进一个与子代理失败无法区分的 `null`，DSH 把它升级为 fatal——「一个 typo 的选项绝不能溶解成 null，那正是本仓库禁止的 accepted-then-ignored 失败模式」（同 note Decision 节）。引擎侧同样有取舍：`ctx.workflowEngine` 一个上下文只有一个引擎、无命名 provider 注册表——**引擎是部署替换件，不是共居者**（子代理的 transports 才是共居的）；`result` 永不 reject（失败结算为 stopReason，消费方永不处理 rejection）；`workflow/*` 事件是 observe-only 的数据快照——**控制权留在 run 的持有者手里**，订阅者拿不到 cancel。
+
 ## 定位：三层分离
 
 ![workflow 编排栈三层分离](./figures/workflow-three-layers.svg)

@@ -4,6 +4,10 @@
 
 本页回答：作为 goal 的使用者（驾驶座），objective 该怎么写、轮预算怎么定、complete/blocked 怎么判定、`/goal` 命令面有什么、resume 之后怎么重新武装？**机制不重复**：goal 状态机与 CAS 见 [`../agent-loop/01-goal-lifecycle.md`](../agent-loop/01-goal-lifecycle.md)，Round Driver 的自动续轮见 [`../agent-loop/02-goal-round-driver.md`](../agent-loop/02-goal-round-driver.md)，四层结束边界见 [`../agent-loop/03-activity-vs-goal-boundaries.md`](../agent-loop/03-activity-vs-goal-boundaries.md)；什么时候选 goal（而不是 subagent/workflow/ralph）见 [`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md)。
 
+## 为什么是这个形状：设计考量
+
+goal 的设计围绕一个核心区分展开：**durable 的生命周期 ≠ 继续执行的权限**（`.agents/notes/implemented/feature/2026-07-19-persisted-same-session-goal-domain.md` Problem 节）。目标放内存循环变量里重启即失、放 UI 状态里模型行为无法重建——所以要进 session 日志；但「会话里有个 active 目标」和「可以自动开始干活」是两件事——把每个 session turn 都当进展会让无关的人类消息也消耗自动工作预算，重开一个会话就静默开始干活则令人惊吓。答案是 phase 持久化 + activation **从不写盘**（armed/disarmed 只在进程内），重开永远 disarmed，人类说「继续」才重新武装。工具层同样的考量（`.agents/notes/implemented/feature/2026-07-19-model-facing-goal-tools.md` Problem 节）：**prompt 引导无法确立授权**——子代理、注入的插件消息、过期的模型 turn、恢复的会话都能产生一模一样的工具参数，所以权限判定必须在 authority 层而不在 prompt 文本里；同时自动续轮要能报告完成/阻塞，但**不能因此获得** edit/pause/resume/替换人类目标的权力——所以 action 权限表是两层的（edit/pause/resume 需直接人类；complete/blocked 也接受 goal-round authority）。这些考量解释了本页后面所有驾驶座规则为什么长那样。
+
 ## 一场 goal 的驾驶座时间线
 
 ```text
