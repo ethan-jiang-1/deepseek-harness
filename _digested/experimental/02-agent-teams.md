@@ -32,4 +32,4 @@
 | `packages/experimental/client-ui-agent-team/` | Web 会话头部 Team 动作 UI（读 Lead Session 投影，无 RPC） |
 | ~~`packages/experimental/agent-team-web-profile/`~~ | （0.1.7 线删除；职责并入 agent-team-profile 的统一 bundle） |
 
-session event log 与 projection 的底层机制见 [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md)；continuable 子代理的 `send_message` / steer 语义见 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/03-subagent后台与产品provider.md)；驾驶座用法（启用代价组合互斥表、Lead 九工具工作流、POLICY 协作纪律）见 [`../work-orchestration-primitives-ladder/07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md`](../work-orchestration-primitives-ladder/07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md)。
+session event log 与 projection 的底层机制见 [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md)；continuable 子代理的 `send_message` / steer 语义见 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/03-subagent后台与产品provider.md)；驾驶座用法（启用代价组合互斥表、Lead 九工具工作流、POLICY 协作纪律）见 [`../orchestration-ladder/07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md`](../orchestration-ladder/07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md)。
