@@ -18,6 +18,8 @@ provider 只参与**准备初始创建 spec**——返回物只有脱离的 prov
 
 ## fork 继承什么：balanced completed-turn 前缀
 
+![fork 种子与 inheritedEventCount 边界](./figures/fork-seed.svg)
+
 fork 种子的构造（`packages/subagent/subagent-fork-in-process/src/index.ts:41`-`55`）：`parent.session.snapshotEvents()` → `findLast(e => e.type === 'turn/end')` → `slice(0, lastEnd.seq + 1)`——**到含最后一个 `turn/end` 的全量事件前缀**（不是消息投影），seq 即数组下标（append contract）保证从 seq 0 起合法。三个边界事实：
 
 1. **无已完成 turn → 种子为 `[]`**，child 等价 fresh spawn（`start` 只在 `seed.length > 0` 时传 seed，`:76`-`83`）；

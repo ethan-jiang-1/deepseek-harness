@@ -31,7 +31,7 @@
 
 ### ⑤ 派活与自动化（子代理、后台任务、定时）
 
-`tool-subagent`/`subagent_fork` 委派子代理（进程内、ACP、Codex、Claude Code、SDK 多后端）；`jobs` 管后台任务（`job_list/job_output/job_kill`）；`workflow` 编排多步；`schedule` 定时提醒（随 optional bundle）；experimental 里有 Agent Teams 与 auto-review。**覆盖组**：subagent、jobs、workflow、schedule、experimental 的 teams/auto-review 家族、browser-use / computer-use（让模型操作浏览器与桌面）。
+`tool-subagent`/`subagent_fork` 委派子代理（进程内、ACP、Codex、Claude Code、SDK 多后端）；`jobs` 管后台任务（`job_list/job_output/job_kill`）；`workflow` 编排多步；`schedule` 定时提醒（随 optional bundle）；experimental 里有 Agent Teams 与 auto-review。**覆盖组**：subagent、jobs、workflow、schedule、experimental 的 teams/auto-review 家族、browser-use / computer-use（让模型操作浏览器与桌面）。这一族原语的机制深挖（什么时候用哪个、各自保证什么、怎么组合）见 [`../work-orchestration-primitives-ladder/00-map.md`](../work-orchestration-primitives-ladder/00-map.md)。
 
 ### ⑥ 记忆、检索、技能（会话的持久半边）
 
