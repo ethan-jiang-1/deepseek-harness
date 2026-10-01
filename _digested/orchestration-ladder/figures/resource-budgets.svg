@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif">
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#595959"/></marker></defs>
+  <text x="40" y="36" font-size="20" font-weight="700" fill="#262626">编排预算是多层边界，不是一个全局数字</text>
+  <text x="40" y="62" font-size="13" fill="#8c8c8c">纵向深度、横向并发、累计调用、owner 容量和协作数据各自拒绝不同的超限</text>
+
+  <rect x="55" y="105" width="240" height="230" rx="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="175" y="140" text-anchor="middle" font-size="18" font-weight="700" fill="#1677ff">Subagent</text>
+  <text x="175" y="177" text-anchor="middle" font-size="13" fill="#333">maxDepth = 1</text>
+  <text x="175" y="207" text-anchor="middle" font-size="13" fill="#333">Activation = 8</text>
+  <text x="175" y="246" text-anchor="middle" font-size="12" fill="#595959">纵向：能否再委派</text>
+  <text x="175" y="270" text-anchor="middle" font-size="12" fill="#595959">横向：能否驻留</text>
+  <text x="175" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#cf1322">超限：拒绝 / DepthError</text>
+
+  <rect x="330" y="105" width="240" height="230" rx="12" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="450" y="140" text-anchor="middle" font-size="18" font-weight="700" fill="#d46b08">Workflow</text>
+  <text x="450" y="177" text-anchor="middle" font-size="13" fill="#333">FIFO concurrency</text>
+  <text x="450" y="207" text-anchor="middle" font-size="13" fill="#333">total = 1000</text>
+  <text x="450" y="237" text-anchor="middle" font-size="13" fill="#333">items = 4096</text>
+  <text x="450" y="276" text-anchor="middle" font-size="12" fill="#595959">排队、累计、单次批量</text>
+  <text x="450" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#cf1322">超限：fatal run error</text>
+
+  <rect x="605" y="105" width="240" height="230" rx="12" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="725" y="140" text-anchor="middle" font-size="18" font-weight="700" fill="#389e0d">Jobs</text>
+  <text x="725" y="177" text-anchor="middle" font-size="13" fill="#333">owner bucket = 10</text>
+  <text x="725" y="207" text-anchor="middle" font-size="13" fill="#333">running + stopping</text>
+  <text x="725" y="246" text-anchor="middle" font-size="12" fill="#595959">owner fence ≠ capacity</text>
+  <text x="725" y="270" text-anchor="middle" font-size="12" fill="#595959">stopping 仍占容量</text>
+  <text x="725" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#cf1322">超限：start 拒绝</text>
+
+  <rect x="880" y="105" width="240" height="230" rx="12" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
+  <text x="1000" y="140" text-anchor="middle" font-size="18" font-weight="700" fill="#cf1322">Teams</text>
+  <text x="1000" y="177" text-anchor="middle" font-size="13" fill="#333">members = 16</text>
+  <text x="1000" y="207" text-anchor="middle" font-size="13" fill="#333">tasks = 256</text>
+  <text x="1000" y="237" text-anchor="middle" font-size="13" fill="#333">mailbox = 64</text>
+  <text x="1000" y="276" text-anchor="middle" font-size="12" fill="#595959">持久协作数据上限</text>
+  <text x="1000" y="306" text-anchor="middle" font-size="12" font-weight="700" fill="#cf1322">超限：操作拒绝</text>
+
+  <line x1="55" y1="400" x2="1120" y2="400" stroke="#d9d9d9" stroke-width="2"/>
+  <text x="590" y="438" text-anchor="middle" font-size="16" font-weight="700" fill="#333">这些边界不合并成全局公平调度器</text>
+  <text x="590" y="472" text-anchor="middle" font-size="13" fill="#595959">当前保证：局部 FIFO、exact-owner fence、共享 Activation pool、per-member mailbox cap</text>
+  <text x="590" y="500" text-anchor="middle" font-size="13" fill="#595959">当前未保证：跨原语优先级、全局 token 配额、全局成本调度、饥饿自由</text>
+  <rect x="180" y="540" width="820" height="58" rx="10" fill="#fafafa" stroke="#d9d9d9"/>
+  <text x="590" y="576" text-anchor="middle" font-size="14" font-weight="700" fill="#333">遇到拒绝：先定位触发层，再调整对应配置或释放对应资源</text>
+</svg>

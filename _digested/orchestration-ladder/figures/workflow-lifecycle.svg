@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#595959"/></marker>
+    <marker id="red-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#cf1322"/></marker>
+    <marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#389e0d"/></marker>
+  </defs>
+  <text x="40" y="36" font-size="20" font-weight="700" fill="#262626">固定的控制结构，不固定的叶子结果</text>
+  <text x="40" y="62" font-size="13" fill="#8c8c8c">JS 脚本固定分支与组合方式；每次运行的模型结果可以改变下一批 child 的数量、prompt 与返回值</text>
+
+  <rect x="60" y="92" width="250" height="96" rx="10" fill="#f0f5ff" stroke="#2f54eb" stroke-width="2"/>
+  <text x="185" y="122" text-anchor="middle" font-size="15" font-weight="700" fill="#2f54eb">script body（固定）</text>
+  <text x="185" y="148" text-anchor="middle" font-size="12" fill="#333">stage / 分支 / 组合结构</text>
+  <text x="185" y="170" text-anchor="middle" font-size="11" fill="#8c8c8c">meta 与 args 也参与可复现前提</text>
+
+  <path d="M315 140 L385 140" stroke="#2f54eb" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="392" y="92" width="250" height="96" rx="10" fill="#e6fffb" stroke="#13c2c2" stroke-width="2"/>
+  <text x="517" y="122" text-anchor="middle" font-size="15" font-weight="700" fill="#08979c">agent() 结果（动态）</text>
+  <text x="517" y="148" text-anchor="middle" font-size="12" fill="#333">文本或 structured output</text>
+  <text x="517" y="170" text-anchor="middle" font-size="11" fill="#8c8c8c">provider / model / 工具集都会影响</text>
+
+  <path d="M647 140 L717 140" stroke="#13c2c2" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="724" y="92" width="250" height="96" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="849" y="122" text-anchor="middle" font-size="15" font-weight="700" fill="#d46b08">下一批输入（可变）</text>
+  <text x="849" y="148" text-anchor="middle" font-size="12" fill="#333">数量 / prompt / 分支走向</text>
+  <text x="849" y="170" text-anchor="middle" font-size="11" fill="#8c8c8c">控制结构相同也可能多跑或少跑</text>
+  <path d="M849 192 C849 240 185 240 185 196" fill="none" stroke="#fa8c16" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+  <text x="517" y="234" text-anchor="middle" font-size="12" fill="#d46b08">结构可重放 ≠ 结果可重放</text>
+
+  <text x="60" y="292" font-size="15" font-weight="700" fill="#333">失败传播：局部 null 还是整个 run fatal</text>
+  <line x1="60" y1="312" x2="1120" y2="312" stroke="#d9d9d9"/>
+
+  <rect x="60" y="330" width="330" height="128" rx="10" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="225" y="358" text-anchor="middle" font-size="14" font-weight="700" fill="#389e0d">item-local → null</text>
+  <text x="80" y="386" font-size="12" fill="#333">• child stopReason 非 completed</text>
+  <text x="80" y="410" font-size="12" fill="#333">• 带 schema 但无 structured output</text>
+  <text x="80" y="434" font-size="12" fill="#333">• 普通 stage / thunk throw</text>
+  <text x="80" y="452" font-size="11" fill="#8c8c8c">combinator 继续处理其他 item</text>
+  <path d="M395 394 L455 394" stroke="#389e0d" stroke-width="2" marker-end="url(#green-arrow)"/>
+
+  <rect x="462" y="330" width="330" height="128" rx="10" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
+  <text x="627" y="358" text-anchor="middle" font-size="14" font-weight="700" fill="#cf1322">run-fatal</text>
+  <text x="482" y="386" font-size="12" fill="#333">• provider result rejection（AGENT_RESULT）</text>
+  <text x="482" y="410" font-size="12" fill="#333">• maxTotalAgents / maxItemsPerCall cap</text>
+  <text x="482" y="434" font-size="12" fill="#333">• WorkflowError、schema、配置错误</text>
+  <text x="482" y="452" font-size="11" fill="#8c8c8c">不伪装成局部 null</text>
+  <path d="M797 394 L857 394" stroke="#cf1322" stroke-width="2" marker-end="url(#red-arrow)"/>
+
+  <rect x="864" y="330" width="256" height="128" rx="10" fill="#fafafa" stroke="#595959" stroke-width="2"/>
+  <text x="992" y="358" text-anchor="middle" font-size="14" font-weight="700" fill="#262626">脚本最终返回值</text>
+  <text x="884" y="386" font-size="12" fill="#333">能物化为 plain JSON → value</text>
+  <text x="884" y="410" font-size="12" fill="#333">不能物化 → RESULT_UNSERIALIZABLE</text>
+  <text x="884" y="436" font-size="11" fill="#8c8c8c">result 本身不 reject</text>
+  <text x="884" y="452" font-size="11" fill="#8c8c8c">调用方仍须 dispose()</text>
+
+  <text x="60" y="508" font-size="15" font-weight="700" fill="#333">取消窗口与观察记录</text>
+  <line x1="60" y1="528" x2="1120" y2="528" stroke="#d9d9d9"/>
+  <text x="80" y="558" font-size="13" fill="#333">child start 后再次检查 signal</text>
+  <text x="380" y="558" font-size="13" fill="#595959">已取消则立即 dispose 并拒绝这次 start（不当作成功启动）</text>
+  <text x="80" y="588" font-size="13" fill="#333">workflow/* 观察事件</text>
+  <text x="380" y="588" font-size="13" fill="#595959">回答“观察到什么”，不回答“从哪一行恢复”；workflow/end 不含 result value</text>
+  <text x="80" y="618" font-size="13" fill="#333">recorder append 失败</text>
+  <text x="380" y="618" font-size="13" fill="#595959">只记警告并停止后续记录，不影响正在运行的 workflow</text>
+</svg>
