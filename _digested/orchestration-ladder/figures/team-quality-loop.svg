@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 520" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif">
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#595959"/></marker></defs>
+  <text x="40" y="36" font-size="20" font-weight="700" fill="#262626">Agent Teams 的质量闭环是显式设计，不是自动评估</text>
+  <text x="40" y="62" font-size="13" fill="#8c8c8c">平台保存协作状态；Lead 负责安排验收，工具和测试提供可执行证据</text>
+
+  <rect x="55" y="115" width="210" height="115" rx="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="160" y="150" text-anchor="middle" font-size="16" font-weight="700" fill="#1677ff">1. 验收条件</text>
+  <text x="160" y="180" text-anchor="middle" font-size="12" fill="#333">输入、产物、通过标准</text>
+  <text x="160" y="204" text-anchor="middle" font-size="12" fill="#595959">写入 task description</text>
+
+  <rect x="320" y="115" width="210" height="115" rx="12" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="425" y="150" text-anchor="middle" font-size="16" font-weight="700" fill="#389e0d">2. 执行</text>
+  <text x="425" y="180" text-anchor="middle" font-size="12" fill="#333">teammate / workflow child</text>
+  <text x="425" y="204" text-anchor="middle" font-size="12" fill="#595959">产出代码、文档或报告</text>
+
+  <rect x="585" y="115" width="210" height="115" rx="12" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="690" y="150" text-anchor="middle" font-size="16" font-weight="700" fill="#d46b08">3. 复核</text>
+  <text x="690" y="180" text-anchor="middle" font-size="12" fill="#333">Lead / reviewer teammate</text>
+  <text x="690" y="204" text-anchor="middle" font-size="12" fill="#595959">测试、diff、反例、引用</text>
+
+  <rect x="850" y="115" width="250" height="115" rx="12" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
+  <text x="975" y="150" text-anchor="middle" font-size="16" font-weight="700" fill="#cf1322">4. 结算</text>
+  <text x="975" y="180" text-anchor="middle" font-size="12" fill="#333">通过 → complete</text>
+  <text x="975" y="204" text-anchor="middle" font-size="12" fill="#595959">不通过 → reopen / reassign / revise</text>
+
+  <line x1="265" y1="172" x2="320" y2="172" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="530" y1="172" x2="585" y2="172" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="795" y1="172" x2="850" y2="172" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M975 230 C975 315 160 315 160 230" fill="none" stroke="#cf1322" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
+  <text x="570" y="305" text-anchor="middle" font-size="12" fill="#cf1322">重试是 Lead 的显式决定，不是平台自动推断</text>
+
+  <rect x="170" y="380" width="840" height="64" rx="10" fill="#fafafa" stroke="#d9d9d9"/>
+  <text x="590" y="407" text-anchor="middle" font-size="14" font-weight="700" fill="#333">teammate 自报完成 ≠ 质量已证明</text>
+  <text x="590" y="429" text-anchor="middle" font-size="12" fill="#595959">任务板持久化状态 ≠ 正确性判定；测试与 Lead 最终审查负责证据</text>
+</svg>
