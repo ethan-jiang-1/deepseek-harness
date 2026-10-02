@@ -53,11 +53,33 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
 { "task_id": "t3", "expected_revision": 2, "action": "claim" }
 ```
 
-`context`：`fresh`（无 Lead 历史）/ `fork`（继承已完成轮次）；`write_scopes` 是 **advisory** 工作区相对前缀（"Advisory workspace-relative file or directory prefixes this task expects to modify"，`:295`-`298`）；一切任务变更一律 `expected_revision` CAS。
+`context`：`fresh`（无 Lead 历史）/ `fork`（继承已完成轮次）；`write_scopes` 是 **advisory** 工作区相对前缀（"Advisory workspace-relative file or directory prefixes this task expects to modify"，`:295`-`298`）；任务状态、依赖、描述和 owner 的每次变更都通过带 `expected_revision` 的 CAS 请求提交。
+
+## 子 Agent 能否继续启动子 Agent？
+
+这里要区分 **Team teammate**、普通 subagent 和 workflow child：Agent Teams 的 `spawn_teammate` 不是一个所有成员都能调用的递归委派工具，只有 Lead 有权创建具名 teammate；队友不能用它再创建下一层 Team 成员。profile 同时禁用了普通 `subagent` / `subagent_fork` 工具，但保留了底层 Subagent service 和 `workflow` 的 `spawn` provider，因此一个 teammate 在其工具面确实可用 workflow 时，仍可能通过 workflow 的 `agent()` 创建一次性的 fresh child；这不是新的持久 teammate，也不继承 Team 的长期协调身份。`tool-agent-team` 对每个成员注册同一组九个 Team 工具，但服务层仍执行 Lead-only 权限；one-shot child 在刚发布的短窗口内可能暂时看见 Team 工具，调用会在身份确认后被拒绝，这是当前已登记的限制（`packages/experimental/tool-agent-team/README.md:142`）。
+
+因此，**“能不能再扇出”取决于入口和 provider，不是由 Team 任务板自动递归**：Lead 可以创建具名 teammate；队友不能创建 teammate；workflow 可以按自身脚本和容量限制启动 fresh child；任务 `ready` 也不会自动启动任何 owner。若要让某个队友再使用 workflow，Lead 应在初始 prompt 或消息中明确它的工作范围、输入、输出和验收条件，并把最终结果带回任务板或消息中。
+
+## 质量保障：不会自动发现错误并自动重派
+
+Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teammate 返回“完成”只表示它报告了完成；`inactive` 只表示当前没有 turn 在执行；`completed` 任务状态表示 Lead 或队友提交了该状态。系统不会根据答案正确性自动判断质量，也不会因为结果不满意自动 re-kickoff 原队友。
+
+质量保障必须由 Lead 把它设计成工作流，而不是期待平台替你判断。最小可靠闭环是：**定义验收条件 → 委派执行 → 读取产物 → 独立复核或运行测试 → 通过则 complete，不通过则 reopen/reassign 或发送带缺口的修订任务 → 再复核**。复核可以由 Lead 自己完成，也可以由另一个 teammate 作为 reviewer 完成；但 reviewer 也是模型 Agent，不能替代测试、编译器、`ref-sweep` 或其他可执行证据。
+
+当质量不满足时，确实可以再次启动工作，但它是**显式的重试/修订动作**：Lead 读取新结果，指出具体缺口，通过 `send_message` 让原队友继续修订，或用 `team_task_update` 的 `reopen` / `reassign` 把任务重新打开或交给另一名队友；Lead 也可以 `interrupt_agent` 停止当前回合并保留其 pending inbox。系统不记录一个自动 retry counter，也不保证第二次结果会比第一次更好，因此应在任务描述中写清验收条件、失败证据和最大重试策略。
+
+推荐的分工是：执行者负责修改，复核者负责寻找反例，Lead 负责解释验收标准并作最终合并判断。对于代码或文档，最终质量证据应优先来自测试、类型检查、格式检查、引用扫描、构建或人工逐项审查，而不是来自 teammate 的自报。共享文件系统使执行者和复核者看到同一工作区，也使未协调的并行写入产生冲突；`write_scopes` 只是 advisory，不能代替 Lead 的 diff 审查。
+
+任务板没有独立的 `reviewed`、`evidence` 或 `approval` 字段；它只保存任务描述、状态、owner、依赖、revision 和写域等信息。因此可以把验收标准写进 `description`，把验证命令和结果写进共享报告或消息，再由 Lead 根据外部证据决定是否 `complete`。一个可执行的任务描述至少应包含：`产物`、`验收条件`、`验证命令`、`失败时的修订动作`。例如：`产物：更新 07 页；验收：递归边界与质量闭环均有源码引用；验证：node _digested/ref-sweep.mjs _digested/orchestration-ladder；失败：保留 pending，发送具体缺口并 reopen`。这段文字是协作约定，不会被 Team service 自动解释为质量判定。
+
+复核者发现问题后，应先把失败证据发给 Lead，再由 Lead 选择修订路径：同一 owner 继续工作适合上下文仍有用的缺口；`reopen` 后重新 claim 适合需要重新进入任务流程的情况；`reassign` 适合需要换执行者，且该动作只有 Lead 可执行；独立 reviewer 适合验证执行者没有覆盖的反例。每次状态转换都必须带最新 `expected_revision`，过期 revision 会被拒绝，不会静默覆盖他人的更新。
+
+![Agent Teams 质量闭环](./figures/team-quality-loop.svg)
 
 ## 走查：一次完整的团队会话
 
-规则集读一遍不如演一遍。场景就用读者自己的世界：**本专题有 1437 条 path:line 引用，要一支小队交叉复核并修复越界**——每一步都是你刚经历过的工作。任务板长这样（外部叙事爱画订单支付的 DAG；这张是真的）：
+规则集读一遍不如演一遍。场景就用读者自己的世界：**本专题有数百条 path:line 引用，要一支小队交叉复核并修复越界**——每一步都是典型的维护工作。任务板长这样（外部叙事爱画订单支付的 DAG；这张对应真实的 Team task board）：
 
 | 任务 | blocked_by | write_scope | 期望产物 |
 |------|-----------|-------------|---------|
