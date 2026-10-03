@@ -52,6 +52,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `experimental/` | 实验原型面 | 还没承诺稳定合同的原型插件（多代理、浏览器、语音……），随时会改名或消失。 |
 | `tools-prompt-llm/` | 模型可见面 | 模型每一步看见什么：工具清单、系统提示词、历史投影怎么组装。 |
 | `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、Web、桌面、ACP、SDK 五个入口怎么复用同一台运行时。 |
+| `test-strategy/` | 测试体系 | DSH 怎么测：七层证据形态、录制会话快照、CI 门禁与防假绿、可靠性纪律与测试基建——55 行测试政策的完整展开。 |
 | `_coverage/` | 覆盖矩阵 | 维护索引：每个专题承诺回答什么、最后对到哪个源码 commit。 |
 | `harness-idea/` | 消化后的理解与判断 | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪。 |
 | `_change_log/` | 上游同步记录 | 每次 upstream 同步的范围、审计与修复记录。 |
@@ -92,6 +93,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → [`surfaces-entrypoints/00-map.md`](./surfaces-entrypoints/00-map.md)
 - **想给 Web UI 加功能、或新增一个 `packages/client/*` 插件包** → [`surfaces-entrypoints/05-客户端架构与插件纪律.md`](./surfaces-entrypoints/05-客户端架构与插件纪律.md)
 - **想搞懂一个 `@Remote` 方法怎么变成 `ctx.remote.<ns>` 上的类型化 stub** → [`surfaces-entrypoints/06-Typert类型图与Remote生成.md`](./surfaces-entrypoints/06-Typert类型图与Remote生成.md)
+- **想搞懂 DSH 自己怎么测试（分层、快照、门禁、可靠性）** → [`test-strategy/00-map.md`](./test-strategy/00-map.md)
 - **想搞懂 dsh 为什么对读者友好（harness 思想）** → [`harness-idea/00-map.md`](./harness-idea/00-map.md)
 
 推荐主干顺序：
