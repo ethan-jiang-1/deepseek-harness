@@ -70,7 +70,7 @@
 
 - 命令先构建 plugin CSS，再在 Chromium 里比对 session 驱动的 `snapshots/web/` 与 UI-only 的 `apps/web/tests/expected/`；model/reasoning picker 额外跑 WebKit；Linux PR 必过门。
 - 本地 `fileParallelism: false` 串行；CI 经 `run-web-snapshots.ts` 先串行跑两个改写共享树的 HMR/Client-plugin 覆盖、再并行其余；CI 钉只读 `DSH_SNAPSHOT=replay`，record/refresh 只在本地，每个 diff 人工 review。
-- 与 Pi 生态"绝不在 CI 启真浏览器"（pi-mono FAQ 11 第 07 案）相反：DSH 认为浏览器证据值得花这份 CI 成本，用"录制回放 + 只读 + diff review"控制确定性，而不是用无头帧仿真绕开浏览器。
+- DSH 认为浏览器证据值得花这份 CI 成本：确定性不靠绕开真实浏览器，而靠"录制回放 + CI 只读 `DSH_SNAPSHOT=replay` + 每个 diff 人工 review"来控制。
 
 ## 宪法之外的广义测试面（硬事实，散在 package.json / run-gates.ts）
 
@@ -94,7 +94,7 @@
 1. **REAL-composition 测试**：boot 一份 test-only `cordis.yml`，走真 Loader、真 app/process 组装，mock 只限外部服务与非确定输入（[01](./01-doctrine.md) 教义 6a）。测的是"组装后插件还工作"。
 2. **Profile 级集成测试**（`apps/cli/tests/profiles/`）：启动 shipped profile 跑真实任务流。测的是"发布形态的组装"。
 3. **Built smokes**：`bin` 走 built `lib/bin.js` + plain node 冒烟。实际清单：`apps/cli/tests/built-bin.e2e.ts`（1321 行，`runBuiltBin()` 用 execa 直接跑 `apps/cli/lib/bin.js`，31 个用例：参数错误、profile 生命周期标记、patch 热重载、mock-backed ACP turn、config dump）+ 各包 `built-lib.e2e.ts`（lsp-stdio、api/job-controller、api/remotes、experimental/{agent-team,inspector,webworker-packer}、ptc-runtime-node 等）；CI 的 built-bin-smoke 门聚合 18 个 built 消费者 e2e（`DSH_EXAMPLE_MODE=lib`）。`packages/lsp/lsp-stdio/tests/built-lib.e2e.ts` 的头注释说得最直白："plain Node imports … by name through their exports maps … Unit tests use `src/`; **this pins the downstream `lib/` path**. Skips when `lib/` is absent; CI runs it after the build"。
-   > 注：`docs/testing.md` 引用的 `packages/examples/*/tests/built-bin.e2e.ts` 在 commit `68724b375` 的树中**已不存在**——文档过期，实际清单以本条为准。
+   > 注：`docs/testing.md` 引用的 `packages/examples/*/tests/built-bin.e2e.ts` 在基线树中**已不存在**——文档过期，实际清单以本条为准。
 
 三者的共同点：**都不信任手搭的组装**（"Hand-built `ctx.plugin(...)` suites are insufficient"），集成证据必须取自真实入口。
 
@@ -109,7 +109,7 @@
 | 可擦写 `.ts` + plain Node（无 tsx、无 paths map） | 不加载 Cordis 的协议/OS fixture | fixture 逻辑本身，零转译层干扰 |
 | 编译 worker + 净化 env + plain Node | benchmarks | 纯净计时（四层拒绝机制见上） |
 
-## 文件形态普查（commit `68724b375`，按各配置 include 模式实测）
+## 文件形态普查（按基线树、各配置 include 模式实测）
 
 | 后缀 / 形态 | 计数 | 备注 |
 |---|---|---|

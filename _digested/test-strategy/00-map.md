@@ -10,13 +10,13 @@ DSH 有 1893 个测试文件，测试政策却只有 55 行（`docs/testing.md`�
 
 DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些规矩、快照怎么运转、CI 门禁怎么编排、可靠性纪律是什么、测试基建有哪些。
 
-缘起是 pi-mono 侧的研究素材：那个仓库的 `_faq_on_digested/11_production_extension_repo_archetypes/` 解剖了 Pi 生态头部扩展仓库的测试资产（零 Token 离线仿真、契约证据锁、变异测试），回答"围绕一个 harness 做生产工程的人怎么测"。本专题把镜头对准 harness 本身——一个由模型厂自研自维护、日常研发主力包含 Coding Agent 的仓库，如何系统性地组织测试。两边的镜像分歧（DSH 的 with-key vs Pi 的零 Token、mock 边界的宽窄）在各篇以 "pi-mono FAQ 11" 交叉引用带过，不设对比篇。
+对象是 harness 本身：一个由模型厂自研自维护、日常研发主力包含 Coding Agent 的仓库，如何系统性地组织测试——测试思想、分层、规矩、快照机制、CI 门禁、可靠性纪律与基建，全部锚定本仓库的产品源码基线。
 
 ## 规模基线（硬事实，按基线树实测）
 
 | 资产 | 数字 |
 |---|---|
-| unit spec | **1893** 个 `*.spec.{ts,tsx}`（packages 1358+265、apps 143+1、scripts 121、website 5），分布在 313 个 `tests/` 目录 |
+| unit spec | **1893** 个 `*.spec.{ts,tsx}`（packages 1358+265、apps 143+1、scripts 121、website 5），分布在 323 个 `tests/` 目录（packages 313） |
 | e2e 车道 | **91** 个 `*.e2e.ts`（`vitest.e2e.config.ts` 实际 include 减去 exclude；另有 161 个归 web 车道） |
 | expected 驱动 | 18（apps/cli）+ 8（apps/web，归 web 车道） |
 | 快照场景 | **210** 个录制场景（session 122 / sdk 24 / acp 9 / web 55），`snapshots/` 全树 1271 个文件 |
@@ -54,7 +54,6 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 | [`harness-idea/`](../harness-idea/00-map.md) | 判断层（dsh 这种 harness 形态做对了什么）；本专题是机制消化层，测试相关的判断在那边 |
 | [`_coverage/`](../_coverage/00-index.md) | 本专题的核验登记（承诺回答的问题、最近核验 commit） |
 | [`_change_log/`](../_change_log/00-index.md) | 上游同步记录；同步触及测试面时按影响评估复核本专题 |
-| pi-mono `_faq_on_digested/11_production_extension_repo_archetypes/`（另一仓库，不做跨仓库链接） | Pi 生态扩展仓库的测试资产素材；正文里的 "pi-mono FAQ 11" 均指它 |
 
 ## 写作定调
 

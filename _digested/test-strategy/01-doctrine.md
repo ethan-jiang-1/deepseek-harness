@@ -1,10 +1,10 @@
 # 01 — 思想与成文政策：55 行宪法与它的九条教义
 
-> 本篇消化 DSH 的成文测试政策 `docs/testing.md`（commit `68724b375` 时 55 行、9 节、中英双语），以及 root `AGENTS.md` 里思想级的测试条款。分层细节见 [02](./02-tiers.md)，规矩与所有权见 [03](./03-rules-ownership.md)。
+> 本篇消化 DSH 的成文测试政策 `docs/testing.md`（55 行、9 节、中英双语），以及 root `AGENTS.md` 里思想级的测试条款。分层细节见 [02](./02-tiers.md)，规矩与所有权见 [03](./03-rules-ownership.md)。
 
 ## 现象是什么：一个把测试政策压缩到 55 行的仓库
 
-DSH 有 1358 个测试文件，但它的测试政策只有 55 行。开篇一句自述定位：
+DSH 仅单元测试就有 1893 个 spec 文件，而它的测试政策只有 55 行。开篇一句自述定位：
 
 > "How this repo tests, tier by tier, and the rules that keep a green suite meaningful."
 
@@ -42,7 +42,7 @@ DSH 有 1358 个测试文件，但它的测试政策只有 55 行。开篇一句
 
 说了什么：CI 的并发模型只隔离进程，不隔离端口、可预测路径、外部命名空间、继承的子进程；每个测试对它获取的每个资源负责到 teardown；**"单跑才绿"被定义为 spec 自身的缺陷**，不许赖 runner。
 
-为什么（解释）：DSH 的 CI 用共享 host/volume 的 self-hosted runner 跑大量并发 job，任何"我占了这个端口/路径/名字"的隐式假设都会变成别人的偶发失败。把"单跑才绿"定性为 spec 缺陷，是把 flake 的责任单向压给测试作者——这与 Pi 生态"Flaky 会摧毁 Coding Agent 自愈闭环"的担忧（pi-mono FAQ 11 第五节）同源，但 DSH 的解法是**纪律条文 + 技能**而不是隔离基建。展开见 [06](./06-reliability.md)。
+为什么（解释）：DSH 的 CI 用共享 host/volume 的 self-hosted runner 跑大量并发 job，任何"我占了这个端口/路径/名字"的隐式假设都会变成别人的偶发失败。把"单跑才绿"定性为 spec 缺陷，是把 flake 的责任单向压给测试作者；DSH 的解法是**纪律条文 + 技能**而不是隔离基建。展开见 [06](./06-reliability.md)。
 
 ### 3. The with-key policy——"推理在这里是便宜的"
 
@@ -54,7 +54,7 @@ DSH 有 1358 个测试文件，但它的测试政策只有 55 行。开篇一句
 
 说了什么：真 API 测试不设限额；无 key 的测试只能证明管道通，有 key 的运行才能证明 agent 对真模型工作；最高价值的形态是"启动一个 shipped profile、发一条 prompt、检查世界"；各 suite 无 key 自跳过，且自跳过被明确定性为"不是成本信号"——别因为"反正会 skip"就少写。
 
-为什么（解释）：这是**模型厂自研仓库的特权立场**。Pi 生态的扩展作者按 token 付费、CI 里没有 key，所以发展出整套零 Token 离线仿真（pi-mono FAQ 11 第五节第 1 条）；DSH 推理成本内部化，于是把"确定性离线仿真"的边界大幅收窄，把预算押在"对真模型冒烟"上。两家用同一个理由推出相反的预算表：**测试要测的是契约，不是模型智能；但对 DSH 来说，"产品对真模型工作"本身就是契约的一部分。**
+为什么（解释）：这是**模型厂自研仓库的立场**——推理成本内部化，"确定性离线仿真"的边界被收窄到最小（只 LLM/网络/时钟），预算押在"对真模型冒烟"上。理由仍然是：**测试测的是契约，不是模型智能；而对 DSH 来说，"产品对真模型工作"本身就是契约的一部分。**
 
 ### 4. Prefer the real implementation over a mock——mock 只放边界
 
@@ -64,7 +64,7 @@ DSH 有 1358 个测试文件，但它的测试政策只有 55 行。开篇一句
 
 说了什么：mock 白名单只有三类——贵（LLM adapter）、不确定（网络）、不可控（时钟）；边界下游全部用真实现。样板是 ACP 的 `makeBridgeHarness()`：整个 loop、session store、tool registry、JSONL 持久化都是真的，唯一 mock 是 scripted MockAdapter。恢复类测试还要求：按 step 区分 pre/post-chunk 失败、证明失败的 chunk 不产生消息或工具副作用、覆盖 exhaustion / cancellation / policy composition / persistence / status / wire counts / transport-closing idle timeouts / shipping Loader composition。
 
-为什么（解释）：与 Pi 生态的 scripted provider（pi-mono FAQ 11 第 05 案）是**同一条原则的两种力度**。两家都承认"边界之内要真"；分歧在边界画多宽。DSH 画得极窄（只 LLM/网络/时钟），因为边界下游就是它要交付的产品本体；Pi 扩展画得较宽（连 spawn 出去的子进程 CLI 都偷换成桩），因为它们要测的是自己的扩展层，宿主是被给定的环境。**mock 边界的宽窄 = 你对哪一层拥有交付责任。**
+为什么（解释）：边界画得极窄（只 LLM/网络/时钟），因为边界下游就是它要交付的产品本体。**mock 边界的宽窄 = 你对哪一层拥有交付责任**——DSH 对从 loop 到持久化的每一层都承担交付责任，所以每一层都用真实现。
 
 ### 5. Verify the world, not the self-report——验证世界，不是自报
 
@@ -72,7 +72,7 @@ DSH 有 1358 个测试文件，但它的测试政策只有 55 行。开篇一句
 
 说了什么：e2e 断言必须从外部重跑命令或重读文件；对 agent 自己输出的关键词探测等于给作弊者放行；声称没动的文件要断言字节级相同。配套资源纪律：资源在测试里创建、在 `afterEach` 释放（覆盖 failure/retry/timeout）；共享 fixture 放普通的 `tests/harness.ts`，**绝不 import 另一个 `*.e2e.ts`**——import 一个 spec 会重复注册它的 `describe`、重复真实 API 调用。
 
-为什么（解释）：这条把"被测对象可能在撒谎"写进了断言方法论——agent 说"我写好了文件"不算数，文件系统说了才算。Pi 生态的对应物是 hook 契约 `evidence.json` 字节锁和 "No Self-Certification"（pi-mono FAQ 11 第 05 案）：同样是**不信任系统对自己的报告，证据必须落在被测系统之外**。
+为什么（解释）：这条把"被测对象可能在撒谎"写进了断言方法论——agent 说"我写好了文件"不算数，文件系统说了才算；**不信任系统对自己的报告，证据必须落在被测系统之外**。
 
 ### 6. Test the real entry path——测真实入口
 
@@ -80,7 +80,7 @@ DSH 有 1358 个测试文件，但它的测试政策只有 55 行。开篇一句
 
 - **产品可见插件必须有 non-unit 的 REAL-composition 测试**："Hand-built `ctx.plugin(...)` suites are insufficient: boot test-only `cordis.yml` through Loader and app/process, mock only external services or nondeterministic inputs, and assert model-visible request/log, durable state, or user-visible output."——手搭插件组装的测试不算数，必须真的走 Loader 启动一份 test-only `cordis.yml`，断言到 model-visible 请求/日志、durable 状态或用户可见输出。
 - **guard 必须真的挡得住回归**："A guard only guards if the regression fails it."——对无 `inject` 的 bundle/composition 插件，default export 替换掉必需的 named exports 时 Loader smoke 依然绿；所以要求 `expect('default' in mod).toBe(false)` + `unwrapExports` round-trip 断言，并且 "**prove it: introduce the regression, watch red, revert**"——守卫测试要先亲手制造回归看它变红。
-- **real entry path = published artifact**："a package `bin` runs built `lib/bin.js` under plain `node`, exposing failures tsx masks (settle races, module resolution, swallowed load failures)."——bin 入口要在 built 产物上用 plain node 跑；保持 built smokes 绿；配置真缺失时必须断言非零退出。（注：政策此处点名的 `packages/examples/*/tests/built-bin.e2e.ts` 在 commit `68724b375` 树中已不存在，属文档过期；实际 built 冒烟清单见 [02](./02-tiers.md) 的"集成测试去了哪里"。）
+- **real entry path = published artifact**："a package `bin` runs built `lib/bin.js` under plain `node`, exposing failures tsx masks (settle races, module resolution, swallowed load failures)."——bin 入口要在 built 产物上用 plain node 跑；保持 built smokes 绿；配置真缺失时必须断言非零退出。（注：政策此处点名的 `packages/examples/*/tests/built-bin.e2e.ts` 在基线树中已不存在，属文档过期；实际 built 冒烟清单见 [02](./02-tiers.md) 的"集成测试去了哪里"。）
 
 为什么（解释）：这条是 postmortem 0001 的制度化答案。该事故里**两个加载路径 bug 同时漏网**：① 多余的 `export default` 让 Loader 的 `unwrapExports` 解析到裸函数、丢弃整个模块命名空间（inject/name/Config 是兄弟命名导出）→ fiber 空 inject → apply 首行就炸；② 可选服务经 traceable shadow 的属性读取走 ancestor-only fiber walk，而进程内测试的 flat root context 恰好掩盖了这个拓扑。事故复盘的原话点睛："no test exercised the plugin through its real load path or its real call topology"、"Coverage proves lines *ran*; it says nothing about whether the feature works *the way it ships*"。护栏里最硬的一条：无 key e2e 走真实 stdio 子进程，**且验证过恢复 `export default` 时它会变红**——prove-it-red 的实例。单测/tsx 启动会掩盖三类问题：settle 竞态、模块解析差异、被吞掉的加载失败。**"能跑"的证据要取自发布形态，而不是开发形态。**
 
@@ -115,7 +115,7 @@ DSH 有 1358 个测试文件，但它的测试政策只有 55 行。开篇一句
 3. **覆盖率是死代码探测器。** "An uncovered line is often dead code the gate flags for deletion, not a missing test to bolt on. Line coverage is necessary, never sufficient — it proves lines ran, not that the feature works as shipped." per-file 100% 的意图是逼出死代码，不是逼出补测试。
 4. **全量套件是 CI 的事。** "Never default to the full suite or repeat a passing check for commit or push." 本地按面选最小证据（`dsh-pre-push-checks` 技能落实），CI 拥有穷尽覆盖与平台矩阵；`test:coverage` 而不是 `test` 才是 CI 覆盖率门。
 5. **计划时点名测试面。** root `AGENTS.md`："Plan unit, e2e, and snapshot coverage for capability seams, lifecycle paths, and transcript output; include missing snapshot-harness support in the same change." 测试面是设计的一部分，不是事后补的。
-6. **夹具跨平台、修夹具不修归一化器。** "Fixtures replay on macOS/Linux; fix fixtures, not normalizers."——快照归一化器不许为了凑通过而改，这个方向的选择和保护 Pi 侧"evidence 字节锁"的动机相同：**不许把证据磨到跟 bug 吻合。**
+6. **夹具跨平台、修夹具不修归一化器。** "Fixtures replay on macOS/Linux; fix fixtures, not normalizers."——快照归一化器不许为了凑通过而改，保护的不变量是：**不许把证据磨到跟 bug 吻合。**
 
 ## 源码锚点
 
@@ -128,7 +128,7 @@ DSH 有 1358 个测试文件，但它的测试政策只有 55 行。开篇一句
 
 ## 最小例证
 
-1. **立场句式**：读 `docs/testing.md` 第 23 节标题下的第一句——以 "We are DeepSeek" 开头。测试政策以厂商身份开头，这本身就是"模型厂自研仓库"的证据。
+1. **立场句式**：读 `docs/testing.md` "The with-key policy" 一节的第一句——以 "We are DeepSeek" 开头。测试政策以厂商身份开头，这本身就是"模型厂自研仓库"的证据。
 2. **唯一 mock 数得出来**：读 `packages/acp/acp/tests/harness.ts`，数 `makeBridgeHarness()` 里 mock 的数量——只有 `MockAdapter`；loop / session store / tool registry / JSONL persistence 全是真实现。
 3. **prove-it-red 可检索**：在测试里 grep `expect('default' in mod)`，能找到"先制造回归看它变红"这类守卫断言的实例。
 4. **自跳过不是成本信号**：任选一个 e2e suite，看它无 key 时的 self-skip 分支——skip 分支旁边没有任何"记录预算"或"减少调用"的注释，与"do not ration"一致。
