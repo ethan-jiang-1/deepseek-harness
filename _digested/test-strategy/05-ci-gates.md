@@ -5,7 +5,7 @@
 
 ## 现象是什么：一个 1687 行的门禁注册表
 
-DSH 的 CI 不是一堆散装的 workflow 步骤，而是一个**可编程门禁图**：`scripts/run-gates.ts`（commit `68724b375` 时 1687 行）注册了 **18 个聚合模式**，每个模式是一张带依赖关系的门禁 DAG。workflow 只是调用入口，门禁的拓扑、并发、失败语义全部由这张注册表统一声明。
+DSH 的 CI 不是一堆散装的 workflow 步骤，而是一个**可编程门禁图**：`scripts/run-gates.ts`（基线下 1687 行）注册了 **18 个聚合模式**，每个模式是一张带依赖关系的门禁 DAG。workflow 只是调用入口，门禁的拓扑、并发、失败语义全部由这张注册表统一声明。
 
 18 个聚合：`ci-primary`、`ci-linux-primary`、`ci-static`、`ci-lint-contracts-ready`、`ci-coverage`、`ci-unit`、`ci-bench`、`ci-snapshot`、`ci-artifacts`、`ci-consumers`、`ci-windows-blocking`、`ci-windows-complete`、`ci-windows-observational-ready`、`node-compat`、`check-all`、`hygiene`、`doc-sync`、`doc-quick`。
 
@@ -77,7 +77,7 @@ DSH 的 CI 设计里有一组专门对付"测试自己骗自己"的机制，与 
 4. **观察性显式化**（allowFailure / continue-on-error / 不进 needs）：不能稳定跑的门（windows-coverage、windows observational）不混进必需判定，但结果保留可见。
 5. **runner 可信性演练**（serial-* 热备）：备用执行环境每周被真实跑一遍必需 lane，"换池子会炸"的风险被持续证伪。
 
-对照：Pi 生态的对应物是 hook 契约 `evidence.json` 字节锁 + CI 禁改证据（pi-mono FAQ 11 第 05 案）。两家用不同工具保护同一件事：**证据链上任何"悄悄少测了"的路径都要被封死。**
+五个机制保护同一件事：**证据链上任何"悄悄少测了"的路径都要被封死。**
 
 ## 与政策的一致性（解释）
 

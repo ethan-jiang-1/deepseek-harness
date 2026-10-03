@@ -60,9 +60,9 @@ DSH 的测试可靠性问题被显式建模为：**大量并发 spec 文件跑�
 
 ## 为什么这么定（解释）
 
-1. **"纪律 + 调参"而不是"容器级隔离"。** 共享 host/volume 是 runner 成本上的选择；代价被显式转嫁给测试作者的责任条款（own each acquired resource through its teardown）。对照：pi-lens 为同类问题造了跨进程文件锁基建（`with-test-lock.mjs` 排队 LSP 集成测试，pi-mono FAQ 11 第 06 案）——DSH 选择了更便宜的一面：**先写责任规则，基建只在规则不够的地方补**。
+1. **"纪律 + 调参"而不是"容器级隔离"。** 共享 host/volume 是 runner 成本上的选择；代价被显式转嫁给测试作者的责任条款（own each acquired resource through its teardown）。DSH 选择了更便宜的一面：**先写责任规则，基建只在规则不够的地方补**。
 2. **retry 只给 e2e 是诚实的分层。** 确定性层（unit/snapshot/expected/bench）不允许 retry——retry 会掩盖竞态；只有面对真模型（物理上存在瞬态抖动）的层接受 retry，且写明理由。**"对什么宽容"本身被纪律化。**
-3. **归因单向化防 flake 腐败。** "单跑才绿 = spec 缺陷"把环境从怀疑名单里永久移除。没有这条，"时好时坏"会演化成互相甩锅的灰色地带——Pi 生态对 flaky 的零容忍（Flaky 摧毁 Coding Agent 自愈闭环，pi-mono FAQ 11 第五节）在 DSH 这里落成一句可执行的归因规则。
+3. **归因单向化防 flake 腐败。** "单跑才绿 = spec 缺陷"把环境从怀疑名单里永久移除。没有这条，"时好时坏"会演化成互相甩锅的灰色地带；有了它，对 flaky 的零容忍落成一句可执行的归因规则。
 4. **写路径全部显式互斥。** 共享树的三个写者（HMR 测试、dev:web、refresh）都被编排层用 after/串行隔开——可靠性问题的解法一半在测试内（teardown 责任），一半在测试外（谁先谁后）。
 
 ## 源码锚点
