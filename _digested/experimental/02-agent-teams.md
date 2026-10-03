@@ -16,7 +16,7 @@
 
 ## 统一 profile bundle（0.1.7 线起 Host/Web 共用一个）
 
-`agent-team-profile` 同时服务 Host 与 Web：disable 重名的 `tool-subagent-control` / `tool-subagent-list-agents`、把 `tool-subagent` / `tool-subagent-fork` 压成 `backgroundMode: one-shot`，再 insert `agent-team` + `tool-agent-team` + 浏览器插件 `ui-agent-team`（`packages/experimental/agent-team-profile/cordis.patch.yml`，`maxMembers: 8` 等配置在同一行）。启用方式 `dsh plugin --profile headless|web add @deepseek-ai/dsh-experimental-agent-team-profile`（已发布、从 npm 装），要求 profile 已含 `dsh-base`（其 README「Install into a profile」节）；~~旧的 Host/Web 两个 bundle 与「先 Host 后 Web」安装顺序~~（`agent-team-web-profile` 包已随 0.1.7 线删除，目录不复存在）。它也是 `OPTIONAL_BUNDLES` 成员（`packages/boot/app-boot/src/profile.ts:213-218`），shipped 安装在 Web 插件管理器里默认关、一键开。
+`agent-team-profile` 同时服务 Host 与 Web：disable 重名的 `tool-subagent-control` / `tool-subagent-list-agents`，连同直接委派工具 `tool-subagent` / `tool-subagent-fork` 一并 disable，再 insert `agent-team` + `tool-agent-team` + 浏览器插件 `ui-agent-team`（`packages/experimental/agent-team-profile/cordis.patch.yml:4`-`:14`；底层 Subagent 服务与 spawn/fork provider 保留，供 teammate 创建与 workflow 使用）。启用方式 `dsh plugin --profile headless|web add @deepseek-ai/dsh-experimental-agent-team-profile`（已发布、从 npm 装），要求 profile 已含 `dsh-base`（其 README「Install into a profile」节）；~~旧的 Host/Web 两个 bundle 与「先 Host 后 Web」安装顺序~~（`agent-team-web-profile` 包已随 0.1.7 线删除，目录不复存在）。它也是 `OPTIONAL_BUNDLES` 成员（`packages/boot/app-boot/src/profile.ts:213-218`），shipped 安装在 Web 插件管理器里默认关、一键开。
 
 ## UI 落点
 
