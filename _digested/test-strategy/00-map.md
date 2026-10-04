@@ -26,9 +26,11 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 | vitest 配置 | 8 份运行配置 + 1 份共享门面（`vitest.shared.ts`） |
 | 测试决策笔记 | **33 篇**（`.agents/notes/implemented/testing/`，另有 33 份 `.i18n.yaml` 配对）+ **4 篇** postmortem（`docs/postmortem/0001`-`0004`） |
 | 测试基建 | `packages/test-support/` 七件套 + `benchmarks/support/` + vitest setup 三件套 |
+| 测试基建 | `packages/test-support/` 七件套 + `benchmarks/support/` + vitest setup 三件套 |
 | 政策测试 | approval-policy（`node --test`）/ issue-management（plain `node`）直跑 `.mjs` |
 | Python 侧 | `python/sdk/tests/`（pytest via uv，无 tox）+ `scripts/snapshots/python-sdk-single-exe/` 7 场景 |
 | CI 门禁编排 | `scripts/run-gates.ts` 18 个聚合模式；PR 必需 job 9 个 + 1 个观察性 |
+| 插件面 | 95 个包以 named export 导出 `inject`、53 个 client `ui-*` 包、641 个 `.client.spec`——插件作者的测试策略见 [08-10](./08-plugin-testing.md) |
 
 ## 结构（7 篇机制参考）
 
@@ -41,11 +43,15 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 | CI 门禁怎么编排、平台矩阵怎么铺、防假绿怎么做 | [`05-ci-gates.md`](./05-ci-gates.md) |
 | 测试可靠性纪律是什么、flake 怎么归因 | [`06-reliability.md`](./06-reliability.md) |
 | 测试基建有哪些、各自职责与已知限制 | [`07-infrastructure.md`](./07-infrastructure.md) |
+| 写一个 DSH 插件，测试面怎么摆（政策要求） | [`08-plugin-testing.md`](./08-plugin-testing.md) |
+| 真实插件的测试组合长什么样（实战解剖） | [`09-plugin-testing-playbook.md`](./09-plugin-testing-playbook.md) |
+| 一个插件 PR 的最小证据集与 CI 行为（检查单） | [`10-plugin-testing-checklist.md`](./10-plugin-testing-checklist.md) |
 
 ## 阅读路径
 
 - **10 分钟**：读本文件 + [`01-doctrine.md`](./01-doctrine.md)。`docs/testing.md` 只有 55 行，值得整读；01 逐条消化它并给出测试指导在文档体系里的完整分布图。
 - **30 分钟**：加读 [`02-tiers.md`](./02-tiers.md)（分层全景与文件形态普查）与 [`03-rules-ownership.md`](./03-rules-ownership.md)（规矩与所有权）。
+- **插件作者专线**：[`08`](./08-plugin-testing.md)（政策对插件的要求）→ [`09`](./09-plugin-testing-playbook.md)（真实插件组合解剖）→ [`10`](./10-plugin-testing-checklist.md)（PR 检查单）；货架与分类法在 [`plugin-inventory`](../plugin-inventory/00-map.md)。
 - **深潜**：按问题进 [`04`](./04-snapshot-machinery.md)（快照机制）、[`05`](./05-ci-gates.md)（CI 门禁与防假绿）、[`06`](./06-reliability.md)（可靠性纪律）、[`07`](./07-infrastructure.md)（基建与 Python 面）。
 
 ## 与其他专题的边界

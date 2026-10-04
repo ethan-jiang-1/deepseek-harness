@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow-up" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#666"/>
+    </marker>
+  </defs>
+  <rect width="960" height="560" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">插件测试证据阶梯：五个台阶，逐级抬高入口真实性</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">每一级挡住一类真实发生过的事故；跳级 = 留一个已知漏洞。</text>
+
+  <!-- ladder: bottom = cheapest, top = assembled transcript -->
+  <rect x="120" y="76" width="600" height="66" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="140" y="102" font-weight="700" fill="#a8071a">5 组装转录（快照）</text>
+  <text x="140" y="122" fill="#333">录制场景 patch：真实插件 + 场景 config + 回放模型流，无 key 复验</text>
+
+  <rect x="120" y="152" width="600" height="66" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="140" y="178" font-weight="700" fill="#ad6800">4 REAL composition（两级）</text>
+  <text x="140" y="198" fill="#333">进程内真 Loader boot cordis.yml：Config 两脸跟随 · 子进程 runLoaderSmoke：发布形态与可选性</text>
+
+  <rect x="120" y="228" width="600" height="66" rx="8" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="140" y="254" font-weight="700" fill="#531dab">3 注册表生命周期</text>
+  <text x="140" y="274" fill="#333">HMR-safety：dispose 贡献 fiber → 贡献消失、服务自身 built-in 不受影响</text>
+
+  <rect x="120" y="304" width="600" height="66" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="140" y="330" font-weight="700" fill="#1d4ed8">2 行为 spec（进程内真依赖）</text>
+  <text x="140" y="350" fill="#333">真 ToolRuntime / 真 Session，只 stand-in agent wrapper；从 ctx.tools.execute 真入口调</text>
+
+  <rect x="120" y="380" width="600" height="66" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="140" y="406" font-weight="700" fill="#38761c">1 导出形态守卫</text>
+  <text x="140" y="426" fill="#333">named exports、无 default；unwrapExports round-trip 不丢命名空间</text>
+
+  <!-- ascending arrow on the left -->
+  <line x1="80" y1="430" x2="80" y2="100" stroke="#666" stroke-width="2" marker-end="url(#arrow-up)"/>
+  <text x="62" y="265" font-size="12" fill="#4b5563" transform="rotate(-90 62 265)" text-anchor="middle">入口真实性</text>
+
+  <!-- right column: what each tier stops -->
+  <text x="740" y="86" font-weight="700" fill="#374151">挡住什么</text>
+  <text x="740" y="110" fill="#a8071a">"绿单测，坏产品"：组装后</text>
+  <text x="740" y="128" fill="#a8071a">转录意外变化（postmortem 0001 类）</text>
+  <text x="740" y="186" fill="#ad6800">硬编码 tunable 冒充配置；</text>
+  <text x="740" y="204" fill="#ad6800">可选依赖缺席时乱 probe；</text>
+  <text x="740" y="222" fill="#ad6800">built 产物加载失败被 tsx 掩盖</text>
+  <text x="740" y="262" fill="#531dab">热插拔后贡献残留——</text>
+  <text x="740" y="280" fill="#531dab">注册了却撤不掉</text>
+  <text x="740" y="318" fill="#1d4ed8">工具注册后行为不符：schema、</text>
+  <text x="740" y="336" fill="#1d4ed8">参数校验、session log 副作用</text>
+  <text x="740" y="374" fill="#38761c">多余的 default export 丢掉整个</text>
+  <text x="740" y="392" fill="#38761c">命名空间——Loader smoke 依然绿</text>
+
+  <rect x="120" y="472" width="680" height="60" rx="10" fill="#fff" stroke="#d4380d" stroke-dasharray="6 3"/>
+  <text x="460" y="497" text-anchor="middle" font-size="12.5" font-weight="700" fill="#a8071a">按插件类型增补：provider 加 capabilities 拓扑 · toolview 加 assembly-surfaces 与 locale</text>
+  <text x="460" y="518" text-anchor="middle" font-size="12.5" font-weight="700" fill="#a8071a">guard 加"不触发"负例矩阵 · LLM-backed 加脚本化 adapter 与 with-key 成对 e2e（见 09）</text>
+</svg>
