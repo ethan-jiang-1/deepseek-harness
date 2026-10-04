@@ -23,7 +23,7 @@ DSH 仅单元测试就有 1893 个 spec 文件，而它的测试政策只有 55 
 | 命令选取 | `.agents/skills/dsh-pre-push-checks/` | 推送前选哪些检查跑（[03](./03-rules-ownership.md)） |
 | 决策记录 | `.agents/notes/implemented/testing/`（**33 篇**） | 每条政策"为什么这么定、放弃了什么、要什么验证"的 rationale |
 | 事故 | `docs/postmortem/`（**4 篇**：0001 ACP default export / 0002 `!!js` / 0003 替代服务器 / 0004 Landlock 误分类） | 政策的反面教材；唯一允许 war-story 叙事的层 |
-| 操作步骤 | `docs/cookbook/` | 加包/加工具/加格式版本时的步骤与验证命令 |
+| 操作步骤 | `docs/cookbook/` | 加包/加工具/加格式版本时的步骤与验证命令；`reviewing-persistence-type-changes` 进一步要求 type acknowledgement 的 `verification` 字段填真实 vitest 证据——"A recording command's `ok: true` does not replace these checks or the owner's behavior and migration tests" |
 | 局部契约 | `packages/test-support/*/README` 等各包 README | 该工具/该包的测试语义与已知限制（[07](./07-infrastructure.md)） |
 | vendored 修改 | `vendor/README.md` | 每条本地修改注记覆盖它的 DSH 包测试；同步流程要求重跑 `pnpm run test && pnpm run build` |
 

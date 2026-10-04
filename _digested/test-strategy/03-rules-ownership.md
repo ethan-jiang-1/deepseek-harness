@@ -39,7 +39,7 @@ DSH 的测试规矩不在一份文件里，而是按"谁需要什么时候看到
 
 配套执行纪律：`test:snapshot` 回放不写；record/refresh 走显式脚本；所有 JSONL/prompt/schema/protocol/UI/workspace diff 提交前评审。
 
-所有权契约的模式同样向下延伸：`packages/AGENTS.md` 把若干测试规则固化为包层常驻条令（plugin exports 形态与 `ctx.get` 读可选服务——均回指 postmortem 0001；REAL-composition 测试要求；注册贡献必须由 HMR 测试证明可撤销；并发 spec 缺陷认定；拒绝路径要"through the executor"测；结果边界要测 tiny / exact / oversized；model-visible 稳定文本 verbatim pin 进快照）；`benchmarks/AGENTS.md` 拥有基准树规则（[02](./02-tiers.md)）；`scripts/AGENTS.md` 拥有门禁脚本自身的测试条款（检测边界变化的 admitted/excluded 形态都要测到）。
+所有权契约的模式同样向下延伸：`packages/AGENTS.md` 把若干测试规则固化为包层常驻条令（plugin exports 形态与 `ctx.get` 读可选服务——均回指 postmortem 0001；REAL-composition 测试要求；注册贡献必须由 HMR 测试证明可撤销；并发 spec 缺陷认定；拒绝路径要"through the executor"测；结果边界要测 tiny / exact / oversized；model-visible 稳定文本 verbatim pin 进快照）；组级 AGENTS 各带自己的测试条款——`packages/experimental/AGENTS.md`（experimental 身份不豁免任何测试/快照要求）、`packages/schedule/AGENTS.md`（recurrence 算术保持纯函数：测试用显式样本或恢复的 fake timers）、`packages/web/AGENTS.md`（redirect 拒绝的回归覆盖必须证明重定向目标未被联络）、`packages/client/AGENTS.md`（production 代码不得在注册外调用 factory——测试是获准的零机件通道）；`benchmarks/AGENTS.md` 拥有基准树规则（[02](./02-tiers.md)）；`scripts/AGENTS.md` 拥有门禁脚本自身的测试条款（检测边界变化的 admitted/excluded 形态都要测到）；**tests 树内也有规则文件**——`apps/cli/tests/profiles/AGENTS.md` 拥有跨包 profile 集成的落位与驱动纪律。
 
 ## 推送前检查选取（`dsh-pre-push-checks`）
 
@@ -47,7 +47,7 @@ DSH 的测试规矩不在一份文件里，而是按"谁需要什么时候看到
 
 1. **没有普适本地基线**："There is no universal local baseline beyond the hooks. Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression; add broader checks only for surfaces the diff actually reaches."——git hooks 故意窄（pre-commit 只修 staged lint/空白/vendor 元数据；pre-push 只跑增量 typecheck），"the hooks intentionally do not run tests, snapshots, documentation checks, builds, or hygiene"。CI 拥有穷尽覆盖与平台矩阵。
 2. **证据映射表**：包/脚本行为 → owning vitest 文件或聚焦名；文档 → `doc-sync`；模型/编辑器/CLI/终端可见输出 → 聚焦无密钥快照；manifest/公共导出/构建配置 → `build` + hygiene + owning built smoke；真实 provider/agent 行为 → 凭据可用时跑相关 `test:e2e`。
-3. **预期输出放置**（复述快照所有权）：录制 Session 双角色场景归顶层 `snapshots/`；无该往返的期望留 owner 的 `tests/expected/`；跨包 profile 行为归 `apps/cli/tests/profiles/`，包特定组合归包 `tests/fixtures/`，用户可选 overlay 归 `apps/cli/config/examples/`。
+3. **预期输出放置**（复述快照所有权，规则的家是 `apps/cli/tests/profiles/AGENTS.md` 与 `snapshots/AGENTS.md`）：录制 Session 双角色场景归顶层 `snapshots/`；无该往返的期望留 owner 的 `tests/expected/`；跨包 profile 行为归 `apps/cli/tests/profiles/`，包特定组合归包 `tests/fixtures/`，用户可选 overlay 归 `apps/cli/config/examples/`（产品资产而非测试夹具，须有 docs/user/ 指南）。
 4. **不重复已过的检查**："Do not manually repeat a passing check merely because commit or push follows."——尤其不许只为复述 pre-push hook 而在推送前再跑一次 typecheck。
 5. **聚焦覆盖率仍按门的标准**：`vitest run <owning tests> --coverage --coverage.include='packages/<group>/<pkg>/src/**'`；per-file 100% 在选定范围内仍适用；不 `--passWithNoTests`、不降阈值、不为隐藏未覆盖文件而收窄 include。
 6. **全套彩排仅三种情况**：用户显式要求、诊断 CI 失败、改动遍及全仓且无更小可信集。
@@ -64,6 +64,7 @@ DSH 的测试规矩不在一份文件里，而是按"谁需要什么时候看到
 ## 源码锚点
 
 - root `AGENTS.md`——上述条款原文（Testing policy / Plan unit… / Both SDKs… / Run relevant checks locally 三节）
+- `lefthook.yml`——hooks 的物理实现（pre-commit 只挂 translation pairing / archived notes / staged lint / third-party notices / whitespace / vendor manifest guard；pre-push 只跑增量 typecheck）
 - `snapshots/AGENTS.md`——快照树所有权
 - `.agents/skills/dsh-pre-push-checks/SKILL.md`——推送前检查选取
 - `.agents/skills/record-browser-gif/SKILL.md`——GUI PR 的 GIF 证据规矩

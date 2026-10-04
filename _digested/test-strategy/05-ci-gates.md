@@ -19,7 +19,7 @@ DSH 的 CI 不是一堆散装的 workflow 步骤，而是一个**可编程门禁
 | 有界并发 | 默认 min(门数, CPU)；本地模式（check-all/hygiene/doc-sync/doc-quick）cap 4 |
 | `DSH_GATE_FAIL_FAST=1` | 首败中止并**杀整棵进程树**（POSIX 进程组负 pid、Windows `taskkill /T /F`、5s SIGKILL 升级） |
 
-ci- 模式统一注入 worker 环境变量（线程数、快照并发=1、覆盖分区=插桩份额 2/3 等），保证"本地跑同一模式"与 CI 同参数。
+ci- 模式（ci-unit 除外）统一注入 worker 环境变量（oxlint/publint 并发=CPU/2、**快照文件 worker=1**（`DSH_SNAPSHOT_MAX_WORKERS`，文件级串行）、场景内回放并发仍为 shared（`DSH_SNAPSHOT_MAX_CONCURRENCY`）、覆盖分区=插桩份额 ≈2/3 等），保证"本地跑同一模式"与 CI 同参数。
 
 ## 主要聚合的内容链（摘要）
 
@@ -63,7 +63,7 @@ ci- 模式统一注入 worker 环境变量（线程数、快照并发=1、覆盖
 
 ### node-addon-system.yml（native 体系，独立于 vitest）
 
-native/system（`@deepseek-ai/node-addon-system`）有自己的平台×Node 矩阵 CI：每个平台 job 构建一次、在受支持的每个 Node 版本上测同一份字节——`test/entry.test.js`（keyless）、`test/launcher.test.js`（真实内核强制）、`test:packaging`、test-oracle、`test:flock`。这些测试是 plain Node 直跑的 `.js`，不在任何 vitest 配置内（[02](./02-tiers.md) 的后缀文法只覆盖 vitest 车道）。其余 workflows（release*、python-release、docs-pages、build-preview-cloudflare、issue-policy/lifecycle、weighted-approval*）属于发布/文档/政策执行面，不承载测试。
+native/system（`@deepseek-ai/node-addon-system`）有自己的平台×Node 矩阵 CI：每个平台 job 构建一次、在受支持的每个 Node 版本上测同一份字节——`test/entry.test.js`（keyless）、`test/launcher.test.js`（真实内核强制）、`test:packaging`、test-oracle、`test:flock`。这些测试是 plain Node 直跑的 `.js`，不在任何 vitest 配置内（[02](./02-tiers.md) 的后缀文法只覆盖 vitest 车道）；规则见 `native/system/AGENTS.md`（"test/ owns real process and lock behavior"；独立 syscall fixture 仅测试可用、绝不进发布平台包）。其余 workflows（release*、python-release、docs-pages、build-preview-cloudflare、issue-policy/lifecycle、weighted-approval*）属于发布/文档/政策执行面，不承载测试。
 
 ### expected-filenames.yml / sandbox.yml / pi-ai-provider-e2e.yml
 
@@ -94,6 +94,7 @@ DSH 的 CI 设计里有一组专门对付"测试自己骗自己"的机制，与 
 ## 源码锚点
 
 - `scripts/run-gates.ts`——18 个聚合、调度语义、注入 env、fail-fast
+- `native/system/AGENTS.md`——native 测试树的所有权与矩阵派生
 - `scripts/run-coverage-partitions.ts` + `scripts/coverage-partitions.ts`——分区→blob→合并判门
 - `scripts/run-web-snapshots.ts`——HMR 串行先行再并行
 - `scripts/wine-windows-gates.sh`——Wine 门（快照树 / hoisted / SHA-256 / 重试）

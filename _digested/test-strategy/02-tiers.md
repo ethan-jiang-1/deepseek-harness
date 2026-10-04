@@ -134,6 +134,11 @@
 - **client 组件 spec**：文件首行 `// @vitest-environment jsdom` pragma + testing-library + fake timers；断言用户可见行为而非 class 名。
 - **两个横切 helper**：`runLoaderSmoke`（`@deepseek-ai/dsh-loader-smoke`，双模式 src/lib 子进程启动器，所有 profile/snapshot 套件共用）与 `mountAgentLoopTestDependencies`（`@deepseek-ai/dsh-agent-loop-testkit`，进程内一次挂全 agent-loop 依赖栈）。
 
+### 测试代码自身也过静态门（硬事实）
+
+- **typecheck 覆盖全部测试文件**。包级 tsconfig 只 include `src`（它拥有发布面的 `lib/types`），测试文件的类型检查由 repo 级 face program 承担：host program（`tsc -b tsconfig.host.json`）include `packages/*/*/tests/**/*.ts`、`apps/*/tests/**`、`scripts/**`、`benchmarks/**`、`website/**`；client program（`tsc -b tsconfig.client.json`）接管 `.tsx` 与 `*.client.*` 测试（packages/client/*/tests、`*.client.spec.tsx`、apps/desktop tests）——两个 face 用各自的 exclude 互斥分工（host exclude `.client.*`，client exclude `.host.spec`）。唯一豁免：`packages/typert/generator/tests/fixtures/**`。
+- **lint 覆盖全仓**（`oxlint .`，tests 在内）；**duplication 显式不管测试**：`.jscpd.json` ignore `**/tests/**`，且命令范围只有 packages scripts——克隆门有意放行测试里的重复表达（测试按行为逐例陈述，重复是表达而非债务）。
+
 ## 源码锚点
 
 - `docs/testing.md` Tiers 节——七层的官方定义
