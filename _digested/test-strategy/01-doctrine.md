@@ -16,7 +16,7 @@ DSH 仅单元测试就有 1893 个 spec 文件，而它的测试政策只有 55 
 
 | 层 | 文件 | 职责 |
 |---|---|---|
-| 政策 | `docs/testing.md` | 分层定义 + 跨层规则（本篇）；唯一测试策略权威，词预算 1,300 行列管 |
+| 政策 | `docs/testing.md` | 分层定义 + 跨层规则（本篇）；唯一测试策略权威，词预算 1,350 词列管（`wc -w` 口径） |
 | 常备条令 | root `AGENTS.md` + `packages/AGENTS.md` | 每个 session 都要在上下文里的测试条款（链接到政策）；包层复述 plugin exports / `ctx.get` / REAL-composition / HMR disposal |
 | 所有权 | `snapshots/AGENTS.md` | 快照树的归属规则（[03](./03-rules-ownership.md)） |
 | 可靠性纪律 | `.agents/skills/dsh-ci-test-reliability/` | 并发/资源/teardown/flake 分类（[06](./06-reliability.md)） |
@@ -25,8 +25,9 @@ DSH 仅单元测试就有 1893 个 spec 文件，而它的测试政策只有 55 
 | 事故 | `docs/postmortem/`（**4 篇**：0001 ACP default export / 0002 `!!js` / 0003 替代服务器 / 0004 Landlock 误分类） | 政策的反面教材；唯一允许 war-story 叙事的层 |
 | 操作步骤 | `docs/cookbook/` | 加包/加工具/加格式版本时的步骤与验证命令 |
 | 局部契约 | `packages/test-support/*/README` 等各包 README | 该工具/该包的测试语义与已知限制（[07](./07-infrastructure.md)） |
+| vendored 修改 | `vendor/README.md` | 每条本地修改注记覆盖它的 DSH 包测试；同步流程要求重跑 `pnpm run test && pnpm run build` |
 
-一句话职责表：**policy 定"什么算证据"；skill 定"怎么写得可靠、怎么选命令"；note 定"为什么这么定、放弃了什么"；cookbook 定"做某类变更时的步骤"；README/树规则定"这个工具/这棵树的具体规则"；postmortem 定"哪类漏网之鱼催生了哪些护栏"；AGENTS 层定"每个会话必须记得的几行"。** `testing.md` 是枢纽：每个 tier 链到 owning note，每条规则链到 rationale；postmortem 0001 同时向上滋养 policy 层（with-key 冒烟主张、"test the real entry path"）与 `packages/AGENTS.md` 常驻层（plugin exports 形态、`ctx.get`）——事故教训被制度化成两层常驻规则。
+一句话职责表：**policy 定"什么算证据"；skill 定"怎么写得可靠、怎么选命令"；note 定"为什么这么定、放弃了什么"；cookbook 定"做某类变更时的步骤"；README/树规则定"这个工具/这棵树的具体规则"；vendor/README 定"每条 vendored 修改由哪些测试覆盖"；postmortem 定"哪类漏网之鱼催生了哪些护栏"；AGENTS 层定"每个会话必须记得的几行"。** `testing.md` 是枢纽：每个 tier 链到 owning note，每条规则链到 rationale；postmortem 0001 同时向上滋养 policy 层（with-key 冒烟主张、"test the real entry path"）与 `packages/AGENTS.md` 常驻层（plugin exports 形态、`ctx.get`）——事故教训被制度化成两层常驻规则。
 
 ## 九条教义逐条消化
 
@@ -130,5 +131,5 @@ DSH 仅单元测试就有 1893 个 spec 文件，而它的测试政策只有 55 
 
 1. **立场句式**：读 `docs/testing.md` "The with-key policy" 一节的第一句——以 "We are DeepSeek" 开头。测试政策以厂商身份开头，这本身就是"模型厂自研仓库"的证据。
 2. **唯一 mock 数得出来**：读 `packages/acp/acp/tests/harness.ts`，数 `makeBridgeHarness()` 里 mock 的数量——只有 `MockAdapter`；loop / session store / tool registry / JSONL persistence 全是真实现。
-3. **prove-it-red 可检索**：在测试里 grep `expect('default' in mod)`，能找到"先制造回归看它变红"这类守卫断言的实例。
+3. **prove-it-red 可检索**：在测试里 grep `expect('default' in`——43 个 spec 文件含 `expect('default' in <module>).toBe(false)` 守卫（如 `packages/lsp/tool-lsp/tests/load-path.spec.ts:14`，配套 `unwrapExports` 往返断言）。注意字面串 `expect('default' in mod)` 只出现在 `docs/testing.md` 政策原文里——各测试用被测模块的变量名。
 4. **自跳过不是成本信号**：任选一个 e2e suite，看它无 key 时的 self-skip 分支——skip 分支旁边没有任何"记录预算"或"减少调用"的注释，与"do not ration"一致。

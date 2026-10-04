@@ -12,6 +12,8 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 
 对象是 harness 本身：一个由模型厂自研自维护、日常研发主力包含 Coding Agent 的仓库，如何系统性地组织测试——测试思想、分层、规矩、快照机制、CI 门禁、可靠性纪律与基建，全部锚定本仓库的产品源码基线。
 
+![七层宪法层总览：证据形态与入口真实性](./figures/evidence-map.svg)
+
 ## 规模基线（硬事实，按基线树实测）
 
 | 资产 | 数字 |
@@ -19,12 +21,12 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 | unit spec | **1893** 个 `*.spec.{ts,tsx}`（packages 1358+265、apps 143+1、scripts 121、website 5），分布在 323 个 `tests/` 目录（packages 313） |
 | e2e 车道 | **91** 个 `*.e2e.ts`（`vitest.e2e.config.ts` 实际 include 减去 exclude；另有 161 个归 web 车道） |
 | expected 驱动 | 18（apps/cli）+ 8（apps/web，归 web 车道） |
-| 快照场景 | **210** 个录制场景（session 122 / sdk 24 / acp 9 / web 55），`snapshots/` 全树 1271 个文件 |
+| 快照场景 | **210** 个录制场景（session 122 / sdk 24 / acp 9 / web 55），`snapshots/` 全树 1278 个文件（1271 常规文件 + 7 个跨 profile sidecar 符号链接） |
 | 性能门 | 7 个 bench（5 Host + 2 Client）+ 1 个 opt-in stress + 3 个手动 perf |
 | vitest 配置 | 8 份运行配置 + 1 份共享门面（`vitest.shared.ts`） |
 | 测试决策笔记 | **33 篇**（`.agents/notes/implemented/testing/`，另有 33 份 `.i18n.yaml` 配对）+ **4 篇** postmortem（`docs/postmortem/0001`-`0004`） |
 | 测试基建 | `packages/test-support/` 七件套 + `benchmarks/support/` + vitest setup 三件套 |
-| 政策测试 | approval-policy / issue-management（`node --test` 直跑 `.mjs`） |
+| 政策测试 | approval-policy（`node --test`）/ issue-management（plain `node`）直跑 `.mjs` |
 | Python 侧 | `python/sdk/tests/`（pytest via uv，无 tox）+ `scripts/snapshots/python-sdk-single-exe/` 7 场景 |
 | CI 门禁编排 | `scripts/run-gates.ts` 18 个聚合模式；PR 必需 job 9 个 + 1 个观察性 |
 

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow-r" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#d4380d"/>
+    </marker>
+  </defs>
+  <rect width="960" height="540" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">共享执行世界：只有进程是隔离的</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">成本选择换来的边界——责任被显式转嫁给每个测试作者。</text>
+
+  <!-- shared host frame -->
+  <rect x="40" y="76" width="640" height="380" rx="12" fill="#fff" stroke="#595959" stroke-width="2"/>
+  <text x="360" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#374151">self-hosted runner：one host, one volume（共享）</text>
+
+  <!-- three fork workers -->
+  <rect x="70" y="128" width="180" height="120" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="160" y="156" text-anchor="middle" font-weight="700" fill="#1d4ed8">fork worker</text>
+  <text x="160" y="176" text-anchor="middle" fill="#333">spec A</text>
+  <text x="160" y="200" text-anchor="middle" fill="#666">进程内状态私有：</text>
+  <text x="160" y="218" text-anchor="middle" fill="#666">模块实例 · 内存 · cwd</text>
+
+  <rect x="270" y="128" width="180" height="120" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="360" y="156" text-anchor="middle" font-weight="700" fill="#38761c">fork worker</text>
+  <text x="360" y="176" text-anchor="middle" fill="#333">spec B</text>
+  <text x="360" y="200" text-anchor="middle" fill="#666">与 A/C 并发跑</text>
+  <text x="360" y="218" text-anchor="middle" fill="#666">同一份代码树</text>
+
+  <rect x="470" y="128" width="180" height="120" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="560" y="156" text-anchor="middle" font-weight="700" fill="#ad6800">fork worker</text>
+  <text x="560" y="176" text-anchor="middle" fill="#333">spec C</text>
+  <text x="560" y="200" text-anchor="middle" fill="#666">coverage 分区旁路</text>
+  <text x="560" y="218" text-anchor="middle" fill="#666">也在同一个 job 里</text>
+
+  <!-- shared resources -->
+  <text x="70" y="286" font-weight="700" fill="#d4380d">进程边界之外不隔离（谁都可以撞上谁）：</text>
+  <rect x="70" y="300" width="140" height="56" rx="8" fill="#fff1f0" stroke="#d4380d"/>
+  <text x="140" y="324" text-anchor="middle" fill="#a8071a">ports</text>
+  <text x="140" y="344" text-anchor="middle" fill="#666">listen(0) 原子分配</text>
+  <rect x="226" y="300" width="140" height="56" rx="8" fill="#fff1f0" stroke="#d4380d"/>
+  <text x="296" y="324" text-anchor="middle" fill="#a8071a">predictable paths</text>
+  <text x="296" y="344" text-anchor="middle" fill="#666">mkdtemp 私有临时根</text>
+  <rect x="382" y="300" width="140" height="56" rx="8" fill="#fff1f0" stroke="#d4380d"/>
+  <text x="452" y="324" text-anchor="middle" fill="#a8071a">external namespaces</text>
+  <text x="452" y="344" text-anchor="middle" fill="#666">外部服务 · 数据库</text>
+  <rect x="538" y="300" width="122" height="56" rx="8" fill="#fff1f0" stroke="#d4380d"/>
+  <text x="599" y="324" text-anchor="middle" fill="#a8071a">inherited children</text>
+  <text x="599" y="344" text-anchor="middle" fill="#666">子进程要收到静默</text>
+
+  <text x="70" y="398" fill="#333">每个被获取资源五要素：owner · 原子分配 · 可观察就绪信号 · 注册的清理 · 静默完成信号</text>
+  <text x="70" y="424" fill="#333">配套编排兜底：e2e 唯一显式 retry=2 · 写路径互斥（after）· fail-fast 杀整棵进程树 · bench 独占 runner</text>
+
+  <!-- attribution clause -->
+  <rect x="712" y="76" width="220" height="380" rx="12" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
+  <text x="822" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#a8071a">归因是单向的</text>
+  <text x="822" y="132" text-anchor="middle" font-size="11" fill="#a8071a">宪法条款（testing.md）</text>
+  <text x="728" y="164" fill="#333">"a spec that passes only</text>
+  <text x="728" y="184" fill="#333">when it runs alone is</text>
+  <text x="728" y="204" fill="#333">a defect in the spec,</text>
+  <text x="728" y="224" fill="#333">rather than an unstable</text>
+  <text x="728" y="244" fill="#333">runner"</text>
+  <text x="728" y="280" fill="#333">"单跑才绿"被定义为</text>
+  <text x="728" y="300" fill="#333">spec 自身的缺陷，</text>
+  <text x="728" y="320" fill="#333">不许赖 runner——</text>
+  <text x="728" y="350" font-weight="700" fill="#a8071a">环境从怀疑名单里</text>
+  <text x="728" y="370" font-weight="700" fill="#a8071a">永久移除，</text>
+  <text x="728" y="390" font-weight="700" fill="#a8071a">堵死不可证伪的辩解</text>
+  <text x="728" y="424" fill="#666">flake 诊断走 skill 的</text>
+  <text x="728" y="444" fill="#666">八类分类 + 五级复现阶梯</text>
+</svg>

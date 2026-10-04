@@ -29,7 +29,7 @@ ci- 模式统一注入 worker 环境变量（线程数、快照并发=1、覆盖
 - **ci-unit**：全量无插桩清单（streamOutput 供 15~30 分钟日志带时间戳）。
 - **ci-bench**：单门 `test:bench`（build:bench + build:web + built 运行）。
 - **ci-consumers**：build、node-compat、publint、snapshot、expected-output、web-snapshot、built-bin-smoke 等"消费 built 产物的面"；其中 web-snapshot 用 `after` 等全部 build-artifact readers settle——**HMR 测试会启动 dev:web 改写共享 `lib/` 与 `apps/web/dist/`**，必须互斥。
-- **built-bin-smoke**：`DSH_EXAMPLE_MODE=lib` 下跑 18 个 built 消费者 e2e 文件。注释原话：这是 "package 名导入在 plain Node 下能到达 `lib/` 入口" 的**唯一自动证明**——发布面的守门人（对应 [01](./01-doctrine.md) 教义 6c）。
+- **built-bin-smoke**：`DSH_EXAMPLE_MODE=lib` 下跑 **16** 个 built 消费者 e2e 文件（13 个 built 命名 + keyless-smoke + subagent-{codex,claude-code} 的 loader-composition）。注释原话：这是 "package 名导入在 plain Node 下能到达 `lib/` 入口" 的**唯一自动证明**——发布面的守门人（对应 [01](./01-doctrine.md) 教义 6c）。
 
 ## CI 工作流结构（硬事实）
 
@@ -47,19 +47,23 @@ ci- 模式统一注入 worker 环境变量（线程数、快照并发=1、覆盖
 | python-sdk | unittest（review-ownership 的 Python 端）+ pytest 全量 keyless | |
 | python-runtime | build-exe（linux/win x64） | 双 SDK 投影的 Python 面 |
 | windows-build | `check:ci:windows-blocking`（必需）+ `check:ci:windows-observational-ready`（continue-on-error 观察性） | ReFS 卷检测 + `--package-import-method=clone` |
-| windows-native-tests | 4 个 Windows 绑定套件 `--no-file-parallelism` | 2vcpu 小 runner 上的 file-serial |
+| windows-native-tests | 4 个 Windows 绑定套件 `--no-file-parallelism`（tool-pwsh loader / workflow-ptc / tool-ralph integration / subprocess process-exit） | 2vcpu 小 runner 上的 file-serial |
 
 **windows-coverage 不在 `all-checks-passed` 的 needs 里**——对 PR 判定是观察性。runner 池可用仓库变量（`DSH_CI_FAILOVER_LINUX`/`_WINDOWS`）在企业池 / selfhosted / blacksmith 之间切换，Linux 三大 job 共用同一开关。
 
 ### ci-master.yml（push master + 手动 dispatch，不进 PR 面板）
 
 - **windows（Wine）**：ubuntu + Wine 跑 `scripts/wine-windows-gates.sh`——在 Linux 上用真 win-x64 Node 跑两个 blocking 门。工作树不动（tracked+untracked-unignored 全部 tar 快照进 scratch）；Wine 专属覆盖（hoisted linker + win32-x64 supportedArchitectures）只附加到快照的 pnpm-workspace.yaml，`--frozen-lockfile` 仍有效；Node zip 下载并 SHA-256 校验；pnpm hoisted rename race 最多干净重试 3 次；Wine 下 Node 不能接管道 stdio，全部经文件。
-- **serial-linux-selfhosted / serial-windows**：**热备演练**——每次 master push 在持久 VM 上**全串行**（一切并发=1）跑必需 lane（`check:ci:linux-primary` / `check:ci:windows-complete`），持续证明备用环境能接管必需 lane。
+- **serial-linux-selfhosted / serial-windows / serial-macos**：**热备演练**——每次 master push 在持久 VM 上**全串行**（一切并发=1）跑必需 lane（`check:ci:linux-primary` / `check:ci:windows-complete`），持续证明备用环境能接管必需 lane。
 - **runner 基准矩阵**：手动 dispatch，4~96 核 × Linux/Windows，分别测单 lane 与整合拓扑的 wall-clock。
 
 ### e2e.yml（真 DeepSeek API）
 
 触发：dispatch + push main/master + PR + nightly（cron 错开整点）。fork 与 Dependabot PR 在 job `if:` 跳过（secrets 被扣留；skipped job 报 SUCCESS，可安全设为 required）。**preflight 步骤对缺 `DEEPSEEK_API_KEY` 硬失败**——防"全跳过的假绿"。`DEEPSEEK_BASE_URL` 钉死官方端点（防 stray `.env` 重定向）。头注释的安全红线：**绝不改 `pull_request_target`**（fork 代码将带 secrets 执行 = key 泄漏向量）。
+
+### node-addon-system.yml（native 体系，独立于 vitest）
+
+native/system（`@deepseek-ai/node-addon-system`）有自己的平台×Node 矩阵 CI：每个平台 job 构建一次、在受支持的每个 Node 版本上测同一份字节——`test/entry.test.js`（keyless）、`test/launcher.test.js`（真实内核强制）、`test:packaging`、test-oracle、`test:flock`。这些测试是 plain Node 直跑的 `.js`，不在任何 vitest 配置内（[02](./02-tiers.md) 的后缀文法只覆盖 vitest 车道）。其余 workflows（release*、python-release、docs-pages、build-preview-cloudflare、issue-policy/lifecycle、weighted-approval*）属于发布/文档/政策执行面，不承载测试。
 
 ### expected-filenames.yml / sandbox.yml / pi-ai-provider-e2e.yml
 
@@ -79,6 +83,8 @@ DSH 的 CI 设计里有一组专门对付"测试自己骗自己"的机制，与 
 
 五个机制保护同一件事：**证据链上任何"悄悄少测了"的路径都要被封死。**
 
+![防假绿五机制及其 workflow 出处](./figures/anti-fake-green.svg)
+
 ## 与政策的一致性（解释）
 
 - root `AGENTS.md` 的 "CI owns exhaustive coverage and the platform matrix" 在这里兑现：本地按面选最小证据（[03](./03-rules-ownership.md) pre-push 纪律），穷尽与矩阵是 CI 的财产。矩阵 = OS（Linux/Windows/macOS/Wine）× Node（22.19/24.9/26）× runner 池（企业/自托管/blacksmith）× 浏览器（chromium/webkit）。
@@ -92,7 +98,7 @@ DSH 的 CI 设计里有一组专门对付"测试自己骗自己"的机制，与 
 - `scripts/run-web-snapshots.ts`——HMR 串行先行再并行
 - `scripts/wine-windows-gates.sh`——Wine 门（快照树 / hoisted / SHA-256 / 重试）
 - `.github/workflows/ci.yml`（含 all-checks-passed L700-726、failover 变量注释）
-- `.github/workflows/ci-master.yml`、`e2e.yml`、`sandbox.yml`、`expected-filenames.yml`、`pi-ai-provider-e2e.yml`
+- `.github/workflows/ci-master.yml`、`e2e.yml`、`sandbox.yml`、`expected-filenames.yml`、`pi-ai-provider-e2e.yml`、`node-addon-system.yml`
 - `benchmarks/AGENTS.md` 与 `benchmarks/support/{built-worker,calibration}.ts`
 
 ## 最小例证

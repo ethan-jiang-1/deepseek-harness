@@ -42,6 +42,7 @@
   - `test_account_provider_snapshot.py` **复用 TS 侧场景的 `cordis.yml` 作 patch**，用真 Python SDK 对着 built CLI（`apps/cli/lib/bin.js`）跑，`DSH_SNAPSHOT: 'replay'`，比较 final_response / finish_reason / turn-end reason——"双 SDK 投影"不是比喻，是**同一场景资产驱动两个 SDK**。
 - `scripts/snapshots/python-sdk-single-exe/`：7 个场景（minimal / advanced / restart / minimal-in-history / dynamic-tools / scheduler-recovery / authoring），由 `scripts/smoke-python-runtime.py` 驱动（`--update-snapshots` 重录），钉死单可执行 Python runtime 的 model-visible 输出（含 win-x64 变体）与父/子 session 日志（多代保留）；Python-runtime CI 拥有。
 - 手动冒烟与 pytest 分离：`manual_sdk_agent_smoke.py` 的 docstring 明说 "This manual test is not collected by pytest"。
+- **installed-wheel 黑盒 CI**（`build-exe-for-python-sdk.yml` + ci.yml 的 python-runtime job）：Python 侧的 built smoke——选中目标在全新 Python 3.10 venv 里安装 SDK 与 runtime wheel，在 checkout 之外运行（`PYTHONPATH`、`DSH_RUNTIME_MODE` 未设），先证明模块与可执行确实来自发行版，再跑全部 keyless 场景；trusted PR/master 额外跑 `--scenario sdk-live --installed-wheel`，花 key 做两轮工具调用并以外部字节比对收尾；缺 secret 硬失败而非自跳，fork/Dependabot 只跑 keyless 路径。这是 [01](./01-doctrine.md) 教义 6c（"real entry path = published artifact"）在 Python 发行物上的对位（决策记录：`.agents/notes/implemented/testing/2026-08-23-installed-python-wheel-black-box-ci.md`）。
 
 ## 为什么这么定（解释）
 
@@ -56,6 +57,8 @@
 - `packages/test-support/llm-replay/tests/session-format-corpus.spec.ts`——三棵树的语料校验
 - `packages/test-support/loader-smoke/tests/fixtures/production-profile.ts`——profile 集成 driver
 - `python/sdk/tests/test_smoke_model.py` / `test_account_provider_snapshot.py`
+- `python/development.md`——installed-wheel 黑盒 CI 与 Python 发行物测试面
+- `.github/workflows/build-exe-for-python-sdk.yml`——wheel 构建与 installed-wheel 测试 lane
 - `scripts/smoke-python-runtime.py` + `scripts/snapshots/python-sdk-single-exe/`
 
 ## 最小例证

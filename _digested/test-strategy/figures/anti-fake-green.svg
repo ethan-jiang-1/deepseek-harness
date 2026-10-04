@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="960" height="470" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">防假绿五机制：证据链上任何"悄悄少测了"的路径都被封死</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">与 verify-the-world 教义同源——CI 专门设防"测试自己骗自己"。</text>
+
+  <!-- card 1 -->
+  <rect x="30" y="76" width="176" height="250" rx="10" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="118" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#a8071a">缺 key 硬失败</text>
+  <text x="118" y="126" text-anchor="middle" font-size="11" fill="#a8071a">e2e.yml preflight</text>
+  <text x="44" y="156" fill="#333">with-key lane 的 key</text>
+  <text x="44" y="176" fill="#333">缺失不降级为</text>
+  <text x="44" y="196" fill="#333">"全 skip 的绿"，</text>
+  <text x="44" y="216" fill="#333">而是显式红</text>
+  <text x="44" y="252" fill="#666">self-skip 保留给</text>
+  <text x="44" y="272" fill="#666">secretless CI 与</text>
+  <text x="44" y="292" fill="#666">keyless 贡献者，</text>
+  <text x="44" y="312" fill="#666">但必需 lane 不适用</text>
+
+  <!-- card 2 -->
+  <rect x="216" y="76" width="176" height="250" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="304" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#ad6800">自跳过即失败</text>
+  <text x="304" y="126" text-anchor="middle" font-size="11" fill="#ad6800">sandbox.yml grep 守卫</text>
+  <text x="230" y="156" fill="#333">跑之前先数"应该过</text>
+  <text x="230" y="176" fill="#333">的文件数"，套件悄悄</text>
+  <text x="230" y="196" fill="#333">自跳过会被拦下</text>
+  <text x="230" y="232" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12">grep "Test Files</text>
+  <text x="230" y="252" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12">2 passed (2)"</text>
+  <text x="230" y="282" fill="#666">每条 sandbox 腿</text>
+  <text x="230" y="302" fill="#666">必须证明专属 e2e 真跑</text>
+
+  <!-- card 3 -->
+  <rect x="402" y="76" width="176" height="250" rx="10" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="490" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#38761c">skipped 判红</text>
+  <text x="490" y="126" text-anchor="middle" font-size="11" fill="#38761c">all-checks-passed 聚合</text>
+  <text x="416" y="156" fill="#333">单一 required check 把</text>
+  <text x="416" y="176" fill="#333">skipped 与 failure</text>
+  <text x="416" y="196" fill="#333">同等对待——</text>
+  <text x="416" y="226" font-weight="700" fill="#1d4e13">"没跑"不算"过了"</text>
+  <text x="416" y="262" fill="#666">9 个必需 job 的</text>
+  <text x="416" y="282" fill="#666">failure / cancelled /</text>
+  <text x="416" y="302" fill="#666">skipped 三条件判红</text>
+
+  <!-- card 4 -->
+  <rect x="588" y="76" width="176" height="250" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="676" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">观察性显式化</text>
+  <text x="676" y="126" text-anchor="middle" font-size="11" fill="#1d4ed8">allowFailure · 不进 needs</text>
+  <text x="602" y="156" fill="#333">不能稳定跑的门</text>
+  <text x="602" y="176" fill="#333">（windows-coverage、</text>
+  <text x="602" y="196" fill="#333">windows observational）</text>
+  <text x="602" y="216" fill="#333">不混进必需判定，</text>
+  <text x="602" y="246" font-weight="700" fill="#1e3a8a">但结果保留可见</text>
+  <text x="602" y="282" fill="#666">不许假装它不存在，</text>
+  <text x="602" y="302" fill="#666">也不许让它假装绿</text>
+
+  <!-- card 5 -->
+  <rect x="774" y="76" width="176" height="250" rx="10" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="862" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#531dab">热备演练</text>
+  <text x="862" y="126" text-anchor="middle" font-size="11" fill="#531dab">serial-* master push</text>
+  <text x="788" y="156" fill="#333">备用执行环境在持久</text>
+  <text x="788" y="176" fill="#333">VM 上全串行（并发=1）</text>
+  <text x="788" y="196" fill="#333">真实跑一遍必需 lane</text>
+  <text x="788" y="226" font-weight="700" fill="#4c1d95">"换池子会炸"的风险</text>
+  <text x="788" y="246" font-weight="700" fill="#4c1d95">被持续证伪</text>
+  <text x="788" y="282" fill="#666">linux / windows / macos</text>
+  <text x="788" y="302" fill="#666">三条热备腿</text>
+
+  <!-- bottom -->
+  <rect x="30" y="356" width="920" height="76" rx="10" fill="#fff" stroke="#d4380d" stroke-dasharray="6 3"/>
+  <text x="490" y="386" text-anchor="middle" font-size="13" font-weight="700" fill="#a8071a">同一件事的五个侧面：runner 可信、skip 可见、少测必红</text>
+  <text x="490" y="412" text-anchor="middle" font-size="12" fill="#374151">加上 runner 池 failover 变量与 e2e 钉死官方端点，编排层在替测试纪律兜底——本地跑同一张 run-gates 图，"我本地复现 CI 失败"不需要重建 workflow。</text>
+</svg>

@@ -4,7 +4,7 @@
 
 ## 现象是什么：把一次真实会话变成无 key 的期望值
 
-Snapshot 层的定义（`docs/testing.md`）是 **keyless recorded-session replay**：录制时用真模型跑一次完整会话，把"用户输入 + 模型回放 + 持久化结果"固化成场景资产；CI 里无 key 回放——同一份输入喂给回放的模型流，断言持久化结果与期望一致。`snapshots/` 树在基线下有 1271 个文件，分四个面：`snapshots/session/`（headless）、`snapshots/sdk/`、`snapshots/acp/`、`snapshots/web/`。
+Snapshot 层的定义（`docs/testing.md`）是 **keyless recorded-session replay**：录制时用真模型跑一次完整会话，把"用户输入 + 模型回放 + 持久化结果"固化成场景资产；CI 里无 key 回放——同一份输入喂给回放的模型流，断言持久化结果与期望一致。`snapshots/` 树在基线下有 1278 个文件（1271 常规文件 + 7 个跨 profile sidecar 符号链接），分四个面：`snapshots/session/`（headless）、`snapshots/sdk/`、`snapshots/acp/`、`snapshots/web/`。
 
 一句话定位：**with-key e2e 证明"现在还对真模型工作"，快照证明"组装后的完整转录没有意外变化"**。前者是活的，后者是固化的；两者互补，谁也不能替代谁（"package, e2e, mock-only, and rationale evidence does not replace the assembled transcript"）。
 
@@ -52,6 +52,8 @@ Web 渲染可以显式借用另一个场景的 canonical session（"a Web render
 | replay（默认） | CI | 只读回放比对 |
 
 共同纪律："review every resulting diff"——两种写模式产出的每个 diff 都要人工过目。CI 强制只读（`DSH_SNAPSHOT=replay`）。
+
+![record / replay / refresh 三态与世代模型](./figures/snapshot-modes.svg)
 
 ### 7. 执行形态（来自 `vitest.snapshot.config.ts`）
 

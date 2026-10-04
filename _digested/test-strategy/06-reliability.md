@@ -12,9 +12,11 @@ DSH 的测试可靠性问题被显式建模为：**大量并发 spec 文件跑�
 
 三个要点：环境是共享的（成本选择）；责任是单向的（每个测试对自己获取的资源负责到 teardown）；**归因是单向的（"单跑才绿"永远算 spec 的缺陷，不许赖 runner）**。第三条是整个可靠性纪律的宪法条款——它堵死了"在我机器上时好时坏"这类不可证伪的辩解。
 
+![共享执行世界：只有进程隔离，归因单向](./figures/shared-world.svg)
+
 ## forked pool 的工程理由（硬事实）
 
-`vitest.config.ts` 的两个内联 project（`thread-safe` 与 `process-bound`）全部用 `pool: 'forks'`，不是默认的 worker threads。理由写在配置注释里：**Node 24 的 CJS lexer 在 worker 线程上崩溃**。另外 8 个进程绑定套件（session-persistence-jsonl、subagent-acp、process-exit、spawn、time-context、llm-pi-ai adapter、app-boot、workflow-ptc）单独成 `process-bound` project；`execArgv` 统一带 `--no-webstorage`（防进程级 Web Storage 状态遮蔽 jsdom storage）。
+`vitest.config.ts` 的两个内联 project（`thread-safe` 与 `process-bound`）全部用 `pool: 'forks'`，不是默认的 worker threads。理由写在配置注释里：**Node 24 的 CJS lexer 在 worker 线程上崩溃**。另外 8 个进程绑定套件（session-persistence-jsonl、subagent-acp、process-exit、spawn、time-context、llm-pi-ai adapter、app-boot、workflow-ptc）单独成 `process-bound` project；`execArgv` 按能力带 `--no-webstorage`（`allowedNodeEnvironmentFlags` 认可该 flag 时才加，防进程级 Web Storage 状态遮蔽 jsdom storage）。
 
 ## 编排层的可靠性兜底（硬事实，散在配置与 run-gates）
 

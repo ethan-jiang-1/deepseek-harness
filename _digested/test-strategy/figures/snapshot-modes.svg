@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow-s" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#666"/>
+    </marker>
+  </defs>
+  <rect width="960" height="640" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">快照层：一次真实会话固化成无 key 可验证的期望值</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">录制时花 key，验证时零 key——真模型行为的证据进 CI，靠录制回放，不是 mock。</text>
+
+  <!-- scenario asset box -->
+  <rect x="60" y="76" width="840" height="118" rx="10" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="80" y="102" font-weight="700" fill="#a8071a">场景资产（snapshot.yml + session JSONL + workspace.expected/）</text>
+  <text x="80" y="126" fill="#333">一次录制会话 = 用户输入 + 模型回放 + 持久化结果；身兼回放输入与预期输出</text>
+  <text x="80" y="150" fill="#333">世代文法：session[.vN].jsonl，子角色 session.&lt;ordinal&gt;[.vN].jsonl —— replay / record / refresh 都选数值</text>
+  <text x="80" y="170" font-weight="700" fill="#a8071a">最高代；已提交世代不可变，record/refresh 只写版本命名的新输出</text>
+  <text x="700" y="150" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#a8071a">session.v2.jsonl</text>
+  <text x="700" y="170" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#a8071a">session.v3.jsonl ← 选 v3</text>
+
+  <line x1="250" y1="196" x2="250" y2="228" stroke="#666" stroke-width="2" marker-end="url(#arrow-s)"/>
+  <line x1="480" y1="196" x2="480" y2="228" stroke="#666" stroke-width="2" marker-end="url(#arrow-s)"/>
+  <line x1="710" y1="196" x2="710" y2="228" stroke="#666" stroke-width="2" marker-end="url(#arrow-s)"/>
+
+  <!-- three mode cards -->
+  <rect x="60" y="232" width="270" height="270" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="195" y="262" text-anchor="middle" font-size="15" font-weight="700" fill="#ad6800">record</text>
+  <text x="195" y="282" text-anchor="middle" font-size="11" fill="#ad6800">DSH_SNAPSHOT=record</text>
+  <text x="80" y="312" fill="#333">何时：模型转录变了（改 prompt、</text>
+  <text x="80" y="332" fill="#333">改格式、模型行为变化）</text>
+  <text x="80" y="362" font-weight="700" fill="#7c2d12">要 key：唯一读 .env 的模式</text>
+  <text x="80" y="386" font-weight="700" fill="#7c2d12">严格串行：花真实 API 配额</text>
+  <text x="80" y="414" fill="#333">写版本命名的新录制代；</text>
+  <text x="80" y="434" fill="#333">绝不重命名或删除已提交代</text>
+  <text x="80" y="462" fill="#666">产物：新的 session.vN.jsonl</text>
+  <text x="80" y="482" fill="#666">+ 重生成的期望输出</text>
+
+  <rect x="345" y="232" width="270" height="270" rx="10" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="480" y="262" text-anchor="middle" font-size="15" font-weight="700" fill="#38761c">replay</text>
+  <text x="480" y="282" text-anchor="middle" font-size="11" fill="#38761c">默认 · CI 钉只读 DSH_SNAPSHOT=replay</text>
+  <text x="365" y="312" fill="#333">何时：每个 PR（keyless CI 全绿）</text>
+  <text x="365" y="340" font-weight="700" fill="#1d4e13">零 key：不读 .env</text>
+  <text x="365" y="364" font-weight="700" fill="#1d4e13">并行 min(5, CPU)</text>
+  <text x="365" y="382" font-weight="700" fill="#1d4e13">(DSH_SNAPSHOT_MAX_CONCURRENCY)</text>
+  <text x="365" y="406" fill="#333">同一份输入喂给回放的模型流，</text>
+  <text x="365" y="426" fill="#333">断言持久化结果与期望一致</text>
+  <text x="365" y="452" fill="#666">210 个录制场景：session 122 /</text>
+  <text x="365" y="470" fill="#666">sdk 24 / acp 9 / web 55</text>
+  <text x="365" y="484" fill="#666">不写任何已提交输出</text>
+
+  <rect x="630" y="232" width="270" height="270" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="765" y="262" text-anchor="middle" font-size="15" font-weight="700" fill="#1d4ed8">refresh</text>
+  <text x="765" y="282" text-anchor="middle" font-size="11" fill="#1d4ed8">DSH_SNAPSHOT=refresh</text>
+  <text x="650" y="312" fill="#333">何时：实现变了但转录不该变</text>
+  <text x="650" y="340" font-weight="700" fill="#1e3a8a">零 key：不读 .env</text>
+  <text x="650" y="364" font-weight="700" fill="#1e3a8a">严格串行：并发写会写坏期望输出</text>
+  <text x="650" y="392" fill="#333">回放输入仍有效，只重新生成</text>
+  <text x="650" y="412" fill="#333">期望输出（转录不动）</text>
+  <text x="650" y="440" fill="#666">产物：更新的期望文件</text>
+  <text x="650" y="460" fill="#666">（workspace.expected/ 永不被写）</text>
+  <text x="650" y="484" fill="#666">独立世界树比对照旧只读</text>
+
+  <!-- bottom rule -->
+  <rect x="60" y="530" width="840" height="76" rx="10" fill="#fff" stroke="#d4380d" stroke-dasharray="6 3"/>
+  <text x="480" y="560" text-anchor="middle" font-size="13" font-weight="700" fill="#a8071a">review every resulting diff —— 两种写模式的每个 diff 都要人工过目</text>
+  <text x="480" y="584" text-anchor="middle" font-size="12" fill="#374151">mutating 场景的 workspace.expected/ 是独立 oracle：record 与 refresh 也永远不改写它——证据的生产者不能是证据的修改者。</text>
+</svg>

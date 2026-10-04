@@ -39,7 +39,7 @@ DSH 的测试规矩不在一份文件里，而是按"谁需要什么时候看到
 
 配套执行纪律：`test:snapshot` 回放不写；record/refresh 走显式脚本；所有 JSONL/prompt/schema/protocol/UI/workspace diff 提交前评审。
 
-所有权契约的模式同样向下延伸：`packages/AGENTS.md` 把若干测试规则固化为包层常驻条令（plugin exports 形态与 `ctx.get` 读可选服务——均回指 postmortem 0001；REAL-composition 测试要求；注册贡献必须由 HMR 测试证明可撤销；并发 spec 缺陷认定）；`benchmarks/AGENTS.md` 拥有基准树规则（[02](./02-tiers.md)）。
+所有权契约的模式同样向下延伸：`packages/AGENTS.md` 把若干测试规则固化为包层常驻条令（plugin exports 形态与 `ctx.get` 读可选服务——均回指 postmortem 0001；REAL-composition 测试要求；注册贡献必须由 HMR 测试证明可撤销；并发 spec 缺陷认定；拒绝路径要"through the executor"测；结果边界要测 tiny / exact / oversized；model-visible 稳定文本 verbatim pin 进快照）；`benchmarks/AGENTS.md` 拥有基准树规则（[02](./02-tiers.md)）；`scripts/AGENTS.md` 拥有门禁脚本自身的测试条款（检测边界变化的 admitted/excluded 形态都要测到）。
 
 ## 推送前检查选取（`dsh-pre-push-checks`）
 

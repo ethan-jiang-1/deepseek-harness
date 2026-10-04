@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="960" height="620" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">七层宪法层：证据匹配面，不是测试金字塔</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">每层回答一个"绿了为什么还不算数"的问题；入口真实性自上而下递增。</text>
+
+  <!-- right rail: entry realism arrow -->
+  <line x1="906" y1="96" x2="906" y2="560" stroke="#9ca3af" stroke-width="2" marker-end="url(#arrow-down)"/>
+  <text x="922" y="328" text-anchor="middle" font-size="12" fill="#4b5563" transform="rotate(90 922 328)">入口真实性：src → 真 Loader → built lib → 真模型 / 浏览器</text>
+  <defs>
+    <marker id="arrow-down" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <!-- tier rows: name+command | evidence | realism -->
+  <rect x="36" y="84" width="852" height="56" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="52" y="107" font-weight="700" fill="#1677ff">1 Unit</text>
+  <text x="52" y="126" fill="#1d4ed8">pnpm run test</text>
+  <text x="240" y="107" fill="#333">进程内真 Cordis 组合 + MockAdapter；registry 与事件序列</text>
+  <text x="240" y="126" fill="#666">HMR-safety：卸载贡献 fiber，断言清理干净</text>
+  <text x="762" y="117" fill="#1677ff">src 就近</text>
+
+  <rect x="36" y="150" width="852" height="56" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="52" y="173" font-weight="700" fill="#52c41a">2 Coverage gate</text>
+  <text x="52" y="192" fill="#38761c">pnpm run test:coverage</text>
+  <text x="240" y="173" fill="#333">per-file 100% on packages/*/*/src；失败打印 path:line:col</text>
+  <text x="240" y="192" fill="#666">未覆盖行常是待删死代码，不是欠测试</text>
+  <text x="762" y="183" fill="#38761c">插桩全量</text>
+
+  <rect x="36" y="216" width="852" height="56" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="52" y="239" font-weight="700" fill="#fa8c16">3 Real-API e2e</text>
+  <text x="52" y="258" fill="#ad6800">pnpm run test:e2e</text>
+  <text x="240" y="239" fill="#333">对真模型的外部世界检查；进程外重读文件，不信 agent 自述</text>
+  <text x="240" y="258" fill="#666">无 key 自跳过；self-skip 不是成本信号</text>
+  <text x="762" y="249" fill="#ad6800">真 provider（with-key）</text>
+
+  <rect x="36" y="282" width="852" height="56" rx="8" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="52" y="305" font-weight="700" fill="#722ed1">4 Owner-local expected</text>
+  <text x="52" y="324" fill="#531dab">pnpm run test:expected</text>
+  <text x="240" y="305" fill="#333">组装后 CLI/进程期望；无录制会话往返</text>
+  <text x="240" y="324" fill="#666">驱动 *.expected.e2e.ts 贴着 owner 住；CI 跑 built exports</text>
+  <text x="762" y="315" fill="#531dab">built exports</text>
+
+  <rect x="36" y="348" width="852" height="56" rx="8" fill="#e6fffb" stroke="#13c2c2" stroke-width="1.5"/>
+  <text x="52" y="371" font-weight="700" fill="#13c2c2">5 Performance benchmarks</text>
+  <text x="52" y="390" fill="#006d75">pnpm run test:bench</text>
+  <text x="240" y="371" fill="#333">用户路径的时间 / 堆 / 扩放预算；预算常量自身有校准测试</text>
+  <text x="240" y="390" fill="#666">计时码 plain Node，never TSX；合成固定输入</text>
+  <text x="762" y="381" fill="#006d75">built lib · plain Node</text>
+
+  <rect x="36" y="414" width="852" height="56" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="52" y="437" font-weight="700" fill="#d4380d">6 Snapshot</text>
+  <text x="52" y="456" fill="#a8071a">pnpm run test:snapshot</text>
+  <text x="240" y="437" fill="#333">录制会话回放的组装后完整转录；model-visible 的强制证据</text>
+  <text x="240" y="456" fill="#666">keyless 回放：录制花 key，验证零 key</text>
+  <text x="762" y="447" fill="#a8071a">shipped profile</text>
+
+  <rect x="36" y="480" width="852" height="56" rx="8" fill="#f5f5f5" stroke="#595959" stroke-width="1.5"/>
+  <text x="52" y="503" font-weight="700" fill="#595959">7 Web browser snapshot</text>
+  <text x="52" y="522" fill="#434343">pnpm run test:web</text>
+  <text x="240" y="503" fill="#333">session 驱动 + UI-only 期望的浏览器/ARIA 比对</text>
+  <text x="240" y="522" fill="#666">CI 只读 replay；model/reasoning picker 加跑 WebKit</text>
+  <text x="762" y="513" fill="#434343">Chromium / WebKit</text>
+
+  <text x="480" y="572" text-anchor="middle" font-size="12" fill="#374151">宪法层之外还有广义测试面：政策测试、文档门禁、GUI、平台矩阵、native addon 矩阵（见 02 与 05）。</text>
+  <text x="480" y="594" text-anchor="middle" font-size="11" fill="#9ca3af">"integration test"在 DSH 被拆成更精确的证据类型：REAL-composition / profile 集成 / built smokes。</text>
+</svg>
