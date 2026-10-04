@@ -98,6 +98,39 @@
         "_digested/harness-idea/claims.json"
       ],
       "falsified_by": "本专题加入更多机器可核验 claim 后，本条目需要更新"
+    },
+    {
+      "id": "C11",
+      "claim": "DSH 的反馈设计立场是「harness 报告，模型裁决」：命令级失败渲染为标记文本（isError=false），isError 只留给基础设施失败与控制决定；工具失败无 harness 侧重试/熔断，retry waterfall 只在 LLM 请求层",
+      "status": "源码",
+      "sources": [
+        "packages/shell/tool-bash/src/render.ts",
+        "packages/core/agent-loop/src/agent.ts",
+        "packages/llm/llm-retry/src/index.ts"
+      ],
+      "falsified_by": "源码把命令级失败改为 isError 结果，或为工具失败加入 harness 侧重试/熔断分支"
+    },
+    {
+      "id": "C12",
+      "claim": "DSH 没有模型从历史会话学习的机制：跨会话学习整体外置到仓库层（失败→规则/门禁/skill/note 回写），且回写被 doc-sync 门禁与元验证条文把关；唯一缺口是升级指南无机器存在性强制",
+      "status": "推断",
+      "sources": [
+        "docs/testing.md",
+        "scripts/run-gates.ts",
+        ".agents/notes/README.md",
+        "AGENTS.md"
+      ],
+      "falsified_by": "出现会话级记忆提炼并回注 prompt 的机制，或回写在无任何检查下长期稳定"
+    },
+    {
+      "id": "C13",
+      "claim": "关于输出的人类反馈（packages/feedback 的会话备注与消息评分）永不进入模型上下文：单向 log-only 信号，消费者是产品面与分享策略",
+      "status": "原文",
+      "sources": [
+        "packages/feedback/README.md",
+        "packages/feedback/command-feedback/src/index.ts"
+      ],
+      "falsified_by": "feedback 事件进入模型上下文、投影或任何注入 inbox 的路径"
     }
   ],
   "metrics": [

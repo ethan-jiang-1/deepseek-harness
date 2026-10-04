@@ -27,6 +27,7 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 - **06 技术选型与语言贴合**（[`06-tech-and-language-fit.md`](./06-tech-and-language-fit.md)）：回答「dsh 的技术为什么容易被 coding agent 消化」——先验密度、语义贴合、低密度承重件本地化，三层共同作用。
 - **07 边界、成本与适用条件**（[`07-boundaries-costs-fit.md`](./07-boundaries-costs-fit.md)）：合同面被多重消费；原则与智能无关但形状与生产方式和组合压力有关；诚实列出 dsh 的成本与「何时不该学它」。
 - **08 判断纪律**（[`08-judgement-discipline.md`](./08-judgement-discipline.md)）：本专题自己的知识从哪来、如何标出处、如何做反事实检验，并给出核心 claim register。
+- **09 反馈环路**（[`09-feedback-loop.md`](./09-feedback-loop.md)，后续补篇）：轮内环保真不裁决、会话环先账后投影、元环把学习做成仓库的构建系统问题；对照 loop engineering 的七项能力要求给出 Eval 薄层的诚实边界。
 
 推荐顺序即构思顺序。机制编号只为引用方便：边界故意重叠，不是拼图。
 
@@ -59,6 +60,10 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 | 分布外知识 | out-of-distribution knowledge | LM 凭训练先验生成不出来的知识，只能靠检索、核对或人类播种进入文本 |
 | 反事实标记 | counterfactual marker | 自问「一个没读过本仓库的 fresh agent 会不会自然写出这句」——会，是通式；不会，才可能是本仓库信息 |
 | 多重消费 | multi-consumption | 同一合同面被编译器、门禁、生成器、双 SDK、harness 自身与读者同时消费；漂移先被机器抓住 |
+| 反馈三环 | feedback loops | 轮内环（环境事实→模型可见信号）、会话环（反馈→事件日志→投影）、元环（harness 失败→仓库规则回写）三层闭环 |
+| 报告不裁决 | report, don't adjudicate | harness 保真传递失败信号、把「怎么办」留给模型；只在基础设施与目标生命周期处收走裁决权 |
+| 定影 | fixation | resume/fork 把结果未知的工具调用合成为带重试指导的错误结果，而不是重放执行 |
+| 人类反馈三分流 | three-way human feedback split | 人的反馈按「进环的 / 关于输出的 / 关于仓库的」走三条互不混流的通道 |
 
 ## 核心论点
 
@@ -93,8 +98,9 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 | [`06-tech-and-language-fit.md`](./06-tech-and-language-fit.md) | dsh 的技术为什么容易被 coding agent 消化 |
 | [`07-boundaries-costs-fit.md`](./07-boundaries-costs-fit.md) | 哪些原则与智能无关；这个形状何时划算、代价是什么 |
 | [`08-judgement-discipline.md`](./08-judgement-discipline.md) | 本专题自己的判断纪律与 claim register |
+| [`09-feedback-loop.md`](./09-feedback-loop.md) | 失败信号如何塑形、反馈如何持久化与恢复、harness 自身如何从失败回写成规则 |
 
-推荐顺序：`01` → `02` → `03` → `04` → `05` → `06` → `07` → `08`。每篇末尾列证据入口；判断与证据分离，判断是消化后的立场，证据是 DSH 官方源码、文档与 Agent Note 的引用。
+推荐顺序：`01` → `02` → `03` → `04` → `05` → `06` → `07` → `08` → `09`。每篇末尾列证据入口；判断与证据分离，判断是消化后的立场，证据是 DSH 官方源码、文档与 Agent Note 的引用。
 
 ## 我的判断
 
