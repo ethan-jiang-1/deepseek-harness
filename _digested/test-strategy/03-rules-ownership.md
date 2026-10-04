@@ -47,10 +47,11 @@ DSH 的测试规矩不在一份文件里，而是按"谁需要什么时候看到
 
 1. **没有普适本地基线**："There is no universal local baseline beyond the hooks. Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression; add broader checks only for surfaces the diff actually reaches."——git hooks 故意窄（pre-commit 只修 staged lint/空白/vendor 元数据；pre-push 只跑增量 typecheck），"the hooks intentionally do not run tests, snapshots, documentation checks, builds, or hygiene"。CI 拥有穷尽覆盖与平台矩阵。
 2. **证据映射表**：包/脚本行为 → owning vitest 文件或聚焦名；文档 → `doc-sync`；模型/编辑器/CLI/终端可见输出 → 聚焦无密钥快照；manifest/公共导出/构建配置 → `build` + hygiene + owning built smoke；真实 provider/agent 行为 → 凭据可用时跑相关 `test:e2e`。
-3. **预期输出放置**（复述快照所有权，规则的家是 `apps/cli/tests/profiles/AGENTS.md` 与 `snapshots/AGENTS.md`）：录制 Session 双角色场景归顶层 `snapshots/`；无该往返的期望留 owner 的 `tests/expected/`；跨包 profile 行为归 `apps/cli/tests/profiles/`，包特定组合归包 `tests/fixtures/`，用户可选 overlay 归 `apps/cli/config/examples/`（产品资产而非测试夹具，须有 docs/user/ 指南）。
+- **预期输出放置**（复述快照所有权，规则的家是 `apps/cli/tests/profiles/AGENTS.md` 与 `snapshots/AGENTS.md`）：录制 Session 双角色场景归顶层 `snapshots/`；无该往返的期望留 owner 的 `tests/expected/`；跨包 profile 行为归 `apps/cli/tests/profiles/`，包特定组合归包 `tests/fixtures/`，用户可选 overlay 归 `apps/cli/config/examples/`（产品资产而非测试夹具，须有 docs/user/ 指南）。
 4. **不重复已过的检查**："Do not manually repeat a passing check merely because commit or push follows."——尤其不许只为复述 pre-push hook 而在推送前再跑一次 typecheck。
 5. **聚焦覆盖率仍按门的标准**：`vitest run <owning tests> --coverage --coverage.include='packages/<group>/<pkg>/src/**'`；per-file 100% 在选定范围内仍适用；不 `--passWithNoTests`、不降阈值、不为隐藏未覆盖文件而收窄 include。
 6. **全套彩排仅三种情况**：用户显式要求、诊断 CI 失败、改动遍及全仓且无更小可信集。
+7. **插件作者的时间线**：本技能管"推送前跑什么"；插件测试面怎么摆、组合怎么抄、PR 要带什么证据，按 [`08`](./08-plugin-testing.md) → [`09`](./09-plugin-testing-playbook.md) → [`10`](./10-plugin-testing-checklist.md) 走。
 7. **改写历史**：`--force-with-lease`（fetch 记录观察到的 OID，并发更新即中止）；raw `--force` 永不允许；`gh stack sync` 后四步验证（重查每分支头 → 检视 changed scope → 逐层跑证据 → 全过前不 merge）。
 8. **失败处理**："Do not push and hope CI differs."——环境特定失败要拿证据（精确命令/失败测试/平台不匹配），不许推上去赌 CI。
 
