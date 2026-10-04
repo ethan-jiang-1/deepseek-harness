@@ -6,7 +6,7 @@
   </defs>
   <rect width="960" height="560" fill="#fafafa" rx="6"/>
   <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">插件测试证据阶梯：五个台阶，逐级抬高入口真实性</text>
-  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">每一级挡住一类真实发生过的事故；跳级 = 留一个已知漏洞。</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">每一级挡住一类已知的失败模式（发生过的事故或明文禁令）；跳级 = 留一个已知漏洞。</text>
 
   <!-- ladder: bottom = cheapest, top = assembled transcript -->
   <rect x="120" y="76" width="600" height="66" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>

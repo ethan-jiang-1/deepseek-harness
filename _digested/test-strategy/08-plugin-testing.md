@@ -1,10 +1,12 @@
 # 08 — 插件测试策略：政策对一个新插件的要求
 
-> 本篇面向**插件作者**：DSH 出厂自带 316 个包、92 个 `ctx` 服务、30 个工具包（[`plugin-inventory`](../plugin-inventory/00-map.md) 口径），其中 95 个包以 named export 形态导出 `inject`、53 个 client `ui-*` 包——它们全部按同一套测试要求受审。[`plugin-inventory`](../plugin-inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。
+> 本篇面向**插件作者**：DSH 出厂自带 316 个包、92 个 `ctx` 服务、30 个工具包（[`plugin-inventory`](../plugin-inventory/00-map.md) 口径）；本篇实测另有 95 个包以 named export 形态导出 `inject`、53 个 client `ui-*` 包——它们全部按同一套测试要求受审。[§plugin-inventory](../plugin-inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。
 
 ## 现象是什么：同一套要求，形态随插件类型变
 
 `docs/testing.md` 的条款是通用的，但落到插件身上有固定形态：**导出形态守卫 → 行为 spec → 注册表生命周期 → REAL composition → 组装转录**，五个台阶逐级抬高入口真实性。跳过任何一级，都有对应的、已经发生过的事故或明文禁令。
+
+**台阶与 [02](./02-tiers.md) 七层的关系**：台阶不是新的层——台阶 1~3 都落在 **Unit 层**内（一个 spec 文件可以同时覆盖三阶）；台阶 4 落在 **Real-API e2e 车道**（`loader-composition.e2e.ts`，keyless、无模型调用）与 built-bin-smoke 门；台阶 5 就是 **Snapshot 层**。
 
 ![插件测试证据阶梯](./figures/plugin-evidence-ladder.svg)
 
@@ -53,7 +55,7 @@ expect(unwrapped.name).toBe('tool-lsp')  // name/inject 穿过 unwrapExports 仍
 ## 配套纪律（与台阶同交）
 
 - **mock 白名单**：插件测试里唯一常见 mock 是模型（scripted adapter，如 `core/agent-loop/tests/mock-adapter.ts` 的 `MockAdapter`，跨包经源码平面相对导入复用）；网络/时钟才可 mock。with-key e2e 用共享 harness 挂全真栈（`packages/fs/tool-fs/tests/harness.ts` 挂 AgentLoop + LlmDeepSeek + LocalFileSystem + FsPolicy + ToolFs），harness 放 include 之外（[02](./02-tiers.md)）。
-- **face 命名**：`.host.spec.ts`（全仓 80 个）与 `.client.spec.tsx`（641 个）后缀决定该文件被哪个 tsc face program 类型检查（[02](./02-tiers.md) "测试代码自身也过静态门"）；client 侧再加 `@vitest-environment jsdom` pragma。
+- **face 命名**：`.host.spec`（全仓 80 个）与 `.client.spec.*`（641 个，含 `.ts` 与 `.tsx`）后缀决定该文件被哪个 tsc face program 类型检查（[02](./02-tiers.md) "测试代码自身也过静态门"）；client 侧再加 `@vitest-environment jsdom` pragma。
 - **运行时不变量**：插件若拥有可发散的观察关系，发布 `./invariant` 入口并用 `InvariantRegistry, { enabled: true }` 测试它（样板：`packages/todo/tool-todo/tests/invariant.spec.ts`；空壳 invariant 被 `verify-package-invariants` 拒绝）。
 - **README 限制清单**：`verify-package-readme-limitations` 门要求插件 README 带已知限制节——mock 证明不了什么，要写下来（[07](./07-infrastructure.md)）。
 

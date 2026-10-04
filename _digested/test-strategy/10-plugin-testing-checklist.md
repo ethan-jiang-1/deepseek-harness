@@ -38,13 +38,13 @@
 | snapshot replay | 你的场景在 210 个录制场景里被无 key 回放比对 |
 | 静态门 | `verify-cordis-config`（若动配置）、`verify-client-ui-i18n`（若动 client 文案）、`verify-package-invariants`（若发布 `./invariant`）、`verify-package-readme-limitations`、doc 门 |
 
-## 反例清单（每一类都被政策明文拒绝）
+## 反例清单（前四类被政策明文拒绝，后两类是仓库里反复出现的坑）
 
 1. **hand-built `ctx.plugin(...)` 充当组装证据**——"Hand-built `ctx.plugin(...)` suites are insufficient"（[01](./01-doctrine.md) 教义 6）。
 2. **对 agent 自报的关键词探测**——"a keyword probe on the agent's own output lets a cheating agent pass"；断言文件系统/session log 等外部事实。
 3. **把 tunable 写成常量再用单测钉死**——`DEFAULT_*` 常量不是可配置性；用真 Loader boot 验 Config 两脸跟随（[08](./08-plugin-testing.md) 台阶四）。
 4. **import 另一个 `*.e2e.ts` 复用 fixture**——会重复注册 `describe`、重复真实 API 调用；共享 fixture 放普通 `tests/harness.ts`。
-5. **只有 skip 分支没有用例内守卫**——`describe.skipIf` 之外，关键前置（如 key、built 产物）在用例内再 throw 一次（样板 `runtime.e2e.ts:184`）。
+5. **只有 skip 分支、没有用例内守卫**（模式而非禁令）：部分套件在 `describe.skipIf` 之外对关键前置（key、built 产物）在用例内再 throw 一次（样板 `runtime.e2e.ts:184`）——可选的双保险，仓库里的既有做法。
 6. **为凑绿改 normalizer / 弱化断言 / 加 sleep**——`dsh-ci-test-reliability` 的"拒绝的掩盖修法"清单（[06](./06-reliability.md)）。
 
 ## 最小例证
