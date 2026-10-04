@@ -2,6 +2,10 @@
 
 > 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[08](./08-plugin-testing.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录），本篇按五个插件类型各解剖一套真实组合。基线 `639ed01539`。
 
+## 现象是什么：组合的形状跟着"插件承诺"走
+
+没有两套插件测试长得一样，但差异不是随机的——**插件承诺什么，测试组合就长什么样**：工具插件承诺行为与 Config，provider 插件承诺可选性与实例拓扑，toolview 承诺组装面与文案，guard 插件承诺"什么时不做"，LLM-backed 插件承诺"对真模型工作"。以下五套真实组合各自兑现一种承诺；写自己的插件时按承诺挑组合，而不是按文件数抄。
+
 ## 一、工具插件全家桶：`tool-todo`（五文件各司其职）
 
 `packages/todo/tool-todo/tests/` 是"一个工具插件该有的全部测试文件"的最小完备样例：
@@ -14,14 +18,14 @@
 | `projection.spec.ts` | 投影提供者 + HMR-safety | `todos` projection 的读路径；dispose 贡献 fiber 断言清理（`(HMR safety)`） |
 | `invariant.spec.ts` | 快照不变量 | 插件发布 `./invariant` 子路径导出，挂 `InvariantRegistry, { enabled: true }` 测历史/在线并行快照的接受性 |
 
-分工逻辑：**行为在台阶二测一遍（注册后入口）、在台阶三测一遍（loop 端到端）、在台阶四测一遍（Config 组装语义）**——三遍的对象不同（工具体 / 事件序列 / 组装语义），不是重复。
+台阶映射：`tool-todo.spec` 与 `integration.spec` 是**台阶二的两遍**（直调注册入口 / 穿 loop 端到端）；`projection.spec` 是台阶三；`loader-composition.spec` 是台阶四的进程内级；`todo-write` 录制场景（`snapshots/session/todo-write/`）兑现台阶五。分工逻辑：**三遍测的不是同一个对象**——工具体、事件序列、组装语义各归各，不是重复。
 
 ## 二、provider 插件：`subagent-codex`（可选性 + 拓扑）
 
 `packages/subagent/subagent-codex/tests/loader-composition.e2e.ts` 单文件单用例，断言密度极高：
 
 - **可选性**：`PATH: ''` 启动——"Loading the optional package must not probe or start a Codex binary"（可选依赖缺席时不探测、不启动）；
-- **拓扑**：Bundle default + 两个命名实例（`codex-primary`/`codex-secondary`）+ 各自的 capabilities JSON（`agentOptions`/`outputSchema`/`depthLimit`/`toolFilter`/`persona` 逐项 false/true）+ `inheritsParentContext`；
+- **拓扑**：Bundle default + 两个命名实例（`codex-primary`/`codex-secondary`）+ 各自的 capabilities JSON（`agentOptions`/`outputSchema`/`depthLimit`/`toolFilter`/`persona` 逐项断言——本例三实例全 false）+ `inheritsParentContext`；
 - **结构来自产品面**：patch 路径从 `package.json` 的 `dsh.bundle.patch` 现读，"Codex package must declare a Bundle patch" 缺失即 throw；
 - **CI 挂载**：此文件在 built-bin-smoke 门的 16 文件清单里（[05](./05-ci-gates.md)），CI 用 built `lib/` 以 `DSH_EXAMPLE_MODE=lib` 再跑一遍。
 
@@ -35,7 +39,7 @@
 - **locale-owned**：经 `makeTranslate` + 各包 zh 词典断言用户可见文案，不硬编码字符串（`verify-client-ui-i18n` 门在 CI 拦截违规）；
 - **export 纪律就地引用**：`// Export discipline: packages/client/AGENTS.md.`——测试注释回指规则原文。
 
-同族：`assembly-surfaces.client.spec.tsx` 断言插件的 slot 组装面（渲染的 slot keys 与注册声明的 `children` 精确一致——`packages/client/AGENTS.md` 的 "children = declaration + authorization" 条款）。
+同族：`assembly-surfaces.client.spec.tsx`——头注释自述 "Tool assembly acceptance through the real ui-conversation host"：经 `SlotTestRuntime` 与真实 ui-conversation host 断言 toolview 组装（chat / conversation / tool 三方 `apply`/`inject` 协同、shipped 中文文案、locale 钉在 zh-CN）。
 
 ## 四、guard 插件：`timeout-policy`（信号语义矩阵）
 
@@ -52,8 +56,9 @@ guard 插件的测试对象不是"它做了什么"而是"**它什么时不做**"
 `packages/session/session-title-llm/tests/llm.spec.ts` 展示"模型是依赖"的插件测法：
 
 - **RecordingAdapter**：子类化真 `LlmAdapter`，按脚本产出 `StreamChunk` 并记录收到的 `GenerateOptions`——断言模型请求本身（消息形状、signal）而不只是最终结果；
-- **CooperativeAdapter**：挂起直到 signal，以 `signal.reason` reject——精确演练取消路径的 reason 传播（配合 `MAX_TIMER_DELAY_MS` 断言超时码 `SESSION_TITLE_TIMEOUT_CODE`）；
-- **keyless spec + with-key e2e 成对**：姊妹包 `session-title-first-prompt-llm/tests/provider.e2e.ts` 用 `describe.skipIf(!DEEPSEEK_API_KEY)` 对真模型跑同一 provider——离线证明逻辑、在线证明"对真模型工作"（[01](./01-doctrine.md) 教义 3 的成对形态）。
+- **CooperativeAdapter**：挂起直到 signal，以 `signal.reason` reject——精确演练取消路径的 reason 传播；
+- **Config 校验与超时码分开测**：`resolveSessionTitleLlmConfig` 的边界（`timeoutMs` 不得超过 `MAX_TIMER_DELAY_MS`，逐条 toThrow）与超时结果码 `SESSION_TITLE_TIMEOUT_CODE` 各有断言；
+- **keyless spec + with-key e2e 成对**：provider 插件 `session-title-first-prompt-llm`（其 src 使用本包的共享 LLM 标题机制）在 `provider.e2e.ts` 用 `describe.skipIf(!DEEPSEEK_API_KEY)` 对真模型跑——离线证明逻辑、在线证明"对真模型工作"（[01](./01-doctrine.md) 教义 3 的成对形态）。
 
 ## 快照场景怎么"带上"一个插件（[04](./04-snapshot-machinery.md) 的插件视角）
 
