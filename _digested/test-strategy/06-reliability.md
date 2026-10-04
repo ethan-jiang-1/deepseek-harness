@@ -50,7 +50,7 @@ DSH 的测试可靠性问题被显式建模为：**大量并发 spec 文件跑�
 
 **按状态同步**："A fixed sleep is not evidence that setup completed or cleanup settled"——等显式就绪事件/握手/状态迁移/owned promise/外部可观察条件；timeout 只用来界定等待、**绝不作为断言成立的条件**；时间为被测对象时注入/伪造时钟并恢复真实 timers。
 
-**释放到静默**：获取后立即注册清理（断言失败也释放）；"Calling `abort()`, `close()`, or `kill()` without awaiting the owned completion signal is incomplete teardown."
+**释放到静默**：获取后立即注册清理（断言失败也释放）；"Calling `abort()`, `close()`, or `kill()` without awaiting the owned completion signal is incomplete teardown."——产品侧的孪生条款是 `docs/defensive-patterns.md` 的 "Dispose must reach quiescence, not just request it"：同一纪律在产品代码与测试各投影一次。
 
 **证明目标回归**：可行时先观察回归在修复前变红；竞态用 barrier 证明重叠，"repeated execution alone is not a race test"；宿主资源（端口/共享路径/子进程）用并发独立进程证明跨进程隔离；"Stress runs supplement a deterministic regression; they do not replace one."
 
@@ -76,6 +76,7 @@ DSH 的测试可靠性问题被显式建模为：**大量并发 spec 文件跑�
 - `scripts/run-web-snapshots.ts`——串行先行再并行
 - `.github/workflows/ci.yml`——timeout 校准的 run 编号证据注释
 - `.agents/skills/dsh-ci-test-reliability/SKILL.md`——纪律技能本体
+- `docs/defensive-patterns.md`——产品侧的孪生条款（teardown 到静默、异步状态、回调遏制）
 
 ## 最小例证
 
