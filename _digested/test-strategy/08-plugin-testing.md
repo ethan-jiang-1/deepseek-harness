@@ -2,6 +2,16 @@
 
 > 本篇面向**插件作者**：DSH 出厂自带 316 个包、92 个 `ctx` 服务、30 个工具包（[`plugin-inventory`](../plugin-inventory/00-map.md) 口径）；本篇实测另有 95 个包以 named export 形态导出 `inject`、53 个 client `ui-*` 包——它们全部按同一套测试要求受审。[§plugin-inventory](../plugin-inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。
 
+## 先对齐五个名词（本篇自足，不依赖其他篇）
+
+| 名词 | 一句话 |
+|---|---|
+| **DSH 插件** | 一个 npm 包。function 插件具名导出 `name` / `inject` / `Config` / `apply`，**不得有 default export**；service 插件 default-export 服务类。`inject` 声明要从 `ctx` 取哪些已有服务 |
+| **Loader + cordis.yml** | 运行时按 YAML 把插件装进进程的装载器；`cordis.yml` 每行 `- name: 包名`，可有 `config:` 块。产品以 bundle/profile 预组装它 |
+| **`ctx` 与 fiber** | 插件运行所在的上下文。`ctx.plugin()` 挂服务、`ctx.effect()`/`ctx.on()` 挂贡献；每个插件一条 fiber，**dispose 即撤销其全部贡献**（热插拔的机制基础） |
+| **registry 贡献** | 插件向各注册表注册的东西：工具（`ToolRuntime`）、session 投影、命令、client UI slot……注册必须可撤销 |
+| **脚本化模型** | 实现 `LlmAdapter`、按脚本吐 `StreamChunk` 的假模型（如 `MockAdapter`）——插件测试里唯一常见的 mock |
+
 ## 现象是什么：同一套要求，形态随插件类型变
 
 `docs/testing.md` 的条款是通用的，但落到插件身上有固定形态：**导出形态守卫 → 行为 spec → 注册表生命周期 → REAL composition → 组装转录**，五个台阶逐级抬高入口真实性。跳过任何一级，都有对应的、已经发生过的事故或明文禁令。
@@ -12,39 +22,64 @@
 
 ## 台阶一：导出形态守卫（spec 级，成本最低）
 
-function plugin 以 named exports 发布 `name` / `inject` / `Config` / `apply` 且**不得有 default export**；service 类插件 default-export 服务类。守卫写法（全仓 43 个 spec 含此断言）：
+function 插件以 named exports 发布 `name` / `inject` / `Config` / `apply` 且**不得有 default export**；service 类插件 default-export 服务类。可直接照抄的守卫（样板 `packages/lsp/tool-lsp/tests/load-path.spec.ts:14`）：
 
 ```ts
+const loader = Object.create(Loader.prototype) as Loader
 expect('default' in toolLsp).toBe(false)
-const unwrapped = loader.unwrapExports(toolLsp)
-expect(unwrapped).toBe(toolLsp)          // round-trip：Loader 不会丢命名空间
-expect(unwrapped.name).toBe('tool-lsp')  // name/inject 穿过 unwrapExports 仍在
+const unwrapped = loader.unwrapExports(toolLsp) as Record<string, unknown>
+expect(unwrapped).toBe(toolLsp)                        // round-trip：Loader 不丢命名空间
+expect(unwrapped.name).toBe('tool-lsp')                // name / inject 穿过 unwrapExports 仍在
+expect(unwrapped.inject).toEqual(['tools', 'lsp', 'systemPrompt'])
 ```
 
-样板：`packages/lsp/tool-lsp/tests/load-path.spec.ts:14`。为什么这么严：postmortem 0001 的 bug #1——一个多余的 `export default` 让 Loader 的 `unwrapExports` 解析到裸函数、丢弃整个模块命名空间，Loader smoke 依然绿。`packages/AGENTS.md` 把它固化为包层常驻条令（[03](./03-rules-ownership.md)）。
+为什么这么严：postmortem 0001 的 bug #1——一个多余的 `export default` 让 Loader 的 `unwrapExports` 解析到裸函数、丢弃整个模块命名空间，Loader smoke 依然绿。全仓 43 个 spec 含此断言；`packages/AGENTS.md` 把它固化为包层常驻条令（[03](./03-rules-ownership.md)）。
 
 ## 台阶二：行为 spec（进程内，真依赖只 stand-in 最外层包装）
 
-**政策原文的投影**："keep everything downstream real"（[01](./01-doctrine.md) 教义 4）。插件的样板写法（`packages/todo/tool-todo/tests/tool-todo.spec.ts` 头注释）：
+**政策原文的投影**："keep everything downstream real"（[01](./01-doctrine.md) 教义 4）。插件的样板写法（`packages/todo/tool-todo/tests/tool-todo.spec.ts`，头注释自述意图）：
 
-> "Drives the REAL plugin body: mounts `dsh-tool-todo` on a real `ToolRuntime` … with a fake parent Agent carrying a real `Session` — so the append the tool makes is observable on a genuine session log (**only the agent wrapper is a stand-in; the session and the tool are the shipping code**)."
+```ts
+async function setup(allowParallelInProgress: boolean): Promise<Context> {
+  const ctx = new Context()
+  await ctx.plugin(SystemPrompt)              // 真依赖服务
+  await ctx.plugin(ToolRuntime)
+  await ctx.plugin(SessionProjectionRegistry)
+  await ctx.plugin(tool, { allowParallelInProgress })   // 被测插件本体
+  return ctx
+}
+// 断言从注册后的真入口进，而不是直调插件导出的函数：
+ctx.tools.execute({ signal, callId, name: 'todo_write', arguments: args, agent })
+```
 
-要点：
+> "…with a fake parent Agent carrying a real `Session` — so the append the tool makes is observable on a genuine session log (**only the agent wrapper is a stand-in; the session and the tool are the shipping code**)."
 
-- 挂**真实的** `ToolRuntime` / `SessionStore` / `SystemPrompt` 等依赖服务，只把 parent Agent 换成假包装；
-- 断言从真实入口进：`ctx.tools.execute({ name: 'todo_write', … })`，而不是直接调插件导出的函数——守卫的是注册后的行为（schema、参数校验、结果形状、session log 副作用）；
-- 独有行为单列 describe（tool-todo 的 `allowParallelInProgress` 一节）。
+要点：挂**真实的**依赖服务，只把 parent Agent 换成带真 Session 的假包装；断言 schema 形状、参数校验、错误结果、session log 副作用（`agent.session.snapshotEvents()` 找 `todo/write` 事件）。独有的配置行为单列 describe（tool-todo 的 `allowParallelInProgress` 一节）。
 
 ## 台阶三：注册表生命周期（HMR-safety 是强制模式）
 
-"Every registry gets an HMR-safety test (dispose the contributing fiber, assert cleanup)"——全仓 72 处 `(HMR safety)`。插件的贡献（工具、projection、命令、UI slot）都注册在某个 registry 上，插件作者要证明：dispose 掉自己的 fiber，贡献消失，服务自身 built-in 不受影响。样板：`packages/todo/tool-todo/tests/projection.spec.ts`。
+"Every registry gets an HMR-safety test (dispose the contributing fiber, assert cleanup)"——全仓 72 处 `(HMR safety)`。插件作者要证明：dispose 掉自己的 fiber，贡献消失，服务自身 built-in 不受影响。样板：`packages/todo/tool-todo/tests/projection.spec.ts`。
 
 ## 台阶四：REAL composition（两级，分工不同）
 
-政策原文："Hand-built `ctx.plugin(...)` suites are insufficient"——但"真组装"有两个级别，插件作者两个都要懂：
+政策原文："Hand-built `ctx.plugin(...)` suites are insufficient"——手工 `ctx.plugin()` 拼出来的组装不算证据，要让**真的 Loader 读真的 cordis.yml**。两个级别：
 
-1. **进程内真 Loader boot**（`*.spec.ts`）：在 vitest 里用真的 `Loader` + `Include` 读一份临时 `cordis.yml` 启动插件，`await ctx.loader.await()`。它证明的是 **Config 是真配置**——`tool-todo/tests/loader-composition.spec.ts` 的头注释就是这个意图："Proves `allowParallelInProgress` is real configurability and not a constant: the flag is set in a cordis.yml booted through the real Loader, and both faces it controls — the model-facing description and the accepted input — follow it."（模型可见的 description 和接受的输入**都**要跟着 flag 变——这是 root `AGENTS.md` "no hardcoded tunables" 条款的测试投影：一个 `DEFAULT_*` 常量或单测 hook 不构成可配置性证据。）
-2. **子进程 Loader smoke**（`*.e2e.ts` + `runLoaderSmoke`）：以发布形态（built `lib/`，CI 的 `DSH_EXAMPLE_MODE=lib`）启动 driver 子进程断言 stdout。样板：`packages/subagent/subagent-codex/tests/loader-composition.e2e.ts`——把 `PATH` 置空，注释写明意图："Loading the optional package must not probe or start a Codex binary"，然后断言三个 provider 实例与 capabilities 的完整 JSON。可选依赖插件用这一手证明**缺席时不 probe、在场时组装出正确实例**。
+1. **进程内真 Loader boot**（`*.spec.ts`）——证明 **Config 是真配置**。样板 `tool-todo/tests/loader-composition.spec.ts`（头注释："Proves `allowParallelInProgress` is real configurability and not a constant"），可抄骨架：
+
+```ts
+const ctx = new Context()
+await ctx.plugin(Loader)
+ctx.loader.builtins.include = Include
+ctx.loader.internal = { version: 'v2', async import(specifier: string) {
+  if (!modules.has(specifier)) throw new Error(`unexpected Loader import: ${specifier}`)
+  return modules.get(specifier)          // 只放行白名单模块——boot 顺带钉住 import 面
+} }
+await ctx.loader.create({ name: 'cordis:include', config: { path: pathToFileURL(configPath).href } })
+await ctx.loader.await()
+```
+
+   断言**两脸**：同一个 flag，模型可见的 description 措辞跟着变、接受的行为跟着变——这是 root `AGENTS.md` "no hardcoded tunables" 的测试投影：`DEFAULT_*` 常量或单测 hook 不构成可配置性证据。
+2. **子进程 Loader smoke**（`*.e2e.ts` + `runLoaderSmoke`）——证明发布形态组装与可选性。样板 `packages/subagent/subagent-codex/tests/loader-composition.e2e.ts`：把 `PATH` 置空（"Loading the optional package must not probe or start a Codex binary"），断言 stdout 的完整 provider 拓扑 JSON。
 
 两级都过了，才轮到台阶五。
 
@@ -54,7 +89,7 @@ expect(unwrapped.name).toBe('tool-lsp')  // name/inject 穿过 unwrapExports 仍
 
 ## 配套纪律（与台阶同交）
 
-- **mock 白名单**：插件测试里唯一常见 mock 是模型（scripted adapter，如 `core/agent-loop/tests/mock-adapter.ts` 的 `MockAdapter`，跨包经源码平面相对导入复用）；网络/时钟才可 mock。with-key e2e 用共享 harness 挂全真栈（`packages/fs/tool-fs/tests/harness.ts` 挂 AgentLoop + LlmDeepSeek + LocalFileSystem + FsPolicy + ToolFs），harness 放 include 之外（[02](./02-tiers.md)）。
+- **mock 白名单**：插件测试里唯一常见 mock 是脚本化模型（`MockAdapter`，跨包经源码平面相对导入复用）；网络/时钟才可 mock。with-key e2e 用共享 harness 挂全真栈（`packages/fs/tool-fs/tests/harness.ts` 挂 AgentLoop + LlmDeepSeek + LocalFileSystem + FsPolicy + ToolFs），harness 放 include 之外（[02](./02-tiers.md)）。
 - **face 命名**：`.host.spec`（全仓 80 个）与 `.client.spec.*`（641 个，含 `.ts` 与 `.tsx`）后缀决定该文件被哪个 tsc face program 类型检查（[02](./02-tiers.md) "测试代码自身也过静态门"）；client 侧再加 `@vitest-environment jsdom` pragma。
 - **运行时不变量**：插件若拥有可发散的观察关系，发布 `./invariant` 入口并用 `InvariantRegistry, { enabled: true }` 测试它（样板：`packages/todo/tool-todo/tests/invariant.spec.ts`；空壳 invariant 被 `verify-package-invariants` 拒绝）。
 - **README 限制清单**：`verify-package-readme-limitations` 门要求插件 README 带已知限制节——mock 证明不了什么，要写下来（[07](./07-infrastructure.md)）。
