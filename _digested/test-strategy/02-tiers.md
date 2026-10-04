@@ -4,7 +4,7 @@
 
 ## 现象是什么：不按"单元/集成/端到端"三分
 
-`docs/testing.md` 的 Tiers 节定义了 **7 个宪法层**：Unit / Coverage gate / Real-API e2e / Owner-local expected output / Performance benchmarks / Snapshot / Web browser snapshot。root `package.json` 里还有约 15 个 test*/check* 脚本对应的**广义测试面**（web-perf、web-stress、gui、政策测试、文档门禁、平台矩阵……）。
+`docs/testing.md` 的 Tiers 节定义了 **7 个宪法层**：Unit / Coverage gate / Real-API e2e / Owner-local expected output / Performance benchmarks / Snapshot / Web browser snapshot。root `package.json` 里还有 38 个 test*/check* 脚本（去重 refresh/built/ci 变体后约 15 条命令族）对应的**广义测试面**（web-perf、web-stress、gui、政策测试、文档门禁、平台矩阵……）。
 
 关键的阅读姿势：**这不是经典测试金字塔的 unit/integration/e2e 三分法**。DSH 按两个轴分层——**证据形态**（assembled transcript？外部世界检查？built 产物冒烟？浏览器回放证据？性能预算？政策断言？）和**入口真实性**（src 就近单测？test-only cordis.yml 走 Loader？shipped profile？built lib？）。"integration test"这个词在 DSH 文档里几乎不存在，它被拆成了更精确的证据类型（见"'集成测试'去了哪里"）。
 
@@ -14,16 +14,18 @@
 
 | 后缀 / 位置 | 层 | 选中它的配置 |
 |---|---|---|
-| `packages/*/*/tests/**/*.spec.ts(x)`、`apps/*/tests/**`、`scripts/**/*.spec.ts`、`website/tests/**` | Unit（+覆盖率） | `vitest.config.ts` |
+| `packages/*/*/tests/**/*.spec.{ts,tsx}`、`apps/*/tests/**/*.spec.{ts,tsx}`、`scripts/**/*.spec.ts`、`website/tests/**/*.spec.ts` | Unit（+覆盖率） | `vitest.config.ts` |
 | `packages/*/*/tests/**/*.e2e.ts`、`apps/{cli,desktop}/tests/**/*.e2e.ts` | Real-API e2e | `vitest.e2e.config.ts` |
 | `apps/cli/tests/**/*.expected.e2e.ts` | Owner-local expected | `vitest.expected.config.ts` |
 | `scripts/session-snapshot-corpus.corpus.ts`、`snapshots/**/*.snapshot.ts` | Snapshot | `vitest.snapshot.config.ts` |
 | `apps/web/tests/**/*.{e2e,snapshot}.ts` | Web 浏览器 | `vitest.web.config.ts` |
-| `apps/web/tests/**/*.perf.ts`、`**/*.perf.client.ts` | Web 性能诊断（手动） | `vitest.web.perf.config.ts` |
+| `apps/web/tests/**/*.perf.ts`、`packages/client/ui-conversation/tests/**/*.perf.client.ts` | Web 性能诊断（手动） | `vitest.web.perf.config.ts` |
 | `apps/web/stress-tests/**/*.stress.ts` | Web 压力（opt-in） | `vitest.web-stress.config.ts` |
 | `benchmarks/**/*.bench.ts`、`*.bench.client.ts` | CI 性能门禁 | `vitest.bench.config.ts` |
 
 注意 e2e 配置显式 **exclude `*.expected.e2e.ts`**（归 expected 层）和 inspector 的 `client-browser.e2e.ts`（归 web 层）——层的边界在后缀文法里是互斥的。8 份配置全部用同一个 `tsconfig.base.json` 门面做 vite-tsconfig-paths 解析（源码平面，[01](./01-doctrine.md) 教义 7）。
+
+![后缀 → 配置 → 车道的选中机制](./figures/suffix-to-lane.svg)
 
 ## 逐层深挖
 
@@ -32,7 +34,7 @@
 - **位置纪律**："tests stay with the code area they exercise"——测试跟它测的代码住在一起；仓库级脚本测试住 `scripts/**/*.spec.ts`。
 - **强制模式一：HMR-safety**。"Every registry gets an HMR-safety test (dispose the contributing fiber, assert cleanup)"——每个注册表都必须有"卸载贡献 fiber 后断言清理干净"的测试。这是 all-plugin 架构的独有要求：插件能热插拔，注册就必须可撤销。
 - **强制模式二：契约回归永久化**。边界、错误路径、事件顺序、并发竞态优先；契约回归测试是永久资产（样板 `packages/core/agent-loop/tests/contract-regressions.spec.ts`）。
-- **执行形态**：两个内联 project（`thread-safe` / `process-bound`）全部 `pool: 'forks'`——理由写在注释里：Node 24 的 CJS lexer 在 worker 线程上崩溃。8 个动进程级全局状态的套件（session-persistence-jsonl、subagent-acp、process-exit、spawn、time-context、llm-pi-ai adapter、app-boot、workflow-ptc）单独成 `process-bound` project；`execArgv` 带 `--no-webstorage` 防进程级 Web Storage 遮蔽 jsdom。`.tsx` 客户端组件用每文件 `@vitest-environment` pragma 声明 jsdom。
+- **执行形态**：两个内联 project（`thread-safe` / `process-bound`）全部 `pool: 'forks'`——理由写在注释里：Node 24 的 CJS lexer 在 worker 线程上崩溃。8 个动进程级全局状态的套件（session-persistence-jsonl、subagent-acp、process-exit、spawn、time-context、llm-pi-ai adapter、app-boot、workflow-ptc）单独成 `process-bound` project；`execArgv` 按能力带 `--no-webstorage`（`allowedNodeEnvironmentFlags` 认可该 flag 时才加）防进程级 Web Storage 遮蔽 jsdom。`.tsx` 客户端组件用每文件 `@vitest-environment` pragma 声明 jsdom。
 - setup 三件套：`scripts/test-proxy-environment.ts`、`test-invariants.ts`、`test-dom-environment.ts`。
 
 ### 2. Coverage gate——per-file 100%，死代码探测器
@@ -93,7 +95,7 @@
 
 1. **REAL-composition 测试**：boot 一份 test-only `cordis.yml`，走真 Loader、真 app/process 组装，mock 只限外部服务与非确定输入（[01](./01-doctrine.md) 教义 6a）。测的是"组装后插件还工作"。
 2. **Profile 级集成测试**（`apps/cli/tests/profiles/`）：启动 shipped profile 跑真实任务流。测的是"发布形态的组装"。
-3. **Built smokes**：`bin` 走 built `lib/bin.js` + plain node 冒烟。实际清单：`apps/cli/tests/built-bin.e2e.ts`（1321 行，`runBuiltBin()` 用 execa 直接跑 `apps/cli/lib/bin.js`，31 个用例：参数错误、profile 生命周期标记、patch 热重载、mock-backed ACP turn、config dump）+ 各包 `built-lib.e2e.ts`（lsp-stdio、api/job-controller、api/remotes、experimental/{agent-team,inspector,webworker-packer}、ptc-runtime-node 等）；CI 的 built-bin-smoke 门聚合 18 个 built 消费者 e2e（`DSH_EXAMPLE_MODE=lib`）。`packages/lsp/lsp-stdio/tests/built-lib.e2e.ts` 的头注释说得最直白："plain Node imports … by name through their exports maps … Unit tests use `src/`; **this pins the downstream `lib/` path**. Skips when `lib/` is absent; CI runs it after the build"。
+3. **Built smokes**：`bin` 走 built `lib/bin.js` + plain node 冒烟。实际清单：`apps/cli/tests/built-bin.e2e.ts`（1321 行，`runBuiltBin()` 用 execa 直接跑 `apps/cli/lib/bin.js`，30 个用例：参数错误、profile 生命周期标记、patch 热重载、mock-backed ACP turn、config dump）+ 各包 `built-lib.e2e.ts`（lsp-stdio、api/job-controller、api/remotes、experimental/{agent-team,inspector,webworker-packer}、ptc-runtime-node 等）；CI 的 built-bin-smoke 门聚合 **16** 个 built 消费者 e2e 文件（13 个 built 命名 + keyless-smoke + subagent-{codex,claude-code} 的 loader-composition；`DSH_EXAMPLE_MODE=lib`）。`packages/lsp/lsp-stdio/tests/built-lib.e2e.ts` 的头注释说得最直白："plain Node imports … by name through their exports maps … Unit tests use `src/`; **this pins the downstream `lib/` path**. Skips when `lib/` is absent; CI runs it after the build"。
    > 注：`docs/testing.md` 引用的 `packages/examples/*/tests/built-bin.e2e.ts` 在基线树中**已不存在**——文档过期，实际清单以本条为准。
 
 三者的共同点：**都不信任手搭的组装**（"Hand-built `ctx.plugin(...)` suites are insufficient"），集成证据必须取自真实入口。
@@ -121,14 +123,14 @@
 | `*.perf.ts` / `*.perf.client.ts` | 2 / 1 | packages 下 1 个**不在任何配置 include 里**（纯手动诊断，"package-local `.perf.ts` stays diagnostic"的实例） |
 | `*.stress.ts` | 1 | opt-in |
 | `tests/harness.ts` | 8 | 共享 fixture，**刻意不被任何 include 选中** |
-| built 冒烟（`built-*.e2e.ts`） | ~15 | 散在 e2e include 内；无 key、lib 缺失自跳 |
+| built 冒烟 | **16** | built-bin-smoke 门清单文件数；散在 e2e include 内，无 key、lib 缺失自跳（另有 1 个 built 命名的 `apps/web/tests/built-boot.expected.e2e.ts` 归 web 车道，不在该门） |
 
 **写法惯例（硬事实）**：
 
 - **命名**：英文行为命题、现在时、**无 "should"**——`describe('disposal leaves the two-state status contract balanced')`、`it('removes contributions when the contributing fiber is disposed (HMR safety)')`。"Tests describe behavior, not correctness" 的文体化。
 - **HMR-safety 模式**（全仓 72 处 `(HMR safety)`）：子 fiber 注册贡献 → 断言存在 → `await fiber.dispose()` → 断言移除（服务自身 built-in 不受影响）。契约回归样板 `contract-regressions.spec.ts`（1552 行、14 个 describe）每条测试钉死一个边界/身份/生命周期契约，注释直接回指原始 bug（如 "The key assertion from the original bug report: after disposal, no assistant/attempt or assistant/message appears"）。
 - **tests/harness.ts 模式**：共享 fixture 刻意放在 include 模式之外——import 它不会重复注册别人的 `describe`、不会重复真实 API 调用；代码里有就地注释（`packages/fs/tool-fs/tests/harness.ts`："This helper lives outside the e2e glob so imports do not register tests"）。
-- **spec 与 e2e 的实际写法差**（抽样对比）：spec = 进程内真 Cordis 组合 + MockAdapter，断言事件序列 / registry 状态；e2e = `describe.skipIf(!process.env.DEEPSEEK_API_KEY)` 自跳过（packages 侧 34 处，部分套件再加用例内双保险 throw）+ 真 provider + 180s 超时 + **进程外读文件断言**（verify the world）+ session log 里真实 tool/call 名单核对，不信 agent 自述。
+- **spec 与 e2e 的实际写法差**（抽样对比）：spec = 进程内真 Cordis 组合 + MockAdapter，断言事件序列 / registry 状态；e2e = `describe.skipIf(!process.env.DEEPSEEK_API_KEY)` 自跳过（e2e 车道 22 处：packages 12 + apps 10，部分套件再加用例内双保险 throw，如 `packages/llm/llm-deepseek/tests/runtime.e2e.ts:184`）+ 真 provider + 120s 车道默认 testTimeout（个别 profile 用例显式提到 180s）+ **进程外读文件断言**（verify the world）+ session log 里真实 tool/call 名单核对，不信 agent 自述。
 - **client 组件 spec**：文件首行 `// @vitest-environment jsdom` pragma + testing-library + fake timers；断言用户可见行为而非 class 名。
 - **两个横切 helper**：`runLoaderSmoke`（`@deepseek-ai/dsh-loader-smoke`，双模式 src/lib 子进程启动器，所有 profile/snapshot 套件共用）与 `mountAgentLoopTestDependencies`（`@deepseek-ai/dsh-agent-loop-testkit`，进程内一次挂全 agent-loop 依赖栈）。
 
@@ -139,6 +141,7 @@
 - root `package.json` scripts + `scripts/run-gates.ts`——广义测试面全表
 - `packages/core/agent-loop/tests/contract-regressions.spec.ts`——契约回归样板
 - `benchmarks/AGENTS.md` + `benchmarks/support/{built-worker,calibration}.ts`——性能门纪律与预算校准
+- `.agents/skills/dsh-speed-up-perf/SKILL.md`——perf gate 设计与调优的方法论技能
 - `.github/review-ownership/*.test.mjs`——政策测试样本
 
 ## 最小例证
