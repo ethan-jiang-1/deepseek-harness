@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="800" viewBox="0 0 840 800" font-family="sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+
+  <rect x="40" y="24" width="760" height="196" rx="10" fill="#f2f6fc" stroke="#4a6fa5"/>
+  <text x="70" y="52" font-size="15" font-weight="bold" fill="#24364d">环一 · 轮内环（秒级）——harness 报告，模型裁决</text>
+  <text x="70" y="72" font-size="12" fill="#555">失败是标记文本，不是异常；「怎么办」留给消费者</text>
+
+  <rect x="64" y="84" width="160" height="76" rx="6" fill="#fff" stroke="#4a6fa5"/>
+  <text x="144" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="#24364d">环境</text>
+  <text x="144" y="128" text-anchor="middle" font-size="10" fill="#333">命令、子进程、</text>
+  <text x="144" y="144" text-anchor="middle" font-size="10" fill="#333">文件系统</text>
+  <rect x="254" y="84" width="160" height="76" rx="6" fill="#fff" stroke="#4a6fa5"/>
+  <text x="334" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="#24364d">输出收集</text>
+  <text x="334" y="128" text-anchor="middle" font-size="10" fill="#333">保尾丢头（尾窗）</text>
+  <text x="334" y="144" text-anchor="middle" font-size="10" fill="#333">全文外置 spill，脚注指回</text>
+  <rect x="444" y="84" width="160" height="76" rx="6" fill="#fff" stroke="#4a6fa5"/>
+  <text x="524" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="#24364d">塑形</text>
+  <text x="524" y="128" text-anchor="middle" font-size="10" fill="#333">标记文本：exit code/截断/沙箱</text>
+  <text x="524" y="144" text-anchor="middle" font-size="10" fill="#333">isError：仅基础设施失败</text>
+  <rect x="634" y="84" width="160" height="76" rx="6" fill="#fff" stroke="#4a6fa5"/>
+  <text x="714" y="108" text-anchor="middle" font-size="13" font-weight="bold" fill="#24364d">模型</text>
+  <text x="714" y="128" text-anchor="middle" font-size="10" fill="#333">读信号、决定反应</text>
+  <text x="714" y="144" text-anchor="middle" font-size="10" fill="#333">重试是模型的动作</text>
+
+  <line x1="224" y1="122" x2="250" y2="122" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="414" y1="122" x2="440" y2="122" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="604" y1="122" x2="630" y2="122" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <polyline points="714,160 714,184 144,184 144,164" fill="none" stroke="#555" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="430" y="178" text-anchor="middle" font-size="11" fill="#555">动作改变环境 → 下一轮输入</text>
+  <text x="70" y="206" font-size="12" fill="#333">harness 自己的重试只在基础设施辖区：LLM 请求失败 → request-error waterfall；工具超时 → 替换为 isError（时间预算）</text>
+
+  <rect x="40" y="244" width="760" height="212" rx="10" fill="#f0f7f0" stroke="#2f6b3a"/>
+  <text x="70" y="272" font-size="15" font-weight="bold" fill="#1e4026">环二 · 会话环（会话级）——先落账，再投影</text>
+  <text x="70" y="292" font-size="12" fill="#555">每条进模型的反馈先是一次事件追加；何时被消费是投影问题</text>
+
+  <rect x="64" y="304" width="124" height="76" rx="6" fill="#fff" stroke="#2f6b3a"/>
+  <text x="126" y="328" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e4026">反馈源</text>
+  <text x="126" y="348" text-anchor="middle" font-size="10" fill="#333">提问·审批·后台·插话</text>
+  <text x="126" y="364" text-anchor="middle" font-size="10" fill="#333">goal 续轮（服务层裁决）</text>
+  <rect x="216" y="304" width="124" height="76" rx="6" fill="#fff" stroke="#2f6b3a"/>
+  <text x="278" y="328" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e4026">inbox 三入口</text>
+  <text x="278" y="348" text-anchor="middle" font-size="10" fill="#333">followup / steer</text>
+  <text x="278" y="364" text-anchor="middle" font-size="10" fill="#333">inject</text>
+  <rect x="368" y="304" width="124" height="76" rx="6" fill="#fff" stroke="#2f6b3a"/>
+  <text x="430" y="328" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e4026">事件日志</text>
+  <text x="430" y="348" text-anchor="middle" font-size="10" fill="#333">user/message·tool/result</text>
+  <text x="430" y="364" text-anchor="middle" font-size="10" fill="#333">approval 事件对（turn 内）</text>
+  <rect x="520" y="304" width="124" height="76" rx="6" fill="#fff" stroke="#2f6b3a"/>
+  <text x="582" y="328" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e4026">投影</text>
+  <text x="582" y="348" text-anchor="middle" font-size="10" fill="#333">deriveMessages 派生</text>
+  <text x="582" y="364" text-anchor="middle" font-size="10" fill="#333">compaction 只改投影</text>
+  <rect x="672" y="304" width="124" height="76" rx="6" fill="#fff" stroke="#2f6b3a"/>
+  <text x="734" y="328" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e4026">模型</text>
+  <text x="734" y="348" text-anchor="middle" font-size="10" fill="#333">读投影</text>
+  <text x="734" y="364" text-anchor="middle" font-size="10" fill="#333">反馈已结算</text>
+
+  <line x1="188" y1="342" x2="212" y2="342" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="340" y1="342" x2="364" y2="342" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="492" y1="342" x2="516" y2="342" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="644" y1="342" x2="668" y2="342" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <rect x="300" y="396" width="420" height="40" rx="6" fill="#fff" stroke="#2f6b3a" stroke-dasharray="5 4"/>
+  <text x="510" y="414" text-anchor="middle" font-size="11" fill="#1e4026">resume 定影：未知结果 → 合成 isError＋重试指导</text>
+  <text x="510" y="430" text-anchor="middle" font-size="11" fill="#1e4026">（不是重放执行；已启动/未启动二分）</text>
+  <line x1="430" y1="380" x2="430" y2="392" stroke="#555" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <line x1="640" y1="416" x2="592" y2="384" stroke="#555" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+
+  <rect x="40" y="480" width="760" height="192" rx="10" fill="#fdf6ec" stroke="#b07818"/>
+  <text x="70" y="508" font-size="15" font-weight="bold" fill="#5c3a08">环三 · 元环（跨会话）——学习发生在仓库，不在模型</text>
+  <text x="70" y="528" font-size="12" fill="#555">模型不跨会话；跨会话学到的都回写成仓库的一部分</text>
+
+  <rect x="64" y="540" width="164" height="76" rx="6" fill="#fff" stroke="#b07818"/>
+  <text x="146" y="564" text-anchor="middle" font-size="13" font-weight="bold" fill="#5c3a08">失败/踩坑</text>
+  <text x="146" y="584" text-anchor="middle" font-size="10" fill="#333">真实事故、类型漂移、</text>
+  <text x="146" y="600" text-anchor="middle" font-size="10" fill="#333">UI 混语言、flaky</text>
+  <rect x="252" y="540" width="164" height="76" rx="6" fill="#fff" stroke="#b07818"/>
+  <text x="334" y="564" text-anchor="middle" font-size="13" font-weight="bold" fill="#5c3a08">五形态回写</text>
+  <text x="334" y="584" text-anchor="middle" font-size="10" fill="#333">规则·门禁·note·skill</text>
+  <text x="334" y="600" text-anchor="middle" font-size="10" fill="#333">·postmortem（同 PR）</text>
+  <rect x="440" y="540" width="164" height="76" rx="6" fill="#fff" stroke="#b07818"/>
+  <text x="522" y="564" text-anchor="middle" font-size="13" font-weight="bold" fill="#5c3a08">元验证把关</text>
+  <text x="522" y="584" text-anchor="middle" font-size="10" fill="#333">doc-sync 60+ 门禁、</text>
+  <text x="522" y="600" text-anchor="middle" font-size="10" fill="#333">guard 必须红过才有效</text>
+  <rect x="628" y="540" width="164" height="76" rx="6" fill="#fff" stroke="#b07818"/>
+  <text x="710" y="564" text-anchor="middle" font-size="13" font-weight="bold" fill="#5c3a08">规则生效</text>
+  <text x="710" y="584" text-anchor="middle" font-size="10" fill="#333">standing orders、</text>
+  <text x="710" y="600" text-anchor="middle" font-size="10" fill="#333">invariant、snapshot</text>
+
+  <line x1="228" y1="578" x2="248" y2="578" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="416" y1="578" x2="436" y2="578" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="604" y1="578" x2="624" y2="578" stroke="#555" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <polyline points="710,616 710,640 146,640 146,620" fill="none" stroke="#555" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="428" y="634" text-anchor="middle" font-size="11" fill="#555">约束下一批贡献：环闭合在仓库</text>
+  <text x="70" y="662" font-size="12" fill="#5c3a08">诚实缺口：升级指南只有 standing order，无「该写未写」的存在性门禁</text>
+
+  <rect x="40" y="696" width="760" height="80" rx="10" fill="#f2f6fc" stroke="#4a6fa5" stroke-dasharray="6 4"/>
+  <text x="70" y="724" font-size="13" font-weight="bold" fill="#24364d">人类反馈三分流（三条通道互不混流）</text>
+  <text x="70" y="746" font-size="12" fill="#333">进环的（提问回答·审批·政策切换）→ 环二 ｜ 关于输出的（/feedback·消息评分）→ feedback 包，永不进模型 ｜ 关于仓库的 → 环三</text>
+  <text x="70" y="766" font-size="12" fill="#555">分权原则：harness 只在基础设施与生命周期处收走裁决权（goal 的 phase 门、plan 的模式开关），其余一律报告</text>
+</svg>

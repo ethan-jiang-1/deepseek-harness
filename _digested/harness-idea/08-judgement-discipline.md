@@ -88,6 +88,9 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 | C8 | pnpm note 明确把生态熟悉度作为 package manager 选型理由 | `[原文]` | [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md) | pnpm note 被修订，删除了 agent 生态熟悉度作为理由 |
 | C9 | dsh 形状的性价比由组合压力决定 | `[推断]` | [`docs/architecture.md`](../../docs/architecture.md) · [`docs/capability-seams.md`](../../docs/capability-seams.md) | 低组合压力场景下 dsh 形状仍被证明普遍更划算 |
 | C10 | 本专题的可执行化做到 prose + 出处 + claims.json 的路径与数字检查 | `[源码]` | 本专题 verify 脚本 · claims.json | 本专题加入更多机器可核验 claim 后需更新 |
+| C11 | 反馈设计立场是「harness 报告，模型裁决」：命令级失败是标记文本，isError 只留给基础设施失败与控制决定，工具失败无 harness 侧重试 | `[源码]` | `tool-bash/render.ts` · `agent-loop/agent.ts` · `llm-retry` | 命令级失败改为 isError，或工具失败加入 harness 侧重试/熔断 |
+| C12 | DSH 无模型跨会话学习机制：学习外置为仓库层回写（规则/门禁/skill/note），回写被 doc-sync 与元验证把关；升级指南是唯一无存在性强制的缺口 | `[推断]` | [`docs/testing.md`](../../docs/testing.md) · `scripts/run-gates.ts` · [`.agents/notes/README.md`](../../.agents/notes/README.md) | 出现会话级记忆回注机制，或回写无检查仍长期稳定 |
+| C13 | 关于输出的人类反馈永不进模型：feedback 包是单向 log-only 信号 | `[原文]` | [`packages/feedback/README.md`](../../packages/feedback/README.md) | feedback 事件进入模型上下文、投影或任何 inbox 注入路径 |
 
 ## 自我适用：用三个问题检验本专题
 
