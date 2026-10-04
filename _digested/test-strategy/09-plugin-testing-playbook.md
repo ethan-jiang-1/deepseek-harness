@@ -1,6 +1,6 @@
 # 09 — 插件测试实战：五个真实插件的测试组合解剖
 
-> 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[08](./08-plugin-testing.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录），本篇按五个插件类型各解剖一套真实组合。基线 `639ed01539`。
+> 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[08](./08-plugin-testing.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录）与名词表，本篇按五个插件类型各解剖一套真实组合——每节给关键代码摘录与"移植到你的插件"一句。基线 `639ed01539`。
 
 ## 现象是什么：组合的形状跟着"插件承诺"走
 
@@ -13,12 +13,42 @@
 | 文件 | 测什么 | 关键手法 |
 |---|---|---|
 | `tool-todo.spec.ts` | 注册后的工具行为 | 挂真 `ToolRuntime`/`SystemPrompt`/`SessionProjectionRegistry`，**只把 parent Agent 换成带真 Session 的假包装**；从 `ctx.tools.execute()` 真入口调 `todo_write`，断言 schema 形状、参数校验、错误结果、session log 副作用 |
-| `integration.spec.ts` | 穿过 agent-loop 的端内行为 | `mountAgentLoopTestDependencies(ctx)` 挂全依赖栈 + 从 `core/agent-loop/tests/mock-adapter.ts` 复用 `MockAdapter` 脚本化模型回复（源码平面跨包导入，[02](./02-tiers.md)）——模型说"调 todo_write"，断言工具真被调、结果真回填 |
+| `integration.spec.ts` | 穿过 agent-loop 的端内行为 | `mountAgentLoopTestDependencies(ctx)` 挂全依赖栈 + 从 `core/agent-loop/tests/mock-adapter.ts` 复用 `MockAdapter` 脚本化模型回复（源码平面跨包导入，[02](./02-tiers.md)） |
 | `loader-composition.spec.ts` | Config 真实可配置性 | 进程内真 `Loader`+`Include` boot 临时 `cordis.yml`；同一个 flag 断言**两脸**：模型可见 description 措辞随 `allowParallelInProgress` 变、并行写被拒/放行 |
 | `projection.spec.ts` | 投影提供者 + HMR-safety | `todos` projection 的读路径；dispose 贡献 fiber 断言清理（`(HMR safety)`） |
 | `invariant.spec.ts` | 快照不变量 | 插件发布 `./invariant` 子路径导出，挂 `InvariantRegistry, { enabled: true }` 测历史/在线并行快照的接受性 |
 
 台阶映射：`tool-todo.spec` 与 `integration.spec` 是**台阶二的两遍**（直调注册入口 / 穿 loop 端到端）；`projection.spec` 是台阶三；`loader-composition.spec` 是台阶四的进程内级；`todo-write` 录制场景（`snapshots/session/todo-write/`）兑现台阶五。分工逻辑：**三遍测的不是同一个对象**——工具体、事件序列、组装语义各归各，不是重复。
+
+`integration.spec.ts` 的可抄骨架（挂栈 → 脚本化模型 → 对 session log 断言）：
+
+```ts
+async function harness(adapter: MockAdapter): Promise<Context> {
+  const ctx = new Context()
+  await mountAgentLoopTestDependencies(ctx)            // 真依赖栈：LLM→Session→投影→提示词→工具→agents
+  await ctx.plugin(AgentLoop, { agents: [] })
+  await ctx.plugin(ToolTodo, { allowParallelInProgress: true })   // 被测插件
+  ctx.llm.registerAdapter(['mock'], adapter)           // 唯一 mock：脚本化模型
+  return ctx
+}
+
+it('model calls todo_write: a tool/call, a non-error tool/result, and a todo/write snapshot land', async () => {
+  const ctx = await harness(new MockAdapter([
+    toolCallResponse('call-1', 'todo_write', { todos: [...] }, 'Planning the work.'),
+    textResponse('Plan recorded.'),
+  ]))
+  const agent = await ctx.agentLoop.create(SessionId('it-todo'), { provider: 'mock', model: 'mock' })
+  agent.followup(createUserMessage({ content: [{ type: 'text', text: 'plan a two-step task' }], source: { kind: 'user' } }))
+  await waitForIdle(ctx, agent)
+
+  const log = agent.session.snapshotEvents()
+  expect(findEvent(log, 'tool/call').data.name).toBe('todo_write')
+  expect(findEvent(log, 'tool/result').data.message.isError).toBe(false)
+  expect(findEvent(log, 'todo/write').data.todos).toEqual([...])
+})
+```
+
+**移植到你的插件**：换插件名、工具名、事件类型三个标识符，五件套形状不变。
 
 ## 二、provider 插件：`subagent-codex`（可选性 + 拓扑）
 
@@ -29,7 +59,20 @@
 - **结构来自产品面**：patch 路径从 `package.json` 的 `dsh.bundle.patch` 现读，"Codex package must declare a Bundle patch" 缺失即 throw；
 - **CI 挂载**：此文件在 built-bin-smoke 门的 16 文件清单里（[05](./05-ci-gates.md)），CI 用 built `lib/` 以 `DSH_EXAMPLE_MODE=lib` 再跑一遍。
 
-同族样板：`subagent-{claude-code,dsh-sdk,acp}`、`host/product-telemetry-otel`、`session/session-telemetry-otel` 的 `loader-composition.e2e.ts`——可选服务插件全部用这个模式。
+可抄骨架：
+
+```ts
+const { stdout, stderr } = await runLoaderSmoke({
+  label: 'subagent-codex Loader composition',
+  binScript: driver, libBinScript: driver,        // driver.ts 是测试自己的极简入口
+  configPath, binArgs: [configPath, bundlePatchPath],
+  env: { PATH: '' },                              // 可选依赖缺席时不得探测/启动
+})
+expect(stderr).toBe('')
+expect(JSON.parse(stdout)).toEqual({ providers: ['codex', 'codex-primary', 'codex-secondary'], providerDetails: [...] })
+```
+
+**移植到你的插件**：可选依赖插件必抄 `PATH: ''`；断言面换成你的 driver 输出（打印什么由你定，JSON 最好比对）。同族样板：`subagent-{claude-code,dsh-sdk,acp}`、`host/product-telemetry-otel`、`session/session-telemetry-otel` 的 `loader-composition.e2e.ts`。
 
 ## 三、client toolview 插件：`ui-tool` 的 ask-question-row
 
@@ -41,6 +84,8 @@
 
 同族：`assembly-surfaces.client.spec.tsx`——头注释自述 "Tool assembly acceptance through the real ui-conversation host"：经 `SlotTestRuntime` 与真实 ui-conversation host 断言 toolview 组装（chat / conversation / tool 三方 `apply`/`inject` 协同、shipped 中文文案、locale 钉在 zh-CN）。
 
+**移植到你的插件**：钉住浏览器语言（`usePinnedBrowserLanguages('zh-CN')`）再断言文案；toolview 的组装验收走真实 host 而非孤立的浅渲染。
+
 ## 四、guard 插件：`timeout-policy`（信号语义矩阵）
 
 `packages/guard/timeout-policy/tests/timeout-policy.spec.ts` 展示"守卫类插件"的测法——**把政策语义展开成互斥分支矩阵**：
@@ -51,6 +96,8 @@
 
 guard 插件的测试对象不是"它做了什么"而是"**它什么时不做**"（透传/恢复/保留）——分支矩阵必须含"不触发"的负例。这正是 [01](./01-doctrine.md) 教义 6b "A guard only guards if the regression fails it" 的测试形态：每个分支都对应一条会被某回归破坏的边界。
 
+**移植到你的插件**：先列"不触发"负例（透传/恢复/保留），再列触发分支；竞态两序各一个用例。
+
 ## 五、LLM-backed 插件：`session-title-llm`（脚本化模型 + with-key 对）
 
 `packages/session/session-title-llm/tests/llm.spec.ts` 展示"模型是依赖"的插件测法：
@@ -59,6 +106,20 @@ guard 插件的测试对象不是"它做了什么"而是"**它什么时不做**"
 - **CooperativeAdapter**：挂起直到 signal，以 `signal.reason` reject——精确演练取消路径的 reason 传播；
 - **Config 校验与超时码分开测**：`resolveSessionTitleLlmConfig` 的边界（`timeoutMs` 不得超过 `MAX_TIMER_DELAY_MS`，逐条 toThrow）与超时结果码 `SESSION_TITLE_TIMEOUT_CODE` 各有断言；
 - **keyless spec + with-key e2e 成对**：provider 插件 `session-title-first-prompt-llm`（其 src 使用本包的共享 LLM 标题机制）在 `provider.e2e.ts` 用 `describe.skipIf(!DEEPSEEK_API_KEY)` 对真模型跑——离线证明逻辑、在线证明"对真模型工作"（[01](./01-doctrine.md) 教义 3 的成对形态）。
+
+可抄骨架：
+
+```ts
+class RecordingAdapter extends LlmAdapter {
+  readonly requests: GenerateOptions[] = []
+  override async *stream(options: GenerateOptions): AsyncIterable<StreamChunk> {
+    this.requests.push(options)          // 记录请求本身
+    yield* this.script                   // 按脚本吐 chunk
+  }
+}
+```
+
+**移植到你的插件**：Recording/Cooperative 两个 adapter 直接可抄；超时、取消、坏 JSON 的路径各自一个用例。
 
 ## 快照场景怎么"带上"一个插件（[04](./04-snapshot-machinery.md) 的插件视角）
 
@@ -72,7 +133,7 @@ guard 插件的测试对象不是"它做了什么"而是"**它什么时不做**"
 
 ## 为什么这么定（解释）
 
-1. **组合的形状跟着"插件承诺"走**：工具插件承诺行为与 Config（五件套）；provider 插件承诺可选性与拓扑（loader-composition + capabilities JSON）；toolview 承诺组装面与文案（assembly-surfaces + locale）；guard 承诺"不做什么"（负例矩阵）；LLM-backed 承诺对真模型工作（成对 spec/e2e）。**先写承诺，再挑组合**。
+1. **组合的形状跟着"插件承诺"走**（见现象节）：先写承诺，再挑组合。
 2. **测试文件的注释密度是有意的**：tool-todo.spec 解释"为什么只 stand-in agent wrapper"，subagent-codex 解释"为什么 PATH 为空"——每个 stand-in 都写明自己证明不了什么，与 [07](./07-infrastructure.md) 的"mock 不自欺清单"同一条纪律落到测试代码里。
 
 ## 源码锚点
