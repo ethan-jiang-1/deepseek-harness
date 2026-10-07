@@ -1,51 +1,59 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
   <title id="title">DSH 插件变更的证据路由</title>
-  <desc id="desc">根据 changed surface 选择局部测试、真实组合、snapshot、打包 smoke、真实 API e2e 或 invariant，再由 CI 和语义评审分别判断机械属性和意图对齐。</desc>
+  <desc id="desc">按改动对象分别选择局部测试、真实 Loader 组合、录制会话、安装产物 smoke 和真实 provider API e2e。安装验证与 provider 验证是独立维度，可以组合但不能互相替代；检查与语义评审各自建立不同属性。</desc>
   <defs>
     <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#475569"/></marker>
     <marker id="arrow-teal" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#0f766e"/></marker>
   </defs>
   <rect width="1200" height="760" fill="#ffffff"/>
   <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">按可观察对象路由证据</text>
-  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">最小检查不是最少测试，而是会拒绝目标回归的最小可信观察</text>
+  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">最小检查不是最少测试，而是会拒绝目标回归的最小可信观察；可按改动组合多个维度</text>
 
   <rect x="435" y="95" width="330" height="70" rx="10" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
   <text x="600" y="125" text-anchor="middle" font-size="16" font-weight="700" fill="#744408">changed surface</text>
   <text x="600" y="149" text-anchor="middle" font-size="12" fill="#805915">diff 改变了哪个可观察对象？</text>
+  <path d="M600 165 V185 H140 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M600 185 H370 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M600 185 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M600 185 H830 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M600 185 H1060 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
 
-  <path d="M435 130 H170 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
-  <path d="M435 130 H390 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
-  <path d="M765 130 H810 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
-  <path d="M765 130 H1030 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <rect x="35" y="205" width="210" height="150" rx="10" fill="#edf5ff" stroke="#5791c9"/>
+  <text x="140" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#173f67">局部行为</text>
+  <text x="140" y="271" text-anchor="middle" font-size="12" fill="#526175">unit / component test</text>
+  <text x="140" y="297" text-anchor="middle" font-size="12" fill="#526175">固定函数或组件结果</text>
+  <text x="140" y="329" text-anchor="middle" font-size="12" fill="#39709f">必须能抓住局部回归</text>
 
-  <rect x="45" y="205" width="250" height="150" rx="10" fill="#edf5ff" stroke="#5791c9"/>
-  <text x="170" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#173f67">局部行为</text>
-  <text x="170" y="271" text-anchor="middle" font-size="12" fill="#526175">unit / component test</text>
-  <text x="170" y="297" text-anchor="middle" font-size="12" fill="#526175">固定函数或组件结果</text>
-  <text x="170" y="329" text-anchor="middle" font-size="12" fill="#39709f">必须能抓住局部回归</text>
+  <rect x="265" y="205" width="210" height="150" rx="10" fill="#e8f7f3" stroke="#319795"/>
+  <text x="370" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#125f5b">Loader / wiring</text>
+  <text x="370" y="271" text-anchor="middle" font-size="12" fill="#3f5f62">真实配置 + app/process</text>
+  <text x="370" y="297" text-anchor="middle" font-size="12" fill="#3f5f62">配置、inject、组合结果</text>
+  <text x="370" y="329" text-anchor="middle" font-size="12" fill="#18766f">不能只用 ctx.plugin()</text>
 
-  <rect x="315" y="205" width="250" height="150" rx="10" fill="#e8f7f3" stroke="#319795"/>
-  <text x="440" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#125f5b">Loader / wiring</text>
-  <text x="440" y="271" text-anchor="middle" font-size="12" fill="#3f5f62">真实 cordis.yml + app/process</text>
-  <text x="440" y="297" text-anchor="middle" font-size="12" fill="#3f5f62">配置、inject、组合结果</text>
-  <text x="440" y="329" text-anchor="middle" font-size="12" fill="#18766f">不能只用 ctx.plugin()</text>
+  <rect x="495" y="205" width="210" height="150" rx="10" fill="#f3efff" stroke="#8269bd"/>
+  <text x="600" y="238" text-anchor="middle" font-size="14" font-weight="700" fill="#513b85">模型 / 协议 / 用户输出</text>
+  <text x="600" y="271" text-anchor="middle" font-size="12" fill="#634a99">keyless recorded session</text>
+  <text x="600" y="297" text-anchor="middle" font-size="12" fill="#634a99">snapshot 固定组装后输出</text>
+  <text x="600" y="329" text-anchor="middle" font-size="12" fill="#7457a3">刷新不自动接受新预期</text>
 
-  <rect x="585" y="205" width="250" height="150" rx="10" fill="#f3efff" stroke="#8269bd"/>
-  <text x="710" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#513b85">模型 / 协议 / 用户输出</text>
-  <text x="710" y="271" text-anchor="middle" font-size="12" fill="#634a99">keyless recorded session</text>
-  <text x="710" y="297" text-anchor="middle" font-size="12" fill="#634a99">snapshot / e2e 外部断言</text>
-  <text x="710" y="329" text-anchor="middle" font-size="12" fill="#7457a3">预期不由刷新自动接受</text>
+  <rect x="725" y="205" width="210" height="150" rx="10" fill="#fff8e8" stroke="#d6a636"/>
+  <text x="830" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#76530a">published artifact</text>
+  <text x="830" y="271" text-anchor="middle" font-size="12" fill="#665a3e">build / pack + 干净安装</text>
+  <text x="830" y="297" text-anchor="middle" font-size="12" fill="#665a3e">安装后 profile smoke</text>
+  <text x="830" y="329" text-anchor="middle" font-size="12" fill="#8a6d25">验证用户拿到的形态</text>
 
-  <rect x="855" y="205" width="300" height="150" rx="10" fill="#fff8e8" stroke="#d6a636"/>
-  <text x="1005" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#76530a">published artifact</text>
-  <text x="1005" y="271" text-anchor="middle" font-size="12" fill="#665a3e">build / pack + clean install</text>
-  <text x="1005" y="297" text-anchor="middle" font-size="12" fill="#665a3e">profile smoke / real API e2e</text>
-  <text x="1005" y="329" text-anchor="middle" font-size="12" fill="#8a6d25">验证用户实际拿到的形态</text>
+  <rect x="955" y="205" width="210" height="150" rx="10" fill="#fff0f0" stroke="#d26a6a"/>
+  <text x="1060" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#8b3030">真实 provider</text>
+  <text x="1060" y="271" text-anchor="middle" font-size="12" fill="#6d4d4d">real-API e2e</text>
+  <text x="1060" y="297" text-anchor="middle" font-size="12" fill="#6d4d4d">验证外部模型与服务行为</text>
+  <text x="1060" y="329" text-anchor="middle" font-size="12" fill="#9b4545">未运行 ≠ provider 已验证</text>
 
-  <path d="M170 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
-  <path d="M440 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
-  <path d="M710 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
-  <path d="M1005 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M140 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M370 355 V405" fill="none" stroke="#475569" stroke-width="1.4"/>
+  <path d="M600 355 V405" fill="none" stroke="#475569" stroke-width="1.4"/>
+  <path d="M830 355 V405 H600" fill="none" stroke="#475569" stroke-width="1.4"/>
+  <path d="M1060 355 V405 H830" fill="none" stroke="#475569" stroke-width="1.4"/>
+  <text x="600" y="433" text-anchor="middle" font-size="12" fill="#64748b">安装 smoke 与真实 API 可组合执行，但一个通过不代表另一个通过</text>
 
   <rect x="365" y="450" width="470" height="105" rx="10" fill="#f8fafc" stroke="#94a3b8"/>
   <text x="600" y="483" text-anchor="middle" font-size="16" font-weight="700" fill="#334155">PR CI / 本地检查</text>

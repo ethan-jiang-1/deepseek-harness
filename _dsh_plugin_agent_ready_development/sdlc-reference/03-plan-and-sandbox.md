@@ -2,11 +2,11 @@
 
 ## 一句话
 
-Plan Mode（计划模式）是可选、按 agent 记录的协作状态：激活时把 deployment-owned guidance（部署提供的引导文本）加进模型请求，`exit_plan_mode` 把完整计划交给用户审批。它不限制文件或命令；sandbox mode（沙箱模式）和 approval policy（审批策略）独立执行访问规则。
+Plan Mode（计划模式）是可选、按 agent 记录的协作状态：激活时把 deployment-owned guidance（部署提供的引导文本）加进模型请求，`exit_plan_mode` 把完整计划交给用户审批。它不限制文件或命令；sandbox mode（沙箱模式）约束文件系统效果，approval policy（审批策略）处理调用方显式发起的具体动作请求，两者均独立于 plan state。
 
 > Plan mode is soft guidance. Sandbox mode and approval policy enforce restrictions independently; neither reads or writes plan state, so deployments configure them separately.
 >
-> — DSH [`docs/subsystems/plan.md` 的开篇定义](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/subsystems/plan.md)。这句话直接划开计划协作状态与强制权限机制。
+> — DSH [`docs/subsystems/plan.md` 的开篇定义](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/subsystems/plan.md)。这句话直接划开计划协作状态与强制权限机制。
 
 ![Plan guidance、用户审批与权限执行彼此独立](./figures/plan-vs-enforcement.svg)
 
@@ -15,10 +15,10 @@ Plan Mode（计划模式）是可选、按 agent 记录的协作状态：激活�
 | 机制 | 拥有什么 | 不拥有 |
 |---|---|---|
 | Plan Mode | `plan/mode` 日志状态、`plan:policy` prompt section、`exit_plan_mode`、`/plan` | 文件/网络/进程权限 |
-| Sandbox mode | 运行环境允许的文件效果范围 | 计划正文、用户是否认可设计，以及网络/进程等受限操作 |
-| Approval policy | 哪类受限操作需要用户批准 | plan state 或计划质量 |
+| Sandbox mode | 已接入 sandbox 的操作可产生的文件系统效果范围 | 计划正文、设计认可、网络访问与进程可见性 |
+| Approval policy | 调用方显式审批请求的答复策略：`ask` 委派答复链，`never` 直接拒绝 | plan state、计划质量，以及所有操作的自动发现或拦截 |
 
-Plan guidance 可以要求 agent 只读探索，但违反这段 prompt 的模型行为只有在 sandbox/approval 也拒绝操作时才被强制阻止。部署需要硬限制时必须单独配置后两者。
+Plan guidance 可以要求 agent 只读探索，但文字要求本身不阻止写入。部署需要硬限制时，应配置文件效果约束，并确认相关调用方实际接入执行机制。调用方通过 `ctx.approval.request()` 请求具体动作授权，只在 `allowed-once` 时执行该次动作；拒绝、取消或无可用答复均停止执行。Approval 不是覆盖所有网络、进程或外部状态操作的全局监控层，也不要求每个操作依次经过 sandbox 与 approval。
 
 ## 2. coding preset 定义计划质量
 
@@ -58,9 +58,9 @@ Plan 是一次会话内、面向即将实施工作的可审批对象；Agent Not
 
 ## 证据入口
 
-- DSH [Plan subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/subsystems/plan.md)：`plan/mode` event、service、command 与工具的公开语义。
-- DSH [Plan Mode package README](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/plan/plan-mode/README.md)：durable state、pending selection、review exchange 和已知限制。
-- DSH [Plan Mode implementation](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/plan/plan-mode/src/index.ts)：event 提交和 `exit_plan_mode` 审批时序的实际实现。
-- DSH [coding preset](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/bundle/web-app/presets/ptc.patch.yml)：当前 deployment 提供给模型的 plan guidance，而不是包级通用模板。
-- DSH [Sandbox subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/subsystems/sandbox.md)：访问限制由谁执行。
-- DSH [Approval subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/subsystems/approval.md)：哪些操作需要显式用户授权。
+- DSH [Plan subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/subsystems/plan.md)：`plan/mode` event、service、command 与工具的公开语义。
+- DSH [Plan Mode package README](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/plan/plan-mode/README.md)：durable state、pending selection、review exchange 和已知限制。
+- DSH [Plan Mode implementation](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/plan/plan-mode/src/index.ts)：event 提交和 `exit_plan_mode` 审批时序的实际实现。
+- DSH [coding preset](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/bundle/web-app/presets/ptc.patch.yml)：当前 deployment 提供给模型的 plan guidance，而不是包级通用模板。
+- DSH [Sandbox subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/subsystems/sandbox.md)：访问限制由谁执行。
+- DSH [Approval subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/subsystems/approval.md)：具体动作请求、`ask`/`never` 策略、一次性结果与调用方 fail-closed 义务。

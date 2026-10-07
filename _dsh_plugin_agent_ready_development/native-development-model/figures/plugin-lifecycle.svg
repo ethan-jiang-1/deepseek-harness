@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
   <title id="title">DSH 插件生命周期与资源清理</title>
-  <desc id="desc">从 Loader 加载插件开始，经过依赖注入、注册能力和运行阶段，最后在卸载或 HMR 时通过 effect disposer 清理资源。</desc>
+  <desc id="desc">Loader 解析模块后，框架等待 inject 声明的服务；缺少 provider 时可能保持 PENDING。依赖就绪才执行 apply，卸载或 HMR 时由 effect disposer 清理资源。</desc>
   <defs>
     <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#475569"/></marker>
     <marker id="arrow-teal" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#0f766e"/></marker>
   </defs>
   <rect width="1200" height="620" fill="#ffffff"/>
   <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">插件先按生命周期构造，再添加能力</text>
-  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">Loader 保证依赖准备；plugin effect 拥有注册和资源的清理路径</text>
+  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">框架等待 inject 服务；provider 缺失可保持 PENDING，依赖就绪才调用 apply</text>
 
   <rect x="55" y="125" width="190" height="130" rx="11" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
   <text x="150" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#173f67">Loader 加载</text>
@@ -17,10 +17,11 @@
   <path d="M245 190 H285" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
 
   <rect x="285" y="125" width="190" height="130" rx="11" fill="#f3efff" stroke="#8269bd" stroke-width="1.5"/>
-  <text x="380" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#513b85">依赖注入</text>
+  <text x="380" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#513b85">等待依赖</text>
   <text x="380" y="190" text-anchor="middle" font-size="12" fill="#526175">inject 声明</text>
-  <text x="380" y="214" text-anchor="middle" font-size="12" fill="#634a99">所需 service 已准备</text>
+  <text x="380" y="214" text-anchor="middle" font-size="12" fill="#634a99">就绪才继续 → apply</text>
 
+  <text x="495" y="172" text-anchor="middle" font-size="11" fill="#634a99">就绪</text>
   <path d="M475 190 H515" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
 
   <rect x="515" y="125" width="190" height="130" rx="11" fill="#e8f7f3" stroke="#319795" stroke-width="1.5"/>
@@ -41,6 +42,11 @@
   <text x="1060" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#8b3030">卸载 / HMR</text>
   <text x="1060" y="190" text-anchor="middle" font-size="12" fill="#6d4d4d">自动撤销注册</text>
   <text x="1060" y="214" text-anchor="middle" font-size="12" fill="#9b4545">执行 disposer</text>
+
+  <path d="M380 255 V280" fill="none" stroke="#8269bd" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="235" y="280" width="290" height="65" rx="9" fill="#f3efff" stroke="#8269bd"/>
+  <text x="380" y="306" text-anchor="middle" font-size="13" font-weight="700" fill="#513b85">缺少 provider：PENDING</text>
+  <text x="380" y="331" text-anchor="middle" font-size="12" fill="#634a99">可持续等待，不等于插件已经运行</text>
 
   <path d="M1060 255 V360 H610 V405" fill="none" stroke="#0f766e" stroke-width="1.7" stroke-dasharray="7 5" marker-end="url(#arrow-teal)"/>
 

@@ -22,4 +22,4 @@
 
 正文拥有概念、流程与注意事项，图只辅助表达。七张 SVG 分别说明开发闭环、owner 归属、证据路由、新仓起步、插件生命周期、plugin/bundle/profile 分层和交付判断角色；所有图由本卷自己的 [图示清单](./figures/README.md) 管理，不依赖相邻卷的图。
 
-需要具体代码和命令时，继续 DSH [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/user/develop/basic/index.md) 与 [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/cordis-tutorial/index.md)。本卷不另造未经执行的脚手架命令，也不承载跨 feature 排期。
+需要具体代码和命令时，继续 DSH [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/user/develop/basic/index.md) 与 [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/cordis-tutorial/index.md)。本卷不另造未经执行的脚手架命令，也不承载跨 feature 排期。

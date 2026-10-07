@@ -2,40 +2,40 @@
   <title id="title">插件变更的 owner 与证据分工</title>
   <desc id="desc">五类事实分别由意图、决定理由、当前行为、行为证据和交付验证拥有；它们在一次变更中相互核对，但不互相替代。</desc>
   <rect width="1200" height="720" fill="#ffffff"/>
-  <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">Owner 不是一个人，而是事实的权威位置</text>
-  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">同一变更可能修改多个文件；每类事实仍只保留一个首要维护位置</text>
+  <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">本图的 owner：事实与行为的权威维护位置</text>
+  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">同一变更可改多个文件；项目职责中的 owner 也可以指人，需看上下文</text>
 
   <rect x="445" y="95" width="310" height="72" rx="10" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
   <text x="600" y="125" text-anchor="middle" font-size="16" font-weight="700" fill="#744408">一次插件变更</text>
   <text x="600" y="149" text-anchor="middle" font-size="12" fill="#805915">目标行为 ↔ 交付证据 ↔ 评审判断</text>
 
   <line x1="600" y1="167" x2="600" y2="205" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="600" y1="205" x2="180" y2="205" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="600" y1="205" x2="1020" y2="205" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="180" y1="205" x2="180" y2="238" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="390" y1="205" x2="390" y2="238" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="600" y1="205" x2="140" y2="205" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="600" y1="205" x2="1060" y2="205" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="140" y1="205" x2="140" y2="238" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="370" y1="205" x2="370" y2="238" stroke="#94a3b8" stroke-width="1.5"/>
   <line x1="600" y1="205" x2="600" y2="238" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="810" y1="205" x2="810" y2="238" stroke="#94a3b8" stroke-width="1.5"/>
-  <line x1="1020" y1="205" x2="1020" y2="238" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="830" y1="205" x2="830" y2="238" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="1060" y1="205" x2="1060" y2="238" stroke="#94a3b8" stroke-width="1.5"/>
 
   <g>
-    <rect x="65" y="238" width="230" height="190" rx="10" fill="#edf5ff" stroke="#5791c9"/>
-    <text x="180" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#173f67">意图 owner</text>
-    <text x="180" y="307" text-anchor="middle" font-size="12" fill="#526175">Issue / task context</text>
-    <text x="180" y="333" text-anchor="middle" font-size="12" fill="#526175">用户结果与完成条件</text>
-    <text x="180" y="369" text-anchor="middle" font-size="12" fill="#39709f">回答：为什么改？</text>
-    <text x="180" y="400" text-anchor="middle" font-size="12" fill="#39709f">不规定具体函数</text>
+    <rect x="35" y="238" width="210" height="190" rx="10" fill="#edf5ff" stroke="#5791c9"/>
+    <text x="140" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#173f67">意图 owner</text>
+    <text x="140" y="307" text-anchor="middle" font-size="12" fill="#526175">Issue / task context</text>
+    <text x="140" y="333" text-anchor="middle" font-size="12" fill="#526175">用户结果与完成条件</text>
+    <text x="140" y="369" text-anchor="middle" font-size="12" fill="#39709f">回答：为什么改？</text>
+    <text x="140" y="400" text-anchor="middle" font-size="12" fill="#39709f">不规定具体函数</text>
   </g>
   <g>
-    <rect x="275" y="238" width="230" height="190" rx="10" fill="#f3efff" stroke="#8269bd"/>
-    <text x="390" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#513b85">决定 owner</text>
-    <text x="390" y="307" text-anchor="middle" font-size="12" fill="#526175">Agent Note（需要时）</text>
-    <text x="390" y="333" text-anchor="middle" font-size="12" fill="#526175">选择与放弃的理由</text>
-    <text x="390" y="369" text-anchor="middle" font-size="12" fill="#634a99">回答：为什么这样做？</text>
-    <text x="390" y="400" text-anchor="middle" font-size="12" fill="#634a99">局部/机械变更可豁免</text>
+    <rect x="265" y="238" width="210" height="190" rx="10" fill="#f3efff" stroke="#8269bd"/>
+    <text x="370" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#513b85">决定 owner</text>
+    <text x="370" y="307" text-anchor="middle" font-size="12" fill="#526175">Agent Note（需要时）</text>
+    <text x="370" y="333" text-anchor="middle" font-size="12" fill="#526175">选择与放弃的理由</text>
+    <text x="370" y="369" text-anchor="middle" font-size="12" fill="#634a99">回答：为什么这样做？</text>
+    <text x="370" y="400" text-anchor="middle" font-size="12" fill="#634a99">局部/机械变更可豁免</text>
   </g>
   <g>
-    <rect x="485" y="238" width="230" height="190" rx="10" fill="#e8f7f3" stroke="#319795"/>
+    <rect x="495" y="238" width="210" height="190" rx="10" fill="#e8f7f3" stroke="#319795"/>
     <text x="600" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#125f5b">行为 owner</text>
     <text x="600" y="307" text-anchor="middle" font-size="12" fill="#3f5f62">插件 / service / config</text>
     <text x="600" y="333" text-anchor="middle" font-size="12" fill="#3f5f62">源码、README、接口</text>
@@ -43,20 +43,20 @@
     <text x="600" y="400" text-anchor="middle" font-size="12" fill="#18766f">改源头再修派生物</text>
   </g>
   <g>
-    <rect x="695" y="238" width="230" height="190" rx="10" fill="#fff8e8" stroke="#d6a636"/>
-    <text x="810" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#76530a">证据 owner</text>
-    <text x="810" y="307" text-anchor="middle" font-size="12" fill="#665a3e">tests / expected / snapshot</text>
-    <text x="810" y="333" text-anchor="middle" font-size="12" fill="#665a3e">真实入口与外部结果</text>
-    <text x="810" y="369" text-anchor="middle" font-size="12" fill="#8a6d25">回答：怎样拒绝回归？</text>
-    <text x="810" y="400" text-anchor="middle" font-size="12" fill="#8a6d25">预期不能被测试刷新偷改</text>
+    <rect x="725" y="238" width="210" height="190" rx="10" fill="#fff8e8" stroke="#d6a636"/>
+    <text x="830" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#76530a">证据 owner</text>
+    <text x="830" y="302" text-anchor="middle" font-size="12" fill="#665a3e">tests / expected</text>
+    <text x="830" y="326" text-anchor="middle" font-size="12" fill="#665a3e">snapshot · 真实入口与结果</text>
+    <text x="830" y="369" text-anchor="middle" font-size="12" fill="#8a6d25">回答：怎样拒绝回归？</text>
+    <text x="830" y="400" text-anchor="middle" font-size="12" fill="#8a6d25">预期不能被测试刷新偷改</text>
   </g>
   <g>
-    <rect x="905" y="238" width="230" height="190" rx="10" fill="#fff0f0" stroke="#d26a6a"/>
-    <text x="1020" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#8b3030">交付判断 owner</text>
-    <text x="1020" y="307" text-anchor="middle" font-size="12" fill="#6d4d4d">review / CI / applicable approval</text>
-    <text x="1020" y="333" text-anchor="middle" font-size="12" fill="#6d4d4d">当前 diff 的实际证据</text>
-    <text x="1020" y="369" text-anchor="middle" font-size="12" fill="#9b4545">回答：现在能否交付？</text>
-    <text x="1020" y="400" text-anchor="middle" font-size="12" fill="#9b4545">不等于产品意图自动完成</text>
+    <rect x="955" y="238" width="210" height="190" rx="10" fill="#fff0f0" stroke="#d26a6a"/>
+    <text x="1060" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#8b3030">交付判断 owner</text>
+    <text x="1060" y="307" text-anchor="middle" font-size="12" fill="#6d4d4d">review / CI</text>
+    <text x="1060" y="333" text-anchor="middle" font-size="12" fill="#6d4d4d">适用批准 · 当前 diff 证据</text>
+    <text x="1060" y="369" text-anchor="middle" font-size="12" fill="#9b4545">回答：现在能否交付？</text>
+    <text x="1060" y="400" text-anchor="middle" font-size="12" fill="#9b4545">不等于产品意图自动完成</text>
   </g>
 
   <rect x="160" y="492" width="880" height="128" rx="12" fill="#f8fafc" stroke="#cbd5e1"/>

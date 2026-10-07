@@ -4,7 +4,7 @@
 
 新建独立 DSH 插件仓后，最容易出现的不是不会写 `apply(ctx)`，而是不知道怎样把用户意图、插件实现、配置组合、测试资产和交付判断连成一条可复查的链。本卷给出一张 DSH-native 的总地图：哪些事实由谁拥有，哪种测试能证明什么，以及为什么“goal 完成”或“CI 变绿”都不能单独代表插件已经完成。
 
-这是一种依据 DSH 源码、文档、规则、测试和 Skills 归纳出的开发模型，不是 DSH 官方宣布的方法名，也不是独立插件仓必须复制的主仓库制度。`repo-harness` 解释 DSH 如何帮助 agent 找到知识和工具；`sdlc-reference` 解释 DSH 主仓库的精确条件、状态和例外；本卷解释这些机制之间怎样形成可控的插件开发闭环。
+这是一种依据 DSH 源码、文档、规则、测试和 Skills 归纳出的开发模型，不是 DSH 官方宣布的方法名，也不是独立插件仓必须复制的主仓库制度。本卷自行解释起步所需概念；`repo-harness` 与 `sdlc-reference` 分别提供仓库参与机制和主仓精确规则的可选深入阅读，不是前置材料。正文区分 DSH 运行时机制、DSH 主仓要求和面向独立插件仓的建议；独立仓自行决定治理规则与验证适配。
 
 ## 本页导航
 
@@ -74,7 +74,7 @@ DSH 的本地检查策略又要求验证保持聚焦：选择会为当前回归�
 
 > Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression.
 >
-> — DSH [pre-push checks Skill](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/skills/dsh-pre-push-checks/SKILL.md#select-relevant-evidence)
+> — DSH [pre-push checks Skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md#select-relevant-evidence)
 
 ### 5. 让测试观察真实对象
 
@@ -82,9 +82,9 @@ DSH 的本地检查策略又要求验证保持聚焦：选择会为当前回归�
 
 测试层按观察对象分工，不是固定的 test-first 顺序。局部测试验证函数或组件行为；真实 Loader 组合测试验证配置、依赖注入和 app/process 入口；snapshot 固定模型、协议或用户可见输出；e2e 重新读取文件或命令结果；真实 API 测试验证外部模型与服务。每层只能证明自己实际断言的属性。
 
-对产品可见的插件，DSH 测试政策要求真实 composition，而不是只用手工 `ctx.plugin(...)` 的单元套件。测试应从 Loader 和应用入口启动，mock 仅限外部服务或非确定性边界，并从模型请求、持久状态或用户可见输出断言结果。具体政策见 DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/testing.md)。
+DSH 主仓测试政策对产品可见插件要求 non-unit real composition，而不是只用手工 `ctx.plugin(...)` 的单元套件：从 Loader 和应用入口启动，仅 mock 外部服务或非确定性输入，从模型请求、持久状态或用户可见输出断言结果。每个非平凡（non-trivial）的模型、协议或用户可见变化还必须在同一 PR 中新增或更新 keyless recorded-session scenario；真实组合测试不能自动替代这项录制场景义务。独立插件仓建议采用这两项验证原则，并自行建立适用的测试入口；调整场景或测试层时应说明观察对象、替代证据及未覆盖之处，不把适配说成 DSH 主仓的可选规则。具体政策见 DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md)。
 
-测试资产还需要独立的预期来源。Recorded-session 的场景 owner 负责记录或刷新选中的 Session，共享引用只读且无环；工作区结果由独立的 `workspace.expected/` 作为 oracle，录制或刷新过程不能顺手改写它。否则测试可能只证明“工具重新生成了自己的答案”，而不是证明插件对外产生了正确结果。参见 DSH [snapshot ownership](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/snapshots/AGENTS.md)。
+测试资产还需要独立的预期来源。Recorded-session 的场景 owner 负责记录或刷新选中的 Session，共享引用只读且无环；工作区结果由独立的 `workspace.expected/` 作为 oracle，录制或刷新过程不能顺手改写它。否则测试可能只证明“工具重新生成了自己的答案”，而不是证明插件对外产生了正确结果。参见 DSH [snapshot ownership](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/snapshots/AGENTS.md)。
 
 ### 6. 验证用户实际安装的形态
 
@@ -93,8 +93,6 @@ DSH 的本地检查策略又要求验证保持聚焦：选择会为当前回归�
 如果插件声明支持多个 DSH 版本，应在自己的仓库记录已验证的版本范围，并在范围变化时执行兼容验证。不要把 peer dependency 的范围写成未经测试的兼容承诺，也不要把 DSH 主仓当前的发布矩阵直接当作独立插件的覆盖证明。
 
 ### 7. 用语义评审完成交付判断
-
-![owner、证据与交付判断的关系](./figures/owner-and-evidence.svg)
 
 这里的 oracle、real composition 和 semantic review 都是有边界的术语，不是“测试通过”的同义词；分别见[术语页的验证部分](./02-terms-and-mental-models.md#四怎样验证与判断完成)。真实入口与独立 oracle 的选择见上面的证据路由图。测试、snapshot、CI 和 approval 规则各自建立机械属性；语义评审判断实现、当前文档、持久取舍和证据是否真的符合用户意图。
 
@@ -132,7 +130,7 @@ DSH 主仓的 GitHub Project、Issue metadata policy、weighted approval、平�
 
 ## 从新仓库开始
 
-先用 DSH [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/user/develop/basic/index.md)建立最小可加载模块，按任务读取 [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/cordis-tutorial/index.md) 与 [插件作者入口](../repo-harness/09-plugin-author-entry.md)，再为独立仓逐步补齐自身的 package/config、真实组合测试和用户可见预期。插件以本地模块加载、配置 bundle 发布和仓库如何组织是不同层次，不能由运行时插件示例推出唯一仓库模板。
+先用 DSH [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/user/develop/basic/index.md)建立最小可加载模块，按任务读取 [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/cordis-tutorial/index.md) 与 [插件作者入口](../repo-harness/09-plugin-author-entry.md)，再为独立仓逐步补齐自身的 package/config、真实组合测试和用户可见预期。插件以本地模块加载、配置 bundle 发布和仓库如何组织是不同层次，不能由运行时插件示例推出唯一仓库模板。
 
 一个合理的第一笔交付是：一种可观察行为、一个明确的行为 owner、一条真实 Loader 组合路径、一个在回归时会失败的证据，以及一份能解释当前使用方式的 README。完成后，新参与者应能从当前仓库回答“现在是什么、为什么这样选、什么固定住它、怎样证明发布物可用”。
 

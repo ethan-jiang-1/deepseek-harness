@@ -6,22 +6,22 @@ Web capability seam（Web 能力 seam）的 git 历史直接证明了“提案 �
 
 > The model-facing API must stay stable while backends change. [...] Providers do not register tools. Providers register capabilities.
 >
-> — DSH Web capability seam Agent Note 的 [“Problem”](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md#problem) 与 [“Decision”](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md#decision)。这两句给出案例真正拥有的设计问题和已交付决定；git 历史只用来核对它在各 commit 中处于什么状态。
+> — DSH Web capability seam Agent Note 的 [“Problem”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md#problem) 与 [“Decision”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md#decision)。这两句给出案例真正拥有的设计问题和已交付决定；git 历史只用来核对它在各 commit 中处于什么状态。
 
 ![Web seam 记录从 proposal 到现行 Agent Note 的四个 commit](./figures/web-seam-history.svg)
 
 ## 1. 四个 commit 各自提供什么证据
 
-| commit | 可观察变更 | 能证明 |
+| 提交日期与准确标题（样本标记） | 可观察变更 | 能证明 |
 |---|---|---|
-| `a4091daa3d` | 新增 proposed Web seam RFC，并登记 proposed 索引 | 实现前存在一份仓库内提案 |
-| `d01f5f73b7` | RFC 移到 implemented；新增 `packages/web/**`、tests、README，并更新 architecture/package map | 代码、当前文档、行为测试和 implemented 记录在同一 commit 交付 |
-| `e6fad266a6` | 统一 RFC 格式，把 `Proposal/Tests/Risks` 改成 `Decision/Testing/Consequences` | 现行 implemented skeleton 的正文改写发生在独立格式变更中 |
-| `e8eddc7ef8` | `docs/rfc/**` 迁到 `.agents/notes/**` 并改名 Agent Note | 当前记录路径和术语来自后续 corpus migration |
+| 2026-06-25 13:59:34 +08:00 · `docs: propose web capability seam`（提案） | 新增 proposed Web seam RFC，并登记 proposed 索引 | 实现前存在一份仓库内提案 |
+| 2026-06-25 15:04:12 +08:00 · `Add web capability seam: ctx.web, search/fetch providers, web tools`（交付） | RFC 移到 implemented；新增 `packages/web/**`、tests、README，并更新 architecture/package map | 代码、当前文档、行为测试和 implemented 记录在同一 commit 交付 |
+| 2026-07-05 22:58:25 +08:00 · `docs(rfc): define and enforce a uniform RFC format; adopt it across the corpus`（格式统一） | 统一 RFC 格式，把 `Proposal/Tests/Risks` 改成 `Decision/Testing/Consequences` | 现行 implemented skeleton 的正文改写发生在独立格式变更中 |
+| 2026-07-19 22:50:49 +08:00 · `Rename RFCs to Agent Notes`（迁移） | `docs/rfc/**` 迁到 `.agents/notes/**` 并改名 Agent Note | 当前记录路径和术语来自后续 corpus migration |
 
 ## 2. 实现 commit 还不符合现行 Note 格式
 
-`d01f5f73b7` 确实把 proposed RFC 移到 implemented 并将 status 改为 implemented，但正文仍保留：
+`交付样本` 确实把 proposed RFC 移到 implemented 并将 status 改为 implemented，但正文仍保留：
 
 ```text
 ## Proposal
@@ -30,11 +30,11 @@ Web capability seam（Web 能力 seam）的 git 历史直接证明了“提案 �
 ## Risks
 ```
 
-`e6fad266a6` 才把它改写成 implemented 记录的现在式 skeleton。现行 `verify-agent-note-format` 会拒绝只移动路径和 status 的做法；这个历史差异说明案例不能反推“当时已经执行现行规则”。当前规则应从 `.agents/notes/README.md` 和 verifier 读取。
+`格式统一样本` 才把它改写成 implemented 记录的现在式 skeleton。现行 `verify-agent-note-format` 会拒绝只移动路径和 status 的做法；这个历史差异说明案例不能反推“当时已经执行现行规则”。当前规则应从 `.agents/notes/README.md` 和 verifier 读取。
 
 ## 3. 核心交付段的文件证据
 
-`d01f5f73b7` 同时包含：
+`交付样本` 同时包含：
 
 - `packages/web/web` 的 capability definition 与 tests；
 - Exa、Perplexity 和 local fetch providers 的 source、README 与 tests/e2e；
@@ -58,20 +58,16 @@ Web capability seam（Web 能力 seam）的 git 历史直接证明了“提案 �
 
 ## 5. 现行记录
 
-当前文件是 DSH 的 [`.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)，使用 `Agent Note` 标题、`Status: implemented`、`Decision`、`Testing`、`Alternatives considered` 和 `Consequences`。它是当前 rationale owner；旧 commit 只用于解释记录怎样到达现行位置。
+当前文件是 DSH 的 [`.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)，使用 `Agent Note` 标题、`Status: implemented`、`Decision`、`Testing`、`Alternatives considered` 和 `Consequences`。它是当前 rationale owner；旧 commit 只用于解释记录怎样到达现行位置。
 
-## 复核命令
+## 怎样复核历史样本
 
-```sh
-git show a4091daa3d -- docs/rfc/README.md docs/rfc/proposed/architecture/2026-06-24-web-capability-seam.md
-git show --stat d01f5f73b7
-git show d01f5f73b7:docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md
-git show e6fad266a6:docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md
-git show e8eddc7ef8 --name-status
-```
+复核者需要含上述历史对象的 DSH checkout；只有 release tree 或浅克隆不保证这些对象存在。按表中的准确标题和带时区时间定位提交，确认唯一匹配后检查该提交的文件树、diff 与父提交；不要用相近标题替代。检查重点分别是 proposal 文件、同笔交付的源码/README/tests、implemented 正文格式，以及目录迁移。
+
+本轮已逐一核对这四个本地历史对象的时间、标题与对应文件；独立发行不携带这些 Git 对象。无法取得对应历史时，四个样本应标为未复核，现行机制仍以固定 release tag 的一手来源为准。
 
 ## 证据入口
 
-- DSH [当前 Web seam Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)：现行 rationale、三角色职责、provider selection 和稳定 tool schema 决定。
-- DSH [Agent Note 规则](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/README.md)：当前 lifecycle 与 implemented 正文格式，用来解释历史文件为什么不能充当现行规范。
-- DSH [Web packages](https://github.com/deepseek-ai/deepseek-harness/tree/580646c14fb998532a6ef19bb4cc4009cd74b786/packages/web)：Definition、Providers、Consumer、README 与 tests 的当前源码落点。
+- DSH [当前 Web seam Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)：现行 rationale、三角色职责、provider selection 和稳定 tool schema 决定。
+- DSH [Agent Note 规则](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md)：当前 lifecycle 与 implemented 正文格式，用来解释历史文件为什么不能充当现行规范。
+- DSH [Web packages](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.0-rc.2/packages/web)：Definition、Providers、Consumer、README 与 tests 的当前源码落点。
