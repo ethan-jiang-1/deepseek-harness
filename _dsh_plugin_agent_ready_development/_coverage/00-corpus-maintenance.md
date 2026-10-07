@@ -52,7 +52,7 @@
 
 ## 4. 图示
 
-现有 SVG 分属 [SDLC Reference](../sdlc-reference/figures/README.md) 和 [Development Harness](../repo-harness/figures/README.md) 两个图示清单；原生开发模型当前不使用图示。各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
+现有 SVG 分属 [SDLC Reference](../sdlc-reference/figures/README.md)、[Development Harness](../repo-harness/figures/README.md) 和 [Native Development Model](../native-development-model/figures/README.md) 三个图示清单；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
 
 ## 5. 重审触发路径
 
