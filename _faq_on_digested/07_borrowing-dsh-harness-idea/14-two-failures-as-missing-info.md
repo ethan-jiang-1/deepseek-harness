@@ -33,7 +33,7 @@ DSH 没有把六类信息混写在一份总览里，而是**一个问题一个 o
 
 > 这些文件并非越多越好。关键在于每类事实有 owner，读者可以从短入口逐步进入详细来源，而不必先通读整个仓库。
 
-（上句是 `_agent_ready_development/repo-harness/00-index.md` 的归纳，不是 DSH 原文。）
+（上句是 `_dsh_plugin_agent_ready_development/repo-harness/00-index.md` 的归纳，不是 DSH 原文。）
 
 ## 关键反转：不赌「聪明」，赌「成本结构」
 

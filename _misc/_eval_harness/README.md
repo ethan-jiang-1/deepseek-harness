@@ -53,7 +53,7 @@
 
 | 语料 | 是什么 | 本目录从它取了什么 |
 |---|---|---|
-| `_agent_ready_development/` | 面向普通仓库的 SDLC 与仓库机制：`repo-harness/` 11 篇、`sdlc-reference/` 13 篇、`sdlc-tutorial/` | 开发维度里**仓库机制那一半**的定义与素材：入口链 / 归属（ownership） / 分类学、流程固化、状态分层、评审与批准的流程素材；"四条不能混淆的边界"的原始表述 |
+| `_dsh_plugin_agent_ready_development/` | 面向普通仓库的 SDLC 与仓库机制：`repo-harness/` 11 篇、`sdlc-reference/` 13 篇、`sdlc-tutorial/` | 开发维度里**仓库机制那一半**的定义与素材：入口链 / 归属（ownership） / 分类学、流程固化、状态分层、评审与批准的流程素材；"四条不能混淆的边界"的原始表述 |
 | `_faq_on_digested/` | 跨材料二次研究（按主题重新提问与回答）：07 转移章法、11 原生开发循环、08/09 插件成熟度（maturity）与商业台阶等 | 七个信息缺口（information gap） `IG1`–`IG7`；**十七维的定义底本**（来源十维 + 补齐的七维）与分阶段验收；反馈分层与"检查必须先被证明会失败"；迁移优先级；模仿判断 |
 | `_digested/` | 当前、经核验的 DSH 机制解读：`agent-loop`、`capability-seams`、`composition`、`session-and-loop`、`tools-prompt-llm`、`runtime-profiles`、`surfaces`、`system` 等 | 运行时 Harness 十一维的全部机制清单；组合内核 / 事实源（source of truth） / 投影 / 能力 seam / 扩展点 / 拦截点等术语 |
 
@@ -81,8 +81,8 @@
 | [`…/07/answer.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/answer.md) | 三条立场、三层模型、症状 → 机制总览表 |
 | [`_faq_on_digested/11_native-development-loop/answer.md`](../../_faq_on_digested/11_native-development-loop/answer.md) | **窄证据切片（slice）闭环六步**（01 §3 的第二层）、"轻松"的三个机制来源、代价与边界 |
 | [`…/11/question.md`](../../_faq_on_digested/11_native-development-loop/question.md) | 上述闭环的问题框架与范围声明 |
-| [`_agent_ready_development/README.md`](../../_agent_ready_development/README.md) | 三个视角的分工与语料自身的结构纪律 |
-| [`…/repo-harness/00-index.md`](../../_agent_ready_development/repo-harness/00-index.md) | 五问五答映射表、核心术语表（development harness / legibility / paved road / …） |
+| [`_dsh_plugin_agent_ready_development/README.md`](../../_dsh_plugin_agent_ready_development/README.md) | 三个视角的分工与语料自身的结构纪律 |
+| [`…/repo-harness/00-index.md`](../../_dsh_plugin_agent_ready_development/repo-harness/00-index.md) | 五问五答映射表、核心术语表（development harness / legibility / paved road / …） |
 
 ### 二、委托全量精读的（五路）
 
@@ -90,10 +90,10 @@
 
 | 路 | 读了什么 | 用在哪 |
 |---|---|---|
-| 教程与立场 | `_agent_ready_development/sdlc-tutorial/00-index.md` | 01 §1 三条立场的出处 |
-| 仓库机制 | `_agent_ready_development/repo-harness/` 全 11 篇 + 三个目录的 `README`/`00-index` + `_coverage/00-corpus-maintenance.md` + `verify.mjs` | 知识归位组、证据与交付组、状态与上下文组 |
+| 教程与立场 | `_faq_on_digested/17_dsh-native-development-process/answer.md` | 01 §1 三条立场的出处 |
+| 仓库机制 | `_dsh_plugin_agent_ready_development/repo-harness/` 全 11 篇 + 三个目录的 `README`/`00-index` + `_coverage/00-corpus-maintenance.md` + `verify.mjs` | 知识归位组、证据与交付组、状态与上下文组 |
 | 转移章法 | `_faq_on_digested/07_borrowing-dsh-harness-idea/` 的 01–05、07–09、11–13（11 篇） | 开发十七维（维度集合与粗判（coarse check）在 01，定义、探针（probe）、锚点（anchor）与封顶（cap）在 02）、22 的处置卡（remediation card）、四条边界 |
-| 流程参考 | `_agent_ready_development/sdlc-reference/` 全 13 篇 | 补齐的五维：意图入口、评审与批准、发布与版本、分类学、防漂移（drift prevention） |
+| 流程参考 | `_dsh_plugin_agent_ready_development/sdlc-reference/` 全 13 篇 | 补齐的五维：意图入口、评审与批准、发布与版本、分类学、防漂移（drift prevention） |
 | 运行时机制 | `_digested/` 的 `agent-loop`、`capability-seams`、`composition`、`session-and-loop`、`tools-prompt-llm`、`runtime-profiles`、`surfaces`、`system` 八组 + `_faq_on_digested/08_plugin-seam-maturity`、`09_plugin-business-ladder` | 11/12 的全部十一维 + 11 §5 的模仿判断 |
 
 ### 三、只用来核对边界的
@@ -117,7 +117,7 @@
 | 部分 | 来源 |
 |---|---|
 | §1 七个信息缺口（information gap） IG1–IG7 | FAQ07/14 的缺口表（原文写作"六个缺口"但列了七行，本目录统一按七个处理；分组见下一节第 7 条） |
-| §1 三条立场 | `sdlc-tutorial/00-index.md` |
+| §1 三条立场 | `_faq_on_digested/17/answer.md` |
 | §2 证据四级 EL0–EL3 | 本目录的归纳，底子是 FAQ07/09 的"prose 没有约束力（enforcement）、门禁（gate）才有" |
 | §3 第二层六步切片（slice） | FAQ11/answer 的窄证据切片（slice）闭环 |
 | §4 两轴（two axes）与成熟度档（maturity level）、十七维粗判（coarse check）一览 | **本目录新增**（两轴（two axes）与封顶（cap）机制是新增；"粗判（coarse check）一览"是把各维的"一眼信号"从卡片里提出来） |

@@ -60,6 +60,7 @@ _faq_on_digested/
 | 16 | [四个内置模式（Standard / PTC / Minimal / Creator）各自特殊在哪？](./16_preset-modes-specialty/question.md) | [同一声明式 preset 机制上的四份 bundle patch，各自动宿主一根轴：Standard 三轴不动（26 工具契约 + 三组刻意缺席）、PTC 动呈现层（run_code + 生成 SDK，子调用仍走完整管道）、Minimal 动身份层（complete:true 一句话提示词 + 持久 shell，其余清零）、Creator 动扩展层（运行时检查 + 条件启用 plugin_manager + 三个创作技能）；四模式各一篇分篇 + 5 张 SVG 图解](./16_preset-modes-specialty/answer.md) |
 | 17 | [开发 DSH 插件时，怎么先找到现成的轮子而不是重写？](./17_finding-existing-plugins/question.md) | [货架（316 包按组）→ 横切清单（92 服务/30 工具包×profile）→ 判形态与可见性光谱 → 四条出路按代价排序（调配置/patch 换 Provider/挂现货包/写胶水）；三个过去踩的坑（平铺 packages/、只看 base 层、以为接新模型必须写 adapter）与必须自写的缺口白名单](./17_finding-existing-plugins/answer.md) |
 | 18 | [全局安装的 DSH CLI 老了，怎样安全地升级到最新的 RC / 正式版？](./18_global-dsh-upgrade/question.md) | [升级命令只有一个：`npm install -g @deepseek-ai/dsh@latest`（RC 走 `latest` 通道，`alpha` 永不碰）；把预检 / 目标解析 / 确认 / 安装 / 校验 / 回滚固化成一个可复用脚本，`~/.dsh` 用户数据不随包安装变化](./18_global-dsh-upgrade/answer.md) |
+| 19 | [DSH 的一次变更，为什么要把意图、决定、实现和证据分开安放？](./17_dsh-native-development-process/question.md) | [owner、证据、交付判断与 GitHub 状态的关系；历史案例保留可核对的事实边界](./17_dsh-native-development-process/answer.md) |
 
 ## 引用规范
 

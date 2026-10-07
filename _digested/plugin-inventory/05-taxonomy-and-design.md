@@ -22,7 +22,7 @@
 
 **adapter（LLM 接入）回答「模型从哪来」。** `ctx.llm` 的 Provider，可休眠挂载——`llm-pi-ai` 雏形零 routes，settings 出现 `llm-pi-ai:` 段才注册多 Provider。第三家 Provider 的接入位现成，不用改 loop。
 
-**bundle（交付打包）回答「怎么发货」。** patch 层是交付单位，profile 是组合单位，二者刻意二分（「Nothing is both」，[`_agent_ready_development/repo-harness/09`](../../_agent_ready_development/repo-harness/09-plugin-author-entry.md)）。OPTIONAL_BUNDLES 是中间档：随安装出货、默认关、插件页一键开。
+**bundle（交付打包）回答「怎么发货」。** patch 层是交付单位，profile 是组合单位，二者刻意二分（「Nothing is both」，[`_dsh_plugin_agent_ready_development/repo-harness/09`](../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md)）。OPTIONAL_BUNDLES 是中间档：随安装出货、默认关、插件页一键开。
 
 **lib（纯库）回答「哪些不是插件」。** util 组 17 包零运行时依赖，被 import 不被挂载。货架上必须有这一栏，否则「316 个包」会被误读成「316 个插件位」。
 

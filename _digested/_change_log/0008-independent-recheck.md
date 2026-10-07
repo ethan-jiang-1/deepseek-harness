@@ -4,7 +4,7 @@
 
 本页是对 [`0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](./0008-0.1.5-rc.2-to-0.1.7-rc.1.md) 所述语料更新的**独立反查**（五个并行审计 + 独立抽查），不替代该记录。全部证据为工作树实读（文件:行），未采信记录自述。结论按五级组织：**重写**（机制描述已退役，需整段重写）、**点改**（计数/名称/行锚错）、**缺落点**（新源码面语料无内容）、**删除**（孤儿页）、**口径**（索引/矩阵/记录自相矛盾）。
 
-前置事实：三个语料 `verify.mjs` 在复核时全绿（`_digested` 85 MD / `_faq_on_digested` 106 MD / `_agent_ready_development` 32 MD）。即现有门禁（UTF-8、换行、相对链接、锚点、基线常量、外链钉版）**不覆盖内容新鲜度**——下述全部问题存在于绿门禁之下。
+前置事实：三个语料 `verify.mjs` 在复核时全绿（`_digested` 85 MD / `_faq_on_digested` 106 MD / `_dsh_plugin_agent_ready_development` 32 MD）。即现有门禁（UTF-8、换行、相对链接、锚点、基线常量、外链钉版）**不覆盖内容新鲜度**——下述全部问题存在于绿门禁之下。
 
 ## 总体结论
 
@@ -16,7 +16,7 @@
 2. **「A 类有落点」判定过宽**。web-app 组合新行（3 个 controller + 8 个 ui-* 包）、`workspace/changes` 事件族被记为「本批已改/有落点」，实际语料正文零命中（见下文证据）。
 3. **B 类缺口登记只落在 change log**，没有落到 `_coverage/00-index.md` 的「已知未覆盖」表。ssh / browser-use / computer-use / voice-input 四项在记录里"登记为缺口"，在唯一有长期效力的 coverage 表里不存在。
 4. **`_architecture_referenced` 被排除在审计外**（0008 记录写「对三个语料的影响」），而 `_digested/00-index.md:5`、`_change_log/00-index.md:28`、0008 记录 :9 自己都说维护**四个**目录。
-5. **历史条目被机械替换破坏**。`_agent_ready_development/_coverage/00-corpus-maintenance.md` 的 re-pin 编辑做了全局 hash 替换（`fb2c4b9e69` → `46a7f68b09`），把 2026-09-16 历史条目里的基线 hash 也改掉了（:3 头部与 :97 条目现在把 `46a7f68b09` 标成 `dsh-v0.1.5-rc.2`；git tag 证实 `dsh-v0.1.5-rc.2` = `fb2c4b9e69`）。历史读数保留的惯例被这次替换违反。
+5. **历史条目被机械替换破坏**。`_dsh_plugin_agent_ready_development/_coverage/00-corpus-maintenance.md` 的 re-pin 编辑做了全局 hash 替换（`fb2c4b9e69` → `46a7f68b09`），把 2026-09-16 历史条目里的基线 hash 也改掉了（:3 头部与 :97 条目现在把 `46a7f68b09` 标成 `dsh-v0.1.5-rc.2`；git tag 证实 `dsh-v0.1.5-rc.2` = `fb2c4b9e69`）。历史读数保留的惯例被这次替换违反。
 6. **孤儿页从未清理**。0006 时「没有文件被删除」被当作正面指标记录，实际留下三页互引孤儿链（见 _digested D 节）。
 7. **矩阵「已核验」没有降级通道**。surfaces-entrypoints/03:3 页内写着「surfaces 深读将复核这一面」，矩阵同一轮把 surfaces 行写回「已核验 @ 46a7f68b09」。
 
@@ -115,7 +115,7 @@ _surfaces / runtime-profiles：_
 
 **明示未核**：FAQ 02/06/09/10 编号页、07 的 01–05/07–10 页、04 tier 表细节、05 maxBytes 数字、11 developer-journey 页、14 的 7/33 与 5/12 事件计数、03 完整 vendor route 集。
 
-## _agent_ready_development
+## _dsh_plugin_agent_ready_development
 
 **维护记录损坏（先修）**：
 
@@ -176,7 +176,7 @@ _surfaces / runtime-profiles：_
 
 **批 1 · 删除（已完成）**：删 `surfaces-entrypoints/03-客户端资源与侧栏.md`、`capability-seams/05-进程遏制与宿主边界.md`、`session-and-loop/04-持久化seam与互斥写.md`（flock/repair 残值由 07 页承载）；`system-overview/03:28` 改指 07；`_coverage/00-index.md` surfaces 表述消歧。
 
-**批 2 · 点改（已完成）**：session v4 常数四处（00-map:45/:86/:89、01:5、03:36）；`system-overview/03` 17 modes + 六条 bench 路径；转发白名单 23 条（surfaces-entrypoints/01）+ surfaces-entrypoints/06 的 stream/uplink 重写；surfaces-entrypoints/05 59 目录 + permission-presets 改名注记；runtime-profiles 00-map/01/02 的 hmr 门控、args.ts:83、profile.ts 行锚；tools-prompt-llm 00-map/02/05 的锚与 preparing 阶段；harness-idea/05 两工具；capability-seams/08 的 mcp-resources 两层边界 + `agent/created` 锚；`_agent_ready_development` 维护页 hash 复原（09-16 条目复原为 `183f08e9c6`/`fb2c4b9e69`、计数改「唯一 URL 数」）+ note 收窄标准六处 + skills 14/12 + tier 表 Persistence history 行 + 触发路径 + 02 页 rules.mjs/e2e；FAQ 01/02/03/04/06/07/10/11/12/13/00-index 全部点改（含 `API_REMOTE_FORWARDED_EVENTS` 23、client 59、`cordis_inspect_self`、settings-file、预算 2410、FAQ 08 摘要与 FAQ 12 摘要）。
+**批 2 · 点改（已完成）**：session v4 常数四处（00-map:45/:86/:89、01:5、03:36）；`system-overview/03` 17 modes + 六条 bench 路径；转发白名单 23 条（surfaces-entrypoints/01）+ surfaces-entrypoints/06 的 stream/uplink 重写；surfaces-entrypoints/05 59 目录 + permission-presets 改名注记；runtime-profiles 00-map/01/02 的 hmr 门控、args.ts:83、profile.ts 行锚；tools-prompt-llm 00-map/02/05 的锚与 preparing 阶段；harness-idea/05 两工具；capability-seams/08 的 mcp-resources 两层边界 + `agent/created` 锚；`_dsh_plugin_agent_ready_development` 维护页 hash 复原（09-16 条目复原为 `183f08e9c6`/`fb2c4b9e69`、计数改「唯一 URL 数」）+ note 收窄标准六处 + skills 14/12 + tier 表 Persistence history 行 + 触发路径 + 02 页 rules.mjs/e2e；FAQ 01/02/03/04/06/07/10/11/12/13/00-index 全部点改（含 `API_REMOTE_FORWARDED_EVENTS` 23、client 59、`cordis_inspect_self`、settings-file、预算 2410、FAQ 08 摘要与 FAQ 12 摘要）。
 
 **批 3 · 重写（已完成）**：`surfaces-entrypoints/03-桌面入口.md` 与 `runtime-profiles/06-desktop.md` 按 runProfile + 19387 + 认证 URL 整页重写（capability-seams/06 的桌面段同步改写为「分歧已消除」）；`composition-boot/03-user-patch-hmr.md`、`composition-boot/04-profile-创建与保留名.md`、`composition-boot/01-boot-时序.md`（heal→runtime-resolution、appReady 步骤）、`composition-boot/00-map.md`（preset 显示名 locale 化反转、03 行摘要）按 hmr/reconcileProfilePatches/runtime-resolution 新机制改述；`cordis-runtime/04-vendor-本地修改.md` 整页按 22 条清单 + 4.0.4 重写，`00-map.md` vendor 段与 `03-loader-include-与js插值.md` 队列段同步；`experimental/00-map.md`（public-by-default 反转 + 20 包五家族 + OPTIONAL_BUNDLES 通道 + ptc-python 快照仍在的更正）与 `02-agent-teams.md`（统一 bundle、TeamService 非 Remote、投影读法）重写。
 
