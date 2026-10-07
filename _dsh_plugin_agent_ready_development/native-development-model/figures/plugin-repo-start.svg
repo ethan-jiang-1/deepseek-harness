@@ -57,6 +57,6 @@
   <text x="660" y="490" font-size="12" fill="#526175">package、bundle、profile 层</text>
   <text x="900" y="465" font-size="13" font-weight="700" fill="#744408">治理规则</text>
   <text x="900" y="490" font-size="12" fill="#526175">Issue、review、CI、release 由谁拥有</text>
-  <text x="607" y="550" text-anchor="middle" font-size="13" fill="#64748b">DSH 文档定义前两层与可用组合机制；独立插件仓为后两层选择自己的 owner 和门禁</text>
+  <text x="607" y="550" text-anchor="middle" font-size="13" fill="#64748b">DSH 定义运行时接口与组合机制；源码仓库结构、发布方式和治理由独立插件仓自定</text>
   <text x="607" y="577" text-anchor="middle" font-size="13" font-weight="700" fill="#0f766e">能加载 ≠ 有行为证据 ≠ 能安装 ≠ 已获交付批准</text>
 </svg>

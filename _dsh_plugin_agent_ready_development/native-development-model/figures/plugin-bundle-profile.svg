@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
   <title id="title">Plugin、bundle 与 profile 的三层关系</title>
-  <desc id="desc">独立插件仓里的 TypeScript plugin 由 bundle manifest 引用并分发，profile manifest 再组合 bundle，DSH loader 启动最终 profile；三者不是同一个结构。</desc>
+  <desc id="desc">图示自动配置层的分发路径：bundle 引用 plugin 模块，profile 组合 bundle，DSH Loader 加载插件；本地模块也可通过 patch 挂载，不必打包成 bundle。</desc>
   <defs>
     <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#475569"/></marker>
   </defs>
   <rect width="1200" height="560" fill="#ffffff"/>
   <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">Plugin → Bundle → Profile：三个不同层次</text>
-  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">运行时模块、分发配置层和可启动组合不能互相推导</text>
+  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">图示 bundle 自动配置层路径；本地模块也可通过 patch 挂载，不必打成 bundle</text>
 
   <rect x="55" y="110" width="300" height="260" rx="12" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
   <text x="205" y="148" text-anchor="middle" font-size="18" font-weight="700" fill="#173f67">Plugin module</text>
@@ -38,7 +38,7 @@
   <text x="925" y="263" text-anchor="middle" font-size="12" fill="#3f5f62">ordered bundles</text>
   <text x="925" y="287" text-anchor="middle" font-size="12" fill="#3f5f62">user patch layer</text>
 
-  <path d="M925 370 V425" fill="none" stroke="#0f766e" stroke-width="1.7" marker-end="url(#arrow)"/>
+  <path d="M925 370 V395 H600 V425" fill="none" stroke="#0f766e" stroke-width="1.7" marker-end="url(#arrow)"/>
   <rect x="415" y="425" width="370" height="78" rx="11" fill="#fff8e8" stroke="#d6a636" stroke-width="1.5"/>
   <text x="600" y="456" text-anchor="middle" font-size="16" font-weight="700" fill="#76530a">DSH Loader / app</text>
   <text x="600" y="480" text-anchor="middle" font-size="12" fill="#665a3e">boot profile → load bundle layer → apply plugin</text>

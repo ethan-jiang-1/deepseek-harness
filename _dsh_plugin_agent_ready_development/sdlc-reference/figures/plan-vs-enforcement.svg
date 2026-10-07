@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1040" height="580" viewBox="0 0 1040 580" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title id="title">Plan guidance、用户审批与权限执行彼此独立</title>
-  <desc id="desc">上半部分展示 Plan Mode 日志、guidance、退出工具和用户 review，下半部分展示 sandbox 与 approval 独立执行操作权限。</desc>
+  <desc id="desc">上半部分展示 Plan Mode 日志、guidance、退出工具和用户 review。下半部分并列展示仅管理文件效果的 sandbox，以及调用方显式请求、按结果 fail closed 的 approval；不是所有操作必经的通用拦截链。</desc>
   <defs>
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
     <marker id="arrg" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#15803d"/></marker>
@@ -44,18 +44,15 @@
   <path d="M304 290 L161 290 L161 212" fill="none" stroke="#475569" stroke-dasharray="5 4" marker-end="url(#arr)"/>
 
   <rect x="38" y="400" width="964" height="132" rx="12" fill="#fff7ed" stroke="#d48b45"/>
-  <text x="62" y="429" font-size="13" font-weight="700" fill="#7a4313">Operation enforcement plane · 独立配置</text>
-  <rect x="76" y="451" width="240" height="55" rx="7" fill="#fff" stroke="#dda66f"/>
-  <text x="196" y="474" text-anchor="middle" font-weight="700" fill="#7a4313">模型提出 operation</text>
-  <text x="196" y="493" text-anchor="middle" font-size="11" fill="#9a5c25">file · network · process · external state</text>
-  <rect x="400" y="451" width="240" height="55" rx="7" fill="#fff" stroke="#dda66f"/>
-  <text x="520" y="474" text-anchor="middle" font-weight="700" fill="#7a4313">sandbox policy</text>
-  <text x="520" y="493" text-anchor="middle" font-size="11" fill="#9a5c25">文件效果（file effects）是否允许</text>
-  <rect x="724" y="451" width="240" height="55" rx="7" fill="#fff" stroke="#dda66f"/>
-  <text x="844" y="474" text-anchor="middle" font-weight="700" fill="#7a4313">approval policy</text>
-  <text x="844" y="493" text-anchor="middle" font-size="11" fill="#9a5c25">网络/进程等受限操作是否授权</text>
-  <line x1="316" y1="478" x2="396" y2="478" stroke="#475569" marker-end="url(#arr)"/>
-  <line x1="640" y1="478" x2="720" y2="478" stroke="#475569" marker-end="url(#arr)"/>
+  <text x="62" y="425" font-size="13" font-weight="700" fill="#7a4313">独立权限机制 · 各有适用调用方，不是所有操作必经的串行链</text>
+  <rect x="66" y="442" width="428" height="70" rx="7" fill="#fff" stroke="#dda66f"/>
+  <text x="280" y="465" text-anchor="middle" font-weight="700" fill="#7a4313">Sandbox mode：仅管理文件效果</text>
+  <text x="280" y="485" text-anchor="middle" font-size="11" fill="#9a5c25">file effects；网络 / 进程可见性不在其范围内</text>
+  <text x="280" y="504" text-anchor="middle" font-size="11" fill="#9a5c25">接入 sandbox 的调用方执行相应文件策略</text>
+  <rect x="542" y="442" width="428" height="70" rx="7" fill="#fff" stroke="#dda66f"/>
+  <text x="756" y="465" text-anchor="middle" font-weight="700" fill="#7a4313">Approval：调用方显式请求一次授权</text>
+  <text x="756" y="485" text-anchor="middle" font-size="11" fill="#9a5c25">ask 分派请求 / never 拒绝请求；不自动拦截所有操作</text>
+  <text x="756" y="504" text-anchor="middle" font-size="11" fill="#9a5c25">调用方仅在 allowed-once 后执行，其余结果 fail closed</text>
 
   <line x1="520" y1="364" x2="520" y2="396" stroke="#b42318" stroke-dasharray="5 4"/>
   <text x="536" y="386" font-size="11" fill="#8f241d">不读写 plan state</text>

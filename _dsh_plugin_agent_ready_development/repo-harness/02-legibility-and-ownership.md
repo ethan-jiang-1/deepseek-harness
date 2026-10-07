@@ -8,7 +8,7 @@ DSH 通过分层减少两种错误：一是同一规则在多个地方各写一�
 
 > Each fact has one home: the tier whose job it is; elsewhere, link there.
 >
-> — DSH [`docs/AGENTS.md` 的文档层级规则](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这段原文建立了“一个事实一个 owner”的组织原则。
+> — DSH [`docs/AGENTS.md` 的文档层级规则](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这段原文建立了“一个事实一个 owner”的组织原则。
 
 ![DSH 仓库知识按问题分配给不同 owner](./figures/knowledge-owners.svg)
 
@@ -36,7 +36,7 @@ Negative knowledge（负知识）包括“为什么不采用某条路”“这�
 
 > A decision recorded without what it beat invites re-litigation — the failure Agent Notes exist to prevent.
 >
-> — DSH [`.agents/notes/README.md` 的 “Alternatives considered — mandatory”](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/README.md#alternatives-considered--mandatory)。负知识的检验标准因此是防错而不是数量：一段“为什么不”的记忆只在仍能阻止可信错误时保留，这正是 rejected Note 的删除条件。
+> — DSH [`.agents/notes/README.md` 的 “Alternatives considered — mandatory”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md#alternatives-considered--mandatory)。负知识的检验标准因此是防错而不是数量：一段“为什么不”的记忆只在仍能阻止可信错误时保留，这正是 rejected Note 的删除条件。
 
 DSH 使用 rejected Agent Notes、README 的 Known Limitations、README 中“为什么不发布 `./invariant`”的理由，以及冻结 archive 保存不同类型的负知识。它们的共同作用不是证明永远不能改变，而是让改变从已知理由开始。
 
@@ -56,10 +56,10 @@ DSH 使用 rejected Agent Notes、README 的 Known Limitations、README 中“�
 
 ## 证据入口
 
-- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/AGENTS.md)：文档层级、一个事实一个 owner、tutorial/reference 分工和 Skills 的位置。
-- DSH [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/glossary.md)：一个概念使用一个 canonical term（规范术语）的规则。
-- DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.agents/notes/README.md)：决策理由、替代方案、生命周期和 archive 的 owner。
-- DSH [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/module-graph.md)：从源码生成的仓库关系索引实例。
-- DSH [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/event-producer-consumer.md)：事件 producer、consumer 和 dispatch mode 的生成索引实例。
-- DSH [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/capability-seams.md)：Service Definition、providers 与 consumers 的生成关系索引。
-- DSH [`docs/persistence-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/persistence-catalog.md)：可写入 session log 的事件及其声明位置的生成索引。
+- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/AGENTS.md)：文档层级、一个事实一个 owner、tutorial/reference 分工和 Skills 的位置。
+- DSH [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/glossary.md)：一个概念使用一个 canonical term（规范术语）的规则。
+- DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md)：决策理由、替代方案、生命周期和 archive 的 owner。
+- DSH [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/module-graph.md)：从源码生成的仓库关系索引实例。
+- DSH [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/event-producer-consumer.md)：事件 producer、consumer 和 dispatch mode 的生成索引实例。
+- DSH [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/capability-seams.md)：Service Definition、providers 与 consumers 的生成关系索引。
+- DSH [`docs/persistence-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/persistence-catalog.md)：可写入 session log 的事件及其声明位置的生成索引。

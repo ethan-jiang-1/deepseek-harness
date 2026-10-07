@@ -25,7 +25,7 @@ const forbiddenResearchReferences = [
   '_digested',
   '_faq_on_digested',
 ]
-const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:blob|tree)\/580646c14fb998532a6ef19bb4cc4009cd74b786(?:[/?#]|$)/
+const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:blob|tree)\/dsh-v0\.2\.0-rc\.2(?:[/?#]|$)/
 
 function corpusFiles(directory) {
   const files = []
