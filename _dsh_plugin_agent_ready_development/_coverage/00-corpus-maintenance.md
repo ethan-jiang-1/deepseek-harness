@@ -177,6 +177,15 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、实体正向覆盖、硬数字重测、口径一致性四线并行）。本语料修复：`sdlc-reference/11` 的版本基线（`0.1.7-rc.1` → `0.2.0-rc.2`，re-pin 漏网）与 release 间隔口径（约 24–41 分钟）；`sdlc-reference/10` 与本页 `:120` 的 PR merge 样本读数（众数 2、单 commit 约五分之一，最近 100 个 PR merge 重测）；`sdlc-tutorial/02` 的 Note 类别数（六）；`sdlc-tutorial/03`、`04` 与 `sdlc-reference/04` 的 PR CI job 结构（9 必需 + 不进聚合的 `windows-coverage`；observational gates 是 required Windows build job 内 step）；`sdlc-reference/09` 的 Skill description 前缀表述（实测 9/15 以 "Use" 开头）；`repo-harness/08` 的 pairing manifest 归属（与门禁发现范围逻辑共同定义）；`_misc/_eval_harness/README.md` 的例证钉版与 `_eval_harness/02` 的 npm-publish job 口径（每条发布序列一个）；本页 `:30` 加 en+zh 合计口径勘误、`:120` 间隔与 `:165` 唯一 URL 数（130）口径统一。钉版纪律复核：113 条钉版路径全量 `git cat-file -e` 全部存在，29 个锚点全解析，内容一致性抽查 5/5 逐字吻合。
 
+## 2026-10-01 的 0012 轮：原生开发模型图解与术语入口
+
+基线不变，继续面向新建独立 DSH 插件仓补强入口页。
+
+1. **图解入口**：`native-development-model/` 新增开发闭环、owner/证据、证据路由、新仓起步、插件生命周期、Plugin → Bundle → Profile 分层和交付判断角色七张 SVG；图示只表达关系与流程，具体条件仍由正文和固定版本的一手来源拥有。每张图均由本卷 `figures/README.md` 登记，`verify.mjs` 将图归属限制在本卷 figures 目录。
+2. **术语入口**：新增 `02-terms-and-mental-models.md`，按运行时、组合分发、变更组织、验证判断四组解释 Plugin、Context、Loader、inject、effect/disposer、HMR、owner、Agent Note、Plan、goal、bundle、profile、oracle、real composition、snapshot、CI、semantic review 等词，说明常见误解并链接固定版本 DSH 一手来源。
+3. **入口导航**：native model README、总览页和新仓起步页均明确链接术语页；根 README 与维护说明改正“原生开发模型当前不使用图示”的旧描述。总览页新增 Plugin/bundle/profile 与 acceptance-roles 图，替换重复使用 owner 图的说明。
+4. **验证**：新增页和图均通过语料 verifier；需再次运行 Markdown links/wrap、SVG 结构与引用、翻译配对及 `git diff --check`。本轮不新增 Agent Note：内容是现有 DSH 机制的教学归纳，不是新的 DSH 持久决定。
+
 ## 2026-09-30 的 0011 轮：语料更名与 sdlc-tutorial 迁出
 
 基线不变，仅动目录结构与引用，不改任何对 DSH 一手来源的事实断言。

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">新建独立 DSH 插件仓的起步路径</title>
+  <desc id="desc">四层路径展示从官方最小插件和真实 profile 组合开始，逐步确定行为 owner、建立真实组合证据、验证打包安装形态，并由插件仓自行决定治理和发布方式。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1200" height="720" fill="#ffffff"/>
+  <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">新建独立 DSH 插件仓：从能加载到可交付</text>
+  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">运行时接口、仓库结构、发布物和治理规则是四个不同的问题</text>
+
+  <rect x="80" y="115" width="240" height="190" rx="12" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+  <circle cx="120" cy="155" r="18" fill="#276da8"/><text x="120" y="161" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">1</text>
+  <text x="200" y="157" text-anchor="middle" font-size="16" font-weight="700" fill="#173f67">能加载</text>
+  <text x="200" y="193" text-anchor="middle" font-size="12" fill="#526175">apply(ctx)</text>
+  <text x="200" y="216" text-anchor="middle" font-size="12" fill="#526175">cordis.yml + profile</text>
+  <text x="200" y="239" text-anchor="middle" font-size="12" fill="#526175">inject / effect cleanup</text>
+  <text x="200" y="274" text-anchor="middle" font-size="12" fill="#39709f">真实启动成功</text>
+
+  <path d="M320 210 H365" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="365" y="115" width="240" height="190" rx="12" fill="#f3efff" stroke="#8269bd" stroke-width="1.5"/>
+  <circle cx="405" cy="155" r="18" fill="#6950a4"/><text x="405" y="161" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">2</text>
+  <text x="485" y="157" text-anchor="middle" font-size="16" font-weight="700" fill="#513b85">有 owner</text>
+  <text x="485" y="193" text-anchor="middle" font-size="12" fill="#526175">用户结果与当前合同</text>
+  <text x="485" y="216" text-anchor="middle" font-size="12" fill="#526175">插件 / service / config</text>
+  <text x="485" y="239" text-anchor="middle" font-size="12" fill="#526175">测试场景与预期来源</text>
+  <text x="485" y="274" text-anchor="middle" font-size="12" fill="#634a99">知道改哪里、证据归谁</text>
+
+  <path d="M605 210 H650" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="650" y="115" width="240" height="190" rx="12" fill="#e8f7f3" stroke="#319795" stroke-width="1.5"/>
+  <circle cx="690" cy="155" r="18" fill="#0f766e"/><text x="690" y="161" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">3</text>
+  <text x="770" y="157" text-anchor="middle" font-size="16" font-weight="700" fill="#125f5b">可证明</text>
+  <text x="770" y="193" text-anchor="middle" font-size="12" fill="#3f5f62">局部测试 + Loader 组合</text>
+  <text x="770" y="216" text-anchor="middle" font-size="12" fill="#3f5f62">独立 expected / snapshot</text>
+  <text x="770" y="239" text-anchor="middle" font-size="12" fill="#3f5f62">外部世界断言</text>
+  <text x="770" y="274" text-anchor="middle" font-size="12" fill="#18766f">回归时测试会变红</text>
+
+  <path d="M890 210 H935" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="935" y="115" width="200" height="190" rx="12" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
+  <circle cx="975" cy="155" r="18" fill="#b7791f"/><text x="975" y="161" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">4</text>
+  <text x="1035" y="157" text-anchor="middle" font-size="16" font-weight="700" fill="#744408">可交付</text>
+  <text x="1035" y="193" text-anchor="middle" font-size="12" fill="#665a3e">build / pack / install</text>
+  <text x="1035" y="216" text-anchor="middle" font-size="12" fill="#665a3e">干净 profile smoke</text>
+  <text x="1035" y="239" text-anchor="middle" font-size="12" fill="#665a3e">兼容范围有证据</text>
+  <text x="1035" y="274" text-anchor="middle" font-size="12" fill="#8a6d25">用户安装形态成立</text>
+
+  <rect x="80" y="370" width="1055" height="235" rx="12" fill="#fafafa" stroke="#cbd5e1"/>
+  <text x="607" y="405" text-anchor="middle" font-size="17" font-weight="700" fill="#334155">四个边界：不要把它们混成一件事</text>
+  <line x1="115" y1="430" x2="1100" y2="430" stroke="#e2e8f0"/>
+  <text x="135" y="465" font-size="13" font-weight="700" fill="#173f67">运行时接口</text>
+  <text x="135" y="490" font-size="12" fill="#526175">apply / inject / effects / Loader</text>
+  <text x="390" y="465" font-size="13" font-weight="700" fill="#513b85">仓库结构</text>
+  <text x="390" y="490" font-size="12" fill="#526175">monorepo、独立仓、vendor 的选择</text>
+  <text x="660" y="465" font-size="13" font-weight="700" fill="#125f5b">发布形态</text>
+  <text x="660" y="490" font-size="12" fill="#526175">package、bundle、profile 层</text>
+  <text x="900" y="465" font-size="13" font-weight="700" fill="#744408">治理规则</text>
+  <text x="900" y="490" font-size="12" fill="#526175">Issue、review、CI、release 由谁拥有</text>
+  <text x="607" y="550" text-anchor="middle" font-size="13" fill="#64748b">DSH 文档定义前两层与可用组合机制；独立插件仓为后两层选择自己的 owner 和门禁</text>
+  <text x="607" y="577" text-anchor="middle" font-size="13" font-weight="700" fill="#0f766e">能加载 ≠ 有行为证据 ≠ 能安装 ≠ 已获交付批准</text>
+</svg>

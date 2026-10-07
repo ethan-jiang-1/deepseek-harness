@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">独立 DSH 插件仓的原生开发闭环</title>
+  <desc id="desc">流程从用户可观察结果开始，经过 owner 定位、条件性决策、实现与文档、匹配证据、语义评审，回到可重新发现的当前状态；Issue、Agent Note 和 Plan 是按需使用的承载物。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#475569"/></marker>
+    <marker id="arrow-accent" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#0f766e"/></marker>
+  </defs>
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">独立 DSH 插件仓的原生开发闭环</text>
+  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">先定义可观察结果，再让 owner、证据和评审互相核对；不是固定的 test-first 阶段序列</text>
+
+  <rect x="425" y="92" width="350" height="70" rx="10" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
+  <text x="600" y="121" text-anchor="middle" font-size="16" font-weight="700" fill="#744408">用户可观察结果</text>
+  <text x="600" y="145" text-anchor="middle" font-size="12" fill="#805915">意图、外部行为与完成条件</text>
+
+  <path d="M425 127 H330 V205" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M775 127 H870 V205" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="205" width="330" height="132" rx="10" fill="#edf5ff" stroke="#5791c9"/>
+  <text x="235" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#173f67">1 · 找到行为 owner</text>
+  <text x="235" y="265" text-anchor="middle" font-size="12" fill="#526175">插件 / service / config / consumer</text>
+  <text x="235" y="287" text-anchor="middle" font-size="12" fill="#526175">当前文档与接口义务</text>
+  <text x="235" y="314" text-anchor="middle" font-size="12" fill="#39709f">改源头，同步受影响派生物</text>
+
+  <rect x="800" y="205" width="330" height="132" rx="10" fill="#f3efff" stroke="#8269bd"/>
+  <text x="965" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#513b85">2 · 判断承载方式</text>
+  <text x="965" y="265" text-anchor="middle" font-size="12" fill="#526175">Issue / task context：意图</text>
+  <text x="965" y="287" text-anchor="middle" font-size="12" fill="#526175">Agent Note：持久取舍（按需）</text>
+  <text x="965" y="309" text-anchor="middle" font-size="12" fill="#526175">Plan：本次会话计划（按需）</text>
+
+  <path d="M235 337 V390 H600 V430" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M965 337 V390 H600 V430" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="390" y="430" width="420" height="118" rx="10" fill="#e8f7f3" stroke="#319795" stroke-width="1.5"/>
+  <text x="600" y="462" text-anchor="middle" font-size="16" font-weight="700" fill="#125f5b">3 · 同批形成完整交付切片</text>
+  <text x="600" y="489" text-anchor="middle" font-size="12" fill="#3f5f62">实现 + 用户文档 + 配置消费者 + 行为证据</text>
+  <text x="600" y="512" text-anchor="middle" font-size="12" fill="#3f5f62">必要时更新 owning Note 的 shipped reality</text>
+
+  <path d="M600 548 V592" fill="none" stroke="#0f766e" stroke-width="1.7" marker-end="url(#arrow-accent)"/>
+
+  <rect x="65" y="592" width="330" height="112" rx="10" fill="#fff8e8" stroke="#d6a636"/>
+  <text x="230" y="623" text-anchor="middle" font-size="15" font-weight="700" fill="#76530a">4 · 跑匹配证据</text>
+  <text x="230" y="648" text-anchor="middle" font-size="12" fill="#665a3e">局部测试 / 真实 Loader 组合</text>
+  <text x="230" y="670" text-anchor="middle" font-size="12" fill="#665a3e">snapshot / e2e / package smoke</text>
+  <text x="230" y="692" text-anchor="middle" font-size="12" fill="#8a6d25">断言必须会拒绝目标回归</text>
+
+  <rect x="435" y="592" width="330" height="112" rx="10" fill="#fff0f0" stroke="#d26a6a"/>
+  <text x="600" y="623" text-anchor="middle" font-size="15" font-weight="700" fill="#8b3030">5 · 做语义评审</text>
+  <text x="600" y="648" text-anchor="middle" font-size="12" fill="#6d4d4d">意图 ↔ 实现 ↔ 文档 ↔ 证据</text>
+  <text x="600" y="670" text-anchor="middle" font-size="12" fill="#6d4d4d">检查真实入口与未覆盖的声称</text>
+  <text x="600" y="692" text-anchor="middle" font-size="12" fill="#9b4545">机器绿灯不等于语义完成</text>
+
+  <rect x="805" y="592" width="330" height="112" rx="10" fill="#eef7ef" stroke="#62a36d"/>
+  <text x="970" y="623" text-anchor="middle" font-size="15" font-weight="700" fill="#326b3c">6 · 交付后可重新发现</text>
+  <text x="970" y="648" text-anchor="middle" font-size="12" fill="#526a56">源码 / README：现在是什么</text>
+  <text x="970" y="670" text-anchor="middle" font-size="12" fill="#526a56">Note：为什么这样选（若有）</text>
+  <text x="970" y="692" text-anchor="middle" font-size="12" fill="#46744d">tests：什么固定住它</text>
+
+  <path d="M805 648 H765" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M435 648 H395" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M1135 704 C1135 735 65 735 65 704" fill="none" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arrow-accent)"/>
+  <text x="600" y="748" text-anchor="middle" font-size="12" fill="#0f766e">下一笔变更从当前 owner 和证据继续，而不是从旧对话重新猜</text>
+</svg>
