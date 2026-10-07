@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="610" viewBox="0 0 1200 610" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">插件交付的判断角色</title>
+  <desc id="desc">测试和 CI 建立机械属性，语义评审判断意图与证据是否对齐，批准规则判断 PR 资格，显式用户交互授权范围或受限操作；goal、plan 和 merge 各自不能替代这些判断。</desc>
+  <rect width="1200" height="610" fill="#ffffff"/>
+  <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">交付判断：四种机制，四种问题</text>
+  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">它们互相配合，但没有一种机制能替代其他三种</text>
+
+  <rect x="55" y="110" width="250" height="190" rx="11" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+  <text x="180" y="147" text-anchor="middle" font-size="16" font-weight="700" fill="#173f67">测试 / CI</text>
+  <text x="180" y="181" text-anchor="middle" font-size="12" fill="#526175">类型、构建、测试、平台</text>
+  <text x="180" y="207" text-anchor="middle" font-size="12" fill="#526175">实际执行的机械属性</text>
+  <text x="180" y="248" text-anchor="middle" font-size="12" font-weight="700" fill="#39709f">回答：断言通过了吗？</text>
+  <text x="180" y="275" text-anchor="middle" font-size="12" fill="#39709f">不能回答：意图正确吗？</text>
+
+  <rect x="325" y="110" width="250" height="190" rx="11" fill="#fff0f0" stroke="#d26a6a" stroke-width="1.5"/>
+  <text x="450" y="147" text-anchor="middle" font-size="16" font-weight="700" fill="#8b3030">语义评审</text>
+  <text x="450" y="181" text-anchor="middle" font-size="12" fill="#6d4d4d">实现、文档、意图、证据</text>
+  <text x="450" y="207" text-anchor="middle" font-size="12" fill="#6d4d4d">当前 diff 的含义对齐</text>
+  <text x="450" y="248" text-anchor="middle" font-size="12" font-weight="700" fill="#9b4545">回答：真的满足声称吗？</text>
+  <text x="450" y="275" text-anchor="middle" font-size="12" fill="#9b4545">不能替代实际运行</text>
+
+  <rect x="595" y="110" width="250" height="190" rx="11" fill="#f3efff" stroke="#8269bd" stroke-width="1.5"/>
+  <text x="720" y="147" text-anchor="middle" font-size="16" font-weight="700" fill="#513b85">批准规则</text>
+  <text x="720" y="181" text-anchor="middle" font-size="12" fill="#634a99">review / author / status</text>
+  <text x="720" y="207" text-anchor="middle" font-size="12" fill="#634a99">适用 PR 的资格门槛</text>
+  <text x="720" y="248" text-anchor="middle" font-size="12" font-weight="700" fill="#7457a3">回答：可以推进合并吗？</text>
+  <text x="720" y="275" text-anchor="middle" font-size="12" fill="#7457a3">不能证明产品完成</text>
+
+  <rect x="865" y="110" width="280" height="190" rx="11" fill="#fff8e8" stroke="#d6a636" stroke-width="1.5"/>
+  <text x="1005" y="147" text-anchor="middle" font-size="16" font-weight="700" fill="#76530a">显式用户交互</text>
+  <text x="1005" y="181" text-anchor="middle" font-size="12" fill="#665a3e">Plan 批准 / 受限操作授权</text>
+  <text x="1005" y="207" text-anchor="middle" font-size="12" fill="#665a3e">用户决定范围或风险</text>
+  <text x="1005" y="248" text-anchor="middle" font-size="12" font-weight="700" fill="#8a6d25">回答：可以做这个动作吗？</text>
+  <text x="1005" y="275" text-anchor="middle" font-size="12" fill="#8a6d25">不能替代质量证据</text>
+
+  <rect x="100" y="370" width="1000" height="150" rx="12" fill="#fafafa" stroke="#cbd5e1"/>
+  <text x="600" y="407" text-anchor="middle" font-size="17" font-weight="700" fill="#334155">四条非等价关系</text>
+  <text x="250" y="448" text-anchor="middle" font-size="13" fill="#526175">Goal complete ≠ 需求已满足</text>
+  <text x="500" y="448" text-anchor="middle" font-size="13" fill="#526175">Plan 批准 ≠ 权限授予</text>
+  <text x="750" y="448" text-anchor="middle" font-size="13" fill="#526175">CI green ≠ 语义完整</text>
+  <text x="950" y="448" text-anchor="middle" font-size="13" fill="#526175">merge ≠ release</text>
+  <text x="600" y="487" text-anchor="middle" font-size="13" font-weight="700" fill="#8b3030">权限仍由 sandbox / approval policy 管理；交付仍需匹配证据和语义判断</text>
+</svg>

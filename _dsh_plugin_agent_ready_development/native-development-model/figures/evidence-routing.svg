@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">DSH 插件变更的证据路由</title>
+  <desc id="desc">根据 changed surface 选择局部测试、真实组合、snapshot、打包 smoke、真实 API e2e 或 invariant，再由 CI 和语义评审分别判断机械属性和意图对齐。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#475569"/></marker>
+    <marker id="arrow-teal" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#0f766e"/></marker>
+  </defs>
+  <rect width="1200" height="760" fill="#ffffff"/>
+  <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">按可观察对象路由证据</text>
+  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">最小检查不是最少测试，而是会拒绝目标回归的最小可信观察</text>
+
+  <rect x="435" y="95" width="330" height="70" rx="10" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
+  <text x="600" y="125" text-anchor="middle" font-size="16" font-weight="700" fill="#744408">changed surface</text>
+  <text x="600" y="149" text-anchor="middle" font-size="12" fill="#805915">diff 改变了哪个可观察对象？</text>
+
+  <path d="M435 130 H170 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M435 130 H390 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M765 130 H810 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M765 130 H1030 V205" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <rect x="45" y="205" width="250" height="150" rx="10" fill="#edf5ff" stroke="#5791c9"/>
+  <text x="170" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#173f67">局部行为</text>
+  <text x="170" y="271" text-anchor="middle" font-size="12" fill="#526175">unit / component test</text>
+  <text x="170" y="297" text-anchor="middle" font-size="12" fill="#526175">固定函数或组件结果</text>
+  <text x="170" y="329" text-anchor="middle" font-size="12" fill="#39709f">必须能抓住局部回归</text>
+
+  <rect x="315" y="205" width="250" height="150" rx="10" fill="#e8f7f3" stroke="#319795"/>
+  <text x="440" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#125f5b">Loader / wiring</text>
+  <text x="440" y="271" text-anchor="middle" font-size="12" fill="#3f5f62">真实 cordis.yml + app/process</text>
+  <text x="440" y="297" text-anchor="middle" font-size="12" fill="#3f5f62">配置、inject、组合结果</text>
+  <text x="440" y="329" text-anchor="middle" font-size="12" fill="#18766f">不能只用 ctx.plugin()</text>
+
+  <rect x="585" y="205" width="250" height="150" rx="10" fill="#f3efff" stroke="#8269bd"/>
+  <text x="710" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#513b85">模型 / 协议 / 用户输出</text>
+  <text x="710" y="271" text-anchor="middle" font-size="12" fill="#634a99">keyless recorded session</text>
+  <text x="710" y="297" text-anchor="middle" font-size="12" fill="#634a99">snapshot / e2e 外部断言</text>
+  <text x="710" y="329" text-anchor="middle" font-size="12" fill="#7457a3">预期不由刷新自动接受</text>
+
+  <rect x="855" y="205" width="300" height="150" rx="10" fill="#fff8e8" stroke="#d6a636"/>
+  <text x="1005" y="238" text-anchor="middle" font-size="15" font-weight="700" fill="#76530a">published artifact</text>
+  <text x="1005" y="271" text-anchor="middle" font-size="12" fill="#665a3e">build / pack + clean install</text>
+  <text x="1005" y="297" text-anchor="middle" font-size="12" fill="#665a3e">profile smoke / real API e2e</text>
+  <text x="1005" y="329" text-anchor="middle" font-size="12" fill="#8a6d25">验证用户实际拿到的形态</text>
+
+  <path d="M170 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M440 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M710 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M1005 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <rect x="365" y="450" width="470" height="105" rx="10" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="600" y="483" text-anchor="middle" font-size="16" font-weight="700" fill="#334155">PR CI / 本地检查</text>
+  <text x="600" y="511" text-anchor="middle" font-size="12" fill="#526175">建立机械属性：实际执行的测试、构建、格式和平台结果</text>
+  <text x="600" y="535" text-anchor="middle" font-size="12" fill="#64748b">绿灯只证明它执行的断言</text>
+
+  <path d="M600 555 V600" fill="none" stroke="#0f766e" stroke-width="1.7" marker-end="url(#arrow-teal)"/>
+  <rect x="330" y="600" width="540" height="92" rx="10" fill="#fff0f0" stroke="#d26a6a"/>
+  <text x="600" y="631" text-anchor="middle" font-size="16" font-weight="700" fill="#8b3030">语义评审</text>
+  <text x="600" y="657" text-anchor="middle" font-size="12" fill="#6d4d4d">意图 ↔ 实现 ↔ 当前文档 ↔ 证据 ↔ 发布形态</text>
+  <text x="600" y="679" text-anchor="middle" font-size="12" fill="#9b4545">判断“这笔变更是否真的满足用户声称”</text>
+</svg>
