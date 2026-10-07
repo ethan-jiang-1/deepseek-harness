@@ -70,7 +70,7 @@ e2e 的断言（`checkbox { name: 'gpt-6-astra', exact: true }`）在旧组件�
 
 ## 本地检查和 PR CI 是两层
 
-本地检查针对当前待推送的 diff 选最小可信证据，push 前抓住相关回归；PR CI 在远端跑完整矩阵（9 个必需 job 加 1 个不进聚合的 Windows coverage，见 [03](./03-github-flow.md)），覆盖共享规则、构建消费者和平台信号。两层不是二选一：本地快、有针对性；CI 统一、覆盖广。精确的检查选择方法见 [证据路由参考](../sdlc-reference/04-gates-and-local-checks.md)。
+本地检查针对当前待推送的 diff 选最小可信证据，push 前抓住相关回归；PR CI 在远端跑完整矩阵（9 个必需 job 加 1 个不进聚合的 Windows coverage，见 [03](./03-github-flow.md)），覆盖共享规则、构建消费者和平台信号。两层不是二选一：本地快、有针对性；CI 统一、覆盖广。精确的检查选择方法见 [证据路由参考](../../_dsh_plugin_agent_ready_development/sdlc-reference/04-gates-and-local-checks.md)。
 
 ## Push 前的完成判断
 

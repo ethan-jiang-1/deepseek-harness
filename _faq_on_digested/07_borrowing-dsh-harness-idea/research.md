@@ -2,7 +2,7 @@
 
 ## 说明
 
-本 FAQ 的正文证据只有两类：DSH 仓库一手内容（钉版 `46a7f68b09`，`dsh-v0.1.7-rc.1`，正文以 GitHub URL 引用）与本目录内部文件。此外的整理过程依赖两份**本地研究语料**（`_agent_ready_development/repo-harness/`、`_digested/harness-idea/`）——它们只存在于本仓库工作树、不在上游，**对借用者不可见、不构成外部依赖**；本文件把它们记为纯文字出处（内部账本），不放链接。两份语料的理解都只从 DSH 仓库一手内容挖出。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写入入口链、披露管线两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写，第 1、3、9、10、14 条已按 0.1.7 基线（`46a7f68b09` 工作树）逐字重核并改写（截断补 `[...]`、恢复句尾冒号与引文内代码块、E9 换为 note 现行原文、E14 改引现行表格行）。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
+本 FAQ 的正文证据只有两类：DSH 仓库一手内容（钉版 `46a7f68b09`，`dsh-v0.1.7-rc.1`，正文以 GitHub URL 引用）与本目录内部文件。此外的整理过程依赖两份**本地研究语料**（`_dsh_plugin_agent_ready_development/repo-harness/`、`_digested/harness-idea/`）——它们只存在于本仓库工作树、不在上游，**对借用者不可见、不构成外部依赖**；本文件把它们记为纯文字出处（内部账本），不放链接。两份语料的理解都只从 DSH 仓库一手内容挖出。下面是本 FAQ 用到的一手原文，标注它在 DSH 仓库的位置；条目 1–12 随语料核对，13–21 为补写入入口链、披露管线两章时直接从 DSH 仓库核对的一手原文；第 8、10、13、14、19、20 条已在 0.1.5 基线上按新工作树重核并改写，第 1、3、9、10、14 条已按 0.1.7 基线（`46a7f68b09` 工作树）逐字重核并改写（截断补 `[...]`、恢复句尾冒号与引文内代码块、E9 换为 note 现行原文、E14 改引现行表格行）。上游再次合入后，按 `_digested/_change_log/` 复核本节名与原文，不要把「当前 checkout」当成新基线。
 
 ## 1. 仓库以 coding agent 为主、机械门禁优于 prose 约定
 
@@ -78,7 +78,7 @@
 
 > 较小项目若只有一个 loop、少量固定 adapter 和单一入口，可能只需要清晰 architecture map、少数 standing rules、任务 Skills 和针对性 tests。学习 DSH 的第一步应是知识归属与反馈纪律，而不是复制全部包结构。
 
-来源：`_agent_ready_development/repo-harness/07-boundaries-and-costs.md`（语料自身的判断，非 DSH 原文）
+来源：`_dsh_plugin_agent_ready_development/repo-harness/07-boundaries-and-costs.md`（语料自身的判断，非 DSH 原文）
 
 ## 13. CLAUDE.md 是 symlink，编辑真实文件
 
@@ -150,7 +150,7 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 > Mechanical or local edits, including local UI presentation and interaction changes, are exempt.
 
-来源：`.agents/notes/README.md`（创建标准一节）。变更闭环、决策记录两章引用的「局部修补豁免 vs 持久取舍必写」判据以此条为 DSH 侧原文；两个对比例的完整走查在 `_agent_ready_development/sdlc-tutorial/02-specs-and-decisions.md`。
+来源：`.agents/notes/README.md`（创建标准一节）。变更闭环、决策记录两章引用的「局部修补豁免 vs 持久取舍必写」判据以此条为 DSH 侧原文；两个对比例的完整走查在 `_faq_on_digested/17_dsh-native-development-process/02-specs-and-decisions.md`。
 
 ## 23. 本地相关检查按改动面选择
 
@@ -162,7 +162,7 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 > agent 是一等参与者；规则是可执行的代码；每类事实有唯一的 owner。
 
-来源：`_agent_ready_development/sdlc-tutorial/00-index.md`（2026-09-24 重写轮确立的归纳）。answer.md「DSH 的精华」一节直接引用此归纳；它是对 DSH 既有机制的总结，不是 DSH 的自称——DSH 从未把这三句写进自己的文档，逐条机制依据见 Tutorial 各页的钉版链接。
+来源：`_faq_on_digested/17_dsh-native-development-process/answer.md`（2026-09-24 重写轮确立的归纳）。answer.md「DSH 的精华」一节直接引用此归纳；它是对 DSH 既有机制的总结，不是 DSH 的自称——DSH 从未把这三句写进自己的文档，逐条机制依据见该 FAQ 各页的钉版链接。
 
 ## 25. 字数预算门禁的棘轮语义
 
@@ -174,14 +174,14 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 ## 已核对的相关消化材料
 
-- `_agent_ready_development/repo-harness/00-index.md`：五类信息缺口与五类 owner 总表（本 FAQ 正文扩为六缺口，见 01）
-- `_agent_ready_development/repo-harness/01-follow-a-fresh-agent.md`：fresh agent 六问闭环
-- `_agent_ready_development/repo-harness/02-legibility-and-ownership.md`：可读性与知识归属
-- `_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md`：Skills 的定位与边界
-- `_agent_ready_development/repo-harness/04-paved-road-and-participation.md`：参与阶梯与归属路由
-- `_agent_ready_development/repo-harness/05-executable-feedback.md`：六层反馈与负例控制
-- `_agent_ready_development/repo-harness/12-runtime-inspection.md`：运行时查询
-- `_agent_ready_development/repo-harness/07-boundaries-and-costs.md`：优先级清单与三问框架
+- `_dsh_plugin_agent_ready_development/repo-harness/00-index.md`：五类信息缺口与五类 owner 总表（本 FAQ 正文扩为六缺口，见 01）
+- `_dsh_plugin_agent_ready_development/repo-harness/01-follow-a-fresh-agent.md`：fresh agent 六问闭环
+- `_dsh_plugin_agent_ready_development/repo-harness/02-legibility-and-ownership.md`：可读性与知识归属
+- `_dsh_plugin_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md`：Skills 的定位与边界
+- `_dsh_plugin_agent_ready_development/repo-harness/04-paved-road-and-participation.md`：参与阶梯与归属路由
+- `_dsh_plugin_agent_ready_development/repo-harness/05-executable-feedback.md`：六层反馈与负例控制
+- `_dsh_plugin_agent_ready_development/repo-harness/12-runtime-inspection.md`：运行时查询
+- `_dsh_plugin_agent_ready_development/repo-harness/07-boundaries-and-costs.md`：优先级清单与三问框架
 - `_digested/harness-idea/00-map.md`：harness 思想入口与核心论点
 - `_digested/harness-idea/02-legibility.md`：静态可读性
 - `_digested/harness-idea/03-paved-road.md`：正确路径

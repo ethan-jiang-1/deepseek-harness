@@ -1,6 +1,6 @@
 # SDLC Reference 图示
 
-本目录只保存 `sdlc-reference/` 参考页使用的 SVG 图示，不向 SDLC Tutorial 或 Development Harness 提供共享图。
+本目录只保存 `sdlc-reference/` 参考页使用的 SVG 图示，不向其它卷提供共享图。
 
 ## 主入口
 

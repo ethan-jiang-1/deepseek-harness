@@ -280,7 +280,6 @@ const referencedSvgPaths = new Set()
 
 function owningFiguresDirectory(markdownPath) {
   const fromRoot = relative(corpusRoot, markdownPath).split(sep)
-  if (fromRoot[0] === 'sdlc-tutorial') return resolve(corpusRoot, 'sdlc-tutorial/figures')
   if (fromRoot[0] === 'sdlc-reference') return resolve(corpusRoot, 'sdlc-reference/figures')
   if (fromRoot[0] === 'repo-harness') return resolve(corpusRoot, 'repo-harness/figures')
   return undefined
@@ -553,9 +552,9 @@ for (const path of files) {
 }
 
 if (failures.length > 0) {
-  console.error(`_agent_ready_development verification failed with ${failures.length} problem(s):`)
+  console.error(`_dsh_plugin_agent_ready_development verification failed with ${failures.length} problem(s):`)
   for (const failure of failures) console.error(`  ${failure}`)
   process.exitCode = 1
 } else {
-  console.log(`_agent_ready_development verification passed: ${markdownCount} Markdown files, ${scriptCount} scripts, ${svgCount} SVG files.`)
+  console.log(`_dsh_plugin_agent_ready_development verification passed: ${markdownCount} Markdown files, ${scriptCount} scripts, ${svgCount} SVG files.`)
 }

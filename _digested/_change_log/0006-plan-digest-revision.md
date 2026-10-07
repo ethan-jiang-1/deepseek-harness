@@ -124,4 +124,4 @@ _coverage 逐专题翻回「已核验」+ verify + 独立复审
 - ~~上游文档缺口五条只登记，不代上游修~~ → **已在 0007 就地修复**（根 `AGENTS.md` 布局块、`packages/session/README.md` 漏登记 v2→v3、`packages/preset/agent-presets/README.md` 仍提已删的 `code` preset、`packages/client/README.md` 漏登记三个包；`docs/persistence-changes/` 在本基线确实不存在，属「不要提前引用」而非缺陷）。发现时的现场记录保留在 `0006` 的「顺带核出的上游文档缺口」一节。
 - ~~`0.1.5-rc.2` / `0.1.6-alpha.1` / `upstream/master` 未同步~~ → **口径澄清**：同步到**最后一个 RC**。`0.1.5-rc.2` 已由 [`0007`](./0007-0.1.5-rc.1-to-0.1.5-rc.2.md) 合入；`0.1.6-alpha.1` 与 `upstream/master` 是 alpha / 主干，按口径**有意不同步**，不再是待办。
 
-> 本计划列出的修订项与两项曾挂账的收尾（`_agent_ready_development/` re-pin、`harness-idea/` claims 与 FAQ 逐篇复核）**均已完成**，结果见 [`0006`](./0006-0.1.2-rc.1-to-0.1.5-rc.1.md) 的「后续完成」与「第二轮全量核验」两节。
+> 本计划列出的修订项与两项曾挂账的收尾（`_dsh_plugin_agent_ready_development/` re-pin、`harness-idea/` claims 与 FAQ 逐篇复核）**均已完成**，结果见 [`0006`](./0006-0.1.2-rc.1-to-0.1.5-rc.1.md) 的「后续完成」与「第二轮全量核验」两节。

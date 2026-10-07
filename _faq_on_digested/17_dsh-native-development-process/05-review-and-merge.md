@@ -23,7 +23,7 @@ Semantic review 可以由具备上下文的人或 agent 执行。`.github` 中�
 
 第 3、4 问就是你作为 reviewer 的产出：**finding（评审发现）**，指出缺陷、位置、影响和证据。作者逐条核验：成立就修改并补证据，不成立就用可验证事实解释。
 
-高风险变更还要沿真实 consumer 和 entry path 检查错误、取消、资源释放、并发、安全限制、模型可见内容与发布产物。完整语义维度见 [code review 参考](../sdlc-reference/06-review-and-human-role.md)。
+高风险变更还要沿真实 consumer 和 entry path 检查错误、取消、资源释放、并发、安全限制、模型可见内容与发布产物。完整语义维度见 [code review 参考](../../_dsh_plugin_agent_ready_development/sdlc-reference/06-review-and-human-role.md)。
 
 ## Review 是一个反馈循环
 
@@ -43,10 +43,10 @@ Merge 后目标分支成为当前交付状态。一个没读过 PR 对话的 fre
 
 这就是“合并后知识归位”的具体含义：**归位不是因为 merge 这个动作，而是因为交付组合本身把每类事实放进了它的 owner**（[02](./02-specs-and-decisions.md) 的六类位置）。
 
-Merge 只改变分支和 PR 状态，不会自动改变 Agent Note 的生命周期；归档条件由 [Agent Note 参考](../sdlc-reference/01-agent-note-lifecycle.md) 拥有。**合并非发布**：发布另有资格门槛与演练要求，见 [发布参考](../sdlc-reference/11-release.md)。
+Merge 只改变分支和 PR 状态，不会自动改变 Agent Note 的生命周期；归档条件由 [Agent Note 参考](../../_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md) 拥有。**合并非发布**：发布另有资格门槛与演练要求，见 [发布参考](../../_dsh_plugin_agent_ready_development/sdlc-reference/11-release.md)。
 
 ## 完成后的心智模型
 
 五篇读完，回到开篇的三条立场，它们在这最后一页合拢：**agent 是一等参与者**——你刚以一个没参与过 PR #5004 的身份，靠公开入口做完了语义评审和知识定位；**规则是可执行代码**——自动检查、policy、配对 hash 把能机械化的判断全部机械化，语义评审只处理机器管不了的部分；**每类事实有唯一 owner**——合并后 fresh agent 的三个问题都有可打开的答案，这就是“知识归位”。一句话收束：**先用可观察结果说明变更应该成为什么，把实现、当前文档和能在旧行为上失败的证据装进同一个 PR，让自动检查、语义评审和（需要时的）用户决定共同判断能否交付；合并后每类事实都在自己的 owner 里可再次发现。**
 
-需要核对精确 policy、Agent Note 状态、Plan 审批、证据路由、高风险 review、分支改写或依赖式 PR 栈时，从 [SDLC Reference 目录](../sdlc-reference/00-index.md) 按问题进入。
+需要核对精确 policy、Agent Note 状态、Plan 审批、证据路由、高风险 review、分支改写或依赖式 PR 栈时，从 [SDLC Reference 目录](../../_dsh_plugin_agent_ready_development/sdlc-reference/00-index.md) 按问题进入。

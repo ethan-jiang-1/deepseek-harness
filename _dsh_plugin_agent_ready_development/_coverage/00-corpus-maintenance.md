@@ -1,12 +1,12 @@
-# `_agent_ready_development` 语料证据与维护说明
+# `_dsh_plugin_agent_ready_development` 语料证据与维护说明
 
 > 复核日期：2026-09-30。产品源码基线：`580646c14fb998532a6ef19bb4cc4009cd74b786`（`dsh-v0.2.0-rc.2`，本语料自钉的固定基线；0009 轮 re-pin 后语料引用的全部 DSH 路径都在该 commit 逐一复核过）。本页记录专题的核验范围、结构决定和重审触发路径，不复制专题正文。（0008 独立复核注记：本页 2026-09-16 与 09-23 两个历史条目里的 commit hash 曾被一次全局替换误改成 `46a7f68b09`——历史条目各自钉的基线应为 `183f08e9c6`（0.1.5-rc.1）与 `fb2c4b9e69`（0.1.5-rc.2），已按 git tag 证据复原；URL 计数口径统一为「唯一 URL 数」；本条中的 `46a7f68b09` 指 0.1.7-rc.1 基线，是历史事实，不属于本轮 re-pin 范围。）
 
 ## 1. 专题定位
 
-`_agent_ready_development/` 是根级 SDD、GitHub Flow 与 Development Harness 学习语料，并使用 DSH 作为固定版本的一手机制参考；它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法。语料把可观察机制综合为“分布式规格”：Issue/任务意图、Agent Note 决定、可选 Plan、当前源码与文档、行为证据，以及 GitHub 远端协作状态分别有自己的 owner。
+`_dsh_plugin_agent_ready_development/` 是以 DSH 固定版本一手来源为依据的三卷互补语料：`native-development-model/` 综合原生开发流程中的关系，`sdlc-reference/` 提供精确条件与例外，`repo-harness/` 解释仓库如何帮助 coding agent 参与。它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法；三卷均独立依据 DSH 源码、文档、规则、Skills、workflow 和 git 历史，不依赖其它研究语料。
 
-根 `README.md` 是独立语料的介绍、三视角定位与维护入口。`sdlc-tutorial/` 中的 `01` 至 `05` 以一笔真实小变更（模型选择器显示 model ID，提交 `5124a2a310`，PR #5004）为主例递进讲解 SDD、GitHub Flow、实现证据与 review/merge，并以 pnpm 锁修复（`ccaa0dc11c`，PR #4982，`bounded-pnpm-runs` Note）做 Note 对照；2026-09-24 重写轮把虚构 CLI 例子整体替换为这两笔真实交付，正文对每步标注 `已在提交观察` / `现行规则要求` / `需查 GitHub` 三层证据等级，任务描述明示为教学重建，PR #5004/#4982 的远端记录在钉版环境不可达、按现行规范演练呈现，红灯对照（2 红 95 绿）在钉版基线 worktree 实测。`sdlc-reference/` 中的 `01` 至 `08` 按问题提供 SDLC 生命周期的精确 reference，`08` 是明确限定证据范围的 git 历史案例；2026-09-24 轮新增 `09`（意图入口与工作项治理）、`10`（加权批准与合并门槛）与 `11`（发布与上线），把主链在“意图进入”与“merge 之后”两端补齐。`repo-harness/` 中的 `01` 是 fresh-agent tutorial，`02` 至 `07` 分别拥有知识归属、Skills、参与路径、可执行反馈、运行时查询和适用边界。
+根 `README.md` 是独立语料的介绍、三卷定位与维护入口。`native-development-model/00-index.md` 说明 owner、证据、交付判断之间的关系，不增加额外阶段或产物；`sdlc-reference/` 按问题提供意图入口、Agent Note、Plan、检查、评审、批准、合并、发布与历史证据的精确参考；`repo-harness/` 说明 fresh agent 入口、知识归属、Skills、参与路径、可执行反馈、运行时查询、仓库分类学和插件作者入口。迁移到独立研究 FAQ 的历史案例不再作为本语料的前置卷。
 
 每个目录都有 `README.md`。三个主题目录的 README 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 README 还标明每张 SVG 的正文 owner。
 
@@ -34,7 +34,7 @@
 
 ## 3. 结构与叙事约束
 
-1. 阅读顺序是 tutorial-first：先在 `sdlc-tutorial/` 用一笔真实小变更（模型选择器显示 model ID）讲完普通路径，再拆解规格、GitHub Flow、证据与 review；精确机制和少见流程进入 `sdlc-reference/`。案例事实与三层证据标注（`已在提交观察` / `现行规则要求` / `需查 GitHub`）是 tutorial 层的结构约束：教学重建的任务描述不冒充原始 Issue，不可达的远端记录不补造历史。
+1. 三卷互补但独立：`native-development-model/` 只综合 owner、证据与交付判断的关系；`sdlc-reference/` 拥有精确条件、状态与例外；`repo-harness/` 拥有仓库入口、工具和反馈机制。任何一卷都不要求先读另一卷，也不把迁移到 FAQ 的历史案例当作前置知识。
 2. 重要术语在新手层首次出现时同时给出英文名称和中文解释；后文保留仓库与 GitHub 中可搜索的英文名称。
 3. 主链不把 Issue、proposed Note 和 Plan Mode 画成统一必经顺序；三者是条件入口，承载持久决定理由的变更的共同义务是 owning Agent Note（机械/局部编辑豁免，与上游收窄后的标准一致）。
 4. `.github/` 是远端执行面，而非只在 Issue 小节中出现：模板、trusted policy、Project lifecycle、PR CI、自动依赖 PR 和相邻发布 workflow 各自标明职责。
@@ -52,7 +52,7 @@
 
 ## 4. 图示
 
-18 张 SVG 分属 [SDLC Tutorial](../sdlc-tutorial/figures/README.md)、[SDLC Reference](../sdlc-reference/figures/README.md) 和 [Development Harness](../repo-harness/figures/README.md) 三个清单（2026-09-24 第五段起新增 `content-maintenance-forms.svg` 与 `plugin-three-structures.svg`，均归 Development Harness；同日 tutorial 重写轮新增 `evidence-map.svg`，归 SDLC Tutorial 的 `01`）；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
+现有 SVG 分属 [SDLC Reference](../sdlc-reference/figures/README.md) 和 [Development Harness](../repo-harness/figures/README.md) 两个图示清单；原生开发模型当前不使用图示。各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
 
 ## 5. 重审触发路径
 
@@ -73,8 +73,8 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 ## 6. 验证
 
-- 每次改动运行 `node _agent_ready_development/verify.mjs`、`pnpm run verify-md-links`、`pnpm run verify-md-wrap` 和 `git diff --check`。目录 verifier 检查严格 UTF-8、结尾换行、内部链接与锚点、固定 DSH 外链、研究语料隔离、目录 README、图示归属、孤立 SVG，以及 SVG 的固有尺寸、无障碍元数据和 XML。
-- 修改 `verify.mjs` 时再运行 `node --check _agent_ready_development/verify.mjs`，并确认代表性无效输入会被拒绝；修改 SVG 时渲染受影响文件，检查文字、连线和缩放。
+- 每次改动运行 `node _dsh_plugin_agent_ready_development/verify.mjs`、`pnpm run verify-md-links`、`pnpm run verify-md-wrap` 和 `git diff --check`。目录 verifier 检查严格 UTF-8、结尾换行、内部链接与锚点、固定 DSH 外链、研究语料隔离、目录 README、图示归属、孤立 SVG，以及 SVG 的固有尺寸、无障碍元数据和 XML。
+- 修改 `verify.mjs` 时再运行 `node --check _dsh_plugin_agent_ready_development/verify.mjs`，并确认代表性无效输入会被拒绝；修改 SVG 时渲染受影响文件，检查文字、连线和缩放。
 - Repository-level 文档校验运行 `pnpm run doc-sync`；被 host toolchain、build prerequisite 或目录外规则阻断时，交付报告记录 exact command 与错误，不把结果写成绿色证据。
 
 2026-08-24 的 repository-level 复核没有建立绿色 `doc-sync` 结果：`corepack pnpm run doc-sync` 完成 28 项中的 25 项，`doc-typecheck` 缺少 `lib/types/{index,invariant,startup}.js` 构建入口，documentation build 命中 host Corepack 的 `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`，translation pairing 因仓库 scope 包含本语料而拒绝 8 个 README。前两项需要目录外构建或工具链修复；pairing exclusion 由目录外的 `scripts/translation-pairing.manifest.json` 拥有。目录级检查通过不能替代这三项 repository-level 结果。
@@ -98,11 +98,11 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 复核后未改动的部分：`sdlc-reference/02` 的 policy 函数与 workflow/Dependabot 事实、`sdlc-reference/04` 的 `change-scope`、hook 与证据路由表、`sdlc-reference/07` 的 stack 流程、`repo-harness/01`、`04`、`06` 的机制清单、`sdlc-reference/08` 的四个历史 commit 与现行 Note 结构，以及 `sdlc-tutorial/` 全篇，都与 `46a7f68b09` 一致。
 
-本轮只做语料级验证：`node _agent_ready_development/verify.mjs` 通过（32 Markdown、1 scripts、15 SVG），`npx tsx scripts/verify-md-wrap.ts`、`npx tsx scripts/verify-md-links.ts` 与 `git diff --check` 也都通过，且语料中没有任何 URL 仍钉在旧 commit。完整 `doc-sync` 未在本轮重跑，2026-08-24 条目记录的目录外阻断仍然适用。
+本轮只做语料级验证：`node _dsh_plugin_agent_ready_development/verify.mjs` 通过（32 Markdown、1 scripts、15 SVG），`npx tsx scripts/verify-md-wrap.ts`、`npx tsx scripts/verify-md-links.ts` 与 `git diff --check` 也都通过，且语料中没有任何 URL 仍钉在旧 commit。完整 `doc-sync` 未在本轮重跑，2026-08-24 条目记录的目录外阻断仍然适用。
 
 2026-09-16 的 0.1.5-rc.2（`fb2c4b9e69`）re-pin：本语料的固定基线从 `183f08e9c6` 推进到 0.1.5 的最后一个 RC `fb2c4b9e69`，118 处目录外 DSH 引用 URL（约 57 个唯一 URL）全部改钉（17 个内容文件，另同步 `verify.mjs` 的钉版正则、`repo-harness/00-index.md` 的 baseline 声明与本页基线行）。钉版路径与锚点**逐一**在 rc.2 用 `git cat-file -e` / 标题比对复核：57 个唯一路径全部存在，11 个带 fragment 的锚点全部解析到 rc.2 的标题或 HTML id。rc.2 相对 rc.1 只有 4 个提交、1 个内容提交（feedback 提交对称化 + `ui-deliverables`/`ui-primitives` 细化），未触及本语料引用的任何文件，因此正文机制陈述无需修订。目录级 verify 通过。（0008 复核复原注记：本条 hash 在 0008 轮的机械 re-pin 中被误替换为 `46a7f68b09`——`dsh-v0.1.5-rc.2` 的 tag 对象是 `fb2c4b9e69`，`46a7f68b09` 是 `dsh-v0.1.7-rc.1`；已按 git tag 证据复原。）
 
-**pairing exclusion 落地（同批）**：2026-08-24 条目记录的最后一项目录外阻断——translation pairing 因仓库 scope 覆盖「每个非 vendor README」而拒绝本语料的 8 个 `README.md`（另外两个研究语料没有 README，所以只有本语料命中）——已按该条目预告的方式关闭：`scripts/translation-pairing.manifest.json` 的 `excluded` 增加目录项 `"_agent_ready_development/"`（尾斜杠是路径边界），本语料整体退出双语配对 scope。此后 `npx tsx scripts/run-gates.ts doc-quick` **16 项全绿**（此前 15 通过 1 失败），`verify-translation-pairing` 报 789 对全部一致。2026-08-24 条目余下的两项（`doc-typecheck` 缺少构建入口、documentation build 的 host Corepack `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`）仍需目录外构建或工具链修复，本语料无法自行关闭。
+**pairing exclusion 落地（同批）**：2026-08-24 条目记录的最后一项目录外阻断——translation pairing 因仓库 scope 覆盖「每个非 vendor README」而拒绝本语料的 8 个 `README.md`（另外两个研究语料没有 README，所以只有本语料命中）——已按该条目预告的方式关闭：`scripts/translation-pairing.manifest.json` 的 `excluded` 增加目录项 `"_dsh_plugin_agent_ready_development/"`（尾斜杠是路径边界），本语料整体退出双语配对 scope。此后 `npx tsx scripts/run-gates.ts doc-quick` **16 项全绿**（此前 15 通过 1 失败），`verify-translation-pairing` 报 789 对全部一致。2026-08-24 条目余下的两项（`doc-typecheck` 缺少构建入口、documentation build 的 host Corepack `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`）仍需目录外构建或工具链修复，本语料无法自行关闭。
 
 ## 2026-09-23 的 0.1.7-rc.1（`46a7f68b09`）re-pin：整树照搬口径首次执行
 
@@ -120,7 +120,7 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 4. **git 历史轨迹（支撑 `10` §5 与 `11` §2）**：在可复核窗口内（本地 checkout 为 shallow，master 线可见约 2026-07-30 之后；22 个 tag 全部可见）确认——merge commit 是主导落地形态（约 33% 的 commit 为 merge，PR merge 标题带 PR 号），squash 为少数；PR commit 数中位数 3、众数 1（0009 独立反查重测：众数 2、单 commit 约 19%，旧读为该轮样本口径误差）；分支命名是类型前缀（`feat/`、`fix/`、`rel/`）与执行者命名空间（`worktree/`、`codex/`、`turtle/`、`ihsiang/`）并存并常带日期后缀；release tag 直接打在 release PR 的 merge commit 上，距前一个 feature merge 约 19–41 分钟（0010 轮重测：23m48s/40m34s/19m27s；0009 轮的 24–41 读数不可复现）。两个端到端案例：semantic issue templates（note 直接诞生于 implemented/，note+模板+policy+测试同一 commit `fa40d90023`，经 PR #3529 merge `cd4a23c5df`，首个包含 tag `dsh-v0.1.3-alpha.2`）；conversation build groups（PR #4758 内 proposed-intro docs commit → 实现 commits → 独立的 implemented 移动 commit，同 PR 异 commit）。语料维护 commit 在 fork 本地分支直接提交、不经 upstream PR pipeline（fork 与 upstream 仅以周期性 sync merge 连接）。
 5. **根 README 声明改写**：按用户要求写明「语料的全部理解只从 DSH GitHub 仓库一手挖出」，并把钉版表述改为「本轮尊敬的版本，随上游版本演进不断 re-pin」，不是永久前提；历轮记录仍由本页承载。
 
-同轮修正的旧偏差记录：`sdlc-reference/02` §6 与 `sdlc-reference/00-index` 补充指向 `09`–`11` 的导航，`sdlc-reference/06` §1 补充指向 `10` 的加权批准门禁；`sdlc-reference/10` §5 按 git 历史证据把 merge 形态改述为「merge commit 主导、squash 少数」，并补 PR 规模分布与分支命名两类前缀。新增页面全部引用钉版 URL，锚点按标题或既有 `<a id>` 核对；`09` 初稿误写的 `#the-two-dimensions` 锚点已改为 `#decision`。本轮运行 `node _agent_ready_development/verify.mjs` 通过（35 Markdown、1 script、15 SVG），未重跑 repository-level `doc-sync`（2026-08-24 条目的目录外阻断仍然适用）。
+同轮修正的旧偏差记录：`sdlc-reference/02` §6 与 `sdlc-reference/00-index` 补充指向 `09`–`11` 的导航，`sdlc-reference/06` §1 补充指向 `10` 的加权批准门禁；`sdlc-reference/10` §5 按 git 历史证据把 merge 形态改述为「merge commit 主导、squash 少数」，并补 PR 规模分布与分支命名两类前缀。新增页面全部引用钉版 URL，锚点按标题或既有 `<a id>` 核对；`09` 初稿误写的 `#the-two-dimensions` 锚点已改为 `#decision`。本轮运行 `node _dsh_plugin_agent_ready_development/verify.mjs` 通过（35 Markdown、1 script、15 SVG），未重跑 repository-level `doc-sync`（2026-08-24 条目的目录外阻断仍然适用）。
 
 ## 2026-09-24 的目录更名与语料自查
 
@@ -149,7 +149,7 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 2. **新增 `repo-harness/08-repository-taxonomy.md`**：顶层分区各辖其职表、包“恰好属于一个组”与 product/support/experimental 发布期望、依赖方向规则、内容的五种维护形态（手写 / 生成+freshness / 混合 cordis-surface 与 type-equiv / 录制 snapshots 与 archived / 投影 website）加预算与双语两个仪表、`snapshots/` 只收 session 回放的放置规则、vendor 作为所有权边界（owned 而非 depended，分叉逐条留痕）。
 3. **新增 `repo-harness/09-plugin-author-entry.md`**：cordis-tutorial（audience 是 agent developers、scratch 可运行、末讲接入真实 tools service）与 user/develop 两条线的分界（`cordis.yml` 加载 + Web UI 驱动）、插件最小定义（导出 `apply` 的 TS 模块，DSH 自身包同为此种插件）、bundle/profile 二分（“Nothing is both”）与 plugin → bundle → profile 发布链；§4 为标注的语料归纳——插件仓库对齐词汇的收益与继承边界（DSH 不要求插件仓库复制 AGENTS.md/Notes/gates）。
 4. **导航与定位同步**：`repo-harness/00-index` 阅读路径表加两行，`repo-harness/README` 内容表改 01–09，根 README 宗旨节补一段“读者典型用途是开发 DSH 插件”的定位并指向新两篇。两篇新页均无图（页不强制配图，`verify.mjs` 不要求）。
-5. **验证**：`node _agent_ready_development/verify.mjs` 通过（37 Markdown、1 scripts、15 SVG），钉版审计脚本对新增 URL 全过（路径与锚点，含 `#package-groups`、`#release-expectations`、`#dependencies`、`#what-is-a-plugin`、`#two-concepts-two-manifests`、`#local-modifications`），新页全部 blockquote 逐字回对；`npx tsx scripts/verify-md-links.ts`、`npx tsx scripts/verify-md-wrap.ts` 与 `git diff --check` 通过。
+5. **验证**：`node _dsh_plugin_agent_ready_development/verify.mjs` 通过（37 Markdown、1 scripts、15 SVG），钉版审计脚本对新增 URL 全过（路径与锚点，含 `#package-groups`、`#release-expectations`、`#dependencies`、`#what-is-a-plugin`、`#two-concepts-two-manifests`、`#local-modifications`），新页全部 blockquote 逐字回对；`npx tsx scripts/verify-md-links.ts`、`npx tsx scripts/verify-md-wrap.ts` 与 `git diff --check` 通过。
 
 ## 2026-09-24 的第五段：分类学与插件作者两页补图
 
@@ -158,7 +158,7 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 1. **新增 `repo-harness/figures/content-maintenance-forms.svg`（08 页）**：五列展示手写 / 混合 / 生成+freshness / 录制 / 投影五种维护形态（各含例子与机器边界，副标题声明“从左到右机器参与度递增”）；下方 “docs/ 分区剖面” 四个 chip + website chip 与上方五列垂直对齐，承载“形态由 owner 与 gate 决定、不由目录名决定——docs/ 一个目录住四种形态”的核心洞见；底部条收束三条放置规则（分组表、snapshots/AGENTS.md、vendor 修改日志）。列序按机器参与度排（混合居第二），08 页正文表格保持手写/生成/混合/录制/投影原序未改——图讲频谱、表讲逐类边界，两序并存有意为之。
 2. **新增 `repo-harness/figures/plugin-three-structures.svg`（09 页）**：三面板画三个结构——DSH 仓库（词汇与机制 owner，含 packages/apps/docs/.agents/.github·vendor 迷你树）、插件仓库（hello-plugin/ 的 package.json dsh.bundle、cordis.patch.yml、src 插件模块）、运行时组合（$DSH_HOME/profiles 的 dsh.profile、bundle 层叠加、挂进 ctx）；顶部流程条（词汇与教程 → dsh plugin add → bundle 进入 profile）、面板间裸箭头、底部虚线回环箭头（挂回同一棵运行时插件树）与 coding agent 双仓库视角条（含继承边界）。初稿流程标签放在 30px 面板间隙中导致溢出，改为顶部流程条承载全部流程语义。
 3. **几何自检**：自写宽度估算脚本（CJK≈字号、ASCII≈0.6×字号）检查全部新图文本是否溢出所在容器与画布，两图均通过并用 `rsvg-convert` 渲染成功；同一脚本对第三段改过的三张图复核，被标记项均为存量版式或旋转文本误报（本段未触及），不翻修。
-4. **同步**：`repo-harness/figures/README.md` 登记两张新图的正文 owner；本页 §4 图示计数 15 → 17。`node _agent_ready_development/verify.mjs` 通过（37 Markdown、1 scripts、17 SVG），`npx tsx scripts/verify-md-links.ts`、`npx tsx scripts/verify-md-wrap.ts`、`git diff --check` 通过。
+4. **同步**：`repo-harness/figures/README.md` 登记两张新图的正文 owner；本页 §4 图示计数 15 → 17。`node _dsh_plugin_agent_ready_development/verify.mjs` 通过（37 Markdown、1 scripts、17 SVG），`npx tsx scripts/verify-md-links.ts`、`npx tsx scripts/verify-md-wrap.ts`、`git diff --check` 通过。
 
 ## 2026-09-30 的 0.2.0-rc.2（`580646c14fb998532a6ef19bb4cc4009cd74b786`）re-pin：0.2.0 线首轮对齐
 
@@ -176,6 +176,14 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 ## 2026-09-30 的 0009 独立反查（按维度重测）
 
 re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、实体正向覆盖、硬数字重测、口径一致性四线并行）。本语料修复：`sdlc-reference/11` 的版本基线（`0.1.7-rc.1` → `0.2.0-rc.2`，re-pin 漏网）与 release 间隔口径（约 24–41 分钟）；`sdlc-reference/10` 与本页 `:120` 的 PR merge 样本读数（众数 2、单 commit 约五分之一，最近 100 个 PR merge 重测）；`sdlc-tutorial/02` 的 Note 类别数（六）；`sdlc-tutorial/03`、`04` 与 `sdlc-reference/04` 的 PR CI job 结构（9 必需 + 不进聚合的 `windows-coverage`；observational gates 是 required Windows build job 内 step）；`sdlc-reference/09` 的 Skill description 前缀表述（实测 9/15 以 "Use" 开头）；`repo-harness/08` 的 pairing manifest 归属（与门禁发现范围逻辑共同定义）；`_misc/_eval_harness/README.md` 的例证钉版与 `_eval_harness/02` 的 npm-publish job 口径（每条发布序列一个）；本页 `:30` 加 en+zh 合计口径勘误、`:120` 间隔与 `:165` 唯一 URL 数（130）口径统一。钉版纪律复核：113 条钉版路径全量 `git cat-file -e` 全部存在，29 个锚点全解析，内容一致性抽查 5/5 逐字吻合。
+
+## 2026-09-30 的 0011 轮：语料更名与 sdlc-tutorial 迁出
+
+基线不变，仅动目录结构与引用，不改任何对 DSH 一手来源的事实断言。
+
+1. **语料更名**：`_agent_ready_development/` → `_dsh_plugin_agent_ready_development/`。旧名描述对象模糊（“agent ready”未说明面向哪类仓库），新名写清定位：面向新建独立 DSH 插件仓的 agent-ready 语料。根 `README.md`、引用扫描脚本的 `CORPORA`、`scripts/translation-pairing.manifest.json` 与全部跨语料引用同步；其余语料目录下的旧路径引用已清扫（本目录的 `verify.mjs` 禁止正文点名兄弟语料目录，故本节不写其目录名；改名后的跨语料引用见各自仓库）。
+2. **`sdlc-tutorial/` 迁出**：该卷的 01–05 与图示迁入 FAQ 语料的 `17_dsh-native-development-process/`（与本轮同时新增），以贯穿案例（提交 `5124a2a310`，PR #5004）与三条立场为正文主线，不再作为本语料的第四卷；本语料保留 `native-development-model/`、`sdlc-reference/`、`repo-harness/` 三卷。`verify.mjs` 的 `owningFiguresDirectory` 删去 `sdlc-tutorial` 分支（该目录已不存在）。
+3. **引用修正**：FAQ 07 的 `research.md` 两处 tutorial 出处改指 FAQ 17（02 页与 answer.md），评估语料 README 的“教程与立场”与来源表同步改指 FAQ 17。本页与各卷正文中记录历史轮次的 `sdlc-tutorial/NN` 字样保留原样——它们描述当时状态，不改写成现在时。
 
 ## 2026-09-30 的 0010 轮（变更账本＋无引文钉专项）
 

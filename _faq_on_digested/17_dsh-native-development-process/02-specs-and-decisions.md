@@ -37,7 +37,7 @@
 
 三件套的第三件（`.i18n.yaml`）记录两份语言的 git blob hash——连“中英文档相等”这个纪律都被可执行配对钉住，与主例 README 的配对方式完全相同。一个 agent 不需要读完整规则就能从目录树读出：决定分六个类别、有四种状态、双语平等。
 
-**Agent Note 只拥有决定**：承载持久决定理由的变更（代码、测试与现有文档都无法解释“为什么选当前方案”与“主动放弃了什么”这两类事实的变更）都要新增或更新 owning Agent Note；机械或局部编辑（含局部 UI 呈现）豁免。它有两个常见起点——决定仍需实现前评审时创建 proposed；决定已明确并随当前变更交付时直接 implemented。生命周期、取代和冻结归档规则属于 Reference 层机制，见 [Agent Note lifecycle](../sdlc-reference/01-agent-note-lifecycle.md)。
+**Agent Note 只拥有决定**：承载持久决定理由的变更（代码、测试与现有文档都无法解释“为什么选当前方案”与“主动放弃了什么”这两类事实的变更）都要新增或更新 owning Agent Note；机械或局部编辑（含局部 UI 呈现）豁免。它有两个常见起点——决定仍需实现前评审时创建 proposed；决定已明确并随当前变更交付时直接 implemented。生命周期、取代和冻结归档规则属于 Reference 层机制，见 [Agent Note lifecycle](../../_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md)。
 
 ## 两笔真实修改并排看
 
@@ -57,7 +57,7 @@
 
 Plan（计划）回答“这一次准备怎样做”，可以写具体文件、步骤、验证和未确定假设，服务当前会话。Agent Note 回答“仓库为什么长期采用这个决定”，服务未来维护者。一个 Plan 可以在实施中变化；implemented Note 只描述实际交付的决定。两者可能来自同一次设计讨论，但不能互相替代。
 
-Plan Mode 提供计划状态和用户审批交互，本身不限制文件、网络或进程访问；权限控制由 sandbox mode（沙箱模式）和 approval policy（审批策略）各自独立承担。精确状态和审批时序见 [Plan Mode 参考](../sdlc-reference/03-plan-and-sandbox.md)。
+Plan Mode 提供计划状态和用户审批交互，本身不限制文件、网络或进程访问；权限控制由 sandbox mode（沙箱模式）和 approval policy（审批策略）各自独立承担。精确状态和审批时序见 [Plan Mode 参考](../../_dsh_plugin_agent_ready_development/sdlc-reference/03-plan-and-sandbox.md)。
 
 ## 练习
 

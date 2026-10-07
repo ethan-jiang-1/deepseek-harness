@@ -13,7 +13,7 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join, relative, resolve, dirname, isAbsolute } from 'node:path'
 
 const ROOT = resolve(import.meta.dirname, '..')
-const CORPORA = ['_digested', '_faq_on_digested', '_agent_ready_development', '_misc']
+const CORPORA = ['_digested', '_faq_on_digested', '_dsh_plugin_agent_ready_development', '_misc']
 const SKIP_DIRS = ['_misc/_references', '_misc/_scratch']
 const inCorpora = (abs) => CORPORA.some((c) => abs === join(ROOT, c) || abs.startsWith(join(ROOT, c) + '/'))
 const inSkip = (abs) => SKIP_DIRS.some((s) => abs === join(ROOT, s) || abs.startsWith(join(ROOT, s) + '/'))

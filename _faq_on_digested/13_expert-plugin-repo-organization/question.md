@@ -29,7 +29,7 @@
 2. **流程模型**：dev-loop 沿 FAQ 06（spec 从意图走到当前合同的完整路径）与 FAQ 11（六步执行闭环）的已核结论展开，不重复论证。
 3. **市场实证**：公开 repo 与官方文档，来源 URL 一律记在 [research.md](./research.md)，检索时点为 2026-09；外部 repo 结构随时间漂移，引用时以 research.md 里留档的树为准。
 
-`_agent_ready_development/` 语料不在本 FAQ 的证据链里：它与本 FAQ 平行、钉同一基线 `46a7f68b09`，其全部理解也只从 DSH 仓库一手内容挖出（语料根 README 的声明）。该语料 2026-09-24 新增的两篇覆盖了本 FAQ 的相邻题域，可交叉印证、不构成依据——[`repo-harness/08-repository-taxonomy.md`](../../_agent_ready_development/repo-harness/08-repository-taxonomy.md)（仓库分类规则：顶层分区各辖其职、包恰属一组、五类维护形态）与 [`repo-harness/09-plugin-author-entry.md`](../../_agent_ready_development/repo-harness/09-plugin-author-entry.md)（插件作者文档 tier、bundle/profile 组合模型、插件仓库沿用 DSH 词汇的收益与继承边界）。09 的「插件仓库与 DSH 沿用同一套概念词汇时，coding agent 在两边用同样的检索模式」归纳，与本 FAQ 方案 A「DSH 源码进 repo 让 agent 就地探索」同向。语料再更名、扩篇或 re-pin 时，本 FAQ 的机制结论不随语料变——那些以 DSH 工作树为准，需要跟改的只有这里的交叉引用路径。
+`_dsh_plugin_agent_ready_development/` 语料不在本 FAQ 的证据链里：它与本 FAQ 平行、钉同一基线 `46a7f68b09`，其全部理解也只从 DSH 仓库一手内容挖出（语料根 README 的声明）。该语料 2026-09-24 新增的两篇覆盖了本 FAQ 的相邻题域，可交叉印证、不构成依据——[`repo-harness/08-repository-taxonomy.md`](../../_dsh_plugin_agent_ready_development/repo-harness/08-repository-taxonomy.md)（仓库分类规则：顶层分区各辖其职、包恰属一组、五类维护形态）与 [`repo-harness/09-plugin-author-entry.md`](../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md)（插件作者文档 tier、bundle/profile 组合模型、插件仓库沿用 DSH 词汇的收益与继承边界）。09 的「插件仓库与 DSH 沿用同一套概念词汇时，coding agent 在两边用同样的检索模式」归纳，与本 FAQ 方案 A「DSH 源码进 repo 让 agent 就地探索」同向。语料再更名、扩篇或 re-pin 时，本 FAQ 的机制结论不随语料变——那些以 DSH 工作树为准，需要跟改的只有这里的交叉引用路径。
 
 ## 阅读入口
 

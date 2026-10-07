@@ -2,9 +2,9 @@
 
 反查日期：2026-09-30。产品基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）。先验证整树照搬成立：`git diff 639ed01539 HEAD` 排除四个语料目录后仅剩 `scripts/translation-pairing.manifest.json` 一行排除项与未跟踪的 `.pi/` 记录，产品源码与 tag 逐字节一致（三条审计线独立复核）。
 
-本页是对 [`0009-0.1.7-rc.1-to-0.2.0-rc.2.md`](./0009-0.1.7-rc.1-to-0.2.0-rc.2.md) 所述语料反查的**独立反查**，不替代该记录。全部证据为工作树实读（文件:行），未采信记录自述。与 0009 六路切片的方法差异：本轮**按维度而非按目录切**——D0 机械完整性、D1 孤儿引用全量反查（不与变更跨度求交）、D2 实体正向覆盖（三路切片：包与 ctx 服务、扩展面实体、文档与结构面）、D3 硬数字重测（两路切片：_digested、_agent_ready_development+_misc）、D4 基线与口径一致性。
+本页是对 [`0009-0.1.7-rc.1-to-0.2.0-rc.2.md`](./0009-0.1.7-rc.1-to-0.2.0-rc.2.md) 所述语料反查的**独立反查**，不替代该记录。全部证据为工作树实读（文件:行），未采信记录自述。与 0009 六路切片的方法差异：本轮**按维度而非按目录切**——D0 机械完整性、D1 孤儿引用全量反查（不与变更跨度求交）、D2 实体正向覆盖（三路切片：包与 ctx 服务、扩展面实体、文档与结构面）、D3 硬数字重测（两路切片：_digested、_dsh_plugin_agent_ready_development+_misc）、D4 基线与口径一致性。
 
-前置事实：三个语料 `verify.mjs` 在反查时全绿（`_digested` 87 MD / `_faq_on_digested` 126 MD / `_agent_ready_development` 37 MD；`_misc` 无校验脚本，本轮用临时全量链接扫描覆盖，固化待办见文末）。即现有门禁（UTF-8、换行、相对链接、锚点、基线常量）**不覆盖内容新鲜度**——下述全部问题存在于绿门禁之下。
+前置事实：三个语料 `verify.mjs` 在反查时全绿（`_digested` 87 MD / `_faq_on_digested` 126 MD / `_dsh_plugin_agent_ready_development` 37 MD；`_misc` 无校验脚本，本轮用临时全量链接扫描覆盖，固化待办见文末）。即现有门禁（UTF-8、换行、相对链接、锚点、基线常量）**不覆盖内容新鲜度**——下述全部问题存在于绿门禁之下。
 
 ## 总体结论
 
@@ -56,7 +56,7 @@
 - `_change_log/00-index.md:26`：「语料反查待执行，全部专题标『需复核』」→ 已完成（矩阵十一行写回已核验；本页即独立反查记录）。
 - `capability-seams/00-map.md:3` 头部基线随修改升 rc.2。其余六个 00-map 头部仍钉 `46a7f68b09`——按「未改动文件头不动」政策保留，但 0009 政策与本轮证据（A1 恰是页头未动而正文过期）说明该张力真实存在，**后续轮次建议：正文被改到的页一律随改升头**。
 
-## _agent_ready_development 与 _misc
+## _dsh_plugin_agent_ready_development 与 _misc
 
 - `sdlc-reference/11-release.md:17`：dsh 版本基线「`0.1.7-rc.1`」→ **`0.2.0-rc.2`**（0009 re-pin 漏改的版本串）。
 - `sdlc-reference/11-release.md:27` 与 `_coverage/00-corpus-maintenance.md:120`：release 间隔「约 19–41 分钟」→ **约 24–41 分钟**（旧读 19 来自以 release commit 而非 merge commit 为端点的口径）。
