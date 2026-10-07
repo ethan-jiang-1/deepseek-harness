@@ -179,7 +179,7 @@ Plan Mode 本身不禁止文件、进程或网络操作。计划认可不是扩�
 
 ### snapshot（录制会话测试）
 
-DSH 本卷谈的 **snapshot**主要是 recorded-session scenario：提交的 Session JSONL 提供用户输入、模型回放与预期持久结果，相关界面还可以保留协议或渲染证据。**Replay**回放已有数据验证结果；**record/refresh**按指定方式更新录制资产。
+DSH 本卷谈的 **snapshot** 主要是 recorded-session scenario：提交的 Session JSONL 提供用户输入、模型回放与预期持久结果，相关界面还可以保留协议或渲染证据。**Replay**回放已有数据验证结果；**record/refresh**按指定方式更新录制资产。
 
 它不是泛指任何截图，也不是仅让测试框架重新生成一个文本文件。非会话驱动的 UI 或 CLI expected output 由所属 app/package/script 维护。**Keyless**表示回放验证无需真实 API key，不表示首次录制或真实模型能力测试都无需 key。依据：DSH [Testing tiers](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/docs/testing.md#tiers)与 [录制场景规则](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/snapshots/AGENTS.md)。
 

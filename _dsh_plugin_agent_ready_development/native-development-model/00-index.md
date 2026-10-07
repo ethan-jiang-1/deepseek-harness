@@ -94,9 +94,9 @@ DSH 的本地检查策略又要求验证保持聚焦：选择会为当前回归�
 
 ### 7. 用语义评审完成交付判断
 
-![独立 oracle、真实入口与评审的关系](./figures/owner-and-evidence.svg)
+![owner、证据与交付判断的关系](./figures/owner-and-evidence.svg)
 
-这里的 oracle、real composition 和 semantic review 都是有边界的术语，不是“测试通过”的同义词；分别见[术语页的验证部分](./02-terms-and-mental-models.md#四怎样验证与判断完成)。测试、snapshot、CI 和 approval 规则各自建立机械属性；语义评审判断实现、当前文档、持久取舍和证据是否真的符合用户意图。
+这里的 oracle、real composition 和 semantic review 都是有边界的术语，不是“测试通过”的同义词；分别见[术语页的验证部分](./02-terms-and-mental-models.md#四怎样验证与判断完成)。真实入口与独立 oracle 的选择见上面的证据路由图。测试、snapshot、CI 和 approval 规则各自建立机械属性；语义评审判断实现、当前文档、持久取舍和证据是否真的符合用户意图。
 
 ![交付判断的四种角色](./figures/acceptance-roles.svg)
 
