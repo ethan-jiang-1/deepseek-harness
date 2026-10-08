@@ -18,5 +18,5 @@
 
 | 路径 | 职责 |
 |---|---|
-| [`01-agent-note-lifecycle.md`](./01-agent-note-lifecycle.md) 至 [`11-release.md`](./11-release.md) | Agent Note、Issue/PR、Plan、检查、文档、评审、合并、意图入口、批准门禁、发布上线与历史证据参考 |
+| [`01-agent-note-lifecycle.md`](./01-agent-note-lifecycle.md) 至 [`11-release.md`](./11-release.md)，以及 [`12-agent-contract-evidence.md`](./12-agent-contract-evidence.md) | Agent Note、Issue/PR、Plan、检查、文档、评审、合并、意图入口、批准门禁、发布上线、历史证据，以及 agent 契约资产的原文归属 |
 | [`figures/`](./figures/README.md) | 只服务本目录正文的流程图示 |

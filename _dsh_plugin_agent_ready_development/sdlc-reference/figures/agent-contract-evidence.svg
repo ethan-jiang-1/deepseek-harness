@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="900" viewBox="0 0 1120 900" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title id="title">Agent 契约的三件资产与原文位置</title>
+  <desc id="desc">模型只占不确定边界。验收固定看见的请求、可回放的会话和外部世界，每件资产标明 dsh-v0.2.0-rc.2 上的原文。真模型冒烟、命令路由、语义评审、批准分数和 goal 相位各自回答不同问题。</desc>
+  <rect width="1120" height="900" rx="6" fill="#fafafa"/>
+  <text x="560" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#172033">Agent 契约证据：三件资产，以及去哪份原文核对</text>
+  <text x="560" y="58" text-anchor="middle" font-size="12" fill="#667085">基线 dsh-v0.2.0-rc.2。卡片第二段是权威文件，不是本页的转述。</text>
+
+  <rect x="32" y="78" width="1056" height="84" rx="8" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="560" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#334155">不确定边界：只 mock LLM adapter、网络、时钟；下游用真实现</text>
+  <text x="560" y="134" text-anchor="middle" font-size="12" fill="#475569">原文 docs/testing.md · Prefer the real implementation over a mock</text>
+
+  <rect x="32" y="182" width="340" height="292" rx="10" fill="#e8f1fb" stroke="#6b9ac4"/>
+  <text x="202" y="214" text-anchor="middle" font-size="16" font-weight="700" fill="#244e73">1 · 看见的请求</text>
+  <text x="202" y="240" text-anchor="middle" font-size="12" fill="#244e73">请求必须能从 session log 重建</text>
+  <line x1="56" y1="258" x2="348" y2="258" stroke="#8ab0d2"/>
+  <text x="202" y="284" text-anchor="middle" font-size="11" font-weight="700" fill="#54748f">原文</text>
+  <text x="202" y="306" text-anchor="middle" font-size="12" fill="#244e73">docs/architecture.md#session-log</text>
+  <text x="202" y="334" text-anchor="middle" font-size="11" font-weight="700" fill="#54748f">运行时比对</text>
+  <text x="202" y="356" text-anchor="middle" font-size="12" fill="#244e73">agent-loop/src/invariant.ts</text>
+  <text x="202" y="380" text-anchor="middle" font-size="11" fill="#54748f">只检查 loop 构建的 llm/stream</text>
+  <text x="202" y="408" text-anchor="middle" font-size="12" fill="#244e73">messages 必须等于 deriveMessages()</text>
+  <text x="202" y="444" text-anchor="middle" font-size="12" fill="#244e73">新的模型可见输入要有 session event</text>
+
+  <rect x="390" y="182" width="340" height="292" rx="10" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="560" y="214" text-anchor="middle" font-size="16" font-weight="700" fill="#245d35">2 · 可回放的会话</text>
+  <text x="560" y="240" text-anchor="middle" font-size="12" fill="#245d35">最高代 JSONL = 输入 + 持久化预期</text>
+  <line x1="414" y1="258" x2="706" y2="258" stroke="#8fbf9c"/>
+  <text x="560" y="284" text-anchor="middle" font-size="11" font-weight="700" fill="#4f775a">何时必须更新</text>
+  <text x="560" y="306" text-anchor="middle" font-size="12" fill="#245d35">docs/testing.md</text>
+  <text x="560" y="326" text-anchor="middle" font-size="11" fill="#326c42">#when-a-snapshot-test-is-required</text>
+  <text x="560" y="354" text-anchor="middle" font-size="11" font-weight="700" fill="#4f775a">资产规则</text>
+  <text x="560" y="376" text-anchor="middle" font-size="12" fill="#245d35">snapshots/AGENTS.md</text>
+  <text x="560" y="400" text-anchor="middle" font-size="11" fill="#326c42">代际只增；只有 owner 能 record / refresh</text>
+  <text x="560" y="444" text-anchor="middle" font-size="12" fill="#245d35">session · sdk · acp · web 四面投影</text>
+
+  <rect x="748" y="182" width="340" height="292" rx="10" fill="#fbf3e4" stroke="#c4a36b"/>
+  <text x="918" y="214" text-anchor="middle" font-size="16" font-weight="700" fill="#6b4e24">3 · 外部世界</text>
+  <text x="918" y="240" text-anchor="middle" font-size="12" fill="#6b4e24">重读文件或重跑外部命令</text>
+  <line x1="772" y1="258" x2="1064" y2="258" stroke="#d4bc90"/>
+  <text x="918" y="284" text-anchor="middle" font-size="11" font-weight="700" fill="#8a6840">断言方法</text>
+  <text x="918" y="306" text-anchor="middle" font-size="12" fill="#6b4e24">docs/testing.md</text>
+  <text x="918" y="326" text-anchor="middle" font-size="11" fill="#8a6840">#verify-the-world-not-the-self-report</text>
+  <text x="918" y="354" text-anchor="middle" font-size="11" font-weight="700" fill="#8a6840">独立 oracle</text>
+  <text x="918" y="376" text-anchor="middle" font-size="12" fill="#6b4e24">workspace.expected/</text>
+  <text x="918" y="400" text-anchor="middle" font-size="11" fill="#8a6840">record / refresh 不改写这棵树</text>
+  <text x="918" y="444" text-anchor="middle" font-size="12" fill="#6b4e24">模型正文不能证明外部效果</text>
+
+  <rect x="32" y="494" width="1056" height="92" rx="8" fill="#ffffff" stroke="#6b9ac4"/>
+  <text x="560" y="524" text-anchor="middle" font-size="15" font-weight="700" fill="#244e73">真模型冒烟：已发布的 dsh profile，一条 prompt，再检查世界</text>
+  <text x="560" y="548" text-anchor="middle" font-size="12" fill="#475569">原文 docs/testing.md · The with-key policy: inference is cheap here</text>
+  <text x="560" y="568" text-anchor="middle" font-size="12" fill="#475569">无 key 只证明管道。self-skip 让没有密钥的 CI 继续，不表示 provider 已经验证。</text>
+
+  <rect x="32" y="606" width="1056" height="150" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="560" y="634" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">旁边这些结果回答别的问题</text>
+  <rect x="52" y="656" width="240" height="72" rx="6" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="172" y="684" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">Reference 04</text>
+  <text x="172" y="706" text-anchor="middle" font-size="11" fill="#475569">这次 diff 跑哪条命令</text>
+  <rect x="310" y="656" width="240" height="72" rx="6" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="430" y="684" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">Reference 06</text>
+  <text x="430" y="706" text-anchor="middle" font-size="11" fill="#475569">场景是否对上意图</text>
+  <rect x="568" y="656" width="240" height="72" rx="6" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="688" y="684" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">Reference 10</text>
+  <text x="688" y="706" text-anchor="middle" font-size="11" fill="#475569">批准分数够不够</text>
+  <rect x="826" y="656" width="240" height="72" rx="6" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="946" y="684" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">goal complete</text>
+  <text x="946" y="706" text-anchor="middle" font-size="11" fill="#475569">会话目标的相位</text>
+
+  <rect x="32" y="776" width="1056" height="92" rx="8" fill="#172033"/>
+  <text x="560" y="812" text-anchor="middle" font-size="15" font-weight="700" fill="#f8fafc">绿灯固定的是这三件契约还在</text>
+  <text x="560" y="840" text-anchor="middle" font-size="13" fill="#cbd5e1">模型智力没有单独的合并门禁。keyless 回放也不代替带着 key 的冒烟。</text>
+</svg>

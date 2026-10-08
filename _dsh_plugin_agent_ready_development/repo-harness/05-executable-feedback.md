@@ -41,7 +41,7 @@
 
 `dsh-pre-push-checks` 先解析 outgoing scope（待推送范围），再为受影响行为选择最小可信证据。Git hooks 保留低延迟检查；GitHub CI 执行穷举 coverage、平台矩阵和较重的真实入口检查。
 
-这不是降低本地标准，而是把反馈按成本和适用范围分工：开发循环先得到相关红灯，远端再验证跨平台和仓库级完整性。精确选择方法见 [Evidence routing 参考](../sdlc-reference/04-gates-and-local-checks.md)。
+这不是降低本地标准，而是把反馈按成本和适用范围分工：开发循环先得到相关红灯，远端再验证跨平台和仓库级完整性。精确选择方法见 [Evidence routing 参考](../sdlc-reference/04-gates-and-local-checks.md)。agent 看见的请求、可回放会话和外部世界的原文归属见 [Agent 契约证据](../sdlc-reference/12-agent-contract-evidence.md)。
 
 ## `.github/` 是远端反馈执行层
 

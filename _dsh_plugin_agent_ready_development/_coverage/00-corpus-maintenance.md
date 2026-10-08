@@ -10,7 +10,7 @@
 
 `_dsh_plugin_agent_ready_development/` 是以 DSH 固定版本一手来源为依据的三卷互补语料：`native-development-model/` 综合原生开发流程中的关系，`sdlc-reference/` 提供精确条件与例外，`repo-harness/` 解释仓库如何帮助 coding agent 参与。它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法；三卷均独立依据 DSH 源码、文档、规则、Skills、workflow 和 git 历史，不依赖其它研究语料。
 
-根 `README.md` 是独立语料的介绍、三卷定位与维护入口。`native-development-model/00-index.md` 说明 owner、证据、交付判断之间的关系，不增加额外阶段或产物；`sdlc-reference/` 按问题提供意图入口、Agent Note、Plan、检查、评审、批准、合并、发布与历史证据的精确参考；`repo-harness/` 说明 fresh agent 入口、知识归属、Skills、参与路径、可执行反馈、运行时查询、仓库分类学和插件作者入口。迁移到独立研究 FAQ 的历史案例不再作为本语料的前置卷。
+根 `README.md` 是独立语料的介绍、三卷定位与维护入口。`native-development-model/00-index.md` 说明 owner、证据、交付判断之间的关系，不增加额外阶段或产物；`sdlc-reference/` 按问题提供意图入口、Agent Note、Plan、检查、agent 契约证据、评审、批准、合并、发布与历史证据的精确参考；`repo-harness/` 说明 fresh agent 入口、知识归属、Skills、参与路径、可执行反馈、运行时查询、仓库分类学和插件作者入口。迁移到独立研究 FAQ 的历史案例不再作为本语料的前置卷。
 
 每个目录都有 `README.md`。三个主题目录的 README 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 README 还标明每张 SVG 的正文 owner。
 
@@ -181,6 +181,12 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 ## 2026-09-30 的 0009 独立反查（按维度重测）
 
 re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、实体正向覆盖、硬数字重测、口径一致性四线并行）。本语料修复：`sdlc-reference/11` 的版本基线（`0.1.7-rc.1` → `0.2.0-rc.2`，re-pin 漏网）与 release 间隔口径（约 24–41 分钟）；`sdlc-reference/10` 与本页 `:120` 的 PR merge 样本读数（众数 2、单 commit 约五分之一，最近 100 个 PR merge 重测）；`sdlc-tutorial/02` 的 Note 类别数（六）；`sdlc-tutorial/03`、`04` 与 `sdlc-reference/04` 的 PR CI job 结构（9 必需 + 不进聚合的 `windows-coverage`；observational gates 是 required Windows build job 内 step）；`sdlc-reference/09` 的 Skill description 前缀表述（实测 9/15 以 "Use" 开头）；`repo-harness/08` 的 pairing manifest 归属（与门禁发现范围逻辑共同定义）；`_misc/_eval_harness/README.md` 的例证钉版与 `_eval_harness/02` 的 npm-publish job 口径（每条发布序列一个）；本页 `:30` 加 en+zh 合计口径勘误、`:120` 间隔与 `:165` 唯一 URL 数（130）口径统一。钉版纪律复核：113 条钉版路径全量 `git cat-file -e` 全部存在，29 个锚点全解析，内容一致性抽查 5/5 逐字吻合。
+
+## 2026-10-08 的 0014 轮：agent 契约证据页
+
+基线仍是 `dsh-v0.2.0-rc.2`。`sdlc-reference/12-agent-contract-evidence.md` 拥有 agent 侧三件资产的条件、例外和原文位置：看见的请求、可回放会话、外部世界。同页用 `figures/agent-contract-evidence.svg` 把每件资产指到权威文件，文末表保留可搜索的同一映射。Reference 04 继续只拥有命令路由；原生开发模型第 5 步和 Development Harness 的可执行反馈页各加一条入口，不复制本页的条件。
+
+本轮不新增 DSH Agent Note：页面归纳的是现行 testing policy、architecture、snapshots 规则和 agent-loop invariant，不改变 DSH 运行时或主仓持久决定。
 
 ## 2026-10-07 的 0013 轮：独立发行与一致性修复
 

@@ -82,7 +82,7 @@ DSH 的本地检查策略又要求验证保持聚焦：选择会为当前回归�
 
 测试层按观察对象分工，不是固定的 test-first 顺序。局部测试验证函数或组件行为；真实 Loader 组合测试验证配置、依赖注入和 app/process 入口；snapshot 固定模型、协议或用户可见输出；e2e 重新读取文件或命令结果；真实 API 测试验证外部模型与服务。每层只能证明自己实际断言的属性。
 
-DSH 主仓测试政策对产品可见插件要求 non-unit real composition，而不是只用手工 `ctx.plugin(...)` 的单元套件：从 Loader 和应用入口启动，仅 mock 外部服务或非确定性输入，从模型请求、持久状态或用户可见输出断言结果。每个非平凡（non-trivial）的模型、协议或用户可见变化还必须在同一 PR 中新增或更新 keyless recorded-session scenario；真实组合测试不能自动替代这项录制场景义务。独立插件仓建议采用这两项验证原则，并自行建立适用的测试入口；调整场景或测试层时应说明观察对象、替代证据及未覆盖之处，不把适配说成 DSH 主仓的可选规则。具体政策见 DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md)。
+DSH 主仓测试政策对产品可见插件要求 non-unit real composition，而不是只用手工 `ctx.plugin(...)` 的单元套件：从 Loader 和应用入口启动，仅 mock 外部服务或非确定性输入，从模型请求、持久状态或用户可见输出断言结果。每个非平凡（non-trivial）的模型、协议或用户可见变化还必须在同一 PR 中新增或更新 keyless recorded-session scenario；真实组合测试不能自动替代这项录制场景义务。独立插件仓建议采用这两项验证原则，并自行建立适用的测试入口；调整场景或测试层时应说明观察对象、替代证据及未覆盖之处，不把适配说成 DSH 主仓的可选规则。具体政策见 DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md)。三件资产的精确条件、例外和原文位置见 [Agent 契约证据](../sdlc-reference/12-agent-contract-evidence.md)。
 
 测试资产还需要独立的预期来源。Recorded-session 的场景 owner 负责记录或刷新选中的 Session，共享引用只读且无环；工作区结果由独立的 `workspace.expected/` 作为 oracle，录制或刷新过程不能顺手改写它。否则测试可能只证明“工具重新生成了自己的答案”，而不是证明插件对外产生了正确结果。参见 DSH [snapshot ownership](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/snapshots/AGENTS.md)。
 

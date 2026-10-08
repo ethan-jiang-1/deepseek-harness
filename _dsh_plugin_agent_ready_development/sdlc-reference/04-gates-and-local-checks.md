@@ -46,6 +46,8 @@ pnpm --silent run change-scope --base <verified-base-ref>
 
 该表描述 DSH 主仓要求。产品可见插件还必须通过 Loader 与 app/process 的 non-unit real-composition 测试；普通示例、局部单测、真实 API e2e 与决定记录均不能自动替代非平凡模型、协议或用户可见变更的 recorded-session 场景。安装 smoke 证明发布产物可加载执行，真实 provider e2e 证明外部 API 交互；二者各有观察对象。
 
+agent 看见的请求、可回放会话和外部世界各自固定什么、例外是什么、哪份原文拥有规则，由 [Reference 12](./12-agent-contract-evidence.md) 说明。本页只保留 outgoing diff 到命令的路由。
+
 测试选择和 coverage 选择是两件事。Focused coverage 要同时指定 owning tests 与受影响 source include，并在该 source 范围继续满足 per-file 100%；不能用 `--passWithNoTests`、降低 threshold 或人为缩小 include 掩盖缺口。
 
 本地不因“准备 commit/push”重复一个已经通过且未被新改动失效的检查，也不专门重跑 typecheck 去复制 pre-push hook。全库 rehearsal 只用于用户明确要求、CI 诊断或无法可信拆分的仓库级变更。
