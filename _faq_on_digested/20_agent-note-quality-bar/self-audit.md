@@ -1,5 +1,7 @@
 # 自查：这一组 FAQ 的问题在哪里
 
+> 本文写于第一轮成稿之后，描述的是**当时**的问题与修法。此后又做过一轮结构与顺序重排（编号只给正文 01–07、`walkthrough` 与本文降为不带编号的附录、`04` 改写为「背后的思考」），下文的旧编号不再对应当前文件名。当前结构见 [`answer.md`](./answer.md) 的目录清单。
+
 对 `20_agent-note-quality-bar/` 九篇现稿做的对抗性复核。每条都标了**证据**、**影响**与**修法**。未标注「已确认」的，是我尚未核到原文、需要在动手时一并核实的。
 
 ## A. 事实性错误（必须修）
@@ -16,7 +18,7 @@ BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance crite
 
 ### A2. 六个类型的定义被我压缩后失真
 
-- **现稿**：[`04`](./04-why-so-many-types.md) 的表格把 `architecture` 写成「关于**交付源码**的结构性决策；包之间怎么关联」。
+- **现稿**：[`04`](./04-why-this-design.md) 的表格把 `architecture` 写成「关于**交付源码**的结构性决策；包之间怎么关联」。
 - **事实**：README 原文是 "A structural decision about the **shipped source** — how packages relate, what the runtime vocabulary is"。我漏掉了 **runtime vocabulary**（运行时词汇），而它正是区分 architecture 与纯目录重构的关键。
 - **修法**：六个定义逐条对齐 README 的 Classification 表，不要改写。
 
@@ -50,7 +52,7 @@ BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance crite
 
 ### B2. 07 与 04 的图注互为镜像，读者会来回跳
 
-- 07 的图注讲三层分工，04 的图讲生命周期。两张图都以「Agent Note…」开头，都出现在页面上半部。需要各加一句指向：04 的图注补「三者如何分工见 07」，07 的图注补「状态与类型的细节见 04」。
+- 07 的图注讲三层分工，04 的图讲生命周期。两张图都以「Agent Note…」开头，都出现在页面上半部。需要各加一句指向：04 的图注补「三者如何分工见 08」，07 的图注补「状态与类型的细节见 04」。
 
 ### B3. 页面长度与摘要粒度不匹配
 

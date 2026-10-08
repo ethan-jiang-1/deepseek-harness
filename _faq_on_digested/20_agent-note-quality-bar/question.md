@@ -21,18 +21,7 @@
 
 ## 入口
 
-`answer.md` 是路由页，一分钟读完，按你的处境指到具体一篇：
-
-| 编号 | 独立问题 |
-|---|---|
-| [answer.md](./answer.md) | 先读哪一篇（一分钟版 + 导航） |
-| [01](./01-should-i-write-one.md) | 该不该写一篇 |
-| [02](./02-what-goes-in-the-file.md) | 文件里放什么 |
-| [03](./03-note-triplets-on-disk.md) | 磁盘上的三件套 |
-| [04](./04-why-so-many-types.md) | 为什么有那么多类型 |
-| [05](./05-keep-archive-delete.md) | 留下、归档还是删除 |
-| [06](./06-port-to-another-repo.md) | 移植到别的仓库 |
-| [07](./07-where-skills-add-requirements.md) | skill 往里加了什么（溯源表） |
+导航表只在 [`answer.md`](./answer.md) 一处维护——两份清单一定会漂移，这也是 Agent Note 树禁止 `INDEX.md` 的同一条理由（展开见 [04 背后的思考](./04-why-this-design.md)）。
 
 ## 证据边界
 
