@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="840" viewBox="0 0 1120 840" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title id="title">测试怎样推动一笔变更</title>
+  <desc id="desc">计划时点名测试车道，同一笔变更带上会为这次回归失败的证据。亲手看红再撤只用于新守卫。推送时红灯停住，覆盖率变红时先看要不要删代码。仓库不把先写失败测试再写实现再重构写成必经顺序。</desc>
+  <rect width="1120" height="840" rx="6" fill="#fafafa"/>
+  <text x="560" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#172033">测试怎样推动这笔变更</text>
+  <text x="560" y="60" text-anchor="middle" font-size="12" fill="#667085">成文义务是同一笔变更里的证据。写测试和写实现的先后没有成文顺序。</text>
+
+  <line x1="96" y1="150" x2="96" y2="690" stroke="#94a3b8" stroke-width="2"/>
+
+  <rect x="140" y="88" width="948" height="112" rx="10" fill="#e8f1fb" stroke="#6b9ac4"/>
+  <circle cx="96" cy="144" r="18" fill="#244e73"/>
+  <text x="96" y="150" text-anchor="middle" font-size="16" font-weight="700" fill="#f8fafc">1</text>
+  <text x="164" y="124" font-size="16" font-weight="700" fill="#244e73">计划时点名车道</text>
+  <text x="164" y="150" font-size="13" fill="#244e73">局部 spec、真实组合、录制会话、真模型冒烟、构建冒烟，各算各的</text>
+  <text x="164" y="176" font-size="12" fill="#54748f">docs/testing.md · name every required tier at plan time</text>
+
+  <rect x="140" y="216" width="948" height="112" rx="10" fill="#e8f5ed" stroke="#58a36d"/>
+  <circle cx="96" cy="272" r="18" fill="#245d35"/>
+  <text x="96" y="278" text-anchor="middle" font-size="16" font-weight="700" fill="#f8fafc">2</text>
+  <text x="164" y="252" font-size="16" font-weight="700" fill="#245d35">同一笔变更带上会变红的证据</text>
+  <text x="164" y="278" font-size="13" fill="#245d35">行为，加上会为这次回归失败的最窄检查；录制场景与 SDK 投影也在这个 PR</text>
+  <text x="164" y="304" font-size="12" fill="#4f775a">dsh-pre-push-checks · would fail for its regression</text>
+
+  <rect x="140" y="344" width="948" height="112" rx="10" fill="#fbf3e4" stroke="#c4a36b"/>
+  <circle cx="96" cy="400" r="18" fill="#6b4e24"/>
+  <text x="96" y="406" text-anchor="middle" font-size="16" font-weight="700" fill="#f8fafc">3</text>
+  <text x="164" y="380" font-size="16" font-weight="700" fill="#6b4e24">新守卫才看红，再撤掉</text>
+  <text x="164" y="406" font-size="13" fill="#6b4e24">造一次回归，看检查变红，再把这次回归撤掉。每个功能不走这条循环</text>
+  <text x="164" y="432" font-size="12" fill="#8a6840">docs/testing.md · introduce the regression, watch red, revert</text>
+
+  <rect x="140" y="472" width="948" height="112" rx="10" fill="#ffffff" stroke="#94a3b8"/>
+  <circle cx="96" cy="528" r="18" fill="#334155"/>
+  <text x="96" y="534" text-anchor="middle" font-size="16" font-weight="700" fill="#f8fafc">4</text>
+  <text x="164" y="508" font-size="16" font-weight="700" fill="#334155">推送时红灯停住</text>
+  <text x="164" y="534" font-size="13" fill="#334155">本地相关检查失败就停。CI 再跑穷举 coverage 和平台矩阵</text>
+  <text x="164" y="560" font-size="12" fill="#64748b">Reference 04 拥有这次 diff 跑哪条命令</text>
+
+  <rect x="140" y="600" width="948" height="112" rx="10" fill="#edf2f7" stroke="#94a3b8"/>
+  <circle cx="96" cy="656" r="18" fill="#334155"/>
+  <text x="96" y="662" text-anchor="middle" font-size="16" font-weight="700" fill="#f8fafc">5</text>
+  <text x="164" y="636" font-size="16" font-weight="700" fill="#334155">覆盖率变红，先看要不要删</text>
+  <text x="164" y="662" font-size="13" fill="#334155">没覆盖到的行经常是该死的代码。行覆盖证明行跑过，不证明功能按发布形态工作</text>
+  <text x="164" y="688" font-size="12" fill="#64748b">变异测试仍是 proposed，还不是现行门禁</text>
+
+  <rect x="32" y="736" width="1056" height="76" rx="8" fill="#172033"/>
+  <text x="560" y="766" text-anchor="middle" font-size="15" font-weight="700" fill="#f8fafc">场景选得对不对，由 Reference 06 判断</text>
+  <text x="560" y="790" text-anchor="middle" font-size="13" fill="#cbd5e1">绿灯只说明已执行的断言通过。</text>
+</svg>

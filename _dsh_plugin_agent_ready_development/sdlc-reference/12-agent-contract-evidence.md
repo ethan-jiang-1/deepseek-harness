@@ -2,13 +2,55 @@
 
 ## 一句话
 
-DSH 验收 agent 时固定三件资产：它看见的请求、可回放的会话、独立于自述的外部世界。绿灯说明这三件契约还在。模型智力没有单独的合并门禁。本页每条规则都标出 `dsh-v0.2.0-rc.2` 上的权威原文，图和文末表都可以按图索骥。
+DSH 验收 agent 时固定三件资产：它看见的请求、可回放的会话、独立于自述的外部世界。绿灯说明这三件契约还在。模型智力没有单独的合并门禁。测试推动交付的方式是：计划时点名车道，同一笔变更带上会为这次回归变红的证据。写测试和写实现的先后，仓库没有成文顺序。本页每条规则都标出 `dsh-v0.2.0-rc.2` 上的权威原文，图和文末表都可以按图索骥。
 
 ![三件资产与各自的原文位置](./figures/agent-contract-evidence.svg)
 
 DSH 原文把这个参与者叫做 agent，把进模型的内容叫做 model-visible，把冻住的一次行为叫做 recorded-session。本页用这三个词组织条件，不另起一套评估术语。
 
-本页拥有三件资产的条件、例外和原文位置。[Reference 04](./04-gates-and-local-checks.md) 拥有「这次 diff 跑哪条命令」。[Reference 06](./06-review-and-human-role.md) 拥有语义评审是否判断场景对上了意图。[Reference 10](./10-approval-gate.md) 拥有批准分数。独立插件仓可以借用这三件资产的分工，并自己建立测试入口；主仓的 CI 矩阵不会因此变成插件仓的制度。
+本页拥有三件资产的条件、例外和原文位置，也拥有测试怎样推动这笔变更。[Reference 04](./04-gates-and-local-checks.md) 拥有「这次 diff 跑哪条命令」。[Reference 06](./06-review-and-human-role.md) 拥有语义评审是否判断场景对上了意图。[Reference 10](./10-approval-gate.md) 拥有批准分数。独立插件仓可以借用这三件资产的分工，并自己建立测试入口；主仓的 CI 矩阵不会因此变成插件仓的制度。
+
+## 测试怎样推动这笔变更
+
+仓库没有把「先写失败测试、再写实现、再重构」写成必经顺序。它写成下面这条交付义务：行为要改，同一笔变更里就要有一条会为这次回归失败的证据；计划时先点名这条证据落在哪一层。
+
+![计划、同一 PR、看红、推送与覆盖率的推动顺序](./figures/test-drives-the-change.svg)
+
+> New capability seams and lifecycle or transcript variants name every required tier at plan time.
+>
+> — DSH [`docs/testing.md` 的 “When a snapshot test is required”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md#when-a-snapshot-test-is-required)。新的 capability seam、生命周期或转录变体，在计划时点名每一层需要的测试。
+
+根 [`AGENTS.md` 的 Conventions](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/AGENTS.md#conventions) 用同一句话落地：Plan unit, e2e, and snapshot coverage。点名的是车道，不是先提交一个红灯测试。非平凡的模型可见、协议或用户可见改动，还要在同一个 PR 里更新录制场景；agent-loop、session-lifecycle 或 `SessionEventMap` 的变更同时更新两套 SDK 投影。条件见 [可回放的会话](#可回放的会话)。
+
+> There is no universal local baseline beyond the hooks. Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression; add broader checks only for surfaces the diff actually reaches.
+>
+> — DSH [`dsh-pre-push-checks` 的 “Select relevant evidence”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md#select-relevant-evidence)。标准是反事实：这条检查在目标回归出现时会失败。hooks 之外没有一份人人都要先跑完的本地基线。
+
+推送前先解析 outgoing diff，再跑拥有这块行为的 Vitest 文件或聚焦测试名。文档、可见输出、构建产物和真 provider 各走自己的车道。命令怎么选、失败了怎样停，由 [Reference 04](./04-gates-and-local-checks.md) 拥有。本地相关检查失败就停止并修复，不能把 CI 当作试运行。CI 再跑穷举 coverage 和平台矩阵。
+
+亲手看红再撤掉，只用于证明一条新的机械守卫真的挡得住：
+
+> A guard only guards if the regression fails it. [...] prove it: introduce the regression, watch red, revert.
+>
+> — DSH [`docs/testing.md` 的 “Test the real entry path”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md#test-the-real-entry-path)。造一次回归，看检查变红，再把这次回归撤掉。
+
+这不是每个功能的开发循环。对象是新守卫会不会在真实的无效案例上失败。
+
+覆盖率变红时，先判断那一行是不是该死的代码：
+
+> An uncovered line is often dead code the gate flags for deletion, not a missing test to bolt on. Line coverage is necessary, never sufficient — it proves lines ran, not that the feature works as shipped.
+>
+> — DSH [`docs/testing.md` 的 Coverage gate](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md#tiers)。没覆盖到的行经常要删。行覆盖证明行跑过，不证明功能按发布形态工作。
+
+用变异测试逼「断言必须能杀死错误」仍是 [`2026-06-11-mutation-testing`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/proposed/testing/2026-06-11-mutation-testing.md)，`Status: proposed`。它还不是现行门禁。
+
+因此一笔变更里，测试按这个顺序推动，停在交付资格上：
+
+1. 改之前按改动面点名车道：局部 spec、真实组合、录制会话、真模型冒烟、构建冒烟，各算各的。
+2. 行为和那条「回归时会红」的证据放进同一个 PR。证据落在哪一层，见上面的三件资产和 [Reference 04](./04-gates-and-local-checks.md)。
+3. 新的机械守卫先看它变红，再恢复现场。
+4. 推送时红灯停住。CI 再证明仓库级和跨平台的那一层。
+5. 场景选得对不对，仍由 [Reference 06](./06-review-and-human-role.md) 的语义评审判断。绿灯只说明已执行的断言通过。
 
 ## 1. 模型只占不确定边界
 
@@ -83,6 +125,11 @@ Goal 服务保存一个跨 turn 的完成目标。相位 `complete` 回答这个
 
 | 要核对的事实 | 权威原文 | 本页位置 |
 |---|---|---|
+| 计划时点名测试车道，不规定先写测试 | [`docs/testing.md` · When a snapshot test is required](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md#when-a-snapshot-test-is-required)、[`AGENTS.md` · Conventions](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/AGENTS.md#conventions) | [测试怎样推动这笔变更](#测试怎样推动这笔变更) |
+| 每笔行为变更要有会为这次回归失败的最窄检查 | [`dsh-pre-push-checks` · Select relevant evidence](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md#select-relevant-evidence) | [测试怎样推动这笔变更](#测试怎样推动这笔变更) |
+| 新守卫必须亲眼变红再撤掉回归 | [`docs/testing.md` · Test the real entry path](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md#test-the-real-entry-path) | [测试怎样推动这笔变更](#测试怎样推动这笔变更) |
+| 未覆盖的行经常是待删除的代码 | [`docs/testing.md` · Tiers](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md#tiers) | [测试怎样推动这笔变更](#测试怎样推动这笔变更) |
+| 变异测试仍是提案 | [`2026-06-11-mutation-testing`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/proposed/testing/2026-06-11-mutation-testing.md) | [测试怎样推动这笔变更](#测试怎样推动这笔变更) |
 | 只 mock LLM adapter、网络、时钟 | [`docs/testing.md` · Prefer the real implementation over a mock](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md#prefer-the-real-implementation-over-a-mock) | [§1](#1-模型只占不确定边界) |
 | 分层、coverage、snapshot、Web 各证明什么 | [`docs/testing.md` · Tiers](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md#tiers) | [§2](#2-三件资产)、[§3](#3-真模型冒烟证明哪一段) |
 | 模型看见的请求必须能从日志重建 | [`docs/architecture.md` · Session log](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/architecture.md#session-log) | [看见的请求](#看见的请求) |
@@ -100,7 +147,9 @@ Goal 服务保存一个跨 turn 的完成目标。相位 `complete` 回答这个
 
 ## 证据入口
 
-- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md)：分层、mock 边界、外部世界断言、真实入口、录制义务和 with-key 政策的家。
+- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md)：分层、mock 边界、外部世界断言、真实入口、录制义务、计划时点名车道、看红再撤，以及 with-key 政策的家。
+- DSH [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md#select-relevant-evidence)：行为变更要有会为这次回归失败的最窄检查。
+- DSH [`AGENTS.md` · Conventions](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/AGENTS.md#conventions)：计划 unit、e2e 和 snapshot 覆盖。
 - DSH [`docs/architecture.md` · Session log](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/architecture.md#session-log)：model-visible means logged。
 - DSH [`agent-loop` invariant](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/core/agent-loop/src/invariant.ts)：loop 构建的请求与日志派生结果的比对。
 - DSH [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/snapshots/AGENTS.md)：代际、owner、共享引用和 `workspace.expected/`。
