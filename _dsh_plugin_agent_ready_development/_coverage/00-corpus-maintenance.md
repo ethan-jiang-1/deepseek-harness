@@ -184,7 +184,7 @@ re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、
 
 ## 2026-10-08 的 0014 轮：agent 契约证据页
 
-基线仍是 `dsh-v0.2.0-rc.2`。`sdlc-reference/12-agent-contract-evidence.md` 拥有 agent 侧三件资产的条件、例外和原文位置：看见的请求、可回放会话、外部世界。同页用 `figures/agent-contract-evidence.svg` 把每件资产指到权威文件，文末表保留可搜索的同一映射。同页另写测试怎样推动这笔变更：计划时点名车道，同一 PR 带上会为这次回归变红的证据，写测试与写实现的先后没有成文顺序；亲手看红再撤只用于新守卫，未覆盖行经常是待删除代码，变异测试仍是 proposed。这段顺序由图 `figures/test-drives-the-change.svg` 拥有示意，三件资产仍由图 `figures/agent-contract-evidence.svg` 拥有。Reference 04 继续只拥有命令路由；原生开发模型第 5 步和 Development Harness 的可执行反馈页各加一条入口，不复制本页的条件。
+基线仍是 `dsh-v0.2.0-rc.2`。`sdlc-reference/12-agent-contract-evidence.md` 拥有 agent 侧三件资产的条件、例外和原文位置：看见的请求、可回放会话、外部世界。同页用 `figures/agent-contract-evidence.svg` 把每件资产指到权威文件，文末表保留可搜索的同一映射。同页另写测试怎样推动这笔变更，并在「三种情况」里用白话分开改行为、修 bug、新守卫：前两种不必先看见红，新守卫必须亲眼看红再撤；未覆盖行经常是待删除代码，变异测试仍是 proposed。推动顺序由图 `figures/test-drives-the-change.svg` 拥有示意，三种红灯由图 `figures/three-red-cases.svg` 拥有示意，三件资产仍由图 `figures/agent-contract-evidence.svg` 拥有。随后把阅读顺序改成先资产、后推动、再冒烟与完成判断，并删掉与三张图重复的第二份步骤清单；覆盖率变红不再算进三种情况。Reference 04 继续只拥有命令路由；原生开发模型第 5 步和 Development Harness 的可执行反馈页各加一条入口，不复制本页的条件。
 
 本轮不新增 DSH Agent Note：页面归纳的是现行 testing policy、architecture、snapshots 规则和 agent-loop invariant，不改变 DSH 运行时或主仓持久决定。
 

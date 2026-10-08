@@ -17,5 +17,6 @@
 | `evidence-routing.svg` | [`../04-gates-and-local-checks.md`](../04-gates-and-local-checks.md) |
 | `agent-contract-evidence.svg` | [`../12-agent-contract-evidence.md`](../12-agent-contract-evidence.md) |
 | `test-drives-the-change.svg` | [`../12-agent-contract-evidence.md`](../12-agent-contract-evidence.md) |
+| `three-red-cases.svg` | [`../12-agent-contract-evidence.md`](../12-agent-contract-evidence.md) |
 | `stack-landing.svg` | [`../07-push-merge-stacked-prs.md`](../07-push-merge-stacked-prs.md) |
 | `web-seam-history.svg` | [`../08-example-web-seam.md`](../08-example-web-seam.md) |

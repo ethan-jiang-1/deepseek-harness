@@ -31,7 +31,7 @@
 | [`09-intake-and-work-items.md`](./09-intake-and-work-items.md) | 意图从哪里进来：外部 Discussions 边界、Issue 模板、Project 生命周期、标签分工与非 Issue 意图载体 | policy 函数细节、模板演进史 |
 | [`10-approval-gate.md`](./10-approval-gate.md) | merge 的真实门槛：weighted approval 加权批准、`/delegate` 积分转移与 branch rules | blame 分类器、委托的完整状态机 |
 | [`11-release.md`](./11-release.md) | merge 之后怎样上线：三条 release 序列、bump 与 tag、rehearsal 与 publish 分离、各发布 lane | registry 三态参数、Desktop/Python 细节 |
-| [`12-agent-contract-evidence.md`](./12-agent-contract-evidence.md) | agent 看见的请求、可回放会话、外部世界，以及测试怎样推动同一笔变更、为何不规定先写测试 | 代际文件名、invariant 的逐条失败条件 |
+| [`12-agent-contract-evidence.md`](./12-agent-contract-evidence.md) | agent 看见的请求、可回放会话、外部世界；改行为、修 bug、新守卫三种情况下红灯各表示什么 | 代际文件名、invariant 的逐条失败条件 |
 
 按生命周期找页：意图入口读 `09`；决定、计划与实现读 `01`–`05`；agent 契约证据读 `12`；评审读 `06`；依赖栈与落地读 `07`；批准门禁读 `10`；发布上线读 `11`；历史证据的边界读 `08`。
 
