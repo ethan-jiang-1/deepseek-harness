@@ -83,17 +83,33 @@ exact ranges; packed-manifest tests check the emitted versions.
 <!-- agent-note-format: alternatives-not-recorded (pre-format Agent Note) -->
 ```
 
-活跃树里现在只有 3 篇用它，归档树里 6 篇——**说明这条例外是历史遗留通道，不是可用的省事写法。**
+活跃树里现在只有 **2 篇**用它（`event-domain-semantics.md`、`uniform-agent-note-format.md`），归档树里 6 篇——**说明这条例外是历史遗留通道，不是可用的省事写法。** 另有一条门禁规则收紧了它：注释只对 **2026-07-05 之前**的 Note 有效（`if (hasGrandfather && note.date >= FORMAT_ADOPTED) fail(...)`）。
 
 ## implemented 里禁止出现的标题
 
-`## Proposal`、`## Plan`、`## Migration plan`、`## Acceptance criteria` 出现在 `implemented/` 会被门禁直接拒绝，报错原文是：
+门禁的正则只有四个（[`verify-agent-note-format.ts:36`](../../scripts/verify-agent-note-format.ts)）：
+
+```js
+BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance criteria\b)/i
+```
+
+命中任意一个，报错原文是（逐字）：
 
 > `## Proposal` is a proposal-era heading; an implemented Agent Note states what is (fold it into Decision/Consequences/Testing)
 
-原因是 [`docs/AGENTS.md`](../../docs/AGENTS.md) 的 slop 清单点名了这条反模式：**implemented Note 里的 spec-speak**（"should"、迁移计划、验收清单）。
+原因出自 [`docs/AGENTS.md:72`](../../docs/AGENTS.md) 的 slop 清单：**implemented Note 里的 spec-speak**（"should"、迁移计划、验收清单）。
 
-允许的：陈述现在时事实的 `## Testing`、`## Deferred`、`## Related`。
+`## Risks` 不在禁用集里。**活跃 implemented 树里现在有 5 篇英文 Note 带着它正常通过了门禁**：`2026-06-15-ptc.md`、`2026-07-14-provider-routed-llm-adapters.md`、`2026-08-24-session-log-snapshot-corpus.md`、`2026-08-25-electron-desktop-packaging-and-updates.md`、`2026-09-17-windows-runtime-signature-cache.md`。README 希望把残余风险折进 `## Consequences`，但**门禁不管**——折进去是写法偏好，不是硬要求。
+
+各章节的合法性一览（README:103 点名了前三个）：
+
+| 章节 | 状态 |
+|---|---|
+| `## Decision`、`## Consequences` | **必需**，缺了门禁直接拒 |
+| `## Alternatives considered` | **必需**（旧文件可用 grandfather 注释代替）。规则是二选一：两者都有、或都没有，都直接拒；且 grandfather 注释只对 2026-07-05 之前的 Note 有效 |
+| `## Testing`、`## Deferred`、`## Related` | 合法，只要陈述现在时事实 |
+| `## Risks` | 合法，门禁不查 |
+| 包拓扑、wire contract、schema 等自定义章节 | 合法，夹在必需章节之间自由组织 |
 
 ## 需要保留什么、可以删什么
 

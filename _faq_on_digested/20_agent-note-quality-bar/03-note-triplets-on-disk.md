@@ -68,12 +68,12 @@ sidecar 的实际内容长这样：
 
 ## 头部与状态的语法
 
-前三行严格是 `# Agent Note: <title>`、空行、`Status: <status>`，第四行空行，且**全文只有这一个 `Status:` 行**。三种状态：
+前三行严格是 `# Agent Note: <title>`、空行、`Status: <status>`，第四行空行，且**全文只有这一个 `Status:` 行**（[`verify-agent-note-format.ts:23`](../../scripts/verify-agent-note-format.ts)）。三种状态的语法是精确正则，没有自由度：
 
 ```text
-Status: proposed
-Status: implemented
-Status: rejected — <why, in one line>
+proposed     /^Status: proposed$/
+implemented  /^Status: implemented$/
+rejected     /^Status: rejected — .+$/     ← 破折号是 em dash，后面必须有内容
 ```
 
 状态行**不带日期、不带括号补充**：日期在文件名，其余在 git。唯一带内容的是 rejected，因为读者查阅被否决的 Note 时，结论正是他要找的东西。
@@ -86,18 +86,39 @@ does not intercept `node:timers/promises`, so the swap costs deterministic fast 
 ~10 deleted lines
 ```
 
-## `.md` 与 `.zh.md` 的机器标记必须保持英文原样
+## 中文侧：哪些保持英文，哪些必须翻译
 
-格式门禁**跳过** `.zh.md`；配对门禁检查它们的一致性。但两个跨语言的机器标记在中文文件里也不翻译：
+格式门禁**跳过** `.zh.md`（[`agent-note-tree.ts:64`](../../scripts/agent-note-tree.ts)），所以 `.zh.md` 的章节结构由配对门禁对齐。分四类：
 
-- 第一行 `# Agent Note: `
-- 第三行 `Status: `
+| 内容 | 中文侧怎么写 | 谁检查 |
+|---|---|---|
+| 第 1 行 `# Agent Note: ` | **保持英文前缀**，标题正文翻译 | 配对门禁 |
+| 第 3 行 `Status: rejected — …` | **保持英文 `Status:` 行**（理由也不翻） | 配对门禁 |
+| 第 4 行空行、以及语言切换行 `[English](foo.md) \| 中文` | 固定形态 | 配对门禁 |
+| `## Problem`、`## Decision`、`## Alternatives considered` 等章节标题 | **翻译**（`## 问题`、`## 决策`、`## 考虑过的替代方案`） | 配对门禁按**英文**标题生成 slug 键，两侧标题数量必须相等 |
+| fenced code block、生成区域 | **两侧逐字相同** | 配对门禁 |
 
-其余章节标题（`## Problem` 等）在中文侧同样保留英文——配对是按 slug 路径逐节比对的。
+最后一行是关键，也最反直觉：`.i18n.yaml` 的键取自**英文**标题的 slug（`/agent-note-repeated-sandbox-modes-need-no-approval/decision`），但被哈希的内容块来自两侧各自的文字——[`translation-brief.ts:125`](../../scripts/translation-brief.ts) 写明了为什么不能拿标题文字对齐：**「Depth only: heading TEXT is translated across a pair, so it cannot participate in cross-language alignment.」**
+
+真实对照（同一篇 Note 的两种语言）：
+
+```text
+英文                                        中文
+# Agent Note: Repeated sandbox modes…       # Agent Note: 重复沙箱模式无需审批
+Status: implemented                         Status: implemented
+English | [中文](….zh.md)                    [English](….md) | 中文
+## Problem                                  ## 问题
+## Decision                                 ## 决策
+## Alternatives considered                  ## 考虑过的替代方案
+## Consequences                             ## 影响
+```
+
+所以「中文文件里机器标记不翻译」只对前三行成立；**把 `## Problem` 照抄进中文正文反而是错的**——配对门禁只比标题数量，不比标题文字，但 `## Problem` 出现在中文散文里属于漏译，是 code review 的活儿。
 
 ## 改名与移动
 
-- **在生命周期之间移动**：同一变更里改 `Status:` **并且**满足目标文件夹的骨架，否则门禁失败。`proposed/` → `implemented/` 是把 `## Proposal` 改写成现在时 `## Decision`，把验收与风险里仍有价值的事实折进 `## Consequences`；`proposed/` → `rejected/` 只在 `Status:` 加理由并冻结。
+- **在生命周期之间移动**：同一变更里改 `Status:` **并且**满足目标文件夹的骨架，否则门禁失败。`proposed/` → `implemented/` 是把 `## Proposal` 改写成现在时 `## Decision`，把验收与风险里仍有价值的事实折进 `## Consequences`（或陈述现在时事实的 `## Testing` / `## Verification`）；`proposed/` → `rejected/` 只在 `Status:` 加理由并冻结。
+- **rejected 保留提案期的正文。** 它只需要满足四样：头部块、`## Problem` 开头、含 `## Proposal`、有 Alternatives（[`.agents/notes/README.md:107`](../../.agents/notes/README.md)）——**`## Acceptance criteria`、`## Risks`、`## Plan` 都合法留着**，因为它们描述的是那个被否决的提案本身。`Status:` 行承载裁决。
 - **类型选错了**：改目录即可，但三件套一起移动。
 - **归档**：见 [05](./05-keep-archive-delete.md)——那是唯一允许在正文里加一行 `Archived: YYYY-MM-DD` 的变更。
 
