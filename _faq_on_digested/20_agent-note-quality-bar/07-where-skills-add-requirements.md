@@ -8,7 +8,7 @@
 
 | 层 | 位置 | 拥有什么 | 谁执行 |
 |---|---|---|---|
-| 规则层 | [`.agents/notes/README.md`](../../.agents/notes/README.md) + 各子树 `AGENTS.md` | 何时写、路径语法、生命周期、正文骨架、Alternatives 强制、归档删除判据、移动改写 | `verify-agent-note-format` + `agent-note-tree`（`doc-sync` 内） |
+| 规则层 | [`.agents/notes/README.md`](../../.agents/notes/README.md) + 各子树 `AGENTS.md` | 何时写、路径语法、生命周期、正文骨架、Alternatives 强制、归档删除判据、移动改写 | `verify-agent-note-classification` + `verify-agent-note-format`（两者共用 `agent-note-tree` 的结构判定，均在 `doc-sync` 内） |
 | 流程层 | `dsh-archive-agent-notes`、`dsh-find-simplifications`、`dsh-prose-standard`、`dsh-trim-cot-leakage` | 语义判断：结构合法 ≠ 决定正确 | 人 / agent 的语义 review |
 | 消费层 | `dsh-doc`、`dsh-code-review`、`dsh-pre-push-checks`、`dsh-create-upgrade-guide`、`docs/AGENTS.md` | 其他文档 tier 怎么引用 Note、review 查什么、rationale 溢出时倒在哪里 | review 与文档门禁 |
 
@@ -70,7 +70,7 @@
 | [`implemented/AGENTS.md`](../../.agents/notes/implemented/AGENTS.md) | 事实保持 current；不得重写决策；低未来价值时归档而非继续维护 | 规则 |
 | [`archived/AGENTS.md`](../../.agents/notes/archived/AGENTS.md) | 封存件冻结；归档变更的允许动作清单；唯一授权的 seal 例外 | 规则 |
 | [`scripts/verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts) | 头部、骨架、禁用标题、Alternatives、grandfather 注释、遗留标记 | 门禁 |
-| [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) | 封闭状态与类型目录树、文件名日期、`INDEX.md` 禁令 | 门禁 |
+| [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) | 封闭状态与类型目录树、文件名日期、`INDEX.md` 禁令 | 被 `verify-agent-note-classification` 与 `verify-agent-note-format` 共同调用的**共享模块**，没有 CLI，本身不是独立门禁 |
 | [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) | 保留 / 归档 / 删除判定与校准例子；三件套与 manifest 机械步骤 | 流程 |
 | [`dsh-find-simplifications`](../../.agents/skills/dsh-find-simplifications/SKILL.md) | proposal 骨架与四件必备证据；禁止重复 Note | 流程 |
 | [`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md) | 必须保留的命题；规划清单 vs 验证证据；链接不替代本地合同 | 流程 |

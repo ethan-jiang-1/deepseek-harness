@@ -61,7 +61,7 @@ _faq_on_digested/
 | 17 | [开发 DSH 插件时，怎么先找到现成的轮子而不是重写？](./17_finding-existing-plugins/question.md) | [货架（316 包按组）→ 横切清单（92 服务/30 工具包×profile）→ 判形态与可见性光谱 → 四条出路按代价排序（调配置/patch 换 Provider/挂现货包/写胶水）；三个过去踩的坑（平铺 packages/、只看 base 层、以为接新模型必须写 adapter）与必须自写的缺口白名单](./17_finding-existing-plugins/answer.md) |
 | 18 | [全局安装的 DSH CLI 老了，怎样安全地升级到最新的 RC / 正式版？](./18_global-dsh-upgrade/question.md) | [升级命令只有一个：`npm install -g @deepseek-ai/dsh@latest`（RC 走 `latest` 通道，`alpha` 永不碰）；把预检 / 目标解析 / 确认 / 安装 / 校验 / 回滚固化成一个可复用脚本，`~/.dsh` 用户数据不随包安装变化](./18_global-dsh-upgrade/answer.md) |
 | 19 | [DSH 的一次变更，为什么要把意图、决定、实现和证据分开安放？](./19_dsh-native-development-process/question.md) | [owner、证据、交付判断与 GitHub 状态的关系；历史案例保留可核对的事实边界](./19_dsh-native-development-process/answer.md) |
-| 20 | [Agent Note 到底该怎么写、为什么要搞这么复杂？](./20_agent-note-quality-bar/question.md) | [分篇 01–07 按推荐顺序推进：先判该不该写（多数改动不用）、再学怎么写与放哪，然后才是背后的思考（制度在防哪四种失败）、归档判据、移植与完整溯源表；附录是一篇全程带真实提交号的走查，answer.md 负责一分钟版、目录清单与术语速查，全部结论带真实 Note 与提交作例](./20_agent-note-quality-bar/answer.md) |
+| 20 | [Agent Note 到底该怎么写、为什么要搞这么复杂？](./20_agent-note-quality-bar/question.md) | [分篇 01–07 按推荐顺序推进：先判该不该写（多数改动不用）、再学怎么写与放哪，然后才是背后的思考（制度在防哪四种失败）、归档判据、移植与完整溯源表；附录是一篇全程带真实提交号的走查，answer.md 负责一分钟版、目录清单与术语速查，全部结论带真实 Note 与提交作例，出处集中在 reference.md（每条结论对应仓库路径与行号）](./20_agent-note-quality-bar/answer.md) |
 
 ## 引用规范
 
