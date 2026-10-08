@@ -1,5 +1,5 @@
-// TeamoRouter GPT-6 effort 全档探测（2026-09-24 首轮实测用脚本）
-// 用法（仓库根目录）：node _faq_on_digested/03_model-vendors/TEAMOROUTER_gpt6_effort_probe.mjs gpt-6-luna gpt-6-sol gpt-6-astra
+// TeamoRouter OpenAI 系 effort 全档探测（2026-09-24 GPT-6 首轮实测用脚本）
+// 用法（仓库根目录）：node _faq_on_digested/03_model-vendors/TEAMOROUTER_openai_probe.mjs <model-id>...（例：gpt-6.1-sol gpt-6-luna）
 // 凭据 TEAMOROUTER_API_KEY 只从 ~/.dsh/.credentials.yaml 的 refs 读取，仅用于请求，不打印不落盘。
 // 协议 = 该 route 的 openai-completions：逐档发送 reasoning_effort: <值>；DEFAULT = 不发参数（DSH effort map 的 off: 空档）。
 // 判读：200 = 参数被接受；rt = usage.reasoning_tokens，恒空表示中转不上报，不能据此宣称档位语义差异；
@@ -12,7 +12,7 @@ const key = doc?.refs?.TEAMOROUTER_API_KEY;
 if (typeof key !== 'string' || key.length < 8) { console.error('NO_KEY_RESOLVED'); process.exit(2); }
 
 const models = process.argv.slice(2);
-if (models.length === 0) { console.error('usage: node TEAMOROUTER_gpt6_effort_probe.mjs <model-id>...'); process.exit(1); }
+if (models.length === 0) { console.error('usage: node TEAMOROUTER_openai_probe.mjs <model-id>...'); process.exit(1); }
 const efforts = ['DEFAULT', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh', 'max'];
 const BASE = 'https://api.teamorouter.com/v1/chat/completions';
 
