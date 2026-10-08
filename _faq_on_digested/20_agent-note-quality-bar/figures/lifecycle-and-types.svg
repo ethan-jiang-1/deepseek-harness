@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>Agent Note 的三个状态、六个类型与一个冷藏库</title>
+  <desc>proposed 是待评审方案，implemented 是已交付决定，rejected 是保留下来防止重犯的错误；三者对应的 Note 状态分别是 Status proposed、Status implemented 和 Status rejected。implemented 中不再指导未来工作但仍有历史价值的记录移入 archived 并永久冻结，其 Status 行仍是 implemented。六个类型 feature、bug-fix、simplification、architecture、process、testing 只是检索标签，门禁拒绝集合之外的目录。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="560" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">三个状态 · 六个类型 · 一个冷藏库</text>
+  <text x="600" y="60" text-anchor="middle" fill="#64748b">状态回答「这个决定还算数吗」，类型只是检索标签，archived 不是状态而是存放位置。</text>
+
+  <text x="30" y="96" font-size="12" font-weight="700" fill="#475569">生命周期（状态）</text>
+
+  <rect x="30" y="110" width="250" height="132" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="155" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">proposed/</text>
+  <text x="155" y="164" text-anchor="middle" fill="#334155">重大工作尚未构建</text>
+  <text x="155" y="184" text-anchor="middle" fill="#334155">决定需要先评审</text>
+  <text x="155" y="214" text-anchor="middle" fill="#9a3412">Status: proposed</text>
+  <text x="155" y="232" text-anchor="middle" fill="#64748b">39 篇</text>
+
+  <line x1="288" y1="176" x2="322" y2="176" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="305" y="164" text-anchor="middle" font-size="11" fill="#64748b">交付</text>
+
+  <rect x="330" y="110" width="250" height="132" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="455" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">implemented/</text>
+  <text x="455" y="164" text-anchor="middle" fill="#334155">已交付，随代码事实</text>
+  <text x="455" y="184" text-anchor="middle" fill="#334155">保持 current</text>
+  <text x="455" y="214" text-anchor="middle" fill="#1e40af">Status: implemented</text>
+  <text x="455" y="232" text-anchor="middle" fill="#64748b">525 篇</text>
+
+  <line x1="155" y1="250" x2="155" y2="292" stroke="#b91c1c" stroke-width="2" marker-end="url(#arrowRed)"/>
+  <text x="163" y="276" font-size="11" fill="#b91c1c">被否决</text>
+
+  <rect x="30" y="300" width="250" height="132" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="155" y="330" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">rejected/</text>
+  <text x="155" y="354" text-anchor="middle" fill="#334155">只在这个错误诱惑</text>
+  <text x="155" y="374" text-anchor="middle" fill="#334155">仍然存在时保留</text>
+  <text x="155" y="404" text-anchor="middle" fill="#991b1b">Status: rejected — 原因</text>
+  <text x="155" y="422" text-anchor="middle" fill="#64748b">14 篇</text>
+
+  <line x1="588" y1="176" x2="622" y2="176" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="605" y="266" text-anchor="middle" font-size="11" fill="#64748b">不再指导未来</text>
+
+  <rect x="630" y="110" width="540" height="132" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-dasharray="6 4"/>
+  <text x="900" y="140" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">archived/ — 冷藏库，不是第四个状态</text>
+  <text x="900" y="166" text-anchor="middle" fill="#334155">只有 implemented 能进来，所以路径里刻意没有 implemented 这一层</text>
+  <text x="900" y="190" text-anchor="middle" fill="#334155">Status 行仍是 Status: implemented，只多插一行 Archived: YYYY-MM-DD</text>
+  <text x="900" y="214" text-anchor="middle" fill="#991b1b">封存后永久冻结：不得编辑、翻译、移动、删除，也不是当前权威</text>
+  <text x="900" y="234" text-anchor="middle" fill="#64748b">641 篇</text>
+
+  <rect x="30" y="456" width="1140" height="86" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="52" y="484" font-size="13" font-weight="700" fill="#166534">六个类型只是检索标签（门禁拒绝集合之外的目录；故意没有 refactor）</text>
+  <text x="52" y="510" fill="#334155">architecture 201｜feature 132｜process 69｜bug-fix 63｜testing 33｜simplification 27　　数量为 implemented 侧实测</text>
+  <text x="52" y="532" fill="#475569">边界：architecture 关乎交付的源码，process 关乎围绕源码的工具；simplification 的判据是「可观察行为是否改变」，因此覆盖了 refactor。</text>
+</svg>

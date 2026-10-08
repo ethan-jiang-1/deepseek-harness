@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
   <title>Agent Note 质量要求的三层分工</title>
-  <desc>规则层由 .agents/notes/README.md 与子树 AGENTS.md 拥有，可机械检查的部分由 verify-agent-note-format 与 agent-note-tree 执行；流程层由 dsh-archive-agent-notes、dsh-find-simplifications、dsh-prose-standard、dsh-trim-cot-leakage 承担语义判断；消费层由 dsh-doc、dsh-code-review、dsh-create-upgrade-guide 与 docs/AGENTS.md 规定引用与 review 检查点。没有任何一层叫「写 Note 的 skill」。</desc>
+  <desc>规则层由 .agents/notes/README.md 与子树 AGENTS.md 拥有，可机械检查的部分由 verify-agent-note-format 与 agent-note-tree 两个门禁执行；流程层由 dsh-archive-agent-notes、dsh-find-simplifications、dsh-prose-standard、dsh-trim-cot-leakage 承担语义判断；消费层由 dsh-doc、dsh-code-review、dsh-pre-push-checks、dsh-create-upgrade-guide 与 docs/AGENTS.md 规定引用方式与 review 检查点。没有任何一层叫「写 Note 的 skill」。</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
@@ -8,50 +8,62 @@
   </defs>
 
   <rect width="1200" height="660" rx="8" fill="#f8fafc"/>
-  <text x="600" y="38" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Agent Note 质量要求：三层分工</text>
-  <text x="600" y="62" text-anchor="middle" fill="#64748b">结构可执行的部分变成 gate，需要判断的部分留在 skill 与 review；两层都链回同一份 owner 文件。</text>
+  <text x="600" y="38" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">要求分三层，每层一个 owner</text>
+  <text x="600" y="62" text-anchor="middle" fill="#64748b">可机械判定的部分变成门禁，需要判断的部分留在 skill 与 review 里——所以没有一篇「写 Note 的 skill」。</text>
 
-  <rect x="30" y="88" width="1140" height="150" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="52" y="118" font-size="15" font-weight="700" fill="#1e40af">层级 1 · 规则层 — owner：.agents/notes/README.md ＋ 各子树 AGENTS.md</text>
-  <text x="52" y="144" fill="#334155">创建门槛（持久决定理由才写；机械与局部编辑豁免）｜路径语法 {lifecycle}/{class}/yyyy-mm-dd-topic.md｜封闭类别集合</text>
-  <text x="52" y="166" fill="#334155">头部块与三种 Status 语法｜proposed / implemented 两套正文骨架｜implemented 禁用提案期标题</text>
-  <text x="52" y="188" fill="#334155">Alternatives considered 强制且只能记录不能编造｜移动即改写｜随事实保持 current｜删除优先于归档｜封存后冻结</text>
-  <rect x="52" y="202" width="1096" height="30" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="64" y="221" fill="#1e3a8a">可机械判定的部分由 verify-agent-note-format ＋ agent-note-tree 实际拒绝，二者都在 doc-sync 内；「不设集中式 INDEX.md」也由门禁拒绝。</text>
+  <rect x="30" y="86" width="1140" height="150" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="52" y="114" font-size="14" font-weight="700" fill="#1e40af">① 规则层 · 唯一完整 owner</text>
+  <text x="1130" y="114" text-anchor="end" fill="#1e40af">.agents/notes/README.md + 各子树 AGENTS.md</text>
+  <text x="52" y="142" fill="#334155">何时写（持久决定理由 + 机械/局部 UI 豁免）｜路径语法 {生命周期}/{类型}/yyyy-mm-dd-topic.md｜两种正文骨架｜Alternatives considered 强制</text>
+  <text x="52" y="164" fill="#334155">闲置状态与类型的封闭集合｜生命周期移动即改写｜保持 current 但决策反转另写｜归档/删除判据｜新 Note 触发 supersession 检查</text>
 
-  <line x1="600" y1="238" x2="600" y2="268" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="52" y="184" width="1096" height="34" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="66" y="206" fill="#1e3a8a">执行者：verify-agent-note-format（头部 / 骨架 / 禁用标题 / grandfather 注释）　·　agent-note-tree（状态与类型目录树 / 文件名日期 / INDEX.md 禁令）　·　均在 doc-sync 内</text>
 
-  <rect x="30" y="272" width="1140" height="160" rx="10" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="52" y="302" font-size="15" font-weight="700" fill="#9a3412">层级 2 · 流程层 — skill 追加的语义要求（各自链回层级 1 的 owner）</text>
-  <rect x="52" y="316" width="264" height="104" rx="8" fill="#ffffff" stroke="#fdba74"/>
-  <text x="66" y="340" font-weight="700" fill="#9a3412">dsh-archive-agent-notes</text>
-  <text x="66" y="362" fill="#334155">保留 / 归档 / 删除按未来价值判断</text>
-  <text x="66" y="382" fill="#334155">字数与年龄只是发现手段</text>
-  <text x="66" y="400" fill="#334155">不朝配额归档｜封存件永久冻结</text>
-  <rect x="332" y="316" width="264" height="104" rx="8" fill="#ffffff" stroke="#fdba74"/>
-  <text x="346" y="340" font-weight="700" fill="#9a3412">dsh-find-simplifications</text>
-  <text x="346" y="362" fill="#334155">proposal 必备：消费者证据、</text>
-  <text x="346" y="382" fill="#334155">移除的维护成本、放弃的能力、</text>
-  <text x="346" y="400" fill="#334155">可观察验收条件｜禁止重复 Note</text>
-  <rect x="612" y="316" width="264" height="104" rx="8" fill="#ffffff" stroke="#fdba74"/>
-  <text x="626" y="340" font-weight="700" fill="#9a3412">dsh-prose-standard</text>
-  <text x="626" y="362" fill="#334155">必须留下：独有 rationale、机制、</text>
-  <text x="626" y="382" fill="#334155">备选方案、后果、验证证据、</text>
-  <text x="626" y="400" fill="#334155">已命名的覆盖缺口｜链接≠本地合同</text>
-  <rect x="892" y="316" width="256" height="104" rx="8" fill="#ffffff" stroke="#fdba74"/>
-  <text x="906" y="340" font-weight="700" fill="#9a3412">dsh-trim-cot-leakage</text>
-  <text x="906" y="362" fill="#334155">允许：合并 PR 引用、历史阶段名、</text>
-  <text x="906" y="382" fill="#334155">Alternatives 作为裁决归宿</text>
-  <text x="906" y="400" fill="#334155">禁止：索引式版本戳、修订史</text>
+  <line x1="600" y1="240" x2="600" y2="266" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="614" y="258" font-size="11" fill="#64748b">结构合法 ≠ 决定正确</text>
 
-  <line x1="600" y1="432" x2="600" y2="462" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="30" y="272" width="1140" height="196" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="52" y="300" font-size="14" font-weight="700" fill="#9a3412">② 流程层 · skill 只在四处分岔上追加语义判断</text>
 
-  <rect x="30" y="464" width="1140" height="132" rx="10" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="52" y="494" font-size="15" font-weight="700" fill="#166534">层级 3 · 消费层 — 其他 tier 怎样引用与检查 Note</text>
-  <text x="52" y="522" fill="#334155">dsh-code-review：验证 implemented Note 是否在同一 diff 从 proposed 改写为现在式，并对照实现核对路径、名称与机制</text>
-  <text x="52" y="546" fill="#334155">dsh-doc：Agent Note 豁免人类文档的作者顺序，保留仓库定义的骨架；implemented 内的迁移计划属 slop</text>
-  <text x="52" y="570" fill="#334155">dsh-create-upgrade-guide：指南超出 500 词时，rationale 移进 Agent Note；docs/AGENTS.md：rationale 这一 tier 的 owner 是 Note</text>
+  <rect x="52" y="314" width="262" height="136" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="66" y="336" font-size="12" font-weight="700" fill="#9a3412">dsh-archive-agent-notes</text>
+  <text x="66" y="358" fill="#334155">保留 / 归档 / 删除的判定</text>
+  <text x="66" y="378" fill="#334155">按未来价值，不按字数年龄</text>
+  <text x="66" y="398" fill="#334155">不朝配额归档</text>
+  <text x="66" y="418" fill="#334155">封存件永久冻结</text>
+  <text x="66" y="438" fill="#64748b">含校准例子（533 词该删、248 词该留）</text>
 
-  <rect x="30" y="608" width="1140" height="34" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="52" y="630" fill="#991b1b">结论：没有「写 Agent Note 的 skill」是分工结果，不是缺口 —— 结构已可执行，判断按场景分散，owner 唯一。</text>
+  <rect x="330" y="314" width="262" height="136" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="344" y="336" font-size="12" font-weight="700" fill="#9a3412">dsh-find-simplifications</text>
+  <text x="344" y="358" fill="#334155">proposal 四件必备证据：</text>
+  <text x="344" y="378" fill="#334155">具体消费者证据</text>
+  <text x="344" y="398" fill="#334155">被移除的维护成本</text>
+  <text x="344" y="418" fill="#334155">放弃的能力 · 可观察验收</text>
+  <text x="344" y="438" fill="#64748b">禁止为凑候选数建重复 Note</text>
+
+  <rect x="608" y="314" width="262" height="136" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="622" y="336" font-size="12" font-weight="700" fill="#9a3412">dsh-prose-standard</text>
+  <text x="622" y="358" fill="#334155">必须留下的命题：</text>
+  <text x="622" y="378" fill="#334155">rationale · 机制 · 备选方案</text>
+  <text x="622" y="398" fill="#334155">后果 · 已验证证据 · 覆盖缺口</text>
+  <text x="622" y="418" fill="#334155">删规划清单，不删钉住决定的证据</text>
+  <text x="622" y="438" fill="#64748b">链接不能替代本地合同</text>
+
+  <rect x="886" y="314" width="262" height="136" rx="8" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="900" y="336" font-size="12" font-weight="700" fill="#9a3412">dsh-trim-cot-leakage</text>
+  <text x="900" y="358" fill="#334155">允许：合并 PR/issue 引用</text>
+  <text x="900" y="378" fill="#334155">历史阶段名 · 审查裁决改写成理由</text>
+  <text x="900" y="398" fill="#334155">严禁：索引式版本戳</text>
+  <text x="900" y="418" fill="#334155">自己的修订史（属于 git）</text>
+  <text x="900" y="438" fill="#64748b">由审查与语料审计执行</text>
+
+  <line x1="600" y1="468" x2="600" y2="494" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="614" y="486" font-size="11" fill="#64748b">谁引用它、审查时查什么</text>
+
+  <rect x="30" y="500" width="1140" height="120" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="52" y="528" font-size="14" font-weight="700" fill="#166534">③ 消费层 · 别的文档 tier 怎样与 Note 交接</text>
+  <text x="52" y="554" fill="#334155">dsh-create-upgrade-guide：指南超过 500 词，把 rationale 移进 Note，其余链符号、变脚本</text>
+  <text x="52" y="576" fill="#334155">dsh-code-review / dsh-pre-push-checks：实现 proposed Note 的 PR 必须同 diff 改写为现在式，并对照实现核对路径、名称与机制</text>
+  <text x="52" y="598" fill="#334155">dsh-doc 与 docs/AGENTS.md：文档结构规则不适用于 Note；tier 表把 rationale 指派给 Note；implemented 里的迁移计划与未来时态属于 slop</text>
 </svg>

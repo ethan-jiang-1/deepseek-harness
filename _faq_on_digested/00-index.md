@@ -61,7 +61,7 @@ _faq_on_digested/
 | 17 | [开发 DSH 插件时，怎么先找到现成的轮子而不是重写？](./17_finding-existing-plugins/question.md) | [货架（316 包按组）→ 横切清单（92 服务/30 工具包×profile）→ 判形态与可见性光谱 → 四条出路按代价排序（调配置/patch 换 Provider/挂现货包/写胶水）；三个过去踩的坑（平铺 packages/、只看 base 层、以为接新模型必须写 adapter）与必须自写的缺口白名单](./17_finding-existing-plugins/answer.md) |
 | 18 | [全局安装的 DSH CLI 老了，怎样安全地升级到最新的 RC / 正式版？](./18_global-dsh-upgrade/question.md) | [升级命令只有一个：`npm install -g @deepseek-ai/dsh@latest`（RC 走 `latest` 通道，`alpha` 永不碰）；把预检 / 目标解析 / 确认 / 安装 / 校验 / 回滚固化成一个可复用脚本，`~/.dsh` 用户数据不随包安装变化](./18_global-dsh-upgrade/answer.md) |
 | 19 | [DSH 的一次变更，为什么要把意图、决定、实现和证据分开安放？](./17_dsh-native-development-process/question.md) | [owner、证据、交付判断与 GitHub 状态的关系；历史案例保留可核对的事实边界](./17_dsh-native-development-process/answer.md) |
-| 20 | [Agent Note 的质量要求到底写在哪、要求什么？](./20_agent-note-quality-bar/question.md) | [三层分工：规则层 owner + 门禁执行、skill 层追加的四条语义要求、消费层的引用与 review 检查点；含逐文件溯源表与插件仓可迁移性对照](./20_agent-note-quality-bar/answer.md) |
+| 20 | [Agent Note 到底该怎么写、为什么要搞这么复杂？](./20_agent-note-quality-bar/question.md) | [七个独立问题各一篇：该不该写 / 放什么 / 三件套 / 为什么这么多类型 / 归档判据 / 移植 / 溯源表；answer.md 只做一分钟路由，全部结论带真实 Note 与提交作例](./20_agent-note-quality-bar/answer.md) |
 
 ## 引用规范
 
