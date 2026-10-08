@@ -42,7 +42,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 | 机械可检查 | **门禁**，会以非零退出码失败 | 头部格式、必需章节、类型目录名、禁用标题 |
 | 需要判断 | **skill 与 code review** | 保留还是删除、备选方案写得真不真、风险折没折进后果 |
 
-这就是为什么你找不到一个「怎么写 Agent Note」的 skill：**能机械化的部分被门禁接管了**，剩下的部分才需要人和 agent 的判断。分工的完整溯源见 [07](./07-where-skills-add-requirements.md)。
+这就是为什么你找不到一个「怎么写 Agent Note」的 skill：**能机械化的部分被门禁接管了**，剩下的部分才需要人和 agent 的判断。三层分工见 [07](./07-where-skills-add-requirements.md)。
 
 ### 约束二：语料会长期增长
 
@@ -92,11 +92,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 它们不是一开始就设计好的，而是**从旧的目录名快照下来的**。2026-08-11 的提交 `a767cd357f`（PR #2280，"docs: propose repository naming contract and rename ledger"）把当时的 Note 树**整体搬进了类型子目录**——同一次改动里，旧的顶层分区变成 `feature/`、`bug-fix/`、`simplification/`、`architecture/`、`process/`、`testing/`，并把这份名单写进了门禁和 README。
 
-这解释了一个新人常见困惑：**为什么有些 Note 的类型看起来可以两说？** 因为在既有分类上做判断，本来就有一批边界案例。分类的作用是**缩小检索范围**，不是给出唯一正确答案：
-
-- 拿不准 `simplification` 还是 `feature`？问「可观察行为变了吗」。
-- 拿不准 `architecture` 还是 `process`？问「我改的是交付的源码，还是它周围的工具」。
-- 真的两可？选一个，不要为此新增类型——新增类型要同时改门禁名单和 README，是一次刻意行为。
+这解释了一个新人常见困惑：有些 Note 的类型看起来可以两说。分类从既有目录快照而来，边界案例是预期的。分类的作用是**缩小检索范围**。怎么选见 [03](./03-note-triplets-on-disk.md)；真的两可就选一个。新增类型要同时改门禁名单和 README，是一次刻意行为。
 
 ## 为什么禁用集中索引
 
@@ -125,7 +121,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 ![三个状态、六个类型与一个冷藏库](./figures/states-and-classes.svg)
 
-*这三个状态、六个类型由谁来判、谁来执行，见 [07 溯源表](./07-where-skills-add-requirements.md) 的图。*
+*这三个状态、六个类型由谁来判、谁来执行，见 [07](./07-where-skills-add-requirements.md) 的图。*
 
 两条冻结规则：**`archived/` 里的东西永远不出来**；`rejected/` 一旦落定就不再移动——git 历史里 20 处相关改名全部是 `proposed/` → `rejected/`，没有一处反向。想重新提，就新写一篇 Note，并链接到那篇被否决的历史。
 

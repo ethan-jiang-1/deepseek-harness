@@ -13,7 +13,7 @@
 
 ## 目录里都有什么
 
-编号只给**分篇正文**（01–07），`question.md` / `answer.md` 是入口，三个附录不带编号。这是全目录的清单：
+编号只给**分篇正文**（01–07），`question.md` / `answer.md` 是入口，两个附录不带编号。这是全目录的清单：
 
 | 文件 | 种类 | 作用 |
 |---|---|---|
@@ -21,15 +21,14 @@
 | `answer.md` | 入口 | 就是本页：一分钟版、阅读路线、术语速查 |
 | `01` | 正文 | **要不要写**——先回答这个 |
 | `02` | 正文 | **怎么写**——文件里放什么 |
-| `03` | 正文 | **放在哪**——磁盘上的三件套 |
+| `03` | 正文 | **放在哪**——路径、六个类型怎么选、三件套 |
 | `04` | 正文 | **背后的思考**——为什么是这套制度 |
-| `05` – `07` | 正文 | 维护、移植、每条要求写在哪个文件（`07` 是索引，细节在 `reference.md`） |
+| `05` – `07` | 正文 | 维护、移植、三层分工（行号只在 `reference.md`） |
 | `walkthrough.md` | 附录 | 抽一次真实改动走完全程；想先看全貌就读它 |
 | `reference.md` | 附录 | **全部出处**：每条结论对应的仓库路径、行号与实测口径 |
-| `self-audit.md` | 附录 | 关于这组页面本身的对抗性自查，不是你要读的问题 |
 | `figures/*.svg` | 素材 | 三张图，由对应正文嵌入 |
 
-**编号只覆盖 01–07，而且顺序就是推荐顺序：先决定要不要写，再学怎么写和放哪，然后才是背后的理由。** 三个附录刻意不带编号——`walkthrough.md` 是可选的纵切演示，`reference.md` 与 `self-audit.md` 是查阅用的元文档，都不该和正文抢位置。
+**编号只覆盖 01–07，而且顺序就是推荐顺序：先决定要不要写，再学怎么写和放哪，然后才是背后的理由。** 两个附录刻意不带编号——`walkthrough.md` 是可选的纵切演示，`reference.md` 是查阅用的出处，都不该和正文抢位置。
 
 ## 按什么顺序读
 
@@ -39,11 +38,11 @@
 |---|---|---|
 | 1 | [01 该不该写一篇](./01-should-i-write-one.md) | 这次改动要不要写 Note？（多数不用） |
 | 2 | [02 怎么写得对](./02-what-goes-in-the-file.md) | 决定要写了，往文件里放什么？ |
-| 3 | [03 放在哪里](./03-note-triplets-on-disk.md) | 放哪个文件夹？为什么是三个文件？ |
+| 3 | [03 放在哪里](./03-note-triplets-on-disk.md) | 放哪个文件夹？六个类型怎么选？为什么是三个文件？ |
 | 4 | [04 背后的思考](./04-why-this-design.md) | 为什么要有状态、类型、归档这些手续？ |
 | 5 | [05 写完之后](./05-keep-archive-delete.md) | 旧 Note 什么时候该归档或删除？ |
 | 6 | [06 移植到别的仓库](./06-port-to-another-repo.md) | 我想在自己的仓库里也搞一套，抄哪些？ |
-| 7 | [07 完整溯源表](./07-where-skills-add-requirements.md) | 这些要求各自写在哪个文件、哪一行？ |
+| 7 | [07 三层分工](./07-where-skills-add-requirements.md) | 这条要求归规则、流程，还是消费？ |
 | — | [reference.md 全部出处](./reference.md) | 附录：想核对原文、或想知道某个数字怎么数出来的 |
 
 **多数人只走前三步：要不要写、怎么写、放哪里。** `04` 留到你心里冒出「何必这么麻烦」的时候再读——它专门回答这个。
@@ -58,13 +57,14 @@
 |---|---|
 | **Agent Note** | agent 自己写的 RFC：记录一个决定、它的备选方案和后果 |
 | **lifecycle（生命周期）** | Note 的状态文件夹：`proposed/` 待评审、`implemented/` 已交付、`rejected/` 已否决 |
-| **class（类型）** | 检索标签，六个：`feature`、`bug-fix`、`simplification`、`architecture`、`process`、`testing` |
+| **class（类型）** | 检索标签，六个：`feature`、`bug-fix`、`simplification`、`architecture`、`process`、`testing`。怎么选见 [03](./03-note-triplets-on-disk.md) |
 | **triplet（三件套）** | 一篇 Note 在磁盘上是三个文件：`.md` + `.zh.md` + `.i18n.yaml` |
 | **sidecar** | 指 `.i18n.yaml`：逐章节记录中英两版是否同步 |
 | **supersession（取代）** | 新 Note 顶掉旧 Note 的决定。完全取代才合并归档；部分取代两篇都留、互相链接 |
 | **grandfather 注释** | 2026-07-05 之前的老文件可以用一行注释代替 `## Alternatives considered`；新文件不允许 |
-| **gate（门禁）** | 会以非零退出码失败的脚本，如 `verify-agent-note-format`、`verify-translation-pairing` |
-| **`doc-sync`** | 文档门禁总入口，上面两个门禁都在里面 |
+| **seal** | 归档内容的只追加哈希清单。归档门禁用它拒绝事后改动 |
+| **gate（门禁）** | 会以非零退出码失败的脚本，如 `verify-agent-note-classification`、`verify-agent-note-format`、`verify-translation-pairing` |
+| **`doc-sync`** | 文档门禁总入口，上面这些门禁都在里面 |
 
 ## 一句话记住三件事
 
@@ -82,10 +82,10 @@
 | 归档件的冻结规则 | [`.agents/notes/archived/AGENTS.md`](../../.agents/notes/archived/AGENTS.md) |
 | 保留 / 归档 / 删除的判定流程与校准例子 | [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) |
 | 多语言三件套政策 | [`docs/i18n/README.md`](../../docs/i18n/README.md) |
-| 会失败的门禁脚本 | [`scripts/verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts)、[`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)、[`scripts/verify-translation-pairing.ts`](../../scripts/verify-translation-pairing.ts) |
+| 会失败的门禁脚本 | [`scripts/verify-agent-note-classification.ts`](../../scripts/verify-agent-note-classification.ts)、[`scripts/verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts)、[`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)、[`scripts/verify-translation-pairing.ts`](../../scripts/verify-translation-pairing.ts) |
 
 本组 FAQ 只引用上面这类**仓库根部的内容**；它不引用任何其他 FAQ 目录或仓库外的下划线目录。
 
 ---
 
-*基线：工作树 `caf78ed639`，2026-10-08 实测；数量类事实会随仓库变化，上游改动规则文件后需重新核对行号。本组页面的自查记录见 [self-audit.md](./self-audit.md)。*
+*基线：工作树 `caf78ed639`，2026-10-08 实测；数量类事实会随仓库变化，上游改动规则文件后需重新核对行号。*

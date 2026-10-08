@@ -1,6 +1,6 @@
 # 03 · 放在哪里：磁盘上的三件套
 
-**第 3 步。** 路径语法、三件套、中文侧规则。
+**第 3 步。** 路径语法、类型怎么选、三件套、中文侧规则。
 
 ## 一句话
 
@@ -19,6 +19,26 @@
 2026-09-16-sandbox-same-mode.zh.md
 2026-09-16-sandbox-same-mode.i18n.yaml
 ```
+
+## 怎么选 `{类型}`
+
+路径第二层是六个名字之一。目录不在这份名单里，`verify-agent-note-classification` 会失败。各类型现在有多少篇、为什么没有 `refactor`，见 [04](./04-why-this-design.md)。选的时候用这张表：
+
+| 类型 | 这次决定属于它，当…… |
+|---|---|
+| `feature` | 面向用户或模型的新能力 |
+| `bug-fix` | 修正缺陷，或补上事故复盘暴露的缺口 |
+| `simplification` | 不增加能力，去掉代码、行为或对外范围 |
+| `architecture` | 关于交付源码的结构：包怎么关联、运行时词汇是什么 |
+| `process` | 代码周边的工具、政策或工作流（门禁、包管理器、vendoring） |
+| `testing` | 测试基础设施与策略 |
+
+两可时只加问两句：
+
+- **`architecture` 还是 `process`？** 改的是交付的源码，还是它周围的工具？
+- **`simplification` 还是 `feature`？** 有没有增加能力？只是移除，用 `simplification`。行为完全没变的搬移，仓库故意不单列 `refactor`，归 `simplification`；若这次也没有新决定，回到 [01](./01-should-i-write-one.md) 的出口 ①。
+
+仍然两可就选一个。新增类型要同时改门禁名单和 README，不要为了一篇 Note 加类型。类型选错了，三件套一起换目录即可。
 
 ## 为什么是三个
 
@@ -58,7 +78,7 @@ sidecar 的实际内容长这样：
 | 规则 | 违规时报错 |
 |---|---|
 | 顶层只能是生命周期文件夹 | `unknown lifecycle folder (allowed: proposed, implemented, rejected, plus archived/)` |
-| 第二层只能是六个类型之一 | `unknown class folder "xxx" (allowed: feature, bug-fix, …)` |
+| 第二层只能是六个类型之一 | `unknown class folder "xxx" (allowed: feature, bug-fix, simplification, architecture, process, testing)` |
 | 深度必须是三层 | `expected {lifecycle}/{class}/file.md (got depth N)` |
 | 文件名必须带日期前缀 | `filename must be yyyy-mm-dd-topic.md` |
 

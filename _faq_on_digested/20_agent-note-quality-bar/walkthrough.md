@@ -29,7 +29,7 @@
 
 这次是后者，直接落在 `implemented/`。类型选 `feature`——它改变了一个面向模型的行为（重复请求不再被拒）。
 
-拿不准类型时的两条判据见 [04](./04-why-this-design.md)：`architecture` 关乎交付的源码，`process` 关乎围绕源码的工具；`simplification` 的判别标准是「可观察行为是否改变」。
+六个类型怎么选，见 [03](./03-note-triplets-on-disk.md)。
 
 > **新人提示：** 类型选错不是事故——换目录、三件套一起移动即可（[03](./03-note-triplets-on-disk.md)）。
 
@@ -87,22 +87,27 @@ with no approval events and checks the resulting file.
 | 要求 | 这篇怎么做 |
 |---|---|
 | `## Problem` 不看解决方案也能懂 | 只讲「重复请求已经生效的模式」这个处境，没提怎么改 |
-| `## Decision` 用现在时 | "returns the effective mode immediately"——不是 "will return" |
-| `## Alternatives considered` 真实且带理由 | 两个真备选，各一句话说明为什么输 |
-| `## Consequences` 说清代价**与**收益 | 收益是无需审批；代价是「更宽的模式仍要审批」这条边界必须守住 |
+| `## Decision` 用现在时，边界写在这里 | "returns the effective mode immediately"。更宽的模式仍要审批，也写在这一节 |
+| `## Alternatives considered` 真实且带理由 | 两个真备选，各一句话说明为什么输。一个真实备选也合格，不要为了凑数编造 |
+| `## Consequences` 写收益，并点名钉住它的证据 | 收益是工具接受重复的生效模式，不再要审批服务。钉住它的是共享单测、两个工具消费者和 `fs-same-mode` 快照 |
 
 最后一句还点名了**什么钉住了这个决定**（单测、两个工具消费者、ACP 快照）——这是 `dsh-prose-standard` 要求保留的内容（[02](./02-what-goes-in-the-file.md)）。
 
 ## 第 5 步：写中文侧，重录哈希
 
-中文侧前三行保持英文机器标记，章节标题翻译：
+机器标记只有两处保持英文：`# Agent Note: ` 前缀，以及整行 `Status:`。标题正文要翻译。第 2 行和第 4 行留空，接着是语言切换行。下面是这篇中文侧的头部，与仓库里的文件一致：
 
 ```text
 # Agent Note: 重复沙箱模式无需审批
+
 Status: implemented
+
 [English](2026-09-16-sandbox-same-mode.md) | 中文
-## 问题 / ## 决策 / ## 考虑过的替代方案 / ## 影响
+
+## 问题
 ```
+
+其余三节标题是 `## 决策`、`## 考虑过的替代方案`、`## 影响`。每一节的正文翻译英文侧同节。把 `## Problem` 照抄进中文正文是漏译。
 
 然后重录 sidecar：
 
@@ -133,9 +138,9 @@ pnpm run doc-sync                   # 含上面的格式门禁与类型目录门
 - [ ] 放对了生命周期与类型文件夹
 - [ ] 三件套齐全，日期是主题首次提出日
 - [ ] `## Problem` 独立成文，`## Decision`/`## Proposal` 时态正确
-- [ ] `## Alternatives considered` 是两个以上真备选，不是编的
-- [ ] `## Consequences` 同时写了收益、代价和「什么钉住了它」
-- [ ] 中文侧前三行保持英文标记，标题翻译，sidecar 已重录
+- [ ] `## Alternatives considered` 记下每一个真实备选和它为什么输；一个也算，不要为了凑数编造
+- [ ] `## Consequences` 写了买到了什么，并点名钉住它的测试或检查
+- [ ] 中文侧：`# Agent Note: ` 前缀和 `Status:` 行保持英文，标题正文已翻译，第 2 行和第 4 行是空行，语言行是 `[English](….md) | 中文`，章节标题已翻译，sidecar 已重录
 - [ ] 同 PR 做了 supersession 检查
 - [ ] `pnpm run doc-sync` 通过
 
