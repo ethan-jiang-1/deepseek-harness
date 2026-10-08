@@ -72,7 +72,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 ## 为什么有六个类型
 
-六个类型是**封闭集合**，门禁 [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) 拒绝任何不在这份名单里的目录。它们的职责只有一个：**把检索范围从一千篇缩到几十篇**。
+六个类型是**封闭集合**——[`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) 拒绝任何不在这份名单里的目录，该错误随 `verify-agent-note-classification` 与格式门禁一起失败。它们的职责只有一个：**把检索范围从一千篇缩到几十篇**。
 
 | 类型 | 覆盖范围 | implemented 侧数量 |
 |---|---|---|
@@ -133,7 +133,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 - [`.agents/notes/AGENTS.md`](../../.agents/notes/AGENTS.md)：Note 的身份（agent 写的 RFC）与 supersession 检查要求。
 - [`implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)：「机械门禁优于散文约定」的实测结论。
-- [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)：状态与类型的封闭集合、允许清单、`INDEX.md` 禁令。
+- [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)：状态与类型的封闭集合、允许清单、`INDEX.md` 禁令；由两个门禁共同调用的共享模块。
 - [`.agents/notes/README.md` 的 "Classification"](../../.agents/notes/README.md)：六个类型的定义与 architecture/process 分界。
 - 提交 `a767cd357f`（2026-08-11）：把旧目录整体搬进类型子目录、确立这份名单的那次改动。
 - [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)：保留 / 归档 / 删除的判定与校准例子（含字数作为反证的那几个案例）。

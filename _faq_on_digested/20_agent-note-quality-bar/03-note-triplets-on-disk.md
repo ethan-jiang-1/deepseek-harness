@@ -53,7 +53,7 @@ sidecar 的实际内容长这样：
 
 ## 被测的目录树
 
-门禁 [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) 会把结构错误直接判失败：
+结构错误由 [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) 的 `walkAgentNoteTree()` 判定；该模块本身没有 CLI，是两个门禁（`verify-agent-note-classification` 与 `verify-agent-note-format`）共同调用的共享模块，错误经由它们以非零退出码失败：
 
 | 规则 | 违规时报错 |
 |---|---|
@@ -100,7 +100,7 @@ does not intercept `node:timers/promises`, so the swap costs deterministic fast 
 | `## Problem`、`## Decision`、`## Alternatives considered` 等章节标题 | **翻译**（`## 问题`、`## 决策`、`## 考虑过的替代方案`） | 配对门禁按**英文**标题生成 slug 键，两侧标题数量必须相等 |
 | fenced code block、生成区域 | **两侧逐字相同** | 配对门禁 |
 
-最后一行是关键，也最反直觉：`.i18n.yaml` 的键取自**英文**标题的 slug（`/agent-note-repeated-sandbox-modes-need-no-approval/decision`），但被哈希的内容块来自两侧各自的文字——[`translation-brief.ts:125`](../../scripts/translation-brief.ts) 写明了为什么不能拿标题文字对齐：**「Depth only: heading TEXT is translated across a pair, so it cannot participate in cross-language alignment.」**
+最后一行是关键，也最反直觉：`.i18n.yaml` 的键是**英文侧标题的 slug 路径**，形如 `/{H1 标题}/{h2 标题}`（真实值：`/agent-note-repeated-sandbox-modes-need-no-approval/decision`），但被哈希的内容块来自两侧各自的文字——[`translation-brief.ts:125`](../../scripts/translation-brief.ts) 写明了为什么不能拿标题文字对齐：**「Depth only: heading TEXT is translated across a pair, so it cannot participate in cross-language alignment.」**
 
 真实对照（同一篇 Note 的两种语言）：
 
@@ -128,4 +128,4 @@ English | [中文](….zh.md)                    [English](….md) | 中文
 
 - [`.agents/notes/README.md` 的 "Layout and naming"](../../.agents/notes/README.md)：路径语法、日期语义、不用索引、相对链接。
 - [`docs/i18n/README.md`](../../docs/i18n/README.md)：三件套契约、sidecar 键与哈希语义。
-- [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)：上表每条报错的来源。
+- [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)：上表每条报错的来源。注意它是被 `verify-agent-note-classification` 与 `verify-agent-note-format` 共同调用的共享模块，本身不是独立门禁。
