@@ -113,7 +113,7 @@
 
 旧判据「变更非平凡」无法执行——任何改动都能论证自己非平凡，结果是每个行为变更都机械建档。新标准明确写了：行为变化、用户可见性、文件数量、新增测试**本身都不构成理由**；普通变更理由写进 PR 描述，当前行为写进它既有的文档。
 
-> 如果你在旧材料里看到 "Every non-trivial change MUST…"，那是收窄之前的历史引文，不是现行规则。`_faq_on_digested/06` 与 `11` 里的引用就属于这一类，本文不改写它们的历史语境。
+> 如果你在别处看到 "Every non-trivial change MUST…"，那是收窄之前的历史引文，不是现行规则——它以提交 `730bcc7c85` 为准。
 
 ## 证据入口
 
@@ -121,7 +121,6 @@
 - [`.agents/notes/README.md` § Archiving and deletion](../../.agents/notes/README.md)：为什么「实现很小」不是判据。
 - 提交 `730bcc7c85`（2026-09-17）：把「非平凡变更必须写」改写成「只有持久决定理由才写」。
 - 提交 `5124a2a310`（PR #5004）：一次完整、合格、不需要 Note 的交付。
-- [`_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md`](../../_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md)：从哪开始写、什么时候该更新既有 owner。
 
 ---
 

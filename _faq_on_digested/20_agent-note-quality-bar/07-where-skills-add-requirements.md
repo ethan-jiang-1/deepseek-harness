@@ -80,7 +80,10 @@
 | [`dsh-create-upgrade-guide`](../../.agents/skills/dsh-create-upgrade-guide/SKILL.md) | 指南 rationale 溢出时移进 Note | 消费 |
 | [`docs/AGENTS.md`](../../docs/AGENTS.md) | 结构规则不适用于 Note；tier 表（rationale → Note）；创建标准必须应用；spec-speak 反模式 | 边界 |
 
-## 证据入口
+## 出处
 
-- [`_faq_on_digested/19_dsh-native-development-process`](../19_dsh-native-development-process/answer.md)：一次变更里各层载体如何落位。
-- [`_dsh_plugin_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md`](../../_dsh_plugin_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md)：Skill 为什么适合承载情境化流程、又为什么不能替代 gate。
+上表每一行都指向仓库里真实存在的 owner 文件，可逐条打开核对；全部路径、行号与实测口径集中在 [reference.md](./reference.md)。
+
+---
+
+*基线：工作树 `caf78ed639`，2026-10-08 实测；上游改动规则文件后需重新核对行号。*
