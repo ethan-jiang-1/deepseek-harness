@@ -1,51 +1,75 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="520" viewBox="0 0 1000 520" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title id="title">Agent Note 的状态转换与禁止路径</title>
-  <desc id="desc">展示 proposed、implemented、rejected 三个 lifecycle 状态与 archived 冻结存放地的允许转换，以及 supersession 与 archive 的不同条件。</desc>
-  <defs>
-    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
-    <marker id="arr-red" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#b42318"/></marker>
-  </defs>
-  <rect width="1000" height="520" rx="6" fill="#fafafa"/>
-  <text x="500" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">Agent Note lifecycle：状态由事实决定，不是固定晋级阶梯</text>
-  <text x="500" y="51" text-anchor="middle" font-size="11" fill="#667085">只有承载持久决定理由的变更才需要 owning Note（机械/局部编辑豁免）；proposal 只属于实现前需要评审的重大工作。</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="760" viewBox="0 0 1120 760" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">什么会成为一篇 Agent Note</title>
+  <desc id="desc">先按三个出口判断这次改动会不会成为 Note，再看 proposed、implemented、rejected 与 archived，最后分开留下、归档和合并后删除。</desc>
+  <rect width="1120" height="760" rx="6" fill="#fafafa"/>
+  <text x="560" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#172033">什么会成为一篇 Agent Note</text>
+  <text x="560" y="56" text-anchor="middle" font-size="12" fill="#667085">代码、测试和现有文档都解释不了的持久决定理由，才在同一次变更里写下来。</text>
 
-  <rect x="42" y="83" width="200" height="74" rx="8" fill="#edf2f7" stroke="#94a3b8"/>
-  <text x="142" y="111" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">决定尚未做出？</text>
-  <text x="142" y="135" text-anchor="middle" fill="#475569">先判断工作所处事实</text>
+  <rect x="36" y="76" width="336" height="132" rx="8" fill="#f3f4f6" stroke="#94a3b8"/>
+  <text x="204" y="106" text-anchor="middle" font-size="15" font-weight="700" fill="#334155">不成为 Note</text>
+  <text x="204" y="132" text-anchor="middle" font-size="12" fill="#475569">代码、测试或现有文档</text>
+  <text x="204" y="152" text-anchor="middle" font-size="12" fill="#475569">已经解释得了当前行为</text>
+  <text x="204" y="178" text-anchor="middle" font-size="12" fill="#667085">机械或局部编辑，含局部 UI</text>
 
-  <rect x="320" y="78" width="260" height="98" rx="8" fill="#f7ecda" stroke="#c68b2c"/>
-  <text x="450" y="107" text-anchor="middle" font-size="14" font-weight="700" fill="#744d0f">proposed</text>
-  <text x="450" y="132" text-anchor="middle" fill="#805915">Proposal · Alternatives · Acceptance · Risks</text>
-  <text x="450" y="154" text-anchor="middle" font-size="11" fill="#916d32">未构建或只部分构建</text>
+  <rect x="392" y="76" width="336" height="132" rx="8" fill="#eef2ff" stroke="#818cf8"/>
+  <text x="560" y="106" text-anchor="middle" font-size="15" font-weight="700" fill="#3730a3">更新已有 Note</text>
+  <text x="560" y="132" text-anchor="middle" font-size="12" fill="#4338ca">决定还是那一个</text>
+  <text x="560" y="152" text-anchor="middle" font-size="12" fill="#4338ca">变的是路径、名称、key、默认值</text>
+  <text x="560" y="178" text-anchor="middle" font-size="12" fill="#6366f1">改那一篇的事实，不新建</text>
 
-  <rect x="700" y="78" width="260" height="98" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
-  <text x="830" y="107" text-anchor="middle" font-size="14" font-weight="700" fill="#245d35">implemented</text>
-  <text x="830" y="132" text-anchor="middle" fill="#326c42">Decision · Alternatives · Consequences</text>
-  <text x="830" y="154" text-anchor="middle" font-size="11" fill="#4f775a">shipped rationale owner，随事实保持 current</text>
+  <rect x="748" y="76" width="336" height="132" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="916" y="106" text-anchor="middle" font-size="15" font-weight="700" fill="#245d35">新写一篇</text>
+  <text x="916" y="132" text-anchor="middle" font-size="12" fill="#326c42">持久的 why，以及放弃了什么</text>
+  <text x="916" y="152" text-anchor="middle" font-size="12" fill="#326c42">要先评审、尚未构建 → proposed</text>
+  <text x="916" y="178" text-anchor="middle" font-size="12" fill="#4f775a">决定已交付 → implemented</text>
 
-  <line x1="242" y1="108" x2="316" y2="108" stroke="#475569" marker-end="url(#arr)"/>
-  <text x="278" y="97" text-anchor="middle" font-size="11" fill="#667085">需要先评审</text>
-  <path d="M142 157 L142 378 L648 378 L648 154 L696 154" fill="none" stroke="#475569" marker-end="url(#arr)"/>
-  <text x="500" y="373" text-anchor="middle" font-size="11" fill="#667085">决定已做出，直接交付</text>
-  <line x1="580" y1="127" x2="696" y2="127" stroke="#15803d" marker-end="url(#arr)"/>
-  <text x="638" y="117" text-anchor="middle" font-size="11" fill="#245d35">实现并改写正文</text>
+  <text x="560" y="236" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">新写之后，状态由这份事实决定</text>
 
-  <rect x="320" y="258" width="260" height="96" rx="8" fill="#fdecec" stroke="#d96c65"/>
-  <text x="450" y="287" text-anchor="middle" font-size="14" font-weight="700" fill="#8f241d">rejected</text>
-  <text x="450" y="312" text-anchor="middle" fill="#9f332b">保留 proposal + 一行拒绝原因</text>
-  <text x="450" y="334" text-anchor="middle" font-size="11" fill="#aa514a">仅在仍能阻止可信错误时保留</text>
-  <line x1="450" y1="176" x2="450" y2="254" stroke="#b42318" marker-end="url(#arr-red)"/>
-  <text x="463" y="220" font-size="11" fill="#8f241d">决定不做</text>
+  <rect x="36" y="252" width="250" height="92" rx="8" fill="#f7ecda" stroke="#c68b2c"/>
+  <text x="161" y="282" text-anchor="middle" font-size="14" font-weight="700" fill="#744d0f">proposed</text>
+  <text x="161" y="306" text-anchor="middle" font-size="12" fill="#805915">未构建，先评审</text>
+  <text x="161" y="326" text-anchor="middle" font-size="11" fill="#916d32">Proposal · Acceptance · Risks</text>
 
-  <rect x="700" y="258" width="260" height="96" rx="8" fill="#ede9f7" stroke="#8b7bb8"/>
-  <text x="830" y="287" text-anchor="middle" font-size="14" font-weight="700" fill="#554879">archived</text>
-  <text x="830" y="312" text-anchor="middle" fill="#665a87">完整 triplet + append-only hash</text>
-  <text x="830" y="334" text-anchor="middle" font-size="11" fill="#746894">永久冻结；只作历史引用</text>
-  <line x1="830" y1="176" x2="830" y2="254" stroke="#475569" stroke-dasharray="5 4" marker-end="url(#arr)"/>
-  <text x="843" y="220" font-size="11" fill="#667085">未来决策价值低</text>
+  <rect x="302" y="252" width="250" height="92" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="427" y="282" text-anchor="middle" font-size="14" font-weight="700" fill="#245d35">implemented</text>
+  <text x="427" y="306" text-anchor="middle" font-size="12" fill="#326c42">已交付的现在式决定</text>
+  <text x="427" y="326" text-anchor="middle" font-size="11" fill="#4f775a">Decision · Consequences</text>
 
-  <rect x="42" y="399" width="918" height="82" rx="8" fill="#fff" stroke="#cbd5e1"/>
-  <text x="64" y="425" font-size="12" font-weight="700" fill="#334155">Supersession 发生在活动树内</text>
-  <text x="64" y="450" fill="#475569">部分取代：旧 Note 继续活动，双方 cross-link。完整取代：新 owner 先吸收独有 rationale / alternative / consequence / verification，再删除旧 triplet。</text>
-  <text x="64" y="470" font-size="11" fill="#667085">禁止路径：proposed → archived；sealed archive → edit / translate / move / delete；只改 Status 而不改 lifecycle skeleton。</text>
+  <rect x="568" y="252" width="250" height="92" rx="8" fill="#fdecec" stroke="#d96c65"/>
+  <text x="693" y="282" text-anchor="middle" font-size="14" font-weight="700" fill="#8f241d">rejected</text>
+  <text x="693" y="306" text-anchor="middle" font-size="12" fill="#9f332b">决定不做</text>
+  <text x="693" y="326" text-anchor="middle" font-size="11" fill="#aa514a">仍能阻止可信错误才留</text>
+
+  <rect x="834" y="252" width="250" height="92" rx="8" fill="#ede9f7" stroke="#8b7bb8"/>
+  <text x="959" y="282" text-anchor="middle" font-size="14" font-weight="700" fill="#554879">archived</text>
+  <text x="959" y="306" text-anchor="middle" font-size="12" fill="#665a87">只有 implemented 能进入</text>
+  <text x="959" y="326" text-anchor="middle" font-size="11" fill="#746894">冻结历史，不是第四种状态</text>
+
+  <text x="560" y="376" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">写完之后，三条结局不要并成一条</text>
+
+  <rect x="36" y="392" width="336" height="118" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="204" y="422" text-anchor="middle" font-size="15" font-weight="700" fill="#245d35">留下</text>
+  <text x="204" y="448" text-anchor="middle" font-size="12" fill="#326c42">理由仍可能指导以后的改动</text>
+  <text x="204" y="470" text-anchor="middle" font-size="12" fill="#4f775a">部分取代：两边都留，并交叉链接</text>
+  <text x="204" y="492" text-anchor="middle" font-size="11" fill="#667085">字数和年龄不是判据</text>
+
+  <rect x="392" y="392" width="336" height="118" rx="8" fill="#ede9f7" stroke="#8b7bb8"/>
+  <text x="560" y="422" text-anchor="middle" font-size="15" font-weight="700" fill="#554879">归档</text>
+  <text x="560" y="448" text-anchor="middle" font-size="12" fill="#665a87">已完成，不太再指导未来</text>
+  <text x="560" y="470" text-anchor="middle" font-size="12" fill="#746894">历史理由仍值得保留</text>
+  <text x="560" y="492" text-anchor="middle" font-size="11" fill="#667085">proposed 永不归档</text>
+
+  <rect x="748" y="392" width="336" height="118" rx="8" fill="#fdecec" stroke="#d96c65"/>
+  <text x="916" y="422" text-anchor="middle" font-size="15" font-weight="700" fill="#8f241d">合并后删除</text>
+  <text x="916" y="448" text-anchor="middle" font-size="12" fill="#9f332b">新 owner 已吸收全部独有内容</text>
+  <text x="916" y="470" text-anchor="middle" font-size="12" fill="#aa514a">旧三件套删除，不进归档</text>
+  <text x="916" y="492" text-anchor="middle" font-size="11" fill="#667085">部分取代不符合合并条件</text>
+
+  <rect x="36" y="534" width="1048" height="188" rx="8" fill="#fff" stroke="#cbd5e1"/>
+  <text x="56" y="566" font-size="13" font-weight="700" fill="#334155">禁止路径</text>
+  <text x="56" y="594" font-size="13" fill="#475569">把一篇 Note 改写成另一个决定。要换决定，新写一篇，并与旧篇交叉链接。</text>
+  <text x="56" y="620" font-size="13" fill="#475569">proposed 直接进入 archived。过时提案转入 rejected，或在失去防错价值后删除。</text>
+  <text x="56" y="646" font-size="13" fill="#475569">封存后的归档件再编辑、翻译、移动或删除。它只作历史引用，不是当前权威。</text>
+  <text x="56" y="672" font-size="13" fill="#475569">只改 Status、不改写成已交付正文，就把未来计划留在 implemented 里冒充当前事实。</text>
+  <text x="56" y="698" font-size="12" fill="#667085">每篇活动 Note 都要写下它击败了什么。没有输家的决定，会把同一条路再争论一遍。</text>
 </svg>
