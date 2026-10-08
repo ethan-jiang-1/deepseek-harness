@@ -150,7 +150,7 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 > Mechanical or local edits, including local UI presentation and interaction changes, are exempt.
 
-来源：`.agents/notes/README.md`（创建标准一节）。变更闭环、决策记录两章引用的「局部修补豁免 vs 持久取舍必写」判据以此条为 DSH 侧原文；两个对比例的完整走查在 `_faq_on_digested/17_dsh-native-development-process/02-specs-and-decisions.md`。
+来源：`.agents/notes/README.md`（创建标准一节）。变更闭环、决策记录两章引用的「局部修补豁免 vs 持久取舍必写」判据以此条为 DSH 侧原文；两个对比例的完整走查在 `_faq_on_digested/19_dsh-native-development-process/02-specs-and-decisions.md`。
 
 ## 23. 本地相关检查按改动面选择
 
@@ -162,7 +162,7 @@ tool schema 的可见集由每次 assembly 决定：`ToolProviderResult.schemas`
 
 > agent 是一等参与者；规则是可执行的代码；每类事实有唯一的 owner。
 
-来源：`_faq_on_digested/17_dsh-native-development-process/answer.md`（2026-09-24 重写轮确立的归纳）。answer.md「DSH 的精华」一节直接引用此归纳；它是对 DSH 既有机制的总结，不是 DSH 的自称——DSH 从未把这三句写进自己的文档，逐条机制依据见该 FAQ 各页的钉版链接。
+来源：`_faq_on_digested/19_dsh-native-development-process/answer.md`（2026-09-24 重写轮确立的归纳）。answer.md「DSH 的精华」一节直接引用此归纳；它是对 DSH 既有机制的总结，不是 DSH 的自称——DSH 从未把这三句写进自己的文档，逐条机制依据见该 FAQ 各页的钉版链接。
 
 ## 25. 字数预算门禁的棘轮语义
 

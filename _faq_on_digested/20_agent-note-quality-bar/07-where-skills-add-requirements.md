@@ -80,5 +80,5 @@
 
 ## 证据入口
 
-- [`_faq_on_digested/17_dsh-native-development-process`](../17_dsh-native-development-process/answer.md)：一次变更里各层载体如何落位。
+- [`_faq_on_digested/19_dsh-native-development-process`](../19_dsh-native-development-process/answer.md)：一次变更里各层载体如何落位。
 - [`_dsh_plugin_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md`](../../_dsh_plugin_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md)：Skill 为什么适合承载情境化流程、又为什么不能替代 gate。
