@@ -69,6 +69,16 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 | 文档写作与预算 | [`dsh-doc/SKILL.md`](../../.agents/skills/dsh-doc/SKILL.md) |
 | 破坏性变更要立刻写 upgrade guide | [`dsh-create-upgrade-guide/SKILL.md`](../../.agents/skills/dsh-create-upgrade-guide/SKILL.md) |
 | 推送前该跑哪些检查 | [`dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md) |
+| 删除类提案的四件证据：消费者证据、被移除的维护成本、放弃的能力、可观察的验收条件；proposal 骨架含 `Acceptance criteria` 与 `Risks` | [`dsh-find-simplifications/SKILL.md`](../../.agents/skills/dsh-find-simplifications/SKILL.md) 第 61 行 |
+| Note 的 change-story 可以用历史阶段名；`this cut` / `v1` / `today` 以及 Note 自身的修订史不行；`## Alternatives considered` 是 review 裁决的归宿 | [`dsh-trim-cot-leakage/SKILL.md`](../../.agents/skills/dsh-trim-cot-leakage/SKILL.md) 第 35、37 行；[`references/examples.md`](../../.agents/skills/dsh-trim-cot-leakage/references/examples.md) 第 97、111 行 |
+| 升级指南超过 500 词时，多出来的理由移进 Agent Note | [`dsh-create-upgrade-guide/SKILL.md`](../../.agents/skills/dsh-create-upgrade-guide/SKILL.md) 第 44 行 |
+| 实现了 proposed Note 的 PR 要在同一 diff 改写成现在时，并核对路径、名称与机制 | [`dsh-code-review/SKILL.md`](../../.agents/skills/dsh-code-review/SKILL.md) 第 47 行 |
+| 作者顺序适用于面向人的文档，不适用于 Agent Note；implemented 里的迁移计划与未来时态属于 slop | [`dsh-doc/SKILL.md`](../../.agents/skills/dsh-doc/SKILL.md) 第 91、93 行 |
+| Note 相关改动在推送前跑 `pnpm run doc-sync` | [`dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md) 第 35 行 |
+| 文档结构规则不适用于 Agent Note | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 7 行 |
+| tier 表把 rationale 指派给 Agent Note | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 25 行 |
+| 写作规则仍要求应用 Agent Note 创建标准 | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 40 行 |
+| slop 清单点名 implemented Note 里的 spec-speak | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 72 行 |
 
 ## 四、作为范例的真实文件
 
@@ -98,7 +108,7 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 
 ## 六、移植时的判断依据
 
-第七页讲的移植（哪些必须照抄、哪些可以自己发明），**是本组 FAQ 依据下列仓库根部文件做的归纳**，不是某一篇文档里的现成清单——判断依据全部在仓库里可以逐条核对：
+[06](./06-port-to-another-repo.md) 讲的移植（哪些必须照抄、哪些可以自己发明），**是本组 FAQ 依据下列仓库根部文件做的归纳**，不是某一篇文档里的现成清单——判断依据全部在仓库里可以逐条核对：
 
 | 判断 | 依据 |
 |---|---|
@@ -116,7 +126,7 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 | [`question.md`](./question.md) | 问题与范围声明 |
 | [`answer.md`](./answer.md) | 一分钟版、目录清单、推荐顺序、术语速查 |
 | [`walkthrough.md`](./walkthrough.md) | 附录：一次真实改动的全程走查 |
-| [`self-audit.md`](./self-audit.md) | 附录：第一轮成稿后的对抗性自查（描述的是当时状态） |
+| [`07-where-skills-add-requirements.md`](./07-where-skills-add-requirements.md) | 三层分工；行号不在该页 |
 
 ---
 

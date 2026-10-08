@@ -1,6 +1,10 @@
+# 已冻结的起草记录
+
+这是 `20_agent-note-quality-bar/` 第一轮成稿时的自查。编号和「现稿」结论对不上现在的页面。不要用它改 FAQ，也不要把它当成现行规则。现行结构以 [`answer.md`](../20_agent-note-quality-bar/answer.md) 为准。
+
 # 自查：这一组 FAQ 的问题在哪里
 
-> 本文写于第一轮成稿之后，描述的是**当时**的问题与修法。此后又做过一轮结构与顺序重排（编号只给正文 01–07、`walkthrough` 与本文降为不带编号的附录、`04` 改写为「背后的思考」），下文的旧编号不再对应当前文件名。当前结构见 [`answer.md`](./answer.md) 的目录清单。
+> 本文写于第一轮成稿之后，描述的是**当时**的问题与修法。此后又做过一轮结构与顺序重排（编号只给正文 01–07、`walkthrough` 与本文降为不带编号的附录、`04` 改写为「背后的思考」），下文的旧编号不再对应当前文件名。当前结构见 [`answer.md`](../20_agent-note-quality-bar/answer.md) 的目录清单。
 
 对 `20_agent-note-quality-bar/` 九篇现稿做的对抗性复核。每条都标了**证据**、**影响**与**修法**。未标注「已确认」的，是我尚未核到原文、需要在动手时一并核实的。
 
@@ -8,7 +12,7 @@
 
 ### A1. 「`## Risks` 在 implemented 里被禁」——错，而且门禁的报错原文被我改写了
 
-- **现稿**：[`03`](./03-note-triplets-on-disk.md) 与 [`02`](./02-what-goes-in-the-file.md) 都写「`## Proposal`、`## Plan`、`## Migration plan`、`## Acceptance criteria` 出现在 implemented 会被门禁直接拒绝」。
+- **现稿**：[`03`](../20_agent-note-quality-bar/03-note-triplets-on-disk.md) 与 [`02`](../20_agent-note-quality-bar/02-what-goes-in-the-file.md) 都写「`## Proposal`、`## Plan`、`## Migration plan`、`## Acceptance criteria` 出现在 implemented 会被门禁直接拒绝」。
 - **事实**：```js
 BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance criteria\b)/i
 ```（[`scripts/verify-agent-note-format.ts:36`](../../scripts/verify-agent-note-format.ts)）。**`## Risks` 不在禁用列表里。**
@@ -18,20 +22,20 @@ BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance crite
 
 ### A2. 六个类型的定义被我压缩后失真
 
-- **现稿**：[`04`](./04-why-this-design.md) 的表格把 `architecture` 写成「关于**交付源码**的结构性决策；包之间怎么关联」。
+- **现稿**：[`04`](../20_agent-note-quality-bar/04-why-this-design.md) 的表格把 `architecture` 写成「关于**交付源码**的结构性决策；包之间怎么关联」。
 - **事实**：README 原文是 "A structural decision about the **shipped source** — how packages relate, what the runtime vocabulary is"。我漏掉了 **runtime vocabulary**（运行时词汇），而它正是区分 architecture 与纯目录重构的关键。
 - **修法**：六个定义逐条对齐 README 的 Classification 表，不要改写。
 
 ### A3. rejected 的正文规则我写漏了，且与自己的例子矛盾
 
-- **现稿**：[`03`](./03-note-triplets-on-disk.md) 只写「`proposed/` → `rejected/` 只在 `Status:` 加理由并冻结」。
+- **现稿**：[`03`](../20_agent-note-quality-bar/03-note-triplets-on-disk.md) 只写「`proposed/` → `rejected/` 只在 `Status:` 加理由并冻结」。
 - **事实**：README:107 明确 rejected **保留提案期的全部章节**（包括 `## Acceptance criteria`、`## Plan`），只有四样东西仍然适用：头部块、`## Problem` 开头、`## Proposal`、Alternatives 强制。
 - **自相矛盾**：我在 04 里引用的那篇 rejected 例子实际含 `## Acceptance criteria` 与 `## Risks`——正文规则不讲清，读者会以为那篇违规。
 - **修法**：03 补 rejected 的正文章节规则；04 引例子时点明「它保留提案期章节是合规的」。
 
 ### A4. 我把「哪些事不该写 Note」写成了几乎禁止 bug 修复
 
-- **现稿**：[`01`](./01-should-i-write-one.md) 的三十秒自检第 2 问——「我说得出被击败的备选方案吗？说不出来，通常意味着这个决定没有取舍，只有实现步骤」，配合第 1 问，读起来像「修 bug 不要写 Note」。
+- **现稿**：[`01`](../20_agent-note-quality-bar/01-should-i-write-one.md) 的三十秒自检第 2 问——「我说得出被击败的备选方案吗？说不出来，通常意味着这个决定没有取舍，只有实现步骤」，配合第 1 问，读起来像「修 bug 不要写 Note」。
 - **事实**：README:45 的豁免只覆盖**机械编辑与局部 UI**；类目定义里 `bug-fix` 是正式一类（implemented 侧 63 篇），archive skill 也明确「A local bug fix… does not qualify merely because its implementation is small」。
 - **我真正想说但没说清的**：不是「bug 不写」，而是**「这次改动有没有一个决定」**。若只是让代码符合既有决定，答案是「没有」，那就去修，不必写；若这次改动**改变或补充了一个决定**（哪怕行数很少），就该写。sandbox-same-mode 就是后者——171 词，但它放宽了一条既有安全保证。
 - **修法**：改成**三出口**结构，把「不需要商量」这一支明确还给读者：

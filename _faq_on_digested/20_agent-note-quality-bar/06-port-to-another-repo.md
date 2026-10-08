@@ -46,8 +46,11 @@ notes/
 │   └── architecture/
 │       └── 2026-01-15-tool-execution-seam.md
 └── rejected/
-    └── 2026-01-20-single-jsonrpc-transport.md
+    └── simplification/
+        └── 2026-01-20-single-jsonrpc-transport.md
 ```
+
+类型集合可以缩小（见上面第 1 条），类型这一层不能省。`implemented/` 和 `rejected/` 都是 `{生命周期}/{类型}/文件`。
 
 配一条 CI 检查（伪代码）：
 
@@ -55,10 +58,10 @@ notes/
 对 notes/**/*.md：
   前两行必须是 "# Agent Note: X" 和空行
   第三行必须是 "Status: implemented" 或 "Status: rejected — …"
+  第 4 行必须是空行
   首个 ## 标题必须是 "## Problem"
   implemented 必须含 "## Decision"、"## Alternatives considered"、"## Consequences"
-  目录名必须在允许清单里
-  文件名必须匹配 yyyy-mm-dd-*.md
+  路径必须是 {lifecycle}/{class}/yyyy-mm-dd-*.md，两层都在允许清单里
 ```
 
 ## 三个最容易抄错的点

@@ -14,12 +14,14 @@
 ## Consequences            ← 代价与收益都要写
 ```
 
-头部三行固定，第四行空行：
+头部固定成这样：第 1 行标题，第 2 行空，第 3 行 `Status:`，第 4 行空，然后是语言切换行。中文侧的逐行对照在 [03](./03-note-triplets-on-disk.md)。
 
 ```markdown
 # Agent Note: <title>
 
 Status: implemented
+
+English | [中文](yyyy-mm-dd-topic-title.zh.md)
 ```
 
 ## 最短的合格成品
@@ -108,7 +110,7 @@ BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance crite
 | 章节 | 状态 |
 |---|---|
 | `## Decision`、`## Consequences` | **必需**，缺了门禁直接拒 |
-| `## Alternatives considered` | **必需**（旧文件可用 grandfather 注释代替）。规则是二选一：两者都有、或都没有，都直接拒；且 grandfather 注释只对 2026-07-05 之前的 Note 有效 |
+| `## Alternatives considered` | **必需**。这一节和 grandfather 注释恰好留一个：两个同时出现，或两个都没有，门禁都拒绝。grandfather 注释只对 2026-07-05 之前的 Note 有效 |
 | `## Testing`、`## Deferred`、`## Related` | 合法，只要陈述现在时事实 |
 | `## Risks` | 合法，门禁不查 |
 | 包拓扑、wire contract、schema 等自定义章节 | 合法，夹在必需章节之间自由组织 |
