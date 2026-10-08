@@ -125,7 +125,7 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 |---|---|
 | [`question.md`](./question.md) | 问题与范围声明 |
 | [`answer.md`](./answer.md) | 一分钟版、目录清单、推荐顺序、术语速查 |
-| [`walkthrough.md`](./walkthrough.md) | 附录：一次真实改动的全程走查 |
+| [`one-real-change.md`](./one-real-change.md) | 附录：一次真实改动的全程走查 |
 | [`07-where-skills-add-requirements.md`](./07-where-skills-add-requirements.md) | 三层分工；行号不在该页 |
 
 ---
