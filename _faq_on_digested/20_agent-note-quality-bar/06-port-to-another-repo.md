@@ -1,5 +1,7 @@
 # 06 · 移植到别的仓库
 
+**想自立门户时读这一页。** 哪些必须照抄，哪些可以自己发明。
+
 ## 前提
 
 目录叫什么、放在 `.agents/notes/` 还是仓库根目录的 `notes/`，都不影响内容要求。要移植的是**制度**，不是路径前缀。
@@ -74,5 +76,5 @@ notes/
 ## 证据入口
 
 - [`_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md`](../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md)：DSH 明确说明插件仓**不继承**它的目录拓扑、gates 与发布制度；可迁移的是原则。
-- [`demo:inspector` 之外的另一条路]：直接看 DSH 最简的注册形态 [`packages/preset/agent-preset/skills/agent-experience/SKILL.md`](../../packages/preset/agent-preset/skills/agent-experience/SKILL.md)，它演示了「一份文档 + 一条检查」的最小组合。
 - [`.agents/notes/README.md`](../../.agents/notes/README.md)：八条照抄项的原文依据。
+- [`_faq_on_digested/19`](../19_dsh-native-development-process/answer.md)：DSH 原生开发流程里各层载体的落位；移植时它会告诉你哪些环节是**必须保留的机制**、哪些只是 DSH 自己的装载方式。

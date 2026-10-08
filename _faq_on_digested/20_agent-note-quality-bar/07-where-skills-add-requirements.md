@@ -1,4 +1,6 @@
-# 07 · skill 往里加了什么
+# 07 · 这些要求写在哪：完整溯源表
+
+**需要核对原文时查这一页。** 每条要求的 owner 文件与行号。
 
 ## 结论
 
@@ -12,7 +14,7 @@
 
 **`.agents/skills/` 里没有一份「写 Agent Note」的 skill，这是分工不是遗漏**：可机械判定的部分已经变成 gate，不需要 skill；需要判断的部分才留在 skill 与 review 里。这正是 [`quality-gates` Note](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) 记录的仓库立场。
 
-![Agent Note 质量要求的三层分工](./figures/three-layers.svg)
+![Agent Note 质量要求的三层分工](./figures/ownership-layers.svg)
 
 ## 流程层追加的四组要求
 
