@@ -74,13 +74,18 @@
 
 ## 与相邻文档的分工
 
-| 想知道 | 去哪里 |
+| 想知道 | 去哪里（都在本仓库内） |
 |---|---|
-| Note 在一个仓库里排在什么位置、和 README / docs / Skill 怎么分工 | [`_faq_on_digested/06`](../06_change-landing-path/answer.md) 与 [`_dsh_plugin_agent_ready_development/repo-harness/02`](../../_dsh_plugin_agent_ready_development/repo-harness/02-legibility-and-ownership.md) |
-| 一次变更各层载体如何落位（更宏观的版本） | [`_faq_on_digested/19`](../19_dsh-native-development-process/answer.md) |
-| 保留 / 归档 / 删除的具体判定流程与校准例子 | [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) |
-| 完整规则原文 | [`.agents/notes/README.md`](../../.agents/notes/README.md) |
+| Note 的制度原文：何时写、路径、骨架、归档 | [`.agents/notes/README.md`](../../.agents/notes/README.md) |
+| Note 的身份与 supersession 检查要求 | [`.agents/notes/AGENTS.md`](../../.agents/notes/AGENTS.md) |
+| 文档标准、tier 表与 slop 清单 | [`docs/AGENTS.md`](../../docs/AGENTS.md) |
+| 归档件的冻结规则 | [`.agents/notes/archived/AGENTS.md`](../../.agents/notes/archived/AGENTS.md) |
+| 保留 / 归档 / 删除的判定流程与校准例子 | [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) |
+| 多语言三件套政策 | [`docs/i18n/README.md`](../../docs/i18n/README.md) |
+| 会失败的门禁脚本 | [`scripts/verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts)、[`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)、[`scripts/verify-translation-pairing.ts`](../../scripts/verify-translation-pairing.ts) |
+
+本组 FAQ 只引用上面这类**仓库根部的内容**；它不引用任何其他 FAQ 目录或仓库外的下划线目录。
 
 ---
 
-*基线：工作树 `caf78ed639`，2026-10-08 实测；数量类事实会随仓库变化，上游改动规则文件后按 `_digested/_change_log/` 复核。本组页面的自查记录见 [self-audit.md](./self-audit.md)。*
+*基线：工作树 `caf78ed639`，2026-10-08 实测；数量类事实会随仓库变化，上游改动规则文件后需重新核对行号。本组页面的自查记录见 [self-audit.md](./self-audit.md)。*

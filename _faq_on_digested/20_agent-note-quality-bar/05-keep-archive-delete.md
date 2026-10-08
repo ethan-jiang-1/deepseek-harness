@@ -104,4 +104,3 @@ skill 给的两组例子，字数都是用来**反驳**「按篇幅判断」的�
 - [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)：判定流程、五个归档动作、校准例子。
 - [`archived/AGENTS.md`](../../.agents/notes/archived/AGENTS.md)：冻结规则与唯一授权的 seal 例外。
 - [`.agents/notes/README.md` 的 "Archiving and deletion"](../../.agents/notes/README.md)：删除、归档、合并的完整条件。
-- [`_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md`](../../_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md) 第 6 节：supersession 与 archive 的区别。

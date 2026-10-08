@@ -75,6 +75,5 @@ notes/
 
 ## 证据入口
 
-- [`_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md`](../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md)：DSH 明确说明插件仓**不继承**它的目录拓扑、gates 与发布制度；可迁移的是原则。
-- [`.agents/notes/README.md`](../../.agents/notes/README.md)：八条照抄项的原文依据。
-- [`_faq_on_digested/19`](../19_dsh-native-development-process/answer.md)：DSH 原生开发流程里各层载体的落位；移植时它会告诉你哪些环节是**必须保留的机制**、哪些只是 DSH 自己的装载方式。
+- [`.agents/notes/README.md`](../../.agents/notes/README.md) 与 [`.agents/notes/AGENTS.md`](../../.agents/notes/AGENTS.md)：八条照抄项的原文依据。
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)：tier 表与「文件说明现在、rationale 进 Note」的分工依据。

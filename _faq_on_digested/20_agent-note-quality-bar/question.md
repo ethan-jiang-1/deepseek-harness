@@ -17,7 +17,7 @@
 
 本文只回答内容与结构要求，不回答「Agent Note 应该放在哪个目录」——目录名与位置是可替换的（DSH 放在 `.agents/notes/`，外部插件仓通常放在仓库根部的 `notes/`），`{生命周期}/{类型}/yyyy-mm-dd-topic-title.md` 这条路径语法才是要求本身。
 
-源码核验基线：本仓库工作树 `caf78ed639`。下文引用的规则文件在该 commit 与 `_digested/` 基线 `639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）之间逐文件 `git diff` 无差异，因此结论对两个基线同时成立；行号以工作树为准。
+源码核验基线：本仓库工作树 `caf78ed639`。下文引用的规则文件、门禁脚本与 skill 全部位于本仓库根目录（`.agents/`、`docs/`、`scripts/`），行号以该工作树为准。本文不引用仓库外的任何目录。
 
 ## 入口
 
@@ -26,7 +26,7 @@
 ## 证据边界
 
 - 本文的每一条规范都能在仓库里指出 owner 文件与行号；找不到 owner 的说法（例如「Note 必须写够多少字」）被明确列为不存在的要求，而不是由本文补造。
-- 本文引用的是当前工作树，不是 DSH 的产品行为；上游改动规则文件后，行号与措辞需按 `_digested/_change_log/` 的复核流程重对。
-- `_faq_on_digested/06_change-landing-path/` 与 `_faq_on_digested/11_native-development-loop/` 里出现的 "Every non-trivial change MUST add or update at least one Agent Note in the same PR" 是**规则收窄之前的历史引文**：该标准已于 2026-09-17 被提交 `730bcc7c85` 改写为「只有具备持久维护价值的决策才写 Note」。本文只说明现状，不改写那两篇的历史语境。
+- 本文引用的是当前工作树，不是 DSH 的产品行为；上游改动规则文件后，行号与措辞需按该文件本身重新核对。
+- "Every non-trivial change MUST add or update at least one Agent Note in the same PR" 是**规则收窄之前的历史表述**：该标准已于 2026-09-17 被提交 `730bcc7c85` 改写为「只有具备持久维护价值的决策才写 Note」。本文只陈述现状。
 - 数量类事实按工作树实测（活跃 578 篇、归档 641 篇），会随仓库变化；结构类结论不受影响。
 - 本文不覆盖归档执行细节（三件套搬迁、seal 清单、`--write` 重录）的完整操作步骤，那属于 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 的职责。

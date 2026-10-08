@@ -96,18 +96,18 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 | 改名历史里 20 处 `notes/rejected/` ↔ `notes/proposed/` 相关变更，全部是 `proposed` → `rejected` | `git log --diff-filter=R --name-status -- .agents/notes` |
 | 2026-09-18 之后一个月：新增 Note ≈ 110，非合并提交 ≈ 914 | Note 按文件名日期计，提交按 `--no-merges` 计；重命名与合并会同时抬高两侧，只用于给量级感，不做逐年比较 |
 
-## 六、移植时要分清的两类文件
+## 六、移植时的判断依据
 
-第六页讲的移植，判断依据是「这是 DSH 的机制，还是 DSH 自己的装载方式」。这个边界有明确 owner：
+第七页讲的移植（哪些必须照抄、哪些可以自己发明），**是本组 FAQ 依据下列仓库根部文件做的归纳**，不是某一篇文档里的现成清单——判断依据全部在仓库里可以逐条核对：
 
-| 说法 | 出处 |
+| 判断 | 依据 |
 |---|---|
-| 插件仓**不继承** DSH 的目录拓扑、Agent Notes、gates 与发布序列；可迁移的是「一个事实一个 owner、生成物有生成器、决定有记录」这类原则 | [`_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md`](../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md) 第 45 行 |
-| Note 与 README / docs / Skill 的分工 | [`_dsh_plugin_agent_ready_development/repo-harness/02-legibility-and-ownership.md`](../../_dsh_plugin_agent_ready_development/repo-harness/02-legibility-and-ownership.md) |
-| skill 作为程序性记忆的定位 | [`_dsh_plugin_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md`](../../_dsh_plugin_agent_ready_development/repo-harness/03-skills-as-procedural-memory.md) |
-| 从哪开始写、什么时候更新既有 owner | [`_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md`](../../_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md) |
-| 文档标准与 slop 清单，含「implemented 里的 spec-speak」这条反模式 | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 72 行 |
-| 多语言政策 | [`docs/i18n/README.md`](../../docs/i18n/README.md) |
+| 哪些是**必须照抄的机制**：规则 owner 文件 + 会失败的门禁 + 三件套配对 | [`.agents/notes/README.md`](../../.agents/notes/README.md)、[`.agents/notes/AGENTS.md`](../../.agents/notes/AGENTS.md)、[`scripts/verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts)、[`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) |
+| 哪些是 **DSH 自己的装载方式**：具体目录名（`.agents/notes/`）、具体类型名、多语言三件套 | 目录名与类型集合写在 [`.agents/notes/README.md`](../../.agents/notes/README.md) 与 [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)；多语言政策写在 [`docs/i18n/README.md`](../../docs/i18n/README.md) |
+| 「文件说明现在，Note 说明为什么」这条分工 | [`docs/AGENTS.md`](../../docs/AGENTS.md) 的 tier 表与 rationale 行 |
+| 为什么值得机械门禁而不是散文约定 | [`implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) |
+
+> 移植建议本身（八条照抄、五条可发明）属于本 FAQ 的**综合判断**，来源是上表这些文件的对照阅读，不是原文引用。
 
 ## 七、本组页面自己的记录
 
