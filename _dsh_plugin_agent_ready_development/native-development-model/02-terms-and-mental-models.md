@@ -223,7 +223,7 @@ Gate 是判断逻辑，CI 还拥有何时、在哪运行。绿灯只证明已执
 
 **Merge**把变更并入目标分支；**release**产生用户可取得的版本和发布产物。合并后仍可能没有构建、打包、发布或安装验证。
 
-因此 merge 不等于 release，源码在主分支也不等于用户安装的产物已更新。独立插件仓对自己的版本、构建产物和兼容承诺负责。依据：DSH [发布流程参考](../sdlc-reference/11-release.md)。
+因此 merge 不等于 release，源码在主分支也不等于用户安装的产物已更新。独立插件仓对自己的版本、构建产物和兼容承诺负责。依据：DSH [发布流程参考](../sdlc-reference/11-release-sequences-and-publish-lanes.md)。
 
 ## 继续阅读
 

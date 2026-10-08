@@ -182,6 +182,14 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、实体正向覆盖、硬数字重测、口径一致性四线并行）。本语料修复：`sdlc-reference/11` 的版本基线（`0.1.7-rc.1` → `0.2.0-rc.2`，re-pin 漏网）与 release 间隔口径（约 24–41 分钟）；`sdlc-reference/10` 与本页 `:120` 的 PR merge 样本读数（众数 2、单 commit 约五分之一，最近 100 个 PR merge 重测）；`sdlc-tutorial/02` 的 Note 类别数（六）；`sdlc-tutorial/03`、`04` 与 `sdlc-reference/04` 的 PR CI job 结构（9 必需 + 不进聚合的 `windows-coverage`；observational gates 是 required Windows build job 内 step）；`sdlc-reference/09` 的 Skill description 前缀表述（实测 9/15 以 "Use" 开头）；`repo-harness/08` 的 pairing manifest 归属（与门禁发现范围逻辑共同定义）；`_misc/_eval_harness/README.md` 的例证钉版与 `_eval_harness/02` 的 npm-publish job 口径（每条发布序列一个）；本页 `:30` 加 en+zh 合计口径勘误、`:120` 间隔与 `:165` 唯一 URL 数（130）口径统一。钉版纪律复核：113 条钉版路径全量 `git cat-file -e` 全部存在，29 个锚点全解析，内容一致性抽查 5/5 逐字吻合。
 
+## 2026-10-08 的 Note 判据
+
+`sdlc-reference/01-agent-note-lifecycle.md` 把「什么会成为一篇 Note」写成开头判据：代码、测试和现有文档都解释不了的持久决定理由才写；机械或局部编辑不写；同一决定更新已有 owner。写完之后的留下、归档、合并后删除分成三条结局。完全取代并吸收独有内容后删除旧三件套；符合归档条件的才冻结。`figures/agent-note-lifecycle.svg` 改为先画三个出口，再画状态，最后画这三条结局。原生开发模型第 3 步和 Development Harness 的知识归属页各留一句入口，不复制本页的表。
+
+## 2026-10-08 的文件名
+
+`sdlc-reference/11-release.md` 改名为 `sdlc-reference/11-release-sequences-and-publish-lanes.md`，与同卷其它页一样在编号后写明主题。正文未改。历史账本里的旧文件名仍指当时核对的那一页。
+
 ## 2026-10-08 的 0014 轮：agent 契约证据页
 
 基线仍是 `dsh-v0.2.0-rc.2`。`sdlc-reference/12-agent-contract-evidence.md` 拥有 agent 侧三件资产的条件、例外和原文位置：看见的请求、可回放会话、外部世界。同页用 `figures/agent-contract-evidence.svg` 把每件资产指到权威文件，文末表保留可搜索的同一映射。同页另写测试怎样推动这笔变更，并在「三种情况」里用白话分开改行为、修 bug、新守卫：前两种不必先看见红，新守卫必须亲眼看红再撤；未覆盖行经常是待删除代码，变异测试仍是 proposed。推动顺序由图 `figures/test-drives-the-change.svg` 拥有示意，三种红灯由图 `figures/three-red-cases.svg` 拥有示意，三件资产仍由图 `figures/agent-contract-evidence.svg` 拥有。随后把阅读顺序改成先资产、后推动、再冒烟与完成判断，并删掉与三张图重复的第二份步骤清单；覆盖率变红不再算进三种情况。Reference 04 继续只拥有命令路由；原生开发模型第 5 步和 Development Harness 的可执行反馈页各加一条入口，不复制本页的条件。

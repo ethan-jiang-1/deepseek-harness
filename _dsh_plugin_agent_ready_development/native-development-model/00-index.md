@@ -64,7 +64,7 @@ DSH 的“一个事实一个家”不等于“一次 feature 只能改一个文�
 
 Issue、Agent Note 和 Plan 不是每笔变更都必须依次经过的阶段。Issue 或 task context 承载意图；只有当代码、测试和现有文档无法表达长期取舍时，才需要 owning Agent Note；Plan Mode 用于本次会话的计划和用户批准交互，计划可以变化，也不会成为交付后的当前行为合同。
 
-机械或局部编辑可以不写 Agent Note。需要 Note 时，`proposed` 记录仍待评审的决定，`implemented` 记录已经交付的现在式决定；不要把旧计划或 acceptance checklist 留在 implemented Note 中冒充当前事实。精确规则见 [Agent Note 生命周期](../sdlc-reference/01-agent-note-lifecycle.md) 与 [Plan 与 sandbox](../sdlc-reference/03-plan-and-sandbox.md)。
+机械或局部编辑可以不写 Agent Note。需要 Note 时，`proposed` 记录仍待评审的决定，`implemented` 记录已经交付的现在式决定；不要把旧计划或 acceptance checklist 留在 implemented Note 中冒充当前事实。什么会成为一篇 Note，以及写完之后留下、归档还是合并删除，由 [Agent Note 生命周期](../sdlc-reference/01-agent-note-lifecycle.md) 拥有。Plan 见 [Plan 与 sandbox](../sdlc-reference/03-plan-and-sandbox.md)。
 
 ### 4. 形成完整的垂直切片
 

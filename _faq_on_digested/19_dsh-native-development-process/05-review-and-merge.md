@@ -43,7 +43,7 @@ Merge 后目标分支成为当前交付状态。一个没读过 PR 对话的 fre
 
 这就是“合并后知识归位”的具体含义：**归位不是因为 merge 这个动作，而是因为交付组合本身把每类事实放进了它的 owner**（[02](./02-specs-and-decisions.md) 的六类位置）。
 
-Merge 只改变分支和 PR 状态，不会自动改变 Agent Note 的生命周期；归档条件由 [Agent Note 参考](../../_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md) 拥有。**合并非发布**：发布另有资格门槛与演练要求，见 [发布参考](../../_dsh_plugin_agent_ready_development/sdlc-reference/11-release.md)。
+Merge 只改变分支和 PR 状态，不会自动改变 Agent Note 的生命周期；归档条件由 [Agent Note 参考](../../_dsh_plugin_agent_ready_development/sdlc-reference/01-agent-note-lifecycle.md) 拥有。**合并非发布**：发布另有资格门槛与演练要求，见 [发布参考](../../_dsh_plugin_agent_ready_development/sdlc-reference/11-release-sequences-and-publish-lanes.md)。
 
 ## 完成后的心智模型
 
