@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
   <title>录制会话快照对 DSH 插件开发的价值：一页看懂</title>
-  <desc>三列并排。左列（蓝）主仓为什么需要它：起点是 postmortem 0001，178 个单测全绿、100% 行覆盖、ACP 桥在生产完全不能用；它买到的唯一东西是组装之后的完整转录——模型实际收到什么、说了什么、落了什么盘；并且能在无 key 的 CI 里逐字节复现。中列（绿）插件仓能拿到什么：@deepseek-ai/dsh-llm-replay 是发布在 npm 上的普通 function 插件，接受未经投影的原始运行日志，于是能买到三样东西——trajectory 回归基线、可稳定复现的 bug、模型可见面的断言点。右列（琥珀与红）代价与上限：顶层语料治理搬不走也不该抄，语义守卫必须自己写，而且它只是变更探测器不是正确性 oracle——postmortem 0002 里快照套件曾为一次真实回归背书。底部是一条 L0 到 L4 的证据阶梯：导出守卫、行为 spec、HMR、REAL composition 默认都做，L4 轨迹夹具按触发条件启用。一句话记法：机制可以拿，制度不要抄，判断不能外包。</desc>
+  <desc>三列并排。左列（蓝）主仓为什么需要它：起点是 postmortem 0001，178 个单测全绿、100% 行覆盖、ACP 桥在生产完全不能用；它买到的唯一东西是组装之后的完整转录——模型实际收到什么、说了什么、落了什么盘；并且能在无 key 的 CI 里逐字节复现。中列（绿）插件仓能拿到什么：@deepseek-ai/dsh-llm-replay 是发布在 npm 上的普通 function 插件，接受未经投影的原始运行日志，于是能买到三样东西——trajectory 回归基线、可稳定复现的 bug、模型可见面的断言点。右列（琥珀与红）代价与上限：顶层语料治理搬不走也不该抄，语义守卫必须自己写，而且它只是变更探测器不是正确性 oracle——postmortem 0002 里快照套件曾为一次真实回归背书。底部是一条 L0 到 L4 的证据阶梯：导出守卫、行为 spec、HMR、REAL composition 默认都做，L4 行为回归证据面按触发条件启用。一句话记法：机制可以拿，制度不要抄，判断不能外包。</desc>
   <defs>
     <marker id="ov-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
@@ -84,7 +84,7 @@
   <text x="782" y="532" text-anchor="middle" font-size="11" fill="#64748b">真 Loader 读真 cordis.yml</text>
 
   <rect x="892" y="492" width="248" height="52" rx="8" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
-  <text x="1016" y="514" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">L4 轨迹夹具（按需）</text>
+  <text x="1016" y="514" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">L4 行为回归证据面（按需）</text>
   <text x="1016" y="532" text-anchor="middle" font-size="11" fill="#166534">命中触发条件才建，贵在维护</text>
 
   <text x="60" y="576" font-size="12" font-weight="700" fill="#334155">一句话记法：机制可以拿，制度不要抄，判断不能外包。</text>

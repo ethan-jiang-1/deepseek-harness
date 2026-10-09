@@ -24,7 +24,7 @@
 - **插件仓能用它，而且正是用在 trajectory 与 bug 复现上**。`@deepseek-ai/dsh-llm-replay` 的 `next` 通道发布版本就是本基线 `0.2.0-rc.2`；它接受**未做投影的原始运行日志**（只要每行要么都带 `seq`/`time`、要么都不带），所以「跑一次真会话 → 把日志提交进仓 → 以后无 key 重放」这条路是通的。
 - **它对插件开发值三样东西**：trajectory 回归（组装转录的固定基线）、bug 复现（固定流之后仍复现的才是产品 bug）、model-visible 钉住（`request/header` 就是断言点）。**但它有一条上限**：它是变更探测器，不是正确性 oracle——postmortem 0002 里快照套件曾为一次真实回归背书；校准后，主仓四篇 postmortem 里只有一篇把它当作组装回归 pin。完整账单见 [04](./04-what-its-worth.md)。
 - **搬不出去的是语料治理，不是机制**。顶层 `snapshots/` 的所有权、四面分工、corpus policy、格式世代候选名单、`session-snapshot` 的语料级守卫，都服务「一个仓库集中维护几百个场景」这个规模；插件仓照抄只会得到一套没人维护的制度。
-- **所以推荐不是「用」或「不用」，而是一条阶梯**：前四阶（导出守卫 → 行为 spec → HMR → REAL composition）默认全做，第五阶「trajectory 夹具」按触发条件启用——判据见 [05](./05-plugin-repo-organization.md)。
+- **所以推荐不是「用」或「不用」，而是一条阶梯**：前四阶（导出守卫 → 行为 spec → HMR → REAL composition）默认全做，第五阶「行为回归证据面」（会话回放或渲染期望）按触发条件启用；落点与五条不变量见 [05](./05-plugin-repo-organization.md)。
 
 ## 范围与边界
 
