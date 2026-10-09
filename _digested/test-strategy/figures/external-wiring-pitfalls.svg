@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 510" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="960" height="510" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">外部挂 dsh-llm-replay 的三个接线坑：组合层容错的代价</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">patch 未命中是警告不是报错——主仓靠 corpus gate 与 --dump-config 习惯兜底，外部仓没有这些门禁。</text>
+
+  <!-- pit 1 -->
+  <rect x="30" y="76" width="290" height="300" rx="10" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="175" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#a8071a">坑一：替换 provider 没禁干净</text>
+  <text x="46" y="132" fill="#333">llm-deepseek 与 llm-deepseek-account</text>
+  <text x="46" y="150" fill="#333">都是 base bundle 的 adapter 挂载行</text>
+  <text x="46" y="168" fill="#666">（cordis.patch.yml:525、:528）</text>
+  <text x="46" y="196" fill="#333">只加一个同名新行 ≠ 替换：</text>
+  <text x="46" y="214" fill="#333">真 adapter 仍在组合里注册并接流</text>
+  <text x="46" y="244" font-weight="700" fill="#a8071a">解法：相关挂载行全部 disabled: true</text>
+  <text x="46" y="264" fill="#666">用 --dump-config 核对 patch 是否</text>
+  <text x="46" y="282" fill="#666">真的落位（可重复、叠加 profile 层后）</text>
+
+  <!-- pit 2 -->
+  <rect x="335" y="76" width="290" height="300" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="480" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#ad6800">坑二：patch 未命中只 warn 不报错</text>
+  <text x="351" y="132" fill="#333">vendor include 对不存在的行 id 只</text>
+  <text x="351" y="150" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12" font-size="11">warn('patch: entry %C not found')</text>
+  <text x="351" y="168" fill="#333">name 不匹配也只 warn 并跳过</text>
+  <text x="351" y="196" fill="#333">写错 id/name 时组合照常启动</text>
+  <text x="351" y="214" fill="#333">——接线静默失效，没有 throw</text>
+  <text x="351" y="244" font-weight="700" fill="#ad6800">解法：--dump-config 核对落位</text>
+  <text x="351" y="264" fill="#666">主仓还有 corpus gate 兜底；</text>
+  <text x="351" y="282" fill="#666">外部仓只能靠自己核对</text>
+
+  <!-- pit 3 -->
+  <rect x="640" y="76" width="290" height="300" rx="10" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="785" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#531dab">坑三：overlay 的 config: 整键替换</text>
+  <text x="656" y="132" fill="#333">target[key] = value —— 逐顶层键</text>
+  <text x="656" y="150" fill="#333">整键覆盖，不是深合并；</text>
+  <text x="656" y="168" fill="#333">缺的键不会被补上</text>
+  <text x="656" y="196" fill="#333">另一头：session-title-first-</text>
+  <text x="656" y="214" fill="#333">prompt-llm 也 inject llm，按</text>
+  <text x="656" y="232" fill="#333">first-call 序占脚本位</text>
+  <text x="656" y="258" font-weight="700" fill="#531dab">不想让它吃位：回放 overlay 里</text>
+  <text x="656" y="276" font-weight="700" fill="#531dab">显式禁用（标题会走 fallback）</text>
+
+  <!-- footer -->
+  <rect x="30" y="396" width="920" height="90" rx="10" fill="#fff" stroke="#d4380d" stroke-dasharray="6 3"/>
+  <text x="490" y="422" text-anchor="middle" font-size="13" font-weight="700" fill="#a8071a">组合层为什么用 warn：配置在 HMR 与版本演进中会漂移，部分不命中被容错——代价是接线错误静默失效</text>
+  <text x="490" y="446" text-anchor="middle" fill="#333" font-size="11">挂载前置：assertConsumed()（静默 underrun 的诊断）只在编程式 installLlmReplay 上暴露，Cordis 插件形态拿不到</text>
+  <text x="490" y="470" text-anchor="middle" fill="#666" font-size="11">夹具三前提：明文（compression: 'none'）· header 带整数 version · 夹具不比运行时新（projected / complete 不可混）</text>
+</svg>

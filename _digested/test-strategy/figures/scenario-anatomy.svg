@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="960" height="580" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">一个最小场景的物理构成：snapshots/session/workspace-edit/ 解剖</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">世代文法 session[.vN].jsonl，v0 省略后缀；已提交世代不可变，record/refresh 只写版本命名的新输出。</text>
+
+  <!-- tree root -->
+  <text x="48" y="92" font-weight="700" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#374151">snapshots/session/workspace-edit/</text>
+
+  <!-- row 1: manifest -->
+  <rect x="48" y="104" width="290" height="36" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="64" y="127" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1d4ed8">├─ snapshot.yml</text>
+  <text x="356" y="126" font-weight="700" fill="#1677ff">场景清单（manifest）—— 场景怎么跑全部显式声明</text>
+  <text x="356" y="146" fill="#333" font-size="11">profile: headless · composition: default · recording: live</text>
+  <text x="356" y="164" fill="#666" font-size="11">header.class · workspace.final: true —— 没有隐式约定</text>
+
+  <!-- row 2: generations -->
+  <rect x="48" y="156" width="290" height="36" rx="8" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="64" y="178" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#531dab">├─ session.v2.jsonl</text>
+  <text x="248" y="178" fill="#666" font-size="11">历史代</text>
+  <rect x="48" y="208" width="290" height="36" rx="8" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="64" y="230" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#531dab">├─ session.v3.jsonl</text>
+  <text x="230" y="230" font-weight="700" fill="#a8071a" font-size="11">← harness 选它</text>
+  <text x="356" y="180" font-weight="700" fill="#531dab">回放输入 + 转录期望 —— 最高录制父代</text>
+  <text x="356" y="200" fill="#333">父代提供用户输入与模型回放，其持久化结果就是期望值</text>
+  <text x="356" y="220" fill="#333">多代并存：格式演进只加后继世代，已提交世代不可变</text>
+  <text x="356" y="240" fill="#666" font-size="11">replay / record / refresh 一律选数值最高代（正版本小写 .vN）</text>
+
+  <!-- row 3: seed workspace -->
+  <rect x="48" y="260" width="290" height="52" rx="8" fill="#f5f5f5" stroke="#595959" stroke-width="1.5"/>
+  <text x="64" y="282" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#434343">├─ workspace/</text>
+  <text x="80" y="302" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#434343">└─ greeting.txt</text>
+  <text x="356" y="282" font-weight="700" fill="#595959">种子工作区（seed）</text>
+  <text x="356" y="302" fill="#333">运行前拷进被测进程的 cwd —— 会话对它的改动构成「世界状态」</text>
+
+  <!-- row 4: expected world tree -->
+  <rect x="48" y="324" width="290" height="52" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="64" y="346" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#a8071a">└─ workspace.expected/</text>
+  <text x="80" y="366" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#a8071a">└─ greeting.txt</text>
+  <text x="356" y="346" font-weight="700" fill="#a8071a">独立的世界状态 oracle（workspace.final: true）</text>
+  <text x="356" y="366" fill="#333">完整期望终态树，与转录期望分开固化</text>
+  <text x="356" y="386" fill="#666" font-size="11">record 与 refresh 永不改写它 —— 证据的生产者不能是证据的修改者</text>
+
+  <!-- footer: sibling assets of the same mechanism -->
+  <rect x="48" y="412" width="864" height="150" rx="10" fill="#fff" stroke="#9ca3af" stroke-dasharray="6 3"/>
+  <text x="64" y="440" font-weight="700" fill="#38761c">同机制的其他资产（散见其他场景，见正文扩展字段）</text>
+  <text x="64" y="464" fill="#333" font-size="11">sidecar 唯一 owner：system-prompt.expected.md · tool-schemas.expected.json —— 每个 header pin 一个，序列相同时可指名另一 pin 复用</text>
+  <text x="64" y="486" fill="#333" font-size="11">typed token：{{session:1}} · {{message:1}} · {{system}} · {{tools}} —— 身份关系靠类型化 token，不靠文件位置</text>
+  <text x="64" y="508" fill="#333" font-size="11">世代文法：父代 session[.vN].jsonl · 子角色 session.&lt;ordinal&gt;[.vN].jsonl —— 文件名必须与自己的 header 一致</text>
+  <text x="64" y="530" fill="#666" font-size="11">扩展字段：header.pin · platform posix/pwsh · sessionFormat.version+coverage（历史代际保留）· recording: authored</text>
+</svg>

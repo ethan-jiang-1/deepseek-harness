@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 656" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow-h" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#666"/>
+    </marker>
+  </defs>
+  <rect width="960" height="656" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">测试规矩住在哪：按"谁需要什么时候看到它"分布</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">政策—命令—理由各只有一个家；testing.md 是枢纽：每个 tier 链到 owning note，每条规则链到 rationale。</text>
+
+  <!-- hub: the policy -->
+  <rect x="210" y="72" width="540" height="60" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="480" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#1677ff">docs/testing.md —— 55 行政策，唯一测试策略权威</text>
+  <text x="480" y="118" text-anchor="middle" fill="#1d4ed8">定"什么算证据"；命令的家在 root AGENTS.md 的 Commands 节</text>
+  <line x1="480" y1="132" x2="480" y2="162" stroke="#666" stroke-width="2" marker-end="url(#arrow-h)"/>
+
+  <!-- band 1: always in context -->
+  <text x="48" y="184" font-size="13" font-weight="700" fill="#1d4ed8">常备条令 —— 每个 session 都在上下文里（每条 1~3 行，链接到它的家）</text>
+  <rect x="48" y="196" width="216" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="64" y="220" font-weight="700" fill="#374151">root AGENTS.md</text>
+  <text x="64" y="240" fill="#666">Commands 节：命令的家</text>
+  <text x="64" y="258" fill="#666">Testing policy 常驻条款</text>
+  <text x="64" y="276" fill="#666">（快照强制 · 证据匹配面）</text>
+  <rect x="276" y="196" width="216" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="292" y="220" font-weight="700" fill="#374151">packages/AGENTS.md</text>
+  <text x="292" y="240" fill="#666">plugin exports 形态 · ctx.get</text>
+  <text x="292" y="258" fill="#666">REAL-composition 要求</text>
+  <text x="292" y="276" fill="#666">注册贡献 HMR 可撤销</text>
+  <rect x="504" y="196" width="216" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="520" y="220" font-weight="700" fill="#374151">snapshots/AGENTS.md</text>
+  <text x="520" y="240" fill="#666">快照树归属七条</text>
+  <text x="520" y="258" fill="#666">（只收 session 驱动场景）</text>
+  <rect x="732" y="196" width="216" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="748" y="220" font-weight="700" fill="#374151">组级 AGENTS 家族</text>
+  <text x="748" y="240" fill="#666" font-size="11">experimental · schedule · web</text>
+  <text x="748" y="258" fill="#666" font-size="11">client · benchmarks · scripts</text>
+  <text x="748" y="276" fill="#666" font-size="11">tests 树内 profiles 规则</text>
+
+  <!-- band 2: load on demand -->
+  <text x="48" y="336" font-size="13" font-weight="700" fill="#38761c">按需加载 —— 做到那件事时才读</text>
+  <rect x="48" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="60" y="372" font-weight="700" fill="#374151">技能 skills</text>
+  <text x="60" y="392" fill="#666" font-size="11">dsh-ci-test-reliability</text>
+  <text x="60" y="410" fill="#666" font-size="11">dsh-pre-push-checks</text>
+  <text x="60" y="428" fill="#666" font-size="11">record-browser-gif</text>
+  <rect x="223" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="235" y="372" font-weight="700" fill="#374151">Agent Notes · 33 篇</text>
+  <text x="235" y="392" fill="#666">rationale 的家</text>
+  <text x="235" y="410" fill="#666">为什么这么定</text>
+  <text x="235" y="428" fill="#666">放弃了什么</text>
+  <rect x="398" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="410" y="372" font-weight="700" fill="#374151">docs/cookbook/</text>
+  <text x="410" y="392" fill="#666">加包 · 加工具</text>
+  <text x="410" y="410" fill="#666">加格式版本</text>
+  <text x="410" y="428" fill="#666">的步骤与验证</text>
+  <rect x="573" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="585" y="372" font-weight="700" fill="#374151">各包 README</text>
+  <text x="585" y="392" fill="#666">该工具的</text>
+  <text x="585" y="410" fill="#666">测试语义</text>
+  <text x="585" y="428" fill="#666">与已知限制</text>
+  <rect x="748" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="760" y="372" font-weight="700" fill="#374151">vendor/README.md</text>
+  <text x="760" y="392" fill="#666">每条本地修改</text>
+  <text x="760" y="410" fill="#666">由哪些测试覆盖</text>
+  <text x="760" y="428" fill="#666" font-size="11">同步重跑 test + build</text>
+
+  <!-- postmortems: feed upward into policy and standing orders -->
+  <rect x="48" y="480" width="864" height="84" rx="10" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="64" y="506" font-weight="700" fill="#a8071a">postmortem · 4 篇 —— 政策的反面教材，唯一允许 war-story 叙事的层（0001 ACP / 0002 !!js / 0003 替代服务器 / 0004 Landlock）</text>
+  <text x="64" y="528" fill="#333">0001 的教训同时滋养两层常驻规则：policy 条款（with-key 冒烟、"test the real entry path"）+ packages/AGENTS（plugin exports 形态、ctx.get）</text>
+  <text x="64" y="550" font-weight="700" fill="#a8071a">↑ 事故 → 制度化：漏网之鱼催生的护栏，最终住进上面两层</text>
+
+  <!-- bottom: one-line duty table -->
+  <rect x="48" y="588" width="864" height="52" rx="8" fill="#fff" stroke="#9ca3af" stroke-dasharray="5 3"/>
+  <text x="480" y="610" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">一句话分工：policy 定"什么算证据" · skill 定"怎么写得可靠、怎么选命令" · cookbook 定"步骤" · AGENTS 定"每个会话必记的几行"</text>
+  <text x="480" y="630" text-anchor="middle" font-size="11" fill="#666">note 定"为什么这么定、放弃了什么" · README/树规则定"这个工具的具体规则" · vendor/README 定"每条本地修改的测试覆盖" · postmortem 定"哪类漏网催生哪些护栏"</text>
+</svg>

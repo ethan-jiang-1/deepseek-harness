@@ -43,6 +43,8 @@ export function apply(ctx: Context, config: Config = {}): void
 - **overlay 的 `config:` 是逐顶层键整键替换**（vendor include 的 `target[key] = value`），不是深合并——录制/回放 overlay 里要把该插件需要的 config 键写全。
 - **`session-title-first-prompt-llm` 也 inject `llm`**（`packages/session/session-title-first-prompt-llm/src/index.ts`）——它同样是一条 `llm/stream` 消费方，在回放里按 first-call 序占用脚本位；不想让它吃位就在回放 overlay 里显式禁用（标题会走 fallback）。
 
+![外部挂 llm-replay 的三个接线坑：挂载行没禁干净 / patch 未命中只 warn / overlay 整键替换](./figures/external-wiring-pitfalls.svg)
+
 ## 硬事实四：git 卫生与实测占用（基线树实测）
 
 | 事实 | 数字 / 出处 |

@@ -86,6 +86,8 @@ Web 渲染可以显式借用另一个场景的 canonical session（"a Web render
 | `workspace.expected/greeting.txt` | 完整期望终态树（record/refresh 永不改写） |
 | `session.v2.jsonl` + `session.v3.jsonl` | **多代并存**；harness 选数值最高代（v3） |
 
+![最小场景的物理构成：清单 / 多代 JSONL / 种子工作区 / 只读期望世界树](./figures/scenario-anatomy.svg)
+
 `snapshot.yml` 的扩展字段散见其他场景：`header.pin` / `childSystemPrompts` / `childToolSchemas`（sdk/subagent-continuable）、`recording: authored`（subagent-parallel）、`sessionFormat.version + coverage`（历史代际保留）、`platform`（posix/pwsh）、`environment`、`input.task`、`workspace.setup/parent`。
 
 session JSONL 一行一事件、首行 header；身份与路径全部用类型化 token——`{{session:1}}`、`{{message:1}}`、`{{system}}`、`"tools":"{{tools}}"`；提示词与工具 schema 各有唯一 sidecar owner（`system-prompt.expected.md` / `tool-schemas.expected.json`）。
