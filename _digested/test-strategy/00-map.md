@@ -46,12 +46,13 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 | 写一个 DSH 插件，测试面怎么摆（政策要求） | [`08-plugin-testing.md`](./08-plugin-testing.md) |
 | 真实插件的测试组合长什么样（实战解剖） | [`09-plugin-testing-playbook.md`](./09-plugin-testing-playbook.md) |
 | 一个插件 PR 的最小证据集与 CI 行为（检查单） | [`10-plugin-testing-checklist.md`](./10-plugin-testing-checklist.md) |
+| 快照机制对插件仓暴露了什么（发布包、夹具双接受、接线语义、git 卫生、postmortem 校准） | [`11-snapshot-external-face.md`](./11-snapshot-external-face.md) |
 
 ## 阅读路径
 
 - **10 分钟**：读本文件 + [`01-doctrine.md`](./01-doctrine.md)。`docs/testing.md` 只有 55 行，值得整读；01 逐条消化它并给出测试指导在文档体系里的完整分布图。
 - **30 分钟**：加读 [`02-tiers.md`](./02-tiers.md)（分层全景与文件形态普查）与 [`03-rules-ownership.md`](./03-rules-ownership.md)（规矩与所有权）。
-- **插件作者专线**：[`08`](./08-plugin-testing.md)（政策对插件的要求）→ [`09`](./09-plugin-testing-playbook.md)（真实插件组合解剖）→ [`10`](./10-plugin-testing-checklist.md)（PR 检查单）；货架与分类法在 [`plugin-inventory`](../plugin-inventory/00-map.md)。
+- **插件作者专线**：[`08`](./08-plugin-testing.md)（政策对插件的要求）→ [`09`](./09-plugin-testing-playbook.md)（真实插件组合解剖）→ [`10`](./10-plugin-testing-checklist.md)（PR 检查单）→ [`11`](./11-snapshot-external-face.md)（快照机制的对外面）；货架与分类法在 [`plugin-inventory`](../plugin-inventory/00-map.md)。
 - **深潜**：按问题进 [`04`](./04-snapshot-machinery.md)（快照机制）、[`05`](./05-ci-gates.md)（CI 门禁与防假绿）、[`06`](./06-reliability.md)（可靠性纪律）、[`07`](./07-infrastructure.md)（基建与 Python 面）。
 
 ## 与其他专题的边界
