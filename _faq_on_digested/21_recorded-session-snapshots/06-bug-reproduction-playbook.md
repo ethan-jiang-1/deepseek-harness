@@ -87,7 +87,7 @@ llm-replay: fixture not fully consumed — …; the scenario drove fewer model c
 
 ## 反面教材：不要把「坏的运行」录进去
 
-[04](./04-what-does-not-transplant.md) 讲过的 postmortem 0002 在这里要再说一次，因为**它正是「录了一条 bug」的现场**：
+[04](./04-what-its-worth.md) 讲过的 postmortem 0002 在这里要再说一次，因为**它正是「录了一条 bug」的现场**：
 
 - 七个文件系统场景调用的工具根本没注册，日志里是 `UNKNOWN_TOOL`；
 - 快照刷新把这些结果**当成新的期望输出**收下了；

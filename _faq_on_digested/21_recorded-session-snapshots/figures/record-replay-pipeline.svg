@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>录制一次、提交夹具、无 key 回放：插件仓的最小可用链路</title>
+  <desc>左上是录制环：人工用真模型跑一次 dsh，加一层把会话日志写成明文的 overlay，得到 session.vN.jsonl，这一步要 API key、花配额、不进 CI。中间是提交进仓：把日志拷成 tests/trajectory/fixtures/某场景/session.jsonl，它是明文、带 version 的持久化资产，同时充当回放输入与期望输出。左下是回放环：CI 用另一层 overlay 关掉真实 provider 并挂上 dsh-llm-replay，回放器读本仓夹具、按位置吐模型流，跑完再和同一份夹具比对，全过程无 key。右侧列出四条已知坑：任务文本必须与录制一致（让驱动从夹具里推导）、模型调用次数必须一致、并发子代理会绑错脚本、包版本错配会在 import 时直接失败；另附一条零配置的取日志路径：Web profile 的 /export 导出的一定是明文，不受压缩设置影响。</desc>
+  <defs>
+    <marker id="rp-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+    <marker id="rp-g" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#15803d"/>
+    </marker>
+    <marker id="rp-b" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="640" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">录制一次 · 提交夹具 · 无 key 回放</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">这套链路里唯一「DSH 专属」的零件只有一个包：@deepseek-ai/dsh-llm-replay</text>
+
+  <rect x="40" y="76" width="740" height="188" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="60" y="102" font-size="13" font-weight="700" fill="#92400e">① 录制环（人工，要 key，不进 CI）</text>
+
+  <rect x="60" y="118" width="212" height="60" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="166" y="142" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">真模型跑一次</text>
+  <text x="166" y="162" text-anchor="middle" font-size="11" fill="#334155">dsh --profile headless</text>
+  <text x="166" y="176" text-anchor="middle" font-size="11" fill="#334155">--patch record.patch.yml</text>
+
+  <line x1="278" y1="148" x2="308" y2="148" stroke="#b45309" stroke-width="2" marker-end="url(#rp-a)"/>
+
+  <rect x="314" y="118" width="212" height="60" rx="8" fill="#fef3c7" stroke="#fbbf24"/>
+  <text x="420" y="142" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">唯一必需的设置</text>
+  <text x="420" y="162" text-anchor="middle" font-size="11" fill="#334155">compression: none</text>
+  <text x="420" y="176" text-anchor="middle" font-size="11" fill="#64748b">默认 zstd，回放器读不了</text>
+
+  <line x1="532" y1="148" x2="562" y2="148" stroke="#b45309" stroke-width="2" marker-end="url(#rp-a)"/>
+
+  <rect x="568" y="118" width="192" height="60" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="664" y="142" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">拿到明文日志</text>
+  <text x="664" y="162" text-anchor="middle" font-size="11" fill="#334155">.sessions/…/session.vN.jsonl</text>
+  <text x="664" y="176" text-anchor="middle" font-size="11" fill="#64748b">一行一事件</text>
+
+  <rect x="60" y="192" width="700" height="58" rx="8" fill="#ffffff" stroke="#fde68a"/>
+  <text x="76" y="214" font-size="11" font-weight="700" fill="#92400e">等价捷径：零配置取日志</text>
+  <text x="76" y="234" fill="#334155" font-size="11">Web profile 的「Download session log」/ /export 导出的 zip 里就是 canonical 命名的明文 JSONL，不受 compression 影响。</text>
+
+  <line x1="410" y1="264" x2="410" y2="292" stroke="#64748b" stroke-width="2" marker-end="url(#rp-a)"/>
+
+  <rect x="40" y="300" width="740" height="86" rx="10" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="60" y="326" font-size="13" font-weight="700" fill="#334155">② 提交进仓（一次，评审过目）</text>
+  <rect x="60" y="336" width="700" height="36" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="76" y="359" font-size="11" fill="#334155">tests/trajectory/fixtures/&lt;case-slug&gt;/session.jsonl　←　同时是回放输入与期望输出；header 必须带 version</text>
+
+  <line x1="410" y1="386" x2="410" y2="414" stroke="#15803d" stroke-width="2" marker-end="url(#rp-g)"/>
+
+  <rect x="40" y="422" width="740" height="188" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="60" y="448" font-size="13" font-weight="700" fill="#166534">③ 回放环（CI，无 key，每个 PR）</text>
+
+  <rect x="60" y="464" width="212" height="60" rx="8" fill="#ffffff" stroke="#4ade80"/>
+  <text x="166" y="488" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">关掉真 provider</text>
+  <text x="166" y="508" text-anchor="middle" font-size="11" fill="#334155">replay.patch.yml 里</text>
+  <text x="166" y="522" text-anchor="middle" font-size="11" fill="#334155">disabled: true</text>
+
+  <line x1="278" y1="494" x2="308" y2="494" stroke="#15803d" stroke-width="2" marker-end="url(#rp-g)"/>
+
+  <rect x="314" y="464" width="212" height="60" rx="8" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="420" y="488" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">llm-replay 接管</text>
+  <text x="420" y="508" text-anchor="middle" font-size="11" fill="#334155">按位置吐录制的 chunk</text>
+  <text x="420" y="522" text-anchor="middle" font-size="11" fill="#64748b">不产生任何 provider I/O</text>
+
+  <line x1="532" y1="494" x2="562" y2="494" stroke="#15803d" stroke-width="2" marker-end="url(#rp-g)"/>
+
+  <rect x="568" y="464" width="192" height="60" rx="8" fill="#ffffff" stroke="#4ade80"/>
+  <text x="664" y="488" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">比对持久化结果</text>
+  <text x="664" y="508" text-anchor="middle" font-size="11" fill="#334155">与同一份夹具逐字节比</text>
+  <text x="664" y="522" text-anchor="middle" font-size="11" fill="#64748b">少了会 fail loud</text>
+
+  <rect x="60" y="538" width="700" height="56" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="76" y="560" font-size="11" font-weight="700" fill="#166534">为什么这样便宜</text>
+  <text x="76" y="580" fill="#334155" font-size="11">模型脚本不是另写的，而是从这份日志里推导出来的（每个 assistant/message 展开成一次按位置的调用）。</text>
+
+  <rect x="800" y="76" width="360" height="282" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="820" y="102" font-size="13" font-weight="700" fill="#991b1b">四条已知坑</text>
+  <text x="820" y="128" font-size="11" font-weight="700" fill="#991b1b">① 任务文本必须与录制一致</text>
+  <text x="820" y="148" fill="#334155" font-size="11">回放按位置吐 chunk，不校验你这次输入。</text>
+  <text x="820" y="166" fill="#334155" font-size="11">主仓的做法：从夹具里推导任务，别另写一份。</text>
+  <text x="820" y="194" font-size="11" font-weight="700" fill="#991b1b">② 模型调用次数必须一致</text>
+  <text x="820" y="214" fill="#334155" font-size="11">多了会 fail loud；少了要自己发现——CLI 驱动</text>
+  <text x="820" y="232" fill="#334155" font-size="11">拿不到 assertConsumed()，除非用 in-process 挂载。</text>
+  <text x="820" y="260" font-size="11" font-weight="700" fill="#991b1b">③ 并发子代理会绑错脚本</text>
+  <text x="820" y="280" fill="#334155" font-size="11">绑定按 first-call-order，并发委派不确定。</text>
+  <text x="820" y="308" font-size="11" font-weight="700" fill="#991b1b">④ 包版本错配在 import 时即失败</text>
+  <text x="820" y="328" fill="#334155" font-size="11">回放器与 CLI 版本一起钉住（pre-stable API）。</text>
+  <text x="820" y="350" fill="#64748b" font-size="11">详见 03 正文的四条坑，逐条带出处。</text>
+
+  <rect x="800" y="374" width="360" height="236" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="820" y="400" font-size="13" font-weight="700" fill="#1e40af">这套链路买到了什么</text>
+  <rect x="820" y="414" width="320" height="40" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="836" y="439" fill="#1e40af" font-size="11">无 key 的组装转录回归 —— CI 每个 PR 都跑</text>
+  <rect x="820" y="462" width="320" height="40" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="836" y="487" fill="#1e40af" font-size="11">可稳定复现的失败 —— 固定流之后仍复现</text>
+  <rect x="820" y="510" width="320" height="40" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="836" y="535" fill="#1e40af" font-size="11">模型可见面的断言点 —— request/header</text>
+  <text x="820" y="572" fill="#64748b" font-size="11">但它买不到「对错」：录一次坏运行 = 把 bug 固化。</text>
+  <text x="820" y="592" fill="#64748b" font-size="11">价值与代价的完整账见 04。</text>
+</svg>

@@ -1,5 +1,7 @@
 # 02 · 一份 `session.jsonl` 到底是什么：它就是 trajectory
 
+![一份 session.jsonl 的解剖：左侧是 bash-tool-turn 的 22 行事件，按颜色分成 header、会话配置、turn/step 包围、模型可见输入、请求头、模型输出与工具往返六组；右侧是三种取用粒度（单条事件 / 请求头 / 整条轨迹）各自的成本与证明力；底部是它缺的四类失败——首个 chunk 前抛出、接受后抛出、取消或挂起、注入重试，只能由 replay.override.json 补](./figures/trajectory-anatomy.svg)
+
 ## 一句话
 
 **是的，它就是 trajectory——而且是比通常意义的 trajectory 更完整的一种**：一行一个事件、首行是 header，里面按顺序记着 turn/step 边界、模型**实际收到**的请求头、模型的完整输出流、每一次工具调用与结果。它同时还有两个普通 trajectory 没有的性质：**可重放**（回放器能从中反推出模型脚本）和**可断言**（跑完之后的持久化结果要和它比对）。
@@ -70,7 +72,7 @@ turn/end
 
 提交进仓的夹具**省略顶层 `seq` / `time` 包络**，回放时用确定性的稠密序号和零时间戳补回来。理由是本地插入一个事件会导致后续一大段重新编号，产生纯噪声 diff。
 
-代价是：**夹具不是逐字节的现场复现**。这一点在插件仓自建夹具时会变成一个具体选择——见 [03](./03-what-a-plugin-can-reuse.md) 和 [04](./04-what-does-not-transplant.md)。
+代价是：**夹具不是逐字节的现场复现**。这一点在插件仓自建夹具时会变成一个具体选择——见 [03](./03-what-a-plugin-can-reuse.md) 和 [04](./04-what-its-worth.md)。
 
 ## 它缺什么：四类「日志里根本不存在」的失败
 
@@ -110,7 +112,7 @@ turn/end
 
 回放器接受历史版本：解析时会经 build-static 的 format catalog **在内存里迁移**到当前版本再暴露事件（`packages/test-support/llm-replay/src/index.ts:200` 起的 `parseSessionLog`）。这意味着**你录的夹具不会因为 DSH 升版就作废**——它会被就地升级后重放。
 
-但这条保证有边界，独立夹具 owner 要自己承担的部分写在 [04](./04-what-does-not-transplant.md)。
+但这条保证有边界，独立夹具 owner 要自己承担的部分写在 [04](./04-what-its-worth.md)。
 
 ## 这一篇要你记住的
 

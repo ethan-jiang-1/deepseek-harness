@@ -1,4 +1,6 @@
-# 03 · 插件仓能不能用？能，而且正是用在 trajectory 与 bug 复现上
+# 03 · 插件仓能不能用：三条硬证据与最小可用设置
+
+![录制一次、提交夹具、无 key 回放：上半是录制环（真模型 + compression: none，人工跑、要 key），下半是回放环（dsh-llm-replay 读本仓 session.jsonl，CI 每个 PR 无 key 跑）；右侧标出四条已知坑](./figures/record-replay-pipeline.svg)
 
 ## 一句话结论
 
@@ -6,9 +8,9 @@
 
 | | 顶层 `snapshots/` 语料 | 录制回放**机制** |
 |---|---|---|
-| 是什么 | 主仓集中维护的 210 个场景 + 语料治理规则 | 两个已发布的 npm 包：读会话日志、按位置回放模型流 |
+| 是什么 | 主仓集中维护的 210 个场景 + 语料治理规则 | 一个已发布的 npm 插件：读会话日志、按位置回放模型流 |
 | 归属 | DSH 主仓所有，外部仓无法贡献 | **任何人可装、可挂、可自带夹具** |
-| 插件仓 | 搬不走，也不该搬（见 [04](./04-what-does-not-transplant.md)） | **能用，而且正是它解决 trajectory 与 bug 复现** |
+| 插件仓 | 搬不走，也不该搬（见 [04](./04-what-its-worth.md)） | **能用**，价值与代价见 [04](./04-what-its-worth.md) |
 
 所以正确的说法是：**插件仓不该复刻主仓的语料治理，但完全可以用同一套回放机制，做一份属于自己的小 trajectory 语料。**
 
@@ -16,7 +18,7 @@
 
 ### 证据一：回放器是发布在 npm 上的普通插件
 
-```
+```text
 @deepseek-ai/dsh-llm-replay   latest: 0.0.1-rc.1   next: 0.2.0-rc.2
 ```
 
@@ -74,7 +76,7 @@ your-plugin-repo/
 dsh plugin --profile headless add @deepseek-ai/dsh-llm-replay@next
 ```
 
-（`dsh plugin` 子命令把参数转发给 profile 目录里的 pnpm；见 `apps/cli/src/args.ts:188`，用法示例见同文件帮助文本里的 `dsh plugin --profile tui add <package>`。`next` 是发布通道名，见本文开头。）
+（`dsh plugin` 子命令把参数转发给 profile 目录里的 pnpm；见 `apps/cli/src/args.ts:188`，用法示例见同文件帮助文本里的 `dsh plugin --profile tui add <package>`。`next` 是发布通道名，见上文。）
 
 **录制层** `record.patch.yml`——只做一件事：把持久化改成明文（照 `snapshots/acp/escalation-approved/cordis.yml` 的写法）：
 
@@ -127,19 +129,9 @@ dsh --profile headless --patch ./tests/trajectory/replay.patch.yml "<与录制�
 3. **并发子代理会绑错脚本。** 一个父会话 + 顺序子会话按 first-call-order 绑定；**并发**的子会话会不确定地抢脚本——这是回放器自己声明的已知限制。
 4. **包版本错配会在 import 时直接失败。** 回放器硬依赖 `dsh-session-format-catalog`，它必须与已安装的 `@deepseek-ai/dsh-session` 的 writer 版本一致（`packages/test-support/llm-replay/src/index.ts:42`）。DSH 的公共 API 是 pre-stable 的，所以插件仓要把回放器的版本和 CLI 版本**一起钉住**。
 
-## 用法一：trajectory——把「一次真实运行」变成可重放的资产
+## `live` 还是 `authored`：录制来源的选择
 
-这是最直接、也最被低估的用法。`session.jsonl` 里是完整轨迹（见 [02](./02-what-a-trajectory-is.md)）：turn/step 边界、模型真正收到的 `request/header`、模型的完整输出块、每次 `tool/call` 与 `tool/result`。
-
-对插件作者，这解决三类问题：
-
-- **「我的插件到底改了什么模型可见面？」** 跑一次，diff 两份 trajectory 的 `request/header`，比读代码可靠。
-- **「升级 DSH 之后我的插件行为变了吗？」** 同一份轨迹在新版本上重放，比对结果——**这就是主仓那套世代模型的私人缩小版**。
-- **「用户报的现象我没法复现。」** 让他给你一段日志，重放它。
-
-### `live` 还是 `authored`：一个必须做的选择
-
-主仓的 `snapshot.yml` 有一个 `recording` 字段，取值 `live` 或 `authored`（`packages/test-support/session-snapshot/src/manifest.ts:10`）。这个区分对插件仓尤其重要：
+主仓的 `snapshot.yml` 有一个 `recording` 字段，取值 `live` 或 `authored`（`packages/test-support/session-snapshot/src/manifest.ts:10`），而且 `authored` 的场景**永不被 record 覆盖**（`packages/test-support/session-snapshot/src/suite.ts:1307`）。这个区分对插件仓尤其重要：
 
 | | `recording: live` | `recording: authored` |
 |---|---|---|
@@ -150,41 +142,20 @@ dsh --profile headless --patch ./tests/trajectory/replay.patch.yml "<与录制�
 
 **从用户那里拿到的日志不要直接提交进仓**——它含用户提示词与文件内容。主仓的「typed token 只替换身份、不脱敏任意文本」规则是为了保住可重建性（`snapshots/AGENTS.md:11`），那条规则的前提是语料本来就归主仓所有；外部仓面对用户数据时，正确做法是**据此手写一条最小 `authored` 轨迹**，只保留触发 bug 所需的事件。
 
-## 用法二：bug reproduce——四类「日志里没有」的失败
-
-回放器的脚本是从 `assistant/message` / `assistant/attempt` 的**持久化结果**推导的。推不出来的失败，用 `replay.override.json` 补（`packages/test-support/llm-replay/README.md` 的 Failure modes and overrides 一节）：
-
-override 文件有**两种文档形态**（整脚本替换的数组，或打补丁的 `{patches:[{at, entry}]}`），条目有**三种类型**（`chunks` / `throw` / `hang`）。主仓 32 份 sidecar 里**真实提交在案的只有下面标了样例的两类**，其余靠包自己的单元测试覆盖（`packages/test-support/llm-replay/tests/llm-replay.spec.ts:1239`、`:1247`、`:1559`）：
-
-| 条目 / 形态 | 表达什么 | 主仓提交在案的样例 |
-|---|---|---|
-| `{"kind":"throw","chunks":[],"message":…,"code":…}` | 首个 chunk 之前就抛（pre-2xx 不接受） | `snapshots/session/error-finish/replay.override.json`——「模拟 provider 401」 |
-| `{"kind":"throw","chunks":[…],"accepted":true}` | 已接受之后再抛（post-2xx 失败） | **无**（只有单元测试） |
-| `{"kind":"hang","readyFile":…}` | 挂起不终止，等外部决定性取消 | `snapshots/acp/cancel/replay.override.json` |
-| `{patches:[{at, entry}]}` | 在推导出的脚本上按 0 基下标替换；`at` 等于脚本长度即「追加一次重试」 | 形态有样例（`snapshots/web/{file-upload-round,goal-multi-turn-actions,lifecycle-chrome}/replay.override.json`），但**注入瞬时失败再重试的组合没有样例**（只有单元测试） |
-
-**为什么这对外部仓有用**：provider 抛错与流挂起恰恰是最难用 mock 稳定复现、又最容易在真实使用中出问题的两类，主仓已经把这两块基建做完并发布了。具体做法见 [06](./06-bug-reproduction-playbook.md)。
-
-## 用法三：model-visible 回归——把「我给模型加了什么」钉住
-
-只要你的插件动过请求的任一部分（新工具、system prompt 注入、投影事件、工具描述文案），`request/header` 就是它的断言点。主仓的 pin 机制（`{{system}}` / `{{tools}}` + 两份 sidecar）是把体积搬去可审阅的位置；插件仓如果只有一两条轨迹，**直接保留 header 原文更省事**——反正 diff 也就那么几行。
-
-这也是 [08-plugin-testing](../../_digested/test-strategy/08-plugin-testing.md) 那条「台阶五」的外部版本：主仓里插件通过给某个场景的 `cordis.snapshot.yml` 打 patch（样板 `snapshots/session/agent-instructions/cordis.snapshot.yml`）进入那 210 个场景所在的语料；插件仓里它通过自己的一份轨迹进入自己的 CI。
-
-## 这一篇要你记住的
-
-- 机制可复用：**发布包 + 普通插件形态 + 接受原始日志**，三条都成立。
-- 录制不需要 DSH 内部工具：**真跑一次、留下日志**就够了。
-- 最小设置是**四个文件加一条命令**，不是一套语料治理。
-- 用用户日志前先想 `live` 还是 `authored`——**外部仓面对隐私，不能照抄主仓的脱敏政策**。
-- 但这些都建立在「你自己补上语料治理的空白」之上——具体缺什么，见 [04](./04-what-does-not-transplant.md)。
-
 ## 一个必须说明的空白：这套用法没有官方文档
 
-上面这四样配置不是从某篇指南抄的，是**从源码和主仓夹具反推出来的**。核实过的事实是：
+上面这些配置不是从某篇指南抄的，是**从源码和主仓夹具反推出来的**。核实过的事实是：
 
 - `llm-replay` 在 `docs/` 里只出现在**生成的目录**中（`docs/config-catalog.md`、`docs/module-graph.md`、`docs/capability-seams.md`、`docs/event-producer-consumer.md`），没有一篇面向插件作者的说明；
 - `docs/user/develop/` 与 `docs/cookbook/` 里**没有**任何一篇讲录制回放怎么用在插件上（`adding-a-tool.md` 等 cookbook 一篇都没提）；
 - 唯一权威是包自己的 README（`packages/test-support/llm-replay/README.md`）与实现（`packages/test-support/llm-replay/src/index.ts`）。
 
 **这不是「所以不能用」，而是「用之前要自己核对」**：本文给出的每个字段都能在源码里指出行号，但它们的组合方式（`--patch` 叠一层 + `file:` 指本仓夹具 + 断言写在自己的测试里）是本文综合出来的，不是主仓声明支持的用法。上游随时可能改动包边界；按 [reference.md](./reference.md) 的出处逐条复核。
+
+## 这一篇要你记住的
+
+- 机制可复用：**发布包 + 普通插件形态 + 接受原始日志**，三条都成立。
+- 录制不需要 DSH 内部工具：**真跑一次、留下日志**就够了（但要从 root 取就得关压缩）。
+- 最小设置是**四个文件加一条命令**，不是一套语料治理。
+- 用用户日志前先想 `live` 还是 `authored`——**外部仓面对隐私，不能照抄主仓的脱敏政策**。
+- 能用到什么程度、值多少，见 [04](./04-what-its-worth.md)。

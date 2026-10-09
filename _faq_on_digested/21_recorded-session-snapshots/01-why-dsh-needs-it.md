@@ -1,5 +1,7 @@
 # 01 · 主仓为什么需要它：一个 178 个单测全绿、生产完全不能用的插件
 
+![三种既有手段各证明什么、缺口在哪：单元测试证明组件行为但装配常是手搭的，mock 证明管道能通但复现不了 Loader 的导出解析问题，with-key e2e 证明今天还活着但不确定、无 key 会自跳；底部说明快照补上的正是这三者共同的缺口——组装之后的完整转录，无 key 可逐字节复现](./figures/why-not-enough.svg)
+
 ## 一句话
 
 因为**「组装后的完整转录」是一种没有替代品的证据形态**：单测证明组件行为、e2e 证明现在对真模型还能跑，但只有录制回放能固化「模型实际收到了什么、又落了什么盘」，并且让它在没有 API key 的 CI 里逐字节可复现。主仓把它定为强制条件，是因为它买到的东西别处买不到——不是因为它喜欢多一层测试。
@@ -80,7 +82,7 @@
 
 | 零件 | 管什么 | 规则出处 |
 |---|---|---|
-| `snapshot.yml` | 封闭清单，只记「完成的 Session 重建不出来的事实」：profile、composition/header class、录制策略、平台、replay 例外、workspace 事实 | `snapshots/AGENTS.md:7`、[2026-08-24 语料决策](../../.agents/notes/implemented/testing/2026-08-24-session-log-snapshot-corpus.md):15 |
+| `snapshot.yml` | 封闭清单，只记「完成的 Session 重建不出来的事实」：profile、composition/header class、录制策略、平台、replay 例外、workspace 事实 | `docs/testing.md:14`；封闭 schema 在 `packages/test-support/session-snapshot/src/manifest.ts:201` |
 | `workspace.expected/` | 独立的世界 oracle：会改工作区的场景提交完整终态树，**record 与 refresh 永不改写它** | `snapshots/AGENTS.md:15` |
 | sidecar（prompt / schema） | 每个 header 类恰好一个可读 owner，避免几十条巨型单行 JSON 被反复重写 | [2026-07-06 归档决策](../../.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md):10,14,16 |
 | typed token | 保留关系的脱敏：`{{session:1}}`、`{{message:1}}`、`{{cwd}}`、`{{system}}`、`{{tools}}` | `snapshots/AGENTS.md:11` |
@@ -91,9 +93,9 @@
 
 1. **任何无 key 的组装转录信号都没有了。** PR CI 是刻意无 key、可 fork 的；`test:e2e` 没 key 就自跳，于是会「绿着但不跑真套件」（[real-API e2e 决策](../../.agents/notes/implemented/testing/2026-06-19-real-api-e2e-ci.md):11）。
 2. **不确定性回到测试里。** 录制流是拿到「真运行保真度 + 确定性」的唯一办法；回放是按位置绑定的，且**一个场景只允许一条在飞的模型流**。
-3. **持久化格式的回归失去样本。** 语料里保留着历史世代的会话，它们必须仍然能被当前读取器**恢复**；这是「已发布的用户数据还能不能读」的唯一提交在案的证据（[released-format migration 决策](../../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.md):84）。
+3. **持久化格式的回归失去样本。** 语料里保留着历史世代的会话，它们必须仍然能被当前读取器**恢复**（[released-format migration 决策](../../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.md):84 要求未列入拒绝清单的工件必须还原成功，并在还原成功后校验源字节未变）。
 4. **模型实际收到什么，没有第二处能钉住。** 见上一节。
-5. **成本回到每次运行。** 录制花真 API 配额——这正是 record / refresh 严格串行、且只有 record 读 `.env` 的原因（`vitest.snapshot.config.ts:63`）。
+5. **成本回到每次运行。** 录制花真 API 配额——这正是 record / refresh 严格串行的原因（`vitest.snapshot.config.ts:63`）；另外只有 record 模式会读 `.env`（同文件`:33`），CI 强制只读回放（`docs/testing.md:15`）。
 6. **重演事故 0001 那一类。**「包测试全绿、发布出去的产品是坏的」正是本层存在的理由；`docs/testing.md:55` 明确写了 package / e2e / mock-only / rationale 证据**都不能替代**组装转录。
 
 ## 规模（本工作树实测）
@@ -104,7 +106,7 @@
 | `snapshots/web/` | 55 | 302 | 同一 Session 旁的浏览器/ARIA 证据 |
 | `snapshots/sdk/` | 24 | 171 | 持久控制（TypeScript SDK 投影） |
 | `snapshots/acp/` | 9 | 58 | 自动化协议行为 |
-| **合计** | **210** | **1271**（另有 7 个符号链接：5 个跨 profile 的 prompt/schema 别名 + 2 个场景内的 `workspace/AGENTS.md`） | |
+| **合计** | **210** | **1271**（= 上面四行之和 1270 + 树根的 `snapshots/AGENTS.md`；另有 7 个符号链接：5 个跨 profile 的 prompt/schema 别名 + 2 个场景内的 `workspace/AGENTS.md`） | |
 
 其中 444 个 `.jsonl`、32 份 `replay.override*.json`、56 份 `system-prompt.expected.md`、55 份 `tool-schemas.expected.json`。
 
