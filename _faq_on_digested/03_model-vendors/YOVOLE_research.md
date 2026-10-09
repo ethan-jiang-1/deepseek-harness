@@ -33,7 +33,7 @@
 
 ## 三、凭据现状（「key 是不是已经在环境里」的答案）
 
-- **在**：`~/.env` 里 `AIDER_OPENAI_API_KEY=sk-Tx5…`，与用户本次给出的 key **完全一致**（长度 51，sha256 前 8 位 `7124c872`）。该行所属注释是 `# GLM-4.7 API 配置`，属于**错标**：这条 key 打的是 Yovole 中转，只是恰好能调到 `glm-4.7`。
+- **在**：`~/.env` 里 `AIDER_OPENAI_API_KEY` 的取值，与用户本次给出的 key **完全一致**（已逐字节核对；指纹不落语料）。该行所属注释是 `# GLM-4.7 API 配置`，属于**错标**：这条 key 打的是 Yovole 中转，只是恰好能调到 `glm-4.7`。
 - **不在**：当前 shell 的环境变量；`~/.dsh/settings*`、`~/.dsh/profiles/*`、`~/.dsh/storages/*`；仓库受版本控制的文件（`git grep -il yovole` 空）；本目录 `_faq_on_digested/`；shell history（`~/.zsh_history`、`~/.bash_history`）；`~/.dsh/sessions`（1.3 GB 全量扫描无命中）。
 - `~/.dsh/.credentials.yaml` 现有凭据 ref 共 6 条：`OPENROUTER_API_KEY`、`DEEPSEEK_API_KEY`、`CODEX_API_KEY_MICU`、`KIMI_CN_API_KEY`、`TEAMOROUTER_API_KEY`、`OPENCODE_API_KEY`——**没有** yovole 相关条目。
 - 钥匙串里三个 `Yovole-Office` / `Yovole-Guest` / `yovole-office` 条目**不是 API key**：它们在 `System.keychain`，`desc = "AirPort network password"`，是无线网络密码。
@@ -207,4 +207,4 @@ DSH 侧的含义：`contextWindow` 填上表数字；`maxTokens` 是「每次请
 - **id 与实际模型不对应是最大风险**：把 `glm-5` 写进 route，实际跑的是 `DeepSeek-V4-Flash`，会话日志里的模型名会与实际供应商不符；如需可追溯，建议只用实测能自证的那几个 id（`DeepSeek-V4-Flash`、`qwen3.6-27b`、`gpt-oss-120b`、`gemma-4-31b`），或至少以响应体 `model` 为准建立对照表。
 - **503 表达配置错误**：未知模型、分组无渠道都返回 503，接入后要确认 retry/错误分类不会把它当瞬时故障反复重试。
 - **档位不可全信**：`DeepSeek-V4-Flash` 的 low/high/xhigh/max 在统计上与不传参数无差异（第六节），只有 `qwen3.8-27b` 的三档经重复实验确认可分；其余 31 个 id 的档位未测。
-- 本次 key 在对话中明文出现过；它同时躺在 `~/.env`，若该文件曾同步或备份到别处，建议轮换。
+- 本次 key 在对话中明文出现过；它同时躺在 `~/.env`，若该文件曾同步或备份到别处，建议轮换（轮换向导：同目录 `rotate-yovole-key.sh`，本地文件不入库——建新令牌 → 实测 → 双写 `~/.env` 与 `.credentials.yaml` → 吊销旧令牌 → 实测 401）。
