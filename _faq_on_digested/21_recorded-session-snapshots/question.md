@@ -29,7 +29,7 @@
 
 ## 范围与边界
 
-- 本文回答的是「这套机制是什么、为什么存在、能不能移植、值多少、插件仓该怎么摆」，**不重写** `_digested/test-strategy/` 已有的机制整理：快照层的分层与车道见 [04-snapshot-machinery](../../_digested/test-strategy/04-snapshot-machinery.md)，插件测试的五个台阶见 [08-plugin-testing](../../_digested/test-strategy/08-plugin-testing.md)，真实插件的测试组合解剖见 [09-plugin-testing-playbook](../../_digested/test-strategy/09-plugin-testing-playbook.md)，插件 PR 的最小证据集见 [10-plugin-testing-checklist](../../_digested/test-strategy/10-plugin-testing-checklist.md)。本文补的是那四篇没有回答的部分：**外部插件仓视角下的可复用性与组织方案**。
+- 本文回答的是「这套机制是什么、为什么存在、能不能移植、值多少、插件仓该怎么摆」，**不重写** `_digested/test-strategy/` 已有的机制整理：快照层的分层与车道见 [04-snapshot-machinery](../../_digested/test-strategy/04-snapshot-machinery.md)，插件测试的五个台阶见 [08-plugin-testing](../../_digested/test-strategy/08-plugin-testing.md)，真实插件的测试组合解剖见 [09-plugin-testing-playbook](../../_digested/test-strategy/09-plugin-testing-playbook.md)，插件 PR 的最小证据集见 [10-plugin-testing-checklist](../../_digested/test-strategy/10-plugin-testing-checklist.md)，快照机制对插件仓暴露的一手事实（发布包、夹具双接受、接线语义、git 卫生、postmortem 校准）见 [11-snapshot-external-face](../../_digested/test-strategy/11-snapshot-external-face.md)。本文补的是 digest 不承载的部分：**外部仓的实践校准、组织方案与价值判断**。
 - **源码核验基线**：本仓库工作树 `187ad35dac677485653be1847d0aac808dde42a1`（2026-10-08）。所有行号以该工作树为准；`_faq_on_digested/00-index.md` 声明的运行时基线 `dsh-v0.2.0-rc.2`（`639ed01539`）在本篇用于行为结论，两者在本轮未观察到冲突。
 - **npm 版本**：`@deepseek-ai/dsh-llm-replay` 与 `@deepseek-ai/dsh-session-snapshot` 的 `next` dist-tag 实测为 `0.2.0-rc.2`，与本基线一致；`latest` 通道停在更早的 `0.0.1-rc.1` / `0.1.2-alpha.2`。装包时用 `@next`（或与你所用 CLI 相同的版本），不要用 `latest`。
 - 本仓库的 git 克隆是**浅克隆**（`.git/shallow` 里有 158 个边界提交，边界落在 2026-07-30 到 8 月下旬之间），边界之外的历史无法核对；早期决策只能引用 Agent Note 与文档，这一点在 [reference.md](./reference.md) 的「证据薄弱处」单独列出。
