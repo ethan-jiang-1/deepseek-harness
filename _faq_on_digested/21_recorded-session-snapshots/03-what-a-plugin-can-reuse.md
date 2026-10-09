@@ -101,10 +101,14 @@ dsh --profile headless --patch ./tests/trajectory/record.patch.yml "<任务文�
 **回放层** `replay.patch.yml`（照主仓 `cordis.snapshot.yml` 的写法，例如 `snapshots/session/compaction-recovery/cordis.snapshot.yml`）：
 
 ```yaml
-# 1) 关掉真实 provider，让回放适配器接管 llm/stream
+# 1) 关掉**全部**真实 adapter 入口行（base bundle 有两行，缺一行就全盘失效，见下）
 - id: llm-deepseek
   name: '@deepseek-ai/dsh-llm-deepseek-api-key'
   disabled: true
+- id: llm-deepseek-account
+  name: '@deepseek-ai/dsh-llm-deepseek-account'
+  disabled: true
+# 你的 profile 若还挂了别的 llm/stream 消费方（如 title LLM），同样要禁——见静默失效三。
 
 # 2) 把回放器指到本仓的夹具
 - insert:
@@ -121,6 +125,16 @@ dsh --profile headless --patch ./tests/trajectory/replay.patch.yml "<与录制�
 ```
 
 注意 `--patch` 是「在 profile 层之后叠加」（`apps/cli/src/args.ts:170`），所以它不改变你的日常配置，只在测试时叠一层。`file` 走的是普通 `readFileSync`（`packages/test-support/llm-replay/src/index.ts:773`），所以**相对路径按进程 cwd 解析**——从仓库根启动，或直接给绝对路径。
+
+## 接线时的三个静默失效（全部实测踩出来过）
+
+回放链路最危险的不是报错，而是**静默失效**：patch 没落上、真实模型照答、探针看着绿其实什么都没测。三个已知的失效形态：
+
+1. **行 id 写错 → patch 不生效且不报错。** 本基线（`dsh-v0.2.0-rc.2`，`639ed015`）里 api-key adapter 的行 id 是 `llm-deepseek`，**不是** `llm-deepseek-api-key`。写错 id 只会在 `--dump-config` 里留一行 `patch: entry "…" not found`，真实 adapter 照旧在组合里接住全部请求——凭据来自 home 的 `.credentials.yaml`，env 里没有 key 也照样真跑。**对策：换 pin 之后先 `dsh --profile <p> --dump-config | grep -A1 "dsh-llm-deepseek"` 校对本行 id。**（行 id 随 pin 漂移，这一步不能省。）
+2. **把裸 `ReplayEntry[]` 塞进 `file` → 整行不 activate。** `file` 必须是录制的会话 JSONL（会走 `parseSessionFixture`）；裸脚本要放 `overrideFile`（整脚本替换），`file` 指向一个派生路径即可（可以故意不存在）。塞反了会报 `session snapshot line 1 …` 并让 patch 静默失效。**对策：改完先跑一次，确认日志里的回复确实是 canned 文本而不是真模型答的。**
+3. **同名 provider 双注册 → 真实 adapter 先接住流。** 只禁一个入口行、或 replay 的 provider/model 命名与真实行冲突处理不当时，真实 adapter 优先生效——此时日志里的 `replayState` 是真实 adapter 自己写的响应元数据，**不是**回放插件的标记。**对策：两个入口行都禁；命名对齐 base 的 `agent-default-model` 行，让 agent 的默认选择直接落进回放 adapter。**
+
+另一个易踩的脚本位问题：**title LLM 也消耗回放脚本位。** `session-title-first-prompt-llm` 同样是一条 `llm/stream` 调用，按 first-call 序与用户回合交错消耗脚本——实测 title 拿走第 2 个 settlement，3 次搜索只回放了 2 次、日志少一个 step。你的 profile 若挂了 title LLM，回放 patch 里要显式 `- id: session-title-llm / disabled: true`（title 会走 fallback，不影响断言）。
 
 **四个已知坑，先说清楚**：
 

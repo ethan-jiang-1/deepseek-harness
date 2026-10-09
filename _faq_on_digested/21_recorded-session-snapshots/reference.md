@@ -122,6 +122,22 @@
 | 同类 commit / 场景配对 | `82c6a5e4f485d7570161e15b4de377e4d49eece9`、`b79a227cec941405c9b368524446145298e9d48d`、`61c548e200ab00e6eceaf81bce3a819c195f393c`、`73e38e1758fe5ebdc914f6d6d002142a1eb5ce21` |
 | `authored` 场景不被 record 覆盖 | `packages/test-support/session-snapshot/src/suite.ts:1307` |
 
+## 七、现实校准：两个独立插件仓（仓外路径，仅参考）
+
+本篇 03/04/05 的接线与组织建议在两个真实插件仓里校准过。它们在仓外，本目录的 verifier 只对其作警告、不校验；引用按原样给出。
+
+| 结论 | 出处（绝对路径） |
+|---|---|
+| 回放接线用发布包：整脚本 override 形态 + providers 命名对齐 base 的默认模型行 | `/Users/bowhead/ai_dsh_assitant/dev/probes/session/preset-runner-replay.patch.yml` |
+| 静默失效一：行 id 写错不报错（只有 `--dump-config` 一行 `patch: entry "…" not found`），真实 adapter 照常接流——2026-09-30 实测，凭据来自 home 的 `.credentials.yaml` | 同上文件头注释 |
+| 静默失效二：裸 `ReplayEntry[]` 塞进 `file` 报 `session snapshot line 1 …` 并使整行不 activate；裸脚本实放 `overrideFile` | 同上；`/Users/bowhead/ai_dsh_assitant/dev/fixtures/llm-replay-fixture.json` |
+| 探针的证据位在**请求侧**：canned 回复 + 真实组装的 system/tools 进日志（keyless 产出 model-visible 证据） | 同上 patch 文件头注释 |
+| 判据集由消费者固定、声明不可削减；注入种类**双向**自守（基线外新增 / 比对面未覆盖都报红）；录制身份逐 case 校验（40 位 commit 或 `unknown-historical`） | `/Users/bowhead/ai_dsh_deep_research/snapshots/README.md`、`scripts/lib/replay-scene.mjs`、`notes/implemented/2026-10-09-snapshots-adoption.md` |
+| title LLM 也消耗回放脚本位（实测 title 拿走第 2 个 settlement，3 次搜索只回放 2 次） | `/Users/bowhead/ai_dsh_deep_research/notes/implemented/2026-09-24-keyless-snapshot-lane.md` |
+| 顶层 `snapshots/` 选型理由与输掉方案清单（含「路径型义务门禁假阳率高被否决」） | `notes/implemented/2026-10-09-snapshots-adoption.md` |
+| 渲染期望作为会话回放的姊妹形态：DOM 证据比对 + 自有 harness + 实测成本台账 + prove-it-red 记录 | `/Users/bowhead/ai_dsh_assitant/snapshots/web-face/blank-first-open/README.md` |
+| 两仓均为方案 A（pinned submodule）：`vendor/dsh` 钉在上游 | 两仓 `.gitmodules`（url = deepseek-ai/deepseek-harness） |
+
 ## npm 实测口径
 
 2026-10-08 用 `npm view <pkg> version dist-tags`（备用 cache 目录）实测：
