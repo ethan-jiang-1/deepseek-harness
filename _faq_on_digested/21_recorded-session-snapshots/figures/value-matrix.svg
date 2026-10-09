@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>它对插件开发值多少：三张账单、一条分工带、一条上限</title>
+  <desc>上半是三行账单。A 轨迹回归：买到组装转录的固定基线，用在改了模型可见面或跟 DSH 升版时，成本是一次录制加之后的 diff 审阅，单测和 mock 都替代不了。B bug 复现：买到可稳定重放的失败，用在固定模型流之后仍然复现的情况，成本是手写最小轨迹或脱敏用户日志，难例还要 override sidecar，with-key e2e 能发现但不能稳定复现。C 模型可见面钉住：买到「我给模型加了什么」的断言点，用在新增工具、提示词注入、投影事件或工具描述文案变更时，几乎没有额外成本。中间是一条分工带，说明五层证据各自证明什么、明确不证明什么，结论是 with-key e2e 证明今天还活着，轨迹回放证明组装转录没变，互补而不互相替代。下半是红色上限框：它是变更探测器不是正确性 oracle，postmortem 0002 里快照刷新曾把七个场景的 UNKNOWN_TOOL 当成新期望输出、套件全绿，所以录制前必须先确认运行是对的，正确性判断必须由自己的语义断言补上。</desc>
+
+  <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">它对插件开发值多少</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">价值不在「多一层测试」，而在买到一种别人买不到的证据；但每一分价值都对应一张维护账单</text>
+
+  <rect x="40" y="80" width="200" height="30" rx="6" fill="#e2e8f0"/>
+  <text x="140" y="100" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">用法</text>
+  <rect x="248" y="80" width="300" height="30" rx="6" fill="#e2e8f0"/>
+  <text x="398" y="100" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">买到什么</text>
+  <rect x="556" y="80" width="300" height="30" rx="6" fill="#e2e8f0"/>
+  <text x="706" y="100" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">什么时候用</text>
+  <rect x="864" y="80" width="296" height="30" rx="6" fill="#e2e8f0"/>
+  <text x="1012" y="100" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">成本在哪</text>
+
+  <rect x="40" y="118" width="1120" height="86" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <rect x="52" y="130" width="176" height="62" rx="8" fill="#dbeafe"/>
+  <text x="140" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">A · trajectory 回归</text>
+  <text x="140" y="176" text-anchor="middle" font-size="11" fill="#1e40af">最常用的那一档</text>
+  <text x="260" y="150" fill="#334155" font-size="11">组装之后模型实际收到 / 产出了什么，</text>
+  <text x="260" y="170" fill="#334155" font-size="11">固定成可比对的基线（含 request/header）</text>
+  <text x="568" y="150" fill="#334155" font-size="11">改了模型可见面；或跟 DSH 升版，</text>
+  <text x="568" y="170" fill="#334155" font-size="11">想确认插件行为没漂</text>
+  <text x="876" y="150" fill="#334155" font-size="11">一次录制（要 key）</text>
+  <text x="876" y="170" fill="#334155" font-size="11">+ 之后每次的 diff 审阅</text>
+  <text x="876" y="190" fill="#64748b" font-size="11">单测与 mock 拿不到这一层</text>
+
+  <rect x="40" y="212" width="1120" height="86" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <rect x="52" y="224" width="176" height="62" rx="8" fill="#dcfce7"/>
+  <text x="140" y="249" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">B · bug 复现</text>
+  <text x="140" y="270" text-anchor="middle" font-size="11" fill="#166534">最不可替代的一档</text>
+  <text x="260" y="244" fill="#334155" font-size="11">把「再跑一次试试」变成「重放固定的流」；</text>
+  <text x="260" y="264" fill="#334155" font-size="11">四类日志里没有的失败用 override 补</text>
+  <text x="568" y="244" fill="#334155" font-size="11">固定模型流之后仍然复现 ——</text>
+  <text x="568" y="264" fill="#334155" font-size="11">这才是产品 bug 的判据</text>
+  <text x="876" y="244" fill="#334155" font-size="11">手写最小轨迹，或按用户日志</text>
+  <text x="876" y="264" fill="#334155" font-size="11">重写一条脱敏版本；难例加 sidecar</text>
+  <text x="876" y="284" fill="#64748b" font-size="11">with-key e2e 能发现但无法稳定复现</text>
+
+  <rect x="40" y="306" width="1120" height="86" rx="10" fill="#fef3c7" stroke="#fcd34d"/>
+  <rect x="52" y="318" width="176" height="62" rx="8" fill="#fef3c7" stroke="#fbbf24"/>
+  <text x="140" y="343" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">C · model-visible 钉住</text>
+  <text x="140" y="364" text-anchor="middle" font-size="11" fill="#92400e">几乎白拿的一档</text>
+  <text x="260" y="338" fill="#334155" font-size="11">「我给模型加了什么」的断言点 ——</text>
+  <text x="260" y="358" fill="#334155" font-size="11">请求头的逐字节内容</text>
+  <text x="568" y="338" fill="#334155" font-size="11">新增工具、提示词注入、投影事件、</text>
+  <text x="568" y="358" fill="#334155" font-size="11">工具描述文案变更</text>
+  <text x="876" y="338" fill="#334155" font-size="11">几乎没有额外成本 ——</text>
+  <text x="876" y="358" fill="#334155" font-size="11">header 本来就在轨迹里</text>
+  <text x="876" y="378" fill="#64748b" font-size="11">只借了 A 的顺风车</text>
+
+  <rect x="40" y="404" width="1120" height="112" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="60" y="428" font-size="12" font-weight="700" fill="#334155">它不替代谁：五层证据各证明什么、明确不证明什么</text>
+  <rect x="60" y="438" width="212" height="62" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="166" y="458" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">L0–L1 导出守卫 + 行为 spec</text>
+  <text x="166" y="476" text-anchor="middle" font-size="11" fill="#64748b">证明注册后的行为与命名空间</text>
+  <text x="166" y="492" text-anchor="middle" font-size="11" fill="#64748b">不证明发布形态的装配</text>
+  <rect x="284" y="438" width="212" height="62" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="390" y="458" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">L3 REAL composition</text>
+  <text x="390" y="476" text-anchor="middle" font-size="11" fill="#64748b">证明 Config 是真配置、拓扑对</text>
+  <text x="390" y="492" text-anchor="middle" font-size="11" fill="#64748b">不证明模型收到什么字节</text>
+  <rect x="508" y="438" width="212" height="62" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="614" y="458" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">with-key e2e</text>
+  <text x="614" y="476" text-anchor="middle" font-size="11" fill="#64748b">证明今天对真模型还活着</text>
+  <text x="614" y="492" text-anchor="middle" font-size="11" fill="#64748b">不证明确定性，不能固定失败</text>
+  <rect x="732" y="438" width="212" height="62" rx="6" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
+  <text x="838" y="458" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">L4 轨迹回放</text>
+  <text x="838" y="476" text-anchor="middle" font-size="11" fill="#166534">证明组装转录没变、失败可复现</text>
+  <text x="838" y="492" text-anchor="middle" font-size="11" fill="#991b1b">不证明对错 —— 见下方上限</text>
+  <rect x="956" y="438" width="184" height="62" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="1048" y="458" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">你的语义断言</text>
+  <text x="1048" y="476" text-anchor="middle" font-size="11" fill="#64748b">判断「这不可能」</text>
+  <text x="1048" y="492" text-anchor="middle" font-size="11" fill="#64748b">只有你能写</text>
+
+  <rect x="40" y="530" width="1120" height="106" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="60" y="556" font-size="13" font-weight="700" fill="#991b1b">上限：它是变更探测器，不是正确性 oracle</text>
+  <text x="60" y="580" fill="#334155" font-size="11">postmortem 0002：七个文件系统场景调用了根本不存在的工具，日志里是 UNKNOWN_TOOL，而快照刷新把它们当成了新的期望输出 —— 套件全绿。</text>
+  <text x="60" y="600" fill="#334155" font-size="11">「A snapshot refresh is fixture production, not correctness review.」所以：录制前先确认这次运行是对的；刷新产物要人工过目；正确性由独立断言来判。</text>
+  <text x="60" y="622" fill="#991b1b" font-size="11" font-weight="700">校准：主仓四篇 postmortem 里只有一篇把它当作组装回归 pin —— 重要的一层，不是唯一的一层。</text>
+
+  <text x="600" y="664" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">结论：默认不做 L4；命中触发条件才做，做了就必须配独立断言。</text>
+  <text x="600" y="686" text-anchor="middle" fill="#64748b" font-size="11">触发条件与目录形状见 05；具体怎么做一条见 06。</text>
+</svg>

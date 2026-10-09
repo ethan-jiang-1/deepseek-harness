@@ -1,8 +1,10 @@
 # 05 · 插件仓该怎么组织：一条按需启用的阶梯，而不是一棵照抄的树
 
+![插件仓的证据阶梯：上半是 L4 的四条触发条件与不建的判据；下半是从 L0 导出形态守卫、L1 行为 spec、L2 HMR-safety、L3 REAL composition 逐级抬高的四阶（默认都做），到按需启用的 L4 轨迹夹具（放 tests/trajectory/fixtures/<case>/）；底部是六个不要做](./figures/ladder.svg)
+
 ## 一句话推荐
 
-**不要复刻 `snapshots/` 这棵树，把轨迹当作测试目录下的一个自有子目录；默认不做，命中触发条件才做。** 前四阶证据（导出守卫 → 行为 spec → HMR → REAL composition）永远该有；第五阶「轨迹夹具」是**按需**的，因为它贵在维护（有人重录、有人看 diff），而不贵在建。
+**不要复刻 `snapshots/` 这棵树，把轨迹当作测试目录下的一个自有子目录；默认不做，命中触发条件才做。** 前四阶证据（导出守卫 → 行为 spec → HMR → REAL composition）默认都做——其中 HMR 一阶只在你的插件确实向注册表贡献东西时才需要；第五阶「轨迹夹具」是**按需**的，因为它贵在维护（有人重录、有人看 diff），而不贵在建。
 
 ## 推荐阶梯
 
@@ -59,11 +61,11 @@ your-plugin-repo/
 
 ## 明确不要做的六件事
 
-1. **不要复刻 `snapshot.yml` + corpus policy + 四面分工。** 那套是「一个仓库集中维护 210 个场景」的配额与所有权制度（[04](./04-what-does-not-transplant.md)）。
+1. **不要复刻 `snapshot.yml` + corpus policy + 四面分工。** 那套是「一个仓库集中维护 210 个场景」的配额与所有权制度（[04](./04-what-its-worth.md)）。
 2. **不要依赖 `@deepseek-ai/dsh-session-snapshot`。** 它 `import vitest`、面向语料级守卫；插件仓需要的是 `@deepseek-ai/dsh-llm-replay`（见 [03](./03-what-a-plugin-can-reuse.md)）。
 3. **不要手写模型 chunk 当唯一真相。** 主仓明确否决过「手写 `llm.json`」，理由是这样夹具就不是系统的真实产物了（[01](./01-why-dsh-needs-it.md)）。手写应该只用于**最小复现场景**，不是常规做法。
 4. **不要把用户日志直接提交进仓。** 用 `authored` 重写最小版本（[03](./03-what-a-plugin-can-reuse.md) 的 `live` / `authored` 一节）。
-5. **不要只有轨迹、没有语义断言。** [04](./04-what-does-not-transplant.md) 的事故就是「套件为回归背书」。
+5. **不要只有轨迹、没有语义断言。** [04](./04-what-its-worth.md) 的事故就是「套件为回归背书」。
 6. **不要指望它替代 with-key e2e。** 轨迹证明「组装转录没变」，不证明「对今天的真模型还能工作」。
 
 ## 和已有组织方案怎么衔接

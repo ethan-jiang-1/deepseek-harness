@@ -62,7 +62,7 @@ _faq_on_digested/
 | 18 | [全局安装的 DSH CLI 老了，怎样安全地升级到最新的 RC / 正式版？](./18_global-dsh-upgrade/question.md) | [升级命令只有一个：`npm install -g @deepseek-ai/dsh@latest`（RC 走 `latest` 通道，`alpha` 永不碰）；把预检 / 目标解析 / 确认 / 安装 / 校验 / 回滚固化成一个可复用脚本，`~/.dsh` 用户数据不随包安装变化](./18_global-dsh-upgrade/answer.md) |
 | 19 | [DSH 的一次变更，为什么要把意图、决定、实现和证据分开安放？](./19_dsh-native-development-process/question.md) | [owner、证据、交付判断与 GitHub 状态的关系；历史案例保留可核对的事实边界](./19_dsh-native-development-process/answer.md) |
 | 20 | [Agent Note 到底该怎么写、为什么要搞这么复杂？](./20_agent-note-quality-bar/question.md) | [分篇 01–07 按推荐顺序推进：先判该不该写（多数改动不用）、再学怎么写与放哪，然后才是背后的思考（制度在防哪四种失败）、归档判据、移植与三层分工；附录是一篇全程带真实提交号的走查，answer.md 负责一分钟版、目录清单与术语速查，全部结论带真实 Note 与提交作例，出处集中在 reference.md（每条结论对应仓库路径与行号）](./20_agent-note-quality-bar/answer.md) |
-| 21 | [`snapshots/` 这套录制会话快照，主仓为什么离不开、插件仓到底需不需要？（对「插件不需要它」这一判断的反查）](./21_recorded-session-snapshots/question.md) | [拆成三层：主仓需要它是因为「组装转录」没有替代品（起点是 178 单测全绿的 ACP 事故）；插件仓能用**机制**——`dsh-llm-replay` 是发布包、接受未经投影的原始运行日志，正好做 trajectory 与 bug 复现；搬不走的是**语料治理与判断**（postmortem 0002 是「快照为回归背书」的真实事故）；推荐 L0–L4 阶梯，前四阶默认做、轨迹夹具按触发条件启用](./21_recorded-session-snapshots/answer.md) |
+| 21 | [`snapshots/` 这套录制会话快照，主仓为什么离不开、插件仓到底需不需要、对插件开发值多少？（对「插件不需要它」这一判断的反查）](./21_recorded-session-snapshots/question.md) | [六篇正文 + 六张图，按「为什么→是什么→能不能用→值多少→怎么组织→怎么做」推进：主仓需要它是因为「组装转录」没有替代品（起点是 178 单测全绿的 ACP 事故）；插件仓能用**机制**——`dsh-llm-replay` 是发布包、接受未经投影的原始运行日志；对插件开发值三样东西（trajectory 回归 / bug 复现 / model-visible 钉住），但上限是「变更探测器 ≠ 正确性 oracle」（postmortem 0002 是「快照为回归背书」的真实事故，四篇 postmortem 里只有一篇拿它当回归 pin）；推荐 L0–L4 阶梯，前四阶默认做、轨迹夹具按触发条件启用](./21_recorded-session-snapshots/answer.md) |
 
 ## 引用规范
 

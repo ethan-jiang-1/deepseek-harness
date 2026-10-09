@@ -54,22 +54,23 @@
 |---|---|
 | `dsh-llm-replay` 是 function 插件形态 | `packages/test-support/llm-replay/src/index.ts:1125`（`name`）、`:1126`（`inject`）、`:1129`（`Config`）、`:1192`（`apply`） |
 | `file` 必填，来自 Config 或 `$DSH_SNAPSHOT_FILE` | 同文件:1193–1195 |
-| `overrideFile` / `childFiles` / `providers` / `paceMs` | 同文件:1196–1199；`packages/test-support/llm-replay/README.md` 的挂载表 |
+| `overrideFile` / `childFiles` / `providers` / `paceMs` | 字段声明 `packages/test-support/llm-replay/src/index.ts:1132–1143`，env 接线 `:1198–1207`；`packages/test-support/llm-replay/README.md` 的挂载表 |
 | 夹具可以 complete 或 projected，但**不能混** | `packages/test-support/llm-replay/src/index.ts:200`、`:259–262` |
 | `--patch` 是叠加在 profile 层之后的可重复 overlay | `apps/cli/src/args.ts:170`（选项定义）、`:73`（可重复语义） |
 | 主仓从夹具推导任务、不另写 `input.json` | `snapshots/AGENTS.md:7` |
 | `assertConsumed()` 把静默少跑变成诊断 | `packages/test-support/llm-replay/src/index.ts:1107`；只在 `installLlmReplay` 上暴露，Cordis 插件形态拿不到 |
 | 并发子代理会非确定地绑脚本（已知限制） | `packages/test-support/llm-replay/README.md` 的 Known Limitations 一节 |
-| `recording: live \| authored` 的区分 | `snapshots/AGENTS.md:7`；`packages/test-support/session-snapshot/src/suite.ts:1307`（authored 场景不被 record 覆盖） |
+| `recording: live \| authored` 的区分 | 类型 `packages/test-support/session-snapshot/src/manifest.ts:10`；`authored` 不被 record 覆盖 `packages/test-support/session-snapshot/src/suite.ts:1307` |
 | 会话日志默认是 zstd 压缩，回放器读不了 | `packages/session/session-persistence-jsonl/README.md:48`（默认 `'zstd'`）；`packages/test-support/llm-replay/src/index.ts:773`（裸 `readFileSync` + 逐行 JSON） |
 | 一个持久化 root 只允许一种编码 | `packages/session/session-persistence-jsonl/README.md:104` |
 | 主仓怎么把压缩关掉 | `snapshots/acp/escalation-approved/cordis.yml:29–32` |
 | 夹具 header 必须带显式整数 `version` | 回放器的 strict restore（`packages/test-support/llm-replay/src/index.ts:239–245`）；无版本号报 `Session format version must be a non-negative safe integer` |
 | 包版本错配在 import 时即失败 | `packages/test-support/llm-replay/src/index.ts:42`（catalog 与 writer 版本一致性断言） |
 | 装回放器的官方途径 | `apps/cli/src/args.ts:188` 的 `dsh plugin` 子命令（帮助文本示例：`dsh plugin --profile tui add <package>`） |
-| 零配置取明文轨迹 | `packages/session-query/session-log-export/README.md:28`（`/export` / 「Download session log」导出 canonical JSONL 的 zip，带完整包络，可直接回放） |
+| 零配置取明文轨迹 | `packages/session-query/session-log-export/README.md:28`（`/export` / 「Download session log」导出 canonical JSONL 的 zip）；明文由持久化层解码后重新序列化保证，`packages/session-query/session-log-export/src/archive.ts:148`、`:165` |
+| overlay 的 `config:` 是整键替换而不是深合并 | `vendor/include/src/index.ts:120–123`；`name:` 在 patch 里可选（`:115–118`） |
 
-## 四、什么搬不出去（[04](./04-what-does-not-transplant.md)）
+## 四、值多少与代价（[04](./04-what-its-worth.md)）
 
 | 结论 | 出处 |
 |---|---|
@@ -113,7 +114,8 @@
 | 失败诊断：`script exhausted` / `fixture not fully consumed` | `packages/test-support/llm-replay/src/index.ts:1078`、`:1119` |
 | 真实样例：pre-2xx 抛（HTTP 401） | `snapshots/session/error-finish/replay.override.json`；对应夹具 `snapshots/session/error-finish/session.jsonl:14` |
 | 真实样例：挂起 + 外部取消 | `snapshots/acp/cancel/replay.override.json`、`snapshots/acp/cancel/input.json` |
-| 真实样例：注入多轮 | `snapshots/sdk/subagent-activation-limit/replay.override.json` |
+| 真实样例：`{patches:[…]}` 形态 | `snapshots/web/{file-upload-round,goal-multi-turn-actions,lifecycle-chrome}/replay.override.json`（都只打 `chunks` 补丁） |
+| 只有单元测试、没有提交在案的样例：post-2xx 抛（`accepted: true`）与「注入瞬时失败再重试」 | `packages/test-support/llm-replay/tests/llm-replay.spec.ts:1559`；`:1239`、`:1247` |
 | 真实样例：整脚本替换 + 独立 workspace oracle | `snapshots/session/background-confinement-failure/replay.override.json`、`workspace.expected/confinement-audit.json` |
 | 真实样例：取消时排队中的兄弟调用不得派发 | `snapshots/acp/cancel-tool-calls/`（`workspace.expected/` 里**没有** `skipped.txt` 就是断言） |
 | 案例走查：畸形历史工具参数仍须发出第二轮请求 | `snapshots/session/deepseek-messages-invalid-tool-history/session.v3.jsonl`；修复提交 `1f030b3c1c5aa7164a42f483075c80fe29559f41` |
@@ -149,8 +151,7 @@ for d in session sdk acp web; do find $d -name snapshot.yml | wc -l; done  # 122
 
 ## 证据薄弱处
 
-- **浅克隆。** 本仓库是浅克隆（`git rev-parse --is-shallow-repository` 为 true，最早提交 2026-07-30），2026-07-30 之前的提交无法核对。早期决策只能引用 Agent Note 与文档，不能回到当时的 commit。
-- **创建顶层 `snapshots/` 树的提交**（`caf386f59c`，2026-08-24）**没有正文**，没有 commit message 解释语料设计；理由只存在于同日的 Agent Note。
+- **浅克隆。** 本仓库是浅克隆（`git rev-parse --is-shallow-repository` 为 true），`.git/shallow` 里有 158 个边界提交，边界落在 2026-07-30 到 8 月下旬之间。边界之外的历史无法核对，早期决策只能引用 Agent Note 与文档。**推论**：任何「某提交创建了某个目录」的说法在这个克隆里都不可判定——`git show --stat` 会把边界提交与空树相比，显示出几百个「新增」文件。
 - **成本是设计约束而非实测。** 全仓只有一句「record spends real API quota per scenario」（`vitest.snapshot.config.ts:63`），没有录制耗时或花费的量化数据；`docs/testing.md:25` 还明确说自跳「不是成本信号」。
 - **「真模型测试不确定」这句话本身没有被量化。** 它是断言（`.agents/notes/implemented/testing/2026-06-19-acp-snapshot-tests.md:11`，以及 Web 车道引用 open-webui 删掉整套套件的先例），本仓库没有对应的 flake 统计或失败率数据。
 - **`snapshots/web/` 大多不在 `test:snapshot` 车道里。** 它们由 `test:web` 的 `apps/web/tests/*.e2e.ts` 驱动，只有四个 `.snapshot.ts` 适配器进快照车道（`vitest.snapshot.config.ts:55`）。本文引用 `snapshots/web/` 的场景时指的是语料形态，不是「它跑在 `test:snapshot` 里」。
