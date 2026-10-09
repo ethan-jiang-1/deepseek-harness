@@ -42,6 +42,8 @@ your-plugin-repo/
     ├── loader-composition.spec.ts      # L3
     └── trajectory/                     # L4：命中触发条件才建
         ├── README.md                   # 每条轨迹：来源 / 触发什么 / 防什么 / 怎么重录
+        ├── record.patch.yml            # 录制层 overlay：compression: none（见 03）
+        ├── replay.patch.yml            # 回放层 overlay：关真 provider + 挂 llm-replay（见 03）
         ├── record.ts                   # 录制入口（要 key，人工跑，不进 CI）
         ├── replay.e2e.ts               # 无 key 回放 + 断言（进 CI）
         └── fixtures/
