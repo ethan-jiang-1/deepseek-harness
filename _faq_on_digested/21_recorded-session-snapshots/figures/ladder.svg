@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 780" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
   <title>插件仓的证据阶梯：L0–L3 默认都做，L4 按触发条件启用</title>
-  <desc>上半是 L4 的四条触发条件：改了模型可见面（工具描述、系统提示词注入、工具 schema、投影事件）；修了一个只在真模型流下出现的 bug；bug 属于日志重建不出来的失败（提供方抛错、取消、挂起、注入重试）；正在跟 DSH 版本升级、想确认插件行为没漂。命中任意一条才建，不建的判据同样重要：实现细节重构、纯样式、只影响内部 API 的改动，以及涉及并发子代理委派的场景。下半是一段从左到右逐级抬高的阶梯：L0 导出形态守卫、L1 行为 spec、L2 HMR-safety、L3 REAL composition 四阶默认都做，L4 轨迹夹具按需启用、贵在维护；每阶标注它证明什么。底部一条说明六个不要做：不要复刻 snapshot.yml 与 corpus policy 与四面分工、不要依赖 dsh-session-snapshot、不要手写模型 chunk 当唯一真相、不要把用户日志直接提交、不要只有轨迹没有语义断言、不要指望它替代 with-key e2e。一句话记法：默认不做 L4，命中触发条件才做，做了就必须配独立断言。</desc>
+  <desc>上半是 L4 的五条触发条件：改了模型可见面（工具描述、系统提示词注入、工具 schema、投影事件）；修了一个只在真模型流下出现的 bug；bug 属于日志重建不出来的失败（提供方抛错、取消、挂起、注入重试）；正在跟 DSH 版本升级、想确认插件行为没漂；模型可见面主要是 UI 渲染（toolview、面板、状态页签），此时比会话回放更贴的是渲染期望。命中任意一条才建，不建的判据同样重要：实现细节重构、纯样式、只影响内部 API 的改动，以及涉及并发子代理委派的场景。下半是一段从左到右逐级抬高的阶梯：L0 导出形态守卫、L1 行为 spec、L2 HMR-safety、L3 REAL composition 四阶默认都做，L4 行为回归证据面（会话回放或渲染期望）按需启用、贵在维护；每阶标注它证明什么。底部一条说明六个不要做：不要复刻 snapshot.yml 与 corpus policy 与四面分工、不要依赖 dsh-session-snapshot、不要手写模型 chunk 当唯一真相、不要把用户日志直接提交、不要只有轨迹没有语义断言、不要指望它替代 with-key e2e。一句话记法：默认不做 L4，命中触发条件才做，做了就必须配独立断言。</desc>
   <defs>
     <marker id="ld-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#b45309"/>
     </marker>
   </defs>
 
-  <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
+  <rect width="1200" height="780" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">插件仓的证据阶梯</text>
   <text x="600" y="58" text-anchor="middle" fill="#64748b">默认不做 L4；命中触发条件才做 —— 因为它贵在维护，不贵在建</text>
 
-  <rect x="40" y="78" width="1120" height="156" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <rect x="40" y="78" width="1120" height="234" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
   <text x="60" y="104" font-size="13" font-weight="700" fill="#92400e">L4 的触发条件：命中任意一条才建</text>
 
   <rect x="60" y="116" width="530" height="48" rx="8" fill="#ffffff" stroke="#fbbf24"/>
@@ -30,51 +30,55 @@
   <text x="626" y="192" font-size="11" font-weight="700" fill="#92400e">④ 跟 DSH 升版，想确认行为没漂</text>
   <text x="626" y="211" fill="#334155" font-size="11">同一份轨迹在新版本上重放 = 世代模型的私人缩小版</text>
 
-  <text x="60" y="252" font-size="11" fill="#92400e">不建的判据同样重要：实现细节重构、纯样式、只影响内部 API 的改动，以及涉及并发子代理委派的场景（绑定按 first-call-order，不确定）。</text>
+  <rect x="60" y="228" width="1080" height="48" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="76" y="248" font-size="11" font-weight="700" fill="#92400e">⑤ 你的模型可见面主要是 UI 渲染（toolview / 面板 / 状态页签）</text>
+  <text x="76" y="267" fill="#334155" font-size="11">此时比会话回放更贴的是渲染期望：真渲染一次的 DOM 证据比对，同为「录一次、重放比对、diff 人工过目」</text>
 
-  <line x1="120" y1="286" x2="1120" y2="286" stroke="#cbd5e1" stroke-width="2"/>
-  <text x="60" y="290" font-size="11" font-weight="700" fill="#64748b">默认</text>
-  <text x="1150" y="290" text-anchor="end" font-size="11" font-weight="700" fill="#b45309">按需 →</text>
+  <text x="60" y="300" font-size="11" fill="#92400e">不建的判据同样重要：实现细节重构、纯样式、只影响内部 API 的改动，以及涉及并发子代理委派的场景（绑定按 first-call-order，不确定）。</text>
 
-  <rect x="40" y="430" width="208" height="68" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="144" y="454" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">L0 导出形态守卫</text>
-  <text x="144" y="474" text-anchor="middle" font-size="11" fill="#64748b">真 Loader 不丢命名空间</text>
-  <text x="144" y="490" text-anchor="middle" font-size="11" fill="#64748b">一行断言挡过最贵的事故</text>
+  <line x1="120" y1="364" x2="1120" y2="364" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="60" y="368" font-size="11" font-weight="700" fill="#64748b">默认</text>
+  <text x="1150" y="368" text-anchor="end" font-size="11" font-weight="700" fill="#b45309">按需 →</text>
 
-  <rect x="264" y="392" width="208" height="68" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="368" y="416" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">L1 行为 spec</text>
-  <text x="368" y="436" text-anchor="middle" font-size="11" fill="#64748b">挂真依赖，只假最外层包装</text>
-  <text x="368" y="452" text-anchor="middle" font-size="11" fill="#64748b">从注册后的真入口调</text>
+  <rect x="40" y="508" width="208" height="68" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="144" y="532" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">L0 导出形态守卫</text>
+  <text x="144" y="552" text-anchor="middle" font-size="11" fill="#64748b">真 Loader 不丢命名空间</text>
+  <text x="144" y="568" text-anchor="middle" font-size="11" fill="#64748b">一行断言挡过最贵的事故</text>
 
-  <rect x="488" y="354" width="208" height="68" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="592" y="378" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">L2 HMR-safety</text>
-  <text x="592" y="398" text-anchor="middle" font-size="11" fill="#64748b">dispose 贡献 fiber</text>
-  <text x="592" y="414" text-anchor="middle" font-size="11" fill="#64748b">断言贡献消失</text>
+  <rect x="264" y="470" width="208" height="68" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="368" y="494" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">L1 行为 spec</text>
+  <text x="368" y="514" text-anchor="middle" font-size="11" fill="#64748b">挂真依赖，只假最外层包装</text>
+  <text x="368" y="530" text-anchor="middle" font-size="11" fill="#64748b">从注册后的真入口调</text>
 
-  <rect x="712" y="316" width="208" height="68" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="816" y="340" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">L3 REAL composition</text>
-  <text x="816" y="360" text-anchor="middle" font-size="11" fill="#64748b">真 Loader 读真 cordis.yml</text>
-  <text x="816" y="376" text-anchor="middle" font-size="11" fill="#64748b">断言 Config 的「两脸」</text>
+  <rect x="488" y="432" width="208" height="68" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="592" y="456" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">L2 HMR-safety</text>
+  <text x="592" y="476" text-anchor="middle" font-size="11" fill="#64748b">dispose 贡献 fiber</text>
+  <text x="592" y="492" text-anchor="middle" font-size="11" fill="#64748b">断言贡献消失</text>
 
-  <rect x="936" y="264" width="224" height="140" rx="8" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
-  <text x="1048" y="290" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">L4 轨迹夹具</text>
-  <text x="1048" y="312" text-anchor="middle" font-size="11" fill="#166534">tests/trajectory/ 或顶层 snapshots/</text>
-  <text x="1048" y="332" text-anchor="middle" font-size="11" fill="#334155">session.jsonl　+　可选</text>
-  <text x="1048" y="350" text-anchor="middle" font-size="11" fill="#334155">replay.override.json</text>
-  <text x="1048" y="368" text-anchor="middle" font-size="11" fill="#334155">world.expected.json</text>
-  <text x="1048" y="392" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">贵在维护，不在建</text>
+  <rect x="712" y="394" width="208" height="68" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="816" y="418" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">L3 REAL composition</text>
+  <text x="816" y="438" text-anchor="middle" font-size="11" fill="#64748b">真 Loader 读真 cordis.yml</text>
+  <text x="816" y="454" text-anchor="middle" font-size="11" fill="#64748b">断言 Config 的「两脸」</text>
 
-  <line x1="248" y1="468" x2="264" y2="426" stroke="#94a3b8" stroke-width="1"/>
-  <line x1="472" y1="430" x2="488" y2="388" stroke="#94a3b8" stroke-width="1"/>
-  <line x1="696" y1="392" x2="712" y2="350" stroke="#94a3b8" stroke-width="1"/>
-  <line x1="920" y1="348" x2="936" y2="326" stroke="#4ade80" stroke-width="2" marker-end="url(#ld-a)"/>
+  <rect x="936" y="342" width="224" height="140" rx="8" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
+  <text x="1048" y="368" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">L4 行为回归证据面</text>
+  <text x="1048" y="390" text-anchor="middle" font-size="11" fill="#166534">tests/trajectory/ 或顶层 snapshots/</text>
+  <text x="1048" y="410" text-anchor="middle" font-size="11" fill="#334155">session.jsonl　+　可选</text>
+  <text x="1048" y="428" text-anchor="middle" font-size="11" fill="#334155">replay.override.json</text>
+  <text x="1048" y="446" text-anchor="middle" font-size="11" fill="#334155">world.expected.json</text>
+  <text x="1048" y="470" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">贵在维护，不在建</text>
 
-  <line x1="40" y1="522" x2="1160" y2="522" stroke="#cbd5e1" stroke-width="1"/>
-  <text x="600" y="544" text-anchor="middle" font-size="11" fill="#64748b">四阶默认都做的理由：它们各自挡过一类具体事故，而每一阶的成本都远低于它挡下的损失</text>
+  <line x1="248" y1="546" x2="264" y2="504" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="472" y1="508" x2="488" y2="466" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="696" y1="470" x2="712" y2="428" stroke="#94a3b8" stroke-width="1"/>
+  <line x1="920" y1="426" x2="936" y2="404" stroke="#4ade80" stroke-width="2" marker-end="url(#ld-a)"/>
 
-  <rect x="40" y="562" width="1120" height="94" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="60" y="586" font-size="12" font-weight="700" fill="#991b1b">六个不要做</text>
-  <text x="60" y="608" fill="#334155" font-size="11">① 不要复刻 snapshot.yml + corpus policy + 四面分工　② 不要依赖 dsh-session-snapshot（它 import vitest）　③ 不要手写模型 chunk 当唯一真相</text>
-  <text x="60" y="628" fill="#334155" font-size="11">④ 不要把用户日志直接提交进仓（用 authored 重写最小版本）　⑤ 不要只有轨迹、没有语义断言　⑥ 不要指望它替代 with-key e2e</text>
-  <text x="60" y="648" fill="#991b1b" font-size="11" font-weight="700">底线：独立 oracle 与语义断言不是可选项 —— 它们是一条轨迹值不值得存在的前提。</text>
+  <line x1="40" y1="600" x2="1160" y2="600" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="600" y="622" text-anchor="middle" font-size="11" fill="#64748b">四阶默认都做的理由：它们各自挡过一类具体事故，而每一阶的成本都远低于它挡下的损失</text>
+
+  <rect x="40" y="640" width="1120" height="94" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="60" y="664" font-size="12" font-weight="700" fill="#991b1b">六个不要做</text>
+  <text x="60" y="686" fill="#334155" font-size="11">① 不要复刻 snapshot.yml + corpus policy + 四面分工　② 不要依赖 dsh-session-snapshot（它 import vitest）　③ 不要手写模型 chunk 当唯一真相</text>
+  <text x="60" y="706" fill="#334155" font-size="11">④ 不要把用户日志直接提交进仓（用 authored 重写最小版本）　⑤ 不要只有轨迹、没有语义断言　⑥ 不要指望它替代 with-key e2e</text>
+  <text x="60" y="726" fill="#991b1b" font-size="11" font-weight="700">底线：独立 oracle 与语义断言不是可选项 —— 它们是一条轨迹值不值得存在的前提。</text>
 </svg>
