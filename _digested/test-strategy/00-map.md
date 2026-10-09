@@ -26,13 +26,12 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 | vitest 配置 | 8 份运行配置 + 1 份共享门面（`vitest.shared.ts`） |
 | 测试决策笔记 | **33 篇**（`.agents/notes/implemented/testing/`，另有 33 份 `.i18n.yaml` 配对）+ **4 篇** postmortem（`docs/postmortem/0001`-`0004`） |
 | 测试基建 | `packages/test-support/` 七件套 + `benchmarks/support/` + vitest setup 三件套 |
-| 测试基建 | `packages/test-support/` 七件套 + `benchmarks/support/` + vitest setup 三件套 |
 | 政策测试 | approval-policy（`node --test`）/ issue-management（plain `node`）直跑 `.mjs` |
 | Python 侧 | `python/sdk/tests/`（pytest via uv，无 tox）+ `scripts/snapshots/python-sdk-single-exe/` 7 场景 |
 | CI 门禁编排 | `scripts/run-gates.ts` 18 个聚合模式；PR 必需 job 9 个 + 1 个观察性 |
 | 插件面 | 95 个包以 named export 导出 `inject`、53 个 client `ui-*` 包、641 个 `.client.spec`——插件作者的测试策略见 [08-10](./08-plugin-testing.md) |
 
-## 结构（7 篇机制参考）
+## 结构（11 篇机制参考）
 
 | 问题 | 阅读入口 |
 |---|---|

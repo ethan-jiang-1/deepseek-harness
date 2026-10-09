@@ -27,6 +27,8 @@ DSH 仅单元测试就有 1893 个 spec 文件，而它的测试政策只有 55 
 | 局部契约 | `packages/test-support/*/README` 等各包 README | 该工具/该包的测试语义与已知限制（[07](./07-infrastructure.md)） |
 | vendored 修改 | `vendor/README.md` | 每条本地修改注记覆盖它的 DSH 包测试；同步流程要求重跑 `pnpm run test && pnpm run build` |
 
+![测试规矩的九个载体与加载时机：常备条令 / 按需加载 / 事故反面教材](./figures/rules-homes.svg)
+
 一句话职责表：**policy 定"什么算证据"；skill 定"怎么写得可靠、怎么选命令"；note 定"为什么这么定、放弃了什么"；cookbook 定"做某类变更时的步骤"；README/树规则定"这个工具/这棵树的具体规则"；vendor/README 定"每条 vendored 修改由哪些测试覆盖"；postmortem 定"哪类漏网之鱼催生了哪些护栏"；AGENTS 层定"每个会话必须记得的几行"。** `testing.md` 是枢纽：每个 tier 链到 owning note，每条规则链到 rationale；postmortem 0001 同时向上滋养 policy 层（with-key 冒烟主张、"test the real entry path"）与 `packages/AGENTS.md` 常驻层（plugin exports 形态、`ctx.get`）——事故教训被制度化成两层常驻规则。
 
 ## 九条教义逐条消化
