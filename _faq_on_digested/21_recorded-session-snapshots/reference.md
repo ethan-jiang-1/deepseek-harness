@@ -138,6 +138,23 @@
 | 渲染期望作为会话回放的姊妹形态：DOM 证据比对 + 自有 harness + 实测成本台账 + prove-it-red 记录 | `/Users/bowhead/ai_dsh_assitant/snapshots/web-face/blank-first-open/README.md` |
 | 两仓均为方案 A（pinned submodule）：`vendor/dsh` 钉在上游 | 两仓 `.gitmodules`（url = deepseek-ai/deepseek-harness） |
 
+## 八、check in 与增长的实测口径
+
+（[07](./07-check-in-or-not.md) 的全部数字，2026-10-09 实测。）
+
+| 事实 | 出处 / 命令 |
+|---|---|
+| 主仓 `snapshots/` tracked：1278 个文件、6.7MB（ls-tree 字节；`du` 会按 4KB 块虚高到 10MB） | `git ls-tree -r -l HEAD snapshots` |
+| 按扩展名：jsonl 4.1MB / json 1.7MB / md 0.6MB / yml 0.2MB | `git ls-files -z snapshots \| xargs -0 ls -l` 按扩展名求和 |
+| 最大单文件 77KB：`snapshots/session/dynamic-tool-updates/tool-schemas.expected.json` | 同上排序 |
+| 折算 ~32KB/场景（6.7MB / 210） | 上两行相除 |
+| 增长轨迹（tracked 字节）：08-31 = 3.3MB / 649 文件；09-15 = 5.7MB / 1066；09-30 = 6.7MB / 1278 | `git ls-tree -r -l <ref> snapshots` 于各月末提交 |
+| 近月触碰 snapshots 的提交数：2026-08 = 185，2026-09 = 735（含整树同步与批量刷新），2026-10 上旬 = 0 | `git log --oneline --since -- snapshots/` |
+| 主仓 `.gitignore:14` 的 `.sessions/`——运行时原始日志不进 git | `.gitignore` |
+| assistant 的 `.gitignore:7` 注释「snapshots/ 录制会话与预期（证据，不是产物）」；PNG 只作人工审阅副页不进 git | `/Users/bowhead/ai_dsh_assitant/.gitignore`；`snapshots/web-face/blank-first-open/README.md` |
+| 两仓都把 snapshots 提交进 git：assistant 9 个文件；deep_research 7 个文件（含 127KB 的 lead 夹具） | `git -C <repo> ls-files snapshots` |
+| deep_research 夹具带完整工具 schema 未 token 化（127KB）——插件仓不做 schema sidecar 时的真实体积上限样本 | `/Users/bowhead/ai_dsh_deep_research/snapshots/replay/research-face/session.v4.jsonl` |
+
 ## npm 实测口径
 
 2026-10-08 用 `npm view <pkg> version dist-tags`（备用 cache 目录）实测：
