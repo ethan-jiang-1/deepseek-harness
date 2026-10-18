@@ -1,6 +1,6 @@
 # `_dsh_plugin_agent_ready_development` 语料证据与维护说明
 
-> 复核日期：2026-10-07。现行源码与文档基线：release tag `dsh-v0.2.0-rc.2`。本页记录核验范围、结构约束和重审路径，不复制教学正文。固定标签只标明核验版本，不代表永久兼容承诺。
+> 复核日期：2026-10-18。现行源码与文档基线：release tag `dsh-v0.2.1-rc.2`。本页记录核验范围、结构约束和重审路径，不复制教学正文。固定标签只标明核验版本，不代表永久兼容承诺。
 
 当前引用政策：现行机制链接固定到上述 release tag；历史证据用 release tag、PR、日期与准确提交标题定位，不在维护文件中写 Git commit 标识。0013 轮核对了原本引用的本地同步树与真正 release tag：唯一差异是配对清单中的研究语料排除项。其余引用来源内容等价；配对清单仍证明 DSH 主仓的发现与排除机制，但本地新增排除项不是发布版本事实。语料自身不继承 DSH 主仓的配对制度。
 
@@ -10,9 +10,9 @@
 
 `_dsh_plugin_agent_ready_development/` 是以 DSH 固定版本一手来源为依据的三卷互补语料：`native-development-model/` 综合原生开发流程中的关系，`sdlc-reference/` 提供精确条件与例外，`repo-harness/` 解释仓库如何帮助 coding agent 参与。它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法；三卷均独立依据 DSH 源码、文档、规则、Skills、workflow 和 git 历史，不依赖其它研究语料。
 
-根 `README.md` 是独立语料的介绍、三卷定位与维护入口。`native-development-model/00-index.md` 说明 owner、证据、交付判断之间的关系，不增加额外阶段或产物；`sdlc-reference/` 按问题提供意图入口、Agent Note、Plan、检查、agent 契约证据、评审、批准、合并、发布与历史证据的精确参考；`repo-harness/` 说明 fresh agent 入口、知识归属、Skills、参与路径、可执行反馈、运行时查询、仓库分类学和插件作者入口。迁移到独立研究 FAQ 的历史案例不再作为本语料的前置卷。
+根落地页 `00-index.md` 是独立语料的介绍、三卷定位与维护入口。`native-development-model/00-index.md` 说明 owner、证据、交付判断之间的关系，不增加额外阶段或产物；`sdlc-reference/` 按问题提供意图入口、Agent Note、Plan、检查、agent 契约证据、评审、批准、合并、发布与历史证据的精确参考；`repo-harness/` 说明 fresh agent 入口、知识归属、Skills、参与路径、可执行反馈、运行时查询、仓库分类学和插件作者入口。迁移到独立研究 FAQ 的历史案例不再作为本语料的前置卷。
 
-每个目录都有 `README.md`。三个主题目录的 README 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 README 还标明每张 SVG 的正文 owner。
+每个目录都有落地页：卷目录用 `00-map.md`，其余目录用 `00-index.md`。三个主题目录的 `00-map.md` 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 `00-index.md` 还标明每张 SVG 的正文 owner。
 
 专题所需的教学上下文、图与维护说明都在本目录内；目录外引用只指向固定 release tag 的 DSH 源码、文档、规则、Skills 与 Agent Notes，不依赖其它研究语料。本页拥有语料的层级、证据范围、`.github/` 纳入原则、独立发行约束、图文分工与重审入口；这些是研究语料自身的维护信息，不写入或修改 DSH 的 Agent Notes。
 
@@ -24,17 +24,17 @@
 - Issue/PR templates、`issue-management/policy.mjs`、config 与 policy tests；
 - `issue-policy.yml`、`issue-lifecycle.yml`、`ci.yml`、real-provider e2e、docs/release workflow 的触发边界，以及 Dependabot config；
 - Plan subsystem、package README、implementation 和 coding preset；
-- 固定基线中 `.agents/skills/` 的 15 个 repository development Skills（其中 13 个以 `dsh-` 命名；0009 轮复核：0008 基数 14 个目录（12 个 `dsh-` 前缀）之上新增 `dsh-create-upgrade-guide`（对应根 `AGENTS.md` 新增的升级指南常设指令），且 `agent-experience/SKILL.md` 在 0.2.0 跨度内改为指向 `packages/preset/agent-preset/skills/agent-experience/SKILL.md` 的符号链接，内容本体移入 agent-preset 包），包括 decision corpus、docs/prose 和 delivery/review 三组；
+- 固定基线中 `.agents/skills/` 的 19 个 repository development Skills（其中 16 个以 `dsh-` 命名；0011 轮复核：0009 基数 15 个目录（13 个 `dsh-` 前缀）之上新增 `cordis-styling-nitpicking`、`dsh-error-handling`、`dsh-official-plugin-artwork`、`dsh-responsive-ui`，且 `agent-experience/SKILL.md` 仍是指向 `packages/preset/agent-preset/skills/agent-experience/SKILL.md` 的符号链接），包括 decision corpus、docs/prose、客户端界面与美术、错误处理和 delivery/review 五组；
 - `packages/skill/{skill,skill-filesystem,tool-skill}` 的 runtime Skill registry、provider discovery 与 model-facing loading；
 - `packages/extensions/tool-cordis`、`cordis-host-runner` 源码、生成 tool catalog 与 package trust stance；
 - `scripts/run-gates.ts`、testing policy 和相关 process Agent Notes；
 - Web capability seam 的四个历史 commit 与当前 Agent Note；
 - 2026-09-24 轮新增：`CONTRIBUTING.md`、`.github/review-ownership/**`（README、`approval-policy.json`、`check-approval.mjs`、`blame-ownership.mjs`、`blame-production.py`）、`scripts/release/**`、`native/system/docs/release.md`、`python/development.md` 的发布节、`apps/desktop/README.md` 的 Release versions 与 Windows EV signing 节、`docs/session-format-status.md`、`docs/persistence-changes/releases/`、`docs/postmortem/`，以及发布/预览/评审 workflows（`release`、`release-publish`、`release-vendor`、`release-vendor-publish`、`node-addon-system-release`、`python-release`、`docs-pages`、`build-preview-cloudflare`、`weighted-approval`、`weighted-approval-review-event`、`ci-master`、`sandbox`、`e2e`）；
 - 2026-09-24 轮新增：git 历史证据——22 个 `dsh-v*` tag 序列、相邻 tag 的 commit 区间、merge 与 squash 并存的落地形态、`rel/dsh-0.1.7-rc.1` → PR #5073 → tag `dsh-v0.1.7-rc.1` 所指 release commit 的发布样本。
-- 2026-09-24 深挖轮新增：`.agents/notes/AGENTS.md` 的 supersession check 常设指令、no-index Agent Note（`implemented/process/2026-07-19-remove-generated-agent-note-index.md`）、`.agents/notes/README.md` 的 “Alternatives considered — mandatory” 与 “Layout and naming” 两节；基线四类 Note 目录英文计数复核（implemented 972、archived 1279、rejected 28、proposed 39，六个 class 目录齐全；0009 独立反查勘误：前三数实为 en+zh 合计口径，rc.1 英文实测 486、639、14，proposed 39 为英文口径无误）、AGENTS.md 总数 22、`.agents/skills/` 14 个目录（12 个 `dsh-` 前缀）复核；语料全部 92 个唯一钉版路径、28 个锚点、29 条带出处引文经脚本 + 人工逐字回对。
+- 2026-09-24 深挖轮新增：`.agents/notes/AGENTS.md` 的 supersession check 常设指令、no-index Agent Note（`archived/process/2026-07-19-remove-generated-agent-note-index.md`，0011 轮复核该 triplet 已归档）、`.agents/notes/README.md` 的 “Alternatives considered — mandatory” 与 “Layout and naming” 两节；基线四类 Note 目录英文计数复核（implemented 972、archived 1279、rejected 28、proposed 39，六个 class 目录齐全；0009 独立反查勘误：前三数实为 en+zh 合计口径，rc.1 英文实测 486、639、14，proposed 39 为英文口径无误）、AGENTS.md 总数 22、`.agents/skills/` 14 个目录（12 个 `dsh-` 前缀）复核；语料全部 92 个唯一钉版路径、28 个锚点、29 条带出处引文经脚本 + 人工逐字回对。
 - 2026-09-24 第四段新增：`packages/README.md`（分组表、release expectations、依赖方向）、`packages/AGENTS.md`、`snapshots/AGENTS.md`（session fixture 放置与世代规则）、`vendor/README.md`（vendoring manifest 与本地修改日志）、`scripts/doc-budgets.manifest.json` 与 `scripts/translation-pairing.manifest.json`、`docs/cordis-tutorial/index.md` 与 `07-into-the-harness.md`、`docs/user/develop/{basic,framework,practice}/**`（basic 的 index/config/tool/publish 与 framework、practice 各页开篇）、根 `README.md` 的 Run 节、`.github/AGENTS.md`、`docs/subsystems/README.md`；`package.json` 的 `gen:*`/`verify:*-catalog` 命令族清点。
 
-【0008 复核：本条挂账已关闭】上游已把该 note 整篇重写为 "Cordis runtime inspection and runner isolation"，与两工具现状对齐；工具面在 0.1.7 线收敛为 `cordis_inspect_list`/`cordis_inspect_query` 两只读工具，持久安装走 plugin_manager。下文为 0007 时的原文记录：implemented Agent Note [`2026-07-08-self-referential-cordis-toolset`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 仍用 `cordis_inspect` / `cordis_mount` / `cordis_unmount` 三个工具的旧词汇描述动态 Plugin，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/extensions/tool-cordis/src/index.ts)、生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 与 package README 在 0.1.5 线曾列出七个工具。`repo-harness/06` 已按 0.1.7 线改述为两工具。
+【0008 复核：本条挂账已关闭】上游已把该 note 整篇重写为 "Cordis runtime inspection and runner isolation"，与两工具现状对齐；工具面在 0.1.7 线收敛为 `cordis_inspect_list`/`cordis_inspect_query` 两只读工具，持久安装走 plugin_manager。下文为 0007 时的原文记录：implemented Agent Note [`2026-07-08-self-referential-cordis-toolset`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md) 仍用 `cordis_inspect` / `cordis_mount` / `cordis_unmount` 三个工具的旧词汇描述动态 Plugin，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/packages/extensions/tool-cordis/src/index.ts)、生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 与 package README 在 0.1.5 线曾列出七个工具。`repo-harness/06` 已按 0.1.7 线改述为两工具。
 
 ## 3. 结构与叙事约束
 
@@ -52,7 +52,7 @@
 12. Development Harness 从一个 fresh-agent 场景起步，再引入 legibility、procedural memory、paved road 与 inspectability；抽象术语不能成为新读者的前置条件。
 13. `.agents/skills/` 的 repository development Skills 与 `packages/skill/` 的 runtime Skill capability 分开说明；相似的按需知识思想不能被误写成共享同一 registry 或调用机制。
 14. Skills 拥有情境化工作流程，`AGENTS.md` 拥有 standing orders，repository gates 拥有确定性检查，`.github/` workflows 拥有远端调度，Agent Notes 拥有决定理由，current docs/source 拥有当前行为。
-15. 每个目录必须有 `README.md`；README 负责目录导航，不复制 `00-index.md` 的教学叙事或本页的维护细节。
+15. 每个目录必须有落地页（`00-index.md` 或 `00-map.md`，不用 `README.md`——仓库的 bilingual pairing 门禁把任意 `README.md` 当产品文档语料）；落地页负责目录导航，不复制 `00-index.md` 的教学叙事或本页的维护细节。
 
 ## 4. 图示
 
@@ -71,6 +71,7 @@
 - 2026-09-24 轮新增触发路径：`CONTRIBUTING.md`、`.github/review-ownership/**`、`scripts/release/**`、`.github/workflows/{release,release-publish,release-vendor,release-vendor-publish,node-addon-system-release,python-release,docs-pages,build-preview-cloudflare,weighted-approval,weighted-approval-review-event,ci-master,sandbox,e2e}.yml`、`apps/desktop/README.md`、`native/system/docs/release.md`、`docs/session-format-status.md`、`docs/persistence-changes/releases/**`、`.agents/notes/implemented/process/2026-08-10-npm-release-sequences.md` 与同目录的 approval 系列笔记；
 - `scripts/run-gates.ts` 与专题引用的 generated catalog owners；
 - 2026-09-24 深挖轮新增触发路径：`packages/README.md`、`packages/AGENTS.md`、`snapshots/AGENTS.md`、`vendor/README.md`、`scripts/{doc-budgets,translation-pairing}.manifest.json`、`docs/cordis-tutorial/**`、`docs/user/develop/**`、根 `README.md` 的 Run 节；
+- 2026-10-18 轮新增触发路径：`docs/defensive-patterns/**`、`docs/upgrade-guide/**`、`packages/experimental/README.md`、`docs/cli-help.md`、`scripts/gen-cli-help.ts`、`scripts/product-package-policy.ts`、`apps/desktop/windows-signing/**`；
 - Web seam Agent Note 或专题引用的四个历史 commit 被重新解释时。
 
 Release-only workflow 的内部 job 变化不自动触发整篇复核；只有它改变专题描述的触发边界、required evidence 或 daily PR flow 时才进入范围。
@@ -233,3 +234,33 @@ re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、
 ## 2026-09-30 的 0010 轮（变更账本＋无引文钉专项）
 
 同基线换角轮（目标 `goal-9417a210`；方法与全语料修复清单记于同轮的另一份语料账本，此处只留本语料结论）。本语料修复：`sdlc-reference/11` 的 release 间隔回归 **19–41 分钟**（重测 23m48s/40m34s/19m27s，0009 轮的「24–41」与「19 来自 release-commit 端点」归因均不可复现）与本页 `:120` 同步。核对后未改动：PR CI job 结构（`ci.yml` 定义 11 个 job＝needs 9＋不进聚合的 windows-coverage＋聚合 all-checks-passed，与 `sdlc-tutorial/03:65-67`、`sdlc-reference/04:53-62` 逐字对账）；run-gates 18 mode 与 `run-gates.ts:19-37` 行钉；skills 15 目录/13 dsh- 前缀/9 个以 Use 开头（agent-experience 为 symlink）；plugin-manager 簇（OPTIONAL_BUNDLES 四包 `profile.ts:213-218`、Web 页一键开关、plugin-manager 行 Config 8 字段）；`repo-harness/03` 等无引文钉抽查全中。落点决策：0009 跨度新增的 `verify-upgrade-guides.ts`、`lane-test-budget.spec.ts`、`persistence-schema-snapshot.spec.ts` 三个文件按问题驱动口径均不追（语料零断言依赖；verify-upgrade-guides 已由 `repo-harness/03:33` 的 skill 落点覆盖，可选在 `sdlc-reference/11` 补一句指路，非义务）。方法论发现：无引文的行号区间钉（`path:N-M`）是 ref-sweep 盲区，本轮约 60 处漂移全靠人工实证重锚，后续每轮须保持承重钉抽样实证。
+
+## 2026-10-18 的 0.2.1-rc.2（`dsh-v0.2.1-rc.2`）re-pin：runtime invariant 退役与 0.2.1 线对齐
+
+本语料的固定基线从 `dsh-v0.2.0-rc.2` 推进到 `dsh-v0.2.1-rc.2`（跨度 1925 个 commit、8431 个文件）。本语料 118 个唯一目录外 DSH 引用路径（158 个唯一 URL、350 处文本出现）全部改钉；`verify.mjs` 的钉版正则、`repo-harness/00-index.md` 的基线声明、`sdlc-reference/12` 与 `sdlc-reference/figures/agent-contract-evidence.svg` 的基线文字同步。`_misc/_references/00-index.md` 按冻结政策只更新基线行（正文与外部文章不动）。
+
+钉版复核：118 个目标路径逐条 `git cat-file -e` 复核，106 条直接通过；12 条按新基线改写——10 个 `.agents/notes/implemented/<class>/<name>.md` 已随跨度归档，同名改钉 `.agents/notes/archived/<class>/<name>.md`（`2026-06-11-quality-gates`、`2026-07-05-uniform-agent-note-format`、`2026-07-08-self-referential-cordis-toolset`、`2026-07-19-remove-generated-agent-note-index`、`2026-09-03-semantic-issue-templates-and-policy`、`2026-09-06-master-only-platform-ci`、`2026-09-11-production-blame-approval-weight`、`2026-09-15-pr-approval-delegation`、`2026-09-16-author-approval-credit`、`2026-09-16-sandbox-same-mode`）；`docs/defensive-patterns.md` 从单页变为目录，改钉 `docs/defensive-patterns/README.md`；`packages/core/agent-loop/src/invariant.ts` 随机制退役删除，不是路径继任问题。47 个带 fragment 的钉版 URL 的锚点在 `dsh-v0.2.1-rc.2` 全部解析（含 1 个 `#L32` 行号锚）。
+
+机制改写：
+
+1. **运行时 invariant 机制整族退役**（权威：upgrade guide `docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`）。删除 `@deepseek-ai/dsh-invariants` 包、各包 `./invariant` 子路径与测试、`ctx.invariants` 服务、`verify-package-invariants` 与 `verify-built-package-invariants` 门禁、`sdk-minimal` 的五条 invariant 行，以及 `INVARIANT` 编码的 listener rethrow 路径；根 `AGENTS.md` 与 `packages/AGENTS.md` 的相关条令整条移除，新树 `/invariant` 路径数为 0。语料在 14 个正文页与 6 张图上改写或删除现行表述：`repo-harness/{00-index,01,02,03,04,05,07,08}`、`sdlc-reference/{00-index,04,06,12}`、`native-development-model/{00-index,02}`，图同步指 `figures/feedback-layers.svg`（删去第 5 层并重编号）、`participation-ladder.svg`、`fresh-agent-loop.svg`、`figures/evidence-routing.svg`、`change-control-map.svg`、`agent-contract-evidence.svg`。`repo-harness/05` 拥有退役口径与升级指南落点，`sdlc-reference/12` 的引文换成 `docs/architecture.md` 现行原文。
+
+2. **Skills 计数**：`.agents/skills/` 从 15 个目录（13 个 `dsh-` 前缀）变为 19 个（16 个），新增 `cordis-styling-nitpicking`、`dsh-error-handling`、`dsh-official-plugin-artwork`、`dsh-responsive-ui` 四个 Skill；`agent-experience/SKILL.md` 仍是指向 agent-preset 包的符号链接。`repo-harness/03` 的任务分组由四组改为五组，本页 §2 同步。
+
+3. **`.agents/notes/` 大批归档**：英文 Note（不含 `README.md`/`AGENTS.md`）中 implemented 由 526 篇降至 294 篇，archived 由 641 篇升至 924 篇。`sdlc-reference/01` 的“不设集中索引”引文在跨度内被上游改写，已换成 `.agents/notes/README.md` 现行原文，no-index Note 的落点改述为已归档的历史记录；proposed 英文提案由 39 篇增至 42 篇（`sdlc-reference/09`）。
+
+4. **`docs/AGENTS.md` tier 表**：新增 `defensive-patterns/` 行（review 执行的规则按 artifact 分页），生成 reference 行新增 `cli-help`；`repo-harness/06` 登记 `docs/cli-help.md` 这一新生成目录。`repo-harness/08` 的 “Release expectations” 引文整段换新（experimental 状态与发布、安装、可选交付无关；非 experimental runtime 包需产品用途或显式分类），并登记 `packages/experimental/README.md#status` 的 experimental / optional / official 三分。
+
+5. **包分组**：`packages/hooks/`、`packages/webhook/`、`packages/runtime-diagnostics/` 三组解散，`packages/experimental/` 收编全部可选包；按深度精确口径（`^packages/[^/]+/[^/]+/package\.json$`），包总数 316 → 342、组数 55 → 52、experimental 包 21 → 47。
+
+6. **根 `AGENTS.md`**：`pnpm run build` 拆成 `build:artifacts` + `build:check`（`sdlc-reference/04` 的改动面表同步）；新增 dsh-error-handling 与 official plugin artwork 两条条令；defensive patterns 入口改为 `docs/defensive-patterns/README.md`；Windows packaging/signing 入口改为 `apps/desktop/windows-signing/README.md`（`sdlc-reference/11` 两处改锚）。
+
+7. **tag 计数**：`dsh-v*` tag 从 25 个增到 32 个（新增 `dsh-v0.2.1-alpha.1`…`alpha.5`、`dsh-v0.2.1-rc.1`、`dsh-v0.2.1-rc.2`）；`sdlc-reference/11` 的「截至基线」计数同步。
+
+8. **落地页改名收尾**：本语料起落地页不再用 `README.md`（仓库 bilingual pairing 门禁把任意 `README.md` 当产品文档语料），卷目录用 `00-map.md`、其余目录用 `00-index.md`。本页 §1 与结构约束 #15、根 `00-index.md`、两个卷的 `00-map.md`、`native-development-model/figures/00-index.md` 的主入口与 `verify.test.mjs` 的负例文件路径同步改指；`verify.test.mjs` 9 个 case 全部通过。
+
+9. **`_misc` 例证基线**：`_misc/_eval_harness/` 的 DSH 例证从本地同步提交 `580646c14f…` 推进到 `dsh-v0.2.1-rc.2` 的 release commit，随改的两处读数为例证卡的字数上限（≤1,960 → ≤2,080 词）与工作流计数（20 → 25）；`_misc/_references/00-index.md` 只更新基线行。
+
+核对后未改动的部分：`docs/persistence-changes/releases/` 仍是 26 个 release 页；AGENTS.md 总数仍是 22（根加 21 个子树；`snapshots/**/workspace/` 内的同名 fixture 不计）；`run-gates.ts` 仍是 18 个 mode；`SESSION_FORMAT_VERSION` 仍是 4；vendor cordis 仍是 `4.0.0-rc.7`；`tool-cordis` 仍只注册 `cordis_inspect_list`/`cordis_inspect_query` 两个只读工具；`snapshots/AGENTS.md`、`.github/` policy、`scripts/release/**`、review-ownership 与各发布 lane 的机制陈述逐条复核后仍成立。
+
+验证：`node _dsh_plugin_agent_ready_development/verify.mjs` 通过（35 Markdown、2 scripts、26 SVG）；`node _dsh_plugin_agent_ready_development/verify.test.mjs` 通过（1 个接受 case、8 个拒绝 case）；`node _misc/verify.mjs` 通过；外部引用反查对本语料报 0 处路径失效、0 处行号越界、0 处引文漂移。repository-level `doc-sync` 未重跑，2026-08-24 条目记录的目录外阻断仍然适用。

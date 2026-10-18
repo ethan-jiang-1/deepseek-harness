@@ -42,18 +42,18 @@ const valid = run(fixture())
 assert.equal(valid.status, 0, valid.output)
 console.log('PASS accept: copied corpus runs outside its original repository and cwd')
 
-const currentUrl = 'https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.0-rc.2'
-for (const ref of ['main', 'dsh-v0.2.0-rc.1', 'a'.repeat(40), 'dsh-v0.2.0-rc.2-extra']) {
-  reject(`unpinned or wrong reference ${ref}`, 'README.md',
-    source => `${source}\n[invalid](${currentUrl.replace('dsh-v0.2.0-rc.2', ref)})\n`,
+const currentUrl = 'https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.1-rc.2'
+for (const ref of ['main', 'dsh-v0.2.1-rc.1', 'a'.repeat(40), 'dsh-v0.2.1-rc.2-extra']) {
+  reject(`unpinned or wrong reference ${ref}`, '00-index.md',
+    source => `${source}\n[invalid](${currentUrl.replace('dsh-v0.2.1-rc.2', ref)})\n`,
     /external link must target/)
 }
 reject('cross-volume SVG ownership', 'native-development-model/00-index.md',
   source => `${source}\n![invalid](../repo-harness/figures/two-harnesses.svg)\n`,
   /SVG must come from this Markdown subtree/)
-reject('escaping relative link', 'README.md',
+reject('escaping relative link', '00-index.md',
   source => `${source}\n[invalid](../outside.md)\n`, /relative link escapes the corpus/)
-reject('missing local anchor', 'README.md',
+reject('missing local anchor', '00-index.md',
   source => `${source}\n[invalid](#nonexistent-verifier-test-anchor)\n`, /Markdown fragment does not exist/)
-reject('missing trailing newline', 'README.md', source => source.trimEnd(), /must end with one trailing newline/)
+reject('missing trailing newline', '00-index.md', source => source.trimEnd(), /must end with one trailing newline/)
 console.log(`Verifier acceptance tests passed; ${caseCount} isolated copies retained at ${testRoot}.`)

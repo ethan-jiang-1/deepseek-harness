@@ -46,7 +46,7 @@
 
   <rect x="570" y="323" width="196" height="104" rx="7" fill="#e8f5ed" stroke="#58a36d"/>
   <text x="668" y="351" text-anchor="middle" font-size="13" font-weight="700" fill="#245d35">行为证据</text>
-  <text x="668" y="376" text-anchor="middle" fill="#326c42">tests · snapshots · invariants</text>
+  <text x="668" y="376" text-anchor="middle" fill="#326c42">tests · snapshots · real composition</text>
   <text x="668" y="398" text-anchor="middle" font-size="11" fill="#4f775a">正例、负例与真实入口</text>
 
   <rect x="787" y="323" width="196" height="104" rx="7" fill="#f7ecda" stroke="#c68b2c"/>

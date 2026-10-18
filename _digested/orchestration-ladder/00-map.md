@@ -1,6 +1,6 @@
 # Work Orchestration Primitives Ladder · 工作编排原语阶梯
 
-专题基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）。最近一次引用复核在 `8f761b5a6e`（本专题自身的文档 commit）运行；该 commit 与基线之间的 `packages/` 树逐字相同，因此下文 path:line 与基线一致，不存在两套行号。**专题 HEAD 指产品源码 commit，不是文档 commit**；若同步到新的产品 commit，应重新运行引用复核并重写漂移行号。
+专题基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）。本页与全部结论页的 path:line 均按该产品源码 commit 复核；上一基线是 `639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）。**专题 HEAD 指产品源码 commit，不是文档 commit**；若再同步到新的产品 commit，应重新运行引用复核并重写漂移行号。
 
 ## 一句话
 
@@ -43,11 +43,11 @@ ruofei 说「这个其实是一个 agent harness 今后的一个趋势，我们�
 | plan mode | `packages/plan/plan-mode/` | 计划先行：先出方案、用户批准后执行 | 同上下文 | 单 turn |
 | `subagent` / `subagent_fork` | `packages/subagent/tool-subagent/` | 有界委派：一两个自包含任务交给独立子代理 | 独立子上下文 | 一次性（one-shot / continuable） |
 | `workflow` | `packages/workflow/tool-workflow/` | 模型写 JS 编排脚本扇出子代理（`agent`/`pipeline`/`parallel`/`phase`） | 沙箱 PTC 进程 | 前台等待 / 后台 job |
-| `ralph` | `packages/workflow/tool-ralph/` | 不可变目标的 fresh-agent 前台循环，轮间只传有界报告 | 每轮全新子代理 | 前台多轮 |
+| `ralph` | `packages/experimental/tool-ralph/` | 不可变目标的 fresh-agent 前台循环，轮间只传有界报告 | 每轮全新子代理 | 前台多轮 |
 | `goal`（`create_goal`/`update_goal`/`get_goal`） | `packages/goal/tool-goal/` | 跨轮次长目标 + idle 自动续跑（Goal Round Driver） | 同会话跨轮 | 跨自动续轮 |
 | `jobs`（后台化 + `job_output`/`job_kill`/`job_list`） | `packages/jobs/tool-jobs/` | 任意工作后台化，随时收结果、可取消 | 后台 job | 异步 |
-| schedule | `packages/schedule/schedule/` | 定时跟进（optional bundle，随装随用） | — | 定时触发 |
-| agent-teams * | `packages/experimental/agent-team/` 服务；`packages/experimental/tool-agent-team/` 工具；`packages/experimental/agent-team-profile/` 组合；`packages/experimental/ui-agent-team/` UI | Lead + 具名队友 + 持久消息 + 共享任务板 | 独立持久会话 | 持续协作 |
+| schedule | `packages/schedule/schedule/` + `packages/schedule/tool-schedule/` | 定时跟进（直接进 Web 组合） | — | 定时触发 |
+| agent-teams * | `packages/experimental/agent-team/` 服务；`packages/experimental/tool-agent-team/` 工具；`packages/experimental/agent-team-profile/` 组合；`packages/experimental/client-ui-agent-team/` UI | Lead + 具名队友 + 持久消息 + 共享任务板 | 独立持久会话 | 持续协作 |
 
 \* experimental：无稳定合同承诺，随时可能改名或消失。
 
@@ -57,16 +57,18 @@ ruofei 说「这个其实是一个 agent harness 今后的一个趋势，我们�
 
 | 原语 | 默认状态 | 出处 |
 |------|---------|------|
-| `todo_write` | base 挂载，`allowParallelInProgress: true` | `packages/bundle/base/cordis.patch.yml:430`-`433` |
-| plan mode | base 挂载（plan-mode 行含 plan-mode 行为段注入） | `packages/bundle/base/cordis.patch.yml:322` |
-| `subagent` | base 挂载：`provider: spawn`、`backgroundMode: continuable` | `packages/bundle/base/cordis.patch.yml:370`-`375` |
-| `subagent_fork` | base 挂载：`provider: fork`、`backgroundMode: one-shot`；fork 不选模型，让 provider/model 与父级一致、继承历史仍符合 KV Cache 前缀复用条件（注释明说） | `packages/bundle/base/cordis.patch.yml:377`-`388` |
-| `workflow` | base 挂载，执行链 `workflow-ptc`（`provider: spawn`）→ `ptc-runtime-node` | `packages/bundle/base/cordis.patch.yml:390`-`398` |
-| `ralph` | base 挂载但 **`disabled: true`**（完成是 worker 自报而非独立评估，默认关；overlay 行可恢复，`subagentProvider: spawn`、`maxRounds: 64`） | `packages/bundle/base/cordis.patch.yml:441`-`452` |
-| goal 三件套 + `/goal` | base 挂载（`goal`、`goal-round-driver`、`command-goal`、`tool-goal`） | `packages/bundle/base/cordis.patch.yml:313`-`320`、`436` |
-| jobs | base 挂载（`jobs-local` 服务 + `tool-jobs` 工具） | `packages/bundle/base/cordis.patch.yml:88`、`275` |
-| schedule | 不在 base：experimental optional bundle | `packages/boot/app-boot/src/profile.ts:217` |
-| agent-teams / auto-review | 不在 base：experimental optional bundle（`OPTIONAL_BUNDLES` 四成员） | `packages/boot/app-boot/src/profile.ts:213`-`218` |
+| `todo_write` | base 挂载，`allowParallelInProgress: true` | `packages/bundle/base/cordis.patch.yml:437`-`441` |
+| plan mode | base 挂载（plan-mode 行含 plan-mode 行为段注入） | `packages/bundle/base/cordis.patch.yml:332`-`340` |
+| `subagent` | base 挂载：`provider: spawn`、`toolName: subagent`；`backgroundMode` 配置已不存在，continuable 由 per-delegation-tool 选择（base 注释 `:373`-`374`，`send_message` 由 `tool-subagent-control` 注册） | `packages/bundle/base/cordis.patch.yml:380`-`384` |
+| `subagent_fork` | base 挂载：`provider: fork`、`toolName: subagent_fork`；fork 不选模型，让 provider/model 与父级一致、继承历史仍符合 KV Cache 前缀复用条件（注释明说） | `packages/bundle/base/cordis.patch.yml:391`-`396` |
+| `workflow` | base 挂载，执行链 `workflow-ptc`（`provider: spawn`）→ `ptc-runtime-node` | `packages/bundle/base/cordis.patch.yml:397`-`405` |
+| `ralph` | **不在 base**：由 optional bundle `packages/experimental/ralph-bundle/` 提供（`id: tool-ralph`，`subagentProvider: spawn`、`maxRounds: 64`），默认不装；理由是完成是 worker 自报而非独立评估 | `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16`、`packages/boot/app-boot/src/profile.ts:223`-`236` |
+| goal 三件套 + `/goal` | base 挂载（`goal`、`goal-round-driver`、`command-goal`、`tool-goal`） | `packages/bundle/base/cordis.patch.yml:323`-`332`、`444` |
+| jobs | base 挂载（`jobs-local` 服务 + `tool-jobs` 工具） | `packages/bundle/base/cordis.patch.yml:97`、`289` |
+| `tool-worktree` | **不在 base**：`OPTIONAL_BUNDLES` 成员，按需给并行工作提供 `ctx.worktrees` 隔离目录 | `packages/boot/app-boot/src/profile.ts:223`-`236`、`packages/experimental/tool-worktree/src/index.ts:39` |
+| schedule | **不在 optional bundle**：直接进 Web 组合（`experimental/schedule-bundle` 已退役；组合行 `id: schedule` 与 `id: ui-schedule`） | `packages/bundle/web-app/cordis.patch.yml:139`-`140`、`:398`-`399` |
+| agent-teams / auto-review | 不在 base：experimental optional bundle（`OPTIONAL_BUNDLES` 12 成员） | `packages/boot/app-boot/src/profile.ts:223`-`236` |
+| `subagent_codex` / `subagent_claude_code` | 不在 base、也不在 `OPTIONAL_BUNDLES`：**按需安装档位** `ON_DEMAND_BUNDLES` 提供（进程外 provider 行，`maxDepth: provider-managed`） | `packages/boot/app-boot/src/official-bundle-packages.ts:4`-`7`、`packages/subagent/subagent-codex/cordis.patch.yml:1`-`10` |
 
 goal 的状态机与 Round Driver 深挖在 [`../agent-loop/00-map.md`](../agent-loop/00-map.md)；subagent 的 seam 与多后端在 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/03-subagent后台与产品provider.md)；agent-teams 的机制在 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)。本专题拥有的是**跨原语的统一视角**：阶梯位置、选择决策、组合模式。
 
@@ -117,21 +119,22 @@ goal 的状态机与 Round Driver 深挖在 [`../agent-loop/00-map.md`](../agent
 | `packages/todo/tool-todo/` | `todo_write` 工具：上下文内计划留痕 |
 | `packages/plan/plan-mode/` | 计划模式：方案先行、批准后执行 |
 | `packages/subagent/tool-subagent/` | `subagent` / `subagent_fork` 两个模型可见工具 |
-| `packages/subagent/subagent-in-process-driver/` 等 | 委派的多后端（进程内 / ACP / Claude Code / Codex / SDK），见 capability-seams 专题 |
+| `packages/subagent/subagent-spawn-in-process/`、`subagent-fork-in-process/`、`subagent-acp/`、`subagent-claude-code/`、`subagent-codex/`、`subagent-dsh-sdk/` | 委派的多后端（进程内 / ACP / Claude Code / Codex / SDK），见 capability-seams 专题；`subagent-in-process-driver` 已整包解散并入 `packages/subagent/subagent/`（commit `3d852a1cea`） |
 | `packages/workflow/workflow/` | 编排引擎：脚本钩子、schema 校验、失败结算 |
 | `packages/workflow/tool-workflow/` | `workflow` 模型工具与 Config（`toolName`、`maxResultChars`） |
 | `packages/workflow/workflow-ptc/` | PTC 执行 provider：fresh Node 进程 + 沙箱策略 |
-| `packages/workflow/tool-ralph/` | `ralph` 工具：fresh-agent 循环 |
+| `packages/experimental/tool-ralph/` | `ralph` 工具：fresh-agent 循环（由 `packages/experimental/ralph-bundle/` 可选挂载） |
 | `packages/goal/tool-goal/` | `create_goal` / `update_goal` / `get_goal` |
 | `packages/goal/goal-round-driver/` | idle 自动续轮（深挖见 agent-loop 专题） |
 | `packages/jobs/tool-jobs/` | 后台 job 的模型可见面 |
 | `packages/jobs/jobs-local/` | process-local job registry：owner capacity、ring 与 cursor（不跨重启） |
-| `packages/terminal/tool-terminal/` | terminal 后台 producer：`pty-send` |
+| `packages/experimental/tool-worktree/` | 并行工作的 git worktree 隔离目录（`ctx.worktrees` seam，optional bundle） |
+| `packages/experimental/tool-terminal/` | terminal 后台 producer：`pty-send`（`packages/experimental/terminal-bundle/` 可选挂载） |
 | `packages/schedule/schedule/` | Host 时间任务与 Session follow-up |
 | `packages/experimental/tool-agent-team/` | Agent Teams 模型可见工具 |
 | `packages/experimental/agent-team/` | Agent Teams 服务、任务图与 mailbox |
 | `packages/experimental/agent-team-profile/` | Agent Teams 组合层 |
-| `packages/experimental/ui-agent-team/` | Agent Teams 客户端投影与 UI |
+| `packages/experimental/client-ui-agent-team/` | Agent Teams 客户端投影与 UI |
 | `packages/bundle/base/cordis.patch.yml` | 阶梯默认挂在哪些 bundle 里 |
 
 ## 可审查性清单

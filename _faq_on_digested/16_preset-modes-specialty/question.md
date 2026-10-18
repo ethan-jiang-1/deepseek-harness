@@ -4,7 +4,7 @@
 
 Web UI 新建任务的模式选择器里有四个内置选项：Standard / PTC / Minimal / Creator（创造模式）。表面上它们都是"换一份工具清单"，但直觉上不止如此——如果是纯工具加减，为什么 PTC 连"模型怎么调用工具"的形状都变了，Minimal 连系统提示词都换掉了，Creator 却几乎不删任何东西？
 
-1. **Standard**——它是"没有特殊性"的基线，但基线本身有内容：26 个 wire 工具怎么分组？哪些工具**刻意不在场**（cordis_\* / mcp_\* / ralph），为什么？三个 `isolate` 隔离组各自圈住什么？
+1. **Standard**——它是"没有特殊性"的基线，但基线本身有内容：31 个 wire 工具怎么分组？哪些工具**刻意不在场**（cordis_\* / mcp_\* / ralph），为什么？三个 `isolate` 隔离组各自圈住什么？
 2. **PTC 模式**——它只是换工具，还是换了"模型调用工具"这件事本身的形状？`run_code` 是什么，子调用还受不受权限约束，结果怎么回到上下文？
 3. **Minimal 模式**——"极简"减掉的是哪些层？系统提示词还剩什么，终端为什么是持久的，它和 `sdk-minimal` 这个 profile 是什么关系？
 4. **Creator 模式**（preset id 是 `cordis`）——它比 Standard 多出来的几行插件到底干什么？让 agent 改 DSH 自身，靠什么机制落地、靠什么门禁兜底？
@@ -22,7 +22,7 @@ Web UI 新建任务的模式选择器里有四个内置选项：Standard / PTC /
 
 ## 范围与基线
 
-源码核验基线：本仓库工作树 `7073ae7c94`。预设相关路径（`packages/bundle/web-app/presets/`、`packages/preset/`、`packages/core/agent-tool-presentation/`、`packages/client/ui-agent-preset/`）在该 commit 与 `_digested/` 基线 `46a7f68b09`（`dsh-v0.1.7-rc.1`）之间无差异，结论对两个基线同时成立；上游合入后按 `_digested/_change_log/` 复核。
+源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e86`。本轮四份 preset 都随上游变动重测：standard 的 wire 工具从 26 涨到 31、`tool-subagent-codex`/`tool-subagent-claude-code`/`tool-ralph` 三行退出默认目录（两个 subagent 后端改由 on-demand bundle 提供），minimal 新增 `read_image`、`working_directory` 与 compaction 组，四份都新增 `time-context` 与 `tool-schedule` 行；下文计数与行号以该树为准，上游合入后按 `_digested/_change_log/` 复核。
 
 四份预设声明的唯一事实源是 `packages/bundle/web-app/presets/` 下四个 `*.patch.yml`（[`standard.patch.yml`](../../packages/bundle/web-app/presets/standard.patch.yml)、[`ptc.patch.yml`](../../packages/bundle/web-app/presets/ptc.patch.yml)、[`minimal.patch.yml`](../../packages/bundle/web-app/presets/minimal.patch.yml)、[`cordis.patch.yml`](../../packages/bundle/web-app/presets/cordis.patch.yml)）；GUI 文案（模式名、描述、引导文）来自 [`packages/client/ui-agent-preset/src/client/locales.ts`](../../packages/client/ui-agent-preset/src/client/locales.ts) 与 [`guide-locales.ts`](../../packages/client/ui-agent-preset/src/client/guide-locales.ts)。行为事实另有快照/e2e 钉住：[`apps/web/tests/minimal-preset.snapshot.ts`](../../apps/web/tests/minimal-preset.snapshot.ts)、[`apps/web/tests/ptc-round.e2e.ts`](../../apps/web/tests/ptc-round.e2e.ts)、[`apps/web/tests/ptc-escalation.e2e.ts`](../../apps/web/tests/ptc-escalation.e2e.ts)、[`apps/web/tests/shipped-composition.e2e.ts`](../../apps/web/tests/shipped-composition.e2e.ts)。
 

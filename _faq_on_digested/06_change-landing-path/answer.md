@@ -8,7 +8,7 @@
 Issue 模板（意图与可观察行为，验收由 PR 的 Testing 节承载）
   → proposed Agent Note（决策记录，重大未来工作）
   → Plan Mode（实施计划，可选会话模式）
-  → implementation + docs/types/JSDoc/README + tests/snapshots/invariants
+  → implementation + docs/types/JSDoc/README + tests/snapshots
   → implemented Agent Note（交付后的决定）
   → review（语义兜底）
   → archive（可选生命周期收敛）
@@ -29,7 +29,7 @@ Issue 模板（意图与可观察行为，验收由 PR 的 Testing 节承载）
 | 计划 | Plan Mode | 改哪些子系统、API、schema、失败路径、测试 | 可选会话模式；`exit_plan_mode` 要求完整计划并取得用户批准，批准前不退出 |
 | 实现 | `packages/`、`apps/`、`python/`、`vendor/` 等源码 | 实际改变行为 | 与当前合同、行为证据、Agent Note 同一 PR 交付 |
 | 当前合同 | `docs/`、types、JSDoc、package README | 系统现在是什么 | 只写 current state；生成目录 freshness-gated |
-| 行为证据 | tests、snapshots、real composition、invariants | 行为是否真的成立 | 真实入口、keyless snapshot、package invariant 等分层测试政策 |
+| 行为证据 | tests、snapshots、real composition | 行为是否真的成立 | 真实入口、keyless snapshot 等分层测试政策 |
 | 交付决定 | `implemented/` Agent Note | 最终交付了什么，代价是什么 | 同 diff 从 `proposed/` 移动并改写为现在式；随代码事实保持 current |
 | 语义兜底 | `dsh-code-review`、prose skills | 机器查不到的语义是否正确 | 自动化不建立语义属性；进入 review 的人类 PR 由 policy 单独约束 |
 | 归档收敛 | `.agents/notes/archived/`、`dsh-archive-agent-notes` | 低未来价值的 implemented note 才冻结归档 | 可选；冻结后不作现行权威，文档门禁跳过 |
@@ -40,7 +40,7 @@ DSH 的文档规则明确：
 
 > **Document current state.**
 
-来源：`docs/AGENTS.md:38`
+来源：`docs/AGENTS.md:40`
 
 `docs/` 被设计成**只写 now**。变更理由在 Agent Notes，变更过程在 git/PR，最终留下的当前状态才写进 docs。
 

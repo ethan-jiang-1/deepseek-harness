@@ -12,11 +12,11 @@ Cordis tutorial 面向 agent 开发者，每讲都是在仓库 scratch 目录里
 
 > This tutorial teaches Cordis hands-on: each chapter is a runnable example you build in a scratch directory inside this repository, ending with a plugin wired into real harness services.
 >
-> — DSH [`docs/cordis-tutorial/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/cordis-tutorial/index.md)。七讲从 first plugin、lifecycle 与 effects、services、events、config 走到 composition 与 HMR，末讲 “Into the harness” 把一个模型可调用工具注册进 harness 的 `tools` service、经真实 tool pipeline 执行并观察结果事件——教程的终点是接入真实 harness 服务，不是玩具示例。
+> — DSH [`docs/cordis-tutorial/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/cordis-tutorial/index.md)。七讲从 first plugin、lifecycle 与 effects、services、events、config 走到 composition 与 HMR，末讲 “Into the harness” 把一个模型可调用工具注册进 harness 的 `tools` service、经真实 tool pipeline 执行并观察结果事件——教程的终点是接入真实 harness 服务，不是玩具示例。
 
 > To write plugins for the harness itself — loaded from a `cordis.yml` and driven from the Web UI rather than the launcher below — start from your first Harness plugin.
 >
-> — DSH [`docs/cordis-tutorial/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/cordis-tutorial/index.md)。两条线的分界由加载方式定义：scratch 运行器用于学 Cordis；写“真正的” harness 插件（经 `cordis.yml` 加载、从 Web UI 驱动）从 `docs/user/develop/basic/` 进入。
+> — DSH [`docs/cordis-tutorial/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/cordis-tutorial/index.md)。两条线的分界由加载方式定义：scratch 运行器用于学 Cordis；写“真正的” harness 插件（经 `cordis.yml` 加载、从 Web UI 驱动）从 `docs/user/develop/basic/` 进入。
 
 `docs/user/develop/` 自身分三层：basic（Your first plugin、Plugin configuration、Build a tool、Package and install a plugin）、framework（Event system、Services and dependencies）、practice（LLM adapters、Creator mode 的动态插件配置）。进度与 [参与阶梯](./04-paved-road-and-participation.md) 的 L0–L1 对应，但用作者视角的语言讲述。
 
@@ -26,7 +26,7 @@ Cordis tutorial 面向 agent 开发者，每讲都是在仓库 scratch 目录里
 
 > In Harness, a plugin is a TypeScript module that exports an `apply` function. The framework calls `apply` when loading the plugin and passes a `ctx` context object through which the plugin registers capabilities: [...] That is the complete configuration.
 >
-> — DSH [`docs/user/develop/basic/index.md` 的 “What is a plugin?”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/user/develop/basic/index.md#what-is-a-plugin)。插件没有独立的引导协议：注册即 `apply(ctx)`，配置经 `cordis.yml` 的 schema 校验，工具经 `ctx.tools.register` 与 `defineTool`。DSH 自身的 `packages/` 包也是同一种插件——同一机制既是内部组成方式也是外部扩展方式。
+> — DSH [`docs/user/develop/basic/index.md` 的 “What is a plugin?”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/user/develop/basic/index.md#what-is-a-plugin)。插件没有独立的引导协议：注册即 `apply(ctx)`，配置经 `cordis.yml` 的 schema 校验，工具经 `ctx.tools.register` 与 `defineTool`。DSH 自身的 `packages/` 包也是同一种插件——同一机制既是内部组成方式也是外部扩展方式。
 
 ## 3. bundle 与 profile：作者侧的组合模型
 
@@ -34,9 +34,9 @@ Cordis tutorial 面向 agent 开发者，每讲都是在仓库 scratch 目录里
 
 > A bundle is what you author and distribute; a profile is what a user boots with `dsh --profile <name>`. Nothing is both.
 >
-> — DSH [`docs/user/develop/basic/publish.md` 的 “Two concepts, two manifests”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/user/develop/basic/publish.md#two-concepts-two-manifests)。bundle 的 `package.json` 声明 `dsh.bundle`，回答“这个包贡献什么”（插入或覆盖 plugin rows 的 patch 层）；profile 声明 `dsh.profile`，回答“哪些 bundle 按什么顺序组成这套环境”。安装走 `dsh plugin add`，分层顺序决定最终合成配置——与 [`--dump-config`](./06-runtime-inspection.md) 查询的是同一棵配置树。
+> — DSH [`docs/user/develop/basic/publish.md` 的 “Two concepts, two manifests”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/user/develop/basic/publish.md#two-concepts-two-manifests)。bundle 的 `package.json` 声明 `dsh.bundle`，回答“这个包贡献什么”（插入或覆盖 plugin rows 的 patch 层）；profile 声明 `dsh.profile`，回答“哪些 bundle 按什么顺序组成这套环境”。安装走 `dsh plugin add`，分层顺序决定最终合成配置——与 [`--dump-config`](./06-runtime-inspection.md) 查询的是同一棵配置树。
 
-采用自动启用配置层的分发路径时，链路是 plugin → bundle → profile：作者把插件模块与 patch 层打包为 bundle，用户安装后由 profile 组合并启动。它不是所有插件唯一的发布形态：插件也可作为本地模块或普通 npm 模块由配置显式挂载；没有 `dsh.bundle` 声明的包不会因安装而自动激活配置层。这条安装组合链与 DSH 主仓自己的 npm 发布序列是不同问题；后者不约束外部插件仓。
+采用自动启用配置层的分发路径时，链路是 plugin → bundle → profile：作者把插件模块与 patch 层打包为 bundle，用户安装后由 profile 组合并启动。它不是所有插件唯一的发布形态：插件也可作为本地模块或普通 npm 模块由配置显式挂载；没有 `dsh.bundle` 声明的包不会因安装而自动激活配置层。bundle 还可以在 `package.json` 声明 `engines.dsh` SemVer 范围（例如 `>=0.2.0 <0.3.0`）说明支持的 DSH 版本：安装与 profile 启动会拒绝运行中的 DSH 不满足该范围的 bundle，没有该字段时改查它的 `@deepseek-ai/dsh*` peer dependency 范围。这条安装组合链与 DSH 主仓自己的 npm 发布序列是不同问题；后者不约束外部插件仓。
 
 ## 4. 为什么插件仓库要与这套词汇对齐
 
@@ -46,9 +46,9 @@ Cordis tutorial 面向 agent 开发者，每讲都是在仓库 scratch 目录里
 
 ## 证据入口
 
-- DSH [`docs/cordis-tutorial/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/cordis-tutorial/index.md)：Cordis 七讲教程的入口、受众与 scratch 运行方式。
-- DSH [`docs/user/develop/basic/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/user/develop/basic/index.md)：插件的最小定义与第一个插件的完整路径。
-- DSH [`docs/user/develop/basic/publish.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/user/develop/basic/publish.md)：bundle/profile 二分、manifest 语义与 `dsh plugin add` 安装。
-- DSH [`docs/user/develop/framework/`](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.0-rc.2/docs/user/develop/framework) 与 [`docs/user/develop/practice/`](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.0-rc.2/docs/user/develop/practice)：事件、服务依赖与 LLM adapter、动态插件配置的进阶层。
-- DSH [`docs/cordis-primer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/cordis-primer.md)：教程之外的浓缩概念参考。
-- DSH [`packages/README.md` 的 “Dependencies”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/packages/README.md#dependencies)：扩展插件依赖 Service Definition、不依赖具体 provider 的方向规则。
+- DSH [`docs/cordis-tutorial/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/cordis-tutorial/index.md)：Cordis 七讲教程的入口、受众与 scratch 运行方式。
+- DSH [`docs/user/develop/basic/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/user/develop/basic/index.md)：插件的最小定义与第一个插件的完整路径。
+- DSH [`docs/user/develop/basic/publish.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/user/develop/basic/publish.md)：bundle/profile 二分、manifest 语义与 `dsh plugin add` 安装。
+- DSH [`docs/user/develop/framework/`](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.1-rc.2/docs/user/develop/framework) 与 [`docs/user/develop/practice/`](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.1-rc.2/docs/user/develop/practice)：事件、服务依赖与 LLM adapter、动态插件配置的进阶层。
+- DSH [`docs/cordis-primer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/cordis-primer.md)：教程之外的浓缩概念参考。
+- DSH [`packages/README.md` 的 “Dependencies”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/packages/README.md#dependencies)：扩展插件依赖 Service Definition、不依赖具体 provider 的方向规则。

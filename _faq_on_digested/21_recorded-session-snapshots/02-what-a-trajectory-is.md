@@ -1,6 +1,6 @@
 # 02 · 一份 `session.jsonl` 到底是什么：它就是 trajectory
 
-![一份 session.jsonl 的解剖：左侧是 bash-tool-turn 的 22 行事件，按颜色分成 header、会话配置、turn/step 包围、模型可见输入、请求头、模型输出与工具往返六组；右侧是三种取用粒度（单条事件 / 请求头 / 整条轨迹）各自的成本与证明力；底部是它缺的四类失败——首个 chunk 前抛出、接受后抛出、取消或挂起、注入重试，只能由 replay.override.json 补](./figures/trajectory-anatomy.svg)
+![一份 session.jsonl 的解剖：左侧是 bash-tool-turn 的事件序列，按颜色分成 header、会话配置、turn/step 包围、模型可见输入、请求头、模型输出与工具往返六组；右侧是三种取用粒度（单条事件 / 请求头 / 整条轨迹）各自的成本与证明力；底部是它缺的四类失败——首个 chunk 前抛出、接受后抛出、取消或挂起、注入重试，只能由 replay.override.json 补](./figures/trajectory-anatomy.svg)
 
 ## 一句话
 
@@ -28,6 +28,8 @@ request/context          ← provider/model
 session/title            ← 标题
 assistant/message        ← 模型输出：reasoning + tool-call 两块
 tool/call                ← bash("echo TERMINAL_OK")
+job/registered           ← 后台任务登记（log-only）
+job/settled              ← 后台任务结算（同一 jobId 配对）
 tool/result              ← isError=false
 step/end
 step/start               ← step 2
@@ -36,13 +38,13 @@ step/end
 turn/end
 ```
 
-22 行，一次完整的「用户提问 → 模型决定调工具 → 工具执行 → 模型总结」闭环。**这不是日志摘要，这是可回放的轨迹。**
+24 行，一次完整的「用户提问 → 模型决定调工具 → 工具执行 → 模型总结」闭环。**这不是日志摘要，这是可回放的轨迹。**
 
 更重的一些场景事件类型更多，但结构相同。三个实测样本：
 
 | 夹具 | 行数 | 事件类型 |
 |---|---|---|
-| `session/bash-tool-turn/session.v4.jsonl` | 22 | 17 种，含 `tool/call` + `tool/result` |
+| `session/bash-tool-turn/session.v4.jsonl` | 24 | 19 种，含 `tool/call` + `tool/result`，以及这一轮新增的 `job/registered` + `job/settled` |
 | `session/agent-instructions/session.v3.jsonl` | 39 | 20 种，含 `compaction/start`+`summary`+`end`、两次 `request/header` |
 | `session/subagent-multi/session.jsonl` | 50 | 含 `assistant/chunk`×18、`reasoning-chunks`、`tool-call-chunks`、`text-chunks` |
 
@@ -58,7 +60,7 @@ turn/end
 
 - `system/message` 事件的正文被替换成 `{{system}}`，完整提示词落在 sidecar `system-prompt.expected.md`；
 - `request/header` 里的工具 schema 被替换成 `{{tools}}`（**保留字段存在性**），完整目录落在 `tool-schemas.expected.json`；
-- 两者都通过 `scrubSystemPrompts` / `scrubToolSchemas` 完成，且这些变换是**幂等**的（`packages/test-support/session-snapshot/src/normalize.ts:515`、`:531`、`:546`）。
+- 两者都通过 `scrubSystemPrompts` / `scrubToolSchemas` 完成，且这些变换是**幂等**的（`packages/test-support/session-snapshot/src/normalize.ts:549`、`:565`、`:580`）。
 
 **注意方向**：脱敏是把「体积」搬去 sidecar，不是把「内容」删掉。原文一条不少，只是换了个更好审阅的位置——这也是为什么它没有违反可重建性。
 
@@ -107,8 +109,8 @@ turn/end
 
 `session` header 里的 `version` 字段就是 `SESSION_FORMAT_VERSION`。本工作树的行为：
 
-- **checkout writer**：`SESSION_FORMAT_VERSION = 4`（`packages/core/session/src/types.ts:89`，是代码里唯一手维护的当前写入版本号）；
-- **仓库的发布记录**：`docs/session-format-status.md:46` 仍写着 `latestReleasedVersion: 3`（证据 tag `dsh-v0.1.5-alpha.1`），而 `:32` 的定稿记录是 4；本基线 tag `dsh-v0.2.0-rc.2` 的 writer 已经是 4，所以那条发布记录落后于实际发布，不要拿它当「现在装到的 CLI 写哪个版本」的依据。
+- **checkout writer**：`SESSION_FORMAT_VERSION = 4`（`packages/core/session/src/types.ts:90`，是代码里唯一手维护的当前写入版本号）；
+- **仓库的发布记录**：`docs/session-format-status.md:45` 的 `latestReleasedVersion: 4`、`:46` 的 `evidenceTag: dsh-v0.2.0-rc.2`，与 checkout writer 一致；`:32` 的定稿记录同样是 4。这条记录只在更高版本**首次发布**时才前进，同一格式的后续发布不需要改它。
 
 回放器接受历史版本：解析时会经 build-static 的 format catalog **在内存里迁移**到当前版本再暴露事件（`packages/test-support/llm-replay/src/index.ts:200` 起的 `parseSessionLog`）。这意味着**你录的夹具不会因为 DSH 升版就作废**——它会被就地升级后重放。
 

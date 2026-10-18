@@ -1,12 +1,12 @@
 # 09 — 插件测试实战：五个真实插件的测试组合解剖
 
-> 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[08](./08-plugin-testing.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录）与名词表，本篇按五个插件类型各解剖一套真实组合——每节给关键代码摘录与"移植到你的插件"一句。基线 `639ed01539`。
+> 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[08](./08-plugin-testing.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录）与名词表，本篇按五个插件类型各解剖一套真实组合——每节给关键代码摘录与"移植到你的插件"一句。基线 `687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）。
 
 ## 现象是什么：组合的形状跟着"插件承诺"走
 
 没有两套插件测试长得一样，但差异不是随机的——**插件承诺什么，测试组合就长什么样**：工具插件承诺行为与 Config，provider 插件承诺可选性与实例拓扑，toolview 承诺组装面与文案，guard 插件承诺"什么时不做"，LLM-backed 插件承诺"对真模型工作"。以下五套真实组合各自兑现一种承诺；写自己的插件时按承诺挑组合，而不是按文件数抄。
 
-## 一、工具插件全家桶：`tool-todo`（五文件各司其职）
+## 一、工具插件全家桶：`tool-todo`（四文件各司其职）
 
 `packages/todo/tool-todo/tests/` 是"一个工具插件该有的全部测试文件"的最小完备样例：
 
@@ -16,7 +16,8 @@
 | `integration.spec.ts` | 穿过 agent-loop 的端内行为 | `mountAgentLoopTestDependencies(ctx)` 挂全依赖栈 + 从 `core/agent-loop/tests/mock-adapter.ts` 复用 `MockAdapter` 脚本化模型回复（源码平面跨包导入，[02](./02-tiers.md)） |
 | `loader-composition.spec.ts` | Config 真实可配置性 | 进程内真 `Loader`+`Include` boot 临时 `cordis.yml`；同一个 flag 断言**两脸**：模型可见 description 措辞随 `allowParallelInProgress` 变、并行写被拒/放行 |
 | `projection.spec.ts` | 投影提供者 + HMR-safety | `todos` projection 的读路径；dispose 贡献 fiber 断言清理（`(HMR safety)`） |
-| `invariant.spec.ts` | 快照不变量 | 插件发布 `./invariant` 子路径导出，挂 `InvariantRegistry, { enabled: true }` 测历史/在线并行快照的接受性 |
+
+（本跨度删掉了第五个文件 `invariant.spec.ts`：运行时 invariant 机制整族退役，commit `f028f25667`，无继任——插件不再发布 `./invariant` 入口。）
 
 台阶映射：`tool-todo.spec` 与 `integration.spec` 是**台阶二的两遍**（直调注册入口 / 穿 loop 端到端）；`projection.spec` 是台阶三；`loader-composition.spec` 是台阶四的进程内级；`todo-write` 录制场景（`snapshots/session/todo-write/`）兑现台阶五。分工逻辑：**三遍测的不是同一个对象**——工具体、事件序列、组装语义各归各，不是重复。
 
@@ -48,7 +49,7 @@ it('model calls todo_write: a tool/call, a non-error tool/result, and a todo/wri
 })
 ```
 
-**移植到你的插件**：换插件名、工具名、事件类型三个标识符，五件套形状不变。
+**移植到你的插件**：换插件名、工具名、事件类型三个标识符，四件套形状不变。
 
 ## 二、provider 插件：`subagent-codex`（可选性 + 拓扑）
 
@@ -129,7 +130,7 @@ class RecordingAdapter extends LlmAdapter {
 2. 场景 `config:` 覆盖被测插件的参数（`agent-instructions.maxBytes: 65536`、`projectRootMarkers`）；
 3. 基础设施插件经 `!!js` 表达式落位（`session-persistence-jsonl.root: !!js dshHomePath('sessions')`——cordis.yml 允许 `!!js` 于 plugin `config`，[01](./01-doctrine.md)）。
 
-结果：**真实插件 + 场景配置 + 回放模型流**进 210 个录制场景——插件的 model-visible 面在每个 PR 被无 key 复验。
+结果：**真实插件 + 场景配置 + 回放模型流**进 250 个录制场景——插件的 model-visible 面在每个 PR 被无 key 复验。
 
 ## 为什么这么定（解释）
 
@@ -138,7 +139,7 @@ class RecordingAdapter extends LlmAdapter {
 
 ## 源码锚点
 
-- `packages/todo/tool-todo/tests/`——五件套
+- `packages/todo/tool-todo/tests/`——四件套
 - `packages/subagent/subagent-codex/tests/loader-composition.e2e.ts`（含 `fixtures/loader/driver.ts` + `codex.patch.yml`）
 - `packages/client/ui-tool/tests/ask-question-row.client.spec.tsx`、`assembly-surfaces.client.spec.tsx`
 - `packages/guard/timeout-policy/tests/timeout-policy.spec.ts`
@@ -148,6 +149,6 @@ class RecordingAdapter extends LlmAdapter {
 
 ## 最小例证
 
-1. **五件套可数**：`ls packages/todo/tool-todo/tests/`——5 个 spec 各占一个台阶。
+1. **四件套可数**：`ls packages/todo/tool-todo/tests/`——4 个 spec 各占一个台阶。
 2. **可选性可复现**：`grep -n "PATH: ''" packages/subagent/subagent-codex/tests/loader-composition.e2e.ts`。
 3. **成对形态可检索**：`grep -rn "skipIf(!process.env.DEEPSEEK_API_KEY)" packages/session --include="*.e2e.ts"`。

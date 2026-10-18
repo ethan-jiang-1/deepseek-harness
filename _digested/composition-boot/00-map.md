@@ -1,6 +1,6 @@
 # Composition · 启动组合
 
-产品源码基线：`639ed01539`（`dsh-v0.2.0-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`0.1.7-rc.1` → `0.2.0-rc.2` 的增量见 [`_change_log/0009`](../_change_log/0009-0.1.7-rc.1-to-0.2.0-rc.2.md)。
+产品源码基线：`687f282e86`（`dsh-v0.2.1-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`0.2.0-rc.2` → `0.2.1-rc.2` 的增量见 [`_change_log/0011`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
 
 ## 一句话
 
@@ -29,7 +29,7 @@
 
 列出的 bundle 若没有 `dsh.bundle` 声明，启动失败，不会默默跳过。Patch 文件必须是列表；要保留一个空层，写 `[]`。
 
-base 工具面是这两条规则的现成例子（#3382）：base 层 `tool-web` 默认 `search`+`fetch` 双开（`packages/bundle/base/cordis.patch.yml:486-490`，`fetch: false→true`，0a0f9e59），web-app 反而把该行整行 disable、由 agent preset 逐 preset 组合两工具（base patch 注释，`packages/bundle/base/cordis.patch.yml:461-463`）。
+base 工具面是这两条规则的现成例子（#3382）：base 层 `tool-web` 默认 `search`+`fetch` 双开（`packages/bundle/base/cordis.patch.yml:486-490`，`fetch: false→true`，0a0f9e59），web-app 反而把该行整行 disable、由 agent preset 逐 preset 组合两工具（base patch 注释，`packages/bundle/base/cordis.patch.yml:454-456`）。
 
 `composeEntries`、`boot()` 与 `renderConfigDump` 共用 Include 的 `applyEntryPatches`。`--dump-config` 展示用户可编辑层，launcher 派生层只在启动时追加；差异和 `!!js` 保真见 [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md)。
 
@@ -44,13 +44,13 @@ dsh --profile web --dump-config
 ![Harness home 与 profile 目录](./figures/profile-home.svg)
 
 - **profile**：`$DSH_HOME/profiles/<name>`（未设 `DSH_HOME` 则为 `~/.dsh`）。里面有 `package.json`（`dsh.profile.bundles` + 树外插件）和用户自己的 `cordis.patch.yml`。
-- **bundle**：npm 包，清单里写 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`。`dsh-base` 是每个 profile 的第一层；其它 bundle 增加 Web 或 headless 等产品组合。`dsh-base` 不依赖、也不挂载可选的 Codex / Claude Code provider；它们是独立的 Profile Bundle，用 `dsh plugin --profile <name> add` 装进 profile 并 restart，各自在 host 平面注册一个 dormant 默认 provider，agent preset 再决定要不要露出对应的 model-facing tool 行——host 可用不等于 tool 暴露。
+- **bundle**：npm 包，清单里写 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`。`dsh-base` 是每个 profile 的第一层；其它 bundle 增加 Web 或 headless 等产品组合。`dsh-base` 不依赖、也不挂载可选的 Codex / Claude Code provider；它们是独立的 Profile Bundle，由 `ON_DEMAND_BUNDLES`（`packages/boot/app-boot/src/official-bundle-packages.ts`，2 条）登记为按需安装成员，用 `dsh plugin --profile <name> add` 或插件管理面装进 profile 并 restart，各自在 host 平面注册一个 dormant 默认 provider，agent preset 再决定要不要露出对应的 model-facing tool 行——host 可用不等于 tool 暴露。这与 `OPTIONAL_BUNDLES`（12 条，随安装出货、默认关断）是两个不同档位。
 - **模板**：`web`、`headless`、`sdk`、`sdk-minimal`、`acp` 五个内置 profile 首次使用会自动初始化（`PROFILE_TEMPLATES` 登记，`packages/boot/app-boot/src/profile.ts:179-195`）。其它名字必须先 `initProfile`，否则 fail loud——这条 fail-loud 提示的就是 `dsh plugin`；`--from-default-profile <模板>` 是另一半入口，见 [`04-profile-创建与保留名.md`](./04-profile-创建与保留名.md)。`sdk-minimal` 是唯一不叠 `dsh-base` 的 bundle（自己持有完整工具树）。
 - **preset id 与显示名**：shipped preset 在 0.1.7 线改为 bundle 携带的 `packages/bundle/web-app/presets/*.patch.yml`（旧 `packages/preset/agent-presets/presets/` 目录整删，包重设计为声明式 `agent-preset` + `agent-preset-registry`；`code` 改名 `ptc`（3ca9c7d489）与 `minimal` preset 入包（f94495e527）均发生在 alpha.3 之前（merge-base 已验证），不是 rc.1 周期内的变化）。显示名与 preset **声明分离**：preset 行只带 id（无 `name` 字段），shipped 显示文案经 locale 键 `presetStandardName` / `presetPtcName` / `presetMinimalName` / `presetCordisName` 解析（`packages/preset/agent-preset-registry/src/display.ts:10-17` 的键表与 `:40-67` 的 `presetDisplayText` 折叠；中文文案在 `packages/client/ui-agent-preset/src/client/locales.ts`）；用户自建 preset 的自由文本名不做本地化。（0.1.5 线「显示名来自 `preset.yml` 的 `name` 字段」的说法已随声明式重设计方向反转。）
 
-PTC 相对 standard 的实质差异（#3425 起步，0.1.7 线重新落地）：`presets/ptc.patch.yml` 对 workflow 面 `isolate.workflowEngine: true` 并把 `workflow-ptc` 行 `disabled: true`（`packages/bundle/web-app/presets/ptc.patch.yml:84,119-121`）——不在 `run_code` 之外发布第二个模型侧编排面；旧 `shipped-root.spec.ts` 断言与 `workflow-worker-thread` 引擎叙述随 0.1.7 线的 workflow-ptc 改道退役。
+PTC 相对 standard 的实质差异（#3425 起步，0.1.7 线重新落地）：`presets/ptc.patch.yml` 对 workflow 面 `isolate.workflowEngine: true`（`:86-87`）并把 `workflow-ptc` 行 `disabled: true`（`:104-106`）——不在 `run_code` 之外发布第二个模型侧编排面；旧 `shipped-root.spec.ts` 断言与 `workflow-worker-thread` 引擎叙述随 0.1.7 线的 workflow-ptc 改道退役。该 preset 同时把 `tool-plugin-manager` 与 `tool-plugin-market` 两行 disable（`:129-134`）。
 
-启动环境分层：进程继承 > 项目目录 `.env` > home `.env`。bootstrap-only 变量不允许来自**项目目录**的 `.env`；Harness home 的 `.env` 例外，只放行 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` / `NO_PROXY` 四个代理名（`packages/boot/app-boot/src/index.ts:132`、`:165`、`:208-209`），因为项目 `.env` 随 clone 一起到达、不能决定出网路由，而 `DSH_HOME` 本身是 bootstrap-only、指不到仓库控制的目录。`ctx.credentials` 的本地 provider 对同名引用使用启动环境 > `$DSH_HOME/.credentials.yaml` > 项目 `.env` > home `.env`，其中凭据文件是可由产品写入的持久层。
+启动环境分层：进程继承 > 项目目录 `.env` > home `.env`。bootstrap-only 变量不允许来自**项目目录**的 `.env`；Harness home 的 `.env` 例外，只放行 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` / `NO_PROXY` 四个代理名（`packages/boot/app-boot/src/index.ts:136`、`:169`、`:212-213`），因为项目 `.env` 随 clone 一起到达、不能决定出网路由，而 `DSH_HOME` 本身是 bootstrap-only、指不到仓库控制的目录。`ctx.credentials` 的本地 provider 对同名引用使用启动环境 > `$DSH_HOME/.credentials.yaml` > 项目 `.env` > home `.env`，其中凭据文件是可由产品写入的持久层。
 
 `cordis:group` 与 Include 一起注册，使 provider 和 Consumer 可以处于同一个 `isolate` realm；agent preset 的服务隔离依赖这一点。
 
@@ -70,6 +70,7 @@ PTC 相对 standard 的实质差异（#3425 起步，0.1.7 线重新落地）：
 | `packages/bundle/acp-app/` | ACP 自动化服务层 |
 | `packages/experimental/agent-team-profile/` | Agent Teams CLI 实验性 profile |
 | ~~`packages/experimental/agent-team-web-profile/`~~ | Agent Teams Web 实验性 profile（0.1.7 线已删除） |
+| `packages/boot/plugin-market/`、`packages/util/plugin-market-index/` | `ctx.pluginMarket` 与只读 `plugin_market` 工具：读用户配置的市场索引、校验格式 1、标注安装状态与 DSH 兼容性；真正的安装仍走 `pluginManager.installBundle`。随 `OPTIONAL_BUNDLES` 的 `plugin-market-bundle` 出货、默认关断，无 profile 时整行 disable |
 | `apps/cli/` | 产品 bin `dsh`（CLI launcher profile 的入口） |
 | `apps/desktop/`、`apps/desktop-host/` | Electron 桌面应用：应用自有的保留 profile `desktop`，不走 `dsh`（[`../runtime-profiles/06-desktop.md`](../runtime-profiles/06-desktop.md)） |
 | [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md) | profile 机器合同 |

@@ -13,7 +13,7 @@ DSH 没有一个单独的“人/agent 分工表”，但它把分工写进了权
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions, and "a lot of work" is not a cost argument when agents do the labor.
 
-来源：`.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`
+来源：`.agents/notes/archived/process/2026-06-11-quality-gates.md:12`
 
 这是 DSH 对角色分工最直接的一句话：**agent 是主要生产者，且机械门禁比 prose 约定更可靠。**
 
@@ -23,13 +23,13 @@ DSH 没有一个单独的“人/agent 分工表”，但它把分工写进了权
 
 根 `AGENTS.md` 直接给 agent 下指令：
 
-> Run checks before pushes via [dsh-pre-push-checks](../../.agents/skills/dsh-pre-push-checks/SKILL.md); report only commands run.
+> Before pushing, follow [dsh-pre-push-checks](../../.agents/skills/dsh-pre-push-checks/SKILL.md); report only commands run. After `gh stack sync`, validate immediately; do not merge before checks pass.
 
-来源：`AGENTS.md:116`
+来源：`AGENTS.md:115`
 
 > Never default to the full suite or repeat a passing check for commit or push. CI owns exhaustive coverage and the platform matrix.
 
-来源：`AGENTS.md:119`
+来源：`AGENTS.md:118`
 
 ### 2. 提案、计划、实现、合同同步
 
@@ -43,7 +43,7 @@ Agent Note 规则要求变更本身带决策记录：
 
 > Update package README and JSDoc contracts in the same commit as behavior.
 
-来源：`packages/AGENTS.md:26`
+来源：`packages/AGENTS.md:27`
 
 ### 3. Plan Mode 里 agent 先探索、设计，再交人审批
 
@@ -51,11 +51,11 @@ Plan prompt 给 agent 的规则是：
 
 > Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:63`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
 
 > implementation begins only in a later step after approval.
 
-来源：`packages/bundle/web-app/presets/ptc.patch.yml:62`（0.1.7 线起迁至 bundle patch；旧路径 `agent.cordis.yml:132` 已删）
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:65`（0.1.7 线起迁至 bundle patch；旧路径 `agent.cordis.yml:132` 已删）
 
 这说明：**agent 负责把计划做到 decision-complete，但不能自己批准实施。**
 
@@ -81,11 +81,11 @@ Plan prompt 给 agent 的规则是：
 
 > automated checks do not establish those properties.
 
-来源：`.agents/skills/dsh-code-review/SKILL.md:23`
+来源：`.agents/skills/dsh-code-review/SKILL.md:32`
 
 > ## Manual checks
 
-来源：`.agents/skills/dsh-code-review/SKILL.md:31`
+来源：`.agents/skills/dsh-code-review/SKILL.md:39`
 
 PR 模板则把 Issue 关联写进 Motivation 的填写说明：
 
@@ -110,7 +110,7 @@ issue policy 则把这种约束命名得更直接：
 
 > only explicit user invocation may run `dsh-translate-docs`.
 
-来源：`AGENTS.md:176`
+来源：`AGENTS.md:177`
 
 ### 4. sandbox 无法解决的主机环境问题
 
@@ -118,7 +118,7 @@ issue policy 则把这种约束命名得更直接：
 
 > If a required `gh`, `pnpm`, build, test, or generator command fails because the sandbox blocks credentials, network, IPC, watching, or nested `sandbox-exec`, retry unchanged with the narrowest host escalation.
 
-来源：`AGENTS.md:112`
+来源：`AGENTS.md:111`
 
 ### 5. 外部社区参与
 
@@ -136,7 +136,7 @@ issue policy 则把这种约束命名得更直接：
 
 > When receiving review, verify each claim and fix or rebut it on technical grounds without performative agreement.
 
-来源：`.agents/skills/dsh-code-review/SKILL.md:52`
+来源：`.agents/skills/dsh-code-review/SKILL.md:61`
 
 这补上了闭环：review 反馈回来后，agent 修或 rebut，而不是无脑接受。
 
@@ -150,13 +150,13 @@ issue policy 则把这种约束命名得更直接：
 
 ## 证据入口
 
-- `.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`
-- `AGENTS.md:112`、`:116`、`:119`、`:176`
-- `packages/AGENTS.md:26`
+- `.agents/notes/archived/process/2026-06-11-quality-gates.md:12`
+- `AGENTS.md:111`、`:115`、`:118`、`:177`
+- `packages/AGENTS.md:27`
 - `.agents/notes/README.md:46`
-- `packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）、`:62`
+- `packages/bundle/web-app/presets/ptc.patch.yml:63`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）、`:65`
 - `docs/subsystems/plan.md:33`
-- `.agents/skills/dsh-code-review/SKILL.md:23`、`:31`、`:52`
+- `.agents/skills/dsh-code-review/SKILL.md:32`、`:39`、`:61`
 - `.github/pull_request_template.md:3`
 - `.github/issue-management/rules.mjs:60-70`、`:265`
 - `CONTRIBUTING.md:9`、`:11`

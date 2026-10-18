@@ -21,7 +21,7 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 
 - **01 立基底**（[`01-role-and-substrate.md`](./01-role-and-substrate.md)）：harness 与框架的差别；dsh 的基底是插件图 + 事件流两套系统；参与规则最终由五个运行时问题回答；因果链按证据等级拆开。
 - **02 拆「读懂」**（[`02-legibility.md`](./02-legibility.md)）：静态可读性来自八个机制，共同保证「全部参与知识都以字面形式存在」，并且负知识、上下文入口也被外置。
-- **03 拆「做对」**（[`03-paved-road.md`](./03-paved-road.md)）：正确路径来自扩展点路由、控制权语义、生命周期归属、门禁与 invariant、以及**门禁自身被测试**的元验证。
+- **03 拆「做对」**（[`03-paved-road.md`](./03-paved-road.md)）：正确路径来自扩展点路由、控制权语义、生命周期归属、门禁、以及**门禁自身被测试**的元验证。
 - **04 参与阶梯**（[`04-participation-paths.md`](./04-participation-paths.md)）：从改配置到改 loop，不同参与半径有不同的门、合同与检查半径；一次贡献还有完整生命周期。
 - **05 动态可读性**（[`05-dynamic-legibility.md`](./05-dynamic-legibility.md)）：dsh 不只可读，还可查询、可试验——`dump-config`、生成目录、两只读 `cordis_inspect_*` 工具与 `plugin_manager` 安装让读者能问运行时（0.1.7 线起 define/run 生命周期退到程序化 runner）。
 - **06 技术选型与语言贴合**（[`06-tech-and-language-fit.md`](./06-tech-and-language-fit.md)）：回答「dsh 的技术为什么容易被 coding agent 消化」——先验密度、语义贴合、低密度承重件本地化，三层共同作用。
@@ -72,7 +72,7 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 参与一个 harness 需要两类知识：**系统外置的**（写在哪、怎么写、怎么验证）和**读者自带的**（背景、行话、部落知识）。dsh 的工程重心是让第一类尽可能多、第二类尽可能少：
 
 1. **参与规则住在运行时里，不在人脑里。** dsh 的基底是两套系统：插件图回答「现在由什么组成」，事件流回答「刚才发生过什么」。参与时最关键的五个问题——能看到什么、依赖未就绪怎么办、同名能力如何隔离、谁清理副作用、配置如何变成树——全部有运行时可查的答案（[`01`](./01-role-and-substrate.md)）。
-2. **合同是可执行的，不只是可读的。** 类型在编译期拒绝、门禁在提交前纠正、运行时 invariant 在请求发出时比对；门禁本身还要求「证明无效案例会被拒绝」。正确性由系统证明，不由读者自觉（[`03`](./03-paved-road.md)）。
+2. **合同是可执行的，不只是可读的。** 类型在编译期拒绝、门禁在提交前纠正；门禁本身还要求「证明无效案例会被拒绝」。正确性由系统证明，不由读者自觉（[`03`](./03-paved-road.md)）。
 3. **正确路径是分层的、有判定顺序的。** 扩展点路由四问先定落点，event 分发模式定控制权，Fiber 与 effect 定生命周期；patch、扩展点、seam、loop 四层参与各有摩擦与检查半径（[`03`](./03-paved-road.md)、[`04`](./04-participation-paths.md)）。
 4. **这个形状来自生产方式与组合压力，不是设计宣言。** 写作者自称以 coding agent 为主，使知识被迫外置；多宿主、多 provider、会话级隔离与运行时装卸，使外置到运行时语法成为划算的选择。两者共同塑形，但都不是「对 agent 友好」的事先宣言（[`01`](./01-role-and-substrate.md)、[`07`](./07-boundaries-costs-fit.md)）。
 
@@ -104,17 +104,17 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 
 ## 我的判断
 
-- **判断一：prose 是索引，执行才是保证。** dsh 的规则文档（`docs/`、`AGENTS.md`）写得克制，是因为每一条关键规则都有机器可执行的落点：`verify-export-jsdoc`、`verify-package-invariants`、`doc-typecheck`、coverage 门禁、运行时 invariant。文档负责「告诉你往哪看」，系统负责「证明你做对了」。
-- **判断二：「模型可见 ⟺ 已记录」能成立，是因为它被写成了运行时检查。** `dsh-agent-loop/invariant` 在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对，不一致直接 fail（机制见 [`03`](./03-paved-road.md)，源码在 `packages/core/agent-loop/src/invariant.ts`）。它是 invariant 体系的一个实例；invariant 体系的另一半纪律是「只在有独立可观察关系时 publish，不造无意义断言」——`0.1.2-rc.1` 连「显式空断言」都裁掉了（见机制六）。agent-loop 实例因有真实关系而在废除中幸存。
-- **判断三（反转但有分级）：LLM 读得懂 dsh 不是设计目标，是生产方式残留。** [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) 的 Problem 段第一句是仓库对自身生产方式的自述；`docs/architecture.md` 那句「推荐用 agent 探索代码库」是后来的注脚。但「开发主力就是 agent」应标为第一方自述，不等同于外部普查；本专题按“自述 + 机制推断”处理。
+- **判断一：prose 是索引，执行才是保证。** dsh 的规则文档（`docs/`、`AGENTS.md`）写得克制，是因为每一条关键规则都有机器可执行的落点：`verify-export-jsdoc`、`doc-typecheck`、coverage 门禁、`verify-archived-agent-notes`。文档负责「告诉你往哪看」，系统负责「证明你做对了」。
+- **判断二：「模型可见 ⟺ 已记录」现在由类型与投影纪律保证，不再有运行时断言。** `0.1.7-rc.1` 线上它是 `dsh-agent-loop/invariant` 这个运行时检查在 loop 每次 `llm/stream` 上独立重建请求并与日志比对；`f028f25667`（remove runtime invariant plugins）把运行时 invariant 机制整族删除，该实例一并消失，`ctx.invariants` 服务随之不存在。现行的执行面是 `SessionEventMap` 的 required-on-read、`deriveMessages()` 投影与根 `AGENTS.md` 条令的叠加，退役依据见 [`03`](./03-paved-road.md) 机制六。
+- **判断三（反转但有分级）：LLM 读得懂 dsh 不是设计目标，是生产方式残留。** [`2026-06-11-quality-gates`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md) 的 Problem 段第一句是仓库对自身生产方式的自述；`639ed01539` 基线里 `docs/architecture.md` 曾有「推荐用 agent 探索代码库」一句，它在 `3f35ca7b5b` 被撤下，现行 `docs/architecture.md` 与 zh 版都不再出现该句。但「开发主力就是 agent」应标为第一方自述，不等同于外部普查；本专题按“自述 + 机制推断”处理。
 - **判断四：dsh 的形状还要过「组合压力」检验。** 生产方式解释它为什么是 agent 形状，组合压力解释这个形状何时值得模仿。两者都是判断，不是源码能直接证明的定律（[`07`](./07-boundaries-costs-fit.md)）。
-- **判断五：本专题自己也要过分布纪律。** 框架性通式（知识外置、paved road、三问检验）落在 LM 喜欢的分布内，谁都能写；挖出来的事实（因果反转、vendor manifest 门禁、required-on-read、invariant 只在有真关系处断言而「显式空断言」被 `0.1.2-rc.1` 裁掉、note 语料库的出处）在分布外，必须带出处。执行办法在 [`08`](./08-judgement-discipline.md)。
+- **判断五：本专题自己也要过分布纪律。** 框架性通式（知识外置、paved road、三问检验）落在 LM 喜欢的分布内，谁都能写；挖出来的事实（因果反转、vendor manifest 门禁、required-on-read、note 语料库的出处、运行时 invariant 连「显式空断言」都裁掉后整族退役）在分布外，必须带出处。执行办法在 [`08`](./08-judgement-discipline.md)。
 
 ## 判断纪律（摘要）
 
 本专题不进 `_coverage/` 核验矩阵：它不追踪机制覆盖度，只记录消化后的判断。替代纪律在 [`08-judgement-discipline.md`](./08-judgement-discipline.md)，核心是四条：
 
-1. **钉基线**：全部判断对照 DeepSeek Harness `dsh-v0.1.7-rc.1`（commit `46a7f68b0922371ce7144b668b90e377d8e799f4`），与 `_digested/` 其它专题同一基线。上游同步后按 `_change_log/` 复核本专题的证据锚点。
+1. **钉基线**：全部判断对照 DeepSeek Harness `dsh-v0.2.1-rc.2`（commit `687f282e8625c6b8d11ff58211a90524be2e4317`），与 `_digested/` 其它专题同一基线。上游同步后按 `_change_log/` 复核本专题的证据锚点。
 2. **出处分级**：每条判断标注来源——`[原文]`、`[源码]`、`[推断]`、`[框架]`；后两类可信度最低，只提供结构或假设。
 3. **反事实标记**：写判断时自问「一个没读过本仓库的 fresh agent 会不会自然写出这句」；会，是分布内通式；不会，才可能是信息。
 4. **自我适用**：[`08`](./08-judgement-discipline.md) 末尾用「三个问题」检验本专题自身，并维护一个核心 claim register。

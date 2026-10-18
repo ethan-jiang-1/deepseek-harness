@@ -1,12 +1,12 @@
 # workflow：模型编写的 JS 编排脚本与子代理扇出机制
 
-源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/workflow/src/index.ts`、`packages/workflow/workflow-ptc/src/`（`index.ts`/`runtime.ts`/`host.ts`/`guest.ts`/`meta.ts`/`realm.ts`）、`packages/core/tools/src/json-schema.ts`、`packages/jobs/jobs/src/index.ts`、`packages/workflow/tool-ralph/src/index.ts`、`packages/bundle/base/cordis.patch.yml`、`docs/subsystems/workflow.md`。
+源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/workflow/src/index.ts`、`packages/workflow/workflow-ptc/src/`（`index.ts`/`runtime.ts`/`host.ts`/`guest.ts`/`meta.ts`/`realm.ts`）、`packages/core/tools/src/json-schema.ts`、`packages/jobs/jobs/src/index.ts`、`packages/experimental/tool-ralph/src/index.ts`、`packages/bundle/base/cordis.patch.yml`、`docs/subsystems/workflow.md`。
 
 本页回答：模型写的 workflow 编排脚本在什么进程里跑、能调用什么钩子、失败如何结算、结果如何持久化？工具的选择边界（什么时候该用）不在本页，见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)。
 
 ## 为什么是这个形状：设计考量
 
-没有 workflow 时，扇出型工作（多文件审计、迁移、多角度调研）只能**逐轮委派**：每个中间结果都落进父上下文、计划无处持久、每步协调花一次模型往返（`.agents/notes/implemented/feature/2026-07-05-dynamic-workflows.md` Problem 节）。设计者的答案是让**脚本而不是对话**持有循环、分支与中间结果——模型写一段 JS 编排脚本，脚本扇出子代理、自己消化中间值，父上下文只收最终结果。这是 Claude Code dynamic workflows 的合同（meta 字段词汇对齐），但有一个**故意的分歧**：钩子滥用（写错的选项、越界的 schema、触顶）在 CC 里会溶进一个与子代理失败无法区分的 `null`，DSH 把它升级为 fatal——「一个 typo 的选项绝不能溶解成 null，那正是本仓库禁止的 accepted-then-ignored 失败模式」（同 note Decision 节）。引擎侧同样有取舍：`ctx.workflowEngine` 一个上下文只有一个引擎、无命名 provider 注册表——**引擎是部署替换件，不是共居者**（子代理的 transports 才是共居的）；`result` 永不 reject（失败结算为 stopReason，消费方永不处理 rejection）；`workflow/*` 事件是 observe-only 的数据快照——**控制权留在 run 的持有者手里**，订阅者拿不到 cancel。
+没有 workflow 时，扇出型工作（多文件审计、迁移、多角度调研）只能**逐轮委派**：每个中间结果都落进父上下文、计划无处持久、每步协调花一次模型往返（`.agents/notes/archived/feature/2026-07-05-dynamic-workflows.md` Problem 节）。设计者的答案是让**脚本而不是对话**持有循环、分支与中间结果——模型写一段 JS 编排脚本，脚本扇出子代理、自己消化中间值，父上下文只收最终结果。这是 Claude Code dynamic workflows 的合同（meta 字段词汇对齐），但有一个**故意的分歧**：钩子滥用（写错的选项、越界的 schema、触顶）在 CC 里会溶进一个与子代理失败无法区分的 `null`，DSH 把它升级为 fatal——「一个 typo 的选项绝不能溶解成 null，那正是本仓库禁止的 accepted-then-ignored 失败模式」（同 note Decision 节）。引擎侧同样有取舍：`ctx.workflowEngine` 一个上下文只有一个引擎、无命名 provider 注册表——**引擎是部署替换件，不是共居者**（子代理的 transports 才是共居的）；`result` 永不 reject（失败结算为 stopReason，消费方永不处理 rejection）；`workflow/*` 事件是 observe-only 的数据快照——**控制权留在 run 的持有者手里**，订阅者拿不到 cancel。
 
 ## 定位：三层分离
 
@@ -22,7 +22,7 @@ workflow-ptc（执行 provider：脚本解析、钩子实现、caps、取消）
 PTC fresh Node 进程（脚本 VM 只注入钩子与 args；子代理经 subagent seam 派发）
 ```
 
-工具拥有模型可见面（schema、系统提示节、结果渲染），引擎拥有脚本解析、执行、上限与取消；「caller 必须供应执行引擎，隔离策略可换而可见行为不变」（`packages/workflow/workflow/README.md:12`、`packages/workflow/tool-workflow/README.md:66`）。shipped base 组合依次加载 `dsh-ptc-runtime-node` → `dsh-workflow-ptc`（`provider: spawn`）→ `dsh-tool-workflow`（`packages/bundle/base/cordis.patch.yml:390`-`400`）。
+工具拥有模型可见面（schema、系统提示节、结果渲染），引擎拥有脚本解析、执行、上限与取消；「caller 必须供应执行引擎，隔离策略可换而可见行为不变」（`packages/workflow/workflow/README.md:12`、`packages/workflow/tool-workflow/README.md:66`）。shipped base 组合依次加载 `dsh-ptc-runtime-node` → `dsh-workflow-ptc`（`provider: spawn`）→ `dsh-tool-workflow`（`packages/bundle/base/cordis.patch.yml:397`-`400`）。
 
 引擎是单例 seam：`ctx.workflowEngine` 之上无命名 provider 注册表，同 scope 第二次 provide 直接 throw（cordis 通用规则，`vendor/cordis/src/reflect.ts:290`；`docs/subsystems/workflow.md:5`）。换引擎 = 改组合里加载哪个引擎插件行（`packages/workflow/workflow/README.md:71`）。
 
@@ -97,21 +97,21 @@ VM 上下文 `createContext({})` 后只注入五个冻结函数（`agent`/`paral
 - **fatal（杀整个脚本）**：所有 `WorkflowError` 默认 `fatal: true`（`packages/workflow/workflow/src/index.ts:134`-`138`）；`parallel()`/`pipeline()` 对 fatal **re-throw** 而不是把 item 变 null——「写错的选项必须响亮地杀死脚本，绝不溶进一个读起来像普通子代理失败的 null」（`:121`-`129` JSDoc）。fatality 判定用 host realm 的 `instanceof`，脚本 realm 造的对象无法伪造也无法误触发（`:146`-`148`）。
 - **逐 item `null`（只留给局部失败）**：子代理自身失败（stopReason 非 completed）与普通 stage/thunk 错误（`packages/workflow/workflow/README.md:92`；`packages/workflow/workflow-ptc/src/runtime.ts:221`-`222`、`:332`-`338`）。
 
-上限是协作式配额而非主机强制（`packages/workflow/workflow-ptc/README.md:156`）：总子代理数 `AGENT_CAP` 默认 1000（`packages/workflow/workflow-ptc/src/runtime.ts:168`-`173`、`packages/workflow/workflow-ptc/src/index.ts:108`）、单次 parallel/pipeline 条目 `ITEM_CAP` 默认 4096（`packages/workflow/workflow-ptc/src/runtime.ts:342`-`349`、`packages/workflow/workflow-ptc/src/index.ts:109`）。子代理 result **reject**（基础设施故障）≠ 子代理失败：配对 lifecycle 后抛 fatal `AGENT_RESULT`（`packages/workflow/workflow-ptc/src/runtime.ts:198`-`206`）。返回值不可物化为 lossless JSON（exotic 原型/循环/稀疏数组/bigint/嵌套 undefined 等）→ `RESULT_UNSERIALIZABLE`（`packages/workflow/workflow-ptc/src/runtime.ts:127`-`140`、`packages/workflow/workflow-ptc/src/realm.ts:74`-`147`）。
+上限是协作式配额而非主机强制（`packages/workflow/workflow-ptc/README.md:155`）：总子代理数 `AGENT_CAP` 默认 1000（`packages/workflow/workflow-ptc/src/runtime.ts:168`-`173`、`packages/workflow/workflow-ptc/src/index.ts:108`）、单次 parallel/pipeline 条目 `ITEM_CAP` 默认 4096（`packages/workflow/workflow-ptc/src/runtime.ts:342`-`349`、`packages/workflow/workflow-ptc/src/index.ts:109`）。子代理 result **reject**（基础设施故障）≠ 子代理失败：配对 lifecycle 后抛 fatal `AGENT_RESULT`（`packages/workflow/workflow-ptc/src/runtime.ts:198`-`206`）。返回值不可物化为 lossless JSON（exotic 原型/循环/稀疏数组/bigint/嵌套 undefined 等）→ `RESULT_UNSERIALIZABLE`（`packages/workflow/workflow-ptc/src/runtime.ts:127`-`140`、`packages/workflow/workflow-ptc/src/realm.ts:74`-`147`）。
 
 ## PTC 进程模型
 
-- **fresh Node 进程**：引擎把自包含 guest 程序（data: URL ESM）交给 `ctx.ptcRuntime.run(...)`；Node PTC provider 每次 run 起新进程（`packages/workflow/workflow-ptc/src/host.ts:25`-`26`、`:276`-`283`；`packages/ptc-runtime/ptc-runtime-node/README.md:12`）。
+- **fresh Node 进程**：引擎把自包含 guest 程序（data: URL ESM）交给 `ctx.ptcRuntime.run(...)`；Node PTC provider 每次 run 起新进程（`packages/workflow/workflow-ptc/src/index.ts:161`-`167`、`packages/workflow/workflow-ptc/src/host.ts:276`-`300`；`packages/ptc-runtime/ptc-runtime-node/README.md:12`）。
 - **调用方 Session 的文件沙箱**：引擎按 `runCtx.sandboxPolicy.resolve({ session: request.parent.session })` 解析父会话的常设策略，cwd 取 `policy.workspaceRoot`（`packages/workflow/workflow-ptc/src/index.ts:166`；`packages/workflow/workflow-ptc/src/host.ts:279`-`280`）。
 - **取消**：`cancel(reason)`（首个 reason 生效）→ `controller.abort()` + 立即 dispose 所有已发布 child——**立即中止受管进程，不等 guest 确认**（`packages/workflow/workflow-ptc/src/host.ts:148`-`153`；`packages/workflow/workflow-ptc/README.md:98`）；终局 finally 处置全部 child、为残余 liveAgents 合成 `cancelled` agent-end（`packages/workflow/workflow-ptc/src/host.ts:293`-`303`）。工具层把 `exec.signal` 桥为 `run.cancel('parent step aborted')`（`packages/workflow/tool-workflow/src/index.ts:444`-`448`）。
-- **无整体 elapsed deadline**：`timeoutMs: null` 显式请求免计时器（`packages/workflow/workflow-ptc/src/host.ts:281`；`packages/workflow/workflow-ptc/README.md:157`）；仅初始同步片有 `syncTimeoutMs`（默认 5000ms，`packages/workflow/workflow-ptc/src/index.ts:110`）。旁路限制：Node provider 的 `maxPendingCalls`（默认 128）同时限制 workflow 并发（`packages/workflow/workflow-ptc/README.md:49`）。
+- **无整体 elapsed deadline**：`timeoutMs: null` 显式请求免计时器（`packages/workflow/workflow-ptc/src/host.ts:295`；`packages/workflow/workflow-ptc/README.md:156`）；仅初始同步片有 `syncTimeoutMs`（默认 5000ms，`packages/workflow/workflow-ptc/src/index.ts:110`）。旁路限制：Node provider 的 `maxPendingCalls`（默认 128）同时限制 workflow 并发（`packages/workflow/workflow-ptc/README.md:49`）。
 - **装载约束**：要求 Node **TypeScript** PTC runtime，否则装载即 throw；Python PTC 组合必须禁用 workflow-ptc/tool-workflow/tool-ralph 行（`packages/workflow/workflow-ptc/src/index.ts:117`；`packages/workflow/workflow-ptc/README.md:28`）。
 
 ## 归属与持久记录
 
 `WorkflowStartRequest.parent` **必填**——脚本起的每个 child 都归属到这个 live Agent，cwd、谱系与深度经 subagent seam 传递（`packages/workflow/workflow/src/runtime-types.ts:30`-`31`）。工具层取 `exec.agent` 作 parent，无调用 agent 即 fail loud（`packages/workflow/tool-workflow/src/index.ts:407`-`413`）；host 每次 `agent()` 经 `this.subagents.start(provider, { prompt, parent: this.parent, ... })` 发布 child（`packages/workflow/workflow-ptc/src/host.ts:197`-`211`）；本地 run 在 child session 的 `parentSession` header 记录父会话 id（`docs/subsystems/subagent.md:389`）。引擎在 start 时捕获 `subagents`/`ptcRuntime` 服务句柄，引擎卸载不撤销已接受的 run；调用方必须 dispose 每个 run（`packages/workflow/workflow-ptc/src/index.ts:154`-`156`；`packages/workflow/workflow/README.md:53`）。
 
-持久 Chat 记录（只顶层 transport 调用记录，嵌套不记，`packages/workflow/tool-workflow/src/index.ts:440`-`442`、`packages/workflow/tool-workflow/README.md:174`）：`tool-workflow/run-start` 在 run 被接受后写入；成员 start/end 按 `runId + seq` 配对；`tool-workflow/run-end` 只在结果已知且 disposal 静默后写入；首次 append 失败即停写该 run，日志保持空或合法前缀（`docs/subsystems/workflow.md:124`）。`dsh-tool-workflow/invariant` 在 live commit 前与 Session 装载时校验同一协议：一 run 一 start、正数唯一成员序列、成员配对、无 open member 结束的 run 结尾（`docs/subsystems/workflow.md:126`）。
+持久 Chat 记录（只顶层 transport 调用记录，嵌套不记，`packages/workflow/tool-workflow/src/index.ts:440`-`442`、`packages/workflow/tool-workflow/README.md:174`）：`tool-workflow/run-start` 在 run 被接受后写入；成员 start/end 按 `runId + seq` 配对；`tool-workflow/run-end` 只在结果已知且 disposal 静默后写入；首次 append 失败即停写该 run，日志保持空或合法前缀（`docs/subsystems/workflow.md:124`）。`packages/workflow/tool-workflow` 的 record 校验在 live commit 前与 Session 装载时校验同一协议（该校验原先在 `dsh-tool-workflow/invariant` companion 里，运行时 invariant 机制已在 `f028f25667` 整族退役）：一 run 一 start、正数唯一成员序列、成员配对、无 open member 结束的 run 结尾（`docs/subsystems/workflow.md:126`）。
 
 ## 后台模式：接入 jobs 体系
 
@@ -121,12 +121,12 @@ live output 经 mirror 订阅引擎事件写进 job 的 output ring（`packages/
 
 ## ralph：同一引擎上的固定脚本
 
-`ralph` 不是第二个引擎——它是 `ctx.workflowEngine` + `ctx.subagents` 之上的**普通插件**，复用同一 PTC 执行 provider，agent-loop 里没有 Ralph 模式（`inject = ['tools', 'workflowEngine', 'subagents', 'systemPrompt']`，`packages/workflow/tool-ralph/src/index.ts:18`；`packages/workflow/tool-ralph/README.md:61`）。差异全在工具层：
+`ralph` 不是第二个引擎——它是 `ctx.workflowEngine` + `ctx.subagents` 之上的**普通插件**，复用同一 PTC 执行 provider，agent-loop 里没有 Ralph 模式（`inject = ['tools', 'workflowEngine', 'subagents', 'systemPrompt']`，`packages/experimental/tool-ralph/src/index.ts:18`；`packages/experimental/tool-ralph/README.md:61`）。差异全在工具层：
 
-- **固定脚本**：`RALPH_SCRIPT` 由部署持有，模型只供数据（objective/maxRounds），改不了 loop、provider 路由、schema 与 handoff 校验（`packages/workflow/tool-ralph/src/index.ts:88`-`175`、`:445`-`453`）。
+- **固定脚本**：`RALPH_SCRIPT` 由部署持有，模型只供数据（objective/maxRounds），改不了 loop、provider 路由、schema 与 handoff 校验（`packages/experimental/tool-ralph/src/index.ts:88`-`175`、`:445`-`453`）。
 - **provider 预检**：必须存在、支持 `outputSchema`、`inheritsParentContext: false`（真 fresh child，`:218`-`230`）；轮数上限经 `maxTotalAgents` 与引擎总量 backstop 协调（`:449`-`450`）。
-- **前台 only**：无 job id / 后台（`packages/workflow/tool-ralph/README.md:163`）；终局 `complete`/`blocked`/`budget-limited` + 报告，普通 child 失败即终局不重试（`packages/workflow/tool-ralph/README.md:166`）。
-- **默认关闭**：base 组合包含 `tool-ralph` 行，但将 `disabled: true`；该行保留 `subagentProvider: spawn` 与 `maxRounds: 64`，overlay 可将 `disabled` 改为 `false`（`packages/bundle/base/cordis.patch.yml:440`-`452`；默认状态见 [`00-map.md`](./00-map.md)）。
+- **前台 only**：无 job id / 后台（`packages/experimental/tool-ralph/README.md:163`）；终局 `complete`/`blocked`/`budget-limited` + 报告，普通 child 失败即终局不重试（`packages/experimental/tool-ralph/README.md:167`）。
+- **默认不装**：base 组合已无 ralph 行；它由 optional bundle `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 提供（`subagentProvider: spawn`、`maxRounds: 64`），是 `OPTIONAL_BUNDLES` 12 成员之一（`packages/boot/app-boot/src/profile.ts:223`-`236`），默认状态见 [`00-map.md`](./00-map.md)。
 
 ## 源码入口
 
@@ -142,6 +142,6 @@ live output 经 mirror 订阅引擎事件写进 job 的 output ring（`packages/
 | `packages/workflow/workflow-ptc/src/realm.ts` | 返回值物化（lossless JSON 纪律） |
 | `packages/core/tools/src/json-schema.ts` | schema 子集校验（与工具结构化输出共用） |
 | `packages/jobs/jobs/src/index.ts` | JobRegistry：start/kill/output ring/settled 留存 |
-| `packages/workflow/tool-ralph/src/index.ts` | ralph：固定脚本消费方、provider 预检 |
+| `packages/experimental/tool-ralph/src/index.ts` | ralph：固定脚本消费方、provider 预检 |
 | `docs/subsystems/workflow.md` | seam 层权威文档：start request、事件 observe-only、durable 记录协议 |
 | `packages/bundle/base/cordis.patch.yml` | shipped 执行链组装顺序（`:390`-`400`） |

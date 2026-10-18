@@ -1,6 +1,6 @@
 # Tools, prompt, LLM · 模型可见面
 
-产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `46a7f68b09`（`dsh-v0.1.7-rc.1`），其间的增量见 [`_change_log/0009`](../_change_log/0009-0.1.7-rc.1-to-0.2.0-rc.2.md)。
+产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`），其间的增量见 [`_change_log/0011`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
 
 ## 一句话
 
@@ -15,7 +15,7 @@
 三股汇合：
 
 1. **Prompt sections** — 插件往 `ctx.systemPrompt` 注册片段（身份、persona、工作区指令、时间……），按顺序、按这个 agent 的 scope 过滤后拼起来。
-2. **Tool schemas** — `ctx.tools` 里该 scope chain 仍可见的工具。全局层和祖先层按远到近合并，chain 上的 `restrict` 过滤这份继承面，当前 agent 自有层最后覆盖或补充——delegation 注册进子代理 own-layer 的是它的 structured-output tool，这条豁免专门保住它（`packages/core/tools/src/index.ts:1157-1170`，关键句 `:1165`）。被过滤的工具在提示词和执行中都表现为不存在。
+2. **Tool schemas** — `ctx.tools` 里该 scope chain 仍可见的工具。全局层和祖先层按远到近合并，chain 上的 `restrict` 过滤这份继承面，当前 agent 自有层最后覆盖或补充——delegation 注册进子代理 own-layer 的是它的 structured-output tool，这条豁免专门保住它（`packages/core/tools/src/index.ts:1164`-`:1180`，关键句 `:1171`-`:1176`）。被过滤的工具在提示词和执行中都表现为不存在。
 3. **历史** — `deriveMessages()` 从 surface 投影。`inject` 的材料等下一次获准请求，获准后写成 `user/message`。图像以 durable attachment 引用进 content block，不把 inline base64 留在日志里；请求序列化时才把 durable 图像解析成 provider 的 file id（DeepSeek Files API 优先，失败回退 base64 data URL），并受每请求图像字节/数量上限约束。`llm-deepseek` 的 `DeepSeekFileStore` 按 `variantId` 索引复用已上传文件，带过期与配额回收；provider 拒绝 file id 时 invalidate 该映射并在同一请求重试一次。413 映射为 `INVALID_REQUEST`。PTC 模式（原 code-mode）子工具若返回 image block，会在本次 `run_code` 结束之后 `deferContext` 成一条 user message，而不是嵌在父 tool 结果里。
 
 > **图像编码管线**：上游 #2676 引入了统一的 encoding ladder（`attachment-local` 的 `encoding.ts`、`normalization.ts`、`compression-limiter.ts`、`request-image.ts`）。`saveImage` 返回 canonical ref 与 source facts。Alpha 感知编码：透明通道走独立 quality ladder。`read_image` 上报降采样后的尺寸与坐标比例。`llm/llm` 的 `content.ts` 支持多模态 image 内容装配。
@@ -26,7 +26,7 @@
 
 加模型提供方：在 `ctx.llm` 上注册 adapter。官方 DeepSeek adapter 的 thinking effort 是 `off` / `low` / `high` / `max`（省略默认 `high`）；`off` 在线上发 `thinking.type: disabled`，其余发同名 `reasoning_effort`。route 还按模型能力分路提示词替换：`deepseek-flash` 在 catalog 里声明 `systemPromptUpdate: 'in-history'`，其余内置 route（含全部手工 pi-ai route）走 replace（见 [`04-in-history提示词替换.md`](./04-in-history提示词替换.md)）。加面向模型的能力：在 `ctx.tools` 上注册，它的 schema 会自动加入组装。都不必改 loop。
 
-llm 配置面在 rc.1 收紧两处（PR #3403）：provider profile 的 `headers` 在 resolve 时按 Fetch `Headers` 语义校验，非法字段名/值载入即拒（`packages/llm/llm-pi-ai/src/config.ts:385-396` 的 `assertValidHeaders`，由 `resolveProfiles` 逐 profile 调用，`:428`）；model discovery 新增 `StoredModelDiscoveryProfile`（部署 headers + 惰性 `resolveApiKey`，`packages/llm/llm-pi-ai/src/discovery.ts:252-257`），探测请求携带已配置路由的 headers，不再裸探测打 401（`packages/llm/llm-pi-ai/src/index.ts:243-274`）。`resolveProfiles(providers, validation)` 新增 `'strict' | 'deferred'`（`packages/llm/llm-pi-ai/src/config.ts:406-409`）：写入走 strict、存量读取走 deferred，且 `assertServiceable(config, previous?)` 只 resolve 改动的 provider（同文件 `:360-364`），所以存量失效 profile 不再让整段 namespace 注册失败，用户可以去修别的 provider。DeepSeek 官方线协议扩展（`@deepseek-ai/dsh-llm-deepseek` 在 Messages 请求上加的私有 header 与增量字段）的逐条权威是 [`docs/deepseek-llm-api-wire-extensions.md`](../../docs/deepseek-llm-api-wire-extensions.md)。
+llm 配置面在 rc.1 收紧两处（PR #3403）：provider profile 的 `headers` 在 resolve 时按 Fetch `Headers` 语义校验，非法字段名/值载入即拒（`packages/llm/llm-pi-ai/src/config.ts:389`-`:396` 的 `assertValidHeaders`，由 `resolveProfiles` 逐 profile 调用，`:428`）；model discovery 新增 `StoredModelDiscoveryProfile`（部署 headers + 惰性 `resolveApiKey`，`packages/llm/llm-pi-ai/src/discovery.ts:252-257`），探测请求携带已配置路由的 headers，不再裸探测打 401（`packages/llm/llm-pi-ai/src/index.ts:279`-`:283` 的 `registerModelDiscovery` 调用）。`resolveProfiles(providers, validation)` 新增 `'strict' | 'deferred'`（`packages/llm/llm-pi-ai/src/config.ts:410`-`:412`）：写入走 strict、存量读取走 deferred，且 `assertServiceable(config, previous?)` 只 resolve 改动的 provider（同文件 `:364`-`:367`），所以存量失效 profile 不再让整段 namespace 注册失败，用户可以去修别的 provider。DeepSeek 官方线协议扩展（`@deepseek-ai/dsh-llm-deepseek` 在 Messages 请求上加的私有 header 与增量字段）的逐条权威是 [`docs/deepseek-llm-api-wire-extensions.md`](../../docs/deepseek-llm-api-wire-extensions.md)。
 
 ## 工具执行管道
 
@@ -47,7 +47,7 @@ tool/result（入 log）
 - **审批 / permission / ask-user** 挂在 interaction 与这条管道上，仍然是模型 turn 的一部分。
 - **人敲的 slash command** 走 `ctx.commands`，**不经过模型 turn**。那是另一个平面，见 [surfaces](../surfaces-entrypoints/00-map.md)。
 
-tool 的 UI 渲染意图是设计的一部分，一开始就要定：call-time 三种 `generic` / `terminal` / `diff`（`packages/core/tools/src/presentation.ts:46`），result-time 另有 `search` / `read` / `web`，共六种（`:140`）。展示方法是 `args` 的纯函数。
+tool 的 UI 渲染意图是设计的一部分，一开始就要定：call-time 三种 `generic` / `terminal` / `diff`（`packages/core/tools/src/presentation.ts:46` 的 `ToolCallView`），result-time 另有 `search` / `read` / `web`，共六种（`:140` 的 `ToolResultView`）。展示方法是 `args` 的纯函数。
 
 ## 源码入口
 

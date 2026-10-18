@@ -99,7 +99,7 @@
 | 顶层 `snapshots/` 树的所有权 | 这棵树只放「以提交的会话 JSONL 为回放输入与期望输出」的测试；其他期望输出留在各自的 app / package / script 下（`snapshots/AGENTS.md:3`） |
 | 「进程必须经 `dsh` CLI + shipped profile 启动」 | 不许新增应用入口、隐藏 CLI 模式或可执行场景驱动（`snapshots/AGENTS.md:5`） |
 | 四面分工（headless / SDK / ACP / Web） | 它依赖主仓的四个 profile 各自拥有的行为证据（`docs/testing.md:14`）；插件仓通常只有一个入口 |
-| corpus policy 与 corpus gate | 基线版本、保留角色上限（11）、V0 覆盖名单、多数派——这是给「一个仓库集中维护 210 个场景」用的配额制度（`scripts/session-snapshot-corpus-policy.ts:24`、`:25`、`:26`）；gate 只在 `test:snapshot` 里跑，并把 `*.snapshot.ts` 后缀保留给 7 个指定适配器 |
+| corpus policy 与 corpus gate | 基线版本、保留角色上限（13）、V0 覆盖名单、多数派——这是给「一个仓库集中维护 250 个场景」用的配额制度（`scripts/session-snapshot-corpus-policy.ts:24`、`:26`、`:27`）；gate 只在 `test:snapshot` 里跑，并把 `*.snapshot.ts` 后缀保留给 8 个指定适配器 |
 | `dsh-session-snapshot` 这个包 | 它 `import vitest`，**只能在 vitest run 内使用**（`packages/test-support/session-snapshot/src/index.ts:14`）——想复用得自己写驱动 |
 
 **这不是「主仓小气」**：这些规则每一条都在解决「几百个场景、多个 owner、持续演进」带来的具体问题。一个只有三五条轨迹的插件仓照抄它们，得到的是没人维护的仪式。

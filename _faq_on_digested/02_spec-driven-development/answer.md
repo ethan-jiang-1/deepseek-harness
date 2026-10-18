@@ -1,10 +1,10 @@
 # Answer · DSH 的 SDD：分层规格、生命周期与可执行验收
 
-产品源码核验基线：DeepSeek Harness `dsh-v0.2.0-rc.2`，commit `639ed01539`（与 `_digested/` 相同；0009 同步轮复核）。
+产品源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（与 `_digested/` 相同；0011 同步轮复核）。
 
 ## 结论先行
 
-仓库没有正式宣称“我们使用 SDD”，也没有一套单文件 spec 或标准 SDD 工具链。能够从一手材料稳定推出的是：DSH 把一次非平凡变更的**意图、设计决定、实现计划、公开合同和验收证据**分别放进最合适的权威载体，再通过审批、评审、测试、快照、运行时 invariant、生成器和 CI 让这些记录相互约束。
+仓库没有正式宣称“我们使用 SDD”，也没有一套单文件 spec 或标准 SDD 工具链。能够从一手材料稳定推出的是：DSH 把一次非平凡变更的**意图、设计决定、实现计划、公开合同和验收证据**分别放进最合适的权威载体，再通过审批、评审、测试、快照、生成器和 CI 让这些记录相互约束。
 
 因此，DSH 的做法更接近一套为 coding agent 优化的**分层规格开发**：先把仍需选择的设计写成可评审提案，把实现计划写到另一位工程师无需再做设计决定的程度，再让代码、类型、文档和可执行证据共同落实它；交付后又把提案改写成现在时态的已交付决定，避免长期维护一份已经过期的未来式 spec。
 
@@ -22,7 +22,7 @@
 | 决策规格 | proposed Agent Note | 为什么这样设计，什么方案输了，接受什么风险 | 固定的 `Problem`、`Proposal`、`Alternatives considered`、`Acceptance criteria`、`Risks` 结构 |
 | 实现规格 | Plan Mode 提交的 plan | 哪些子系统、API、schema、数据流、失败路径和测试要改 | 先只读勘察；`exit_plan_mode` 要求完整 Markdown 计划并取得用户明确批准 |
 | 当前合同 | 类型、配置 schema、事件声明、README、JSDoc、architecture/subsystem 文档 | 调用方和实现方现在必须遵守什么 | strict TypeScript、生成目录、类型等价、README/JSDoc 与文档同步检查 |
-| 行为规格 | 单元测试、真实组合测试、keyless snapshot、浏览器快照、real-API e2e、runtime invariant | 真实入口和外部可见行为是否满足要求 | 测试矩阵、每文件覆盖率、负例、日志重建、快照 diff 和真实 API smoke |
+| 行为规格 | 单元测试、真实组合测试、keyless snapshot、浏览器快照、real-API e2e | 真实入口和外部可见行为是否满足要求 | 测试矩阵、每文件覆盖率、负例、日志重建、快照 diff 和真实 API smoke |
 | 工程规则 | `AGENTS.md`、专用 skills、脚本与 CI | 任何变更都不能破坏哪些仓库级约束 | 能机械检查的规则变成非零退出命令；语义边界由 review 承担 |
 
 这种分层符合仓库的“一项事实只有一个权威归属”规则。Agent Note 不应复制完整 API，README 不应复制生成目录，architecture 不应保存每个 package 的细节，测试也不替代设计理由。所谓 spec 不是把所有事实塞进一个文件，而是让每类事实进入能够长期维护和检查它的载体。
@@ -31,7 +31,7 @@
 
 ### 1. 先定义可观察结果
 
-当前 [Feature Issue 模板](../../.github/ISSUE_TEMPLATE/feature.md)只固定两节——动机与预期行为（`feature.md:7`、`:11`）；[Bug 模板](../../.github/ISSUE_TEMPLATE/bug.md)要求概述、复现、实际行为、预期行为与环境（`bug.md:7`、`:11`、`:15`、`:19`、`:23`）；[Task 模板](../../.github/ISSUE_TEMPLATE/task.md)要求概述与交付物（`task.md:7`、`:11`）。[PR 模板](../../.github/pull_request_template.md)要求进入评审的非 Draft 人类 PR 关联同仓库 Issue，并列出变更与验证。0.1.5 基线起 Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task：验收条件与测试证据不再由模板承载，改由 PR 的 Testing 节承载；policy 仍把五种原生 Issue Type 视为合法（[`.github/issue-management/rules.mjs:218`](../../.github/issue-management/rules.mjs)），取消的只是模板入口。
+当前 [Feature Issue 模板](../../.github/ISSUE_TEMPLATE/feature.md)只固定两节——动机与预期行为（`feature.md:7`、`:11`）；[Bug 模板](../../.github/ISSUE_TEMPLATE/bug.md)要求概述、复现、实际行为、预期行为与环境（`bug.md:7`、`:11`、`:15`、`:19`、`:23`）；[Task 模板](../../.github/ISSUE_TEMPLATE/task.md)要求概述与交付物（`task.md:7`、`:11`）。[PR 模板](../../.github/pull_request_template.md)要求进入评审的非 Draft 人类 PR 关联同仓库 Issue，并列出变更与验证。0.1.5 基线起 Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/archived/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task：验收条件与测试证据不再由模板承载，改由 PR 的 Testing 节承载；policy 仍把五种原生 Issue Type 视为合法（[`.github/issue-management/rules.mjs:218`](../../.github/issue-management/rules.mjs)），取消的只是模板入口。
 
 这一层故意不先规定内部类名或函数列表。它先固定外部结果和完成标准，让后续设计可以变化，但不能丢掉最初要解决的问题。
 
@@ -64,13 +64,13 @@ DSH 自己的 coding-agent preset 把 Plan Mode 规则写进系统提示。它�
 
 ### 5. 把可检查的规格变成可执行证据
 
-[质量门禁 Agent Note](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)直接说明：代码库主要由 coding agents 开发，agent 对强制 gate 的遵循明显好于纯文字约定，因此每条可机械检查的 `AGENTS.md` 承诺都应有一个失败时非零退出的命令。根 [`AGENTS.md`](../../AGENTS.md)进一步要求，把可机械检查的 invariant 接入顶层 gate，并证明每条变更过的验收路径会拒绝一个无效案例。
+[质量门禁 Agent Note](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)直接说明：代码库主要由 coding agents 开发，agent 对强制 gate 的遵循明显好于纯文字约定，因此每条可机械检查的 `AGENTS.md` 承诺都应有一个失败时非零退出的命令（该 Note 已归档，引述的是它记录的历史决策）。根 [`AGENTS.md`](../../AGENTS.md)进一步要求，把可机械检查的 invariant 接入顶层 gate，并证明每条变更过的验收路径会拒绝一个无效案例。
 
 `pnpm run doc-sync` 是这一原则在文档侧的集中入口，不是把 Markdown 上传到网站。它通过 [`scripts/run-gates.ts`](../../scripts/run-gates.ts)串联源码投影目录的新鲜度、导出 JSDoc、Markdown 链接、Agent Note 分类与格式、类型等价、翻译配对、文档预算和网站构建等检查；任一项不一致都会非零退出。对这套 SDD 推断而言，它说明 DSH 会把“实现、当前合同与说明必须同步”变成自动化验收，而不是只依靠 reviewer 记住规则。
 
 [测试政策](../../docs/testing.md)把行为证据分成多层：单元测试优先覆盖合同回归、边界、错误、事件顺序、并发和清理；CI 使用每文件 100% coverage，但明确承认 coverage 不等于功能正确；产品可见插件要通过真实 Loader 和 app/process 组合；模型、协议或人类可见的非平凡变化要在同一 PR 更新真实可运行示例的 keyless snapshot；provider 行为另有 real-API e2e。
 
-因此，验收条件不会停留在 Note 的清单里。它会被分配给最能证明它的机制：类型错误由编译器拒绝，格式漂移由生成器拒绝，非法运行时关系由 invariant 拒绝，外部可见输出由 snapshot 固定，真实 provider 由 with-key smoke 验证。
+因此，验收条件不会停留在 Note 的清单里。它会被分配给最能证明它的机制：类型错误由编译器拒绝，格式漂移由生成器拒绝，外部可见输出由 snapshot 固定，真实 provider 由 with-key smoke 验证。0011 跨度删掉了这条链上原先的一层：运行时 invariant 机制整族退役（`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`），所以「非法关系由运行时 invariant 拒绝」不再是可用的验收落点，这类关系要么前置到类型与结构，要么由真实组合测试覆盖。
 
 ### 6. Review 对照 spec，交付后改写 spec
 

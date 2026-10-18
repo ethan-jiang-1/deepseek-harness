@@ -47,8 +47,8 @@ pnpm exec vitest run --config vitest.e2e.config.ts <file>         # e2e 车道�
 | unit + coverage | 你的 `tests/**/*.spec` 全跑；**你的 `src/` 每文件 100%**（未覆盖行要么补测要么删除——它常是死代码） |
 | typecheck | 你的测试文件被 host 或 client face program 类型检查（`.tsx`/`.client.*` 归 client program） |
 | REAL-composition e2e | 你的 `loader-composition.e2e.ts` 若进了 built-bin-smoke 门（16 文件清单），CI 以 built `lib/` 再跑一遍 |
-| snapshot replay | 你的场景在 210 个录制场景里被无 key 回放比对 |
-| 静态门 | `verify-cordis-config`（若动配置）、`verify-client-ui-i18n`（若动 client 文案）、`verify-package-invariants`（若发布 `./invariant`）、`verify-package-readme-limitations`、文档门 |
+| snapshot replay | 你的场景在 250 个录制场景里被无 key 回放比对 |
+| 静态门 | `verify-cordis-config`（若动配置）、`verify-client-ui-i18n`（若动 client 文案）、`verify-package-readme-limitations`、文档门 |
 
 ## 反例清单（前四类被政策明文拒绝，后两类是仓库里反复出现的坑）
 

@@ -1,6 +1,6 @@
 # vendor 本地修改：产品踩在哪些补丁上
 
-源码核验入口：[`vendor/README.md`](../../vendor/README.md)「Local modifications」（现 **22** 条编号条目）及其列出的 vendored 文件。上游同步必须逐条重放或退役；本篇只解释 dsh 组合模型直接依赖的修改。
+源码核验入口：[`vendor/README.md`](../../vendor/README.md)「Local modifications」（现 **24** 条编号条目）及其列出的 vendored 文件，以及拟升级计划 [`vendor/cordis-rc11-upgrade-plan.md`](../../vendor/cordis-rc11-upgrade-plan.md)。上游同步必须逐条重放或退役；本篇只解释 dsh 组合模型直接依赖的修改。
 
 这些修改支撑 profile 叠层、dump 保真、profile patch 热更新与 volatile 配置。
 
@@ -47,18 +47,22 @@ Include 的配置文件写串行化并跟踪：瞬时 `EACCES`/`EBUSY`/`EPERM` r
 
 清单第 18 条。`disabled` 是唯一插值的 metadata。原始节点留在 options，写回仍是 `!!js`。
 
-## vendor 4.0.4：版本与 0008 跨度的真实变化
+## vendor 4.0.5：版本与两次跨度的真实变化
 
-`vendor/cordis` 现为 **4.0.4**；各包发布版本（`vendor/*/package.json`）：cordis 4.0.4、loader 1.0.5、include 1.0.9、group 1.0.4、timer 1.1.6、hmr 1.0.19、logger-console 1.0.4、schemastery 3.18.4、cosmokit 1.8.5。版本史：4.0.2 → 4.0.3（`efa63a7fc4`，纯 bump）→ 4.0.4（`d0dca04e22`，纯 bump）；**0008 跨度内 vendor 源码的实质变化是本地修改新增的 #16 / #20 / #21 / #22 与第 8/9/12 条的重写**，不是上游版本带来的。
+`vendor/cordis` 现为 **4.0.5**；各包发布版本（`vendor/*/package.json`）：cordis 4.0.5、loader 1.0.6、include 1.0.10、group 1.0.5、timer 1.1.7、hmr 1.0.20、logger-console 1.0.5、schemastery 3.18.5、cosmokit 1.8.6。版本史：4.0.2 → 4.0.3（`efa63a7fc4`，纯 bump）→ 4.0.4（`d0dca04e22`，纯 bump）→ 4.0.5（`d9c04d6cc6`，九个包一起 bump，跨度内另有 alpha 预发布 bump）。**0008 跨度内 vendor 源码的实质变化是本地修改新增的 #16 / #20 / #21 / #22 与第 8/9/12 条的重写**，不是上游版本带来的；**0011 跨度再新增 #23 / #24 两条**，并首次把升级到 cordis `4.0.0-rc.11` 的计划写进仓库。
 
 - **#16**：`cordis/package.json` 把 `src` 加进 `files`（cordis 声明 `"./src/*"` exports，tarball 缺 src 会发布指空文件的 export map；release 变更判定也读 `files`）。
 - **#20**：`loader/src/config/entry.ts` fiber identity——保存 registry 结果 context 里的原始 fiber 而不是 PromiseLike 包装，配置更新与服务通知因此改同一份生命周期状态，同时更新 provider 与 consumer 不会把 consumer 钉在 `PENDING`。
 - **#21**：`cordis/src/logger.ts` exporter disposal——每个 disposer 持有自己的注册 id，移除早先的 exporter 不会删掉后来的 console / telemetry exporter。
 - **#22**：volatile config（cosmokit + schemastery + cordis + loader 四处）：cosmokit 提供不可变引用与框架代持的 commit（`deepEqual` 把两个引用视为相等、数组逐位比较、URL 按 href 归一）；schemastery 增加 `.volatile()`、默认值/可选推断、引用感知 simplify；loader 的 `Entry.update` 对 active fiber 上的纯 volatile 变更走 `equalExceptVolatile`（`config/diff.ts`）+ `Entry._commitVolatile` 重解析并发出实例本地的 `loader/volatile-update`（`loader/src/index.ts` 声明），普通值变化仍走普通 remount。
+- **#23**：`loader/src/config/entry.ts` 模块身份——保存每个 entry 的原始 import 结果（`moduleNamespace`），取在插件导出归一化**之前**；HMR 用它匹配 Node 已缓存的模块命名空间，并在成功重载后更新该字段（commit `b1c5f861b6`，`loader/README.md` 记录这个新增字段）。
+- **#24**：`timer/locale/{en,zh}.json` 显示元数据——Settings 插件清单用的中英文标题与描述；`timer/package.json` 导出并发布这两份 locale 资源（commit `c7d61ecc11`）。
 
-**上游同步要求随 0008 改写**：~~0006 跨度「vendor 零改动、无需重放」的结论~~已被本跨度推翻——`git diff fb2c4b9e69..46a7f68b09 -- vendor/` 大量命中（事务重载退役 + 新增四条），下一次同步**必须**按 22 条清单逐条重放或退役，并按下面那条双核对规则确认版本列。
+**拟升级 cordis rc.11**：[`vendor/cordis-rc11-upgrade-plan.md`](../../vendor/cordis-rc11-upgrade-plan.md)（状态 proposed）把升级拆成独立可评审的 PR：先升 Core 并做最小跨包兼容，再分别完成 Loader / Include / vendor HMR；每个 PR 记录它对本篇 24 条本地修改的处置（retire / partial / retain）。计划本身不含运行时改动，也不批准其中留下的开放决定。
 
-版本核对提醒仍然成立：[`vendor/README.md`](../../vendor/README.md) manifest 的版本列（`4.0.0-rc.7` / `1.0.0-rc.5` / `1.0.0` / `3.18.0` / `1.1.2`）与各 `vendor/*/package.json`（`4.0.4` / `1.0.5` / `1.0.9` / `3.18.4` / `1.1.6`）**按设计就不同**：manifest 那一列记录的是 pinned 上游快照版本，`package.json` 的 `version` 是本仓的发布版本（`docs/rescope.md:25`；`scripts/release/families.ts` 的 vendor family 只 bump `vendor/*/package.json`）。不要把两列不一致读成漏同步。
+**上游同步要求随 0008 改写**：~~0006 跨度「vendor 零改动、无需重放」的结论~~已被 0008 跨度推翻——`git diff fb2c4b9e69..46a7f68b09 -- vendor/` 大量命中（事务重载退役 + 新增四条），0011 跨度再添两条并写下 rc.11 计划，下一次同步**必须**按 24 条清单逐条重放或退役，并按下面那条双核对规则确认版本列。
+
+版本核对提醒仍然成立：[`vendor/README.md`](../../vendor/README.md) manifest 的版本列（`1.8.1` / `3.18.0` / `4.0.0-rc.7` / `1.0.0-rc.5` / `1.0.4` / `1.0.0` / `1.1.2` / `1.0.15` / `1.0.0`）与各 `vendor/*/package.json`（`1.8.6` / `3.18.5` / `4.0.5` / `1.0.6` / `1.0.10` / `1.0.5` / `1.1.7` / `1.0.20` / `1.0.5`）**按设计就不同**：manifest 那一列记录的是 pinned 上游快照版本，`package.json` 的 `version` 是本仓的发布版本（`docs/rescope.md:25`；`scripts/release/families.ts` 的 vendor family 只 bump `vendor/*/package.json`）。不要把两列不一致读成漏同步。
 
 ## 上游同步要求
 

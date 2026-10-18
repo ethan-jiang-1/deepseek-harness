@@ -1,6 +1,6 @@
 # System · 整机介绍
 
-产品源码基线：`46a7f68b09`（`dsh-v0.1.7-rc.1`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`rc.1` → `rc.2` 的增量见 [`_change_log/0007`](../_change_log/0007-0.1.5-rc.1-to-0.1.5-rc.2.md)。
+产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`），增量见 [`_change_log/0011`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
 
 ## 一句话
 
@@ -86,7 +86,7 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 | `core/agent-loop` | 实现该接口的默认驱动 | `ctx.agentLoop` |
 | `core/scope` | 按 agent 划分的注册原语 | 库，无 ctx 键 |
 | `llm/llm` | 消息与流式词汇 + adapter seam | `ctx.llm` |
-| `webhook/webhook` | 认证投递分发与 Workspace Session 创建 | `ctx.webhookRuntime` |
+| `experimental/webhook` | 认证投递分发与 Workspace Session 创建 | `ctx.webhookRuntime` |
 
 ## 官方文档入口
 

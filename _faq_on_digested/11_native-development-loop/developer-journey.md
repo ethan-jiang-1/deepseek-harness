@@ -21,12 +21,10 @@
 | "UI 上能看到" | `presentCall` / `presentResult` 声明 card kind |
 | "日志卡片" | `generic` card + `locations`（指向源文件） |
 
-还不需要写代码。这一步只是把需求投射到仓库已有的概念上。所有术语都在 [docs/glossary.md](../../docs/glossary.md) 和
-[cookbook/adding-a-tool.md](../../docs/cookbook/adding-a-tool.md) 里有一个家。
+还不需要写代码。这一步只是把需求投射到仓库已有的概念上。所有术语都在 [docs/glossary.md](../../docs/glossary.md) 和 [cookbook/adding-a-tool.md](../../docs/cookbook/adding-a-tool.md) 里有一个家。
 
 **节省的意志力**：不需要自己发明架构——capability seam（Service Definition / Provider / Consumer）模式是强制的，
-tool 必须走 `defineTool`，UI card 必须走 `presentCall`/`presentResult` + 纯函数约束。
-正确路径已经被制度画好了。
+tool 必须走 `defineTool`，UI card 必须走 `presentCall`/`presentResult` + 纯函数约束。正确路径已经被制度画好了。
 
 ---
 
@@ -57,8 +55,7 @@ tool 必须走 `defineTool`，UI card 必须走 `presentCall`/`presentResult` + 
 
 ## 3. 第 2 步：判定窄 diff——真正要动的文件
 
-你要加的是一个**单 package 单 plugin**。照 [cookbook/adding-a-package.md](../../docs/cookbook/adding-a-package.md)
-的 checklist，新 package 需要：
+你要加的是一个**单 package 单 plugin**。照 [cookbook/adding-a-package.md](../../docs/cookbook/adding-a-package.md) 的 checklist，新 package 需要：
 
 ```
 packages/decision-log/tool-decision-log/
@@ -102,8 +99,7 @@ parameters: {
 }
 ```
 
-这里你**手检**了几个 DSL 无法表达的约束（adding-a-tool.md:42）：`key` 必须非空、kebab-case 格式在 `execute`
-里用 regex 验证；`title` 必须非空。DSL 能做的（type、required、enum）自动由 harness 在 execute 前验证。
+这里你**手检**了几个 DSL 无法表达的约束（adding-a-tool.md:42）：`key` 必须非空、kebab-case 格式在 `execute` 里用 regex 验证；`title` 必须非空。DSL 能做的（type、required、enum）自动由 harness 在 execute 前验证。
 
 ### 4.2 定义 output schema + render（返回值与 UI 的不可派生本质）
 
@@ -225,16 +221,13 @@ pnpm run doc-sync
 - `pre-commit` 自己跑了 oxlint fix + whitespace + vendor manifest（自动完成，你不需要记）
 - `pre-push` 跑了 `pnpm run typecheck`（但你已经跑过了，只是会被重跑一次——不亏）
 
-这就是"反馈延迟被刻意压到最小"（第三节）：一次典型迭代 = 改 2 个文件 → 跑 owning test 8 秒 → 出结果。
-改了再跑，成本低到愿意跑。**迭代成本低，人才会真的守规矩。**
+这就是"反馈延迟被刻意压到最小"（第三节）：一次典型迭代 = 改 2 个文件 → 跑 owning test 8 秒 → 出结果。改了再跑，成本低到愿意跑。**迭代成本低，人才会真的守规矩。**
 
 ---
 
 ## 6. 第 5 步：沉淀——加一条 Note
 
-你发现了一个值得记录的点：`log_decision` 的 `status` 字段用了 `enum`，但 DSL 不保证 `proposed` 是默认值。
-你在 `execute` 里补了 `?? 'proposed'`，并且觉得这个"默认值由 execute 保证而不是 schema 保证"的模式
-值得记一条 Agent Note。
+你发现了一个值得记录的点：`log_decision` 的 `status` 字段用了 `enum`，但 DSL 不保证 `proposed` 是默认值。你在 `execute` 里补了 `?? 'proposed'`，并且觉得这个"默认值由 execute 保证而不是 schema 保证"的模式值得记一条 Agent Note。
 
 你在 `.agents/notes/implemented/process/` 下加了一条：
 
@@ -364,7 +357,7 @@ Pending: CI will run coverage gate + platform matrix.
 | output schema 设计成可编程 API | `output.schema` is a useful programmatic API（adding-a-tool.md:65） |
 | presenter 是纯函数 | `Purity — these run on live streaming AND on session-log REPLAY`（adding-a-tool.md:87） |
 | 只跑 owning test + typecheck + doc-sync | `Never default to the full suite`（AGENTS.md） |
-| 只记一条 Note，不记全部 | 增生（accretion）是被预算与归档制度点名的敌人（[2026-07-04-doc-tiers-and-budgets](../../.agents/notes/implemented/process/2026-07-04-doc-tiers-and-budgets.md)、dsh-archive-agent-notes） |
+| 只记一条 Note，不记全部 | 增生（accretion）是被预算与归档制度点名的敌人（[2026-07-04-doc-tiers-and-budgets](../../.agents/notes/archived/process/2026-07-04-doc-tiers-and-budgets.md)、dsh-archive-agent-notes） |
 | PR 描述列检查清单 | `report only commands run`（AGENTS.md） |
 | 错了整 PR 回滚 | git 历史证据（#2903 67-file mirror revert #2608） |
 | schema 默认放 execute 不放 schema | 契约设计原则：`Explicit > implicit at package boundaries`（AGENTS.md），且 token 经济：模型可见即成本 |
@@ -393,5 +386,4 @@ Pending: CI will run coverage gate + platform matrix.
 - 写的人只需要声明不可派生的本质
 - 规则由门禁和 cookbook 记住，不在脑子里
 
-这就是 DSH 最自然的开发习惯——**窄证据切片闭环**——在"做一个有 UI 卡的对话工具"这个具体需求上的全貌。
-"轻松"不是因为没有约束，而是因为约束被设计成了默认路径。
+这就是 DSH 最自然的开发习惯——**窄证据切片闭环**——在"做一个有 UI 卡的对话工具"这个具体需求上的全貌。"轻松"不是因为没有约束，而是因为约束被设计成了默认路径。

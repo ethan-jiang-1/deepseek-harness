@@ -26,7 +26,7 @@ English | [中文](yyyy-mm-dd-topic-title.zh.md)
 
 ## 最短的合格成品
 
-[`implemented/process/2026-09-22-workspace-release-ranges.md`](../../.agents/notes/implemented/process/2026-09-22-workspace-release-ranges.md) 全文 232 个词，四段齐全。摘出来看结构：
+[`archived/process/2026-09-22-workspace-release-ranges.md`](../../.agents/notes/archived/process/2026-09-22-workspace-release-ranges.md) 全文 232 个词，四段齐全。摘出来看结构：
 
 ```markdown
 ## Problem
@@ -87,7 +87,7 @@ exact ranges; packed-manifest tests check the emitted versions.
 <!-- agent-note-format: alternatives-not-recorded (pre-format Agent Note) -->
 ```
 
-活跃树里现在只有 **2 篇**用它（`event-domain-semantics.md`、`uniform-agent-note-format.md`），归档树里 6 篇——**说明这条例外是历史遗留通道，不是可用的省事写法。** 另有一条门禁规则收紧了它：注释只对 **2026-07-05 之前**的 Note 有效（`if (hasGrandfather && note.date >= FORMAT_ADOPTED) fail(...)`）。
+活跃树里现在有 **7 篇**用它（其中 `implemented/` 只剩 `2026-06-30-event-domain-semantics.md` 1 篇），归档树里 8 篇——**说明这条例外是历史遗留通道，不是可用的省事写法。** 另有一条门禁规则收紧了它：注释只对 **2026-07-05 之前**的 Note 有效（`if (hasGrandfather && note.date >= FORMAT_ADOPTED) fail(...)`）。
 
 ## implemented 里禁止出现的标题
 
@@ -101,9 +101,9 @@ BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance crite
 
 > `## Proposal` is a proposal-era heading; an implemented Agent Note states what is (fold it into Decision/Consequences/Testing)
 
-原因出自 [`docs/AGENTS.md:72`](../../docs/AGENTS.md) 的 slop 清单：**implemented Note 里的 spec-speak**（"should"、迁移计划、验收清单）。
+原因出自 [`docs/AGENTS.md:73`](../../docs/AGENTS.md) 的 slop 清单：**implemented Note 里的 spec-speak**（"should"、迁移计划、验收清单）。
 
-`## Risks` 不在禁用集里。**活跃 implemented 树里现在有 5 篇英文 Note 带着它正常通过了门禁**：`2026-06-15-ptc.md`、`2026-07-14-provider-routed-llm-adapters.md`、`2026-08-24-session-log-snapshot-corpus.md`、`2026-08-25-electron-desktop-packaging-and-updates.md`、`2026-09-17-windows-runtime-signature-cache.md`。README 希望把残余风险折进 `## Consequences`，但**门禁不管**——折进去是写法偏好，不是硬要求。
+`## Risks` 不在禁用集里。**活跃 implemented 树里现在有 6 篇英文 Note 带着它正常通过了门禁**：`2026-06-15-ptc.md`、`2026-07-14-provider-routed-llm-adapters.md`、`2026-08-24-session-log-snapshot-corpus.md`、`2026-08-25-electron-desktop-packaging-and-updates.md`、`2026-09-17-windows-runtime-signature-cache.md`、`2026-10-02-plugin-market-index-format.md`。README 希望把残余风险折进 `## Consequences`，但**门禁不管**——折进去是写法偏好，不是硬要求。
 
 各章节的合法性一览（README:103 点名了前三个）：
 

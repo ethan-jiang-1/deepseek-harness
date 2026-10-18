@@ -2,7 +2,7 @@
 
 ## 第一节 默认 catalog 里两个模型各自是什么
 
-`llm-deepseek` 省略 `models` 配置时公布的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:6-21`、`packages/llm/llm-deepseek/README.md:52`；0009 按 `dsh-v0.2.0-rc.2` 实测重写为两条，其中一条声明图像能力；0.1.5 时的四条目版本——含 `deepseek-v4-flash-vision-exp` 与 `deepseek-v4-flash`——已随上游同步移除）：
+`llm-deepseek` 省略 `models` 配置时公布的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:6-21`、`packages/llm/llm-deepseek/README.md:53`；0009 按 `dsh-v0.2.0-rc.2` 实测重写为两条，其中一条声明图像能力；0.1.5 时的四条目版本——含 `deepseek-v4-flash-vision-exp` 与 `deepseek-v4-flash`——已随上游同步移除）：
 
 | 模型 | 输入模态 | 定位 |
 |---|---|---|
@@ -11,9 +11,9 @@
 
 三个关键机制事实：
 
-1. **vision 是模型条目的属性，不是开关**。catalog 条目的 `inputModalities` 字段声明图片能力（类型见 `packages/llm/llm-deepseek/src/types.ts:21`；默认 catalog 唯一的 image-capable 条目见 `packages/llm/llm-deepseek/README.md:52`）；路由是否收图由"确切模型能力"决定，而非会话配置。catalog 是 advisory：未列出的模型 id 原样透传、按纯文本路由——所以"用 vision"必须真的把路由切到 image-capable 条目，不是开个设置。
-2. **`read_image` 工具的存在本身依赖两道门**：`ctx.attachments` 持久附件服务挂载（没挂则工具根本不注册，`packages/fs/tool-fs/src/index.ts:70` 条件注入）；执行时 `assertImageCapableRoute` 解析会话最新 `request/header` 的路由并要求 `inputModalities` 显式含 `'image'`，否则拒——"model … does not declare image input"（`tool-fs/src/read-image.ts:119-131`）。
-3. **切换路由有缓存代价**：`request/header` 记录 provider/model/effort 为会话级状态；模型路由一变，装配前缀的 DeepSeek cache 从第一个变更 token 起失效（`packages/llm/llm-deepseek/README.md:180`）。"干活用 Flash、关键验证切 vision"在长会话里每次都是一次前缀清零，值得按节而不是按请求切换。
+1. **vision 是模型条目的属性，不是开关**。catalog 条目的 `inputModalities` 字段声明图片能力（类型见 `packages/llm/llm-deepseek/src/types.ts:21`；默认 catalog 唯一的 image-capable 条目见 `packages/llm/llm-deepseek/README.md:53`）；路由是否收图由"确切模型能力"决定，而非会话配置。catalog 是 advisory：未列出的模型 id 原样透传、按纯文本路由——所以"用 vision"必须真的把路由切到 image-capable 条目，不是开个设置。
+2. **`read_image` 工具的存在本身依赖两道门**：`ctx.attachments` 持久附件服务挂载（没挂则工具根本不注册，`packages/fs/tool-fs/src/index.ts:82-86` 条件注入）；执行时 `assertImageCapableRoute` 解析会话最新 `request/header` 的路由并要求 `inputModalities` 显式含 `'image'`，否则拒——"model … does not declare image input"（`tool-fs/src/read-image.ts:119-131`）。
+3. **切换路由有缓存代价**：`request/header` 记录 provider/model/effort 为会话级状态；模型路由一变，装配前缀的 DeepSeek cache 从第一个变更 token 起失效（`packages/llm/llm-deepseek/README.md:181`）。"干活用 Flash、关键验证切 vision"在长会话里每次都是一次前缀清零，值得按节而不是按请求切换。
 
 ## 第二节 为什么 vision 是"验证手段"而不只是"看得见图"
 
@@ -33,12 +33,12 @@ DSH 对 UI/前端类工作的验证有一个结构性事实：**模型没有"指
 | 级 | 位置 | 默认预算 | 超限行为 |
 |---|---|---|---|
 | 准入 | `attachment-local` 每源 | ≤20MiB、≤64,000,000 px、单边 ≤8192px；每消息 ≤20 张 / 200MiB | 拒绝进入 |
-| 规范化 | 附件存储 | 长边 2048px、4MiB 安全帽；EXIF 方向应用、转 8-bit sRGB | 按 `Math.min(1, sqrt(maxPixels / (width×height)))` 向内取整缩放（`packages/attachment/attachment/src/request-projection.ts:18`） |
+| 规范化 | 附件存储 | 长边 2048px、4MiB 安全帽；EXIF 方向应用、转 8-bit sRGB | 按 `Math.min(1, sqrt(maxPixels / (width×height)))` 向内取整缩放（`packages/attachment/attachment/src/request-projection.ts:24`） |
 | 路由请求版本 | catalog 条目 | 默认走官方 vision token 网格（14px patch、3:1 降采样、单图 1024-token 帽，正方形最高 1302×1302、16:9 以 1708×961 发送）；条目可设 `imagePixelBudget` 总像素预算或 `'low'`（512×512）；单边 4096px 帽；编码目标默认 2MiB | 确定性缩放，不强制方形 |
 | 请求总量 | 适配器 | 文件引用 128MiB / 600 张；内联回退 20MiB | **最老图优先 offload**，替换为固定占位文本 |
 | 单文件 | Files API | 32MiB 硬限、默认 7 天过期 | 失效即重传一次，二次失败不再试 |
 
-（依据：`packages/attachment/attachment-local/README.md:41-45`、`packages/llm/llm-deepseek/README.md:94`（token 网格与 `'low'` 预设）、`:63-65`、`packages/llm/llm-deepseek/src/request-pricing.ts:20-31`、`src/file-store.ts:12`、`src/config.ts:48` 与 `src/defaults.ts:18`。0009 按 `dsh-v0.2.0-rc.2` 实测重钉：旧 640,000 总像素 / 1MiB 编码默认已被官方 token 网格 + 2MiB 编码目标取代，Files API 过期默认仍由 `llm-deepseek/src/config.ts` 承载、未随凭据拆分外移。）
+（依据：`packages/attachment/attachment-local/README.md:41-45`、`packages/llm/llm-deepseek/README.md:95`（token 网格与 `'low'` 预设）、`:64-68`、`packages/llm/llm-deepseek/src/request-pricing.ts:20-31`、`src/file-store.ts:12`、`src/config.ts:48` 与 `src/defaults.ts:18`。0009 按 `dsh-v0.2.0-rc.2` 实测重钉：旧 640,000 总像素 / 1MiB 编码默认已被官方 token 网格 + 2MiB 编码目标取代，Files API 过期默认仍由 `llm-deepseek/src/config.ts` 承载、未随凭据拆分外移。）
 
 第五级的 offload 占位文本值得读一遍：`[image omitted to fit request image limits; attachment sha256:…. …]`（`packages/llm/llm/src/content.ts:112`）——**旧图先出局**，且高水位投影让前缀不因每张新图改写。这就是长会话反复看截图的机制告诫：`read_image` 是"看一眼"，不是"存档"；同一张图要反复引用时，靠的是重新读文件，而不是指望历史里的图永远在场。
 

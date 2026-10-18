@@ -1,6 +1,6 @@
 # Answer · DSH 目录设计的总模型
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。
+源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）。
 
 ## 一句话答案
 
@@ -99,6 +99,7 @@ packages/fs/                  # 文件系统能力家族
 - `packages/api/` 与 `packages/typert/` 负责 Host/Client 之间的类型化 Remote/RPC 机制，不是另一个独立产品入口。
 - 组合叶子不再有 `examples/` 包组：可选 overlay 是 `apps/cli/config/examples/*/cordis.yml`（产品资产，`dsh --patch` 才挂）；0.1.7 线起 agent preset 走声明式重设计——shipped preset 是 `packages/bundle/web-app/presets/{standard,ptc,minimal,cordis}.patch.yml`，声明与注册在 `packages/preset/agent-preset/` + `agent-preset-registry/`。
 - `packages/client/` 已不只是 Web 壳：`resources` 提供 `ctx.resources` 资源模型，`ui-dockkit` 是平台静态模块，右栏与文件树各由 `ui-sidebar-*` 拥有。
+- `packages/experimental/` 是唯一按成熟度而非领域划分的组：0011 跨度把 `hooks/`、`webhook/`、`runtime-diagnostics/` 三组解散，全部可选包并入，组内 47 包（包总数按深度精确口径 342、组数 52）。它的定位是 `evaluated capabilities without a product-support commitment`；experimental 与 optional 是两件事，组外的包需要产品用途或 `scripts/product-package-policy.ts` 的显式分类。
 - `packages/test-support/` 是跨 package 的测试基础设施；普通行为测试仍跟随自己的 package 放在 `tests/`。
 
 ## 一个 package 内部应该怎样读
@@ -112,11 +113,12 @@ packages/<group>/<pkg>/
 ├── README.zh.md       # 配对中文文档
 ├── src/
 │   ├── index.ts       # 服务或插件入口
-│   ├── types.ts       # 仅类型；不是所有 package 都需要
-│   └── invariant.ts   # 可选加载的运行时关系检查
+│   └── types.ts       # 仅类型；不是所有 package 都需要
 ├── tests/             # 单元、集成或 real-composition 测试
 └── tsconfig.json      # package 自己的编译边界与项目引用
 ```
+
+（早期版本的这棵树里还有一项 `src/invariant.ts`。运行时 invariant 机制已在 0011 跨度整族退役——`@deepseek-ai/dsh-invariants` 包、各包的 `./invariant` companion 与其测试、`scripts/test-invariants.ts`、`scripts/verify-package-invariants.ts`、`scripts/verify-built-package-invariants.mjs`、`run-gates.ts` 的 invariant 门禁与 `ctx.invariants` 服务都已删除；新树里 `/invariant` 路径数量为 0，退役权威是 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)。）
 
 `lib/` 是构建产物，不是读实现的起点。先读 `README.md` 确认角色，再读 `package.json` 看它依赖的是 Definition 还是具体 Provider，然后进入 `src/index.ts`；若行为跨包，再沿 `ctx` key、事件名和 bundle row 搜索。
 

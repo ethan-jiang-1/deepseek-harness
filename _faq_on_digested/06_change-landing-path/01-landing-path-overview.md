@@ -22,7 +22,7 @@
 | 实施计划 | Plan Mode、plan review | 可选会话模式；批准才经 `exit_plan_mode` 退出 |
 | 实现 | `packages/`、`apps/`、`vendor/`、`python/` 等 | 与合同/证据/note 同一变更 |
 | 当前合同 | `docs/`、types、JSDoc、package README | current state，不写 change history |
-| 行为证据 | package tests、real composition、snapshots、invariants | 按行为表面选真实入口与 snapshot |
+| 行为证据 | package tests、real composition、snapshots | 按行为表面选真实入口与 snapshot |
 | 交付决定 | `.agents/notes/implemented/` | 同 diff 改写为现在式，并随代码事实更新 |
 | 语义兜底 | `.agents/skills/dsh-code-review`、`dsh-prose-standard` | 机器门禁不建立语义属性 |
 | 归档收敛 | `.agents/notes/archived/`、`dsh-archive-agent-notes`、`verify-archived-agent-notes` | 可选；只用于低未来价值 note |

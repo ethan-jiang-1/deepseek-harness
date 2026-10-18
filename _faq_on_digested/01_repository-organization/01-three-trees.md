@@ -1,6 +1,6 @@
 # 01 · 先分清三棵树
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。
+源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）。
 
 ## 为什么目录越看越乱
 
@@ -16,7 +16,7 @@
 
 ```text
 vendor/                 Cordis 框架与基础库
-packages/<group>/<pkg>  产品 package
+packages/<group>/<pkg>  产品 package（experimental/ 是按成熟度而非领域划分的组）
 apps/                   最终可执行入口（CLI、Web、桌面壳与私有 host）
 benchmarks/             仓库级性能门禁与 bench-only 依赖
 native/system/          原生 system 原语（Landlock / flock）与平台包
@@ -25,7 +25,7 @@ docs/ + website/        权威文档与站点投影
 scripts/                生成器与仓库门禁
 ```
 
-目录树不回答“本次运行加载了什么”。`packages/ssh/fs-ssh` 在仓库里存在，只说明项目维护这个 Provider；默认本地 profile 是否加载它，要看组合配置。（原例 `packages/e2b/fs-e2b` 已随 0.1.7 线删除——E2B POC 组退场，远程执行族落点 ssh 组。）
+目录树不回答“本次运行加载了什么”。`packages/ssh/fs-ssh` 在仓库里存在，只说明项目维护这个 Provider；默认本地 profile 是否加载它，要看组合配置。（原例 `packages/e2b/fs-e2b` 已随 0.1.7 线删除——E2B POC 组退场，远程执行族落点 ssh 组；0011 跨度另有 `hooks/`、`webhook/`、`runtime-diagnostics/` 三组解散，可选包整族迁入 `packages/experimental/`，组数与包数因此变化。）
 
 目录树也不完整表达 import 方向。`tool-fs` 和 `fs-local` 同处 `packages/fs/`，但两者都围绕 `fs` Definition 演化，Consumer 不应为了本地实现去依赖 `fs-local`。这要看第二棵图。
 

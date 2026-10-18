@@ -2,11 +2,11 @@
 
 ## 问题
 
-本专题主张「关键规则要下沉到可执行层」，但它自己主要是 prose。`_digested/verify.mjs` 查链接、UTF-8 与 SVG 结构，还读取 [`claims.json`](./claims.json) 核对基线与每个 claim 的证据路径，并用 `git ls-tree` / `git show` 重算六项指标，但不查判断真伪。所以本专题需要一套替代纪律，并且要诚实说明它的边界。
+本专题主张「关键规则要下沉到可执行层」，但它自己主要是 prose。`_digested/verify.mjs` 查链接、UTF-8 与 SVG 结构，还读取 [`claims.json`](./claims.json) 核对基线与每个 claim 的证据路径，并用 `git ls-tree` / `git show` 重算四项指标，但不查判断真伪。所以本专题需要一套替代纪律，并且要诚实说明它的边界。
 
 ## 基线
 
-全部判断对照 DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。上游同步后，按 `_change_log/` 复核本专题证据锚点；本专题不使用外部资料作为证据，事实一律以 DSH 官方文件与本基线为准。
+全部判断对照 DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`。上游同步后，按 `_change_log/` 复核本专题证据锚点；本专题不使用外部资料作为证据，事实一律以 DSH 官方文件与本基线为准。
 
 ## 出处分级
 
@@ -15,7 +15,7 @@
 | 标记 | 含义 | 可信度 | 用法 |
 |------|------|--------|------|
 | `[原文]` | Agent Note / AGENTS.md / 官方文档的直接陈述 | 高 | 可以引用为事实，但「原文说的是什么」与「我们推出的结论」必须分开 |
-| `[源码]` | 从 `46a7f68b09` 源码或生成物核对过的事实 | 高 | 可作为机制事实 |
+| `[源码]` | 从 `687f282e86` 源码或生成物核对过的事实 | 高 | 可作为机制事实 |
 | `[推断]` | 从事实推出的解释或因果 | 中 | 必须能指出让它变假的观察 |
 | `[框架]` | 不依赖 dsh 的通式（paved road、知识外置） | 低 | 只提供结构，压缩使用，不得冒充 dsh 发现 |
 
@@ -60,7 +60,7 @@
 7. **独立复现**：用另一份无上下文 prompt 做对照生成，或用只有 repo 路径的 agent 做检索对照；
 8. **可证伪性**：每条 `[推断]` 都能回答「哪份文件改掉后这句话变假」。
 
-dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 是检索索引，invariants/gates 是运行时验证，rejected notes 是负样本，archive 是遗忘策略，skills 是程序化判断。本专题应当吃自己的药。
+dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 是检索索引，gates 是提交前验证（运行时 invariant 层已在 `f028f25667` 整族退役），rejected notes 是负样本，archive 是遗忘策略，skills 是程序化判断。本专题应当吃自己的药。
 
 ### 归档事件：连「决定忘记什么」也被写成了判据
 
@@ -68,7 +68,7 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 
 1. **判据成文，且明文排除体量与年龄。** [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md) 的归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明确要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。
 2. **动作最小，因此可证伪。** 对该提交的 452 个英文配对与 452 个中文配对逐字节比对：全部是「0 删除行、恰好新增一行 `Archived: 2026-09-04`」，正文零改动；同一提交里对其余 note 的改动只有归档政策列明的入站链接修复（链接目标改写），判断层面的改写只有 7 篇 proposed→rejected（拒绝，不是归档）。**「归档」与「修订」因此是两个可分辨的动作**，而不是同一次编辑的副产物——这正是本页对 `[推断]` 要求的可证伪性。
-3. **封印有机器门禁。** [`archived/manifest.json`](../../.agents/notes/archived/manifest.json) 的 seal 数 510 → 1884；[`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 注册在 [`scripts/run-gates.ts:844`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单；README:42 同时规定归档件永久冻结、不得当作现行权威。
+3. **封印有机器门禁。** [`archived/manifest.json`](../../.agents/notes/archived/manifest.json) 的 seal 数 510 → 1884（0008 叙事口径的历史读数；`687f282e86` 基线实测 files 条目 2772）；[`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 注册在 [`scripts/run-gates.ts:854`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单；README:42 同时规定归档件永久冻结、不得当作现行权威。
 
 这也校正了一个容易误读的读数：同一窗口内 note 总数从 1704 涨到 1912，而活跃 `implemented/` 从 1288 降到 584——**归档没有消灭记录，只是把记录移进冻结层**；判断纪律的产物不是更少的文档，而是分层更清楚的文档。
 
@@ -80,12 +80,12 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 |----|-------|------|----------|--------------|
 | C1 | 可参与性 = 参与规则被字面外置并可执行的程度 | `[框架]` | 本文框架 | 找到一个规则大量在人脑但 agent 仍稳定做对的系统 |
 | C2 | dsh 的基底是插件图 + 事件流，loop 位于两者之间 | `[源码]` | [`docs/architecture.md`](../../docs/architecture.md) · [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md) | 源码显示 loop 不写日志或直接构造应用状态 |
-| C3 | quality-gates note 自称开发主力是 coding agent，并选择 gates over prose | `[原文]` | [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) | 原文被修改或归档且不再指向当前门禁 |
+| C3 | quality-gates note 自称开发主力是 coding agent，并选择 gates over prose | `[原文]` | [`2026-06-11-quality-gates`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)（已归档，历史快照） | 原文被修改或删除且不再指向当前门禁 |
 | C4 | 没有部落知识通道 → 知识必须外置 | `[推断]` | 本文因果节 | 找到同时期、同压力、但知识未外置的纯 agent 仓库 |
-| C5 | 「推荐用 agent 探索」是事后注脚 | `[推断]` | architecture 原文 + quality-gates note 的时间先后 | 找到更早的官方设计记录把 agent 读者当作源头 |
-| C6 | 门禁与 invariant 让关键规则可执行 | `[源码]` | `scripts/run-gates.ts` · invariant 源码 | 关键规则存在且长期只有 prose、无红灯 |
+| C5 | dsh 的 agent 读者定位来自生产方式自述，不是 architecture 的设计声明；architecture 那句推荐句已在 `3f35ca7b5b` 撤下 | `[推断]` | quality-gates note 的时间先后 | 找到更早的官方设计记录把 agent 读者当作源头 |
+| C6 | 关键规则由门禁与类型系统变成可执行检查；运行时 invariant 机制已整族退役，无幸存实例 | `[源码]` | [`scripts/run-gates.ts`](../../scripts/run-gates.ts) · [`AGENTS.md`](../../AGENTS.md) | 关键规则存在且长期只有 prose、无红灯 |
 | C7 | 正确路径分四层：patch / 扩展点 / seam / loop | `[推断]` | [`docs/architecture.md`](../../docs/architecture.md) · [`extension-cookbook`](../../docs/cookbook/extension-cookbook.md) · [`AGENTS.md`](../../AGENTS.md) | dsh 官方或源码显示某层参与不成立 |
-| C8 | pnpm note 明确把生态熟悉度作为 package manager 选型理由 | `[原文]` | [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md) | pnpm note 被修订，删除了 agent 生态熟悉度作为理由 |
+| C8 | pnpm note 明确把生态熟悉度作为 package manager 选型理由 | `[原文]` | [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/archived/process/2026-06-16-pnpm-over-yarn.md)（已归档，历史快照） | pnpm note 被修订，删除了 agent 生态熟悉度作为理由 |
 | C9 | dsh 形状的性价比由组合压力决定 | `[推断]` | [`docs/architecture.md`](../../docs/architecture.md) · [`docs/capability-seams.md`](../../docs/capability-seams.md) | 低组合压力场景下 dsh 形状仍被证明普遍更划算 |
 | C10 | 本专题的可执行化做到 prose + 出处 + claims.json 的路径与数字检查 | `[源码]` | 本专题 verify 脚本 · claims.json | 本专题加入更多机器可核验 claim 后需更新 |
 | C11 | 反馈设计立场是「harness 报告，模型裁决」：命令级失败是标记文本，isError 只留给基础设施失败与控制决定，工具失败无 harness 侧重试 | `[源码]` | `tool-bash/render.ts` · `agent-loop/agent.ts` · `llm-retry` | 命令级失败改为 isError，或工具失败加入 harness 侧重试/熔断 |
@@ -94,7 +94,7 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 
 ## 自我适用：用三个问题检验本专题
 
-1. **规则在哪层？** 本专题的判断主体仍落在第二层（prose），但最小第三层已经存在：`_digested/verify.mjs` 读取 [`claims.json`](./claims.json)，检查 baseline、每个 claim 的证据路径存在，并用 `git ls-tree` / `git show` 重新计算六项指标（note 文件数、扩展表行数、invariant 计数）。它仍不判断 claim 语义真伪——诚实边界在这里。
+1. **规则在哪层？** 本专题的判断主体仍落在第二层（prose），但最小第三层已经存在：`_digested/verify.mjs` 读取 [`claims.json`](./claims.json)，检查 baseline、每个 claim 的证据路径存在，并用 `git ls-tree` / `git show` 重新计算四项指标（note 文件总数、活跃 implemented 数、扩展表行数、包总数）。它仍不判断 claim 语义真伪——诚实边界在这里。
 2. **正确路径与错误路径的摩擦差多少？** 每条判断带出处标记：`[原文]` / `[源码]` 与 `[推断]` / `[框架]` 分开。「说不出从哪挖出来的判断」因此变得显眼——这是本专题自己的 paved road。
 3. **错误何时被发现？** 上游同步时按 `_change_log/` 复核（基线变了会牵动证据锚点），以及每次人读时。没有机器帮本专题抓错——诚实地说，这就是第二层载体的处境，也是第三层载体更值得向往的原因。
 
@@ -105,11 +105,11 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 ## 证据入口（DSH 官方）
 
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders：可机械检查的规则优先）
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-33、39 行；当前状态散文与一个事实一个家）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-33、40-41 行；当前状态散文与一个事实一个家）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期与格式）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 `0.1.2-rc.1` 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」；曾有过的「空 invariant 是显式结论」纪律已作废，被 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md) 取代）
-- [`../../docs/testing.md`](../../docs/testing.md)（第 10、35、40、53-55 行；元验证与 snapshot 政策）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md) 与 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（均已归档，历史快照；两篇 note 记录的运行时 invariant 机制已在 `f028f25667` 整族退役，权威记录改为 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)）
+- [`../../docs/testing.md`](../../docs/testing.md)（第 9-10、35、37-41、53-55 行；覆盖门禁、元验证与 snapshot 政策）
 
 ## 本专题内部产物（非 DSH 证据）
 

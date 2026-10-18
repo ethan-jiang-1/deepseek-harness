@@ -10,7 +10,7 @@
 
 - [四个层次](#一页总览四个层次不要混成一件事)：运行时、仓库、发布物与治理。
 - [开发闭环](#dsh-native-闭环)：外部结果、owner、条件性记录、完整交付、验证与评审。
-- [注意事项](#最重要的注意事项)：goal、mock、录制刷新、invariant、loop 修改与主仓制度。
+- [注意事项](#最重要的注意事项)：goal、mock、录制刷新、已退役的 invariant companion、loop 修改与主仓制度。
 - [第一笔交付](#从新仓库开始)：从当前仓库判断是否已经具备继续开发的基础。
 
 ![独立 DSH 插件仓的原生开发闭环](./figures/plugin-development-loop.svg)
@@ -74,7 +74,7 @@ DSH 的本地检查策略又要求验证保持聚焦：选择会为当前回归�
 
 > Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression.
 >
-> — DSH [pre-push checks Skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md#select-relevant-evidence)
+> — DSH [pre-push checks Skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md#select-relevant-evidence)
 
 ### 5. 让测试观察真实对象
 
@@ -82,9 +82,9 @@ DSH 的本地检查策略又要求验证保持聚焦：选择会为当前回归�
 
 测试层按观察对象分工，不是固定的 test-first 顺序。局部测试验证函数或组件行为；真实 Loader 组合测试验证配置、依赖注入和 app/process 入口；snapshot 固定模型、协议或用户可见输出；e2e 重新读取文件或命令结果；真实 API 测试验证外部模型与服务。每层只能证明自己实际断言的属性。
 
-DSH 主仓测试政策对产品可见插件要求 non-unit real composition，而不是只用手工 `ctx.plugin(...)` 的单元套件：从 Loader 和应用入口启动，仅 mock 外部服务或非确定性输入，从模型请求、持久状态或用户可见输出断言结果。每个非平凡（non-trivial）的模型、协议或用户可见变化还必须在同一 PR 中新增或更新 keyless recorded-session scenario；真实组合测试不能自动替代这项录制场景义务。独立插件仓建议采用这两项验证原则，并自行建立适用的测试入口；调整场景或测试层时应说明观察对象、替代证据及未覆盖之处，不把适配说成 DSH 主仓的可选规则。具体政策见 DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md)。三件资产的精确条件、例外和原文位置见 [Agent 契约证据](../sdlc-reference/12-agent-contract-evidence.md)。
+DSH 主仓测试政策对产品可见插件要求 non-unit real composition，而不是只用手工 `ctx.plugin(...)` 的单元套件：从 Loader 和应用入口启动，仅 mock 外部服务或非确定性输入，从模型请求、持久状态或用户可见输出断言结果。每个非平凡（non-trivial）的模型、协议或用户可见变化还必须在同一 PR 中新增或更新 keyless recorded-session scenario；真实组合测试不能自动替代这项录制场景义务。独立插件仓建议采用这两项验证原则，并自行建立适用的测试入口；调整场景或测试层时应说明观察对象、替代证据及未覆盖之处，不把适配说成 DSH 主仓的可选规则。具体政策见 DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/testing.md)。三件资产的精确条件、例外和原文位置见 [Agent 契约证据](../sdlc-reference/12-agent-contract-evidence.md)。
 
-测试资产还需要独立的预期来源。Recorded-session 的场景 owner 负责记录或刷新选中的 Session，共享引用只读且无环；工作区结果由独立的 `workspace.expected/` 作为 oracle，录制或刷新过程不能顺手改写它。否则测试可能只证明“工具重新生成了自己的答案”，而不是证明插件对外产生了正确结果。参见 DSH [snapshot ownership](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/snapshots/AGENTS.md)。
+测试资产还需要独立的预期来源。Recorded-session 的场景 owner 负责记录或刷新选中的 Session，共享引用只读且无环；工作区结果由独立的 `workspace.expected/` 作为 oracle，录制或刷新过程不能顺手改写它。否则测试可能只证明“工具重新生成了自己的答案”，而不是证明插件对外产生了正确结果。参见 DSH [snapshot ownership](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/snapshots/AGENTS.md)。
 
 ### 6. 验证用户实际安装的形态
 
@@ -116,9 +116,9 @@ Goal 保存同一会话的目标并帮助工作续接。Goal 变为 `complete` �
 
 刷新 snapshot 或 Session 只是更新测试资产。接受用户可见行为变化仍需要由变更意图、独立预期和语义评审明确决定；record/refresh 不应自动改写独立 workspace oracle。
 
-### 不要为了“符合形式”添加空 invariant
+### 不要设计已经退役的 invariant companion
 
-只有当两个独立观察可能分叉时，runtime invariant 才有价值。检查 service 存在、插件 metadata、effect 或固定示例的空 invariant 不能证明行为正确，反而会增加维护成本。DSH 的 invariant 规则应按实际可分叉关系判断。
+DSH 当前版本没有 runtime invariant 机制：`@deepseek-ai/dsh-invariants`、各包的 `./invariant` 子路径、`ctx.invariants` 服务与 `verify-package-invariants` 门禁都已整族退役（机制与迁移见 [可执行反馈](../repo-harness/05-executable-feedback.md)）。owner 关系由 standing order、semantic review 与 recorded-session 证据维持，插件仓不要设计 `./invariant` 导出或在 `cordis.yml` 里挂同名 companion。
 
 ### 不要未经扩展点确认就改 agent loop
 
@@ -130,7 +130,7 @@ DSH 主仓的 GitHub Project、Issue metadata policy、weighted approval、平�
 
 ## 从新仓库开始
 
-先用 DSH [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/user/develop/basic/index.md)建立最小可加载模块，按任务读取 [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/cordis-tutorial/index.md) 与 [插件作者入口](../repo-harness/09-plugin-author-entry.md)，再为独立仓逐步补齐自身的 package/config、真实组合测试和用户可见预期。插件以本地模块加载、配置 bundle 发布和仓库如何组织是不同层次，不能由运行时插件示例推出唯一仓库模板。
+先用 DSH [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/user/develop/basic/index.md)建立最小可加载模块，按任务读取 [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/cordis-tutorial/index.md) 与 [插件作者入口](../repo-harness/09-plugin-author-entry.md)，再为独立仓逐步补齐自身的 package/config、真实组合测试和用户可见预期。插件以本地模块加载、配置 bundle 发布和仓库如何组织是不同层次，不能由运行时插件示例推出唯一仓库模板。
 
 一个合理的第一笔交付是：一种可观察行为、一个明确的行为 owner、一条真实 Loader 组合路径、一个在回归时会失败的证据，以及一份能解释当前使用方式的 README。完成后，新参与者应能从当前仓库回答“现在是什么、为什么这样选、什么固定住它、怎样证明发布物可用”。
 

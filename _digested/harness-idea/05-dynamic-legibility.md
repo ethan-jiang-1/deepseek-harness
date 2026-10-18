@@ -6,7 +6,7 @@
 
 ## 查询面一：`dsh --dump-config` 输出实际运行的树
 
-静态 import 图只说明「可能加载什么」；Profile、Bundle、Patch、realm 与条件表达式共同决定实际拓扑。`dsh --dump-config` 把 boot 会用到的组合按 `applyEntryPatches` 打印出来，且与 boot 共用同一算法，不另写一份会漂移的实现（官方落点：`docs/architecture.md:36` 与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
+静态 import 图只说明「可能加载什么」；Profile、Bundle、Patch、realm 与条件表达式共同决定实际拓扑。`dsh --dump-config` 把 boot 会用到的组合按 `applyEntryPatches` 打印出来，且与 boot 共用同一算法，不另写一份会漂移的实现（官方落点：`docs/architecture.md:34` 与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
 
 对读者来说，这是**部署时组合的运行时答案**：不知道哪个 provider 生效，先 dump；问题报告缺最终配置树，常常连复现对象都没描述完整。
 
@@ -16,7 +16,7 @@
 
 ## 查询面三：`cordis_inspect_*` 问活运行时
 
-静态索引只覆盖源码平面；运行时可能还有临时插件、pending fiber、实际服务提供者（service provider）。[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md) 给了模型一组**只读**的 inspect 工具——注意该 note 里写的「current names are cordis_inspect, cordis_mount, cordis_unmount」已经过期，0.1.7 线（#4745）起只注册两个只读名字：`cordis_inspect_list`、`cordis_inspect_query`（`packages/extensions/tool-cordis/src/index.ts:23,42`；`docs/tool-catalog.md`），变更类工具退役、持久安装归 plugin_manager（详见下文试验面一节）。
+静态索引只覆盖源码平面；运行时可能还有临时插件、pending fiber、实际服务提供者（service provider）。[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)（已归档，历史快照）给了模型一组**只读**的 inspect 工具——注意该 note 早期版本里写的「current names are cordis_inspect, cordis_mount, cordis_unmount」已经过期，0.1.7 线（#4745）起只注册两个只读名字：`cordis_inspect_list`、`cordis_inspect_query`（`packages/extensions/tool-cordis/src/index.ts:23,42`；`docs/tool-catalog.md`），变更类工具退役、持久安装归 plugin_manager（详见下文试验面一节）。
 
 两个只读工具各有分工：`cordis_inspect_list` 列当前有哪些 Provider 与插件；`cordis_inspect_query` 按 `platform`（host / client）+ `provider` + `method`（+ 可选 `input`）向某个 Provider 的 manifest 方法发起**参数化查询**（两工具的注册与分工，`packages/extensions/tool-cordis/src/index.ts:23,42`）。~~旧 `cordis_inspect_self`（列全部 Plugin / 返回源码与诊断）~~（0.1.7 线随 #4745 收缩退役；名字只残留在 slot-catalog 帮助文案与 UI 测试的旧 key 清单里）。旧版那种「一次调用列出 `plugins`/`services`/`tools`/`api`/`events`/`temporary` 各节」的单一 `cordis_inspect` 已不存在。
 
@@ -32,11 +32,11 @@
 
 - **两只读模型工具**：`cordis_inspect_list` / `cordis_inspect_query`（`packages/extensions/tool-cordis/src/index.ts:23,42`）暴露只读运行时发现；查询纪律写在工具描述里（先发现 provider 与方法，再按返回 schema 查询，不能猜名称、不能把 Inspect method 当业务 Service）。catalog 生成器拒绝 freshness 漂移，详查避免为完整 API 声明付每请求的账。
 - **程序化 runner**：`cordis-host-runner` / `cordis-client-runner` 保留生命周期与浏览器消费者的编程 API，不再暴露为模型工具。Host definition 在 fresh vm realm 里求值、拿 context façade（服务访问要声明注入、框架内部隐藏、注册归属 definition 自己的 fiber），但 vm 只防意外全局污染——注入的 fs/shell/network 服务仍有真实权限，**不是安全边界**。
-- **持久安装走 `plugin_manager`**：agent 写的持久化安装、审批与 profile 持久化归 Creator persistent plugin decision（`.agents/notes/implemented/architecture/2026-09-16-creator-persistent-plugin-management.md`）；现行 note 明言 "Shipped model tools do not create or mutate runner definitions"（`2026-07-08-self-referential-cordis-toolset.md:17`）。定义仍是进程内的，重启与 resume 不从历史调用重建。
+- **持久安装走 `plugin_manager`**：agent 写的持久化安装、审批与 profile 持久化归 Creator persistent plugin decision（`.agents/notes/implemented/architecture/2026-09-16-creator-persistent-plugin-management.md`）；现行 note 明言 "Shipped model tools do not create or mutate runner definitions"（[`.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md:18`](../../.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)，已归档）。定义仍是进程内的，重启与 resume 不从历史调用重建。
 
 > The vm prevents accidental global pollution; injected filesystem, shell, and network services still have real authority, so it is not a security boundary.
 >
-> —— `.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md:14`（基线 `46a7f68b09…`；该 note 已被上游整篇重写为 "Cordis runtime inspection and runner isolation"，与两工具现状对齐，0007 登记的脱节缺口随之关闭）
+> —— `.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md:16`（已归档，历史快照；基线 `687f282e86…`；该 note 已被上游整篇重写为 "Cordis runtime inspection and runner isolation"，与两工具现状对齐，0007 登记的脱节缺口随之关闭）
 
 `[原文]` 同时要记住它是 **opt-in、bash-equivalent trust**：能自动 install 与「可信」是两件事，这条面也不应进默认产品组合。
 
@@ -46,17 +46,17 @@
 
 - 每 step 重新读取插件图，但 prompt section、工具 schema、历史前缀稳定时，重新组装仍得到相同前缀；
 - 真正使模型面失效的是变化穿透到请求：工具集改变、section 改写、模型切换、compaction 替换历史；
-- `request/header` 快照记录实际生效的请求面，模型可见 ⟺ 已记录由 invariant 断言。
+- `request/header` 快照记录实际生效的请求面，模型可见 ⟺ 已记录由 `SessionEventMap` 的 required-on-read 与 `deriveMessages()` 投影承担（`0.1.7-rc.1` 线上的运行时断言层已随 `f028f25667` 整族退役）。
 
 `[推断]` 这个「动态控制平面（dynamic control plane） vs 稳定模型面（stable model surface）」的区分可以从 DSH 的 turn flow 与 request/header 机制推出；仓库落点见 [`docs/architecture.md`](../../docs/architecture.md) 的 turn flow。它说明 dsh 的运行时动态没有牺牲读者最需要的稳定性——变化有明确的可见边界。
 
-> **Model-visible means logged.** Anything that reaches a model request must be reconstructable from the log, and a runtime invariant asserts it.
+> **Model-visible means logged.** Every model request must be reconstructable from the log. New model-visible inputs require session events.
 >
-> —— `docs/architecture.md:125`（基线 `46a7f68b09…`）
+> —— `docs/architecture.md:124`（基线 `687f282e86…`；`0.1.7-rc.1` 线上的后续句 "and a runtime invariant asserts it" 已随机制退役删除）
 
 > The loop builds each request from logged state. `EpochHeader` records call config, ... and records the authoritative returned tool order ... through full `request/header` snapshots. The rendered prompt is derived history — the `system/message` at surface node 0, plus any later system node an `in-history` route appended — so the header and the derived history together make the request reconstructable from the session log.
 >
-> —— `docs/subsystems/llm-streaming.md:704`（基线 `46a7f68b09…`）
+> —— `docs/subsystems/llm-streaming.md:761`（基线 `687f282e86…`）
 
 ## 结论
 
@@ -66,10 +66,10 @@
 
 ## 证据入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)（第 125 行；model-visible ⟺ logged）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 124 行；model-visible ⟺ logged）
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) / [`docs/tool-catalog.md`](../../docs/tool-catalog.md) / [`docs/persistence-catalog.md`](../../docs/persistence-catalog.md)（生成目录实例）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件索引）
-- [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)（第 17、23、27、37、43、59 行；inspect / mount / unmount 的合同、边界校验与进程内存语义）
+- [`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)（已归档，历史快照；第 12-18 行；inspect 两工具、runner 生命周期与进程内存语义）
 - [`../../packages/extensions/tool-cordis/README.md`](../../packages/extensions/tool-cordis/README.md)（工具包合同）
 - [`docs/tool-execution-pipeline.md`](../../docs/tool-execution-pipeline.md)（工具执行管道）
 - [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md)（请求面变化与重建）

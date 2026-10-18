@@ -8,7 +8,7 @@
 - 行号按下面的基线测量。**规则文件如果被改过，行号会漂，路径不会**——所以先看路径，再用行号定位。
 - 标「实测」的条目是我在本仓库跑命令数出来的，不是规则原文；仓库每天都在长，这类数字最先过期。
 
-> **基线：** 工作树 `caf78ed639`（本组页面成稿时的 commit）。测量后工作树前进到 `a98317a9a4`，但我逐文件 `git diff caf78ed639..a98317a9a4` 核过：本文引用的全部规则文件、门禁脚本与 skill **一字未改**，所以行号仍然有效。
+> **源码核验基线：** DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）。本页行号按该基线逐条重核过；规则文件被上游改过之后行号会漂，路径不会。
 
 ## 一、规则原文的 owner 文件
 
@@ -48,9 +48,9 @@
 | 上一条是**共享模块**，错误随 `verify-agent-note-format` 等门禁失败 | [`scripts/verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts) 第 38 行调用 `walkAgentNoteTree()` | — |
 | 格式与树门禁**跳过** `.zh.md` | [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) | 第 64 行 |
 | 三件套完整性、中英逐章节一致性 | [`scripts/verify-translation-pairing.ts`](../../scripts/verify-translation-pairing.ts) | 全文 |
-| 章节键取**英文**标题 slug（第 133 行 `slug(headingText(enSection.heading))`），键的构成说明见第 102 行 | [`scripts/translation-pairing-record.ts`](../../scripts/translation-pairing-record.ts) | 第 102 / 133 行 |
+| 章节键取**英文**标题 slug（第 223 行 `slug(headingText(enSection.heading))`），键的构成说明见第 187 行 | [`scripts/translation-pairing-record.ts`](../../scripts/translation-pairing-record.ts) | 第 187 / 223 行 |
 | 「标题文字本身会被翻译，因此不能参与跨语言对齐」这句理由 | [`scripts/translation-brief.ts`](../../scripts/translation-brief.ts) | **第 125 行**注释 |
-| 各门禁在总入口里如何挂载 | [`scripts/run-gates.ts`](../../scripts/run-gates.ts) | `agent-note-format` 第 843 行、`archived-agent-notes` 第 844 行、`translation-pairing` 第 819 行 |
+| 各门禁在总入口里如何挂载 | [`scripts/run-gates.ts`](../../scripts/run-gates.ts) | `agent-note-format` 第 853 行、`archived-agent-notes` 第 854 行、`translation-pairing` 第 829 行 |
 | 归档件的冻结与三件套规则 | [`scripts/verify-archived-agent-notes.ts`](../../scripts/verify-archived-agent-notes.ts) | 全文 |
 | 六类型调用的共享类型集合 | [`scripts/archived-agent-notes.ts`](../../scripts/archived-agent-notes.ts) | 第 5 行 import |
 
@@ -69,16 +69,16 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 | 文档写作与预算 | [`dsh-doc/SKILL.md`](../../.agents/skills/dsh-doc/SKILL.md) |
 | 破坏性变更要立刻写 upgrade guide | [`dsh-create-upgrade-guide/SKILL.md`](../../.agents/skills/dsh-create-upgrade-guide/SKILL.md) |
 | 推送前该跑哪些检查 | [`dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md) |
-| 删除类提案的四件证据：消费者证据、被移除的维护成本、放弃的能力、可观察的验收条件；proposal 骨架含 `Acceptance criteria` 与 `Risks` | [`dsh-find-simplifications/SKILL.md`](../../.agents/skills/dsh-find-simplifications/SKILL.md) 第 61 行 |
+| 删除类提案的四件证据：消费者证据、被移除的维护成本、放弃的能力、可观察的验收条件；proposal 骨架含 `Acceptance criteria` 与 `Risks` | [`dsh-find-simplifications/SKILL.md`](../../.agents/skills/dsh-find-simplifications/SKILL.md) 第 59 行 |
 | Note 的 change-story 可以用历史阶段名；`this cut` / `v1` / `today` 以及 Note 自身的修订史不行；`## Alternatives considered` 是 review 裁决的归宿 | [`dsh-trim-cot-leakage/SKILL.md`](../../.agents/skills/dsh-trim-cot-leakage/SKILL.md) 第 35、37 行；[`references/examples.md`](../../.agents/skills/dsh-trim-cot-leakage/references/examples.md) 第 97、111 行 |
 | 升级指南超过 500 词时，多出来的理由移进 Agent Note | [`dsh-create-upgrade-guide/SKILL.md`](../../.agents/skills/dsh-create-upgrade-guide/SKILL.md) 第 44 行 |
-| 实现了 proposed Note 的 PR 要在同一 diff 改写成现在时，并核对路径、名称与机制 | [`dsh-code-review/SKILL.md`](../../.agents/skills/dsh-code-review/SKILL.md) 第 47 行 |
+| 实现了 proposed Note 的 PR 要在同一 diff 改写成现在时，并核对路径、名称与机制 | [`dsh-code-review/SKILL.md`](../../.agents/skills/dsh-code-review/SKILL.md) 第 55 行 |
 | 作者顺序适用于面向人的文档，不适用于 Agent Note；implemented 里的迁移计划与未来时态属于 slop | [`dsh-doc/SKILL.md`](../../.agents/skills/dsh-doc/SKILL.md) 第 91、93 行 |
 | Note 相关改动在推送前跑 `pnpm run doc-sync` | [`dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md) 第 35 行 |
 | 文档结构规则不适用于 Agent Note | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 7 行 |
 | tier 表把 rationale 指派给 Agent Note | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 25 行 |
-| 写作规则仍要求应用 Agent Note 创建标准 | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 40 行 |
-| slop 清单点名 implemented Note 里的 spec-speak | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 72 行 |
+| 写作规则仍要求应用 Agent Note 创建标准 | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 41 行 |
+| slop 清单点名 implemented Note 里的 spec-speak | [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 73 行 |
 
 ## 四、作为范例的真实文件
 
@@ -86,12 +86,12 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 
 | 用来说明什么 | 文件 |
 |---|---|
-| 出口 ③：小改动、但放宽了安全保证（171 词） | [`implemented/feature/2026-09-16-sandbox-same-mode.md`](../../.agents/notes/implemented/feature/2026-09-16-sandbox-same-mode.md) |
-| 出口 ③：一条看不出规律的长期约定（232 词） | [`implemented/process/2026-09-22-workspace-release-ranges.md`](../../.agents/notes/implemented/process/2026-09-22-workspace-release-ranges.md) |
+| 出口 ③：小改动、但放宽了安全保证（171 词） | [`archived/feature/2026-09-16-sandbox-same-mode.md`](../../.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md) |
+| 出口 ③：一条看不出规律的长期约定（232 词） | [`archived/process/2026-09-22-workspace-release-ranges.md`](../../.agents/notes/archived/process/2026-09-22-workspace-release-ranges.md) |
 | rejected 的价值：防止重新开讼 | [`rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md`](../../.agents/notes/rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md) |
-| 「机械门禁优于散文约定」的实测结论 | [`implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) |
-| 多语言三件套的实际形态 | [`implemented/feature/2026-09-16-sandbox-same-mode.i18n.yaml`](../../.agents/notes/implemented/feature/2026-09-16-sandbox-same-mode.i18n.yaml)（同目录另有 `.md` 与 `.zh.md`） |
-| `.i18n.yaml` 的键形态：`/{H1 标题 slug}/{h2 标题 slug}` | 同上文件，例如 `/agent-note-repeated-sandbox-modes-need-no-approval/decision` |
+| 「机械门禁优于散文约定」的实测结论 | [`archived/process/2026-06-11-quality-gates.md`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md) |
+| 多语言三件套的实际形态 | [`archived/feature/2026-09-16-sandbox-same-mode.i18n.yaml`](../../.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.i18n.yaml)（同目录另有 `.md` 与 `.zh.md`） |
+| `.i18n.yaml` 的键形态：`/{H1 标题 slug}/{h2 标题 slug}` | 活跃 Note 的 sidecar，例如 [`implemented/feature/2026-06-15-ptc.i18n.yaml`](../../.agents/notes/implemented/feature/2026-06-15-ptc.i18n.yaml) 里的 `/agent-note-ptc-mode-the-model-writes-typescript-against-the-tool-registry/decision`；归档件改用两侧文件的 git blob 哈希记录 |
 
 ## 五、实测数字（会过期）
 
@@ -99,11 +99,11 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 
 | 数字 | 怎么得到的 |
 |---|---|
-| 活跃 578 篇 = `proposed` 39 + `implemented` 525 + `rejected` 14；归档 641 篇 | 数 `.agents/notes/` 下各生命周期目录（**不含** `.zh.md` 与 `.i18n.yaml`），基线 `caf78ed639`，2026-10-08 |
-| implemented 各类型：architecture 201 / feature 132 / process 69 / bug-fix 63 / testing 33 / simplification 27 | 同上，按类型子目录分别计数 |
-| 5 篇 implemented 仍带 `## Risks` | 全树 grep `^## Risks`，逐篇确认其在 `implemented/` 下 |
-| 2 篇活跃 Note 使用 grandfather 注释（另有 6 篇在归档树） | 全树 grep `agent-note-format: alternatives-not-recorded` |
-| 改名历史里 20 处 `notes/rejected/` ↔ `notes/proposed/` 相关变更，全部是 `proposed` → `rejected` | `git log --diff-filter=R --name-status -- .agents/notes` |
+| 活跃 343 篇 = `proposed` 42 + `implemented` 293 + `rejected` 8；归档 924 篇 | 数 `.agents/notes/` 下各生命周期目录的 Note（**不含** `.zh.md` 与 `.i18n.yaml`，也**不含目录自身的 `AGENTS.md`/`CLAUDE.md`/`README.md`**——后三者是导航与指令文件，不是 Note；`implemented` 的 293 可由六类分项 177+40+34+11+18+13 交叉验证），基线 `dsh-v0.2.1-rc.2`（`687f282e86`），2026-10-18 |
+| implemented 各类型：architecture 177 / feature 40 / process 34 / bug-fix 11 / testing 18 / simplification 13 | 同上，按类型子目录分别计数 |
+| 6 篇 implemented 仍带 `## Risks` | 全树 grep `^## Risks`，逐篇确认其在 `implemented/` 下 |
+| 7 篇活跃 Note 使用 grandfather 注释（另有 8 篇在归档树） | 全树 grep `agent-note-format: alternatives-not-recorded` |
+| 跨生命周期的改名全部以 `rejected/` 为目标（`proposed/` → `rejected/`），没有一处反向 | `git log --diff-filter=R --name-status -- .agents/notes` |
 | 2026-09-18 之后一个月：新增 Note ≈ 110，非合并提交 ≈ 914 | Note 按文件名日期计，提交按 `--no-merges` 计；重命名与合并会同时抬高两侧，只用于给量级感，不做逐年比较 |
 
 ## 六、移植时的判断依据
@@ -115,7 +115,7 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 | 哪些是**必须照抄的机制**：规则 owner 文件 + 会失败的门禁 + 三件套配对 | [`.agents/notes/README.md`](../../.agents/notes/README.md)、[`.agents/notes/AGENTS.md`](../../.agents/notes/AGENTS.md)、[`scripts/verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts)、[`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) |
 | 哪些是 **DSH 自己的装载方式**：具体目录名（`.agents/notes/`）、具体类型名、多语言三件套 | 目录名与类型集合写在 [`.agents/notes/README.md`](../../.agents/notes/README.md) 与 [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)；多语言政策写在 [`docs/i18n/README.md`](../../docs/i18n/README.md) |
 | 「文件说明现在，Note 说明为什么」这条分工 | [`docs/AGENTS.md`](../../docs/AGENTS.md) 的 tier 表与 rationale 行 |
-| 为什么值得机械门禁而不是散文约定 | [`implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) |
+| 为什么值得机械门禁而不是散文约定 | [`archived/process/2026-06-11-quality-gates.md`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md) |
 
 > 移植建议本身（八条照抄、五条可发明）属于本 FAQ 的**综合判断**，来源是上表这些文件的对照阅读，不是原文引用。
 
@@ -130,4 +130,4 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 
 ---
 
-*基线：工作树 `caf78ed639`，2026-10-08 测量；同日复核至 `a98317a9a4`，本文引用的规则文件在该区间无改动。*
+*源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）；本文引用的规则文件与门禁脚本在这一轮里有多处改动（行号已按新基线重核），数量类事实也会随仓库变化。*

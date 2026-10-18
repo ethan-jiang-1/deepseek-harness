@@ -27,13 +27,13 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 > Agent Notes are effectively RFCs written by agents: durable proposals and decision records that preserve rationale, alternatives, consequences, and required verification.
 >
-> — DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/AGENTS.md)。成为 Note 的是一份给以后的参与者看的决定记录。它要能独立回答「为什么是这条路」。
+> — DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/AGENTS.md)。成为 Note 的是一份给以后的参与者看的决定记录。它要能独立回答「为什么是这条路」。
 
 规则把「写不写」收成一个条件。代码和文档装得下的 why，仍然不够；测试也装不下，才写。
 
 > Add or update an Agent Note in the same PR only for lasting decision rationale that code, tests, and existing documentation do not explain. A proposal for substantial future work starts in `proposed/`; a decision already made starts in `implemented/`.
 >
-> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md#when-to-write-one)。`only for` 把 Note 收成例外。后一句规定起点：proposal 只属于实现前要评审的重大工作，已做出的决定直接进入 `implemented/`。
+> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md#when-to-write-one)。`only for` 把 Note 收成例外。后一句规定起点：proposal 只属于实现前要评审的重大工作，已做出的决定直接进入 `implemented/`。
 
 拿这次改动对三个出口：
 
@@ -45,13 +45,13 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 > Updating the Agent Note that already owns the decision satisfies the rule; do not create a duplicate. Mechanical or local edits, including local UI presentation and interaction changes, are exempt. An Agent Note is never edited into a *different decision*: supersede it with a new one, and keep both notes cross-linked unless the old note is later fully consolidated under the rule below.
 >
-> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md#when-to-write-one)。同一决定不复制。一篇 Note 不能被改写成另一个决定；要换决定，就新写一篇，并与旧篇交叉链接。跟踪既有决定的新位置，是必须做的更新。
+> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md#when-to-write-one)。同一决定不复制。一篇 Note 不能被改写成另一个决定；要换决定，就新写一篇，并与旧篇交叉链接。跟踪既有决定的新位置，是必须做的更新。
 
 `bug-fix` 是正式类别，表示修正缺陷或补上复盘暴露的缺口。一次修复成为 Note，是因为它留下了别处装不下的决定；只是让代码回到既有决定之内，走第一个出口。篇幅、改动文件数都不是这条判据。归档侧把同一边界写在删除上：局部 bug 修复、性能变更、新能力或实质行为决定，不因为实现小就够格删掉。
 
 两则基线上的对照：
 
-- 小改动仍然成为了 Note。[Repeated sandbox modes need no approval](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/feature/2026-09-16-sandbox-same-mode.md) 记录：`danger-full-access` 已经生效时，再次请求同一模式应直接返回。拒绝这次调用会挡住已授权的工作，又挡不住任何权限上升。若不写下这个边界，后来的人会把它当成漏洞补上。这篇 Note 同时写明，它只部分取代沙箱决定里的 non-widening rejection，原决定的隔离和逐次批准仍然有效。
+- 小改动仍然成为了 Note。[Repeated sandbox modes need no approval](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md) 记录：`danger-full-access` 已经生效时，再次请求同一模式应直接返回。拒绝这次调用会挡住已授权的工作，又挡不住任何权限上升。若不写下这个边界，后来的人会把它当成漏洞补上。这篇 Note 同时写明，它只部分取代沙箱决定里的 non-widening rejection，原决定的隔离和逐次批准仍然有效。
 - 一次合格交付没有成为 Note。PR #5004 `fix(web): show model IDs in monospace and names on hover` 改了模型设置列表的呈现，同一变更更新了组件、样式、README 和测试，没有新增 Agent Note。局部 UI 呈现由现有文档和测试解释。
 
 一篇文件要真的成为 Note，还得写下它击败了什么。只写结论、不写输家，等于邀请后来的人把同一条路再争论一遍。这段强制要求在 [§4](#4-文件格式让状态转换可检查)。
@@ -66,11 +66,11 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 分类是 `scripts/agent-note-tree.ts` 中的封闭集合，门禁拒绝未知目录。`refactor` 不在集合中；不增加能力的删除或收缩归 `simplification`。`architecture` 记录交付源码的结构决定；`process` 记录代码周围的工具、政策和流程。
 
-路径树本身就是工作清单：仓库刻意不设集中式 `INDEX.md`（历史上的生成索引已被移除，理由由 no-index Agent Note 拥有），读者按 lifecycle/class 目录浏览或全库搜索；Note 之间的交叉引用只用相对 Markdown 链接，不用裸文字或编号。
+路径树本身就是工作清单：仓库刻意不设集中式 `INDEX.md`（历史上的生成索引已被移除，理由写在 `.agents/notes/README.md` 的 “Layout and naming” 里），读者按 lifecycle/class 目录浏览或全库搜索；Note 之间的交叉引用只用相对 Markdown 链接，不用裸文字或编号。
 
-> Cross-references between Agent Notes use relative markdown links [...] — never bare prose or numbers — so they are mechanically checkable and survive moves between folders. The active lifecycle tree is the working inventory: browse its lifecycle/class folders or search the repository. Do not add a centralized `INDEX.md`; the no-index Agent Note owns the rationale.
+> Cross-references between Agent Notes use relative markdown links [...] — never bare prose or numbers — so they are mechanically checkable and survive moves between folders. The active lifecycle tree is the working inventory: browse its lifecycle/class folders or search the repository. Do not add a centralized `INDEX.md`: it duplicates path metadata and makes unrelated note changes contend on one generated file.
 >
-> — DSH [`.agents/notes/README.md` 的 “Layout and naming”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md#layout-and-naming)。相对链接让引用可被机械检查，也让 Note 在 lifecycle 目录间移动后链接仍然有效；目录树代替索引，避免第二份会漂移的清单。
+> — DSH [`.agents/notes/README.md` 的 “Layout and naming”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md#layout-and-naming)。相对链接让引用可被机械检查，也让 Note 在 lifecycle 目录间移动后链接仍然有效；集中索引会重复路径元数据，还让不相关的 Note 改动争用同一个生成文件，因此目录树代替索引。
 
 ## 3. 三个 lifecycle 状态与一个冻结存放地
 
@@ -98,7 +98,7 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 > A decision recorded without what it beat invites re-litigation — the failure Agent Notes exist to prevent. Alternatives are recorded, never invented.
 >
-> — DSH [`.agents/notes/README.md` 的 “Alternatives considered — mandatory”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md#alternatives-considered--mandatory)。Agent Note 的存在理由是防止重新开讼：每篇 Note 固定携带“为什么不是另一条路”，让后续参与者从已知理由开始，而不是重新提出已被击败的方案。
+> — DSH [`.agents/notes/README.md` 的 “Alternatives considered — mandatory”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md#alternatives-considered--mandatory)。Agent Note 的存在理由是防止重新开讼：每篇 Note 固定携带“为什么不是另一条路”，让后续参与者从已知理由开始，而不是重新提出已被击败的方案。
 
 格式门禁只证明结构满足规则，不证明决定正确、替代方案真实或 shipped facts 与代码一致；这些仍需语义 review。没有一份「写 Agent Note」的 skill：路径和骨架由上面的门禁执行，留下还是归档的语义判断留在 [§6](#6-写完之后留下归档还是合并后删除) 的 skill。
 
@@ -119,19 +119,19 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 > Judge every note semantically; word count and age are discovery aids, never archive criteria.
 >
-> — DSH [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-archive-agent-notes/SKILL.md)。判的是这份理由还能不能指导以后的工作。
+> — DSH [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-archive-agent-notes/SKILL.md)。判的是这份理由还能不能指导以后的工作。
 
 每新增一篇 Note，都要在同一个 PR 里搜索同一决定、机制或被拒方案，并分类：
 
 > Every new Agent Note triggers a supersession check. Search the active tree for older notes covering the same decision or mechanism, classify any full or partial supersession with dsh-archive-agent-notes, and archive every qualifying implemented triplet in the same PR. Keep partial supersessions active and cross-linked.
 >
-> — DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/AGENTS.md)。`qualifying` 指符合归档条件的那几篇，不是每一篇被提到的旧 Note。部分取代的两边都继续活动，并交叉链接。
+> — DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/AGENTS.md)。`qualifying` 指符合归档条件的那几篇，不是每一篇被提到的旧 Note。部分取代的两边都继续活动，并交叉链接。
 
 完全取代还有另一条出路。新 owner 已经吸收旧篇全部独有内容时，旧三件套删除，不进归档：
 
 > An implemented Agent Note that is fully superseded may be consolidated into the current owning note and deleted. Before deletion, the owner must preserve every unique rationale, alternative, consequence, required verification, and named coverage gap; repair every inbound link; and delete the Chinese counterpart and consistency record in the same change. Partial supersession does not qualify: keep both notes cross-linked and update every fact that remains current.
 >
-> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md#when-to-write-one)。合并删除的前提是独有内容已经活在新 owner 里。不得把旧文件改写成相反结论，也不得只靠 git history 留底。
+> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md#when-to-write-one)。合并删除的前提是独有内容已经活在新 owner 里。不得把旧文件改写成相反结论，也不得只靠 git history 留底。
 
 | 情况 | 结局 |
 |---|---|
@@ -151,13 +151,14 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 ## 证据入口
 
-- DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md#when-to-write-one)：成为 Note 的条件、豁免、禁止改写成另一个决定、完全取代后的合并删除。
-- DSH [`.agents/notes/README.md` 的 “Archiving and deletion”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md#archiving-and-deletion)：留下、归档、直接删除，以及 proposed 永不归档。
-- DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/AGENTS.md)：Agent Note 的身份，以及新增 Note 触发 supersession check。
-- DSH [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-archive-agent-notes/SKILL.md)：按未来价值分类，以及归档一次的五个动作。字数和年龄不是判据。
-- DSH [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md)：路径、六个 class、统一正文结构。
-- DSH [no-index Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/process/2026-07-19-remove-generated-agent-note-index.md)：活动树为什么不设集中索引。
-- DSH [implemented Note 子树规则](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/AGENTS.md)：implemented Note 如何随已交付路径、名称和机制保持当前。
-- DSH [archived Note 子树规则](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/archived/AGENTS.md)：归档 triplet 的冻结与 seal 约束。
-- DSH [统一格式 Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/process/2026-07-05-uniform-agent-note-format.md)：为什么三种活动 lifecycle 使用一套可检查格式。
-- DSH [Repeated sandbox modes need no approval](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/feature/2026-09-16-sandbox-same-mode.md)：一次小改动仍然成为 Note 的对照。
+- DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md#when-to-write-one)：成为 Note 的条件、豁免、禁止改写成另一个决定、完全取代后的合并删除。
+- DSH [`.agents/notes/README.md` 的 “Archiving and deletion”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md#archiving-and-deletion)：留下、归档、直接删除，以及 proposed 永不归档。
+- DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/AGENTS.md)：Agent Note 的身份，以及新增 Note 触发 supersession check。
+- DSH [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-archive-agent-notes/SKILL.md)：按未来价值分类，以及归档一次的五个动作。字数和年龄不是判据。
+- DSH [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md)：路径、六个 class、统一正文结构。
+- DSH [`.agents/notes/README.md` 的 “Layout and naming”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md#layout-and-naming)：路径编码、交叉引用规则与不设集中索引的理由。
+- DSH [no-index Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/process/2026-07-19-remove-generated-agent-note-index.md)：移除生成索引那次决定的历史记录（已归档，不是当前权威）。
+- DSH [implemented Note 子树规则](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/implemented/AGENTS.md)：implemented Note 如何随已交付路径、名称和机制保持当前。
+- DSH [archived Note 子树规则](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/AGENTS.md)：归档 triplet 的冻结与 seal 约束。
+- DSH [统一格式 Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/process/2026-07-05-uniform-agent-note-format.md)：为什么三种活动 lifecycle 使用一套可检查格式。
+- DSH [Repeated sandbox modes need no approval](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md)：一次小改动仍然成为 Note 的对照。

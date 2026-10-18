@@ -18,7 +18,7 @@
 
 | 阶 | 证据 | 默认 | 成本 | 样板（主仓） |
 |---|---|---|---|---|
-| **L0** | 导出形态守卫：`expect('default' in mod).toBe(false)` + `unwrapExports` round-trip | **必做** | 一行断言 | `packages/lsp/tool-lsp/tests/load-path.spec.ts:15` |
+| **L0** | 导出形态守卫：`expect('default' in mod).toBe(false)` + `unwrapExports` round-trip | **必做** | 一行断言 | `packages/lsp/tool-lsp/tests/load-path.spec.ts:14` |
 | **L1** | 行为 spec：挂**真依赖服务**，只把最外层包装换成假体；从注册后的真入口调 | **必做** | 低 | `packages/todo/tool-todo/tests/tool-todo.spec.ts` |
 | **L2** | HMR-safety：dispose 你的 fiber，断言贡献消失 | **必做**（有注册表贡献时） | 低 | `tool-todo/tests/projection.spec.ts` |
 | **L3** | REAL composition：真 Loader 读临时 `cordis.yml` boot 你的插件，断言 Config 的**两脸**（模型可见措辞 + 接受行为） | **必做** | 中 | `tool-todo/tests/loader-composition.spec.ts` |
@@ -116,7 +116,7 @@ your-plugin-repo/
 
 ## 明确不要做的六件事
 
-1. **不要照抄主仓的治理**：corpus policy、corpus gate、四面分工、record/refresh 写回——那是「一个仓库集中维护 210 个场景」的配额与所有权制度（[04](./04-what-its-worth.md)）。**自定义一份 manifest + 自己的消费者是对的**（形状二正是这么做的）；错的只是把主仓的规模制度搬进一个三五条轨迹的仓。
+1. **不要照抄主仓的治理**：corpus policy、corpus gate、四面分工、record/refresh 写回——那是「一个仓库集中维护 250 个场景」的配额与所有权制度（[04](./04-what-its-worth.md)）。**自定义一份 manifest + 自己的消费者是对的**（形状二正是这么做的）；错的只是把主仓的规模制度搬进一个三五条轨迹的仓。
 2. **不要依赖 `@deepseek-ai/dsh-session-snapshot`。** 它 `import vitest`、面向语料级守卫；插件仓需要的是 `@deepseek-ai/dsh-llm-replay`（见 [03](./03-what-a-plugin-can-reuse.md)）。
 3. **不要手写模型 chunk 当唯一真相。** 主仓明确否决过「手写 `llm.json`」，理由是这样夹具就不是系统的真实产物了（[01](./01-why-dsh-needs-it.md)）。手写应该只用于**最小复现场景**，不是常规做法。
 4. **不要把用户日志直接提交进仓。** 用 `authored` 重写最小版本（[03](./03-what-a-plugin-can-reuse.md) 的 `live` / `authored` 一节）。

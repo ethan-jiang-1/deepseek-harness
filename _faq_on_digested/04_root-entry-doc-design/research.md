@@ -6,7 +6,7 @@
 >
 > For agents, follow [AGENTS.md](AGENTS.md).
 
-来源：`README.md:55-57`（基线 `46a7f68b09…`）
+来源：`README.md:55-59`（基线 `46a7f68b09…`；该区间在三棵基线树上位置一致）
 
 中文侧同样保留分流：
 
@@ -32,7 +32,7 @@
 - `## Editing these instructions`
 - `## Vendoring policy`
 
-来源：`AGENTS.md:5-155`（基线 `46a7f68b09…`）
+来源：`AGENTS.md:5-185`（基线 `687f282e86…`；`46a7f68b09…` 时为 `:5-155`，文件长度 182）
 
 ## 3. Root AGENTS 的定义：standing orders，不是教程
 
@@ -68,9 +68,11 @@
 
 ## 7. 机器可检查的链接
 
-> Link repository references with relative Markdown paths, never bare filenames or Agent Note numbers. `verify-md-links` rejects missing targets and dead `#fragment` anchors.
+> Use relative Markdown links for current files and tags or PR numbers for historical references. `verify-md-links` checks local targets. Reference validation (`scripts/verify-repository-references.ts`) rejects actual commit identifiers and disallowed organization URLs in maintained files.
 
-来源：`docs/AGENTS.md:75`（基线 `46a7f68b09…`）
+来源：`docs/AGENTS.md:77`（基线 `687f282e86…`；引文只去掉了原文的 Markdown 链接目标，文字未改）
+
+（勘误：本节原引文为「Link repository references with relative Markdown paths, never bare filenames or Agent Note numbers. `verify-md-links` rejects missing targets and dead `#fragment` anchors.」，并标注 `docs/AGENTS.md:75`（基线 `46a7f68b09…`）。该句在 `46a7f68b09`、`639ed01539` 与 NEW 三棵树上都不存在，属无法溯源的引文；现已按 NEW 树逐字改写并改钉 `:77`。）
 
 ## 8. 生成目录是查询面，不是手写文档
 
@@ -93,15 +95,15 @@
 
 > Update package README and JSDoc contracts in the same commit as behavior, and verify them against code with [dsh-prose-standard](.agents/skills/dsh-prose-standard/SKILL.md).
 
-来源：`packages/AGENTS.md:26`（基线 `46a7f68b09…`）
+来源：`packages/AGENTS.md:27`（基线 `46a7f68b09…` 为 `:26`）
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 
-来源：`packages/AGENTS.md:27`（基线 `46a7f68b09…`）
+来源：`packages/AGENTS.md:28`（基线 `46a7f68b09…` 为 `:27`）
 
 > Package READMEs put durable consumer gaps and non-obvious maintainer constraints under `## Known Limitations and Deferred Work`.
 
-来源：`packages/AGENTS.md:28`（基线 `46a7f68b09…`）
+来源：`packages/AGENTS.md:29`（基线 `46a7f68b09…` 为 `:28`）
 
 ## 10. 双语文档配对
 

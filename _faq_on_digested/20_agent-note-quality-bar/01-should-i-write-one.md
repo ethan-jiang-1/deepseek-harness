@@ -20,7 +20,7 @@
 **写 Agent Note 是例外，不是流程关口。** 大多数改动——包括大多数 bug 修复——根本不到这里：
 
 - 2026-09-18 之后的一个月里，新增 Agent Note 约 **110 篇**，同期非合并提交约 **914 个**；
-- `bug-fix` 是正式类目（implemented 侧 63 篇）。让代码回到既有决定之内，走出口 ①；这次修复改变或补上了一条决定，走出口 ③。
+- `bug-fix` 是正式类目（现役 `implemented/` 侧 11 篇，归档侧 182 篇）。让代码回到既有决定之内，走出口 ①；这次修复改变或补上了一条决定，走出口 ③。
 
 真正的问题从来不是「改动大不大」「是不是 bug」，而是：
 
@@ -49,7 +49,7 @@
 
 ### 出口 ③：改动很小，但它放宽了一条安全保证
 
-[`implemented/feature/2026-09-16-sandbox-same-mode.md`](../../.agents/notes/implemented/feature/2026-09-16-sandbox-same-mode.md)（171 词）
+[`archived/feature/2026-09-16-sandbox-same-mode.md`](../../.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md)（171 词）
 
 `approveEscalation` 在请求的模式已经生效时直接返回——几行改动。但如果不写，下一个人看到「重复请求危险模式却不拒绝」，**很可能会把它当成权限校验的漏洞补上**。它命中了「未来会有人踩」，因为这次改动**动了既有决定的边界**，还顺带记下了部分取代关系：
 
@@ -57,7 +57,7 @@
 
 ### 出口 ③：一条看不出规律的长期约定
 
-[`implemented/process/2026-09-22-workspace-release-ranges.md`](../../.agents/notes/implemented/process/2026-09-22-workspace-release-ranges.md)（232 词）
+[`archived/process/2026-09-22-workspace-release-ranges.md`](../../.agents/notes/archived/process/2026-09-22-workspace-release-ranges.md)（232 词）
 
 为什么 `workspace:*` 和 `workspace:~` 混着用？因为发布节奏不同（DSH 包共用一个产品发布，vendor 与 native 各自独立）。没有这篇 Note，下一个人只会看到一堆看不出规律的范围符号，然后按直觉统一它们。
 
@@ -73,11 +73,7 @@
 
 > Mechanical or local edits, including local UI presentation and interaction changes, are exempt.
 
-局部 UI 改动默认走出口 ①：文案、间距、颜色、图标、状态指示、布局、可见性条件。但**UI 代码不是一张空白豁免**：
-
-> Changes involving persistence, protocols, permissions, cross-component state ownership, or shared interaction rules still use the lasting-value test above.
-
-碰到持久化、协议、权限、跨组件状态归属或共享交互规则，就回到三个出口重判。一个校准例子：去掉一个冗余的状态点、同时保留转换指示——理由能放进 PR 描述、测试能抓住行为，走出口 ①。
+局部 UI 改动默认走出口 ①：文案、间距、颜色、图标、状态指示、布局、可见性条件。但**UI 代码不是一张空白豁免**：豁免按「这次改动有没有产生新决定」判，不按改动落在哪一层判——碰到持久化、协议、权限、跨组件状态归属或共享交互规则，还是要回到三个出口重判。一个校准例子：去掉一个冗余的状态点、同时保留转换指示——理由能放进 PR 描述、测试能抓住行为，走出口 ①。
 
 ### 反向也要记住
 
@@ -124,4 +120,4 @@
 
 ---
 
-*基线：工作树 `caf78ed639`，2026-10-08 实测；门槛相关的规则原文见 [`.agents/notes/README.md`](../../.agents/notes/README.md)。*
+*源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）；门槛相关的规则原文见 [`.agents/notes/README.md`](../../.agents/notes/README.md)。*

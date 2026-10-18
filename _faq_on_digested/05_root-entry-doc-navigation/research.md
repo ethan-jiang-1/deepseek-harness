@@ -100,15 +100,15 @@
 
 > Update package README and JSDoc contracts in the same commit as behavior, and verify them against code with dsh-prose-standard.
 
-来源：`packages/AGENTS.md:26`
+来源：`packages/AGENTS.md:27`
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 
-来源：`packages/AGENTS.md:27`
+来源：`packages/AGENTS.md:28`
 
 > Package READMEs put durable consumer gaps and non-obvious maintainer constraints under `## Known Limitations and Deferred Work`.
 
-来源：`packages/AGENTS.md:28`
+来源：`packages/AGENTS.md:29`
 
 ## 已核对的相关消化材料
 

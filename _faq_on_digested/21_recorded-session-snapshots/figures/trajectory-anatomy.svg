@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
   <title>一份 session.jsonl 的解剖：它就是 trajectory</title>
-  <desc>左侧是 snapshots/session/bash-tool-turn/session.v4.jsonl 的 22 行事件，按颜色分成六组：首行 header、会话配置、turn 与 step 包围、模型可见的输入、请求头（模型真正收到什么）、模型的输出与工具往返。右侧三张卡说明同一份文件可以按三种粒度取用：只看单条事件（断言某个事件存在与顺序）、只看请求头（钉住我给模型加了什么）、整条轨迹回放（无 key 回归基线），成本依次抬高。底部说明它缺的四类失败——首个 chunk 之前就抛、接受之后再抛、取消或挂起、注入重试——这四类日志里根本不存在，要用 replay.override.json 补。</desc>
+  <desc>左侧是 snapshots/session/bash-tool-turn/session.v4.jsonl 的 24 行事件，按颜色分成六组：首行 header、会话配置、turn 与 step 包围、模型可见的输入、请求头（模型真正收到什么）、模型的输出与工具往返。右侧三张卡说明同一份文件可以按三种粒度取用：只看单条事件（断言某个事件存在与顺序）、只看请求头（钉住我给模型加了什么）、整条轨迹回放（无 key 回归基线），成本依次抬高。底部说明它缺的四类失败——首个 chunk 之前就抛、接受之后再抛、取消或挂起、注入重试——这四类日志里根本不存在，要用 replay.override.json 补。</desc>
 
   <rect width="1200" height="760" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">一份 session.jsonl 的解剖</text>
   <text x="600" y="58" text-anchor="middle" fill="#64748b">一行一个事件、首行 header；它同时记着「模型收到什么」「模型说了什么」「世界被改成了什么」</text>
 
   <rect x="40" y="76" width="470" height="536" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="60" y="102" font-size="13" font-weight="700" fill="#334155">实测：bash-tool-turn/session.v4.jsonl（22 行）</text>
+  <text x="60" y="102" font-size="13" font-weight="700" fill="#334155">实测：bash-tool-turn/session.v4.jsonl（24 行）</text>
   <text x="60" y="122" fill="#64748b" font-size="11">一次「提问 → 调工具 → 总结」的完整闭环</text>
 
   <rect x="56" y="134" width="440" height="18" rx="4" fill="#e2e8f0"/>
@@ -42,18 +42,20 @@
   <rect x="56" y="398" width="440" height="18" rx="4" fill="#ede9fe"/>
   <text x="66" y="411" font-size="11" fill="#5b21b6">16　tool/call　← bash("echo TERMINAL_OK")</text>
   <rect x="56" y="420" width="440" height="18" rx="4" fill="#ede9fe"/>
-  <text x="66" y="433" font-size="11" fill="#5b21b6">17　tool/result　← isError=false</text>
+  <text x="66" y="433" font-size="11" fill="#5b21b6">17–18　job/registered · job/settled　← 后台任务登记与结算</text>
+  <rect x="56" y="442" width="440" height="18" rx="4" fill="#ede9fe"/>
+  <text x="66" y="455" font-size="11" fill="#5b21b6">19　tool/result　← isError=false</text>
 
-  <rect x="56" y="442" width="440" height="18" rx="4" fill="#f1f5f9"/>
-  <text x="66" y="455" font-size="11" fill="#334155">18　step/end</text>
   <rect x="56" y="464" width="440" height="18" rx="4" fill="#f1f5f9"/>
-  <text x="66" y="477" font-size="11" fill="#334155">19　step/start</text>
-  <rect x="56" y="486" width="440" height="18" rx="4" fill="#dcfce7"/>
-  <text x="66" y="499" font-size="11" fill="#166534">20　assistant/message　← 模型输出：reasoning + text</text>
-  <rect x="56" y="508" width="440" height="18" rx="4" fill="#f1f5f9"/>
-  <text x="66" y="521" font-size="11" fill="#334155">21　step/end</text>
+  <text x="66" y="477" font-size="11" fill="#334155">20　step/end</text>
+  <rect x="56" y="486" width="440" height="18" rx="4" fill="#f1f5f9"/>
+  <text x="66" y="499" font-size="11" fill="#334155">21　step/start</text>
+  <rect x="56" y="508" width="440" height="18" rx="4" fill="#dcfce7"/>
+  <text x="66" y="521" font-size="11" fill="#166534">22　assistant/message　← 模型输出：reasoning + text</text>
   <rect x="56" y="530" width="440" height="18" rx="4" fill="#f1f5f9"/>
-  <text x="66" y="543" font-size="11" fill="#334155">22　turn/end</text>
+  <text x="66" y="543" font-size="11" fill="#334155">23　step/end</text>
+  <rect x="56" y="552" width="440" height="18" rx="4" fill="#f1f5f9"/>
+  <text x="66" y="565" font-size="11" fill="#334155">24　turn/end</text>
 
   <text x="60" y="580" font-size="11" fill="#64748b">两种记法：V0 / V1 历史夹具把模型流记成显式 assistant/chunk 行；</text>
   <text x="60" y="598" font-size="11" fill="#64748b">V3 / V4 一行一事件、流紧凑内嵌在 assistant/message 里。回放两边都认。</text>

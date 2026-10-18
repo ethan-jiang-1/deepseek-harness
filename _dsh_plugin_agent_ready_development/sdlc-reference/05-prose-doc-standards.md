@@ -6,7 +6,7 @@ DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 
 
 > Each fact has one home: the tier whose job it is; elsewhere, link there.
 >
-> — DSH [`docs/AGENTS.md` 的 “The tier taxonomy”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这条规则解释为什么当前行为、决定理由、操作步骤和生成目录必须分属不同 owner。
+> — DSH [`docs/AGENTS.md` 的 “The tier taxonomy”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这条规则解释为什么当前行为、决定理由、操作步骤和生成目录必须分属不同 owner。
 
 ## 1. 一个事实先找 owner
 
@@ -18,14 +18,15 @@ DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 
 | 子树 `AGENTS.md`（`packages/`、`docs/`、`.agents/notes/`） | 只属于该子树的 orders |
 | `docs/architecture.md` | 组合、主干、扩展点与 capability seam 的有序地图 |
 | `docs/subsystems/` | 子系统 types、semantics 与生成的 Cordis API |
-| `docs/persistence-changes/` | 持久化类型变更的唯一 ack 入口：类型变更声明、发布对比与历史格式 schema（`docs/AGENTS.md:27` 的 Persistence history 行，0008 跨度新增） |
+| `docs/persistence-changes/` | 持久化类型变更的唯一 ack 入口：类型变更声明、发布对比与历史格式 schema（`docs/AGENTS.md:28` 的 Persistence history 行，0008 跨度新增） |
 | `.agents/notes/` | 现行决策记录：为什么、放弃了什么、需要什么验证 |
+| `docs/defensive-patterns/` | 本仓库在 review 中执行的规则，按 artifact 分页：一页通用 bug 类，加各域页面（0011 跨度新增） |
 | `docs/postmortem/` | 事故故事——唯一允许 war story 叙事的层 |
 | `docs/cookbook/` | 带编号验证步骤的 how-to |
 | `docs/user/` | 面向产品的指南，由文档站发布 |
 | package README | 每个包的 config、行为、失败、限制、extension points 与 Model Experience |
 | `docs/development.md` | 贡献者上手、日常工作流与 CI 摘要 |
-| 生成的 reference（`subsystems/` 的 cordis-surface 区域、`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`） | 从 source 重新生成、带 freshness 门禁的穷举英文源 |
+| 生成的 reference（`subsystems/` 的 cordis-surface 区域、`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`cli-help`） | 从 source 重新生成、带 freshness 门禁的穷举英文源 |
 | Skills（`.agents/skills/`） | 可复用工作流与专门决策标准 |
 
 高层文档只概括直接子项的 purpose、responsibility 和 high-level behavior；更低层细节链接到 owning descendant。生成目录改 owner source 或 generator，不能手改产物。
@@ -66,8 +67,8 @@ Durable prose 直接陈述当前 actor、行为、条件、时机、modality、�
 
 ## 证据入口
 
-- DSH [文档标准](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/AGENTS.md)：tier owner、tutorial/reference 区分、当前状态写作与字数预算。
-- DSH [`dsh-doc` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-doc/SKILL.md)：文档放置、语料审计、校验流程，以及 canonical docs 到 VitePress projection 的网站发布路径。
-- DSH [`dsh-prose-standard` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-prose-standard/SKILL.md)：完整命题与各类 prose 必须覆盖的行为、失败和所有权。
-- DSH [`dsh-trim-cot-leakage` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-trim-cot-leakage/SKILL.md)：怎样识别并移除作者会话视角。
-- DSH [`dsh-translate-docs` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-translate-docs/SKILL.md)：只有显式调用才进入的整篇翻译扩展流程。
+- DSH [文档标准](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/AGENTS.md)：tier owner、tutorial/reference 区分、当前状态写作与字数预算。
+- DSH [`dsh-doc` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-doc/SKILL.md)：文档放置、语料审计、校验流程，以及 canonical docs 到 VitePress projection 的网站发布路径。
+- DSH [`dsh-prose-standard` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-prose-standard/SKILL.md)：完整命题与各类 prose 必须覆盖的行为、失败和所有权。
+- DSH [`dsh-trim-cot-leakage` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-trim-cot-leakage/SKILL.md)：怎样识别并移除作者会话视角。
+- DSH [`dsh-translate-docs` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-translate-docs/SKILL.md)：只有显式调用才进入的整篇翻译扩展流程。

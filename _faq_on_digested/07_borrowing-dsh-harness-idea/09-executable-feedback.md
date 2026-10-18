@@ -1,6 +1,6 @@
 # 可执行反馈：做错了会被抓住
 
-> **术 · 反馈。** 本页是实战：DSH 的六层反馈各是什么、本地和 CI 怎么分工、检查怎么证明自己会拦人、invariant 什么时候写。配 [`落地总纲`](./06-step-by-step-guide.md) Phase 4 用——十维评估里「变更闭环」维的证据环亮红时，来这页抄作业。
+> **术 · 反馈。** 本页是实战：DSH 的五层反馈各是什么、本地和 CI 怎么分工、检查怎么证明自己会拦人，以及运行时关系那一层退役后留下了什么纪律。配 [`落地总纲`](./06-step-by-step-guide.md) Phase 4 用——十维评估里「变更闭环」维的证据环亮红时，来这页抄作业。
 
 ## 先把规则变成命令
 
@@ -27,7 +27,7 @@
 
 同样的纪律也定义了 agent 的义务边界，还是那份记录的原话：「Agents inspect the outgoing diff and run the narrowest tests and checks that cover its behavior once. CI owns exhaustive coverage, built-artifact checks, and the platform matrix.」
 
-## 这样做：六层各查各的，别让一层冒充另一层
+## 这样做：五层各查各的，别让一层冒充另一层
 
 | 反馈层 | DSH 的典型机制 | 能证明 | 不能单独证明 |
 |---|---|---|---|
@@ -35,7 +35,6 @@
 | Load / parser | config schema 校验、引用解析、fail loud | 输入在最早可解析点合法 | 行为满足意图 |
 | 局部行为 | unit tests、per-file 100% coverage | 模块正例、错误、生命周期 | 已发行入口与完整输出 |
 | 组装行为 | snapshots、real-composition 测试、e2e | 真实入口产生预期外部结果 | 设计选择合理 |
-| 运行时关系 | package `./invariant` | 活系统中 owned relationship 持续成立 | 没有可观察关系的性质 |
 | 语义判断 | code review（人或 agent）、用户验收 | 意图、架构、风险对齐 | 每个机械细节都已执行 |
 
 每一层在 DSH 仓库里都有具名的真实检查，抓一个回归该去哪层一目了然：
@@ -44,10 +43,11 @@
 - **Load/parser**：`verify-cordis-config`——配置在加载时解析校验，坏引用直接 fail loud，不带病启动；
 - **局部行为**：`pnpm run test:coverage`——per-file 100%（`packages/*/*/src`），防御性死分支要 `/* v8 ignore */` 加理由，不许删；
 - **组装行为**：`test:snapshot`——无 key 回放录制会话，走真实 profile 入口；`test:expected`——进程级期望输出；
-- **运行行时关系**：`verify-package-invariants`——各包的 `./invariant` 安装器，空壳直接判 fail（见下文）；
 - **语义判断**：`dsh-code-review` skill + 人类作者 PR 的加权批准门禁——人和 agent 都能做 reviewer，但意图判断不外包给机器。
 
 关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 绿不代表产品工作，snapshot 绿不代表 API 合理，review 也不该手工重复绿色 gate 已经精确拒绝的格式问题。
+
+DSH 曾有过第六层「运行时关系」：每个包发布 `./invariant` companion、把 package 拥有的权威关系注册进 `ctx.invariants`，`verify-package-invariants` 对空壳直接判 fail。0.2.1-rc.2 起这套机制整族退役（[升级指南](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)，归档记录 [省略空壳 companion 的判据](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）——留下的可迁移纪律是它当初的取舍：**有关系才有检查、没有可观察关系就写清省略理由，不拿空壳凑数**；`model-visible ⟺ logged` 这类规则改由 assembled-transcript snapshot、双 SDK 投影与 review 把关。
 
 ## 这样做：本地按 diff 选检查，不全跑
 
@@ -65,13 +65,13 @@
 
 同一原则的孪生句是 e2e 的「**verify the world, not the self-report**」——测试重新读文件、跑命令、看持久状态，而不是相信 agent 声称完成了。本 FAQ 自己就有一次实战记录：把提交 `5124a2a310` 的实现回滚、保留新测试，跑出 **2 红 95 绿**（[变更闭环](./01-sdlc-change-loop.md) 的逐环对照里有完整记录）——这就是负例控制的活样本。
 
-## 这样做：invariant 只在「有关系」时写
+## 这样做：没有可观察关系就别造检查
 
-有效的 runtime invariant 比较 package 拥有的权威关系，最典型的就是静与动那篇的 `model-visible ⟺ logged`。**没有可观察关系时，DSH 明确不发布 `./invariant`**，而是在包 README 写省略原因——因为「没有关系」和「漏了检查」是两种状态。空壳 companion 被 `verify-package-invariants` 直接判 fail（[`.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）。
+这一条是上一节退役机制的正面遗产：检查只该比较 package 真正拥有的权威关系（最典型的是静与动那篇的 `model-visible ⟺ logged`），**没有可观察关系时明确不发布检查、并在包 README 写清省略原因**——因为「没有关系」和「漏了检查」是两种状态，拿空壳凑数会把绿灯变成噪音。DSH 当年用 `verify-package-invariants` 强制这条判据，今天靠 review 与测试面选择维持同一取舍。
 
 ## 从哪开始
 
-第一周就做三件事：挑根文件里最容易被违反的三条规则，各配一个 `exit non-zero` 命令；给这三个检查各做一次负例控制（引入回归 → 看红 → 还原）；本地只跑覆盖当前 diff 的这三个，CI 跑全套。invariant 和 per-file coverage 之类的，等前三件事成为习惯再说。
+第一周就做三件事：挑根文件里最容易被违反的三条规则，各配一个 `exit non-zero` 命令；给这三个检查各做一次负例控制（引入回归 → 看红 → 还原）；本地只跑覆盖当前 diff 的这三个，CI 跑全套。per-file coverage 与更细的运行时关系检查之类的，等前三件事成为习惯再说。
 
 ## 学走形的检查
 

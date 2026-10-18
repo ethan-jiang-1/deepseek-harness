@@ -8,7 +8,7 @@
 
 ## 起点是一次事故，不是一次设计
 
-`dsh --profile acp` 的生产事故是本层的直接起因（[postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)；它的教训被[快照层决策](../../.agents/notes/implemented/testing/2026-06-19-acp-snapshot-tests.md):9 直接引用）：
+`dsh --profile acp` 的生产事故是本层的直接起因（[postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)；它的教训被[快照层决策](../../.agents/notes/archived/testing/2026-06-19-acp-snapshot-tests.md):10 直接引用）：
 
 > The bridge was completely non-functional in production despite 178 green unit tests and 100% line coverage. — 同文件:13
 
@@ -20,11 +20,11 @@
 
 > Coverage proves lines *ran*; it says nothing about whether the feature works *the way it ships*. — 同文件:98
 
-事故之后写下的问题陈述，把这一层要填的缺口讲得很清楚（[2026-06-19 快照层决策](../../.agents/notes/implemented/testing/2026-06-19-acp-snapshot-tests.md)）：
+事故之后写下的问题陈述，把这一层要填的缺口讲得很清楚（[2026-06-19 快照层决策](../../.agents/notes/archived/testing/2026-06-19-acp-snapshot-tests.md)）：
 
-> Unit tests do not exercise the complete assembled-agent subprocess or its ACP automation wire, while real-API tests are nondeterministic and key-gated. — 同文件:9
+> Unit tests do not exercise the complete assembled-agent subprocess or its ACP automation wire, while real-API tests are nondeterministic and key-gated. — 同文件:10
 
-> The tier needs the fidelity of a real run with the determinism of a fixture. — 同文件:11
+> The tier needs the fidelity of a real run with the determinism of a fixture. — 同文件:12
 
 **「真运行的保真度 + 夹具的确定性」**——这一句就是整层的设计目标。
 
@@ -34,11 +34,11 @@
 
 | 被考虑的方案 | 否决理由 | 出处 |
 |---|---|---|
-| 手写一份 `llm.json` 模型分片 | 复用真实会话日志让夹具成为**系统的真实产物**而不是手搭 mock，并且顺带当作行为期望值 | [2026-06-19 快照层决策](../../.agents/notes/implemented/testing/2026-06-19-acp-snapshot-tests.md):76 |
-| HTTP 字节级录放（Polly / nock / MSW） | adapter 相关、对 SSE 流式很别扭、比被测对象低一层 | 同文件:78 |
-| 从 `turn/end` 的事件里合成 throw / cancel | 会把 `llm-replay` 耦合到 loop 内部的收尾语义上；而且 `turn/end` 的 reason 是**有损的**（分不清「抛出的 401」和「finish-error」） | 同文件:79 |
+| 手写一份 `llm.json` 模型分片 | 复用真实会话日志让夹具成为**系统的真实产物**而不是手搭 mock，并且顺带当作行为期望值 | [2026-06-19 快照层决策](../../.agents/notes/archived/testing/2026-06-19-acp-snapshot-tests.md):77 |
+| HTTP 字节级录放（Polly / nock / MSW） | adapter 相关、对 SSE 流式很别扭、比被测对象低一层 | 同文件:79 |
+| 从 `turn/end` 的事件里合成 throw / cancel | 会把 `llm-replay` 耦合到 loop 内部的收尾语义上；而且 `turn/end` 的 reason 是**有损的**（分不清「抛出的 401」和「finish-error」） | 同文件:81 |
 | 每个场景再存一份 `session.expected.jsonl` | 对普通录制场景，两份规范化日志完全相同——重复的 oracle 不增加独立性 | [归档决策](../../.agents/notes/archived/testing/2026-06-20-remove-redundant-snapshot-log-expected-output.md):10 |
-| 每个 header 类都复制两份 sidecar | 会在无关的类之间反复制造字节相同的文件 | [2026-06-19 快照层决策](../../.agents/notes/implemented/testing/2026-06-19-acp-snapshot-tests.md):80 |
+| 每个 header 类都复制两份 sidecar | 会在无关的类之间反复制造字节相同的文件 | [2026-06-19 快照层决策](../../.agents/notes/archived/testing/2026-06-19-acp-snapshot-tests.md):81 |
 | live 配置与 snapshot 配置各维护一份 | 125 行近乎复制，且会静默漂移；改成 overlay patch | [归档决策](../../.agents/notes/archived/testing/2026-07-04-single-source-acp-replay-config.md):10,22 |
 | 把 session log 本身瘦身（用 hash 代替 header） | 违反可重建性约定 | [归档决策](../../.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md):28 |
 | 浏览器侧拦截 SSE（`route.fulfill`） | 无法流式 | [Web 快照车道决策](../../.agents/notes/implemented/testing/2026-07-24-web-gui-browser-e2e-lane.md):63 |
@@ -48,7 +48,7 @@
 
 ## 定下来的形状：一份文件，两个用途
 
-最后确定的设计是（[2026-06-19 快照层决策](../../.agents/notes/implemented/testing/2026-06-19-acp-snapshot-tests.md):21）：
+最后确定的设计是（[2026-06-19 快照层决策](../../.agents/notes/archived/testing/2026-06-19-acp-snapshot-tests.md):22）：
 
 > One ordinary Session generation therefore serves as both replay source and behavioral expected output.
 
@@ -64,7 +64,7 @@
 
 ## 它与「model-visible ⟺ logged」是同一条不变量
 
-根 `AGENTS.md:138` 的规则是：
+根 `AGENTS.md:137` 的规则是：
 
 > **Model-visible ⟺ logged**: anything that reaches a model request must be reconstructable from the session log; a new model-visible input requires a session event.
 
@@ -102,13 +102,13 @@
 
 | 面 | 场景数 | 文件数 | 拥有的证据 |
 |---|---|---|---|
-| `snapshots/session/` | 122 | 739 | headless 一次性行为 |
-| `snapshots/web/` | 55 | 302 | 同一 Session 旁的浏览器/ARIA 证据 |
-| `snapshots/sdk/` | 24 | 171 | 持久控制（TypeScript SDK 投影） |
-| `snapshots/acp/` | 9 | 58 | 自动化协议行为 |
-| **合计** | **210** | **1271**（= 上面四行之和 1270 + 树根的 `snapshots/AGENTS.md`；另有 7 个符号链接：5 个跨 profile 的 prompt/schema 别名 + 2 个场景内的 `workspace/AGENTS.md`） | |
+| `snapshots/session/` | 150 | 1039 | headless 一次性行为 |
+| `snapshots/web/` | 64 | 354 | 同一 Session 旁的浏览器/ARIA 证据 |
+| `snapshots/sdk/` | 27 | 218 | 持久控制（TypeScript SDK 投影） |
+| `snapshots/acp/` | 9 | 63 | 自动化协议行为 |
+| **合计** | **250** | **1675**（= 上面四行之和 1674 + 树根的 `snapshots/AGENTS.md`；符号链接不计入文件数，树里另有 7 个：5 个跨 profile 的 prompt/schema 别名 + 2 个场景内的 `workspace/AGENTS.md`） | |
 
-其中 444 个 `.jsonl`、32 份 `replay.override*.json`、56 份 `system-prompt.expected.md`、55 份 `tool-schemas.expected.json`。
+其中 626 个 `.jsonl`、37 份 `replay.override*.json`、77 份 `system-prompt.expected.md`、72 份 `tool-schemas.expected.json`。
 
 ## 这一篇要你记住的
 

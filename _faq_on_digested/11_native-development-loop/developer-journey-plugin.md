@@ -8,9 +8,7 @@
 
 ## 0. 一句话结论
 
-传统代码插件 = **TypeScript 写的 Cordis plugin + `defineTool` 声明**。
-代码放哪有两种选择，DSH 原生（最省力）的是在仓库内开新 `packages/<group>/<pkg>/`，直接享用
-workspace 级 typecheck、test runner、门禁、CI 发布管道。
+传统代码插件 = **TypeScript 写的 Cordis plugin + `defineTool` 声明**。代码放哪有两种选择，DSH 原生（最省力）的是在仓库内开新 `packages/<group>/<pkg>/`，直接享用 workspace 级 typecheck、test runner、门禁、CI 发布管道。
 
 ---
 
@@ -145,7 +143,7 @@ dsh plugin --profile <name> add ./dsh-plugin-my-tools
 |---|---|
 | 新 package 目录布局 | [cookbook/adding-a-package.md](../../docs/cookbook/adding-a-package.md) |
 | tool execute/present 契约 | [cookbook/adding-a-tool.md](../../docs/cookbook/adding-a-tool.md) |
-| 如何加载外部 plugin | 打成声明 `dsh.bundle` 的包后用 `dsh plugin --profile <name> add <pkg>` 装进 profile；仓库内的包由 bundle/profile 的一行挂载（`apps/cli/src/args.ts:190`） |
+| 如何加载外部 plugin | 打成声明 `dsh.bundle` 的包后用 `dsh plugin --profile <name> add <pkg>` 装进 profile；仓库内的包由 bundle/profile 的一行挂载（`apps/cli/src/args.ts:187-190`） |
 | workspace 依赖解析 | pnpm 自动 |
 | 外部 plugin 的 cordis.yml | [cordis-primer.md](../../docs/cordis-primer.md) |
 | 完整实例推演 | [`developer-journey.md`](./developer-journey.md)（`log_decision` 工具走完全程） |

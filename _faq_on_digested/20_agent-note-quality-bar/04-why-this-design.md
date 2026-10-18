@@ -33,7 +33,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 > Agents follow enforced gates far more reliably than prose conventions, and "a lot of work" is not a cost argument when agents do the labor.
 
-（出处：[`implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)）
+（出处：[`archived/process/2026-06-11-quality-gates.md`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)）
 
 于是整套制度被**切成两半**：
 
@@ -46,7 +46,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 ### 约束二：语料会长期增长
 
-一千多篇之后（当前活跃 578、归档 641），两个问题必然出现：**找不到**，和**信噪比恶化**。这解释了为什么要有封闭的类型集合、要有归档、要有删除——它们都是检索问题，不是官僚问题。
+一千多篇之后（当前活跃 343、归档 924），两个问题必然出现：**找不到**，和**信噪比恶化**。这解释了为什么要有封闭的类型集合、要有归档、要有删除——它们都是检索问题，不是官僚问题。
 
 ## 为什么状态是三个而不是两个
 
@@ -76,12 +76,12 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 | 类型 | 覆盖范围 | implemented 侧数量 |
 |---|---|---|
-| `architecture` | 关于**交付源码**的结构性决策：包之间怎么关联、运行时词汇是什么 | 201 |
-| `feature` | 面向用户或模型的新能力 | 132 |
-| `process` | 代码**周边**的工具、政策或工作流——门禁、包管理器、vendoring | 69 |
-| `bug-fix` | 修正缺陷，或弥补事故复盘暴露出来的缺口 | 63 |
-| `testing` | 测试基础设施与策略 | 33 |
-| `simplification` | 不增加能力的前提下，移除代码、行为或对外范围 | 27 |
+| `architecture` | 关于**交付源码**的结构性决策：包之间怎么关联、运行时词汇是什么 | 177 |
+| `feature` | 面向用户或模型的新能力 | 40 |
+| `process` | 代码**周边**的工具、政策或工作流——门禁、包管理器、vendoring | 34 |
+| `bug-fix` | 修正缺陷，或弥补事故复盘暴露出来的缺口 | 11 |
+| `testing` | 测试基础设施与策略 | 18 |
+| `simplification` | 不增加能力的前提下，移除代码、行为或对外范围 | 13 |
 
 最容易被追问的两条线：
 
@@ -115,7 +115,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 .agents/notes/archived/architecture/2026-…-….md      ← 死的：封存时的快照，永不改动
 ```
 
-规模说明它为什么必要：**归档 641 篇，活跃（`proposed` 39 + `implemented` 525 + `rejected` 14）578 篇**（2026-10-08 实测；本组 FAQ 只在本文与 [answer](./answer.md) 两处报数）。没有冷藏库，活跃树的信噪比会持续恶化。
+规模说明它为什么必要：**归档 924 篇，活跃（`proposed` 42 + `implemented` 293 + `rejected` 8）343 篇**（2026-10-18 按 `dsh-v0.2.1-rc.2` 实测；本组 FAQ 只在本文与 [answer](./answer.md) 两处报数）。没有冷藏库，活跃树的信噪比会持续恶化。
 
 ## 三个状态、六个类型、一个冷藏库——合起来就是这张图
 
@@ -123,12 +123,12 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 *这三个状态、六个类型由谁来判、谁来执行，见 [07](./07-where-skills-add-requirements.md) 的图。*
 
-两条冻结规则：**`archived/` 里的东西永远不出来**；`rejected/` 一旦落定就不再移动——git 历史里 20 处相关改名全部是 `proposed/` → `rejected/`，没有一处反向。想重新提，就新写一篇 Note，并链接到那篇被否决的历史。
+两条冻结规则：**`archived/` 里的东西永远不出来**；`rejected/` 一旦落定就不再移动——git 历史里跨生命周期的改名全部以 `rejected/` 为**目标**（`proposed/` → `rejected/`），没有一处反向。想重新提，就新写一篇 Note，并链接到那篇被否决的历史。
 
 ## 证据入口
 
 - [`.agents/notes/AGENTS.md`](../../.agents/notes/AGENTS.md)：Note 的身份（agent 写的 RFC）与 supersession 检查要求。
-- [`implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)：「机械门禁优于散文约定」的实测结论。
+- [`archived/process/2026-06-11-quality-gates.md`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)：「机械门禁优于散文约定」的实测结论。
 - [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)：状态与类型的封闭集合、允许清单、`INDEX.md` 禁令；由两个门禁共同调用的共享模块。
 - [`.agents/notes/README.md` 的 "Classification"](../../.agents/notes/README.md)：六个类型的定义与 architecture/process 分界。
 - 提交 `a767cd357f`（2026-08-11）：把旧目录整体搬进类型子目录、确立这份名单的那次改动。
@@ -136,4 +136,4 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 ---
 
-*基线：工作树 `caf78ed639`，2026-10-08 实测。*
+*源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）。*

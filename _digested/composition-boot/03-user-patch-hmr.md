@@ -10,29 +10,29 @@ boot 叠完的树不是一次性的。profile 的 `cordis.patch.yml`、home 层 
 
 ## hmr 插件看哪三份文件
 
-`hmr` 服务的 `[Service.init]`（`packages/boot/hmr/src/index.ts:198-237`）在 `profileContext` 在场时（`:206`）启动 profile 监视：
+`hmr` 服务的 `[Service.init]`（`packages/boot/hmr/src/index.ts:355-408`）在 `profileContext` 在场时（`:367`）启动 profile 监视：
 
 - profile 的 `cordis.patch.yml`（`profile.patchPath`）；
 - home 层 patch（`$DSH_HOME/cordis.patch.yml`）；
-- profile 的 `package.json`（bundle 清单变更也触发重载——`:214` 的 `manifestPath`、`:215` 的两个 patch 路径，`refresh(manifestOnly)` 对 bundle 变化单独比对 `:222-227`）。
+- profile 的 `package.json`（bundle 清单变更也触发重载——`:384` 的 `manifestPath`、`:385` 的两个 patch 路径，`refresh(manifestOnly)` 对 bundle 变化单独比对 `:389-390`）。
 
-**前提是应用就绪**：`appReady` 不在场直接抛 `Profile HMR requires application readiness`（`:208-209`）。`appReady` 由 launcher 经 `provideCmdline({ ready })` 提供并注入 `ctx.provide('appReady', …)`（`packages/boot/cmdline/src/index.ts:88`），`runProfile` 在 `ctx.fiber` ACTIVE 且 loader 在场时 commit（`apps/cli/src/profile-boot.ts:268/:310/:317`）。这个前提就是 0.1.7 线把 headless / sdk-app / acp-app 显式 disable hmr 行之外的第二道闸：**desktop**（desktop-host 经 `runProfile` 起 profile、`profileContext` 在场但调用侧不传 `ready`）与 webworker 宿主的 HMR 初始化会命中这条抛错而不挂 watcher（desktop-host 进程自身经 IPC `{type:'ready'}` 向壳报告就绪，`apps/desktop-host/src/index.ts:104`，与 `appReady` 是两条不同的就绪信号）。
+**前提是应用就绪**：`appReady` 不在场直接抛 `Profile HMR requires application readiness`（`:369-370`）。`appReady` 由 launcher 经 `provideCmdline({ ready })` 提供并注入 `ctx.provide('appReady', …)`（`packages/boot/cmdline/src/index.ts:88`），`runProfile` 在 `ctx.fiber` ACTIVE 且 loader 在场时 commit（`apps/cli/src/profile-boot.ts:295/:341-344`）。这个前提就是 0.1.7 线把 headless / sdk-app / acp-app 显式 disable hmr 行之外的第二道闸：**desktop**（desktop-host 经 `runProfile` 起 profile、`profileContext` 在场但调用侧不传 `ready`）与 webworker 宿主的 HMR 初始化会命中这条抛错而不挂 watcher（desktop-host 进程自身经 IPC `{type:'ready'}` 向壳报告就绪，`apps/desktop-host/src/index.ts:104`，与 `appReady` 是两条不同的就绪信号）。
 
 ## 刷新做什么
 
-任一被监视文件变化 → `refresh()`（`:218-237`）：
+任一被监视文件变化 → `refresh()`（`:388-405`）：
 
 1. 重读三份文件内容做指纹比对，无变化直接返回；ENOENT 视为该层为空。
 2. `readProfilePatches('dsh', profile)` 组出完整 patch 列表（bundle 层 + 用户两层由 profile 读取函数统一装配，bundle 与 overlay 不会被用户文件挤掉）。
-3. `reconcileProfilePatches(root, patches, 'dsh')`（`packages/boot/app-boot/src/index.ts:271-300`）：从根 Include 的当前 config 拆掉旧 `patches`、保留其余 Include 选项，`prepareProfilePatches` 后 `entry.update({ config: { …includeConfig, patches } })` 一次提交；等旧 fiber 收束、loader 静止后清点失活条目。
-4. **失败大声**：只对「本次新引入」的失活条目抛错（`:291-294`）——启动时就坏的条目不会因为一次无关刷新把进程打死；先前已存在的失败以 warning 逐条记录（返回值）。
-5. 成功后 `ctx.emit('app-boot/config-reload')`（`:300`；声明 `app-boot/src/index.ts:52`；消费方如 `SettingsForms` 以它作失效信号，`packages/settings/settings/src/index.ts:234`）。
+3. `reconcileProfilePatches(root, patches, 'dsh')`（`packages/boot/app-boot/src/index.ts:322-436`，实现拆在 `:328` 起的 `recompose`）：从根 Include 的当前 config 拆掉旧 `patches`、保留其余 Include 选项，`prepareProfilePatches` 后 `entry.update({ config: { …includeConfig, patches } })` 一次提交（`:388-392`）；等旧 fiber 收束、loader 静止后清点失活条目。
+4. **失败大声**：只对「本次新引入」的失活条目抛错（`:399-407`）——启动时就坏的条目不会因为一次无关刷新把进程打死；先前已存在的失败以 warning 逐条记录（返回值）。
+5. 成功后 `ctx.emit('app-boot/config-reload')`（`:411`；声明 `app-boot/src/index.ts:54`；消费方如 `SettingsForms` 以它作失效信号，`packages/settings/settings/src/index.ts:234`）。
 
-模块热替换与这条配置链共用 `watchConfig(filename, refresh)`（`:160`，同队列、重复路径抛错；watcher 失败记日志不致命）与 `hmr.runExclusive`（plugin-manager / config-editor 的写路径都从这条队列过，`packages/boot/plugin-manager/src/index.ts:759`、`packages/boot/config-editor/src/index.ts:153`）。
+模块热替换与这条配置链共用 `watchConfig(filename, refresh)`（`:289`，同队列、重复路径抛错；watcher 失败记日志不致命）与 `hmr.runExclusive`（plugin-manager / config-editor 的写路径都从这条队列过，`packages/boot/plugin-manager/src/index.ts:852`、`packages/boot/config-editor/src/index.ts:153`）。
 
 ## 门控：哪些 profile 有 HMR
 
-base bundle 的 `hmr` 行用 profileContext 门控（`packages/bundle/base/cordis.patch.yml:27-32`）：`disabled: !!js "!ctx.get('profileContext')"` + `config: { root: [] }`，行上注释 "Profile configuration reloads by default; module roots are opt-in"——即 launcher profile 默认开**配置重载**，模块热替换根（`root`）按部署显式给。headless（`:33-34`）、sdk-app（`:24-25`）、acp-app（`:23-25`）再显式 `disabled: true`；sdk-minimal 与 web-app 不带 `hmr` 行（web-app 只有 `client-hmr`，client 插件热重载归 client 资源管线）。非 launcher 语境（无 `profileContext`，如 webworker 宿主）整行关断。
+base bundle 的 `hmr` 行用 profileContext 门控（`packages/bundle/base/cordis.patch.yml:27-32`）：`disabled: !!js "!ctx.get('profileContext')"` + `config: { root: [] }`，行上注释 "Profile configuration reloads by default; module roots are opt-in"——即 launcher profile 默认开**配置重载**，模块热替换根（`root`）按部署显式给。headless（`:32-33`）、sdk-app（`:23-24`）、acp-app（`:22-23`）再显式 `disabled: true`；sdk-minimal 与 web-app 不带 `hmr` 行（web-app 只有 `client-hmr`，client 插件热重载归 client 资源管线）。非 launcher 语境（无 `profileContext`，如 webworker 宿主）整行关断。
 
 ## 候选失败：上一棵好树继续跑
 

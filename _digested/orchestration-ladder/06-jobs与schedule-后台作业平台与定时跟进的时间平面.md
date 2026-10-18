@@ -1,6 +1,6 @@
 # jobs 与 schedule：后台作业平台与定时跟进的时间平面
 
-源码核验入口：`packages/jobs/jobs/`（`README.md`/`src/index.ts`）、`packages/jobs/jobs-local/`、`packages/jobs/tool-jobs/src/index.ts` 与 `README.md`、`packages/shell/tool-bash/src/index.ts`、`packages/schedule/schedule/`（`README.md`/`src/tools.ts`）、`packages/schedule/README.md`、`packages/boot/app-boot/src/profile.ts`。
+源码核验入口：`packages/jobs/jobs/`（`README.md`/`src/index.ts`）、`packages/jobs/jobs-local/`、`packages/jobs/tool-jobs/src/index.ts` 与 `README.md`、`packages/shell/tool-bash/src/index.ts`、`packages/schedule/schedule/`（`README.md`）、`packages/schedule/tool-schedule/src/index.ts`、`packages/schedule/README.md`、`packages/boot/app-boot/src/profile.ts`、`packages/bundle/web-app/cordis.patch.yml`。
 
 本页回答：JobRegistry 这个后台作业平台给了什么保证（id、隔离、结算、通知）？谁是 producer？"何时转后台"的官方边界？schedule 的时序语义与交付形态？工具描述里的跟踪纪律（不忙轮询、收尾前收集）见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；workflow 与 subagent 两个 producer 的接入细节见 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) 与 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
 
@@ -33,13 +33,13 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 |----------|----------|--------|
 | bash | `bash`（`packages/shell/tool-bash/src/index.ts:278`；后台启动 `:509` 返回 `{kind:'background', jobId}`） | `run_in_background` 参数 |
 | pwsh | 同构（`packages/shell/tool-pwsh/src/index.ts:44` 的 `JobKindMap`） | 同上 |
-| subagent（one-shot 显式后台） | `subagent`（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)：`jobs.start({kind:'subagent', owner: parent.id, run})`，无 output sources） | `run_in_background` 参数 |
+| subagent | — | **不再是 job producer**：统一 activation 生命周期后，每次委派立即返回 child id，前台 run 与 jobs 的 `jobs.start({kind:'subagent'})` 分支已移除（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）；要后台化请用 `job_*` 之外的 delegation 语义 |
 | workflow | `workflow`（[`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)：`JobKindMap` 声明合并 + mirror 写 ring） | `run_in_background` 参数 |
-| terminal | `pty-send`（`packages/terminal/tool-terminal/src/index.ts:251`-`:263`） | `run_in_background` 参数 |
+| terminal | `pty-send`（`packages/experimental/tool-terminal/src/index.ts:251`-`:263`） | `run_in_background` 参数 |
 
 kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 registry。上表列出当前已核验的五类 shipped producer；其他插件也可以通过同一声明合并与 `jobs.start()` 接入。**controller 是启动的闸门**（`packages/jobs/jobs/README.md:40`-`42`）：producer 只能在"有服务该 owner 的 controller 在场"时启动（加载 `tool-jobs` 即挂上一个）；没有 controller 的组合 `start()` 直接失败并**点名缺失的组件**——绝不启动一个 agent 永远收不回也停不掉的工作。
 
-**可写接口**（`packages/jobs/tool-jobs/src/index.ts:311`-`376`）：`{"job_id": "workflow-1", "wait": true, "timeout_ms": 60000}`（`job_output`；流式 job 返回自上次读取的增量，`wait` 超时返回 `[status: running]` 不算失败）；`{"job_id": "bash-2", "reason": "不再需要"}`（`job_kill`）；`job_list` 无参数。**通知模板**：`background job <id> (<kind>: <label>) finished [status: …]. Read its output with job_output.`；subagent 结算通知带 `Its closing message:` 前缀。
+**可写接口**（`packages/jobs/tool-jobs/src/index.ts:312`-`400`）：`{"job_id": "workflow-1", "wait": true, "timeout_ms": 60000}`（`job_output`；流式 job 返回自上次读取的增量，`wait` 超时返回 `[status: running]` 不算失败）；`{"job_id": "bash-2", "reason": "不再需要"}`（`job_kill`）；`job_list` 无参数。**通知模板**：`background job <id> (<kind>: <label>) finished [status: …]. Read its output with job_output.`；subagent 结算通知带 `Its closing message:` 前缀。
 
 ## 通知经济学：完成什么时候打断你
 
@@ -62,7 +62,7 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 - 任务**跨 Host 重启保留**；**到期交付时 Host 会冷恢复对应 Session**；一次交付只在 Session 确认 `session/flush` 后才 commit——这就是工具描述里 "Delivery can repeat after crash" 的根源（崩溃后重投）；
 - catch-up 规则：recurring 任务停机后**只交付最新一次错过的发生**。
 
-六种时序选择器（`packages/schedule/schedule/README.md:31`-`40` 的表）：`after_seconds`（正安全整数延迟）/ `at`（严格未来绝对时刻，显式时区）/ `every_seconds`（固定间隔 **≥60s**，对齐创建时刻）/ `daily` / `weekly`（ISO 星期 1-7）/ `cron`（**五字段 Vixie**，显式 IANA zone）。官方示例逐字（创建 = `title` + `prompt` + **恰好一个**选择器）：
+六种时序选择器（`packages/schedule/schedule/README.md:30`-`38` 的表）：`after_seconds`（正安全整数延迟）/ `at`（严格未来绝对时刻，显式时区）/ `every_seconds`（固定间隔 **≥60s**，对齐创建时刻）/ `daily` / `weekly`（ISO 星期 1-7）/ `cron`（**五字段 Vixie**，显式 IANA zone）。官方示例逐字（创建 = `title` + `prompt` + **恰好一个**选择器）：
 
 ```json
 {"prompt":"Check the build","title":"Build check","after_seconds":600}
@@ -75,11 +75,11 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 
 `update` 的可写形态是 **complete-record CAS**：`{sessionId, id, expected: <编辑前完整记录>, title?, prompt?, change?}`——`change` 是判别联合（`at`/`every`/`daily`/`weekly`/`cron`），可跨 kind；等价归一化规则是 no-op。DST 规则：本地不存在的时刻跳过、重叠取更早且每天只一次；`every_seconds: 86400` 是固定间隔，不等于 daily 的 wall-clock 语义。`title` 必填（trim 后非空、≤120 字符、**从不从 instruction 派生**）。
 
-绑定与操作边界（`packages/schedule/schedule/README.md:50`-`56`）：reminder 绑定**创建它的 Agent Session**；`schedule_list` 只返 active；这些操作**不激活任何 Agent、不读 Session 日志**；显式删除 = 停未来交付 + 删任务行 + 删交付记录，**已进队列的消息不撤回**。update 是 **complete-record CAS**（与创建/删除同一 FIFO）：可跨 kind（daily 改 cron）、保留 id/绑定/状态/历史，等价归一化规则是 no-op，冲突返回 `schedule_conflict` 不覆写。
+绑定与操作边界（`packages/schedule/schedule/README.md:46`-`56`）：reminder 绑定**创建它的 Agent Session**；`schedule_list` 只返 active；这些操作**不激活任何 Agent、不读 Session 日志**；显式删除 = 停未来交付 + 删任务行 + 删交付记录，**已进队列的消息不撤回**。update 是 **complete-record CAS**（与创建/删除同一 FIFO）：可跨 kind（daily 改 cron）、保留 id/绑定/状态/历史，等价归一化规则是 no-op，冲突返回 `schedule_conflict` 不覆写。
 
 **与 Session 归档互锁**（`packages/schedule/schedule/README.md:54`）：有 active reminder 的 Session **归档被拒**，直到它们停止；选择停止 = 删除全部 active reminder；unarchive 不复活它们。
 
-**启用面**（`packages/schedule/schedule/README.md:26`-`29`；`packages/boot/app-boot/src/profile.ts:217`）：shipped Web 组合默认**没有** schedule 行——从 Plugins 页（Official 组）启用 experimental optional bundle `dsh-experimental-schedule-bundle`，或写进 profile 的 `dsh.profile.bundles`；`deliveryHistoryDays` 默认 30、`deliveryHistoryRecords` 默认 200；**headless/SDK-only 组合不能单独挂 schedule**——交付依赖 Host Web Session controller 与 Session 持久化后端。
+**启用面**（`packages/schedule/schedule/README.md:26`；`packages/bundle/web-app/cordis.patch.yml:139`-`140`、`:398`-`399`）：schedule 现在**直接进 Web 组合**——`id: schedule` 服务行与 `id: ui-schedule` 客户端行都在 web-app bundle 里，`experimental/schedule-bundle` 已退役；新工具包 `packages/schedule/tool-schedule` 提供 `schedule_create`/`schedule_list`/`schedule_delete`/`schedule_update`。`Config` 里 `deliveryHistoryDays` 默认 30、`deliveryHistoryRecords` 默认 200；**headless/SDK-only 组合不能单独挂 schedule**——交付依赖 Host Web Session controller 与 Session 持久化后端。
 
 ## jobs 与 schedule 与 goal：三个正交平面
 
@@ -98,9 +98,9 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 | `packages/jobs/jobs/README.md` | 平台合同全景：id/owner/first-wins/ring/归档联动 |
 | `packages/jobs/jobs/src/index.ts` | 抽象 `JobRegistry` 服务 |
 | `packages/jobs/tool-jobs/README.md:40`-`57` | 通知经济学、maxConsecutiveWakes、wait clamp、配置表 |
-| `packages/jobs/tool-jobs/src/index.ts:250`-`254` | `tool:jobs` 跟踪纪律 prompt 节 |
+| `packages/jobs/tool-jobs/src/index.ts:254` | `tool:jobs` 跟踪纪律 prompt 节 |
 | `packages/shell/tool-bash/src/index.ts:278`、`:509` | bash producer：kind 'bash' 与后台启动 |
 | `packages/schedule/schedule/README.md` | 六选择器/DST/CAS update/归档互锁/启用面 |
-| `packages/schedule/schedule/src/tools.ts:169`-`182` | 四个工具的模型可见描述 |
+| `packages/schedule/tool-schedule/src/index.ts:185`-`199`、`:454`-`:520` | 四个工具的模型可见描述 |
 | `packages/schedule/README.md:12` | 「follow-up message，不是通知推送」形态边界 |
-| `packages/boot/app-boot/src/profile.ts:213`-`218` | `OPTIONAL_BUNDLES`：schedule 是 experimental optional |
+| `packages/boot/app-boot/src/profile.ts:223`-`236` | `OPTIONAL_BUNDLES`（12 条）：**不含 schedule**——schedule 已改为直接进 Web 组合 |

@@ -4,7 +4,7 @@
 
 ## 一句话答案
 
-四个内置模式是**同一声明式 preset 机制**上的四份 bundle patch（`packages/bundle/web-app/presets/` 下 [`standard.patch.yml`](../../packages/bundle/web-app/presets/standard.patch.yml) / [`ptc.patch.yml`](../../packages/bundle/web-app/presets/ptc.patch.yml) / [`minimal.patch.yml`](../../packages/bundle/web-app/presets/minimal.patch.yml) / [`cordis.patch.yml`](../../packages/bundle/web-app/presets/cordis.patch.yml)，见 [declarative presets Note](../../.agents/notes/implemented/architecture/2026-09-18-declarative-agent-presets.md)）。它们的"特殊性"不是工具清单的加减，而是各自动了宿主的一根不同的轴：**Standard 三轴都不动**（26 个原生工具全量、完整身份输入，因此是其余三份的 diff 基准），**PTC 动呈现层**（工具目录怎么投影成模型可见的 wire 工具表），**Minimal 动身份层**（系统提示词被一句话整体替换、运行时上下文关闭、终端换成持久终端），**Creator 动扩展层**（在 Standard 之上加运行时检查、持久插件管理与创作技能，把 DSH 自身变成 agent 的工作对象）。
+四个内置模式是**同一声明式 preset 机制**上的四份 bundle patch（`packages/bundle/web-app/presets/` 下 [`standard.patch.yml`](../../packages/bundle/web-app/presets/standard.patch.yml) / [`ptc.patch.yml`](../../packages/bundle/web-app/presets/ptc.patch.yml) / [`minimal.patch.yml`](../../packages/bundle/web-app/presets/minimal.patch.yml) / [`cordis.patch.yml`](../../packages/bundle/web-app/presets/cordis.patch.yml)，见 [declarative presets Note](../../.agents/notes/implemented/architecture/2026-09-18-declarative-agent-presets.md)）。它们的"特殊性"不是工具清单的加减，而是各自动了宿主的一根不同的轴：**Standard 三轴都不动**（31 个原生工具全量、完整身份输入，因此是其余三份的 diff 基准），**PTC 动呈现层**（工具目录怎么投影成模型可见的 wire 工具表），**Minimal 动身份层**（系统提示词被一句话整体替换、运行时上下文关闭、终端换成持久终端），**Creator 动扩展层**（在 Standard 之上加运行时检查、持久插件管理与创作技能，把 DSH 自身变成 agent 的工作对象）。
 
 ## 第一节 · 先分清：preset 是什么，不是什么
 
@@ -20,19 +20,20 @@
 
 | 维度 | standard | ptc（order 2） | minimal（order 3） | cordis（order 4，显示名 Creator mode） |
 |---|---|---|---|---|
-| persona | `{{model}}` 前缀 + `{{cwd}}` 后缀 | 同 standard | **一句话 + `complete: true` + `includeRuntimeContext: false`** | 同 standard |
-| wire 工具表 | **26 个原生 schema**（e2e 钉死） | **只剩 `run_code` + 生成 SDK**（加一行 `dsh-agent-tool-presentation mode: ptc`） | 只剩 `bash`/`pwsh`（持久终端） | 26 + `cordis_inspect_*`×2 + 条件性 `plugin_manager` |
+| persona | `{{model}}` 前缀（`{{cwd}}` 后缀已退役） | 同 standard | **一句话 + `complete: true` + `includeRuntimeContext: false`** | 同 standard |
+| wire 工具表 | **31 个原生 schema**（e2e 钉死） | **只剩 `run_code` + 生成 SDK**（加一行 `dsh-agent-tool-presentation mode: ptc`） | 只剩 `bash`/`pwsh`（持久终端）+ `read_image` + `working_directory` | 31 + `cordis_inspect_*`×2 + 条件性 `plugin_manager`／`plugin_market` |
 | shell | one-shot `dsh-tool-bash`/`pwsh` | 同 standard | **`dsh-tool-bash-persistent`/`pwsh-persistent`，`isolate: terminals`** | 同 standard |
-| fs 工具 / 搜索 | read/read_image/edit/write/glob/grep | 有（经 SDK 调用） | **无**（靠 shell 命令） | 有 |
+| fs 工具 / 搜索 | read/read_image/edit/write/working_directory/glob/grep | 有（经 SDK 调用） | **只剩 `read_image` 与 `working_directory`**，其余靠 shell 命令 | 有 |
 | skills | skill-filesystem + tool-skill | 有 | **无** | 有，且 `customSkillDirs` **追加**四个创作技能 |
 | plan / goal / todo / ask-user / web / present / jobs | 全有 | 全有 | **全无** | 全有 |
-| compaction | 有（`isolate: compaction, toolResultPruner`） | 有 | **无** | 有 |
-| delegation | subagent×2 + workflow + workflow-ptc，ralph 禁 | subagent×2，**workflow 三件全禁** | 无 | 同 standard（workflow 可用） |
+| compaction | 有（`isolate: compaction, toolResultPruner`） | 有 | **有**（`isolate: compaction` 的 compaction-basic + `/compact`，本跨度新增） | 有 |
+| delegation | subagent×2 + workflow + workflow-ptc | subagent×2，**workflow 三件全禁** | 无 | 同 standard（workflow 可用） |
 | `tool-cordis`（运行时检查） | 无（刻意缺席） | 无 | 无 | **有** |
-| `plugin-manager` 工具 | `disabled: true` | `disabled: true` | 无此行 | **条件启用**：`disabled: !!js "!ctx.get('profileContext')"` |
+| `plugin-manager` / `plugin_market` 工具 | 两行都 `disabled: true` | 两行都 `disabled: true` | 无此行 | **条件启用**：两行都是 `disabled: !!js "!ctx.get('profileContext')"` |
 | `agent-instructions`（AGENTS.md 注入） | 有（64KB 上限） | 有 | **无** | 有 |
+| `time-context` / `tool-schedule` | 都有（本跨度新增） | 都有 | 无 | 都有 |
 
-（逐格出处：四份 `*.patch.yml` 本身；standard 列的 26 工具清单与刻意缺席见 [standard-mode.md](./standard-mode.md)；Minimal 列另有快照钉住，见 [minimal-mode.md](./minimal-mode.md)。）
+（逐格出处：四份 `*.patch.yml` 本身；standard 列的 31 工具清单与刻意缺席见 [standard-mode.md](./standard-mode.md)；Minimal 列另有快照钉住，见 [minimal-mode.md](./minimal-mode.md)。）
 
 ## 第三节 · "特殊性"的机制定位：三根正交的轴
 

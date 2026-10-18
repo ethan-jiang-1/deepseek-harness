@@ -16,7 +16,7 @@
 | 6 | `dsh rollback --task <id>`：保留无关节点、只重置该任务与下游 | CLI 没有任何 rollback 子命令——应用启动面只有 profile 启动、`plugin` 管理命令与 `--patch`/`--dump-config` 选项（`docs/architecture.md:43`）。真实的恢复语义是**会话级**的另一套：durable session + `--resume`；goal resume 后一律 disarmed（[`05`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md)）；continuable child 冷恢复不经 provider（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）；fork 继承的是创建时一次性快照，父的后续轮次永不进入 child | ❌（命令不存在；"保留已完成、重做其余"的真实形态是会话级恢复而非任务级回滚） |
 | 7 | Web 端动态 DAG 实时看板（拓扑染色） | 不存在 DAG 拓扑看板。真实的实时编排可观测：session-header job 列表流式显示 `phase()`/`log()`/成员生命周期行并跟踪当前 phase（[`06`](./06-jobs与schedule-后台作业平台与定时跟进的时间平面.md)）；`ui-workflow-run` 把四类 workflow 事件折成一个 `workflow-run` Chat 节点，phase 分组只来自实际成员启动、保字符串精确（`docs/subsystems/workflow.md:128`）；teams UI 的名册/任务板/队友导航（[`07`](./07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md)） | 🟡 |
 | 8 | 节点 Telemetry：生成速率 tokens/sec、TTFT、KV Cache 命中率 92.4%、沙箱容器信息、租约与重试配额 | 不存在该指标面。dsh 的遥测是 **OTLP 导出管道**：`dsh-otel` 创建 ordinary-event 与 session-log 上报通道，"Mounting alone creates no transport or identity and sends nothing… the service has no deployment defaults or automatic collection policy of its own"（`packages/telemetry/otel/README.md:12`）——它是给业务消费者配的导出通道，自身不采集任何推理指标。沙箱真实：workflow PTC 跑在调用方 Session 的文件沙箱策略下（[`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)） | ❌（指标看板不存在；沙箱真实） |
-| 9 | KV Cache 前缀对齐优化：全局前缀固定排列，命中 85%~95% | 前缀稳定性是**真实的设计目标**，但形态是一组组合纪律而非运行时优化器：fork 工具行省略模型选择、让 provider/model 与父一致保继承前缀复用资格（`packages/bundle/base/cordis.patch.yml:377`-`382`）；prompt section 顺序与稳定前缀（[`../tools-prompt-llm/01-section顺序与前缀.md`](../tools-prompt-llm/01-section顺序与前缀.md)）；工具目录跨模式不变以保 request-cache 稳定（plan-mode 部署 guidance，`packages/bundle/base/cordis.patch.yml:330`）；continuable 回传指引排在继承历史之后保字节稳定（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）。具体命中率数字无源 | 🟡（设计目标真实；数字无源） |
+| 9 | KV Cache 前缀对齐优化：全局前缀固定排列，命中 85%~95% | 前缀稳定性是**真实的设计目标**，但形态是一组组合纪律而非运行时优化器：fork 工具行省略模型选择、让 provider/model 与父一致保继承前缀复用资格（`packages/bundle/base/cordis.patch.yml:386`-`382`）；prompt section 顺序与稳定前缀（[`../tools-prompt-llm/01-section顺序与前缀.md`](../tools-prompt-llm/01-section顺序与前缀.md)）；工具目录跨模式不变以保 request-cache 稳定（plan-mode 部署 guidance，`packages/bundle/base/cordis.patch.yml:340`）；continuable 回传指引排在继承历史之后保字节稳定（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）。具体命中率数字无源 | 🟡（设计目标真实；数字无源） |
 | 10 | "业界首个模型推理指标与图工程拓扑合一的可观测性平台" | 见 #7 与 #8：两种形态都不存在 | ❌ |
 
 ## 三条最重要的形态纠正
@@ -25,7 +25,7 @@
 
 图的完整分置（三个真实的图、写时校验与读时推导、为什么分界画在这里）见 [`11`](./11-图计算的本质-不变量推导与执行的三件分置.md)。
 
-**一、当前产品不是一个由任务 DAG 自动派工的中心引擎。** 外部叙事把多种真实能力组合成了 Captain/Kahn 体系；源码中对应的实现是原语阶梯、workflow 脚本控制流、Teams 任务图准入与 Lead 派发。goal 与 ralph 的两策略决策确实没有引入通用 `LoopDriver` 或 generic `loop` 工具（`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md`），但这项观察不推出系统没有全局 projection、FIFO slot 或其他局部调度机制。逐项证据见 [`00-map`](./00-map.md)、[`08`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md) 与 [`11`](./11-图计算的本质-不变量推导与执行的三件分置.md)。
+**一、当前产品不是一个由任务 DAG 自动派工的中心引擎。** 外部叙事把多种真实能力组合成了 Captain/Kahn 体系；源码中对应的实现是原语阶梯、workflow 脚本控制流、Teams 任务图准入与 Lead 派发。goal 与 ralph 的两策略决策确实没有引入通用 `LoopDriver` 或 generic `loop` 工具（`.agents/notes/archived/feature/2026-07-16-harness-level-loop.md`），但这项观察不推出系统没有全局 projection、FIFO slot 或其他局部调度机制。逐项证据见 [`00-map`](./00-map.md)、[`08`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md) 与 [`11`](./11-图计算的本质-不变量推导与执行的三件分置.md)。
 
 **二、恢复是会话级，不是任务级。** 没有 task 回滚命令；durable session + resume + disarmed goal + continuable 冷恢复 + fork 一次性快照共同构成真实的恢复语义（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)、[`05`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md)）。叙事里的"外科手术式回退"是对"事件溯源可重建状态"这个真机制的过度具体化。
 
@@ -42,8 +42,8 @@
 | `docs/architecture.md:43` | 应用启动面：无 rollback 子命令的权威出处 |
 | `packages/experimental/auto-review/README.md:12` | auto-review 的真实身份：权限预审 |
 | `packages/telemetry/otel/README.md:12` | 遥测的真实形态：OTLP 导出通道，无自动采集 |
-| `packages/bundle/base/cordis.patch.yml:330`、`:377`-`382` | 前缀稳定性的两处组合决策 |
+| `packages/bundle/base/cordis.patch.yml:340`、`:386`-`390` | 前缀稳定性的两处组合决策 |
 | `docs/subsystems/workflow.md:128` | ui-workflow-run 的真实编排展示形态 |
-| `.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md` | 明文拒绝通用编排引擎 |
+| `.agents/notes/archived/feature/2026-07-16-harness-level-loop.md` | 明文拒绝通用编排引擎 |
 | `AGENTS.md` | "模型可见 ⟺ 已记录"铁律 |
 | 本专题 01-08 页 | 全部真实对应物的 path:line 落点 |

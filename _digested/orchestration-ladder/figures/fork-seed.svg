@@ -9,7 +9,7 @@
   </defs>
 
   <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">fork 种子：balanced completed-turn 前缀与 inheritedEventCount 边界</text>
-  <text x="40" y="54" font-size="12" fill="#8c8c8c">findLast(turn/end) → slice(0, lastEnd.seq + 1)——seq 即数组下标（append contract），种子从 seq 0 起合法（subagent-fork-in-process/src/index.ts:41-55）</text>
+  <text x="40" y="54" font-size="12" fill="#8c8c8c">findLast(turn/end) → slice(0, lastEnd.seq + 1)——seq 即数组下标（append contract），种子从 seq 0 起合法（subagent-fork-in-process/src/index.ts:46-55）</text>
 
   <text x="40" y="88" font-size="13" font-weight="bold" fill="#333">父 Session 日志</text>
   <rect x="40" y="100" width="150" height="44" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
@@ -29,7 +29,7 @@
   <text x="751" y="134" font-size="9.5" fill="#d4380d" text-anchor="middle">unbalanced · 排除</text>
 
   <path d="M45 154 L45 148 L655 148 L655 154" fill="none" stroke="#52c41a" stroke-width="2"/>
-  <text x="350" y="170" font-size="11.5" fill="#52c41a" text-anchor="middle">slice(0, lastEnd.seq + 1)：contiguous from seq 0 · lossless JSON · balanced（invariants 回放可接受）</text>
+  <text x="350" y="170" font-size="11.5" fill="#52c41a" text-anchor="middle">slice(0, lastEnd.seq + 1)：contiguous from seq 0 · lossless JSON · balanced（合法子会话前缀）</text>
 
   <text x="40" y="204" font-size="13" font-weight="bold" fill="#333">fork child Session</text>
   <rect x="40" y="216" width="615" height="44" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
@@ -59,13 +59,13 @@
   <text x="428" y="382" font-size="11" fill="#333">fork 行省略模型选择 → provider/model 与父一致 → 继承历史保持前缀复用资格</text>
   <text x="428" y="402" font-size="11" fill="#333">persona / tool-filter / generated-SDK / 路由变更 → 继承历史之前的前缀失效</text>
   <text x="428" y="422" font-size="11" fill="#333">continuable 回传指引排在继承历史之后 → 前缀字节稳定</text>
-  <text x="428" y="442" font-size="10.5" fill="#8c8c8c">packages/bundle/base/cordis.patch.yml:377-382 · subagent-fork-in-process/README.md:120-122</text>
+  <text x="428" y="442" font-size="10.5" fill="#8c8c8c">packages/bundle/base/cordis.patch.yml:385-390 · subagent-fork-in-process/README.md:118-122</text>
 
   <rect x="40" y="478" width="1000" height="96" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
   <text x="58" y="504" font-size="12.5" font-weight="bold" fill="#52c41a">继承的只是对话历史</text>
   <text x="58" y="526" font-size="11" fill="#333">「The seed carries conversation history only: the child still gets a fresh tool scope and none of the parent's authority」</text>
   <text x="58" y="546" font-size="11" fill="#333">child 拿到新的 flat scope（不继承父注册）；权限在第一个 await 前捕获（approval 钉 never）；深度 = parent + 1</text>
-  <text x="58" y="564" font-size="10.5" fill="#8c8c8c">测试旁证：subagent-fork-in-process.spec.ts:93（seeds every completed turn）· :137（mid-turn excludes the open turn）· :183（不返回种子里的父输出）</text>
+  <text x="58" y="564" font-size="10.5" fill="#8c8c8c">测试旁证：subagent-fork-in-process.spec.ts:78（seeds every completed parent turn）· :122（mid-turn excludes the open turn）· :168（不返回种子里的父输出）</text>
 
-  <text x="40" y="606" font-size="10.5" fill="#8c8c8c">源码核验：subagent-fork-in-process/src/index.ts:41-91 · subagent/src/catalog.ts:119-123 · docs/subsystems/subagent.md:462</text>
+  <text x="40" y="606" font-size="10.5" fill="#8c8c8c">源码核验：subagent-fork-in-process/src/index.ts:46-91 · subagent/src/catalog.ts:120-124 · docs/subsystems/subagent.md:168</text>
 </svg>

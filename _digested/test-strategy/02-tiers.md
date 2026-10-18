@@ -4,7 +4,7 @@
 
 ## 现象是什么：不按"单元/集成/端到端"三分
 
-`docs/testing.md` 的 Tiers 节定义了 **7 个宪法层**：Unit / Coverage gate / Real-API e2e / Owner-local expected output / Performance benchmarks / Snapshot / Web browser snapshot。root `package.json` 里还有 38 个 test*/check* 脚本（去重 refresh/built/ci 变体后约 15 条命令族）对应的**广义测试面**（web-perf、web-stress、gui、政策测试、文档门禁、平台矩阵……）。
+`docs/testing.md` 的 Tiers 节定义了 **7 个宪法层**：Unit / Coverage gate / Real-API e2e / Owner-local expected output / Performance benchmarks / Snapshot / Web browser snapshot。root `package.json` 里还有 39 个 test*/check* 脚本（去重 refresh/built/ci 变体后约 15 条命令族）对应的**广义测试面**（web-perf、web-stress、gui、政策测试、文档门禁、平台矩阵……）。
 
 关键的阅读姿势：**这不是经典测试金字塔的 unit/integration/e2e 三分法**。DSH 按两个轴分层——**证据形态**（assembled transcript？外部世界检查？built 产物冒烟？浏览器回放证据？性能预算？政策断言？）和**入口真实性**（src 就近单测？test-only cordis.yml 走 Loader？shipped profile？built lib？）。"integration test"这个词在 DSH 文档里几乎不存在，它被拆成了更精确的证据类型（见"'集成测试'去了哪里"）。
 
@@ -35,7 +35,7 @@
 - **强制模式一：HMR-safety**。"Every registry gets an HMR-safety test (dispose the contributing fiber, assert cleanup)"——每个注册表都必须有"卸载贡献 fiber 后断言清理干净"的测试。这是 all-plugin 架构的独有要求：插件能热插拔，注册就必须可撤销。
 - **强制模式二：契约回归永久化**。边界、错误路径、事件顺序、并发竞态优先；契约回归测试是永久资产（样板 `packages/core/agent-loop/tests/contract-regressions.spec.ts`）。
 - **执行形态**：两个内联 project（`thread-safe` / `process-bound`）全部 `pool: 'forks'`——理由写在注释里：Node 24 的 CJS lexer 在 worker 线程上崩溃。8 个动进程级全局状态的套件（session-persistence-jsonl、subagent-acp、process-exit、spawn、time-context、llm-pi-ai adapter、app-boot、workflow-ptc）单独成 `process-bound` project；`execArgv` 按能力带 `--no-webstorage`（`allowedNodeEnvironmentFlags` 认可该 flag 时才加）防进程级 Web Storage 遮蔽 jsdom。`.tsx` 客户端组件用每文件 `@vitest-environment` pragma 声明 jsdom。
-- setup 三件套：`scripts/test-proxy-environment.ts`、`test-invariants.ts`、`test-dom-environment.ts`。
+- setup 两件套：`scripts/test-proxy-environment.ts`、`test-dom-environment.ts`（`scripts/test-invariants.ts` 已随运行时 invariant 机制整族退役，commit `f028f25667`）。
 
 ### 2. Coverage gate——per-file 100%，死代码探测器
 
@@ -85,7 +85,7 @@
 | 文档门禁 | `doc-sync` / `doc-typecheck` / `test:docs` | 约 40 个文档门叶子（type-equivalence、doc-budgets、markdown-links…） |
 | 平台矩阵 | `check:windows-wine` / `check:node-compat` | Wine 上的 Windows 门（master-only）、Node 版本兼容 |
 | 静态质量 | `typecheck` / `lint` / `duplication` / `hygiene` | 类型/风格/克隆检测/发布卫生 |
-| 发布面 | `check:ci:artifacts` / `check:ci:consumers` | publint、node-next-types、built-invariants、built-bin-smoke |
+| 发布面 | `check:ci:artifacts` / `check:ci:consumers` | publint、node-next-types、built-bin-smoke |
 
 **政策测试为什么用 `node --test` 而不是 vitest**：被测对象是 `.github/` 下的 GitHub 自动化脚本——纯 `.mjs`，生产路径是 Actions 运行器里系统 Node 直接执行；测试用同一解释器、零依赖（`node:test` + 内建 `t.mock.method`），且 `.github/` 本来就不在任何 vitest include 模式内。**测试运行器与生产运行器同构**——这是 [01](./01-doctrine.md) 教义 6（测真实入口）在测试基建自身上的应用。
 
@@ -95,7 +95,7 @@
 
 1. **REAL-composition 测试**：boot 一份 test-only `cordis.yml`，走真 Loader、真 app/process 组装，mock 只限外部服务与非确定输入（[01](./01-doctrine.md) 教义 6a）。测的是"组装后插件还工作"。
 2. **Profile 级集成测试**（`apps/cli/tests/profiles/`）：启动 shipped profile 跑真实任务流。测的是"发布形态的组装"。
-3. **Built smokes**：`bin` 走 built `lib/bin.js` + plain node 冒烟。实际清单：`apps/cli/tests/built-bin.e2e.ts`（1321 行，`runBuiltBin()` 用 execa 直接跑 `apps/cli/lib/bin.js`，30 个用例：参数错误、profile 生命周期标记、patch 热重载、mock-backed ACP turn、config dump）+ 各包 `built-lib.e2e.ts`（lsp-stdio、api/job-controller、api/remotes、experimental/{agent-team,inspector,webworker-packer}、ptc-runtime-node 等）；CI 的 built-bin-smoke 门聚合 **16** 个 built 消费者 e2e 文件（13 个 built 命名 + keyless-smoke + subagent-{codex,claude-code} 的 loader-composition；`DSH_EXAMPLE_MODE=lib`）。`packages/lsp/lsp-stdio/tests/built-lib.e2e.ts` 的头注释说得最直白："plain Node imports … by name through their exports maps … Unit tests use `src/`; **this pins the downstream `lib/` path**. Skips when `lib/` is absent; CI runs it after the build"。
+3. **Built smokes**：`bin` 走 built `lib/bin.js` + plain node 冒烟。实际清单：`apps/cli/tests/built-bin.e2e.ts`（1324 行，`runBuiltBin()` 用 execa 直接跑 `apps/cli/lib/bin.js`，30 个用例：参数错误、profile 生命周期标记、patch 热重载、mock-backed ACP turn、config dump）+ 各包 `built-lib.e2e.ts`（lsp-stdio、api/job-controller、api/remotes、experimental/{agent-team,inspector,webworker-packer}、ptc-runtime-node 等）；CI 的 built-bin-smoke 门聚合 **16** 个 built 消费者 e2e 文件（13 个 built 命名 + keyless-smoke + subagent-{codex,claude-code} 的 loader-composition；`DSH_EXAMPLE_MODE=lib`）。`packages/lsp/lsp-stdio/tests/built-lib.e2e.ts` 的头注释说得最直白："plain Node imports … by name through their exports maps … Unit tests use `src/`; **this pins the downstream `lib/` path**. Skips when `lib/` is absent; CI runs it after the build"。
    > 注：`docs/testing.md` 引用的 `packages/examples/*/tests/built-bin.e2e.ts` 在基线树中**已不存在**——文档过期，实际清单以本条为准。
 
 三者的共同点：**都不信任手搭的组装**（"Hand-built `ctx.plugin(...)` suites are insufficient"），集成证据必须取自真实入口。
@@ -115,20 +115,20 @@
 
 | 后缀 / 形态 | 计数 | 备注 |
 |---|---|---|
-| `*.spec.{ts,tsx}`（unit） | **1893** | packages 1358 `.ts` + 265 `.tsx`、apps 143+1、scripts 121、website 5 |
-| `*.e2e.ts`（e2e 车道） | **91** | 按 `vitest.e2e.config.ts` 的 include（`packages/*/*/tests/**`、`apps/{cli,desktop}/tests/**`）减 exclude（`*.expected.e2e.ts` 与 inspector 的 `client-browser.e2e.ts`）实测；物理总数 270，归 web 车道的 161 个与归 expected 层的 18 个不在内 |
-| `*.expected.e2e.ts` | **18**（apps/cli）+ 8（apps/web，归 web 车道） | 另有 1 个 `*.expected.spec.ts` 走 unit——"Package/script expectations use `test`"的实例 |
-| `*.snapshot.ts` 驱动 | **3** + 1 corpus | 场景数据面：snapshots/session **122**、sdk **24**、acp **9**、web **55** = **210 个录制场景** |
-| `*.bench.ts` / `*.bench.client.ts` | 5 + 2 | |
+| `*.spec.{ts,tsx}`（unit） | **2134** | packages 1505 `.ts` + 296 `.tsx`、apps 176+1、scripts 151、website 5 |
+| `*.e2e.ts`（e2e 车道） | **110** | 按 `vitest.e2e.config.ts` 的 include（`packages/*/*/tests/**`、`apps/{cli,desktop}/tests/**`）减 exclude（`*.expected.e2e.ts` 与 inspector 的 `client-browser.e2e.ts`）实测；物理总数 320，归 web 车道的 190 个与归 expected 层的 20 个不在内 |
+| `*.expected.e2e.ts` | **20**（apps/cli）+ 8（apps/web，归 web 车道） | 另有 1 个 `*.expected.spec.ts` 走 unit——"Package/script expectations use `test`"的实例 |
+| `*.snapshot.ts` 驱动 | **3** + 1 corpus | 场景数据面：snapshots/session **150**、sdk **27**、acp **9**、web **64** = **250 个录制场景** |
+| `*.bench.ts` / `*.bench.client.ts` | 7 + 3 | |
 | `*.perf.ts` / `*.perf.client.ts` | 2 / 1 | packages 下 1 个**不在任何配置 include 里**（纯手动诊断，"package-local `.perf.ts` stays diagnostic"的实例） |
 | `*.stress.ts` | 1 | opt-in |
-| `tests/harness.ts` | 8 | 共享 fixture，**刻意不被任何 include 选中** |
+| `tests/harness.ts` | 10 | 共享 fixture，**刻意不被任何 include 选中** |
 | built 冒烟 | **16** | built-bin-smoke 门清单文件数；散在 e2e include 内，无 key、lib 缺失自跳（另有 1 个 built 命名的 `apps/web/tests/built-boot.expected.e2e.ts` 归 web 车道，不在该门） |
 
 **写法惯例（硬事实）**：
 
 - **命名**：英文行为命题、现在时、**无 "should"**——`describe('disposal leaves the two-state status contract balanced')`、`it('removes contributions when the contributing fiber is disposed (HMR safety)')`。"Tests describe behavior, not correctness" 的文体化。
-- **HMR-safety 模式**（全仓 72 处 `(HMR safety)`）：子 fiber 注册贡献 → 断言存在 → `await fiber.dispose()` → 断言移除（服务自身 built-in 不受影响）。契约回归样板 `contract-regressions.spec.ts`（1552 行、14 个 describe）每条测试钉死一个边界/身份/生命周期契约，注释直接回指原始 bug（如 "The key assertion from the original bug report: after disposal, no assistant/attempt or assistant/message appears"）。
+- **HMR-safety 模式**（全仓 72 处 `(HMR safety)`）：子 fiber 注册贡献 → 断言存在 → `await fiber.dispose()` → 断言移除（服务自身 built-in 不受影响）。契约回归样板 `contract-regressions.spec.ts`（1522 行、14 个 describe）每条测试钉死一个边界/身份/生命周期契约，注释直接回指原始 bug（如 "The key assertion from the original bug report: after disposal, no assistant/attempt or assistant/message appears"）。
 - **tests/harness.ts 模式**：共享 fixture 刻意放在 include 模式之外——import 它不会重复注册别人的 `describe`、不会重复真实 API 调用；代码里有就地注释（`packages/fs/tool-fs/tests/harness.ts`："This helper lives outside the e2e glob so imports do not register tests"）。
 - **spec 与 e2e 的实际写法差**（抽样对比）：spec = 进程内真 Cordis 组合 + MockAdapter，断言事件序列 / registry 状态；e2e = `describe.skipIf(!process.env.DEEPSEEK_API_KEY)` 自跳过（e2e 车道 22 处：packages 12 + apps 10，部分套件再加用例内双保险 throw，如 `packages/llm/llm-deepseek/tests/runtime.e2e.ts:184`）+ 真 provider + 120s 车道默认 testTimeout（个别 profile 用例显式提到 180s）+ **进程外读文件断言**（verify the world）+ session log 里真实 tool/call 名单核对，不信 agent 自述。
 - **client 组件 spec**：文件首行 `// @vitest-environment jsdom` pragma + testing-library + fake timers；断言用户可见行为而非 class 名。

@@ -4,7 +4,7 @@
 
 ## 现象是什么：一个把测试政策压缩到 55 行的仓库
 
-DSH 仅单元测试就有 1893 个 spec 文件，而它的测试政策只有 55 行。开篇一句自述定位：
+DSH 仅单元测试就有 2134 个 spec 文件，而它的测试政策只有 55 行。开篇一句自述定位：
 
 > "How this repo tests, tier by tier, and the rules that keep a green suite meaningful."
 
@@ -21,7 +21,7 @@ DSH 仅单元测试就有 1893 个 spec 文件，而它的测试政策只有 55 
 | 所有权 | `snapshots/AGENTS.md` | 快照树的归属规则（[03](./03-rules-ownership.md)） |
 | 可靠性纪律 | `.agents/skills/dsh-ci-test-reliability/` | 并发/资源/teardown/flake 分类（[06](./06-reliability.md)） |
 | 命令选取 | `.agents/skills/dsh-pre-push-checks/` | 推送前选哪些检查跑（[03](./03-rules-ownership.md)） |
-| 决策记录 | `.agents/notes/implemented/testing/`（**33 篇**） | 每条政策"为什么这么定、放弃了什么、要什么验证"的 rationale |
+| 决策记录 | `.agents/notes/implemented/testing/`（**18 篇**） | 每条政策"为什么这么定、放弃了什么、要什么验证"的 rationale |
 | 事故 | `docs/postmortem/`（**4 篇**：0001 ACP default export / 0002 `!!js` / 0003 替代服务器 / 0004 Landlock 误分类） | 政策的反面教材；唯一允许 war-story 叙事的层 |
 | 操作步骤 | `docs/cookbook/` | 加包/加工具/加格式版本时的步骤与验证命令；`reviewing-persistence-type-changes` 进一步要求 type acknowledgement 的 `verification` 字段填真实 vitest 证据——"A recording command's `ok: true` does not replace these checks or the owner's behavior and migration tests" |
 | 局部契约 | `packages/test-support/*/README` 等各包 README | 该工具/该包的测试语义与已知限制（[07](./07-infrastructure.md)） |
@@ -133,5 +133,5 @@ DSH 仅单元测试就有 1893 个 spec 文件，而它的测试政策只有 55 
 
 1. **立场句式**：读 `docs/testing.md` "The with-key policy" 一节的第一句——以 "We are DeepSeek" 开头。测试政策以厂商身份开头，这本身就是"模型厂自研仓库"的证据。
 2. **唯一 mock 数得出来**：读 `packages/acp/acp/tests/harness.ts`，数 `makeBridgeHarness()` 里 mock 的数量——只有 `MockAdapter`；loop / session store / tool registry / JSONL persistence 全是真实现。
-3. **prove-it-red 可检索**：在测试里 grep `expect('default' in`——43 个 spec 文件含 `expect('default' in <module>).toBe(false)` 守卫（如 `packages/lsp/tool-lsp/tests/load-path.spec.ts:14`，配套 `unwrapExports` 往返断言）。注意字面串 `expect('default' in mod)` 只出现在 `docs/testing.md` 政策原文里——各测试用被测模块的变量名。
+3. **prove-it-red 可检索**：在测试里 grep `expect('default' in`——45 个 spec 文件含 `expect('default' in <module>).toBe(false)` 守卫（如 `packages/lsp/tool-lsp/tests/load-path.spec.ts:14`，配套 `unwrapExports` 往返断言）。注意字面串 `expect('default' in mod)` 只出现在 `docs/testing.md` 政策原文里——各测试用被测模块的变量名。
 4. **自跳过不是成本信号**：任选一个 e2e suite，看它无 key 时的 self-skip 分支——skip 分支旁边没有任何"记录预算"或"减少调用"的注释，与"do not ration"一致。

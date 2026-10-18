@@ -48,8 +48,8 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
 | `orchestration-ladder/` | 工作编排原语阶梯 | 从驾驶座视角：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个、怎么组合。 |
 | `capability-seams/` | 可替换能力 | 同一个能力（读文件、跑命令……）有多个插件实现时，怎么换实现而不改调用方——插件的竞聘位。 |
-| `plugin-inventory/` | 现成插件货架 | 316 个包按组列成清单：能力在哪、以什么形态给、怎么拿——动手写之前先查这里。 |
-| `experimental/` | 实验原型面 | 还没承诺稳定合同的原型插件（多代理、浏览器、语音……），随时会改名或消失。 |
+| `plugin-inventory/` | 现成插件货架 | 342 个包按组列成清单：能力在哪、以什么形态给、怎么拿——动手写之前先查这里。 |
+| `experimental/` | 可选能力与原型 | 已评估但未承诺产品支持的能力（47 包）。**实验身份与「可选交付」相互独立**：可选包收编进本组，而非 experimental 的包才需要产品用途或显式分类（`scripts/product-package-policy.ts`）。 |
 | `tools-prompt-llm/` | 模型可见面 | 模型每一步看见什么：工具清单、系统提示词、历史投影怎么组装。 |
 | `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、Web、桌面、ACP、SDK 五个入口怎么复用同一台运行时。 |
 | `test-strategy/` | 测试体系 | DSH 怎么测：七层证据形态、录制会话快照、CI 门禁与防假绿、可靠性纪律与测试基建——55 行测试政策的完整展开。 |
@@ -88,7 +88,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **想搞懂磁盘上的 session 文件怎么跨格式世代读** → [`session-and-loop/04-格式世代与迁移.md`](./session-and-loop/04-格式世代与迁移.md)
 - **想加能力或换后端** → [`capability-seams/00-map.md`](./capability-seams/00-map.md)
 - **想先看 dsh 已经给了什么再动手** → [`plugin-inventory/00-map.md`](./plugin-inventory/00-map.md)
-- **想研究实验原型** → [`experimental/00-map.md`](./experimental/00-map.md)
+- **想研究实验与可选能力** → [`experimental/00-map.md`](./experimental/00-map.md)
 - **想搞懂模型看见什么** → [`tools-prompt-llm/00-map.md`](./tools-prompt-llm/00-map.md)
 - **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → [`surfaces-entrypoints/00-map.md`](./surfaces-entrypoints/00-map.md)
 - **想给 Web UI 加功能、或新增一个 `packages/client/*` 插件包** → [`surfaces-entrypoints/05-客户端架构与插件纪律.md`](./surfaces-entrypoints/05-客户端架构与插件纪律.md)

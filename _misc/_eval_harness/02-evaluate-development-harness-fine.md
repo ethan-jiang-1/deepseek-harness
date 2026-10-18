@@ -110,7 +110,7 @@
 
 **走形症状（failure symptoms）**：把根入口写成一份完整手册；或者到处放子树入口，让每个目录都要重新学一套。
 
-**例证（exemplar）**（可选核对）：DSH 的根 `AGENTS.md` 只放常驻规则（always-loaded rules）、布局与命令，每条规则 1–3 行并立刻给出链接；`CLAUDE.md` 是 `AGENTS.md` 的符号链接，四个目录各一处；根文件有字数上限（≤1,960 词），由 `verify-doc-budgets` 执行。
+**例证（exemplar）**（可选核对）：DSH 的根 `AGENTS.md` 只放常驻规则（always-loaded rules）、布局与命令，每条规则 1–3 行并立刻给出链接；`CLAUDE.md` 是 `AGENTS.md` 的符号链接，四个目录各一处；根文件有字数上限（≤2,080 词），由 `verify-doc-budgets` 执行。
 
 ---
 
@@ -363,7 +363,7 @@
 
 **走形症状（failure symptoms）**：每个脚本或工作流各自判权限（绕过统一判定层）；把"部分成功"的发布或部署当作成功交给下一步。
 
-**例证（exemplar）**（可选核对）：DSH 的 20 个 GitHub Actions 工作流都在顶层声明 `permissions`（默认只读 `contents: read`，需要写权限的工作流逐项列出，例如 `pull-requests: write`）；发布到 npm 的每条发布序列只有一个 job，它跑在 `npm-publish` 环境里，必需的审批人与允许的标签配在环境上，注释写明这是整个发布序列里唯一能写 registry 的 job。
+**例证（exemplar）**（可选核对）：DSH 的 25 个 GitHub Actions 工作流都在顶层声明 `permissions`（默认只读 `contents: read`，需要写权限的工作流逐项列出，例如 `pull-requests: write`）；发布到 npm 的每条发布序列只有一个 job，它跑在 `npm-publish` 环境里，必需的审批人与允许的标签配在环境上，注释写明这是整个发布序列里唯一能写 registry 的 job。
 
 ---
 

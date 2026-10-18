@@ -18,7 +18,7 @@ DSH 没有正面度量“理解程度”，而是把披露问题转成了三个�
 >
 > —— `docs/AGENTS.md:58`（基线 `46a7f68b09…`）
 
-（0008 复核注记：引文照录上游原文，但执行口径以 `scripts/doc-budgets.manifest.json` 为准——那里 `architecture.md` 已是 2410，上游 Targets 行印的 ≤2,400 与 manifest 不一致，属上游自相矛盾、已登记。）
+（0008 复核注记：引文照录上游原文，但执行口径以 `scripts/doc-budgets.manifest.json` 为准。0011 复核时上游 Targets 行与 manifest 的对照是：root `AGENTS.md` 2,080 对 2,080、`docs/AGENTS.md` 1,430 对 1,430、`packages/AGENTS.md` 810 对 810——这三条已一致；`architecture.md` 仍印 ≤2,400 而 manifest 是 2410，`testing.md` 印 1,300 而 manifest 是 1350，这两处上游自相矛盾仍在，已登记。原 Targets 行里的 `defensive-patterns.md 550` 已随该页由单页改成目录而取消。）
 
 预算超了以后，处理顺序不是“写短一点”：
 
@@ -36,8 +36,8 @@ DSH 没有正面度量“理解程度”，而是把披露问题转成了三个�
 
 | 层 | 内容 | 加载时机 | 上限 |
 |---|---|---|---|
-| L1 常驻 | 根 `AGENTS.md` | 每个 agent session | 1960 words |
-| L2 区域入口 | `architecture.md`、子树 `AGENTS.md` | 进入对应区域 | 2410（manifest） / 600-750 words |
+| L1 常驻 | 根 `AGENTS.md` | 每个 agent session | 2080 words（manifest） |
+| L2 区域入口 | `architecture.md`、子树 `AGENTS.md` | 进入对应区域 | 2410（manifest） / 600-810 words |
 | L3 按需合同 | package README、subsystems、cookbook | 定位到具体包/任务 | 无统一的字数预算：`packages/README.md` ≤ 994；单个 package README 由 Summary ≤ 100 words、Model Experience 与 limitations 三道门禁管 |
 | L4 穷举索引 | generated catalogs、cordis API、module graph | 查询时 | 无人工预算，但由生成器维护 |
 | L5 理由与流程 | Agent Notes、skills | 决策或执行时 | Agent Notes 不设总预算，但有归档/分类/格式门禁 |
@@ -69,9 +69,9 @@ DSH 做对的不是“写得循序渐进”，而是**把披露顺序编码成�
 
 ## 证据入口
 
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 48-58 行：budget 与 relocate/condense/raise
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 75 行：verify-md-links
+- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 49-59 行：budget 与 relocate/condense/raise
+- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 77 行：verify-md-links
 - [`package.json`](../../package.json)：`verify-doc-budgets`、`verify-md-links`、`verify-tool-catalog` 等脚本
 - [`scripts/doc-budgets.manifest.json`](../../scripts/doc-budgets.manifest.json)：各常驻文档的实际 ceiling
 - [`scripts/verify-package-readme-summaries.ts`](../../scripts/verify-package-readme-summaries.ts)：package README Summary 的 100 词上限
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 15-33 行：tier taxonomy
+- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 15-36 行：tier taxonomy

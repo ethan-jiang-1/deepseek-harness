@@ -5,7 +5,7 @@
 > ## Motivation
 > ## Behavior
 
-来源：`.github/ISSUE_TEMPLATE/feature.md:1-13`（Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板不再承载验收与测试证据）
+来源：`.github/ISSUE_TEMPLATE/feature.md:1-13`（Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/archived/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板不再承载验收与测试证据）
 
 PR 模板：
 
@@ -58,11 +58,11 @@ proposed 骨架：
 
 > Make the plan decision-complete: ... detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:63`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）
 
 > **Guidance, not enforcement** — plan mode restrains through text only; deployments that need enforced restrictions configure sandbox mode and approval policy independently.
 
-来源：`packages/plan/plan-mode/README.md:183`
+来源：`packages/plan/plan-mode/README.md:184`
 
 限制：Plan Mode 能证明 DSH 原生支持「先计划、后实施」的可选工作方式；git 历史不能证明每个 PR 都使用过它。
 
@@ -74,23 +74,23 @@ proposed 骨架：
 
 ## 4. docs 是当前状态，不是变更史
 
-> **Document current state, not change history.** Name live mechanisms, not PRs, commits, stack positions, or "previously/now/no longer".
+> **Document current state.** Keep history in commits, PRs, Agent Notes, postmortems, or scoped persistence records. Other prose names live mechanisms, not changes or stack positions.
 
-来源：`docs/AGENTS.md:38`
+来源：`docs/AGENTS.md:40`
 
-> The owning subsystems page updates in the same change that reshapes a documented type.
+> **The owning subsystems page updates in the same change** that reshapes a documented type.
 
-来源：`docs/AGENTS.md:43`
+来源：`docs/AGENTS.md:44`
 
 ## 5. package README / JSDoc 随代码更新
 
 > Update package README and JSDoc contracts in the same commit as behavior.
 
-来源：`packages/AGENTS.md:26`
+来源：`packages/AGENTS.md:27`
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 
-来源：`packages/AGENTS.md:27`
+来源：`packages/AGENTS.md:28`
 
 ## 6. 行为证据：测试与快照
 

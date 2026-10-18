@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 500" font-family="-apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif">
   <title>三层生产力价值：能用（省手）→ 敢用（敢放手）→ 复利（可复用）</title>
-  <desc>三层堆叠图，自下而上：省手（装了就能跑、换底座不改调用）、敢放手（审批成对、fail-closed、可重建，加粗强调为第一价值）、可复用（preset/bundle/patch 一处配好处处照搬）。每层内列出挂在哪条机制不变式上。</desc>
+  <desc>三层堆叠图，自下而上：省手（装了就能跑、换底座不改调用）、敢放手（审批成对、fail-closed、可重建，加粗强调为第一价值）、可复用（preset/bundle/patch 一处配好处处照搬）。每层的 owner 关系由 standing order、semantic review 与 recorded-session 证据维持（运行时 invariant companion 机制已整族退役，见 docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md）。</desc>
   <rect width="780" height="500" fill="#ffffff"/>
   <text x="390" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">三层生产力价值：能用 → 敢用 → 复利</text>
-  <text x="390" y="46" text-anchor="middle" font-size="12" fill="#888">卡点不是 agent 不够强，是我不敢离开；三层都是运行时不变式（机制事实见 FAQ 08），不是文档承诺</text>
+  <text x="390" y="46" text-anchor="middle" font-size="12" fill="#888">卡点不是 agent 不够强，是我不敢离开；三层都是机制事实（见 FAQ 08），不是文档承诺</text>
 
   <!-- 左侧阶段词 -->
   <g font-size="14" font-weight="700" text-anchor="middle">
@@ -36,10 +36,10 @@
   <!-- 底带：省手 -->
   <rect x="72" y="340" width="668" height="104" rx="10" fill="#eef3fd" stroke="#4a6fd4" stroke-width="1.5"/>
   <text x="88" y="366" font-size="13.5" font-weight="700" fill="#2f4fa8">省手——装了就能跑，换底座不改调用</text>
-  <text x="88" y="382" font-size="10.5" fill="#555">执行世界 / 持久化 / subagents：28 条 seam 中 11 条已有 ≥2 真实 Provider（39.3%，"至少能换"的下界）</text>
+  <text x="88" y="382" font-size="10.5" fill="#555">执行世界 / 持久化 / subagents：35 条 seam 中 15 条已有 ≥2 真实 Provider（42.9%，"至少能换"的下界）</text>
   <text x="88" y="400" font-size="10.5" fill="#555">装一个 = 雇一个能换底座的劳力：本地 ↔ 云沙箱（E2B），Consumer 一行不改</text>
   <text x="88" y="418" font-size="10" fill="#888">饱和区不用你投入——直接挑 Provider；单 Provider 区才是你该等的（FAQ 08）</text>
 
   <text x="72" y="466" font-size="10" fill="#888">出处：构建期检查（session-and-loop/00-map）· asked/decided 成对 + fail-closed + 拒签（user-approval README）· 版本纪律（FAQ 08 边界 3）</text>
-  <text x="72" y="482" font-size="10" fill="#888">39.3% = 11/28 条 seam 有 ≥2 个真实 Provider（FAQ 08 当前树点数）——只回答"今天能不能无痛换"，不等于"换出差异"</text>
+  <text x="72" y="482" font-size="10" fill="#888">42.9% = 15/35 条 seam 有 ≥2 个真实 Provider（FAQ 08 当前树点数）——只回答"今天能不能无痛换"，不等于"换出差异"</text>
 </svg>

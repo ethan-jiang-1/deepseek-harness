@@ -1,6 +1,6 @@
 # 工具管道、审批、timeout，以及 chunk 如何沉淀为 settlement
 
-产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`，2026-09-25 同步轮核验；OLD 侧 `46a7f68b09`）。
+产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`，2026-10-18 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
 
 源码核验入口：`packages/core/tools/src/index.ts` 事件、`packages/core/tools/src/ptc.ts`、`packages/llm/llm/src/assembler.ts`、`packages/llm/llm/src/assistant-stream.ts`、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
 
@@ -28,7 +28,7 @@ hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-exec
 
 ## 会话中途的工具面更新（0.2.0 线新增）
 
-`dsh-llm` 定义路由能力 `ToolUpdate = 'in-history' | 'addition-only'`（`packages/llm/llm/src/types.ts:407`，挂在 `LlmResolvedModelInfo` 上，`:420`）。route 声明了模式时，会话中途的工具面变化按「历史更新」走：loop 在 `request/header` 变更旁边把增删写成一条 `developer/message`（source `tool-registry`，content 是 `tool-addition` / `tool-removal` 块，`packages/core/agent-loop/src/agent.ts:635-649`），随 `headerSeq` 关联触发它的 header。dispatch 边界 `projectToolUpdates`（`packages/llm/llm/src/content.ts:424`）再按目标 route 的模式投影：`in-history` route 收到保留的 `tool-addition` / `tool-removal` 增量，`addition-only` route 的 removal 被滤掉（工具只能增不能撤），未声明模式的 route 收不到 developer 更新、拿完整工具表（`content.ts:430-436`）。DeepSeek wire 侧把保留的 developer 块序列化成 system-role 的 `tool_addition` / `tool_removal` tool 引用，`defer_loading` 声明按 schema 字段透传（`packages/llm/llm-deepseek/src/serialize.ts:46-48`、`:94-95`、`:164`）。内置唯一声明者 `deepseek-flash` 用 `addition-only`（`packages/llm/llm-deepseek/src/models.ts:13`，catalog zod 校验 `config.ts:78`）。未声明模式的 route 行为不变：可见 schema 集变化仍然使 `startsSeries` 成立（`packages/core/agent-loop/src/agent.ts:414` 的条件是 `preparedCall?.toolUpdate === undefined && this.toolsChanged(assembly.tools)`）。
+`dsh-llm` 定义路由能力 `ToolUpdate = 'in-history' | 'addition-only'`（`packages/llm/llm/src/types.ts:425`，挂在 `LlmResolvedModelInfo` 上，`:428`）。route 声明了模式时，会话中途的工具面变化按「历史更新」走：loop 在 `request/header` 变更旁边把增删写成一条 `developer/message`（source `tool-registry`，content 是 `tool-addition` / `tool-removal` 块，`packages/core/agent-loop/src/agent.ts:656`-`:665`），随 `headerSeq` 关联触发它的 header。dispatch 边界 `projectToolUpdates`（`packages/llm/llm/src/content.ts:424`）再按目标 route 的模式投影：`in-history` route 收到保留的 `tool-addition` / `tool-removal` 增量，`addition-only` route 的 removal 被滤掉（工具只能增不能撤），未声明模式的 route 收不到 developer 更新、拿完整工具表（`content.ts:430`-`:436`）。DeepSeek wire 侧把保留的 developer 块序列化成 system-role 的 `tool_addition` / `tool_removal` tool 引用，`defer_loading` 声明按 schema 字段透传（`packages/llm/llm-deepseek/src/serialize.ts:47`、`:95`-`:96`、`:165`）。内置唯一声明者 `deepseek-flash` 用 `addition-only`（`packages/llm/llm-deepseek/src/models.ts:13`，catalog zod 校验 `config.ts:81`）。未声明模式的 route 行为不变：可见 schema 集变化仍然使 `startsSeries` 成立（`packages/core/agent-loop/src/agent.ts:420` 的条件是 `preparedCall?.toolUpdate === undefined && this.toolsChanged(assembly.tools)`）。
 
 ## timeout 挂在 `tools/execute`
 
@@ -40,9 +40,9 @@ hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-exec
 
 `tools/post-execute`：抛错的 tool 也作为 error 进入这条链。caller 取消在结算后只替换「已接受的成功结果」。
 
-还有 `tools/ptc-dispatch-log`（3ca9c7d489 随 PTC 改名，旧名 `tools/code-dispatch-log`；`packages/core/tools/src/index.ts:190,364,1314-1329`）：只改 `run_code` 子调度写入 log 的副本（spill 预览），程序已经拿到完整值，模型也看不见这段。log 事件名与 waterfall 名都已随 PTC 改名：`tool/ptc-dispatch-start` / `tool/ptc-dispatch`（`packages/core/tools/src/ptc.ts:612`、`:586`），sub-call id 为 `<parent>:ptc:<n>`（`:545`），deferred image 的 plugin 来源为 `tools-ptc`；旧名只作为 v2→v3 迁移的输入词表存在（`packages/session/session-format-v2-to-v3/README.zh.md:95`）。
+还有 `tools/ptc-dispatch-log`（3ca9c7d489 随 PTC 改名，旧名 `tools/code-dispatch-log`；`packages/core/tools/src/index.ts:191`、`:365`、`:1323`-`:1334`）：只改 `run_code` 子调度写入 log 的副本（spill 预览），程序已经拿到完整值，模型也看不见这段。log 事件名与 waterfall 名都已随 PTC 改名：`tool/ptc-dispatch-start` / `tool/ptc-dispatch`（`packages/core/tools/src/ptc.ts:614`、`:587`），sub-call id 为 `<parent>:ptc:<n>`（`:546`），deferred image 的 plugin 来源为 `tools-ptc`；旧名只作为 v2→v3 迁移的输入词表存在（`packages/session/session-format-v2-to-v3/README.zh.md:95`）。
 
-**工具卡的 preparing 阶段**（#5053 起）：`assistant/live-chunk` 的 `tool-call-delta` 帧在 `tool/call` 落 log 之前就把工具卡的 phase 置为 `preparing`（`packages/client/ui-chat/src/client/conversation-nodes/tool.ts:41-49`），Web 过程活动行同样显示准备态（`packages/client/ui-chat/src/client/conversation-nodes/process-activity.ts:109-110`，0.2.0 线随 ui-chat 目录整理从 `src/client/process-activity.ts` 移入 `conversation-nodes/`）；card 拿到的是「工具开始准备」的过程信号，不是执行结果。
+**工具卡的 preparing 阶段**（#5053 起）：`assistant/live-chunk` 的 `tool-call-delta` 帧在 `tool/call` 落 log 之前就把工具卡的 phase 置为 `preparing`（`packages/client/ui-chat/src/client/conversation-nodes/tool.ts:64`、`:71`、`:80`），Web 过程活动行同样显示准备态（`packages/client/ui-chat/src/client/conversation-nodes/process-activity.ts:149`、`:165`，0.2.0 线随 ui-chat 目录整理从 `src/client/process-activity.ts` 移入 `conversation-nodes/`）；card 拿到的是「工具开始准备」的过程信号，不是执行结果。
 
 ## settlement → message
 
@@ -57,7 +57,7 @@ hooks（Claude Code / Codex 桥）把外部 permission 决策映射成 `pre-exec
 
 一次模型 attempt 因此只有**一条 settlement**，流内嵌其中（`assistant/message.stream` 或 `assistant/attempt.stream`）。`assistant/message` 不能再带 chunk 的 `sourceEventSeqs`。要拿回逐 token 事实与精确时间戳，读的是 [`05-chunk到settlement.md`](./05-chunk到settlement.md)：`expandAssistantStream()`（`packages/llm/llm/src/assistant-stream.ts:202`）是严格校验的展开路径，`assembleAssistantStream()`（`:425`）重组 blocks。
 
-`deriveMessages` 折叠 `assistant/message`，不折叠 `assistant/attempt`；空 content（只带 usage 的 max-tokens）派生为 null。chunk 的 seq 是品牌化 `SessionSeq`（`packages/core/session/src/types.ts:31-32`），按 seq 读取走 `snapshotEvents()` / `eventAt()`；token-meter 不再按引用的 chunk seq 重组 provider 输出，改为 `assembleAssistantStream(event.data.stream).blocks()`（`packages/llm/token-meter/src/index.ts:10,337`）。
+`deriveMessages` 折叠 `assistant/message`，不折叠 `assistant/attempt`；空 content（只带 usage 的 max-tokens）派生为 null。chunk 的 seq 是品牌化 `SessionSeq`（`packages/core/session/src/types.ts:33`），按 seq 读取走 `snapshotEvents()` / `eventAt()`；token-meter 不再按引用的 chunk seq 重组 provider 输出，改为 `assembleAssistantStream(event.data.stream).blocks()`（`packages/llm/token-meter/src/index.ts:10,337`）。
 
 max-tokens 截断时，assembler 丢掉全部 `tool-call` block（无论完成与否，`assembler.assembled()` 直接裁）。`ReplayEnvelope` 把 adapter 私有 replay 拆成 `response` 与可选的 per-block `blocks`；assembly 按同一套 keep/drop 裁 `blocks`，两半不能各裁各的。长度对不上就丢弃整份 envelope。
 

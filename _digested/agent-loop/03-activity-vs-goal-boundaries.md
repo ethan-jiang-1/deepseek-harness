@@ -14,7 +14,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 
 | 问题 | 答案 |
 |------|------|
-| 谁驱动 | `ReactLoopAgent.step()`（packages/core/agent-loop/src/agent.ts:398-544） |
+| 谁驱动 | `ReactLoopAgent.step()`（packages/core/agent-loop/src/agent.ts:400-561） |
 | 什么时候结束 | 流式 chunk 收完 → `BlockAssembler.finish` 判断：`completed`（无 tool-call）、入工具执行（可能 `concludesTurn`）、`max-tokens`、`error` |
 | 对谁可见 | `step/start` → `step/end` 事件写入 session |
 | 关键细节 | 请求错误（`agent/request-error`）可以 `retry`，同一 step 内重发请求，不新开 step |
@@ -23,7 +23,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 
 | 问题 | 答案 |
 |------|------|
-| 谁驱动 | `ReactLoopAgent.turn()`（packages/core/agent-loop/src/agent.ts:296-396） |
+| 谁驱动 | `ReactLoopAgent.turn()`（packages/core/agent-loop/src/agent.ts:298-398） |
 | 什么时候结束 | `preStep` 被 reject（`blocked`）；首次 step 消息为空（`completed`）；所有 step 完成后 `turn-stopping` 无人 steer 且 inbox 无 next-step 消息 |
 | 对谁可见 | `turn/start` → `turn/end` 事件写入 session，`turn/end.reason` 记录结束原因 |
 | 关键细节 | turn 可以含 0 个或多个 step。`turn/end` 不会发 `interrupted`——那是崩溃恢复层补的 |
@@ -33,7 +33,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 | 问题 | 答案 |
 |------|------|
 | 谁驱动 | `ReactLoopAgent.wakeDriver()` → `kick()`（packages/core/agent-loop/src/agent.ts:252-265；`wakeDriver` 本体 :214-235） |
-| 什么时候结束 | `kick()` 的 `while (await this.turn()) {}`（packages/core/agent-loop/src/agent.ts:254）返回 `false`（turn 返回 false 的三条路径：pre-step reject→`blocked`（packages/core/agent-loop/src/agent.ts:319）、首步消息为空（packages/core/agent-loop/src/agent.ts:327）、inbox 无待唤醒消息（packages/core/agent-loop/src/agent.ts:390）） |
+| 什么时候结束 | `kick()` 的 `while (await this.turn()) {}`（packages/core/agent-loop/src/agent.ts:254）返回 `false`（turn 返回 false 的三条路径：pre-step reject→`blocked`（packages/core/agent-loop/src/agent.ts:321）、首步消息为空（packages/core/agent-loop/src/agent.ts:329）、inbox 无待唤醒消息（packages/core/agent-loop/src/agent.ts:392）） |
 | 对谁可见 | `agent/status` 从 `'running'` 变回 `'idle'` |
 | 关键细节 | 整段 activity 在 `ctx.agents.withInitiator(agent, () => kick())` 的因果边界内运行（packages/core/agent-loop/src/agent.ts:234）——这是 host / model pause 判据的来源（见 [`04-agent-runtime-identity.md`](./04-agent-runtime-identity.md)）。`maintenance` 阶段 `status` 也是 `'idle'`。`kick()` catch 所有 error（packages/core/agent-loop/src/agent.ts:255-257）并 contained 在 driver 边界。activity 结束后自动重检查 `wakeRequested`（packages/core/agent-loop/src/agent.ts:262） |
 
@@ -48,7 +48,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 
 ## turn/end 的 reason 对照
 
-`turn/end` 的 `reason` 字段记录这一轮为什么结束，各方据此决定下一步行动。loop 只会写下表这五种 reason；`{ kind: 'interrupted' }` 不是 loop 发的，而是由 `interruptedTurnClosers` 在 agent-loop resume（`packages/core/agent-loop/src/index.ts:855-856`）与 session-query 冷读（`packages/core/session/src/repair.ts:209`）两处补写：
+`turn/end` 的 `reason` 字段记录这一轮为什么结束，各方据此决定下一步行动。loop 只会写下表这五种 reason；`{ kind: 'interrupted' }` 不是 loop 发的，而是由 `interruptedTurnClosers` 在 agent-loop resume（`packages/core/agent-loop/src/index.ts:891-892`）与 session-query 冷读（`packages/core/session/src/repair.ts:209`）两处补写：
 
 | reason | 含义 | round-driver 反应 | user 看到 |
 |--------|------|-------------------|-----------|
@@ -58,7 +58,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 | `{ kind: 'blocked' }` | pre-step 拒绝，无 step 被处理 | 不特别处理（pre-step hook 可能已 block goal） | 未产生回复 |
 | `{ kind: 'error', error }` | 执行出错 | disarm（经 `agent/error` 事件，`goal-round-driver/src/index.ts:246-249`） | 错误提示 |
 
-`aborted.reason` 的类型是 `TurnEndCancelCause`：`AgentCancelCause`（`user` / `parent` / `hook` / `disposed`）再加上 `{ kind: 'legacy' }`，后者只出现在导入的旧记录里（`packages/core/session/src/types.ts:188-195`）。
+`aborted.reason` 的类型是 `TurnEndCancelCause`：`AgentCancelCause`（`user` / `parent` / `hook` / `disposed`）再加上 `{ kind: 'legacy' }`，后者只出现在导入的旧记录里（`packages/core/session/src/types.ts:189-197`）。
 
 ## 崩溃恢复
 
@@ -72,7 +72,7 @@ turn/start (turn=5)
 turn/end (turn=5, reason={ kind: 'interrupted' })  ← 之后补的
 ```
 
-- **agent-loop 的 resume** 打开写句柄、读完已存日志后，把这些 closer **追加写回**（`packages/core/agent-loop/src/index.ts:854-856`）——这是唯一落盘的一侧，不是 loop 运行时发的。
+- **agent-loop 的 resume** 打开写句柄、读完已存日志后，把这些 closer **追加写回**（`packages/core/agent-loop/src/index.ts:890-892`）——这是唯一落盘的一侧，不是 loop 运行时发的。
 - **session-query 的冷读**在只读句柄上为读取视图合成同一组 closer，不写回存储（`packages/session-query/session-query/src/cold-read.ts:55`）。
 
 `turn/end` 的 `interrupted` 只用于恢复。不要和 `assistant/message.interrupted` 混——那是 loop 取消时主动写的前缀定稿。
@@ -81,9 +81,9 @@ turn/end (turn=5, reason={ kind: 'interrupted' })  ← 之后补的
 
 ![崩溃重启后必须 re-arm](./figures/restart-rearm.svg)
 
-`phase` 不依赖进程内存：所有 `goal/change` 事件写入 session log，进程重启后 fold（`fold.ts`）从 log 重放，重建 goal 状态。但 **`activation`（armed / disarmed）从不持久化**（`packages/goal/goal/src/types.ts:97` 的 `activation` 字段注释「never persisted」）：session-start 边（串行 `agent/created`）时 `GoalService` 把 activation 重置为 `disarmed`（`goal/src/index.ts:255-257`），Round Driver 装载时也会 disarm 全部现存 agent（`goal-round-driver/src/index.ts:428-433`）。
+`phase` 不依赖进程内存：所有 `goal/change` 事件写入 session log，进程重启后 fold（`fold.ts`）从 log 重放，重建 goal 状态。但 **`activation`（armed / disarmed）从不持久化**（`packages/goal/goal/src/types.ts:97` 的 `activation` 字段注释「never persisted」）：session-start 边（串行 `agent/created`）时 `GoalService` 把 activation 重置为 `disarmed`（`goal/src/index.ts:255-257`），Round Driver 装载时也会 disarm 全部现存 agent（`goal-round-driver/src/index.ts:449-452`）。
 
-所以崩溃重启后，goal 停在 active + **disarmed**——**自动续轮不会自动恢复**，必须 human re-arm 之后，driver 才从 `roundsStarted + 1` 继续；round 计数完全重建自 log，不会漏也不会超前。re-arm 的通道要分清：模型 `update_goal resume` 只覆盖 `active·disarmed` 与 `blocked`，若 goal 处于 `paused` 则必须走 human 的 `/goal resume` 或 Web 恢复（`tool-goal/src/index.ts:279-286`）。测试直接断言 session-start 后的重置行为（`packages/goal/goal-round-driver/tests/goal-round-driver.spec.ts:937-950`）。
+所以崩溃重启后，goal 停在 active + **disarmed**——**自动续轮不会自动恢复**，必须 human re-arm 之后，driver 才从 `roundsStarted + 1` 继续；round 计数完全重建自 log，不会漏也不会超前。re-arm 的通道要分清：模型 `update_goal resume` 只覆盖 `active·disarmed` 与 `blocked`，若 goal 处于 `paused` 则必须走 human 的 `/goal resume` 或 Web 恢复（`tool-goal/src/index.ts:279-286`）。测试直接断言 session-start 后的重置行为（`packages/goal/goal-round-driver/tests/goal-round-driver.spec.ts:1048-1060`）。
 
 ## Goal 与 Agent Loop 的通信通道
 
@@ -94,13 +94,13 @@ Goal 与 Agent Loop 之间没有直接耦合：driver 不 import loop 内部，l
 1. `agent.followup()` — driver 往 inbox 写 round 消息，loop 在 pre-step 时 claim
 2. `agent/status === 'idle'` — driver 监听这个信号决定要不要推进下一轮
 3. `agent/pre-step` waterfall — driver 验证 reservation，可返回 `reject`（round 消息的准入闸）
-4. `goal/changed` — mutation 提交后触发 checkpoint 标记与重新排程；host 发起的 `pause` 还会让 driver 调 `agent.cancel({ kind: 'user' }, { keepInbox: true })` 中止在跑的 turn（`goal-round-driver/src/index.ts:282-294`）
+4. `goal/changed` — mutation 提交后触发 checkpoint 标记与重新排程；host 发起的 `pause` 还会让 driver 调 `agent.cancel({ kind: 'user' }, { keepInbox: true })` 中止在跑的 turn（`goal-round-driver/src/index.ts:302-313`）
 5. `turn/end` — `max-tokens` 触发 disarm；`aborted` 把 claimed/admitted 的 attempt 标记 cancelled
 6. `agent/error` — 触发 disarm
 7. `agent/inbox/inserted` / `claimed` / `discarded` — competing / stale 簿记
-8. `agent/created`（session-start 边）— driver 在 `goal-round-driver/src/index.ts:252-256` 消费它，清空 `attempt` / `competingQueued` / `needsCheckpoint`，让新会话不从上一会话的调度残留里起步（事件由 `AgentRegistry.announce()` 串行发出，`packages/core/agent/src/index.ts:537-559`；旧名 `agent/session-start` 已随 0.1.7 线退役）
+8. `agent/created`（session-start 边）— driver 在 `goal-round-driver/src/index.ts:268-273` 消费它，清空 `attempt` / `competingQueued` / `needsCheckpoint`，让新会话不从上一会话的调度残留里起步（事件由 `AgentRegistry.announce()` 串行发出，`packages/core/agent/src/index.ts:539-561`；旧名 `agent/session-start` 已随 0.1.7 线退役）
 
-`goal/activation-changed` **不在这条清单里**：`GoalService.setActivation()` 在 activation 真正变化时广播的进程内事件（`goal/src/index.ts:495-516`），driver 不消费它；消费方是 Web goal bar（经 Remote 白名单转发，`packages/api/remotes/src/remote-events.ts:33`；订阅点 `packages/client/ui-goal/src/client/index.ts:115`）
+`goal/activation-changed` **不在这条清单里**：`GoalService.setActivation()` 在 activation 真正变化时广播的进程内事件（`goal/src/index.ts:495-516`），driver 不消费它；消费方是 Web goal bar（经 Remote 白名单转发，`packages/api/remotes/src/remote-events.ts:39`；订阅点 `packages/client/ui-goal/src/client/index.ts:125`）
 
 ## 场景：一次完整的 goal 生命周期
 
@@ -138,7 +138,7 @@ agent idle → driver 检查 goal.phase === 'complete'
 
 | 层 | 关停操作 | 源码位置 |
 |----|---------|---------|
-| step | `step()` 内 `return { kind: 'max-tokens' }` 或 `{ kind: 'completed' }` | packages/core/agent-loop/src/agent.ts:530（max-tokens）、:533、:538（completed） |
-| turn | `return false`：pre-step reject→`blocked`、首步消息为空、inbox 无 pending | packages/core/agent-loop/src/agent.ts:319、:327、:390 |
+| step | `step()` 内 `return { kind: 'max-tokens' }` 或 `{ kind: 'completed' }` | packages/core/agent-loop/src/agent.ts:547（max-tokens）、:550、:555（completed） |
+| turn | `return false`：pre-step reject→`blocked`、首步消息为空、inbox 无 pending | packages/core/agent-loop/src/agent.ts:321、:329、:392 |
 | activity | `kick()` finally 块 `setPhase({ kind: 'idle' })` | packages/core/agent-loop/src/agent.ts:252-265（finally 的 `setPhase` 在 :261） |
-| goal | `ctx.goals.complete()` / `block()` / `clear()` | goal/src/index.ts:390-400（complete）、:409-424（block）、:432-447（clear）<br>goal-round-driver:166-172（auto block） |
+| goal | `ctx.goals.complete()` / `block()` / `clear()` | goal/src/index.ts:390-400（complete）、:409-424（block）、:432-447（clear）<br>goal-round-driver:182-188（auto block） |

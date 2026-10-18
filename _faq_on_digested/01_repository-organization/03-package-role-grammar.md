@@ -1,6 +1,6 @@
 # 03 · `packages/` 的角色语法
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。
+源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）。
 
 ## 先把六个层级分开
 
@@ -25,6 +25,8 @@ DSH 从源码维护单元走到活运行时，要经过六个不同层级：
 - `<pkg>` 回答“这个可发布、可替换、可独立测试的单元扮演什么角色”。
 
 组 README 是第一入口。它应当列出组内 package、职责和 `ctx` key；根 [`packages/README.md`](../../packages/README.md) 只列 group 与整体依赖原则，避免维护一份重复的 package 细节目录。
+
+`packages/experimental/` 是这条规则的一个显式例外组：它不按领域划分，而是按成熟度收编“整份公开合同都仍是 experimental 或 internal-only”的包。0011 跨度把原先分散的 `hooks/`、`webhook/`、`runtime-diagnostics/` 三个领域组解散，全部可选包并入该组——包总数按 `packages/<group>/<pkg>/package.json` 的深度精确口径为 342、组数 52、组内 47 包。组 README 写明它的定位是 `evaluated capabilities without a product-support commitment`，并强调 **experimental 状态与 optional 交付相互独立**：optional 说的是用户显式选择，experimental 说的是成熟度；反过来，不在该组里的包必须有产品用途，或拿到 [`scripts/product-package-policy.ts`](../../scripts/product-package-policy.ts) 的显式分类。产品包内部的一个 experimental 选项仍留在该产品包里，不因此搬进这个组。
 
 ## 一条 capability family 的典型构成
 
@@ -68,7 +70,7 @@ Definition 位于中间，Provider 和 Consumer 都朝它依赖；Composition �
 | `packages/fs/tool-fs` | Consumer | 向 `ctx.tools` 注册 `read`、`read_image`、`write`、`edit` |
 | `packages/fs/tool-fs-search` | 相邻 Consumer | 通过 `ctx.subprocess` 运行 packaged ripgrep；不扩张 `ctx.fs` 合同 |
 | `packages/fs/tool-str-replace-editor` | 相邻 Consumer | 独立的 `str_replace_editor` 工具（`view` / `create` / `str_replace` / `insert`），同样只依赖 `ctx.fs` |
-| `packages/fs/tool-present` | 相邻 Consumer | 把已交付文件登记为 Session 交付物（只记路径与描述，不复制内容） |
+| `packages/deliverables/tool-present` | 跨组相邻 Consumer | 把已交付文件登记为 Session 交付物（只记路径与描述，不复制内容；0.1.7 线起自 `packages/fs/tool-present` 移入 `deliverables/` 组） |
 
 这里有两个重要细节。
 
@@ -124,7 +126,7 @@ Web GUI 不是一个 `frontend/` 加一个 `backend/` 大目录，而是多个�
 
 这种拆法把“传输”“业务 Remote”“浏览器模块加载”“具体 UI 功能”分开。读一个 UI 时，不能只停在 React component；还要沿 Remote 或 session projection 找到 Host 侧事实来源。
 
-客户端拿到的 Host 事实有两条链路，不要混：session 历史与状态走 `api/session-controller` 的 `follow` stream；其余 Host Cordis 事件走 `api/remotes` 的转发白名单 `API_REMOTE_FORWARDED_EVENTS`（本基线 27 条，0008 跨度新增 `agent-preset/selected`、`commands/change`、`credentials/reference-updated`、`cordis/inspect-query(-resolved)`、`permission-presets/catalog-changed`、`plugin-manager/*` 三条，0009 跨度新增 `deepseek-account/session-expired`、`deepseek-account/model-sign-in-required`、`credentials/record-updated`、`schedule/changed`；是 `ctx.remote.$on` 的合法 key 集）。白名单不是 session 事件来源，两者各有自己的所有者与背压语义。
+客户端拿到的 Host 事实有两条链路，不要混：session 历史与状态走 `api/session-controller` 的 `follow` stream；其余 Host Cordis 事件走 `api/remotes` 的转发白名单 `API_REMOTE_FORWARDED_EVENTS`（[`packages/api/remotes/src/remote-events.ts:26-54`](../../packages/api/remotes/src/remote-events.ts)，0011 基线 28 条；0008 跨度新增 `agent-preset/selected`、`commands/change`、`credentials/reference-updated`、`cordis/inspect-query(-resolved)`、`permission-presets/catalog-changed`、`plugin-manager/*` 三条，0009 跨度新增 `deepseek-account/session-expired`、`deepseek-account/model-sign-in-required`、`credentials/record-updated`、`schedule/changed`，0011 跨度新增 `plugin-market/changed`；是 `ctx.remote.$on` 的合法 key 集）。白名单不是 session 事件来源，两者各有自己的所有者与背压语义。
 
 `apps/` 这一层另有 `apps/desktop`（Electron 壳）与 `apps/desktop-host`（私有 host），两者都不带 `bin`、也不从 `dsh --profile` 启动；0.1.7 线起 desktop-host 经 `runProfile` 起完整 web 应用（监听 `127.0.0.1:19387`，认证 URL 交给窗口），见 [`_digested/surfaces-entrypoints/03-桌面入口.md`](../../_digested/surfaces-entrypoints/03-桌面入口.md)。`client/` 在 `dsh-v0.1.7-rc.1` 也已不只“壳 + slots”：`ctx.resources` / `useResource` 构成内容寻址的资源模型，`ui-dockkit` 是平台静态模块而非 Loader row，右栏、file-upload 与 open-in-app 都在这一组，见 [`_digested/surfaces-entrypoints/04-客户端资源模型与右栏.md`](../../_digested/surfaces-entrypoints/04-客户端资源模型与右栏.md)（`packages/client/README.md` 的包表原先漏登记 `ui-dockkit`、`ui-sidebar-right`、`ui-sidebar-documentpreview` 三个包，0007 复核时已就地补齐；0008 复核实测 `packages/client/` 共 59 个包目录、README 表 58 行——`ui-settings-account/` 与 `ui-sidebar-terminal/` 两个真实包仍未登记，属上游候选缺口）。
 
@@ -151,9 +153,10 @@ tsconfig.json
 2. `package.json`：npm 名称、exports、peer dependencies、普通 dependencies、是否声明 `dsh.bundle`。
 3. `src/index.ts`：插件/Service 入口、`inject`、注册点、Config schema。
 4. `src/types.ts`：只有 package 真正拥有独立类型词汇时才存在；按仓库规则不放 runtime code。
-5. `src/invariant.ts`：可选加载的关系检查，不替代主实现的边界验证。
-6. `tests/`：行为与 real-composition 证据；测试不藏在 `src/__tests__`。
-7. `tsconfig.json`：所属 compiler face 与 workspace project references。
+5. `tests/`：行为与 real-composition 证据；测试不藏在 `src/__tests__`。
+6. `tsconfig.json`：所属 compiler face 与 workspace project references。
+
+（原第 5 项 `src/invariant.ts` 连同运行时 invariant 机制整族退役：`@deepseek-ai/dsh-invariants` 包、各包的 `./invariant` companion 与其测试、`scripts/test-invariants.ts`、`scripts/verify-package-invariants.ts`、`scripts/verify-built-package-invariants.mjs`、`run-gates.ts` 里的 invariant 门禁与 `ctx.invariants` 服务都已删除，新树里 `/invariant` 路径数量为 0。退役权威是 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)，历史脉络见归档 note `.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md` 与 `.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md`。）
 
 ## 依赖声明透露什么
 

@@ -1,6 +1,6 @@
 # Agent Loop · 推进、边界与 Goal 驱动
 
-产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `46a7f68b09`（`dsh-v0.1.7-rc.1`），增量见 [`_change_log/0009`](../_change_log/0009-0.1.7-rc.1-to-0.2.0-rc.2.md)。
+产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`），增量见 [`_change_log/0011`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
 
 ## 一句话
 
@@ -35,7 +35,7 @@ ruofei 说「Agent Loop 管推进，结束却分好几层」。Loop 不是「模
 
 > "**Use it when the direct human request is a long-running objective, even if the user did not say 'goal';** not for single-turn work."
 
-加上 system prompt 里 `tool:goal` section（order 2400，`packages/core/system-prompt/src/index.ts:145` 的 `SECTION_ORDERS.TOOL_GOAL`）进一步引导：
+加上 system prompt 里 `tool:goal` section（order 2400，`packages/core/system-prompt/src/index.ts:151` 的 `SECTION_ORDERS.TOOL_GOAL`）进一步引导：
 
 > "create_goal may infer goal intent from a direct human request in any language."
 
@@ -112,9 +112,10 @@ Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/se
 | `packages/goal/goal-round-driver/src/prompt.ts` | 下一轮注入的 prompt 文本 |
 | `packages/goal/goal/src/types.ts` | GoalId、GoalSnapshot、GoalPhase、GoalView、GoalProjection 类型 |
 | `packages/goal/goal/src/fold.ts` | 严格的纯函数 fold（回放时重建 goal 状态） |
-| `packages/goal/goal/src/invariant.ts` | goal stream 不变量（回放时校验） |
 | `packages/goal/tool-goal/src/authority.ts` | 谁可以操作 goal：direct human 或当前 goal round；subagent 被拒绝 |
 | `packages/bundle/base/cordis.patch.yml` | `goal`、`goal-round-driver`、`command-goal`、`tool-goal` 都在 base bundle 的 insert 里 |
 | `_digested/session-and-loop/00-map.md` | turn/step 基础词汇和事件骨架 |
 | `_digested/session-and-loop/02-inbox-与turn-时序.md` | turn() 内部时序、claim、pre-step |
 | `_digested/orchestration-ladder/05-goal-驾驶座用法-objective写法轮预算与终结纪律.md` | goal 的驾驶座用法：objective 写法、轮预算、终结纪律、wrapup 收尾 |
+
+`packages/goal/goal/src/invariant.ts` 已随 `f028f25667`（`refactor: remove runtime invariant plugins`）删除，**无继任**：goal stream 的运行时 invariant 断言面不再存在，回放一致性由 `fold.ts` 的纯函数重放本身承担（升级路径见 `docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`）。

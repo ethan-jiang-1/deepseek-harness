@@ -29,9 +29,9 @@ workflow 必须区分三种失败：
 
 ## 启动、取消与处置竞态
 
-一次 child 启动先进入 `children.startAgent()`，provider 可能在 `AbortSignal` 已触发后才发布 run。host 在发布后再次检查 signal；如果已取消，就立即处置 child 并拒绝这次 start（`packages/workflow/workflow-ptc/src/host.ts:197`-`:219`）。这避免把取消窗口中的 child 当成成功启动。
+一次 child 启动先进入 `children.startAgent()`，provider 可能在 `AbortSignal` 已触发后才发布 run。host 在发布后再次检查 signal；如果已取消，就立即处置 child 并拒绝这次 start（`packages/workflow/workflow-ptc/src/host.ts:200`-`:219`）。这避免把取消窗口中的 child 当成成功启动。
 
-取消 workflow 时，host 将脚本 signal 置为 aborted，run 结果结算为 `cancelled`；随后处置已发布 child，并等待 pending startup 与 child disposal 完成。未在 start 后发布 child 的调用不会伪造一对生命周期事件；仍处于 live map 的成员会在最终处置阶段合成 `agent-end(cancelled)`（`packages/workflow/workflow-ptc/src/host.ts:269`-`:303`）。
+取消 workflow 时，host 将脚本 signal 置为 aborted，run 结果结算为 `cancelled`；随后处置已发布 child，并等待 pending startup 与 child disposal 完成。未在 start 后发布 child 的调用不会伪造一对生命周期事件；仍处于 live map 的成员会在最终处置阶段合成 `agent-end(cancelled)`（`packages/workflow/workflow-ptc/src/host.ts:276`-`:303`）。
 
 `WorkflowRun.result` 不 reject；调用方通过 `stopReason` 和可选 error 读取结算，调用方仍必须调用 `dispose()` 等待脚本与 child 静止（`packages/workflow/workflow/src/runtime-types.ts:36`-`:49`）。
 
@@ -62,8 +62,8 @@ workflow 必须区分三种失败：
 | `packages/workflow/workflow-ptc/src/runtime.ts:142`-`:180` | FIFO slot、total cap 与 child start |
 | `packages/workflow/workflow-ptc/src/runtime.ts:195`-`:225` | child result、structured output 与 failure propagation |
 | `packages/workflow/workflow-ptc/src/runtime.ts:284`-`:339` | parallel/pipeline 的 barrier 与 item-local null |
-| `packages/workflow/workflow-ptc/src/host.ts:197`-`:247` | start-after-abort、result race 与 child disposal |
-| `packages/workflow/workflow-ptc/src/host.ts:269`-`:303` | cancellation、pending startup 与合成 lifecycle end |
+| `packages/workflow/workflow-ptc/src/host.ts:200`-`:247` | start-after-abort、result race 与 child disposal |
+| `packages/workflow/workflow-ptc/src/host.ts:276`-`:303` | cancellation、pending startup 与合成 lifecycle end |
 | `packages/workflow/workflow/src/runtime-types.ts:36`-`:49` | holder-owned result/cancel/dispose contract |
 | `packages/workflow/workflow/src/index.ts:35`-`:134` | event pairing 与 fatal error taxonomy |
 | `packages/workflow/tool-workflow/src/index.ts:89`-`:149` | Session observation recorder 的 contained failure |

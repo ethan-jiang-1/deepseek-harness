@@ -18,6 +18,7 @@
 | `architecture.md` | 有序地图：composition、core packages、loop、seams、extension points | type definitions、package detail、decision rationale |
 | subsystems | type definitions、semantics、generated Cordis API | behavior narration |
 | Agent Notes | why、放弃了什么、验证 | migration plans、checklists、spec-speak |
+| `defensive-patterns/` | review 要执行的规则，按 artifact 分页：一页通用 bug 类 + 各域页面 | type definitions（→ subsystems）、decision rationale（→ Agent Notes） |
 | cookbook | step-by-step how-tos + verify | design rationale |
 | Package README | 该包合同、config、semantics、limitations、Model Experience | JSDoc restatement、generated catalog restatement |
 | Generated reference | 穷举英文源，从源码生成并 freshness-gated | hand edits |
@@ -76,16 +77,18 @@ DSH 最独特的一点是：**需要穷举的参考内容不由人写，也不�
 
 DSH 的文档规则要求用可检查的链接，而不是自由 prose 文件名：
 
-> Link repository references with relative Markdown paths, never bare filenames or Agent Note numbers. `verify-md-links` rejects missing targets and dead `#fragment` anchors.
+> Use relative Markdown links for current files and tags or PR numbers for historical references. `verify-md-links` checks local targets. Reference validation (`scripts/verify-repository-references.ts`) rejects actual commit identifiers and disallowed organization URLs in maintained files.
 >
-> —— `docs/AGENTS.md:75`（基线 `46a7f68b09…`）
+> —— `docs/AGENTS.md:77`（基线 `687f282e86…`；引文只去掉了原文的 Markdown 链接目标，文字未改）
+
+（勘误：本条在原稿中曾引作 `docs/AGENTS.md:75` 并带 `46a7f68b09…` 历史标注，但那句「Link repository references with relative Markdown paths, never bare filenames or Agent Note numbers.」在 `46a7f68b09`、`639ed01539` 与 NEW 三棵树上都不存在，属无法溯源的引文；现改为逐字照录 NEW 树 `docs/AGENTS.md:77` 的现行条文。）
 
 这对模型至关重要：地图上的每一条边都被机器验证过。按图索骥失败时，不是模型理解错了，而是 CI 会先红。
 
 ## 证据入口
 
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 15-33 行、第 75 行
+- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 15-36 行（tier taxonomy）、第 77 行（repository references）
 - [`docs/tool-catalog.md`](../../docs/tool-catalog.md) 第 1-2 行
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) 第 1-2 行
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md) 第 1-2 行
-- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 27-28 行：Model Experience / Known Limitations
+- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 28-29 行：Model Experience / Known Limitations

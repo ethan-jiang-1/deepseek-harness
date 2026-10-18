@@ -1,10 +1,10 @@
 # 11 — 快照机制的对外面：插件仓能拿到的发布包、夹具与接线事实
 
-> 本篇补 [04](./04-snapshot-machinery.md) 的一个视角缺口：04 站在**主仓语料消费者**一侧讲机制（世代、四面、manifest、sidecar、门禁）；本篇讲同一套机制**作为发布物**对仓外暴露了什么。与 [08–10](./08-plugin-testing.md) 同族，面向插件作者。只收 DSH 一手事实（基线 `639ed01539`）；外部仓的实践校准、组织与价值判断在 `_faq_on_digested/21_recorded-session-snapshots/`，本篇不重复。
+> 本篇补 [04](./04-snapshot-machinery.md) 的一个视角缺口：04 站在**主仓语料消费者**一侧讲机制（世代、四面、manifest、sidecar、门禁）；本篇讲同一套机制**作为发布物**对仓外暴露了什么。与 [08–10](./08-plugin-testing.md) 同族，面向插件作者。只收 DSH 一手事实（基线 `687f282e8625c6b8d11ff58211a90524be2e4317`，`dsh-v0.2.1-rc.2`）；外部仓的实践校准、组织与价值判断在 `_faq_on_digested/21_recorded-session-snapshots/`，本篇不重复。
 
 ## 现象是什么：一个半公开的机制
 
-`packages/test-support/` 的两个快照支撑包都是 **npm 公开发布物**：`package.json` 里 `publishConfig.access: "public"`、无 `private`，版本 `0.2.0-rc.2` 与产品同版本矩阵（`@deepseek-ai/dsh-llm-replay`、`@deepseek-ai/dsh-session-snapshot`）。但 `docs/user/develop/` 与 `docs/cookbook/` 对它们**零提及**（grep 事实）——`llm-replay` 在 `docs/` 里只出现在生成的目录中（config-catalog、module-graph、capability-seams、event-producer-consumer），唯一权威是包自己的 README 与 `src/`。
+`packages/test-support/` 的两个快照支撑包都是 **npm 公开发布物**：`package.json` 里 `publishConfig.access: "public"`、无 `private`，版本 `0.2.1-rc.2` 与产品同版本矩阵（`@deepseek-ai/dsh-llm-replay`、`@deepseek-ai/dsh-session-snapshot`）。但 `docs/user/develop/` 与 `docs/cookbook/` 对它们**零提及**（grep 事实）——`llm-replay` 在 `docs/` 里只出现在生成的目录中（config-catalog、module-graph、capability-seams、event-producer-consumer），唯一权威是包自己的 README 与 `src/`。
 
 一句话定性：**能装、能挂、能自带夹具，但没有面向外部作者的文档。** 主仓把它们当内部测试基建使用并随矩阵发布；外部消费是「事实可行」，不是「官方支持面」。
 
@@ -49,9 +49,9 @@ export function apply(ctx: Context, config: Config = {}): void
 
 | 事实 | 数字 / 出处 |
 |---|---|
-| `snapshots/` 整树提交 | 基线树 **210 场景 / 1278 文件 / 6.7MB**（`git ls-tree -r -l` 字节口径；`du` 按 4KB 块会虚高到 ~10MB），折算 **~32KB/场景** |
-| 最大单文件 | 77KB（`snapshots/session/dynamic-tool-updates/tool-schemas.expected.json`——schema sidecar 是大头） |
-| 按扩展名 | jsonl 4.1MB / json 1.7MB / md 0.6MB——全是逐行文本，packfile 再压缩 |
+| `snapshots/` 整树提交 | 基线树 **250 场景 / 1682 文件 / 9.6MB**（`git ls-tree -r -l` 字节口径；`du` 按 4KB 块会虚高到 ~14MB），折算 **~38KB/场景** |
+| 最大单文件 | 95KB（`snapshots/session/cua-native/session.v4.jsonl`）；schema sidecar 最大 81KB（`snapshots/session/dynamic-tool-updates/tool-schemas.expected.json`） |
+| 按扩展名 | jsonl 6.1MB / json 2.2MB / md 0.9MB——全是逐行文本，packfile 再压缩 |
 | 运行时原始日志**不进** git | `.gitignore:14` 的 `.sessions/`——**录制原料不进，证据进** |
 | diff 人工过目是成文义务 | `snapshots/AGENTS.md`：「every resulting JSONL, prompt, schema, protocol, UI, and workspace diff is reviewed before commit」 |
 
@@ -87,4 +87,4 @@ export function apply(ctx: Context, config: Config = {}): void
 
 1. **双接受可检索**：`grep -n "cannot mix projected and complete" packages/test-support/llm-replay/src/index.ts`——错误串本身就是规则原文。
 2. **patch 未命中只是 warn 可复现**：读 `vendor/include/src/index.ts` 的 `warn('patch: entry %C not found', id)`——没有任何 throw 路径。
-3. **体积口径可复现**：`git ls-tree -r -l 639ed015397290b3745d163aafe02ffee4aa3f84 snapshots | awk '{s+=$4} END {print s/1024}'` ≈ 6727 KB；换 `du -sh` 会得到虚高的块口径。
+3. **体积口径可复现**：`git ls-tree -r -l 687f282e8625c6b8d11ff58211a90524be2e4317 snapshots | awk '{s+=$4} END {print s/1024}'` ≈ 9582 KB；换 `du -sh` 会得到虚高的块口径（~14MB）。

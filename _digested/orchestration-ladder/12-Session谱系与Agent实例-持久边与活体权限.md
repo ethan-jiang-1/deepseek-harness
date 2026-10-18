@@ -17,20 +17,20 @@
 
 ## Session 谱系：向上可持久追溯
 
-in-process child 创建时，child header 写入父 Session id、工作目录、agent preset、delegation depth 和是否带 seed（`packages/subagent/subagent/src/child-agent.ts:139`-`:156`）。Session Query 沿 `parentSession` 向上追溯；它检测循环，并在父记录缺失时返回 unresolved parent，而不是把缺失父节点伪造为 live Agent（`packages/session-query/session-query/src/tracing.ts:132`-`:150`）。
+in-process child 创建时，child header 写入父 Session id、工作目录、agent preset、delegation depth 和是否带 seed（`packages/subagent/subagent/src/child-agent.ts:135`-`155`）。Session Query 沿 `parentSession` 向上追溯；它检测循环，并在父记录缺失时返回 unresolved parent，而不是把缺失父节点伪造为 live Agent（`packages/session-query/session-query/src/tracing.ts:132`-`:150`）。
 
 fork 的 inherited prefix 只表示创建时复制到 child 的已完成父历史。父 Session 后续追加的事件不会实时进入 child；continuable 冷恢复读取 child 自己的后缀和 descriptor。因此 lineage、fork seed 和 live parent authority 是三个不同问题。
 
 ## Activation：Session 不变，runtime epoch 可更换
 
-continuable Activation 保存 `childId`、持久 direct parent、当前 provider、AgentHandle、child inbox、活体 ancestry 和 owned children（`packages/subagent/subagent/src/continuation-activation.ts:64`-`:105`）。其中：
+continuable Activation 保存 `childId`、持久 direct parent、当前 provider、AgentHandle、child inbox、活体 ancestry 和 owned children（`packages/subagent/subagent/src/activation.ts:39`-`111`；`390fbe8852` 前在 `continuation-activation.ts`）。其中：
 
 - `parentSession` 用于在 handle 释放后定位持久 direct parent；
 - `ancestry: WeakSet<Agent>` 只回答某个 live caller 是否属于当次 materialization 观察到的祖先链，不能枚举父节点；
 - `ownedChildren: Set<SessionId>` 用于生命周期闭包，非空会阻止 child settlement；
 - Activation registry 的 `resident` 是进程内表，不写入 Session，新的 Activation 可以复用同一个 child Session id。
 
-child 的投递、释放和处置通过 per-child lock 串行化。`startContinuable` 在首个 inbox prompt 被接受后返回 `{ childId, messageId }`；创建、持久化、权限捕获或提交失败时回滚 Activation 和 parent ownership，不返回可用 id（`packages/subagent/subagent/src/continuation.ts:97`-`:191`）。
+child 的投递、释放和处置通过 per-child lock 串行化。`startContinuable` 在首个 inbox prompt 被接受后返回 `{ childId, messageId }`；创建、持久化、权限捕获或提交失败时回滚 Activation 和 parent ownership，不返回可用 id（`packages/subagent/subagent/src/manager.ts:744`-`800`；`390fbe8852` 把原 `continuation.ts` 并入 `manager.ts`）。
 
 ## 权限：持久来源与活体来源必须同时成立
 
@@ -40,7 +40,7 @@ child 的投递、释放和处置通过 per-child lock 串行化。`startContinu
 
 ## 冷恢复：不经过原 provider
 
-`send_message` 找不到 live child 时，continuation manager 先观察持久 Session，再确认 header 的 `parentSession` 与调用者一致，折叠 child 自身后缀中的 descriptor，最后 materialize 新 Activation（`packages/subagent/subagent/src/continuation.ts:402`-`:455`）。该路径不调用原 provider；descriptor 提供 provider 名、模型参数、persona 和 tool filter，Session 日志提供已捕获的 policy 与对话状态。
+`send_message` 找不到 live child 时，continuation manager 先观察持久 Session，再确认 header 的 `parentSession` 与调用者一致，折叠 child 自身后缀中的 descriptor，最后 materialize 新 Activation（`packages/subagent/subagent/src/manager.ts:1250`-`1330`）。该路径不调用原 provider；descriptor 提供 provider 名、模型参数、persona 和 tool filter，Session 日志提供已捕获的 policy 与对话状态。
 
 这解释了三个常见误读：
 
@@ -60,9 +60,9 @@ in-process spawn/fork 可以使用 parent Session、child header、Agent scope �
 
 | 路径 | 关注点 |
 |------|--------|
-| `packages/subagent/subagent/src/child-agent.ts:139`-`:156` | child header 与持久谱系 |
-| `packages/subagent/subagent/src/child-agent.ts:238`-`:280` | 委派权限捕获与 durable policy 事件 |
-| `packages/subagent/subagent/src/continuation-activation.ts:64`-`:105` | Activation epoch、ancestry 与 owned children |
-| `packages/subagent/subagent/src/continuation.ts:97`-`:191` | continuable 创建、持有与回滚 |
-| `packages/subagent/subagent/src/continuation.ts:402`-`:455` | lineage 授权与不经 provider 的冷恢复 |
+| `packages/subagent/subagent/src/child-agent.ts:135`-`155` | child header 与持久谱系 |
+| `packages/subagent/subagent/src/child-agent.ts:248`-`290` | 委派权限捕获与 durable policy 事件 |
+| `packages/subagent/subagent/src/activation.ts:39`-`111` | Activation epoch、ancestry 与 owned children |
+| `packages/subagent/subagent/src/manager.ts:744`-`800` | continuable 创建、持有与回滚 |
+| `packages/subagent/subagent/src/manager.ts:1250`-`1330` | lineage 授权与不经 provider 的冷恢复 |
 | `packages/session-query/session-query/src/tracing.ts:132`-`:150` | Session lineage 追溯与循环检测 |

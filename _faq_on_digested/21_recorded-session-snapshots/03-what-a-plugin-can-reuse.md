@@ -8,7 +8,7 @@
 
 | | 顶层 `snapshots/` 语料 | 录制回放**机制** |
 |---|---|---|
-| 是什么 | 主仓集中维护的 210 个场景 + 语料治理规则 | 一个已发布的 npm 插件：读会话日志、按位置回放模型流 |
+| 是什么 | 主仓集中维护的 250 个场景 + 语料治理规则 | 一个已发布的 npm 插件：读会话日志、按位置回放模型流 |
 | 归属 | DSH 主仓所有，外部仓无法贡献 | **任何人可装、可挂、可自带夹具** |
 | 插件仓 | 搬不走，也不该搬（见 [04](./04-what-its-worth.md)） | **能用**，价值与代价见 [04](./04-what-its-worth.md) |
 
@@ -19,10 +19,10 @@
 ### 证据一：回放器是发布在 npm 上的普通插件
 
 ```text
-@deepseek-ai/dsh-llm-replay   latest: 0.0.1-rc.1   next: 0.2.0-rc.2
+@deepseek-ai/dsh-llm-replay   latest: 0.0.1-rc.1   next: 0.2.1-rc.2
 ```
 
-`next` 通道就是本基线 `dsh-v0.2.0-rc.2`。同族的 `@deepseek-ai/dsh-session-snapshot` 同样发布（`next: 0.2.0-rc.2`），但它 `import vitest`，只能在 vitest run 内使用——**插件仓真正需要的是前者**。
+`next` 通道就是本基线 `dsh-v0.2.1-rc.2`（包清单里的 `version` 已是 `0.2.1-rc.2`）。同族的 `@deepseek-ai/dsh-session-snapshot` 同样发布（`next: 0.2.1-rc.2`），但它 `import vitest`，只能在 vitest run 内使用——**插件仓真正需要的是前者**。
 
 ### 证据二：它是最普通的 function 插件形态
 
@@ -50,7 +50,7 @@ if (bodyKind !== undefined && currentKind !== bodyKind) {
 
 不过「留下日志」有三个具体前提，都不是默认满足的：
 
-1. **从持久化 root 直接取文件时，必须关掉压缩。** 会话日志**默认是 Zstandard 压缩的**（`packages/session/session-persistence-jsonl/README.md:48`：`compression` 默认 `'zstd'`），而回放器只会 `readFileSync` 后按 JSON 逐行解析（`packages/test-support/llm-replay/src/index.ts:773`）——**它读不了 `.zstd`**。所以这条路要配 `compression: 'none'`。另外「一个 root 只属于一种编码」，混放会被启动发现拒绝（同 README:104）。走 `/export` 那条路则不受这个设置影响。
+1. **从持久化 root 直接取文件时，必须关掉压缩。** 会话日志**默认是 Zstandard 压缩的**（`packages/session/session-persistence-jsonl/README.md:48`：`compression` 默认 `'zstd'`），而回放器只会 `readFileSync` 后按 JSON 逐行解析（`packages/test-support/llm-replay/src/index.ts:773`）——**它读不了 `.zstd`**。所以这条路要配 `compression: 'none'`。另外「一个 root 只属于一种编码」，混放会被启动发现拒绝（同 README:111）。走 `/export` 那条路则不受这个设置影响。
 2. **header 必须带显式的 `version`。** 无版本号的 header 会被拒（回放器要求非负整数版本）。
 3. **夹具比运行时新是不行的。** 迁移是**向前**的：旧版本夹具能在新运行时里被就地升级后回放；反过来读不了。
 
@@ -130,7 +130,7 @@ dsh --profile headless --patch ./tests/trajectory/replay.patch.yml "<与录制�
 
 回放链路最危险的不是报错，而是**静默失效**：patch 没落上、真实模型照答、探针看着绿其实什么都没测。三个已知的失效形态：
 
-1. **行 id 写错 → patch 不生效且不报错。** 本基线（`dsh-v0.2.0-rc.2`，`639ed015`）里 api-key adapter 的行 id 是 `llm-deepseek`，**不是** `llm-deepseek-api-key`。写错 id 只会在 `--dump-config` 里留一行 `patch: entry "…" not found`，真实 adapter 照旧在组合里接住全部请求——凭据来自 home 的 `.credentials.yaml`，env 里没有 key 也照样真跑。**对策：换 pin 之后先 `dsh --profile <p> --dump-config | grep -A1 "dsh-llm-deepseek"` 校对本行 id。**（行 id 随 pin 漂移，这一步不能省。）
+1. **行 id 写错 → patch 不生效且不报错。** 本基线（`dsh-v0.2.1-rc.2`，`687f282e86`）里 api-key adapter 的行 id 是 `llm-deepseek`，**不是** `llm-deepseek-api-key`。写错 id 只会在 `--dump-config` 里留一行 `patch: entry "…" not found`，真实 adapter 照旧在组合里接住全部请求——凭据来自 home 的 `.credentials.yaml`，env 里没有 key 也照样真跑。**对策：换 pin 之后先 `dsh --profile <p> --dump-config | grep -A1 "dsh-llm-deepseek"` 校对本行 id。**（行 id 随 pin 漂移，这一步不能省。）
 2. **把裸 `ReplayEntry[]` 塞进 `file` → 整行不 activate。** `file` 必须是录制的会话 JSONL（会走 `parseSessionFixture`）；裸脚本要放 `overrideFile`（整脚本替换），`file` 指向一个派生路径即可（可以故意不存在）。塞反了会报 `session snapshot line 1 …` 并让 patch 静默失效。**对策：改完先跑一次，确认日志里的回复确实是 canned 文本而不是真模型答的。**
 3. **同名 provider 双注册 → 真实 adapter 先接住流。** 只禁一个入口行、或 replay 的 provider/model 命名与真实行冲突处理不当时，真实 adapter 优先生效——此时日志里的 `replayState` 是真实 adapter 自己写的响应元数据，**不是**回放插件的标记。**对策：两个入口行都禁；命名对齐 base 的 `agent-default-model` 行，让 agent 的默认选择直接落进回放 adapter。**
 
@@ -160,7 +160,7 @@ dsh --profile headless --patch ./tests/trajectory/replay.patch.yml "<与录制�
 
 上面这些配置不是从某篇指南抄的，是**从源码和主仓夹具反推出来的**。核实过的事实是：
 
-- `llm-replay` 在 `docs/` 里只出现在**生成的目录**中（`docs/config-catalog.md`、`docs/module-graph.md`、`docs/capability-seams.md`、`docs/event-producer-consumer.md`），没有一篇面向插件作者的说明；
+- `llm-replay` 在 `docs/` 里只出现在**生成的目录**中（`docs/config-catalog.md`、`docs/module-graph.md`、`docs/capability-seams.md`、`docs/event-producer-consumer.md`），另有一处是 `docs/upgrade-guide/v0.2.1-alpha.1/session-title-adapters/guide.md:16` 迁移步骤里的一行提及——仍然没有一篇面向插件作者的说明；
 - `docs/user/develop/` 与 `docs/cookbook/` 里**没有**任何一篇讲录制回放怎么用在插件上（`adding-a-tool.md` 等 cookbook 一篇都没提）；
 - 唯一权威是包自己的 README（`packages/test-support/llm-replay/README.md`）与实现（`packages/test-support/llm-replay/src/index.ts`）。
 

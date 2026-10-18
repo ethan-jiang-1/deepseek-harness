@@ -1,11 +1,6 @@
 # 用户体验审计 · "为什么驾驭 DSH 感觉轻松？"（FAQ 11）
 
-严格从**用户**视角，以写作时的 checkout（`git HEAD 4f69e0f3b5`, branch `ethan`）的原始
-源码 / 文档 / 配置 / 测试为基准，对 [`answer.md`](./answer.md) 的审计；本次上游同步复核
-（`fb2c4b9e69`，dsh-v0.1.5-rc.2）已把下文引用的源码/文档行号推进到当前工作树，结论未变。
-目标问题：对于每个关于感觉 **light / fast / easy / native** 的核心主张，（1）用户实际做了什么和观察到了什么，
-（2）哪个仓库原始来源/机制导致了它，（3）该主张是 **proven / inferred / unsupported**，
-以及（4）反证与局限性是什么。
+严格从**用户**视角，以写作时的 checkout（`git HEAD 4f69e0f3b5`, branch `ethan`）的原始源码 / 文档 / 配置 / 测试为基准，对 [`answer.md`](./answer.md) 的审计；本次上游同步复核（`fb2c4b9e69`，dsh-v0.1.5-rc.2）已把下文引用的源码/文档行号推进到当前工作树，结论未变。目标问题：对于每个关于感觉 **light / fast / easy / native** 的核心主张，（1）用户实际做了什么和观察到了什么，（2）哪个仓库原始来源/机制导致了它，（3）该主张是 **proven / inferred / unsupported**，以及（4）反证与局限性是什么。
 
 最重要的先决条件是问题描述要求的三种用户类别划分。当前 answer 没有干净地遵循这一点，而这是其大多数问题的根源。
 
@@ -20,13 +15,9 @@
 | **(C) 手动编码的贡献者** | 在终端编辑仓库的人类 | `git commit` / `git push`、`pnpm run <check>` | Pre-commit/pre-push hooks、CI、review。 |
 
 **发现 F0（结构性问题）。** Answer 的第 1–6 阶段（六步闭环）、§2–§4（记忆外包、
-反馈延迟、犯错成本低）和 §6（git 历史量化）描述的是 **类别 (B)**，仅对 **类别 (C)** 做了薄薄的修饰。
-Answer 对问题明确指名的 **类别 (A)** 只字未提。在 §8 中，answer 将"对人是…指挥与审查面"映射到**团队领导 / reviewer** 角色
-（`answer.md:92`），这更接近 **(C)** 而非 (A) 的 Web/CLI 用户。因此，answer 回答的是"为什么 agent（和仓库工作者）觉得容易"，
-而问题问的是"为什么指挥 DSH 的人类觉得容易"。这是最核心的修正。
+反馈延迟、犯错成本低）和 §6（git 历史量化）描述的是 **类别 (B)**，仅对 **类别 (C)** 做了薄薄的修饰。Answer 对问题明确指名的 **类别 (A)** 只字未提。在 §8 中，answer 将"对人是…指挥与审查面"映射到**团队领导 / reviewer** 角色（`answer.md:92`），这更接近 **(C)** 而非 (A) 的 Web/CLI 用户。因此，answer 回答的是"为什么 agent（和仓库工作者）觉得容易"，而问题问的是"为什么指挥 DSH 的人类觉得容易"。这是最核心的修正。
 
-实际上创造 (A) 轻松感的机制是**运行时/产品设计**属性（interview 姿态、按需加载、自包含报告）；
-answer 详细阐述的机制是**仓库流程**属性（gates、hooks、窄测试、原子切片）。**后者中没有一个对 (A) 可见。** 下面，每个主张都标注了它实际适用的类别。
+实际上创造 (A) 轻松感的机制是**运行时/产品设计**属性（interview 姿态、按需加载、自包含报告）；answer 详细阐述的机制是**仓库流程**属性（gates、hooks、窄测试、原子切片）。**后者中没有一个对 (A) 可见。** 下面，每个主张都标注了它实际适用的类别。
 
 ---
 
@@ -34,10 +25,7 @@ answer 详细阐述的机制是**仓库流程**属性（gates、hooks、窄测�
 
 ### 1.1 "feedback is seconds / 秒到分钟级"（§3）— 类别 **(B)/(C)** — **INFERRED, over-precise（推断，过度精确）**
 
-他们做什么：对 (C) 的 push，或 (B) 运行最窄测试或 `doc-sync`。
-来源机制：[`lefthook.yml:52-55`](../../lefthook.yml) pre-push 运行 `pnpm run typecheck`；
-`package.json` `typecheck` = `npm run build:lib:host && npm run typecheck:contracts-ready`，
-而 `build:lib:host` = `tsc -b tsconfig.host.json && tsdown --env.DSH_BUILD_FACE host`。
+他们做什么：对 (C) 的 push，或 (B) 运行最窄测试或 `doc-sync`。来源机制：[`lefthook.yml:52-55`](../../lefthook.yml) pre-push 运行 `pnpm run typecheck`；`package.json` `typecheck` = `npm run build:lib:host && npm run typecheck:contracts-ready`，而 `build:lib:host` = `tsc -b tsconfig.host.json && tsdown --env.DSH_BUILD_FACE host`。
 
 - **反证。** "Seconds" 的表述将本地 hooks 作为反馈步骤，但唯一的 *始终开启的* push 时本地门禁是
   **完整的 host build + bundle + client typecheck**（`build:lib:host`），而不是亚秒级检查。Superseding note
@@ -53,9 +41,7 @@ answer 详细阐述的机制是**仓库流程**属性（gates、hooks、窄测�
 
 ### 1.2 "each time only one or two checks / 一两个检查"（§结论, §1 step 4）— 类别 **(B)/(C)** — **PARTLY PROVEN, understates the automatic baseline（部分证实，低估了自动基线）**
 
-来源：[`dsh-pre-push-checks/SKILL.md:29`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（"There
-is no universal local baseline beyond the hooks. Every behavior change needs the narrowest available
-test or purpose-built check that would fail for its regression"）。
+来源：[`dsh-pre-push-checks/SKILL.md:29`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（"There is no universal local baseline beyond the hooks. Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression"）。
 
 - **证实部分。** 对于单表面变更，*agent 选择*的证据确实是一两个检查（docs → `doc-sync`；package behavior → owning Vitest file；manifest → build + hygiene + smoke；`SKILL.md:31-35`）。
 - **反证。** "Only one or two" 省略了**始终开启的自动基线**：每次 commit
@@ -69,14 +55,12 @@ test or purpose-built check that would fail for its regression"）。
 
 ### 1.3 "forget the rules, the gates remember / 忘了规则没关系，门禁会替你记得"（§2）— 类别 **(B)/(C)** — **OVERSTATES the coverage the gates claim（夸大了门禁声称的覆盖范围）**
 
-来源：[`quality-gates` note:11-15](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
-（"Agents follow enforced gates far more reliably than prose conventions…"）以及"Every mechanically
-checkable AGENTS.md promise gets a command that exits non-zero"的决策。
+来源：[`quality-gates` note:12-16](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)（"Agents follow enforced gates far more reliably than prose conventions…"）以及"Every mechanically checkable AGENTS.md promise gets a command that exits non-zero"的决策。
 
 - **证实部分。** 对于 *mechanically checkable* 子集——typecheck、per-file 100% coverage、lint、
   jscpd、knip/publint/constraints、doc-sync、translation-pairing、Note-format、whitespace、vendor manifest
   ——机器命令确实以非零退出。忘了*那些*确实会被抓住。
-- **反证 (a)。本地门禁的覆盖范围狭窄。** [`docs/development.md:125`](../../docs/development.md)：
+- **反证 (a)。本地门禁的覆盖范围狭窄。** [`docs/development.md:147`](../../docs/development.md)：
   *"the hooks intentionally do not run tests, snapshots, documentation checks, builds, or hygiene."*
   详尽的门禁集在 **CI** 中运行，即在 push 之后，即**慢**反馈——不是一个"记着"能帮你节省本地工作量的事情。
 - **反证 (b)。该主张对于它所推崇的循环是自否定的。** 六步闭环、
@@ -90,7 +74,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
 - **反证 (c)。门禁的记忆在 CI，而引用的 note 本身将其标记为已取代。**
   Quality-gates note 的 hook/CI 对称性已被
   [`fast-local-git-hooks`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
-  取代（`:23`，"supersedes the hook/CI symmetry"），而 answer 引用 *quality-gates* note 时仿佛它
+  取代（`:24`，"supersedes the hook/CI symmetry"），而 answer 引用 *quality-gates* note 时仿佛它
   描述了当前的 hook 集。当前的 hook 集是 `lefthook.yml`，比 quality-gates note 的 prose 暗示的更窄。
 - **裁定。** 对机械规则为真，且仅在本地狭窄 hook 子集上；作为 blanket "你可以忘记规则"**unsupported**。
   不需要记住规则的感觉是真实的，但覆盖的规则面**很小**，而且漏掉了循环本身。
@@ -155,7 +139,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
 
 - 在*机械*意义上得到支持：只运行最窄失败检查的 agent 每 token 做更多正确工作，
   CI 后盾覆盖了穷举性违规。这是一个连贯的设计主张，由
-  [`quality-gates:15`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
+  [`quality-gates:16`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)
   和 `fast-local-git-hooks:10-20` 支持。
 - **反证。** 对齐仅适用于"正确"是*机械强制执行的*地方。当规则是 prose（循环顺序、Note 必要性判断、
   `report-only-commands-run`、tier 放置）时，最省力路径**不**自动是正确路径——
@@ -164,9 +148,7 @@ checkable AGENTS.md promise gets a command that exits non-zero"的决策。
 
 ### 1.8 §3 "验证本身便宜 / validation is cheap"（§3, 第 51 行）— 类别 **(B)/(C)** — **unsupported gloss on the quoted source（对所引来源的不可支持的修饰）**
 
-来源：[`docs/testing.md:25`](../../docs/testing.md) — "We are DeepSeek — do not ration real-API tests.
-A no-key test proves plumbing; only a with-key run proves the agent works against a real model." Answer
-引用此作为"验证本身便宜"的证据。
+来源：[`docs/testing.md:25`](../../docs/testing.md) — "We are DeepSeek — do not ration real-API tests. A no-key test proves plumbing; only a with-key run proves the agent works against a real model." Answer 引用此作为"验证本身便宜"的证据。
 
 - **反证。** "Do not ration"是一个**反成本借口**的指示，而不是成本主张。它所指的——带 key 的真实 API e2e——
   是仓库中**最昂贵的**验证（真实模型、真实网络、真实延迟、真实金钱）。这个修饰颠倒了引用的意图。
@@ -199,16 +181,15 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 
 ## 2. 类别 (A) 实际做了什么和观察了什么——缺失的一半
 
-对于通过 Web/CLI 指挥 DSH 的人类，§1 的机制中没有一个可见。他们经历的轻松感是由**运行时姿态**生成的，
-它是**部署级配置**，而不是仓库流程。已核实的主要来源：
+对于通过 Web/CLI 指挥 DSH 的人类，§1 的机制中没有一个可见。他们经历的轻松感是由**运行时姿态**生成的，它是**部署级配置**，而不是仓库流程。已核实的主要来源：
 
 - **只在权威边界问，从不问检查可发现的事实。** Plan-mode 姿态节，answer 引用了它但也只是作为"姿态条款"，
   实际上是 (A) 面对的契约："A user's conversational agreement — including an answer confirming something you asked — **approves nothing**"
-  （[`packages/bundle/base/cordis.patch.yml:305`](../../packages/bundle/base/cordis.patch.yml)）；"Resolve
+  （[`packages/bundle/base/cordis.patch.yml:336`](../../packages/bundle/base/cordis.patch.yml)）；"Resolve
   discoverable facts by inspection. Use `ask_user_question` only for user-owned choices or material
   ambiguity that inspection cannot answer. **Do not ask the user where code lives**"（`:311`）。工具自身的描述
   进一步缩小范围："when you need confirmation, a choice, or missing information"
-  （[`packages/interaction/tool-ask-user/src/index.ts:16`](../../packages/interaction/tool-ask-user/src/index.ts)）。
+  （[`packages/interaction/tool-ask-user/src/index.ts:31`](../../packages/interaction/tool-ask-user/src/index.ts)）。
   这是 (A) 体验感觉轻松的确切原因：**人只在为他们拥有的决策时被打断**，
   而检查可以解决的一切都由 agent 处理。
 - **按需而非预先的知识。** Skills 被广告为 hashed、deduped 的 catalog 摘要，
@@ -219,12 +200,12 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
   [`packages/todo/tool-todo/src/index.ts:45-66`](../../packages/todo/tool-todo/src/index.ts)）和
   plan-mode 门禁使 agent 的工作*可见且可步进*，而无需人驱动每一步。
 - **Advisory 而非致命的引导。** 重复调用提醒温和升级（`[3,5,8]`，
-  [`packages/guard/repeat-tool-reminder/src/index.ts:46`](../../packages/guard/repeat-tool-reminder/src/index.ts)）
+  [`packages/guard/repeat-tool-reminder/src/index.ts:53`](../../packages/guard/repeat-tool-reminder/src/index.ts)）
   且是 advisory（`:209-224`），注册在 post-execute 正是为了让*被拒绝的*调用获得指导。
   卡住 → 被引导，而非被杀。
 - **可读的最终交付。** 后台子会话 settle 时，运行时把 outcome 与 final message 作为 notice 交回父会话
   （"When a background run settles, the runtime sends you a notice containing its outcome and any final
-  assistant message"，[`packages/subagent/tool-subagent/src/index.ts:603`](../../packages/subagent/tool-subagent/src/index.ts)）。
+  assistant message" 的现行文案收在 [`packages/subagent/tool-subagent/src/index.ts:379`](../../packages/subagent/tool-subagent/src/index.ts)，settle 回交合同见 [`docs/subsystems/subagent.md:176`](../../docs/subsystems/subagent.md)）。
   rc.1 删除了独立的自足 `report` 工具（`tool-subagent-report`）。
   对 (A) 用户而言，最顶层的对应物仍是可读的完成报告，而不是六步循环。
 - **可重放性 / 对 transcript 的信任。** `model-visible ⟺ logged` 不变量
@@ -233,9 +214,7 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
   不是关于*写代码*。
 
 **结论。** 这些都是**产品/运行时**机制。(A) 轻松感的正确描述是：
-"人只在为他们拥有的决策时被征求；其余由 agent 检查；工作被脚手架化为可见；
-知识按需加载；卡住时被引导而非被杀；最终报告是自包含且可重建的。"
-§1 的 git-hooks / gates / narrow-tests / atomic-slice 主张中没有一个对此有贡献。
+"人只在为他们拥有的决策时被征求；其余由 agent 检查；工作被脚手架化为可见；知识按需加载；卡住时被引导而非被杀；最终报告是自包含且可重建的。" §1 的 git-hooks / gates / narrow-tests / atomic-slice 主张中没有一个对此有贡献。
 
 ---
 
@@ -243,14 +222,13 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 
 > **落地状态（0006 复核补记）**：本节是审计当时的建议清单。后续的 FAQ 11 修订已部分采纳——最明确的是双重主语：`answer.md` 现在区分「agent 执行者的六步闭环」与「人类指挥者回路」，并配 `figures/two-loops.svg`；第 7 条的历史数值改为带基线的复核注记。本节其余各条的采纳情况未逐条标注，读的时候请以 `answer.md` 的当前正文为准，不要把它当成一份未处理的待办。
 
-当前 answer 的论点将 **repo-process ease（仓库流程轻松）**（agent/contributor）与 **product-usage ease（产品使用轻松）**
-（指挥 DSH 的人）混为一谈。替换为**双重主语**论点，并将每个机制重新锚定到其实际所有者：
+当前 answer 的论点将 **repo-process ease（仓库流程轻松）**（agent/contributor）与 **product-usage ease（产品使用轻松）**（指挥 DSH 的人）混为一谈。替换为**双重主语**论点，并将每个机制重新锚定到其实际所有者：
 
 > **DSH 对两个不同的主语轻松，出于两个不同的原因。**
 >
 > **对于 agent (B) 和手动贡献者 (C)，** 轻松是一个*流程*属性：正确和
 > 便宜在*机械强制执行*的子集上重合。本地 hooks 保持狭窄（`lefthook.yml`,
-> [`docs/development.md:125-125`](../../docs/development.md)），agent 选择会为其回归而失败的最窄检查
+> [`docs/development.md:147`](../../docs/development.md)），agent 选择会为其回归而失败的最窄检查
 > （`dsh-pre-push-checks:29`）；变更的正确性被委派给 CI
 > 因此本地成本保持低。整 PR revert 是真实的（`#2903` 镜像 `#2608`, 67 文件），但只有在没有后续碰撞时才是干净的
 > 单次撤销。这**不是**一个"你可以忘记规则"的主张：门禁覆盖一个*机械*子集，而被推崇的六步循环本身是无门禁的 prose。
@@ -258,11 +236,11 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
 >
 > **对于通过 Web/CLI 指挥 DSH 的人类 (A)，** 轻松是一个*产品*属性，不在 git 层中。
 > 人只在为他们拥有的决策时被打断（"conversational agreement approves nothing",
-> "do not ask where code lives", [`cordis.patch.yml:305,311`](../../packages/bundle/base/cordis.patch.yml)）；
+> "do not ask where code lives", [`cordis.patch.yml:336,342`](../../packages/bundle/base/cordis.patch.yml)）；
 > 知识按需加载；工作被脚手架化（todo + plan）和引导（advisory guard）；结果由运行时在子会话 settle 时
 > 以 notice 交回父会话，而不是由子会话自己交一份报告
 > （[`continuation-messages.ts:130`](../../packages/subagent/subagent/src/continuation-messages.ts)、
-> [`docs/subsystems/subagent.md:202`](../../docs/subsystems/subagent.md)）。对 (A) 而言，
+> [`docs/subsystems/subagent.md:176`](../../docs/subsystems/subagent.md)）。对 (A) 而言，
 > "轻松"意味着 **"harness 处理流程，只在需要我选择时中断我。"**
 >
 > 两种"轻松"**不是**同一现象。如果问题是"为什么对一个人来说驾驶 DSH 很容易"，答案是其 **运行时姿态**，
@@ -303,7 +281,7 @@ A no-key test proves plumbing; only a with-key run proves the agent works agains
   execute contract、Code Mode free、purity hard rule。
 - [`docs/AGENTS.md`](../../docs/AGENTS.md) — tier taxonomy、one-home-per-fact、"never hand-edited"。
 - [`AGENTS.md`](../../AGENTS.md) — "report only commands run", "Never default to the full suite"。
-- [`.agents/notes/implemented/process/2026-06-11-quality-gates.md`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)
+- [`.agents/notes/archived/process/2026-06-11-quality-gates.md`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)
   — "developed primarily by coding agents", "Every mechanically checkable…", "gates are code to maintain"。
 - [`.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   — 当前 hook 集、取代 quality-gates、无延迟保证。

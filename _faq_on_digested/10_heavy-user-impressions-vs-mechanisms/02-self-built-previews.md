@@ -17,7 +17,7 @@
 
 ## 第二节 用户清单之外的一项：工具结果图像的 GUI 渲染（0.1.5 已交付）
 
-复核时曾记下一条链路不对称：**`read_image` 把图作为 image block 写进 `tool/result`，模型确实收到（Messages-only 适配器下，工具结果图像序列化为 `tool_result` 内容里的内联 image block，每块前置稳定 handle 文本 `Image …; request preview WxHpx.`，`packages/llm/llm-deepseek/src/serialize.ts:73`、文案在 `packages/llm/llm/src/content.ts:91-106`；0009 按 `dsh-v0.2.0-rc.2` 实测重写——0.1.5 时期"独立 user message + `Attached image(s) from tool result:` 前缀"的序列化方式已随 Messages-only 重构移除），而 `ui-tool` 的 GenericToolCard 当时只派生 terminal/read/diff/search/web 卡、全包对 `'image'` 零分支**。这条不对称在 `a66e470204` 时成立，在本次跨度内被官方交付闭合：`ui-tool` 新增 image 卡模型与 `read_image` 行渲染器（`packages/client/ui-tool/src/client/tool/models/image-card-model.ts:118`、`:188`、`src/client/tool/toolviews/read-image-row.tsx`），并注册 `tool.call.images` slot（`src/client/contract/slots.ts:46`、`packages/client/ui-attachment/src/client/index.ts:30`；跨度内提交 `a4d4404708 feat(ui-tool): render read_image results as the image` 与 `56ca8af0ee`）。
+复核时曾记下一条链路不对称：**`read_image` 把图作为 image block 写进 `tool/result`，模型确实收到（Messages-only 适配器下，工具结果图像序列化为 `tool_result` 内容里的内联 image block，每块前置稳定 handle 文本 `Image …; request preview WxHpx.`，`packages/llm/llm-deepseek/src/serialize.ts:74`、文案在 `packages/llm/llm/src/content.ts:91-99`；0009 按 `dsh-v0.2.0-rc.2` 实测重写——0.1.5 时期"独立 user message + `Attached image(s) from tool result:` 前缀"的序列化方式已随 Messages-only 重构移除），而 `ui-tool` 的 GenericToolCard 当时只派生 terminal/read/diff/search/web 卡、全包对 `'image'` 零分支**。这条不对称在 `a66e470204` 时成立，在本次跨度内被官方交付闭合：`ui-tool` 新增 image 卡模型与 `read_image` 行渲染器（`packages/client/ui-tool/src/client/tool/models/image-card-model.ts:118`、`:188`、`src/client/tool/toolviews/read-image-row.tsx`），并注册 `tool.call.images` slot（`src/client/contract/slots.ts:46`、`packages/client/ui-attachment/src/client/index.ts:30`；跨度内提交 `a4d4404708 feat(ui-tool): render read_image results as the image` 与 `56ca8af0ee`）。
 
 也就是说：在"多用 vision"的工作流里，模型看到的截图人类现在能在会话流里直接看到。**验证回路在 0.1.5 上是双向的**——这条曾经的 UI 缺口已从 backlog 移除。
 
@@ -25,12 +25,12 @@
 
 两项真缺口，按"离现有制度多远"排序：
 
-1. **word/ppt/pdf 等文档产物的读取与预览**。`tool-fs` README 明说 "`read` handles UTF-8 text files only — PDF, audio, and video remain deferred"（`packages/fs/tool-fs/README.md:242`）；`packages/web` 的 `WebFetchBody` 是封闭 union（`html | text`），无 `pdf` arm；全仓 "artifact" 命中只指会话日志文件，与 Claude 式 artifacts 无关。这是**读取侧 + 渲染侧双缺口**。
+1. **word/ppt/pdf 等文档产物的读取与预览**。`tool-fs` README 明说 "`read` handles UTF-8 text files only — PDF, audio, and video remain deferred"（`packages/fs/tool-fs/README.md:251`）；`packages/web` 的 `WebFetchBody` 是封闭 union（`html | text`），无 `pdf` arm；全仓 "artifact" 命中只指会话日志文件，与 Claude 式 artifacts 无关。这是**读取侧 + 渲染侧双缺口**。
 2. **侧边栏 artifacts / 产出物面板**。`deliverables/presented` 已是 `KNOWN_SESSION_EVENT_TYPES` 的成员（`packages/core/session/src/known-event-types.ts:36`；`packages/deliverables/tool-present/src/index.ts:105`（`session.append('deliverables/presented'`）追加，声明在 `packages/deliverables/tool-present/src/types.ts:15`（0.1.7 线起自 `packages/fs/tool-present/` 移入 deliverables 组）），`ui-deliverables` 已把它渲染成独立的「已交付文件」行（`Deliverables.tsx:107` 的 `data-presented-files-row`），与由 mutation 派生的 "Files changed" 行是两块——`turn-deliverables.ts:58-75` 的 `mutationPath` 只认 `write`/`edit`/`str_replace_editor`，`present` 不产生那一行；但 `ui-sidebar` 有品牌行、会话浏览器与 Settings，没有产出物面板。缺的不是事件词表，是**侧边栏面板**——该事件在本页写作基线尚未存在，在复核树 `46a7f68b09` 上已交付。
 
 补任何一个，都会先撞上同一条硬税——**`model-visible ⟺ logged` 的 UI 侧镜像**：
 
-> GUI 不自造事实。用户看到的一切必须能从会话日志重建（render intent 纯函数、`presentationMeta` 落 `tool/result.meta`、session-projection whole-value 规则、SDK 整信封转发），而模型看到的一切必须能从日志推导（agent-loop invariant 在每次 dispatch 时以 `JSON.stringify` 逐字比对 `session.deriveMessages()`，`packages/core/agent-loop/src/invariant.ts:40-43`）。
+> GUI 不自造事实。用户看到的一切必须能从会话日志重建（render intent 纯函数、`presentationMeta` 落 `tool/result.meta`、session-projection whole-value 规则、SDK 整信封转发），而模型看到的一切必须能从日志推导（每次请求的消息只来自 `session.deriveMessages()`，工具 schema 与系统提示词随 `request/header` 落日志，`packages/core/agent-loop/src/agent.ts:688-695`；0.2.1 线起运行时 invariant companion 机制整族退役，这类「模型输入可重建」性质改由 assembled-transcript snapshot 与双 SDK 投影钉住）。
 
 两个方向共用同一个 `SessionEventMap`。所以新增一种产出物的最小完整动作是：**声明合并新增事件成员 → 提供投影/渲染器 → 过回放门禁**，且新成员**默认 required-on-read**：旧构建遇到不认识的无 `ignorable` 标记事件会拒绝重建整条会话，而不是悄悄跳过（`packages/core/session/src/known-event-types.ts:9-21`；机制笔记 `2026-08-10-session-log-version-mechanism.md`）。`ignorable: true` 只许给"丢了不影响重建"的纯信息记录。**这决定了 word/ppt 预览不是"写个渲染器"的活**：预览字节若要进日志（进就得想清楚它算不算模型可见、算不算 required），要么复用现有 `tool/result.meta` 携带派生卡数据（diff/read 卡的路），要么立新事件族（artifacts 侧栏的路）。抄近路在进程内直接塞 UI 状态，等于放弃回放与 fork——GUI 一刷新就没了。
 

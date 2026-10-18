@@ -41,7 +41,7 @@ PTC = **Programmatic Tool Calling**（GUI 文案原话，[`guide-locales.ts`](..
 
 ## 为什么 PTC 预设把 workflow 工具禁了？
 
-事实：`ptc.patch.yml` 里 `workflow-ptc`、`tool-workflow`（以及本来默认就禁的 `tool-ralph`）都是 `disabled: true`；GUI guide 也只陈述现状——"当前 PTC 预设未启用 workflow 工具"。仓库里**没有**书面 rationale，以下是我的推断（标注为推断）：workflow 工具本身就是"模型写一个 JS 编排程序跑在 PTC runtime 里"的另一个入口（[`packages/workflow/workflow-ptc/README.md`](../../packages/workflow/workflow-ptc/README.md)），与 `run_code` 供给模型的"写程序组织调用"能力重叠；单入口省掉模型在两种编排原语间做策略选择。guide 文案把它写成 current state 而非永久承诺，说明这是可翻的开关。**引用时按事实（禁用 + 无书面理由）转述，不要把我的推断当成设计声明。**
+事实：`ptc.patch.yml` 里 `workflow-ptc` 与 `tool-workflow` 都是 `disabled: true`（`tool-ralph` 的占位行已随本轮从四份 preset 移除，改由可选 `ralph-bundle` 提供）；GUI guide 也只陈述现状——"当前 PTC 预设未启用 workflow 工具"。仓库里**没有**书面 rationale，以下是我的推断（标注为推断）：workflow 工具本身就是"模型写一个 JS 编排程序跑在 PTC runtime 里"的另一个入口（[`packages/workflow/workflow-ptc/README.md`](../../packages/workflow/workflow-ptc/README.md)），与 `run_code` 供给模型的"写程序组织调用"能力重叠；单入口省掉模型在两种编排原语间做策略选择。guide 文案把它写成 current state 而非永久承诺，说明这是可翻的开关。**引用时按事实（禁用 + 无书面理由）转述，不要把我的推断当成设计声明。**
 
 ## 什么时候选它？边界在哪？
 

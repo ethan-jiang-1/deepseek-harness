@@ -22,7 +22,7 @@ DSH 的 owner 用法需要按对象区分。文档层级的 owner 是某类事�
 - **测试资产归属**：`docs/testing.md:9,12,14,55` 区分代码旁的测试、owner-local expected output 与 session-driven snapshot。`snapshots/AGENTS.md:7` 规定只有场景 owner 记录或刷新所选 Session，共享引用只读且无环；`:15` 要求工作区变更与独立的 `workspace.expected/` 比较，record/refresh 不重写该预期。
 - **评估责任**：测试检查指定行为，review 检查行为声称、测试选择和意图是否对齐，PR Testing/Proof 呈现实际执行证据。三者都需要；记录完成不自动建立这些属性。
 
-这些规定没有建立一条固定的 test-first 阶段序列。`docs/testing.md:55` 要求在计划时明确必要测试层；实现、文档和行为证据在同一变更交付。unit、snapshot、real composition、e2e 和 invariant 按可观察对象分工，不能把它们机械排列成每笔变更都必须依次执行的阶段。
+这些规定没有建立一条固定的 test-first 阶段序列。`docs/testing.md:55` 要求在计划时明确必要测试层；实现、文档和行为证据在同一变更交付。unit、snapshot、real composition 与 e2e 按可观察对象分工，不能把它们机械排列成每笔变更都必须依次执行的阶段。
 
 ## 一、机制归属
 
@@ -32,7 +32,7 @@ DSH 的 owner 用法需要按对象区分。文档层级的 owner 是某类事�
 
 `packages/goal/tool-goal/src/index.ts:51-56` 规定 `create_goal` 用于 direct human request 的 long-running objective，而不是 single-turn work；`guidance()` 在 `:114-123` 要求目标实际达成才 complete，只有同一阻塞条件至少持续配置轮数才 block，困难、不确定或尚有有用工作不算 blocked。`update_goal` 的 authority、revision、block threshold 和 durable mutation 在 `:255-331` 执行；这些是权限、并发版本和状态合法性约束，不是对业务结果的独立判定。
 
-`packages/goal/goal-round-driver/src/prompt.ts:18-23` 要求模型检查当前 workspace、tool results 和 durable state，取得 whole-objective evidence 后再 complete；`packages/goal/goal-round-driver/src/index.ts:102-205` 负责 agent live/idle、竞争消息、checkpoint、round cap、队列失败和 disarm。`packages/goal/goal/src/domain.ts:13-44,70-90` 的 durable vocabulary 只有 create/edit/pause/resume/complete/block/clear、轮次 attribution 和 replay fold，没有 feature queue、acceptance-item 或 evaluator-result 字段。
+`packages/goal/goal-round-driver/src/prompt.ts:18-23` 要求模型检查当前 workspace、tool results 和 durable state，取得 whole-objective evidence 后再 complete；`packages/goal/goal-round-driver/src/index.ts:102-221` 负责 agent live/idle、竞争消息、checkpoint、round cap、队列失败和 disarm。`packages/goal/goal/src/domain.ts:13-44,70-90` 的 durable vocabulary 只有 create/edit/pause/resume/complete/block/clear、轮次 attribution 和 replay fold，没有 feature queue、acceptance-item 或 evaluator-result 字段。
 
 `packages/todo/README.md:10-12,25-37` 的 todo 是 session-level task list：add、in progress、check off，跨 turns/reopened sessions 持久化；每次 update 替换整个列表。它是模型协作的可见计划，不是 GitHub backlog，也不负责证明完成。
 
@@ -60,7 +60,7 @@ PR approval 有真正的 evaluator。`.github/review-ownership/README.md:15-31` 
 
 `docs/testing.md:53-55` 要求每个非平凡 model/protocol/human-visible change 在同一 PR 添加或更新 keyless recorded-session scenario；headless、SDK、ACP、Web 各有 owner，agent-loop/session-lifecycle/SessionEventMap 还要更新两个 SDK projection。这里的完成判定是“相关行为证据已落到正确测试资产并可 replay”，不是 goal phase 自己变成 complete。
 
-`scripts/run-gates.ts:1-6,18-58` 将 gates 建模为有依赖、状态、输出、失败策略和可中止语义的 graph；CI workflow 的 static/coverage/artifact/consumer/benchmark/snapshot 等 lane 再组合这些 gate。`.github/workflows/ci.yml:21-56,102-108` 展示 PR CI 的可信 checkout、并发/取消策略和 static gate；`docs/development.md:124-136` 说明 hooks 只做窄检查，CI 拥有 exhaustive coverage、built-artifact smokes 和 Node/platform matrix。
+`scripts/run-gates.ts:1-6,18-58` 将 gates 建模为有依赖、状态、输出、失败策略和可中止语义的 graph；CI workflow 的 static/coverage/artifact/consumer/benchmark/snapshot 等 lane 再组合这些 gate。`.github/workflows/ci.yml:21-56,102-108` 展示 PR CI 的可信 checkout、并发/取消策略和 static gate；`docs/development.md:147` 说明 hooks 只做窄检查，CI 拥有 exhaustive coverage、built-artifact smokes 和 Node/platform matrix。
 
 因此测试资产承担“实现是否通过规定场景”的机器证据，但测试描述 behavior，不自动证明任意产品意图、模型输出质量或用户体验已经满足。前次报告中“goal 测试是机制正确性，不是任意目标质量 evaluator”的判断仍成立，但应放在这个更大的 repo evaluator 体系之内。
 

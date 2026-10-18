@@ -24,11 +24,11 @@
 
 > Update package README and JSDoc contracts in the same commit as behavior, and verify them against code with dsh-prose-standard.
 >
-> —— `packages/AGENTS.md:26`
+> —— `packages/AGENTS.md:27`
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
-> —— `packages/AGENTS.md:27`
+> —— `packages/AGENTS.md:28`
 
 两道机器兜底：
 
@@ -39,10 +39,10 @@
 
 ## 静态预算与运行时预算是一回事
 
-04 的字数预算（根 AGENTS ≤ 1960 词）和 05 的 `maxBytes` 是同一个约束的两端：静态层决定“每层最多放多少”，运行时层决定“每次最多注入多少”。两者都不度量“模型懂没懂”，而是度量**容量**——一个是文档的容量，一个是上下文的容量。
+04 的字数预算（根 AGENTS ≤ 2080 词，manifest 口径）和 05 的 `maxBytes` 是同一个约束的两端：静态层决定“每层最多放多少”，运行时层决定“每次最多注入多少”。两者都不度量“模型懂没懂”，而是度量**容量**——一个是文档的容量，一个是上下文的容量。
 
 ## 证据入口
 
 - [`docs/subsystems/compaction.md`](../../docs/subsystems/compaction.md) 第 101 行
 - [`docs/subsystems/token-meter.md`](../../docs/subsystems/token-meter.md) 第 5 行
-- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 26-28 行
+- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 27-29 行

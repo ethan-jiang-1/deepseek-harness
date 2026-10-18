@@ -21,7 +21,7 @@
 
 `ShellExecutor` 规定：`run` **只**对基础设施失败 reject。非零退出、超时杀、abort 杀都 **resolve** 成 `ShellRunResult`。Consumer 把结果写成模型可见文本，不要把退出码 1 当成 harness 崩溃。
 
-`start` 立即返回；后台进程没有 timeout。`done` 结算且**永不 reject**：provider 在给出直接结果之前失败时结算为 `killed`，stderr 上是一条 stage-neutral 注记（`subprocess failed before reporting an outcome: …`，`packages/shell/bash-local/src/index.ts:294`；合同措辞见 `packages/shell/shell/src/types.ts:168`-`:170`）。仍在跑的后台进程在组合拆除时停掉并等待。有 subprocess seam 时，这个边界是 `ctx.subprocess` 的 dispose——executor 单独 HMR 不会把活进程带走。
+`start` 立即返回；后台进程没有 timeout。`done` 结算且**永不 reject**：provider 在给出直接结果之前失败时结算为 `killed`，stderr 上是一条 stage-neutral 注记（`subprocess failed before reporting an outcome: …`，`packages/shell/bash-local/src/index.ts:338` 构造该文本，`:294` 的 stderr reader 把它送出去；合同措辞见 `packages/shell/shell/src/types.ts:196`-`:197`）。仍在跑的后台进程在组合拆除时停掉并等待。有 subprocess seam 时，这个边界是 `ctx.subprocess` 的 dispose——executor 单独 HMR 不会把活进程带走。
 
 ## 政策挂在哪
 
@@ -39,7 +39,7 @@ local executor 注释写：command defaulting、deadline 分类、模型友好�
 
 ## 受管范围与原生 containment
 
-`ctx.subprocess` 的公开句柄不再有 `pid`（`packages/subprocess/subprocess/src/types.ts:167`）：`spawn` 同步返回，target identity 是 provider 私有事实；`terminate()` 与 `waitForExit()` 作用于同一个 provider 选定的**受管范围**，provider 无法再观察该范围时 `waitForExit()` throw（`packages/subprocess/subprocess/src/index.ts:95`）。这是相对旧基线「进程组/进程树」语义的替换——一条子进程可以 `setsid`、reparent 或活过直接父进程，从而离开任何单一进程关系描述的范围；唯一保留 `pid` 的是终端句柄（`packages/subprocess/subprocess/src/types.ts:235`），PTY 身份与前台 inspection 需要它。
+`ctx.subprocess` 的公开句柄不再有 `pid`（`packages/subprocess/subprocess/src/types.ts:169` 的 `SubprocessHandle`）：`spawn` 同步返回，target identity 是 provider 私有事实（`packages/subprocess/subprocess/src/index.ts:97`-`:99`）；`terminate()` 与 `waitForExit()` 作用于同一个 provider 选定的**受管范围**，provider 无法再观察该范围时 `waitForExit()` throw（`packages/subprocess/subprocess/src/types.ts:193`）。这是相对旧基线「进程组/进程树」语义的替换——一条子进程可以 `setsid`、reparent 或活过直接父进程，从而离开任何单一进程关系描述的范围；唯一保留 `pid` 的是终端句柄（`packages/subprocess/subprocess/src/types.ts:259`），PTY 身份与前台 inspection 需要它。
 
 Linux 上合格的普通与 PTY 启动进入 user-systemd transient scope 加一次性 bootstrap，Windows 上合格的普通启动进入私有 runner 拥有的 kill-on-close Job；macOS 普通启动、Windows ConPTY 等未支持宿主回退到 PGID / `taskkill /T` / identity-fenced PTY 观察，并给出一条 provider 生命期警告（逃出可观察关系的后代不保证被终止或推迟 `waitForExit()`）。选中 native 路径后的失败不重放目标，避免执行两次。两条 native 路径、回退边界与 `native/system` 的 landlock-run + flock 双能力见 [`07-原生containment与native-system.md`](./07-原生containment与native-system.md)。
 

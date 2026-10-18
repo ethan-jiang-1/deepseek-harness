@@ -17,10 +17,10 @@
   <rect x="226" y="70" width="180" height="200" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
   <text x="316" y="94" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">② web-app 层</text>
   <text x="316" y="114" text-anchor="middle" fill="#1e40af">浏览器体验 + Remote 控制器</text>
-  <text x="240" y="140" fill="#1e3a8a">63 个 client UI 包</text>
+  <text x="240" y="140" fill="#1e3a8a">66 个 client UI 包</text>
   <text x="240" y="158" fill="#1e3a8a">session / workspace 等控制器</text>
   <text x="240" y="176" fill="#1e3a8a">webserver / web-runtime</text>
-  <text x="240" y="194" fill="#1e3a8a">85 条 insert 行（01 页明细）</text>
+  <text x="240" y="194" fill="#1e3a8a">90 条 insert 行（01 页明细）</text>
   <text x="240" y="212" fill="#1e3a8a">agent 工具行整体 disabled，</text>
   <text x="240" y="230" fill="#1e3a8a">改由 preset 会话级提供</text>
   <text x="240" y="252" fill="#2563eb">桌面复用同一组合</text>
@@ -38,30 +38,31 @@
 
   <rect x="606" y="70" width="160" height="200" rx="10" fill="#ede9fe" stroke="#c4b5fd"/>
   <text x="686" y="94" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">④ opt bundle</text>
-  <text x="686" y="114" text-anchor="middle" fill="#5b21b6">OPTIONAL_BUNDLES ×4</text>
-  <text x="620" y="140" fill="#4c1d95">agent-team-profile</text>
-  <text x="620" y="158" fill="#4c1d95">voice-input-bundle</text>
-  <text x="620" y="176" fill="#4c1d95">auto-review</text>
-  <text x="620" y="194" fill="#4c1d95">schedule-bundle</text>
-  <text x="620" y="216" fill="#7c3aed">随安装出货、默认关，</text>
-  <text x="620" y="234" fill="#7c3aed">Web 插件页一键开</text>
-  <text x="620" y="256" fill="#6b7280">inspector 例外：显式安装</text>
+  <text x="686" y="114" text-anchor="middle" fill="#5b21b6">OPTIONAL_BUNDLES ×12</text>
+  <text x="620" y="140" fill="#4c1d95">session-search / terminal-bundle</text>
+  <text x="620" y="158" fill="#4c1d95">agent-team-profile / voice-input</text>
+  <text x="620" y="176" fill="#4c1d95">cot-translation / badge-skill</text>
+  <text x="620" y="194" fill="#4c1d95">ralph / session-titles / tool-worktree</text>
+  <text x="620" y="212" fill="#4c1d95">plugin-market / inspector-profile</text>
+  <text x="620" y="234" fill="#7c3aed">随安装出货、默认关，</text>
+  <text x="620" y="252" fill="#7c3aed">Web 插件页一键开</text>
 
   <rect x="776" y="70" width="150" height="200" rx="10" fill="#fee2e2" stroke="#fca5a5"/>
   <text x="851" y="94" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">⑤ 未挂载现货</text>
-  <text x="851" y="114" text-anchor="middle" fill="#991b1b">plugin add 即用</text>
+  <text x="851" y="114" text-anchor="middle" fill="#991b1b">plugin add 或 opt bundle</text>
   <text x="790" y="140" fill="#7f1d1d">tool-lsp + lsp-stdio</text>
-  <text x="790" y="158" fill="#7f1d1d">tool-terminal（6 工具）</text>
-  <text x="790" y="176" fill="#7f1d1d">tool-session-query（5）</text>
-  <text x="790" y="194" fill="#7f1d1d">web-search-exa / perplexity</text>
-  <text x="790" y="212" fill="#7f1d1d">mcp-client、hooks-codex</text>
+  <text x="790" y="158" fill="#7f1d1d">web-search-exa / perplexity</text>
+  <text x="790" y="176" fill="#7f1d1d">mcp-client、subagent-acp</text>
+  <text x="790" y="194" fill="#7f1d1d">hooks-claude-code / codex</text>
+  <text x="790" y="212" fill="#7f1d1d">webhook / webhook-github</text>
   <text x="790" y="230" fill="#7f1d1d">tool-str-replace-editor</text>
-  <text x="790" y="252" fill="#b91c1c">ssh 族 4 包同在此层</text>
+  <text x="790" y="248" fill="#7f1d1d">browser-use / computer-use driver</text>
+  <text x="790" y="264" fill="#b91c1c">ssh 族 5 包同在此层；裸 inspector 包不在 OPTIONAL_BUNDLES</text>
 
   <rect x="36" y="290" width="890" height="56" rx="8" fill="#ffffff" stroke="#d1d5db"/>
   <text x="52" y="312" font-weight="700" fill="#1f2937">换档动作 = 改配置，不写代码：</text>
   <text x="52" y="332" fill="#374151">①→③ preset/patch 一行；③→④ Web 插件页开关；④→⑤ `dsh plugin --profile &lt;name&gt; add &lt;package&gt;`；反向同样是一行 disabled/insert。</text>
 
   <text x="480" y="382" text-anchor="middle" font-size="12" font-weight="700" fill="#1f2937">两个特殊门控：skill-office 与 load_workspace_dependencies 随 DSH_PRIMARY_RUNTIME 才生效（sdk-app）；ui-sidebar-browser 仅 desktop 保留。</text>
-  <text x="480" y="406" text-anchor="middle" font-size="11" fill="#9ca3af">来源：packages/bundle/base/cordis.patch.yml、web-app/cordis.patch.yml、presets/*.patch.yml、app-boot/src/profile.ts:179-218</text>
+  <text x="480" y="406" text-anchor="middle" font-size="11" fill="#9ca3af">来源：packages/bundle/base/cordis.patch.yml、web-app/cordis.patch.yml、presets/*.patch.yml、app-boot/src/profile.ts:179-236</text>
 </svg>

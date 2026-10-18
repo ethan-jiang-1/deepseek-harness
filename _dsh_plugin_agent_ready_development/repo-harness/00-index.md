@@ -12,7 +12,7 @@ DeepSeek Harness（DSH）首先是一个 coding harness（编码代理运行框�
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions [...].
 >
-> — DSH [`Mechanical quality gates over prose guidelines` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/process/2026-06-11-quality-gates.md)。这段原文说明 DSH 为什么把可机械判断的规则落实为检查，而不只依赖文字约定。
+> — DSH [`Mechanical quality gates over prose guidelines` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/process/2026-06-11-quality-gates.md)。这段原文说明 DSH 为什么把可机械判断的规则落实为检查，而不只依赖文字约定。
 
 ![DSH 同时提供运行时 Harness 与仓库开发 Harness](./figures/two-harnesses.svg)
 
@@ -28,7 +28,7 @@ DSH 分别给出可查入口：
 | 系统由什么组成 | architecture、glossary、subsystem docs 和 generated catalogs |
 | 为什么这样设计 | Agent Notes 及其 alternatives（替代方案） |
 | 当前任务怎样做 | `.agents/skills/` 中的 development Skills |
-| 怎样证明完成 | 类型、测试、snapshots、invariants、repository gates 和 GitHub CI |
+| 怎样证明完成 | 类型、测试、snapshots、repository gates 和 GitHub CI |
 
 这些文件并非越多越好。关键在于每类事实有 owner（拥有者），读者可以从短入口逐步进入详细来源，而不必先通读整个仓库。
 
@@ -42,7 +42,7 @@ DSH 分别给出可查入口：
 | [`02-legibility-and-ownership.md`](./02-legibility-and-ownership.md) | 规则、当前事实、决策理由和负知识分别住在哪里 |
 | [`03-skills-as-procedural-memory.md`](./03-skills-as-procedural-memory.md) | Skills 为什么不是普通文档，也不是自动门禁 |
 | [`04-paved-road-and-participation.md`](./04-paved-road-and-participation.md) | 插件结构怎样给不同半径的修改提供明确入口 |
-| [`05-executable-feedback.md`](./05-executable-feedback.md) | 类型、测试、invariant、CI 与 review 怎样逐层发现错误 |
+| [`05-executable-feedback.md`](./05-executable-feedback.md) | 类型、测试、CI 与 review 怎样逐层发现错误 |
 | [`06-runtime-inspection.md`](./06-runtime-inspection.md) | agent 怎样查询实际配置和活运行时，而不是只猜源码 |
 | [`07-boundaries-and-costs.md`](./07-boundaries-and-costs.md) | 哪些原则可以迁移，哪些 DSH 成本不能忽略 |
 | [`08-repository-taxonomy.md`](./08-repository-taxonomy.md) | 什么放在哪里：顶层分区、包分组与内容的五种维护形态 |
@@ -65,10 +65,10 @@ DSH 分别给出可查入口：
 
 ## 怎样阅读证据
 
-正文先讲清结论，再摘录 DSH 原文作为引子。页面末尾的“证据入口”会标明具体 DSH 文件及它能证明的事实。现行机制的外部链接固定到 DSH release tag `dsh-v0.2.0-rc.2`；本文归纳出的解释不会伪装成 DSH 的正式自述。
+正文先讲清结论，再摘录 DSH 原文作为引子。页面末尾的“证据入口”会标明具体 DSH 文件及它能证明的事实。现行机制的外部链接固定到 DSH release tag `dsh-v0.2.1-rc.2`；本文归纳出的解释不会伪装成 DSH 的正式自述。
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/architecture.md)：产品插件树、事件扩展点、会话日志和新行为归属表。
-- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/AGENTS.md)：不同文档层级、Skills 与 Agent Notes 的职责分工。
-- DSH [`quality-gates Agent Note`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：coding-agent 生产方式与机械检查选择之间的一手因果说明。
+- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/architecture.md)：产品插件树、事件扩展点、会话日志和新行为归属表。
+- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/AGENTS.md)：不同文档层级、Skills 与 Agent Notes 的职责分工。
+- DSH [`quality-gates Agent Note`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/process/2026-06-11-quality-gates.md)：coding-agent 生产方式与机械检查选择之间的一手因果说明。

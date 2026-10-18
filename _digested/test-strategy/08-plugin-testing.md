@@ -1,6 +1,6 @@
 # 08 — 插件测试策略：政策对一个新插件的要求
 
-> 本篇面向**插件作者**：DSH 出厂自带 316 个包、92 个 `ctx` 服务、30 个工具包（[`plugin-inventory`](../plugin-inventory/00-map.md) 口径）；本篇实测另有 95 个包以 named export 形态导出 `inject`、53 个 client `ui-*` 包——它们全部按同一套测试要求受审。[§plugin-inventory](../plugin-inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。
+> 本篇面向**插件作者**：DSH 出厂自带 342 个包、99 个 `ctx` 服务、33 个工具包（[`plugin-inventory`](../plugin-inventory/00-map.md) 口径；工具包数取 `docs/tool-catalog.md` 的 Tool Package Map 行数）；本篇实测另有 101 个包以 named export 形态导出 `inject`（口径：`packages/*/*/src/index.ts` 含 `export const inject`）、56 个 client `ui-*` 包（`packages/client/ui-*`，不含 `extensions/ui-cordis`）——它们全部按同一套测试要求受审。[§plugin-inventory](../plugin-inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。
 
 ## 先对齐五个名词（本篇自足，不依赖其他篇）
 
@@ -33,7 +33,7 @@ expect(unwrapped.name).toBe('tool-lsp')                // name / inject 穿过 u
 expect(unwrapped.inject).toEqual(['tools', 'lsp', 'systemPrompt'])
 ```
 
-为什么这么严：postmortem 0001 的 bug #1——一个多余的 `export default` 让 Loader 的 `unwrapExports` 解析到裸函数、丢弃整个模块命名空间，Loader smoke 依然绿。全仓 43 个 spec 含此断言；`packages/AGENTS.md` 把它固化为包层常驻条令（[03](./03-rules-ownership.md)）。
+为什么这么严：postmortem 0001 的 bug #1——一个多余的 `export default` 让 Loader 的 `unwrapExports` 解析到裸函数、丢弃整个模块命名空间，Loader smoke 依然绿。全仓 45 个 spec 含此断言；`packages/AGENTS.md` 把它固化为包层常驻条令（[03](./03-rules-ownership.md)）。
 
 ## 台阶二：行为 spec（进程内，真依赖只 stand-in 最外层包装）
 
@@ -90,8 +90,8 @@ await ctx.loader.await()
 ## 配套纪律（与台阶同交）
 
 - **mock 白名单**：插件测试里唯一常见 mock 是脚本化模型（`MockAdapter`，跨包经源码平面相对导入复用）；网络/时钟才可 mock。with-key e2e 用共享 harness 挂全真栈（`packages/fs/tool-fs/tests/harness.ts` 挂 AgentLoop + LlmDeepSeek + LocalFileSystem + FsPolicy + ToolFs），harness 放 include 之外（[02](./02-tiers.md)）。
-- **face 命名**：`.host.spec`（全仓 80 个）与 `.client.spec.*`（641 个，含 `.ts` 与 `.tsx`）后缀决定该文件被哪个 tsc face program 类型检查（[02](./02-tiers.md) "测试代码自身也过静态门"）；client 侧再加 `@vitest-environment jsdom` pragma。
-- **运行时不变量**：插件若拥有可发散的观察关系，发布 `./invariant` 入口并用 `InvariantRegistry, { enabled: true }` 测试它（样板：`packages/todo/tool-todo/tests/invariant.spec.ts`；空壳 invariant 被 `verify-package-invariants` 拒绝）。
+- **face 命名**：`.host.spec`（全仓 98 个）与 `.client.spec.*`（722 个，含 `.ts` 与 `.tsx`）后缀决定该文件被哪个 tsc face program 类型检查（[02](./02-tiers.md) "测试代码自身也过静态门"）；client 侧再加 `@vitest-environment jsdom` pragma。
+- **运行时不变量已整族退役**：本跨度 `f028f25667`（`refactor: remove runtime invariant plugins`）删除了每包的 `./invariant` companion、`InvariantRegistry`、`scripts/test-invariants.ts` 与 `verify-package-invariants`，**无继任**——插件不再发布 invariant 入口，运行时关系由类型与产品面测试守卫（升级路径见 `docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`）。
 - **README 限制清单**：`verify-package-readme-limitations` 门要求插件 README 带已知限制节——mock 证明不了什么，要写下来（[07](./07-infrastructure.md)）。
 
 ## 为什么这么定（解释）
@@ -102,7 +102,7 @@ await ctx.loader.await()
 
 ## 源码锚点
 
-- `packages/todo/tool-todo/tests/`——五件套全景（本篇与 [09](./09-plugin-testing-playbook.md) 的主样板）
+- `packages/todo/tool-todo/tests/`——四件套全景（本篇与 [09](./09-plugin-testing-playbook.md) 的主样板）
 - `packages/lsp/tool-lsp/tests/load-path.spec.ts:14`——导出形态守卫样板
 - `packages/subagent/subagent-codex/tests/loader-composition.e2e.ts`——子进程 REAL composition 样板
 - `packages/fs/tool-fs/tests/harness.ts`——with-key e2e 的全真栈 harness
@@ -111,6 +111,6 @@ await ctx.loader.await()
 
 ## 最小例证
 
-1. **守卫可检索**：`grep -rn "expect('default' in" packages --include="*.spec.ts"`——43 个文件。
+1. **守卫可检索**：`grep -rn "expect('default' in" --include="*.spec.ts" .`——45 个文件。
 2. **Config 两脸跟随可复现**：读 `tool-todo/tests/loader-composition.spec.ts` 两个 it——同一个 flag，断言 description 包含/不包含两种措辞、并行写被拒/放行。
 3. **可选性可复现**：读 `subagent-codex/tests/loader-composition.e2e.ts` 的 `PATH: ''` 与断言 JSON。

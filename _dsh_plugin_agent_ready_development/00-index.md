@@ -6,7 +6,7 @@
 
 ## 目标读者与适用边界
 
-目标读者是在独立仓库中开发 DSH 插件的 owner 与 coding agent。读者应能从插件作者文档找到可运行的最小插件入口，再逐步建立自己的源码、配置、测试、预期结果和交付记录。从插件仓启动时，先按 DSH [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/user/develop/basic/index.md)创建并挂载最小插件，再用 [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/cordis-tutorial/index.md)学习依赖、生命周期和真实组合。随后按本语料从单个行为切片增补行为 owner、用户配置、测试预期与可重复验证。
+目标读者是在独立仓库中开发 DSH 插件的 owner 与 coding agent。读者应能从插件作者文档找到可运行的最小插件入口，再逐步建立自己的源码、配置、测试、预期结果和交付记录。从插件仓启动时，先按 DSH [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/user/develop/basic/index.md)创建并挂载最小插件，再用 [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/cordis-tutorial/index.md)学习依赖、生命周期和真实组合。随后按本语料从单个行为切片增补行为 owner、用户配置、测试预期与可重复验证。
 
 **适用边界**：独立插件仓可以采用 DSH 的 `apply(ctx)`、依赖声明、effect 清理、Cordis 配置组合、真实 Loader 测试和外部可观察断言。DSH 主仓库的 Issue policy、GitHub Project、加权批准积分、CI job 矩阵与发布工作流属于主仓库治理，不会因使用 DSH 就自动适用于插件仓。插件仓应为自身公开接口、用户可见行为、升级兼容和发布方式指定 owner 与验证路径。
 
@@ -28,13 +28,13 @@
 | [SDLC Reference（流程参考）](./sdlc-reference/00-map.md) | DSH 本身的具体条件、状态和例外是什么？哪些内容可移用于独立插件仓？ | 按问题查阅，并遵守适用边界 |
 | [Development Harness（开发 Harness）](./repo-harness/00-map.md) | DSH 仓库怎样让 agent 定位知识、扩展点和验证方式？ | 按参与任务查阅 |
 
-三卷分别解释原生开发模型、DSH 主仓库的精确机制和仓库参与方式。它们各有 README 与入口页，只依赖 DSH 一手来源，彼此不构成前置阅读顺序。
+三卷分别解释原生开发模型、DSH 主仓库的精确机制和仓库参与方式。它们各有落地页与内容页，只依赖 DSH 一手来源，彼此不构成前置阅读顺序。
 
 ## DSH 在这里扮演什么角色，理解从哪里来
 
-本语料对 DSH 的全部理解都只从 DSH 的 GitHub 仓库 [`deepseek-ai/deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.0-rc.2) 的一手内容挖出：源码、文档、`AGENTS.md`、`.agents/`、`.github/`、Skills、workflows，以及该仓库 git 历史中的 commit 与 tag。语料不使用任何二手转述或仓库外的描述性材料；其它研究目录不参与本语料的证据链。
+本语料对 DSH 的全部理解都只从 DSH 的 GitHub 仓库 [`deepseek-ai/deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.1-rc.2) 的一手内容挖出：源码、文档、`AGENTS.md`、`.agents/`、`.github/`、Skills、workflows，以及该仓库 git 历史中的 commit 与 tag。语料不使用任何二手转述或仓库外的描述性材料；其它研究目录不参与本语料的证据链。
 
-挖取按版本进行：当前现行机制的目录外引用固定到 release tag `dsh-v0.2.0-rc.2`。这是本轮核验版本，不是永久前提。DSH 处于 developer preview，运行时接口与主仓制度都会演进；更新版本时应逐条复核并改写过时结论，不能只替换 URL。基线与历轮复核记录由[维护页](./_coverage/00-corpus-maintenance.md)拥有。历史样本以日期、提交标题、PR 或 release tag 定位，不充当当前规则。
+挖取按版本进行：当前现行机制的目录外引用固定到 release tag `dsh-v0.2.1-rc.2`。这是本轮核验版本，不是永久前提。DSH 处于 developer preview，运行时接口与主仓制度都会演进；更新版本时应逐条复核并改写过时结论，不能只替换 URL。基线与历轮复核记录由[维护页](./_coverage/00-corpus-maintenance.md)拥有。历史样本以日期、提交标题、PR 或 release tag 定位，不充当当前规则。
 
 具体做法是：结论先在正文里讲清楚，关键规则以 Markdown blockquote 摘录仓库原文，并给出来自该仓库固定 release tag 的可核对链接与出处说明；读者不需要先理解 DSH 才能读懂主线，也可以顺着链接回到原文逐条核对。仓库没有声明的制度（例如它从未自称采用一套名为 SDD 的方法）在本语料中一律表述为“可观察机制的综合”，而不是官方方法名。
 
@@ -48,10 +48,10 @@
 | [`sdlc-reference/`](./sdlc-reference/00-map.md) | 查阅 DSH 主仓库的精确条件、状态与例外，并判断哪些机制适用于独立插件仓 | 任何一手事实变化（workflows、policy、release、评审制度）都按 `_coverage` 的重审触发路径改对应页 |
 | [`repo-harness/`](./repo-harness/00-map.md) | 查找 DSH 的知识入口、Skills、扩展方式和反馈机制，选择独立插件仓实际需要的部分 | 仓库机制清单变化时改（Skills 增减、gate 结构、inspect 工具面、preset 组装）；历轮教训是这类"现状清单"最容易在 re-pin 时漏改，见 `_coverage` 0008 注记 |
 | [`_coverage/`](./_coverage/00-index.md) | 语料的可信度取决于证据范围与复核记录：钉了哪个版本、哪些来源核过、上游什么变化要触发重审、历轮改了什么。没有它，更新就不知道从哪下手、哪些结论还站得住 | 每轮挖取/re-pin/改名都必须在这里留一条带日期的记录；改动了证据范围或结构约束时同步更新对应节 |
-| [`verify.mjs`](./verify.mjs) | 语料的结构规则（严格 UTF-8、结尾换行、相对链接与锚点、钉版 DSH 外链、目录 README、SVG 规范）用可执行脚本强制，不靠人记；它使“语料改动没有破坏结构”可以机器回答 | 只在结构规则本身变化时改；同步检查负例 |
+| [`verify.mjs`](./verify.mjs) | 语料的结构规则（严格 UTF-8、结尾换行、相对链接与锚点、钉版 DSH 外链、目录落地页、SVG 规范）用可执行脚本强制，不靠人记；它使“语料改动没有破坏结构”可以机器回答 | 只在结构规则本身变化时改；同步检查负例 |
 | [`verify.test.mjs`](./verify.test.mjs) | 在临时复制的完整语料中，通过真实 verifier 入口测试接受和拒绝条件 | 修改引用政策、隔离或链接约束时更新对应负例 |
 
-每卷都有自己的 README 和入口页；术语页和图示服务拥有它们的卷。目录更名与历史案例迁移由[维护记录](./_coverage/00-corpus-maintenance.md)保存，不作为阅读本语料的前提。
+每卷都有自己的落地页与内容页；术语页和图示服务拥有它们的卷。目录更名与历史案例迁移由[维护记录](./_coverage/00-corpus-maintenance.md)保存，不作为阅读本语料的前提。
 
 ## 验证
 

@@ -14,7 +14,7 @@ agent 从根级 `AGENTS.md` 得到常驻规则和仓库布局；任务涉及 `pa
 
 > New behavior attaches to a documented extension point. Changing the loop itself updates this map.
 >
-> — DSH [`docs/architecture.md` 的行为归属表](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/architecture.md#where-new-behavior-goes)。原文说明新增行为先寻找已有扩展点；修改 `agent-loop` 是需要额外说明的例外。
+> — DSH [`docs/architecture.md` 的行为归属表](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/architecture.md#where-new-behavior-goes)。原文说明新增行为先寻找已有扩展点；修改 `agent-loop` 是需要额外说明的例外。
 
 表中“Add a model-facing capability”指向 `ctx.tools`。因此 agent 的第一项设计判断不是“在哪个 loop 函数里插代码”，而是“这个功能是否属于工具注册”。如果需求其实是一项可替换能力，它还需要检查 Service Definition、Provider、Consumer 三个角色，而不能把一个工具包误称为完整 capability seam（能力接缝）。
 
@@ -49,11 +49,11 @@ Skill 不替 agent 决定产品需求，也不自动证明实现正确。它把�
 
 > Add or update an Agent Note in the same PR only for lasting decision rationale that code, tests, and existing documentation do not explain.
 >
-> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md#when-to-write-one)。这条规则把设计记忆纳入同一个交付单元，而不是把它留在某一轮 agent 的上下文里。
+> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md#when-to-write-one)。这条规则把设计记忆纳入同一个交付单元，而不是把它留在某一轮 agent 的上下文里。
 
 ## 5. 让错误尽早出现
 
-实现过程中，TypeScript 先检查静态接口，配置加载检查可解析的误配置，unit tests 检查局部行为，runtime invariant（运行时不变量检查）比较真实关系，focused local checks（聚焦本地检查）覆盖待推送差异。每一层只证明自己观察到的性质。
+实现过程中，TypeScript 先检查静态接口，配置加载检查可解析的误配置，unit tests 检查局部行为，focused local checks（聚焦本地检查）覆盖待推送差异。每一层只证明自己观察到的性质。
 
 agent 不应因为一个检查为绿就跳过其它层：coverage 只能说明代码执行过，snapshot 才能固定组装后的外部输出，semantic review（语义评审）仍要判断实现是否符合需求和设计 owner。证据分层见 [可执行反馈](./05-executable-feedback.md)。
 
@@ -69,9 +69,9 @@ Push 和 Pull Request（PR）把本地交付组合放进 GitHub Flow。`.github/
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/architecture.md)：工具注册、seam、session event 与 loop 修改的归属入口。
-- DSH [`adding-a-tool cookbook`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/cookbook/adding-a-tool.md)：新增模型工具的真实实施入口和验证义务。
-- DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md)：产品可见插件的真实组合要求，以及非平凡模型、协议或用户可见变化的录制场景义务。
-- DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/README.md)：决策记录的职责、生命周期与格式。
-- DSH [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样从 outgoing diff 选择相关本地证据，并把穷举矩阵留给 CI。
-- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-code-review/SKILL.md)：review 需要覆盖的语义、生命周期、安全和真实入口问题。
+- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/architecture.md)：工具注册、seam、session event 与 loop 修改的归属入口。
+- DSH [`adding-a-tool cookbook`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/cookbook/adding-a-tool.md)：新增模型工具的真实实施入口和验证义务。
+- DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/testing.md)：产品可见插件的真实组合要求，以及非平凡模型、协议或用户可见变化的录制场景义务。
+- DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md)：决策记录的职责、生命周期与格式。
+- DSH [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样从 outgoing diff 选择相关本地证据，并把穷举矩阵留给 CI。
+- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-code-review/SKILL.md)：review 需要覆盖的语义、生命周期、安全和真实入口问题。

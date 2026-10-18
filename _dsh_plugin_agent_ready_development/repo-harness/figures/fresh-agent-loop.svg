@@ -54,7 +54,7 @@
   <circle cx="440" cy="366" r="16" fill="#b66d12"/>
   <text x="440" y="371" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">5</text>
   <text x="560" y="367" text-anchor="middle" font-size="14" font-weight="700" fill="#744408">运行相关证据</text>
-  <text x="560" y="396" text-anchor="middle" font-size="11" fill="#526175">types · tests · invariants</text>
+  <text x="560" y="396" text-anchor="middle" font-size="11" fill="#526175">types · tests · focused checks</text>
   <text x="560" y="417" text-anchor="middle" font-size="11" fill="#526175">focused local checks</text>
   <text x="560" y="438" text-anchor="middle" font-size="11" fill="#805915">按失败修正</text>
 

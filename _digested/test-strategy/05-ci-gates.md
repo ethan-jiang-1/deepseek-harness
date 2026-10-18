@@ -5,7 +5,7 @@
 
 ## 现象是什么：一个 1687 行的门禁注册表
 
-DSH 的 CI 不是一堆散装的 workflow 步骤，而是一个**可编程门禁图**：`scripts/run-gates.ts`（基线下 1687 行）注册了 **18 个聚合模式**，每个模式是一张带依赖关系的门禁 DAG。workflow 只是调用入口，门禁的拓扑、并发、失败语义全部由这张注册表统一声明。
+DSH 的 CI 不是一堆散装的 workflow 步骤，而是一个**可编程门禁图**：`scripts/run-gates.ts`（基线下 1697 行）注册了 **18 个聚合模式**，每个模式是一张带依赖关系的门禁 DAG。workflow 只是调用入口，门禁的拓扑、并发、失败语义全部由这张注册表统一声明。
 
 18 个聚合：`ci-primary`、`ci-linux-primary`、`ci-static`、`ci-lint-contracts-ready`、`ci-coverage`、`ci-unit`、`ci-bench`、`ci-snapshot`、`ci-artifacts`、`ci-consumers`、`ci-windows-blocking`、`ci-windows-complete`、`ci-windows-observational-ready`、`node-compat`、`check-all`、`hygiene`、`doc-sync`、`doc-quick`。
 
@@ -23,13 +23,15 @@ ci- 模式（ci-unit 除外）统一注入 worker 环境变量（oxlint/publint 
 
 ## 主要聚合的内容链（摘要）
 
-- **ci-primary**（`check:ci`）：17 个共享静态门（runtime-closure、package-invariants、cordis-config、client-ui-i18n、no-unknown-casts、approval-policy、issue-management 等）→ typert-contracts → typecheck/lint/duplication → coverage → node-compat smokes → snapshot → 文档门叶子 → build → publint → node-next-types → built-package-invariants → built-bin-smoke。
+- **ci-primary**（`check:ci`）：21 个共享静态门（runtime-closure、product-use、official-bundle-catalog、provider-data、cordis-config、client-ui-i18n、no-unknown-casts、approval-policy、issue-management 等）→ typert-contracts → typecheck/lint/duplication → coverage → node-compat smokes → snapshot → 文档门叶子 → build → publint → node-next-types → built-bin-smoke。
 - **ci-linux-primary** = ci-primary + webSnapshotGate（Linux PR 的 web 快照必过门在这里挂上）。
 - **ci-coverage**：`build:native-system` 后两路并行——①插桩覆盖（分区模式经 `run-coverage-partitions.ts`：多个单 worker Vitest 进程各出 blob，**合并成一份报告后统一判 per-file 100% 门**；分区权重来自 `.coverage-times.json` 的实测时长，Windows job 有对应 GitHub cache）；②豁免重型套件不插桩跑。预算分配：总量的 1/3 给豁免门。
 - **ci-unit**：全量无插桩清单（streamOutput 供 15~30 分钟日志带时间戳）。
 - **ci-bench**：单门 `test:bench`（build:bench + build:web + built 运行）。
 - **ci-consumers**：build、node-compat、publint、snapshot、expected-output、web-snapshot、built-bin-smoke 等"消费 built 产物的面"；其中 web-snapshot 用 `after` 等全部 build-artifact readers settle——**HMR 测试会启动 dev:web 改写共享 `lib/` 与 `apps/web/dist/`**，必须互斥。
 - **built-bin-smoke**：`DSH_EXAMPLE_MODE=lib` 下跑 **16** 个 built 消费者 e2e 文件（13 个 built 命名 + keyless-smoke + subagent-{codex,claude-code} 的 loader-composition）。注释原话：这是 "package 名导入在 plain Node 下能到达 `lib/` 入口" 的**唯一自动证明**——发布面的守门人（对应 [01](./01-doctrine.md) 教义 6c）。
+
+`build` 门跑的是 `pnpm run build`，它本身已拆成 `build:artifacts` 与 `build:check` 的并发组合（root `AGENTS.md` 命令表）：前者产出 `lib/types`、tsdown 运行时包与 Web 产物，后者用**当前**构建产物类型检查聚合的 tests/scripts。因此「先 artifacts 后 check」是硬顺序，`build` 只是把两者一起跑。
 
 ## CI 工作流结构（硬事实）
 

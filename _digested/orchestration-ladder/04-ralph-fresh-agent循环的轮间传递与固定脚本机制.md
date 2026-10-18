@@ -1,6 +1,6 @@
 # ralph：fresh-agent 循环的轮间传递与固定脚本机制
 
-源码核验入口：`packages/workflow/tool-ralph/src/index.ts`（`RALPH_SCRIPT`、防御性解码、工具注册）、`packages/workflow/tool-ralph/README.md`、`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md`（两策略决策）、`packages/bundle/base/cordis.patch.yml`。
+源码核验入口：`packages/experimental/tool-ralph/src/index.ts`（`RALPH_SCRIPT`、防御性解码、工具注册）、`packages/experimental/tool-ralph/README.md`、`.agents/notes/archived/feature/2026-07-16-harness-level-loop.md`（已归档，历史快照；两策略决策）、`packages/experimental/ralph-bundle/cordis.patch.yml`。
 
 本页回答：ralph 轮间到底传什么、固定脚本锁死了什么、四种终局怎么结算、为什么 DSH 把「长任务」显式分裂成 goal 与 ralph 两种策略？工具的选择边界（仅人类显式要求）见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；它跑在哪个引擎/进程里见 [`01-workflow-模型编写的JS编排脚本与子代理扇出机制.md`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)（ralph 是 `ctx.workflowEngine` + `ctx.subagents` 之上的普通插件，复用 PTC 执行链）。
 
@@ -8,14 +8,14 @@
 
 ![ralph 轮循环与四种终局](./figures/ralph-rounds.svg)
 
-模型提交 `{ objective, maxRounds? }`，**调用阻塞到整个 run 结算**（前台 only）。工具层做四件事（`packages/workflow/tool-ralph/src/index.ts:435`-`453`）：
+模型提交 `{ objective, maxRounds? }`，**调用阻塞到整个 run 结算**（前台 only）。工具层做四件事（`packages/experimental/tool-ralph/src/index.ts:435`-`453`）：
 
 1. 取 `exec.agent` 作 parent（无调用 agent 即 fail loud，`:437`-`438`）；objective trim 后非空（`:440`-`441`）；
 2. `resolveMaxRounds`：部署 `maxRounds` 既是默认也是 ceiling，调用侧只能往下调（`:206`-`214`）；
 3. `requireFreshProvider` 预检：provider 必须存在、具备 `outputSchema` 能力、**不继承父上下文**（fork provider 被拒：`inheritsParentContext` 为 true 直接 throw，`:218`-`230`）；
 4. `ctx.workflowEngine.start({ script: RALPH_SCRIPT, meta: RALPH_META, args: { objective, maxRounds, maxHandoffChars }, subagentProvider, maxTotalAgents: maxRounds, parent, signal: exec.signal })`（`:445`-`453`）——**`maxTotalAgents: maxRounds` 把引擎的总子代理上限钉到轮预算**，双层预算收敛为一个数字。
 
-每轮的 child prompt 由固定脚本拼六段（`RALPH_SCRIPT`，`packages/workflow/tool-ralph/src/index.ts:151`-`160`）：
+每轮的 child prompt 由固定脚本拼六段（`RALPH_SCRIPT`，`packages/experimental/tool-ralph/src/index.ts:151`-`160`）：
 
 1. 身份声明："You are one fresh worker in a foreground Ralph loop. You receive no parent conversation and no prior child session. **Do not call the ralph tool: this round already is its worker.**"
 2. 不可变 objective（逐字传入，每轮相同）；
@@ -28,7 +28,7 @@ child 经 `agent(prompt, { label: 'Ralph round N', phase: 'Fresh-agent rounds', 
 
 ## 轮间传什么：五字段结构化报告
 
-跨轮传递的**只有一个 JSON 对象**（`reportSchema`，`packages/workflow/tool-ralph/src/index.ts:89`-`100`）：
+跨轮传递的**只有一个 JSON 对象**（`reportSchema`，`packages/experimental/tool-ralph/src/index.ts:89`-`100`）：
 
 | 字段 | 类型 | 约束 |
 |------|------|------|
@@ -60,11 +60,11 @@ round-failed 的渲染与校验在 `:281`-`331`（readRunResult）、`:383`-`390
 
 `maxResultChars`（默认 16384）用 `boundResult` 封顶**含 envelope 与截断标记在内的完整文本**（`:349`-`356`）。
 
-两个 Config 默认值要区分**包默认**与 **shipped 组合值**：包默认 `maxRounds` 256（`packages/workflow/tool-ralph/src/index.ts:187`），而 base 行把 shipped 值覆盖为 **64**（`packages/bundle/base/cordis.patch.yml:447`-`452` 的 `maxRounds: 64`）——启用 overlay 恢复 ralph 后，实际生效的默认轮预算是 64。
+两个 Config 默认值要区分**包默认**与 **shipped 组合值**：包默认 `maxRounds` 256（`packages/experimental/tool-ralph/src/index.ts:187`），而可选 bundle 行把 shipped 值覆盖为 **64**（`packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 的 `maxRounds: 64`）——装上 `ralph-bundle` 后，实际生效的默认轮预算是 64。ralph 已不在 base：它由该 optional bundle 提供（`packages/boot/app-boot/src/profile.ts:223`-`236` 的 `OPTIONAL_BUNDLES` 12 成员之一），默认不装。
 
 ## 为什么分成 goal 与 ralph 两种策略
 
-`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md` 的决策记录：
+`.agents/notes/archived/feature/2026-07-16-harness-level-loop.md` 的决策记录：
 
 **问题意识**：定时 prompt、同会话续跑、fresh-agent Ralph 都在「重复工作」，但它们的状态、权限、记忆与生命周期完全不同——同会话工作必须在既有 transcript 里持久化人类目标并保留对话上下文；Ralph 工作**有意丢弃**对话上下文，只用 workspace + 一个有界 handoff；完成与阻塞声称需要**显式信任边界**，而不是偷渡进某个调度器抽象。把一切重复动作泛化成一个通用 loop 服务会掩盖这些差异。
 
@@ -79,22 +79,24 @@ fresh-agent：Ralph Run → Ralph Round → fresh child Turn → Step（每轮�
 
 **第三种策略未实现**：time-based `/loop` 与 scheduled execution 属于 scheduler，不属于这两个家族。
 
-## 已知限制（README 明文，`packages/workflow/tool-ralph/README.md:155`-`165`）
+## 已知限制（README 明文，`packages/experimental/tool-ralph/README.md:154`-`167`）
 
 - **完成是 worker 自声明**——没有独立评估器或验证器判定目标是否真的完成；evaluator policy 与 evaluator-driven continuation 延后；
 - **仅前台**——无 job id、无后台收集、无进程恢复检查点、无调度器、无 wall-clock 启动策略；
 - **workspace 是唯一跨轮长期记忆**——一个有界报告是显式 handoff，未提交的对话推理随每轮 child 消失；
-- **一轮一个 fresh child**——轮内无扇出、无模型/provider 切换、无 fork context、无模型调用侧选 provider。
+- **一轮一个 fresh child**——轮内无扇出、无模型/provider 切换、无 fork context、无模型调用侧选 provider；
+- **无强制的递归 ralph 拒绝**——没有结构性拒绝，prompt guidance 不构成递归禁令（`:165`）；
+- **只有轮数约束总投入**——token、价格与墙钟预算延后（`:167`）。
 
 ## 源码入口
 
 | 路径 | 一句话 |
 |------|--------|
-| `packages/workflow/tool-ralph/src/index.ts:88`-`175` | `RALPH_SCRIPT` 固定脚本：reportSchema、validateReport、轮循环、四种终局返回 |
-| `packages/workflow/tool-ralph/src/index.ts:244`-`331` | 跨进程边界的防御性解码（readReport / readRunResult） |
-| `packages/workflow/tool-ralph/src/index.ts:333`-`390` | stopReasonError、boundResult、renderResult / renderRoundFailure |
-| `packages/workflow/tool-ralph/src/index.ts:402`-`477` | 工具注册、参数 schema、execute 全流程、abort 桥与 dispose |
-| `packages/workflow/tool-ralph/src/index.ts:184`-`230` | Config 解析与 requireFreshProvider 预检 |
-| `packages/workflow/tool-ralph/README.md:155`-`165` | 四条已知限制（worker 自声明 / 仅前台 / workspace 唯一记忆 / 一轮一 child） |
-| `.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md` | 两策略决策：为什么没有通用 loop 服务 |
-| `packages/bundle/base/cordis.patch.yml:441`-`452` | base 默认 `disabled: true` 与理由注释 |
+| `packages/experimental/tool-ralph/src/index.ts:88`-`175` | `RALPH_SCRIPT` 固定脚本：reportSchema、validateReport、轮循环、四种终局返回 |
+| `packages/experimental/tool-ralph/src/index.ts:244`-`331` | 跨进程边界的防御性解码（readReport / readRunResult） |
+| `packages/experimental/tool-ralph/src/index.ts:333`-`390` | stopReasonError、boundResult、renderResult / renderRoundFailure |
+| `packages/experimental/tool-ralph/src/index.ts:402`-`477` | 工具注册、参数 schema、execute 全流程、abort 桥与 dispose |
+| `packages/experimental/tool-ralph/src/index.ts:184`-`230` | Config 解析与 requireFreshProvider 预检 |
+| `packages/experimental/tool-ralph/README.md:154`-`167` | 已知限制（worker 自声明 / 仅前台 / workspace 唯一记忆 / 一轮一 child / 无递归拒绝 / 子代理失败即终局 / 只有轮数预算） |
+| `.agents/notes/archived/feature/2026-07-16-harness-level-loop.md` | 两策略决策：为什么没有通用 loop 服务 |
+| `packages/experimental/ralph-bundle/cordis.patch.yml:1`-`16` | optional bundle 挂载（`id: tool-ralph`、`maxRounds: 64`）；默认不装 |

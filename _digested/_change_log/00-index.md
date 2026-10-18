@@ -26,6 +26,7 @@
 - [`0009-0.1.7-rc.1-to-0.2.0-rc.2.md`](./0009-0.1.7-rc.1-to-0.2.0-rc.2.md)——第九次合入（794 commits；session 格式保持 v4、Schedule 转正为 bundle、账号/模型面大改、user-questions timed waits、llm 动态工具更新；语料反查随同步执行，另完成独立反查，见 [`0009-independent-recheck.md`](./0009-independent-recheck.md)）
 - [`0010-ledger-and-pin-recheck.md`](./0010-ledger-and-pin-recheck.md)——0010 轮**同基线换角反查**（变更三账本＋merge 主题正查＋无引文行号钉专项；约 60 处漂移重锚、图鉴补 acp/sdk 两节、subprocess 计数与 release 间隔口径回归）
 - [`0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](./0011-0.2.0-rc.2-to-0.2.1-rc.2.md)——第十次合入（1925 commits；**对齐口径在本卷定型**，见下节）
+- [`0011-independent-recheck.md`](./0011-independent-recheck.md)——0011 轮**独立反查**（按维度而非目录切：D1 引用反查、D2 正向覆盖、D3 硬数字残留、D4 钉版锚点、D5 文风纪律；实测并定义了「按路径求交」的三类盲区——按数字陈述的文件、引用已整族删除机制的文件、引文不可溯源的文件）
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
 

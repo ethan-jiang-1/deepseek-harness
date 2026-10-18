@@ -1,6 +1,6 @@
 # Prompt section 顺序与前缀稳定
 
-产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`，2026-09-25 同步轮核验；OLD 侧 `46a7f68b09`）。
+产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`，2026-10-18 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
 
 源码核验入口：`packages/core/system-prompt/src/index.ts`。
 
@@ -14,11 +14,11 @@
 
 内置（构造时，与选哪个 loop 无关）：
 
-- `harness:identity`，`SECTION_ORDERS.HARNESS_IDENTITY = -1000`（可用 config 关掉，注册在 `packages/core/system-prompt/src/index.ts:424-431`，name 在 `:427`）
-- `deployment:persona-prefix`，`SECTION_ORDERS.DEPLOYMENT_PERSONA_PREFIX = 0`（`packages/core/system-prompt/src/index.ts:127,179,432`），文本来自 `config.personaPrefix`（默认空串）
-- `deployment:persona-suffix`，`SECTION_ORDERS.DEPLOYMENT_PERSONA_SUFFIX = 10200`（`packages/core/system-prompt/src/index.ts:158,182,438`），文本来自 `config.personaSuffix`（默认空串）；它刻意排在全部可复用指令之后
+- `harness:identity`，`SECTION_ORDERS.HARNESS_IDENTITY = -1000`（可用 config 关掉，注册在 `packages/core/system-prompt/src/index.ts:449-455`，name 在 `:451`）
+- `deployment:persona-prefix`，`SECTION_ORDERS.DEPLOYMENT_PERSONA_PREFIX = 0`（order 常量与注册见 `packages/core/system-prompt/src/index.ts:133`、`:456-461`），文本来自 `config.personaPrefix`（默认空串）
+- `deployment:persona-suffix`，`SECTION_ORDERS.DEPLOYMENT_PERSONA_SUFFIX = 10200`（`packages/core/system-prompt/src/index.ts:164`、`:462-466`），文本来自 `config.personaSuffix`（默认空串）；它刻意排在全部可复用指令之后
 
-工具包自己登记 `tool:bash` 这类跨调用指导，主体约定 1000–2900：`SECTION_ORDERS` 里 `TOOL_BASH` 1000、`TOOL_PWSH` 1010、…、`TOOL_REPORT` 2900（`packages/core/system-prompt/src/index.ts:125-159`）；`tool:bash` 实际经 `getSectionOrder('TOOL_BASH')` 注册（`packages/shell/tool-bash/src/index.ts:261`）。负 order 只剩 `HARNESS_IDENTITY`（-1000）一个，`DEPLOYMENT_PERSONA_PREFIX` 是 0，500–900 是模式与文件引用等约定（`PLAN_POLICY` 500、`TEAM_POLICY` 600、`PTC_ONLY` 800、`FILE_REFERENCE` 900），从 1000 起是工具指导，其后 `TOOL_COMPUTER_USE` 3000、`MCP_SERVERS` 3100 与 `TOOLS_SDK` 5000、`DELIVERABLE_FILE_REFERENCES` 9000、`STRUCTURED_OUTPUT` 9900 仍是可复用指令；**环境事实（`HARNESS_SOURCE` 10000、`WEB_SURFACE` 10100）与 persona 后缀（10200）刻意排在全部可复用指令之后**，因为它们逐机器/逐用户不同，放在前面会让本可共享的前缀在开头就分叉。
+工具包自己登记 `tool:bash` 这类跨调用指导，主体约定 1000–2900：`SECTION_ORDERS` 里 `TOOL_BASH` 1000、`TOOL_PWSH` 1010、…、`TOOL_REPORT` 2900（`packages/core/system-prompt/src/index.ts:131-165`）；`tool:bash` 实际经 `getSectionOrder('TOOL_BASH')` 注册（`packages/shell/tool-bash/src/index.ts:253`）。负 order 只剩 `HARNESS_IDENTITY`（-1000）一个，`DEPLOYMENT_PERSONA_PREFIX` 是 0，500–900 是模式与文件引用等约定（`PLAN_POLICY` 500、`TEAM_POLICY` 600、`PTC_ONLY` 800、`FILE_REFERENCE` 900），从 1000 起是工具指导，其后 `TOOL_COMPUTER_USE` 3000、`MCP_SERVERS` 3100 与 `TOOLS_SDK` 5000、`DELIVERABLE_FILE_REFERENCES` 9000、`STRUCTURED_OUTPUT` 9900 仍是可复用指令；**环境事实（`HARNESS_SOURCE` 10000、`WEB_SURFACE` 10100）与 persona 后缀（10200）刻意排在全部可复用指令之后**，因为它们逐机器/逐用户不同，放在前面会让本可共享的前缀在开头就分叉。
 
 ## 为什么前缀要稳
 
@@ -31,6 +31,8 @@
 - `systemPrompt.context()`（如 `approval:policy` order 115、`sandbox:policy`）**不进 system 前缀**。loop 的 `RuntimeContextProjection` 把 `joinContextSections` 收成 `user/message` 快照，拼进下一次获准 enter；政策切换因此不打乱 KV 前缀。这不是 `agent.inject()`。
 
 `config.toolOrder` 排 schema 名字；未列出的走保留名 `TOOL_ORDER_REST`。provider 返回这个保留名会让 assembly 失败。
+
+**环境事实的活样本**：`packages/context/harness-dev-context/`（0.2.1 线新增）注册 `harness:source`（section order 10000）与 `app:web-surface`（10100）两条 section，文本是**去值**的固定指引，checkout 路径与 Web GUI URL 只经 `systemPrompt.context()` 出现在 `HARNESS_SOURCE` 200 / `WEB_SURFACE` 210 两条 runtime context 里（`src/index.ts:141`-`:164`，`inject = ['systemPrompt', 'sessionProjections', 'webApp']`）。因此换 checkout、换端口或换安装都不改写 system prompt 前缀。该包另注册 `harnessDevLegacyPrompt` projection（`:129`-`:135`）记住本 Session 已准入的含值段落，section 文本优先复用它们（`:136`-`:145`、`:153`-`:157`），升级后 resume 也不会重写已记录的 prompt。
 
 ## `complete` 与 waterfall
 

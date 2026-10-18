@@ -1,6 +1,6 @@
 # Minimal 模式分篇 · 一句话身份 + 一个持久 shell，其余全部清零
 
-![Minimal 剥掉了什么：左=Standard 的完整提示词输入栈（persona 前后缀、首方 guidance、AGENTS.md、运行时上下文、宿主后加 section）被 persona complete: true 全部抑制到只剩一句话；右=工具面从 26 个收到 1 个持久 bash，跨步状态从 harness 设施移到 shell 进程状态，且无 compaction；底部=对照实验的用法](./figures/minimal-strip.svg)
+![Minimal 剥掉了什么：左=Standard 的完整提示词输入栈（persona、首方 guidance、AGENTS.md、运行时上下文、宿主后加 section）被 persona complete: true 全部抑制到只剩一句话；右=工具面从 31 个收到持久 bash + read_image + working_directory，跨步状态从 harness 设施移到 shell 进程状态；底部=对照实验的用法](./figures/minimal-strip.svg)
 
 ## Minimal 到底"极简"掉了什么？
 
@@ -8,12 +8,12 @@
 
 ```text
 prompt: "You are a helpful software engineer assistant."
-tools:   ["bash"]        // Windows 上是 pwsh
+tools:   ["bash", "read_image", "working_directory"]   // bash 在 Windows 上是 pwsh
 goalCommand: false
-// 且：无 runtime-context user message、preset scope 无 fs / compaction 服务
+// 且：无 runtime-context user message；compaction 组已随本轮新增
 ```
 
-减法清单（对照 standard）：无 fs 工具（read/edit/write/glob/grep 全无，读写靠 shell 命令）、无 jobs、无 skills、无 goal、无 plan mode、无 compaction、无 delegation、无 ask-user、无 todo、无 web、无 present、无 plugin-manager、**无 `agent-instructions`（AGENTS.md 不进上下文）**。GUI guide 的措辞："仅提供一个持久 Shell 工具，并使用固定系统提示词……不加载 Skills、计划、上下文压缩，也不注入标准运行时上下文"（[`guide-locales.ts`](../../packages/client/ui-agent-preset/src/client/guide-locales.ts)）。
+减法清单（对照 standard）：fs 只剩 `read_image` 与 `working_directory`（read/edit/write/glob/grep 全无，读写靠 shell 命令）、无 jobs、无 skills、无 goal、无 plan mode、无 delegation、无 ask-user、无 todo、无 web、无 present、无 plugin-manager／plugin-market、无 schedule、**无 `agent-instructions`（AGENTS.md 不进上下文）**；保留一个 `isolate: compaction` 组（compaction-basic + `/compact`）。GUI guide 的措辞："仅提供一个持久 Shell 工具，并使用固定系统提示词……不加载 Skills、计划、上下文压缩，也不注入标准运行时上下文"（[`guide-locales.ts`](../../packages/client/ui-agent-preset/src/client/guide-locales.ts)）。
 
 ## `complete: true` 到底抑制了什么？
 

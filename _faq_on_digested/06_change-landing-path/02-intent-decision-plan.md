@@ -9,7 +9,7 @@ Feature issue 模板（0.1.5 基线）只有两节：
 
 来源：`.github/ISSUE_TEMPLATE/feature.md:1-13`
 
-Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implemented/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板 frontmatter 只保留 `name`/`about`/`type`，验收条件与测试证据不再写进模板，改由 PR 的 Testing 节承载。Bug 模板要求概述、复现、当前行为、预期行为与环境。
+Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/archived/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板 frontmatter 只保留 `name`/`about`/`type`，验收条件与测试证据不再写进模板，改由 PR 的 Testing 节承载。Bug 模板要求概述、复现、当前行为、预期行为与环境。
 
 模板只问意图与可观察行为，不问内部类名或函数列表；这让后续设计可以变化，但不丢掉最初要解决的问题。
 
@@ -27,7 +27,7 @@ Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/implem
 > - **`proposed/`** — proposals reviewed before implementation; not yet built (or only partly).
 > - **`implemented/`** — the decision shipped. The file records what was decided and what was rejected, and is **kept current with what actually shipped**…
 
-来源：`.agents/notes/README.md:11-13`
+来源：`.agents/notes/README.md:12-14`
 
 proposed 的结构：
 
@@ -58,7 +58,7 @@ Plan Mode 把“边写边设计”压缩掉：
 
 > **Guidance, not enforcement** — plan mode restrains through text only; deployments that need enforced restrictions configure sandbox mode and approval policy independently.
 
-来源：`packages/plan/plan-mode/README.md:183`
+来源：`packages/plan/plan-mode/README.md:184`
 
 所以 [`02_spec-driven-development`](../02_spec-driven-development/answer.md) 的完整 SDD 判断也明确说：Plan Mode 是会话可选状态，不能证明每个历史 PR 都使用过它。它能证明 DSH 原生支持「先计划、后实施」的可选工作方式，但不是全仓库统一瀑布的一环。
 
@@ -66,7 +66,7 @@ Plan Mode 把“边写边设计”压缩掉：
 
 > Make the plan decision-complete: state the goal and success criteria; group implementation changes by subsystem; identify public API, schema, and data-flow changes; cover edge cases, failure modes, tests, acceptance criteria, and explicit assumptions. Keep it concise enough to review but detailed enough that another engineer can implement it without making design decisions.
 
-来源：`packages/bundle/web-app/presets/ptc.patch.yml:60`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）；plan/review 留在会话历史见 `packages/plan/plan-mode/README.md:170`。
+来源：`packages/bundle/web-app/presets/ptc.patch.yml:63`（0.1.7 线起 shipped preset 声明迁至 bundle patch；旧 `packages/preset/agent-presets/presets/ptc/agent.cordis.yml:130` 已随重设计删除）；plan/review 留在会话历史见 `packages/plan/plan-mode/README.md:171`。
 
 ## 上游小结
 
@@ -83,7 +83,7 @@ Plan   = 具体改哪里，怎么验证
 - [`.github/ISSUE_TEMPLATE/feature.md`](../../.github/ISSUE_TEMPLATE/feature.md) 第 1-13 行
 - [`.github/ISSUE_TEMPLATE/bug.md`](../../.github/ISSUE_TEMPLATE/bug.md)
 - [`.github/ISSUE_TEMPLATE/task.md`](../../.github/ISSUE_TEMPLATE/task.md)
-- [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 11-13、46、80-90 行
+- [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 12-14、46、83-88 行
 - [`.github/issue-management/rules.mjs`](../../.github/issue-management/rules.mjs) 第 60-70、252、265 行
 - [`docs/subsystems/plan.md`](../../docs/subsystems/plan.md) 第 5、33 行
-- [`packages/plan/plan-mode/README.md`](../../packages/plan/plan-mode/README.md) 第 93、170、183 行
+- [`packages/plan/plan-mode/README.md`](../../packages/plan/plan-mode/README.md) 第 93、171、184 行

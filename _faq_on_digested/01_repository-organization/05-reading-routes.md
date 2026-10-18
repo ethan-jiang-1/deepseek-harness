@@ -1,6 +1,6 @@
 # 05 · 用什么路线读 DSH
 
-源码核验基线：DeepSeek Harness `dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。
+源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）。
 
 ## 不要从 `packages/` 第一项顺序读到最后一项
 
@@ -168,7 +168,7 @@ package src/index.ts 的 apply / Service constructor
   → teardown and real-composition tests
 ```
 
-先读 [`docs/defensive-patterns.md`](../../docs/defensive-patterns.md) 和 [`_digested/cordis-runtime/`](../../_digested/cordis-runtime/00-map.md)，再进入 `vendor/cordis/src/fiber.ts`。`vendor/` 有独立同步与本地修改纪律，不能因为问题最终落到 Cordis 就绕过 `vendor/README.md` 直接改。
+先读 [`docs/defensive-patterns/README.md`](../../docs/defensive-patterns/README.md) 和 [`_digested/cordis-runtime/`](../../_digested/cordis-runtime/00-map.md)，再进入 `vendor/cordis/src/fiber.ts`。`vendor/` 有独立同步与本地修改纪律，不能因为问题最终落到 Cordis 就绕过 `vendor/README.md` 直接改。（0.1.7 线起 `docs/defensive-patterns.md` 单页改成目录：一页通用 bug 类加各域页面，凡钉版指向单页的要改到 `docs/defensive-patterns/README.md`。）
 
 ## 判断修改应该放哪里
 

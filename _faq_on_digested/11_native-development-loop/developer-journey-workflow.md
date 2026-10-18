@@ -11,11 +11,9 @@
 
 ## 0. 一句话结论
 
-智能体工作流插件**不是传统的 npm package**，不需要 `package.json`、`tsconfig.json`、`pnpm install`。
-你不用 TypeScript 扩展运行时，你用**纯 JS 编排脚本**或**结构化 Markdown 指令**来定义 agent 在特定场景下怎么行事。
+智能体工作流插件**不是传统的 npm package**，不需要 `package.json`、`tsconfig.json`、`pnpm install`。你不用 TypeScript 扩展运行时，你用**纯 JS 编排脚本**或**结构化 Markdown 指令**来定义 agent 在特定场景下怎么行事。
 
-DSH 里"一切皆插件"——这类插件的"安装"不是一个 npm install 动作，而是放进 `.agents/` 下对应的目录，
-agent 的 session 就会自动发现它。
+DSH 里"一切皆插件"——这类插件的"安装"不是一个 npm install 动作，而是放进 `.agents/` 下对应的目录，agent 的 session 就会自动发现它。
 
 ---
 
@@ -55,7 +53,7 @@ log(`Analyzed ${results.length} files`)
 return { count: results.filter(Boolean).length, details: results }
 ```
 
-**钩子**（精确来源：`packages/workflow/tool-workflow/src/index.ts:138-150`）：
+**钩子**（精确来源：`packages/workflow/tool-workflow/src/index.ts:161-164`）：
 
 | 钩子 | 作用 |
 |---|---|
@@ -68,8 +66,7 @@ return { count: results.filter(Boolean).length, details: results }
 
 ### 2.2 插件结构
 
-这就是一个 `.js` 文件。你不需要 `package.json`、不需要 `tsconfig.json`、不需要 `pnpm build`。
-它由 `workflow` tool 的 provider 在 worker thread 里执行。
+这就是一个 `.js` 文件。你不需要 `package.json`、不需要 `tsconfig.json`、不需要 `pnpm build`。它由 `workflow` tool 的 provider 在 worker thread 里执行。
 
 | 场景 | 存放位置 |
 |---|---|
@@ -177,8 +174,7 @@ const analyses = await pipeline(files,
   2026-09-01-decision-log-default-status-in-execute.md
 ```
 
-Note 是制度上的"插件"——它不是加载到运行时，而是沉淀到仓库里，供后续 PR 查阅。
-它同样不需要 `package.json`，不需要打包。
+Note 是制度上的"插件"——它不是加载到运行时，而是沉淀到仓库里，供后续 PR 查阅。它同样不需要 `package.json`，不需要打包。
 
 ---
 
@@ -246,7 +242,7 @@ DSH 运行时中：
 
 | 问题 | 权威来源 |
 |---|---|
-| workflow tool 的 DSL 契约 | `packages/workflow/tool-workflow/src/index.ts:138-150` |
+| workflow tool 的 DSL 契约 | `packages/workflow/tool-workflow/src/index.ts:161-164` |
 | skill 的两层披露机制 | `packages/skill/tool-skill/src/index.ts` |
 | skill 的目录结构 | `.agents/skills/` 下已有项目可做模板 |
 | Agent Note 格式 | [`.agents/notes/README.md`](../../.agents/notes/README.md) |

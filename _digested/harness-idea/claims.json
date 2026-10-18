@@ -1,5 +1,5 @@
 {
-  "baseline": "46a7f68b0922371ce7144b668b90e377d8e799f4",
+  "baseline": "687f282e8625c6b8d11ff58211a90524be2e4317",
   "claims": [
     {
       "id": "C1",
@@ -25,37 +25,37 @@
       "claim": "quality-gates note 自称开发主力是 coding agent，并选择 gates over prose",
       "status": "原文",
       "sources": [
-        ".agents/notes/implemented/process/2026-06-11-quality-gates.md"
+        ".agents/notes/archived/process/2026-06-11-quality-gates.md"
       ],
-      "falsified_by": "该 note 原文被修改、归档或不再指向当前门禁体系"
+      "falsified_by": "该 note 原文被修改、删除或不再指向当前门禁体系"
     },
     {
       "id": "C4",
       "claim": "没有免费部落知识通道 → 知识必须外置，产物因此呈 agent 形状",
       "status": "推断",
       "sources": [
-        ".agents/notes/implemented/process/2026-06-11-quality-gates.md",
+        ".agents/notes/archived/process/2026-06-11-quality-gates.md",
         "_digested/harness-idea/01-role-and-substrate.md"
       ],
       "falsified_by": "找到同时期、同组合压力、但知识未外置且仍能由 agent 持续开发的仓库"
     },
     {
       "id": "C5",
-      "claim": "「推荐用 agent 探索代码库」是事后注脚，不是设计源头",
+      "claim": "dsh 的 agent 读者定位来自生产方式自述（quality-gates note），不是 architecture 文档的设计声明；`docs/architecture.md` 那句「推荐用 agent 探索代码库」已在 3f35ca7b5b 撤下",
       "status": "推断",
       "sources": [
         "docs/architecture.md",
-        ".agents/notes/implemented/process/2026-06-11-quality-gates.md"
+        ".agents/notes/archived/process/2026-06-11-quality-gates.md"
       ],
       "falsified_by": "找到更早的官方设计记录，把 agent 读者当作架构选择的源头"
     },
     {
       "id": "C6",
-      "claim": "门禁与 invariant 让关键规则可执行",
+      "claim": "关键规则由门禁与类型系统变成可执行检查；运行时 invariant 机制已整族退役（f028f25667 起没有任何幸存实例）",
       "status": "源码",
       "sources": [
         "scripts/run-gates.ts",
-        "packages/core/agent-loop/src/invariant.ts"
+        "AGENTS.md"
       ],
       "falsified_by": "关键规则长期只有 prose、没有红灯，且仍能在 CI 中存活"
     },
@@ -75,7 +75,7 @@
       "claim": "pnpm note 明确把生态熟悉度作为 package manager 选型理由",
       "status": "原文",
       "sources": [
-        ".agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md"
+        ".agents/notes/archived/process/2026-06-16-pnpm-over-yarn.md"
       ],
       "falsified_by": "pnpm note 被修订，删除了 agent 生态熟悉度作为理由"
     },
@@ -138,13 +138,13 @@
       "id": "N1",
       "description": "baseline 下 .agents/notes 的 .md 文件总数",
       "metric": "notes-md-total",
-      "expected": 2360
+      "expected": 2540
     },
     {
       "id": "N2",
       "description": "baseline 下 .agents/notes/implemented 的 .md 文件数",
       "metric": "notes-implemented-md",
-      "expected": 972
+      "expected": 588
     },
     {
       "id": "N3",
@@ -154,21 +154,9 @@
     },
     {
       "id": "N4",
-      "description": "baseline 下所有 packages 所有者包总数（packages/*/*/package.json）",
-      "metric": "invariant-total",
-      "expected": 307
-    },
-    {
-      "id": "N5",
-      "description": "baseline 下 publish ./invariant 的包数（rc.1 起 src/invariant.ts 存在即算；空/忽略 reporter 判 fail，见 packages/AGENTS.md）",
-      "metric": "invariant-published",
-      "expected": 38
-    },
-    {
-      "id": "N6",
-      "description": "baseline 下按政策省略 invariant companion 的包数（rc.1 废除带 \\\"No runtime invariant:\\\" 标记的空 companion，改为省略并写 README 原因）",
-      "metric": "invariant-omitted",
-      "expected": 269
+      "description": "baseline 下所有 packages 所有者包总数（packages/*/*/package.json，深度精确）",
+      "metric": "package-total",
+      "expected": 342
     }
   ]
 }

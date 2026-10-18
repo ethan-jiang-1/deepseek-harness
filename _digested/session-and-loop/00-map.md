@@ -1,6 +1,6 @@
 # Session and loop · 会话与驱动
 
-产品源码基线：`639ed01539`（`dsh-v0.2.0-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`0.1.7-rc.1` → `0.2.0-rc.2` 的增量见 [`_change_log/0009`](../_change_log/0009-0.1.7-rc.1-to-0.2.0-rc.2.md)。
+产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`），增量见 [`_change_log/0011`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
 
 ## 一句话
 
@@ -42,7 +42,7 @@
 
 fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条流派生；持久化按格式世代寻址，更旧的 log 在打开时经相邻链迁移到当前写者版本，机制见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。所以 loop 可以换：只要新驱动仍往同一条 log 写、仍发同一类 `session/event`，渲染面可以不动。
 
-> **持久化后端与格式世代**：SQLite 后端已由 **#3339**（`4553c9d957`）删除，session 持久化只剩 JSONL：`session-persistence-sqlite` 不再存在，`session-persistence-jsonl` 承担全部持久化职责（注意 #2698 是格式迁移 PR，当时仍在改 SQLite，不要把它记成删除者）。zstd 后端拥有拼接多帧容器，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。格式侧不再是一道拒收闸：`SESSION_FORMAT_VERSION` 是唯一手维护的写者权威（当前为 4，`packages/core/session/src/types.ts:89`），`packages/session/session-format*` 的 build-static catalog 提供从最早支持世代到 current 的完整相邻链；只对**更新**版本拒收并给出「升级 harness」的方向，**更旧**版本走迁移，跨历史格式边时未知事件比同版本读更严。世代、权威与读准备/写发布时序见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
+> **持久化后端与格式世代**：SQLite 后端已由 **#3339**（`4553c9d957`）删除，session 持久化只剩 JSONL：`session-persistence-sqlite` 不再存在，`session-persistence-jsonl` 承担全部持久化职责（注意 #2698 是格式迁移 PR，当时仍在改 SQLite，不要把它记成删除者）。zstd 后端拥有拼接多帧容器，以支持追加与批量恢复（`packages/session/session-persistence-jsonl/src/zstd.ts:2-3`）。格式侧不再是一道拒收闸：`SESSION_FORMAT_VERSION` 是唯一手维护的写者权威（当前为 4，`packages/core/session/src/types.ts:90`），`packages/session/session-format*` 的 build-static catalog 提供从最早支持世代到 current 的完整相邻链；只对**更新**版本拒收并给出「升级 harness」的方向，**更旧**版本走迁移，跨历史格式边时未知事件比同版本读更严。世代、权威与读准备/写发布时序见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
 
 ## Projection 必须化
 
@@ -72,6 +72,7 @@ fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条�
 | `packages/core/scope/` | （库） | per-agent 注册原语 |
 | `packages/preset/` | | 从 preset `cordis.yml` 组合 |
 | `packages/session/` | 持久化 seam | JSONL、projection、title、格式包组与世代迁移 |
+| `packages/session/working-directory/` | `ctx.workingDirectory` | 每个 Session 的持久工作目录：`workingDirectory` projection 状态 + session 事件落盘，模型侧入口是 `packages/session/tool-working-directory`（声明见 [`docs/persistence-changes/2026-09-13-working-directory.md`](../../docs/persistence-changes/2026-09-13-working-directory.md)） |
 | [`docs/agent-lifecycle.md`](../../docs/agent-lifecycle.md) | | 官方时序图 |
 | [`docs/subsystems/session.md`](../../docs/subsystems/session.md) | | session 语义 |
 | [`docs/subsystems/scope.md`](../../docs/subsystems/scope.md) | | scope 语义 |

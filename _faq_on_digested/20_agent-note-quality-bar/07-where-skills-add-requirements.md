@@ -10,7 +10,7 @@
 | 流程层 | `dsh-archive-agent-notes`、`dsh-find-simplifications`、`dsh-prose-standard`、`dsh-trim-cot-leakage` | 语义判断：结构合法之后，决定本身对不对 | 人 / agent 的语义 review |
 | 消费层 | `dsh-doc`、`dsh-code-review`、`dsh-pre-push-checks`、`dsh-create-upgrade-guide`、`docs/AGENTS.md` | 其他文档怎么引用 Note、review 查什么、理由写不下时倒到哪里 | review 与文档门禁 |
 
-**`.agents/skills/` 里没有一份「写 Agent Note」的 skill，这是分工不是遗漏**：可机械判定的部分已经变成 gate，不需要 skill；需要判断的部分才留在 skill 与 review 里。这正是 [`quality-gates` Note](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md) 记录的仓库立场。
+**`.agents/skills/` 里没有一份「写 Agent Note」的 skill，这是分工不是遗漏**：可机械判定的部分已经变成 gate，不需要 skill；需要判断的部分才留在 skill 与 review 里。这正是 [`quality-gates` Note](../../.agents/notes/archived/process/2026-06-11-quality-gates.md) 记录的仓库立场。
 
 ![Agent Note 质量要求的三层分工](./figures/ownership-layers.svg)
 
@@ -33,4 +33,4 @@
 
 ---
 
-*基线：工作树 `caf78ed639`，2026-10-08 实测；上游改动规则文件后需重新核对行号。*
+*源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）；上游改动规则文件后需重新核对行号。*

@@ -6,7 +6,7 @@ DSH 的 code review（代码评审）不是“机器查结构、人查语义”�
 
 > The report identifies paths and dirty layers but does not replace semantic review. [...] Prioritize correctness, lifecycle, security, and broken required behavior over style; a short review with one substantiated blocker is better than a list of nits.
 >
-> — DSH [`dsh-code-review` skill 的开篇](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-code-review/SKILL.md)。这里把 scope 工具、自动检查与语义判断明确分开。
+> — DSH [`dsh-code-review` skill 的开篇](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-code-review/SKILL.md)。这里把 scope 工具、自动检查与语义判断明确分开。
 
 ## 1. 三层证据不要互相冒充
 
@@ -40,7 +40,7 @@ Skill 是 guidance，不是完整 checklist；review 优先 correctness、lifecy
 - config、defaults、errors、wire fields、events 和 public behavior 同 diff 更新 owning README/JSDoc；
 - spine 或 capability seam 的 public types 同步 subsystem/type-equivalence owner；
 - registry contribution 具有 disposal evidence；
-- invariant companion 用独立观察比较 owned 关系，不用 service/method presence、plugin metadata、effect 或固定例子充数；没有可观察关系时省略 `./invariant` 接线并在 package README 记录原因，空 installer 会被 `verify-package-invariants` 拒绝；
+- 共享状态挂在 service 或实例上，不新增全局 `current` / `active` / `selection` 单例，也不新增 `Symbol.for` / `globalThis` / `window.__X__` 旁路；业务规则留在自己的包里，通过注册面或投影数据接入，不写进 runtime、controller、manager 或 API dispatch 层；
 - 作者运行覆盖 diff 的相关本地证据，CI 提供远端矩阵。
 
 ## 4. 高风险语义检查
@@ -69,9 +69,9 @@ Finding 要给出 defect、location、impact 和 evidence；局部问题放最�
 
 ## 证据入口
 
-- DSH [`dsh-code-review` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/skills/dsh-code-review/SKILL.md)：review scope、阻塞条件、语义维度和 finding 格式。
-- DSH [Defensive patterns](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/defensive-patterns.md)：生命周期、并发、subprocess 与 teardown 的高风险缺陷模式。
-- DSH [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/docs/testing.md)：测试实际能够建立什么证据，以及真实入口与负例要求。
-- DSH [Issue/PR policy](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.github/issue-management/policy.mjs)：`human-review policy` 的适用条件，不是 reviewer 身份规则。
-- DSH [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.github/pull_request_template.md)：提示 PR 作者呈现适用的 Issue 关联、摘要与已运行验证。
-- DSH [Quality gates Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.0-rc.2/.agents/notes/implemented/process/2026-06-11-quality-gates.md)：自动化检查的设计理由与能力边界。
+- DSH [`dsh-code-review` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-code-review/SKILL.md)：review scope、阻塞条件、语义维度和 finding 格式。
+- DSH [Defensive patterns](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/defensive-patterns/README.md)：按 artifact 分页的高风险缺陷模式——包接口、远端服务、客户端组件与状态、会话行为，以及生命周期、并发、subprocess 与 teardown。
+- DSH [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/testing.md)：测试实际能够建立什么证据，以及真实入口与负例要求。
+- DSH [Issue/PR policy](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.github/issue-management/policy.mjs)：`human-review policy` 的适用条件，不是 reviewer 身份规则。
+- DSH [PR template](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.github/pull_request_template.md)：提示 PR 作者呈现适用的 Issue 关联、摘要与已运行验证。
+- DSH [Quality gates Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/process/2026-06-11-quality-gates.md)：自动化检查的设计理由与能力边界。

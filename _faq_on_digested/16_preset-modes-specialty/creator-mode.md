@@ -37,7 +37,7 @@ Standard 不给它的理由写在组合测试里：`cordis_*` 工具执行模型
 - `cordis-composition-reference`——Loader patch 方言（insert/override by id/group/isolate/`!!js`）+ 可装插件包清单（doc-sync 门禁保鲜）；
 - `agent-experience`——面向模型表面的写作纪律（工具定义、技能与上下文加载设计；0009 起由 agent-preset 包共享给 Creator 模式）。
 
-成本控制是 [progressive disclosure Note](../../.agents/notes/implemented/architecture/2026-09-21-creator-skills-progressive-disclosure.md) 的主题：`SKILL.md` 只留过程、知识源次序和索引表（首载约 3.9 KB），recipe 拆进 `references/`、可拷贝 bundle 拆进 `templates/`，压在 tool-result pruner 的 8192 字符阈值之下；技能明确**允许**读源码，知识源次序是检查（`cordis_inspect_query`）→ 包 README（`Config.listConfigs` 解析出的 `packageDir`）→ built `lib/` 声明或 checkout 源码。对比被否决的方案：把创作文本放系统提示词是每轮都付费，技能目录按需加载。
+成本控制是 [progressive disclosure Note](../../.agents/notes/archived/architecture/2026-09-21-creator-skills-progressive-disclosure.md) 的主题：`SKILL.md` 只留过程、知识源次序和索引表（首载约 3.9 KB），recipe 拆进 `references/`、可拷贝 bundle 拆进 `templates/`，压在 tool-result pruner 的 8192 字符阈值之下；技能明确**允许**读源码，知识源次序是检查（`cordis_inspect_query`）→ 包 README（`Config.listConfigs` 解析出的 `packageDir`）→ built `lib/` 声明或 checkout 源码。对比被否决的方案：把创作文本放系统提示词是每轮都付费，技能目录按需加载。
 
 ## 创作成果怎么生效？
 

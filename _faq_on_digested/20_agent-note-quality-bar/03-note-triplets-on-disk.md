@@ -12,7 +12,7 @@
 .agents/notes/{生命周期}/{类型}/yyyy-mm-dd-topic-title.i18n.yaml ← 一致性记录
 ```
 
-真实例子（`implemented/feature/` 下的一篇）：
+真实例子（2026-09-16 的沙箱审批那篇，现已在 `archived/feature/` 下）：
 
 ```text
 2026-09-16-sandbox-same-mode.md
@@ -46,24 +46,31 @@
 
 - 两种语言**权威相等**：可以先用中文写再翻成英文，中文优先和英文优先一样合法；约束它们的是「必须说同一件事」。
 - **一对 = 三个兄弟文件**，同目录、无 locale 子目录、无交错双语文件。PR 从不只落一种语言。
-- `.i18n.yaml` 是**一致性记录**：逐标题段落记录英文块与中文块的哈希。改了一边就要带上另一边，然后重录：
+- `.i18n.yaml` 是**一致性记录**：活跃 Note 逐标题段落记录英文块与中文块的哈希。改了一边就要带上另一边，然后重录：
 
 ```sh
-pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-16-sandbox-same-mode.md
+pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-06-15-ptc.md
 ```
 
-sidecar 的实际内容长这样：
+活跃 Note 的 sidecar 实际内容长这样：
 
 ```yaml
-/agent-note-repeated-sandbox-modes-need-no-approval:
-  en: 85325770757063d8
-  zh: 9c55052551299ddf
-/agent-note-repeated-sandbox-modes-need-no-approval/decision:
-  en: b102948c4acbdd96
-  zh: 7220f043716d571c
+/agent-note-ptc-mode-the-model-writes-typescript-against-the-tool-registry:
+  en: 9506116227b22bd0
+  zh: c2d42a9f483cfbe3
+/agent-note-ptc-mode-the-model-writes-typescript-against-the-tool-registry/decision:
+  en: a1732e2b1b46cb39
+  zh: ddfc2bdcffa099a5
 ```
 
-键是标题 slug 路径，值是那一节中英两边**不同**的内容块哈希。门禁管一致性，不管翻译质量——「绿色哈希不等于翻译正确」是 code review 的活儿。
+键是标题 slug 路径，值是那一节中英两边**不同**的内容块哈希。归档件是另一套记录——内容冻结后不再逐节登记，只记两侧文件各自的 git blob 哈希，沙箱那篇归档后就是这个形态：
+
+```yaml
+2026-09-16-sandbox-same-mode.md: b7f817029dee32851df222c147ea09083043ee7d
+2026-09-16-sandbox-same-mode.zh.md: b0a67d8c04f091deaa992602b59d2fba26b1c2ae
+```
+
+两套记录都只管一致性，不管翻译质量——「绿色哈希不等于翻译正确」是 code review 的活儿。
 
 > 路径里的日期是主题**首次提出**的日期（以 git 历史为准），不是实现或归档日期。
 
@@ -120,9 +127,9 @@ does not intercept `node:timers/promises`, so the swap costs deterministic fast 
 | `## Problem`、`## Decision`、`## Alternatives considered` 等章节标题 | **翻译**（`## 问题`、`## 决策`、`## 考虑过的替代方案`） | 配对门禁按**英文**标题生成 slug 键，两侧标题数量必须相等 |
 | fenced code block、生成区域 | **两侧逐字相同** | 配对门禁 |
 
-最后一行是关键，也最反直觉：`.i18n.yaml` 的键是**英文侧标题的 slug 路径**，形如 `/{H1 标题}/{h2 标题}`（真实值：`/agent-note-repeated-sandbox-modes-need-no-approval/decision`），但被哈希的内容块来自两侧各自的文字——[`translation-brief.ts:125`](../../scripts/translation-brief.ts) 写明了为什么不能拿标题文字对齐：**「Depth only: heading TEXT is translated across a pair, so it cannot participate in cross-language alignment.」**
+最后一行是关键，也最反直觉：`.i18n.yaml` 的键是**英文侧标题的 slug 路径**，形如 `/{H1 标题}/{h2 标题}`（真实值：`/agent-note-ptc-mode-the-model-writes-typescript-against-the-tool-registry/decision`），但被哈希的内容块来自两侧各自的文字——[`translation-brief.ts:125`](../../scripts/translation-brief.ts) 写明了为什么不能拿标题文字对齐：**「Depth only: heading TEXT is translated across a pair, so it cannot participate in cross-language alignment.」**
 
-真实对照（同一篇 Note 的两种语言）：
+真实对照（同一篇 Note 的两种语言；它归档后，两侧在 `Status:` 下各多一行同值的 `Archived: 2026-09-30`）：
 
 ```text
 英文                                        中文

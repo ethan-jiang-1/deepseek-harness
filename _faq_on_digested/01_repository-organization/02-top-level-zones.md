@@ -1,6 +1,6 @@
 # 02 · 顶层目录按什么边界划分
 
-源码核验基线：DeepSeek Harness `dsh-v0.2.0-rc.2`，commit `639ed015397290b3745d163aafe02ffee4aa3f84`（0009 复核）。
+源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）。
 
 ## 总图
 
@@ -20,6 +20,8 @@
 
 `packages/` 是主产品层。绝大多数功能修改最终落在这里，但准确落点仍由能力所有者和角色决定，不是看到一个功能就新建 group。（0009 跨度事实：新增 `packages/telemetry/` 组承载共享的 Cordis OTel 上报通道；`packages/llm/` 把 DeepSeek 凭据拆成 `llm-deepseek-account` / `llm-deepseek-api-key`，并新增会话中途的动态工具更新投影，见 `.agents/notes/implemented/architecture/2026-09-20-dynamic-tool-updates.md`；`packages/client/` 新增 `shortcuts` + `ui-shortcuts`（快捷键编辑重做与侧栏提示）与 `ui-settings-session-log`（Session Log 上传偏好设置页）；`packages/util/` 新增 `code-language`（代码高亮语言表统一的数据源）；审批解释文案本地化（#4793）与按请求凭据区分欠费提示/充值入口（#4858）也属本跨度用户可见面；组清单以 [`packages/README.md`](../../packages/README.md) 为准。）
 
+0011 跨度改的是 `packages/` 的分组口径本身：`hooks/`、`webhook/`、`runtime-diagnostics/` 三组解散，全部可选包迁入 `packages/experimental/`。按 `packages/<group>/<pkg>/package.json` 的深度精确口径计，包总数 316 → **342**、组数 55 → **52**、`packages/experimental/` 21 → **47** 包（本跨度删除 13 包、新增 39 包，其中 27 个落在 `packages/experimental/`）。计数必须用该口径：`git ls-files 'packages/*/*/package.json'` 会让 `*` 跨 `/` 匹配到 fixture 与 template，在 NEW 树上多算 9 个包。
+
 `apps/cli` 的职责是解析启动模式、组合 profile、提供进程级启动事实和收敛 shutdown；`apps/web` 只寻找 DOM mount point 并启动 client shell；`apps/desktop` 是 Electron 壳，`apps/desktop-host` 只负责组合并启动 `desktop` profile。入口保持薄，才能让 Web、Headless、SDK（含 `sdk-minimal`）与 ACP 复用相同的产品 packages——桌面是同一论点的第 5 个例证，它复用的正是 Web 那份 client 产物。
 
 桌面也是 `apps/` 里唯一**不**经 `dsh --profile` 启动的入口：CLI 用 `rejectElectronProfile()` 明确拒绝 `desktop` 这个 profile 名（`apps/cli/src/args.ts:83-86`），上游 [`docs/architecture.md`](../../docs/architecture.md) 也把桌面单列在 `## Desktop application`（`:51-55`），而不是并进 `## Application launch`（`:43-49`）。所以「`apps/` 保留最终可执行入口」这条描述仍然成立，但它不等于「`apps/` 里的每个入口都由 `dsh --profile` 启动」。（0009 跨度补充：桌面现自带一份经 Electron 可执行文件以 Node 模式运行的 CLI launcher，仅在应用退出后管理 `desktop` profile 与插件，不承担 profile 启动；见 `.agents/notes/implemented/feature/2026-09-27-desktop-cli-runtime.md`。）
@@ -32,11 +34,14 @@
 |------|------|----------|
 | `packages/bundle/` | 可发布、可安装的 profile patch 层；web-app 的 `presets/*.patch.yml` 携带 shipped preset 声明 | 位于 `packages/`，因为 bundle 自身也是 npm package |
 | `packages/preset/` | per-session agent 组合：`agent-preset/`（声明解析）+ `agent-preset-registry/`（`ctx.agentPresets` 注册表） | 决定“这个 session 的 agent 由哪些行组成”，不是进程级 profile；0.1.7 线起不再持 yml 目录森林 |
-| `packages/experimental/schedule-bundle` | 0.2.0 线起新增的可选 bundle：把 `time-context` + `schedule` + `ui-schedule` 三行作为整组带回 shipped Web 组合（出厂默认关闭，Web Plugins 页或 profile `dsh.profile.bundles` 启用；`OPTIONAL_BUNDLES` 见 `packages/boot/app-boot/src/profile.ts`） | 旧 `apps/cli/config/examples/schedule/` overlay 已随此退役；Schedule 行默认不进每个 root Agent 请求 |
-| `apps/cli/config/examples/` | 随产品出货的可选 overlay（GitHub review webhook、memory MCP 服务；旧 `cordis` overlay 已随 0.1.7 线 cordis 变更类工具退役，旧 `schedule` overlay 已随 0.2.0 线 Schedule 转 optional bundle 退役） | 是产品资产而非测试 fixture；用 `dsh --profile <name> --patch <该文件>` opt-in，永不进默认 profile |
+| `packages/experimental/` | 全部可选能力的归集组（NEW 树 47 包）：`hooks/` 与 `webhook/` 两组的包在本跨度整族迁入，`packages/experimental/README.md#status` 是组内定位的权威 | experimental 描述成熟度，optional 描述用户是否显式选择，两者独立：组内定位是 `evaluated capabilities without a product-support commitment`，组外的包需要产品用途或 `scripts/product-package-policy.ts` 的显式分类 |
+| `OPTIONAL_BUNDLES`（`packages/boot/app-boot/src/profile.ts`） | 随安装出货、默认关断的可选 bundle 清单，本跨度 4 → 12 条 | 与 `packages/boot/app-boot/src/official-bundle-packages.ts` 的 `ON_DEMAND_BUNDLES`（按需安装档位，本跨度 2 条）不是一个档位；两者都不描述成熟度 |
+| `apps/cli/config/examples/` | 随产品出货的可选 overlay（GitHub review webhook、memory MCP 服务；旧 `cordis` overlay 已随 0.1.7 线 cordis 变更类工具退役，旧 `schedule` overlay 已随 0.2.0 线退役） | 是产品资产而非测试 fixture；用 `dsh --profile <name> --patch <该文件>` opt-in，永不进默认 profile |
 | `snapshots/` | committed session JSONL 作为回放输入与期望输出的场景 | 只放 session 驱动的用例；其它期望输出留在各自 owner |
 
 bundle 的 `cordis.patch.yml` 解决“默认装配是什么”，`apps/cli/config/examples/*/cordis.yml` 解决“这次额外接哪几行”。两者都是配置层，都不该沉淀可复用实现：overlay 里长出的可复用逻辑要提取回 `packages/`，让它获得自己的合同、测试、覆盖率和发布边界。
+
+Schedule 在本轮换了归属：`packages/experimental/schedule-bundle` 退役，`schedule` 与 `ui-schedule` 两行改为直接挂在 Web 组合里（`packages/bundle/web-app/cordis.patch.yml:139-140` 的 `schedule` row、`:398-399` 的 `ui-schedule` row），并新增 `packages/schedule/tool-schedule`。所以「Schedule 是可选出货、默认关断的 bundle」这条描述已过期。
 
 ## 跨语言与平台发行
 
@@ -61,7 +66,7 @@ bundle 的 `cordis.patch.yml` 解决“默认装配是什么”，`apps/cli/conf
 
 文档实行“一事实一归属”。高层架构只说明顺序、职责和扩展点；类型与事件语义属于 `docs/subsystems/`；package 消费合同属于 package README；生成 catalog 由 scripts 从源码再生；网站只投影这些来源。
 
-根 [`AGENTS.md`](../../AGENTS.md) 是顶层区域的文字总览。它的 `packages/` 布局块曾经有两处过期条目——列出的 `self-modification/` 与 `support/` 并不存在，实际归属是 `packages/extensions/`（自省与运行时挂载工具面）和 `packages/test-support/`（跨 package 测试基础设施）；该缺口已就地修正（根 `AGENTS.md:50`、`:70`，0009 复核重钉行号，原 0008 时点为 `:48`、`:68`），组清单始终以 [`packages/README.md`](../../packages/README.md) 为准。
+根 [`AGENTS.md`](../../AGENTS.md) 是顶层区域的文字总览。它的 `packages/` 布局块曾经有两处过期条目——列出的 `self-modification/` 与 `support/` 并不存在，实际归属是 `packages/extensions/`（自省与运行时挂载工具面）和 `packages/test-support/`（跨 package 测试基础设施）；该缺口已就地修正（根 `AGENTS.md:49`、`:68`，0011 复核重钉行号，原 0008 时点为 `:48`、`:68`，0009 时点为 `:50`、`:70`），组清单始终以 [`packages/README.md`](../../packages/README.md) 为准。
 
 ## Workspace 与非 Workspace
 

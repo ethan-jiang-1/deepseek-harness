@@ -16,8 +16,8 @@ dsh 把这些路径做成**参与阶梯（participation ladder）**，而不是�
 
 > **seam** — a *swappable capability* with three roles: a **Service Definition** (…never a TypeScript `interface`), one or more **Service Providers**, and one or more **Consumers** that inject the service.
 >
-> —— `docs/glossary.md:9`（基线 `46a7f68b09…`）
-| L3 loop / session 合同 | `agent-loop`、`SessionEventMap` | 改驱动、加持久事件、改请求头语义 | loop 义务、日志投影、版本机制 | invariant、双 SDK 投影、snapshot、architecture 同步 |
+> —— `docs/glossary.md:9`（基线 `687f282e86…`）
+| L3 loop / session 合同 | `agent-loop`、`SessionEventMap` | 改驱动、加持久事件、改请求头语义 | loop 义务、日志投影、版本机制 | 门禁、双 SDK 投影、snapshot、architecture 同步 |
 
 阶梯的要点不是「层级越高越难」，而是**每层都有明确的升级条件**：L0 解决不了才去 L1；扩展点表达不了才设计 seam；只有改变循环合同本身才改 L3。这正是 [`03`](./03-paved-road.md) 的四问路由在参与者视角的投影。
 
@@ -32,7 +32,7 @@ Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以
 
 > Give one session a different capability set | compose an agent preset; a service row there needs an `isolate` realm.
 >
-> —— `docs/architecture.md:145`（基线 `46a7f68b09…`）
+> —— `docs/architecture.md:146`（基线 `687f282e86…`）
 
 ## 部署时替换是系统能力，不是源码习惯
 
@@ -40,15 +40,15 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 > A running `dsh` is a plugin tree composed at boot from ordered layers.
 >
-> —— `docs/architecture.md:17`（基线 `46a7f68b09…`）
+> —— `docs/architecture.md:15`（基线 `687f282e86…`）
 
-> Layers apply to an empty entry list in this order: each bundle in the profile's listed order, then the profile's `cordis.patch.yml`, then the home-level one, then any `--patch` overlay. A patch targets a row by id and replaces its whole config, or inserts new rows.
+> Layers apply to an empty entry list: the profile's ordered bundles, its `cordis.patch.yml`, the home patch, then `--patch` overlays. A patch targets a row by id and replaces its whole config, or inserts new rows.
 >
-> —— `docs/architecture.md:27`（基线 `46a7f68b09…`）
+> —— `docs/architecture.md:25`（基线 `687f282e86…`）
 
 - 配置从空 entry list 开始，按 Bundle → Profile patch → home patch → `--patch` 的顺序叠加；顺序就是数据。
 - 后层按 entry id 整份替换 config，或插入新行。
-- `dsh --dump-config` 输出的不是「可能加载什么」，而是**这台机器实际会挂什么**；dump 与 boot 共用同一 `applyEntryPatches`（官方落点：`docs/architecture.md:36` 的 dump 命令与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
+- `dsh --dump-config` 输出的不是「可能加载什么」，而是**这台机器实际会挂什么**；dump 与 boot 共用同一 `applyEntryPatches`（官方落点：`docs/architecture.md:34` 的 dump 命令与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
 - 用户 patch 的 HMR 是事务性的：候选配置失败时保留上一棵好树（[`vendor/README.md`](../../vendor/README.md) 本地修改清单第 8 条：restores the previous plugin or config when candidate application fails）。
 
 因此静态 import 图只能说明「可能加载什么」，最终配置树才说明「实际是什么」。参与 L0 的最低可核查动作就是读 `dump-config`，而不是读源码目录猜组合。
@@ -57,9 +57,9 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 四层阶梯只回答「从哪扇门进」。进了门之后，非平凡贡献还有一条制度化的生命周期。这条链可以从 DSH 的 `.agents/notes/README.md`、`docs/AGENTS.md`、`docs/testing.md`、`.github/ISSUE_TEMPLATE/` 与 `.github/pull_request_template.md` 中直接重建，harness-idea 只引用判断，不重复机制：
 
-> **Apply the Agent Note creation criteria in `.agents/notes/README.md`:** create a note only when a decision needs durable rationale; mechanical/local edits are exempt.
+> **Apply the Agent Note creation criteria.** Mechanical/local edits are exempt, including local UI changes; keep existing owning notes accurate.
 >
-> —— `docs/AGENTS.md:39`（基线 `46a7f68b09…`）
+> —— `docs/AGENTS.md:41`（基线 `687f282e86…`）
 
 ```text
 Issue 意图与预期行为（验收证据在 PR 的 Testing 节）
@@ -88,7 +88,7 @@ Issue 意图与预期行为（验收证据在 PR 的 Testing 节）
 
 ## 证据入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)（第 17、27、36 行；profile / bundle / patch 与 dump 命令）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 15、25、34 行；profile / bundle / patch 与 dump 命令）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（L1 范本）
 - [`docs/cookbook/adding-a-package.md`](../../docs/cookbook/adding-a-package.md)（L2/L3 涉及的新包与同步义务）
@@ -97,4 +97,4 @@ Issue 意图与预期行为（验收证据在 PR 的 Testing 节）
 - [`../../packages/AGENTS.md`](../../packages/AGENTS.md)（包级参与规则）
 - [`../../docs/testing.md`](../../docs/testing.md)（第 35、37-41、53-55 行；完成标准与验证政策）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期）
-- [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；seam / scope / preset 术语）
+- [`docs/glossary.md`](../../docs/glossary.md)（第 5、9 行；seam / scope / preset 术语）

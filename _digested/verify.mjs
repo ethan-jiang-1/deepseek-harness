@@ -468,7 +468,7 @@ function checkSvg(path, source) {
   if (stack.length > 0) report(path, undefined, `unclosed XML tag <${stack.at(-1)}>`)
 }
 
-const EXPECTED_BASELINE = '46a7f68b0922371ce7144b668b90e377d8e799f4'
+const EXPECTED_BASELINE = '687f282e8625c6b8d11ff58211a90524be2e4317'
 const claimsPath = resolve(corpusRoot, 'harness-idea', 'claims.json')
 
 /**
@@ -579,9 +579,7 @@ const claimMetrics = new Set([
   'notes-md-total',
   'notes-implemented-md',
   'architecture-extension-rows',
-  'invariant-total',
-  'invariant-published',
-  'invariant-omitted',
+  'package-total',
 ])
 
 function gitOutput(args) {
@@ -610,29 +608,6 @@ function gitPackageOwners(commit) {
     .filter(line => /^packages\/[^/]+\/[^/]+\/package\.json$/.test(line))
 }
 
-/**
- * Invariant companion owners split by publish / omit at a commit.
- * rc.1 起政策改为「只在有独立可观察关系时 publish ./invariant，否则省略」，
- * 带 "No runtime invariant:" 标记的空 companion 已被废除（见
- * .agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md）。
- * 空/忽略 reporter 由 verify-package-invariants 判 fail，因此 publish 即真实。
- */
-function invariantCompanionCounts(commit) {
-  const manifests = gitPackageOwners(commit)
-  const publishedPaths = new Set(
-    gitOutput(['ls-tree', '-r', '--name-only', commit, 'packages'])
-      .split('\n')
-      .filter(line => line.endsWith('/src/invariant.ts'))
-  )
-  const counts = { total: manifests.length, published: 0, omitted: 0 }
-  for (const manifest of manifests) {
-    const sourcePath = `${manifest.replace(/package\.json$/, '')}src/invariant.ts`
-    if (publishedPaths.has(sourcePath)) counts.published += 1
-    else counts.omitted += 1
-  }
-  return counts
-}
-
 function computeClaimMetric(metric) {
   if (metric === 'notes-md-total') {
     return gitTrackedLines(EXPECTED_BASELINE, '.agents/notes')
@@ -656,14 +631,7 @@ function computeClaimMetric(metric) {
     }
     return count
   }
-  if (metric === 'invariant-total'
-    || metric === 'invariant-published'
-    || metric === 'invariant-omitted') {
-    const counts = invariantCompanionCounts(EXPECTED_BASELINE)
-    return metric === 'invariant-total' ? counts.total
-      : metric === 'invariant-published' ? counts.published
-        : counts.omitted
-  }
+  if (metric === 'package-total') return gitPackageOwners(EXPECTED_BASELINE).length
   return undefined
 }
 

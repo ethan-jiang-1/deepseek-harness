@@ -6,19 +6,19 @@
 
 > Update package README and JSDoc contracts in the same commit as behavior, and verify them against code with dsh-prose-standard.
 
-来源：`packages/AGENTS.md:26`
+来源：`packages/AGENTS.md:27`
 
 > The owning subsystems page updates in the same change that reshapes a documented type.
 
-来源：`docs/AGENTS.md:43`
+来源：`docs/AGENTS.md:44`
 
 也就是说，`docs/`、package README、JSDoc 是在这里作为**结果**被写回。
 
 ## 2. docs 只写 now，不写过程
 
-> **Document current state.** Name live mechanisms, not PRs, commits, stack positions, or "previously/now/no longer".
+> **Document current state.** Keep history in commits, PRs, Agent Notes, postmortems, or scoped persistence records. Other prose names live mechanisms, not changes or stack positions.
 
-来源：`docs/AGENTS.md:38`
+来源：`docs/AGENTS.md:40`
 
 所以 docs 更新时，写的是实现后的当前机制，不写“我们以前怎样，现在改成怎样”。
 
@@ -50,15 +50,15 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
   + package README
   + architecture / subsystems
   + generated catalogs
-  + tests / snapshots / invariants
+  + tests / snapshots
 ```
 
 这些都是同一变更的多个面，不是依次补交的多个 PR。`docs/` 在这里作为实现后的当前合同被写回。
 
 ## 证据入口
 
-- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 26-28 行
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 39、43 行
+- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 27-29 行
+- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 40、44 行
 - [`docs/testing.md`](../../docs/testing.md) 第 27-55 行
 - [`docs/tool-catalog.md`](../../docs/tool-catalog.md) 第 1-2 行
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) 第 1-2 行

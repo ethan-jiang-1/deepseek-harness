@@ -1,6 +1,6 @@
 # 04 · 从入口和配置看目录怎样变成运行时
 
-源码核验基线：DeepSeek Harness `dsh-v0.2.0-rc.2`，commit `639ed015397290b3745d163aafe02ffee4aa3f84`（0009 复核）。
+源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）。
 
 ## 总链路
 
@@ -153,7 +153,9 @@ base bundle 可以先插入全局工具，web-app bundle 再禁用其中部分�
 | agent preset | 一个 session/agent 的 scoped composition | app shipped roots 或用户 preset roots | 可随部署/插件分发 |
 | shipped overlay | 随产品出货的一份可选组合叶子 | `apps/cli/config/examples/<name>/cordis.yml` | 产品资产，永不进默认 profile |
 
-顶层 `examples/` 与 `packages/examples/` 都已退役；要读“一份完整组合长什么样”，现在看 `apps/cli/config/examples/` 的两个 overlay 目录（`github-review` 与 `mcp-memory`——内含 `engram` / `mcp-reference-memory` / `memorix` 三份；旧 `cordis` overlay 已随 0.1.7 线 cordis 变更类工具退役，旧 `schedule` overlay 已随 0.2.0 线 Schedule 转 optional bundle 退役——见 `packages/experimental/schedule-bundle/`），以及 shipped preset 声明 `packages/bundle/web-app/presets/{standard,ptc,minimal,cordis}.patch.yml`（0.1.7 线起 preset 重设计：`packages/preset/agent-presets/` yml 森林已删，preset 根改为 `agent-preset` + `agent-preset-registry`）。
+顶层 `examples/` 与 `packages/examples/` 都已退役；要读“一份完整组合长什么样”，现在看 `apps/cli/config/examples/` 的两个 overlay 目录（`github-review` 与 `mcp-memory`——内含 `engram` / `mcp-reference-memory` / `memorix` 三份；旧 `cordis` overlay 已随 0.1.7 线 cordis 变更类工具退役，旧 `schedule` overlay 已随 0.2.0 线退役），以及 shipped preset 声明 `packages/bundle/web-app/presets/{standard,ptc,minimal,cordis}.patch.yml`（0.1.7 线起 preset 重设计：`packages/preset/agent-presets/` yml 森林已删，preset 根改为 `agent-preset` + `agent-preset-registry`）。
+
+0011 跨度把可选 bundle 从 4 条扩到 12 条（`packages/boot/app-boot/src/profile.ts` 的 `OPTIONAL_BUNDLES`：`session-search`、`ralph-bundle`、`terminal-bundle`、`badge-skill-bundle`、`session-titles-bundle`、`agent-team-profile`、`voice-input-bundle`、`cot-translation-bundle`、`auto-review`、`inspector-profile`、`plugin-market-bundle`、`tool-worktree`）。其中 `experimental/schedule-bundle` 退役——Schedule 不再是 bundle，而是把 `schedule`（`packages/bundle/web-app/cordis.patch.yml:139-140`）与 `ui-schedule`（`:398-399`）两行直接挂进 Web 组合，并新增 `packages/schedule/tool-schedule`。另有一个独立档位 `ON_DEMAND_BUNDLES`（`packages/boot/app-boot/src/official-bundle-packages.ts`，2 条：`subagent-claude-code`、`subagent-codex`），它按需安装，与随安装出货、默认关断的 `OPTIONAL_BUNDLES` 不是一回事。
 
 ## 为什么 `--dump-config` 很重要
 
@@ -164,7 +166,7 @@ base bundle 可以先插入全局工具，web-app bundle 再禁用其中部分�
 - 用户 patch 是否成功覆盖 bundle 默认值。
 - 两个 bundle 对同一稳定 row id 的作用顺序。
 
-dump 仍不是活插件图：它只合成 entry rows，不执行插件生命周期、不等待 inject、不观察运行时 HMR，也不证明 service 成功发布。要确认活关系，还需启动、日志、runtime inspect 或相应 invariant/test。
+dump 仍不是活插件图：它只合成 entry rows，不执行插件生命周期、不等待 inject、不观察运行时 HMR，也不证明 service 成功发布。要确认活关系，还需启动、日志或 runtime inspect（0011 跨度起不再有运行时 invariant 兜底：`@deepseek-ai/dsh-invariants` 与各包的 `./invariant` companion 已整族退役，见 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)）。
 
 ## 配置问题应该从哪里读
 

@@ -4,7 +4,7 @@
 
 ## 问题是怎么冒出来的
 
-我最初的判断是：**「快照是 DSH 主仓的内政，插件仓不需要这个。」** 理由是 `snapshots/` 归主仓语料所有、`pnpm run test:snapshot` 是根脚本、那套 `snapshot.yml` 守卫服务的是 210 个场景的语料治理。
+我最初的判断是：**「快照是 DSH 主仓的内政，插件仓不需要这个。」** 理由是 `snapshots/` 归主仓语料所有、`pnpm run test:snapshot` 是根脚本、那套 `snapshot.yml` 守卫服务的是 250 个场景的语料治理。
 
 这个判断被质疑了：**「你确认开发插件完全不需要这个东西吗？这个不是可以做成一个 trajectory 呀，还是 bug reproduce 什么东西的吗？」**
 
@@ -22,7 +22,7 @@
 ## 结论先说
 
 - **主仓需要它，是因为它买到了一样别处买不到的东西**：完整装配后的真实转录——模型实际收到什么、说了什么、落了什么盘——并且能在无 key 的 CI 里逐字节比对。这不是单测、e2e 或覆盖率能替代的（有一个 178 个单测全绿、100% 行覆盖、生产完全不能用的插件作为起点）。
-- **插件仓能用它，而且正是用在 trajectory 与 bug 复现上**。`@deepseek-ai/dsh-llm-replay` 的 `next` 通道发布版本就是本基线 `0.2.0-rc.2`；它接受**未做投影的原始运行日志**（只要每行要么都带 `seq`/`time`、要么都不带），所以「跑一次真会话 → 把日志提交进仓 → 以后无 key 重放」这条路是通的。
+- **插件仓能用它，而且正是用在 trajectory 与 bug 复现上**。`@deepseek-ai/dsh-llm-replay` 的 `next` 通道发布版本随本基线推进到 `0.2.1-rc.2`（本轮 registry 不可达、未复测，按本基线 `package.json` 版本推定）；它接受**未做投影的原始运行日志**（只要每行要么都带 `seq`/`time`、要么都不带），所以「跑一次真会话 → 把日志提交进仓 → 以后无 key 重放」这条路是通的。
 - **它对插件开发值三样东西**：trajectory 回归（组装转录的固定基线）、bug 复现（固定流之后仍复现的才是产品 bug）、model-visible 钉住（`request/header` 就是断言点）。**但它有一条上限**：它是变更探测器，不是正确性 oracle——postmortem 0002 里快照套件曾为一次真实回归背书；校准后，主仓四篇 postmortem 里只有一篇把它当作组装回归 pin。完整账单见 [04](./04-what-its-worth.md)。
 - **搬不出去的是语料治理，不是机制**。顶层 `snapshots/` 的所有权、四面分工、corpus policy、格式世代候选名单、`session-snapshot` 的语料级守卫，都服务「一个仓库集中维护几百个场景」这个规模；插件仓照抄只会得到一套没人维护的制度。
 - **所以推荐不是「用」或「不用」，而是一条阶梯**：前四阶（导出守卫 → 行为 spec → HMR → REAL composition）默认全做，第五阶「行为回归证据面」（会话回放或渲染期望）按触发条件启用；落点与五条不变量见 [05](./05-plugin-repo-organization.md)。
@@ -30,8 +30,8 @@
 ## 范围与边界
 
 - 本文回答的是「这套机制是什么、为什么存在、能不能移植、值多少、插件仓该怎么摆」，**不重写** `_digested/test-strategy/` 已有的机制整理：快照层的分层与车道见 [04-snapshot-machinery](../../_digested/test-strategy/04-snapshot-machinery.md)，插件测试的五个台阶见 [08-plugin-testing](../../_digested/test-strategy/08-plugin-testing.md)，真实插件的测试组合解剖见 [09-plugin-testing-playbook](../../_digested/test-strategy/09-plugin-testing-playbook.md)，插件 PR 的最小证据集见 [10-plugin-testing-checklist](../../_digested/test-strategy/10-plugin-testing-checklist.md)，快照机制对插件仓暴露的一手事实（发布包、夹具双接受、接线语义、git 卫生、postmortem 校准）见 [11-snapshot-external-face](../../_digested/test-strategy/11-snapshot-external-face.md)。本文补的是 digest 不承载的部分：**外部仓的实践校准、组织方案与价值判断**。
-- **源码核验基线**：本仓库工作树 `187ad35dac677485653be1847d0aac808dde42a1`（2026-10-08）。所有行号以该工作树为准；`_faq_on_digested/00-index.md` 声明的运行时基线 `dsh-v0.2.0-rc.2`（`639ed01539`）在本篇用于行为结论，两者在本轮未观察到冲突。
-- **npm 版本**：`@deepseek-ai/dsh-llm-replay` 与 `@deepseek-ai/dsh-session-snapshot` 的 `next` dist-tag 实测为 `0.2.0-rc.2`，与本基线一致；`latest` 通道停在更早的 `0.0.1-rc.1` / `0.1.2-alpha.2`。装包时用 `@next`（或与你所用 CLI 相同的版本），不要用 `latest`。
+- **源码核验基线**：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（2026-10-18）。所有行号以该工作树为准；本轮的语料读数（250 个场景、1675 个常规文件）也在该树上重测。
+- **npm 版本**：`@deepseek-ai/dsh-llm-replay` 与 `@deepseek-ai/dsh-session-snapshot` 的 `next` dist-tag 上轮实测为 `0.2.0-rc.2`；**本轮 registry 不可达、未复测**，只可按本基线 `package.json` 版本 `0.2.1-rc.2` 推定，需下次联网时实测复核。`latest` 通道停在更早的 `0.0.1-rc.1` / `0.1.2-alpha.2`（同为上轮读数）。装包时用 `@next`（或与你所用 CLI 相同的版本），不要用 `latest`。
 - 本仓库的 git 克隆是**浅克隆**（`.git/shallow` 里有 158 个边界提交，边界落在 2026-07-30 到 8 月下旬之间），边界之外的历史无法核对；早期决策只能引用 Agent Note 与文档，这一点在 [reference.md](./reference.md) 的「证据薄弱处」单独列出。
 - 六张图（`figures/*.svg`）是本文的解释件，不是新证据：图里的每个事实都能在正文或 [reference.md](./reference.md) 找到出处。
 

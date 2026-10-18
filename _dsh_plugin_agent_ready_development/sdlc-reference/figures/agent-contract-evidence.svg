@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="900" viewBox="0 0 1120 900" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title id="title">Agent 契约的三件资产与原文位置</title>
-  <desc id="desc">模型只占不确定边界。验收固定看见的请求、可回放的会话和外部世界，每件资产标明 dsh-v0.2.0-rc.2 上的原文。真模型冒烟、命令路由、语义评审、批准分数和 goal 相位各自回答不同问题。</desc>
+  <desc id="desc">模型只占不确定边界。验收固定看见的请求、可回放的会话和外部世界，每件资产标明 dsh-v0.2.1-rc.2 上的原文。真模型冒烟、命令路由、语义评审、批准分数和 goal 相位各自回答不同问题。</desc>
   <rect width="1120" height="900" rx="6" fill="#fafafa"/>
   <text x="560" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#172033">Agent 契约证据：三件资产，以及去哪份原文核对</text>
-  <text x="560" y="58" text-anchor="middle" font-size="12" fill="#667085">基线 dsh-v0.2.0-rc.2。卡片第二段是权威文件，不是本页的转述。</text>
+  <text x="560" y="58" text-anchor="middle" font-size="12" fill="#667085">基线 dsh-v0.2.1-rc.2。卡片第二段是权威文件，不是本页的转述。</text>
 
   <rect x="32" y="78" width="1056" height="84" rx="8" fill="#edf2f7" stroke="#94a3b8"/>
   <text x="560" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#334155">不确定边界：只 mock LLM adapter、网络、时钟；下游用真实现</text>
@@ -15,11 +15,11 @@
   <line x1="56" y1="258" x2="348" y2="258" stroke="#8ab0d2"/>
   <text x="202" y="284" text-anchor="middle" font-size="11" font-weight="700" fill="#54748f">原文</text>
   <text x="202" y="306" text-anchor="middle" font-size="12" fill="#244e73">docs/architecture.md#session-log</text>
-  <text x="202" y="334" text-anchor="middle" font-size="11" font-weight="700" fill="#54748f">运行时比对</text>
-  <text x="202" y="356" text-anchor="middle" font-size="12" fill="#244e73">agent-loop/src/invariant.ts</text>
-  <text x="202" y="380" text-anchor="middle" font-size="11" fill="#54748f">只检查 loop 构建的 llm/stream</text>
-  <text x="202" y="408" text-anchor="middle" font-size="12" fill="#244e73">messages 必须等于 deriveMessages()</text>
-  <text x="202" y="444" text-anchor="middle" font-size="12" fill="#244e73">新的模型可见输入要有 session event</text>
+  <text x="202" y="334" text-anchor="middle" font-size="11" font-weight="700" fill="#54748f">现行约束</text>
+  <text x="202" y="356" text-anchor="middle" font-size="12" fill="#244e73">根 AGENTS.md 的 standing order</text>
+  <text x="202" y="380" text-anchor="middle" font-size="11" fill="#54748f">没有运行时比对机制</text>
+  <text x="202" y="408" text-anchor="middle" font-size="12" fill="#244e73">新的模型可见输入要有 session event</text>
+  <text x="202" y="440" text-anchor="middle" font-size="11" fill="#54748f">靠 review 与 recorded-session 复核</text>
 
   <rect x="390" y="182" width="340" height="292" rx="10" fill="#e8f5ed" stroke="#58a36d"/>
   <text x="560" y="214" text-anchor="middle" font-size="16" font-weight="700" fill="#245d35">2 · 可回放的会话</text>

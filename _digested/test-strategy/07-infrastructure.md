@@ -11,7 +11,7 @@
 | 包 | 一句话 | 关键契约 |
 |---|---|---|
 | `session-snapshot` | 快照层 owning 工具 | 封闭 manifest、类型化身份重绘、normalizer、workspace 比较、fixture 守卫、四协议适配器；包入口 import vitest，只能在 vitest 内用（[04](./04-snapshot-machinery.md)） |
-| `agent-loop-testkit` | AgentLoop 依赖栈装配 | `mountAgentLoopTestDependencies()` 按固定顺序挂六服务（LLM→会话→投影注册表→系统提示词→工具注册表→agent 注册表）、**停在 AgentLoop 之前**（调用方控制 loop 加载）；不挂任何 LLM 适配器 |
+| `agent-loop-testkit` | AgentLoop 依赖栈装配 | `mountAgentLoopTestDependencies()` 按固定顺序挂六服务（LLM→会话→投影注册表→系统提示词→工具注册表→agent 注册表），`options.workingDirectory` 打开时在系统提示词与工具注册表之间追加 `FsLocal`+`WorkingDirectory`（新 `ctx.workingDirectory` seam 的测试夹具）、**停在 AgentLoop 之前**（调用方控制 loop 加载）；不挂任何 LLM 适配器 |
 | `llm-mock-server` | 可脚本 Messages 兼容 HTTP/SSE 故障服务器 | 每个已接受 `/v1/messages` 请求按 FIFO 消费下一个行为（校验先于游标推进）；带种子加权 `random` 行为支持可复现混合故障压力 |
 | `llm-replay` | 无 key 回放插件 | `file/overrideFile/childFiles` 缺省取 `$DSH_SNAPSHOT_*`；嵌套 agent 按 first-call-order 绑定；`assertConsumed()` 把静默 underrun 变明确诊断 |
 | `loader-smoke` | 双模式子进程启动器 | `runLoaderSmoke`：`DSH_EXAMPLE_MODE=lib`（CI）跑 built `lib/` 经真实包 exports；src 模式 tsx + `TSX_TSCONFIG_PATH` 零构建；隔离 cwd/DSH 主目录、deadline、只清理自建 |
@@ -33,14 +33,14 @@
 
 - `benchmarks/support/built-worker.ts`：spawn 前从子进程 env 删除 `NODE_OPTIONS` 与 `TSX_TSCONFIG_PATH`、拒绝非 `.dsh-build/` 编译产物入口（[02](./02-tiers.md) "四层落实"）。
 - `benchmarks/support/calibration.ts`：`CI_TIME_SCALE = 2` × `PERFORMANCE_BUDGET_HEADROOM = 1.25`；预算是 reviewed source constants，环境变量不得覆盖。
-- vitest setup 三件套：`scripts/test-proxy-environment.ts`、`test-invariants.ts`、`test-dom-environment.ts`——unit 层全部 project 共用。
+- vitest setup 两件套：`scripts/test-proxy-environment.ts`、`test-dom-environment.ts`——unit 层全部 project 共用（`scripts/test-invariants.ts` 已随运行时 invariant 机制整族退役，commit `f028f25667`）。
 
 ## Python 面（双 SDK 投影的另一半）
 
 - `python/sdk/tests/`：`uv run --project python/sdk pytest`（无 tox）。两个值得记的样本：
   - `test_smoke_model.py` **直接从 `packages/core/session/src/types.ts` 读出 `SESSION_FORMAT_VERSION`**——跨语言把会话格式版本钉死：TS 侧改版本号，Python 测试立刻红。
   - `test_account_provider_snapshot.py` **复用 TS 侧场景的 `cordis.yml` 作 patch**，用真 Python SDK 对着 built CLI（`apps/cli/lib/bin.js`）跑，`DSH_SNAPSHOT: 'replay'`，比较 final_response / finish_reason / turn-end reason——"双 SDK 投影"不是比喻，是**同一场景资产驱动两个 SDK**。
-- `scripts/snapshots/python-sdk-single-exe/`：7 个场景（minimal / advanced / restart / minimal-in-history / dynamic-tools / scheduler-recovery / authoring），由 `scripts/smoke-python-runtime.py` 驱动（`--update-snapshots` 重录），钉死单可执行 Python runtime 的 model-visible 输出（含 win-x64 变体）与父/子 session 日志（多代保留）；Python-runtime CI 拥有。
+- `scripts/snapshots/python-sdk-single-exe/`：8 个场景（minimal / advanced / advanced-ptc / restart / minimal-in-history / dynamic-tools / scheduler-recovery / authoring），由 `scripts/smoke-python-runtime.py` 驱动（`--update-snapshots` 重录），钉死单可执行 Python runtime 的 model-visible 输出（含 win-x64 变体）与父/子 session 日志（多代保留）；Python-runtime CI 拥有。
 - 手动冒烟与 pytest 分离：`manual_sdk_agent_smoke.py` 的 docstring 明说 "This manual test is not collected by pytest"。
 - **installed-wheel 黑盒 CI**（`build-exe-for-python-sdk.yml` + ci.yml 的 python-runtime job）：Python 侧的 built smoke——选中目标在全新 Python 3.10 venv 里安装 SDK 与 runtime wheel，在 checkout 之外运行（`PYTHONPATH`、`DSH_RUNTIME_MODE` 未设），先证明模块与可执行确实来自发行版，再跑全部 keyless 场景；trusted PR/master 额外跑 `--scenario sdk-live --installed-wheel`，花 key 做两轮工具调用并以外部字节比对收尾；缺 secret 硬失败而非自跳，fork/Dependabot 只跑 keyless 路径。这是 [01](./01-doctrine.md) 教义 6c（"real entry path = published artifact"）在 Python 发行物上的对位（决策记录：`.agents/notes/implemented/testing/2026-08-23-installed-python-wheel-black-box-ci.md`）。
 

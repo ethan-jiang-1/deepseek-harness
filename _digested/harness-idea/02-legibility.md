@@ -12,13 +12,13 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 > A fiber is one loaded plugin instance: its lifecycle state, validated config, and registered effects. `ctx.fiber` is the current fiber, and `ctx.effect()` delegates to it.
 >
-> —— `docs/cordis-api/fiber.md:6`（基线 `46a7f68b09…`）
+> —— `docs/cordis-api/fiber.md:6`（基线 `687f282e86…`）
 
 这比「词汇表统一」更深一层：同一套原语贯穿工具、provider、策略、UI、loop，所以学会一个插件形状，就能在整棵树上迁移。
 
 > Domain vocabulary for DeepSeek Harness uses one canonical term per concept.
 >
-> —— `docs/glossary.md:5`（基线 `46a7f68b09…`）
+> —— `docs/glossary.md:5`（基线 `687f282e86…`）
 
 ## 机制二：一词一义，文档与代码没有翻译层
 
@@ -26,9 +26,9 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 读者看到 `ctx.agents`，glossary、架构文档和源码说的是同一件事。翻译层是常见的可读性杀手：文档说「组件」、代码叫 `Component`、review 里叫「那个东西」。
 
-> `SessionEventMap` members are required-on-read by default — builds that do not know a type refuse the log unless the event carries the envelope's `ignorable: true`; only structural format changes bump `SESSION_FORMAT_VERSION`.
+> **Typed events use declaration merging** and merge-extensible maps. … `SessionEventMap` members are required-on-read unless the envelope carries `ignorable: true`. Bump `SESSION_FORMAT_VERSION` only when existing discriminators cannot prevent unsafe interpretation; same-version changes require safe reader behavior.
 >
-> —— `AGENTS.md:108`（基线 `46a7f68b09…`）
+> —— `AGENTS.md:134`（基线 `687f282e86…`）
 
 ## 机制三：合同外显为类型
 
@@ -49,16 +49,16 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 > Services declare event names through TypeScript declaration merging, then dispatch them as `emit`, `waterfall`, `parallel`, `serial`, or `bail` depending on whether listeners observe, wrap, fan out, run in order, or stop at the first bail value.
 >
-> —— `docs/cordis-primer.md:12`（基线 `46a7f68b09…`）
+> —— `docs/cordis-primer.md:12`（基线 `687f282e86…`）
 
 ## 机制五：结构同构，生成目录不漂移
 
 - 每个包同样布局：`src/types.ts` 只放类型、测试在包级 `tests/`、同一 tsconfig 模板、注册进恰好一个 aggregate（包目录规则见 [`packages/AGENTS.md`](../../packages/AGENTS.md) 的 naming rules，tsconfig 面与 aggregate 见 [`docs/development.md`](../../docs/development.md#typescript-project-layout)）。学会一个包 = 学会全部包。
-- 每个包有 README + JSDoc 合同；`./invariant` 只在有独立可观察关系时登记（`verify-package-invariants` 强制，空/忽略 reporter 判 fail）；README 还必须写 Model Experience 和 Known Limitations（`verify-package-readme-model-experience` / `verify-package-readme-limitations`）。
+- 每个包有 README + JSDoc 合同；README 还必须写 Model Experience 和 Known Limitations（`verify-package-readme-model-experience` / `verify-package-readme-limitations`）。
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
-> —— `packages/AGENTS.md:27`（基线 `46a7f68b09…`）
+> —— `packages/AGENTS.md:27`（基线 `687f282e86…`）
 - 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`graph-atlas`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
 
 手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
@@ -67,8 +67,8 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 - `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果、模型可见 ⟺ 已记录、显式优于隐式。
 - 文档标准禁止「previously / now / renamed」这类变迁史；当前状态散文（current-state prose），一个事实一个家（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
-- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模**三个数并报**（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）：`dsh-v0.1.7-rc.1` 上总量 2360 篇 `.md`、活跃 `implemented/` 972 篇、冻结 `archived/` 1279 篇，前两个即 [`claims.json`](./claims.json) 的 N1–N2。缺一个都会读错形状——只报总量会把「按未来决策价值裁剪」读成膨胀，只报活跃数会读成收缩；实际是同一批记录分了活跃与冻结两层，而**冻结层不是现行权威**：归档政策明文禁止把 `archived/` 当作当前行为的依据。所以「非平凡改动必须带 note」这条规则的现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:39`](../../docs/AGENTS.md)，[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照）只作为这条规则的来源记录被引用。note 记的是「为什么、放弃了什么、怎么验证」，每条有分类、双语、归档纪律。
-- **记忆本身也有 gate**：连「决定忘记什么」都被写成了成文判据 + 可复用流程 + 机器封印。判据在 [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md)：归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明文要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。封印是 [`archived/manifest.json`](../../.agents/notes/archived/manifest.json)（seal 数 510 → 1884）加 [`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 门禁，后者注册在 [`scripts/run-gates.ts:844`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单。
+- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模**三个数并报**（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）：`dsh-v0.2.1-rc.2` 上总量 2540 篇 `.md`、活跃 `implemented/` 588 篇、冻结 `archived/` 1849 篇，前两个即 [`claims.json`](./claims.json) 的 N1–N2。缺一个都会读错形状——只报总量会把「按未来决策价值裁剪」读成膨胀，只报活跃数会读成收缩；实际是同一批记录分了活跃与冻结两层，而**冻结层不是现行权威**：归档政策明文禁止把 `archived/` 当作当前行为的依据。所以「非平凡改动必须带 note」这条规则的现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:41`](../../docs/AGENTS.md)，[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照）只作为这条规则的来源记录被引用。note 记的是「为什么、放弃了什么、怎么验证」，每条有分类、双语、归档纪律。
+- **记忆本身也有 gate**：连「决定忘记什么」都被写成了成文判据 + 可复用流程 + 机器封印。判据在 [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md)：归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明文要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。封印是 [`archived/manifest.json`](../../.agents/notes/archived/manifest.json)（seal 数 510 → 1884 为 0008 叙事口径的历史读数；`687f282e86` 基线实测 files 条目 2772）加 [`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 门禁，后者注册在 [`scripts/run-gates.ts:854`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单。
 
 为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。
 
@@ -78,7 +78,7 @@ fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的
 
 - `rejected/` Agent Notes 保留被否提案及其失败理由；
 - `archived/` 冻结历史，不当现行权威，文档门禁也跳过它；
-- `./invariant` 的空 companion（带 `No runtime invariant:` 标记）曾是负知识的一种——「这里没有可观察的运行时关系」是显式结论；`0.1.2-rc.1` 上游裁定空 companion 是噪音并全部删除，改由省略 + 写进 README 承担（[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）——负知识的载体从「强制文件」变成「省略即默认，例外进 README」；
+- `./invariant` companion 曾是一种负知识：带 `No runtime invariant:` 标记的空文件表示「这里没有可观察的运行时关系」是显式结论。它在两个阶段被上游拆掉——`0.1.2-rc.1` 先裁定空 companion 是噪音并全部删除，改由省略 + 写进 README 承担（[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)，已归档）；`f028f25667` 再把运行时 invariant 机制整族删除，`./invariant` 与新树里任何 `/invariant` 路径都不再存在；
 - package README 的 `## Known Limitations and Deferred Work` 由 `verify-package-readme-limitations` 门禁检查。
 
 负知识让读者能查到「这里没有检查」和「这条路已被否掉」，而不是靠试错重新发现。
@@ -87,7 +87,7 @@ fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的
 
 coding agent 的真实约束不只有「读不读得懂」，还有**上下文预算内能否找到对的入口**。dsh 的文档 tier 为此分层：
 
-- 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 1960 词，0009 线上调），细节链接到 home；
+- 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 `scripts/doc-budgets.manifest.json` 的 2080 词；0009 线为 1960，本跨度上调），细节链接到 home；
 - [`docs/architecture.md`](../../docs/architecture.md) 是 2,410 词预算内（0.1.7 线 doc-budgets 上调）的有序地图；
 - 生成的 catalog 提供穷举查询，不要求读者通读；
 - skills 提供可调用的程序化工作流，如 [`dsh-doc`](../../.agents/skills/dsh-doc/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。
@@ -95,13 +95,13 @@ coding agent 的真实约束不只有「读不读得懂」，还有**上下文�
 
 > **Pairs update together**: Terminology-guided, single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records; `dsh-translate-docs` remains user-invoked.
 >
-> —— `docs/AGENTS.md:44`（基线 `46a7f68b09…`）
+> —— `docs/AGENTS.md:45`（基线 `687f282e86…`）
 
 `verify-doc-budgets` 把字数预算钉成门禁。可读性因此来自组织，不来自把系统做小；正确读法是查表，不是通读。
 
-> **Document current state, not change history.** Name live mechanisms, not PRs, commits, stack positions, or "previously/now/no longer".
+> **Document current state.** Keep history in commits, PRs, Agent Notes, postmortems, or scoped persistence records. Other prose names live mechanisms, not changes or stack positions.
 >
-> —— `docs/AGENTS.md:38`（基线 `46a7f68b09…`）
+> —— `docs/AGENTS.md:40`（基线 `687f282e86…`；原句首为 "Document current state, not change history" 的旧版措辞已在本次跨度内改写）
 
 ## 可读 ≠ 简单
 
@@ -110,16 +110,16 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 ## 证据入口
 
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 74、141 行；事件域、扩展表）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 69、142 行；事件域、扩展表）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件矩阵与分发模式）
-- [`../../AGENTS.md`](../../AGENTS.md)（第 108 行；required-on-read 与 standing orders）
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-33、39、48-58 行；tier taxonomy 与一个事实一个家、当前状态散文、字数预算）
-- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；读者模型的因果来源）
-- [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照；note 语料库规则的历史来源。现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:39`](../../docs/AGENTS.md)）
+- [`../../AGENTS.md`](../../AGENTS.md)（第 134 行；required-on-read 与 standing orders）
+- [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-33、40、45 行；tier taxonomy 与一个事实一个家、当前状态散文、字数预算）
+- [`2026-06-11-quality-gates`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)（已归档，历史快照；第 12 行；读者模型的因果来源）
+- [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照；note 语料库规则的历史来源。现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:41`](../../docs/AGENTS.md)）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（第 36-42、46 行；归档判据与记忆的 gate）
 - [`../../.agents/notes/archived/manifest.json`](../../.agents/notes/archived/manifest.json) / [`../../scripts/verify-archived-agent-notes.ts`](../../scripts/verify-archived-agent-notes.ts)（冻结清单与封印门禁）
-- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（`0.1.2-rc.1` 废除空 companion，现行权威）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/implemented/architecture/2026-07-19-package-invariant-runtime-contracts.md)（第 24 行；note 已被 `0.1.2-rc.1` 原地改写，现文是「无独立关系即省略 companion 并在 README 记原因」，原「空 invariant 纪律」的显式结论表述只剩历史意义，`0.1.2-rc.1` 起被 2026-08-28 裁定取代）
+- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（已归档，历史快照；`0.1.2-rc.1` 废除空 companion 的裁定，当时是现行权威）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md)（已归档，历史快照；第 24 行。两份 note 记录的运行时 invariant 机制已在 `f028f25667` 整族退役，权威记录改由 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md) 承担）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
 - [`docs/development.md`](../../docs/development.md#typescript-project-layout) / [`../../packages/AGENTS.md`](../../packages/AGENTS.md)（包结构同构：aggregate 布局与命名规则）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）

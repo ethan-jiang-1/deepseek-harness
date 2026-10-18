@@ -19,7 +19,7 @@
 
 旧基线在 `Context` 上声明可选的 `agent` 反向属性并注册 `ctx.accessor('agent', …)`，任何拿到 Context 的代码都能反推 Agent。问题是 Context 与 Agent 回答两个不同的问题：Context 是注册与生命周期所有者，Agent 是这次操作的身份（选哪个 Session、谁是运行时属主、事件主体是谁、权限归谁、wire 身份是谁）。反向属性把两者混为一谈，还逼出三种补偿机制——Host Remote 转发从路由 subject 反查 Context、创建路径从调用方 Context 推断运行时父属、适配器维护反向身份扫描。
 
-新基线只按显式身份解析：Typert 的 lookup 与 host context provider 都以 wire 字段 `agentId` 为输入，`resolve: sessionId => this.get(sessionId)`（`packages/core/agent/src/index.ts:259-269`；session-controller 的异步版本 `packages/api/session-controller/src/agent.ts:158-162`）。`agent.ctx` 仍是注册与生命周期所有者，但不再暴露任何反向 Agent 属性。
+新基线只按显式身份解析：Typert 的 lookup 与 host context provider 都以 wire 字段 `agentId` 为输入，`resolve: sessionId => this.get(sessionId)`（`packages/core/agent/src/index.ts:259-271`；session-controller 的异步版本 `packages/api/session-controller/src/agent.ts:188-192`）。`agent.ctx` 仍是注册与生命周期所有者，但不再暴露任何反向 Agent 属性。
 
 决策记录在仍现行的 note `.agents/notes/implemented/architecture/2026-08-31-explicit-agent-runtime-identity.md`；它只取代 [2026-07-15 initiator 作用域决策](../../.agents/notes/implemented/architecture/2026-07-15-agent-initiator-scope.md) 里的「反向 Context 关联 / 隐式运行时属主推导」部分，注册作用域与 initiator 私有链的理由仍然独立成立。
 
@@ -27,22 +27,22 @@
 
 - `AgentSetup` 的签名是 `(agentCtx: Context, agent: Agent)`（`packages/core/agent/src/index.ts:50-53`）：setup 回调同时拿到「注册落在哪个 Context」与「这次操作属于哪个 Agent」，不再需要从前者推后者。父创建子时，setup 回调的 Agent 参数是**子**，因果父由 initiator 边界报告。
 - `CreateAgentOptions.parentAgent`（`:67`）与 `ResumeAgentOptions.parentAgent`（`:129`）是运行时子属关系的唯一入口。
-- `AgentRegistry.register()` 固定以 root 身份进入：`yield this.enter(agent, undefined)`（`:437-439`）。也就是说，已构造 Agent 的注册永远是运行时 root；子属关系只能经 `parentAgent` 建立——loop 侧的调用点是 `loopCtx.agents.enter(agent, parentAgent)`（`packages/core/agent-loop/src/index.ts:621`）。
-- 后果：`AgentRegistry.roots()` 与 `isOwnedBy()` 看的是 live 属主，不是 durable 的 `parentSession` metadata。一个 fork 或 resume 出来的 Session 在没有 live Agent 拥有它时就是运行时 root，而 `SubagentContinuationManager` 建立的 continuable child 即使在私有插件 Context 里创建，也因为有精确 `parentAgent`（`packages/subagent/subagent/src/continuation-activation.ts:636`、`:643`，冷 resume 与新建两条路径都传）而不被当成顶层。
+- `AgentRegistry.register()` 固定以 root 身份进入：`yield this.enter(agent, undefined)`（`:439-441`）。也就是说，已构造 Agent 的注册永远是运行时 root；子属关系只能经 `parentAgent` 建立——loop 侧的调用点是 `loopCtx.agents.enter(agent, parentAgent)`（`packages/core/agent-loop/src/index.ts:657`）。
+- 后果：`AgentRegistry.roots()` 与 `isOwnedBy()` 看的是 live 属主，不是 durable 的 `parentSession` metadata。一个 fork 或 resume 出来的 Session 在没有 live Agent 拥有它时就是运行时 root，而 `SubagentContinuationManager` 建立的 continuable child 即使在私有插件 Context 里创建，也因为有精确 `parentAgent`（`packages/subagent/subagent/src/manager.ts:908`、`:915`，冷 resume 与新建两条路径都传）而不被当成顶层。
 
 ### 对 subagent 的直接后果
 
-同一条原则决定了 subagent 的 model-selection 继承目标：`selectForSession(session)` 从 `ctx.get('sessions')` 读父 Session（`packages/subagent/tool-subagent/src/index.ts:620-650`），而不是从 Agent registry 反查父 Agent；委派工具的装载签名因此变成 `apply(ctx, config, session?)`（`:313`），由直接 `AgentSetup` 显式传入尚未发布的 Session。host 侧的消息交付同样显式带 parent：`deliverSubagentPrompt(parent, childId, …)`（`packages/subagent/subagent/src/internal.ts:42-55`）。机制细节见 [`../capability-seams/05-subagent-catalog与host交付.md`](../capability-seams/05-subagent-catalog与host交付.md)。
+同一条原则决定了 subagent 的 model-selection 继承目标：`selectForSession(session)` 从 `ctx.get('sessions')` 读父 Session（`packages/subagent/tool-subagent/src/index.ts:413-441`），而不是从 Agent registry 反查父 Agent；委派工具的装载签名因此变成 `apply(ctx, config, session?)`（`:146`），由直接 `AgentSetup` 显式传入尚未发布的 Session。host 侧的消息交付同样显式带 parent：`deliverSubagentPrompt(parent, childId, …)`（`packages/subagent/subagent/src/internal.ts:42-55`）。机制细节见 [`../capability-seams/05-subagent-catalog与host交付.md`](../capability-seams/05-subagent-catalog与host交付.md)。
 
 ## initiator 边界
 
-`withInitiator(agent, operation)` 把一段进程内操作标记为「继承自这个 Agent」，`currentInitiator()` 读当前边界，`withoutInitiator(operation)` 显式清除归属（`packages/core/agent/src/index.ts:327`、`:295`、`:342`）。契约写明 presence 既不是存活证明也不是授权——它只回答因果归属。
+`withInitiator(agent, operation)` 把一段进程内操作标记为「继承自这个 Agent」，`currentInitiator()` 读当前边界，`withoutInitiator(operation)` 显式清除归属（`packages/core/agent/src/index.ts:329`、`:297`、`:344`）。契约写明 presence 既不是存活证明也不是授权——它只回答因果归属。
 
-loop 在 `wakeDriver()` 里用 `this.loopCtx.agents.withInitiator(this, () => this.kick())` 启动 driver（`packages/core/agent-loop/src/agent.ts:234`）：整个 activity（若干 turn、step、工具执行）都落在「以该 agent 为 initiator」的边界内。反过来，goal round driver 的调度任务用 `ctx.agents.withoutInitiator(async () => { … })` 包住（`packages/goal/goal-round-driver/src/index.ts:215`），因为后台调度不属于任何 agent 的 turn。
+loop 在 `wakeDriver()` 里用 `this.loopCtx.agents.withInitiator(this, () => this.kick())` 启动 driver（`packages/core/agent-loop/src/agent.ts:234`）：整个 activity（若干 turn、step、工具执行）都落在「以该 agent 为 initiator」的边界内。反过来，goal round driver 的调度任务用 `ctx.agents.withoutInitiator(async () => { … })` 包住（`packages/goal/goal-round-driver/src/index.ts:231`），因为后台调度不属于任何 agent 的 turn。
 
 ## initiator 作为 pause 来源判据
 
-`goal/changed` 监听器现在解构 `change`，并用 initiator 判定 pause 的来源（`packages/goal/goal-round-driver/src/index.ts:282-294`）：
+`goal/changed` 监听器现在解构 `change`，并用 initiator 判定 pause 的来源（`packages/goal/goal-round-driver/src/index.ts:302-313`）：
 
 ```ts
 if (change.operation === 'pause' && agent.status === 'running'

@@ -41,7 +41,7 @@ Agent loop 位于两者之间：从插件图取模型、工具、提示词与会
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions, and "a lot of work" is not a cost argument when agents do the labor.
 >
-> —— `.agents/notes/implemented/process/2026-06-11-quality-gates.md:11`（基线 `46a7f68b09…`）
+> —— `.agents/notes/archived/process/2026-06-11-quality-gates.md:12`（已归档，历史快照；基线 `687f282e86…`）
 
 直接支持的因果是：**agent 更可靠地服从机械门禁，且 agent 劳动力便宜 → 用 enforced gates 替代 prose conventions。** 这是「门禁为什么这么多」的一手解释。
 
@@ -53,13 +53,11 @@ Agent loop 位于两者之间：从插件图取模型、工具、提示词与会
 
 quality-gates note 是仓库的第一方自我描述；本专题不把它当作外部普查结论，只作为生产方式自述。因此因果写成「生产方式自称 + 可解释的机制」，不再写成斩钉截铁的既成事实。
 
-### `[原文]` architecture 说了什么；`[推断]` 它是注脚
+### `[原文]` architecture 的 agent 推荐句已撤下
 
-[`docs/architecture.md`](../../docs/architecture.md) 开篇说「We recommend using an agent to explore the codebase and understand its architecture」。这句话是原文；「它是后来的注脚、不是设计源头」是本专题从 note 时间先后推出的判断——源头是生产方式带来的机械门禁偏好。
+`639ed01539` 基线的 [`docs/architecture.md`](../../docs/architecture.md):7 曾有「We recommend using an agent to explore the codebase and understand its architecture.」一句，本专题曾把它当作判断三的「事后注脚」侧证据。它在 `3f35ca7b5b` 被删除，现行 `docs/architecture.md` 与 `docs/architecture.zh.md` 都不再出现该句；因此判断三的因果源头现在只由 quality-gates note 单独支撑，**「它是后来的注脚、不是设计源头」这一侧只剩历史意义**。
 
-> We recommend using an agent to explore the codebase and understand its architecture.
->
-> —— `docs/architecture.md:7`（基线 `46a7f68b09…`）
+现行 `docs/architecture.md` 开篇只保留阅读顺序与 Cordis 前置说明（第 5 行，原句为：Read this before changing anything under packages. It assumes you know Cordis; if you do not, start with the primer or the tutorial；原文的 primer / tutorial 两处链接在此省略），不再出现任何面向 agent 的推荐句。
 
 ## 参与规则的三层载体
 
@@ -73,10 +71,10 @@ quality-gates note 是仓库的第一方自我描述；本专题不把它当作�
 
 - **归属**：[`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的扩展表「目标 → 机制」（行数见 [`claims.json`](./claims.json) 的 N3）直接回答「这段代码放哪」；[`extension cookbook`](../../docs/cookbook/extension-cookbook.md) 还有更细的 feature → mechanism 表。
 - **合同**：Service Definition 是 Cordis `Service`（抽象类或注册表，不是 `interface`）；事件经声明合并成为类型化 map；`SessionEventMap` 成员默认 required-on-read。
-- **门禁（gates）**：`verify-export-jsdoc`、`verify-package-invariants`、`doc-typecheck`、`test:coverage`（per-file 100%）。规则不是劝告，是红灯。
+- **门禁（gates）**：`verify-export-jsdoc`、`verify-archived-agent-notes`、`doc-typecheck`、`test:coverage`（per-file 100%）。规则不是劝告，是红灯。
 - **词汇**：[`docs/glossary.md`](../../docs/glossary.md) 规定一个概念一个词；文档标准规定「一个事实一个家」（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
 - **设计意图**：`为什么` 单独住在 Agent Notes——语料库规模见 [`claims.json`](./claims.json) 的 N1–N2（用 `git ls-tree` 在基线上重算，prose 不手写固定总数）；被分类、双语、归档政策管辖。`docs/` 只写当前状态，读者不用从 git log 反推意图。
-- **负知识**：被拒方案住在 `rejected/`；归档 note 冻结且不当现行权威；package 的 `./invariant` 只在有独立可观察关系时存在（`0.1.2-rc.1` 起空 companion 判 fail，无关系即省略 + README 原因）；README 的 Known Limitations 被门禁检查。读者不只查到「怎么做」，也查到「什么不要做」。
+- **负知识**：被拒方案住在 `rejected/`；归档 note 冻结且不当现行权威；README 的 Known Limitations 被门禁检查。读者不只查到「怎么做」，也查到「什么不要做」。
 
 ## 结论
 
@@ -84,12 +82,12 @@ harness 的职责 = 让「正确参与」不依赖参与者的背景知识。做
 
 ## 证据入口
 
-- [`2026-06-11-quality-gates`](../../.agents/notes/implemented/process/2026-06-11-quality-gates.md)（第 11 行；因果原文）
+- [`2026-06-11-quality-gates`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)（已归档，历史快照；第 12 行；因果原文）
 - [`2026-06-11-vendor-cordis-as-source`](../../.agents/notes/archived/process/2026-06-11-vendor-cordis-as-source.md)（已归档，历史快照；第 10 行；框架层被搬进仓库的真实理由。这条决定的现行 owner 是 [`vendor/README.md`](../../vendor/README.md) 的 manifest 与本地修改日志，不是这份冻结记录）
-- [`docs/architecture.md`](../../docs/architecture.md)（第 7、74、141 行；推荐用 agent 探索、事件域、扩展表）
+- [`docs/architecture.md`](../../docs/architecture.md)（第 69、142 行；事件域、扩展表）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md)（五条原语）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders：面向 agent 的规则本身）
 - [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)（事件 dispatcher / listener 矩阵）
 - [`../../scripts/run-gates.ts`](../../scripts/run-gates.ts)（门禁聚合器）
-- [`../../packages/core/agent-loop/src/invariant.ts`](../../packages/core/agent-loop/src/invariant.ts)（运行时 invariant 实例）
+- [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)（运行时 invariant 机制整族退役的权威记录；原 `packages/core/agent-loop/src/invariant.ts` 实例随之删除，无继任）

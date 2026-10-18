@@ -8,12 +8,12 @@
 
 ## ACP：自动化适配器，不是 IDE
 
-`dsh-acp` 在 stdio 上用 `createAcpAgentApp(...).onRequest(...).connect(stream)` 接线（@agentclientprotocol/sdk 1.4.0；`packages/acp/acp/src/index.ts:378-389`，stdout/stdin 经 `ndJsonStream` 接线 `:374-377`），驱动 `ctx.agents`。stdout 只给协议帧。它**不是** UI 集成，也不是 capability seam。
+`dsh-acp` 在 stdio 上用 `createAcpAgentApp(...).onRequest(...).connect(stream)` 接线（@agentclientprotocol/sdk 1.4.0；`packages/acp/acp/src/index.ts:382-395`，stdout/stdin 经 `ndJsonStream` 接线 `:378-381`），驱动 `ctx.agents`。stdout 只给协议帧。它**不是** UI 集成，也不是 capability seam。
 
 **保证：**
 
-- `session/new`：新鲜 agent，绝对 `cwd`。非空 `additionalDirectories` 拒绝（`packages/acp/acp/src/index.ts:516`）；`mcpServers` 非空则**接受并验证**（`:209` 传入 `AcpSession.create`），配置错抛 `AcpMcpConfigError` → invalidParams（`:216`），`initialize` 广告 `mcpCapabilities: { http: true }`（`:184`）。
-- `session/list` / `session/resume` / `session/close` / `session/set_config_option`：均已实现并在 `initialize` 广告（`packages/acp/acp/src/index.ts:186`、`:385-388`）。list 是确定性 newest-first 分页（`sessionListPageSize` 可配），按物理目录身份过滤 `cwd`，只列持久化的 root 会话（排除活跃、subagent origin、带 parent 的条目，`:305-313`）；resume 校验同目录后才恢复持久 log，排除 origin / parentSession（`:248-254`）；set_config_option 序列化更新广告的 `model` / `reasoning_effort`。
+- `session/new`：新鲜 agent，绝对 `cwd`。非空 `additionalDirectories` 拒绝（`packages/acp/acp/src/index.ts:520-527`）；`mcpServers` 非空则**接受并验证**（`:210` 传入 `AcpSession.create`），配置错抛 `AcpMcpConfigError` → invalidParams（`:220`），`initialize` 广告 `mcpCapabilities: { http: true }`（`:188`，capabilities 块 `:184-193`）。
+- `session/list` / `session/resume` / `session/close` / `session/set_config_option`：均已实现并在 `initialize` 广告（`packages/acp/acp/src/index.ts:190`、`:389-392`）。list 是确定性 newest-first 分页（`sessionListPageSize` 可配），按物理目录身份过滤 `cwd`，只列持久化的 root 会话（排除活跃、subagent origin、带 parent 的条目，`:310-314`）；resume 校验同目录后才恢复持久 log，排除 origin / parentSession（`:253`）；set_config_option 序列化更新广告的 `model` / `reasoning_effort`。
 - `initialize`：仅当挂了 durable attachment store、且配置的精确 provider/model 声明了 image input 时，才广告图像 prompt；音频和 embedded context 恒为 false。
 - `session/prompt`：按线序保留文本与受支持的 inline 图像；resource link 变成 `[resource_link name=… uri=…]`。整批图像先校验、再按最新精确 route 复核，然后在 user 事件之前全部 commit。inline base64 准入后丢弃，日志里只留 attachment 引用。每会话一个 in-flight。等到准入、整个 agent idle、以及有序输出投递。正常静默 → `end_turn`，token-limit → `max_tokens`；ACP 取消 / dispose / 未被准入的 turnless slot → `cancelled`。
 - `session/cancel`：先中止尚未进 inbox 的 admission，不取消无关 agent 工作；prompt 一旦进 inbox，才取消该 agent 并等到所拥有区间静默。没有 in-flight prompt 时取消自主工作。

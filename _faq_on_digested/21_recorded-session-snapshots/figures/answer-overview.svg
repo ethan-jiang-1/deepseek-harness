@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
   <title>录制会话快照对 DSH 插件开发的价值：一页看懂</title>
-  <desc>三列并排。左列（蓝）主仓为什么需要它：起点是 postmortem 0001，178 个单测全绿、100% 行覆盖、ACP 桥在生产完全不能用；它买到的唯一东西是组装之后的完整转录——模型实际收到什么、说了什么、落了什么盘；并且能在无 key 的 CI 里逐字节复现。中列（绿）插件仓能拿到什么：@deepseek-ai/dsh-llm-replay 是发布在 npm 上的普通 function 插件，接受未经投影的原始运行日志，于是能买到三样东西——trajectory 回归基线、可稳定复现的 bug、模型可见面的断言点。右列（琥珀与红）代价与上限：顶层语料治理搬不走也不该抄，语义守卫必须自己写，而且它只是变更探测器不是正确性 oracle——postmortem 0002 里快照套件曾为一次真实回归背书。底部是一条 L0 到 L4 的证据阶梯：导出守卫、行为 spec、HMR、REAL composition 默认都做，L4 行为回归证据面按触发条件启用。一句话记法：机制可以拿，制度不要抄，判断不能外包。</desc>
+  <desc>三列并排。左列（蓝）主仓为什么需要它：起点是 postmortem 0001，178 个单测全绿、100% 行覆盖、ACP 桥在生产完全不能用；它买到的唯一东西是组装之后的完整转录——模型实际收到什么、说了什么、落了什么盘；并且能在无 key 的 CI 里逐字节复现。中列（绿）插件仓能拿到什么：@deepseek-ai/dsh-llm-replay 是发布在 npm 上的普通 function 插件，接受未经投影的原始运行日志，于是能买到三样东西——trajectory 回归基线、可稳定复现的 bug、模型可见面的断言点。右列（琥珀与红）代价与上限：顶层语料治理搬不走也不该抄，语义守卫必须自己写，而且它只是变更探测器不是正确性 oracle——postmortem 0002 里快照套件曾为一次真实回归背书。底部是一条 L0 到 L4 的证据阶梯：导出守卫、行为 spec、HMR、REAL composition 默认都做，L4 行为回归证据面按触发条件启用。一句话记法：机制可以拿，制度不要抄，判断不能外包。场景与文件数按本基线 `dsh-v0.2.1-rc.2`（`687f282e86`）实测；本轮 registry 不可达，npm next 版本按该基线 `package.json` 的 `0.2.1-rc.2` 推定，需复测。</desc>
   <defs>
     <marker id="ov-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
@@ -25,14 +25,14 @@
   <text x="64" y="340" font-size="11" font-weight="700" fill="#1e40af">而且无 key 可复现</text>
   <text x="64" y="362" fill="#334155">真运行的保真度 + 夹具的确定性</text>
   <text x="64" y="380" fill="#64748b" font-size="11">录制花配额，回放零 key，CI 只读</text>
-  <text x="64" y="404" fill="#64748b" font-size="11">210 个场景 / 1271 个文件的主仓语料</text>
+  <text x="64" y="404" fill="#64748b" font-size="11">250 个场景 / 1675 个文件的主仓语料</text>
 
   <rect x="420" y="80" width="360" height="336" rx="10" fill="#f0fdf4" stroke="#86efac"/>
   <text x="600" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">② 插件仓能拿到什么</text>
   <line x1="444" y1="124" x2="756" y2="124" stroke="#bbf7d0" stroke-width="1"/>
   <text x="444" y="150" font-size="11" font-weight="700" fill="#166534">前提：它是一个发布包</text>
   <text x="444" y="172" fill="#334155">@deepseek-ai/dsh-llm-replay</text>
-  <text x="444" y="190" fill="#64748b" font-size="11">npm next = 0.2.0-rc.2（就是本基线）</text>
+  <text x="444" y="190" fill="#64748b" font-size="11">npm next = 0.2.1-rc.2（按本基线推定，需复测）</text>
   <text x="444" y="208" fill="#64748b" font-size="11">普通 function 插件：name / inject / apply</text>
   <text x="444" y="240" font-size="11" font-weight="700" fill="#166534">三样买到的东西</text>
   <rect x="444" y="252" width="312" height="46" rx="8" fill="#dcfce7" stroke="#4ade80"/>
@@ -51,7 +51,7 @@
   <text x="824" y="150" font-size="11" font-weight="700" fill="#92400e">搬不走：语料治理（别抄）</text>
   <text x="824" y="172" fill="#334155">顶层 snapshots/ 所有权、四面分工、</text>
   <text x="824" y="190" fill="#334155">corpus policy 与 gate、dsh-session-snapshot</text>
-  <text x="824" y="208" fill="#64748b" font-size="11">那是给「一仓维护 210 个场景」用的制度</text>
+  <text x="824" y="208" fill="#64748b" font-size="11">那是给「一仓维护 250 个场景」用的制度</text>
   <text x="824" y="240" font-size="11" font-weight="700" fill="#92400e">必须自己写：语义守卫</text>
   <text x="824" y="262" fill="#334155">对你的插件，「语义上不可能」长什么样</text>
   <text x="824" y="280" fill="#334155">只有你知道，夹具不会替你想到</text>
