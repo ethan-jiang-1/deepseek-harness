@@ -10,7 +10,7 @@
 
 所以对提问者的直接回答是：**「项目左晃右晃」在这里不是异常，是被流程假设并记账的常态；真正会出事的是「转向没有留下任何载体」。** 你担心的两种腐化里，运行时的那一种被记录面挡住了，仓库的那一种被「一个事实一个家 + 取代检查」挡住了；剩下的空白是语义层的（[07](./07-limits.md)）。
 
-![四类失败与三层防线：谁接住什么](./figures/three-layers.svg)
+![四类失败 × 三层防线：谁接住什么](./figures/three-layers.svg)
 
 上图是全文的总览：四类失败按三层分工排列，底部那条是没有任何一层接住的部分。
 
@@ -54,7 +54,7 @@
 3. **方向反复的成本被显式定价。** 写新 Note、交叉链接、分诊旧篇、修入链；配套的是「默认不写」的高门槛。
 4. **每篇新 Note 强制取代检查**，这是整套流程里最直接针对「spec 越堆越矛盾」的一条（`.agents/notes/AGENTS.md:5`）。
 5. **机器管形状与新鲜度，人管语义。** 门禁很密，但没有一条能判断「两段话是否互相矛盾」。
-6. **术语提醒**：仓库里没有「context rot」这个词（全仓检索无命中）；DSH 用的词是 surface / shadow / reconstructable / supersede / archive。"[原文]" 与 "[推断]" 的分工见 [reference.md](./reference.md)。
+6. **术语提醒**：DSH 自己的源码与文档里没有「context rot」这个词（本仓 `_misc/` 的外部参考材料里出现过）；DSH 用的词是 surface / shadow / reconstructable / supersede / archive。"[原文]" 与 "[推断]" 的分工见 [reference.md](./reference.md)。
 
 ## 术语速查
 

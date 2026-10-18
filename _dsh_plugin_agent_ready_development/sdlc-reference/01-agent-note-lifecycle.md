@@ -145,7 +145,7 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 功能新增 Note 收进后来的移除 Note，还要多满足一组事实：该功能已从生产代码、配置、schema、持久化或线上格式、迁移和兼容行为中消失；当前文档不再把它写成可用；测试不再把它当成受支持行为。移除 owner 要保住原来的动机、为何不再成立、未完全移除的备选、放弃的能力、重新引入的条件，以及对「已经完全不存在」的验证。只去掉一种传输、默认值、实现或呈现，或者仍有持久数据与兼容处理，是部分取代，两边都留。
 
-归档不是改个文件夹名。一次归档移动完整的 `.md`、`.zh.md`、`.i18n.yaml`，路径是 `archived/{class}/`，中间没有 `implemented`。正文不改，只在两种语言的 `Status: implemented` 下插入同一行 `Archived: YYYY-MM-DD`，机械重录 sidecar，并处理活动 prose 的入站链接。`verify-archived-agent-notes` 把内容写入 hash manifest：它保证的是已封存内容不被改写（先核对既有封存，再追加新哈希），而非条目永不消失——整组删除未发布的记录时，它的清单条目会一并移除。封存后不得编辑、翻译、移动或删除。文档门禁跳过归档源文件，包括它们的出站链接；活动 prose 仍可以在有意引用历史时链进去。
+归档不是改个文件夹名。一次归档移动完整的 `.md`、`.zh.md`、`.i18n.yaml`，路径是 `archived/{class}/`，中间没有 `implemented`。正文不改，只在两种语言的 `Status: implemented` 下插入同一行 `Archived: YYYY-MM-DD`，机械重录 sidecar，并处理活动 prose 的入站链接。`verify-archived-agent-notes` 把内容写入只追加的 hash manifest：`--write` 先证明既有封存仍匹配，再只追加新三元组的哈希（[`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-archive-agent-notes/SKILL.md)）；整组删除已封存记录时，其清单条目必须同步移除，否则 [`archived-agent-notes` 校验器](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/scripts/archived-agent-notes.ts) 报 `sealed artifact is missing`。封存后不得编辑、翻译、移动或删除。文档门禁跳过归档源文件，包括它们的出站链接；活动 prose 仍可以在有意引用历史时链进去。
 
 `dsh-archive-agent-notes` 拥有上面这张表的语义判断。格式 gate 只证明结构合法，不代替这张表。Skill 为什么适合承载这类判断，见 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md)。
 

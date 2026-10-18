@@ -30,13 +30,13 @@
 | `verify-md-wrap` | 一段被拆成多个物理行 |
 | `verify-translation-pairing` | 中英对照失配 |
 | `verify-repository-references` | 维护文件里出现真实 commit 标识符或不允许的组织 URL——**历史引用必须用 tag 或 PR 号**（`docs/AGENTS.md:77`） |
-| `verify-doc-refs` | 文档与 JSDoc 里引用的 `docs/`、`.agents/notes/` 路径必须存在 |
+| `verify-doc-refs` | 包内 TypeScript 注释与字符串里引用的 `docs/`、`.agents/notes/` 路径必须存在（Markdown 侧由 `verify-md-links` 覆盖） |
 | `verify-type-equiv` | 文档里粘贴的类型声明与源码漂移 |
 | `verify-subsystem-pages` | 子系统页与包组的归属失配 |
 | `verify-package-readme-summaries` / `-model-experience` / `-limitations` | 包 README 的必备节缺失或不合格式 |
 | `verify-agent-note-classification` / `-format` / `-archived-agent-notes` | Note 的生命周期/类别/格式/封存违规 |
 | `verify-doc-budgets` | 常驻文档超过词数上限，或上限清单里缺文件 |
-| `verify-upgrade-guides` | 破坏性变更的升级指南缺位 |
+| `verify-upgrade-guides` | **已存在**指南的路径、front matter、小节与词数违规；指南缺位查不出（见 [07](./07-limits.md)） |
 | `verify-persistence-changes` / `-releases` / `-formats` | 持久化类型变更的确认记录、发布历史与格式参考过期 |
 
 出处：`scripts/run-gates.ts:823`-`:872`（`[源码]`）。
@@ -64,7 +64,7 @@
 - 相邻迁移「may add a version-named successor but never move, overwrite, or delete committed generations; predecessors imply neither fallback nor downgrade support」；
 - 每一条对外可感知的破坏性变更必须**立刻**写进升级指南。
 
-配套的可执行面是 `Acknowledge declared persistence-type changes`（`AGENTS.md:9`）与 `docs/persistence-changes/` 的每变更四件套（英文确认、中文对照、双语一致性 sidecar、生成的 after schema），以及 `docs/session-format-status.md` 的 finalization checkpoint（`docs/persistence-changes/README.md:12`、`:35`、`:40`，`[原文]`）。
+配套的可执行面是 `Acknowledge declared persistence-type changes`（`AGENTS.md:9`）与 `docs/persistence-changes/` 的每变更四件套（英文确认、中文对照、双语一致性 sidecar、生成的 after schema），以及 `docs/session-format-status.md` 的 finalization checkpoint（`docs/persistence-changes/README.md:31`-`:38`、`:40`，`[原文]`）。
 
 ## 五、机器查不到的部分（明说）
 

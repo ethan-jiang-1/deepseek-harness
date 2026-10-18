@@ -2,7 +2,7 @@
 
 这是提问里点名要查的那一问：**DSH 的 Note 流程是不是已经考虑过「项目左晃右晃、spec 越堆越多」？**
 
-结论：**考虑了，而且不是靠写作自觉，是靠三条可执行的纪律**——决定不可原地改写、新 Note 必须做取代检查、被取代的记录有明确的去向。下面全部是仓库原文。
+结论：**考虑了，而且不是靠写作自觉，是靠三条可执行的纪律**——决定不可原地改写、新 Note 必须做取代检查、被取代的记录有明确的去向。下面除标注 `[源码]` 的门禁实现外，均为仓库原文。
 
 ## 一、三条硬规则
 
@@ -30,13 +30,13 @@
 
 出处：`.agents/notes/AGENTS.md:5`（`[原文]`）。
 
-这条规则直接消灭了「左晃右晃留下一堆互相矛盾的现行文档」这个形态：**新决定落地的同一个 PR 里，被它取代的旧记录必须被分诊**——全取代的归档，部分取代的保持现行并交叉链接。
+这条规则正面处理「转向之后留下一堆互相矛盾的现行文档」这个形态——注意它由作者执行，没有门禁比较两份叙述（见 [07](./07-limits.md)）：**新决定落地的同一个 PR 里，被它取代的旧记录必须被分诊**——全取代的归档，部分取代的保持现行并交叉链接。
 
 为什么放在写作时刻而不是事后审计，仓库给了理由：
 
 > **Defer supersession cleanup to periodic corpus audits.** Rejected because the author of a replacement note has the freshest evidence about ownership and overlap. Postponement leaves redundant active authorities and makes later classification more expensive.
 
-出处：`.agents/notes/implemented/process/2026-07-26-frozen-agent-note-archive.md:35`（`[原文]`，`[源码]` 中「Rejected」一词说明这是被否决过的替代方案）。
+出处：`.agents/notes/implemented/process/2026-07-26-frozen-agent-note-archive.md:35`（`[原文]`；文中「Rejected」一词说明这是被否决过的替代方案）。
 
 ### 规则 3：记录的去向由「还有没有用」决定，不由年龄或体量决定
 

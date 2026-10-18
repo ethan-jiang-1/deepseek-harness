@@ -223,4 +223,5 @@ Gate 是判断逻辑，CI 还拥有何时、在哪运行。绿灯只证明已执
 
 - [开发模型总览](./00-index.md)：把这些词放回完整开发闭环。
 - [新仓起步](./01-new-plugin-repository.md)：从最小插件到真实组合与安装验证。
+- [上下文纪律](./03-context-and-drift.md)：压缩、按需加载、取代与归档怎样接住 spec 堆积与方向反复。
 - DSH [规范 glossary](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/glossary.md)：进一步了解 scope、turn、step、goal round 等规范术语；本页不维护第二份 API 词典。

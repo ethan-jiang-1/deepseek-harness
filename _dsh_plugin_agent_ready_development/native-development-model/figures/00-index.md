@@ -4,7 +4,7 @@
 
 ## 主入口
 
-从 [`../00-map.md`](../00-map.md) 进入本卷；图示由 [`00-index.md`](../00-index.md) 和 [`01-new-plugin-repository.md`](../01-new-plugin-repository.md) 解释。
+从 [`../00-map.md`](../00-map.md) 进入本卷；图示由 [`00-index.md`](../00-index.md)、[`01-new-plugin-repository.md`](../01-new-plugin-repository.md) 与 [`03-context-and-drift.md`](../03-context-and-drift.md) 解释。
 
 ## 直接内容
 

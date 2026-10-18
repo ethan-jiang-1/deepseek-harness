@@ -47,7 +47,7 @@
 
 | 机制 | 持久方式 | 恢复与再注入行为 | 出处 |
 |---|---|---|---|
-| **goal** | 一条 durable `goal/change` 事件；每个 session 只有一个当前目标 | 跨 turn、resume、fork、进程重启存活；**续跑许可（armed/disarmed）故意不持久化**，resume/fork 后必须由人显式 rearm | `packages/goal/README.md:12`、`:72`、`:99`；`packages/goal/tool-goal/README.md:116`，`[原文]` |
+| **goal** | 一条 durable `goal/change` 事件；每个 session 只有一个当前目标 | 跨 turn、resume、fork、进程重启存活；**续跑许可（armed/disarmed）故意不持久化**，resume/fork 后必须由人显式 rearm | `packages/goal/goal/README.md:12`、`:72`、`:99`；`packages/goal/tool-goal/README.md:116`，`[原文]` |
 | **plan mode** | 单个 log-only 的整值替换事件 `plan/mode`，最后一条记录值就是状态 | 「resume, fork, and compaction recover it by folding the log」；每次组装 system prompt 时由投影状态决定是否注入 `plan:policy` 段 | `packages/plan/plan-mode/README.md:81`、`:12`；`packages/plan/plan-mode/src/index.ts:9`，`[源码]` |
 | **todo** | 整表替换的 `todo/write` 快照事件，属于单个 agent session | **只作日志态 UI 状态，明确「never derived history」**——持久、可重放、可重建，但不会自动回灌进模型历史 | `packages/todo/tool-todo/README.md:12`；`packages/todo/tool-todo/src/types.ts:30`，`[原文]` |
 
@@ -61,7 +61,7 @@
 
 > Treat the current workspace, tool results, and durable session state as authoritative; inspect them instead of assuming earlier narration is still current.
 
-出处：`packages/goal/goal-round-driver/src/prompt.ts:18`-`20`（`[源码]`）。同一提示词要求「声称完成前先取证、读当前 goal、再标 complete」（同文件 `:20`-`:23`）。这是仓库里唯一直白假设「早先叙述可能过期」的运行时指令。
+出处：`packages/goal/goal-round-driver/src/prompt.ts:18`-`20`（`[源码]`）。同一提示词要求「声称完成前先取证、读当前 goal、再标 complete」（同文件 `:20`-`:23`）。这是仓库里少见的、把「早先叙述可能过期」直接写进提示词的运行时指令。
 
 **2. 目标轮次会整条重发，直到被压缩遮蔽。**
 
@@ -82,14 +82,14 @@
 - **skills 只发目录**：模型先拿到「名字 + 截断描述（默认上限 500）」的耐久目录，再用 `skill` 工具加载正文；目录整份替换，清空则追加空目录退役旧名字（`packages/skill/tool-skill/README.md:12`、`:54`、`:57`，`[原文]`）。目录消息本身还写明「This catalog contains summaries only; do not infer or follow a skill's instructions until it has been loaded.」（`packages/skill/tool-skill/src/index.ts:268`，`[源码]`）。
 - **指令文件分层注入并刷新**：`agent-instructions` 把 `AGENTS.md` / `CLAUDE.md` 载入上下文，注入的是普通带 source 的 `user/message`，因此「replay, compact, and resume exactly like other history」（`packages/context/agent-instructions/README.md:88`，`[原文]`）。
 
-配套的是**预算**：根 `AGENTS.md` 有 2080 词的硬上限，`docs/AGENTS.md` 1430、`docs/architecture.md` 2410、`docs/testing.md` 1350 等，由 `verify-doc-budgets` 在超限或缺文件时拒绝（`docs/AGENTS.md:51`、`:59`；`scripts/doc-budgets.manifest.json:2`-`:8`，`[源码]`）。**常驻上下文的那份规则文件不能无限长**——这是把 spec 堆积挡在上下文之外的第一道闸。
+配套的是**预算**：根 `AGENTS.md` 有 2080 词的硬上限，`docs/AGENTS.md` 1430、`docs/architecture.md` 2410、`docs/testing.md` 1350 等，由 `verify-doc-budgets` 在超限或缺文件时拒绝（上限值见 `scripts/doc-budgets.manifest.json:2`-`:8`；门禁行为见 `docs/AGENTS.md:51`。`:59` 列的是目标值，它与 manifest 的 ceiling 数值不一致这件事见 [07](./07-limits.md)）。**常驻上下文的那份规则文件不能无限长**——这是把 spec 堆积挡在上下文之外的第一道闸。
 
 ## 七、找回来：检索与隔离
 
 被压缩或压根没进上下文的历史可以按需检索；需要独立上下文的工作则被隔离出去：
 
 - `session-search` 给每个 agent 五个只读全局工具，检索**当前工作区更早的 session**（`packages/experimental/session-search/README.md:12`，`[原文]`）。
-- `tool-session-query` 提供五个只读工具（搜索 session、搜索事件、追关系、读精确事件），跨 session 访问要求目标 `cwd` 与调用者完全一致，且**默认关闭**（`packages/experimental/tool-session-query/README.md:12`，`[原文]`）。被压缩遮蔽的事件仍然可搜：「All `current`, `shadowed`, and `log-only` events are searchable by default.」（`packages/session-query/session-query-sqlite/README.md:59`，`[原文]`）
+- `tool-session-query` 提供五个只读工具（`session_search`、`session_event_search`、`session_trace`、`session_event_trace`、`session_event_read`），跨 session 访问要求目标 `cwd` 与调用者完全一致，且**默认关闭**（`packages/experimental/tool-session-query/README.md:12`，`[原文]`）。被压缩遮蔽的事件仍然可搜：「All `current`, `shadowed`, and `log-only` events are searchable by default.」（`packages/session-query/session-query-sqlite/README.md:59`，`[原文]`）
 - **子代理按「继承多少上下文」分成两种**：fork 继承父级**已完成 turn 的前缀**，是一次性快照，此后父级再写什么都不会进来（`packages/subagent/subagent-fork-in-process/README.md:32`、`:143`，`[原文]`）；spawn 完全不继承，「The child starts with an empty conversation, so a task prompt must stand alone」（`packages/subagent/subagent-spawn-in-process/README.md:12`，`[原文]`）。委派因此不会把主线上下文继续吹大。
 
 ## 八、守住循环卫生（但不是防漂移）
@@ -100,7 +100,4 @@
 
 ## 运行时的能力边界
 
-- **压缩是有损的**，只是损失被记账：只保留摘要文本，压不动 system prompt、工具、前缀（`packages/compaction/compaction-basic/README.md:12`）。
-- **没有「压缩后自动重述目标」的机制**：目标只在调度下一轮时整条重发（`packages/goal/goal-round-driver/README.md:112`）；不续跑就没有这句话。
-- **会话记忆不等于项目记忆**：日志记的是这一次会话；跨会话检索要显式挂 `session-search` / `tool-session-query`。
-- **没有语义漂移检测器**：没有运行时会对「你现在做的和当初说的还是不是一件事」下判断。
+压缩有损、目标不会在压缩后自动重述、跨会话记忆默认关闭、没有语义漂移检测器——这四条与仓库侧的空白一起列在 [07](./07-limits.md)，本节不重复。

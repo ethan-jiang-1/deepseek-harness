@@ -38,7 +38,7 @@ Remote head 已前进就让 push 失败，重新读取状态；raw `--force` 永
 >
 > — DSH [`AGENTS.md` 的 Conventions 节](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/AGENTS.md#conventions)。独立改动分开落地；错误的来源层修正后再向上推进。改写仍受上一节的 lease 约束。
 
-公开 API 是 pre-stable，修正时更新每个消费方，不为旧形态保留兼容层（见 [发布序列与上线 lane](./11-release-sequences-and-publish-lanes.md)）。这样主线上留下的是当前事实，而不是「先这样、后来改了」的两段历史。
+公开 API 是 pre-stable，修正时更新每个消费方，不为旧形态保留兼容层（规则 owner 是根 [`AGENTS.md` 的 Pre-stable APIs 节](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/AGENTS.md#pre-stable-apis-and-released-session-data)）。这样主线上留下的是当前事实，而不是「先这样、后来改了」的两段历史。
 
 ## 3. 先确认依赖链是官方 stack
 

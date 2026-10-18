@@ -11,7 +11,7 @@
 | 模型可见即已记录（架构层） | `docs/architecture.md:124` | `[原文]` |
 | 同一条不变量（仓规） | `AGENTS.md:137` | `[原文]` |
 | 会话只追加记录、压缩只遮蔽不删除 | `packages/core/session/README.md:12` | `[原文]` |
-| surface 五类消息事件及其元数据规则 | `docs/subsystems/session.md:298` | `[原文]` |
+| surface 五类消息事件及其元数据规则 | `docs/subsystems/session.md:298`、`:262` | `[原文]` |
 | `replace` 遮蔽一段 surface 并原位插入 | `docs/subsystems/session.md:338` | `[原文]` |
 | 面向人的 transcript 读 append 来源，因为 surface 故意遮蔽 | `docs/subsystems/session.md:358` | `[原文]` |
 | `deriveMessages()` 纯函数投影、缓存、冻结 | `docs/subsystems/session.md:668` | `[原文]` |
@@ -42,8 +42,8 @@
 
 | 事实 | 位置 | 类型 |
 |---|---|---|
-| goal 跨 turn/resume/fork/重启存活 | `packages/goal/README.md:12`、`:72` | `[原文]` |
-| 续跑许可（armed/disarmed）不持久化、每次 `agent/created` 解除 | `packages/goal/README.md:99` | `[原文]` |
+| goal 跨 turn/resume/fork/重启存活 | `packages/goal/goal/README.md:12`、`:72` | `[原文]` |
+| 续跑许可（armed/disarmed）不持久化、每次 `agent/created` 解除 | `packages/goal/goal/README.md:99` | `[原文]` |
 | resume/fork 后需显式 rearm | `packages/goal/tool-goal/README.md:116` | `[原文]` |
 | `update_goal` 的五个动作与精确 revision 要求 | `packages/goal/tool-goal/README.md:38` | `[原文]` |
 | 每轮重发完整目标块，直到被压缩遮蔽 | `packages/goal/goal-round-driver/README.md:108`、`:112` | `[原文]` |
@@ -140,4 +140,4 @@
 - **Note 计数**：`find .agents/notes/<lifecycle> -name '*.md' ! -name '*.zh.md' ! -name 'AGENTS.md' ! -name 'CLAUDE.md' | wc -l` → proposed 42、implemented 293、rejected 8、archived 924（活跃合计 343）。中英对照与 `.i18n.yaml` sidecar 不计入。
 - **skills 计数**：`.agents/skills/` 下 19 个目录（同一层另有 1 个 `.gitignore`；`ls` 默认不显示点文件，所以 `ls | wc -l` 也是 19）。
 - **浅克隆**：`.git/shallow` 158 行；历史边界之外不作断代。
-- **未在本篇出现的写法**：仓库内不存在「context rot」这一术语（实测全仓检索无命中）；本篇的「上下文腐化」是为提问者用词保留的中文说法，不是 DSH 的官方词汇。
+- **未在本篇出现的写法**：DSH 自己的源码与文档（`packages/`、`docs/`、`AGENTS.md`、`.agents/`）里没有「context rot」这一术语（实测检索无命中；本仓 `_misc/` 下的外部参考材料里出现过，不计入）；本篇的「上下文腐化」是为提问者用词保留的中文说法，不是 DSH 的官方词汇。

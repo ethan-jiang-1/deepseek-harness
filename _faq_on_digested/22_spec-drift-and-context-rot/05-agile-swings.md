@@ -4,10 +4,10 @@
 
 ## 一、它不阻止转向，它让转向有唯一现行版本与可回溯历史
 
-产品本身是 pre-stable、按 RC 滚动发布的（`AGENTS.md:5`、`:7`）；流程里没有任何一条规则假设方向稳定。相反，它假定方向会变，于是把「变了之后算谁的、旧的去哪」写死：
+产品本身是 pre-stable（`AGENTS.md:5`、`:7`），发布按 RC 滚动（见本仓 tag 序列）；流程里没有任何一条规则假设方向稳定。相反，它假定方向会变，于是把「变了之后算谁的、旧的去哪」写死：
 
 - **现行的只有一个**：一篇决定只有一个 owner；「Updating the Agent Note that already owns the decision satisfies the rule; do not create a duplicate.」（`.agents/notes/README.md:48`，`[原文]`）
-- **历史只追加**：归档永久冻结、不可编辑（`.agents/notes/README.md:42`）；快照世代、Session 格式世代同样「never move, overwrite, or delete committed generations」（`AGENTS.md:7`，`[原文]`）。
+- **历史只追加**：归档永久冻结、不可编辑（`.agents/notes/README.md:42`）；快照世代、Session 格式世代同样「never move, overwrite, or delete committed generations」（`AGENTS.md:7`，`[原文]`）。这里的「只追加」指已封存内容不被改写，清单条目本身不是单调账本，见 [07 §四](./07-limits.md)。
 - **转向要指名道姓**：新 Note 落地即触发取代检查（`.agents/notes/AGENTS.md:5`）。
 
 ## 二、三个真实案例（当前工作树可核对）

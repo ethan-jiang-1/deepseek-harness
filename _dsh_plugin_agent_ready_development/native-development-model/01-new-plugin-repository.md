@@ -59,3 +59,4 @@ DSH 主仓对每个非平凡（non-trivial）的模型、协议或用户可见�
 - [DSH 插件作者入口](../repo-harness/09-plugin-author-entry.md)：官方作者文档层次、bundle/profile 关系及外部仓库适用边界。
 - [DSH 原生开发模型](./00-index.md)：owner、证据、评估与完成判断之间的关系。
 - [精确流程参考](../sdlc-reference/00-index.md)：按问题查找 Agent Note、证据路由、review 与发布条件。
+- [上下文纪律](./03-context-and-drift.md)：spec 堆积与方向反复时，运行时会话与仓库各接住什么、哪些判断留给人。

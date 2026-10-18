@@ -43,5 +43,5 @@
 
 - **本仓库是浅克隆**：`.git/shallow` 有 158 个边界提交，边界之外的历史无法核对。本文引用的历史案例都取了当前工作树仍存在、且可从 `upstream/master` 可达的提交；凡是解析到 graft 根（`92f8fb6c4a`）的，一律不作为「某年某月做的决定」的证明。
 - **无法证明上游从未重写过历史**：本地没有 upstream 的 reflog，也没有 PR 讨论。
-- **本语料与主仓有一条已知冲突**：`_faq_on_digested/` 的引用规范要求在引用源码时标注 commit hash（见本目录 `00-index.md` 的「引用规范」），而主仓的 `verify-repository-references` 恰好拒绝维护文件中出现真实 commit 标识符。实测该门禁在本基线对 `_faq_on_digested/`、`_misc/`、`python/sdk/uv.lock` 已是红的（非本篇引入）；本语料按自身规范继续标注提交号，这一冲突在语料层面登记，不在本篇解决。
+- **本语料与主仓有一条已知冲突**：`_faq_on_digested/` 的引用规范要求在引用源码时标注 commit hash（见本目录 `00-index.md` 的「引用规范」），而主仓的 `verify-repository-references` 恰好拒绝维护文件中出现真实 commit 标识符。实测该门禁在本基线对 `_faq_on_digested/`、`_digested/`、`_misc/`、`python/sdk/uv.lock` 已是红的（非本篇引入）；本语料按自身规范继续标注提交号，这一冲突在语料层面登记，不在本篇解决。
 - **「现行」判定有时间戳**：全部结论对照 `dsh-v0.2.1-rc.2`（`687f282e8625c6b8d11ff58211a90524be2e4317`）。下一轮同步后，数字、路径与本篇的判断都要按 `_change_log/` 重测。

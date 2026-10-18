@@ -1,4 +1,4 @@
-# 03 · 长会话与长期项目：上下文纪律（context discipline）
+# 长会话与长期项目：上下文纪律（context discipline）
 
 ## 一句话
 
@@ -23,20 +23,20 @@ spec 越堆越多时，先分清坏的是哪一层：**上下文腐化**（模�
 
 | 失败 | 出事载体 | 典型信号 | 主要接住它的一层 |
 |---|---|---|---|
-| 上下文腐化 | 一次会话的模型可见面 | 早先的叙述被当成现状；摘要吃掉了决定性细节 | 运行时（§2）+ 录制证据 |
+| 上下文腐化 | 一次会话的模型可见面 | 早先的叙述被当成现状；摘要吃掉了决定性细节 | 运行时（§2）与 [Agent 契约证据](../sdlc-reference/12-agent-contract-evidence.md#看见的请求) |
 | 规格漂移 | 仓库里的事实载体 | 同一事实出现第二份手写副本，改了一处忘了另一处 | 仓库归属（§3）+ 生成目录与门禁 |
 | 方向反复 | 决定的版本化方式 | 说不清为什么变成现在这样，旧方案被重新提出 | 决定生命周期（§4） |
-| 存量堆积 | 决定语料的总量 | 检索变慢、没人删，但每篇单看都没错 | 归档与删除判据（§4、§5） |
+| 存量堆积 | 决定语料的总量 | 检索变慢、没人删，但每篇单看都没错 | 归档与删除判据（§4） |
 
-前三种是「内容错了」，第四种是「内容没错但太多」。混着谈会得出「写少一点就好了」这种既不正确也不可执行的结论——DSH 对第四种给的是归档与删除判据，不是写作克制。
+前三种是「内容错了」，第四种是「内容没错但太多」。混着谈会得出「写少一点就好了」这种既不正确也不可执行的结论——DSH 对第四种给的是归档与删除判据，同时用写入门槛压住新增量。
+
+这组四类失败与三层分工，是本语料从 DSH 一手机制归纳出的框架，不是 DSH 的官方术语。
 
 ## 2. 运行时：日志是记录，模型可见面是投影
 
 会话事实只有一条来源：仅追加的 session log（会话日志）。模型看见的历史是从它派生出来的 surface（模型可见面）。
 
-> **Model-visible means logged.** Every model request must be reconstructable from the log.
->
-> — DSH [`docs/architecture.md` 的 Session log 节](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/architecture.md#session-log)。这条不变量决定了「上下文里丢的东西」在日志里找得回来，也决定了任何新的模型可见输入都必须先成为一条 session event。
+这条不变量（模型可见即已记录）的原文与它对 agent 契约资产的含义，由 [Agent 契约证据](../sdlc-reference/12-agent-contract-evidence.md#看见的请求) 拥有（`docs/architecture.md` 的 Session log 节）：任何进入模型请求的内容都必须能从会话日志重建，新的模型可见输入必须先成为一条 session event。
 
 长会话一定会压缩。压缩的做法是**遮蔽（shadow）而不是删除**：被压掉的事件不再进入派生消息，但仍留在日志里。
 
@@ -52,7 +52,7 @@ spec 越堆越多时，先分清坏的是哪一层：**上下文腐化**（模�
 
 更值得记住的是压缩指令对「过期」的态度：摘要**不允许照抄上一版**，必须按「现在还成立吗」重写。
 
-> Do not copy it forward verbatim: preserve still-true facts, **drop stale ones**, and merge newer information into a single consolidated summary under the same structure.
+> Do not copy it forward verbatim: preserve still-true facts, drop stale ones, and merge newer information into a single consolidated summary under the same structure.
 >
 > — DSH [`packages/compaction/compaction-basic/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/packages/compaction/compaction-basic/README.md)。所以「不写下来就会丢」的事实，不要指望留在对话里。
 
@@ -95,7 +95,7 @@ spec 越堆越多时，先分清坏的是哪一层：**上下文腐化**（模�
 >
 > — DSH [`docs/AGENTS.md` 的 slop checklist](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/AGENTS.md#the-slop-checklist)。同一清单还点名手抄目录：「Hand-restated catalogs, JSDoc, or inventories of tests, packages, and status when source or a generator is authoritative.」
 
-会漂移的清单交给生成器：工具、配置、持久事件、模块关系、capability seam 与 Cordis API 的目录都由源码生成，并有 freshness（新鲜度）门禁在生成物与源码不一致时失败（[Development Harness 的可读性与归属](../repo-harness/02-legibility-and-ownership.md)）。
+会漂移的清单交给生成器，并由 freshness（新鲜度）门禁守住；生成目录与手抄清单的分工见 [Development Harness 的可读性与归属](../repo-harness/02-legibility-and-ownership.md)。
 
 常驻上下文本身也有预算：根级指令与若干 standing 文档在 `scripts/doc-budgets.manifest.json` 里有词数上限，`verify-doc-budgets` 超限或缺文件即失败，处理顺序是 relocate（搬去 owning tier）→ condense → 才考虑抬上限（DSH [`docs/AGENTS.md` 的 Wordcount Budgets 节](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/AGENTS.md#wordcount-budgets)）。
 
@@ -111,22 +111,15 @@ spec 越堆越多时，先分清坏的是哪一层：**上下文腐化**（模�
 
 > A reversal of the decision or its rationale requires a new Agent Note and cross-link.
 >
-> — 同上。决定或理由反转，必须新写一篇并与旧篇交叉链接。
+> — DSH [`.agents/notes/implemented/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/implemented/AGENTS.md)。决定或理由反转，必须新写一篇并与旧篇交叉链接。
 
 而且取代不是靠自觉：**每新增一篇 Note，都要在同一次变更里做一次取代检查**（supersession check），把同一决定、机制或被拒方案的旧记录分类处理。
 
 > Every new Agent Note triggers a supersession check. Search the active tree for older notes covering the same decision or mechanism, classify any full or partial supersession with dsh-archive-agent-notes, and archive every qualifying implemented triplet in the same PR. Keep partial supersessions active and cross-linked.
 >
-> — DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/AGENTS.md)。这条规则直接消灭「转向之后留下两份互相矛盾的现行文档」这一形态。
+> — DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/AGENTS.md)。这条规则正面处理「转向之后留下两份互相矛盾的现行文档」这一形态；判断仍由作者执行，没有门禁比较两份叙述。
 
-分类结果只有三种去向，精确条件与冻结约束由 [Agent Note 生命周期](../sdlc-reference/01-agent-note-lifecycle.md) 拥有：
-
-| 情形 | 去向 |
-|---|---|
-| 部分取代，或旧理由仍独立有用 | 两篇都留在活动树、交叉链接，并更新仍然有效的事实 |
-| 完全取代，且新 owner 已吸收全部独有理由、备选、后果与验证要求 | 合并进新 owner 后删除旧的完整三件套，并修复入站链接 |
-| 从未实现、方向作废 | 转入 `rejected/`，否决理由写在 `Status:` 行；不再能防错时删除 |
-| 已交付但未来决策价值低 | 归档为冻结快照，只作历史引用，不作当前权威 |
+分类结果与每种情形的精确条件、冻结约束，由 [Agent Note 生命周期](../sdlc-reference/01-agent-note-lifecycle.md) 拥有，本页不复制。
 
 **插件仓建议。** 即使不使用 DSH 的目录约定，也值得照搬两条：改主意时**新开一篇**（含备选与代价）并在两篇之间建立可机械检查的链接；把「还有没有指导价值」而不是字数或年龄作为归档判据。
 
@@ -136,7 +129,7 @@ spec 越堆越多时，先分清坏的是哪一层：**上下文腐化**（模�
 
 | 样本 | 转向 | 记录方式 |
 |---|---|---|
-| 提案被否 | 用运行时 schema 注册表替换编译期事件映射的提案，提出 11 周后被否决 | 转入 `rejected/`，否决理由写在 `Status:` 行（该轮同时归档 453 组已交付三件套、拒绝 7 篇提案、删除 2 篇不再防错的 rejected） |
+| 提案被否 | 用运行时 schema 注册表替换编译期事件映射的提案，提出 11 周后被否决 | 转入 `rejected/`，否决理由写在 `Status:` 行 |
 | 部分取代 | 依赖政策只取代另一篇的 package-selection 一段 | 新 Note 头部声明取代范围，并写明另一篇的其余决定仍然有效 |
 | 头部声明取代 | Node 原生 TypeScript 启动方式被 tsx ESM 钩子取代 | 两篇互相链接；归档篇逐条点名仍然生效的子决定 |
 | 已交付组件被移除 | PR #3339（2026-08-31，`refactor(session)!: remove SQLite persistence backend`）删除第一方 SQLite 持久化后端 | 旧 Note 归档（正文只加一行 `Archived:`），后继 Note 接管现行叙述并写明放弃的能力与重新引入条件 |
@@ -144,7 +137,7 @@ spec 越堆越多时，先分清坏的是哪一层：**上下文腐化**（模�
 
 上表的可点证据：被否提案在 [`.agents/notes/rejected/architecture/2026-06-16-typed-event-schemas.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/rejected/architecture/2026-06-16-typed-event-schemas.md)；部分取代见 [`.agents/notes/implemented/process/2026-10-14-experimental-dependency-policy.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/implemented/process/2026-10-14-experimental-dependency-policy.md)；取代对见 [现行篇](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/implemented/architecture/2026-07-29-dsh-source-launch-tsx-esm.md) 与 [归档篇](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/architecture/2026-07-28-dsh-native-typescript-source-launch.md)；SQLite 移除的后继叙述见 [`.agents/notes/implemented/simplification/2026-08-30-jsonl-only-session-persistence.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/implemented/simplification/2026-08-30-jsonl-only-session-persistence.md)。
 
-归档轮 PR #3548（2026-09-04，`docs(notes): archive low-future-value Agent Notes`）的提交信息自述：归档 **453** 组已交付三件套（417,882 个英文词）、拒绝 **7** 篇前提已消失的提案、删除 **2** 篇不再能阻止错误的 rejected，并保留 201 篇仍有指导价值的记录。规模一侧，本基线实测 `.agents/notes/` 活跃 **343** 篇（proposed 42、implemented 293、rejected 8）、归档 **924** 篇（英文口径，不含 `.zh.md` 与 `.i18n.yaml` sidecar，见 [`.agents/notes/`](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.1-rc.2/.agents/notes)）。数量本身不是缺陷；它证明归档与删除判据是被真正执行过的动作，而不是写在纸上的口号。
+归档轮 PR #3548（2026-09-05 合并；分支提交信息日期 2026-09-04，`docs(notes): archive low-future-value Agent Notes`）的提交信息自述：归档 **453** 组已交付三件套（417,882 个英文词）、拒绝 **7** 篇前提已消失的提案、删除 **2** 篇不再能阻止错误的 rejected，并保留 201 篇仍有指导价值的记录。规模一侧，本基线实测 `.agents/notes/` 活跃 **343** 篇（proposed 42、implemented 293、rejected 8）、归档 **924** 篇（英文口径，不含 `.zh.md` 与 `.i18n.yaml` sidecar，见 [`.agents/notes/`](https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.1-rc.2/.agents/notes)）。数量本身不是缺陷；它证明归档与删除判据是被真正执行过的动作，而不是写在纸上的口号。
 
 ## 5. 使用清单
 
@@ -182,5 +175,5 @@ spec 越堆越多时，先分清坏的是哪一层：**上下文腐化**（模�
 - DSH [`packages/skill/tool-skill/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/packages/skill/tool-skill/README.md)：目录与按需加载。
 - DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/AGENTS.md)：文档层级（一个事实一个家）、slop checklist 与词数预算。
 - DSH [`scripts/doc-budgets.manifest.json`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/scripts/doc-budgets.manifest.json)：常驻文档的实际上限。
-- DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/AGENTS.md)、[`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md) 与 [implemented 子树规则](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/implemented/AGENTS.md)：取代检查、事实原地更新与决定不可改写；三条结局的精确条件见 [Agent Note 生命周期](../sdlc-reference/01-agent-note-lifecycle.md)。
+- DSH [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/AGENTS.md)（取代检查）、[implemented 子树规则](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/implemented/AGENTS.md)（事实原地更新、决定不可改写）与 [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/README.md)（归档与删除判据）；结局的精确条件见 [Agent Note 生命周期](../sdlc-reference/01-agent-note-lifecycle.md)。
 - DSH [`docs/i18n/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/i18n/README.md) 与 [`scripts/verify-upgrade-guides.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/scripts/verify-upgrade-guides.ts)：机器检查自称的边界。

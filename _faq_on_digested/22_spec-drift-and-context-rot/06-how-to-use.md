@@ -26,7 +26,7 @@
 - **方向要改就改 goal**：`edit` 而不是在对话里说一句（`packages/goal/tool-goal/README.md:38`，`[原文]`）。
 - **需要独立上下文就委派**：fork 继承父级已完成 turn 的**一次性快照**，spawn 完全不继承（`packages/subagent/subagent-fork-in-process/README.md:143`、`packages/subagent/subagent-spawn-in-process/README.md:12`，`[原文]`）。
 
-## 三、传统应用开发：五条可迁移规则 `[推断]`
+## 三、传统应用开发：六条可迁移规则 `[推断]`
 
 下面每条左边是 DSH 的一手机制（可核对），右边是不依赖 DSH 的等价落地形态。
 

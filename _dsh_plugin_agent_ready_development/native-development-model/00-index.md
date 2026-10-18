@@ -12,7 +12,6 @@
 - [开发闭环](#dsh-native-闭环)：外部结果、owner、条件性记录、完整交付、验证与评审。
 - [注意事项](#最重要的注意事项)：goal、mock、录制刷新、已退役的 invariant companion、loop 修改与主仓制度。
 - [第一笔交付](#从新仓库开始)：从当前仓库判断是否已经具备继续开发的基础。
-- [上下文纪律](./03-context-and-drift.md)：spec 堆积时长会话与长期项目各层的防腐机制，以及机器查不到的边界。
 
 ![独立 DSH 插件仓的原生开发闭环](./figures/plugin-development-loop.svg)
 

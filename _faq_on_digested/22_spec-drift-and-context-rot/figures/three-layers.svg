@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>四类失败与三层防线：谁接住什么</title>
+  <title>四类失败 × 三层防线：谁接住什么</title>
   <desc>把上下文腐化、规格漂移、方向反复、存量堆积四类失败按三层分工排列。上下文腐化主要由运行时的 surface 投影与 compaction 遮蔽记账接住；规格漂移主要由仓库治理的「一个事实一个家、只写当前状态」与门禁的生成物新度、链接、引用、类型粘贴检查接住；方向反复主要由仓库治理的「决定不可原地改写、每篇新 Note 强制取代检查、归档冻结」接住；存量堆积主要由归档与删除判据接住，配合运行时的按需加载与常驻文档词数预算。底部说明语义判断没有任何机器保证，归 review 与 owner。</desc>
 
   <rect width="1200" height="660" rx="8" fill="#f8fafc"/>
