@@ -52,7 +52,7 @@ DSH 使用 rejected Agent Notes、README 的 Known Limitations 与 deferred work
 
 根级 `AGENTS.md` 只保留每轮需要的 standing orders，并链接详细 owner；architecture 提供有序地图；catalog 支持查询；Skill 在任务匹配时才加载完整工作流。Progressive disclosure（渐进披露）让 agent 先取得方向，再为当前问题支付细节成本。
 
-可读性因此不是“把一切写进上下文”，而是“让读者知道下一份最小且权威的材料在哪里”。
+可读性因此不是“把一切写进上下文”，而是“让读者知道下一份最小且权威的材料在哪里”。会话内的压缩、状态恢复与按需加载怎样接住上下文腐化，见 [上下文纪律](../native-development-model/03-context-and-drift.md)。
 
 ## 证据入口
 

@@ -32,6 +32,14 @@ git push --force-with-lease=<branch>:<observed-oid>
 
 Remote head 已前进就让 push 失败，重新读取状态；raw `--force` 永不允许。改写后重新 fetch heads，并审计 unresolved review threads、approvals、mergeability 与 checks。
 
+改写不只为追新 trunk。一次改动本身落错了位置时，仓库的规则是回去修**引入它的那一层**，而不是在它上面叠一个修正 PR：
+
+> **Choose PR history deliberately.** Split independent changes and fix the introducing PR before propagation. Standalone/stack branches may merge-forward or rebase.
+>
+> — DSH [`AGENTS.md` 的 Conventions 节](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/AGENTS.md#conventions)。独立改动分开落地；错误的来源层修正后再向上推进。改写仍受上一节的 lease 约束。
+
+公开 API 是 pre-stable，修正时更新每个消费方，不为旧形态保留兼容层（见 [发布序列与上线 lane](./11-release-sequences-and-publish-lanes.md)）。这样主线上留下的是当前事实，而不是「先这样、后来改了」的两段历史。
+
 ## 3. 先确认依赖链是官方 stack
 
 同仓库 A ← B ← C 的依赖 PR 不能靠逐个 `gh pr merge` 和手工 retarget 模拟 stack。Landing 前：

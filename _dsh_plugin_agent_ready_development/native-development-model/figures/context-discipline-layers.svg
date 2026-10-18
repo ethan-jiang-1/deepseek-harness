@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">上下文纪律：运行时、仓库与决定三层，外加一条人的边界</title>
+  <desc id="desc">左侧运行时面板说明会话日志只追加、模型可见面由它投影、压缩只遮蔽并记账，被遮蔽的事件仍留在日志里；goal 与 plan 会重新进入请求，todo 只服务界面，skill 正文按需加载。中间仓库面板说明一个事实一个家、只写当前状态、历史另行安放、清单由生成器产出、常驻指令文件有词数上限。右侧决定面板说明事实原地更新而决定不可改写、每篇新 Note 触发取代检查，部分取代交叉链接、完全取代合并后删除、低未来价值冻结归档。底部说明语义判断没有机器保证，归 review 与 owner。</desc>
+  <rect width="1200" height="660" fill="#ffffff"/>
+  <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">长会话与长期项目的三层上下文纪律</text>
+  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">先分清是哪一种失败；三层各接一部分，语义判断留给人</text>
+
+  <rect x="40" y="96" width="360" height="440" rx="12" fill="#f5f8ff" stroke="#b9c9e8" stroke-width="1.5"/>
+  <text x="220" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#1e3a8a">运行时 · 会话</text>
+  <text x="220" y="150" text-anchor="middle" font-size="11" fill="#5f6b7a">记录面与可见面分开</text>
+  <rect x="70" y="166" width="300" height="42" rx="8" fill="#ffffff" stroke="#93a9d1"/>
+  <text x="220" y="192" text-anchor="middle" font-size="13" font-weight="600" fill="#172033">事件日志：只追加</text>
+  <line x1="220" y1="210" x2="220" y2="232" stroke="#94a3b8" stroke-width="1.5"/>
+  <path d="M214,230 L220,240 L226,230 Z" fill="#94a3b8"/>
+  <rect x="70" y="242" width="300" height="42" rx="8" fill="#ffffff" stroke="#93a9d1"/>
+  <text x="220" y="268" text-anchor="middle" font-size="13" font-weight="600" fill="#172033">模型可见面：从日志投影</text>
+  <line x1="220" y1="286" x2="220" y2="308" stroke="#94a3b8" stroke-width="1.5"/>
+  <path d="M214,306 L220,316 L226,306 Z" fill="#94a3b8"/>
+  <rect x="70" y="318" width="300" height="42" rx="8" fill="#fff5e6" stroke="#d99939"/>
+  <text x="220" y="344" text-anchor="middle" font-size="13" font-weight="600" fill="#744408">压缩：遮蔽 + 记账</text>
+  <text x="220" y="382" text-anchor="middle" font-size="11" fill="#5f6b7a">被遮蔽的事件仍留在日志里</text>
+  <line x1="70" y1="398" x2="370" y2="398" stroke="#d7e0f0" stroke-width="1.5"/>
+  <text x="220" y="424" text-anchor="middle" font-size="12" fill="#1e3a8a">重新进入请求：goal / plan</text>
+  <text x="220" y="452" text-anchor="middle" font-size="12" fill="#1e3a8a">只服务界面：todo 清单</text>
+  <text x="220" y="480" text-anchor="middle" font-size="12" fill="#1e3a8a">按需加载：skill 正文</text>
+  <text x="220" y="512" text-anchor="middle" font-size="11" fill="#5f6b7a">续跑许可不持久：resume 后要 rearm</text>
+
+  <rect x="420" y="96" width="360" height="440" rx="12" fill="#f4fbf6" stroke="#a9d5b8" stroke-width="1.5"/>
+  <text x="600" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#14532d">仓库 · 事实</text>
+  <text x="600" y="150" text-anchor="middle" font-size="11" fill="#5f6b7a">当前状态只能有一个 owner</text>
+  <rect x="450" y="166" width="300" height="42" rx="8" fill="#ffffff" stroke="#8fc7a5"/>
+  <text x="600" y="192" text-anchor="middle" font-size="13" font-weight="600" fill="#172033">一个事实一个家</text>
+  <rect x="450" y="220" width="300" height="42" rx="8" fill="#ffffff" stroke="#8fc7a5"/>
+  <text x="600" y="246" text-anchor="middle" font-size="13" font-weight="600" fill="#172033">只写当前状态</text>
+  <rect x="450" y="274" width="300" height="42" rx="8" fill="#ffffff" stroke="#8fc7a5"/>
+  <text x="600" y="300" text-anchor="middle" font-size="12" font-weight="600" fill="#172033">历史进 commit / PR / Note</text>
+  <rect x="450" y="328" width="300" height="42" rx="8" fill="#ffffff" stroke="#8fc7a5"/>
+  <text x="600" y="354" text-anchor="middle" font-size="12" font-weight="600" fill="#172033">清单由生成器产出并查新鲜度</text>
+  <rect x="450" y="382" width="300" height="42" rx="8" fill="#ffffff" stroke="#8fc7a5"/>
+  <text x="600" y="408" text-anchor="middle" font-size="12" font-weight="600" fill="#172033">常驻指令文件有词数上限</text>
+  <text x="600" y="452" text-anchor="middle" font-size="11" fill="#5f6b7a">状态词与手抄目录是典型漂移源</text>
+  <text x="600" y="480" text-anchor="middle" font-size="11" fill="#5f6b7a">第二份手写副本改一处忘一处</text>
+  <text x="600" y="512" text-anchor="middle" font-size="11" fill="#5f6b7a">门禁查形状与新鲜度，不查语义</text>
+
+  <rect x="800" y="96" width="360" height="440" rx="12" fill="#fff8ef" stroke="#e2c08d" stroke-width="1.5"/>
+  <text x="980" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#7c4a03">决定 · 历史</text>
+  <text x="980" y="150" text-anchor="middle" font-size="11" fill="#5f6b7a">改主意要留账，不留两份现行</text>
+  <rect x="830" y="166" width="300" height="42" rx="8" fill="#ffffff" stroke="#dcb877"/>
+  <text x="980" y="192" text-anchor="middle" font-size="12" font-weight="600" fill="#172033">事实原地更新，决定不可改写</text>
+  <rect x="830" y="220" width="300" height="42" rx="8" fill="#ffffff" stroke="#dcb877"/>
+  <text x="980" y="246" text-anchor="middle" font-size="12" font-weight="600" fill="#172033">每篇新 Note 触发取代检查</text>
+  <rect x="830" y="274" width="300" height="38" rx="8" fill="#ffffff" stroke="#dcb877"/>
+  <text x="980" y="298" text-anchor="middle" font-size="12" fill="#172033">部分取代 → 交叉链接</text>
+  <rect x="830" y="322" width="300" height="38" rx="8" fill="#ffffff" stroke="#dcb877"/>
+  <text x="980" y="346" text-anchor="middle" font-size="12" fill="#172033">完全取代 → 合并后删除</text>
+  <rect x="830" y="370" width="300" height="38" rx="8" fill="#ffffff" stroke="#dcb877"/>
+  <text x="980" y="394" text-anchor="middle" font-size="12" fill="#172033">低未来价值 → 冻结归档</text>
+  <text x="980" y="436" text-anchor="middle" font-size="11" fill="#5f6b7a">归档后不再编辑，也不作现行权威</text>
+  <text x="980" y="462" text-anchor="middle" font-size="11" fill="#5f6b7a">判据是「还有没有指导价值」</text>
+  <text x="980" y="488" text-anchor="middle" font-size="11" fill="#5f6b7a">不是字数、年龄或配额</text>
+
+  <rect x="40" y="556" width="1120" height="72" rx="12" fill="#fef3c7" stroke="#fcd34d" stroke-width="1.5"/>
+  <text x="600" y="584" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">没有任何一层接住的部分：语义判断</text>
+  <text x="600" y="608" text-anchor="middle" font-size="12" fill="#78350f">两段话是否互相矛盾、一篇记录是否仍有效、一次改动算不算重大 —— 显式交给 review 与 owner</text>
+</svg>

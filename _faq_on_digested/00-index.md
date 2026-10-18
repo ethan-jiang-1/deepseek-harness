@@ -63,6 +63,7 @@ _faq_on_digested/
 | 19 | [DSH 的一次变更，为什么要把意图、决定、实现和证据分开安放？](./19_dsh-native-development-process/question.md) | [owner、证据、交付判断与 GitHub 状态的关系；历史案例保留可核对的事实边界](./19_dsh-native-development-process/answer.md) |
 | 20 | [Agent Note 到底该怎么写、为什么要搞这么复杂？](./20_agent-note-quality-bar/question.md) | [分篇 01–07 按推荐顺序推进：先判该不该写（多数改动不用）、再学怎么写与放哪，然后才是背后的思考（制度在防哪四种失败）、归档判据、移植与三层分工；附录是一篇全程带真实提交号的走查，answer.md 负责一分钟版、目录清单与术语速查，全部结论带真实 Note 与提交作例，出处集中在 reference.md（每条结论对应仓库路径与行号）](./20_agent-note-quality-bar/answer.md) |
 | 21 | [`snapshots/` 这套录制会话快照，主仓为什么离不开、插件仓到底需不需要、对插件开发值多少？（对「插件不需要它」这一判断的反查）](./21_recorded-session-snapshots/question.md) | [七篇正文 + 六张图，按「为什么→是什么→能不能用→值多少→怎么组织→怎么做→进不进 git」推进：主仓需要它是因为「组装转录」没有替代品（起点是 178 单测全绿的 ACP 事故）；插件仓能用**机制**——`dsh-llm-replay` 是发布包、接受未经投影的原始运行日志；对插件开发值三样东西（trajectory 回归 / bug 复现 / model-visible 钉住），但上限是「变更探测器 ≠ 正确性 oracle」（postmortem 0002 是「快照为回归背书」的真实事故，四篇 postmortem 里只有一篇拿它当回归 pin）；推荐 L0–L4 阶梯与前六步采用次序：前四阶默认做；进 L4 先按「model-visible 面住在哪」选渲染期望或会话回放；落点判决——独立 agent 运营仓选顶层 `snapshots/` 证据面，`tests/trajectory/` 是降级形态，长在主仓里则都不建](./21_recorded-session-snapshots/answer.md) |
+| 22 | [Spec 越堆越多、项目左晃右晃：上下文腐化与规格漂移，DSH 机理上防住了什么？](./22_spec-drift-and-context-rot/question.md) | [七篇正文，三层分开答：运行时（日志只追加、surface 是投影、compaction 遮蔽不删除并逐项记账、goal/plan/todo 外置状态、skills 按需加载、检索与委派隔离）、仓库治理（一个事实一个家、只写当前状态、**决定不可原地改写**、每篇新 Note 强制取代检查、归档冻结与删除判据）、门禁与证据（生成器 `--check` 孪生、`doc-sync` 叶子门禁、快照世代、持久化确认）；另给三次转向的完整走法、五个 git 可核案例、插件仓与传统应用各自的抄法，以及**没防住的部分**（无跨文档语义矛盾检测，语义边界归 review）](./22_spec-drift-and-context-rot/answer.md) |
 
 ## 引用规范
 

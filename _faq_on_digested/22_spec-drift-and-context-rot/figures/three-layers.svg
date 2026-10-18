@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>四类失败与三层防线：谁接住什么</title>
+  <desc>把上下文腐化、规格漂移、方向反复、存量堆积四类失败按三层分工排列。上下文腐化主要由运行时的 surface 投影与 compaction 遮蔽记账接住；规格漂移主要由仓库治理的「一个事实一个家、只写当前状态」与门禁的生成物新度、链接、引用、类型粘贴检查接住；方向反复主要由仓库治理的「决定不可原地改写、每篇新 Note 强制取代检查、归档冻结」接住；存量堆积主要由归档与删除判据接住，配合运行时的按需加载与常驻文档词数预算。底部说明语义判断没有任何机器保证，归 review 与 owner。</desc>
+
+  <rect width="1200" height="660" rx="8" fill="#f8fafc"/>
+  <text x="600" y="38" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">四类失败 × 三层防线：谁接住什么</text>
+  <text x="600" y="62" text-anchor="middle" fill="#64748b">绿色＝这一层的主要答案；蓝色＝部分接住；灰色＝这一层不管</text>
+
+  <rect x="40" y="86" width="250" height="44" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="165" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">四类失败</text>
+  <rect x="300" y="86" width="280" height="44" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="440" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">运行时</text>
+  <text x="440" y="124" text-anchor="middle" font-size="10" fill="#475569">日志 · surface · compaction · goal/plan</text>
+  <rect x="590" y="86" width="280" height="44" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="730" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">仓库治理</text>
+  <text x="730" y="124" text-anchor="middle" font-size="10" fill="#475569">Note 生命周期 · 文档层级</text>
+  <rect x="880" y="86" width="280" height="44" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="1020" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">门禁与证据</text>
+  <text x="1020" y="124" text-anchor="middle" font-size="10" fill="#475569">生成器 --check · 快照 · 预算</text>
+
+  <rect x="40" y="140" width="250" height="98" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="165" y="172" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">上下文腐化</text>
+  <text x="165" y="194" text-anchor="middle" font-size="10" fill="#64748b">模型看见的与真实脱节</text>
+  <rect x="300" y="140" width="280" height="98" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="440" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">主要</text>
+  <text x="440" y="196" text-anchor="middle" font-size="11" fill="#334155">surface 是投影，压缩只遮蔽</text>
+  <text x="440" y="216" text-anchor="middle" font-size="11" fill="#334155">被压掉的 seq 与摘要全程记账</text>
+  <rect x="590" y="140" width="280" height="98" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="730" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">部分</text>
+  <text x="730" y="196" text-anchor="middle" font-size="11" fill="#334155">决定与事实分层，历史不当现行</text>
+  <rect x="880" y="140" width="280" height="98" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="1020" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">部分</text>
+  <text x="1020" y="196" text-anchor="middle" font-size="11" fill="#334155">录制快照钉住模型可见面</text>
+
+  <rect x="40" y="248" width="250" height="98" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="165" y="280" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">规格漂移</text>
+  <text x="165" y="302" text-anchor="middle" font-size="10" fill="#64748b">写下来的与代码不符</text>
+  <rect x="300" y="248" width="280" height="98" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="440" y="280" text-anchor="middle" font-size="12" font-weight="700" fill="#94a3b8">不管</text>
+  <text x="440" y="304" text-anchor="middle" font-size="11" fill="#94a3b8">会话不检查仓库里的一致性</text>
+  <rect x="590" y="248" width="280" height="98" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="730" y="280" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">主要</text>
+  <text x="730" y="304" text-anchor="middle" font-size="11" fill="#334155">一个事实一个家；只写当前状态</text>
+  <text x="730" y="324" text-anchor="middle" font-size="11" fill="#334155">理由住 Note，事实原地更新</text>
+  <rect x="880" y="248" width="280" height="98" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="1020" y="280" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">主要</text>
+  <text x="1020" y="304" text-anchor="middle" font-size="11" fill="#334155">生成物 --check、链接、引用</text>
+  <text x="1020" y="324" text-anchor="middle" font-size="11" fill="#334155">类型粘贴、词数预算</text>
+
+  <rect x="40" y="356" width="250" height="98" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="165" y="388" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">方向反复</text>
+  <text x="165" y="410" text-anchor="middle" font-size="10" fill="#64748b">先往东，隔一阵改往西</text>
+  <rect x="300" y="356" width="280" height="98" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="440" y="388" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">部分</text>
+  <text x="440" y="412" text-anchor="middle" font-size="11" fill="#334155">goal/plan 落日志、可改可恢复</text>
+  <text x="440" y="432" text-anchor="middle" font-size="11" fill="#334155">续轮要求以现场为准，不信叙述</text>
+  <rect x="590" y="356" width="280" height="98" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="730" y="388" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">主要</text>
+  <text x="730" y="412" text-anchor="middle" font-size="11" fill="#334155">决定不可原地改写，只能被取代</text>
+  <text x="730" y="432" text-anchor="middle" font-size="11" fill="#334155">每篇新 Note 强制取代检查</text>
+  <rect x="880" y="356" width="280" height="98" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="1020" y="388" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">部分</text>
+  <text x="1020" y="412" text-anchor="middle" font-size="11" fill="#334155">结构、封存哈希、入链由门禁保证</text>
+  <text x="1020" y="432" text-anchor="middle" font-size="11" fill="#334155">“该不该取代”仍靠判断</text>
+
+  <rect x="40" y="464" width="250" height="98" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="165" y="496" text-anchor="middle" font-size="13" font-weight="700" fill="#334155">存量堆积</text>
+  <text x="165" y="518" text-anchor="middle" font-size="10" fill="#64748b">都对，但太多、没人删</text>
+  <rect x="300" y="464" width="280" height="98" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="440" y="496" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">部分</text>
+  <text x="440" y="520" text-anchor="middle" font-size="11" fill="#334155">skill 目录按需加载；常驻文件</text>
+  <text x="440" y="540" text-anchor="middle" font-size="11" fill="#334155">有词数上限；旧会话可检索</text>
+  <rect x="590" y="464" width="280" height="98" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="730" y="496" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">主要</text>
+  <text x="730" y="520" text-anchor="middle" font-size="11" fill="#334155">归档/删除按「还有没有用」</text>
+  <text x="730" y="540" text-anchor="middle" font-size="11" fill="#334155">不按年龄体积，不设配额，不建索引</text>
+  <rect x="880" y="464" width="280" height="98" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="1020" y="496" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">部分</text>
+  <text x="1020" y="520" text-anchor="middle" font-size="11" fill="#334155">常驻文档预算超限即失败</text>
+
+  <rect x="40" y="578" width="1120" height="56" rx="10" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="600" y="602" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">没有任何一层接住的部分：语义判断</text>
+  <text x="600" y="622" text-anchor="middle" font-size="11" fill="#78350f">两段话是否互相矛盾、一篇记录是否还有效、某个决定算不算重大 —— 归 review 与 owner</text>
+</svg>

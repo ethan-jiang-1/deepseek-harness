@@ -17,7 +17,7 @@
 | `proposed` 交付时正文怎样改写 | [§5](#5-proposed--implemented-是正文改写) |
 | 留下、归档，还是合并后删除 | [§6](#6-写完之后留下归档还是合并后删除) |
 
-本页拥有成为 Note 的判据、状态转换和写完之后的三条结局。[Reference 03](./03-plan-and-sandbox.md) 拥有一次会话里的 Plan。[Reference 05](./05-prose-doc-standards.md) 拥有「系统现在做什么」。[Reference 09](./09-intake-and-work-items.md) 拥有 Issue 与 proposed Note 作为意图载体的分工。
+本页拥有成为 Note 的判据、状态转换和写完之后的三条结局。[Reference 03](./03-plan-and-sandbox.md) 拥有一次会话里的 Plan。[Reference 05](./05-prose-doc-standards.md) 拥有「系统现在做什么」。[Reference 09](./09-intake-and-work-items.md) 拥有 Issue 与 proposed Note 作为意图载体的分工。长会话与长期项目里压缩、按需加载、取代与归档的使用面，见 [上下文纪律](../native-development-model/03-context-and-drift.md)。
 
 ## 1. 什么会成为一篇 Note
 
@@ -145,7 +145,7 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 功能新增 Note 收进后来的移除 Note，还要多满足一组事实：该功能已从生产代码、配置、schema、持久化或线上格式、迁移和兼容行为中消失；当前文档不再把它写成可用；测试不再把它当成受支持行为。移除 owner 要保住原来的动机、为何不再成立、未完全移除的备选、放弃的能力、重新引入的条件，以及对「已经完全不存在」的验证。只去掉一种传输、默认值、实现或呈现，或者仍有持久数据与兼容处理，是部分取代，两边都留。
 
-归档不是改个文件夹名。一次归档移动完整的 `.md`、`.zh.md`、`.i18n.yaml`，路径是 `archived/{class}/`，中间没有 `implemented`。正文不改，只在两种语言的 `Status: implemented` 下插入同一行 `Archived: YYYY-MM-DD`，机械重录 sidecar，并处理活动 prose 的入站链接。`verify-archived-agent-notes` 把内容写入只追加的 hash manifest。封存后不得编辑、翻译、移动或删除。文档门禁跳过归档源文件，包括它们的出站链接；活动 prose 仍可以在有意引用历史时链进去。
+归档不是改个文件夹名。一次归档移动完整的 `.md`、`.zh.md`、`.i18n.yaml`，路径是 `archived/{class}/`，中间没有 `implemented`。正文不改，只在两种语言的 `Status: implemented` 下插入同一行 `Archived: YYYY-MM-DD`，机械重录 sidecar，并处理活动 prose 的入站链接。`verify-archived-agent-notes` 把内容写入 hash manifest：它保证的是已封存内容不被改写（先核对既有封存，再追加新哈希），而非条目永不消失——整组删除未发布的记录时，它的清单条目会一并移除。封存后不得编辑、翻译、移动或删除。文档门禁跳过归档源文件，包括它们的出站链接；活动 prose 仍可以在有意引用历史时链进去。
 
 `dsh-archive-agent-notes` 拥有上面这张表的语义判断。格式 gate 只证明结构合法，不代替这张表。Skill 为什么适合承载这类判断，见 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md)。
 

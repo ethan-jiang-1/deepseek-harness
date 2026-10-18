@@ -17,3 +17,4 @@
 | `evidence-routing.svg` | [`../00-index.md`](../00-index.md) |
 | `plugin-bundle-profile.svg` | [`../00-index.md`](../00-index.md) |
 | `acceptance-roles.svg` | [`../00-index.md`](../00-index.md) |
+| `context-discipline-layers.svg` | [`../03-context-and-drift.md`](../03-context-and-drift.md) |
