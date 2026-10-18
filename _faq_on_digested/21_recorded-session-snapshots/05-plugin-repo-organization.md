@@ -127,7 +127,7 @@ your-plugin-repo/
 
 - **[FAQ 13 专家插件 repo 组织](../13_expert-plugin-repo-organization/answer.md)** 回答的是「repo 放哪、DSH 源码怎么引、UI 怎么分层、spec 流程怎么走」；本篇是它没覆盖的一格：**测试证据里最贵的那一阶在外部仓怎么落地**。四个方案（A pinned submodule / B 树内 / C 纯外部 / D marketplace）都适用同一套 L0–L4 阶梯，落点按上表三情况选。
 - **方案 B 的 L4 直接按主仓形状写**：在 `snapshots/session/<你的场景>/` 下加场景、在 `cordis.snapshot.yml` 里用 patch 挂你的插件（主仓做法见 [08](../../_digested/test-strategy/08-plugin-testing.md) 台阶五与 [09](../../_digested/test-strategy/09-plugin-testing-playbook.md) 末节）。**过渡路径**是从私有轨迹「翻译」成主仓场景，而不是把私有目录搬进去。
-- **[_dsh_plugin_agent_ready_development](../../_dsh_plugin_agent_ready_development/README.md)** 讲的是独立插件仓如何沿用 DSH 的开发机制（意图 / owner / 证据 / 交付判断）；本篇可以看作它在**测试证据**这一格上的补充。
+- **[_dsh_plugin_agent_ready_development](../../_dsh_plugin_agent_ready_development/00-index.md)** 讲的是独立插件仓如何沿用 DSH 的开发机制（意图 / owner / 证据 / 交付判断）；本篇可以看作它在**测试证据**这一格上的补充。
 
 ## 这一篇要你记住的
 

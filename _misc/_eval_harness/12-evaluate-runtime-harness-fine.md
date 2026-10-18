@@ -6,7 +6,7 @@
 
 **为什么分两份。** 粗粒度（coarse-grained）定下来之后基本不动；细粒度（fine-grained）会**持续增补**（新探针（probe）、新封顶（cap））。分开之后，加一条封顶（cap）只改本文。
 
-**编号约定。** 维度用 `RT`，探针（probe）用 `PB`，活体实验（live experiment）用 `LX`，成熟度档（maturity level）用 `MG`（见 [README 的标识符约定](./README.md#标识符约定token)）。
+**编号约定。** 维度用 `RT`，探针（probe）用 `PB`，活体实验（live experiment）用 `LX`，成熟度档（maturity level）用 `MG`（见 [README 的标识符约定](./00-index.md#标识符约定token)）。
 
 **配套文档。** [01 开发粗粒度（coarse-grained）](./01-evaluate-development-harness-coarse.md) · [02 开发细粒度（fine-grained）](./02-evaluate-development-harness-fine.md) · [11 运行时粗粒度（coarse-grained）](./11-evaluate-runtime-harness-coarse.md) · [21 从缺口到计划](./21-from-gaps-to-plan-coarse.md)
 
@@ -69,7 +69,7 @@
 
 ## 4 · 十一维细粒度（fine-grained）卡
 
-> 每张卡给出：一句话定义、探针（probe）、两轴（two axes）锚点（anchor）、封顶规则（cap rules）、常见伪证（false evidence）、走形症状（failure symptoms）；部分卡另有适用性（applicability）说明、"一个判据"或"两条硬边界"。**一句话定义与锚点阶梯（anchor ladder）以本文为准**，11 §3 的一览只给名字与一行概述。增删维度、改通用两轴（two axes）或成熟度档（maturity level）时改 11；改某一维的定义、锚点（anchor）、探针（probe）或封顶（cap）时改这里（改锚点（anchor）时同步检查封顶（cap），见 [README 的维护规则](./README.md#维护规则)）。
+> 每张卡给出：一句话定义、探针（probe）、两轴（two axes）锚点（anchor）、封顶规则（cap rules）、常见伪证（false evidence）、走形症状（failure symptoms）；部分卡另有适用性（applicability）说明、"一个判据"或"两条硬边界"。**一句话定义与锚点阶梯（anchor ladder）以本文为准**，11 §3 的一览只给名字与一行概述。增删维度、改通用两轴（two axes）或成熟度档（maturity level）时改 11；改某一维的定义、锚点（anchor）、探针（probe）或封顶（cap）时改这里（改锚点（anchor）时同步检查封顶（cap），见 [README 的维护规则](./00-index.md#维护规则)）。
 
 ### RT1 组合与启动 · Composition and boot
 

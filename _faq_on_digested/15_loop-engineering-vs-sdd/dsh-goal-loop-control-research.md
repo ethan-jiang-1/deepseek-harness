@@ -26,7 +26,7 @@ OpenSpec 在仓库内是对照/建议性材料，而非 DSH 产品集成或仓�
 
 - [.agents/notes/README.md](../../.agents/notes/README.md:44) 把 Agent Notes 限定为代码、测试与现有文档尚未解释的持久决策理由；:46-52 表明它们不是通用任务队列。`.agents/` 的 Skills 提供可复用流程/判断标准，根 `AGENTS.md` 提供常设约束，二者不是当前跨 feature backlog。
 - [_faq_on_digested/07_borrowing-dsh-harness-idea/01-sdlc-change-loop.md](../07_borrowing-dsh-harness-idea/01-sdlc-change-loop.md:17) 将交付闭环表达为意图、owner、决定、实现/文档/回归证据、本地检查、CI/review、归位；:29-33 要求证据与声称对齐、负例能使检查失败。这里的完成是可核对交付证据，不是 goal 状态本身。
-- [_dsh_plugin_agent_ready_development/README.md](../../_dsh_plugin_agent_ready_development/README.md:3) 将该目录定义为独立学习/研究语料，并说 DSH 未正式声明采用名为 SDD 的方法；:29-35 说明其基线、来源和证据范围。[_dsh_plugin_agent_ready_development/sdlc-reference/09-intake-and-work-items.md](../../_dsh_plugin_agent_ready_development/sdlc-reference/09-intake-and-work-items.md:75) 明说仓库没有 Issue→agent 自动分派，goal/todo 是运行时协作状态而非仓库工作项。
+- [_dsh_plugin_agent_ready_development/00-index.md](../../_dsh_plugin_agent_ready_development/00-index.md:3) 将该目录定义为独立学习/研究语料，并说 DSH 未正式声明采用名为 SDD 的方法；:29-35 说明其基线、来源和证据范围。[_dsh_plugin_agent_ready_development/sdlc-reference/09-intake-and-work-items.md](../../_dsh_plugin_agent_ready_development/sdlc-reference/09-intake-and-work-items.md:75) 明说仓库没有 Issue→agent 自动分派，goal/todo 是运行时协作状态而非仓库工作项。
 - [15-loop-engineering-vs-sdd/05-control-points.md](./05-control-points.md:9) 建议插件仓为当前工作保留一个权威来源（ROADMAP、Issue 或 OpenSpec change/tasks），显式记录为何做、已批准范围、下一步和停止条件；:25-29 建议用多笔真实工作检验状态是否可信、验证是否对齐，而非预先宣称流程奏效。这是研究建议，不是 DSH 产品要求。
 
 ## OpenSpec：仓库引用及其证据边界

@@ -6,7 +6,7 @@
 
 **为什么分两份。** 粗粒度（coarse-grained）定下来之后基本不动；细粒度（fine-grained）会**持续增补**（新探针（probe）、新封顶（cap））。分开之后，加一条封顶（cap）只改本文，不会碰到稳定的粗粒度（coarse-grained）。
 
-**编号约定。** 维度用两字母前缀（`KN`/`CP`/`EV`/`ST`/`MT`），探针（probe）用 `PB`，封顶规则（cap rules）见本文附录 A；完整对照见 [README 的标识符约定](./README.md#标识符约定token)。
+**编号约定。** 维度用两字母前缀（`KN`/`CP`/`EV`/`ST`/`MT`），探针（probe）用 `PB`，封顶规则（cap rules）见本文附录 A；完整对照见 [README 的标识符约定](./00-index.md#标识符约定token)。
 
 **本文引用 01 的定义**：信息缺口（information gap） `IG1`–`IG7`（01 §1）、证据级（evidence level） `EL0`–`EL3`（01 §2）、第一 / 第二层（01 §3）、两轴（two axes）档位与成熟度档（maturity level） `MG0`–`MG3`（01 §4），见 [01](./01-evaluate-development-harness-coarse.md)。第三层（反证 falsification）在本文 §3 定义。
 
@@ -73,7 +73,7 @@
 
 ## 4 · 十七维细粒度（fine-grained）卡
 
-> 每张卡给出：一句话定义、填的缺口、探针（probe）、两轴（two axes）锚点（anchor）、封顶规则（cap rules）、常见伪证（false evidence）、走形症状（failure symptoms），以及可选的例证。**一句话定义与锚点阶梯（anchor ladder）以本文为准**，01 §4 的一览只给名字与一行概述。增删维度、改通用两轴（two axes）或成熟度档（maturity level）时改 01；改某一维的定义、锚点（anchor）、探针（probe）或封顶（cap）时改这里（改锚点（anchor）时同步检查封顶（cap），见 [README 的维护规则](./README.md#维护规则)）。
+> 每张卡给出：一句话定义、填的缺口、探针（probe）、两轴（two axes）锚点（anchor）、封顶规则（cap rules）、常见伪证（false evidence）、走形症状（failure symptoms），以及可选的例证。**一句话定义与锚点阶梯（anchor ladder）以本文为准**，01 §4 的一览只给名字与一行概述。增删维度、改通用两轴（two axes）或成熟度档（maturity level）时改 01；改某一维的定义、锚点（anchor）、探针（probe）或封顶（cap）时改这里（改锚点（anchor）时同步检查封顶（cap），见 [README 的维护规则](./00-index.md#维护规则)）。
 
 ### 知识归位 · KN 组
 

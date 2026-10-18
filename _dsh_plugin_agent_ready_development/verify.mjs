@@ -528,9 +528,15 @@ let markdownCount = 0
 let scriptCount = 0
 let svgCount = 0
 
+// 落地页不用 README.md：仓库的 bilingual pairing 门禁把任意 README.md 当产品文档语料。
+// 该目录已有 00-index.md（卷内容页）时，落地页退到 00-map.md。
+const landingPageNames = ['00-index.md', '00-map.md']
+
 for (const directory of directories) {
-  const readme = resolve(directory, 'README.md')
-  if (!existsSync(readme) || !statSync(readme).isFile()) report(directory, undefined, 'directory must contain README.md')
+  const landing = landingPageNames
+    .map(name => resolve(directory, name))
+    .find(candidate => existsSync(candidate) && statSync(candidate).isFile())
+  if (landing === undefined) report(directory, undefined, `directory must contain ${landingPageNames.join(' or ')}`)
 }
 
 for (const path of files) {

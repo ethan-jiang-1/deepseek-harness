@@ -2,7 +2,7 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **产品源码审计基线**：DeepSeek Harness `dsh-v0.2.0-rc.2`，commit `639ed015397290b3745d163aafe02ffee4aa3f84`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0009-0.1.7-rc.1-to-0.2.0-rc.2.md`](./_change_log/0009-0.1.7-rc.1-to-0.2.0-rc.2.md)；0008 轮语料维护的**独立复核**（约 60 处过期断言、20 处缺落点、3 孤儿页的处置与修复记录）见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)；0009 轮的**独立反查**（D1 全量引用反查、D2 正向覆盖三路、D3 硬数字重测两路、D4 口径一致性，按维度而非目录切）见 [`_change_log/0009-independent-recheck.md`](./_change_log/0009-independent-recheck.md)。自 0008 起同步口径为**整树照搬**：产品源码完全等于 upstream tag，本地维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个语料目录（`_misc` 为低重要性杂项：`_references` 冻结存档只随轮更新基线行，`_scratch` 不跟踪内容）。
+> **产品源码审计基线**：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](./_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)（该卷同时定型的**执行口径**：`ethan` = upstream 最后一个 RC 的原样 + 5 个本地独有目录，除这 5 个之外与 master 逐路径相同，没有 merge 这回事）；0008 轮语料维护的**独立复核**见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)；0009 轮的**独立反查**见 [`_change_log/0009-independent-recheck.md`](./_change_log/0009-independent-recheck.md)。本地维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个语料目录与 `.pi/`（`_misc` 为低重要性杂项：`_references` 冻结存档只随轮更新基线行，`_scratch` 不跟踪内容）。
 
 ## 30 秒看懂
 

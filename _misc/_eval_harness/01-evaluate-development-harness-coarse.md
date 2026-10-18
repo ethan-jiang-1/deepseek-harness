@@ -6,7 +6,7 @@
 
 **前置知识。** 无。本文不假设你读过任何其它材料，术语在本页定义。文中出现的 DeepSeek Harness（DSH）只是**例证**：钉版在 commit `580646c14fb998532a6ef19bb4cc4009cd74b786`，用来指认"这件事在成熟仓库里长什么样"。本文只有 §1 一条带链接的原文引文；其余例证在 [02](./02-evaluate-development-harness-fine.md) 各卡不带链接的"例证（可选核对）"段落里——**不打开任何链接也能核对**。
 
-**编号约定。** 维度用两字母前缀（知识归位 `KN` / 变更路径 `CP` / 证据与交付 `EV` / 状态与上下文 `ST` / 维护与发布 `MT`），探针（probe）用 `PB`，证据级（evidence level） `EL`，信息缺口（information gap） `IG`，成熟度档（maturity level） `MG`；完整对照见 [README 的标识符约定](./README.md#标识符约定token)。
+**编号约定。** 维度用两字母前缀（知识归位 `KN` / 变更路径 `CP` / 证据与交付 `EV` / 状态与上下文 `ST` / 维护与发布 `MT`），探针（probe）用 `PB`，证据级（evidence level） `EL`，信息缺口（information gap） `IG`，成熟度档（maturity level） `MG`；完整对照见 [README 的标识符约定](./00-index.md#标识符约定token)。
 
 **两份粒度。** 本文（`01`）是粗粒度（coarse-grained）：定义、两轴（two axes）、十七维粗判（coarse check）、报告格式与自检。**细粒度（fine-grained）**（[`02`](./02-evaluate-development-harness-fine.md)）才有每维的探针（probe）、锚点（anchor）与封顶规则（cap rules）。快诊（quick check）和全量用同一条：**只在粗判（coarse check）为红、这一轮要动、或要写成最终结论的维度上翻 02。** 全量是十七维都做粗判，不是把 02 的探针（probe）全部跑完。**粗粒度（coarse-grained）定下来后基本不动，细粒度（fine-grained）会持续增补。**
 

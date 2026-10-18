@@ -30,4 +30,4 @@ DSH 这样的真实仓库里，一次变更为什么不能只靠一份 spec、�
 
 正文会区分三类事实：`已在提交观察`（git 历史可核对）、`现行规则要求`（固定基线中的规则文件）和 `需查 GitHub`（只有远端记录才能回答）。教学重建的任务描述会明确标出，不冒充原始 Issue；未执行的 e2e、doc-sync 或远端 CI 也不会写成已验证。
 
-本 FAQ 的图示只辅助正文，不构成独立阅读路径；图示清单见 [`figures/README.md`](./figures/README.md)。
+本 FAQ 的图示只辅助正文，不构成独立阅读路径；图示清单见 [`figures/README.md`](./figures/00-index.md)。

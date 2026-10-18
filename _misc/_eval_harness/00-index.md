@@ -81,7 +81,7 @@
 | [`…/07/answer.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/answer.md) | 三条立场、三层模型、症状 → 机制总览表 |
 | [`_faq_on_digested/11_native-development-loop/answer.md`](../../_faq_on_digested/11_native-development-loop/answer.md) | **窄证据切片（slice）闭环六步**（01 §3 的第二层）、"轻松"的三个机制来源、代价与边界 |
 | [`…/11/question.md`](../../_faq_on_digested/11_native-development-loop/question.md) | 上述闭环的问题框架与范围声明 |
-| [`_dsh_plugin_agent_ready_development/README.md`](../../_dsh_plugin_agent_ready_development/README.md) | 三个视角的分工与语料自身的结构纪律 |
+| [`_dsh_plugin_agent_ready_development/00-index.md`](../../_dsh_plugin_agent_ready_development/00-index.md) | 三个视角的分工与语料自身的结构纪律 |
 | [`…/repo-harness/00-index.md`](../../_dsh_plugin_agent_ready_development/repo-harness/00-index.md) | 五问五答映射表、核心术语表（development harness / legibility / paved road / …） |
 
 ### 二、委托全量精读的（五路）

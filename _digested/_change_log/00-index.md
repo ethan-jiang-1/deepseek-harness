@@ -25,10 +25,13 @@
 - [`0008-independent-recheck.md`](./0008-independent-recheck.md)——0008 轮语料维护的独立反查（五路并行审计 + 修复执行记录；约 60 处过期断言、20 处缺落点、3 孤儿页、4 处口径矛盾）
 - [`0009-0.1.7-rc.1-to-0.2.0-rc.2.md`](./0009-0.1.7-rc.1-to-0.2.0-rc.2.md)——第九次合入（794 commits；session 格式保持 v4、Schedule 转正为 bundle、账号/模型面大改、user-questions timed waits、llm 动态工具更新；语料反查随同步执行，另完成独立反查，见 [`0009-independent-recheck.md`](./0009-independent-recheck.md)）
 - [`0010-ledger-and-pin-recheck.md`](./0010-ledger-and-pin-recheck.md)——0010 轮**同基线换角反查**（变更三账本＋merge 主题正查＋无引文行号钉专项；约 60 处漂移重锚、图鉴补 acp/sdk 两节、subprocess 计数与 release 间隔口径回归）
+- [`0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](./0011-0.2.0-rc.2-to-0.2.1-rc.2.md)——第十次合入（1925 commits；**对齐口径在本卷定型**，见下节）
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
 
-**选基线的口径**：只同步 **RC 或 final release**，目标是当前的**最后一个 RC**（若该版本线已出 final release，则同步到 final release）。alpha、beta 一律**不同步**——除非明确指定，否则即使 upstream 长期停在 alpha 阶段也不追，避免同步负担失控。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`；0007 改成「最后一个 RC」并推进到 `0.1.5-rc.2`。0008 起执行方式简化为**整树照搬**：产品源码完全等于 upstream tag（不做内容合并、不留本地源码补丁），本地只维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个目录；唯一保留的本地口径行是 pairing manifest 对 `_dsh_plugin_agent_ready_development/` 的排除。
+**选基线的口径**：只同步 **RC 或 final release**，目标是当前的**最后一个 RC**（若该版本线已出 final release，则同步到 final release）。alpha、beta 一律**不同步**——除非明确指定，否则即使 upstream 长期停在 alpha 阶段也不追，避免同步负担失控。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`；0007 改成「最后一个 RC」并推进到 `0.1.5-rc.2`。
+
+**执行口径（0011 起定型，取代 0008–0009 的整树照搬）**：**`ethan` = upstream 最后一个 RC 的原样 + 5 个本地独有目录**，5 个目录即 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/`、`.pi/`。除这 5 个之外**每一个字节都与该 RC 逐路径相同**，不留任何本地源码补丁、配置行或口径行。动作是**对齐，不是 merge**：`git merge-base` 因 0008–0009 的 `read-tree` 停在 `46a7f68b09`（0.1.7-rc.1），直接 merge 会得到 2047 个冲突文件；正确动作是 `git read-tree -u --reset <tag>` 后把 5 个目录放回。0008 起保留的 pairing manifest 本地排除行在 0011 全部退役——它是 5 个目录之外的本地修改，且其中一行早已因目录改名而失效。详见 [`0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](./0011-0.2.0-rc.2-to-0.2.1-rc.2.md) 的「同步口径」节。
 
 每次 sync 同时执行以下维护动作：
 

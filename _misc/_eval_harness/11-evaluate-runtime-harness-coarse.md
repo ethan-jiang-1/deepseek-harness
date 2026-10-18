@@ -6,7 +6,7 @@
 
 **谁执行、谁读。** 评估由 agent 执行：它按本协议跑适用性（applicability）判定、五个活体实验（live experiment）与十一维粗判（coarse check），写出一份 Markdown 报告（第 6 节，末尾列出需要人回答的问题）。人读本文是为了理解判据；人读报告是为了复核证据、回答末尾的问题、决定下一步——**人不打分，也不填表**。
 
-**编号约定。** 维度用 `RT`，探针（probe）用 `PB`，五个活体实验（live experiment）用 `LX`，成熟度档（maturity level）用 `MG`（见 [README 的标识符约定](./README.md#标识符约定token)）。
+**编号约定。** 维度用 `RT`，探针（probe）用 `PB`，五个活体实验（live experiment）用 `LX`，成熟度档（maturity level）用 `MG`（见 [README 的标识符约定](./00-index.md#标识符约定token)）。
 
 **前置知识。** 无。术语在本页定义。**本文与 12 都不附 DSH 例证（两份里的短例都是构造的），也不含任何外部链接**——它们只给判据。
 

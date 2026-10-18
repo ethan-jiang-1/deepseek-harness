@@ -56,7 +56,7 @@
 
 ## 4. 图示
 
-现有 SVG 分属 [SDLC Reference](../sdlc-reference/figures/README.md)、[Development Harness](../repo-harness/figures/README.md) 和 [Native Development Model](../native-development-model/figures/README.md) 三个图示清单；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
+现有 SVG 分属 [SDLC Reference](../sdlc-reference/figures/00-index.md)、[Development Harness](../repo-harness/figures/00-index.md) 和 [Native Development Model](../native-development-model/figures/00-index.md) 三个图示清单；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
 
 ## 5. 重审触发路径
 
@@ -163,7 +163,7 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 1. **新增 `repo-harness/figures/content-maintenance-forms.svg`（08 页）**：五列展示手写 / 混合 / 生成+freshness / 录制 / 投影五种维护形态（各含例子与机器边界，副标题声明“从左到右机器参与度递增”）；下方 “docs/ 分区剖面” 四个 chip + website chip 与上方五列垂直对齐，承载“形态由 owner 与 gate 决定、不由目录名决定——docs/ 一个目录住四种形态”的核心洞见；底部条收束三条放置规则（分组表、snapshots/AGENTS.md、vendor 修改日志）。列序按机器参与度排（混合居第二），08 页正文表格保持手写/生成/混合/录制/投影原序未改——图讲频谱、表讲逐类边界，两序并存有意为之。
 2. **新增 `repo-harness/figures/plugin-three-structures.svg`（09 页）**：三面板画三个结构——DSH 仓库（词汇与机制 owner，含 packages/apps/docs/.agents/.github·vendor 迷你树）、插件仓库（hello-plugin/ 的 package.json dsh.bundle、cordis.patch.yml、src 插件模块）、运行时组合（$DSH_HOME/profiles 的 dsh.profile、bundle 层叠加、挂进 ctx）；顶部流程条（词汇与教程 → dsh plugin add → bundle 进入 profile）、面板间裸箭头、底部虚线回环箭头（挂回同一棵运行时插件树）与 coding agent 双仓库视角条（含继承边界）。初稿流程标签放在 30px 面板间隙中导致溢出，改为顶部流程条承载全部流程语义。
 3. **几何自检**：自写宽度估算脚本（CJK≈字号、ASCII≈0.6×字号）检查全部新图文本是否溢出所在容器与画布，两图均通过并用 `rsvg-convert` 渲染成功；同一脚本对第三段改过的三张图复核，被标记项均为存量版式或旋转文本误报（本段未触及），不翻修。
-4. **同步**：`repo-harness/figures/README.md` 登记两张新图的正文 owner；本页 §4 图示计数 15 → 17。`node _dsh_plugin_agent_ready_development/verify.mjs` 通过（37 Markdown、1 scripts、17 SVG），`npx tsx scripts/verify-md-links.ts`、`npx tsx scripts/verify-md-wrap.ts`、`git diff --check` 通过。
+4. **同步**：`repo-harness/figures/00-index.md` 登记两张新图的正文 owner；本页 §4 图示计数 15 → 17。`node _dsh_plugin_agent_ready_development/verify.mjs` 通过（37 Markdown、1 scripts、17 SVG），`npx tsx scripts/verify-md-links.ts`、`npx tsx scripts/verify-md-wrap.ts`、`git diff --check` 通过。
 
 ## 2026-09-30 的 0.2.0-rc.2（`dsh-v0.2.0-rc.2`）re-pin：0.2.0 线首轮对齐
 
@@ -180,7 +180,7 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 
 ## 2026-09-30 的 0009 独立反查（按维度重测）
 
-re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、实体正向覆盖、硬数字重测、口径一致性四线并行）。本语料修复：`sdlc-reference/11` 的版本基线（`0.1.7-rc.1` → `0.2.0-rc.2`，re-pin 漏网）与 release 间隔口径（约 24–41 分钟）；`sdlc-reference/10` 与本页 `:120` 的 PR merge 样本读数（众数 2、单 commit 约五分之一，最近 100 个 PR merge 重测）；`sdlc-tutorial/02` 的 Note 类别数（六）；`sdlc-tutorial/03`、`04` 与 `sdlc-reference/04` 的 PR CI job 结构（9 必需 + 不进聚合的 `windows-coverage`；observational gates 是 required Windows build job 内 step）；`sdlc-reference/09` 的 Skill description 前缀表述（实测 9/15 以 "Use" 开头）；`repo-harness/08` 的 pairing manifest 归属（与门禁发现范围逻辑共同定义）；`_misc/_eval_harness/README.md` 的例证钉版与 `_eval_harness/02` 的 npm-publish job 口径（每条发布序列一个）；本页 `:30` 加 en+zh 合计口径勘误、`:120` 间隔与 `:165` 唯一 URL 数（130）口径统一。钉版纪律复核：113 条钉版路径全量 `git cat-file -e` 全部存在，29 个锚点全解析，内容一致性抽查 5/5 逐字吻合。
+re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、实体正向覆盖、硬数字重测、口径一致性四线并行）。本语料修复：`sdlc-reference/11` 的版本基线（`0.1.7-rc.1` → `0.2.0-rc.2`，re-pin 漏网）与 release 间隔口径（约 24–41 分钟）；`sdlc-reference/10` 与本页 `:120` 的 PR merge 样本读数（众数 2、单 commit 约五分之一，最近 100 个 PR merge 重测）；`sdlc-tutorial/02` 的 Note 类别数（六）；`sdlc-tutorial/03`、`04` 与 `sdlc-reference/04` 的 PR CI job 结构（9 必需 + 不进聚合的 `windows-coverage`；observational gates 是 required Windows build job 内 step）；`sdlc-reference/09` 的 Skill description 前缀表述（实测 9/15 以 "Use" 开头）；`repo-harness/08` 的 pairing manifest 归属（与门禁发现范围逻辑共同定义）；`_misc/_eval_harness/00-index.md` 的例证钉版与 `_eval_harness/02` 的 npm-publish job 口径（每条发布序列一个）；本页 `:30` 加 en+zh 合计口径勘误、`:120` 间隔与 `:165` 唯一 URL 数（130）口径统一。钉版纪律复核：113 条钉版路径全量 `git cat-file -e` 全部存在，29 个锚点全解析，内容一致性抽查 5/5 逐字吻合。
 
 ## 2026-10-08 的 Note 判据
 

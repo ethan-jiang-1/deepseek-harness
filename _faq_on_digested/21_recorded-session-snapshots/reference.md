@@ -99,7 +99,7 @@
 | 插件 PR 的最小证据集 | `_digested/test-strategy/10-plugin-testing-checklist.md` |
 | 主仓里插件通过 patch 进入快照场景 | `_digested/test-strategy/09-plugin-testing-playbook.md` 的「快照场景怎么带上一个插件」一节；样板 `snapshots/session/agent-instructions/cordis.snapshot.yml` |
 | 独立插件仓的组织、DSH 源码引入、spec 流程 | `_faq_on_digested/13_expert-plugin-repo-organization/answer.md` 与四个 option 分篇 |
-| 独立插件仓的开发 Harness 语料 | `_dsh_plugin_agent_ready_development/README.md` |
+| 独立插件仓的开发 Harness 语料 | `_dsh_plugin_agent_ready_development/00-index.md` |
 | 独立 oracle 样板（独立于转录的外部事实） | `snapshots/session/background-confinement-failure/workspace.expected/confinement-audit.json` |
 
 ## 六、bug 复现（[06](./06-bug-reproduction-playbook.md)）

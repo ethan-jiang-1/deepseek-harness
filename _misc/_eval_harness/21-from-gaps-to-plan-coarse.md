@@ -6,7 +6,7 @@
 
 **可以单独使用。** 没做过评估也能用：用[第 2 节](#2--症状--缺口--维度总对照表)的症状对上维度，再打开 [22](./22-from-gaps-to-plan-fine.md) 里那一张卡。做过评估的话，从[第 1 节](#1--排序原则ordering-principles)开始。
 
-**编号约定。** 维度沿用 01/02 的两字母前缀（`KN`/`CP`/`EV`/`ST`/`MT`/`RT`），缺口用 `IG`（见 [README 的标识符约定](./README.md#标识符约定token)）。
+**编号约定。** 维度沿用 01/02 的两字母前缀（`KN`/`CP`/`EV`/`ST`/`MT`/`RT`），缺口用 `IG`（见 [README 的标识符约定](./00-index.md#标识符约定token)）。
 
 **两份粒度。** 本文（`21`）稳定：排序原则（ordering principles）、症状对照、边界、收工线（stop line）。[22](./22-from-gaps-to-plan-fine.md) 会随做法增补。
 
