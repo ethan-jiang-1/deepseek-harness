@@ -13,7 +13,7 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 1. `_digested/` 其它专题回答「机制是什么」，默认读者已经决定要读懂 dsh；本专题回答「它为什么值得这样被读」，并把答案整理成**可迁移的判断**——可以用来检验任何 harness，不限于 dsh。
 2. 答案的核心不依赖背后是不是 LLM：它说的是知识外置（knowledge externalization）与合同面的多重消费，不是模型能力。把 LLM 语境抽掉，它仍是 harness 设计的一般思想（见 [`07`](./07-boundaries-costs-fit.md)）。
 3. 判断需要与证据分离：每篇末尾的「证据入口」引用源码与文档，立场单独成文，便于被反驳和修正。
-4. 判断需要出处（provenance）：本专题最核心的因果判断不是凭空生成的，是从 Agent Notes 里挖出来的；一个完全新的 coding agent 大概率写不出这些句子。这本身就是「知识在训练先验之外、主要靠搬运与核对」的例子（见 [`08`](./08-judgement-discipline.md)）。
+4. 判断需要可指认的出处：本专题最核心的因果判断不是凭空生成的，是从 Agent Notes 里挖出来的；一个完全新的 coding agent 大概率写不出这些句子。这本身就是「知识在训练先验之外、主要靠搬运与核对」的例子（见 [`08`](./08-judgement-discipline.md)）。
 
 ## 章节构思
 
@@ -56,7 +56,7 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 | 一个事实一个家 | one home per fact | 文档 tier 的归属纪律 |
 | 模型可见 ⟺ 已记录 | model-visible ⟺ logged | 请求可从 session log 重建的不变量 |
 | 负知识 | negative knowledge | 被拒绝方案、已知限制、「为什么这里没有检查」的显式记录 |
-| 出处 | provenance | 一条判断从哪份证据（Agent Note / 源码 / 文档）挖出来的记录 |
+| 出处 | source | 一条判断从哪份证据（Agent Note / 源码 / 文档）挖出来的记录 |
 | 分布外知识 | out-of-distribution knowledge | LM 凭训练先验生成不出来的知识，只能靠检索、核对或人类播种进入文本 |
 | 反事实标记 | counterfactual marker | 自问「一个没读过本仓库的 fresh agent 会不会自然写出这句」——会，是通式；不会，才可能是本仓库信息 |
 | 多重消费 | multi-consumption | 同一合同面被编译器、门禁、生成器、双 SDK、harness 自身与读者同时消费；漂移先被机器抓住 |

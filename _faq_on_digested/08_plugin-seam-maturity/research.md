@@ -55,6 +55,6 @@ EchoBird（⭐3.1K）一行文案覆盖 Claude Code / Codex / Grok / DeepSeek / 
 
 - **沙箱供应在商品化**：E2B 以 "Cloud for AI Agents" 拿 $21M Series A（Insight Partners，2025-07，公司博客），Daytona 2026-02 拿 $24M Series A 做 agent-native compute；公开对比文章把 E2B/Daytona/Modal 当逐项比价的采购选项。推论：自营沙箱不是 moat，**seam 保持供应商中立**才是 DSH 该守的东西——E2B 转正的价值是"又一个可替换 Provider 的成熟样本"，不是平台资产。
 - **跨会话持久流程是被融资的缺口**：Temporal 围绕 durable execution 先 $146M（$1.72B 估值，2025-03）再 $300M Series D（2026-02，"make agentic AI real"）。外网把"agent 下的持久流程"当作独立生意，而 DSH 的 `workflowEngine` 还是单 Provider 无持久层——缺口区的第 5 位有外部融资背书。
-- **MCP 已被中性化，审计价值反而上升**：MCP 于 2025 年末捐赠给 Linux Foundation 治理的 Agentic AI Foundation；跟踪者报 ~10k server / 97M 累计下载；Invariant Labs 实证 MCP tool-poisoning（恶意 server 描述劫持 agent 行为）。"成为最好的 MCP host"这个定位已被协议中性化稀释；真实差一点是 harness 级 provenance——经 `mcp-client` 注册的 MCP 工具走 `ctx.tools`，自动落在 model-visible ⟺ logged 不变式下，等于**每一个第三方 MCP 工具免费获得审计**，这是纯客户端做不到的价值。
+- **MCP 已被中性化，审计价值反而上升**：MCP 于 2025 年末捐赠给 Linux Foundation 治理的 Agentic AI Foundation；跟踪者报 ~10k server / 97M 累计下载；Invariant Labs 实证 MCP tool-poisoning（恶意 server 描述劫持 agent 行为）。"成为最好的 MCP host"这个定位已被协议中性化稀释；真实差一点是 harness 级的来源可审计性——经 `mcp-client` 注册的 MCP 工具走 `ctx.tools`，自动落在 model-visible ⟺ logged 不变式下，等于**每一个第三方 MCP 工具免费获得审计**，这是纯客户端做不到的价值。
 
 （上述三条的源 URL 与校验方式见 [FAQ 09 research](../09_plugin-business-ladder/research.md) 的引用节与子代理源表。）

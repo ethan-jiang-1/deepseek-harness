@@ -45,11 +45,11 @@ subagent seam 的这两条契约面在 0.2.1 线换了实现文件而语义未�
 
 实际分派在 `SubagentManager.deliver()`（`packages/subagent/subagent/src/manager.ts:615`，两条分支 `:626`-`:627`）；activation 正在关闭时以 `ACTIVATION_CLOSING` 拒绝（`:619`），消息不被接受。服务侧的私有实现按 `delivery` 选 `queuePrompt()` / `steerPrompt()`（`manager.ts:585`、`:604`；分发见 `packages/subagent/subagent/src/index.ts:339`-`:342`）。
 
-**私有协议面。** host 侧不新增公开 Service 方法，而是走进程稳定的 symbol `deliverSubagentPrompt = Symbol.for('dsh.subagent.deliverPrompt')` 与 `HostPromptDeliverer` 接口（`packages/subagent/subagent/src/internal.ts:42`-`:54`），由 `queueHostSubagentPrompt`（固定传 `'queue'`）与 `steerHostSubagentPrompt`（固定传 `'steer'`）两个导出包装（`:66`、`:94`）。这样 host adapter 能保留自己的 provenance，既不扩大公开 Definition，也不冒充 Agent sender。
+**私有协议面。** host 侧不新增公开 Service 方法，而是走进程稳定的 symbol `deliverSubagentPrompt = Symbol.for('dsh.subagent.deliverPrompt')` 与 `HostPromptDeliverer` 接口（`packages/subagent/subagent/src/internal.ts:42`-`:54`），由 `queueHostSubagentPrompt`（固定传 `'queue'`）与 `steerHostSubagentPrompt`（固定传 `'steer'`）两个导出包装（`:66`、`:94`）。这样 host adapter 能保留自己的来源身份，既不扩大公开 Definition，也不冒充 Agent sender。
 
 **Remote 面。** `prompt` Remote 的请求带 `delivery` 字段并参与校验（`packages/subagent/subagent/src/index.ts:447`-`:450`，投递处 `:494`）；附件准入先于交付，所以 child inbox 只会收到已被 Host 持久化的引用。
 
-**模型侧不动。** `send_message` 仍然是「永远 steer」的单一语义：Service Definition 的 `SubagentRuntime.sendMessage`（`packages/subagent/subagent/src/index.ts:310`）委托 manager 的同名方法（`packages/subagent/subagent/src/manager.ts:543`），标准工具由 `packages/subagent/tool-subagent-control/src/index.ts:29` 注册。host 通道的 Queue 能力只服务「人发的每条 prompt 应是独立 turn」这类 host provenance 需求，不是模型 tool 的扩展。
+**模型侧不动。** `send_message` 仍然是「永远 steer」的单一语义：Service Definition 的 `SubagentRuntime.sendMessage`（`packages/subagent/subagent/src/index.ts:310`）委托 manager 的同名方法（`packages/subagent/subagent/src/manager.ts:543`），标准工具由 `packages/subagent/tool-subagent-control/src/index.ts:29` 注册。host 通道的 Queue 能力只服务「人发的每条 prompt 应是独立 turn」这类「标明来自 host」的需求，不是模型 tool 的扩展。
 
 ## 与 03 的分工
 

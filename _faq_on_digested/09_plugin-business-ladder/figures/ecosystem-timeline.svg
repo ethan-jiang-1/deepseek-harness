@@ -3,7 +3,7 @@
   <desc>两条时间线。上：DSH 2026-08 发布两周内，第三方已占先分发层（awesome 列表、媒体报道、目录站快照 5,886 项目、imsai-sh 11,424 索引）。下：先例与反例——Koishi 上一轮 4 年长出 4,000+ 插件、官方市场是 npm 薄目录不碰支付、今天仍活；GPT Store 反例：无分成+无门禁沦为垃圾场。底部结论框：生态对 owner 的读法。</desc>
   <rect width="780" height="440" fill="#ffffff"/>
   <text x="390" y="26" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">生态是附件：别人替你踩过的路，不是你的生意</text>
-  <text x="390" y="46" text-anchor="middle" font-size="12" fill="#888">上：DSH 发布两周内的第三方分发层；下：上一轮胜仗与反例——目录不挣钱，信任靠 provenance</text>
+  <text x="390" y="46" text-anchor="middle" font-size="12" fill="#888">上：DSH 发布两周内的第三方分发层；下：上一轮胜仗与反例——目录不挣钱，信任靠可核对的出处</text>
 
   <!-- 上轨：DSH 当下 -->
   <text x="70" y="82" font-size="12.5" font-weight="700" fill="#2f4fa8">DSH 当下（2026-08，发布两周内）</text>
