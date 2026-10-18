@@ -21,3 +21,5 @@ node _misc/verify.mjs
 ```
 
 最小卫生检查：严格 UTF-8、LF 与单个结尾换行、相对链接与锚点可解析（允许爬出到兄弟语料目录）。`_scratch/` 不检查；`_references/` 是冻结存档，只做卫生检查、内容不改。
+
+宿主门禁的预期红：仓库根的 `verify-repository-references` 拒绝维护文件里出现真实 commit 标识符，而 `_references/` 的冻结副本与相邻语料按各自引用规范保留提交号，因此该门禁对本目录预期为红；本目录的权威校验器是上面的 `verify.mjs`。

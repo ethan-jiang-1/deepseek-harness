@@ -118,3 +118,5 @@ node _digested/verify.mjs
 ```
 
 该检查验证 Markdown / SVG / 校验脚本的严格 UTF-8 与单个结尾换行、Markdown 相对链接和锚点，以及 SVG 的 XML 结构与实体。
+
+宿主门禁的预期红：仓库根的 `verify-repository-references` 拒绝维护文件里出现真实 commit 标识符，而本语料按自身引用规范要求标注基线与历史提交号，因此该门禁对本目录预期为红。这不代表回归，也不是本次改动引入；本目录的权威校验器是上面的 `verify.mjs`；`_faq_on_digested/`、`_misc/` 与 `python/sdk/uv.lock` 在同一门禁下同理。
