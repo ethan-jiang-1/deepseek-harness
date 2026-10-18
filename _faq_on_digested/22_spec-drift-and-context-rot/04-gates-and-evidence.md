@@ -30,7 +30,7 @@
 | `verify-md-wrap` | 一段被拆成多个物理行 |
 | `verify-translation-pairing` | 中英对照失配 |
 | `verify-repository-references` | 维护文件里出现真实 commit 标识符或不允许的组织 URL——**历史引用必须用 tag 或 PR 号**（`docs/AGENTS.md:77`） |
-| `verify-doc-refs` | 包内 TypeScript 注释与字符串里引用的 `docs/`、`.agents/notes/` 路径必须存在（Markdown 侧由 `verify-md-links` 覆盖） |
+| `verify-doc-refs` | 包内 TypeScript 注释与字符串里引用的 `docs/`、`.agents/notes/` 路径必须存在（Markdown 链接目标由 `verify-md-links` 覆盖；非链接的裸路径文本没有门禁核对） |
 | `verify-type-equiv` | 文档里粘贴的类型声明与源码漂移 |
 | `verify-subsystem-pages` | 子系统页与包组的归属失配 |
 | `verify-package-readme-summaries` / `-model-experience` / `-limitations` | 包 README 的必备节缺失或不合格式 |

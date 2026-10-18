@@ -89,7 +89,7 @@
 被压缩或压根没进上下文的历史可以按需检索；需要独立上下文的工作则被隔离出去：
 
 - `session-search` 给每个 agent 五个只读全局工具，检索**当前工作区更早的 session**（`packages/experimental/session-search/README.md:12`，`[原文]`）。
-- `tool-session-query` 提供五个只读工具（`session_search`、`session_event_search`、`session_trace`、`session_event_trace`、`session_event_read`），跨 session 访问要求目标 `cwd` 与调用者完全一致，且**默认关闭**（`packages/experimental/tool-session-query/README.md:12`，`[原文]`）。被压缩遮蔽的事件仍然可搜：「All `current`, `shadowed`, and `log-only` events are searchable by default.」（`packages/session-query/session-query-sqlite/README.md:59`，`[原文]`）
+- `tool-session-query` 提供五个只读工具（`session_search`、`session_event_search`、`session_trace`、`session_event_trace`、`session_event_read`），跨 session 访问要求目标 `cwd` 与调用者完全一致，且**默认关闭**（`packages/experimental/tool-session-query/README.md:12`、`:47`-`:51`，`[原文]`）。被压缩遮蔽的事件仍然可搜：「All `current`, `shadowed`, and `log-only` events are searchable by default.」（`packages/session-query/session-query-sqlite/README.md:59`，`[原文]`）
 - **子代理按「继承多少上下文」分成两种**：fork 继承父级**已完成 turn 的前缀**，是一次性快照，此后父级再写什么都不会进来（`packages/subagent/subagent-fork-in-process/README.md:32`、`:143`，`[原文]`）；spawn 完全不继承，「The child starts with an empty conversation, so a task prompt must stand alone」（`packages/subagent/subagent-spawn-in-process/README.md:12`，`[原文]`）。委派因此不会把主线上下文继续吹大。
 
 ## 八、守住循环卫生（但不是防漂移）

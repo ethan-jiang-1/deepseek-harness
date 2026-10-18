@@ -33,15 +33,16 @@
 
 整套机制处理的都是已经进入 issue / commit / Note / 文档的内容。**只在对话里说过一句「我们改用另一个方向」，没有任何载体**，那就没有任何机制会发现——语料里不会留下矛盾，因为什么也没留下。这不是缺陷，是边界；对应的是使用纪律（[06](./06-how-to-use.md)）。
 
-## 六、运行时侧的三条边界
+## 六、运行时侧的四条边界
 
 - **没有语义偏离检测器。** goal 域与续轮 driver 都写明「No independent evaluator」（`packages/goal/goal/README.md:159`、`packages/goal/goal-round-driver/README.md:125`，`[原文]`）。重复调用提醒只按「同名 + 参数规范一致」计数，且只提醒不拦截（`packages/guard/repeat-tool-reminder/src/index.ts:53`、`:219`，`[源码]`）。
 - **压缩有损，而且不是所有东西都能压。** 只保留摘要文本，压不动 system prompt、工具与 session 前缀，也切不开一个不可分单元（`packages/compaction/compaction-basic/README.md:12`；`packages/compaction/compaction/README.md:160`-`161`，`[原文]`）。图片卸载在能力不可用时是**永久替换**（`packages/compaction/compaction-image-offload/README.md:12`，`[原文]`）。
+- **没有「压缩后自动重述目标」的机制。** 目标只在调度下一轮时整条重发（`packages/goal/goal-round-driver/README.md:108`、`:112`，`[原文]`）；不续跑就没有这句话。
 - **跨会话记忆默认关闭。** 检索早先 session 的能力是 experimental 且默认不挂（`packages/experimental/session-search/README.md:12`、`packages/experimental/tool-session-query/README.md:12`，`[原文]`）；fork 也不共享后续上下文，只是一次性快照（`packages/subagent/subagent-fork-in-process/README.md:143`，`[原文]`）。
 
 ## 七、本文自身的证据边界
 
 - **本仓库是浅克隆**：`.git/shallow` 有 158 个边界提交，边界之外的历史无法核对。本文引用的历史案例都取了当前工作树仍存在、且可从 `upstream/master` 可达的提交；凡是解析到 graft 根（`92f8fb6c4a`）的，一律不作为「某年某月做的决定」的证明。
 - **无法证明上游从未重写过历史**：本地没有 upstream 的 reflog，也没有 PR 讨论。
-- **本语料与主仓有一条已知冲突**：`_faq_on_digested/` 的引用规范要求在引用源码时标注 commit hash（见本目录 `00-index.md` 的「引用规范」），而主仓的 `verify-repository-references` 恰好拒绝维护文件中出现真实 commit 标识符。实测该门禁在本基线对 `_faq_on_digested/`、`_digested/`、`_misc/`、`python/sdk/uv.lock` 已是红的（非本篇引入）；本语料按自身规范继续标注提交号，这一冲突在语料层面登记，不在本篇解决。
+- **本语料与主仓有一条已知冲突**：`_faq_on_digested/` 的引用规范要求在引用源码时标注 commit hash（见本目录 `00-index.md` 的「引用规范」），而主仓的 `verify-repository-references` 恰好拒绝维护文件中出现真实 commit 标识符。实测该门禁在本基线对 `_faq_on_digested/`、`_digested/`、`_misc/`、`python/sdk/uv.lock` 已是红的（非本篇引入；插件仓语料原有的唯一一处缩写提交号已于 2026-10-18 修掉，现对该门禁零命中）；本语料按自身规范继续标注提交号，这一冲突在语料层面登记，不在本篇解决。
 - **「现行」判定有时间戳**：全部结论对照 `dsh-v0.2.1-rc.2`（`687f282e8625c6b8d11ff58211a90524be2e4317`）。下一轮同步后，数字、路径与本篇的判断都要按 `_change_log/` 重测。
