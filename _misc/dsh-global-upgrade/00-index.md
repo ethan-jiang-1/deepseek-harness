@@ -48,7 +48,7 @@ DSH 是命令行全局安装的，**升级也只用命令行那一套**：
 | **不动** | `@arcships/dsh-dim-oauth` | `0.2.1`（已是 npm 最新，无新版可升） |
 | **不动** | `dsh-client-auto-continue` | `0.14.2`（已是 npm 最新，无新版可升） |
 
-一句话：**没有"不能升级"的插件**，只有"必须升"（better-sidebar）、"建议升"（四个）、"没得升"（两个）。升级后如果一切正常，插件功能不应有任何缺失。
+一句话：**没有"不能升级"的插件**，只有"必须升"（better-sidebar）、"建议升"（四个）、"没得升"（两个）。升级后不应出现功能缺失；但 better-sidebar 跨 3 个 minor（0.25→0.28），若发现某个侧栏功能位置或交互变了，属正常演进，不算故障。
 
 ## 文件导航
 
@@ -61,10 +61,9 @@ DSH 是命令行全局安装的，**升级也只用命令行那一套**：
 ## 三条硬约束（执行时先确认）
 
 1. **顺序不能反**：先升 DSH 本体，再升插件。新版插件（`skill-explorer@0.4.7`、`auto-approval@0.0.43`、`better-sidebar@0.28`）都要求 DSH ≥ 0.2.1，先装会被判不兼容。
-2. **先备份再动手**：`~/.dsh/profiles/web/cordis.patch.yml`（13,632 字节，sha256 `9ae14672…`，全文见验收清单）是唯一存着 7 个 provider 配置的文件，启动失败时宿主可能把它改名成 `.bak-<时间戳>` 再写空壳。
+2. **先备份再动手**：`~/.dsh/profiles/web/cordis.patch.yml`（13,632 字节，sha256 `9ae14672…`，哈希与字节数见验收清单）是当前生效的那份配置（目录里的 `.bak-*` 只是旧快照）；启动失败时宿主可能把它改名成 `.bak-<时间戳>` 再写空壳。
 3. **失败就停，不要"顺手再试一下"**：每个阶段都有停止条件，命中就停下、按回滚章节退回，把日志留下来。
 
-## 已知的两个"看起来像报错、其实是预期"的现象
+## 一个"看起来像报错、其实是预期"的现象
 
-- 升级完本体、还没换插件时先启动一次：`dsh-better-sidebar` 会报 `pending (waiting for service: webRuntime)`。这是预期的，换到 0.28.0 后消失。
-- 第一次启动时如果出现 `Plugins waiting for services` 且列表里有 `webRuntime`，同上，属预期；除它以外出现任何 pending 都要当失败处理。
+**只在"升完本体、还没换插件"的中间启动里**：`dsh-better-sidebar` 会报 `pending (waiting for service: webRuntime)`，日志汇总里会出现 `Plugins waiting for services` 且名单里只有 `webRuntime`。换到 0.28.0 后这两条都应消失；**完成插件升级后**再出现任何 pending，都按失败处理。

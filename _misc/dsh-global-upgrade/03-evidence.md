@@ -39,7 +39,7 @@
 - 0.25.0 的 `lib/index.js`：`inject = ["webServer","sessions","webRuntime","tools"]`，并且用 `ctx.webRuntime.trustedHosts` 做请求围栏。
 - 0.2.1 移除了 `webRuntime` 服务，换成 `webStartup`（Web profile 的 `web-startup` 行提供）。旧插件因此永远等不到服务 → 侧栏整块不加载。
 - 0.26.0 / 0.26.1 实测仍写 `webRuntime`（拉了 0.26.1 的 `lib/index.js` 验证），0.27 未发布。
-- 0.28.0 的 `inject = ["webServer","sessions","connection","tools"]`，不再引用 `webRuntime`，也不再带那个空转的 `invariant` 伴生插件。
+- 0.28.0 的 `inject = ["webServer","sessions","connection","tools"]`，不再引用 `webRuntime`；入口里也没有 `invariants` 服务的使用（0.25.0 那个空转的伴生插件在 0.28.0 已不存在）。
 - 0.25.0 与 0.28.0 的 `PrefsSchema` 逐字段一致（连已废弃的 titleBar 兼容键都保留）→ 升级**不重置**侧栏偏好。
 - 0.28.0 的 `cordis.patch.yml` 仍用行 id `better-sidebar`，`Config` 里仍有 `agentOpenTools` → 现有 user patch 继续生效。
 - 附带证据：0.25.0 的 `TerminalLabels` 没有 0.2.1 新增的必填 `commandLine(line)`，即使宿主能加载，侧栏终端卡片也会在渲染时出错——进一步说明 0.25.0 不是 0.2.1 时代的构建。
@@ -48,7 +48,7 @@
 
 - 0.0.41 的 peer 范围 `>=0.2.0-rc.2 <2 || >=0.2.1-alpha.1 <2` 本身就包含 0.2.1-rc.2 → 不升也能过宿主校验。
 - 0.0.41 → 0.0.43 的 `lib` 差异：新增 `systemone` 端点协议与分类器、新增唯一配置项 `endpointProtocol`（union，默认 `'openai'`），`index.js` 里**没有**宿主版本判断或 0.2.1 适配代码。
-- 用户 patch 里 pin 的 8 个键（`enabled` / `timeoutAction` / `allowlist` / `denyList` / `humanOnlyList` / `maxConsecutiveDenials` / `maxTotalDenials` / `maxArgsChars` / `notifyUser`）在 0.0.43 中全部仍存在。
+- 用户 patch 里 pin 的 9 个键（`enabled` / `timeoutAction` / `allowlist` / `denyList` / `humanOnlyList` / `maxConsecutiveDenials` / `maxTotalDenials` / `maxArgsChars` / `notifyUser`）在 0.0.43 中全部仍存在；而且 0.0.41 与 0.0.43 的 `cordis.patch.yml` 逐字相同。
 - 它对 `webRuntime` 是**可选读取**（`ctx.get('webRuntime')`），取不到退到 `--trusted-host` 再 fail-closed 到 loopback，因此即使留着旧版也不会崩。
 
 ### 3.3 `dshmarket`（建议升）
@@ -60,7 +60,7 @@
 ### 3.4 `@linxin666/dsh-client-ui-skill-explorer`（建议升，非必须）
 
 - 0.4.4 → 0.4.7 的差异集中在"插件提供的技能"：新增 `setProviderEnabled` 接口与"无本地 SKILL.md / 由插件提供"的展示文案。
-- 0.4.4 的宿主侧不调用 `ctx.skills` 服务（自己扫描技能根目录），因此 0.2.1 对该服务的改动不影响它，只是看不到插件贡献的技能。
+- 0.4.4 注入 `skills`，并用 `ctx.skills.snapshot({ cwd })` 作为文件系统扫描的补充。0.2.1 的 `snapshot(options)` 签名、`SkillLookupOptions.cwd` 与返回的 `{ skills, complete }` 都还在，且 0.4.4 对该调用有 try/catch（失败只把 `complete` 置 false，不影响面板其余部分）。
 - 0.4.7 把 `engines.dsh` 提到 `>=0.2.1-rc.2`，属于"新能力依赖新宿主"，不是"旧版会坏"。
 
 ### 3.5 `@cerbur/clutch-dsh-worktree`（建议升，非必须）

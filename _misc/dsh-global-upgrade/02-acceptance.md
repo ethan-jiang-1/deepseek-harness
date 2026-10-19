@@ -30,7 +30,7 @@ grep -nE "startup failed|disabling profile plugin|incompatible with dsh|Plugins 
 | `dsh web: http://127.0.0.1:3080/?token=...` | 出现，端口与预期一致 |
 | `[dsh-auto-approval-llm]` 开头的行 | 出现（说明插件已加载；`slash commands disabled` 属正常配置结果） |
 
-补充：如果启动时用 `--dump-config` 做过阶段 1.3 的检查，那一份 `.err` 也保留，作为对照。
+补充：阶段 1.3a 的 `--dump-config` 产物（`.yml` / `.err`）和 1.3b 的启动日志都保留，作为对照。`--dump-config` 只做配置组合，不启动插件，所以它没有 `pending` / `disabling` 字样是正常的。
 
 ## B. 进程与端口（阻断级）
 
@@ -40,14 +40,14 @@ curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:3080
 ```
 
 - 端口由**一个**进程占用。
-- HTTP 返回 `200` 或 `302`（带 token 的地址）。
+- 根地址返回任意非 `000` 的状态码都算服务在监听；`401` / `403` 是没带 token 的正常拒绝，用启动日志里带 `?token=` 的地址打开界面。
 
 ## C. 配置文件完整性（阻断级）
 
 ```sh
 shasum -a 256 "$HOME/.dsh/profiles/web/cordis.patch.yml"
 wc -c "$HOME/.dsh/profiles/web/cordis.patch.yml"
-ls "$HOME/.dsh/profiles/web/" | grep -E "cordis.patch.yml(\.bak-[0-9]+)?$"
+ls "$HOME/.dsh/profiles/web/" | grep -E "cordis\.patch\.yml\.bak-[0-9]+$" || echo "no backup residue"
 ```
 
 | 检查 | 期望 |
@@ -80,6 +80,8 @@ node -p "JSON.stringify(require(process.env.HOME+'/.dsh/profiles/web/package.jso
 
 同时确认 `dsh --version` 为 `0.2.1-rc.2`。
 
+> 以上假设升级命令带了 `--save-exact`。若某条漏了，那一条会写成 `^0.4.7` 这类范围；功能相同，按实际值记录即可，不要因此回滚。
+
 ## E. 界面功能（按级）
 
 浏览器打开 `http://127.0.0.1:3080/?token=...`，逐项点一遍。
@@ -89,7 +91,7 @@ node -p "JSON.stringify(require(process.env.HOME+'/.dsh/profiles/web/package.jso
 1. **能新建会话并完成一轮对话**：发送"你好"，收到回复，消息落盘（`~/.dsh/sessions` 下出现新目录）。
 2. **侧栏存在且可用**：`dsh-better-sidebar` 的侧栏出现；展开文件树能看到当前工作区文件；终端面板能打开并执行 `echo ok`。
 3. **设置 → 插件页能打开**：能看到已安装插件列表（或至少设置窗口能正常打开）。
-4. **审批链路可用**：让 Agent 执行一个需要审批的命令（例如写文件或跑一条 bash），确认审批弹窗出现、批准后执行成功、拒绝后不执行。
+4. **审批链路可用**：让 Agent 执行一个需要审批的命令（例如写文件或跑一条 bash）。出现审批弹窗 → 批准后执行成功、拒绝后不执行；若被自动审批直接放行（`[dsh-auto-approval-llm]` 日志里有对应处理记录），同样算链路正常。
 
 ### 重要
 
@@ -97,6 +99,7 @@ node -p "JSON.stringify(require(process.env.HOME+'/.dsh/profiles/web/package.jso
 6. **技能中心**（skill-explorer）：面板能打开、能列出技能、能打开某个 `SKILL.md` 编辑；插件提供的技能显示为"由插件提供 / 无本地文件"属新版本正常行为。
 7. **插件市场**（dshmarket）：设置里能打开市场卡片，能看到已安装列表。**先不要点"更新"**（升级后的第一轮验收不测写操作）；确认版本显示 `1.66.42` 后，可在下一轮再测更新。
 8. **模型选择器**：7 个自定义 provider 组都在 —— `MICU`、`OpenRouter`、`Z.ai Coding API (working)`、`Kimi China Open Platform (working)`、`TeamoRouter`、`OpenCode Go (working)`、`Yovole (new-api)`。另加内置 `DeepSeek`。
+   注意：0.2.1 起，声明了 `apiKeyEnv` 的路线在该凭据解析出来之前会整组隐藏（`pi-ai` 与 `deepseek-official` 都如此）。某组不在时，先确认对应 key 在 `.credentials.yaml` 或环境里，再判断是不是故障。
 9. **自动继续**（auto-continue）：日志里出现 `[auto-continue] 已启动`；如果方便，制造一次中断看它是否自动续（不确定就只核对日志）。
 
 ### 观察

@@ -101,6 +101,7 @@ lsof -ti tcp:3080
 - 有输出（一个 PID）：先试 `kill <PID>`（普通 TERM），等 3 秒；再 `lsof -ti tcp:3080` 应为空。仍占用再 `kill -9 <PID>`。
 - 没有输出：说明没在跑，继续。
 - 如果它由别的服务（launchd、pm2、某个终端标签）托管，用管理它的方式停止；不要只杀进程留下托管守护再拉起。
+- 端口不一定是 3080（历史上也用过 3081）：以你启动日志里打印的 `dsh web: http://127.0.0.1:<端口>` 为准，把本节命令里的 3080 换成实际端口。
 
 通过标准：`lsof -ti tcp:3080` 无输出，`curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3080` 返回 `000`。
 
@@ -126,7 +127,7 @@ npm view @cerbur/clutch-dsh-worktree@0.1.18 version
 任何一条命中：**停**，不要继续，把输出贴给负责人。
 
 - `dsh --version` 不是 `0.2.0-rc.2`（说明环境已经被动过，先搞清楚现状）。
-- 备份哈希与上表不一致（说明 patch 在快照之后被改过，先确认改了什么）。
+- 备份哈希与上表不一致：先 `diff` 备份与现值。若只是你之后改过配置（例如加了模型），把新哈希记下来、以现值为基线继续；若是被替换成空壳或被改名，停下来查。
 - 3080 端口停不下来。
 - 任一目标版本查不到。
 
@@ -154,7 +155,9 @@ npm ls -g --depth=0 @deepseek-ai/dsh
 
 ### 1.3 中间验证（推荐，能提前把问题定位到"宿主"还是"插件"）
 
-此时插件还是旧版，先跑一次纯配置组合（不监听端口、不起 GUI）：
+分两步，别指望 `--dump-config` 能代替真实启动——它只做配置组合，**不挂载插件**，因此不会产生 `pending` / `disabling` 这类启动诊断。
+
+**1.3a 组合检查（不起进程）**
 
 ```sh
 dsh --profile web --dump-config > /tmp/dsh-web-config-021.yml 2> /tmp/dsh-web-config-021.err
@@ -166,15 +169,26 @@ cat /tmp/dsh-web-config-021.err
 通过标准：
 
 - 退出码 `0`，YAML 非空。
-- `.err` 里**没有** `startup failed`、`disabling profile plugin`、`incompatible with dsh`。
-- `.err` 里**允许**出现 `pending (waiting for service: webRuntime)`（旧版 better-sidebar 的预期现象）；若完全没有这条也正常，取决于该命令是否真的启动插件。
-- 配置里能找到 7 个 provider 名：`micu`、`openrouter`、`zai`、`moonshotai-cn`、`teamorouter`、`opencode-go`、`yovole`。
+- `.err` 里没有解析类错误（这个命令不启动插件，出现 `failed to load` / `cannot` 之类才算问题）。
+- YAML 里能找到 7 个 provider 名：`micu`、`openrouter`、`zai`、`moonshotai-cn`、`teamorouter`、`opencode-go`、`yovole`。
+
+**1.3b 真实启动冒烟（推荐）**
+
+```sh
+dsh web --no-open
+```
+
+- 等到日志出现 `dsh web: http://127.0.0.1:<端口>/?token=...`，说明宿主能带着旧插件起来。
+- 日志里**不应**出现 `startup failed`、`disabling profile plugin`。
+- 日志里**允许**出现 `pending (waiting for service: webRuntime)`（旧版 better-sidebar 的预期现象）。
+- 看到 URL 后按 `Ctrl-C` 停掉，继续阶段 2。
 
 ### 阶段 1 停止条件
 
 - `npm i -g` 失败：先看错误类型。网络 → 重试；`EPERM` → 加 `--cache`；`EACCES` → 不要 sudo，改用 `npm i -g --prefix <可写前缀>` 前先问负责人。
 - `dsh --version` 仍是 `0.2.0-rc.2`：说明装到了别的 Node 前缀，检查 `which dsh` 是否仍在 nvm 的 v22.23.1 下。
-- `--dump-config` 出现 `startup failed` 或 `disabling profile plugin`：**不要升级插件**，直接走回滚，保留 `/tmp/dsh-web-config-021.err`。
+- `--dump-config` 非 0 退出或 YAML 为空：**不要升级插件**，停下来查 `/tmp/dsh-web-config-021.err`，处理不了就回滚。
+- 1.3b 启动时出现 `startup failed` 或 `disabling profile plugin`：**不要升级插件**，直接走回滚，保留启动日志。
 
 ---
 
@@ -183,6 +197,7 @@ cat /tmp/dsh-web-config-021.err
 通用规则：
 
 - `--profile web` 必须写在 pnpm 参数**前面**。
+- 每条命令末尾都带 `--save-exact`：`dsh plugin` 会把未知参数原样转给 pnpm，这个参数让 `package.json` 写入精确版本（与现有风格一致）。漏掉它会写成 `^0.28.0` 这类范围——功能一样，但版本不再锁死，验收时按实际值记录，不必因此回滚。
 - 一条一条执行，每条执行完立刻验证版本，再执行下一条。
 - 命令失败时**不要**紧接着重试别的命令；先判断错误类型（见附录 B）。
 - 不要用 `allow-version` 绕过兼容检查。
@@ -190,7 +205,7 @@ cat /tmp/dsh-web-config-021.err
 ### 2.1 `dsh-better-sidebar` → 0.28.0（关键项，不升等于侧栏消失）
 
 ```sh
-dsh plugin --profile web add dsh-better-sidebar@0.28.0
+dsh plugin --profile web add dsh-better-sidebar@0.28.0 --save-exact
 node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencies['dsh-better-sidebar']"
 ```
 
@@ -199,25 +214,25 @@ node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencie
 ### 2.2 `@quill507/dsh-auto-approval-llm` → 0.0.43
 
 ```sh
-dsh plugin --profile web add @quill507/dsh-auto-approval-llm@0.0.43
+dsh plugin --profile web add @quill507/dsh-auto-approval-llm@0.0.43 --save-exact
 node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencies['@quill507/dsh-auto-approval-llm']"
 ```
 
-期望：`0.0.43`。该版本的 `cordis.patch.yml` 里 8 个配置键与你现在 pin 的完全兼容，**不需要改 patch**。
+期望：`0.0.43`。该版本 `cordis.patch.yml` 里那 9 个配置键（与你现在 pin 的完全一致，0.0.41 与 0.0.43 的 patch 逐字相同）依然有效，**不需要改 patch**。
 
 ### 2.3 `dshmarket` → 1.66.42
 
 ```sh
-dsh plugin --profile web add dshmarket@1.66.42
+dsh plugin --profile web add dshmarket@1.66.42 --save-exact
 node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencies.dshmarket"
 ```
 
-期望：`1.66.42`。低于 1.66.42 的版本在 0.2.1 上"更新官方插件"会报 `already-installed`。
+期望：`1.66.42`。1.66.17 在 0.2.1 上"更新官方插件"会报 `already-installed`；1.66.42 已修复（先 remove 再 install）。
 
 ### 2.4 `@linxin666/dsh-client-ui-skill-explorer` → 0.4.7
 
 ```sh
-dsh plugin --profile web add @linxin666/dsh-client-ui-skill-explorer@0.4.7
+dsh plugin --profile web add @linxin666/dsh-client-ui-skill-explorer@0.4.7 --save-exact
 node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencies['@linxin666/dsh-client-ui-skill-explorer']"
 ```
 
@@ -226,7 +241,7 @@ node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencie
 ### 2.5 `@cerbur/clutch-dsh-worktree` → 0.1.18
 
 ```sh
-dsh plugin --profile web add @cerbur/clutch-dsh-worktree@0.1.18
+dsh plugin --profile web add @cerbur/clutch-dsh-worktree@0.1.18 --save-exact
 node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencies['@cerbur/clutch-dsh-worktree']"
 ```
 
@@ -245,7 +260,7 @@ node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencie
 node -p "JSON.stringify(require(process.env.HOME+'/.dsh/profiles/web/package.json'),null,2)"
 ```
 
-`dsh.profile.bundles` 应仍是这 9 项（顺序可能与你看到的略有不同，CLI 一般保留既有顺序；只要 9 项都在即可）：
+`dsh.profile.bundles` 应仍是这 9 项（顺序通常保持不变；只要 9 项都在即可）：
 
 ```
 @deepseek-ai/dsh-base
@@ -259,7 +274,7 @@ dsh-client-auto-continue
 @linxin666/dsh-client-ui-skill-explorer
 ```
 
-如果 bundles 里少了某个包，说明 reconcile 把它当成"已移除"，补一条 `dsh plugin --profile web add <pkg>@<ver>` 重新加回。
+如果 bundles 里少了某个包，**不要只补一条 `add`**：包还在依赖里时，reconcile 只处理"新增依赖"，不会把它写回清单。正确做法是先 `dsh plugin --profile web remove <包>`，再 `add <包>@<版本> --save-exact`。
 
 ### 阶段 2 停止条件
 
@@ -290,7 +305,7 @@ dsh web --no-open
 
 ### 触发条件（任一）
 
-- 阶段 1 的 `--dump-config` 失败。
+- 阶段 1 的 `--dump-config` 失败，或启动冒烟出现 `startup failed` / `disabling profile plugin`。
 - 插件升级过程中任一步失败且附录 B 处理不了。
 - 启动日志出现 `startup failed` 或必需插件失败。
 - 验收清单里"阻断级"项失败。
@@ -298,7 +313,7 @@ dsh web --no-open
 ### 步骤
 
 ```sh
-# 1. 停掉 web（macOS 的 xargs 没有 -r，用 shell 判空）
+# 1. 停掉 web（不用 xargs：macOS 版不支持 -r）
 PIDS=$(lsof -ti tcp:3080); [ -n "$PIDS" ] && kill $PIDS
 sleep 3
 
@@ -321,7 +336,8 @@ node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencie
 dsh web --no-open
 ```
 
-- 第 4 步若因 pnpm 版本差异失败：改用逐条降级 `dsh plugin --profile web add <包>@<旧版本>`（版本见阶段 0.1）。
+- 第 2 步若 npm 报 `EPERM`：同样加 `--cache "$HOME/.npm-cache-dsh"`。
+- 第 4 步若因 pnpm 版本差异失败：改用逐条降级 `dsh plugin --profile web add <包>@<旧版本> --save-exact`（版本见阶段 0.1）。
 - 第 5 步启动后确认侧栏和 7 个 provider 都在，再回浏览器。
 
 ### 回滚代价（必须让负责人知情）
@@ -350,14 +366,15 @@ PIDS=$(lsof -ti tcp:3080); [ -n "$PIDS" ] && kill $PIDS; sleep 3; lsof -ti tcp:3
 # 1 升本体
 npm i -g @deepseek-ai/dsh@next
 dsh --version
-dsh --profile web --dump-config > /tmp/dsh-web-config-021.yml 2> /tmp/dsh-web-config-021.err
+dsh --profile web --dump-config > /tmp/dsh-web-config-021.yml 2> /tmp/dsh-web-config-021.err   # 组合检查
+dsh web --no-open        # 启动冒烟：看到 URL 且无 disabling/startup failed 后 Ctrl-C
 
 # 2 升插件（逐条，每条后验证版本）
-dsh plugin --profile web add dsh-better-sidebar@0.28.0
-dsh plugin --profile web add @quill507/dsh-auto-approval-llm@0.0.43
-dsh plugin --profile web add dshmarket@1.66.42
-dsh plugin --profile web add @linxin666/dsh-client-ui-skill-explorer@0.4.7
-dsh plugin --profile web add @cerbur/clutch-dsh-worktree@0.1.18
+dsh plugin --profile web add dsh-better-sidebar@0.28.0 --save-exact
+dsh plugin --profile web add @quill507/dsh-auto-approval-llm@0.0.43 --save-exact
+dsh plugin --profile web add dshmarket@1.66.42 --save-exact
+dsh plugin --profile web add @linxin666/dsh-client-ui-skill-explorer@0.4.7 --save-exact
+dsh plugin --profile web add @cerbur/clutch-dsh-worktree@0.1.18 --save-exact
 
 # 3 启动
 dsh web --no-open
@@ -370,6 +387,7 @@ dsh web --no-open
 | `dsh: plugin command failed; diagnostics: <路径>` | pnpm 非 0 退出 | 打开该日志看第一条真实错误；网络类可原样重跑一次 |
 | `already-installed` | 用"安装 API"覆盖已装包被拒（HMR 场景） | `dsh plugin --profile web remove <包>` 然后重新 `add <包>@<版本>` |
 | `incompatible-version` / `requirements {...}` | 目标版本不满足当前 DSH | **停**。确认 `dsh --version` 是 0.2.1-rc.2；不要 `allow-version` |
+| `dsh: to accept the risk, run: dsh plugin ... allow-version ...` | 兼容检查拒绝，宿主给出了"强行放行"的提示 | **不要照做**。这条说明版本判断错了，停下来查版本与宿主 |
 | `dsh: pnpm was not found` | pnpm 不在 PATH | 先修 PATH 再重跑 |
 | 报错提到 `minimumReleaseAge`（版本太新） | 目标版本被 pnpm 的发版冷却拦住 | 在 `pnpm-workspace.yaml` 的 `minimumReleaseAgeExclude` 加精确版本 |
 | `pending (waiting for service: webRuntime)` | 旧版 better-sidebar 未升级 | 升到 0.28.0 后应消失；升完仍有 → 停 |
