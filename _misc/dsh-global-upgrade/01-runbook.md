@@ -50,7 +50,7 @@ node -p "JSON.stringify(require(process.env.HOME+'/.dsh/profiles/web/package.jso
 }
 ```
 
-### 0.2 备份（做两遍，别省）
+### 0.2 备份（别省）
 
 ```sh
 TS=$(date +%Y%m%d-%H%M%S)
@@ -119,6 +119,8 @@ npm view @cerbur/clutch-dsh-worktree@0.1.18 version
 
 期望依次：`0.2.1-rc.2`、`0.28.0`、`0.0.43`、`1.66.42`、`0.4.7`、`0.1.18`。
 
+> 若 0.3 判定要用备用缓存，本节与后续所有 npm 命令都加上 `--cache "$HOME/.npm-cache-dsh"`。
+
 ### 阶段 0 停止条件
 
 任何一条命中：**停**，不要继续，把输出贴给负责人。
@@ -165,7 +167,7 @@ cat /tmp/dsh-web-config-021.err
 
 - 退出码 `0`，YAML 非空。
 - `.err` 里**没有** `startup failed`、`disabling profile plugin`、`incompatible with dsh`。
-- `.err` 里**允许**出现 `pending (waiting for service: webRuntime)`（旧版 better-sidebar 的预期现象）。
+- `.err` 里**允许**出现 `pending (waiting for service: webRuntime)`（旧版 better-sidebar 的预期现象）；若完全没有这条也正常，取决于该命令是否真的启动插件。
 - 配置里能找到 7 个 provider 名：`micu`、`openrouter`、`zai`、`moonshotai-cn`、`teamorouter`、`opencode-go`、`yovole`。
 
 ### 阶段 1 停止条件
@@ -243,7 +245,7 @@ node -p "require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencie
 node -p "JSON.stringify(require(process.env.HOME+'/.dsh/profiles/web/package.json'),null,2)"
 ```
 
-`dsh.profile.bundles` 应仍是这 9 项，顺序允许变化（CLI 会保留既有顺序）：
+`dsh.profile.bundles` 应仍是这 9 项（顺序可能与你看到的略有不同，CLI 一般保留既有顺序；只要 9 项都在即可）：
 
 ```
 @deepseek-ai/dsh-base
@@ -264,7 +266,7 @@ dsh-client-auto-continue
 - 任一 `add` 返回非 0：停，读 stderr，按附录 B 处理；处理不了就回滚。
 - 任一条出现 `incompatible-version` / "requires" 字样：说明版本判断错了，**不要用 `allow-version`**，停并回滚。
 - 出现 `already-installed`：改为先 `remove` 再 `add`（见附录 B），成功则继续，失败则停。
-- pnpm 报 `ERR_PNPM_MINIMUM_RELEASE_AGE`（新版本"太新"）：在 `~/.dsh/profiles/web/pnpm-workspace.yaml` 的 `minimumReleaseAgeExclude` 里加上**精确版本**（例如 `dsh-better-sidebar@0.28.0`），再重跑该条。当前环境该项未启用，正常不会遇到。
+- pnpm 报错提到 `minimumReleaseAge`（目标版本"发布太新"）：在 `~/.dsh/profiles/web/pnpm-workspace.yaml` 的 `minimumReleaseAgeExclude` 里加上**精确版本**（例如 `dsh-better-sidebar@0.28.0`），再重跑该条。当前环境该项未启用（`pnpm config get minimumReleaseAge` 返回 `undefined`），正常不会遇到。
 
 ---
 
@@ -369,7 +371,7 @@ dsh web --no-open
 | `already-installed` | 用"安装 API"覆盖已装包被拒（HMR 场景） | `dsh plugin --profile web remove <包>` 然后重新 `add <包>@<版本>` |
 | `incompatible-version` / `requirements {...}` | 目标版本不满足当前 DSH | **停**。确认 `dsh --version` 是 0.2.1-rc.2；不要 `allow-version` |
 | `dsh: pnpm was not found` | pnpm 不在 PATH | 先修 PATH 再重跑 |
-| `ERR_PNPM_MINIMUM_RELEASE_AGE` | 目标版本太新被 pnpm 拦 | 在 `pnpm-workspace.yaml` 的 `minimumReleaseAgeExclude` 加精确版本 |
+| 报错提到 `minimumReleaseAge`（版本太新） | 目标版本被 pnpm 的发版冷却拦住 | 在 `pnpm-workspace.yaml` 的 `minimumReleaseAgeExclude` 加精确版本 |
 | `pending (waiting for service: webRuntime)` | 旧版 better-sidebar 未升级 | 升到 0.28.0 后应消失；升完仍有 → 停 |
 | `Plugins waiting for services` 里出现 `webRuntime` 以外的东西 | 新宿主与插件对不上 | 停，回滚，保留日志 |
 | `startup failed` | 必需插件未激活 | 停，回滚 |
