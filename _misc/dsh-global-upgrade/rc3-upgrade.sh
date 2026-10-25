@@ -46,15 +46,25 @@ while [ "$#" -gt 0 ]; do
 	--yes | -y) ASSUME_YES=1 ;;
 	--resume)
 		MODE="resume"
-		case "${2:-}" in "" | -*) ;; *) GIVEN_DIR="$2"; set -- "$@" ;; esac
+		case "${2:-}" in "" | -*) ;; *)
+			GIVEN_DIR="$2"
+			set -- "$@"
+			;;
+		esac
 		[ -n "${2:-}" ] && [ "${2#-}" = "$2" ] && shift
 		;;
 	--rollback)
 		MODE="rollback"
 		[ -n "${2:-}" ] && [ "${2#-}" = "$2" ] && GIVEN_DIR="$2" && shift
 		;;
-	-h | --help) usage; exit 0 ;;
-	*) echo "未知参数：$1（用 --help 看用法）" >&2; exit 2 ;;
+	-h | --help)
+		usage
+		exit 0
+		;;
+	*)
+		echo "未知参数：$1（用 --help 看用法）" >&2
+		exit 2
+		;;
 	esac
 	shift
 done
@@ -165,7 +175,10 @@ guard_not_inside_dsh_web() {
 stop_all_dsh_web() {
 	local pids remaining
 	pids="$(dsh_web_pids)"
-	[ -z "$pids" ] && { ok "没有需要停的 dsh web"; return 0; }
+	[ -z "$pids" ] && {
+		ok "没有需要停的 dsh web"
+		return 0
+	}
 	say "正在停：$(echo $pids | tr ' ' ' ')"
 	for pid in $pids; do kill "$pid" 2>/dev/null || true; done
 	remaining=""
