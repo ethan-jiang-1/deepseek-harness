@@ -81,6 +81,33 @@ describe('maintained repository reference policy', () => {
     }
   })
 
+  it('skips commit identifiers in research corpora and lockfiles but still checks organization URLs', () => {
+    const commit = 'a'.repeat(40)
+    const commits = new Set([commit])
+    const source = `${organizationUrl}\n${commit}\n`
+    for (const file of [
+      '_digested/00-index.md',
+      '_faq_on_digested/00-index.md',
+      '_dsh_plugin_agent_ready_development/00-index.md',
+      '_misc/notes.md',
+      'python/sdk/uv.lock',
+      'pnpm-lock.yaml',
+      'package-lock.json',
+      'npm-shrinkwrap.json',
+      'yarn.lock',
+      'bun.lock',
+    ]) {
+      expect(findRepositoryReferences(file, source, commits)).toEqual([
+        { file, line: 1, kind: 'organization-url' },
+      ])
+    }
+    expect(findRepositoryReferences('vendor/readme.md', source, commits)).toEqual([])
+    expect(findRepositoryReferences('docs/note.md', source, commits)).toEqual([
+      { file: 'docs/note.md', line: 1, kind: 'organization-url' },
+      { file: 'docs/note.md', line: 2, kind: 'commit-hash' },
+    ])
+  })
+
   it('rejects complete and abbreviated commit identifiers in tracked, staged, and new files', (test) => {
     const fixture = repository(test)
     fixture.write('tracked.md', `release\n${fixture.commit}\n${fixture.commit.toUpperCase()}\n`)

@@ -12,7 +12,20 @@ const organizationUrl = new RegExp(`\\bgithub\\.com/${organization}(?![a-z0-9-])
 // The independent kit repository owns the engine source and documentation.
 const kitRepositoryUrl = new RegExp(`\\bgithub\\.com/${organization}/libreoffice-kit(?:\\.git)?(?=/|[^a-zA-Z0-9_.-]|$)`, 'g')
 const commitCandidate = /(?<![a-z0-9])[\da-f]{7,40}(?![a-z0-9])/gi
-const excludedPrefixes = ['vendor/', '.agents/notes/archived/']
+// Local research corpora cite historical commits as evidence by design; they are not
+// maintained product references. They still undergo the organization-URL check, which
+// looks for maintained links rather than historical evidence. Lockfiles carry integrity
+// digests that can coincide with an object name; only their commit check is skipped.
+const uncheckedPrefixes = ['vendor/', '.agents/notes/archived/']
+const researchPrefixes = ['_digested/', '_faq_on_digested/', '_dsh_plugin_agent_ready_development/', '_misc/']
+const commitUncheckedBasenames = new Set([
+  'pnpm-lock.yaml',
+  'package-lock.json',
+  'npm-shrinkwrap.json',
+  'yarn.lock',
+  'bun.lock',
+  'uv.lock',
+])
 const gitOutputLimit = 64 * 1024 * 1024
 // One 41-byte line per object; 1.2 million objects produce about 49 MiB.
 const objectListingLimit = 1024 * 1024 * 1024
@@ -28,7 +41,13 @@ export interface RepositoryReference {
 }
 
 function isMaintained(file: string): boolean {
-  return !excludedPrefixes.some(prefix => file.startsWith(prefix))
+  return !uncheckedPrefixes.some(prefix => file.startsWith(prefix))
+}
+
+function checksCommit(file: string): boolean {
+  if (!isMaintained(file)) return false
+  if (researchPrefixes.some(prefix => file.startsWith(prefix))) return false
+  return !commitUncheckedBasenames.has(file.slice(file.lastIndexOf('/') + 1))
 }
 
 /**
@@ -49,7 +68,7 @@ export function findRepositoryReferences(
     if (organizationUrl.test(canonicalReferenceText(line).replace(kitRepositoryUrl, ''))) {
       references.push({ file, line: index + 1, kind: 'organization-url' })
     }
-    if ([...line.matchAll(commitCandidate)].some(match => commits.has(match[0].toLowerCase()))) {
+    if (checksCommit(file) && [...line.matchAll(commitCandidate)].some(match => commits.has(match[0].toLowerCase()))) {
       references.push({ file, line: index + 1, kind: 'commit-hash' })
     }
   }
