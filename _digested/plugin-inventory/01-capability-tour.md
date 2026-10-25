@@ -39,7 +39,7 @@
 
 ### ⑦ 人与界面（浏览器半边 + 程序化入口）
 
-66 个 `client` 包画 Web 界面（ui-* 罗盘行）；`host`/`api` 组是 Remote 控制器与 webserver，`api/remote-access` 决定非 owner Peer 能调哪些 Remote 方法；`interaction` 管审批与提问（`ui-approval`/`ui-user-questions` 接管 waterfall）；`deliverables` 呈现终件；`feedback` 记赞踩；`settings`/`config-editor` 管配置面；程序化入口走 `sdk`（JSON-RPC）或 `acp`。**覆盖组**：client、host、api、interaction、feedback、deliverables、settings、workspace、sdk、acp。
+67 个 `client` 包画 Web 界面（ui-* 罗盘行）；`host`/`api` 组是 Remote 控制器与 webserver，`api/remote-access` 决定非 owner Peer 能调哪些 Remote 方法；`interaction` 管审批与提问（`ui-approval`/`ui-user-questions` 接管 waterfall）；`deliverables` 呈现终件；`feedback` 记赞踩；`settings`/`config-editor` 管配置面；程序化入口走 `sdk`（JSON-RPC）或 `acp`。**覆盖组**：client、host、api、interaction、feedback、deliverables、settings、workspace、sdk、acp。
 
 ### ⑧ 扩展机制与运营（「插件」本身的插件）
 

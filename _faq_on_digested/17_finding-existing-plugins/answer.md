@@ -2,11 +2,11 @@
 
 ## 方法与基线
 
-机制结论以 [`_digested/plugin-inventory/`](../../_digested/plugin-inventory/00-map.md) 专题为底（基线 `dsh-v0.2.1-rc.2`，commit `687f282e86`），并与 [`08`](../08_plugin-seam-maturity/answer.md)（seam 成熟度）、[`09`](../09_plugin-business-ladder/answer.md)（自用价值与参与阶梯）、[`16`](../16_preset-modes-specialty/answer.md)（四模式差异）交叉。计数均可由生成目录与 bundle patch 行号复核。
+机制结论以 [`_digested/plugin-inventory/`](../../_digested/plugin-inventory/00-map.md) 专题为底（基线 `dsh-v0.2.1-rc.3`，commit `1f81c047fc`），并与 [`08`](../08_plugin-seam-maturity/answer.md)（seam 成熟度）、[`09`](../09_plugin-business-ladder/answer.md)（自用价值与参与阶梯）、[`16`](../16_preset-modes-specialty/answer.md)（四模式差异）交叉。计数均可由生成目录与 bundle patch 行号复核。
 
 ## 答案：四步流程
 
-**第一步，查货架（有什么）。** 打开 [`plugin-inventory/02-plugin-catalog.md`](../../_digested/plugin-inventory/02-plugin-catalog.md)：342 个包按 52 个组列出，每包标注形态（Def / Impl / Tool / cmd / UI / adapter / lib / 驱动）、默认可见性（base / web / min / preset / opt / —）、Config 字段数与一句话职责。组序与 `packages/README.md` 一致，可直接对照源码目录；新手先读 [`01-capability-tour.md`](../../_digested/plugin-inventory/01-capability-tour.md) 的八类地图与场景再回来查。
+**第一步，查货架（有什么）。** 打开 [`plugin-inventory/02-plugin-catalog.md`](../../_digested/plugin-inventory/02-plugin-catalog.md)：343 个包按 52 个组列出，每包标注形态（Def / Impl / Tool / cmd / UI / adapter / lib / 驱动）、默认可见性（base / web / min / preset / opt / —）、Config 字段数与一句话职责。组序与 `packages/README.md` 一致，可直接对照源码目录；新手先读 [`01-capability-tour.md`](../../_digested/plugin-inventory/01-capability-tour.md) 的八类地图与场景再回来查。
 
 **第二步，按「要什么」对横切清单（以什么形态给）。** [`03-reference-lists.md`](../../_digested/plugin-inventory/03-reference-lists.md) 回答形态问题：要服务查 99 个 `ctx` 键（58 core + 35 seam + 5 service + 1 bundle，`docs/capability-seams.md:612-712`）；要模型工具查逐 profile 暴露表（base 层 25 个左右固定名、web 预设由四 preset 各自决定、sdk-minimal 只有持久 shell＋`run_code`）；要打包查 6 个 profile bundle ＋ 12 个可选 bundle（另 2 个官方按需）；要模式查四 preset；要技能查 19 个 skill。
 
@@ -20,9 +20,9 @@
 
 ## 三个过去踩的坑（为什么原来没头绪）
 
-1. **把 `packages/` 当货架平铺**。342 个包里 util 18 包与 test-support 7 包是纯库和测试基建，不是插件位；九种形态的分法（[`05`](../../_digested/plugin-inventory/05-taxonomy-and-design.md)）先告诉你哪些格子是「插件位」。
+1. **把 `packages/` 当货架平铺**。343 个包里 util 18 包与 test-support 7 包是纯库和测试基建，不是插件位；九种形态的分法（[`05`](../../_digested/plugin-inventory/05-taxonomy-and-design.md)）先告诉你哪些格子是「插件位」。
 2. **只看 base 层就下结论「没有」**。货架现货大量藏在光谱右侧：`tool-lsp`、`tool-terminal`、`tool-session-query`（5 个检索工具）、`web-search-exa`、`mcp-client`、`hooks-codex` 都默认不挂载——「默认看不到」≠「没有」。
-3. **以为接新模型必须写 adapter**。`llm-pi-ai` 以休眠态随 base 挂载，settings 出现 `llm-pi-ai:` 段即注册多 Provider routes，零 route 时保持休眠（`packages/llm/llm-pi-ai/src/index.ts:286-311`）；catalog 替换走 `cordis.yml` 的 `models` 列表（`packages/llm/llm-deepseek/src/config.ts:97`）。先调配置，最后才写 adapter。
+3. **以为接新模型必须写 adapter**。`llm-pi-ai` 以休眠态随 base 挂载，settings 出现 `llm-pi-ai:` 段即注册多 Provider routes，零 route 时保持休眠（`packages/llm/llm-pi-ai/src/index.ts:286-311`）；catalog 替换走 `cordis.yml` 的 `models` 列表（`packages/llm/llm-deepseek/src/config.ts:98`）。先调配置，最后才写 adapter。
 
 ## 阅读地图
 

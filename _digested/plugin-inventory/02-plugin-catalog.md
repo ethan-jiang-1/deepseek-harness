@@ -1,6 +1,6 @@
-# 02 · 插件货架：342 包逐组图鉴
+# 02 · 插件货架：343 包逐组图鉴
 
-基线 `dsh-v0.2.1-rc.2`（快照式清单，重测义务见 [`_coverage/`](../_coverage/00-index.md)）；组序与 [`packages/README.md`](../../packages/README.md) 一致。总量：342 包、52 个包组（含 experimental）。
+基线 `dsh-v0.2.1-rc.3`（快照式清单，重测义务见 [`_coverage/`](../_coverage/00-index.md)）；组序与 [`packages/README.md`](../../packages/README.md) 一致。总量：343 包、52 个包组（含 experimental）。
 
 枚举口径是深度精确的 `^packages/[^/]+/[^/]+/package\.json$`（`_digested/verify.mjs` 的 `gitPackageOwners`）；`Config` 列是该包声明式配置的顶层字段数，取自生成目录 [`docs/config-catalog.md`](../../docs/config-catalog.md)。
 
@@ -95,8 +95,8 @@
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
 | llm | Def seam `ctx.llm` | base+min | — | Provider 无关流式服务 seam |
-| llm-deepseek | adapter Impl | —（base 两行挂载） | — | DeepSeek Messages adapter |
-| llm-deepseek-api-key | 入口行 | base+min | 1 | api-key 认证发现 |
+| llm-deepseek | adapter Impl | —（base 两行挂载） | — | DeepSeek Messages adapter；0012 起还承载官方 `/models` listing、缓存与 catalog 解析（两条 DeepSeek route 共用） |
+| llm-deepseek-api-key | 入口行 | base+min | 3 | api-key 认证、发现；官方 endpoint 上跟随 `/models` listing（可自定义 catalog 关闭） |
 | llm-deepseek-account | 入口行 | base | 3 | 账户认证发现 |
 | llm-pi-ai | adapter Impl（休眠） | base | 56 | 零 routes 直到 settings 提供 profiles |
 | llm-retry | 策略 | base+min | 0 | Provider 路由重试 |
@@ -447,7 +447,7 @@
 | plugin-inventory | 只读投影 | web | — | Loader 只读插件清单 |
 | product-telemetry-otel | Def `ctx.productTelemetry` | web | 11 | 桌面遥测 OTLP |
 
-## client/（66 包，全部 web 层）
+## client/（67 包，全部 web 层）
 
 基础设施与服务（10）：
 
@@ -464,7 +464,7 @@
 | file-upload | Def `ctx.fileUploads` | 上传暂存 |
 | product-analytics | Def（service） | 桌面产品分析 |
 
-UI 插件（56）：
+UI 插件（57）：
 
 | 包 | 一句话 |
 |---|---|
@@ -496,6 +496,7 @@ UI 插件（56）：
 | ui-permission-presets | 权限面 |
 | ui-plan | 计划座位＋卡片 |
 | ui-agent-preset | preset 缺省座位 |
+| ui-entry-customization | 左栏 / Conversation View / 右栏 guide 三处 More 菜单：浏览插件 + Creator 草稿 |
 | ui-plugin-manager | 插件页安装/启停/卸载 |
 | ui-plugin-market | 插件页 Discover 页签（读市场索引并安装） |
 | ui-shortcuts | 键位参考/录制 |

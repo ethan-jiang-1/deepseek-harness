@@ -1,5 +1,5 @@
 {
-  "baseline": "687f282e8625c6b8d11ff58211a90524be2e4317",
+  "baseline": "1f81c047fc48fa190a683e469daa699857e9afe8",
   "claims": [
     {
       "id": "C1",
@@ -138,13 +138,13 @@
       "id": "N1",
       "description": "baseline 下 .agents/notes 的 .md 文件总数",
       "metric": "notes-md-total",
-      "expected": 2540
+      "expected": 2546
     },
     {
       "id": "N2",
       "description": "baseline 下 .agents/notes/implemented 的 .md 文件数",
       "metric": "notes-implemented-md",
-      "expected": 588
+      "expected": 594
     },
     {
       "id": "N3",
@@ -156,7 +156,7 @@
       "id": "N4",
       "description": "baseline 下所有 packages 所有者包总数（packages/*/*/package.json，深度精确）",
       "metric": "package-total",
-      "expected": 342
+      "expected": 343
     }
   ]
 }

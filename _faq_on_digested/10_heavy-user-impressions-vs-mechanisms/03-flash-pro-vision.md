@@ -2,7 +2,7 @@
 
 ## 第一节 默认 catalog 里两个模型各自是什么
 
-`llm-deepseek` 省略 `models` 配置时公布的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:6-21`、`packages/llm/llm-deepseek/README.md:53`；0009 按 `dsh-v0.2.0-rc.2` 实测重写为两条，其中一条声明图像能力；0.1.5 时的四条目版本——含 `deepseek-v4-flash-vision-exp` 与 `deepseek-v4-flash`——已随上游同步移除）：
+`llm-deepseek` 省略 `models` 配置时公布的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:8-23`、`packages/llm/llm-deepseek/README.md:53`；0009 按 `dsh-v0.2.0-rc.2` 实测重写为两条，其中一条声明图像能力；0.1.5 时的四条目版本——含 `deepseek-v4-flash-vision-exp` 与 `deepseek-v4-flash`——已随上游同步移除）。0012 起官方 endpoint 的 api-key route 默认跟随官方 `/models` listing，内建两条目退为兜底与 Models 页的继承行；只有自定义 `models` 才锁定这份内建口径：
 
 | 模型 | 输入模态 | 定位 |
 |---|---|---|

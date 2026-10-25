@@ -1,10 +1,10 @@
 # 05 · 插件分类与设计思考
 
-产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）；快照式清单的重测义务见 [`_coverage/`](../_coverage/00-index.md)。
+产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）；快照式清单的重测义务见 [`_coverage/`](../_coverage/00-index.md)。
 
 ## 一句话
 
-货架不是平铺的 `packages/` 目录：342 个包按「能力怎么进入运行时」切成九种形态、按「服务在总线上的身份」分成四种 role。分类本身就是 DSH 的设计决定清单——每一刀背后都有一个可以单独检验的承诺。
+货架不是平铺的 `packages/` 目录：343 个包按「能力怎么进入运行时」切成九种形态、按「服务在总线上的身份」分成四种 role。分类本身就是 DSH 的设计决定清单——每一刀背后都有一个可以单独检验的承诺。
 
 ![插件分类全景](./figures/plugin-taxonomy.svg)
 
@@ -18,13 +18,13 @@
 
 **cmd（人类命令）回答「人从哪里进」。** `/goal`、`/compact`、`/export` 与模型工具共用同一运行时但入口分离——人不说话也能用上运行时，模型不经过命令层。
 
-**UI（client 半边）回答「浏览器里放什么」。** host 行与 `dsh.client` 罗盘行成对出现；设置页按 Host namespace 一页一行（`ui-settings-*` 系列与 `ui-settings-plugins` 的罗盘页互补）。66 个 client 包遵守 Client composition discipline：模块物化顺序与 Cordis 激活顺序是两回事（`packages/client/AGENTS.md`）。
+**UI（client 半边）回答「浏览器里放什么」。** host 行与 `dsh.client` 罗盘行成对出现；设置页按 Host namespace 一页一行（`ui-settings-*` 系列与 `ui-settings-plugins` 的罗盘页互补）。67 个 client 包遵守 Client composition discipline：模块物化顺序与 Cordis 激活顺序是两回事（`packages/client/AGENTS.md`）。
 
 **adapter（LLM 接入）回答「模型从哪来」。** `ctx.llm` 的 Provider，可休眠挂载——`llm-pi-ai` 雏形零 routes，settings 出现 `llm-pi-ai:` 段才注册多 Provider。第三家 Provider 的接入位现成，不用改 loop。
 
 **bundle（交付打包）回答「怎么发货」。** patch 层是交付单位，profile 是组合单位，二者刻意二分（「Nothing is both」，[`_dsh_plugin_agent_ready_development/repo-harness/09`](../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md)）。OPTIONAL_BUNDLES 是中间档：随安装出货、默认关、插件页一键开；官方另有 `ON_DEMAND_BUNDLES` 按需安装档。
 
-**lib（纯库）回答「哪些不是插件」。** util 组 18 包零运行时依赖，被 import 不被挂载。货架上必须有这一栏，否则「342 个包」会被误读成「342 个插件位」。
+**lib（纯库）回答「哪些不是插件」。** util 组 18 包零运行时依赖，被 import 不被挂载。货架上必须有这一栏，否则「343 个包」会被误读成「343 个插件位」。
 
 **驱动（启动胶水）回答「谁把服务接成通路」。** `goal-round-driver`、`browser-use-runtime` 这类包不注册面向模型的能力，只把现成服务接成一条执行路径——出路四（写胶水插件）的官方参照物。0.2.1 线把 `subagent-in-process-driver` 整包解散、驱动逻辑并入 `subagent`，是这条形态的边界案例：驱动可以只是一条 seam 的内部实现。
 

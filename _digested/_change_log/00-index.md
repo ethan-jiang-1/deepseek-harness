@@ -28,11 +28,32 @@
 - [`0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](./0011-0.2.0-rc.2-to-0.2.1-rc.2.md)——第十次合入（1925 commits；**对齐口径在本卷定型**，见下节）
 - [`0011-independent-recheck.md`](./0011-independent-recheck.md)——0011 轮**独立反查**（按维度而非目录切：D1 引用反查、D2 正向覆盖、D3 硬数字残留、D4 钉版锚点、D5 文风纪律；实测并定义了「按路径求交」的三类盲区——按数字陈述的文件、引用已整族删除机制的文件、引文不可溯源的文件）
 
+- [`0012-0.2.1-rc.2-to-0.2.1-rc.3.md`](./0012-0.2.1-rc.2-to-0.2.1-rc.3.md)——第十二次合入（6 个提交、640 个文件；导航入口自定义与 New Session 空白复用、官方 `/models` listing 进入共享 transport、客户端分析事件、侧栏 pin/selection 分离；343 包；**口径定稿**：对齐已发布 tag，不跟 master 分支头、不 merge）
+
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
 
-**选基线的口径**：只同步 **RC 或 final release**，目标是当前的**最后一个 RC**（若该版本线已出 final release，则同步到 final release）。alpha、beta 一律**不同步**——除非明确指定，否则即使 upstream 长期停在 alpha 阶段也不追，避免同步负担失控。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`；0007 改成「最后一个 RC」并推进到 `0.1.5-rc.2`。
+**选基线的口径（0012 定稿）**：只同步**已发布版本的内容**，目标是当前版本的 **release tag**（本轮 `dsh-v0.2.1-rc.3`）。alpha / beta 不追；0.2.1 线尚未 final，所以取最后一个 RC。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`，0007 起改成「最后一个 RC」，沿用至今。
 
-**执行口径（0011 起定型，取代 0008–0009 的整树照搬）**：**`ethan` = upstream 最后一个 RC 的原样 + 5 个本地独有目录**，5 个目录即 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/`、`.pi/`。除这 5 个之外**每一个字节都与该 RC 逐路径相同**，不留任何本地源码补丁、配置行或口径行。动作是**对齐，不是 merge**：`git merge-base` 因 0008–0009 的 `read-tree` 停在 `46a7f68b09`（0.1.7-rc.1），直接 merge 会得到 2047 个冲突文件；正确动作是 `git read-tree -u --reset <tag>` 后把 5 个目录放回。0008 起保留的 pairing manifest 本地排除行在 0011 全部退役——它是 5 个目录之外的本地修改，且其中一行早已因目录改名而失效。详见 [`0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](./0011-0.2.0-rc.2-to-0.2.1-rc.2.md) 的「同步口径」节。
+**「跟上 master」的正确含义**：取 master 上**已发布版本的内容**，不是 master 分支头。master 可能领先 release tag 很多未发版提交（0012 时是 **1533 个**）；跟分支头会把未发布机制写进语料，也会让「版本」失去意义。tag 就是目标的唯一名字。
+
+**执行口径（0011 定稿、0012 复核）**：**`ethan` = 目标 release tag 的原样 + 5 个本地独有目录**，5 个目录即 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/`、`.pi/`。除这 5 个之外**每一个字节都与该 tag 逐路径相同**，不留任何本地源码补丁、配置行或口径行。
+
+动作是**对齐，不是 merge**：
+
+```sh
+git fetch upstream --tags
+git read-tree -u --reset dsh-v0.2.1-rc.3          # 换成本轮 tag
+git checkout HEAD -- _digested _faq_on_digested \
+  _dsh_plugin_agent_ready_development _misc .pi
+git diff --name-only dsh-v0.2.1-rc.3 -- . \
+  ':(exclude)_digested' ':(exclude)_faq_on_digested' \
+  ':(exclude)_dsh_plugin_agent_ready_development' \
+  ':(exclude)_misc' ':(exclude).pi'                # 必须为空
+```
+
+**不要 merge**：`git merge-base` 因 0008–0009 的 `read-tree` 停在 `46a7f68b09`（0.1.7-rc.1），直接 merge 会得到 2047 个冲突文件；逐冲突解决等于把本地材料的取舍混进产品树，而且下一次同步还要重来一遍。
+
+**这条口径是本目录的唯一权威**：同步前先读本节。**读成「跟 master 分支头」是 0012 已经犯过的错**（当时对齐到 `22ddee37`，多出 1533 个未发版提交，已回退）；判据只有一条——除 5 个目录外与目标 tag 零差异。
 
 每次 sync 同时执行以下维护动作：
 

@@ -59,7 +59,7 @@
   <text x="358" y="380" fill="#374151">host 行 + dsh.client 罗盘行成对</text>
   <text x="358" y="398" fill="#374151">设置页按 Host namespace 一页一行</text>
   <text x="358" y="416" fill="#2563eb">例：ui-goal、ui-settings-shell</text>
-  <text x="358" y="434" fill="#6b7280">66 个 client 包，全部 web 层</text>
+  <text x="358" y="434" fill="#6b7280">67 个 client 包，全部 web 层</text>
 
   <rect x="648" y="336" width="290" height="108" rx="10" fill="#ffffff" stroke="#d1d5db"/>
   <text x="664" y="360" font-size="13" font-weight="700" fill="#1f2937">adapter · LLM 接入</text>

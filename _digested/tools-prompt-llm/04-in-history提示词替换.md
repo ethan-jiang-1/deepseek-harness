@@ -1,6 +1,6 @@
 # in-history 提示词替换
 
-产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`，2026-10-18 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
+产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`，2026-10-25 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
 
 源码核验入口：`packages/llm/llm/src/types.ts`、`packages/llm/llm/src/index.ts` 的 `normalizeModelInfo`、`packages/llm/llm-deepseek/src/models.ts` 的 catalog、`packages/core/agent-loop/src/runtime-context.ts:88-103`。
 
@@ -10,7 +10,7 @@
 
 `dsh-llm` 定义能力 `SystemPromptUpdate = 'in-history'`（`packages/llm/llm/src/types.ts:414`），作为**可选兄弟字段**挂在 `LlmResolvedModelInfo`（`:428`，字段 `:436`）与 `PreparedLlmCall` 上（`packages/llm/llm/src/index.ts:179`，归一化在 `:774` 起的 `normalizeModelInfo`）。`normalizeModelInfo` 拒绝任何其他取值，抛 `LlmError` code `INVALID_MODEL_INFO`（`:805`-`:809`）。
 
-**唯一内置声明者是 `deepseek-flash`**（`packages/llm/llm-deepseek/src/models.ts:12`；0.2.0 线该模型同时声明了兄弟能力 `toolUpdate: 'addition-only'`，见 [`02-管道审批timeout与chunk.md`](./02-管道审批timeout与chunk.md) 的新节）。catalog zod 用 `z.const('in-history')` 校验（0.2.0 线 catalog 定义随 `llm-deepseek/src/index.ts` 瘦身迁到 `config.ts:80`，per-model 复核在 `:173`-`:174`）。**所有 `llm-pi-ai` route 都不声明**（`packages/llm/llm-pi-ai/src/` 全目录无 `systemPromptUpdate`），因此手工配置的 pi-ai route 一律保持「重写 message 0」的 replace 行为。部署可以用 `cordis.yml` 的 `models` 列表替换 catalog，从而显式声明该能力（`packages/llm/llm-deepseek/src/config.ts:80`、`:173`-`:174`）。
+**唯一内置声明者是 `deepseek-flash`**（`packages/llm/llm-deepseek/src/models.ts:14`；0.2.0 线该模型同时声明了兄弟能力 `toolUpdate: 'addition-only'`，见 [`02-管道审批timeout与chunk.md`](./02-管道审批timeout与chunk.md) 的新节）。catalog zod 用 `z.const('in-history')` 校验（0.2.0 线 catalog 定义随 `llm-deepseek/src/index.ts` 瘦身迁到 `config.ts:81`，per-model 复核在 `:184`-`:185`）。**所有 `llm-pi-ai` route 都不声明**（`packages/llm/llm-pi-ai/src/` 全目录无 `systemPromptUpdate`），因此手工配置的 pi-ai route 一律保持「重写 message 0」的 replace 行为。部署可以用 `cordis.yml` 的 `models` 列表替换 catalog，从而显式声明该能力（`packages/llm/llm-deepseek/src/config.ts:81`、`:184`-`:185`）。0012 起，跟随官方 listing 的 route 用 listing 的 `api_capabilities.anthropic_messages.system_prompt_update` 覆盖内建模式：省略或 `null` 保留内建值，`in-history` 采用 listing，其他值按 `leading-only` 移除内建模式（`packages/llm/llm-deepseek/src/listed-catalog.ts:55`-`:68`）。「唯一内置声明者」因此只约束内建 catalog；运行期实际声明集合还取决于当前 listing。
 
 ## 语义
 

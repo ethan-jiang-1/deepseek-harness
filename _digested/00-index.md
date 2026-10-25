@@ -2,7 +2,7 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **产品源码审计基线**：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](./_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)（该卷同时定型的**执行口径**：`ethan` = upstream 最后一个 RC 的原样 + 5 个本地独有目录，除这 5 个之外与 master 逐路径相同，没有 merge 这回事）；0008 轮语料维护的**独立复核**见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)；0009 轮的**独立反查**见 [`_change_log/0009-independent-recheck.md`](./_change_log/0009-independent-recheck.md)。本地维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个语料目录与 `.pi/`（`_misc` 为低重要性杂项：`_references` 冻结存档只随轮更新基线行，`_scratch` 不跟踪内容）。
+> **产品源码审计基线**：DeepSeek Harness `dsh-v0.2.1-rc.3`，commit `1f81c047fc48fa190a683e469daa699857e9afe8`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md`](./_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md)（该卷同时定型的**执行口径**：`ethan` = upstream 最后一个 RC 的原样 + 5 个本地独有目录，除这 5 个之外与 master 逐路径相同，没有 merge 这回事）；0008 轮语料维护的**独立复核**见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)；0009 轮的**独立反查**见 [`_change_log/0009-independent-recheck.md`](./_change_log/0009-independent-recheck.md)。本地维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个语料目录与 `.pi/`（`_misc` 为低重要性杂项：`_references` 冻结存档只随轮更新基线行，`_scratch` 不跟踪内容）。
 
 ## 30 秒看懂
 
@@ -22,7 +22,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `ethan` | 研究分支。源码整树照搬 upstream tag；研究材料位于 `_digested/`、`_dsh_plugin_agent_ready_development/`、`_faq_on_digested/` 与 `_misc/`。 |
 | `ethan2` | `ethan` 的工作副本，两者在每次同步后保持指向同一提交。 |
 
-同步方式（0008 起为**整树照搬**，见 `_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`）：把产品源码对齐到选定的 upstream tag（不做内容合并、不留本地源码补丁，四个语料目录整体保留），再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。（旧口径「非快进 merge + 逐冲突解决」在 0008 执行时退役。）
+同步方式（权威口径见 [`_change_log/00-index.md`](./_change_log/00-index.md)）：把产品源码**整树对齐到当前发布版本的 release tag**（本轮 `dsh-v0.2.1-rc.3`；不做内容合并、不留本地源码补丁，四个语料目录与 `.pi/` 整体保留），再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。旧口径「非快进 merge + 逐冲突解决」在 0008 退役。**不要读成「跟 master 分支头」**——master 上未发版的提交不属于本轮（0012 时领先 1533 个，已因此返工一次）。
 
 ## 与同级目录的关系
 
@@ -48,7 +48,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
 | `orchestration-ladder/` | 工作编排原语阶梯 | 从驾驶座视角：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个、怎么组合。 |
 | `capability-seams/` | 可替换能力 | 同一个能力（读文件、跑命令……）有多个插件实现时，怎么换实现而不改调用方——插件的竞聘位。 |
-| `plugin-inventory/` | 现成插件货架 | 342 个包按组列成清单：能力在哪、以什么形态给、怎么拿——动手写之前先查这里。 |
+| `plugin-inventory/` | 现成插件货架 | 343 个包按组列成清单：能力在哪、以什么形态给、怎么拿——动手写之前先查这里。 |
 | `experimental/` | 可选能力与原型 | 已评估但未承诺产品支持的能力（47 包）。**实验身份与「可选交付」相互独立**：可选包收编进本组，而非 experimental 的包才需要产品用途或显式分类（`scripts/product-package-policy.ts`）。 |
 | `tools-prompt-llm/` | 模型可见面 | 模型每一步看见什么：工具清单、系统提示词、历史投影怎么组装。 |
 | `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、Web、桌面、ACP、SDK 五个入口怎么复用同一台运行时。 |

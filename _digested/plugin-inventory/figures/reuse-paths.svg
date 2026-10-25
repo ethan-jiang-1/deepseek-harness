@@ -12,7 +12,7 @@
 
   <rect x="310" y="108" width="340" height="42" rx="8" fill="#e5e7eb" stroke="#9ca3af"/>
   <text x="480" y="127" text-anchor="middle" font-weight="700" fill="#374151">① 查货架（01 按组）＋ ② 对横切清单（02 按 profile 暴露）</text>
-  <text x="480" y="144" text-anchor="middle" fill="#6b7280">342 包 / 99 个 ctx 服务 / 33 个工具包——先假设它已存在</text>
+  <text x="480" y="144" text-anchor="middle" fill="#6b7280">343 包 / 99 个 ctx 服务 / 33 个工具包——先假设它已存在</text>
 
   <line x1="180" y1="150" x2="180" y2="176" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
   <line x1="480" y1="150" x2="480" y2="176" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>

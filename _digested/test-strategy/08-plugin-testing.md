@@ -1,6 +1,6 @@
 # 08 — 插件测试策略：政策对一个新插件的要求
 
-> 本篇面向**插件作者**：DSH 出厂自带 342 个包、99 个 `ctx` 服务、33 个工具包（[`plugin-inventory`](../plugin-inventory/00-map.md) 口径；工具包数取 `docs/tool-catalog.md` 的 Tool Package Map 行数）；本篇实测另有 101 个包以 named export 形态导出 `inject`（口径：`packages/*/*/src/index.ts` 含 `export const inject`）、56 个 client `ui-*` 包（`packages/client/ui-*`，不含 `extensions/ui-cordis`）——它们全部按同一套测试要求受审。[§plugin-inventory](../plugin-inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。
+> 本篇面向**插件作者**：DSH 出厂自带 343 个包、99 个 `ctx` 服务、33 个工具包（[`plugin-inventory`](../plugin-inventory/00-map.md) 口径；工具包数取 `docs/tool-catalog.md` 的 Tool Package Map 行数）；本篇实测另有 101 个包以 named export 形态导出 `inject`（口径：`packages/*/*/src/index.ts` 含 `export const inject`）、56 个 client `ui-*` 包（`packages/client/ui-*`，不含 `extensions/ui-cordis`）——它们全部按同一套测试要求受审。[§plugin-inventory](../plugin-inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。
 
 ## 先对齐五个名词（本篇自足，不依赖其他篇）
 

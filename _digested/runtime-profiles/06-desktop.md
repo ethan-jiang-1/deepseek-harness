@@ -40,7 +40,7 @@ desktop 与 CLI 组合的三处差异：
 
 - **安装锚点不同**：CLI 用自身 `apps/cli` 的 `package.json`（`apps/cli/src/profile-boot.ts:77`），desktop 用签名 runtime 树里的 `node_modules/@deepseek-ai/dsh/package.json`（`apps/desktop-host/src/index.ts:22`）。同一 `loadProfileDirectory`，解析出的 bundle 位置不同。
 - **~~`desktop.cordis.patch.yml` 应用私有覆盖层~~（0.1.7 线随 desktop-host 重构退役）**：旧基线 desktop 在 profile 层之上再叠一份应用私有 patch，disable `webserver` / `web-startup` 等七行、换成无端口的分帧字节管道。现 host 经共享 `runProfile` 起完整 web 应用（webserver 也在树里，`packages/bundle/web-app/cordis.patch.yml:179-188`），`patchFiles: []` 表示没有应用私有 overlay（`apps/desktop-host/src/index.ts:29`）；组合差异改为 Electron 壳侧的资源投递与请求转发（见「进程模型」「传输与认证」）。
-- **~~`agent-presets` roots 改写~~（0.1.7 线退役）**：旧机制把 preset 行的 `roots` 改指 dsh 安装内的 `config/agent-presets`。现组合的 preset 行由 `dsh-web-app` bundle 自带（`agent-preset-registry`，`packages/bundle/web-app/cordis.patch.yml:585-589`），host 不再做任何 roots 改写（现文件 122 行）。
+- **~~`agent-presets` roots 改写~~（0.1.7 线退役）**：旧机制把 preset 行的 `roots` 改指 dsh 安装内的 `config/agent-presets`。现组合的 preset 行由 `dsh-web-app` bundle 自带（`agent-preset-registry`，`packages/bundle/web-app/cordis.patch.yml:590-594`），host 不再做任何 roots 改写（现文件 122 行）。
 
 ## 进程模型
 
