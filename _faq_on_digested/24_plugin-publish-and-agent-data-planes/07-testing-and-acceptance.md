@@ -31,7 +31,7 @@
 | **T5 数据** | 数据在正确平面，跨会话/重启/升级不串 | 两个会话并行不共享；重启后 storage domain 仍在；包目录无写入；secret 不进日志 | 临时 `DSH_HOME` + 临时 workspace + 两次启动 + 目录 diff | 2–4 小时 |
 | **T6 兼容** | 声明范围真实覆盖 | `engines.dsh` 下界/上界；peer-only 回退；预发布；不兼容时安装/启动都拒绝 | `dsh plugin add` 到最小/最大版本；`plugin_manager` 的豁免路径 | 4–8 小时（矩阵） |
 | **T7 UI** | 客户端模块可构建、可挂载、可清理、文案本地化 | `./client` 存在；slot 渲染；locale 键；卸载清理样式/监听器 | `@deepseek-ai/dsh-client-test-runtime`（jsdom）；Playwright（真实 Web） | 3–8 小时 |
-| **T8 供应链/安全** | 安装脚本、secret、网络、权限边界可解释 | 无生命周期脚本或已声明 `allowBuilds`；无明文 secret；无沙箱绕过；有 provenance/签名 | 人工 review + `npm publish --provenance`、`npm audit signatures`、secret 扫描 | 1–2 小时 |
+| **T8 供应链/安全** | 安装脚本、secret、网络、权限边界可解释 | 无生命周期脚本或已声明 `allowBuilds`；无明文 secret；无沙箱绕过；有构建来源证明/签名 | 人工 review + npm 的构建证明发布（CI OIDC）、`npm audit signatures`、secret 扫描 | 1–2 小时 |
 
 ## 3. T0：打包面（最便宜，先做）
 
@@ -292,7 +292,7 @@ diff -u "$BEFORE" "$AFTER"
 - **secret**：不写 patch/locale/README/测试 fixture；用凭据服务/环境变量引用；错误信息不打印 token。
 - **网络**：声明会访问的域名；不要把用户内容发到未声明的第三方。
 - **权限**：Host 插件在进程内、沙箱之外执行；不要用宿主代码替模型绕过 `ctx.fs`/sandbox。
-- **provenance**：npm 发布用 `--provenance`（CI OIDC）；`npm audit signatures` 验证；市场 index 不验证作者，用户要自己核对来源。
+- **构建来源证明**：npm 发布用 CI OIDC 的构建证明选项；`npm audit signatures` 验证；市场 index 不验证作者，用户要自己核对来源。
 - **依赖**：`knip`/`dependency-cruiser` 查未使用依赖与非法分层；不要 vendored 一份 DSH 源码来“稳定 API”。
 
 ## 12. 时间预算：一小时 / 一天 / 一周
@@ -317,7 +317,7 @@ diff -u "$BEFORE" "$AFTER"
 10. 录制回放：真实会话 fixture + `dsh-llm-replay` + 模型可见断言。
 11. 兼容矩阵：最小/最大 DSH、peer-only、预发布、不兼容拒绝。
 12. UI：client 构建 + slot + locale + 窄宽度 + 卸载清理。
-13. 供应链：`--provenance`、签名 release、依赖审计。
+13. 供应链：构建证明、签名 release、依赖审计。
 14. 文档即测试：README 的 Data/Compatibility 与 manifest 一致；tag == version；release 资产完整。
 
 ## 13. 不要测什么
@@ -363,22 +363,22 @@ diff -u "$BEFORE" "$AFTER"
 - [ ] 最小/最大 DSH 版本各跑一次安装 + 启动。
 - [ ] secret 扫描与卸载残留检查。
 - [ ] UI 的 locale/窄宽度/清理测试。
-- [ ] `npm publish --provenance` + `npm audit signatures`。
+- [ ] npm 的构建证明发布 + `npm audit signatures`。
 
 ## 16. 证据与边界
 
 DSH 测试设施：
 
-- [testing.md](../../docs/testing.md) — 分层、覆盖率、e2e、快照、Web、flaky 规则
-- [snapshots/AGENTS.md](../../snapshots/AGENTS.md) — 录制会话的所有权与代际规则
-- [llm-replay README](../../packages/test-support/llm-replay/README.md) — 无 key 回放
-- [llm-mock-server README](../../packages/test-support/llm-mock-server/README.md) — provider 故障注入
-- [loader-smoke README](../../packages/test-support/loader-smoke/README.md) — 真实 bin/配置启动
-- [agent-loop-testkit README](../../packages/test-support/agent-loop-testkit/README.md) — 真实 loop 组合
-- [client-test-runtime README](../../packages/test-support/client-runtime/README.md) — jsdom slot 运行时
-- [remote-mock README](../../packages/test-support/remote-mock/README.md) — 按 endpoint mock Host
-- [session-snapshot README](../../packages/test-support/session-snapshot/README.md) — 完整 profile 快照套件
-- [dsh-ci-test-reliability skill](../../.agents/skills/dsh-ci-test-reliability/SKILL.md) — 并发、端口、时钟、子进程、teardown
+- [testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/testing.md) — 分层、覆盖率、e2e、快照、Web、flaky 规则
+- [snapshots/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/snapshots/AGENTS.md) — 录制会话的所有权与代际规则
+- [llm-replay README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/llm-replay/README.md) — 无 key 回放
+- [llm-mock-server README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/llm-mock-server/README.md) — provider 故障注入
+- [loader-smoke README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/loader-smoke/README.md) — 真实 bin/配置启动
+- [agent-loop-testkit README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/agent-loop-testkit/README.md) — 真实 loop 组合
+- [client-test-runtime README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/client-runtime/README.md) — jsdom slot 运行时
+- [remote-mock README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/remote-mock/README.md) — 按 endpoint mock Host
+- [session-snapshot README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/session-snapshot/README.md) — 完整 profile 快照套件
+- [dsh-ci-test-reliability skill](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/.agents/skills/dsh-ci-test-reliability/SKILL.md) — 并发、端口、时钟、子进程、teardown
 
 外部实践（2026-10-25 文档，未在 DSH 实测）：
 
@@ -388,7 +388,7 @@ DSH 测试设施：
 - VS Code 测试/发布 — [testing extensions](https://code.visualstudio.com/api/working-with-extensions/testing-extension)、[publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
 - Obsidian 发布要求 — [submission requirements](https://github.com/obsidianmd/obsidian-developer-docs/blob/main/en/Community%20directory/Submission%20requirements%20for%20plugins.md)
 - HF Spaces 调试 — [debugging ladder](https://github.com/huggingface/skills/blob/main/skills/huggingface-spaces/references/debugging.md)
-- npm provenance / `npm pack` / publint / attw — [npm provenance](https://github.com/npm/provenance)、[publint](https://publint.dev/)、[attw](https://github.com/arethetypeswrong/arethetypeswrong.github.io)
+- npm 发布 / `npm pack` / publint / attw — [npm publish](https://docs.npmjs.com/cli/v11/commands/npm-publish)、[publint](https://publint.dev/)、[attw](https://github.com/arethetypeswrong/arethetypeswrong.github.io)
 
 边界：
 

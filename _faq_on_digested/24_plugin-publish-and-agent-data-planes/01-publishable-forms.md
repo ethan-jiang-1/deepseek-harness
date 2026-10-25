@@ -8,7 +8,7 @@ DSH 只会把 **bundle** 自动选入 profile 并作为一层管理；普通 npm
 
 ## 1. plugin：运行时行为单元
 
-DSH 对插件的最小定义只有一句：一个模块（TypeScript 源或构建后的 JS），导出 `apply` 函数；框架加载时调用它并传入 `ctx`，插件在 `ctx` 上注册能力。服务型包则默认导出 service class。两种形式不能混用，混用会让 Loader 丢掉 named export 的命名空间（[packages/AGENTS.md](../../packages/AGENTS.md) 的 Plugin exports 条；事故记录见 [postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)）。
+DSH 对插件的最小定义只有一句：一个模块（TypeScript 源或构建后的 JS），导出 `apply` 函数；框架加载时调用它并传入 `ctx`，插件在 `ctx` 上注册能力。服务型包则默认导出 service class。两种形式不能混用，混用会让 Loader 丢掉 named export 的命名空间（[packages/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/AGENTS.md) 的 Plugin exports 条；事故记录见 [postmortem 0001](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/postmortem/0001-acp-default-export-drops-inject.md)）。
 
 ```ts
 // 函数型
@@ -26,7 +26,7 @@ export default class MyService { /* ... */ }
 
 ## 2. bundle：唯一的可安装并自动启用的作者发布物
 
-bundle 的定义同样只有一句：`package.json` 里声明 `dsh.bundle.patch` 的 npm 包。patch 是一份 YAML 数组，用来插入或覆盖插件行；`patch` 可以是一个文件，也可以是有序的文件列表，启动器按顺序当成一层应用（[package-manifest types.ts](../../packages/util/package-manifest/src/types.ts) 的 `DshBundleManifest`）。
+bundle 的定义同样只有一句：`package.json` 里声明 `dsh.bundle.patch` 的 npm 包。patch 是一份 YAML 数组，用来插入或覆盖插件行；`patch` 可以是一个文件，也可以是有序的文件列表，启动器按顺序当成一层应用（[package-manifest types.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/package-manifest/src/types.ts) 的 `DshBundleManifest`）。
 
 ```json
 {
@@ -46,7 +46,7 @@ bundle 的定义同样只有一句：`package.json` 里声明 `dsh.bundle.patch`
 
 bundle **不必挂载自己**：`dsh-base` 的 patch 插入很多行，但没有一行挂载 `dsh-base` 自己；配置型 bundle 只插别的包；反过来，一个能力包也可以在自己的 patch 里插自己的根行。patch 插什么，比“这个包是谁”更重要。
 
-如果包没有 `dsh.bundle`，行为取决于入口：`dsh plugin add` 仍会把它装成普通依赖，打一条警告，不激活任何层（[publish.md](../../docs/user/develop/basic/publish.md)）；`plugin_manager` 的 `install_bundle` 在 pnpm 之后以 `not-bundle` 拒绝，并回滚 manifest 与 lockfile。`listBundles` 会把这种“被选中但没有 bundle patch”的名字标成 `not-bundle`。**“能装”与“会被当成插件”是两件事。**
+如果包没有 `dsh.bundle`，行为取决于入口：`dsh plugin add` 仍会把它装成普通依赖，打一条警告，不激活任何层（[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)）；`plugin_manager` 的 `install_bundle` 在 pnpm 之后以 `not-bundle` 拒绝，并回滚 manifest 与 lockfile。`listBundles` 会把这种“被选中但没有 bundle patch”的名字标成 `not-bundle`。**“能装”与“会被当成插件”是两件事。**
 
 ## 3. profile：用户侧组合，不是发布物
 
@@ -59,7 +59,7 @@ profile 是 `$DSH_HOME/profiles/<name>` 下的一个目录，两份关键文件�
 
 profile 回答的是“这台机器上这个入口由哪些 bundle、按什么顺序组成”；bundle 回答的是“这个包贡献什么”。所以产品文档才说 “Nothing is both”。这是**角色分工**，不是 JSON 层面的排他：一个 package.json 理论上可以同时写 `dsh.bundle` 与 `dsh.profile`，但 DSH 只从 profile 目录读 `dsh.profile`、只从依赖里读 `dsh.bundle`，两个角色不会互相替代。作者不应该发布 profile；用户也不应该手写 profile manifest——`dsh plugin` 和 `plugin_manager` 会维护它。
 
-加载顺序固定为：每个 bundle 的 patch（按列表顺序）→ profile 的 `cordis.patch.yml` → `$DSH_HOME/cordis.patch.yml` → 每个 `--patch` overlay（按 argv 顺序）。后者按行覆盖前者，且覆盖会替换整段 `config`，不是深合并（[publish.md](../../docs/user/develop/basic/publish.md)）。
+加载顺序固定为：每个 bundle 的 patch（按列表顺序）→ profile 的 `cordis.patch.yml` → `$DSH_HOME/cordis.patch.yml` → 每个 `--patch` overlay（按 argv 顺序）。后者按行覆盖前者，且覆盖会替换整段 `config`，不是深合并（[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)）。
 
 ## 4. preset：一行声明，不是包
 
@@ -88,7 +88,7 @@ preset 不是一种包类型，而是 `@deepseek-ai/dsh-agent-preset` 的一行�
 
 ## 5. skill：资源，不是包
 
-skill 是给模型的按需指令，格式是目录 `<name>/SKILL.md` 或扁平 `<name>.md`，必须在扫描根的顶层；嵌套的 `**/SKILL.md` 故意不发现。frontmatter 必须有 `name` 与 `description`，可选 `whenToUse`、`metadata`、`disable-model-invocation`、`user-invocable`（[skill-filesystem README](../../packages/skill/skill-filesystem/README.md)）。
+skill 是给模型的按需指令，格式是目录 `<name>/SKILL.md` 或扁平 `<name>.md`，必须在扫描根的顶层；嵌套的 `**/SKILL.md` 故意不发现。frontmatter 必须有 `name` 与 `description`，可选 `whenToUse`、`metadata`、`disable-model-invocation`、`user-invocable`（[skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/skill/skill-filesystem/README.md)）。
 
 它有**六个扫描根，按 rank 合并；按所有权可分四类**（包、项目、用户、部署者）：
 

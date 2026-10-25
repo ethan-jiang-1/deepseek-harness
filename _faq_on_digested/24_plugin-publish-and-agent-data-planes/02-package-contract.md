@@ -19,11 +19,11 @@ DSH 真正会**拒绝、跳过或拒绝装载**的硬门禁只有四类：patch 
 
 图与上表按三种失败方式着色：**红 = 拒绝/跳过/拒行**（第 2、4、5 行），**黄 = 不拒绝但装后坏/不可用**（第 1、3 行），**绿 = 只降级**（第 6 行）。
 
-“行的重要性”不是行上的字段，而是启动器的全局必需 id 集合。必需插件失败会让启动**丢弃已挂载的插件并以非零码退出**，这不是配置事务回滚；可选插件失败通常只警告，但它可能让必需的消费者无法激活，从而仍然启动失败（[app-boot README](../../packages/boot/app-boot/README.md)）。`dsh plugin add` 成功也不等于激活成功：插件管理器会保留依赖与选择，把激活诊断报出来。
+“行的重要性”不是行上的字段，而是启动器的全局必需 id 集合。必需插件失败会让启动**丢弃已挂载的插件并以非零码退出**，这不是配置事务回滚；可选插件失败通常只警告，但它可能让必需的消费者无法激活，从而仍然启动失败（[app-boot README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/README.md)）。`dsh plugin add` 成功也不等于激活成功：插件管理器会保留依赖与选择，把激活诊断报出来。
 
 ## 1. 入口：装载正确性，不是安装门禁
 
-DSH 对插件的最小定义是：一个导出 `apply` 函数的模块（JS 或构建后的 TS），框架加载时调用它并传入 `ctx`。服务型包则默认导出 service class。**两种形式不能混用**——混用时 Loader 会丢掉函数插件的命名空间，`inject` 等导出失效；这有事故记录（[postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)）。
+DSH 对插件的最小定义是：一个导出 `apply` 函数的模块（JS 或构建后的 TS），框架加载时调用它并传入 `ctx`。服务型包则默认导出 service class。**两种形式不能混用**——混用时 Loader 会丢掉函数插件的命名空间，`inject` 等导出失效；这有事故记录（[postmortem 0001](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/postmortem/0001-acp-default-export-drops-inject.md)）。
 
 ```ts
 export const name = 'acme-expert'
@@ -66,7 +66,7 @@ export function apply(ctx: Context, config: Config) { /* ... */ }
 
 ### 2.2 覆盖与 id 稳定性
 
-patch 可以按 `id` 覆盖前层（例如 `dsh-web-app` 覆盖 `dsh-base` 的行）。覆盖会替换整段 `config`，不是深合并；作者要重述想保留的每个字段（[publish.md](../../docs/user/develop/basic/publish.md)）。
+patch 可以按 `id` 覆盖前层（例如 `dsh-web-app` 覆盖 `dsh-base` 的行）。覆盖会替换整段 `config`，不是深合并；作者要重述想保留的每个字段（[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)）。
 
 由此产生两条发布纪律：
 
@@ -82,9 +82,9 @@ patch 可以按 `id` 覆盖前层（例如 `dsh-web-app` 覆盖 `dsh-base` 的�
 DSH 的安装模型是“把包装进 profile 的依赖树”，不是“复制你的 repo”。因此：
 
 - **npm 发布必须带构建产物**（`lib/` 或打包后的 `index.js`）。直接发 `src/*.ts`，用户装到的是 Node 不能直接执行的源码。
-- **Git 安装拿到的是源码，不会自动构建。** 作者要提供自包含的 `prepare` 脚本（不假设旁边有 monorepo），用户还要在 profile 的 `pnpm-workspace.yaml` 里为该包开 `allowBuilds`；否则 pnpm 会拒绝执行构建脚本（[publish.md](../../docs/user/develop/basic/publish.md)）。仓库内对阈值有两种写法（`publish.md` 写 pnpm ≥10，plugin-manager README 与根 `packageManager` 写 pnpm 11）；以安装方的实际版本为准。
+- **Git 安装拿到的是源码，不会自动构建。** 作者要提供自包含的 `prepare` 脚本（不假设旁边有 monorepo），用户还要在 profile 的 `pnpm-workspace.yaml` 里为该包开 `allowBuilds`；否则 pnpm 会拒绝执行构建脚本（[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)）。仓库内对阈值有两种写法（`publish.md` 写 pnpm ≥10，plugin-manager README 与根 `packageManager` 写 pnpm 11）；以安装方的实际版本为准。
 - **不要引用仓库内的 `workspace:*` 路径、`vendor/`、共享 tsconfig 或 sibling 包**。发布后这些都不存在。
-- **代码型 bundle 的入口必须导出；`./client` 在声明 `dsh.client` 时必须导出。** patch 不走 `exports`；`locale/*.json`、`icon`、`package.json` 由元数据读取方**可选**解析，缺了只回退或产生诊断，不会让插件装不上（[package-meta.ts](../../packages/boot/app-boot/src/package-meta.ts)）。
+- **代码型 bundle 的入口必须导出；`./client` 在声明 `dsh.client` 时必须导出。** patch 不走 `exports`；`locale/*.json`、`icon`、`package.json` 由元数据读取方**可选**解析，缺了只回退或产生诊断，不会让插件装不上（[package-meta.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/src/package-meta.ts)）。
 - **校验真实打包结果**：`pnpm pack` 后看 tarball 里的文件列表，或 `npm publish --dry-run`。链接安装不会暴露 `files` 漏项；链接包若入口在 `lib/`，改 `src/` 仍需先构建。
 
 ## 4. 兼容：唯一的硬版本门
@@ -101,7 +101,7 @@ DSH 的安装模型是“把包装进 profile 的依赖树”，不是“复制�
 }
 ```
 
-判定顺序（[app-boot README](../../packages/boot/app-boot/README.md)）：
+判定顺序（[app-boot README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/README.md)）：
 
 1. 有 `engines.dsh`：**只看它**，peer 范围被忽略。
 2. 没有 `engines.dsh`：每个 `@deepseek-ai/dsh` 与 `@deepseek-ai/dsh-*` 的 peer 范围都必须匹配运行版本。
@@ -123,12 +123,12 @@ DSH 的安装模型是“把包装进 profile 的依赖树”，不是“复制�
 - `peerDependencies` 告诉安装位置“这个实例由宿主提供”；
 - `devDependencies` 让你的类型检查和独立测试能跑。
 
-只在 `dependencies` 里写，会出现两份实例，`instanceof`、服务注册、事件命名空间都可能对不上。独立版本的三方库、无状态的工具库才放 `dependencies`（[publish.md](../../docs/user/develop/basic/publish.md)）。
+只在 `dependencies` 里写，会出现两份实例，`instanceof`、服务注册、事件命名空间都可能对不上。独立版本的三方库、无状态的工具库才放 `dependencies`（[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)）。
 
 ### 4.3 `manifestVersion` 与豁免
 
-- `dsh.manifestVersion: 1` 是 manifest 格式标识，与 npm 包版本、会话格式版本都无关。**它没有任何读取方**：仓库里只有类型声明与文档表格，安装器、加载器、plugin-manager 都不读它；写上是为了让格式演进有据可依（[package-manifest types.ts](../../packages/util/package-manifest/src/types.ts)）。
-- 不兼容时可以用精确版本豁免：profile 的 `compatibility.json` 里把 `package-name@version` 映射到精确的 DSH 运行版本列表。豁免不继承：插件升级或 DSH 升级都要重新授权；授权时只能指名当前运行版本，撤销时可以清历史授权；授权前要提示崩溃与数据损坏风险（[plugin-manager README](../../packages/boot/plugin-manager/README.md)）。
+- `dsh.manifestVersion: 1` 是 manifest 格式标识，与 npm 包版本、会话格式版本都无关。**它没有任何读取方**：仓库里只有类型声明与文档表格，安装器、加载器、plugin-manager 都不读它；写上是为了让格式演进有据可依（[package-manifest types.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/package-manifest/src/types.ts)）。
+- 不兼容时可以用精确版本豁免：profile 的 `compatibility.json` 里把 `package-name@version` 映射到精确的 DSH 运行版本列表。豁免不继承：插件升级或 DSH 升级都要重新授权；授权时只能指名当前运行版本，撤销时可以清历史授权；授权前要提示崩溃与数据损坏风险（[plugin-manager README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/plugin-manager/README.md)）。
 - `compatibility.json` 畸形时**不会阻止启动**：读取方接受仍合法的记录，逐条报告被拒绝的记录，然后把文件当只读；授权/撤销会拒绝，要求用户手工修复。缺失文件等于没有豁免。
 
 ## 5. 配置：条件门，不是无条件门
@@ -157,14 +157,14 @@ DSH 在**不执行插件代码**的前提下读取显示元数据：Plugin Manag
 2. `package.json` 的 `name` 与 `description`（缺省回退）；
 3. `package.json` 的 `icon` 字段，或导出的 `<specifier>/icon`。
 
-规则（[package-meta.ts](../../packages/boot/app-boot/src/package-meta.ts)）：
+规则（[package-meta.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/src/package-meta.ts)）：
 
 - 英文文件必须是 `locale/en.json`；其他语言文件与它同目录，文件名是语言 id。
 - **这些资源都通过 `exports` 解析**：包根要导出 `./package.json`（否则标题回退成完整 specifier、描述为空），每个语言文件都要被 `./locale/*.json` 覆盖（漏一个可能让整段文字退化为只有 `error`），`./icon` 也要导出。
 - 图标只能是 SVG、PNG、JPEG、WebP，≤256 KiB，必须留在包目录内；绝对路径、URL、指向包外的 symlink 都会被拒。
 - 缺字段回退到包名与 `package.json.description`；没有图标就用面板默认图。
 - **错误分两种**：图标读取失败会保留已解析的文字并附 `error`；locale 文件名/JSON 解析失败等外层错误只返回 `error`，不保留文字。两种都不会让插件不可管理。
-- 官方目录更严：必须是公开的 `@deepseek-ai/dsh-*` bundle，英文与中文的 title/description 都要有，且必须有图标（[官方目录生成器](../../scripts/gen-official-bundle-catalog.ts)）。
+- 官方目录更严：必须是公开的 `@deepseek-ai/dsh-*` bundle，英文与中文的 title/description 都要有，且必须有图标（[官方目录生成器](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/scripts/gen-official-bundle-catalog.ts)）。
 
 最小例子：
 

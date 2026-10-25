@@ -2,6 +2,8 @@
 
 源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`），与 `_digested/` 同一基线。本篇的 DSH 行为结论来自仓库内产品文档、包 README 与源码；市场、npm、Git 托管等仓库外行为只按文档与生成器描述记录，未做联网实测。
 
+本篇的**目录外引用统一用 GitHub URL**（产品源码固定到上面的 rc.3 commit，姊妹 FAQ 指向研究分支），目录内引用用相对路径，便于单独分发。
+
 ## 问题从哪来
 
 前面几篇分别回答了“DSH 的目录怎么读”“领域专家插件的 repo 怎么组织”“standalone 与 CLI/Web 怎么发布”“怎么先找现成的轮子”。把这些问题串起来之后，还剩一组没有被单篇回答的困惑，集中在“一个插件作者真正要交付什么”上。
@@ -36,8 +38,8 @@
 
 ## 不回答什么
 
-- 不重复安装渠道的 UI 操作：Desktop 六种装法、Web 插件页、`dsh plugin` 的入口差异见 [FAQ 23 的 04 篇](../23_standalone-vs-web-release-forms/04_plugin-paths.md)。
-- 不重复“专家插件 repo 选哪个方案”：独立 repo、pinned submodule、marketplace monorepo 的取舍见 [FAQ 13](../13_expert-plugin-repo-organization/answer.md)。
+- 不重复安装渠道的 UI 操作：Desktop 六种装法、Web 插件页、`dsh plugin` 的入口差异见 [FAQ 23 的 04 篇](https://github.com/ethan-jiang-1/deepseek-harness/blob/ethan/_faq_on_digested/23_standalone-vs-web-release-forms/04_plugin-paths.md)。
+- 不重复“专家插件 repo 选哪个方案”：独立 repo、pinned submodule、marketplace monorepo 的取舍见 [FAQ 13](https://github.com/ethan-jiang-1/deepseek-harness/blob/ethan/_faq_on_digested/13_expert-plugin-repo-organization/answer.md)。
 - 不评估某个具体第三方插件的好坏；外部样本只在“生态是否已经收敛到同一形态”处引用。
 - 不把 DSH 主仓的贡献纪律（Agent Note、coverage、snapshot、label）当成外部插件作者的义务；两者会明确分开标注。
 

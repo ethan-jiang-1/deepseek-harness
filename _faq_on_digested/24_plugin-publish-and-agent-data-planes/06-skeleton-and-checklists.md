@@ -361,9 +361,9 @@ DSH 的公开 API 仍是 pre-stable。插件作者的最小跟进纪律：
 
 ## 11. 证据与下一步
 
-- 发布与安装：[publish.md](../../docs/user/develop/basic/publish.md)
-- 作者契约：[host-plugin.md](../../packages/preset/agent-preset/skills/cordis-plugin-development/references/host-plugin.md)、[ui-plugin.md](../../packages/preset/agent-preset/skills/cordis-plugin-development/references/ui-plugin.md)、[mcp-bundle.md](../../packages/preset/agent-preset/skills/cordis-plugin-development/references/mcp-bundle.md)
-- manifest 类型：[package-manifest types.ts](../../packages/util/package-manifest/src/types.ts)
-- 管理与兼容：[plugin-manager README](../../packages/boot/plugin-manager/README.md)
-- 扩展点地图：[extension-cookbook.md](../../docs/cookbook/extension-cookbook.md)、[adding-a-tool.md](../../docs/cookbook/adding-a-tool.md)
-- 相邻问题：[FAQ 13 的 repo 组织](../13_expert-plugin-repo-organization/answer.md)、[FAQ 17 的找轮子](../17_finding-existing-plugins/answer.md)、[FAQ 23 的安装途径](../23_standalone-vs-web-release-forms/04_plugin-paths.md)
+- 发布与安装：[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)
+- 作者契约：[host-plugin.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/skills/cordis-plugin-development/references/host-plugin.md)、[ui-plugin.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/skills/cordis-plugin-development/references/ui-plugin.md)、[mcp-bundle.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/skills/cordis-plugin-development/references/mcp-bundle.md)
+- manifest 类型：[package-manifest types.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/package-manifest/src/types.ts)
+- 管理与兼容：[plugin-manager README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/plugin-manager/README.md)
+- 扩展点地图：[extension-cookbook.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/cookbook/extension-cookbook.md)、[adding-a-tool.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/cookbook/adding-a-tool.md)
+- 相邻问题：[FAQ 13 的 repo 组织](https://github.com/ethan-jiang-1/deepseek-harness/blob/ethan/_faq_on_digested/13_expert-plugin-repo-organization/answer.md)、[FAQ 17 的找轮子](https://github.com/ethan-jiang-1/deepseek-harness/blob/ethan/_faq_on_digested/17_finding-existing-plugins/answer.md)、[FAQ 23 的安装途径](https://github.com/ethan-jiang-1/deepseek-harness/blob/ethan/_faq_on_digested/23_standalone-vs-web-release-forms/04_plugin-paths.md)

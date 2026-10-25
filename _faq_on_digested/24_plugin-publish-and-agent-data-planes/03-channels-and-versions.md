@@ -87,7 +87,7 @@ tarball 是“没有 registry 也想发预构建产物”的最简形式：不�
 ## 5. 本地 link：开发期形态，不是发布形态
 
 ```sh
-dsh plugin --profile web add link:/Users/me/src/dsh-review-pack
+dsh plugin --profile web add link:/abs/path/to/dsh-review-pack
 # 或
 dsh plugin --profile web add ./dsh-review-pack
 ```
@@ -230,7 +230,7 @@ DSH 会拒绝整份 index（只要有一条规则不满足），并在 **Manage 
 - **带 `install`/`postinstall` 的 tarball 仍需要 `allowBuilds`**；“npm/tarball 不需要构建许可”只适用于无生命周期脚本的预构建产物。
 - **构建脚本以宿主机用户权限执行**，`allowBuilds` 的授权按包名持久化，另一次安装失败也不会撤销。
 - **市场内容是第三方声明**，DSH 不验证作者、主页、来源的真实性。
-- **桌面壳的包操作归壳所有**，即使你从浏览器点同一个 Plugins 页，执行的也是壳侧 pnpm（[FAQ 23](../23_standalone-vs-web-release-forms/04_plugin-paths.md)）。
+- **桌面壳的包操作归壳所有**，即使你从浏览器点同一个 Plugins 页，执行的也是壳侧 pnpm（[FAQ 23](https://github.com/ethan-jiang-1/deepseek-harness/blob/ethan/_faq_on_digested/23_standalone-vs-web-release-forms/04_plugin-paths.md)）。
 - **版本豁免不是安全授权**，它只跳过兼容性检查，不放宽任何权限。
 
 ## 11. 渠道选择建议

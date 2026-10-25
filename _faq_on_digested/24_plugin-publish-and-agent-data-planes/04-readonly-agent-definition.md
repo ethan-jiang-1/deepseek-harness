@@ -49,7 +49,7 @@ Loader 行 id 约定为 `preset-<id>`。出厂 Web 的四个预设就是 `@deeps
 1. **registry 不写声明。** `agent-preset-registry` 的 `read` 只把子列表渲染成 YAML 给客户端看；“nothing accepts YAML back”。它没有“保存 preset”的接口。
 2. **Plugin Manager 的 preset 行只读。** 插件页可以启用/禁用普通行，但 agent-preset 行不在可切换范围；要改就装一个 bundle。
 3. **新增或覆盖都是 bundle patch。** `insert` 一个 `@deepseek-ai/dsh-agent-preset` 行，或按 `preset-<id>` 覆盖已有一行，装进 profile 后生效。
-4. **覆盖替换整段 `config`。** 覆盖者必须重述 `id`、`plugins`、`name`、`description`、`order` 和所有想保留的字段；未来上游对内置 preset 的改动不会自动合并进用户覆盖。覆盖层必须排在声明层之后；补丁未命中任何既有行时只报未命中警告，该条补丁不生效，层本身不会因此失败（[app-boot README](../../packages/boot/app-boot/README.md)）。
+4. **覆盖替换整段 `config`。** 覆盖者必须重述 `id`、`plugins`、`name`、`description`、`order` 和所有想保留的字段；未来上游对内置 preset 的改动不会自动合并进用户覆盖。覆盖层必须排在声明层之后；补丁未命中任何既有行时只报未命中警告，该条补丁不生效，层本身不会因此失败（[app-boot README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/README.md)）。
 
    这里有一处**文档漂移**要避开：`packages/bundle/web-app/presets/*.patch.yml` 的注释还写着“Edits saved from the Web editor override this row”，但当前代码与包 README 不是这样：Settings 的 preset 卡是只读 YAML 查看器，registry 只有 `list` / `read` / `select` 三个 Remote，没有 save，也“nothing accepts YAML back”。`registry/src/mount.ts` 的注释说的是“only the profile configuration editor persists definitions”，指的是通用 profile 配置编辑，不是 Web 预设编辑器；把它当成“Web 编辑器保存 preset”的证据是误读。另外，`2026-09-18-declarative-agent-presets` 决策记录里仍写着 Web editor 与 `agent_preset` 工具会保存；该实现没有落地，按当前代码/README 为准。要改 preset，走 bundle patch，不要相信旧注释。
 5. **会话按 id 绑定，按 revision 持有。** 声明激活时创建一个 registry 拥有的 scope 与 in-memory Loader tree；更新/移除声明会退休旧 revision。已有 Agent、子 Agent、临时历史读取继续持有引用，直到最后一个引用释放。进程重启后，恢复用的是该 id 的**当前定义**；定义缺失会被拒绝。
@@ -149,10 +149,10 @@ Agent 的系统提示前缀、工具目录、prompt section 都是 KV cache 的�
 
 ## 10. 证据
 
-- 声明格式与生命周期：[agent-preset README](../../packages/preset/agent-preset/README.md)、[agent-preset-registry README](../../packages/preset/agent-preset-registry/README.md)
-- 作者写法与覆盖规则：[editing-cordis-compositions SKILL](../../packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md)
-- 出厂实例：[standard preset](../../packages/bundle/web-app/presets/standard.patch.yml)、[web-app 的 Host 行](../../packages/bundle/web-app/cordis.patch.yml)（preset 声明在 `presets/*.patch.yml`）
-- 只读界面与管理边界：[ui-agent-preset README](../../packages/client/ui-agent-preset/README.md)、[plugin-manager README](../../packages/boot/plugin-manager/README.md)
-- 混用导出的事故：[postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)
+- 声明格式与生命周期：[agent-preset README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/README.md)、[agent-preset-registry README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset-registry/README.md)
+- 作者写法与覆盖规则：[editing-cordis-compositions SKILL](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md)
+- 出厂实例：[standard preset](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/web-app/presets/standard.patch.yml)、[web-app 的 Host 行](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/web-app/cordis.patch.yml)（preset 声明在 `presets/*.patch.yml`）
+- 只读界面与管理边界：[ui-agent-preset README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/client/ui-agent-preset/README.md)、[plugin-manager README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/plugin-manager/README.md)
+- 混用导出的事故：[postmortem 0001](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/postmortem/0001-acp-default-export-drops-inject.md)
 
 preset 注释的漂移与当前行为见 §3.4。

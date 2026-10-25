@@ -224,10 +224,10 @@ workspace / home / session 是一个好的导航模型，但它把四个不同�
 
 ## 11. 证据
 
-- 路径与根：[home-paths README](../../packages/util/home-paths/README.md)、[skill-filesystem README](../../packages/skill/skill-filesystem/README.md)、[agent-instructions README](../../packages/context/agent-instructions/README.md)
-- 会话与工作目录：[session-persistence-jsonl README](../../packages/session/session-persistence-jsonl/README.md)、[working-directory README](../../packages/session/working-directory/README.md)
-- 宿主状态：[storage-domain README](../../packages/storage/storage-domain/README.md)、[workspace README](../../packages/workspace/workspace/README.md)
-- 附件与凭据：[attachment-local README](../../packages/attachment/attachment-local/README.md)、[credentials-local README](../../packages/credentials/credentials-local/README.md)
-- 沙箱：[base cordis.patch.yml](../../packages/bundle/base/cordis.patch.yml)、[sandbox 文档](../../docs/defensive-patterns/README.md)
-- 定义与 revision：[agent-preset README](../../packages/preset/agent-preset/README.md)、[agent-preset-registry README](../../packages/preset/agent-preset-registry/README.md)
+- 路径与根：[home-paths README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/home-paths/README.md)、[skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/skill/skill-filesystem/README.md)、[agent-instructions README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/context/agent-instructions/README.md)
+- 会话与工作目录：[session-persistence-jsonl README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/session-persistence-jsonl/README.md)、[working-directory README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/working-directory/README.md)
+- 宿主状态：[storage-domain README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/storage/storage-domain/README.md)、[workspace README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/workspace/workspace/README.md)
+- 附件与凭据：[attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/attachment/attachment-local/README.md)、[credentials-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/credentials/credentials-local/README.md)
+- 沙箱：[base cordis.patch.yml](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/base/cordis.patch.yml)、[sandbox 文档](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/defensive-patterns/README.md)
+- 定义与 revision：[agent-preset README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/README.md)、[agent-preset-registry README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset-registry/README.md)
 - 相邻问题：[05 篇的路径表](./05-data-planes.md)、[04 篇的 preset 生命周期](./04-readonly-agent-definition.md)

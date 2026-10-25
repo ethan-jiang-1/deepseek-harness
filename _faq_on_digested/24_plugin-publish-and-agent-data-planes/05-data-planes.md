@@ -88,7 +88,7 @@
 - **项目经验进仓库，跨项目经验进 home。** 不要把项目事实写进 `$DSH_HOME`，也不要把个人偏好提交进项目。
 - **记忆也要有生命周期。** 文件可以 review/prune；storage domain 要声明版本与清理策略；会话日志不是记忆，它只负责重放。
 
-仓库里的 MCP memory 例子就是按这个原则放的：它把 JSONL 写到 `$HOME/.dsh-mcp-reference-memory.jsonl`，而不是装好的 npm 包目录（[mcp-memory 指南](../../docs/user/guide/mcp-memory.md)）。
+仓库里的 MCP memory 例子就是按这个原则放的：它把 JSONL 写到 `$HOME/.dsh-mcp-reference-memory.jsonl`，而不是装好的 npm 包目录（[mcp-memory 指南](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/guide/mcp-memory.md)）。
 
 ### 3.2 宿主 KV：storage domain
 
@@ -217,14 +217,14 @@ $DSH_HOME/sessions/
 
 ## 11. 证据
 
-- Home 解析：[home-paths README](../../packages/util/home-paths/README.md)
-- 技能根与来源：[skill-filesystem README](../../packages/skill/skill-filesystem/README.md)
-- 指令链与预算：[agent-instructions README](../../packages/context/agent-instructions/README.md)
-- 宿主 KV：[storage-domain README](../../packages/storage/storage-domain/README.md)
-- 会话日志布局：[session-persistence-jsonl README](../../packages/session/session-persistence-jsonl/README.md)
-- 工作目录：[working-directory README](../../packages/session/working-directory/README.md)
-- 工作区记录：[workspace README](../../packages/workspace/workspace/README.md)
-- 附件：[attachment-local README](../../packages/attachment/attachment-local/README.md)
-- 凭据：[credentials-local README](../../packages/credentials/credentials-local/README.md)
-- 默认根：[base cordis.patch.yml](../../packages/bundle/base/cordis.patch.yml)
-- 插件状态规则：[practices.md](../../packages/preset/agent-preset/skills/cordis-plugin-development/references/practices.md)
+- Home 解析：[home-paths README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/home-paths/README.md)
+- 技能根与来源：[skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/skill/skill-filesystem/README.md)
+- 指令链与预算：[agent-instructions README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/context/agent-instructions/README.md)
+- 宿主 KV：[storage-domain README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/storage/storage-domain/README.md)
+- 会话日志布局：[session-persistence-jsonl README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/session-persistence-jsonl/README.md)
+- 工作目录：[working-directory README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/working-directory/README.md)
+- 工作区记录：[workspace README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/workspace/workspace/README.md)
+- 附件：[attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/attachment/attachment-local/README.md)
+- 凭据：[credentials-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/credentials/credentials-local/README.md)
+- 默认根：[base cordis.patch.yml](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/base/cordis.patch.yml)
+- 插件状态规则：[practices.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/skills/cordis-plugin-development/references/practices.md)

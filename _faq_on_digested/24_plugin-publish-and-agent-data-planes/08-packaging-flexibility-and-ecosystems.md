@@ -137,7 +137,7 @@ DSH 的复现锚点有三个：会话日志（模型可见输入）、preset id 
 1. **只读工件根 + 独立可写数据目录。** Claude Code 明确写了 `${CLAUDE_PLUGIN_ROOT}` 会随更新变化，不能写状态；`${CLAUDE_PLUGIN_DATA}` 才是跨更新保留的目录。VS Code 用 `globalState` / `workspaceState` / `secrets` 把作用域、表示和机密性拆开。HF 用“临时磁盘 vs bucket”把可丢和持久分开。DSH 的对应物是包目录 / workspace / `$DSH_HOME` / storage domain / cache / credentials。
 2. **权限要在安装前可见。** Dify 的 `resource.permission` 让用户在安装前看到工具、模型、节点、endpoint、存储、网络的申请。DSH 目前没有 per-plugin 权限清单；插件作者至少应在 README 的 Data / Security 节写清能力与数据边界，宿主侧则靠 sandbox、approval、凭据服务兜底。
 3. **版本不可变、范围不能代替版本。** MCP Registry 要求每次发布的版本唯一且不可变，并明确禁止范围。DSH 的市场 index 列精确版本，但安装时仍会重新读包 manifest 并做兼容检查；作者不要把“市场列了某版本”当成安装保证。
-4. **provenance 是分发层的信任，不是安全审计。** npm 的 SLSA provenance + Sigstore 能证明“哪个仓库、哪个 CI 作业产生了这个 tarball”，不能证明作者没有恶意。DSH 的安装渠道可以消费 npm 的 provenance，但市场 index 目前只校验格式；作者应把 `npm publish --provenance`、签名 release、固定 commit 作为供应链质量线。
+4. **构建来源证明是分发层的信任，不是安全审计。** npm 的 SLSA 构建证明 + Sigstore 能证明“哪个仓库、哪个 CI 作业产生了这个 tarball”，不能证明作者没有恶意。DSH 的安装渠道可以消费 npm 的构建证明，但市场 index 目前只校验格式；作者应把 npm 的构建证明发布、签名 release、固定 commit 作为供应链质量线。
 5. **临时与持久的边界要写进产品，而不是靠作者自觉。** HF Space 的临时磁盘丢数据是最常见的故障；Claude Code 用 `PLUGIN_DATA` 把“插件要持久化”变成显式选择。DSH 的 storage domain 与 cache 也应让作者显式选择，而不是默认写包目录。
 
 ### 5.2 DSH 与它们真正不同的地方
@@ -215,11 +215,11 @@ DSH 的复现锚点有三个：会话日志（模型可见输入）、preset id 
 
 DSH 侧：
 
-- 包 / bundle / profile：[publish.md](../../docs/user/develop/basic/publish.md)、[bundle README](../../packages/bundle/README.md)、[app-boot README](../../packages/boot/app-boot/README.md)
-- preset / revision：[preset README](../../packages/preset/README.md)、[agent-preset-registry README](../../packages/preset/agent-preset-registry/README.md)
-- skill / provider：[skill-filesystem README](../../packages/skill/skill-filesystem/README.md)、[skill-badge 实现](../../packages/experimental/skill-badge/src/index.ts)
-- client module：[client-modules README](../../packages/client/modules/README.md)
-- 市场 / 官方目录：[plugin-market 指南](../../docs/user/guide/plugin-market.md)、[官方目录生成器](../../scripts/gen-official-bundle-catalog.ts)
+- 包 / bundle / profile：[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)、[bundle README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/README.md)、[app-boot README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/README.md)
+- preset / revision：[preset README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/README.md)、[agent-preset-registry README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset-registry/README.md)
+- skill / provider：[skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/skill/skill-filesystem/README.md)、[skill-badge 实现](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/experimental/skill-badge/src/index.ts)
+- client module：[client-modules README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/client/modules/README.md)
+- 市场 / 官方目录：[plugin-market 指南](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/guide/plugin-market.md)、[官方目录生成器](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/scripts/gen-official-bundle-catalog.ts)
 
 外部侧（2026-10-25 文档，未实测）：
 
@@ -230,4 +230,4 @@ DSH 侧：
 - OpenAI：portable plugin manifest — [package your plugin](https://developers.openai.com/plugins/build/plugins)、[plugin schema](https://agent-plugins.org/schemas/1.0.0/plugin.schema.json)
 - VS Code：manifest / storage / 签名 — [extension manifest](https://code.visualstudio.com/api/references/extension-manifest)、[common capabilities](https://code.visualstudio.com/api/extension-capabilities/common-capabilities)
 - Obsidian：三文件 / release 标签 — [submit your plugin](https://docs.obsidian.md/Plugins/Releasing/Submit+your+plugin)
-- npm provenance / Sigstore / SLSA — [npm provenance](https://github.com/npm/provenance)、[Sigstore overview](https://docs.sigstore.dev/about/overview/)、[SLSA levels](https://slsa.dev/spec/v1.1/levels)
+- npm 构建证明 / Sigstore / SLSA — [npm publish](https://docs.npmjs.com/cli/v11/commands/npm-publish)、[Sigstore overview](https://docs.sigstore.dev/about/overview/)、[SLSA levels](https://slsa.dev/spec/v1.1/levels)

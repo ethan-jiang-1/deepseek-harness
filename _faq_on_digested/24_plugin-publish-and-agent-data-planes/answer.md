@@ -2,7 +2,7 @@
 
 ## 一分钟结论
 
-**DSH 作者侧会被自动选入 profile 并作为一层管理的发布物只有一种：bundle。** 它是一个 npm 包，`package.json` 的 `dsh.bundle.patch` 指向一份或多份 Cordis patch；用户把它装进某个 profile，profile 按 `dsh.profile.bundles` 的顺序叠层启动。普通 npm 包也能安装，但只是依赖，不会自动启用。profile 是用户侧的运行组合，不是作者发布的东西——产品文档的原话是 “A bundle is what you author and distribute; a profile is what a user boots... Nothing is both.”（[publish.md](../../docs/user/develop/basic/publish.md)）
+**DSH 作者侧会被自动选入 profile 并作为一层管理的发布物只有一种：bundle。** 它是一个 npm 包，`package.json` 的 `dsh.bundle.patch` 指向一份或多份 Cordis patch；用户把它装进某个 profile，profile 按 `dsh.profile.bundles` 的顺序叠层启动。普通 npm 包也能安装，但只是依赖，不会自动启用。profile 是用户侧的运行组合，不是作者发布的东西——产品文档的原话是 “A bundle is what you author and distribute; a profile is what a user boots... Nothing is both.”（[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)）
 
 **bundle 里可以装两种代码形态与三种非代码贡献：**
 
@@ -115,12 +115,12 @@
 
 仓库内主要证据：
 
-- 发布模型：[publish.md](../../docs/user/develop/basic/publish.md)、[app-boot README 的 profiles 节](../../packages/boot/app-boot/README.md)、[plugin-manager README](../../packages/boot/plugin-manager/README.md)
-- manifest 类型：[package-manifest types.ts](../../packages/util/package-manifest/src/types.ts)
-- 元数据解析：[package-meta.ts](../../packages/boot/app-boot/src/package-meta.ts)、[plugin-market 指南](../../docs/user/guide/plugin-market.md)
-- 智能体定义：[agent-preset README](../../packages/preset/agent-preset/README.md)、[editing-cordis-compositions skill](../../packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md)、[standard preset](../../packages/bundle/web-app/presets/standard.patch.yml)
-- 数据层：[skill-filesystem README](../../packages/skill/skill-filesystem/README.md)、[agent-instructions README](../../packages/context/agent-instructions/README.md)、[storage-domain README](../../packages/storage/storage-domain/README.md)、[session-persistence-jsonl README](../../packages/session/session-persistence-jsonl/README.md)、[home-paths README](../../packages/util/home-paths/README.md)
-- 渠道：[plugin-market 指南](../../docs/user/guide/plugin-market.md)、[plugin-manager README 的版本兼容节](../../packages/boot/plugin-manager/README.md)
+- 发布模型：[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)、[app-boot README 的 profiles 节](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/README.md)、[plugin-manager README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/plugin-manager/README.md)
+- manifest 类型：[package-manifest types.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/package-manifest/src/types.ts)
+- 元数据解析：[package-meta.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/src/package-meta.ts)、[plugin-market 指南](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/guide/plugin-market.md)
+- 智能体定义：[agent-preset README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/README.md)、[editing-cordis-compositions skill](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md)、[standard preset](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/web-app/presets/standard.patch.yml)
+- 数据层：[skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/skill/skill-filesystem/README.md)、[agent-instructions README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/context/agent-instructions/README.md)、[storage-domain README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/storage/storage-domain/README.md)、[session-persistence-jsonl README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/session-persistence-jsonl/README.md)、[home-paths README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/home-paths/README.md)
+- 渠道：[plugin-market 指南](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/guide/plugin-market.md)、[plugin-manager README 的版本兼容节](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/plugin-manager/README.md)
 
 边界：
 
