@@ -46,12 +46,10 @@ while [ "$#" -gt 0 ]; do
 	--yes | -y) ASSUME_YES=1 ;;
 	--resume)
 		MODE="resume"
-		case "${2:-}" in "" | -*) ;; *)
+		[ -n "${2:-}" ] && [ "${2#-}" = "$2" ] && {
 			GIVEN_DIR="$2"
-			set -- "$@"
-			;;
-		esac
-		[ -n "${2:-}" ] && [ "${2#-}" = "$2" ] && shift
+			shift
+		}
 		;;
 	--rollback)
 		MODE="rollback"
@@ -74,6 +72,7 @@ RUN_DIR="$BACKUP_ROOT/rc3-run-$STAMP"
 SUMMARY="$RUN_DIR/summary.txt"
 BACKUP_DIR=""
 BASELINE_DRIFT=0
+NPM_CACHE_DIR=""
 step() { printf '\n\033[1m== %s\033[0m\n' "$*"; }
 say() { printf '   %s\n' "$*"; }
 warn() { printf '\033[33m   ! %s\033[0m\n' "$*"; }
@@ -113,7 +112,7 @@ confirm() {
 
 sha_of() { shasum -a 256 "$1" | cut -d' ' -f1; }
 bytes_of() { wc -c <"$1" | tr -d ' '; }
-dsh_version() { dsh --version 2>/dev/null | tr -d ' \n' || true; }
+dsh_version() { dsh --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?' | head -1 || true; }
 plugin_version() {
 	node -p "require('$PROFILE_DIR/node_modules/$1/package.json').version" 2>/dev/null || echo "missing"
 }
@@ -122,7 +121,7 @@ DSH_BIN=""
 resolve_dsh_bin() {
 	DSH_BIN="$(command -v dsh 2>/dev/null || true)"
 	[ -n "$DSH_BIN" ] || fail "PATH 里找不到 dsh"
-	# 解析到真实文件，避免 command -v 给出包装脚本时漏掉真正的进程
+	# 只解析目录到真实路径；进程 ps 里显示的是 bin 下的符号链接路径，保留原名才能命中
 	DSH_BIN="$(cd "$(dirname "$DSH_BIN")" && pwd)/$(basename "$DSH_BIN")"
 }
 
@@ -159,7 +158,7 @@ ancestor_pids() {
 
 # 铁律 2：执行者不能是被升级的那个进程（或它的后代）
 guard_not_inside_dsh_web() {
-	local target ancestor
+	local target ancestor t
 	target="$(dsh_web_pids)"
 	[ -z "$target" ] && return 0
 	for ancestor in $(ancestor_pids); do
@@ -173,13 +172,13 @@ guard_not_inside_dsh_web() {
 }
 
 stop_all_dsh_web() {
-	local pids remaining
+	local pids remaining pid
 	pids="$(dsh_web_pids)"
 	[ -z "$pids" ] && {
 		ok "没有需要停的 dsh web"
 		return 0
 	}
-	say "正在停：$(echo $pids | tr ' ' ' ')"
+	say "正在停：$pids"
 	for pid in $pids; do kill "$pid" 2>/dev/null || true; done
 	remaining=""
 	for _ in 1 2 3 4 5 6 7 8 9 10; do
@@ -188,27 +187,54 @@ stop_all_dsh_web() {
 		sleep 1
 	done
 	if [ -n "$remaining" ]; then
-		warn "TERM 后仍在：$(echo $remaining | tr ' ' ' ')，改用 KILL"
+		warn "TERM 后仍在：$remaining，改用 KILL"
 		for pid in $remaining; do kill -9 "$pid" 2>/dev/null || true; done
 		sleep 2
 		remaining="$(dsh_web_pids)"
 	fi
-	[ -z "$remaining" ] || fail "还有 dsh web 没停掉：$(echo $remaining | tr ' ' ' ')" \
+	[ -z "$remaining" ] || fail "还有 dsh web 没停掉：$remaining" \
 		"若它由 launchd/pm2 托管，先停托管再看；不要留下守护进程自动拉起。"
 	ok "dsh web 已全部停止"
+}
+
+# 探测 npm 缓存是否可写；坏则记下备用缓存，后续所有 npm 命令共用（不要 sudo）
+probe_npm_cache() {
+	local log="$RUN_DIR/npm-cache-probe.log"
+	if npm view @deepseek-ai/dsh version >/dev/null 2>"$log"; then
+		return 0
+	fi
+	if grep -qE "EPERM|_cacache" "$log"; then
+		warn "npm 缓存属主问题，后续 npm 命令改用备用缓存（不要 sudo）"
+		NPM_CACHE_DIR="$HOME/.npm-cache-dsh"
+	fi
+	return 0
+}
+
+# 带备用缓存参数（如已探测到缓存属主问题）跑一次 npm view
+npm_view() {
+	if [ -n "$NPM_CACHE_DIR" ]; then
+		npm view "$@" --cache "$NPM_CACHE_DIR"
+	else
+		npm view "$@"
+	fi
 }
 
 npm_install_host() {
 	local version="$1" log="$RUN_DIR/npm-install.log" status
 	set +e
-	npm i -g "@deepseek-ai/dsh@$version" 2>&1 | tee "$log"
+	if [ -n "$NPM_CACHE_DIR" ]; then
+		npm i -g "@deepseek-ai/dsh@$version" --cache "$NPM_CACHE_DIR" 2>&1 | tee "$log"
+	else
+		npm i -g "@deepseek-ai/dsh@$version" 2>&1 | tee "$log"
+	fi
 	status="${PIPESTATUS[0]}"
 	set -e
 	[ "$status" -eq 0 ] && return 0
-	if grep -qE "EPERM|_cacache" "$log"; then
+	if [ -z "$NPM_CACHE_DIR" ] && grep -qE "EPERM|_cacache" "$log"; then
 		warn "npm 缓存属主问题，改用备用缓存重试（不要 sudo）"
+		NPM_CACHE_DIR="$HOME/.npm-cache-dsh"
 		set +e
-		npm i -g "@deepseek-ai/dsh@$version" --cache "$HOME/.npm-cache-dsh" 2>&1 | tee -a "$log"
+		npm i -g "@deepseek-ai/dsh@$version" --cache "$NPM_CACHE_DIR" 2>&1 | tee -a "$log"
 		status="${PIPESTATUS[0]}"
 		set -e
 		[ "$status" -eq 0 ] && return 0
@@ -310,9 +336,10 @@ if [ "$MODE" = "upgrade" ]; then
 		note "plugin $p=$v"
 		[ "$v" = "missing" ] || progress=$((progress + 1))
 	done
-	[ "$progress" -eq 7 ] || fail "7 个插件目录里只有 $progress 个在" \
+	PLUGIN_COUNT="$(printf '%s\n' $MANAGED_PLUGINS | wc -l | tr -d ' ')"
+	[ "$progress" -eq "$PLUGIN_COUNT" ] || fail "$PLUGIN_COUNT 个插件目录里只有 $progress 个在" \
 		"本脚本不替你补装缺失插件；先把插件恢复原状再升级。"
-	ok "7 个插件目录都在"
+	ok "$PLUGIN_COUNT 个插件目录都在"
 fi
 
 step "阶段 0.3 profile 元数据"
@@ -348,13 +375,14 @@ fi
 
 if [ "$MODE" = "upgrade" ]; then
 	step "阶段 0.4 registry"
-	NEXT_TAG="$(npm view @deepseek-ai/dsh dist-tags --json 2>/dev/null |
+	probe_npm_cache
+	NEXT_TAG="$(npm_view @deepseek-ai/dsh dist-tags --json 2>/dev/null |
 		node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).next||"")}catch{console.log("")}})' || true)"
 	say "dist-tag next = ${NEXT_TAG:-<查不到>}"
 	note "dist-tag next=$NEXT_TAG"
 	[ "$NEXT_TAG" = "$TARGET_VERSION" ] || fail "registry 的 next 是 ${NEXT_TAG:-空}，不是 $TARGET_VERSION" \
-		"网络/registry 问题。不要改用 latest：它仍是 $PREV_VERSION。"
-	MARKET_HAS="$(npm view "dshmarket@$MARKET_TARGET" version 2>/dev/null | tr -d '\n' || true)"
+		"网络/registry 问题（也可能 npm 缓存属主异常，见 $RUN_DIR/npm-cache-probe.log）。不要改用 latest：它仍是 $PREV_VERSION。"
+	MARKET_HAS="$(npm_view "dshmarket@$MARKET_TARGET" version 2>/dev/null | tr -d '\n' || true)"
 	say "dshmarket@$MARKET_TARGET = ${MARKET_HAS:-<查不到>}"
 	[ "$MARKET_HAS" = "$MARKET_TARGET" ] || fail "registry 查不到 dshmarket@$MARKET_TARGET"
 	ok "目标版本都在"
@@ -430,7 +458,7 @@ if [ "$MODE" = "upgrade" ]; then
 	say "exit=$DUMP_STATUS  yaml_lines=$(wc -l <"$RUN_DIR/config.yml" | tr -d ' ')"
 	[ "$DUMP_STATUS" -eq 0 ] || fail "--dump-config 退出码 $DUMP_STATUS" "见 $RUN_DIR/config.err；不要动插件，先回滚。"
 	[ -s "$RUN_DIR/config.yml" ] || fail "--dump-config 输出为空" "见 $RUN_DIR/config.err；先回滚。"
-	grep -qE "failed to load|cannot " "$RUN_DIR/config.err" &&
+	grep -qE "failed to load|cannot" "$RUN_DIR/config.err" &&
 		fail "--dump-config 报解析错误" "见 $RUN_DIR/config.err；先回滚。"
 	missing=""
 	for provider in $PROVIDERS; do
@@ -456,6 +484,11 @@ if [ "$MODE" = "upgrade" ]; then
 	fi
 	say "$URL"
 	note "smoke url=$URL"
+	# URL 先于插件完全加载打印；等几秒让迟到的启动诊断落盘，再检查禁用关键字
+	for _ in $(seq 1 4); do
+		kill -0 "$SMOKE_PID" 2>/dev/null || break
+		sleep 1
+	done
 	if grep -qE "$FORBIDDEN_LOG" "$RUN_DIR/smoke.log"; then
 		grep -nE "$FORBIDDEN_LOG" "$RUN_DIR/smoke.log" >&2 || true
 		fail "启动日志出现禁用关键字" "见 $RUN_DIR/smoke.log；不要动插件，先回滚。"
@@ -489,7 +522,7 @@ const lines = fs.readFileSync(p, "utf8").split("\n");
 let hit = false;
 for (let i = 0; i < lines.length; i++) {
   if (/^\s*-\s+dshmarket@/.test(lines[i])) {
-    if (!lines[i].split("||").some(s => s.trim().replace(/^dshmarket@/, "") === v)) lines[i] += " || " + v;
+    if (!lines[i].split("||").some(s => s.trim().replace(/^[- ]*dshmarket@/, "") === v)) lines[i] += " || " + v;
     hit = true;
   }
 }
@@ -501,7 +534,8 @@ console.log(lines.find(l => /^\s*-\s+dshmarket@/.test(l)));
 	add_market || fail "补冷却排除后 add 仍失败" "见 $RUN_DIR/add-dshmarket.log"
 elif grep -qE "already-installed" "$RUN_DIR/add-dshmarket.log"; then
 	warn "已装包被拒，改走 remove → add"
-	dsh plugin --profile web remove dshmarket || fail "remove 失败" "见 $RUN_DIR/add-dshmarket.log"
+	dsh plugin --profile web remove dshmarket 2>&1 | tee "$RUN_DIR/remove-dshmarket.log" ||
+		fail "remove 失败" "见 $RUN_DIR/remove-dshmarket.log"
 	add_market || fail "remove 后 add 仍失败" "见 $RUN_DIR/add-dshmarket.log"
 elif grep -qE "incompatible-version|allow-version|requires " "$RUN_DIR/add-dshmarket.log"; then
 	fail "兼容检查拒绝了 $MARKET_TARGET" "不要用 allow-version 强行放行；先查版本判断。"
@@ -534,7 +568,7 @@ ok "patch 与备份一致"
 step "升级完成"
 cat <<EOF
 
-   本体      ${CURRENT_VERSION:-?} → $(dsh_version)
+   本体      $PREV_VERSION → $(dsh_version)
    插件      dshmarket → $MARKET_NOW（其余 6 个未动）
    备份      $BACKUP_DIR
    运行记录  $RUN_DIR
