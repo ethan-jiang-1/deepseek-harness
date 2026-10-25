@@ -4,7 +4,17 @@
 
 一个专家插件的 repo 不需要很复杂：一个包、一份 patch、一组只读资产、一份 README。复杂的是**边界**——哪些行放 Host，哪些行放 preset，哪些东西根本不该进包。这一篇给一个可直接照抄的骨架，和四张发布前检查表。
 
-## 1. 参考骨架
+## 1. 包粒度：先一个包，别先拆
+
+“合理”的插件包不是越大越完整，而是边界清楚：
+
+- **一个能力一个包。** 一个工具、一个 provider、一个专家 pack 各自成包；不要把无关能力塞进同一个 patch。
+- **bundle 只是发布容器，不必与代码包一一对应。** 配置型 bundle（MCP、preset-only、skill-provider）可以没有 `main`、没有 `./` export，只靠 patch 行引用别的包。
+- **只在角色独立演化时拆包。** 第二个消费者出现、需要独立版本节奏、Host 与 Client 生命周期不同——这些才是拆的理由；否则单包起步（FAQ 13 的生态证据也是这个结论）。
+- **不要新造可执行入口。** 插件挂在现有 profile 上；Desktop / CLI / Web 才是应用发布物（FAQ 23）。
+- **不要把数据或用户配置打进包。** 包只发代码与只读资产；数据在 workspace / home / session。
+
+## 2. 参考骨架
 
 ```text
 acme-dsh-expert/
@@ -33,7 +43,7 @@ acme-dsh-expert/
 
 不必要的东西：`agent.cordis.yml`、`$DSH_HOME/.agent-presets/`、自己的 `profile.json`、`dsh.compatibility` 矩阵、`vendor/dsh`（除非你要在 repo 内探索 DSH 源码，见 FAQ 13）。
 
-## 2. 一份完整的 `package.json`
+## 3. 一份完整的 `package.json`
 
 ```json
 {
@@ -100,7 +110,7 @@ acme-dsh-expert/
 - `engines.dsh` 与 peer 二选一优先；两个都写时 `engines.dsh` 决定一切。共享实例的 DSH 包仍要 peer + dev 双写。
 - `files` 必须包含 `assets/skills/**`，否则技能不会进 tarball。
 
-## 3. patch 怎么写
+## 4. patch 怎么写
 
 ```yaml
 # cordis.patch.yml
@@ -136,13 +146,15 @@ acme-dsh-expert/
             name: '@acme/dsh-expert-pack/tool'
 ```
 
+这三行 preset 子插件的前提是 Host 层已经挂了 `@deepseek-ai/dsh-skill` 注册表（`dsh-base` 默认有）；preset 只负责“这个 agent 从哪些本地根发现技能、以及是否给它 skill 工具”。
+
 三条纪律：
 
 1. **行 id 稳定。** 用户会按 id 覆盖；改名等于破坏配置。
 2. **覆盖重述完整 config。** 你的 patch 覆盖别层时，要写全想保留的字段；用户覆盖你的 preset 时也一样。
 3. **preset 只放按 agent 定制的东西。** 共享服务、持久化、沙箱策略留在 Host 行；需要 `isolate` 的提供者与消费者放同一个 `cordis:group`。
 
-## 4. README 模板
+## 5. README 模板
 
 ```markdown
 # @acme/dsh-expert-pack
@@ -176,7 +188,7 @@ dsh plugin --profile web add @acme/dsh-expert-pack@1.0.0
 Removes the rows and preset. Storage domain data remains under $DSH_HOME/storages.
 ```
 
-## 5. 发布前检查表
+## 6. 发布前检查表
 
 ### A · 包与 manifest
 
@@ -218,7 +230,7 @@ Removes the rows and preset. Storage domain data remains under $DSH_HOME/storage
 - [ ] 工作区文件访问走 `ctx.fs`，没有用宿主 `node:fs` 绕过沙箱。
 - [ ] README 写清读写哪些数据、属于 workspace 还是 home、升级是否保留。
 
-## 6. 安装验收：用“真实安装形状”
+## 7. 安装验收：用“真实安装形状”
 
 源码直跑会掩盖依赖与 `files` 错误。最小验收流程：
 
@@ -245,7 +257,7 @@ Agent 环境里不要手写 profile 的 `package.json` / `cordis.patch.yml`，�
 - `warnings` 有没有版本、元数据、激活诊断；
 - 新会话里能力是否真的可用（工具能调用、UI 能出现、preset 能被选中）。
 
-## 7. 升级与跟进
+## 8. 升级与跟进
 
 DSH 的公开 API 仍是 pre-stable。插件作者的最小跟进纪律：
 
@@ -255,7 +267,7 @@ DSH 的公开 API 仍是 pre-stable。插件作者的最小跟进纪律：
 4. **破坏性变更升 minor/major，并写迁移说明。** 预稳定期可以快，但不能静默。
 5. **不要在包里 vendored 一份 DSH 源码来“稳定 API”。** 那会让你的包与宿主的服务实例、peer 解析、沙箱策略脱节；要探索源码用 pinned submodule，发布仍依赖宿主。
 
-## 8. 旧写法迁移
+## 9. 旧写法迁移
 
 ### 8.1 `agent.cordis.yml` 预设目录
 
@@ -292,7 +304,7 @@ DSH 的公开 API 仍是 pre-stable。插件作者的最小跟进纪律：
 | 手写 profile manifest | 不推荐 | `dsh plugin` / `plugin_manager` |
 | 精确钉死 DSH 版本 | 每次 RC 都逼发版 | 宽 minor、窄 major 的范围 |
 
-## 9. 一页总结
+## 10. 一页总结
 
 - **发布物**：一个 bundle（包 + patch + 资源）。
 - **智能体**：bundle 里的一行 preset + 它引用的子插件与只读资产。
@@ -302,3 +314,13 @@ DSH 的公开 API 仍是 pre-stable。插件作者的最小跟进纪律：
 - **边界**：包只发代码与只读定义；数据经服务访问；secret 走凭据；沙箱不替模型绕过。
 
 把这张纸贴在 repo 的 `AGENTS.md` 里，下一个接手的人（或 agent）就不需要重新推导一遍。
+
+
+## 11. 证据与下一步
+
+- 发布与安装：[publish.md](../../docs/user/develop/basic/publish.md)
+- 作者契约：[host-plugin.md](../../packages/preset/agent-preset/skills/cordis-plugin-development/references/host-plugin.md)、[ui-plugin.md](../../packages/preset/agent-preset/skills/cordis-plugin-development/references/ui-plugin.md)、[mcp-bundle.md](../../packages/preset/agent-preset/skills/cordis-plugin-development/references/mcp-bundle.md)
+- manifest 类型：[package-manifest types.ts](../../packages/util/package-manifest/src/types.ts)
+- 管理与兼容：[plugin-manager README](../../packages/boot/plugin-manager/README.md)
+- 扩展点地图：[extension-cookbook.md](../../docs/cookbook/extension-cookbook.md)、[adding-a-tool.md](../../docs/cookbook/adding-a-tool.md)
+- 相邻问题：[FAQ 13 的 repo 组织](../13_expert-plugin-repo-organization/answer.md)、[FAQ 17 的找轮子](../17_finding-existing-plugins/answer.md)、[FAQ 23 的安装途径](../23_standalone-vs-web-release-forms/04_plugin-paths.md)

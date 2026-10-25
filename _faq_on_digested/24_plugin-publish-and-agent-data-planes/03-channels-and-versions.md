@@ -2,7 +2,7 @@
 
 ## 一句话
 
-不管从哪个渠道来，插件的落点永远是**某个 profile 目录**（`package.json` 的依赖 + `cordis.patch.yml` 的层），执行安装的永远是**那台机器上的 pnpm**。渠道差异只改变“代码从哪来、版本怎么选、用户要批准什么”。版本依赖则统一由 `engines.dsh`（或回退的 DSH peer 范围）判定，安装前与启动时各查一次。
+不管从哪个安装渠道来，插件的落点都是**某个 profile 目录**（`package.json` 的依赖 + `cordis.patch.yml` 的层）。执行安装的是**该 profile 所属应用提供的包管理器**：普通 CLI/Web 用 profile 目录里的 pnpm，Desktop 等 application-owned profile 由壳提供的包管理器调用。渠道差异只改变“代码从哪来、版本怎么选、用户要批准什么”。版本依赖则统一由 `engines.dsh`（或回退的 DSH peer 范围）判定，安装前与启动时各查一次。
 
 ![六种来源，同一个落点](./figures/03-channels.svg)
 
@@ -12,12 +12,12 @@
 |---|---|---|---|---|
 | npm registry | 构建产物 + 完整 manifest + 发布 | `dsh plugin add @acme/pack@1.2.3` | 预构建 | 精确版本或范围 |
 | Git 托管 | 源码 + 自包含 `prepare` 脚本 | `dsh plugin add github:acme/pack#<sha>` | 源码，装时构建 | 提交 sha |
-| tarball | `pnpm pack` 产物 | `dsh plugin add ./pack-1.0.0.tgz` | 预构建 | 文件名里的版本 |
+| tarball | `pnpm pack` 产物 | `dsh plugin add ./pack-1.0.0.tgz` | 预构建 | 包内 `package.json.version` |
 | 本地目录 | 可运行的目录 | `dsh plugin add link:/abs/path` | 链接 checkout | 无（跟随工作区） |
-| 市场 index | 静态 JSON + 图标 | Discover 页选版本安装 | 由 index 指向 npm 或 Git | index 列出的版本 |
+| 市场 index | 静态 JSON + 图标 | Discover 页选版本安装 | 由 index 指向 npm 或 Git | 推荐：最高兼容非预发布版；也允许装任一列出版本 |
 | 官方目录 | DSH 官方维护 | Plugins 页按需安装 | 官方预构建 | `package@<运行版本>` |
 
-前四种是“spec”层面的差异；后两种是“发现层”的差异。DSH 的安装器最终都收敛到同一个 pnpm 操作与同一套兼容性检查。
+前四种是“spec”层面的差异；后两种是“发现层”的差异。安装最终都收敛到同一个包操作与同一套兼容性检查，只是执行器由应用提供。
 
 ## 2. npm：默认渠道
 
@@ -37,6 +37,17 @@ dsh plugin --profile web add @acme/dsh-review-pack        # 跟随 registry 的 
 
 `dsh plugin` 首次使用会初始化一个 base-backed profile（`@deepseek-ai/dsh-base` 作为第一个 bundle），然后把包追加到 `dsh.profile.bundles`。发布版安装器对官方按需包使用 `saveExact: true`；外部包默认按 spec 记录。
 
+一次安装的真实步骤（来自 `plugin-manager` 的 operations）：
+
+1. 对命令里点名的 spec 做预检：本地路径读 `package.json`，registry spec 用 `pnpm view` 解析出版本与 `engines`/`peerDependencies`；不满足就在 pnpm 之前拒绝，什么都不下载。
+2. 跑 pnpm；只有 exit 0 且没有被静默超时终止，才继续对账。
+3. 对本次新增或改动的直接依赖做安装后兼容检查（含 bundle 的组件 manifest）。不满足就恢复 `package.json` 与 `pnpm-lock.yaml`，并重装恢复后的 lockfile，退出 1。
+4. 对声明了 `dsh.bundle.patch` 的新依赖：先解析每个 patch 文件，再把包名追加到 `dsh.profile.bundles`。patch 解析失败会报错，也不会成为一层。
+5. 没有 `dsh.bundle` 的新依赖：打警告，留作普通依赖。
+6. 移除依赖时，从 bundle 列表里去掉对应名字；如果某个依赖已不再声明 bundle，也一并去掉。
+
+所以“安装成功”至少包含“pnpm 成功 + 兼容检查通过 + patch 可解析 + bundle 已追加”四件事；缺一件都只算“包在磁盘上”。
+
 适用：稳定分发、需要版本回退、希望市场能列出多个版本。
 
 ## 3. Git：源码直装，必须处理构建
@@ -48,7 +59,7 @@ dsh plugin --profile web add github:acme/dsh-review-pack#3f9c2e1d8a4b6c0e7f1a2b3
 Git 安装拿到的是源码，不是构建产物。因此：
 
 - **作者**必须提供自包含的 `prepare` 脚本，在安装后构建发布入口；不能假设旁边有 monorepo、共享 tsconfig 或 `vendor/`。
-- **用户**必须在 profile 的 `pnpm-workspace.yaml` 里为该包开 `allowBuilds`，否则 pnpm ≥10 会拒绝执行脚本，第一次 `add` 失败。
+- **用户**必须在 profile 的 `pnpm-workspace.yaml` 里为该包开 `allowBuilds`，否则 pnpm 会拒绝执行脚本，第一次 `add` 失败（仓库内一处写 pnpm ≥10，一处写 pnpm 11，以安装方实际版本为准）。
 - **固定提交 sha**，不要用分支名；否则一次 push 就能改变用户下次安装执行的代码。
 
 `allowBuilds` 的本质是“允许这个包在安装时以宿主机用户权限执行代码”。它与 agent 的沙箱无关，也不受 profile 的权限模式保护。只对信任的源码开，并尽量用预构建渠道替代。
@@ -62,7 +73,7 @@ pnpm pack
 dsh plugin --profile web add ./acme-dsh-review-pack-1.0.0.tgz
 ```
 
-tarball 是“没有 registry 也想发预构建产物”的最简形式：不触发构建脚本，不需要 `allowBuilds`，版本由包内 manifest 决定。适合私有交付、离线环境、审阅归档。
+tarball 是“没有 registry 也想发预构建产物”的最简形式：不运行 Git 的 `prepare`，版本由包内 manifest 决定。**但如果包声明了 `install` / `postinstall` 等生命周期脚本，pnpm 仍会拦下并要求 `allowBuilds`**；只有预构建且无生命周期脚本的 tarball 才完全不需要。适合私有交付、离线环境、审阅归档。
 
 注意：tarball 安装同样按 `files` 裁剪；打包前要确认 `pnpm pack` 的文件列表。
 
@@ -89,6 +100,7 @@ dsh plugin --profile web add ./dsh-review-pack
 - 图标可以内联为 base64 `data:` URL（解码后 ≤32 KiB），也可以是 URL；相对图标相对 index URL 解析。
 - 跨源绝对图标 URL 必须 `https:`。
 - `format: 1`；`title` 必填；`plugins` 必填；每个 plugin 至少一个 version。
+- `title` / `description` 等文本是 `LocalizedText`：字符串，或按小写语言 id 键控的对象；对象必须含 `en`。
 
 最小片段：
 
@@ -121,7 +133,9 @@ dsh plugin --profile web add ./dsh-review-pack
 - `source`：`{ "type": "npm", "registry"?: url }` 或 `{ "type": "git", "url": https-url, "commit": 40-hex, "path"?: dir }`；
 - `engines.dsh`：该版本支持的 DSH 范围；缺省表示任意。
 
-DSH 安装 npm 版本为 `name@version`（有 `registry` 就先问它）；Git 版本为 `git+<url>.git#<commit>`，子目录再加 `&path:/<path>`。`engines.dsh` 应与包自身声明一致，安装时还会再查一次。
+DSH 安装 npm 版本为 `name@version`（有 `registry` 就先问它）；Git 版本为 `git+<url>.git#<commit>`，子目录再加 `&path:/<path>`。
+
+Discover 卡片默认推荐“与运行 DSH 兼容的最高非预发布版”；如果该插件没有任何非预发布版，就取最高兼容预发布版。任一列出版本也可以手动安装。index 里的 `engines.dsh` 只是展示/推荐用的声明；安装时会重新读包自身 manifest 的 `engines.dsh` 或 peer 范围，所以两者不一致时以包为准。
 
 ### 6.2 生成与校验
 
@@ -146,15 +160,17 @@ DSH 会拒绝整份 index（只要有一条规则不满足），并在 **Manage 
 
 发布版安装器给出 `package@<运行中的 DSH 版本>`；源码 Web 与开发桌面改成 `link:<工作区包目录>`。外部作者不能通过这条渠道发布，只能走 npm / Git / 市场。
 
+还要区分三个相邻状态：**optional** 是随 DSH 安装包一起装、默认关闭、永远不可移除的 bundle；**on-demand** 是公开目录里默认不装、按需从 registry 或源码 link 安装的条目；**official** 是 `listBundles` 的列表状态（`optional || 目录条目`），不是 `package.json` 字段。别把“在官方列表里”当成一种 manifest 声明。
+
 ## 8. 版本依赖：判定语义
 
 ### 8.1 谁在读
 
 | 字段 | 读取方 | 时机 |
 |---|---|---|
-| `engines.dsh` | 安装前预检（registry spec 走 `pnpm view`）、bundle 加载、行准入 | 安装 / 启动 / 重载 |
+| `engines.dsh` | 安装前预检（registry spec 走 `pnpm view`，本地目录读 manifest）、bundle 加载、行准入 | 安装 / 启动 / 重载 |
 | `@deepseek-ai/dsh*` peer | 同上，仅在没有 `engines.dsh` 时 | 同上 |
-| `dsh.manifestVersion` | 类型与读取方声明 | 不作为版本门禁 |
+| `dsh.manifestVersion` | 仅类型声明，没有读取方 | 不作为版本门禁 |
 | `compatibility.json` | 安装器 / 启动器 | 拒绝后的显式豁免 |
 
 ### 8.2 判定规则
@@ -164,7 +180,7 @@ DSH 会拒绝整份 index（只要有一条规则不满足），并在 **Manage 
 - 两者都无：不约束。
 - 预发布参与匹配；空范围、非法范围、`workspace:` 写进 `engines.dsh` 都算不满足。
 - 拒绝信息按 `engines.dsh` 或 peer 包名列出未满足项；不满足的 bundle 会被跳过并记入 `skippedBundles`，不满足的行会被拒绝装载。还有一条温和路径：一次安装没有改动某个依赖、而它本来就不兼容时，安装只警告、不会因此失败；该依赖保持安装，但启动时仍会被拒绝，直到获得精确版本豁免。
-- 安装前能查的（registry 名字）在 pnpm 之前就拒绝；Git / tarball 要等 fetch 之后才能判断，失败会回滚 manifest 与 lockfile。
+- 安装前能查的（registry 名字、本地目录）在 pnpm 之前就拒绝；Git / tarball 要等 fetch 之后才能判断，失败会回滚 manifest 与 lockfile。
 
 ### 8.3 豁免
 
@@ -191,8 +207,8 @@ DSH 会拒绝整份 index（只要有一条规则不满足），并在 **Manage 
 | 安装失败 | profile manifest 与 lockfile 回滚；pnpm 已下载的文件可能残留 |
 | 安装成功、激活失败 | 依赖与选择保留，插件不可用；修包后重装 |
 | 无 HMR | 新包/新行要重启才生效 |
-| 有 HMR | 配置变更即时重组；已加载的 JS 模块不会自动换新 |
-| 替换已安装包 | 需要重启才能加载新的模块代；HMR 下会拒绝同 spec 覆盖 |
+| 有 HMR | 配置变更即时重组；profile 或 linked 包中已加载文件变化会在下一次重组时替换对应插件 |
+| 替换已安装包 | 同 spec 的 registry/本地目录安装会被 `already-installed` 拒绝；git/tarball 这类安装后才确定包名的 spec 可覆盖并重组；无 HMR 时仍需重启 |
 | 移除 bundle | 取消选择、停止其插件；包文件可能保留 |
 | 禁用 bundle | 只取消选择，依赖仍在；重新启用会排到列表末尾，可能改变优先级 |
 

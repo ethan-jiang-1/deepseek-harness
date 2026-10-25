@@ -2,19 +2,19 @@
 
 ## 一句话
 
-数据不属于插件包，它有三个所有者：**workspace**（跟当前 working folder 有关）、**home**（与 folder 无关的用户全局）、**session**（一次会话的日志与投影）。插件只能通过服务访问它们；把数据写进包目录、模块全局或自造事件类型，都会在升级、重放或多会话并发时坏掉。
+数据不属于插件包。按归属粗分有三类：**workspace**（跟当前 working folder 有关）、**home**（与 folder 无关的用户全局）、**session**（一次会话的日志与投影）。这是导航用的粗分，不是排他分区：`home` 实际有两个根（`$DSH_HOME` 与共享的 `~/.agents`），`$DSH_HOME` 内部又按用途分给不同包。插件只能通过服务访问它们；把数据写进包目录、模块全局或自造事件类型，都会在升级、重放或多会话并发时坏掉。
 
 ![数据地图](./figures/05-data-map.svg)
 
-## 1. 三种所有者
+## 1. 三种归属（home 有两个根）
 
-| 所有者 | 回答的问题 | 典型内容 | 生命周期 |
+| 归属 | 回答的问题 | 典型内容 | 生命周期 |
 |---|---|---|---|
 | workspace | 这个项目里有什么 | 工作目录文件、项目 `AGENTS.md`、项目技能 | 随仓库/目录；用户自己管理 |
 | home | 这台机器上的用户是谁、积累了什么 | 全局指令、用户技能、宿主 KV、凭据、profile | 跨项目、跨会话；DSH 升级不应清掉 |
 | session | 这一次对话发生了什么 | 会话日志、投影、附件引用、preset 选择 | 随会话；只追加 |
 
-`$DSH_HOME` 默认 `~/.dsh`，可用环境变量覆盖；共享 agents 根默认 `~/.agents`，可用 `DSH_AGENTS_HOME` 覆盖。两者都是用户数据根，不是插件安装目录。
+`$DSH_HOME` 默认 `~/.dsh`，可用环境变量覆盖；共享 agents 根默认 `~/.agents`，可用 `DSH_AGENTS_HOME` 覆盖。两者都是用户数据根，不是插件安装目录。**把 `~/.agents` 当成 `$DSH_HOME` 的子目录是错的**：DSH 故意把它放在外面，因为别的 agent 工具也读同一个 `AGENTS.md` 与 `skills/`。
 
 ## 2. workspace：跟当前 working folder 有关
 
@@ -70,6 +70,27 @@
 
 共享 agents 根（`~/.agents`）是另一种全局：它的 `AGENTS.md` 与 `skills/` 故意放在 `$DSH_HOME` 之外，因为别的 agent 工具也读它。DSH 不会把它当成自己的私有目录。
 
+### 3.2 经验（experience）放哪
+
+“经验”不是第五种存储，它是“下一次会话要读到的文本或记录”。DSH 里没有内置的语义记忆服务；可选落点只有四种，按可审计性排序：
+
+| 形态 | 位置 | 谁写 | 何时进入模型 | 适合 |
+|---|---|---|---|---|
+| 全局规则/偏好 | `$DSH_HOME/AGENTS.md`、`~/.agents/AGENTS.md` | 用户 | 每次会话的 baseline | 少而稳定的偏好 |
+| 可复用流程 | `$DSH_HOME/skills/<name>/SKILL.md`、`~/.agents/skills` | 用户或经批准的工具 | 按需加载（catalog + skill 工具） | 多步骤经验、领域检查表 |
+| 项目经验 | 项目 `AGENTS.md`、`.dsh/skills` | 项目维护者 | 进入该项目时 | 与仓库绑定的事实 |
+| 结构化记忆 | `ctx.storageDomain` 或外部 memory MCP | 插件/服务 | 经工具显式读取 | 需要检索、去重、打分的记忆 |
+
+四条纪律：
+
+- **人能读的优先。** 规则与流程用 Markdown，用户可以 review、diff、删除；只有确实需要检索结构时才上 KV 或外部 memory。
+- **不要静默追加全局指令。** 插件自动往 `$DSH_HOME/AGENTS.md` 里写内容，等于给未来所有会话注入提示词；必须是用户显式动作，或写到单独的可审阅文件。
+- **项目经验进仓库，跨项目经验进 home。** 不要把项目事实写进 `$DSH_HOME`，也不要把个人偏好提交进项目。
+- **记忆也要有生命周期。** 文件可以 review/prune；storage domain 要声明版本与清理策略；会话日志不是记忆，它只负责重放。
+
+仓库里的 MCP memory 例子就是按这个原则放的：它把 JSONL 写到 `$HOME/.dsh-mcp-reference-memory.jsonl`，而不是装好的 npm 包目录（[mcp-memory 指南](../../docs/user/guide/mcp-memory.md)）。
+
+
 ### 3.1 宿主 KV：storage domain
 
 `ctx.storageDomain` 提供 schema 校验、写后持久、变更事件的 KV domain。它适合“必须跨重启、但不属于会话日志”的宿主状态：工作区记录、会话旁路元数据、插件自己的配置缓存等。
@@ -81,6 +102,7 @@
 - 打开时校验全部记录；坏记录会以 `invalid-record` 拒绝打开，而不是静默跳过。
 - 它**不产生工具、prompt 或 session event**，所以模型看不见；要让模型看见，必须由消费者显式渲染。
 - 句柄生命周期归调用方；插件卸载时用 `ctx.effect` 的 disposer `close()`。
+- 没有自动迁移：存储里的 domain 版本与当前 spec 不一致会以 `version-mismatch` 拒绝打开；改 schema 要自己迁移数据。
 
 这不是“插件的私有数据库”。domain 名字与 schema 是包级契约；多个消费者打开同一 domain 会得到 `already-open`。
 
@@ -88,13 +110,13 @@
 
 ### 4.1 日志是唯一真源
 
-模型看到的任何东西都必须能从已提交的会话事件重建。fork、resume、replay、compaction 都从日志派生。插件内存里的状态只是派生缓存，进程一退就没了。
+**对模型可见的会话内容而言**，日志是唯一真源：模型看到的任何东西都必须能从已提交的会话事件重建，fork、resume、replay、compaction 都从日志派生。插件内存里的状态只是派生缓存，进程一退就没了。这句不要外推成“所有数据都从日志派生”：workspace 记录、凭据、附件、技能文件都各自有自己的权威存储。
 
 因此：
 
 - 要让模型看见的状态 → 写成会话事件（优先用已有事件类型与投影），或在请求前通过 `agent.inject()` 注入并留下事件。
 - 只是宿主自己用的状态 → storage domain。
-- 不要新增自定义 session event 类型：读取方只接受带 `ignorable: true` 的未知事件，而 live `Session.append()` 不能设置该标记，会话会拒绝重新打开。`appendPluginRecord()` 写 `plugin:` 记录，但保留给 DSH 实验包，且会话格式迁移只尽力保留。
+- 事件类型是兼容契约：插件可以声明合并额外的 `SessionEventMap` 类型，但它们只能是 **log-only**，不是 surface event、不进入派生历史。读取方只接受带 `ignorable: true` 的未知事件，而 live `Session.append()` 不能设置该标记，所以新增类型要按“缺少声明插件的读取方”来设计。`appendPluginRecord()` 写 `plugin:` 记录，但保留给 DSH 实验包，且会话格式迁移只尽力保留。
 - 不要用 `session/event` 监听 + 全量重扫来维护状态；用 `ctx.sessionProjections` 的纯函数 fold，未变化时返回同一引用。
 
 ### 4.2 目录布局
@@ -106,9 +128,9 @@ $DSH_HOME/sessions/
       <generation files>         # 只追加的 JSONL 世代
 ```
 
-项目目录名让日志可导航；cwd 归一化后相同的会话共享项目目录，但会话 id 仍然唯一选择目录。历史格式以不可变世代保留，读取时迁移，写时发布后继，不覆盖源文件。
+项目目录名让日志可导航；cwd 归一化后相同的会话共享项目目录，但会话 id 仍然唯一选择目录。历史格式以不可变世代保留，读取时迁移，写时发布后继，不覆盖源文件。日志**没有删除 API**：它会一直累积在 root 下，直到外部手动清理；插件不要把“归档会话”实现成删日志。
 
-**这解释了“数据跟 working folder 有关”的一半**：日志物理上住在 home，但按会话创建时的 cwd 分组。项目移动不会搬日志；日志仍在旧项目目录名下。插件不应该依赖这个路径做业务逻辑。
+**这解释了“数据跟 working folder 有关”的一半**：日志物理上住在 home，但按会话创建时 `SessionHeader.cwd` 分组。这个目录名是**导航键，不是身份**：编码会替换分隔符并截断，故意有损；会话 id 才是身份。项目移动不会搬日志；改工作目录也不会把会话移到新项目目录或新 workspace——成员身份锚定原始 cwd。插件不应该依赖这个路径做业务逻辑。
 
 ### 4.3 附件
 
@@ -122,7 +144,7 @@ $DSH_HOME/sessions/
 
 **R3 · 模型可见 ⟺ 可从日志重建。** 任何进入模型请求的东西都必须能从已提交事件重建；否则 fork/replay 会得到不同结果。
 
-**R4 · 不造新事件类型。** 用已有事件、投影、`agent.inject()` 或 storage。`plugin:` 记录是实验通道，不是通用扩展点。
+**R4 · 事件类型是兼容契约。** 优先用已有事件、投影、`agent.inject()` 或 storage。插件可以声明合并额外的 `SessionEventMap` 类型，但它们只能是 **log-only**，不是 surface event、不进入派生历史；未知事件只有在带 `ignorable: true` 时才能被读取方接受，而 live `Session.append()` 不能设置该标记，所以新增类型要按“缺少声明插件的读取方”来设计。`plugin:` 记录是实验通道，不是通用扩展点。
 
 **R5 · 宿主状态用 storage domain，不用模块全局。** 模块级 `Map`、`globalThis`、`Symbol.for` 都隐藏了所有者；多会话、多 profile、HMR 下会串。
 
@@ -130,7 +152,7 @@ $DSH_HOME/sessions/
 
 **R7 · 经验放技能根或 AGENTS.md，不放包。** 包只发只读的、与版本绑定的知识；可编辑经验属于项目或用户。
 
-**R8 · secret 走凭据，不进 patch、locale、README 或会话文本。** `!!js` 引用既有凭据可以；复制明文不行。
+**R8 · secret 走凭据，不进 patch、locale、README 或会话文本。** 配置里只放引用（如 `apiKeyEnv`），每次操作重新解析，不要跨操作缓存；`!!js` 引用既有凭据可以，复制明文不行。凭据文件按权限管理，不是隔离边界——agent 的工具进程以你的 OS 用户运行。
 
 ## 6. 选路径的决策树
 
@@ -155,13 +177,13 @@ $DSH_HOME/sessions/
 |---|---|---|---|---|
 | DSH 升级 | 不动 | 不动 | 可能读旧格式并写后继世代 | 替换 |
 | 插件升级 | 不动 | 不动 | 不动 | 替换；模块代需要重启 |
-| 移除 bundle | 不动 | 不动 | 不动 | 从 profile 依赖中移除，文件可能残留 |
+| 移除 bundle | 不动 | 不动 | 不动 | 从 profile 依赖中移除；下载缓存可能残留 |
 | 禁用 bundle | 不动 | 不动 | 不动 | 依赖仍在，只是不选层 |
 | 项目移动/改名 | 路径变 | 不动 | 仍在旧 cwd 的项目目录下 | 不动 |
 | 删除 workspace 记录 | **不删** | 不动 | 不删 | 不动 |
 | 清理缓存 | 不动 | `cache/` 可删 | 不动 | 不动 |
 
-结论：**只有包目录会被升级替换，所以它是唯一不能放数据的地方。** 其余三个位置各有明确的生命周期；插件要做的是选对位置，并把选择写进 README。
+结论：**包目录是唯一会被升级整体替换的位置，所以它不能放可变用户数据。** 其余三个位置各有明确的生命周期；插件要做的是选对位置，并把选择写进 README。只读资产可以随包发布，但它们不是用户数据。
 
 ## 8. 反模式
 
@@ -171,7 +193,7 @@ $DSH_HOME/sessions/
 | 模块级 `Map` 当会话缓存 | 多会话串；HMR 不清理；卸载泄漏 | 会话投影 / `ctx.effect` 清理 |
 | `process.cwd()` 当会话目录 | `working_directory` 改了还读旧目录 | `ctx.workingDirectory` |
 | `join(os.homedir(), '.dsh')` | 忽略 `DSH_HOME`，多环境互相污染 | `resolveDshHome()` |
-| 追加自定义 session event | 会话可能拒绝重开；迁移丢失 | 已有事件 + 投影 |
+| 追加未声明的新 event 类型，或依赖 `plugin:` 记录 | 缺少声明插件的读取方可能拒绝重开；迁移只尽力保留 | 已有事件 + 投影；新增类型只能 log-only |
 | 只存 storage，不写事件 | 模型可见但不可重放；fork 不一致 | 事件优先，storage 只存宿主侧 |
 | secret 写进 Config 默认值 | patch 被分享即泄漏 | 凭据引用 / 环境变量 |
 | 用 `node:fs` 直接改 workspace | 绕过 fs 策略、沙箱与审计 | `ctx.fs` |
@@ -180,7 +202,7 @@ $DSH_HOME/sessions/
 ## 9. 宿主代码与沙箱的边界
 
 - **Host 插件在进程内执行，位于 workspace 沙箱之外。** 插件管理器明确写出这条边界；插件代码与宿主同权，能做 sandbox 之外的事。
-- **模型的文件工具受沙箱与权限策略约束。** `workspace-write` 只允许改会话工作区；`read-only` 只读；审批策略决定 `ask` 还是拒绝。
+- **沙箱只管文件效果，而且只管“改”。** `workspace-write` 只允许改会话工作区或平台临时目录；`read-only` 拒绝一切修改；`danger-full-access` 不限制修改。读、列目录、只读 watch 在所有模式下都按本地文件系统行为工作；网络与进程可见性也不在这个词汇表里。审批策略决定 `ask` 还是拒绝。
 - **不要用宿主代码替模型绕过沙箱。** 如果插件替模型读写工作区文件，它应当走 `ctx.fs`，让策略、审计、观测事件都成立；否则用户以为沙箱在保护他，实际没有。
 - **安装即执行。** 装包、跑构建脚本、激活 Host 代码都在沙箱之外；这是“只装信任来源”的根本原因，不是文档措辞。
 
@@ -193,3 +215,18 @@ $DSH_HOME/sessions/
 - **session** 属于这次对话，模型可见的东西必须能从日志重建。
 
 插件包只发代码与只读定义；它通过服务访问这三种数据，并把“我读写什么、属于谁、升级后怎样”写进 README。做到这一点，“智能体代码”和“智能体数据”就自然分离了。
+
+
+## 11. 证据
+
+- Home 解析：[home-paths README](../../packages/util/home-paths/README.md)
+- 技能根与来源：[skill-filesystem README](../../packages/skill/skill-filesystem/README.md)
+- 指令链与预算：[agent-instructions README](../../packages/context/agent-instructions/README.md)
+- 宿主 KV：[storage-domain README](../../packages/storage/storage-domain/README.md)
+- 会话日志布局：[session-persistence-jsonl README](../../packages/session/session-persistence-jsonl/README.md)
+- 工作目录：[working-directory README](../../packages/session/working-directory/README.md)
+- 工作区记录：[workspace README](../../packages/workspace/workspace/README.md)
+- 附件：[attachment-local README](../../packages/attachment/attachment-local/README.md)
+- 凭据：[credentials-local README](../../packages/credentials/credentials-local/README.md)
+- 默认根：[base cordis.patch.yml](../../packages/bundle/base/cordis.patch.yml)
+- 插件状态规则：[practices.md](../../packages/preset/agent-preset/skills/cordis-plugin-development/references/practices.md)

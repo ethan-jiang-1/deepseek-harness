@@ -1,27 +1,27 @@
-# 02 · 插件包的发布合同：六道门，两种要求
+# 02 · 插件包的发布合同：六项检查，三种失败方式
 
 ## 一句话
 
-DSH 对插件包的硬要求只有四类：**能解析、能装载、版本对得上、配置校验得过**。其余（README、图标、测试、许可证、SemVer、数据边界）是质量线。把两类混在一起，就会把“DSH 会拒绝”与“作者应该做”说成同一件事。
+DSH 真正会**拒绝、跳过或拒绝装载**的只有四类：patch 存在且能解析、入口模块能被 Node 解析、`engines.dsh`（或 DSH peer）匹配、声明了 `Config` 时行内配置能过校验。入口导出形式错了通常不会在安装时被拒绝，而是装载后坏掉；元数据错了只降级；README、许可证、测试是质量线。把这三类混成“DSH 会拒绝”，是发布讨论里最常见的失真。
 
-![发布六道门](./figures/02-publish-gates.svg)
+![发布六项检查](./figures/02-publish-gates.svg)
 
 ## 0. 先看全景
 
-| 门 | 检查什么 | 谁在检查 | 不通过会怎样 |
-|---|---|---|---|
-| 1 入口 | 模块导出形式是否合法 | Loader / 模块加载 | 命名空间被丢弃、激活失败 |
-| 2 打包 | `dsh.bundle.patch` 存在且能解析，模块能被 Node 解析 | `dsh plugin` / profile 启动 | 安装警告、bundle 被跳过、行被拒绝 |
-| 3 自包含 | `exports`、`files`、构建产物是否覆盖运行所需 | Node 解析 / pnpm 打包 | 装完缺文件，激活时报模块找不到 |
-| 4 兼容 | `engines.dsh`，或全部 `@deepseek-ai/dsh*` peer 范围 | 安装前预检 + 启动/重载 | 拒绝安装、跳过 bundle、拒绝行 |
-| 5 配置 | 行内 `config` 是否过 `Config` 校验 | 插件激活 | 激活失败（随行的重要性升级） |
-| 6 元数据 | locale、icon、description | 读 Display 元数据的消费者 | 只产生诊断，插件仍可管理 |
+| # | 检查 | 检查什么 | 谁在检查 | 失败方式 |
+|---|---|---|---|---|
+| 1 | 入口形式 | named `apply` 或 default service class，不混用 | Loader / 模块加载 | **装载正确性**：命名空间被丢弃、`inject` 失效，通常不在安装时拒绝 |
+| 2 | patch / 打包 | `dsh.bundle.patch` 存在且能解析 | `dsh plugin` / profile 启动 | **拒绝或跳过**：`not-bundle`、安装警告、`skippedBundles` |
+| 3 | 自包含 | 入口与（声明 `dsh.client` 时的）`./client` 能解析；构建产物存在 | Node 解析 / `pnpm pack` | **装后坏**：模块找不到、tarball 缺文件 |
+| 4 | 兼容 | `engines.dsh`，或全部 `@deepseek-ai/dsh*` peer 范围 | 安装预检 + 启动/重载 | **拒绝/跳过/拒行**；未改动的既有依赖只警告，启动仍拒绝 |
+| 5 | 配置 | **声明了** `Config` 时，行内 `config` 能过校验 | 插件激活 | **激活失败**（随行的重要性升级） |
+| 6 | 元数据 | locale、icon、description | 读 Display 元数据的消费者 | **只降级**：回退或诊断，插件仍可管理 |
 
-表里的“行的重要性”指 `required`：必需的插件失败会让启动回滚并非零退出；可选插件失败只打警告（[app-boot README](../../packages/boot/app-boot/README.md)）。`dsh plugin add` 成功也不等于激活成功：插件管理器会保留依赖与选择，把激活诊断报出来。
+“行的重要性”不是行上的字段，而是启动器的全局必需 id 集合。必需插件失败会让启动**丢弃已挂载的插件并以非零码退出**，这不是配置事务回滚；可选插件失败通常只警告，但它可能让必需的消费者无法激活，从而仍然启动失败（[app-boot README](../../packages/boot/app-boot/README.md)）。`dsh plugin add` 成功也不等于激活成功：插件管理器会保留依赖与选择，把激活诊断报出来。
 
-## 1. 入口门：两种形式，不能混
+## 1. 入口：装载正确性，不是安装门禁
 
-函数型插件：
+DSH 对插件的最小定义是：一个导出 `apply` 函数的模块（JS 或构建后的 TS），框架加载时调用它并传入 `ctx`。服务型包则默认导出 service class。**两种形式不能混用**——混用时 Loader 会丢掉函数插件的命名空间，`inject` 等导出失效；这有事故记录（[postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)）。
 
 ```ts
 export const name = 'acme-expert'
@@ -30,17 +30,13 @@ export const Config = Schema.object({ /* ... */ }) // 可选
 export function apply(ctx: Context, config: Config) { /* ... */ }
 ```
 
-服务型插件：默认导出一个 service class。
+关键点：
 
-规则与原因：
-
-- **不能同时** default export 和 named `apply`。混用时 Loader 会丢掉函数插件的命名空间，`inject` 等导出失效——这是有事故记录的（[postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)）。
-- 依赖的服务要么进 `inject`，要么用 `ctx.inject([...], ...)` 可选等待；不要直接读 `ctx.<service>` 赌它存在。可选服务用 `ctx.get(name)`，属性代理对拓扑敏感。
+- **混用不会在安装时被拒绝。** 它通常在第一次访问未注入的服务时才崩，所以这是“装载正确性”要求，不是“DSH 会拒绝你发布”的门禁。
+- 依赖的服务要么进 `inject`，要么用 `ctx.inject([...], ...)` 可选等待；不要直接读 `ctx.<service>` 赌它存在。可选服务用 `ctx.get(name)`。
 - 每个注册都要有 disposer；用 `ctx.effect()` / `ctx.on()`，不要把清理留给“进程退出”。
 
-这是“能装载”的最低条件，也是唯一一条**静默失败**风险最高的门：形式错了不一定会报错，可能只是行为少了一半。
-
-## 2. 打包门：patch 是 bundle 的身份证
+## 2. patch：bundle 的身份证
 
 ### 2.1 最小 bundle
 
@@ -50,7 +46,7 @@ export function apply(ctx: Context, config: Config) { /* ... */ }
   "version": "0.1.0",
   "type": "module",
   "main": "index.js",
-  "exports": { ".": "./index.js", "./cordis.patch.yml": "./cordis.patch.yml", "./package.json": "./package.json" },
+  "exports": { ".": "./index.js", "./package.json": "./package.json" },
   "files": ["index.js", "cordis.patch.yml"],
   "dsh": { "bundle": { "patch": "./cordis.patch.yml" } }
 }
@@ -62,9 +58,9 @@ export function apply(ctx: Context, config: Config) { /* ... */ }
       name: '@acme/dsh-review-pack'
 ```
 
-- `patch` 是相对包根的路径；也可以是有序数组，启动器按顺序当一层应用。
+- `patch` 是相对包根的路径；也可以是有序数组，启动器按顺序当一层应用。**patch 由启动器按包目录直接读取，不经过 `exports`。**
 - 行 `name` 用包名（或子路径），不要用相对源码路径——安装后的代码在 profile 的 `node_modules` 里，相对路径会指错地方。
-- `files` 必须覆盖 patch、运行入口、locale、icon、以及运行时要读的资源。**本地目录安装是 link，`files` 不过滤**；只有 packed/published 安装才按 `files` 裁剪。所以“我本地能跑”不能证明发布包完整。
+- `files` 是 `pnpm pack` / 发布时的裁剪清单：它决定 tarball 里有什么，安装时不再二次过滤；链接安装不打包，所以 `files` 不生效。patch 或入口漏掉会让装后不可用；locale/icon 漏掉只降级元数据。
 
 ### 2.2 覆盖与 id 稳定性
 
@@ -79,17 +75,17 @@ patch 可以按 `id` 覆盖前层（例如 `dsh-web-app` 覆盖 `dsh-base` 的�
 
 同一个包可以导出多个插件入口，每个入口一行，各自 `config`、各自启用。子路径插件（如 `@acme/pack/search`）不是包根：它不读 `package.json` 的 `icon` 与 `description`，显示元数据只能走自己的 `./search/locale/*.json` 与 `./search/icon`。这条差异在写元数据时最容易踩。
 
-## 3. 自包含门：发布物不能依赖你的工作区
+## 3. 自包含：发布物不能依赖你的工作区
 
 DSH 的安装模型是“把包装进 profile 的依赖树”，不是“复制你的 repo”。因此：
 
 - **npm 发布必须带构建产物**（`lib/` 或打包后的 `index.js`）。直接发 `src/*.ts`，用户装到的是 Node 不能直接执行的源码。
-- **Git 安装拿到的是源码，不会自动构建。** 作者要提供自包含的 `prepare` 脚本（不假设旁边有 monorepo），用户还要在 profile 的 `pnpm-workspace.yaml` 里为该包开 `allowBuilds`；否则 pnpm 会拒绝执行构建脚本（[publish.md](../../docs/user/develop/basic/publish.md)）。
+- **Git 安装拿到的是源码，不会自动构建。** 作者要提供自包含的 `prepare` 脚本（不假设旁边有 monorepo），用户还要在 profile 的 `pnpm-workspace.yaml` 里为该包开 `allowBuilds`；否则 pnpm 会拒绝执行构建脚本（[publish.md](../../docs/user/develop/basic/publish.md)）。仓库内对阈值有两种写法（`publish.md` 写 pnpm ≥10，plugin-manager README 与根 `packageManager` 写 pnpm 11）；以安装方的实际版本为准。
 - **不要引用仓库内的 `workspace:*` 路径、`vendor/`、共享 tsconfig 或 sibling 包**。发布后这些都不存在。
-- **`exports` 要显式**：`"."`、`"./cordis.patch.yml"`、`"./package.json"`、`"./client"`（如果有 UI）、`"./locale/*.json"`、`"./icon"`（如果用导出图标）。少一个，Node 就会在用户机器上报 `ERR_PACKAGE_PATH_NOT_EXPORTED`。
-- **校验真实打包结果**：`pnpm pack` 后看 tarball 里的文件列表，或 `npm publish --dry-run`。链接安装不会暴露 `files` 漏项。
+- **代码型 bundle 的入口必须导出；`./client` 在声明 `dsh.client` 时必须导出。** patch 不走 `exports`；`locale/*.json`、`icon`、`package.json` 由元数据读取方**可选**解析，缺了只回退或产生诊断，不会让插件装不上（[package-meta.ts](../../packages/boot/app-boot/src/package-meta.ts)）。
+- **校验真实打包结果**：`pnpm pack` 后看 tarball 里的文件列表，或 `npm publish --dry-run`。链接安装不会暴露 `files` 漏项；链接包若入口在 `lib/`，改 `src/` 仍需先构建。
 
-## 4. 兼容门：写在 manifest 里的版本承诺
+## 4. 兼容：唯一的硬版本门
 
 ### 4.1 两种声明，一个判定
 
@@ -113,10 +109,10 @@ DSH 的安装模型是“把包装进 profile 的依赖树”，不是“复制�
 
 - 预发布版本参与范围匹配；`engines.dsh` 写精确的预发布版本是允许的。
 - `workspace:` 协议在 `engines.dsh` 里非法；在 peer 里，`workspace:^`、`workspace:~`、`workspace:*` 都指运行中的 DSH 版本。
-- 空范围、非法范围、非字符串 `engines.dsh`、非对象 `engines` 都算不兼容/畸形。
-- 不满足时，安装前会拒绝（registry spec 先查 `pnpm view`），启动时会跳过 bundle 或在行级拒绝；拒绝信息会按 `engines.dsh` 或 peer 包名列出未满足项。
+- 空范围、非法范围、非字符串 `engines.dsh`、非对象 `engines` 都算不兼容/畸形；非法范围不会被诊断成“语法错误”，只是不满足。
+- 不满足时：安装预检（registry spec 用 `pnpm view`，本地目录读 `package.json`）在 pnpm 之前拒绝；安装后会对改动的直接依赖再查一遍，不通过就回滚 `package.json` 与 lockfile；启动时跳过 bundle 或在行级拒绝。
 
-**一处证据冲突要说明。** `packages/util/package-manifest/README.md` 的 Known Limitations 与 `2026-09-10-public-package-manifest` 决策记录都写着“当前安装器与加载器不强制 `engines.dsh`”。当前源码已经强制：`packages/boot/app-boot/src/plugin-compatibility.ts` 实现了 `engines.dsh` 优先、peer 回退的判定，`publish.md`、app-boot README 与 plugin-manager README 也都按“强制”描述，安装操作会对直接依赖逐一评估。合理的读法是：那两处说的是“这组 TypeScript 类型声明本身不做校验”，不是“运行时不做校验”。判定以源码与三个描述强制行为的产品文档为准。
+**一处证据冲突要说明。** `packages/util/package-manifest/README.md` 的 Known Limitations 与 `2026-09-10-public-package-manifest` 决策记录都写着“当前安装器与加载器不强制 `engines.dsh`”。这句话**对 `engines.dsh` 已过时**，只对 `dsh.manifestVersion` 成立。当前源码 `packages/boot/app-boot/src/plugin-compatibility.ts` 实现了 `engines.dsh` 优先、peer 回退的判定，`publish.md`、app-boot README 与 plugin-manager README 也都按“强制”描述。判定以源码与这三个产品文档为准，不要引用那两处旧结论。
 
 ### 4.2 共享实例：peer + dev 双写
 
@@ -129,12 +125,12 @@ DSH 的安装模型是“把包装进 profile 的依赖树”，不是“复制�
 
 ### 4.3 `manifestVersion` 与豁免
 
-- `dsh.manifestVersion: 1` 是 manifest 格式标识，与 npm 包版本、会话格式版本都无关。当前读取方把它当声明，不当作强制门禁；写上是为了让格式演进有据可依（[package-manifest types.ts](../../packages/util/package-manifest/src/types.ts)）。
-- 不兼容时可以用精确版本豁免：profile 的 `compatibility.json` 里把 `package-name@version` 映射到精确的 DSH 运行版本。豁免不继承：插件升级或 DSH 升级都要重新授权；授权前要提示崩溃与数据损坏风险（[plugin-manager README](../../packages/boot/plugin-manager/README.md)）。
+- `dsh.manifestVersion: 1` 是 manifest 格式标识，与 npm 包版本、会话格式版本都无关。**它没有任何读取方**：仓库里只有类型声明与文档表格，安装器、加载器、plugin-manager 都不读它；写上是为了让格式演进有据可依（[package-manifest types.ts](../../packages/util/package-manifest/src/types.ts)）。
+- 不兼容时可以用精确版本豁免：profile 的 `compatibility.json` 里把 `package-name@version` 映射到精确的 DSH 运行版本列表。豁免不继承：插件升级或 DSH 升级都要重新授权；授权时只能指名当前运行版本，撤销时可以清历史授权；授权前要提示崩溃与数据损坏风险（[plugin-manager README](../../packages/boot/plugin-manager/README.md)）。
 
-## 5. 配置门：所有会变的都进 Config
+## 5. 配置：条件门，不是无条件门
 
-DSH 的规则是“**不要在插件里硬编码可调值**”：会随部署变化的选项必须是有校验的 `Config` 字段，能从 `cordis.yml` / patch 改；`DEFAULT_*` 常量或测试钩子不算可配置。协议常量、外部规范、安全不变量才保持固定。
+**`Config` 是可选导出。** 没有声明 `Config` 的插件照样加载；只有声明后，行内 `config` 才必须通过校验，失败时按该行是必需还是可选处理。
 
 ```ts
 export const Config = Schema.object({
@@ -144,13 +140,13 @@ export const Config = Schema.object({
 })
 ```
 
-为什么这是发布要求而不是风格问题：
+把可调值放进 `Config` 是 DSH 主仓的贡献纪律（“No hardcoded tunables in plugins”），也是外部插件的质量线，不是安装门禁。它的实际价值：
 
 - 用户只能通过 patch 覆盖你的 `config`；没有 Config 字段，他只能改你的代码。
-- `plugin_manager` 与 `--dump-config-schema` 靠 Config 生成可读的 schema；没有它就无从校验。
+- `--dump-config-schema` 与配置编辑器读取已声明的 Config schema；**`plugin_manager` 不生成 schema**，它只管 bundle / 行 / 安装。
 - 覆盖是整段替换，不是深合并；Config 字段越少、默认值越稳，用户越不需要抄长配置。
 
-## 6. 元数据门：说明文字与图标是“不激活也能读”的资源
+## 6. 元数据：只降级，不拒绝
 
 DSH 在**不执行插件代码**的前提下读取显示元数据：Plugin Manager、Settings、官方目录都靠它。来源有三层：
 
@@ -163,7 +159,7 @@ DSH 在**不执行插件代码**的前提下读取显示元数据：Plugin Manag
 - 英文文件必须是 `locale/en.json`；其他语言文件与它同目录，文件名是语言 id。
 - 图标只能是 SVG、PNG、JPEG、WebP，≤256 KiB，必须留在包目录内；绝对路径、URL、指向包外的 symlink 都会被拒。
 - 缺字段回退到包名与 `package.json.description`；没有图标就用面板默认图。
-- 元数据错误不会让插件不可管理：会保留可用的文字，并附带一条 `error` 诊断。
+- **错误分两种**：图标读取失败会保留已解析的文字并附 `error`；locale 文件名/JSON 解析失败等外层错误只返回 `error`，不保留文字。两种都不会让插件不可管理。
 - 官方目录更严：必须是公开的 `@deepseek-ai/dsh-*` bundle，英文与中文的 title/description 都要有，且必须有图标（[官方目录生成器](../../scripts/gen-official-bundle-catalog.ts)）。
 
 最小例子：
@@ -212,22 +208,28 @@ README 建议按 DSH 自己的包 README 结构写，但不必抄它的全部栏
 
 ## 8. 一张发布前检查表
 
-### 硬门禁（不通过就会装不上/跑不起来）
+### A · 会被拒绝 / 跳过 / 拒行的
+
+- [ ] `package.json` 有 `dsh.bundle.patch`，路径存在且 YAML 能解析。
+- [ ] 没有 `dsh.bundle` 的包不会被当作插件：要么补声明，要么只当普通依赖。
+- [ ] patch 里每个 `name` 都能从安装位置解析到模块。
+- [ ] `engines.dsh` 或全部 `@deepseek-ai/dsh*` peer 范围与目标 DSH 匹配。
+- [ ] 声明了 `Config` 的行，其 `config` 能过校验。
+- [ ] 安装后没有激活失败；失败时按行的重要性处理。
+
+### B · 不会被拒绝，但装完会坏
 
 - [ ] 入口只导出一种形式：named `apply` 或 default service class。
-- [ ] `package.json` 有 `dsh.bundle.patch`，路径存在且 YAML 能解析。
-- [ ] patch 里每个 `name` 都能从安装位置解析到模块。
 - [ ] npm 发布带构建产物；Git 安装有自包含 `prepare`。
-- [ ] `exports` 覆盖入口、patch、locale、icon、client。
-- [ ] `engines.dsh` 或全部 `@deepseek-ai/dsh*` peer 范围与目标 DSH 匹配。
-- [ ] 每个行的 `config` 能过 `Config` 校验。
-- [ ] `pnpm pack` 后的文件列表包含运行所需全部文件。
+- [ ] 入口导出可解析；声明 `dsh.client` 时 `./client` 可解析。
+- [ ] `pnpm pack` 后的文件列表包含入口、patch 与运行所需资源。
+- [ ] 链接包已构建入口文件，而不只是 `src/`。
+- [ ] 每个注册都有 disposer；卸载后无残留。
 
-### 质量线（不通过不会立刻报错，但会留下维护债）
+### C · 质量线（不通过不会立刻报错，但会留下维护债）
 
 - [ ] 可调值全部进 `Config`，没有硬编码常量。
 - [ ] 行 id 稳定；覆盖行为文档化。
-- [ ] 每个注册都有 disposer；卸载后无残留。
 - [ ] README 有 Install / Configuration / Data / Compatibility / Uninstall。
 - [ ] `locale/en.json`、`locale/zh.json` 有真实 title/description。
 - [ ] 图标 ≤256 KiB、留在包内、有再分发许可。
@@ -240,15 +242,20 @@ README 建议按 DSH 自己的包 README 结构写，但不必抄它的全部栏
 | 现象 | 根因 | 修法 |
 |---|---|---|
 | 装上了但没反应 | 包没有 `dsh.bundle`，或 patch 没插行 | 加 `dsh.bundle.patch`；确认行 `name` |
-| 启动报模块找不到 | `files` 漏了文件，或 `exports` 没导出 | `pnpm pack` 看列表；补 `exports` |
+| `install_bundle` 直接回滚 | 包没有 `dsh.bundle`，服务端按 `not-bundle` 拒绝 | 补 bundle 声明；或改用 CLI 当普通依赖 |
+| 启动报模块找不到 | 发布包缺入口文件，或 `./client` 没导出 | `pnpm pack` 看列表；补构建产物/导出 |
 | 行为少了一半 | default 与 named export 混用 | 只保留一种形式 |
 | 用户覆盖后你的默认值丢了 | 覆盖是整段替换 | 文档写明要重述的字段；减少必填项 |
 | 升级后配置失效 | 行 id 或 Config 字段改名 | 把 id/字段当 API；写迁移说明 |
 | 装完立刻失败但依赖还在 | 安装成功、激活失败 | 读激活诊断；修包后重装，不要重复装 |
-| 本地能跑、发布不能跑 | link 不过滤 `files`，源码未构建 | 用 `pnpm pack` + 干净 profile 验证 |
+| 本地能跑、发布不能跑 | link 不打包，`files` 漏项，源码未构建 | 用 `pnpm pack` + 干净 profile 验证 |
 
 ## 10. 结论
 
-发布一个插件包，不是“把代码推到 npm”就完了。它是一份六面合同：入口形式决定能不能装载，patch 决定是不是 bundle，自包含决定装完能不能跑，版本声明决定 DSH 让不让你跑，Config 决定用户能不能改，元数据决定用户能不能发现和信任。
+发布一个插件包，不是“把代码推到 npm”就完了。它是一份六面合同，但六个面的失败方式不同：
 
-前四面是 DSH 会检查的；后两面是 DSH 自己遵守、外部作者最好也遵守的质量线。把这条分界线记住，就不会把“我的 README 写得不好”误当成“DSH 不让我发布”。
+- **会拒绝/跳过**：patch 解析、模块解析、版本匹配、已声明 Config 的校验；
+- **不拒绝但会坏**：入口形式、构建产物、client 导出、链接包的构建状态；
+- **只降级**：locale、图标、description。
+
+把这三类分开，就不会把“我的 README 写得不好”误当成“DSH 不让我发布”，也不会把“入口形式混用”误当成“安装器会拦住我”。

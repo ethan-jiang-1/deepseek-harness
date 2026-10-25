@@ -49,13 +49,16 @@ Loader 行 id 约定为 `preset-<id>`。出厂 Web 的四个预设就是 `@deeps
 1. **registry 不写声明。** `agent-preset-registry` 的 `read` 只把子列表渲染成 YAML 给客户端看；“nothing accepts YAML back”。它没有“保存 preset”的接口。
 2. **Plugin Manager 的 preset 行只读。** 插件页可以启用/禁用普通行，但 agent-preset 行不在可切换范围；要改就装一个 bundle。
 3. **新增或覆盖都是 bundle patch。** `insert` 一个 `@deepseek-ai/dsh-agent-preset` 行，或按 `preset-<id>` 覆盖已有一行，装进 profile 后生效。
-4. **覆盖替换整段 `config`。** 覆盖者必须重述 `id`、`plugins` 和所有想保留的字段；未来上游对内置 preset 的改动不会自动合并进用户覆盖。
+4. **覆盖替换整段 `config`。** 覆盖者必须重述 `id`、`plugins`、`name`、`description`、`order` 和所有想保留的字段；未来上游对内置 preset 的改动不会自动合并进用户覆盖。覆盖层必须排在声明层之后，否则 patch 会报“entry not found”并跳过。
+
+   这里有一处**文档漂移**要避开：`packages/bundle/web-app/presets/*.patch.yml` 的旧注释与 `registry/src/mount.ts` 的旧说明还写着“Web 编辑器会持久化 preset”，但当前代码与包 README 不是这样：Settings 的 preset 卡是只读 YAML 查看器，registry 只有 `list` / `read` / `select` 三个 Remote，没有 save，也“nothing accepts YAML back”。要改 preset，走 bundle patch，不要相信旧注释。
 5. **会话按 id 绑定，按 revision 持有。** 声明激活时创建一个 registry 拥有的 scope 与 in-memory Loader tree；更新/移除声明会退休旧 revision。已有 Agent、子 Agent、临时历史读取继续持有引用，直到最后一个引用释放。进程重启后，恢复用的是该 id 的**当前定义**；定义缺失会被拒绝。
 
 所以“改 preset 只影响新会话”这句话需要精确化：
 
-- **同一进程内**：已有 Agent 继续用它启动时的 revision；新 Agent 用当前定义。
-- **进程重启后**：所有会话都按当前定义恢复；旧 revision 不会跨进程保留。
+- **同一进程内**：已有 Agent 与子 Agent 继续用它们启动时的 revision；新 Agent 用当前定义。
+- **空白会话**：在第一轮之前可以通过 `select` 切换到另一个 preset；第一轮之后锁定。
+- **关闭再打开 / 进程重启**：恢复时按该 id 的**当前定义**重建，所以恢复后的前缀可能和重启前不同；旧 revision 不会跨进程保留。定义被删掉时，恢复会被拒绝。
 - **覆盖后**：完整子列表被替换，不是差量合并。
 
 ## 4. Host 行与 preset 行怎么分工
@@ -76,7 +79,7 @@ Loader 行 id 约定为 `preset-<id>`。出厂 Web 的四个预设就是 `@deeps
 
 两条硬规则：
 
-- **preset 里的服务提供者与其消费者必须放进同一个 `cordis:group` 隔离 realm。** entry 级 `isolate` 不会穿过 Agent 注册 scope 传播；组外的普通 lookup（包括 `agent.ctx`）仍然选中 Host realm。
+- **preset 里的服务提供者与其消费者必须放进同一个 `cordis:group` 隔离 realm。** entry 级 `isolate` 不会穿过 Agent 注册 scope 传播；组外的普通 lookup（包括 `agent.ctx`）仍然选中 Host realm。要检查某个 Agent 实际持有的组合，用 `agentPresets.serviceFor()`，不要靠普通 lookup。挂载时若发现 root-realm 泄漏，会以 `Preset services require isolate realms` 拒绝。
 - **scope 控制贡献与可见性，`isolate` 控制服务实例。** 不要把两者混用：只加 `isolate` 不加组，消费者可能找不到提供者；只加组不加 `isolate`，服务实例仍可能来自 Host。
 
 激活时还会做审计：import 失败、缺服务、全局泄漏服务都会拒绝挂载；等待 Host 服务的行会保持挂载，并在 Host Loader 树稳定后重审，所以启动顺序不决定结果。失败的声明仍留在花名册上，但不能被新会话绑定。
@@ -125,7 +128,7 @@ Agent 的系统提示前缀、工具目录、prompt section 都是 KV cache 的�
 
 | 现象 | 原因 | 处理 |
 |---|---|---|
-| 新会话看不到这个 preset | 声明行没装、id 重复、激活失败 | `plugin_manager list_plugins` 看 `preset-<id>` 行与诊断 |
+| 新会话看不到这个 preset | 声明行没装、id 重复、激活失败 | `plugin_manager list_plugins` 看 `preset-<id>` 行与诊断；重复 id 时**先注册者胜**，后一行失败 |
 | 会话恢复失败 | 日志里的 preset id 在当前定义里不存在 | 恢复该 bundle，或提供同 id 的定义 |
 | 工具少了一半 | 覆盖时只写了增量 `plugins` | 覆盖必须重述完整子列表 |
 | 服务找不到 | 提供者与消费者不在同一 `cordis:group` realm | 同组 + `isolate` |
@@ -142,3 +145,14 @@ Agent 的系统提示前缀、工具目录、prompt section 都是 KV cache 的�
 定义不是程序，不在运行时被改写，不携带数据；它通过 id 被会话选择，通过 revision 被已有 Agent 持有，通过 bundle patch 被新增或覆盖。把这条线守住，智能体的“只读部分”和“数据部分”就不会长在一起。
 
 下一篇把数据部分展开：workspace、`$DSH_HOME`、session 三种归属，各自的确切路径、写入者与升级行为。
+
+
+## 10. 证据
+
+- 声明格式与生命周期：[agent-preset README](../../packages/preset/agent-preset/README.md)、[agent-preset-registry README](../../packages/preset/agent-preset-registry/README.md)
+- 作者写法与覆盖规则：[editing-cordis-compositions SKILL](../../packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md)
+- 出厂实例：[standard preset](../../packages/bundle/web-app/presets/standard.patch.yml)、[web-app 的 preset 与 Host 行](../../packages/bundle/web-app/cordis.patch.yml)
+- 只读界面与管理边界：[ui-agent-preset README](../../packages/client/ui-agent-preset/README.md)、[plugin-manager README](../../packages/boot/plugin-manager/README.md)
+- 混用导出的事故：[postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)
+
+一处已知文档漂移：`presets/*.patch.yml` 与 `registry/src/mount.ts` 的旧注释仍提到“Web 编辑器持久化 preset”；当前代码与包 README 是只读查看器 + 没有 save Remote。本文按当前代码/README 写。

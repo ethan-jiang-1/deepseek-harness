@@ -8,7 +8,7 @@ DSH 只把 **bundle** 当作“可安装、可管理、可自动启用”的发�
 
 ## 1. plugin：运行时行为单元
 
-DSH 对插件的最小定义只有一句：一个 TypeScript 模块，导出 `apply` 函数；框架加载时调用它并传入 `ctx`，插件在 `ctx` 上注册能力。服务型包则默认导出 service class。两种形式不能混用，混用会让 Loader 丢掉 named export 的命名空间（[packages/AGENTS.md](../../packages/AGENTS.md) 的 Plugin exports 条；事故记录见 [postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)）。
+DSH 对插件的最小定义只有一句：一个模块（TypeScript 源或构建后的 JS），导出 `apply` 函数；框架加载时调用它并传入 `ctx`，插件在 `ctx` 上注册能力。服务型包则默认导出 service class。两种形式不能混用，混用会让 Loader 丢掉 named export 的命名空间（[packages/AGENTS.md](../../packages/AGENTS.md) 的 Plugin exports 条；事故记录见 [postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)）。
 
 ```ts
 // 函数型
@@ -20,11 +20,11 @@ export function apply(ctx: Context) { /* 注册能力 */ }
 export default class MyService { /* ... */ }
 ```
 
-插件的身份不是“一个 npm 包”，而是“patch 行里的一个 `name`”。同一个包可以导出多个入口（`@scope/pkg`、`@scope/pkg/search`），每一行都可以单独启用、单独 `config`、单独卸载。这一点决定了后面所有发布讨论的对象：**你发布的是包，DSH 加载的是行。**
+更准确的说法是：**一个插件实例是 patch 行；一个 bundle 是包。** 同一个包可以导出多个入口（`@scope/pkg`、`@scope/pkg/search`），每一行都可以单独启用、单独 `config`、单独卸载；包负责安装、元数据、保护与移除，行负责这一次组合里的实例。这一点决定了后面所有发布讨论的对象：**你发布的是包，DSH 加载的是行。**
 
 “注册即效果”是硬约定：每个贡献走 `ctx.effect()` 或 `ctx.on()`，`register()` 返回 disposer。否则 HMR、卸载、agent 销毁都会留下泄漏。DSH 没有运行时门禁能自动发现漏掉的 disposer，这属于质量线，不是安装门禁。
 
-## 2. bundle：唯一的作者发布物
+## 2. bundle：唯一的可安装作者发布物
 
 bundle 的定义同样只有一句：`package.json` 里声明 `dsh.bundle.patch` 的 npm 包。patch 是一份 YAML 数组，用来插入或覆盖插件行；`patch` 可以是一个文件，也可以是有序的文件列表，启动器按顺序当成一层应用（[package-manifest types.ts](../../packages/util/package-manifest/src/types.ts) 的 `DshBundleManifest`）。
 
@@ -43,6 +43,8 @@ bundle 的定义同样只有一句：`package.json` 里声明 `dsh.bundle.patch`
 2. 如果包声明了 `dsh.bundle`，`dsh` 把包名追加到 `dsh.profile.bundles`；
 3. 启动时按 `dsh.profile.bundles` 顺序叠 patch 层；
 4. 每行 `name` 经 Node 解析到实际模块，模块激活。
+
+bundle **不必挂载自己**：`dsh-base` 的 patch 不插任何 base 行，配置型 bundle 只插别的包；反过来，一个能力包也可以在自己的 patch 里插自己的根行。patch 插什么，比“这个包是谁”更重要。
 
 如果包没有 `dsh.bundle`，行为取决于入口：`dsh plugin add` 仍会把它装成普通依赖，打一条警告，不激活任何层（[publish.md](../../docs/user/develop/basic/publish.md)）；`plugin_manager` 的 `install_bundle` 则直接以 `not-bundle` 拒绝，并回滚 manifest 与 lockfile。`listBundles` 会把这种“被选中但没有 bundle patch”的名字标成 `not-bundle`。**“能装”与“会被当成插件”是两件事。**
 
@@ -103,9 +105,9 @@ skill 也可以由包内 provider 直接注册（例如 `dsh-skill-badge` 从 `a
 
 ## 6. client module：bundle 的浏览器半边
 
-Web UI 插件不是独立发布物。包在 `package.json` 声明 `dsh.client`（`platform: 'web'`，可选 `inject`、`immediately`、`external`），并在 `exports["./client"]` 导出构建好的浏览器 bundle。Host 侧的 `ctx.clientModules` 扫描**当前 Loader 里已经挂载的包**，把 `dsh.client` 行编成 `window.__DSH_BOOT__` 的模块图；没有 Host 行，client 声明不会被扫到。
+Web UI 插件不是独立发布物。包在 `package.json` 声明 `dsh.client`（`platform: 'web'`，可选 `inject`、`immediately`、`external`），并在 `exports["./client"]` 导出构建好的浏览器 bundle。Host 侧的 `ctx.clientModules` 扫描**任意已启用的 Loader 行所挂载的包**（通常是 Host 行，也可以来自 preset 组），把 `dsh.client` 行编成 `window.__DSH_BOOT__` 的模块图；没有任何启用的行把包挂上，client 声明不会被扫到。行必须命名**包根**，子路径插件永远不是 client 行。
 
-这意味着一个 UI 插件的最小发布单元是：**一个 Host 行 + 一个 client 模块 + 同一个包**。只发 client 文件、不插 Host 行，页面上什么都不会出现。
+这意味着一个 UI 插件的最小发布单元是：**一个启用该包的 Loader 行 + 一个 client 模块 + 同一个包**。只发 client 文件、没有任何行把包挂上，页面上什么都不会出现。
 
 ## 7. MCP：配置型 bundle，不是新协议实现
 
@@ -122,7 +124,7 @@ Web UI 插件不是独立发布物。包在 `package.json` 声明 `dsh.client`�
 | `--patch` overlay | 本地一次性补丁 | 不经过安装、不进 profile、不可管理 |
 | `cordis.yml` | Loader 直接配置 | 面向嵌入与测试，不是分发单位 |
 | `$DSH_HOME` 下的数据 | 用户数据 | 与包版本无关，升级不应触碰 |
-| 会话日志 | 运行记录 | 只追加，插件不应发明新事件类型 |
+| 会话日志 | 运行记录 | 只追加；新增类型只能 log-only，优先用已有事件 |
 
 ## 9. 一张判定表
 
@@ -131,7 +133,7 @@ Web UI 插件不是独立发布物。包在 `package.json` 声明 `dsh.client`�
 | 带 `dsh.bundle.patch` 的包 | 安装 → 追加 `dsh.profile.bundles` | 能 | 能（bundle 级） |
 | 不带 `dsh.bundle` 的普通包 | 被某行 `name` 解析时 | 不能（只装依赖） | 只作为依赖出现，标 `not-bundle` |
 | patch 行引用的模块 | 启动/重载时 Loader 激活 | 不适用（它已经被行引用） | 能（行级启用/禁用） |
-| preset 声明行 | 会话选择 preset 时 | 随 bundle | 只读，不能改 |
+| preset 声明行 | 会话选择 preset 时 | 随 bundle | 管理器只读；可按 id 用 profile patch 覆盖整段 config |
 | skill 目录/文件 | 会话 catalog 扫描 | 随所属 bundle 或用户放置 | 不在插件管理范围 |
 | `dsh.client` 模块 | Host 扫描已挂载包时 | 随 bundle | 随包 |
 | MCP server | `dsh-mcp-client` 行激活时 | 随配置型 bundle | 行级 |

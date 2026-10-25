@@ -11,7 +11,7 @@
   <text x="56" y="121" font-size="10" fill="#1e40af">作者发预构建产物；用户指定版本</text>
   <text x="56" y="140" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9" fill="#1e3a8a">add @acme/pack@1.2.3</text>
   <text x="56" y="159" font-size="9.5" fill="#1d4ed8">可回退版本；市场可列多版本</text>
-  <text x="56" y="177" font-size="9.5" fill="#1d4ed8">默认渠道；需要完整 exports/files</text>
+  <text x="56" y="177" font-size="9.5" fill="#1d4ed8">默认渠道；files 要完整，入口要导出</text>
 
   <rect x="322" y="76" width="262" height="112" rx="9" fill="#f0fdf4" stroke="#bbf7d0"/>
   <text x="338" y="100" font-size="12" font-weight="700" fill="#166534">Git 托管</text>
@@ -22,7 +22,7 @@
 
   <rect x="604" y="76" width="316" height="112" rx="9" fill="#f8fafc" stroke="#cbd5e1"/>
   <text x="620" y="100" font-size="12" font-weight="700" fill="#334155">tarball / 本地 link</text>
-  <text x="620" y="121" font-size="10" fill="#475569">tarball：pnpm pack，离线交付，不跑脚本</text>
+  <text x="620" y="121" font-size="10" fill="#475569">tarball：pnpm pack，离线交付，不跑 prepare</text>
   <text x="620" y="140" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9" fill="#334155">add ./pack-1.0.0.tgz | link:/abs</text>
   <text x="620" y="159" font-size="9.5" fill="#475569">link 是开发形态：files 不过滤，路径机器相关</text>
   <text x="620" y="177" font-size="9.5" fill="#475569">tarball 是预构建、可归档的私有交付</text>
@@ -60,6 +60,6 @@
   <rect x="40" y="458" width="880" height="104" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/>
   <text x="56" y="482" font-size="12" font-weight="700" fill="#4c1d95">安全边界：安装可执行，激活在进程内</text>
   <text x="56" y="504" font-size="10.5" fill="#5b21b6">安装只跑 pnpm，不导入插件；被批准的构建脚本在安装时执行；激活后的 Host 代码在进程内、沙箱之外。</text>
-  <text x="56" y="524" font-size="10.5" fill="#5b21b6">Git / tarball 的构建脚本以宿主机用户权限运行；allowBuilds 按包名持久化，失败也不撤销。</text>
+  <text x="56" y="524" font-size="10.5" fill="#5b21b6">Git 的 prepare 与包的安装期脚本以宿主机用户权限运行；allowBuilds 按包名持久化，失败也不撤销。</text>
   <text x="56" y="544" font-size="10.5" fill="#5b21b6">市场内容是第三方声明；安装确认框里的来源核对是最后一道人工防线。</text>
 </svg>
