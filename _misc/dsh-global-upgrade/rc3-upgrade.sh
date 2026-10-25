@@ -187,7 +187,7 @@ stop_all_dsh_web() {
 		sleep 1
 	done
 	if [ -n "$remaining" ]; then
-		warn "TERM 后仍在：$remaining，改用 KILL"
+		warn "TERM 后仍在：${remaining}，改用 KILL"
 		for pid in $remaining; do kill -9 "$pid" 2>/dev/null || true; done
 		sleep 2
 		remaining="$(dsh_web_pids)"
@@ -254,7 +254,7 @@ rollback() {
 	[ -n "$dir" ] || fail "没找到任何 pre-rc3-* 备份；手工指定：--rollback <目录>"
 	[ -d "$dir" ] || fail "备份目录不存在：$dir"
 	for f in cordis.patch.yml package.json pnpm-lock.yaml pnpm-workspace.yaml; do
-		[ -f "$dir/$f" ] || fail "备份目录缺少 $f：$dir"
+		[ -f "$dir/$f" ] || fail "备份目录缺少 ${f}：$dir"
 	done
 	BACKUP_DIR="$dir"
 
@@ -297,6 +297,8 @@ rollback() {
 }
 
 if [ "$MODE" = "rollback" ]; then
+	node -v >/dev/null 2>&1 || fail "node 不在 PATH"
+	pnpm -v >/dev/null 2>&1 || fail "pnpm 不在 PATH（重装插件依赖需要它）"
 	resolve_dsh_bin
 	rollback "$GIVEN_DIR"
 	exit 0
@@ -321,13 +323,13 @@ upgrade)
 		"环境已被动过。已是 $TARGET_VERSION 就用 --resume；要退回就用 --rollback。"
 	;;
 resume)
-	[ "$CURRENT_VERSION" = "$TARGET_VERSION" ] || fail "--resume 要求当前已是 $TARGET_VERSION，实际 ${CURRENT_VERSION:-空}" \
+	[ "$CURRENT_VERSION" = "$TARGET_VERSION" ] || fail "--resume 要求当前已是 ${TARGET_VERSION}，实际 ${CURRENT_VERSION:-空}" \
 		"没升到目标版本就不能只补插件阶段。"
 	;;
 esac
 ok "本体 ${CURRENT_VERSION:-?}"
 
-if [ "$MODE" = "upgrade" ]; then
+if [ "$MODE" != "resume" ]; then
 	step "阶段 0.2 已装插件"
 	progress=0
 	for p in $MANAGED_PLUGINS; do
@@ -373,7 +375,7 @@ if [ "$MODE" = "upgrade" ]; then
 	fi
 fi
 
-if [ "$MODE" = "upgrade" ]; then
+if [ "$MODE" != "resume" ]; then
 	step "阶段 0.4 registry"
 	probe_npm_cache
 	NEXT_TAG="$(npm_view @deepseek-ai/dsh dist-tags --json 2>/dev/null |
@@ -381,7 +383,7 @@ if [ "$MODE" = "upgrade" ]; then
 	say "dist-tag next = ${NEXT_TAG:-<查不到>}"
 	note "dist-tag next=$NEXT_TAG"
 	[ "$NEXT_TAG" = "$TARGET_VERSION" ] || fail "registry 的 next 是 ${NEXT_TAG:-空}，不是 $TARGET_VERSION" \
-		"网络/registry 问题（也可能 npm 缓存属主异常，见 $RUN_DIR/npm-cache-probe.log）。不要改用 latest：它仍是 $PREV_VERSION。"
+		"网络/registry 问题（也可能 npm 缓存属主异常，见 $RUN_DIR/npm-cache-probe.log）。不要改用 latest：它仍是 ${PREV_VERSION}。"
 	MARKET_HAS="$(npm_view "dshmarket@$MARKET_TARGET" version 2>/dev/null | tr -d '\n' || true)"
 	say "dshmarket@$MARKET_TARGET = ${MARKET_HAS:-<查不到>}"
 	[ "$MARKET_HAS" = "$MARKET_TARGET" ] || fail "registry 查不到 dshmarket@$MARKET_TARGET"
@@ -411,6 +413,11 @@ if [ "$MODE" = "resume" ]; then
 	[ -n "$BACKUP_DIR" ] && [ -d "$BACKUP_DIR" ] || fail "找不到可用的 pre-rc3-* 备份；用 --resume <目录> 指定"
 	say "备份：$BACKUP_DIR"
 	note "resume backup=$BACKUP_DIR"
+	if [ -n "$(dsh_web_pids)" ]; then
+		warn "dsh web 还在跑；对活宿主装插件可能触发 already-installed 拒绝"
+		say "建议先停掉再继续；确认不停就靠 remove → add 兜底。"
+		confirm "不停 web，直接继续？"
+	fi
 else
 	step "阶段 0.7 备份"
 	BACKUP_DIR="$BACKUP_ROOT/pre-rc3-$STAMP"
@@ -461,11 +468,12 @@ if [ "$MODE" = "upgrade" ]; then
 	grep -qE "failed to load|cannot" "$RUN_DIR/config.err" &&
 		fail "--dump-config 报解析错误" "见 $RUN_DIR/config.err；先回滚。"
 	missing=""
+	PROVIDER_COUNT="$(printf '%s\n' $PROVIDERS | wc -l | tr -d ' ')"
 	for provider in $PROVIDERS; do
 		grep -q "$provider" "$RUN_DIR/config.yml" || missing="$missing $provider"
 	done
 	[ -z "$missing" ] || fail "配置里找不到 provider:$missing" "patch 没被完整组合进去；见 $RUN_DIR/config.yml。"
-	ok "组合通过，7 个自定义 provider + dimagent-oauth 都在"
+	ok "组合通过，$PROVIDER_COUNT 个 provider 条目都在（含 dimagent-oauth）"
 
 	step "阶段 2.3 启动冒烟"
 	dsh web --no-open >"$RUN_DIR/smoke.log" 2>&1 &
@@ -515,7 +523,7 @@ add_market() {
 if add_market; then
 	ok "dshmarket add 成功"
 elif grep -qE "minimumReleaseAge" "$RUN_DIR/add-dshmarket.log"; then
-	warn "pnpm 发版冷却拦住了 $MARKET_TARGET，把版本补进 minimumReleaseAgeExclude"
+	warn "pnpm 发版冷却拦住了 ${MARKET_TARGET}，把版本补进 minimumReleaseAgeExclude"
 	node -e '
 const fs = require("fs"), p = process.argv[1], v = process.argv[2];
 const lines = fs.readFileSync(p, "utf8").split("\n");
@@ -546,15 +554,16 @@ fi
 step "阶段 3.2 验证 profile"
 MARKET_NOW="$(plugin_version dshmarket)"
 say "dshmarket = $MARKET_NOW"
-[ "$MARKET_NOW" = "$MARKET_TARGET" ] || fail "dshmarket 是 $MARKET_NOW，不是 $MARKET_TARGET"
+[ "$MARKET_NOW" = "$MARKET_TARGET" ] || fail "dshmarket 是 ${MARKET_NOW}，不是 $MARKET_TARGET"
 BUNDLES_MISSING=""
 for bundle in $BUNDLES; do
 	node -e 'const p=require(process.argv[1]);if(!((p.dsh&&p.dsh.profile&&p.dsh.profile.bundles)||[]).includes(process.argv[2]))process.exit(1)' \
 		"$PKG" "$bundle" || BUNDLES_MISSING="$BUNDLES_MISSING $bundle"
 done
+BUNDLE_COUNT="$(printf '%s\n' $BUNDLES | wc -l | tr -d ' ')"
 [ -z "$BUNDLES_MISSING" ] || fail "dsh.profile.bundles 少了:$BUNDLES_MISSING" \
 	"不要手工编辑 bundles；对该包先 remove 再 add。"
-ok "9 个 bundle 都在"
+ok "$BUNDLE_COUNT 个 bundle 都在"
 
 step "阶段 3.3 配置未被改写"
 PATCH_NOW="$(sha_of "$PATCH")"
@@ -569,7 +578,7 @@ step "升级完成"
 cat <<EOF
 
    本体      $PREV_VERSION → $(dsh_version)
-   插件      dshmarket → $MARKET_NOW（其余 6 个未动）
+   插件      dshmarket → ${MARKET_NOW}（其余 6 个未动）
    备份      $BACKUP_DIR
    运行记录  $RUN_DIR
 
