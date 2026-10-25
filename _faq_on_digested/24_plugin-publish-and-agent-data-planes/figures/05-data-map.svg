@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr24e" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="640" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">数据地图：working folder 相关 vs 与 folder 无关</text>
+  <text x="480" y="55" text-anchor="middle" font-size="11" fill="#6b7280">$DSH_HOME 默认 ~/.dsh；共享 agents 根默认 ~/.agents。两者都是用户数据，不是插件包内容。</text>
+
+  <rect x="36" y="76" width="426" height="300" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="54" y="100" font-size="13" font-weight="700" fill="#166534">workspace · 跟当前 working folder 有关</text>
+  <text x="54" y="120" font-size="10" fill="#15803d">换项目就换一套；随仓库/目录走，可提交、可共享。</text>
+
+  <rect x="54" y="134" width="390" height="44" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="68" y="153" font-size="10.5" font-weight="700" fill="#166534">&lt;projectRoot&gt;/AGENTS.md + 各级子目录</text>
+  <text x="68" y="170" font-size="9.5" fill="#15803d">项目指令链：从项目根到会话工作目录，broad → specific</text>
+  <rect x="54" y="186" width="390" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="68" y="205" font-size="10.5" font-weight="700" fill="#166534">&lt;projectRoot&gt;/.dsh/skills/</text>
+  <text x="68" y="221" font-size="9.5" fill="#15803d">项目专用流程；rank 100；用户可编辑</text>
+  <rect x="54" y="234" width="390" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="68" y="253" font-size="10.5" font-weight="700" fill="#166534">&lt;projectRoot&gt;/.agents/skills/</text>
+  <text x="68" y="269" font-size="9.5" fill="#15803d">与其他 agent 工具共用；rank 200</text>
+  <rect x="54" y="282" width="390" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="68" y="301" font-size="10.5" font-weight="700" fill="#166534">工作目录中的文件</text>
+  <text x="68" y="317" font-size="9.5" fill="#15803d">模型经 fs 工具读写；受沙箱与权限策略约束</text>
+  <text x="54" y="348" font-size="10" fill="#166534">项目根判定：最近一个含 .git 的祖先；没有就用 cwd。</text>
+  <text x="54" y="366" font-size="10" fill="#166534">workspace 记录本身（项目列表）是宿主 KV，不删你的文件。</text>
+
+  <rect x="498" y="76" width="426" height="300" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="516" y="100" font-size="13" font-weight="700" fill="#1e3a8a">$DSH_HOME · 与 folder 无关的用户全局</text>
+  <text x="516" y="120" font-size="10" fill="#1e40af">跨项目持续存在；升级 DSH 或插件都不应该清掉它。</text>
+
+  <rect x="516" y="134" width="390" height="36" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="530" y="157" font-size="10.5" fill="#1e3a8a">AGENTS.md · 用户全局指令（先于项目链加载）</text>
+  <rect x="516" y="178" width="390" height="36" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="530" y="201" font-size="10.5" fill="#1e3a8a">skills/ · 跨项目经验；rank 400</text>
+  <rect x="516" y="222" width="390" height="36" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="530" y="245" font-size="10.5" fill="#1e3a8a">storages/ · 宿主 KV domain（模型不可见）</text>
+  <rect x="516" y="266" width="390" height="36" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="530" y="289" font-size="10.5" fill="#1e3a8a">.credentials.yaml · 凭据（写后只回描述符）</text>
+  <rect x="516" y="310" width="390" height="36" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="530" y="333" font-size="10.5" fill="#1e3a8a">profiles/&lt;name&gt;/ · 组合与依赖，不是数据</text>
+
+  <rect x="498" y="392" width="426" height="120" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="516" y="416" font-size="13" font-weight="700" fill="#78350f">session · 按会话归属，日志在 home 下</text>
+  <text x="516" y="438" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" fill="#854d0e">$DSH_HOME/sessions/--&lt;normalized-cwd&gt;--/&lt;id&gt;/</text>
+  <text x="516" y="459" font-size="10" fill="#854d0e">项目目录名让日志可导航；会话 id 仍唯一选择目录。</text>
+  <text x="516" y="478" font-size="10" fill="#854d0e">模型可见的内容必须能从日志重建；插件记忆只是派生缓存。</text>
+  <text x="516" y="497" font-size="10" fill="#854d0e">附件在 $DSH_HOME/attachments/v1；先持久化再写事件。</text>
+
+  <rect x="36" y="392" width="426" height="120" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="54" y="416" font-size="13" font-weight="700" fill="#334155">共享 agents 根 · 另一种全局</text>
+  <text x="54" y="438" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" fill="#475569">~/.agents/ 或 $DSH_AGENTS_HOME</text>
+  <text x="54" y="459" font-size="10" fill="#475569">AGENTS.md：与别的 agent 工具共用的全局指令。</text>
+  <text x="54" y="478" font-size="10" fill="#475569">skills/：与别的 agent 工具共用的技能；rank 500。</text>
+  <text x="54" y="497" font-size="10" fill="#475569">DSH 故意把它放在 $DSH_HOME 之外，避免被 DSH 独占。</text>
+
+  <rect x="36" y="530" width="888" height="92" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/>
+  <text x="54" y="554" font-size="12" font-weight="700" fill="#4c1d95">插件代码只通过服务访问，不直接拼路径</text>
+  <text x="54" y="576" font-size="10.5" fill="#5b21b6">文件 → ctx.fs（受沙箱约束）· 技能 → ctx.skills / skill 根 · 指令 → 指令链 · 宿主状态 → ctx.storageDomain</text>
+  <text x="54" y="596" font-size="10.5" fill="#5b21b6">模型可见状态 → 会话事件 + 投影 · 凭据 → 凭据服务 / !!js 引用 · 路径根 → home-paths 的 resolveDshHome / resolveAgentsHome</text>
+  <text x="54" y="614" font-size="10.5" fill="#5b21b6">不要把 ~/.dsh、绝对路径、cwd 默认值写死在插件里；部署会用 DSH_HOME 换根。</text>
+</svg>

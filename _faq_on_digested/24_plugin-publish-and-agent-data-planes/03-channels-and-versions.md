@@ -1,0 +1,224 @@
+# 03 · 发行渠道与版本依赖：同一条落点，六种来源
+
+## 一句话
+
+不管从哪个渠道来，插件的落点永远是**某个 profile 目录**（`package.json` 的依赖 + `cordis.patch.yml` 的层），执行安装的永远是**那台机器上的 pnpm**。渠道差异只改变“代码从哪来、版本怎么选、用户要批准什么”。版本依赖则统一由 `engines.dsh`（或回退的 DSH peer 范围）判定，安装前与启动时各查一次。
+
+![六种来源，同一个落点](./figures/03-channels.svg)
+
+## 1. 六种来源
+
+| 渠道 | 作者要准备 | 用户怎么装 | 代码形态 | 版本选择 |
+|---|---|---|---|---|
+| npm registry | 构建产物 + 完整 manifest + 发布 | `dsh plugin add @acme/pack@1.2.3` | 预构建 | 精确版本或范围 |
+| Git 托管 | 源码 + 自包含 `prepare` 脚本 | `dsh plugin add github:acme/pack#<sha>` | 源码，装时构建 | 提交 sha |
+| tarball | `pnpm pack` 产物 | `dsh plugin add ./pack-1.0.0.tgz` | 预构建 | 文件名里的版本 |
+| 本地目录 | 可运行的目录 | `dsh plugin add link:/abs/path` | 链接 checkout | 无（跟随工作区） |
+| 市场 index | 静态 JSON + 图标 | Discover 页选版本安装 | 由 index 指向 npm 或 Git | index 列出的版本 |
+| 官方目录 | DSH 官方维护 | Plugins 页按需安装 | 官方预构建 | `package@<运行版本>` |
+
+前四种是“spec”层面的差异；后两种是“发现层”的差异。DSH 的安装器最终都收敛到同一个 pnpm 操作与同一套兼容性检查。
+
+## 2. npm：默认渠道
+
+作者侧：
+
+- `package.json` 完整：`name`、`version`、`type`、`exports`、`files`、`description`、`repository`、`license`、`engines.dsh`。
+- 发布前构建好 `lib/` 或打包产物；`files` 覆盖它们。
+- `publishConfig.access` 按 scope 设置；scoped 包默认私有，要显式 public。
+- 版本用 SemVer；预发布用 `-rc.N` / `-alpha.N` 之类，DSH 的范围匹配会让预发布参与比较。
+
+用户侧：
+
+```sh
+dsh plugin --profile web add @acme/dsh-review-pack@1.2.3
+dsh plugin --profile web add @acme/dsh-review-pack        # 跟随 registry 的 latest
+```
+
+`dsh plugin` 首次使用会初始化一个 base-backed profile（`@deepseek-ai/dsh-base` 作为第一个 bundle），然后把包追加到 `dsh.profile.bundles`。发布版安装器对官方按需包使用 `saveExact: true`；外部包默认按 spec 记录。
+
+适用：稳定分发、需要版本回退、希望市场能列出多个版本。
+
+## 3. Git：源码直装，必须处理构建
+
+```sh
+dsh plugin --profile web add github:acme/dsh-review-pack#3f9c2e1d8a4b6c0e7f1a2b3c4d5e6f708192a3b4
+```
+
+Git 安装拿到的是源码，不是构建产物。因此：
+
+- **作者**必须提供自包含的 `prepare` 脚本，在安装后构建发布入口；不能假设旁边有 monorepo、共享 tsconfig 或 `vendor/`。
+- **用户**必须在 profile 的 `pnpm-workspace.yaml` 里为该包开 `allowBuilds`，否则 pnpm ≥10 会拒绝执行脚本，第一次 `add` 失败。
+- **固定提交 sha**，不要用分支名；否则一次 push 就能改变用户下次安装执行的代码。
+
+`allowBuilds` 的本质是“允许这个包在安装时以宿主机用户权限执行代码”。它与 agent 的沙箱无关，也不受 profile 的权限模式保护。只对信任的源码开，并尽量用预构建渠道替代。
+
+适用：内部插件、需要跟随源码、尚未发版；不适合作为面向不特定用户的默认渠道。
+
+## 4. tarball：预构建、离线交付
+
+```sh
+pnpm pack
+dsh plugin --profile web add ./acme-dsh-review-pack-1.0.0.tgz
+```
+
+tarball 是“没有 registry 也想发预构建产物”的最简形式：不触发构建脚本，不需要 `allowBuilds`，版本由包内 manifest 决定。适合私有交付、离线环境、审阅归档。
+
+注意：tarball 安装同样按 `files` 裁剪；打包前要确认 `pnpm pack` 的文件列表。
+
+## 5. 本地 link：开发期形态，不是发布形态
+
+```sh
+dsh plugin --profile web add link:/Users/me/src/dsh-review-pack
+# 或
+dsh plugin --profile web add ./dsh-review-pack
+```
+
+- 链接安装直接指向 checkout，**`files` 不过滤**，源码改动立即反映（重启或 HMR 后）。
+- 链接包保留自己的 `node_modules`；需要与宿主共享的 DSH 包要按 peer + dev 双写。
+- 它适合开发与验收，不适合交付：路径是机器相关的，checkout 一移动就失效。
+
+## 6. 市场：一个静态 JSON 目录
+
+市场不是 DSH 内置的服务，而是一份由第三方托管、DSH 只校验格式的 index 文件。打开实验 bundle **Custom plugin markets** 后，Plugins 页出现 Discover，Creator 模式多一个只读的 `plugin_market` 工具。DSH 官方不带任何 index 源。
+
+### 6.1 发布一份 index
+
+- UTF-8 JSON，默认上限 128 MiB，2xx 响应，不跟随重定向。
+- 放在任意静态主机（GitHub Pages、GitLab Pages、对象存储 + https 都行）。
+- 图标可以内联为 base64 `data:` URL（解码后 ≤32 KiB），也可以是 URL；相对图标相对 index URL 解析。
+- 跨源绝对图标 URL 必须 `https:`。
+- `format: 1`；`title` 必填；`plugins` 必填；每个 plugin 至少一个 version。
+
+最小片段：
+
+```json
+{
+  "format": 1,
+  "title": { "en": "Team plugins", "zh": "团队插件" },
+  "plugins": [
+    {
+      "name": "@acme/dsh-review-pack",
+      "title": "Review Pack",
+      "description": "Adds a review workflow and its tools.",
+      "icon": "icons/review.svg",
+      "author": "Acme",
+      "homepage": "https://github.com/acme/dsh-review-pack#readme",
+      "repository": { "url": "https://github.com/acme/dsh-review-pack" },
+      "versions": [
+        { "version": "1.2.0", "publishTimestamp": 1790476800, "source": { "type": "npm" }, "engines": { "dsh": ">=0.2.0 <0.3.0" } },
+        { "version": "1.1.0", "publishTimestamp": 1788000000, "source": { "type": "npm" } }
+      ]
+    }
+  ]
+}
+```
+
+版本字段的语义：
+
+- `version`：精确 SemVer，插件内唯一；
+- `publishTimestamp`：Unix 秒；
+- `source`：`{ "type": "npm", "registry"?: url }` 或 `{ "type": "git", "url": https-url, "commit": 40-hex, "path"?: dir }`；
+- `engines.dsh`：该版本支持的 DSH 范围；缺省表示任意。
+
+DSH 安装 npm 版本为 `name@version`（有 `registry` 就先问它）；Git 版本为 `git+<url>.git#<commit>`，子目录再加 `&path:/<path>`。`engines.dsh` 应与包自身声明一致，安装时还会再查一次。
+
+### 6.2 生成与校验
+
+仓库带一个参考生成器：输入一行一个 npm 包名或 https Git 仓库 URL，输出 `index.json` 与 `icons/`。它只下载和读取文件，不安装、不执行代码，并把缓存放在 `.plugin-market-cache`。生成器从每个插件的最高版本取标题、描述、图标、作者、主页；对 npm 只列未废弃且声明 `dsh.bundle` 的版本；对 Git 找默认分支上的 bundle 包与 `vX.Y.Z` / `X.Y.Z` / `<name>@X.Y.Z` 标签。
+
+DSH 会拒绝整份 index（只要有一条规则不满足），并在 **Manage index sources…** 下显示 JSON 路径；格式校验库是 `@deepseek-ai/dsh-plugin-market-index`。
+
+### 6.3 市场不背书
+
+市场由第三方写标题、描述、图标、作者与来源；DSH 只校验文件格式，不验证这些声明。`http:` 源可被网络路径上的任何人篡改，包括它列出的安装 spec，所以跨网络必须用 `https:`。安装前在确认框里核对来源。
+
+## 7. 官方目录：只收第一方 bundle
+
+官方按需目录由 DSH 自己维护，准入条件很硬：
+
+- 必须是公开的 `@deepseek-ai/dsh-*` 包；
+- 必须声明 `dsh.bundle`；
+- 不能随 DSH 发行版一起安装（按需提供）；
+- 必须有英文与中文的 `meta.title` / `meta.description`；
+- 必须有图标；
+- 由 `scripts/gen-official-bundle-catalog.ts` 生成，`verify-official-bundle-catalog` 校验新鲜度。
+
+发布版安装器给出 `package@<运行中的 DSH 版本>`；源码 Web 与开发桌面改成 `link:<工作区包目录>`。外部作者不能通过这条渠道发布，只能走 npm / Git / 市场。
+
+## 8. 版本依赖：判定语义
+
+### 8.1 谁在读
+
+| 字段 | 读取方 | 时机 |
+|---|---|---|
+| `engines.dsh` | 安装前预检（registry spec 走 `pnpm view`）、bundle 加载、行准入 | 安装 / 启动 / 重载 |
+| `@deepseek-ai/dsh*` peer | 同上，仅在没有 `engines.dsh` 时 | 同上 |
+| `dsh.manifestVersion` | 类型与读取方声明 | 不作为版本门禁 |
+| `compatibility.json` | 安装器 / 启动器 | 拒绝后的显式豁免 |
+
+### 8.2 判定规则
+
+- 有 `engines.dsh`：只看它，peer 被忽略。
+- 无 `engines.dsh`：所有 DSH peer 范围都要满足。
+- 两者都无：不约束。
+- 预发布参与匹配；空范围、非法范围、`workspace:` 写进 `engines.dsh` 都算不满足。
+- 拒绝信息按 `engines.dsh` 或 peer 包名列出未满足项；不满足的 bundle 会被跳过并记入 `skippedBundles`，不满足的行会被拒绝装载。还有一条温和路径：一次安装没有改动某个依赖、而它本来就不兼容时，安装只警告、不会因此失败；该依赖保持安装，但启动时仍会被拒绝，直到获得精确版本豁免。
+- 安装前能查的（registry 名字）在 pnpm 之前就拒绝；Git / tarball 要等 fetch 之后才能判断，失败会回滚 manifest 与 lockfile。
+
+### 8.3 豁免
+
+不兼容时有且只有一条路：精确版本豁免。写入 profile 的 `compatibility.json`，键是 `package-name@version`，值是精确的 DSH 运行版本列表——一个键可以列多个精确运行时版本，但**授权时只能指名当前运行版本**，撤销时可以清历史授权。
+
+- 不继承：插件升级、DSH 升级都要重新授权。
+- 不改变依赖、不改变 bundle 选择、不改变 patch。
+- 授权必须提示“可能崩溃或数据损坏”，并拿到用户对**这一对**版本的明确同意。
+- 可以用 `plugin_manager` 的 `list_version_exemptions` / `set_version_exemption`，或 CLI 的 `version-exemptions` / `allow-version` / `revoke-version`。
+
+对插件作者的含义：**不要靠豁免来支持一个不兼容的版本。** 豁免是用户的逃生门，不是作者的兼容策略。
+
+### 8.4 范围怎么选
+
+- 预稳定期（当前）优先 `>=0.2.0 <0.3.0` 这类“宽 minor、窄 major”的范围；不要精确钉死一个小版本，否则每次上游 RC 都逼你发版。
+- 只声明你真正测过的下界；上界至少覆盖下一个 minor。
+- 如果插件依赖某个在 RC 之间变过的 API，把范围收窄并在 README 写明“已测试到哪个 DSH 版本”。
+- 升级 DSH 后先跑真实安装形状的测试，再放宽范围。
+
+## 9. 安装成功之后
+
+| 事件 | 结果 |
+|---|---|
+| 安装失败 | profile manifest 与 lockfile 回滚；pnpm 已下载的文件可能残留 |
+| 安装成功、激活失败 | 依赖与选择保留，插件不可用；修包后重装 |
+| 无 HMR | 新包/新行要重启才生效 |
+| 有 HMR | 配置变更即时重组；已加载的 JS 模块不会自动换新 |
+| 替换已安装包 | 需要重启才能加载新的模块代；HMR 下会拒绝同 spec 覆盖 |
+| 移除 bundle | 取消选择、停止其插件；包文件可能保留 |
+| 禁用 bundle | 只取消选择，依赖仍在；重新启用会排到列表末尾，可能改变优先级 |
+
+最后一条容易被忽略：**重新启用会追加到 `dsh.profile.bundles` 末尾**，覆盖优先级随之改变。作者不应该依赖“我的层永远在前面”。
+
+## 10. 安全边界
+
+- **安装本身不导入插件代码；激活的 Host 代码在进程内执行，且在 workspace 沙箱之外。** `dsh plugin add` 只是跑 pnpm，不 import 任何插件；npm/tarball 安装也不需要构建许可。真正的执行有两处：被批准的安装/构建脚本在安装时以宿主机用户权限运行；插件被激活后，Host 代码在进程内执行，与宿主同权。插件管理器的原文是“installed Host code executes in-process outside the workspace sandbox”。
+- **构建脚本以宿主机用户权限执行**，`allowBuilds` 的授权按包名持久化，另一次安装失败也不会撤销。
+- **市场内容是第三方声明**，DSH 不验证作者、主页、来源的真实性。
+- **桌面壳的包操作归壳所有**，即使你从浏览器点同一个 Plugins 页，执行的也是壳侧 pnpm（[FAQ 23](../23_standalone-vs-web-release-forms/04_plugin-paths.md)）。
+- **版本豁免不是安全授权**，它只跳过兼容性检查，不放宽任何权限。
+
+## 11. 渠道选择建议
+
+| 场景 | 建议 |
+|---|---|
+| 面向外部用户的正式发布 | npm + 市场 index；范围声明 `engines.dsh` |
+| 内部团队、频繁迭代 | 私有 registry 或 Git + 固定 sha + `allowBuilds` |
+| 离线/审计环境 | `pnpm pack` 的 tarball |
+| 开发验收 | `link:` 本地目录 |
+| 只想让别人发现你 | 市场 index 列出 npm / Git 版本，不托管代码 |
+| 第一方能力 | 官方按需目录（外部作者不适用） |
+
+## 12. 结论
+
+渠道不是发布形态的分类，而是**代码来源与信任级别**的分类。DSH 对它们的要求是同一套：一个能解析的 spec、一个能装的包、一个能过的版本检查、一个能激活的 patch。作者的真正选择是：预构建还是源码、公开还是私有、固定版本还是跟随范围、让用户批准构建还是直接给成品。
+
+版本依赖则是这份选择里最需要克制的地方：`engines.dsh` 是承诺，不是装饰；豁免是用户的逃生门，不是作者的兼容手段。

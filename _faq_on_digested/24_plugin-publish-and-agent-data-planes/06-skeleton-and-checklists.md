@@ -1,0 +1,304 @@
+# 06 · 骨架、检查表与旧写法迁移
+
+## 一句话
+
+一个专家插件的 repo 不需要很复杂：一个包、一份 patch、一组只读资产、一份 README。复杂的是**边界**——哪些行放 Host，哪些行放 preset，哪些东西根本不该进包。这一篇给一个可直接照抄的骨架，和四张发布前检查表。
+
+## 1. 参考骨架
+
+```text
+acme-dsh-expert/
+├── package.json
+├── cordis.patch.yml            # Host 行 + preset 声明
+├── presets/
+│   └── expert.patch.yml        # 可选：把 preset 声明拆成单独一层
+├── src/
+│   ├── index.ts                # 工具 / 服务 / 策略
+│   └── client.tsx              # 可选：Web UI
+├── assets/
+│   └── skills/
+│       └── acme-expert/
+│           ├── SKILL.md
+│           └── references/
+│               └── checklist.md
+├── locale/
+│   ├── en.json                 # meta.title / meta.description
+│   └── zh.json
+├── icon.svg
+├── README.md
+├── LICENSE
+└── tests/
+    └── composition.spec.ts     # 真实 bundle 安装形状的测试
+```
+
+不必要的东西：`agent.cordis.yml`、`$DSH_HOME/.agent-presets/`、自己的 `profile.json`、`dsh.compatibility` 矩阵、`vendor/dsh`（除非你要在 repo 内探索 DSH 源码，见 FAQ 13）。
+
+## 2. 一份完整的 `package.json`
+
+```json
+{
+  "name": "@acme/dsh-expert-pack",
+  "version": "1.0.0",
+  "description": "An expert review agent: review tools, checklist skill, and a Web card.",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": { "types": "./lib/index.d.ts", "default": "./lib/index.js" },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./presets/expert.patch.yml": "./presets/expert.patch.yml",
+    "./client": { "types": "./lib/client.d.ts", "default": "./lib/client.js" },
+    "./tool": { "types": "./lib/tool.d.ts", "default": "./lib/tool.js" },
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/index.js",
+    "lib/index.d.ts",
+    "lib/client.js",
+    "lib/client.d.ts",
+    "lib/tool.js",
+    "lib/tool.d.ts",
+    "cordis.patch.yml",
+    "presets/expert.patch.yml",
+    "assets/skills/**",
+    "locale/*.json",
+    "icon.svg"
+  ],
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": ["./cordis.patch.yml", "./presets/expert.patch.yml"]
+    },
+    "client": {
+      "platform": "web",
+      "inject": ["@deepseek-ai/dsh-client-ui-conversation"]
+    }
+  },
+  "engines": { "dsh": ">=0.2.0 <0.3.0", "node": ">=22.19" },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^0.2.0",
+    "@deepseek-ai/dsh-tools": "^0.2.0",
+    "@deepseek-ai/dsh-agent-preset": "^0.2.0"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^0.2.0",
+    "@deepseek-ai/dsh-tools": "^0.2.0",
+    "@deepseek-ai/dsh-agent-preset": "^0.2.0"
+  },
+  "repository": { "type": "git", "url": "git+https://github.com/acme/dsh-expert-pack.git" },
+  "license": "MIT",
+  "publishConfig": { "access": "public" }
+}
+```
+
+要点：
+
+- `dsh.bundle.patch` 是数组时按顺序当一层；每个文件里的插件行 `name` 都可以是包名或子路径。
+- `dsh.client` 只是声明；真正加载要求 Host 行把包挂上（见下一节 patch）。
+- `engines.dsh` 与 peer 二选一优先；两个都写时 `engines.dsh` 决定一切。共享实例的 DSH 包仍要 peer + dev 双写。
+- `files` 必须包含 `assets/skills/**`，否则技能不会进 tarball。
+
+## 3. patch 怎么写
+
+```yaml
+# cordis.patch.yml
+- insert:
+    - id: acme-review
+      name: '@acme/dsh-expert-pack'
+```
+
+根行提供共享服务与 `dsh.client` 声明；模型可调用的工具放在 `./tool` 子路径，只由 preset 行挂载，所以它只出现在选中该 preset 的会话里。这样同一个包既有 Host 行，又有按 agent 定制的工具行，不重复挂载根插件。
+
+```yaml
+# presets/expert.patch.yml
+- insert:
+    - id: preset-expert
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: expert
+        name: Expert Review
+        description: Reviews changes with the review tools and checklist skill.
+        order: 20
+        plugins:
+          - id: persona
+            name: '@deepseek-ai/dsh-persona'
+            config:
+              prefix: You are a senior reviewer. Review changes against the checklist skill.
+          - id: tool-fs
+            name: '@deepseek-ai/dsh-tool-fs'
+          - id: skill-filesystem
+            name: '@deepseek-ai/dsh-skill-filesystem'
+          - id: tool-skill
+            name: '@deepseek-ai/dsh-tool-skill'
+          - id: acme-review-tool
+            name: '@acme/dsh-expert-pack/tool'
+```
+
+三条纪律：
+
+1. **行 id 稳定。** 用户会按 id 覆盖；改名等于破坏配置。
+2. **覆盖重述完整 config。** 你的 patch 覆盖别层时，要写全想保留的字段；用户覆盖你的 preset 时也一样。
+3. **preset 只放按 agent 定制的东西。** 共享服务、持久化、沙箱策略留在 Host 行；需要 `isolate` 的提供者与消费者放同一个 `cordis:group`。
+
+## 4. README 模板
+
+```markdown
+# @acme/dsh-expert-pack
+
+One sentence: what capability this bundle contributes.
+
+## Install
+dsh plugin --profile web add @acme/dsh-expert-pack@1.0.0
+
+## What it contributes
+- Host row `acme-review`: the review tool.
+- Preset `expert`: the Expert Review agent.
+- Bundled skill `acme-expert`: the review checklist.
+- Client module: the review card under the composer.
+
+## Configuration
+| Field | Default | Meaning |
+|---|---|---|
+| maxFiles | 50 | ... |
+
+## Data
+- Reads: the session working directory through ctx.fs.
+- Writes: none outside the workspace.
+- Cross-session state: storage domain `acme.review`, version 1.
+
+## Compatibility
+- engines.dsh: >=0.2.0 <0.3.0
+- Tested against: 0.2.1-rc.3
+
+## Uninstall
+Removes the rows and preset. Storage domain data remains under $DSH_HOME/storages.
+```
+
+## 5. 发布前检查表
+
+### A · 包与 manifest
+
+- [ ] `dsh.bundle.patch` 指向真实文件，YAML 能解析。
+- [ ] 每个 `name` 都能从安装位置解析（包根或子路径）。
+- [ ] `exports` 覆盖入口、patch、preset、locale、icon、client。
+- [ ] `files` 覆盖运行所需全部文件（含 `assets/**`）。
+- [ ] npm 发布带构建产物；Git 安装有自包含 `prepare`。
+- [ ] `engines.dsh` 或全部 DSH peer 范围与目标版本匹配。
+- [ ] 共享 DSH 包写进 peer + dev，不只在 dependencies。
+- [ ] `pnpm pack` 后检查文件列表；不依赖 link 的宽松行为。
+
+### B · 行与配置
+
+- [ ] 入口只导出一种形式；没有 default + named 混用。
+- [ ] 每个注册都有 disposer；卸载后无残留。
+- [ ] 可调值全部进 `Config`，没有硬编码常量。
+- [ ] 行 id 稳定；覆盖行为写进 README。
+- [ ] preset 的 `plugins` 是完整列表；覆盖时重述全部字段。
+- [ ] 需要 `isolate` 的服务提供者与消费者同组。
+
+### C · 说明与可发现性
+
+- [ ] `package.json.description` 是一句“贡献什么”。
+- [ ] `locale/en.json` 与 `locale/zh.json` 有真实 `meta.title` / `meta.description`。
+- [ ] 图标 ≤256 KiB、SVG/PNG/JPEG/WebP、留在包内。
+- [ ] README 有 Install / Configuration / Data / Compatibility / Uninstall。
+- [ ] `repository`、`license`、`publishConfig.access` 正确。
+- [ ] 若进市场：index 的 title/description/icon/homepage/repository 与包一致。
+
+### D · 数据与安全
+
+- [ ] 没有把用户数据写进包目录或 `import.meta.url` 旁边。
+- [ ] 没有模块级可变状态；跨会话状态有 storage domain 或会话投影。
+- [ ] 模型可见的状态能从会话日志重建。
+- [ ] 没有新增自定义 session event 类型；没有依赖 `plugin:` 记录。
+- [ ] 路径用 `resolveDshHome` / `resolveAgentsHome` / `ctx.workingDirectory`。
+- [ ] secret 走凭据服务；patch / locale / README 没有明文。
+- [ ] 工作区文件访问走 `ctx.fs`，没有用宿主 `node:fs` 绕过沙箱。
+- [ ] README 写清读写哪些数据、属于 workspace 还是 home、升级是否保留。
+
+## 6. 安装验收：用“真实安装形状”
+
+源码直跑会掩盖依赖与 `files` 错误。最小验收流程：
+
+```sh
+# 1. 打包
+pnpm pack
+
+# 2. 用干净 home 起一个临时 web profile（不污染现有数据）
+VERIFY_HOME=$(mktemp -d)
+DSH_HOME="$VERIFY_HOME" dsh plugin --profile web add ./acme-dsh-expert-pack-1.0.0.tgz
+
+# 3. 看层是否真的进来了
+DSH_HOME="$VERIFY_HOME" dsh --profile web --dump-config | grep acme
+
+# 4. 启动并验证能力（新会话，不要复用旧会话）
+DSH_HOME="$VERIFY_HOME" dsh web
+```
+
+Agent 环境里不要手写 profile 的 `package.json` / `cordis.patch.yml`，也不要在 profile 目录跑 pnpm；用 `plugin_manager` 的 `install_bundle` / `list_bundles` / `list_plugins`，它会处理安装、选择、写入锁与结果解释。
+
+验收时分开看三件事：
+
+- `application` 是 `applied` 还是 `restart-required`；
+- `warnings` 有没有版本、元数据、激活诊断；
+- 新会话里能力是否真的可用（工具能调用、UI 能出现、preset 能被选中）。
+
+## 7. 升级与跟进
+
+DSH 的公开 API 仍是 pre-stable。插件作者的最小跟进纪律：
+
+1. **用范围，不钉死。** `>=0.2.0 <0.3.0` 比 `=0.2.1-rc.3` 更能承受 RC 迭代；只在确实依赖具体行为时收窄。
+2. **每次上游升级跑一遍真实安装形状。** 先 `pnpm pack`，再干净 profile 安装，再新会话验证。
+3. **把行 id、preset id、Config 字段当 API。** 改名前先想用户覆盖。
+4. **破坏性变更升 minor/major，并写迁移说明。** 预稳定期可以快，但不能静默。
+5. **不要在包里 vendored 一份 DSH 源码来“稳定 API”。** 那会让你的包与宿主的服务实例、peer 解析、沙箱策略脱节；要探索源码用 pinned submodule，发布仍依赖宿主。
+
+## 8. 旧写法迁移
+
+### 8.1 `agent.cordis.yml` 预设目录
+
+旧写法：`$DSH_HOME/.agent-presets/<id>/` 下放 `preset.yml`（展示字段）与 `agent.cordis.yml`（插件列表）。**现在没有读取方。** 出厂 preset 自 0.1.7 线起迁到 `packages/bundle/web-app/presets/*.patch.yml`；用户自定义 preset 也必须变成 bundle patch。
+
+迁移步骤：
+
+1. 建一个 bundle 目录，`package.json` 声明 `dsh.bundle.patch`；
+2. `cordis.patch.yml` 插入一行 `@deepseek-ai/dsh-agent-preset`；
+3. `config.id` 取原目录名，`name` / `description` / `order` 取 `preset.yml`，`plugins` 取 `agent.cordis.yml` 的条目列表（原样搬，再逐个核对包名）；
+4. 用 `plugin_manager` 安装，确认 `preset-<id>` 行存在且能绑定新会话；
+5. 删除旧目录。
+
+容易漏的：旧插件名可能已经改名或删除，搬过来会在激活时报缺模块；`!!js` 只应保留在配置或 `disabled`；资产要从安装包解析，不要从旧预设目录解析。
+
+### 8.2 `dsh.compatibility`
+
+某些第三方插件曾用 `dsh.compatibility` 写版本矩阵。**DSH 不读这个字段。** 安装器与启动器只读 `engines.dsh`，没有它时回退到 `@deepseek-ai/dsh*` peer 范围。把矩阵改成：
+
+```json
+{ "engines": { "dsh": ">=0.2.0 <0.3.0" } }
+```
+
+如果你确实要表达“多个 DSH 大版本”，用一条范围或发多个包版本，不要发明新字段。
+
+### 8.3 其他已退役写法
+
+| 旧写法 | 现状 | 替代 |
+|---|---|---|
+| `$DSH_HOME/.agent-presets/` | 不读 | bundle patch 的 preset 行 |
+| `agent.cordis.yml` | 不读 | `@deepseek-ai/dsh-agent-preset` 的 `config.plugins` |
+| `dsh.compatibility` | 不读 | `engines.dsh` |
+| `modeSelectionEnabled` | registry 不声明、不读不写 | 删除；默认 preset 用 registry 的 `default` + 用户 `selectedDefault` |
+| 手写 profile manifest | 不推荐 | `dsh plugin` / `plugin_manager` |
+| 精确钉死 DSH 版本 | 每次 RC 都逼发版 | 宽 minor、窄 major 的范围 |
+
+## 9. 一页总结
+
+- **发布物**：一个 bundle（包 + patch + 资源）。
+- **智能体**：bundle 里的一行 preset + 它引用的子插件与只读资产。
+- **数据**：workspace / home / session 三种归属，全部在包外。
+- **说明**：`package.json.description` + `locale/*.json` + README 四节。
+- **版本**：`engines.dsh`（或 peer 回退）+ SemVer + 真实安装验收。
+- **边界**：包只发代码与只读定义；数据经服务访问；secret 走凭据；沙箱不替模型绕过。
+
+把这张纸贴在 repo 的 `AGENTS.md` 里，下一个接手的人（或 agent）就不需要重新推导一遍。
