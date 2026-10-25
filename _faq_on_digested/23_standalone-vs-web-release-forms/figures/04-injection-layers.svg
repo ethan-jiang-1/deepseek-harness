@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr5" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="540" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">开发期注入：四层配置叠加 + 三种不进层的手段</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">层顺序决定谁覆盖谁；越靠上越临时、越优先。仓库里 profiles 的叠加顺序是固定的。</text>
+
+  <!-- stack -->
+  <text x="60" y="86" font-size="11" font-weight="700" fill="#334155">组合层（自下而上）</text>
+
+  <rect x="60" y="98" width="500" height="52" rx="8" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="76" y="120" font-size="12" font-weight="700" fill="#7f1d1d">--patch overlay.yml</text>
+  <text x="76" y="140" font-size="10.5" fill="#991b1b">最顶层：只对这次启动生效；仓库测试用它顶掉原生目录选择器</text>
+
+  <rect x="60" y="160" width="500" height="52" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="76" y="182" font-size="12" font-weight="700" fill="#78350f">profile 的 cordis.patch.yml</text>
+  <text x="76" y="202" font-size="10.5" fill="#854d0e">该 profile 的用户层；HMR 开着时改完自动重载</text>
+
+  <rect x="60" y="222" width="500" height="52" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="76" y="244" font-size="12" font-weight="700" fill="#1e3a8a">$DSH_HOME/cordis.patch.yml</text>
+  <text x="76" y="264" font-size="10.5" fill="#1e40af">home 层，跨 profile；社区用它关桌面默认遥测</text>
+
+  <rect x="60" y="284" width="500" height="52" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="76" y="306" font-size="12" font-weight="700" fill="#1e293b">bundle 自带的 patch</text>
+  <text x="76" y="326" font-size="10.5" fill="#334155">安装包/bundle 内，由 dsh.profile.bundles 顺序叠加；你不改它</text>
+
+  <line x1="620" y1="330" x2="620" y2="112" stroke="#4b5563" marker-end="url(#arr5)"/>
+  <text x="620" y="90" text-anchor="middle" font-size="10.5" fill="#4b5563">越靠上越临时、越优先</text>
+
+  <!-- right column: not layers -->
+  <rect x="660" y="98" width="260" height="128" rx="8" fill="#ecfdf5" stroke="#6ee7b7"/>
+  <text x="676" y="120" font-size="12" font-weight="700" fill="#065f46">不进层：直接进 profile 依赖</text>
+  <text x="676" y="141" font-size="10.5" fill="#065f46">dsh plugin add 收这些 spec：</text>
+  <text x="676" y="161" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="#064e3b">link:/abs/path</text>
+  <text x="676" y="179" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="#064e3b">file:../pkg · ./x.tgz</text>
+  <text x="676" y="197" font-size="10.5" fill="#065f46">Plugins 页也能填绝对路径</text>
+  <text x="676" y="215" font-size="10.5" fill="#065f46">（路径指 Host 的文件系统）</text>
+
+  <rect x="660" y="238" width="260" height="98" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="676" y="260" font-size="12" font-weight="700" fill="#312e81">另起一个 profile（实验用）</text>
+  <text x="676" y="282" font-size="10.5" fill="#3730a3">同一个 launcher，换一个组合：</text>
+  <text x="676" y="302" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" fill="#312e81">dsh --profile lab \</text>
+  <text x="676" y="319" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" fill="#312e81">  --from-default-profile web</text>
+
+  <rect x="660" y="348" width="260" height="62" rx="8" fill="#f9fafb" stroke="#d1d5db"/>
+  <text x="676" y="370" font-size="12" font-weight="700" fill="#374151">只改前端：pnpm run dev:web</text>
+  <text x="676" y="392" font-size="10.5" fill="#4b5563">持续重建 client bundle，不动 Host 依赖</text>
+
+  <!-- failure strip -->
+  <text x="60" y="366" font-size="11" font-weight="700" fill="#334155">失效条件</text>
+  <rect x="60" y="378" width="140" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="130" y="398" text-anchor="middle" font-size="10.5" fill="#334155">进程重启</text>
+  <rect x="212" y="378" width="150" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="287" y="398" text-anchor="middle" font-size="10.5" fill="#334155">换 profile / 换 home</text>
+  <rect x="374" y="378" width="186" height="30" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="467" y="398" text-anchor="middle" font-size="10.5" fill="#334155">改了代码没重建 / 没重启</text>
+
+  <rect x="60" y="420" width="500" height="52" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="76" y="442" font-size="11" font-weight="700" fill="#78350f">打包版 Desktop 还会忽略开发期路径变量</text>
+  <text x="76" y="461" font-size="10.5" fill="#854d0e">DSH_DESKTOP_PNPM_ENTRY / _DSH_DIR / _PRIMARY_RUNTIME_DIR 只对解包启动有效</text>
+
+  <rect x="660" y="420" width="260" height="52" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="676" y="442" font-size="11" font-weight="700" fill="#7f1d1d">npm 全局 CLI 管不了 desktop</text>
+  <text x="676" y="461" font-size="10.5" fill="#991b1b">要用桌面菜单装的那个 dsh</text>
+
+  <!-- bottom line -->
+  <text x="480" y="512" text-anchor="middle" font-size="11" fill="#6b7280">排法：先试 overlay（最便宜）→ 再 profile/home patch → 再本地 spec → 最后另起 profile 或换 home；每上一层都不要忘记它的失效条件。</text>
+</svg>

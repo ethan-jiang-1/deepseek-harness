@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="960" height="640" fill="#fafafa" rx="6"/>
+  <text x="480" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">$DSH_HOME 里到底有什么：一半按 home 共享，一半按 profile 分开</text>
+  <text x="480" y="52" text-anchor="middle" font-size="11" fill="#6b7280">“数据侧共享”指的只是上半部分；设置与插件依赖在下半部分，本来就各 profile 各一份。</text>
+
+  <!-- outer home box -->
+  <rect x="30" y="70" width="900" height="454" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="46" y="94" font-size="12" font-weight="700" fill="#334155">~/.dsh（一个 home，实测权限 0700）</text>
+
+  <!-- shared -->
+  <rect x="44" y="104" width="872" height="176" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="60" y="126" font-size="12" font-weight="700" fill="#14532d">按 home 共享：同一 home 下的 web / desktop 等所有 profile 都读同一份</text>
+
+  <rect x="60" y="136" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="74" y="153" font-size="11" font-weight="700" fill="#166534">sessions/</text>
+  <text x="74" y="169" font-size="10" fill="#15803d">会话日志，按工作区归档（本机 2.7 GB）</text>
+
+  <rect x="344" y="136" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="358" y="153" font-size="11" font-weight="700" fill="#166534">storages/</text>
+  <text x="358" y="169" font-size="10" fill="#15803d">KV 域表：workspace.json、投影缓存…</text>
+
+  <rect x="628" y="136" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="642" y="153" font-size="11" font-weight="700" fill="#166534">.credentials.yaml</text>
+  <text x="642" y="169" font-size="10" fill="#15803d">凭据（0600，宽权限会被拒读）</text>
+
+  <rect x="60" y="186" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="74" y="203" font-size="11" font-weight="700" fill="#166534">attachments/</text>
+  <text x="74" y="219" font-size="10" fill="#15803d">附件二进制（本机 766 MB）</text>
+
+  <rect x="344" y="186" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="358" y="203" font-size="11" font-weight="700" fill="#166534">cache/</text>
+  <text x="358" y="219" font-size="10" fill="#15803d">可重建缓存（缩略图等；插件也可用）</text>
+
+  <rect x="628" y="186" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="642" y="203" font-size="11" font-weight="700" fill="#166534">.anonymous-user-id</text>
+  <text x="642" y="219" font-size="10" fill="#15803d">匿名身份 / 遥测 ID</text>
+
+  <rect x="60" y="236" width="272" height="34" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="74" y="258" font-size="10.5" fill="#166534">logs/（启动诊断，非 Desktop 日志）</text>
+
+  <rect x="344" y="236" width="272" height="34" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="358" y="258" font-size="10.5" fill="#166534">dsh-runtimes/（Desktop 的 Python/Node 载荷）</text>
+
+  <rect x="628" y="236" width="272" height="34" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="642" y="258" font-size="10.5" fill="#166534">.env 与 home 层 cordis.patch.yml（可选）</text>
+
+  <!-- divider -->
+  <line x1="44" y1="292" x2="916" y2="292" stroke="#94a3b8" stroke-dasharray="6 4"/>
+  <text x="480" y="288" text-anchor="middle" font-size="10" fill="#64748b">↑ 共享 / ↓ 分开</text>
+
+  <!-- per profile -->
+  <rect x="44" y="302" width="872" height="212" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="60" y="324" font-size="12" font-weight="700" fill="#1e3a8a">按 profile 分开：profiles/&lt;name&gt;/，web 与 desktop 各一份，互不影响</text>
+
+  <rect x="60" y="334" width="408" height="168" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="74" y="356" font-size="11.5" font-weight="700" fill="#1e3a8a">profiles/web（生产）</text>
+  <text x="74" y="378" font-size="10.5" fill="#1e40af">package.json · pnpm-lock.yaml · node_modules</text>
+  <text x="74" y="396" font-size="10.5" fill="#1e40af">　→ 插件依赖树，顶层 101 个条目（本机实测）</text>
+  <text x="74" y="416" font-size="10.5" fill="#1e40af">cordis.patch.yml → 设置 + 插件开关</text>
+  <text x="74" y="434" font-size="10.5" fill="#1e40af">　（settings 服务就是写这个文件）</text>
+  <text x="74" y="454" font-size="10.5" fill="#1e40af">.plugin-manager/logs · .dsh-market/</text>
+  <text x="74" y="472" font-size="10.5" fill="#1e40af">compatibility.json · cordis.patch.yml.bak-*</text>
+
+  <rect x="488" y="334" width="408" height="168" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="502" y="356" font-size="11.5" font-weight="700" fill="#1e3a8a">profiles/desktop（实验）</text>
+  <text x="502" y="378" font-size="10.5" fill="#1e40af">同样的结构，另一套依赖与另一份设置</text>
+  <text x="502" y="396" font-size="10.5" fill="#1e40af">　→ 换 home 后整套重建</text>
+  <text x="502" y="416" font-size="10.5" fill="#1e40af">cordis.patch.yml → 实验插件与实验设置</text>
+  <text x="502" y="434" font-size="10.5" fill="#1e40af">　（不会改到 web 的设置）</text>
+  <text x="502" y="454" font-size="10.5" fill="#1e40af">.plugin-manager/logs · .dsh-market/</text>
+  <text x="502" y="472" font-size="10.5" fill="#1e40af">写锁：profiles/desktop/lock</text>
+  <text x="502" y="490" font-size="10" fill="#64748b">Electron 的键位/壳设置在 userData，不在 home</text>
+
+  <!-- outside -->
+  <rect x="30" y="534" width="900" height="92" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="46" y="556" font-size="12" font-weight="700" fill="#334155">不在 home 里，但同样算“状态”</text>
+  <rect x="46" y="566" width="270" height="46" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="60" y="584" font-size="10.5" fill="#475569">工作区里的文件本身（你的仓库）</text>
+  <text x="60" y="601" font-size="10" fill="#64748b">会话按它们的路径归档，不复制这些文件</text>
+  <rect x="332" y="566" width="270" height="46" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="346" y="584" font-size="10.5" fill="#475569">Electron userData（键位、壳设置、浏览器数据）</text>
+  <text x="346" y="601" font-size="10" fill="#64748b">~/.dsh-lab/electron 之类</text>
+  <rect x="618" y="566" width="282" height="46" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="632" y="584" font-size="10.5" fill="#475569">~/Library/Logs/DeepSeek Harness（桌面日志）</text>
+  <text x="632" y="601" font-size="10" fill="#64748b">两个实例共享</text>
+</svg>

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="960" height="520" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">两个官方发布物：一个打包了运行环境，一个跑在你的 Node 上</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">同一套产品代码、同一套 profile 组合；差别是谁提供 Node/pnpm、进程怎么起、插件装到哪。</text>
+
+  <rect x="40" y="78" width="420" height="56" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="250" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">Desktop（独立安装包）</text>
+  <text x="250" y="121" text-anchor="middle" font-size="10.5" fill="#1e40af">macOS arm64/x64 · Windows x64</text>
+
+  <rect x="500" y="78" width="420" height="56" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="710" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">CLI / Web（npm 安装）</text>
+  <text x="710" y="121" text-anchor="middle" font-size="10.5" fill="#166534">@deepseek-ai/dsh · dsh web / dsh --profile …</text>
+
+  <text x="40" y="166" font-size="12" font-weight="700" fill="#334155">打包物</text>
+  <text x="40" y="286" font-size="12" font-weight="700" fill="#334155">进程怎么起</text>
+  <text x="40" y="406" font-size="12" font-weight="700" fill="#334155">插件落点</text>
+
+  <rect x="40" y="140" width="420" height="96" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="56" y="164" font-size="11" fill="#1e3a8a">dmg / exe + 更新 feed</text>
+  <text x="56" y="184" font-size="11" fill="#1e3a8a">自带 Node + pnpm + Python 载荷</text>
+  <text x="56" y="204" font-size="11" fill="#1e3a8a">整棵 dsh runtime 打进 app.asar</text>
+  <text x="56" y="224" font-size="10.5" fill="#1d4ed8">不解析你 nvm 里的全局 dsh</text>
+
+  <rect x="500" y="140" width="420" height="96" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="516" y="164" font-size="11" fill="#166534">npm 包 @deepseek-ai/dsh</text>
+  <text x="516" y="184" font-size="11" fill="#166534">没有自带运行时：用你的 Node</text>
+  <text x="516" y="204" font-size="11" fill="#166534">包管理：你的 npm / pnpm</text>
+  <text x="516" y="224" font-size="10.5" fill="#15803d">升级就是 npm i -g，整包替换</text>
+
+  <rect x="40" y="260" width="420" height="96" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="56" y="284" font-size="11" fill="#1e3a8a">Electron 壳 + desktop-host 子进程</text>
+  <text x="56" y="304" font-size="11" fill="#1e3a8a">绑 127.0.0.1，端口由 OS 分配</text>
+  <text x="56" y="324" font-size="11" fill="#1e3a8a">dsh-app:// 转发已认证请求</text>
+  <text x="56" y="344" font-size="10.5" fill="#1d4ed8">Node IPC 只承载生命周期</text>
+
+  <rect x="500" y="260" width="420" height="96" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="516" y="284" font-size="11" fill="#166534">node 进程直接跑 dsh</text>
+  <text x="516" y="304" font-size="11" fill="#166534">dsh web 起 HTTP/WS 服务（默认 3080）</text>
+  <text x="516" y="324" font-size="11" fill="#166534">headless / sdk / acp 是同一 launcher 的 profile</text>
+  <text x="516" y="344" font-size="10.5" fill="#15803d">浏览器是客户端，不是运行环境</text>
+
+  <rect x="40" y="380" width="420" height="96" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="56" y="404" font-size="11" font-weight="700" fill="#78350f">$DSH_HOME/profiles/desktop</text>
+  <text x="56" y="424" font-size="11" fill="#78350f">壳侧 bundled pnpm 执行安装</text>
+  <text x="56" y="444" font-size="11" fill="#78350f">壳独占 profile 写锁</text>
+  <text x="56" y="464" font-size="10.5" fill="#854d0e">多条途径（见 04 篇）</text>
+
+  <rect x="500" y="380" width="420" height="96" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="516" y="404" font-size="11" font-weight="700" fill="#78350f">$DSH_HOME/profiles/web（或 headless…）</text>
+  <text x="516" y="424" font-size="11" fill="#78350f">Host 侧 pnpm 执行安装</text>
+  <text x="516" y="444" font-size="11" fill="#78350f">dsh plugin --profile web add … 也是它</text>
+  <text x="516" y="464" font-size="10.5" fill="#854d0e">同一个 Plugins 页，落到不同 profile</text>
+
+  <text x="480" y="502" text-anchor="middle" font-size="10.5" fill="#6b7280">两者共享同一个 $DSH_HOME 的用户数据，但可执行包、插件激活、lockfile、node_modules 各自独立。</text>
+</svg>

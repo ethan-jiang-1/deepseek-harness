@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr3b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="460" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">插件安装的执行位置：三条入口，同一套管道</text>
+  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">“在哪点按钮”不重要；“谁的 pnpm 在跑、写进哪个 profile”才决定插件归谁。</text>
+
+  <text x="40" y="88" font-size="11" font-weight="700" fill="#334155">操作发生在</text>
+  <text x="380" y="88" font-size="11" font-weight="700" fill="#334155">谁执行 pnpm</text>
+  <text x="660" y="88" font-size="11" font-weight="700" fill="#334155">落到哪个 profile</text>
+
+  <rect x="40" y="100" width="300" height="86" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="56" y="124" font-size="12" font-weight="700" fill="#1e3a8a">Desktop：窗口里的 Plugins 页</text>
+  <text x="56" y="146" font-size="10.5" fill="#1e40af">Add plugin / Discover / On-demand Official</text>
+  <text x="56" y="166" font-size="10.5" fill="#1e40af">也可以让 Creator 模式里的 agent 代写</text>
+  <rect x="380" y="100" width="240" height="86" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="396" y="124" font-size="12" font-weight="700" fill="#1e3a8a">壳侧 bundled pnpm</text>
+  <text x="396" y="146" font-size="10.5" fill="#1e40af">不依赖系统 Node/pnpm</text>
+  <text x="396" y="166" font-size="10.5" fill="#1e40af">包操作归壳所有</text>
+  <rect x="660" y="100" width="260" height="86" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="676" y="124" font-size="12" font-weight="700" fill="#78350f">profiles/desktop</text>
+  <text x="676" y="146" font-size="10.5" fill="#854d0e">壳独占写锁</text>
+  <text x="676" y="166" font-size="10.5" fill="#854d0e">重启或 HMR 后生效</text>
+  <line x1="340" y1="143" x2="376" y2="143" stroke="#4b5563" marker-end="url(#arr3b)"/>
+  <line x1="620" y1="143" x2="656" y2="143" stroke="#4b5563" marker-end="url(#arr3b)"/>
+
+  <rect x="40" y="200" width="300" height="86" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="56" y="224" font-size="12" font-weight="700" fill="#166534">Web：浏览器里的 Plugins 页</text>
+  <text x="56" y="246" font-size="10.5" fill="#166534">同一份 UI，服务端是 dsh web 的 Host</text>
+  <text x="56" y="266" font-size="10.5" fill="#166534">远程访问时也一样（路径指 Host）</text>
+  <rect x="380" y="200" width="240" height="86" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="396" y="224" font-size="12" font-weight="700" fill="#166534">Host 的 pnpm</text>
+  <text x="396" y="246" font-size="10.5" fill="#166534">进程在跑 dsh web 的那台机器</text>
+  <text x="396" y="266" font-size="10.5" fill="#166534">和浏览器无关</text>
+  <rect x="660" y="200" width="260" height="86" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="676" y="224" font-size="12" font-weight="700" fill="#78350f">profiles/web</text>
+  <text x="676" y="246" font-size="10.5" fill="#854d0e">与 desktop 各一份</text>
+  <text x="676" y="266" font-size="10.5" fill="#854d0e">依赖树、lockfile 独立</text>
+  <line x1="340" y1="243" x2="376" y2="243" stroke="#4b5563" marker-end="url(#arr3b)"/>
+  <line x1="620" y1="243" x2="656" y2="243" stroke="#4b5563" marker-end="url(#arr3b)"/>
+
+  <rect x="40" y="300" width="300" height="86" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="56" y="324" font-size="12" font-weight="700" fill="#334155">CLI：一条命令</text>
+  <text x="56" y="346" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" fill="#334155">dsh plugin --profile web add link:/abs/path</text>
+  <text x="56" y="366" font-size="10.5" fill="#475569">转发给 profile 目录里的 pnpm，不经过 UI</text>
+  <rect x="380" y="300" width="240" height="86" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="396" y="324" font-size="12" font-weight="700" fill="#334155">你的 npm / pnpm</text>
+  <text x="396" y="346" font-size="10.5" fill="#475569">用当前 PATH 上的包管理器</text>
+  <text x="396" y="366" font-size="10.5" fill="#475569">与 Web 的安装是同一条路径</text>
+  <rect x="660" y="300" width="260" height="86" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="676" y="324" font-size="12" font-weight="700" fill="#78350f">同上（profiles/web）</text>
+  <text x="676" y="346" font-size="10.5" fill="#854d0e">装完写进 package.json</text>
+  <text x="676" y="366" font-size="10.5" fill="#854d0e">重启或 HMR 后生效</text>
+  <line x1="340" y1="343" x2="376" y2="343" stroke="#4b5563" marker-end="url(#arr3b)"/>
+  <line x1="620" y1="343" x2="656" y2="343" stroke="#4b5563" marker-end="url(#arr3b)"/>
+
+  <rect x="40" y="404" width="880" height="38" rx="6" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="480" y="428" text-anchor="middle" font-size="11" font-weight="700" fill="#312e81">不变量：插件永远落在某个 profile 目录；执行安装的永远是那台机器上的 pnpm。</text>
+</svg>
