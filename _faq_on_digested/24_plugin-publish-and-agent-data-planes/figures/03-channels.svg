@@ -1,10 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg width="960" height="580" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>六种来源与同一个 profile 落点</title>
+  <desc>npm、Git、tarball、link、市场 index、官方目录的差异；图中 tarball 与 link 合并展示。</desc>
   <defs>
     <marker id="arr24c" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
   <rect width="960" height="580" fill="#fafafa" rx="6"/>
   <text x="480" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">六种来源，同一个落点：profile 目录</text>
-  <text x="480" y="55" text-anchor="middle" font-size="11" fill="#6b7280">渠道只改变“代码从哪来、版本怎么选、用户要批准什么”；安装与启动是同一套管道。</text>
+  <text x="480" y="55" text-anchor="middle" font-size="11" fill="#6b7280">渠道只改变“代码从哪来、版本怎么选、用户要批准什么”；tarball 与 link 合并为一张卡，实际是六种来源。</text>
 
   <rect x="40" y="76" width="262" height="112" rx="9" fill="#eff6ff" stroke="#bfdbfe"/>
   <text x="56" y="100" font-size="12" font-weight="700" fill="#1e3a8a">npm registry</text>
@@ -59,7 +61,7 @@
 
   <rect x="40" y="458" width="880" height="104" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/>
   <text x="56" y="482" font-size="12" font-weight="700" fill="#4c1d95">安全边界：安装可执行，激活在进程内</text>
-  <text x="56" y="504" font-size="10.5" fill="#5b21b6">安装只跑 pnpm，不导入插件；被批准的构建脚本在安装时执行；激活后的 Host 代码在进程内、沙箱之外。</text>
+  <text x="56" y="504" font-size="10.5" fill="#5b21b6">CLI 安装只跑 pnpm，不导入插件；install_bundle 随后应用并激活。被批准的构建脚本在安装时执行；激活后的 Host 代码在进程内、沙箱之外。</text>
   <text x="56" y="524" font-size="10.5" fill="#5b21b6">Git 的 prepare 与包的安装期脚本以宿主机用户权限运行；allowBuilds 按包名持久化，失败也不撤销。</text>
   <text x="56" y="544" font-size="10.5" fill="#5b21b6">市场内容是第三方声明；安装确认框里的来源核对是最后一道人工防线。</text>
 </svg>

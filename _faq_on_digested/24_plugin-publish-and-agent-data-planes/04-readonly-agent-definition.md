@@ -49,9 +49,9 @@ Loader 行 id 约定为 `preset-<id>`。出厂 Web 的四个预设就是 `@deeps
 1. **registry 不写声明。** `agent-preset-registry` 的 `read` 只把子列表渲染成 YAML 给客户端看；“nothing accepts YAML back”。它没有“保存 preset”的接口。
 2. **Plugin Manager 的 preset 行只读。** 插件页可以启用/禁用普通行，但 agent-preset 行不在可切换范围；要改就装一个 bundle。
 3. **新增或覆盖都是 bundle patch。** `insert` 一个 `@deepseek-ai/dsh-agent-preset` 行，或按 `preset-<id>` 覆盖已有一行，装进 profile 后生效。
-4. **覆盖替换整段 `config`。** 覆盖者必须重述 `id`、`plugins`、`name`、`description`、`order` 和所有想保留的字段；未来上游对内置 preset 的改动不会自动合并进用户覆盖。覆盖层必须排在声明层之后，否则 patch 会报“entry not found”并跳过。
+4. **覆盖替换整段 `config`。** 覆盖者必须重述 `id`、`plugins`、`name`、`description`、`order` 和所有想保留的字段；未来上游对内置 preset 的改动不会自动合并进用户覆盖。覆盖层必须排在声明层之后；补丁未命中任何既有行时只报未命中警告，该条补丁不生效，层本身不会因此失败（[app-boot README](../../packages/boot/app-boot/README.md)）。
 
-   这里有一处**文档漂移**要避开：`packages/bundle/web-app/presets/*.patch.yml` 的旧注释与 `registry/src/mount.ts` 的旧说明还写着“Web 编辑器会持久化 preset”，但当前代码与包 README 不是这样：Settings 的 preset 卡是只读 YAML 查看器，registry 只有 `list` / `read` / `select` 三个 Remote，没有 save，也“nothing accepts YAML back”。要改 preset，走 bundle patch，不要相信旧注释。
+   这里有一处**文档漂移**要避开：`packages/bundle/web-app/presets/*.patch.yml` 的注释还写着“Edits saved from the Web editor override this row”，但当前代码与包 README 不是这样：Settings 的 preset 卡是只读 YAML 查看器，registry 只有 `list` / `read` / `select` 三个 Remote，没有 save，也“nothing accepts YAML back”。`registry/src/mount.ts` 的注释说的是“only the profile configuration editor persists definitions”，指的是通用 profile 配置编辑，不是 Web 预设编辑器；把它当成“Web 编辑器保存 preset”的证据是误读。另外，`2026-09-18-declarative-agent-presets` 决策记录里仍写着 Web editor 与 `agent_preset` 工具会保存；该实现没有落地，按当前代码/README 为准。要改 preset，走 bundle patch，不要相信旧注释。
 5. **会话按 id 绑定，按 revision 持有。** 声明激活时创建一个 registry 拥有的 scope 与 in-memory Loader tree；更新/移除声明会退休旧 revision。已有 Agent、子 Agent、临时历史读取继续持有引用，直到最后一个引用释放。进程重启后，恢复用的是该 id 的**当前定义**；定义缺失会被拒绝。
 
 所以“改 preset 只影响新会话”这句话需要精确化：
@@ -71,29 +71,30 @@ Loader 行 id 约定为 `preset-<id>`。出厂 Web 的四个预设就是 `@deeps
 
 | 能力 | 放 Host 行 | 放 preset 行 |
 |---|---|---|
-| 共享服务、loop、持久化、沙箱策略、模型路由 | ✅ | ❌（会变成每个 agent 一份） |
+| 共享服务、loop、持久化、沙箱策略、模型路由 | ✅ | ❌（会变成每个 preset revision 一份） |
 | 工具、persona、prompt section、策略 | 可以（全局默认） | ✅（按 agent 定制） |
 | 需要 `isolate` 的服务提供者 | 不建议 | ✅，但提供者与消费者必须同一 realm |
 | 每个 agent 不同的工具集 | ❌ | ✅（`ctx.tools.restrict` 或不同子行） |
-| 跨 agent 共享的状态 | ✅ | ❌（preset scope 会隔离） |
+| 同一 preset revision 内共享的状态 | ✅（供不同 preset 共享） | ✅（同一 revision 的 Agent 共享，跨 revision 不共享） |
 
 两条硬规则：
 
 - **preset 里的服务提供者与其消费者必须放进同一个 `cordis:group` 隔离 realm。** entry 级 `isolate` 不会穿过 Agent 注册 scope 传播；组外的普通 lookup（包括 `agent.ctx`）仍然选中 Host realm。要检查某个 Agent 实际持有的组合，用 `agentPresets.serviceFor()`，不要靠普通 lookup。挂载时若发现 root-realm 泄漏，会以 `Preset services require isolate realms` 拒绝。
 - **scope 控制贡献与可见性，`isolate` 控制服务实例。** 不要把两者混用：只加 `isolate` 不加组，消费者可能找不到提供者；只加组不加 `isolate`，服务实例仍可能来自 Host。
 
-激活时还会做审计：import 失败、缺服务、全局泄漏服务都会拒绝挂载；等待 Host 服务的行会保持挂载，并在 Host Loader 树稳定后重审，所以启动顺序不决定结果。失败的声明仍留在花名册上，但不能被新会话绑定。
+激活时还会做审计：import 失败、激活失败、全局泄漏服务都会**拒绝挂载**；缺服务的行是 `pending`，会保持挂载，等 Host Loader 树稳定后复审；复审仍缺服务时，定义留着但不能被新会话绑定（`agent-preset/invalid`）。所以启动顺序不决定结果，但“挂载成功”不等于“可用”。
 
 ## 5. 只读知识：skills 应该放哪
 
 preset 挂技能的标准姿势是两行：`skill-filesystem`（发现本地技能根）+ `tool-skill`（把 catalog 与加载工具给模型）。出厂 `standard` preset 就是这两行。
 
-技能有三种所有权，格式相同、归属不同：
+技能有四种所有权，格式相同、归属不同：
 
 | 所有权 | 位置 | 谁改 | 生命周期 |
 |---|---|---|---|
 | bundled | 包内 `assets/` 或 `skills/`，由 provider 注册 | 包作者 | 随包版本；升级替换 |
 | project | `<projectRoot>/.dsh/skills`、`.agents/skills` | 项目维护者 | 随仓库；可提交 |
+| deployer | `customSkillDirs`（rank 300） | 部署者 | 部署期；不是包作者的数据 |
 | user | `$DSH_HOME/skills`、`~/.agents/skills` | 用户 | 跨项目；升级 DSH 不动 |
 
 bundled skill 的正文每次加载会重读文件，但文件属于包目录；改它既不持久（升级会替换），也不受支持。**用户可编辑的经验不要放包内**；包只发“与版本绑定的只读知识”，把可编辑入口留给项目或用户根。
@@ -146,13 +147,12 @@ Agent 的系统提示前缀、工具目录、prompt section 都是 KV cache 的�
 
 下一篇把数据部分展开：workspace、`$DSH_HOME`、session 三种归属，各自的确切路径、写入者与升级行为。
 
-
 ## 10. 证据
 
 - 声明格式与生命周期：[agent-preset README](../../packages/preset/agent-preset/README.md)、[agent-preset-registry README](../../packages/preset/agent-preset-registry/README.md)
 - 作者写法与覆盖规则：[editing-cordis-compositions SKILL](../../packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md)
-- 出厂实例：[standard preset](../../packages/bundle/web-app/presets/standard.patch.yml)、[web-app 的 preset 与 Host 行](../../packages/bundle/web-app/cordis.patch.yml)
+- 出厂实例：[standard preset](../../packages/bundle/web-app/presets/standard.patch.yml)、[web-app 的 Host 行](../../packages/bundle/web-app/cordis.patch.yml)（preset 声明在 `presets/*.patch.yml`）
 - 只读界面与管理边界：[ui-agent-preset README](../../packages/client/ui-agent-preset/README.md)、[plugin-manager README](../../packages/boot/plugin-manager/README.md)
 - 混用导出的事故：[postmortem 0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md)
 
-一处已知文档漂移：`presets/*.patch.yml` 与 `registry/src/mount.ts` 的旧注释仍提到“Web 编辑器持久化 preset”；当前代码与包 README 是只读查看器 + 没有 save Remote。本文按当前代码/README 写。
+preset 注释的漂移与当前行为见 §3.4。

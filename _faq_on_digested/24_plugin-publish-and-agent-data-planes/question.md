@@ -1,6 +1,6 @@
 # 24 · 插件怎么才算“能发布”，智能体的只读定义与数据又该放在哪？
 
-源码核验基线：当前 checkout，DSH 包版本 `0.2.1-rc.3`。本篇的 DSH 行为结论来自仓库内产品文档、包 README 与源码；市场、npm、Git 托管等仓库外行为只按文档与生成器描述记录，未做联网实测。
+源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`），与 `_digested/` 同一基线。本篇的 DSH 行为结论来自仓库内产品文档、包 README 与源码；市场、npm、Git 托管等仓库外行为只按文档与生成器描述记录，未做联网实测。
 
 ## 问题从哪来
 
@@ -30,6 +30,9 @@
 | Q4 | “智能体”的只读定义层是什么？preset 与 Host 行怎么分工，为什么它是只读的，改它为什么只影响新会话？ | [04 篇](./04-readonly-agent-definition.md) |
 | Q5 | 数据分几种归属？working folder 相关的、与 folder 无关的经验、会话日志、宿主 KV 各自住在哪？ | [05 篇](./05-data-planes.md) |
 | Q6 | 有没有一个可以直接照抄的仓库骨架、文件清单和发布前检查表？旧写法（`agent.cordis.yml`、`dsh.compatibility`）怎么迁移？ | [06 篇](./06-skeleton-and-checklists.md) |
+| Q7 | 合格插件要测什么？打包、数据分割、智能体、代码各自怎么测，时间不够时先做什么？ | [07 篇](./07-testing-and-acceptance.md) |
+| Q8 | 灵活度到底怎么打包？打包的性质是什么？Dify、Hugging Face、MCP、Claude Code、VS Code 各自怎么做？ | [08 篇](./08-packaging-flexibility-and-ecosystems.md) |
+| Q9 | 智能体的只读定义和数据到底怎么切最合理？除了 workspace/home/session，还有哪些切法？ | [09 篇](./09-agent-data-cuts.md) |
 
 ## 不回答什么
 
@@ -40,6 +43,6 @@
 
 ## 阅读顺序
 
-先读 [answer.md](./answer.md) 的一分钟版与三张判据表，再按 Q1 → Q6 读分篇。若只关心“我现在要发一个包”，直接跳到 [02 篇](./02-package-contract.md) 与 [06 篇](./06-skeleton-and-checklists.md)；若只关心“数据别放错地方”，直接读 [05 篇](./05-data-planes.md)。
+先读 [answer.md](./answer.md) 的一分钟版与三张判据表，再按 Q1 → Q9 读分篇。若只关心“我现在要发一个包”，直接跳到 [02 篇](./02-package-contract.md)、[06 篇](./06-skeleton-and-checklists.md) 与 [07 篇](./07-testing-and-acceptance.md)；若只关心“数据别放错地方”，直接读 [05 篇](./05-data-planes.md) 与 [09 篇](./09-agent-data-cuts.md)；若关心“为什么这样设计、别人怎么做”，读 [08 篇](./08-packaging-flexibility-and-ecosystems.md)。
 
-![三个角色与五种贡献](./figures/01-three-roles.svg)
+![三层与五种贡献](./figures/01-three-roles.svg)

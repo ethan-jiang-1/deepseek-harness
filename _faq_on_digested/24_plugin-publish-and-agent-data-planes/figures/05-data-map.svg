@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg width="960" height="640" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>workspace、home 与 session 的数据地图</title>
+  <desc>数据归属、路径与插件通过服务访问的边界。</desc>
   <defs>
     <marker id="arr24e" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
@@ -21,7 +23,7 @@
   <text x="68" y="269" font-size="9.5" fill="#15803d">与其他 agent 工具共用；rank 200</text>
   <rect x="54" y="282" width="390" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
   <text x="68" y="301" font-size="10.5" font-weight="700" fill="#166534">工作目录中的文件</text>
-  <text x="68" y="317" font-size="9.5" fill="#15803d">模型经 fs 工具读写；受沙箱与权限策略约束</text>
+  <text x="68" y="317" font-size="9.5" fill="#15803d">模型经 fs 工具读写；写受沙箱约束，读按本地文件系统</text>
   <text x="54" y="348" font-size="10" fill="#166534">项目根判定：最近一个含 .git 的祖先；没有就用 cwd。</text>
   <text x="54" y="366" font-size="10" fill="#166534">workspace 记录本身（项目列表）是宿主 KV，不删你的文件。</text>
 
@@ -56,7 +58,7 @@
 
   <rect x="36" y="530" width="888" height="92" rx="9" fill="#f5f3ff" stroke="#ddd6fe"/>
   <text x="54" y="554" font-size="12" font-weight="700" fill="#4c1d95">插件代码只通过服务访问，不直接拼路径</text>
-  <text x="54" y="576" font-size="10.5" fill="#5b21b6">文件 → ctx.fs（受沙箱约束）· 技能 → ctx.skills / skill 根 · 指令 → 指令链 · 宿主状态 → ctx.storageDomain</text>
+  <text x="54" y="576" font-size="10.5" fill="#5b21b6">文件 → ctx.fs（写受沙箱约束）· 技能 → ctx.skills / skill 根 · 指令 → 指令链 · 宿主状态 → ctx.storageDomain</text>
   <text x="54" y="596" font-size="10.5" fill="#5b21b6">模型可见状态 → 会话事件 + 投影 · 凭据 → 凭据服务 / !!js 引用 · 路径根 → home-paths 的 resolveDshHome / resolveAgentsHome</text>
   <text x="54" y="614" font-size="10.5" fill="#5b21b6">不要把 ~/.dsh、绝对路径、cwd 默认值写死在插件里；部署会用 DSH_HOME 换根。</text>
 </svg>

@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg width="960" height="620" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>只读定义、代码与数据的分离</title>
+  <desc>Host 共享 loop、preset 定义与会话数据三层分离，以及各自的只读/可写边界。</desc>
   <defs>
     <marker id="arr24d" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
     <marker id="arr24dr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#dc2626"/></marker>
@@ -62,7 +64,7 @@
   <text x="358" y="536" font-size="9.5" fill="#854d0e">跨项目的经验与状态</text>
   <rect x="632" y="462" width="272" height="78" rx="6" fill="#ffffff" stroke="#fcd34d"/>
   <text x="646" y="483" font-size="10.5" font-weight="700" fill="#78350f">session · 会话日志</text>
-  <text x="646" y="502" font-size="9.5" fill="#854d0e">$DSH_HOME/sessions/--&lt;cwd&gt;--/</text>
+  <text x="646" y="502" font-size="9.5" fill="#854d0e">$DSH_HOME/sessions/--&lt;normalized-cwd&gt;--/</text>
   <text x="646" y="519" font-size="9.5" fill="#854d0e">模型可见 ⟺ 可从日志重建</text>
   <text x="646" y="536" font-size="9.5" fill="#854d0e">只追加；插件记忆是派生缓存</text>
 

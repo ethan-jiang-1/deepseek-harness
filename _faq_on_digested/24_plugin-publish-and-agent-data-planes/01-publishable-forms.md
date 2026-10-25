@@ -2,9 +2,9 @@
 
 ## 一句话
 
-DSH 只把 **bundle** 当作“可安装、可管理、可自动启用”的发布物；**plugin** 是 bundle 里被 patch 行引用的运行时模块；**preset** 是 bundle 里的一行智能体定义；**skill** 是资源；**profile** 是用户侧的运行组合；**market index** 是目录；**overlay** 是本地试验层。把这些混成一个“插件”概念，后面的发布要求就说不清。
+DSH 只会把 **bundle** 自动选入 profile 并作为一层管理；普通 npm 包也能安装，但只是依赖，不会自动启用。**plugin** 是 bundle 里被 patch 行引用的运行时模块；**preset** 是 bundle 里的一行智能体定义；**skill** 是资源；**profile** 是用户侧的运行组合；**market index** 是目录；**overlay** 是本地试验层。把这些混成一个“插件”概念，后面的发布要求就说不清。
 
-![三个角色与五种贡献](./figures/01-three-roles.svg)
+![三层与五种贡献](./figures/01-three-roles.svg)
 
 ## 1. plugin：运行时行为单元
 
@@ -20,11 +20,11 @@ export function apply(ctx: Context) { /* 注册能力 */ }
 export default class MyService { /* ... */ }
 ```
 
-更准确的说法是：**一个插件实例是 patch 行；一个 bundle 是包。** 同一个包可以导出多个入口（`@scope/pkg`、`@scope/pkg/search`），每一行都可以单独启用、单独 `config`、单独卸载；包负责安装、元数据、保护与移除，行负责这一次组合里的实例。这一点决定了后面所有发布讨论的对象：**你发布的是包，DSH 加载的是行。**
+更准确的说法是：**一个插件实例是 patch 行；一个 bundle 是包。** 同一个包可以导出多个入口（`@scope/pkg`、`@scope/pkg/search`），每一行都可以单独启用/禁用、单独 `config`；行不是安装单位，移除要移除包或覆盖层。包负责安装、元数据、保护与移除，行负责这一次组合里的实例。这一点决定了后面所有发布讨论的对象：**你发布的是包，DSH 加载的是行。**
 
 “注册即效果”是硬约定：每个贡献走 `ctx.effect()` 或 `ctx.on()`，`register()` 返回 disposer。否则 HMR、卸载、agent 销毁都会留下泄漏。DSH 没有运行时门禁能自动发现漏掉的 disposer，这属于质量线，不是安装门禁。
 
-## 2. bundle：唯一的可安装作者发布物
+## 2. bundle：唯一的可安装并自动启用的作者发布物
 
 bundle 的定义同样只有一句：`package.json` 里声明 `dsh.bundle.patch` 的 npm 包。patch 是一份 YAML 数组，用来插入或覆盖插件行；`patch` 可以是一个文件，也可以是有序的文件列表，启动器按顺序当成一层应用（[package-manifest types.ts](../../packages/util/package-manifest/src/types.ts) 的 `DshBundleManifest`）。
 
@@ -44,16 +44,18 @@ bundle 的定义同样只有一句：`package.json` 里声明 `dsh.bundle.patch`
 3. 启动时按 `dsh.profile.bundles` 顺序叠 patch 层；
 4. 每行 `name` 经 Node 解析到实际模块，模块激活。
 
-bundle **不必挂载自己**：`dsh-base` 的 patch 不插任何 base 行，配置型 bundle 只插别的包；反过来，一个能力包也可以在自己的 patch 里插自己的根行。patch 插什么，比“这个包是谁”更重要。
+bundle **不必挂载自己**：`dsh-base` 的 patch 插入很多行，但没有一行挂载 `dsh-base` 自己；配置型 bundle 只插别的包；反过来，一个能力包也可以在自己的 patch 里插自己的根行。patch 插什么，比“这个包是谁”更重要。
 
-如果包没有 `dsh.bundle`，行为取决于入口：`dsh plugin add` 仍会把它装成普通依赖，打一条警告，不激活任何层（[publish.md](../../docs/user/develop/basic/publish.md)）；`plugin_manager` 的 `install_bundle` 则直接以 `not-bundle` 拒绝，并回滚 manifest 与 lockfile。`listBundles` 会把这种“被选中但没有 bundle patch”的名字标成 `not-bundle`。**“能装”与“会被当成插件”是两件事。**
+如果包没有 `dsh.bundle`，行为取决于入口：`dsh plugin add` 仍会把它装成普通依赖，打一条警告，不激活任何层（[publish.md](../../docs/user/develop/basic/publish.md)）；`plugin_manager` 的 `install_bundle` 在 pnpm 之后以 `not-bundle` 拒绝，并回滚 manifest 与 lockfile。`listBundles` 会把这种“被选中但没有 bundle patch”的名字标成 `not-bundle`。**“能装”与“会被当成插件”是两件事。**
 
 ## 3. profile：用户侧组合，不是发布物
 
-profile 是 `$DSH_HOME/profiles/<name>` 下的一个目录，里面只有两份关键文件：
+profile 是 `$DSH_HOME/profiles/<name>` 下的一个目录，两份关键文件是：
 
 - `package.json`：profile 自己的依赖 + `dsh.profile.bundles` 有序列表；
 - `cordis.patch.yml`：用户自己的覆盖层，在所有 bundle 层之后应用。
+
+目录里还会有 `compatibility.json`（版本豁免）、`pnpm-workspace.yaml`（`allowBuilds`）、`pnpm-lock.yaml` 与 `.plugin-manager/`（运行记录）；它们是安装/管理状态，不是发布物。
 
 profile 回答的是“这台机器上这个入口由哪些 bundle、按什么顺序组成”；bundle 回答的是“这个包贡献什么”。所以产品文档才说 “Nothing is both”。这是**角色分工**，不是 JSON 层面的排他：一个 package.json 理论上可以同时写 `dsh.bundle` 与 `dsh.profile`，但 DSH 只从 profile 目录读 `dsh.profile`、只从依赖里读 `dsh.bundle`，两个角色不会互相替代。作者不应该发布 profile；用户也不应该手写 profile manifest——`dsh plugin` 和 `plugin_manager` 会维护它。
 
@@ -88,7 +90,7 @@ preset 不是一种包类型，而是 `@deepseek-ai/dsh-agent-preset` 的一行�
 
 skill 是给模型的按需指令，格式是目录 `<name>/SKILL.md` 或扁平 `<name>.md`，必须在扫描根的顶层；嵌套的 `**/SKILL.md` 故意不发现。frontmatter 必须有 `name` 与 `description`，可选 `whenToUse`、`metadata`、`disable-model-invocation`、`user-invocable`（[skill-filesystem README](../../packages/skill/skill-filesystem/README.md)）。
 
-它有四种来源，所有权完全不同：
+它有**六个扫描根，按 rank 合并；按所有权可分四类**（包、项目、用户、部署者）：
 
 | 来源 | rank | 谁拥有 | 典型用途 |
 |---|---|---|---|
@@ -99,19 +101,19 @@ skill 是给模型的按需指令，格式是目录 `<name>/SKILL.md` 或扁平 
 | `<agentsHome>/skills` | 500 | 用户/共享 | `~/.agents/skills` |
 | `bundledSkillDir` / provider | 600 | 包 | 随插件发布的只读知识 |
 
-所以“经验放哪”不是插件实现细节，而是 skill 根的归属问题：项目经验放项目根，跨项目经验放 `$DSH_HOME/skills` 或 `~/.agents/skills`；插件只应该发布**只读的、与版本绑定的**那部分，并把可编辑入口留给用户。
+所以“经验放哪”不是插件实现细节，而是 skill 根的归属问题：项目经验放项目根，跨项目经验放 `$DSH_HOME/skills` 或 `~/.agents/skills`；插件只应该发布**只读的、与版本绑定的**那部分，并把可编辑入口留给用户。用户 DSH 根会跳过 `.system` 子目录；`includeDefaultRoots: false` 会省略项目/用户默认根，只保留配置的根。
 
 skill 也可以由包内 provider 直接注册（例如 `dsh-skill-badge` 从 `assets/dsh-badge.md` 读正文，注册一个 `source: 'bundled'`、rank 为 `BUNDLED_SKILL_RANK` 的候选）。这种包仍然需要被某个 bundle 的 patch 行挂载，才会出现在会话里。
 
 ## 6. client module：bundle 的浏览器半边
 
-Web UI 插件不是独立发布物。包在 `package.json` 声明 `dsh.client`（`platform: 'web'`，可选 `inject`、`immediately`、`external`），并在 `exports["./client"]` 导出构建好的浏览器 bundle。Host 侧的 `ctx.clientModules` 扫描**任意已启用的 Loader 行所挂载的包**（通常是 Host 行，也可以来自 preset 组），把 `dsh.client` 行编成 `window.__DSH_BOOT__` 的模块图；没有任何启用的行把包挂上，client 声明不会被扫到。行必须命名**包根**，子路径插件永远不是 client 行。
+Web UI 插件不是独立发布物。包在 `package.json` 声明 `dsh.client`（`platform: 'web'`，可选 `inject`、`immediately`、`external`），并在 `exports["./client"]` 导出构建好的浏览器 bundle。Host 侧的 `ctx.clientModules` 扫描**Host Loader 中已启用行所挂载的包**，把 `dsh.client` 行编成 `window.__DSH_BOOT__` 的模块图；preset 子树不参与这次扫描，除非同一个包也被 Host 行挂载。没有任何 Host 行把包挂上，client 声明不会被扫到。行必须命名**包根**，子路径插件永远不是 client 行。
 
-这意味着一个 UI 插件的最小发布单元是：**一个启用该包的 Loader 行 + 一个 client 模块 + 同一个包**。只发 client 文件、没有任何行把包挂上，页面上什么都不会出现。
+这意味着一个 UI 插件的最小发布单元是：**一个 Host Loader 行 + 一个 client 模块 + 同一个包**。只发 client 文件、没有任何 Host 行把包挂上，页面上什么都不会出现。`dsh.client.external` 只能列精确的包行或静态表名；自请求、缺供应商、同步环都会让组合拒绝。
 
 ## 7. MCP：配置型 bundle，不是新协议实现
 
-接一个外部 MCP server 不需要写协议代码。建一个配置型 bundle，patch 插入已经随 DSH 发布的 `@deepseek-ai/dsh-mcp-client`，配 `serverName`、`transport`、`url`（或 stdio 的 `command`/`args`/`env`/`cwd`），装上后工具以 `mcp__<serverName>__<tool>` 出现。凭据用 Loader 的 `!!js` 引用既有凭据，不要把 secret 复制进 patch 或会话文本。
+接一个外部 MCP server 不需要写协议代码。建一个配置型 bundle，patch 插入已经随 DSH 发布的 `@deepseek-ai/dsh-mcp-client`，配 `serverName`（`[A-Za-z0-9_-]{1,32}`，同一注册域内唯一）、`transport`（`stdio` 或 `streamable-http`）、`url`（streamable-http 还可配 `headers`；或 stdio 的 `command`/`args`/`env`/`cwd`），装上后工具以 `mcp__<serverName>__<tool>` 出现。需要初次连接失败就拒绝激活时设 `failOnStartupError: true`。凭据用 Loader 的 `!!js` 引用既有凭据，不要把 secret 复制进 patch 或会话文本。
 
 这和“写一个自己的 MCP 客户端插件”是两条路：前者是配置分发，后者才是代码。绝大多数“接一个工具”的需求属于前者。
 
@@ -124,7 +126,7 @@ Web UI 插件不是独立发布物。包在 `package.json` 声明 `dsh.client`�
 | `--patch` overlay | 本地一次性补丁 | 不经过安装、不进 profile、不可管理 |
 | `cordis.yml` | Loader 直接配置 | 面向嵌入与测试，不是分发单位 |
 | `$DSH_HOME` 下的数据 | 用户数据 | 与包版本无关，升级不应触碰 |
-| 会话日志 | 运行记录 | 只追加；新增类型只能 log-only，优先用已有事件 |
+| 会话日志 | 运行记录 | 只追加；第三方不要新增 event 类型，用已有事件/投影；`plugin:` 只限实验包 |
 
 ## 9. 一张判定表
 
@@ -141,7 +143,7 @@ Web UI 插件不是独立发布物。包在 `package.json` 声明 `dsh.client`�
 
 ## 10. 结论
 
-**发布形态只有一个：bundle。** 但 bundle 可以承载五种贡献，而且“贡献”与“包”不是一一对应：一个包可以同时声明 bundle、client、多个子路径插件；一个 preset 可以引用多个包里的插件行；一个 skill 可以来自包、项目或用户目录。
+**会被 DSH 自动启用为层的发布形态只有一个：bundle。** 普通 npm 包可以安装，但只是依赖。bundle 可以承载五种贡献，而且“贡献”与“包”不是一一对应：一个包可以同时声明 bundle、client、多个子路径插件；一个 preset 可以引用多个包里的插件行；一个 skill 可以来自包、项目或用户目录。
 
 判断一个东西“算不算 DSH 插件”，不要看它是不是 npm 包，而要看它有没有进入下面任一管道：
 
