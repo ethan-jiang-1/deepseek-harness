@@ -12,10 +12,10 @@
 
 | 级别 | 含义 | 长期策略 |
 |---|---|---|
-| **N0 核心合同** | `docs/` + 核心包 + 测试定义的 Service/事件/格式 | 首选；插件应依赖这些 |
-| **N1 官方随包插件** | 仓库内、由 base/web 等官方 bundle 挂载的插件（如 workspace、projection-cache、settings、credentials-local、session-query-sqlite、spill-local） | 首选；能力通常够用 |
-| **N2 experimental** | `packages/experimental/` 下的官方实验（agent-team、claude-code-mods `$.store`、webworker runtime 等） | 可参考，不承诺稳定 |
-| **GAP** | 没有核心/原生插件提供 | 作者自建或等核心；外部插件只作参考 |
+| **N0 原生核心（核心合同）** | `docs/` + 核心包 + 测试定义的 Service/事件/格式 | 首选；插件应依赖这些 |
+| **N1 原生插件（官方随包）** | 仓库内、由 base/web 等官方 bundle 挂载的插件（如 workspace、projection-cache、settings、credentials-local、session-query-sqlite、spill-local） | 首选；能力通常够用 |
+| **N2 原生实验（experimental）** | `packages/experimental/` 下的官方实验（agent-team、claude-code-mods `$.store`、webworker runtime 等） | 可参考，不承诺稳定 |
+| **GAP** | 没有核心/原生插件提供 | 作者自建或等核心；扩展插件只作参考 |
 
 ## 七个轴
 
