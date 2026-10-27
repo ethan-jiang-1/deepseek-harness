@@ -1,14 +1,14 @@
-# 06 · 外部插件模式（参考）：九个维度、十八种手法与已核出的坑
+# 07 · 外部插件模式（参考）：九个维度、十八种手法与已核出的坑
 
 ## 这一篇回答什么
 
 本 FAQ 第一版把社区做法压成“五种承诺”，够用但太粗；这一版扩成九个维度。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
 
-> **外部参考，不是原生方案。** 本文件只记录第三方插件/社区模式；长期优先 [08 原生 landscape](../02-native/08-native-data-landscape.md) 的 N0/N1。外部插件只借模式，不作依赖；E1/E2 的迁移/清理/兼容成本要自己承担。
+> **外部参考，不是原生方案。** 本文件只记录第三方插件/社区模式；长期优先 [08 原生 landscape](../02-native/05-native-data-landscape.md) 的 N0/N1。外部插件只借模式，不作依赖；E1/E2 的迁移/清理/兼容成本要自己承担。
 
 **验证口径（2026-10-27）。** 对九个仓库做了 README 与源码阅读，并对照本仓 `dsh-v0.2.1-rc.3` 的源码；**没有安装、没有运行**，所以“已验证”只代表源码层面能对上，不代表行为已在你的环境成立。星数/目录条目只能说明曝光，不能说明质量或安全；不同目录的计数互相矛盾（13,882 / 20,006 / 23,307），本篇不选边。
 
-![九个维度](../figures/05-community-map.svg)
+![九个维度](../figures/07-external-community-map.svg)
 
 ## 观察样本
 
@@ -183,7 +183,7 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 ## 三个核心缺口，社区怎么补
 
 1. **没有“每 workspace 一套插件实例”**。社区用 `ctx.workspaceCordis` + canonical path lease 补（workspace-overlay），或用项目内配置 + 自己解析（project-context），或用 home + 自定义 RPC（custom-workspace）。
-2. **没有“插件数据根”**。社区各自造 `~/.dsh/<plugin>/`、项目内 `.agents/`、SQLite 文件；没有统一的位置、配额、GC 或导出。Claude Code 的 `${CLAUDE_PLUGIN_DATA}` 是一个直接对照（见 07 篇）。
+2. **没有“插件数据根”**。社区各自造 `~/.dsh/<plugin>/`、项目内 `.agents/`、SQLite 文件；没有统一的位置、配额、GC 或导出。Claude Code 的 `${CLAUDE_PLUGIN_DATA}` 是一个直接对照（见 08 篇）。
 3. **没有“第三方任意设置命名空间”**。注意：**Config-backed 的 volatile 表单是开放的**，第三方插件导出 `Config` 就能在设置页出现；缺的是“与 Loader 条目无关的任意键值命名空间”。custom-workspace 在 0.1.0-rc.6 上因此造了自定义 RPC；新插件应先试 `Config.volatile()`，不要直接复制这个 workaround。
 
 ## v2 市场补充（2026-10-27）
@@ -194,7 +194,7 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 - **迁移只出现在“严肃数据”**：credentials-mysql 数值 schema fail-closed、task-board localStorage v1 + migration、kb-manager 每 KB SQLite + compact；多数插件没有迁移概念。
 - **声明质量与数据风险无关**：55 个 runtime/account/UI 样本只有 1 个声明 `engines.dsh`；同名克隆/近似实现大量存在，选型不能看星数。
 
-完整的 15 个深读与反模式见 [10 篇](./10-external-plugin-patterns.md)。
+完整的 15 个深读与反模式见 [09 篇](./09-external-plugin-patterns.md)。
 
 ## 五个反直觉的结论
 

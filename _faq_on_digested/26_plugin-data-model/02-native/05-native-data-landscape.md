@@ -1,8 +1,8 @@
-# 08 · DSH 原生数据 landscape：核心、原生插件、experimental
+# 05 · DSH 原生数据 landscape：核心、原生插件、experimental
 
 ## 这一篇回答什么
 
-先把**DSH 自己**的数据家铺开：哪些是核心合同（N0）、哪些是官方随包插件（N1）、哪些是 experimental（N2），哪些根本没有家。外部插件只作参考，统一放在 [10 外部插件模式](../03-external/10-external-plugin-patterns.md)，不混进这张图。
+先把**DSH 自己**的数据家铺开：哪些是核心合同（N0）、哪些是官方随包插件（N1）、哪些是 experimental（N2），哪些根本没有家。外部插件只作参考，统一放在 [10 外部插件模式](../03-external/09-external-plugin-patterns.md)，不混进这张图。
 
 **口径。** DSH 侧：343 个包、1,272 篇英文 Agent Note（298 implemented / 42 proposed / 925 archived）、67 篇 subsystem、49 篇 persistence-change、43 篇 upgrade guide、4 篇 postmortem、6 篇 defensive-pattern；本机 `$DSH_HOME` 4.0 GB / 28,443 文件（只看结构）。证据标签 C/H/P/S/R/U 见 [research-native](../05-evidence/research-native.md)。
 
@@ -27,7 +27,7 @@
 | **介质** | 文件 / journal / KV domain / SQLite / 向量 / settings / credentials / localStorage / 外部 API |
 | **成熟度** | N0 / N1 / N2 / GAP |
 
-![DSH 原生数据 landscape](../figures/08-native-landscape.svg)
+![DSH 原生数据 landscape](../figures/05-native-landscape.svg)
 
 ## 表 L1：12 个 archetype × 原生家
 
@@ -51,7 +51,7 @@
 | 组 | 家（id） | 级别 | 权威 | 寿命 | 主要风险 |
 |---|---|---|---|---|---|
 | **一条日志** | SESS-LOG、SESS-GEN、SESS-LOCK、SESS-TMP、SESS-TITLE、SESS-WORKDIR、DELIV、jobs/goal/todo/plan | N0/N1 | 会话日志 | 永久 | 无删除；旧世代累积；插件不能扩展事件 |
-| **三张旁表** | WORKSPACE、PROJCACHE、PROJCACHE-LEGACY、SCHED、KV-SQLITE | N1 | workspace 权威；其余派生 | 永久/可重建 | 派生与权威同目录；legacy 无清理；schedule 落点 U |
+| **旁表与 KV 域** | WORKSPACE、PROJCACHE、PROJCACHE-LEGACY、SCHED、KV-SQLITE | N1 | workspace 权威；其余派生 | 永久/可重建 | 派生与权威同目录；legacy 无清理；schedule 落点 U |
 | **两类不可变对象** | ATT-OBJ、ATT-FILEOBJ、ATT-REQ、ATT-FILES、ATT-TMP、ATT-CACHE | N1 | 内容寻址对象 | 永久 | 无 GC；日志删除即孤儿 |
 | **组合/设置** | PROFILES、PROFILE-NM、SETTINGS-LEGACY | N1 | profile | 永久 | 迁移一次性；patch pin 字段；无跨 profile |
 | **秘密** | CREDS、CREDS-BAK、ENV-USER | N1 | provider | 永久 | 同 uid 可读；备份含历史值 |
@@ -77,7 +77,7 @@
 
 ## 表 L4：原生时间线（压缩）
 
-22 个关键事件在 [09 原生数据历史](./09-native-data-history.md)；44 条完整清单在 [research-native](../05-evidence/research-native.md#5-附录44-事件清单)。关键节点：2026-06 会话持久化 → 2026-07 home 单根/settings seam/domain KV 提案 → 2026-07-22 持久附件 → 2026-08-19 per-record 投影缓存 → 2026-08-27 handle 持久化 → 2026-08-31 已发布格式流式迁移 → 2026-09-08 present 只记路径 → 2026-09-19 settings 并入 profile patch → 2026-10-09 存储凭据优先。
+22 个关键事件在 [09 原生数据历史](./06-native-data-history.md)；44 条完整清单在 [research-native](../05-evidence/research-native.md#5-附录44-事件清单)。关键节点：2026-06 会话持久化 → 2026-07 home 单根/settings seam/domain KV 提案 → 2026-07-22 持久附件 → 2026-08-19 per-record 投影缓存 → 2026-08-27 handle 持久化 → 2026-08-31 已发布格式流式迁移 → 2026-09-08 present 只记路径 → 2026-09-19 settings 并入 profile patch → 2026-10-09 存储凭据优先。
 
 ## 十个原生观察
 
@@ -94,7 +94,7 @@
 
 ## 外部参考
 
-外部插件/社区模式**不进入这张原生图**，统一放在 [10 外部插件模式](../03-external/10-external-plugin-patterns.md)，并明确标注“参考，不作长期依赖”。长期优先 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
+外部插件/社区模式**不进入这张原生图**，统一放在 [10 外部插件模式](../03-external/09-external-plugin-patterns.md)，并明确标注“参考，不作长期依赖”。长期优先 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
 
 ## 边界
 

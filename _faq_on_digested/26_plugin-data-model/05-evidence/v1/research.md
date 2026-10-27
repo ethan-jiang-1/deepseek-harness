@@ -1,8 +1,8 @@
 # Research v1 · 外部核验底稿（历史记录）
 
-> **v1 历史记录**：记录第一轮外部核验；当前版本见 [research-external](../research-external.md) 与 [10 外部插件模式](../../03-external/10-external-plugin-patterns.md)。不要把它当当前合同。
+> **v1 历史记录**：记录第一轮外部核验；**编号为 v1 当时**。当前版本见 [research-external](../research-external.md) 与 [09 外部插件模式](../../03-external/09-external-plugin-patterns.md)。不要把它当当前合同。
 
-这一份是 [06](../../03-external/06-external-community-patterns.md) 与 [07](../../03-external/07-external-adjacent-ecosystems.md) 的底稿，记录“读到了什么、核到什么程度、哪些没确认”。正文只保留结论；这里保留来源与反例，方便下次复核。
+这一份是 [06](../../03-external/07-external-community-patterns.md) 与 [07](../../03-external/08-external-adjacent-ecosystems.md) 的底稿，记录“读到了什么、核到什么程度、哪些没确认”。正文只保留结论；这里保留来源与反例，方便下次复核。
 
 ## 方法与边界
 

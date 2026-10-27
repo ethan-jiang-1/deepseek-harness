@@ -4,7 +4,7 @@
 
 用户口中的“artifact / 产物”在 DSH 里对应什么？为什么 `present` 只记路径？附件库和 `present` 有什么区别？什么时候该用 spill？把文件写到哪里，用户才能找得到？
 
-![产物的引用与导出](../figures/03-artifact-refs.svg)
+![产物的引用与导出](../figures/04-artifact-refs.svg)
 
 ## 先给结论
 
@@ -112,4 +112,4 @@ Web 的 `/export`（或 Session Header 的 Download session log）会把会话�
 - 附件的清理/保留策略是后端/部署的事；本地后端目前不清理，也没有“永久归档”的承诺。
 - spill 的保留期与清理策略由后端决定；不要把 locator 当长期 URL。
 - 会话导出是 Web 能力；headless/SDK 组合不一定挂载它。
-- 删除/保留是系统性空白：session 无删除 API、附件无 GC、插件无卸载契约；外部插件有物理删日志/改 header 的补丁（E1，参考），但那是高风险反模式（见 10）。
+- 删除/保留是系统性空白：session 无删除 API、附件无 GC、插件无卸载契约；外部插件有物理删日志/改 header 的补丁（E1，参考），但那是高风险反模式（见 09）。

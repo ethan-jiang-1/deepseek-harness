@@ -20,7 +20,7 @@
 | **E1 外部社区插件** | 第三方仓库/包 | 只借模式；短期用要写清依赖/迁移/卸载 |
 | **E2 外部服务** | MCP/HTTP/DB/对象存储 | 没有原生替代时短期用 |
 
-08 只放原生；10 只放外部，并给「外部模式 → 原生替代」；11 的路线表标 N0/N1/N+/E。
+05 只放原生；09 只放外部，并给「外部模式 → 原生替代」；11 的路线表标 N0/N1/N+/E。
 
 ## 一页决策画布
 
@@ -28,14 +28,14 @@
 
 | 格 | 问题 | 去哪里找 |
 |---|---|---|
-| 权威 | 用户、会话、插件、provider、没人（派生）、外部？ | [01 五个家](01-foundations/01-five-homes.md) |
-| 对象/作用域 | 这次会话、这个项目、这个人、这台机器、这个安装？ | [03 作用域与键](01-foundations/03-scope-and-keys.md) |
-| 寿命 | turn、session、project、account、forever、rebuildable？ | [01](01-foundations/01-five-homes.md) / [09 历史](02-native/09-native-data-history.md) |
-| 读写者 | 模型、用户、插件、浏览器、没人？ | [01](01-foundations/01-five-homes.md) |
-| 敏感性 | 是否秘密？是否可上传？ | [02 状态的家](01-foundations/02-state-homes.md) |
-| 规模/频率 | 一次多大、多频繁、是否点更新？ | [02](01-foundations/02-state-homes.md) |
-| 可移植/同步 | 换机器/多设备/团队要带走吗？ | [11 参考架构](04-advisor/11-native-reference-architectures.md) |
-| 可重建/清理 | 删了会不会丢？卸载留什么？ | [05 决策程序](04-advisor/05-checklist.md) |
+| 权威 | 用户、会话、插件、provider、没人（派生）、外部？ | [01 五个家](./01-foundations/01-five-homes.md) |
+| 对象/作用域 | 这次会话、这个项目、这个人、这台机器、这个安装？ | [03 作用域与键](./01-foundations/03-scope-and-keys.md) |
+| 寿命 | turn、session、project、account、forever、rebuildable？ | [01](./01-foundations/01-five-homes.md) / [06 历史](./02-native/06-native-data-history.md) |
+| 读写者 | 模型、用户、插件、浏览器、没人？ | [01](./01-foundations/01-five-homes.md) |
+| 敏感性 | 是否秘密？是否可上传？ | [02 状态的家](./01-foundations/02-state-homes.md) |
+| 规模/频率 | 一次多大、多频繁、是否点更新？ | [02](./01-foundations/02-state-homes.md) |
+| 可移植/同步 | 换机器/多设备/团队要带走吗？ | [11 参考架构](./04-advisor/11-native-reference-architectures.md) |
+| 可重建/清理 | 删了会不会丢？卸载留什么？ | [10 决策程序](./04-advisor/10-checklist.md) |
 
 ## 十条 advisor 原则
 
@@ -54,30 +54,30 @@
 
 | Archetype | 原生首选（N0/N1） | 可借模式（N+） | 外部参考（E） | 细读 |
 |---|---|---|---|---|
-| 项目记忆 | 项目文件 + `ctx.fs` | journal+render、锁内备份 | project-context | [11 §1](04-advisor/11-native-reference-architectures.md#1-项目记忆journal--render) |
-| 个人长期记忆 | `ctx.storageDomain` / 项目文件 | 条目 id、确认队列 | memory-evolve、graphmemory | [11 §2](04-advisor/11-native-reference-architectures.md#2-个人长期记忆home-ledger--sqlite--向量) |
-| 会话归档/删除 | **GAP**（无 delete） | 宽限+审计 | archive-retention | [11 §3](04-advisor/11-native-reference-architectures.md#3-会话归档--删除--保留) |
-| KB/RAG | `ctx.storageDomain` + sqlite backend | 每 KB SQLite、软删/compact | kb-manager | [11 §4](04-advisor/11-native-reference-architectures.md#4-知识库--rag) |
-| 任务/目标 | session 事件/投影、home 域 | 状态机、跨标签同步 | task-board | [11 §5](04-advisor/11-native-reference-architectures.md#5-任务--待办--目标状态) |
-| 交付物 | 工作区文件 + `present` | 项目导出目录 | artifact 服务 | [11 §6](04-advisor/11-native-reference-architectures.md#6-交付物--文档) |
-| 渠道/账号 | profile patch + `ctx.credentials` | 去重/路由表 | 外部账号 DB | [11 §7](04-advisor/11-native-reference-architectures.md#7-渠道--账号集成) |
-| 每项目运行时 | **GAP**（无 per-workspace scope） | read-only 配置 + lease | workspace-overlay | [11 §8](04-advisor/11-native-reference-architectures.md#8-每项目运行时) |
-| 客户端 UI | localStorage / `SessionProjectionMap` | host 文件迁移、版本键 | beauty-persist | [11 §9](04-advisor/11-native-reference-architectures.md#9-客户端-ui-状态) |
-| 同步/备份 | `/export` ZIP | 用户 git、冲突三选一 | 外部同步服务 | [11 §10](04-advisor/11-native-reference-architectures.md#10-同步--备份) |
+| 项目记忆 | 项目文件 + `ctx.fs` | journal+render、锁内备份 | project-context | [11 §1](./04-advisor/11-native-reference-architectures.md#1-项目记忆journal--render) |
+| 个人长期记忆 | `ctx.storageDomain` / 项目文件 | 条目 id、确认队列 | memory-evolve、graphmemory | [11 §2](./04-advisor/11-native-reference-architectures.md#2-个人长期记忆home-ledger--sqlite--向量) |
+| 会话归档/删除 | **GAP**（无 delete） | 宽限+审计 | archive-retention | [11 §3](./04-advisor/11-native-reference-architectures.md#3-会话归档--删除--保留) |
+| KB/RAG | `ctx.storageDomain` + sqlite backend | 每 KB SQLite、软删/compact | kb-manager | [11 §4](./04-advisor/11-native-reference-architectures.md#4-知识库--rag) |
+| 任务/目标 | session 事件/投影、home 域 | 状态机、跨标签同步 | task-board | [11 §5](./04-advisor/11-native-reference-architectures.md#5-任务--待办--目标状态) |
+| 交付物 | 工作区文件 + `present` | 项目导出目录 | artifact 服务 | [11 §6](./04-advisor/11-native-reference-architectures.md#6-交付物--文档) |
+| 渠道/账号 | profile patch + `ctx.credentials` | 去重/路由表 | 外部账号 DB | [11 §7](./04-advisor/11-native-reference-architectures.md#7-渠道--账号集成) |
+| 每项目运行时 | **GAP**（无 per-workspace scope） | read-only 配置 + lease | workspace-overlay | [11 §8](./04-advisor/11-native-reference-architectures.md#8-每项目运行时) |
+| 客户端 UI | localStorage / `SessionProjectionMap` | host 文件迁移、版本键 | beauty-persist | [11 §9](./04-advisor/11-native-reference-architectures.md#9-客户端-ui-状态) |
+| 同步/备份 | `/export` ZIP | 用户 git、冲突三选一 | 外部同步服务 | [11 §10](./04-advisor/11-native-reference-architectures.md#10-同步--备份) |
 
 ## 按问题快速分流
 
 | 你的问题 | 先读 | 再读 |
 |---|---|---|
-| 用户要打开/编辑/带走一份文件 | [04 产物](01-foundations/04-artifacts.md) | [11 §6](04-advisor/11-native-reference-architectures.md#6-交付物--文档) |
-| 跨会话统计/用量面板 | [01 历史家](01-foundations/01-five-homes.md) | [08 原生 landscape](02-native/08-native-data-landscape.md) |
-| 项目级插件状态/索引 | [03 作用域与键](01-foundations/03-scope-and-keys.md) | [11 §1](04-advisor/11-native-reference-architectures.md#1-项目记忆journal--render) |
-| 个人偏好/默认值 | [02 状态的家](01-foundations/02-state-homes.md) | [11 §7](04-advisor/11-native-reference-architectures.md#7-渠道--账号集成) |
-| API key / token | [02 状态的家](01-foundations/02-state-homes.md) | [09 历史](02-native/09-native-data-history.md) 的凭据部分 |
-| 删除/保留/卸载 | [05 决策程序](04-advisor/05-checklist.md) | [11 §3](04-advisor/11-native-reference-architectures.md#3-会话归档--删除--保留) |
-| 每项目一套 MCP/配置 | [03 作用域与键](01-foundations/03-scope-and-keys.md) | [10 外部案例](03-external/10-external-plugin-patterns.md) |
-| 面板宽度/折叠/快捷键 | [01 客户端家](01-foundations/01-five-homes.md) | [11 §9](04-advisor/11-native-reference-architectures.md#9-客户端-ui-状态) |
-| 要选一套架构 | [05 决策程序](04-advisor/05-checklist.md) | [11 参考架构](04-advisor/11-native-reference-architectures.md) |
+| 用户要打开/编辑/带走一份文件 | [04 产物](./01-foundations/04-artifacts.md) | [11 §6](./04-advisor/11-native-reference-architectures.md#6-交付物--文档) |
+| 跨会话统计/用量面板 | [01 历史家](./01-foundations/01-five-homes.md) | [05 原生 landscape](./02-native/05-native-data-landscape.md) |
+| 项目级插件状态/索引 | [03 作用域与键](./01-foundations/03-scope-and-keys.md) | [11 §1](./04-advisor/11-native-reference-architectures.md#1-项目记忆journal--render) |
+| 个人偏好/默认值 | [02 状态的家](./01-foundations/02-state-homes.md) | [11 §7](./04-advisor/11-native-reference-architectures.md#7-渠道--账号集成) |
+| API key / token | [02 状态的家](./01-foundations/02-state-homes.md) | [06 历史](./02-native/06-native-data-history.md) 的凭据部分 |
+| 删除/保留/卸载 | [10 决策程序](./04-advisor/10-checklist.md) | [11 §3](./04-advisor/11-native-reference-architectures.md#3-会话归档--删除--保留) |
+| 每项目一套 MCP/配置 | [03 作用域与键](./01-foundations/03-scope-and-keys.md) | [09 外部案例](./03-external/09-external-plugin-patterns.md) |
+| 面板宽度/折叠/快捷键 | [01 客户端家](./01-foundations/01-five-homes.md) | [11 §9](./04-advisor/11-native-reference-architectures.md#9-客户端-ui-状态) |
+| 要选一套架构 | [10 决策程序](./04-advisor/10-checklist.md) | [11 参考架构](./04-advisor/11-native-reference-architectures.md) |
 
 ## 反模式 Top 10
 
@@ -94,21 +94,21 @@
 
 ## 阅读路线
 
-- **插件作者（30 分钟）**：[00-answer](00-answer.md) → [05 决策程序](04-advisor/05-checklist.md) → [11 参考架构](04-advisor/11-native-reference-architectures.md) 对应 archetype。
-- **架构/维护者（2 小时）**：[08 原生 landscape](02-native/08-native-data-landscape.md) → [09 原生历史](02-native/09-native-data-history.md) → [11 参考架构](04-advisor/11-native-reference-architectures.md)；外部只读 [06](03-external/06-external-community-patterns.md)/[07](03-external/07-external-adjacent-ecosystems.md)/[10](03-external/10-external-plugin-patterns.md)。
-- **Agent 要做一次数据决策**：直接读 [05 决策程序](04-advisor/05-checklist.md) 的十八问 + 数据卡，再按 archetype 跳 [11](04-advisor/11-native-reference-architectures.md)。
-- **只想看结论**：[00-answer](00-answer.md)。
+- **插件作者（30 分钟）**：[00-answer](./00-answer.md) → [10 决策程序](./04-advisor/10-checklist.md) → [11 参考架构](./04-advisor/11-native-reference-architectures.md) 对应 archetype。
+- **架构/维护者（2 小时）**：[05 原生 landscape](./02-native/05-native-data-landscape.md) → [06 原生历史](./02-native/06-native-data-history.md) → [11 参考架构](./04-advisor/11-native-reference-architectures.md)；外部只读 [07](./03-external/07-external-community-patterns.md)/[08](./03-external/08-external-adjacent-ecosystems.md)/[09](./03-external/09-external-plugin-patterns.md)。
+- **Agent 要做一次数据决策**：直接读 [10 决策程序](./04-advisor/10-checklist.md) 的十八问 + 数据卡，再按 archetype 跳 [11](./04-advisor/11-native-reference-architectures.md)。
+- **只想看结论**：[00-answer](./00-answer.md)。
 
 ## Agent 使用方式（可直接照做）
 
 1. **填八格**：权威 / 作用域 / 寿命 / 读写者 / 敏感性 / 规模 / 可移植 / 可重建。
-2. **过十八问**：用 [05 决策程序](04-advisor/05-checklist.md) 逐条问，不要先选 API。
-3. **选 archetype**：在上面的快速索引里找最接近的一个；读 [11](04-advisor/11-native-reference-architectures.md) 对应小节，至少比较两条路线。
-4. **写数据卡**：用 05 的模板写清“数据在哪、谁删、卸载留什么、怎么迁移”。
+2. **过十八问**：用 [10 决策程序](./04-advisor/10-checklist.md) 逐条问，不要先选 API。
+3. **选 archetype**：在上面的快速索引里找最接近的一个；读 [11](./04-advisor/11-native-reference-architectures.md) 对应小节，至少比较两条路线。
+4. **写数据卡**：用 10 的模板写清“数据在哪、谁删、卸载留什么、怎么迁移”。
 5. **过反模式**：对照下面的 Top 10；如果命中，回到第 1 步。
 6. **标证据**：C/H/P/S/R/U；不要把 README 当合同。
 
-输出可以只有一页：数据卡 + 选中的路线 + 代价 + 未确认项。需要展开时再读 08/09/10。
+输出可以只有一页：数据卡 + 选中的路线 + 代价 + 未确认项。需要展开时再读 05/06/09。
 
 ## 目录结构
 
@@ -123,14 +123,14 @@
 │   ├── 03-scope-and-keys.md
 │   └── 04-artifacts.md
 ├── 02-native/                  # DSH 原生
-│   ├── 08-native-data-landscape.md
-│   └── 09-native-data-history.md
+│   ├── 05-native-data-landscape.md
+│   └── 06-native-data-history.md
 ├── 03-external/                # 外部参考
-│   ├── 06-external-community-patterns.md
-│   ├── 07-external-adjacent-ecosystems.md
-│   └── 10-external-plugin-patterns.md
+│   ├── 07-external-community-patterns.md
+│   ├── 08-external-adjacent-ecosystems.md
+│   └── 09-external-plugin-patterns.md
 ├── 04-advisor/                 # 决策与骨架
-│   ├── 05-checklist.md
+│   ├── 10-checklist.md
 │   └── 11-native-reference-architectures.md
 ├── 05-evidence/                # 证据
 │   ├── reference.md
@@ -146,25 +146,37 @@
 
 | # | 文件 | 作用 |
 |---|---|---|
-| 00 | [00-answer](00-answer.md) | 一分钟结论、五种承诺、四种解法、快问快答 |
-| 01 | [01 五个家](01-foundations/01-five-homes.md) | 内容/历史/状态/派生/客户端 + 只读层 |
-| 02 | [02 状态的家](01-foundations/02-state-homes.md) | domain / settings / credentials |
-| 03 | [03 作用域与键](01-foundations/03-scope-and-keys.md) | session/workspace/profile/home/device + 键 |
-| 04 | [04 产物](01-foundations/04-artifacts.md) | present / changes / attachments / spill / export |
-| 05 | [05 决策程序](04-advisor/05-checklist.md) | 十八问 + 数据卡 + 反模式 + 测试 |
-| 06 | [06 外部社区模式](03-external/06-external-community-patterns.md) | 九个维度、十八种手法（E1 参考） |
-| 07 | [07 外部生态对照](03-external/07-external-adjacent-ecosystems.md) | VS Code / Obsidian / Claude Code 等 |
-| 08 | [08 原生 landscape](02-native/08-native-data-landscape.md) | 33 个原生家、12 archetype、N0/N1/N2 |
-| 09 | [09 原生历史](02-native/09-native-data-history.md) | 22 个关键事件、12 个数据簇、欠账 |
-| 10 | [10 外部插件案例](03-external/10-external-plugin-patterns.md) | 15 个深读、反模式（E1 参考） |
-| 11 | [11 原生参考架构](04-advisor/11-native-reference-architectures.md) | 10 个 archetype 的数据卡与路线 |
-| — | [证据入口](05-evidence/reference.md) | reference、research、review、quality review |
+| 00q | [00-question](./00-question.md) | 问题从哪来、为什么不能一句话回答 |
+| 00 | [00-answer](./00-answer.md) | 一分钟结论、五种承诺、四种解法、快问快答 |
+| 01 | [01 五个家](./01-foundations/01-five-homes.md) | 内容/历史/状态/派生/客户端 + 只读层 |
+| 02 | [02 状态的家](./01-foundations/02-state-homes.md) | domain / settings / credentials |
+| 03 | [03 作用域与键](./01-foundations/03-scope-and-keys.md) | session/workspace/profile/home/device + 键 |
+| 04 | [04 产物](./01-foundations/04-artifacts.md) | present / changes / attachments / spill / export |
+| 05 | [05 原生 landscape](./02-native/05-native-data-landscape.md) | 33 个原生家、12 archetype、N0/N1/N2 |
+| 06 | [06 原生历史](./02-native/06-native-data-history.md) | 22 个关键事件、12 个数据簇、欠账 |
+| 07 | [07 外部社区模式](./03-external/07-external-community-patterns.md) | 九个维度、十八种手法（E1 参考） |
+| 08 | [08 外部生态对照](./03-external/08-external-adjacent-ecosystems.md) | VS Code / Obsidian / Claude Code 等 |
+| 09 | [09 外部插件案例](./03-external/09-external-plugin-patterns.md) | 15 个深读、反模式（E1 参考） |
+| 10 | [10 决策程序](./04-advisor/10-checklist.md) | 十八问 + 数据卡 + 反模式 + 测试 |
+| 11 | [11 原生参考架构](./04-advisor/11-native-reference-architectures.md) | 10 个 archetype 的数据卡与路线 |
+| — | [证据入口](./05-evidence/reference.md) | reference、research、review、quality review |
+
+## 术语
+
+| 词 | 含义 |
+|---|---|
+| **家（平面）** | 一个存储落点：内容 / 历史 / 状态 / 派生 / 客户端 / 外部 / OS 临时；每个家有权威、作用域和寿命 |
+| **权威** | 冲突时谁说了算；一份事实只能有一个权威 |
+| **派生** | 从权威算出来、丢了能重建的数据（投影、索引、缓存） |
+| **承诺** | 作者对用户说的话：记住什么、在哪、删了/换机器/升级后还算不算数 |
+| **N0 / N1 / N2** | DSH 原生：核心合同 / 官方随包插件 / experimental |
+| **E1 / E2** | 外部：社区插件 / 外部服务；只借模式，不作长期依赖 |
 
 ## 证据等级
 
 **C** 当前合同（docs/源码/测试） · **H** 历史事实（Note/旧文档） · **P** 提案（未实现） · **S** 第三方源码阅读 · **R** README/作者声明 · **U** 未确认。
 
-只有 C 能写成“DSH 现在如何”；H 只能写“当时如何”；P 不能当已实现；S/R/U 不能冒充合同。完整来源见 [reference](05-evidence/reference.md) 与 [research-native](05-evidence/research-native.md) / [research-external](05-evidence/research-external.md)；本轮结构/一致性自查见 [quality-review](05-evidence/quality-review.md)，v1/v2 历史见 `05-evidence/v1/`、`05-evidence/v2/`。
+只有 C 能写成“DSH 现在如何”；H 只能写“当时如何”；P 不能当已实现；S/R/U 不能冒充合同。完整来源见 [reference](./05-evidence/reference.md) 与 [research-native](./05-evidence/research-native.md) / [research-external](./05-evidence/research-external.md)；本轮结构/一致性自查见 [quality-review](./05-evidence/quality-review.md)，v1/v2 历史见 `05-evidence/v1/`、`05-evidence/v2/`。
 
 ## 边界
 

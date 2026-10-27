@@ -2,13 +2,14 @@
 
 ## 一分钟结论
 
-“插件的数据放哪”之所以难，是因为它把三个独立问题压成了一句：
+“插件的数据放哪”之所以难，是因为它把四个独立问题压成了一句：
 
 1. **谁拥有它？** 用户、会话、插件、没人（可重建），还是浏览器/设备？
 2. **它是关于谁的？** 这一次调用、这次会话、这个项目、这个人/这台机器，还是这个安装？
-3. **它必须活多久、被谁看见？** 一轮、一会话、一个项目、一个账号；模型、用户、插件、浏览器，还是没人？
+3. **它必须活多久？** 一轮、一会话、一个项目、一个账号，还是永久/可重建？
+4. **谁必须看见它？** 模型、用户、插件、浏览器，还是没人？
 
-这三个坐标定了，DSH 的家、作用域和键基本就定了。反过来先挑 API，最后一定会出现“放哪都不对”的感觉。
+这四个坐标定了，DSH 的家、作用域和键基本就定了。反过来先挑 API，最后一定会出现“放哪都不对”的感觉。
 
 先给一条能覆盖大多数情况的规则：
 
@@ -41,7 +42,7 @@
 
 会话日志和派生物不在这张表里：日志是“这次对话”的追加事实，派生层没有权威。它们与上表正交。
 
-![所有权与作用域](./figures/06-ownership-matrix.svg)
+![所有权与作用域](./figures/00-ownership-matrix.svg)
 
 ## 五种“数据承诺”
 
@@ -55,7 +56,7 @@
 | **P3 宿主账本** | 我按项目记，但东西在我这 | `$DSH_HOME` + 项目键 | `dsh-workspace-memories`：按 workspace 存 Markdown | 孤儿、换机器丢、用户看不见 |
 | **P4 账号/安装配置** | 配一次，所有项目生效 | profile 配置 / home 域 / 凭据 | 渠道插件：`defaultWorkspace` + 凭据引用 | profile 不是账号；一个默认值套所有项目；秘密风险 |
 
-（P2 有两个根：项目内文件删项目就没；用户全局文件（`$DSH_HOME/AGENTS.md`、`skills/`、`~/.agents`）跟 home 或共享根走，主要供用户维护、插件只读。P5“每项目一套运行时”不是数据承诺，是运行时缺口；外部插件（E1）用 `workspaceCordis` 自己补，见 06 篇。）
+（P2 有两个根：项目内文件删项目就没；用户全局文件（`$DSH_HOME/AGENTS.md`、`skills/`、`~/.agents`）跟 home 或共享根走，主要供用户维护、插件只读。P5“每项目一套运行时”不是数据承诺，是运行时缺口；外部插件（E1）用 `workspaceCordis` 自己补，见 09 篇。）
 
 ## 同一份数据，四种都成立的解法
 
@@ -80,7 +81,7 @@
 | P3 宿主账本 | 状态 | workspace 键（存 home） | `ctx.storageDomain` | 否 | 留孤儿，需清理 |
 | P4 账号配置 | 状态 + 凭据 | profile / home | `Config.volatile()` / `credentials` | 设置页 | 随 profile 或 home |
 
-## 先站到作者的位置：六个问题
+## 先站到作者的位置：作者六问
 
 按作者真实的设计顺序问，而不是按 DSH 的架构问：
 
@@ -107,9 +108,9 @@
 - **journal 权威 + 渲染派生**：`memory.jsonl` 追加写是权威，`MEMORY.md` 只是渲染；锁内备份、崩溃只落后不丢。
 - **用 git 做同步**：记忆推到代码仓库的专属分支或独立记忆仓库；写路径仍然本地即时，同步是显式批处理。
 
-完整的九个维度、十八种手法和已核出的坑，见 [06 篇](./03-external/06-external-community-patterns.md)（外部参考）。DSH 原生历史见 [09 篇](./02-native/09-native-data-history.md)，外部插件模式见 [10 篇](./03-external/10-external-plugin-patterns.md)（只作参考），原生优先的骨架见 [11 篇](./04-advisor/11-native-reference-architectures.md)。其他插件生态（VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma）怎么切同样的题，见 [07 篇](./03-external/07-external-adjacent-ecosystems.md)。
+完整的九个维度、十八种手法和已核出的坑，见 [07 篇](./03-external/07-external-community-patterns.md)（外部参考）。DSH 原生历史见 [06 篇](./02-native/06-native-data-history.md)，外部插件模式见 [09 篇](./03-external/09-external-plugin-patterns.md)（只作参考），原生优先的骨架见 [11 篇](./04-advisor/11-native-reference-architectures.md)。其他插件生态（VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma）怎么切同样的题，见 [08 篇](./03-external/08-external-adjacent-ecosystems.md)。
 
-## 你应该怎么选：七个问题
+## 你应该怎么选：选型七问
 
 ```text
 1. 用户已经有这份数据了吗？            是 → P0（引用它）
@@ -158,8 +159,8 @@
 
 ## 证据与边界
 
-- DSH 机制：`docs/subsystems/storage.md`、`session-projection.md`、`session-query.md`、`filesystem.md`、`settings.md`、`credentials.md`、`attachment.md`、`deliverables.md`、`spill.md`、`workspace.md`、`persistence.md`；历史见 [09](./02-native/09-native-data-history.md) 与 [research-native-v2](./05-evidence/research-native.md)。
+- DSH 机制：`docs/subsystems/storage.md`、`session-projection.md`、`session-query.md`、`filesystem.md`、`settings.md`、`credentials.md`、`attachment.md`、`deliverables.md`、`spill.md`、`workspace.md`、`persistence.md`；历史见 [06](./02-native/06-native-data-history.md) 与 [research-native](./05-evidence/research-native.md)。
 - 社区样本：[dsh-memory-snapshot](https://github.com/yzx4036/dsh-memory-snapshot)、[dsh-workspace-memories](https://github.com/lengfengng-tech/dsh-workspace-memories)、[dsh-memory-evolve](https://github.com/csyangwen/dsh-memory-evolve)、[dsh-graphmemory](https://github.com/meyaomiao/dsh-graphmemory)、[dsh-project-context](https://github.com/P02-1010751281/dsh-project-context)、[dsh-workspace-overlay](https://github.com/TTTPOB/dsh-workspace-overlay)、[dsh-custom-workspace](https://github.com/JeremyGuo/dsh-custom-workspace)、[harness-insights](https://github.com/mapan0424/deepseek-harness-plugins/tree/main/packages/harness-insights)。
-- 社区材料是**外部、未独立验证**的作者声明；2026-10-27 对其中九个仓库做过 README/源码阅读，发现三处与当前 DSH 不符的说法（详见 06 篇）。它们钉在 `0.1.x`/`0.2.x` 的不同 RC 上，不能当 DSH 的 API 合同。
+- 社区材料是**外部、未独立验证**的作者声明；2026-10-27 对其中九个仓库做过 README/源码阅读，发现三处与当前 DSH 不符的说法（详见 07 篇）。它们钉在 `0.1.x`/`0.2.x` 的不同 RC 上，不能当 DSH 的 API 合同。
 - “哪种承诺更好”是产品判断，不是 DSH 强制；同一插件可以组合 P0+P2（引用 + 项目内缓存）、P2+P1（项目文件 + 派生索引）。
 - 单 Host、单 `$DSH_HOME` 账户；多租户、跨机器同步、对象存储不在本篇范围。

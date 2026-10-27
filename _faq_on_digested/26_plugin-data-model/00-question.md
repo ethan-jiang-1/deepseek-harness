@@ -1,4 +1,4 @@
-# 26 · 插件的数据该放哪：DSH 的数据平面、作用域与“产物”到底怎么分？
+# 26 · 插件的数据该放哪：DSH 的数据家（平面）、作用域与“产物”到底怎么分？
 
 源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。本篇面向插件作者与测试作者，只讨论单 Host、单 `$DSH_HOME` 账户下的数据归属；多租户部署不在范围内。
 
@@ -41,12 +41,12 @@
 | Q3 | 宿主状态该用 domain、settings 还是 credential？各自的寿命、失败方式与迁移责任是什么？凭据记录又是什么？ | [02 状态的家](./01-foundations/02-state-homes.md) |
 | Q4 | 数据该按 session、workspace、profile 还是 home 切？跨 workspace 的插件用什么键？`workspaceId` 还是路径？ | [03 作用域与键](./01-foundations/03-scope-and-keys.md) |
 | Q5 | “产物 / artifact”在 DSH 里是什么？`present`、`workspace/changes`、附件、spill、会话导出各管哪一段？ | [04 产物不是副本](./01-foundations/04-artifacts.md) |
-| Q6 | 外部社区插件实际怎么做？哪些模式能借，哪些坑已经有人踩过？ | [06 外部社区模式（参考）](./03-external/06-external-community-patterns.md) |
-| Q7 | 别的插件生态（VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma）怎么切同一道题？哪些能迁移？ | [07 外部生态对照](./03-external/07-external-adjacent-ecosystems.md) |
-| Q8 | 给我一套可以直接照做的判断顺序、数据卡、例子和反模式清单。 | [05 决策程序](./04-advisor/05-checklist.md) |
-| Q9 | DSH 自己历史上为什么长成这些家？哪些是刻意、哪些是欠账？ | [09 原生历史](./02-native/09-native-data-history.md) |
-| Q10 | 外部复杂插件实际怎么补缺口？哪些能借、哪些是反模式？ | [10 外部插件模式](./03-external/10-external-plugin-patterns.md) |
-| Q11 | 有没有一张全景图和可照抄的参考架构？ | [08 原生 Landscape](./02-native/08-native-data-landscape.md) / [11 原生参考架构](./04-advisor/11-native-reference-architectures.md) |
+| Q6 | 外部社区插件实际怎么做？哪些模式能借，哪些坑已经有人踩过？ | [07 外部社区模式（参考）](./03-external/07-external-community-patterns.md) |
+| Q7 | 别的插件生态（VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma）怎么切同一道题？哪些能迁移？ | [08 外部生态对照](./03-external/08-external-adjacent-ecosystems.md) |
+| Q8 | 给我一套可以直接照做的判断顺序、数据卡、例子和反模式清单。 | [10 决策程序](./04-advisor/10-checklist.md) |
+| Q9 | DSH 自己历史上为什么长成这些家？哪些是刻意、哪些是欠账？ | [06 原生历史](./02-native/06-native-data-history.md) |
+| Q10 | 外部复杂插件实际怎么补缺口？哪些能借、哪些是反模式？ | [09 外部插件模式](./03-external/09-external-plugin-patterns.md) |
+| Q11 | 有没有一张全景图和可照抄的参考架构？ | [05 原生 Landscape](./02-native/05-native-data-landscape.md) / [11 原生参考架构](./04-advisor/11-native-reference-architectures.md) |
 
 ## 一句话预告
 
@@ -63,6 +63,6 @@
 
 ## 阅读顺序
 
-先读 [answer](./00-answer.md) 的“五种承诺”和“同一份数据，四种都成立的解法”，再读 [08 原生 Landscape](./02-native/08-native-data-landscape.md) 建立全景、[01](./01-foundations/01-five-homes.md) 理解五个家、[03](./01-foundations/03-scope-and-keys.md) 决定键；写持久状态时读 [02](./01-foundations/02-state-homes.md)；要交付文件时读 [04](./01-foundations/04-artifacts.md)；想知道 DSH 为什么长成这样，读 [09](./02-native/09-native-data-history.md)；想知道别人怎么做、踩过哪些坑，读 [06](./03-external/06-external-community-patterns.md) 与 [10](./03-external/10-external-plugin-patterns.md)；想跳出 DSH 看同类问题，读 [07](./03-external/07-external-adjacent-ecosystems.md)；最后用 [05](./04-advisor/05-checklist.md) 自查、用 [11](./04-advisor/11-native-reference-architectures.md) 选骨架。
+先读 [answer](./00-answer.md) 的“五种承诺”和“同一份数据，四种都成立的解法”，再读 [05 原生 Landscape](./02-native/05-native-data-landscape.md) 建立全景、[01](./01-foundations/01-five-homes.md) 理解五个家、[03](./01-foundations/03-scope-and-keys.md) 决定键；写持久状态时读 [02](./01-foundations/02-state-homes.md)；要交付文件时读 [04](./01-foundations/04-artifacts.md)；想知道 DSH 为什么长成这样，读 [06](./02-native/06-native-data-history.md)；想知道别人怎么做、踩过哪些坑，读 [07](./03-external/07-external-community-patterns.md) 与 [09](./03-external/09-external-plugin-patterns.md)；想跳出 DSH 看同类问题，读 [08](./03-external/08-external-adjacent-ecosystems.md)；最后用 [10](./04-advisor/10-checklist.md) 自查、用 [11](./04-advisor/11-native-reference-architectures.md) 选骨架。
 
-![五种数据承诺](./figures/04-author-promises.svg)
+![五种数据承诺](./figures/00-author-promises.svg)

@@ -1,5 +1,7 @@
 # Review v2 · 第二轮发现了什么、改了什么
 
+> **编号为 v2 当时的编号**（05–11）；重组后的编号见 [00-index](../../00-index.md)。本文件保留当时的叙述，链接已指向新路径。
+
 ## 文件命名：原生 vs 外部
 
 | 文件 | 内容 | 长期策略 |
@@ -80,12 +82,12 @@
 
 ## 改了什么
 
-- 新增 [08 原生 landscape](../../02-native/08-native-data-landscape.md)：七轴、12 archetype、33 个原生家、原生模式 × 成熟度、十个原生观察。
-- 新增 [09 原生历史](../../02-native/09-native-data-history.md)：22 个时间线事件、12 个数据簇、七个反复张力、欠账清单。
-- 新增 [10 外部插件模式](../../03-external/10-external-plugin-patterns.md)：15 个案例、横向模式、五个“作者在补什么”、反模式。
+- 新增 [08 原生 landscape](../../02-native/05-native-data-landscape.md)：七轴、12 archetype、33 个原生家、原生模式 × 成熟度、十个原生观察。
+- 新增 [09 原生历史](../../02-native/06-native-data-history.md)：22 个时间线事件、12 个数据簇、七个反复张力、欠账清单。
+- 新增 [10 外部插件模式](../../03-external/09-external-plugin-patterns.md)：15 个案例、横向模式、五个“作者在补什么”、反模式。
 - 新增 [11 原生参考架构](../../04-advisor/11-native-reference-architectures.md)：10 个 archetype 的数据卡/布局/路线/测试/DSH 映射。
 - 新增 [research-native](../research-native.md) 与 [research-external](../research-external.md)：原生/外部两套证据。
-- 更新 [answer.md](../../00-answer.md)、[01](../../01-foundations/01-five-homes.md)、[02](../../01-foundations/02-state-homes.md)、[03](../../01-foundations/03-scope-and-keys.md)、[04](../../01-foundations/04-artifacts.md)、[05](../../04-advisor/05-checklist.md)：补历史注脚、profile/account 区分、无插件数据根、无 session 删除、附件 GC 刻意、client 两层、workspace 无核心家。
+- 更新 [answer.md](../../00-answer.md)、[01](../../01-foundations/01-five-homes.md)、[02](../../01-foundations/02-state-homes.md)、[03](../../01-foundations/03-scope-and-keys.md)、[04](../../01-foundations/04-artifacts.md)、[05](../../04-advisor/10-checklist.md)：补历史注脚、profile/account 区分、无插件数据根、无 session 删除、附件 GC 刻意、client 两层、workspace 无核心家。
 - 图：`08-native-landscape.svg`、`09-native-timeline.svg`、`10-external-market-map.svg`、`11-native-reference-architectures.svg`。
 
 ## 仍然开放

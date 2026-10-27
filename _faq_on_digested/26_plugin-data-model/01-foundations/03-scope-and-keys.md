@@ -4,7 +4,7 @@
 
 插件实例只有一份，但要服务多个 workspace、多个会话、多个项目。数据怎么切？项目级状态用什么键？`workspaceId` 行不行？目录被删了、被移了、工作区被重新添加了，会发生什么？
 
-![作用域矩阵](../figures/02-scope-matrix.svg)
+![作用域矩阵](../figures/03-scope-matrix.svg)
 
 ## 六个作用域
 
@@ -35,7 +35,7 @@
 
 shipped Web 组合挂载 `workspaceRegistry`；headless/SDK 组合可能没有它。插件要用就先 `inject` 并处理缺失，不要把“没有注册表”当成“没有项目”。
 
-外部社区插件（E1，参考）补“每项目一套运行时”的做法是另一个服务：`dsh-workspace-overlay` 注册 `ctx.workspaceCordis`，用 canonical path 做 lease，最后一个租约释放时 dispose scope。它不是核心 API，不能当 DSH 的合同（见 06 篇）。
+外部社区插件（E1，参考）补“每项目一套运行时”的做法是另一个服务：`dsh-workspace-overlay` 注册 `ctx.workspaceCordis`，用 canonical path 做 lease，最后一个租约释放时 dispose scope。它不是核心 API，不能当 DSH 的合同（见 07 篇）。
 
 ## 工作区的身份：id 短命，路径长命，但都不完美
 
@@ -190,5 +190,4 @@ single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分
 - 工作区路径可能是仓库的子目录，不等于 git 根；技能发现用的是“最近的 `.git` 祖先”，不要混用这两个概念。
 - `session.header.cwd` 不可变，所以会话的**项目归属**不会跟着 `working_directory` 变；当前工作目录可以改，但 workspace 成员与项目分组仍锚定 header.cwd。跨项目迁移只能新建会话（外部插件有直接改日志 header 的做法；E1，风险自负）。
 - `ctx.workspaceRegistry` 是可选能力；不要假设每个组合都有。
-- `header.cwd` 不可变，但 `working_directory` 可改；“把会话搬到另一个项目”不是受支持操作，跨项目迁移只能新建会话。
 - session 日志有跨进程写租约；domain JSON 没有。两者不要混为一谈。

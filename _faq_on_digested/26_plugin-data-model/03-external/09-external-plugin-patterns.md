@@ -1,14 +1,14 @@
-# 10 · 外部插件模式（参考）：15 个复杂插件在补什么缺口
+# 09 · 外部插件模式（参考）：15 个复杂插件在补什么缺口
 
 ## 这一篇回答什么
 
 **这一篇只讲外部插件，长期不作依赖。** 不是“哪个插件好”，而是：**它们把 DSH 的哪个数据缺口补成了事实标准？哪些模式可以借，哪些只是权宜？**
 
-外部插件分两级：**E1 外部社区插件**（第三方仓库/包）；**E2 外部服务**（MCP/HTTP/DB/对象存储）。长期策略：优先 [08 原生 landscape](../02-native/08-native-data-landscape.md) 的 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
+外部插件分两级：**E1 外部社区插件**（第三方仓库/包）；**E2 外部服务**（MCP/HTTP/DB/对象存储）。长期策略：优先 [08 原生 landscape](../02-native/05-native-data-landscape.md) 的 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
 
 **口径。** 2026-10-27 对约 100 个候选做了目录/README 扫描（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55），选 15 个深读。**没有安装、没有运行**；S = 读过源码，R = README/作者声明，U = 未确认。样本不是 census。所有结论只描述外部插件，不是 DSH 合同。
 
-![外部插件样本 × 数据家](../figures/10-external-market-map.svg)
+![外部插件样本 × 数据家](../figures/09-external-market-map.svg)
 
 ## 外部模式 → 原生替代
 

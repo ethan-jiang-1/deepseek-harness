@@ -2,7 +2,7 @@
 
 复核日期：2026-10-27。
 
-> **v1 历史记录**：当前版本见 [review-v2](../v2/review.md)；本文件的计数/链接是当时的快照。基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。
+> **v1 历史记录**：**编号为 v1 当时**；当前版本见 [review-v2](../v2/review.md)。本文件的计数/链接是当时的快照。基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。
 
 ## 结论
 
@@ -37,9 +37,9 @@
 - [02-state-homes.md](../../01-foundations/02-state-homes.md)：domain/settings/credentials 三者的精确边界；补凭据记录、profile 作用域、立即应用、后端限制。
 - [03-scope-and-keys.md](../../01-foundations/03-scope-and-keys.md)：作用域表扩到 session/workspace/profile/home/client/external；补键的代数、per-record 键限制、目录移动矩阵。
 - [04-artifacts.md](../../01-foundations/04-artifacts.md)：五种引用/导出；修正附件寿命、changes 位置、present 上限。
-- [05-checklist.md](../../04-advisor/05-checklist.md)：十四问 + 数据卡 + 五个例子 + 反模式 + 测试。
-- [06-external-community-patterns.md](../../03-external/06-external-community-patterns.md)：九个维度 + 十五种手法 + 三处版本漂移 + 产品缺口。
-- [07-external-adjacent-ecosystems.md](../../03-external/07-external-adjacent-ecosystems.md)：新增跨生态对照。
+- [05-checklist.md](../../04-advisor/10-checklist.md)：十四问 + 数据卡 + 五个例子 + 反模式 + 测试。
+- [06-external-community-patterns.md](../../03-external/07-external-community-patterns.md)：九个维度 + 十五种手法 + 三处版本漂移 + 产品缺口。
+- [07-external-adjacent-ecosystems.md](../../03-external/08-external-adjacent-ecosystems.md)：新增跨生态对照。
 - [answer.md](../../00-answer.md)：三坐标、2×2、五种承诺、四种解法、决策树、快问快答。
 - [question.md](../../00-question.md)、[reference.md](../reference.md)、[00-index.md](../../../00-index.md)：同步更新。
 - 图：`01-five-homes.svg`（重画）、`02-scope-matrix.svg`（补客户端/修正附件）、`03-artifact-refs.svg`（标题/上限/保留）、`04-author-promises.svg`（P1/P4 文案）、`05-community-map.svg`（settings 缺口修正）、新增 `06-ownership-matrix.svg`、`07-ecosystem-matrix.svg`。

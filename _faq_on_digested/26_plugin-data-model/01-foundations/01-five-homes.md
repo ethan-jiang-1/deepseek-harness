@@ -26,14 +26,14 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 
 | 家 | 权威 | 典型位置 | 作用域 | 寿命 | 谁看得见 |
 |---|---|---|---|---|---|
-| **内容** | 用户 | 工作区目录、项目 `.agents/`、用户 `AGENTS.md`/`skills/` | workspace / 用户全局 | 跟目录/仓库 | 用户；模型经工具读 |
+| **内容** | 用户 | 工作区目录、项目内约定目录（如 `.agents/`，E1 约定）、用户 `AGENTS.md`/`skills/` | workspace / 用户全局 | 跟目录/仓库 | 用户；模型经工具读 |
 | **历史** | 会话 | `$DSH_HOME/sessions/…` | session | 跟会话；日志不删 | 模型（surface）、Host（log-only） |
 | **状态** | 插件 / 用户配置 / 凭据 provider | `$DSH_HOME/storages`、`profiles/`、`.credentials.yaml` | workspace 键 / profile / home | 跟 home 或 profile | 插件；用户经设置页 |
 | **派生** | 无 | 投影缓存、`session_projcache`、索引 | 跟源 | 可重建 | 间接 |
 | **客户端** | 浏览器 / 设备 | `localStorage`、`userData/` | 源（origin）/ 设备 | 跟浏览器配置 | 用户/浏览器；Host 看不到 |
 | **只读层** | npm 包 | profile 的 `node_modules` | 安装 | 升级替换 | 运行时读取；不写 |
 
-**原生优先。** 这些家里，N0 核心合同（session log、projections、fs、remote access）和 N1 随包插件（workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local）是长期依赖；N2 experimental 只参考；E1 外部插件/E2 外部服务只借模式（见 [10](../03-external/10-external-plugin-patterns.md)）。
+**原生优先。** 这些家里，N0 核心合同（session log、projections、fs、remote access）和 N1 随包插件（workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local）是长期依赖；N2 experimental 只参考；E1 外部插件/E2 外部服务只借模式（见 [09](../03-external/09-external-plugin-patterns.md)）。
 
 三个边界不是平等的家，但作者必须知道：
 
@@ -159,7 +159,7 @@ DSH 没有 `$DSH_HOME/plugins/<id>/` 的契约；`plugins/` 只是本机出现�
 
 - 要么用 domain（推荐），自己声明 domain 名、版本、记录键；
 - 要么自造目录，并在 README 写清路径、清理、迁移、卸载残留；
-- 不要指望平台替你删——删除/保留是系统性空白（见 09/11）。
+- 不要指望平台替你删——删除/保留是系统性空白（见 06/11）。
 
 ## 边界
 
@@ -167,4 +167,4 @@ DSH 没有 `$DSH_HOME/plugins/<id>/` 的契约；`plugins/` 只是本机出现�
 - 会话日志的格式、迁移与 compaction 细节不在本篇展开；这里只关心“它是不是权威”。
 - `ctx.fs` 的远端后端（SSH 等）可能让 `processPath` 与本地路径不同；不要把 `displayPath` 当成本地绝对路径。
 - 客户端家只讨论 Web/Desktop 的浏览器侧；Electron 主进程、原生扩展的存储不在本篇范围。
-- 完整 landscape、历史与参考架构见 [08](../02-native/08-native-data-landscape.md)、[09](../02-native/09-native-data-history.md)、[11](../04-advisor/11-native-reference-architectures.md)。
+- 完整 landscape、历史与参考架构见 [05](../02-native/05-native-data-landscape.md)、[06](../02-native/06-native-data-history.md)、[11](../04-advisor/11-native-reference-architectures.md)。
