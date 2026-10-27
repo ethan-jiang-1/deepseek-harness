@@ -9,8 +9,9 @@
 | 批次 | 候选 | 深读 |
 |---|---|---|
 | memory/session | 23 | 8 |
-| workflow/tools/notify | 19 | 6 |
-| runtime/account/UI/theme | 55 | 10 |
+| workflow/tools/notify | 19 | 4 |
+| runtime/account/UI/theme | 55 | 3 |
+| **合计** | **97** | **15** |
 
 ### 1.2 深读名单
 

@@ -1,10 +1,10 @@
-# 33 · 外部插件模式（参考）：15 个复杂插件在补什么缺口
+# 33 · 外部插件案例（参考）：15 个复杂插件在补什么缺口
 
 ## 这一篇回答什么
 
 **这一篇只讲外部插件，长期不作依赖。** 不是“哪个插件好”，而是：**它们把 DSH 的哪个数据缺口补成了事实标准？哪些模式可以借，哪些只是权宜？**
 
-外部插件分两级：**E1 外部社区插件**（第三方仓库/包）；**E2 外部服务**（MCP/HTTP/DB/对象存储）。长期策略：优先 [08 原生 landscape](../20-native/21-native-data-landscape.md) 的 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
+外部插件分两级：**E1 外部社区插件**（第三方仓库/包）；**E2 外部服务**（MCP/HTTP/DB/对象存储）。长期策略：优先 [21 原生 landscape](../20-native/21-native-data-landscape.md) 的 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
 
 **口径。** 2026-10-27 对约 100 个候选做了目录/README 扫描（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55），选 15 个深读。**没有安装、没有运行**；S = 读过源码，R = README/作者声明，U = 未确认。样本不是 census。所有结论只描述外部插件，不是 DSH 合同。
 
@@ -227,7 +227,7 @@
 ## 证据与边界
 
 - S：memory-evolve、project-context、graphmemory、workspace-memories、workspace-overlay（部分）、PromptRecall、credentials-mysql、custom-workspace。
-- R：kb-manager、mnemon、session-workspace-organizer、archive-retention、codex-sync、claude-move、agent-mailbox、session_folders、以及 04 报告中的多数账号/UI 样本。
+- R：kb-manager、mnemon、session-workspace-organizer、archive-retention、codex-sync、claude-move、agent-mailbox、session_folders、以及 research-external 中的多数账号/UI 样本。
 - U：mailbox/mnemon 的落点、codex-sync 映射状态、部分 localStorage 键。
 - 没有安装/运行；探针结果另列（如执行）。
-- 样本不是 census；同名克隆已排除并记录在 `02`/`03`。
+- 样本不是 census；同名克隆已排除并记录在 v2 调查底稿。

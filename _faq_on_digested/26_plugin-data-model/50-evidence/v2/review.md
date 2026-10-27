@@ -82,7 +82,7 @@
 
 ## 改了什么
 
-- 新增 [08 原生 landscape](../../20-native/21-native-data-landscape.md)：七轴、12 archetype、33 个原生家（含无主/边界）、原生模式 × 成熟度、十个原生观察。
+- 新增 [08 原生 landscape](../../20-native/21-native-data-landscape.md)：七轴、12 archetype、33 个 DSH 侧数据落点（含无主/边界）、原生模式 × 成熟度、十个原生观察。
 - 新增 [09 原生历史](../../20-native/22-native-data-history.md)：22 个时间线事件、12 个数据簇、七个反复张力、欠账清单。
 - 新增 [10 外部插件模式](../../30-external/33-external-plugin-patterns.md)：15 个案例、横向模式、五个“作者在补什么”、反模式。
 - 新增 [11 原生参考架构](../../40-advisor/42-native-reference-architectures.md)：10 个 archetype 的数据卡/布局/路线/测试/DSH 映射。

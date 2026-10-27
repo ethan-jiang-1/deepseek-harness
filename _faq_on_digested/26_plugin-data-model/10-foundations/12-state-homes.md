@@ -39,7 +39,7 @@ defineDomain({
 
 消费者用 `ctx.storageDomain.open(spec)` 拿到 `Domain`，再 `domain.table('records')` 或 `domain.global`。三个边界：
 
-- **域名是静态的**：不能按 workspace 动态建域；项目级数据只能体现在**记录键**上（03 篇）。
+- **域名是静态的**：不能按 workspace 动态建域；项目级数据只能体现在**记录键**上（13 篇）。
 - **一个名字一个打开的句柄**：同一进程里重复 `open` 会 `already-open`；多实例插件要用**记录里的实例键**区分，不要造多个域。
 - **域属于声明它的包**：schema 是包级契约；换个包名/域名等于换了一个存储。
 
@@ -159,7 +159,7 @@ OAuth grant、代理凭据这类**多字段、需要读-改-写**的东西，用
 
 ## 边界
 
-- 域是 home 级的；没有“每 workspace 一个域”。项目级切分靠键（03 篇）。
+- 域是 home 级的；没有“每 workspace 一个域”。项目级切分靠键（13 篇）。
 - `domain/changed` 不跨进程；需要跨进程刷新就自己加版本号/轮询，或等上游的 cross-process revision。
 - 本篇不展开 settings 的表单协议与凭据 provider 的实现；只讲选型边界。
 - 客户端存储没有统一的 DSH 服务；它是浏览器/桌面能力，插件自己管键名、版本与清理。

@@ -2,7 +2,7 @@
 
 源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。行号按该 commit 的树；仓库前移后以符号名为准。
 
-## 零、承诺与家的对应
+## 零、承诺与落点的对应（P0–P4 是承诺）
 
 | 承诺 | 主家 | 作用域 | 主要 API | 社区样本（外部，源码阅读，未安装） |
 |---|---|---|---|---|
@@ -11,8 +11,8 @@
 | P2 项目内文件 | 内容 | workspace / 用户全局 | `ctx.fs` + `present` | dsh-project-context |
 | P3 宿主账本 | 状态 | workspace 键（存 home） | `ctx.storageDomain` | dsh-workspace-memories |
 | P4 账号/安装配置 | 状态 + 凭据 | home / profile | `Config.volatile()` / `credentials` | 渠道插件 |
-| P5 每项目运行时 | 运行时 | workspace | 无核心实现；社区 `workspaceCordis` | dsh-workspace-overlay |
-| P6 客户端本地 | 客户端 | origin / device | `localStorage` / `userData` | DSH 自带 UI 插件 |
+
+P0–P4 是数据承诺。P5“每项目运行时”是运行时 scope 缺口（外部 `workspaceCordis`），P6“客户端本地”是设备落点，它们都不是第六/第七种承诺。
 
 这张表是“作者视角 → 架构词汇”的翻译层；下文是架构本身的出处。
 
@@ -166,14 +166,14 @@ OS 临时目录                 # spill、workspace/changes 整文件副本
 | 36 | session 日志有跨进程 kernel lease；domain JSON 没有 | `session-persistence-jsonl/src/lease.ts`；`storage-json` | C |
 | 37 | 没有 per-workspace domain/scope；proposed 明确 out-of-scope | `2026-07-24-domain-kv-storage-and-workspace` | P |
 | 38 | 客户端状态分纯 UI 与 session-derived 投影 | `2026-08-25-session-observations-and-projection-owned-client-state` | H/C |
-| 39 | 市场至少四种 workspace 表示、三种凭据家、卸载非生命周期 | [33 外部插件模式](../30-external/33-external-plugin-patterns.md)、[research-external](./research-external.md) | S/R |
+| 39 | 市场至少四种 workspace 表示、三种凭据家、卸载非生命周期 | [33 外部插件案例](../30-external/33-external-plugin-patterns.md)、[research-external](./research-external.md) | S/R |
 | 40 | 插件直接改 session log/物理删目录是现实补丁 | session-workspace-organizer、archive-retention、archive-manager | R |
 
 原生来源见 [research-native](./research-native.md)，外部样本见 [research-external](./research-external.md)；本轮改动见 [review-v2](./v2/review.md)。
 
 ## 九、相关阅读
 
-- [21 原生 Landscape](../20-native/21-native-data-landscape.md)、[22 原生历史](../20-native/22-native-data-history.md)、[33 外部插件模式](../30-external/33-external-plugin-patterns.md)、[42 原生参考架构](../40-advisor/42-native-reference-architectures.md)。
+- [21 原生 Landscape](../20-native/21-native-data-landscape.md)、[22 原生历史](../20-native/22-native-data-history.md)、[33 外部插件案例](../30-external/33-external-plugin-patterns.md)、[42 原生参考架构](../40-advisor/42-native-reference-architectures.md)。
 - [FAQ 24 · 数据平面](../../24_plugin-publish-and-agent-data-planes/05-data-planes.md)：workspace / home / session 的三分与八条规则。
 - [FAQ 25 · Workspace 与 Ungrouped](../../25_workspaces-and-conversations/answer.md)：工作区记录、attach、删除语义。
 - [FAQ 22 · 上下文腐化](../../22_spec-drift-and-context-rot/answer.md)：compaction 遮蔽与日志只追加。

@@ -2,11 +2,20 @@
 
 ## 这一篇回答什么
 
-前四篇是地图；这一篇是**可照抄的骨架**。每个 archetype 给：数据卡、布局/键、生命周期、失败模式、2–3 条都成立的路线、测试清单、DSH API 映射。
+`11`–`14` 是词汇，`21`/`31`/`32`/`33` 是地图；这一篇是**可照抄的骨架**。每个 archetype 给：数据卡、布局/键、生命周期、失败模式、2–3 条都成立的路线、测试清单、DSH API 映射。
 
 原则：**没有唯一答案**；每条路线都标出代价与适用条件。一个插件可以组合多个 archetype，但每块数据只能有一个主权威。
 
-**原生优先（本轮新增）**：路线标记 **N0** 核心合同、**N1** 官方随包插件、**N+** 原生 API + 借用模式（无外部依赖）、**E** 外部插件/服务。长期优先 N0/N1/N+；E 只作参考或短期过渡。下面的 A/B/C 路线不再逐个重复徽标，级别以上面的“原生优先路线表”为准。
+**依赖层级（摘要；完整发布规则见 [41](./41-checklist.md)）**：
+
+- **N0 原生核心**：`docs/` + 核心包 + 测试定义的 Service/事件/格式；首选，直接依赖。
+- **N1 原生插件**：官方随包插件（workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local 等）；首选，直接依赖。
+- **N2 原生实验**：`packages/experimental/`；只参考，不承诺稳定。
+- **N+ 借用模式**：用原生 API 自己实现某个外部模式；不是包依赖。
+- **E1 扩展插件**：第三方社区插件；**只借鉴，不写进发布依赖**。
+- **E2 外部服务**：MCP/HTTP/DB/对象存储；没有原生替代时短期用。
+
+**发布规则**：依赖 E1 会把对方的版本、许可证、卸载和供应链绑进你的发布；除非没有原生替代，否则借它的模式、用 N0/N1 自己实现。下面的 A/B/C 路线不再逐个重复徽标，级别以下面的路线表为准。
 
 ![10 个 archetype 的参考架构路线](../figures/42-native-reference-architectures.svg)
 
@@ -25,18 +34,18 @@
 | 可移植/同步 | 换机器/多设备/团队要带走吗？ |
 | 可重建/清理 | 删了会不会丢？卸载留什么？ |
 
-## 原生优先路线表
+## 依赖层级路线表（N0 / N1 / N+ / E1 / E2）
 
-| Archetype | 原生首选 | 可借模式（N+） | 外部（E，仅参考） |
+| Archetype | 原生核心/插件（N0/N1） | 借用模式（N+，自己实现） | 扩展参考（E1/E2） |
 |---|---|---|---|
 | 项目记忆 | 项目文件 + `ctx.fs`（N0） | journal+render、锁内备份 | 外部笔记/DB |
 | 个人长期记忆 | `ctx.storageDomain`（N0）+ backend（N1），或项目文件（N0） | 条目 id、确认队列 | 外部记忆服务 |
-| 会话归档/删除 | **GAP**（无 delete） | 宽限+审计（E1 模式） | archive-retention 等 |
+| 会话归档/删除 | **GAP**（无 delete） | 借用 E1 模式：宽限+审计，自己实现 | archive-retention 等 |
 | KB/RAG | `ctx.storageDomain`（N0）+ sqlite backend（N1） | 每 KB SQLite、软删/compact | 外部 RAG/向量 |
 | 任务/目标 | session 事件/投影（N0）、home 域（N1） | 状态机、跨标签同步 | 外部任务库 |
 | 交付物 | 工作区文件（N0）+ `present`（N1） | 项目导出目录 | artifact 服务 |
 | 渠道/账号 | profile patch + `ctx.credentials`（N1） | 去重/路由表 | 外部账号 DB |
-| 每项目运行时 | **GAP**（无 per-workspace scope） | read-only 配置 + lease（E1 模式） | workspace-overlay |
+| 每项目运行时 | **GAP**（无 per-workspace scope） | 借用 E1 模式：read-only 配置 + lease，自己实现 | workspace-overlay |
 | 客户端状态 | `localStorage`（平台，不是 N0）/ `SessionProjectionMap`（N0） | host 文件迁移、版本键 | 外部同步 |
 | 同步/备份 | `/export` ZIP（N1） | 用户 git、冲突三选一 | 外部同步服务 |
 
@@ -105,7 +114,7 @@
 
 | 路线 | 做法 | 代价 | 选它当 |
 |---|---|---|---|
-| A 文件树 + 条目 id | `~/.dsh/<plugin>/memory/`；`§` 条目 + `[id:]`；锁+tmp/rename | 要自己写合并/锁/清理 | 用户可读、跨设备 git 同步 |
+| A 文件树 + 条目 id | `$DSH_HOME/<plugin>/memory/`；`§` 条目 + `[id:]`；锁+tmp/rename | 要自己写合并/锁/清理 | 用户可读、跨设备 git 同步 |
 | B SQLite + 迁移表 | 单 DB；`_migrations`；FTS/向量 | 不可读、备份/迁移成本 | 查询/召回为主 |
 | C 外部服务 | MCP/HTTP/DB | 运维/隐私/网络 | 多机/团队/大库 |
 
@@ -166,7 +175,7 @@
 **布局**
 
 ```text
-~/.dsh/<plugin>/<kb-id>/
+$DSH_HOME/<plugin>/<kb-id>/
 ├── kb.db              # docs/chunks/vectors/FTS/audit/jobs
 ├── inbox/             # 允许导入的本地路径
 ├── snapshots/         # 可恢复快照
@@ -293,11 +302,13 @@
 | B 项目内脚本 | 插件自己解析 | 重复造 Loader | 简单场景 |
 | C 等待核心 scope | 不实现 | 受限 | 核心提供后 |
 
+**注**：`<workspace>/.dsh/cordis.yml` 是社区约定（E1），核心不规定每项目配置目录。
+
 **硬规则**：配置是输入不是输出；默认不要 trust 仓库配置；热重载要 drain/rollback；日志不含 config/env。
 
 **测试**：lease 生命周期、热重载失败回滚、trust=false、MCP 进程清理、路径移动。
 
-**DSH 映射**：外部插件（E1）的 `ctx.workspaceCordis`；核心没有 per-workspace 实例。
+**DSH 映射**：扩展插件（E1）的 `ctx.workspaceCordis`；核心没有 per-workspace 实例。
 
 ## 9. 客户端 UI 状态
 

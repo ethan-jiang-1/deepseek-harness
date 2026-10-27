@@ -3,12 +3,12 @@
 ## 0. 方法与边界
 
 - 基线：`dsh-v0.2.1-rc.3`（`1f81c047`）；本仓库是**浅克隆**（`git rev-parse --is-shallow-repository` = true），2026-06 之前的 git 历史不可用。
-- DSH 侧：343 个包、1,272 篇英文 Agent Note（298 implemented / 42 proposed / 925 archived）、67 篇 subsystem、49 篇 persistence-change、43 篇 upgrade guide、4 篇 postmortem、6 篇 defensive-pattern；本机 `$DSH_HOME` 只看结构（4.0 GB / 28,443 文件）。
+- DSH 侧：343 个包、约 1,265 篇英文 Agent Note（298 implemented / 42 proposed / 925 archived）、67 篇 subsystem、49 篇 persistence-change、43 篇 upgrade guide、4 篇 postmortem、6 篇 defensive-pattern；本机 `$DSH_HOME` 只看结构（4.0 GB / 28,443 文件）。
 - 外部市场：97 个候选、15 个深读，单独放在 [research-external](./research-external.md)；本表只保留 DSH 原生证据。
 - 没有安装、没有运行第三方插件；C/H/P/U 用于 DSH 原生证据。
 - 星数、目录计数、下载量不作质量证据；同名克隆/镜像排除并记录。
 
-## 1. DSH 数据家（33）
+## 1. DSH 数据落点（33）
 
 | id | 家 | 位置 | 权威 | 作用域 | 寿命 | 证据 |
 |---|---|---|---|---|---|---|
@@ -48,7 +48,7 @@
 
 ## 2. DSH 时间线（压缩）
 
-完整 44 事件在 `01-dsh-inventory.md`。关键节点：2026-06-14 session persistence → 2026-07-02 per-session cwd → 2026-07-08 spill → 2026-07-19 zstd → 2026-07-22 durable attachments → 2026-07-24 project session dirs / single home / domain KV proposal → 2026-07-28 settings seam + storage root proposal → 2026-08-13 credential records → 2026-08-19 per-record projcache → 2026-08-27 handle persistence → 2026-08-30 ignorable events → 2026-08-31 released format migrations → 2026-09-08 present paths → 2026-09-16 V4 → 2026-09-19 profile-owned config → 2026-10-09 stored credential precedence.
+完整 44 事件见本文件 §5“附录：44 事件清单”。关键节点：2026-06-14 session persistence → 2026-07-02 per-session cwd → 2026-07-08 spill → 2026-07-19 zstd → 2026-07-22 durable attachments → 2026-07-24 project session dirs / single home / domain KV proposal → 2026-07-28 settings seam + storage root proposal → 2026-08-13 credential records → 2026-08-19 per-record projcache → 2026-08-27 handle persistence → 2026-08-30 ignorable events → 2026-08-31 released format migrations → 2026-09-08 present paths → 2026-09-16 V4 → 2026-09-19 profile-owned config → 2026-10-09 stored credential precedence.
 
 ## 3. DSH 关键决定与证据
 

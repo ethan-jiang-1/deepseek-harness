@@ -18,18 +18,20 @@
 第二轮（原生历史 + 外部市场）补了三件事，后面各篇会展开：
 
 1. **没有“插件数据根”**：`$DSH_HOME/plugins/<id>/` 只是惯例；插件要么用 domain，要么自造目录，并自己承担清理/迁移。**C/U**
-2. **删除/保留是系统性空白**：session 没有删除 API、附件没有 GC、插件没有卸载契约；外部插件（E1）已经在用“物理删日志/改日志 header”补。**C/H/R**
+2. **删除/保留是系统性空白**：session 没有删除 API、附件没有 GC、插件没有卸载契约；扩展插件（E1）已经在用“物理删日志/改日志 header”补。**C/H/R**
 3. **profile 不是账号**：settings 只对当前 profile 生效；跨 profile 共享偏好要 home 域，不能靠 `Config`。**C/H**
 
-**原生优先。** 长期只用 DSH 原生能力；外部插件只借模式，不作依赖：
+**原生优先。** 长期只用 DSH 原生核心/原生插件；扩展插件（E1）只借模式、自己实现，不写进发布依赖：
 
 | 级别 | 含义 | 长期策略 |
 |---|---|---|
-| **N0 核心合同** | docs + 核心包 + 测试定义的 Service/事件/格式 | 首选 |
-| **N1 官方随包插件** | workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local 等 | 首选 |
-| **N2 experimental** | agent-team、claude-code-mods `$.store` 等 | 可参考，不承诺稳定 |
-| **E1 外部社区插件** | 第三方仓库/包 | 只借模式；短期用要写清依赖/迁移/卸载 |
+| **N0 原生核心（核心合同）** | docs + 核心包 + 测试定义的 Service/事件/格式 | 首选 |
+| **N1 原生插件（官方随包）** | workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local 等 | 首选 |
+| **N2 原生实验（experimental）** | agent-team、claude-code-mods `$.store` 等 | 可参考，不承诺稳定 |
+| **E1 扩展插件（社区）** | 第三方仓库/包 | 只借鉴、自己实现；不写进 `dependencies` |
 | **E2 外部服务** | MCP/HTTP/DB/对象存储 | 没有原生替代时短期用 |
+
+**发布建议**：依赖 E1 等于把对方的版本、许可证、卸载和供应链绑进你的发布；只借它的模式，用 N0/N1 自己实现。
 
 ## 一张图：所有权 × 作用域
 
@@ -56,7 +58,7 @@
 | **P3 宿主账本** | 我按项目记，但东西在我这 | `$DSH_HOME` + 项目键 | `dsh-workspace-memories`：按 workspace 存 Markdown | 孤儿、换机器丢、用户看不见 |
 | **P4 账号/安装配置** | 配一次，所有项目生效 | profile 配置 / home 域 / 凭据 | 渠道插件：`defaultWorkspace` + 凭据引用 | profile 不是账号；一个默认值套所有项目；秘密风险 |
 
-（P2 有两个根：项目内文件删项目就没；用户全局文件（`$DSH_HOME/AGENTS.md`、`skills/`、`~/.agents`）跟 home 或共享根走，主要供用户维护、插件只读。P5“每项目一套运行时”不是数据承诺，是运行时缺口；外部插件（E1）用 `workspaceCordis` 自己补，见 33 篇。）
+（P2 有两个根：项目内文件删项目就没；用户全局文件（`$DSH_HOME/AGENTS.md`、`skills/`、`~/.agents`）跟 home 或共享根走，主要供用户维护、插件只读。P5“每项目一套运行时”不是数据承诺，是运行时缺口；扩展插件（E1）用 `workspaceCordis` 自己补，见 31 篇（案例见 33）。）
 
 ## 同一份数据，四种都成立的解法
 
@@ -100,15 +102,15 @@
 
 1. **能不存就不存。** 最轻的记忆插件卖点是“没有数据库、没有写入通道、文档原地不动”。少一个存储面，就少一套迁移、清理、备份、隐私问题。
 2. **存就存成“可重建”。** 用量面板只折叠元数据，检查点坏了从日志重建；用户删了会话，统计跟着变，这是诚实的行为。
-3. **项目级的东西要么进项目，要么带稳定键。** 核心没有“每项目一套实例”，外部插件（E1）用 `.dsh/cordis.yml`、canonical path lease 或路径键自己补；代价是孤儿、信任边界和版本兼容，必须自己承担。
+3. **项目级的东西要么进项目，要么带稳定键。** 核心没有“每项目一套实例”，扩展插件（E1）用 `.dsh/cordis.yml`、canonical path lease 或路径键自己补；代价是孤儿、信任边界和版本兼容，必须自己承担。
 
-另外三条来自外部插件源码、值得单独看（E1，参考）：
+另外三条来自扩展插件源码、值得单独看（E1，参考）：
 
 - **位置做成配置**：同一插件，`storage: home`（敏感、机内）或 `storage: workspace`（团队、随代码）。但别像某些样本那样硬编码 `~/.dsh`，要尊重 `DSH_HOME`。
 - **journal 权威 + 渲染派生**：`memory.jsonl` 追加写是权威，`MEMORY.md` 只是渲染；锁内备份、崩溃只落后不丢。
 - **用 git 做同步**：记忆推到代码仓库的专属分支或独立记忆仓库；写路径仍然本地即时，同步是显式批处理。
 
-完整的九个维度、十八种手法和已核出的坑，见 [31 篇](./30-external/31-external-community-patterns.md)（外部参考）。DSH 原生历史见 [22 篇](./20-native/22-native-data-history.md)，外部插件模式见 [33 篇](./30-external/33-external-plugin-patterns.md)（只作参考），原生优先的骨架见 [42 篇](./40-advisor/42-native-reference-architectures.md)。其他插件生态（VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma）怎么切同样的题，见 [32 篇](./30-external/32-external-adjacent-ecosystems.md)。
+完整的九个维度、十八种手法和已核出的坑，见 [31 篇](./30-external/31-external-community-patterns.md)（外部参考）。DSH 原生历史见 [22 篇](./20-native/22-native-data-history.md)，扩展插件案例见 [33 篇](./30-external/33-external-plugin-patterns.md)（只作参考），原生优先的骨架见 [42 篇](./40-advisor/42-native-reference-architectures.md)。其他插件生态（VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma、JetBrains）怎么切同样的题，见 [32 篇](./30-external/32-external-adjacent-ecosystems.md)。
 
 ## 你应该怎么选：选型七问
 
@@ -116,9 +118,9 @@
 1. 用户已经有这份数据了吗？            是 → P0（引用它）
 2. 能从会话/文件重新算吗？              是 → P1（派生）
 3. 必须跟项目一起走/被用户看见吗？      是 → P2（项目内文件）
-4. 要跨会话记住、但用户不必编辑吗？     是 → P3（home + 稳定键）
-5. 是关于这个人/账号/安装的吗？         是 → P4（配置/凭据/home 单例）
-6. 只在浏览器里用、模型不必知道吗？     是 → 客户端本地（localStorage/userData）
+4. 只在浏览器里用、模型不必知道吗？     是 → 客户端本地（localStorage/userData）
+5. 要跨会话记住、但用户不必编辑吗？     是 → P3（home + 稳定键）
+6. 是关于这个人/账号/安装的吗？         是 → P4（配置/凭据/home 单例）
 7. 需要每个项目一套进程/连接吗？        是 → 看 31 篇的 workspace scope（P5）
 ```
 
@@ -149,8 +151,8 @@
 | `per-record` 的键能放路径吗？ | 不能；必须匹配 `[a-zA-Z0-9_-]+`，用 `sha256` 十六进制。 |
 | 换 `DSH_HOME` 会带走什么？ | 新 home 没有旧 home 的域/配置/凭据/会话；项目文件还在，`~/.agents` 独立。 |
 | 卸载后留下什么？ | 取决于你写哪：domain/settings/credentials/localStorage/自造目录都可能留；README 要写清。 |
-| 外部插件能直接抄吗？ | 只借模式，不抄 API；它们各自钉在不同 RC 版本，未独立验证。长期优先 N0/N1 原生能力。 |
-| 原生还是外部？ | N0 核心 / N1 随包插件首选；N2 只参考；E1/E2 只借模式，短期用要写清依赖、迁移、卸载。 |
+| 扩展插件能直接抄吗？ | 只借模式，不抄 API；它们各自钉在不同 RC 版本，未独立验证。长期优先 N0/N1 原生能力。 |
+| 原生还是扩展？ | N0 原生核心 / N1 原生插件首选；N2 只参考；E1 扩展插件只借鉴、自己实现，不写进 `dependencies`；E2 最后。 |
 | 升级 schema 怎么办？ | 自己迁移；domain 不自动迁移，`single` 版本不符直接拒绝。 |
 | 删除/保留谁负责？ | 没有统一 GC；session 无删除 API、附件无 GC、插件无卸载契约；作者必须自己设计并写 README。 |
 | 客户端状态放哪？ | 纯 UI 用 localStorage/userData；session-derived 事实（标题/模型/preset）走 projection，不要复制到 localStorage。 |
