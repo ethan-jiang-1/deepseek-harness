@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title>插件作者的五种数据承诺</title>
-  <desc>纯引用、会话派生、项目内文件、宿主账本、账号配置。每种承诺决定数据在哪、用户能否看见、卸载后留下什么，以及对应的 DSH API 与社区样本。P5 的每项目运行时是缺口，社区用 workspace scope 自己补。</desc>
+  <desc>纯引用、会话派生、项目内文件、宿主账本、账号/安装配置。每种承诺决定数据在哪、用户能否看见、卸载后留下什么，以及对应的 DSH API 与社区样本。P5 的每项目运行时是缺口，社区用 workspace scope 自己补。</desc>
 
   <rect width="1200" height="680" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">先选“数据承诺”，再找 DSH 的平面</text>
@@ -42,7 +42,7 @@
   <text x="273" y="204" font-size="10.5" fill="#334155">会话日志 + 可重建检查点</text>
   <text x="273" y="232" font-size="10" font-weight="700" fill="#166534">DSH 材料</text>
   <text x="273" y="250" font-size="10.5" fill="#334155">sessionProjections +</text>
-  <text x="273" y="266" font-size="10.5" fill="#334155">结构化字段</text>
+  <text x="273" y="266" font-size="10.5" fill="#334155">sessionQuery / 检查点</text>
   <text x="273" y="294" font-size="10" font-weight="700" fill="#166534">用户看见</text>
   <text x="273" y="312" font-size="10.5" fill="#334155">面板/统计；看不到原文</text>
   <text x="273" y="356" font-size="10" font-weight="700" fill="#166534">卸载后</text>
@@ -108,8 +108,8 @@
   <rect x="956" y="84" width="220" height="470" rx="10" fill="#f5f3ff" stroke="#c4b5fd"/>
   <rect x="972" y="98" width="38" height="20" rx="10" fill="#ede9fe" stroke="#a78bfa"/>
   <text x="991" y="112" text-anchor="middle" font-size="10" font-weight="700" fill="#5b21b6">P4</text>
-  <text x="1020" y="113" font-size="12.5" font-weight="700" fill="#5b21b6">账号配置</text>
-  <text x="972" y="140" font-size="10.5" fill="#334155">关于这个人/账号；配</text>
+  <text x="1020" y="113" font-size="12.5" font-weight="700" fill="#5b21b6">账号/安装配置</text>
+  <text x="972" y="140" font-size="10.5" fill="#334155">关于这个人/账号/安装；配</text>
   <text x="972" y="156" font-size="10.5" fill="#334155">一次，所有项目生效。</text>
   <text x="972" y="186" font-size="10" font-weight="700" fill="#5b21b6">数据在哪</text>
   <text x="972" y="204" font-size="10.5" fill="#334155">profile 配置 / home / 凭据</text>
