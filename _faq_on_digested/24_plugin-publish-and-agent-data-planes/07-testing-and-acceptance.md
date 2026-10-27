@@ -263,6 +263,8 @@ diff -u "$BEFORE" "$AFTER"
 - **session 无删除 API、附件无 GC。** 断言插件不删日志、不改 header；附件只通过 attachment 服务取引用，不解析 id、不拼路径；卸载不会假装回收附件。
 - **settings 是 profile 作用域。** 换一个 profile 后，设置不跟随；如果 README 声称“配一次全生效”，测试要拆穿它。跨 profile 共享偏好应走 home 域，并单独测。
 
+设计阶段的对应清单见 [10 篇 §11](./10-data-design-advisor.md)：数据卡、原生能力落点、键、生命周期、迁移与安全逐条过一遍，再回来写测试。
+
 ## 9. T6：兼容面
 
 ### 9.1 最小矩阵

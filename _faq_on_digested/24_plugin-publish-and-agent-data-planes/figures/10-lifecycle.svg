@@ -1,0 +1,103 @@
+<svg width="1100" height="660" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 660" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>生命周期：升级和卸载到底会动什么</title>
+  <desc>包目录、工作区文件、profile、home 域、自造目录、会话日志、附件、spill、cache、凭据在安装、升级、卸载和手动清理下的行为。</desc>
+  <rect width="1100" height="660" fill="#fafafa" rx="6"/>
+  <text x="550" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">生命周期：升级和卸载到底会动什么</text>
+  <text x="550" y="55" text-anchor="middle" font-size="11" fill="#6b7280">包目录是唯一会被升级整体替换的位置；会话日志和附件没有自动删除。</text>
+
+  <rect x="36" y="84" width="1028" height="40" rx="6" fill="#1f2937"/>
+  <g font-size="10.5" font-weight="700" fill="#ffffff">
+    <text x="52" y="109">位置 / 数据</text>
+    <text x="248" y="109">安装</text>
+    <text x="398" y="109">升级</text>
+    <text x="548" y="109">卸载 bundle</text>
+    <text x="708" y="109">手动清理</text>
+    <text x="888" y="109">谁负责</text>
+  </g>
+
+  <g font-size="10.5">
+    <rect x="36" y="124" width="1028" height="46" fill="#fef2f2" stroke="#e2e8f0"/>
+    <text x="52" y="152" font-weight="700" fill="#991b1b">包目录</text>
+    <text x="248" y="152" fill="#b91c1c">安装 / 解包</text>
+    <text x="398" y="152" fill="#b91c1c">整体替换</text>
+    <text x="548" y="152" fill="#b91c1c">移除</text>
+    <text x="708" y="152" fill="#64748b">无</text>
+    <text x="888" y="152" fill="#334155">安装器</text>
+
+    <rect x="36" y="170" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="52" y="198" font-weight="700" fill="#166534">工作区文件</text>
+    <text x="248" y="198" fill="#15803d">不动</text>
+    <text x="398" y="198" fill="#15803d">不动</text>
+    <text x="548" y="198" fill="#15803d">不动</text>
+    <text x="708" y="198" fill="#15803d">用户删</text>
+    <text x="888" y="198" fill="#334155">用户 / 项目</text>
+
+    <rect x="36" y="216" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="52" y="244" font-weight="700" fill="#1e3a8a">profile / settings</text>
+    <text x="248" y="244" fill="#1e40af">建立</text>
+    <text x="398" y="244" fill="#1e40af">保留</text>
+    <text x="548" y="244" fill="#b45309">配置仍在</text>
+    <text x="708" y="244" fill="#1e40af">删 profile</text>
+    <text x="888" y="244" fill="#334155">用户</text>
+
+    <rect x="36" y="262" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="52" y="290" font-weight="700" fill="#1e3a8a">home 域</text>
+    <text x="248" y="290" fill="#15803d">不动</text>
+    <text x="398" y="290" fill="#15803d">不动</text>
+    <text x="548" y="290" fill="#b45309">可能残留</text>
+    <text x="708" y="290" fill="#b45309">插件清</text>
+    <text x="888" y="290" fill="#334155">插件</text>
+
+    <rect x="36" y="308" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="52" y="336" font-weight="700" fill="#b45309">自造目录 $DSH_HOME/&lt;plugin&gt;</text>
+    <text x="248" y="336" fill="#15803d">可建</text>
+    <text x="398" y="336" fill="#15803d">不动</text>
+    <text x="548" y="336" fill="#b91c1c">残留</text>
+    <text x="708" y="336" fill="#b45309">插件清</text>
+    <text x="888" y="336" fill="#334155">插件</text>
+
+    <rect x="36" y="354" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="52" y="382" font-weight="700" fill="#b91c1c">session 日志</text>
+    <text x="248" y="382" fill="#15803d">新会话</text>
+    <text x="398" y="382" fill="#15803d">保留</text>
+    <text x="548" y="382" fill="#15803d">保留</text>
+    <text x="708" y="382" fill="#b91c1c">无删除 API</text>
+    <text x="888" y="382" fill="#334155">无人（只能外部清）</text>
+
+    <rect x="36" y="400" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="52" y="428" font-weight="700" fill="#b91c1c">附件</text>
+    <text x="248" y="428" fill="#15803d">新对象</text>
+    <text x="398" y="428" fill="#15803d">保留</text>
+    <text x="548" y="428" fill="#15803d">保留</text>
+    <text x="708" y="428" fill="#b91c1c">无 GC</text>
+    <text x="888" y="428" fill="#334155">无人</text>
+
+    <rect x="36" y="446" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="52" y="474" font-weight="700" fill="#334155">spill</text>
+    <text x="248" y="474" fill="#15803d">临时文件</text>
+    <text x="398" y="474" fill="#b45309">按策略清</text>
+    <text x="548" y="474" fill="#b45309">可残留</text>
+    <text x="708" y="474" fill="#334155">cleanupPeriodDays</text>
+    <text x="888" y="474" fill="#334155">后端</text>
+
+    <rect x="36" y="492" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <text x="52" y="520" font-weight="700" fill="#334155">cache</text>
+    <text x="248" y="520" fill="#15803d">可建</text>
+    <text x="398" y="520" fill="#15803d">可清</text>
+    <text x="548" y="520" fill="#b45309">可残留</text>
+    <text x="708" y="520" fill="#15803d">可删</text>
+    <text x="888" y="520" fill="#334155">插件 / 用户</text>
+
+    <rect x="36" y="538" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="52" y="566" font-weight="700" fill="#991b1b">credentials</text>
+    <text x="248" y="566" fill="#15803d">可建</text>
+    <text x="398" y="566" fill="#15803d">保留</text>
+    <text x="548" y="566" fill="#15803d">保留</text>
+    <text x="708" y="566" fill="#1e40af">用户撤销</text>
+    <text x="888" y="566" fill="#334155">用户 / provider</text>
+  </g>
+
+  <rect x="36" y="600" width="1028" height="42" rx="6" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="52" y="620" font-size="10.5" fill="#4338ca">升级只替换包目录；卸载只移除依赖、选择和运行时贡献。domain、settings、凭据、自造目录、附件、session 日志都不会被自动清。</text>
+  <text x="52" y="636" font-size="10.5" fill="#4338ca">所以 README 必须写：数据在哪、卸载后什么还在、谁来清；不要把“平台会清”当成设计假设。</text>
+</svg>

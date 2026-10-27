@@ -112,7 +112,7 @@ U 里有一个作用域例外：**settings 写当前 profile 的 `cordis.patch.y
 - 打开时校验全部记录；坏记录 `invalid-record`；版本不匹配 `version-mismatch`；同一 domain 多消费者 `already-open`。
 - 不产生工具、prompt 或 session event，所以模型看不见；要让模型看见，必须由消费者显式渲染，并留下会话事件。
 - domain 名与 schema 是包级契约；改 schema 要自己迁移。
-- domain 不是“插件数据根”：没有 per-plugin 目录、配额、scope、卸载清理；项目级切分靠记录键，不能按 workspace 建 domain。
+- domain 不是“插件数据根”：没有 per-plugin 目录、配额、作用域、卸载清理；项目级切分靠记录键，不能按 workspace 建 domain。
 
 ### 4.7 K cache：可丢弃，不是权威
 
@@ -227,6 +227,8 @@ U 里有一个作用域例外：**settings 写当前 profile 的 `cordis.patch.y
 **最合理的切法是按所有权切、按可见性强约束、按生命周期文档化；推荐 6+2 平面。** 只读定义属于 D/C，数据属于 W/U/S/H/K/X；两边不共享目录与写入通道。三归属可以作为给用户看的导航图，但不能作为插件作者的实现模型：它没有回答“谁写、谁看、活多久、谁是权威”。
 
 把这四个问题答清楚，智能体的“只读部分”和“数据部分”就不会长在一起；剩下的只是把每个选择写进 README、测试和迁移说明。
+
+把 6+2 落到一个具体插件上的开发顺序、数据卡、原生能力地图与评审清单，见 [10 篇](./10-data-design-advisor.md)。
 
 ## 11. 证据
 

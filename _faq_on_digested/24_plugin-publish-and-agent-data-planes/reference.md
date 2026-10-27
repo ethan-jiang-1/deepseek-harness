@@ -51,6 +51,18 @@
 | 测试设施 | [testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/testing.md) | 分层、快照、e2e、覆盖率、flaky 规则 | 主仓规则，不是外部插件义务 |
 | 导出事故 | [postmortem 0001](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/postmortem/0001-acp-default-export-drops-inject.md) | default/named 混用会丢命名空间 | 真实事故记录 |
 | 沙箱与宿主边界 | [defensive-patterns README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/defensive-patterns/README.md) | 宿主代码在沙箱外、文件效果与审批、安装脚本执行 | 插件作者必须知道的边界 |
+| 文件系统 | [filesystem.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/filesystem.md) | `ctx.fs`、target/version 不透明、`createIfAbsent` / `replaceIfVersion`、沙箱策略 | 不要解析 `targetKey` |
+| 宿主存储 | [storage.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/storage.md) | `ctx.storageDomain`、`DomainSpec`、`single` / `per-record`、版本/写链 | 没有跨进程锁 |
+| per-record 键 | [storage-json per-record-unit.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/storage/storage-json/src/per-record-unit.ts) | JSON `per-record` 把记录键变成路径段，必须 `[a-zA-Z0-9_-]+` | 其他后端不保证 |
+| 会话持久化 | [persistence.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/persistence.md) | 日志、世代、租约、无删除 API、`header.cwd` | 不要改 header/删目录 |
+| 会话投影 | [session-projection.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/session-projection.md) | 纯同步 fold、`stateSchema` / `apply` / `wire` / `stateVersion`、客户端视图 | 不存新事实 |
+| 会话查询 | [session-query.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/session-query.md) | live-preferred 读取/过滤/搜索；全文依赖 provider | 只读，不写 |
+| 附件 | [attachment.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/attachment.md) | 内容寻址、不可变引用、`ctx.attachments`、不拼路径 | 无自动 GC |
+| spill | [spill.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/spill.md) | `ctx.spillStore`、`saveText`、不透明 locator、OS 临时目录 | 没有按会话的保留策略 |
+| 凭据 | [credentials.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/credentials.md) | `CredentialRef` / `CredentialKey`、每次操作 resolve、空值等于未配置 | 文件权限不是隔离 |
+| 配置表单 | [settings.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/settings.md) | volatile 字段、profile entry 命名空间、写 profile patch | 不是账号作用域 |
+| 交付物 | [deliverables.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/deliverables.md) | `present` 只记路径、log-only 事件、工作区变更摘要 | 不复制字节 |
+| 工作区 | [workspace.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/workspace.md) | `WorkspaceId` 是生成 uuid、path canonical、只登记不读写数据 | 不是文件管理器 |
 
 ### 历史与过时材料（H / R）
 
@@ -92,6 +104,14 @@
 | 21 | HMR 会在下一次重组时替换 profile/linked 包的已加载文件 | plugin-manager README | C |
 | 22 | 版本豁免是用户的逃生门，不是作者的兼容策略 | plugin-manager README | C |
 | 23 | 卸载 bundle 只移除依赖、选择与运行时贡献，不清理插件数据 | plugin-manager README 的 Removal 顺序 | C |
+| 24 | `ctx.sessionQuery` 是 live-preferred 的只读查询；全文搜索依赖挂载的 provider | session-query.md；session-query README | C |
+| 25 | `ctx.sessionProjections` 是纯同步 fold；`stateVersion` 变更要 bump；客户端视图由 `wire` 决定 | session-projection.md；session-projection README | C |
+| 26 | `single` 域记录键是不透明字符串；JSON `per-record` 后端把键变成路径段，必须匹配 `[a-zA-Z0-9_-]+`；为可移植性建议统一按此限制 | storage.md；storage-json `per-record-unit.ts`；storage-domain README | C |
+| 27 | 域写链只保证单进程内不交错；JSON 无文件锁，SQLite 竞争写会 `busy`；`domain/changed` 不跨进程，多 Host 需自己处理可见性 | storage.md；storage-domain README | C |
+| 28 | `ctx.spillStore` 只有 `saveText`；locator 不透明；默认落 OS 临时目录，启动后按 `cleanupPeriodDays` 清理 | spill.md；spill-local README | C |
+| 29 | `ctx.credentials` 每次操作重新 resolve；空存储值等于未配置；文件权限不是隔离边界 | credentials.md；credentials-local README | C |
+| 30 | `WorkspaceId` 是生成 uuid，不是路径；workspace 只登记，不提供数据读写 API | workspace.md；workspace README | C |
+| 31 | 附件只暴露不可变引用；消费者不得解析 `AttachmentId` 或据此拼路径 | attachment.md；attachment-local README | C |
 
 ## 外部来源（参考，不是 DSH 合同）
 

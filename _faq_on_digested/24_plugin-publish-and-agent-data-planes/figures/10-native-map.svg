@@ -1,0 +1,130 @@
+<svg width="1100" height="760" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 760" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>原生能力与边界：什么数据用什么能力</title>
+  <desc>十二种常见数据形态与 DSH 原生能力、作用域、模型可见性、清理责任的对应关系。</desc>
+  <rect width="1100" height="760" fill="#fafafa" rx="6"/>
+  <text x="550" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">原生能力与边界：什么数据用什么能力</text>
+  <text x="550" y="55" text-anchor="middle" font-size="11" fill="#6b7280">先用“作用域 + 模型可见性”排除，再看 API；最后一行是浏览器边界，不是 DSH 服务。</text>
+
+  <rect x="36" y="84" width="1028" height="40" rx="6" fill="#1f2937"/>
+  <g font-size="10.5" font-weight="700" fill="#ffffff">
+    <text x="52" y="109">数据形态</text>
+    <text x="250" y="109">原生能力 / 落点</text>
+    <text x="486" y="109">作用域</text>
+    <text x="660" y="109">模型可见</text>
+    <text x="762" y="109">持久化 / 清理</text>
+    <text x="916" y="109">不要拿它做</text>
+  </g>
+
+  <g font-size="10.5">
+    <rect x="36" y="124" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="36" y="124" width="5" height="46" fill="#22c55e"/>
+    <text x="52" y="145" font-weight="700" fill="#166534">项目 / 用户文件</text>
+    <text x="250" y="145" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ctx.fs</text>
+    <text x="486" y="145" fill="#334155">用户 / 项目</text>
+    <text x="660" y="145" fill="#334155">经工具 / 调用点</text>
+    <text x="762" y="145" fill="#334155">用户 / 项目自己管</text>
+    <text x="916" y="145" fill="#64748b">插件账本</text>
+
+    <rect x="36" y="170" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <rect x="36" y="170" width="5" height="46" fill="#3b82f6"/>
+    <text x="52" y="191" font-weight="700" fill="#1e3a8a">宿主账本 / 游标</text>
+    <text x="250" y="191" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ctx.storageDomain</text>
+    <text x="486" y="191" fill="#334155">home + 记录键</text>
+    <text x="660" y="191" fill="#334155">否</text>
+    <text x="762" y="191" fill="#334155">插件清理 / 迁移</text>
+    <text x="916" y="191" fill="#64748b">用户文件 / secret</text>
+
+    <rect x="36" y="216" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="36" y="216" width="5" height="46" fill="#f59e0b"/>
+    <text x="52" y="237" font-weight="700" fill="#92400e">模型可见会话状态</text>
+    <text x="250" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ctx.sessionProjections</text>
+    <text x="486" y="237" fill="#334155">session</text>
+    <text x="660" y="237" fill="#334155">是（surface / wire）</text>
+    <text x="762" y="237" fill="#334155">随日志重建</text>
+    <text x="916" y="237" fill="#64748b">新事实 / 宿主账本</text>
+
+    <rect x="36" y="262" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <rect x="36" y="262" width="5" height="46" fill="#3b82f6"/>
+    <text x="52" y="283" font-weight="700" fill="#1e3a8a">跨会话查询 / 统计</text>
+    <text x="250" y="283" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ctx.sessionQuery</text>
+    <text x="486" y="283" fill="#334155">会话语料</text>
+    <text x="660" y="283" fill="#334155">否（代码读）</text>
+    <text x="762" y="283" fill="#334155">只读，不写</text>
+    <text x="916" y="283" fill="#64748b">写数据 / 当权威</text>
+
+    <rect x="36" y="308" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="36" y="308" width="5" height="46" fill="#8b5cf6"/>
+    <text x="52" y="329" font-weight="700" fill="#5b21b6">二进制模型输入</text>
+    <text x="250" y="329" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ctx.attachments</text>
+    <text x="486" y="329" fill="#334155">内容寻址；引用在 session</text>
+    <text x="660" y="329" fill="#334155">经事件 / 工具</text>
+    <text x="762" y="329" fill="#334155">本地后端无自动 GC</text>
+    <text x="916" y="329" fill="#64748b">用户交付物 / 拼路径</text>
+
+    <rect x="36" y="354" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <rect x="36" y="354" width="5" height="46" fill="#94a3b8"/>
+    <text x="52" y="375" font-weight="700" fill="#334155">大段工具输出</text>
+    <text x="250" y="375" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ctx.spillStore</text>
+    <text x="486" y="375" fill="#334155">OS 临时目录</text>
+    <text x="660" y="375" fill="#334155">经 locator</text>
+    <text x="762" y="375" fill="#334155">启动后一次性清理</text>
+    <text x="916" y="375" fill="#64748b">长期存储 / 交付物</text>
+
+    <rect x="36" y="400" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="36" y="400" width="5" height="46" fill="#ef4444"/>
+    <text x="52" y="421" font-weight="700" fill="#991b1b">秘密 / token / OAuth</text>
+    <text x="250" y="421" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ctx.credentials</text>
+    <text x="486" y="421" fill="#334155">home</text>
+    <text x="660" y="421" fill="#334155">否</text>
+    <text x="762" y="421" fill="#334155">用户撤销；每次 resolve</text>
+    <text x="916" y="421" fill="#64748b">patch / 日志明文</text>
+
+    <rect x="36" y="446" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <rect x="36" y="446" width="5" height="46" fill="#3b82f6"/>
+    <text x="52" y="467" font-weight="700" fill="#1e3a8a">用户可调参数</text>
+    <text x="250" y="467" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">Config + .volatile()</text>
+    <text x="486" y="467" fill="#334155">profile</text>
+    <text x="660" y="467" fill="#334155">间接</text>
+    <text x="762" y="467" fill="#334155">随 profile；写 profile patch</text>
+    <text x="916" y="467" fill="#64748b">累积记录 / secret</text>
+
+    <rect x="36" y="492" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="36" y="492" width="5" height="46" fill="#22c55e"/>
+    <text x="52" y="513" font-weight="700" fill="#166534">用户交付物</text>
+    <text x="250" y="513" fill="#1e3a8a">工作区文件 + present</text>
+    <text x="486" y="513" fill="#334155">workspace</text>
+    <text x="660" y="513" fill="#334155">是（声明）</text>
+    <text x="762" y="513" fill="#334155">文件 owner 管</text>
+    <text x="916" y="513" fill="#64748b">复制字节 / 附件库</text>
+
+    <rect x="36" y="538" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <rect x="36" y="538" width="5" height="46" fill="#94a3b8"/>
+    <text x="52" y="559" font-weight="700" fill="#334155">可重建缓存 / 索引</text>
+    <text x="250" y="559" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">dshCachePath</text>
+    <text x="486" y="559" fill="#334155">home cache</text>
+    <text x="660" y="559" fill="#334155">否</text>
+    <text x="762" y="559" fill="#334155">可删；应能重建</text>
+    <text x="916" y="559" fill="#64748b">权威数据</text>
+
+    <rect x="36" y="584" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
+    <rect x="36" y="584" width="5" height="46" fill="#3b82f6"/>
+    <text x="52" y="605" font-weight="700" fill="#1e3a8a">工作区记录</text>
+    <text x="250" y="605" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ctx.workspaceRegistry</text>
+    <text x="486" y="605" fill="#334155">home state</text>
+    <text x="660" y="605" fill="#334155">否</text>
+    <text x="762" y="605" fill="#334155">workspace 服务管</text>
+    <text x="916" y="605" fill="#64748b">文件管理 / 项目数据</text>
+
+    <rect x="36" y="630" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
+    <rect x="36" y="630" width="5" height="46" fill="#94a3b8"/>
+    <text x="52" y="651" font-weight="700" fill="#334155">客户端 UI 状态（边界）</text>
+    <text x="250" y="651" fill="#1e3a8a">浏览器 API，非 DSH 服务</text>
+    <text x="486" y="651" fill="#334155">源 / 设备</text>
+    <text x="660" y="651" fill="#334155">否</text>
+    <text x="762" y="651" fill="#334155">插件自己管键/版本</text>
+    <text x="916" y="651" fill="#64748b">跨设备 / 身份</text>
+  </g>
+
+  <rect x="36" y="694" width="1028" height="40" rx="6" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="52" y="719" font-size="10.5" fill="#4338ca">颜色只表示主要归属：绿 = 项目/用户文件，蓝 = 宿主/会话，橙 = 模型可见，紫 = 二进制，红 = 秘密，灰 = 临时/设备。不是安全等级。</text>
+</svg>

@@ -35,6 +35,7 @@
 | Q7 | 合格插件要测什么？打包、数据分割、智能体、代码各自怎么测，时间不够时先做什么？ | [07 篇](./07-testing-and-acceptance.md) |
 | Q8 | 灵活度到底怎么打包？打包的性质是什么？Dify、Hugging Face、MCP、Claude Code、VS Code 各自怎么做？ | [08 篇](./08-packaging-flexibility-and-ecosystems.md) |
 | Q9 | 智能体的只读定义和数据到底怎么切最合理？除了 workspace/home/session，还有哪些切法？ | [09 篇](./09-agent-data-cuts.md) |
+| Q10 | 插件开发时，怎么只用 DSH 原生能力系统安排数据？有没有可以照着做的数据卡、落点表和检查表？ | [10 篇](./10-data-design-advisor.md) |
 
 ## 不回答什么
 
@@ -47,6 +48,6 @@
 
 ## 阅读顺序
 
-先读 [00-index.md](./00-index.md) 的 30 秒结论、一页决策画布与六项检查速查，再读 [answer.md](./answer.md) 的一分钟版与三张判据表，最后按 Q1 → Q9 读分篇。若只关心“我现在要发一个包”，直接跳到 [02 篇](./02-package-contract.md)、[06 篇](./06-skeleton-and-checklists.md) 与 [07 篇](./07-testing-and-acceptance.md)；若只关心“数据别放错地方”，直接读 [05 篇](./05-data-planes.md) 与 [09 篇](./09-agent-data-cuts.md)；若关心“为什么这样设计、别人怎么做”，读 [08 篇](./08-packaging-flexibility-and-ecosystems.md)。
+先读 [00-index.md](./00-index.md) 的 30 秒结论、一页决策画布与六项检查速查，再读 [answer.md](./answer.md) 的一分钟版与三张判据表，最后按 Q1 → Q10 读分篇。若只关心“我现在要发一个包”，直接跳到 [02 篇](./02-package-contract.md)、[06 篇](./06-skeleton-and-checklists.md) 与 [07 篇](./07-testing-and-acceptance.md)；若只关心“数据别放错地方”，读 [05 篇](./05-data-planes.md)、[09 篇](./09-agent-data-cuts.md) 与 [10 篇](./10-data-design-advisor.md)；若关心“为什么这样设计、别人怎么做”，读 [08 篇](./08-packaging-flexibility-and-ecosystems.md)。
 
 ![三层与五种贡献](./figures/01-three-roles.svg)

@@ -226,6 +226,8 @@ spill 不是附件：`ctx.spillStore` 把大段文本放到 OS 临时目录，�
 
 插件包只发代码与只读定义；它通过服务访问这三种数据，并把“我读写什么、属于谁、升级后怎样”写进 README。做到这一点，“智能体代码”和“智能体数据”就自然分离了。
 
+把这张路径表走成一个具体插件的数据设计，见 [10 篇](./10-data-design-advisor.md)：数据卡、原生能力地图、键与生命周期。
+
 ## 11. 证据
 
 - Home 解析：[home-paths README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/home-paths/README.md)

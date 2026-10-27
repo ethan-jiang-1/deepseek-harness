@@ -16,7 +16,7 @@
 
 **可变用户数据从来不在 bundle 里。** 只读资产（`SKILL.md`、`references/`、locale、icon、模板）可以随包发布；用户数据的主归属有三类：会话工作区（working folder）、`$DSH_HOME` 用户目录（外带共享的 `~/.agents`）、会话日志；另有 host state 平面与 cache、credentials 两个旁路，见 [09 篇](./09-agent-data-cuts.md)。插件要读写数据，必须通过 `ctx.fs`、`ctx.storageDomain`、`ctx.sessionProjections` 这些服务，并明确它是 workspace 相对还是 home 相对；不能写进包目录，也不能藏在模块全局变量里。
 
-**删除与保留没有平台兜底。** 没有“插件数据根”：`$DSH_HOME/plugins/<id>/` 只是惯例，没有核心契约；session 日志没有删除 API；附件本地后端不自动 GC；卸载 bundle 也没有统一清理契约。插件作者必须在 README 写清“数据在哪、卸载后什么还在、谁来清”。
+**删除与保留没有平台兜底。** 没有“插件数据根”：`$DSH_HOME/plugins/<id>/` 只是惯例，没有核心契约；session 日志没有删除 API；附件本地后端不自动 GC；卸载 bundle 也没有统一清理契约。插件作者必须在 README 写清“数据在哪、卸载后什么还在、谁来清”。具体的数据设计步骤见 [10 篇](./10-data-design-advisor.md)。
 
 **DSH 会拒绝、跳过或拒绝装载的主要是四类：** patch 不可解析、入口模块解析不到、`engines.dsh`（或 DSH peer）不匹配、**声明了 `Config` 时**行内配置校验失败。入口形式混用通常不会在安装时拦住，而是装载后坏掉；元数据错了只降级。README、图标、测试、许可证、SemVer 纪律、数据边界都是质量线，不是门禁；但它们决定插件能否被发现、被信任、被升级。
 
@@ -66,9 +66,9 @@
 | 凭据 | credentials（物理在 home） | `$DSH_HOME/.credentials.yaml` 或环境变量 | 凭据服务 / `!!js` 引用；每次操作重新解析 |
 | 可重建缓存 | cache | `$DSH_HOME/cache` + `dshCachePath` | 用缓存路径；清了应能重建，不能当权威 |
 
-表 C 是导航，不是排他分区。settings 不在表里：它写当前 profile 的 `cordis.patch.yml`，作用域是 profile，不是账号；附件与 spill 是产物/临时旁路，不是普通数据平面——附件内容寻址、无自动 GC，spill 默认在 OS 临时目录，`present` 只记路径。完整切法见 [09 篇](./09-agent-data-cuts.md)。
+表 C 是导航，不是排他分区。settings 不在表里：它写当前 profile 的 `cordis.patch.yml`，作用域是 profile，不是账号；附件与 spill 是产物/临时旁路，不是普通数据平面——附件内容寻址、无自动 GC，spill 默认在 OS 临时目录，`present` 只记路径。完整切法见 [09 篇](./09-agent-data-cuts.md)，把切法落到具体插件的步骤见 [10 篇](./10-data-design-advisor.md)。
 
-## 九篇分读
+## 十篇分读
 
 | # | 分篇 | 一句话 |
 |---|---|---|
@@ -81,6 +81,7 @@
 | 07 | [测试与验收](./07-testing-and-acceptance.md) | T0–T8 测试矩阵；打包、契约、组合、真实安装、模型可见、数据隔离、兼容、UI、供应链；一小时/一天/一周预算 |
 | 08 | [灵活度与生态](./08-packaging-flexibility-and-ecosystems.md) | 分发/组合/定义/资源四种性质、五个决策时点；Dify、Hugging Face、MCP、Claude Code、VS Code 对照 |
 | 09 | [数据切法](./09-agent-data-cuts.md) | 六种切法；6+2 平面（定义/代码/workspace/home/session/host state + cache/credentials）；迁移清单 |
+| 10 | [数据设计顾问](./10-data-design-advisor.md) | 数据卡、原生能力地图、作用域/键、常见 archetype、生命周期/迁移、测试与评审清单 |
 
 ## 三个最容易被说错的点
 
@@ -98,6 +99,7 @@
 | 插件能不能在 `$DSH_HOME` 下自己建目录存数据？ | 不要手写 profile 或 `node_modules`；宿主状态用 storage domain，用户可见经验放 skills/AGENTS.md。 |
 | 要不要同时写 `engines.dsh` 和 DSH peer？ | `engines.dsh` 优先，写了就只看它；peer 仍用于共享实例与类型检查，共享包要 peer + dev 双写。 |
 | 数据放包目录行不行？ | 不行。包目录会被升级整体替换，`files` 会裁剪，link 安装又指向工作区。 |
+| 插件的数据到底怎么安排？ | 先写数据卡（谁拥有、关于谁、活多久、谁看见、谁是权威），再按 10 篇的原生能力地图选 `ctx.fs` / `ctx.storageDomain` / `ctx.sessionProjections` 等；不要先建表。 |
 | 市场是官方商店吗？ | 不是。它是一份第三方静态 JSON，DSH 只校验格式，不验证作者、主页或来源。 |
 | Desktop 和 Web 要分别发插件吗？ | 不用分别发；同一个 bundle 装进不同 profile。差异在安装入口与 `$DSH_HOME`，见 FAQ 23。 |
 | 能不能不发布、只在本地用？ | 可以，`--patch` overlay 或 `link:` 安装；但它们不是正式发布形态。 |

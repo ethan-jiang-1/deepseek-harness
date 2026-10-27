@@ -1,6 +1,8 @@
 # 24 · 插件发布与数据落点：先分清发布物，再决定数据归属
 
-这是一篇**自足**的说明：发布形态、发布要求、渠道版本、智能体定义、数据落点，都在本目录的九篇里回答。入口只做一件事——让你先判断“我现在要发的这个东西属于哪一层”，再按需翻分篇。
+这是一篇**自足**的说明：发布形态、发布要求、渠道版本、智能体定义、数据落点与数据设计，都在本目录的十篇里回答。入口只做一件事——让你先判断“我现在要发的这个东西属于哪一层”，再按需翻分篇。
+
+不熟悉 DSH？先看三张图：[01 的三层与五种贡献](./figures/01-three-roles.svg)、[05 的数据地图](./figures/05-data-map.svg)、[10 的落点决策树](./figures/10-decision-tree.svg)；图后回到下面的 30 秒结论。
 
 本篇回答三个问题：
 
@@ -16,6 +18,7 @@
 4. **智能体 = Host 共享的 agent loop + 会话选中的 preset + 该会话的数据。** preset 是 `@deepseek-ai/dsh-agent-preset` 的一行声明，不是程序、不是目录、不在运行时被改写。
 5. **数据不在包里。** 先按 workspace / home / session 导航；实现时按 09 篇的 6+2 切法。包目录是唯一会被升级整体替换的位置，不能放可变用户数据。
 6. **删除/保留没有统一 GC。** 插件没有核心“数据根”，session 日志没有删除 API，附件不自动回收，插件也没有统一卸载契约；作者必须自己设计并写进 README。
+7. **数据设计先写数据卡，再选 API。** 一块事实一张卡：谁拥有、关于谁、活多久、谁必须看见、谁是权威、用什么原生能力、键是什么、卸载留什么。具体步骤见 [10 篇](./10-data-design-advisor.md)。
 
 ## 一页决策画布
 
@@ -29,7 +32,7 @@
 | **版本承诺** | 我承诺支持哪些 DSH？ | 优先 `engines.dsh`；没有它才回退 DSH peer；`manifestVersion` 不是门 | [02](./02-package-contract.md) / [03](./03-channels-and-versions.md) |
 | **智能体定义** | 这个智能体由哪些子插件组成？ | preset 行 + 子插件行；共享服务留 Host | [04](./04-readonly-agent-definition.md) |
 | **只读资产** | 哪些知识随包走，哪些让用户编辑？ | 随包走只读 skill；可编辑经验放项目/用户 skill 根或 `AGENTS.md` | [04](./04-readonly-agent-definition.md) / [05](./05-data-planes.md) |
-| **数据归属** | 谁拥有、谁能看见、能活多久、谁是权威？ | workspace / home / session 导航；再按 6+2 与八条规则细化 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
+| **数据归属** | 谁拥有、谁能看见、能活多久、谁是权威？ | workspace / home / session 导航；再按 6+2 与八条规则细化；落到插件用数据卡 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) / [10](./10-data-design-advisor.md) |
 | **验收** | 我能不能重复证明它装得上、起得来、不串数据？ | 先 T0 + T3，再 T1/T2/T5，最后 T4/T6/T7/T8 | [07](./07-testing-and-acceptance.md) |
 
 ## 十个发布判断
@@ -62,7 +65,7 @@
 
 ## 数据：三归属是导航，6+2 是实现
 
-workspace / home / session 回答的是“大致在哪”；一旦要决定“谁写、谁看、活多久、谁是权威”，就要用 09 篇的 6+2：
+workspace / home / session 回答的是“大致在哪”；一旦要决定“谁写、谁看、活多久、谁是权威”，就要用 09 篇的 6+2。把 6+2 落到一个具体插件上的步骤、数据卡与原生能力地图见 [10 篇](./10-data-design-advisor.md)：
 
 | 24 的平面 | 放什么 | 所有者 | 物理位置 / 服务 | 可变性 | 模型可见 | 章节 |
 |---|---|---|---|---|---|---|
@@ -74,6 +77,10 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | **H host state** | workspace 记录、会话旁路元数据、插件 KV | 宿主 / 插件 | `$DSH_HOME/storages` + `ctx.storageDomain` | 可读写（schema 校验） | 否 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
 | **K cache** | 请求图片缓存、解析结果、临时产物 | 运行时 | `$DSH_HOME/cache` + `dshCachePath` | 可丢弃 | 否 | [09](./09-agent-data-cuts.md) |
 | **X credentials** | token、API key、OAuth grant | 用户 | `$DSH_HOME/.credentials.yaml` + 凭据服务 | 受权限保护 | 否 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
+
+![数据落点决策树：从用户问题走到原生能力](./figures/10-decision-tree.svg)
+
+这张图是入口版；数据卡的十个问题、原生能力与边界图的十二种落点、完整说明见 [10 篇](./10-data-design-advisor.md)。
 
 三个容易混的边界：
 
@@ -100,11 +107,13 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 5. 是 secret 吗？            是 → X；否 → 按上面结果
 ```
 
+这和 [10 的决策树](./10-data-design-advisor.md) 是同一组判断；10 先排除用户文件、再问模型可见性，并多出“用户可调参数 → Config”一支，顺序不同，结论一致。
+
 一条覆盖多数情况的规则：**用户拥有的字节留在用户能看见、能带走的地方；插件只拥有索引、游标、偏好、学到的事实和缓存，并且必须说清楚它跟谁走、什么时候删。**
 
 ## 保留与删除：四个系统性空白
 
-这四件事没有平台兜底，必须写进 README：
+这四件事没有平台兜底，必须写进 README（逐项设计见 [10 篇 §7](./10-data-design-advisor.md)）：
 
 - **没有“插件数据根”。** `$DSH_HOME/plugins/<id>/` 只是本机惯例，没有核心契约；插件要么用 `ctx.storageDomain`，要么自造目录并自己负责清理、迁移、卸载残留。
 - **session 日志没有删除 API。** 归档只是从导航里隐藏；插件不要把“归档会话”实现成删日志。
@@ -120,7 +129,8 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | 我该发 npm、Git、tarball 还是市场？ | [03 的渠道选择](./03-channels-and-versions.md) | [08 的分发性质](./08-packaging-flexibility-and-ecosystems.md) |
 | 我要交付一个专用智能体 | [04](./04-readonly-agent-definition.md) | [06 的 preset 骨架](./06-skeleton-and-checklists.md) |
 | 用户的经验/记忆放哪？ | [05 的经验落点](./05-data-planes.md) | [09 的状态判定](./09-agent-data-cuts.md) |
-| 我不知道数据该放哪个平面 | [09 的五问](./09-agent-data-cuts.md) | [05 的八条规则](./05-data-planes.md) |
+| 我要给插件设计数据，从哪开始？ | [10 的数据卡与七步](./10-data-design-advisor.md) | [09 的 6+2](./09-agent-data-cuts.md) / [07 的 T5](./07-testing-and-acceptance.md) |
+| 我不知道数据该放哪个平面 | [09 的五问](./09-agent-data-cuts.md) | [10 的原生能力地图](./10-data-design-advisor.md) |
 | 旧的 `agent.cordis.yml` / `dsh.compatibility` 怎么写？ | [06 的迁移节](./06-skeleton-and-checklists.md) | [02 的版本门](./02-package-contract.md) |
 | 灵活度怎么打包，别人怎么做？ | [08](./08-packaging-flexibility-and-ecosystems.md) | [07 的测试矩阵](./07-testing-and-acceptance.md) |
 | 我只有一小时，先测什么？ | [07 的时间预算](./07-testing-and-acceptance.md) | [02 的检查表](./02-package-contract.md) |
@@ -148,7 +158,8 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 ## 阅读路线
 
 - **作者，30 分钟**：[02](./02-package-contract.md) → [06](./06-skeleton-and-checklists.md) 的骨架与检查表 → [07](./07-testing-and-acceptance.md) 的“一小时”清单。
-- **维护者/架构，2 小时**：[01](./01-publishable-forms.md) → [03](./03-channels-and-versions.md) → [04](./04-readonly-agent-definition.md) → [05](./05-data-planes.md) → [09](./09-agent-data-cuts.md)。
+- **数据设计，45 分钟**：[10](./10-data-design-advisor.md) 的数据卡与七步 → [05](./05-data-planes.md) 的路径表 → [09](./09-agent-data-cuts.md) 的 6+2 与五问。
+- **维护者/架构，2 小时**：[01](./01-publishable-forms.md) → [03](./03-channels-and-versions.md) → [04](./04-readonly-agent-definition.md) → [05](./05-data-planes.md) → [09](./09-agent-data-cuts.md) → [10](./10-data-design-advisor.md)。
 - **Agent 要做一次发布**：读本文件的八格与六项检查 → [02](./02-package-contract.md) → [06](./06-skeleton-and-checklists.md) 的检查表 → [07](./07-testing-and-acceptance.md) 的 T0/T3；不要先读 08。
 - **只想看结论**：[answer](./answer.md) 的一分钟版与三张判据表。
 
@@ -168,8 +179,9 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 ├── 07-testing-and-acceptance.md
 ├── 08-packaging-flexibility-and-ecosystems.md
 ├── 09-agent-data-cuts.md       # 六种切法、6+2 平面
+├── 10-data-design-advisor.md   # 数据卡、原生能力地图、键、生命周期、archetype
 ├── reference.md                # 证据等级与来源登记
-└── figures/                    # 五张 SVG
+└── figures/                    # 九张 SVG
 ```
 
 ## 章节地图
@@ -187,6 +199,7 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | 07 | [测试与验收](./07-testing-and-acceptance.md) | T0–T8 测试矩阵；一小时/一天/一周预算 |
 | 08 | [灵活度与生态](./08-packaging-flexibility-and-ecosystems.md) | 分发/组合/定义/资源四种性质；五个时点；Dify、HF、MCP、Claude Code、VS Code 对照 |
 | 09 | [数据切法](./09-agent-data-cuts.md) | 六种切法；6+2 平面；状态判定；迁移清单 |
+| 10 | [数据设计顾问](./10-data-design-advisor.md) | 数据卡、原生能力地图、作用域/键、常见 archetype、生命周期/迁移、评审清单 |
 | — | [证据登记](./reference.md) | 来源、等级、关键主张的对应关系 |
 
 ## 术语
@@ -203,6 +216,9 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | **质量线** | 不通过不会立刻报错，但会造成维护债的发布要求 |
 | **三归属** | workspace / home / session 的导航三分；不是实现模型 |
 | **6+2** | D 定义 / C 代码 / W workspace / U home / S session / H host state，加 K cache / X credentials |
+| **数据卡** | 一块事实的十格设计卡：事实、拥有者、关于谁、寿命、可见性、权威、落点、键、删除、迁移 |
+| **原生能力** | 随 DSH 发行或由 Host 提供的服务/插件，例如 `ctx.fs`、`ctx.storageDomain`；不是第三方依赖 |
+| **`$DSH_HOME`** | 用户数据根（默认 `~/.dsh`），可用 `DSH_HOME` 覆盖；与共享的 `~/.agents` 分开 |
 
 ## 证据等级
 
