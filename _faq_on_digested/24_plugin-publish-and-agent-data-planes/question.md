@@ -2,7 +2,7 @@
 
 源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`），与 `_digested/` 同一基线。本篇的 DSH 行为结论来自仓库内产品文档、包 README 与源码；市场、npm、Git 托管等仓库外行为只按文档与生成器描述记录，未做联网实测。
 
-本篇的**目录外引用统一用 GitHub URL**（产品源码固定到上面的 rc.3 commit，姊妹 FAQ 指向研究分支），目录内引用用相对路径，便于单独分发。
+本篇的**目录外引用统一用 GitHub URL**（产品源码固定到上面的 rc.3 commit，其他 FAQ 指向研究分支），目录内引用用相对路径，便于单独分发。
 
 ## 问题从哪来
 
@@ -38,6 +38,8 @@
 
 ## 不回答什么
 
+下面只标出不在本篇展开的相邻问题；本篇的结论不依赖它们。
+
 - 不重复安装渠道的 UI 操作：Desktop 六种装法、Web 插件页、`dsh plugin` 的入口差异见 [FAQ 23 的 04 篇](https://github.com/ethan-jiang-1/deepseek-harness/blob/ethan/_faq_on_digested/23_standalone-vs-web-release-forms/04_plugin-paths.md)。
 - 不重复“专家插件 repo 选哪个方案”：独立 repo、pinned submodule、marketplace monorepo 的取舍见 [FAQ 13](https://github.com/ethan-jiang-1/deepseek-harness/blob/ethan/_faq_on_digested/13_expert-plugin-repo-organization/answer.md)。
 - 不评估某个具体第三方插件的好坏；外部样本只在“生态是否已经收敛到同一形态”处引用。
@@ -45,6 +47,6 @@
 
 ## 阅读顺序
 
-先读 [answer.md](./answer.md) 的一分钟版与三张判据表，再按 Q1 → Q9 读分篇。若只关心“我现在要发一个包”，直接跳到 [02 篇](./02-package-contract.md)、[06 篇](./06-skeleton-and-checklists.md) 与 [07 篇](./07-testing-and-acceptance.md)；若只关心“数据别放错地方”，直接读 [05 篇](./05-data-planes.md) 与 [09 篇](./09-agent-data-cuts.md)；若关心“为什么这样设计、别人怎么做”，读 [08 篇](./08-packaging-flexibility-and-ecosystems.md)。
+先读 [00-index.md](./00-index.md) 的 30 秒结论、一页决策画布与六项检查速查，再读 [answer.md](./answer.md) 的一分钟版与三张判据表，最后按 Q1 → Q9 读分篇。若只关心“我现在要发一个包”，直接跳到 [02 篇](./02-package-contract.md)、[06 篇](./06-skeleton-and-checklists.md) 与 [07 篇](./07-testing-and-acceptance.md)；若只关心“数据别放错地方”，直接读 [05 篇](./05-data-planes.md) 与 [09 篇](./09-agent-data-cuts.md)；若关心“为什么这样设计、别人怎么做”，读 [08 篇](./08-packaging-flexibility-and-ecosystems.md)。
 
 ![三层与五种贡献](./figures/01-three-roles.svg)

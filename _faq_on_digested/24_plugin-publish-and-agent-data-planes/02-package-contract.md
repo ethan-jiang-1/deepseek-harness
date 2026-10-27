@@ -114,7 +114,7 @@ DSH 的安装模型是“把包装进 profile 的依赖树”，不是“复制�
 - 空范围、非法范围、非字符串 `engines.dsh`、非对象 `engines`、非字符串 peer 范围都算不兼容/畸形；非法范围不会被诊断成“语法错误”，只是不满足。
 - 不满足时：安装预检（registry spec 用 `pnpm view`，本地目录读 `package.json`）在 pnpm 之前拒绝；`plugin_manager` 安装后会对改动的直接依赖再查一遍，不通过就恢复 `package.json` 与 `pnpm-lock.yaml`；兼容性拒绝还会重装恢复后的 lockfile，使 `node_modules` 回到原形状。启动时跳过 bundle 或在行级拒绝。注意 `dsh plugin add` 走 CLI 的 pnpm 路径，失败不保证回滚（见 03 篇）。
 
-**一处证据冲突要说明。** `packages/util/package-manifest/README.md` 的 Known Limitations 与 `2026-09-10-public-package-manifest` 决策记录都写着“当前安装器与加载器不强制 `engines.dsh`”。这句话**对 `engines.dsh` 已过时**，只对 `dsh.manifestVersion` 成立。当前源码 `packages/boot/app-boot/src/plugin-compatibility.ts` 实现了 `engines.dsh` 优先、peer 回退的判定，`publish.md`、app-boot README 与 plugin-manager README 也都按“强制”描述。判定以源码与这三个产品文档为准，不要引用那两处旧结论。
+**一处证据冲突要说明。** `packages/util/package-manifest/README.md` 的 Known Limitations 与 `2026-09-10-public-package-manifest` 决策记录都写着“当前安装器与加载器不强制 `engines.dsh`”（**R/H**）。这句话**对 `engines.dsh` 已过时**，只对 `dsh.manifestVersion` 成立。当前源码 `packages/boot/app-boot/src/plugin-compatibility.ts` 实现了 `engines.dsh` 优先、peer 回退的判定，`publish.md`、app-boot README 与 plugin-manager README 也都按“强制”描述（**C**）。判定以源码与这三个产品文档为准，不要引用那两处旧结论。证据等级见 [reference](./reference.md)。
 
 ### 4.2 共享实例：peer + dev 双写
 

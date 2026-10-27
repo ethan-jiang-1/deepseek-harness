@@ -48,7 +48,7 @@ workspace / home / session 是一个好的导航模型，但它把四个不同�
 | **D 定义** | bundle patch、preset 行、Config 默认值、工具边界 | 包作者 / 部署者 | `package.json` + patch + preset | 只读（按 revision） | 间接（决定工具/提示词） | 随包/层版本；已有 Agent 钉住 revision |
 | **C 代码** | 插件模块、`./client`、provider 代码 | 包作者 | 包目录 | 只读（随版本替换） | 间接 | 随安装/升级；link 指向 checkout |
 | **W workspace** | 项目文件、项目 `AGENTS.md`、`.dsh/skills`、`.agents/skills` | 项目 | 会话工作目录及其项目根 | 可读写 | 按需（工具读取/指令链） | 随仓库；用户自己管理 |
-| **U home** | 用户 `AGENTS.md`、`$DSH_HOME/skills`、`~/.agents/skills`、settings | 用户 | `$DSH_HOME` + `~/.agents` | 可读写 | 按需（指令链/技能/设置） | 跨项目；升级 DSH 不应清掉 |
+| **U home** | 用户 `AGENTS.md`、`$DSH_HOME/skills`、`~/.agents/skills`、settings | 用户 / profile | `$DSH_HOME` + `~/.agents` + profile patch | 可读写 | 按需（指令链/技能/设置） | 跨项目；升级 DSH 不应清掉；settings 只对当前 profile 生效 |
 | **S session** | 事件日志、投影、preset 选择、附件引用 | 会话 | `$DSH_HOME/sessions/...` + `ctx.sessionPersistence` | 只追加 | 是（会话内容） | 随会话；无删除 API |
 | **H host state** | workspace 记录、会话旁路元数据、插件 KV | 宿主 / 插件 | `$DSH_HOME/storages` + `ctx.storageDomain` | 可读写（schema 校验） | 否（除非消费者显式渲染） | 跨重启；版本不匹配拒绝打开 |
 | **K cache** | 请求图片缓存、解析结果、临时产物 | 运行时 | `$DSH_HOME/cache` + `dshCachePath` | 可读写、可丢弃 | 否 | 随时可清；清了应能重建 |
@@ -59,6 +59,10 @@ workspace / home / session 是一个好的导航模型，但它把四个不同�
 - **H 与 U 物理上都可能在 `$DSH_HOME` 下，但权威不同。** U 是用户可见的文件与技能；H 是 schema 校验、写后持久、变更事件的 KV，模型看不见。把 H 当 U 会绕过 schema 和迁移规则。
 - **K 与 H 都是“跨重启”，但 K 可重建。** 把 K 当 H 会让清理缓存变成数据丢失；把 H 当 K 会让重启丢状态。
 - **X 与 U 都是用户数据，但安全边界不同。** X 不进 patch、locale、README、会话文本；每次操作重新解析，不跨操作缓存。
+
+U 里有一个作用域例外：**settings 写当前 profile 的 `cordis.patch.yml`，是 profile 作用域，不是账号作用域。** 换 profile 就是另一份配置；跨 profile 共享的偏好要用 home 域单例，不能指望 `Config`。
+
+**附件、spill、导出不是新增平面。** 附件在 `$DSH_HOME/attachments/v1`，内容寻址、不可变、本地后端不自动 GC；spill 默认在 OS 临时目录，启动后一次性清理（`cleanupPeriodDays`）；`present` 只记路径，不复制字节。它们是产物/临时旁路，发布数据测试时要单独看。
 
 ## 4. 每个平面的不变量
 
@@ -97,6 +101,7 @@ workspace / home / session 是一个好的导航模型，但它把四个不同�
 - 对模型可见的会话内容，日志是唯一真源；fork、resume、replay、compaction 都从日志派生。
 - 只追加；历史格式以不可变世代保留，读取时迁移，写时发布后继，不覆盖源文件。
 - 没有删除 API；日志会累积到外部清理。插件不要把“归档会话”实现成删日志。
+- 附件引用在事件里，但对象在 `$DSH_HOME/attachments/v1`，内容寻址、不可变、不自动 GC；删日志不会回收附件。
 - **第三方不要新增 session event 类型。** 未知事件只有带 `ignorable: true` 才被读取方接受，而 live `Session.append()` 不能设置它；缺少声明插件的读取方会拒绝重开会话。用已有事件、投影、`agent.inject()` 或 storage；`plugin:` 记录只限 DSH 实验包。`@messageProjection` 是内部更强契约，不是第三方的安全替代。
 - 不要用 `session/event` 监听 + 全量重扫维护状态；用 `ctx.sessionProjections` 的纯函数 fold。
 
@@ -107,6 +112,7 @@ workspace / home / session 是一个好的导航模型，但它把四个不同�
 - 打开时校验全部记录；坏记录 `invalid-record`；版本不匹配 `version-mismatch`；同一 domain 多消费者 `already-open`。
 - 不产生工具、prompt 或 session event，所以模型看不见；要让模型看见，必须由消费者显式渲染，并留下会话事件。
 - domain 名与 schema 是包级契约；改 schema 要自己迁移。
+- domain 不是“插件数据根”：没有 per-plugin 目录、配额、scope、卸载清理；项目级切分靠记录键，不能按 workspace 建 domain。
 
 ### 4.7 K cache：可丢弃，不是权威
 
@@ -227,7 +233,9 @@ workspace / home / session 是一个好的导航模型，但它把四个不同�
 - 路径与根：[home-paths README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/home-paths/README.md)、[skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/skill/skill-filesystem/README.md)、[agent-instructions README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/context/agent-instructions/README.md)
 - 会话与工作目录：[session-persistence-jsonl README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/session-persistence-jsonl/README.md)、[working-directory README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/working-directory/README.md)
 - 宿主状态：[storage-domain README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/storage/storage-domain/README.md)、[workspace README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/workspace/workspace/README.md)
-- 附件与凭据：[attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/attachment/attachment-local/README.md)、[credentials-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/credentials/credentials-local/README.md)
+- settings 作用域：[settings README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/settings/settings/README.md)
+- 附件、spill 与导出：[attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/attachment/attachment-local/README.md)、[spill-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/spill/spill-local/README.md)、[deliverables README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/deliverables/tool-present/README.md)
+- 凭据：[credentials-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/credentials/credentials-local/README.md)
 - 沙箱：[base cordis.patch.yml](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/base/cordis.patch.yml)、[sandbox 文档](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/defensive-patterns/README.md)
 - 定义与 revision：[agent-preset README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/README.md)、[agent-preset-registry README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset-registry/README.md)
 - 相邻问题：[05 篇的路径表](./05-data-planes.md)、[04 篇的 preset 生命周期](./04-readonly-agent-definition.md)

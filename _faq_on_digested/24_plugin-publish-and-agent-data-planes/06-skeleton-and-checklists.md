@@ -10,7 +10,7 @@
 
 - **一个能力一个包。** 一个工具、一个 provider、一个专家 pack 各自成包；不要把无关能力塞进同一个 patch。
 - **bundle 只是发布容器，不必与代码包一一对应。** 配置型 bundle（MCP、preset-only、skill-provider）可以没有 `main`、没有 `./` export，只靠 patch 行引用别的包。
-- **只在角色独立演化时拆包。** 第二个消费者出现、需要独立版本节奏、Host 与 Client 生命周期不同——这些才是拆的理由；否则单包起步（FAQ 13 的生态证据也是这个结论）。
+- **只在角色独立演化时拆包。** 第二个消费者出现、需要独立版本节奏、Host 与 Client 生命周期不同——这些才是拆的理由；否则单包起步。
 - **不要新造可执行入口。** 插件挂在现有 profile 上；Desktop / CLI / Web 才是应用发布物（FAQ 23）。
 - **不要把数据或用户配置打进包。** 包只发代码与只读资产；数据在 workspace / home / session。
 
@@ -270,6 +270,9 @@ Removes the rows and preset. Storage domain data remains under $DSH_HOME/storage
 - [ ] 模型可见的状态能从会话日志重建。
 - [ ] 没有新增自定义 session event 类型，也没有依赖 `plugin:` 记录；状态用已有事件/投影/`agent.inject()`/storage。
 - [ ] 路径用 `resolveDshHome` / `resolveAgentsHome` / `ctx.workingDirectory.get(session)`。
+- [ ] 没有把 `$DSH_HOME/plugins/<id>` 当核心数据根；自造目录写清路径、清理、迁移。
+- [ ] 附件/spill/导出有保留说明；不把附件库当项目文件库。
+- [ ] settings 只对当前 profile 生效；跨 profile 共享的偏好走 home 域。
 - [ ] secret 走凭据服务；patch / locale / README 没有明文。
 - [ ] 工作区文件访问走 `ctx.fs`，没有用宿主 `node:fs` 绕过沙箱。
 - [ ] README 写清读写哪些数据、属于 workspace 还是 home、升级是否保留。

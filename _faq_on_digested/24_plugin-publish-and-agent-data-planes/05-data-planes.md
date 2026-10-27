@@ -64,9 +64,11 @@
 | `.credentials.yaml` | 凭据引用 | 通过凭据服务；不要读文件 |
 | `sessions/` | 会话日志 | 通过 `ctx.sessionPersistence` |
 | `attachments/v1/` | 附件 | 通过 attachment 服务 |
-| `profiles/<name>/` | 组合与依赖 | 不要手写；用 `dsh plugin` / `plugin_manager` |
+| `profiles/<name>/` | 组合、依赖与当前 profile 的 settings 写入 | 不要手写；用 `dsh plugin` / `plugin_manager` |
 | `cache/` | 缓存 | 通过 `dshCachePath`，可清理 |
 | `cordis.patch.yml` | 机器级覆盖层 | 用户维护；插件不应改 |
+
+`profiles/<name>/cordis.patch.yml` 也承接 settings 写入：`Config` 中标了 `.volatile()` 的字段由设置页写回**当前 profile**，作用域是 profile，不是账号。换 profile 就是另一份配置；跨 profile 共享的偏好不能用 `Config`，要用 home 域单例。
 
 共享 agents 根（`~/.agents`）是另一种全局：它的 `AGENTS.md` 与 `skills/` 故意放在 `$DSH_HOME` 之外，因为别的 agent 工具也读它。DSH 不会把它当成自己的私有目录。
 
@@ -105,6 +107,8 @@
 
 这不是“插件的私有数据库”。domain 名字与 schema 是包级契约；多个消费者打开同一 domain 会得到 `already-open`。
 
+**也没有“插件数据根”。** DSH 没有 `$DSH_HOME/plugins/<id>/` 的契约；`plugins/` 只是本机惯例。插件要么用 domain，要么自造目录，并自己负责路径、清理、迁移、卸载残留。domain 名是静态的，一个 Host 里一个名字只能打开一次；项目级切分靠记录键，不能按 workspace 建 domain。
+
 ## 4. session：一次会话的日志
 
 ### 4.1 日志是唯一真源
@@ -134,6 +138,10 @@ $DSH_HOME/sessions/
 ### 4.3 附件
 
 浏览器草稿可能只在内存；一旦 host 接受用户消息，图片会在写 user event 之前移动到 `$DSH_HOME/attachments/v1`。规则是“先持久化，再写事件”。插件处理附件时应通过 attachment 服务取引用，不要自己拼路径。
+
+附件是内容寻址、不可变的；本地后端把对象放在 `$DSH_HOME/attachments/v1`，**保留所有对象，没有自动 GC**。删会话日志或删 workspace 记录不会回收附件，对象会变成孤儿。消费者不得解析附件 id 或据此拼路径；要交付用户文件，写工作区文件再 `present`，不要把附件库当项目文件库。
+
+spill 不是附件：`ctx.spillStore` 把大段文本放到 OS 临时目录，启动后一次性清理（`cleanupPeriodDays`）；它是模型/工具的上下文管理产物，不是用户交付物。`present` 只记路径，不复制字节——用户要打开、编辑、带走的东西应写工作区文件。
 
 ## 5. 八条数据规则
 
@@ -197,6 +205,9 @@ $DSH_HOME/sessions/
 | secret 写进 Config 默认值 | patch 被分享即泄漏 | 凭据引用 / 环境变量 |
 | 用 `node:fs` 直接改 workspace | 绕过 fs 策略、沙箱与审计 | `ctx.fs` |
 | 把 workspace 记录当文件管理器 | 删记录以为删了目录 | 明确“记录 ≠ 文件” |
+| 把 `$DSH_HOME/plugins/<id>` 当插件数据根 | 没有契约、没有清理/迁移；卸载留垃圾 | `ctx.storageDomain`，或自造目录并写清清理说明 |
+| 把 settings 当账号级配置 | 换 profile 就丢；用户以为“配一次全生效” | home 域单例，或明确只对当前 profile 生效 |
+| 把附件库当项目文件库 | 附件不跟项目走、无 GC、用户找不到 | 工作区文件 + `present` |
 
 ## 9. 宿主代码与沙箱的边界
 
@@ -221,10 +232,12 @@ $DSH_HOME/sessions/
 - 技能根与来源：[skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/skill/skill-filesystem/README.md)
 - 指令链与预算：[agent-instructions README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/context/agent-instructions/README.md)
 - 宿主 KV：[storage-domain README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/storage/storage-domain/README.md)
+- settings 作用域：[settings README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/settings/settings/README.md)
 - 会话日志布局：[session-persistence-jsonl README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/session-persistence-jsonl/README.md)
 - 工作目录：[working-directory README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/working-directory/README.md)
 - 工作区记录：[workspace README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/workspace/workspace/README.md)
-- 附件：[attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/attachment/attachment-local/README.md)
+- 附件保留：[attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/attachment/attachment-local/README.md)
+- spill：[spill-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/spill/spill-local/README.md)
 - 凭据：[credentials-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/credentials/credentials-local/README.md)
 - 默认根：[base cordis.patch.yml](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/base/cordis.patch.yml)
 - 插件状态规则：[practices.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/skills/cordis-plugin-development/references/practices.md)

@@ -15,7 +15,7 @@ DSH 的灵活度不是“把一个包做得更大”，而是把可变的部分�
 | 代码怎么分发？ | npm 包、压缩包、目录、仓库、描述符 | npm 包；`dsh.bundle.patch` 让它同时是 bundle | `.difypkg`、`.vsix`、HF repo、MCP `server.json` |
 | 行为怎么组合？ | patch 层、贡献点、清单、依赖 | bundle patch 按 profile 顺序叠层 | VS Code contribution points、Claude Code manifest、Dify 扩展点 |
 | 智能体怎么定义？ | preset 行、agent manifest、app DSL | `@deepseek-ai/dsh-agent-preset` 的一行 | Claude Code agents、Dify `app.yaml`、OpenAI `skills/` |
-| 数据放在哪？ | KV、workspace 状态、bucket、插件数据目录 | workspace / home / session / host state / cache / credentials | Claude Code `PLUGIN_DATA`、VS Code 五套 storage、HF buckets、Dify 按 workspace 的 KV |
+| 数据放在哪？ | KV、workspace 状态、bucket、插件数据目录 | workspace / home / session / host state / cache / credentials；附件、spill、导出是产物与临时旁路 | Claude Code `PLUGIN_DATA`、VS Code 五套 storage、HF buckets、Dify 按 workspace 的 KV |
 
 这四问的答案可以分别演进。把它们压成一个“插件格式”，就会在升级、卸载、迁移、审计时付出代价。
 
@@ -145,7 +145,7 @@ DSH 的复现锚点有三个：会话日志（模型可见输入）、preset id 
 - **patch/overlay 组合。** 其他生态基本只做加法或按引用挂载；DSH 允许按 id 覆盖前一层的行与整段配置。这带来“不 fork 也能改行为”的能力，也把行 id 与配置键变成长期契约。
 - **preset revision。** 其他生态的 agent 定义多是文件或 app DSL；DSH 把“定义”做成可选择的运行时 revision，已有 Agent 不被中途改写。
 - **model-visible ⟺ logged。** 这是 DSH 自己的不变量：模型看到的会话内容必须能从已提交事件重建。多数生态只记录 chat transcript，不承诺 fork/replay/compaction 的一致性。
-- **数据三归属的导航模型。** workspace / home / session 的粗分容易讲，但真正的实现还要加 host state、cache、credentials；见 09 篇。
+- **数据三归属的导航模型。** workspace / home / session 的粗分容易讲，但真正的实现还要加 host state、cache、credentials，见 09 篇；附件、spill、导出另有保留策略，不是普通平面。
 
 ## 6. 灵活度的边界
 

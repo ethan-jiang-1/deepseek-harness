@@ -255,6 +255,14 @@ diff -u "$BEFORE" "$AFTER"
 | K cache | 清理后行为可重建；不成为唯一真源 |
 | X credentials | 不进 patch/locale/README/日志；每次操作重新解析 |
 
+### 8.4 保留、清理与作用域的测试
+
+09 篇没有把下面几件事单列成平面，但它们是发布时最容易留垃圾的地方：
+
+- **没有插件数据根。** 如果你的插件自造 `$DSH_HOME/<plugin>/`，测试要断言：README 写了路径、清理方式、迁移方式；卸载后残留可解释。用 domain 时，断言 domain 名/版本与 README 一致。
+- **session 无删除 API、附件无 GC。** 断言插件不删日志、不改 header；附件只通过 attachment 服务取引用，不解析 id、不拼路径；卸载不会假装回收附件。
+- **settings 是 profile 作用域。** 换一个 profile 后，设置不跟随；如果 README 声称“配一次全生效”，测试要拆穿它。跨 profile 共享偏好应走 home 域，并单独测。
+
 ## 9. T6：兼容面
 
 ### 9.1 最小矩阵
@@ -379,6 +387,12 @@ DSH 测试设施：
 - [remote-mock README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/remote-mock/README.md) — 按 endpoint mock Host
 - [session-snapshot README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/session-snapshot/README.md) — 完整 profile 快照套件
 - [dsh-ci-test-reliability skill](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/.agents/skills/dsh-ci-test-reliability/SKILL.md) — 并发、端口、时钟、子进程、teardown
+
+数据保留的边界：
+
+- [attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/attachment/attachment-local/README.md) — 内容寻址、保留所有对象、无自动 GC
+- [spill-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/spill/spill-local/README.md) — OS 临时目录、启动清理
+- [settings README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/settings/settings/README.md) — 写当前 profile 的 `cordis.patch.yml`，不是账号作用域
 
 外部实践（2026-10-25 文档，未在 DSH 实测）：
 
