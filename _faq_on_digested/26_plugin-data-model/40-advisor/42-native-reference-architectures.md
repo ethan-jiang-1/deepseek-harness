@@ -1,4 +1,4 @@
-# 11 · 原生优先的参考架构：10 个 archetype 的数据卡与路线
+# 42 · 原生优先的参考架构：10 个 archetype 的数据卡与路线
 
 ## 这一篇回答什么
 
@@ -8,7 +8,7 @@
 
 **原生优先（本轮新增）**：路线标记 **N0** 核心合同、**N1** 官方随包插件、**N+** 原生 API + 借用模式（无外部依赖）、**E** 外部插件/服务。长期优先 N0/N1/N+；E 只作参考或短期过渡。下面的 A/B/C 路线不再逐个重复徽标，级别以上面的“原生优先路线表”为准。
 
-![10 个 archetype 的参考架构路线](../figures/11-native-reference-architectures.svg)
+![10 个 archetype 的参考架构路线](../figures/42-native-reference-architectures.svg)
 
 ## 0. 八格决策画布
 

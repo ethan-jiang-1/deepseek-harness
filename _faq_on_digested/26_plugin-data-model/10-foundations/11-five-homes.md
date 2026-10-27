@@ -1,4 +1,4 @@
-# 01 · 五个家与一个只读层：内容、历史、状态、派生、客户端
+# 11 · 五个家与一个只读层：内容、历史、状态、派生、客户端
 
 ## 这一篇回答什么
 
@@ -22,7 +22,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 
 **“一个事实一个家”** 是贯穿整套设计的规则：同一份事实只能有一个权威。其他家如果要提到它，只能存**引用**（路径、id、哈希、附件引用、事件 seq），不能存副本。否则用户改一处、你抄一处，两边必然漂移。
 
-![五个家与一个只读层](../figures/01-five-homes.svg)
+![五个家与一个只读层](../figures/11-five-homes.svg)
 
 | 家 | 权威 | 典型位置 | 作用域 | 寿命 | 谁看得见 |
 |---|---|---|---|---|---|
@@ -33,7 +33,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 | **客户端** | 浏览器 / 设备 | `localStorage`、`userData/` | 源（origin）/ 设备 | 跟浏览器配置 | 用户/浏览器；Host 看不到 |
 | **只读层** | npm 包 | profile 的 `node_modules` | 安装 | 升级替换 | 运行时读取；不写 |
 
-**原生优先。** 这些家里，N0 核心合同（session log、projections、fs、remote access）和 N1 随包插件（workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local）是长期依赖；N2 experimental 只参考；E1 外部插件/E2 外部服务只借模式（见 [09](../03-external/09-external-plugin-patterns.md)）。
+**原生优先。** 这些家里，N0 核心合同（session log、projections、fs、remote access）和 N1 随包插件（workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local）是长期依赖；N2 experimental 只参考；E1 外部插件/E2 外部服务只借模式（见 [33](../30-external/33-external-plugin-patterns.md)）。
 
 三个边界不是平等的家，但作者必须知道：
 
@@ -79,7 +79,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 - Config / settings：插件 `Config` 里标了 `.volatile()` 的字段，由 settings 服务投影成表单，写回**当前 profile 的 `cordis.patch.yml`**；它是配置，不是数据表。
 - 凭据：`CredentialRef`（环境变量名）只存引用，值由 provider 管；`CredentialKey` 记录（`<owner>/<id>`）用于 API key / grant 这类多字段凭据。每次操作重新 `resolve`，所以轮换不需要重启。
 
-细节、失败方式与迁移责任在 [02](./02-state-homes.md)。
+细节、失败方式与迁移责任在 [12](./12-state-homes.md)。
 
 ## 派生家：可以丢的东西
 
@@ -159,12 +159,12 @@ DSH 没有 `$DSH_HOME/plugins/<id>/` 的契约；`plugins/` 只是本机出现�
 
 - 要么用 domain（推荐），自己声明 domain 名、版本、记录键；
 - 要么自造目录，并在 README 写清路径、清理、迁移、卸载残留；
-- 不要指望平台替你删——删除/保留是系统性空白（见 06/11）。
+- 不要指望平台替你删——删除/保留是系统性空白（见 22/42）。
 
 ## 边界
 
-- 本篇把“内容”限定为工作区文件；附件库里的二进制也是内容，但它服务模型输入，归属与生命周期不同（见 04）。
+- 本篇把“内容”限定为工作区文件；附件库里的二进制也是内容，但它服务模型输入，归属与生命周期不同（见 14）。
 - 会话日志的格式、迁移与 compaction 细节不在本篇展开；这里只关心“它是不是权威”。
 - `ctx.fs` 的远端后端（SSH 等）可能让 `processPath` 与本地路径不同；不要把 `displayPath` 当成本地绝对路径。
 - 客户端家只讨论 Web/Desktop 的浏览器侧；Electron 主进程、原生扩展的存储不在本篇范围。
-- 完整 landscape、历史与参考架构见 [05](../02-native/05-native-data-landscape.md)、[06](../02-native/06-native-data-history.md)、[11](../04-advisor/11-native-reference-architectures.md)。
+- 完整 landscape、历史与参考架构见 [21](../20-native/21-native-data-landscape.md)、[22](../20-native/22-native-data-history.md)、[42](../40-advisor/42-native-reference-architectures.md)。

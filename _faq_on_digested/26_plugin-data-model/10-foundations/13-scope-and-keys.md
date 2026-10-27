@@ -1,10 +1,10 @@
-# 03 · 作用域与键：一个插件，多个工作区
+# 13 · 作用域与键：一个插件，多个工作区
 
 ## 这一篇回答什么
 
 插件实例只有一份，但要服务多个 workspace、多个会话、多个项目。数据怎么切？项目级状态用什么键？`workspaceId` 行不行？目录被删了、被移了、工作区被重新添加了，会发生什么？
 
-![作用域矩阵](../figures/03-scope-matrix.svg)
+![作用域矩阵](../figures/13-scope-matrix.svg)
 
 ## 六个作用域
 
@@ -35,7 +35,7 @@
 
 shipped Web 组合挂载 `workspaceRegistry`；headless/SDK 组合可能没有它。插件要用就先 `inject` 并处理缺失，不要把“没有注册表”当成“没有项目”。
 
-外部社区插件（E1，参考）补“每项目一套运行时”的做法是另一个服务：`dsh-workspace-overlay` 注册 `ctx.workspaceCordis`，用 canonical path 做 lease，最后一个租约释放时 dispose scope。它不是核心 API，不能当 DSH 的合同（见 07 篇）。
+外部社区插件（E1，参考）补“每项目一套运行时”的做法是另一个服务：`dsh-workspace-overlay` 注册 `ctx.workspaceCordis`，用 canonical path 做 lease，最后一个租约释放时 dispose scope。它不是核心 API，不能当 DSH 的合同（见 31 篇）。
 
 ## 工作区的身份：id 短命，路径长命，但都不完美
 

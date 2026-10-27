@@ -1,4 +1,4 @@
-# 08 · 外部对照：VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma、JetBrains
+# 32 · 外部对照：VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma、JetBrains
 
 ## 这一篇回答什么
 
@@ -11,7 +11,7 @@ DSH 没有“插件数据目录”，这不是它独有的难题。成熟的插�
 
 **来源口径（2026-10-27）。** 只取官方文档/API reference；能核到源码的核到源码。标注“未确认”的是官方文档没有明说、只能从行为推断的部分。不同生态的版本不同，下面的名字以各自当前文档为准。
 
-![跨生态对照](../figures/08-external-ecosystem-matrix.svg)
+![跨生态对照](../figures/32-external-ecosystem-matrix.svg)
 
 ## 一张总表
 

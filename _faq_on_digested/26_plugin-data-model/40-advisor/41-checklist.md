@@ -1,4 +1,4 @@
-# 10 · 决策程序：十八问、一张数据卡、例子、反模式与测试
+# 41 · 决策程序：十八问、一张数据卡、例子、反模式与测试
 
 ## 这一篇回答什么
 
@@ -67,7 +67,7 @@
 
 ## 几个例子
 
-> 例子里的 `.agents/`、`dsh-*` 是外部社区模式（E1，参考）；原生长相见 [05](../02-native/05-native-data-landscape.md)，原生优先的骨架见 [11](./11-native-reference-architectures.md)。
+> 例子里的 `.agents/`、`dsh-*` 是外部社区模式（E1，参考）；原生长相见 [21](../20-native/21-native-data-landscape.md)，原生优先的骨架见 [42](./42-native-reference-architectures.md)。
 
 ### 例 1：代码检查器的分析缓存
 
@@ -184,7 +184,7 @@
 
 注意：这张图的第一问不是“模型要看见吗”，而是“用户是不是已经有了”。**能不存就不存**，是外部社区里最省事、也最容易获得信任的路线（E1 参考）。
 
-原生 landscape/历史/参考架构见 [05](../02-native/05-native-data-landscape.md)、[06](../02-native/06-native-data-history.md)、[11](./11-native-reference-architectures.md)；外部插件模式（只作参考）见 [09](../03-external/09-external-plugin-patterns.md)。
+原生 landscape/历史/参考架构见 [21](../20-native/21-native-data-landscape.md)、[22](../20-native/22-native-data-history.md)、[42](./42-native-reference-architectures.md)；外部插件模式（只作参考）见 [33](../30-external/33-external-plugin-patterns.md)。
 
 ## 边界
 

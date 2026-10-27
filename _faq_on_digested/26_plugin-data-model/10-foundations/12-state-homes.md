@@ -1,4 +1,4 @@
-# 02 · 状态的家：domain、settings、credential 各管什么
+# 12 · 状态的家：domain、settings、credential 各管什么
 
 ## 这一篇回答什么
 
@@ -17,7 +17,7 @@
 
 一句话：**domain 存事实，Config 存选择，credentials 存引用与授权记录，cache 存可丢弃的推导。**
 
-但 domain 不是“插件数据根”：它没有 per-plugin 目录、配额、scope、卸载清理；域名是包级静态声明，一个 Host 一个名字只能开一次。需要“按插件 id 隔离”的状态，要么用记录键，要么自造目录并承担生命周期（见 [01](./01-five-homes.md) 的“没有插件数据根”）。
+但 domain 不是“插件数据根”：它没有 per-plugin 目录、配额、scope、卸载清理；域名是包级静态声明，一个 Host 一个名字只能开一次。需要“按插件 id 隔离”的状态，要么用记录键，要么自造目录并承担生命周期（见 [11](./11-five-homes.md) 的“没有插件数据根”）。
 
 ## `ctx.storageDomain`：有 schema 的宿主 KV
 

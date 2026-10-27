@@ -166,14 +166,14 @@ OS 临时目录                 # spill、workspace/changes 整文件副本
 | 36 | session 日志有跨进程 kernel lease；domain JSON 没有 | `session-persistence-jsonl/src/lease.ts`；`storage-json` | C |
 | 37 | 没有 per-workspace domain/scope；proposed 明确 out-of-scope | `2026-07-24-domain-kv-storage-and-workspace` | P |
 | 38 | 客户端状态分纯 UI 与 session-derived 投影 | `2026-08-25-session-observations-and-projection-owned-client-state` | H/C |
-| 39 | 市场至少四种 workspace 表示、三种凭据家、卸载非生命周期 | [09 外部插件模式](../03-external/09-external-plugin-patterns.md)、[research-external](./research-external.md) | S/R |
+| 39 | 市场至少四种 workspace 表示、三种凭据家、卸载非生命周期 | [33 外部插件模式](../30-external/33-external-plugin-patterns.md)、[research-external](./research-external.md) | S/R |
 | 40 | 插件直接改 session log/物理删目录是现实补丁 | session-workspace-organizer、archive-retention、archive-manager | R |
 
 原生来源见 [research-native](./research-native.md)，外部样本见 [research-external](./research-external.md)；本轮改动见 [review-v2](./v2/review.md)。
 
 ## 九、相关阅读
 
-- [05 原生 Landscape](../02-native/05-native-data-landscape.md)、[06 原生历史](../02-native/06-native-data-history.md)、[09 外部插件模式](../03-external/09-external-plugin-patterns.md)、[11 原生参考架构](../04-advisor/11-native-reference-architectures.md)。
+- [21 原生 Landscape](../20-native/21-native-data-landscape.md)、[22 原生历史](../20-native/22-native-data-history.md)、[33 外部插件模式](../30-external/33-external-plugin-patterns.md)、[42 原生参考架构](../40-advisor/42-native-reference-architectures.md)。
 - [FAQ 24 · 数据平面](../../24_plugin-publish-and-agent-data-planes/05-data-planes.md)：workspace / home / session 的三分与八条规则。
 - [FAQ 25 · Workspace 与 Ungrouped](../../25_workspaces-and-conversations/answer.md)：工作区记录、attach、删除语义。
 - [FAQ 22 · 上下文腐化](../../22_spec-drift-and-context-rot/answer.md)：compaction 遮蔽与日志只追加。
