@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>作用域矩阵：四个平面 × 三个作用域，外加客户端边界</title>
-  <desc>内容、历史、状态、派生四个平面分别落在 session、workspace、home 三个作用域里的典型数据与键；profile 是 Config 的作用域，客户端是独立的设备作用域。插件实例是宿主级的一份，所以每个项目级数据都必须带项目键；workspaceId 会随删除重加变化，规范化路径也不保证目录移动后仍有效。</desc>
+  <title>作用域矩阵：四个家 × 三个作用域，外加客户端边界</title>
+  <desc>内容、历史、状态、派生四个家分别落在 session、workspace、home 三个作用域里的典型数据与键；profile 是 Config 的作用域，客户端是独立的设备作用域。插件实例是宿主级的一份，所以每个项目级数据都必须带项目键；workspaceId 会随删除重加变化，规范化路径也不保证目录移动后仍有效。</desc>
 
   <rect width="1200" height="760" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">作用域矩阵：先选平面，再选它跟谁走</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">作用域矩阵：先选家，再选它跟谁走</text>
   <text x="600" y="58" text-anchor="middle" fill="#64748b">插件实例只有一份，所以每一格都要自己带键</text>
 
   <!-- header -->

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title>五个家与一个只读层：内容、历史、状态、派生、客户端</title>
-  <desc>内容平面是用户拥有的工作区与用户全局文件；历史平面是模型可见的会话日志；状态平面是插件拥有的宿主域、配置与凭据；派生平面是可重建的投影与索引；客户端平面是浏览器 localStorage 或桌面 userData。只读层是随包发布、升级即替换的资源，不是用户数据。每个家有自己的权威、位置、可见性与生命周期。</desc>
+  <desc>内容家是用户拥有的工作区与用户全局文件；历史家是模型可见的会话日志；状态家是插件拥有的宿主域、配置与凭据；派生家是可重建的投影与索引；客户端家是浏览器 localStorage 或桌面 userData。只读层是随包发布、升级即替换的资源，不是用户数据。每个家有自己的权威、位置、可见性与生命周期。</desc>
 
   <rect width="1200" height="760" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">五个家，一个只读层</text>

@@ -20,7 +20,7 @@
 | **E1 外部社区插件** | 第三方仓库/包 | 只借模式；短期用要写清依赖/迁移/卸载 |
 | **E2 外部服务** | MCP/HTTP/DB/对象存储 | 没有原生替代时短期用 |
 
-21 只放原生；33 只放外部，并给「外部模式 → 原生替代」；42 的路线表标 N0/N1/N+/E。
+21 只放原生（外部只留指针）；31/32/33 只放外部，并给「外部模式 → 原生替代」；42 的路线表标 N0/N1/N+/E。
 
 ## 一页决策画布
 
@@ -152,7 +152,7 @@
 | 12 | [12 状态的家](./10-foundations/12-state-homes.md) | domain / settings / credentials |
 | 13 | [13 作用域与键](./10-foundations/13-scope-and-keys.md) | session/workspace/profile/home/device + 键 |
 | 14 | [14 产物](./10-foundations/14-artifacts.md) | present / changes / attachments / spill / export |
-| 21 | [21 原生 landscape](./20-native/21-native-data-landscape.md) | 33 个原生家、12 archetype、N0/N1/N2 |
+| 21 | [21 原生 landscape](./20-native/21-native-data-landscape.md) | 33 个 DSH 侧数据家（含无主）、12 archetype、N0/N1/N2 |
 | 22 | [22 原生历史](./20-native/22-native-data-history.md) | 22 个关键事件、12 个数据簇、欠账 |
 | 31 | [31 外部社区模式](./30-external/31-external-community-patterns.md) | 九个维度、十八种手法（E1 参考） |
 | 32 | [32 外部生态对照](./30-external/32-external-adjacent-ecosystems.md) | VS Code / Obsidian / Claude Code 等 |

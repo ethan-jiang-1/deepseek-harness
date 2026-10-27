@@ -30,14 +30,14 @@
 | Archetype | 原生首选 | 可借模式（N+） | 外部（E，仅参考） |
 |---|---|---|---|
 | 项目记忆 | 项目文件 + `ctx.fs`（N0） | journal+render、锁内备份 | 外部笔记/DB |
-| 个人长期记忆 | `ctx.storageDomain`（N1）或项目文件（N0） | 条目 id、确认队列 | 外部记忆服务 |
+| 个人长期记忆 | `ctx.storageDomain`（N0）+ backend（N1），或项目文件（N0） | 条目 id、确认队列 | 外部记忆服务 |
 | 会话归档/删除 | **GAP**（无 delete） | 宽限+审计（E1 模式） | archive-retention 等 |
-| KB/RAG | `ctx.storageDomain` + sqlite backend（N1） | 每 KB SQLite、软删/compact | 外部 RAG/向量 |
+| KB/RAG | `ctx.storageDomain`（N0）+ sqlite backend（N1） | 每 KB SQLite、软删/compact | 外部 RAG/向量 |
 | 任务/目标 | session 事件/投影（N0）、home 域（N1） | 状态机、跨标签同步 | 外部任务库 |
-| 交付物 | 工作区文件 + `present`（N1） | 项目导出目录 | artifact 服务 |
+| 交付物 | 工作区文件（N0）+ `present`（N1） | 项目导出目录 | artifact 服务 |
 | 渠道/账号 | profile patch + `ctx.credentials`（N1） | 去重/路由表 | 外部账号 DB |
 | 每项目运行时 | **GAP**（无 per-workspace scope） | read-only 配置 + lease（E1 模式） | workspace-overlay |
-| 客户端状态 | localStorage / `SessionProjectionMap`（N0） | host 文件迁移、版本键 | 外部同步 |
+| 客户端状态 | `localStorage`（平台，不是 N0）/ `SessionProjectionMap`（N0） | host 文件迁移、版本键 | 外部同步 |
 | 同步/备份 | `/export` ZIP（N1） | 用户 git、冲突三选一 | 外部同步服务 |
 
 ## 1. 项目记忆（journal + render）

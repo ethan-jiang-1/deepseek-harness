@@ -46,7 +46,7 @@
 | 11 | 账号/租户/身份 | anonymous id（N1）、credentials（N1）、profiles（N1）、remoteAccess（N0） | 安装/账号 | home/external | 无多租户分区 |
 | 12 | 客户端/UI 状态 | localStorage/userData（平台，不是 DSH 服务）；session-derived 投影（N0） | 浏览器/设备 | device | 无统一服务/迁移/卸载清理 |
 
-## 表 L2：33 个原生数据家，收敛成 7 组
+## 表 L2：33 个 DSH 侧数据家（含无主/边界），收敛成 7 组
 
 | 组 | 家（id） | 级别 | 权威 | 寿命 | 主要风险 |
 |---|---|---|---|---|---|
