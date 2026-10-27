@@ -4,7 +4,7 @@
 
 插件实例只有一份，但要服务多个 workspace、多个会话、多个项目。数据怎么切？项目级状态用什么键？`workspaceId` 行不行？目录被删了、被移了、工作区被重新添加了，会发生什么？
 
-![作用域矩阵](./figures/02-scope-matrix.svg)
+![作用域矩阵](../figures/02-scope-matrix.svg)
 
 ## 六个作用域
 
@@ -35,7 +35,7 @@
 
 shipped Web 组合挂载 `workspaceRegistry`；headless/SDK 组合可能没有它。插件要用就先 `inject` 并处理缺失，不要把“没有注册表”当成“没有项目”。
 
-社区补“每项目一套运行时”的做法是另一个服务：`dsh-workspace-overlay` 注册 `ctx.workspaceCordis`，用 canonical path 做 lease，最后一个租约释放时 dispose scope。它不是核心 API，不能当 DSH 的合同（见 06 篇）。
+外部社区插件（E1，参考）补“每项目一套运行时”的做法是另一个服务：`dsh-workspace-overlay` 注册 `ctx.workspaceCordis`，用 canonical path 做 lease，最后一个租约释放时 dispose scope。它不是核心 API，不能当 DSH 的合同（见 06 篇）。
 
 ## 工作区的身份：id 短命，路径长命，但都不完美
 
@@ -43,7 +43,8 @@ shipped Web 组合挂载 `workspaceRegistry`；headless/SDK 组合可能没有�
 |---|---|---|
 | `WorkspaceId`（uuid） | 删除再添加同一目录会换新的 | **不适合**长期键；适合进程内引用 |
 | `workspace.path`（realpath） | 目录不改名/不移动就稳定；符号链接已解开 | **较适合**，但要处理移动/删除 |
-| `session.header.cwd` | 会话创建后不可变 | 不能当项目键：目录移动后它仍指旧路径 |
+| `session.header.cwd` | 创建时写入，不可变 | 不能当“当前项目”：`working_directory` 可改，header 仍指创建路径 |
+| `ctx.workingDirectory.get(session)` | 会话级，可被工具改 | 当前工作的根；不是长期项目键 |
 | 会话目录名 `--<cwd>--` | 持久化层的内部编码，有损、可能截断 | **不能**反解成路径 |
 | 目录里的一个标记文件（如 `.your-plugin/id`） | 跟目录走、可复制 | **最稳**，但会污染仓库、要用户同意 |
 | 内容哈希（如 git remote + 相对路径） | 跨机器可认，但依赖内容 | 适合同步/去重，不适合单独当主键 |
@@ -123,6 +124,21 @@ single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分
 - 目录移动后，想找回旧数据只能靠用户手动指定、项目内标记或内容哈希，路径键帮不了你；
 - 删除工作区记录不会触发任何“数据删除”回调；你的清理只能靠下次启动扫描或用户显式操作。
 
+## 核心没有“每 workspace 一个数据家”
+
+`DomainSpec` 没有 scope 字段；domain 名是包级静态声明，一个 Host 一个名字只能打开一次。proposed 的 domain KV 笔记把 **scope dimension** 明确列为 out-of-scope：等“每 workspace 一个 domain”的真实消费者出现，再给 `DomainSpec` 加 scope 声明 + 文件名 scope 段。**P**
+
+外部插件（E1，参考）因此出现四种互不兼容的表示：
+
+| 表示 | 样本（E1，参考） | 键 |
+|---|---|---|
+| canonical path scope + lease | workspace-overlay（E1） | `realpath(cwd)` |
+| settings 字段按 workspace | custom-workspace（E1） | `workspaceId` / Host path |
+| storage-domain 按 workspace | session_folders（E1） | workspace 记录/文件夹 |
+| home 目录按 workspace | workspace-memories（E1） | `workspaceId` |
+
+这也是 v1 说“没有 per-workspace 实例”时真正缺的东西：不是“没有目录”，是**没有统一的作用域 + 键 + 生命周期**。
+
 ## 跨工作区聚合：不要扫盘，扫注册表/会话
 
 一个“跨项目”的插件（例如全局搜索、项目总览）需要枚举项目。按可靠性排序：
@@ -142,7 +158,7 @@ single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分
 - 参数 → Config 的 volatile 字段（按 profile 生效，不是按人）；
 - 秘密 → credentials。
 
-但要接受：**home 是机器/账户本地的**。换机器、换 `DSH_HOME`、换 Host，数据不跟着走。如果用户期望“我的偏好在任何机器都一样”，那不是 DSH 内置能力，需要你自己做导入/导出（或像社区那样用 git 做同步）。
+但要接受：**home 是机器/账户本地的**。换机器、换 `DSH_HOME`、换 Host，数据不跟着走。如果用户期望“我的偏好在任何机器都一样”，那不是 DSH 内置能力，需要你自己做导入/导出（或像外部插件那样用 git 做同步；E1，参考）。
 
 另一个容易混的点：**profile 不是人**。同一个 `$DSH_HOME` 下可以有多个 profile（standard、creator、自定义），每个 profile 有自己的配置 patch；`Config` 的作用域是 profile，不是“这个用户”。要跨 profile 共享，用 home 域。
 
@@ -155,7 +171,7 @@ single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分
 
 ## 作用域选择表
 
-| 事实 | 作用域 | 平面 | 键 |
+| 事实 | 作用域 | 家 | 键 |
 |---|---|---|---|
 | 生成的报告/代码 | workspace | 内容 | 文件路径 |
 | 这次对话的中间结果 | session | 历史/内存 | `SessionId` |
@@ -172,5 +188,7 @@ single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分
 
 - 路径规范化用 `fs.realpath` 的口径；Windows 的大小写与分隔符要单独测试。
 - 工作区路径可能是仓库的子目录，不等于 git 根；技能发现用的是“最近的 `.git` 祖先”，不要混用这两个概念。
-- 会话 cwd 不可变，所以“把会话搬到另一个项目”不是支持的操作；跨项目迁移只能新建会话（社区有直接改日志 header 的做法，风险自负）。
+- `session.header.cwd` 不可变，所以会话的**项目归属**不会跟着 `working_directory` 变；当前工作目录可以改，但 workspace 成员与项目分组仍锚定 header.cwd。跨项目迁移只能新建会话（外部插件有直接改日志 header 的做法；E1，风险自负）。
 - `ctx.workspaceRegistry` 是可选能力；不要假设每个组合都有。
+- `header.cwd` 不可变，但 `working_directory` 可改；“把会话搬到另一个项目”不是受支持操作，跨项目迁移只能新建会话。
+- session 日志有跨进程写租约；domain JSON 没有。两者不要混为一谈。

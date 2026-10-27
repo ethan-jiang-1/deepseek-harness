@@ -1,0 +1,217 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<title>外部插件样本 × 数据家（参考）</title>
+<desc>15 个复杂插件把数据放在哪些家：内容、历史、状态、派生、客户端、外部/临时。空白处就是 DSH 没有统一服务的区域。</desc>
+<rect width="1200" height="760" rx="8" fill="#f8fafc"/>
+<text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">外部插件样本 × 数据家（参考）</text>
+<text x="600" y="58" text-anchor="middle" fill="#64748b">外部插件（E1/E2）只作参考，不作长期依赖；深色=主家，浅色=次要/派生</text>
+<text x="24" y="92" font-size="11" font-weight="700" fill="#334155">插件</text>
+<rect x="200" y="76" width="154" height="26" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+<text x="277" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#3730a3">内容</text>
+<rect x="362" y="76" width="154" height="26" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+<text x="439" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#3730a3">历史</text>
+<rect x="524" y="76" width="154" height="26" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+<text x="601" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#3730a3">状态</text>
+<rect x="686" y="76" width="154" height="26" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+<text x="763" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#3730a3">派生</text>
+<rect x="848" y="76" width="154" height="26" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+<text x="925" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#3730a3">客户端</text>
+<rect x="1010" y="76" width="154" height="26" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+<text x="1087" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#3730a3">外部/临时</text>
+<text x="24" y="118" font-size="9.6" font-weight="700" fill="#0f172a">1. memory-evolve</text>
+<rect x="200" y="100" width="154" height="30" rx="5" fill="#dbeafe" stroke="#cbd5e1"/>
+<text x="277" y="119" text-anchor="middle" font-size="8.6" fill="#1e3a8a">项目文件?</text>
+<rect x="362" y="100" width="154" height="30" rx="5" fill="#dcfce7" stroke="#cbd5e1"/>
+<text x="439" y="119" text-anchor="middle" font-size="8.6" fill="#166534">会话副本?</text>
+<rect x="524" y="100" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="119" text-anchor="middle" font-size="8.6" fill="#78350f">home 文件树</text>
+<rect x="686" y="100" width="154" height="30" rx="5" fill="#e2e8f0" stroke="#cbd5e1"/>
+<text x="763" y="119" text-anchor="middle" font-size="8.6" fill="#334155">git 同步</text>
+<rect x="848" y="100" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="119" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="100" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="119" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="158" font-size="9.6" font-weight="700" fill="#0f172a">2. project-context</text>
+<rect x="200" y="140" width="154" height="30" rx="5" fill="#dbeafe" stroke="#cbd5e1"/>
+<text x="277" y="159" text-anchor="middle" font-size="8.6" fill="#1e3a8a">项目 .agents/</text>
+<rect x="362" y="140" width="154" height="30" rx="5" fill="#dcfce7" stroke="#cbd5e1"/>
+<text x="439" y="159" text-anchor="middle" font-size="8.6" fill="#166534">项目内会话副本</text>
+<rect x="524" y="140" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="159" text-anchor="middle" font-size="8.6" fill="#78350f">journal + render</text>
+<rect x="686" y="140" width="154" height="30" rx="5" fill="#e2e8f0" stroke="#cbd5e1"/>
+<text x="763" y="159" text-anchor="middle" font-size="8.6" fill="#334155">INDEX 索引</text>
+<rect x="848" y="140" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="159" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="140" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="159" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="198" font-size="9.6" font-weight="700" fill="#0f172a">3. graphmemory</text>
+<rect x="200" y="180" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="277" y="199" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="362" y="180" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="439" y="199" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="524" y="180" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="199" text-anchor="middle" font-size="8.6" fill="#78350f">SQLite 图谱</text>
+<rect x="686" y="180" width="154" height="30" rx="5" fill="#e2e8f0" stroke="#cbd5e1"/>
+<text x="763" y="199" text-anchor="middle" font-size="8.6" fill="#334155">向量/FTS</text>
+<rect x="848" y="180" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="199" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="180" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="199" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="238" font-size="9.6" font-weight="700" fill="#0f172a">4. workspace-memories</text>
+<rect x="200" y="220" width="154" height="30" rx="5" fill="#dbeafe" stroke="#cbd5e1"/>
+<text x="277" y="239" text-anchor="middle" font-size="8.6" fill="#1e3a8a">项目 .dsh/memory</text>
+<rect x="362" y="220" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="439" y="239" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="524" y="220" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="239" text-anchor="middle" font-size="8.6" fill="#78350f">home Markdown</text>
+<rect x="686" y="220" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="763" y="239" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="848" y="220" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="239" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="220" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="239" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="278" font-size="9.6" font-weight="700" fill="#0f172a">5. kb-manager</text>
+<rect x="200" y="260" width="154" height="30" rx="5" fill="#dbeafe" stroke="#cbd5e1"/>
+<text x="277" y="279" text-anchor="middle" font-size="8.6" fill="#1e3a8a">inbox/原文件</text>
+<rect x="362" y="260" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="439" y="279" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="524" y="260" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="279" text-anchor="middle" font-size="8.6" fill="#78350f">每 KB SQLite</text>
+<rect x="686" y="260" width="154" height="30" rx="5" fill="#e2e8f0" stroke="#cbd5e1"/>
+<text x="763" y="279" text-anchor="middle" font-size="8.6" fill="#334155">向量/FTS/jobs</text>
+<rect x="848" y="260" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="279" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="260" width="154" height="30" rx="5" fill="#fee2e2" stroke="#cbd5e1"/>
+<text x="1087" y="279" text-anchor="middle" font-size="8.6" fill="#991b1b">URL 导入</text>
+<text x="24" y="318" font-size="9.6" font-weight="700" fill="#0f172a">6. mnemon</text>
+<rect x="200" y="300" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="277" y="319" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="362" y="300" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="439" y="319" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="524" y="300" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="319" text-anchor="middle" font-size="8.6" fill="#78350f">sources</text>
+<rect x="686" y="300" width="154" height="30" rx="5" fill="#e2e8f0" stroke="#cbd5e1"/>
+<text x="763" y="319" text-anchor="middle" font-size="8.6" fill="#334155">per-turn View</text>
+<rect x="848" y="300" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="319" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="300" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="319" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="358" font-size="9.6" font-weight="700" fill="#0f172a">7. session-workspace-organizer</text>
+<rect x="200" y="340" width="154" height="30" rx="5" fill="#dbeafe" stroke="#cbd5e1"/>
+<text x="277" y="359" text-anchor="middle" font-size="8.6" fill="#1e3a8a">每会话输出目录</text>
+<rect x="362" y="340" width="154" height="30" rx="5" fill="#dcfce7" stroke="#cbd5e1"/>
+<text x="439" y="359" text-anchor="middle" font-size="8.6" fill="#166534">改 zstd 首帧/搬目录</text>
+<rect x="524" y="340" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="601" y="359" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="686" y="340" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="763" y="359" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="848" y="340" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="359" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="340" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="359" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="398" font-size="9.6" font-weight="700" fill="#0f172a">8. archive-retention</text>
+<rect x="200" y="380" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="277" y="399" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="362" y="380" width="154" height="30" rx="5" fill="#dcfce7" stroke="#cbd5e1"/>
+<text x="439" y="399" text-anchor="middle" font-size="8.6" fill="#166534">物理删归档/孤儿</text>
+<rect x="524" y="380" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="399" text-anchor="middle" font-size="8.6" fill="#78350f">审计清单</text>
+<rect x="686" y="380" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="763" y="399" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="848" y="380" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="399" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="380" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="399" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="438" font-size="9.6" font-weight="700" fill="#0f172a">9. codex-sync</text>
+<rect x="200" y="420" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="277" y="439" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="362" y="420" width="154" height="30" rx="5" fill="#dcfce7" stroke="#cbd5e1"/>
+<text x="439" y="439" text-anchor="middle" font-size="8.6" fill="#166534">DSH 会话</text>
+<rect x="524" y="420" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="439" text-anchor="middle" font-size="8.6" fill="#78350f">映射状态?</text>
+<rect x="686" y="420" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="763" y="439" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="848" y="420" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="439" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="420" width="154" height="30" rx="5" fill="#fee2e2" stroke="#cbd5e1"/>
+<text x="1087" y="439" text-anchor="middle" font-size="8.6" fill="#991b1b">Codex CLI</text>
+<text x="24" y="478" font-size="9.6" font-weight="700" fill="#0f172a">10. claude-move</text>
+<rect x="200" y="460" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="277" y="479" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="362" y="460" width="154" height="30" rx="5" fill="#dcfce7" stroke="#cbd5e1"/>
+<text x="439" y="479" text-anchor="middle" font-size="8.6" fill="#166534">导入会话</text>
+<rect x="524" y="460" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="479" text-anchor="middle" font-size="8.6" fill="#78350f">move.json</text>
+<rect x="686" y="460" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="763" y="479" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="848" y="460" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="479" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="460" width="154" height="30" rx="5" fill="#fee2e2" stroke="#cbd5e1"/>
+<text x="1087" y="479" text-anchor="middle" font-size="8.6" fill="#991b1b">Claude/Codex</text>
+<text x="24" y="518" font-size="9.6" font-weight="700" fill="#0f172a">11. agent-mailbox</text>
+<rect x="200" y="500" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="277" y="519" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="362" y="500" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="439" y="519" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="524" y="500" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="519" text-anchor="middle" font-size="8.6" fill="#78350f">持久 inbox/thread</text>
+<rect x="686" y="500" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="763" y="519" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="848" y="500" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="519" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="500" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="519" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="558" font-size="9.6" font-weight="700" fill="#0f172a">12. workspace-overlay</text>
+<rect x="200" y="540" width="154" height="30" rx="5" fill="#dbeafe" stroke="#cbd5e1"/>
+<text x="277" y="559" text-anchor="middle" font-size="8.6" fill="#1e3a8a">项目 .dsh/cordis.yml</text>
+<rect x="362" y="540" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="439" y="559" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="524" y="540" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="559" text-anchor="middle" font-size="8.6" fill="#78350f">内存 lease</text>
+<rect x="686" y="540" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="763" y="559" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="848" y="540" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="559" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="540" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="559" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="598" font-size="9.6" font-weight="700" fill="#0f172a">13. PromptRecall</text>
+<rect x="200" y="580" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="277" y="599" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="362" y="580" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="439" y="599" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="524" y="580" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="599" text-anchor="middle" font-size="8.6" fill="#78350f">home JSONL</text>
+<rect x="686" y="580" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="763" y="599" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="848" y="580" width="154" height="30" rx="5" fill="#ede9fe" stroke="#cbd5e1"/>
+<text x="925" y="599" text-anchor="middle" font-size="8.6" fill="#4c1d95">local 快照</text>
+<rect x="1010" y="580" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="1087" y="599" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<text x="24" y="638" font-size="9.6" font-weight="700" fill="#0f172a">14. credentials-mysql</text>
+<rect x="200" y="620" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="277" y="639" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="362" y="620" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="439" y="639" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="524" y="620" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="639" text-anchor="middle" font-size="8.6" fill="#78350f">MySQL 三表</text>
+<rect x="686" y="620" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="763" y="639" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="848" y="620" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="639" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="620" width="154" height="30" rx="5" fill="#fee2e2" stroke="#cbd5e1"/>
+<text x="1087" y="639" text-anchor="middle" font-size="8.6" fill="#991b1b">外部 DB</text>
+<text x="24" y="678" font-size="9.6" font-weight="700" fill="#0f172a">15. custom-workspace</text>
+<rect x="200" y="660" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="277" y="679" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="362" y="660" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="439" y="679" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="524" y="660" width="154" height="30" rx="5" fill="#fef3c7" stroke="#cbd5e1"/>
+<text x="601" y="679" text-anchor="middle" font-size="8.6" fill="#78350f">settings 命名空间</text>
+<rect x="686" y="660" width="154" height="30" rx="5" fill="#e2e8f0" stroke="#cbd5e1"/>
+<text x="763" y="679" text-anchor="middle" font-size="8.6" fill="#334155">主题派生</text>
+<rect x="848" y="660" width="154" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+<text x="925" y="679" text-anchor="middle" font-size="9" fill="#94a3b8">—</text>
+<rect x="1010" y="660" width="154" height="30" rx="5" fill="#fee2e2" stroke="#cbd5e1"/>
+<text x="1087" y="679" text-anchor="middle" font-size="8.6" fill="#991b1b">loopback RPC</text>
+<rect x="24" y="712" width="1152" height="34" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+<text x="44" y="734" font-size="10.5" fill="#334155">共同点：没有统一 workspace-scoped 家（5 个样本各造一种）；没有统一插件数据根（home 文件/KB 目录/自造目录）；删除/保留靠插件自己。</text>
+</svg>

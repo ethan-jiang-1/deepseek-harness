@@ -1,12 +1,14 @@
-# 06 · 社区作者的数据地图：九个维度、十五种手法与已核出的坑
+# 06 · 外部插件模式（参考）：九个维度、十八种手法与已核出的坑
 
 ## 这一篇回答什么
 
-上一版把社区做法压成“五种承诺”，够用但太粗。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
+本 FAQ 第一版把社区做法压成“五种承诺”，够用但太粗；这一版扩成九个维度。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
+
+> **外部参考，不是原生方案。** 本文件只记录第三方插件/社区模式；长期优先 [08 原生 landscape](../02-native/08-native-data-landscape.md) 的 N0/N1。外部插件只借模式，不作依赖；E1/E2 的迁移/清理/兼容成本要自己承担。
 
 **验证口径（2026-10-27）。** 对九个仓库做了 README 与源码阅读，并对照本仓 `dsh-v0.2.1-rc.3` 的源码；**没有安装、没有运行**，所以“已验证”只代表源码层面能对上，不代表行为已在你的环境成立。星数/目录条目只能说明曝光，不能说明质量或安全；不同目录的计数互相矛盾（13,882 / 20,006 / 23,307），本篇不选边。
 
-![九个维度](./figures/05-community-map.svg)
+![九个维度](../figures/05-community-map.svg)
 
 ## 观察样本
 
@@ -142,7 +144,7 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 
 反过来，最大的信任杀手是“安装即执行”：workspace-overlay 的 `trustWorkspaceConfig: true` 让一个克隆的仓库能把代码挂进 Host。它明确写了这个取舍，但默认值值得每个作者重新想一遍。
 
-## 作者策略库：十五种可抄的手法
+## 作者策略库：十八种可抄的手法
 
 | # | 手法 | 适用 | 样本 | 抄的时候注意 |
 |---|---|---|---|---|
@@ -161,6 +163,9 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 | 13 | 召回标不可信 | 记忆/检索进入上下文 | graphmemory、kb-manager | 标记要进入模型可见文本，不能只在 UI |
 | 14 | 软删除 + compact + confirm token | 知识库、可恢复删除 | kb-manager | token 绑定对象、短 TTL；清理要真能回收 |
 | 15 | 派生-only 检查点 | 用量/统计面板 | insights、session_projcache | 写清重建路径；升级后重建而不是迁移 |
+| 16 | 软删 + compact + confirm token | 可恢复删除、知识库 | kb-manager | 删除先标记；compact 真回收；token 绑定对象、短 TTL |
+| 17 | 物理删除 + 宽限 + 审计 | 归档会话保留期 | archive-retention | 绝不删 live；先父后子；审计清单；失败保守 |
+| 18 | 只改日志首帧 header | 工作区搬家 | session-workspace-organizer | 只改必要字段、后续帧不动、无 live 才允许；普通插件不要模仿 |
 
 ## 按插件类型的选型矩阵
 
@@ -180,6 +185,16 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 1. **没有“每 workspace 一套插件实例”**。社区用 `ctx.workspaceCordis` + canonical path lease 补（workspace-overlay），或用项目内配置 + 自己解析（project-context），或用 home + 自定义 RPC（custom-workspace）。
 2. **没有“插件数据根”**。社区各自造 `~/.dsh/<plugin>/`、项目内 `.agents/`、SQLite 文件；没有统一的位置、配额、GC 或导出。Claude Code 的 `${CLAUDE_PLUGIN_DATA}` 是一个直接对照（见 07 篇）。
 3. **没有“第三方任意设置命名空间”**。注意：**Config-backed 的 volatile 表单是开放的**，第三方插件导出 `Config` 就能在设置页出现；缺的是“与 Loader 条目无关的任意键值命名空间”。custom-workspace 在 0.1.0-rc.6 上因此造了自定义 RPC；新插件应先试 `Config.volatile()`，不要直接复制这个 workaround。
+
+## v2 市场补充（2026-10-27）
+
+- **凭据有三种互斥的家**：OS keychain（codex-keychain，root account = `SHA-256(DSH_HOME)`）、`ctx.credentials` seam（credential-manager、credentials-mysql 三表 + AES-GCM + 行锁）、明文 JSON/settings（api-key-pool、ark-quota）。迁移路径不明，卸载也常不清理。
+- **卸载不是数据生命周期**：credential-manager 明确保留 metadata+secrets；cursor-theme 改 OS 光标注册表不还原；archive-manager 物理删日志目录。生态里“清理”既可能缺失，也可能过度。
+- **客户端状态跨源会丢**：theme 8/8 落 localStorage；beauty-persist 专门把 `dsh-dream-skin:*` 迁到 `~/.dsh/beauty-persist-state.json`，因为端口变化换 origin。PromptRecall 则用 host JSONL + 锁。
+- **迁移只出现在“严肃数据”**：credentials-mysql 数值 schema fail-closed、task-board localStorage v1 + migration、kb-manager 每 KB SQLite + compact；多数插件没有迁移概念。
+- **声明质量与数据风险无关**：55 个 runtime/account/UI 样本只有 1 个声明 `engines.dsh`；同名克隆/近似实现大量存在，选型不能看星数。
+
+完整的 15 个深读与反模式见 [10 篇](./10-external-plugin-patterns.md)。
 
 ## 五个反直觉的结论
 

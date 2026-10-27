@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" width="1200" height="820" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>DSH 原生数据 landscape：12 个 archetype × 家</title>
+  <desc>会话历史、项目知识、个人记忆、任务、设置、秘密、交付物、附件、索引、协作、账号、客户端状态分别落在哪些家；空白处就是 DSH 的缺口。</desc>
+
+  <rect width="1200" height="820" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">DSH 原生数据 landscape：12 个 archetype × 家</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">N0 核心 / N1 随包插件 / N2 experimental / GAP；绿色=历史，黄色=状态，紫色=客户端，红色=缺口</text>
+
+  <!-- header -->
+  <text x="24" y="94" font-size="11" font-weight="700" fill="#334155">Archetype</text>
+  <rect x="210" y="76" width="130" height="26" rx="6" fill="#eff6ff" stroke="#93c5fd"/><text x="275" y="94" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e40af">内容</text>
+  <rect x="348" y="76" width="130" height="26" rx="6" fill="#f0fdf4" stroke="#86efac"/><text x="413" y="94" text-anchor="middle" font-size="10.5" font-weight="700" fill="#166534">历史</text>
+  <rect x="486" y="76" width="130" height="26" rx="6" fill="#fffbeb" stroke="#fcd34d"/><text x="551" y="94" text-anchor="middle" font-size="10.5" font-weight="700" fill="#92400e">状态</text>
+  <rect x="624" y="76" width="130" height="26" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/><text x="689" y="94" text-anchor="middle" font-size="10.5" font-weight="700" fill="#334155">派生</text>
+  <rect x="762" y="76" width="130" height="26" rx="6" fill="#f5f3ff" stroke="#c4b5fd"/><text x="827" y="94" text-anchor="middle" font-size="10.5" font-weight="700" fill="#5b21b6">客户端</text>
+  <rect x="900" y="76" width="276" height="26" rx="6" fill="#fef2f2" stroke="#fecaca"/><text x="1038" y="94" text-anchor="middle" font-size="10.5" font-weight="700" fill="#991b1b">GAP / 边界</text>
+
+  <!-- rows -->
+  <g font-size="9.4">
+    <!-- 1 -->
+    <text x="24" y="128" font-weight="700" fill="#0f172a">1 会话历史</text>
+    <text x="24" y="143" fill="#64748b">transcript</text>
+    <rect x="210" y="112" width="130" height="34" rx="6" fill="#dbeafe"/><text x="275" y="133" text-anchor="middle" fill="#1e3a8a">sessions/</text>
+    <rect x="348" y="112" width="130" height="34" rx="6" fill="#dcfce7"/><text x="413" y="133" text-anchor="middle" fill="#166534">session log</text>
+    <rect x="486" y="112" width="130" height="34" rx="6" fill="#fef3c7"/><text x="551" y="133" text-anchor="middle" fill="#78350f">title/workdir</text>
+    <rect x="624" y="112" width="130" height="34" rx="6" fill="#e2e8f0"/><text x="689" y="133" text-anchor="middle" fill="#334155">projection</text>
+    <rect x="762" y="112" width="130" height="34" rx="6" fill="#ede9fe"/><text x="827" y="133" text-anchor="middle" fill="#4c1d95">client rows</text>
+    <rect x="900" y="112" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="133" text-anchor="middle" fill="#991b1b">无删除 / 无保留</text>
+
+    <!-- 2 -->
+    <text x="24" y="186" font-weight="700" fill="#0f172a">2 项目知识</text>
+    <text x="24" y="201" fill="#64748b">workspace</text>
+    <rect x="210" y="170" width="130" height="34" rx="6" fill="#dbeafe"/><text x="275" y="191" text-anchor="middle" fill="#1e3a8a">项目文件</text>
+    <rect x="348" y="170" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="413" y="191" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="486" y="170" width="130" height="34" rx="6" fill="#fef3c7"/><text x="551" y="191" text-anchor="middle" fill="#78350f">workspace.json</text>
+    <rect x="624" y="170" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="689" y="191" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="762" y="170" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="827" y="191" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="900" y="170" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="191" text-anchor="middle" fill="#991b1b">无 per-workspace 状态</text>
+
+    <!-- 3 -->
+    <text x="24" y="244" font-weight="700" fill="#0f172a">3 个人长期记忆</text>
+    <text x="24" y="259" fill="#64748b">memory</text>
+    <rect x="210" y="228" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="275" y="249" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="348" y="228" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="413" y="249" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="486" y="228" width="130" height="34" rx="6" fill="#fef3c7" opacity="0.55"/><text x="551" y="249" text-anchor="middle" fill="#78350f">home 域（自造）</text>
+    <rect x="624" y="228" width="130" height="34" rx="6" fill="#e2e8f0" opacity="0.6"/><text x="689" y="249" text-anchor="middle" fill="#334155">索引/向量</text>
+    <rect x="762" y="228" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="827" y="249" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="900" y="228" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="249" text-anchor="middle" fill="#991b1b">无记忆服务 / 无 data root</text>
+
+    <!-- 4 -->
+    <text x="24" y="302" font-weight="700" fill="#0f172a">4 任务/目标</text>
+    <text x="24" y="317" fill="#64748b">task/goal</text>
+    <rect x="210" y="286" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="275" y="307" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="348" y="286" width="130" height="34" rx="6" fill="#dcfce7"/><text x="413" y="307" text-anchor="middle" fill="#166534">session events</text>
+    <rect x="486" y="286" width="130" height="34" rx="6" fill="#fef3c7"/><text x="551" y="307" text-anchor="middle" fill="#78350f">schedule 域</text>
+    <rect x="624" y="286" width="130" height="34" rx="6" fill="#e2e8f0"/><text x="689" y="307" text-anchor="middle" fill="#334155">projection</text>
+    <rect x="762" y="286" width="130" height="34" rx="6" fill="#ede9fe"/><text x="827" y="307" text-anchor="middle" fill="#4c1d95">todo UI</text>
+    <rect x="900" y="286" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="307" text-anchor="middle" fill="#991b1b">无跨会话任务库</text>
+
+    <!-- 5 -->
+    <text x="24" y="360" font-weight="700" fill="#0f172a">5 设置/偏好</text>
+    <text x="24" y="375" fill="#64748b">settings</text>
+    <rect x="210" y="344" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="275" y="365" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="348" y="344" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="413" y="365" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="486" y="344" width="130" height="34" rx="6" fill="#fef3c7"/><text x="551" y="365" text-anchor="middle" fill="#78350f">profile patch</text>
+    <rect x="624" y="344" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="689" y="365" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="762" y="344" width="130" height="34" rx="6" fill="#ede9fe"/><text x="827" y="365" text-anchor="middle" fill="#4c1d95">localStorage</text>
+    <rect x="900" y="344" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="365" text-anchor="middle" fill="#991b1b">profile ≠ 账号；无跨 profile</text>
+
+    <!-- 6 -->
+    <text x="24" y="418" font-weight="700" fill="#0f172a">6 秘密/凭据</text>
+    <text x="24" y="433" fill="#64748b">secrets</text>
+    <rect x="210" y="402" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="275" y="423" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="348" y="402" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="413" y="423" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="486" y="402" width="130" height="34" rx="6" fill="#fef3c7"/><text x="551" y="423" text-anchor="middle" fill="#78350f">credentials</text>
+    <rect x="624" y="402" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="689" y="423" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="762" y="402" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="827" y="423" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="900" y="402" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="423" text-anchor="middle" fill="#991b1b">同 uid 可读；备份无清理</text>
+
+    <!-- 7 -->
+    <text x="24" y="476" font-weight="700" fill="#0f172a">7 交付物</text>
+    <text x="24" y="491" fill="#64748b">deliverables</text>
+    <rect x="210" y="460" width="130" height="34" rx="6" fill="#dbeafe"/><text x="275" y="481" text-anchor="middle" fill="#1e3a8a">工作区文件</text>
+    <rect x="348" y="460" width="130" height="34" rx="6" fill="#dcfce7"/><text x="413" y="481" text-anchor="middle" fill="#166534">present 事件</text>
+    <rect x="486" y="460" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="551" y="481" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="624" y="460" width="130" height="34" rx="6" fill="#e2e8f0"/><text x="689" y="481" text-anchor="middle" fill="#334155">changes 内存</text>
+    <rect x="762" y="460" width="130" height="34" rx="6" fill="#ede9fe"/><text x="827" y="481" text-anchor="middle" fill="#4c1d95">file cards</text>
+    <rect x="900" y="460" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="481" text-anchor="middle" fill="#991b1b">无 artifact store</text>
+
+    <!-- 8 -->
+    <text x="24" y="534" font-weight="700" fill="#0f172a">8 附件/媒体</text>
+    <text x="24" y="549" fill="#64748b">attachments</text>
+    <rect x="210" y="518" width="130" height="34" rx="6" fill="#dbeafe"/><text x="275" y="539" text-anchor="middle" fill="#1e3a8a">attachments/v1</text>
+    <rect x="348" y="518" width="130" height="34" rx="6" fill="#dcfce7"/><text x="413" y="539" text-anchor="middle" fill="#166534">event refs</text>
+    <rect x="486" y="518" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="551" y="539" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="624" y="518" width="130" height="34" rx="6" fill="#e2e8f0"/><text x="689" y="539" text-anchor="middle" fill="#334155">request cache</text>
+    <rect x="762" y="518" width="130" height="34" rx="6" fill="#ede9fe"/><text x="827" y="539" text-anchor="middle" fill="#4c1d95">media views</text>
+    <rect x="900" y="518" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="539" text-anchor="middle" fill="#991b1b">无 GC；删日志即孤儿</text>
+
+    <!-- 9 -->
+    <text x="24" y="592" font-weight="700" fill="#0f172a">9 索引/分析</text>
+    <text x="24" y="607" fill="#64748b">index/analytics</text>
+    <rect x="210" y="576" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="275" y="597" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="348" y="576" width="130" height="34" rx="6" fill="#dcfce7"/><text x="413" y="597" text-anchor="middle" fill="#166534">log source</text>
+    <rect x="486" y="576" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="551" y="597" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="624" y="576" width="130" height="34" rx="6" fill="#e2e8f0"/><text x="689" y="597" text-anchor="middle" fill="#334155">projcache/FTS</text>
+    <rect x="762" y="576" width="130" height="34" rx="6" fill="#ede9fe"/><text x="827" y="597" text-anchor="middle" fill="#4c1d95">dashboards</text>
+    <rect x="900" y="576" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="597" text-anchor="middle" fill="#991b1b">派生/权威未声明</text>
+
+    <!-- 10 -->
+    <text x="24" y="650" font-weight="700" fill="#0f172a">10 协作/消息</text>
+    <text x="24" y="665" fill="#64748b">team/messages</text>
+    <rect x="210" y="634" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="275" y="655" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="348" y="634" width="130" height="34" rx="6" fill="#dcfce7"/><text x="413" y="655" text-anchor="middle" fill="#166534">agent-team events</text>
+    <rect x="486" y="634" width="130" height="34" rx="6" fill="#fef3c7"/><text x="551" y="655" text-anchor="middle" fill="#78350f">inbox/ledger</text>
+    <rect x="624" y="634" width="130" height="34" rx="6" fill="#e2e8f0"/><text x="689" y="655" text-anchor="middle" fill="#334155">projection</text>
+    <rect x="762" y="634" width="130" height="34" rx="6" fill="#ede9fe"/><text x="827" y="655" text-anchor="middle" fill="#4c1d95">room UI</text>
+    <rect x="900" y="634" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="655" text-anchor="middle" fill="#991b1b">无持久消息服务</text>
+
+    <!-- 11 -->
+    <text x="24" y="708" font-weight="700" fill="#0f172a">11 账号/身份</text>
+    <text x="24" y="723" fill="#64748b">identity</text>
+    <rect x="210" y="692" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="275" y="713" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="348" y="692" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="413" y="713" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="486" y="692" width="130" height="34" rx="6" fill="#fef3c7"/><text x="551" y="713" text-anchor="middle" fill="#78350f">profiles/creds</text>
+    <rect x="624" y="692" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="689" y="713" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="762" y="692" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="827" y="713" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="900" y="692" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="713" text-anchor="middle" fill="#991b1b">无多租户分区</text>
+
+    <!-- 12 -->
+    <text x="24" y="766" font-weight="700" fill="#0f172a">12 客户端状态</text>
+    <text x="24" y="781" fill="#64748b">client UI</text>
+    <rect x="210" y="750" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="275" y="771" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="348" y="750" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="413" y="771" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="486" y="750" width="130" height="34" rx="6" fill="#f8fafc" stroke="#e2e8f0"/><text x="551" y="771" text-anchor="middle" fill="#94a3b8">—</text>
+    <rect x="624" y="750" width="130" height="34" rx="6" fill="#e2e8f0"/><text x="689" y="771" text-anchor="middle" fill="#334155">client rows</text>
+    <rect x="762" y="750" width="130" height="34" rx="6" fill="#ede9fe"/><text x="827" y="771" text-anchor="middle" fill="#4c1d95">localStorage</text>
+    <rect x="900" y="750" width="276" height="34" rx="6" fill="#fee2e2"/><text x="1038" y="771" text-anchor="middle" fill="#991b1b">无服务/无迁移/无卸载清</text>
+  </g>
+</svg>

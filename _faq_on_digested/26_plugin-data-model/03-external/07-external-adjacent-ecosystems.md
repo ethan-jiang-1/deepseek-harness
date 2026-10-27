@@ -1,6 +1,8 @@
-# 07 · 别人家的插件数据模型：VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma
+# 07 · 外部对照：VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma
 
 ## 这一篇回答什么
+
+> **只作对照，不是依赖。** 这些生态的做法用于校准 DSH 的缺什么/该借什么；长期仍优先 DSH 原生 N0/N1，外部插件/服务只作短期过渡或模式参考。
 
 DSH 没有“插件数据目录”，这不是它独有的难题。成熟的插件生态都遇到过同一个问题，只是各自用不同的 API 名字把它拆开了。把它们的切法放在一起看，能校准两件事：
 
@@ -9,7 +11,7 @@ DSH 没有“插件数据目录”，这不是它独有的难题。成熟的插�
 
 **来源口径（2026-10-27）。** 只取官方文档/API reference；能核到源码的核到源码。标注“未确认”的是官方文档没有明说、只能从行为推断的部分。不同生态的版本不同，下面的名字以各自当前文档为准。
 
-![跨生态对照](./figures/07-ecosystem-matrix.svg)
+![跨生态对照](../figures/07-ecosystem-matrix.svg)
 
 ## 一张总表
 

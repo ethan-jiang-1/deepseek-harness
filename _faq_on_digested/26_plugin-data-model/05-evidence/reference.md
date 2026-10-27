@@ -119,7 +119,7 @@ OS 临时目录                 # spill、workspace/changes 整文件副本
 7. **客户端 `localStorage` 的行为**来自源码阅读（键名、按 session 存），没有做跨浏览器/跨端口的实测。
 8. **社区样本没有安装实测。** 2026-10-27 做了 README 与部分源码阅读，并对照本仓 rc.3；星数/目录计数不作为证据。
 
-## 六、社区来源（外部，源码阅读，未安装）
+## 六、外部插件来源（源码阅读，未安装）
 
 | 来源 | 用来支持什么 | 边界 |
 |---|---|---|
@@ -134,7 +134,7 @@ OS 临时目录                 # spill、workspace/changes 整文件副本
 | [deepseek-harness-plugins](https://github.com/mapan0424/deepseek-harness-plugins) | P4：渠道配置 `defaultWorkspace` + 凭据放 profile/env | 第三方 monorepo；按 0.1.5-rc 验证 |
 | [dshbase](https://dshbase.com/) / [awesome 目录](https://github.com/imsai-sh/awesome-deepseek-harness-plugins) | 生态规模与分类 | 站点自述，未审计；计数互相矛盾（13,882 / 20,006 / 23,307） |
 
-## 七、跨生态来源（官方文档，2026-10-27）
+## 七、外部生态来源（官方文档，2026-10-27）
 
 | 来源 | 用来支持什么 |
 |---|---|
@@ -154,9 +154,27 @@ OS 临时目录                 # spill、workspace/changes 整文件副本
 | [Figma clientStorage](https://www.figma.com/plugin-docs/api/figma-clientStorage/) | 每插件 5 MB、本地、不同步 |
 | [Figma pluginData](https://www.figma.com/plugin-docs/api/properties/nodes-setplugindata/) | 文档节点上的插件私有数据 |
 
-## 八、相关阅读
+## 八、v2 追加证据
 
-- [FAQ 24 · 数据平面](../24_plugin-publish-and-agent-data-planes/05-data-planes.md)：workspace / home / session 的三分与八条规则。
-- [FAQ 25 · Workspace 与 Ungrouped](../25_workspaces-and-conversations/answer.md)：工作区记录、attach、删除语义。
-- [FAQ 22 · 上下文腐化](../22_spec-drift-and-context-rot/answer.md)：compaction 遮蔽与日志只追加。
+| # | 结论 | 证据 | 等级 |
+|---|---|---|---|
+| 31 | 没有插件数据根；`$DSH_HOME/plugins/<id>/` 只是惯例 | 本机 `$DSH_HOME` 结构；inventory D1/D5；无核心服务 | C/U |
+| 32 | 没有 session 删除；`SessionPersistence` 5 方法 | `packages/session/session-persistence/src/*.ts`；`2026-07-24` 提案 out-of-scope | C/P |
+| 33 | 附件无 GC 是刻意（引用感知 GC blocker） | `2026-07-22-web-multimodal-image-input-and-durable-attachments` | H/C |
+| 34 | spill 默认在 OS temp，不在 `$DSH_HOME` | `spill-local`；`cordis.patch.yml:411` 无 config | C |
+| 35 | settings 是 profile 作用域；`settings.yaml` 一次性 import | `2026-09-19-profile-owned-live-configuration` | H/C |
+| 36 | session 日志有跨进程 kernel lease；domain JSON 没有 | `session-persistence-jsonl/src/lease.ts`；`storage-json` | C |
+| 37 | 没有 per-workspace domain/scope；proposed 明确 out-of-scope | `2026-07-24-domain-kv-storage-and-workspace` | P |
+| 38 | 客户端状态分纯 UI 与 session-derived 投影 | `2026-08-25-session-observations-and-projection-owned-client-state` | H/C |
+| 39 | 市场至少四种 workspace 表示、三种凭据家、卸载非生命周期 | [10 外部插件模式](../03-external/10-external-plugin-patterns.md)、[research-external](./research-external.md) | S/R |
+| 40 | 插件直接改 session log/物理删目录是现实补丁 | session-workspace-organizer、archive-retention、archive-manager | R |
+
+原生来源见 [research-native](./research-native.md)，外部样本见 [research-external](./research-external.md)；本轮改动见 [review-v2](./v2/review.md)。
+
+## 九、相关阅读
+
+- [08 原生 Landscape](../02-native/08-native-data-landscape.md)、[09 原生历史](../02-native/09-native-data-history.md)、[10 外部插件模式](../03-external/10-external-plugin-patterns.md)、[11 原生参考架构](../04-advisor/11-native-reference-architectures.md)。
+- [FAQ 24 · 数据平面](../../24_plugin-publish-and-agent-data-planes/05-data-planes.md)：workspace / home / session 的三分与八条规则。
+- [FAQ 25 · Workspace 与 Ungrouped](../../25_workspaces-and-conversations/answer.md)：工作区记录、attach、删除语义。
+- [FAQ 22 · 上下文腐化](../../22_spec-drift-and-context-rot/answer.md)：compaction 遮蔽与日志只追加。
 - `docs/subsystems/storage.md`、`session-projection.md`、`session-query.md`、`attachment.md`、`spill.md`、`deliverables.md`、`settings.md`、`credentials.md`、`filesystem.md`。

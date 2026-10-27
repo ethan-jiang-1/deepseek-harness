@@ -1,0 +1,68 @@
+# 26 · 插件的数据该放哪：DSH 的数据平面、作用域与“产物”到底怎么分？
+
+源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。本篇面向插件作者与测试作者，只讨论单 Host、单 `$DSH_HOME` 账户下的数据归属；多租户部署不在范围内。
+
+## 问题从哪来
+
+写插件时，**只读的“智力体”很好办**：提示词、技能、工具定义、preset，全都可以随包发布，运行时只读，版本化交给 npm。真正卡住的是**数据**：
+
+1. 数据是**用户那头定义的**：用户决定在哪个项目里用、项目里有什么文件、要不要保留上次的结果；
+2. 同一个插件要服务**多个 workspace**：插件实例是宿主级的，但数据看起来应该是“项目级”的；
+3. 数据内部至少有两块，我一直切不清楚：
+   - 一块是**用户的东西**（用户的文件、文档、代码、导出的报告）；
+   - 一块是**跟用户相关的东西**（偏好、画像、索引、上次同步到哪、学到的事实）。
+   这两块能不能放在同一个地方？谁负责删？换台机器还在吗？
+
+于是问题不是“DSH 有没有数据库”，而是：
+
+> **在 DSH 里，一个事实应该由谁拥有、按什么作用域切、放在哪个家、用什么键关联？**
+
+## 为什么不能一句话回答
+
+因为 DSH 没有“插件的数据目录”这种东西。它提供的是一组**不同权威（authority）**的存储面，每个面的生命周期、可见性、失败语义都不同：
+
+- 会话日志：追加、可回放、模型可见，但只属于一个会话，而且默认是压缩帧；
+- 工作区文件：用户所有、可编辑、可提交，但随时可能被用户在 DSH 之外改掉；
+- 宿主域存储：有 schema、有版本、模型不可见，但**没有跨进程通知、没有自动迁移、没有索引**；
+- Config / settings：用户可编辑的参数，按 profile 生效，不是数据库；
+- 凭据：只放引用与授权记录，不放值；
+- 附件与 spill：不可变二进制 / 大段文本，服务于模型输入与上下文，不是交付物；
+- 投影、索引、缓存：可重建，不是真相；
+- 浏览器 `localStorage` / 桌面 `userData`：设备本地，Host 看不见。
+
+把这些都叫“数据”，就会得到“数据到底放哪”这种没有答案的问题。先把**权威、作用域、寿命、可见性**拆开，答案才会收敛。
+
+## 本篇要回答的具体问题
+
+| # | 问题 | 主回答 |
+|---|---|---|
+| Q1 | 插件作者先决定什么？为什么“先选一个数据承诺”比“先找 API”更重要？同一份数据为什么会有多种都成立的解法？ | [answer](./00-answer.md) |
+| Q2 | 插件碰到的“数据”到底分几种？用户的东西和跟用户相关的东西，正确的切法是什么？客户端本地状态算不算？ | [01 五个家](./01-foundations/01-five-homes.md) |
+| Q3 | 宿主状态该用 domain、settings 还是 credential？各自的寿命、失败方式与迁移责任是什么？凭据记录又是什么？ | [02 状态的家](./01-foundations/02-state-homes.md) |
+| Q4 | 数据该按 session、workspace、profile 还是 home 切？跨 workspace 的插件用什么键？`workspaceId` 还是路径？ | [03 作用域与键](./01-foundations/03-scope-and-keys.md) |
+| Q5 | “产物 / artifact”在 DSH 里是什么？`present`、`workspace/changes`、附件、spill、会话导出各管哪一段？ | [04 产物不是副本](./01-foundations/04-artifacts.md) |
+| Q6 | 外部社区插件实际怎么做？哪些模式能借，哪些坑已经有人踩过？ | [06 外部社区模式（参考）](./03-external/06-external-community-patterns.md) |
+| Q7 | 别的插件生态（VS Code、Obsidian、Claude Code、Codex、MCP、Chrome、Figma）怎么切同一道题？哪些能迁移？ | [07 外部生态对照](./03-external/07-external-adjacent-ecosystems.md) |
+| Q8 | 给我一套可以直接照做的判断顺序、数据卡、例子和反模式清单。 | [05 决策程序](./04-advisor/05-checklist.md) |
+| Q9 | DSH 自己历史上为什么长成这些家？哪些是刻意、哪些是欠账？ | [09 原生历史](./02-native/09-native-data-history.md) |
+| Q10 | 外部复杂插件实际怎么补缺口？哪些能借、哪些是反模式？ | [10 外部插件模式](./03-external/10-external-plugin-patterns.md) |
+| Q11 | 有没有一张全景图和可照抄的参考架构？ | [08 原生 Landscape](./02-native/08-native-data-landscape.md) / [11 原生参考架构](./04-advisor/11-native-reference-architectures.md) |
+
+## 一句话预告
+
+**插件作者先选“数据承诺”，再找 DSH 的家。** 外部社区里能观察到的五种承诺——纯引用、会话派生、项目内文件、宿主账本、账号配置——各自决定了数据在哪、用户能不能看见、卸载后留下什么；客户端本地状态是另一种落点（不是第六种承诺），它只属于设备。DSH 的五个家（内容 / 历史 / 状态 / 派生 / 客户端）是兑现承诺的材料，不是起点。**用户的东西留在用户那，插件只记引用；跟用户相关的账本按“跟项目走还是跟人走”分到 workspace 键或 home。**
+
+同一份数据往往有 3–5 种都成立的落法；本篇不给唯一答案，给的是**按承诺选路、按代价取舍**的方法。长期优先 DSH 原生 N0/N1；N2 只参考；E1/E2 外部插件/服务只借模式，不作依赖。
+
+## 不回答什么
+
+- 不重复发布形态、bundle/profile/preset 的分工：见 [FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)。
+- 不讨论多租户、跨机器同步、对象存储；DSH 当前没有这些内置能力。
+- 不把会话日志格式、compaction、归档的细节再讲一遍：只讲它们对“数据归属”的影响。
+- 不给具体插件的完整实现；例子只用于说明边界。
+
+## 阅读顺序
+
+先读 [answer](./00-answer.md) 的“五种承诺”和“同一份数据，四种都成立的解法”，再读 [08 原生 Landscape](./02-native/08-native-data-landscape.md) 建立全景、[01](./01-foundations/01-five-homes.md) 理解五个家、[03](./01-foundations/03-scope-and-keys.md) 决定键；写持久状态时读 [02](./01-foundations/02-state-homes.md)；要交付文件时读 [04](./01-foundations/04-artifacts.md)；想知道 DSH 为什么长成这样，读 [09](./02-native/09-native-data-history.md)；想知道别人怎么做、踩过哪些坑，读 [06](./03-external/06-external-community-patterns.md) 与 [10](./03-external/10-external-plugin-patterns.md)；想跳出 DSH 看同类问题，读 [07](./03-external/07-external-adjacent-ecosystems.md)；最后用 [05](./04-advisor/05-checklist.md) 自查、用 [11](./04-advisor/11-native-reference-architectures.md) 选骨架。
+
+![五种数据承诺](./figures/04-author-promises.svg)

@@ -17,6 +17,8 @@
 
 一句话：**domain 存事实，Config 存选择，credentials 存引用与授权记录，cache 存可丢弃的推导。**
 
+但 domain 不是“插件数据根”：它没有 per-plugin 目录、配额、scope、卸载清理；域名是包级静态声明，一个 Host 一个名字只能开一次。需要“按插件 id 隔离”的状态，要么用记录键，要么自造目录并承担生命周期（见 [01](./01-five-homes.md) 的“没有插件数据根”）。
+
 ## `ctx.storageDomain`：有 schema 的宿主 KV
 
 ### 声明一次，到处打开
@@ -106,7 +108,7 @@ per-record:  key = 'w_' + sha256(realpath)          // 只能这样
 - **表单只显示 volatile 字段**：一份没有任何 volatile 字段的 `Config` 不会出现在设置页；新增字段忘了标 volatile，用户的设置页会看不到它。
 - **写是“合并字段 + 乐观 revision”**，拒绝陈旧写入；`mutate` 按路径改，避免把客户端没收到的 secret 字段一起抹掉。
 - **home patch 与命令行 overlay 优先**：如果它们会覆盖表单写入，写入会被拒绝；表单不是最高层。
-- **profile 作用域，不是账号作用域**：换 profile 就是另一份配置；要跨 profile 共享，用 home 域单例，不要指望 `Config`。
+- **profile 作用域，不是账号作用域**：换 profile 就是另一份配置；要跨 profile 共享，用 home 域单例，不要指望 `Config`。当前设计刻意拒绝“全局共享设置”；`$DSH_HOME/settings.yaml` 只被一次性 import 到活跃 profile，然后改名 `settings.yaml.imported`。**C/H**
 - **嵌套 Include 的配置不进入当前 profile 的表单**，这是已知限制。
 
 ## `ctx.credentials`：只放引用与授权记录
@@ -148,6 +150,12 @@ OAuth grant、代理凭据这类**多字段、需要读-改-写**的东西，用
 4. 在隔离的 `DSH_HOME` 里演练：旧数据 → 新版本启动 → 读回 → 再降级一次（确认不会写坏旧文件）。
 5. 迁移是**你**的责任：DSH 不会替你改 schema，也不会在版本不匹配时猜。
 6. 迁移要可重复、可校验、可中断；宁可 fail loud，也不要静默重建。
+
+## 版本迁移的历史教训
+
+- `invalidRecords: 'backup-and-skip'` 不是万能：只有 JSON `per-record` 能 `backupRecord`；`single`/SQLite 会回退到拒绝。
+- 旧 `session_projcache.json`（单文件）被 per-record 布局取代后，遗留文件仍在磁盘，没有自动清理；这是“迁移只增不删”的典型。
+- 可重建介质曾能 brick 启动（v3 单文件升级），后来靠读兼容 + backup-and-skip 缓解；权威 domain（workspace）仍然故意 fail-loud。**H/C**
 
 ## 边界
 
