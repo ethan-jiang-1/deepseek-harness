@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>社区插件作者的数据地图：九个维度</title>
+  <desc>从放哪、介质、权威、切法、可见性、同步、并发、迁移、信任九个维度看社区插件的数据设计。每一格给出该维度的核心取舍与代表样本，底部指出核心缺少每 workspace 运行时这一一等能力。</desc>
+
+  <rect width="1200" height="720" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">社区作者的数据地图：九个维度</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">同一个“记忆插件”，可能在九个维度上做出完全不同的选择</text>
+
+  <!-- row 1 -->
+  <rect x="30" y="84" width="370" height="180" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="50" y="110" font-size="12.5" font-weight="700" fill="#1e40af">① 放哪</text>
+  <text x="50" y="134" fill="#334155" font-size="11">不存 → 项目内 → home → 外部服务</text>
+  <text x="50" y="156" fill="#334155" font-size="11">越往右能力越强，信任/运维成本越高</text>
+  <text x="50" y="180" fill="#64748b" font-size="10.5">样本：memory-snapshot（不存）、</text>
+  <text x="50" y="196" fill="#64748b" font-size="10.5">project-context（项目）、graphmemory（home）</text>
+  <rect x="50" y="214" width="330" height="34" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="64" y="236" fill="#1e3a8a" font-size="10.5">关键：同一插件可把位置做成配置项</text>
+
+  <rect x="415" y="84" width="370" height="180" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="435" y="110" font-size="12.5" font-weight="700" fill="#166534">② 介质</text>
+  <text x="435" y="134" fill="#334155" font-size="11">Markdown / journal / SQLite / 投影 / 外部</text>
+  <text x="435" y="156" fill="#334155" font-size="11">可读性、崩溃安全、查询能力三者取舍</text>
+  <text x="435" y="180" fill="#64748b" font-size="10.5">样本：workspace-memories（Markdown）、</text>
+  <text x="435" y="196" fill="#64748b" font-size="10.5">project-context（journal）、graphmemory（SQLite）</text>
+  <rect x="435" y="214" width="330" height="34" rx="6" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="449" y="236" fill="#166534" font-size="10.5">最工程化：journal 权威 + Markdown 派生</text>
+
+  <rect x="800" y="84" width="370" height="180" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="820" y="110" font-size="12.5" font-weight="700" fill="#92400e">③ 权威</text>
+  <text x="820" y="134" fill="#334155" font-size="11">先回答：删掉它，用户会丢东西吗？</text>
+  <text x="820" y="156" fill="#334155" font-size="11">会 → 权威；不会 → 派生，必须可重建</text>
+  <text x="820" y="180" fill="#64748b" font-size="10.5">样本：session.jsonl 权威 / session.md 渲染；</text>
+  <text x="820" y="196" fill="#64748b" font-size="10.5">insights 只存检查点，不存正文</text>
+  <rect x="820" y="214" width="330" height="34" rx="6" fill="#fef3c7" stroke="#fbbf24"/>
+  <text x="834" y="236" fill="#92400e" font-size="10.5">README 要写明哪个文件能删、怎么重建</text>
+
+  <!-- row 2 -->
+  <rect x="30" y="280" width="370" height="180" rx="10" fill="#fdf2f8" stroke="#f9a8d4"/>
+  <text x="50" y="306" font-size="12.5" font-weight="700" fill="#9d174d">④ 切法</text>
+  <text x="50" y="330" fill="#334155" font-size="11">workspace / project / session / user</text>
+  <text x="50" y="352" fill="#334155" font-size="11">项目根 ≠ 工作区路径：一个是 git 顶层，</text>
+  <text x="50" y="368" fill="#334155" font-size="11">一个是用户登记目录</text>
+  <text x="50" y="392" fill="#64748b" font-size="10.5">样本：workspace-memories 按 workspace，</text>
+  <text x="50" y="408" fill="#64748b" font-size="10.5">project-context 按 git 根，memory-evolve 分五轨</text>
+  <rect x="50" y="426" width="330" height="24" rx="6" fill="#fce7f3" stroke="#f472b6"/>
+  <text x="64" y="442" fill="#9d174d" font-size="10.5">键：规范化路径 &gt; 项目内标记 &gt; workspaceId</text>
+
+  <rect x="415" y="280" width="370" height="180" rx="10" fill="#f5f3ff" stroke="#c4b5fd"/>
+  <text x="435" y="306" font-size="12.5" font-weight="700" fill="#5b21b6">⑤ 可见性</text>
+  <text x="435" y="330" fill="#334155" font-size="11">隐藏 DB → 可读文件 → 可编辑文件 → 待确认</text>
+  <text x="435" y="352" fill="#334155" font-size="11">AI 写入会改变行为时，应先进确认队列</text>
+  <text x="435" y="376" fill="#64748b" font-size="10.5">样本：graphmemory（隐藏 + 召回标不可信）、</text>
+  <text x="435" y="392" fill="#64748b" font-size="10.5">memory-evolve（AI 只提议，用户确认）</text>
+  <rect x="435" y="414" width="330" height="32" rx="6" fill="#ede9fe" stroke="#a78bfa"/>
+  <text x="449" y="434" fill="#5b21b6" font-size="10.5">记忆进提示词：标不可信 + 设字节上限</text>
+
+  <rect x="800" y="280" width="370" height="180" rx="10" fill="#ecfeff" stroke="#67e8f9"/>
+  <text x="820" y="306" font-size="12.5" font-weight="700" fill="#155e75">⑥ 同步</text>
+  <text x="820" y="330" fill="#334155" font-size="11">DSH 没有跨设备同步；社区用用户的 git</text>
+  <text x="820" y="352" fill="#334155" font-size="11">专属分支 / 共享记忆仓库 / 冲突三选一</text>
+  <text x="820" y="376" fill="#64748b" font-size="10.5">样本：memory-evolve 把记忆推到代码仓库分支，</text>
+  <text x="820" y="392" fill="#64748b" font-size="10.5">不污染代码；公开代码 + 私藏记忆用独立仓库</text>
+  <rect x="820" y="414" width="330" height="32" rx="6" fill="#cffafe" stroke="#22d3ee"/>
+  <text x="834" y="434" fill="#155e75" font-size="10.5">不一定要自建云：git 已有权限/历史/冲突</text>
+
+  <!-- row 3 -->
+  <rect x="30" y="476" width="370" height="160" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="50" y="502" font-size="12.5" font-weight="700" fill="#334155">⑦ 并发与崩溃</text>
+  <text x="50" y="526" fill="#334155" font-size="11">跨进程锁 + 字节级备份 + 原子写 + 追加 journal</text>
+  <text x="50" y="548" fill="#334155" font-size="11">inode/字节数/mtime 检查外部改写</text>
+  <text x="50" y="572" fill="#64748b" font-size="10.5">样本：project-context 的 30s 陈旧锁、5 份备份、</text>
+  <text x="50" y="588" fill="#64748b" font-size="10.5">错误日志脱敏与轮转</text>
+  <text x="50" y="614" fill="#991b1b" font-size="10.5">DSH domain 只有进程内写链，跨进程要自己防</text>
+
+  <rect x="415" y="476" width="370" height="160" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="435" y="502" font-size="12.5" font-weight="700" fill="#9a3412">⑧ 迁移与版本</text>
+  <text x="435" y="526" fill="#334155" font-size="11">RC 漂移是常态：0.1.x / 0.2.x 各钉一段</text>
+  <text x="435" y="548" fill="#334155" font-size="11">settings.yaml → profile patch；旧目录布局迁移</text>
+  <text x="435" y="572" fill="#64748b" font-size="10.5">样本：project-context 启动迁移 + zip 回填；</text>
+  <text x="435" y="588" fill="#64748b" font-size="10.5">graphmemory 0.2.x 对应 0.1.5-rc</text>
+  <text x="435" y="614" fill="#9a3412" font-size="10.5">兼容范围 + 迁移路径 + 失败可见，都是数据设计</text>
+
+  <rect x="800" y="476" width="370" height="160" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="820" y="502" font-size="12.5" font-weight="700" fill="#991b1b">⑨ 信任</text>
+  <text x="820" y="526" fill="#334155" font-size="11">少存、可查、可确认、可删、可导出、不泄漏</text>
+  <text x="820" y="548" fill="#334155" font-size="11">凭据只存引用；日志脱敏；安装统计匿名</text>
+  <text x="820" y="572" fill="#64748b" font-size="10.5">样本：memory-snapshot 零依赖；workspace-memories</text>
+  <text x="820" y="588" fill="#64748b" font-size="10.5">侧栏面板；memory-evolve 确认队列</text>
+  <text x="820" y="614" fill="#991b1b" font-size="10.5">执行项目内配置（overlay）必须显式 trust 开关</text>
+
+  <!-- bottom -->
+  <rect x="30" y="654" width="1140" height="48" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="50" y="676" fill="#3730a3" font-size="11" font-weight="700">九个维度里，DSH 核心只直接提供“介质/切法/权威”的一部分；每 workspace 运行时、跨设备同步、第三方 settings 命名空间仍要作者自建。</text>
+  <text x="50" y="694" fill="#4338ca" font-size="10.5">抄模式，不抄 API：样本各自钉在不同 RC，且都是作者自述、未审计。</text>
+</svg>

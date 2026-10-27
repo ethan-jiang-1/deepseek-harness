@@ -135,6 +135,17 @@
 2. **存就存成“可重建”**（P1）。insights 只存派生检查点，从不存消息内容；升级时从日志重建。用户删了会话，统计跟着变，这是诚实的行为。
 3. **项目级的东西要么进项目，要么带路径键**（P2/P3）。社区插件在核心没有“每项目一套实例”的情况下，自己用 `.dsh/cordis.yml` 或按 workspace 的设置解决了；代价是孤儿、信任边界和版本兼容，必须自己承担。
 
+社区里还有四种手法，值得单独看：
+
+| 手法 | 做法 | 样本 |
+|---|---|---|
+| **位置做成配置** | 同一插件，`storage: home`（敏感、机内）或 `storage: workspace`（团队、随代码） | dsh-workspace-memories |
+| **journal 权威 + 渲染派生** | `memory.jsonl` 追加写是权威，`MEMORY.md` 只是渲染；锁内备份、崩溃只落后不丢 | dsh-project-context |
+| **用 git 做同步** | 记忆推到代码仓库的专属分支或独立记忆仓库，冲突三选一 | dsh-memory-evolve |
+| **SQLite + 不可信召回** | 本地图谱库 + FTS/向量；召回进提示词时标成“不可信参考” | dsh-graphmemory |
+
+完整的九个维度（放哪、介质、权威、切法、可见性、同步、并发、迁移、信任）和十二种可抄手法，见 [06 篇](./06-community-patterns.md)。
+
 ## 你应该怎么选：五个问题
 
 ```text
@@ -173,6 +184,6 @@
 ## 证据与边界
 
 - DSH 机制：`docs/subsystems/storage.md`、`session-projection.md`、`filesystem.md`、`settings.md`、`credentials.md`、`attachment.md`、`deliverables.md`、`spill.md`、`workspace.md`。
-- 社区样本：[dsh-memory-snapshot](https://github.com/yzx4036/dsh-memory-snapshot)、[dsh-workspace-overlay](https://github.com/TTTPOB/dsh-workspace-overlay)、[dsh-custom-workspace](https://github.com/JeremyGuo/dsh-custom-workspace)、[harness-insights](https://github.com/mapan0424/deepseek-harness-plugins/tree/main/packages/harness-insights)、[dshbase](https://dshbase.com/)。
+- 社区样本：[dsh-memory-snapshot](https://github.com/yzx4036/dsh-memory-snapshot)、[dsh-workspace-memories](https://github.com/lengfengng-tech/dsh-workspace-memories)、[dsh-memory-evolve](https://github.com/csyangwen/dsh-memory-evolve)、[dsh-graphmemory](https://github.com/meyaomiao/dsh-graphmemory)、[dsh-project-context](https://github.com/P02-1010751281/dsh-project-context)、[dsh-workspace-overlay](https://github.com/TTTPOB/dsh-workspace-overlay)、[dsh-custom-workspace](https://github.com/JeremyGuo/dsh-custom-workspace)、[harness-insights](https://github.com/mapan0424/deepseek-harness-plugins/tree/main/packages/harness-insights)、[dshbase](https://dshbase.com/)。
 - 社区材料是**外部、未独立验证**的作者声明；它们钉在 `0.1.x`/`0.2.x` 的不同 RC 上，不能当 DSH 的 API 合同。
 - “哪种承诺更好”是产品判断，不是 DSH 强制；同一插件可以组合 P0+P2（引用 + 项目内缓存）。

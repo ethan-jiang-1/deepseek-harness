@@ -94,6 +94,10 @@ $DSH_HOME/
 | [dsh-memory-snapshot](https://github.com/yzx4036/dsh-memory-snapshot) | P0：零依赖、路径清单、文档原地不动；相对路径按启动目录解析 | 作者自述；钉在 0.2.x |
 | [dsh-workspace-overlay](https://github.com/TTTPOB/dsh-workspace-overlay) | P2/P5：`<workspace>/.dsh/cordis.yml`、workspace scope/lease | 第三方实现，非核心 API |
 | [dsh-custom-workspace](https://github.com/JeremyGuo/dsh-custom-workspace) | P3：按 workspace 持久化；第三方 settings namespace 缺口 | 旧 `settings.yaml` 写法 |
+| [dsh-workspace-memories](https://github.com/lengfengng-tech/dsh-workspace-memories) | P3：默认 home、可 opt-in 项目内；Markdown + 工具写 + 面板；1 MiB/32K 上限 | 作者自述；未审计 |
+| [dsh-memory-evolve](https://github.com/csyangwen/dsh-memory-evolve) | P3/P4：五轨记忆、确认队列、git 分支同步 | 作者自述；未审计 |
+| [dsh-graphmemory](https://github.com/meyaomiao/dsh-graphmemory) | P3：SQLite + FTS/向量 + LLM 抽取；召回标不可信 | 作者自述；未审计 |
+| [dsh-project-context](https://github.com/P02-1010751281/dsh-project-context) | P2：项目内 journal 权威 + Markdown 派生、跨进程锁、回填 | 作者自述；未审计 |
 | [harness-insights](https://github.com/mapan0424/deepseek-harness-plugins/tree/main/packages/harness-insights) | P1：只折叠元数据、不存正文、可重建检查点 | 作者声明；未审计 |
 | [deepseek-harness-plugins](https://github.com/mapan0424/deepseek-harness-plugins) | P4：渠道配置 `defaultWorkspace` + 凭据放 profile/env | 第三方 monorepo |
 | [dshbase](https://dshbase.com/) / [awesome 目录](https://github.com/imsai-sh/awesome-deepseek-harness-plugins) | 生态规模与分类（约 2 万条目录；Memory 436） | 站点自述，未审计 |
