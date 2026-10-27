@@ -72,8 +72,8 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | **D 定义** | bundle patch、preset 行、Config 默认值、工具边界 | 包作者 / 部署者 | `package.json` + patch + preset | 只读（按 revision） | 间接 | [04](./04-readonly-agent-definition.md) / [09](./09-agent-data-cuts.md) |
 | **C 代码** | 插件模块、`./client`、provider 代码 | 包作者 | 包目录 | 只读（随版本替换） | 间接 | [09](./09-agent-data-cuts.md) |
 | **W workspace** | 项目文件、项目 `AGENTS.md`、项目技能 | 项目 | 会话工作目录及其项目根 | 可读写 | 按需 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
-| **U home** | 用户 `AGENTS.md`、用户技能、settings | 用户 / profile | `$DSH_HOME` + `~/.agents` | 可读写 | 按需 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
-| **S session** | 事件日志、投影、preset 选择、附件引用 | 会话 | `$DSH_HOME/sessions/...` | 只追加 | 是 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
+| **U home** | 用户 `AGENTS.md`、用户技能 | 用户 | `$DSH_HOME` + `~/.agents` | 可读写 | 按需 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
+| **S session** | 事件日志、preset 选择、附件引用 | 会话 | `$DSH_HOME/sessions/...` | 只追加 | 是 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
 | **H host state** | workspace 记录、会话旁路元数据、插件 KV | 宿主 / 插件 | `$DSH_HOME/storages` + `ctx.storageDomain` | 可读写（schema 校验） | 否 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
 | **K cache** | 请求图片缓存、解析结果、临时产物 | 运行时 | `$DSH_HOME/cache` + `dshCachePath` | 可丢弃 | 否 | [09](./09-agent-data-cuts.md) |
 | **X credentials** | token、API key、OAuth grant | 用户 | `$DSH_HOME/.credentials.yaml` + 凭据服务 | 受权限保护 | 否 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) |
@@ -82,9 +82,10 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 
 这张图是入口版；数据卡的十个问题、原生能力与边界图的十二种落点、完整说明见 [10 篇](./10-data-design-advisor.md)。
 
-三个容易混的边界：
+几个容易混的边界：
 
 - **定义与代码不是数据。** 它们随包发布、随版本替换，运行时只读；不要为了“让用户能改”把数据塞进 patch 或包目录。
+- **投影不是 session 的权威数据。** `ctx.sessionProjections` 从日志派生、可重建；日志才是模型可见历史的权威。
 - **附件、spill、导出不是普通平面。** 附件在 `$DSH_HOME/attachments/v1`，内容寻址、不可变、本地后端不自动 GC；spill 默认在 OS 临时目录，启动后一次性清理（`cleanupPeriodDays`）；`present` 只记路径，不复制字节。
 - **settings 是 profile 作用域，不是账号作用域。** 它写当前 profile 的 `cordis.patch.yml`；换 profile 就是另一份配置。跨 profile 共享偏好要用 home 域，不能指望 `Config`。
 
@@ -111,7 +112,7 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 
 一条覆盖多数情况的规则：**用户拥有的字节留在用户能看见、能带走的地方；插件只拥有索引、游标、偏好、学到的事实和缓存，并且必须说清楚它跟谁走、什么时候删。**
 
-## 保留与删除：四个系统性空白
+## 保留与删除：四个必须回答的问题
 
 这四件事没有平台兜底，必须写进 README（逐项设计见 [10 篇 §7](./10-data-design-advisor.md)）：
 
@@ -179,9 +180,9 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 ├── 07-testing-and-acceptance.md
 ├── 08-packaging-flexibility-and-ecosystems.md
 ├── 09-agent-data-cuts.md       # 六种切法、6+2 平面
-├── 10-data-design-advisor.md   # 数据卡、原生能力地图、键、生命周期、archetype
+├── 10-data-design-advisor.md   # 数据卡、原生能力与边界、切法对照、键、生命周期、archetype
 ├── reference.md                # 证据等级与来源登记
-└── figures/                    # 九张 SVG
+└── figures/                    # 十张 SVG
 ```
 
 ## 章节地图
@@ -199,7 +200,7 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | 07 | [测试与验收](./07-testing-and-acceptance.md) | T0–T8 测试矩阵；一小时/一天/一周预算 |
 | 08 | [灵活度与生态](./08-packaging-flexibility-and-ecosystems.md) | 分发/组合/定义/资源四种性质；五个时点；Dify、HF、MCP、Claude Code、VS Code 对照 |
 | 09 | [数据切法](./09-agent-data-cuts.md) | 六种切法；6+2 平面；状态判定；迁移清单 |
-| 10 | [数据设计顾问](./10-data-design-advisor.md) | 数据卡、原生能力地图、作用域/键、常见 archetype、生命周期/迁移、评审清单 |
+| 10 | [数据设计顾问](./10-data-design-advisor.md) | 数据卡、原生能力与边界、6+2 与五个家对照、作用域/键、常见 archetype、生命周期/迁移、评审清单 |
 | — | [证据登记](./reference.md) | 来源、等级、关键主张的对应关系 |
 
 ## 术语
@@ -216,6 +217,9 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | **质量线** | 不通过不会立刻报错，但会造成维护债的发布要求 |
 | **三归属** | workspace / home / session 的导航三分；不是实现模型 |
 | **6+2** | D 定义 / C 代码 / W workspace / U home / S session / H host state，加 K cache / X credentials |
+| **home（本篇）** | 本篇的 home 指 `$DSH_HOME` 用户数据根；不是“五个家”里的“家” |
+| **五个家 / 家** | 另一套切法：内容 / 历史 / 状态 / 派生 / 客户端；与本篇 6+2 的对应见 [10 篇 §13](./10-data-design-advisor.md) |
+| **P0–P4** | 五种数据承诺：纯引用 / 会话派生 / 项目文件 / home 账本 / profile 配置；见 [10 篇 §3](./10-data-design-advisor.md) |
 | **数据卡** | 一块事实的十格设计卡：事实、拥有者、关于谁、寿命、可见性、权威、落点、键、删除、迁移 |
 | **原生能力** | 随 DSH 发行或由 Host 提供的服务/插件，例如 `ctx.fs`、`ctx.storageDomain`；不是第三方依赖 |
 | **`$DSH_HOME`** | 用户数据根（默认 `~/.dsh`），可用 `DSH_HOME` 覆盖；与共享的 `~/.agents` 分开 |

@@ -1,0 +1,75 @@
+<svg width="1100" height="700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>两套切法怎么对齐：6+2 与五个家</title>
+  <desc>把 24 的 6+2 落点映射到内容、历史、状态、派生、客户端五个家，以及只读层和边界；说明两者是同一批落点的不同分类粒度。</desc>
+  <defs>
+    <marker id="arr24cross" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="1100" height="700" fill="#fafafa" rx="6"/>
+  <text x="550" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">两套切法怎么对齐：6+2 与五个家</text>
+  <text x="550" y="55" text-anchor="middle" font-size="11" fill="#6b7280">同一批落点，不同分类粒度；箭头是映射，不是两套事实。</text>
+
+  <text x="42" y="86" font-size="11" font-weight="700" fill="#334155">24 的 6+2 落点</text>
+  <text x="728" y="86" font-size="11" font-weight="700" fill="#334155">五个家 / 只读层 / 边界</text>
+
+  <rect x="40" y="100" width="360" height="60" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="58" y="125" font-size="11" font-weight="700" fill="#334155">D 定义 + C 代码</text>
+  <text x="58" y="144" font-size="9.5" fill="#64748b">patch / preset / 模块 / client</text>
+  <line x1="400" y1="130" x2="712" y2="130" stroke="#4b5563" marker-end="url(#arr24cross)"/>
+  <rect x="720" y="100" width="340" height="60" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="738" y="125" font-size="11" font-weight="700" fill="#334155">只读层（不是数据家）</text>
+  <text x="738" y="144" font-size="9.5" fill="#64748b">随包发布、升级替换、运行时不写</text>
+
+  <rect x="40" y="176" width="360" height="60" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="58" y="201" font-size="11" font-weight="700" fill="#166534">W workspace + U home 文件</text>
+  <text x="58" y="220" font-size="9.5" fill="#15803d">项目文件 / 用户全局 AGENTS、skills</text>
+  <line x1="400" y1="206" x2="712" y2="206" stroke="#4b5563" marker-end="url(#arr24cross)"/>
+  <rect x="720" y="176" width="340" height="60" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="738" y="201" font-size="11" font-weight="700" fill="#166534">内容家</text>
+  <text x="738" y="220" font-size="9.5" fill="#15803d">用户/项目拥有字节；插件只存引用</text>
+
+  <rect x="40" y="252" width="360" height="60" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="58" y="277" font-size="11" font-weight="700" fill="#92400e">S session 日志</text>
+  <text x="58" y="296" font-size="9.5" fill="#b45309">事件、preset 选择、附件引用；只追加</text>
+  <line x1="400" y1="282" x2="712" y2="282" stroke="#4b5563" marker-end="url(#arr24cross)"/>
+  <rect x="720" y="252" width="340" height="60" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="738" y="277" font-size="11" font-weight="700" fill="#92400e">历史家</text>
+  <text x="738" y="296" font-size="9.5" fill="#b45309">日志是权威；投影不是第二份日志</text>
+
+  <rect x="40" y="328" width="360" height="76" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="58" y="353" font-size="11" font-weight="700" fill="#1e3a8a">H host state + X credentials</text>
+  <text x="58" y="372" font-size="9.5" fill="#1e40af">domain / 凭据 / profile settings</text>
+  <text x="58" y="390" font-size="9.5" fill="#1e40af">模型不可见；profile 不是账号</text>
+  <line x1="400" y1="366" x2="712" y2="366" stroke="#4b5563" marker-end="url(#arr24cross)"/>
+  <rect x="720" y="328" width="340" height="76" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="738" y="353" font-size="11" font-weight="700" fill="#1e3a8a">状态家</text>
+  <text x="738" y="372" font-size="9.5" fill="#1e40af">宿主账本 / 配置 / 凭据</text>
+  <text x="738" y="390" font-size="9.5" fill="#1e40af">可版本化，但要自己迁移/清理</text>
+
+  <rect x="40" y="420" width="360" height="60" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="58" y="445" font-size="11" font-weight="700" fill="#334155">K cache + 投影 / 索引</text>
+  <text x="58" y="464" font-size="9.5" fill="#64748b">session projections / 检查点 / 可丢弃缓存</text>
+  <line x1="400" y1="450" x2="712" y2="450" stroke="#4b5563" marker-end="url(#arr24cross)"/>
+  <rect x="720" y="420" width="340" height="60" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="738" y="445" font-size="11" font-weight="700" fill="#334155">派生家</text>
+  <text x="738" y="464" font-size="9.5" fill="#64748b">可重建，不承担权威；删了要能重算</text>
+
+  <rect x="40" y="496" width="360" height="54" rx="8" fill="#f5f3ff" stroke="#ddd6fe" stroke-dasharray="4 3"/>
+  <text x="58" y="519" font-size="11" font-weight="700" fill="#5b21b6">浏览器 UI 状态（6+2 之外）</text>
+  <text x="58" y="537" font-size="9.5" fill="#7c3aed">面板宽度 / 折叠 / 快捷键</text>
+  <line x1="400" y1="523" x2="712" y2="523" stroke="#4b5563" stroke-dasharray="4 3" marker-end="url(#arr24cross)"/>
+  <rect x="720" y="496" width="340" height="54" rx="8" fill="#f5f3ff" stroke="#ddd6fe" stroke-dasharray="4 3"/>
+  <text x="738" y="519" font-size="11" font-weight="700" fill="#5b21b6">客户端家</text>
+  <text x="738" y="537" font-size="9.5" fill="#7c3aed">localStorage / userData；Host 看不到</text>
+
+  <rect x="40" y="566" width="360" height="54" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="4 3"/>
+  <text x="58" y="589" font-size="11" font-weight="700" fill="#334155">附件 / spill / 导出</text>
+  <text x="58" y="607" font-size="9.5" fill="#64748b">产物与临时旁路，不是普通平面</text>
+  <line x1="400" y1="593" x2="712" y2="593" stroke="#4b5563" stroke-dasharray="4 3" marker-end="url(#arr24cross)"/>
+  <rect x="720" y="566" width="340" height="54" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="4 3"/>
+  <text x="738" y="589" font-size="11" font-weight="700" fill="#334155">边界</text>
+  <text x="738" y="607" font-size="9.5" fill="#64748b">外部服务 / OS 临时 / 无主插件目录</text>
+
+  <rect x="40" y="640" width="1020" height="42" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="58" y="660" font-size="10.5" fill="#4338ca">6+2 把只读层和旁路也列进落点表，所以看起来是 8 项；五个家只数数据家，所以是 5 项。两者对同一份事实的归属判断一致。</text>
+  <text x="58" y="676" font-size="10.5" fill="#4338ca">容易混的词：本篇的 home 指 $DSH_HOME 用户数据根；“家”是另一套切法对数据落点的叫法。</text>
+</svg>

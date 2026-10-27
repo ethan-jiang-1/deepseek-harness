@@ -48,8 +48,8 @@ workspace / home / session 是一个好的导航模型，但它把四个不同�
 | **D 定义** | bundle patch、preset 行、Config 默认值、工具边界 | 包作者 / 部署者 | `package.json` + patch + preset | 只读（按 revision） | 间接（决定工具/提示词） | 随包/层版本；已有 Agent 钉住 revision |
 | **C 代码** | 插件模块、`./client`、provider 代码 | 包作者 | 包目录 | 只读（随版本替换） | 间接 | 随安装/升级；link 指向 checkout |
 | **W workspace** | 项目文件、项目 `AGENTS.md`、`.dsh/skills`、`.agents/skills` | 项目 | 会话工作目录及其项目根 | 可读写 | 按需（工具读取/指令链） | 随仓库；用户自己管理 |
-| **U home** | 用户 `AGENTS.md`、`$DSH_HOME/skills`、`~/.agents/skills`、settings | 用户 / profile | `$DSH_HOME` + `~/.agents` + profile patch | 可读写 | 按需（指令链/技能/设置） | 跨项目；升级 DSH 不应清掉；settings 只对当前 profile 生效 |
-| **S session** | 事件日志、投影、preset 选择、附件引用 | 会话 | `$DSH_HOME/sessions/...` + `ctx.sessionPersistence` | 只追加 | 是（会话内容） | 随会话；无删除 API |
+| **U home** | 用户 `AGENTS.md`、`$DSH_HOME/skills`、`~/.agents/skills` | 用户 | `$DSH_HOME` + `~/.agents` | 可读写 | 按需（指令链/技能） | 跨项目；升级 DSH 不应清掉 |
+| **S session** | 事件日志、preset 选择、附件引用 | 会话 | `$DSH_HOME/sessions/...` + `ctx.sessionPersistence` | 只追加 | 是（会话内容） | 随会话；无删除 API |
 | **H host state** | workspace 记录、会话旁路元数据、插件 KV | 宿主 / 插件 | `$DSH_HOME/storages` + `ctx.storageDomain` | 可读写（schema 校验） | 否（除非消费者显式渲染） | 跨重启；版本不匹配拒绝打开 |
 | **K cache** | 请求图片缓存、解析结果、临时产物 | 运行时 | `$DSH_HOME/cache` + `dshCachePath` | 可读写、可丢弃 | 否 | 随时可清；清了应能重建 |
 | **X credentials** | token、API key、OAuth grant | 用户 | `$DSH_HOME/.credentials.yaml` + 凭据服务 | 可读写（受权限保护） | 否 | 用户撤销；不进日志/导出 |
@@ -60,7 +60,11 @@ workspace / home / session 是一个好的导航模型，但它把四个不同�
 - **K 与 H 都是“跨重启”，但 K 可重建。** 把 K 当 H 会让清理缓存变成数据丢失；把 H 当 K 会让重启丢状态。
 - **X 与 U 都是用户数据，但安全边界不同。** X 不进 patch、locale、README、会话文本；每次操作重新解析，不跨操作缓存。
 
-U 里有一个作用域例外：**settings 写当前 profile 的 `cordis.patch.yml`，是 profile 作用域，不是账号作用域。** 换 profile 就是另一份配置；跨 profile 共享的偏好要用 home 域单例，不能指望 `Config`。
+**settings 不在 U 行里。** 它是 profile 作用域的状态/配置，写当前 profile 的 `cordis.patch.yml`，不是账号作用域；换 profile 就是另一份配置。跨 profile 共享的偏好要用 home 域单例，不能指望 `Config`。
+
+**投影不是 S 的权威数据。** `ctx.sessionProjections` 从日志派生，是可重建的读模型；日志才是模型可见历史的权威。不要把它当第二份日志。
+
+投影和索引属于派生层；6+2 不把它们单列（K 只列可丢弃缓存），用 `ctx.sessionProjections` / `ctx.sessionQuery` 读取。
 
 **附件、spill、导出不是新增平面。** 附件在 `$DSH_HOME/attachments/v1`，内容寻址、不可变、本地后端不自动 GC；spill 默认在 OS 临时目录，启动后一次性清理（`cleanupPeriodDays`）；`present` 只记路径，不复制字节。它们是产物/临时旁路，发布数据测试时要单独看。
 
@@ -94,7 +98,7 @@ U 里有一个作用域例外：**settings 写当前 profile 的 `cordis.patch.y
 - 用户全局指令 `$DSH_HOME/AGENTS.md`、共享 `~/.agents/AGENTS.md`；用户技能 `$DSH_HOME/skills`、`~/.agents/skills`。
 - `~/.agents` 故意在 `$DSH_HOME` 之外，因为别的 agent 工具也读它；不要把两者合并。
 - 插件**不要静默追加**全局 `AGENTS.md`；这等于给未来所有会话注入提示词。用户显式动作，或写到单独可审阅文件。
-- settings 属于 U；启用/禁用、默认 preset 选择等可变选择不应写进包或 preset 定义。
+- settings 不属于 U 的内容家数据；它是 profile 作用域的配置，写当前 profile 的 `cordis.patch.yml`。启用/禁用、默认 preset 选择等可变选择不应写进包或 preset 定义。
 
 ### 4.5 S session：模型可见内容的唯一真源
 
@@ -136,7 +140,7 @@ U 里有一个作用域例外：**settings 写当前 profile 的 `cordis.patch.y
 | Agent 工作状态 | 当前计划、临时中间结果、待办 | 投影/内存（随 Agent 释放）；跨 turn 则写事件 | storage domain（模型看不见） |
 | 宿主跨会话状态 | workspace 记录、会话旁路元数据、插件配置缓存 | H storage domain | 包目录、`$DSH_HOME` 手写文件 |
 | 项目状态 | 项目文件、项目技能、项目指令、生成物 | W workspace | home、session |
-| 用户偏好 | 默认 preset、启用项、界面偏好、全局规则 | U home（settings / `AGENTS.md` / skills） | preset、包、session |
+| 用户偏好 | 默认 preset、启用项、界面偏好、全局规则 | settings 走 profile 配置；`AGENTS.md` / skills 走 U home | preset、包、session |
 | 机密 | token、API key、OAuth grant | X credentials | 任何可导出/可记录的位置 |
 
 再问五个判定问题：
@@ -194,7 +198,7 @@ U 里有一个作用域例外：**settings 写当前 profile 的 `cordis.patch.y
 | 直接写 `$DSH_HOME` 下的自造文件 | 绕过 schema、迁移、变更事件 | H storage domain；用户可见内容才进 U |
 | 删除日志实现“归档” | 历史不可恢复 | 隐藏/归档会话记录，不删日志 |
 | `process.cwd()` 当会话目录 | working_directory 改了还读旧目录 | `ctx.workingDirectory.get(session)` |
-| 把用户偏好写进 preset | 每个用户一份定义、升级冲突 | U settings / 用户 patch |
+| 把用户偏好写进 preset | 每个用户一份定义、升级冲突 | profile settings / 用户 patch |
 | 以为 `assets/skills` 会自动发现 | 装上后技能不出现 | 包内 provider 注册，或 `bundledSkillDir` 显式配置 |
 
 迁移顺序建议：

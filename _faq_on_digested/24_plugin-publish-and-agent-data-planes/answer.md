@@ -66,7 +66,7 @@
 | 凭据 | credentials（物理在 home） | `$DSH_HOME/.credentials.yaml` 或环境变量 | 凭据服务 / `!!js` 引用；每次操作重新解析 |
 | 可重建缓存 | cache | `$DSH_HOME/cache` + `dshCachePath` | 用缓存路径；清了应能重建，不能当权威 |
 
-表 C 是导航，不是排他分区。settings 不在表里：它写当前 profile 的 `cordis.patch.yml`，作用域是 profile，不是账号；附件与 spill 是产物/临时旁路，不是普通数据平面——附件内容寻址、无自动 GC，spill 默认在 OS 临时目录，`present` 只记路径。完整切法见 [09 篇](./09-agent-data-cuts.md)，把切法落到具体插件的步骤见 [10 篇](./10-data-design-advisor.md)。
+表 C 是导航，不是排他分区。settings 不在表里：它写当前 profile 的 `cordis.patch.yml`，作用域是 profile，不是账号；附件与 spill 是产物/临时旁路，不是普通数据平面——附件内容寻址、无自动 GC，spill 默认在 OS 临时目录，`present` 只记路径。完整切法见 [09 篇](./09-agent-data-cuts.md)，把切法落到具体插件的步骤见 [10 篇](./10-data-design-advisor.md)；与“五个家 / P0–P4”的对照见 [10 篇 §13](./10-data-design-advisor.md)。
 
 ## 十篇分读
 

@@ -107,7 +107,7 @@
 | 24 | `ctx.sessionQuery` 是 live-preferred 的只读查询；全文搜索依赖挂载的 provider | session-query.md；session-query README | C |
 | 25 | `ctx.sessionProjections` 是纯同步 fold；`stateVersion` 变更要 bump；客户端视图由 `wire` 决定 | session-projection.md；session-projection README | C |
 | 26 | `single` 域记录键是不透明字符串；JSON `per-record` 后端把键变成路径段，必须匹配 `[a-zA-Z0-9_-]+`；为可移植性建议统一按此限制 | storage.md；storage-json `per-record-unit.ts`；storage-domain README | C |
-| 27 | 域写链只保证单进程内不交错；JSON 无文件锁，SQLite 竞争写会 `busy`；`domain/changed` 不跨进程，多 Host 需自己处理可见性 | storage.md；storage-domain README | C |
+| 27 | 域写链只保证单进程内不交错；JSON 无文件锁，SQLite 竞争写会 `busy`；`domain/changed` 不跨进程，多 Host 共享 home 不是支持场景 | storage.md；storage-domain README | C |
 | 28 | `ctx.spillStore` 只有 `saveText`；locator 不透明；默认落 OS 临时目录，启动后按 `cleanupPeriodDays` 清理 | spill.md；spill-local README | C |
 | 29 | `ctx.credentials` 每次操作重新 resolve；空存储值等于未配置；文件权限不是隔离边界 | credentials.md；credentials-local README | C |
 | 30 | `WorkspaceId` 是生成 uuid，不是路径；workspace 只登记，不提供数据读写 API | workspace.md；workspace README | C |

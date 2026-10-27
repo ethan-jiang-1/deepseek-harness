@@ -16,6 +16,8 @@
 
 `$DSH_HOME` 默认 `~/.dsh`，可用环境变量覆盖；共享 agents 根默认 `~/.agents`，可用 `DSH_AGENTS_HOME` 覆盖。两者都是用户数据根，不是插件安装目录。**把 `~/.agents` 当成 `$DSH_HOME` 的子目录是错的**：DSH 故意把它放在外面，因为别的 agent 工具也读同一个 `AGENTS.md` 与 `skills/`。
 
+客户端纯 UI 状态不在这三分里：它按源/设备存在浏览器 `localStorage` 或桌面 `userData`，Host 和模型看不到；它是 Host 之外的边界，不参与 workspace/home/session 的导航。要放进数据全景时，按 [10 篇的对照](./10-data-design-advisor.md) 处理。
+
 ## 2. workspace：跟当前 working folder 有关
 
 ### 2.1 工作目录不是进程 cwd
@@ -26,7 +28,7 @@
 
 ### 2.2 项目根与指令链
 
-项目根是最近的、包含 `.git` 的祖先；没有就用当前目录。`dsh-agent-instructions` 加载的链是：
+项目根是最近的、包含 `.git` 的祖先；没有就用当前目录。**这里的“项目根”是指令链/技能发现用的根，不是 workspace 记录的 path**：workspace 记录可以指向仓库子目录，甚至不是 git 根，两者不要混用。`dsh-agent-instructions` 加载的链是：
 
 1. `$DSH_HOME/AGENTS.md`（用户全局）
 2. `<agentsHome>/AGENTS.md`（共享全局）

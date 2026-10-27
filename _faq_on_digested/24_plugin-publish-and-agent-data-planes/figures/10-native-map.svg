@@ -36,12 +36,12 @@
 
     <rect x="36" y="216" width="1028" height="46" fill="#ffffff" stroke="#e2e8f0"/>
     <rect x="36" y="216" width="5" height="46" fill="#f59e0b"/>
-    <text x="52" y="237" font-weight="700" fill="#92400e">模型可见会话状态</text>
-    <text x="250" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">ctx.sessionProjections</text>
+    <text x="52" y="237" font-weight="700" fill="#92400e">模型可见输入 / 派生视图</text>
+    <text x="250" y="237" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#1e3a8a">事件/工具结果 + projections</text>
     <text x="486" y="237" fill="#334155">session</text>
-    <text x="660" y="237" fill="#334155">是（surface / wire）</text>
+    <text x="660" y="237" fill="#334155">是 / 按 wire</text>
     <text x="762" y="237" fill="#334155">随日志重建</text>
-    <text x="916" y="237" fill="#64748b">新事实 / 宿主账本</text>
+    <text x="916" y="237" fill="#64748b">新事实 / 新 event</text>
 
     <rect x="36" y="262" width="1028" height="46" fill="#f8fafc" stroke="#e2e8f0"/>
     <rect x="36" y="262" width="5" height="46" fill="#3b82f6"/>
