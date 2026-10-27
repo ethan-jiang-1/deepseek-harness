@@ -266,9 +266,9 @@ Removes the rows and preset. Storage domain data remains under $DSH_HOME/storage
 ### D · 数据与安全
 
 - [ ] 没有把用户数据写进包目录或 `import.meta.url` 旁边。
-- [ ] 没有模块级可变状态；跨会话状态有 storage domain 或会话投影。
+- [ ] 没有模块级可变状态；跨会话状态用 storage domain；会话内派生视图用投影。
 - [ ] 模型可见的状态能从会话日志重建。
-- [ ] 没有新增自定义 session event 类型，也没有依赖 `plugin:` 记录；状态用已有事件/投影/`agent.inject()`/storage。
+- [ ] 没有新增自定义 session event 类型，也没有依赖 `plugin:` 记录；状态用已有事件/派生投影/`agent.inject()`/storage。
 - [ ] 路径用 `resolveDshHome` / `resolveAgentsHome` / `ctx.workingDirectory.get(session)`。
 - [ ] 没有把 `$DSH_HOME/plugins/<id>` 当核心数据根；自造目录写清路径、清理、迁移。
 - [ ] 附件/spill/导出有保留说明；不把附件库当项目文件库。

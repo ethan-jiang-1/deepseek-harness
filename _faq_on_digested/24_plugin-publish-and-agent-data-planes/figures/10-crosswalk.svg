@@ -62,12 +62,12 @@
   <text x="738" y="537" font-size="9.5" fill="#7c3aed">localStorage / userData；Host 看不到</text>
 
   <rect x="40" y="566" width="360" height="54" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="4 3"/>
-  <text x="58" y="589" font-size="11" font-weight="700" fill="#334155">附件 / spill / 导出</text>
-  <text x="58" y="607" font-size="9.5" fill="#64748b">产物与临时旁路，不是普通平面</text>
+  <text x="58" y="589" font-size="11" font-weight="700" fill="#334155">附件 / spill / 导出（特殊）</text>
+  <text x="58" y="607" font-size="9.5" fill="#64748b">spill/导出是边界；附件按内容家但生命周期不同</text>
   <line x1="400" y1="593" x2="712" y2="593" stroke="#4b5563" stroke-dasharray="4 3" marker-end="url(#arr24cross)"/>
   <rect x="720" y="566" width="340" height="54" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="4 3"/>
-  <text x="738" y="589" font-size="11" font-weight="700" fill="#334155">边界</text>
-  <text x="738" y="607" font-size="9.5" fill="#64748b">外部服务 / OS 临时 / 无主插件目录</text>
+  <text x="738" y="589" font-size="11" font-weight="700" fill="#334155">边界 / 特殊产物</text>
+  <text x="738" y="607" font-size="9.5" fill="#64748b">外部服务 / OS 临时 / 无主目录；附件无 GC</text>
 
   <rect x="40" y="640" width="1020" height="42" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
   <text x="58" y="660" font-size="10.5" fill="#4338ca">6+2 把只读层和旁路也列进落点表，所以看起来是 8 项；五个家只数数据家，所以是 5 项。两者对同一份事实的归属判断一致。</text>

@@ -119,7 +119,7 @@ Agent 的系统提示前缀、工具目录、prompt section 都是 KV cache 的�
 | 用户数据、项目路径、绝对路径 | 定义随包分发，换机器就错 | Config / 运行时解析 / 数据层 |
 | secret、token、API key | patch 会被复制、分享、进 git | 凭据服务或环境变量引用 |
 | 每个用户不同的值 | preset 是共享定义 | 用户设置 / storage domain |
-| 可变状态、缓存、计数器 | 定义是只读的，没有写回通道 | 会话事件 / storage domain / 投影 |
+| 可变状态、缓存、计数器 | 定义是只读的，没有写回通道 | 会话事件 / storage domain；展示用派生投影 |
 | 大段会频繁改的提示词 | 改一次就要发版、换 revision | prompt section + Config，或 skill |
 | 平台/机器相关的分支 | 定义应在不同部署上同构 | `!!js` 条件仅用于配置/disabled，且要可解释 |
 

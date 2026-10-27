@@ -62,7 +62,7 @@
 | 项目级经验 | workspace | `<projectRoot>/.dsh/skills`、`.agents/skills`、项目 `AGENTS.md` | skill 发现、指令链，不写进包 |
 | 跨项目经验 | home | `$DSH_HOME/skills`、`$DSH_HOME/AGENTS.md`、`~/.agents/skills` | 用户维护；插件只读/注册 |
 | 宿主结构化状态 | host state（物理在 home） | `$DSH_HOME/storages` 的 KV domain | `ctx.storageDomain`，模型不可见 |
-| 模型可见历史 | session | `$DSH_HOME/sessions/--<normalized-cwd>--/<encoded-id>/` | 优先已有事件 + 投影；第三方不要新增 event 类型或 `plugin:` 记录 |
+| 模型可见历史 | session | `$DSH_HOME/sessions/--<normalized-cwd>--/<encoded-id>/` | 优先已有事件；展示用派生投影；第三方不要新增 event 类型或 `plugin:` 记录 |
 | 凭据 | credentials（物理在 home） | `$DSH_HOME/.credentials.yaml` 或环境变量 | 凭据服务 / `!!js` 引用；每次操作重新解析 |
 | 可重建缓存 | cache | `$DSH_HOME/cache` + `dshCachePath` | 用缓存路径；清了应能重建，不能当权威 |
 
@@ -99,7 +99,7 @@
 | 插件能不能在 `$DSH_HOME` 下自己建目录存数据？ | 不要手写 profile 或 `node_modules`；宿主状态用 storage domain，用户可见经验放 skills/AGENTS.md。 |
 | 要不要同时写 `engines.dsh` 和 DSH peer？ | `engines.dsh` 优先，写了就只看它；peer 仍用于共享实例与类型检查，共享包要 peer + dev 双写。 |
 | 数据放包目录行不行？ | 不行。包目录会被升级整体替换，`files` 会裁剪，link 安装又指向工作区。 |
-| 插件的数据到底怎么安排？ | 先写数据卡（谁拥有、关于谁、活多久、谁看见、谁是权威），再按 10 篇的原生能力地图选 `ctx.fs` / `ctx.storageDomain` / `ctx.sessionProjections` 等；不要先建表。 |
+| 插件的数据到底怎么安排？ | 先写数据卡（谁拥有、关于谁、活多久、谁必须看见、谁是权威），再按 10 篇的原生能力地图选 `ctx.fs` / `ctx.storageDomain` / `ctx.sessionProjections` 等；不要先建表。 |
 | 市场是官方商店吗？ | 不是。它是一份第三方静态 JSON，DSH 只校验格式，不验证作者、主页或来源。 |
 | Desktop 和 Web 要分别发插件吗？ | 不用分别发；同一个 bundle 装进不同 profile。差异在安装入口与 `$DSH_HOME`，见 FAQ 23。 |
 | 能不能不发布、只在本地用？ | 可以，`--patch` overlay 或 `link:` 安装；但它们不是正式发布形态。 |

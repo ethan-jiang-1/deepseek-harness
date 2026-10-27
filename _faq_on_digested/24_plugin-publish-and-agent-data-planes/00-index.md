@@ -32,7 +32,7 @@
 | **版本承诺** | 我承诺支持哪些 DSH？ | 优先 `engines.dsh`；没有它才回退 DSH peer；`manifestVersion` 不是门 | [02](./02-package-contract.md) / [03](./03-channels-and-versions.md) |
 | **智能体定义** | 这个智能体由哪些子插件组成？ | preset 行 + 子插件行；共享服务留 Host | [04](./04-readonly-agent-definition.md) |
 | **只读资产** | 哪些知识随包走，哪些让用户编辑？ | 随包走只读 skill；可编辑经验放项目/用户 skill 根或 `AGENTS.md` | [04](./04-readonly-agent-definition.md) / [05](./05-data-planes.md) |
-| **数据归属** | 谁拥有、谁能看见、能活多久、谁是权威？ | workspace / home / session 导航；再按 6+2 与八条规则细化；落到插件用数据卡 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) / [10](./10-data-design-advisor.md) |
+| **数据归属** | 谁拥有、关于谁、活多久、谁必须看见、谁是权威？ | workspace / home / session 导航；再按 6+2 与八条规则细化；落到插件用数据卡 | [05](./05-data-planes.md) / [09](./09-agent-data-cuts.md) / [10](./10-data-design-advisor.md) |
 | **验收** | 我能不能重复证明它装得上、起得来、不串数据？ | 先 T0 + T3，再 T1/T2/T5，最后 T4/T6/T7/T8 | [07](./07-testing-and-acceptance.md) |
 
 ## 十个发布判断
@@ -65,7 +65,7 @@
 
 ## 数据：三归属是导航，6+2 是实现
 
-workspace / home / session 回答的是“大致在哪”；一旦要决定“谁写、谁看、活多久、谁是权威”，就要用 09 篇的 6+2。把 6+2 落到一个具体插件上的步骤、数据卡与原生能力地图见 [10 篇](./10-data-design-advisor.md)：
+workspace / home / session 回答的是“大致在哪”；一旦要决定“谁拥有、关于谁、活多久、谁必须看见、谁是权威”，就要用 09 篇的 6+2。把 6+2 落到一个具体插件上的步骤、数据卡与原生能力地图见 [10 篇](./10-data-design-advisor.md)：
 
 | 24 的平面 | 放什么 | 所有者 | 物理位置 / 服务 | 可变性 | 模型可见 | 章节 |
 |---|---|---|---|---|---|---|
@@ -89,26 +89,30 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 - **附件、spill、导出不是普通平面。** 附件在 `$DSH_HOME/attachments/v1`，内容寻址、不可变、本地后端不自动 GC；spill 默认在 OS 临时目录，启动后一次性清理（`cleanupPeriodDays`）；`present` 只记路径，不复制字节。
 - **settings 是 profile 作用域，不是账号作用域。** 它写当前 profile 的 `cordis.patch.yml`；换 profile 就是另一份配置。跨 profile 共享偏好要用 home 域，不能指望 `Config`。
 
-## 数据归属四问与五个判定
+## 数据归属五问与八个判定
 
-先问四个坐标（详见 [09 篇 §1](./09-agent-data-cuts.md)）：
+先问五个问题（详见 [09 篇 §1](./09-agent-data-cuts.md)）：
 
-1. **谁拥有？** 项目、用户、会话、宿主，还是包作者？
-2. **谁能看见？** 模型、用户、宿主，还是只有安全边界？
-3. **能活多久？** 一次 turn、一次会话、一次安装，还是跨机器？
-4. **谁是权威？** 定义、日志、文件、KV，还是可重建的缓存？
+1. **谁拥有？** 项目、用户、会话、插件、宿主、浏览器/设备（Host 之外），还是没人（派生）？
+2. **关于谁？** 一次调用、这次会话、这个项目、这个人/这台机器，还是这个安装？
+3. **能活多久？** 一次 turn、一次会话、一个项目、一个 profile、一个 home，还是可重建/永久？
+4. **谁必须看见？** 模型、用户、插件、浏览器，还是没人（只有安全边界）？
+5. **谁是权威？** 定义、日志、文件、KV，还是可重建的缓存？
 
-再按 [09 篇 §5](./09-agent-data-cuts.md) 的五个问题落点：
+再按 [09 篇 §5](./09-agent-data-cuts.md) 的八个问题落点：
 
 ```text
 1. 模型必须看见吗？          是 → S；否 → 继续
-2. 跨重启吗？                否 → K 或内存；是 → 继续
-3. 跟项目绑定吗？            是 → W（文件）或 H（项目记录）；否 → 继续
-4. 用户要能读/改吗？         是 → U；否 → H
-5. 是 secret 吗？            是 → X；否 → 按上面结果
+2. 只在浏览器里用吗？        是 → localStorage / userData；否 → 继续
+3. 跨重启吗？                否 → K 或内存；是 → 继续
+4. 能重建吗？                是 → K / 派生层；否 → 继续
+5. 是 secret 吗？            是 → X；否 → 继续
+6. 跟项目绑定吗？            是 → W（文件）或 H（项目记录）；否 → 继续
+7. 是用户可调参数吗？        是 → Config（profile）；否 → 继续
+8. 用户要能读/改内容吗？     是 → U；否 → H
 ```
 
-这和 [10 的决策树](./10-data-design-advisor.md) 是同一组判断；10 先排除用户文件、再问模型可见性，并多出“用户可调参数 → Config”一支，顺序不同，结论一致。
+这和 [10 的决策树](./10-data-design-advisor.md) 是同一组判断；10 先排除用户文件、再问模型可见性与浏览器；用户可调参数落到 Config；顺序不同，结论一致。
 
 一条覆盖多数情况的规则：**用户拥有的字节留在用户能看见、能带走的地方；插件只拥有索引、游标、偏好、学到的事实和缓存，并且必须说清楚它跟谁走、什么时候删。**
 
@@ -131,7 +135,7 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | 我要交付一个专用智能体 | [04](./04-readonly-agent-definition.md) | [06 的 preset 骨架](./06-skeleton-and-checklists.md) |
 | 用户的经验/记忆放哪？ | [05 的经验落点](./05-data-planes.md) | [09 的状态判定](./09-agent-data-cuts.md) |
 | 我要给插件设计数据，从哪开始？ | [10 的数据卡与七步](./10-data-design-advisor.md) | [09 的 6+2](./09-agent-data-cuts.md) / [07 的 T5](./07-testing-and-acceptance.md) |
-| 我不知道数据该放哪个平面 | [09 的五问](./09-agent-data-cuts.md) | [10 的原生能力地图](./10-data-design-advisor.md) |
+| 我不知道数据该放哪个平面 | [09 的八问](./09-agent-data-cuts.md) | [10 的原生能力地图](./10-data-design-advisor.md) |
 | 旧的 `agent.cordis.yml` / `dsh.compatibility` 怎么写？ | [06 的迁移节](./06-skeleton-and-checklists.md) | [02 的版本门](./02-package-contract.md) |
 | 灵活度怎么打包，别人怎么做？ | [08](./08-packaging-flexibility-and-ecosystems.md) | [07 的测试矩阵](./07-testing-and-acceptance.md) |
 | 我只有一小时，先测什么？ | [07 的时间预算](./07-testing-and-acceptance.md) | [02 的检查表](./02-package-contract.md) |
@@ -159,7 +163,7 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 ## 阅读路线
 
 - **作者，30 分钟**：[02](./02-package-contract.md) → [06](./06-skeleton-and-checklists.md) 的骨架与检查表 → [07](./07-testing-and-acceptance.md) 的“一小时”清单。
-- **数据设计，45 分钟**：[10](./10-data-design-advisor.md) 的数据卡与七步 → [05](./05-data-planes.md) 的路径表 → [09](./09-agent-data-cuts.md) 的 6+2 与五问。
+- **数据设计，45 分钟**：[10](./10-data-design-advisor.md) 的数据卡与七步 → [05](./05-data-planes.md) 的路径表 → [09](./09-agent-data-cuts.md) 的 6+2 与八问。
 - **维护者/架构，2 小时**：[01](./01-publishable-forms.md) → [03](./03-channels-and-versions.md) → [04](./04-readonly-agent-definition.md) → [05](./05-data-planes.md) → [09](./09-agent-data-cuts.md) → [10](./10-data-design-advisor.md)。
 - **Agent 要做一次发布**：读本文件的八格与六项检查 → [02](./02-package-contract.md) → [06](./06-skeleton-and-checklists.md) 的检查表 → [07](./07-testing-and-acceptance.md) 的 T0/T3；不要先读 08。
 - **只想看结论**：[answer](./answer.md) 的一分钟版与三张判据表。
@@ -219,7 +223,7 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | **6+2** | D 定义 / C 代码 / W workspace / U home / S session / H host state，加 K cache / X credentials |
 | **home（本篇）** | 本篇的 home 指 `$DSH_HOME` 用户数据根；不是“五个家”里的“家” |
 | **五个家 / 家** | 另一套切法：内容 / 历史 / 状态 / 派生 / 客户端；与本篇 6+2 的对应见 [10 篇 §13](./10-data-design-advisor.md) |
-| **P0–P4** | 五种数据承诺：纯引用 / 会话派生 / 项目文件 / home 账本 / profile 配置；见 [10 篇 §3](./10-data-design-advisor.md) |
+| **P0–P4** | 五种数据承诺：纯引用 / 会话派生 / 用户可见文件 / 宿主账本 / profile 配置（含凭据）；见 [10 篇 §3](./10-data-design-advisor.md) |
 | **数据卡** | 一块事实的十格设计卡：事实、拥有者、关于谁、寿命、可见性、权威、落点、键、删除、迁移 |
 | **原生能力** | 随 DSH 发行或由 Host 提供的服务/插件，例如 `ctx.fs`、`ctx.storageDomain`；不是第三方依赖 |
 | **`$DSH_HOME`** | 用户数据根（默认 `~/.dsh`），可用 `DSH_HOME` 覆盖；与共享的 `~/.agents` 分开 |
@@ -236,7 +240,7 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 
 - **基线**：DSH 行为结论按 `dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）核验；市场、npm、Git 托管与 Desktop 壳侧安装只按仓库文档与生成器描述记录，未联网实测。
 - **外部生态**：Dify、Hugging Face、MCP、Claude Code、OpenAI、VS Code、Obsidian 的对照按 2026-10-25 公开文档记录，未逐项实测；不构成 DSH 契约。
-- **客户端 UI 状态**：本篇只讲 client module 的发布面；浏览器里的纯 UI 状态（面板宽度、折叠、快捷键）不在本篇范围，也不涉及客户端存储选型。
+- **客户端 UI 状态**：本篇只在数据边界处点到为止：纯 UI 状态（面板宽度、折叠、快捷键）是 `localStorage` / `userData` 的客户端边界，不是 DSH 数据服务；客户端存储选型不在本篇展开。
 - **多租户/跨机器同步**：不在本篇范围；单 Host、单 `$DSH_HOME` 账户。
 - **单独分发**：目录内引用用相对路径；目录外引用按 [question](./question.md) 的约定用 GitHub URL。本篇结论不依赖其他 FAQ。
 - **不是产品文档**：本篇是研究语料，不是 DSH 官方文档；产品行为以仓库 `docs/`、包 README 与源码为准。

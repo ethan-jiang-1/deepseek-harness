@@ -27,9 +27,9 @@
 | 字段 | 要回答的问题 | 例子 |
 |---|---|---|
 | **事实** | 一句话：它是什么？ | “这个项目上次评审到哪个提交” |
-| **谁拥有** | 用户、项目、会话、插件，还是没人（派生）？ | 项目 |
+| **谁拥有** | 用户、项目、会话、插件、浏览器/设备，还是没人（派生）？ | 项目 |
 | **关于谁** | 一次调用、这次会话、这个项目、这个人/这台机器，还是这个安装？ | 这个项目 |
-| **活多久** | turn、session、project、profile、home，还是可重建？ | 跟项目走 |
+| **活多久** | turn、session、project、profile、home、永久，还是可重建？ | 跟项目走 |
 | **谁必须看见** | 模型、用户、插件、浏览器，还是没人？ | 用户可见；模型经工具读 |
 | **权威** | 冲突时谁说了算？ | 项目里的文件 |
 | **落点 / API** | 用哪个原生能力？ | `ctx.fs` 写项目文件 |
@@ -54,7 +54,7 @@
 | 读写项目或用户文件 | `ctx.fs` | 用户 / 项目；路径经 `resolve` 成不透明 target | 经工具/调用点 | 用户/项目自己管 | 插件账本、secret、模型可见历史 |
 | 宿主结构化状态 | `ctx.storageDomain` | home + 记录键；`single` / `per-record` | 否 | 插件自己清理、迁移 | 用户文件、secret、模型可见状态 |
 | 模型可见的会话输入 / 派生视图 | 已有事件 / 工具结果 + `ctx.sessionProjections` | session；纯同步 fold，可重建 | 是（输入）/ 按 wire（视图） | 框架驱动，随日志重建 | 新事实、新增 event 类型 |
-| 跨会话读取/统计/搜索 | `ctx.sessionQuery` | 会话语料；live-preferred，只读 | 否（代码读取） | 只读，不写 | 写数据、当权威存储 |
+| 跨会话读取/统计/搜索 | `ctx.sessionQuery` | 会话语料；live-preferred，只读；全文搜索依赖 provider | 否（代码读取） | 只读，不写 | 写数据、当权威存储 |
 | 二进制模型输入 | `ctx.attachments` | 内容寻址、不可变；引用在会话事件 | 经事件/工具 | 本地后端保留所有对象，无自动 GC | 用户交付物、按路径拼对象 |
 | 大段工具输出/临时文本 | `ctx.spillStore` | 本地 provider 默认 OS 临时目录；locator 不透明 | 经 locator/工具 | 启动后一次性清理 | 长期数据、用户交付物 |
 | 秘密、token、OAuth grant | `ctx.credentials` | home；引用/记录由 provider 管 | 否 | 用户撤销；每次操作重新解析 | 普通配置、日志、patch 明文 |
@@ -73,16 +73,16 @@
 ## 3. 七步落点
 
 1. **列事实。** 按“用户会怎么描述它”列，不按文件/表列。每一块事实写一张数据卡。
-2. **定承诺与落点。** 先选五种承诺之一：纯引用 / 会话派生 / 用户可见文件 / home 账本 / profile 配置。秘密属于 profile/凭据部分；spill/cache 是临时旁路，不另立第六、第七种承诺。
-3. **定四坐标。** 谁拥有、关于谁、活多久、谁必须看见；四个答案不能互相矛盾。
+2. **定承诺与落点。** 先选五种承诺之一：纯引用 / 会话派生 / 用户可见文件 / 宿主账本（home） / profile 配置。秘密属于 profile/凭据部分；spill/cache 是临时旁路，不另立第六、第七种承诺。
+3. **定五个问题。** 谁拥有、关于谁、活多久、谁必须看见、谁是权威；五个答案不能互相矛盾。
 4. **选原生能力。** 用第 2 节的表；如果没有一个能力同时满足权威、可见性和生命周期，拆成两块数据，不要硬塞。
 5. **定键。** 用稳定标识；不要把路径、workspace id 或 `process.cwd()` 直接当长期键。见第 4 节。
-6. **定生命周期。** 谁创建、谁更新、谁删除、卸载留什么；见第 6 节。没有平台 GC 的，自己写清理说明。
+6. **定生命周期。** 谁创建、谁更新、谁删除、卸载留什么；见第 7 节。没有平台 GC 的，自己写清理说明。
 7. **定迁移与测试。** 版本、兼容读、一次性迁移、失败可见、旧数据保留；测试至少覆盖 07 篇的 T5 与 §8.4。
 
 ![数据落点决策树：沿“否”向下，每个“是”给出落点](./figures/10-decision-tree.svg)
 
-这张图是 09 篇五问的展开版：先排除用户交付物，再问模型可见性，并多出“用户可调参数 → Config”一支；提问顺序不同，结论一致。用户全局文件（`$DSH_HOME/AGENTS.md`、`skills/`、`~/.agents`）由用户维护，插件只读，不要走“用户可见 → 写文件”的分支。
+这张图是 09 篇判定问题的更细展开：先排除用户交付物，再问模型可见性与浏览器；用户可调参数在 09 里已有一问，这里补上 Config 落点。提问顺序不同，结论一致。用户全局文件（`$DSH_HOME/AGENTS.md`、`skills/`、`~/.agents`）由用户维护，插件只读，不要走“用户可见 → 写文件”的分支。
 
 第 2 步可以压成一张小表（P0–P4 + 旁路）：
 
@@ -90,11 +90,15 @@
 |---|---|---|---|
 | 纯引用（P0） | 读用户已有的文件、配置 | `ctx.fs` + 路径/哈希 | 原文件可能被改/删；不能“学习” |
 | 会话派生（P1） | 统计、用量、索引、检查点 | `ctx.sessionQuery` / `ctx.sessionProjections` | 不能存新事实；回填有成本 |
-| 项目文件（P2） | 项目记忆、检查表、报告；用户全局文件由用户维护 | `ctx.fs` | 仓库污染、手改、多人冲突；用户全局只读 |
-| home 账本（P3） | 插件状态、游标、学到的索引 | `ctx.storageDomain` | 孤儿、换机器丢、用户看不见 |
-| profile 配置（P4） | 开关、阈值、默认值 | `Config` + `.volatile()` | 只对当前 profile 生效 |
+| 用户可见文件（P2） | 项目记忆、检查表、报告；用户全局文件由用户维护 | `ctx.fs` | 仓库污染、手改、多人冲突；用户全局只读 |
+| 宿主账本 / home 账本（P3） | 插件状态、游标、学到的索引 | `ctx.storageDomain` | 孤儿、换机器丢、用户看不见 |
+| profile / 安装配置（P4） | 开关、阈值、默认值 | `Config` + `.volatile()` | 只对当前 profile 生效 |
 | 秘密（P4 的凭据部分） | token、API key、OAuth | `ctx.credentials` | 需要 provider/用户授权 |
 | 临时旁路（不是承诺） | 大输出、可重建缓存 | `ctx.spillStore` / `dshCachePath` | 会被清掉，不能当权威 |
+
+P4 的跨 profile 共享偏好不是 `Config`，而是 home 域单例；`Config` 只对当前 profile 生效。
+
+同一块数据往往有 2–3 条都成立的路；按承诺、可见性和维护代价选，不要找唯一答案。
 
 ## 4. 作用域与键
 
@@ -103,7 +107,7 @@
 | 作用域 | 稳定标识 | 适合 | 坑 |
 |---|---|---|---|
 | session | `SessionId` | 这次对话的临时/派生状态 | 日志无删除 API；`header.cwd` 不可变，当前目录可改 |
-| workspace | `WorkspaceId` + canonical path | 项目级记录、项目内文件 | `WorkspaceId` 是生成的 uuid，删了重加会换；长期键用路径哈希 |
+| workspace | `WorkspaceId` + canonical path | 项目级记录、项目内文件 | `WorkspaceId` 是生成的 uuid，删了重加会换；path 可以是仓库子目录，不等于 git 根；长期键用路径哈希 |
 | profile | profile 目录名 / entry id | settings、启用项、默认值 | 不是账号；换 profile 就是另一份 |
 | home | `$DSH_HOME` | 跨项目账本、凭据、缓存 | 换机器/换 home 不跟随；多 Host 共享不是支持场景 |
 | agents home | `~/.agents` | 与其他 agent 工具共享的技能/指令 | 是共享根，不是 DSH 私有目录 |
@@ -135,7 +139,7 @@
 | 项目记忆 / 检查表 | 项目 | `ctx.fs` 写项目文件 | 固定相对路径 + 文件内 `version` | 用户删；不要复制进 home |
 | 用户偏好 / 默认值 | profile | `Config` + `.volatile()` | entry id / 字段 | 换 profile 就是另一份；跨 profile 用 home 域 |
 | 跨会话统计 / 用量 | 无（派生） | `ctx.sessionQuery` + projection | `SessionId` / 时间范围 | 不存新事实；删会话就跟着变 |
-| 会话工作集 / 临时状态 | 会话 | 内存或 `ctx.sessionProjections` | `SessionId` | 模型可见就走事件；不要塞 storage domain |
+| 会话工作集 / 临时状态 | 会话 | 内存（跨 turn 就写事件；展示用投影） | `SessionId` | 模型可见就走事件；不要塞 storage domain |
 | 宿主账本 / 游标 | 插件 | `ctx.storageDomain` | 稳定记录键（`w_` + 哈希） | 自己迁移/清理；模型不可见 |
 | 索引 / 缓存 | 无（可重建） | `dshCachePath` 或派生域 | 源版本/哈希 | 可删；失效要能重建 |
 | 秘密 / OAuth | 用户 / provider | `ctx.credentials` | `CredentialRef` / `CredentialKey` | 每次操作重新解析；不进日志 |
@@ -181,7 +185,7 @@
 - **会话日志有租约。** 不要直接改 header、不要物理删目录、不要用“重扫日志”维护状态；用投影的纯函数 fold。
 - **文件写入用守卫。** `createIfAbsent` / `replaceIfVersion` 处理并发；`FS_STALE_VERSION` 要重新读后再决定，不要吞掉。
 - **注册即效果。** domain 句柄、监听器、定时器都走 `ctx.effect()` 的 disposer；HMR/卸载时 `close()`。
-- **不要模块级可变状态。** 多会话、多 profile、HMR 下会串；状态放投影、域或显式实例。
+- **不要模块级可变状态。** 多会话、多 profile、HMR 下会串；状态放事件/派生投影、域或显式实例。
 - **键里带会话/项目。** 同一插件被多个会话/项目使用时，记录键要能区分；不要用“当前目录”做隐式键。
 
 ## 9. 安全与隐私
@@ -206,7 +210,7 @@
 
 - [ ] 每块事实都有数据卡；一张卡只有一个权威。
 - [ ] 包目录没有写入；没有 `import.meta.url` 旁边的 `data/`。
-- [ ] 模型可见的内容能从已有事件/投影重建；没有新增 event 类型或 `plugin:` 记录。
+- [ ] 模型可见的内容能从已有事件重建（投影是派生视图）；没有新增 event 类型或 `plugin:` 记录。
 - [ ] 作用域和键稳定；没有用 `process.cwd()`、`os.homedir()`、`workspaceId` 当长期键。
 - [ ] 域有版本与迁移方案；`per-record` 键合法；没有按 workspace 建域。
 - [ ] 用户内容只存引用/哈希；没有把用户文件复制进 home 当真相。
@@ -214,6 +218,8 @@
 - [ ] 附件/spill/交付物各归其位；没有把附件当项目文件库。
 - [ ] settings 只当 profile 配置；没有把累积数据塞进 `Config`。
 - [ ] 删除/保留/卸载写进 README；没有承诺平台会替你清。
+- [ ] 可选能力（如 `ctx.workspaceRegistry`）缺失时有降级路径，不假设必有。
+- [ ] 发布依赖没有第三方插件/外部服务；experimental 只作参考。
 - [ ] 并发：域写链、文件守卫、disposer、HMR 都覆盖；没有模块级可变状态。
 - [ ] 测试覆盖 07 篇的 T5 与 §8.4；在隔离 `DSH_HOME` 里跑过升级/卸载。
 
@@ -260,6 +266,7 @@
 | 状态家 | H host state + X credentials + profile settings | 宿主账本、凭据、配置 |
 | 派生家 | K cache + `ctx.sessionProjections` / 索引 / 检查点 | 可重建，不承担权威 |
 | 客户端家 | 浏览器 `localStorage` / `userData` | 6+2 之外的设备边界，不是 DSH 服务 |
+| 边界 | spill / 导出 / 外部服务 / 无主目录；附件按内容家但无 GC | 不是家；作者自己处理生命周期 |
 
 两个容易混的词：
 
@@ -268,7 +275,11 @@
 
 所以：**五个家数的是“数据家”，6+2 数的是“发布视角的落点”**（含只读层与两个旁路）；两者对同一份事实的归属判断一致，只是分类粒度不同。
 
-承诺也对得上：另一套切法把前五个承诺叫 P0–P4；本篇的纯引用 / 会话派生 / 项目文件 / home 账本 / profile 配置与之一一对应。秘密属于 P4 的凭据部分；spill/cache 是旁路，不是第六种承诺；每项目运行时是运行时缺口，不是数据承诺。
+五个问题的前四个（谁拥有、关于谁、活多久、谁必须看见）就是另一套切法的四个坐标；第五个“谁是权威”是约束，不是另一个存储位置。
+
+承诺也对得上：另一套切法把前五个承诺叫 P0–P4；本篇的纯引用 / 会话派生 / 用户可见文件 / 宿主账本 / profile 配置与之一一对应。秘密属于 P4 的凭据部分；spill/cache 是旁路，不是第六种承诺；每项目运行时是运行时缺口，不是数据承诺。
+
+依赖层级也能对上：DSH 核心合同 / 稳定随包插件 = N0 / N1；experimental = N2；第三方插件 = E1；外部服务 = E2。
 
 附件也要单独说明：在“五个家”里它属于内容家（附件库），但它服务模型输入、内容寻址、无自动 GC，生命周期与普通文件不同；6+2 不把它单列，按 05 篇的产物边界处理。
 
@@ -287,4 +298,4 @@
 - 附件与 spill：[attachment.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/attachment.md)、[spill.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/spill.md)
 - 配置与凭据：[settings.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/settings.md)、[credentials.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/credentials.md)
 - 交付物与工作区：[deliverables.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/deliverables.md)、[workspace.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/workspace.md)
-- 同目录：[05 的路径表](./05-data-planes.md)、[07 的 T5/§8.4](./07-testing-and-acceptance.md)、[09 的 6+2 与五问](./09-agent-data-cuts.md)
+- 同目录：[05 的路径表](./05-data-planes.md)、[07 的 T5/§8.4](./07-testing-and-acceptance.md)、[09 的 6+2 与判定问题](./09-agent-data-cuts.md)

@@ -2,7 +2,7 @@
 
 ## 一句话
 
-数据不属于插件包。按归属粗分有三类：**workspace**（跟当前 working folder 有关）、**home**（与 folder 无关的用户全局）、**session**（一次会话的日志与投影）。这是导航用的粗分，不是排他分区：`home` 实际有两个根（`$DSH_HOME` 与共享的 `~/.agents`），`$DSH_HOME` 内部又按用途分给不同包。插件只能通过服务访问它们；把数据写进包目录、模块全局或自造事件类型，都会在升级、重放或多会话并发时坏掉。
+数据不属于插件包。按归属粗分有三类：**workspace**（跟当前 working folder 有关）、**home**（与 folder 无关的用户全局）、**session**（一次会话的日志；投影由日志派生）。这是导航用的粗分，不是排他分区：`home` 实际有两个根（`$DSH_HOME` 与共享的 `~/.agents`），`$DSH_HOME` 内部又按用途分给不同包。插件只能通过服务访问它们；把数据写进包目录、模块全局或自造事件类型，都会在升级、重放或多会话并发时坏掉。
 
 ![数据地图](./figures/05-data-map.svg)
 
@@ -12,7 +12,7 @@
 |---|---|---|---|
 | workspace | 这个项目里有什么 | 工作目录文件、项目 `AGENTS.md`、项目技能 | 随仓库/目录；用户自己管理 |
 | home | 这台机器上的用户是谁、积累了什么 | 全局指令、用户技能、宿主 KV、凭据、profile | 跨项目、跨会话；DSH 升级不应清掉 |
-| session | 这一次对话发生了什么 | 会话日志、投影、附件引用、preset 选择 | 随会话；只追加 |
+| session | 这一次对话发生了什么 | 会话日志、派生投影、附件引用、preset 选择 | 随会话；只追加 |
 
 `$DSH_HOME` 默认 `~/.dsh`，可用环境变量覆盖；共享 agents 根默认 `~/.agents`，可用 `DSH_AGENTS_HOME` 覆盖。两者都是用户数据根，不是插件安装目录。**把 `~/.agents` 当成 `$DSH_HOME` 的子目录是错的**：DSH 故意把它放在外面，因为别的 agent 工具也读同一个 `AGENTS.md` 与 `skills/`。
 
@@ -52,7 +52,7 @@
 
 ### 2.4 workspace 记录不是文件管理器
 
-`dsh-workspace` 维护的是“项目列表 + 每个目录下的会话分组”，不是文件本身。删除一个 workspace 记录不会删除目录，也不会删除会话历史；隐藏会话只是不参与分组。插件不要把“删除项目”实现成“删目录”。
+`dsh-workspace`（可选能力，不是每个组合都有）维护的是“项目列表 + 每个目录下的会话分组”，不是文件本身。删除一个 workspace 记录不会删除目录，也不会删除会话历史；隐藏会话只是不参与分组。插件不要把“删除项目”实现成“删目录”。
 
 ## 3. home：与 folder 无关的用户全局
 
@@ -119,7 +119,7 @@
 
 因此：
 
-- 要让模型看见的状态 → 写成会话事件（优先用已有事件类型与投影），或在请求前通过 `agent.inject()` 注入并留下事件。
+- 要让模型看见的状态 → 写成会话事件（优先用已有事件类型；展示用派生投影），或在请求前通过 `agent.inject()` 注入并留下事件。
 - 只是宿主自己用的状态 → storage domain。
 - 事件类型是兼容契约：**第三方插件不要新增 `SessionEventMap` 类型，也不要 append 新 `type`。** 读取方只接受带 `ignorable: true` 的未知事件，而 live `Session.append()` 不能设置该标记，所以缺少声明插件的读取方会拒绝重开会话。`appendPluginRecord()` 的 `plugin:` 记录保留给 DSH 实验包，且会话格式迁移只尽力保留，不是第三方扩展点。要保存状态，用已有事件、`ctx.sessionProjections` 的纯函数 fold、`agent.inject()` 或 storage domain。内部代码若用 `@messageProjection` 改变派生消息，需要声明并注册 `SessionMessageProjection`；它是更强的契约，但不能让旧读取方安全理解一个新类型。
 - 不要用 `session/event` 监听 + 全量重扫来维护状态；用 `ctx.sessionProjections` 的纯函数 fold，未变化时返回同一引用。
@@ -167,15 +167,25 @@ spill 不是附件：`ctx.spillStore` 把大段文本放到 OS 临时目录，�
 
 ```text
 这份数据是模型必须看见的吗？
-├── 是 → 它属于这次会话 → 写成会话事件/投影，或经 agent.inject 注入
-└── 否 → 它需要跨重启吗？
-    ├── 否 → 内存缓存即可，但要有所有者与清理
-    └── 是 → 它跟当前项目绑定吗？
-        ├── 是 → 用户可见的项目文件（workspace），或项目级技能
-        └── 否 → 宿主 KV domain（home），或用户级技能/AGENTS.md
+├── 是 → 它属于这次会话 → 写成会话事件；需要展示再加派生投影；或经 agent.inject 注入
+└── 否 → 只在浏览器里用吗？
+    ├── 是 → 客户端 localStorage / userData
+    └── 否 → 它需要跨重启吗？
+        ├── 否 → 内存缓存即可，但要有所有者与清理
+        └── 是 → 能重建吗？
+            ├── 是 → 缓存 / 派生层（K）
+            └── 否 → 是秘密吗？
+                ├── 是 → 凭据服务（X）
+                └── 否 → 是用户可见文件吗？
+                    ├── 是 → 项目文件（W）或用户全局文件（U，用户维护）
+                    └── 否 → 是用户可调参数吗？
+                        ├── 是 → Config + .volatile()（profile）
+                        └── 否 → 它跟当前项目绑定吗？
+                            ├── 是 → 项目记录 / 项目键（H）
+                            └── 否 → 宿主 KV domain（home），或用户级技能/AGENTS.md
 ```
 
-再问两个问题：
+对文件/域数据再问两个问题（客户端/Config 按各自作用域，不在这两问里）：
 
 - **换一台机器还要吗？** 要 → home；不要 → workspace 或 session。
 - **升级插件后还要吗？** 要 → 绝不能放包目录；不要 → 也不要放包目录，放缓存并声明可清理。
@@ -199,10 +209,10 @@ spill 不是附件：`ctx.spillStore` 把大段文本放到 OS 临时目录，�
 | 反模式 | 后果 | 正确做法 |
 |---|---|---|
 | 写 `import.meta.url` 旁边的 `data/` | 升级丢失；`files` 裁剪；多 profile 各一份 | storage domain 或 workspace 文件 |
-| 模块级 `Map` 当会话缓存 | 多会话串；HMR 不清理；卸载泄漏 | 会话投影 / `ctx.effect` 清理 |
+| 模块级 `Map` 当会话缓存 | 多会话串；HMR 不清理；卸载泄漏 | 会话事件（投影派生）/ `ctx.effect` 清理 |
 | `process.cwd()` 当会话目录 | `working_directory` 改了还读旧目录 | `ctx.workingDirectory.get(session)` |
 | `join(os.homedir(), '.dsh')` | 忽略 `DSH_HOME`，多环境互相污染 | `resolveDshHome()` |
-| 追加自定义 event 类型，或依赖 `plugin:` 记录 | 缺少声明插件的读取方可能拒绝重开；迁移只尽力保留 | 已有事件 + 投影 + `agent.inject` + storage |
+| 追加自定义 event 类型，或依赖 `plugin:` 记录 | 缺少声明插件的读取方可能拒绝重开；迁移只尽力保留 | 已有事件 + 派生投影 + `agent.inject` + storage |
 | 只存 storage，不写事件 | 模型可见但不可重放；fork 不一致 | 事件优先，storage 只存宿主侧 |
 | secret 写进 Config 默认值 | patch 被分享即泄漏 | 凭据引用 / 环境变量 |
 | 用 `node:fs` 直接改 workspace | 绕过 fs 策略、沙箱与审计 | `ctx.fs` |
