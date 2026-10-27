@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" width="1200" height="660" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>插件数据的四个平面：内容、历史、状态、派生</title>
+  <desc>内容平面是用户拥有的工作区文件；历史平面是模型可见的会话日志与投影；状态平面是插件拥有的宿主域、配置与凭据；派生平面是可重建的索引与缓存。每个平面有自己的权威、位置、可见性与生命周期。</desc>
+
+  <rect width="1200" height="660" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">四个平面，四套权威</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">同一份事实只能有一个家；其他平面只能存引用</text>
+
+  <!-- 内容 -->
+  <rect x="30" y="84" width="270" height="468" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="165" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">① 内容</text>
+  <text x="165" y="132" text-anchor="middle" font-size="11" fill="#1e3a8a">用户拥有的字节</text>
+  <line x1="52" y1="146" x2="278" y2="146" stroke="#bfdbfe"/>
+  <text x="52" y="170" font-size="11" font-weight="700" fill="#1e40af">权威</text>
+  <text x="52" y="190" fill="#334155">工作区目录里的文件</text>
+  <text x="52" y="208" fill="#64748b" font-size="10.5">DSH 不拥有、不代管、不复制</text>
+  <text x="52" y="236" font-size="11" font-weight="700" fill="#1e40af">怎么碰</text>
+  <text x="52" y="256" fill="#334155">ctx.fs.resolve / read / write</text>
+  <text x="52" y="274" fill="#64748b" font-size="10.5">版本守卫：createIfAbsent / replaceIfVersion</text>
+  <text x="52" y="302" font-size="11" font-weight="700" fill="#1e40af">可见性</text>
+  <text x="52" y="322" fill="#334155">用户直接打开；模型经工具读</text>
+  <text x="52" y="350" font-size="11" font-weight="700" fill="#1e40af">寿命</text>
+  <text x="52" y="370" fill="#334155">跟目录；用户删就没了</text>
+  <text x="52" y="398" font-size="11" font-weight="700" fill="#1e40af">典型</text>
+  <rect x="52" y="410" width="226" height="66" rx="7" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="66" y="432" font-size="10.5" fill="#1e3a8a">报告、代码、图片、配置</text>
+  <text x="66" y="452" font-size="10.5" fill="#1e3a8a">用户会编辑、提交、带走</text>
+  <text x="66" y="470" font-size="10.5" fill="#1e3a8a">插件只写，不据为己有</text>
+  <text x="52" y="506" fill="#1e40af" font-size="10.5">交付：present（路径引用）</text>
+  <text x="52" y="526" fill="#64748b" font-size="10.5">不要写进 home 冒充交付</text>
+
+  <!-- 历史 -->
+  <rect x="320" y="84" width="270" height="468" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="455" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">② 历史</text>
+  <text x="455" y="132" text-anchor="middle" font-size="11" fill="#14532d">这次对话发生过什么</text>
+  <line x1="342" y1="146" x2="568" y2="146" stroke="#bbf7d0"/>
+  <text x="342" y="170" font-size="11" font-weight="700" fill="#166534">权威</text>
+  <text x="342" y="190" fill="#334155">会话日志（每会话一份）</text>
+  <text x="342" y="208" fill="#64748b" font-size="10.5">$DSH_HOME/sessions/--cwd--/id/</text>
+  <text x="342" y="236" font-size="11" font-weight="700" fill="#166534">怎么碰</text>
+  <text x="342" y="256" fill="#334155">session.append(event)</text>
+  <text x="342" y="274" fill="#64748b" font-size="10.5">派生值：ctx.sessionProjections</text>
+  <text x="342" y="302" font-size="11" font-weight="700" fill="#166534">可见性</text>
+  <text x="342" y="322" fill="#334155">模型可见 ⟺ 已记录</text>
+  <text x="342" y="340" fill="#64748b" font-size="10.5">私有账本不要塞进来</text>
+  <text x="342" y="368" font-size="11" font-weight="700" fill="#166534">寿命</text>
+  <text x="342" y="388" fill="#334155">跟会话；归档隐藏，不删除</text>
+  <text x="342" y="416" font-size="11" font-weight="700" fill="#166534">典型</text>
+  <rect x="342" y="428" width="226" height="66" rx="7" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="356" y="450" font-size="10.5" fill="#166534">用户消息、模型输出、工具结果</text>
+  <text x="356" y="470" font-size="10.5" fill="#166534">待办、标题、沙箱模式等投影</text>
+  <text x="356" y="488" font-size="10.5" fill="#166534">附件只存引用，不存字节</text>
+  <text x="342" y="524" fill="#166534" font-size="10.5">模型要记住 → 必须落事件</text>
+  <text x="342" y="544" fill="#64748b" font-size="10.5">回放/审计也靠它</text>
+
+  <!-- 状态 -->
+  <rect x="610" y="84" width="270" height="468" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="745" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">③ 状态</text>
+  <text x="745" y="132" text-anchor="middle" font-size="11" fill="#78350f">插件拥有的账本</text>
+  <line x1="632" y1="146" x2="858" y2="146" stroke="#fde68a"/>
+  <text x="632" y="170" font-size="11" font-weight="700" fill="#92400e">权威</text>
+  <text x="632" y="190" fill="#334155">domain / Config / credentials</text>
+  <text x="632" y="208" fill="#64748b" font-size="10.5">$DSH_HOME/storages、profiles、凭据层</text>
+  <text x="632" y="236" font-size="11" font-weight="700" fill="#92400e">怎么碰</text>
+  <text x="632" y="256" fill="#334155">ctx.storageDomain.open(spec)</text>
+  <text x="632" y="274" fill="#64748b" font-size="10.5">Config.volatile() → settings 表单</text>
+  <text x="632" y="292" fill="#64748b" font-size="10.5">credentials.resolve(ref) 每次操作</text>
+  <text x="632" y="320" font-size="11" font-weight="700" fill="#92400e">可见性</text>
+  <text x="632" y="340" fill="#334155">模型不可见（除非你渲染）</text>
+  <text x="632" y="368" font-size="11" font-weight="700" fill="#92400e">寿命</text>
+  <text x="632" y="388" fill="#334155">跟 $DSH_HOME；换 home 就没了</text>
+  <text x="632" y="416" font-size="11" font-weight="700" fill="#92400e">典型</text>
+  <rect x="632" y="428" width="226" height="66" rx="7" fill="#fef3c7" stroke="#fbbf24"/>
+  <text x="646" y="450" font-size="10.5" fill="#78350f">项目索引、同步游标、学到的事实</text>
+  <text x="646" y="470" font-size="10.5" fill="#78350f">偏好、阈值、默认模型</text>
+  <text x="646" y="488" font-size="10.5" fill="#78350f">API key 只存引用</text>
+  <text x="632" y="524" fill="#92400e" font-size="10.5">schema + version 自己管</text>
+  <text x="632" y="544" fill="#64748b" font-size="10.5">没有自动迁移、没有跨进程事件</text>
+
+  <!-- 派生 -->
+  <rect x="900" y="84" width="270" height="468" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="1035" y="112" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">④ 派生</text>
+  <text x="1035" y="132" text-anchor="middle" font-size="11" fill="#475569">可以丢的加速层</text>
+  <line x1="922" y1="146" x2="1148" y2="146" stroke="#e2e8f0"/>
+  <text x="922" y="170" font-size="11" font-weight="700" fill="#334155">权威</text>
+  <text x="922" y="190" fill="#334155">没有；从上面三层算出来</text>
+  <text x="922" y="208" fill="#64748b" font-size="10.5">丢了能重算，才叫派生</text>
+  <text x="922" y="236" font-size="11" font-weight="700" fill="#334155">怎么碰</text>
+  <text x="922" y="256" fill="#334155">投影 fold / 缓存目录 / per-record</text>
+  <text x="922" y="274" fill="#64748b" font-size="10.5">invalidRecords: backup-and-skip</text>
+  <text x="922" y="302" font-size="11" font-weight="700" fill="#334155">可见性</text>
+  <text x="922" y="322" fill="#334155">间接（渲染或查询时）</text>
+  <text x="922" y="350" font-size="11" font-weight="700" fill="#334155">寿命</text>
+  <text x="922" y="370" fill="#334155">随时可丢；重建成本要可接受</text>
+  <text x="922" y="398" font-size="11" font-weight="700" fill="#334155">典型</text>
+  <rect x="922" y="410" width="226" height="66" rx="7" fill="#e2e8f0" stroke="#cbd5e1"/>
+  <text x="936" y="432" font-size="10.5" fill="#334155">文件索引、向量、摘要、统计</text>
+  <text x="936" y="452" font-size="10.5" fill="#334155">会话标题/待办/沙箱模式投影</text>
+  <text x="936" y="470" font-size="10.5" fill="#334155">搜索结果缓存</text>
+  <text x="922" y="506" fill="#334155" font-size="10.5">判断：删掉它，用户会丢东西吗？</text>
+  <text x="922" y="526" fill="#64748b" font-size="10.5">会 → 不是派生；不会 → 放这里</text>
+
+  <!-- footer -->
+  <rect x="30" y="572" width="1140" height="64" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="52" y="596" font-size="12" font-weight="700" fill="#334155">同一个事实的跨平面引用</text>
+  <text x="52" y="618" fill="#334155" font-size="11">内容 → 历史：会话事件记录文件路径或附件引用；内容 → 状态：索引只存路径 + 哈希；历史 → 派生：投影从事件 fold，不反向写；状态 → 派生：缓存可重建，绝不回写权威。</text>
+</svg>

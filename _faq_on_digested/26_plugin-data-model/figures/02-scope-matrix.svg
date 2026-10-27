@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>作用域矩阵：四个平面 × 三个作用域</title>
+  <desc>内容、历史、状态、派生四个平面分别落在 session、workspace、home 三个作用域里的典型数据与键。插件实例是宿主级的一份，所以每个项目级数据都必须带项目键；workspaceId 会随删除重加变化，规范化路径也不保证目录移动后仍有效。</desc>
+
+  <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">作用域矩阵：先选平面，再选它跟谁走</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">插件实例只有一份，所以每一格都要自己带键</text>
+
+  <!-- header -->
+  <rect x="170" y="80" width="330" height="34" rx="7" fill="#e0e7ff" stroke="#c7d2fe"/>
+  <text x="335" y="102" text-anchor="middle" font-size="12" font-weight="700" fill="#3730a3">session（会话）</text>
+  <rect x="515" y="80" width="330" height="34" rx="7" fill="#e0e7ff" stroke="#c7d2fe"/>
+  <text x="680" y="102" text-anchor="middle" font-size="12" font-weight="700" fill="#3730a3">workspace（项目）</text>
+  <rect x="860" y="80" width="310" height="34" rx="7" fill="#e0e7ff" stroke="#c7d2fe"/>
+  <text x="1015" y="102" text-anchor="middle" font-size="12" font-weight="700" fill="#3730a3">home（这个人 / 这台机）</text>
+
+  <!-- rows -->
+  <rect x="30" y="128" width="130" height="118" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="95" y="158" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">内容</text>
+  <text x="95" y="178" text-anchor="middle" font-size="10" fill="#1e3a8a">用户拥有的字节</text>
+  <text x="95" y="198" text-anchor="middle" font-size="9.5" fill="#64748b">写工作区，不写 home</text>
+
+  <rect x="170" y="128" width="330" height="118" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="186" y="152" font-size="11" fill="#334155">对话里产生的图片/附件</text>
+  <text x="186" y="174" font-size="10.5" fill="#64748b">字节在附件库；事件只带引用</text>
+  <text x="186" y="196" font-size="10.5" fill="#64748b">键：AttachmentId / SessionId</text>
+  <text x="186" y="224" font-size="10.5" fill="#991b1b">不是项目资产；会话结束仍可用但会随清理</text>
+
+  <rect x="515" y="128" width="330" height="118" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="531" y="152" font-size="11" fill="#334155">项目文件、生成的报告、代码</text>
+  <text x="531" y="174" font-size="10.5" fill="#64748b">经 ctx.fs 读写；用户可直接编辑</text>
+  <text x="531" y="196" font-size="10.5" fill="#64748b">键：会话 cwd / 文件路径</text>
+  <text x="531" y="224" font-size="10.5" fill="#166534">交付用 present；删除目录即删除内容</text>
+
+  <rect x="860" y="128" width="310" height="118" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="876" y="152" font-size="11" fill="#64748b">很少见：用户级模板/资产</text>
+  <text x="876" y="174" font-size="10.5" fill="#64748b">只有当它不属于任何项目时</text>
+  <text x="876" y="196" font-size="10.5" fill="#64748b">键：主题/名字</text>
+  <text x="876" y="224" font-size="10.5" fill="#991b1b">别把项目产物放这里：用户找不到</text>
+
+  <!-- history -->
+  <rect x="30" y="260" width="130" height="118" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="95" y="290" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">历史</text>
+  <text x="95" y="310" text-anchor="middle" font-size="10" fill="#14532d">模型可见的事实</text>
+  <text x="95" y="330" text-anchor="middle" font-size="9.5" fill="#64748b">只能落会话日志</text>
+
+  <rect x="170" y="260" width="330" height="118" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="186" y="284" font-size="11" fill="#334155">全部事件、投影、工具结果</text>
+  <text x="186" y="306" font-size="10.5" fill="#64748b">模型可见 ⟺ 已记录</text>
+  <text x="186" y="328" font-size="10.5" fill="#64748b">键：SessionId + seq</text>
+  <text x="186" y="356" font-size="10.5" fill="#166534">回放、审计、压缩都靠它</text>
+
+  <rect x="515" y="260" width="330" height="118" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="531" y="284" font-size="11" fill="#64748b">没有“项目级历史”这种东西</text>
+  <text x="531" y="306" font-size="10.5" fill="#64748b">历史以会话为单位；项目只是 cwd</text>
+  <text x="531" y="328" font-size="10.5" fill="#64748b">要跨会话汇总 → 自己建派生索引</text>
+  <text x="531" y="356" font-size="10.5" fill="#991b1b">不要按目录拼日志：那是持久化内部编码</text>
+
+  <rect x="860" y="260" width="310" height="118" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="876" y="284" font-size="11" fill="#64748b">没有 home 级历史</text>
+  <text x="876" y="306" font-size="10.5" fill="#64748b">跨会话审计不在内置模型里</text>
+  <text x="876" y="328" font-size="10.5" fill="#64748b">需要就自己从会话日志导出</text>
+  <text x="876" y="356" font-size="10.5" fill="#991b1b">不要把日志复制进 home 当第二真相</text>
+
+  <!-- state -->
+  <rect x="30" y="392" width="130" height="118" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="95" y="422" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">状态</text>
+  <text x="95" y="442" text-anchor="middle" font-size="10" fill="#78350f">插件拥有的账本</text>
+  <text x="95" y="462" text-anchor="middle" font-size="9.5" fill="#64748b">domain / Config / 凭据</text>
+
+  <rect x="170" y="392" width="330" height="118" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="186" y="416" font-size="11" fill="#334155">会话级游标/临时选择</text>
+  <text x="186" y="438" font-size="10.5" fill="#64748b">优先用事件/投影，而不是另建存储</text>
+  <text x="186" y="460" font-size="10.5" fill="#64748b">键：SessionId</text>
+  <text x="186" y="488" font-size="10.5" fill="#991b1b">会话结束后还要 → 选错作用域了</text>
+
+  <rect x="515" y="392" width="330" height="118" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="531" y="416" font-size="11" fill="#334155">项目索引、同步游标、项目知识索引</text>
+  <text x="531" y="438" font-size="10.5" fill="#64748b">home 域 + 规范化路径键</text>
+  <text x="531" y="460" font-size="10.5" fill="#64748b">或项目内文件（用户可读时）</text>
+  <text x="531" y="488" font-size="10.5" fill="#991b1b">workspaceId 会随删除重加变化</text>
+
+  <rect x="860" y="392" width="310" height="118" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="876" y="416" font-size="11" fill="#334155">偏好、跨项目经验、账号设置</text>
+  <text x="876" y="438" font-size="10.5" fill="#64748b">home 域单例 / Config.volatile()</text>
+  <text x="876" y="460" font-size="10.5" fill="#64748b">秘密：CredentialRef</text>
+  <text x="876" y="488" font-size="10.5" fill="#166534">换 home 不带走；需要就自己做导出</text>
+
+  <!-- derived -->
+  <rect x="30" y="524" width="130" height="108" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="95" y="554" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">派生</text>
+  <text x="95" y="574" text-anchor="middle" font-size="10" fill="#475569">可重建，可丢弃</text>
+  <text x="95" y="594" text-anchor="middle" font-size="9.5" fill="#64748b">丢了能重算</text>
+
+  <rect x="170" y="524" width="330" height="108" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="186" y="548" font-size="11" fill="#334155">会话投影、上下文缓存</text>
+  <text x="186" y="570" font-size="10.5" fill="#64748b">从日志 fold；stateSchema 校验</text>
+  <text x="186" y="592" font-size="10.5" fill="#64748b">持久缓存只是加速，不是真相</text>
+
+  <rect x="515" y="524" width="330" height="108" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="531" y="548" font-size="11" fill="#334155">文件索引、向量、摘要</text>
+  <text x="531" y="570" font-size="10.5" fill="#64748b">键：路径 + 内容哈希/版本</text>
+  <text x="531" y="592" font-size="10.5" fill="#64748b">用户改文件后必须失效</text>
+
+  <rect x="860" y="524" width="310" height="108" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="876" y="548" font-size="11" fill="#334155">模型目录、跨项目缓存</text>
+  <text x="876" y="570" font-size="10.5" fill="#64748b">$DSH_HOME/cache 或 per-record 域</text>
+  <text x="876" y="592" font-size="10.5" fill="#64748b">可丢弃；写坏一条不影响启动</text>
+
+  <!-- footer key rules -->
+  <rect x="30" y="646" width="1140" height="38" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="48" y="670" fill="#3730a3" font-size="11" font-weight="700">键：规范化路径 &gt; 项目内标记文件 &gt; workspaceId（短命）。目录移动后路径键会变孤儿，这是 home 存储的代价。</text>
+</svg>

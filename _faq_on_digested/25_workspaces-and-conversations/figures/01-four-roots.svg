@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" width="1200" height="620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>四个“根”：进程目录、登记路径、会话 cwd、数据 home</title>
+  <desc>把“根”拆成四个不同的东西：process.cwd() 只在创建会话缺省和沙箱兜底时出现；workspace.path 是持久记录里的规范化目录；header.cwd 是会话不可变的目录，同时是入组门票和沙箱边界；$DSH_HOME 才是侧栏记录与日志的存放处。左侧分组由第二、第三列共同决定，与第一列无关。</desc>
+
+  <rect width="1200" height="620" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">“根”有四个，只有两个跟左侧分组有关</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">启动目录（进程 cwd）不是分组键；分组键是 workspace 记录，以及它账户里登记的会话</text>
+
+  <!-- ① process cwd -->
+  <rect x="30" y="86" width="270" height="392" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="165" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">① 进程根</text>
+  <text x="165" y="134" text-anchor="middle" font-size="11" fill="#7f1d1d" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">process.cwd()</text>
+  <line x1="52" y1="148" x2="278" y2="148" stroke="#fecaca"/>
+  <text x="52" y="172" font-size="11" font-weight="700" fill="#991b1b">它是什么</text>
+  <text x="52" y="192" fill="#334155">启动 dsh 的那个目录</text>
+  <text x="52" y="210" fill="#64748b" font-size="11">同一台机器，从不同目录启动</text>
+  <text x="52" y="226" fill="#64748b" font-size="11">会得到不同的 cwd</text>
+
+  <text x="52" y="256" font-size="11" font-weight="700" fill="#991b1b">它只出现在三处</text>
+  <text x="52" y="278" fill="#334155">· 创建会话既没给 workspaceId</text>
+  <text x="64" y="294" fill="#334155">也没给 cwd 时的默认值</text>
+  <text x="64" y="310" fill="#64748b" font-size="10.5">session-controller/src/index.ts:163</text>
+  <text x="52" y="332" fill="#334155">· 沙箱 workspaceRoot 的兜底</text>
+  <text x="64" y="348" fill="#64748b" font-size="10.5">base/cordis.patch.yml:247</text>
+  <text x="52" y="370" fill="#334155">· headless 会话的全部目录</text>
+  <text x="64" y="386" fill="#64748b" font-size="10.5">headless 组合里没有 workspace 插件</text>
+
+  <rect x="52" y="406" width="226" height="52" rx="8" fill="#fee2e2" stroke="#f87171"/>
+  <text x="165" y="426" text-anchor="middle" font-weight="700" fill="#991b1b">它不决定左侧分组</text>
+  <text x="165" y="446" text-anchor="middle" font-size="10.5" fill="#7f1d1d">换目录启动，侧栏一个像素都不变</text>
+
+  <!-- ② workspace path -->
+  <rect x="320" y="86" width="270" height="392" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="455" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">② 登记根</text>
+  <text x="455" y="134" text-anchor="middle" font-size="11" fill="#1e3a8a" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">workspace.path</text>
+  <line x1="342" y1="148" x2="568" y2="148" stroke="#bfdbfe"/>
+  <text x="342" y="172" font-size="11" font-weight="700" fill="#1e40af">它是什么</text>
+  <text x="342" y="192" fill="#334155">一条持久记录的字段</text>
+  <text x="342" y="210" fill="#64748b" font-size="11">存在 $DSH_HOME/storages/workspace.json</text>
+
+  <text x="342" y="240" font-size="11" font-weight="700" fill="#1e40af">两条硬规则</text>
+  <text x="342" y="262" fill="#334155">· 必须是 realpath 规范化后的</text>
+  <text x="354" y="278" fill="#334155">绝对路径；一个路径一条记录</text>
+  <text x="342" y="298" fill="#334155">· 建会话时它成为会话的 cwd</text>
+  <text x="354" y="314" fill="#64748b" font-size="10.5">session-controller/src/commands.ts:124</text>
+
+  <text x="342" y="344" font-size="11" font-weight="700" fill="#1e40af">它回答什么</text>
+  <text x="342" y="366" fill="#334155">“左侧这一节属于哪个目录”</text>
+  <text x="342" y="384" fill="#64748b" font-size="11">标题只是显示名，路径才是身份</text>
+  <text x="342" y="402" fill="#64748b" font-size="11">删除记录不动目录，再加回来是新记录</text>
+
+  <rect x="342" y="420" width="226" height="40" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="455" y="445" text-anchor="middle" font-weight="700" fill="#1e40af">侧栏一节 = 一条记录</text>
+
+  <!-- ③ session cwd -->
+  <rect x="610" y="86" width="270" height="392" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="745" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">③ 会话根</text>
+  <text x="745" y="134" text-anchor="middle" font-size="11" fill="#14532d" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">SessionHeader.cwd</text>
+  <line x1="632" y1="148" x2="858" y2="148" stroke="#bbf7d0"/>
+  <text x="632" y="172" font-size="11" font-weight="700" fill="#166534">它是什么</text>
+  <text x="632" y="192" fill="#334155">会话创建时写进日志头的目录</text>
+  <text x="632" y="210" fill="#64748b" font-size="11">之后不可变；不随会话移动</text>
+
+  <text x="632" y="240" font-size="11" font-weight="700" fill="#166534">它同时是三样东西</text>
+  <text x="632" y="262" fill="#334155">· 入组门票：realpath 必须与</text>
+  <text x="644" y="278" fill="#334155">workspace.path 字符串相等</text>
+  <text x="644" y="294" fill="#64748b" font-size="10.5">workspace/src/entity.ts:110</text>
+  <text x="632" y="316" fill="#334155">· 工具执行目录：模型看到的工作区</text>
+  <text x="632" y="338" fill="#334155">· 沙箱可写边界：workspace-write</text>
+  <text x="644" y="354" fill="#64748b" font-size="10.5">sandbox-policy/src/index.ts:168</text>
+
+  <rect x="632" y="376" width="226" height="76" rx="8" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="745" y="398" text-anchor="middle" font-weight="700" fill="#166534">一个目录，多种命运</text>
+  <text x="745" y="418" text-anchor="middle" font-size="10.5" fill="#166534">同样 cwd 的会话，可以一半在组里、</text>
+  <text x="745" y="436" text-anchor="middle" font-size="10.5" fill="#166534">一半在 Ungrouped（见 04 篇实测）</text>
+
+  <!-- ④ home -->
+  <rect x="900" y="86" width="270" height="392" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="1035" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">④ 数据根</text>
+  <text x="1035" y="134" text-anchor="middle" font-size="11" fill="#78350f" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">$DSH_HOME</text>
+  <line x1="922" y1="148" x2="1148" y2="148" stroke="#fde68a"/>
+  <text x="922" y="172" font-size="11" font-weight="700" fill="#92400e">它里面有什么</text>
+  <text x="922" y="194" fill="#334155" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">storages/workspace.json</text>
+  <text x="922" y="212" fill="#64748b" font-size="10.5">登记记录 + 顺序 + 归档/置顶集合</text>
+  <text x="922" y="236" fill="#334155" font-size="11" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">sessions/--&lt;cwd&gt;--/&lt;id&gt;/</text>
+  <text x="922" y="254" fill="#64748b" font-size="10.5">每个会话一份日志，按 cwd 分区</text>
+
+  <text x="922" y="284" font-size="11" font-weight="700" fill="#92400e">它决定边界</text>
+  <text x="922" y="306" fill="#334155">换一个 home = 换一整套侧栏</text>
+  <text x="922" y="324" fill="#334155">同一个 home 的窗口共享同一份记录</text>
+  <text x="922" y="342" fill="#64748b" font-size="11">记录不跟进程走，也不跟工作目录走</text>
+
+  <rect x="922" y="360" width="226" height="94" rx="8" fill="#fef3c7" stroke="#fbbf24"/>
+  <text x="1035" y="382" text-anchor="middle" font-weight="700" fill="#92400e">首次启动的默认工作区</text>
+  <text x="1035" y="402" text-anchor="middle" font-size="10.5" fill="#78350f">&lt;Documents&gt;/deepseek-harness/</text>
+  <text x="1035" y="420" text-anchor="middle" font-size="10.5" fill="#78350f">default-workspace</text>
+  <text x="1035" y="440" text-anchor="middle" font-size="10.5" fill="#78350f">同样不是启动目录</text>
+
+  <!-- footer flow -->
+  <rect x="30" y="496" width="1140" height="98" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="52" y="520" font-size="11" font-weight="700" fill="#334155">三条实际发生的路径</text>
+  <text x="52" y="544" fill="#1e40af">GUI 新建会话：</text>
+  <text x="150" y="544" fill="#334155">选中的 ②（workspace.path） → 写进 ③（header.cwd） → 成为沙箱边界 → 再登记进账户</text>
+  <text x="52" y="566" fill="#991b1b">headless / SDK / 插件测试：</text>
+  <text x="218" y="566" fill="#334155">没有 workspace 记录，①（进程 cwd）或显式 cwd 直接写进 ③ → 之后一直没人认领 → 出现在 Ungrouped</text>
+  <text x="52" y="588" fill="#6b7280">左侧栏目：把 ②（登记记录）和它账户里的 ③ 画成一节；① 与 ④ 都只间接出现。</text>
+</svg>

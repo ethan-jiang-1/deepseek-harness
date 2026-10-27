@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>左侧栏目的解剖：哪些来自 Host，哪些是 Client 现算</title>
+  <desc>左侧栏目的结构示意：工作区节按登记顺序排列，节内会话按账户顺序（或最近更新）排列；置顶行领跑，空白会话只显示当前那一个，归档行按筛选灰显；末尾的未分组桶是 Client 用“不在任何账户里”的可见会话推导出来的，没有 Host 记录，也没有工作区菜单。</desc>
+
+  <rect width="1200" height="720" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">左侧栏目解剖：Host 给记录，Client 算分组</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">结构示意，不逐像素复刻；颜色只表示“这一行的数据从哪来”</text>
+
+  <!-- mock sidebar -->
+  <rect x="40" y="84" width="470" height="544" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="60" y="112" font-size="12" font-weight="700" fill="#334155">工作区</text>
+  <rect x="400" y="98" width="90" height="20" rx="10" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="445" y="112" text-anchor="middle" font-size="10" fill="#64748b">搜索 / 视图</text>
+
+  <!-- workspace A -->
+  <rect x="56" y="128" width="438" height="34" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="72" y="150" font-size="12" fill="#1e40af">▾</text>
+  <path d="M88 141 h8 l3 3 h11 v10 h-22 z" fill="#93c5fd"/>
+  <text x="112" y="150" font-size="12" fill="#1e40af">deepseek-harness</text>
+  <text x="470" y="150" text-anchor="end" font-size="10" fill="#64748b">12</text>
+
+  <!-- pinned row -->
+  <rect x="72" y="168" width="422" height="30" rx="5" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="86" y="176" width="26" height="14" rx="7" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="99" y="186" text-anchor="middle" font-size="8.5" fill="#1e40af">PIN</text>
+  <text x="120" y="188" font-size="11" fill="#0f172a">修 snapshot 的 flaky</text>
+  <text x="486" y="188" text-anchor="end" font-size="9.5" fill="#64748b">置顶</text>
+
+  <!-- current blank -->
+  <rect x="72" y="204" width="422" height="30" rx="5" fill="#f0fdf4" stroke="#86efac" stroke-dasharray="4 3"/>
+  <text x="86" y="224" font-size="11" fill="#166534">新会话</text>
+  <text x="486" y="224" text-anchor="end" font-size="9.5" fill="#166534">当前空白会话</text>
+
+  <!-- ordinary running -->
+  <rect x="72" y="240" width="422" height="30" rx="5" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="86" y="260" font-size="11" fill="#0f172a">●  读 workspace 源码</text>
+  <text x="486" y="260" text-anchor="end" font-size="9.5" fill="#64748b">运行中</text>
+
+  <!-- archived -->
+  <rect x="72" y="276" width="422" height="30" rx="5" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="86" y="296" font-size="11" fill="#94a3b8">旧日志迁移</text>
+  <text x="486" y="296" text-anchor="end" font-size="9.5" fill="#94a3b8">已归档（灰显）</text>
+
+  <!-- workspace B collapsed -->
+  <rect x="56" y="318" width="438" height="34" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="72" y="340" font-size="12" fill="#334155">▸</text>
+  <path d="M88 331 h8 l3 3 h11 v10 h-22 z" fill="#cbd5e1"/>
+  <text x="112" y="340" font-size="12" fill="#334155">ai_dsh_assitant</text>
+  <text x="470" y="340" text-anchor="end" font-size="10" fill="#64748b">9</text>
+
+  <!-- workspace C -->
+  <rect x="56" y="358" width="438" height="34" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
+  <text x="72" y="380" font-size="12" fill="#334155">▸</text>
+  <path d="M88 371 h8 l3 3 h11 v10 h-22 z" fill="#cbd5e1"/>
+  <text x="112" y="380" font-size="12" fill="#334155">ai_tool_deepresearch</text>
+  <text x="470" y="380" text-anchor="end" font-size="10" fill="#64748b">7</text>
+
+  <!-- ungrouped -->
+  <rect x="56" y="400" width="438" height="34" rx="6" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="72" y="422" font-size="12" font-weight="700" fill="#92400e">▾  未分组 / Ungrouped</text>
+  <text x="470" y="422" text-anchor="end" font-size="10" fill="#92400e">12</text>
+  <rect x="72" y="440" width="422" height="30" rx="5" fill="#ffffff" stroke="#fde68a"/>
+  <text x="86" y="460" font-size="11" fill="#0f172a">插件测试残留</text>
+  <rect x="72" y="476" width="422" height="30" rx="5" fill="#ffffff" stroke="#fde68a"/>
+  <text x="86" y="496" font-size="11" fill="#0f172a">headless 跑的一次</text>
+  <text x="86" y="526" font-size="10.5" fill="#9a3412">这一节没有文件夹图标、没有“…”菜单、没有悬浮卡片</text>
+  <text x="86" y="546" font-size="10.5" fill="#9a3412">右上角“＋”是惰性的：它不知道往哪个目录建</text>
+
+  <line x1="500" y1="112" x2="500" y2="612" stroke="#e2e8f0" stroke-dasharray="4 4"/>
+  <text x="273" y="606" text-anchor="middle" font-size="10" fill="#94a3b8">Host 数据 + Client 推导</text>
+
+  <!-- legend right -->
+  <text x="540" y="104" font-size="13" font-weight="700" fill="#334155">每一行的来源</text>
+
+  <rect x="540" y="118" width="14" height="14" rx="3" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="566" y="130" font-weight="700" fill="#1e40af">蓝色 = Host 的 workspace 记录</text>
+  <text x="566" y="150" fill="#334155">标题、路径、创建时间来自 workspace.json。</text>
+  <text x="566" y="168" fill="#334155">节与节的顺序就是 workspaceIds 数组。</text>
+  <text x="566" y="186" fill="#64748b" font-size="10.5">packages/workspace/workspace/src/spec.ts:24</text>
+
+  <rect x="540" y="208" width="14" height="14" rx="3" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="566" y="220" font-weight="700" fill="#166534">绿色 = 账户数组 sessionIds 的顺序</text>
+  <text x="566" y="240" fill="#334155">默认按“最近更新”排；手动排序用浏览器本地顺序，</text>
+  <text x="566" y="258" fill="#334155">初值取账户顺序；拖拽只改本地，不写 Host。</text>
+  <text x="566" y="276" fill="#64748b" font-size="10.5">workspace/src/entity.ts:110 · ui-workspace/src/client/tree.ts:334</text>
+
+  <rect x="540" y="298" width="14" height="14" rx="3" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="566" y="310" font-weight="700" fill="#92400e">琥珀 = Client 推导的兜底桶</text>
+  <text x="566" y="330" fill="#334155">“不在任何 sessionIds 里”的可见会话，</text>
+  <text x="566" y="348" fill="#334155">按浏览器本地顺序排在最后；Host 没有这条记录。</text>
+  <text x="566" y="366" fill="#64748b" font-size="10.5">ui-workspace/src/client/tree.ts:18（UNGROUPED_KEY = ''）</text>
+
+  <rect x="540" y="388" width="14" height="14" rx="3" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="566" y="400" font-weight="700" fill="#475569">灰色 = 纯浏览器状态</text>
+  <text x="566" y="420" fill="#334155">展开哪些节、手动顺序、按更新排序、归档筛选、</text>
+  <text x="566" y="438" fill="#334155">分组方式（按工作区 / 工作区树 / 单列表）都只在本机。</text>
+  <text x="566" y="456" fill="#64748b" font-size="10.5">ui-workspace/src/client/stores.ts（defineStore 持久化）</text>
+
+  <rect x="540" y="478" width="14" height="14" rx="3" fill="#fee2e2" stroke="#f87171"/>
+  <text x="566" y="490" font-weight="700" fill="#991b1b">红色 = 压根不在这个列表里</text>
+  <text x="566" y="510" fill="#334155">subagent 子会话、未选中的空白会话被挡掉；</text>
+  <text x="566" y="528" fill="#334155">没有 cwd 的冷会话连列表都不进。</text>
+  <text x="566" y="546" fill="#64748b" font-size="10.5">ui-workspace/src/client/tree.ts:244 · session-controller/src/list.ts:144</text>
+
+  <rect x="540" y="556" width="620" height="96" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="562" y="590" font-size="12" font-weight="700" fill="#334155">为什么 Ungrouped 会突然出现</text>
+  <text x="562" y="610" fill="#334155">不因为目录变了，而因为账户里没有它：删过工作区、</text>
+  <text x="562" y="628" fill="#334155">bootstrap 之后用 headless/SDK 建了会话、或 cwd 已解析不到。</text>
+  <text x="562" y="646" fill="#64748b" font-size="10.5">它也不是回收站：里面的会话照样能打开、继续、分叉、归档。</text>
+
+  <!-- bottom -->
+  <rect x="40" y="656" width="1120" height="48" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="60" y="678" fill="#3730a3" font-weight="700">一句话：Host 只交两样东西——登记记录 + follow 增量；分组、Ungrouped、行状态、展开与排序，全部在 Client 现算。</text>
+  <text x="60" y="696" fill="#4338ca" font-size="11">所以“左侧跟启动目录强相关”这个直觉，在数据流里找不到接口：启动目录从未进入这条投影。</text>
+</svg>

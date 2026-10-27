@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="1200" height="640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>会话进入工作区的四道门，以及唯一的门票</title>
+  <desc>会话只有四种方式进入工作区账户：带 workspaceId 新建、从父会话分叉、首次启动的历史 bootstrap、外部集成显式 attach。四者都要经过同一道校验：日志头的 cwd 经 realpath 后必须等于工作区路径。仅仅把会话建在同一个目录下，不是一道门。</desc>
+
+  <rect width="1200" height="640" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">入组只有四道门，门票只有一张</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">“会话的目录和某个工作区一样”不是门；门是显式写进账户的那个动作</text>
+
+  <!-- doors -->
+  <text x="40" y="92" font-size="12" font-weight="700" fill="#334155">四道门</text>
+
+  <rect x="40" y="104" width="286" height="76" rx="9" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="56" y="126" font-weight="700" fill="#1e40af">① GUI 新建（带 workspaceId）</text>
+  <text x="56" y="146" fill="#334155" font-size="11">侧栏“＋”/新会话：请求带 workspaceId，</text>
+  <text x="56" y="163" fill="#334155" font-size="11">Host 把 workspace.path 写进 header.cwd。</text>
+
+  <rect x="40" y="192" width="286" height="76" rx="9" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="56" y="214" font-weight="700" fill="#1e40af">② 分叉（Fork）</text>
+  <text x="56" y="234" fill="#334155" font-size="11">子会话继承父的 cwd；父在某工作区，</text>
+  <text x="56" y="251" fill="#334155" font-size="11">子会话就 attach 到同一工作区。</text>
+
+  <rect x="40" y="280" width="286" height="76" rx="9" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="56" y="302" font-weight="700" fill="#1e40af">③ 首次启动的 bootstrap</text>
+  <text x="56" y="322" fill="#334155" font-size="11">历史日志按 cwd 分组，一目录一工作区，</text>
+  <text x="56" y="339" fill="#334155" font-size="11">只跑一次；之后不再自动收人。</text>
+
+  <rect x="40" y="368" width="286" height="76" rx="9" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="56" y="390" font-weight="700" fill="#1e40af">④ 外部集成显式 attach</text>
+  <text x="56" y="410" fill="#334155" font-size="11">例如 webhook 插件：先 create 工作区，</text>
+  <text x="56" y="427" fill="#334155" font-size="11">再把会话写进账户；协议由集成方负责。</text>
+
+  <defs>
+    <marker id="arr25b2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#60a5fa"/></marker>
+  </defs>
+  <path d="M330 142 L360 142" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arr25b2)"/>
+  <path d="M330 230 L360 230" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arr25b2)"/>
+  <path d="M330 318 L360 318" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arr25b2)"/>
+  <path d="M330 406 L360 406" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arr25b2)"/>
+
+  <!-- gate -->
+  <rect x="366" y="104" width="250" height="340" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="491" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">attach 校验</text>
+  <text x="491" y="150" text-anchor="middle" font-size="10.5" fill="#14532d">workspace/src/entity.ts:110</text>
+  <line x1="384" y1="162" x2="598" y2="162" stroke="#bbf7d0"/>
+  <text x="384" y="186" font-size="11" fill="#166534">1  会话必须存在，且能读到日志头</text>
+  <text x="384" y="212" font-size="11" fill="#166534">2  日志头必须有 cwd</text>
+  <text x="384" y="238" font-size="11" fill="#166534">3  cwd 经 realpath 规范化</text>
+  <text x="384" y="264" font-size="11" fill="#166534">4  规范化结果必须是现存目录</text>
+  <text x="384" y="290" font-size="11" fill="#166534">5  必须与 workspace.path 相等</text>
+  <rect x="384" y="308" width="214" height="46" rx="7" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="491" y="328" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">五步全过，才写账户</text>
+  <text x="491" y="346" text-anchor="middle" font-size="10.5" fill="#166534">前插到 sessionIds 头部</text>
+  <text x="384" y="378" font-size="10.5" fill="#166534">失败即拒绝：未知会话、无 cwd、</text>
+  <text x="384" y="394" font-size="10.5" fill="#166534">目录不在、不是目录、路径不等。</text>
+  <text x="384" y="418" font-size="10.5" fill="#14532d">这里只写账户，不改会话的 cwd。</text>
+
+  <!-- record -->
+  <rect x="656" y="104" width="504" height="340" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="676" y="130" font-size="13" font-weight="700" fill="#334155">工作区记录（workspace.json 里的一个对象）</text>
+  <line x1="676" y1="142" x2="1140" y2="142" stroke="#e2e8f0"/>
+  <text x="676" y="166" font-size="11" fill="#1e40af" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">id: 1ae56e1b-…（生成的 uuid，永不是路径）</text>
+  <text x="676" y="188" font-size="11" fill="#1e40af" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">path: /Users/…/deepseek-harness</text>
+  <text x="676" y="210" font-size="11" fill="#1e40af" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">title: deepseek-harness</text>
+  <text x="676" y="232" font-size="11" fill="#1e40af" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">createdAt / updatedAt: ISO-8601</text>
+  <text x="676" y="256" font-size="11" fill="#166534" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">sessionIds: [ s9, s8, s7, … ]</text>
+  <text x="676" y="276" font-size="10.5" fill="#64748b">账户即真相：数组成员就是成员；数组顺序就是默认显示顺序。</text>
+
+  <!-- array boxes -->
+  <rect x="676" y="292" width="64" height="34" rx="6" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="708" y="314" text-anchor="middle" font-size="11" fill="#166534">s9 新</text>
+  <rect x="748" y="292" width="64" height="34" rx="6" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="780" y="314" text-anchor="middle" font-size="11" fill="#166534">s8</text>
+  <rect x="820" y="292" width="64" height="34" rx="6" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="852" y="314" text-anchor="middle" font-size="11" fill="#166534">s7</text>
+  <text x="900" y="314" font-size="11" fill="#64748b">… 手动排序只动这个数组</text>
+
+  <text x="676" y="356" font-size="10.5" fill="#64748b">读取时还会过滤：目录彻底丢失（ENOENT）的成员保留账户；</text>
+  <text x="676" y="374" font-size="10.5" fill="#64748b">cwd 不合法或与 path 不等的成员先在读取时被滤掉，</text>
+  <text x="676" y="392" font-size="10.5" fill="#64748b">下一次成功写入时再从盘上剪掉。</text>
+  <text x="676" y="416" font-size="10.5" fill="#991b1b">注意：过滤只影响“显示为成员”，不会把会话送给别的工作区。</text>
+
+  <!-- not a door -->
+  <rect x="40" y="466" width="540" height="146" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="60" y="492" font-size="12" font-weight="700" fill="#991b1b">不是门：目录碰巧一样</text>
+  <text x="60" y="516" fill="#334155" font-size="11">用 headless、SDK、插件测试直接 create 会话时，cwd 可以正好等于</text>
+  <text x="60" y="534" fill="#334155" font-size="11">某个工作区的 path，但没有任何人调用 attach —— 它仍然不在账户里。</text>
+  <text x="60" y="558" fill="#991b1b" font-size="11">宿主不会在启动或刷新时“按目录重新收编”已有会话：bootstrap 一生只跑一次。</text>
+  <text x="60" y="584" fill="#64748b" font-size="10.5">本机实测：目录 /Users/bowhead/deepseek-harness 已有工作区，仍有 31 条主会话未入组。</text>
+
+  <!-- proof -->
+  <rect x="600" y="466" width="560" height="146" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="620" y="492" font-size="12" font-weight="700" fill="#92400e">一条可核对的因果关系</text>
+  <text x="620" y="516" fill="#334155" font-size="11">同一个 cwd 下出现“组里一半、Ungrouped 一半”，恰好证明：</text>
+  <text x="620" y="534" fill="#334155" font-size="11">分组键不是目录，而是“创建时有没有走那道门”。</text>
+  <text x="620" y="560" fill="#92400e" font-size="11">所以修数据的手段也不同：不能靠“重启扫一遍目录”，只能显式 attach，</text>
+  <text x="620" y="578" fill="#92400e" font-size="11">或者用新的 home 从干净状态重建（见 06 篇）。</text>
+</svg>
