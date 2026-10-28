@@ -44,7 +44,6 @@ _faq_on_digested/
 |------|------|--------|
 | 01 | [DSH 的目录为什么这样组织，应该怎样读？](./01_repository-organization/question.md) | [目录设计总模型](./01_repository-organization/answer.md) |
 | 02 | [DSH 所谓 Spec-Driven Development 大概怎样运作？](./02_spec-driven-development/question.md) | [分层规格、生命周期与可执行验收](./02_spec-driven-development/answer.md) |
-| 03 | [多个模型 vendor 应怎样接入 DSH？](./03_model-vendors/question.md) | [配置、adapter 与自动路由的选择](./03_model-vendors/answer.md) |
 | 04 | [DSH 根入口文档的静态设计：这张地图是怎么画出来的？](./04_root-entry-doc-design/question.md) | [根入口分流、tier 路由、预算门禁与可迁移原则](./04_root-entry-doc-design/answer.md) |
 | 05 | [DSH 跑起来之后，根入口文档是怎么被消费的？](./05_root-entry-doc-navigation/question.md) | [指令注入、工具导航、按需加载与运行时预算](./05_root-entry-doc-navigation/answer.md) |
 | 06 | [一次变更从意图到归位，经过哪些载体、哪些段强制？](./06_change-landing-path/question.md) | [docs 是当前合同层；意图 / 决策 / 计划 / 实现 / 合同 / 行为证据 / 交付决定 / review 的落位路径与强制边界](./06_change-landing-path/answer.md) |
@@ -69,6 +68,8 @@ _faq_on_digested/
 | 25 | [Workspace 到底是不是“启动时的那个目录根”？左侧会话为什么跟它绑定？](./25_workspaces-and-conversations/question.md) | [Workspace 是一条登记记录而不是目录：会话靠 attach 入组、目录只是门票、Ungrouped 是 Client 的减法；六篇正文 + 五张 SVG，附本机 31 个工作区 / 58 条未登记主会话的实测与处置清单](./25_workspaces-and-conversations/answer.md) |
 | 26 | [插件的数据该放哪？DSH 的数据家（平面）、作用域与“产物”到底怎么分？](./26_plugin-data-model/00-question.md) | [advisor 入口：先定“谁拥有、关于谁、活多久”，再选五种承诺之一；原生/外部分级（N0 核心/N1 随包插件/N2 experimental/E1 外部插件/E2 外部服务）+ 五个家 + 只读层 + 三个边界；同一份数据给四种都成立的解法；新增 DSH 原生数据演进史（12 簇/22 事件）、外部插件 97 候选与 15 个深读（只作参考）、10 个原生优先参考架构；含无插件数据根、无 session 删除、附件无 GC、profile≠账号、客户端两层等 v2 修正；社区样本为源码阅读、未安装；含 00-index 决策画布、十条原则与 archetype 索引（详细一分钟版见 00-answer）](./26_plugin-data-model/00-index.md) |
 | 27 | [Agent 跑到一半，workflow 还是 Agent Team？运行时编排该怎么选？](./27_runtime-orchestration-choice/question.md) | [五个岔口 + 三把尺子 + 一张诊断表：选择不是挑工具，而是「循环归谁 × 承诺多深」；01 要不要交出去、02 一把还是一批、03 跨轮与 fresh、04 持续协作、05 谁在等，另加 06 症状与迁移、07 为什么不是 DAG 引擎](./27_runtime-orchestration-choice/answer.md) |
+
+> 03 为本地多 vendor 研究笔记，未随仓库发布；编号保持不变，便于与历史引用对齐。
 
 ## 引用规范
 

@@ -45,4 +45,4 @@
 
 **模型契约本身是「按供给记录」的**，不是源码分析能验证的：note 写明「The model contract is recorded as supplied」。验证路径是真实 API e2e `packages/llm/llm-deepseek/tests/adapter.e2e.ts:52`-`:71`（0.2.0 线重写：`it.skipIf(!IN_HISTORY_MODEL).each([false, true])` 用 `DEEPSEEK_IN_HISTORY_MODEL` 指定的模型对**声明与未声明**两种能力状态各跑一轮三段对话——改写 prompt、追加为后继 system 消息、空 prompt 清空——断言回复内容按各自身份切换且历史不可变；旧版「比较 replace/in-history 两种 `cacheReadTokens`」的断言已不在这条测试里，缓存收益由模型契约侧记录，源码不再断言）；变量未设时跳过。
 
-对多 vendor 中转的实际含义见 [`../../_faq_on_digested/03_model-vendors/DSH_systemPromptUpdate能力面.md`](../../_faq_on_digested/03_model-vendors/DSH_systemPromptUpdate能力面.md)：中转 route 无法声明该能力，代理若重写或重排 system 消息会**静默**破坏替换语义。
+多 vendor 中转下，route 无法声明该能力；代理若重写或重排 system 消息，会**静默**破坏替换语义。
