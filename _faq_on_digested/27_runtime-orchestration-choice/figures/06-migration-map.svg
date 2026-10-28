@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>迁移地图：什么时候从哪个原语换到哪个，以及每次迁移丢什么</title>
+  <desc>实线是升级：自己做 → subagent（占上下文）、subagent → workflow（数量变多）、workflow → team（要协作）、subagent → goal（要跨轮）、goal → ralph（要 fresh）。虚线是降级或重开：team 回到 workflow（规模变大）、team 直接重开（工具面错了）。底部说明每次迁移都会丢一样东西——上下文、协调状态或工具面；纪律是先迁移循环，再迁移记忆。</desc>
+  <defs>
+    <marker id="s1" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#475569"/>
+    </marker>
+    <marker id="s2" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="560" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">迁移地图</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">实线是升级或换挡，虚线是降级或重开；每条边都有一条对应的「你丢掉什么」</text>
+
+  <rect x="60" y="110" width="160" height="50" rx="10" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="140" y="140" text-anchor="middle" font-size="12" fill="#1e3a8a">自己做</text>
+
+  <rect x="280" y="110" width="160" height="50" rx="10" fill="#ffffff" stroke="#5eead4"/>
+  <text x="360" y="140" text-anchor="middle" font-size="12" fill="#0f766e">subagent</text>
+
+  <rect x="500" y="110" width="160" height="50" rx="10" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="580" y="140" text-anchor="middle" font-size="12" fill="#92400e">workflow</text>
+
+  <rect x="720" y="110" width="160" height="50" rx="10" fill="#ffffff" stroke="#a78bfa"/>
+  <text x="800" y="140" text-anchor="middle" font-size="12" fill="#5b21b6">team</text>
+
+  <rect x="280" y="270" width="160" height="50" rx="10" fill="#ffffff" stroke="#86efac"/>
+  <text x="360" y="300" text-anchor="middle" font-size="12" fill="#15803d">goal</text>
+
+  <rect x="500" y="270" width="160" height="50" rx="10" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="580" y="300" text-anchor="middle" font-size="12" fill="#92400e">ralph</text>
+
+  <rect x="920" y="190" width="160" height="50" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="5 4"/>
+  <text x="1000" y="220" text-anchor="middle" font-size="12" fill="#334155">重开 · 换 profile</text>
+
+  <line x1="222" y1="135" x2="276" y2="135" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="249" y="124" text-anchor="middle" font-size="9.5" fill="#475569">占上下文</text>
+
+  <line x1="442" y1="135" x2="496" y2="135" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="469" y="124" text-anchor="middle" font-size="9.5" fill="#475569">数量变多</text>
+
+  <line x1="662" y1="135" x2="716" y2="135" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="689" y="124" text-anchor="middle" font-size="9.5" fill="#475569">要协作</text>
+
+  <rect x="60" y="270" width="160" height="50" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="5 4"/>
+  <text x="140" y="300" text-anchor="middle" font-size="12" fill="#475569">继续</text>
+  <line x1="222" y1="295" x2="276" y2="295" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="249" y="284" text-anchor="middle" font-size="9.5" fill="#475569">要跨轮</text>
+
+  <line x1="442" y1="295" x2="496" y2="295" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="469" y="284" text-anchor="middle" font-size="9.5" fill="#475569">要 fresh</text>
+
+  <path d="M800,162 C800,232 660,232 660,162" fill="none" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s2)"/>
+  <text x="730" y="252" text-anchor="middle" font-size="9.5" fill="#b91c1c">降级：规模变大 / 不需要协作</text>
+
+  <line x1="882" y1="150" x2="916" y2="196" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s2)"/>
+  <text x="930" y="168" font-size="9.5" fill="#b91c1c">工具面错了</text>
+
+  <line x1="60" y1="360" x2="1160" y2="360" stroke="#e2e8f0"/>
+
+  <text x="60" y="392" font-size="12" font-weight="700" fill="#0f172a">读法</text>
+  <line x1="60" y1="414" x2="106" y2="414" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="116" y="418" font-size="10.5" fill="#475569">升级 / 换挡：承诺加深</text>
+  <line x1="260" y1="414" x2="306" y2="414" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s2)"/>
+  <text x="316" y="418" font-size="10.5" fill="#b91c1c">降级或重开</text>
+
+  <text x="60" y="448" font-size="10.5" fill="#475569">每次迁移都会丢一样东西：上下文（fresh 换掉历史）、协调状态（离开 Team 就没有任务板）、工具面（装或卸 bundle 改变选择）。</text>
+  <text x="60" y="474" font-size="10.5" fill="#475569">所以纪律是：先迁移「循环」，再迁移「记忆」——如果循环还留在原地，换原语只是换了个壳。</text>
+  <text x="60" y="500" font-size="10.5" fill="#94a3b8">「重开」不是失败：当工具面已经错了（装了 Team 才发现要 subagent），改 profile 比在会话里绕更便宜。</text>
+
+  <text x="600" y="536" text-anchor="middle" font-size="10.5" fill="#64748b">迁移的判据不是一个更漂亮的名字，而是「这次迁移只该有一个理由」</text>
+</svg>

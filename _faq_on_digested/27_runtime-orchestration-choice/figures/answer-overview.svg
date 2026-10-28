@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>运行时编排的五个岔口：从最浅的承诺到最深的承诺</title>
+  <desc>左侧五张卡片按承诺深度排列：01 要不要交出去（自己做、subagent、fork，浅——一次委派）；02 一把还是一批（多次委派、workflow，较浅——一次运行）；03 这一轮结束了吗（继续、goal、ralph，较深——跨轮）；04 要不要有人一直在场（workflow 加人、Agent Team，深——换组合）；05 谁在等（前台、jobs、schedule，时间平面）。右侧是三把共用尺子：循环归谁、承诺多深、选择住在哪；底部是两篇横切：06 诊断与迁移、07 为什么不是 DAG 引擎。一句话：承诺序约等于能力序的反向，默认停在能完成工作的最浅一层。</desc>
+
+  <rect width="1200" height="620" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">五个岔口：从最浅的承诺，到最深的承诺</text>
+  <text x="600" y="60" text-anchor="middle" fill="#64748b">每个岔口都有两个以上真实候选；越往下承诺越深，回头越贵</text>
+
+  <rect x="40" y="84" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="40" y="84" width="6" height="86" rx="3" fill="#3b82f6"/>
+  <circle cx="78" cy="127" r="15" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="78" y="131" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">01</text>
+  <text x="104" y="116" font-size="13" font-weight="700" fill="#0f172a">要不要交出去</text>
+  <text x="104" y="138" fill="#475569">「我能自己做，但会占上下文」</text>
+  <text x="104" y="158" fill="#94a3b8" font-size="11">自己做 · subagent · subagent_fork</text>
+  <rect x="552" y="100" width="112" height="22" rx="11" fill="#eff6ff"/>
+  <text x="608" y="115" text-anchor="middle" font-size="10.5" fill="#1d4ed8">浅 · 一次委派</text>
+
+  <rect x="40" y="182" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="40" y="182" width="6" height="86" rx="3" fill="#0d9488"/>
+  <circle cx="78" cy="225" r="15" fill="#f0fdfa" stroke="#5eead4"/>
+  <text x="78" y="229" text-anchor="middle" font-size="11" font-weight="700" fill="#0f766e">02</text>
+  <text x="104" y="214" font-size="13" font-weight="700" fill="#0f172a">一把还是一批</text>
+  <text x="104" y="236" fill="#475569">「四十个文件都要审 / 一个迁移要铺开」</text>
+  <text x="104" y="256" fill="#94a3b8" font-size="11">多次 subagent · workflow（parallel / pipeline / 手写循环）</text>
+  <rect x="552" y="198" width="112" height="22" rx="11" fill="#f0fdfa"/>
+  <text x="608" y="213" text-anchor="middle" font-size="10.5" fill="#0f766e">较浅 · 一次运行</text>
+
+  <rect x="40" y="280" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="40" y="280" width="6" height="86" rx="3" fill="#d97706"/>
+  <circle cx="78" cy="323" r="15" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="78" y="327" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">03</text>
+  <text x="104" y="312" font-size="13" font-weight="700" fill="#0f172a">这一轮结束了吗</text>
+  <text x="104" y="334" fill="#475569">「修完一版还有下一版」</text>
+  <text x="104" y="354" fill="#94a3b8" font-size="11">继续 · goal（同会话跨轮） · ralph（每轮全新）</text>
+  <rect x="552" y="296" width="112" height="22" rx="11" fill="#fffbeb"/>
+  <text x="608" y="311" text-anchor="middle" font-size="10.5" fill="#b45309">较深 · 跨轮</text>
+
+  <rect x="40" y="378" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="40" y="378" width="6" height="86" rx="3" fill="#7c3aed"/>
+  <circle cx="78" cy="421" r="15" fill="#f5f3ff" stroke="#c4b5fd"/>
+  <text x="78" y="425" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">04</text>
+  <text x="104" y="410" font-size="13" font-weight="700" fill="#0f172a">要不要有人一直在场</text>
+  <text x="104" y="432" fill="#475569">「两个人得同时改、互相等」</text>
+  <text x="104" y="452" fill="#94a3b8" font-size="11">workflow 加人 · Agent Team（实验性）</text>
+  <rect x="552" y="394" width="112" height="22" rx="11" fill="#f5f3ff"/>
+  <text x="608" y="409" text-anchor="middle" font-size="10.5" fill="#6d28d9">深 · 换组合</text>
+
+  <rect x="40" y="476" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="40" y="476" width="6" height="86" rx="3" fill="#475569"/>
+  <circle cx="78" cy="519" r="15" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="78" y="523" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">05</text>
+  <text x="104" y="508" font-size="13" font-weight="700" fill="#0f172a">谁在等</text>
+  <text x="104" y="530" fill="#475569">「CI 要跑二十分钟，我不想干等」</text>
+  <text x="104" y="550" fill="#94a3b8" font-size="11">前台 · 后台 job · schedule</text>
+  <rect x="552" y="492" width="112" height="22" rx="11" fill="#f1f5f9"/>
+  <text x="608" y="507" text-anchor="middle" font-size="10.5" fill="#334155">时间平面</text>
+
+  <rect x="710" y="84" width="450" height="478" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="732" y="116" font-size="14" font-weight="700" fill="#0f172a">三把共用尺子</text>
+  <text x="732" y="138" font-size="11" fill="#64748b">任何两个原语能不能互换，用它们量一遍</text>
+
+  <text x="732" y="172" font-size="12" font-weight="700" fill="#1d4ed8">① 循环归谁</text>
+  <text x="732" y="192" fill="#475569" font-size="11">当前 Agent · 子 Agent · 脚本 · 固定脚本 · driver · Lead</text>
+  <text x="732" y="210" fill="#94a3b8" font-size="10.5">谁需要根据中间结果改主意，循环就该在谁手里</text>
+
+  <text x="732" y="244" font-size="12" font-weight="700" fill="#b45309">② 承诺多深</text>
+  <text x="732" y="264" fill="#475569" font-size="11">运行级可改 → 会话级可改 → 只能重开或重装</text>
+  <text x="732" y="282" fill="#94a3b8" font-size="10.5">可逆性不对称：选错 workflow 废一次运行，选错 team 换工具面</text>
+
+  <text x="732" y="316" font-size="12" font-weight="700" fill="#0f766e">③ 选择住在哪</text>
+  <text x="732" y="336" fill="#475569" font-size="11">没有中心路由；策略随工具插件走</text>
+  <text x="732" y="354" fill="#94a3b8" font-size="10.5">选择面 ≈ 安装面：少装一个工具，就少一种选择</text>
+
+  <line x1="732" y1="380" x2="1138" y2="380" stroke="#e2e8f0"/>
+
+  <text x="732" y="410" font-size="13" font-weight="700" fill="#0f172a">横切两篇</text>
+
+  <rect x="732" y="426" width="406" height="54" rx="8" fill="#fef2f2" stroke="#fecaca"/>
+  <text x="748" y="448" font-size="12" font-weight="700" fill="#b91c1c">06 · 跑歪了：症状、机制、迁移</text>
+  <text x="748" y="468" fill="#7f1d1d" font-size="10.5">七种症状 → 很可能选错了什么 → 往哪迁、迁移丢什么</text>
+
+  <rect x="732" y="492" width="406" height="54" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="748" y="514" font-size="12" font-weight="700" fill="#334155">07 · 为什么不是 DAG 引擎</text>
+  <text x="748" y="534" fill="#475569" font-size="10.5">三件分置、深度换广度、三条可迁移原则与可证伪点</text>
+
+  <text x="600" y="598" text-anchor="middle" font-size="11" fill="#64748b">承诺有深浅，但它和「看起来更完整」的直觉相反——默认停在能完成工作的最浅一层，只在出现明确信号时才往下走一格</text>
+</svg>

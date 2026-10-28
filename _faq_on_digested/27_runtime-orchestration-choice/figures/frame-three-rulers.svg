@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 780" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>三把尺子：循环归谁、承诺多深、选择住在哪</title>
+  <desc>上带是尺子一：六个原语各自把循环放在谁手里——直接做在当前 Agent，subagent 在子 Agent，workflow 在模型写的脚本，ralph 在固定脚本，goal 在 Round Driver，team 在 Lead 与各成员。中带是尺子二：三层可逆性——运行级可 cancel、dispose、interrupt；会话级可 pause、edit、resume 与任务 CAS；组合级只能换 profile 或装卸 bundle，代价是工具面消失。下带是尺子三：没有中心路由，模型只看见工具 description、prompt 段与组合层暴露的选择；结论是选择面等于安装面。底部一句话：先问循环该在哪，再问承诺要多深，最后看当前安装有没有这个选项。</desc>
+
+  <rect width="1200" height="780" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">三把尺子</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">结构、代价、信息——任何两个原语能不能互换，量一遍就有依据</text>
+
+  <rect x="40" y="76" width="1120" height="200" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="60" y="104" font-size="14" font-weight="700" fill="#1d4ed8">尺子一 · 循环归谁</text>
+  <text x="60" y="124" fill="#3b82f6" font-size="11">「下一步做什么」的决定权在谁手里——它决定一次运行的单位，也决定谁能改主意</text>
+
+  <rect x="60" y="140" width="170" height="112" rx="8" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="72" y="166" font-size="12" font-weight="700" fill="#1e3a8a">直接做</text>
+  <text x="72" y="190" fill="#334155" font-size="11">循环：当前 Agent</text>
+  <text x="72" y="210" fill="#64748b" font-size="10.5">单位：一个 step</text>
+  <text x="72" y="232" fill="#94a3b8" font-size="10.5">改主意 = 下一步</text>
+
+  <rect x="242" y="140" width="170" height="112" rx="8" fill="#ffffff" stroke="#5eead4"/>
+  <text x="254" y="166" font-size="12" font-weight="700" fill="#0f766e">subagent</text>
+  <text x="254" y="190" fill="#334155" font-size="11">循环：子 Agent</text>
+  <text x="254" y="210" fill="#64748b" font-size="10.5">单位：一次 child turn</text>
+  <text x="254" y="232" fill="#94a3b8" font-size="10.5">父不干预过程</text>
+
+  <rect x="424" y="140" width="170" height="112" rx="8" fill="#ffffff" stroke="#fcd34d"/>
+  <text x="436" y="166" font-size="12" font-weight="700" fill="#b45309">workflow</text>
+  <text x="436" y="190" fill="#334155" font-size="11">循环：模型写的脚本</text>
+  <text x="436" y="210" fill="#64748b" font-size="10.5">单位：一次 run</text>
+  <text x="436" y="232" fill="#94a3b8" font-size="10.5">改主意 = 改脚本</text>
+
+  <rect x="606" y="140" width="170" height="112" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="618" y="166" font-size="12" font-weight="700" fill="#92400e">ralph</text>
+  <text x="618" y="190" fill="#334155" font-size="11">循环：固定脚本</text>
+  <text x="618" y="210" fill="#64748b" font-size="10.5">单位：N 轮</text>
+  <text x="618" y="232" fill="#94a3b8" font-size="10.5">模型只给 objective</text>
+
+  <rect x="788" y="140" width="170" height="112" rx="8" fill="#ffffff" stroke="#86efac"/>
+  <text x="800" y="166" font-size="12" font-weight="700" fill="#15803d">goal</text>
+  <text x="800" y="190" fill="#334155" font-size="11">循环：Round Driver</text>
+  <text x="800" y="210" fill="#64748b" font-size="10.5">单位：一个 goal round</text>
+  <text x="800" y="232" fill="#94a3b8" font-size="10.5">每轮重新决定</text>
+
+  <rect x="970" y="140" width="170" height="112" rx="8" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="982" y="166" font-size="12" font-weight="700" fill="#6d28d9">team</text>
+  <text x="982" y="190" fill="#334155" font-size="11">循环：Lead 与各成员</text>
+  <text x="982" y="210" fill="#64748b" font-size="10.5">单位：一个成员 turn</text>
+  <text x="982" y="232" fill="#94a3b8" font-size="10.5">对话派活，任务板记事</text>
+
+  <rect x="40" y="292" width="1120" height="250" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="60" y="320" font-size="14" font-weight="700" fill="#b45309">尺子二 · 承诺多深</text>
+  <text x="60" y="340" fill="#d97706" font-size="11">承诺 = 结构 + 时长 + 谁推进；可逆性只是它的一个投影——不对称的是选错代价</text>
+
+  <rect x="60" y="356" width="340" height="168" rx="8" fill="#ffffff" stroke="#fcd34d"/>
+  <text x="78" y="382" font-size="12" font-weight="700" fill="#92400e">运行级可改</text>
+  <text x="78" y="406" fill="#334155" font-size="11">cancel · dispose · interrupt</text>
+  <text x="78" y="430" fill="#475569" font-size="11">原语：jobs · subagent · workflow</text>
+  <text x="78" y="454" fill="#64748b" font-size="10.5">改不了：已烧的 token、已写的文件</text>
+  <text x="78" y="478" fill="#64748b" font-size="10.5">workflow 取消后不可续，只能重跑</text>
+  <text x="78" y="502" fill="#94a3b8" font-size="10.5">代价：一次运行</text>
+
+  <rect x="430" y="356" width="340" height="168" rx="8" fill="#ffffff" stroke="#fcd34d"/>
+  <text x="448" y="382" font-size="12" font-weight="700" fill="#92400e">会话级可改</text>
+  <text x="448" y="406" fill="#334155" font-size="11">pause · edit · resume；任务 CAS</text>
+  <text x="448" y="430" fill="#475569" font-size="11">原语：goal · schedule · team 的任务板</text>
+  <text x="448" y="454" fill="#64748b" font-size="10.5">改不了：已经进入日志的历史</text>
+  <text x="448" y="478" fill="#64748b" font-size="10.5">goal 可换 objective，但已跑的轮次不重来</text>
+  <text x="448" y="502" fill="#94a3b8" font-size="10.5">代价：一段会话</text>
+
+  <rect x="800" y="356" width="340" height="168" rx="8" fill="#ffffff" stroke="#fcd34d"/>
+  <text x="818" y="382" font-size="12" font-weight="700" fill="#92400e">组合级可改</text>
+  <text x="818" y="406" fill="#334155" font-size="11">换 profile · 装 / 卸 bundle</text>
+  <text x="818" y="430" fill="#475569" font-size="11">原语：team（以及 ralph 的安装）</text>
+  <text x="818" y="454" fill="#64748b" font-size="10.5">改不了：同一会话里消失的工具面</text>
+  <text x="818" y="478" fill="#64748b" font-size="10.5">team 会 disable subagent 系列与全局控制</text>
+  <text x="818" y="502" fill="#94a3b8" font-size="10.5">代价：一个 profile</text>
+
+  <rect x="40" y="558" width="1120" height="170" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="60" y="586" font-size="14" font-weight="700" fill="#15803d">尺子三 · 选择住在哪</text>
+  <text x="60" y="606" fill="#16a34a" font-size="11">没有中心选择器；模型只看得见当前安装暴露给它的那点文本</text>
+
+  <rect x="60" y="622" width="250" height="76" rx="8" fill="#ffffff" stroke="#86efac"/>
+  <text x="76" y="646" font-size="12" font-weight="700" fill="#166534">工具 description</text>
+  <text x="76" y="668" fill="#475569" font-size="10.5">名字、参数、一句使用边界</text>
+  <text x="76" y="686" fill="#94a3b8" font-size="10.5">最常见的一类策略载体</text>
+
+  <rect x="330" y="622" width="250" height="76" rx="8" fill="#ffffff" stroke="#86efac"/>
+  <text x="346" y="646" font-size="12" font-weight="700" fill="#166534">prompt 段</text>
+  <text x="346" y="668" fill="#475569" font-size="10.5">tool:workflow 这类常驻指引</text>
+  <text x="346" y="686" fill="#94a3b8" font-size="10.5">随工具注册，也随工具消失</text>
+
+  <rect x="600" y="622" width="250" height="76" rx="8" fill="#ffffff" stroke="#86efac"/>
+  <text x="616" y="646" font-size="12" font-weight="700" fill="#166534">组合层</text>
+  <text x="616" y="668" fill="#475569" font-size="10.5">装 / 卸 bundle 改变工具去留</text>
+  <text x="616" y="686" fill="#94a3b8" font-size="10.5">一个 patch 能换掉四个工具</text>
+
+  <path d="M866,660 L892,660" stroke="#16a34a" stroke-width="2"/>
+  <path d="M886,654 L894,660 L886,666 Z" fill="#16a34a"/>
+
+  <rect x="900" y="622" width="240" height="76" rx="8" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="916" y="646" font-size="12" font-weight="700" fill="#166534">模型看到的选择面</text>
+  <text x="916" y="668" fill="#166534" font-size="10.5">少装一个工具 = 少一种选择</text>
+  <text x="916" y="686" fill="#15803d" font-size="10.5">策略文本一起消失</text>
+
+  <text x="600" y="758" text-anchor="middle" font-size="11" fill="#64748b">先问循环该在哪，再问承诺要多深，最后看当前安装有没有这个选项；验收方式跟原语一起选</text>
+</svg>

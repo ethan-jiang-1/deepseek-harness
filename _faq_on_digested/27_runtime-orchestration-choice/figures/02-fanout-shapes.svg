@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>扇出的三种形状：parallel 是屏障，pipeline 无跨阶段屏障，手写循环可以在中间改图</title>
+  <desc>左panel：parallel 并发拉起所有项，全部等齐后越过屏障再汇总，失败粒度是单项变成 null、fatal 错误整体打死。中panel：pipeline 让每一项独立穿过多个 stage，stage 之间没有屏障，慢项只拖自己。右panel：手写 for 循环加 agent()，下一步取决于中间结果，可以随时改图，这是图灵完备的表达方式。底部一句：三种形状都能表达 DAG，但没有一个需要先画图。</desc>
+  <defs>
+    <marker id="ar" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+    <marker id="arb" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#1d4ed8"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="560" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">扇出的三种形状</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">都能表达 DAG，但没有一个需要先画图——图是写出来的</text>
+
+  <rect x="40" y="80" width="360" height="400" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="60" y="112" font-size="14" font-weight="700" fill="#1d4ed8">parallel（屏障）</text>
+  <text x="60" y="132" fill="#3b82f6" font-size="11">全部拉起，全部等齐，再一起汇总</text>
+
+  <circle cx="110" cy="180" r="16" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="110" y="184" text-anchor="middle" font-size="11" fill="#1e3a8a">1</text>
+  <circle cx="180" cy="180" r="16" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="180" y="184" text-anchor="middle" font-size="11" fill="#1e3a8a">2</text>
+  <circle cx="250" cy="180" r="16" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="250" y="184" text-anchor="middle" font-size="11" fill="#1e3a8a">3</text>
+  <circle cx="320" cy="180" r="16" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="320" y="184" text-anchor="middle" font-size="11" fill="#1e3a8a">4</text>
+
+  <line x1="110" y1="196" x2="110" y2="230" stroke="#93c5fd"/>
+  <line x1="180" y1="196" x2="180" y2="230" stroke="#93c5fd"/>
+  <line x1="250" y1="196" x2="250" y2="230" stroke="#93c5fd"/>
+  <line x1="320" y1="196" x2="320" y2="230" stroke="#93c5fd"/>
+  <line x1="70" y1="230" x2="340" y2="230" stroke="#1d4ed8" stroke-width="3"/>
+  <text x="205" y="250" text-anchor="middle" font-size="10.5" fill="#1d4ed8">屏障：最慢的一项决定整体</text>
+
+  <line x1="205" y1="256" x2="205" y2="276" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arb)"/>
+  <rect x="135" y="280" width="140" height="36" rx="8" fill="#ffffff" stroke="#1d4ed8"/>
+  <text x="205" y="303" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">汇总</text>
+
+  <text x="60" y="366" fill="#475569" font-size="10.5">失败粒度：单项抛错变成 null；</text>
+  <text x="60" y="384" fill="#475569" font-size="10.5">fatal 错误（选项写错、超限）整个脚本死</text>
+  <text x="60" y="424" fill="#1d4ed8" font-size="10.5">适合：分支独立、最后一起汇总</text>
+  <text x="60" y="452" fill="#94a3b8" font-size="10.5">代价：慢项拖住全批；中间结果看不到</text>
+
+  <rect x="420" y="80" width="360" height="400" rx="10" fill="#f0fdfa" stroke="#99f6e4"/>
+  <text x="440" y="112" font-size="14" font-weight="700" fill="#0f766e">pipeline（无跨阶段屏障）</text>
+  <text x="440" y="132" fill="#0d9488" font-size="11">每项独立穿 stage，不等其他项</text>
+
+  <rect x="450" y="170" width="72" height="30" rx="6" fill="#ffffff" stroke="#5eead4"/>
+  <text x="486" y="190" text-anchor="middle" font-size="11" fill="#0f766e">item 1</text>
+  <line x1="522" y1="185" x2="548" y2="185" stroke="#64748b" marker-end="url(#ar)"/>
+  <rect x="552" y="170" width="72" height="30" rx="6" fill="#ffffff" stroke="#5eead4"/>
+  <text x="588" y="190" text-anchor="middle" font-size="11" fill="#0f766e">stage 2</text>
+  <line x1="624" y1="185" x2="650" y2="185" stroke="#64748b" marker-end="url(#ar)"/>
+  <rect x="654" y="170" width="72" height="30" rx="6" fill="#ffffff" stroke="#5eead4"/>
+  <text x="690" y="190" text-anchor="middle" font-size="11" fill="#0f766e">stage 3</text>
+
+  <rect x="468" y="236" width="72" height="30" rx="6" fill="#ffffff" stroke="#5eead4"/>
+  <text x="504" y="256" text-anchor="middle" font-size="11" fill="#0f766e">item 2</text>
+  <line x1="540" y1="251" x2="566" y2="251" stroke="#64748b" marker-end="url(#ar)"/>
+  <rect x="570" y="236" width="72" height="30" rx="6" fill="#ffffff" stroke="#5eead4"/>
+  <text x="606" y="256" text-anchor="middle" font-size="11" fill="#0f766e">stage 2</text>
+  <line x1="642" y1="251" x2="668" y2="251" stroke="#64748b" marker-end="url(#ar)"/>
+  <rect x="672" y="236" width="72" height="30" rx="6" fill="#ffffff" stroke="#5eead4"/>
+  <text x="708" y="256" text-anchor="middle" font-size="11" fill="#0f766e">stage 3</text>
+
+  <rect x="486" y="302" width="72" height="30" rx="6" fill="#ffffff" stroke="#5eead4"/>
+  <text x="522" y="322" text-anchor="middle" font-size="11" fill="#0f766e">item 3</text>
+  <line x1="558" y1="317" x2="584" y2="317" stroke="#64748b" marker-end="url(#ar)"/>
+  <rect x="588" y="302" width="72" height="30" rx="6" fill="#ffffff" stroke="#5eead4"/>
+  <text x="624" y="322" text-anchor="middle" font-size="11" fill="#0f766e">stage 2</text>
+  <line x1="660" y1="317" x2="686" y2="317" stroke="#64748b" marker-end="url(#ar)"/>
+  <rect x="690" y="302" width="72" height="30" rx="6" fill="#ffffff" stroke="#5eead4"/>
+  <text x="726" y="322" text-anchor="middle" font-size="11" fill="#0f766e">stage 3</text>
+
+  <text x="440" y="366" fill="#475569" font-size="10.5">失败粒度：某项某阶段抛错 → 该项 null，后续 stage 跳过</text>
+  <text x="440" y="384" fill="#475569" font-size="10.5">一个 item 慢，不影响其他 item 继续往下走</text>
+  <text x="440" y="424" fill="#0f766e" font-size="10.5">适合：先粗筛再精读这类多阶段工作</text>
+  <text x="440" y="452" fill="#94a3b8" font-size="10.5">代价：阶段之间拿不到全局视图</text>
+
+  <rect x="800" y="80" width="360" height="400" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="820" y="112" font-size="14" font-weight="700" fill="#b45309">手写循环（可改图）</text>
+  <text x="820" y="132" fill="#d97706" font-size="11">下一步做什么，取决于中间结果</text>
+
+  <rect x="900" y="166" width="160" height="36" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="980" y="189" text-anchor="middle" font-size="11" fill="#92400e">批 1：agent()</text>
+  <line x1="980" y1="202" x2="980" y2="230" stroke="#64748b" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="900" y="234" width="160" height="36" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="980" y="257" text-anchor="middle" font-size="11" fill="#92400e">看结果、筛一遍</text>
+  <line x1="980" y1="270" x2="980" y2="298" stroke="#64748b" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="880" y="302" width="200" height="44" rx="8" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="980" y="320" text-anchor="middle" font-size="11" fill="#92400e">按结果决定下一批节点</text>
+  <text x="980" y="337" text-anchor="middle" font-size="10.5" fill="#b45309">循环写进脚本，不是写进图</text>
+
+  <path d="M880,324 C820,324 820,252 896,252" fill="none" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#ar)"/>
+  <text x="812" y="292" font-size="10" fill="#b45309">改图</text>
+
+  <text x="820" y="382" fill="#475569" font-size="10.5">这是图灵完备的表达：分支、循环、重试都在代码里</text>
+  <text x="820" y="400" fill="#475569" font-size="10.5">不需要 DSL，也不需要先声明图</text>
+  <text x="820" y="436" fill="#b45309" font-size="10.5">适合：图的形状本身取决于中间结果</text>
+
+  <text x="600" y="520" text-anchor="middle" font-size="11" fill="#64748b">默认 pipeline；确实需要全部结果时才 parallel；三者都要能说清失败粒度</text>
+</svg>

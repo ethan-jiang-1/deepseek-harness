@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>两种拓扑：workflow 的星形扇出，与 team 的网状协作加共享任务板</title>
+  <desc>左panel：workflow 由发起 Agent 交给一个持循环的脚本，脚本再拉起六个 child；child 之间没有连线，也没有消息通道，结果只能经脚本变量汇合，所以它是星形而不是网。右panel：team 由一个隐式 Lead 拉起三个具名队友，任意成员之间可以互发消息（网状），所有成员共享一块任务板；任务板保存 blocked_by 依赖与 CAS 修订，但就绪不会自动派活，仍要 Lead 发消息。底部一句：星形能做扇出，网状才能协作。</desc>
+  <defs>
+    <marker id="m1" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+    <marker id="m2" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto-start-reverse">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#7c3aed"/>
+    </marker>
+    <marker id="m3" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="560" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">两种拓扑</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">星形能做扇出，网状才能协作——差别不在 child 数量，在它们之间有没有边</text>
+
+  <rect x="40" y="80" width="540" height="420" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="60" y="112" font-size="14" font-weight="700" fill="#1d4ed8">workflow：星形</text>
+  <text x="60" y="132" fill="#3b82f6" font-size="11">脚本持循环，child 只是被拉起来的执行单元</text>
+
+  <rect x="230" y="155" width="160" height="40" rx="8" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="310" y="180" text-anchor="middle" font-size="11" fill="#1e3a8a">发起 Agent</text>
+  <line x1="310" y1="195" x2="310" y2="211" stroke="#64748b" stroke-width="2" marker-end="url(#m1)"/>
+
+  <rect x="210" y="215" width="200" height="44" rx="8" fill="#dbeafe" stroke="#1d4ed8"/>
+  <text x="310" y="242" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">脚本（持循环）</text>
+
+  <line x1="290" y1="259" x2="110" y2="296" stroke="#93c5fd"/>
+  <line x1="298" y1="259" x2="182" y2="296" stroke="#93c5fd"/>
+  <line x1="306" y1="259" x2="256" y2="296" stroke="#93c5fd"/>
+  <line x1="314" y1="259" x2="330" y2="296" stroke="#93c5fd"/>
+  <line x1="322" y1="259" x2="404" y2="296" stroke="#93c5fd"/>
+  <line x1="330" y1="259" x2="478" y2="296" stroke="#93c5fd"/>
+
+  <circle cx="100" cy="318" r="22" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="100" y="322" text-anchor="middle" font-size="10.5" fill="#1e40af">c1</text>
+  <circle cx="176" cy="318" r="22" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="176" y="322" text-anchor="middle" font-size="10.5" fill="#1e40af">c2</text>
+  <circle cx="252" cy="318" r="22" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="252" y="322" text-anchor="middle" font-size="10.5" fill="#1e40af">c3</text>
+  <circle cx="328" cy="318" r="22" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="328" y="322" text-anchor="middle" font-size="10.5" fill="#1e40af">c4</text>
+  <circle cx="404" cy="318" r="22" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="404" y="322" text-anchor="middle" font-size="10.5" fill="#1e40af">c5</text>
+  <circle cx="480" cy="318" r="22" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="480" y="322" text-anchor="middle" font-size="10.5" fill="#1e40af">c6</text>
+
+  <text x="290" y="372" text-anchor="middle" font-size="11" fill="#b91c1c">×  child 之间没有消息通道</text>
+  <text x="290" y="394" text-anchor="middle" font-size="10.5" fill="#475569">结果只能经脚本变量汇合，父模型看不到过程</text>
+  <text x="60" y="440" fill="#1d4ed8" font-size="10.5">适合：批量扇出、结果汇总；不适合：成员互相等、互相看。</text>
+  <text x="60" y="466" fill="#94a3b8" font-size="10.5">容量：默认一次运行最多 1000 个 child，单次调用 4096 项。</text>
+
+  <rect x="620" y="80" width="540" height="420" rx="10" fill="#f5f3ff" stroke="#c4b5fd"/>
+  <text x="640" y="112" font-size="14" font-weight="700" fill="#6d28d9">team：网状 + 任务板</text>
+  <text x="640" y="132" fill="#7c3aed" font-size="11">Lead 派活，成员之间可以直接互发消息</text>
+
+  <rect x="810" y="155" width="160" height="40" rx="8" fill="#ffffff" stroke="#a78bfa"/>
+  <text x="890" y="180" text-anchor="middle" font-size="11" fill="#5b21b6">Lead（隐式）</text>
+
+  <line x1="850" y1="195" x2="740" y2="248" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#m3)"/>
+  <line x1="890" y1="195" x2="880" y2="248" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#m3)"/>
+  <line x1="930" y1="195" x2="1020" y2="248" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#m3)"/>
+
+  <rect x="670" y="252" width="110" height="40" rx="8" fill="#ffffff" stroke="#a78bfa"/>
+  <text x="725" y="277" text-anchor="middle" font-size="10.5" fill="#5b21b6">reviewer</text>
+  <rect x="810" y="252" width="110" height="40" rx="8" fill="#ffffff" stroke="#a78bfa"/>
+  <text x="865" y="277" text-anchor="middle" font-size="10.5" fill="#5b21b6">builder</text>
+  <rect x="950" y="252" width="110" height="40" rx="8" fill="#ffffff" stroke="#a78bfa"/>
+  <text x="1005" y="277" text-anchor="middle" font-size="10.5" fill="#5b21b6">tester</text>
+
+  <line x1="782" y1="272" x2="806" y2="272" stroke="#7c3aed" stroke-width="1.6" marker-start="url(#m2)" marker-end="url(#m2)"/>
+  <line x1="922" y1="272" x2="946" y2="272" stroke="#7c3aed" stroke-width="1.6" marker-start="url(#m2)" marker-end="url(#m2)"/>
+
+  <line x1="725" y1="292" x2="790" y2="338" stroke="#a78bfa" stroke-dasharray="4 4"/>
+  <line x1="865" y1="292" x2="865" y2="338" stroke="#a78bfa" stroke-dasharray="4 4"/>
+  <line x1="1005" y1="292" x2="1000" y2="338" stroke="#a78bfa" stroke-dasharray="4 4"/>
+
+  <rect x="710" y="340" width="360" height="56" rx="8" fill="#ffffff" stroke="#a78bfa"/>
+  <text x="890" y="364" text-anchor="middle" font-size="11" fill="#5b21b6">共享任务板（blocked_by + CAS）</text>
+  <text x="890" y="383" text-anchor="middle" font-size="10" fill="#7c3aed">依赖写时校验，就绪读时推导，但不会自动派活</text>
+
+  <text x="640" y="440" fill="#6d28d9" font-size="10.5">适合：成员持续互发、状态跨重启、任务需要排序。</text>
+  <text x="640" y="466" fill="#94a3b8" font-size="10.5">容量：默认 16 个成员（profile 钉 8）、256 个任务。</text>
+
+  <text x="600" y="532" text-anchor="middle" font-size="11" fill="#64748b">一句话：workflow 的边只从脚本出发；team 的边是任意两点之间，而且还有一块共享的第三空间</text>
+</svg>
