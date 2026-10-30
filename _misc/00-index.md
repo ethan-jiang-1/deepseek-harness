@@ -2,6 +2,10 @@
 
 **本目录内容不重要。除非任务明确指定，不要读取本目录下的内容。**
 
+例外：下列两个子目录是**长期维护的参考**，涉及相关主题时应当主动查阅，而非当作一次性材料——
+[`dsh-global-upgrade/`](./dsh-global-upgrade/00-index.md)（升级执行包）与
+[`dimagent-oauth/`](./dimagent-oauth/00-index.md)（DimAgent 插件运维）。其余子目录仍按上一条处理。
+
 本目录收纳低重要性的杂项，避免在项目其它位置新开目录：
 
 | 子目录 | 内容 | 性质 |
@@ -10,6 +14,7 @@
 | [`_scratch/`](./_scratch/00-index.md) | 草稿本：在本项目内落盘的临时输出与草稿 | 可丢弃，git 不跟踪内容 |
 | [`_eval_harness/`](./_eval_harness/00-index.md) | 给任何仓库做体检的评估方法：开发 Harness（仓库对 agent 的可参与性）与运行时 Harness（agent 产品本身的运行时）；每套分**粗粒度**（先过一遍）与**细粒度**（按需深挖） | 自包含、可直接使用；评估依据与职责见其 README |
 | [`dsh-global-upgrade/`](./dsh-global-upgrade/00-index.md) | DSH 全局安装升级执行包（`0.2.0-rc.2` → `0.2.1-rc.2`）：命令行升级与插件顺序、验收清单、回滚步骤、调研证据 | 供另一个 Agent 或人工照单执行；只走全局 npm 与 `dsh plugin`，不依赖本仓库 |
+| [`dimagent-oauth/`](./dimagent-oauth/00-index.md) | `@arcships/dsh-dim-oauth` 的长期使用经验：接入排查、UA 白名单机制、日常操作手册、模型清单、速查事实 | 长期维护的 vendor 参考；**操作手册部分是日常主入口** |
 
 当前、经核验的 DSH 机制解读在 [`../_digested/00-index.md`](../_digested/00-index.md)；跨材料二次研究在 [`../_faq_on_digested/00-index.md`](../_faq_on_digested/00-index.md)。
 
