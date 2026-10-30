@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>四层词汇：承诺、空间、家、作用域与键</title>
+  <desc>承诺（P0–P5）落到空间（插件包/workspace/账本/全局设置），用家（内容/历史/状态/派生/客户端）实现，再用作用域与键寻址；三条横切是工具面、启动解析、配置五层。</desc>
+
+  <rect width="1200" height="420" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">四层词汇：承诺 → 空间 → 家 → 作用域/键</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">顺序不能跳：跳过承诺没有判据，跳过空间不知道归谁，跳过家会选错机制</text>
+
+  <!-- 承诺 -->
+  <rect x="30" y="86" width="250" height="180" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="50" y="114" font-size="13.5" font-weight="700" fill="#1e40af">承诺（对用户）</text>
+  <text x="50" y="138" font-size="10" fill="#334155">记住什么、在哪、删了</text>
+  <text x="50" y="153" font-size="10" fill="#334155">还算不算数</text>
+  <text x="50" y="180" font-size="10" font-weight="700" fill="#1e40af">P0–P5</text>
+  <text x="50" y="198" font-size="10" fill="#334155">引用 / 派生 / 项目文件</text>
+  <text x="50" y="213" font-size="10" fill="#334155">账本 / 配置 / 产品实例</text>
+  <text x="50" y="240" font-size="9.5" fill="#64748b">见 10 §1、00-answer</text>
+
+  <path d="M284 176 L318 176" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M318 176 L310 171 L310 181 Z" fill="#94a3b8"/>
+
+  <!-- 空间 -->
+  <rect x="322" y="86" width="250" height="180" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="342" y="114" font-size="13.5" font-weight="700" fill="#166534">空间（归属）</text>
+  <text x="342" y="138" font-size="10" fill="#334155">这份事实属于谁</text>
+  <text x="342" y="166" font-size="10" font-weight="700" fill="#166534">四个</text>
+  <text x="342" y="184" font-size="10" fill="#334155">插件包 / workspace</text>
+  <text x="342" y="199" font-size="10" fill="#334155">账本 / 全局设置</text>
+  <text x="342" y="226" font-size="9.5" fill="#64748b">账本再分：索引可重建</text>
+  <text x="342" y="241" font-size="9.5" fill="#64748b">状态不可重建</text>
+
+  <path d="M576 176 L610 176" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M610 176 L602 171 L602 181 Z" fill="#94a3b8"/>
+
+  <!-- 家 -->
+  <rect x="614" y="86" width="250" height="180" rx="10" fill="#faf5ff" stroke="#d8b4fe"/>
+  <text x="634" y="114" font-size="13.5" font-weight="700" fill="#6b21a8">家（机制）</text>
+  <text x="634" y="138" font-size="10" fill="#334155">DSH 用什么通道存</text>
+  <text x="634" y="166" font-size="10" font-weight="700" fill="#6b21a8">五个 + 只读层</text>
+  <text x="634" y="184" font-size="10" fill="#334155">内容 / 历史 / 状态</text>
+  <text x="634" y="199" font-size="10" fill="#334155">派生 / 客户端</text>
+  <text x="634" y="226" font-size="9.5" fill="#64748b">见 11；状态三家见 12</text>
+
+  <path d="M868 176 L902 176" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M902 176 L894 171 L894 181 Z" fill="#94a3b8"/>
+
+  <!-- 作用域与键 -->
+  <rect x="906" y="86" width="264" height="180" rx="10" fill="#fff1f2" stroke="#fda4af"/>
+  <text x="926" y="114" font-size="13.5" font-weight="700" fill="#9f1239">作用域与键</text>
+  <text x="926" y="138" font-size="10" fill="#334155">这条记录怎么寻址</text>
+  <text x="926" y="166" font-size="10" font-weight="700" fill="#9f1239">作用域</text>
+  <text x="926" y="184" font-size="10" fill="#334155">session / workspace</text>
+  <text x="926" y="199" font-size="10" fill="#334155">profile / home / device</text>
+  <text x="926" y="226" font-size="9.5" fill="#64748b">键：路径哈希，不用 workspaceId</text>
+  <text x="926" y="241" font-size="9.5" fill="#64748b">见 13</text>
+
+  <!-- 横切 -->
+  <rect x="30" y="300" width="1140" height="76" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="50" y="324" font-size="12" font-weight="700" fill="#0f172a">三条横切（哪一层都要用）</text>
+  <text x="50" y="346" font-size="10.5" fill="#334155">工具面：模型能不能直接读写（preset 挂了哪些工具）—— 17</text>
+  <text x="450" y="346" font-size="10.5" fill="#334155">启动解析：根从哪来、没有怎么办 —— 16</text>
+  <text x="810" y="346" font-size="10.5" fill="#334155">配置五层：启动前读哪份 —— 17</text>
+  <text x="50" y="366" font-size="10.5" fill="#64748b">九格画布把这些压成一页填法（42 §0）；一章一个事实的分工见 10</text>
+
+  <text x="600" y="402" text-anchor="middle" font-size="9.5" fill="#64748b">同一块数据只有一个主承诺；其他层只存引用、哈希或可重建副本</text>
+</svg>

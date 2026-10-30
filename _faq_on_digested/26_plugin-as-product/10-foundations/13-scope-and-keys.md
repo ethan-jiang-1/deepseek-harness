@@ -1,8 +1,12 @@
-# 13 · 作用域与键：一个插件，多个工作区
+# 13 · 作用域与键：数据跟哪个作用域走
 
 ## 这一篇回答什么
 
-插件实例只有一份，但要服务多个 workspace、多个会话、多个项目。数据怎么切？项目级状态用什么键？`workspaceId` 行不行？目录被删了、被移了、工作区被重新添加了，会发生什么？
+
+
+> 本篇按“一个插件服务多个 workspace”的通用场景写。产品型实例的根是一个还是多个，取决于架构选择（见 [15](./15-four-spaces.md) / [16](./16-startup-resolution.md)）。
+
+这一篇展开的是四层词汇里的**第四层（作用域与键）**：承诺见 [10](./10-taxonomy.md)，空间见 [15](./15-four-spaces.md)，家见 [11](./11-five-homes.md)。插件实例只有一份，但要服务多个 workspace、多个会话、多个项目。数据怎么切？项目级状态用什么键？`workspaceId` 行不行？目录被删了、被移了、工作区被重新添加了，会发生什么？
 
 ![作用域矩阵](../figures/13-scope-matrix.svg)
 
@@ -18,6 +22,8 @@
 | shared / external | 跨工具或外部服务 | 技能、`AGENTS.md`、MCP 服务 | 文件名 / 服务地址 |
 
 你的“两块”在这里落位：**用户的内容**几乎总是 workspace 级或用户全局；**跟用户相关的状态**要再问一句“跟项目走还是跟人走”——前者 workspace 键，后者 home/profile。
+
+**产品型实例不是第七个作用域。** 它是“一份 profile 组合 + 一个 workspace 根 + 一份 home 级账本与全局设置”的合称；数据仍然按 session / workspace / profile / home 落位。为什么值得单列，见 [15 四个空间](./15-four-spaces.md)。
 
 ## 插件是宿主级的，没有“每个项目一份实例”
 
@@ -41,7 +47,7 @@ shipped Web 组合挂载 `workspaceRegistry`；headless/SDK 组合可能没有�
 
 | 标识 | 稳定吗 | 适合当键吗 |
 |---|---|---|
-| `WorkspaceId`（uuid） | 删除再添加同一目录会换新的 | **不适合**长期键；适合进程内引用 |
+| `WorkspaceId`（uuid） | 删除再添加同一目录会换新的（**C**） | **不适合**长期键；适合进程内引用 |
 | `workspace.path`（realpath） | 目录不改名/不移动就稳定；符号链接已解开 | **较适合**，但要处理移动/删除 |
 | `session.header.cwd` | 创建时写入，不可变 | 不能当“当前项目”：`working_directory` 可改，header 仍指创建路径 |
 | `ctx.workingDirectory.get(session)` | 会话级，可被工具改 | 当前工作的根；不是长期项目键 |
@@ -81,7 +87,7 @@ value: { path, index, cursor, updatedAt }
 
 ## 键的代数
 
-**第一原则：键必须来自规范化标识，不是用户输入的原始字符串。**
+**第一原则：键必须来自规范化标识，不是用户输入的原始字符串。**（工作区唯一性 = canonical path 字符串相等；**C**）
 
 - 路径规范用 `fs.realpath` 的口径：尾斜杠、`..`、符号链接都解开；DSH 自己的工作区唯一性就是 canonical path 字符串相等。
 - Windows 的大小写、分隔符、短路径要单独测试；不要把 POSIX 的写法当成跨平台。
@@ -160,7 +166,7 @@ single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分
 
 但要接受：**home 是机器/账户本地的**。换机器、换 `DSH_HOME`、换 Host，数据不跟着走。如果用户期望“我的偏好在任何机器都一样”，那不是 DSH 内置能力，需要你自己做导入/导出（或像外部插件那样用 git 做同步；E1，参考）。
 
-另一个容易混的点：**profile 不是人**。同一个 `$DSH_HOME` 下可以有多个 profile（standard、creator、自定义），每个 profile 有自己的配置 patch；`Config` 的作用域是 profile，不是“这个用户”。要跨 profile 共享，用 home 域。
+另一个容易混的点：**profile 不是人，也不是项目**。同一个 `$DSH_HOME` 下可以有多个 profile（web、headless、产品自有名），每个 profile 有自己的配置 patch；`Config` 的作用域是 profile，不是“这个用户”。要跨 profile 共享，用 home 作用域的文件或域——产品全局设置就是这么放的（见 [17](../10-foundations/17-config-layers.md)）。
 
 ## 多用户与远程：home 是 Host 账户的，不是浏览器的
 
@@ -183,6 +189,30 @@ single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分
 | 密钥 | home | 凭据 | `CredentialRef` / `CredentialKey` |
 | 用户上传的图片 | session | 内容（附件库） | `AttachmentId` |
 | 面板宽度/折叠状态 | device | 客户端 | origin + 本地键 |
+| 产品的项目清单/游标 | workspace（存 home） | 账本 | 路径哈希 `w_<sha256>` |
+| 会话 ↔ 项目绑定 | workspace（存 home） | 账本 | `SessionId` + 项目 id |
+| 产品全局设置 | home | 状态 | 单例文件 |
+| 插件出厂模板/种子 | 无（包内只读） | —— | 包名 + 版本 |
+
+## 产品实例的三把键
+
+| 键 | 用什么 | 不要用什么 | 原因 |
+|---|---|---|---|
+| 项目键（账本记录） | `w_<sha256(realpath)>` | `workspaceId`、裸路径 | 删重加会换 uuid；JSON per-record 键必须是 `[a-zA-Z0-9_-]+` |
+| 实例键（同插件多实例） | 记录键前缀 `inst_<entryId>_` | domain 名 | domain 名静态，一个 Host 一个名字只能打开一次 |
+| 会话绑定 | `SessionId` → 项目 id | 用 cwd 反推 | 会话 cwd 与项目目录可以无关；绑定要显式 |
+
+换机器或换 `$DSH_HOME` 后，这三把键全部失效（home 级数据不跟走）；要携带项目身份，只能在目录内放 marker。详见 [15 四个空间](./15-four-spaces.md)。
+
+## 产品型实例里怎么用
+
+- **一个根还是多个根**：架构 I（工具中介）通常只有一个账本根；架构 II（workspace 化）每个项目一个 workspace，项目键用 canonical path 哈希。见 [15](./15-four-spaces.md)。
+- **用户选定的根**不放这里：它属于全局设置（[16](./16-startup-resolution.md)）。
+- **会话 → 项目绑定**放账本·状态，键是 `SessionId` + 项目 id；不要用 `cwd` 反推（两者可以无关）。
+- **不要用 `workspaceId` 当长期键**：删了重加会换 uuid；路径哈希更稳。
+- 换 `$DSH_HOME` 或换机器后，这些键全部失效；要携带项目身份只能在目录里放 marker。
+
+键的细节见本篇第三节"键的代数"与第七节"产品实例的三把键"。
 
 ## 边界
 

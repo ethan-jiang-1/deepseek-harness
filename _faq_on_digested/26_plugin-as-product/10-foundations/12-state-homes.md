@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-插件要持久化一点东西时，DSH 给了三个看起来都像“存数据”的东西：`ctx.storageDomain`、Config/settings、`ctx.credentials`。它们不是同一层的替代品；选错的代价是数据不可迁移、秘密泄漏、或者把配置当数据库写坏。
+这一篇展开的是**状态家**：四层词汇见 [10](./10-taxonomy.md)，五个家见 [11](./11-five-homes.md)。插件要持久化一点东西时，DSH 给了三个看起来都像“存数据”的东西：`ctx.storageDomain`、Config/settings、`ctx.credentials`。它们不是同一层的替代品；选错的代价是数据不可迁移、秘密泄漏、或者把配置当数据库写坏。
 
 ## 三者的分工
 
@@ -15,7 +15,9 @@
 | 纯浏览器 UI 状态 | `localStorage` / 桌面 `userData` | 浏览器/设备 | 源或设备 | 间接 | 不能 |
 | 可重建的索引/缓存 | 派生层（domain 的 `per-record`、`$DSH_HOME/cache`、`session_projcache`） | 同上 | 跟源 | 不需要 | 不能 |
 
-一句话：**domain 存事实，Config 存选择，credentials 存引用与授权记录，cache 存可丢弃的推导。**
+一句话：**domain 存事实，Config 存选择，credentials 存引用与授权记录，cache 存可丢弃的推导。**（表中位置与作用域是当前合同 **C**；域版本不符拒绝、`per-record` 键必须是 `[a-zA-Z0-9_-]+` 见 [reference](../50-evidence/reference.md)。）
+
+**产品型实例还有一类不在这张表里**：跨 profile 一致的产品全局设置。它放在 `dataRoot` 下的文件里，既不是 settings，也不写 profile patch（那些都按 profile 分裂）；为什么不能做成 `.volatile()` 见 [17 配置分层](./17-config-layers.md)。
 
 但 domain 不是“插件数据根”：它没有 per-plugin 目录、配额、scope、卸载清理；域名是包级静态声明，一个 Host 一个名字只能开一次。需要“按插件 id 隔离”的状态，要么用记录键，要么自造目录并承担生命周期（见 [11](./11-five-homes.md) 的“没有插件数据根”）。
 
@@ -156,6 +158,22 @@ OAuth grant、代理凭据这类**多字段、需要读-改-写**的东西，用
 - `invalidRecords: 'backup-and-skip'` 不是万能：只有 JSON `per-record` 能 `backupRecord`；`single`/SQLite 会回退到拒绝。
 - 旧 `session_projcache.json`（单文件）被 per-record 布局取代后，遗留文件仍在磁盘，没有自动清理；这是“迁移只增不删”的典型。
 - 可重建介质曾能 brick 启动（v3 单文件升级），后来靠读兼容 + backup-and-skip 缓解；权威 domain（workspace）仍然故意 fail-loud。**H/C**
+
+## 产品型实例里怎么用
+
+| 产品里的事实 | 用 | 落在哪 | 为什么 |
+|---|---|---|---|
+| 项目索引、绑定、游标 | `storageDomain` 或自造文件 | 账本 | 要查询/迁移，用户不必编辑 |
+| 安装参数（项目根、显示名） | `Config`（非 volatile） | profile patch | 启动前就要读到，装一次 |
+| 用户可改的产品偏好 | `Config`（volatile）或设置文件 | profile / 全局设置 | 见 [17](./17-config-layers.md) 的字段级二选一 |
+| 秘密 | `ctx.credentials` | home | 只存引用 |
+| 跨 profile 一致的产品设置 | 自造文件 | 全局设置 | settings 会按 profile 分裂 |
+
+三条规则：
+
+1. 账本里再分"可重建索引 / 不可重建状态"（[15](./15-four-spaces.md)）；
+2. 同一字段不要同时给 settings 和文件两个入口；
+3. 产品全局设置不是 settings——它不写 profile patch。
 
 ## 边界
 

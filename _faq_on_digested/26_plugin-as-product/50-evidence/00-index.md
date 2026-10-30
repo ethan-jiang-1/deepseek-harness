@@ -10,6 +10,9 @@
 | [research-native.md](./research-native.md) | DSH 原生 33 个数据落点、44 事件清单、关键决定 |
 | [research-external.md](./research-external.md) | 外部插件约 97 个候选、15 个深读的样本与来源 |
 | [quality-review.md](./quality-review.md) | 本轮结构/一致性审计；计数结论截至 2026-10-27，不替代 API 证据 |
+| [experiments/](./experiments/00-index.md) | 三个 U 的实验记录与本机观测命令（T 级证据的来源） |
+
+**插件即产品轮（2026-10-30）新增的 R 级实测**：`$DSH_HOME/storages/workspace.json`（domain `workspace` v2）、已绑定会话头（`cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`）、某工作台类插件的 `node:fs` 落盘与 preset 工具面；结论见 [00-answer](../00-answer.md) 与 [15](../10-foundations/15-four-spaces.md)–[17](../10-foundations/17-config-layers.md)。
 
 ## 历史快照（不要当当前合同）
 
@@ -29,6 +32,8 @@
 
 ## 标签
 
-**C** 当前合同（docs/源码/测试） · **H** 历史事实（Note/旧文档） · **P** 提案（未实现） · **S** 第三方源码阅读 · **R** README/作者声明 · **U** 未确认。
+**T** 可复现实验/探针（命令+输出） · **C** 当前合同（docs/源码，精确到符号） · **H** 历史事实 · **P** 提案 · **S** 第三方源码阅读 · **R** 第三方 README/作者声明 · **U** 未确认。
 
-只有 C 能写成“DSH 现在如何”；H 只能写“当时如何”；P 不能当已实现；S/R/U 不能冒充合同。外部插件没有安装实测，S 只代表源码阅读。
+只有 T/C 能写成“DSH 现在如何”；H 只能写“当时如何”；P 不能当已实现；S/R/U 不能冒充合同；外部源码与 README 不得支撑 C 级结论。
+
+外部插件默认没有安装实测：S 只代表源码阅读，R 只代表作者声明；行为类结论要么在隔离环境抽样实测并记为 T，要么保持 S 并在句中注明。

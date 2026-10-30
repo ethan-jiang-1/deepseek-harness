@@ -4,9 +4,11 @@
 
 先把**DSH 自己**的数据落点铺开：哪些是核心合同（N0）、哪些是官方随包插件（N1）、哪些是 experimental（N2），哪些根本没有家。扩展插件（E1）只作参考，统一放在 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-adjacent-ecosystems.md)/[33](../30-external/33-external-plugin-patterns.md)，不混进这张图。
 
-**口径。** DSH 侧：343 个包、约 1,265 篇英文 Agent Note（298 implemented / 42 proposed / 925 archived）、67 篇 subsystem、49 篇 persistence-change、43 篇 upgrade guide、4 篇 postmortem、6 篇 defensive-pattern；本机 `$DSH_HOME` 4.0 GB / 28,443 文件（只看结构）。证据标签 C/H/P/S/R/U 见 [research-native](../50-evidence/research-native.md)。
+**口径。** DSH 侧：343 个包、约 1,265 篇英文 Agent Note（298 implemented / 42 proposed / 925 archived）、67 篇 subsystem、49 篇 persistence-change、43 篇 upgrade guide、4 篇 postmortem、6 篇 defensive-pattern；本机 `$DSH_HOME` 4.0 GB / 28,443 文件（只看结构）。证据标签 T/C/H/P/S/R/U 见 [research-native](../50-evidence/research-native.md)。
 
 > **两层说法**：`11` 的“五个家”是抽象层（内容/历史/状态/派生/客户端）；这里列的 33 个是具体落点（日志、旁表、对象、目录、客户端键）。不要把“33 个落点”和“五个家”当成同一层级。
+
+> **第三层**：产品视角的“四个空间”（插件包 / workspace / 账本 / 全局设置）见 [15](../10-foundations/15-four-spaces.md)；它回答“哪些落点属于一个产品实例”，不替代这里的落点清单。
 
 ## 原生分级
 
@@ -52,15 +54,15 @@
 
 完整 ID、位置与证据见 [research-native](../50-evidence/research-native.md) 的 33 行表；下表按组列代表，不重复全部 ID。
 
-| 组 | 家（id） | 级别 | 权威 | 寿命 | 主要风险 |
-|---|---|---|---|---|---|
-| **一条日志** | SESS-LOG、SESS-GEN、SESS-LOCK、SESS-TMP、SESS-TITLE、SESS-WORKDIR、DELIV、jobs/goal/todo/plan | N0/N1 | 会话日志 | 永久 | 无删除；旧世代累积；插件不能扩展事件 |
-| **旁表与 KV 域** | WORKSPACE、PROJCACHE、PROJCACHE-LEGACY、SCHED、KV-SQLITE | N1 | workspace/schedule/domain 权威；projcache/legacy 派生 | 永久；projcache 可重建 | 派生与权威同目录；legacy 无清理；schedule 落点 U |
-| **附件对象/缓存** | ATT-OBJ、ATT-FILEOBJ、ATT-REQ、ATT-FILES、ATT-TMP、ATT-CACHE | N1 | 对象内容寻址；请求图/缓存/暂存是派生 | 对象永久；缓存/暂存可清 | 对象无 GC；日志删除即孤儿 |
-| **组合/设置** | PROFILES、PROFILE-NM、SETTINGS-LEGACY | N1 | profile | 永久 | 迁移一次性；patch pin 字段；无跨 profile |
-| **秘密** | CREDS、CREDS-BAK、ENV-USER | N1 | provider | 永久 | 同 uid 可读；备份含历史值 |
-| **home 外临时** | SPILL、QIDX（默认 `:memory:`）、workspace-changes temp | N1 | 会话/可重建 | 进程/启动 sweep | 跨进程不可见；长跑不 sweep |
-| **无主区** | PLUGIN-DATA、`auto-approval-llm/`、`clutch-dsh-worktree/`、`company-workspace/` | GAP | 插件自述 | 插件自述 | 无契约/配额/清理/卸载 |
+| 组 | 家（id） | 四空间 | 级别 | 权威 | 寿命 | 主要风险 |
+|---|---|---|---|---|---|---|
+| **一条日志** | SESS-LOG、SESS-GEN、SESS-LOCK、SESS-TMP、SESS-TITLE、SESS-WORKDIR、DELIV、jobs/goal/todo/plan | 历史（会话） | N0/N1 | 会话日志 | 永久 | 无删除；旧世代累积；插件不能扩展事件 |
+| **旁表与 KV 域** | WORKSPACE、PROJCACHE、PROJCACHE-LEGACY、SCHED、KV-SQLITE | 账本 + DSH 登记 | N1 | workspace/schedule/domain 权威；projcache/legacy 派生 | 永久；projcache 可重建 | 派生与权威同目录；legacy 无清理；schedule 落点 U |
+| **附件对象/缓存** | ATT-OBJ、ATT-FILEOBJ、ATT-REQ、ATT-FILES、ATT-TMP、ATT-CACHE | 历史（附件库） | N1 | 对象内容寻址；请求图/缓存/暂存是派生 | 对象永久；缓存/暂存可清 | 对象无 GC；日志删除即孤儿 |
+| **组合/设置** | PROFILES、PROFILE-NM、SETTINGS-LEGACY | profile + 全局设置 | N1 | profile | 永久 | 迁移一次性；patch pin 字段；无跨 profile |
+| **秘密** | CREDS、CREDS-BAK、ENV-USER | 全局设置（凭据） | N1 | provider | 永久 | 同 uid 可读；备份含历史值 |
+| **home 外临时** | SPILL、QIDX（默认 `:memory:`）、workspace-changes temp | —（派生） | N1 | 会话/可重建 | 进程/启动 sweep | 跨进程不可见；长跑不 sweep |
+| **无主区** | PLUGIN-DATA、`auto-approval-llm/`、`clutch-dsh-worktree/`、`company-workspace/` | 账本（自造） | GAP | 插件自述 | 插件自述 | 无契约/配额/清理/卸载 |
 
 ## 表 L3：原生模式 × 成熟度
 
@@ -100,8 +102,22 @@
 
 扩展插件/社区模式**不进入这张原生图**，统一放在 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-adjacent-ecosystems.md)/[33](../30-external/33-external-plugin-patterns.md)，并明确标注“参考，不作长期依赖”。长期优先 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
 
+## 产品型实例视角
+
+把 33 个落点按四个空间收一遍，产品型实例实际只用到这些：
+
+| 空间 | DSH 提供 | 插件自己提供的 |
+|---|---|---|
+| 插件包 | 无（npm 包） | 模板、种子、预设（只读） |
+| workspace | 目录 + 会话 `cwd` | 项目内脚手架（可选） |
+| 账本 | 可选 `storageDomain` | `$DSH_HOME/<plugin>/` 下的索引与绑定 |
+| 全局设置 | 无 | `$DSH_HOME/<plugin>/settings.json` |
+| 登记/历史 | `workspace` domain、`sessions/` | 会话 → 项目的绑定记录 |
+
+结论：产品型实例把 DSH 的登记与会话落点当基础设施，自己的账本与设置落在**自造目录**——它不在上面的 33 个落点里，这正是 N+ 的含义：迁移、清理、配额都要自己承担。参考架构见 [42 §11](../40-advisor/architectures/11-product-instance.md)。
+
 ## 边界
 
-- 本图是 DSH 原生数据面的广度稿；C/H/P/S/R/U 标注见 [research-native](../50-evidence/research-native.md)。
+- 本图是 DSH 原生数据面的广度稿；T/C/H/P/S/R/U 标注见 [research-native](../50-evidence/research-native.md)。
 - 本机 `$DSH_HOME` 统计只用于验证结构，不代表所有部署。
 - 原生插件是否挂载取决于组合（base/web/headless/SDK）；“N1”不等于每个 profile 都有。

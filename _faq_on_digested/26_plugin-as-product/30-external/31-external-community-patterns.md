@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-本 FAQ 第一版把社区做法压成“五种承诺”，够用但太粗；这一版扩成九个维度。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
+**角色：外部参考层（E1/E2）。** 本篇回答“别人怎么切”，只借模式、不作依赖；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。本 FAQ 第一版把社区做法压成“五种承诺”，够用但太粗；这一版扩成九个维度。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
 
 > **外部参考，不是原生方案。** 本文件只记录第三方插件/社区模式；长期优先 [21 原生 landscape](../20-native/21-native-data-landscape.md) 的 N0/N1。外部插件只借模式，不作依赖；E1/E2 的迁移/清理/兼容成本要自己承担。
 
@@ -59,6 +59,8 @@
 - insights：只存投影检查点，源是会话日志。
 - workspace-memories：Markdown 文件本身就是权威，没有第二层。
 - memory-evolve：`~/.dsh/memories/` 文件是权威；git 同步是显式批处理，不是每次写入都提交。
+
+补充观察（2026-10-27）：生态里凭据有三种互斥的家（OS keychain / `ctx.credentials` / 明文 JSON/settings），迁移路径不明；卸载也不是数据生命周期——有的明确保留 metadata+secrets，有的物理删日志目录，“清理”既可能缺失也可能过度。
 
 判断方法没变：**删掉它，用户会丢东西吗？** 会 → 权威；不会 → 派生。社区里做得好的插件，README 都会写清楚“哪个文件是权威、哪个可以删、怎么重建”。
 
@@ -129,6 +131,8 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 
 同时，settings 从 `~/.dsh/settings.yaml` 迁到 profile patch，旧插件要处理导入与重命名；project-context 在启动时迁移旧目录布局，类型冲突时两侧都保留并记日志。
 
+迁移只出现在“严肃数据”：credentials-mysql 数值 schema fail-closed、task-board localStorage v1 + migration、kb-manager 每 KB SQLite + compact；多数插件没有迁移概念。
+
 **启示**：DSH 是 pre-stable，插件作者必须把“兼容范围 + 迁移路径 + 失败可见”当成数据设计的一部分，而不是发布后再补。声明 `engines.dsh` 或用 peer 下限，比 README 里写“实测某 RC”更可执行。
 
 ## 维度九：怎么取得信任——少存、可查、可删、可导出
@@ -141,6 +145,8 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 - **可删/可带走**：明确的卸载/清理说明、导出、`.gitignore` 托管；
 - **不泄漏**：graphmemory 的凭据只收引用、日志脱敏、召回标不可信；
 - **可审计**：错误日志轮转、安装统计匿名化（dshbase 的实例 ID）。
+
+补充观察（2026-10-27）：客户端状态跨源会丢——theme 8/8 落 localStorage，beauty-persist 专门把 `dsh-dream-skin:*` 迁到 `~/.dsh/beauty-persist-state.json`；55 个 runtime/account/UI 样本只有 1 个声明 `engines.dsh`，声明质量与数据风险无关。
 
 反过来，最大的信任杀手是“安装即执行”：workspace-overlay 的 `trustWorkspaceConfig: true` 让一个克隆的仓库能把代码挂进 Host。它明确写了这个取舍，但默认值值得每个作者重新想一遍。
 
@@ -177,7 +183,7 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 | 图谱/向量记忆 | P1 + P3 | SQLite | home | 迁移表、抽取成本、不可信标记 |
 | 用量/统计面板 | P1 | 检查点 | home/项目 | 不存正文、可重建 |
 | 渠道/账号集成 | P4 | profile/env | home | 凭据引用、去重状态 |
-| 每项目运行时 | P5（运行时落点，不是承诺） | 项目配置 | 项目内 | trust 开关、lease/dispose |
+| 每项目运行时 | 运行时落点（不是承诺） | 项目配置 | 项目内 | trust 开关、lease/dispose |
 | UI/主题 | 客户端落点或 P4 | 配置/localStorage | 浏览器/home | 卸载清理、跨设备预期 |
 
 ## 三个核心缺口，社区怎么补
@@ -185,16 +191,6 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 1. **没有“每 workspace 一套插件实例”**。社区用 `ctx.workspaceCordis` + canonical path lease 补（workspace-overlay），或用项目内配置 + 自己解析（project-context），或用 home + 自定义 RPC（custom-workspace）。
 2. **没有“插件数据根”**。社区各自造 `~/.dsh/<plugin>/`、项目内 `.agents/`、SQLite 文件；没有统一的位置、配额、GC 或导出。Claude Code 的 `${CLAUDE_PLUGIN_DATA}` 是一个直接对照（见 32 篇）。
 3. **没有“第三方任意设置命名空间”**。注意：**Config-backed 的 volatile 表单是开放的**，第三方插件导出 `Config` 就能在设置页出现；缺的是“与 Loader 条目无关的任意键值命名空间”。custom-workspace 在 0.1.0-rc.6 上因此造了自定义 RPC；新插件应先试 `Config.volatile()`，不要直接复制这个 workaround。
-
-## v2 市场补充（2026-10-27）
-
-- **凭据有三种互斥的家**：OS keychain（codex-keychain，root account = `SHA-256(DSH_HOME)`）、`ctx.credentials` seam（credential-manager、credentials-mysql 三表 + AES-GCM + 行锁）、明文 JSON/settings（api-key-pool、ark-quota）。迁移路径不明，卸载也常不清理。
-- **卸载不是数据生命周期**：credential-manager 明确保留 metadata+secrets；cursor-theme 改 OS 光标注册表不还原；archive-manager 物理删日志目录。生态里“清理”既可能缺失，也可能过度。
-- **客户端状态跨源会丢**：theme 8/8 落 localStorage；beauty-persist 专门把 `dsh-dream-skin:*` 迁到 `~/.dsh/beauty-persist-state.json`，因为端口变化换 origin。PromptRecall 则用 host JSONL + 锁。
-- **迁移只出现在“严肃数据”**：credentials-mysql 数值 schema fail-closed、task-board localStorage v1 + migration、kb-manager 每 KB SQLite + compact；多数插件没有迁移概念。
-- **声明质量与数据风险无关**：55 个 runtime/account/UI 样本只有 1 个声明 `engines.dsh`；同名克隆/近似实现大量存在，选型不能看星数。
-
-完整的 15 个深读与反模式见 [33 篇](./33-external-plugin-patterns.md)。
 
 ## 五个反直觉的结论
 
@@ -211,9 +207,23 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 3. **双写实验**：两个 Host/两个进程同时写同一份数据，看是丢更新、报错，还是靠锁串行；如果没有保护，就在文档里写明“单 Host”。
 4. **换源实验**（客户端）：用两个端口/两个浏览器打开，确认 `localStorage` 状态是否按预期隔离。
 
+## 映射到四个空间与六种承诺
+
+外部手法只作模式参考；落到 DSH 时，先判断它属于哪个空间、兑现哪种承诺：
+
+| 社区手法 | 空间 | 承诺 | DSH 里的等价物 |
+|---|---|---|---|
+| 零存储、只注入路径 | 插件包 + workspace（只读） | P0 | Config 路径清单 + `ctx.fs` 读 |
+| journal 权威 + Markdown 渲染 | workspace | P2 | 项目内 `.agents/` 目录 |
+| 按项目存 home、路径键 | 账本（索引/状态） | P3 | `storageDomain` + `w_<sha256>` |
+| 设置里选存储位置 | 全局设置 | P4/P5 | `dataRoot` 文件 |
+| 每项目一套运行时 | —（运行时缺口） | 不是承诺 | E1 lease，见 [42 §8](../40-advisor/architectures/08-per-project-runtime.md) |
+
 ## 边界
 
 - 样本是作者自述 + README/源码阅读，没有安装实测；星数、目录计数不是质量证据。
 - 九个仓库的版本声明会随 RC 漂移，引用时按各仓库当前 README 为准；本篇不承诺它们在你安装的版本上仍成立。
 - 部分插件体量很大（project-context 的 README 本身有数百行工程细节），本篇只摘与数据归属有关的部分。
 - 社区补丁不是 DSH 的 API 合同；`ctx.workspaceCordis`、`/custom-workspace` RPC、`.agents/memory` 目录都不是核心保证。
+- 完整的 15 个深读与反模式见 [33 外部插件案例](./33-external-plugin-patterns.md)。
+- 外部源码与 README 不得支撑 C 级结论（标签规则见 [50-evidence](../50-evidence/00-index.md)）。

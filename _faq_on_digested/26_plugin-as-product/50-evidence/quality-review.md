@@ -116,7 +116,7 @@
 - 本仓库浅克隆，2026-06 前历史靠 Note/docs 复述。
 - `00-index` 的 archetype 锚点依赖 42 的标题；若改标题需同步。
 - 50-evidence/v1/ 是历史记录，不应作为当前合同；文件头已标 v1，个别旧表述（如“十五种手法”）作为历史保留。
-- 42 仍是 392 行的长章；10 个 archetype 暂未拆成独立文件。若后续继续增长，建议按 archetype 拆分到 `40-advisor/architectures/`。
+- 42 仍是 392 行的长章；10 个 archetype 暂未拆成独立文件。若后续继续增长，建议按 archetype 拆分到 `40-advisor/architectures/`。（2026-10-30 已拆分，见 §9）
 - 社区样本的版本兼容声明会随 RC 漂移；本目录只保证“写作时点的源码阅读”。
 
 ## 6. 本轮验证
@@ -134,3 +134,89 @@
 2. 决定是否把 31/32/33 的外部材料再压缩，或保持“模式库 / 生态对照 / 案例”三分。
 3. 决定是否把 42 拆成 `40-advisor/architectures/` 下的 10 个文件。
 4. 确认后整理成一次 `docs(corpus): ...` 提交。
+
+## 8. 2026-10-30 · 插件即产品轮
+
+本轮把 FAQ 26 从"插件数据放哪"重做为"当一个插件就是整个 DSH"，来源是调研稿（已并入本篇后从 `_misc/` 移除）与一个工作台类实例的运行时读数。
+
+**改动**
+
+- 目录改名 `26_plugin-data-model/` → `26_plugin-as-product/`，`_faq_on_digested/00-index.md` 同步。
+- 重写 [00-question](../00-question.md)、[00-answer](../00-answer.md)、[00-index](../00-index.md)：四空间、工具面、启动四状态、六种承诺（新增 P5 产品实例）。
+- 新增 [15 四个空间](../10-foundations/15-four-spaces.md)、[16 启动解析](../10-foundations/16-startup-resolution.md)、[17 配置分层](../10-foundations/17-config-layers.md)。
+- 回填 [11](../10-foundations/11-five-homes.md)（六种承诺）、[12](../10-foundations/12-state-homes.md)（产品全局设置不是 settings）、[13](../10-foundations/13-scope-and-keys.md)（实例不是第七个作用域 + 三把键）、[21](../20-native/21-native-data-landscape.md)（第三层视角）、[31](../30-external/31-external-community-patterns.md)（P5 旧引用）、[41](../40-advisor/41-checklist.md)（六问 + 反模式）、[42](../40-advisor/42-native-reference-architectures.md)（§11 产品实例 / 九格画布）、[reference](./reference.md)（P0–P5）。
+
+**新增证据等级**
+
+- **R（运行时实测）**：`$DSH_HOME/storages/workspace.json` 为 domain `workspace` v2；已绑定会话头含 `cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`；该样本插件的落盘全走 `node:fs`；其 preset 不含 `tool-fs`/`tool-bash`；profile 未覆盖产品那一行。
+- **C（源码）**：`applyEntryPatches` 的整对象替换、config-editor 写完整对象、`initializeDefault` 的空 registry 条件、`session.create` 的 `mkdir -p`。
+
+**验证**
+
+- `node _faq_on_digested/verify.mjs`：26 子树 **0 违规**（链接与锚点）。
+- 全量运行仍有 20 条，全部来自被 `_faq_on_digested/.gitignore` 排除的本地 `03_model-vendors/03_model-vendors-worktree/`，属既有本地残留，不在提交范围。
+- `node _misc/verify.mjs`：通过。
+
+**未完成/边界**
+
+- 图：旧的 `00-author-promises.svg`（只画 P0–P4）已由 `00-promises-six.svg` 取代并删除；新增 `15-four-spaces.svg`，两图都用 `rsvg-convert` 目检过。
+- 启动竞态、客户端插件调用顺序、Windows ACL 仍标 **U**，见 [16](../10-foundations/16-startup-resolution.md) 的"待核实"。
+- 16/17 的"配置五层"与 `_misc` 08 的"四层 + 全局设置"口径一致，但 `_misc` 是调研稿，不作为合同。
+
+## 9. 2026-10-30 · 系统性复核（方向变更后）
+
+方向从"插件数据模型"改成"插件即产品"后做的第二轮结构复核，目标是消除潜在矛盾与叙事漂移。
+
+**结构**
+
+- 叙事骨架统一为「承诺 → 空间 → 家 → 启动/配置」，在 [00-index](../00-index.md) 新增"怎么读：四套词汇的关系"；[00-answer](../00-answer.md) 的章节重排为 承诺 → 空间 → 工具面，并统一 H1 为"承诺、空间、工具面与启动状态机"。
+- 修正空间模型矛盾：账本不再是"可重建"的同义词，拆成**可重建索引**与**不可重建状态**（绑定、游标、已采纳标记）两类，见 [15](../10-foundations/15-four-spaces.md)；"用户选定的根"归位到全局设置，[16](../10-foundations/16-startup-resolution.md) 同步。
+- 新增 [18 安装升级](../10-foundations/18-install-upgrade.md)：profile 创建、bundle 重启边界、`engines.dsh` 跳过与豁免、三层升级、卸载四处残留。
+- 去掉 deckline 中心化：具体目录树与个人路径**从正文移除**（证据只留 00-answer 的 R 标注与 `50-evidence`）；[42 §11](../40-advisor/architectures/11-product-instance.md) 的推荐按写路径需求而非示例现状。
+- [41](../40-advisor/41-checklist.md) 的"第零步"与六种承诺对齐，客户端本地与每项目运行时降为"不是承诺的运行时选择"。
+- 给 [11](../10-foundations/11-five-homes.md)、[12](../10-foundations/12-state-homes.md)、[13](../10-foundations/13-scope-and-keys.md)、[14](../10-foundations/14-artifacts.md)、[31](../30-external/31-external-community-patterns.md) 加了到新骨架的桥接句。
+
+**图**
+
+- `15-four-spaces.svg` 的账本框改为"插件记录：索引可重建 / 绑定不可重建"，与正文一致。
+
+**验证**
+
+- `node _faq_on_digested/verify.mjs`：26 子树 0 违规。
+
+## 10. 2026-10-30 · 拆 42 与旧章重写
+
+- **42 拆分**：拆成总览（九格画布、依赖层级路线表、分篇索引、选型表）与 `40-advisor/architectures/` 下 11 个分篇（01–11）。[00-index](../00-index.md) 的 archetype 链接改指分篇，目录树与章节地图同步。
+- **旧章重写**：[21](../20-native/21-native-data-landscape.md) 增加"产品型实例视角"（六个高频落点与 N+ 的含义）；[22](../20-native/22-native-data-history.md) 增加四条历史决定对产品的后果。
+- **外部章映射**：[31](../30-external/31-external-community-patterns.md)、[32](../30-external/32-external-adjacent-ecosystems.md)、[33](../30-external/33-external-plugin-patterns.md) 各补"映射到四个空间与六种承诺"。
+- **18 加深**：[18](../10-foundations/18-install-upgrade.md) 补失败与半装、回滚演练、`dataRoot` 迁移、卸载验收。
+- **证据标注**：[12](../10-foundations/12-state-homes.md)、[13](../10-foundations/13-scope-and-keys.md)、[41](../40-advisor/41-checklist.md)、[42](../40-advisor/42-native-reference-architectures.md) 补行内 `C` 标注。
+- **验证**：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规（38 篇 Markdown）。
+
+## 11. 2026-10-30 · 二阶段：概念层与基础四章
+
+- **概念层**：新增 [10 概念层](../10-foundations/10-taxonomy.md)——承诺→空间→家→作用域/键、三条横切、"一章一个事实"分工表、五条常见混淆；[00-index](../00-index.md) 的读法改为引用它，两种读者路线同步。
+- **基础四章**：[11](../10-foundations/11-five-homes.md)–[14](../10-foundations/14-artifacts.md) 各加"产品型实例里怎么用"，开头定位到概念层；删除与新层重复的解释。
+- **去重**：[15](../10-foundations/15-four-spaces.md) 的可写性段落收成一句并指向 [17](../10-foundations/17-config-layers.md)；[00-answer](../00-answer.md) 的承诺速查表标注权威定义在 10/13。
+- **术语**：00-index 术语表修正"账本=可重建"的旧口径，新增"产品型实例"与"账本·索引/状态"。
+- **参考层**：[21](../20-native/21-native-data-landscape.md) 的落点表加"四空间"列；[22](../20-native/22-native-data-history.md) 加"22 个事件按空间归组"；[31](../30-external/31-external-community-patterns.md)–[33](../30-external/33-external-plugin-patterns.md) 补统一角色横幅（外部参考层）。
+- **图**：新增 `10-taxonomy-flow.svg` 与 `16-startup-states.svg`；旧 `00-ownership-matrix.svg`（只画 P0–P4）退役并删除，00-question/00-answer 改用新图。
+- **验证**：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规；两张新图 `rsvg-convert` 目检。
+
+## 12. 2026-10-30 · 收尾：外部参考压缩、事件映射、答案收紧
+
+- **[31](../30-external/31-external-community-patterns.md)**：删掉独立的 "v2 市场补充" 小节，把五条观察折进维度三（凭据三种家、卸载非生命周期）、维度八（迁移只在严肃数据）、维度九（客户端跨源、声明质量）；补一条指向 33 的深读链接。
+- **[32](../30-external/32-external-adjacent-ecosystems.md)**：把 "映射回 DSH" 与 "映射到四个空间与六种承诺" 合并为一节。
+- **[33](../30-external/33-external-plugin-patterns.md)**：把 "横向模式" 与 "五个作者在补的缺口" 合并为 "横向模式与缺口"（表 + 五条收敛）。
+- **[22](../20-native/22-native-data-history.md)**：时间线表新增 "层/空间" 列，22 个事件逐条标注。
+- **[00-answer](../00-answer.md)**：211 → 179 行；选型压成"第 0 问 + 承诺速查"，主要 API 表改为指向 10/15/41，三种架构表压成一句摘要 + 42 §11 链接。
+- **验证**：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规。
+
+## 13. 2026-10-30 · 证据等级与实验收口
+
+- **图例统一**：T（可复现命令+输出）/ C（源码或 docs 合同，尽量给符号）/ H / P / S（第三方源码）/ R（第三方 README）/ U。修正了 `R` 的双重含义（00-answer 曾用它表示运行时实测）；四处图例与引用约定同步（00-index、00-question、22、50-evidence/00-index、21/42 的提及）。
+- **实验层**：新增 [experiments/](./experiments/00-index.md)。实验 02（客户端调 `uiWorkspace.connectWorkspace`）与 03（插件经 `ctx.fiber.entry` + `ConfigEditor.edit` 回写自己那一行）已用源码收口为 **C**；实验 01（启动竞态）给出可证伪设计与阻塞原因，维持 **U**。[16](../10-foundations/16-startup-resolution.md) 的三条待核实同步更新。
+- **本机观测（T）**：experiments §04 记录了两条可直接粘贴的命令与输出（workspace domain v2；会话 V4 首帧含 `cwd`/`agentPreset`），个人值已脱敏；[00-answer](../00-answer.md) 的 R 标记随之改为 T。
+- **外部边界**：[31](../30-external/31-external-community-patterns.md) 与 [33](../30-external/33-external-plugin-patterns.md) 的边界写明“外部源码与 README 不得支撑 C 级结论”；[reference](./reference.md) 增加“复核方式（按等级）”一节。
+- **刻意不做**：不引入 probe 脚本、不做第三方安装实测——这些是一次性只读命令，写进文档即可复现；维护脚本的成本高于收益。
+- **验证**：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规。

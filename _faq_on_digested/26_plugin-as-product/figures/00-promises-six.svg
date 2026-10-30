@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>六种数据承诺</title>
+  <desc>P0 纯引用、P1 会话派生、P2 用户可见文件、P3 宿主账本、P4 账号/安装配置、P5 产品实例。每种承诺决定数据在哪、主要代价与适用场景。</desc>
+
+  <rect width="1200" height="400" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">先选数据承诺，再找四个空间</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">承诺 = 对用户说的话：记住什么、在哪、删了/换机器后还算不算数</text>
+
+  <!-- P0 -->
+  <rect x="24" y="78" width="180" height="292" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <rect x="38" y="92" width="36" height="19" rx="9" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="56" y="105" text-anchor="middle" font-size="10" font-weight="700" fill="#1e40af">P0</text>
+  <text x="82" y="106" font-size="12" font-weight="700" fill="#1e40af">纯引用</text>
+  <text x="38" y="132" font-size="10" fill="#334155">我不存，只读你已有</text>
+  <text x="38" y="147" font-size="10" fill="#334155">的文件。</text>
+  <text x="38" y="176" font-size="9.5" font-weight="700" fill="#1e40af">数据在哪</text>
+  <text x="38" y="193" font-size="10" fill="#334155">用户原文件，原地</text>
+  <text x="38" y="208" font-size="10" fill="#334155">不动</text>
+  <text x="38" y="236" font-size="9.5" font-weight="700" fill="#1e40af">主要代价</text>
+  <text x="38" y="253" font-size="10" fill="#334155">不能保证存在/格式</text>
+  <text x="38" y="286" font-size="9.5" fill="#64748b">适合：规则、知识库、</text>
+  <text x="38" y="301" font-size="9.5" fill="#64748b">只读记忆</text>
+
+  <!-- P1 -->
+  <rect x="215" y="78" width="180" height="292" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <rect x="229" y="92" width="36" height="19" rx="9" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="247" y="105" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">P1</text>
+  <text x="273" y="106" font-size="12" font-weight="700" fill="#166534">会话派生</text>
+  <text x="229" y="132" font-size="10" fill="#334155">我不存聊天，只算统</text>
+  <text x="229" y="147" font-size="10" fill="#334155">计或索引。</text>
+  <text x="229" y="176" font-size="9.5" font-weight="700" fill="#166534">数据在哪</text>
+  <text x="229" y="193" font-size="10" fill="#334155">会话日志 + 可重建</text>
+  <text x="229" y="208" font-size="10" fill="#334155">检查点</text>
+  <text x="229" y="236" font-size="9.5" font-weight="700" fill="#166534">主要代价</text>
+  <text x="229" y="253" font-size="10" fill="#334155">依赖日志/投影 API</text>
+  <text x="229" y="286" font-size="9.5" fill="#64748b">适合：统计、用量、</text>
+  <text x="229" y="301" font-size="9.5" fill="#64748b">只读索引</text>
+
+  <!-- P2 -->
+  <rect x="406" y="78" width="180" height="292" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <rect x="420" y="92" width="36" height="19" rx="9" fill="#fef3c7" stroke="#fbbf24"/>
+  <text x="438" y="105" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">P2</text>
+  <text x="464" y="106" font-size="12" font-weight="700" fill="#92400e">用户可见文件</text>
+  <text x="420" y="132" font-size="10" fill="#334155">数据跟项目或用户目</text>
+  <text x="420" y="147" font-size="10" fill="#334155">录走。</text>
+  <text x="420" y="176" font-size="9.5" font-weight="700" fill="#92400e">数据在哪</text>
+  <text x="420" y="193" font-size="10" fill="#334155">workspace 或用户</text>
+  <text x="420" y="208" font-size="10" fill="#334155">全局目录</text>
+  <text x="420" y="236" font-size="9.5" font-weight="700" fill="#92400e">主要代价</text>
+  <text x="420" y="253" font-size="10" fill="#334155">仓库污染、手改、</text>
+  <text x="420" y="268" font-size="10" fill="#334155">多人冲突</text>
+  <text x="420" y="296" font-size="9.5" fill="#64748b">适合：交付物、项目记忆</text>
+
+  <!-- P3 -->
+  <rect x="597" y="78" width="180" height="292" rx="10" fill="#faf5ff" stroke="#d8b4fe"/>
+  <rect x="611" y="92" width="36" height="19" rx="9" fill="#f3e8ff" stroke="#c084fc"/>
+  <text x="629" y="105" text-anchor="middle" font-size="10" font-weight="700" fill="#6b21a8">P3</text>
+  <text x="655" y="106" font-size="12" font-weight="700" fill="#6b21a8">宿主账本</text>
+  <text x="611" y="132" font-size="10" fill="#334155">我按项目记，但东西</text>
+  <text x="611" y="147" font-size="10" fill="#334155">在我这。</text>
+  <text x="611" y="176" font-size="9.5" font-weight="700" fill="#6b21a8">数据在哪</text>
+  <text x="611" y="193" font-size="10" fill="#334155">$DSH_HOME + 稳定</text>
+  <text x="611" y="208" font-size="10" fill="#334155">路径键</text>
+  <text x="611" y="236" font-size="9.5" font-weight="700" fill="#6b21a8">主要代价</text>
+  <text x="611" y="253" font-size="10" fill="#334155">孤儿、换机器丢、</text>
+  <text x="611" y="268" font-size="10" fill="#334155">用户看不见</text>
+  <text x="611" y="296" font-size="9.5" fill="#64748b">适合：索引、游标、绑定</text>
+
+  <!-- P4 -->
+  <rect x="788" y="78" width="180" height="292" rx="10" fill="#fff1f2" stroke="#fda4af"/>
+  <rect x="802" y="92" width="36" height="19" rx="9" fill="#ffe4e6" stroke="#fb7185"/>
+  <text x="820" y="105" text-anchor="middle" font-size="10" font-weight="700" fill="#9f1239">P4</text>
+  <text x="846" y="106" font-size="12" font-weight="700" fill="#9f1239">账号/安装配置</text>
+  <text x="802" y="132" font-size="10" fill="#334155">配一次，所有项目</text>
+  <text x="802" y="147" font-size="10" fill="#334155">生效。</text>
+  <text x="802" y="176" font-size="9.5" font-weight="700" fill="#9f1239">数据在哪</text>
+  <text x="802" y="193" font-size="10" fill="#334155">profile 配置 / home</text>
+  <text x="802" y="208" font-size="10" fill="#334155">域 / 凭据</text>
+  <text x="802" y="236" font-size="9.5" font-weight="700" fill="#9f1239">主要代价</text>
+  <text x="802" y="253" font-size="10" fill="#334155">profile 不是账号；</text>
+  <text x="802" y="268" font-size="10" fill="#334155">一个默认值套所有项目</text>
+  <text x="802" y="296" font-size="9.5" fill="#64748b">适合：渠道、模型默认</text>
+
+  <!-- P5 -->
+  <rect x="979" y="78" width="180" height="292" rx="10" fill="#ecfeff" stroke="#67e8f9"/>
+  <rect x="993" y="92" width="36" height="19" rx="9" fill="#cffafe" stroke="#22d3ee"/>
+  <text x="1011" y="105" text-anchor="middle" font-size="10" font-weight="700" fill="#155e75">P5</text>
+  <text x="1037" y="106" font-size="12" font-weight="700" fill="#155e75">产品实例</text>
+  <text x="993" y="132" font-size="10" fill="#334155">这个 DSH 就是我的</text>
+  <text x="993" y="147" font-size="10" fill="#334155">产品。</text>
+  <text x="993" y="176" font-size="9.5" font-weight="700" fill="#155e75">数据在哪</text>
+  <text x="993" y="193" font-size="10" fill="#334155">profile 组合 +</text>
+  <text x="993" y="208" font-size="10" fill="#334155">workspace 根 + home 账本</text>
+  <text x="993" y="236" font-size="9.5" font-weight="700" fill="#155e75">主要代价</text>
+  <text x="993" y="253" font-size="10" fill="#334155">升级、隔离、启动</text>
+  <text x="993" y="268" font-size="10" fill="#334155">编排</text>
+  <text x="993" y="296" font-size="9.5" fill="#64748b">适合：deckline 类产品</text>
+
+  <text x="600" y="390" text-anchor="middle" font-size="9.5" fill="#64748b">同一插件可以组合多种承诺；但每一块数据只能有一个主承诺</text>
+</svg>

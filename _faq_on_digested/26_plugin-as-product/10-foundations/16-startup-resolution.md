@@ -14,6 +14,8 @@
 
 所以真实形态是：**Host 先落到一个确定状态，客户端连上后由产品的客户端插件弹窗**。不能阻塞 boot 等用户。
 
+![启动解析：四种状态与占位防抢占](../figures/16-startup-states.svg)
+
 ## 四种状态
 
 ```text
@@ -51,7 +53,7 @@ boot:
       ledger.mark(placeholder, pending=true)
 ```
 
-**占位登记是防抢占的核心。** 客户端首连只有在"registry 为空且没有任何会话"时才走 `initializeDefault`（会在 `<Documents>/deepseek-harness/default-workspace` 建目录）。启动时先登记一个占位工作区，这条路径就永久失效。**C**
+**占位登记是防抢占的核心。** 客户端首连只有在"registry 为空、且既没有已存会话头也没有存档会话"时才走 `initializeDefault`（会在 `<Documents>/deepseek-harness/default-workspace` 建目录）。启动时先登记一个占位工作区，这条路径就永久失效。**C**
 
 删占位要小心：`workspaceRegistry.delete` 只删登记，目录与已开会话不动；如果用户已经在占位目录里开过会话，删登记会让那些会话变 Ungrouped。安全做法是**保留占位、把用户选的目录追加登记**，让用户自己决定删哪个。
 
@@ -64,40 +66,52 @@ boot:
 
 两种都要回答"用户取消 / 关掉弹窗"：保持占位可用，下次连接再提示，不要卡死。
 
+## 编排时机
+
+| 时机 | 能做什么 | 不能做什么 |
+|---|---|---|
+| 启动 `apply`（T1） | 扫根、注册、写脚手架 | 反应不了用户刚选的目录；与客户端首连有竞态 |
+| `agent/created` / `session/created`（T2） | 按会话 cwd 采纳、写脚手架；`agent/created` 是 serial，抛错会让会话创建失败 | 只在已有会话时触发；不能改 cwd |
+| 客户端选目录后回调（T3） | 立刻采纳、提示 | 要客户端插件；用户取消就没发生 |
+| 显式命令/设置页（T4） | 全量重建、修复 | 要用户主动 |
+
+Host 侧**没有** `workspace/created` 事件；唯一增量来源是 `workspaceController.follow()`，它是面向客户端的长流（baseline + upsert/remove），不要当插件事件总线用。
+
 ## 选择记在哪
 
 | 载体 | 语义 | 问题 |
 |---|---|---|
-| **账本** `dataRoot` 下的文件（推荐） | 插件自己的运行时状态 | 用户不可见；但正是"弹窗里选的那个" |
+| **全局设置**（推荐） | `dataRoot` 下的设置文件；跨 profile 一致 | 用户不可见；但正是"弹窗里选的那个" |
+| 账本·状态 | 跨项目但不跨 profile 的记录 | 适合会话绑定；不适合"产品根" |
 | profile patch | 安装参数 | 运行时选择混进安装文件；插件写自己那一行还要额外接口 |
 | DSH registry | "这也是个工作区" | 跨 profile 共享，不能当私有记忆 |
 
-原则：**安装默认值放 profile，用户运行时选择放账本。** 两者可以指向同一目录，但权威只有一个——账本有记录就以账本为准，profile 只提供默认。
+原则：**安装默认值放 profile，用户运行时选择放全局设置。** 账本只放与项目绑定的记录（索引与绑定），不承担"这个产品从哪起步"。
 
 ## 无客户端时
 
 headless / SDK / 纯 CLI 没有浏览器：
 
 - 有 `configured` → 用；
-- 否则用 `default`，并在启动日志里打一行（例如 `deck-studio: using default workspace <path>`）；
+- 否则用 `default`，并在启动日志里打一行（例如 `<plugin>: using default workspace <path>`）；
 - `pending` 保留，等下一次有客户端时再问。
 
 不要为了"等用户"阻塞启动，也不要因为问不到就起不来。
 
 ## 三个真实风险
 
-1. **启动竞态**：Loader 的行并发启动，占位登记与 web 监听没有先后保证。慢盘下客户端可能先连上并建出 `<Documents>` 默认工作区。缓解：插件行放在 web 行之前、`apply` 里只做 `mkdir` + `create`，并实测一次冷启动。**U（未保证）**
+1. **启动竞态**：Loader 的行并发启动，占位登记与 web 监听没有先后保证。`dsh web` 默认会自动打开浏览器，慢盘或慢插件下，客户端可能在占位登记完成前就连上并建出 `<Documents>` 默认工作区。缓解：插件行排在 web 行之前、`apply` 里只做 `mkdir` + `create`，并实测一次带自动打开浏览器的冷启动；行是并发启动的，这个顺序只是提高概率。**U（未保证）** 实验设计见[实验 01](../50-evidence/experiments/01-startup-race.md)。
 2. **挂载点被物化**：`session.create` 会对 cwd 执行 `mkdir -p`。如果 `adopted` 目录位于未挂载的卷，新建会话会**在挂载点造一个空目录**，卷再挂上时被遮住，现场极难排查。缓解：`missing` 状态不登记该路径，或登记前校验卷存在。**C**
 3. **跨 profile 可见**：registry 全 home 共享，产品登记的工作区会出现在通用 `web` 的侧栏里，没有过滤机制。缓解：接受并写进 README，或改走独立 `DSH_HOME`。**C**
 
-## 待核实
+## 核对结论
 
-- 产品客户端插件能否在 `ui-workspace` 的 `restoreSelection` 之前完成弹窗决策（顺序无保证；占位方案让顺序变得不重要）。**U**
-- 客户端插件能否调用 `uiWorkspace.connectWorkspace(id)` 切到新目录。**U**
-- 插件把自己的选择写回 profile patch 的受支持通道对"自己那一行"是否可达（因此推荐账本）。**U**
+- 客户端插件的加载顺序由**模块图拓扑序**决定（`orderByModuleGraph`，同层按扫描序），不是行序，也不是可控的同步点；`ui-workspace` 在 `apply` 里就启动导航。**C** 所以不要指望弹窗先于默认选择——靠占位关掉"默认工作区"这条路径才是确定做法。
+- 客户端插件可以调用 `uiWorkspace.connectWorkspace(id)`：服务名 `uiWorkspace`、方法是公开面；顺序不保证，且调用会创建或复用 blank 会话。**C** 见[实验 02](../50-evidence/experiments/02-client-connect-workspace.md)。
+- 插件可以用 `ctx.fiber.entry` 定位自己那一行，再调 `ConfigEditor.edit` 回写；仍推荐把运行时选择放全局设置文件。**C** 见[实验 03](../50-evidence/experiments/03-profile-writeback.md)。
 
 ## 与其它篇的关系
 
-- 四个空间与账本的键：[15](./15-three-spaces.md)
+- 四个空间与账本的键：[15](./15-four-spaces.md)
 - 启动配置从哪来：[17](./17-config-layers.md)
 - workspace 的登记、删除、首用默认：[workspace 子系统](docs/subsystems/workspace.md)

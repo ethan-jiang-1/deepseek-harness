@@ -6,36 +6,47 @@
 
 不是“DSH 现在有哪些家”，而是：**这些家为什么是现在这样？哪些是刻意、哪些是欠账、哪些被否决过？**
 
-证据标签：**C** 当前合同（docs/源码/测试）、**H** 历史事实（当时的 Agent Note/旧文档）、**P** 提案（未实现）、**U** 未确认。本仓库是浅克隆，2026-06 之前的 git 历史不可用；早期事实以 Agent Note 与 docs 为准。
+证据标签：**T** 可复现实验/探针（命令+输出） · **C** 当前合同（docs/源码，精确到符号） · **H** 历史事实 · **P** 提案 · **S** 第三方源码阅读 · **R** 第三方 README/作者声明 · **U** 未确认。本仓库是浅克隆，2026-06 之前的 git 历史不可用；早期事实以 Agent Note 与 docs 为准。
 
 ![DSH 原生数据时间线](../figures/22-native-timeline.svg)
 
 ## 一条时间线（22 个事件）
 
-| 日期 | 变化 | 之前 | 之后 | 证据 |
-|---|---|---|---|---|
-| 2026-06-14 | 会话持久化抽成 `SessionPersistence` | 会话状态与文件耦合 | 追加日志 + 可恢复句柄 | H |
-| 2026-06-18 | 共享写协调器 | 多个消费者各自持有写路径 | 单写者、按 id 路由 | H |
-| 2026-07-02 | 文件路径按会话 cwd 解析 | 进程 cwd 决定相对路径 | 工具把 `session.header.cwd` 传给 `ctx.fs` | H |
-| 2026-07-08 | spill 落盘 | 大结果只能内联/截断 | 文本落私有文件，模型拿 locator | H |
-| 2026-07-17 | spill 启动清扫 | 临时根无限增长 | `cleanupPeriodDays` 一次性 sweep | H |
-| 2026-07-19 | 会话日志 zstd | 原始 JSONL 体积/IO 大 | 默认 `.jsonl.zstd`，`compression:'none'` 保留可读 | H |
-| 2026-07-22 | 持久附件 | 浏览器 object URL/临时路径 | 内容寻址对象 + `ImageAttachmentRef` | H |
-| 2026-07-24 | 会话按项目分目录 | 平铺/<hash> 桶 | `--<cwd>--/<session-id>/`，每会话一目录 | H |
-| 2026-07-24 | 单一 home 解析器 | 两个 `resolveDshHome` 漂移 | `explicit > $DSH_HOME > ~/.dsh`；不拆 XDG | H |
-| 2026-07-24 | domain KV + workspace 提案 | 非会话数据无处可放 | `ctx.storage` + json/sqlite + domain + workspace | P（部分已实现） |
-| 2026-07-28 | settings seam（`settings.yaml`） | cwd 锚定的 profile json，无写路径 | 三包 settings + 文件 provider | H（后被取代） |
-| 2026-07-28 | storage root / 派生介质恢复提案 | `./.storages` 随启动目录分裂 | 锚到 `$DSH_HOME/storages`；恢复语义仍开放 | P/C |
-| 2026-08-13 | 凭据记录与授权流 | 只有 `CredentialRef` | `CredentialKey` + grant 记录 | H |
-| 2026-08-19 | 投影缓存 per-record | 单个全局 `session_projcache.json` | 每会话一档，写隔离 | H |
-| 2026-08-27 | handle-based 持久化 | 服务方法 + 协调器/adoption | 5 方法 + per-session handle；跨进程 lease 后续已落地 | H |
-| 2026-08-30 | 保留 `ignorable` 外部事件 | 移除字段导致第三方会话不可读 | `ignorable` 保留；`plugin:` 记录只限 experimental | H |
-| 2026-08-31 | 已发布格式流式迁移 | 整包迁移内存爆炸 | 有状态 stage，逐代迁移，不覆盖旧代 | H |
-| 2026-09-08 | present 只记路径 | 独立交付副本 | 声明源文件，不复制 | H |
-| 2026-09-16 | Session format V4 | V3 | tool-role 结果、producer-owned source 等 | C/H |
-| 2026-09-19 | 设置并入 profile patch | 全局 `settings.yaml` | profile 专属；旧文件一次性 import 后改名 | C/H |
-| 2026-10-09 | 存储凭据优先 | 环境变量可能盖过已存值 | 文件 > 启动环境 > 项目 `.env` > home `.env` | C/H |
-| 2026-10-12 | headless 不挂凭据 store | 所有 profile 共享 store | headless 无持久凭据，per-run 覆盖 | C/H |
+| 日期 | 变化 | 之前 | 之后 | 证据 | 层/空间 |
+|---|---|---|---|---|---|
+| 2026-06-14 | 会话持久化抽成 `SessionPersistence` | 会话状态与文件耦合 | 追加日志 + 可恢复句柄 | H | 历史 |
+| 2026-06-18 | 共享写协调器 | 多个消费者各自持有写路径 | 单写者、按 id 路由 | H | 历史 |
+| 2026-07-02 | 文件路径按会话 cwd 解析 | 进程 cwd 决定相对路径 | 工具把 `session.header.cwd` 传给 `ctx.fs` | H | 作用域/键 |
+| 2026-07-08 | spill 落盘 | 大结果只能内联/截断 | 文本落私有文件，模型拿 locator | H | 派生/临时 |
+| 2026-07-17 | spill 启动清扫 | 临时根无限增长 | `cleanupPeriodDays` 一次性 sweep | H | 派生/临时 |
+| 2026-07-19 | 会话日志 zstd | 原始 JSONL 体积/IO 大 | 默认 `.jsonl.zstd`，`compression:'none'` 保留可读 | H | 历史（格式） |
+| 2026-07-22 | 持久附件 | 浏览器 object URL/临时路径 | 内容寻址对象 + `ImageAttachmentRef` | H | 历史（附件） |
+| 2026-07-24 | 会话按项目分目录 | 平铺/<hash> 桶 | `--<cwd>--/<session-id>/`，每会话一目录 | H | 历史/作用域 |
+| 2026-07-24 | 单一 home 解析器 | 两个 `resolveDshHome` 漂移 | `explicit > $DSH_HOME > ~/.dsh`；不拆 XDG | H | 配置/home |
+| 2026-07-24 | domain KV + workspace 提案 | 非会话数据无处可放 | `ctx.storage` + json/sqlite + domain + workspace | P（部分已实现） | 账本（DSH 登记） |
+| 2026-07-28 | settings seam（`settings.yaml`） | cwd 锚定的 profile json，无写路径 | 三包 settings + 文件 provider | H（后被取代） | 配置/profile |
+| 2026-07-28 | storage root / 派生介质恢复提案 | `./.storages` 随启动目录分裂 | 锚到 `$DSH_HOME/storages`；恢复语义仍开放 | P/C | 账本 |
+| 2026-08-13 | 凭据记录与授权流 | 只有 `CredentialRef` | `CredentialKey` + grant 记录 | H | 全局设置（凭据） |
+| 2026-08-19 | 投影缓存 per-record | 单个全局 `session_projcache.json` | 每会话一档，写隔离 | H | 派生 |
+| 2026-08-27 | handle-based 持久化 | 服务方法 + 协调器/adoption | 5 方法 + per-session handle；跨进程 lease 后续已落地 | H | 历史（写租约） |
+| 2026-08-30 | 保留 `ignorable` 外部事件 | 移除字段导致第三方会话不可读 | `ignorable` 保留；`plugin:` 记录只限 experimental | H | 历史（格式） |
+| 2026-08-31 | 已发布格式流式迁移 | 整包迁移内存爆炸 | 有状态 stage，逐代迁移，不覆盖旧代 | H | 历史（迁移） |
+| 2026-09-08 | present 只记路径 | 独立交付副本 | 声明源文件，不复制 | H | 内容/产物 |
+| 2026-09-16 | Session format V4 | V3 | tool-role 结果、producer-owned source 等 | C/H | 历史（格式） |
+| 2026-09-19 | 设置并入 profile patch | 全局 `settings.yaml` | profile 专属；旧文件一次性 import 后改名 | C/H | 配置/profile |
+| 2026-10-09 | 存储凭据优先 | 环境变量可能盖过已存值 | 文件 > 启动环境 > 项目 `.env` > home `.env` | C/H | 全局设置（凭据） |
+| 2026-10-12 | headless 不挂凭据 store | 所有 profile 共享 store | headless 无持久凭据，per-run 覆盖 | C/H | 配置/凭据 |
+
+### 22 个事件按空间归组
+
+| 事件组 | 影响的层 | 今天的后果 |
+|---|---|---|
+| 会话持久化、写协调、zstd、按项目分目录 | 历史 | 会话是历史家；项目归属写进 `header.cwd` |
+| 文件路径按 cwd、单一 home 解析器 | 作用域/键 | canonical path 与 home 单一来源 |
+| spill、附件、投影缓存 | 派生/状态 | 可重建与不可重建的分界线 |
+| domain KV + workspace 提案、storage root | 状态/空间 | 账本有了 domain；但没有"插件数据根" |
+| settings seam、凭据记录 | 状态/配置 | Config 按 profile；凭据只存引用 |
+| 无主的 `auto-approval-llm/` 等 | 账本（自造） | N+ 区域：自担迁移与清理 |
 
 ## 12 个数据簇
 
@@ -166,6 +177,19 @@
 5. **删除/卸载要自己设计**：平台没有统一的 GC/卸载清理；README 必须写清数据在哪、怎么删。
 6. **秘密是约定不是边界**：不要把 `.credentials.yaml` 的内容写进日志/提示词；也不要以为文件权限能挡住模型。
 7. **不要直接改 session 日志**：已有插件这么做（surgical header rewrite），但它是高风险反模式；用 `sessionQuery`/`sessionPersistence` 的受支持面。
+
+## 产品型实例视角
+
+22 个事件里，有四条直接决定了产品型实例的今天：
+
+| 历史决定 | 对产品的后果 | 今天的做法 |
+|---|---|---|
+| 没有插件数据根 | 自造 `$DSH_HOME/<plugin>/` 没有配额、迁移、卸载契约 | 自己写 schemaVersion、迁移与清理说明 |
+| session 无删除 API | 卸载不能承诺"删干净" | 卸载说明只承诺登记与文件，会话走归档 |
+| profile 不是账号 | 跨 profile 一致不能靠 Config | 产品全局设置放 `dataRoot` 文件 |
+| 没有 per-workspace scope | 每项目一套运行时只能自建 | lease + read-only 配置（E1 参考） |
+
+这也解释了为什么 [17](../10-foundations/17-config-layers.md) 的配置层级和 [18](../10-foundations/18-install-upgrade.md) 的卸载清单必须写得那么细：它们是在补历史的欠账。
 
 ## 边界
 

@@ -1,6 +1,6 @@
 # 26 · 当一个插件就是整个 DSH：安装、启动、目录与数据该怎么分？
 
-源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。本轮新增结论按当前 checkout 逐条复核；标 **R** 的是本机运行时实测（`$DSH_HOME` 静态读数与真实插件实例），其余仍以源码与 docs 为准。只讨论单 Host、单 `$DSH_HOME` 账户。
+源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。本轮新增结论按当前 checkout 逐条复核；标 **T** 的是可复现探针（`$DSH_HOME` 静态读数与真实插件实例，命令见 `50-evidence/experiments/`），其余仍以源码与 docs 为准。只讨论单 Host、单 `$DSH_HOME` 账户。
 
 ## 问题从哪来
 
@@ -17,26 +17,10 @@
 
 1. 产品启动时，workspace 的根目录从哪来？没有怎么办？
 2. 用户选了一个目录之后，DSH 到底在哪儿留了什么？要不要在目录里、profile 里留东西？
-3. 插件包里的只读资产、可写 workspace、可重建账本、全局设置，边界怎么划？
+3. 插件包里的只读资产、可写 workspace、插件状态账本、全局设置，边界怎么划？
 4. 模型能不能直接读写 workspace？由什么决定？
 
-## 一个真实实例
-
-本机已经在跑一个这样的实例（只读观察，2026-10-30）：
-
-```text
-~/.dsh/profiles/deckline/        # bundles: dsh-base → dsh-web-app → dsh-plugin-deck-studio
-~/.dsh/deckline/                 # 插件 dataRoot：账本、会话绑定、deck 工作目录、资源库
-~/.dsh/storages/workspace.json   # DSH 自己的工作区登记（全 home 共享）
-```
-
-几条实测事实：
-
-- 插件自己的账本根是 `dataRoot`，默认 `$DSH_HOME/deckline`；`projectsRoot` 只决定新项目落盘位置；
-- 会话与项目的关联不是 `cwd`，而是插件自己的 `session-bindings.json`；抽查一个已绑定会话，它的头部是 `cwd: /Users/bowhead/ai_dsh_deep_research`、`agentPreset: deck-studio`、`sandbox/mode: workspace-write`；
-- 所有落盘由插件工具的 `node:fs` 完成，preset 里没有 `tool-fs` / `tool-bash`。**R**
-
-也就是说：**这个实例根本不需要模型对项目目录有写权限**，沙箱问题被"工具中介写"绕开了。这引出了本篇最重要的一条区分。
+有的产品把写操作全部交给自己的工具，模型只调工具、根本不直接写项目目录——沙箱在这一类产品里是背景，而不是约束。这引出了本篇最重要的一条区分。
 
 ## 为什么不能一句话回答
 
@@ -53,8 +37,9 @@
 
 | # | 问题 | 主回答 |
 |---|---|---|
+| Q0 | 本目录的几套词汇（承诺/空间/家/作用域）怎么对上？ | [10 概念层](./10-foundations/10-taxonomy.md) |
 | Q1 | 什么时候一个插件就是整个 DSH？它和"装在别人 harness 里的插件"差在哪？ | [answer](./00-answer.md) |
-| Q2 | 插件包、workspace、账本、全局设置，四个空间的边界怎么划？谁写、谁删、跨机器还在不在？ | [15 四个空间](./10-foundations/15-three-spaces.md) |
+| Q2 | 插件包、workspace、账本、全局设置，四个空间的边界怎么划？谁写、谁删、跨机器还在不在？ | [15 四个空间](./10-foundations/15-four-spaces.md) |
 | Q3 | 启动时目录从哪来？不存在怎么办？为什么不能开机弹窗？ | [16 启动解析](./10-foundations/16-startup-resolution.md) |
 | Q4 | 插件启动读的那份 config 从哪来？产品全局设置放哪？整对象替换会丢什么？ | [17 配置分层](./10-foundations/17-config-layers.md) |
 | Q5 | 数据按 session / workspace / profile / home / device 怎么切？跨 workspace 用什么键？ | [13 作用域与键](./10-foundations/13-scope-and-keys.md) |
@@ -63,13 +48,14 @@
 | Q8 | 产物 / artifact 是什么？`present`、changes、附件、spill 各管哪一段？ | [14 产物](./10-foundations/14-artifacts.md) |
 | Q9 | DSH 自己历史上为什么长成这些家？哪些是刻意、哪些是欠账？ | [22 原生历史](./20-native/22-native-data-history.md) |
 | Q10 | 外部插件生态怎么切同一道题？哪些能借、哪些是坑？ | [31](./30-external/31-external-community-patterns.md) / [32](./30-external/32-external-adjacent-ecosystems.md) / [33](./30-external/33-external-plugin-patterns.md) |
-| Q11 | 给我判断顺序、数据卡、反模式与参考架构。 | [41 决策程序](./40-advisor/41-checklist.md) / [42 参考架构](./40-advisor/42-native-reference-architectures.md) |
+| Q11 | 这个实例怎么装、怎么升级、卸载后留下什么？哪些变更要重启？ | [18 安装升级](./10-foundations/18-install-upgrade.md) |
+| Q12 | 给我判断顺序、数据卡、反模式与参考架构。 | [41 决策程序](./40-advisor/41-checklist.md) / [42 参考架构](./40-advisor/42-native-reference-architectures.md) |
 
 ## 一句话预告
 
-**插件即产品 = 一份 profile 组合（装什么）+ 一个 workspace 根（在哪干）+ 一份 home 级账本与全局设置（记住什么）。** 插件包只读，workspace 可写，账本可重建，全局设置跟 home；模型能不能直接写 workspace 取决于 preset 的工具面，而不是 workspace 本身。启动时没有用户可问，所以"让用户选目录"必须发生在客户端连上之后，并用占位登记挡住 DSH 自己的默认工作区。
+**一个产品型 DSH 实例 = 一份 profile 组合（装什么）+ 一个 workspace 根（在哪干）+ 一份 home 级账本与全局设置（记住什么）。** 插件包只读，workspace 可写，账本记插件自己的东西（索引可重建、状态不可重建），全局设置跟 home；模型能不能直接写 workspace 取决于 preset 的工具面，而不是 workspace 本身。启动时没有用户可问，所以"让用户选目录"必须发生在客户端连上之后，并用占位登记挡住 DSH 自己的默认工作区。
 
-![四种空间与所有权](./figures/00-ownership-matrix.svg)
+![四层词汇：承诺 → 空间 → 家 → 作用域/键](./figures/10-taxonomy-flow.svg)
 
 ## 不回答什么
 
@@ -80,6 +66,6 @@
 
 ## 阅读顺序
 
-先读 [answer](./00-answer.md) 的四个空间与六种承诺，再读 [15](./10-foundations/15-three-spaces.md) 建立空间感、[16](./10-foundations/16-startup-resolution.md) 决定启动怎么安排、[17](./10-foundations/17-config-layers.md) 决定配置放哪；然后按需读 [11](./10-foundations/11-five-homes.md)（家）、[13](./10-foundations/13-scope-and-keys.md)（作用域与键）、[12](./10-foundations/12-state-homes.md)（状态）、[14](./10-foundations/14-artifacts.md)（产物）；想知道 DSH 为什么长成这样，读 [22](./20-native/22-native-data-history.md)；想对比别人怎么做，读 [31](./30-external/31-external-community-patterns.md) 与 [33](./30-external/33-external-plugin-patterns.md)；最后用 [41](./40-advisor/41-checklist.md) 自查、用 [42](./40-advisor/42-native-reference-architectures.md) 选骨架。
+先读 [answer](./00-answer.md) 的四个空间与六种承诺，再读 [15](./10-foundations/15-four-spaces.md) 建立空间感、[16](./10-foundations/16-startup-resolution.md) 决定启动怎么安排、[17](./10-foundations/17-config-layers.md) 决定配置放哪；然后按需读 [11](./10-foundations/11-five-homes.md)（家）、[13](./10-foundations/13-scope-and-keys.md)（作用域与键）、[12](./10-foundations/12-state-homes.md)（状态）、[14](./10-foundations/14-artifacts.md)（产物）；想知道 DSH 为什么长成这样，读 [22](./20-native/22-native-data-history.md)；想对比别人怎么做，读 [31](./30-external/31-external-community-patterns.md) 与 [33](./30-external/33-external-plugin-patterns.md)；最后用 [41](./40-advisor/41-checklist.md) 自查、用 [42](./40-advisor/42-native-reference-architectures.md) 选骨架。
 
-![六种数据承诺（P0–P4 见图，P5 见 answer）](./figures/00-author-promises.svg)
+![六种数据承诺](./figures/00-promises-six.svg)

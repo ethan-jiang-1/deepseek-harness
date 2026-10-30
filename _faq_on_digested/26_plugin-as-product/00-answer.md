@@ -1,4 +1,4 @@
-# Answer 26 · 插件即产品：四个空间、一条工具面、一个启动状态机
+# Answer 26 · 插件即产品：承诺、空间、工具面与启动状态机
 
 ## 一分钟结论
 
@@ -7,6 +7,22 @@
 3. **启动时没有用户可问。** 目录解析只能落成四个状态（configured / adopted / default / unresolved），弹窗发生在客户端连上之后；启动时先登记一个占位工作区，才能挡住 DSH 自己的 `<Documents>` 默认工作区。
 4. **用户选目录后，DSH 目录里零写入、profile 里零写入。** 知识只在 `$DSH_HOME`（workspace registry + 会话）和浏览器 `localStorage`；要不要在目录里留 marker，是产品决策。
 5. **配置有五层，且 patch 是整对象替换。** profile patch 只写一个键，会把该行其余键打回 schema 默认值；产品默认值必须进 schema/代码默认。
+
+## 定义：产品型 DSH 实例
+
+> **一个产品型 DSH 实例 = 一份 profile 组合（装什么）+ 一个 workspace 根（在哪干）+ 一份 home 级账本与全局设置（记住什么）。**
+
+| 组成 | 回答什么 | 落在哪 | 换了会怎样 |
+|---|---|---|---|
+| **profile 组合** | 装什么、默认值是什么 | `$DSH_HOME/profiles/<name>/`：`package.json` 的 `dsh.profile.bundles` + `cordis.patch.yml` | 换 profile 就是另一个实例；能力与默认值都变 |
+| **workspace 根** | 在哪干、模型能写哪儿 | 一个目录 + `workspaceRegistry` 登记 + 会话 `header.cwd` | 换根就是换项目；沙箱边界随之改变 |
+| **home 级账本与全局设置** | 记住什么、跨 profile 还剩下什么 | `$DSH_HOME/<plugin>/`（账本 + `settings.json`）+ `$DSH_HOME/storages`、`sessions` | 换 home 全丢；换 profile 不受影响 |
+
+三条容易记错的推论：
+
+1. **组合给不了写权限。** 装了什么不等于模型能写什么；那由 preset 的工具面决定。
+2. **根给不了跨 profile 记忆。** workspace 是项目作用域；要跨 profile 一致，只能放 home 级文件。
+3. **home 记录给不了项目内容。** 用户的内容永远在 workspace（或用户自己的目录），账本只存索引。
 
 ## 两种实例
 
@@ -19,30 +35,6 @@
 | 升级 | 宿主升级 | 产品自身版本 + profile 组合 |
 
 两种都存在，但读物不同。本篇主讲"主人"，[11–14](./10-foundations/11-five-homes.md) 的通用词汇仍然适用。
-
-## 四个空间
-
-| 空间 | 权威 | 放什么 | 谁写 | 删了会怎样 |
-|---|---|---|---|---|
-| **插件包** | 发布版本 | 模板、种子、预设、客户端 bundle | 只读（发布时） | 出厂能力消失，用户数据不动 |
-| **workspace** | 用户 | 项目内容 | 模型（有工具时）或插件工具 | 删登记不删目录 |
-| **账本** | 插件 | 索引、游标、会话绑定 | 插件 | 应能重建；重建不了说明它不是账本 |
-| **全局设置** | 插件 | 渲染节点、默认风格、品牌素材 | 产品 UI | 换机器就丢 |
-
-细节与反模式见 [15](./10-foundations/15-three-spaces.md)。四者与"五个家"的映射也在那一篇。
-
-## 可写性来自工具面
-
-这是最容易说错的一格：
-
-| 模式 | preset 挂了什么 | 谁写项目文件 | workspace 的作用 | 沙箱 |
-|---|---|---|---|---|
-| **工具中介** | 插件自己的工具 | 插件 `node:fs` | 数据根 + 侧栏入口 | 不相关 |
-| **开放 agent** | 加 `tool-fs` / `tool-bash` | 模型直接写 | 沙箱根 + 真正的读写边界 | 决定一切 |
-
-本机的 `deck-studio` preset 只有 `persona` + `deck-studio-tools`，没有 `tool-fs`/`tool-bash`；那个已绑定会话的 cwd 在 `/Users/bowhead/ai_dsh_deep_research`，与 deck 项目目录无关，落盘全部由插件工具完成。**R**
-
-所以：把 deck 目录登记成 workspace，不会让模型多出任何能力；要"像常规 harness 一样可读可改"，得先在 preset 里加工具，再让会话 cwd 落在项目里。
 
 ## 六种数据承诺
 
@@ -59,7 +51,35 @@
 
 （原来提到的"每项目一套运行时"不是数据承诺，是运行时缺口，不在 P0–P5 之列。P2 有两个根：项目内文件删项目就没；用户全局文件跟 home 走，插件只读。）
 
-![所有权与作用域](./figures/00-ownership-matrix.svg)
+## 四个空间
+
+承诺定完，再看每份事实属于哪个空间。
+
+| 空间 | 权威 | 放什么 | 谁写 | 删了会怎样 |
+|---|---|---|---|---|
+| **插件包** | 发布版本 | 模板、种子、预设、客户端 bundle | 只读（发布时） | 出厂能力消失，用户数据不动 |
+| **workspace** | 用户 | 项目内容 | 模型（有工具时）或插件工具 | 删登记不删目录 |
+| **账本** | 插件 | 索引（可重建）+ 绑定/游标（不可重建） | 插件 | 索引可删；状态丢失即丢事实 |
+| **全局设置** | 插件 | 渲染节点、默认风格、品牌素材 | 产品 UI | 换机器就丢 |
+
+细节与反模式见 [15](./10-foundations/15-four-spaces.md)。四者与"五个家"的映射也在那一篇。
+
+![四层词汇：承诺 → 空间 → 家 → 作用域/键](./figures/10-taxonomy-flow.svg)
+
+## 可写性来自工具面
+
+四个空间里最容易说错的是 workspace：**它不产生可写性。**
+
+| 模式 | preset 挂了什么 | 谁写项目文件 | workspace 的作用 | 沙箱 |
+|---|---|---|---|---|
+| **工具中介** | 插件自己的工具 | 插件 `node:fs` | 数据根 + 侧栏入口 | 不相关 |
+| **开放 agent** | 加 `tool-fs` / `tool-bash` | 模型直接写 | 沙箱根 + 真正的读写边界 | 决定一切 |
+
+在一个实测样本里（非通用结论）：产品 preset 只挂了 `persona` + 自有工具，没有 `tool-fs`/`tool-bash`；已绑定会话的 cwd 与项目目录无关，落盘全部由插件工具完成。**T**
+
+所以：把项目目录登记成 workspace，不会让模型多出任何能力；要"像常规 harness 一样可读可改"，得先在 preset 里加工具，再让会话 cwd 落在项目里。
+
+三种架构：**I 工具中介**（插件工具写）、**II workspace 化**（模型工具写，cwd=项目）、**III 混合**（workspace 是入口，账本另存）。架构 II 还要选数据面：共享 home、重定向数据根、独立 home；取舍见 [42 §11](./40-advisor/architectures/11-product-instance.md)。
 
 ## 启动解析：四个状态
 
@@ -72,17 +92,17 @@ unresolved                → 登记占位，等客户端弹窗
 
 **为什么不能开机弹窗**：目录选择器是客户端交互能力（native 在宿主显示器、browse 供远端），Host 启动时没有浏览器连着。**为什么要占位**：客户端只在"registry 为空且无会话"时自动建 `<Documents>/deepseek-harness/default-workspace`；先登记一个占位，这条路径就失效。
 
-三个风险（细节见 [16](./10-foundations/16-startup-resolution.md)）：Loader 并发启动导致占位与首连有竞态；`session.create` 的 `mkdir -p` 会物化未挂载的卷；registry 全 home 共享，产品的工作区会出现在通用 `web` 侧栏。
+三个风险见 [16](./10-foundations/16-startup-resolution.md)：启动竞态、未挂载卷被物化、registry 跨 profile 共享。
 
 ## 配置五层与整对象替换
 
 ```text
-包默认（bundle patch） → profile patch → home patch → --patch
-                                    产品全局设置：dataRoot 下的文件（跨 profile）
+包默认（bundle patch） → profile patch → home patch → --patch   （后层赢）
+产品全局设置：dataRoot 下的文件（不在这条链里，跨 profile）
 ```
 
 - 产品全局设置**不能**放 home patch：它会 insert 进每个 profile，或在不含该行的 profile 上每次启动告警。
-- profile patch 的 `config` 是**整体替换**（`target[key] = value`），不是深合并；只覆盖一个键会让其余键掉回 schema 默认。**C**
+- profile patch 的 `config` 是**整体替换**（`target[key] = value`），不是深合并；只覆盖一个键会让其余键掉回 schema 默认。设置页只编辑 volatile 字段，不能把丢掉的默认值补回来。**C**
 - 要跨 profile 一致的字段**不要**做成 `.volatile()`：volatile 写回当前 profile 的 patch，会让"全局"按 profile 分裂。
 - 鸡生蛋边界：解析 `dataRoot` 依赖的配置不能放进 `dataRoot` 的文件。
 
@@ -98,17 +118,6 @@ unresolved                → 登记占位，等客户端弹窗
 
 DSH 自己**不写目录、不写 profile**；"要不要留 marker"是产品在"可携带"与"不污染"之间的取舍。推荐：账本为主判别，marker 只在必须跨 home 携带时引入。
 
-## 承诺 → 空间 → 作用域 → API
-
-| 承诺 | 主空间 | 作用域 | 主要 API | 卸载后 |
-|---|---|---|---|---|
-| P0 纯引用 | 内容（只读） | 用户给的路径 | `Config` + `ctx.fs` | 原文件不动 |
-| P1 会话派生 | 派生 + 历史 | session（可聚合到 workspace） | `ctx.sessionProjections` / `ctx.sessionQuery` | 检查点可丢 |
-| P2 用户可见文件 | 内容 | workspace / 用户全局 | `ctx.fs` + `present` | 跟项目/仓库 |
-| P3 宿主账本 | 状态 | workspace 键（存 home） | `ctx.storageDomain` 或自造文件 | 留孤儿，需清理 |
-| P4 账号配置 | 状态 + 凭据 | profile / home | `Config.volatile()` / `credentials` | 随 profile 或 home |
-| P5 产品实例 | 全部四个空间 | profile + workspace + home | bundle patch + registry + dataRoot | 三处都要写清理说明 |
-
 ## 产品作者六问
 
 按真实设计顺序问：
@@ -122,22 +131,12 @@ DSH 自己**不写目录、不写 profile**；"要不要留 marker"是产品在"
 
 这六问的答案，就是你的数据卡。
 
-## 选型：第 0 问 + 七问
+## 选型速查
 
-```text
-0. 模型要对项目目录用通用文件工具吗？
-   不要 → 工具中介：项目不必是 workspace，账本/工具自洽
-   要   → 开放 agent：会话 cwd 必须落在项目里，沙箱约束全部生效
-1. 用户已经有这份数据了吗？            是 → P0（引用它）
-2. 能从会话/文件重新算吗？              是 → P1（派生）
-3. 必须跟项目一起走/被用户看见吗？      是 → P2（项目内文件）
-4. 只在浏览器里用、模型不必知道吗？     是 → 客户端本地
-5. 要跨会话记住、但用户不必编辑吗？     是 → P3（home + 稳定键）
-6. 是关于这个人/账号/安装的吗？         是 → P4（配置/凭据/home 单例）
-7. 这个 DSH 由我决定装什么、从哪起步吗？ 是 → P5（产品实例）
-```
+0. **模型要对项目目录用通用文件工具吗？** 不要 → 工具中介；要 → 开放 agent，会话 cwd 必须落在项目里。
+1. 其余按承诺选：已有 → P0；能重算 → P1；跟项目走 → P2；跨会话记录 → P3；账号/安装 → P4；这个 DSH 由我决定 → P5。
 
-注意顺序：**先问工具面，再问"存哪"。** 跳过第 0 问，最容易把"模型写不了"误诊成"数据放错了"。
+完整问题清单与数据卡见 [41](./40-advisor/41-checklist.md)；空间与键见 [10](./10-foundations/10-taxonomy.md) / [15](./10-foundations/15-four-spaces.md)。
 
 ## 反模式（产品视角）
 
@@ -172,7 +171,7 @@ DSH 自己**不写目录、不写 profile**；"要不要留 marker"是产品在"
 
 ## 证据与边界
 
-- **R（运行时实测，2026-10-30）**：`$DSH_HOME/storages/workspace.json` 为 domain `workspace` v2；已绑定会话头含 `cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`；`deck-studio` 落盘全走 `node:fs`；profile 未覆盖 `deck-studio` 行。
+- **T（可复现观测，2026-10-30；命令见 [experiments](50-evidence/experiments/00-index.md) §04）**：`$DSH_HOME/storages/workspace.json` 为 domain `workspace` v2；已绑定会话头含 `cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`；在该样本中，落盘全走插件工具的 `node:fs`，profile 未覆盖产品那一行。
 - **C（源码/docs）**：workspace 子系统、会话创建与 cwd、`applyEntryPatches` 的整对象替换、config-editor 的完整写入、首用默认工作区的空 registry 条件、沙箱唯一可写根。
 - DSH 机制入口：[workspace](docs/subsystems/workspace.md)、[sandbox](docs/subsystems/sandbox.md)、[filesystem](docs/subsystems/filesystem.md)、[settings](docs/subsystems/settings.md)、[persistence](docs/subsystems/persistence.md)。
 - 社区材料（31–33）是外部、未独立验证的作者声明，不能当 DSH 的 API 合同。

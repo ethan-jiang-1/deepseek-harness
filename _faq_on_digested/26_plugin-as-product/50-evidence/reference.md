@@ -2,7 +2,7 @@
 
 源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。行号按该 commit 的树；仓库前移后以符号名为准。
 
-## 零、承诺与落点的对应（P0–P4 是承诺）
+## 零、承诺与落点的对应（P0–P5 是承诺）
 
 | 承诺 | 主家 | 作用域 | 主要 API | 社区样本（外部，源码阅读，未安装） |
 |---|---|---|---|---|
@@ -11,10 +11,25 @@
 | P2 项目内文件 | 内容 | workspace / 用户全局 | `ctx.fs` + `present` | dsh-project-context |
 | P3 宿主账本 | 状态 | workspace 键（存 home） | `ctx.storageDomain` | dsh-workspace-memories |
 | P4 账号/安装配置 | 状态 + 凭据 | home / profile | `Config.volatile()` / `credentials` | 渠道插件 |
+| P5 产品实例 | 四个空间 | profile 组合 + workspace 根 + home 账本 | bundle patch + `workspaceRegistry` + `dataRoot` 文件 | 本机实测样本（工作台类） |
 
-P0–P4 是数据承诺。P5“每项目运行时”是运行时 scope 缺口（外部 `workspaceCordis`），P6“客户端本地”是设备落点，它们都不是第六/第七种承诺。
+P0–P5 是数据承诺。原来编号里的“每项目运行时”是运行时 scope 缺口（外部 `workspaceCordis`），“客户端本地”是设备落点，两者都不是承诺；P5 现指产品实例，见 [15](../10-foundations/15-four-spaces.md)。
 
 这张表是“作者视角 → 架构词汇”的翻译层；下文是架构本身的出处。
+
+## 复核方式（按等级）
+
+| 等级 | 怎么复核 |
+|---|---|
+| **T** | 跑 [experiments](./experiments/00-index.md) §04 或对应实验里的命令，比对输出 |
+| **C** | 按正文给出的符号名 grep 当前源码；行号只作辅助 |
+| **H** | 查当时的 Agent Note / 旧文档，不保证今天仍成立 |
+| **P** | 查 proposal note；未实现，不能当合同 |
+| **S** | 读第三方仓库源码；未安装，不代表本机行为 |
+| **R** | 读第三方 README/作者声明；不独立验证 |
+| **U** | 看 [experiments](./experiments/00-index.md) 的状态表；未执行就仍是 U |
+
+基线刷新时：先跑 T，再按符号重读 C，最后检查 S/R 样本版本。
 
 ## 一、五个家与权威
 
@@ -128,7 +143,7 @@ OS 临时目录                 # spill、workspace/changes 整文件副本
 | [dsh-memory-evolve](https://github.com/csyangwen/dsh-memory-evolve) | P3/P4：五轨记忆、确认队列、git 分支同步、条目 id 锚点 | README 发布标签与 `package.json` 版本不一致；未审计全部功能 |
 | [dsh-graphmemory](https://github.com/meyaomiao/dsh-graphmemory) | P3：SQLite + FTS/向量 + `_migrations` + 凭据引用；召回标不可信 | 0.2.x 对应 DSH 0.1.5-rc；仓库描述有无法核实的来源说法 |
 | [dsh-project-context](https://github.com/P02-1010751281/dsh-project-context) | P2：项目内 journal 权威 + Markdown 派生、跨进程锁、备份、回填、设置命名空间 | 作者自述；v0.4.3 按 0.1.7-rc.2 写；没有核出与当前 DSH 冲突的说法 |
-| [dsh-workspace-overlay](https://github.com/TTTPOB/dsh-workspace-overlay) | P2/P5：`<workspace>/.dsh/cordis.yml`、`workspaceCordis`/lease、热重载 | 第三方实现，非核心 API；`trustWorkspaceConfig` 默认 true |
+| [dsh-workspace-overlay](https://github.com/TTTPOB/dsh-workspace-overlay) | P2/每项目运行时：`<workspace>/.dsh/cordis.yml`、`workspaceCordis`/lease、热重载 | 第三方实现，非核心 API；`trustWorkspaceConfig` 默认 true |
 | [dsh-custom-workspace](https://github.com/JeremyGuo/dsh-custom-workspace) | P3：按 workspace 持久化外观；自定义 loopback RPC | 旧 `settings.yaml` 写法，对 0.2.x 已过期；目标 0.1.0-rc.6 |
 | [harness-insights](https://github.com/mapan0424/deepseek-harness-plugins/tree/main/packages/harness-insights) | P1：只折叠元数据、不存正文、可重建检查点 | 作者声明；绑定投影/持久化 API 的演进；另有独立镜像仓库 |
 | [deepseek-harness-plugins](https://github.com/mapan0424/deepseek-harness-plugins) | P4：渠道配置 `defaultWorkspace` + 凭据放 profile/env | 第三方 monorepo；按 0.1.5-rc 验证 |

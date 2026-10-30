@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-**这一篇只讲外部插件，长期不作依赖。** 不是“哪个插件好”，而是：**它们把 DSH 的哪个数据缺口补成了事实标准？哪些模式可以借，哪些只是权宜？**
+**角色：外部参考层（E1/E2）。** 这一篇只讲外部插件，长期不作依赖；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。 不是“哪个插件好”，而是：**它们把 DSH 的哪个数据缺口补成了事实标准？哪些模式可以借，哪些只是权宜？**
 
 外部插件分两级：**E1 外部社区插件**（第三方仓库/包）；**E2 外部服务**（MCP/HTTP/DB/对象存储）。长期策略：优先 [21 原生 landscape](../20-native/21-native-data-landscape.md) 的 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
 
@@ -186,7 +186,7 @@
 - **可抄**：loopback-only、响应校验、回退主题。
 - **不要抄**：`settings.yaml` 当 DB；`workspaceId` 当长期键；自定义 RPC 优先于 Config 表单。
 
-## 横向模式
+## 横向模式与缺口
 
 | 模式 | 样本 | 成熟度 | 说明 |
 |---|---|---|---|
@@ -205,8 +205,7 @@
 | 无锁写 | workspace-memories | L3 | last-write-wins |
 | 跨 origin 迁移 | beauty-persist | L2 | localStorage 缺口 |
 
-## 五个“作者在补 DSH 的什么”
-
+上表收敛成五类缺口：
 1. **workspace 级数据/运行时**：overlay（scope/lease）、workspace-memories（home 键）、custom-workspace（设置键）、session_folders（storage-domain）——四种互不兼容的表示。
 2. **删除/保留/归档**：archive-retention、archive-manager、archive-purge、session-workspace-organizer——因为没有 `session.delete`/retention。
 3. **稳定插件数据根**：memory-evolve、project-context、PromptRecall、kb-manager、beauty-persist——各自造 `~/.dsh/<plugin>/` 或项目目录。
@@ -224,7 +223,19 @@
 - 双向同步无冲突策略——两边都权威。
 - 用 `workspaceId` 当长期键——重加换 uuid。
 
+## 映射到四个空间与六种承诺
+
+| 外部案例在补的缺口 | 空间 | 承诺 | 今天的原生做法 |
+|---|---|---|---|
+| 项目记忆 / 项目上下文 | workspace | P2 | 项目内文件 + `ctx.fs` |
+| 跨项目记忆 / 画像 | 账本（home） | P3 | `storageDomain` + 稳定键 |
+| 用量统计 / 索引 | 历史（派生） | P1 | 会话日志 + 可重建检查点 |
+| 渠道 / 账号路由 | 全局设置 | P4 | profile + 凭据引用 |
+| 产品级工作台 | 四个空间 | P5 | profile 组合 + workspace 根 + 账本，见 [42 §11](../40-advisor/architectures/11-product-instance.md) |
+
 ## 证据与边界
+
+外部源码与 README 不得支撑 C 级结论；标签规则见 [50-evidence](../50-evidence/00-index.md)。
 
 - S：memory-evolve、project-context、graphmemory、workspace-memories、workspace-overlay（部分）、PromptRecall、credentials-mysql、custom-workspace。
 - R：kb-manager、mnemon、session-workspace-organizer、archive-retention、codex-sync、claude-move、agent-mailbox、session_folders、以及 research-external 中的多数账号/UI 样本。

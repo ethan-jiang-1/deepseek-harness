@@ -59,12 +59,12 @@ $DSH_HOME/<plugin>/                   ← 账本、注册表、会话绑定
 后果：
 
 - 产品默认值只写在 bundle patch 里，用户在 profile 里只覆盖 `projectsRoot` 一个键 → 其余键（`displayName`、`hideShellSidebar`、`bootstrap`）**全部回落到 schema/代码默认值**，bundle 里那份消失；
-- 设置页不受影响：它写回的是"当前值 + 继承值"合并后的完整对象（[config-editor](packages/boot/config-editor/src/index.ts)）。**C**
+- 设置页**不能**替你恢复：`update` 以当前行 config 为底，`replace` 才以继承层为底；两者都保留非 volatile 字段（`strip(raw)` + `mergeLayers`），但被不完整覆盖丢掉的 bundle 默认值不会回来。`inherited` 只是把下层算给 UI 看（[config-editor](packages/boot/config-editor/src/index.ts)、[settings](packages/settings/settings/src/index.ts)）。**C**
 
 两条纪律：
 
 1. **凡是用户可能覆盖的默认值，都要成为 schema/代码默认值**，不能只活在 bundle patch 里；
-2. 手改 profile patch 前先 `dsh --dump-config` 看整行；要覆盖就写全，或者走设置页。
+2. 手改 profile patch 前先 `dsh --dump-config` 看整行；要覆盖就把该行 `config` 写全。设置页只编辑 volatile 字段，不能恢复已经丢掉的非 volatile 默认值。
 
 ## `.volatile()` 的陷阱
 
@@ -96,6 +96,20 @@ volatile 字段会出现在设置页，**写回当前 profile 的 patch**。一�
 | **开放 agent** | 加 `tool-fs` / `tool-bash` | 模型直接写 | 唯一可写根 = 会话 cwd |
 
 选开放模式时，`cwd` 必须落在项目目录里，且 `cd` 不会放宽沙箱；放宽只能靠一次性审批。约束见 [sandbox 子系统](docs/subsystems/sandbox.md) 与 [fs-sandbox](packages/fs/fs-sandbox/README.md)。**C**
+
+## 沙箱对写路径的硬要求
+
+| 事实 | 结论 |
+|---|---|
+| 策略字段 | 只有 `mode` + `workspaceRoot`，**没有**"额外可写目录" |
+| 根从哪来 | 会话 `SessionHeader.cwd`；无会话时用部署兜底 `sandbox-policy.workspaceRoot` |
+| `workspace-write` 放行 | 根 + 平台临时目录（`writableRoots`） |
+| `cd` | 不放宽：沙箱根锚定原始 cwd |
+| 读 | 不受 fs 栅栏限制（栅栏只管 `writeText`/`editText`） |
+| 放宽 | 只有一次性审批，或把默认档改成 `danger-full-access` |
+| 后端差异 | Seatbelt `deny file-write*`；bwrap 只读宿主根 + 可写 workspace bind；Windows ACL 报 `partial` |
+
+推论：要让模型用通用工具写 `projectsRoot`，会话 cwd 必须落在该根下；插件自己的 `node:fs` 不受这条限制。详见 [sandbox](docs/subsystems/sandbox.md) 与 [fs-sandbox](packages/fs/fs-sandbox/README.md)。
 
 ## 秘密
 
