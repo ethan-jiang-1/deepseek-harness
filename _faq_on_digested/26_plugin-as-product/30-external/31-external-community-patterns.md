@@ -2,7 +2,9 @@
 
 ## 这一篇回答什么
 
-**角色：外部参考层（E1/E2）。** 本篇回答“别人怎么切”，只借模式、不作依赖；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。本 FAQ 第一版把社区做法压成“五种承诺”，够用但太粗；这一版扩成九个维度。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
+**角色：外部参考层（E1/E2）。** 本篇回答“别人怎么切”，只借模式、不作依赖；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。
+
+本 FAQ 第一版把社区做法压成“五种承诺”，够用但太粗；这一版扩成九个维度。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
 
 > **外部参考，不是原生方案。** 本文件只记录第三方插件/社区模式；长期优先 [21 原生 landscape](../20-native/21-native-data-landscape.md) 的 N0/N1。外部插件只借模式，不作依赖；E1/E2 的迁移/清理/兼容成本要自己承担。
 
@@ -48,7 +50,9 @@
 | 会话投影/检查点 | 零额外状态、天然派生 | 只能算已有事件，不能存额外事实 | insights、session_projcache |
 | 外部服务 | 能力强、跨设备 | 运维/隐私/网络/账号 | Honcho、OpenViking |
 
-**journal → 渲染视图**是这批样本里最工程化的一招：`memory.jsonl` 是唯一权威，`MEMORY.md` 是给人看和注入的派生渲染；写入顺序固定为“锁内备份 → 追加 journal → 渲染”，崩溃只会让渲染落后，不会让权威丢；用户手改 `MEMORY.md` 且比 journal 新时，下一次整理会把它收进 journal。这套做法把“用户可编辑”和“机器可追加”这两个矛盾需求同时满足了。
+**journal → 渲染视图**是这批样本里最工程化的一招：`memory.jsonl` 是唯一权威，`MEMORY.md` 是给人看和注入的派生渲染；写入顺序固定为“锁内备份 → 追加 journal → 渲染”，崩溃只会让渲染落后，不会让权威丢；用户手改 `MEMORY.md` 且比 journal 新时，下一次整理会把它收进 journal。
+
+这套做法把“用户可编辑”和“机器可追加”这两个矛盾需求同时满足了。
 
 ## 维度三：权威与派生——先回答“删了会不会丢”
 
@@ -190,7 +194,9 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 
 1. **没有“每 workspace 一套插件实例”**。社区用 `ctx.workspaceCordis` + canonical path lease 补（workspace-overlay），或用项目内配置 + 自己解析（project-context），或用 home + 自定义 RPC（custom-workspace）。
 2. **没有“插件数据根”**。社区各自造 `~/.dsh/<plugin>/`、项目内 `.agents/`、SQLite 文件；没有统一的位置、配额、GC 或导出。Claude Code 的 `${CLAUDE_PLUGIN_DATA}` 是一个直接对照（见 32 篇）。
-3. **没有“第三方任意设置命名空间”**。注意：**Config-backed 的 volatile 表单是开放的**，第三方插件导出 `Config` 就能在设置页出现；缺的是“与 Loader 条目无关的任意键值命名空间”。custom-workspace 在 0.1.0-rc.6 上因此造了自定义 RPC；新插件应先试 `Config.volatile()`，不要直接复制这个 workaround。
+3. **没有“第三方任意设置命名空间”**。注意：**Config-backed 的 volatile 表单是开放的**，第三方插件导出 `Config` 就能在设置页出现；缺的是“与 Loader 条目无关的任意键值命名空间”。
+
+custom-workspace 在 0.1.0-rc.6 上因此造了自定义 RPC；新插件应先试 `Config.volatile()`，不要直接复制这个 workaround。
 
 ## 五个反直觉的结论
 
@@ -217,7 +223,7 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 | journal 权威 + Markdown 渲染 | workspace | P2 | 项目内 `.agents/` 目录 |
 | 按项目存 home、路径键 | 账本（索引/状态） | P3 | `storageDomain` + `w_<sha256>` |
 | 设置里选存储位置 | 全局设置 | P4/P5 | `dataRoot` 文件 |
-| 每项目一套运行时 | —（运行时缺口） | 不是承诺 | E1 lease，见 [92 §8](../90-advisor/architectures/08-per-project-runtime.md) |
+| 每项目一套运行时 | —（运行时缺口） | 不是承诺 | E1 lease，见 [92](../90-advisor/92-native-reference-architectures.md) |
 
 ## 边界
 

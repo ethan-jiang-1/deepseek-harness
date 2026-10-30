@@ -2,7 +2,9 @@
 
 ## 这一篇回答什么
 
-这一篇是**内容家**的一个切片：四层词汇见 [10](./10-taxonomy.md)，五个家见 [11](./11-five-homes.md)，空间归属见 [15](./15-four-spaces.md)。这些产物最终落在 workspace、附件库或临时目录。用户口中的“artifact / 产物”在 DSH 里对应什么？为什么 `present` 只记路径？附件库和 `present` 有什么区别？什么时候该用 spill？把文件写到哪里，用户才能找得到？
+这一篇是**内容家**的一个切片：四层词汇见 [10](./10-taxonomy.md)，五个家见 [11](./11-five-homes.md)，空间归属见 [15](./15-four-spaces.md)。
+
+这些产物最终落在 workspace、附件库或临时目录。用户口中的“artifact / 产物”在 DSH 里对应什么？为什么 `present` 只记路径？附件库和 `present` 有什么区别？什么时候该用 spill？把文件写到哪里，用户才能找得到？
 
 ![产物的引用与导出](../figures/14-artifact-refs.svg)
 

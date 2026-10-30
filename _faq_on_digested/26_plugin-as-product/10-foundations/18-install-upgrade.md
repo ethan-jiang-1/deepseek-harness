@@ -13,34 +13,57 @@ dsh plugin --profile <name> add <bundle-package>
 - profile 缺失时先初始化：五个随附模板名（`acp` / `web` / `headless` / `sdk` / `sdk-minimal`）用自己的 bundles；**其他名字只有 `@deepseek-ai/dsh-base`**。所以自定义产品 profile 要把 `@deepseek-ai/dsh-web-app` 也加进 bundles，才复现 Web 组合。**C**
 - 命令把参数转发给 pnpm，profile 目录是工作目录；`add`/`remove`/`update`/`why` 都可用。**C**
 - 每次成功后，`dsh.profile.bundles` 按安装状态重算：声明了 `dsh.bundle.patch` 的依赖进层叠，没有声明的只留作普通依赖并给一次警告。**C**
+- 重算**保留已有条目的顺序**，新 bundle 按安装顺序**追加到末尾**（`reconcileProfilePlugins`）。所以要按 `base → web-app → 产品 bundle` 的顺序装；顺序反了就手改 `dsh.profile.bundles`。**C**
 - bundle 名解析有两个锚点：先 dsh 安装自身，再 profile 的 `node_modules`。**C**
 - **没有 `extends: web` 这种继承**：复现某组合的唯一方式是照它的 bundles 顺序列一遍；产品 bundle 放最后，才能按 id 覆盖前面的行。
 
+### bundle 包本体
+
+一个 bundle 就是一个普通 npm 包，在 `package.json` 里声明 patch 文件：
+
+```json
+{
+  "name": "dsh-plugin-kanban-studio",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
+```
+
+- `patch` 是相对包根的路径，文件名可以改；`cordis.patch.yml` 与 `package.json` 同目录是惯例；
+- 文件内容是 `insert:` 列表与按 id 覆盖的行（和 profile patch 同构）；
+- **没有 `dsh.bundle.patch` 的包只是普通依赖**，不进层叠；安装时会被警告一次。**C**
+
 分发形态三选一（详见 [24](../../24_plugin-publish-and-agent-data-planes/answer.md)）：只发 bundle 包、只发 patch 片段、或自带壳（Desktop 就是自己 `loadProfileDirectory` + `runProfile` 的先例）。
+
+**普通插件**：装进用户已有的 profile（`dsh plugin --profile <existing> add <pkg>`），不必须是 bundle——普通依赖也能装，只是不进层叠并给一次警告；`engines.dsh` 仍建议声明。
 
 ## 变更边界：什么要重启、什么热重载
 
 | 变更 | 生效方式 | 依据 |
 |---|---|---|
-| bundle 成员（add / remove / update） | **必须重启该 profile**：运行中的实例保留启动时的 bundle 集合 | **C** |
+| bundle 成员（add / remove / update） | 有 HMR（base/web 默认）时可能热应用（`applied`）；无 HMR（headless 等）或操作要求时 `restart-required`。**以返回值 `application` 为准**，不确定就重启 | **C** |
 | profile / home 的 `cordis.patch.yml` | 启用 HMR 时热重载；否则下次启动 | **C** |
 | `dataRoot` 下的账本与全局设置 | 插件自己读，保存即生效 | **C** |
 | workspace 登记 | 立即（registry 写入） | **C** |
+| 客户端插件（client bundle） | 生产构建下刷新 Web 页面；开发时 client HMR 自动重载 | **建议（U）** |
 
-产品升级最常见的坑：以为 `update` 完就生效。**bundle 层变化一定重启**；只有用户 patch 的编辑才是热重载。
+产品升级最常见的坑：以为 `update` 完就生效。**看 `ChangeResult.application`**：`applied` 已热应用；`restart-required` 必须重启（无 HMR 的 headless 一律如此）；用户 patch 的编辑走 HMR。
 
 ## 兼容：`engines.dsh` 与豁免
 
 - bundle 可以在 `package.json` 里声明 `engines.dsh`；不匹配或读不出时，**跳过这个 bundle**，在 stderr 打 `skipping profile bundle ...`，profile 仍然启动。**C**
 - 这是"降级启动"而不是数据损坏：会话、凭据、账本都还在，但产品可能少了几行插件。
 - 豁免通道：`dsh plugin --profile <name> allow-version <pkg@version> --dsh-version <exact> --accept-risk`；`version-exemptions` 查看，`revoke-version` 撤销。**C**
-- 产品侧要做的：把 `engines.dsh` 写进 manifest，别让用户靠猜。
+- 产品侧要做的：把 `engines.dsh` 写进 manifest，别让用户靠猜。**P5 的自检不能由产品插件自己做**：bundle 被跳过时它根本不加载。要在用户 profile 里留一条常驻的 launcher 行（或独立小包）检查产品行是否存在，缺失就 fail loud——否则 profile 照常启动，产品静默消失。**建议**（不是 C）
 
 ## 升级：三层分别处理
 
 | 层 | 怎么升 | 风险 |
 |---|---|---|
-| **组合** | `dsh plugin update` 或升级 dsh 本身 | 成员变化要重启；旧 bundle 可能被跳过 |
+| **组合** | `dsh plugin update` 或升级 dsh 本身 | 成员变化看 `application`，`restart-required` 就重启；旧 bundle 可能被跳过 |
 | **配置** | 对比新旧 bundle patch，把差异合并进 profile patch | patch 是整对象替换：只写一个键会丢其余默认值（见 [17](./17-config-layers.md)） |
 | **数据** | `dataRoot` 的 `schemaVersion`、workspace 内容 | 版本不符 fail loud；迁移必须自己写 |
 
@@ -50,17 +73,27 @@ dsh plugin --profile <name> add <bundle-package>
 2. **升级不静默重建数据**：版本不符要么迁移，要么报错。
 3. 升级前备份 profile patch 与 `dataRoot`；回滚按同样的三层次序做。
 
-## 卸载：四处残留
+## 卸载：四处残留（会话只归档）
 
 | 残留 | 位置 | 谁清 |
 |---|---|---|
-| workspace 登记 | `$DSH_HOME/storages/workspace.json` | 用户或产品：`delete` 只删登记，目录与会话不动 |
+| workspace 登记 | `$DSH_HOME/storages/workspace.json` | **只删产品创建的占位/项目登记**（记在账本·状态里）；用户自己加的不删。`delete` 只删登记，目录与会话不动 |
 | 账本与全局设置 | `$DSH_HOME/<plugin>/` | 卸载说明必须列出这个路径 |
 | 目录内 marker / 脚手架 | 用户目录 | 说明里写清哪些文件是产品写的 |
 | profile patch 里的行 | `profiles/<name>/cordis.patch.yml` | `dsh plugin remove` 只动包；用户自己的 patch 要手删，否则剩下 unmatched 行 |
 | 会话 | `$DSH_HOME/sessions` | **没有删除 API**；只能归档 |
 
+会话不是“残留”：没有删除 API，只能归档，所以下面按四处产品残留来清。
+
 `dsh plugin remove` 会移除依赖并从 bundles 列表里去掉；bundle 自己层里的行随层消失，**但用户复制到 profile patch 里的行不会自动消失**——每次启动会报 unmatched 目标。
+
+**普通插件**：移除依赖后，项目内用户文件保留；domain 记录没有删除 API，README 要写清域与清理方式。
+
+**所有权判据**：registry 没有属主字段，产品只能靠自己账本里的记录区分“我创建的”与“用户加的”；卸载前按这份记录逐条判断，别全删。
+
+**P2 项目内文件**：属于用户资产，卸载一律不删；只删插件自己的索引/绑定/marker。
+
+**占位登记**：占位目录里没有会话 → 删；有会话 → 保留并追加用户目录（[16](./16-startup-resolution.md)）。
 
 ## 失败与半装
 
@@ -84,7 +117,7 @@ dsh plugin --profile <name> add <bundle-package>
 数据：$DSH_HOME/<plugin>/（整个 dataRoot）
 ```
 
-- 回滚 bundle：把版本钉回旧值并重装；bundle 成员变化后重启。
+- 回滚 bundle：把版本钉回旧值并重装；成员变化后按 `application` 判断是否重启。
 - 回滚配置：还原 patch；若产品写过 patch（不应该），以备份为准。
 - 回滚数据：只在升级已经改过 `dataRoot` 时做；先停 Host，再换目录。
 - 每次回滚后用 `dsh --dump-config` 确认组合回到旧形状。
@@ -110,7 +143,7 @@ dsh plugin --profile <name> add <bundle-package>
 
 - [ ] `engines.dsh` 已声明，且与目标 dsh 版本范围一致
 - [ ] 产品 bundle 排在 bundles 列表最后，能覆盖 base/web-app 的行
-- [ ] 文档写了"装完之后要重启"（bundle 成员变化）
+- [ ] 文档写了重启条件（`application: restart-required`），而不是笼统的"装完要重启"
 - [ ] 升级路径覆盖组合、配置、数据三层
 - [ ] `dataRoot` 有 `schemaVersion` 与迁移或明确的 fail loud
 - [ ] 卸载说明列出 workspace 登记、`dataRoot`、目录内文件、profile patch 四处

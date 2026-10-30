@@ -6,7 +6,9 @@
 
 外部插件分两级：**E1 外部社区插件**（第三方仓库/包）；**E2 外部服务**（MCP/HTTP/DB/对象存储）。长期策略：优先 [21 原生 landscape](../20-native/21-native-data-landscape.md) 的 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
 
-**口径。** 2026-10-27 对约 100 个候选做了目录/README 扫描（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55），选 15 个深读。**没有安装、没有运行**；S = 读过源码，R = README/作者声明，U = 未确认。样本不是 census。所有结论只描述外部插件，不是 DSH 合同。
+**口径。** 2026-10-27 对约 100 个候选做了目录/README 扫描（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55），选 15 个深读。
+
+**没有安装、没有运行**；S = 读过源码，R = README/作者声明，U = 未确认。样本不是 census。所有结论只描述外部插件，不是 DSH 合同。
 
 ![外部插件样本 × 数据家](../figures/33-external-market-map.svg)
 
@@ -231,9 +233,9 @@
 | 跨项目记忆 / 画像 | 账本（home） | P3 | `storageDomain` + 稳定键 |
 | 用量统计 / 索引 | 历史（派生） | P1 | 会话日志 + 可重建检查点 |
 | 渠道 / 账号路由 | 全局设置 | P4 | profile + 凭据引用 |
-| 产品级工作台 | 四个空间 | P5 | profile 组合 + workspace 根 + 账本，见 [92 §11](../90-advisor/architectures/11-product-instance.md) |
+| 产品级工作台 | 四个空间 | P5 | profile 组合 + workspace 根 + 账本，见 [92](../90-advisor/92-native-reference-architectures.md) |
 
-## 证据与边界
+## 边界
 
 外部源码与 README 不得支撑 C 级结论；标签规则见 [40-evidence](../40-evidence/00-index.md)。
 
@@ -241,4 +243,4 @@
 - R：kb-manager、mnemon、session-workspace-organizer、archive-retention、codex-sync、claude-move、agent-mailbox、session_folders、以及 research-external 中的多数账号/UI 样本。
 - U：mailbox/mnemon 的落点、codex-sync 映射状态、部分 localStorage 键。
 - 没有安装/运行；探针结果另列（如执行）。
-- 样本不是 census；同名克隆已排除并记录在 v2 调查底稿。
+- 样本不是 census；同名克隆已排除（记录见 [quality-review](../40-evidence/quality-review.md)）。

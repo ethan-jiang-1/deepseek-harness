@@ -1,4 +1,4 @@
-# 50 · 证据入口：当前证据、v1/v2 历史与阅读顺序
+# 40 · 证据入口：当前证据、实验与复核
 
 `40-evidence/` 只放证据，不放结论。结论在 `10`–`40`；这里回答“这句话凭什么”。
 
@@ -10,25 +10,20 @@
 | [research-native.md](./research-native.md) | DSH 原生 33 个数据落点、44 事件清单、关键决定 |
 | [research-external.md](./research-external.md) | 外部插件约 97 个候选、15 个深读的样本与来源 |
 | [quality-review.md](./quality-review.md) | 本轮结构/一致性审计；计数结论截至 2026-10-27，不替代 API 证据 |
-| [experiments/](./experiments/00-index.md) | 三个 U 的实验记录与本机观测命令（T 级证据的来源） |
+| [experiments/](./experiments/00-index.md) | 待确认项的实验记录（02/03 已收口为 C）与本机观测命令（T 级证据的来源） |
 
-**插件即产品轮（2026-10-30）新增的 R 级实测**：`$DSH_HOME/storages/workspace.json`（domain `workspace` v2）、已绑定会话头（`cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`）、某工作台类插件的 `node:fs` 落盘与 preset 工具面；结论见 [00-answer](../00-answer.md) 与 [15](../10-foundations/15-four-spaces.md)–[17](../10-foundations/17-config-layers.md)。
+**插件即产品轮（2026-10-30）新增的 T 级观测**：`$DSH_HOME/storages/workspace.json`（domain `workspace` v2）、已绑定会话头（`cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`）、某工作台类插件的 `node:fs` 落盘与 preset 工具面；结论见 [00-answer](../00-answer.md) 与 [15](../10-foundations/15-four-spaces.md)–[17](../10-foundations/17-config-layers.md)。
 
-## 历史快照（不要当当前合同）
+## 历史底稿
 
-| 文件 | 说明 |
-|---|---|
-| [v1/research.md](./v1/research.md) | 第一轮外部核验底稿；编号/计数是当时快照 |
-| [v1/review.md](./v1/review.md) | 第一轮 review 记录 |
-| [v2/plan.md](./v2/plan.md) | 第二轮调查计划；记录执行偏差 |
-| [v2/review.md](./v2/review.md) | 第二轮 review 记录；编号是 v2 当时编号 |
+早期两轮研究的工作底稿（v1 外部核验、v2 调查计划与 review）已从语料移除——它们的结论已吸收进正文，保留只会让人误以为有"版本"。需要追溯时看 git 历史；各轮审计结论见 [quality-review](./quality-review.md)。
 
 ## 阅读顺序
 
 1. 先看 [reference](./reference.md) 的“证据薄弱处”，知道哪些是 C/H，哪些是 S/R/U。
 2. 原生结论查 [research-native](./research-native.md)；外部结论查 [research-external](./research-external.md)。
 3. 想知道“这轮改了什么、还漏什么”，看 [quality-review](./quality-review.md)；它是审计快照，不替代 reference。
-4. 只有追溯方法时才读 v1/v2；它们不覆盖当前结论。
+4. 需要追溯早期方法时看 git 历史；本目录不再保留 v1/v2 底稿。
 
 ## 标签
 

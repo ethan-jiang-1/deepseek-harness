@@ -6,7 +6,9 @@
 
 > 本篇按“一个插件服务多个 workspace”的通用场景写。产品型实例的根是一个还是多个，取决于架构选择（见 [15](./15-four-spaces.md) / [16](./16-startup-resolution.md)）。
 
-这一篇展开的是四层词汇里的**第四层（作用域与键）**：承诺见 [10](./10-taxonomy.md)，空间见 [15](./15-four-spaces.md)，家见 [11](./11-five-homes.md)。插件实例只有一份，但要服务多个 workspace、多个会话、多个项目。数据怎么切？项目级状态用什么键？`workspaceId` 行不行？目录被删了、被移了、工作区被重新添加了，会发生什么？
+这一篇展开的是四层词汇里的**第四层（作用域与键）**：承诺见 [10](./10-taxonomy.md)，空间见 [15](./15-four-spaces.md)，家见 [11](./11-five-homes.md)。
+
+插件实例只有一份，但要服务多个 workspace、多个会话、多个项目。数据怎么切？项目级状态用什么键？`workspaceId` 行不行？目录被删了、被移了、工作区被重新添加了，会发生什么？
 
 ![作用域矩阵](../figures/13-scope-matrix.svg)
 
@@ -143,7 +145,7 @@ single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分
 | storage-domain 按 workspace | session_folders（E1） | workspace 记录/文件夹 |
 | home 目录按 workspace | workspace-memories（E1） | `workspaceId` |
 
-这也是 v1 说“没有 per-workspace 实例”时真正缺的东西：不是“没有目录”，是**没有统一的作用域 + 键 + 生命周期**。
+这也是“没有 per-workspace 实例”真正缺的东西：不是“没有目录”，是**没有统一的作用域 + 键 + 生命周期**。
 
 ## 跨工作区聚合：不要扫盘，扫注册表/会话
 
@@ -166,7 +168,9 @@ single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分
 
 但要接受：**home 是机器/账户本地的**。换机器、换 `DSH_HOME`、换 Host，数据不跟着走。如果用户期望“我的偏好在任何机器都一样”，那不是 DSH 内置能力，需要你自己做导入/导出（或像外部插件那样用 git 做同步；E1，参考）。
 
-另一个容易混的点：**profile 不是人，也不是项目**。同一个 `$DSH_HOME` 下可以有多个 profile（web、headless、产品自有名），每个 profile 有自己的配置 patch；`Config` 的作用域是 profile，不是“这个用户”。要跨 profile 共享，用 home 作用域的文件或域——产品全局设置就是这么放的（见 [17](../10-foundations/17-config-layers.md)）。
+另一个容易混的点：**profile 不是人，也不是项目**。同一个 `$DSH_HOME` 下可以有多个 profile（web、headless、产品自有名），每个 profile 有自己的配置 patch；`Config` 的作用域是 profile，不是“这个用户”。
+
+要跨 profile 共享，用 home 作用域的文件或域——产品全局设置就是这么放的（见 [17](../10-foundations/17-config-layers.md)）。
 
 ## 多用户与远程：home 是 Host 账户的，不是浏览器的
 

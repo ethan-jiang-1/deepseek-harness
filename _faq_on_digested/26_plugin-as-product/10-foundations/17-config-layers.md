@@ -46,20 +46,18 @@ $DSH_HOME/<plugin>/                   ← 账本、注册表、会话绑定
 
 ## 优先级与字段级权威
 
-```text
-包内代码默认 → profile config（DSH Config） → dataRoot 全局设置文件
-```
+一条链管配置：**代码 schema 默认 → bundle patch → profile patch → home patch → `--patch`**（后层整对象替换，见上表）。
 
-文件里有的字段以文件为准；文件里没有的才回落到 config。**同一字段不要同时给两个入口**（设置页写 config、产品 UI 写文件），否则用户改了一个、另一个还在生效。
+`dataRoot` 的 `settings.json` 是链外的运行时存储：插件启动后读它；对用户在 UI 里改的字段，文件值覆盖 config 值。规则：**同一字段只给一个入口**——安装参数进 config，运行时选择进 settings 文件；两边同时写会互相覆盖，用户也分不清哪个生效。
 
 ## 整对象替换：最容易丢默认值的地方
 
-`applyEntryPatches` 对目标行执行的是 `target[key] = value`（[vendor/include](vendor/include/src/index.ts)），也就是说 profile patch 里的 `config` 会**整体替换**该行的 config，不是深合并。**C**
+`applyEntryPatches` 对目标行执行的是 `target[key] = value`（[vendor/include](../../../vendor/include/src/index.ts)），也就是说 profile patch 里的 `config` 会**整体替换**该行的 config，不是深合并。**C**
 
 后果：
 
 - 产品默认值只写在 bundle patch 里，用户在 profile 里只覆盖 `projectsRoot` 一个键 → 其余键（`displayName`、`hideShellSidebar`、`bootstrap`）**全部回落到 schema/代码默认值**，bundle 里那份消失；
-- 设置页**不能**替你恢复：`update` 以当前行 config 为底，`replace` 才以继承层为底；两者都保留非 volatile 字段（`strip(raw)` + `mergeLayers`），但被不完整覆盖丢掉的 bundle 默认值不会回来。`inherited` 只是把下层算给 UI 看（[config-editor](packages/boot/config-editor/src/index.ts)、[settings](packages/settings/settings/src/index.ts)）。**C**
+- 设置页**不能**替你恢复：`update` 以当前行 config 为底，`replace` 才以继承层为底；两者都保留非 volatile 字段（`strip(raw)` + `mergeLayers`），但被不完整覆盖丢掉的 bundle 默认值不会回来。`inherited` 只是把下层算给 UI 看（[config-editor](../../../packages/boot/config-editor/src/index.ts)、[settings](../../../packages/settings/settings/src/index.ts)）。**C**
 
 两条纪律：
 
@@ -95,7 +93,11 @@ volatile 字段会出现在设置页，**写回当前 profile 的 patch**。一�
 | **工具中介** | 插件自己的工具 | 插件 `node:fs` | 不相关 |
 | **开放 agent** | 加 `tool-fs` / `tool-bash` | 模型直接写 | 唯一可写根 = 会话 cwd |
 
-选开放模式时，`cwd` 必须落在项目目录里，且 `cd` 不会放宽沙箱；放宽只能靠一次性审批。约束见 [sandbox 子系统](docs/subsystems/sandbox.md) 与 [fs-sandbox](packages/fs/fs-sandbox/README.md)。**C**
+选开放模式时，`cwd` 必须落在项目目录里，且 `cd` 不会放宽沙箱；放宽只能靠一次性审批。约束见 [sandbox 子系统](../../../docs/subsystems/sandbox.md) 与 [fs-sandbox](../../../packages/fs/fs-sandbox/README.md)。**C**
+
+**普通插件控制不了宿主 preset**：宿主若挂了 `tool-fs`/`tool-bash`，模型可以绕过你的工具直接改文件。对策是格式幂等（外部改写后能重建索引）、派生索引可重建，不要假设只有你能写。
+
+**沙箱管不到插件自己的代码。** 插件运行在 Host 进程，用 `node:fs` 写盘不受会话沙箱约束；沙箱约束的是模型调用的工具（`tool-fs`/`tool-bash`）。所以架构 I 的写边界是进程账户权限，不是会话 cwd。
 
 ## 沙箱对写路径的硬要求
 
@@ -109,7 +111,7 @@ volatile 字段会出现在设置页，**写回当前 profile 的 patch**。一�
 | 放宽 | 只有一次性审批，或把默认档改成 `danger-full-access` |
 | 后端差异 | Seatbelt `deny file-write*`；bwrap 只读宿主根 + 可写 workspace bind；Windows ACL 报 `partial` |
 
-推论：要让模型用通用工具写 `projectsRoot`，会话 cwd 必须落在该根下；插件自己的 `node:fs` 不受这条限制。详见 [sandbox](docs/subsystems/sandbox.md) 与 [fs-sandbox](packages/fs/fs-sandbox/README.md)。
+推论：要让模型用通用工具写 `projectsRoot`，会话 cwd 必须落在该根下；插件自己的 `node:fs` 不受这条限制。详见 [sandbox](../../../docs/subsystems/sandbox.md) 与 [fs-sandbox](../../../packages/fs/fs-sandbox/README.md)。
 
 ## 秘密
 
@@ -130,3 +132,8 @@ volatile 字段会出现在设置页，**写回当前 profile 的 patch**。一�
 - [ ] 明确选了工具中介还是开放 agent；选开放 agent 时会话 cwd 必须是项目目录
 - [ ] README 写了优先级链与"改哪个文件生效"
 - [ ] 秘密只存引用
+
+## 边界
+
+- 单 Host、单 home；不涉及远端部署。
+- 字段级权威与整对象替换只讨论 profile patch 这条路径；home patch 与 `--patch` 见 17 前文与 18。

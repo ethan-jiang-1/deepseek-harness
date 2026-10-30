@@ -1,6 +1,8 @@
 # 26 · 当一个插件就是整个 DSH：安装、启动、目录与数据该怎么分？
 
-源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。本轮新增结论按当前 checkout 逐条复核；标 **T** 的是可复现探针（`$DSH_HOME` 静态读数与真实插件实例，命令见 `40-evidence/experiments/`），其余仍以源码与 docs 为准。只讨论单 Host、单 `$DSH_HOME` 账户。
+源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。
+
+本轮新增结论按当前 checkout 逐条复核；标 **T** 的是可复现探针（`$DSH_HOME` 静态读数与真实插件实例，命令见 `40-evidence/experiments/`），其余仍以源码与 docs 为准。只讨论单 Host、单 `$DSH_HOME` 账户。
 
 ## 问题从哪来
 
@@ -11,7 +13,7 @@
 - 它有自己的**出厂资产**（模板、种子、预设、客户端界面），随 npm 版本走；
 - 它有自己的**项目目录**——可能是 home 下的默认目录，也可能由用户指定；
 - 它有自己的**账本**（索引、游标、会话绑定）；
-- 它还有一份**跨 profile 一致的全局设置**。
+- 它还有一份**跨 profile 一致的全局设置**（前提：`dataRoot` 稳定）。
 
 于是原来的问句"插件的数据放哪"被拆成四个：
 
@@ -53,7 +55,11 @@
 
 ## 一句话预告
 
-**一个产品型 DSH 实例 = 一份 profile 组合（装什么）+ 一个 workspace 根（在哪干）+ 一份 home 级账本与全局设置（记住什么）。** 插件包只读，workspace 可写，账本记插件自己的东西（索引可重建、状态不可重建），全局设置跟 home；模型能不能直接写 workspace 取决于 preset 的工具面，而不是 workspace 本身。启动时没有用户可问，所以"让用户选目录"必须发生在客户端连上之后，并用占位登记挡住 DSH 自己的默认工作区。
+**一个产品型 DSH 实例 = 一份 profile 组合（装什么）+ 一个 workspace 根（在哪干）+ 一份 home 级账本与全局设置（记住什么）。**
+
+插件包只读，workspace 可写，账本记插件自己的东西（索引可重建、状态不可重建），全局设置跟 home；模型能不能直接写 workspace 取决于 preset 的工具面，而不是 workspace 本身。启动时没有用户可问，所以"让用户选目录"必须发生在客户端连上之后，并用占位登记挡住 DSH 自己的默认工作区。
+
+> 这里的“根”是**产品自己的项目根**（`projectsRoot`）；只有架构 II 会把它登记为 DSH workspace。
 
 ![四层词汇：承诺 → 空间 → 家 → 作用域/键](./figures/10-taxonomy-flow.svg)
 
@@ -66,6 +72,10 @@
 
 ## 阅读顺序
 
-先读 [answer](./00-answer.md) 的四个空间与六种承诺，再读 [15](./10-foundations/15-four-spaces.md) 建立空间感、[16](./10-foundations/16-startup-resolution.md) 决定启动怎么安排、[17](./10-foundations/17-config-layers.md) 决定配置放哪；然后按需读 [11](./10-foundations/11-five-homes.md)（家）、[13](./10-foundations/13-scope-and-keys.md)（作用域与键）、[12](./10-foundations/12-state-homes.md)（状态）、[14](./10-foundations/14-artifacts.md)（产物）；想知道 DSH 为什么长成这样，读 [22](./20-native/22-native-data-history.md)；想对比别人怎么做，读 [31](./30-external/31-external-community-patterns.md) 与 [33](./30-external/33-external-plugin-patterns.md)；最后用 [91](./90-advisor/91-checklist.md) 自查、用 [92](./90-advisor/92-native-reference-architectures.md) 选骨架。
+1. **先看结论**：[answer](./00-answer.md) 的四个空间与六种承诺。
+2. **建立空间感**：[15](./10-foundations/15-four-spaces.md) → [16](./10-foundations/16-startup-resolution.md) → [17](./10-foundations/17-config-layers.md)。
+3. **按需补词汇**：[11](./10-foundations/11-five-homes.md)（家）、[13](./10-foundations/13-scope-and-keys.md)（作用域与键）、[12](./10-foundations/12-state-homes.md)（状态）、[14](./10-foundations/14-artifacts.md)（产物）。
+4. **要动手**：直接去 [90 动手](./90-advisor/00-index.md)，用 [91](./90-advisor/91-checklist.md) 自查。
+5. **想溯源**：[22](./20-native/22-native-data-history.md)（历史）、[31](./30-external/31-external-community-patterns.md)/[33](./30-external/33-external-plugin-patterns.md)（外部对照）。
 
 ![六种数据承诺](./figures/00-promises-six.svg)

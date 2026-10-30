@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>启动解析：四种状态与占位防抢占</title>
-  <desc>configured 缺失则创建；adopted 缺失不重建、重新问；default 是产品默认；unresolved 先登记占位，等客户端弹窗。开机时没有用户可问。</desc>
+  <title>启动解析：四种状态与占位条件</title>
+  <desc>configured 缺失则创建；adopted 缺失不重建、重新问；default 是产品默认；unresolved 用侧栏时先登记占位。开机时没有用户可问。</desc>
 
   <rect width="1200" height="400" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">启动解析：四种状态与占位防抢占</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">启动解析：四种状态与占位条件</text>
   <text x="600" y="58" text-anchor="middle" fill="#64748b">开机时没有用户可问；Host 先落到确定状态，弹窗发生在客户端连上之后</text>
 
   <!-- configured -->
@@ -29,7 +29,7 @@
   <!-- default -->
   <rect x="608" y="82" width="276" height="180" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
   <text x="628" y="110" font-size="13" font-weight="700" fill="#92400e">default</text>
-  <text x="628" y="134" font-size="10.5" fill="#334155">$DSH_HOME/&lt;plugin&gt;/workspace</text>
+  <text x="628" y="134" font-size="10.5" fill="#334155">&lt;dataRoot&gt;/workspace</text>
   <text x="628" y="162" font-size="10" font-weight="700" fill="#92400e">目录存在</text>
   <text x="628" y="179" font-size="10.5" fill="#334155">直接用并登记</text>
   <text x="628" y="205" font-size="10" font-weight="700" fill="#92400e">目录缺失</text>
@@ -41,16 +41,16 @@
   <text x="920" y="110" font-size="13" font-weight="700" fill="#9f1239">unresolved</text>
   <text x="920" y="134" font-size="10.5" fill="#334155">以上都不能确定</text>
   <text x="920" y="162" font-size="10" font-weight="700" fill="#9f1239">动作</text>
-  <text x="920" y="179" font-size="10.5" fill="#334155">登记占位工作区</text>
+  <text x="920" y="179" font-size="10.5" fill="#334155">登记占位（需侧栏）</text>
   <text x="920" y="194" font-size="10.5" fill="#334155">标记 pending</text>
   <text x="920" y="220" font-size="10" font-weight="700" fill="#9f1239">然后</text>
   <text x="920" y="237" font-size="10.5" fill="#334155">客户端弹窗让用户选</text>
-  <text x="920" y="255" font-size="9.5" fill="#64748b">先登记，挡住默认工作区</text>
+  <text x="920" y="255" font-size="9.5" fill="#64748b">用侧栏时先登记，挡住默认</text>
 
   <!-- 占位说明 -->
   <rect x="24" y="286" width="1152" height="88" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="44" y="312" font-size="12" font-weight="700" fill="#0f172a">为什么占位是关键</text>
+  <text x="44" y="312" font-size="12" font-weight="700" fill="#0f172a">占位的边界</text>
   <text x="44" y="334" font-size="10.5" fill="#334155">客户端首连只在“registry 为空、且没有已存会话头/存档会话”时才建 &lt;Documents&gt;/deepseek-harness/default-workspace；</text>
-  <text x="44" y="352" font-size="10.5" fill="#334155">启动时先登记一个占位工作区，这条路径就失效。用户选完后再决定保留还是追加登记。</text>
+  <text x="44" y="352" font-size="10.5" fill="#334155">用侧栏时先登记占位，这条路径才挡得住（概率，不保证）。用户选完后再决定保留还是追加登记。</text>
   <text x="44" y="368" font-size="9.5" fill="#64748b">风险：启动竞态（行并发启动）、mkdir -p 物化未挂载的卷、registry 跨 profile 共享。见 16。</text>
 </svg>

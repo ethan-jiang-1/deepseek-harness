@@ -76,7 +76,9 @@
 
 ### 4. 会话持久化：日志是唯一真源
 
-**决定**：`SessionPersistence` 只有 `create/open/stat/list/flush`，返回 per-session handle；handle 的 `read/append/flush/close` 是唯一门；单写者由进程内 registry + 跨进程 kernel lease（POSIX `flock` / Win32 semaphore）保证；崩溃修复在 resume 里做，不在 persistence 里做。**C/H**
+**决定**：`SessionPersistence` 只有 `create/open/stat/list/flush`，返回 per-session handle；handle 的 `read/append/flush/close` 是唯一门。
+
+单写者由进程内 registry + 跨进程 kernel lease（POSIX `flock` / Win32 semaphore）保证；崩溃修复在 resume 里做，不在 persistence 里做。**C/H**
 
 **为什么**：旧的 coordinator 会“adopt”已发布会话、HMR 重新接管、用 revision 循环模拟所有权；这些把 storage 和 Session 生命周期混在一起。handle 化让所有权显式。**H**
 
@@ -92,7 +94,9 @@
 
 ### 6. 投影、查询、缓存：派生没有权威
 
-**决定**：`ctx.sessionProjections` 是 live session 的纯同步 fold，客户端可见值（标题、模型选择、preset、subagent 身份）属于 `SessionProjectionMap`；`session_projcache` 是 per-record 持久检查点；`ctx.sessionQuery` 是跨会话 live-preferred 读取，SQLite FTS5 是可选 provider。**C**
+**决定**：`ctx.sessionProjections` 是 live session 的纯同步 fold，客户端可见值（标题、模型选择、preset、subagent 身份）属于 `SessionProjectionMap`。
+
+`session_projcache` 是 per-record 持久检查点；`ctx.sessionQuery` 是跨会话 live-preferred 读取，SQLite FTS5 是可选 provider。**C**
 
 **为什么**：三个前端各自造标题/统计/轮子；query 索引和统计是派生，不能成为恢复权威。**H/C**
 
@@ -104,7 +108,9 @@
 
 **为什么**：会话日志不能承载 workspace 这种“不属于任何单会话”的事实；path 作为 key 被否决，因为规范化/符号链接会重写路径，引用锚点必须稳定；ownership 不能从 cwd 派生，否则两个真相。**H**
 
-**代价（proposed 明确 out-of-scope）**：session delete、`log` facet、多进程写保护、跨进程 change、data migration、多段键、**scope dimension**（每 workspace 一个 domain）、跨表事务、二级索引、跨 workspace 移动。**P** 这是理解“为什么没有 per-workspace 数据家”的关键。
+**代价（proposed 明确 out-of-scope）**：session delete、`log` facet、多进程写保护、跨进程 change、data migration、多段键、**scope dimension**（每 workspace 一个 domain）、跨表事务、二级索引、跨 workspace 移动。
+
+**P** 这是理解“为什么没有 per-workspace 数据家”的关键。
 
 ### 8. 附件：不可变对象，故意不 GC
 
@@ -140,7 +146,9 @@
 
 ### 12. 插件记录与实验存储：没有通用插件数据根
 
-**决定**：`SessionEventMap` 第三方不要新增；未知事件只有 `ignorable: true` 才能读；`appendPluginRecord()` 的 `plugin:` 记录只允许 `packages/experimental/` 调用；`claude-code-mods` 的 `$.store` 是 experimental bridge 里的 per-plugin 4 MiB domain。**C/H**
+**决定**：`SessionEventMap` 第三方不要新增；未知事件只有 `ignorable: true` 才能读。
+
+`appendPluginRecord()` 的 `plugin:` 记录只允许 `packages/experimental/` 调用；`claude-code-mods` 的 `$.store` 是 experimental bridge 里的 per-plugin 4 MiB domain。**C/H**
 
 **为什么**：第三方事件类型会变成 required-on-read 的发布合同；`plugin:` 记录在格式迁移里只尽力保留，发布包不能把状态放进去；通用插件数据根没有被设计，因为 storage domain 已经能承载，但缺 scope/quota/cleanup 契约。**H/C**
 
@@ -152,7 +160,7 @@
 2. **作用域身份**：path vs `workspaceId`；profile vs account；workspace vs project root（git 顶层）。没有一套名字同时满足“稳定、可读、可移植”。
 3. **删除与保留**：session、attachment、`.bak`、legacy cache 都没有统一回收；作者要自己写清理，而平台没有“卸载契约”。
 4. **追加 vs 编辑**：日志只追加；用户要可编辑的 Markdown；journal+render、present 引用都是折中。
-5. **进程边界**：session 有 kernel lease；domain JSON 没有跨进程锁；spill 在 OS temp；多 Host 共享 home 不是支持场景。
+5. **进程边界**：session 有 kernel lease；domain JSON 没有跨进程锁；spill 在 OS temp；多 Host 共享 home 不支持（见 [12](../10-foundations/12-state-homes.md)）。
 6. **秘密边界**：`0600` 挡其他用户，不挡同 uid 的模型；备份副本绕过“不 hoist”。
 7. **派生 vs 权威**：projcache 可重建却与 workspace 同目录同后端；没有统一的 authority 声明。
 

@@ -1,4 +1,4 @@
-# 91 · 决策程序：十八问 + 产品实例六问、一张数据卡、反模式与测试
+# 91 · 决策程序：十八问 + 六个工程问题、一张数据卡、反模式与测试
 
 > 这一篇是施工图的一部分；路线与顺序见 [90 动手](./00-index.md)，完整例子见 [93](./93-app-plugin-walkthrough.md)。
 
@@ -6,7 +6,9 @@
 
 把前面几篇压成一张可以直接照做的清单：**先定承诺，再落到空间与家，最后才选 API**。普通插件走十八问；产品型实例再加六问。然后给典型切法、一张可以抄进 README 的数据卡、最容易踩的坑和测试策略。
 
-> **先分清对象**：普通插件（装在别人的 DSH 里）还是产品型 DSH 实例（= 一份 profile 组合〔装什么〕+ 一个 workspace 根〔在哪干〕+ 一份 home 级账本与全局设置〔记住什么〕）。后者先过第 0 问与"产品型实例的六个附加问题"；前者直接从十八问开始。
+> **先分清对象**：普通插件（装在别人的 DSH 里）还是产品型 DSH 实例（= 一份 profile 组合〔装什么〕+ 一个 workspace 根〔在哪干〕+ 一份 home 级账本与全局设置〔记住什么〕）。后者先过第 0 问与"产品型实例的六个工程问题"；前者直接从十八问开始。
+
+> 这里的“根”是**产品自己的项目根**（`projectsRoot`）；只有架构 II 会把它登记为 DSH workspace。
 
 ## 先分清依赖层级：原生核心 / 原生插件 / 扩展插件
 
@@ -33,23 +35,25 @@
 5. **是关于这个人/账号/安装的吗？** → P4 配置/凭据/home 单例。
 6. **这个 DSH 由我决定装什么、从哪起步吗？** → P5 产品实例；见 [15 四个空间](../10-foundations/15-four-spaces.md) 与 [16 启动解析](../10-foundations/16-startup-resolution.md)。
 
+选了 **P3 宿主账本**还要再分一次：**账本·索引**（项目索引、缓存，可重建）与**账本·状态**（会话绑定、游标、已采纳标记，不可重建）。两类要分开文件、分开清理（[15](../10-foundations/15-four-spaces.md)）。
+
 两条**不是承诺**的运行时选择，可以叠加在任一承诺上：
 
 - **只在浏览器里用、模型不必知道** → 客户端本地（设备落点，不是第七种承诺）；
 - **需要每个项目一套进程/连接** → 运行时缺口，看 [31](../30-external/31-external-community-patterns.md) 的 workspace scope。
 
-承诺可以组合（例如 P2 项目文件 + P1 派生索引 + P4 偏好），但**每一块数据只能有一个主承诺**。
+承诺可以组合（例如 P2 项目文件 + P1 派生索引 + P4 偏好），但**每一块数据只能有一个主承诺**（规则见 [10](../10-foundations/10-taxonomy.md)）。
 
 ## 十八问（承诺选定之后）
 
-普通插件从这十八问开始；产品型实例读完十八问后，再过后面的"产品型实例的六个附加问题"。
+普通插件从这十八问开始；产品型实例读完十八问后，再过后面的"产品型实例的六个工程问题"。
 
 按顺序问，不要跳步：
 
 1. **用一句话说出这个事实。** 说不出来，说明你还没决定要存什么。
 2. **谁拥有它？** 用户（内容） / 会话（历史） / 插件（状态） / 没人（派生） / 设备（客户端）。
 3. **用户需要打开或编辑它吗？** 是 → 内容家，写工作区或用户全局。
-4. **模型必须看见它吗？** 是 → 历史家，落事件（且第三方优先用已有事件类型）；否则不要让模型感知。
+4. **模型必须看见它吗？** 是 → 历史家，落事件（**第三方不要新增事件类型**：用工具结果或已有事件；需要跨会话查询才考虑 domain）；否则不要让模型感知。
 5. **只在当前浏览器/设备里有效吗？** 是 → 客户端本地，写清清理与版本键。
 6. **重启后还要在吗？** 不要 → 内存/派生；要 → 继续。
 7. **能从别的事实重算吗？** 能 → 派生层，写清重建路径；不能 → 状态家。
@@ -68,14 +72,14 @@
 17. **客户端状态属于哪层？** 纯 UI（localStorage/userData）还是 session-derived（projection）？后者不能复制到 localStorage。
 18. **依赖层级？** 原生核心（N0）→ 原生插件（N1）→ 原生实验（N2，只参考）→ 扩展插件（E1，只借鉴、自己实现）→ 外部服务（E2，最后）。扩展插件不要写进 `dependencies`；短期用也要写清迁移、卸载、许可证与供应链。
 
-## 产品型实例的六个附加问题
+## 产品型实例的六个工程问题
 
-只有 P5 需要问；普通插件可以跳过。前两问决定架构，后四问决定落位：
+只有 P5 需要问；普通插件可以跳过。前两问决定架构，后四问决定落位；**定位与信任**见 [90 的应用七问](./00-index.md)。
 
 19. **模型要对项目目录用通用文件工具吗？** 不要 → 工具中介，项目不必是 workspace；要 → 开放 agent，会话 cwd 必须落在项目里。
-20. **启动时根从哪来？** `configured`（profile 指定）/ `adopted`（用户上次选的）/ `default`（`$DSH_HOME/<plugin>/workspace`）/ `unresolved`（等客户端弹窗）。四状态见 [16](../10-foundations/16-startup-resolution.md)。
+20. **启动时根从哪来？** `configured`（profile 指定）/ `adopted`（用户上次选的）/ `default`（`<dataRoot>/workspace`）/ `unresolved`（等客户端弹窗）。四状态见 [16](../10-foundations/16-startup-resolution.md)。
 21. **目录缺失时重建还是重新问？** 部署意图（configured）可以重建；用户记忆（adopted）不能，可能是未挂载的卷。
-22. **扫描的权威是谁？** 目录树（自动发现，会复活已删工作区）/ 登记表（尊重删除，要刷新）/ 混合 + 墓碑。必须选一个。
+22. **扫描的权威是谁？** 目录树（自动发现，会复活已删工作区）/ 登记表（尊重删除，要刷新）/ 混合 + 墓碑。必须选一个。**默认建议**：账本索引为权威（可重建），`readdir` 只做发现与修复；目录删除重加按路径键视为同一项目，目录移动才换键。
 23. **账本在模型可写范围内吗？** 不能。账本目录一旦登记成 workspace，模型就能改写自己的记录。
 24. **产品全局配置放哪、要跨 profile 一致吗？** 跨 profile → `dataRoot` 文件（不要 volatile、不要 home patch）；按 profile 不同 → profile config。见 [17](../10-foundations/17-config-layers.md)。
 
@@ -87,13 +91,13 @@
 ## Data
 
 | 事实 | 承诺 | 依赖层级 | 权威 | 位置 | 作用域/键 | 寿命 | 谁看得见 | 秘密 |
-|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|---|
 | 项目索引 | P3 | N0 service + N1 backend | 插件 | $DSH_HOME domain | w_<sha256(realpath)> | 直到目录消失 + 下次清理 | 插件/面板 | 否 |
 | 项目记忆 | P2 | N0 文件 | 用户 | <project>/.your-plugin/memory.md | 文件路径 | 跟仓库 | 用户/模型经工具 | 否 |
 | 用量统计 | P1 | N1 projcache | 会话日志 | $DSH_HOME/storages/session_projcache | SessionId | 可重建 | 面板 | 否 |
 | API key | P4 | N1 credentials | provider | `$DSH_HOME/.credentials.yaml` | CredentialRef | 跟 home | 不回传 | 是 |
 
-卸载后留下：<domain 记录 / 项目文件 / 自造目录 / localStorage 键 / 凭据备份>；删除方式：<命令/路径>。
+卸载后留下：<domain 记录 / 自造目录 / localStorage 键 / 凭据备份>；**P2 项目内文件是用户资产，卸载不删**。删除方式：<命令/路径>。
 迁移：<版本、兼容读或一次性迁移；失败语义>。
 删除/保留：<谁删、何时删、审计/宽限、是否影响分叉/恢复/搜索索引/附件引用>。
 ```
@@ -106,7 +110,7 @@
 
 ## 几个例子
 
-> 例子里的 `.agents/`、`dsh-*` 是外部社区模式（E1，参考）；原生长相见 [21](../20-native/21-native-data-landscape.md)，原生优先的骨架见 [92](./92-native-reference-architectures.md)。
+> 例子里的 `.agents/`、`dsh-*` 是外部社区模式（E1，参考）；原生长相见 [21](../20-native/21-native-data-landscape.md)，原生优先的路线见 [92](./92-native-reference-architectures.md)。
 
 ### 例 1：代码检查器的分析缓存
 
@@ -164,7 +168,7 @@
 | 用 spill 当交付 | 会过期；用户没有稳定入口 | 工作区文件 + `present` |
 | 附件当项目资产 | 在 home、不跟项目走、没有 GC | 工作区文件 + `present` |
 | 卸载不留说明 | 用户不知道数据在哪、怎么删 | 数据卡 + 清理命令/路径 |
-| 自造 `$DSH_HOME/<plugin>/` 当数据根 | 没有配额/迁移/卸载契约；根目录变杂 | 优先 domain；必须自造时写清生命周期 |
+| 自造 `$DSH_HOME/<plugin>/` 且不写生命周期 | 没有配额/迁移/卸载约定；根目录变杂 | 普通插件优先 domain；产品实例用 dataRoot 时写 schemaVersion/迁移/清理（见 [15](../10-foundations/15-four-spaces.md)） |
 | 直接物理删 session 日志目录 | 绕过投影缓存、附件引用、搜索索引；不可逆 | 等待核心 delete；至少先停工作、审计、宽限 |
 | 直接改 session 日志 header | 破坏 append-only/租约/格式合同 | 用受支持的 session API；核心缺口应上报 |
 | 把 workspace 当可写性来源 | 登记了目录，模型仍然没有 `write` 工具 | 先看 preset 工具面；要写就加 `tool-fs`/`tool-bash` |
@@ -186,7 +190,7 @@
 
 - **domain**：每个域一条写链，`update` 在槽位上执行；内存只在校验通过后更新；写失败不留半状态。
 - **文件**：`writeText` 的 `createIfAbsent` / `replaceIfVersion` 是并发保护；省略就是无条件覆盖。它们是 CAS，不是锁。
-- **跨进程**：JSON 后端没有锁；SQLite 单语句原子但竞争写立即拒绝，没有等待/重试。`domain/changed` 不跨进程。多 Host 共享 home 不是支持场景。
+- **跨进程**：JSON 后端没有锁；SQLite 单语句原子但竞争写立即拒绝，没有等待/重试。`domain/changed` 不跨进程。多 Host 共享 home 不支持（见 [12](../10-foundations/12-state-homes.md)）。
 - **客户端**：`localStorage` 是同步 API，但多标签页会并发；要么接受 last-write-wins，要么用 `storage` 事件做协调。
 - **失败语义**：配置/schema 错误应在加载时 fail loud；用户数据的版本不匹配应给出可行动的错误，而不是静默重建。
 
@@ -229,7 +233,9 @@
 
 注意：这张图的第一问不是“模型要看见吗”，而是“用户是不是已经有了”。**能不存就不存**，是外部社区里最省事、也最容易获得信任的路线（E1 参考）。
 
-原生 landscape/历史/参考架构见 [21](../20-native/21-native-data-landscape.md)、[22](../20-native/22-native-data-history.md)、[92](./92-native-reference-architectures.md)；扩展插件案例（只作参考）见 [33](../30-external/33-external-plugin-patterns.md)。
+原生 landscape/历史/参考架构见 [21](../20-native/21-native-data-landscape.md)、[22](../20-native/22-native-data-history.md)、[92](./92-native-reference-architectures.md)。
+
+扩展插件案例（只作参考）见 [33](../30-external/33-external-plugin-patterns.md)。
 
 ## 边界
 

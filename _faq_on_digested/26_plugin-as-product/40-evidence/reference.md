@@ -184,7 +184,7 @@ OS 临时目录                 # spill、workspace/changes 整文件副本
 | 39 | 市场至少四种 workspace 表示、三种凭据家、卸载非生命周期 | [33 外部插件案例](../30-external/33-external-plugin-patterns.md)、[research-external](./research-external.md) | S/R |
 | 40 | 插件直接改 session log/物理删目录是现实补丁 | session-workspace-organizer、archive-retention、archive-manager | R |
 
-原生来源见 [research-native](./research-native.md)，外部样本见 [research-external](./research-external.md)；本轮改动见 [review-v2](./v2/review.md)。
+原生来源见 [research-native](./research-native.md)，外部样本见 [research-external](./research-external.md)；本轮改动见 [quality-review](./quality-review.md)。
 
 ## 九、相关阅读
 

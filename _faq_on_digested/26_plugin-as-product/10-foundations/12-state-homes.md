@@ -2,7 +2,9 @@
 
 ## 这一篇回答什么
 
-这一篇展开的是**状态家**：四层词汇见 [10](./10-taxonomy.md)，五个家见 [11](./11-five-homes.md)。插件要持久化一点东西时，DSH 给了三个看起来都像“存数据”的东西：`ctx.storageDomain`、Config/settings、`ctx.credentials`。它们不是同一层的替代品；选错的代价是数据不可迁移、秘密泄漏、或者把配置当数据库写坏。
+这一篇展开的是**状态家**：四层词汇见 [10](./10-taxonomy.md)，五个家见 [11](./11-five-homes.md)。
+
+插件要持久化一点东西时，DSH 给了三个看起来都像“存数据”的东西：`ctx.storageDomain`、Config/settings、`ctx.credentials`。它们不是同一层的替代品；选错的代价是数据不可迁移、秘密泄漏、或者把配置当数据库写坏。
 
 ## 三者的分工
 

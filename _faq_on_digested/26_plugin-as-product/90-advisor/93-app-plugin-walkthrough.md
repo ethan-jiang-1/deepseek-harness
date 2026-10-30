@@ -1,6 +1,8 @@
 # 93 · 端到端：一个应用型插件怎么落地
 
-这一篇用一个**假想的看板应用**把 [40](./00-index.md) 的七步走一遍。例子不是规范——换一个产品，目录名、字段名都会不同；要抄的是**顺序与分界**，不是字面配置。
+## 这一篇回答什么
+
+这一篇用一个**假想的看板应用**沿 [90](./00-index.md) 的施工顺序走一遍（外加 profile 与测试）。例子不是规范——换一个产品，目录名、字段名都会不同；要抄的是**顺序与分界**，不是字面配置。
 
 ## 0. 设定
 
@@ -30,6 +32,8 @@ $DSH_HOME/profiles/kanban/
 
 产品 bundle 放最后，才能按 id 覆盖前两层的行。没有 `extends: web` 这种继承，复现 Web 组合靠的是把 web-app 列进来（[18](../10-foundations/18-install-upgrade.md)）。
 
+> **首启弹窗不在本例的 bundle 里。** 要让用户选根，需要再加一个客户端插件与两个 Remote（`status` / `adopt`），调用 `remote.directoryPicker.pick()`；形态与约束见 [16 弹窗](../10-foundations/16-startup-resolution.md)。没有它就走 `default` 并打日志的降级路径。
+
 ## 3. 架构选择
 
 | 选项 | 选它因为 | 代价 |
@@ -46,14 +50,16 @@ $DSH_HOME/profiles/kanban/
 configured  ← profile 的 projectsRoot（可选，部署方指定）
 adopted     ← 全局设置文件里的 adoptedRoot（用户在弹窗里选过）
 default     ← <dataRoot>/workspace（产品默认）
-unresolved  → 登记占位 + 客户端弹窗
+unresolved  → 客户端弹窗（用侧栏时登记占位）
 ```
+
+本例架构 I：**根只 `mkdir` + 记账本，不登记 DSH workspace**；只有需要侧栏/会话分组时才 `registry.create`，那时才需要占位（不保证，见 16 风险 1）。
 
 规则（[16](../10-foundations/16-startup-resolution.md)）：
 
 - `configured` / `default` 缺失可以 `mkdir`；`adopted` 缺失不能重建，转 `missing` 重新问；
-- `unresolved` 时先登记 `$DSH_HOME/kanban/workspace` 占位，挡住 `<Documents>` 默认工作区；
-- 用户的选择写进 `dataRoot/settings.json`（跨 profile 一致），不写 profile patch。
+- `unresolved` 时：**本例架构 I 不登记 workspace**，所以不需要占位；只有改用侧栏时才登记 `<dataRoot>/workspace` 占位。
+- 用户的选择写进 `dataRoot/settings.json`（`dataRoot` 稳定时跨 profile 一致），不写 profile patch。
 
 ## 5. 配置分层
 
@@ -97,12 +103,14 @@ $DSH_HOME/kanban/
 
 **账本目录不能登记成 workspace**；否则模型（或用户）能改写你的注册表。
 
+本例用 `dataRoot` 文件，是为了与 `settings.json` 同目录、便于用户整目录备份；普通插件优先 `ctx.storageDomain`，两者的取舍见 [15](../10-foundations/15-four-spaces.md)。
+
 ## 7. 安装、升级、卸载
 
-- **安装**：`dsh plugin --profile kanban add <bundle>`；bundle 成员变化需重启；
+- **安装**：`dsh plugin --profile kanban add <bundle>`；成员变化看 `ChangeResult.application`，`restart-required` 才重启；
 - **兼容**：manifest 写 `engines.dsh`；不匹配会被跳过并在 stderr 报 `skipping profile bundle`；
 - **升级**：组合（bundle 版本）、配置（patch 差异）、数据（`settings/index/state` 的 `schemaVersion`）三层分别处理；数据版本不符要么迁移、要么 fail loud；
-- **卸载**：workspace 登记、`dataRoot`、目录内 marker、profile patch 里的行——四处写进 README。
+- **卸载**：workspace 登记（只删产品创建的占位/项目登记）、`dataRoot`、目录内 marker、profile patch 里的行——四处写进 README。
 
 ## 8. 数据卡
 
@@ -114,13 +122,15 @@ $DSH_HOME/kanban/
 | 用户选定的根 | P5 | 全局设置 | `settings.json` | 单例 | 用户/插件 | 丢 |
 | 安装参数 | P4 | profile | patch | 行 id | 用户 | 跟 profile |
 
+完整模板（9 列，含依赖层级与秘密）见 [91](./91-checklist.md)；本表是压缩版，列有取舍。
+
 ## 9. 测试清单
 
 - 冷启动四状态各一遍；`missing` 不重建；
 - 未挂载卷：不允许在 `adopted` 路径建会话（`mkdir -p` 会物化挂载点）；
 - 两个 profile 共用 home：工作区列表互相可见；
 - 配置整对象替换：手写只覆盖一个键后，其余默认值是否还在；
-- 升级：bundle 成员变化后重启；`schemaVersion` 不符时 fail loud；
+- 升级：成员变化按 `application` 判断是否重启；`schemaVersion` 不符时 fail loud；
 - 卸载：四处残留与 README 一致。
 
 ## 10. 如果改成开放 agent

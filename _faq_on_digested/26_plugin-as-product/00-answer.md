@@ -4,25 +4,28 @@
 
 1. **一个产品型 DSH 实例 = 一份 profile 组合 + 一个 workspace 根 + 一份 home 级账本与全局设置。** 装什么、在哪干、记住什么，三件事分开看。
 2. **可写性不是 workspace 给的，是 preset 的工具面给的。** workspace 只提供侧栏一行、会话 `cwd` 和沙箱可写根；模型能不能 `read`/`write`/`bash`，取决于 agent preset 挂了哪些工具行。
-3. **启动时没有用户可问。** 目录解析只能落成四个状态（configured / adopted / default / unresolved），弹窗发生在客户端连上之后；启动时先登记一个占位工作区，才能挡住 DSH 自己的 `<Documents>` 默认工作区。
+3. **启动时没有用户可问。** 目录解析只能落成四个状态（configured / adopted / default / unresolved），弹窗发生在客户端连上之后；要用 DSH 侧栏时，启动时先登记一个占位工作区，可以挡住 DSH 自己的 `<Documents>` 默认工作区（概率性缓解，见 16 风险 1）。
 4. **用户选目录后，DSH 目录里零写入、profile 里零写入。** 知识只在 `$DSH_HOME`（workspace registry + 会话）和浏览器 `localStorage`；要不要在目录里留 marker，是产品决策。
 5. **配置有五层，且 patch 是整对象替换。** profile patch 只写一个键，会把该行其余键打回 schema 默认值；产品默认值必须进 schema/代码默认。
 
 ## 定义：产品型 DSH 实例
 
 > **一个产品型 DSH 实例 = 一份 profile 组合（装什么）+ 一个 workspace 根（在哪干）+ 一份 home 级账本与全局设置（记住什么）。**
+>
+> 这里的“根”是**产品自己的项目根**（`projectsRoot`）；只有架构 II 会把它登记为 DSH workspace。
 
 | 组成 | 回答什么 | 落在哪 | 换了会怎样 |
 |---|---|---|---|
 | **profile 组合** | 装什么、默认值是什么 | `$DSH_HOME/profiles/<name>/`：`package.json` 的 `dsh.profile.bundles` + `cordis.patch.yml` | 换 profile 就是另一个实例；能力与默认值都变 |
-| **workspace 根** | 在哪干、模型能写哪儿 | 一个目录 + `workspaceRegistry` 登记 + 会话 `header.cwd` | 换根就是换项目；沙箱边界随之改变 |
+| **workspace 根** | 在哪干、模型能写哪儿 | 一个项目目录；只有架构 II 才登记为 DSH workspace（那时才有会话 cwd 与沙箱根） | 换根就是换项目；登记与否改变的是 DSH 的会话/沙箱语义 |
 | **home 级账本与全局设置** | 记住什么、跨 profile 还剩下什么 | `$DSH_HOME/<plugin>/`（账本 + `settings.json`）+ `$DSH_HOME/storages`、`sessions` | 换 home 全丢；换 profile 不受影响 |
 
-三条容易记错的推论：
+四条容易记错的推论：
 
 1. **组合给不了写权限。** 装了什么不等于模型能写什么；那由 preset 的工具面决定。
-2. **根给不了跨 profile 记忆。** workspace 是项目作用域；要跨 profile 一致，只能放 home 级文件。
-3. **home 记录给不了项目内容。** 用户的内容永远在 workspace（或用户自己的目录），账本只存索引。
+2. **根不一定是 DSH workspace。** 架构 I 通常不登记，只有需要侧栏/会话分组的架构 II 才登记；登记与否不影响产品自己的项目根。
+3. **根给不了跨 profile 记忆。** workspace 是项目作用域；要跨 profile 一致，只能放 home 级文件。
+4. **home 记录给不了项目内容。** 用户的内容永远在 workspace（或用户自己的目录），账本只存索引与绑定，不存用户内容。
 
 ## 两种实例
 
@@ -38,7 +41,7 @@
 
 ## 六种数据承诺
 
-"承诺"是作者对用户说的话，不是存储 API。选定承诺，位置和键自动收敛；同一插件可以组合多种承诺，但**每一块数据只能有一个主承诺**。
+"承诺"是作者对用户说的话，不是存储 API。选定承诺，位置和键自动收敛；同一插件可以组合多种承诺，但**每一块数据只能有一个主承诺**（规则见 [10](./10-foundations/10-taxonomy.md)）。
 
 | 承诺 | 一句话 | 数据在哪 | 主要代价 |
 |---|---|---|---|
@@ -60,7 +63,7 @@
 | **插件包** | 发布版本 | 模板、种子、预设、客户端 bundle | 只读（发布时） | 出厂能力消失，用户数据不动 |
 | **workspace** | 用户 | 项目内容 | 模型（有工具时）或插件工具 | 删登记不删目录 |
 | **账本** | 插件 | 索引（可重建）+ 绑定/游标（不可重建） | 插件 | 索引可删；状态丢失即丢事实 |
-| **全局设置** | 插件 | 渲染节点、默认风格、品牌素材 | 产品 UI | 换机器就丢 |
+| **全局设置** | 插件 | 渲染节点、endpoint、默认风格、品牌素材 | 产品 UI | 换机器就丢 |
 
 细节与反模式见 [15](./10-foundations/15-four-spaces.md)。四者与"五个家"的映射也在那一篇。
 
@@ -75,18 +78,20 @@
 | **工具中介** | 插件自己的工具 | 插件 `node:fs` | 数据根 + 侧栏入口 | 不相关 |
 | **开放 agent** | 加 `tool-fs` / `tool-bash` | 模型直接写 | 沙箱根 + 真正的读写边界 | 决定一切 |
 
+架构 I 的“沙箱不相关”指模型工具不参与；插件自己的 `node:fs` 写盘不受会话沙箱约束，边界是进程账户权限（见 [17](./10-foundations/17-config-layers.md)）。
+
 在一个实测样本里（非通用结论）：产品 preset 只挂了 `persona` + 自有工具，没有 `tool-fs`/`tool-bash`；已绑定会话的 cwd 与项目目录无关，落盘全部由插件工具完成。**T**
 
 所以：把项目目录登记成 workspace，不会让模型多出任何能力；要"像常规 harness 一样可读可改"，得先在 preset 里加工具，再让会话 cwd 落在项目里。
 
-三种架构：**I 工具中介**（插件工具写）、**II workspace 化**（模型工具写，cwd=项目）、**III 混合**（workspace 是入口，账本另存）。架构 II 还要选数据面：共享 home、重定向数据根、独立 home；取舍见 [92 §11](./90-advisor/architectures/11-product-instance.md)。
+三种架构：**I 工具中介**（插件工具写）、**II workspace 化**（模型工具写，cwd=项目）、**III 混合**（workspace 是入口，账本另存）。架构 II 还要选数据面：共享 home、重定向数据根、独立 home；取舍见 [92](./90-advisor/92-native-reference-architectures.md)。
 
 ## 启动解析：四个状态
 
 ```text
 configured（profile 指定） → 用；缺失则 mkdir
 adopted（用户上次选的）    → 用；缺失则重新问，不重建
-default（$DSH_HOME/<plugin>/workspace）→ 用；缺失则 mkdir
+default（<dataRoot>/workspace）→ 用；缺失则 mkdir
 unresolved                → 登记占位，等客户端弹窗
 ```
 
@@ -118,9 +123,9 @@ unresolved                → 登记占位，等客户端弹窗
 
 DSH 自己**不写目录、不写 profile**；"要不要留 marker"是产品在"可携带"与"不污染"之间的取舍。推荐：账本为主判别，marker 只在必须跨 home 携带时引入。
 
-## 产品作者六问
+## 产品作者六问（叙事版）
 
-按真实设计顺序问：
+按真实设计顺序问；工程检查清单见 [91](./90-advisor/91-checklist.md)，决策顺序见 [90 的应用七问](./90-advisor/00-index.md)。
 
 1. **用户第一次启动我，要准备什么目录？** 能不能零配置？默认目录放在哪？
 2. **我承诺记住什么？** 出厂资产、项目内容、账本、全局设置，各是哪一块？
@@ -159,7 +164,7 @@ DSH 自己**不写目录、不写 profile**；"要不要留 marker"是产品在"
 | workspace 决定模型能写吗？ | 不。决定权在 preset 的工具面；workspace 只给 cwd 与沙箱根。 |
 | 启动时能弹窗让用户选目录吗？ | 不能。选择器是客户端交互能力，Host 启动时没有用户；客户端连上后再问。 |
 | 用户选目录后 DSH 留什么？ | 目录零写入、profile 零写入；只写 workspace registry 与会话头，浏览器存当前选择。 |
-| 产品全局配置放哪？ | `dataRoot` 下的文件（默认 `$DSH_HOME/<plugin>/`），跨 profile 一致。 |
+| 产品全局配置放哪？ | `dataRoot` 下的文件（默认 `$DSH_HOME/<plugin>/`）；**`dataRoot` 稳定时**跨 profile 一致，按 profile 配不同 `dataRoot` 会分裂。 |
 | profile patch 能只写一个键吗？ | 不能。`config` 整对象替换，其余键会回落到 schema 默认。 |
 | 能不能按 workspace 建 domain？ | 不能；domain 名静态，一个 Host 一个名字只能打开一次；项目级靠记录键。 |
 | `workspaceId` 能当长期键吗？ | 进程内引用可以；删了重加会换 uuid，长期键不行。 |
@@ -173,6 +178,6 @@ DSH 自己**不写目录、不写 profile**；"要不要留 marker"是产品在"
 
 - **T（可复现观测，2026-10-30；命令见 [experiments](40-evidence/experiments/00-index.md) §04）**：`$DSH_HOME/storages/workspace.json` 为 domain `workspace` v2；已绑定会话头含 `cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`；在该样本中，落盘全走插件工具的 `node:fs`，profile 未覆盖产品那一行。
 - **C（源码/docs）**：workspace 子系统、会话创建与 cwd、`applyEntryPatches` 的整对象替换、config-editor 的完整写入、首用默认工作区的空 registry 条件、沙箱唯一可写根。
-- DSH 机制入口：[workspace](docs/subsystems/workspace.md)、[sandbox](docs/subsystems/sandbox.md)、[filesystem](docs/subsystems/filesystem.md)、[settings](docs/subsystems/settings.md)、[persistence](docs/subsystems/persistence.md)。
+- DSH 机制入口：[workspace](../../docs/subsystems/workspace.md)、[sandbox](../../docs/subsystems/sandbox.md)、[filesystem](../../docs/subsystems/filesystem.md)、[settings](../../docs/subsystems/settings.md)、[persistence](../../docs/subsystems/persistence.md)。
 - 社区材料（31–33）是外部、未独立验证的作者声明，不能当 DSH 的 API 合同。
 - 单 Host、单 `$DSH_HOME` 账户；多租户、跨机器同步、对象存储不在本篇范围。

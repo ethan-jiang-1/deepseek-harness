@@ -4,7 +4,7 @@
 
 ## 这一篇回答什么
 
-`11`–`14` 是词汇，`21`/`31`/`32`/`33` 是地图；这一篇是**总览与索引**：九格画布、依赖层级路线表、分篇链接与选型表。每个 archetype 的分篇给数据卡、布局/键、生命周期、失败模式、2–3 条都成立的路线、测试清单与 DSH API 映射。
+`11`–`14` 是词汇，`21`/`31`/`32`/`33` 是地图；这一篇是**总览**：九格画布、依赖层级路线表、选型表，以及产品实例的数据面。原先的 11 个 archetype 分篇已删除；共性结论在路线表与选型表，具体数据设计按 10–18 的判据推导。注意：21 的「12 类数据场景」是数据面视角，与本篇 11 个插件 archetype 不是同一套编号。
 
 原则：**没有唯一答案**；每条路线都标出代价与适用条件。一个插件可以组合多个 archetype，但每块数据只能有一个主权威。
 
@@ -13,7 +13,7 @@
 - **N0 原生核心**：`docs/` + 核心包 + 测试定义的 Service/事件/格式；首选，直接依赖。
 - **N1 原生插件**：官方随包插件（workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local 等）；首选，直接依赖。
 - **N2 原生实验**：`packages/experimental/`；只参考，不承诺稳定。
-- **N+ 借用模式**：用原生 API 自己实现某个外部模式；不是包依赖。
+- **N+ 借用模式**：用原生 API 自己实现某个外部模式；**不是依赖级别，也不是包依赖**——它标的是“借模式、自己实现”的做法。
 - **E1 扩展插件**：第三方社区插件；**只借鉴，不写进发布依赖**。
 - **E2 外部服务**：MCP/HTTP/DB/对象存储；没有原生替代时短期用。
 
@@ -39,7 +39,7 @@
 | 可移植/同步 | 换机器/多设备/团队要带走吗？ |
 | 可重建/清理 | 删了会不会丢？卸载留什么？ |
 
-## 依赖层级路线表（N0 / N1 / N+ / E1 / E2）
+## 依赖层级路线表（N0 / N1 / E1 / E2；N+ 是实现方式，N2 只参考）
 
 | Archetype | 原生核心/插件（N0/N1） | 借用模式（N+，自己实现） | 扩展参考（E1/E2） |
 |---|---|---|---|
@@ -53,23 +53,7 @@
 | 每项目运行时 | **GAP**（无 per-workspace scope，**C**） | 借用 E1 模式：read-only 配置 + lease，自己实现 | workspace-overlay |
 | 客户端状态 | `localStorage`（平台，不是 N0）/ `SessionProjectionMap`（N0） | host 文件迁移、版本键 | 外部同步 |
 | 同步/备份 | `/export` ZIP（N1） | 用户 git、冲突三选一 | 外部同步服务 |
-| 产品实例 / 配置根 | profile 组合 + `workspaceRegistry` + `dataRoot` 文件（N0/N1） | 启动四状态、占位防抢占、账本路径键 | workspace-overlay |
-
-## 分篇索引
-
-| # | Archetype | 分篇 | 一句话 |
-|---|---|---|---|
-| 1 | 项目记忆 | [01](./architectures/01-project-memory.md) | journal 权威、Markdown 渲染；用户可读可提交 |
-| 2 | 个人长期记忆 | [02](./architectures/02-personal-memory.md) | home 账本或 SQLite；跨项目经验与画像 |
-| 3 | 会话归档 / 删除 | [03](./architectures/03-session-archive.md) | **GAP**：无删除 API；归档 + 保留期 |
-| 4 | 知识库 / RAG | [04](./architectures/04-knowledge-base.md) | 每 KB SQLite 或项目文件；软删 + compact |
-| 5 | 任务 / 待办 / 目标 | [05](./architectures/05-tasks-goals.md) | session 事件/投影，或 home 域 |
-| 6 | 交付物 / 文档 | [06](./architectures/06-deliverables.md) | 工作区文件 + `present`；不要用附件库当交付 |
-| 7 | 渠道 / 账号 | [07](./architectures/07-channels.md) | profile patch + 凭据引用；一账号一 profile |
-| 8 | 每项目运行时 | [08](./architectures/08-per-project-runtime.md) | **GAP**：无 per-workspace scope；lease 自建 |
-| 9 | 客户端 UI 状态 | [09](./architectures/09-client-ui.md) | localStorage / projection；分两层 |
-| 10 | 同步 / 备份 | [10](./architectures/10-sync-backup.md) | 用户 git 或导出 ZIP；冲突三选一 |
-| 11 | 产品实例（配置根） | [11](./architectures/11-product-instance.md) | profile 组合 + workspace 根 + home 账本；三种架构 |
+| 产品实例 / 配置根 | profile 组合 + `workspaceRegistry` + `dataRoot` 文件（N0/N1） | 启动四状态、占位（需侧栏）、账本路径键 | workspace-overlay |
 
 ## 一张选型表
 
@@ -87,9 +71,19 @@
 | UI 状态 | localStorage | host 文件 | settings/domain |
 | 同步 | 用户 git | 导出 ZIP | 自建云/外部同步（除非必要） |
 
+## 产品实例的数据面（S1 / S2 / S3）
+
+| 选项 | 做法 | 隔离 | 代价 |
+|---|---|---|---|
+| **S1 共享 `$DSH_HOME`** | 什么都不改 | 无：会话/工作区/凭据混在一起 | 零 |
+| **S2 重定向数据根** | 覆写 `session-persistence-jsonl.root`、`storage-json.root`、`attachment-local.dshHome`、`credentials-local.path`、`spill-local.root`、`session-query-sqlite.path` | 中 | 配置现成但没有文档模式；两 profile 共用同一根会互踩 |
+| **S3 独立 `DSH_HOME`** | 启动器设 `DSH_HOME=...` | 高 | 凭据、模型配置、设置全要重来；端口也要管 |
+
+默认 S1；需要隔离再上 S2；S3 只在产品要求完全独立账户时用。
+
 ## 边界
 
 - 这些是参考架构，不是 DSH 合同；具体 API 以当前 docs/源码为准。
 - 同一插件可以组合多个 archetype，但每块数据只能有一个主权威。
 - 没有一种路线适合所有部署；按九格画布选，按代价维护。
-- 分篇里的结论按 T/C/H/P/S/R/U 标注；未标注的是操作建议。
+- 表里的结论按 T/C/H/P/S/R/U 标注；未标注的是操作建议。

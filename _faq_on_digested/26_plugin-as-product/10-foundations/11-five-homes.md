@@ -33,7 +33,9 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 | **客户端** | 浏览器 / 设备 | `localStorage`、`userData/` | 源（origin）/ 设备 | 跟浏览器配置 | 用户/浏览器；Host 看不到 |
 | **只读层** | npm 包 | profile 的 `node_modules` | 安装 | 升级替换 | 运行时读取；不写 |
 
-**原生优先。** 这些家里，N0 核心合同（session log、projections、fs、remote access）和 N1 随包插件（workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local）是长期依赖；N2 experimental 只参考；E1 外部插件/E2 外部服务只借模式（见 [33](../30-external/33-external-plugin-patterns.md)）。
+**原生优先。** 这些家里，N0 核心合同（session log、projections、fs、remote access）和 N1 随包插件（workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local）是长期依赖。
+
+N2 experimental 只参考；E1 外部插件/E2 外部服务只借模式（见 [33](../30-external/33-external-plugin-patterns.md)）。
 
 三个边界不是平等的家，但作者必须知道：
 

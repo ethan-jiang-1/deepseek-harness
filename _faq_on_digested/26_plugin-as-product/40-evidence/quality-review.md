@@ -1,5 +1,9 @@
 # Quality review · 2026-10-27
 
+> 早期两轮工作底稿（v1/v2）已从语料移除；下文提到 v1/v2 指当时的记录，文件本身看 git 历史。
+>
+> 下文提到的 `90-advisor/architectures/` 分篇后来合并回 [92](../90-advisor/92-native-reference-architectures.md)，目录已删；需要追溯看 git 历史。
+
 本轮对 FAQ 26 做了一次结构/一致性自查，并把 20 个平铺文件收进 5 个子目录 + 一个 advisor 入口。这里记录发现的问题、已修项和仍存在的边界。
 
 ## 1. 结构
@@ -172,7 +176,7 @@
 - 叙事骨架统一为「承诺 → 空间 → 家 → 启动/配置」，在 [00-index](../00-index.md) 新增"怎么读：四套词汇的关系"；[00-answer](../00-answer.md) 的章节重排为 承诺 → 空间 → 工具面，并统一 H1 为"承诺、空间、工具面与启动状态机"。
 - 修正空间模型矛盾：账本不再是"可重建"的同义词，拆成**可重建索引**与**不可重建状态**（绑定、游标、已采纳标记）两类，见 [15](../10-foundations/15-four-spaces.md)；"用户选定的根"归位到全局设置，[16](../10-foundations/16-startup-resolution.md) 同步。
 - 新增 [18 安装升级](../10-foundations/18-install-upgrade.md)：profile 创建、bundle 重启边界、`engines.dsh` 跳过与豁免、三层升级、卸载四处残留。
-- 去掉 deckline 中心化：具体目录树与个人路径**从正文移除**（证据只留 00-answer 的 R 标注与 `40-evidence`）；[92 §11](../90-advisor/architectures/11-product-instance.md) 的推荐按写路径需求而非示例现状。
+- 去掉 deckline 中心化：具体目录树与个人路径**从正文移除**（证据只留 00-answer 的 R 标注与 `40-evidence`）；[92](../90-advisor/92-native-reference-architectures.md) 的推荐按写路径需求而非示例现状。
 - [91](../90-advisor/91-checklist.md) 的"第零步"与六种承诺对齐，客户端本地与每项目运行时降为"不是承诺的运行时选择"。
 - 给 [11](../10-foundations/11-five-homes.md)、[12](../10-foundations/12-state-homes.md)、[13](../10-foundations/13-scope-and-keys.md)、[14](../10-foundations/14-artifacts.md)、[31](../30-external/31-external-community-patterns.md) 加了到新骨架的桥接句。
 
@@ -228,3 +232,96 @@
 - [00-index](../00-index.md) 在定义后加"要动手写插件？直接去 90"的入口；阅读路线首条改为"要动手写插件"；分流表、目录树、章节地图补 90/93。
 - [91](../90-advisor/91-checklist.md) 与 [92](../90-advisor/92-native-reference-architectures.md) 顶部加施工入口链接；`_faq_on_digested/00-index.md` 的 26 行补指向。
 - 验证：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规。
+
+## 15. 2026-10-30 · 信噪比与施工入口
+
+- **必读三篇**：00-index 顶部新增"00-answer → 90 动手 → 91 检查表"；其余按需查、不必通读。
+- **读法合并**：原来的"阅读路线 / 信号标记 / Agent 使用方式"三节收成"读法"一节（按时间预算、按角色、信号、Agent 四小节），00-index 从 247 → 212 行。
+- **目录结构压缩**：41 行的完整文件树改为 8 行目录级概览；精确文件清单保留在"章节地图"。
+- **施工入口**：[90 动手](../90-advisor/00-index.md) 新增"一页施工卡"（11 项检查），入口自足。
+- **一致性修补**：[91](../90-advisor/91-checklist.md) 补上"P3 宿主账本再分索引/状态"——这是账本二分在检查表中的缺口。
+- **复核**：链接与锚点 0 违规；章节地图 20 行覆盖 18 章 + 00 两篇；术语（四个空间/五个家/账本·索引·状态/工具面）在正文一致。
+
+## 16. 2026-10-30 · L2 读者测试与结构修补
+
+- **读者测试**：三个子代理分别扮演新插件作者、产品型实例作者、审稿人，只读施工路径并产出计划。前两个已返回（各 8 条卡点）；审稿人仍在运行。
+- **启动状态机重写**（[16](../10-foundations/16-startup-resolution.md)）：`unresolved` 原来没有可达条件、`pending` 不参与解析；现在明确 `default` 与 `unresolved` 是策略差异，`pending` 写 `settings.json` 并在下次启动强制 unresolved。`adopted` 存 `settings.json` 的 `adoptedRoot`、配置指针统一叫 `projectsRoot`，不再与 `sandbox-policy.workspaceRoot` 混用。
+- **占位断言降级**：16/00-answer/00-index 不再写"才能挡住""确定做法"，改为"可以挡住、是概率性缓解（U，见风险 1）"。
+- **workspace 登记可选**：架构 I 不登记 registry，只有用侧栏/会话分组的架构 II 才登记；00-answer 定义与推论、15 的角色表、93 §4 同步。
+- **客户端插件契约**：16 新增最小契约（status/adopt 两个 Remote、弹窗时机、`connectWorkspace`）；93 与 90 七步补"不含客户端插件"的说明。
+- **安装/卸载**：18 补 bundle 重算保序与追加规则、P5 缺失行 fail loud、卸载所有权判据；15/91 统一 domain 与 dataRoot 的取舍。
+- **L1**：>240 字段落清零；各章具备"这一篇回答什么"与"边界"；跨文重复只剩结构性的回链与边界句。
+- **历史底稿**：v1/v2 已移除（结论吸收进正文，git 历史保留），引用改指 quality-review。
+- 验证：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规。
+
+## 17. 2026-10-30 · 审稿人复核：10 条全修
+
+- **重启语义**（[18](../10-foundations/18-install-upgrade.md)）：原文"bundle 成员必须重启"与源码不符——`plugin-manager` 在有 HMR 时返回 `application: 'applied'`，无 HMR 才 `restart-required`/`no-hmr`；base/web 默认启用 HMR，headless 显式禁用。改为"以 `ChangeResult.application` 为准"，同步 18 的清单、93 的安装/升级与 00-index 的表述。
+- **占位条件**：90 的七问第 3 问与 93 的规则把占位写成无条件；改为"仅使用 DSH 侧栏时登记"，93 注明架构 I 不适用。
+- **项目根 vs workspace**：定义式仍是"workspace 根"，在 00-answer/00-index/00-question/91 的定义处补注"产品自己的项目根（`projectsRoot`），只有架构 II 登记为 DSH workspace"。
+- **配置链**：[17](../10-foundations/17-config-layers.md) 的两条优先级链合并为一条（代码默认 → bundle → profile → home → `--patch`），`dataRoot` 设置文件标为链外运行时存储。
+- **账本二分**：15 的"可重建账本"改为"可重建的项目索引（绑定另存）"；00-answer 的"只存索引"改为"索引与绑定"。
+- **占位路径**：统一为 `<dataRoot>/workspace`（16/91/00-answer/93），与 default 根一致。
+- **模型写判据**：15 的捷径改为"通用文件工具直接改 → 会话 cwd 内；仅经插件工具改 → 不必是 workspace"。
+- **dataRoot 前提**：00-answer/00-index/15/16/93 的"跨 profile 一致"补"`dataRoot` 稳定时"。
+- **重复表**：10 的四空间表删除，只留一句总结 + 链 15；00-answer 的全局设置行与 15 对齐（加 endpoint）。
+- **根相对链接**：00-answer/00-index/15/16/17 的 `docs/`、`vendor/`、`packages/` 链接补足 `../../` 或 `../../../`，现在可点。
+- **N+**：00-index 与 92 标明 N+ 是实现方式，不是第六个依赖级别；路线表标题补 N2 只参考。
+- 验证：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规。
+
+## 18. 2026-10-30 · L4 证据抽查与图口径
+
+- **证据抽查（5 条最重的 C）**，逐条对到符号：
+  1. `applyEntryPatches` 整对象替换：`vendor/include/src/index.ts:122` `target[key] = value`。
+  2. `engines.dsh` 跳过 bundle 并写 stderr：`packages/boot/app-boot/src/profile.ts:120` `skipping profile bundle ...`。
+  3. `workspace.delete` 只删登记、保留目录与会话：`packages/workspace/workspace/src/index.ts:310` 的 JSDoc 与实现。
+  4. 设置页只接受 volatile 字段：`packages/settings/settings/src/index.ts:388` `isVolatilePath`。
+  5. 会话 cwd 的公开读取：`packages/session/working-directory/src/index.ts:122` `WorkingDirectoryService.get(session)`。
+- **图口径**：[15 四空间](../figures/15-four-spaces.svg) 的账本位置标注"默认 `$DSH_HOME/<plugin>/`"、全局设置标注"`dataRoot` 稳定时一致"；[16 启动](../figures/16-startup-states.svg) 的 default 根改为 `<dataRoot>/workspace`、占位改为"需侧栏"并弱化"挡住"为概率性；两张图用 `rsvg-convert` 重渲染确认无溢出。
+- 验证：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规。
+
+## 19. 2026-10-30 · 复测修复与 architectures 合并
+
+- **轻量复测**（普通插件、产品实例各一轮）各报 5 条，已修：
+  - **P2 项目内文件卸载不删**：写进 [15](../10-foundations/15-four-spaces.md)、[18](../10-foundations/18-install-upgrade.md)、[91](../90-advisor/91-checklist.md) 的数据卡。
+  - **数据卡列错位**：91 的表头 9 列、分隔行 8 列，已补齐；93 的压缩卡片加注"完整模板见 91"。
+  - **插件 `node:fs` 与沙箱**：17/00-answer 写明插件代码不受会话沙箱约束，架构 I 的写边界是进程账户权限。
+  - **何时不必建账本**：15 补判据（项目内文件本身可作身份时先用文件）。
+  - **侧栏判据**：16 补"是否需要侧栏的项目列表/会话分组"；A/B 形态给默认建议（早期 B，产品化后 A）。
+  - **扫描 vs 登记**：91 第 22 问补默认建议（账本索引为权威，readdir 只做发现/修复）。
+  - **占位删/留**：18 补"无会话删、有会话保留并追加"。
+  - **engines 自检悖论**：18 明确产品插件无法自检，需 profile 里的常驻 launcher 行或独立小包。
+  - **普通插件最小阅读集**：90 补"91 + 10 §3/§4 + 15 + 18"。
+- **architectures 合并**：按反馈删除 `90-advisor/architectures/` 的 11 个分篇（目录价值低于维护成本），唯一独有的"数据面 S1/S2/S3"折进 [92](../90-advisor/92-native-reference-architectures.md)；92 的"分篇索引"删除，引用全部改指 92；10/00-index/90/93/21/31/33/quality-review 同步。
+- 验证：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规。
+
+## 20. 2026-10-30 · 最终审计（L4 收口）
+
+- **段落阈值**：按验收标准把剩余 200–240 字符的段落也按句号拆开，非列表段落 **>200 字符为 0**。
+- **表格**：全语料表格分隔行与表头列数一致（91 的 9 列卡片是唯一一处错位，已修）。
+- **骨架**：10–18、21–22、31–33、91–93 全部含"这一篇回答什么"与"## 边界"。
+- **架构目录**：`90-advisor/architectures/` 已删除（11 篇）；数据面 S1/S2/S3 折进 92；00-index 的重复 archetype 表删除，改为一段指针。
+- **读者测试**：两轮轻量复测各 5 条、全部修复；终测代理超时中断，未产生新卡点证据。已修项：P2 卸载不删、数据卡列错位、插件 node:fs 与沙箱、何时不必建账本、侧栏判据、A/B 默认建议、扫描权威默认、占位删/留、engines 自检悖论、普通插件最小阅读集。
+- 验证：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规；`git diff --check` 通过。
+
+## 21. 2026-10-30 · 最小复测与最后三修
+
+- 最小复测（只读 90 入口/93/18）报 3 条：bundle 包本体结构缺失（高）、Remote 形状缺失（中）、客户端产物升级（低）。
+- [18](../10-foundations/18-install-upgrade.md) 新增"bundle 包本体"：`package.json` 的 `dsh.bundle.patch` 声明、patch 文件位置与"无声明只是普通依赖"；变更表补客户端产物行（**建议 U**）。
+- [16](../10-foundations/16-startup-resolution.md) 的客户端契约补最小形状：`status()`/`adopt(path)`/`directoryPicker.pick()` 的返回与失败路径，明确"形状由插件定义、不是 DSH 合同"。
+- 最终审计：`verify` 26 子树 0；非列表段落 >200 字符 0；表格列数一致；骨架齐全；`architectures/` 已删且引用清零。
+
+## 22. 2026-10-30 · 删除后的系统复核
+
+- **术语**：21 的"12 个 archetype"改为"12 类数据场景"，与 92 的 11 个插件 archetype 区分；92 开头加了一句"两套视角不是同一套编号"。
+- **92 的措辞**："已合并回本篇与各基础章"改为"已删除；共性结论在路线表与选型表"——分篇内容并未保留，原说法不实。
+- **占位措辞**：16/92/93/00-index 残留的"占位防抢占"改为"占位（需侧栏）"；16 的开机策略句补"用侧栏时再登记占位"。
+- **索引链接**：00-index 分流表里把 92 当泛化兜底的三行改回具体章（14/15、91/18、11/13）；"92 对应 archetype"改为"92 路线表"。
+- **目录树**：40-evidence 描述从"与历史"改为"与审计"（v1/v2 已删）。
+- 扫描：链接/锚点 0 违规；跨文重复只剩回链、角色横幅、定义注、边界句；表格列数一致；非列表段落 >200 字符 0。
+
+## 23. 2026-10-30 · 复核补丁
+
+- [15](../10-foundations/15-four-spaces.md) 的归属表把账本位置写成 `dataRoot`，与"优先 storageDomain"冲突；两行改为"优先 storageDomain；产品实例可 dataRoot"，会话行改为"账本位置"。
+- [40-evidence/00-index](../40-evidence/00-index.md) 的 experiments 行说"三个 U"，但 02/03 已收口为 C；改为"待确认项的实验记录（02/03 已收口为 C）"。
+- 验证：verify 26 子树 0；>200 字符非列表段落 0；表格列数一致。
