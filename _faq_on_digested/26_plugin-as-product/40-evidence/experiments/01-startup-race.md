@@ -34,3 +34,38 @@ node -e 'const d=require(process.env.DSH_HOME+"/storages/workspace.json"); conso
 ## 改了哪篇
 
 无（[16](../../10-foundations/16-startup-resolution.md) 的 U 保持，并链到本记录）。
+
+## 关闭它需要什么
+
+三步，缺一不可：
+
+1. **一个测试插件**（延迟 `apply` 再登记，模拟慢产品）：
+
+```js
+// race-plugin/index.js
+import { mkdirSync } from 'node:fs'
+import { join } from 'node:path'
+export default {
+  name: 'race-delay',
+  apply(ctx) {
+    return new Promise((resolve) => setTimeout(() => {
+      const root = join(process.env.DSH_HOME, 'race', 'workspace')
+      mkdirSync(root, { recursive: true })
+      ctx.get('workspaceRegistry')?.create(root)
+      resolve()
+    }, 5000))
+  },
+}
+```
+
+```yaml
+# race-plugin/cordis.patch.yml
+- insert:
+    - id: race-delay
+      name: 'race-plugin'
+```
+
+2. **一个隔离 profile**：`export DSH_HOME=$(mktemp -d)`，`dsh plugin --profile race add <web-app>` 再 `add ./race-plugin`。
+3. **浏览器自动化**：`dsh --profile race web --no-open --port 3999` 起服务后，用 Playwright 打开页面、在 5 秒窗口内等首连，然后读 `$DSH_HOME/storages/workspace.json` 看是否出现 `<Documents>/deepseek-harness/default-workspace`。
+
+判定：出现 → 竞态复现，U 升级为 T；不出现 → 在当前机器上未复现，仍不能证明普遍安全。**本机没有安装浏览器二进制，这一步未执行。**
