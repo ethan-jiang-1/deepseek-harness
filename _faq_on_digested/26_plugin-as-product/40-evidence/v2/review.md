@@ -85,9 +85,9 @@
 - 新增 [08 原生 landscape](../../20-native/21-native-data-landscape.md)：七轴、12 archetype、33 个 DSH 侧数据落点（含无主/边界）、原生模式 × 成熟度、十个原生观察。
 - 新增 [09 原生历史](../../20-native/22-native-data-history.md)：22 个时间线事件、12 个数据簇、七个反复张力、欠账清单。
 - 新增 [10 外部插件模式](../../30-external/33-external-plugin-patterns.md)：15 个案例、横向模式、五个“作者在补什么”、反模式。
-- 新增 [11 原生参考架构](../../40-advisor/42-native-reference-architectures.md)：10 个 archetype 的数据卡/布局/路线/测试/DSH 映射。
+- 新增 [11 原生参考架构](../../90-advisor/92-native-reference-architectures.md)：10 个 archetype 的数据卡/布局/路线/测试/DSH 映射。
 - 新增 [research-native](../research-native.md) 与 [research-external](../research-external.md)：原生/外部两套证据。
-- 更新 [answer.md](../../00-answer.md)、[01](../../10-foundations/11-five-homes.md)、[02](../../10-foundations/12-state-homes.md)、[03](../../10-foundations/13-scope-and-keys.md)、[04](../../10-foundations/14-artifacts.md)、[05](../../40-advisor/41-checklist.md)：补历史注脚、profile/account 区分、无插件数据根、无 session 删除、附件 GC 刻意、client 两层、workspace 无核心家。
+- 更新 [answer.md](../../00-answer.md)、[01](../../10-foundations/11-five-homes.md)、[02](../../10-foundations/12-state-homes.md)、[03](../../10-foundations/13-scope-and-keys.md)、[04](../../10-foundations/14-artifacts.md)、[05](../../90-advisor/91-checklist.md)：补历史注脚、profile/account 区分、无插件数据根、无 session 删除、附件 GC 刻意、client 两层、workspace 无核心家。
 - 图：`08-native-landscape.svg`、`09-native-timeline.svg`、`10-external-market-map.svg`、`11-native-reference-architectures.svg`。
 
 ## 仍然开放

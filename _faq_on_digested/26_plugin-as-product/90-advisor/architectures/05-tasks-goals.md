@@ -1,6 +1,6 @@
 # 5 · 任务 / 待办 / 目标状态
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：跨会话任务、项目待办、目标轮次、定时提醒。
 

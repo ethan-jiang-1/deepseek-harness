@@ -1,6 +1,6 @@
 # 8 · 每项目运行时
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：每 workspace 一套 Cordis 配置/preset/MCP。
 

@@ -4,7 +4,7 @@
 
 先把**DSH 自己**的数据落点铺开：哪些是核心合同（N0）、哪些是官方随包插件（N1）、哪些是 experimental（N2），哪些根本没有家。扩展插件（E1）只作参考，统一放在 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-adjacent-ecosystems.md)/[33](../30-external/33-external-plugin-patterns.md)，不混进这张图。
 
-**口径。** DSH 侧：343 个包、约 1,265 篇英文 Agent Note（298 implemented / 42 proposed / 925 archived）、67 篇 subsystem、49 篇 persistence-change、43 篇 upgrade guide、4 篇 postmortem、6 篇 defensive-pattern；本机 `$DSH_HOME` 4.0 GB / 28,443 文件（只看结构）。证据标签 T/C/H/P/S/R/U 见 [research-native](../50-evidence/research-native.md)。
+**口径。** DSH 侧：343 个包、约 1,265 篇英文 Agent Note（298 implemented / 42 proposed / 925 archived）、67 篇 subsystem、49 篇 persistence-change、43 篇 upgrade guide、4 篇 postmortem、6 篇 defensive-pattern；本机 `$DSH_HOME` 4.0 GB / 28,443 文件（只看结构）。证据标签 T/C/H/P/S/R/U 见 [research-native](../40-evidence/research-native.md)。
 
 > **两层说法**：`11` 的“五个家”是抽象层（内容/历史/状态/派生/客户端）；这里列的 33 个是具体落点（日志、旁表、对象、目录、客户端键）。不要把“33 个落点”和“五个家”当成同一层级。
 
@@ -52,7 +52,7 @@
 
 ## 表 L2：33 个 DSH 侧数据落点，收敛成 7 组（表中列代表 ID）
 
-完整 ID、位置与证据见 [research-native](../50-evidence/research-native.md) 的 33 行表；下表按组列代表，不重复全部 ID。
+完整 ID、位置与证据见 [research-native](../40-evidence/research-native.md) 的 33 行表；下表按组列代表，不重复全部 ID。
 
 | 组 | 家（id） | 四空间 | 级别 | 权威 | 寿命 | 主要风险 |
 |---|---|---|---|---|---|---|
@@ -83,7 +83,7 @@
 
 ## 表 L4：原生时间线（压缩）
 
-22 个关键事件在 [22 原生数据历史](./22-native-data-history.md)；44 条完整清单在 [research-native](../50-evidence/research-native.md#5-附录44-事件清单)。关键节点：2026-06 会话持久化 → 2026-07 home 单根/settings seam/domain KV 提案 → 2026-07-22 持久附件 → 2026-08-19 per-record 投影缓存 → 2026-08-27 handle 持久化 → 2026-08-31 已发布格式流式迁移 → 2026-09-08 present 只记路径 → 2026-09-19 settings 并入 profile patch → 2026-10-09 存储凭据优先。
+22 个关键事件在 [22 原生数据历史](./22-native-data-history.md)；44 条完整清单在 [research-native](../40-evidence/research-native.md#5-附录44-事件清单)。关键节点：2026-06 会话持久化 → 2026-07 home 单根/settings seam/domain KV 提案 → 2026-07-22 持久附件 → 2026-08-19 per-record 投影缓存 → 2026-08-27 handle 持久化 → 2026-08-31 已发布格式流式迁移 → 2026-09-08 present 只记路径 → 2026-09-19 settings 并入 profile patch → 2026-10-09 存储凭据优先。
 
 ## 十个原生观察
 
@@ -114,10 +114,10 @@
 | 全局设置 | 无 | `$DSH_HOME/<plugin>/settings.json` |
 | 登记/历史 | `workspace` domain、`sessions/` | 会话 → 项目的绑定记录 |
 
-结论：产品型实例把 DSH 的登记与会话落点当基础设施，自己的账本与设置落在**自造目录**——它不在上面的 33 个落点里，这正是 N+ 的含义：迁移、清理、配额都要自己承担。参考架构见 [42 §11](../40-advisor/architectures/11-product-instance.md)。
+结论：产品型实例把 DSH 的登记与会话落点当基础设施，自己的账本与设置落在**自造目录**——它不在上面的 33 个落点里，这正是 N+ 的含义：迁移、清理、配额都要自己承担。参考架构见 [92 §11](../90-advisor/architectures/11-product-instance.md)。
 
 ## 边界
 
-- 本图是 DSH 原生数据面的广度稿；T/C/H/P/S/R/U 标注见 [research-native](../50-evidence/research-native.md)。
+- 本图是 DSH 原生数据面的广度稿；T/C/H/P/S/R/U 标注见 [research-native](../40-evidence/research-native.md)。
 - 本机 `$DSH_HOME` 统计只用于验证结构，不代表所有部署。
 - 原生插件是否挂载取决于组合（base/web/headless/SDK）；“N1”不等于每个 profile 都有。

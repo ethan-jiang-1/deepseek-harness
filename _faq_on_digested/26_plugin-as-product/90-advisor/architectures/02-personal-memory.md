@@ -1,6 +1,6 @@
 # 2 · 个人长期记忆（home ledger / SQLite / 向量）
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：跨项目偏好、用户画像、学到的 facts、可检索知识。
 

@@ -217,7 +217,7 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 | journal 权威 + Markdown 渲染 | workspace | P2 | 项目内 `.agents/` 目录 |
 | 按项目存 home、路径键 | 账本（索引/状态） | P3 | `storageDomain` + `w_<sha256>` |
 | 设置里选存储位置 | 全局设置 | P4/P5 | `dataRoot` 文件 |
-| 每项目一套运行时 | —（运行时缺口） | 不是承诺 | E1 lease，见 [42 §8](../40-advisor/architectures/08-per-project-runtime.md) |
+| 每项目一套运行时 | —（运行时缺口） | 不是承诺 | E1 lease，见 [92 §8](../90-advisor/architectures/08-per-project-runtime.md) |
 
 ## 边界
 
@@ -226,4 +226,4 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 - 部分插件体量很大（project-context 的 README 本身有数百行工程细节），本篇只摘与数据归属有关的部分。
 - 社区补丁不是 DSH 的 API 合同；`ctx.workspaceCordis`、`/custom-workspace` RPC、`.agents/memory` 目录都不是核心保证。
 - 完整的 15 个深读与反模式见 [33 外部插件案例](./33-external-plugin-patterns.md)。
-- 外部源码与 README 不得支撑 C 级结论（标签规则见 [50-evidence](../50-evidence/00-index.md)）。
+- 外部源码与 README 不得支撑 C 级结论（标签规则见 [40-evidence](../40-evidence/00-index.md)）。

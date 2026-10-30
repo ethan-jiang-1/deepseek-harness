@@ -188,7 +188,7 @@ OS 临时目录                 # spill、workspace/changes 整文件副本
 
 ## 九、相关阅读
 
-- [21 原生 Landscape](../20-native/21-native-data-landscape.md)、[22 原生历史](../20-native/22-native-data-history.md)、[33 外部插件案例](../30-external/33-external-plugin-patterns.md)、[42 原生参考架构](../40-advisor/42-native-reference-architectures.md)。
+- [21 原生 Landscape](../20-native/21-native-data-landscape.md)、[22 原生历史](../20-native/22-native-data-history.md)、[33 外部插件案例](../30-external/33-external-plugin-patterns.md)、[92 原生参考架构](../90-advisor/92-native-reference-architectures.md)。
 - [FAQ 24 · 数据平面](../../24_plugin-publish-and-agent-data-planes/05-data-planes.md)：workspace / home / session 的三分与八条规则。
 - [FAQ 25 · Workspace 与 Ungrouped](../../25_workspaces-and-conversations/answer.md)：工作区记录、attach、删除语义。
 - [FAQ 22 · 上下文腐化](../../22_spec-drift-and-context-rot/answer.md)：compaction 遮蔽与日志只追加。

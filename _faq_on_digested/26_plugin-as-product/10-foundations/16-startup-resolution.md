@@ -100,15 +100,15 @@ headless / SDK / 纯 CLI 没有浏览器：
 
 ## 三个真实风险
 
-1. **启动竞态**：Loader 的行并发启动，占位登记与 web 监听没有先后保证。`dsh web` 默认会自动打开浏览器，慢盘或慢插件下，客户端可能在占位登记完成前就连上并建出 `<Documents>` 默认工作区。缓解：插件行排在 web 行之前、`apply` 里只做 `mkdir` + `create`，并实测一次带自动打开浏览器的冷启动；行是并发启动的，这个顺序只是提高概率。**U（未保证）** 实验设计见[实验 01](../50-evidence/experiments/01-startup-race.md)。
+1. **启动竞态**：Loader 的行并发启动，占位登记与 web 监听没有先后保证。`dsh web` 默认会自动打开浏览器，慢盘或慢插件下，客户端可能在占位登记完成前就连上并建出 `<Documents>` 默认工作区。缓解：插件行排在 web 行之前、`apply` 里只做 `mkdir` + `create`，并实测一次带自动打开浏览器的冷启动；行是并发启动的，这个顺序只是提高概率。**U（未保证）** 实验设计见[实验 01](../40-evidence/experiments/01-startup-race.md)。
 2. **挂载点被物化**：`session.create` 会对 cwd 执行 `mkdir -p`。如果 `adopted` 目录位于未挂载的卷，新建会话会**在挂载点造一个空目录**，卷再挂上时被遮住，现场极难排查。缓解：`missing` 状态不登记该路径，或登记前校验卷存在。**C**
 3. **跨 profile 可见**：registry 全 home 共享，产品登记的工作区会出现在通用 `web` 的侧栏里，没有过滤机制。缓解：接受并写进 README，或改走独立 `DSH_HOME`。**C**
 
 ## 核对结论
 
 - 客户端插件的加载顺序由**模块图拓扑序**决定（`orderByModuleGraph`，同层按扫描序），不是行序，也不是可控的同步点；`ui-workspace` 在 `apply` 里就启动导航。**C** 所以不要指望弹窗先于默认选择——靠占位关掉"默认工作区"这条路径才是确定做法。
-- 客户端插件可以调用 `uiWorkspace.connectWorkspace(id)`：服务名 `uiWorkspace`、方法是公开面；顺序不保证，且调用会创建或复用 blank 会话。**C** 见[实验 02](../50-evidence/experiments/02-client-connect-workspace.md)。
-- 插件可以用 `ctx.fiber.entry` 定位自己那一行，再调 `ConfigEditor.edit` 回写；仍推荐把运行时选择放全局设置文件。**C** 见[实验 03](../50-evidence/experiments/03-profile-writeback.md)。
+- 客户端插件可以调用 `uiWorkspace.connectWorkspace(id)`：服务名 `uiWorkspace`、方法是公开面；顺序不保证，且调用会创建或复用 blank 会话。**C** 见[实验 02](../40-evidence/experiments/02-client-connect-workspace.md)。
+- 插件可以用 `ctx.fiber.entry` 定位自己那一行，再调 `ConfigEditor.edit` 回写；仍推荐把运行时选择放全局设置文件。**C** 见[实验 03](../40-evidence/experiments/03-profile-writeback.md)。
 
 ## 与其它篇的关系
 

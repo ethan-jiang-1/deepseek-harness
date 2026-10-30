@@ -231,11 +231,11 @@
 | 跨项目记忆 / 画像 | 账本（home） | P3 | `storageDomain` + 稳定键 |
 | 用量统计 / 索引 | 历史（派生） | P1 | 会话日志 + 可重建检查点 |
 | 渠道 / 账号路由 | 全局设置 | P4 | profile + 凭据引用 |
-| 产品级工作台 | 四个空间 | P5 | profile 组合 + workspace 根 + 账本，见 [42 §11](../40-advisor/architectures/11-product-instance.md) |
+| 产品级工作台 | 四个空间 | P5 | profile 组合 + workspace 根 + 账本，见 [92 §11](../90-advisor/architectures/11-product-instance.md) |
 
 ## 证据与边界
 
-外部源码与 README 不得支撑 C 级结论；标签规则见 [50-evidence](../50-evidence/00-index.md)。
+外部源码与 README 不得支撑 C 级结论；标签规则见 [40-evidence](../40-evidence/00-index.md)。
 
 - S：memory-evolve、project-context、graphmemory、workspace-memories、workspace-overlay（部分）、PromptRecall、credentials-mysql、custom-workspace。
 - R：kb-manager、mnemon、session-workspace-organizer、archive-retention、codex-sync、claude-move、agent-mailbox、session_folders、以及 research-external 中的多数账号/UI 样本。

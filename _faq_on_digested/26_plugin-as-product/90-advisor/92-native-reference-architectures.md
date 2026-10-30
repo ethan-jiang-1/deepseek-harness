@@ -1,4 +1,6 @@
-# 42 · 原生优先的参考架构：11 个 archetype 总览
+# 92 · 原生优先的参考架构：11 个 archetype 总览
+
+> 施工入口见 [90 动手](./00-index.md)；应用型插件先看 [93 端到端例子](./93-app-plugin-walkthrough.md)。
 
 ## 这一篇回答什么
 
@@ -6,7 +8,7 @@
 
 原则：**没有唯一答案**；每条路线都标出代价与适用条件。一个插件可以组合多个 archetype，但每块数据只能有一个主权威。
 
-**依赖层级（摘要；完整发布规则见 [41](./41-checklist.md)）**：
+**依赖层级（摘要；完整发布规则见 [91](./91-checklist.md)）**：
 
 - **N0 原生核心**：`docs/` + 核心包 + 测试定义的 Service/事件/格式；首选，直接依赖。
 - **N1 原生插件**：官方随包插件（workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local 等）；首选，直接依赖。
@@ -19,7 +21,7 @@
 
 **阅读约定**：每节 A/B/C 中，标“外部”的 C 路线默认只作对照；原生能覆盖时不要选。下面的路线表不再逐个重复徽标，级别以下面的路线表为准。
 
-![11 个 archetype 的参考架构路线](../figures/42-native-reference-architectures.svg)
+![11 个 archetype 的参考架构路线](../figures/92-native-reference-architectures.svg)
 
 ## 0. 九格决策画布
 

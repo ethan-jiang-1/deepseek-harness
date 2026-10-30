@@ -1,6 +1,6 @@
 # 6 · 交付物 / 文档
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：报告、代码、图片、Office 文档；用户要打开/编辑/带走。
 

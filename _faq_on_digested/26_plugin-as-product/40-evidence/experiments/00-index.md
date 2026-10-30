@@ -11,7 +11,7 @@
 | 03 | 插件能否回写自己那一行 profile patch | 已收口（源码） | 可以（经 `ctx.fiber.entry` + `ConfigEditor.edit`）；仍推荐设置文件 |
 | 04 | 本机运行时可复现观测 | 已执行 | 见下节命令与输出 |
 
-证据等级见 [50-evidence/00-index](../00-index.md)：T = 可复现命令 + 输出；C = 源码/docs 合同。
+证据等级见 [40-evidence/00-index](../00-index.md)：T = 可复现命令 + 输出；C = 源码/docs 合同。
 
 ## 04 · 本机观测（T）
 

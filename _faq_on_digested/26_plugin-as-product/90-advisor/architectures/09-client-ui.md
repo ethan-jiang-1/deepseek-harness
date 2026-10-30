@@ -1,6 +1,6 @@
 # 9 · 客户端 UI 状态
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：布局、快捷键、面板宽度、折叠、最近选择、输入历史。
 

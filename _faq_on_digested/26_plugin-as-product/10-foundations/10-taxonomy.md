@@ -41,7 +41,7 @@
 | **P4 账号/安装配置** | 配一次，所有项目生效 | profile 配置 / home 域 / 凭据 |
 | **P5 产品实例** | 这个 DSH 就是我的产品 | profile 组合 + workspace 根 + 全局设置 |
 
-同一插件可以组合多种承诺，但**每一块数据只能有一个主承诺**。详细的数据卡与代价见 [00-answer](../00-answer.md) 与 [41](../40-advisor/41-checklist.md)。
+同一插件可以组合多种承诺，但**每一块数据只能有一个主承诺**。详细的数据卡与代价见 [00-answer](../00-answer.md) 与 [91](../90-advisor/91-checklist.md)。
 
 ## 2. 空间：四个
 
@@ -110,7 +110,7 @@
 | 启动四状态与占位 | [16](./16-startup-resolution.md) |
 | 配置五层与工具面 | [17](./17-config-layers.md) |
 | 安装、升级、卸载 | [18](./18-install-upgrade.md) |
-| archetype 路线 | [42](../40-advisor/42-native-reference-architectures.md) 与 `architectures/` |
+| archetype 路线 | [92](../90-advisor/92-native-reference-architectures.md) 与 `architectures/` |
 
 ## 两个读者入口
 

@@ -159,7 +159,7 @@ DSH 没有 `$DSH_HOME/plugins/<id>/` 的契约；`plugins/` 只是本机出现�
 
 - 要么用 domain（推荐），自己声明 domain 名、版本、记录键；
 - 要么自造目录，并在 README 写清路径、清理、迁移、卸载残留；
-- 不要指望平台替你删——删除/保留是系统性空白（见 22/42）。
+- 不要指望平台替你删——删除/保留是系统性空白（见 22/92）。
 
 ## 产品型实例里怎么用
 
@@ -182,4 +182,4 @@ DSH 没有 `$DSH_HOME/plugins/<id>/` 的契约；`plugins/` 只是本机出现�
 - 会话日志的格式、迁移与 compaction 细节不在本篇展开；这里只关心“它是不是权威”。
 - `ctx.fs` 的远端后端（SSH 等）可能让 `processPath` 与本地路径不同；不要把 `displayPath` 当成本地绝对路径。
 - 客户端家只讨论 Web/Desktop 的浏览器侧；Electron 主进程、原生扩展的存储不在本篇范围。
-- 完整 landscape、历史与参考架构见 [21](../20-native/21-native-data-landscape.md)、[22](../20-native/22-native-data-history.md)、[42](../40-advisor/42-native-reference-architectures.md)。
+- 完整 landscape、历史与参考架构见 [21](../20-native/21-native-data-landscape.md)、[22](../20-native/22-native-data-history.md)、[92](../90-advisor/92-native-reference-architectures.md)。

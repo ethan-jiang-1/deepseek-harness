@@ -15,7 +15,7 @@
 | 纯浏览器 UI 状态 | `localStorage` / 桌面 `userData` | 浏览器/设备 | 源或设备 | 间接 | 不能 |
 | 可重建的索引/缓存 | 派生层（domain 的 `per-record`、`$DSH_HOME/cache`、`session_projcache`） | 同上 | 跟源 | 不需要 | 不能 |
 
-一句话：**domain 存事实，Config 存选择，credentials 存引用与授权记录，cache 存可丢弃的推导。**（表中位置与作用域是当前合同 **C**；域版本不符拒绝、`per-record` 键必须是 `[a-zA-Z0-9_-]+` 见 [reference](../50-evidence/reference.md)。）
+一句话：**domain 存事实，Config 存选择，credentials 存引用与授权记录，cache 存可丢弃的推导。**（表中位置与作用域是当前合同 **C**；域版本不符拒绝、`per-record` 键必须是 `[a-zA-Z0-9_-]+` 见 [reference](../40-evidence/reference.md)。）
 
 **产品型实例还有一类不在这张表里**：跨 profile 一致的产品全局设置。它放在 `dataRoot` 下的文件里，既不是 settings，也不写 profile patch（那些都按 profile 分裂）；为什么不能做成 `.volatile()` 见 [17 配置分层](./17-config-layers.md)。
 

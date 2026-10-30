@@ -1,6 +1,6 @@
 # 1 · 项目记忆（journal + render）
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：项目约定、决策、术语、交接；用户要能读/改/提交。
 

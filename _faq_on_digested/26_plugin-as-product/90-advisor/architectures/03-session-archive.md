@@ -1,6 +1,6 @@
 # 3 · 会话归档 / 删除 / 保留
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：用户要清理旧会话、控制磁盘、保留审计。
 

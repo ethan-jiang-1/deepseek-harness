@@ -1,6 +1,6 @@
 # 10 · 同步 / 备份
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：跨设备、团队共享、导出/导入、灾难恢复。
 

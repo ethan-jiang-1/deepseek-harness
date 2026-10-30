@@ -1,6 +1,6 @@
 # 7 · 渠道 / 账号集成
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：Feishu/DingTalk/WeCom/iMessage、账号级默认 workspace、去重/路由状态。
 

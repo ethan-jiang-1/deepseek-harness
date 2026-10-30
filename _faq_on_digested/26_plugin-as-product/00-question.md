@@ -1,6 +1,6 @@
 # 26 · 当一个插件就是整个 DSH：安装、启动、目录与数据该怎么分？
 
-源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。本轮新增结论按当前 checkout 逐条复核；标 **T** 的是可复现探针（`$DSH_HOME` 静态读数与真实插件实例，命令见 `50-evidence/experiments/`），其余仍以源码与 docs 为准。只讨论单 Host、单 `$DSH_HOME` 账户。
+源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。本轮新增结论按当前 checkout 逐条复核；标 **T** 的是可复现探针（`$DSH_HOME` 静态读数与真实插件实例，命令见 `40-evidence/experiments/`），其余仍以源码与 docs 为准。只讨论单 Host、单 `$DSH_HOME` 账户。
 
 ## 问题从哪来
 
@@ -49,7 +49,7 @@
 | Q9 | DSH 自己历史上为什么长成这些家？哪些是刻意、哪些是欠账？ | [22 原生历史](./20-native/22-native-data-history.md) |
 | Q10 | 外部插件生态怎么切同一道题？哪些能借、哪些是坑？ | [31](./30-external/31-external-community-patterns.md) / [32](./30-external/32-external-adjacent-ecosystems.md) / [33](./30-external/33-external-plugin-patterns.md) |
 | Q11 | 这个实例怎么装、怎么升级、卸载后留下什么？哪些变更要重启？ | [18 安装升级](./10-foundations/18-install-upgrade.md) |
-| Q12 | 给我判断顺序、数据卡、反模式与参考架构。 | [41 决策程序](./40-advisor/41-checklist.md) / [42 参考架构](./40-advisor/42-native-reference-architectures.md) |
+| Q12 | 给我判断顺序、数据卡、反模式与参考架构。 | [91 决策程序](./90-advisor/91-checklist.md) / [92 参考架构](./90-advisor/92-native-reference-architectures.md) |
 
 ## 一句话预告
 
@@ -66,6 +66,6 @@
 
 ## 阅读顺序
 
-先读 [answer](./00-answer.md) 的四个空间与六种承诺，再读 [15](./10-foundations/15-four-spaces.md) 建立空间感、[16](./10-foundations/16-startup-resolution.md) 决定启动怎么安排、[17](./10-foundations/17-config-layers.md) 决定配置放哪；然后按需读 [11](./10-foundations/11-five-homes.md)（家）、[13](./10-foundations/13-scope-and-keys.md)（作用域与键）、[12](./10-foundations/12-state-homes.md)（状态）、[14](./10-foundations/14-artifacts.md)（产物）；想知道 DSH 为什么长成这样，读 [22](./20-native/22-native-data-history.md)；想对比别人怎么做，读 [31](./30-external/31-external-community-patterns.md) 与 [33](./30-external/33-external-plugin-patterns.md)；最后用 [41](./40-advisor/41-checklist.md) 自查、用 [42](./40-advisor/42-native-reference-architectures.md) 选骨架。
+先读 [answer](./00-answer.md) 的四个空间与六种承诺，再读 [15](./10-foundations/15-four-spaces.md) 建立空间感、[16](./10-foundations/16-startup-resolution.md) 决定启动怎么安排、[17](./10-foundations/17-config-layers.md) 决定配置放哪；然后按需读 [11](./10-foundations/11-five-homes.md)（家）、[13](./10-foundations/13-scope-and-keys.md)（作用域与键）、[12](./10-foundations/12-state-homes.md)（状态）、[14](./10-foundations/14-artifacts.md)（产物）；想知道 DSH 为什么长成这样，读 [22](./20-native/22-native-data-history.md)；想对比别人怎么做，读 [31](./30-external/31-external-community-patterns.md) 与 [33](./30-external/33-external-plugin-patterns.md)；最后用 [91](./90-advisor/91-checklist.md) 自查、用 [92](./90-advisor/92-native-reference-architectures.md) 选骨架。
 
 ![六种数据承诺](./figures/00-promises-six.svg)

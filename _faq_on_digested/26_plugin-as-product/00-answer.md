@@ -79,7 +79,7 @@
 
 所以：把项目目录登记成 workspace，不会让模型多出任何能力；要"像常规 harness 一样可读可改"，得先在 preset 里加工具，再让会话 cwd 落在项目里。
 
-三种架构：**I 工具中介**（插件工具写）、**II workspace 化**（模型工具写，cwd=项目）、**III 混合**（workspace 是入口，账本另存）。架构 II 还要选数据面：共享 home、重定向数据根、独立 home；取舍见 [42 §11](./40-advisor/architectures/11-product-instance.md)。
+三种架构：**I 工具中介**（插件工具写）、**II workspace 化**（模型工具写，cwd=项目）、**III 混合**（workspace 是入口，账本另存）。架构 II 还要选数据面：共享 home、重定向数据根、独立 home；取舍见 [92 §11](./90-advisor/architectures/11-product-instance.md)。
 
 ## 启动解析：四个状态
 
@@ -136,7 +136,7 @@ DSH 自己**不写目录、不写 profile**；"要不要留 marker"是产品在"
 0. **模型要对项目目录用通用文件工具吗？** 不要 → 工具中介；要 → 开放 agent，会话 cwd 必须落在项目里。
 1. 其余按承诺选：已有 → P0；能重算 → P1；跟项目走 → P2；跨会话记录 → P3；账号/安装 → P4；这个 DSH 由我决定 → P5。
 
-完整问题清单与数据卡见 [41](./40-advisor/41-checklist.md)；空间与键见 [10](./10-foundations/10-taxonomy.md) / [15](./10-foundations/15-four-spaces.md)。
+完整问题清单与数据卡见 [91](./90-advisor/91-checklist.md)；空间与键见 [10](./10-foundations/10-taxonomy.md) / [15](./10-foundations/15-four-spaces.md)。
 
 ## 反模式（产品视角）
 
@@ -171,7 +171,7 @@ DSH 自己**不写目录、不写 profile**；"要不要留 marker"是产品在"
 
 ## 证据与边界
 
-- **T（可复现观测，2026-10-30；命令见 [experiments](50-evidence/experiments/00-index.md) §04）**：`$DSH_HOME/storages/workspace.json` 为 domain `workspace` v2；已绑定会话头含 `cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`；在该样本中，落盘全走插件工具的 `node:fs`，profile 未覆盖产品那一行。
+- **T（可复现观测，2026-10-30；命令见 [experiments](40-evidence/experiments/00-index.md) §04）**：`$DSH_HOME/storages/workspace.json` 为 domain `workspace` v2；已绑定会话头含 `cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`；在该样本中，落盘全走插件工具的 `node:fs`，profile 未覆盖产品那一行。
 - **C（源码/docs）**：workspace 子系统、会话创建与 cwd、`applyEntryPatches` 的整对象替换、config-editor 的完整写入、首用默认工作区的空 registry 条件、沙箱唯一可写根。
 - DSH 机制入口：[workspace](docs/subsystems/workspace.md)、[sandbox](docs/subsystems/sandbox.md)、[filesystem](docs/subsystems/filesystem.md)、[settings](docs/subsystems/settings.md)、[persistence](docs/subsystems/persistence.md)。
 - 社区材料（31–33）是外部、未独立验证的作者声明，不能当 DSH 的 API 合同。

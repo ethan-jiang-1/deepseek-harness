@@ -1,6 +1,6 @@
 # 4 · 知识库 / RAG
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：文档导入、分块、向量+FTS、引用、删除、快照。
 

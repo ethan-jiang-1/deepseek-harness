@@ -1,6 +1,6 @@
 # 11 · 产品实例（配置根）
 
-[← 返回 42 总览](../42-native-reference-architectures.md)
+[← 返回 92 总览](../92-native-reference-architectures.md)
 
 **适用**：一个插件决定整个 DSH 实例的用途——装什么、从哪个目录起步、数据归谁（产品型实例：工作台、编辑器、运维面板都属于这一类）。
 

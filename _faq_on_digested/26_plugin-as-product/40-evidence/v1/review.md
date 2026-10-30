@@ -37,7 +37,7 @@
 - [02-state-homes.md](../../10-foundations/12-state-homes.md)：domain/settings/credentials 三者的精确边界；补凭据记录、profile 作用域、立即应用、后端限制。
 - [03-scope-and-keys.md](../../10-foundations/13-scope-and-keys.md)：作用域表扩到 session/workspace/profile/home/client/external；补键的代数、per-record 键限制、目录移动矩阵。
 - [04-artifacts.md](../../10-foundations/14-artifacts.md)：五种引用/导出；修正附件寿命、changes 位置、present 上限。
-- [05-checklist.md](../../40-advisor/41-checklist.md)：十四问 + 数据卡 + 五个例子 + 反模式 + 测试。
+- [05-checklist.md](../../90-advisor/91-checklist.md)：十四问 + 数据卡 + 五个例子 + 反模式 + 测试。
 - [06-external-community-patterns.md](../../30-external/31-external-community-patterns.md)：九个维度 + 十五种手法 + 三处版本漂移 + 产品缺口。
 - [07-external-adjacent-ecosystems.md](../../30-external/32-external-adjacent-ecosystems.md)：新增跨生态对照。
 - [answer.md](../../00-answer.md)：三坐标、2×2、五种承诺、四种解法、决策树、快问快答。

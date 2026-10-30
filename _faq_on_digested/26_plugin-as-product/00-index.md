@@ -6,6 +6,8 @@
 >
 > 三件事分开看：组合决定能力与默认值，根决定模型能写哪儿，home 级记录决定换 profile 之后还剩下什么。
 
+> **要动手写插件？** 直接去 [90 动手](./90-advisor/00-index.md)：两条施工路线、应用插件七问、七步顺序，以及一个完整的[端到端例子](./90-advisor/93-app-plugin-walkthrough.md)。前面的章节是地图，90 是施工图。
+
 ![四个空间：谁拥有、谁能写、换机器还在不在](./figures/15-four-spaces.svg)
 
 ## 30 秒结论
@@ -53,7 +55,7 @@
 | 寿命 | turn、session、project、account、forever、rebuildable？ | [11](./10-foundations/11-five-homes.md) / [22](./20-native/22-native-data-history.md) |
 | 读写者 | 模型、用户、插件、浏览器、没人？ | [11](./10-foundations/11-five-homes.md) |
 | 配置层级 | 包默认 / profile / home / 产品全局设置？ | [17](./10-foundations/17-config-layers.md) |
-| 删除/迁移 | 删了会不会丢？卸载留什么？ | [41 决策程序](./40-advisor/41-checklist.md) |
+| 删除/迁移 | 删了会不会丢？卸载留什么？ | [91 决策程序](./90-advisor/91-checklist.md) |
 
 ## 十一条原则
 
@@ -74,32 +76,33 @@
 | Archetype | 原生核心/插件（N0/N1） | 借用模式（N+，自己实现） | 扩展参考（E1/E2） | 细读 |
 |---|---|---|---|---|
 | **产品实例 / 配置根** | profile 组合 + workspace registry + `dataRoot` 文件 | 启动四状态、占位防抢占、账本路径键 | workspace-overlay | [15](./10-foundations/15-four-spaces.md) / [16](./10-foundations/16-startup-resolution.md) / [17](./10-foundations/17-config-layers.md) |
-| 项目记忆 | 项目文件 + `ctx.fs` | journal+render、锁内备份 | project-context | [42 §1](./40-advisor/architectures/01-project-memory.md) |
-| 个人长期记忆 | `ctx.storageDomain` / 项目文件 | 条目 id、确认队列 | memory-evolve、graphmemory | [42 §2](./40-advisor/architectures/02-personal-memory.md) |
-| 会话归档/删除 | **GAP**（无 delete） | 宽限+审计 | archive-retention | [42 §3](./40-advisor/architectures/03-session-archive.md) |
-| KB/RAG | `ctx.storageDomain` + sqlite backend | 每 KB SQLite、软删/compact | kb-manager | [42 §4](./40-advisor/architectures/04-knowledge-base.md) |
-| 任务/目标 | session 事件/投影、home 域 | 状态机、跨标签同步 | task-board | [42 §5](./40-advisor/architectures/05-tasks-goals.md) |
-| 交付物 | 工作区文件 + `present` | 项目导出目录 | artifact 服务 | [42 §6](./40-advisor/architectures/06-deliverables.md) |
-| 渠道/账号 | profile patch + `ctx.credentials` | 去重/路由表 | 外部账号 DB | [42 §7](./40-advisor/architectures/07-channels.md) |
-| 每项目运行时 | **GAP**（无 per-workspace scope） | read-only 配置 + lease | workspace-overlay | [42 §8](./40-advisor/architectures/08-per-project-runtime.md) |
-| 客户端 UI | localStorage / `SessionProjectionMap` | host 文件迁移、版本键 | beauty-persist | [42 §9](./40-advisor/architectures/09-client-ui.md) |
-| 同步/备份 | `/export` ZIP | 用户 git、冲突三选一 | 外部同步服务 | [42 §10](./40-advisor/architectures/10-sync-backup.md) |
+| 项目记忆 | 项目文件 + `ctx.fs` | journal+render、锁内备份 | project-context | [92 §1](./90-advisor/architectures/01-project-memory.md) |
+| 个人长期记忆 | `ctx.storageDomain` / 项目文件 | 条目 id、确认队列 | memory-evolve、graphmemory | [92 §2](./90-advisor/architectures/02-personal-memory.md) |
+| 会话归档/删除 | **GAP**（无 delete） | 宽限+审计 | archive-retention | [92 §3](./90-advisor/architectures/03-session-archive.md) |
+| KB/RAG | `ctx.storageDomain` + sqlite backend | 每 KB SQLite、软删/compact | kb-manager | [92 §4](./90-advisor/architectures/04-knowledge-base.md) |
+| 任务/目标 | session 事件/投影、home 域 | 状态机、跨标签同步 | task-board | [92 §5](./90-advisor/architectures/05-tasks-goals.md) |
+| 交付物 | 工作区文件 + `present` | 项目导出目录 | artifact 服务 | [92 §6](./90-advisor/architectures/06-deliverables.md) |
+| 渠道/账号 | profile patch + `ctx.credentials` | 去重/路由表 | 外部账号 DB | [92 §7](./90-advisor/architectures/07-channels.md) |
+| 每项目运行时 | **GAP**（无 per-workspace scope） | read-only 配置 + lease | workspace-overlay | [92 §8](./90-advisor/architectures/08-per-project-runtime.md) |
+| 客户端 UI | localStorage / `SessionProjectionMap` | host 文件迁移、版本键 | beauty-persist | [92 §9](./90-advisor/architectures/09-client-ui.md) |
+| 同步/备份 | `/export` ZIP | 用户 git、冲突三选一 | 外部同步服务 | [92 §10](./90-advisor/architectures/10-sync-backup.md) |
 
 ## 按问题快速分流
 
 | 你的问题 | 先读 | 再读 |
 |---|---|---|
+| 我要开始写插件（尤其是应用型） | [90 动手](./90-advisor/00-index.md) | [91 决策程序](./90-advisor/91-checklist.md) / [93 端到端](./90-advisor/93-app-plugin-walkthrough.md) |
 | 产品启动时目录从哪来、用户怎么选 | [16 启动解析](./10-foundations/16-startup-resolution.md) | [15 四个空间](./10-foundations/15-four-spaces.md) |
 | 模型为什么写不了项目文件 | [17 配置分层](./10-foundations/17-config-layers.md) | [sandbox](docs/subsystems/sandbox.md) |
 | 产品全局设置放哪、跨 profile 一致 | [17](./10-foundations/17-config-layers.md) | [12 状态的家](./10-foundations/12-state-homes.md) |
 | 怎么安装/升级/卸载、什么时候要重启 | [18 安装升级](./10-foundations/18-install-upgrade.md) | [17](./10-foundations/17-config-layers.md) |
 | 用户选目录后要留什么 | [15](./10-foundations/15-four-spaces.md) | [13](./10-foundations/13-scope-and-keys.md) |
-| 用户要打开/编辑/带走一份文件 | [14 产物](./10-foundations/14-artifacts.md) | [42 §6](./40-advisor/architectures/06-deliverables.md) |
+| 用户要打开/编辑/带走一份文件 | [14 产物](./10-foundations/14-artifacts.md) | [92 §6](./90-advisor/architectures/06-deliverables.md) |
 | 跨会话统计/用量面板 | [11 历史家](./10-foundations/11-five-homes.md#历史家会话日志) | [21 原生 landscape](./20-native/21-native-data-landscape.md) |
-| 项目级插件状态/索引 | [13 作用域与键](./10-foundations/13-scope-and-keys.md) | [41 例 1](./40-advisor/41-checklist.md) |
+| 项目级插件状态/索引 | [13 作用域与键](./10-foundations/13-scope-and-keys.md) | [91 例 1](./90-advisor/91-checklist.md) |
 | API key / token | [12 状态的家](./10-foundations/12-state-homes.md) | [22 历史 §3](./20-native/22-native-data-history.md#3-凭据引用与记录分开) |
-| 删除/保留/卸载 | [41 决策程序](./40-advisor/41-checklist.md) | [42 §3](./40-advisor/architectures/03-session-archive.md) |
-| 面板宽度/折叠/快捷键 | [11 客户端家](./10-foundations/11-five-homes.md#客户端家浏览器设备本地状态) | [42 §9](./40-advisor/architectures/09-client-ui.md) |
+| 删除/保留/卸载 | [91 决策程序](./90-advisor/91-checklist.md) | [92 §3](./90-advisor/architectures/03-session-archive.md) |
+| 面板宽度/折叠/快捷键 | [11 客户端家](./10-foundations/11-five-homes.md#客户端家浏览器设备本地状态) | [92 §9](./90-advisor/architectures/09-client-ui.md) |
 
 ## 反模式清单
 
@@ -117,17 +120,18 @@
 
 ## 阅读路线
 
-- **产品型插件作者（30 分钟）**：[00-answer](./00-answer.md) → [10 概念层](./10-foundations/10-taxonomy.md) → [15 四个空间](./10-foundations/15-four-spaces.md) → [16 启动解析](./10-foundations/16-startup-resolution.md) → [17 配置分层](./10-foundations/17-config-layers.md) → [18 安装升级](./10-foundations/18-install-upgrade.md) → [41 决策程序](./40-advisor/41-checklist.md)。
-- **普通插件作者**：[00-answer](./00-answer.md) → [10 概念层](./10-foundations/10-taxonomy.md) → [11](./10-foundations/11-five-homes.md) → [13](./10-foundations/13-scope-and-keys.md) → [12](./10-foundations/12-state-homes.md) → [41](./40-advisor/41-checklist.md)。
-- **架构/维护者（2 小时）**：[21 原生 landscape](./20-native/21-native-data-landscape.md) → [22 原生历史](./20-native/22-native-data-history.md) → [42 参考架构](./40-advisor/42-native-reference-architectures.md)；外部只读 [31](./30-external/31-external-community-patterns.md)/[32](./30-external/32-external-adjacent-ecosystems.md)/[33](./30-external/33-external-plugin-patterns.md)。
-- **Agent 要做一次数据决策**：直接读 [41 决策程序](./40-advisor/41-checklist.md) 的决策问题 + 数据卡，再按 archetype 跳 [42](./40-advisor/42-native-reference-architectures.md)。
+- **要动手写插件（推荐先看）**：[90 动手](./90-advisor/00-index.md) → [93 端到端例子](./90-advisor/93-app-plugin-walkthrough.md) → [91 决策程序](./90-advisor/91-checklist.md)。
+- **产品型插件作者（30 分钟）**：[00-answer](./00-answer.md) → [10 概念层](./10-foundations/10-taxonomy.md) → [15 四个空间](./10-foundations/15-four-spaces.md) → [16 启动解析](./10-foundations/16-startup-resolution.md) → [17 配置分层](./10-foundations/17-config-layers.md) → [18 安装升级](./10-foundations/18-install-upgrade.md) → [91 决策程序](./90-advisor/91-checklist.md)。
+- **普通插件作者**：[00-answer](./00-answer.md) → [10 概念层](./10-foundations/10-taxonomy.md) → [11](./10-foundations/11-five-homes.md) → [13](./10-foundations/13-scope-and-keys.md) → [12](./10-foundations/12-state-homes.md) → [91](./90-advisor/91-checklist.md)。
+- **架构/维护者（2 小时）**：[21 原生 landscape](./20-native/21-native-data-landscape.md) → [22 原生历史](./20-native/22-native-data-history.md) → [92 参考架构](./90-advisor/92-native-reference-architectures.md)；外部只读 [31](./30-external/31-external-community-patterns.md)/[32](./30-external/32-external-adjacent-ecosystems.md)/[33](./30-external/33-external-plugin-patterns.md)。
+- **Agent 要做一次数据决策**：直接读 [91 决策程序](./90-advisor/91-checklist.md) 的决策问题 + 数据卡，再按 archetype 跳 [92](./90-advisor/92-native-reference-architectures.md)。
 - **只想看结论**：[00-answer](./00-answer.md)。
 
 ## Agent 使用方式（可直接照做）
 
 1. **问第 0 问**：模型要不要对项目目录用通用工具？决定架构 I（工具中介）还是 II（workspace 化）。
 2. **填画布**：工具面 / 空间 / 启动 / 权威 / 作用域 / 寿命 / 读写者 / 配置层级 / 删除迁移。
-3. **过决策问题**：用 [41](./40-advisor/41-checklist.md) 逐条问，不要先选 API。
+3. **过决策问题**：用 [91](./90-advisor/91-checklist.md) 逐条问，不要先选 API。
 4. **选 archetype**：先看"产品实例 / 配置根"，再按需要看项目记忆、账本、会话归档等。
 5. **写数据卡**：对每块事实重复，写清"在哪、谁删、卸载留什么、怎么迁移"。
 6. **过反模式**：命中就回到第 1 步。
@@ -157,11 +161,7 @@
 │   ├── 31-external-community-patterns.md
 │   ├── 32-external-adjacent-ecosystems.md
 │   └── 33-external-plugin-patterns.md
-├── 40-advisor/                 # 41–42：决策与骨架
-│   ├── 41-checklist.md
-│   ├── 42-native-reference-architectures.md   # 总览：画布、路线表、分篇索引
-│   └── architectures/          # 11 个 archetype 分篇（01–11）
-├── 50-evidence/                # 证据
+├── 40-evidence/                # 证据
 │   ├── 00-index.md
 │   ├── reference.md
 │   ├── research-native.md
@@ -169,6 +169,12 @@
 │   ├── quality-review.md
 │   ├── v1/
 │   └── v2/
+├── 90-advisor/                 # 施工图：从决策到落地
+│   ├── 00-index.md             # 两条施工路线、应用七问、七步顺序
+│   ├── 91-checklist.md
+│   ├── 92-native-reference-architectures.md   # 总览：画布、路线表、分篇索引
+│   ├── 93-app-plugin-walkthrough.md   # 端到端例子：一个应用型插件
+│   └── architectures/          # 11 个 archetype 分篇（01–11）
 └── figures/
 ```
 
@@ -192,8 +198,10 @@
 | 31 | [31 外部社区模式](./30-external/31-external-community-patterns.md) | 九个维度、十八种手法（E1 参考） |
 | 32 | [32 外部生态对照](./30-external/32-external-adjacent-ecosystems.md) | VS Code / Obsidian / Claude Code 等 |
 | 33 | [33 外部插件案例](./30-external/33-external-plugin-patterns.md) | 深度案例、反模式（E1 参考） |
-| 41 | [41 决策程序](./40-advisor/41-checklist.md) | 决策问题 + 数据卡 + 反模式 + 测试 |
-| 42 | [42 参考架构总览](./40-advisor/42-native-reference-architectures.md) | 九格画布、路线表、分篇索引（11 个 archetype 在 `architectures/`） |
+| 90 | [90 动手](./90-advisor/00-index.md) | 两条施工路线、应用七问、七步顺序、一页判断 |
+| 91 | [91 决策程序](./90-advisor/91-checklist.md) | 决策问题 + 数据卡 + 反模式 + 测试 |
+| 92 | [92 参考架构总览](./90-advisor/92-native-reference-architectures.md) | 九格画布、路线表、分篇索引（11 个 archetype 在 `architectures/`） |
+| 93 | [93 端到端例子](./90-advisor/93-app-plugin-walkthrough.md) | 一个看板应用从 profile 到卸载的完整走法 |
 
 ## 术语
 
@@ -214,7 +222,7 @@
 
 **T** 可复现实验/探针（命令+输出） · **C** 当前合同（docs/源码，精确到符号） · **H** 历史事实 · **P** 提案 · **S** 第三方源码阅读 · **R** 第三方 README/作者声明 · **U** 未确认。
 
-只有 C 能写成"DSH 现在如何"；H 只能写"当时如何"；P 不能当已实现；S/R/U 不能冒充合同。完整来源见 [reference](./50-evidence/reference.md) 与 [research-native](./50-evidence/research-native.md) / [research-external](./50-evidence/research-external.md)；本轮结构/一致性自查见 [quality-review](./50-evidence/quality-review.md)，v1/v2 历史见 `50-evidence/v1/`、`50-evidence/v2/`。
+只有 C 能写成"DSH 现在如何"；H 只能写"当时如何"；P 不能当已实现；S/R/U 不能冒充合同。完整来源见 [reference](./40-evidence/reference.md) 与 [research-native](./40-evidence/research-native.md) / [research-external](./40-evidence/research-external.md)；本轮结构/一致性自查见 [quality-review](./40-evidence/quality-review.md)，v1/v2 历史见 `40-evidence/v1/`、`40-evidence/v2/`。
 
 ## 边界
 
