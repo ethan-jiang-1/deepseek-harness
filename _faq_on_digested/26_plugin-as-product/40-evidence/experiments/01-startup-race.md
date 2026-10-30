@@ -68,4 +68,6 @@ export default {
 2. **一个隔离 profile**：`export DSH_HOME=$(mktemp -d)`，`dsh plugin --profile race add <web-app>` 再 `add ./race-plugin`。
 3. **浏览器自动化**：`dsh --profile race web --no-open --port 3999` 起服务后，用 Playwright 打开页面、在 5 秒窗口内等首连，然后读 `$DSH_HOME/storages/workspace.json` 看是否出现 `<Documents>/deepseek-harness/default-workspace`。
 
-判定：出现 → 竞态复现，U 升级为 T；不出现 → 在当前机器上未复现，仍不能证明普遍安全。**本机没有安装浏览器二进制，这一步未执行。**
+判定：出现 → 竞态复现，U 升级为 T；不出现 → 在当前机器上未复现，仍不能证明普遍安全。
+
+**本机尝试结果（2026-10-30）**：浏览器与 Playwright 都在，但隔离 profile 安装 `@deepseek-ai/dsh-web-app@0.2.1-rc.3` 被 pnpm 的构建脚本策略拒绝（`Ignored build scripts: koffi@3.1.1`，`dsh plugin` 视为失败），实验未执行。
