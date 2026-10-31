@@ -335,3 +335,10 @@
 - 临时 `$DSH_HOME` 下执行 `dsh --profile kanban --from-default-profile web --dump-default-config` 后，manifest 只列 base + web-app、dependencies 为空，旧用户 patch 替换为空 patch。未构建时 source Web launch 因缺少 `dsh-client-ui-entry-customization/lib/client.js` 失败。随后 `pnpm run build` 通过；隔离 profile 输出 tokenized `dsh web:` URL，该 URL 返回 HTTP 303；带上响应 cookie 跟随 redirect 后，根页面返回 HTTP 200 `text/html`。它未验证浏览器渲染或 Kanban 产品行为。93 将产品特定验收与本仓库可复现实验分开。
 - Profile composition 实验 05 通过。`pnpm run test:docs` 通过 21/21 gates，`pnpm run doc-sync` 通过 43/43 gates，`pnpm run lint` 成功，`git diff --check` 通过。lint 提示一个 `packages/experimental/client-ui-cot-translation` 中未使用的 disable directive，与本目录无关。
 - 整个 FAQ corpus verifier 报告的失败位于 26 目录之外的 03_model-vendors worktree；不能据此称整个 corpus 通过。
+
+## 25. 2026-11-01 · 30-external 扩为 31–36
+
+- **结构**：30-external 从 31–33 扩为 31–36——31 单插件模式、32 数据设计、33 案例、34 profile 形态、35 装配状态与所有权、36 证据台账。00-index 的章节地图与 31–33/34–36 的分工说明同步。
+- **标签**：34–36 的 `[SRC]`/`[DSH]`/`[TEST]`/`[CI]`/`[RUN]` 在 00-index 证据段映射到既有的 S/C/未执行/未运行，避免与 31–33 的 S/R/U 冲突。
+- **90-advisor**：90 增加“先定形态”入口并调整下一步顺序；91 新增“检查 profile 发行形态”；92 与 93 回链 34/35；18 增加更新补偿与四层状态的对照。
+- **验证**：verify 26 子树 0；全量失败仍在 03_model-vendors 既有断链。

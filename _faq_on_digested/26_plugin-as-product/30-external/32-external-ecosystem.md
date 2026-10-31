@@ -1,4 +1,4 @@
-# 32 · 产品型外部插件的数据设计（参考）：八种可以借鉴的结构
+# 32 · 产品型外部插件的数据设计（参考）：八组可以借鉴的结构
 
 ## 这一篇回答什么
 
@@ -20,7 +20,7 @@ DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端�
 
 E1 与 E2 的分界是数据权威在哪。本篇讨论的结构几乎都在 E1：插件自己写文件或 DB，权威在本机，生命周期也由插件承担。
 
-## 八种可以借鉴的数据结构
+## 八组可以借鉴的数据结构
 
 | 产品问题 | 外部做法（代表） | 可借鉴的结构 | 别照抄 |
 |---|---|---|---|
@@ -53,11 +53,11 @@ kb-manager 把“一个知识库”做成一个单元：数据、索引、任务
 
 ### 凭据、迁移与协作
 
-credentials-mysql 证明凭据 provider 可以换：外部 DB、schema 版本 fail-closed、行锁、字段加密、owner scope；但卸载不清理 DB，迁移契约没人写。claude-move 用 scan → preview → apply 和幂等 `move.json`；codex-sync 暴露了双向同步真正的难点——映射和冲突策略。agent-mailbox 补持久 inbox/threads/receipts，session_folders 把 UI 状态放进 storage-domain。可借鉴的是“换后端、搬数据、跨会话消息”都被当成产品功能来设计，而不是一次性脚本。
+credentials-mysql 证明凭据 provider 可以换：外部 DB、schema 版本 fail-closed、行锁、字段加密、owner scope；但卸载不清理 DB，迁移契约没人写。claude-move 用 scan → preview → apply 和幂等 `move.json`；codex-sync 暴露了双向同步真正的难点——映射和冲突策略。agent-mailbox 补持久 inbox/threads/receipts，session_folders 把 UI 状态放进 storage-domain。可借鉴的是“换后端、搬数据、跨会话消息”都被当成产品功能来设计，而不是一次性脚本。profile 级的进口形态与来源/安装/过滤分层见 [34](./34-profile-product-forms.md)/[35](./35-profile-assembly-ownership.md)。
 
 ## 目录扫描：产品型样本池
 
-从 6704 条目录元数据里做关键词扫描后人工筛出的产品型样本（只读作者描述，R 级；没有安装、没有读源码）。它们补上了八种结构没覆盖的账号、备份、回滚和账本。
+从 6704 条目录元数据里做关键词扫描后人工筛出的产品型样本（只读作者描述，R 级；没有安装、没有读源码）。它们补上了八组结构没覆盖的账号、备份、回滚和账本。
 
 | 样本 | 类别 | 数据设计 | 可借鉴 |
 |---|---|---|---|
@@ -82,6 +82,8 @@ credentials-mysql 证明凭据 provider 可以换：外部 DB、schema 版本 fa
 | [worktree-panel](https://github.com/HeathHe/dsh-worktree-panel) | git | worktree → 会话分组、脏树/活跃会话保护、存储迁移 | 迁移有保护 |
 | [trilogy](https://github.com/TodayJin/dsh-trilogy) | memory | 每工作区三份 Markdown、溢出归档、导出/导入 JSON、两步清除 | 溢出可读、可恢复 |
 
+其中 `ui-auth`、`team-cost` 涉及多用户/团队，超出本目录的单 Host、单用户数据卡范围；只作结构参考，采用前另做权限、审计和迁移设计。
+
 ## 这些结构在补哪六个缺口
 
 | 缺口 | 对应结构 | DSH 现状 |
@@ -93,7 +95,7 @@ credentials-mysql 证明凭据 provider 可以换：外部 DB、schema 版本 fa
 | 客户端状态跨源 | 产品设置 | 无客户端状态服务；`localStorage` 换 origin 就丢 |
 | 第三方设置命名空间 | 产品设置 | `Config.volatile()` 有表单，缺与 Loader 无关的键空间 |
 
-八个结构不是八种发明，它们反复撞到同一批缺口。对产品作者，缺口决定“哪些要自建、自建时抄哪个结构”；对 DSH 维护者，缺口就是需求信号：同一件事已经被不同插件用互不兼容的方式补了多次。
+八组结构不是八种发明，它们反复撞到同一批缺口。对产品作者，缺口决定“哪些要自建、自建时抄哪个结构”；对 DSH 维护者，缺口就是需求信号：同一件事已经被不同插件用互不兼容的方式补了多次。
 
 ## 声明质量
 

@@ -88,7 +88,7 @@
 
 ## 九条 profile 检查清单
 
-来自八个样本的复核，不是无条件通用规则；每条都依赖对应机制，证据在 [36](./36-profile-evidence-ledger.md)。
+来自八个样本的复核（其中 plugins-plus/better-session 只到 README/发布物），不是无条件通用规则；每条都依赖对应机制，证据在 [36](./36-profile-evidence-ledger.md)。
 
 1. **分清四层状态**：bundle package、dependency rows、profile roster、effective enabled/config 不是一回事；分别提供读回路径。
 2. **声明式生成要验证产物一致**：依赖清单、Loader rows、package exports 来自同一聚合定义时，用 generator/check 维持 parity；生成通过不等于任意 profile 安装原子成功。
@@ -102,7 +102,7 @@
 
 ## 边界
 
-- 四层状态与所有权来自固定版本源码/测试/CI 阅读（`[SRC]`），没有安装、没有启动；README 体验主张不是运行时观察。
+- 四层状态与所有权来自固定版本源码/测试/CI 阅读（`[SRC]`），其中 `plugins-plus`/`better-session` 只到 README/发布物；没有安装、没有启动。
 - `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考（`[R]`/`U`）。
 - `better-session` 目标源码未 pin，发布 patch 之外的会话状态机都是 `[R]`/`[U]`。
 - 九条检查清单只在目标形态需要时采用；不是所有产品都必须有聚合、接管或进口形态。

@@ -4,6 +4,8 @@
 
 用户仍由 `dsh` 启动应用。产品 profile 用有序 bundle 组合 Web 界面、产品 plugin 和 Agent preset；一个 Session 通过 Workspace 或显式目录进入产品工具，工具再访问用户项目文件。以 Kanban Studio 为例，本篇从启动文件、patch 顺序和 preset 一路追到目录身份与数据归属。
 
+若还没决定发插件、发 profile 还是独立应用，或要选一种 profile 发行形态，先看 [34 profile 产品形态](../30-external/34-profile-product-forms.md)；四层装配状态与所有权见 [35](../30-external/35-profile-assembly-ownership.md)。本篇从已经选定的 profile 开始。
+
 ![从 profile 文件到 Kanban 项目数据](../figures/90-profile-product-flow.svg)
 
 ## 1. 先认清启动文件
@@ -79,7 +81,7 @@ Kanban 第一版可让项目目录中的 Markdown/JSON board files 作为业务 
 
 ## 下一步
 
+- 先定形态：用 [34 profile 产品形态](../30-external/34-profile-product-forms.md) 选八种交付形态之一，再用 [35 装配状态与所有权](../30-external/35-profile-assembly-ownership.md) 做四层读回。
 - 用 [93 Kanban 文件走查](./93-app-plugin-walkthrough.md) 对照 profile JSON、bundle JSON、preset YAML 和 Session 请求。
 - 用 [91 数据卡与验收](./91-checklist.md) 核对事实的 Authority、Source、读写者和生命周期。
-- 要发全家桶、聚合、接管或进口形态时，先看 [34 profile 产品形态](../30-external/34-profile-product-forms.md) 的形态选择，再用 [35 装配状态与所有权](../30-external/35-profile-assembly-ownership.md) 做四层读回。
 - 只有当产品有存储、归档、同步或隔离取舍时，才查 [92 参考矩阵](./92-native-reference-architectures.md)。安装、升级和卸载语义见 [18](../10-foundations/18-install-upgrade.md)。

@@ -119,4 +119,4 @@ Board files 是初版的业务 authority。若增加派生索引，Source 为 bo
 
 ## 验证范围
 
-本仓库已执行的 profile 初始化、bundle 安装、preset row 组合和 Web listener smoke 见[实验 05](../40-evidence/experiments/05-profile-bundle-install.md)。它不验证 Kanban 示例代码、工具权限或看板行为。安装组合见 [90 主线](./00-index.md)，数据卡见 [91](./91-checklist.md)，升级与卸载见 [18](../10-foundations/18-install-upgrade.md)。
+本仓库已执行的 profile 初始化、bundle 安装、preset row 组合和 Web listener smoke 见[实验 05](../40-evidence/experiments/05-profile-bundle-install.md)。它不验证 Kanban 示例代码、工具权限或看板行为。安装组合见 [90 主线](./00-index.md)，数据卡见 [91](./91-checklist.md)，升级与卸载见 [18](../10-foundations/18-install-upgrade.md)。本例是单一 bundle + preset 的最小形态；聚合/接管/进口/闭环与四层状态见 [34](../30-external/34-profile-product-forms.md) 和 [35](../30-external/35-profile-assembly-ownership.md)。

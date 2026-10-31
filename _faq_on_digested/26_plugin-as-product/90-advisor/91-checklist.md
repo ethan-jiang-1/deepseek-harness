@@ -63,9 +63,9 @@
 5. **隔离：** 列出共享的 `$DSH_HOME` stores、path overrides、browser origins 和外部 services。Profile 名本身不隔离数据。
 6. **升级与卸载：** 说明 profile 重启、数据迁移、保留的用户文件和产品数据清理方式。
 
-## 检查 profile 装配状态
+## 检查 profile 发行形态
 
-产品以聚合、接管或进口形态发行时，装配状态要分层读回；样本与机制见 [34](../30-external/34-profile-product-forms.md) 与 [35](../30-external/35-profile-assembly-ownership.md)。
+产品以聚合、接管或进口形态发行时，装配状态要分层读回；这一节检查发行形态，不替代每份事实的数据卡。样本与机制见 [34](../30-external/34-profile-product-forms.md) 与 [35](../30-external/35-profile-assembly-ownership.md)。
 
 1. **四层状态**：包可解析、bundle 在 `dsh.profile.bundles`、row 在 patch、row 当前 enabled/config 生效，是四种状态；分别用 lockfile/版本、profile roster、patch fold 和 effective config dump 读回，不只看安装命令的 exit code。
 2. **身份与冲突**：自研 row 用独立 namespace，明确 aggregate 与 standalone 的混装政策；共享库检查单例版本；改变 row id 或 package identity 时给旧身份一个退役窗口。

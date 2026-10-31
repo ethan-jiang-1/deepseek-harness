@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" width="1200" height="690" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>产品型外部插件：八种可借鉴的数据结构</title>
+  <title>产品型外部插件：八组可借鉴的数据结构</title>
   <desc>从 15 个 DSH 外部插件深读里挑出的八组产品级数据结构：项目绑定、每项目运行时、产品设置、知识库、生命周期、凭据、迁移、协作面板。每行给出代表做法、可借鉴的结构和不要照抄的做法。</desc>
 
   <rect width="1200" height="690" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">产品型外部插件：八种可借鉴的数据结构</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">产品型外部插件：八组可借鉴的数据结构</text>
   <text x="600" y="58" text-anchor="middle" fill="#64748b">97 候选 → 15 深读；只取进入产品领域的样本；外部 = DSH 生态，不是其他产品</text>
 
   <!-- table header -->
@@ -99,5 +99,5 @@
 
   <!-- footer -->
   <text x="24" y="636" font-size="9.5" fill="#64748b">口径：2026-10-27 对 97 个候选做目录/README 扫描，15 个深读；没有安装、没有运行。S/R 不建立 DSH API 合同，也不构成依赖背书。</text>
-  <text x="24" y="656" font-size="9.5" fill="#64748b">八个结构不是八种发明：它们反复撞到同一批缺口；缺口清单与 DSH 现状见正文。</text>
+  <text x="24" y="656" font-size="9.5" fill="#64748b">八组结构不是八种发明：它们反复撞到同一批缺口；缺口清单与 DSH 现状见正文。</text>
 </svg>

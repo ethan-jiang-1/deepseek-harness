@@ -25,6 +25,16 @@
 
 ![选形态：先看交付意图](../figures/34-form-selection.svg)
 
+## 先判断：插件、profile 还是独立应用
+
+| 交付物 | 启动方式 | 负责到哪层 | 抄错的样子 |
+|---|---|---|---|
+| 单个插件 | 装进用户现有 profile | 3 层槽位为主 | 硬依赖不存在的服务，结果白屏 |
+| 一套 bundle / profile | `dsh web --profile <name>` | 5/6/7：默认值、首启、分发 | 装上了但 bundles 没那行，用户以为装好 |
+| 独立应用（换表层/自带运行时） | 双击或命令行 | 2 层起，连运行时都可能要带 | 换了表层没补 5/6/7，首启即崩 |
+
+本篇只收中间一列；单插件的数据做法见 [31](./31-external-community-patterns.md)–[33](./33-external-plugin-patterns.md)，独立应用不在本篇。八种形态是中间一列的八种产品承诺，不是八种技术选型。
+
 ## 1. 全家桶：dsh-web
 
 **交付与装配。** 仓库根 `dsh-web` 是 `private: true` 的 GitHub wrapper，真正进入 profile 的是 `@linxin666/dsh-web-all@0.4.13`，它声明 `dsh.bundle.patch` 与 `engines.dsh`，依赖仓内 family packages 和四个 registry satellite。`aggregate.yml` 是装配事实源：`patchFrom` 声明子 patch 来源与顺序，`deps` 是依赖，`rows` 是外部行，`familyIds` 钉历史 id，`inactive` 生成 `disabled: true`，`tombstones`/`retiredPlugins` 管旧身份。`scripts/aggregate.mjs` 从它生成 patch、exports、metadata 和 retired registry；`aggregate:check` 与测试抓 manifest/产物漂移。（`[SRC]`）
@@ -79,7 +89,7 @@
 
 ## 6. 套件市场：dsh-agent-plugins-market
 
-**交付与装配。** 0.13.0 用有序 adapter registry 解析多种外部 suite 布局：候选失败写 diagnostics 后继续下一个 adapter；runtime schema 实际只接受 Agent Plugins v1 的 1.0/1.1，其他格式是兼容读取，不代表同一 validator 已核。安装以 `<sourceId>/<suiteId>` 为键，避免同名来源碰撞；runtime reconciler 再把 command/MCP/hooks/LSP 各面分别挂载。（`[SRC]`）
+**交付与装配。** 0.13.0 用有序 adapter registry 解析 README 宣称的十种外部 suite 布局：候选失败写 diagnostics 后继续下一个 adapter；runtime schema 实际只接受 Agent Plugins v1 的 1.0/1.1，其他格式是兼容读取，不代表同一 validator 已核。安装以 `<sourceId>/<suiteId>` 为键，避免同名来源碰撞；runtime reconciler 再把 command/MCP/hooks/LSP 各面分别挂载。（`[SRC]`）
 
 **状态与所有权。** source registry/checkout 在 `.sources/<sourceId>` 与 user `state.json`；install record 记录 Git HEAD/archive digest 与 enabled；workspace surface filter 是另一层，project-native 布局在 `<projectRoot>/.dsh/agent-plugins/` 单独扫描。source refresh 会更新受管 checkout，所以安装时 `lockCommit` 不能解释为内容冻结；要可复现必须另 pin 不可变 snapshot，源码里没有 refresh 后回滚。（`[SRC]`）
 
@@ -93,7 +103,7 @@
 
 ## 7. 闭环装配：better-session
 
-**交付与装配。** npm 0.1.10 的发布 patch 能确认：五个 exact 依赖（`session-branch@0.1.9`、`session-rdb@0.1.9`、manager/actions `0.1.10`、`dsh-reference@0.0.10`），关闭四个 legacy/storage rows，设置 `storage-domain.backend=rdb`，插入 branch/rdb/message-actions/conversation-manager/reference rows，并给 `session-rdb` 声明 SQLite `$DSH_HOME/sessions/sessions.sqlite` default。发布 patch 本身就是可审阅的装配清单。（`[SRC: 发布物]`）
+**交付与装配。** npm 0.1.10 的发布 patch 能确认：五个 exact 依赖（`session-branch@0.1.9`、`session-rdb@0.1.9`、`ui-conversation-manager@0.1.10`、`ui-conversation-message-actions@0.1.10`、`dsh-reference@0.0.10`），关闭四个 legacy/storage rows，设置 `storage-domain.backend=rdb`，插入 branch/rdb/message-actions/conversation-manager/reference rows，并给 `session-rdb` 声明 SQLite `$DSH_HOME/sessions/sessions.sqlite` default。发布 patch 本身就是可审阅的装配清单。（`[SRC: 发布物]`）
 
 **状态与所有权。** bundle 默认值不等于用户 effective config；更高 profile/home/CLI patch 可以覆盖 SQLite path。README 描述 edit 回填不重放、retry 才重放、fork 派生新 session；这是三种状态转换，truncate 事件不等于撤销外部工具副作用。session schema、序号分配、事务、workspace partition、migration 都没有 pin 到 0.1.10 源码。（`[R]`/`U`）
 
@@ -132,7 +142,7 @@
 
 ## 边界
 
-- 八个样本是固定版本的源码/测试/CI 阅读（`[SRC]`/`[R]`），没有安装、没有启动；逐样本证据与未验证项见 [36](./36-profile-evidence-ledger.md)。
+- 八个样本是固定版本复核：六个读到源码，`plugins-plus` 只到 README/tarball，`better-session` 只到发布 patch；都没有安装、启动；逐样本证据与未验证项见 [36](./36-profile-evidence-ledger.md)。
 - `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考（`[R]`/`U`）。
 - npm 下载含 CI 与镜像，星标不是质量；采用信号只说明曝光，不说明用户数或机制正确。
 - 本篇不覆盖终端表层、自带运行时的独立应用、单插件增强和只支持 0.1.x 的样本。

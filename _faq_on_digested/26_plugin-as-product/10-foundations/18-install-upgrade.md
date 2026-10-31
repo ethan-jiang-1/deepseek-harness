@@ -48,6 +48,8 @@ bundle 作者应在 `package.json` 声明准确的 `engines.dsh` 或 DSH peer ra
 
 Bundle 更新不应静默重写用户的 profile patch。产品数据不兼容时应迁移或报告可恢复错误，不要静默建一个空数据根冒充成功。
 
+外部产品型样本的更新补偿、四层装配状态与恢复失败语义见 [35](../30-external/35-profile-assembly-ownership.md)；那是对照，不是 DSH 合同。
+
 ## 卸载与保留
 
 `dsh plugin remove` 删除 profile dependency，并从 bundle list 移除相应 layer；它不会自动删除任意产品文件或业务记录。DSH Workspace deletion 仅删除 registration、排序和分组关系，不删除目录或 Session history。会话日志没有通用 delete API，附件本地 backend 没有自动 GC。
