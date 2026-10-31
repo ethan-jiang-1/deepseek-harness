@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>八种 profile 产品形态</title>
+  <desc>全家桶、界面套件、组合包、聚合补丁、接管套件、套件市场、闭环装配、视觉资产：每种形态的交付物、状态 owner 和最常抄错的地方。</desc>
+
+  <rect width="1200" height="720" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">八种 profile 产品形态</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">同一套 bundle 机制，八种交付方式；状态 owner 不同，失败模式也不同</text>
+
+  <!-- cards: 2 x 4 -->
+  <g>
+    <rect x="24" y="86" width="576" height="134" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="44" y="116" font-size="13" font-weight="700" fill="#1e40af">全家桶 · dsh-web v0.4.13</text>
+    <text x="44" y="142" font-size="10" fill="#334155">聚合包 + 20 多个家族/卫星包 + 商店与更新</text>
+    <text x="44" y="166" font-size="9.5" fill="#64748b">owner：aggregate manifest → patch；profile roster；row</text>
+    <text x="44" y="190" font-size="9.5" fill="#b45309">风险：把 exit 0 当挂载成功</text>
+
+    <rect x="600" y="86" width="576" height="134" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="620" y="116" font-size="13" font-weight="700" fill="#1e40af">界面套件 · dsh-codex-ui 2.0.9</text>
+    <text x="620" y="142" font-size="10" fill="#334155">单包六个 rows 重做整套界面</text>
+    <text x="620" y="166" font-size="9.5" fill="#64748b">owner：每个 row 的探活 / 激活 / 清理</text>
+    <text x="620" y="190" font-size="9.5" fill="#b45309">风险：禁用不等于零残留</text>
+
+    <rect x="24" y="228" width="576" height="134" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="44" y="258" font-size="13" font-weight="700" fill="#1e40af">组合包 · dsh-suite 0.9.1</text>
+    <text x="44" y="284" font-size="10" fill="#334155">18 个 exact 依赖 + 共享默认 + 每 profile 更新器</text>
+    <text x="44" y="308" font-size="9.5" fill="#64748b">owner：suite patch defaults；成员拥有实现</text>
+    <text x="44" y="332" font-size="9.5" fill="#b45309">风险：direct pin 当 transitive lock</text>
+
+    <rect x="600" y="228" width="576" height="134" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="620" y="258" font-size="13" font-weight="700" fill="#1e40af">聚合补丁 · dsh-all 0.1.73</text>
+    <text x="620" y="284" font-size="10" fill="#334155">12 条 insert rows + 11 个 exact 依赖</text>
+    <text x="620" y="308" font-size="9.5" fill="#64748b">owner：aggregate patch；成员各自</text>
+    <text x="620" y="332" font-size="9.5" fill="#b45309">风险：insert-only 也会冲突</text>
+
+    <rect x="24" y="370" width="576" height="134" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="44" y="400" font-size="13" font-weight="700" fill="#1e40af">接管套件 · dsh-plugins-plus 0.2.0</text>
+    <text x="44" y="426" font-size="10" fill="#334155">按 preset 换掉宿主自带的发现规则</text>
+    <text x="44" y="450" font-size="9.5" fill="#64748b">owner：preset / component owner</text>
+    <text x="44" y="474" font-size="9.5" fill="#b45309">风险：整份 preset 写回</text>
+
+    <rect x="600" y="370" width="576" height="134" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="620" y="400" font-size="13" font-weight="700" fill="#1e40af">套件市场 · market 0.13.0</text>
+    <text x="620" y="426" font-size="10" fill="#334155">别人的套件就地读成可安装单位</text>
+    <text x="620" y="450" font-size="9.5" fill="#64748b">owner：source / install / workspace filter</text>
+    <text x="620" y="474" font-size="9.5" fill="#b45309">风险：lockCommit 当冻结</text>
+
+    <rect x="24" y="512" width="576" height="134" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="44" y="542" font-size="13" font-weight="700" fill="#1e40af">闭环装配 · better-session 0.1.10</text>
+    <text x="44" y="568" font-size="10" fill="#334155">一个 bundle 装一条会话闭环</text>
+    <text x="44" y="592" font-size="9.5" fill="#64748b">owner：发布 patch 默认；用户 effective 更高层</text>
+    <text x="44" y="616" font-size="9.5" fill="#b45309">风险：bundle 默认当 effective</text>
+
+    <rect x="600" y="512" width="576" height="134" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="620" y="542" font-size="13" font-weight="700" fill="#1e40af">视觉资产 · wallpaper-engine 1.4.0</text>
+    <text x="620" y="568" font-size="10" fill="#334155">整套观感 + 可分享预设</text>
+    <text x="620" y="592" font-size="9.5" fill="#64748b">owner：预设 schema / 资产 / 设置</text>
+    <text x="620" y="616" font-size="9.5" fill="#b45309">风险：旧 preset 自动套新 schema</text>
+  </g>
+
+  <text x="24" y="672" font-size="9.5" fill="#64748b">口径：2026-10-31 固定版本源码/测试/CI 已读，未安装、未运行；README 主张单独标注。npm 下载含 CI/镜像，不等于用户数。</text>
+  <text x="24" y="692" font-size="9.5" fill="#64748b">八种形态回答“怎么发”；四层状态、身份、更新、接管、进口与资产的所有权见 34 篇正文。</text>
+</svg>
