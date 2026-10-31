@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-**角色：外部参考层（E1/E2）。** 本篇记录 DSH 生态（核心仓之外）的插件怎样处理数据，不验证其可安装性或运行质量；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。外部指 DSH 生态的外围，不是其他产品的插件体系；产品型样例与缺口汇总见 [32](./32-external-ecosystem.md)。
+**角色：外部参考层（E1/E2）。** 本篇记录 DSH 生态（核心仓之外）的插件怎样处理数据，不验证其可安装性或运行质量；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。外部指 DSH 生态的外围，不是其他产品的插件体系；产品型样例与缺口汇总见 [32](./32-external-ecosystem.md)，profile 交付形态见 [34](./34-profile-product-forms.md)，装配状态见 [35](./35-profile-assembly-ownership.md)。
 
 本 FAQ 第一版把社区做法压成“五种承诺”，够用但太粗；这一版扩成九个维度。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
 

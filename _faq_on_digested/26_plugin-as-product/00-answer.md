@@ -21,8 +21,8 @@
 | Q3：目录怎样选择？ | DSH Web 有 Workspace 首用与 picker；产品 root resolver 是自建机制 | [16](./10-foundations/16-startup-resolution.md) |
 | Q4：配置如何生效？ | Patch 链按层覆盖完整 entry config；产品运行时设置在链外 | [17](./10-foundations/17-config-layers.md) |
 | Q5–Q8：作用域、存储、凭据与产物 | 按数据 owner 与 API 分别选择 | [11–14](./10-foundations/11-five-homes.md) |
-| Q9–Q10：设计来源与 DSH 外部生态 | DSH 当前行为以原生证据为准；外部材料仅供参考 | [21–22](./20-native/21-native-data-landscape.md)、[31–33](./30-external/31-external-community-patterns.md) |
-| Q11–Q12：安装与施工检查 | CLI 与 Plugin Manager 有不同更新结果；用 90–93 完成方案与验收 | [18](./10-foundations/18-install-upgrade.md)、[90–93](./90-advisor/00-index.md) |
+| Q9–Q10：设计来源与 DSH 外部生态 | DSH 当前行为以原生证据为准；外部材料仅供参考 | [21–22](./20-native/21-native-data-landscape.md)、[31–36](./30-external/31-external-community-patterns.md) |
+| Q11–Q12：安装与施工检查 | CLI 与 Plugin Manager 有不同更新结果；用 90–93 完成方案与验收 | [18](./10-foundations/18-install-upgrade.md)、[34](./30-external/34-profile-product-forms.md)、[90–93](./90-advisor/00-index.md) |
 
 ## Profile 与数据 owner
 

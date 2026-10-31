@@ -4,9 +4,9 @@
 
 > **角色：外部参考层（E1/E2）。** 本篇只看核心仓之外的 DSH 生态，并且只挑已经走进产品领域的插件：它们自己定义了产品级状态（项目绑定、设置、生命周期、迁移、团队凭据、协作），而不只是给已有 composition 加一个工具。外部指 DSH 生态的外围，不是其他产品的插件体系。
 
-DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端五个家）；外部插件在补的往往是产品层：项目怎么绑定、设置放哪、数据跟谁走、卸载后留什么。本篇从 15 个深读样本里挑出八组可以借鉴的数据结构；[31](./31-external-community-patterns.md) 给单插件的九个维度和十八种手法，[33](./33-external-plugin-patterns.md) 给逐个案例与证据。
+DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端五个家）；外部插件在补的往往是产品层：项目怎么绑定、设置放哪、数据跟谁走、卸载后留什么。本篇从 15 个深读样本里挑出八组可以借鉴的数据结构；[31](./31-external-community-patterns.md) 给单插件的九个维度和十八种手法，[33](./33-external-plugin-patterns.md) 给逐个案例与证据，[34](./34-profile-product-forms.md) 看 profile 的交付形态，[35](./35-profile-assembly-ownership.md) 看装配状态与所有权。
 
-**口径（2026-10-27）。** 97 个候选（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55）里选 15 个深读；没有安装、没有运行。S = 读过源码，R = README/作者声明，U = 未确认。样本不是 census。
+**口径。** 深读 2026-10-27：97 个候选（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55）里选 15 个，读过源码或 README（S/R）。目录 2026-10-24：awesome-dsh-plugin 6704 条元数据，只读作者描述（R），没有安装。样本不是 census，U = 未确认。
 
 ![产品型外部插件的数据结构](../figures/32-product-data-structures.svg)
 
@@ -54,6 +54,33 @@ kb-manager 把“一个知识库”做成一个单元：数据、索引、任务
 ### 凭据、迁移与协作
 
 credentials-mysql 证明凭据 provider 可以换：外部 DB、schema 版本 fail-closed、行锁、字段加密、owner scope；但卸载不清理 DB，迁移契约没人写。claude-move 用 scan → preview → apply 和幂等 `move.json`；codex-sync 暴露了双向同步真正的难点——映射和冲突策略。agent-mailbox 补持久 inbox/threads/receipts，session_folders 把 UI 状态放进 storage-domain。可借鉴的是“换后端、搬数据、跨会话消息”都被当成产品功能来设计，而不是一次性脚本。
+
+## 目录扫描：产品型样本池
+
+从 6704 条目录元数据里做关键词扫描后人工筛出的产品型样本（只读作者描述，R 级；没有安装、没有读源码）。它们补上了八种结构没覆盖的账号、备份、回滚和账本。
+
+| 样本 | 类别 | 数据设计 | 可借鉴 |
+|---|---|---|---|
+| [ui-auth](https://github.com/0QwQ0/dsh-ui-auth) | security | 登录门禁、每用户 Key 加密、管理员不可读、JSONL 审计、fail-closed | 身份、凭据、数据按用户隔离；未配置即阻断 |
+| [team-cost](https://github.com/1569126506-sudo/dsh-team-cost) | usage | 按成员/工作区计费、预算、阈值 Webhook、超支拦截 | 团队成本当产品状态 |
+| [backup](https://github.com/xiaoyuyu6420/dsh-backup) | dev | 全 home 备份/恢复、分级保留、sha256、失败回滚、凭据脱敏、救援页 | 备份带校验与回滚 |
+| [backup-sync](https://github.com/Arlenman/dsh-backup-sync) | dev | tar.gz + sha256、三方合并、凭据黑名单、导入前快照、WebDAV | 换机迁移做三方合并 |
+| [dsh-webdav](https://github.com/GaoHu1997/dsh-webdav) | dev | profile 五份、AES-256-GCM、分份三方合并、冲突留档 | 同步只存密文 |
+| [dsh-vault](https://github.com/soberkeen/dsh-vault) | tools | 加密分卷、口令/恢复码/DPAPI、GFS 四档保留、回收站 | 保留策略与恢复槽 |
+| [session-delete](https://github.com/wenhao4126/dsh-session-delete) | session | 归档/删除、按工作区批量、恢复时重建工作区 | 删除前备份工作区信息 |
+| [session-move](https://github.com/hwangjunjie/dsh-session-move) | session | 改 header cwd、迁日志、更新账目；删除先停 agent | 迁移/删除是同一事务 |
+| [session-migrate](https://github.com/EIGHTfs/dsh-session-migrate) | session | v0/.zstd/.zip 迁移、header 绑定、打开时升级 | 旧格式迁移与预检 |
+| [context-archive](https://github.com/kingofpowers/dsh-context-archive) | tools | 大结果存 `archives/` + 存根、原文留日志 | 大对象出上下文 |
+| [rollback](https://github.com/Taler97/dsh-rollback) | tools | write/edit 改前映像、`rollback_files` | 变更前留映像 |
+| [time-machine](https://github.com/zjukop/dsh-time-machine) | dev | 内容寻址快照、差异预览、两阶段恢复 | 恢复要二次确认 |
+| [risk-guard](https://github.com/shuxue6662-a11y/dsh-risk-guard) | security | 工具调用审计、规则评分、保险丝、脱敏账单 | 审计 + 只拦不可逆 |
+| [secret-guard](https://github.com/JohnXu22786/secret-guard) | security | 敏感文件拦截、结果掩码、审计、永不输出原值 | 秘密不进日志/上下文 |
+| [model-gateway](https://github.com/Leafyezi233/dsh-model-gateway) | model | OpenAI 兼容网关、Key 只存 SHA-256、删最后钥匙仍锁定 | 哈希存储 + 锁定语义 |
+| [all-usage](https://github.com/ParticleLight/dsh-all-usage) | usage | 独立账本、删除前持久化、revision 增量、已删除工作区聚合 | 派生账本独立于源 |
+| [team-rooms](https://github.com/PerryLink/dsh-team-rooms) | workflow | 持久团队房间、消息总线、共享任务板、时间线 | 跨会话持久消息 |
+| [workspace-hub](https://github.com/Jadramcool/dsh-workspace-hub) | usage | 工作区分组/排序、每工作区 token/成本、30s 刷新 | 工作区当产品对象 |
+| [worktree-panel](https://github.com/HeathHe/dsh-worktree-panel) | git | worktree → 会话分组、脏树/活跃会话保护、存储迁移 | 迁移有保护 |
+| [trilogy](https://github.com/TodayJin/dsh-trilogy) | memory | 每工作区三份 Markdown、溢出归档、导出/导入 JSON、两步清除 | 溢出可读、可恢复 |
 
 ## 这些结构在补哪六个缺口
 

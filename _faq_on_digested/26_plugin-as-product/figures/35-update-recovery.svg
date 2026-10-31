@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" width="1200" height="620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>更新与恢复：补偿流程，不是原子事务</title>
+  <desc>dsh-suite 的更新链：检查、门控、更新、校验；失败时 reinstall 旧 exact 版本，恢复失败标 restore-failed/unknown；remove/install/restore 之间存在 crash window。</desc>
+
+  <rect width="1200" height="620" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">更新与恢复：补偿流程，不是原子事务</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">先记录旧 exact version/enabled；失败就装回旧版本，但 crash window 仍在</text>
+
+  <g>
+    <rect x="24" y="110" width="212" height="104" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="40" y="138" font-size="12" font-weight="700" fill="#1e40af">① 检查</text>
+    <text x="40" y="162" font-size="9.5" fill="#334155">metadata / registry</text>
+    <text x="40" y="182" font-size="9.5" fill="#334155">engines / 候选 exact 版本</text>
+    <text x="40" y="202" font-size="9.5" fill="#64748b">不满足就停在检查</text>
+
+    <rect x="258" y="110" width="212" height="104" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="274" y="138" font-size="12" font-weight="700" fill="#1e40af">② 门控</text>
+    <text x="274" y="162" font-size="9.5" fill="#334155">enabled / healthy / idle</text>
+    <text x="274" y="182" font-size="9.5" fill="#334155">consent / no pending restart</text>
+    <text x="274" y="202" font-size="9.5" fill="#64748b">auto-install 默认关</text>
+
+    <rect x="492" y="110" width="212" height="104" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="508" y="138" font-size="12" font-weight="700" fill="#1e40af">③ 更新</text>
+    <text x="508" y="162" font-size="9.5" fill="#334155">host updateBundle</text>
+    <text x="508" y="182" font-size="9.5" fill="#334155">fallback remove→install</text>
+    <text x="508" y="202" font-size="9.5" fill="#64748b">先存旧 version/enabled</text>
+
+    <rect x="726" y="110" width="212" height="104" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="742" y="138" font-size="12" font-weight="700" fill="#1e40af">④ 校验</text>
+    <text x="742" y="162" font-size="9.5" fill="#334155">版本读回 / enabled</text>
+    <text x="742" y="182" font-size="9.5" fill="#334155">family 依赖一致</text>
+    <text x="742" y="202" font-size="9.5" fill="#64748b">失败进入恢复</text>
+
+    <rect x="960" y="110" width="216" height="104" rx="8" fill="#ecfdf5" stroke="#86efac"/>
+    <text x="976" y="138" font-size="12" font-weight="700" fill="#166534">成功</text>
+    <text x="976" y="162" font-size="9.5" fill="#334155">新版本生效</text>
+    <text x="976" y="182" font-size="9.5" fill="#334155">pending restart 只是 gate</text>
+    <text x="976" y="202" font-size="9.5" fill="#64748b">不强制重启</text>
+
+    <path d="M 238 162 L 254 162" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M 248 156 L 256 162 L 248 168" stroke="#94a3b8" stroke-width="2" fill="none"/>
+    <path d="M 472 162 L 488 162" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M 482 156 L 490 162 L 482 168" stroke="#94a3b8" stroke-width="2" fill="none"/>
+    <path d="M 706 162 L 722 162" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M 716 156 L 724 162 L 716 168" stroke="#94a3b8" stroke-width="2" fill="none"/>
+    <path d="M 940 162 L 956 162" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M 950 156 L 958 162 L 950 168" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  </g>
+
+  <g>
+    <rect x="492" y="290" width="212" height="100" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+    <text x="508" y="318" font-size="12" font-weight="700" fill="#b45309">失败 / 取消</text>
+    <text x="508" y="342" font-size="9.5" fill="#334155">reinstall 旧 exact 版本</text>
+    <text x="508" y="362" font-size="9.5" fill="#334155">恢复旧 enabled 状态</text>
+
+    <rect x="726" y="290" width="212" height="100" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+    <text x="742" y="318" font-size="12" font-weight="700" fill="#991b1b">restore-failed / unknown</text>
+    <text x="742" y="342" font-size="9.5" fill="#334155">阻止自动重试</text>
+    <text x="742" y="362" font-size="9.5" fill="#334155">引导人工修复</text>
+
+    <path d="M 598 218 L 598 286" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M 592 278 L 598 288 L 604 278" stroke="#94a3b8" stroke-width="2" fill="none"/>
+    <path d="M 706 340 L 722 340" stroke="#94a3b8" stroke-width="2"/>
+    <path d="M 716 334 L 724 340 L 716 346" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  </g>
+
+  <rect x="24" y="424" width="1152" height="46" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="44" y="446" font-size="10" font-weight="700" fill="#b45309">crash window</text>
+  <text x="150" y="446" font-size="9.5" fill="#334155">remove / install / restore 之间杀进程，会留下 partial state；这不是 package manager + DSH config 的原子事务。</text>
+  <text x="44" y="462" font-size="9.5" fill="#64748b">suite-managed 成员被抑制独立更新；direct pin ≠ transitive lock；恢复失败时不要假装“自动回滚”。</text>
+
+  <text x="24" y="506" font-size="9.5" fill="#64748b">样本：dsh-suite 0.9.1（SLSA provenance commit b904373）；updater state/门控/恢复来自源码与测试阅读，未运行。</text>
+  <text x="24" y="526" font-size="9.5" fill="#64748b">先写清 owner、consent/idle 门、旧状态与 crash window，再谈“一键更新”。</text>
+</svg>

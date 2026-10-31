@@ -16,8 +16,8 @@
 ## 按角色阅读
 
 - **普通 plugin 作者**：从 [91 数据卡](./90-advisor/91-checklist.md) 开始，按需查 [10–14](./10-foundations/10-taxonomy.md) 和 [92](./90-advisor/92-native-reference-architectures.md)。
-- **产品 profile 作者**：[90 主线](./90-advisor/00-index.md) → [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)；交付前查 [91 数据卡/验收](./90-advisor/91-checklist.md)，遇到存储取舍查 [92 参考矩阵](./90-advisor/92-native-reference-architectures.md)。
-- **DSH 维护者**：读 [21 原生数据面](./20-native/21-native-data-landscape.md) 与 [22 历史](./20-native/22-native-data-history.md)；[31–33](./30-external/31-external-community-patterns.md) 是 DSH 外部生态研究（核心仓之外的插件与服务），不是 DSH API 合同。
+- **产品 profile 作者**：[90 主线](./90-advisor/00-index.md) → [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)；交付前查 [91 数据卡/验收](./90-advisor/91-checklist.md)，发行形态查 [34 profile 形态](./30-external/34-profile-product-forms.md)，装配状态查 [35 装配所有权](./30-external/35-profile-assembly-ownership.md)，证据查 [36 样本台账](./30-external/36-profile-evidence-ledger.md)，遇到存储取舍查 [92 参考矩阵](./90-advisor/92-native-reference-architectures.md)。
+- **DSH 维护者**：读 [21 原生数据面](./20-native/21-native-data-landscape.md) 与 [22 历史](./20-native/22-native-data-history.md)；[31–36](./30-external/31-external-community-patterns.md) 是 DSH 外部生态研究（核心仓之外的插件与服务），不是 DSH API 合同。
 
 ## 章节地图
 
@@ -37,8 +37,11 @@
 | [21 原生数据面](./20-native/21-native-data-landscape.md) | DSH 数据机制与 API 来源 |
 | [22 原生历史](./20-native/22-native-data-history.md) | DSH 存储能力的决策背景 |
 | [31 社区模式](./30-external/31-external-community-patterns.md) | 社区插件的数据做法（九个维度、18 种手法） |
-| [32 产品设计](./30-external/32-external-ecosystem.md) | 产品型外部插件的八种数据结构；六个缺口 |
+| [32 产品设计](./30-external/32-external-ecosystem.md) | 产品型外部插件的八种数据结构 + 20 个目录样本；六个缺口 |
 | [33 外部插件](./30-external/33-external-plugin-patterns.md) | 15 个案例；具体依赖需单独审核 |
+| [34 profile 形态](./30-external/34-profile-product-forms.md) | 八种交付方式与逐卡机制 |
+| [35 装配所有权](./30-external/35-profile-assembly-ownership.md) | 四层状态、身份、更新、接管、进口、资产 |
+| [36 样本台账](./30-external/36-profile-evidence-ledger.md) | 逐样本证据、采用信号与未验证项 |
 | [90 主线](./90-advisor/00-index.md) | Profile 文件、启动顺序、Kanban 运行和数据归属 |
 | [91 数据卡](./90-advisor/91-checklist.md) | 数据事实、实现、测试和退出检查 |
 | [92 参考架构](./90-advisor/92-native-reference-architectures.md) | 数据用途、DSH 能力、隔离与维护 |

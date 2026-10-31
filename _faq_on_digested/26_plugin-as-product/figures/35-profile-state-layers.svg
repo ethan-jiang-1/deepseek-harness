@@ -34,8 +34,6 @@
   <text x="44" y="592" font-size="9.5" fill="#b45309">失败：默认值被覆盖，数据落点变了</text>
 
   <!-- down arrow -->
-  <path d="M 40 216 L 40 612" stroke="#cbd5e1" stroke-width="2" fill="none"/>
-  <path d="M 34 606 L 40 618 L 46 606" stroke="#cbd5e1" stroke-width="2" fill="none"/>
 
   <!-- right: ownership questions -->
   <text x="792" y="90" font-size="13" font-weight="700" fill="#334155">五个所有权问题</text>

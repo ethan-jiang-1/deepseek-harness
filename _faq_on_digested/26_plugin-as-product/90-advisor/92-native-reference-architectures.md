@@ -6,6 +6,8 @@
 
 先确认目标 profile 可解析所需 API/provider。普通 dependency 不会自动加入 Cordis rows，但其他 patch 可以显式挂载该 plugin；只有要自动应用 package 自带的 `dsh.bundle.patch` 时，才须把它作为 bundle 选入 profile。产品可以使用 DSH package、维护中的外部 package，或自行实现所需机制。逐项检查版本、兼容范围、license、供应链和数据生命周期；仅阅读源码或 README 不能证明 package 已验证。外部 service 还要承担网络、认证、隐私和运维责任。
 
+若产品以聚合、接管或进口形态发行，装配状态、更新恢复与所有权检查见 [35 装配状态与所有权](../30-external/35-profile-assembly-ownership.md)。
+
 ## 数据用途与机制选择
 
 | 用途 | DSH 提供 | 产品要决定 | 不要假设 |

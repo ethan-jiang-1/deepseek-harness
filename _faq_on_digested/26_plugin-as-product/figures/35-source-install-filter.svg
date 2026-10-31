@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>进口：source、install、filter 是三个 owner</title>
+  <desc>外部套件的 source checkout、install record 与 workspace surface filter 分属不同 owner；删除要区分 record、受管 checkout 和外部路径。</desc>
+
+  <rect width="1200" height="600" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">进口：source、install、filter 是三个 owner</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">来源可刷新、suite 可安装、workspace 可过滤；三者不能合成一个“已安装”</text>
+
+  <g>
+    <rect x="24" y="92" width="360" height="252" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="44" y="122" font-size="13" font-weight="700" fill="#1e40af">Source</text>
+    <text x="44" y="148" font-size="10" fill="#334155">.sources/&lt;sourceId&gt; + user state.json</text>
+    <text x="44" y="174" font-size="9.5" fill="#64748b">refresh 更新受管 checkout</text>
+    <text x="44" y="196" font-size="9.5" fill="#64748b">lockCommit 只记录，不是冻结</text>
+    <text x="44" y="218" font-size="9.5" fill="#334155">project-native：</text>
+    <text x="44" y="238" font-size="9.5" fill="#64748b">&lt;project&gt;/.dsh/agent-plugins/</text>
+    <text x="44" y="270" font-size="9.5" fill="#b45309">刷新会改变已装内容</text>
+    <text x="44" y="292" font-size="9.5" fill="#b45309">要可复现就另 pin 快照</text>
+
+    <rect x="408" y="92" width="360" height="252" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="428" y="122" font-size="13" font-weight="700" fill="#1e40af">Install</text>
+    <text x="428" y="148" font-size="10" fill="#334155">key = &lt;sourceId&gt;/&lt;suiteId&gt;</text>
+    <text x="428" y="174" font-size="9.5" fill="#64748b">记录 Git HEAD / archive digest</text>
+    <text x="428" y="196" font-size="9.5" fill="#64748b">enabled 状态在 user state</text>
+    <text x="428" y="218" font-size="9.5" fill="#64748b">uninstall 只删 install record</text>
+    <text x="428" y="250" font-size="9.5" fill="#334155">安装时不复制资源文件</text>
+    <text x="428" y="270" font-size="9.5" fill="#b45309">lockCommit ≠ 内容冻结</text>
+    <text x="428" y="292" font-size="9.5" fill="#b45309">没有 refresh 后回滚</text>
+
+    <rect x="792" y="92" width="384" height="252" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+    <text x="812" y="122" font-size="13" font-weight="700" fill="#1e40af">Filter / adapters</text>
+    <text x="812" y="148" font-size="10" fill="#334155">workspace surface filter</text>
+    <text x="812" y="174" font-size="9.5" fill="#64748b">command / MCP / hooks / LSP</text>
+    <text x="812" y="196" font-size="9.5" fill="#64748b">每面独立 mount / disable / status</text>
+    <text x="812" y="218" font-size="9.5" fill="#64748b">project-native 另走扫描</text>
+    <text x="812" y="250" font-size="9.5" fill="#334155">失败粒度是 artifact 级</text>
+    <text x="812" y="270" font-size="9.5" fill="#b45309">manifest fatal/ignored；</text>
+    <text x="812" y="292" font-size="9.5" fill="#b45309">MCP file disable；server skip</text>
+  </g>
+
+  <path d="M 384 218 L 404 218" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 394 212 L 402 218 L 394 224" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M 768 218 L 788 218" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 778 212 L 786 218 L 778 224" stroke="#94a3b8" stroke-width="2" fill="none"/>
+
+  <rect x="24" y="372" width="1152" height="44" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="44" y="392" font-size="10" font-weight="700" fill="#b45309">删除所有权</text>
+  <text x="150" y="392" font-size="9.5" fill="#334155">suite uninstall 删 record / source removal 默认保留 checkout / deleteCheckout 才删受管目录 / 外部 local path 永不由工具删除。</text>
+  <text x="44" y="408" font-size="9.5" fill="#64748b">state.json 损坏会退回 empty state，后续写入可能覆盖原状态；没有现成备份/恢复。</text>
+
+  <rect x="24" y="428" width="1152" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="44" y="448" font-size="10" font-weight="700" fill="#3730a3">凭据与 hook</text>
+  <text x="150" y="448" font-size="9.5" fill="#334155">missing-credential / OAuth pending·denied·persisted·memory-only；没有 ctx.credentials store 时 token 只在进程内。</text>
+  <text x="44" y="464" font-size="9.5" fill="#64748b">hook dry-run 用 host shell 执行，dry_run:true 只是脚本标志，不是 sandbox。</text>
+
+  <text x="24" y="510" font-size="9.5" fill="#64748b">样本：dsh-agent-plugins-market 0.13.0（commit d3364da）；source/install/filter、validation、credentials、hooks 已读源码，未运行。</text>
+  <text x="24" y="530" font-size="9.5" fill="#64748b">先分开三个 owner，再谈“装上了”：安装记录、可见资源和工作区过滤不是同一层。</text>
+</svg>

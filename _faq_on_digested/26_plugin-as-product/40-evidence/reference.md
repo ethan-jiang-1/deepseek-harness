@@ -61,7 +61,7 @@
 
 ## 外部研究
 
-第三方 package、插件与 DSH 外部生态样本见 [research-external](./research-external.md)、[31](../30-external/31-external-community-patterns.md)、[32](../30-external/32-external-ecosystem.md) 和 [33](../30-external/33-external-plugin-patterns.md)。S/R/U 证据不建立 DSH API、兼容性或安装行为。
+第三方 package、插件与 DSH 外部生态样本见 [research-external](./research-external.md)、[31](../30-external/31-external-community-patterns.md)、[32](../30-external/32-external-ecosystem.md)、[33](../30-external/33-external-plugin-patterns.md)、[34](../30-external/34-profile-product-forms.md)、[35](../30-external/35-profile-assembly-ownership.md) 和 [36](../30-external/36-profile-evidence-ledger.md)。S/R/U 证据不建立 DSH API、兼容性或安装行为。
 
 ## 边界
 

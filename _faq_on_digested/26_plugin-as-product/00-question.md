@@ -44,8 +44,8 @@
 | Q7 | DSH 的五个家与客户端状态是什么关系？ | [11 五个家](./10-foundations/11-five-homes.md) |
 | Q8 | `present`、changes、attachments 和 spill 各服务谁？ | [14 产物](./10-foundations/14-artifacts.md) |
 | Q9 | DSH 存储能力的形成历史有什么当前影响？ | [22 原生数据历史](./20-native/22-native-data-history.md) |
-| Q10 | DSH 外部插件有哪些可借模式？ | [31](./30-external/31-external-community-patterns.md)、[32](./30-external/32-external-ecosystem.md)、[33](./30-external/33-external-plugin-patterns.md) |
-| Q11 | Profile bundle 如何安装、更新与卸载？数据清理由谁负责？ | [18 安装生命周期](./10-foundations/18-install-upgrade.md) |
+| Q10 | DSH 外部插件有哪些可借模式？ | [31](./30-external/31-external-community-patterns.md)、[32](./30-external/32-external-ecosystem.md)、[33](./30-external/33-external-plugin-patterns.md)、[34](./30-external/34-profile-product-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[36](./30-external/36-profile-evidence-ledger.md) |
+| Q11 | Profile bundle 如何安装、更新与卸载？数据清理由谁负责？ | [18 安装生命周期](./10-foundations/18-install-upgrade.md)、[34 profile 形态](./30-external/34-profile-product-forms.md)、[35 装配所有权](./30-external/35-profile-assembly-ownership.md) |
 | Q12 | 如何从 profile 文件走到产品 Session、工具和数据？ | [90 主线](./90-advisor/00-index.md)、[93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)、[91 数据卡](./90-advisor/91-checklist.md)、[92 参考矩阵](./90-advisor/92-native-reference-architectures.md) |
 
 ## 一句话预告
@@ -67,4 +67,4 @@
 2. **准备设计**：[10](./10-foundations/10-taxonomy.md) → [15](./10-foundations/15-four-spaces.md) → [16](./10-foundations/16-startup-resolution.md) → [17](./10-foundations/17-config-layers.md)。
 3. **逐块选数据机制**：按需读 [11](./10-foundations/11-five-homes.md)、[12](./10-foundations/12-state-homes.md)、[13](./10-foundations/13-scope-and-keys.md)、[14](./10-foundations/14-artifacts.md)。
 4. **开始动手**：沿 [90 主线](./90-advisor/00-index.md) → [93 Kanban 文件例子](./90-advisor/93-app-plugin-walkthrough.md)；完工用 [91](./90-advisor/91-checklist.md) 验收。遇到存储或隔离取舍，再查 [92](./90-advisor/92-native-reference-architectures.md) 和 [18](./10-foundations/18-install-upgrade.md)。
-5. **核实研究材料**：[21/22](./20-native/21-native-data-landscape.md) 提供 DSH 参考；[31–33](./30-external/31-external-community-patterns.md) 是 DSH 外部生态模式，不是 DSH 合同；[40-evidence](./40-evidence/00-index.md) 提供来源与命令。
+5. **核实研究材料**：[21/22](./20-native/21-native-data-landscape.md) 提供 DSH 参考；[31–36](./30-external/31-external-community-patterns.md) 是 DSH 外部生态模式，不是 DSH 合同；[40-evidence](./40-evidence/00-index.md) 提供来源与命令。

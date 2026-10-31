@@ -63,6 +63,16 @@
 5. **隔离：** 列出共享的 `$DSH_HOME` stores、path overrides、browser origins 和外部 services。Profile 名本身不隔离数据。
 6. **升级与卸载：** 说明 profile 重启、数据迁移、保留的用户文件和产品数据清理方式。
 
+## 检查 profile 装配状态
+
+产品以聚合、接管或进口形态发行时，装配状态要分层读回；样本与机制见 [34](../30-external/34-profile-product-forms.md) 与 [35](../30-external/35-profile-assembly-ownership.md)。
+
+1. **四层状态**：包可解析、bundle 在 `dsh.profile.bundles`、row 在 patch、row 当前 enabled/config 生效，是四种状态；分别用 lockfile/版本、profile roster、patch fold 和 effective config dump 读回，不只看安装命令的 exit code。
+2. **身份与冲突**：自研 row 用独立 namespace，明确 aggregate 与 standalone 的混装政策；共享库检查单例版本；改变 row id 或 package identity 时给旧身份一个退役窗口。
+3. **更新与恢复**：记录更新 owner、consent/idle 门、旧 exact version 与 enabled 状态；失败恢复是补偿流程，要写清 crash window、`restore-failed`/`unknown` 和重启要求。exact direct pin 不等于 transitive lock。
+4. **接管与覆盖**：替换宿主内置行时显示 target/scope/owner，区分 `unset`/继承与显式默认，只回滚自有行并保护 foreign edit；旧配置迁移要幂等。
+5. **来源、安装与过滤**：外部套件的 source checkout、install record 和 workspace filter 分开存；要可复现就 pin 不可变快照，`lockCommit` 不是冻结；卸载区分 suite、source 与 checkout。
+
 ## 安装、更新与移除
 
 `dsh plugin --profile <name> add <bundle>` 修改 profile bundle list，并返回 package-manager 结果，不返回 Plugin Manager 的 `ChangeResult.application`。CLI 修改后要重启 profile；Plugin Manager 是另一条操作路径，会返回自己的 application result。

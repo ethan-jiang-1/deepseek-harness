@@ -6,7 +6,7 @@
 
 外部来源分为 **E1 package/plugin** 与 **E2 service**（MCP/HTTP/DB/对象存储）。本篇的代码与 README 样本仅支持 S/R 级模式观察；若要依赖某个具体 package/service，需另行审查其兼容、license、安全、数据迁移和维护责任。
 
-**口径。** 2026-10-27 对 97 个候选做了目录/README 扫描（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55），选 15 个深读；产品型样例与缺口汇总见 [32](./32-external-ecosystem.md)。
+**口径。** 2026-10-27 对 97 个候选做了目录/README 扫描（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55），选 15 个深读；产品型样例与缺口汇总见 [32](./32-external-ecosystem.md)，profile 交付形态见 [34](./34-profile-product-forms.md)，装配状态见 [35](./35-profile-assembly-ownership.md)。
 
 **没有安装、没有运行**；S = 读过源码，R = README/作者声明，U = 未确认。样本不是 census。所有结论只描述 DSH 外部插件，不是 DSH 合同。
 

@@ -39,6 +39,8 @@ dsh --profile kanban --dump-config
 
 `<kanban-bundle-spec>` 是尚未提供的产品包占位符，需替换为实际安装规格。`--dump-default-config` 只查看所选 bundle 层；`--dump-config` 显示合成的文件配置，但不挂载 plugin、验证产品行为或反映启动时的 telemetry 环境开关。Bundle 加载或兼容性检查失败时会被跳过并报告；plugin row 的运行时准入与激活仍需启动后核查。
 
+dump 只覆盖文件配置层；包已安装、bundle 在 roster、row 存在、row 当前 enabled/config 生效是四层状态，聚合/接管/进口形态还要检查身份冲突、更新恢复和来源所有权，见 [35 装配状态与所有权](../30-external/35-profile-assembly-ownership.md)。
+
 检查 dump 中是否有 Web rows、Kanban preset row 和该 preset 的完整子插件列表。`dsh plugin add` 更新磁盘上的 bundle selection，返回 package-manager 结果，不返回 Plugin Manager 的 `ChangeResult.application`；CLI 改变 bundle membership 后要重启 profile。Web Plugin Manager/HMR 是另一条应用路径。
 
 实际产品 bundle 准备好后，可用 `dsh --profile kanban --no-open` 启动；打开启动时输出的 `dsh web:` 带令牌 URL。源码启动须先构建 Web Client；监听地址、浏览器及故障说明见 [Web bundle README](../../../packages/bundle/web-app/README.md#starting-the-web-gui)。
@@ -79,4 +81,5 @@ Kanban 第一版可让项目目录中的 Markdown/JSON board files 作为业务 
 
 - 用 [93 Kanban 文件走查](./93-app-plugin-walkthrough.md) 对照 profile JSON、bundle JSON、preset YAML 和 Session 请求。
 - 用 [91 数据卡与验收](./91-checklist.md) 核对事实的 Authority、Source、读写者和生命周期。
+- 要发全家桶、聚合、接管或进口形态时，先看 [34 profile 产品形态](../30-external/34-profile-product-forms.md) 的形态选择，再用 [35 装配状态与所有权](../30-external/35-profile-assembly-ownership.md) 做四层读回。
 - 只有当产品有存储、归档、同步或隔离取舍时，才查 [92 参考矩阵](./92-native-reference-architectures.md)。安装、升级和卸载语义见 [18](../10-foundations/18-install-upgrade.md)。

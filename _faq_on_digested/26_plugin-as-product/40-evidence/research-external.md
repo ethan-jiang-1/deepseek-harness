@@ -44,4 +44,6 @@ memory-evolve、project-context、graphmemory、workspace-memories、kb-manager�
 
 - DSH docs/source：`docs/subsystems/*`、`packages/storage|session|workspace|attachment|spill|settings|credentials|deliverables|session-query`、`.agents/notes/*`。
 - 市场：awesome-deepseek-harness-plugins、dshbase、GitHub raw README/package.json/tree、少量源码。
-- 产品型样例与缺口：见 [32](../30-external/32-external-ecosystem.md)；其他产品的插件生态不在本 FAQ 范围。
+- 产品型样例与缺口：见 [32](../30-external/32-external-ecosystem.md)；profile 交付形态、装配状态与证据见 [34](../30-external/34-profile-product-forms.md)/[35](../30-external/35-profile-assembly-ownership.md)/[36](../30-external/36-profile-evidence-ledger.md)。
+- 目录快照：<https://github.com/awesome-dsh-plugin/awesome-dsh-plugin>（6704 条，2026-10-24）。
+- profile 形态的 8 个 repo 与 npm 包见 [34 的样本与来源](../30-external/34-profile-product-forms.md)。

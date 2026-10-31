@@ -4,7 +4,7 @@
 
 先把**DSH 自己**的数据落点铺开：哪些是核心合同（N0）、哪些是官方随包插件（N1）、哪些是 experimental（N2），哪些根本没有家。
 
-本图只列 DSH 原生 API/package；外部 DSH 生态样本见 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-ecosystem.md)/[33](../30-external/33-external-plugin-patterns.md)。
+本图只列 DSH 原生 API/package；外部 DSH 生态样本见 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-ecosystem.md)/[33](../30-external/33-external-plugin-patterns.md)/[34](../30-external/34-profile-product-forms.md)/[35](../30-external/35-profile-assembly-ownership.md)/[36](../30-external/36-profile-evidence-ledger.md)。
 
 **口径。** DSH 侧：343 个包、约 1,265 篇英文 Agent Note（298 implemented / 42 proposed / 925 archived）、67 篇 subsystem、49 篇 persistence-change、43 篇 upgrade guide、4 篇 postmortem、6 篇 defensive-pattern。
 
@@ -108,7 +108,7 @@
 
 ## 外部参考
 
-外部 package 与生态模式不进入这张原生能力图，分别放在 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-ecosystem.md)/[33](../30-external/33-external-plugin-patterns.md)。这些样本只描述 DSH 生态（核心仓之外），不代表 DSH API 或依赖建议。
+外部 package 与生态模式不进入这张原生能力图，分别放在 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-ecosystem.md)/[33](../30-external/33-external-plugin-patterns.md)/[34](../30-external/34-profile-product-forms.md)/[35](../30-external/35-profile-assembly-ownership.md)/[36](../30-external/36-profile-evidence-ledger.md)。这些样本只描述 DSH 生态（核心仓之外），不代表 DSH API 或依赖建议。
 
 N0/N1/N2 描述 DSH API/package 来源与稳定性；E1/E2 描述外部 package/service。按目标 profile 是否提供接口、兼容范围与维护责任选择，不把来源标签当作依赖禁令。
 
