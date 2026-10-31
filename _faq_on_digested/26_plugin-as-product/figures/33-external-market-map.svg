@@ -3,7 +3,7 @@
 <desc>15 个复杂插件把数据放在哪些家：内容、历史、状态、派生、客户端、外部/临时。空白处就是 DSH 没有统一服务的区域。</desc>
 <rect width="1200" height="760" rx="8" fill="#f8fafc"/>
 <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">外部插件样本 × 数据家（参考）</text>
-<text x="600" y="58" text-anchor="middle" fill="#64748b">外部插件（E1/E2）只作参考，不作长期依赖；深色=主家，浅色=次要/派生</text>
+<text x="600" y="58" text-anchor="middle" fill="#64748b">外部样本仅供研究，不构成 dependency 背书；深色=主家，浅色=次要/派生</text>
 <text x="24" y="92" font-size="11" font-weight="700" fill="#334155">插件</text>
 <rect x="200" y="76" width="154" height="26" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
 <text x="277" y="94" text-anchor="middle" font-size="10" font-weight="700" fill="#3730a3">内容</text>

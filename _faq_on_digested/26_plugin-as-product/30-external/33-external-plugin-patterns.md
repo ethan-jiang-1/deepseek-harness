@@ -2,9 +2,9 @@
 
 ## 这一篇回答什么
 
-**角色：外部参考层（E1/E2）。** 这一篇只讲外部插件，长期不作依赖；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。 不是“哪个插件好”，而是：**它们把 DSH 的哪个数据缺口补成了事实标准？哪些模式可以借，哪些只是权宜？**
+**角色：外部参考层（E1/E2）。** 本篇不评定 package 是否适合作为依赖；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。它比较外部样本解决了哪些数据问题，以及哪些模式值得进一步评估。
 
-外部插件分两级：**E1 外部社区插件**（第三方仓库/包）；**E2 外部服务**（MCP/HTTP/DB/对象存储）。长期策略：优先 [21 原生 landscape](../20-native/21-native-data-landscape.md) 的 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
+外部来源分为 **E1 package/plugin** 与 **E2 service**（MCP/HTTP/DB/对象存储）。本篇的代码与 README 样本仅支持 S/R 级模式观察；若要依赖某个具体 package/service，需另行审查其兼容、license、安全、数据迁移和维护责任。
 
 **口径。** 2026-10-27 对约 100 个候选做了目录/README 扫描（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55），选 15 个深读。
 
@@ -225,15 +225,16 @@
 - 双向同步无冲突策略——两边都权威。
 - 用 `workspaceId` 当长期键——重加换 uuid。
 
-## 映射到四个空间与六种承诺
+## 外部案例与数据卡
 
-| 外部案例在补的缺口 | 空间 | 承诺 | 今天的原生做法 |
+| 外部案例 | Owner/authority | 机制参考 | 仍需记录 |
 |---|---|---|---|
-| 项目记忆 / 项目上下文 | workspace | P2 | 项目内文件 + `ctx.fs` |
-| 跨项目记忆 / 画像 | 账本（home） | P3 | `storageDomain` + 稳定键 |
-| 用量统计 / 索引 | 历史（派生） | P1 | 会话日志 + 可重建检查点 |
-| 渠道 / 账号路由 | 全局设置 | P4 | profile + 凭据引用 |
-| 产品级工作台 | 四个空间 | P5 | profile 组合 + workspace 根 + 账本，见 [92](../90-advisor/92-native-reference-architectures.md) |
+| 项目记忆 / 项目上下文 | 用户项目文件 | 项目文件 + `ctx.fs` | 是否可编辑、重建规则、仓库冲突 |
+| 跨项目记忆 / 画像 | plugin | `storageDomain` + 产品定义的 key | home 共享范围、迁移与删除 |
+| 用量统计 / 索引 | Session history | 可重建 checkpoint | 重算来源和成本 |
+| 渠道 / 账号路由 | profile 与 credential provider | Config + credentials API | 凭据 owner、轮换和授权撤销 |
+| 产品级工作台 | 多个 owner | named profile + ordered bundles，见 [92](../90-advisor/92-native-reference-architectures.md) | Session cwd、Workspace 导航和数据隔离 |
+
 
 ## 边界
 

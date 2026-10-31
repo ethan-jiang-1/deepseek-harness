@@ -1,245 +1,81 @@
-# 91 · 决策程序：十八问 + 六个工程问题、一张数据卡、反模式与测试
+# 91 · 数据卡与集成检查
 
-> 这一篇是施工图的一部分；路线与顺序见 [90 动手](./00-index.md)，完整例子见 [93](./93-app-plugin-walkthrough.md)。
+> 产品决策顺序见 [90](./00-index.md)，Web profile 的 composition 示例见 [93](./93-app-plugin-walkthrough.md)。
 
-## 这一篇回答什么
+## 一份数据用一张卡
 
-把前面几篇压成一张可以直接照做的清单：**先定承诺，再落到空间与家，最后才选 API**。普通插件走十八问；产品型实例再加六问。然后给典型切法、一张可以抄进 README 的数据卡、最容易踩的坑和测试策略。
+每张卡描述一份事实。Owner、authority、source、readers 和 writers 是不同角色。
 
-> **先分清对象**：普通插件（装在别人的 DSH 里）还是产品型 DSH 实例（= 一份 profile 组合〔装什么〕+ 一个 workspace 根〔在哪干〕+ 一份 home 级账本与全局设置〔记住什么〕）。后者先过第 0 问与"产品型实例的六个工程问题"；前者直接从十八问开始。
+| 字段 | 要回答的问题 |
+|---|---|
+| Fact | 这是什么事实？用户需要什么操作、导出或恢复能力？ |
+| Owner | 谁负责记录的生命周期、迁移与删除？ |
+| Authority | 哪份数据决定当前真值？派生数据可填“无；derived”。 |
+| Source (input/operation) | 哪份数据、输入或用户操作产生此记录？ |
+| Mechanism/path | 通过哪个 API、文件或服务保存？实际位置是什么？ |
+| Scope/key | 跟哪个 Session、产品 project、DSH Workspace、profile、home 或 device 走？如何定位？ |
+| Readers | 哪些角色或工具可以读取？ |
+| Writers | 哪些角色或工具可以修改？ |
+| Rebuildability | 丢失后能否从 authority 或 source 重建？成本是什么？ |
+| Retention/deletion | 谁备份、迁移、删除或恢复？卸载后保留什么？ |
 
-> 这里的“根”是**产品自己的项目根**（`projectsRoot`）；只有架构 II 会把它登记为 DSH workspace。
-
-## 先分清依赖层级：原生核心 / 原生插件 / 扩展插件
-
-这不是分类癖好，是**发布成本**问题。优先级从高到低：
-
-| 层级 | 是什么 | 长期策略 | 发布含义 |
-|---|---|---|---|
-| **原生核心（N0）** | `docs/` + 核心包 + 测试定义的 Service/事件/格式 | 首选；直接依赖 | 随 DSH 发行，最稳 |
-| **原生插件（N1）** | 官方随包插件：workspace、projcache、settings、credentials-local、session-query-sqlite、spill-local 等 | 首选；直接依赖 | 跟 DSH 版本走，兼容成本最低 |
-| **原生实验（N2）** | `packages/experimental/` 下的官方实验 | 只参考，不承诺稳定 | 可能改/撤，不要写进发布依赖 |
-| **扩展插件（E1）** | 第三方社区插件/包 | **只借鉴模式，自己用原生 API 实现** | 不要写进 dependencies；否则版本、许可证、卸载、供应链都受对方牵制 |
-| **外部服务（E2）** | MCP/HTTP/DB/对象存储 | 没有原生替代时短期用 | 运维/隐私/网络成本自负 |
-
-**规则**：下表是依赖层级的唯一详细版；`00-index` 是摘要，`92` 只把它映射到路线。先问“原生核心能不能做”，再问“原生插件能不能做”；两者都覆盖不了，才看扩展插件——而且只看它的**做法**，不把它的包作为依赖。发布一个依赖 E1 的插件，等于把对方的兼容性和生命周期绑进你的发布。
-
-## 第零步：先选一个数据承诺
-
-按顺序问，第一个"是"就是你的承诺：
-
-1. **用户已经有这份数据了吗？** → P0 纯引用。你只需要路径和读取。
-2. **能从会话/文件重新算吗？** → P1 会话派生。你只存可重建的检查点。
-3. **必须跟项目一起走、被用户看见吗？** → P2 项目内文件。
-4. **要跨会话记住、但用户不必编辑吗？** → P3 宿主账本 + 稳定键。
-5. **是关于这个人/账号/安装的吗？** → P4 配置/凭据/home 单例。
-6. **这个 DSH 由我决定装什么、从哪起步吗？** → P5 产品实例；见 [15 四个空间](../10-foundations/15-four-spaces.md) 与 [16 启动解析](../10-foundations/16-startup-resolution.md)。
-
-选了 **P3 宿主账本**还要再分一次：**账本·索引**（项目索引、缓存，可重建）与**账本·状态**（会话绑定、游标、已采纳标记，不可重建）。两类要分开文件、分开清理（[15](../10-foundations/15-four-spaces.md)）。
-
-两条**不是承诺**的运行时选择，可以叠加在任一承诺上：
-
-- **只在浏览器里用、模型不必知道** → 客户端本地（设备落点，不是第七种承诺）；
-- **需要每个项目一套进程/连接** → 运行时缺口，看 [31](../30-external/31-external-community-patterns.md) 的 workspace scope。
-
-承诺可以组合（例如 P2 项目文件 + P1 派生索引 + P4 偏好），但**每一块数据只能有一个主承诺**（规则见 [10](../10-foundations/10-taxonomy.md)）。
-
-## 十八问（承诺选定之后）
-
-普通插件从这十八问开始；产品型实例读完十八问后，再过后面的"产品型实例的六个工程问题"。
-
-按顺序问，不要跳步：
-
-1. **用一句话说出这个事实。** 说不出来，说明你还没决定要存什么。
-2. **谁拥有它？** 用户（内容） / 会话（历史） / 插件（状态） / 没人（派生） / 设备（客户端）。
-3. **用户需要打开或编辑它吗？** 是 → 内容家，写工作区或用户全局。
-4. **模型必须看见它吗？** 是 → 历史家，落事件（**第三方不要新增事件类型**：用工具结果或已有事件；需要跨会话查询才考虑 domain）；否则不要让模型感知。
-5. **只在当前浏览器/设备里有效吗？** 是 → 客户端本地，写清清理与版本键。
-6. **重启后还要在吗？** 不要 → 内存/派生；要 → 继续。
-7. **能从别的事实重算吗？** 能 → 派生层，写清重建路径；不能 → 状态家。
-8. **跟项目走还是跟人走？** 项目 → workspace 键；人 → home/profile；只在这次对话 → session。
-9. **项目键是什么？** 规范化路径哈希（推荐）；不要用 `workspaceId` 当长期键。
-10. **目录被删/被移/工作区被重加时，这条数据怎么办？** 写出清理/保留策略。
-11. **它是秘密吗？** 是 → 只存 `CredentialRef` / `CredentialKey`，调用点解析；不要放 Config、domain、日志。
-12. **它是大块文本/二进制吗？** 是 → 工作区文件、附件或 spill，不要塞 domain。
-
-再加六个工程问题：
-
-13. **并发写怎么保护？** domain 有单写链；文件用 `createIfAbsent` / `replaceIfVersion`；domain JSON 跨进程没有锁（session 日志有 kernel lease，别混）。
-14. **怎么在隔离环境测试？** 独立 `DSH_HOME`，覆盖删除/重加、迁移、并发与模型可见面。
-15. **如果不用 domain，你自造的目录谁来清？** 卸载、升级、换 home、用户删项目时，残留什么？没有答案就不要自造目录。
-16. **删除/保留/GC 谁负责？** session 无删除 API、附件无 GC、插件无卸载契约（**C**）；你的数据卡必须写清“谁删、何时删、删不干净怎么办”。
-17. **客户端状态属于哪层？** 纯 UI（localStorage/userData）还是 session-derived（projection）？后者不能复制到 localStorage。
-18. **依赖层级？** 原生核心（N0）→ 原生插件（N1）→ 原生实验（N2，只参考）→ 扩展插件（E1，只借鉴、自己实现）→ 外部服务（E2，最后）。扩展插件不要写进 `dependencies`；短期用也要写清迁移、卸载、许可证与供应链。
-
-## 产品型实例的六个工程问题
-
-只有 P5 需要问；普通插件可以跳过。前两问决定架构，后四问决定落位；**定位与信任**见 [90 的应用七问](./00-index.md)。
-
-19. **模型要对项目目录用通用文件工具吗？** 不要 → 工具中介，项目不必是 workspace；要 → 开放 agent，会话 cwd 必须落在项目里。
-20. **启动时根从哪来？** `configured`（profile 指定）/ `adopted`（用户上次选的）/ `default`（`<dataRoot>/workspace`）/ `unresolved`（等客户端弹窗）。四状态见 [16](../10-foundations/16-startup-resolution.md)。
-21. **目录缺失时重建还是重新问？** 部署意图（configured）可以重建；用户记忆（adopted）不能，可能是未挂载的卷。
-22. **扫描的权威是谁？** 目录树（自动发现，会复活已删工作区）/ 登记表（尊重删除，要刷新）/ 混合 + 墓碑。必须选一个。**默认建议**：账本索引为权威（可重建），`readdir` 只做发现与修复；目录删除重加按路径键视为同一项目，目录移动才换键。
-23. **账本在模型可写范围内吗？** 不能。账本目录一旦登记成 workspace，模型就能改写自己的记录。
-24. **产品全局配置放哪、要跨 profile 一致吗？** 跨 profile → `dataRoot` 文件（不要 volatile、不要 home patch）；按 profile 不同 → profile config。见 [17](../10-foundations/17-config-layers.md)。
-
-## 一张数据卡（抄进 README）
-
-插件 README 应该能用一张表回答“用户装了我之后，数据在哪、怎么删、走的时候带不带走”：
+README 示例：
 
 ```text
-## Data
-
-| 事实 | 承诺 | 依赖层级 | 权威 | 位置 | 作用域/键 | 寿命 | 谁看得见 | 秘密 |
-|---|---|---|---|---|---|---|---|---|
-| 项目索引 | P3 | N0 service + N1 backend | 插件 | $DSH_HOME domain | w_<sha256(realpath)> | 直到目录消失 + 下次清理 | 插件/面板 | 否 |
-| 项目记忆 | P2 | N0 文件 | 用户 | <project>/.your-plugin/memory.md | 文件路径 | 跟仓库 | 用户/模型经工具 | 否 |
-| 用量统计 | P1 | N1 projcache | 会话日志 | $DSH_HOME/storages/session_projcache | SessionId | 可重建 | 面板 | 否 |
-| API key | P4 | N1 credentials | provider | `$DSH_HOME/.credentials.yaml` | CredentialRef | 跟 home | 不回传 | 是 |
-
-卸载后留下：<domain 记录 / 自造目录 / localStorage 键 / 凭据备份>；**P2 项目内文件是用户资产，卸载不删**。删除方式：<命令/路径>。
-迁移：<版本、兼容读或一次性迁移；失败语义>。
-删除/保留：<谁删、何时删、审计/宽限、是否影响分叉/恢复/搜索索引/附件引用>。
+Fact: Project search index
+Owner: Product plugin
+Authority: None; derived view
+Source (input/operation): Project files
+Mechanism/path: Storage domain, table `projects`
+Scope/key: Product project ID
+Readers: Product search tool
+Writers: Product indexer
+Rebuildability: Re-index from project files
+Retention/deletion: Product cleanup command
 ```
 
-目录名是示例；`.agents/` 是 E1 扩展插件的社区约定，不是核心路径。
+Owner 负责记录的生命周期；authority 决定真值；source 说明记录如何产生。Reader 和 writer 分开列出。Plugin 可以写派生索引，而 project files 仍是被索引内容的 authority。
 
-依赖层级：N0 原生核心 / N1 原生插件首选；N2 原生实验只参考；E1 扩展插件只借鉴、自己实现；E2 外部服务最后。
+## Check the data path
 
-这张卡不是文档装饰：它迫使你回答“卸载后留下什么”，也方便测试逐项断言。
+- Do model-visible inputs come from reconstructable Session history or another documented source? Do not rely only on Host memory.
+- Are secrets represented correctly? `CredentialRef.resolve` reads a named environment variable; `CredentialKey` accesses credential records. These are different APIs.
+- Does a storage-domain record key satisfy the selected backend? JSON `per-record` keys must match `[a-zA-Z0-9_-]+`; use a prefixed hash for paths.
+- Is `WorkspaceId` only used for a DSH registration? Removing and re-creating a registration gives a new ID; it is not a stable product project ID.
+- Does a persisted Session event have compatible readers? A TypeScript declaration alone does not establish released reader compatibility; see [11](../10-foundations/11-five-homes.md).
 
-## 几个例子
+## Check the implementation
 
-> 例子里的 `.agents/`、`dsh-*` 是外部社区模式（E1，参考）；原生长相见 [21](../20-native/21-native-data-landscape.md)，原生优先的路线见 [92](./92-native-reference-architectures.md)。
+1. **Concurrency:** identify competing writers and their coordination. JSON storage domains serialize calls in one process, not writes across processes.
+2. **Failure and recovery:** test missing files, permissions, corrupt records, migration failure, cancellation, and restart recovery.
+3. **Project moves and deletion:** state how paths, IDs, orphaned records, Workspace registrations, and project files behave.
+4. **Retention:** assign owners for Session history, attachments, caches, and product-owned files. DSH has no general Session delete API; the local attachment backend has no automatic GC.
+5. **Client state:** distinguish origin/device-local UI preferences from Session-derived state and product settings.
+6. **Dependencies:** use the APIs and packages available to the target profile. Ordinary runtime dependencies do not add Cordis rows; a package that contributes rows must enter the profile as a bundle. Review external dependencies individually.
 
-### 例 1：代码检查器的分析缓存
+## Check the product profile
 
-- 事实：每个文件的检查结果，能重算。
-- 家：派生；作用域：workspace；位置：home 域（`layout: 'per-record'`），键 = `w_<sha256(realpath)>_f_<sha256(content)>`；记录里带 `lastSeenAt`。
-- 失效：内容哈希变了就重算；目录不存在就标记过期，定期清理。
-- 反例：把结果存成权威、文件删了还推荐。
+1. **Composition:** record the shipped template or complete custom bundle list, package dependencies, and bundle order.
+2. **Tools:** list model-visible product and general-purpose tools; verify each provider and policy separately.
+3. **Project selection:** distinguish DSH Web's default Workspace/picker from product-owned project selection and recovery.
+4. **Workspace:** use `workspaceId` when the Session must join a Host registration; use absolute `cwd` when only a starting directory is needed.
+5. **Isolation:** inventory shared `$DSH_HOME` stores, path overrides, browser origins, and external services. A profile name does not isolate data.
+6. **Upgrade and removal:** document profile restart, data migration, surviving user files, and cleanup of product-owned records.
 
-### 例 2：项目记忆（用户可读的知识）
+## Install and update
 
-- 事实：这个项目的约定、决策、术语。
-- 家：内容（用户可读）；作用域：workspace。
-- 做法：项目内 `.your-plugin/memory.md`（或 E1 约定 `.agents/memory.md`）；索引是派生，可重建；用户可以直接编辑。
-- 交付：不需要 `present`（它是工作文件，不是一次性产物）。
-- 反例：把用户需要读/带走的**唯一副本**只存 home 域——用户找不到、换机器丢、删项目还留孤儿；纯索引/游标可以放 home。
+`dsh plugin --profile <name> add <bundle>` changes the profile's bundle list and returns the package-manager result, not Plugin Manager's `ChangeResult.application`. Restart the profile to load the changed composition. Plugin Manager reports its own application result.
 
-### 例 3：个人偏好
+To create a new Web profile, follow [93](./93-app-plugin-walkthrough.md). `--from-default-profile web` replaces a same-named custom profile, including installed dependencies and its user patch. Use a fresh profile name or back up the existing profile first. A successful replacement is committed before application boot; a later boot failure does not restore the prior profile.
 
-- 事实：跨项目的偏好（语气、默认模型、输出格式）。
-- 家：状态；作用域：profile 或 home。
-- 做法：简单、用户可调 → `Config` 的 `.volatile()` 字段（落 profile patch，立即生效）；结构化、程序写入、跨 profile → home 域的单例记录。
-- 反例：每个项目存一份偏好，用户改十次；或把“账号级”偏好放进 `Config`，换 profile 就丢。
+Bundle removal does not delete project files, Session history, or product-owned data. `workspace.delete` removes only the Workspace registration. Remove product data only when its ownership is known and the user has authorized deletion.
 
-### 例 4：报告导出
+## Common errors
 
-- 事实：用户要的报告文件。
-- 家：内容；作用域：workspace。
-- 做法：写到会话 cwd 下的文件，`present` 声明；可选在 home 域记一条“最近导出时间”。
-- 反例：把报告写进 `$DSH_HOME` 或附件库，然后告诉用户“去那里找”。
-
-### 例 5（边界）：面板宽度
-
-- 事实：当前浏览器里右侧栏多宽。
-- 家：客户端；作用域：device/origin。
-- 做法：`localStorage`，键里带 session id；卸载时清掉自己的键；不参与模型请求。
-- 反例：写进 domain，让服务端为每个浏览器存一份 UI 状态；或跨设备同步一个本来只想本机记住的值。
-
-## 反模式清单
-
-| 反模式 | 为什么会坏 | 替代 |
-|---|---|---|
-| 用户文件复制进 home 当真相 | 用户在外部修改，副本永久过期 | 只存路径/哈希；内容留在工作区 |
-| `workspaceId` 当长期键 | 删除重加换 uuid，数据孤儿 | 规范化路径哈希，或项目内标记文件 |
-| `realpath` 直接当 `per-record` 键 | 含 `/`，JSON per-record 拒绝写入 | `w_` + sha256 十六进制 |
-| 硬编码 `~/.dsh` | 忽略 `DSH_HOME`，两套 home 分裂 | `resolveDshHome()` / `dshHomePath()`；或直接用域服务 |
-| 索引当权威 | 文件删除后仍被推荐 | 派生层 + 版本/哈希失效 |
-| 秘密进 domain/settings/日志 | 明文落盘、随备份/导出泄漏 | credentials 引用/记录 |
-| settings 当数据库 | 每次写重写 profile patch；不是查询结构 | domain |
-| 每个 workspace 一个 domain | `defineDomain` 静态，一个名字只能开一次 | 单域 + 路径键 |
-| 用 `process.cwd()` 当项目 | 只是启动目录；服务多项目时全错 | 会话 `header.cwd` / 注册表 |
-| 把插件状态写进会话 surface | 模型上下文污染；schema 绑死会话格式 | domain；只有模型可见事实才落日志 |
-| 第三方新增 session event 类型 | 缺少声明插件的读取方会拒绝重开会话 | 已有事件 + 投影 + `agent.inject()` + domain |
-| 直接写 home/系统目录 | 绕过用户预期；可能破坏其他数据 | 只写当前工作区，必要时显式申请 |
-| 客户端 localStorage 当共享状态 | 换端口/浏览器就丢；两个 Host 共用 | 服务端 domain 或显式导出 |
-| 用 spill 当交付 | 会过期；用户没有稳定入口 | 工作区文件 + `present` |
-| 附件当项目资产 | 在 home、不跟项目走、没有 GC | 工作区文件 + `present` |
-| 卸载不留说明 | 用户不知道数据在哪、怎么删 | 数据卡 + 清理命令/路径 |
-| 自造 `$DSH_HOME/<plugin>/` 且不写生命周期 | 没有配额/迁移/卸载约定；根目录变杂 | 普通插件优先 domain；产品实例用 dataRoot 时写 schemaVersion/迁移/清理（见 [15](../10-foundations/15-four-spaces.md)） |
-| 直接物理删 session 日志目录 | 绕过投影缓存、附件引用、搜索索引；不可逆 | 等待核心 delete；至少先停工作、审计、宽限 |
-| 直接改 session 日志 header | 破坏 append-only/租约/格式合同 | 用受支持的 session API；核心缺口应上报 |
-| 把 workspace 当可写性来源 | 登记了目录，模型仍然没有 `write` 工具 | 先看 preset 工具面；要写就加 `tool-fs`/`tool-bash` |
-| 账本目录登记成 workspace | 模型可改写自己的注册表与绑定 | 账本与 workspace 分开：`dataRoot` vs 项目目录 |
-| 目录缺失就当空目录重建 | 未挂载的卷被物化出空目录，卷挂回后被遮住 | `adopted` 缺失转 `missing`，重新问用户 |
-| 把项目清单塞进 profile | profile 是安装单位，两个 profile 就是两份清单 | 账本或 DSH registry |
-| 只在一个 profile 里改配置 | 两个 profile 各改一次就分裂 | 跨 profile 一致的放 `dataRoot` 文件 |
-| 以为 patch 深合并 | `config` 整对象替换，只写一个键会丢其余默认值 | 默认值进 schema；或走设置页写完整对象 |
-
-## 版本与迁移：插件自己的责任
-
-- `single` 布局版本不等 → 拒绝打开；升级前先迁移文件。
-- `per-record` 可以用 `compatibleVersions` 读旧记录；`invalidRecords: 'backup-and-skip'` 让坏记录不拖垮启动（仅 JSON per-record，且只用于派生/可丢弃数据）。
-- 改语义、拆表、改键 → 新 domain 名字 + 一次性迁移；不要在原 domain 上偷偷改含义。
-- settings 迁移用 profile patch；credentials 用 `CredentialRef` 引用层；客户端 localStorage 用版本化键名 + 读取时迁移。
-- 迁移要可重复、可校验（条数、抽样、读回），并在隔离 home 里演练降级。
-
-## 并发与失败
-
-- **domain**：每个域一条写链，`update` 在槽位上执行；内存只在校验通过后更新；写失败不留半状态。
-- **文件**：`writeText` 的 `createIfAbsent` / `replaceIfVersion` 是并发保护；省略就是无条件覆盖。它们是 CAS，不是锁。
-- **跨进程**：JSON 后端没有锁；SQLite 单语句原子但竞争写立即拒绝，没有等待/重试。`domain/changed` 不跨进程。多 Host 共享 home 不支持（见 [12](../10-foundations/12-state-homes.md)）。
-- **客户端**：`localStorage` 是同步 API，但多标签页会并发；要么接受 last-write-wins，要么用 `storage` 事件做协调。
-- **失败语义**：配置/schema 错误应在加载时 fail loud；用户数据的版本不匹配应给出可行动的错误，而不是静默重建。
-
-## 测试策略
-
-1. **隔离**：`DSH_HOME=$(mktemp -d)`，不要污染日常侧栏与会话列表（见 FAQ 25 的 Ungrouped）。
-2. **生命周期**：建工作区 → 写数据 → 删工作区 → 重加 → 读数据；断言孤儿/保留符合设计。
-3. **迁移**：旧版本 fixture → 新版本启动 → 读回 → 再降级，确认不写坏旧文件。
-4. **并发**：两个 update 同时打同一个键；文件用版本守卫模拟外部修改；客户端两个标签页同时写。
-5. **可见性**：断言 domain 数据没有进入模型请求；需要模型看的事实确实有事件。
-6. **大小/二进制**：附件与 spill 的上限、失败路径、清理。
-7. **清理**：卸载后哪些记录/文件/`localStorage` 键还在；README 的数据卡与实际一致。
-
-## 一张收尾的判断图
-
-```text
-用户已经有这份数据？ ──是──> P0 引用（Config + ctx.fs）
-   │否
-   ↓
-能从日志/文件重算？ ──是──> P1 派生（projection / sessionQuery / 缓存）
-   │否
-   ↓
-要跟项目走、用户可见？ ──是──> P2 项目内文件（ctx.fs + present）
-   │否
-   ↓
-只在当前浏览器用？ ──是──> 客户端本地（localStorage/userData）
-   │否
-   ↓
-跨会话记住、不必编辑？ ──是──> P3 home 域 + 稳定键
-   │否
-   ↓
-关于这个人/账号/安装？ ──是──> P4 Config/凭据/home 单例
-   │否
-   ↓
-需要每项目运行时？ ──是──> workspace scope（外部 E1 自建；原生 GAP）
-   │否
-   ↓
-回到 P1：也许你根本不需要持久化
-```
-
-注意：这张图的第一问不是“模型要看见吗”，而是“用户是不是已经有了”。**能不存就不存**，是外部社区里最省事、也最容易获得信任的路线（E1 参考）。
-
-原生 landscape/历史/参考架构见 [21](../20-native/21-native-data-landscape.md)、[22](../20-native/22-native-data-history.md)、[92](./92-native-reference-architectures.md)。
-
-扩展插件案例（只作参考）见 [33](../30-external/33-external-plugin-patterns.md)。
-
-## 边界
-
-- 这套程序假设单 Host 账户；多租户需要部署层隔离，不是插件自己能解决的。
-- “用户会编辑/带走”是产品判断；项目内文件与 home 域都能成立，选你能维护的那条。
-- 本篇不评价具体后端的性能；写入频率高时优先 `per-record` 或 sqlite，并用基准验证。
-- 数据卡是给作者自查用的，不是 DSH 的强制格式；但一张写不清数据去向的 README，通常也意味着实现里没有想清楚。
+| Error | Correction |
+|---|---|
+| Treat `WorkspaceId` as the product project ID | Define a product ID or accept that re-created registrations have new IDs |
+| Treat Workspace registration as permission | Check the tool, provider, and policy that access the path |
+| Treat Session `header.cwd` as the effective directory | Track working-directory changes separately; they do not change sandbox roots |
+| Assume profiles isolate the same `$DSH_HOME` | Use an independent home or configure each relevant provider path |
+| Assume bundle removal deletes business data | Provide product-owned migration and cleanup instructions |

@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" width="1200" height="820" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>DSH 原生数据 landscape：12 个 archetype × 家</title>
+  <title>DSH 原生数据 landscape：12 类数据场景 × 原生家</title>
   <desc>会话历史、项目知识、个人记忆、任务、设置、秘密、交付物、附件、索引、协作、账号、客户端状态分别落在哪些家；空白处就是 DSH 的缺口。</desc>
 
   <rect width="1200" height="820" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">DSH 原生数据 landscape：12 个 archetype × 家</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">DSH 原生数据 landscape：12 类数据场景 × 原生家</text>
   <text x="600" y="58" text-anchor="middle" fill="#64748b">N0 核心 / N1 随包插件 / N2 experimental / GAP；绿色=历史，黄色=状态，紫色=客户端，红色=缺口</text>
 
   <!-- header -->
-  <text x="24" y="94" font-size="11" font-weight="700" fill="#334155">Archetype</text>
+  <text x="24" y="94" font-size="11" font-weight="700" fill="#334155">数据场景</text>
   <rect x="210" y="76" width="130" height="26" rx="6" fill="#eff6ff" stroke="#93c5fd"/><text x="275" y="94" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e40af">内容</text>
   <rect x="348" y="76" width="130" height="26" rx="6" fill="#f0fdf4" stroke="#86efac"/><text x="413" y="94" text-anchor="middle" font-size="10.5" font-weight="700" fill="#166534">历史</text>
   <rect x="486" y="76" width="130" height="26" rx="6" fill="#fffbeb" stroke="#fcd34d"/><text x="551" y="94" text-anchor="middle" font-size="10.5" font-weight="700" fill="#92400e">状态</text>

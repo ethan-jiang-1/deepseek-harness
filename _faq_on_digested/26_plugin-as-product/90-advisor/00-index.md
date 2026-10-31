@@ -1,93 +1,74 @@
-# 90 · 动手：把结论落到插件
+# 90 · 动手：把插件组合成产品 profile
 
 ## 这一篇回答什么
 
-如果你已经读完结论，要开始写插件——尤其**这个插件就是整个应用**——从这里开始。10–33 与 40 是词汇、地图与证据；这一层是施工图：先问什么、按什么顺序做、做完检查什么。
+DSH 中产品型插件仍是由 `dsh` 启动的 named profile：bundle 提供 patch 和代码依赖，profile 决定组合与顺序。本页给出产品决策顺序；[93](./93-app-plugin-walkthrough.md) 演示 Web profile composition，[91](./91-checklist.md) 用于交付验收。
 
 ## 两条施工路线
 
-| 你在做什么 | 路线 | 时间 |
-|---|---|---|
-| **普通插件**（装在别人的 DSH 里，加一个能力） | [91 决策程序](./91-checklist.md)（十八问 + 数据卡）→ [92 路线表](./92-native-reference-architectures.md) 找最接近的 archetype → **另读** [10](../10-foundations/10-taxonomy.md)/[11](../10-foundations/11-five-homes.md)/[12](../10-foundations/12-state-homes.md)/[13](../10-foundations/13-scope-and-keys.md) 选家与键（90 本身不含这些细节） | 半天 |
-| **应用型插件**（这个 DSH 就是你的产品） | 本节"应用七问" → [91 六问](./91-checklist.md) → [92](./92-native-reference-architectures.md) → [18 安装升级](../10-foundations/18-install-upgrade.md) 收尾 | 1–2 天 |
+| 你在做什么 | 推荐路线 |
+|---|---|
+| **普通插件**：给已有 DSH profile 增加能力 | [10 概念](../10-foundations/10-taxonomy.md) → [91 数据卡](./91-checklist.md) → [92 选型矩阵](./92-native-reference-architectures.md) → 按需读 [11–14](../10-foundations/11-five-homes.md) 与相关 package README |
+| **产品型 profile**：一组 bundle 组成面向用户的应用入口 | 本页七问 → [92 选型矩阵](./92-native-reference-architectures.md) → [93 Web profile 走查](./93-app-plugin-walkthrough.md) → [91 交付检查](./91-checklist.md) → [18 安装生命周期](../10-foundations/18-install-upgrade.md) |
 
-**应用型插件的完整走法**见 [93 端到端例子](./93-app-plugin-walkthrough.md)：从 profile 到 workspace 根、配置、账本、启动、安装、卸载，一步不落。
+`00-answer` 是总览，不取代基础事实页。产品型 profile 的完整施工示例从 [93](./93-app-plugin-walkthrough.md) 开始，不必把 10–33 的调研章节按顺序通读。
 
-**普通插件的最小阅读集**：91 + 10 §3/§4 + 15 + 18；11/12/13 按需补。90 本身不含家与键的细节，路线里已标“另读”。
+## 产品型 profile 七问
 
-## 应用插件七问
+按顺序回答。每一问都必须区分 DSH 当前能力和产品自建行为。
 
-按顺序回答，答不出就先别写代码：
-
-1. **这个 DSH 为什么存在？** 一句话说清"用户打开它要完成什么"。这是 P5 承诺（[10 §1](../10-foundations/10-taxonomy.md)）。
-2. **模型要不要直接读写项目文件？** 不要 → 架构 I（工具中介）；要 → 架构 II（workspace 化），会话 cwd 必须落在项目里。见 [17 工具面](../10-foundations/17-config-layers.md)。
-3. **根从哪来、没有怎么办？** `configured` / `adopted` / `default` / `unresolved` 四状态；弹窗在客户端连上之后。**只有产品使用 DSH 侧栏时**才登记占位，架构 I 不登记。见 [16](../10-foundations/16-startup-resolution.md)。
-4. **哪些配置是安装参数、哪些是运行时选择？** 安装参数进 profile patch；运行时选择进全局设置文件；不要 volatile 一个"全局"字段。见 [17](../10-foundations/17-config-layers.md)。
-5. **账本里哪些可重建、哪些不可重建？** 索引可删；绑定、游标、已采纳标记要单独文件、单独迁移。见 [15](../10-foundations/15-four-spaces.md)。
-6. **怎么装、怎么升、怎么卸？** bundle 成员变化要重启；升级分组合/配置/数据三层；卸载写清四处残留。见 [18](../10-foundations/18-install-upgrade.md)。
-7. **用户凭什么信任你？** 少存、秘密只存引用、卸载说明、失败可见。见 [91 反模式](./91-checklist.md)。
-
-> **三份清单的分工**：本节的七问是**决策顺序**（先想）；[91](./91-checklist.md) 的十八问 + 六个工程问题是**检查清单**（照做）；[00-answer](../00-answer.md) 的六问是**叙事版数据卡**（理解）。
+1. **用哪个受支持 profile 启动？** Web 产品通常基于 shipped Web template；Node app 仍由 `dsh --profile <name>` 启动。
+2. **如何分发功能？** 说明产品 bundle、`dsh.bundle.patch` 与所依赖的 plugin packages；bundle 顺序决定 patch 覆盖顺序。
+3. **模型可调用哪些工具？** 列出产品工具与通用文件/进程工具，并确认每个工具所用 provider 和 policy。
+4. **Session 从哪条目录开始？** 只需指定工作目录就传绝对 `cwd`；还要加入 DSH 侧栏分组时，传已有 registration 的 `workspaceId`。产品业务 project ID 另行定义。
+5. **每块数据的 data card 填什么？** 分列 fact、owner、authority、source、mechanism/path、scope/key、readers、writers、rebuildability 和 retention。
+6. **哪些数据需要隔离？** 列出 profile、共享 `$DSH_HOME`、产品额外数据路径和 browser origin 的数据；profile 名不是隔离措施。
+7. **如何升级与退出？** 区分 CLI bundle 安装后的重启、Web Plugin Manager 的 HMR 结果、用户数据迁移和卸载残留。
 
 ## 七步施工顺序
 
-| # | 步骤 | 产出 | 去哪读 |
+| # | 决定 | 产出 | 依据 |
 |---|---|---|---|
-| 1 | 定位与承诺 | 一句话 + P0–P5 主承诺 | [10 §1](../10-foundations/10-taxonomy.md) |
-| 2 | 选架构 | 工具中介 / workspace 化 / 混合 | [17](../10-foundations/17-config-layers.md) / [92](./92-native-reference-architectures.md) |
-| 3 | 定根与启动 | 四状态与占位方案 | [16](../10-foundations/16-startup-resolution.md) |
-| 4 | 定配置 | 五层归属 + 字段级二选一 | [17](../10-foundations/17-config-layers.md) |
-| 5 | 定账本 | 索引/状态二分 + 键 | [15](../10-foundations/15-four-spaces.md) / [13](../10-foundations/13-scope-and-keys.md) |
-| 6 | 选路线 | 最接近的 archetype 路线 | [92 路线表](./92-native-reference-architectures.md) |
-| 7 | 收尾 | 数据卡、安装/升级/卸载、测试清单 | [91](./91-checklist.md) / [18](../10-foundations/18-install-upgrade.md) |
-
-> **七步不含客户端插件**：要让用户首启选目录，还要加一个客户端插件 + 两个 Remote（`status`/`adopt`），见 [16 形态 A](../10-foundations/16-startup-resolution.md)。没有它就走 `default` 降级。
+| 1 | 定启动 profile | shipped template 或 custom profile；不创建替代 `dsh` 的应用 bin | [application launch](../../../docs/architecture.md#application-launch) |
+| 2 | 定包和组合 | bundle manifest、依赖包、完整 bundle 顺序 | [FAQ 24](../../24_plugin-publish-and-agent-data-planes/answer.md)、[93 §1–2](./93-app-plugin-walkthrough.md) |
+| 3 | 定模型能力 | preset 工具清单，以及每个 provider/policy 的适用范围 | [17](../10-foundations/17-config-layers.md) |
+| 4 | 定目录与 Session | 产品 project root、初始 Session `cwd`、DSH Workspace registration 分开说明 | [16](../10-foundations/16-startup-resolution.md)、[Workspace API](../../../docs/subsystems/workspace.md) |
+| 5 | 定数据权威 | 每块事实一个数据卡行；明确重建和删除语义 | [91](./91-checklist.md)、[15](../10-foundations/15-four-spaces.md) |
+| 6 | 定作用域和隔离 | profile-local、home-shared、独立 path 或独立 `$DSH_HOME` | [13](../10-foundations/13-scope-and-keys.md)、[92](./92-native-reference-architectures.md) |
+| 7 | 验证生命周期 | 冷启动、bundle 加载、设置迁移、卸载和恢复测试 | [91](./91-checklist.md)、[18](../10-foundations/18-install-upgrade.md) |
 
 ## 一页判断
 
 ```text
-这个 DSH 由我的插件决定吗？
-├─ 否 → 普通插件：承诺 → 家 → 键（91 十八问）
-└─ 是 → 应用插件
-   ├─ 模型只调我的工具吗？
-   │  ├─ 是 → 架构 I：项目不必是 workspace；根可任意；沙箱是背景
-   │  └─ 否 → 架构 II：会话 cwd 必须落在项目里；沙箱决定一切
-   ├─ 根从哪来？ configured / adopted / default / unresolved
-   ├─ 配置：安装参数进 profile；运行时选择进全局设置文件
-   └─ 收尾：账本二分、卸载四处、数据卡
+先选 DSH 启动组合
+├─ 给现有 profile 加能力 → 普通插件 / bundle
+└─ 提供产品入口 → shipped template 或 custom profile + product bundle
+
+再分别回答
+├─ 模型工具：产品专用 / 通用文件与进程 / 混合
+├─ 项目目录：Session cwd / DSH Workspace navigation / 产品 project root
+├─ 数据：逐块填写 data card，说明权威、路径、scope/key、读写者与保留
+└─ 隔离：共享 home / 明确重定向的 providers / 独立 DSH_HOME
 ```
 
-## 五个常见半成品
+产品工具可写项目文件，模型工具也可使用独立的 Session cwd；Workspace registration 只决定 Host 导航和分组，不决定文件权限。
 
-1. **只做了工具，没做根**：用户不知道项目从哪来，每次都要手选。
-2. **根写死在 patch**：换一台机器就失效；没有 `default` 兜底。
-3. **账本放进 workspace**：模型（或用户）能改写你的注册表。
-4. **配置全做成 volatile**：换 profile 就分裂，"全局"名不副实。
-5. **卸载没写**：workspace 登记、`dataRoot`、目录内文件、profile 行四处残留。
+## 常见返工原因
+
+1. 直接创建自定义 Web profile，却只安装产品 bundle；新 profile 默认只有 `dsh-base`。
+2. 用 `dsh plugin add` 安装后，期待 CLI 返回 `ChangeResult.application`；CLI bundle membership 变更后需重启 profile。
+3. 认为换 profile 会隔离会话、Workspace registry 或 credentials；这些服务通常仍由同一 `$DSH_HOME` 提供。
+4. 将产品项目根、Session 初始 `cwd`、当前 working directory 与 DSH Workspace 混成一个路径。
+5. 认为 Workspace registration 可以替代文件工具、policy 或产品权限检查。
+6. 把普通 runtime dependency 当作 bundle membership；package 的 Cordis rows 需要通过 bundle 进入 profile composition。
 
 ## 动手时只需要记住三句
 
-- **先问工具面，再问存哪。**
-- **账本里分两类：可重建的索引，不可重建的状态。**
-- **安装、升级、卸载是数据设计的一部分，不是发布后补。**
-
-## 一页施工卡
-
-动手时逐项打勾；任何一项答不出，先回对应章节：
-
-- [ ] 一句话定位（P5）：用户打开它要完成什么
-- [ ] 选架构：工具中介 / workspace 化 / 混合
-- [ ] 根的四状态与占位方案
-- [ ] 配置分层：安装参数进 profile，运行时选择进全局设置文件
-- [ ] 账本二分：索引（可重建）/ 状态（不可重建），键用路径哈希
-- [ ] 数据卡：每块事实一行（承诺 / 空间 / 位置 / 键 / 谁删 / 换机器）
-- [ ] 安装：bundle 顺序、`engines.dsh`、重启边界
-- [ ] 升级：组合 / 配置 / 数据三层
-- [ ] 卸载：workspace 登记、`dataRoot`、目录内文件、profile 行
-- [ ] 秘密：只存引用
-- [ ] 测试：冷启动四状态、未挂载卷、双 profile、整对象替换、升级、卸载
+- **先确定启动组合，再逐块设计数据事实。**
+- **Session cwd、Workspace 导航和模型工具权限是不同决定。**
+- **把 DSH 合同、产品自建 API 与外部模式分别标清。**
 
 ## 边界
 
-- 本篇是施工顺序与检查表，不重复概念定义；定义见 [10](../10-foundations/10-taxonomy.md)。
-- 具体 API 以当前 docs/源码为准；标记规则见 [40-evidence](../40-evidence/00-index.md)。
+- 本页是施工顺序，不复述数据机制定义；定义见 [10](../10-foundations/10-taxonomy.md)。
+- DSH 行为以当前 `docs/`、package README、类型和源码为准；外部样本不构成 DSH API 合同。

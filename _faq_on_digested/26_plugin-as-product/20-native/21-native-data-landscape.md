@@ -4,7 +4,7 @@
 
 先把**DSH 自己**的数据落点铺开：哪些是核心合同（N0）、哪些是官方随包插件（N1）、哪些是 experimental（N2），哪些根本没有家。
 
-扩展插件（E1）只作参考，统一放在 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-adjacent-ecosystems.md)/[33](../30-external/33-external-plugin-patterns.md)，不混进这张图。
+本图只列 DSH 原生 API/package；外部生态样本见 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-adjacent-ecosystems.md)/[33](../30-external/33-external-plugin-patterns.md)。
 
 **口径。** DSH 侧：343 个包、约 1,265 篇英文 Agent Note（298 implemented / 42 proposed / 925 archived）、67 篇 subsystem、49 篇 persistence-change、43 篇 upgrade guide、4 篇 postmortem、6 篇 defensive-pattern。
 
@@ -14,14 +14,14 @@
 
 > **第三层**：产品视角的“四个空间”（插件包 / workspace / 账本 / 全局设置）见 [15](../10-foundations/15-four-spaces.md)；它回答“哪些落点属于一个产品实例”，不替代这里的落点清单。
 
-## 原生分级
+## 原生能力来源
 
-| 级别 | 含义 | 长期策略 |
+| 级别 | 含义 | 阅读时的边界 |
 |---|---|---|
-| **N0 原生核心（核心合同）** | `docs/` + 核心包 + 测试定义的 Service/事件/格式 | 首选；插件应依赖这些 |
-| **N1 原生插件（官方随包）** | 仓库内、由 base/web 等官方 bundle 挂载的插件（如 workspace、projection-cache、settings、credentials-local、session-query-sqlite、spill-local） | 首选；能力通常够用 |
-| **N2 原生实验（experimental）** | `packages/experimental/` 下的官方实验（agent-team、claude-code-mods `$.store`、webworker runtime 等） | 可参考，不承诺稳定 |
-| **GAP** | 没有核心/原生插件提供 | 作者自建或等核心；扩展插件只作参考 |
+| **N0 核心 API** | 核心 packages、公开 service/event/formats 与 docs | 先核实其当前调用合同与兼容范围 |
+| **N1 随附 package** | 可由 shipped bundle 提供的 Workspace、storage、Settings、Credentials 等 package | 随附不表示每个 profile 都启用；查看目标 profile 的 bundle list |
+| **N2 experimental** | `packages/experimental/` 下的实验 package | 可能变化或移除，不作稳定保证 |
+| **GAP** | 当前组合没有可直接满足需求的原生机制 | 评估自建实现或维护中的 package；清楚标记实现 owner |
 
 ## 七个轴
 
@@ -43,7 +43,7 @@
 |---|---|---|---|---|---|
 | 1 | 会话历史/transcript | `sessions/`（N0）、`sessionQuery`（N0）、projections（N0） | 会话日志 | session | 无删除/保留；旧世代累积 |
 | 2 | 项目/工作区知识 | 工作区文件（N0）、`workspace.json`（N1）、项目 `AGENTS.md`/skills（N0/N1） | 用户/项目 | workspace | 无 per-workspace plugin state |
-| 3 | 个人长期记忆 | **GAP**（只能 P0 引用 / P3 home 域 / 外部） | 插件/用户 | home | 无记忆服务、无稳定 data root |
+| 3 | 个人长期记忆 | **GAP**（可引用用户文件、保存插件状态或接入外部服务） | 用户/产品/外部 owner | home / external | 无统一记忆服务或产品 data root |
 | 4 | 任务/待办/目标 | 会话事件 + todo/goal/plan 投影（N0）、schedule 域（N1） | 会话日志 | session / home | 无跨会话任务库；schedule 落点 U |
 | 5 | 设置/偏好 | profile patch（N1）、旧 `settings.yaml`（已废）、客户端 localStorage（平台能力） | profile / 设备 | profile / device | 无跨 profile 共享；无客户端迁移 |
 | 6 | 秘密/凭据 | `.credentials.yaml`（N1）、`.env`（N1）、OS keychain（GAP/deferred） | provider | home | 无硬隔离；备份无清理 |
@@ -60,7 +60,7 @@
 
 | 组 | 家（id） | 四空间 | 级别 | 权威 | 寿命 | 主要风险 |
 |---|---|---|---|---|---|---|
-| **一条日志** | SESS-LOG、SESS-GEN、SESS-LOCK、SESS-TMP、SESS-TITLE、SESS-WORKDIR、DELIV、jobs/goal/todo/plan | 历史（会话） | N0/N1 | 会话日志 | 永久 | 无删除；旧世代累积；插件不能扩展事件 |
+| **一条日志** | SESS-LOG、SESS-GEN、SESS-LOCK、SESS-TMP、SESS-TITLE、SESS-WORKDIR、DELIV、jobs/goal/todo/plan | 历史（会话） | N0/N1 | 会话日志 | 永久 | 无通用删除；旧世代累积；独立扩展需兼容设计 |
 | **旁表与 KV 域** | WORKSPACE、PROJCACHE、PROJCACHE-LEGACY、SCHED、KV-SQLITE | 账本 + DSH 登记 | N1 | workspace/schedule/domain 权威；projcache/legacy 派生 | 永久；projcache 可重建 | 派生与权威同目录；legacy 无清理；schedule 落点 U |
 | **附件对象/缓存** | ATT-OBJ、ATT-FILEOBJ、ATT-REQ、ATT-FILES、ATT-TMP、ATT-CACHE | 历史（附件库） | N1 | 对象内容寻址；请求图/缓存/暂存是派生 | 对象永久；缓存/暂存可清 | 对象无 GC；日志删除即孤儿 |
 | **组合/设置** | PROFILES、PROFILE-NM、SETTINGS-LEGACY | profile + 全局设置 | N1 | profile | 永久 | 迁移一次性；patch pin 字段；无跨 profile |
@@ -72,7 +72,7 @@
 
 | 模式 | 原生实现 | 级别 | 备注 |
 |---|---|---|---|
-| 模型可见 ⟺ 日志 | session events + projections | N0 | 第三方不要新增事件类型 |
+| 模型可见 ⟺ 日志 | Session messages + projections | N0 | 模型可见事实必须可重建；event vocabulary 需有 reader/format compatibility |
 | 派生检查点 | `session_projcache` per-record | N1 | 可重建；`invalidRecords` 仅 JSON per-record |
 | 通用宿主 KV | `ctx.storageDomain`（N0 服务）+ backend（N1） | N0 服务 / N1 后端 | 无 scope/迁移/跨进程 |
 | 工作区注册 | `ctx.workspaceRegistry` | N1 | 只在 shipped Web 组合；不拥有目录 |
@@ -108,11 +108,9 @@
 
 ## 外部参考
 
-扩展插件/社区模式**不进入这张原生图**，统一放在 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-adjacent-ecosystems.md)/[33](../30-external/33-external-plugin-patterns.md)。
+外部 package 与生态模式不进入这张原生能力图，分别放在 [31](../30-external/31-external-community-patterns.md)/[32](../30-external/32-external-adjacent-ecosystems.md)/[33](../30-external/33-external-plugin-patterns.md)。这些样本只作比较，不代表 DSH API 或依赖建议。
 
-那里明确标注“参考，不作长期依赖”。
-
-长期优先 N0/N1；N2 可参考；E1/E2 只在没有原生替代时短期使用。
+N0/N1/N2 描述 DSH API/package 来源与稳定性；E1/E2 描述外部 package/service。按目标 profile 是否提供接口、兼容范围与维护责任选择，不把来源标签当作依赖禁令。
 
 ## 产品型实例视角
 
@@ -126,7 +124,7 @@
 | 全局设置 | 无 | `$DSH_HOME/<plugin>/settings.json` |
 | 登记/历史 | `workspace` domain、`sessions/` | 会话 → 项目的绑定记录 |
 
-结论：产品型实例把 DSH 的登记与会话落点当基础设施，自己的账本与设置落在**自造目录**——它不在上面的 33 个落点里，这正是 N+ 的含义：迁移、清理、配额都要自己承担。参考架构见 [92](../90-advisor/92-native-reference-architectures.md)。
+产品型 profile 仍可复用 DSH Session 与 Workspace services；产品自己的 ledger/settings 若需要，应按产品选择 storage domain 或自建目录，并负责路径、迁移、备份和清理。它们不是 DSH 自动管理的 plugin data root。参考架构见 [92](../90-advisor/92-native-reference-architectures.md)。
 
 ## 边界
 

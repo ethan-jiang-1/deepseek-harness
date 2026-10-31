@@ -1,156 +1,66 @@
-# 18 · 安装、升级与卸载：产品实例的生命周期
+# 18 · Profile bundles：安装、更新与数据退出
 
 ## 这一篇回答什么
 
-标题里承诺了"安装"：一个产品型实例怎么出现、装了什么、哪些变更要重启、兼容性怎么判、升级时哪三层要分别处理、卸载后会留下什么。这一篇把这些收口。
+DSH profile 决定一个应用组合由哪些 bundles 和 patches 构成。Plugin package 的安装、profile layer 的选择、当前进程是否重组以及产品数据清理是不同操作；本篇说明它们各自的 owner。
 
-## 安装：profile 是怎么出现的
+## 创建 profile 与安装 bundle
+
+新 profile 经 `dsh plugin --profile <name> add <package>` 初始化时，shipped profile name 使用对应 template；其他 profile 默认只有 `@deepseek-ai/dsh-base`。该命令随后将参数转交 pnpm。
+
+若目标是 Web 产品，先从 Web template 初始化自定义 profile：
 
 ```sh
-dsh plugin --profile <name> add <bundle-package>
+dsh --profile kanban --from-default-profile web --dump-default-config
 ```
 
-- profile 缺失时先初始化：五个随附模板名（`acp` / `web` / `headless` / `sdk` / `sdk-minimal`）用自己的 bundles；**其他名字只有 `@deepseek-ai/dsh-base`**。所以自定义产品 profile 要把 `@deepseek-ai/dsh-web-app` 也加进 bundles，才复现 Web 组合。**C**
-- 命令把参数转发给 pnpm，profile 目录是工作目录；`add`/`remove`/`update`/`why` 都可用。**C**
-- 每次成功后，`dsh.profile.bundles` 按安装状态重算：声明了 `dsh.bundle.patch` 的依赖进层叠，没有声明的只留作普通依赖并给一次警告。**C**
-- 重算**保留已有条目的顺序**，新 bundle 按安装顺序**追加到末尾**（`reconcileProfilePlugins`）。所以要按 `base → web-app → 产品 bundle` 的顺序装；顺序反了就手改 `dsh.profile.bundles`。**C**
-- bundle 名解析有两个锚点：先 dsh 安装自身，再 profile 的 `node_modules`。**C**
-- **没有 `extends: web` 这种继承**：复现某组合的唯一方式是照它的 bundles 顺序列一遍；产品 bundle 放最后，才能按 id 覆盖前面的行。
+再安装产品 bundle：
 
-### bundle 包本体
-
-一个 bundle 就是一个普通 npm 包，在 `package.json` 里声明 patch 文件：
-
-```json
-{
-  "name": "dsh-plugin-kanban-studio",
-  "dsh": {
-    "bundle": {
-      "patch": "./cordis.patch.yml"
-    }
-  }
-}
+```sh
+dsh plugin --profile kanban add <bundle-spec>
 ```
 
-- `patch` 是相对包根的路径，文件名可以改；`cordis.patch.yml` 与 `package.json` 同目录是惯例；
-- 文件内容是 `insert:` 列表与按 id 覆盖的行（和 profile patch 同构）；
-- **没有 `dsh.bundle.patch` 的包只是普通依赖**，不进层叠；安装时会被警告一次。**C**
+自定义 Web profile 需要 ordered bundles `@deepseek-ai/dsh-base`、`@deepseek-ai/dsh-web-app` 和产品 bundle。`dsh plugin` 安装后会把新 bundle 追加到 profile list；没有 `dsh.bundle.patch` 的 dependency 只作为普通 package，不贡献 profile layer。完整 package/patch 合同见 [app-boot profile reference](../../../packages/boot/app-boot/README.md#profiles) 与 [CLI profile reference](../../../apps/cli/reference/README.md#plugin-management)。
 
-分发形态三选一（详见 [24](../../24_plugin-publish-and-agent-data-planes/answer.md)）：只发 bundle 包、只发 patch 片段、或自带壳（Desktop 就是自己 `loadProfileDirectory` + `runProfile` 的先例）。
+profile 使用 DSH installation 与 profile node_modules 两个来源解析 bundle 名。若后加入的产品 bundle 要覆盖前面的 row，应将它放在 bundle list 后方并使用相同 row id。
 
-**普通插件**：装进用户已有的 profile（`dsh plugin --profile <existing> add <pkg>`），不必须是 bundle——普通依赖也能装，只是不进层叠并给一次警告；`engines.dsh` 仍建议声明。
+## 安装完成后何时生效
 
-## 变更边界：什么要重启、什么热重载
+CLI `dsh plugin` 运行 pnpm 并更新磁盘上的 dependency/bundle list；它返回退出码，不返回 `ChangeResult.application`。修改 bundle membership 后重启该 profile，以使用新的 composition。
 
-| 变更 | 生效方式 | 依据 |
+Web/agent Plugin Manager 是不同的调用路径。启用 HMR 的 profile 可能应用可热加载的变更并返回 `ChangeResult.application: 'applied'`；只在该接口返回 `restart-required` 时按其结果告知重启。用户不应将 Plugin Manager 的返回值套用到 CLI 命令。
+
+Profile/home patch 的生效方式取决于已启动 composition 是否配置 patch reload。Config editor 对 profile patch 的写入还受高优先级 home patch 和 CLI overlay 影响；详见 [17](./17-config-layers.md)。
+
+## 兼容性与跳过 bundle
+
+DSH 按 bundle/package manifest 声明检查其 DSH 兼容范围。无法读取或不兼容的 bundle 可能在 composition 时被跳过并产生诊断；其余 profile rows 仍可能运行，所以“profile 能启动”不等于产品所有功能都可用。
+
+bundle 作者应在 `package.json` 声明准确的 `engines.dsh` 或 DSH peer ranges，按实际 package composition 和支持范围选择其一。产品 README 应说明如何检查 startup diagnostics 与有效 composition。若核心产品被跳过时必须阻止用户使用，该 fail-loud 检查需由能在相关 bundle 被跳过时仍运行的机制负责；产品 bundle 不能检查自身是否成功加载。
+
+## 升级：区分三类事实
+
+| 类别 | Owner | 作者要处理什么 |
 |---|---|---|
-| bundle 成员（add / remove / update） | 有 HMR（base/web 默认）时可能热应用（`applied`）；无 HMR（headless 等）或操作要求时 `restart-required`。**以返回值 `application` 为准**，不确定就重启 | **C** |
-| profile / home 的 `cordis.patch.yml` | 启用 HMR 时热重载；否则下次启动 | **C** |
-| `dataRoot` 下的账本与全局设置 | 插件自己读，保存即生效 | **C** |
-| workspace 登记 | 立即（registry 写入） | **C** |
-| 客户端插件（client bundle） | 生产构建下刷新 Web 页面；开发时 client HMR 自动重载 | **建议（U）** |
+| Bundle composition | DSH profile / package manager | 检查依赖版本、bundle 顺序和当前进程生效边界 |
+| 用户 patch | 用户与 profile | 保持或迁移 row override；记住 patch 对整份 `config` 替换 |
+| 产品数据 | 产品 owner 或用户 | 提供 schema version、迁移、备份、失败恢复与保留策略 |
 
-产品升级最常见的坑：以为 `update` 完就生效。**看 `ChangeResult.application`**：`applied` 已热应用；`restart-required` 必须重启（无 HMR 的 headless 一律如此）；用户 patch 的编辑走 HMR。
+Bundle 更新不应静默重写用户的 profile patch。产品数据不兼容时应迁移或报告可恢复错误，不要静默建一个空数据根冒充成功。
 
-## 兼容：`engines.dsh` 与豁免
+## 卸载与保留
 
-- bundle 可以在 `package.json` 里声明 `engines.dsh`；不匹配或读不出时，**跳过这个 bundle**，在 stderr 打 `skipping profile bundle ...`，profile 仍然启动。**C**
-- 这是"降级启动"而不是数据损坏：会话、凭据、账本都还在，但产品可能少了几行插件。
-- 豁免通道：`dsh plugin --profile <name> allow-version <pkg@version> --dsh-version <exact> --accept-risk`；`version-exemptions` 查看，`revoke-version` 撤销。**C**
-- 产品侧要做的：把 `engines.dsh` 写进 manifest，别让用户靠猜。**P5 的自检不能由产品插件自己做**：bundle 被跳过时它根本不加载。要在用户 profile 里留一条常驻的 launcher 行（或独立小包）检查产品行是否存在，缺失就 fail loud——否则 profile 照常启动，产品静默消失。**建议**（不是 C）
+`dsh plugin remove` 删除 profile dependency，并从 bundle list 移除相应 layer；它不会自动删除任意产品文件或业务记录。DSH Workspace deletion 仅删除 registration、排序和分组关系，不删除目录或 Session history。会话日志没有通用 delete API，附件本地 backend 没有自动 GC。
 
-## 升级：三层分别处理
+产品卸载说明按 owner 列出：
 
-| 层 | 怎么升 | 风险 |
-|---|---|---|
-| **组合** | `dsh plugin update` 或升级 dsh 本身 | 成员变化看 `application`，`restart-required` 就重启；旧 bundle 可能被跳过 |
-| **配置** | 对比新旧 bundle patch，把差异合并进 profile patch | patch 是整对象替换：只写一个键会丢其余默认值（见 [17](./17-config-layers.md)） |
-| **数据** | `dataRoot` 的 `schemaVersion`、workspace 内容 | 版本不符 fail loud；迁移必须自己写 |
-
-纪律：
-
-1. **升级不改写用户的 profile patch**（`dsh plugin` 只维护 `package.json` 与 bundles）。
-2. **升级不静默重建数据**：版本不符要么迁移，要么报错。
-3. 升级前备份 profile patch 与 `dataRoot`；回滚按同样的三层次序做。
-
-## 卸载：四处残留（会话只归档）
-
-| 残留 | 位置 | 谁清 |
-|---|---|---|
-| workspace 登记 | `$DSH_HOME/storages/workspace.json` | **只删产品创建的占位/项目登记**（记在账本·状态里）；用户自己加的不删。`delete` 只删登记，目录与会话不动 |
-| 账本与全局设置 | `$DSH_HOME/<plugin>/` | 卸载说明必须列出这个路径 |
-| 目录内 marker / 脚手架 | 用户目录 | 说明里写清哪些文件是产品写的 |
-| profile patch 里的行 | `profiles/<name>/cordis.patch.yml` | `dsh plugin remove` 只动包；用户自己的 patch 要手删，否则剩下 unmatched 行 |
-| 会话 | `$DSH_HOME/sessions` | **没有删除 API**；只能归档 |
-
-会话不是“残留”：没有删除 API，只能归档，所以下面按四处产品残留来清。
-
-`dsh plugin remove` 会移除依赖并从 bundles 列表里去掉；bundle 自己层里的行随层消失，**但用户复制到 profile patch 里的行不会自动消失**——每次启动会报 unmatched 目标。
-
-**普通插件**：移除依赖后，项目内用户文件保留；domain 记录没有删除 API，README 要写清域与清理方式。
-
-**所有权判据**：registry 没有属主字段，产品只能靠自己账本里的记录区分“我创建的”与“用户加的”；卸载前按这份记录逐条判断，别全删。
-
-**P2 项目内文件**：属于用户资产，卸载一律不删；只删插件自己的索引/绑定/marker。
-
-**占位登记**：占位目录里没有会话 → 删；有会话 → 保留并追加用户目录（[16](./16-startup-resolution.md)）。
-
-## 失败与半装
-
-| 失败点 | 发生什么 | 产品要做什么 |
-|---|---|---|
-| 安装失败 / 取消 | `package.json` 与 `pnpm-lock.yaml` 回滚到 pnpm 前的快照；`node_modules` 里可能留下下载文件 | 重试前先读 profile 的实际状态，不要假设"没装" |
-| `engines` / peer 不满足 | 在 pnpm 之前就拒绝，不下载、不跑构建脚本 | 把 `engines.dsh` 写清楚，别让用户走到这一步 |
-| git / tarball 装后判定失败 | 恢复 manifest 与 lockfile 并重装恢复后的状态；持久化日志在 `.plugin-manager/logs` | 让用户先看到日志路径，再决定是否重试 |
-| 移除失败 | 依赖可能处于半改状态 | 不要让"remove"成为唯一清理路径；文档给手动步骤 |
-| 启动时 bundle 被跳过 | profile 仍启动，产品少几行插件 | 在 README 写"看到 skipping profile bundle 时怎么查" |
-
-**半装不是罕见情况。** 产品要能回答："用户看到界面一半功能没了，第一步查哪里？"答案通常是 `dsh --dump-config` 加上 stderr 的 skipping 行。
-
-## 回滚演练
-
-升级前按三层备份，回滚按相反顺序：
-
-```text
-组合：profiles/<name>/package.json + pnpm-lock.yaml（或 bundle 版本号）
-配置：profiles/<name>/cordis.patch.yml
-数据：$DSH_HOME/<plugin>/（整个 dataRoot）
-```
-
-- 回滚 bundle：把版本钉回旧值并重装；成员变化后按 `application` 判断是否重启。
-- 回滚配置：还原 patch；若产品写过 patch（不应该），以备份为准。
-- 回滚数据：只在升级已经改过 `dataRoot` 时做；先停 Host，再换目录。
-- 每次回滚后用 `dsh --dump-config` 确认组合回到旧形状。
-
-## dataRoot 迁移
-
-1. 文件里必须有 `schemaVersion`；
-2. 升级时先备份整个 `dataRoot`；
-3. 版本不符：要么执行一次性迁移（写迁移标记、失败可重试），要么 **fail loud**；
-4. **绝不静默重建**——空账本会让"项目丢了"看起来像"产品正常"；
-5. 用一份 `dataRoot` 副本演练迁移，再在真实目录上跑。
-
-## 卸载验收
-
-- [ ] workspace 登记已删（`delete` 只删登记，目录还在）
-- [ ] `$DSH_HOME/<plugin>/` 已删或明确保留
-- [ ] 目录内产品写的文件（marker、脚手架）已列出并清理
-- [ ] profile patch 里没有剩下指向已卸载 bundle 的行（否则每次启动报 unmatched）
-- [ ] 会话已归档；**不要**物理删 `sessions/`
-- [ ] `.plugin-manager/logs` 与下载残留已说明
-
-## 检查清单
-
-- [ ] `engines.dsh` 已声明，且与目标 dsh 版本范围一致
-- [ ] 产品 bundle 排在 bundles 列表最后，能覆盖 base/web-app 的行
-- [ ] 文档写了重启条件（`application: restart-required`），而不是笼统的"装完要重启"
-- [ ] 升级路径覆盖组合、配置、数据三层
-- [ ] `dataRoot` 有 `schemaVersion` 与迁移或明确的 fail loud
-- [ ] 卸载说明列出 workspace 登记、`dataRoot`、目录内文件、profile patch 四处
-- [ ] 不在升级时改写用户的 profile patch，不在卸载时物理删会话日志
+- 用户项目目录和文件：通常保留；除非用户明确请求并通过独立删除流程确认，不应由 bundle removal 擅删；
+- 产品自建数据目录/domain：写明路径、备份、迁移和显式删除方法；
+- DSH Workspace registration：只在产品能可靠识别自己创建的 Workspace 时提示用户移除；registration 没有产品 owner 字段；
+- profile patch、Settings、credentials、Session history、attachments 和 browser storage：分别说明它们不是 bundle removal 的自动清理范围。
 
 ## 边界
 
-- 只讨论单机、单 `$DSH_HOME`；多机同步、私有 registry 的运维不在本篇。
-- 安装第三方 bundle 的构建批准（pnpm `allowBuilds`）属于安装器细节，见 [CLI 参考](../../../apps/cli/reference/README.md)。
-- 保留 profile 名 `desktop` 由应用自己拥有，不走 `dsh` 的插件命令。
+- `dataRoot` 是产品可定义的 Config 字段，不是 DSH 通用服务。
+- Profile、Workspace、Session 和产品数据有独立 owner 与生命周期。
+- CLI package management 与 Plugin Manager 的返回值、HMR 和 restart 语义不同。

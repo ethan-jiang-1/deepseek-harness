@@ -1,139 +1,88 @@
-# 17 · 配置分几层：启动配置、产品全局、工具面与秘密
+# 17 · 配置、工具与文件权限
 
 ## 这一篇回答什么
 
-插件启动时读的那份 config 从哪来、用户改的设置写回哪、产品自己的全局偏好放哪、模型能不能写文件由谁决定——这四件事常被混成"配置"。它们其实是四层不同的东西，混用会得到"改了没生效""换 profile 就变""用户一覆盖就丢默认值"。
+本篇区分 DSH patch 合成、插件 Config/Settings、产品自建运行时设置，以及模型文件工具的权限。它们不能统称为同一条“配置链”：patch 决定启动 composition，插件决定如何读取其他持久设置，工具 provider 决定如何访问文件。
 
-## 五层配置
+## DSH patch 合成顺序
 
-| 层 | 文件 | 作用域 | 放什么 |
-|---|---|---|---|
-| 包默认 | bundle 的 `cordis.patch.yml` | 随版本 | 出厂值（**不能只放这里**，见"整对象替换"） |
-| **profile** | `$DSH_HOME/profiles/<name>/cordis.patch.yml` | 单个 profile | 启动引导：`dataRoot`、`projectsRoot`、显示名 |
-| home | `$DSH_HOME/cordis.patch.yml` | 该 home 下所有 profile | 机器级通用设施；**不放产品配置** |
-| `--patch` | 启动参数 | 单次启动 | 试验、覆盖 |
-| **产品全局设置** | `dataRoot` 下的文件 | 该 home 下所有 profile | 渲染节点、默认风格、品牌素材 |
-
-组合顺序是 bundle → profile → home → `--patch`，**后层赢**。`dataRoot` 文件不在这个链里：它由插件在启动后自己读（原因见"鸡生蛋"）。
-
-## 为什么 home 层不能放产品配置
-
-`$DSH_HOME/cordis.patch.yml` 对每个 profile 生效：
-
-- `insert` 一行产品插件 → 该插件会出现在 `web`、`headless`、`desktop` 等所有 profile 里；
-- 按 id 覆盖 → 只在有这一行的 profile 生效，其余 profile 每次启动在 stderr 上收到 unmatched 警告；
-- 它优先于 profile patch → 用户在某个 profile 里的修改会被 home 层盖掉。
-
-所以它适合放**真正机器级、与产品无关**的东西（代理、provider 路由），不适合放"某个产品的渲染节点"。
-
-## 产品全局设置放哪
-
-**放在 `dataRoot` 下的文件，且 `dataRoot` 必须稳定。**
+DSH 按下列顺序合成 profile entry：
 
 ```text
-$DSH_HOME/<plugin>/settings.json     ← 产品全局配置（跨 profile、跨 workspace）
-$DSH_HOME/<plugin>/                   ← 账本、注册表、会话绑定
+ordered bundle patches
+→ profile cordis.patch.yml
+→ $DSH_HOME/cordis.patch.yml
+→ 每个 --patch overlay（按命令行顺序）
 ```
 
-为什么这是唯一可行解：
+后续 patch 可覆盖 entry 或插入 rows。覆盖既有 row 的 `config` 是**整对象替换**，不是深合并。Profile Config schema 会为具有定义默认值的字段填充默认；只有写在低层 patch、且没有 schema/code default 的字段，不会因为高层只改另一个字段而继续继承。
 
-1. **跨 profile**：`dataRoot` 默认由 `$DSH_HOME` 推导，每个 profile 拿到同一个目录；
-2. **启动可读**：插件 `apply` 第一行就知道 `dataRoot`，随后读文件；
-3. **不污染其他 profile**：文件只在插件自己跑起来时被读；
-4. **可版本化**：文件里带 `schemaVersion`，插件自己迁移。
-
-代价：`dataRoot` 一旦按 profile 配成不同值，全局配置就按 profile 分裂——**它是实例身份，不是随便调的偏好**。
-
-## 优先级与字段级权威
-
-一条链管配置：**代码 schema 默认 → bundle patch → profile patch → home patch → `--patch`**（后层整对象替换，见上表）。
-
-`dataRoot` 的 `settings.json` 是链外的运行时存储：插件启动后读它；对用户在 UI 里改的字段，文件值覆盖 config 值。规则：**同一字段只给一个入口**——安装参数进 config，运行时选择进 settings 文件；两边同时写会互相覆盖，用户也分不清哪个生效。
-
-## 整对象替换：最容易丢默认值的地方
-
-`applyEntryPatches` 对目标行执行的是 `target[key] = value`（[vendor/include](../../../vendor/include/src/index.ts)），也就是说 profile patch 里的 `config` 会**整体替换**该行的 config，不是深合并。**C**
-
-后果：
-
-- 产品默认值只写在 bundle patch 里，用户在 profile 里只覆盖 `projectsRoot` 一个键 → 其余键（`displayName`、`hideShellSidebar`、`bootstrap`）**全部回落到 schema/代码默认值**，bundle 里那份消失；
-- 设置页**不能**替你恢复：`update` 以当前行 config 为底，`replace` 才以继承层为底；两者都保留非 volatile 字段（`strip(raw)` + `mergeLayers`），但被不完整覆盖丢掉的 bundle 默认值不会回来。`inherited` 只是把下层算给 UI 看（[config-editor](../../../packages/boot/config-editor/src/index.ts)、[settings](../../../packages/settings/settings/src/index.ts)）。**C**
-
-两条纪律：
-
-1. **凡是用户可能覆盖的默认值，都要成为 schema/代码默认值**，不能只活在 bundle patch 里；
-2. 手改 profile patch 前先 `dsh --dump-config` 看整行；要覆盖就把该行 `config` 写全。设置页只编辑 volatile 字段，不能恢复已经丢掉的非 volatile 默认值。
-
-## `.volatile()` 的陷阱
-
-volatile 字段会出现在设置页，**写回当前 profile 的 patch**。一个"产品全局"字段如果做成 volatile，用户在每个 profile 里各改一次，就得到互相不一致的几份——正好违背"全局"的定义。
-
-规则：**要跨 profile 一致的，不要 volatile；要按 profile 不同的，才用 volatile/config。**
-
-## 鸡生蛋边界
-
-| 值 | 什么时候需要 | 只能来自 |
+| 来源 | 作用域 | 适合内容 |
 |---|---|---|
-| `dataRoot` 本身 | `apply` 第一行 | DSH Config 或 env |
-| `projectsRoot` | 同上 | 同上 |
-| 渲染节点、风格、品牌素材 | 首次用到 | `dataRoot` 文件 |
+| Bundle patch | profile composition | 产品 bundle 的默认 rows/config |
+| Profile patch | 当前 profile | 用户或 Settings 保存的 profile-local 覆盖 |
+| Home patch | 同一个 `$DSH_HOME` 下的 profile | 机器级配置，优先于 profile patch |
+| `--patch` | 一次启动 | 临时部署/调试覆盖 |
+| Config schema defaults | plugin entry config | 字段缺失时的代码默认，不是 patch layer |
+| 产品运行时存储 | 产品自己定义的作用域 | 文件或 domain 值，不自动参与 patch precedence |
 
-**解析 `dataRoot` 所依赖的东西不能放进 `dataRoot` 的文件里。** 这就是为什么 profile 层永远要保留一小块"指针配置"。
+### 整对象替换的影响
 
-## 工具面也是配置：模型能不能写由 preset 决定
+若 bundle 在 `config` 内设置多个字段，profile patch 只提供部分 `config`，整个低层 config object 会被替换。Schema 有默认值的字段会按 Schema 规则补默认；仅存在于 bundle patch 的非默认值会丢失。覆盖 row 时要么提供完整配置，要么将可依赖的默认值声明在 Config schema/code defaults 中。
 
-这是产品型实例最容易被说错的一点：
+产品 bundle 应拥有自己需要覆盖的 row，并声明其完整 `config`。不要假设 Settings 的字段更新会合并回所有低层 bundle values；Config Editor 写入的是当前 profile patch。
 
-- workspace 只给**侧栏一行 + 会话 cwd + 沙箱根**；
-- 模型能不能 `read` / `write` / `bash`，取决于 agent preset 挂了哪些工具行；
-- 一个只挂插件工具的 preset，即使会话开在项目目录里，模型也碰不到文件——所有落盘由插件工具的 `node:fs` 完成。
+## Config 与 Settings 的作用域
 
-| 模式 | preset 挂了什么 | 写路径 | 沙箱 |
-|---|---|---|---|
-| **工具中介** | 插件自己的工具 | 插件 `node:fs` | 不相关 |
-| **开放 agent** | 加 `tool-fs` / `tool-bash` | 模型直接写 | 唯一可写根 = 会话 cwd |
+Config 声明插件 row 的配置字段。`Config.volatile()` 字段可以出现在 DSH Settings 表单；保存后写入**当前 profile** 的 `cordis.patch.yml`。因此：
 
-选开放模式时，`cwd` 必须落在项目目录里，且 `cd` 不会放宽沙箱；放宽只能靠一次性审批。约束见 [sandbox 子系统](../../../docs/subsystems/sandbox.md) 与 [fs-sandbox](../../../packages/fs/fs-sandbox/README.md)。**C**
+- profile-local model/default/tool choices 可使用 Config/Settings。
+- 同一 `$DSH_HOME` 下的另一个 profile 不会自动共享该字段。
+- Home patch 对该 home 的 profiles 生效，并且优先于 profile patch；若它覆盖 Settings 正在编辑的 entry/字段，Settings 写入可能被拒绝或不能成为有效值。
 
-**普通插件控制不了宿主 preset**：宿主若挂了 `tool-fs`/`tool-bash`，模型可以绕过你的工具直接改文件。对策是格式幂等（外部改写后能重建索引）、派生索引可重建，不要假设只有你能写。
+若产品需要跨 profile 共享运行时设置，选择产品自建文件或产品拥有的 home-level storage-domain singleton。`dataRoot` 可以是产品 Config 的字段名，但不是 DSH API。共享文件需明确 owner、路径稳定性、文件 schema、并发、备份、迁移和卸载责任。
 
-**沙箱管不到插件自己的代码。** 插件运行在 Host 进程，用 `node:fs` 写盘不受会话沙箱约束；沙箱约束的是模型调用的工具（`tool-fs`/`tool-bash`）。所以架构 I 的写边界是进程账户权限，不是会话 cwd。
+对同一字段，指定一个权威写入入口。不要让 Settings 和产品文件互相覆盖且不解释优先级。
 
-## 沙箱对写路径的硬要求
+## 模型工具和 sandbox policy
 
-| 事实 | 结论 |
-|---|---|
-| 策略字段 | 只有 `mode` + `workspaceRoot`，**没有**"额外可写目录" |
-| 根从哪来 | 会话 `SessionHeader.cwd`；无会话时用部署兜底 `sandbox-policy.workspaceRoot` |
-| `workspace-write` 放行 | 根 + 平台临时目录（`writableRoots`） |
-| `cd` | 不放宽：沙箱根锚定原始 cwd |
-| 读 | 不受 fs 栅栏限制（栅栏只管 `writeText`/`editText`） |
-| 放宽 | 只有一次性审批，或把默认档改成 `danger-full-access` |
-| 后端差异 | Seatbelt `deny file-write*`；bwrap 只读宿主根 + 可写 workspace bind；Windows ACL 报 `partial` |
+Preset 决定模型可调用哪些工具；Workspace registration 不授予文件工具。模型能否读写某路径，还取决于对应 tool provider 及其 policy。DSH 的 `workspace-write` policy 以 Session 初始 `header.cwd` 为 sandbox workspace root，并允许 `/tmp` 与 `os.tmpdir()`；它不是唯一可写路径。读取不会被这个写入 fence 限制。
 
-推论：要让模型用通用工具写 `projectsRoot`，会话 cwd 必须落在该根下；插件自己的 `node:fs` 不受这条限制。详见 [sandbox](../../../docs/subsystems/sandbox.md) 与 [fs-sandbox](../../../packages/fs/fs-sandbox/README.md)。
+`working_directory` 改变 Session 的有效目录，但不修改 `header.cwd`，也不会扩大 sandbox writable roots。若产品需要 sandboxed 通用文件工具从项目目录开始工作，应以 Workspace 创建 Session，或通过 Session Controller 提供显式 `cwd`。是否登记 Workspace 则由是否需要 DSH 导航/分组决定。
+
+Host plugin 代码在 DSH 进程中运行。它直接调用 `node:fs` 不受 Session sandbox 自动约束；直接调用 `ctx.fs` 时也不能假设拥有与 `tool-fs` 相同的 policy，除非插件明确传入 policy 且组合提供相应执行机制。产品工具需自行验证目标 project、用户授权和写入范围。
+
+| 能力 | 由谁决定 | 关键边界 |
+|---|---|---|
+| 模型能调用哪些工具 | agent preset | 未挂载的工具不在该 Agent tool set 中 |
+| Session 初始目录 | `workspaceId` 或显式 `cwd` | `workspaceId` 与 `cwd` 不可同时传入 |
+| Sandbox 主根 | 调用时解析的 Session `header.cwd`；无 cwd 时使用配置 fallback | `working_directory` 不会改此根 |
+| sandboxed 写入范围 | sandbox mode 与平台 provider | `workspace-write` 还允许平台临时根；后端可能报告 partial enforcement |
+| Host 插件文件写入 | 插件代码与部署运行账户 | 不因 Session policy 自动受限 |
+
+具体合同见 [Sandbox](../../../docs/subsystems/sandbox.md)、[Filesystem](../../../docs/subsystems/filesystem.md)、[Working Directory](../../../docs/subsystems/working-directory.md) 与 [`dsh-fs-sandbox`](../../../packages/fs/fs-sandbox/README.md)。
 
 ## 秘密
 
-`dataRoot` 文件的 0600 只是权限，不是边界：模型工具以同一个 uid 运行，读路径不受沙箱限制（fs 栅栏只管写）。所以：
+`CredentialRef` 表示一个环境变量名；调用方通过 credentials provider 的 `resolve(ref)` 获取当前值。`CredentialKey` 表示插件拥有的一条 credential record；调用方用 records API 读取或读改写它，不能将 `CredentialKey` 传给 `resolve` 当作环境变量引用。
 
-- API key 不进配置文件的明文 payload；
-- 首选 `apiKeyEnv` 引用或 `CredentialRef`；
-- 必须落盘时，只回 `keyConfigured` / `keySource`，绝不回值。
+不要把秘密明文写入 Config、普通 domain、产品设置文件、日志或模型上下文。凭据文件的 OS 权限不防止同一 OS 用户运行的 Host plugin 或 model tool 访问文件系统。
 
 ## 检查清单
 
-- [ ] 产品的全局配置只有一个文件，路径由 `dataRoot` 决定
-- [ ] `dataRoot` 默认稳定，不鼓励按 profile 改
-- [ ] 文件里有 `schemaVersion` 与迁移
-- [ ] 每个字段只有一个入口（文件或 config，不双写）
-- [ ] 需要跨 profile 一致的字段没有做成 volatile
-- [ ] 用户可覆盖的默认值同时存在于 schema/代码默认里（防整对象替换丢值）
-- [ ] 明确选了工具中介还是开放 agent；选开放 agent 时会话 cwd 必须是项目目录
-- [ ] README 写了优先级链与"改哪个文件生效"
-- [ ] 秘密只存引用
+- [ ] 使用实际组合的有序 bundle list，并写明覆盖 row 的 owner。
+- [ ] Profile patch、home patch 与 CLI overlays 的优先级写清楚。
+- [ ] 说明整对象替换及哪些默认值来自 schema/code、哪些只在 bundle patch。
+- [ ] Settings 表单字段仅用于预期的 profile scope。
+- [ ] 若产品设置跨 profile 共享，声明实际文件/domain 路径及生命周期 owner。
+- [ ] 每个可见模型工具对应正确 preset、provider 和权限策略。
+- [ ] 将 Session header cwd、有效 working directory、Workspace registration 和 product project root 分开记录。
+- [ ] Host 插件直接写文件时有产品级路径与用户授权检查。
+- [ ] 以 `CredentialRef` 解析环境名；以 `CredentialKey` records API 操作插件拥有的记录。
+- [ ] README 说明隔离范围、备份、迁移、卸载和失败恢复。
 
 ## 边界
 
-- 单 Host、单 home；不涉及远端部署。
-- 字段级权威与整对象替换只讨论 profile patch 这条路径；home patch 与 `--patch` 见 17 前文与 18。
+- Patch precedence 与 entry config replacement 是 DSH composition 机制；产品运行时文件/domain 的读取顺序由产品拥有。
+- 本篇不定义产品级 `dataRoot`、Workspace root resolver 或数据隔离 API。
+- DSH Profile 属于同一 `$DSH_HOME` 时，共享与否按每个 provider/store 的路径和客户端 origin 判断，不能从 profile 名推断。

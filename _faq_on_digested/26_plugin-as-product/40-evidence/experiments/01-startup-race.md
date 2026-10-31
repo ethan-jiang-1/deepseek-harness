@@ -1,73 +1,24 @@
-# 实验 01 · 启动竞态：占位登记 vs 客户端首连
+# 实验 01 · 产品 Client onboarding 与 DSH 默认 Workspace 的时序
 
-**状态**：设计完成，**未执行**（有阻塞，见末段）。
+**状态**：未执行，等级 **U**。本实验描述一个产品自建 UI 与 DSH Web Workspace UI 同时存在的风险，不是 DSH 的默认目录策略。
 
-## 假设
+## 问题
 
-如果插件的 `apply` 在登记占位工作区之前有足够长的 I/O，客户端可能在占位登记完成前连上，并触发 `<Documents>/deepseek-harness/default-workspace` 的自动创建。
+DSH Web Client 只在 Workspace registry 和 Session history 都为空时调用 `workspace.initializeDefault()`。产品若在另一 Client plugin 中运行自建 onboarding，并试图先注册 Workspace 或 Session，实际启动是否会先发生产品操作，必须在目标 Client composition 中验证。
 
-## 命令（设计）
+DSH Loader 不保证两个 Client plugin 的 apply 顺序构成可等待的业务屏障；因此，不要仅靠 bundle row 顺序、placeholder registration 或“产品插件排在前面”宣称 DSH Documents default flow 一定被抑制。
 
-```sh
-# 1. 造一个只做延迟的测试插件（apply 里 await 5s 再 registry.create）
-# 2. 用隔离 home 启动，关掉自动打开浏览器
-export DSH_HOME=$(mktemp -d)
-dsh --profile race-test web --no-open --port 0
-# 3. 拿到 URL 后立刻用浏览器打开一次（Playwright 或手动）
-# 4. 检查默认工作区是否被创建
-node -e 'const d=require(process.env.DSH_HOME+"/storages/workspace.json"); console.log(d.global.workspaceIds)'
-```
+## 判定所需的测试
 
-## 预期
+在隔离 `$DSH_HOME` 下运行真实 Web profile 与产品 Client plugin：
 
-- 无延迟：`workspaceIds` 里只有占位或产品工作区，没有 `<Documents>` 默认。
-- 延迟 5s：客户端先连上，`initialized` 后出现 Documents 默认工作区；占位登记随后到达，registry 里两者并存。
+1. 让产品 onboarding 在收到 Client ready 后执行其实际 Remote 操作。
+2. 同时记录 `workspace.initializeDefault`、产品 `workspace.create` 和 Session create 的完成顺序。
+3. 覆盖空 home、已有 Session、已有 Workspace、取消、picker 失败与慢 Host filesystem。
+4. 检查最终 Workspace registry、Session `header.cwd` 和 UI 恢复状态。
 
-## 实际
+不能只在 hand-built context 中模拟 apply 顺序；测试要经过 Loader 与目标 Client composition。
 
-未执行。阻塞原因：需要一个合成的测试插件（`apply` 内可控延迟），这超出"文档级证据"的成本；且浏览器首连需要 Playwright 驱动，属于测试工程而不是文档整理。
+## 结论与边界
 
-## 结论
-
-维持 **U**。现有缓解（插件行排在 web 行之前、`apply` 只做 `mkdir`+`create`）是提高概率，不是保证；[16](../../10-foundations/16-startup-resolution.md) 的措辞保持"未保证"。
-
-## 改了哪篇
-
-无（[16](../../10-foundations/16-startup-resolution.md) 的 U 保持，并链到本记录）。
-
-## 关闭它需要什么
-
-三步，缺一不可：
-
-1. **一个测试插件**（延迟 `apply` 再登记，模拟慢产品）：
-
-```js
-// race-plugin/index.js
-import { mkdirSync } from 'node:fs'
-import { join } from 'node:path'
-export default {
-  name: 'race-delay',
-  apply(ctx) {
-    return new Promise((resolve) => setTimeout(() => {
-      const root = join(process.env.DSH_HOME, 'race', 'workspace')
-      mkdirSync(root, { recursive: true })
-      ctx.get('workspaceRegistry')?.create(root)
-      resolve()
-    }, 5000))
-  },
-}
-```
-
-```yaml
-# race-plugin/cordis.patch.yml
-- insert:
-    - id: race-delay
-      name: 'race-plugin'
-```
-
-2. **一个隔离 profile**：`export DSH_HOME=$(mktemp -d)`，`dsh plugin --profile race add <web-app>` 再 `add ./race-plugin`。
-3. **浏览器自动化**：`dsh --profile race web --no-open --port 3999` 起服务后，用 Playwright 打开页面、在 5 秒窗口内等首连，然后读 `$DSH_HOME/storages/workspace.json` 看是否出现 `<Documents>/deepseek-harness/default-workspace`。
-
-判定：出现 → 竞态复现，U 升级为 T；不出现 → 在当前机器上未复现，仍不能证明普遍安全。
-
-**本机尝试结果（2026-10-30）**：浏览器与 Playwright 都在，但隔离 profile 安装 `@deepseek-ai/dsh-web-app@0.2.1-rc.3` 被 pnpm 的构建脚本策略拒绝（`Ignored build scripts: koffi@3.1.1`，`dsh plugin` 视为失败），实验未执行。
+实验尚未执行，不能断言产品 onboarding 与 DSH default initialization 是否竞争或最终显示什么 UI。建议复用 DSH Workspace picker/default flow；若产品替换该流程，应在目标 composition 中端到端验证。

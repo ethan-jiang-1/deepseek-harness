@@ -46,7 +46,7 @@
 | spill、附件、投影缓存 | 派生/状态 | 可重建与不可重建的分界线 |
 | domain KV + workspace 提案、storage root | 状态/空间 | 账本有了 domain；但没有"插件数据根" |
 | settings seam、凭据记录 | 状态/配置 | Config 按 profile；凭据只存引用 |
-| 无主的 `auto-approval-llm/` 等 | 账本（自造） | N+ 区域：自担迁移与清理 |
+| 无主的 `auto-approval-llm/` 等 | 账本（自造） | 自建目录由创建它的 package owner 维护迁移与清理 |
 
 ## 12 个数据簇
 

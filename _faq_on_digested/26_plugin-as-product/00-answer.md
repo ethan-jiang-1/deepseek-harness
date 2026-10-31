@@ -1,183 +1,79 @@
-# Answer 26 · 插件即产品：承诺、空间、工具面与启动状态机
+# Answer 26 · 产品 profile：组合、目录、工具与数据
 
 ## 一分钟结论
 
-1. **一个产品型 DSH 实例 = 一份 profile 组合 + 一个 workspace 根 + 一份 home 级账本与全局设置。** 装什么、在哪干、记住什么，三件事分开看。
-2. **可写性不是 workspace 给的，是 preset 的工具面给的。** workspace 只提供侧栏一行、会话 `cwd` 和沙箱可写根；模型能不能 `read`/`write`/`bash`，取决于 agent preset 挂了哪些工具行。
-3. **启动时没有用户可问。** 目录解析只能落成四个状态（configured / adopted / default / unresolved），弹窗发生在客户端连上之后；要用 DSH 侧栏时，启动时先登记一个占位工作区，可以挡住 DSH 自己的 `<Documents>` 默认工作区（概率性缓解，见 16 风险 1）。
-4. **用户选目录后，DSH 目录里零写入、profile 里零写入。** 知识只在 `$DSH_HOME`（workspace registry + 会话）和浏览器 `localStorage`；要不要在目录里留 marker，是产品决策。
-5. **配置有五层，且 patch 是整对象替换。** profile patch 只写一个键，会把该行其余键打回 schema 默认值；产品默认值必须进 schema/代码默认。
+1. **产品 profile 是 DSH 启动组合。** Ordered bundles、profile patch、home patch 与 CLI overlays 合成 composition，仍由 `dsh --profile <name>` 启动。
+2. **每份事实分别记录 owner、authority、source、mechanism/path、scope/key、readers、writers、可重建性和保留责任。** 这些属性互不替代，不应合成一个分类标签。
+3. **DSH Workspace 是 Host 侧目录登记。** 它服务项目导航与 Session 分组；创建 Session 时可选择 `workspaceId`，也可直接提供 `cwd` 而不登记 Workspace。
+4. **模型权限来自可用工具与各工具的 provider/policy。** Workspace 不赋予模型文件操作；Host 插件代码也不自动受到 Session sandbox 约束。
+5. **DSH Web 首用有自己的 Documents 默认 Workspace 流程。** 产品自建的 project root、directory onboarding、设置文件和隔离路径不是 DSH 通用服务。
+6. **profile 不是隔离边界。** 同一 `$DSH_HOME` 中的 profile 可以共享 Session、Workspace registry、凭据与其他 home 数据；CLI 改变 bundle membership 后要重启 profile。
 
-## 定义：产品型 DSH 实例
+## 本篇如何回答问题
 
-> **一个产品型 DSH 实例 = 一份 profile 组合（装什么）+ 一个 workspace 根（在哪干）+ 一份 home 级账本与全局设置（记住什么）。**
->
-> 这里的“根”是**产品自己的项目根**（`projectsRoot`）；只有架构 II 会把它登记为 DSH workspace。
+[00-question](./00-question.md) 列出 Q0–Q12 的主答位置。本文提供产品模式和数据模型的摘要；具体 API 与机制由对应基础页、DSH package README 和源码拥有。
 
-| 组成 | 回答什么 | 落在哪 | 换了会怎样 |
-|---|---|---|---|
-| **profile 组合** | 装什么、默认值是什么 | `$DSH_HOME/profiles/<name>/`：`package.json` 的 `dsh.profile.bundles` + `cordis.patch.yml` | 换 profile 就是另一个实例；能力与默认值都变 |
-| **workspace 根** | 在哪干、模型能写哪儿 | 一个项目目录；只有架构 II 才登记为 DSH workspace（那时才有会话 cwd 与沙箱根） | 换根就是换项目；登记与否改变的是 DSH 的会话/沙箱语义 |
-| **home 级账本与全局设置** | 记住什么、跨 profile 还剩下什么 | `$DSH_HOME/<plugin>/`（账本 + `settings.json`）+ `$DSH_HOME/storages`、`sessions` | 换 home 全丢；换 profile 不受影响 |
-
-四条容易记错的推论：
-
-1. **组合给不了写权限。** 装了什么不等于模型能写什么；那由 preset 的工具面决定。
-2. **根不一定是 DSH workspace。** 架构 I 通常不登记，只有需要侧栏/会话分组的架构 II 才登记；登记与否不影响产品自己的项目根。
-3. **根给不了跨 profile 记忆。** workspace 是项目作用域；要跨 profile 一致，只能放 home 级文件。
-4. **home 记录给不了项目内容。** 用户的内容永远在 workspace（或用户自己的目录），账本只存索引与绑定，不存用户内容。
-
-## 两种实例
-
-| | 客人（普通插件） | 主人（插件即产品） |
+| 问题 | 摘要 | 展开 |
 |---|---|---|
-| 谁装谁 | 用户把它装进自己的 DSH | 它决定这个 DSH 装什么 |
-| 组合 | 一行插件 | 一份 profile（bundle 链 + patch） |
-| 目录 | 借用用户的工作区 | 自己的 workspace 根（默认或用户指定） |
-| 数据 | 借宿主的家 | 账本 + 全局设置自成一套 |
-| 升级 | 宿主升级 | 产品自身版本 + profile 组合 |
+| Q0：profile 与数据卡如何区分？ | profile 决定启动组合；数据卡逐项记录事实属性 | [10 概念层](./10-foundations/10-taxonomy.md) |
+| Q1：产品型插件是什么？ | 一份由产品 bundle 组成并由 named profile 启动的 DSH composition | [FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)、[90](./90-advisor/00-index.md) |
+| Q2：资产放哪里？ | 发布包、用户目录、产品状态、设置与 Session history 由不同 owner 管理 | [15](./10-foundations/15-four-spaces.md) |
+| Q3：目录怎样选择？ | DSH Web 有 Workspace 首用与 picker；产品 root resolver 是自建机制 | [16](./10-foundations/16-startup-resolution.md) |
+| Q4：配置如何生效？ | Patch 链按层覆盖完整 entry config；产品运行时设置在链外 | [17](./10-foundations/17-config-layers.md) |
+| Q5–Q8：作用域、存储、凭据与产物 | 按数据 owner 与 API 分别选择 | [11–14](./10-foundations/11-five-homes.md) |
+| Q9–Q10：设计来源与外部生态 | DSH 当前行为以原生证据为准；外部材料仅供参考 | [21–22](./20-native/21-native-data-landscape.md)、[31–33](./30-external/31-external-community-patterns.md) |
+| Q11–Q12：安装与施工检查 | CLI 与 Plugin Manager 有不同更新结果；用 90–93 完成方案与验收 | [18](./10-foundations/18-install-upgrade.md)、[90–93](./90-advisor/00-index.md) |
 
-两种都存在，但读物不同。本篇主讲"主人"，[11–14](./10-foundations/11-five-homes.md) 的通用词汇仍然适用。
+## Profile 与数据 owner
 
-## 六种数据承诺
+DSH profile 是 named composition；bundle 是发布 Cordis patch 和 package dependencies 的形式。产品 package 可以提供 plugins、presets 和 Client plugins，但运行入口仍是 DSH 支持的 profile。package 是否贡献 rows 取决于其 bundle manifest 和 profile 选择。
 
-"承诺"是作者对用户说的话，不是存储 API。选定承诺，位置和键自动收敛；同一插件可以组合多种承诺，但**每一块数据只能有一个主承诺**（规则见 [10](./10-foundations/10-taxonomy.md)）。
+不要给整款产品套一个数据标签。对每份事实，用 [91 数据卡](./90-advisor/91-checklist.md) 分列 owner、authority、source、mechanism/path、scope/key、readers、writers、可重建性与保留责任。
 
-| 承诺 | 一句话 | 数据在哪 | 主要代价 |
-|---|---|---|---|
-| **P0 纯引用** | 我不存，只读你已有的文件 | 用户的文件原地 | 无法保证存在/格式；不能"学习" |
-| **P1 会话派生** | 我不存聊天，只算统计/索引 | 会话日志 + 可重建检查点 | 依赖日志/投影 API；回填有成本 |
-| **P2 用户可见文件** | 数据跟项目或用户目录走，用户可见 | `<workspace>/…` 或用户全局文件 | 仓库污染、手改、多人冲突 |
-| **P3 宿主账本** | 我按项目记，但东西在我这 | `$DSH_HOME` + 稳定路径键 | 孤儿、换机器丢、用户看不见 |
-| **P4 账号/安装配置** | 配一次，所有项目生效 | profile 配置 / home 域 / 凭据 | profile 不是账号；一个默认值套所有项目 |
-| **P5 产品实例** | 这个 DSH 就是我的产品 | profile 组合 + workspace 根 + 全局设置 | 升级、隔离、启动编排；见 [16](./10-foundations/16-startup-resolution.md)/[17](./10-foundations/17-config-layers.md) |
+## 数据归属
 
-（原来提到的"每项目一套运行时"不是数据承诺，是运行时缺口，不在 P0–P5 之列。P2 有两个根：项目内文件删项目就没；用户全局文件跟 home 走，插件只读。）
+产品 bundle、用户项目目录、产品状态和产品设置有不同 owner；DSH Session history、Workspace registration 和 browser state 也各有自己的生命周期。详见 [15 产品空间](./10-foundations/15-four-spaces.md) 与 [11 存储机制](./10-foundations/11-five-homes.md)。
 
-## 四个空间
+产品自建 `$DSH_HOME/<plugin>/` 只是路径约定，不是 DSH 服务。产品需自行说明迁移、备份和卸载责任。
 
-承诺定完，再看每份事实属于哪个空间。
+## Workspace、Session 与文件权限
 
-| 空间 | 权威 | 放什么 | 谁写 | 删了会怎样 |
-|---|---|---|---|---|
-| **插件包** | 发布版本 | 模板、种子、预设、客户端 bundle | 只读（发布时） | 出厂能力消失，用户数据不动 |
-| **workspace** | 用户 | 项目内容 | 模型（有工具时）或插件工具 | 删登记不删目录 |
-| **账本** | 插件 | 索引（可重建）+ 绑定/游标（不可重建） | 插件 | 索引可删；状态丢失即丢事实 |
-| **全局设置** | 插件 | 渲染节点、endpoint、默认风格、品牌素材 | 产品 UI | 换机器就丢 |
+只指定 Session 工作目录时，传绝对路径 `cwd` 更直接；Session header 保存绝对初始目录。若还要加入 DSH Workspace 侧栏分组，才传 `workspaceId`：它引用一条含 title、顺序和 Session account 的 registration，Host 从记录取得 canonical path 并 attach Session。两者不能同时传。`WorkspaceId` 是 registration ID，不是路径或产品 project ID；它也不是权限 token。
 
-细节与反模式见 [15](./10-foundations/15-four-spaces.md)。四者与"五个家"的映射也在那一篇。
+`header.cwd` 是 Session 的原始项目身份，也是 sandbox policy 的默认 workspace root。`working_directory` 可改变后续相对操作目录，但不会修改初始 header、Workspace membership 或 sandbox writable roots。
 
-![四层词汇：承诺 → 空间 → 家 → 作用域/键](./figures/10-taxonomy-flow.svg)
+Preset 决定模型可见的工具；具体 consumer/provider 决定文件操作如何执行。接入 sandbox 的 `workspace-write` 调用以 Session 根为主根，并允许平台临时目录；读取不由该写入 fence 限制。直接从 Host 插件代码写文件也不自动受该 fence 控制。故需分别回答：
 
-## 可写性来自工具面
+- 模型能调用哪些文件或进程工具？
+- 每种工具是否使用 sandbox policy？
+- 产品 Host 工具如何限制其写入目标？
+- 项目导航是否需要 DSH Workspace？
 
-四个空间里最容易说错的是 workspace：**它不产生可写性。**
+机制详情见 [sandbox](../../docs/subsystems/sandbox.md)、[working-directory](../../docs/subsystems/working-directory.md) 与 [17](./10-foundations/17-config-layers.md)。
 
-| 模式 | preset 挂了什么 | 谁写项目文件 | workspace 的作用 | 沙箱 |
-|---|---|---|---|---|
-| **工具中介** | 插件自己的工具 | 插件 `node:fs` | 数据根 + 侧栏入口 | 不相关 |
-| **开放 agent** | 加 `tool-fs` / `tool-bash` | 模型直接写 | 沙箱根 + 真正的读写边界 | 决定一切 |
+## DSH Web 首用与产品目录选择
 
-架构 I 的“沙箱不相关”指模型工具不参与；插件自己的 `node:fs` 写盘不受会话沙箱约束，边界是进程账户权限（见 [17](./10-foundations/17-config-layers.md)）。
+DSH Web Client 在 Workspace 与 Session 列表都就绪后，仅当 Workspace registry 为空且没有 Session history 时调用 `workspace.initializeDefault()`。Host 在其 Documents 目录下解析 `deepseek-harness/default-workspace`，由 Workspace registry 创建并登记该目录，再由 Client 创建或复用 blank Session。此流程不是产品可配置的 `<dataRoot>/workspace` fallback。
 
-在一个实测样本里（非通用结论）：产品 preset 只挂了 `persona` + 自有工具，没有 `tool-fs`/`tool-bash`；已绑定会话的 cwd 与项目目录无关，落盘全部由插件工具完成。**T**
+Web 用户也可通过 Workspace picker 选择已有目录；native 与 browse capabilities 的差异见 [16](./10-foundations/16-startup-resolution.md)。产品自建目录选择和保存由产品维护，不是 DSH 服务。
 
-所以：把项目目录登记成 workspace，不会让模型多出任何能力；要"像常规 harness 一样可读可改"，得先在 preset 里加工具，再让会话 cwd 落在项目里。
+选择目录后，DSH Web 的 Workspace domain 写入 `$DSH_HOME/storages/workspace.json`；Session 首次打开时以不可变 `header.cwd` 保存初始目录，Web Client 将当前 Session selection 写入该 browser origin 的 local storage。此流程不写产品 profile patch，也不会仅因选择而在项目目录生成产品 marker 或索引。若产品另写 settings 文件，应列入备份、恢复和卸载说明。
 
-三种架构：**I 工具中介**（插件工具写）、**II workspace 化**（模型工具写，cwd=项目）、**III 混合**（workspace 是入口，账本另存）。架构 II 还要选数据面：共享 home、重定向数据根、独立 home；取舍见 [92](./90-advisor/92-native-reference-architectures.md)。
+## 配置与 patch
 
-## 启动解析：四个状态
+DSH 配置 patch 顺序为 **ordered bundle patches → profile patch → home patch → CLI `--patch` overlays**。后层对同一 entry 替换完整 `config`，不是 field-by-field deep merge。Config schema defaults 是缺省值来源，不是一个 patch layer；patch 中省略且 schema 未定义默认值的字段，不会从下层 bundle config 自动继承。
 
-```text
-configured（profile 指定） → 用；缺失则 mkdir
-adopted（用户上次选的）    → 用；缺失则重新问，不重建
-default（<dataRoot>/workspace）→ 用；缺失则 mkdir
-unresolved                → 登记占位，等客户端弹窗
-```
+`Config.volatile()` Settings 写回当前 profile patch，不自动跨 profile 共享。跨 profile 产品设置应选择稳定的数据路径，并用产品文件或产品拥有的 home domain 保存；`dataRoot` 只是产品自定义的字段名，不是 DSH API。若目标是隔离，需逐项核实哪些 providers 的路径已重定向、哪些 `$DSH_HOME` 文件仍共享。[17](./10-foundations/17-config-layers.md) 说明完整规则。
 
-**为什么不能开机弹窗**：目录选择器是客户端交互能力（native 在宿主显示器、browse 供远端），Host 启动时没有浏览器连着。**为什么要占位**：客户端只在"registry 为空且无会话"时自动建 `<Documents>/deepseek-harness/default-workspace`；先登记一个占位，这条路径就失效。
+## 安装、升级、卸载
 
-三个风险见 [16](./10-foundations/16-startup-resolution.md)：启动竞态、未挂载卷被物化、registry 跨 profile 共享。
+新建 Web 产品 profile 时，可从 shipped Web template 初始化，再加入产品 bundle。`dsh plugin` CLI 在成功安装后会将 bundle 加到 profile；此命令不返回 Plugin Manager 的 `ChangeResult.application`，membership 变更后要重启 profile。GUI/agent Plugin Manager 是另一种调用方式，可以报告其 HMR application result。
 
-## 配置五层与整对象替换
-
-```text
-包默认（bundle patch） → profile patch → home patch → --patch   （后层赢）
-产品全局设置：dataRoot 下的文件（不在这条链里，跨 profile）
-```
-
-- 产品全局设置**不能**放 home patch：它会 insert 进每个 profile，或在不含该行的 profile 上每次启动告警。
-- profile patch 的 `config` 是**整体替换**（`target[key] = value`），不是深合并；只覆盖一个键会让其余键掉回 schema 默认。设置页只编辑 volatile 字段，不能把丢掉的默认值补回来。**C**
-- 要跨 profile 一致的字段**不要**做成 `.volatile()`：volatile 写回当前 profile 的 patch，会让"全局"按 profile 分裂。
-- 鸡生蛋边界：解析 `dataRoot` 依赖的配置不能放进 `dataRoot` 的文件。
-
-完整规则与检查清单见 [17](./10-foundations/17-config-layers.md)。
-
-## 用户选目录后，留什么、记在哪
-
-| 载体 | 记了什么 | 跨机器 | 污染目录 |
-|---|---|---|---|
-| DSH workspace registry | 这个目录是一个工作区 | 否 | 否 |
-| 插件账本 | 这是我哪个项目、什么游标 | 否 | 否 |
-| 目录内 marker | 我是谁 | **是** | 是 |
-
-DSH 自己**不写目录、不写 profile**；"要不要留 marker"是产品在"可携带"与"不污染"之间的取舍。推荐：账本为主判别，marker 只在必须跨 home 携带时引入。
-
-## 产品作者六问（叙事版）
-
-按真实设计顺序问；工程检查清单见 [91](./90-advisor/91-checklist.md)，决策顺序见 [90 的应用七问](./90-advisor/00-index.md)。
-
-1. **用户第一次启动我，要准备什么目录？** 能不能零配置？默认目录放在哪？
-2. **我承诺记住什么？** 出厂资产、项目内容、账本、全局设置，各是哪一块？
-3. **用户在哪里看见、编辑、带走、删掉它？** 项目里？设置页？根本看不见？
-4. **他有 30 个项目时，我怎么知道是哪个？** 键是什么？目录移动了怎么办？
-5. **启动时目录不在、换机器、换 home、升级，分别怎么办？** 重建还是重新问？
-6. **他凭什么信任我？** 我会不会改写自己的账本、复制他的文件、把密钥写进日志？
-
-这六问的答案，就是你的数据卡。
-
-## 选型速查
-
-0. **模型要对项目目录用通用文件工具吗？** 不要 → 工具中介；要 → 开放 agent，会话 cwd 必须落在项目里。
-1. 其余按承诺选：已有 → P0；能重算 → P1；跟项目走 → P2；跨会话记录 → P3；账号/安装 → P4；这个 DSH 由我决定 → P5。
-
-完整问题清单与数据卡见 [91](./90-advisor/91-checklist.md)；空间与键见 [10](./10-foundations/10-taxonomy.md) / [15](./10-foundations/15-four-spaces.md)。
-
-## 反模式（产品视角）
-
-- **把 workspace 当可写性来源**：登记了目录就以为模型能写；实际由 preset 决定。
-- **把账本目录登记成 workspace**：模型能改写自己的注册表。
-- **目录缺失就当空目录重建**：未挂载的卷会被物化出空目录，卷挂回来后被遮住。
-- **把项目清单塞进 profile**：profile 是安装单位，不是数据库。
-- **只在一个 profile 里改配置**：两个 profile 各改一次就分裂；要么用全局文件，要么明确按 profile 区分。
-- **以为 `Config` 是深合并**：整对象替换，只写一个键会丢其余默认值。
-- **用 `workspaceId` 当长期键**：删一次工作区就失联。
-- **把 `realpath` 直接当 per-record 键**：JSON 后端要求 `[a-zA-Z0-9_-]+`，用哈希。
-- **启动时重写用户目录**：只写不存在的东西。
-- **卸载不写清理说明**：domain、dataRoot、marker、workspace 登记都可能残留。
-
-## 快问快答
-
-| 问题 | 短答 |
-|---|---|
-| 我的插件一定要有 workspace 吗？ | 不一定。模型只经插件工具读写时，项目目录不必成为 DSH workspace。 |
-| workspace 决定模型能写吗？ | 不。决定权在 preset 的工具面；workspace 只给 cwd 与沙箱根。 |
-| 启动时能弹窗让用户选目录吗？ | 不能。选择器是客户端交互能力，Host 启动时没有用户；客户端连上后再问。 |
-| 用户选目录后 DSH 留什么？ | 目录零写入、profile 零写入；只写 workspace registry 与会话头，浏览器存当前选择。 |
-| 产品全局配置放哪？ | `dataRoot` 下的文件（默认 `$DSH_HOME/<plugin>/`）；**`dataRoot` 稳定时**跨 profile 一致，按 profile 配不同 `dataRoot` 会分裂。 |
-| profile patch 能只写一个键吗？ | 不能。`config` 整对象替换，其余键会回落到 schema 默认。 |
-| 能不能按 workspace 建 domain？ | 不能；domain 名静态，一个 Host 一个名字只能打开一次；项目级靠记录键。 |
-| `workspaceId` 能当长期键吗？ | 进程内引用可以；删了重加会换 uuid，长期键不行。 |
-| `per-record` 键能放路径吗？ | 不能；必须匹配 `[a-zA-Z0-9_-]+`，用 `sha256` 十六进制。 |
-| 换 `DSH_HOME` 会带走什么？ | 新 home 没有旧 home 的域/配置/凭据/会话/工作区；项目文件还在。 |
-| 卸载后留下什么？ | 视你写哪：domain、dataRoot、marker、workspace 登记都可能留；README 要写清。 |
-| 两个产品实例共享一个 home 会怎样？ | 会话、工作区、凭据共享，没有按 profile 过滤；要隔离就用独立 `DSH_HOME` 或重定向数据根。 |
-| 原生还是扩展？ | N0 核心 / N1 随包插件首选；N2 只参考；E1 只借鉴、自己实现；E2 最后。 |
+卸载 bundle 会移除依赖与 bundle layer，但不会自动删除产品数据、用户项目文件、Workspace contents 或 Session history。`workspace.delete` 只删 registration。产品负责记录并清理自有状态；对用户目录、Session logs 或同一 home 的共享数据，不能仅凭 profile/plugin name 就推断其所有权。[18](./10-foundations/18-install-upgrade.md) 说明生命周期责任。
 
 ## 证据与边界
 
-- **T（可复现观测，2026-10-30；命令见 [experiments](40-evidence/experiments/00-index.md) §04）**：`$DSH_HOME/storages/workspace.json` 为 domain `workspace` v2；已绑定会话头含 `cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`；在该样本中，落盘全走插件工具的 `node:fs`，profile 未覆盖产品那一行。
-- **C（源码/docs）**：workspace 子系统、会话创建与 cwd、`applyEntryPatches` 的整对象替换、config-editor 的完整写入、首用默认工作区的空 registry 条件、沙箱唯一可写根。
-- DSH 机制入口：[workspace](../../docs/subsystems/workspace.md)、[sandbox](../../docs/subsystems/sandbox.md)、[filesystem](../../docs/subsystems/filesystem.md)、[settings](../../docs/subsystems/settings.md)、[persistence](../../docs/subsystems/persistence.md)。
-- 社区材料（31–33）是外部、未独立验证的作者声明，不能当 DSH 的 API 合同。
-- 单 Host、单 `$DSH_HOME` 账户；多租户、跨机器同步、对象存储不在本篇范围。
+- **T（2026-10-31，隔离 home 的 CLI 组合检查）**：从 Web template 初始化 `verify-kanban-web`，再通过 `dsh plugin` 安装本地 fixture bundle；manifest 中 bundle 顺序为 base、web-app、fixture。命令和实际结果见 [实验 05](./40-evidence/experiments/05-profile-bundle-install.md)。该检查证明 profile 初始化与 bundle 追加；不证明 Kanban 产品代码或 Web runtime 已实现。
+- **C（DSH 当前合同）**：profile layer order、Workspace/Session create 语义、默认 Workspace eligibility、tool visibility 与 sandbox provider 行为均以对应 `docs/`、package README 和源码为准。
+- 外部 plugin 章节中的 S/R/U 样本未作为 DSH API 依据。
+- 本篇讨论单 Host profile 组合；不提供多租户或跨机器同步方案。

@@ -1,180 +1,82 @@
-# 15 · 四个空间：插件包、workspace、账本、全局设置
+# 15 · 四个空间：发布包、项目目录、插件状态与产品设置
 
 ## 这一篇回答什么
 
-当一个插件就是整个 DSH 时，"插件的数据放哪"会同时问四件不同的事：**出厂资产放哪、项目内容放哪、索引放哪、跨项目偏好放哪。** 这四个空间各有权威、寿命和读写者，混用会得到三种典型故障：改了没生效、换机器就丢、模型改写了自己的账本。
+产品作者通常要安排四类资产：随 bundle 发布的默认内容、用户项目文件、插件自己的状态，以及产品运行时设置。本篇说明每类资产由谁拥有、哪些部分属于 DSH、以及卸载和换 home 时会发生什么。它不把 DSH Workspace registry 当作文件权限或产品项目数据库。
 
-这一篇给四个空间的定义与归属表；配置放在哪一层见 [17](./17-config-layers.md)，启动时怎么确定根见 [16](./16-startup-resolution.md)。
-
-![四个空间：插件包、workspace、账本、全局设置](../figures/15-four-spaces.svg)
+![四类产品资产：bundle、用户项目目录、插件状态与产品设置](../figures/15-four-spaces.svg)
 
 ## 四个空间
 
 ```text
-插件包（只读）        模板 / 种子 / 预设 / 客户端 bundle —— 随 npm 版本走
-    ↓ 复制或工具读取
-workspace（可写）     项目内容 —— 侧栏一行 + 会话 cwd + 沙箱根
-    ↓ 派生
-账本（插件记录）      索引（可重建）+ 绑定/游标（不可重建）
-全局设置（跟 home）   渲染节点 / 默认风格 / 品牌素材 —— dataRoot 稳定时跨 profile 一致
+发布 bundle（只读输入）     模板 / 默认 preset / bundled skills —— 随包版本更新
+用户项目目录（用户拥有）    项目文件 —— 可由产品工具或获准模型工具读写
+插件状态（插件拥有）        索引（可重建）+ 绑定/游标（可能不可重建）
+产品运行时设置              作用域由产品选择：profile Config 或产品自建共享存储
 ```
 
-它们不是"五个家"的替代，而是**产品视角的归属**；两者的映射：
+这四个空间描述产品资产的所有权，不是 DSH 的四种原生存储 API：
 
-| 空间 | 对应五家里的 | 说明 |
+| 空间 | 可能的机制 | 说明 |
 |---|---|---|
-| 插件包 | 无（只读边界） | 随包发布，不在 DSH 存储面上 |
-| workspace | 内容家 | 用户拥有字节 |
-| 账本 | 状态家 + 派生家的混合 | 必须声明哪部分是权威 |
-| 全局设置 | 状态家（home 作用域） | 不派生、跟机器走 |
-| 会话 | 历史家 | 由 `header.cwd` 关联到 workspace |
-| 浏览器本地 | 客户端家 | 当前选中哪个会话 |
+| 发布 bundle | package files、Cordis patch、Client bundle | 安装包是默认资产来源；不要将运行时写入包目录 |
+| 用户项目目录 | `ctx.fs`、模型文件工具或产品自己的工具 | 文件属于用户；是否可通过 DSH Web 分组取决于是否登记 Workspace |
+| 插件状态 | `ctx.storageDomain`、会话/文件引用、产品自建目录 | 指明权威数据；状态与可重建索引分开 |
+| 产品设置 | profile Config、volatile Settings，或产品自建文件/domain | 跨 profile 与 profile-local 是不同作用域；选择机制由产品决定 |
+| Session 历史 | Session persistence | DSH 持久化会话，不等同于项目账本 |
+| 浏览器状态 | browser storage | 仅适用于设备或 origin 级 UI 状态 |
 
-## 插件包：只读的出厂资产
+## 发布 bundle：版本化输入
 
-| 项 | 值 |
-|---|---|
-| 权威 | 包的发布版本 |
-| 放什么 | 模板、种子（`seeds/`）、预设风格、客户端 bundle、提示词 |
-| 谁读 | 宿主代码用 `node:fs`；模型经插件工具，或直接 `read` |
-| 升级 | 随 npm；用户改过的副本**不能覆盖** |
-| 删了会怎样 | 出厂能力消失，用户数据不动 |
+bundle 是 DSH 的发布与组合单位。它可带 Cordis patch 和依赖的插件包，也可带 Web client 插件。bundle 里的模板、默认配置和提示文本按发布版本提供；不要把可变用户数据写回安装包目录。
 
-**"只读"是约定，不是权限。** 宿主代码对包目录当然可写；模型侧更微妙——文件读操作不受 fs 栅栏限制（栅栏只管 `writeText`/`editText`），所以只要模型知道路径，理论上能读包内任何文件。真正的约束是"产物只从版本化的包来，用户可改的那份复制到 workspace 或账本"。
+安装包能否加载由 profile composition 和兼容性检查决定。产品 bundle 可以依赖它实际组合的 plugin package；依赖声明意味着 package manager 安装该包，不会自动把任意普通包当作 profile layer。要贡献 Cordis rows，package 需声明 `dsh.bundle.patch`，并成为 profile bundle。
 
-**bootstrap 的正确形态**：只复制**缺失**的文件；已存在的绝不覆盖；文件里写 `schemaVersion`，升级时比对而不是覆盖。一个 deck 工作台插件的 `bootstrap: true`（首次启动登记示例、拷资源库、导入预设风格）就是这个形态。**C**
+## 用户项目目录：不要与 DSH Workspace 混为一谈
 
-## workspace：唯一的可写边界
+用户项目目录是项目内容的权威位置。模型是否能直接操作这些文件，取决于其 preset 中的工具和这些工具使用的 filesystem/subprocess providers 与 policy。Host 插件自己的代码不会因为 Session sandbox 而自动受限；插件应通过明确的产品授权与目标路径规则控制写入。
 
-| 项 | 值 |
-|---|---|
-| 权威 | 用户（目录与内容） |
-| 在 DSH 里的三重身份 | 侧栏一行登记 / 会话的 `cwd` / 沙箱可写根 |
-| 来源 | 产品默认（home 下）或用户指定 |
-| 谁写 | 模型（前提是 preset 挂了通用工具）或插件工具 |
-| 删除 | `delete` 只删登记，目录与会话不动 |
+DSH Workspace 是 Host 保存的一条目录登记，用于 Web 项目导航、Session 分组和 Workspace 操作。若只指定 Session 的工作目录，显式 `cwd` 更直接；若还要加入 DSH 侧栏分组，应引用已有 registration 的 `workspaceId`，让 Host 同时解析其 canonical path 并 attach Session。`WorkspaceId` 是这条 registration 的身份，不是文件路径，也不是产品长期 project ID。只传 `cwd` 不会自动创建 Workspace，因为登记还要有独立的 ID、标题、顺序和 Session account。路径输入应为绝对目录；Workspace create 要求目录已存在。Workspace registration 不提供文件读写 API、不赋予模型工具，也不拥有目录。
 
-关键事实：**workspace 本身不产生可写性**——它只给会话 cwd 与沙箱根，能不能读写由 preset 的工具面决定。展开见 [17](./17-config-layers.md) 与[沙箱子系统](../../../docs/subsystems/sandbox.md)。
+`header.cwd` 固定原始项目身份，并作为正常 sandbox policy 的默认 workspace 根。`workspace-write` 另允许平台临时目录；读取不由写入 fence 限制。`working_directory` 可改变有效工作目录，但不更改原始 Workspace membership 或 sandbox writable roots。删除 Workspace 只移除登记和分组关系；目录、文件与 Session history 保留。
 
-**反模式**：把账本目录本身登记成 workspace；或者把不可重建状态混进可重建索引的文件里。账本（注册表、绑定、游标）一旦在模型可写范围内，模型就能改写自己的记录。
+## 插件状态：逐条区分权威与派生
 
-P2 项目内文件是**用户资产**：卸载一律不删，插件只清自己的索引与 marker。这条也写进 [18](./18-install-upgrade.md) 的卸载清单。
+插件状态可包含两类不同的数据：
 
-## 账本：插件自己的记录
-
-| 项 | 值 |
-|---|---|
-| 权威 | 插件 |
-| 放什么 | 项目索引、同步游标、会话 → 项目的绑定、纳入时间 |
-| 键 | 规范化路径的哈希（`w_<sha256>`），不要用 `workspaceId` |
-| 默认位置 | 优先 `ctx.storageDomain`；产品型实例需要自有目录时才用 `$DSH_HOME/<plugin>/`（`dataRoot`），并自担迁移与清理 |
-
-**账本里必须分开两类事实**，否则删除与迁移会做错：
-
-| 类别 | 例子 | 丢了会怎样 | 处理 |
+| 类别 | 例子 | 丢失结果 | 建议机制 |
 |---|---|---|---|
-| **可重建索引** | 项目索引、缓存、统计 | 能重算，只是慢 | 可以随时删；写清重建路径 |
-| **不可重建状态** | 会话 → 项目绑定、同步游标、已采纳标记 | 丢失就是丢事实 | 单独文件、单独迁移、卸载说明里必须列出 |
+| 可重建派生 | 项目索引、内容哈希缓存、统计检查点 | 可重算，可能较慢 | 可重建的 per-record domain 或 cache |
+| 权威插件状态 | 用户确认、同步游标、显式项目与 Session 绑定 | 可能丢失用户事实或进度 | `ctx.storageDomain`，或有 schema/迁移/卸载说明的产品自建存储 |
 
-"账本可重建"只对第一类成立。**把第二类也当可重建，是这一层最常见的错误。**
+普通插件可先考虑 `ctx.storageDomain`；它提供 schema 校验和进程内单写链，但没有自动迁移、跨表事务或通用 per-workspace scope。JSON domain 的 `per-record` 键必须是 `[a-zA-Z0-9_-]+`。若产品需要可读文件、与设置一起备份或其他 domain 不适合的特性，可选择自建目录；这不是 DSH 提供的 plugin data-root 服务，产品需自担 schema version、迁移、并发、备份与清理。
 
-账本与 workspace 的分工只有一句：**workspace 存真相，账本存"关于真相的记录"。** 一旦账本里出现了用户内容的唯一副本，它就不再是账本了。
+不要假设 Workspace registry 带有产品属主或卸载钩子。registry 内的记录由 DSH 管理，产品只有在能可靠证明记录由自己创建时，才可考虑删除它；不能把“看起来属于产品”的路径当作授权删除的充分依据。
 
-**什么时候不必建账本？** 如果项目内文件本身就是身份（用户可见的 marker/清单），且不需要跨会话索引或绑定，就不必建账本；先用文件，等出现“需要按项目聚合/游标”再加。
+## 产品运行时设置：明确 profile 或共享作用域
 
-**用 domain 还是 dataRoot 文件？** 普通插件优先 `ctx.storageDomain`（单写链、版本由宿主管）；产品实例需要与 `settings.json` 同目录、人类可读、整目录备份时，才用 `dataRoot` 文件，并自己写 `schemaVersion` 与迁移。同一类事实只选一种，不要两边各存一份。
+DSH 的 `Config.volatile()` Settings 表单写回当前 profile 的 patch。它适合该 profile 自己的用户选项，不是跨 profile 的账号设置。
 
-**反模式**：把项目清单塞进 profile。profile 是"装一次"的单位，不是项目数据库；项目清单属于账本或 DSH registry。
+若多个 profile 要共享产品设置，产品需显式选择 home 级文件或 storage domain，并明确稳定的数据路径、读写入口、迁移与备份策略。`dataRoot` 是产品可以定义的 Config 字段名称，不是 DSH API；默认值可由产品指向 `$DSH_HOME` 下的目录。若 profile 将该路径配置成不同值，设置会分裂；同一 `$DSH_HOME` 不会自动合并或按产品过滤用户数据。
 
-## 全局设置：跟 home，跨 profile
+秘密使用 `CredentialRef` 表示环境变量名并在调用时解析；插件拥有的 OAuth grant 或多字段凭据使用 `CredentialKey` records API 读取和更新。两种接口不是同一个“resolve key”操作。避免把秘密明文写进 Config、domain、产品设置文件或日志。
 
-| 项 | 值 |
-|---|---|
-| 权威 | 插件（用户通过产品 UI 编辑） |
-| 放什么 | 渲染节点、endpoint、默认风格、品牌素材这类"跨项目一致"的偏好 |
-| 位置 | `dataRoot` 下的文件（默认 `$DSH_HOME/<plugin>/`） |
-| 寿命 | 跟这个 home；换机器不带走 |
-| 不能放 | 秘密值（只放引用）、会按 profile 不同的字段 |
+## 归属与生命周期速查
 
-它既不是账本（不派生、不可重建），也不是 workspace（跟项目无关），所以要单列。跨 profile 一致的前提是 `dataRoot` 稳定；细节见 [17](./17-config-layers.md)。
-
-## 归属表（一页）
-
-| 事实 | 空间 | 位置 | 键 / 标识 |
+| 事实 | 权威 | 常见位置 | 删除/迁移责任 |
 |---|---|---|---|
-| 出厂模板、预设 | 插件包 | 包目录 | 包名 + 版本 |
-| 项目内容 | workspace | 用户目录或 home 默认 | 目录路径 |
-| 项目索引（可重建） | 账本·索引 | 优先 `storageDomain`；产品实例可 `dataRoot` | 路径哈希 |
-| 会话绑定、游标（不可重建） | 账本·状态 | 优先 `storageDomain`；产品实例可 `dataRoot` | `SessionId` + 项目 id |
-| 用户选定的项目根 | 全局设置 | `dataRoot` 的设置文件 | 单例 |
-| 会话属于哪个项目 | 会话日志 + 账本·状态 | `$DSH_HOME/sessions` + 账本位置 | `SessionId` |
-| 产品全局偏好 | 全局设置 | `dataRoot` 文件 | 单例 |
-| 当前打开哪个会话 | 客户端 | `localStorage` | 站点 + 键 |
-| 安装参数 | profile | `cordis.patch.yml` | 行 id（见 17） |
-
-## 用户选目录后：DSH 到底留了什么
-
-| 帧 | 发生什么 | 写入了什么 |
-|---|---|---|
-| 1 | 客户端调 `directoryPicker.pick()` | 无 |
-| 2 | `createWorkspace({ path })` → `workspace/create` → `registry.create(path)` | 无（先 realpath + stat 校验，路径必须已存在） |
-| 3 | 新记录：id（uuid）、canonical path、title、时间、空会话账户；插到顺序最前 | `$DSH_HOME/storages/workspace.json`（domain `workspace` v2，single 布局） |
-| 4 | 客户端 `follow()` 收到 upsert，侧栏出现 | 无 |
-| 5 | 用户点开 → `session.create({ workspaceId })` → cwd = `workspace.path`；`mkdir -p` | 会话头 `SessionHeader.cwd`（不可变） |
-| 6 | 当前会话选择写本地存储 | 浏览器 `localStorage`（`dsh.sessions.current`） |
-| 7 | **用户目录** | **零写入**：没有 marker、没有 `.dsh/`、没有索引 |
-
-结论：目录是"哑目录"。DSH 自己不在目录里留任何东西，也不写 profile；要不要留 marker 是产品选择。换 `$DSH_HOME` 或换机器后，工作区列表与选择都没了，只有目录内容还在——这是"用户知道目录在哪、DSH 不知道"的根源。
-
-## 一个根其实是五个角色
-
-| 角色 | 消费者 | 现状 |
-|---|---|---|
-| **发现根** | 插件扫子目录找出项目 | 无 API，自己 `readdir` |
-| **注册根** | 侧栏工作区列表 | `workspaceRegistry.create`，逐个登记 |
-| **会话根** | 新会话 cwd | `workspaceId → path`；否则请求 cwd；否则 `process.cwd()`（仅兜底，不是项目身份） |
-| **沙箱根** | 模型可写边界 | 唯一 = 会话 cwd（见 [17](./17-config-layers.md)） |
-| **插件数据根** | 索引、游标、绑定 | 优先 `storageDomain`；产品实例可用 `dataRoot` 文件（见账本） |
-
-关键：**会话根与沙箱根是同一个值**；发现/注册只决定"看得见"，不产生任何写权限。
-
-这些角色只在根被登记为 workspace、并用于会话时才生效。**架构 I（工具中介）的根只是插件自己的项目目录**，不产生会话根/沙箱根，也不必 `workspaceRegistry.create`。
-
-`process.cwd()` 只决定新会话的初始 cwd：插件不要拿它当项目键——用会话 `header.cwd` 或 `ctx.workingDirectory`（见 [13](./13-scope-and-keys.md)）。
-
-## 怎么判断"这个 workspace 是我的"
-
-| 依据 | 稳定性 | 代价 |
-|---|---|---|
-| 路径前缀（canonical 包含关系） | 目录移动失效 | 零额外状态，最便宜 |
-| 插件账本记录（`w_<hash>`） | 目录移动失效 | 一份可重建的项目索引（绑定另存），有孤儿 |
-| 目录内 marker | 跟目录走、跨机器可认 | 污染仓库，要用户同意 |
-| 会话头推断 | 只说明"用过" | 历史噪音，不能表达"我的项目" |
-
-## 扫描 vs 登记：权威冲突
-
-如果每次启动都扫根并 `create`，会撞上两个语义问题：用户删掉的工作区会被复活（`delete` 只删登记，目录还在）；顺序不稳（`create` 插到最前）。
-
-| 立场 | 行为 | 用户删工作区 | 新目录出现 |
-|---|---|---|---|
-| 目录树权威 | 每次启动对齐 | 下次启动复活 | 自动出现 |
-| 登记表权威 | 只在首次/显式刷新时扫 | 保持删除 | 要用户点刷新 |
-| 混合 + 墓碑 | 扫描并记住被删路径 | 不复活 | 自动出现 |
-
-必须选一个；墓碑本身也是账本的一部分，要定"目录删了重建算不算同一个"。
-
-## 判断捷径
-
-对每块事实问三句：
-
-1. **换个项目还要吗？** 不要 → workspace。
-2. **换台机器还要吗？** 要 → 放进用户会同步的目录（workspace 或根内配置）；不要 → 账本或全局设置。
-3. **模型要改它吗？** 要用通用文件工具直接改 → 它必须在会话 cwd 内，且 preset 挂了对应工具；只经插件工具改 → 不必是 workspace。不要 → 账本/设置，插件自己写。
-
-三句都答完，位置基本唯一。答不出来，通常是"承诺"没定——回 [00-answer](../00-answer.md)。
+| 出厂模板、默认 preset | bundle 发布版本 | package files | 随包升级；用户修改应写入其他空间 |
+| 项目内容 | 用户 | 项目目录 | 用户决定；卸载产品不应擅删 |
+| Workspace 登记 | DSH Workspace registry | DSH storage domain | `workspace.delete` 只删登记；产品不能声称它会删项目 |
+| 项目索引 | 源文件或日志 | domain/cache/产品目录 | 派生数据可重建；清理规则由拥有者说明 |
+| 项目/会话绑定、同步游标 | 插件 | domain/产品状态目录 | 迁移和卸载保留策略由产品说明 |
+| 用户运行时选择 | 用户与产品 | profile patch 或产品共享存储 | 由选择的作用域决定是否跨 profile 保留 |
+| 会话历史 | Session log | Session persistence root | 当前 DSH 没有 Session delete API；不要物理删除目录 |
+| 浏览器布局状态 | 当前 browser origin | `localStorage` | 浏览器本地，换 origin/浏览器可丢；产品负责清理自己的 key |
 
 ## 边界
 
-- 单 Host、单 `$DSH_HOME`；多租户与跨机器同步不在本篇范围。
-- 路径规范化以 `fs.realpath` 为准；Windows 的大小写与分隔符要单独测。
-- 账本若用 DSH `storageDomain`，版本不符会 fail loud；自造 JSON 要自己实现迁移。
+- DSH profile 是 plugin composition，不是数据隔离边界。
+- Workspace registration 仅提供导航和分组数据；它不授予文件权限或拥有用户目录。
+- `$DSH_HOME/<plugin>/` 可以作为产品约定，但没有 DSH 的配额、迁移或卸载清理保证。
+- 本篇不承诺多租户隔离、跨机器同步或产品自建目录选择 API。

@@ -1,56 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>启动解析：四种状态与占位条件</title>
-  <desc>configured 缺失则创建；adopted 缺失不重建、重新问；default 是产品默认；unresolved 用侧栏时先登记占位。开机时没有用户可问。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 370" width="1200" height="370" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>DSH Web 首次 Workspace 流程与产品自建选择状态</title>
+  <desc>DSH Web Client 在 Workspace 与 Session 列表就绪且二者为空时请求初始化默认 Workspace，Host 在 Documents 下创建并登记该目录。产品自己的 configured、adopted 或待选择状态由产品实现。</desc>
 
-  <rect width="1200" height="400" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">启动解析：四种状态与占位条件</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">开机时没有用户可问；Host 先落到确定状态，弹窗发生在客户端连上之后</text>
+  <rect width="1200" height="370" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">DSH Web 默认 Workspace 与产品目录状态分开处理</text>
 
-  <!-- configured -->
-  <rect x="24" y="82" width="276" height="180" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="44" y="110" font-size="13" font-weight="700" fill="#1e40af">configured</text>
-  <text x="44" y="134" font-size="10.5" fill="#334155">profile 显式指定</text>
-  <text x="44" y="162" font-size="10" font-weight="700" fill="#1e40af">目录存在</text>
-  <text x="44" y="179" font-size="10.5" fill="#334155">直接用并登记</text>
-  <text x="44" y="205" font-size="10" font-weight="700" fill="#1e40af">目录缺失</text>
-  <text x="44" y="222" font-size="10.5" fill="#334155">mkdir -p（部署意图）</text>
-  <text x="44" y="246" font-size="9.5" fill="#64748b">失败则 fail loud</text>
+  <rect x="28" y="82" width="260" height="118" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="48" y="109" font-size="12" font-weight="700" fill="#1e40af">1 · Client lists ready</text>
+  <text x="48" y="137" font-size="10" fill="#334155">Workspace list 与 Session list</text>
+  <text x="48" y="155" font-size="10" fill="#334155">都为空时才请求 initializeDefault()</text>
+  <text x="48" y="182" font-size="9.5" fill="#64748b">已有 Session history 时不初始化</text>
 
-  <!-- adopted -->
-  <rect x="316" y="82" width="276" height="180" rx="10" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="336" y="110" font-size="13" font-weight="700" fill="#166534">adopted</text>
-  <text x="336" y="134" font-size="10.5" fill="#334155">用户上次在弹窗里选的</text>
-  <text x="336" y="162" font-size="10" font-weight="700" fill="#166534">目录存在</text>
-  <text x="336" y="179" font-size="10.5" fill="#334155">直接用并登记</text>
-  <text x="336" y="205" font-size="10" font-weight="700" fill="#166534">目录缺失</text>
-  <text x="336" y="222" font-size="10.5" fill="#334155">不重建 → missing</text>
-  <text x="336" y="246" font-size="9.5" fill="#64748b">可能是未挂载的卷</text>
+  <path d="M294 141 L322 141" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M322 141 L314 136 L314 146 Z" fill="#94a3b8"/>
 
-  <!-- default -->
-  <rect x="608" y="82" width="276" height="180" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="628" y="110" font-size="13" font-weight="700" fill="#92400e">default</text>
-  <text x="628" y="134" font-size="10.5" fill="#334155">&lt;dataRoot&gt;/workspace</text>
-  <text x="628" y="162" font-size="10" font-weight="700" fill="#92400e">目录存在</text>
-  <text x="628" y="179" font-size="10.5" fill="#334155">直接用并登记</text>
-  <text x="628" y="205" font-size="10" font-weight="700" fill="#92400e">目录缺失</text>
-  <text x="628" y="222" font-size="10.5" fill="#334155">mkdir -p</text>
-  <text x="628" y="246" font-size="9.5" fill="#64748b">无客户端时的降级落点</text>
+  <rect x="330" y="82" width="260" height="118" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="350" y="109" font-size="12" font-weight="700" fill="#166534">2 · Host resolves Documents</text>
+  <text x="350" y="137" font-size="10" fill="#334155">Documents / deepseek-harness /</text>
+  <text x="350" y="155" font-size="10" fill="#334155">default-workspace</text>
+  <text x="350" y="182" font-size="9.5" fill="#64748b">目录由 Workspace registry 创建</text>
 
-  <!-- unresolved -->
-  <rect x="900" y="82" width="276" height="180" rx="10" fill="#fff1f2" stroke="#fda4af"/>
-  <text x="920" y="110" font-size="13" font-weight="700" fill="#9f1239">unresolved</text>
-  <text x="920" y="134" font-size="10.5" fill="#334155">以上都不能确定</text>
-  <text x="920" y="162" font-size="10" font-weight="700" fill="#9f1239">动作</text>
-  <text x="920" y="179" font-size="10.5" fill="#334155">登记占位（需侧栏）</text>
-  <text x="920" y="194" font-size="10.5" fill="#334155">标记 pending</text>
-  <text x="920" y="220" font-size="10" font-weight="700" fill="#9f1239">然后</text>
-  <text x="920" y="237" font-size="10.5" fill="#334155">客户端弹窗让用户选</text>
-  <text x="920" y="255" font-size="9.5" fill="#64748b">用侧栏时先登记，挡住默认</text>
+  <path d="M596 141 L624 141" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M624 141 L616 136 L616 146 Z" fill="#94a3b8"/>
 
-  <!-- 占位说明 -->
-  <rect x="24" y="286" width="1152" height="88" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="44" y="312" font-size="12" font-weight="700" fill="#0f172a">占位的边界</text>
-  <text x="44" y="334" font-size="10.5" fill="#334155">客户端首连只在“registry 为空、且没有已存会话头/存档会话”时才建 &lt;Documents&gt;/deepseek-harness/default-workspace；</text>
-  <text x="44" y="352" font-size="10.5" fill="#334155">用侧栏时先登记占位，这条路径才挡得住（概率，不保证）。用户选完后再决定保留还是追加登记。</text>
-  <text x="44" y="368" font-size="9.5" fill="#64748b">风险：启动竞态（行并发启动）、mkdir -p 物化未挂载的卷、registry 跨 profile 共享。见 16。</text>
+  <rect x="632" y="82" width="260" height="118" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="652" y="109" font-size="12" font-weight="700" fill="#92400e">3 · Workspace is registered</text>
+  <text x="652" y="137" font-size="10" fill="#334155">写入 DSH Workspace registry</text>
+  <text x="652" y="155" font-size="10" fill="#334155">不创建 Session 或用户消息</text>
+  <text x="652" y="182" font-size="9.5" fill="#64748b">同 home 的 profile 可见同一 registry</text>
+
+  <path d="M898 141 L926 141" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M926 141 L918 136 L918 146 Z" fill="#94a3b8"/>
+
+  <rect x="934" y="82" width="238" height="118" rx="8" fill="#fdf2f8" stroke="#f9a8d4"/>
+  <text x="954" y="109" font-size="12" font-weight="700" fill="#9d174d">4 · Client creates blank Session</text>
+  <text x="954" y="137" font-size="10" fill="#334155">workspaceId → Workspace path</text>
+  <text x="954" y="155" font-size="10" fill="#334155">→ 初始 Session header.cwd</text>
+  <text x="954" y="182" font-size="9.5" fill="#64748b">当前 Session selection 在浏览器保存</text>
+
+  <rect x="28" y="228" width="1144" height="104" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="48" y="256" font-size="12" font-weight="700" fill="#0f172a">产品自建目录选择（可选，非 DSH API）</text>
+  <text x="48" y="283" font-size="10" fill="#334155">部署配置 → 用户保存选择 → 产品默认 → 尚待用户选择；产品需声明优先级、失效处理、取消与恢复。</text>
+  <text x="48" y="307" font-size="10" fill="#334155">选择器使用 DSH Workspace picker 时，native 用 pick；browse 用 list/createDirectory。选完由 Workspace picker 调 workspace.create。</text>
 </svg>

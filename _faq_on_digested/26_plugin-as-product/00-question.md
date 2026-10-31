@@ -1,81 +1,70 @@
-# 26 · 当一个插件就是整个 DSH：安装、启动、目录与数据该怎么分？
+# 26 · 一个 DSH 插件怎样成为产品 profile：组合、项目目录与数据归属
 
 源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。
 
-本轮新增结论按当前 checkout 逐条复核；标 **T** 的是可复现探针（`$DSH_HOME` 静态读数与真实插件实例，命令见 `40-evidence/experiments/`），其余仍以源码与 docs 为准。只讨论单 Host、单 `$DSH_HOME` 账户。
+本篇把 DSH 当前 checkout 的 profile、Workspace、Session、工具与存储机制，与产品作者需要自行设计的目录选择和数据责任分开讨论。标 **T** 的命令/运行观测仅适用于所记录的样本；其他 DSH 行为按当前源码与 docs 核验。运行时合同以本篇 checkout 为准，文件头的 `dsh-v0.2.1-rc.3` 用于标识已归档的研究样本来源，不覆盖当前源码。范围限单 Host；同一 `$DSH_HOME` 下不同 profile 的共享行为会明确说明。
 
 ## 问题从哪来
 
-写普通插件时，问题止于"数据放哪"：借宿主的家、按项目或按人切、用完能删。
+普通插件为已有 DSH composition 增加一项能力。所谓“插件就是产品”通常实际表示：用户通过一份产品 profile 启动 DSH Web 或其他受支持 surface，而该 profile 选入产品 bundle、preset、plugins 与用户配置。
 
-写**产品型插件**时，问题往前挪了一大步：这个 DSH 实例为什么存在、装了什么、从哪个目录起步、模型能写哪儿，全由这个插件决定。它不是一个装在别人 harness 里的客人，而是**主人**：
+这不会改变 DSH 的启动模型：应用仍由 `dsh --profile <name>` 启动；profile 是 named composition，bundle 是发布 patch 与代码依赖的形式。换 profile 不会自动建立独立 `$DSH_HOME`，也不会隔离同一个 home 下的 Session history、Workspace registry 或凭据。
 
-- 它有自己的**出厂资产**（模板、种子、预设、客户端界面），随 npm 版本走；
-- 它有自己的**项目目录**——可能是 home 下的默认目录，也可能由用户指定；
-- 它有自己的**账本**（索引、游标、会话绑定）；
-- 它还有一份**跨 profile 一致的全局设置**（前提：`dataRoot` 稳定）。
+产品作者需要分别决定：
 
-于是原来的问句"插件的数据放哪"被拆成四个：
+- 用户看到的产品入口由哪份 profile composition 提供？
+- 产品目录、Session 初始 `cwd` 与 DSH Workspace registration 如何对应？
+- 模型能调用哪些工具？每种工具怎样访问文件？
+- 每块用户数据由谁拥有、存在哪里、何时删除或迁移？
+- 多 profile、换 home、换机器或卸载后，哪些状态共享或保留？
 
-1. 产品启动时，workspace 的根目录从哪来？没有怎么办？
-2. 用户选了一个目录之后，DSH 到底在哪儿留了什么？要不要在目录里、profile 里留东西？
-3. 插件包里的只读资产、可写 workspace、插件状态账本、全局设置，边界怎么划？
-4. 模型能不能直接读写 workspace？由什么决定？
+## 为什么不能只说“可写目录”
 
-有的产品把写操作全部交给自己的工具，模型只调工具、根本不直接写项目目录——沙箱在这一类产品里是背景，而不是约束。这引出了本篇最重要的一条区分。
+“Workspace”“Session cwd”“有效 working directory”“sandbox root”和“产品 project root”名称接近，但回答不同问题：
 
-## 为什么不能一句话回答
+- DSH Workspace 是 Host 侧的目录登记，用于 Web 导航与 Session 分组；registration 不给模型文件工具。
+- 只需指定 Session 初始工作目录时，传绝对 `cwd`；还要加入 DSH Workspace 侧栏分组时，才传已有 registration 的 `workspaceId`，由 Host 取 canonical path 并 attach Session。两者不能同时传；`WorkspaceId` 是 registration ID，不是 path、权限 token 或产品 project ID。
+- `header.cwd` 标识 Session 的原始项目目录，也是正常 sandbox policy 的默认 workspace root。`working_directory` 可以改变后续操作目录，但不会改变 header 或 sandbox writable roots。
+- Preset 决定模型可调用的工具。Sandbox policy 只约束接入它的 consumer；Host 插件代码不自动受到 Session sandbox 限制。
+- `workspace-write` 除 Session 根外还允许平台临时目录；文件读取也不由这条写入围栏限制。
 
-因为"可写"这件事有两个来源，而它们经常被混为一谈：
-
-- **workspace** 只给三样东西：侧栏一行登记、会话的 `cwd`、沙箱可写根；
-- **preset 的工具面** 才决定模型能不能 `read` / `write` / `bash`。
-
-一个只挂插件工具的 preset，即使会话开在项目目录里，模型也碰不到文件；一个挂了 `tool-fs` 的 preset，会话在项目目录里就能直接改文件，而沙箱只认这一个根，`cd` 不放宽，放宽只能靠一次性审批。
-
-再加上四个空间各有权威与寿命、配置有五层、启动时没有用户可问——这些合在一起，才是"插件即产品"的完整问题。
+因此，本篇将目录导航、模型工具面、sandbox policy 和产品数据 owner 作为独立设计维度处理。
 
 ## 本篇要回答的具体问题
 
 | # | 问题 | 主回答 |
 |---|---|---|
-| Q0 | 本目录的几套词汇（承诺/空间/家/作用域）怎么对上？ | [10 概念层](./10-foundations/10-taxonomy.md) |
-| Q1 | 什么时候一个插件就是整个 DSH？它和"装在别人 harness 里的插件"差在哪？ | [answer](./00-answer.md) |
-| Q2 | 插件包、workspace、账本、全局设置，四个空间的边界怎么划？谁写、谁删、跨机器还在不在？ | [15 四个空间](./10-foundations/15-four-spaces.md) |
-| Q3 | 启动时目录从哪来？不存在怎么办？为什么不能开机弹窗？ | [16 启动解析](./10-foundations/16-startup-resolution.md) |
-| Q4 | 插件启动读的那份 config 从哪来？产品全局设置放哪？整对象替换会丢什么？ | [17 配置分层](./10-foundations/17-config-layers.md) |
-| Q5 | 数据按 session / workspace / profile / home / device 怎么切？跨 workspace 用什么键？ | [13 作用域与键](./10-foundations/13-scope-and-keys.md) |
-| Q6 | 宿主状态用 domain、settings 还是 credential？凭据记录是什么？ | [12 状态的家](./10-foundations/12-state-homes.md) |
-| Q7 | 五个家是什么？客户端本地状态算不算？ | [11 五个家](./10-foundations/11-five-homes.md) |
-| Q8 | 产物 / artifact 是什么？`present`、changes、附件、spill 各管哪一段？ | [14 产物](./10-foundations/14-artifacts.md) |
-| Q9 | DSH 自己历史上为什么长成这些家？哪些是刻意、哪些是欠账？ | [22 原生历史](./20-native/22-native-data-history.md) |
-| Q10 | 外部插件生态怎么切同一道题？哪些能借、哪些是坑？ | [31](./30-external/31-external-community-patterns.md) / [32](./30-external/32-external-adjacent-ecosystems.md) / [33](./30-external/33-external-plugin-patterns.md) |
-| Q11 | 这个实例怎么装、怎么升级、卸载后留下什么？哪些变更要重启？ | [18 安装升级](./10-foundations/18-install-upgrade.md) |
-| Q12 | 给我判断顺序、数据卡、反模式与参考架构。 | [91 决策程序](./90-advisor/91-checklist.md) / [92 参考架构](./90-advisor/92-native-reference-architectures.md) |
+| Q0 | 产品 profile、数据 owner、存储机制和作用域如何区分？ | [10 概念层](./10-foundations/10-taxonomy.md) |
+| Q1 | 插件、bundle 与 profile 各是什么？产品入口怎样启动？ | [answer](./00-answer.md)、[FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md) |
+| Q2 | 发布包、用户目录、插件状态与产品设置分别由谁拥有？ | [15 四个空间](./10-foundations/15-four-spaces.md) |
+| Q3 | DSH Web 首次怎样建立 Workspace？产品若自选项目目录要自建什么？ | [16 首用与项目目录](./10-foundations/16-startup-resolution.md) |
+| Q4 | Patch 优先级、Config 默认值和链外产品设置如何区分？ | [17 配置、工具与权限](./10-foundations/17-config-layers.md) |
+| Q5 | Session、project、Workspace、profile、home 与 device 的作用域有何不同？ | [13 作用域与键](./10-foundations/13-scope-and-keys.md) |
+| Q6 | storage domain、Config、CredentialRef 与 CredentialKey 各保存什么？ | [12 状态机制](./10-foundations/12-state-homes.md) |
+| Q7 | DSH 的五个家与客户端状态是什么关系？ | [11 五个家](./10-foundations/11-five-homes.md) |
+| Q8 | `present`、changes、attachments 和 spill 各服务谁？ | [14 产物](./10-foundations/14-artifacts.md) |
+| Q9 | DSH 存储能力的形成历史有什么当前影响？ | [22 原生数据历史](./20-native/22-native-data-history.md) |
+| Q10 | 外部插件和其他生态有哪些可借模式？ | [31](./30-external/31-external-community-patterns.md)、[32](./30-external/32-external-adjacent-ecosystems.md)、[33](./30-external/33-external-plugin-patterns.md) |
+| Q11 | Profile bundle 如何安装、更新与卸载？数据清理由谁负责？ | [18 安装生命周期](./10-foundations/18-install-upgrade.md) |
+| Q12 | 如何把数据决策、架构选择和验证串成施工流程？ | [90 动手](./90-advisor/00-index.md)、[91 检查表](./90-advisor/91-checklist.md)、[92 架构矩阵](./90-advisor/92-native-reference-architectures.md)、[93 Web profile 走查](./90-advisor/93-app-plugin-walkthrough.md) |
 
 ## 一句话预告
 
-**一个产品型 DSH 实例 = 一份 profile 组合（装什么）+ 一个 workspace 根（在哪干）+ 一份 home 级账本与全局设置（记住什么）。**
+产品型 profile 是产品发布的运行组合。每块数据都要说明 owner、authority、source、保存机制、scope/key、readers、writers、能否重建及保留责任；产品目录选择与 DSH Workspace 导航不是同一个状态。
 
-插件包只读，workspace 可写，账本记插件自己的东西（索引可重建、状态不可重建），全局设置跟 home；模型能不能直接写 workspace 取决于 preset 的工具面，而不是 workspace 本身。启动时没有用户可问，所以"让用户选目录"必须发生在客户端连上之后，并用占位登记挡住 DSH 自己的默认工作区。
-
-> 这里的“根”是**产品自己的项目根**（`projectsRoot`）；只有架构 II 会把它登记为 DSH workspace。
-
-![四层词汇：承诺 → 空间 → 家 → 作用域/键](./figures/10-taxonomy-flow.svg)
+![产品运行组合与数据卡](./figures/10-taxonomy-flow.svg)
 
 ## 不回答什么
 
-- 不重复发布形态、bundle/profile/preset 的分工：见 [FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)。
-- 不讨论多租户、跨机器同步、对象存储；DSH 当前没有这些内置能力。
-- 不把会话日志格式、compaction、归档的细节再讲一遍：只讲它们对"数据归属"的影响。
-- 不给具体插件的完整实现；例子只用于说明边界。
+- 不重复 plugin、bundle、profile、preset 的发布合同；见 [FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)。
+- 不设计 DSH 不提供的多租户或跨机器同步服务；产品作者可另行选择部署隔离和同步机制。
+- 不重新解释会话格式、compaction 或归档算法；仅说明它们的数据 owner 和删除影响。
+- 不提供可直接发布的 Kanban 实现；[93](./90-advisor/93-app-plugin-walkthrough.md) 是产品组合流程示例，产品 package 与工具代码是假想内容。
 
 ## 阅读顺序
 
-1. **先看结论**：[answer](./00-answer.md) 的四个空间与六种承诺。
-2. **建立空间感**：[15](./10-foundations/15-four-spaces.md) → [16](./10-foundations/16-startup-resolution.md) → [17](./10-foundations/17-config-layers.md)。
-3. **按需补词汇**：[11](./10-foundations/11-five-homes.md)（家）、[13](./10-foundations/13-scope-and-keys.md)（作用域与键）、[12](./10-foundations/12-state-homes.md)（状态）、[14](./10-foundations/14-artifacts.md)（产物）。
-4. **要动手**：直接去 [90 动手](./90-advisor/00-index.md)，用 [91](./90-advisor/91-checklist.md) 自查。
-5. **想溯源**：[22](./20-native/22-native-data-history.md)（历史）、[31](./30-external/31-external-community-patterns.md)/[33](./30-external/33-external-plugin-patterns.md)（外部对照）。
-
-![六种数据承诺](./figures/00-promises-six.svg)
+1. **先看摘要**：[00-answer](./00-answer.md) 了解产品 profile 与数据维度。
+2. **准备设计**：[10](./10-foundations/10-taxonomy.md) → [15](./10-foundations/15-four-spaces.md) → [16](./10-foundations/16-startup-resolution.md) → [17](./10-foundations/17-config-layers.md)。
+3. **逐块选数据机制**：按需读 [11](./10-foundations/11-five-homes.md)、[12](./10-foundations/12-state-homes.md)、[13](./10-foundations/13-scope-and-keys.md)、[14](./10-foundations/14-artifacts.md)。
+4. **开始动手**：按 [90](./90-advisor/00-index.md) → [92](./90-advisor/92-native-reference-architectures.md) → [93](./90-advisor/93-app-plugin-walkthrough.md) 走；用 [91](./90-advisor/91-checklist.md) 验收，按 [18](./10-foundations/18-install-upgrade.md) 处理生命周期。
+5. **核实研究材料**：[21/22](./20-native/21-native-data-landscape.md) 提供 DSH 参考；[31–33](./30-external/31-external-community-patterns.md) 是外部模式，不是 DSH 合同；[40-evidence](./40-evidence/00-index.md) 提供来源与命令。

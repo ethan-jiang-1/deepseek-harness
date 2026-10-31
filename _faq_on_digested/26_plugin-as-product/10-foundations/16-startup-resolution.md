@@ -1,156 +1,69 @@
-# 16 · 启动解析：目录从哪来、不存在怎么办
+# 16 · 首次启动与项目目录：DSH 行为和产品自建策略
 
 ## 这一篇回答什么
 
-产品型实例启动时，workspace 的根目录可能已经存在、可能由产品默认给出、可能用户上次选过但现在不在了。**开机那一刻没有用户可问**，所以"弹窗让用户选"必须被安排到正确的时机。这一篇给四状态、解析顺序、占位（用侧栏时）和三个真实风险。
+产品作者必须区分 DSH Web 的默认 Workspace、Session 的初始工作目录、有效 working directory，以及产品自己管理的项目根。本篇记录 DSH 首用流程，并给产品自建目录选择的决策要求；项目选择 UI、API 和保存格式都由产品定义。
 
-## 为什么不能在启动时弹窗
+## 四种目录不是一个根
 
-| 事实 | 依据 |
-|---|---|
-| Host 启动时没有浏览器连着 | `webStartup` 开监听，客户端之后才连 |
-| 目录选择器是**交互能力**，不是 Host 启动 API | native 后端在宿主显示器上开系统对话框（远端客户端够不着）；browse 后端只供远端客户端的应用内选择器 |
-| 客户端只在"registry 为空且无会话"时自动建默认工作区 | 首用默认工作区逻辑 |
-
-所以真实形态是：**Host 先落到一个确定状态，客户端连上后由产品的客户端插件弹窗**。不能阻塞 boot 等用户。
-
-![启动解析：四种状态与占位条件](../figures/16-startup-states.svg)
-
-## 四种状态
-
-```text
-1. configured   profile 的 projectsRoot（部署方显式指定）
-2. adopted      settings.json 里的 adoptedRoot（用户在弹窗里选过）
-3. default      <dataRoot>/workspace（产品默认）
-4. unresolved   没有 configured/adopted，且产品选择“先问”
-```
-
-`default` 与 `unresolved` 的差别是**策略**，不是目录：产品可以选“自动建默认目录”，也可以选“先标记 `pending`、等用户选”（用侧栏时再登记占位）。`pending` 标记写在 `settings.json`；下次启动读到 `pending` 就继续问，直到用户选定。
-
-| 状态 | 目录存在 | 目录缺失 | 处理 |
-|---|---|---|---|
-| configured | 直接用 | `mkdir -p`（部署意图） | 失败则 fail loud |
-| adopted | 直接用 | **不重建**，转 `missing` → 重新问 | 可能是未挂载的卷 |
-| default | 直接用 | `mkdir -p` | 失败则 fail loud |
-| unresolved | — | — | 标记 `pending`；用侧栏时登记占位；等客户端弹窗 |
-
-`configured` 与 `adopted` 的差异是刻意的：**配置是"我想要那里"，记忆是"那里曾经在"。** 前者缺了就创建；后者缺了要重新问，不能悄悄用空目录覆盖一个可能只是暂时离线的卷。
-
-命名约定：产品配置里的指针叫 **`projectsRoot`**，用户选择存在 `settings.json` 的 **`adoptedRoot`**；**不要**和 `sandbox-policy.workspaceRoot`（沙箱兜底根）混用。
-
-## 启动算法
-
-```text
-boot:
-  state = resolve(settings)             # 有 pending 且无 configured/adopted 时保持 unresolved
-  if state in {configured, default}: mkdir -p(root)
-  if state == adopted and !exists(root): state = missing
-  if state in {configured, adopted, default} and isDir(root):
-      if 产品要用 DSH 侧栏/会话分组: registry.create(root)
-      ledger.mark(root)
-  else:
-      settings.mark(pending=true)
-      if 产品要用 DSH 侧栏:
-          placeholder = <dataRoot>/workspace
-          mkdir -p(placeholder)
-          registry.create(placeholder)   # 挡住 <Documents> 默认工作区
-```
-
-**登记 workspace 是可选的，取决于产品是否使用侧栏。** 架构 I（工具中介）通常不登记：产品根只是自己的项目目录，`registry.create` 与沙箱都不参与；架构 II（workspace 化）必须登记，因为会话要靠它拿 cwd。
-
-判据只有一句：**产品是否需要 DSH 侧栏的项目列表/会话分组？** 需要 → 架构 II 登记；不需要 → 架构 I 不登记。
-
-**占位的作用与边界。** 只有当产品**要使用 DSH 侧栏/首用默认工作区**时，占位才有意义：客户端首连只在"registry 为空、且既没有已存会话头也没有存档会话"时才建 `<Documents>/deepseek-harness/default-workspace`；先登记一个占位，这条路径被挡住（前提是占位先落地，见下段）。
-
-**这只在占位先于客户端首连落地时成立**——Loader 行并发启动，先后没有保证（见下文风险 1，**U**）。如果产品不使用侧栏，可以不登记，也不需要占位。
-
-删占位要小心：`workspaceRegistry.delete` 只删登记，目录与已开会话不动；如果用户已经在占位目录里开过会话，删登记会让那些会话变 Ungrouped。安全做法是**保留占位、把用户选的目录追加登记**，让用户自己决定删哪个；所有权判据见 [18](../10-foundations/18-install-upgrade.md) 的卸载一节。
-
-## 弹窗：两种形态
-
-| 形态 | 做法 | 代价 | 适合 |
-|---|---|---|---|
-| **A 产品自己的 modal** | 产品带一个客户端插件：连上后读插件 Remote 的状态，`pending` 就弹窗；"选择目录"调 `remote.directoryPicker.pick()`，再调插件的 `adopt(path)` | 要写客户端插件与两个 Remote 端点 | 首启体验可控 |
-| **B 复用"添加工作区"** | 不弹窗；只登记占位并提示"用左侧 + 添加你的目录"；插件通过 `workspaceController.follow()` 或客户端回调感知并采纳 | 少写 UI，但用户要自己找入口 | 内部工具、迭代早期 |
-
-两种都要回答"用户取消 / 关掉弹窗"：保持占位可用，下次连接再提示，不要卡死。
-
-**默认建议**：早期用 B（复用"添加工作区"，少写客户端插件），首启体验成为产品核心后再上 A。
-
-### 客户端插件的最小契约
-
-形态 A 的产品要写一个客户端插件，最小需要：
-
-1. **一个 `status` Remote**：返回 `{ pending, root }`；客户端连上后先读它。
-2. **一个 `adopt(path)` Remote**：把用户选的目录写进 `dataRoot/settings.json`，清 `pending`。
-3. **弹窗时机**：在 `ui-workspace` 启动导航之后；客户端插件按模块图拓扑序启动，`ui-workspace` 在 `apply` 里就开导航，不要假设自己先于它。**C**
-4. **采纳后切会话**：`ctx.get('uiWorkspace').connectWorkspace(id)` 可切到该目录对应的 workspace；它会创建/复用 blank 会话，用户取消不能回滚。**C** 见[实验 02](../40-evidence/experiments/02-client-connect-workspace.md)。
-
-**形状由你的插件定义**（不是 DSH 合同），最小建议：
-
-```ts
-status(): Promise<{ pending: boolean; root: string | null }>
-adopt(path: string): Promise<{ root: string }>        // 路径不存在/不是目录 → 抛错
-remote.directoryPicker.pick(): Promise<string | undefined>  // 取消 → undefined
-```
-
-失败路径：`adopt` 校验失败保留 `pending`，客户端提示后重试；用户取消不改 `pending`，下次连接再问。
-
-打包形态没有唯一答案：客户端插件可以随产品 bundle 一起发（bundle 带客户端入口），也可以单独一个包；前者少一步安装，后者便于独立迭代。**U**（两种形态的加载差异未实测）
-
-## 编排时机
-
-| 时机 | 能做什么 | 不能做什么 |
+| 名称 | Owner | 用途 |
 |---|---|---|
-| 启动 `apply`（T1） | 扫根、注册、写脚手架 | 反应不了用户刚选的目录；与客户端首连有竞态 |
-| `agent/created` / `session/created`（T2） | 按会话 cwd 采纳、写脚手架；`agent/created` 是 serial，抛错会让会话创建失败 | 只在已有会话时触发；不能改 cwd |
-| 客户端选目录后回调（T3） | 立刻采纳、提示 | 要客户端插件；用户取消就没发生 |
-| 显式命令/设置页（T4） | 全量重建、修复 | 要用户主动 |
+| **产品项目根** | 产品 | 产品工具索引或业务数据所对应的目录，可以不登记为 DSH Workspace |
+| **DSH Workspace path** | Workspace registry | Web 项目导航、Workspace Session 分组和 Workspace 操作 |
+| **Session `header.cwd`** | Session header | Session 创建时记录的原始工作目录；默认作为 sandbox policy 的 workspace root |
+| **有效 working directory** | Session working-directory service | 当前 Session 后续相对文件操作和新进程的工作目录；可以改变 |
 
-Host 侧**没有** `workspace/created` 事件；唯一增量来源是 `workspaceController.follow()`，它是面向客户端的长流（baseline + upsert/remove），不要当插件事件总线用。
+只需指定 Session 工作目录时，传绝对 `cwd` 即可。若还要把 Session 放入 DSH Workspace 分组，传已有 registration 的 `workspaceId`；Host 从中取得 canonical path，并将 Session attach 到 Workspace。两者不能同时提供。Session header 保存绝对初始 cwd。`WorkspaceId` 是 registration ID，不是 path、权限 token 或产品 project ID。改变有效 working directory 不会更改原始 Session header cwd、Workspace membership 或 sandbox writable roots。[Working Directory](../../../docs/subsystems/working-directory.md) 说明运行语义；[Workspace](../../../docs/subsystems/workspace.md) 说明登记语义。
 
-## 选择记在哪
+## DSH Web 首用流程
 
-| 载体 | 语义 | 问题 |
-|---|---|---|
-| **全局设置**（推荐） | `dataRoot` 下的设置文件；`dataRoot` 稳定时跨 profile 一致 | 用户不可见；但正是"弹窗里选的那个" |
-| 账本·状态 | 跨项目但不跨 profile 的记录 | 适合会话绑定；不适合"产品根" |
-| profile patch | 安装参数 | 运行时选择混进安装文件；插件写自己那一行还要额外接口 |
-| DSH registry | "这也是个工作区" | 跨 profile 共享，不能当私有记忆 |
+Web 的 `ui-workspace` 在 Workspace 与 Session 列表都就绪后检查是否为空。只有 Workspace registry 为空且没有任何 live 或 persisted Session 时，Client 才请求 `workspace.initializeDefault()`。Host 在 Documents 下解析 `deepseek-harness/default-workspace`；Workspace registry 创建并登记该目录。随后 Client 为该 Workspace 创建或复用 blank Session。`initializeDefault()` 本身不创建 Session。
 
-原则：**安装默认值放 profile，用户运行时选择放全局设置。** 账本只放与项目绑定的记录（索引与绑定），不承担"这个产品从哪起步"。
+默认路径属于 Host 账户，而非远端浏览器。Linux Documents 目录不可用时，初始化会失败并显示提示“无法创建默认工作区，请通过‘选择工作区’选择文件夹”；用户可在当前 UI 通过 Workspace picker 立即恢复。失败后的默认初始化可在后续启动再次尝试；DSH 不会静默切换到产品定义的 `<dataRoot>/workspace`。
 
-## 无客户端时
+这个首用流程是 DSH Web 的当前行为，不是所有 profile 的启动保证。Headless 和 SDK profile 不运行 Web Client 的这段流程。产品若修改或替换 Web Workspace UI，应在实际 bundle composition 中验证其首次启动、Session 创建和错误恢复；不要依赖 Loader 行顺序或 placeholder registration 作为同步保证。
 
-headless / SDK / 纯 CLI 没有浏览器：
+## Workspace 何时需要登记
 
-- 有 `configured` → 用；
-- 否则用 `default`，并在启动日志里打一行（例如 `<plugin>: using default workspace <path>`）；
-- `pending` 保留，等下一次有客户端时再问。
+当产品使用 DSH Web 的 Workspace 列表、会话分组或 Workspace operation 时，使用现有目录选择流程登记路径。`workspace.create({ path })` 要求目录已存在且是绝对路径；它规范化路径并保存 registration，不创建用户项目目录。
 
-不要为了"等用户"阻塞启动，也不要因为问不到就起不来。
+若产品只需要一个 Session 在指定项目目录工作，可创建 `session.create({ cwd })` 而不注册 DSH Workspace。若产品工具自己选择项目目录，它可以从当前 Session、显式产品记录或用户输入确定项目身份，但这属于产品设计，不是 Workspace registry 提供的项目选择器。
 
-## 三个真实风险
+Workspace registration 不提供文件 API或模型权限。模型是否能调用 `read`、`write`、`bash` 等工具取决于 preset；工具如何解析文件、是否使用 sandbox policy，由具体 consumer 与 provider 决定。
 
-1. **启动竞态**：Loader 的行并发启动，占位登记与 web 监听没有先后保证。`dsh web` 默认会自动打开浏览器，慢盘或慢插件下，客户端可能在占位登记完成前就连上并建出 `<Documents>` 默认工作区。
+## 用户选择目录
 
-缓解：插件行排在 web 行之前、`apply` 里只做 `mkdir` + `create`，并实测一次带自动打开浏览器的冷启动；行是并发启动的，这个顺序只是提高概率。**U（未保证）** 实验设计见[实验 01](../40-evidence/experiments/01-startup-race.md)。
-2. **挂载点被物化**：`session.create` 会对 cwd 执行 `mkdir -p`。如果 `adopted` 目录位于未挂载的卷，新建会话会**在挂载点造一个空目录**，卷再挂上时被遮住，现场极难排查。缓解：`missing` 状态不登记该路径，或登记前校验卷存在。**C**
-3. **跨 profile 可见**：registry 全 home 共享，产品登记的工作区会出现在通用 `web` 的侧栏里，没有过滤机制。缓解：接受并写进 README，或改走独立 `DSH_HOME`。**C**
+Web Workspace picker 复用 DSH 的 picker capability：本机可用 native capability 时，`directoryPicker.pick()` 返回 Host 系统选择的目录；remote、SSH、非 loopback 或无法使用 native chooser 的部署会采用 browse capability，Client 用 `directoryPicker.list()` 浏览并可通过 `directoryPicker.createDirectory()` 创建子目录。选择完成后，现有 Workspace picker 调用 `workspace.create({ path })`。这不是产品独占的流程。
 
-## 核对结论
+产品可以定义自己的 onboarding UI 和 Remote 来保存产品设置，但这些 API 与保存格式由产品拥有。若使用 DSH Workspace picker，应调用其实际支持的 verbs，不要假设 native-only `pick()` 在 browse 部署中可用。
 
-- 客户端插件的加载顺序由**模块图拓扑序**决定（`orderByModuleGraph`，同层按扫描序），不是行序，也不是可控的同步点；`ui-workspace` 在 `apply` 里就启动导航。**C** 所以不要指望弹窗先于默认选择——占位是当前唯一可用的缓解，但不保证（见风险 1）。
-- 客户端插件可以调用 `uiWorkspace.connectWorkspace(id)`：服务名 `uiWorkspace`、方法是公开面；顺序不保证，且调用会创建或复用 blank 会话。**C** 见[实验 02](../40-evidence/experiments/02-client-connect-workspace.md)。
-- 插件可以用 `ctx.fiber.entry` 定位自己那一行，再调 `ConfigEditor.edit` 回写；仍推荐把运行时选择放全局设置文件。**C** 见[实验 03](../40-evidence/experiments/03-profile-writeback.md)。
+## 产品自建项目目录
 
-## 与其它篇的关系
+如果产品需要自己的项目选择，在 Client 可交互后提供选择 UI；Host boot 不应等待用户。先按优先级检查：
 
-- 四个空间与账本的键：[15](./15-four-spaces.md)
-- 启动配置从哪来：[17](./17-config-layers.md)
-- workspace 的登记、删除、首用默认：[workspace 子系统](../../../docs/subsystems/workspace.md)
+1. 部署者配置了固定目录时，使用该目录；缺失或不可用时按产品自己的创建策略处理，不能静默换到其他目录。
+2. 否则检查产品保存的用户选择。路径若已缺失，进入重新选择流程，不要在原路径创建一个空目录。若产品保留旧路径供恢复提示，重新选择状态必须优先于旧值。
+3. 只有产品明确承诺默认位置时，才创建并使用产品默认目录。
+4. 没有可用路径且产品要求用户选择时，等待 Client；取消保持可恢复状态，不阻塞 Host boot。
+
+DSH Web 有自己的 Documents 默认 Workspace 和 Workspace picker；产品自建路径选择与保存不属于这些 DSH 功能。检查路径时区分缺失、权限失败、非目录和 volume mount 不可用。Session creation 可能创建 cwd 目录，因此不要对未经验证的用户选择直接创建 Session。
+
+## 产品目录与 DSH Workspace 的关系
+
+一个产品项目可映射到一个 DSH Workspace，也可只作为产品自己的目录。若映射到 DSH Workspace，Session 的初始 `header.cwd` 应与 Workspace path 匹配，Workspace registry 据此分组；产品需注意 DSH Web 自动创建的 Documents Workspace 仍属于该 profile 所在 home 的共享 registry。
+
+产品自建的设置路径由产品 Config 或显式环境值决定。若设置文件位于 `$DSH_HOME` 下，使用稳定且文档化的产品路径，并在备份、迁移和卸载说明中列出。DSH 没有通用的每插件 data root；profile 名也不会过滤或隔离 home 数据。
+
+## 用户取消、首次失败与无 Client
+
+- Web `initializeDefault` 因 Documents lookup 或目录创建失败时，当前 UI 显示 Choose workspace 提示，不会在同一次运行自动改用产品默认目录。
+- 用户取消 DSH picker 时，不创建 Workspace；用户之后可再次打开 picker。
+- 产品自建目录选择应处理取消、超时、失联与重试；相关保存状态由产品定义。
+- Headless/SDK profile 没有浏览器 Workspace picker。产品若需要目录，必须从 CLI 参数、profile Config、环境或既有配置取得；不得等待一个不存在的 Client。
 
 ## 边界
 
-- 单 Host、单 `$DSH_HOME`；客户端行为与浏览器实现相关。
-- 启动竞态仍是 **U**，实验设计见[实验 01](../40-evidence/experiments/01-startup-race.md)。
+- DSH 当前 Web 首用目录是 Documents 下的 `deepseek-harness/default-workspace`；产品的 `dataRoot/workspace` 是另一项自建配置。
+- DSH Workspace registration 不负责创建通过 picker 选择的目录，不删除项目内容，也不决定模型权限。
+- 产品目录选择 API 与跨 profile 设置由产品维护，不属于 DSH Workspace contract。
+- 本篇记录的首用 eligibility 是空 Workspace registry 且无 Session history；空侧栏本身不代表首次启动。

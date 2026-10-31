@@ -6,10 +6,11 @@
 
 | # | 实验 | 状态 | 结果 |
 |---|---|---|---|
-| 01 | 启动竞态：占位登记 vs 客户端首连 | **未执行（有阻塞）** | 需要合成一个延迟 `apply` 的测试插件；没有它无法可靠复现 |
+| 01 | 产品 onboarding 与 DSH default Workspace 的时序 | **未执行** | 需在真实 Web Client composition 中验证，不把 placeholder 当保证 |
 | 02 | 客户端插件能否调用 `uiWorkspace.connectWorkspace` | 已收口（源码） | 可以；顺序不保证 |
 | 03 | 插件能否回写自己那一行 profile patch | 已收口（源码） | 可以（经 `ctx.fiber.entry` + `ConfigEditor.edit`）；仍推荐设置文件 |
-| 04 | 本机运行时可复现观测 | 已执行 | 见下节命令与输出 |
+| 04 | 本机 `$DSH_HOME` 的静态结构读数 | 已执行 | 仅代表记录的本机样本，见下节 |
+| 05 | Web template 初始化与 bundle list 追加 | 已执行（CLI source） | 见[实验 05](./05-profile-bundle-install.md)；不验证产品 runtime |
 
 证据等级见 [40-evidence/00-index](../00-index.md)：T = 可复现命令 + 输出；C = 源码/docs 合同。
 

@@ -13,13 +13,13 @@
 | 结构化的插件记录（索引、游标、学到的知识、运行历史） | `ctx.storageDomain` | `$DSH_HOME/storages/<domain>.json`（`single`）或 `<domain>/<table>/<key>.json`（`per-record`） | home（记录键再切项目/会话） | 不能（除非你另做 UI） | 不能 |
 | 部署/用户可调的参数（开关、阈值、路径、模型名） | `Config` + `.volatile()` | 当前 profile 的 `cordis.patch.yml` | profile | 能，通过设置页 | 间接（被插件使用） |
 | 秘密（API key、token、密码） | `ctx.credentials` | `.credentials.yaml` / 环境变量 / `.env` | home（provider 管理） | 能，通过凭据 UI | 不能 |
-| 多字段凭据/授权记录（OAuth grant） | `ctx.credentials` 的 `CredentialKey` 记录 | 同一个 provider 文件 | home | 能，通过凭据 UI | 不能 |
+| 多字段凭据/授权记录（OAuth grant） | `CredentialKey` records API | credentials provider storage | home | 可由 owner UI 管理 | 不能 |
 | 纯浏览器 UI 状态 | `localStorage` / 桌面 `userData` | 浏览器/设备 | 源或设备 | 间接 | 不能 |
 | 可重建的索引/缓存 | 派生层（domain 的 `per-record`、`$DSH_HOME/cache`、`session_projcache`） | 同上 | 跟源 | 不需要 | 不能 |
 
 一句话：**domain 存事实，Config 存选择，credentials 存引用与授权记录，cache 存可丢弃的推导。**（表中位置与作用域是当前合同 **C**；域版本不符拒绝、`per-record` 键必须是 `[a-zA-Z0-9_-]+` 见 [reference](../40-evidence/reference.md)。）
 
-**产品型实例还有一类不在这张表里**：跨 profile 一致的产品全局设置。它放在 `dataRoot` 下的文件里，既不是 settings，也不写 profile patch（那些都按 profile 分裂）；为什么不能做成 `.volatile()` 见 [17 配置分层](./17-config-layers.md)。
+产品若需要跨 profile 共享设置，需明确选择共享机制，例如产品自建 home 文件或插件拥有的 home domain singleton。`Config.volatile()` Settings 写当前 profile，不会自动跨 profile 共享；产品自建文件不是 DSH 统一的 `dataRoot` API。选择细节见 [17 配置分层](./17-config-layers.md)。
 
 但 domain 不是“插件数据根”：它没有 per-plugin 目录、配额、scope、卸载清理；域名是包级静态声明，一个 Host 一个名字只能开一次。需要“按插件 id 隔离”的状态，要么用记录键，要么自造目录并承担生命周期（见 [11](./11-five-homes.md) 的“没有插件数据根”）。
 
@@ -112,7 +112,7 @@ per-record:  key = 'w_' + sha256(realpath)          // 只能这样
 - **表单只显示 volatile 字段**：一份没有任何 volatile 字段的 `Config` 不会出现在设置页；新增字段忘了标 volatile，用户的设置页会看不到它。
 - **写是“合并字段 + 乐观 revision”**，拒绝陈旧写入；`mutate` 按路径改，避免把客户端没收到的 secret 字段一起抹掉。
 - **home patch 与命令行 overlay 优先**：如果它们会覆盖表单写入，写入会被拒绝；表单不是最高层。
-- **profile 作用域，不是账号作用域**：换 profile 就是另一份配置；要跨 profile 共享，用 home 域单例，不要指望 `Config`。当前设计刻意拒绝“全局共享设置”；`$DSH_HOME/settings.yaml` 只被一次性 import 到活跃 profile，然后改名 `settings.yaml.imported`。**C/H**
+- **Settings form 的作用域是 profile，不是账号**：`Config.volatile()` 写当前 profile patch；不要据此假定有跨 profile Settings namespace。跨 profile 共享可由产品使用 home-domain singleton 或自建文件，并自行说明 owner/迁移。旧 `$DSH_HOME/settings.yaml` 只做一次性 import 到活跃 profile，之后重命名为 `settings.yaml.imported`。**C/H**
 - **嵌套 Include 的配置不进入当前 profile 的表单**，这是已知限制。
 
 ## `ctx.credentials`：只放引用与授权记录
@@ -169,13 +169,13 @@ OAuth grant、代理凭据这类**多字段、需要读-改-写**的东西，用
 | 安装参数（项目根、显示名） | `Config`（非 volatile） | profile patch | 启动前就要读到，装一次 |
 | 用户可改的产品偏好 | `Config`（volatile）或设置文件 | profile / 全局设置 | 见 [17](./17-config-layers.md) 的字段级二选一 |
 | 秘密 | `ctx.credentials` | home | 只存引用 |
-| 跨 profile 一致的产品设置 | 自造文件 | 全局设置 | settings 会按 profile 分裂 |
+| 跨 profile 一致的产品设置 | 产品自建文件或 home domain | home | 必须显式选择共享路径和迁移 owner |
 
 三条规则：
 
 1. 账本里再分"可重建索引 / 不可重建状态"（[15](./15-four-spaces.md)）；
 2. 同一字段不要同时给 settings 和文件两个入口；
-3. 产品全局设置不是 settings——它不写 profile patch。
+3. 跨 profile 的产品设置不能只靠当前 profile 的 Settings field；由产品选择共享的 home mechanism。
 
 ## 边界
 

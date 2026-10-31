@@ -4,7 +4,7 @@
 >
 > 下文提到的 `90-advisor/architectures/` 分篇后来合并回 [92](../90-advisor/92-native-reference-architectures.md)，目录已删；需要追溯看 git 历史。
 
-本轮对 FAQ 26 做了一次结构/一致性自查，并把 20 个平铺文件收进 5 个子目录 + 一个 advisor 入口。这里记录发现的问题、已修项和仍存在的边界。
+这是按日期记录的结构与一致性审查历史；较早条目不代表当前合同。当前事实与数据卡模板见目录正文和 [reference](./reference.md)。最近一次复核与验证范围见末尾的 2026-10-31 条目。
 
 ## 1. 结构
 
@@ -325,3 +325,13 @@
 - [15](../10-foundations/15-four-spaces.md) 的归属表把账本位置写成 `dataRoot`，与"优先 storageDomain"冲突；两行改为"优先 storageDomain；产品实例可 dataRoot"，会话行改为"账本位置"。
 - [40-evidence/00-index](../40-evidence/00-index.md) 的 experiments 行说"三个 U"，但 02/03 已收口为 C；改为"待确认项的实验记录（02/03 已收口为 C）"。
 - 验证：verify 26 子树 0；>200 字符非列表段落 0；表格列数一致。
+
+## 24. 2026-10-31 · 当前合同复核
+
+- 主文以一张数据卡分列 owner、authority、source (input/operation)、mechanism/path、scope/key、readers、writers、rebuildability 和 retention。P0–P4 标签分类已移除；产品资产 owner 与 DSH 存储机制分别在 15、11–13 作为查询参考。
+- 91 分列 Owner、Authority、Source/input、Readers 与 Writers；项目搜索索引标明 authority 为 none（derived），来源为项目文件。93 将假想产品的测试条件标成实现后的 acceptance criteria，并分开列本仓库可复现实验。92 矩阵只列 DSH 机制、产品选项和额外维护责任。
+- 21 图题统一为“12 类数据场景”，与其正文表一致。
+- 外部研究样本不构成依赖禁令或 package 背书；产品可依赖经审核的 package。`--from-default-profile` 替换目标 profile 的依赖与用户 patch，93 要求使用新名称或预先备份。
+- 临时 `$DSH_HOME` 下执行 `dsh --profile kanban --from-default-profile web --dump-default-config` 后，manifest 只列 base + web-app、dependencies 为空，旧用户 patch 替换为空 patch。未构建时 source Web launch 因缺少 `dsh-client-ui-entry-customization/lib/client.js` 失败。随后 `pnpm run build` 通过；隔离 profile 输出 tokenized `dsh web:` URL，该 URL 返回 HTTP 303；带上响应 cookie 跟随 redirect 后，根页面返回 HTTP 200 `text/html`。它未验证浏览器渲染或 Kanban 产品行为。93 将产品特定验收与本仓库可复现实验分开。
+- Profile composition 实验 05 通过。`pnpm run test:docs` 通过 21/21 gates，`pnpm run doc-sync` 通过 43/43 gates，`pnpm run lint` 成功，`git diff --check` 通过。lint 提示一个 `packages/experimental/client-ui-cot-translation` 中未使用的 disable directive，与本目录无关。
+- 整个 FAQ corpus verifier 报告的失败位于 26 目录之外的 03_model-vendors worktree；不能据此称整个 corpus 通过。

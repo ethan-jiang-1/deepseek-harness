@@ -10,9 +10,9 @@
 | [research-native.md](./research-native.md) | DSH 原生 33 个数据落点、44 事件清单、关键决定 |
 | [research-external.md](./research-external.md) | 外部插件约 97 个候选、15 个深读的样本与来源 |
 | [quality-review.md](./quality-review.md) | 本轮结构/一致性审计；计数结论截至 2026-10-27，不替代 API 证据 |
-| [experiments/](./experiments/00-index.md) | 实验记录（01 待执行，02/03 已收口为 C）与本机观测命令（T 级证据的来源） |
+| [experiments/](./experiments/00-index.md) | 启动竞态实验（01 未执行）、源码核验（02/03）与 CLI profile composition probe（05） |
 
-**插件即产品轮（2026-10-30）新增的 T 级观测**：`$DSH_HOME/storages/workspace.json`（domain `workspace` v2）、已绑定会话头（`cwd`/`agentPreset`/`sandbox/mode`/`approval/policy`）、某工作台类插件的 `node:fs` 落盘与 preset 工具面；结论见 [00-answer](../00-answer.md) 与 [15](../10-foundations/15-four-spaces.md)–[17](../10-foundations/17-config-layers.md)。
+**profile/template 安装的 T 级观测**：隔离 home 下从 Web template 初始化 custom profile，再安装本地 bundle fixture；实测顺序为 base、web-app、产品 bundle。命令与 manifest 结果见 [实验 05](./experiments/05-profile-bundle-install.md)。其他 runtime/provider data roots 需按各 package Config 合同分别验证。
 
 ## 历史底稿
 

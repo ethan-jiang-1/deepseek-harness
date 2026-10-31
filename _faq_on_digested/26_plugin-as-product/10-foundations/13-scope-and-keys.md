@@ -1,227 +1,59 @@
-# 13 · 作用域与键：数据跟哪个作用域走
+# 13 · 作用域与键：记录跟谁走
 
 ## 这一篇回答什么
 
-
-
-> 本篇按“一个插件服务多个 workspace”的通用场景写。产品型实例的根是一个还是多个，取决于架构选择（见 [15](./15-four-spaces.md) / [16](./16-startup-resolution.md)）。
-
-这一篇展开的是四层词汇里的**第四层（作用域与键）**：承诺见 [10](./10-taxonomy.md)，空间见 [15](./15-four-spaces.md)，家见 [11](./11-five-homes.md)。
-
-插件实例只有一份，但要服务多个 workspace、多个会话、多个项目。数据怎么切？项目级状态用什么键？`workspaceId` 行不行？目录被删了、被移了、工作区被重新添加了，会发生什么？
+同一 plugin 会服务多个 Session 和项目。作者要先决定一条数据跟哪个对象走，再选择可以代表该对象的 key。产品 project ID、Session 初始目录与 DSH Workspace ID 不是同一身份。
 
 ![作用域矩阵](../figures/13-scope-matrix.svg)
 
-## 六个作用域
+## 常见作用域
 
-| 作用域 | 谁的生命周期 | 典型数据 | 键 |
+| 作用域 | 跟随对象 | 例子 | 常见 key |
 |---|---|---|---|
-| session | 会话 | 这次对话的中间结果、模型可见事实、附件引用 | `SessionId` |
-| workspace | 项目目录 | 项目索引、上次同步位置、项目知识 | 规范化路径 / `workspaceId` / 项目内标记 |
-| profile | 一个组合（profile） | 插件开关、默认模型、输出目录 | profile entry id |
-| home | 这个 Host 账户 | 偏好、跨项目经验、账号级缓存 | 单例或人级键 |
-| client/device | 浏览器或设备 | 面板宽度、折叠状态、最近选择 | origin + 本地键 |
-| shared / external | 跨工具或外部服务 | 技能、`AGENTS.md`、MCP 服务 | 文件名 / 服务地址 |
+| Session | 一条会话 | 对话状态、Session 绑定、附件引用 | `SessionId` |
+| product project | 产品定义的业务项目 | 看板索引、项目知识、同步进度 | 产品 ID、path hash、项目标记 |
+| DSH Workspace | Host 的目录 registration | 导航顺序和 Session grouping | `WorkspaceId` |
+| profile | 一个 named composition | profile-local Config | profile name / entry id |
+| home | 一个 Harness data home | credentials、跨 Session 状态 | 单例或产品 key |
+| client/device | 一个 browser origin 或设备 | panel width、折叠状态 | origin + local key |
 
-你的“两块”在这里落位：**用户的内容**几乎总是 workspace 级或用户全局；**跟用户相关的状态**要再问一句“跟项目走还是跟人走”——前者 workspace 键，后者 home/profile。
+## `cwd` 与 `WorkspaceId`
 
-**产品型实例不是第七个作用域。** 它是“一份 profile 组合 + 一个 workspace 根 + 一份 home 级账本与全局设置”的合称；数据仍然按 session / workspace / profile / home 落位。为什么值得单列，见 [15 四个空间](./15-four-spaces.md)。
+只要指定 Session 的工作目录，显式传绝对 `cwd` 即可；Session header 保存初始 cwd。若还要把 Session 加入 DSH Workspace 的侧栏分组，传已有 Workspace 的 `workspaceId`。Host 从 registration 取得 canonical path 并 attach Session。两者互斥。
 
-## 插件是宿主级的，没有“每个项目一份实例”
+`WorkspaceId` 指向一条包含 path、title、顺序和 Session account 的 Host registration。它不是 path、产品 project ID 或权限 token。DSH 创建 Workspace 要求 path 是绝对且已经存在的目录；只传 `cwd` 不会自动创建 Workspace registration。
 
-这是与很多 IDE 插件最大的不同：
+`ctx.workingDirectory.get(session)` 返回当前有效目录。工具可以改变它，但这不会更改不可变的 Session header cwd、既有 Workspace membership 或 sandbox writable roots。插件不要从 `process.cwd()` 猜当前项目。
 
-- 插件在 Host 启动时挂载一次，`apply(ctx)` 每加载一次跑一次；它服务所有工作区、所有会话。
-- 没有“打开项目时重新初始化插件”的钩子；也没有“关闭项目时销毁插件”的钩子。
-- 要感知项目，只能从**会话头**、**工作区注册表**或**当前会话**取，不能从 `process.cwd()` 猜。
+## 产品 project ID 怎样选
 
-```text
-会话头：session.header.cwd（不可变，创建时写入，可能缺失）
-注册表：ctx.workspaceRegistry.list() / get(id)（可选能力）
-当前会话：ctx.workingDirectory.get(session)（会话级，可能被工具改过）
-```
+- 若数据跟当前目录绑定，canonical-path hash 可以作为索引 key；目录移动后原 key 会成为孤儿。
+- 若目录移动后仍代表同一业务项目，使用产品生成的 ID，或经用户同意写入项目标记；产品负责复制、丢失和恢复规则。
+- 若只管理 DSH Workspace registration，使用 `WorkspaceId`；删除后重建 registration 会产生新 ID，不会自动恢复原 Session grouping。
 
-shipped Web 组合挂载 `workspaceRegistry`；headless/SDK 组合可能没有它。插件要用就先 `inject` 并处理缺失，不要把“没有注册表”当成“没有项目”。
+没有一种 key 能同时保证可移动、可复制、跨 home 稳定且无需恢复操作。先说明接受哪种行为，再选 key。
 
-外部社区插件（E1，参考）补“每项目一套运行时”的做法是另一个服务：`dsh-workspace-overlay` 注册 `ctx.workspaceCordis`，用 canonical path 做 lease，最后一个租约释放时 dispose scope。它不是核心 API，不能当 DSH 的合同（见 31 篇）。
+## storage-domain key
 
-## 工作区的身份：id 短命，路径长命，但都不完美
+JSON storage domain 的 `per-record` layout 把 key 用作文件名的一段，必须匹配 `[a-zA-Z0-9_-]+`。路径和含 `/`、`:` 的复合 key 会被拒绝；可用 `w_` 或 `s_` 前缀加哈希。`single` layout 允许不透明字符串，但直接使用路径仍会把存储格式绑定到文件系统路径。
 
-| 标识 | 稳定吗 | 适合当键吗 |
-|---|---|---|
-| `WorkspaceId`（uuid） | 删除再添加同一目录会换新的（**C**） | **不适合**长期键；适合进程内引用 |
-| `workspace.path`（realpath） | 目录不改名/不移动就稳定；符号链接已解开 | **较适合**，但要处理移动/删除 |
-| `session.header.cwd` | 创建时写入，不可变 | 不能当“当前项目”：`working_directory` 可改，header 仍指创建路径 |
-| `ctx.workingDirectory.get(session)` | 会话级，可被工具改 | 当前工作的根；不是长期项目键 |
-| 会话目录名 `--<cwd>--` | 持久化层的内部编码，有损、可能截断 | **不能**反解成路径 |
-| 目录里的一个标记文件（如 `.your-plugin/id`） | 跟目录走、可复制 | **最稳**，但会污染仓库、要用户同意 |
-| 内容哈希（如 git remote + 相对路径） | 跨机器可认，但依赖内容 | 适合同步/去重，不适合单独当主键 |
+Domain name 是 package 声明的静态值，不能按 Workspace 动态创建。多个 profile entry 或项目共享一个 domain 时，用 record key 区分；profile 名和 entry ID 不是产品 project ID。
 
-所以项目级状态通常只有三条正路：
+## 常见数据 key
 
-### 路 A：写在项目里
-
-```text
-<workspace>/.your-plugin/
-├── config.json      # 用户可编辑
-├── memory.md        # 用户可读
-└── index.json       # 你的索引（可重建）
-```
-
-优点：删除目录即删除数据；复制/提交/换机器都跟着走；用户看得见、能救。
-代价：污染仓库（要 `.gitignore` 或明确目录约定）；用户可能手改到坏；要尊重沙箱与权限；多人协作时会冲突。
-
-### 路 B：写在 home，用稳定键
-
-```text
-domain: your_plugin
-table: projects
-key:   w_<sha256(realpath)>       # per-record 必须是路径安全字符
-value: { path, index, cursor, updatedAt }
-```
-
-优点：干净、结构化、模型不可见；不污染项目；查询方便。
-代价：目录移动/删除会留孤儿；换机器不带走；要做清理与重建；路径大小写/分隔符/符号链接要统一规范。
-
-### 路 C：项目内标记 + home 账本
-
-项目里放一个很小的、用户可见的 id 文件（或使用仓库已有的稳定标识，如 git remote + 仓库相对路径），home 账本用这个 id 作键。它同时解决“目录移动”和“换机器”的一半问题，代价是项目里多一个文件，以及用户可能复制/删除它。
-
-## 键的代数
-
-**第一原则：键必须来自规范化标识，不是用户输入的原始字符串。**（工作区唯一性 = canonical path 字符串相等；**C**）
-
-- 路径规范用 `fs.realpath` 的口径：尾斜杠、`..`、符号链接都解开；DSH 自己的工作区唯一性就是 canonical path 字符串相等。
-- Windows 的大小写、分隔符、短路径要单独测试；不要把 POSIX 的写法当成跨平台。
-- 不要把 `displayPath` 当键：它可能是相对路径、远端 URI 或 `~` 形式。
-
-**第二原则：per-record 键是路径段，不是任意字符串。**
-
-- JSON `per-record` 后端的键必须匹配 `[a-zA-Z0-9_-]+`；`realpath`、`session:<id>`、`a/b` 都会被拒绝。
-- 用带前缀的哈希：`w_` + `sha256(realpath)` 十六进制；`s_` + session id（如果 id 本身安全）；`v1_` 做 schema 版本前缀。
-- `single` 布局没有这个限制，但把路径直接当键会让 unit 文件变成“路径数据库”，迁移时更难拆。
-
-**第三原则：复合键要有明确的分段和转义。**
-
-```text
-per-record:  w_<hash>_s_<sessionId>       # 每段都安全
-single:      workspace/<realpath>/session/<id>  # 可读，但要自己处理分隔符
-```
-
-不要把用户输入直接拼进键；不要用 `:`、`/`、空格、Unicode 作为 per-record 分隔符。
-
-**第四原则：多实例要带实例键。**
-
-域名单个 Host 只能打开一次；同一个插件的两个实例（不同 profile 条目、不同配置）不能各开一个域。把实例 id 放进记录键，例如 `inst_<profileEntryId>_w_<hash>`，或者用一张 `instances` 表。
-
-## 目录移动/删除时到底发生什么
-
-| 事件 | 项目内数据 | home 域（路径键） | 工作区记录 | 会话 |
-|---|---|---|---|---|
-| 目录改名/移动 | 跟着走 | 变成孤儿（旧键失效） | 保留旧路径，`status()` 报 `missing-dir` | `header.cwd` 仍指旧路径 |
-| 删除目录 | 一起没了 | 孤儿 | 保留（路径不重写） | 日志还在，工具会失败 |
-| 删除工作区记录 | 不动 | 不动 | 没了 | 立即 Ungrouped |
-| 重新添加同一目录 | 还在 | 旧键可复用（路径没变） | 新 uuid、空账户 | 旧会话不会自动回来 |
-| 换 `$DSH_HOME` | 还在（跟目录走） | 没了 | 没了 | 没了 |
-| 换机器 | 跟仓库走 | 没了 | 没了 | 没了（除非导出） |
-
-这张表决定了你的清理策略：
-
-- 路径键的记录要带 `lastSeenAt`，并在读到已不存在的路径时标记/清理；
-- 不要把 `workspaceId` 存进长期记录，除非你接受“删一次工作区就失联”；
-- 目录移动后，想找回旧数据只能靠用户手动指定、项目内标记或内容哈希，路径键帮不了你；
-- 删除工作区记录不会触发任何“数据删除”回调；你的清理只能靠下次启动扫描或用户显式操作。
-
-## 核心没有“每 workspace 一个数据家”
-
-`DomainSpec` 没有 scope 字段；domain 名是包级静态声明，一个 Host 一个名字只能打开一次。proposed 的 domain KV 笔记把 **scope dimension** 明确列为 out-of-scope：等“每 workspace 一个 domain”的真实消费者出现，再给 `DomainSpec` 加 scope 声明 + 文件名 scope 段。**P**
-
-外部插件（E1，参考）因此出现四种互不兼容的表示：
-
-| 表示 | 样本（E1，参考） | 键 |
-|---|---|---|
-| canonical path scope + lease | workspace-overlay（E1） | `realpath(cwd)` |
-| settings 字段按 workspace | custom-workspace（E1） | `workspaceId` / Host path |
-| storage-domain 按 workspace | session_folders（E1） | workspace 记录/文件夹 |
-| home 目录按 workspace | workspace-memories（E1） | `workspaceId` |
-
-这也是“没有 per-workspace 实例”真正缺的东西：不是“没有目录”，是**没有统一的作用域 + 键 + 生命周期**。
-
-## 跨工作区聚合：不要扫盘，扫注册表/会话
-
-一个“跨项目”的插件（例如全局搜索、项目总览）需要枚举项目。按可靠性排序：
-
-1. `ctx.workspaceRegistry.list()`（如果有）：拿到用户真正登记过的项目（已过滤失效成员）；
-2. `ctx.sessionQuery.listSessions()` / `filterSessions({ kind: 'cwd', values: [...] })`：能覆盖没有登记过工作区的目录，但包含历史噪音；
-3. 自己维护的项目表：只包含你见过的项目，需要清理。
-
-不要遍历 `$DSH_HOME/sessions/--*--` 目录名反解路径：那是持久化层的内部编码（slug 化、可能截断），不是给你做项目发现的 API。要读会话内容，走 `ctx.sessionQuery.readSession` / `readSurface`，不要自己解压日志文件。
-
-## 人的数据：home 的单例与可移植性
-
-“跟人走”的状态（偏好、跨项目经验、学习到的画像）放 home：
-
-- 结构化 → home 域的单例记录（`global` 槽或固定键）；
-- 用户可读的知识 → `$DSH_HOME/skills`、`$DSH_HOME/AGENTS.md`，或跨工具共享的 `~/.agents`（`DSH_AGENTS_HOME` 可覆盖）；
-- 参数 → Config 的 volatile 字段（按 profile 生效，不是按人）；
-- 秘密 → credentials。
-
-但要接受：**home 是机器/账户本地的**。换机器、换 `DSH_HOME`、换 Host，数据不跟着走。如果用户期望“我的偏好在任何机器都一样”，那不是 DSH 内置能力，需要你自己做导入/导出（或像外部插件那样用 git 做同步；E1，参考）。
-
-另一个容易混的点：**profile 不是人，也不是项目**。同一个 `$DSH_HOME` 下可以有多个 profile（web、headless、产品自有名），每个 profile 有自己的配置 patch；`Config` 的作用域是 profile，不是“这个用户”。
-
-要跨 profile 共享，用 home 作用域的文件或域——产品全局设置就是这么放的（见 [17](../10-foundations/17-config-layers.md)）。
-
-## 多用户与远程：home 是 Host 账户的，不是浏览器的
-
-- 远程 Web 客户端连的是同一个 Host，读到的是同一个 `$DSH_HOME`；没有“每个浏览器用户一份 home”。
-- 远程访问（`remoteAccess`）是**授权策略**：非 owner 调用要按资源/动作通过 policy；它不提供按用户分区的数据存储。
-- 如果插件需要“每个终端用户自己的数据”，DSH 当前没有内建的租户模型；要么由部署层注入不同的 Host/home，要么在插件里自己带主体键（并自己解决隔离与授权）。
-- 浏览器 `localStorage` 是设备/源级的，不是用户级的；同一台机器的同一浏览器只算一个“客户端身份”。
-
-## 作用域选择表
-
-| 事实 | 作用域 | 家 | 键 |
+| 事实 | 作用域 | 存储 | key |
 |---|---|---|---|
-| 生成的报告/代码 | workspace | 内容 | 文件路径 |
-| 这次对话的中间结果 | session | 历史/内存 | `SessionId` |
-| 项目索引 | workspace | 派生 | 路径哈希 + 内容哈希 |
-| 项目知识（用户可读） | workspace | 内容 | 项目内文件 |
-| 项目同步游标 | workspace | 状态 | 路径哈希 |
-| 个人偏好 | profile/home | 状态/配置 | 单例 |
-| 跨项目经验 | home | 状态/内容 | 单例或主题键 |
-| 密钥 | home | 凭据 | `CredentialRef` / `CredentialKey` |
-| 用户上传的图片 | session | 内容（附件库） | `AttachmentId` |
-| 面板宽度/折叠状态 | device | 客户端 | origin + 本地键 |
-| 产品的项目清单/游标 | workspace（存 home） | 账本 | 路径哈希 `w_<sha256>` |
-| 会话 ↔ 项目绑定 | workspace（存 home） | 账本 | `SessionId` + 项目 id |
-| 产品全局设置 | home | 状态 | 单例文件 |
-| 插件出厂模板/种子 | 无（包内只读） | —— | 包名 + 版本 |
+| 用户项目文件 | product project | 用户目录中的文件 | 相对文件路径 |
+| 可重建项目索引 | product project | domain/cache | 产品 ID 或 canonical-path hash |
+| DSH Workspace grouping | DSH Workspace + Session | Workspace registry | `WorkspaceId` + `SessionId` |
+| 产品 Session 绑定 | 产品定义的 project + Session | 产品账本 | `SessionId` + 产品 project ID |
+| 当前 UI 选择 | client/device | browser storage | origin + local key |
+| Profile-local 设置 | profile | volatile Config | profile entry + field |
 
-## 产品实例的三把键
-
-| 键 | 用什么 | 不要用什么 | 原因 |
-|---|---|---|---|
-| 项目键（账本记录） | `w_<sha256(realpath)>` | `workspaceId`、裸路径 | 删重加会换 uuid；JSON per-record 键必须是 `[a-zA-Z0-9_-]+` |
-| 实例键（同插件多实例） | 记录键前缀 `inst_<entryId>_` | domain 名 | domain 名静态，一个 Host 一个名字只能打开一次 |
-| 会话绑定 | `SessionId` → 项目 id | 用 cwd 反推 | 会话 cwd 与项目目录可以无关；绑定要显式 |
-
-换机器或换 `$DSH_HOME` 后，这三把键全部失效（home 级数据不跟走）；要携带项目身份，只能在目录内放 marker。详见 [15 四个空间](./15-four-spaces.md)。
-
-## 产品型实例里怎么用
-
-- **一个根还是多个根**：架构 I（工具中介）通常只有一个账本根；架构 II（workspace 化）每个项目一个 workspace，项目键用 canonical path 哈希。见 [15](./15-four-spaces.md)。
-- **用户选定的根**不放这里：它属于全局设置（[16](./16-startup-resolution.md)）。
-- **会话 → 项目绑定**放账本·状态，键是 `SessionId` + 项目 id；不要用 `cwd` 反推（两者可以无关）。
-- **不要用 `workspaceId` 当长期键**：删了重加会换 uuid；路径哈希更稳。
-- 换 `$DSH_HOME` 或换机器后，这些键全部失效；要携带项目身份只能在目录里放 marker。
-
-键的细节见本篇第三节"键的代数"与第七节"产品实例的三把键"。
+需要跨 profile 的设置不应假设由 profile Config 自动共享；见 [17](./17-config-layers.md)。
 
 ## 边界
 
-- 路径规范化用 `fs.realpath` 的口径；Windows 的大小写与分隔符要单独测试。
-- 工作区路径可能是仓库的子目录，不等于 git 根；技能发现用的是“最近的 `.git` 祖先”，不要混用这两个概念。
-- `session.header.cwd` 不可变，所以会话的**项目归属**不会跟着 `working_directory` 变；当前工作目录可以改，但 workspace 成员与项目分组仍锚定 header.cwd。跨项目迁移只能新建会话（外部插件有直接改日志 header 的做法；E1，风险自负）。
-- `ctx.workspaceRegistry` 是可选能力；不要假设每个组合都有。
-- session 日志有跨进程写租约；domain JSON 没有。两者不要混为一谈。
+- Profile 组合不是 scope，也不提供 home 隔离。
+- Workspace deletion 只删除 Host registration，不删除项目目录、产品账本或 Session log。
+- DSH 没有内建的多租户或跨机器 project-ID 同步服务。

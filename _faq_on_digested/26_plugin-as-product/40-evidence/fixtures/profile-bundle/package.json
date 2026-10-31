@@ -1,0 +1,10 @@
+{
+  "name": "@example/faq26-product-bundle",
+  "version": "1.0.0",
+  "private": true,
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

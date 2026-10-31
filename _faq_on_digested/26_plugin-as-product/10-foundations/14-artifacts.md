@@ -117,7 +117,7 @@ Web 的 `/export`（或 Session Header 的 Download session log）会把会话�
 | 会话中间的大段输出 | spill | 交付目录 |
 | 备份/迁移 | 会话导出 + 用户自己的目录备份 | 依赖附件库的 GC |
 
-产品型实例最容易犯的错：**把交付物写进附件库或 `dataRoot`**——用户找不到、换机器丢、没有 GC。交付物必须落在用户能看见的 workspace 里。
+用户要打开或携带的交付物应写到用户可访问的位置，再用 `present` 声明。该工具要求 Agent Session、DSH Workspace 和已打开的 turn；文件路径可以位于 cwd 之外，但仍需确认用户可访问。会话导出不包含被 present 文件的内容。不要把仅供模型读取的附件或 spill 当作用户交付目录。
 
 ## 边界
 

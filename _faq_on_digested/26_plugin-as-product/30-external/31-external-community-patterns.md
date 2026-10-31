@@ -2,11 +2,11 @@
 
 ## 这一篇回答什么
 
-**角色：外部参考层（E1/E2）。** 本篇回答“别人怎么切”，只借模式、不作依赖；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。
+**角色：外部参考层（E1/E2）。** 本篇记录外部样本怎样处理数据，不验证其可安装性或运行质量；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。
 
 本 FAQ 第一版把社区做法压成“五种承诺”，够用但太粗；这一版扩成九个维度。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
 
-> **外部参考，不是原生方案。** 本文件只记录第三方插件/社区模式；长期优先 [21 原生 landscape](../20-native/21-native-data-landscape.md) 的 N0/N1。外部插件只借模式，不作依赖；E1/E2 的迁移/清理/兼容成本要自己承担。
+> **外部参考，不是 DSH 合同。** 本文件的社区样本只用于比较设计。产品可以依赖经审核的 package；应评估其来源、license、兼容范围、数据生命周期和维护状态。
 
 **验证口径（2026-10-27）。** 对九个仓库做了 README 与源码阅读，并对照本仓 `dsh-v0.2.1-rc.3` 的源码；**没有安装、没有运行**，所以“已验证”只代表源码层面能对上，不代表行为已在你的环境成立。星数/目录条目只能说明曝光，不能说明质量或安全；不同目录的计数互相矛盾（13,882 / 20,006 / 23,307），本篇不选边。
 
@@ -177,18 +177,18 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 | 17 | 物理删除 + 宽限 + 审计 | 归档会话保留期 | archive-retention | 绝不删 live；先父后子；审计清单；失败保守 |
 | 18 | 只改日志首帧 header | 工作区搬家 | session-workspace-organizer | 只改必要字段、后续帧不动、无 live 才允许；普通插件不要模仿 |
 
-## 按插件类型的选型矩阵
+## 按插件类型检查数据卡
 
-| 插件类型 | 推荐承诺/落点 | 介质 | 位置 | 必做防护 |
-|---|---|---|---|---|
-| 只读知识注入 | P0 | 用户文件 | 原地 | 路径绝对化、字节预算、缺失行为 |
-| 项目记忆/上下文 | P2 + P1 | Markdown + journal | 项目内（可 opt-in home） | `.gitignore`、锁、备份、手改收编 |
-| 个人长期记忆 | P3 + P4 | Markdown/SQLite | home | 稳定项目键、确认队列、同步 |
-| 图谱/向量记忆 | P1 + P3 | SQLite | home | 迁移表、抽取成本、不可信标记 |
-| 用量/统计面板 | P1 | 检查点 | home/项目 | 不存正文、可重建 |
-| 渠道/账号集成 | P4 | profile/env | home | 凭据引用、去重状态 |
-| 每项目运行时 | 运行时落点（不是承诺） | 项目配置 | 项目内 | trust 开关、lease/dispose |
-| UI/主题 | 客户端落点或 P4 | 配置/localStorage | 浏览器/home | 卸载清理、跨设备预期 |
+| 插件类型 | Owner / mechanism | 需要说清楚 |
+|---|---|---|
+| 只读知识注入 | 用户文件，原地读取 | 路径解析、字节上限、缺失行为 |
+| 项目记忆/上下文 | 项目文件；索引可另作派生 | `.gitignore`、并发、备份、手改如何收编 |
+| 个人长期记忆 | 用户/产品 home file 或 SQLite | 项目 key、确认流程、同步与删除 |
+| 图谱/向量记忆 | authoritative DB + derived vectors | schema migration、抽取成本、不可信标记 |
+| 用量/统计面板 | 从 Session 派生 | 不存正文、重建路径和 scope |
+| 渠道/账号集成 | profile Config + credentials | CredentialRef/record owner、去重与撤销状态 |
+| 每项目运行时 | 产品定义的 project scope | trust、lease/dispose、并发和崩溃恢复 |
+| UI/主题 | origin/device local state 或产品 setting | 卸载清理、跨 profile/device 预期 |
 
 ## 三个核心缺口，社区怎么补
 
@@ -213,17 +213,9 @@ custom-workspace 在 0.1.0-rc.6 上因此造了自定义 RPC；新插件应先�
 3. **双写实验**：两个 Host/两个进程同时写同一份数据，看是丢更新、报错，还是靠锁串行；如果没有保护，就在文档里写明“单 Host”。
 4. **换源实验**（客户端）：用两个端口/两个浏览器打开，确认 `localStorage` 状态是否按预期隔离。
 
-## 映射到四个空间与六种承诺
+## 将外部模式转成数据卡
 
-外部手法只作模式参考；落到 DSH 时，先判断它属于哪个空间、兑现哪种承诺：
-
-| 社区手法 | 空间 | 承诺 | DSH 里的等价物 |
-|---|---|---|---|
-| 零存储、只注入路径 | 插件包 + workspace（只读） | P0 | Config 路径清单 + `ctx.fs` 读 |
-| journal 权威 + Markdown 渲染 | workspace | P2 | 项目内 `.agents/` 目录 |
-| 按项目存 home、路径键 | 账本（索引/状态） | P3 | `storageDomain` + `w_<sha256>` |
-| 设置里选存储位置 | 全局设置 | P4/P5 | `dataRoot` 文件 |
-| 每项目一套运行时 | —（运行时缺口） | 不是承诺 | E1 lease，见 [92](../90-advisor/92-native-reference-architectures.md) |
+外部样本展示的是不同实现，并不提供统一分类。迁移到 DSH 产品时，分别写清 owner、mechanism/path、scope/key、readers/writers、rebuildability 和 retention。例如：只读知识仍由用户文件权威；journal 可作为用户内容的权威而 Markdown index 是派生；home 记忆由 plugin 拥有；每项目 runtime 需要产品自己定义 scope/lease，或审核一个实际依赖的 E1 package。其他数据用途见 [92](../90-advisor/92-native-reference-architectures.md)。
 
 ## 边界
 
