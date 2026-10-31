@@ -44,9 +44,9 @@
 | Q7 | DSH 的五个家与客户端状态是什么关系？ | [11 五个家](./10-foundations/11-five-homes.md) |
 | Q8 | `present`、changes、attachments 和 spill 各服务谁？ | [14 产物](./10-foundations/14-artifacts.md) |
 | Q9 | DSH 存储能力的形成历史有什么当前影响？ | [22 原生数据历史](./20-native/22-native-data-history.md) |
-| Q10 | 外部插件和其他生态有哪些可借模式？ | [31](./30-external/31-external-community-patterns.md)、[32](./30-external/32-external-adjacent-ecosystems.md)、[33](./30-external/33-external-plugin-patterns.md) |
+| Q10 | DSH 外部插件有哪些可借模式？ | [31](./30-external/31-external-community-patterns.md)、[32](./30-external/32-external-ecosystem.md)、[33](./30-external/33-external-plugin-patterns.md) |
 | Q11 | Profile bundle 如何安装、更新与卸载？数据清理由谁负责？ | [18 安装生命周期](./10-foundations/18-install-upgrade.md) |
-| Q12 | 如何把数据决策、架构选择和验证串成施工流程？ | [90 动手](./90-advisor/00-index.md)、[91 检查表](./90-advisor/91-checklist.md)、[92 架构矩阵](./90-advisor/92-native-reference-architectures.md)、[93 Web profile 走查](./90-advisor/93-app-plugin-walkthrough.md) |
+| Q12 | 如何从 profile 文件走到产品 Session、工具和数据？ | [90 主线](./90-advisor/00-index.md)、[93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)、[91 数据卡](./90-advisor/91-checklist.md)、[92 参考矩阵](./90-advisor/92-native-reference-architectures.md) |
 
 ## 一句话预告
 
@@ -66,5 +66,5 @@
 1. **先看摘要**：[00-answer](./00-answer.md) 了解产品 profile 与数据维度。
 2. **准备设计**：[10](./10-foundations/10-taxonomy.md) → [15](./10-foundations/15-four-spaces.md) → [16](./10-foundations/16-startup-resolution.md) → [17](./10-foundations/17-config-layers.md)。
 3. **逐块选数据机制**：按需读 [11](./10-foundations/11-five-homes.md)、[12](./10-foundations/12-state-homes.md)、[13](./10-foundations/13-scope-and-keys.md)、[14](./10-foundations/14-artifacts.md)。
-4. **开始动手**：按 [90](./90-advisor/00-index.md) → [92](./90-advisor/92-native-reference-architectures.md) → [93](./90-advisor/93-app-plugin-walkthrough.md) 走；用 [91](./90-advisor/91-checklist.md) 验收，按 [18](./10-foundations/18-install-upgrade.md) 处理生命周期。
-5. **核实研究材料**：[21/22](./20-native/21-native-data-landscape.md) 提供 DSH 参考；[31–33](./30-external/31-external-community-patterns.md) 是外部模式，不是 DSH 合同；[40-evidence](./40-evidence/00-index.md) 提供来源与命令。
+4. **开始动手**：沿 [90 主线](./90-advisor/00-index.md) → [93 Kanban 文件例子](./90-advisor/93-app-plugin-walkthrough.md)；完工用 [91](./90-advisor/91-checklist.md) 验收。遇到存储或隔离取舍，再查 [92](./90-advisor/92-native-reference-architectures.md) 和 [18](./10-foundations/18-install-upgrade.md)。
+5. **核实研究材料**：[21/22](./20-native/21-native-data-landscape.md) 提供 DSH 参考；[31–33](./30-external/31-external-community-patterns.md) 是 DSH 外部生态模式，不是 DSH 合同；[40-evidence](./40-evidence/00-index.md) 提供来源与命令。

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" width="1200" height="690" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>产品型外部插件：八种可借鉴的数据结构</title>
+  <desc>从 15 个 DSH 外部插件深读里挑出的八组产品级数据结构：项目绑定、每项目运行时、产品设置、知识库、生命周期、凭据、迁移、协作面板。每行给出代表做法、可借鉴的结构和不要照抄的做法。</desc>
+
+  <rect width="1200" height="690" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">产品型外部插件：八种可借鉴的数据结构</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">97 候选 → 15 深读；只取进入产品领域的样本；外部 = DSH 生态，不是其他产品</text>
+
+  <!-- table header -->
+  <rect x="24" y="84" width="182" height="32" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+  <text x="40" y="105" font-size="11" font-weight="700" fill="#3730a3">产品问题</text>
+  <rect x="206" y="84" width="394" height="32" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+  <text x="222" y="105" font-size="11" font-weight="700" fill="#3730a3">外部做法（代表）</text>
+  <rect x="600" y="84" width="330" height="32" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+  <text x="616" y="105" font-size="11" font-weight="700" fill="#3730a3">可借鉴的结构</text>
+  <rect x="930" y="84" width="246" height="32" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+  <text x="946" y="105" font-size="11" font-weight="700" fill="#3730a3">别照抄</text>
+
+  <!-- rows -->
+  <g>
+    <rect x="24" y="120" width="1152" height="58" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="40" y="144" font-size="11" font-weight="700" fill="#1e40af">项目绑定</text>
+    <text x="40" y="164" font-size="9.5" fill="#64748b">项目根 + gitignore</text>
+    <text x="222" y="144" font-size="10" fill="#334155">project-context：项目根 = git 顶层；</text>
+    <text x="222" y="164" font-size="9.5" fill="#64748b">workspace-memories：home / 项目内两种选项</text>
+    <text x="616" y="144" font-size="10" fill="#334155">先定义项目根与稳定键；数据放项目内独立目录，</text>
+    <text x="616" y="164" font-size="9.5" fill="#64748b">只忽略自己的目录</text>
+    <text x="946" y="144" font-size="10" fill="#b45309">整份会话日志复制进项目</text>
+    <text x="946" y="164" font-size="9.5" fill="#b45309">（写放大）</text>
+
+    <rect x="24" y="182" width="1152" height="58" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="40" y="206" font-size="11" font-weight="700" fill="#1e40af">每项目运行时</text>
+    <text x="40" y="226" font-size="9.5" fill="#64748b">lease / trust</text>
+    <text x="222" y="206" font-size="10" fill="#334155">workspace-overlay：项目内只读 cordis.yml；</text>
+    <text x="222" y="226" font-size="9.5" fill="#64748b">canonical path lease + 整树回滚</text>
+    <text x="616" y="206" font-size="10" fill="#334155">配置当只读输入；lease 管 scope 生命周期；</text>
+    <text x="616" y="226" font-size="9.5" fill="#64748b">最后租约释放时 dispose</text>
+    <text x="946" y="206" font-size="10" fill="#b45309">默认信任仓库配置</text>
+    <text x="946" y="226" font-size="9.5" fill="#b45309">（克隆即挂代码）</text>
+
+    <rect x="24" y="244" width="1152" height="58" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="40" y="268" font-size="11" font-weight="700" fill="#1e40af">产品设置</text>
+    <text x="40" y="288" font-size="9.5" fill="#64748b">host 权威</text>
+    <text x="222" y="268" font-size="10" fill="#334155">custom-workspace：workspace 键 + loopback RPC；</text>
+    <text x="222" y="288" font-size="9.5" fill="#64748b">beauty-persist：localStorage → host 文件</text>
+    <text x="616" y="268" font-size="10" fill="#334155">host 是权威、客户端只是缓存；</text>
+    <text x="616" y="288" font-size="9.5" fill="#64748b">稳定键 + loopback-only + 校验</text>
+    <text x="946" y="268" font-size="10" fill="#b45309">settings 当 DB；</text>
+    <text x="946" y="288" font-size="9.5" fill="#b45309">workspaceId 当长期键</text>
+
+    <rect x="24" y="306" width="1152" height="58" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="40" y="330" font-size="11" font-weight="700" fill="#1e40af">知识库/上下文</text>
+    <text x="40" y="350" font-size="9.5" fill="#64748b">边界 + 软删</text>
+    <text x="222" y="330" font-size="10" fill="#334155">kb-manager：每 KB SQLite + 软删 + compact；</text>
+    <text x="222" y="350" font-size="9.5" fill="#64748b">mnemon：sources → strategy → view</text>
+    <text x="616" y="330" font-size="10" fill="#334155">一个 KB 一个边界（数据/索引/任务/审计）；</text>
+    <text x="616" y="350" font-size="9.5" fill="#64748b">派生视图按 turn 冻结</text>
+    <text x="946" y="330" font-size="10" fill="#b45309">每 KB 一个 DB 的成本；</text>
+    <text x="946" y="350" font-size="9.5" fill="#b45309">无 retention</text>
+
+    <rect x="24" y="368" width="1152" height="58" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="40" y="392" font-size="11" font-weight="700" fill="#1e40af">生命周期/保留</text>
+    <text x="40" y="412" font-size="9.5" fill="#64748b">宽限 + 审计</text>
+    <text x="222" y="392" font-size="10" fill="#334155">archive-retention：宽限 + 审计 + 不删 live；</text>
+    <text x="222" y="412" font-size="9.5" fill="#64748b">memory-evolve：确认队列</text>
+    <text x="616" y="392" font-size="10" fill="#334155">保留期产品化；AI 写入先提议；</text>
+    <text x="616" y="412" font-size="9.5" fill="#64748b">失败保守</text>
+    <text x="946" y="392" font-size="10" fill="#b45309">物理删日志当常规</text>
+
+    <rect x="24" y="430" width="1152" height="58" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="40" y="454" font-size="11" font-weight="700" fill="#1e40af">凭据/团队</text>
+    <text x="40" y="474" font-size="9.5" fill="#64748b">provider seam</text>
+    <text x="222" y="454" font-size="10" fill="#334155">credentials-mysql：外部 provider + schema</text>
+    <text x="222" y="474" font-size="9.5" fill="#64748b">fail-closed + 行锁 + 字段加密</text>
+    <text x="616" y="454" font-size="10" fill="#334155">provider 可替换；版本 fail-closed；</text>
+    <text x="616" y="474" font-size="9.5" fill="#64748b">owner scope</text>
+    <text x="946" y="454" font-size="10" fill="#b45309">换 provider 无迁移</text>
+    <text x="946" y="474" font-size="9.5" fill="#b45309">/卸载契约</text>
+
+    <rect x="24" y="492" width="1152" height="58" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="40" y="516" font-size="11" font-weight="700" fill="#1e40af">迁移/导入</text>
+    <text x="40" y="536" font-size="9.5" fill="#64748b">预览 + 幂等</text>
+    <text x="222" y="516" font-size="10" fill="#334155">claude-move：scan → preview → apply；</text>
+    <text x="222" y="536" font-size="9.5" fill="#64748b">codex-sync：映射 + 冲突状态</text>
+    <text x="616" y="516" font-size="10" fill="#334155">高风险写先预览；幂等 move.json；</text>
+    <text x="616" y="536" font-size="9.5" fill="#64748b">冲突三选一 + dry-run</text>
+    <text x="946" y="516" font-size="10" fill="#b45309">双向同步没有冲突策略</text>
+
+    <rect x="24" y="554" width="1152" height="58" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
+    <text x="40" y="578" font-size="11" font-weight="700" fill="#1e40af">协作/面板</text>
+    <text x="40" y="598" font-size="9.5" fill="#64748b">持久消息 / UI 状态</text>
+    <text x="222" y="578" font-size="10" fill="#334155">agent-mailbox：持久 inbox/threads/receipts；</text>
+    <text x="222" y="598" font-size="9.5" fill="#64748b">session_folders：storage-domain UI 状态</text>
+    <text x="616" y="578" font-size="10" fill="#334155">持久消息家；服务端 UI 状态；</text>
+    <text x="616" y="598" font-size="9.5" fill="#64748b">面板只存可重建派生</text>
+    <text x="946" y="578" font-size="10" fill="#b45309">纯 localStorage；</text>
+    <text x="946" y="598" font-size="9.5" fill="#b45309">未读源码就依赖</text>
+  </g>
+
+  <!-- footer -->
+  <text x="24" y="636" font-size="9.5" fill="#64748b">口径：2026-10-27 对 97 个候选做目录/README 扫描，15 个深读；没有安装、没有运行。S/R 不建立 DSH API 合同，也不构成依赖背书。</text>
+  <text x="24" y="656" font-size="9.5" fill="#64748b">八个结构不是八种发明：它们反复撞到同一批缺口；缺口清单与 DSH 现状见正文。</text>
+</svg>

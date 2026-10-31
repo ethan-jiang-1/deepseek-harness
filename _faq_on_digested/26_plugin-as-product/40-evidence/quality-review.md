@@ -192,7 +192,7 @@
 
 - **92 拆分**：拆成总览（九格画布、依赖层级路线表、分篇索引、选型表）与 `90-advisor/architectures/` 下 11 个分篇（01–11）。[00-index](../00-index.md) 的 archetype 链接改指分篇，目录树与章节地图同步。
 - **旧章重写**：[21](../20-native/21-native-data-landscape.md) 增加"产品型实例视角"（六个高频落点与 N+ 的含义）；[22](../20-native/22-native-data-history.md) 增加四条历史决定对产品的后果。
-- **外部章映射**：[31](../30-external/31-external-community-patterns.md)、[32](../30-external/32-external-adjacent-ecosystems.md)、[33](../30-external/33-external-plugin-patterns.md) 各补"映射到四个空间与六种承诺"。
+- **外部章映射**：[31](../30-external/31-external-community-patterns.md)、[32](../30-external/32-external-ecosystem.md)、[33](../30-external/33-external-plugin-patterns.md) 各补"映射到四个空间与六种承诺"。
 - **18 加深**：[18](../10-foundations/18-install-upgrade.md) 补失败与半装、回滚演练、`dataRoot` 迁移、卸载验收。
 - **证据标注**：[12](../10-foundations/12-state-homes.md)、[13](../10-foundations/13-scope-and-keys.md)、[91](../90-advisor/91-checklist.md)、[92](../90-advisor/92-native-reference-architectures.md) 补行内 `C` 标注。
 - **验证**：`node _faq_on_digested/verify.mjs` 在 26 子树 0 违规（38 篇 Markdown）。
@@ -210,7 +210,7 @@
 ## 12. 2026-10-30 · 收尾：外部参考压缩、事件映射、答案收紧
 
 - **[31](../30-external/31-external-community-patterns.md)**：删掉独立的 "v2 市场补充" 小节，把五条观察折进维度三（凭据三种家、卸载非生命周期）、维度八（迁移只在严肃数据）、维度九（客户端跨源、声明质量）；补一条指向 33 的深读链接。
-- **[32](../30-external/32-external-adjacent-ecosystems.md)**：把 "映射回 DSH" 与 "映射到四个空间与六种承诺" 合并为一节。
+- **[32](../30-external/32-external-ecosystem.md)**：把 "映射回 DSH" 与 "映射到四个空间与六种承诺" 合并为一节。
 - **[33](../30-external/33-external-plugin-patterns.md)**：把 "横向模式" 与 "五个作者在补的缺口" 合并为 "横向模式与缺口"（表 + 五条收敛）。
 - **[22](../20-native/22-native-data-history.md)**：时间线表新增 "层/空间" 列，22 个事件逐条标注。
 - **[00-answer](../00-answer.md)**：211 → 179 行；选型压成"第 0 问 + 承诺速查"，主要 API 表改为指向 10/15/91，三种架构表压成一句摘要 + 92 §11 链接。

@@ -44,4 +44,4 @@ memory-evolve、project-context、graphmemory、workspace-memories、kb-manager�
 
 - DSH docs/source：`docs/subsystems/*`、`packages/storage|session|workspace|attachment|spill|settings|credentials|deliverables|session-query`、`.agents/notes/*`。
 - 市场：awesome-deepseek-harness-plugins、dshbase、GitHub raw README/package.json/tree、少量源码。
-- 跨生态：见 [32](../30-external/32-external-adjacent-ecosystems.md) 的官方文档链接。
+- 产品型样例与缺口：见 [32](../30-external/32-external-ecosystem.md)；其他产品的插件生态不在本 FAQ 范围。

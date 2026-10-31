@@ -1,14 +1,14 @@
-# 33 · 外部插件案例（参考）：15 个复杂插件在补什么缺口
+# 33 · DSH 外部插件案例（参考）：15 个复杂插件在补什么缺口
 
 ## 这一篇回答什么
 
-**角色：外部参考层（E1/E2）。** 本篇不评定 package 是否适合作为依赖；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。它比较外部样本解决了哪些数据问题，以及哪些模式值得进一步评估。
+**角色：外部参考层（E1/E2）。** 本篇不评定 package 是否适合作为依赖；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。外部指 DSH 生态的外围（核心仓之外的插件与服务）；它比较这些样本解决了哪些数据问题，以及哪些模式值得进一步评估。
 
 外部来源分为 **E1 package/plugin** 与 **E2 service**（MCP/HTTP/DB/对象存储）。本篇的代码与 README 样本仅支持 S/R 级模式观察；若要依赖某个具体 package/service，需另行审查其兼容、license、安全、数据迁移和维护责任。
 
-**口径。** 2026-10-27 对约 100 个候选做了目录/README 扫描（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55），选 15 个深读。
+**口径。** 2026-10-27 对 97 个候选做了目录/README 扫描（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55），选 15 个深读；产品型样例与缺口汇总见 [32](./32-external-ecosystem.md)。
 
-**没有安装、没有运行**；S = 读过源码，R = README/作者声明，U = 未确认。样本不是 census。所有结论只描述外部插件，不是 DSH 合同。
+**没有安装、没有运行**；S = 读过源码，R = README/作者声明，U = 未确认。样本不是 census。所有结论只描述 DSH 外部插件，不是 DSH 合同。
 
 ![外部插件样本 × 数据家](../figures/33-external-market-map.svg)
 
@@ -207,12 +207,7 @@
 | 无锁写 | workspace-memories | L3 | last-write-wins |
 | 跨 origin 迁移 | beauty-persist | L2 | localStorage 缺口 |
 
-上表收敛成五类缺口：
-1. **workspace 级数据/运行时**：overlay（scope/lease）、workspace-memories（home 键）、custom-workspace（设置键）、session_folders（storage-domain）——四种互不兼容的表示。
-2. **删除/保留/归档**：archive-retention、archive-manager、archive-purge、session-workspace-organizer——因为没有 `session.delete`/retention。
-3. **稳定插件数据根**：memory-evolve、project-context、PromptRecall、kb-manager、beauty-persist——各自造 `~/.dsh/<plugin>/` 或项目目录。
-4. **秘密的共享/隔离**：credentials-mysql、codex-keychain、credential-manager、api-key-pool——三种互斥的家。
-5. **客户端状态跨源**：beauty-persist、PromptRecall、session_folders——localStorage 不够，但又没有统一服务。
+上表是案例层的收敛；跨样本的六个缺口、对应结构与 DSH 现状见 [32 产品型数据设计](./32-external-ecosystem.md)。这里只强调一条：workspace 级数据与运行时在四个样本里有四种互不兼容的表示，说明它不是某一家没设计好，而是核心没有给出位置。
 
 ## 反模式
 

@@ -50,7 +50,7 @@
 | 13 | Storage domain 是静态 package schema；JSON per-record key 使用安全字符 | [Storage subsystem](../../../docs/subsystems/storage.md)、`packages/storage/storage-json/src/per-record-unit.ts` |
 | 14 | Workspace deletion 只移除 registration；Session history 和用户目录保留 | [Workspace README](../../../packages/workspace/workspace/README.md)、`packages/workspace/workspace/src/index.ts` |
 | 15 | 附件本地 backend 没有自动 GC；`present` 只记录 path | [Attachment](../../../docs/subsystems/attachment.md)、[Deliverables](../../../docs/subsystems/deliverables.md) |
-| 16 | `$DSH_HOME` 外还可能有 `DSH_AGENTS_HOME`、browser origin 和 OS state | [home paths](../../../packages/util/home-paths/README.md)、[92 隔离矩阵](../90-advisor/92-native-reference-architectures.md#产品运行组合与数据隔离) |
+| 16 | `$DSH_HOME` 外还可能有 `DSH_AGENTS_HOME`、browser origin 和 OS state | [home paths](../../../packages/util/home-paths/README.md)、[92 隔离矩阵](../90-advisor/92-native-reference-architectures.md#profile-数据隔离) |
 | 17 | Session event vocabulary 可在类型层扩展；独立 package 还需满足 released reader/format compatibility | [Session subsystem](../../../docs/subsystems/session.md)、[session format status](../../../docs/session-format-status.md)、`packages/session/session-persistence/src/storage-contract.ts` |
 
 ## 运行命令的观测
@@ -61,7 +61,7 @@
 
 ## 外部研究
 
-第三方 package、插件与相邻生态样本见 [research-external](./research-external.md)、[31](../30-external/31-external-community-patterns.md)、[32](../30-external/32-external-adjacent-ecosystems.md) 和 [33](../30-external/33-external-plugin-patterns.md)。S/R/U 证据不建立 DSH API、兼容性或安装行为。
+第三方 package、插件与 DSH 外部生态样本见 [research-external](./research-external.md)、[31](../30-external/31-external-community-patterns.md)、[32](../30-external/32-external-ecosystem.md) 和 [33](../30-external/33-external-plugin-patterns.md)。S/R/U 证据不建立 DSH API、兼容性或安装行为。
 
 ## 边界
 

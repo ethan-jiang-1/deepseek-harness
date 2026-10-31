@@ -1,81 +1,82 @@
-# 91 · 数据卡与集成检查
+# 91 · 数据卡与产品验收
 
-> 产品决策顺序见 [90](./00-index.md)，Web profile 的 composition 示例见 [93](./93-app-plugin-walkthrough.md)。
+> 产品构建路线见 [90 主线](./00-index.md)，Kanban 文件示例见 [93](./93-app-plugin-walkthrough.md)。
 
-## 一份数据用一张卡
+## 每份事实填写一张卡
 
-每张卡描述一份事实。Owner、authority、source、readers 和 writers 是不同角色。
+一行对应一份事实。Owner、Authority、Source、Readers 和 Writers 是不同角色，不要合成一个“数据类别”。
 
 | 字段 | 要回答的问题 |
 |---|---|
-| Fact | 这是什么事实？用户需要什么操作、导出或恢复能力？ |
+| Fact | 这是什么事实？用户需要查看、编辑、导出或恢复什么？ |
 | Owner | 谁负责记录的生命周期、迁移与删除？ |
-| Authority | 哪份数据决定当前真值？派生数据可填“无；derived”。 |
-| Source (input/operation) | 哪份数据、输入或用户操作产生此记录？ |
+| Authority | 哪份数据决定当前真值？派生数据可填“无（derived）”。 |
+| Source | 哪份数据、输入或用户操作产生此记录？ |
 | Mechanism/path | 通过哪个 API、文件或服务保存？实际位置是什么？ |
 | Scope/key | 跟哪个 Session、产品 project、DSH Workspace、profile、home 或 device 走？如何定位？ |
 | Readers | 哪些角色或工具可以读取？ |
 | Writers | 哪些角色或工具可以修改？ |
-| Rebuildability | 丢失后能否从 authority 或 source 重建？成本是什么？ |
+| Rebuildability | 丢失后能否从 Authority 或 Source 重建？成本是什么？ |
 | Retention/deletion | 谁备份、迁移、删除或恢复？卸载后保留什么？ |
 
-README 示例：
+可以把下面的模板放进产品 README，并为每份持久事实增加一行：
 
-```text
-Fact: Project search index
-Owner: Product plugin
-Authority: None; derived view
-Source (input/operation): Project files
-Mechanism/path: Storage domain, table `projects`
-Scope/key: Product project ID
-Readers: Product search tool
-Writers: Product indexer
-Rebuildability: Re-index from project files
-Retention/deletion: Product cleanup command
+```markdown
+## 数据与保留
+
+| Fact | Owner | Authority | Source | Mechanism/path | Scope/key | Readers | Writers | Rebuildability | Retention/deletion |
+|---|---|---|---|---|---|---|---|---|---|
+| 看板文件 | 用户 | 文件内容 | 用户编辑和看板操作 | `<header.cwd>/boards/*.md` | 项目目录 | 用户、获准的看板工具 | 用户、获准的看板工具 | 非派生数据 | 用户负责备份和删除 |
+| 搜索索引 | 产品 plugin | 无；派生视图 | 看板文件 | Storage domain | 产品 project ID | 搜索工具 | 索引器 | 重新扫描文件 | 产品负责清理 |
+
+共享 DSH 数据：<哪些 home stores 被共享>
+产品设置：<profile 内还是共享路径>
+卸载：<保留什么，如何删除产品数据>
+迁移与恢复：<支持的版本及恢复方法>
 ```
 
-Owner 负责记录的生命周期；authority 决定真值；source 说明记录如何产生。Reader 和 writer 分开列出。Plugin 可以写派生索引，而 project files 仍是被索引内容的 authority。
+第二行示例中，产品 plugin 负责 search index 的生命周期，但 board files 才是其数据来源；索引是可重建视图，不是业务真值。读者和写入者分别填写，不要因数据保存在 storage domain 就推断访问权限。
 
-## Check the data path
+## 检查数据输入与存储
 
-- Do model-visible inputs come from reconstructable Session history or another documented source? Do not rely only on Host memory.
-- Are secrets represented correctly? `CredentialRef.resolve` reads a named environment variable; `CredentialKey` accesses credential records. These are different APIs.
-- Does a storage-domain record key satisfy the selected backend? JSON `per-record` keys must match `[a-zA-Z0-9_-]+`; use a prefixed hash for paths.
-- Is `WorkspaceId` only used for a DSH registration? Removing and re-creating a registration gives a new ID; it is not a stable product project ID.
-- Does a persisted Session event have compatible readers? A TypeScript declaration alone does not establish released reader compatibility; see [11](../10-foundations/11-five-homes.md).
+- 进入模型请求的内容能否从 Session history 或其他记录来源重建？不要只保存在 Host 内存中。
+- Secret 是否使用正确 API？`CredentialRef.resolve` 读取命名的环境变量；`CredentialKey` 访问 credential records，两者用途不同。
+- JSON `per-record` storage-domain key 是否符合后端约束？字符必须匹配 `[a-zA-Z0-9_-]+`；路径应使用带前缀的 hash。
+- `WorkspaceId` 是否只表示 DSH Workspace registration？删除后重建会产生新 ID，不能作为稳定产品 project ID。
+- 持久 Session event 是否有兼容的 reader？仅做 TypeScript declaration merging 不建立已发布的 reader compatibility；见[11 存储机制](../10-foundations/11-five-homes.md)。
 
-## Check the implementation
+## 检查实现与故障恢复
 
-1. **Concurrency:** identify competing writers and their coordination. JSON storage domains serialize calls in one process, not writes across processes.
-2. **Failure and recovery:** test missing files, permissions, corrupt records, migration failure, cancellation, and restart recovery.
-3. **Project moves and deletion:** state how paths, IDs, orphaned records, Workspace registrations, and project files behave.
-4. **Retention:** assign owners for Session history, attachments, caches, and product-owned files. DSH has no general Session delete API; the local attachment backend has no automatic GC.
-5. **Client state:** distinguish origin/device-local UI preferences from Session-derived state and product settings.
-6. **Dependencies:** use the APIs and packages available to the target profile. Ordinary runtime dependencies do not add Cordis rows; a package that contributes rows must enter the profile as a bundle. Review external dependencies individually.
+1. **并发写入：** 找出竞争 writer 和协调方式。JSON storage domain 只在单进程内串行调用，不提供跨进程写锁。
+2. **失败与恢复：** 覆盖文件缺失、权限错误、坏记录、迁移失败、取消和重启恢复。
+3. **项目移动与删除：** 分别说明路径、ID、孤儿记录、Workspace registration 和项目文件如何处理。
+4. **保留：** 为 Session history、附件、缓存和产品数据指定清理 Owner。DSH 没有通用 Session delete API；本地 attachment backend 没有 automatic GC。
+5. **Client 状态：** 区分 origin/device 的纯 UI 状态、Session 派生数据和产品设置。
+6. **依赖：** 确认目标 profile 可解析所需 API/provider。普通 dependency 不自动加入 Cordis rows；可在 patch 中显式挂载它。若要自动应用某个 package 自带的 `dsh.bundle.patch`，须把该 bundle 选入 profile。外部依赖逐个审核。
 
-## Check the product profile
+## 检查产品 profile
 
-1. **Composition:** record the shipped template or complete custom bundle list, package dependencies, and bundle order.
-2. **Tools:** list model-visible product and general-purpose tools; verify each provider and policy separately.
-3. **Project selection:** distinguish DSH Web's default Workspace/picker from product-owned project selection and recovery.
-4. **Workspace:** use `workspaceId` when the Session must join a Host registration; use absolute `cwd` when only a starting directory is needed.
-5. **Isolation:** inventory shared `$DSH_HOME` stores, path overrides, browser origins, and external services. A profile name does not isolate data.
-6. **Upgrade and removal:** document profile restart, data migration, surviving user files, and cleanup of product-owned records.
+1. **组合：** 写明 shipped template 或完整 custom bundle list、package dependencies 和顺序。
+2. **工具：** 列出模型可见的产品工具与通用文件/进程工具；分别核验 provider 和 policy。
+3. **项目选择：** 区分 DSH Web 默认 Workspace/picker 与产品自建的项目选择、取消和恢复。
+4. **Workspace：** Session 要加入 Host registration 时传 `workspaceId`；只需起始目录时传绝对 `cwd`。
+5. **隔离：** 列出共享的 `$DSH_HOME` stores、path overrides、browser origins 和外部 services。Profile 名本身不隔离数据。
+6. **升级与卸载：** 说明 profile 重启、数据迁移、保留的用户文件和产品数据清理方式。
 
-## Install and update
+## 安装、更新与移除
 
-`dsh plugin --profile <name> add <bundle>` changes the profile's bundle list and returns the package-manager result, not Plugin Manager's `ChangeResult.application`. Restart the profile to load the changed composition. Plugin Manager reports its own application result.
+`dsh plugin --profile <name> add <bundle>` 修改 profile bundle list，并返回 package-manager 结果，不返回 Plugin Manager 的 `ChangeResult.application`。CLI 修改后要重启 profile；Plugin Manager 是另一条操作路径，会返回自己的 application result。
 
-To create a new Web profile, follow [93](./93-app-plugin-walkthrough.md). `--from-default-profile web` replaces a same-named custom profile, including installed dependencies and its user patch. Use a fresh profile name or back up the existing profile first. A successful replacement is committed before application boot; a later boot failure does not restore the prior profile.
+创建 Web profile 时按 [93](./93-app-plugin-walkthrough.md) 使用新 profile 名。`--from-default-profile web` 会替换同名 custom profile，包括已安装 dependencies 和用户 patch。目标已存在时先备份或换名；替换提交后，即使应用启动失败也不会回滚旧 profile。
 
-Bundle removal does not delete project files, Session history, or product-owned data. `workspace.delete` removes only the Workspace registration. Remove product data only when its ownership is known and the user has authorized deletion.
+移除 bundle 不删除项目文件、Session history 或产品自有数据。`workspace.delete` 只删除 Workspace registration。只有确认数据归属并得到用户授权后，才删除产品数据。
 
-## Common errors
+## 常见误区
 
-| Error | Correction |
+| 误区 | 正确处理 |
 |---|---|
-| Treat `WorkspaceId` as the product project ID | Define a product ID or accept that re-created registrations have new IDs |
-| Treat Workspace registration as permission | Check the tool, provider, and policy that access the path |
-| Treat Session `header.cwd` as the effective directory | Track working-directory changes separately; they do not change sandbox roots |
-| Assume profiles isolate the same `$DSH_HOME` | Use an independent home or configure each relevant provider path |
-| Assume bundle removal deletes business data | Provide product-owned migration and cleanup instructions |
+| 把 `WorkspaceId` 当产品 project ID | 定义产品 ID；或接受重建 registration 会产生新 ID |
+| 把 Workspace registration 当文件权限 | 分别检查访问该路径的 tool、provider 和 policy |
+| 把 Session `header.cwd` 当当前工作目录 | 单独记录 `working_directory`；改变它不会改 sandbox roots |
+| 把 profile 名当 `$DSH_HOME` 隔离标识 | 使用独立 home，或逐个配置 provider path |
+| 认为 bundle removal 会删除业务数据 | 为产品自有数据说明迁移、保留和清理方式 |

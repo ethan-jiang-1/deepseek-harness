@@ -1,8 +1,8 @@
-# 31 · 外部社区模式（参考）：九个维度、十八种手法与已核出的坑
+# 31 · DSH 社区插件的数据模式（参考）：九个维度、十八种手法与已核出的坑
 
 ## 这一篇回答什么
 
-**角色：外部参考层（E1/E2）。** 本篇记录外部样本怎样处理数据，不验证其可安装性或运行质量；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。
+**角色：外部参考层（E1/E2）。** 本篇记录 DSH 生态（核心仓之外）的插件怎样处理数据，不验证其可安装性或运行质量；DSH 的结论以 [10](../10-foundations/10-taxonomy.md)–[18](../10-foundations/18-install-upgrade.md) 为准。外部指 DSH 生态的外围，不是其他产品的插件体系；产品型样例与缺口汇总见 [32](./32-external-ecosystem.md)。
 
 本 FAQ 第一版把社区做法压成“五种承诺”，够用但太粗；这一版扩成九个维度。这一篇换九个维度重新看同一批插件：**放哪、用什么介质、谁是权威、按什么切、给谁看、怎么同步、怎么防并发、怎么迁移、怎么取得信任**。最后给一份作者策略库、按插件类型的选型矩阵，以及这次核出的三处版本漂移。
 
@@ -190,13 +190,11 @@ memory-evolve 的锁参数更短（10 s 陈旧、5 s 等待、25 ms 重试），
 | 每项目运行时 | 产品定义的 project scope | trust、lease/dispose、并发和崩溃恢复 |
 | UI/主题 | origin/device local state 或产品 setting | 卸载清理、跨 profile/device 预期 |
 
-## 三个核心缺口，社区怎么补
+## 本篇样本集中在哪几条缺口
 
-1. **没有“每 workspace 一套插件实例”**。社区用 `ctx.workspaceCordis` + canonical path lease 补（workspace-overlay），或用项目内配置 + 自己解析（project-context），或用 home + 自定义 RPC（custom-workspace）。
-2. **没有“插件数据根”**。社区各自造 `~/.dsh/<plugin>/`、项目内 `.agents/`、SQLite 文件；没有统一的位置、配额、GC 或导出。Claude Code 的 `${CLAUDE_PLUGIN_DATA}` 是一个直接对照（见 32 篇）。
-3. **没有“第三方任意设置命名空间”**。注意：**Config-backed 的 volatile 表单是开放的**，第三方插件导出 `Config` 就能在设置页出现；缺的是“与 Loader 条目无关的任意键值命名空间”。
+九个维度的取舍最后都会撞到 DSH 的缺口上。本篇样本集中在三条：每 workspace 的实例与数据键、稳定插件数据根、第三方任意设置命名空间。它们与整个生态反复出现的缺口同源；逐条的对应结构和 DSH 现状见 [32 产品型数据设计](./32-external-ecosystem.md)。
 
-custom-workspace 在 0.1.0-rc.6 上因此造了自定义 RPC；新插件应先试 `Config.volatile()`，不要直接复制这个 workaround。
+custom-workspace 在 0.1.0-rc.6 上为此造了自定义 RPC；新插件应先试 `Config.volatile()`，不要直接复制这个 workaround。
 
 ## 五个反直觉的结论
 

@@ -1,3 +1,10 @@
 - insert:
     - id: faq26-proof-row
       name: '@deepseek-ai/dsh-time-context'
+- insert:
+    - id: preset-faq26-fixture
+      name: '@deepseek-ai/dsh-agent-preset'
+      config:
+        id: faq26-fixture
+        name: FAQ26 Fixture
+        plugins: []

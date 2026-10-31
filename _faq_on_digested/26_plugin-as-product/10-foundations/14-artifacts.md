@@ -30,8 +30,8 @@
 - 只接受**可读的普通文件**；目录、最终符号链接、缺失文件、provider 拒绝的路径都会失败；
 - 通过后把**绝对路径**写进 `deliverables/presented` 事件（`{ turn, callId, files }`），**不复制内容**；
 - 挂载配置 `maxFiles` 的默认上限是 8（部署可配）；模型-facing 的 schema 建议“通常 1–2 个、每次最多 4 个”，4 是建议不是强制上限；
-- 交付属于调用它的会话，父会话要让子会话自己 `present`；
-- 需要 agent Session、workspace 和已打开的 turn；不是任意宿主上下文都能调用。
+- 交付属于调用它的会话；父会话若要声明子会话创建的文件，应由父会话自己调用 `present`；
+- 需要 Agent Session、可用的会话工作目录和已打开的 turn；不要求 DSH Workspace registration。
 
 这意味着：**文件必须已经在工作区（或用户可访问的位置）**。如果你把一个报告写进 `$DSH_HOME` 的私有目录再 present，用户打开的是那个路径——能找到，但它不在项目里，也不会跟着项目走。
 
@@ -117,7 +117,7 @@ Web 的 `/export`（或 Session Header 的 Download session log）会把会话�
 | 会话中间的大段输出 | spill | 交付目录 |
 | 备份/迁移 | 会话导出 + 用户自己的目录备份 | 依赖附件库的 GC |
 
-用户要打开或携带的交付物应写到用户可访问的位置，再用 `present` 声明。该工具要求 Agent Session、DSH Workspace 和已打开的 turn；文件路径可以位于 cwd 之外，但仍需确认用户可访问。会话导出不包含被 present 文件的内容。不要把仅供模型读取的附件或 spill 当作用户交付目录。
+用户要打开或携带的交付物应写到用户可访问的位置，再用 `present` 声明。该工具要求 Agent Session、可用的会话工作目录和已打开的 turn，不要求 DSH Workspace registration；文件路径可以位于 cwd 之外，但仍需确认用户可访问。会话导出不包含被 present 文件的内容。不要把仅供模型读取的附件或 spill 当作用户交付目录。
 
 ## 边界
 

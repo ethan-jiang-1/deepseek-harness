@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>Kanban profile：启动文件、Session 和数据 owner</title>
+  <desc>Profile package.json 选择有序 bundle；各 bundle 的 manifest 指定 patch 文件，再与用户覆盖层组成 Loader rows。Registry 为 preset 版本挂载插件子树，选择该 preset 的 Agent 绑定到子树；Kanban 工具校验项目路径后访问用户看板文件。DSH home、浏览器和产品文件各有独立生命周期。</desc>
+  <rect width="1200" height="800" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">Kanban profile：从启动文件到一份看板</text>
+  <text x="600" y="59" text-anchor="middle" fill="#64748b">先由 JSON 选启动组合，再由 preset 与 Session 把产品工具连接到用户项目</text>
+
+  <rect x="24" y="78" width="1152" height="237" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="42" y="105" font-size="12.5" font-weight="700" fill="#0f172a">1 · 启动组合：profile manifest 选 bundle，patch 文件贡献运行 rows</text>
+
+  <rect x="40" y="124" width="260" height="102" rx="6" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="54" y="147" font-size="10.5" font-weight="700" fill="#1e40af">Profile package.json</text>
+  <text x="54" y="169" font-size="9.5" fill="#334155">dsh.profile.bundles 排序</text>
+  <text x="54" y="187" font-size="9.5" fill="#334155">base → web-app → Kanban</text>
+  <text x="54" y="210" font-size="8.8" fill="#64748b">dependencies 负责 package 安装/解析</text>
+
+  <path d="M306 175 L318 175" stroke="#94a3b8" stroke-width="1.7"/>
+  <path d="M318 175 L311 171 L311 179 Z" fill="#94a3b8"/>
+
+  <rect x="324" y="124" width="260" height="102" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="338" y="147" font-size="10.5" font-weight="700" fill="#166534">Bundle package.json</text>
+  <text x="338" y="169" font-size="9.5" fill="#334155">dependencies：所需 plugin code</text>
+  <text x="338" y="187" font-size="9.5" fill="#334155">dsh.bundle.patch：patch 文件路径</text>
+  <text x="338" y="210" font-size="8.8" fill="#64748b">未选中的 bundle 不贡献 patch rows</text>
+
+  <path d="M590 175 L602 175" stroke="#94a3b8" stroke-width="1.7"/>
+  <path d="M602 175 L595 171 L595 179 Z" fill="#94a3b8"/>
+
+  <rect x="608" y="124" width="260" height="102" rx="6" fill="#fdf2f8" stroke="#f9a8d4"/>
+  <text x="622" y="147" font-size="10.5" font-weight="700" fill="#9d174d">Bundle patch YAML/JSON</text>
+  <text x="622" y="169" font-size="9.5" fill="#334155">Web bundle：Host rows / preset registry</text>
+  <text x="622" y="187" font-size="9.5" fill="#334155">Kanban bundle：独立的完整 preset row</text>
+  <text x="622" y="210" font-size="8.8" fill="#64748b">preset.config.plugins 是 Agent 子列表</text>
+
+  <path d="M874 175 L886 175" stroke="#94a3b8" stroke-width="1.7"/>
+  <path d="M886 175 L879 171 L879 179 Z" fill="#94a3b8"/>
+
+  <rect x="892" y="124" width="266" height="102" rx="6" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="906" y="147" font-size="10.5" font-weight="700" fill="#9a3412">App-boot → Loader</text>
+  <text x="906" y="169" font-size="9.5" fill="#334155">合并最终 rows 并启动 Host/Web</text>
+  <text x="906" y="187" font-size="9.5" fill="#334155">Registry 挂载 preset 版本子树</text>
+  <text x="906" y="210" font-size="8.8" fill="#64748b">普通 row 的 config 整体替换</text>
+
+  <text x="42" y="251" font-size="9.2" font-weight="700" fill="#334155">从空 Loader root 开始，按顺序叠加 patch</text>
+  <rect x="48" y="264" width="151" height="36" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="123" y="279" text-anchor="middle" font-size="8.8" fill="#334155">empty cordis.yml</text>
+  <text x="123" y="294" text-anchor="middle" font-size="8" fill="#64748b">空 Loader root</text>
+  <path d="M203 282 L216 282" stroke="#94a3b8" stroke-width="1.4"/>
+  <path d="M216 282 L209 278 L209 286 Z" fill="#94a3b8"/>
+  <rect x="222" y="264" width="190" height="36" rx="5" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="317" y="286" text-anchor="middle" font-size="8.8" fill="#1e40af">有序 bundle patch files</text>
+  <path d="M416 282 L429 282" stroke="#94a3b8" stroke-width="1.4"/>
+  <path d="M429 282 L422 278 L422 286 Z" fill="#94a3b8"/>
+  <rect x="435" y="264" width="142" height="36" rx="5" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="506" y="286" text-anchor="middle" font-size="9" fill="#166534">profile patch</text>
+  <path d="M581 282 L594 282" stroke="#94a3b8" stroke-width="1.4"/>
+  <path d="M594 282 L587 278 L587 286 Z" fill="#94a3b8"/>
+  <rect x="600" y="264" width="170" height="36" rx="5" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="685" y="286" text-anchor="middle" font-size="8.8" fill="#92400e">$DSH_HOME patch</text>
+  <path d="M774 282 L787 282" stroke="#94a3b8" stroke-width="1.4"/>
+  <path d="M787 282 L780 278 L780 286 Z" fill="#94a3b8"/>
+  <rect x="793" y="264" width="150" height="36" rx="5" fill="#fff1f2" stroke="#fda4af"/>
+  <text x="868" y="286" text-anchor="middle" font-size="8.8" fill="#9f1239">CLI --patch</text>
+  <path d="M947 282 L960 282" stroke="#94a3b8" stroke-width="1.4"/>
+  <path d="M960 282 L953 278 L953 286 Z" fill="#94a3b8"/>
+  <rect x="966" y="264" width="192" height="36" rx="5" fill="#e2e8f0" stroke="#cbd5e1"/>
+  <text x="1062" y="279" text-anchor="middle" font-size="8.8" fill="#334155">Loader 最终 rows</text>
+  <text x="1062" y="294" text-anchor="middle" font-size="7.8" fill="#64748b">启动时 telemetry 开关另行应用</text>
+  <text x="894" y="248" font-size="8.3" fill="#64748b">pnpm-workspace.yaml 只供 pnpm 安装</text>
+
+  <rect x="24" y="330" width="1152" height="251" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="42" y="357" font-size="12.5" font-weight="700" fill="#0f172a">2 · 一次看板操作：用户目录 → Session → preset tool → 项目文件</text>
+
+  <rect x="40" y="378" width="168" height="105" rx="6" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="54" y="401" font-size="10.2" font-weight="700" fill="#075985">项目路径</text>
+  <text x="54" y="424" font-size="9.1" fill="#334155">产品 UI / DSH picker</text>
+  <text x="54" y="443" font-size="8.7" fill="#64748b">选择或配置路径</text>
+  <text x="54" y="461" font-size="8.7" fill="#64748b">文件仍由用户拥有</text>
+
+  <path d="M214 430 L225 430" stroke="#94a3b8" stroke-width="1.6"/>
+  <path d="M225 430 L218 426 L218 434 Z" fill="#94a3b8"/>
+
+  <rect x="231" y="378" width="178" height="105" rx="6" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="245" y="401" font-size="10.2" font-weight="700" fill="#1e40af">Workspace 归属</text>
+  <text x="245" y="424" font-size="9.1" fill="#334155">需要 sidebar/grouping</text>
+  <text x="245" y="443" font-size="9.1" fill="#334155">→ picker 建 registration</text>
+  <text x="245" y="461" font-size="8.7" fill="#64748b">否则只传 absolute cwd</text>
+
+  <path d="M415 430 L426 430" stroke="#94a3b8" stroke-width="1.6"/>
+  <path d="M426 430 L419 426 L419 434 Z" fill="#94a3b8"/>
+
+  <rect x="432" y="378" width="178" height="105" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="446" y="401" font-size="10.2" font-weight="700" fill="#166534">Session Controller</text>
+  <text x="446" y="422" font-size="8.4" fill="#334155">session.create({…})</text>
+  <text x="446" y="439" font-size="8.4" fill="#334155">workspaceId XOR cwd</text>
+  <text x="446" y="456" font-size="8.4" fill="#334155">agentPreset: kanban</text>
+  <text x="446" y="473" font-size="8" fill="#64748b">记录初始 header.cwd</text>
+
+  <path d="M616 430 L627 430" stroke="#94a3b8" stroke-width="1.6"/>
+  <path d="M627 430 L620 426 L620 434 Z" fill="#94a3b8"/>
+
+  <rect x="633" y="378" width="162" height="105" rx="6" fill="#fdf2f8" stroke="#f9a8d4"/>
+  <text x="647" y="401" font-size="10.2" font-weight="700" fill="#9d174d">Agent preset</text>
+  <text x="647" y="424" font-size="8.9" fill="#334155">Registry 挂载版本子树</text>
+  <text x="647" y="443" font-size="8.9" fill="#334155">Agent 绑定所选版本</text>
+  <text x="647" y="461" font-size="8.7" fill="#64748b">工具可见 ≠ 路径授权</text>
+
+  <path d="M801 430 L812 430" stroke="#94a3b8" stroke-width="1.6"/>
+  <path d="M812 430 L805 426 L805 434 Z" fill="#94a3b8"/>
+
+  <rect x="818" y="378" width="174" height="105" rx="6" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="832" y="401" font-size="10.2" font-weight="700" fill="#92400e">Kanban tool</text>
+  <text x="832" y="424" font-size="8.9" fill="#334155">校验允许的项目路径</text>
+  <text x="832" y="443" font-size="8.9" fill="#334155">通过 ctx.fs 读取或写入</text>
+  <text x="832" y="461" font-size="8.7" fill="#64748b">Host plugin 自己授权</text>
+
+  <path d="M998 430 L1009 430" stroke="#94a3b8" stroke-width="1.6"/>
+  <path d="M1009 430 L1002 426 L1002 434 Z" fill="#94a3b8"/>
+
+  <rect x="1015" y="378" width="143" height="105" rx="6" fill="#ecfdf5" stroke="#86efac"/>
+  <text x="1029" y="401" font-size="10.2" font-weight="700" fill="#166534">看板文件</text>
+  <text x="1029" y="424" font-size="8.9" fill="#334155">Markdown / JSON</text>
+  <text x="1029" y="443" font-size="8.9" fill="#334155">用户的业务真值</text>
+  <text x="1029" y="461" font-size="8.7" fill="#64748b">Workspace 不拥有</text>
+
+  <text x="42" y="515" font-size="9.5" font-weight="700" fill="#334155">旁边还存在的 owner</text>
+  <rect x="176" y="497" width="290" height="58" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="190" y="520" font-size="9.4" font-weight="700" fill="#334155">$DSH_HOME</text>
+  <text x="190" y="541" font-size="8.5" fill="#475569">profile / Workspace registry / Session logs</text>
+  <rect x="477" y="497" width="250" height="58" rx="6" fill="#f5f3ff" stroke="#c4b5fd"/>
+  <text x="491" y="520" font-size="9.4" font-weight="700" fill="#5b21b6">Browser origin</text>
+  <text x="491" y="541" font-size="8.5" fill="#475569">当前选择与纯 UI state</text>
+  <rect x="738" y="497" width="420" height="58" rx="6" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="752" y="520" font-size="9.4" font-weight="700" fill="#1e40af">可选产品索引</text>
+  <text x="752" y="541" font-size="8.5" fill="#475569">只在产品需要时创建；source/key/rebuild 记入数据卡</text>
+
+  <rect x="28" y="600" width="1144" height="180" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="46" y="628" font-size="12.5" font-weight="700" fill="#0f172a">3 · Kanban bundle 的 JSON/YAML 最小关系（示意，不是可安装包）</text>
+  <rect x="44" y="648" width="352" height="110" rx="6" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="58" y="672" font-size="10.2" font-weight="700" fill="#1e40af">kanban-bundle/package.json</text>
+  <text x="58" y="696" font-size="9.2" fill="#334155">dependencies: @acme/kanban-tools</text>
+  <text x="58" y="716" font-size="9.2" fill="#334155">dsh.bundle.patch: presets/kanban.patch.yml</text>
+  <text x="58" y="740" font-size="8.8" fill="#64748b">还需声明 agent-preset、tool-present 依赖</text>
+
+  <path d="M402 703 L420 703" stroke="#94a3b8" stroke-width="1.8"/>
+  <path d="M420 703 L412 698 L412 708 Z" fill="#94a3b8"/>
+
+  <rect x="428" y="648" width="420" height="110" rx="6" fill="#fdf2f8" stroke="#f9a8d4"/>
+  <text x="442" y="672" font-size="10.2" font-weight="700" fill="#9d174d">presets/kanban.patch.yml</text>
+  <text x="442" y="696" font-size="9.2" fill="#334155">insert 一条完整的 @deepseek-ai/dsh-agent-preset row</text>
+  <text x="442" y="716" font-size="9.2" fill="#334155">config.plugins 列出 Kanban tool 与 present</text>
+  <text x="442" y="740" font-size="8.8" fill="#64748b">不要假设向 preset-standard 内层数组局部追加</text>
+
+  <path d="M854 703 L872 703" stroke="#94a3b8" stroke-width="1.8"/>
+  <path d="M872 703 L864 698 L864 708 Z" fill="#94a3b8"/>
+
+  <rect x="880" y="648" width="278" height="110" rx="6" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="894" y="672" font-size="10.2" font-weight="700" fill="#9a3412">Session 选择</text>
+  <text x="894" y="696" font-size="9.2" fill="#334155">agentPreset: 'kanban'</text>
+  <text x="894" y="716" font-size="9.2" fill="#334155">或用户在 preset selector 中选择</text>
+  <text x="894" y="740" font-size="8.8" fill="#64748b">Registry default 另由完整 root row config 配置</text>
+</svg>

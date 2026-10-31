@@ -2,7 +2,7 @@
 
 本目录帮助 DSH plugin 作者和产品 profile 维护者选择启动组合、目录行为和数据存储。产品 profile 不自动创建数据隔离；项目目录、Workspace registration、Session cwd 和工具权限是不同的决定。
 
-> **要动手**：从 [90 施工入口](./90-advisor/00-index.md) 开始；Web profile 示例见 [93](./90-advisor/93-app-plugin-walkthrough.md)，数据卡与交付检查见 [91](./90-advisor/91-checklist.md)。
+> **产品 profile 路线**：从 [90 主线](./90-advisor/00-index.md) 开始，沿 [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md) 对照 JSON/YAML；数据责任见 [91 数据卡](./90-advisor/91-checklist.md)。
 
 ![产品运行组合与数据卡](./figures/10-taxonomy-flow.svg)
 
@@ -16,8 +16,8 @@
 ## 按角色阅读
 
 - **普通 plugin 作者**：从 [91 数据卡](./90-advisor/91-checklist.md) 开始，按需查 [10–14](./10-foundations/10-taxonomy.md) 和 [92](./90-advisor/92-native-reference-architectures.md)。
-- **产品 profile 作者**：[90 施工入口](./90-advisor/00-index.md) → [92 参考架构](./90-advisor/92-native-reference-architectures.md) → [93 Web 走查](./90-advisor/93-app-plugin-walkthrough.md) → [91 验收](./90-advisor/91-checklist.md) → [18 生命周期](./10-foundations/18-install-upgrade.md)。
-- **DSH 维护者**：读 [21 原生数据面](./20-native/21-native-data-landscape.md) 与 [22 历史](./20-native/22-native-data-history.md)；[31–33](./30-external/31-external-community-patterns.md) 是外部研究，不是 DSH API 合同。
+- **产品 profile 作者**：[90 主线](./90-advisor/00-index.md) → [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)；交付前查 [91 数据卡/验收](./90-advisor/91-checklist.md)，遇到存储取舍查 [92 参考矩阵](./90-advisor/92-native-reference-architectures.md)。
+- **DSH 维护者**：读 [21 原生数据面](./20-native/21-native-data-landscape.md) 与 [22 历史](./20-native/22-native-data-history.md)；[31–33](./30-external/31-external-community-patterns.md) 是 DSH 外部生态研究（核心仓之外的插件与服务），不是 DSH API 合同。
 
 ## 章节地图
 
@@ -36,13 +36,13 @@
 | [18 安装升级](./10-foundations/18-install-upgrade.md) | Profile、升级、兼容与卸载 |
 | [21 原生数据面](./20-native/21-native-data-landscape.md) | DSH 数据机制与 API 来源 |
 | [22 原生历史](./20-native/22-native-data-history.md) | DSH 存储能力的决策背景 |
-| [31 社区模式](./30-external/31-external-community-patterns.md) | 外部社区样本与数据做法 |
-| [32 生态对照](./30-external/32-external-adjacent-ecosystems.md) | 其他产品的存储和隔离机制 |
-| [33 外部插件](./30-external/33-external-plugin-patterns.md) | 外部案例；具体依赖需单独审核 |
-| [90 施工入口](./90-advisor/00-index.md) | Plugin 与产品 profile 的决策顺序 |
+| [31 社区模式](./30-external/31-external-community-patterns.md) | 社区插件的数据做法（九个维度、18 种手法） |
+| [32 产品设计](./30-external/32-external-ecosystem.md) | 产品型外部插件的八种数据结构；六个缺口 |
+| [33 外部插件](./30-external/33-external-plugin-patterns.md) | 15 个案例；具体依赖需单独审核 |
+| [90 主线](./90-advisor/00-index.md) | Profile 文件、启动顺序、Kanban 运行和数据归属 |
 | [91 数据卡](./90-advisor/91-checklist.md) | 数据事实、实现、测试和退出检查 |
 | [92 参考架构](./90-advisor/92-native-reference-architectures.md) | 数据用途、DSH 能力、隔离与维护 |
-| [93 Web 走查](./90-advisor/93-app-plugin-walkthrough.md) | Shipped template、bundle 与 Workspace 示例 |
+| [93 Kanban 文件例子](./90-advisor/93-app-plugin-walkthrough.md) | Profile JSON、bundle JSON、preset YAML 和 Session request |
 
 ## 证据
 
