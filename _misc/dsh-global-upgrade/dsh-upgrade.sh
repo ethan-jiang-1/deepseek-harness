@@ -1,19 +1,41 @@
 #!/usr/bin/env bash
-# DSH 全局安装升级：0.2.1-rc.2 → 0.2.1-rc.3
+# DSH 全局安装升级
 #
-#   ./rc3-upgrade.sh --dry-run              只做只读预检，不改任何东西
-#   ./rc3-upgrade.sh                        完整升级（破坏性步骤前逐个确认）
-#   ./rc3-upgrade.sh --yes                  同上但不问；预检全过才继续
-#   ./rc3-upgrade.sh --resume [备份目录]     宿主已升到 rc.3、只想补插件阶段
-#   ./rc3-upgrade.sh --rollback <备份目录>   回滚
+#   ./dsh-upgrade.sh                 升到最新版（按下面的 DIST_TAG 解析）
+#   ./dsh-upgrade.sh --dry-run       只读预检，不改任何东西
+#   ./dsh-upgrade.sh --rollback      回滚到最近一次升级前的状态
 #
 # 只改 ~/.dsh 与全局 npm 安装。不使用本仓库作为安装来源。
+
+# ============================================================ CONFIG
+# 日常只跑「./dsh-upgrade.sh」就行：升到哪个版本由下面的 DIST_TAG 决定，
+# 不用改文件。要临时指定版本用命令行参数（--to / --dist-tag）。
+# ============================================================
+
+# 目标版本从哪个 npm dist-tag 解析。'' 表示不解析，只看 TARGET_VERSION。
+#   newest next 与 latest 中取较大的那个——默认，拿来就能升到最新
+#   next   只看预发布线的最新一版
+#   latest 只看正式线的最新一版
+DIST_TAG="newest"
+
+# 固定目标版本。非空则直接用它，忽略 DIST_TAG。
+# 需要抱住某一版时写这里，例如 "0.2.1-rc.5"；平时留空。
+TARGET_VERSION=""
+
+# 顺带把 dshmarket 升到指定版本。'' = 不动 dshmarket（推荐：宿主升级和
+# 插件升级解耦，出问题好定位）。要升就写具体版本，例如 "1.73.7"。
+MARKET_TARGET=""
+
+# 本机 patch 里的 provider 条目；升级后拿它核对配置没被组合丢。
+# 这是配置事实，不是版本事实——改了 cordis.patch.yml 就同步这里。
+PROVIDERS="micu openrouter zai moonshotai-cn teamorouter opencode-go yovole dimagent-oauth"
+
+# 等价于 --yes：不逐个确认。0 = 问，1 = 不问。
+ASSUME_YES=0
+
+# ============================================================
 set -euo pipefail
 umask 022
-
-TARGET_VERSION="0.2.1-rc.3"
-PREV_VERSION="0.2.1-rc.2"
-MARKET_TARGET="1.70.2"
 
 PROFILE_DIR="$HOME/.dsh/profiles/web"
 PATCH="$PROFILE_DIR/cordis.patch.yml"
@@ -22,38 +44,81 @@ LOCK="$PROFILE_DIR/pnpm-lock.yaml"
 WORKSPACE="$PROFILE_DIR/pnpm-workspace.yaml"
 BACKUP_ROOT="$HOME/.dsh/backups"
 
-EXPECTED_PATCH_SHA="0584e3be8b8eaaeed7e697f53ec930cae554935612bcaef7db5320e8eaa5e27c"
-EXPECTED_PKG_SHA="f450fc264c782ae27e467b085427e15952dc25513e1804900e37d10fa13831f2"
-EXPECTED_LOCK_SHA="1a4938015e13f0ed989bfcfc7600d3b14d51add3c7614ed26222688a846628a7"
-EXPECTED_WORKSPACE_SHA="3731ceb4387711887c8ce161ebedb04edea6e3235a5d9dcb0bdbee19592c1d4f"
-
-MANAGED_PLUGINS="dsh-better-sidebar @quill507/dsh-auto-approval-llm dshmarket @linxin666/dsh-client-ui-skill-explorer @cerbur/clutch-dsh-worktree @arcships/dsh-dim-oauth dsh-client-auto-continue"
-BUNDLES="@deepseek-ai/dsh-base @deepseek-ai/dsh-web-app dshmarket dsh-better-sidebar @quill507/dsh-auto-approval-llm dsh-client-auto-continue @arcships/dsh-dim-oauth @cerbur/clutch-dsh-worktree @linxin666/dsh-client-ui-skill-explorer"
-PROVIDERS="micu openrouter zai moonshotai-cn teamorouter opencode-go yovole dimagent-oauth"
-
 FORBIDDEN_LOG='startup failed|disabling profile plugin|incompatible with dsh|Plugins waiting for services|pending \(waiting for service'
 
 MODE="upgrade"
-ASSUME_YES=0
 GIVEN_DIR=""
 SMOKE_PID=""
 
-usage() { sed -n '2,10p' "$0"; }
+usage() {
+	cat <<'EOF'
+DSH 全局安装升级（版本无关）
+
+  直接跑：./dsh-upgrade.sh
+      升到文件头 DIST_TAG（默认 next）指向的最新版。日常只用这一条。
+
+  ./dsh-upgrade.sh --dry-run                 只读预检，不改任何东西
+  ./dsh-upgrade.sh --rollback [备份目录]      回滚（默认最近一次升级前）
+  ./dsh-upgrade.sh --resume [备份目录]        本体已是目标版本，只补插件阶段
+  ./dsh-upgrade.sh --yes                     不交互确认；预检全过才继续
+
+  临时覆盖文件头的 CONFIG（不改文件）：
+    --to 0.2.1-rc.5            指定版本
+    --dist-tag latest          指定 dist-tag
+    --market 1.73.7            顺带升级 dshmarket
+    --providers "a b c"        覆盖 provider 核对清单
+EOF
+}
 
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 	--dry-run) MODE="dry-run" ;;
 	--yes | -y) ASSUME_YES=1 ;;
+	--to)
+		[ -n "${2:-}" ] || {
+			echo "--to 需要一个版本号" >&2
+			exit 2
+		}
+		TARGET_VERSION="$2"
+		shift
+		;;
+	--dist-tag)
+		[ -n "${2:-}" ] || {
+			echo "--dist-tag 需要一个 tag 名" >&2
+			exit 2
+		}
+		DIST_TAG="$2"
+		shift
+		;;
+	--market)
+		[ -n "${2:-}" ] || {
+			echo "--market 需要一个版本号" >&2
+			exit 2
+		}
+		MARKET_TARGET="$2"
+		shift
+		;;
+	--providers)
+		[ -n "${2:-}" ] || {
+			echo "--providers 需要一个空格分隔的清单" >&2
+			exit 2
+		}
+		PROVIDERS="$2"
+		shift
+		;;
 	--resume)
 		MODE="resume"
-		[ -n "${2:-}" ] && [ "${2#-}" = "$2" ] && {
+		if [ -n "${2:-}" ] && [ "${2#-}" = "$2" ]; then
 			GIVEN_DIR="$2"
 			shift
-		}
+		fi
 		;;
 	--rollback)
 		MODE="rollback"
-		[ -n "${2:-}" ] && [ "${2#-}" = "$2" ] && GIVEN_DIR="$2" && shift
+		if [ -n "${2:-}" ] && [ "${2#-}" = "$2" ]; then
+			GIVEN_DIR="$2"
+			shift
+		fi
 		;;
 	-h | --help)
 		usage
@@ -68,21 +133,36 @@ while [ "$#" -gt 0 ]; do
 done
 
 STAMP="$(date +%Y%m%d-%H%M%S)"
-RUN_DIR="$BACKUP_ROOT/rc3-run-$STAMP"
+RUN_DIR="$BACKUP_ROOT/dsh-upgrade-run-$STAMP"
 SUMMARY="$RUN_DIR/summary.txt"
 BACKUP_DIR=""
-BASELINE_DRIFT=0
 NPM_CACHE_DIR=""
+CURRENT_VERSION=""
+PREV_VERSION=""
+PLUGINS_BEFORE=""
+BUNDLES_BEFORE=""
+HOST_ALREADY=0
+
 step() { printf '\n\033[1m== %s\033[0m\n' "$*"; }
 say() { printf '   %s\n' "$*"; }
 warn() { printf '\033[33m   ! %s\033[0m\n' "$*"; }
 ok() { printf '\033[32m   + %s\033[0m\n' "$*"; }
-note() { printf '   %s\n' "$*" >>"$SUMMARY" 2>/dev/null || true; }
+note() {
+	[ -d "$RUN_DIR" ] && printf '   %s\n' "$*" >>"$SUMMARY" 2>/dev/null
+	return 0
+}
 
-mkdir -p "$RUN_DIR"
-: >"$SUMMARY" 2>/dev/null || true
+# 运行记录目录只在真的要动手时建；dry-run 与「已是最新」不留垃圾。
+RUN_DIR_READY=0
+ensure_run() {
+	[ "$RUN_DIR_READY" = "1" ] && return 0
+	mkdir -p "$RUN_DIR"
+	: >"$SUMMARY" 2>/dev/null || true
+	RUN_DIR_READY=1
+}
 
 fail() {
+	ensure_run
 	printf '\n\033[31m== 停止：%s\033[0m\n' "$1" >&2
 	[ -n "${2:-}" ] && printf '   %s\n' "$2" >&2
 	note "FAILED: $1"
@@ -115,6 +195,15 @@ bytes_of() { wc -c <"$1" | tr -d ' '; }
 dsh_version() { dsh --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?' | head -1 || true; }
 plugin_version() {
 	node -p "require('$PROFILE_DIR/node_modules/$1/package.json').version" 2>/dev/null || echo "missing"
+}
+
+# 插件清单与 bundle 清单都从 profile 的 package.json 现读。
+# 写死这两份清单会随每次增删插件而静默过期；现读则永远等于磁盘真值。
+profile_plugins() {
+	node -e 'const p=require(process.argv[1]);console.log(Object.keys(p.dependencies||{}).join(" "))' "$PKG"
+}
+profile_bundles() {
+	node -e 'const p=require(process.argv[1]);console.log((((p.dsh||{}).profile||{}).bundles||[]).join(" "))' "$PKG"
 }
 
 DSH_BIN=""
@@ -197,20 +286,25 @@ stop_all_dsh_web() {
 	ok "dsh web 已全部停止"
 }
 
-# 探测 npm 缓存是否可写；坏则记下备用缓存，后续所有 npm 命令共用（不要 sudo）
+# 探测 npm 缓存是否可写；坏则记下备用缓存，后续所有 npm 命令共用（不要 sudo）。
+# 探测本身不建运行目录：只读模式下失败了才靠 fail() 补建，避免 dry-run 留垃圾。
 probe_npm_cache() {
-	local log="$RUN_DIR/npm-cache-probe.log"
+	local log
+	log="$(mktemp -t dsh-upgrade-cache-probe)"
 	if npm view @deepseek-ai/dsh version >/dev/null 2>"$log"; then
+		rm -f "$log"
 		return 0
 	fi
 	if grep -qE "EPERM|_cacache" "$log"; then
 		warn "npm 缓存属主问题，后续 npm 命令改用备用缓存（不要 sudo）"
 		NPM_CACHE_DIR="$HOME/.npm-cache-dsh"
 	fi
+	ensure_run
+	cp "$log" "$RUN_DIR/npm-cache-probe.log" 2>/dev/null || true
+	rm -f "$log"
 	return 0
 }
 
-# 带备用缓存参数（如已探测到缓存属主问题）跑一次 npm view
 npm_view() {
 	if [ -n "$NPM_CACHE_DIR" ]; then
 		npm view "$@" --cache "$NPM_CACHE_DIR"
@@ -220,6 +314,7 @@ npm_view() {
 }
 
 npm_install_host() {
+	ensure_run
 	local version="$1" log="$RUN_DIR/npm-install.log" status
 	set +e
 	if [ -n "$NPM_CACHE_DIR" ]; then
@@ -242,8 +337,67 @@ npm_install_host() {
 	return "$status"
 }
 
+# 只认本脚本建的备份：带 meta.txt 的才是，否则回滚不知道该退到哪一版。
 latest_backup() {
-	find "$BACKUP_ROOT" -maxdepth 1 -name 'pre-rc3-*' -type d 2>/dev/null | sort | tail -1
+	local d
+	for d in $(find "$BACKUP_ROOT" -maxdepth 1 -name 'pre-upgrade-*' -type d 2>/dev/null | sort -r); do
+		[ -f "$d/meta.txt" ] && {
+			echo "$d"
+			return 0
+		}
+	done
+	return 0
+}
+
+# 解析目标版本：TARGET_VERSION（文件头或 --to）优先，其次按 DIST_TAG 向 registry 解析。
+# DIST_TAG=newest 时取 next 与 latest 中较大的那个，这样“跑一下就到最新”不用改文件。
+resolve_target() {
+	if [ -n "$TARGET_VERSION" ]; then
+		say "目标版本（显式指定）  $TARGET_VERSION"
+		return 0
+	fi
+	local tag="$DIST_TAG" resolved
+	if [ "$tag" = "newest" ]; then
+		# next 与 latest 取更大的那个；不碰 alpha 线，避免把测试版当默认目标。
+		resolved="$(npm_view @deepseek-ai/dsh dist-tags --json 2>/dev/null |
+			grep -oE '"(next|latest)"[[:space:]]*:[[:space:]]*"[^"]+"' |
+			sed -E 's/.*"([^"]+)"$/\1/' |
+			sort -V | tail -1 || true)"
+	else
+		resolved="$(npm_view @deepseek-ai/dsh "dist-tags.$tag" 2>/dev/null || true)"
+		resolved="$(printf %s "$resolved" | head -1 | tr -d '"' '[:space:]')"
+	fi
+	if [ -z "$resolved" ]; then
+		say "registry 上的 dist-tags："
+		npm_view @deepseek-ai/dsh dist-tags --json 2>/dev/null >&2 || true
+		fail "解析不到目标版本（dist-tag ${tag}）" \
+			"用 --to <版本> 显式指定，或设置文件头 TARGET_VERSION。见 $RUN_DIR/npm-cache-probe.log。"
+	fi
+	TARGET_VERSION="$resolved"
+	say "目标版本（dist-tag ${tag}）  $TARGET_VERSION"
+}
+
+# 写出本次运行的元信息；回滚靠它知道该退到哪一版
+write_meta() {
+	local dir="$1"
+	cat >"$dir/meta.txt" <<EOF
+prev_version=$PREV_VERSION
+target_version=$TARGET_VERSION
+market_target=$MARKET_TARGET
+stamp=$STAMP
+created=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+host=$(uname -s)
+dsh_bin=$DSH_BIN
+plugins=$PLUGINS_BEFORE
+bundles=$BUNDLES_BEFORE
+EOF
+}
+
+read_meta() {
+	local f="$1/meta.txt"
+	[ -f "$f" ] || return 1
+	PREV_VERSION="$(sed -n 's/^prev_version=//p' "$f" | head -1)"
+	[ -n "$PREV_VERSION" ]
 }
 
 # ---------------------------------------------------------------- 回滚
@@ -251,16 +405,32 @@ latest_backup() {
 rollback() {
 	local dir="$1" f
 	[ -n "$dir" ] || dir="$(latest_backup)"
-	[ -n "$dir" ] || fail "没找到任何 pre-rc3-* 备份；手工指定：--rollback <目录>"
+	if [ -z "$dir" ]; then
+		local stale
+		stale="$(find "$BACKUP_ROOT" -maxdepth 1 -name 'pre-upgrade-*' -type d 2>/dev/null | grep -v -F "${GIVEN_DIR:-/nonexistent}" | head -3 | tr '\n' ' ' || true)"
+		[ -n "${stale// /}" ] &&
+			warn "跳过了没有 meta.txt 的旧备份（无法得知该退到哪一版）：$stale"
+		fail "没找到可用于回滚的 pre-upgrade-* 备份" \
+			"本脚本只回滚自己建的、带 meta.txt 的备份；旧版脚本的备份请手工 npm i -g 并拷回四个文件。"
+	fi
 	[ -d "$dir" ] || fail "备份目录不存在：$dir"
 	for f in cordis.patch.yml package.json pnpm-lock.yaml pnpm-workspace.yaml; do
 		[ -f "$dir/$f" ] || fail "备份目录缺少 ${f}：$dir"
 	done
 	BACKUP_DIR="$dir"
 
+	if ! read_meta "$dir"; then
+		fail "备份目录没有 meta.txt，无法得知该退到哪一版：$dir" \
+			"旧版脚本留下的备份（pre-rc3-*）不含 meta.txt；请手工 npm i -g @deepseek-ai/dsh@<版本> 并恢复四个文件。"
+	fi
+
 	step "回滚目标"
 	say "备份：$dir"
-	say "从 $(dsh_version || echo unknown) 回到 $PREV_VERSION"
+	if [ "$(dsh_version || echo unknown)" = "$PREV_VERSION" ]; then
+		say "本体已是 $PREV_VERSION，只回滚四个 profile 文件"
+	else
+		say "从 $(dsh_version || echo unknown) 回到 $PREV_VERSION"
+	fi
 	if [ "$(sha_of "$PATCH")" != "$(sha_of "$dir/cordis.patch.yml")" ]; then
 		warn "当前 cordis.patch.yml 与备份不同——覆盖后，升级后做的配置改动会丢失"
 		say "先看差异（只显示非注释行）："
@@ -317,76 +487,87 @@ say "dsh      $DSH_BIN"
 say "version  ${CURRENT_VERSION:-<空>}"
 note "run=$STAMP mode=$MODE node=$(node -v) pnpm=$(pnpm -v) dsh=$DSH_BIN version=$CURRENT_VERSION"
 
+[ -f "$PKG" ] || fail "找不到 $PKG" "profile 不存在或 HOME 不对；先确认 dsh web 能启动。"
+PLUGINS_BEFORE="$(profile_plugins)"
+BUNDLES_BEFORE="$(profile_bundles)"
+
+probe_npm_cache
+
 case "$MODE" in
 upgrade)
-	[ "$CURRENT_VERSION" = "$PREV_VERSION" ] || fail "当前版本是 ${CURRENT_VERSION:-空}，不是 $PREV_VERSION" \
-		"环境已被动过。已是 $TARGET_VERSION 就用 --resume；要退回就用 --rollback。"
+	[ -n "$CURRENT_VERSION" ] || fail "读不到 dsh --version" "PATH 上的 dsh 不正常。"
+	resolve_target
+	PREV_VERSION="$CURRENT_VERSION"
+	if [ "$CURRENT_VERSION" = "$TARGET_VERSION" ]; then
+		# 宿主已最新：不要直接退出。若用户还指定了 --market，插件阶段仍有事要做。
+		HOST_ALREADY=1
+		if [ -z "$MARKET_TARGET" ]; then
+			step "已是最新，无需升级"
+			say "当前 ${CURRENT_VERSION} = 目标 ${TARGET_VERSION}，且未指定 --market"
+			say "要重装同名版本：npm i -g @deepseek-ai/dsh@$TARGET_VERSION"
+			say "要只跑插件阶段：$0 --resume"
+			exit 0
+		fi
+		say "宿主已是 ${CURRENT_VERSION}，跳过本体阶段，只处理插件"
+	else
+		HOST_ALREADY=0
+		say "升级路径  ${CURRENT_VERSION} → ${TARGET_VERSION}"
+	fi
+	note "target=$TARGET_VERSION host_already=$HOST_ALREADY"
 	;;
 resume)
+	resolve_target
 	[ "$CURRENT_VERSION" = "$TARGET_VERSION" ] || fail "--resume 要求当前已是 ${TARGET_VERSION}，实际 ${CURRENT_VERSION:-空}" \
 		"没升到目标版本就不能只补插件阶段。"
+	PREV_VERSION="$CURRENT_VERSION"
+	;;
+dry-run)
+	if [ -z "$TARGET_VERSION" ]; then
+		resolve_target
+	else
+		say "目标版本（--to 指定）  $TARGET_VERSION"
+	fi
+	PREV_VERSION="$CURRENT_VERSION"
 	;;
 esac
 ok "本体 ${CURRENT_VERSION:-?}"
 
-if [ "$MODE" != "resume" ]; then
-	step "阶段 0.2 已装插件"
-	progress=0
-	for p in $MANAGED_PLUGINS; do
-		v="$(plugin_version "$p")"
-		printf '   %-44s %s\n' "$p" "$v"
-		note "plugin $p=$v"
-		[ "$v" = "missing" ] || progress=$((progress + 1))
-	done
-	PLUGIN_COUNT="$(printf '%s\n' $MANAGED_PLUGINS | wc -l | tr -d ' ')"
-	[ "$progress" -eq "$PLUGIN_COUNT" ] || fail "$PLUGIN_COUNT 个插件目录里只有 $progress 个在" \
-		"本脚本不替你补装缺失插件；先把插件恢复原状再升级。"
-	ok "$PLUGIN_COUNT 个插件目录都在"
+step "阶段 0.2 已装插件"
+progress=0
+PLUGIN_COUNT=0
+for p in $PLUGINS_BEFORE; do
+	PLUGIN_COUNT=$((PLUGIN_COUNT + 1))
+	v="$(plugin_version "$p")"
+	printf '   %-44s %s\n' "$p" "$v"
+	note "plugin $p=$v"
+	[ "$v" = "missing" ] || progress=$((progress + 1))
+done
+[ "$PLUGIN_COUNT" -gt 0 ] || fail "$PKG 的 dependencies 是空的" "profile 清单异常，先修好再升。"
+if [ "$progress" -ne "$PLUGIN_COUNT" ]; then
+	fail "$PLUGIN_COUNT 个插件目录里只有 $progress 个在" \
+		"本脚本不替你补装缺失插件；先 dsh plugin --profile web add <缺的包> 修好再升。"
 fi
+ok "$PLUGIN_COUNT 个插件目录都在"
+say "bundle $PLUGIN_COUNT/${PLUGIN_COUNT}；bundles 共 $(printf '%s\n' $BUNDLES_BEFORE | wc -l | tr -d ' ') 项"
 
 step "阶段 0.3 profile 元数据"
 for f in "$PATCH" "$PKG" "$LOCK" "$WORKSPACE"; do
 	[ -f "$f" ] || fail "缺少 $f"
 	printf '   %-20s %7s B  %s\n' "$(basename "$f")" "$(bytes_of "$f")" "$(sha_of "$f")"
+	note "hash $(basename "$f")=$(sha_of "$f")"
 done
-
-check_drift() {
-	local file="$1" expected="$2" label="$3" actual
-	actual="$(sha_of "$file")"
-	note "hash $label=$actual"
-	if [ "$actual" != "$expected" ]; then
-		warn "$label 与 2026-10-25 基线不同（$(bytes_of "$file") B / ${actual:0:12}…）"
-		BASELINE_DRIFT=1
-	fi
-}
-
-if [ "$MODE" = "upgrade" ]; then
-	check_drift "$PATCH" "$EXPECTED_PATCH_SHA" "cordis.patch.yml"
-	check_drift "$PKG" "$EXPECTED_PKG_SHA" "package.json"
-	check_drift "$LOCK" "$EXPECTED_LOCK_SHA" "pnpm-lock.yaml"
-	check_drift "$WORKSPACE" "$EXPECTED_WORKSPACE_SHA" "pnpm-workspace.yaml"
-	if [ "$BASELINE_DRIFT" = "1" ]; then
-		say ""
-		say "差异通常来自你升级后改过配置（例如换默认模型）。"
-		say "本脚本以当前现值为基线：备份的是现值，最后验收也拿现值比。"
-		confirm "接受当前值作为基线并继续？"
-	else
-		ok "四个文件与基线一致"
-	fi
-fi
+say ""
+say "现值即本次基线：备份的是现值，验收也拿现值比，不再对照某个写死的快照。"
 
 if [ "$MODE" != "resume" ]; then
 	step "阶段 0.4 registry"
-	probe_npm_cache
-	NEXT_TAG="$(npm_view @deepseek-ai/dsh dist-tags --json 2>/dev/null |
-		node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).next||"")}catch{console.log("")}})' || true)"
-	say "dist-tag next = ${NEXT_TAG:-<查不到>}"
-	note "dist-tag next=$NEXT_TAG"
-	[ "$NEXT_TAG" = "$TARGET_VERSION" ] || fail "registry 的 next 是 ${NEXT_TAG:-空}，不是 $TARGET_VERSION" \
-		"网络/registry 问题（也可能 npm 缓存属主异常，见 $RUN_DIR/npm-cache-probe.log）。不要改用 latest：它仍是 ${PREV_VERSION}。"
-	MARKET_HAS="$(npm_view "dshmarket@$MARKET_TARGET" version 2>/dev/null | tr -d '\n' || true)"
-	say "dshmarket@$MARKET_TARGET = ${MARKET_HAS:-<查不到>}"
-	[ "$MARKET_HAS" = "$MARKET_TARGET" ] || fail "registry 查不到 dshmarket@$MARKET_TARGET"
+	if [ -n "$MARKET_TARGET" ]; then
+		MARKET_HAS="$(npm_view "dshmarket@$MARKET_TARGET" version 2>/dev/null | tr -d '\n' || true)"
+		say "dshmarket@$MARKET_TARGET = ${MARKET_HAS:-<查不到>}"
+		[ "$MARKET_HAS" = "$MARKET_TARGET" ] || fail "registry 查不到 dshmarket@$MARKET_TARGET"
+	else
+		say "dshmarket 不动（未给 --market）"
+	fi
 	ok "目标版本都在"
 fi
 
@@ -403,6 +584,9 @@ fi
 if [ "$MODE" = "dry-run" ]; then
 	step "dry-run 结束：预检通过，未做任何改动"
 	say "去掉 --dry-run 即执行升级。"
+	if [ -n "$CURRENT_VERSION" ] && [ "$CURRENT_VERSION" = "$TARGET_VERSION" ]; then
+		say "注意：当前已是 ${TARGET_VERSION}，真跑会被拒绝；要补插件阶段用 --resume。"
+	fi
 	exit 0
 fi
 
@@ -410,7 +594,7 @@ if [ "$MODE" = "resume" ]; then
 	step "阶段 0.6 选择既有备份"
 	BACKUP_DIR="$GIVEN_DIR"
 	[ -n "$BACKUP_DIR" ] || BACKUP_DIR="$(latest_backup)"
-	[ -n "$BACKUP_DIR" ] && [ -d "$BACKUP_DIR" ] || fail "找不到可用的 pre-rc3-* 备份；用 --resume <目录> 指定"
+	[ -n "$BACKUP_DIR" ] && [ -d "$BACKUP_DIR" ] || fail "找不到可用的 pre-upgrade-* 备份；用 --resume <目录> 指定"
 	say "备份：$BACKUP_DIR"
 	note "resume backup=$BACKUP_DIR"
 	if [ -n "$(dsh_web_pids)" ]; then
@@ -419,8 +603,9 @@ if [ "$MODE" = "resume" ]; then
 		confirm "不停 web，直接继续？"
 	fi
 else
+	ensure_run
 	step "阶段 0.7 备份"
-	BACKUP_DIR="$BACKUP_ROOT/pre-rc3-$STAMP"
+	BACKUP_DIR="$BACKUP_ROOT/pre-upgrade-$STAMP"
 	mkdir -p "$BACKUP_DIR"
 	cp "$PATCH" "$BACKUP_DIR/cordis.patch.yml"
 	cp "$PKG" "$BACKUP_DIR/package.json"
@@ -430,13 +615,14 @@ else
 		[ "$(sha_of "$BACKUP_DIR/$f")" = "$(sha_of "$PROFILE_DIR/$f")" ] ||
 			fail "备份校验失败：$f 复制后哈希不一致" "磁盘可能在变动，重跑一次。"
 	done
+	write_meta "$BACKUP_DIR"
 	ok "备份完成：$BACKUP_DIR"
 	note "backup=$BACKUP_DIR"
 fi
 
 # ---------------------------------------------------------------- 阶段 1–2：宿主
-
-if [ "$MODE" = "upgrade" ]; then
+HOST_ALREADY=0
+if [ "$MODE" = "upgrade" ] && [ "$HOST_ALREADY" != "1" ]; then
 	step "阶段 1 停止 dsh web"
 	if [ -n "$(dsh_web_pids)" ]; then
 		confirm "停掉 $(dsh_web_pids | tr '\n' ' ')？当前浏览器会话会断开。"
@@ -446,7 +632,7 @@ if [ "$MODE" = "upgrade" ]; then
 	fi
 
 	step "阶段 2 升级本体 → $TARGET_VERSION"
-	npm_install_host "next" || fail "npm i -g 失败" "见 $RUN_DIR/npm-install.log"
+	npm_install_host "$TARGET_VERSION" || fail "npm i -g 失败" "见 $RUN_DIR/npm-install.log"
 
 	step "阶段 2.1 验证本体"
 	NEW_VERSION="$(dsh_version)"
@@ -465,15 +651,16 @@ if [ "$MODE" = "upgrade" ]; then
 	say "exit=$DUMP_STATUS  yaml_lines=$(wc -l <"$RUN_DIR/config.yml" | tr -d ' ')"
 	[ "$DUMP_STATUS" -eq 0 ] || fail "--dump-config 退出码 $DUMP_STATUS" "见 $RUN_DIR/config.err；不要动插件，先回滚。"
 	[ -s "$RUN_DIR/config.yml" ] || fail "--dump-config 输出为空" "见 $RUN_DIR/config.err；先回滚。"
-	grep -qE "failed to load|cannot" "$RUN_DIR/config.err" &&
+	if grep -qE "failed to load|cannot" "$RUN_DIR/config.err"; then
 		fail "--dump-config 报解析错误" "见 $RUN_DIR/config.err；先回滚。"
+	fi
 	missing=""
 	PROVIDER_COUNT="$(printf '%s\n' $PROVIDERS | wc -l | tr -d ' ')"
 	for provider in $PROVIDERS; do
 		grep -q "$provider" "$RUN_DIR/config.yml" || missing="$missing $provider"
 	done
 	[ -z "$missing" ] || fail "配置里找不到 provider:$missing" "patch 没被完整组合进去；见 $RUN_DIR/config.yml。"
-	ok "组合通过，$PROVIDER_COUNT 个 provider 条目都在（含 dimagent-oauth）"
+	ok "组合通过，$PROVIDER_COUNT 个 provider 条目都在"
 
 	step "阶段 2.3 启动冒烟"
 	dsh web --no-open >"$RUN_DIR/smoke.log" 2>&1 &
@@ -494,7 +681,9 @@ if [ "$MODE" = "upgrade" ]; then
 	note "smoke url=$URL"
 	# URL 先于插件完全加载打印；等几秒让迟到的启动诊断落盘，再检查禁用关键字
 	for _ in $(seq 1 4); do
-		kill -0 "$SMOKE_PID" 2>/dev/null || break
+		if ! kill -0 "$SMOKE_PID" 2>/dev/null; then
+			break
+		fi
 		sleep 1
 	done
 	if grep -qE "$FORBIDDEN_LOG" "$RUN_DIR/smoke.log"; then
@@ -510,21 +699,22 @@ fi
 
 # ---------------------------------------------------------------- 阶段 3：插件
 
-step "阶段 3.1 升级 dshmarket → $MARKET_TARGET"
-add_market() {
-	local status
-	set +e
-	dsh plugin --profile web add "dshmarket@$MARKET_TARGET" --save-exact 2>&1 | tee "$RUN_DIR/add-dshmarket.log"
-	status="${PIPESTATUS[0]}"
-	set -e
-	return "$status"
-}
+if [ -n "$MARKET_TARGET" ]; then
+	step "阶段 3.1 升级 dshmarket → $MARKET_TARGET"
+	add_market() {
+		local status
+		set +e
+		dsh plugin --profile web add "dshmarket@$MARKET_TARGET" --save-exact 2>&1 | tee "$RUN_DIR/add-dshmarket.log"
+		status="${PIPESTATUS[0]}"
+		set -e
+		return "$status"
+	}
 
-if add_market; then
-	ok "dshmarket add 成功"
-elif grep -qE "minimumReleaseAge" "$RUN_DIR/add-dshmarket.log"; then
-	warn "pnpm 发版冷却拦住了 ${MARKET_TARGET}，把版本补进 minimumReleaseAgeExclude"
-	node -e '
+	if add_market; then
+		ok "dshmarket add 成功"
+	elif grep -qE "minimumReleaseAge" "$RUN_DIR/add-dshmarket.log"; then
+		warn "pnpm 发版冷却拦住了 ${MARKET_TARGET}，把版本补进 minimumReleaseAgeExclude"
+		node -e '
 const fs = require("fs"), p = process.argv[1], v = process.argv[2];
 const lines = fs.readFileSync(p, "utf8").split("\n");
 let hit = false;
@@ -538,34 +728,52 @@ if (!hit) { console.error("没有 dshmarket 的 minimumReleaseAgeExclude 行"); 
 fs.writeFileSync(p, lines.join("\n"));
 console.log(lines.find(l => /^\s*-\s+dshmarket@/.test(l)));
 ' "$WORKSPACE" "$MARKET_TARGET" || fail "改写 pnpm-workspace.yaml 失败" \
-		"手工把 $MARKET_TARGET 加到 dshmarket 那一行选择器末尾，再重跑本脚本。"
-	add_market || fail "补冷却排除后 add 仍失败" "见 $RUN_DIR/add-dshmarket.log"
-elif grep -qE "already-installed" "$RUN_DIR/add-dshmarket.log"; then
-	warn "已装包被拒，改走 remove → add"
-	dsh plugin --profile web remove dshmarket 2>&1 | tee "$RUN_DIR/remove-dshmarket.log" ||
-		fail "remove 失败" "见 $RUN_DIR/remove-dshmarket.log"
-	add_market || fail "remove 后 add 仍失败" "见 $RUN_DIR/add-dshmarket.log"
-elif grep -qE "incompatible-version|allow-version|requires " "$RUN_DIR/add-dshmarket.log"; then
-	fail "兼容检查拒绝了 $MARKET_TARGET" "不要用 allow-version 强行放行；先查版本判断。"
+			"手工把 $MARKET_TARGET 加到 dshmarket 那一行选择器末尾，再重跑本脚本。"
+		add_market || fail "补冷却排除后 add 仍失败" "见 $RUN_DIR/add-dshmarket.log"
+	elif grep -qE "already-installed" "$RUN_DIR/add-dshmarket.log"; then
+		warn "已装包被拒，改走 remove → add"
+		dsh plugin --profile web remove dshmarket 2>&1 | tee "$RUN_DIR/remove-dshmarket.log" ||
+			fail "remove 失败" "见 $RUN_DIR/remove-dshmarket.log"
+		add_market || fail "remove 后 add 仍失败" "见 $RUN_DIR/add-dshmarket.log"
+	elif grep -qE "incompatible-version|allow-version|requires " "$RUN_DIR/add-dshmarket.log"; then
+		fail "兼容检查拒绝了 $MARKET_TARGET" "不要用 allow-version 强行放行；先查版本判断。"
+	else
+		fail "dshmarket add 失败" "见 $RUN_DIR/add-dshmarket.log"
+	fi
+
+	step "阶段 3.2 验证 dshmarket"
+	MARKET_NOW="$(plugin_version dshmarket)"
+	say "dshmarket = $MARKET_NOW"
+	[ "$MARKET_NOW" = "$MARKET_TARGET" ] || fail "dshmarket 是 ${MARKET_NOW}，不是 $MARKET_TARGET"
 else
-	fail "dshmarket add 失败" "见 $RUN_DIR/add-dshmarket.log"
+	MARKET_NOW="$(plugin_version dshmarket)"
+	say "dshmarket 保持 ${MARKET_NOW}（未给 --market）"
 fi
 
-step "阶段 3.2 验证 profile"
-MARKET_NOW="$(plugin_version dshmarket)"
-say "dshmarket = $MARKET_NOW"
-[ "$MARKET_NOW" = "$MARKET_TARGET" ] || fail "dshmarket 是 ${MARKET_NOW}，不是 $MARKET_TARGET"
+step "阶段 3.3 插件与 bundle 清单未被增删"
+PLUGINS_AFTER="$(profile_plugins)"
+note "plugins_after=$PLUGINS_AFTER"
+for p in $PLUGINS_BEFORE; do
+	printf '%s\n' $PLUGINS_AFTER | grep -qx -- "$p" || fail "升级后 dependencies 少了 $p" \
+		"不要手工编辑依赖；先 remove 再 add。"
+done
+for p in $PLUGINS_AFTER; do
+	printf '%s\n' $PLUGINS_BEFORE | grep -qx -- "$p" || warn "升级后 dependencies 多出 ${p}（预期外的新增）"
+done
 BUNDLES_MISSING=""
-for bundle in $BUNDLES; do
+for bundle in $BUNDLES_BEFORE; do
 	node -e 'const p=require(process.argv[1]);if(!((p.dsh&&p.dsh.profile&&p.dsh.profile.bundles)||[]).includes(process.argv[2]))process.exit(1)' \
 		"$PKG" "$bundle" || BUNDLES_MISSING="$BUNDLES_MISSING $bundle"
 done
-BUNDLE_COUNT="$(printf '%s\n' $BUNDLES | wc -l | tr -d ' ')"
+for bundle in $(profile_bundles); do
+	printf '%s\n' $BUNDLES_BEFORE | grep -qx -- "$bundle" || warn "升级后 bundles 多出 ${bundle}（预期外的新增）"
+done
+BUNDLE_COUNT="$(printf '%s\n' $BUNDLES_BEFORE | wc -l | tr -d ' ')"
 [ -z "$BUNDLES_MISSING" ] || fail "dsh.profile.bundles 少了:$BUNDLES_MISSING" \
 	"不要手工编辑 bundles；对该包先 remove 再 add。"
-ok "$BUNDLE_COUNT 个 bundle 都在"
+ok "$BUNDLE_COUNT 个 bundle 都在，依赖清单未被增删"
 
-step "阶段 3.3 配置未被改写"
+step "阶段 3.4 配置未被改写"
 PATCH_NOW="$(sha_of "$PATCH")"
 say "$(basename "$PATCH") $(bytes_of "$PATCH") B / ${PATCH_NOW:0:12}…"
 [ "$PATCH_NOW" = "$(sha_of "$BACKUP_DIR/cordis.patch.yml")" ] ||
@@ -578,18 +786,18 @@ step "升级完成"
 cat <<EOF
 
    本体      $PREV_VERSION → $(dsh_version)
-   插件      dshmarket → ${MARKET_NOW}（其余 6 个未动）
+   插件      dshmarket=${MARKET_NOW}（其余 $(($(printf '%s\n' $PLUGINS_BEFORE | wc -l | tr -d ' ') - 1)) 个未动）
    备份      $BACKUP_DIR
    运行记录  $RUN_DIR
 
    启动：  dsh web --no-open
 
-   启动后逐项验收（前 5 项任一失败就回滚）：
+   启动后逐项验收（阻断级任一失败就回滚）：
      1. 新建会话发一句，能收到回复
      2. 侧栏在、文件树能展开、终端面板能跑 echo ok
      3. 设置能打开
      4. 让 Agent 跑一个需要审批的命令，批准/拒绝都生效
-     5. 模型选择器里 7 个自定义 provider 组 + DimAgent + 内置 DeepSeek 都在
+     5. 模型选择器里 $PROVIDER_COUNT 个自定义 provider 组 + 内置 DeepSeek 都在
 
    回滚：  $0 --rollback $BACKUP_DIR
 

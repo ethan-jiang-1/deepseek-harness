@@ -8,14 +8,16 @@
 
 ## 怎么用
 
-下面是文档；想直接跑就用同目录的 [`rc3-upgrade.sh`](./rc3-upgrade.sh)，它把阶段 0–3 串成一个带守卫的脚本：
+下面是文档；想直接跑就用同目录的 [`dsh-upgrade.sh`](./dsh-upgrade.sh)，它把阶段 0–3 串成一个带守卫的脚本：
 
 ```sh
 cd /Users/bowhead/deepseek-harness/_misc/dsh-global-upgrade
-./rc3-upgrade.sh --dry-run        # 只读预检，确认版本与哈希
-./rc3-upgrade.sh                  # 真升，破坏性步骤前逐个确认
-./rc3-upgrade.sh --rollback ~/.dsh/backups/pre-rc3-<时间戳>
+./dsh-upgrade.sh --dry-run        # 只读预检，不改任何东西
+./dsh-upgrade.sh                  # 升到最新版
+./dsh-upgrade.sh --rollback       # 回滚到最近一次升级前
 ```
+
+脚本是**版本无关**的：目标版本运行时从 npm dist-tag 解析（默认 `newest` = `next` 与 `latest` 取大），上一版从备份目录的 `meta.txt` 读，所以同一个脚本既能升也能回滚，换版本不用改脚本。要钉住某一版用 `--to <版本>`，或改脚本头的 `TARGET_VERSION`。
 
 脚本在**独立终端**里跑（铁律 2 由它自己检查：若当前 shell 是被升级的那个 `dsh web` 的后代进程，直接拒绝执行）。文档仍然保留，因为脚本只盖住你说的这两步；扩展到下一个版本时，改文档与脚本要同步。
 

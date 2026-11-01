@@ -66,7 +66,7 @@ done
 
 ```sh
 TS=$(date +%Y%m%d-%H%M%S)
-B="$HOME/.dsh/backups/pre-rc3-$TS"
+B="$HOME/.dsh/backups/pre-upgrade-$TS"
 mkdir -p "$B"
 cp "$HOME/.dsh/profiles/web/cordis.patch.yml"    "$B"/
 cp "$HOME/.dsh/profiles/web/package.json"        "$B"/
@@ -362,7 +362,7 @@ sleep 3
 npm i -g @deepseek-ai/dsh@0.2.1-rc.2
 
 # 3. 恢复 profile 元数据（用阶段 0 的备份目录）
-B="$HOME/.dsh/backups/pre-rc3-<TS>"
+B="$HOME/.dsh/backups/pre-upgrade-<TS>"
 cp "$B/cordis.patch.yml"    "$HOME/.dsh/profiles/web/cordis.patch.yml"
 cp "$B/package.json"        "$HOME/.dsh/profiles/web/package.json"
 cp "$B/pnpm-lock.yaml"      "$HOME/.dsh/profiles/web/pnpm-lock.yaml"
@@ -398,7 +398,7 @@ npm ls -g --depth=0 @deepseek-ai/dsh
 node -p "JSON.stringify(require(process.env.HOME+'/.dsh/profiles/web/package.json').dependencies,null,2)"
 
 # 0 备份
-TS=$(date +%Y%m%d-%H%M%S); B="$HOME/.dsh/backups/pre-rc3-$TS"; mkdir -p "$B"
+TS=$(date +%Y%m%d-%H%M%S); B="$HOME/.dsh/backups/pre-upgrade-$TS"; mkdir -p "$B"
 cp "$HOME/.dsh/profiles/web/"{cordis.patch.yml,package.json,pnpm-lock.yaml,pnpm-workspace.yaml} "$B"/
 shasum -a 256 "$B"/*
 
