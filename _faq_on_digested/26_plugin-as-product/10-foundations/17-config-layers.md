@@ -32,6 +32,20 @@ ordered bundle patches
 
 产品 bundle 应拥有自己需要覆盖的 row，并声明其完整 `config`。不要假设 Settings 的字段更新会合并回所有低层 bundle values；Config Editor 写入的是当前 profile patch。
 
+### home 层：能覆盖，不能供货
+
+`$DSH_HOME/cordis.patch.yml` 跨 profile 生效，但只改行、不改任何 profile 的 dependencies。它能禁用/覆盖已存在的 row；**插入一个该 profile 没装的包**时：
+
+- `--dump-config` 里能看到这行；
+- 真启动报 `ERR_MODULE_NOT_FOUND … imported from profiles/<p>/`，并给 `warning: N entry did not activate`；
+- **服务照常起来**，用户只看到功能缺失。
+
+所以“让所有 profile 默认启用我的功能”不能靠 home 层供货；正确做法是各自装进各自 profile。隔离实测见 [50/90](../50-launch/90-evidence.md)，阶段判据见 [37](../30-external/37-lifecycle-stages.md)。
+
+### dump 与真启动
+
+`--dump-config` 只合成补丁栈，不 import 模块；`--dump-default-config` 只看 bundle 层。dump 有 row 不等于能跑：验收必须加一次真启动，并读 stderr 有没有 `did not activate` / `skipping profile bundle`。
+
 ## app 参数与 config
 
 Web 的 app args（`--host/--port/--tls/--public-url/--trusted-host/--no-open`）整条归 shipped `web-startup`。`--port` 等只有在 row 保留 `!!js ctx.webStartup.…` 表达式时才压过 config；用户 patch 把 config 写成字面值后，参数失效，且整份替换可能丢必填字段。

@@ -29,7 +29,7 @@
 4. **默认值**：产品端口/主题/preset/开关写 bundle patch；不要写进 app bundle。
 5. **用户设置**：profile patch / Settings UI；不要另建第二套真值。
 6. **首启**：只在全新 profile 用 `--from-default-profile`；已有 profile 不重置。
-7. **安装**：`dsh plugin --profile <name> add <bundle>`；不手写 manifest。
+7. **安装**：默认应用内 Plugins 页；CLI `dsh plugin --profile <name> add <bundle>` 仅 web 自动化；不手写 manifest。
 8. **校验**：`--dump-config`、启动日志、profile roster、页面/任务。
 9. **更新**：`dsh plugin update`/新版本；重启；旧版本恢复。
 10. **文档**：安装/启动/设置/升级/卸载/排障与发布物同版本。

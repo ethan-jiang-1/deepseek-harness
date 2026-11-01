@@ -1,4 +1,4 @@
-# 实验 05 · Web 模板与本地 bundle 安装
+# 实验 05 · Web 模板与本地 bundle 安装（CLI web 自动化）
 
 **状态：** 已执行。证据等级 **T**；范围仅包括 profile composition 和 Web listener HTTP smoke。
 
@@ -39,6 +39,6 @@ DSH_HOME="$home" node --import tsx/esm apps/cli/src/bin.ts \
 
 ## 适用范围
 
-该实验验证 Web 模板初始化、安装声明了 `dsh.bundle.patch` 的 package、bundle append 顺序和 config dump。未构建 Client artifacts 时，source launch 因缺少 `dsh-client-ui-entry-customization/lib/client.js` 停止。执行 `pnpm run build` 后，隔离 profile 启动并输出 tokenized `dsh web:` URL；请求该 URL 返回 HTTP 303，附带响应 cookie 跟随重定向后返回 HTTP 200 `text/html`。
+该实验只验证 **CLI web 自动化**：Web 模板初始化、安装声明了 `dsh.bundle.patch` 的 package、bundle append 顺序和 config dump。**应用内 Plugins 页安装未测**；它才是 web/Desktop 的默认跨面入口。未构建 Client artifacts 时，source launch 因缺少 `dsh-client-ui-entry-customization/lib/client.js` 停止。执行 `pnpm run build` 后，隔离 profile 启动并输出 tokenized `dsh web:` URL；请求该 URL 返回 HTTP 303，附带响应 cookie 跟随重定向后返回 HTTP 200 `text/html`。
 
 HTTP smoke 只证明 listener 和重定向响应，不证明浏览器渲染、Kanban UI 或业务行为。CLI 更新磁盘上的 bundle membership；已经运行的 profile 需重启后才能使用新 composition。

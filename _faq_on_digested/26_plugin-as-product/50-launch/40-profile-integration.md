@@ -6,6 +6,8 @@
 
 ## 选模板
 
+下表是 CLI 自动化建 profile 的命令；产品用户默认在应用内 Plugins 页安装。
+
 | Surface | 首次建 profile | 说明 |
 |---|---|---|
 | Web | `dsh --profile <name> --from-default-profile web` | base + web-app；之后 `dsh --profile <name> --port …` |
@@ -154,7 +156,7 @@ dsh --profile acme --no-open --port 0
 
 ## 更新与卸载
 
-- bundle 更新：`dsh plugin --profile <name> update` / `add` 新版本；**重启 profile** 才生效。
+- bundle 更新：应用内 Plugin Manager（默认）或 CLI `dsh plugin --profile <name> update`（仅 web 自动化）；**重启 profile** 才生效。
 - profile 锁：安装/更新走 `dsh plugin` 或 Plugin Manager；不要并发写。
 - 回滚：保留旧 exact version/enabled；写清 crash window。
 - 卸载：`dsh plugin remove` 只移除 bundle/dependency；用户数据、Session、Workspace registration 不清；产品自建数据要单独说明。

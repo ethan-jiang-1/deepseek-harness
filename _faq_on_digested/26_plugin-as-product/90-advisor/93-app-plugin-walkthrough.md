@@ -6,7 +6,7 @@ Kanban Studio 是假想产品。这里只展示 profile manifest、bundle manife
 
 ## Profile 的 `package.json`
 
-新 profile 从随附的 Web template 开始，再安装产品 bundle。`--from-default-profile` 会替换同名 custom profile 的 dependencies 与用户 patch；必须用新名字或先备份已有 profile。以下 `dsh` 是已安装的 CLI；从源码检出目录运行时按 [90](./00-index.md) 改用 `pnpm dsh`。
+产品安装默认在应用内 **Plugins** 页（web 与 Desktop 同一句）。下面用 CLI 自动化生成/验证 custom profile；`--from-default-profile` 会替换同名 custom profile 的 dependencies 与用户 patch，必须用新名字或先备份已有 profile。以下 `dsh` 是已安装的 CLI；从源码检出目录运行时按 [90](./00-index.md) 改用 `pnpm dsh`。
 
 ```sh
 dsh --profile kanban --from-default-profile web --dump-default-config

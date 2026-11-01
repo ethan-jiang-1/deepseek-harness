@@ -31,7 +31,7 @@ Web template 的 bundle 顺序是 `dsh-base` → `dsh-web-app`。Web bundle 自�
 
 ## 2. 创建 profile 并检查运行组合
 
-以下命令使用已安装的 `dsh`。若从源码检出目录运行，先安装依赖并在缺少 Web Client 构建产物时执行 `pnpm run build`，再将命令开头的 `dsh` 换成 `pnpm dsh`，以使用该检出目录的 CLI。`--from-default-profile` 会替换同名自定义 profile 的依赖和用户 patch，操作前请使用新名称或备份原 profile：
+产品用户默认在应用内 **Plugins** 页安装（web 与 Desktop 同一句）；以下命令只用于 CLI 自动化/自定义 profile 验证。命令使用已安装的 `dsh`；若从源码检出目录运行，先安装依赖并在缺少 Web Client 构建产物时执行 `pnpm run build`，再将命令开头的 `dsh` 换成 `pnpm dsh`。`--from-default-profile` 会替换同名自定义 profile 的依赖和用户 patch，操作前请使用新名称或备份原 profile：
 
 ```sh
 dsh --profile kanban --from-default-profile web --dump-default-config

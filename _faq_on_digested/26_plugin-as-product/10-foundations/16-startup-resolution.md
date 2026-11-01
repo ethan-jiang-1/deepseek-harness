@@ -23,6 +23,18 @@ Web 的 `ui-workspace` 在 Workspace 与 Session 列表都就绪后检查是否�
 
 这个首用流程是 DSH Web 的当前行为，不是所有 profile 的启动保证。Headless 和 SDK profile 不运行 Web Client 的这段流程。产品若修改或替换 Web Workspace UI，应在实际 bundle composition 中验证其首次启动、Session 创建和错误恢复；不要依赖 Loader 行顺序或 placeholder registration 作为同步保证。
 
+## 首启不是安装：令牌门与 onboarding
+
+安装完成不等于“第一次打开有人在”。DSH 原生首启只有一道令牌门：
+
+- `dsh web` 启动后打印 `?token=…` URL；
+- 无 token 访问返回 401；带 token 返回 303 + 30 天 HttpOnly cookie，再进 SPA；
+- **没有欢迎页、没有向导、没有“装什么”的推荐**。首屏只有 `__DSH_MODELS_ONBOARDING__` 这类标记。
+
+`settings.onboarding` 是设置面板里的 step 账本：按 `order` 投影、一次只挂一个 step；宿主自带 `welcome-notice` 与 `deepseek-official`，但 **`welcome-notice` 在 Desktop 不注册**。它不保证抢到首屏。所以“第一次看到什么”必须由产品的 bundle/客户端插件回答；载体与代价见 [37](../30-external/37-lifecycle-stages.md) 与 [50/40](../50-launch/40-profile-integration.md)。
+
+**判据**：首启可推迟；不依赖单个 onboarding step；Desktop 上有替代路径。不要用“装完就能用”替代“第一次打开看到什么”。
+
 ## Workspace 何时需要登记
 
 当产品使用 DSH Web 的 Workspace 列表、会话分组或 Workspace operation 时，使用现有目录选择流程登记路径。`workspace.create({ path })` 要求目录已存在且是绝对路径；它规范化路径并保存 registration，不创建用户项目目录。

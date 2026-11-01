@@ -4,11 +4,33 @@
 
 DSH profile 决定一个应用组合由哪些 bundles 和 patches 构成。Plugin package 的安装、profile layer 的选择、当前进程是否重组以及产品数据清理是不同操作；本篇说明它们各自的 owner。
 
-## 创建 profile 与安装 bundle
+## 安装通道与 profile
+
+安装有三个通道，只有应用内那条跨面：
+
+| 通道 | 谁执行 | profile 从哪来 | 跨面 |
+|---|---|---|---|
+| 应用内 Plugins 页 / `plugin_manager` 工具 | 正在运行的宿主 | 当前 profile，**无参数** | **是**：web 与 Desktop 同一句 |
+| `dsh plugin --profile <p> …` | CLI，转发 pnpm | 显式指定；首次使用自动初始化 | 面绑定：web/headless/sdk 等，不能 `desktop` |
+| Electron carrier | Desktop | 只能它碰 `desktop` | 否：第三方拿不到 |
+
+**默认安装写应用内 Plugins 页。** 面向 GUI 的 CLI 只作 web 自动化，必须标“仅 `dsh web`”；headless/SDK/ACP 没有 Plugins 页，才用 CLI 显式 profile。`dsh --profile desktop` 与 `dsh plugin --profile desktop` 都被拒绝，只有 Electron carrier 用程序化开关能管理。
+
+“装成功”有三个独立状态：
+
+| 状态 | 怎么核 |
+|---|---|
+| pnpm 成功 | exit 0 + `+ <pkg>` |
+| dependency 写入 | `profiles/<p>/package.json.dependencies` |
+| 成为 profile 层 | `dsh.profile.bundles` 含该 bundle |
+
+只有第三个让功能存在。没有声明 `dsh.bundle.patch` 的包：exit 0、dependency 写入、roster 不变，只给一句 stderr `declares no dsh.bundle — installed as a plain dependency, not a profile layer`。
+
+### CLI 自动化路径（web/headless/sdk）
 
 新 profile 经 `dsh plugin --profile <name> add <package>` 初始化时，shipped profile name 使用对应 template；其他 profile 默认只有 `@deepseek-ai/dsh-base`。该命令随后将参数转交 pnpm。
 
-若目标是 Web 产品，先从 Web template 初始化自定义 profile：
+若目标是 Web 产品，且要用 CLI 自动化，先从 Web template 初始化自定义 profile：
 
 ```sh
 dsh --profile kanban --from-default-profile web --dump-default-config
@@ -30,11 +52,13 @@ profile 使用 DSH installation 与 profile node_modules 两个来源解析 bund
 - 本地 tarball 可直接 `dsh plugin --profile <name> add ./x.tgz`；产物要含 `package.json`、`dsh.bundle.patch` 与插件文件。
 - 并发执行 `--from-default-profile` 时，至少一个成功，最终目录是一份完整副本；实测两个进程都成功、最后写入者生效，未留 staging。
 
-实测与模板见 [50 launch](../50-launch/40-profile-integration.md)。
+实测与模板见 [50 launch](../50-launch/40-profile-integration.md)，阶段判据见 [37](../30-external/37-lifecycle-stages.md)。
 
 ## 安装完成后何时生效
 
-CLI `dsh plugin` 运行 pnpm 并更新磁盘上的 dependency/bundle list；它返回退出码，不返回 `ChangeResult.application`。修改 bundle membership 后重启该 profile，以使用新的 composition。
+CLI `dsh plugin` 运行 pnpm 并更新磁盘上的 dependency/bundle list；它返回退出码，不返回 `ChangeResult.application`，而且在另一个进程里操作——**宿主不知道**。修改 bundle membership 后必须重启该 profile。
+
+应用内安装由宿主自己执行，可能返回 `restart-required`（例如 `no-hmr`）；只有该接口明确 `applied` 时才是 HMR 生效。不要把 CLI 的 exit 0 当成“已生效”。
 
 Web/agent Plugin Manager 是不同的调用路径。启用 HMR 的 profile 可能应用可热加载的变更并返回 `ChangeResult.application: 'applied'`；只在该接口返回 `restart-required` 时按其结果告知重启。用户不应将 Plugin Manager 的返回值套用到 CLI 命令。
 
