@@ -20,10 +20,23 @@
 ![安装状态机：五个检查点](./figures/20-install-sequence.svg)
 
 
+## 安装通道
+
+| 通道 | 谁执行 | profile 从哪来 | 跨面吗 |
+|---|---|---|---|
+| 应用内 Plugins 页 / `plugin_manager` 工具 | 正在运行的宿主 | **当前 profile，无参数** | **是**：web 与 Desktop 同一句 |
+| `dsh plugin --profile <p> …` | CLI，转发 pnpm | 显式指定；首次自动初始化 | 面绑定：可管理 web/headless/sdk 等，不能 `desktop` |
+| Electron carrier | Desktop | 只能它碰 `desktop` | 否：第三方拿不到 |
+
+对 web/Desktop，默认安装写应用内 Plugins 页；headless/SDK/ACP 没有 Plugins 页，用 CLI 显式 profile。CLI 不能管理 `desktop`。**不要在安装说明里只写 `--profile web` 而不提 Desktop**：Desktop 用户会装进 `profiles/web`，App 用 `profiles/desktop`，报告成功但界面没有。
+
+“装成功”有三个独立状态：pnpm exit 0 → dependency 写入 → 进 `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包 exit 0、roster 不变，只给一句 stderr warning（实验见 [90](./90-evidence.md)）。
+
 ## Profile 初始化
 
 | 入口 | 行为 |
 |---|---|
+| 应用内 Plugins 页 | 当前 profile 已存在；装 bundle 只改该 profile 的依赖与 `dsh.profile.bundles` |
 | 首次 boot/dump shipped profile | 从模板自动初始化：`web`=base+web-app（live patches），`headless`=base+headless，`sdk`=base+sdk-app，`sdk-minimal`=standalone，`acp`=base+acp-app（后四者 startup-only） |
 | 自定义 profile 缺失 | 失败并提示 `dsh plugin --profile <name> add <package>` |
 | `dsh plugin --profile <name> …` | 缺失时初始化 base-backed profile，再转发 pnpm |
@@ -34,7 +47,9 @@
 
 注意：`dsh plugin` 对自定义名字只初始化 **base**；Web/SDK/ACP 产品要么首次用 `--from-default-profile <template>` 建 profile，要么显式把对应 app bundle 加进去。不要用 base-only profile 期待 Web 界面。
 
-## Bundle 安装
+## Bundle 安装（CLI，面绑定）
+
+应用内 Plugins 页是默认安装路径；CLI 是面绑定自动化：可管理显式非 `desktop` profile，面向 GUI 时只作 web 自动化。
 
 ```sh
 dsh plugin --profile <name> add <package-or-git-spec>

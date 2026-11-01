@@ -8,7 +8,7 @@
 4. **模型权限来自可用工具与各工具的 provider/policy。** Workspace 不赋予模型文件操作；Host 插件代码也不自动受到 Session sandbox 约束。
 5. **DSH Web 首用有自己的 Documents 默认 Workspace 流程。** 产品自建的 project root、directory onboarding、设置文件和隔离路径不是 DSH 通用服务。
 6. **profile 不是隔离边界。** 同一 `$DSH_HOME` 中的 profile 可以共享 Session、Workspace registry、凭据与其他 home 数据；CLI 改变 bundle membership 后要重启 profile。
-7. **交付路径有硬边界。** bundle 在 roster ≠ patch 生效（新增 row 用 `insert:`）；web 命令行归 `web-startup`，替换 provider 要重实现全部 web flags；session 创建与 UI 选中是两层（fresh 可能自动选最新 blank，returning 保持 current）；版本门在安装前拒绝。
+7. **交付路径有硬边界。** 应用内 Plugins 页是跨面安装入口；CLI `--profile` 面绑定（不能 `desktop`），面向 GUI 时仅 web 自动化；bundle 在 roster ≠ patch 生效（新增 row 用 `insert:`）；web 命令行归 `web-startup`，替换 provider 要重实现全部 web flags；session 创建与 UI 选中是两层（fresh 可能自动选最新 blank，returning 保持 current）；版本门在安装前拒绝。
 
 ## 本篇如何回答问题
 
@@ -22,8 +22,8 @@
 | Q3：目录怎样选择？ | DSH Web 有 Workspace 首用与 picker；产品 root resolver 是自建机制 | [16](./10-foundations/16-startup-resolution.md) |
 | Q4：配置如何生效？ | Patch 链按层覆盖完整 entry config；产品运行时设置在链外 | [17](./10-foundations/17-config-layers.md) |
 | Q5–Q8：作用域、存储、凭据与产物 | 按数据 owner 与 API 分别选择 | [11–14](./10-foundations/11-five-homes.md) |
-| Q9–Q10：设计来源与 DSH 外部生态 | DSH 当前行为以原生证据为准；外部材料仅供参考 | [21–22](./20-native/21-native-data-landscape.md)、[31–36](./30-external/31-external-community-patterns.md) |
-| Q11–Q12：安装与施工检查 | CLI 与 Plugin Manager 有不同更新结果；形态与装配见 34/35，安装/启动/命令行见 50，用 90–93 完成方案与验收 | [18](./10-foundations/18-install-upgrade.md)、[34](./30-external/34-profile-product-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[50](./50-launch/00-index.md)、[90–93](./90-advisor/00-index.md) |
+| Q9–Q10：设计来源与 DSH 外部生态 | DSH 当前行为以原生证据为准；外部材料仅供参考 | [21–22](./20-native/21-native-data-landscape.md)、[31–37](./30-external/31-external-community-patterns.md) |
+| Q11–Q12：安装与施工检查 | CLI 与 Plugin Manager 有不同更新结果；形态与装配见 34/35，装/起/配/首启见 37，安装/启动/命令行见 50，用 90–93 完成方案与验收 | [18](./10-foundations/18-install-upgrade.md)、[34](./30-external/34-profile-product-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[50](./50-launch/00-index.md)、[90–93](./90-advisor/00-index.md) |
 
 ## Profile 与数据 owner
 
@@ -76,6 +76,6 @@ DSH 配置 patch 顺序为 **ordered bundle patches → profile patch → home p
 
 - **T（2026-10-31，隔离 home 的 CLI 组合检查）**：从 Web template 初始化 `verify-kanban-web`，再通过 `dsh plugin` 安装本地 fixture bundle；manifest 中 bundle 顺序为 base、web-app、fixture。命令和实际结果见 [实验 05](./40-evidence/experiments/05-profile-bundle-install.md)。该检查证明 profile 初始化与 bundle 追加；不证明 Kanban 产品代码或 Web runtime 已实现。
 - **C（DSH 当前合同）**：profile layer order、Workspace/Session create 语义、默认 Workspace eligibility、tool visibility 与 sandbox provider 行为均以对应 `docs/`、package README 和源码为准。
-- **T（2026-11-01，50-launch 隔离实验）**：bundle patch insert、web-startup 拒绝自定义 flag/替换 provider、workspace/session create、engines 门、并发替换；见 [50/90](./50-launch/90-evidence.md)。
+- **T（2026-11-01，50-launch 隔离实验）**：bundle patch insert、web-startup 拒绝自定义 flag/替换 provider、workspace/session create、engines 门、并发替换、无 bundle exit 0、home 供货失败；见 [50/90](./50-launch/90-evidence.md)。
 - 外部 plugin 章节中的 S/R/U 样本未作为 DSH API 依据。
 - 本篇讨论单 Host profile 组合；不提供多租户或跨机器同步方案。

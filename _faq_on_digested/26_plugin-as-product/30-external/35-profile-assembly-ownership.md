@@ -23,6 +23,14 @@
 
 **读回纪律。** 每个产品至少提供四条读回：package 版本、profile roster、patch 里的 row 与 `disabled`、effective config。把半挂载当可诊断状态而不是异常；repair 要幂等。`dsh --dump-default-config` 只看 bundle 层，`--dump-config` 只看合成文件配置，两者都不能证明 plugin 已挂载或 row 已启用。（`[DSH]`/`[SRC]`）
 
+### 生命周期补丁：三个成功、失败三级、home 不能供货
+
+- **三个成功**：pnpm exit 0 → dependency 写入 → `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包 exit 0、roster 不变，只给一句 stderr warning。
+- **失败三级**：bundle skip / row pending 或 import warning / 整体失败；“应用能开、功能没有”是合法终态，不能按“全有或全无”设计救生逻辑。
+- **home 层能覆盖、不能供货**：插入该 profile 没装的包，dump 有行，真启动 `ERR_MODULE_NOT_FOUND` 且服务照常起。分发给每个 profile 各自装，不要用 home 层供货。
+
+阶段判据与 15 张样本见 [37](./37-lifecycle-stages.md)；本仓库隔离实测的非 bundle 与 home 供货见 [50/90](../50-launch/90-evidence.md)。
+
 ## 身份、冲突与退役
 
 聚合产品的核心不是“多装几个包”，是身份管理：
@@ -106,4 +114,4 @@
 - `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考（`[R]`/`U`）。
 - `better-session` 目标源码未 pin，发布 patch 之外的会话状态机都是 `[R]`/`[U]`。
 - 九条检查清单只在目标形态需要时采用；不是所有产品都必须有聚合、接管或进口形态。
-- 证据分级与逐样本未验证项见 [36](./36-profile-evidence-ledger.md)；bundle patch 的 `insert`/override、web 命令行所有权与 startup session 见 [50](../50-launch/00-index.md)。
+- 证据分级与逐样本未验证项见 [36](./36-profile-evidence-ledger.md)；装/起/配/首启的阶段判据见 [37](./37-lifecycle-stages.md)；bundle patch 的 `insert`/override、web 命令行所有权与 startup session 见 [50](../50-launch/00-index.md)。

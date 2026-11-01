@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-> **角色：外部参考层（E1/E2）。** 本篇只处理 profile 级产品：一套 bundle 装进 profile，用户用 `dsh --profile <name>` 打开。八个样本是 2026-10-31 固定版本复核；源码、测试与 CI 记录已读，**没有安装、没有运行**。
+> **角色：外部参考层（E1/E2）。** 本篇只处理 profile 级产品：一套 bundle 装进 profile。**安装默认写在应用内 Plugins 页（web 与 Desktop 同一句）；`dsh --profile <name>` 是 web 面的启动/自动化，不是跨面安装路径。** 八个样本是 2026-10-31 固定版本复核；源码、测试与 CI 记录已读，**没有安装、没有运行**。
 
 [31](./31-external-community-patterns.md) 看单插件的数据维度，[32](./32-external-ecosystem.md) 看产品内部的数据结构，[33](./33-external-plugin-patterns.md) 是 15 个案例。[35](./35-profile-assembly-ownership.md) 把八种形态共用的装配状态与所有权抽出来，[36](./36-profile-evidence-ledger.md) 记录每个样本的证据与失效边界。
 
@@ -27,10 +27,10 @@
 
 ## 先判断：插件、profile 还是独立应用
 
-| 交付物 | 启动方式 | 负责到哪层 | 抄错的样子 |
+| 交付物 | 安装 / 启动 | 负责到哪层 | 抄错的样子 |
 |---|---|---|---|
 | 单个插件 | 装进用户现有 profile | 3 层槽位为主 | 硬依赖不存在的服务，结果白屏 |
-| 一套 bundle / profile | `dsh --profile <name>` / `dsh web`（仅 web profile） | 5/6/7：默认值、首启、分发 | bundle 在 roster 但 patch row 没生效，用户以为装好 |
+| 一套 bundle / profile | 应用内 Plugins 页安装；启动 `dsh --profile <name>`（web）或 Desktop 内启动 | 5/6/7：默认值、首启、分发 | bundle 在 roster 但 patch row 没生效；Desktop 上装进 profiles/web |
 | 独立应用（换表层/自带运行时） | 双击或命令行 | 2 层起，连运行时都可能要带 | 换了表层没补 5/6/7，首启即崩 |
 
 本篇只收中间一列；单插件的数据做法见 [31](./31-external-community-patterns.md)–[33](./33-external-plugin-patterns.md)，独立应用不在本篇。独立应用/自带 shell 是外部观察，不是 DSH 支持路径；官方 Desktop 之外不承诺。八种形态是中间一列的八种产品承诺，不是八种技术选型。
@@ -127,7 +127,7 @@
 
 ## 样本与来源
 
-版本以各仓库的 tag/commit 为准；npm 包名可直接用于 `dsh plugin --profile <name> add`。
+版本以各仓库的 tag/commit 为准；npm 包名可用于应用内 Plugins 页搜索，或 CLI `dsh plugin --profile <name> add`（仅 web）。
 
 | 形态 | 固定版本 | 仓库 | npm 包 |
 |---|---|---|---|
@@ -145,4 +145,4 @@
 - 八个样本是固定版本复核：六个读到源码，`plugins-plus` 只到 README/tarball，`better-session` 只到发布 patch；都没有安装、启动；逐样本证据与未验证项见 [36](./36-profile-evidence-ledger.md)。
 - `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考（`[R]`/`U`）。
 - npm 下载含 CI 与镜像，星标不是质量；采用信号只说明曝光，不说明用户数或机制正确。
-- 本篇不覆盖终端表层、自带运行时的独立应用、单插件增强和只支持 0.1.x 的样本；安装/启动/设置的产品化路径见 [50](../50-launch/00-index.md)。
+- 本篇不覆盖终端表层、自带运行时的独立应用、单插件增强和只支持 0.1.x 的样本；安装/启动/设置的产品化路径见 [50](../50-launch/00-index.md)，装/起/配/首启的阶段判据与 15 张生命周期样本见 [37](./37-lifecycle-stages.md)。

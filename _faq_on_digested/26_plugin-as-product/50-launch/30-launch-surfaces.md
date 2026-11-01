@@ -72,7 +72,7 @@ HMR 开启时监听 profile/home patch，事务性重载；否则重启生效。
 
 ## Desktop
 
-Electron 壳，不是第五个 CLI profile：`desktop` 名字保留，CLI 拒绝 boot/config-dump；npm CLI 不能管理它的插件，Desktop 安装的命令在应用关闭时可以。Electron 在访问 profile 前拿进程级单实例锁，独占 `profiles/desktop`；核心 dsh 从 `resources/app.asar/dsh` 解析，不复制进 profile；监听默认 OS 分配端口，绑定 `127.0.0.1`，页面走 `dsh-app://app/`；更新要等 analytics intake、锁 API admission、drain 任务，失败有原生 recovery。
+Desktop 与 Web 共用同一个 Plugins 页，安装动作没有 profile 参数；CLI 的 `--profile web` 不会命中 `desktop`。Electron 壳，不是第五个 CLI profile：`desktop` 名字保留，CLI 拒绝 boot/config-dump；npm CLI 不能管理它的插件，Desktop 安装的命令在应用关闭时可以。Electron 在访问 profile 前拿进程级单实例锁，独占 `profiles/desktop`；核心 dsh 从 `resources/app.asar/dsh` 解析，不复制进 profile；监听默认 OS 分配端口，绑定 `127.0.0.1`，页面走 `dsh-app://app/`；更新要等 analytics intake、锁 API admission、drain 任务，失败有原生 recovery。
 
 Desktop 的 shell 设置（如 update test popup）在 Electron `userData/desktop/settings.json`，**不受 `DSH_HOME` 重定位**；Host 环境在 macOS/Linux 通过登录 shell 的 `env -0` 读取，Windows 继承注册表环境。
 

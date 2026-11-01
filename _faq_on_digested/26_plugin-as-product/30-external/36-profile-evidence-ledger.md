@@ -21,6 +21,10 @@
 | `better-session` | 0.1.10（npm tarball） | 发布 patch：5 exact deps、5 rows、SQLite default；README 闭环 | 无匹配 source/test/CI（无 tag、无 `gitHead`） | edit/retry/fork、UI slots、确认弹窗 | session schema/事务/迁移；并发 retry；外部 tool side effect；UI slot 契约 |
 | `dsh-wallpaper-engine` | 1.4.0 / `3b0103b` | 8 packages/rows、host/client、格式 fallback、video limits、preset schema、token contract | same-SHA Windows/Ubuntu CI 读过，未运行 | WebGL/ffmpeg 真实表现、preset obsolete UX、跨 skin 共存 | 真实 GPU/OS、Web sandbox 威胁模型、unload teardown、预设跨版本导入 |
 
+## 生命周期样本（另册）
+
+[37](./37-lifecycle-stages.md) 另列 15 张阶段样本 + 1 张反例（装 4、起 5、配 3、首启 3、反例 1），按“装/起/配/首启”而不是产品形态组织。它们的证据级别与本篇分开：原册对 `install/11`、`install/13`、`boot/21`、`config/31` 有隔离实测，其余为包清单/源码/README；本仓库没有重跑，所以不把原册 `[RUN]` 升为本文的 T。
+
 ## 采用信号与样本边界
 
 npm last-month（2026-09-30 ~ 10-29，含 CI/镜像）：`dsh-codex-ui` 119,610、`dsh-wallpaper-engine` 109,268、`dsh-web` 99,694、`better-session` 8,561、`dsh-suite` 8,230、`dsh-plugins-plus` 6,094、`dsh-agent-plugins-market` 4,752、`dsh-all` 3,558。GitHub 星标（2026-10-31）从 `dsh-web` 9,865、`dsh-wallpaper-engine` 4,189 到 `dsh-plugins-plus` 0 不等；下载与星标不可互证，也不代表用户数或机制质量。

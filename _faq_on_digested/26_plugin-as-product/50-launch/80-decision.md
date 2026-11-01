@@ -5,7 +5,7 @@
 1. **运行时从哪来？** 用户已装 npm、官方 Desktop、Python wheel、源码树。
 2. **用哪个模板/surface？** `web`、`headless`、`sdk`/`sdk-minimal`、`acp`，或自定义 TUI profile。
 3. **产品 bundle 放哪、顺序如何？** base → app bundle → 产品 bundle；默认值放 bundle patch。
-4. **设置/更新/卸载谁负责？** 产品安装器、用户设置、`dsh plugin`、文档。
+4. **设置/更新/卸载谁负责？** 应用内 Plugin Manager（默认）/ `dsh plugin`（仅 web）/ 安装器（仅 shell）、用户设置、文档。
 
 ## 目标 × 模板
 
@@ -19,7 +19,7 @@
 | 官方 Desktop | `desktop`（保留） | Electron 独占 | 双击应用 / 内置命令 |
 | 内网/远程 | `web` + 容器/反代 | base + web-app + 产品 bundle | 反代后的 `dsh web` |
 
-**没有“自建第二层 launcher/桌面壳”这一行。** 产品要桌面体验就用官方 Desktop；要做 Web 就用 web profile + 安装器/容器。
+**没有“自建第二层 launcher/桌面壳”这一行。** 产品要桌面体验就用官方 Desktop；要做 Web 就用 web profile + 应用内 Plugins 页/CLI 自动化；容器是部署包装。
 
 ## Profile 安排清单
 
@@ -76,8 +76,9 @@
 ## 默认建议
 
 - **能用一个 bundle + 一个 shipped 模板解决，就不要造第二层。**
-- **产品安装器只做四件事**：确保 dsh 版本、创建 profile（首次）、装 bundle、`exec dsh --profile`。
+- **默认发 bundle，让用户在应用内 Plugins 页装**（web 与 Desktop 同一句）；CLI `--profile` 面绑定（不能 `desktop`），面向 GUI 时只作 web 自动化。
+- **只有 shell/自托管才用安装器**：确保 dsh 版本、创建 profile（首次）、装 bundle、`exec dsh --profile`；不写 `--profile desktop`。
 - **设置从 bundle 默认值开始**，用户覆盖留 profile/home；不要把所有设置塞进产品自有文件。
-- **更新走 `dsh plugin`**，保留旧 exact version/enabled；文档写清重启与回滚。
+- **更新走应用内 Plugin Manager（默认）或 `dsh plugin`（仅 web）**；保留旧 exact version/enabled，文档写清重启与回滚。
 
 ![决策：模板 → bundle → 设置 → 启动](./figures/80-decision.svg)

@@ -31,13 +31,14 @@ DSH 支持的 Node 应用启动只有一种：**named `dsh` profile**。产品�
 | 对象 | 归谁 | 产品要做什么 |
 |---|---|---|
 | dsh 运行时 | 用户/Desktop/Python/源码 | 声明版本 floor，检测版本 |
-| profile | 用户/安装器 | 首次创建、幂等修复；不覆盖已有 patch/依赖 |
+| 安装通道 | 应用内 Plugins 页（跨面）/ CLI（面绑定，不能 `desktop`） | 文档写一句；不要只写 `--profile web` |
+| profile | 用户/应用内安装（CLI 仅 web） | 首次创建、幂等修复；不覆盖已有 patch/依赖 |
 | bundle | 产品 | 自包含、声明 `dsh.bundle.patch`、engines/peer、版本 |
 | 默认值 | 产品 bundle patch | 随 bundle 发布；可被 profile/home/CLI 覆盖 |
 | 用户设置 | profile patch / Settings UI | 提供设置页或文档；不要两套真值 |
 | home patch | 用户/机器 | 产品不要静默写 |
 | 端口/token | dsh web | 文档写默认/参数；远程用反代/TLS |
-| 更新 | 用户/产品安装器 | 走 `dsh plugin`；重启；旧版本恢复 |
+| 更新 | 用户/Plugin Manager；shell 才用安装器 | 走 `dsh plugin`；重启；旧版本恢复 |
 | 卸载/数据 | 用户/产品 | `dsh plugin remove` 不清数据；产品自建数据单独说明 |
 
 ## 组合顺序

@@ -113,22 +113,33 @@
 
 Settings UI（`Config.volatile()`）写当前 profile patch；产品的设置页应复用这一层，或明确自己的 store 与迁移，不要两套真值。
 
-## 安装器
+## 安装方式
+
+**默认：发 bundle，让用户在应用内 Plugins 页装。** 安装说明只需要一句：
+
+> 在 DSH 的 **Plugins** 页安装 `acme-product`（`dsh web` 与 Desktop 通用）。
+
+**CLI 是面绑定的自动化**：可管理显式非 `desktop` profile；面向 web/Desktop 的安装说明默认 Plugins 页，CLI 只作 web 自动化，必须紧跟“仅 `dsh web`”：
 
 ```sh
-# 1) 确保 dsh 版本
-dsh --version
-# 2) 首次建 profile（破坏性：只对全新 profile）
-dsh --profile acme --from-default-profile web --dump-default-config
-# 3) 装产品 bundle（走 dsh plugin，不手写 manifest）
-dsh plugin --profile acme add @acme/dsh-product@1.2.3
-# 4) 校验组合
-dsh --profile acme --dump-config
-# 5) 启动
-exec dsh --profile acme "$@"
+dsh plugin --profile web add @acme/dsh-product@1.2.3
 ```
 
-安装器要幂等：已有 profile 不重置；已有数据不覆盖；失败能重跑；`--from-default-profile` 只在“全新 profile”或显式救援时用。
+**自托管/安装器是可选项**，只在产品不是插件（shell/自带运行时）或明确只支持 web 时用。它不能管理 Desktop profile；不要写 `--profile desktop`。
+
+```sh
+# 仅自托管/web：确保 dsh 版本
+dsh --version
+# 首次建 profile（破坏性：只对全新 profile）
+dsh --profile acme --from-default-profile web --dump-default-config
+# 装产品 bundle（走 dsh plugin，不手写 manifest）
+dsh plugin --profile acme add @acme/dsh-product@1.2.3
+# 校验组合与真启动
+dsh --profile acme --dump-config
+dsh --profile acme --no-open --port 0
+```
+
+安装器要幂等：已有 profile 不重置；已有数据不覆盖；失败能重跑；`--from-default-profile` 只在“全新 profile”或显式救援时用。**应用内装才是跨面路径；安装器只覆盖它自己能碰到的那个 profile。**
 
 ## 启动入口（薄 bootstrap）
 

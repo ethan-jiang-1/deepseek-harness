@@ -6,8 +6,8 @@ FAQ 24 已经拆过包的角色：**bundle 是唯一可安装并自动启用的�
 
 | 发布单位 | 包含什么 | 安装方式 | 更新方式 | 谁负责签名/校验 |
 |---|---|---|---|---|
-| npm bundle | 包 + `dsh.bundle.patch` + 依赖 | `dsh plugin --profile <name> add` | npm 版本 / 产品 updater | npm provenance（可选）/ 产品 |
-| 产品安装器 | 安装脚本 + profile bootstrap + 固定 bundle 版本 | 脚本创建 profile、初始化、add | 产品 updater | 产品 checksum/签名 |
+| npm bundle | 包 + `dsh.bundle.patch` + 依赖 | 应用内 Plugins 页（默认）；CLI `--profile`（显式；不能 `desktop`） | npm 版本 / 产品 updater | npm provenance（可选）/ 产品 |
+| 产品安装器（仅 shell/自托管） | 安装脚本 + profile bootstrap + 固定 bundle 版本 | 脚本创建 profile、初始化、add；只覆盖 web | 产品 updater | 产品 checksum/签名 |
 | 官方 Desktop | Electron 壳 + 内置 dsh + profile | 安装包 | 应用 feed / 安装器 | 平台签名/公证 |
 | 容器镜像 | dsh + profile + entrypoint | `docker pull/run` | tag/digest | 镜像签名/digest |
 | Python wheel | dsh CLI + SDK runtime | `pip install` | wheel 版本 | wheel hash |
@@ -24,11 +24,11 @@ FAQ 24 已经拆过包的角色：**bundle 是唯一可安装并自动启用的�
 
 完整包合同见 [FAQ 24 的包发布要求](../../24_plugin-publish-and-agent-data-planes/02-package-contract.md)，这里不重复。
 
-**不要发布 profile 目录。** 产品发布 bundle + 安装器/镜像 + 说明；profile 由安装器在用户机器上生成（shipped 模板或 `dsh plugin`），否则用户 patch、依赖与数据会被一份静态目录覆盖。
+**默认发布单位是 bundle，安装入口是应用内 Plugins 页（web 与 Desktop 同一句）。** 不要发布 profile 目录；需要 shell/自托管时再加安装器/镜像，profile 由安装器在用户机器上生成（shipped 模板或 `dsh plugin`），否则用户 patch、依赖与数据会被一份静态目录覆盖。
 
-## 产品安装器要做什么
+## 自托管/安装器要做什么（仅 shell）
 
-1. **选运行时/交付形态**：npm 全局、Desktop、wheel、源码；容器是 `dsh web` 的部署包装；把选择写进安装文档。
+1. **默认走应用内装**：bundle + Plugins 页；只有 shell/自托管才选安装器。选运行时：npm 全局、Desktop、wheel、源码；容器是 `dsh web` 的部署包装。
 2. **固定版本**：dsh 版本 floor、bundle 精确版本、lockfile/镜像 digest；不要“latest 装完再看”。
 3. **初始化 profile**：按 surface 选模板（web/headless/sdk/acp）；`--from-default-profile` 只限首次，它是破坏性替换；`dsh plugin` 对自定义名字只装 base。
 4. **安装 bundle**：调 `dsh plugin --profile <name> add`，不要手写 `dsh.profile.bundles`。

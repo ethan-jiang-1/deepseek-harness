@@ -12,6 +12,7 @@
 - 每份事实分别记录 owner、authority、source、mechanism/path、scope/key、readers、writers、可重建性和保留责任。
 - `workspaceId` 加入 DSH Workspace 导航与 Session 分组；只需工作目录时可传绝对 `cwd`。
 - DSH Web 有自己的首用 Workspace；产品自建项目选择和数据存储由产品维护。
+- **应用内 Plugins 页是跨面安装入口**：`dsh web` 与 Desktop 同一句；CLI `--profile` 仅 web，`desktop` 双门禁闭。
 - **bundle 在 roster ≠ patch 生效**：新增 row 必须 `insert:`；裸 `- id` 是 override target，找不到目标只报 `entry not found`，插件不会跑。
 - **web 的 app args 归 `web-startup`**：产品自定义 flag 需要替换 provider 并重实现全部 web flags；漏实现 `public-url/trusted-host/tls` 会静默退回 HTTP。
 - **session 创建与 UI 选中是两层**：Host `sessionController.create` 只创建/attach；全新客户端可能自动选“最新 blank”，返回用户保持 `dsh.sessions.current`；确定性要用 client `uiWorkspace.openSession`。
@@ -20,12 +21,12 @@
 ## 按角色阅读
 
 - **普通 plugin 作者**：从 [91 数据卡](./90-advisor/91-checklist.md) 开始，按需查 [10–14](./10-foundations/10-taxonomy.md)、[31 社区做法](./30-external/31-external-community-patterns.md)/[32 数据设计](./30-external/32-external-ecosystem.md) 和 [92](./90-advisor/92-native-reference-architectures.md)。
-- **产品 profile 作者**：先查 [34 profile 形态](./30-external/34-profile-product-forms.md) 与 [35 装配所有权](./30-external/35-profile-assembly-ownership.md) 定发行形态，安装/启动/分发查 [50 launch](./50-launch/00-index.md)；再走 [90 主线](./90-advisor/00-index.md) → [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)；交付前查 [91 数据卡/验收](./90-advisor/91-checklist.md)，证据查 [36 样本台账](./30-external/36-profile-evidence-ledger.md)，遇到存储取舍查 [92 参考矩阵](./90-advisor/92-native-reference-architectures.md)。
-- **DSH 维护者**：读 [21 原生数据面](./20-native/21-native-data-landscape.md) 与 [22 历史](./20-native/22-native-data-history.md)；[31–36](./30-external/31-external-community-patterns.md) 是 DSH 外部生态研究（核心仓之外的插件与服务），不是 DSH API 合同。
+- **产品 profile 作者**：先查 [34 profile 形态](./30-external/34-profile-product-forms.md) 与 [35 装配所有权](./30-external/35-profile-assembly-ownership.md) 定发行形态，装/起/配/首启判据查 [37 生命周期](./30-external/37-lifecycle-stages.md)，安装/启动/分发查 [50 launch](./50-launch/00-index.md)；再走 [90 主线](./90-advisor/00-index.md) → [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)；交付前查 [91 数据卡/验收](./90-advisor/91-checklist.md)，证据查 [36 样本台账](./30-external/36-profile-evidence-ledger.md)，遇到存储取舍查 [92 参考矩阵](./90-advisor/92-native-reference-architectures.md)。
+- **DSH 维护者**：读 [21 原生数据面](./20-native/21-native-data-landscape.md) 与 [22 历史](./20-native/22-native-data-history.md)；[31–37](./30-external/31-external-community-patterns.md) 是 DSH 外部生态研究（核心仓之外的插件与服务），不是 DSH API 合同。
 
 ## 章节地图
 
-31–33 是单插件数据模式与案例；34–36 是 profile 交付形态、装配状态与证据；50 是安装、启动、设置与分发。
+31–33 是单插件数据模式与案例；34–36 是 profile 交付形态、装配状态与证据；37 是装/起/配/首启的生命周期判据；50 是安装、启动、设置与分发。
 
 | 文件 | 内容 |
 |---|---|
@@ -48,6 +49,7 @@
 | [34 profile 形态](./30-external/34-profile-product-forms.md) | 八种交付方式与逐卡机制 |
 | [35 装配所有权](./30-external/35-profile-assembly-ownership.md) | 四层状态、身份、更新、接管、进口、资产 |
 | [36 样本台账](./30-external/36-profile-evidence-ledger.md) | 逐样本证据、采用信号与未验证项 |
+| [37 生命周期](./30-external/37-lifecycle-stages.md) | 装/起/配/首启、15 张阶段样本 + 反例、web/Desktop 分叉与发布判据 |
 | [50 安装启动](./50-launch/00-index.md) | named profile 安排、安装/启动/设置、分发打包与安装文档 |
 | [90 主线](./90-advisor/00-index.md) | Profile 文件、启动顺序、Kanban 运行和数据归属 |
 | [91 数据卡](./90-advisor/91-checklist.md) | 数据事实、装配/发行、实现和退出检查 |

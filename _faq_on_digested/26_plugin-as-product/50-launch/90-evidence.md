@@ -52,6 +52,9 @@
 | 29 | 全新 Playwright context 打开 Host 已 create 新 session 的 Web | UI 自动选中新建的 blank session；localStorage `dsh.sessions.current` 就是它 |
 | 30 | 同一 profile：先预置 `dsh.sessions.current` 为旧 session，再 reload | UI 保持旧 session；新建 session 没有被自动选中 |
 | 31 | 两个进程同时 `--profile race --from-default-profile web/headless --dump-default-config` | 两个都 exit 0；最终 profile 是一份完整副本（headless）；没有 staging 残留 |
+| 32 | 装一个没有 `dsh.bundle` 的普通包：`dsh plugin --profile plain add /tmp/dsh-plain` | exit 0；dependency 写入；`dsh.profile.bundles` 仍只有 base；stderr：`declares no dsh.bundle — installed as a plain dependency, not a profile layer` |
+| 33 | 在 home `cordis.patch.yml` 插入一个未安装的包行，启动 web | `--dump-config` 有行；启动 `warning: 1 entry did not activate` + `ERR_MODULE_NOT_FOUND`；**仍打印 token URL、服务照常起** |
+| 34 | `dsh plugin --profile desktop list` | 拒绝：`profile "desktop" is managed exclusively by the Electron application`；CLI 不能管理 desktop profile |
 
 ## 社区样本的位置
 
@@ -87,6 +90,10 @@
 | Host create 不改变 Client 当前选择 | 返回用户保留 `dsh.sessions.current`；全新 context 实测自动选中新建 blank；selection 在 Client | T/C |
 | 确定性选中要 client 调 `uiWorkspace.openSession` | `ClientSessions` 注释 + `uiWorkspace` 合同；未跑 client 插件 | C |
 | 并发 `--from-default-profile` 最终留一份完整副本 | 实验 31 | T |
+| 无 `dsh.bundle` 的包 exit 0 但 roster 不变 | 实验 32 | T |
+| home 层能覆盖、不能供货；服务可带病运行 | 实验 33 | T |
+| CLI 不能管理 `desktop` profile | 实验 34 + CLI reference | T/C |
+| 应用内 Plugins 页是跨面安装入口 | DSH 源码：installBundle 无 profile 参数；web/Desktop 共用插件页 | C |
 
 ## 还没答案的问题
 
@@ -94,6 +101,7 @@
 - 替换 `web-startup` 后，`--tls/--public-url/--trusted-host` 等 web flag 需要产品重实现到什么程度？
 - 自定义 TUI terminal app bundle 需要哪些 profile/参数契约？
 - TUI 的官方边界：CLI 示例有 `tui` profile，但没有 shipped terminal app。
+- 应用内安装在 Desktop 上的 `application`/`warnings`/`nextStep` 实际取值；本机没有 Desktop。
 - Windows/macOS 安装器的签名、公证、自动更新最小实现，社区样本各自做到哪一步？
 - 远程/手机网关的认证边界（token、cookie、配对码、隧道）是否有一致的威胁模型？
 

@@ -76,6 +76,11 @@
 7. **命令行**：web app args 归 `web-startup`；要加产品 flag，必须替换 provider 并重实现全部 web flags，或改用 profile-as-mode/非 Web surface。
 8. **startup session**：Host `sessionController.create` 只创建/attach；fresh client 可能自动选最新 blank，returning 保持 current；确定性选中要 client `uiWorkspace.openSession`。
 9. **版本门**：`engines.dsh`/peer 不匹配安装前拒绝；exemption 只对 exact package + dsh version。
+10. **安装通道**：默认写应用内 Plugins 页（web 与 Desktop 同一句）；面向 GUI 的 CLI 命令标“仅 `dsh web`”；headless/SDK/ACP 用 CLI 显式 profile；全文没有 `--profile desktop`。
+11. **三个成功**：pnpm 0、dependency 写入、进 `dsh.profile.bundles`；dump 有 row，真启动无 `did not activate`。
+12. **失败分级**：bundle skip / row pending 或 import warning / 整体失败；不要按“全有或全无”设计救生逻辑。
+13. **home 层**：能覆盖、不能供货；跨 profile 的默认靠各自安装，不要往 home 插未安装包。
+14. **首启**：原生只有 token 门；首启可推迟；不依赖 `welcome-notice`；Desktop 有替代路径。
 
 ## 安装、更新与移除
 

@@ -359,3 +359,10 @@
 - **未验证断言**：resume 标未测；client 显式 `uiWorkspace.openSession` 标 C；fresh/returning 自动选择有 Playwright T。
 - **入口一致性**：Q1/Q11 补 50 链接；18 tarball 命令补 `--profile`；70 验证命令按 surface 区分；20 标题改为“各来源与容器部署”。
 - **验证**：links/tables/fences/figures 干净；26 子树 verify 0。
+
+## 28. 2026-11-01 · 30-external 吸收 leverage-lifecycle
+
+- 新增 [37 lifecycle](../30-external/37-lifecycle-stages.md)：装/起/配/首启四阶段、8 条硬结论、15 张阶段样本 + 1 张反例、web/Desktop 三处分叉、九类载体与发布判据；新增两张图 `37-lifecycle-stages.svg`、`37-web-desktop.svg`。
+- 34 的安装口径改为“应用内 Plugins 页优先，CLI 仅 web”；35 补三个成功、失败三级、home 不能供货；36 指向 37 的独立样本台账。
+- 50 改为应用内装优先：20 增安装通道，40 重写安装方式，60/70/80 区分 bundle 默认与 shell 安装器；90 增实验 32–34（无 bundle exit 0、home 供货失败、CLI desktop 拒绝）。
+- 00/Q/A、90/91/92/93、40-evidence 入口补 37；verify 26 子树 0。
