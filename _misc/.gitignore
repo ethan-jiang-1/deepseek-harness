@@ -1,3 +1,7 @@
 # Scratchpad drafts are disposable: only the directory index is tracked.
 /_scratch/*
 !/_scratch/00-index.md
+
+# Multi-vendor research notes stay out of version control: they change constantly
+# and hold credentials for the vendors they describe.
+/_model_vendors/

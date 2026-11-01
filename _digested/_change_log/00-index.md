@@ -37,18 +37,17 @@
 
 **「跟上 master」的正确含义**：取 master 上**已发布版本的内容**，不是 master 分支头。master 可能领先 release tag 很多未发版提交（0012 时是 **1533 个**）；跟分支头会把未发布机制写进语料，也会让「版本」失去意义。tag 就是目标的唯一名字。
 
-**执行口径（0011 定稿、0012 复核、0013 修订）**：**`ethan` = 目标 release tag 的原样 + 7 项本地独有内容**。
+**执行口径（0011 定稿、0012 复核、0013 修订）**：**`ethan` = 目标 release tag 的原样 + 6 项本地独有内容**。
 
 | # | 本地独有内容 | 说明 |
 |---|---|---|
-| 1–4 | `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` | 研究语料。下划线前缀是这几项的辨识特征 |
+| 1–4 | `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` | 研究语料。下划线前缀是这几项的辨识特征。`_misc/` 另有不入库的 `_model_vendors/`（多 vendor 研究笔记，高频改动且可能含账号/密钥），忽略规则写在 `_misc/.gitignore`，因此产品树无需改动 |
 | 5 | `.pi/` | 本地工程配置。**没有**下划线，别把它当中性目录冲掉 |
 | 6 | `scripts/verify-repository-references.{ts,spec.ts}` | 产品树单文件例外，让引用门禁跳过语料里的历史 commit 与锁文件，见 0013 |
-| 7 | `_misc/_model_vendors/` 与根 `.gitignore` 的对应条目 | 多 vendor 研究笔记：高频改动且可能含账号/密钥材料，**不入库**。从 `_faq_on_digested/03_model-vendors/` 迁来，改放在 `_misc/` 杂项区之下，不占一个根目录 |
 
-除这 7 项之外**每一个字节都与该 tag 逐路径相同**，不留任何其他本地源码补丁、配置行或口径行。
+除这 6 项之外**每一个字节都与该 tag 逐路径相同**，不留任何其他本地源码补丁、配置行或口径行。
 
-第 7 项的 `.gitignore` 条目是本轮新增的产品树改动，它让 `_misc/_model_vendors/` 在所有克隆上都被忽略，而不只是本机；内容本身永不入库，因此同步时只需确认该行仍在。
+忽略规则尽量下沉到语料目录自己的 `.gitignore`（如 `_misc/.gitignore` 管住 `_scratch/` 与 `_model_vendors/`），这样根 `.gitignore` 保持与上游一致，也就不必为它增设例外。
 
 ### 同步操作手册（照做即可，无需重新推导口径）
 
@@ -69,7 +68,7 @@ git archive HEAD _digested _faq_on_digested \
 # 3. 对齐产品树（换成本轮 tag）
 git read-tree -u --reset dsh-vX.Y.Z-rcN
 
-# 4. 回填例外内容（7 项全部）
+# 4. 回填例外内容（6 项全部）
 git checkout HEAD -- _digested _faq_on_digested \
   _dsh_plugin_agent_ready_development _misc .pi \
   scripts/verify-repository-references.ts \
@@ -83,12 +82,11 @@ RTREE=$(git rev-parse dsh-vX.Y.Z-rcN^{tree})
 ITREE=$(git write-tree)
 git -c core.quotePath=false diff-tree -r --name-status "$RTREE" "$ITREE" \
   | grep -vE '(_digested|_faq_on_digested|_dsh_plugin_agent_ready_development|_misc|\.pi)/' \
-  | grep -vE 'scripts/verify-repository-references(\.spec)?\.ts$' \
-  | grep -vE '^[AMD]\s+\.gitignore$'
+  | grep -vE 'scripts/verify-repository-references(\.spec)?\.ts$'
 # 必须为空
 ```
 
-末尾那三条 `grep -v` 就是「7 项例外」的机器可执行形式（`.gitignore` 只放行 `_misc/_model_vendors/` 那一行，同步后要确认它仍在）；改例外集合时同步改这三行。再用一次集合比对兜底（两边都要 `core.quotePath=false`，否则中文路径会一边转义一边不转义，出现假的 65 条差异）：
+末尾那两条 `grep -v` 就是「6 项例外」的机器可执行形式；改例外集合时同步改这两行。再用一次集合比对兜底（两边都要 `core.quotePath=false`，否则中文路径会一边转义一边不转义，出现假的 65 条差异）：
 
 ```sh
 EXRE='^(_digested|_faq_on_digested|_dsh_plugin_agent_ready_development|_misc|\.pi)/'
@@ -115,7 +113,7 @@ node _digested/verify.mjs              # 语料自检
 pnpm run verify-repository-references  # 验证第 6 项例外仍然生效
 ```
 
-**这条口径是本目录的唯一权威**：同步前先读本节，照「同步操作手册」做一遍即可，不需要再向任何人确认「是全树跟上还是只保留下划线目录」——**答案是：全树跟上目标 tag，只保留上表 7 项**。
+**这条口径是本目录的唯一权威**：同步前先读本节，照「同步操作手册」做一遍即可，不需要再向任何人确认「是全树跟上还是只保留下划线目录」——**答案是：全树跟上目标 tag，只保留上表 6 项**。
 
 ### 语料自身怎么改：读宪章
 

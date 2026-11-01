@@ -71,7 +71,7 @@ _faq_on_digested/
 | 26 | [一个 DSH 插件怎样成为产品 profile：组合、项目目录与数据归属](./26_plugin-as-product/00-question.md) | [产品 profile 是 DSH 启动组合，不是数据隔离；每份事实用数据卡分别记 owner、authority、source、机制与作用域，并把 Session cwd、Workspace registration、模型工具面和 home scope 分开。含原生/外部参考、证据边界及 90–93 advisor 施工路线。](./26_plugin-as-product/00-index.md) |
 | 27 | [Agent 跑到一半，workflow 还是 Agent Team？运行时编排该怎么选？](./27_runtime-orchestration-choice/question.md) | [五个岔口 + 三把尺子 + 一张诊断表：选择不是挑工具，而是「循环归谁 × 承诺多深」；01 要不要交出去、02 一把还是一批、03 跨轮与 fresh、04 持续协作、05 谁在等，另加 06 症状与迁移、07 为什么不是 DAG 引擎](./27_runtime-orchestration-choice/answer.md) |
 
-> 03 为本地多 vendor 研究笔记，已移至 `_misc/_model_vendors/`（由 `.gitignore` 忽略，不入库：高频改动且可能含账号/密钥材料）；编号保持不变，便于与历史引用对齐。
+> 03 为本地多 vendor 研究笔记，已移至 `_misc/_model_vendors/`（由 `_misc/.gitignore` 忽略，不入库：高频改动且可能含账号/密钥材料）；编号保持不变，便于与历史引用对齐。
 
 ## 引用规范
 
