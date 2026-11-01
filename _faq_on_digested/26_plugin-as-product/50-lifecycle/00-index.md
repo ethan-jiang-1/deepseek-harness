@@ -19,6 +19,8 @@
 
 一句话：**守 DSH 的约定 = 可迁移 + 可借力。** 这两件事是同一件事的两面。
 
+![安装 → profile → 启动 → surface 的栈](./figures/10-launch-stack.svg)
+
 ## 最短路径：一个插件从写到交付
 
 只做最小可用交付，五步：
@@ -98,8 +100,6 @@
 - **C**：当前 DSH docs/types/implementation（CLI reference、Desktop README、app-boot、web bundle、SDK/ACP、architecture）。
 - **T**：在 `DSH_HOME=$(mktemp -d)` 的隔离 home 里执行的启动/配置实验，不碰用户 profile 与 Session。
 - 外部 profile 产品样本见 [34](../30-external/34-profile-product-forms.md)/[36](../30-external/36-profile-evidence-ledger.md)；本目录只做 C/T，不自行引用 S/R。
-
-![安装 → profile → 启动 → surface 的栈](./figures/10-launch-stack.svg)
 
 ## 边界
 

@@ -37,6 +37,7 @@
 | 2026-11-01 | 30-external 扩为 31–36（形态 / 装配 / 台账）；新增 [37 生命周期](../30-external/37-lifecycle-stages.md)；[50 生命周期](../50-lifecycle/00-index.md) 补 34 条隔离实测。 |
 | 2026-11-01 | 全树按 DSH 约定 review：CLI 语法、运行时来源计数、Host/Client 分层、未验证断言降级。 |
 | 2026-11-01 | 与 repo 逐条复核（结论见 §1）：修正 `dsh.compatibility` 伪字段、无 bundle 包的双通道行为、web flag 静默后果；拆清 34/35 的重复机制段。 |
+| 2026-11-01 | [50 生命周期](../50-lifecycle/00-index.md) 改为**插件作者的生命周期规范**：加最短路径五步与生命周期规矩总表；新增 [75 插件 README](../50-lifecycle/75-plugin-readme.md) 与其宿主读取字段图；目录由 `50-launch` 改名（launch 只覆盖启动，实际覆盖打包到卸载）；修正五处"可回滚"与一处已退役的"事务性重载"，并把初始化/特殊初始化/卸载三段的机制指回 10-foundations。 |
 
 ## 4. 样本去重
 
