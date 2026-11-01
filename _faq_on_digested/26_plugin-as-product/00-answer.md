@@ -80,7 +80,7 @@ DSH 配置 patch 顺序为 **ordered bundle patches → profile patch → home p
 
 ## 证据与边界
 
-- **T（2026-10-31，隔离 home 的 CLI 组合检查）**：从 Web template 初始化 `verify-kanban-web`，再通过 `dsh plugin` 安装本地 fixture bundle；manifest 中 bundle 顺序为 base、web-app、fixture。命令和实际结果见 [实验 05](./40-evidence/experiments/05-profile-bundle-install.md)。该检查证明 profile 初始化与 bundle 追加；不证明 Kanban 产品代码或 Web runtime 已实现。
+- **T（2026-10-31，隔离 home 的 CLI web 自动化组合检查）**：从 Web template 初始化 `verify-kanban-web`，再通过 `dsh plugin` 安装本地 fixture bundle；manifest 中 bundle 顺序为 base、web-app、fixture。命令和实际结果见 [实验 05](./40-evidence/experiments/05-profile-bundle-install.md)。该检查证明 profile 初始化与 bundle 追加；不证明 Kanban 产品代码或 Web runtime 已实现。
 - **C（DSH 当前合同）**：profile layer order、Workspace/Session create 语义、默认 Workspace eligibility、tool visibility 与 sandbox provider 行为均以对应 `docs/`、package README 和源码为准。
 - **T（2026-11-01，50-launch 隔离实验）**：bundle patch insert、web-startup 拒绝自定义 flag/替换 provider、workspace/session create、engines 门、并发替换、无 bundle exit 0、home 供货失败；见 [50/90](./50-launch/90-evidence.md)。
 - 外部 plugin 章节中的 S/R/U 样本未作为 DSH API 依据。

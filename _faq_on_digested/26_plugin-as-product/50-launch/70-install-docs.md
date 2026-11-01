@@ -84,7 +84,7 @@ docker run --rm -p 8080:3080 \
 <OS/架构、Node/pnpm、磁盘、网络、端口、凭据>
 
 ## 选择安装方式
-<npm / 官方 Desktop / wheel / 源码；容器部署；各自最短命令>
+<应用内 Plugins 页（默认）/ CLI（仅 web 自动化）/ 官方 Desktop / wheel / 源码；容器部署；各自最短命令>
 
 ## 安装
 默认：在 **Plugins** 页安装（web 与 Desktop 同一句）。CLI 自动化才用下面命令，并标“仅 `dsh web`”。

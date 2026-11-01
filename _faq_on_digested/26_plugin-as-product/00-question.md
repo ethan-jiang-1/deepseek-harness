@@ -37,8 +37,8 @@
 | Q0 | 产品 profile、数据 owner、存储机制和作用域如何区分？ | [10 概念层](./10-foundations/10-taxonomy.md) |
 | Q1 | 插件、bundle 与 profile 各是什么？产品入口怎样启动？ | [answer](./00-answer.md)、[FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)、[50 安装/启动](./50-launch/00-index.md) |
 | Q2 | 发布包、用户目录、插件状态与产品设置分别由谁拥有？ | [15 四个空间](./10-foundations/15-four-spaces.md) |
-| Q3 | DSH Web 首次怎样建立 Workspace？产品若自选项目目录要自建什么？ | [16 首用与项目目录](./10-foundations/16-startup-resolution.md) |
-| Q4 | Patch 优先级、Config 默认值和链外产品设置如何区分？ | [17 配置、工具与权限](./10-foundations/17-config-layers.md) |
+| Q3 | DSH Web 首次怎样建立 Workspace？产品若自选项目目录要自建什么？ | [16 首用与项目目录](./10-foundations/16-startup-resolution.md)、[37 首启](./30-external/37-lifecycle-stages.md) |
+| Q4 | Patch 优先级、Config 默认值和链外产品设置如何区分？ | [17 配置、工具与权限](./10-foundations/17-config-layers.md)、[37 配阶段](./30-external/37-lifecycle-stages.md) |
 | Q5 | Session、project、Workspace、profile、home 与 device 的作用域有何不同？ | [13 作用域与键](./10-foundations/13-scope-and-keys.md) |
 | Q6 | storage domain、Config、CredentialRef 与 CredentialKey 各保存什么？ | [12 状态机制](./10-foundations/12-state-homes.md) |
 | Q7 | DSH 的五个家与客户端状态是什么关系？ | [11 五个家](./10-foundations/11-five-homes.md) |

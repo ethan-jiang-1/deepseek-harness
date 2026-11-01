@@ -1,11 +1,12 @@
 # 80 · 决策：选模板、bundle 和设置层
 
-## 四个问题
+## 五个问题
 
 1. **运行时从哪来？** 用户已装 npm、官方 Desktop、Python wheel、源码树。
 2. **用哪个模板/surface？** `web`、`headless`、`sdk`/`sdk-minimal`、`acp`，或自定义 TUI profile。
 3. **产品 bundle 放哪、顺序如何？** base → app bundle → 产品 bundle；默认值放 bundle patch。
 4. **设置/更新/卸载谁负责？** 应用内 Plugin Manager（默认）/ `dsh plugin`（仅 web）/ 安装器（仅 shell）、用户设置、文档。
+5. **第一次打开看到什么？** 原生只有 token 门；产品用 onboarding 或启动载体回答。
 
 ## 目标 × 模板
 
@@ -28,11 +29,12 @@
 3. **bundle 集**：base + app bundle + 产品 bundle；顺序固定；产品 bundle 在 app 之后。
 4. **默认值**：产品端口/主题/preset/开关写 bundle patch；不要写进 app bundle。
 5. **用户设置**：profile patch / Settings UI；不要另建第二套真值。
-6. **首启**：只在全新 profile 用 `--from-default-profile`；已有 profile 不重置。
+6. **首建/重置**：只在全新 profile 用 `--from-default-profile`；已有 profile 不重置。
 7. **安装**：默认应用内 Plugins 页；CLI `dsh plugin --profile <name> add <bundle>` 仅 web 自动化；不手写 manifest。
 8. **校验**：`--dump-config`、启动日志、profile roster、页面/任务。
-9. **更新**：`dsh plugin update`/新版本；重启；旧版本恢复。
+9. **更新**：应用内 Plugin Manager（默认）或 `dsh plugin update`（仅 web 自动化）；重启；旧版本恢复。
 10. **文档**：安装/启动/设置/升级/卸载/排障与发布物同版本。
+11. **首启**：token 门之后由产品回答首屏；可推迟；不依赖 `welcome-notice`，Desktop 有替代。
 
 ## 设置安排清单
 

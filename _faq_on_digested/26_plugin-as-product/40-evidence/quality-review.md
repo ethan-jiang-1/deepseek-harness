@@ -365,4 +365,5 @@
 - 新增 [37 lifecycle](../30-external/37-lifecycle-stages.md)：装/起/配/首启四阶段、8 条硬结论、15 张阶段样本 + 1 张反例、web/Desktop 三处分叉、九类载体与发布判据；新增两张图 `37-lifecycle-stages.svg`、`37-web-desktop.svg`。
 - 34 的安装口径改为“应用内 Plugins 页优先，CLI 仅 web”；35 补三个成功、失败三级、home 不能供货；36 指向 37 的独立样本台账。
 - 50 改为应用内装优先：20 增安装通道，40 重写安装方式，60/70/80 区分 bundle 默认与 shell 安装器；90 增实验 32–34（无 bundle exit 0、home 供货失败、CLI desktop 拒绝）。
+- 全树补齐 lifecycle 基础口径：18 三通道/三成功/Desktop 门；16 令牌门、无向导、onboarding 与 welcome-notice；17 home 能覆盖不能供货、dump 与真启动；00-answer 安装/首启；93/90 与实验 05 标注为 CLI web 自动化。
 - 00/Q/A、90/91/92/93、40-evidence 入口补 37；verify 26 子树 0。
