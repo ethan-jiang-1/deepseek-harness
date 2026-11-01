@@ -52,6 +52,8 @@ Bundle 更新不应静默重写用户的 profile patch。产品数据不兼容�
 
 ## 卸载与保留
 
+安装/启动/分发与安装文档的产品侧选择见 [50 launch](../50-launch/00-index.md)。
+
 `dsh plugin remove` 删除 profile dependency，并从 bundle list 移除相应 layer；它不会自动删除任意产品文件或业务记录。DSH Workspace deletion 仅删除 registration、排序和分组关系，不删除目录或 Session history。会话日志没有通用 delete API，附件本地 backend 没有自动 GC。
 
 产品卸载说明按 owner 列出：

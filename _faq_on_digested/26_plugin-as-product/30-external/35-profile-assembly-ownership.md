@@ -106,4 +106,4 @@
 - `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考（`[R]`/`U`）。
 - `better-session` 目标源码未 pin，发布 patch 之外的会话状态机都是 `[R]`/`[U]`。
 - 九条检查清单只在目标形态需要时采用；不是所有产品都必须有聚合、接管或进口形态。
-- 证据分级与逐样本未验证项见 [36](./36-profile-evidence-ledger.md)。
+- 证据分级与逐样本未验证项见 [36](./36-profile-evidence-ledger.md)；安装/启动/设置的产品化路径见 [50](../50-launch/00-index.md)。
