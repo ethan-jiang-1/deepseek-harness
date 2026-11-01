@@ -31,7 +31,7 @@ Web 的 `ui-workspace` 在 Workspace 与 Session 列表都就绪后检查是否�
 - 无 token 且没有有效 cookie 时返回 401；带 token 返回 303 + 30 天 HttpOnly cookie，再进 SPA（此后 cookie 本身即可访问）；
 - **没有欢迎页、没有向导、没有“装什么”的推荐**。首屏只有 `__DSH_MODELS_ONBOARDING__` 这类标记。
 
-`settings.onboarding` 是设置面板里的 step 账本：按 `order` 投影、一次只挂一个 step；宿主自带 `welcome-notice` 与 `deepseek-official`，但 **`welcome-notice` 在 Desktop 不注册**。它不保证抢到首屏。所以“第一次看到什么”必须由产品的 bundle/客户端插件回答；载体与代价见 [37](../30-external/37-lifecycle-stages.md) 与 [50/40](../50-launch/40-profile-integration.md)。
+`settings.onboarding` 是设置面板里的 step 账本：按 `order` 投影、一次只挂一个 step；宿主自带 `welcome-notice` 与 `deepseek-official`，但 **`welcome-notice` 在 Desktop 不注册**。它不保证抢到首屏。所以“第一次看到什么”必须由产品的 bundle/客户端插件回答；载体与代价见 [37](../30-external/37-lifecycle-stages.md) 与 [50/40](../50-lifecycle/40-profile-integration.md)。
 
 **判据**：首启可推迟；不依赖单个 onboarding step；Desktop 上有替代路径。不要用“装完就能用”替代“第一次打开看到什么”。
 

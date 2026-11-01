@@ -52,7 +52,7 @@ profile 使用 DSH installation 与 profile node_modules 两个来源解析 bund
 - 本地 tarball 可直接 `dsh plugin --profile <name> add ./x.tgz`；产物要含 `package.json`、`dsh.bundle.patch` 与插件文件。
 - 并发执行 `--from-default-profile` 时，至少一个成功，最终目录是一份完整副本；实测两个进程都成功、最后写入者生效，未留 staging。
 
-实测与模板见 [50 launch](../50-launch/40-profile-integration.md)，阶段判据见 [37](../30-external/37-lifecycle-stages.md)。
+实测与模板见 [50 生命周期](../50-lifecycle/40-profile-integration.md)，阶段判据见 [37](../30-external/37-lifecycle-stages.md)。
 
 ## 安装完成后何时生效
 
@@ -84,7 +84,7 @@ Bundle 更新不应静默重写用户的 profile patch。产品数据不兼容�
 
 ## 卸载与保留
 
-安装/启动/分发与安装文档的产品侧选择见 [50 launch](../50-launch/00-index.md)。
+安装/启动/分发与安装文档的产品侧选择见 [50 生命周期](../50-lifecycle/00-index.md)。
 
 应用内 Plugin Manager 或 `dsh plugin remove` 删除 profile dependency，并从 bundle list 移除相应 layer；它不会自动删除任意产品文件或业务记录。DSH Workspace deletion 仅删除 registration、排序和分组关系，不删除目录或 Session history。会话日志没有通用 delete API，附件本地 backend 没有自动 GC。
 

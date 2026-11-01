@@ -84,7 +84,7 @@
 
 ## 安装、更新与移除
 
-安装路径、启动面、命令行所有权与 startup 边界见 [50 launch](../50-launch/00-index.md)。
+安装路径、启动面、命令行所有权与 startup 边界见 [50 生命周期](../50-lifecycle/00-index.md)。
 
 `dsh plugin --profile <name> add <bundle>` 修改 profile bundle list，并返回 package-manager 结果，不返回 Plugin Manager 的 `ChangeResult.application`。CLI 修改后要重启 profile；Plugin Manager 是另一条操作路径，会返回自己的 application result。
 

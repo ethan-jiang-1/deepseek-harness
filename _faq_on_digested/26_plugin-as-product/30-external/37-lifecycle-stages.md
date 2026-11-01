@@ -46,7 +46,7 @@
 | dependency 写入 | `profiles/<p>/package.json.dependencies` |
 | 成为 profile 层 | `dsh.profile.bundles` 含该 bundle |
 
-**只有第三个让功能存在。** 没声明 `dsh.bundle.patch` 的包，CLI 通道是 exit 0、dependency 写入、roster 不变、只给一句 stderr `declares no dsh.bundle — installed as a plain dependency, not a profile layer`；应用内通道则先装后判，以 `not-bundle` 失败并回滚 `package.json` 与 lockfile。本仓库的隔离实测是 CLI 通道（T，见 [50/90](../50-launch/90-evidence.md)）。
+**只有第三个让功能存在。** 没声明 `dsh.bundle.patch` 的包，CLI 通道是 exit 0、dependency 写入、roster 不变、只给一句 stderr `declares no dsh.bundle — installed as a plain dependency, not a profile layer`；应用内通道则先装后判，以 `not-bundle` 失败并回滚 `package.json` 与 lockfile。本仓库的隔离实测是 CLI 通道（T，见 [50/90](../50-lifecycle/90-evidence.md)）。
 
 **patch 语义**：新增 row 用 `insert:`；裸 `- id` 是 override target，找不到目标只报 `entry "..." not found`，bundle 仍在 roster 但插件不跑。
 
@@ -182,7 +182,7 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 - [34](./34-profile-product-forms.md)：八种产品形态；本篇不重复形态，只给阶段判据。
 - [35](./35-profile-assembly-ownership.md)：四层状态、身份、更新、接管；本篇补安装三成功、失败三级、home 不能供货。
 - [36](./36-profile-evidence-ledger.md)：34 的八种形态样本的证据台账；本篇的 15 张阶段样本 + 1 张反例按行记在下方阶段样本表里，不并入 36。
-- [50](../50-launch/00-index.md)：DSH 约定内的安装/启动/设置/分发手册；本篇是外部参考层的阶段判据，不替代 50 的命令与实验。
+- [50 生命周期](../50-lifecycle/00-index.md)：DSH 约定内的做法层——打包、安装、初始化、配置、启动、更新与卸载该怎么写；本篇是外部参考层的阶段判据（15 张样本），不替代 50 的命令与实验。
 
 ## 边界
 

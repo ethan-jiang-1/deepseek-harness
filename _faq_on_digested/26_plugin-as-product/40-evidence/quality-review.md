@@ -22,7 +22,7 @@
 - **外部样本不支撑 C**：第三方源码/README 只能到 S/R。
 - **一个事实一个家**：每个数据事实只有一个权威，其他家只存引用（[11](../10-foundations/11-five-homes.md)）。
 - **数据卡是唯一记录格式**：owner / authority / source / mechanism / scope·key / readers / writers / rebuildability / retention（[91](../90-advisor/91-checklist.md)）。
-- **分章不重复 owner**：机制细节归 10-foundations 与 50-launch，外部样本归 31–37，施工流程归 90–93。
+- **分章不重复 owner**：机制细节归 10-foundations 与 50-lifecycle，外部样本归 31–37，施工流程归 90–93。
 
 ## 3. 轮次索引
 
@@ -34,7 +34,7 @@
 | 2026-10-30 | 方向从“插件数据放哪”改为“插件即产品”；新增 15 四个空间、16 首启、17 配置分层、18 安装升级；叫停 `dataRoot` 之类的伪 DSH 抽象。 |
 | 2026-10-30 | 21/22 补产品视角；31–33 补统一角色横幅；92 的分篇合并回单篇（分篇维护成本高于收益）。 |
 | 2026-10-31 | 主文统一为“数据卡”；P0–P5 分类移除；外部章明确“样本不构成依赖禁令或背书”。 |
-| 2026-11-01 | 30-external 扩为 31–36（形态 / 装配 / 台账）；新增 [37 生命周期](../30-external/37-lifecycle-stages.md)；[50 launch](../50-launch/00-index.md) 补 34 条隔离实测。 |
+| 2026-11-01 | 30-external 扩为 31–36（形态 / 装配 / 台账）；新增 [37 生命周期](../30-external/37-lifecycle-stages.md)；[50 生命周期](../50-lifecycle/00-index.md) 补 34 条隔离实测。 |
 | 2026-11-01 | 全树按 DSH 约定 review：CLI 语法、运行时来源计数、Host/Client 分层、未验证断言降级。 |
 | 2026-11-01 | 与 repo 逐条复核（结论见 §1）：修正 `dsh.compatibility` 伪字段、无 bundle 包的双通道行为、web flag 静默后果；拆清 34/35 的重复机制段。 |
 

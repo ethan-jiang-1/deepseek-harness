@@ -11,6 +11,8 @@
 
 ## 宿主会读你的什么
 
+![一份插件 README 的两个读者](./figures/75-readme-consumers.svg)
+
 | 你会写的地方 | 谁读它 | 不写会怎样 |
 |---|---|---|
 | `dsh.bundle.patch` | profile 组合、Plugins 页 | 不是插件，只是普通依赖；列表里见不到，安装以 `not-bundle` 失败 |

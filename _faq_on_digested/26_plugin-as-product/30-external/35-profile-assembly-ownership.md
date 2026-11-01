@@ -29,7 +29,7 @@
 - **失败三级**：bundle skip / row pending 或 import warning / 整体失败；“应用能开、功能没有”是合法终态，不能按“全有或全无”设计救生逻辑。
 - **home 层能覆盖、不能供货**：插入该 profile 没装的包，dump 有行，真启动 `ERR_MODULE_NOT_FOUND` 且服务照常起。分发给每个 profile 各自装，不要用 home 层供货。
 
-阶段判据与 15 张样本见 [37](./37-lifecycle-stages.md)；本仓库隔离实测的非 bundle 与 home 供货见 [50/90](../50-launch/90-evidence.md)。
+阶段判据与 15 张样本见 [37](./37-lifecycle-stages.md)；本仓库隔离实测的非 bundle 与 home 供货见 [50/90](../50-lifecycle/90-evidence.md)。
 
 ## 身份、冲突与退役
 
@@ -113,4 +113,4 @@
 - 四层状态与所有权来自固定版本源码/测试/CI 阅读（`[SRC]`），其中 `plugins-plus`/`better-session` 只到 README/发布物；没有安装、没有启动。
 - `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考；`better-session` 目标源码未 pin，发布 patch 之外的会话状态机都是 `[R]`/`[U]`（同 [34 的失效边界](./34-profile-product-forms.md#边界)）。
 - 九条检查清单只在目标形态需要时采用；不是所有产品都必须有聚合、接管或进口形态。
-- 证据分级与逐样本未验证项见 [36](./36-profile-evidence-ledger.md)；装/起/配/首启的阶段判据见 [37](./37-lifecycle-stages.md)；bundle patch 的 `insert`/override、web 命令行所有权与 startup session 见 [50](../50-launch/00-index.md)。
+- 证据分级与逐样本未验证项见 [36](./36-profile-evidence-ledger.md)；装/起/配/首启的阶段判据见 [37](./37-lifecycle-stages.md)；bundle patch 的 `insert`/override、web 命令行所有权与 startup session 见 [50](../50-lifecycle/00-index.md)。

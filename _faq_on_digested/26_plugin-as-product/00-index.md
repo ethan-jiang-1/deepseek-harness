@@ -2,7 +2,7 @@
 
 本目录帮助 DSH plugin 作者和产品 profile 维护者选择启动组合、目录行为和数据存储。产品 profile 不自动创建数据隔离；项目目录、Workspace registration、Session cwd 和工具权限是不同的决定。
 
-> **产品 profile 路线**：先查 [34 profile 形态](./30-external/34-profile-product-forms.md) 与 [35 装配所有权](./30-external/35-profile-assembly-ownership.md) 定发行形态，安装/启动/设置查 [50 launch](./50-launch/00-index.md)，再从 [90 主线](./90-advisor/00-index.md) 开始，沿 [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md) 对照 JSON/YAML；数据责任见 [91 数据卡](./90-advisor/91-checklist.md)。
+> **产品 profile 路线**：先查 [34 profile 形态](./30-external/34-profile-product-forms.md) 与 [35 装配所有权](./30-external/35-profile-assembly-ownership.md) 定发行形态，安装/启动/设置查 [50 launch](./50-lifecycle/00-index.md)，再从 [90 主线](./90-advisor/00-index.md) 开始，沿 [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md) 对照 JSON/YAML；数据责任见 [91 数据卡](./90-advisor/91-checklist.md)。
 
 ![产品运行组合与数据卡](./figures/10-taxonomy-flow.svg)
 
@@ -21,7 +21,7 @@
 ## 按角色阅读
 
 - **普通 plugin 作者**：从 [91 数据卡](./90-advisor/91-checklist.md) 开始，按需查 [10–14](./10-foundations/10-taxonomy.md)、[31 社区做法](./30-external/31-external-community-patterns.md)/[32 数据设计](./30-external/32-external-ecosystem.md) 和 [92](./90-advisor/92-native-reference-architectures.md)。
-- **产品 profile 作者**：先查 [34 profile 形态](./30-external/34-profile-product-forms.md) 与 [35 装配所有权](./30-external/35-profile-assembly-ownership.md) 定发行形态，装/起/配/首启判据查 [37 生命周期](./30-external/37-lifecycle-stages.md)，安装/启动/分发查 [50 launch](./50-launch/00-index.md)；再走 [90 主线](./90-advisor/00-index.md) → [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)；交付前查 [91 数据卡/验收](./90-advisor/91-checklist.md)，34 的八样本证据查 [36 台账](./30-external/36-profile-evidence-ledger.md)、37 的 16 张阶段样本证据见该篇表格，遇到存储取舍查 [92 参考矩阵](./90-advisor/92-native-reference-architectures.md)。
+- **产品 profile 作者**：先查 [34 profile 形态](./30-external/34-profile-product-forms.md) 与 [35 装配所有权](./30-external/35-profile-assembly-ownership.md) 定发行形态，装/起/配/首启判据查 [37 生命周期](./30-external/37-lifecycle-stages.md)，安装/启动/分发查 [50 launch](./50-lifecycle/00-index.md)；再走 [90 主线](./90-advisor/00-index.md) → [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)；交付前查 [91 数据卡/验收](./90-advisor/91-checklist.md)，34 的八样本证据查 [36 台账](./30-external/36-profile-evidence-ledger.md)、37 的 16 张阶段样本证据见该篇表格，遇到存储取舍查 [92 参考矩阵](./90-advisor/92-native-reference-architectures.md)。
 - **DSH 维护者**：读 [21 原生数据面](./20-native/21-native-data-landscape.md) 与 [22 历史](./20-native/22-native-data-history.md)；[31–37](./30-external/31-external-community-patterns.md) 是 DSH 外部生态研究（核心仓之外的插件与服务），不是 DSH API 合同。
 
 ## 章节地图
@@ -50,7 +50,7 @@
 | [35 装配所有权](./30-external/35-profile-assembly-ownership.md) | 四层状态、身份、更新、接管、进口、资产 |
 | [36 样本台账](./30-external/36-profile-evidence-ledger.md) | 34 八样本的逐样本证据、采用信号与未验证项 |
 | [37 生命周期](./30-external/37-lifecycle-stages.md) | 装/起/配/首启、15 张阶段样本 + 反例、web/Desktop 分叉与发布判据 |
-| [50 安装启动](./50-launch/00-index.md) | named profile 安排、安装/启动/设置、分发打包与安装文档 |
+| [50 生命周期](./50-lifecycle/00-index.md) | 打包、发布、安装、初始化、配置、启动、更新与卸载的推荐做法；分发打包与安装文档 |
 | [90 主线](./90-advisor/00-index.md) | Profile 文件、启动顺序、Kanban 运行和数据归属 |
 | [91 数据卡](./90-advisor/91-checklist.md) | 数据事实、装配/发行、实现和退出检查 |
 | [92 参考架构](./90-advisor/92-native-reference-architectures.md) | 数据用途、DSH 能力、隔离与维护 |
@@ -62,7 +62,7 @@
 
 34–36 用 `[SRC]`/`[DSH]` 分别对应 S/C；`[TEST]`/`[CI]` 表示读过测试/CI 记录但未执行；`[OBS]` 表示只读目录或注册表的普查记录；本轮没有 `[RUN]`（表示实际运行过）。
 
-Profile/template 的局部实验（CLI web 自动化；应用内安装未测）见 [05](./40-evidence/experiments/05-profile-bundle-install.md)；安装/启动/设置实验见 [50/90](./50-launch/90-evidence.md)。证据来源见 [reference](./40-evidence/reference.md)、[research-native](./40-evidence/research-native.md) 和 [research-external](./40-evidence/research-external.md)。[Quality review](./40-evidence/quality-review.md) 记审计历史与仍开放的缺口，不是当前行为的 owner。
+Profile/template 的局部实验（CLI web 自动化；应用内安装未测）见 [05](./40-evidence/experiments/05-profile-bundle-install.md)；安装/启动/设置实验见 [50/90](./50-lifecycle/90-evidence.md)。证据来源见 [reference](./40-evidence/reference.md)、[research-native](./40-evidence/research-native.md) 和 [research-external](./40-evidence/research-external.md)。[Quality review](./40-evidence/quality-review.md) 记审计历史与仍开放的缺口，不是当前行为的 owner。
 
 ## 范围
 
