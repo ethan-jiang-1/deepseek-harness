@@ -1,4 +1,4 @@
-# 26 · 插件组合成产品：profile、目录与数据
+# 26 · 插件组合成产品：profile、目录、数据与交付
 
 本目录帮助 DSH plugin 作者和产品 profile 维护者选择启动组合、目录行为和数据存储。产品 profile 不自动创建数据隔离；项目目录、Workspace registration、Session cwd 和工具权限是不同的决定。
 
@@ -25,7 +25,7 @@
 
 ## 章节地图
 
-31–33 是单插件数据模式与案例；34–36 是 profile 交付形态、装配状态与证据。
+31–33 是单插件数据模式与案例；34–36 是 profile 交付形态、装配状态与证据；50 是安装、启动、设置与分发。
 
 | 文件 | 内容 |
 |---|---|
@@ -60,7 +60,7 @@
 
 34–36 用 `[SRC]`/`[DSH]` 分别对应 S/C；`[TEST]`/`[CI]` 表示读过测试/CI 记录但未执行；`[RUN]` 表示本轮没有运行。
 
-Profile/template 的局部实验见 [05](./40-evidence/experiments/05-profile-bundle-install.md)。证据来源见 [reference](./40-evidence/reference.md)、[research-native](./40-evidence/research-native.md) 和 [research-external](./40-evidence/research-external.md)。[Quality review](./40-evidence/quality-review.md) 是历史审查记录，不是当前行为的 owner。
+Profile/template 的局部实验见 [05](./40-evidence/experiments/05-profile-bundle-install.md)；安装/启动/设置实验见 [50/90](./50-launch/90-evidence.md)。证据来源见 [reference](./40-evidence/reference.md)、[research-native](./40-evidence/research-native.md) 和 [research-external](./40-evidence/research-external.md)。[Quality review](./40-evidence/quality-review.md) 是历史审查记录，不是当前行为的 owner。
 
 ## 范围
 

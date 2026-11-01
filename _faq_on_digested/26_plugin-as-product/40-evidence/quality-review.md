@@ -350,3 +350,12 @@
 - **workspace/session**：startup 插件 `workspaceController.create` + `sessionController.create({workspaceId, agentPreset})` 创建并 attach；`workspaceId+cwd` 互斥；`cwd` only 可建。UI 选中不在 Controller；Playwright 实测 fresh context 会自动选新建 blank，returning 保持 `dsh.sessions.current`，确定性选中用 `uiWorkspace.openSession`。
 - **版本门**：`engines.dsh` 不匹配在安装前拒绝，`nothing was installed`；exemption 只对 exact package + dsh version。本地 tarball 可 `dsh plugin add`。
 - **验证**：verify 26 子树 0；全量失败仍在 03_model-vendors。
+
+## 27. 2026-11-01 · 26 全树 DSH 约定 review
+
+- **CLI 语法**：修正 34 的 `dsh web --profile <name>` 为 `dsh --profile <name>`（`dsh web` 只对应 web profile）；独立应用/桌面壳标注为外部现象，不是 DSH 支持路径；36 的 DIY 桌面壳同样加边界。
+- **运行时计数**：统一为四种来源（npm/Desktop/wheel/source）+ 容器部署；修 50/00、20 的图题、60/70 的“五种”措辞。
+- **Host/Client 分层**：Host startup 解析 args、建 workspace/session、提供 Host 服务；client 面板与当前 session 选中属于 client plugin；更新 40 与图，避免“一个 startup 插件全包”。
+- **未验证断言**：resume 标未测；client 显式 `uiWorkspace.openSession` 标 C；fresh/returning 自动选择有 Playwright T。
+- **入口一致性**：Q1/Q11 补 50 链接；18 tarball 命令补 `--profile`；70 验证命令按 surface 区分；20 标题改为“各来源与容器部署”。
+- **验证**：links/tables/fences/figures 干净；26 子树 verify 0。

@@ -24,12 +24,10 @@ dsh plugin --profile kanban add <bundle-spec>
 
 profile 使用 DSH installation 与 profile node_modules 两个来源解析 bundle 名。若后加入的产品 bundle 要覆盖前面的 row，应将它放在 bundle list 后方并使用相同 row id。
 
-### bundle patch 的 insert 语义与版本门
+### bundle patch、tarball 与并发替换
 
 - 裸 `- id: …` 是 **override target**，不是新增 row。目标不存在时 `--dump-config` 只报 `patch: entry "…" not found`；bundle 仍在 `dsh.profile.bundles`，但 row 不存在、插件不跑。新增 row 必须写 `- insert:`。
-- `engines.dsh`/peer 不匹配会在安装前拒绝，并明确 `nothing was installed`。exemption 只对 exact package + exact dsh version：
-  `dsh plugin --profile <name> allow-version <pkg>@<version> --dsh-version <dsh-version> --accept-risk`；它是风险接受，不是兼容证明。
-- 本地 tarball 可直接 `dsh plugin add ./x.tgz`；产物要含 `package.json`、`dsh.bundle.patch` 与插件文件。
+- 本地 tarball 可直接 `dsh plugin --profile <name> add ./x.tgz`；产物要含 `package.json`、`dsh.bundle.patch` 与插件文件。
 - 并发执行 `--from-default-profile` 时，至少一个成功，最终目录是一份完整副本；实测两个进程都成功、最后写入者生效，未留 staging。
 
 实测与模板见 [50 launch](../50-launch/40-profile-integration.md)。
@@ -45,6 +43,8 @@ Profile/home patch 的生效方式取决于已启动 composition 是否配置 pa
 ## 兼容性与跳过 bundle
 
 DSH 按 bundle/package manifest 声明检查其 DSH 兼容范围。无法读取或不兼容的 bundle 可能在 composition 时被跳过并产生诊断；其余 profile rows 仍可能运行，所以“profile 能启动”不等于产品所有功能都可用。
+
+安装期还有一道门：`dsh plugin` 在写入前检查 `engines.dsh`/peer；不匹配时明确 `nothing was installed`。exemption 只对 exact package + exact dsh version：`dsh plugin --profile <name> allow-version <pkg>@<version> --dsh-version <dsh-version> --accept-risk`；它是风险接受，不是兼容证明。
 
 bundle 作者应在 `package.json` 声明准确的 `engines.dsh` 或 DSH peer ranges，按实际 package composition 和支持范围选择其一。产品 README 应说明如何检查 startup diagnostics 与有效 composition。若核心产品被跳过时必须阻止用户使用，该 fail-loud 检查需由能在相关 bundle 被跳过时仍运行的机制负责；产品 bundle 不能检查自身是否成功加载。
 

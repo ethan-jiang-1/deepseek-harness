@@ -32,11 +32,13 @@
 
 ![startup 插件契约](./figures/40-startup-plugin.svg)
 
+`acme/startup` 是 **Host 行**：它能解析 args、建 workspace/session、提供 Host 服务；client 面板、slot、当前 session 选中是另一个 **client plugin**。把两者混在一个“startup 插件”里，会得到 Host 侧建了 session 但 UI 不显示的半成品。
+
 ### 命令行所有权（实测）
 
 - web profile 的 app args 整条归 shipped `web-startup`。传 `--project board`：`error: unknown option '--project'`，exit 1。
 - 再插一个 startup 插件**不能**新增 flag：两个 parser 看同一份 args，shipped parser 会先拒绝未知参数。
-- 要加产品 flag，只能 **disable `web-startup` + insert 产品 provider**：自己解析 web + 产品 flags，并 `provide('webStartup', …)`。实测 `dsh --profile acme --project board --no-open --port 0` 能启动，args 到达插件。
+- web profile 上要加产品 flag，路径是 **disable `web-startup` + insert 产品 provider**：自己解析 web + 产品 flags，并 `provide('webStartup', …)`。实测 `dsh --profile acme --project board --no-open --port 0` 能启动，args 到达插件。
 - 代价：web flags（host/port/tls/public-url/trusted-host/no-open）的解析与语义要自己维护，并跟随 DSH 升级。**漏实现不会报错**：实测只实现 project/port/no-open 时，`--public-url`/`--trusted-host`/`--tls-cert/--tls-key` 都被静默忽略，boot 仍打印 loopback HTTP URL——这是安全降级，不是“少个功能”。
 - 完整实现后可用：实测 provider 解析 host/port/tls/public-url/trusted-host/no-open；TLS 启动打印 `https://127.0.0.1:<port>/?token=…`，token URL 返回 303；`--public-url` 打印广告 URL；`--host 0.0.0.0` 被 provider 拒绝并启动失败。
 - 替代：profile-as-mode（不同 profile 不同默认值）、config/env、非 Web surface（headless/SDK/ACP 自己解析）。
@@ -62,7 +64,7 @@
 | 首启/onboarding | Host 可做，UI 需 client 面板 | C |
 | 选/换 workspace | Host 可 create + attach；换目录 = 新建 session | T |
 | 新建 session | Host 可 create（workspaceId 或 cwd） | T |
-| 恢复/选中 session | Host 可建/恢复；UI 选中是 Client 状态 | T/U |
+| 创建/复用 + 选中 session | Host `create` 可复用 blank；UI 选中是 Client；resume 未测 | T/C |
 | 产品自定义 app args | 不能直接加；需替换 `web-startup` 并重实现 web flags | T |
 | 多模式产品 | 多个 named profile；零解析成本 | C |
 | 自定义 Web 面板 | 客户端 slot/primitives | C |

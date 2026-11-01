@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-> **角色：外部参考层（E1/E2）。** 本篇只处理 profile 级产品：一套 bundle 装进 profile，用户用 `dsh web --profile <name>` 打开。八个样本是 2026-10-31 固定版本复核；源码、测试与 CI 记录已读，**没有安装、没有运行**。
+> **角色：外部参考层（E1/E2）。** 本篇只处理 profile 级产品：一套 bundle 装进 profile，用户用 `dsh --profile <name>` 打开。八个样本是 2026-10-31 固定版本复核；源码、测试与 CI 记录已读，**没有安装、没有运行**。
 
 [31](./31-external-community-patterns.md) 看单插件的数据维度，[32](./32-external-ecosystem.md) 看产品内部的数据结构，[33](./33-external-plugin-patterns.md) 是 15 个案例。[35](./35-profile-assembly-ownership.md) 把八种形态共用的装配状态与所有权抽出来，[36](./36-profile-evidence-ledger.md) 记录每个样本的证据与失效边界。
 
@@ -30,10 +30,10 @@
 | 交付物 | 启动方式 | 负责到哪层 | 抄错的样子 |
 |---|---|---|---|
 | 单个插件 | 装进用户现有 profile | 3 层槽位为主 | 硬依赖不存在的服务，结果白屏 |
-| 一套 bundle / profile | `dsh web --profile <name>` | 5/6/7：默认值、首启、分发 | 装上了但 bundles 没那行，用户以为装好 |
+| 一套 bundle / profile | `dsh --profile <name>` / `dsh web`（仅 web profile） | 5/6/7：默认值、首启、分发 | bundle 在 roster 但 patch row 没生效，用户以为装好 |
 | 独立应用（换表层/自带运行时） | 双击或命令行 | 2 层起，连运行时都可能要带 | 换了表层没补 5/6/7，首启即崩 |
 
-本篇只收中间一列；单插件的数据做法见 [31](./31-external-community-patterns.md)–[33](./33-external-plugin-patterns.md)，独立应用不在本篇。八种形态是中间一列的八种产品承诺，不是八种技术选型。
+本篇只收中间一列；单插件的数据做法见 [31](./31-external-community-patterns.md)–[33](./33-external-plugin-patterns.md)，独立应用不在本篇。独立应用/自带 shell 是外部观察，不是 DSH 支持路径；官方 Desktop 之外不承诺。八种形态是中间一列的八种产品承诺，不是八种技术选型。
 
 ## 1. 全家桶：dsh-web
 

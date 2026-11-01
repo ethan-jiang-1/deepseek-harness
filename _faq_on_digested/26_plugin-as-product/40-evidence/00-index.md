@@ -1,6 +1,6 @@
 # 40 · 证据入口：当前证据、实验与复核
 
-`40-evidence/` 只放证据，不放结论。结论在 `10`–`40`；这里回答“这句话凭什么”。
+`40-evidence/` 只放证据，不放结论。结论在正文（`10`–`50`、`90`）；这里回答“这句话凭什么”。
 
 ## 当前证据 / 本轮审计（优先）
 
@@ -9,8 +9,9 @@
 | [reference.md](./reference.md) | API 速查、`$DSH_HOME` 目录、证据薄弱处、外部来源 |
 | [research-native.md](./research-native.md) | DSH 原生 33 个数据落点、44 事件清单、关键决定 |
 | [research-external.md](./research-external.md) | 外部插件约 97 个候选、15 个深读的样本与来源 |
-| [quality-review.md](./quality-review.md) | 本轮结构/一致性审计；计数结论截至 2026-10-27，不替代 API 证据 |
+| [quality-review.md](./quality-review.md) | 本轮结构/一致性审计；最近复核 2026-11-01，不替代 API 证据 |
 | [experiments/](./experiments/00-index.md) | 启动竞态实验（01 未执行）、源码核验（02/03）与 CLI profile composition probe（05） |
+| [50/90](../50-launch/90-evidence.md) | named profile 安装/启动/设置/分发实验：patch insert、web-startup 替换、workspace/session、engines、并发替换 |
 
 **profile/template 安装的 T 级观测**：隔离 home 下从 Web template 初始化 custom profile，再安装本地 bundle fixture；实测顺序为 base、web-app、产品 bundle。命令与 manifest 结果见 [实验 05](./experiments/05-profile-bundle-install.md)。其他 runtime/provider data roots 需按各 package Config 合同分别验证。
 

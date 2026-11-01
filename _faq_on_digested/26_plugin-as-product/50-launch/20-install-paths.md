@@ -11,7 +11,7 @@
 
 这四种来源共用同一套 profile 组合和同一个 `dsh` launcher；差别是**谁提供运行时、谁负责版本与签名**。容器/镜像属于部署包装，见 [60](./60-packaging.md)。
 
-![五种运行时来源与所有权](./figures/20-install-ownership.svg)
+![四种运行时来源与容器部署](./figures/20-install-ownership.svg)
 
 ## 安装状态机
 
@@ -84,9 +84,9 @@ dsh plugin --profile <name> allow-version <pkg>@<version> --dsh-version <dsh-ver
 
 然后重跑 add；stderr 会警告可能崩溃/损坏数据。exemption 不是兼容性证明，也不会覆盖其它版本。
 
-## 各来源的特殊点
+## 各来源与容器部署
 
-**npm**：全局安装最接近 `dsh web --profile` 的默认路径；产品 updater 通常是 npm 全局更新（社区 `dsh-updater-npm` 做多副本保护、源码树 git pull）。多副本、PATH、Node 版本是主要故障源。
+**npm**：全局安装最接近 `dsh --profile web` 的默认路径。产品 updater 只更新自己发布的 bundle/安装器；dsh 运行时更新交给 npm/包管理器，不要造第二套运行时更新。社区 `dsh-updater-npm` 只作为多副本保护样本，不是 DSH 更新合同。多副本、PATH、Node 版本是主要故障源。
 
 **Desktop**：安装器拥有应用、运行时和 `profiles/desktop`；内置 CLI 在应用关闭时可用，npm 安装的 dsh 不能改 Desktop profile，Desktop 安装的命令可以。Desktop 首次启动用 Web 模板初始化 profile；核心包从 asar 解析，不复制进 profile。
 

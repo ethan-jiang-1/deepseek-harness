@@ -8,7 +8,7 @@ DSH 支持的 Node 应用启动只有一种：**named `dsh` profile**。产品�
 2. **profile**：`$DSH_HOME/profiles/<name>` 里的有序 bundle 列表 + 用户 patch；
 3. **安装/升级说明**：怎么创建 profile、装哪些 bundle、默认值是什么、怎么更新。
 
-产品**不**发布新可执行文件、不自建 launcher、不把 profile 当发布物。外层最多是一个薄 bootstrap：设置环境、确保 profile 存在、`exec dsh --profile <name>`。
+产品**不**发布新的 DSH 启动可执行文件、不自建 launcher、不把 profile 当发布物。外层最多是一个薄 bootstrap：设置环境、确保 profile 存在、`exec dsh --profile <name>`。
 
 ## 三轴
 

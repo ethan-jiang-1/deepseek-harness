@@ -28,7 +28,7 @@ FAQ 24 已经拆过包的角色：**bundle 是唯一可安装并自动启用的�
 
 ## 产品安装器要做什么
 
-1. **选运行时**：npm 全局、Desktop、容器、wheel 还是自带；把选择写进安装文档。
+1. **选运行时/交付形态**：npm 全局、Desktop、wheel、源码；容器是 `dsh web` 的部署包装；把选择写进安装文档。
 2. **固定版本**：dsh 版本 floor、bundle 精确版本、lockfile/镜像 digest；不要“latest 装完再看”。
 3. **初始化 profile**：按 surface 选模板（web/headless/sdk/acp）；`--from-default-profile` 只限首次，它是破坏性替换；`dsh plugin` 对自定义名字只装 base。
 4. **安装 bundle**：调 `dsh plugin --profile <name> add`，不要手写 `dsh.profile.bundles`。

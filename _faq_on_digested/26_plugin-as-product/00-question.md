@@ -1,4 +1,4 @@
-# 26 · 一个 DSH 插件怎样成为产品 profile：组合、项目目录与数据归属
+# 26 · 一个 DSH 插件怎样成为产品 profile：组合、项目目录、数据归属与交付
 
 源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。
 
@@ -35,7 +35,7 @@
 | # | 问题 | 主回答 |
 |---|---|---|
 | Q0 | 产品 profile、数据 owner、存储机制和作用域如何区分？ | [10 概念层](./10-foundations/10-taxonomy.md) |
-| Q1 | 插件、bundle 与 profile 各是什么？产品入口怎样启动？ | [answer](./00-answer.md)、[FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md) |
+| Q1 | 插件、bundle 与 profile 各是什么？产品入口怎样启动？ | [answer](./00-answer.md)、[FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)、[50 安装/启动](./50-launch/00-index.md) |
 | Q2 | 发布包、用户目录、插件状态与产品设置分别由谁拥有？ | [15 四个空间](./10-foundations/15-four-spaces.md) |
 | Q3 | DSH Web 首次怎样建立 Workspace？产品若自选项目目录要自建什么？ | [16 首用与项目目录](./10-foundations/16-startup-resolution.md) |
 | Q4 | Patch 优先级、Config 默认值和链外产品设置如何区分？ | [17 配置、工具与权限](./10-foundations/17-config-layers.md) |

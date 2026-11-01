@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title>startup 插件契约：用 bundle 做启动体验</title>
-  <desc>named profile 启动后，startup 插件解析 app args、选择 workspace、创建/恢复 session、设置 preset、注册客户端面板并持久化选择。</desc>
+  <desc>Host startup 插件解析 app args、选择 workspace、创建/恢复 session、设置 preset；client 面板与当前 session 选中由 client plugin 负责。</desc>
 
   <rect width="1200" height="720" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">startup 插件契约：用 bundle 做启动体验</text>
@@ -8,20 +8,20 @@
 
   <rect x="24" y="88" width="700" height="64" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
   <text x="44" y="116" font-size="12" font-weight="700" fill="#1e40af">用户命令</text>
-  <text x="44" y="140" font-size="10" fill="#334155">dsh --profile acme --open board   /   dsh --profile acme --resume &lt;id&gt;</text>
+  <text x="44" y="140" font-size="10" fill="#334155">dsh --profile acme --open board   # 需替换 web-startup</text>
 
   <rect x="24" y="176" width="700" height="188" rx="10" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="44" y="204" font-size="12" font-weight="700" fill="#3730a3">acme/startup（产品 bundle 的一行）</text>
-  <text x="44" y="232" font-size="10" fill="#334155">inject：cmdline / webStartup / session、workspace 服务（以 dump 为准）</text>
+  <text x="44" y="204" font-size="12" font-weight="700" fill="#3730a3">acme/startup（Host 行）</text>
+  <text x="44" y="232" font-size="10" fill="#334155">inject：cmdlineArgs / webStartup / session、workspace 服务（以 dump 为准）</text>
   <text x="44" y="258" font-size="10" fill="#334155">解析 app args → 选 workspace（cwd 或 workspaceId）</text>
-  <text x="44" y="282" font-size="10" fill="#334155">创建/恢复 session → 设置 agentPreset</text>
-  <text x="44" y="306" font-size="10" fill="#334155">注册客户端面板/命令 → 把选择写 profile patch</text>
+  <text x="44" y="282" font-size="10" fill="#334155">创建/复用 session → 设置 agentPreset</text>
+  <text x="44" y="306" font-size="10" fill="#334155">提供 Host 服务/命令；client 面板单独注册</text>
   <text x="44" y="336" font-size="9.5" fill="#64748b">只在 Loader 启动后激活；不能改 profile 组合或 launcher 语法</text>
 
   <rect x="24" y="388" width="700" height="132" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
   <text x="44" y="416" font-size="12" font-weight="700" fill="#1e40af">输出</text>
   <text x="44" y="442" font-size="10" fill="#334155">新 session：cwd/workspaceId + agentPreset；旧 session 保留</text>
-  <text x="44" y="466" font-size="10" fill="#334155">客户端面板/首启页；产品 preset 决定工具面</text>
+  <text x="44" y="466" font-size="10" fill="#334155">client：面板/首启页；Host：session/workspace</text>
   <text x="44" y="490" font-size="10" fill="#334155">用户选择落 profile patch；产品默认值仍在 bundle patch</text>
 
   <rect x="752" y="88" width="424" height="432" rx="10" fill="#fff7ed" stroke="#fdba74"/>
