@@ -158,7 +158,7 @@ dsh --profile acme --no-open --port 0
 
 - bundle 更新：应用内 Plugin Manager（默认）或 CLI `dsh plugin --profile <name> update`（仅 web 自动化）；**重启 profile** 才生效。
 - profile 锁：安装/更新走 `dsh plugin` 或 Plugin Manager；不要并发写。
-- 回滚：保留旧 exact version/enabled；写清 crash window。
+- 回滚：**没有命令级回滚**；保留旧 exact version/enabled，回退是把旧版本重装一次；写清 crash window。
 - 卸载：`dsh plugin remove` 只移除 bundle/dependency；用户数据、Session、Workspace registration 不清；产品自建数据要单独说明。
 
 ## 反模式

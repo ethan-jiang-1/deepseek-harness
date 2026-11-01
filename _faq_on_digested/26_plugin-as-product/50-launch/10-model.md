@@ -38,7 +38,7 @@ DSH 支持的 Node 应用启动只有一种：**named `dsh` profile**。产品�
 | 用户设置 | profile patch / Settings UI | 提供设置页或文档；不要两套真值 |
 | home patch | 用户/机器 | 产品不要静默写 |
 | 端口/token | dsh web | 文档写默认/参数；远程用反代/TLS |
-| 更新 | 用户/Plugin Manager；shell 才用安装器 | 走 `dsh plugin`；重启；旧版本恢复 |
+| 更新 | 用户/Plugin Manager；shell 才用安装器 | 走 `dsh plugin`；bundle 成员变化要重启；回退 = 重装旧版本（没有命令级回滚） |
 | 卸载/数据 | 用户/产品 | `dsh plugin remove` 不清数据；产品自建数据单独说明 |
 
 ## 组合顺序

@@ -32,7 +32,7 @@
 6. **首建/重置**：只在全新 profile 用 `--from-default-profile`；已有 profile 不重置。
 7. **安装**：默认应用内 Plugins 页；CLI `dsh plugin --profile <name> add <bundle>` 仅 web 自动化；不手写 manifest。
 8. **校验**：`--dump-config`、启动日志、profile roster、页面/任务。
-9. **更新**：应用内 Plugin Manager（默认）或 `dsh plugin update`（仅 web 自动化）；重启；旧版本恢复。
+9. **更新**：应用内 Plugin Manager（默认）或 `dsh plugin update`（仅 web 自动化）；bundle 成员变化要重启；回退是重装旧版本，DSH 没有命令级回滚。
 10. **文档**：安装/启动/设置/升级/卸载/排障与发布物同版本。
 11. **首启**：token 门之后由产品回答首屏；可推迟；不依赖 `welcome-notice`，Desktop 有替代。
 
@@ -81,6 +81,6 @@
 - **默认发 bundle，让用户在应用内 Plugins 页装**（web 与 Desktop 同一句）；CLI `--profile` 面绑定（不能 `desktop`），面向 GUI 时只作 web 自动化。
 - **只有 shell/自托管才用安装器**：确保 dsh 版本、创建 profile（首次）、装 bundle、`exec dsh --profile`；不写 `--profile desktop`。
 - **设置从 bundle 默认值开始**，用户覆盖留 profile/home；不要把所有设置塞进产品自有文件。
-- **更新走应用内 Plugin Manager（默认）或 `dsh plugin`（仅 web）**；保留旧 exact version/enabled，文档写清重启与回滚。
+- **更新走应用内 Plugin Manager（默认）或 `dsh plugin`（仅 web）**；保留旧 exact version/enabled，文档写清重启，以及回退是重装旧版本而不是一条命令。
 
 ![决策：模板 → bundle → 设置 → 启动](./figures/80-decision.svg)

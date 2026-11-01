@@ -43,7 +43,7 @@ FAQ 24 已经拆过包的角色：**bundle 是唯一可安装并自动启用的�
 | 多个 bundle 的版本 | exact pin + lockfile/digest；区分 direct pin 与 transitive lock |
 | dsh 版本 | `engines.dsh`/peer range；不匹配默认拒绝安装；exemption 只对 exact package + dsh version，且是风险接受不是兼容证明 |
 | 更新通道 | npm dist-tag、Desktop feed、容器 tag/digest、产品 updater；不要混用 |
-| 回滚 | 保留旧 exact version/enabled；补偿恢复；写清 crash window |
+| 回滚 | **没有命令级回滚**；保留旧 exact version/enabled，回退靠重装；写清 crash window |
 | profile 写锁 | 更新/安装走 `dsh plugin` 或 Plugin Manager；不要并发写 |
 
 ## 签名、校验与离线

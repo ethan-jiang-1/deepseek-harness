@@ -1,27 +1,63 @@
-# 50 · 安装、启动与设置：产品怎么把 DSH 交到用户手里
+# 50 · 安装、启动与设置：DSH 插件的生命周期推荐做法
 
-## 这一篇回答什么
+## 这一节讲给谁、为什么存在
 
-> **角色：产品交付层（C/T）。** 本目录研究一个 DSH 产品从“用户拿到它”到“它跑起来”之间的全部选择：代码和 profile 怎么安装、谁启动进程、用户看到哪个 surface、默认值和用户覆盖归谁、更新和卸载谁负责。**不是**再写一遍 `dsh --profile web`，而是把安装/启动/设置当成产品设计空间拆开。
+> **角色：作者面规范（C/T）。** 写给要给 DSH 写插件、并把它交到用户手里的人。这一节给的是**一套推荐做法**，不是可用选项的清单；选项在别处，这里只回答「应该怎么写，以及不这么写会在换场景时付什么代价」。
 
-三条轴：
+理由只有一条：**不给规矩，插件就会各自发明。**
+
+发明不是恶意，是省事：打包时自定义一个插件清单、安装时自己决定落到哪、初始化时自己造一个"首次运行"标记、配置时自己发明一套开关、卸载时自己决定数据留不留。每一套在写它的那个场景里都说得通，问题出在下一个场景：
+
+| 换场景 | 自造做法要付的代价 |
+|---|---|
+| web → desktop | 自建的安装入口在 Desktop 上根本不存在；profile 归属也不同 |
+| 本地 checkout → registry 分发 | 依赖仓库相对路径的产物装不进别人的机器 |
+| 单人自用 → 第三方安装 | 没有版本声明、没有元数据、没有卸载说明，别人不敢装也不会装 |
+| 一个部署 → 多个部署 | 硬编码的端口、路径、开关改不动 |
+
+第二层代价更隐蔽：**放弃生态的既有习惯**。DSH 的 Plugins 页、`plugin_manager`、profile 组合、设置表单、升级说明，都只接住**按约定写**的插件；自己另造一套，等于把这些现成机制全部关掉，也放弃用户和 coding agent 已经形成的认知——他们不会为你学一套新词。
+
+一句话：**守 DSH 的约定 = 可迁移 + 可借力。** 这两件事是同一件事的两面。
+
+## 生命周期规矩总表
+
+左边一列是 DSH 只提供这一种的机制，右边是作者该做的事，以及不这么做要付的代价。
+
+| 阶段 | DSH 的机制 | 作者该做 | 不这么做的代价 |
+|---|---|---|---|
+| **打包** | npm 包 + `dsh.bundle.patch` 贡献一层配置 | 只发 bundle；`patch` 指向一份或有序几份 patch | 自造插件清单进不了 Plugins 页、`dsh plugin`、`plugin_manager` |
+| **发布** | registry / tarball / git 三种产物形态；准入看 `engines.dsh` 或 DSH peers | 声明 `engines.dsh`；发预构建产物 | 版本一升就装不上；git 装法的构建审批会挡住用户 |
+| **安装** | Plugins 页 / `plugin_manager` / `dsh plugin`，写的是 profile 的两个文件 | 让用户走这三个入口；不教他手改 manifest | 手改的 profile 与工具状态漂移，下次工具一写就打架 |
+| **初始化** | profile 首建由 `initProfile` 做，已有文件一律不覆盖 | 假定 profile 已存在；不做自己的"首启"标记 | 两套首启状态互相打架，重装行为不可预测 |
+| **特殊初始化** | 没有插件级迁移钩子；只有存储的版本接受集与产品级一次性导入 | 一次性动作自己保证幂等，凭据必须可判定 | 重入一次就可能覆盖用户数据 |
+| **配置** | `Config` schema + 五层 patch；patch 对 `config` 是**整份替换** | 默认值进 bundle patch；可变项做成 Config 字段；`.volatile()` 的才上设置页 | 硬编码常量让部署改不动；只写一项让必填字段丢失 |
+| **启动** | named profile；失败分级由 app-boot 判定（optional 警告 / required 停止） | 不做第二个 launcher；不为插件写启动脚本 | 绕过 launcher 的入口不受支持，也拿不到启动诊断 |
+| **更新** | 卸载再安装；bundle 成员变化要重启；**没有命令级回滚** | 文档写清「要重启」与「回退是重装旧版本」 | 文档写"可回滚"，用户回不去 |
+| **卸载** | 只回收包与 patch 层，数据一律留下 | 自己文档化数据位置与清理方式 | 用户以为删了，其实还在 |
+| **文档** | Plugins 页读 `package.json` 与导出的 locale；README 有固定形 | 按骨架写，交代装 / 验 / 配 / 升 / 卸 / 数据 | 用户和 agent 都得读源码才知道怎么用 |
+
+后面各章就是这张表的展开：每条规矩一行，展开成一节的机制、反例与迁移后果。
+
+读法：各章里的「产品」指**把这些插件交付出去的那一方**。如果你一个人写一个插件、自己发布，你就是那一方——章节没有换一套概念，只是换了一个称呼。
+
+## 三条轴
 
 1. **安装**：dsh 运行时从哪来（npm、官方 Desktop、Python wheel、源码），profile 怎么创建，bundle 怎么进入 profile。
 2. **启动**：named profile 怎么组合（模板、bundle 顺序、patch），用哪个 shipped surface（Web、headless、SDK、ACP、TUI）。
 3. **所有权**：profile、home、端口/token、构建产物、设置、更新、签名、单实例、卸载分别归谁。
 
-三条轴之外，[60](./60-packaging.md) 讲分发/打包/签名/离线，[70](./70-install-docs.md) 讲安装与使用说明怎么写。
+三条轴之外，[60](./60-packaging.md) 讲分发/打包/签名/离线，[70](./70-install-docs.md) 讲产品安装手册怎么写，[75](./75-plugin-readme.md) 讲**单个插件的 README 与安装说明**怎么写。
 
 **范围。** 只采用 DSH 约定内的分发/安装/启动/配置。不研究、不对比、不教程化：新 bin、自建 Tauri/Electron/托盘、发布 profile、wildcard bind。替换 `web-startup` 是约定内的 provider 替换（disable + insert），但必须重实现全部 web flags；见 [40](./40-profile-integration.md)。
 
-[18](../10-foundations/18-install-upgrade.md) 讲 DSH 的安装/升级/卸载语义，[37](../30-external/37-lifecycle-stages.md) 给装/起/配/首启的阶段判据，[23](../../23_standalone-vs-web-release-forms/answer.md) 讲官方只有 Desktop 与 CLI/Web 两份发布物，[34](../30-external/34-profile-product-forms.md)/[35](../30-external/35-profile-assembly-ownership.md) 讲 profile 产品形态与装配状态，[90](../90-advisor/00-index.md) 是从 profile 到产品工作流。本目录补的是“交付与启动”这一段。
+[18](../10-foundations/18-install-upgrade.md) 讲 DSH 的安装/升级/卸载语义，[37](../30-external/37-lifecycle-stages.md) 给装/起/配/首启的阶段判据，[23](../../23_standalone-vs-web-release-forms/answer.md) 讲官方只有 Desktop 与 CLI/Web 两份发布物，[34](../30-external/34-profile-product-forms.md)/[35](../30-external/35-profile-assembly-ownership.md) 讲 profile 产品形态与装配状态，[90](../90-advisor/00-index.md) 是从 profile 到产品工作流。本目录补的是"交付与启动"这一段。
 
 ## 先给结论
 
 - **应用内 Plugins 页是唯一跨面安装路径**：`dsh web` 与 Desktop 用同一句；CLI `--profile` 是面绑定（可管理 web/headless/sdk 等，不能 `desktop`），面向 GUI 的安装说明默认 Plugins 页，CLI 仅 web 自动化。
 - **受支持的 Node 应用启动方式只有一种：named `dsh` profile。** `web`、`headless`、`sdk`、`sdk-minimal`、`acp` 是 shipped profiles；自定义组合是 profile + 有序 patch，不是另一个可执行文件。外层最多是一个薄 bootstrap，最终 `exec dsh --profile <name>`。
-- **安装的自由度主要在“谁提供 dsh 运行时”和“profile 怎么初始化”**：npm 全局、Desktop 自带运行时、Python wheel、源码树，四种 runtime 来源对应不同的更新/签名/隔离责任；容器/镜像属于部署包装，不算第五种来源。
-- **设置的灵活性在层级，不在开关数量**：bundle patch → profile patch → home patch → CLI `--patch` → app args/env → 客户端状态/Desktop shell 设置。最容易踩的两个坑是“整份 config 被替换”和“字面值让 app 参数失效”。
+- **安装的自由度主要在"谁提供 dsh 运行时"和"profile 怎么初始化"**：npm 全局、Desktop 自带运行时、Python wheel、源码树，四种 runtime 来源对应不同的更新/签名/隔离责任；容器/镜像属于部署包装，不算第五种来源。
+- **设置的灵活性在层级，不在开关数量**：bundle patch → profile patch → home patch → CLI `--patch` → app args/env → 客户端状态/Desktop shell 设置。最容易踩的两个坑是"整份 config 被替换"和"字面值让 app 参数失效"。
 - **产品拥有 bundle、默认值与文档；只有 shell/自托管才拥有安装器。** 不拥有 launcher、profile 写者或第二套更新。同一 profile 的并发写、两个更新器是主要故障源。
 - **分发单位决定签名/校验/更新责任**：bundle、安装器、Desktop、容器、wheel、离线 tarball 各有 owner；安装文档要与发布物同版本。
 - **bundle 在 roster ≠ patch 生效**：新增 row 必须 `insert:`；裸 `- id` 是 override target。
@@ -38,7 +74,8 @@
 | [40 profile 安排](./40-profile-integration.md) | 模板、bundle、startup 插件、命令行所有权、workspace/session、设置、更新 |
 | [50 设置层](./50-settings.md) | 默认值/覆盖/Settings UI/env/客户端/Desktop shell 设置；两个实验陷阱 |
 | [60 分发打包](./60-packaging.md) | bundle/安装器/官方 Desktop/容器/wheel/离线 tarball；版本、签名、校验 |
-| [70 安装文档](./70-install-docs.md) | 十段安装/使用说明骨架、边界、错误写法 |
+| [70 安装文档](./70-install-docs.md) | 产品安装手册的十段骨架、边界、错误写法 |
+| [75 插件 README](./75-plugin-readme.md) | 单个插件的 README 与安装说明：宿主读你哪些字段、骨架、必答七问、反例 |
 | [80 决策](./80-decision.md) | 模板 × bundle × 设置矩阵、检查清单、失败模式 |
 | [90 证据](./90-evidence.md) | DSH 源码/docs、隔离 profile 实验与证据等级 |
 

@@ -11,7 +11,7 @@
 5. **首次启动**：profile 名、端口、token URL、浏览器/SSH、`--no-open`；Desktop 的欢迎页/登录。
 6. **验证**：`dsh --version`、`--dump-config`、profile roster、页面能聊天；失败时看哪里。
 7. **配置**：设置页 vs profile patch vs env；端口/TLS/代理/trusted-host；凭据放哪。
-8. **升级**：停/备份/更新/重启/回滚；bundle membership 变化要重启；Desktop 更新会 drain。
+8. **升级**：停/备份/更新/重启；bundle membership 变化要重启；Desktop 更新会 drain。DSH 没有命令级回滚，回退是把旧版本重装一次——升级前记下当前版本与 lockfile。
 9. **卸载与数据**：删什么、留什么、`$DSH_HOME` 哪些共享；Desktop profile 的保留规则。
 10. **故障排查**：缺 build、engines 不匹配、端口占用、浏览器打不开、凭据缺失、权限被拒。
 

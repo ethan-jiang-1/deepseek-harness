@@ -41,7 +41,7 @@ error: unknown option '--project'   (exit 1)
 5. 启动 Loader、挂载 plugins；
 6. required plugin 失败 → 报告并退出；可选失败 → 警告；bundle 加载失败 → skip 并报告。
 
-HMR 开启时监听 profile/home patch，事务性重载；否则重启生效。bundle membership 变化（`dsh plugin add/remove/update`）一律要重启 profile。
+HMR 开启时监听 profile/home patch，串行重载但不做事务：候选失败不提交，正在服务的树继续用旧 patch 集；只有本次新引入的失败才抛错。DSH 明确说「不是对兄弟变更的事务性回滚」。没有 HMR 就重启生效；bundle membership 变化（`dsh plugin add/remove/update`）一律要重启 profile。
 
 ## 生命周期
 
