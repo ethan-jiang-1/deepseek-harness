@@ -21,14 +21,14 @@
 
 ## 八条硬结论
 
-1. **应用内安装是“当前 profile 相对”的。** Plugins 页与 `plugin_manager` 工具没有 profile 参数；所以 web 与 Desktop 能够同一句话。
-2. **`desktop` 从普通 CLI 双门禁闭。** `dsh --profile desktop` 与 `dsh plugin --profile desktop` 都被拒；只有 Electron carrier 用程序化开关能管理。
-3. **“装成功”有三个。** pnpm 成功 ≠ dependency 写入 ≠ 成为 profile 层；只有第三个让功能存在，前两个成功时退出码仍可以是 0。
-4. **启动不是全有或全无。** 单个 row 导入失败被隔离成 warning，进程照常服务；“应用能开、我的功能没有”是合法终态。
-5. **home 层跨 profile，但不能供货。** 它能覆盖/禁用任意 profile 的行；插入没装的包，dump 有行，真启动 `ERR_MODULE_NOT_FOUND`。
-6. **原生首启只有令牌门。** token URL → 303 + 30 天 HttpOnly cookie → SPA；没有欢迎页/向导；onboarding 账本只是设置面板的 step。
-7. **启动体验不必另造 launcher。** 首屏注入、预置会话、工作区都在 host 服务层，写在 bundle 里即可，天然跨面。
-8. **机制对不等于产品成立。** `negative/91` 的机制齐全但无人使用；生命周期完整不是发布理由。
+1. **应用内安装是“当前 profile 相对”的。** Plugins 页与 `plugin_manager` 工具没有 profile 参数；所以 web 与 Desktop 能够同一句话。（C）
+2. **`desktop` 从普通 CLI 双门禁闭。** `dsh --profile desktop` 与 `dsh plugin --profile desktop` 都被拒；只有 Electron carrier 用程序化开关能管理。（C/T）
+3. **“装成功”有三个。** pnpm 成功 ≠ dependency 写入 ≠ 成为 profile 层；只有第三个让功能存在，前两个成功时退出码仍可以是 0。（C/T）
+4. **启动不是全有或全无。** 单个 row 导入失败被隔离成 warning，进程照常服务；“应用能开、我的功能没有”是合法终态。（C/T）
+5. **home 层跨 profile，但不能供货。** 它能覆盖/禁用任意 profile 的行；插入没装的包，dump 有行，真启动 `ERR_MODULE_NOT_FOUND`。（C/T）
+6. **原生首启只有令牌门。** token URL → 303 + 30 天 HttpOnly cookie → SPA；没有欢迎页/向导；onboarding 账本只是设置面板的 step。（C）
+7. **启动体验不必另造 launcher。** 首屏注入、预置会话、工作区都在 host 服务层，写在 bundle 里即可，天然跨面。（C/T）
+8. **机制对不等于产品成立。** `negative/91` 的机制齐全但无人使用；生命周期完整不是发布理由。（R/U）
 
 ## ① 装：三条通道，三个“成功”
 
