@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-> **角色：外部参考层（E1/E2）。** [34](./34-profile-product-forms.md) 写八种形态，[35](./35-profile-assembly-ownership.md) 写共用机制；本篇只记证据：每个样本 pin 在哪个版本、读了什么、哪些只是 README 主张、哪些根本没有验证。
+> **角色：外部参考层（E1/E2）。** [34](./34-profile-product-forms.md) 写八种形态，[35](./35-profile-assembly-ownership.md) 写共用机制；本篇只记证据：每个样本 pin 在哪个版本、读了什么、哪些只是 README 主张、哪些根本没有验证；另有一次 2026-11-01 的 npm registry 只读核对。
 
 **口径。** `[SRC]` = 读过固定 tag/commit 的目标源码；`[R]` = README/作者声明；`[DSH]` = DSH `0.2.1-rc.3` 契约；`[TEST]`/`[CI]` = 读过测试与同 SHA CI 记录，但本轮没有执行；`[OBS]` = 只读目录/注册表元数据的普查；**没有 `[RUN]`**（表示实际运行过）。npm 下载含 CI/镜像，星标不是质量。
 
@@ -20,6 +20,31 @@
 | `dsh-agent-plugins-market` | 0.13.0 / `d3364da` | layouts adapter、source/install/filter、validation、credentials/OAuth、hooks、uninstall | same-SHA tests 与 CI run `40302671805` 读过，未运行 | 十种布局的语义保真度、八 tab UX、真实 OAuth callback | hook 决策与权限效果；workspace filter 运行时；`state.json` 损坏恢复；跨 peer range |
 | `better-session` | 0.1.10（npm tarball） | 发布 patch：5 exact deps、5 rows、SQLite default；README 闭环 | 无匹配 source/test/CI（无 tag、无 `gitHead`） | edit/retry/fork、UI slots、确认弹窗 | session schema/事务/迁移；并发 retry；外部 tool side effect；UI slot 契约 |
 | `dsh-wallpaper-engine` | 1.4.0 / `3b0103b` | 8 packages/rows、host/client、格式 fallback、video limits、preset schema、token contract | same-SHA Windows/Ubuntu CI 读过，未运行 | WebGL/ffmpeg 真实表现、preset obsolete UX、跨 skin 共存 | 真实 GPU/OS、Web sandbox 威胁模型、unload teardown、预设跨版本导入 |
+
+## 注册表复核（2026-11-01）
+
+对 8 个 npm 包做了**只读** registry 核对（`registry.npmjs.org/<pkg>/<version>`）与一次 GitHub tags 查询。它只证明**发行物存在、manifest 字段是什么**，不证明行为；行为仍是 `[R]`/`[SRC]`。本节的证据级别是 `[OBS]`（只读元数据），不是 `[SRC]`。
+
+| 样本 | pin 存在 | pin 的来源 | 复核到的 manifest |
+|---|---|---|---|
+| `dsh-web` | ✓ 0.4.13 | 仓库 tag（未单独核对） | `dsh.bundle.patch: ./cordis.patch.yml`；`engines.dsh: >=0.2.1-rc.3`；24 个 direct 依赖（“20 多个家族/卫星包”对得上） |
+| `dsh-codex-ui` | ✓ 2.0.9 | `gitHead` | `gitHead` 与上表的 `29a999e` 一致；`engines.dsh: >=0.2.0-rc.1 <0.3.0-0`；带 SLSA provenance |
+| `dsh-suite` | ✓ 0.9.1 | 有 provenance、无 `gitHead` | 18 个 exact 依赖（与上表一致）；`dsh.bundle.patch` 是数组，含 `cordis.patch.yml` 与 `ptc-minimal.patch.yml`；**无 `gitHead`** |
+| `dsh-all` | ✓ 0.1.73 | 本地 tgz 发布 | 11 个 exact 依赖（与上表一致）；DSH 范围写在 `dsh.engines.dsh`——**DSH 不读这个字段**（`DshManifest` 只有 `manifestVersion`/`bundle`/`profile`/`client`），实际生效回退到 `@deepseek-ai/dsh` peer；**无 `gitHead`** |
+| `dsh-plugins-plus` | ✓ 0.2.0 | `gitHead` | `gitHead` 指向的 commit 里 `package.json` 是 **0.1.8**，与 [34](./34-profile-product-forms.md)/[35](./35-profile-assembly-ownership.md) 的说法一致；无 `engines.dsh`，靠 peer |
+| `dsh-agent-plugins-market` | ✓ 0.13.0 | 有 provenance、无 `gitHead` | 26 个 DSH peer、无 `engines.dsh`；**无 `gitHead`** |
+| `better-session` | ✓ 0.1.10 | npm tarball | **无 `gitHead`**，GitHub `tags` 返回 `[]`——两条与上表一致；5 个 exact 依赖与 34 的清单逐条相同；`engines.dsh: >= 0.2.1-rc.1 < 0.2.2` |
+| `dsh-wallpaper-engine` | ✓ 1.4.0 | npm tarball | 7 个子包 + 主包 = 8；**没有 glass 子包**；`engines.dsh: ^0.2.0-rc.1`；**无 `gitHead`** |
+
+**结论**：8 个 pin 都存在，上表的版本号与依赖数没有漂移。但 `gitHead` 只覆盖 2 个样本，其余没有可直接 diff 的 commit：有 provenance 的包其源码提交写在 attestation 里（本次没有逐一核对 attestation 内容），其余只能靠 npm tarball。引用时按来源理解。
+
+**复核命令**（需要网络；不安装、不运行，容器里可直接跑）：
+
+```sh
+npm view '@linxin666/dsh-web-all@0.4.13' --json | jq '{version, engines, dsh, peerDependencies}'
+curl -s https://registry.npmjs.org/@sidleo3/dsh-plugins-plus/0.2.0 | jq '{gitHead, engines}'
+gh api repos/morlay/dsh-plugin/tags --jq 'length'
+```
 
 ## 生命周期样本（在 37，不在本篇）
 
@@ -41,6 +66,7 @@ npm last-month（2026-09-30 ~ 10-29，含 CI/镜像）：`dsh-codex-ui` 119,610�
 ## 边界
 
 - 八个样本都没有安装或启动；`[SRC]`/`[TEST]`/`[CI]` 不等于本轮行为观察，README 体验主张单独标注。
+- 注册表复核（见上）只证明发行物存在与 manifest 字段，不把任何行为结论升级为 T；`gitHead` 缺失的样本也没有可 diff 的源码锚点。
 - `dsh-plugins-plus` 与 `better-session` 的目标源码未 pin，机制结论只到发布物或 README；不能把邻近 commit 当目标实现。
 - 版本、下载、星标和默认值会变；引用时回到对应 tag/commit 与 npm 版本。
 - 台账不评价 package 是否适合作为依赖；采用前另核 license、兼容范围、供应链和数据生命周期。

@@ -145,26 +145,26 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 
 ## 15 张阶段样本 + 1 张反例
 
-| 阶段 | 样本 | 载体 | 一句话机制 | 证据 |
-|---|---|---|---|---|
-| 装 | cfbridge | 自带 CLI | 五条自证命令，`files` 漏 `scripts/` | S/R |
-| 装 | origin-plugin | 纯 host 行 | 入口工件决定能装，loader fiber 决定活着 | S/R |
-| 装 | free-models-hub | 自带 CLI | 三条安装路径依赖的脚本不在包里 | S/R |
-| 装 | tinyfish | 纯 host 行 | 覆盖行 `name` 是断言，不是重命名 | S/R |
-| 起 | rhine-splash | 首屏注入 | `index-inject` 在 React 前改首屏 | S/R |
-| 起 | update-checker | 自有路由 | 结果文件+实例身份+端口探针证明新版接管 | S/R |
-| 起 | noema | 纯 host 行 | 懒起/保活/退避/并发去重 | S/R |
-| 起 | doctor | 自带 CLI | 检查点硬前置，救生链降级人工 | S/R |
-| 起 | context-guardian | 命令 | 生效是显式一步，默认 dry-run | S/R |
-| 配 | isolation-gate | 纯 host 行 | 读不到就拒绝，坏文件不覆盖 | S/R |
-| 配 | free-search | 纯 host 行 | 只接出厂默认，显式选择让路 | S/R |
-| 配 | dfy-bundle | 纯 host 行 | 换包装保 id，退役留给用户层 | S/R |
-| 首启 | skill-cockpit | 自带 CLI | doctor 退出码当首启验收面 | S/R |
-| 首启 | tool-guardian | 命令 | 命令即验收面，`input` 决定路由 | S/R |
-| 首启 | 24pa | boot hook | 预置工作区+会话，冲突换 id | S/R |
-| 反例 | bootstrap | 自带 CLI | 机制齐全但无人用，发布后停更 | R |
+| 阶段 | 样本 | 载体 | 一句话机制 | 证据 | 本仓库没做的那一步 |
+|---|---|---|---|---|---|
+| 装 | cfbridge | 自带 CLI | 五条自证命令，`files` 漏 `scripts/` | S/R | 没跑 `npm pack --dry-run`，也没逐条执行那五条命令 |
+| 装 | origin-plugin | 纯 host 行 | 入口工件决定能装，loader fiber 决定活着 | S/R | 没装一次确认 fiber 真的起来 |
+| 装 | free-models-hub | 自带 CLI | 三条安装路径依赖的脚本不在包里 | S/R | 没按 tarball 复现那三条安装路径 |
+| 装 | tinyfish | 纯 host 行 | 覆盖行 `name` 是断言，不是重命名 | S/R | 没装后确认被覆盖的行是否真的换了实现 |
+| 起 | rhine-splash | 首屏注入 | `index-inject` 在 React 前改首屏 | S/R | 没真启动看顺序、转义与开屏频率 |
+| 起 | update-checker | 自有路由 | 结果文件+实例身份+端口探针证明新版接管 | S/R | 没跑一次自重启并确认新版接管 |
+| 起 | noema | 纯 host 行 | 懒起/保活/退避/并发去重 | S/R | 没观察六个默认值下的实际生命周期 |
+| 起 | doctor | 自带 CLI | 检查点硬前置，救生链降级人工 | S/R | 没跑一次修复流程验证前置与降级 |
+| 起 | context-guardian | 命令 | 生效是显式一步，默认 dry-run | S/R | 没确认默认 dry-run 与显式生效的差别 |
+| 配 | isolation-gate | 纯 host 行 | 读不到就拒绝，坏文件不覆盖 | S/R | 没造权限/名单失败各一例 |
+| 配 | free-search | 纯 host 行 | 只接出厂默认，显式选择让路 | S/R | 没确认“让路 + 重置后补一次”两个行为 |
+| 配 | dfy-bundle | 纯 host 行 | 换包装保 id，退役留给用户层 | S/R | 没验证退役旧包后用户配置是否保留 |
+| 首启 | skill-cockpit | 自带 CLI | doctor 退出码当首启验收面 | S/R | 没跑那个退出码 |
+| 首启 | tool-guardian | 命令 | 命令即验收面，`input` 决定路由 | S/R | 没试不带 `input` 的带参命令是否被当提问 |
+| 首启 | 24pa | boot hook | 预置工作区+会话，冲突换 id | S/R | 没 boot 后确认冲突换 id 的结果 |
+| 反例 | bootstrap | 自带 CLI | 机制齐全但无人用，发布后停更 | R | 只读了 README，没有作者访谈或使用数据 |
 
-> 原册对 `install/11`、`install/13`、`boot/21`、`config/31` 有隔离实测；本仓库没有重跑，故不升为 T。
+> 原册对 `install/11`、`install/13`、`boot/21`、`config/31` 有隔离实测；本仓库没有重跑，故不升为 T。上表最后一列是把每行的“可迁移”主张反过来说：**这些检查都还没做**，谁要用某一行就先补哪一步。
 
 ## 发布前判据
 

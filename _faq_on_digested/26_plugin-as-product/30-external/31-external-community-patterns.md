@@ -219,7 +219,7 @@ custom-workspace 在 0.1.0-rc.6 上为此造了自定义 RPC；新插件应先�
 
 ## 边界
 
-- 样本是作者自述 + README/源码阅读，没有安装实测；星数、目录计数不是质量证据。
+- 样本是作者自述 + README/源码阅读，没有安装实测；星数、目录计数不是质量证据。要复核某个包的版本/pin 是否存在，按 [36 的 registry 复核命令](./36-profile-evidence-ledger.md#注册表复核2026-11-01) 跑一遍。
 - 九行样本的版本声明会随 RC 漂移，引用时按各仓库当前 README 为准；本篇不承诺它们在你安装的版本上仍成立。
 - 部分插件体量很大（project-context 的 README 本身有数百行工程细节），本篇只摘与数据归属有关的部分。
 - 社区补丁不是 DSH 的 API 合同；`ctx.workspaceCordis`、`/custom-workspace` RPC、`.agents/memory` 目录都不是核心保证。

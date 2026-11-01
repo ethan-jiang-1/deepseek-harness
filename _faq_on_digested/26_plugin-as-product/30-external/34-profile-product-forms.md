@@ -47,7 +47,7 @@
 
 ## 2. 界面套件：dsh-codex-ui
 
-**交付与装配。** 2.0.9 的 bundle patch 插入六行：`session-title`、`settings-skin`、`composer`、`sidebar`、`theme`、`main`。主入口用 Cordis effects 安装 observer 并注册 settings section；peer 声明 `>=0.2.0-rc.1 <0.3.0-0`，dev pin 在 rc.3。（`[SRC]`）
+**交付与装配。** 2.0.9 的 bundle patch 插入六行：`session-title`、`settings-skin`、`composer`、`sidebar`、`theme`、`main`。主入口用 Cordis effects 安装 observer 并注册 settings section；`engines.dsh` 声明 `>=0.2.0-rc.1 <0.3.0-0`，dev 依赖钉在 rc.3。（`[SRC]`）
 
 **激活与清理。** 三条路径并不一致：`theme` 的探活失败分支会恢复 tracked body tokens、surface style、root `data-ds-theme-source` 和 colorScheme，但 observer 的最终 dispose 不做同一组恢复；`composer` 在异步 probe 之前就 activate，失败后再 return cleaners；`sidebar` 探活成功才 mount React root，依赖宿主 DOM selector/CSS，dispose 时卸 root/style。settings card 只在某个 `subPluginEnabled === false` 分支 `return null`，不能扩大成所有禁用都 0 DOM。（`[SRC]`）
 
@@ -57,7 +57,7 @@
 
 ## 3. 组合包：dsh-suite
 
-**交付与装配。** 0.9.1 的 `package.json` exact-pin 18 个 direct dependencies，`cordis.patch.yml` 插入 18 个成员 row 并给若干行写 defaults；`ptc-minimal.patch.yml` 是独立的 preset composition，不是第 19 个成员。patch comment 允许 profile user patch 用同 id 覆盖。（`[SRC]`）
+**交付与装配。** 0.9.1 的 `package.json` exact-pin 18 个 direct dependencies，`cordis.patch.yml` 插入 18 个成员 row 并给若干行写 defaults；`dsh.bundle.patch` 是**数组**，同时列 `cordis.patch.yml` 与 `ptc-minimal.patch.yml`，后者是独立的 preset composition，不是第 19 个成员。patch comment 允许 profile user patch 用同 id 覆盖。（`[SRC]`）
 
 **状态与所有权。** Suite patch 拥有 bundle-layer defaults，成员拥有实现；profile/home/CLI 的更高层可以覆盖。18 个 direct pin 都是 exact 版本，但 npm metadata 没有 consumer shrinkwrap/lock，所以 direct pin 不等于完整 transitive 复现。同 profile 再装独立成员或另一个聚合包写同 id，仍可能重复或由层序决定 effective config，没有 universal checker。（`[SRC]`）
 

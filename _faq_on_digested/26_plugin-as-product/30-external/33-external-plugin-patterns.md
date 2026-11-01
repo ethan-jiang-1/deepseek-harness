@@ -233,7 +233,7 @@
 
 ## 边界
 
-外部源码与 README 不得支撑 C 级结论；标签规则见 [40-evidence](../40-evidence/00-index.md)。
+外部源码与 README 不得支撑 C 级结论；标签规则见 [40-evidence](../40-evidence/00-index.md)。要复核版本 pin，用 [36 的 registry 复核命令](./36-profile-evidence-ledger.md#注册表复核2026-11-01)。
 
 - S：memory-evolve、project-context、graphmemory、workspace-memories、workspace-overlay（部分）、PromptRecall、credentials-mysql、custom-workspace。
 - R：kb-manager、mnemon、session-workspace-organizer、archive-retention、codex-sync、claude-move、agent-mailbox，以及 research-external 中的多数账号/UI 样本（`session_folders` 是 31/32 引用的目录样本，不属这 15 个案例）。
