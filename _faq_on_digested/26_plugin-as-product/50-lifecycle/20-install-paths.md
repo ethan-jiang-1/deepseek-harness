@@ -30,7 +30,7 @@
 
 对 web/Desktop，默认安装写应用内 Plugins 页；headless/SDK/ACP 没有 Plugins 页，用 CLI 显式 profile。CLI 不能管理 `desktop`。**不要在安装说明里只写 `--profile web` 而不提 Desktop**：Desktop 用户会装进 `profiles/web`，App 用 `profiles/desktop`，报告成功但界面没有。
 
-“装成功”有三个独立状态：pnpm exit 0 → dependency 写入 → 进 `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包，CLI 通道 exit 0、roster 不变、只给一句 stderr warning；应用内通道以 `not-bundle` 失败并回滚 manifest（实验见 [90](./90-evidence.md)）。
+“装成功”有三个独立状态（pnpm 成功 / dependency 写入 / 进入 `dsh.profile.bundles`），只有第三个让功能存在；状态判据的完整机制见 [18](../10-foundations/18-install-upgrade.md)。无 `dsh.bundle.patch` 的包，CLI 通道 exit 0、roster 不变、只给一句 stderr warning；应用内通道以 `not-bundle` 失败并回滚 manifest（实验见 [90](./90-evidence.md)）。
 
 ## Profile 初始化
 

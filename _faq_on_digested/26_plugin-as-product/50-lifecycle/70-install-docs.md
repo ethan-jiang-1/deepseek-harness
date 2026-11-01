@@ -116,7 +116,7 @@ dsh --profile <name> --port 0 --no-open
 <设置页 vs profile patch vs env；端口/TLS/代理/trusted-host；凭据>
 
 ## 升级
-<停/备份/更新/重启/回滚；bundle 变化要重启；Desktop drain>
+<停/备份/更新/重启；bundle 变化要重启；回退是重装旧版本；Desktop drain>
 
 ## 卸载与数据
 <删什么、留什么、$DSH_HOME 哪些共享>

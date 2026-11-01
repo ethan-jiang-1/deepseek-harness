@@ -83,7 +83,7 @@ exec dsh --profile acme --no-open \
 1. bundle 能在一个干净 profile 里 `add` → 重启 → dump 看到 row。
 2. `engines.dsh`/peer 与目标 dsh 版本一致；升级路径有说明。
 3. 安装器幂等，已有 profile/data 不被覆盖；`--from-default-profile` 只用于首次。
-4. 版本钉住（dsh/bundle/lock/digest），更新与回滚有 owner。
+4. 版本钉住（dsh/bundle/lock/digest）；更新有 owner，回退是把旧版本重装一次，没有命令级回滚。
 5. 签名/校验：Desktop 签名、npm provenance/checksum、镜像 digest 至少有一项。
 6. 离线/内网方案可复现；license/notice 随包。
 7. 安装/升级/卸载文档与发布物一起版本化。

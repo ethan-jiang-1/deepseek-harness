@@ -19,6 +19,18 @@
 
 一句话：**守 DSH 的约定 = 可迁移 + 可借力。** 这两件事是同一件事的两面。
 
+## 最短路径：一个插件从写到交付
+
+只做最小可用交付，五步：
+
+1. **打成 bundle**：`package.json` 写 `dsh.bundle.patch` 与 `engines.dsh`，补 `description` 与 `icon`。缺这一步，后面全部接不住。
+2. **写 README**：按 [75](./75-plugin-readme.md) 的骨架回答装 / 验 / 配 / 升 / 卸 / 数据六件事。
+3. **让人装得上**：安装说明默认一句「在 Plugins 页安装 X」；CLI 只作 `dsh web` 的自动化，并标注清楚。
+4. **让它不挑场景**：不假设 profile 名、不假设 Desktop、不自己造「首次运行」标记；默认值放 bundle patch。
+5. **交付前自检**：干净 `DSH_HOME` 装一遍 → `--dump-config` 看到自己的 row → 启动正常 → 卸载后数据说明与实际一致。
+
+五步不覆盖全部细节，但盖住了绝大多数插件出错的地方；其余按下面的总表查章节。
+
 ## 生命周期规矩总表
 
 左边一列是 DSH 只提供这一种的机制，右边是作者该做的事，以及不这么做要付的代价。
@@ -36,26 +48,26 @@
 | **卸载** | 只回收包与 patch 层，数据一律留下 | 自己文档化数据位置与清理方式 | 用户以为删了，其实还在 |
 | **文档** | Plugins 页读 `package.json` 与导出的 locale；README 有固定形 | 按骨架写，交代装 / 验 / 配 / 升 / 卸 / 数据 | 用户和 agent 都得读源码才知道怎么用 |
 
-后面各章就是这张表的展开：每条规矩一行，展开成一节的机制、反例与迁移后果。
+这张表是索引，不是展开：后面各章展开其中七段。另三段的**机制**归 `10-foundations`，本篇只给做法、不重写它们——profile 首建与「装成功」的三个状态见 [18](../10-foundations/18-install-upgrade.md)，存储版本、接受集与迁移剧本见 [12](../10-foundations/12-state-homes.md)，卸载后各类数据的 owner 见 [18](../10-foundations/18-install-upgrade.md) 的卸载与保留一节。
 
 读法：各章里的「产品」指**把这些插件交付出去的那一方**。如果你一个人写一个插件、自己发布，你就是那一方——章节没有换一套概念，只是换了一个称呼。
 
-## 三条轴
+## 范围与相邻章节
 
-1. **安装**：dsh 运行时从哪来（npm、官方 Desktop、Python wheel、源码），profile 怎么创建，bundle 怎么进入 profile。
-2. **启动**：named profile 怎么组合（模板、bundle 顺序、patch），用哪个 shipped surface（Web、headless、SDK、ACP、TUI）。
-3. **所有权**：profile、home、端口/token、构建产物、设置、更新、签名、单实例、卸载分别归谁。
+**范围。** 只采用 DSH 约定内的分发、安装、初始化、配置、启动、更新与卸载。不研究、不对比、不教程化：新 bin、自建 Tauri/Electron/托盘、发布 profile、wildcard bind。替换 `web-startup` 是约定内的 provider 替换（disable + insert），但必须重实现全部 web flags；见 [40](./40-profile-integration.md)。
 
-三条轴之外，[60](./60-packaging.md) 讲分发/打包/签名/离线，[70](./70-install-docs.md) 讲产品安装手册怎么写，[75](./75-plugin-readme.md) 讲**单个插件的 README 与安装说明**怎么写。
+| 想要 | 去哪 |
+|---|---|
+| 三轴模型、所有权表、受支持与禁止的边界 | [10](./10-model.md) |
+| 装 / 起 / 配 / 首启的阶段判据（外部参考层，15 张样本） | [37](../30-external/37-lifecycle-stages.md) |
+| 官方发布物只有 Desktop 与 CLI/Web 两份 | [23](../../23_standalone-vs-web-release-forms/answer.md) |
+| profile 产品形态与装配状态 | [34](../30-external/34-profile-product-forms.md) · [35](../30-external/35-profile-assembly-ownership.md) |
+| 从 profile 到产品工作流 | [90](../90-advisor/00-index.md) |
 
-**范围。** 只采用 DSH 约定内的分发/安装/启动/配置。不研究、不对比、不教程化：新 bin、自建 Tauri/Electron/托盘、发布 profile、wildcard bind。替换 `web-startup` 是约定内的 provider 替换（disable + insert），但必须重实现全部 web flags；见 [40](./40-profile-integration.md)。
+## 总表之外，几条最常踩的
 
-[18](../10-foundations/18-install-upgrade.md) 讲 DSH 的安装/升级/卸载语义，[37](../30-external/37-lifecycle-stages.md) 给装/起/配/首启的阶段判据，[23](../../23_standalone-vs-web-release-forms/answer.md) 讲官方只有 Desktop 与 CLI/Web 两份发布物，[34](../30-external/34-profile-product-forms.md)/[35](../30-external/35-profile-assembly-ownership.md) 讲 profile 产品形态与装配状态，[90](../90-advisor/00-index.md) 是从 profile 到产品工作流。本目录补的是"交付与启动"这一段。
+总表已经覆盖的不再重复；下面这些是它放不进去的坑。
 
-## 先给结论
-
-- **应用内 Plugins 页是唯一跨面安装路径**：`dsh web` 与 Desktop 用同一句；CLI `--profile` 是面绑定（可管理 web/headless/sdk 等，不能 `desktop`），面向 GUI 的安装说明默认 Plugins 页，CLI 仅 web 自动化。
-- **受支持的 Node 应用启动方式只有一种：named `dsh` profile。** `web`、`headless`、`sdk`、`sdk-minimal`、`acp` 是 shipped profiles；自定义组合是 profile + 有序 patch，不是另一个可执行文件。外层最多是一个薄 bootstrap，最终 `exec dsh --profile <name>`。
 - **安装的自由度主要在"谁提供 dsh 运行时"和"profile 怎么初始化"**：npm 全局、Desktop 自带运行时、Python wheel、源码树，四种 runtime 来源对应不同的更新/签名/隔离责任；容器/镜像属于部署包装，不算第五种来源。
 - **设置的灵活性在层级，不在开关数量**：bundle patch → profile patch → home patch → CLI `--patch` → app args/env → 客户端状态/Desktop shell 设置。最容易踩的两个坑是"整份 config 被替换"和"字面值让 app 参数失效"。
 - **产品拥有 bundle、默认值与文档；只有 shell/自托管才拥有安装器。** 不拥有 launcher、profile 写者或第二套更新。同一 profile 的并发写、两个更新器是主要故障源。
@@ -79,6 +91,8 @@
 | [80 决策](./80-decision.md) | 模板 × bundle × 设置矩阵、检查清单、失败模式 |
 | [90 证据](./90-evidence.md) | DSH 源码/docs、隔离 profile 实验与证据等级 |
 
+第一次写插件：走上面的最短路径，再读 [75](./75-plugin-readme.md) 与 [20](./20-install-paths.md)。要把整台产品交出去：加读 [60](./60-packaging.md) 与 [70](./70-install-docs.md)。只想知道某个坑怎么来的：[90](./90-evidence.md) 有 34 条隔离实验。
+
 ## 证据口径
 
 - **C**：当前 DSH docs/types/implementation（CLI reference、Desktop README、app-boot、web bundle、SDK/ACP、architecture）。
@@ -89,7 +103,7 @@
 
 ## 边界
 
-- 只覆盖 DSH 约定内的安装、启动、设置与分发；不设计新 bin、第二层 launcher/桌面壳、发布 profile 目录或 wildcard bind。
+- 只覆盖 DSH 约定内的分发、安装、初始化、配置、启动、更新与卸载；不设计新 bin、第二层 launcher/桌面壳、发布 profile 目录或 wildcard bind。
 - 实验只在 macOS、本仓库 checkout 与 `mktemp -d` 的隔离 home 上做；Windows/Linux 路径、Desktop 与安装器没有跑。
 - 34–37 的外部 profile 产品只作对照，不是依赖背书；具体 package 采用前另核兼容、license 与数据生命周期。
 - 应用内 Plugins 页的 Desktop 侧行为来自 docs 与源码阅读，本机没有 Desktop，所以那部分是 C 不是 T。
