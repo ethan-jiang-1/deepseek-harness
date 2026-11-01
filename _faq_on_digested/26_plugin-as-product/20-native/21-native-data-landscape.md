@@ -66,7 +66,7 @@
 | **组合/设置** | PROFILES、PROFILE-NM、SETTINGS-LEGACY | profile + 全局设置 | N1 | profile | 永久 | 迁移一次性；patch pin 字段；无跨 profile |
 | **秘密** | CREDS、CREDS-BAK、ENV-USER | 全局设置（凭据） | N1 | provider | 永久 | 同 uid 可读；备份含历史值 |
 | **home 外临时** | SPILL、QIDX（默认 `:memory:`）、workspace-changes temp | —（派生） | N1 | 会话/可重建 | 进程/启动 sweep | 跨进程不可见；长跑不 sweep |
-| **无主区** | PLUGIN-DATA、`auto-approval-llm/`、`clutch-dsh-worktree/`、`company-workspace/` | 账本（自造） | GAP | 插件自述 | 插件自述 | 无契约/配额/清理/卸载 |
+| **无主区** | PLUGIN-DATA、`auto-approval-llm/`、`clutch-dsh-worktree/`、`company-workspace/`（后三项是本机观测到的第三方目录） | 账本（自造） | GAP | 插件自述 | 插件自述 | 无契约/配额/清理/卸载 |
 
 ## 表 L3：原生模式 × 成熟度
 
@@ -82,7 +82,7 @@
 | 变更摘要 | `workspaceChanges` | N1 | Host 内存；会话销毁即止 |
 | 跨会话读取 | `ctx.sessionQuery` | N1 | live-preferred；FTS 可选 provider |
 | 客户端可见投影 | `SessionProjectionMap` | N0 | 标题/模型/preset/subagent |
-| 插件私有会话记录 | `appendPluginRecord` | N2 | 只限 experimental；不承诺迁移 |
+| 插件私有会话记录 | `appendPluginRecord`（core） | N0 + 调用者限制 | 仓库只允许 experimental 包的生产代码调用；不承诺迁移 |
 | 插件 per-plugin store | claude-code-mods `$.store` | N2 | bridge 内部，4 MiB；不是通用 API |
 
 ## 表 L4：原生时间线（压缩）

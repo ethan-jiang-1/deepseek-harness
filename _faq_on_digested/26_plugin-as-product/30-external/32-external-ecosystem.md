@@ -4,7 +4,7 @@
 
 > **角色：外部参考层（E1/E2）。** 本篇只看核心仓之外的 DSH 生态，并且只挑已经走进产品领域的插件：它们自己定义了产品级状态（项目绑定、设置、生命周期、迁移、团队凭据、协作），而不只是给已有 composition 加一个工具。外部指 DSH 生态的外围，不是其他产品的插件体系。
 
-DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端五个家）；外部插件在补的往往是产品层：项目怎么绑定、设置放哪、数据跟谁走、卸载后留什么。本篇从 15 个深读样本里挑出八组可以借鉴的数据结构；[31](./31-external-community-patterns.md) 给单插件的九个维度和十八种手法，[33](./33-external-plugin-patterns.md) 给逐个案例与证据，[34](./34-profile-product-forms.md) 看 profile 的交付形态，[35](./35-profile-assembly-ownership.md) 看装配状态与所有权，[37](./37-lifecycle-stages.md) 看装/起/配/首启的阶段判据。
+DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端五个家）；外部插件在补的往往是产品层：项目怎么绑定、设置放哪、数据跟谁走、卸载后留什么。本篇从 15 个深读样本与目录样本里挑出八组可以借鉴的数据结构（其中 beauty-persist、codex-keychain、session_folders、insights 属目录/平台样本，不在那 15 个深读里）；[31](./31-external-community-patterns.md) 给单插件的九个维度和十八种手法，[33](./33-external-plugin-patterns.md) 给逐个案例与证据，[34](./34-profile-product-forms.md) 看 profile 的交付形态，[35](./35-profile-assembly-ownership.md) 看装配状态与所有权，[37](./37-lifecycle-stages.md) 看装/起/配/首启的阶段判据。
 
 **口径。** 深读 2026-10-27：97 个候选（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55）里选 15 个，读过源码或 README（S/R）。目录 2026-10-24：awesome-dsh-plugin 6704 条元数据，只读作者描述（R），没有安装。样本不是 census，U = 未确认。
 
@@ -112,7 +112,7 @@ credentials-mysql 证明凭据 provider 可以换：外部 DB、schema 版本 fa
 
 ## 边界
 
-- 本篇挑的是产品型样例，不覆盖 15 个深读里的全部插件；逐案例见 [33](./33-external-plugin-patterns.md)。
+- 本篇挑的是产品型样例，不覆盖 15 个深读里的全部插件，另引用了目录样本；逐案例见 [33](./33-external-plugin-patterns.md)。
 - 不评价具体 package 的安装性或运行质量；依赖决定见 [92](../90-advisor/92-native-reference-architectures.md)。
 - 其他产品的插件生态不在本篇范围；它们的宿主模型、生命周期和 API 不能直接迁移成 DSH 数据卡。
 - 外部源码与 README 不得支撑 C 级结论（标签规则见 [40-evidence](../40-evidence/00-index.md)）。

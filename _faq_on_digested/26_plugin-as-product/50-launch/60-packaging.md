@@ -11,7 +11,7 @@ FAQ 24 已经拆过包的角色：**bundle 是唯一可安装并自动启用的�
 | 官方 Desktop | Electron 壳 + 内置 dsh + profile | 安装包 | 应用 feed / 安装器 | 平台签名/公证 |
 | 容器镜像 | dsh + profile + entrypoint | `docker pull/run` | tag/digest | 镜像签名/digest |
 | Python wheel | dsh CLI + SDK runtime | `pip install` | wheel 版本 | wheel hash |
-| 离线 tarball | npm tgz / 镜像 / profile 快照 | 本地 add / load | 手动 | checksum |
+| 离线 tarball | npm tgz / 离线 registry 镜像 | 本地 `dsh plugin add` | 手动 | checksum |
 | 目录/市场索引 | 元数据，不含安装 | 不安装 | 索引刷新 | 不适用 |
 
 ## Bundle 打包的最小要求

@@ -98,7 +98,7 @@
 ## 还没答案的问题
 
 - client 启动插件如何拿到 Host 创建的 sessionId：自己调 remote `session.create`，还是 Host 暴露 ID？
-- 替换 `web-startup` 后，`--tls/--public-url/--trusted-host` 等 web flag 需要产品重实现到什么程度？
+- 替换 `web-startup` 后，shipped 侧新增或改义一个 web flag 时产品怎么发现（目前只能升级时人工比对，没有运行时信号）？
 - 自定义 TUI terminal app bundle 需要哪些 profile/参数契约？
 - TUI 的官方边界：CLI 示例有 `tui` profile，但没有 shipped terminal app。
 - 应用内安装在 Desktop 上的 `application`/`warnings`/`nextStep` 实际取值；本机没有 Desktop。

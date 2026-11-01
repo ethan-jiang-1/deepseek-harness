@@ -148,7 +148,7 @@
 
 **决定**：`SessionEventMap` 第三方不要新增；未知事件只有 `ignorable: true` 才能读。
 
-`appendPluginRecord()` 的 `plugin:` 记录只允许 `packages/experimental/` 调用；`claude-code-mods` 的 `$.store` 是 experimental bridge 里的 per-plugin 4 MiB domain。**C/H**
+`appendPluginRecord()` 在 core `@deepseek-ai/dsh-session`，但仓库的 lint gate 只放行 `packages/experimental/` 下的生产调用；`claude-code-mods` 的 `$.store` 是 experimental bridge 里的 per-plugin 4 MiB domain。**C/H**
 
 **为什么**：第三方事件类型会变成 required-on-read 的发布合同；`plugin:` 记录在格式迁移里只尽力保留，发布包不能把状态放进去；通用插件数据根没有被设计，因为 storage domain 已经能承载，但缺 scope/quota/cleanup 契约。**H/C**
 

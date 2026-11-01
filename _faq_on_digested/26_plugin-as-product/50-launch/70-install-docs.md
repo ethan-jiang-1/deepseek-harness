@@ -5,7 +5,7 @@
 一份能用的安装/使用说明至少覆盖十段：
 
 1. **这是什么**：产品名、surface（Web/Desktop/CLI/SDK）、适用范围、不做什么。
-2. **前置条件**：OS/架构、Node/pnpm 版本、磁盘/内存、网络、端口、凭据、是否需要管理员权限；写清支持的 dsh 版本范围。engines/peer 不匹配时安装会在写入前拒绝；不要默认让用户加 exemption，确需时给 exact package + dsh version 的命令和风险说明。
+2. **前置条件**：OS/架构、Node/pnpm 版本、磁盘/内存、网络、端口、凭据、是否需要管理员权限；写清支持的 dsh 版本范围。engines/peer 不匹配时安装会在写入 package 依赖前拒绝（profile 脚手架可能已初始化）；不要默认让用户加 exemption，确需时给 exact package + dsh version 的命令和风险说明。
 3. **选运行时**：npm 全局 / 官方 Desktop / wheel / 源码；容器是 `dsh web` 的部署包装，单独写。
 4. **安装**：默认一句“在 Plugins 页安装 X（web 与 Desktop 通用）”；CLI 只作 web 自动化，并紧跟“仅 `dsh web`”。说明会创建/修改什么（profile、home、依赖），给出预期输出。
 5. **首次启动**：profile 名、端口、token URL、浏览器/SSH、`--no-open`；Desktop 的欢迎页/登录。

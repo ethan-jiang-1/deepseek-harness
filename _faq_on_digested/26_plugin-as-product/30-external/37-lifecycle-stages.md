@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-> **角色：外部参考层（E1/E2），按阶段而不是按产品切。** 来源是 2026-11-01 的 `leverage-lifecycle`：4 个阶段、15 张阶段样本卡 + 1 张反例、8 条硬结论、九类载体与一份发布前检查表。本仓库**没有安装或运行这些样本**；行为结论按 C/T/S/R 读，样本事实按包清单/README 读。
+> **角色：外部参考层（E1/E2），按阶段而不是按产品切。** 来源是 2026-11-01 的 `leverage-lifecycle`：4 个阶段、15 张阶段样本卡 + 1 张反例、8 条硬结论、六类启动载体与一份发布前检查表。本仓库**没有安装或运行这些样本**；行为结论按 C/T/S/R 读，样本事实按包清单/README 读。
 
 [34](./34-profile-product-forms.md) 回答“装成什么形态”，[35](./35-profile-assembly-ownership.md) 回答“装配状态归谁”，[36](./36-profile-evidence-ledger.md) 是逐样本台账。本篇补的是横切的一段：**一个插件从被拿到、到第一次成功，四个阶段分别由谁做、做在哪一层、失败长什么样**。
 
@@ -14,7 +14,7 @@
 
 | 阶段 | 原生给什么 | 产品要决定 | 失败态 |
 |---|---|---|---|
-| ① 装 | 应用内 Plugins 页（当前 profile）/ CLI（`--profile`，web 自动化）/ Electron carrier | 声明 `dsh.bundle.patch`；写“Plugins 页装 X”；CLI 标“仅 dsh web” | exit 0 但 roster 不变；Desktop 装进 `profiles/web` |
+| ① 装 | 应用内 Plugins 页（当前 profile）/ CLI（`--profile`，web 自动化）/ Electron carrier | 声明 `dsh.bundle.patch`；写“Plugins 页装 X”；CLI 标“仅 dsh web” | CLI：exit 0 但 roster 不变；应用内：`not-bundle`；Desktop 装进 `profiles/web` |
 | ② 起 | profile 四件套 + 有序 patch；CLI 装完宿主不知道 | 按“改了哪一侧”写重启/刷新/HMR；真启动验收 | row pending / import warning；应用能开但功能没有 |
 | ③ 配 | bundle/profile/home/`--patch` 四层；settings/自有文件/localStorage | 默认值放 bundle；跨 profile 才用 home/自有文件 | home 供货 → `ERR_MODULE_NOT_FOUND`；localStorage 当配置 |
 | ④ 首启 | token URL → 303 + cookie → SPA；无向导 | 自己回答首屏；可推迟；Desktop 上成立 | 依赖 `welcome-notice`；阻塞式向导无出口 |
@@ -46,11 +46,11 @@
 | dependency 写入 | `profiles/<p>/package.json.dependencies` |
 | 成为 profile 层 | `dsh.profile.bundles` 含该 bundle |
 
-**只有第三个让功能存在。** 没声明 `dsh.bundle.patch` 的包：exit 0、dependency 写入、roster 不变、只给一句 stderr `declares no dsh.bundle — installed as a plain dependency, not a profile layer`。本仓库隔离实测与之一致（T，见 [50/90](../50-launch/90-evidence.md)）。
+**只有第三个让功能存在。** 没声明 `dsh.bundle.patch` 的包，CLI 通道是 exit 0、dependency 写入、roster 不变、只给一句 stderr `declares no dsh.bundle — installed as a plain dependency, not a profile layer`；应用内通道则先装后判，以 `not-bundle` 失败并回滚 `package.json` 与 lockfile。本仓库的隔离实测是 CLI 通道（T，见 [50/90](../50-launch/90-evidence.md)）。
 
 **patch 语义**：新增 row 用 `insert:`；裸 `- id` 是 override target，找不到目标只报 `entry "..." not found`，bundle 仍在 roster 但插件不跑。
 
-**版本门**：`engines.dsh` 是地板，`dsh.compatibility.dshReleases` 是逐版本枚举；两条宿主线各自有门，只写一个会在另一条线上失效。安装期不匹配会列出 `incompatible` 并给 exact-version exemption 命令；exemption 是风险接受，不是兼容证明。
+**版本门**：`engines.dsh` 存在时**单独裁决**，忽略 peer；未写时才检查 `@deepseek-ai/dsh` 与 `@deepseek-ai/dsh-*` 的 peerDependencies（`@deepseek-ai/cordis` 不参与；第三方自造的 `dsh.compatibility` 矩阵 DSH 不读，见 [FAQ 24 §9](../../24_plugin-publish-and-agent-data-planes/06-skeleton-and-checklists.md#9-旧写法迁移)）。安装期不匹配会在写入 package 依赖前拒绝并列出 `incompatible`，同时给出 exact-version exemption 命令；exemption 写进该 profile 的 `compatibility.json`，是风险接受，不是兼容证明。
 
 **样本的四条装阶段教训**：
 
@@ -67,13 +67,13 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 
 **补丁叠加顺序**（低 → 高）：bundle 层（按 roster 顺序）→ profile patch → home patch → `--patch`（按 argv）→ telemetry 开关。根 `cordis.yml` 每次启动会被重写成空列表，避免合成树重复插入。
 
-**失败分三级**，别混：
+**失败分三级**（row 级含两种状态），别混：
 
 | 级 | 表现 | 进程 |
 |---|---|---|
 | bundle 级 | `skipping profile bundle "<pkg>": <reason>` | 活 |
-| row 级 pending | `pending (waiting for service: <name>)`，既未激活也未失败 | 活 |
-| row 级 import 失败 | `warning: N entry did not activate` + import 错误 | 活 |
+| row 级 · pending | `pending (waiting for service: <name>)`，既未激活也未失败 | 活 |
+| row 级 · import 失败 | `warning: N entry did not activate` + import 错误 | 活 |
 | 整体 | 组合失败抛错 | 死 |
 
 **三种“生效”**：改宿主行 → 重启；只换客户端模块 → 刷新；宿主自己应用 → HMR。CLI 安装是另一个进程，**宿主不知道**；不重启就是没生效，且没有提示。应用内装才会返回 `restart-required`。
@@ -109,7 +109,7 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 
 ## ④ 首启：令牌门之后是空界面
 
-原生首启只有一道令牌门：`dsh web` 打印 token URL；无 token 401；带 token 303 + 30 天 HttpOnly cookie → SPA。**没有欢迎页、没有向导、没有“装什么”的推荐。** 首启账本 `settings.onboarding` 只是设置面板里的一串 step，一次只挂一个，且 `welcome-notice` 在 Desktop 不注册。
+原生首启只有一道令牌门：`dsh web` 打印 token URL；无 token 且无有效 cookie 时 401；带 token 则 303 + 30 天 HttpOnly cookie → SPA，此后 cookie 本身即可进。**没有欢迎页、没有向导、没有“装什么”的推荐。** 首启账本 `settings.onboarding` 只是设置面板里的一串 step，一次只挂一个，且 `welcome-notice` 在 Desktop 不注册。
 
 因此“第一次看到什么”由已安装的 bundle 与客户端插件决定。**六类启动载体**（都在 bundle 内，不换入口）：
 
@@ -174,12 +174,19 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 4. 默认值在 bundle patch；跨 profile 才用 home/自有文件；home 不供货。
 5. 首启可推迟；不依赖 `welcome-notice`；Desktop 上有替代路径。
 6. `npm pack --dry-run` 清单包含 README 里提到的所有脚本/资源。
-7. 版本门两处都写；`engines.dsh` + `dsh.compatibility.dshReleases`。
+7. 版本门写一处就够：`engines.dsh` 单独裁决，未写时才查 DSH peer；豁免只对 exact package + dsh version。
 8. 升级先升版本号再打包；同名同版本重装不会刷新。
 
 ## 与 34/35/36/50 的边界
 
 - [34](./34-profile-product-forms.md)：八种产品形态；本篇不重复形态，只给阶段判据。
 - [35](./35-profile-assembly-ownership.md)：四层状态、身份、更新、接管；本篇补安装三成功、失败三级、home 不能供货。
-- [36](./36-profile-evidence-ledger.md)：产品形态样本的证据；本篇的 15 张阶段样本 + 1 张反例另列台账。
+- [36](./36-profile-evidence-ledger.md)：34 的八种形态样本的证据台账；本篇的 15 张阶段样本 + 1 张反例按行记在下方阶段样本表里，不并入 36。
 - [50](../50-launch/00-index.md)：DSH 约定内的安装/启动/设置/分发手册；本篇是外部参考层的阶段判据，不替代 50 的命令与实验。
+
+## 边界
+
+- 四阶段的 C 侧结论来自 DSH 源码与 docs；S/R 侧来自样本的包清单、源码与 README。本篇不给 DSH 规定安装流程，只给判据。
+- 15 张阶段样本 + 1 张反例在本仓库**没有安装、没有运行**；原册记录的隔离实测没有重跑。
+- 判据面向“一套 bundle 装进 profile”的产品；单插件、终端 surface、自带运行时的独立应用不在这四阶段的覆盖内。
+- 样本的版本、下载量、维护状态会漂移；引用时回到各自仓库当前版本。

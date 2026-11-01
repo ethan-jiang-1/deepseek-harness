@@ -28,7 +28,7 @@ Web 的 `ui-workspace` 在 Workspace 与 Session 列表都就绪后检查是否�
 安装完成不等于“第一次打开有人在”。DSH 原生首启只有一道令牌门：
 
 - `dsh web` 启动后打印 `?token=…` URL；
-- 无 token 访问返回 401；带 token 返回 303 + 30 天 HttpOnly cookie，再进 SPA；
+- 无 token 且没有有效 cookie 时返回 401；带 token 返回 303 + 30 天 HttpOnly cookie，再进 SPA（此后 cookie 本身即可访问）；
 - **没有欢迎页、没有向导、没有“装什么”的推荐**。首屏只有 `__DSH_MODELS_ONBOARDING__` 这类标记。
 
 `settings.onboarding` 是设置面板里的 step 账本：按 `order` 投影、一次只挂一个 step；宿主自带 `welcome-notice` 与 `deepseek-official`，但 **`welcome-notice` 在 Desktop 不注册**。它不保证抢到首屏。所以“第一次看到什么”必须由产品的 bundle/客户端插件回答；载体与代价见 [37](../30-external/37-lifecycle-stages.md) 与 [50/40](../50-launch/40-profile-integration.md)。
@@ -37,7 +37,7 @@ Web 的 `ui-workspace` 在 Workspace 与 Session 列表都就绪后检查是否�
 
 ## Workspace 何时需要登记
 
-当产品使用 DSH Web 的 Workspace 列表、会话分组或 Workspace operation 时，使用现有目录选择流程登记路径。`workspace.create({ path })` 要求目录已存在且是绝对路径；它规范化路径并保存 registration，不创建用户项目目录。
+当产品使用 DSH Web 的 Workspace 列表、会话分组或 Workspace operation 时，使用现有目录选择流程登记路径。远程 controller 的 `workspace.create({ path })` 要求目录已存在且是绝对路径；Host 侧服务是位置参数 `workspaceRegistry.create(path, title?)`。两者都规范化路径并保存 registration，不创建用户项目目录。
 
 若产品只需要一个 Session 在指定项目目录工作，可创建 `session.create({ cwd })` 而不注册 DSH Workspace。若产品工具自己选择项目目录，它可以从当前 Session、显式产品记录或用户输入确定项目身份，但这属于产品设计，不是 Workspace registry 提供的项目选择器。
 

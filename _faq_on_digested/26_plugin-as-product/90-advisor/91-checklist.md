@@ -101,3 +101,9 @@
 | 把 Session `header.cwd` 当当前工作目录 | 单独记录 `working_directory`；改变它不会改 sandbox roots |
 | 把 profile 名当 `$DSH_HOME` 隔离标识 | 使用独立 home，或逐个配置 provider path |
 | 认为 bundle removal 会删除业务数据 | 为产品自有数据说明迁移、保留和清理方式 |
+
+## 边界
+
+- 本页是检查表，不是 API 合同；每项的机制与出处见对应章节与 [reference](../40-evidence/reference.md)。
+- 填完数据卡只说明责任写清楚了，不说明实现正确；隔离范围还要按 [92](./92-native-reference-architectures.md) 逐 provider 核对。
+- 检查项按产品形态取舍：单插件不需要“四层状态”，没有聚合/接管/进口形态的产品可以跳过对应小节。

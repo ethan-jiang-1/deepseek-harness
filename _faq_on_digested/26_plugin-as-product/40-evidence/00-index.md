@@ -9,7 +9,7 @@
 | [reference.md](./reference.md) | API 速查、`$DSH_HOME` 目录、证据薄弱处、外部来源 |
 | [research-native.md](./research-native.md) | DSH 原生 33 个数据落点、44 事件清单、关键决定 |
 | [research-external.md](./research-external.md) | 外部插件约 97 个候选、15 个深读的样本与来源 |
-| [quality-review.md](./quality-review.md) | 本轮结构/一致性审计；最近复核 2026-11-01，不替代 API 证据 |
+| [quality-review.md](./quality-review.md) | 审计历史、仍开放的缺口与仍然生效的约定；不是当前行为的 owner |
 | [experiments/](./experiments/00-index.md) | 启动竞态实验（01 未执行）、源码核验（02/03）与 CLI profile composition probe（05） |
 | [50/90](../50-launch/90-evidence.md) | named profile 安装/启动/设置/分发实验：patch insert、web-startup 替换、workspace/session、engines、并发替换 |
 | [37 lifecycle](../30-external/37-lifecycle-stages.md) | 装/起/配/首启判据、15 张生命周期样本与 web/Desktop 分叉 |
@@ -24,7 +24,7 @@
 
 1. 先看 [reference](./reference.md) 的“证据薄弱处”，知道哪些是 C/H，哪些是 S/R/U。
 2. 原生结论查 [research-native](./research-native.md)；外部结论查 [research-external](./research-external.md)。
-3. 想知道“这轮改了什么、还漏什么”，看 [quality-review](./quality-review.md)；它是审计快照，不替代 reference。
+3. 想知道“哪轮改了什么、还漏什么”，看 [quality-review](./quality-review.md) 的缺口表；它是审计历史，不替代 reference。
 4. 需要追溯早期方法时看 git 历史；本目录不再保留 v1/v2 底稿。
 
 ## 标签

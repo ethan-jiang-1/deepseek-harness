@@ -58,7 +58,7 @@ DSH Web Client 在 Workspace 与 Session 列表都就绪后，仅当 Workspace r
 
 Web 用户也可通过 Workspace picker 选择已有目录；native 与 browse capabilities 的差异见 [16](./10-foundations/16-startup-resolution.md)。产品自建目录选择和保存由产品维护，不是 DSH 服务。
 
-但安装/首启还有一道更前面的门：`dsh web` 打印 token URL；无 token 401，带 token 303 + 30 天 HttpOnly cookie 后进 SPA。原生**没有欢迎页/向导**；`settings.onboarding` 只是设置面板里一次一个的 step，且 `welcome-notice` 在 Desktop 不注册。第一次看到什么由产品的 bundle/客户端插件回答，见 [37](./30-external/37-lifecycle-stages.md)。
+但安装/首启还有一道更前面的门：`dsh web` 打印 token URL；无 token 且无有效 cookie 时 401，带 token 则 303 + 30 天 HttpOnly cookie 后进 SPA。原生**没有欢迎页/向导**；`settings.onboarding` 只是设置面板里一次一个的 step，且 `welcome-notice` 在 Desktop 不注册。第一次看到什么由产品的 bundle/客户端插件回答，见 [37](./30-external/37-lifecycle-stages.md)。
 
 选择目录后，DSH Web 的 Workspace domain 写入 `$DSH_HOME/storages/workspace.json`；Session 首次打开时以不可变 `header.cwd` 保存初始目录，Web Client 将当前 Session selection 写入该 browser origin 的 local storage。此流程不写产品 profile patch，也不会仅因选择而在项目目录生成产品 marker 或索引。若产品另写 settings 文件，应列入备份、恢复和卸载说明。
 
@@ -72,7 +72,7 @@ DSH 配置 patch 顺序为 **ordered bundle patches → profile patch → home p
 
 安装默认走**应用内 Plugins 页**：`dsh web` 与 Desktop 用同一句话，因为该服务没有 profile 参数。CLI `dsh plugin --profile <p>` 是面绑定：可管理 web/headless/sdk 等显式 profile，**不能** `desktop`；面向 GUI 的 CLI 只作 web 自动化，必须标“仅 `dsh web`”。
 
-“装成功”有三个状态：pnpm exit 0 → dependency 写入 → 进 `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包 exit 0、roster 不变，只给 warning。CLI 装完宿主不知道，必须重启；应用内装才可能返回 `restart-required`。
+“装成功”有三个状态：pnpm exit 0 → dependency 写入 → 进 `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包在两条通道结果不同：CLI exit 0、roster 不变、只给 warning；应用内则以 `not-bundle` 失败并回滚 manifest。CLI 装完宿主不知道，必须重启；应用内装才可能返回 `restart-required`。
 
 新建 Web 产品 profile 时，若要 CLI 自动化，可从 shipped Web template 初始化，再加入产品 bundle；GUI 用户不需要这一步。`dsh plugin` 不返回 Plugin Manager 的 `ChangeResult.application`；membership 变更后要重启 profile。
 

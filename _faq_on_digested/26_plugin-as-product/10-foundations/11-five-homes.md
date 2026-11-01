@@ -68,7 +68,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 
 1. **不要把 TypeScript declaration merging 当作 released event compatibility mechanism。** `SessionEventMap` 在类型层可扩展，但 independently released plugin event 若未被 DSH reader、persistence validator 和 compatibility flow 识别，会造成旧 reader 拒绝重开 Session。新增持久 event 应与 DSH session-format owner 协调 writer/reader/catalog/migration；不能把声明合并本身描述为第三方保证。
 2. **模型可见输入应优先使用已有的消息通道。** `agent.inject()` 会记录带来源的 `user/message`；模型可见事实仍必须能从日志重建。
-3. **会话级、模型不可见的插件记录**：DSH experimental package 有受仓库限制的 `appendPluginRecord()`；外部插件不应依赖这个 experimental API。外部 plugin 可以从已有事件重算，或把带 SessionId key 的状态放入 domain，并自己维护 retention。
+3. **会话级、模型不可见的插件记录**：DSH core 提供 `appendPluginRecord()`，但仓库的 lint gate（`scripts/verify-plugin-record-callers.ts`）只允许 `packages/experimental/` 下的生产代码调用；外部插件不应依赖它。外部 plugin 可以从已有事件重算，或把带 SessionId key 的状态放入 domain，并自己维护 retention。
 
 插件私有的 Host 账本不要塞进会话日志：它会增加历史负担，并把内部 schema 变为 Session compatibility 责任。
 
@@ -87,7 +87,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 **权威**：没有。它从上面几个家算出来，丢了能重算。
 
 - 会话投影（`ctx.sessionProjections`）：纯同步 fold，从日志推导，带 `stateSchema`；持久缓存（`session_projcache`）只是为了加速。
-- 跨会话读取（`ctx.sessionQuery`）：live-preferred 的列表、精确读、过滤、关系追踪；挂 SQLite provider 时还有全文检索。它的索引是派生，不是权威。
+- 跨会话读取（`ctx.sessionQuery`）：live-preferred 的列表、精确读、过滤、关系追踪；挂 SQLite provider 并把它配成 `openAt: first-search|startup` 后才有全文检索（shipped base 默认 `openAt: never`，只挂载不搜索）。它的索引是派生，不是权威。
 - 文件索引、向量、摘要缓存：从工作区内容算出来，必须能用内容哈希/版本失效。
 - 域存储的 `layout: 'per-record'` + `invalidRecords: 'backup-and-skip'` 是给“可丢弃的派生数据”准备的：坏一条就挪走跳过，不拖垮整个域。注意它**只对能 `backupRecord` 的后端有效**（JSON per-record）；`single` 和 SQLite 没有可挪走的单条文档，会回退到拒绝打开。
 

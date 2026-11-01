@@ -14,14 +14,14 @@
 - DSH Web 有自己的首用 Workspace；产品自建项目选择和数据存储由产品维护。
 - **应用内 Plugins 页是跨面安装入口**：`dsh web` 与 Desktop 同一句；CLI `--profile` 仅 web，`desktop` 双门禁闭。
 - **bundle 在 roster ≠ patch 生效**：新增 row 必须 `insert:`；裸 `- id` 是 override target，找不到目标只报 `entry not found`，插件不会跑。
-- **web 的 app args 归 `web-startup`**：产品自定义 flag 需要替换 provider 并重实现全部 web flags；漏实现 `public-url/trusted-host/tls` 会静默退回 HTTP。
-- **session 创建与 UI 选中是两层**：Host `sessionController.create` 只创建/attach；全新客户端可能自动选“最新 blank”，返回用户保持 `dsh.sessions.current`；确定性要用 client `uiWorkspace.openSession`。
-- **版本门是安装前拒绝**：`engines.dsh`/peer 不匹配时 `nothing was installed`；exemption 只对 exact package + exact dsh version。
+- **web 的 app args 归 `web-startup`**：产品自定义 flag 需要替换 provider 并重实现全部 web flags；漏实现不会报错，只会静默丢掉该 flag 的语义——缺 TLS 即明文 listener，缺 `public-url` 只广告 listener origin，缺 `trusted-host` 则代理 authority 不被信任。
+- **session 创建与 UI 选中是两层**：Host `sessionController.create` 只创建/attach；全新客户端可能自动落到最近工作区的 blank，返回用户保持 `dsh.sessions.current`；确定性要用 client `uiWorkspace.openSession`。
+- **版本门在写入依赖前拒绝**：`engines.dsh`/peer 不匹配时 `nothing was installed`（profile 脚手架可能已初始化）；exemption 只对 exact package + exact dsh version。
 
 ## 按角色阅读
 
 - **普通 plugin 作者**：从 [91 数据卡](./90-advisor/91-checklist.md) 开始，按需查 [10–14](./10-foundations/10-taxonomy.md)、[31 社区做法](./30-external/31-external-community-patterns.md)/[32 数据设计](./30-external/32-external-ecosystem.md) 和 [92](./90-advisor/92-native-reference-architectures.md)。
-- **产品 profile 作者**：先查 [34 profile 形态](./30-external/34-profile-product-forms.md) 与 [35 装配所有权](./30-external/35-profile-assembly-ownership.md) 定发行形态，装/起/配/首启判据查 [37 生命周期](./30-external/37-lifecycle-stages.md)，安装/启动/分发查 [50 launch](./50-launch/00-index.md)；再走 [90 主线](./90-advisor/00-index.md) → [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)；交付前查 [91 数据卡/验收](./90-advisor/91-checklist.md)，证据查 [36 样本台账](./30-external/36-profile-evidence-ledger.md)，遇到存储取舍查 [92 参考矩阵](./90-advisor/92-native-reference-architectures.md)。
+- **产品 profile 作者**：先查 [34 profile 形态](./30-external/34-profile-product-forms.md) 与 [35 装配所有权](./30-external/35-profile-assembly-ownership.md) 定发行形态，装/起/配/首启判据查 [37 生命周期](./30-external/37-lifecycle-stages.md)，安装/启动/分发查 [50 launch](./50-launch/00-index.md)；再走 [90 主线](./90-advisor/00-index.md) → [93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)；交付前查 [91 数据卡/验收](./90-advisor/91-checklist.md)，34 的八样本证据查 [36 台账](./30-external/36-profile-evidence-ledger.md)、37 的 16 张阶段样本证据见该篇表格，遇到存储取舍查 [92 参考矩阵](./90-advisor/92-native-reference-architectures.md)。
 - **DSH 维护者**：读 [21 原生数据面](./20-native/21-native-data-landscape.md) 与 [22 历史](./20-native/22-native-data-history.md)；[31–37](./30-external/31-external-community-patterns.md) 是 DSH 外部生态研究（核心仓之外的插件与服务），不是 DSH API 合同。
 
 ## 章节地图
@@ -48,7 +48,7 @@
 | [33 外部插件](./30-external/33-external-plugin-patterns.md) | 15 个案例；具体依赖需单独审核 |
 | [34 profile 形态](./30-external/34-profile-product-forms.md) | 八种交付方式与逐卡机制 |
 | [35 装配所有权](./30-external/35-profile-assembly-ownership.md) | 四层状态、身份、更新、接管、进口、资产 |
-| [36 样本台账](./30-external/36-profile-evidence-ledger.md) | 逐样本证据、采用信号与未验证项 |
+| [36 样本台账](./30-external/36-profile-evidence-ledger.md) | 34 八样本的逐样本证据、采用信号与未验证项 |
 | [37 生命周期](./30-external/37-lifecycle-stages.md) | 装/起/配/首启、15 张阶段样本 + 反例、web/Desktop 分叉与发布判据 |
 | [50 安装启动](./50-launch/00-index.md) | named profile 安排、安装/启动/设置、分发打包与安装文档 |
 | [90 主线](./90-advisor/00-index.md) | Profile 文件、启动顺序、Kanban 运行和数据归属 |
@@ -60,9 +60,9 @@
 
 **T** 可复现实验 · **C** 当前 DSH docs/types/implementation · **H** 历史记录 · **P** 未实现提案 · **S** 第三方源码阅读 · **R** 第三方 README/作者声明 · **U** 未确认。S/R/U 不建立 DSH API 或外部依赖的兼容性保证。
 
-34–36 用 `[SRC]`/`[DSH]` 分别对应 S/C；`[TEST]`/`[CI]` 表示读过测试/CI 记录但未执行；`[RUN]` 表示本轮没有运行。
+34–36 用 `[SRC]`/`[DSH]` 分别对应 S/C；`[TEST]`/`[CI]` 表示读过测试/CI 记录但未执行；`[OBS]` 表示只读目录或注册表的普查记录；本轮没有 `[RUN]`（表示实际运行过）。
 
-Profile/template 的局部实验（CLI web 自动化；应用内安装未测）见 [05](./40-evidence/experiments/05-profile-bundle-install.md)；安装/启动/设置实验见 [50/90](./50-launch/90-evidence.md)。证据来源见 [reference](./40-evidence/reference.md)、[research-native](./40-evidence/research-native.md) 和 [research-external](./40-evidence/research-external.md)。[Quality review](./40-evidence/quality-review.md) 是历史审查记录，不是当前行为的 owner。
+Profile/template 的局部实验（CLI web 自动化；应用内安装未测）见 [05](./40-evidence/experiments/05-profile-bundle-install.md)；安装/启动/设置实验见 [50/90](./50-launch/90-evidence.md)。证据来源见 [reference](./40-evidence/reference.md)、[research-native](./40-evidence/research-native.md) 和 [research-external](./40-evidence/research-external.md)。[Quality review](./40-evidence/quality-review.md) 记审计历史与仍开放的缺口，不是当前行为的 owner。
 
 ## 范围
 

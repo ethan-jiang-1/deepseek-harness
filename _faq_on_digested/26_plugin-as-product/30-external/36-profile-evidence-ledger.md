@@ -4,7 +4,7 @@
 
 > **角色：外部参考层（E1/E2）。** [34](./34-profile-product-forms.md) 写八种形态，[35](./35-profile-assembly-ownership.md) 写共用机制；本篇只记证据：每个样本 pin 在哪个版本、读了什么、哪些只是 README 主张、哪些根本没有验证。
 
-**口径。** `[SRC]` = 读过固定 tag/commit 的目标源码；`[R]` = README/作者声明；`[DSH]` = DSH `0.2.1-rc.3` 契约；`[TEST]`/`[CI]` = 读过测试与同 SHA CI 记录，但本轮没有执行；**没有 `[RUN]`**。npm 下载含 CI/镜像，星标不是质量。
+**口径。** `[SRC]` = 读过固定 tag/commit 的目标源码；`[R]` = README/作者声明；`[DSH]` = DSH `0.2.1-rc.3` 契约；`[TEST]`/`[CI]` = 读过测试与同 SHA CI 记录，但本轮没有执行；`[OBS]` = 只读目录/注册表元数据的普查；**没有 `[RUN]`**（表示实际运行过）。npm 下载含 CI/镜像，星标不是质量。
 
 ![八个样本的证据覆盖](../figures/36-evidence-matrix.svg)
 
@@ -21,9 +21,9 @@
 | `better-session` | 0.1.10（npm tarball） | 发布 patch：5 exact deps、5 rows、SQLite default；README 闭环 | 无匹配 source/test/CI（无 tag、无 `gitHead`） | edit/retry/fork、UI slots、确认弹窗 | session schema/事务/迁移；并发 retry；外部 tool side effect；UI slot 契约 |
 | `dsh-wallpaper-engine` | 1.4.0 / `3b0103b` | 8 packages/rows、host/client、格式 fallback、video limits、preset schema、token contract | same-SHA Windows/Ubuntu CI 读过，未运行 | WebGL/ffmpeg 真实表现、preset obsolete UX、跨 skin 共存 | 真实 GPU/OS、Web sandbox 威胁模型、unload teardown、预设跨版本导入 |
 
-## 生命周期样本（另册）
+## 生命周期样本（在 37，不在本篇）
 
-[37](./37-lifecycle-stages.md) 另列 15 张阶段样本 + 1 张反例（装 4、起 5、配 3、首启 3、反例 1），按“装/起/配/首启”而不是产品形态组织。它们的证据级别与本篇分开：原册对 `install/11`、`install/13`、`boot/21`、`config/31` 有隔离实测，其余为包清单/源码/README；本仓库没有重跑，所以不把原册 `[RUN]` 升为本文的 T。
+[37](./37-lifecycle-stages.md) 另列 15 张阶段样本 + 1 张反例（装 4、起 5、配 3、首启 3、反例 1），按“装/起/配/首启”而不是产品形态组织。**本篇台账不覆盖它们**：它们的逐行证据就在 37 的阶段样本表里（每行一个 S/R 字母），未验证项写在对应阶段小节。原册对 `install/11`、`install/13`、`boot/21`、`config/31` 有隔离实测，其余为包清单/源码/README；本仓库没有重跑，所以不把原册的实测升为本仓库的 T。
 
 ## 采用信号与样本边界
 

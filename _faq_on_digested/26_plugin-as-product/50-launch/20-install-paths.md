@@ -6,7 +6,7 @@
 |---|---|---|---|---|
 | npm 全局 | `@deepseek-ai/dsh` | `$DSH_HOME/profiles/<name>` | 用户/产品 updater 跑 npm | 需要 Node；全局版本漂移；多副本 |
 | 官方 Desktop | 应用内置 `resources/app.asar/dsh` | `profiles/desktop`（Electron 独占） | Desktop Nightly feed + 签名安装器 | 不能换 dsh 版本；CLI 不能 boot |
-| Python wheel | wheel 内置 `dsh` CLI | 显式 `DSH_HOME` 的 profile | Python 包/产品 | SDK/ACP 为主；不是 Web 产品 |
+| Python wheel | wheel 内置 `dsh` CLI | 显式 `DSH_HOME` 的 profile | Python 包/产品 | SDK/ACP 为主；同一 runtime 也打包 `dsh web` 资产，但不是 Python 侧默认用法 |
 | 源码树 | `pnpm dsh`（tsx） | 同一个 home | 开发者/产品 | 需要 build；缺前端会启动失败 |
 
 这四种来源共用同一套 profile 组合和同一个 `dsh` launcher；差别是**谁提供运行时、谁负责版本与签名**。容器/镜像属于部署包装，见 [60](./60-packaging.md)。
@@ -30,7 +30,7 @@
 
 对 web/Desktop，默认安装写应用内 Plugins 页；headless/SDK/ACP 没有 Plugins 页，用 CLI 显式 profile。CLI 不能管理 `desktop`。**不要在安装说明里只写 `--profile web` 而不提 Desktop**：Desktop 用户会装进 `profiles/web`，App 用 `profiles/desktop`，报告成功但界面没有。
 
-“装成功”有三个独立状态：pnpm exit 0 → dependency 写入 → 进 `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包 exit 0、roster 不变，只给一句 stderr warning（实验见 [90](./90-evidence.md)）。
+“装成功”有三个独立状态：pnpm exit 0 → dependency 写入 → 进 `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包，CLI 通道 exit 0、roster 不变、只给一句 stderr warning；应用内通道以 `not-bundle` 失败并回滚 manifest（实验见 [90](./90-evidence.md)）。
 
 ## Profile 初始化
 

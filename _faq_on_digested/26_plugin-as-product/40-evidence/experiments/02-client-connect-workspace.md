@@ -32,4 +32,4 @@ grep -n "connectWorkspace" packages/client/ui-workspace/src/client/navigation.ts
 
 ## 改了哪篇
 
-[16](../../10-foundations/16-startup-resolution.md) 的"待核实"第 2 条从 **U** 改为 **C**，并保留"顺序不保证"。
+[16](../../10-foundations/16-startup-resolution.md) 的「DSH Web 首用流程」已写明不要依赖 Loader 行顺序；本实验只把“客户端插件能拿到 `uiWorkspace` 并调用 `connectWorkspace`”从 **U** 收口为 **C**，并记录它实际会建 blank。

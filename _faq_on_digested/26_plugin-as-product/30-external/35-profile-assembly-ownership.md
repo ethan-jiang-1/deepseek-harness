@@ -25,7 +25,7 @@
 
 ### 生命周期补丁：三个成功、失败三级、home 不能供货
 
-- **三个成功**：pnpm exit 0 → dependency 写入 → `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包 exit 0、roster 不变，只给一句 stderr warning。
+- **三个成功**：pnpm exit 0 → dependency 写入 → `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包：CLI exit 0、roster 不变、只给一句 stderr warning；应用内安装则以 `not-bundle` 失败并回滚 manifest。
 - **失败三级**：bundle skip / row pending 或 import warning / 整体失败；“应用能开、功能没有”是合法终态，不能按“全有或全无”设计救生逻辑。
 - **home 层能覆盖、不能供货**：插入该 profile 没装的包，dump 有行，真启动 `ERR_MODULE_NOT_FOUND` 且服务照常起。分发给每个 profile 各自装，不要用 home 层供货。
 
@@ -90,7 +90,7 @@
 
 `better-session` 用一条用户闭环定义 bundle 边界：五个 exact 依赖、五条 rows、`session-rdb` 的 SQLite default 一起发布，发布 patch 就是可审阅的装配清单。但 README 的 edit/retry/fork 仍是 `[R]`：编辑回填不重放、重试才重放、fork 派生新 session；truncate 事件不等于撤销外部工具副作用，session schema/事务/迁移都没有源码证据。（`[SRC: 发布物]`/`[R]`）
 
-`dsh-wallpaper-engine` 把外观做成可分发资产：预设是 `{schema, id, name, values, assets?}`，`values` 是 allowlisted 设置的完整快照，`assets` 可选带字体/吉祥物/头像；字段区分缺席（保持）、`null`（清除/默认）、内置 id、上传对象。schema 不匹配返回 `version-obsolete`，**不自动迁移**；预设不打包整个壁纸媒体库；主入口用静态 token contract test 保证不注册 model tool、不注入 prompt，这是 release-specific 的零模型预算。（`[SRC]`）
+`dsh-wallpaper-engine` 把外观做成可分发资产：预设是带 `schema` 的完整设置快照，资产与设置分开，旧 schema 显式作废、不自动迁移，外观产品还把“零模型注册”做成了静态 contract test。（`[SRC]`）逐字段的预设语义与格式准入见 [34 §8](./34-profile-product-forms.md#8-视觉资产dsh-wallpaper-engine)。
 
 **做法**：一条闭环定义一个 bundle，发布 patch 当装配清单；区分 bundle 默认与 effective config；预设是版本化 schema，资产与设置分开，旧 schema 显式作废；外观产品把零模型注册当可测试 contract。
 
@@ -111,7 +111,6 @@
 ## 边界
 
 - 四层状态与所有权来自固定版本源码/测试/CI 阅读（`[SRC]`），其中 `plugins-plus`/`better-session` 只到 README/发布物；没有安装、没有启动。
-- `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考（`[R]`/`U`）。
-- `better-session` 目标源码未 pin，发布 patch 之外的会话状态机都是 `[R]`/`[U]`。
+- `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考；`better-session` 目标源码未 pin，发布 patch 之外的会话状态机都是 `[R]`/`[U]`（同 [34 的失效边界](./34-profile-product-forms.md#边界)）。
 - 九条检查清单只在目标形态需要时采用；不是所有产品都必须有聚合、接管或进口形态。
 - 证据分级与逐样本未验证项见 [36](./36-profile-evidence-ledger.md)；装/起/配/首启的阶段判据见 [37](./37-lifecycle-stages.md)；bundle patch 的 `insert`/override、web 命令行所有权与 startup session 见 [50](../50-launch/00-index.md)。

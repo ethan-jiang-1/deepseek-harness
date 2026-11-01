@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-> **角色：外部参考层（E1/E2）。** 本篇只处理 profile 级产品：一套 bundle 装进 profile。**安装默认写在应用内 Plugins 页（web 与 Desktop 同一句）；`dsh --profile <name>` 是 web 面的启动/自动化，不是跨面安装路径。** 八个样本是 2026-10-31 固定版本复核；源码、测试与 CI 记录已读，**没有安装、没有运行**。
+> **角色：外部参考层（E1/E2）。** 本篇只处理 profile 级产品：一套 bundle 装进 profile。**安装默认写在应用内 Plugins 页（web 与 Desktop 同一句）；`dsh --profile <name>` 是 web 面的启动/自动化，不是跨面安装路径。** 八个样本是 2026-10-31 固定版本复核：六个读到源码，`plugins-plus` 只到 README/tarball，`better-session` 只到发布 patch；**没有安装、没有运行**。逐样本证据见 [36](./36-profile-evidence-ledger.md)。
 
 [31](./31-external-community-patterns.md) 看单插件的数据维度，[32](./32-external-ecosystem.md) 看产品内部的数据结构，[33](./33-external-plugin-patterns.md) 是 15 个案例。[35](./35-profile-assembly-ownership.md) 把八种形态共用的装配状态与所有权抽出来，[36](./36-profile-evidence-ledger.md) 记录每个样本的证据与失效边界。
 
@@ -61,7 +61,7 @@
 
 **状态与所有权。** Suite patch 拥有 bundle-layer defaults，成员拥有实现；profile/home/CLI 的更高层可以覆盖。18 个 direct pin 都是 exact 版本，但 npm metadata 没有 consumer shrinkwrap/lock，所以 direct pin 不等于完整 transitive 复现。同 profile 再装独立成员或另一个聚合包写同 id，仍可能重复或由层序决定 effective config，没有 universal checker。（`[SRC]`）
 
-**更新与恢复。** Updater 由 profile context 注册，偏好/cache 放目标 profile 目录；每组件有 `checkEnabled`、`autoInstall`、`deferredUntil`、`ignoredVersion`，默认只检查、不自动装。自动更新只针对 enabled/healthy/registry 包、非 suite-managed 成员、stable patch，还要用户 consent、host agents/jobs idle、页面干净、无 pending restart；偏好写入是 revision-checked lock + 原子 temp/rename，坏 state fail-closed。更新优先走 host `updateBundle`；rc.3 fallback 保存原 exact version/enabled，remove→install exact new，失败/取消则 reinstall 旧版本；恢复失败标 `restore-failed`、未知标 `unknown`，进程 crash 在 remove/install 之间会留 partial state。suite-managed 成员被抑制独立更新，避免两条流程同时处理同一包。（`[SRC]`）
+**更新与恢复。** Updater 由 profile context 注册，偏好/cache 放目标 profile 目录；每组件有 `checkEnabled`、`autoInstall`、`deferredUntil`、`ignoredVersion`，默认只检查、不自动装。恢复是补偿而非事务：先走 host `updateBundle`，rc.3 fallback 保存原 exact version/enabled 后 remove→install exact new，失败或取消则装回旧版本。（`[SRC]`）门控细节、`restore-failed`/`unknown` 状态与 crash window 的完整清单见 [35 的更新与恢复](./35-profile-assembly-ownership.md#更新与恢复)；这里是该形态的具体取值。
 
 **可迁移。** 写清更新 owner、consent/idle 门、旧状态记录、补偿路径和 crash window；把 direct pin、transitive lock、registry integrity、peer range 四种“兼容”分开；给同 id/同包冲突一个检测或禁止政策。
 
@@ -95,7 +95,7 @@
 
 **卸载与删除。** suite uninstall 只删 user install record，不删 checkout；source removal 默认也保留 checkout；只有显式 `deleteCheckout` 才删受管 `.sources/<id>`，外部 local path 永不由工具删除。`state.json` 损坏会退回 empty state，后续 mutation 可能覆盖原状态，没有现成备份/恢复。（`[SRC]`）
 
-**校验、凭据与 hook。** 失败粒度是 artifact 级：manifest 有 fatal/ignored，MCP file 可整体 disable，单个 MCP server 可跳过；不能概括成“坏声明一律整套 fail-closed”。凭据状态分开：`${ENV}` 缺值是 `missing-credential`，OAuth 还有 pending/denied/persisted/memory-only；没有 `ctx.credentials` store 时 token 只在进程内有效。hook 的 dry-run 在用户 home 用 host shell 执行并传 `dry_run:true`，这个标志不是 sandbox。（`[SRC]`）
+**校验、凭据与 hook。** 失败粒度是 artifact 级：manifest 有 fatal/ignored，MCP file 可整体 disable，单个 MCP server 可跳过；不能概括成“坏声明一律整套 fail-closed”。凭据与 hook 的分层（`missing-credential`、OAuth 四态、dry-run 不是 sandbox）见 [35 的进口、来源与过滤](./35-profile-assembly-ownership.md#进口来源与过滤)。（`[SRC]`）
 
 **可迁移。** 分开来源、安装、workspace filter 三个 owner；要可复现就 pin 不可变快照；按 artifact 定义失败原子性；凭据用状态机而不是一个布尔；删除要区分 suite、source 和 checkout 三种所有权。
 

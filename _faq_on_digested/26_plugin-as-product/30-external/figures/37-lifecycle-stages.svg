@@ -12,9 +12,9 @@
   <text x="44" y="168" font-size="9.5" fill="#64748b">三个成功：pnpm 0 → dependency 写入 → 进 dsh.profile.bundles</text>
   <text x="44" y="196" font-size="9.5" fill="#15803d">产品：声明 dsh.bundle.patch；安装说明只写“Plugins 页装 X”</text>
   <text x="44" y="220" font-size="9.5" fill="#b45309">CLI 命令只作 web 自动化，必须标“仅 dsh web”</text>
-  <text x="44" y="250" font-size="9.5" fill="#991b1b">失败：无 dsh.bundle → exit 0、roster 不变、只一句 warning</text>
+  <text x="44" y="250" font-size="9.5" fill="#991b1b">失败：无 dsh.bundle → CLI exit 0 只 warning；应用内 not-bundle 拒绝并回滚</text>
   <text x="44" y="274" font-size="9.5" fill="#991b1b">失败：Desktop 上写 --profile web → 装进 profiles/web，App 看不到</text>
-  <text x="44" y="304" font-size="9.5" fill="#64748b">版本门：engines.dsh + dsh.compatibility 两处都要写</text>
+  <text x="44" y="304" font-size="9.5" fill="#64748b">版本门：engines.dsh 单独裁决，否则查 DSH peer；豁免写 profile</text>
 
   <rect x="624" y="88" width="552" height="250" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
   <text x="644" y="116" font-size="12" font-weight="700" fill="#1e40af">② 起 · 装完怎么让它生效</text>

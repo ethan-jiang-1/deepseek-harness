@@ -13,7 +13,10 @@ ordered bundle patches
 → profile cordis.patch.yml
 → $DSH_HOME/cordis.patch.yml
 → 每个 --patch overlay（按命令行顺序）
+→ DSH_TELEMETRY_DISABLED 非空时，Launcher 追加的 telemetry 禁用 patch
 ```
+
+最后一行只在该环境变量非空、且组合里存在 `session-telemetry-otel` row 时出现；它由启动器生成，不是用户写的 patch 文件。
 
 后续 patch 可覆盖 entry 或插入 rows。覆盖既有 row 的 `config` 是**整对象替换**，不是深合并。Profile Config schema 会为具有定义默认值的字段填充默认；只有写在低层 patch、且没有 schema/code default 的字段，不会因为高层只改另一个字段而继续继承。
 
@@ -50,7 +53,7 @@ ordered bundle patches
 
 Web 的 app args（`--host/--port/--tls/--public-url/--trusted-host/--no-open`）整条归 shipped `web-startup`。`--port` 等只有在 row 保留 `!!js ctx.webStartup.…` 表达式时才压过 config；用户 patch 把 config 写成字面值后，参数失效，且整份替换可能丢必填字段。
 
-产品要新增自己的 app flag，只有替换 `web-startup` 并重实现全部 web flags（否则 `public-url`/`trusted-host`/`tls` 静默失效），或改用 profile-as-mode/config/非 Web surface。详见 [50 launch](../50-launch/40-profile-integration.md)。
+产品要新增自己的 app flag，只有替换 `web-startup` 并重实现全部 web flags（漏实现的 flag 会被静默忽略，后果按项不同：缺 TLS 即明文 listener，缺 `public-url` 只广告 listener origin，缺 `trusted-host` 则代理 authority 不被信任），或改用 profile-as-mode/config/非 Web surface。详见 [50 launch](../50-launch/40-profile-integration.md)。
 
 ## Config 与 Settings 的作用域
 

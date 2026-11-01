@@ -35,4 +35,4 @@ grep -n "async edit(\|entries(): Entry" packages/boot/config-editor/src/index.ts
 
 ## 改了哪篇
 
-[16](../../10-foundations/16-startup-resolution.md) 的"待核实"第 3 条从 **U** 改为 **C**，并保留"优先用全局设置文件"的推荐。
+[16](../../10-foundations/16-startup-resolution.md) 的「产品自建项目目录」仍推荐产品自管设置路径；本实验只把“插件能经 `ctx.fiber.entry` + `ConfigEditor.edit` 回写自己那一行 patch”收口为 **C**，不改变该推荐。

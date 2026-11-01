@@ -24,7 +24,7 @@ DSH profile 决定一个应用组合由哪些 bundles 和 patches 构成。Plugi
 | dependency 写入 | `profiles/<p>/package.json.dependencies` |
 | 成为 profile 层 | `dsh.profile.bundles` 含该 bundle |
 
-只有第三个让功能存在。没有声明 `dsh.bundle.patch` 的包：exit 0、dependency 写入、roster 不变，只给一句 stderr `declares no dsh.bundle — installed as a plain dependency, not a profile layer`。
+只有第三个让功能存在。没有声明 `dsh.bundle.patch` 的包，两条通道结果不同：CLI `dsh plugin` 是 exit 0、dependency 写入、roster 不变，只给一句 stderr `declares no dsh.bundle — installed as a plain dependency, not a profile layer`；应用内 Plugins 页先装后判，以 `not-bundle` 失败并把 `package.json` 与 lockfile 回滚。
 
 ### CLI 自动化路径（web/headless/sdk）
 
@@ -66,7 +66,7 @@ Profile/home patch 的生效方式取决于已启动 composition 是否配置 pa
 
 DSH 按 bundle/package manifest 声明检查其 DSH 兼容范围。无法读取或不兼容的 bundle 可能在 composition 时被跳过并产生诊断；其余 profile rows 仍可能运行，所以“profile 能启动”不等于产品所有功能都可用。
 
-安装期还有一道门：应用内安装与 `dsh plugin` 都在写入前检查 `engines.dsh`/peer；不匹配时明确 `nothing was installed`。exemption 只对 exact package + exact dsh version：`dsh plugin --profile <name> allow-version <pkg>@<version> --dsh-version <dsh-version> --accept-risk`；它是风险接受，不是兼容证明。
+安装期还有一道门：应用内安装与 `dsh plugin` 都检查 `engines.dsh`/peer，不匹配时在写入 package 依赖前拒绝并明确 `nothing was installed`（profile 脚手架可能已经初始化，例如首次使用时）。exemption 只对 exact package + exact dsh version：`dsh plugin --profile <name> allow-version <pkg>@<version> --dsh-version <dsh-version> --accept-risk`；它是风险接受，不是兼容证明。
 
 bundle 作者应在 `package.json` 声明准确的 `engines.dsh` 或 DSH peer ranges，按实际 package composition 和支持范围选择其一。产品 README 应说明如何检查 startup diagnostics 与有效 composition。若核心产品被跳过时必须阻止用户使用，该 fail-loud 检查需由能在相关 bundle 被跳过时仍运行的机制负责；产品 bundle 不能检查自身是否成功加载。
 

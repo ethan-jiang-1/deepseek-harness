@@ -25,8 +25,8 @@
 - **产品拥有 bundle、默认值与文档；只有 shell/自托管才拥有安装器。** 不拥有 launcher、profile 写者或第二套更新。同一 profile 的并发写、两个更新器是主要故障源。
 - **分发单位决定签名/校验/更新责任**：bundle、安装器、Desktop、容器、wheel、离线 tarball 各有 owner；安装文档要与发布物同版本。
 - **bundle 在 roster ≠ patch 生效**：新增 row 必须 `insert:`；裸 `- id` 是 override target。
-- **web 命令行归 `web-startup`**：产品自定义 flag 需要替换 provider 并重实现全部 web flags；漏实现 `public-url/trusted-host/tls` 会静默退回 HTTP。
-- **session 创建 ≠ UI 选中**：Host `sessionController.create` 只创建/attach；全新客户端可能自动选“最新 blank”，返回用户保持 `dsh.sessions.current`；确定性要用 client `uiWorkspace.openSession`。
+- **web 命令行归 `web-startup`**：产品自定义 flag 需要替换 provider 并重实现全部 web flags；漏实现不报错，只会静默忽略该 flag——缺 TLS 即明文 listener，缺 `public-url` 只广告 listener origin，缺 `trusted-host` 则代理 authority 不被信任。
+- **session 创建 ≠ UI 选中**：Host `sessionController.create` 只创建/attach；全新客户端可能自动落到最近工作区的可复用 blank，返回用户保持 `dsh.sessions.current`；确定性要用 client `uiWorkspace.openSession`。
 
 ## 章节地图
 
@@ -49,3 +49,10 @@
 - 外部 profile 产品样本见 [34](../30-external/34-profile-product-forms.md)/[36](../30-external/36-profile-evidence-ledger.md)；本目录只做 C/T，不自行引用 S/R。
 
 ![安装 → profile → 启动 → surface 的栈](./figures/10-launch-stack.svg)
+
+## 边界
+
+- 只覆盖 DSH 约定内的安装、启动、设置与分发；不设计新 bin、第二层 launcher/桌面壳、发布 profile 目录或 wildcard bind。
+- 实验只在 macOS、本仓库 checkout 与 `mktemp -d` 的隔离 home 上做；Windows/Linux 路径、Desktop 与安装器没有跑。
+- 34–37 的外部 profile 产品只作对照，不是依赖背书；具体 package 采用前另核兼容、license 与数据生命周期。
+- 应用内 Plugins 页的 Desktop 侧行为来自 docs 与源码阅读，本机没有 Desktop，所以那部分是 C 不是 T。

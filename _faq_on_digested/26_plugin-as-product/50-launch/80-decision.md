@@ -59,8 +59,8 @@
 |---|---|---|---|
 | 自定义 flag 被拒 | `unknown option '--project'` | web-startup 拥有整条命令行 | 用 web flags/profile-as-mode，或替换 web-startup |
 | patch 没生效 | bundle 在 roster，row 不存在 | 裸 `- id` 被当 override target | 改用 `- insert:` |
-| session 建了但没选中 | 返回用户仍是旧 session | Host create 不切换 Client current；fresh 可能自动选最新 blank | client 调 `uiWorkspace.openSession(sessionId)` |
-| 替换 web-startup 漏 flag | `--public-url/--trusted-host/--tls-*` 静默失效 | 产品 parser 没实现这些 web flag | 实现全部 web flags 或显式拒绝未知 flag |
+| session 建了但没选中 | 返回用户仍是旧 session | Host create 不切换 Client current；fresh 可能落到最近工作区的 blank | client 调 `uiWorkspace.openSession(sessionId)` |
+| 替换 web-startup 漏 flag | flag 被静默忽略：仍是无 TLS 的 listener，广告与信任停在本机 | 产品 parser 没实现这些 web flag | 实现全部 web flags 或显式拒绝未知 flag |
 
 ## 反模式
 

@@ -29,7 +29,7 @@
 
 ## 15 个案例
 
-### 1. dsh-memory-evolve（S）——把“长期记忆”做成文件树 + git 合并
+### 1. dsh-memory-evolve（S/R）——把“长期记忆”做成文件树 + git 合并
 
 - **问题**：跨会话记忆、待办、技能、多 Agent 协作，还要跨设备。
 - **数据**：`~/.dsh/memories/`；`MEMORY.md`/`USER.md` 用 `§` 分隔条目，每条带不可见 `[id:…]` 合并锚点；`SUGGESTIONS.jsonl`、`skills-state.json`、`aliases.json`、`session-bookmarks.json`、`broadcast/`、`session-orch/`、per-project tracks。**R/S**
@@ -156,7 +156,7 @@
 - **可抄**：只读配置、canonical path key、lease 生命周期、watcher 锚点、回滚。
 - **不要抄**：`trustWorkspaceConfig: true` 默认；整树 reload 不 drain in-flight 工具。
 
-### 13. dsh_PromptRecall（S）——输入历史的 host/client 分家
+### 13. dsh-PromptRecall（S）——输入历史的 host/client 分家
 
 - **问题**：Codex 风格 ↑/↓ 输入历史，跨会话/重启。
 - **数据**：`$DSH_HOME/prompt-history.jsonl`（全局、纯文本）；会话内 local 快照；单调 id；10 MB 裁剪整行；`io.withLock` 跨进程读改写；`clear()` 写空文件。**S**
@@ -236,7 +236,7 @@
 外部源码与 README 不得支撑 C 级结论；标签规则见 [40-evidence](../40-evidence/00-index.md)。
 
 - S：memory-evolve、project-context、graphmemory、workspace-memories、workspace-overlay（部分）、PromptRecall、credentials-mysql、custom-workspace。
-- R：kb-manager、mnemon、session-workspace-organizer、archive-retention、codex-sync、claude-move、agent-mailbox、session_folders、以及 research-external 中的多数账号/UI 样本。
+- R：kb-manager、mnemon、session-workspace-organizer、archive-retention、codex-sync、claude-move、agent-mailbox，以及 research-external 中的多数账号/UI 样本（`session_folders` 是 31/32 引用的目录样本，不属这 15 个案例）。
 - U：mailbox/mnemon 的落点、codex-sync 映射状态、部分 localStorage 键。
 - 没有安装/运行；探针结果另列（如执行）。
-- 样本不是 census；同名克隆已排除（记录见 [quality-review](../40-evidence/quality-review.md)）。
+- 样本不是 census；同名克隆与镜像在筛选中排除，但本目录没有保留逐条排除清单。

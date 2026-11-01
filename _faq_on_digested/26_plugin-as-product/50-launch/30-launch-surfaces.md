@@ -30,7 +30,7 @@ web profile 的 app args 整条归 shipped `web-startup`。产品想加 `--proje
 error: unknown option '--project'   (exit 1)
 ```
 
-再加一个 startup 插件不能“扩展”它——两个 parser 看同一份 args。web profile 上要加产品 flag，路径是 disable `web-startup` + insert 产品 provider，自己解析 web + 产品 flags 并 `provide('webStartup', …)`；代价是重实现 web flag 语义并跟随升级——漏实现 `public-url`/`trusted-host`/`tls` 不会报错，只会静默退回 loopback HTTP。替代：profile-as-mode、config/env、非 Web surface。详见 [40](./40-profile-integration.md)。
+再加一个 startup 插件不能“扩展”它——两个 parser 看同一份 args。web profile 上要加产品 flag，路径是 disable `web-startup` + insert 产品 provider，自己解析 web + 产品 flags 并 `provide('webStartup', …)`；代价是重实现 web flag 语义并跟随升级——漏实现不报错，只会静默忽略该 flag：缺 TLS 时 listener 是明文（默认 loopback），缺 `public-url` 时只广告 listener origin，缺 `trusted-host` 时代理 authority 不被信任。替代：profile-as-mode、config/env、非 Web surface。详见 [40](./40-profile-integration.md)。
 
 ## 启动顺序
 
