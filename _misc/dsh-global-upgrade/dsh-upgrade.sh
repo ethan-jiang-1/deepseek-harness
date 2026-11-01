@@ -50,6 +50,22 @@ MODE="upgrade"
 GIVEN_DIR=""
 SMOKE_PID=""
 
+# 取一个选项的取值：缺值或看起来像另一个 flag 都拒绝，避免 --to --yes 把 --yes 当版本号。
+need_value() {
+	local opt="$1" val="${2:-}"
+	if [ -z "$val" ]; then
+		echo "$opt 需要一个取值" >&2
+		exit 2
+	fi
+	case "$val" in
+	-*)
+		echo "${opt} 缺少取值（后面跟的是 ${val}）" >&2
+		exit 2
+		;;
+	esac
+	printf '%s' "$val"
+}
+
 usage() {
 	cat <<'EOF'
 DSH 全局安装升级（版本无关）
@@ -75,35 +91,19 @@ while [ "$#" -gt 0 ]; do
 	--dry-run) MODE="dry-run" ;;
 	--yes | -y) ASSUME_YES=1 ;;
 	--to)
-		[ -n "${2:-}" ] || {
-			echo "--to 需要一个版本号" >&2
-			exit 2
-		}
-		TARGET_VERSION="$2"
+		TARGET_VERSION="$(need_value --to "${2:-}")"
 		shift
 		;;
 	--dist-tag)
-		[ -n "${2:-}" ] || {
-			echo "--dist-tag 需要一个 tag 名" >&2
-			exit 2
-		}
-		DIST_TAG="$2"
+		DIST_TAG="$(need_value --dist-tag "${2:-}")"
 		shift
 		;;
 	--market)
-		[ -n "${2:-}" ] || {
-			echo "--market 需要一个版本号" >&2
-			exit 2
-		}
-		MARKET_TARGET="$2"
+		MARKET_TARGET="$(need_value --market "${2:-}")"
 		shift
 		;;
 	--providers)
-		[ -n "${2:-}" ] || {
-			echo "--providers 需要一个空格分隔的清单" >&2
-			exit 2
-		}
-		PROVIDERS="$2"
+		PROVIDERS="$(need_value --providers "${2:-}")"
 		shift
 		;;
 	--resume)
@@ -299,9 +299,13 @@ probe_npm_cache() {
 		warn "npm 缓存属主问题，后续 npm 命令改用备用缓存（不要 sudo）"
 		NPM_CACHE_DIR="$HOME/.npm-cache-dsh"
 	fi
-	ensure_run
-	cp "$log" "$RUN_DIR/npm-cache-probe.log" 2>/dev/null || true
-	rm -f "$log"
+	# 只读预检不该为一条探测日志建整个运行目录；有目录就归档，没有就只报路径。
+	if [ -d "$RUN_DIR" ]; then
+		cp "$log" "$RUN_DIR/npm-cache-probe.log" 2>/dev/null || true
+		rm -f "$log"
+	elif [ -s "$log" ]; then
+		warn "npm 探测失败（网络或 registry），日志：${log}"
+	fi
 	return 0
 }
 
@@ -352,8 +356,12 @@ latest_backup() {
 # 解析目标版本：TARGET_VERSION（文件头或 --to）优先，其次按 DIST_TAG 向 registry 解析。
 # DIST_TAG=newest 时取 next 与 latest 中较大的那个，这样“跑一下就到最新”不用改文件。
 resolve_target() {
+	if [ -n "$TARGET_VERSION" ] && ! printf '%s' "$TARGET_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$'; then
+		fail "指定的版本号不合法：$TARGET_VERSION" \
+			"期望形如 0.2.1-rc.5。"
+	fi
 	if [ -n "$TARGET_VERSION" ]; then
-		say "目标版本（显式指定）  $TARGET_VERSION"
+		say "目标版本（显式指定）  ${TARGET_VERSION}"
 		return 0
 	fi
 	local tag="$DIST_TAG" resolved
@@ -365,7 +373,7 @@ resolve_target() {
 			sort -V | tail -1 || true)"
 	else
 		resolved="$(npm_view @deepseek-ai/dsh "dist-tags.$tag" 2>/dev/null || true)"
-		resolved="$(printf %s "$resolved" | head -1 | tr -d '"' '[:space:]')"
+		resolved="$(printf %s "$resolved" | head -1 | tr -d '"[:space:]')"
 	fi
 	if [ -z "$resolved" ]; then
 		say "registry 上的 dist-tags："
@@ -374,6 +382,10 @@ resolve_target() {
 			"用 --to <版本> 显式指定，或设置文件头 TARGET_VERSION。见 $RUN_DIR/npm-cache-probe.log。"
 	fi
 	TARGET_VERSION="$resolved"
+	if ! printf '%s' "$TARGET_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$'; then
+		fail "从 registry 解析到的不是合法版本号：${TARGET_VERSION}（dist-tag ${tag}）" \
+			"用 --to <版本> 显式指定。"
+	fi
 	say "目标版本（dist-tag ${tag}）  $TARGET_VERSION"
 }
 
@@ -522,11 +534,7 @@ resume)
 	PREV_VERSION="$CURRENT_VERSION"
 	;;
 dry-run)
-	if [ -z "$TARGET_VERSION" ]; then
-		resolve_target
-	else
-		say "目标版本（--to 指定）  $TARGET_VERSION"
-	fi
+	resolve_target
 	PREV_VERSION="$CURRENT_VERSION"
 	;;
 esac
@@ -562,9 +570,13 @@ say "现值即本次基线：备份的是现值，验收也拿现值比，不再
 if [ "$MODE" != "resume" ]; then
 	step "阶段 0.4 registry"
 	if [ -n "$MARKET_TARGET" ]; then
-		MARKET_HAS="$(npm_view "dshmarket@$MARKET_TARGET" version 2>/dev/null | tr -d '\n' || true)"
-		say "dshmarket@$MARKET_TARGET = ${MARKET_HAS:-<查不到>}"
-		[ "$MARKET_HAS" = "$MARKET_TARGET" ] || fail "registry 查不到 dshmarket@$MARKET_TARGET"
+		if ! printf '%s' "$MARKET_TARGET" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$'; then
+			fail "--market 的版本号不合法：${MARKET_TARGET}" "期望形如 1.73.7。"
+		fi
+		MARKET_HAS="$(npm_view "dshmarket@$MARKET_TARGET" version 2>/dev/null | tr -d '[:space:]\"' || true)"
+		say "dshmarket@${MARKET_TARGET} = ${MARKET_HAS:-<查不到>}"
+		[ "$MARKET_HAS" = "$MARKET_TARGET" ] || fail "registry 查不到 dshmarket@${MARKET_TARGET}" \
+			"确认该版本已发布，或去掉 --market 不同时升插件。"
 	else
 		say "dshmarket 不动（未给 --market）"
 	fi
