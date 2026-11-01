@@ -32,6 +32,7 @@
 | 有哪些现成的、从哪拿 | 本专题 |
 | 换一个实现、三角色怎么分装 | [`capability-seams/`](../capability-seams/00-map.md) |
 | 启动时怎么挂成一棵树 | [`composition-boot/`](../composition-boot/00-map.md) |
+| 找到了之后怎么装、怎么更、怎么卸 | [`plugin-lifecycle/`](../plugin-lifecycle/00-map.md) |
 | 某种启动方式带了什么 | [`runtime-profiles/`](../runtime-profiles/00-map.md) |
 | 生成目录怎么当量化底座 | [`harness-idea/05`](../harness-idea/05-dynamic-legibility.md) |
 | 「我想做 X，dsh 有现成的吗」 | 步骤 2 → [`01`](./01-capability-tour.md) 走场景 |

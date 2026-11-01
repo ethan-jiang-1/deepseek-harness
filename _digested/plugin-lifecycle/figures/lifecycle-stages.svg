@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 470" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arr2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#9ca3af"/></marker>
+  </defs>
+  <rect width="980" height="470" fill="#fafafa" rx="6"/>
+  <text x="490" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">插件生命周期的七段</text>
+  <text x="490" y="51" text-anchor="middle" font-size="11" fill="#6b7280">每段结尾有一个不可逆边界 · 源码基线 dsh-v0.2.1-rc.3 · 1f81c047fc</text>
+
+  <rect x="28" y="70" width="120" height="80" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="88" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">① 打包</text>
+  <text x="88" y="116" text-anchor="middle" font-size="10" fill="#15803d">dsh.bundle</text>
+  <text x="88" y="132" text-anchor="middle" font-size="10" fill="#15803d">patch 层</text>
+
+  <line x1="148" y1="110" x2="158" y2="110" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="162" y="70" width="120" height="80" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="222" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">② 分发</text>
+  <text x="222" y="116" text-anchor="middle" font-size="10" fill="#15803d">4 条 spec</text>
+  <text x="222" y="132" text-anchor="middle" font-size="10" fill="#15803d">3 个目录档位</text>
+
+  <line x1="282" y1="110" x2="292" y2="110" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="296" y="70" width="120" height="80" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="356" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">③ 安装</text>
+  <text x="356" y="116" text-anchor="middle" font-size="10" fill="#2563eb">写 profile 两个文件</text>
+  <text x="356" y="132" text-anchor="middle" font-size="10" fill="#2563eb">版本门先拒绝</text>
+
+  <line x1="416" y1="110" x2="426" y2="110" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="430" y="70" width="120" height="80" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="490" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">④ 启动</text>
+  <text x="490" y="116" text-anchor="middle" font-size="10" fill="#2563eb">叠层 → 挂树</text>
+  <text x="490" y="132" text-anchor="middle" font-size="10" fill="#2563eb">ACTIVE 审计</text>
+
+  <line x1="550" y1="110" x2="560" y2="110" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="564" y="70" width="120" height="80" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="624" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">⑤ 特殊初始化</text>
+  <text x="624" y="116" text-anchor="middle" font-size="10" fill="#a16207">只跑一次</text>
+  <text x="624" y="132" text-anchor="middle" font-size="10" fill="#a16207">先改名再写</text>
+
+  <line x1="684" y1="110" x2="694" y2="110" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="698" y="70" width="120" height="80" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="758" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">⑥ 更新启停</text>
+  <text x="758" y="116" text-anchor="middle" font-size="10" fill="#a16207">改选择 / 改行</text>
+  <text x="758" y="132" text-anchor="middle" font-size="10" fill="#a16207">串行队列</text>
+
+  <line x1="818" y1="110" x2="828" y2="110" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="832" y="70" width="120" height="80" rx="8" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="892" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">⑦ 卸载</text>
+  <text x="892" y="116" text-anchor="middle" font-size="10" fill="#b91c1c">回收代码与层</text>
+  <text x="892" y="132" text-anchor="middle" font-size="10" fill="#b91c1c">数据留下</text>
+
+  <text x="28" y="176" font-size="10" fill="#6b7280">不可逆：</text>
+  <text x="88" y="176" text-anchor="middle" font-size="9.5" fill="#9ca3af">name@version</text>
+  <text x="222" y="176" text-anchor="middle" font-size="9.5" fill="#9ca3af">已在机器上</text>
+  <text x="356" y="176" text-anchor="middle" font-size="9.5" fill="#9ca3af">依赖与列表</text>
+  <text x="490" y="176" text-anchor="middle" font-size="9.5" fill="#9ca3af">服务对外提供</text>
+  <text x="624" y="176" text-anchor="middle" font-size="9.5" fill="#9ca3af">旧状态被改名</text>
+  <text x="758" y="176" text-anchor="middle" font-size="9.5" fill="#9ca3af">优先级会变</text>
+  <text x="892" y="176" text-anchor="middle" font-size="9.5" fill="#9ca3af">数据不可回收</text>
+
+  <line x1="28" y1="196" x2="952" y2="196" stroke="#e5e7eb"/>
+
+  <text x="28" y="222" font-size="13" font-weight="700" fill="#1f2937">同一套七段，三个 profile 分叉点</text>
+
+  <rect x="28" y="238" width="296" height="196" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="44" y="262" font-size="12" font-weight="700" fill="#1e40af">web / base-backed 自定义</text>
+  <text x="44" y="286" font-size="10.5" fill="#1e3a8a">归属：CLI 与 Plugins 页都能管</text>
+  <text x="44" y="308" font-size="10.5" fill="#1e3a8a">首建：shipped 名自动初始化</text>
+  <text x="44" y="330" font-size="10.5" fill="#1e3a8a">变更：hmr 行默认开配置重载</text>
+  <text x="44" y="352" font-size="10.5" fill="#1e3a8a">更新：bundle 级 + HMR 或重启</text>
+  <text x="44" y="374" font-size="10.5" fill="#1e3a8a">卸载：页面 / 工具 / dsh plugin</text>
+  <text x="44" y="402" font-size="10" fill="#6b7280">base 提供 profileContext</text>
+  <text x="44" y="418" font-size="10" fill="#6b7280">门控，模块热替换 opt-in</text>
+
+  <rect x="342" y="238" width="296" height="196" rx="10" fill="#fef2f2" stroke="#fecaca"/>
+  <text x="358" y="262" font-size="12" font-weight="700" fill="#991b1b">desktop</text>
+  <text x="358" y="286" font-size="10.5" fill="#7f1d1d">归属：Electron 独占，CLI 双拒</text>
+  <text x="358" y="308" font-size="10.5" fill="#7f1d1d">首建：Host 前准备，不跑 pnpm</text>
+  <text x="358" y="330" font-size="10.5" fill="#7f1d1d">变更：同 web，另有原生恢复</text>
+  <text x="358" y="352" font-size="10.5" fill="#7f1d1d">更新：壳与 dsh 同版本整体替换</text>
+  <text x="358" y="374" font-size="10.5" fill="#7f1d1d">卸载：删壳数据，不碰 Harness home</text>
+  <text x="358" y="402" font-size="10" fill="#6b7280">运行时来自 app.asar/dsh</text>
+  <text x="358" y="418" font-size="10" fill="#6b7280">desktop-runtime.json 校验</text>
+
+  <rect x="656" y="238" width="296" height="196" rx="10" fill="#f5f5f5" stroke="#e5e7eb"/>
+  <text x="672" y="262" font-size="12" font-weight="700" fill="#374151">一次性表面 headless / sdk / acp</text>
+  <text x="672" y="286" font-size="10.5" fill="#4b5563">归属：CLI 可管</text>
+  <text x="672" y="308" font-size="10.5" fill="#4b5563">首建：同 web 路线</text>
+  <text x="672" y="330" font-size="10.5" fill="#4b5563">变更：hmr 行显式关断</text>
+  <text x="672" y="352" font-size="10.5" fill="#4b5563">更新：一律需要重启</text>
+  <text x="672" y="374" font-size="10.5" fill="#4b5563">卸载：只能手改文件</text>
+  <text x="672" y="402" font-size="10" fill="#6b7280">sdk-minimal 不叠 base，</text>
+  <text x="672" y="418" font-size="10" fill="#6b7280">连 hmr 行都没有</text>
+</svg>

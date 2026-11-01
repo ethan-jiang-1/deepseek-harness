@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="900" height="380" fill="#fafafa" rx="6"/>
+  <text x="450" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">bundle 与 profile 的二分</text>
+  <text x="450" y="51" text-anchor="middle" font-size="11" fill="#6b7280">两个 package.json，两个 dsh 键，回答两个不同的问题</text>
+
+  <rect x="36" y="72" width="380" height="182" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="52" y="98" font-size="13" font-weight="700" fill="#166534">bundle：交付单位</text>
+  <text x="52" y="118" font-size="10.5" fill="#15803d">回答「这个包贡献哪一层配置」</text>
+  <line x1="52" y1="130" x2="400" y2="130" stroke="#bbf7d0"/>
+  <text x="52" y="152" font-size="10.5" fill="#14532d">package.json</text>
+  <text x="176" y="152" font-size="10.5" font-family="ui-monospace, monospace" fill="#166534">dsh.bundle.patch</text>
+  <text x="52" y="176" font-size="10.5" fill="#14532d">cordis.patch.yml</text>
+  <text x="176" y="176" font-size="10.5" fill="#166534">string | string[]，有序</text>
+  <text x="52" y="200" font-size="10.5" fill="#14532d">engines.dsh</text>
+  <text x="176" y="200" font-size="10.5" fill="#166534">准入范围，独占判定</text>
+  <text x="52" y="224" font-size="10.5" fill="#14532d">lib/ 或 prepare</text>
+  <text x="176" y="224" font-size="10.5" fill="#166534">装完即可用 vs 安装期构建</text>
+
+  <rect x="484" y="72" width="380" height="182" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="500" y="98" font-size="13" font-weight="700" fill="#1e40af">profile：组合单位</text>
+  <text x="500" y="118" font-size="10.5" fill="#2563eb">回答「这台机器这次由哪些 bundle 组成」</text>
+  <line x1="500" y1="130" x2="848" y2="130" stroke="#bfdbfe"/>
+  <text x="500" y="152" font-size="10.5" fill="#1e3a8a">$DSH_HOME/profiles/&lt;name&gt;</text>
+  <text x="500" y="176" font-size="10.5" fill="#1e3a8a">package.json</text>
+  <text x="624" y="176" font-size="10.5" font-family="ui-monospace, monospace" fill="#1e40af">dsh.profile.bundles</text>
+  <text x="500" y="200" font-size="10.5" fill="#1e3a8a">cordis.patch.yml</text>
+  <text x="624" y="200" font-size="10.5" fill="#2563eb">只记录与 bundle 的偏离</text>
+  <text x="500" y="224" font-size="10.5" fill="#1e3a8a">node_modules</text>
+  <text x="624" y="224" font-size="10.5" fill="#2563eb">树外插件由 pnpm 装</text>
+
+  <text x="450" y="168" text-anchor="middle" font-size="11" font-weight="700" fill="#b91c1c">Nothing</text>
+  <text x="450" y="184" text-anchor="middle" font-size="11" font-weight="700" fill="#b91c1c">is both</text>
+
+  <text x="450" y="284" text-anchor="middle" font-size="12" font-weight="700" fill="#1f2937">组合结果</text>
+
+  <rect x="36" y="296" width="828" height="56" rx="8" fill="#f3f4f6" stroke="#e5e7eb"/>
+  <text x="52" y="320" font-size="10.5" font-family="ui-monospace, monospace" fill="#374151">空 entry list</text>
+  <text x="152" y="320" font-size="10.5" fill="#6b7280">+</text>
+  <text x="168" y="320" font-size="10.5" font-family="ui-monospace, monospace" fill="#166534">bundle 层（按 bundles 顺序）</text>
+  <text x="378" y="320" font-size="10.5" fill="#6b7280">+</text>
+  <text x="394" y="320" font-size="10.5" font-family="ui-monospace, monospace" fill="#1e40af">profile 层</text>
+  <text x="490" y="320" font-size="10.5" fill="#6b7280">+</text>
+  <text x="506" y="320" font-size="10.5" font-family="ui-monospace, monospace" fill="#1e40af">home 层</text>
+  <text x="586" y="320" font-size="10.5" fill="#6b7280">+</text>
+  <text x="602" y="320" font-size="10.5" font-family="ui-monospace, monospace" fill="#1e40af">--patch</text>
+  <text x="52" y="340" font-size="10" fill="#6b7280">id 命中整份替换 config，insert 加新行；后一层压前一层</text>
+</svg>

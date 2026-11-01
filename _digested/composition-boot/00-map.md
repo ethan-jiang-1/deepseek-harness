@@ -84,4 +84,6 @@ PTC 相对 standard 的实质差异（#3425 起步，0.1.7 线重新落地）：
 | [`03-user-patch-hmr.md`](./03-user-patch-hmr.md) | `hmr` 插件监视 profile/home patch 与包清单，`reconcileProfilePatches` 调和；新失败大声、旧失败保留好树 |
 | [`04-profile-创建与保留名.md`](./04-profile-创建与保留名.md) | `--from-default-profile` 的复制语义与独占抢占；与 `dsh plugin` 初始化路径的分工；`desktop` 保留名 |
 
+装进来之前与装进来之后属于另一个专题：包怎么成为 bundle、怎么装进 profile、坏了怎么更新与卸载，见 [`../plugin-lifecycle/00-map.md`](../plugin-lifecycle/00-map.md)。
+
 Session 与 turn 驱动见 [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md)。
