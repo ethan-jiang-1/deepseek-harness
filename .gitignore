@@ -50,4 +50,4 @@ native/system/test/bin/
 
 # Local multi-vendor research notes: edited constantly and may hold account or key
 # material, so they stay outside version control.
-_model_vendors/
+_misc/_model_vendors/

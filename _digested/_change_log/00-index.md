@@ -44,11 +44,11 @@
 | 1–4 | `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` | 研究语料。下划线前缀是这几项的辨识特征 |
 | 5 | `.pi/` | 本地工程配置。**没有**下划线，别把它当中性目录冲掉 |
 | 6 | `scripts/verify-repository-references.{ts,spec.ts}` | 产品树单文件例外，让引用门禁跳过语料里的历史 commit 与锁文件，见 0013 |
-| 7 | `_model_vendors/` 与根 `.gitignore` 的对应条目 | 多 vendor 研究笔记：高频改动且可能含账号/密钥材料，**不入库**。旧地址是 `_faq_on_digested/03_model-vendors/`；移动后相对路径深度少一级反而解析正确 |
+| 7 | `_misc/_model_vendors/` 与根 `.gitignore` 的对应条目 | 多 vendor 研究笔记：高频改动且可能含账号/密钥材料，**不入库**。从 `_faq_on_digested/03_model-vendors/` 迁来，改放在 `_misc/` 杂项区之下，不占一个根目录 |
 
 除这 7 项之外**每一个字节都与该 tag 逐路径相同**，不留任何其他本地源码补丁、配置行或口径行。
 
-第 7 项的 `.gitignore` 条目是本轮新增的产品树改动，它让 `_model_vendors/` 在所有克隆上都被忽略，而不只是本机；内容本身永不入库，因此同步时只需确认该行仍在。
+第 7 项的 `.gitignore` 条目是本轮新增的产品树改动，它让 `_misc/_model_vendors/` 在所有克隆上都被忽略，而不只是本机；内容本身永不入库，因此同步时只需确认该行仍在。
 
 ### 同步操作手册（照做即可，无需重新推导口径）
 
@@ -88,7 +88,7 @@ git -c core.quotePath=false diff-tree -r --name-status "$RTREE" "$ITREE" \
 # 必须为空
 ```
 
-末尾那三条 `grep -v` 就是「7 项例外」的机器可执行形式（`.gitignore` 只放行 `_model_vendors/` 那一行，同步后要确认它仍在）；改例外集合时同步改这三行。再用一次集合比对兜底（两边都要 `core.quotePath=false`，否则中文路径会一边转义一边不转义，出现假的 65 条差异）：
+末尾那三条 `grep -v` 就是「7 项例外」的机器可执行形式（`.gitignore` 只放行 `_misc/_model_vendors/` 那一行，同步后要确认它仍在）；改例外集合时同步改这三行。再用一次集合比对兜底（两边都要 `core.quotePath=false`，否则中文路径会一边转义一边不转义，出现假的 65 条差异）：
 
 ```sh
 EXRE='^(_digested|_faq_on_digested|_dsh_plugin_agent_ready_development|_misc|\.pi)/'

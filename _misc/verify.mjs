@@ -15,7 +15,10 @@ function* walk(dir) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const path = join(dir, entry.name)
     if (entry.isDirectory()) {
-      if (entry.name === '_scratch' || entry.name === 'node_modules' || entry.name === '.git') continue
+      // Both subtrees are git-ignored local scratch: `_scratch` is disposable drafts, and
+      // `_model_vendors` is multi-vendor research that cites paths outside the corpus by design.
+      if (entry.name === '_scratch' || entry.name === '_model_vendors'
+        || entry.name === 'node_modules' || entry.name === '.git') continue
       yield* walk(path)
     } else if (entry.name.endsWith('.md') || entry.name.endsWith('.svg')) {
       yield path
