@@ -42,10 +42,10 @@ const valid = run(fixture())
 assert.equal(valid.status, 0, valid.output)
 console.log('PASS accept: copied corpus runs outside its original repository and cwd')
 
-const currentUrl = 'https://github.com/deepseek-ai/deepseek-harness/tree/dsh-v0.2.1-rc.2'
-for (const ref of ['main', 'dsh-v0.2.1-rc.1', 'a'.repeat(40), 'dsh-v0.2.1-rc.2-extra']) {
+const currentUrl = 'https://github.com/deepseek-ai/deepseek-harness/tree/master'
+for (const ref of ['main', 'dsh-v0.2.1-rc.2', 'dsh-v0.2.1-rc.5', 'a'.repeat(40), 'master-extra']) {
   reject(`unpinned or wrong reference ${ref}`, '00-index.md',
-    source => `${source}\n[invalid](${currentUrl.replace('dsh-v0.2.1-rc.2', ref)})\n`,
+    source => `${source}\n[invalid](${currentUrl.replace('master', ref)})\n`,
     /external link must target/)
 }
 reject('cross-volume SVG ownership', 'native-development-model/00-index.md',

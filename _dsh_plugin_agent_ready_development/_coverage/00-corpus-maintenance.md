@@ -1,8 +1,8 @@
 # `_dsh_plugin_agent_ready_development` 语料证据与维护说明
 
-> 复核日期：2026-10-18。现行源码与文档基线：release tag `dsh-v0.2.1-rc.2`。本页记录核验范围、结构约束和重审路径，不复制教学正文。固定标签只标明核验版本，不代表永久兼容承诺。
+> 复核日期：2026-11-01。现行源码与文档核验基线：release tag `dsh-v0.2.1-rc.5`。本页记录核验范围、结构约束和重审路径，不复制教学正文。核验基线只标明本轮对着哪个版本核实，不代表永久兼容承诺。
 
-当前引用政策：现行机制链接固定到上述 release tag；历史证据用 release tag、PR、日期与准确提交标题定位，不在维护文件中写 Git commit 标识。0013 轮核对了原本引用的本地同步树与真正 release tag：唯一差异是配对清单中的研究语料排除项。其余引用来源内容等价；配对清单仍证明 DSH 主仓的发现与排除机制，但本地新增排除项不是发布版本事实。语料自身不继承 DSH 主仓的配对制度。
+当前引用政策：**链接不带版本**。目录外引用一律指向 DSH 仓库的 `master` 分支，使一条引用在各轮同步之间保持同一 URL，版本升级不产生语料 diff；核验版本记在本页与 [`00-index.md`](../00-index.md)，不写进每条 URL。历史证据用 release tag、PR、日期与准确提交标题定位，不在维护文件中写 Git commit 标识。这一政策在 0013 轮生效：此前链接钉在 release tag 上，每轮同步产生约 320 行纯 URL 替换，而那些目标文件在相邻 tag 之间多数逐字节相同，版本号在链接里不承载信息。配对清单仍证明 DSH 主仓的发现与排除机制，但本地新增排除项不是发布版本事实。语料自身不继承 DSH 主仓的配对制度。
 
 历史基线勘误：2026-09-16 与 09-23 条目分别对应 `dsh-v0.1.5-rc.1` 与 `dsh-v0.1.5-rc.2`；曾误写为 `dsh-v0.1.7-rc.1` 的基线标识已在 0008 轮复原。以下历史条目保留各轮版本与结果，不充当当前状态。
 
@@ -14,7 +14,7 @@
 
 每个目录都有落地页：卷目录用 `00-map.md`，其余目录用 `00-index.md`。三个主题目录的 `00-map.md` 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 `00-index.md` 还标明每张 SVG 的正文 owner。
 
-专题所需的教学上下文、图与维护说明都在本目录内；目录外引用只指向固定 release tag 的 DSH 源码、文档、规则、Skills 与 Agent Notes，不依赖其它研究语料。本页拥有语料的层级、证据范围、`.github/` 纳入原则、独立发行约束、图文分工与重审入口；这些是研究语料自身的维护信息，不写入或修改 DSH 的 Agent Notes。
+专题所需的教学上下文、图与维护说明都在本目录内；目录外引用只指向 DSH `master` 分支的源码、文档、规则、Skills 与 Agent Notes，不依赖其它研究语料。本页拥有语料的层级、证据范围、`.github/` 纳入原则、独立发行约束、图文分工与重审入口；这些是研究语料自身的维护信息，不写入或修改 DSH 的 Agent Notes。
 
 ## 2. 已核验来源
 
@@ -36,7 +36,7 @@
 - 2026-10-18 轮新增（上下文纪律页）：`native-development-model/03-context-and-drift.md` 及其图 `figures/context-discipline-layers.svg`。来源：`docs/architecture.md` 的 Session log 节、`docs/subsystems/compaction.md`、`docs/AGENTS.md` 的文档层级/slop/预算三节、`docs/i18n/README.md`、`packages/compaction/{compaction,compaction-basic}/README.md`、`packages/plan/plan-mode/README.md`、`packages/goal/{goal,tool-goal}/README.md` 与 `goal-round-driver/{README.md,src/prompt.ts}`、`packages/todo/tool-todo/{README.md,src/types.ts}`、`packages/skill/tool-skill/README.md`、`packages/experimental/{session-search,tool-session-query}/README.md`、`packages/subagent/subagent-{fork,spawn}-in-process/README.md`、`.agents/notes/{AGENTS.md,README.md,implemented/AGENTS.md,archived/AGENTS.md}`、`.agents/notes/rejected/architecture/2026-06-16-typed-event-schemas.md`、`.agents/notes/implemented/process/2026-10-14-experimental-dependency-policy.md`、`.agents/notes/implemented/simplification/2026-08-30-jsonl-only-session-persistence.md`、`.agents/notes/archived/architecture/2026-07-28-dsh-native-typescript-source-launch.md`、`.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md`、`scripts/{doc-budgets.manifest.json,verify-upgrade-guides.ts,archived-agent-notes.ts}`；历史样本按日期、PR（#3339、#3906、#4442、#3548）与准确提交标题定位。验证：`node verify.mjs` 通过（36 Markdown、2 scripts、27 SVG）；`node verify.test.mjs` 通过（1 个接受用例 + 8 个负例）；新图经无头浏览器渲染并人工看图，确认无溢出与重叠。引用政策与证据分级不变。
 - 2026-10-18 复核轮（第三轮 review 修正）：`native-development-model/03` §1 的「写入门槛」断言补上内容与 owner 指针——只有代码、测试与现有文档表达不了的长期取舍才写 Note、机械与局部改动豁免，写入条件由 `sdlc-reference/01` 拥有；`sdlc-reference/01` 归档段的「只追加新三元组的哈希」改为「新封存文件各自的哈希」（manifest 按文件记条目，对照 `scripts/archived-agent-notes.ts`）。验证：`node verify.mjs`（36 Markdown、2 scripts、27 SVG）与 `node verify.test.mjs`（1 接受 + 8 负例）重跑通过。
 
-【0008 复核：本条挂账已关闭】上游已把该 note 整篇重写为 "Cordis runtime inspection and runner isolation"，与两工具现状对齐；工具面在 0.1.7 线收敛为 `cordis_inspect_list`/`cordis_inspect_query` 两只读工具，持久安装走 plugin_manager。下文为 0007 时的原文记录：implemented Agent Note [`2026-07-08-self-referential-cordis-toolset`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md) 仍用 `cordis_inspect` / `cordis_mount` / `cordis_unmount` 三个工具的旧词汇描述动态 Plugin，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/packages/extensions/tool-cordis/src/index.ts)、生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 与 package README 在 0.1.5 线曾列出七个工具。`repo-harness/06` 已按 0.1.7 线改述为两工具。
+【0008 复核：本条挂账已关闭】上游已把该 note 整篇重写为 "Cordis runtime inspection and runner isolation"，与两工具现状对齐；工具面在 0.1.7 线收敛为 `cordis_inspect_list`/`cordis_inspect_query` 两只读工具，持久安装走 plugin_manager。下文为 0007 时的原文记录：implemented Agent Note [`2026-07-08-self-referential-cordis-toolset`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md) 仍用 `cordis_inspect` / `cordis_mount` / `cordis_unmount` 三个工具的旧词汇描述动态 Plugin，而 [`tool-cordis` source](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/extensions/tool-cordis/src/index.ts)、生成 [`tool catalog`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-catalog.md#deepseek-aidsh-tool-cordis) 与 package README 在 0.1.5 线曾列出七个工具。`repo-harness/06` 已按 0.1.7 线改述为两工具。
 
 ## 3. 结构与叙事约束
 

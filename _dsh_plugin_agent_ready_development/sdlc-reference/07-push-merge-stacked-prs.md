@@ -6,7 +6,7 @@
 
 > Land dependent PRs through GitHub's native stack object and `gh stack merge`. Do not reproduce stack semantics by merging and retargeting individual PRs with `gh pr merge` and `gh pr edit`.
 >
-> — DSH [`dsh-merging-stacked-prs` skill 的开篇](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-merging-stacked-prs/SKILL.md)。这条规则确定官方 stack object 才拥有依赖顺序、retarget 和 merge 状态。
+> — DSH [`dsh-merging-stacked-prs` skill 的开篇](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-merging-stacked-prs/SKILL.md)。这条规则确定官方 stack object 才拥有依赖顺序、retarget 和 merge 状态。
 
 本页展开两个交付 Skills 的精确操作；它们为什么以 Skill 而不是 standing rule 或 gate 承载，见 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md)。
 
@@ -36,9 +36,9 @@ Remote head 已前进就让 push 失败，重新读取状态；raw `--force` 永
 
 > **Choose PR history deliberately.** Split independent changes and fix the introducing PR before propagation. Standalone/stack branches may merge-forward or rebase.
 >
-> — DSH [`AGENTS.md` 的 Conventions 节](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/AGENTS.md#conventions)。独立改动分开落地；错误的来源层修正后再向上推进。改写仍受上一节的 lease 约束。
+> — DSH [`AGENTS.md` 的 Conventions 节](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md#conventions)。独立改动分开落地；错误的来源层修正后再向上推进。改写仍受上一节的 lease 约束。
 
-公开 API 是 pre-stable，修正时更新每个消费方，不为旧形态保留兼容层（规则 owner 是根 [`AGENTS.md` 的 Pre-stable APIs 节](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/AGENTS.md#pre-stable-apis-and-released-session-data)）。这样主线上留下的是当前事实，而不是「先这样、后来改了」的两段历史。
+公开 API 是 pre-stable，修正时更新每个消费方，不为旧形态保留兼容层（规则 owner 是根 [`AGENTS.md` 的 Pre-stable APIs 节](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md#pre-stable-apis-and-released-session-data)）。这样主线上留下的是当前事实，而不是「先这样、后来改了」的两段历史。
 
 ## 3. 先确认依赖链是官方 stack
 
@@ -87,9 +87,9 @@ Branch deletion 是独立最后一步：对应 PR 已 `MERGED`，且 `gh pr list
 
 ## 证据入口
 
-- DSH [`dsh-pre-push-checks` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md)：普通 push、history rewrite 和 `gh stack sync` 后的证据顺序。
-- DSH [`dsh-merging-stacked-prs` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-merging-stacked-prs/SKILL.md)：官方 membership、link、sync、merge 与落地后验证流程。
-- DSH [stack review guide](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/cookbook/responding-to-pr-review-on-a-stack.md)：review 修复怎样沿依赖层传播。
-- DSH [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/AGENTS.md)：允许的 merge-forward、rebase、lease 与 history 规则。
-- DSH [Native stacks Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/implemented/process/2026-08-02-native-github-stacks-and-optional-rebases.md)：为什么同仓依赖链必须交给 GitHub 官方 stack。
-- DSH [Incremental retargeting Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/process/2026-07-26-incremental-pr-base-retargeting.md)：merge-forward 时怎样保留中间 checkpoint 并逐层推进。
+- DSH [`dsh-pre-push-checks` skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)：普通 push、history rewrite 和 `gh stack sync` 后的证据顺序。
+- DSH [`dsh-merging-stacked-prs` skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-merging-stacked-prs/SKILL.md)：官方 membership、link、sync、merge 与落地后验证流程。
+- DSH [stack review guide](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/responding-to-pr-review-on-a-stack.md)：review 修复怎样沿依赖层传播。
+- DSH [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)：允许的 merge-forward、rebase、lease 与 history 规则。
+- DSH [Native stacks Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/process/2026-08-02-native-github-stacks-and-optional-rebases.md)：为什么同仓依赖链必须交给 GitHub 官方 stack。
+- DSH [Incremental retargeting Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-26-incremental-pr-base-retargeting.md)：merge-forward 时怎样保留中间 checkpoint 并逐层推进。

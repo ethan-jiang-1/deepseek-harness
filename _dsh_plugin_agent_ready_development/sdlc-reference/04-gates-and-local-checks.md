@@ -6,7 +6,7 @@ DSH 把可机械检查的规则接到会失败的顶层命令；push 前按 outg
 
 > Match evidence to the surface: focused behavior tests, model/user-output snapshots, `doc-sync` for docs, built smokes for published paths, and real-API e2e for providers.
 >
-> — DSH [根 `AGENTS.md` 的 “Run relevant checks locally”](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/AGENTS.md#run-relevant-checks-locally)。这条 standing order 定义本地证据按改动面选择，而不是默认运行全部检查。
+> — DSH [根 `AGENTS.md` 的 “Run relevant checks locally”](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md#run-relevant-checks-locally)。这条 standing order 定义本地证据按改动面选择，而不是默认运行全部检查。
 
 ![从 outgoing diff 到本地证据、PR CI 与语义 review](./figures/evidence-routing.svg)
 
@@ -63,7 +63,7 @@ agent 看见的请求、可回放会话和外部世界各自固定什么、例�
 - Python SDK 与 release-shaped runtime；
 - required native Windows build 与 native tests（observational gates 是 required Windows build job 内的 step，计入聚合），以及不进入该聚合的 Windows coverage job。
 
-`all checks passed` 聚合 required job 结果；`.github/AGENTS.md` 明确 native Windows build 与 process 检查计入该 PR verdict，Wine 只在 master-only 的 `ci-master.yml` 里用 hosted Linux 运行 Windows Node。精确 job 和命令以 DSH 的 [`ci.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.github/workflows/ci.yml) 与 [`run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/scripts/run-gates.ts) 为准，专题不复制完整 gate inventory。
+`all checks passed` 聚合 required job 结果；`.github/AGENTS.md` 明确 native Windows build 与 process 检查计入该 PR verdict，Wine 只在 master-only 的 `ci-master.yml` 里用 hosted Linux 运行 Windows Node。精确 job 和命令以 DSH 的 [`ci.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/ci.yml) 与 [`run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/run-gates.ts) 为准，专题不复制完整 gate inventory。
 
 Secret-backed e2e 在独立 workflow 里运行；无 key 时的本地命令 self-skip，不应被描述为真实 provider 已验证。产品可见 GUI 变更还需要从 PR 的真实 server/model flow 录制 GIF，这份证据不由普通 unit test 或 mock fixture 替代。
 
@@ -81,10 +81,10 @@ Secret-backed e2e 在独立 workflow 里运行；无 key 时的本地命令 self
 
 ## 证据入口
 
-- DSH [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/AGENTS.md#run-relevant-checks-locally)：本地 relevant checks 与 CI exhaustive matrix 的职责分配。
-- DSH [`dsh-pre-push-checks` skill](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样解析 outgoing scope 并选择最小可信证据。
-- DSH [PR CI workflow](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.github/workflows/ci.yml)：远端 runner、job 依赖和 `all checks passed` 聚合。
-- DSH [`.github/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.github/AGENTS.md)：PR Windows signals 中哪些计入 required 聚合，哪些留在 master-only workflow。
-- DSH [gate scheduler](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/scripts/run-gates.ts)：顶层 gate 的命令、依赖与并行调度真源。
-- DSH [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/docs/testing.md)：coverage、snapshot、真实入口和 negative control 的证据要求。
-- DSH [Quality gates Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/dsh-v0.2.1-rc.2/.agents/notes/archived/process/2026-06-11-quality-gates.md)：为什么仓库优先把规则接成可执行检查。
+- DSH [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md#run-relevant-checks-locally)：本地 relevant checks 与 CI exhaustive matrix 的职责分配。
+- DSH [`dsh-pre-push-checks` skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样解析 outgoing scope 并选择最小可信证据。
+- DSH [PR CI workflow](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/ci.yml)：远端 runner、job 依赖和 `all checks passed` 聚合。
+- DSH [`.github/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/AGENTS.md)：PR Windows signals 中哪些计入 required 聚合，哪些留在 master-only workflow。
+- DSH [gate scheduler](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/run-gates.ts)：顶层 gate 的命令、依赖与并行调度真源。
+- DSH [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：coverage、snapshot、真实入口和 negative control 的证据要求。
+- DSH [Quality gates Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)：为什么仓库优先把规则接成可执行检查。

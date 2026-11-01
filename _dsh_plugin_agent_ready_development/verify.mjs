@@ -25,7 +25,10 @@ const forbiddenResearchReferences = [
   '_digested',
   '_faq_on_digested',
 ]
-const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:blob|tree)\/dsh-v0\.2\.1-rc\.2(?:[/?#]|$)/
+// Corpus links track the upstream default branch, never a release tag: evidence stays readable across
+// synchronization rounds and a version bump produces no corpus diff. Release tags, commit hashes, and
+// short names other than the default branch stay rejected so every link resolves to a maintained file.
+const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:blob|tree)\/master(?:[/?#]|$)/
 
 function corpusFiles(directory) {
   const files = []

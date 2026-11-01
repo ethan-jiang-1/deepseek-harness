@@ -468,7 +468,7 @@ function checkSvg(path, source) {
   if (stack.length > 0) report(path, undefined, `unclosed XML tag <${stack.at(-1)}>`)
 }
 
-const EXPECTED_BASELINE = '1f81c047fc48fa190a683e469daa699857e9afe8'
+const EXPECTED_BASELINE = 'b830ec950faba0a46dda564be3e2d854afed94f1'
 const claimsPath = resolve(corpusRoot, 'harness-idea', 'claims.json')
 
 /**
