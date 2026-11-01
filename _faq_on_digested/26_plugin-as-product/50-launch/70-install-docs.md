@@ -5,7 +5,7 @@
 一份能用的安装/使用说明至少覆盖十段：
 
 1. **这是什么**：产品名、surface（Web/Desktop/CLI/SDK）、适用范围、不做什么。
-2. **前置条件**：OS/架构、Node/pnpm 版本、磁盘/内存、网络、端口、凭据、是否需要管理员权限。
+2. **前置条件**：OS/架构、Node/pnpm 版本、磁盘/内存、网络、端口、凭据、是否需要管理员权限；写清支持的 dsh 版本范围。engines/peer 不匹配时安装会在写入前拒绝；不要默认让用户加 exemption，确需时给 exact package + dsh version 的命令和风险说明。
 3. **选运行时**：npm 全局 / Desktop / 容器 / wheel；每种给一条最短命令和适用场景。
 4. **安装**：一条命令；说明会创建/修改什么（profile、home、依赖）；给出预期输出。
 5. **首次启动**：profile 名、端口、token URL、浏览器/SSH、`--no-open`；Desktop 的欢迎页/登录。
@@ -69,6 +69,56 @@ docker run --rm -p 8080:3080 \
 - 已有 profile：安装不覆盖用户 patch/数据；升级后 roster/row 正确。
 - 端口被占/浏览器打不开/凭据缺失：文档给出的诊断能定位。
 - 卸载后：用户数据按文档保留或删除；没有“以为删了其实还在”。
+
+## 可复制骨架
+
+````markdown
+# <产品名>
+
+## 这是什么
+<surface、适用范围、不做什么>
+
+## 前置条件
+<OS/架构、Node/pnpm、磁盘、网络、端口、凭据>
+
+## 选择安装方式
+<npm / 官方 Desktop / 容器 / wheel；各自最短命令>
+
+## 安装
+```sh
+dsh --version
+dsh --profile <name> --from-default-profile web --dump-default-config   # 仅首次
+dsh plugin --profile <name> add <bundle>@<version>
+```
+
+## 首次启动
+```sh
+dsh --profile <name> --port 8080
+```
+<打开的 URL/token、SSH、--no-open、Desktop 欢迎页>
+
+## 验证
+```sh
+dsh --profile <name> --dump-config
+dsh --profile <name> --port 0 --no-open
+```
+<profile roster、页面/任务、日志位置>
+
+## 配置
+<设置页 vs profile patch vs env；端口/TLS/代理/trusted-host；凭据>
+
+## 升级
+<停/备份/更新/重启/回滚；bundle 变化要重启；Desktop drain>
+
+## 卸载与数据
+<删什么、留什么、$DSH_HOME 哪些共享>
+
+## 故障排查
+<缺 build、engines、端口、浏览器、凭据、权限>
+
+## 安全
+<token 不截图、反代/TLS/trusted-host、凭据不进 patch>
+````
 
 ## 常见错误写法
 

@@ -32,6 +32,12 @@ ordered bundle patches
 
 产品 bundle 应拥有自己需要覆盖的 row，并声明其完整 `config`。不要假设 Settings 的字段更新会合并回所有低层 bundle values；Config Editor 写入的是当前 profile patch。
 
+## app 参数与 config
+
+Web 的 app args（`--host/--port/--tls/--public-url/--trusted-host/--no-open`）整条归 shipped `web-startup`。`--port` 等只有在 row 保留 `!!js ctx.webStartup.…` 表达式时才压过 config；用户 patch 把 config 写成字面值后，参数失效，且整份替换可能丢必填字段。
+
+产品要新增自己的 app flag，只有替换 `web-startup` 并重实现全部 web flags（否则 `public-url`/`trusted-host`/`tls` 静默失效），或改用 profile-as-mode/config/非 Web surface。详见 [50 launch](../50-launch/40-profile-integration.md)。
+
 ## Config 与 Settings 的作用域
 
 Config 声明插件 row 的配置字段。`Config.volatile()` 字段可以出现在 DSH Settings 表单；保存后写入**当前 profile** 的 `cordis.patch.yml`。因此：

@@ -8,6 +8,7 @@
 4. **模型权限来自可用工具与各工具的 provider/policy。** Workspace 不赋予模型文件操作；Host 插件代码也不自动受到 Session sandbox 约束。
 5. **DSH Web 首用有自己的 Documents 默认 Workspace 流程。** 产品自建的 project root、directory onboarding、设置文件和隔离路径不是 DSH 通用服务。
 6. **profile 不是隔离边界。** 同一 `$DSH_HOME` 中的 profile 可以共享 Session、Workspace registry、凭据与其他 home 数据；CLI 改变 bundle membership 后要重启 profile。
+7. **交付路径有硬边界。** bundle 在 roster ≠ patch 生效（新增 row 用 `insert:`）；web 命令行归 `web-startup`，替换 provider 要重实现全部 web flags；session 创建与 UI 选中是两层（fresh 可能自动选最新 blank，returning 保持 current）；版本门在安装前拒绝。
 
 ## 本篇如何回答问题
 

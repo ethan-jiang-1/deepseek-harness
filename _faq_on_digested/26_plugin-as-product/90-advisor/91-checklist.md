@@ -72,10 +72,14 @@
 3. **更新与恢复**：记录更新 owner、consent/idle 门、旧 exact version 与 enabled 状态；失败恢复是补偿流程，要写清 crash window、`restore-failed`/`unknown` 和重启要求。exact direct pin 不等于 transitive lock。
 4. **接管与覆盖**：替换宿主内置行时显示 target/scope/owner，区分 `unset`/继承与显式默认，只回滚自有行并保护 foreign edit；旧配置迁移要幂等。
 5. **来源、安装与过滤**：外部套件的 source checkout、install record 和 workspace filter 分开存；要可复现就 pin 不可变快照，`lockCommit` 不是冻结；卸载区分 suite、source 与 checkout。
+6. **bundle patch**：新增 row 用 `insert:`；`--dump-config` 确认 row 存在，不只看 bundle 是否在 roster。
+7. **命令行**：web app args 归 `web-startup`；要加产品 flag，必须替换 provider 并重实现全部 web flags，或改用 profile-as-mode/非 Web surface。
+8. **startup session**：Host `sessionController.create` 只创建/attach；fresh client 可能自动选最新 blank，returning 保持 current；确定性选中要 client `uiWorkspace.openSession`。
+9. **版本门**：`engines.dsh`/peer 不匹配安装前拒绝；exemption 只对 exact package + dsh version。
 
 ## 安装、更新与移除
 
-安装路径、启动面与产品启动器的选择见 [50 launch](../50-launch/00-index.md)。
+安装路径、启动面、命令行所有权与 startup 边界见 [50 launch](../50-launch/00-index.md)。
 
 `dsh plugin --profile <name> add <bundle>` 修改 profile bundle list，并返回 package-manager 结果，不返回 Plugin Manager 的 `ChangeResult.application`。CLI 修改后要重启 profile；Plugin Manager 是另一条操作路径，会返回自己的 application result。
 

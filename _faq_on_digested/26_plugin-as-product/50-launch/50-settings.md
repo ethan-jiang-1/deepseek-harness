@@ -14,7 +14,7 @@ Config schema 默认值
 
 - 后层赢；patch 对目标 row 的 `config` 是**整份替换**，不是字段合并。
 - `!!js` 表达式保留时，app 参数（如 `--port`）优先于 config；用户 patch 换成字面值后，参数失效。
-- Settings UI 的 `Config.volatile()` 写当前 profile patch，不自动跨 profile；home patch 是机器级共享。
+- Settings UI 的 `Config.volatile()` 写当前 profile patch，不自动跨 profile；home patch 是机器级共享。C 依据：`packages/settings/README.md` 明确“changes persist through the active profile’s Cordis patch”，表单只暴露 active、唯一寻址 entry 的 volatile 字段，并拒绝 stale write。
 - Desktop shell 设置（如 update test popup）在 Electron `userData/desktop/settings.json`，`DSH_HOME` 不重定位它。
 
 ## 设置归谁

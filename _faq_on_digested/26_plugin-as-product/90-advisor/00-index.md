@@ -82,7 +82,7 @@ Kanban 第一版可让项目目录中的 Markdown/JSON board files 作为业务 
 ## 下一步
 
 - 先定形态：用 [34 profile 产品形态](../30-external/34-profile-product-forms.md) 选八种交付形态之一，再用 [35 装配状态与所有权](../30-external/35-profile-assembly-ownership.md) 做四层读回。
-- 安装/启动/分发形态见 [50 launch](../50-launch/00-index.md)，含 npm/Desktop/容器、启动面与安装文档。
+- 安装/启动/分发形态见 [50 launch](../50-launch/00-index.md)，含 named profile、web 命令行所有权、startup session/client 选中与安装文档。
 - 用 [93 Kanban 文件走查](./93-app-plugin-walkthrough.md) 对照 profile JSON、bundle JSON、preset YAML 和 Session 请求。
 - 用 [91 数据卡与验收](./91-checklist.md) 核对事实的 Authority、Source、读写者和生命周期。
 - 只有当产品有存储、归档、同步或隔离取舍时，才查 [92 参考矩阵](./92-native-reference-architectures.md)。安装、升级和卸载语义见 [18](../10-foundations/18-install-upgrade.md)。

@@ -13,6 +13,13 @@
 
 ![五种运行时来源与所有权](./figures/20-install-ownership.svg)
 
+## 安装状态机
+
+安装不是“跑完 add 就结束”，而是五个检查点：运行时 → profile → bundle → dump → boot。每一步都有独立读回；失败停在该步，不要用一个 exit code 代表全部。
+
+![安装状态机：五个检查点](./figures/20-install-sequence.svg)
+
+
 ## Profile 初始化
 
 | 入口 | 行为 |
@@ -41,6 +48,41 @@ dsh plugin --profile <name> remove <package>
 - **bundle membership 变化要重启 profile**；普通 profile/home patch 的改动可被 HMR 应用。本地 bundle 同样走 `dsh plugin add /path`，声明了 `dsh.bundle.patch` 就会进入 bundles 列表（实验见 [90](./90-evidence.md)）。
 - git 源安装会跑 `prepare`，pnpm ≥10 需要 `allowBuilds` 允许；built tarball/local checkout 不需要。
 - 安装和启动都校验 `engines.dsh` 或 DSH peer range；不兼容要显式 exact-version exemption。
+
+### bundle patch：insert 还是 override target
+
+产品 bundle 的 patch 里，裸 `- id: …` 是 **override target**，不是新增 row。目标不存在时 `--dump-config` 只报：
+
+```
+patch: entry "tmp-startup" not found
+```
+
+此时 bundle 仍在 `dsh.profile.bundles`，看起来“装上了”，但 row 不存在、插件不跑。新增 row 必须写 `- insert:`：
+
+```yaml
+- insert:
+    - id: acme-startup
+      name: './startup.js'
+```
+
+实测：裸 id 无 row；改成 insert 后 row 出现并解析成 `file://…/startup.js`，插件在 boot 时读到 args。**bundle 在 roster ≠ patch 生效。**
+
+### 版本门与 exemption
+
+bundle 声明 `engines.dsh`/peer 范围后，安装和启动都会校验。不匹配时 `dsh plugin add` **在安装前拒绝**：
+
+```
+installation rejected: Plugin ... is incompatible with dsh 0.2.1-rc.3:
+requirements {"engines.dsh":">=9.0.0"}. ... nothing was installed.
+```
+
+要显式接受风险，只能对 exact package + exact dsh version 授权：
+
+```sh
+dsh plugin --profile <name> allow-version <pkg>@<version> --dsh-version <dsh-version> --accept-risk
+```
+
+然后重跑 add；stderr 会警告可能崩溃/损坏数据。exemption 不是兼容性证明，也不会覆盖其它版本。
 
 ## 各来源的特殊点
 

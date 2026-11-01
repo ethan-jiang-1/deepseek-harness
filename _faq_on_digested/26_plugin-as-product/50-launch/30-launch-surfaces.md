@@ -1,5 +1,11 @@
 # 30 · 启动：CLI 语法、组合顺序与 surfaces
 
+## 启动流水线
+
+启动不是“装完就跑”：patch 层叠 → bundle 解析 → Loader 挂载 → 结果。dump 是旁路，不证明挂载或参数解析。
+
+![启动流水线：patch 层 → 解析 → Loader → 结果](./figures/30-boot-pipeline.svg)
+
 ## CLI 语法
 
 ```sh
@@ -15,6 +21,16 @@ dsh plugin --profile <name> …   # 管理命令，不是 profile
 - 重复 `--profile`、shorthand 后再给 `--profile` 都拒绝。
 - `--dump-default-config`（bundle 层）、`--dump-config`（加 profile/home/CLI）、`--dump-config-schema` 互斥；dump 不接受 app 参数。
 - `--from-default-profile` 用 shipped 模板替换自定义 profile；破坏性，只用于首次/救援。
+
+## 命令行所有权
+
+web profile 的 app args 整条归 shipped `web-startup`。产品想加 `--project` 这类 flag，shipped parser 会先拒绝：
+
+```
+error: unknown option '--project'   (exit 1)
+```
+
+再加一个 startup 插件不能“扩展”它——两个 parser 看同一份 args。要加 flag，只能 disable `web-startup` + insert 产品 provider，自己解析 web + 产品 flags 并 `provide('webStartup', …)`；代价是重实现 web flag 语义并跟随升级——漏实现 `public-url`/`trusted-host`/`tls` 不会报错，只会静默退回 loopback HTTP。替代：profile-as-mode、config/env、非 Web surface。详见 [40](./40-profile-integration.md)。
 
 ## 启动顺序
 

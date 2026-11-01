@@ -45,6 +45,21 @@
 7. patch 不要只写一项：`config` 是整份替换，缺必填字段会启动失败。
 8. 需要 app 参数生效时，保留 row 的 `!!js` 表达式；字面值会让 `--port` 失效。
 
+## 失败模式
+
+大多数“装好了但没用”能归到三类：状态层（base-only/半挂载/skipped bundle）、config 层（整份替换/字面值）、membership 层（重置/双写者/端口）。
+
+![失败模式：症状、原因、检查与修复](./figures/80-failure-modes.svg)
+
+### startup 实测失败
+
+| 失败 | 症状 | 原因 | 修复 |
+|---|---|---|---|
+| 自定义 flag 被拒 | `unknown option '--project'` | web-startup 拥有整条命令行 | 用 web flags/profile-as-mode，或替换 web-startup |
+| patch 没生效 | bundle 在 roster，row 不存在 | 裸 `- id` 被当 override target | 改用 `- insert:` |
+| session 建了但没选中 | 返回用户仍是旧 session | Host create 不切换 Client current；fresh 可能自动选最新 blank | client 调 `uiWorkspace.openSession(sessionId)` |
+| 替换 web-startup 漏 flag | `--public-url/--trusted-host/--tls-*` 静默失效 | 产品 parser 没实现这些 web flag | 实现全部 web flags 或显式拒绝未知 flag |
+
 ## 反模式
 
 | 反模式 | 问题 |

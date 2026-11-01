@@ -37,13 +37,61 @@
 | 14 | `--profile plugin --dump-config` | 报 profile 不存在，提示用 `dsh plugin` 初始化 |
 | 15 | `--profile web --from-default-profile headless` | 拒绝：shipped 名字不能作为自定义目标 |
 | 16 | 本地最小 bundle（`package.json` 声明 `dsh.bundle.patch`，patch 为空）`dsh plugin --profile mini add /tmp/dsh-mini-bundle` | profile 初始化为 base；`dsh.profile.bundles` 含 `@tmp/dsh-mini-bundle`；dependency 为 `link:/tmp/...` |
+| 17 | 同一 bundle 的 patch 写成裸 `- id: tmp-startup` | `--dump-config` 报 `patch: entry "tmp-startup" not found`；bundle 仍在 bundles，row 不存在 |
+| 18 | patch 改为 `- insert:`，本地 startup 插件读 `ctx.cmdlineArgs` | row 出现并解析成 `file://.../index.js`；boot 后写出 `["--no-open","--port","0"]` |
+| 19 | web profile 传 `--project board` | `error: unknown option '--project'`，exit 1 |
+| 20 | disable `web-startup` + insert 产品 provider（解析 `--project/--port/--no-open`，provide `webStartup`） | `--project board --no-open --port 0` 启动成功；插件收到 args，web 正常监听 |
+| 21 | startup 插件 `workspaceController.create({path})` + `sessionController.create({workspaceId, agentPreset})` | workspace 注册；session 创建；`attachedSessionIds` 包含新 session；同路径 create 幂等 |
+| 22 | 同一插件再试 `workspaceId` + `cwd` 同传、以及 `cwd` only | 同传报 `session.create accepts workspaceId or cwd, not both`；`cwd` only 成功建 session |
+| 23 | 本地 bundle 声明 `engines.dsh: ">=9.0.0"`，`dsh plugin add` | 安装被拒：`installation rejected: ... incompatible with dsh 0.2.1-rc.3`；`nothing was installed`；给出 exact-version exemption 命令 |
+| 24 | `dsh plugin --profile bad allow-version <pkg>@0.0.1 --dsh-version 0.2.1-rc.3 --accept-risk` 后再 add | 警告“可能破坏应用/数据”；记录 exact package + dsh version；add 成功，bundle 进入 roster |
+| 25 | `npm pack` 本地 bundle → `dsh plugin --profile tarball add ./tmp-dsh-startup-0.0.1.tgz` | tarball 含 package.json/cordis.patch/插件文件；add 后 bundles 含该包；row 解析到 profile node_modules 内文件 |
+| 26 | 产品 provider 只实现 project/port/no-open，启动时传 `--public-url/--trusted-host`，再传不存在的 `--tls-cert/--tls-key` | 三组 flag 都被静默忽略；boot 打印 `http://127.0.0.1:<port>/`，无报错——替换 web-startup 漏实现即安全降级 |
+| 27 | 完整 provider 解析 host/port/tls/public-url/trusted-host/no-open；启动 `--public-url https://app.example/ --trusted-host app.example`，再用自签证书启动 TLS | 打印 `https://app.example/...`；TLS 启动打印 `https://127.0.0.1:<port>/?token=…`，token URL 返回 303；状态文件含全部值 |
+| 28 | 同一 provider 传 `--host 0.0.0.0` | provider 抛 `wildcard host is not supported`，startup failed；说明替换后要自己保留 shipped 的安全校验 |
+| 29 | 全新 Playwright context 打开 Host 已 create 新 session 的 Web | UI 自动选中新建的 blank session；localStorage `dsh.sessions.current` 就是它 |
+| 30 | 同一 profile：先预置 `dsh.sessions.current` 为旧 session，再 reload | UI 保持旧 session；新建 session 没有被自动选中 |
+| 31 | 两个进程同时 `--profile race --from-default-profile web/headless --dump-default-config` | 两个都 exit 0；最终 profile 是一份完整副本（headless）；没有 staging 残留 |
 
 ## 社区样本的位置
 
 社区 profile 产品的安装/启动样本已在 [34](../30-external/34-profile-product-forms.md)/[36](../30-external/36-profile-evidence-ledger.md) 按 `dsh plugin add` 的约定路径整理；本目录不再列非约定启动。需要对照时，只看它们如何把 bundle 装进 profile，不看自建 launcher。
 
+## claim → evidence
+
+| 断言 | 证据 | 级别 |
+|---|---|---|
+| 只有 named profile 是受支持启动 | architecture / CLI reference | C |
+| `dsh plugin` 对自定义名只初始化 base | CLI reference + 实验 12 | C/T |
+| `--from-default-profile` 是破坏性重置 | CLI reference + 实验 11 | C/T |
+| patch 对 config 是整份替换 | CLI reference + 实验 5 | C/T |
+| 字面值让 `--port` 失效 | 实验 6 | T |
+| home patch 赢 profile，CLI overlay 最后 | 实验 4 | T |
+| `dsh web --port 0` 打印 token URL | 实验 7 | T |
+| SDK/ACP 在 stdin EOF 退出 0 | 实验 13 | T |
+| `desktop` profile 由 Electron 独占 | CLI reference + 实验 9 | C/T |
+| 本地最小 bundle 能进 bundles 列表 | 实验 16 | T |
+| bundle patch 必须 `insert`，裸 id 是 override target | 实验 17 | T |
+| startup 插件能读 app args 并写文件 | 实验 18 | T |
+| web 自定义 flag 被 shipped web-startup 拒绝 | 实验 19 | T |
+| 替换 web-startup 可以新增产品 flag 并提供 webStartup | 实验 20 | T |
+| startup 插件能 create workspace/session 并 attach | 实验 21 | T |
+| `workspaceId` 与 `cwd` 互斥；`cwd` only 可建 session | 实验 22 | T |
+| engines/peer 不匹配会拒绝安装，且 nothing installed | 实验 23 | T |
+| exemption 只覆盖 exact package + dsh version | 实验 24 | T |
+| 本地 tarball 可安装并解析 patch row | 实验 25 | T |
+| 替换 web-startup 漏实现 web flag 会静默降级 | 实验 26 | T |
+| 完整替换 provider 可复现 host/port/tls/public-url/trusted-host/no-open | 实验 27 | T |
+| 替换后要自己保留 wildcard 拒绝等安全校验 | 实验 28 | T/C |
+| Settings UI 的修改写入当前 profile patch | `packages/settings/README.md`：Changes persist through the active profile’s Cordis patch | C |
+| Host create 不改变 Client 当前选择 | 返回用户保留 `dsh.sessions.current`；全新 context 实测自动选中新建 blank；selection 在 Client | T/C |
+| 确定性选中要 client 调 `uiWorkspace.openSession` | `ClientSessions` 注释 + `uiWorkspace` 合同；未跑 client 插件 | C |
+| 并发 `--from-default-profile` 最终留一份完整副本 | 实验 31 | T |
+
 ## 还没答案的问题
 
+- client 启动插件如何拿到 Host 创建的 sessionId：自己调 remote `session.create`，还是 Host 暴露 ID？
+- 替换 `web-startup` 后，`--tls/--public-url/--trusted-host` 等 web flag 需要产品重实现到什么程度？
 - 自定义 TUI terminal app bundle 需要哪些 profile/参数契约？
 - TUI 的官方边界：CLI 示例有 `tui` profile，但没有 shipped terminal app。
 - Windows/macOS 安装器的签名、公证、自动更新最小实现，社区样本各自做到哪一步？

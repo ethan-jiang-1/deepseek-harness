@@ -24,6 +24,16 @@ dsh plugin --profile kanban add <bundle-spec>
 
 profile 使用 DSH installation 与 profile node_modules 两个来源解析 bundle 名。若后加入的产品 bundle 要覆盖前面的 row，应将它放在 bundle list 后方并使用相同 row id。
 
+### bundle patch 的 insert 语义与版本门
+
+- 裸 `- id: …` 是 **override target**，不是新增 row。目标不存在时 `--dump-config` 只报 `patch: entry "…" not found`；bundle 仍在 `dsh.profile.bundles`，但 row 不存在、插件不跑。新增 row 必须写 `- insert:`。
+- `engines.dsh`/peer 不匹配会在安装前拒绝，并明确 `nothing was installed`。exemption 只对 exact package + exact dsh version：
+  `dsh plugin --profile <name> allow-version <pkg>@<version> --dsh-version <dsh-version> --accept-risk`；它是风险接受，不是兼容证明。
+- 本地 tarball 可直接 `dsh plugin add ./x.tgz`；产物要含 `package.json`、`dsh.bundle.patch` 与插件文件。
+- 并发执行 `--from-default-profile` 时，至少一个成功，最终目录是一份完整副本；实测两个进程都成功、最后写入者生效，未留 staging。
+
+实测与模板见 [50 launch](../50-launch/40-profile-integration.md)。
+
 ## 安装完成后何时生效
 
 CLI `dsh plugin` 运行 pnpm 并更新磁盘上的 dependency/bundle list；它返回退出码，不返回 `ChangeResult.application`。修改 bundle membership 后重启该 profile，以使用新的 composition。

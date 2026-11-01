@@ -342,3 +342,11 @@
 - **标签**：34–36 的 `[SRC]`/`[DSH]`/`[TEST]`/`[CI]`/`[RUN]` 在 00-index 证据段映射到既有的 S/C/未执行/未运行，避免与 31–33 的 S/R/U 冲突。
 - **90-advisor**：90 增加“先定形态”入口并调整下一步顺序；91 新增“检查 profile 发行形态”；92 与 93 回链 34/35；18 增加更新补偿与四层状态的对照。
 - **验证**：verify 26 子树 0；全量失败仍在 03_model-vendors 既有断链。
+
+## 26. 2026-11-01 · 50-launch 深度实测
+
+- **bundle patch**：裸 `- id` 是 override target；`--dump-config` 报 `entry "…" not found`，bundle 仍在 roster。新增 row 必须 `- insert:`；实测 row 解析到 `file://…/startup.js` 并读到 args。
+- **命令行所有权**：web profile 传 `--project` 被 shipped `web-startup` 拒绝；disable `web-startup` + insert 产品 provider 后 `--project board --no-open --port 0` 可启动。漏实现 `public-url/trusted-host/tls` 会静默退回 loopback HTTP；完整 provider 实测 TLS token URL 303、public-url 广告、wildcard 拒绝。
+- **workspace/session**：startup 插件 `workspaceController.create` + `sessionController.create({workspaceId, agentPreset})` 创建并 attach；`workspaceId+cwd` 互斥；`cwd` only 可建。UI 选中不在 Controller；Playwright 实测 fresh context 会自动选新建 blank，returning 保持 `dsh.sessions.current`，确定性选中用 `uiWorkspace.openSession`。
+- **版本门**：`engines.dsh` 不匹配在安装前拒绝，`nothing was installed`；exemption 只对 exact package + dsh version。本地 tarball 可 `dsh plugin add`。
+- **验证**：verify 26 子树 0；全量失败仍在 03_model-vendors。

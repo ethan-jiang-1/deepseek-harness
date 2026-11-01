@@ -23,6 +23,9 @@
 - **设置的灵活性在层级，不在开关数量**：bundle patch → profile patch → home patch → CLI `--patch` → app args/env → 客户端状态/Desktop shell 设置。最容易踩的两个坑是“整份 config 被替换”和“字面值让 app 参数失效”。
 - **产品拥有 bundle、默认值、安装器和文档；不拥有 launcher、profile 写者或第二套更新。** 同一 profile 的并发写、两个更新器是主要故障源。
 - **分发单位决定签名/校验/更新责任**：bundle、安装器、Desktop、容器、wheel、离线 tarball 各有 owner；安装文档要与发布物同版本。
+- **bundle 在 roster ≠ patch 生效**：新增 row 必须 `insert:`；裸 `- id` 是 override target。
+- **web 命令行归 `web-startup`**：产品自定义 flag 需要替换 provider 并重实现全部 web flags；漏实现 `public-url/trusted-host/tls` 会静默退回 HTTP。
+- **session 创建 ≠ UI 选中**：Host `sessionController.create` 只创建/attach；全新客户端可能自动选“最新 blank”，返回用户保持 `dsh.sessions.current`；确定性要用 client `uiWorkspace.openSession`。
 
 ## 章节地图
 
@@ -31,7 +34,7 @@
 | [10 模型](./10-model.md) | 三轴模型、所有权表、受支持/可能/禁止的边界 |
 | [20 安装路径](./20-install-paths.md) | npm/官方 Desktop/Python/源码；profile 初始化、bundle 安装、模板重置 |
 | [30 启动面](./30-launch-surfaces.md) | CLI 语法、组合顺序、Web/headless/SDK/ACP/TUI、官方 Desktop 特例 |
-| [40 profile 安排](./40-profile-integration.md) | 选模板、选 bundle、默认值、安装器、设置、更新、反模式 |
+| [40 profile 安排](./40-profile-integration.md) | 模板、bundle、startup 插件、命令行所有权、workspace/session、设置、更新 |
 | [50 设置层](./50-settings.md) | 默认值/覆盖/Settings UI/env/客户端/Desktop shell 设置；两个实验陷阱 |
 | [60 分发打包](./60-packaging.md) | bundle/安装器/官方 Desktop/容器/wheel/离线 tarball；版本、签名、校验 |
 | [70 安装文档](./70-install-docs.md) | 十段安装/使用说明骨架、边界、错误写法 |

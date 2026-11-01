@@ -12,6 +12,10 @@
 - 每份事实分别记录 owner、authority、source、mechanism/path、scope/key、readers、writers、可重建性和保留责任。
 - `workspaceId` 加入 DSH Workspace 导航与 Session 分组；只需工作目录时可传绝对 `cwd`。
 - DSH Web 有自己的首用 Workspace；产品自建项目选择和数据存储由产品维护。
+- **bundle 在 roster ≠ patch 生效**：新增 row 必须 `insert:`；裸 `- id` 是 override target，找不到目标只报 `entry not found`，插件不会跑。
+- **web 的 app args 归 `web-startup`**：产品自定义 flag 需要替换 provider 并重实现全部 web flags；漏实现 `public-url/trusted-host/tls` 会静默退回 HTTP。
+- **session 创建与 UI 选中是两层**：Host `sessionController.create` 只创建/attach；全新客户端可能自动选“最新 blank”，返回用户保持 `dsh.sessions.current`；确定性要用 client `uiWorkspace.openSession`。
+- **版本门是安装前拒绝**：`engines.dsh`/peer 不匹配时 `nothing was installed`；exemption 只对 exact package + exact dsh version。
 
 ## 按角色阅读
 

@@ -41,7 +41,7 @@ FAQ 24 已经拆过包的角色：**bundle 是唯一可安装并自动启用的�
 | 问题 | 做法 |
 |---|---|
 | 多个 bundle 的版本 | exact pin + lockfile/digest；区分 direct pin 与 transitive lock |
-| dsh 版本 | `engines.dsh`/peer range；升级窗口；exemption 只作显式例外 |
+| dsh 版本 | `engines.dsh`/peer range；不匹配默认拒绝安装；exemption 只对 exact package + dsh version，且是风险接受不是兼容证明 |
 | 更新通道 | npm dist-tag、Desktop feed、容器 tag/digest、产品 updater；不要混用 |
 | 回滚 | 保留旧 exact version/enabled；补偿恢复；写清 crash window |
 | profile 写锁 | 更新/安装走 `dsh plugin` 或 Plugin Manager；不要并发写 |
@@ -51,7 +51,7 @@ FAQ 24 已经拆过包的角色：**bundle 是唯一可安装并自动启用的�
 - Desktop：只由官方发布并签名/公证；产品不要自建桌面壳作为主路径。
 - npm：provenance/SLSA 可选（社区 `dsh-suite` 有 SLSA provenance 样本）；至少给 tarball checksum。
 - 容器：image digest、签名、SBOM；固定 tag + digest。
-- 离线/内网：vendor npm tarball + 依赖、预置 profile `node_modules`、或离线镜像；给 checksum 和安装顺序。
+- 离线/内网：vendor npm tarball + 依赖、预置 profile `node_modules`、或离线镜像；给 checksum 和安装顺序。实测：`npm pack` 的 bundle tarball（package.json + cordis.patch + 插件文件）可直接 `dsh plugin add ./x.tgz`，bundles 与 row 都正常。
 - License/notice：bundle license、第三方 notice、模型/API 条款；随发布物分发。
 
 ## 容器 entrypoint
