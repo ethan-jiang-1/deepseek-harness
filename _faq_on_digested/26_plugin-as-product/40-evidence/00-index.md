@@ -14,7 +14,7 @@
 | [50/90](../50-launch/90-evidence.md) | named profile 安装/启动/设置/分发实验：patch insert、web-startup 替换、workspace/session、engines、并发替换 |
 | [37 lifecycle](../30-external/37-lifecycle-stages.md) | 装/起/配/首启判据、15 张生命周期样本与 web/Desktop 分叉 |
 
-**profile/template 安装的 T 级观测**：隔离 home 下从 Web template 初始化 custom profile，再安装本地 bundle fixture；实测顺序为 base、web-app、产品 bundle。命令与 manifest 结果见 [实验 05](./experiments/05-profile-bundle-install.md)。其他 runtime/provider data roots 需按各 package Config 合同分别验证。
+**profile/template 安装的 T 级观测（CLI web 自动化；应用内 Plugins 页未测）**：隔离 home 下从 Web template 初始化 custom profile，再安装本地 bundle fixture；实测顺序为 base、web-app、产品 bundle。命令与 manifest 结果见 [实验 05](./experiments/05-profile-bundle-install.md)。其他 runtime/provider data roots 需按各 package Config 合同分别验证。
 
 ## 历史底稿
 

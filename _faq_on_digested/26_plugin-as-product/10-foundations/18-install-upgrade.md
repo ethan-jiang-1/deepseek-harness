@@ -58,9 +58,7 @@ profile 使用 DSH installation 与 profile node_modules 两个来源解析 bund
 
 CLI `dsh plugin` 运行 pnpm 并更新磁盘上的 dependency/bundle list；它返回退出码，不返回 `ChangeResult.application`，而且在另一个进程里操作——**宿主不知道**。修改 bundle membership 后必须重启该 profile。
 
-应用内安装由宿主自己执行，可能返回 `restart-required`（例如 `no-hmr`）；只有该接口明确 `applied` 时才是 HMR 生效。不要把 CLI 的 exit 0 当成“已生效”。
-
-Web/agent Plugin Manager 是不同的调用路径。启用 HMR 的 profile 可能应用可热加载的变更并返回 `ChangeResult.application: 'applied'`；只在该接口返回 `restart-required` 时按其结果告知重启。用户不应将 Plugin Manager 的返回值套用到 CLI 命令。
+应用内安装由宿主自己执行，可能返回 `restart-required`（例如 `no-hmr`）；只有该接口明确 `applied` 时才是 HMR 生效。不要把 CLI 的 exit 0 或 Plugin Manager 的返回值套用到另一条路径。
 
 Profile/home patch 的生效方式取决于已启动 composition 是否配置 patch reload。Config editor 对 profile patch 的写入还受高优先级 home patch 和 CLI overlay 影响；详见 [17](./17-config-layers.md)。
 
@@ -68,7 +66,7 @@ Profile/home patch 的生效方式取决于已启动 composition 是否配置 pa
 
 DSH 按 bundle/package manifest 声明检查其 DSH 兼容范围。无法读取或不兼容的 bundle 可能在 composition 时被跳过并产生诊断；其余 profile rows 仍可能运行，所以“profile 能启动”不等于产品所有功能都可用。
 
-安装期还有一道门：`dsh plugin` 在写入前检查 `engines.dsh`/peer；不匹配时明确 `nothing was installed`。exemption 只对 exact package + exact dsh version：`dsh plugin --profile <name> allow-version <pkg>@<version> --dsh-version <dsh-version> --accept-risk`；它是风险接受，不是兼容证明。
+安装期还有一道门：应用内安装与 `dsh plugin` 都在写入前检查 `engines.dsh`/peer；不匹配时明确 `nothing was installed`。exemption 只对 exact package + exact dsh version：`dsh plugin --profile <name> allow-version <pkg>@<version> --dsh-version <dsh-version> --accept-risk`；它是风险接受，不是兼容证明。
 
 bundle 作者应在 `package.json` 声明准确的 `engines.dsh` 或 DSH peer ranges，按实际 package composition 和支持范围选择其一。产品 README 应说明如何检查 startup diagnostics 与有效 composition。若核心产品被跳过时必须阻止用户使用，该 fail-loud 检查需由能在相关 bundle 被跳过时仍运行的机制负责；产品 bundle 不能检查自身是否成功加载。
 
@@ -88,7 +86,7 @@ Bundle 更新不应静默重写用户的 profile patch。产品数据不兼容�
 
 安装/启动/分发与安装文档的产品侧选择见 [50 launch](../50-launch/00-index.md)。
 
-`dsh plugin remove` 删除 profile dependency，并从 bundle list 移除相应 layer；它不会自动删除任意产品文件或业务记录。DSH Workspace deletion 仅删除 registration、排序和分组关系，不删除目录或 Session history。会话日志没有通用 delete API，附件本地 backend 没有自动 GC。
+应用内 Plugin Manager 或 `dsh plugin remove` 删除 profile dependency，并从 bundle list 移除相应 layer；它不会自动删除任意产品文件或业务记录。DSH Workspace deletion 仅删除 registration、排序和分组关系，不删除目录或 Session history。会话日志没有通用 delete API，附件本地 backend 没有自动 GC。
 
 产品卸载说明按 owner 列出：
 
