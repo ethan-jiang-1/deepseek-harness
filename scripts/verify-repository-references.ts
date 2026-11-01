@@ -17,7 +17,7 @@ const commitCandidate = /(?<![a-z0-9])[\da-f]{7,40}(?![a-z0-9])/gi
 // looks for maintained links rather than historical evidence. Lockfiles carry integrity
 // digests that can coincide with an object name; only their commit check is skipped.
 const uncheckedPrefixes = ['vendor/', '.agents/notes/archived/']
-const researchPrefixes = ['_digested/', '_faq_on_digested/', '_dsh_plugin_agent_ready_development/', '_misc/']
+const researchPrefixes = ['_digested/', '_faq_on_digested/', '_dsh_plugin_agent_ready_development/', '_misc/', '_model_vendors/']
 const commitUncheckedBasenames = new Set([
   'pnpm-lock.yaml',
   'package-lock.json',
