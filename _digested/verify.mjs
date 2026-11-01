@@ -27,6 +27,11 @@ import { fileURLToPath } from 'node:url'
 const corpusRoot = dirname(fileURLToPath(import.meta.url))
 const repositoryRoot = dirname(corpusRoot)
 const decoder = new TextDecoder('utf-8', { fatal: true })
+// Corpus links track the upstream default branch, never a release tag or commit hash: a citation that
+// carries a version stops pointing at maintained content once that version ages out, and re-pinning it
+// edits every citing file on each synchronization. Edition facts belong in the sentence that states the
+// verification baseline, not in the URL. Event and discussion permalinks are not content addressing.
+const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:(?:blob|tree)\/master(?:[/?#]|$)|(?:commit|discussions|issues|pull)\/)/
 const failures = []
 
 function corpusFiles(directory) {
@@ -277,7 +282,12 @@ function pathInsideRepository(path) {
 function checkMarkdownLinks(path, source) {
   for (const { line, text } of activeMarkdownLines(source)) {
     for (const url of markdownUrls(text)) {
-      if (isExternal(url)) continue
+      if (isExternal(url)) {
+        if (url.includes('github.com/deepseek-ai/deepseek-harness/') && !dshExternalUrl.test(url)) {
+          report(path, line, `DSH link must target the default branch, not a tag or commit: ${JSON.stringify(rawUrl)}`)
+        }
+        continue
+      }
       const parts = linkParts(url)
       if (parts.path === undefined || (url.includes('#') && parts.fragment === undefined)) {
         report(path, line, `malformed percent escape in link ${JSON.stringify(url)}`)

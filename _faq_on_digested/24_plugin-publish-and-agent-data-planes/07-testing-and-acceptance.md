@@ -379,22 +379,22 @@ diff -u "$BEFORE" "$AFTER"
 
 DSH 测试设施：
 
-- [testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/testing.md) — 分层、覆盖率、e2e、快照、Web、flaky 规则
-- [snapshots/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/snapshots/AGENTS.md) — 录制会话的所有权与代际规则
-- [llm-replay README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/llm-replay/README.md) — 无 key 回放
-- [llm-mock-server README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/llm-mock-server/README.md) — provider 故障注入
-- [loader-smoke README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/loader-smoke/README.md) — 真实 bin/配置启动
-- [agent-loop-testkit README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/agent-loop-testkit/README.md) — 真实 loop 组合
-- [client-test-runtime README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/client-runtime/README.md) — jsdom slot 运行时
-- [remote-mock README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/remote-mock/README.md) — 按 endpoint mock Host
-- [session-snapshot README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/test-support/session-snapshot/README.md) — 完整 profile 快照套件
-- [dsh-ci-test-reliability skill](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/.agents/skills/dsh-ci-test-reliability/SKILL.md) — 并发、端口、时钟、子进程、teardown
+- [testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) — 分层、覆盖率、e2e、快照、Web、flaky 规则
+- [snapshots/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md) — 录制会话的所有权与代际规则
+- [llm-replay README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/README.md) — 无 key 回放
+- [llm-mock-server README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-mock-server/README.md) — provider 故障注入
+- [loader-smoke README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/loader-smoke/README.md) — 真实 bin/配置启动
+- [agent-loop-testkit README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/agent-loop-testkit/README.md) — 真实 loop 组合
+- [client-test-runtime README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/client-runtime/README.md) — jsdom slot 运行时
+- [remote-mock README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/remote-mock/README.md) — 按 endpoint mock Host
+- [session-snapshot README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/session-snapshot/README.md) — 完整 profile 快照套件
+- [dsh-ci-test-reliability skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-ci-test-reliability/SKILL.md) — 并发、端口、时钟、子进程、teardown
 
 数据保留的边界：
 
-- [attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/attachment/attachment-local/README.md) — 内容寻址、保留所有对象、无自动 GC
-- [spill-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/spill/spill-local/README.md) — OS 临时目录、启动清理
-- [settings README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/settings/settings/README.md) — 写当前 profile 的 `cordis.patch.yml`，不是账号作用域
+- [attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/attachment/attachment-local/README.md) — 内容寻址、保留所有对象、无自动 GC
+- [spill-local README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/spill/spill-local/README.md) — OS 临时目录、启动清理
+- [settings README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/settings/settings/README.md) — 写当前 profile 的 `cordis.patch.yml`，不是账号作用域
 
 外部实践（2026-10-25 文档，未在 DSH 实测）：
 

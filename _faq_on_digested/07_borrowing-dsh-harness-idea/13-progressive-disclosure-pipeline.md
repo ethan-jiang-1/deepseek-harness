@@ -22,17 +22,17 @@
 
 - **`agent-instructions`**：把 `AGENTS.md`/`CLAUDE.md` 链注入历史。关键是它的加载是 **touch-driven** 的——首次注入 baseline，之后只在成功的 `read`/`write`/`edit` 触达更深目录时才注入 nested 指令；`maxBytes` 限制整条链、`maxSourceBytes` 限制单文件；同目录里 `CLAUDE.md` 与 `AGENTS.md` 内容相同就**只渲染一次**；digest 未变化的文件**不重复注入**。
 
-  > **DSH 原话 ·** 预算与丢弃顺序（[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)）
+  > **DSH 原话 ·** 预算与丢弃顺序（[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md)）
   >
   > Rendering keeps the most specific files first: it drops whole broader files before truncating the most-specific file, and emits a visible `Workspace instruction budget ...` notice naming the omitted and truncated paths. The rendered bytes never exceed `maxBytes`.
 
   这一条就是入口链「会话态」在运行时的真实实现：文件层面「合适个数」，运行时层面「触达才加载 + 有预算 + 去重」。
 
 - **`file-reference` / `file-reference-local`**：`@file` mention 的发现与共享文法（`ctx.fileReferences`）+ 本地工作区的补全 provider——用户在输入里 `@` 一个文件，它的路径进入上下文，而不是整个文件被静默塞入。
-- **`session-reference`**：引用其它会话（`ctx.sessionReferenceResolver`）——mention 一个会话，它的**有界只读快照**成为上下文，不是整段搬运；快照语义与错误分类有专门的[子系统文档](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/session-reference.md)。
+- **`session-reference`**：引用其它会话（`ctx.sessionReferenceResolver`）——mention 一个会话，它的**有界只读快照**成为上下文，不是整段搬运；快照语义与错误分类有专门的[子系统文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session-reference.md)。
 - **`time-context`**：当前时间、浏览器时区、每步耗时；**`tmux-context`**：agent 所在的 tmux 会话/窗口/面板位置——「便宜但有用」的事实，每轮注入的成本极低。
 
-  为什么这些都能注入而不失控——[packages/context/README.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/README.md) 说得清楚：
+  为什么这些都能注入而不失控——[packages/context/README.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/README.md) 说得清楚：
 
   > **DSH 原话 ·** 注入的持久性与边界（`packages/context/README.md`）
   >
@@ -55,13 +55,13 @@ skill 与 tool 的「摘要 vs 正文」也在这层：
 
 - **skill catalog 只给摘要**：`SkillCatalogSnapshot` 只含 sorted `name` + normalized `description`（默认 ≤500 字符），省略 bodies/paths/sources/providers/routing hints；`get()` 每次调用都向 provider 取完整 body，不缓存。
 
-  > **DSH 原话 ·** catalog 只给摘要（[`docs/subsystems/skills.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/skills.md)）
+  > **DSH 原话 ·** catalog 只给摘要（[`docs/subsystems/skills.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md)）
   >
   > The catalog contains sorted skill `name` and normalized, XML-escaped `description` only; it omits bodies, paths, sources, providers, and routing hints. … loads full skill bodies on demand.
 
 - **tool 可见集按 scope 收缩**：`ctx.tools.restrict()` 让模型只看到当前 scope 相关的工具。
 
-  > **DSH 原话 ·** 工具可见集按 scope 收缩（[`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md)）
+  > **DSH 原话 ·** 工具可见集按 scope 收缩（[`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/extension-cookbook.md)）
   >
   > ToolSearch / progressive disclosure — replace a scoped `ctx.tools.restrict()` registration as the visible set changes.
 
@@ -75,7 +75,7 @@ skill 与 tool 的「摘要 vs 正文」也在这层：
 - remeasure 后，若仍需压缩，把选定范围替换为一个 summary；
 - **region 边界保留 tool-call/result 配对**（不拆散一个工具的调用与结果）。
 
-  > **DSH 原话 ·** 压力压缩与配对保留（[`docs/subsystems/compaction.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/compaction.md)）
+  > **DSH 原话 ·** 压力压缩与配对保留（[`docs/subsystems/compaction.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/compaction.md)）
   >
   > Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns.
 
@@ -85,7 +85,7 @@ skill 与 tool 的「摘要 vs 正文」也在这层：
 
 披露还有「谁能看到什么」的边界。DSH 的 subagent 默认**不继承**父对话。DSH 原话：
 
-> **DSH 原话 ·** spawn 不带父历史（[`packages/subagent/subagent-in-process-driver/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/subagent/subagent-in-process-driver/README.md)）
+> **DSH 原话 ·** spawn 不带父历史（[`packages/subagent/subagent-in-process-driver/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent-spawn-in-process/README.md)）
 >
 > The shared driver sends the task verbatim as the child's user message … Spawn supplies no history; fork supplies its balanced seed.
 

@@ -24,7 +24,7 @@ Push 前不机械跑全部命令，而是**选择能覆盖当前 diff 的检查*
 
 ## Push 之后：`.github/` 接管远端协作
 
-PR 一旦创建，模板、workflow 和 policy 成为协作的骨架。先打开仓库的 [.github/pull_request_template.md](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.github/pull_request_template.md)，它规定三部分内容：
+PR 一旦创建，模板、workflow 和 policy 成为协作的骨架。先打开仓库的 [.github/pull_request_template.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/pull_request_template.md)，它规定三部分内容：
 
 - **Motivation**：一句话说明要解决的问题，引用同仓库 Issue（`Fixes #NN` 或 `Related #NN`）；
 - **Changes**：分别说明命令/配置/API/协议层面与可观察行为层面的变化，没有则写 None；
@@ -34,7 +34,7 @@ PR 一旦创建，模板、workflow 和 policy 成为协作的骨架。先打开
 
 ### 主例的示意 PR 摘要
 
-PR #5004 的原始页面本语料钉版时无法访问（`需查 GitHub`），以下是**按现行模板重写的示意文本**，不是当时的原文：
+PR #5004 的原始页面本语料核验时无法访问（`需查 GitHub`），以下是**按现行模板重写的示意文本**，不是当时的原文：
 
 > **Motivation**
 >
@@ -59,7 +59,7 @@ PR #5004 的原始页面本语料钉版时无法访问（`需查 GitHub`），�
 
 ## CI 是代码，不是口头约定
 
-CI 的调度由 workflow（GitHub Actions 的流程定义文件）声明：何时触发、在哪些运行器上跑哪些 job（各自独立的一次运行）。打开 [.github/workflows/ci.yml](https://github.com/deepseek-ai/deepseek-harness/blob/580646c14fb998532a6ef19bb4cc4009cd74b786/.github/workflows/ci.yml) 看实际结构：
+CI 的调度由 workflow（GitHub Actions 的流程定义文件）声明：何时触发、在哪些运行器上跑哪些 job（各自独立的一次运行）。打开 [.github/workflows/ci.yml](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/ci.yml) 看实际结构：
 
 - **触发**：只有 `pull_request`——主分支专属的平台检查放在 `ci-master.yml`，不进 PR 面板；
 - **10 个 job**：9 个必需 job——`node-24`（主测试）、`node-24-coverage`（覆盖率门禁）、`node-24-bench`、`node-24-consumers`（构建消费者）、`node-compat`、`python-sdk`、`python-runtime`、`windows-build`、`windows-native-tests`——外加 1 个不进聚合的 `windows-coverage`；

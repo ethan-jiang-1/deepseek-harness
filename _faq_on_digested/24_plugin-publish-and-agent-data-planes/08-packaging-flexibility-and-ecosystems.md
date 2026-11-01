@@ -215,11 +215,11 @@ DSH 的复现锚点有三个：会话日志（模型可见输入）、preset id 
 
 DSH 侧：
 
-- 包 / bundle / profile：[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md)、[bundle README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/README.md)、[app-boot README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/README.md)
-- preset / revision：[preset README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/README.md)、[agent-preset-registry README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset-registry/README.md)
-- skill / provider：[skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/skill/skill-filesystem/README.md)、[skill-badge 实现](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/experimental/skill-badge/src/index.ts)
-- client module：[client-modules README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/client/modules/README.md)
-- 市场 / 官方目录：[plugin-market 指南](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/guide/plugin-market.md)、[官方目录生成器](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/scripts/gen-official-bundle-catalog.ts)
+- 包 / bundle / profile：[publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)、[bundle README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/README.md)、[app-boot README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md)
+- preset / revision：[preset README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/README.md)、[agent-preset-registry README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset-registry/README.md)
+- skill / provider：[skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-filesystem/README.md)、[skill-badge 实现](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/skill-badge/src/index.ts)
+- client module：[client-modules README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/modules/README.md)
+- 市场 / 官方目录：[plugin-market 指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/guide/plugin-market.md)、[官方目录生成器](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/gen-official-bundle-catalog.ts)
 
 外部侧（2026-10-25 文档，未实测）：
 

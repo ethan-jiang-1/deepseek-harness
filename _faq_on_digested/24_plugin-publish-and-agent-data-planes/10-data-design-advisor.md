@@ -291,11 +291,11 @@ P4 的跨 profile 共享偏好不是 `Config`，而是 home 域单例；`Config`
 
 ## 15. 证据
 
-- 文件与工作目录：[filesystem.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/filesystem.md)、[working-directory README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/working-directory/README.md)
-- 宿主 KV：[storage.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/storage.md)、[storage-domain README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/storage/storage-domain/README.md)
-- 会话与投影：[persistence.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/persistence.md)、[session-projection.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/session-projection.md)
-- 跨会话查询：[session-query.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/session-query.md)
-- 附件与 spill：[attachment.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/attachment.md)、[spill.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/spill.md)
-- 配置与凭据：[settings.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/settings.md)、[credentials.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/credentials.md)
-- 交付物与工作区：[deliverables.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/deliverables.md)、[workspace.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/workspace.md)
+- 文件与工作目录：[filesystem.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/filesystem.md)、[working-directory README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/working-directory/README.md)
+- 宿主 KV：[storage.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/storage.md)、[storage-domain README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/storage/storage-domain/README.md)
+- 会话与投影：[persistence.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/persistence.md)、[session-projection.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session-projection.md)
+- 跨会话查询：[session-query.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session-query.md)
+- 附件与 spill：[attachment.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/attachment.md)、[spill.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/spill.md)
+- 配置与凭据：[settings.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/settings.md)、[credentials.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/credentials.md)
+- 交付物与工作区：[deliverables.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/deliverables.md)、[workspace.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/workspace.md)
 - 同目录：[05 的路径表](./05-data-planes.md)、[07 的 T5/§8.4](./07-testing-and-acceptance.md)、[09 的 6+2 与判定问题](./09-agent-data-cuts.md)

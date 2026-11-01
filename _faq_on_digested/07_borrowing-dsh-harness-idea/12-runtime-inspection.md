@@ -18,7 +18,7 @@
 
 **面 1：最终配置树。** DSH 原话：
 
-> **DSH 原话 ·** 查询最终配置树（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)）
+> **DSH 原话 ·** 查询最终配置树（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)）
 >
 > To see the tree your machine boots:
 >
@@ -28,9 +28,9 @@
 
 输出是叠加后的最终 YAML——profile 基座、bundle、patch 全部应用完的那棵树。agent 拿它回答「这个部署到底启用了什么」，不用去猜三层叠加的结果。
 
-**面 2：声明面（生成 catalog）。** [docs/tool-catalog.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-catalog.md) 不是手写文档，是**真启动**出来的：生成器在真实 context 上 boot 每个 tool 插件、读 `ctx.tools.schemas()`——因为工具 schema 里有运行时展开的枚举、拼接的 description、config 驱动的名字，静态 AST 扫不出来。完整性守卫 glob `packages/*/tool-*`，有包漏在生成清单外就直接 fail——**新工具不可能静默无文档**。可信度由 `verify-tool-catalog`（doc-sync 的一部分）机械保证：目录与源码有 diff 就红。
+**面 2：声明面（生成 catalog）。** [docs/tool-catalog.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-catalog.md) 不是手写文档，是**真启动**出来的：生成器在真实 context 上 boot 每个 tool 插件、读 `ctx.tools.schemas()`——因为工具 schema 里有运行时展开的枚举、拼接的 description、config 驱动的名字，静态 AST 扫不出来。完整性守卫 glob `packages/*/tool-*`，有包漏在生成清单外就直接 fail——**新工具不可能静默无文档**。可信度由 `verify-tool-catalog`（doc-sync 的一部分）机械保证：目录与源码有 diff 就红。
 
-**面 3：活运行时。** `cordis_inspect_list` 列出当前生效的 providers，`cordis_inspect_query` 查某个 provider 的精确方法与类型（[tool-cordis README](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/extensions/tool-cordis/README.md)）。只读、opt-in、不做变更；持久安装走 plugin_manager。agent 拿它回答「此刻这个进程里谁在服务」——声明面答不了这个。
+**面 3：活运行时。** `cordis_inspect_list` 列出当前生效的 providers，`cordis_inspect_query` 查某个 provider 的精确方法与类型（[tool-cordis README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/extensions/tool-cordis/README.md)）。只读、opt-in、不做变更；持久安装走 plugin_manager。agent 拿它回答「此刻这个进程里谁在服务」——声明面答不了这个。
 
 ## 从哪开始
 
@@ -38,7 +38,7 @@
 
 ## 边界：inspect 不是沙箱
 
-> **DSH 原话 ·** vm 不是安全边界（[`.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)）
+> **DSH 原话 ·** vm 不是安全边界（[`.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)）
 >
 > The vm prevents accidental global pollution; injected filesystem, shell, and network services still have real authority, so it is not a security boundary.
 

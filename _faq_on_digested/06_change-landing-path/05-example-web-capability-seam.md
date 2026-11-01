@@ -103,7 +103,7 @@ Status: implemented
 
 ## 证据入口
 
-（`docs/rfc/` 目录树已随上游重构退出当前仓库；下列路径只存在于下方钉住的 commit 历史里，用 `git show <commit> -- <path>` 核对。）
+（`docs/rfc/` 目录树已随上游重构退出当前仓库；下列路径只存在于下方标明的 commit 历史里，用 `git show <commit> -- <path>` 核对。）
 
 - `git show a4091daa3d -- docs/rfc/proposed/architecture/2026-06-24-web-capability-seam.md`
 - `git show a4091daa3d -- docs/rfc/README.md`

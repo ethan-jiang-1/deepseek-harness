@@ -4,6 +4,8 @@
 
 > **产品源码审计基线**：DeepSeek Harness `dsh-v0.2.1-rc.5`，commit `b830ec950faba0a46dda564be3e2d854afed94f1`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md`](./_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)；**执行口径与可照做的同步操作手册**的唯一权威在 [`_change_log/00-index.md`](./_change_log/00-index.md)（`ethan` = 目标 release tag 的原样 + 6 项本地独有内容，按内容级而非路径级验收，没有 merge 这回事）。0008 轮语料维护的**独立复核**见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)；0009 轮的**独立反查**见 [`_change_log/0009-independent-recheck.md`](./_change_log/0009-independent-recheck.md)。本地维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个语料目录、`.pi/`，以及 `scripts/verify-repository-references.{ts,spec.ts}` 的本地补丁（`_misc` 为低重要性杂项：`_references` 冻结存档只随轮更新基线行，`_scratch` 不跟踪内容）。
 
+> **维护宪章**：[`CORPUS-CHARTER.md`](./CORPUS-CHARTER.md)。改本目录前先读它——引用形态、版本号能写在哪、升级时改什么不改什么、以及为什么这些规则是强制而不是建议。它优先于任何单轮记录。
+
 ## 30 秒看懂
 
 dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、跑命令、接模型、画 Web 界面，都是树上的插件。本目录按这棵树的主轴切专题，每个专题看它的一个面——所以「插件」不是某个目录的主题，而是所有目录的底座。三个例外：`capability-seams/` 讲同一个能力有多个插件实现时怎么换实现而不改调用方（插件的竞聘位），`plugin-inventory/` 讲动手写之前先看现成插件给了什么（插件的货架），`plugin-lifecycle/` 讲一个包怎么变成活插件、又怎么被更新和移除（插件的交付与退役）。

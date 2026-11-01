@@ -4,7 +4,7 @@
 
 ## 为什么这条链值得单独一页
 
-agent 的每次「动手」都走这条路。写一个新工具、加一道权限检查、限定沙箱行为、观测工具耗时——全都是在这条链的某一环挂钩子。不理解链的形状，就只能整段抄别人的配置；理解了，每一环你都知道**它是谁、能拦什么、拦不住什么**。DSH 对这条链有一份官方管线图（[docs/tool-execution-pipeline.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-execution-pipeline.md)，由 `scripts/gen-doc-graphs.ts` 生成），下面是它的逐步展开。
+agent 的每次「动手」都走这条路。写一个新工具、加一道权限检查、限定沙箱行为、观测工具耗时——全都是在这条链的某一环挂钩子。不理解链的形状，就只能整段抄别人的配置；理解了，每一环你都知道**它是谁、能拦什么、拦不住什么**。DSH 对这条链有一份官方管线图（[docs/tool-execution-pipeline.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-execution-pipeline.md)，由 `scripts/gen-doc-graphs.ts` 生成），下面是它的逐步展开。
 
 ## 管线的完整顺序（照图走一遍）
 
@@ -48,7 +48,7 @@ agent 的每次「动手」都走这条路。写一个新工具、加一道权�
 
 这张表的另一半价值在**归属表**里——DSH 原话：
 
-> **DSH 原话 ·** 拦截执行链的正确位置（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md) 的 Where new behavior goes 表）
+> **DSH 原话 ·** 拦截执行链的正确位置（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 的 Where new behavior goes 表）
 >
 > Intercept a request, tool, or turn | use its `agent/*` or `tools/*` event; `agent/turn-stopping` stops a turn
 
@@ -56,11 +56,11 @@ agent 的每次「动手」都走这条路。写一个新工具、加一道权�
 
 ## 工具体本身的契约（写新工具时照这个写）
 
-[`docs/subsystems/tools.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/tools.md) 定义了 `ToolDefinition` 的完整契约，写新工具前值得通读。最关键的几条：
+[`docs/subsystems/tools.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/tools.md) 定义了 `ToolDefinition` 的完整契约，写新工具前值得通读。最关键的几条：
 
 - **模型可见面是显式 allowlist**：注册表的 `schemas()` 构建模型请求里的 `ToolSchema[]`。DSH 原话：
 
-  > **DSH 原话 ·** 实现字段永不进模型请求（[docs/subsystems/tools.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/subsystems/tools.md)）
+  > **DSH 原话 ·** 实现字段永不进模型请求（[docs/subsystems/tools.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/tools.md)）
   >
   > `output`/`execute`/`projectContent`/`finalizeContent`/`timeoutMs`/`isConcurrencySafe`/`presentCall`/`presentResult` must never leak into a model request.
 

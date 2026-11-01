@@ -1,6 +1,6 @@
 # Question 07 · 另一个项目想借鉴 DSH 的 Harness 思路，尤其 coding agent 怎么探索、理解项目而不糊涂、不乱发挥，可迁移的东西是什么？
 
-> **DSH = DeepSeek Harness**——DeepSeek 的「一切皆插件」agent harness，仓库在 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)，CLI 与包名写作小写 `dsh`；本目录的「DSH」都指它，所有「DSH 原话」的钉版链接都指向这个仓库。
+> **DSH = DeepSeek Harness**——DeepSeek 的「一切皆插件」agent harness，仓库在 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)，CLI 与包名写作小写 `dsh`；本目录的「DSH」都指它，所有「DSH 原话」的链接都指向这个仓库。
 
 ## 背景
 
@@ -25,7 +25,7 @@ DSH 自己的仓库就是它最好的样板：它的开发主力自称是 coding
 
 ## 证据与分工
 
-- 正文证据只有两类：DSH 仓库一手内容（钉版基线 `46a7f68b09`，`dsh-v0.1.7-rc.1`，以 GitHub URL 引用，任何人可打开）与本 FAQ 家族内部文件——全套目录自包含、可单独取用，不依赖任何只存在于本机的语料或路径。各章声称事实的上游出处集中在 [`reference.md`](./reference.md)；整理过程的语料出处与复核方式记在 [`research.md`](./research.md)（内部账本）。
+- 正文证据只有两类：DSH 仓库一手内容（核验基线 `dsh-v0.1.7-rc.1`，链接指向 `master`，任何人可打开）与本 FAQ 家族内部文件——全套目录自包含、可单独取用，不依赖任何只存在于本机的语料或路径。各章声称事实的上游出处集中在 [`reference.md`](./reference.md)；整理过程的语料出处与复核方式记在 [`research.md`](./research.md)（内部账本）。
 - 修改本目录后运行 [`node _faq_on_digested/verify.mjs`](../verify.mjs)。
 - 与既有 FAQ 的分工：`04_root-entry-doc-design` 只覆盖「根入口/文档的静态设计」，`05_root-entry-doc-navigation` 只覆盖「跑起来之后这些文档怎么被消费」；本问题覆盖「知识归属 + 正确路径 + 可执行反馈 + 变更闭环 + 决策记录 + Skills + 运行时查询 + AGENTS.md 入口链 + 渐进披露管线」整体，并明确跨到「迁移到另一个项目」。
 

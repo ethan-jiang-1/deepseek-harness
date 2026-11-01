@@ -23,7 +23,7 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 **1. `CLAUDE.md` 是 symlink，不产生第二份事实。** 不同 agent 宿主认不同的入口文件名（Claude 类读 `CLAUDE.md`，其它读 `AGENTS.md`），但每个目录里事实只该有一份。DSH 原话：
 
-> **DSH 原话 ·** symlink 规则（根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)）
+> **DSH 原话 ·** symlink 规则（根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)）
 >
 > `CLAUDE.md` symlinks `AGENTS.md` at root and `packages/`; edit the real file.
 
@@ -33,7 +33,7 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 **3. 子树 `AGENTS.md` 是「合适个数」**：只在「有子树专属常驻规则」时放，宁可少放——大多数 package 只有 README.md 是**正确结果，不是缺口**。
 
-**4. AGENTS.md 串起 README.md，而不是吞掉它**：AGENTS 是路由/常驻指令层，README 是「当前合同」事实层，通过 link 串进地图。分工的完整规则是 [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) 的 tier taxonomy 表——根/子树/包 README/Skills 每行同时写「放什么」和「禁放什么」。
+**4. AGENTS.md 串起 README.md，而不是吞掉它**：AGENTS 是路由/常驻指令层，README 是「当前合同」事实层，通过 link 串进地图。分工的完整规则是 [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 的 tier taxonomy 表——根/子树/包 README/Skills 每行同时写「放什么」和「禁放什么」。
 
 **给数值：推荐区间，不是 DSH 的现位。** 数值不迁移，门禁迁移——值得搬的不是 DSH 的某个具体数，而是「存在一个会被机器执行的数」：接成 `exit non-zero` 检查（见 [`可执行反馈`](./09-executable-feedback.md)），上限只降不升、上涨要在 PR 里论证。DSH 的棘轮语义（`verify-doc-budgets` 头注释）：`Ceilings ratchet down with at least 5% headroom; raising one requires the justification defined in docs/AGENTS.md`。区间本身是本 FAQ 的综合推荐，锚点数字以基线 `46a7f68b09` 的文件为准：
 
@@ -48,15 +48,15 @@ CLAUDE.md（symlink → 同目录 AGENTS.md，每目录只有一份真实文件�
 
 ## 会话态：DSH 的运行时怎么加载这条链
 
-文件态是「地图」，会话态是「地图在活 session 里怎么被走」。DSH 用 [`packages/context/agent-instructions`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md) 插件把文件态变成三件机器执行的事：
+文件态是「地图」，会话态是「地图在活 session 里怎么被走」。DSH 用 [`packages/context/agent-instructions`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md) 插件把文件态变成三件机器执行的事：
 
 - **注入（push）**：会话第一步注入根 AGENTS 链（baseline）；模型用 read/write/edit 触达更深目录后才注入子树 AGENTS（**touch-driven**）；`maxBytes` 限制整条链（自建 host 从 32–128 KB 起步，锚点是 dsh-base 默认的 65,536 字节）；同目录 `CLAUDE.md` 与 `AGENTS.md` 内容相同只渲染一次；digest 未变不重复注入。DSH 原话：
 
-  > **DSH 原话 ·** 预算与丢弃顺序（[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/context/agent-instructions/README.md)）
+  > **DSH 原话 ·** 预算与丢弃顺序（[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md)）
   >
   > Rendering keeps the most specific files first: it drops whole broader files before truncating the most-specific file, and emits a visible `Workspace instruction budget ...` notice naming the omitted and truncated paths. The rendered bytes never exceed `maxBytes`.
 
-- **导航（pull）**：不在注入链里的 README / catalog / skill 正文，由模型用 read/grep/glob 按需拉取。这一层的关键在**入口链的「可导航性」**：根文件里的每个链接都是 pull 的起点——agent 从 standing order 的一句话跳到 owning README，再跳到 cookbook。链接断了或指错，pull 就失败，agent 退回裸猜。所以 Phase 1 的验收里有一条「任何一条规则 10 秒内指出唯一 home」——那不只是文档卫生，是 pull 路径的健康检查。DSH 的[文档门禁](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)（`doc-sync` 的一部分）机械校验链接与锚点，保证 pull 路径不断。
+- **导航（pull）**：不在注入链里的 README / catalog / skill 正文，由模型用 read/grep/glob 按需拉取。这一层的关键在**入口链的「可导航性」**：根文件里的每个链接都是 pull 的起点——agent 从 standing order 的一句话跳到 owning README，再跳到 cookbook。链接断了或指错，pull 就失败，agent 退回裸猜。所以 Phase 1 的验收里有一条「任何一条规则 10 秒内指出唯一 home」——那不只是文档卫生，是 pull 路径的健康检查。DSH 的[文档门禁](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)（`doc-sync` 的一部分）机械校验链接与锚点，保证 pull 路径不断。
 - **回收（recycle）**：超预算由 token meter 度量、compaction 压缩回收——注入的内容以 user-role 消息进历史，和普通对话一样被压缩，不享受特权通道；压缩时保留 tool-call/result 配对。完整机制展开在 [`披露管线`](./13-progressive-disclosure-pipeline.md) 层 4。
 
 ## 从哪开始

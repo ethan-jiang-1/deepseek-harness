@@ -41,7 +41,7 @@ DSH 没有把六类信息混写在一份总览里，而是**一个问题一个 o
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions [...].
 
-（来源：DSH [`quality-gates` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/process/2026-06-11-quality-gates.md)，英文原文）
+（来源：DSH [`quality-gates` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)，英文原文）
 
 这句话的因果是：**因为开发主力是 agent（它天然缺背景、会忘、会走捷径），所以仓库才被迫把「读得懂、做不对」的成本结构整个反过来**——正确路径阻力最小、错误路径早撞机器。对你要借鉴的项目，这句话的含义是：**不要指望换一个更聪明的模型来解决「糊涂 / 乱发挥」，要指望把知识外置、把规则接到执行。**
 

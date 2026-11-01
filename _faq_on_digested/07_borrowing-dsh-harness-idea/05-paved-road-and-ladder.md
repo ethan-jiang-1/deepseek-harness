@@ -16,7 +16,7 @@ agent「读懂了系统」和「改对了地方」是两件事。知识外置解
 
 DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩展点、生产范本、生命周期规则和对应证据，让「做对」成为阻力最小的路径。核心原则一句话，DSH 原话：
 
-> **DSH 原话 ·** 新行为接在文档化的扩展点上（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md) 的 Where new behavior goes 一节）
+> **DSH 原话 ·** 新行为接在文档化的扩展点上（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 的 Where new behavior goes 一节）
 >
 > New behavior attaches to a documented extension point. Changing the loop itself updates this map.
 
@@ -24,7 +24,7 @@ DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩�
 
 ## DSH 怎么落地
 
-**归属表是一张真实存在的表**，在 [docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md) 里就是两列 Markdown，摘三行原样：
+**归属表是一张真实存在的表**，在 [docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 里就是两列 Markdown，摘三行原样：
 
 | Goal | Mechanism |
 |---|---|
@@ -32,11 +32,11 @@ DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩�
 | Add a model-facing capability | register on `ctx.tools`; its schema joins prompt assembly |
 | Give one session a different capability set | compose an agent preset; a service row there needs an `isolate` realm |
 
-每行右边都是**具体的注册 API**，不是「找相关模块」这类需要再解释的指引。配套的 [extension cookbook](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cookbook/extension-cookbook.md) 给每个扩展点一份「怎么做」的操作页。
+每行右边都是**具体的注册 API**，不是「找相关模块」这类需要再解释的指引。配套的 [extension cookbook](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/extension-cookbook.md) 给每个扩展点一份「怎么做」的操作页。
 
 **没有特权核心可 patch**——扩展就是挂一个插件，注册即归属当前生命周期。DSH 原话：
 
-> **DSH 原话 ·** 没有特权核心可 patch（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)）
+> **DSH 原话 ·** 没有特权核心可 patch（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)）
 >
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 

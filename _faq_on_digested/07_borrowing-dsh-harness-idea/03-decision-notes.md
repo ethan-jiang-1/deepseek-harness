@@ -1,6 +1,6 @@
 # 决策记录（Notes/ADR）：受控演进的设计记忆
 
-> **道 · 决策记录。** 本页拥有决策记录的完整逻辑：为什么需要它、DSH 怎么应对、怎么落地、怎么迁。[`归属`](./02-legibility-ownership.md) 讲了当前事实与决策理由分家；DSH 侧的原始规则在 [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)。
+> **道 · 决策记录。** 本页拥有决策记录的完整逻辑：为什么需要它、DSH 怎么应对、怎么落地、怎么迁。[`归属`](./02-legibility-ownership.md) 讲了当前事实与决策理由分家；DSH 侧的原始规则在 [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)。
 
 ## 为什么要有这道
 
@@ -18,7 +18,7 @@ DSH 的应对可以压成三条：
 
 1. **一条判据定去留**：存在真实的替代方案和持久取舍才写——代码、测试和现有文档解释不了「为什么选当前方案、放弃了什么」的事实，才需要决策记录。**diff 大小无关**，这条判据的 DSH 原话：
 
-   > **DSH 原话 ·** 豁免与判据（[`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)）
+   > **DSH 原话 ·** 豁免与判据（[`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)）
    >
    > Mechanical or local edits, including local UI presentation and interaction changes, are exempt. … A local bug fix, performance change, new capability, or substantive behavior decision does not qualify merely because its implementation is small.
 
@@ -36,7 +36,7 @@ DSH 的应对可以压成三条：
 - **例一（局部修补，不写）**：UI 呈现修复——模型选择器从显示名称改为显示 model ID。局部呈现修改，豁免决策记录：行为归源码与测试，当前合同归 README，「为什么显示 ID」读完源码和 README 就完整。改动小**不是**豁免理由——「没有持久取舍」才是。
 - **例二（持久取舍，必写）**：进程竞态修复——静默的 pnpm 子进程长期占用 profile lock。它的决策记录承载了源码放不下的东西：为什么用「静默超时」而不用「总耗时阈值」（慢机器上的合法构建会被总时长误杀）、五条被否决的路线及否决原因、接受的代价（静默的健康构建可能被误杀）。这笔 28 文件的修复，就算再小十倍，这些取舍也存在，所以必须写。
 
-**状态与取代的实物**：`.agents/notes/` 目录树本身就是状态机（打开仓库就能读出四态）；每条记录是双语三件套（`xx.md` + `xx.zh.md` + hash 配对），新决策触发 supersession 检查是 `.agents/notes/AGENTS.md` 里的常驻指令；归档判断不靠字数年龄，走 [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-archive-agent-notes/SKILL.md) 的校准工作流。pnpm 案的完整记录（Problem/Decision/真实 Alternatives/Testing/Consequences 五节）见 [bounded-pnpm-runs](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/bug-fix/2026-09-23-bounded-pnpm-runs.md)。
+**状态与取代的实物**：`.agents/notes/` 目录树本身就是状态机（打开仓库就能读出四态）；每条记录是双语三件套（`xx.md` + `xx.zh.md` + hash 配对），新决策触发 supersession 检查是 `.agents/notes/AGENTS.md` 里的常驻指令；归档判断不靠字数年龄，走 [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md) 的校准工作流。pnpm 案的完整记录（Problem/Decision/真实 Alternatives/Testing/Consequences 五节）见 [bounded-pnpm-runs](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/bug-fix/2026-09-23-bounded-pnpm-runs.md)。
 
 ## 怎么迁移到你的项目
 

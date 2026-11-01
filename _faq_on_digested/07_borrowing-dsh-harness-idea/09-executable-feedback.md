@@ -6,7 +6,7 @@
 
 规则写在 CONTRIBUTING 里，agent 违反了什么都不会发生——prose 没有约束力，门禁才有。DSH 的原话说尽了为什么这样做：
 
-> **DSH 原话 ·** 为什么门禁优于 prose（[`.agents/notes/implemented/process/2026-06-11-quality-gates.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/process/2026-06-11-quality-gates.md)）
+> **DSH 原话 ·** 为什么门禁优于 prose（[`.agents/notes/implemented/process/2026-06-11-quality-gates.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)）
 >
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions.
 
@@ -20,7 +20,7 @@
 
 - `scripts/run-gates.ts`——全部顶层检查的聚合调度器（哪个命令、什么依赖、能否并行，都在这一个文件里）；
 - `.github/workflows/ci.yml`——CI 侧的穷举矩阵；
-- `lefthook.yml`——两个 hook，各管一段、严格限速（[设计记录](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)）：
+- `lefthook.yml`——两个 hook，各管一段、严格限速（[设计记录](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)）：
   - **pre-commit 串行跑三件**：对 staged 的 JS/TS 跑无项目加载的 Oxlint（自动修安全项并重新 stage）；`git diff --cached --check` 拒绝空白错误；vendor manifest 守卫核对 vendored 源码元数据。
   - **pre-push 只加一件**：`pnpm run typecheck`（增量）。
   - **明文禁止**进 hook 的：类型分析（pre-commit 侧）、测试、快照、文档检查、构建、hygiene——「unit suites, snapshots, documentation checks, builds … vary with the changed surface and do not（fit that boundary）」。hook 不是小号 CI，是**便宜高置信**缺陷的快反馈层。
@@ -47,19 +47,19 @@
 
 关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 绿不代表产品工作，snapshot 绿不代表 API 合理，review 也不该手工重复绿色 gate 已经精确拒绝的格式问题。
 
-DSH 曾有过第六层「运行时关系」：每个包发布 `./invariant` companion、把 package 拥有的权威关系注册进 `ctx.invariants`，`verify-package-invariants` 对空壳直接判 fail。0.2.1-rc.2 起这套机制整族退役（[升级指南](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)，归档记录 [省略空壳 companion 的判据](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）——留下的可迁移纪律是它当初的取舍：**有关系才有检查、没有可观察关系就写清省略理由，不拿空壳凑数**；`model-visible ⟺ logged` 这类规则改由 assembled-transcript snapshot、双 SDK 投影与 review 把关。
+DSH 曾有过第六层「运行时关系」：每个包发布 `./invariant` companion、把 package 拥有的权威关系注册进 `ctx.invariants`，`verify-package-invariants` 对空壳直接判 fail。0.2.1-rc.2 起这套机制整族退役（[升级指南](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)，归档记录 [省略空壳 companion 的判据](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）——留下的可迁移纪律是它当初的取舍：**有关系才有检查、没有可观察关系就写清省略理由，不拿空壳凑数**；`model-visible ⟺ logged` 这类规则改由 assembled-transcript snapshot、双 SDK 投影与 review 把关。
 
 ## 这样做：本地按 diff 选检查，不全跑
 
-> **DSH 原话 ·** 本地检查的选择纪律（根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)）
+> **DSH 原话 ·** 本地检查的选择纪律（根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)）
 >
 > Match evidence to the surface: focused behavior tests, model/user-output snapshots, `doc-sync` for docs, built smokes for published paths, and real-API e2e for providers. … Never default to the full suite or repeat a passing check for commit or push.
 
-实战工具是 [`dsh-pre-push-checks` skill](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)：先跑 `pnpm --silent run change-scope --base <verified-base-ref>` 解析待推送范围，再为受影响面选**最小可信证据**。本地快、有针对性；CI 统一、跑穷举矩阵——两层不是二选一。
+实战工具是 [`dsh-pre-push-checks` skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)：先跑 `pnpm --silent run change-scope --base <verified-base-ref>` 解析待推送范围，再为受影响面选**最小可信证据**。本地快、有针对性；CI 统一、跑穷举矩阵——两层不是二选一。
 
 ## 这样做：新检查上线前，先证明它会红
 
-> **DSH 原话 ·** 门禁必须先被证明会失败（[docs/testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/testing.md)）
+> **DSH 原话 ·** 门禁必须先被证明会失败（[docs/testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)）
 >
 > A guard only guards if the regression fails it. … and prove it: introduce the regression, watch red, revert.
 

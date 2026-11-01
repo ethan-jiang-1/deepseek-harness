@@ -12,7 +12,7 @@
 
 DSH 的文档层级规则只有一条主线：**每个事实住在「负责它的那一层」，其它地方只放 link、不复制。** DSH 原话：
 
-> **DSH 原话 ·** one home per fact（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) 的 tier taxonomy 一节）
+> **DSH 原话 ·** one home per fact（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 的 tier taxonomy 一节）
 >
 > Each fact has one home: the tier whose job it is; elsewhere, link there.
 
@@ -38,8 +38,8 @@ DSH 的文档层级规则只有一条主线：**每个事实住在「负责它�
 
 「一个事实一个 owner」不是口号，是三个可以直接打开的形态：
 
-1. **根 `AGENTS.md` 的每条 standing order 只有一到三行，后面立刻跟链接。** 实例：「Run relevant checks locally」这条规则在根文件里只占几行，怎么选检查的完整流程链到 [dsh-pre-push-checks skill](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)——根文件负责「有这条规则」，skill 负责「怎么执行」，两层不重复。
-2. **tier 分工是一张真实存在的表**（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)）：根 `AGENTS.md` 放常驻规则、子树 `AGENTS.md` 放子树专属规则、包 README 放每包合同、Skills 放可复用流程——每行同时写「放什么」和「禁放什么」。
+1. **根 `AGENTS.md` 的每条 standing order 只有一到三行，后面立刻跟链接。** 实例：「Run relevant checks locally」这条规则在根文件里只占几行，怎么选检查的完整流程链到 [dsh-pre-push-checks skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)——根文件负责「有这条规则」，skill 负责「怎么执行」，两层不重复。
+2. **tier 分工是一张真实存在的表**（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)）：根 `AGENTS.md` 放常驻规则、子树 `AGENTS.md` 放子树专属规则、包 README 放每包合同、Skills 放可复用流程——每行同时写「放什么」和「禁放什么」。
 3. **不同工具读同一份事实，用 symlink 而不是复制**：`CLAUDE.md` 是指向 `AGENTS.md` 的软链（一条命令 `ln -s AGENTS.md CLAUDE.md`），Claude 类宿主和其它 agent 宿主各认各的入口文件名，但事实只有一份。DSH 仓库里有 4 处这样的 symlink。
 
 分家纪律的落地：决策记录带生命周期目录（`proposed` / `implemented` / `rejected` 三个状态；`archived/` 是冻结存放地），「已否决」「已过时」「现行」一眼可分——展开在 [`决策记录`](./03-decision-notes.md)。DSH 的完整形态是六类事实六类位置：意图/决定/计划/现状/证据/交付状态，各有自己的 home（[变更闭环](./01-sdlc-change-loop.md) 的环即其位置）。

@@ -12,19 +12,19 @@
 | 系统现在怎么工作 | README / current docs | Skill |
 | **一类任务怎么做**（要读上下文、做判断、跑步骤、报结果） | **Skill** | — |
 
-> **DSH 原话 ·** tier 表中 Skills 的定位（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md)）
+> **DSH 原话 ·** tier 表中 Skills 的定位（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)）
 >
 > | Skills (`.agents/skills/`) | Reusable workflows and specialized decision standards | Product and runtime contracts (→ docs or source) |
 
 边界自己声明，不靠读的人自觉：
 
-> **DSH 原话 ·** Skill 自我声明的边界（[`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-code-review/SKILL.md)）
+> **DSH 原话 ·** Skill 自我声明的边界（[`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)）
 >
 > This skill is guidance, not a complete checklist. […] The report identifies paths and dirty layers but does not replace semantic review.
 
 ## 照着写：一个真实 Skill 文件的解剖
 
-打开 [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-pre-push-checks/SKILL.md)（推送前选证据的流程），三样东西逐一看：
+打开 [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)（推送前选证据的流程），三样东西逐一看：
 
 **1. frontmatter 两行，触发条件写死：**
 
@@ -74,7 +74,7 @@ pnpm --silent run change-scope --base <verified-base-ref>
 
 catalog 只暴露 `name` + `description`（≤500 字符），正文按需加载：
 
-> **DSH 原话 ·** catalog 只给摘要（[`packages/skill/tool-skill/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/skill/tool-skill/README.md)）
+> **DSH 原话 ·** catalog 只给摘要（[`packages/skill/tool-skill/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/README.md)）
 >
 > This catalog contains summaries only; do not infer or follow a skill's instructions until it has been loaded.
 

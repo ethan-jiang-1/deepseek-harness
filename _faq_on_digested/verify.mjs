@@ -21,6 +21,7 @@ import {
   readdirSync,
   statSync,
 } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import {
   dirname,
   extname,
@@ -34,6 +35,12 @@ import { fileURLToPath } from 'node:url'
 const corpusRoot = dirname(fileURLToPath(import.meta.url))
 const repositoryRoot = dirname(corpusRoot)
 const decoder = new TextDecoder('utf-8', { fatal: true })
+// Corpus links track the upstream default branch, never a release tag or commit hash: a citation that
+// carries a version stops pointing at maintained content once that version ages out, and re-pinning it
+// edits every citing file on each synchronization. Edition facts belong in the sentence that states the
+// verification baseline, not in the URL. Event and discussion permalinks are not content addressing:
+// a commit or discussion identifier names one immutable event, so those stay allowed.
+const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:(?:blob|tree)\/master(?:[/?#]|$)|(?:commit|discussions|issues|pull)\/)/
 const failures = []
 const warnings = []
 
@@ -41,10 +48,23 @@ function corpusFiles(directory) {
   const files = []
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     const path = resolve(directory, entry.name)
-    if (entry.isDirectory()) files.push(...corpusFiles(path))
-    else if (entry.isFile() && extname(entry.name) === '.md') files.push(path)
+    if (entry.isDirectory()) {
+      // The corpus verifies the content it publishes. Local research scratch ignored by
+      // `.gitignore` cites outside paths and private notes, so it is not a corpus artifact.
+      if (isIgnored(path)) continue
+      files.push(...corpusFiles(path))
+    } else if (entry.isFile() && extname(entry.name) === '.md') files.push(path)
   }
   return files.sort()
+}
+
+function isIgnored(path) {
+  try {
+    execFileSync('git', ['check-ignore', '-q', path], { cwd: corpusRoot, stdio: 'ignore' })
+    return true
+  } catch {
+    return false
+  }
 }
 
 function displayPath(path) {
@@ -289,7 +309,12 @@ function checkMarkdownLinks(path, source) {
       // citation, not part of the path, so strip it before resolving.
       const lineSuffix = rawUrl.match(/^(.+):(\d+)$/)
       const url = lineSuffix === null ? rawUrl : lineSuffix[1]
-      if (isExternal(url)) continue
+      if (isExternal(url)) {
+        if (url.includes('github.com/deepseek-ai/deepseek-harness/') && !dshExternalUrl.test(url)) {
+          report(path, line, `DSH link must target the default branch, not a tag or commit: ${JSON.stringify(rawUrl)}`)
+        }
+        continue
+      }
       const parts = linkParts(url)
       if (parts.path === undefined || (url.includes('#') && parts.fragment === undefined)) {
         report(path, line, `malformed percent escape in link ${JSON.stringify(rawUrl)}`)

@@ -26,7 +26,7 @@
 
 **1. 动态的只从事实源派生，不在第二处存真。** DSH 原话：
 
-> **DSH 原话 ·** 只在提交点发布状态、从单一权威源派生（[`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/AGENTS.md)）
+> **DSH 原话 ·** 只在提交点发布状态、从单一权威源派生（[`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md)）
 >
 > Publish state only at its commit point. … derive caches, prompts, UI echoes, replay, and query views from one authoritative source.
 
@@ -34,7 +34,7 @@
 
 **2. 模型可见的必须落事实源。** DSH 原话：
 
-> **DSH 原话 ·** 模型可见 ⟺ 落日志（根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/AGENTS.md)）
+> **DSH 原话 ·** 模型可见 ⟺ 落日志（根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)）
 >
 > Model-visible ⟺ logged: anything that reaches a model request must be reconstructable from the session log; a new model-visible input requires a session event.
 

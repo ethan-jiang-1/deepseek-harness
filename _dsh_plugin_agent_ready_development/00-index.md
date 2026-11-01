@@ -4,6 +4,8 @@
 
 本目录是一套面向独立 DSH 插件仓的可独立使用语料。三卷分别解释原生开发模型、精确流程机制和仓库参与机制；每卷均以 DeepSeek Harness（DSH）的源码、文档、规则、Skills、workflow 与 git 历史为一手来源，不依赖其他研究材料。DSH 没有正式声明采用一套统一开发方法，本语料不把综合模型写成官方方法。
 
+> **维护宪章**：[`CORPUS-CHARTER.md`](./CORPUS-CHARTER.md)。改本目录前先读它——引用形态、版本号能写在哪、升级时改什么不改什么、以及为什么这些规则是强制而不是建议。它优先于任何单轮记录。
+
 ## 目标读者与适用边界
 
 目标读者是在独立仓库中开发 DSH 插件的 owner 与 coding agent。读者应能从插件作者文档找到可运行的最小插件入口，再逐步建立自己的源码、配置、测试、预期结果和交付记录。从插件仓启动时，先按 DSH [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md)创建并挂载最小插件，再用 [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/index.md)学习依赖、生命周期和真实组合。随后按本语料从单个行为切片增补行为 owner、用户配置、测试预期与可重复验证。

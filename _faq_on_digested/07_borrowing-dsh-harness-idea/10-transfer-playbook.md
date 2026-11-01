@@ -25,19 +25,19 @@
 
 **2. Skill ≠ enforcement。** Skill 是 guidance；可机械规则仍需类型/脚本/invariant，语义仍需 review。DSH 原话：
 
-> **DSH 原话 ·** Skill 自我声明的边界（[`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/skills/dsh-code-review/SKILL.md)）
+> **DSH 原话 ·** Skill 自我声明的边界（[`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)）
 >
 > This skill is guidance, not a complete checklist. […] The report identifies paths and dirty layers but does not replace semantic review.
 
 **3. 清理 ≠ 事务回滚。** disposer 撤销它拥有的注册与资源，不会自动补偿已经发生的外部写入。DSH 原话：
 
-> **DSH 原话 ·** 注册即效果、随卸载 unwind（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md)）
+> **DSH 原话 ·** 注册即效果、随卸载 unwind（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)）
 >
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 
 **4. 运行时查询 ≠ 安全沙箱。** `tool-cordis` 的 vm 只防意外全局污染，注入服务仍有真实权限。DSH 原话：
 
-> **DSH 原话 ·** vm 不是安全边界（[`.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md`](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md)）
+> **DSH 原话 ·** vm 不是安全边界（[`.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)）
 >
 > The vm prevents accidental global pollution; injected filesystem, shell, and network services still have real authority, so it is not a security boundary.
 
@@ -47,10 +47,10 @@
 
 | 成本风险 | DSH 的控制实践 |
 |---|---|
-| 索引过期 | 生成 catalog 配 freshness gate——目录与源码有 diff 就红（[生成 catalog 的门禁](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/tool-catalog.md)） |
-| 常驻层膨胀 | 文档预算进 `scripts/doc-budgets.manifest.json`，`verify-doc-budgets` 逐文件卡上限（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/AGENTS.md) 的 Wordcount Budgets）；数值不迁移——给区间不给定值（推荐区间见 [`入口链`](./07-agents-entry-chain.md)） |
-| 过时理由冒充现行 | 决策记录带状态目录与冻结归档（[.agents/notes/README.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/.agents/notes/README.md)） |
-| 假门禁 | 新检查必须负例控制：引入回归 → 看红 → 还原（[docs/testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/testing.md)） |
+| 索引过期 | 生成 catalog 配 freshness gate——目录与源码有 diff 就红（[生成 catalog 的门禁](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-catalog.md)） |
+| 常驻层膨胀 | 文档预算进 `scripts/doc-budgets.manifest.json`，`verify-doc-budgets` 逐文件卡上限（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 的 Wordcount Budgets）；数值不迁移——给区间不给定值（推荐区间见 [`入口链`](./07-agents-entry-chain.md)） |
+| 过时理由冒充现行 | 决策记录带状态目录与冻结归档（[.agents/notes/README.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)） |
+| 假门禁 | 新检查必须负例控制：引入回归 → 看红 → 还原（[docs/testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)） |
 | 双语漂移 | README 配对 hash sidecar，改一侧必须重录另一侧（`README.i18n.yaml`，[变更闭环](./01-sdlc-change-loop.md) 的 7 文件案例里就有它） |
 
 普通项目最容易犯的错，是**在还不存在组合压力时，提前造一整套插件/生成目录/invariant 架构**——维护成本吃掉可读性收益。本 FAQ 的研究语料（整理者归纳，非 DSH 原文）说得直接：

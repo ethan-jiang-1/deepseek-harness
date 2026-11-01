@@ -1,6 +1,6 @@
 # Answer · 借鉴 DSH Harness 思路：让 coding agent 不糊涂、不乱发挥
 
-> **DSH = DeepSeek Harness**——DeepSeek 的「一切皆插件」agent harness，仓库在 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)，CLI 与包名写作小写 `dsh`；本目录的「DSH」都指它，所有「DSH 原话」的钉版链接都指向这个仓库。
+> **DSH = DeepSeek Harness**——DeepSeek 的「一切皆插件」agent harness，仓库在 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)，CLI 与包名写作小写 `dsh`；本目录的「DSH」都指它，所有「DSH 原话」的链接都指向这个仓库。
 
 ## 一句话结论
 
@@ -124,7 +124,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 **证据与兜底**：各章声称的 DSH 事实，上游一手出处集中在 [`reference.md`](./reference.md)——按需核对，不读不影响理解（渐进披露用在 FAQ 自己身上）；[`research.md`](./research.md) 是整理过程的内部账本（复核历史与语料出处）。本目录自带 [`verify.mjs`](../verify.mjs)（UTF-8 / 换行 / 链接 / 锚点），修改后运行 `node _faq_on_digested/verify.mjs`；防漂移纪律的落地清单见 [`落地总纲`](./06-step-by-step-guide.md) Phase 8——这个 FAQ 讲的机制，自己也在用。
 
-**自包含**：整套目录可以单独拿走用。指向 DSH 仓库的引用全部是钉版在固定 commit `46a7f68b09` 的 GitHub 绝对 URL——任何人、任何机器都能点开核对，不需要 clone 这个仓库；目录间互链只在 `_faq_on_digested` 家族内部。抄走这套 FAQ 的人，唯一断不了的依赖就是公网。
+**自包含**：整套目录可以单独拿走用。指向 DSH 仓库的引用全部是 GitHub 绝对 URL（指向 `master`，不带版本号）——任何人、任何机器都能点开核对，不需要 clone 这个仓库；目录间互链只在 `_faq_on_digested` 家族内部。抄走这套 FAQ 的人，唯一断不了的依赖就是公网。
 
 **按状态读（静态/动态轴）**：这条轴本身由 [`静与动`](./04-static-vs-dynamic.md) 拥有（四层分界 + 三条切换纪律）。偏静态的章——归属、正确路径、入口链文件态、Skills 仓库面；偏动态的章——静与动、运行时查询、披露管线、入口链会话态、Skills 模型可见面。根入口文档的静态设计细节归 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)，运行时消费归 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)。
 

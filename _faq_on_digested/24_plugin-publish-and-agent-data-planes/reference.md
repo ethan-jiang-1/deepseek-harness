@@ -23,46 +23,46 @@
 
 | 主题 | 来源 | 支撑什么 | 备注 |
 |---|---|---|---|
-| 发布模型 | [publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/develop/basic/publish.md) | bundle 与 profile 的分工、加载顺序、覆盖语义、Git 安装与 `allowBuilds` | 产品文档；与 app-boot/plugin-manager 一致时最稳 |
-| 启动、层、行、必需 id | [app-boot README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/README.md) | patch 叠层、`skippedBundles`、行级拒绝、兼容判定入口 | 含 profile/linked 包 HMR 行为 |
-| 安装、激活、豁免 | [plugin-manager README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/plugin-manager/README.md) | `install_bundle`、回滚、`already-installed`、`compatibility.json`、插件在沙箱外执行 | 与 CLI 路径的差异要分开写 |
-| manifest 类型 | [package-manifest types.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/package-manifest/src/types.ts) | `DshBundleManifest`、`dsh.bundle.patch`、`manifestVersion`、`client` 字段 | 类型存在 ≠ 有读取方 |
-| 兼容判定 | [plugin-compatibility.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/src/plugin-compatibility.ts) | `engines.dsh` 优先、peer 回退、预发布匹配、非法范围 | 与 package-manifest README 的旧结论冲突，以本文件为准 |
-| 元数据 | [package-meta.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/boot/app-boot/src/package-meta.ts) | locale/icon/description 的解析、回退与 `error` 行为 | 资源经 `exports` 解析 |
-| preset 声明 | [agent-preset README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/README.md) | preset 的五个字段、子插件行、`preset-<id>` 约定 | 定义是普通插件行 |
-| preset 生命周期 | [agent-preset-registry README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset-registry/README.md) | id 选择、revision 持有、重启按当前定义恢复、只读 UI | 注释里的“Web editor 保存”已过时 |
-| 作者写法 | [editing-cordis-compositions SKILL](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md) | Host 行与 preset 行的分工、`isolate`/`group`、资产从安装包解析 | 作者指引，不是协议 |
-| 出厂 preset | [standard.patch.yml](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/bundle/web-app/presets/standard.patch.yml) | 标准 preset 的 skill 两行、工具面 | 文件注释有漂移，行为以 registry 为准 |
-| skill 根与 rank | [skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/skill/skill-filesystem/README.md) | 六个扫描根、rank、frontmatter、顶层发现 | 包内 `assets/skills` 不自动发现 |
-| 指令链 | [agent-instructions README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/context/agent-instructions/README.md) | `AGENTS.md` 顺序、broad→specific、字节预算、刷新时机 | durable baseline message，不是系统提示 |
-| home 解析 | [home-paths README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/util/home-paths/README.md) | `$DSH_HOME`、`~/.agents`、`DSH_AGENTS_HOME` | 不要硬编码 `~/.dsh` |
-| 宿主 KV | [storage-domain README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/storage/storage-domain/README.md) | domain、schema、版本、写链、`already-open`、无自动迁移 | 没有 per-plugin 目录/配额 |
-| 会话日志 | [session-persistence-jsonl README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/session-persistence-jsonl/README.md) | 目录布局、世代、压缩、无删除 API | 默认 zstd，不是纯 JSONL |
-| 工作目录 | [working-directory README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/session/working-directory/README.md) | 会话级工作目录、`working_directory` 工具、事件提交 | `header.cwd` 不可变，当前目录可改 |
-| 工作区记录 | [workspace README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/workspace/workspace/README.md) | 项目列表与会话分组；删记录不删目录/历史 | 不是文件管理器 |
-| 附件 | [attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/attachment/attachment-local/README.md) | 内容寻址、不可变、保留所有对象、无自动 GC | 删日志/删工作区不回收 |
-| spill | [spill-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/spill/spill-local/README.md) | OS 临时目录、`cleanupPeriodDays`、启动一次性清理 | 不是用户交付物 |
-| 产物 | [tool-present README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/deliverables/tool-present/README.md) | `present` 只记路径，不复制字节 | 交付物应写工作区 |
-| 凭据 | [credentials-local README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/credentials/credentials-local/README.md) | `CredentialRef` / `CredentialKey`、每次 resolve、文件权限不是隔离边界 | 值不进日志/patch |
-| settings | [settings README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/settings/settings/README.md) | volatile 字段、写当前 profile 的 `cordis.patch.yml`、拒绝陈旧写 | profile 作用域，不是账号 |
-| client 模块 | [client modules README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/client/modules/README.md) | Host 已启用行扫描、`dsh.client`、`window.__DSH_BOOT__`、组合路由 | preset 子树不参与扫描 |
-| 市场 | [plugin-market 指南](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/user/guide/plugin-market.md) | index 格式、版本语义、Discover、不背书 | 第三方静态 JSON |
-| 官方目录 | [gen-official-bundle-catalog.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/scripts/gen-official-bundle-catalog.ts) | 准入条件、双语/图标、按需安装 | 外部作者不可发布 |
-| 测试设施 | [testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/testing.md) | 分层、快照、e2e、覆盖率、flaky 规则 | 主仓规则，不是外部插件义务 |
-| 导出事故 | [postmortem 0001](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/postmortem/0001-acp-default-export-drops-inject.md) | default/named 混用会丢命名空间 | 真实事故记录 |
-| 沙箱与宿主边界 | [defensive-patterns README](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/defensive-patterns/README.md) | 宿主代码在沙箱外、文件效果与审批、安装脚本执行 | 插件作者必须知道的边界 |
-| 文件系统 | [filesystem.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/filesystem.md) | `ctx.fs`、target/version 不透明、`createIfAbsent` / `replaceIfVersion`、沙箱策略 | 不要解析 `targetKey` |
-| 宿主存储 | [storage.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/storage.md) | `ctx.storageDomain`、`DomainSpec`、`single` / `per-record`、版本/写链 | 没有跨进程锁 |
-| per-record 键 | [storage-json per-record-unit.ts](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/packages/storage/storage-json/src/per-record-unit.ts) | JSON `per-record` 把记录键变成路径段，必须 `[a-zA-Z0-9_-]+` | 其他后端不保证 |
-| 会话持久化 | [persistence.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/persistence.md) | 日志、世代、租约、无删除 API、`header.cwd` | 不要改 header/删目录 |
-| 会话投影 | [session-projection.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/session-projection.md) | 纯同步 fold、`stateSchema` / `apply` / `wire` / `stateVersion`、客户端视图 | 不存新事实 |
-| 会话查询 | [session-query.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/session-query.md) | live-preferred 读取/过滤/搜索；全文依赖 provider | 只读，不写 |
-| 附件 | [attachment.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/attachment.md) | 内容寻址、不可变引用、`ctx.attachments`、不拼路径 | 无自动 GC |
-| spill | [spill.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/spill.md) | `ctx.spillStore`、`saveText`、不透明 locator、OS 临时目录 | 没有按会话的保留策略 |
-| 凭据 | [credentials.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/credentials.md) | `CredentialRef` / `CredentialKey`、每次操作 resolve、空值等于未配置 | 文件权限不是隔离 |
-| 配置表单 | [settings.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/settings.md) | volatile 字段、profile entry 命名空间、写 profile patch | 不是账号作用域 |
-| 交付物 | [deliverables.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/deliverables.md) | `present` 只记路径、log-only 事件、工作区变更摘要 | 不复制字节 |
-| 工作区 | [workspace.md](https://github.com/deepseek-ai/deepseek-harness/blob/1f81c047fc48fa190a683e469daa699857e9afe8/docs/subsystems/workspace.md) | `WorkspaceId` 是生成 uuid、path canonical、只登记不读写数据 | 不是文件管理器 |
+| 发布模型 | [publish.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md) | bundle 与 profile 的分工、加载顺序、覆盖语义、Git 安装与 `allowBuilds` | 产品文档；与 app-boot/plugin-manager 一致时最稳 |
+| 启动、层、行、必需 id | [app-boot README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md) | patch 叠层、`skippedBundles`、行级拒绝、兼容判定入口 | 含 profile/linked 包 HMR 行为 |
+| 安装、激活、豁免 | [plugin-manager README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md) | `install_bundle`、回滚、`already-installed`、`compatibility.json`、插件在沙箱外执行 | 与 CLI 路径的差异要分开写 |
+| manifest 类型 | [package-manifest types.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/util/package-manifest/src/types.ts) | `DshBundleManifest`、`dsh.bundle.patch`、`manifestVersion`、`client` 字段 | 类型存在 ≠ 有读取方 |
+| 兼容判定 | [plugin-compatibility.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/src/plugin-compatibility.ts) | `engines.dsh` 优先、peer 回退、预发布匹配、非法范围 | 与 package-manifest README 的旧结论冲突，以本文件为准 |
+| 元数据 | [package-meta.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/src/package-meta.ts) | locale/icon/description 的解析、回退与 `error` 行为 | 资源经 `exports` 解析 |
+| preset 声明 | [agent-preset README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset/README.md) | preset 的五个字段、子插件行、`preset-<id>` 约定 | 定义是普通插件行 |
+| preset 生命周期 | [agent-preset-registry README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset-registry/README.md) | id 选择、revision 持有、重启按当前定义恢复、只读 UI | 注释里的“Web editor 保存”已过时 |
+| 作者写法 | [editing-cordis-compositions SKILL](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md) | Host 行与 preset 行的分工、`isolate`/`group`、资产从安装包解析 | 作者指引，不是协议 |
+| 出厂 preset | [standard.patch.yml](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/presets/standard.patch.yml) | 标准 preset 的 skill 两行、工具面 | 文件注释有漂移，行为以 registry 为准 |
+| skill 根与 rank | [skill-filesystem README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-filesystem/README.md) | 六个扫描根、rank、frontmatter、顶层发现 | 包内 `assets/skills` 不自动发现 |
+| 指令链 | [agent-instructions README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md) | `AGENTS.md` 顺序、broad→specific、字节预算、刷新时机 | durable baseline message，不是系统提示 |
+| home 解析 | [home-paths README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/util/home-paths/README.md) | `$DSH_HOME`、`~/.agents`、`DSH_AGENTS_HOME` | 不要硬编码 `~/.dsh` |
+| 宿主 KV | [storage-domain README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/storage/storage-domain/README.md) | domain、schema、版本、写链、`already-open`、无自动迁移 | 没有 per-plugin 目录/配额 |
+| 会话日志 | [session-persistence-jsonl README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-persistence-jsonl/README.md) | 目录布局、世代、压缩、无删除 API | 默认 zstd，不是纯 JSONL |
+| 工作目录 | [working-directory README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/working-directory/README.md) | 会话级工作目录、`working_directory` 工具、事件提交 | `header.cwd` 不可变，当前目录可改 |
+| 工作区记录 | [workspace README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workspace/workspace/README.md) | 项目列表与会话分组；删记录不删目录/历史 | 不是文件管理器 |
+| 附件 | [attachment-local README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/attachment/attachment-local/README.md) | 内容寻址、不可变、保留所有对象、无自动 GC | 删日志/删工作区不回收 |
+| spill | [spill-local README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/spill/spill-local/README.md) | OS 临时目录、`cleanupPeriodDays`、启动一次性清理 | 不是用户交付物 |
+| 产物 | [tool-present README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/deliverables/tool-present/README.md) | `present` 只记路径，不复制字节 | 交付物应写工作区 |
+| 凭据 | [credentials-local README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/credentials/credentials-local/README.md) | `CredentialRef` / `CredentialKey`、每次 resolve、文件权限不是隔离边界 | 值不进日志/patch |
+| settings | [settings README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/settings/settings/README.md) | volatile 字段、写当前 profile 的 `cordis.patch.yml`、拒绝陈旧写 | profile 作用域，不是账号 |
+| client 模块 | [client modules README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/modules/README.md) | Host 已启用行扫描、`dsh.client`、`window.__DSH_BOOT__`、组合路由 | preset 子树不参与扫描 |
+| 市场 | [plugin-market 指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/guide/plugin-market.md) | index 格式、版本语义、Discover、不背书 | 第三方静态 JSON |
+| 官方目录 | [gen-official-bundle-catalog.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/gen-official-bundle-catalog.ts) | 准入条件、双语/图标、按需安装 | 外部作者不可发布 |
+| 测试设施 | [testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) | 分层、快照、e2e、覆盖率、flaky 规则 | 主仓规则，不是外部插件义务 |
+| 导出事故 | [postmortem 0001](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0001-acp-default-export-drops-inject.md) | default/named 混用会丢命名空间 | 真实事故记录 |
+| 沙箱与宿主边界 | [defensive-patterns README](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/defensive-patterns/README.md) | 宿主代码在沙箱外、文件效果与审批、安装脚本执行 | 插件作者必须知道的边界 |
+| 文件系统 | [filesystem.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/filesystem.md) | `ctx.fs`、target/version 不透明、`createIfAbsent` / `replaceIfVersion`、沙箱策略 | 不要解析 `targetKey` |
+| 宿主存储 | [storage.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/storage.md) | `ctx.storageDomain`、`DomainSpec`、`single` / `per-record`、版本/写链 | 没有跨进程锁 |
+| per-record 键 | [storage-json per-record-unit.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/storage/storage-json/src/per-record-unit.ts) | JSON `per-record` 把记录键变成路径段，必须 `[a-zA-Z0-9_-]+` | 其他后端不保证 |
+| 会话持久化 | [persistence.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/persistence.md) | 日志、世代、租约、无删除 API、`header.cwd` | 不要改 header/删目录 |
+| 会话投影 | [session-projection.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session-projection.md) | 纯同步 fold、`stateSchema` / `apply` / `wire` / `stateVersion`、客户端视图 | 不存新事实 |
+| 会话查询 | [session-query.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session-query.md) | live-preferred 读取/过滤/搜索；全文依赖 provider | 只读，不写 |
+| 附件 | [attachment.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/attachment.md) | 内容寻址、不可变引用、`ctx.attachments`、不拼路径 | 无自动 GC |
+| spill | [spill.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/spill.md) | `ctx.spillStore`、`saveText`、不透明 locator、OS 临时目录 | 没有按会话的保留策略 |
+| 凭据 | [credentials.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/credentials.md) | `CredentialRef` / `CredentialKey`、每次操作 resolve、空值等于未配置 | 文件权限不是隔离 |
+| 配置表单 | [settings.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/settings.md) | volatile 字段、profile entry 命名空间、写 profile patch | 不是账号作用域 |
+| 交付物 | [deliverables.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/deliverables.md) | `present` 只记路径、log-only 事件、工作区变更摘要 | 不复制字节 |
+| 工作区 | [workspace.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/workspace.md) | `WorkspaceId` 是生成 uuid、path canonical、只登记不读写数据 | 不是文件管理器 |
 
 ### 历史与过时材料（H / R）
 
