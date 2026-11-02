@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 560" width="1180" height="560" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
   <rect width="1180" height="560" fill="#ffffff"/>
   <text x="40" y="42" font-size="21" font-weight="700" fill="#1f2328">失败矩阵：一行坏了，进程会怎样</text>
-  <text x="40" y="68" font-size="13" fill="#6e7781">三列是三种处境；底部两行与 entry id 无关，永远致命</text>
+  <text x="40" y="68" font-size="13" fill="#6e7781">三列是三种处境；底部的游离异常行与 entry id 无关，永远致命</text>
 
   <rect x="40" y="96" width="240" height="52" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
   <text x="60" y="128" font-size="13" font-weight="700" fill="#1f2328">失败形态</text>
@@ -48,5 +48,5 @@
 
   <rect x="40" y="468" width="1100" height="72" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
   <text x="62" y="494" font-size="12.5" fill="#1f2328">读法：先看自己是 optional 还是 required，再看失败发生在启动还是重载。</text>
-  <text x="62" y="516" font-size="12" fill="#424a53">最后两行没有归属，所以三列一样致命——进程不会假装它还健康。</text>
+  <text x="62" y="516" font-size="12" fill="#424a53">最后一行（游离 async / 未捕获同步异常）没有归属，所以三列一样致命——进程不会假装它还健康。</text>
 </svg>

@@ -60,7 +60,7 @@
 | 首次创建 | shipped 名自动初始化；自定义名走 `--from-default-profile` 或 `dsh plugin` | 壳在 Host 启动前准备，不改已装包、不跑 pnpm | 同左列 |
 | 运行期变更 | base 的 `hmr` 行默认开配置重载，写盘即时生效 | 同左列，另有原生恢复 | `hmr` 行显式关断，改了要重启 |
 | 更新 | bundle 级更新 + HMR 或重启 | 应用整体替换：壳与 dsh 恒为同一精确版本 | 一律重启 |
-| 卸载 | Plugins 页 / `plugin_manager` / `dsh plugin remove <pkg>` | 应用卸载删 Electron 数据，**永不碰 Harness home** | 只能手改文件 |
+| 卸载 | Plugins 页 / `plugin_manager` / `dsh plugin remove <pkg>` | 应用卸载删 Electron 数据，**永不碰 Harness home** | `dsh plugin remove <pkg>`；无进程内管理面 |
 
 `sdk-minimal` 是第四种：它不叠 `dsh-base`，于是连 `hmr` 行都没有。
 

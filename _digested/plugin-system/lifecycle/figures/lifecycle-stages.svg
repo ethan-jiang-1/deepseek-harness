@@ -23,7 +23,7 @@
 
   <rect x="296" y="70" width="120" height="80" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
   <text x="356" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">③ 安装</text>
-  <text x="356" y="116" text-anchor="middle" font-size="10" fill="#2563eb">写 profile 两个文件</text>
+  <text x="356" y="116" text-anchor="middle" font-size="10" fill="#2563eb">写 profile 清单/锁 + workspace 配置</text>
   <text x="356" y="132" text-anchor="middle" font-size="10" fill="#2563eb">版本门先拒绝</text>
 
   <line x1="416" y1="110" x2="426" y2="110" stroke="#4b5563" marker-end="url(#arr)"/>
@@ -93,7 +93,7 @@
   <text x="672" y="308" font-size="10.5" fill="#4b5563">首建：同 web 路线</text>
   <text x="672" y="330" font-size="10.5" fill="#4b5563">变更：hmr 行显式关断</text>
   <text x="672" y="352" font-size="10.5" fill="#4b5563">更新：一律需要重启</text>
-  <text x="672" y="374" font-size="10.5" fill="#4b5563">卸载：只能手改文件</text>
+  <text x="672" y="374" font-size="10.5" fill="#4b5563">卸载：dsh plugin remove</text>
   <text x="672" y="402" font-size="10" fill="#6b7280">sdk-minimal 不叠 base，</text>
   <text x="672" y="418" font-size="10" fill="#6b7280">连 hmr 行都没有</text>
 </svg>

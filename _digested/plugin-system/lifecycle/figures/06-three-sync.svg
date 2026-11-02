@@ -17,7 +17,7 @@
 
   <rect x="40" y="336" width="1100" height="104" rx="10" fill="#e8f5ec" stroke="#8fd19e"/>
   <text x="62" y="364" font-size="14" font-weight="700" fill="#1a7f37">③ 树内变更：effect 的作用域</text>
-  <text x="62" y="390" font-size="12" fill="#424a53">注册 / 监听 / 子插件都由 ctx.effect 拥有；fiber 卸载时按登记逆序撤销</text>
+  <text x="62" y="390" font-size="12" fill="#424a53">注册 / 监听 / 子插件都由 ctx.effect 拥有；同一 effect 内 disposer 逆序撤销</text>
   <text x="62" y="412" font-size="12" fill="#424a53">跨顶层 effect 的清理是并发的，不保证全局顺序</text>
   <text x="62" y="432" font-size="11.5" fill="#6e7781">需要顺序的两份资源，放进同一个 effect 里串行释放</text>
 

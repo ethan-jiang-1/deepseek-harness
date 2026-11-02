@@ -4,7 +4,7 @@
     <marker id="arrr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#b91c1c"/></marker>
   </defs>
   <rect width="900" height="430" fill="#fafafa" rx="6"/>
-  <text x="450" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">安装写盘面：改两个文件，其余一概不动</text>
+  <text x="450" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">安装写盘面：改清单/锁文件，构建批准另写 workspace 配置</text>
   <text x="450" y="51" text-anchor="middle" font-size="11" fill="#6b7280">四个入口落到同一个 PluginManager；包操作在 profile 写锁下进行</text>
 
   <text x="28" y="80" font-size="11" font-weight="700" fill="#374151">四个入口</text>
@@ -53,7 +53,7 @@
   <text x="616" y="114" font-size="10" fill="#15803d">（只这三个位置）</text>
   <text x="596" y="140" font-size="10.5" font-family="ui-monospace, monospace" fill="#14532d">package.json</text>
   <text x="700" y="140" font-size="10" fill="#15803d">依赖 + bundles 列表</text>
-  <text x="596" y="166" font-size="10.5" font-family="ui-monospace, monospace" fill="#14532d">pnpm-lock.yaml</text>
+  <text x="596" y="166" font-size="10.5" font-family="ui-monospace, monospace" fill="#14532d">pnpm-lock.yaml + pnpm-workspace.yaml（构建批准）</text>
   <text x="700" y="166" font-size="10" fill="#15803d">由 pnpm 写</text>
   <text x="596" y="192" font-size="10.5" font-family="ui-monospace, monospace" fill="#14532d">.plugin-manager/logs</text>
   <text x="596" y="214" font-size="10" fill="#15803d">诊断日志追加，不覆盖</text>
