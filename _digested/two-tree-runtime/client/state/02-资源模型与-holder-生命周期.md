@@ -35,7 +35,7 @@ provider 是 `{ protocol, open(address, { signal }) }`（同文件 `:71-85`）�
 
 限定（原文即写明，`docs/subsystems/client-resources.md:90-92`）：地址记录活到页面生命周期，最后一个 holder 离开后记录仍在内存里（不持流、不持值）；provider 若忽略 `signal` 会一直跑到下一帧；`failed` 的失败类型是 Remote 面的 `RemoteFailure`，所以源不是 Remote 调用的 provider 得自己造一个。
 
-明确**不建**（`docs/subsystems/sidebar-right.md:148-159`）：布局持久化、只读布局快照或订阅、capability 发现数组（`features`）、tab 类型的 `option` 优先级带、用户可见 undo、tab 图标、按实现名开 tab、服务上的地址查找、`sidebar://<kind>` 之外的导航地址。
+明确**不建**（`docs/subsystems/sidebar-right.md:148-159`）：布局持久化、只读布局快照或订阅、capability 发现数组（`features`）、tab 类型的 `option` 优先级带、用户可见 undo、记录标题不可重设（`title(address)` 开 tab 时捕获，活标题只能走 title slot）、按实现名开 tab、服务上的地址查找、`sidebar://<kind>` 之外的导航地址。
 
 ## workspaceFiles 服务
 
