@@ -117,7 +117,7 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 1. **钉基线**：全部判断对照 [`catalog.json`](../catalog.json) 的 `baseline`；各页的核验点见 catalog，不在正文重复 commit。上游同步后按 `_change_log/` 复核本专题的证据锚点。
 2. **出处分级**：每条判断标注来源——`[原文]`、`[源码]`、`[推断]`、`[框架]`；后两类可信度最低，只提供结构或假设。
 3. **反事实标记**：写判断时自问「一个没读过本仓库的 fresh agent 会不会自然写出这句」；会，是分布内通式；不会，才可能是信息。
-4. **自我适用**：[`08`](./08-judgement-discipline.md) 末尾用「三个问题」检验本专题自身，并维护一个核心 claim register。
+4. **自我适用**：[`08`](./08-judgement-discipline.md) 末尾用「三个问题」检验本专题自身，并维护一个核心 claim register。页内 blockquote 末尾的 `基线 687f…` 是引文当时的核验点，不是当前基线；当前基线见 [`catalog.json`](../catalog.json)。
 
 ## 与其它专题的关系
 

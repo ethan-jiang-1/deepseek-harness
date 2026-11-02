@@ -78,7 +78,7 @@ web-app 的 disable 名单里**没有** `tool-str-replace-editor`：它和 base 
 - `client-hmr`：client 插件热重载链，常挂、空闲直至重建 watcher 重写 client bundles
 - `file-upload`：Raw Blob / ReadableStream 上传，独立于 Connection 的 RPC 与 generation 服务
 
-**Layer 3 — Browser 插件罗盘（59 条，`dsh.client` 行；`file-upload` 计入 Layer 2）：**
+**Layer 3 — Browser 插件罗盘（59 条，含 `office-to-pdf`、`workspace-changes` 两条 host-only 例外；`file-upload` 计入 Layer 2）：**
 
 - `modules`：node 半边扫本树组装 `window.__DSH_BOOT__` 并 serve `/plugins/<id>/client.js`，同时是 host 行
 - `connection`：web 传输两端：node 半边把 gateway 挂到 webserver 的 `/api` 下，浏览器半边是 fetch/SSE client

@@ -31,8 +31,8 @@
 | `ctx.sessionQuery` | 1 | 2 | session-query/session-query | 单后端（sqlite） |
 | `ctx.workflowEngine` | 1 | 2 | workflow/workflow | worker-thread 单引擎 |
 | `ctx.worktrees` | 1 | 1 | experimental/worktree | 0.2.1 线新增：Provider 与 Consumer 同族、显式实验组合 |
-| `ctx.mcpResources` | 1 | 1 | mcp/mcp-resources | 自消费（P 与 C 同包） |
-| `ctx.fileReferences` | 1 | 1 | context/file-reference | 自消费 |
+| `ctx.mcpResources` | 1 | 1 | mcp/mcp-resources | 跨包：impl 在 `mcp-client`，consumer 在 `mcp-resources`（生成表 :624） |
+| `ctx.fileReferences` | 1 | 1 | context/file-reference | 跨包：impl 在 `file-reference-local`，consumer 在 `api-session-controller`（生成表 :667） |
 | `ctx.compaction` | 1 | 1 | compaction/compaction | 自消费 |
 | `ctx.terminals` | 1 | 1 | terminal/terminal | 单后端（bash PTY） |
 | `ctx.lsp` | 1 | 1 | lsp/lsp | 单后端（stdio） |

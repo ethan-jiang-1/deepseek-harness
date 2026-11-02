@@ -293,7 +293,7 @@
           "title": "载体、rpcId 与逻辑流",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "needs-recheck",
+          "status": "reverified",
           "source": "page"
         },
         {
@@ -309,7 +309,7 @@
           "title": "Host 派发与访问控制",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "needs-recheck",
+          "status": "reverified",
           "source": "page"
         },
         {
@@ -317,7 +317,7 @@
           "title": "客户端 mount 与装配",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "needs-recheck",
+          "status": "reverified",
           "source": "page"
         },
         {
@@ -341,7 +341,7 @@
           "title": "声明期：装饰器、namespace 与三个 core 服务",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "needs-recheck",
+          "status": "reverified",
           "source": "page"
         },
         {
@@ -349,7 +349,7 @@
           "title": "build 期：类型图与两族产物",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "needs-recheck",
+          "status": "reverified",
           "source": "page"
         }
       ]

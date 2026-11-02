@@ -11,7 +11,7 @@
     </marker>
   </defs>
 
-  <text x="40" y="32" font-size="16" font-weight="bold" fill="#333">走查：一支小队交叉复核本专题的 1437 条引用并修复越界</text>
+  <text x="40" y="32" font-size="16" font-weight="bold" fill="#333">走查：一支小队交叉复核本专题的上千条引用并修复越界</text>
   <text x="40" y="52" font-size="11.5" fill="#8c8c8c">场景是读者自己的工作；每条规则的源码出处见正文各节（explicit-ask / CAS / 唤醒语义 / FS_STALE_VERSION / Lead 兜底）</text>
 
   <line x1="90" y1="70" x2="90" y2="760" stroke="#d9d9d9" stroke-width="1.5"/>

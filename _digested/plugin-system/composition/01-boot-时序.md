@@ -32,7 +32,7 @@
 
 ## 层列表：用户层之上还有 launcher 派生
 
-`composeProfile` 算出的 `allPatches`：
+`readProfilePatches` 组出的完整 patch 列表（`composeProfile` 只返回 profile / resolution / overlays）：
 
 ```text
 bundle patches（dsh.profile.bundles 声明顺序）

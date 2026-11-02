@@ -42,7 +42,7 @@ dump 也接受 `--from-default-profile <模板>`（`apps/cli/src/dump-config.ts:
 
 | 层 | 谁加 | dump 有没有 |
 |----|------|-------------|
-| `DSH_TELEMETRY_DISABLED` → `disabled: true` | `runProfile`，且组合里有 `session-telemetry-otel` | 无 |
+| `DSH_TELEMETRY_DISABLED` → `disabled: true` | `readProfilePatches`（`profile-context.ts:74-89`），且组合里有 `session-telemetry-otel` | 无 |
 
 （0.1.7 线起 shipped preset root 机制退役，shipped presets 由 bundle 携带；原 `dsh-agent-presets` 包内解析的说法只适用于 0.1.5 线。）
 

@@ -40,7 +40,7 @@ objective 的**逐字持久**是它区别于 todo 的本质：每轮 prompt 注�
 
 Round Driver 注入的完整轮指令（`packages/goal/goal-round-driver/src/prompt.ts:14`-`28`）：
 
-> `<goal_round>` Objective: <逐字> / Round: N/maxGoalRounds / "Continue working toward the objective in this same session. **Treat the current workspace, tool results, and durable session state as authoritative; inspect them instead of assuming earlier narration is still current.** Make concrete progress and verify the result. Before claiming completion, gather evidence that the whole objective is achieved, read the current goal, and mark it complete. If work remains, leave the goal active for the next round."
+> `<goal_round>` Objective: <逐字> / Round: N/maxGoalRounds / "Continue working toward the objective in this same session. **Treat the current workspace, tool results, and durable session state as authoritative; inspect them instead of assuming earlier narration is still current.** Make concrete progress and verify the result. Before claiming completion, gather evidence that the whole objective is achieved, read the current goal, and mark it complete. If work remains, leave the goal active for the next round. Follow the configured goal-tool policy before reporting a blocker."
 
 两条驾驶座要点：**「检查工作区而不是相信上一轮的自述」写进了每一轮**（防跨轮幻觉积累）；**完成前必须重读当前 goal**（`read the current goal`——防你在中途 edit 过 objective 后模型按旧目标自报完成）。
 

@@ -49,7 +49,7 @@ export function apply(ctx: Context, config: Config = {}): void
 
 | 事实 | 数字 / 出处 |
 |---|---|
-| `snapshots/` 整树提交 | 基线树 **250 场景 / 1682 文件 / 9.6MB**（`git ls-tree -r -l` 字节口径；`du` 按 4KB 块会虚高到 ~14MB），折算 **~38KB/场景** |
+| `snapshots/` 整树提交 | 基线树 **250 场景 / 1682 文件 / 9.36 MiB（9.81 MB）**（`git ls-tree -r -l` 字节口径；`du` 按 4KB 块会虚高到 ~14MB），折算 **~38KB/场景** |
 | 最大单文件 | 95KB（`snapshots/session/cua-native/session.v4.jsonl`）；schema sidecar 最大 81KB（`snapshots/session/dynamic-tool-updates/tool-schemas.expected.json`） |
 | 按扩展名 | jsonl 6.1MB / json 2.2MB / md 0.9MB——全是逐行文本，packfile 再压缩 |
 | 运行时原始日志**不进** git | `.gitignore:14` 的 `.sessions/`——**录制原料不进，证据进** |
@@ -87,4 +87,4 @@ export function apply(ctx: Context, config: Config = {}): void
 
 1. **双接受可检索**：`grep -n "cannot mix projected and complete" packages/test-support/llm-replay/src/index.ts`——错误串本身就是规则原文。
 2. **patch 未命中只是 warn 可复现**：读 `vendor/include/src/index.ts` 的 `warn('patch: entry %C not found', id)`——没有任何 throw 路径。
-3. **体积口径可复现**：`git ls-tree -r -l 687f282e8625c6b8d11ff58211a90524be2e4317 snapshots | awk '{s+=$4} END {print s/1024}'` ≈ 9582 KB；换 `du -sh` 会得到虚高的块口径（~14MB）。
+3. **体积口径可复现**：`git ls-tree -r -l b830ec950faba0a46dda564be3e2d854afed94f1 snapshots | awk '{s+=$4} END {print s/1024}'` ≈ 9585 KB；换 `du -sh` 会得到虚高的块口径（~14MB）。

@@ -57,7 +57,7 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
 
 ## 子 Agent 能否继续启动子 Agent？
 
-这里要区分 **Team teammate**、普通 subagent 和 workflow child：Agent Teams 的 `spawn_teammate` 不是一个所有成员都能调用的递归委派工具，只有 Lead 有权创建具名 teammate；队友不能用它再创建下一层 Team 成员。profile 同时禁用了普通 `subagent` / `subagent_fork` 工具，但保留了底层 Subagent service 和 `workflow` 的 `spawn` provider，因此一个 teammate 在其工具面确实可用 workflow 时，仍可能通过 workflow 的 `agent()` 创建一次性的 fresh child；这不是新的持久 teammate，也不继承 Team 的长期协调身份。`tool-agent-team` 对每个成员注册同一组九个 Team 工具，但服务层仍执行 Lead-only 权限；one-shot child 在刚发布的短窗口内可能暂时看见 Team 工具，调用会在身份确认后被拒绝，这是当前已登记的限制（`packages/experimental/tool-agent-team/README.md:142`）。
+这里要区分 **Team teammate**、普通 subagent 和 workflow child：Agent Teams 的 `spawn_teammate` 不是一个所有成员都能调用的递归委派工具，只有 Lead 有权创建具名 teammate；队友不能用它再创建下一层 Team 成员。profile 同时禁用了普通 `subagent` / `subagent_fork` 工具，但保留了底层 Subagent service 和 `workflow` 的 `spawn` provider，因此一个 teammate 在其工具面确实可用 workflow 时，仍可能通过 workflow 的 `agent()` 创建一次性的 fresh child；这不是新的持久 teammate，也不继承 Team 的长期协调身份。`tool-agent-team` 对每个成员注册同一组九个 Team 工具，但服务层仍执行 Lead-only 权限；one-shot child 在刚发布的短窗口内可能暂时看见 Team 工具，调用会在身份确认后被拒绝；这是实现边界，不属于 Team 的持久协调身份。
 
 因此，**“能不能再扇出”取决于入口和 provider，不是由 Team 任务板自动递归**：Lead 可以创建具名 teammate；队友不能创建 teammate；workflow 可以按自身脚本和容量限制启动 fresh child；任务 `ready` 也不会自动启动任何 owner。若要让某个队友再使用 workflow，Lead 应在初始 prompt 或消息中明确它的工作范围、输入、输出和验收条件，并把最终结果带回任务板或消息中。
 
@@ -79,7 +79,7 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 ## 走查：一次完整的团队会话
 
-规则集读一遍不如演一遍。场景就用读者自己的世界：**本专题有数百条 path:line 引用，要一支小队交叉复核并修复越界**——每一步都是典型的维护工作。任务板长这样（外部叙事爱画订单支付的 DAG；这张对应真实的 Team task board）：
+规则集读一遍不如演一遍。场景就用读者自己的世界：**本专题有一千多条 path:line 引用，要一支小队交叉复核并修复越界**——每一步都是典型的维护工作。任务板长这样（外部叙事爱画订单支付的 DAG；这张对应真实的 Team task board）：
 
 | 任务 | blocked_by | write_scope | 期望产物 |
 |------|-----------|-------------|---------|

@@ -13,7 +13,7 @@
 | [`two-tree-runtime/`](../two-tree-runtime/00-map.md) | 同一套 Cordis 在 Node 与浏览器各长一棵树，中间是类型化的线；一条会话事件穿过两棵树。 | 3 | 3 | 0 | 0 |
 | [`two-tree-runtime/framework/`](../two-tree-runtime/framework/00-map.md) | 两棵树共用的框架本体：五原语、waterfall、Loader/Include、vendor 本地修改。 | 6 | 2 | 4 | 0 |
 | [`two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) | 分层与单向依赖、模块身份与激活、浏览器启动、状态所有权、资源与视图、插件纪律。 | 16 | 5 | 11 | 0 |
-| [`two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md) | Typert 声明、Gateway 派发、载体与认证、两条出站链路与 wire 校验。 | 9 | 1 | 3 | 5 |
+| [`two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md) | Typert 声明、Gateway 派发、载体与认证、两条出站链路与 wire 校验。 | 9 | 6 | 3 | 0 |
 | [`runtime-profiles/`](../runtime-profiles/00-map.md) | 一次启动装入什么：五个 launcher profile 与 desktop 应用自有 profile 的组合、差异与装载路径。 | 7 | 2 | 5 | 0 |
 | [`session-and-loop/`](../session-and-loop/00-map.md) | 会话存在哪、怎么读回来：事件映射、inbox/turn 时序、换 loop 的半径、格式世代。 | 5 | 0 | 5 | 0 |
 | [`agent-loop/`](../agent-loop/00-map.md) | 一次对话怎么推进与收尾：turn/step/activity/goal 边界、goal 状态机与自动续轮。 | 5 | 0 | 5 | 0 |
@@ -85,14 +85,14 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../two-tree-runtime/remote/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`connection/01-载体-rpcId-与逻辑流`](../two-tree-runtime/remote/connection/01-载体-rpcId-与逻辑流.md) | mechanism | 需复核 | b830ec950f | 页面声明 |
+| [`connection/01-载体-rpcId-与逻辑流`](../two-tree-runtime/remote/connection/01-载体-rpcId-与逻辑流.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`connection/02-认证与浏览器宿主`](../two-tree-runtime/remote/connection/02-认证与浏览器宿主.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`gateway/01-Host-派发与访问控制`](../two-tree-runtime/remote/gateway/01-Host-派发与访问控制.md) | mechanism | 需复核 | b830ec950f | 页面声明 |
-| [`gateway/02-客户端-mount-与装配`](../two-tree-runtime/remote/gateway/02-客户端-mount-与装配.md) | mechanism | 需复核 | b830ec950f | 页面声明 |
+| [`gateway/01-Host-派发与访问控制`](../two-tree-runtime/remote/gateway/01-Host-派发与访问控制.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`gateway/02-客户端-mount-与装配`](../two-tree-runtime/remote/gateway/02-客户端-mount-与装配.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`streams/01-一条-emit-两条出站链路`](../two-tree-runtime/remote/streams/01-一条-emit-两条出站链路.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
 | [`streams/02-三类帧与-wire-校验`](../two-tree-runtime/remote/streams/02-三类帧与-wire-校验.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`typert/01-声明期-装饰器与-namespace`](../two-tree-runtime/remote/typert/01-声明期-装饰器与-namespace.md) | mechanism | 需复核 | b830ec950f | 页面声明 |
-| [`typert/02-类型图与两族产物`](../two-tree-runtime/remote/typert/02-类型图与两族产物.md) | mechanism | 需复核 | b830ec950f | 页面声明 |
+| [`typert/01-声明期-装饰器与-namespace`](../two-tree-runtime/remote/typert/01-声明期-装饰器与-namespace.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`typert/02-类型图与两族产物`](../two-tree-runtime/remote/typert/02-类型图与两族产物.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `runtime-profiles/`
 

@@ -8,17 +8,9 @@
 
 **为什么是多 provider 注册表而不是单实现**：同一个会话里，父可能既要一个便宜的进程内 child 干零活，又要一个隔离的进程外 child（ACP/Codex/Claude Code）——transports 是**共居的选择**而非部署的替换，所以 `ctx.subagents` 是具名注册表（像 LLM adapter），不像 bash 的单执行器（`.agents/notes/archived/feature/2026-06-21-subagent-capability-seam.md`，已归档，历史快照；Problem 节）。**为什么 continuable 是「一个 durable Session + 至多一个进程内 Activation」**：旧设计把 Task、provider 执行、结果边界绑成同一生命周期——结算即销毁 child、完成即注入通知；这带来三个病：两条 FIFO 没有单一顺序权威、走 Jobs 会复制 Agent loop 的准入/取消/静止机制、父 runtime 生命周期比一个 turn 宽（child 还在跑时不能销毁父）。答案是 Activation 只是「一个 residency epoch」——它可能跑多个 FIFO turn、等后代时可保持驻留，但它**不是**请求/结果/取消/Task 边界；Agent inbox 是唯一 turn FIFO（`.agents/notes/implemented/feature/2026-07-28-continuable-subagent-conversations.md` Problem 与 Decision 节）。**为什么 fork 曾以 one-shot 出现**：fork 的种子要花 token，它的回报是 provider 侧前缀复用——任何 child-only 的 prompt 节或工具 schema 排在继承历史**之前**都会毁掉这个回报；早期的 one-shot 限制是旧 child-only return 工具的**后果**而非 fork 的本质属性（`.agents/notes/implemented/architecture/2026-08-10-fork-children-stay-one-shot.md` Problem 节）。统一 activation 生命周期之后，组合不再引入 child-only section（回传指引排在继承历史之后），fork 行与 spawn 行现在只在 `provider`/`toolName` 上不同。
 
-## 一次 start 的解剖
+## 一次 start 与 provider 能力
 
-subagent seam 与 bash 型 seam 的关键差异：**多个具名 provider 共存**于一个 `ctx.subagents` 注册表（像 LLM adapter 注册表，不像 bash 的单执行器）（`docs/subsystems/subagent.md:5`-`9`、`:318`）。provider 是"具名的子代理 transport"：`spawn`（进程内 fresh）、`fork`（进程内继承）、`acp`/`codex`/`claude-code`（进程外）、`dsh-sdk`。
-
-`SubagentStartRequest` 的可选面与能力旗标**一一对应**（`packages/subagent/subagent/src/types.ts:123`-`201`）：`agentOptions`/`outputSchema`/`depthLimit`（↔`maxDepth`）/`toolFilter`/`persona` 五 flag；service 在 `start` 前逐一校验，缺则 `UNSUPPORTED_CAPABILITY` 拒绝，绝不"接受后忽略"（`packages/subagent/subagent/src/index.ts:631`-`655`）。`toolFilter` 在 child 创建窗口内做 scoped `tools.restrict()`——工具从 prompt 消失**且**执行被拒（one visibility），未知名字 fail loud；`persona` 是仅该 child 可见的 scoped persona 前缀节。**continuable 由另一种途径发现**：provider 有没有可选方法 `prepareContinuable`（TS narrowing 即发现，`types.ts:316`-`340`；`docs/subsystems/subagent.md:9`）。
-
-进程外后端广告**零或近零能力**：ACP「Advertises NO start-time capabilities」；claude-code/codex 同（`NO_START_CAPABILITIES`）；dsh-sdk 仅 `agentOptions: true`（`packages/subagent/subagent-dsh-sdk/src/index.ts:135`）。`inheritsParentContext` 是**描述性标志**（fork=true，其余全 false），不是服务校验的能力——它是模型措辞的来源（「fork 继承对话」vs「spawn 不共享上下文」）。
-
-provider 只参与**准备初始创建 spec**——返回物只有脱离的 provider 特有创建输入（fork 的 parent-history seed），不含 Agent、`AgentHandle`、prompt 交付、结果、处置或恢复；**冷恢复根本不走 provider**：manager 折叠通用 descriptor，经 activation-owner scope 调 `ctx.agents.resume()`（`docs/subsystems/subagent.md:132`、`:318`；`packages/subagent/subagent/src/manager.ts:1329`-`1400`）。
-
-创建路径分家（`docs/subsystems/subagent.md:9`）：**外部执行**由 provider 的 `start` 承担（service 侧流程：expectProvider → assertCapabilities → 深度/schema 校验 → `provider.start` → `observeRun`，`packages/subagent/subagent/src/index.ts:216`、`:269`-`300`）；**本地 child** 由 manager 经自己的 activation-owner scope 物化（`packages/subagent/subagent/src/manager.ts:744`-`770`）。provider 卸载阻断新 start，**不撤销已接受的 run**；**每个 child 拿到新的 flat scope**，不继承父的任何注册。
+seam 的角色分工、`SubagentStartRequest` 的五个能力旗标、provider 只准备创建 spec 与冷恢复不走 provider 的完整解剖归 [`../capability-seams/03`](../capability-seams/03-subagent后台与产品provider.md)；本页只记驾驶座后果：多个具名 provider 共存，缺能力旗标即 `UNSUPPORTED_CAPABILITY` 拒绝；provider 卸载阻断新 start、不撤销已接受的 run；每个 child 拿新的 flat scope。
 
 ## fork 继承什么：balanced completed-turn 前缀
 
@@ -47,7 +39,7 @@ fork 种子的构造（`packages/subagent/subagent-fork-in-process/src/index.ts:
 | 层 | 来源 | 默认 |
 |----|------|------|
 | Host 设置 `maxDepth` | volatile 配置 | **1**——默认不允许多级嵌套（`packages/subagent/subagent/src/index.ts:196`） |
-| 工具行 `maxDepth` | `number` 或 `'provider-managed'` | `0` 禁止委派；`'provider-managed'` 不发 cap、递归预算归 child runtime（codex/claude-code 的 on-demand bundle 行即配 provider-managed，`packages/subagent/subagent-codex/cordis.patch.yml:9`；配置面 `packages/subagent/tool-subagent/src/index.ts:62`-`77`） |
+| 工具行 `maxDepth` | `number` 或 `'provider-managed'` | 省略 → Host 默认 1；`0` 禁止委派；`'provider-managed'` 不发 cap、递归预算归 child runtime（codex/claude-code 的 on-demand bundle 行即配 provider-managed，`packages/subagent/subagent-codex/cordis.patch.yml:9`；配置面 `packages/subagent/tool-subagent/src/index.ts:62`-`77`） |
 | 请求级 `request.maxDepth` | 调用侧绝对上限 | 需 `depthLimit` 能力（`docs/subsystems/subagent.md:17`-`25`、`:113`） |
 
 **没有显式的"禁止再委派"检查**——嵌套完全由深度预算控制：默认 maxDepth=1 时，depth-1 子代理再委派得 depth-2 > 1 的 `SubagentDepthError`（`packages/subagent/subagent/tests/continuation.spec.ts`）。
