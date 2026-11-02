@@ -2,6 +2,8 @@
 
 核验入口：[`packages/api/session-controller/`](../../../../packages/api/session-controller/README.md)、[`packages/api/remotes/src/remote-events.ts`](../../../../packages/api/remotes/src/remote-events.ts)（Host 事件转发白名单）。
 
+这一页把一次 `emit('session/event')` 拆成两条互不相同的出站链路：session 事件走 follow 流，非 session 事件走白名单转发。
+
 ## host / client 共享 `session/event`
 
 ![session 事件从 append 走到浏览器 slots](../figures/session-mux.svg)

@@ -2,6 +2,8 @@
 
 核验入口：[`docs/subsystems/typert.md`](../../../../docs/subsystems/typert.md)、[`docs/api-gateway.md`](../../../../docs/api-gateway.md)、[`packages/typert/README.md`](../../../../packages/typert/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.md`、`.agents/notes/implemented/architecture/2026-07-27-compiler-independent-typert-model.md`。
 
+这一页讲声明期：一个方法怎么被标成 Remote、namespace 从哪来、复杂对象与 scoped receiver 怎么过声明合并。
+
 ## 四个包与三个 core 服务
 
 `packages/typert/README.md:25-30` 给出四包分工，`ctx` 键只有 registry 一个：

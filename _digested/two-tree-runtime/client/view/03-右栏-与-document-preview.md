@@ -2,6 +2,8 @@
 
 核验入口：[`docs/subsystems/client-resources.md`](../../../../docs/subsystems/client-resources.md)、[`docs/subsystems/sidebar-right.md`](../../../../docs/subsystems/sidebar-right.md)、[`packages/client/resources/README.md`](../../../../packages/client/resources/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-09-05-client-resource-model.md`、`.agents/notes/archived/architecture/2026-09-05-sidebar-tab-types-and-navigation.md`（已归档，只作历史）、`.agents/notes/archived/architecture/2026-09-07-workspace-files-dual-face-package.md`（已归档，只作历史）。
 
+这一页讲两种「用地址读内容」的消费面：资源协议（`dsh-resource://`）与右栏的 tab / slot 体系；holder 生命周期在 [`../state/02`](../state/02-资源模型与-holder-生命周期.md)。
+
 ## 右栏
 
 右栏是每个 Session 一个的 docking surface。四个包分工（`docs/subsystems/sidebar-right.md:5`）：

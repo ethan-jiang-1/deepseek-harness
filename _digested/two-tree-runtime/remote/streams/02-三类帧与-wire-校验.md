@@ -2,6 +2,8 @@
 
 核验入口：[`packages/api/session-controller/`](../../../../packages/api/session-controller/README.md)、[`packages/api/remotes/src/remote-events.ts`](../../../../packages/api/remotes/src/remote-events.ts)（Host 事件转发白名单）。
 
+这一页拆开 follow 流里的三类帧，以及客户端拿到 wire 事件之后还要过的那道逐字段白名单。
+
 ### Web 会话流的三类帧
 
 客户端 `follow` 读到的帧有三类，`packages/api/session-controller/src/types.ts:570` 的 `SessionFollowFrame` 是它们的并集：

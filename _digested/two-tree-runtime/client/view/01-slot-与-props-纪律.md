@@ -1,6 +1,8 @@
 # slot 与 props 纪律
 
-核验入口：[`docs/subsystems/web-client.md`](../../../../docs/subsystems/web-client.md)、[`packages/client/AGENTS.md`](../../../../packages/client/AGENTS.md)、[`docs/subsystems/slots.md`](../../../../docs/subsystems/slots.md)、[`docs/subsystems/client-modules.md`](../../../../docs/subsystems/client-modules.md)、[`docs/subsystems/conversation.md`](../../../../docs/subsystems/conversation.md)、[`docs/web-styling.md`](../../../../docs/web-styling.md)。机检方：[`scripts/verify-client-domain-graph.ts`](../../../../scripts/verify-client-domain-graph.ts)、[`scripts/verify-client-ui-i18n.ts`](../../../../scripts/verify-client-ui-i18n.ts)、[`scripts/verify-client-packages.ts`](../../../../scripts/verify-client-packages.ts)。`packages/client/` 下当前 67 个包目录（2026-11-02 重测：`ls packages/client/*/package.json`，rc.5），本页每条规则都覆盖它们。0011 新增的 `client/ui-secret-mask` 属同一纪律范围：它对**已发送**用户文本里识别出的凭据做显示掩码，并在交互消息里给逐值揭示控件（`packages/bundle/web-app/cordis.patch.yml:388-389` 的罗盘行），是 client 侧安全相关行为的当前落点。（0008 复核注记：`ui-permission` 包已改名 `@deepseek-ai/dsh-client-ui-permission-presets`，目录 `ui-permission-presets/`，slot 行 id 仍是 `ui-permission`；0009 复核注记：`ui-settings-account` 与 `ui-sidebar-terminal` 已登记进 `packages/bundle/web-app/cordis.patch.yml` 的罗盘（`:137`、`:282`）。）
+核验入口：[`docs/subsystems/slots.md`](../../../../docs/subsystems/slots.md)、[`packages/client/AGENTS.md`](../../../../packages/client/AGENTS.md) 的 slot/props 段。
+
+这一页讲组合的唯一两个入口（`register` 与 `registerFactory`）和组件能拿到的派生 share；加 UI 之前先确认你要加的是 slot 还是 factory。
 
 ## slot 与 props 纪律
 
