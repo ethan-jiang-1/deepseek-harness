@@ -361,8 +361,9 @@ function checkMarkdownLinks(path, source) {
 }
 
 // Retired vocabulary: words this corpus replaced with repo-defined terms. The list lives here, not only
-// in prose, so a later rewrite cannot reintroduce them without failing. `term-policy` marks the one
-// line that registers them; the audit log is frozen by the corpus charter and records what a round did.
+// in prose, so a later rewrite cannot reintroduce them without failing. `term-policy` marks the lines
+// that register them; the audit log is frozen by the corpus charter and records what a round did.
+// `one home per fact` (一个事实一个家) is repo vocabulary, not a coinage, so it is not listed.
 const retiredTerms = [
   '五个家',
   '四个空间',
@@ -375,31 +376,34 @@ const retiredTerms = [
   '数据家',
   '原生家',
   '持久消息家',
-  '一个事实一个家',
   '状态的家',
-  'DSH 发行版',
   '产品型插件',
   '产品 profile',
   '产品 bundle',
   '产品 project',
   '入口 profile',
 ]
+// Ambiguous only where the corpus defines its own distribution word: the topic that does says
+// `发行版` for a delivered Harness, so a second variant there reads as a third concept.
+const topicRetiredTerms = new Map([['26_harness-release', ['DSH 发行版']]])
 const termPolicyMarker = 'term-policy'
-const termScope = resolve(corpusRoot, '26_harness-release')
-const frozenTerminology = new Set(['40-evidence/quality-review.md'])
+const topicScope = resolve(corpusRoot, '26_harness-release')
+const frozenTerminology = new Set(['26_harness-release/40-evidence/quality-review.md'])
 // Every coined label must stay registered in the one ledger page, so a reader can tell a repo term
 // from a corpus-local one without searching the whole directory.
-const ledgerPage = resolve(termScope, '10-foundations/10-taxonomy.md')
+const ledgerPage = resolve(topicScope, '10-foundations/10-taxonomy.md')
 const registeredTerms = ['发行版', '发行方', '六轴', '存储通道', '资产 owner']
 
 function checkTerminology(path, source) {
-  // Only this topic has migrated its vocabulary; neighbouring corpora keep their own words until
-  // they are migrated on their own, so a link into them still reads as they were written.
-  if (!path.startsWith(`${termScope}${sep}`)) return
-  if (frozenTerminology.has(relative(termScope, path))) return
+  const localPath = relative(corpusRoot, path)
+  if (frozenTerminology.has(localPath)) return
+  const retired = [...retiredTerms]
+  for (const [prefix, terms] of topicRetiredTerms) {
+    if (localPath.startsWith(`${prefix}${sep}`)) retired.push(...terms)
+  }
   source.split('\n').forEach((line, index) => {
     if (line.includes(termPolicyMarker)) return
-    for (const term of retiredTerms) {
+    for (const term of retired) {
       if (line.includes(term)) report(path, index + 1, `retired term ${JSON.stringify(term)}`)
     }
   })
@@ -429,7 +433,7 @@ for (const path of files) {
 checkTermRegistry()
 
 // Figure labels are prose too: a renamed concept must not survive in an SVG caption.
-for (const path of corpusFiles(termScope, ['.svg'])) {
+for (const path of corpusFiles(corpusRoot, ['.svg'])) {
   const source = decodeText(path)
   if (source !== undefined) checkTerminology(path, source)
 }

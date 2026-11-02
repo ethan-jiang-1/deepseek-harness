@@ -204,7 +204,7 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | 07 | [测试与验收](./07-testing-and-acceptance.md) | T0–T8 测试矩阵；一小时/一天/一周预算 |
 | 08 | [灵活度与生态](./08-packaging-flexibility-and-ecosystems.md) | 分发/组合/定义/资源四种性质；五个时点；Dify、HF、MCP、Claude Code、VS Code 对照 |
 | 09 | [数据切法](./09-agent-data-cuts.md) | 六种切法；6+2 平面；状态判定；迁移清单 |
-| 10 | [数据设计顾问](./10-data-design-advisor.md) | 数据卡、原生能力与边界、6+2 与五个家对照、作用域/键、常见 archetype、生命周期/迁移、评审清单 |
+| 10 | [数据设计顾问](./10-data-design-advisor.md) | 数据卡、原生能力与边界、6+2 与五类存储对照、作用域/键、常见 archetype、生命周期/迁移、评审清单 |
 | — | [证据登记](./reference.md) | 来源、等级、关键主张的对应关系 |
 
 ## 术语
@@ -221,8 +221,8 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | **质量线** | 不通过不会立刻报错，但会造成维护债的发布要求 |
 | **三归属** | workspace / home / session 的导航三分；不是实现模型 |
 | **6+2** | D 定义 / C 代码 / W workspace / U home / S session / H host state，加 K cache / X credentials |
-| **home（本篇）** | 本篇的 home 指 `$DSH_HOME` 用户数据根；不是“五个家”里的“家” |
-| **五个家 / 家** | 另一套切法：内容 / 历史 / 状态 / 派生 / 客户端；与本篇 6+2 的对应见 [10 篇 §13](./10-data-design-advisor.md) |
+| **home（本篇）** | 本篇的 home 指 `$DSH_HOME` 用户数据根；repo 的 `one home per fact`（一个事实一个家）说的是归属处，不是这个路径 |
+| **五类存储（storage channel）** | 另一套切法：内容 / 历史 / 状态 / 派生 / 客户端；对应机制是 files、session log、storage domain、derived、client state；与本篇 6+2 的对应见 [10 篇 §13](./10-data-design-advisor.md) |
 | **P0–P4** | 五种数据承诺：纯引用 / 会话派生 / 用户可见文件 / 宿主账本 / profile 配置（含凭据）；见 [10 篇 §3](./10-data-design-advisor.md) |
 | **数据卡** | 一块事实的十格设计卡：事实、拥有者、关于谁、寿命、可见性、权威、落点、键、删除、迁移 |
 | **原生能力** | 随 DSH 发行或由 Host 提供的服务/插件，例如 `ctx.fs`、`ctx.storageDomain`；不是第三方依赖 |

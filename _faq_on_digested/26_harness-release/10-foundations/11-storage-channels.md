@@ -6,7 +6,7 @@
 
 本篇说明 DSH 与 Client 提供的存储机制。profile 组合和数据卡见 [10 六轴](./10-taxonomy.md)，发行版资产 owner 见 [15 资产 owner](./15-asset-owners.md)，scope/key 见 [13](./13-scope-and-keys.md)。
 
-## 一个事实只能有一个权威
+## 一个事实一个家（one home per fact）
 
 DSH 的持久化不是“一个数据库”，而是几条互不替代的通道：
 
@@ -20,7 +20,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 
 外加一个**只读层**：随包发布、升级即替换的提示词、技能、preset、工具定义。它不是用户数据，但作者经常把它和“数据”混在一起。
 
-**“一个事实一个权威”** 是贯穿整套设计的规则：同一份事实只能有一个权威。其他通道如果要提到它，只能存**引用**（路径、id、哈希、附件引用、事件 seq），不能存副本。否则用户改一处、你抄一处，两边必然漂移。
+**“一个事实一个家”（one home per fact）** 是 repo 的文档纪律（[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)），也是整套数据设计的基本规则：同一份事实只能有一个权威。其他通道如果要提到它，只能存**引用**（路径、id、哈希、附件引用、事件 seq），不能存副本。否则用户改一处、你抄一处，两边必然漂移。
 
 ![五类存储与一个只读层](../figures/11-storage-channels.svg)
 

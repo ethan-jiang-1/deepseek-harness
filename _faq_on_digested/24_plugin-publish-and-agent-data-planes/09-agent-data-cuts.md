@@ -99,7 +99,7 @@ workspace / home / session 是一个好的导航模型，但它把五个不同�
 - 用户全局指令 `$DSH_HOME/AGENTS.md`、共享 `~/.agents/AGENTS.md`；用户技能 `$DSH_HOME/skills`、`~/.agents/skills`。
 - `~/.agents` 故意在 `$DSH_HOME` 之外，因为别的 agent 工具也读它；不要把两者合并。
 - 插件**不要静默追加**全局 `AGENTS.md`；这等于给未来所有会话注入提示词。用户显式动作，或写到单独可审阅文件。
-- settings 不属于 U 的内容家数据；它是 profile 作用域的配置，写当前 profile 的 `cordis.patch.yml`。启用/禁用、默认 preset 选择等可变选择不应写进包或 preset 定义。
+- settings 不属于 U 的内容（files）数据；它是 profile 作用域的配置，写当前 profile 的 `cordis.patch.yml`。启用/禁用、默认 preset 选择等可变选择不应写进包或 preset 定义。
 
 ### 4.5 S session：模型可见内容的唯一真源
 

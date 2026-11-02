@@ -20,7 +20,7 @@
 
 - **证据分级**：`T` 可复现命令+输出、`C` 当前合同（docs/源码）、`H` 历史、`P` 提案、`S` 第三方源码、`R` 第三方 README、`U` 未确认；外部章另用 `[SRC]`/`[R]`/`[DSH]`/`[TEST]`/`[CI]`/`[OBS]`，本轮没有 `[RUN]`。
 - **外部样本不支撑 C**：第三方源码/README 只能到 S/R。
-- **一个事实一个权威**：每个数据事实只有一个权威，其他通道只存引用（[11](../10-foundations/11-storage-channels.md)）。
+- **一个事实一个家（one home per fact）**：每个数据事实只有一个权威，其他通道只存引用（[11](../10-foundations/11-storage-channels.md)）。
 - **数据卡是唯一记录格式**：owner / authority / source / mechanism / scope·key / readers / writers / rebuildability / retention（[91](../90-advisor/91-checklist.md)）。
 - **分章不重复 owner**：机制细节归 10-foundations 与 50-lifecycle，外部样本归 31–37，施工流程归 90–93。
 
