@@ -94,7 +94,7 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 
 | 文件 | 内容 |
 |------|------|
-| [`01-三角色与分包装.md`](./01-三角色与分包装.md) | 分包装的味道；换 E2B 时 tool 源码不动 |
+| [`01-三角色与分包装.md`](./01-三角色与分包装.md) | 分包装的味道；换远程执行世界时 tool 源码不动 |
 | [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md) | resolve → confine → spawn；run 的失败合同；受管范围与原生 containment |
 | [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md) | 受管 activation 取代前台 / Job 委派；产品 provider 的 host 平面 opt-in |
 | [`04-新增seam与Remote.md`](./04-新增seam与Remote.md) | Schedule（刻意不成 seam）与 Webhook（`core` 服务 + 适配器消费者）两个对照；API Remote 非三角色通信模式；三个新 core 服务 |

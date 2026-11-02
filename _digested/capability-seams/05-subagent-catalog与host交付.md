@@ -34,7 +34,7 @@ subagent seam 的这两条契约面在 0.2.1 线换了实现文件而语义未�
 
 **取代了什么。** 旧机制是 `descriptor-seed.ts` 的 `seedDescriptorTurn`——该文件与导出都已删除。child header 与 `subagent/descriptor` 仍是恢复与组合的权威；目录只负责「父如何枚举与恢复自己的 direct child」。
 
-**核对边界。** `dsh-chunked-list` 有自己的行为测试（`packages/util/chunked-list/tests/chunked-list.spec.ts`），本页只引它的块容量与遍历顺序，不复述其测试。`subagentCatalog` 投影目前在生产代码里**没有 `stateOf` 读取点**：除注册点外只出现在 `SessionProjectionMap` 的类型合并（`packages/subagent/subagent/src/projection-types.ts:72`，entry 联合在 `:10`）与测试（`packages/subagent/subagent/tests/catalog.spec.ts`，以及 `packages/subagent/subagent/tests/service.spec.ts:124`、`:128` 的 `snapshot` / `stateOf` 断言），Web 端（`packages/client`、`packages/web`、`apps/web`）不消费它——所以「父如何枚举 direct child」这条权威今天是给投影消费者与测试用的，没有 UI 读点。
+**核对边界。** `dsh-chunked-list` 有自己的行为测试（`packages/util/chunked-list/tests/chunked-list.spec.ts`），本页只引它的块容量与遍历顺序，不复述其测试。`subagentCatalog` 投影目前在生产代码里**没有 `stateOf` 读取点**：除注册点外只出现在 `SessionProjectionMap` 的类型合并（`packages/subagent/subagent/src/projection-types.ts:72`，entry 联合在 `:10`）与测试（`packages/subagent/subagent/tests/catalog.spec.ts`，以及 `packages/subagent/subagent/tests/service.spec.ts:124`、`:128` 的 `snapshot` / `stateOf` 断言），Web 端已有消费者：`packages/client/ui-subagent/src/client/SubagentHeaderLineage.tsx:464`、`:492`、`:793` 与 `packages/client/ui-workspace/src/client/tree.ts:391` 都读 `values.subagentCatalog`；但生产代码没有 `stateOf` 读取点。
 
 ## 宿主消息的 Queue / Steer 双交付
 

@@ -11,17 +11,17 @@
 1. 模型发出 `tool/call`，name 是 bash 工具，`arguments` 是原始 JSON 字符串（未解析）。loop 记入 log。
 2. 工具注册表解析并冻结参数；`tools/pre-execute` 只作 allow / deny / ask 决策。deny 或缺 answerer 的 ask 不进 body。
 3. `tools/execute` 包住下面的 tool body。timeout 政策读 **tool** 的 `timeoutMs`；checkpoint 也在这一层先 flush。
-4. `dsh-tool-bash` `execute`：校验 args → `sandboxPolicy.resolve` → **升权审批在这里**（`approveEscalation` + `ctx.approval`，不是 Definition 方法）→ 收成 `ShellExecRequest` → `ctx.shell.resolve` 得到 Spec。`stdin` / `env` / `stdoutMaxBytes` 不进模型 schema。
-5. 前台 `ctx.shell.run(spec)` 或后台 `start(spec)`。
+4. `dsh-tool-bash` `execute`：`resolveSandboxPolicy` → 校验 args → **升权审批在这里**（`approveEscalation` + `ctx.approval`，不是 Definition 方法）→ 收成 `ShellExecRequest` → `ctx.shell.resolve` 得到 Spec。`stdin` / `env` / `stdoutMaxBytes` 不进模型 schema。
+5. 前台 `ctx.shell.execute(spec)`；后台用 `resolve({ onExpiry: 'none' })` + `execute` 保留 handle。
 6. **bash-local**：`spawnSpec` 把 Spec 映成 `bash -c …` 的 `SubprocessSpawnSpec`，`this.ctx.subprocess.spawn(...)`。环境先合并 `ENV_OVERRIDES`（`NO_COLOR=1`、`TERM=dumb`、`PAGER=cat`、`GIT_PAGER=cat`），调用方显式 env 仍能盖掉。
 7. **bash-sandbox**（子类）：在 spawn 前 `ctx.sandbox.confine(argv, policy)`，用包装后的 argv 再交给 subprocess。Windows 走另一套 ACL runner，合同仍是 confine → spawn。
 8. body 结算后进入 `tools/post-execute`，随后 `tool/result` 入 log。
 
-## `run` 的失败合同
+## `execute` 与 `result()` 的失败合同
 
-`ShellExecutor` 规定：`run` **只**对基础设施失败 reject。非零退出、超时杀、abort 杀都 **resolve** 成 `ShellRunResult`。Consumer 把结果写成模型可见文本，不要把退出码 1 当成 harness 崩溃。
+`ShellExecutor` 只有一个执行方法 `execute(spec)`：准备期（解析/准入）可 throw；启动后 `result()` **只**对基础设施失败 reject，非零退出、超时杀、abort 杀都 **resolve** 成 `ShellRunResult`。Consumer 把结果写成模型可见文本，不要把退出码 1 当成 harness 崩溃。
 
-`start` 立即返回；后台进程没有 timeout。`done` 结算且**永不 reject**：provider 在给出直接结果之前失败时结算为 `killed`，stderr 上是一条 stage-neutral 注记（`subprocess failed before reporting an outcome: …`，`packages/shell/bash-local/src/index.ts:338` 构造该文本，`:294` 的 stderr reader 把它送出去；合同措辞见 `packages/shell/shell/src/types.ts:196`-`:197`）。仍在跑的后台进程在组合拆除时停掉并等待。有 subprocess seam 时，这个边界是 `ctx.subprocess` 的 dispose——executor 单独 HMR 不会把活进程带走。
+`onExpiry: 'none'` 保留 handle，后台进程没有 timeout。`done` 结算且**永不 reject**：provider 在给出直接结果之前失败时结算为 `killed`，stderr 上是一条 stage-neutral 注记（`subprocess failed before reporting an outcome: …`，`packages/shell/bash-local/src/index.ts:338` 构造该文本，`:294` 的 stderr reader 把它送出去；合同措辞见 `packages/shell/shell/src/types.ts:196`-`:197`）。仍在跑的后台进程在组合拆除时停掉并等待。有 subprocess seam 时，这个边界是 `ctx.subprocess` 的 dispose——executor 单独 HMR 不会把活进程带走。
 
 ## 政策挂在哪
 
@@ -53,4 +53,4 @@ Linux 上合格的普通与 PTY 启动进入 user-systemd transient scope 加一
 
 ## 和 jobs 的分界
 
-job id、所有权、轮询、通知属于 `dsh-jobs`，不进 ShellExecutor。executor 独立于 session。这就是「Definition 对着所有 Consumer」：tool-bash 和 jobs 都可以 `resolve`/`start`，不必让 shell 认识 session。
+job id、所有权、轮询、通知属于 `dsh-jobs`，不进 ShellExecutor。executor 独立于 session。这就是「Definition 对着所有 Consumer」：tool-bash 和 jobs 都可以 `resolve`/`execute`（后台保留 handle），不必让 shell 认识 session。
