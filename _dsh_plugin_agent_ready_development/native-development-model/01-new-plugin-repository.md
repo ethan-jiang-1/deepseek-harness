@@ -22,6 +22,8 @@
 
 生命周期要在添加能力时就闭合：`inject` 声明所需服务，依赖就绪后才能加载插件；经 `ctx` 注册的能力跟随插件卸载清理，额外创建的定时器、连接等资源通过 `ctx.effect()` 返回 disposer。重新加载后不应出现重复监听、残留定时器或旧连接。它不仅是资源管理问题，也决定热重载和组合测试是否可信。
 
+清理并不等于数据删除。`dsh plugin remove` 移除的是依赖与 patch 层；插件自己写的数据、Session 历史、Workspace 注册和设置不会随插件消失。插件仓要在 README 写明数据写到哪里、用户怎样清理，以及升级/卸载时哪些数据会保留；不要把“卸载插件”写成“删除数据”。依据：DSH [打包与安装](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#install-into-a-profile) 的 remove 语义。
+
 配置也需要 owner：部署方会改变的选择由插件 Config 定义与验证。错误配置、模块解析失败和已经可判定的缺失引用应在最早可解析时点明确失败；不要用硬编码常量代替用户配置，也不要静默跳过已确定出错的功能。`inject` 等待尚未就绪的 provider 则是合法的 `PENDING` 状态，provider 可能稍后加载，不能保证立即报错。启动 smoke 应确认目标插件实际激活并产生结果，发现非预期等待时核对 provider 与组合配置。规则来源见 DSH [根级开发规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)与 [PENDING 诊断](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md#diagnosing-a-plugin-that-never-loads)。
 
 再按需要读 DSH [Cordis 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/index.md)：先掌握生命周期与 effects，再读实际使用的 service、event、config、composition 与 HMR。不要在尚未确认官方扩展点前复制 harness 内部实现或修改 agent loop。
@@ -42,7 +44,9 @@ DSH 主仓对每个非平凡（non-trivial）的模型、协议或用户可见�
 
 ## 5. 验证用户实际安装的形态
 
-源码 checkout 测试不能替代构建与打包验证。若插件通过 npm package 或 DSH bundle 分发，应在干净 profile/config 中安装构建或打包后的产物，确认入口、依赖声明、配置和资源都存在，并至少运行一次可观察 smoke。若插件支持多个 DSH 版本，应在仓库中声明已验证的版本范围，并对范围变化执行兼容验证；不要把未经验证的版本写成兼容承诺。
+源码 checkout 测试不能替代构建与打包验证。若插件通过 npm package 或 DSH bundle 分发，应在干净 profile/config 中安装构建或打包后的产物，确认入口、依赖声明、配置和资源都存在，并至少运行一次可观察 smoke。这里的“干净 profile”要先有表面：`dsh plugin` 对自定义 profile 只初始化 `base`，而 `base` 没有 Web、headless、SDK 或 ACP 入口。先用 `dsh --profile <name> --from-default-profile web`（或 `headless`、`sdk`、`acp`）建一个有表面的 profile，再执行 `dsh plugin --profile <name> add <spec>`；用 `--dump-config` 确认 bundle 的层注释与目标 row 真的出现。`--from-default-profile` 对已存在的自定义 profile 是替换，会连同依赖、`node_modules` 和 `cordis.patch.yml` 一起换掉，别在已经装好的 profile 上重复执行。依据：DSH [profile manifest 与创建规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-profile-manifest) 与 [`--from-default-profile` 的替换语义](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/upgrade-guide/v0.2.1-alpha.2/from-default-profile-replaces-target/guide.md)。
+
+若插件支持多个 DSH 版本，应在仓库中声明已验证的版本范围，并对范围变化执行兼容验证；不要把未经验证的版本写成兼容承诺。安装会执行依赖构建脚本；信任面见[插件作者入口](../repo-harness/09-plugin-author-entry.md)的 bundle/install 段。
 
 这些检查服务于插件自己的发布合同，不要求复制 DSH 主仓库全部发布 workflow、平台矩阵或 approval score。独立仓的发布步骤和安全条件由该仓库自己拥有。
 

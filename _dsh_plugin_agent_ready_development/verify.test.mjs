@@ -51,6 +51,9 @@ for (const ref of ['main', 'dsh-v0.2.1-rc.2', 'dsh-v0.2.1-rc.5', 'a'.repeat(40),
 reject('cross-volume SVG ownership', 'native-development-model/00-index.md',
   source => `${source}\n![invalid](../repo-harness/figures/two-harnesses.svg)\n`,
   /SVG must come from this Markdown subtree/)
+reject('sibling corpus reference in content', 'native-development-model/00-index.md',
+  source => `${source}\nSee \`_digested/00-index.md\`.\n`,
+  /references sibling research corpus/)
 reject('escaping relative link', '00-index.md',
   source => `${source}\n[invalid](../outside.md)\n`, /relative link escapes the corpus/)
 reject('missing local anchor', '00-index.md',

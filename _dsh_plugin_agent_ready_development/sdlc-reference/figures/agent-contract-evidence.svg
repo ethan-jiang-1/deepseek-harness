@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="900" viewBox="0 0 1120 900" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title id="title">Agent 契约的三件资产与原文位置</title>
-  <desc id="desc">模型只占不确定边界。验收固定看见的请求、可回放的会话和外部世界，每件资产标明 dsh-v0.2.1-rc.2 上的原文。真模型冒烟、命令路由、语义评审、批准分数和 goal 相位各自回答不同问题。</desc>
+  <desc id="desc">模型只占不确定边界。验收固定看见的请求、可回放的会话和外部世界，每件资产标明权威原文。真模型冒烟、命令路由、语义评审、批准分数和 goal 相位各自回答不同问题。</desc>
   <rect width="1120" height="900" rx="6" fill="#fafafa"/>
   <text x="560" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#172033">Agent 契约证据：三件资产，以及去哪份原文核对</text>
-  <text x="560" y="58" text-anchor="middle" font-size="12" fill="#667085">基线 dsh-v0.2.1-rc.2。卡片第二段是权威文件，不是本页的转述。</text>
+  <text x="560" y="58" text-anchor="middle" font-size="12" fill="#667085">核验状态见维护页。卡片第二段是权威文件，不是本页的转述。</text>
 
   <rect x="32" y="78" width="1056" height="84" rx="8" fill="#edf2f7" stroke="#94a3b8"/>
   <text x="560" y="108" text-anchor="middle" font-size="15" font-weight="700" fill="#334155">不确定边界：只 mock LLM adapter、网络、时钟；下游用真实现</text>

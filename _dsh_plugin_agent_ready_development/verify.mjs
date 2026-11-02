@@ -290,8 +290,13 @@ function owningFiguresDirectory(markdownPath) {
 }
 
 function checkMarkdown(path, source) {
-  for (const forbidden of forbiddenResearchReferences) {
-    if (source.includes(forbidden)) report(path, undefined, `references sibling research corpus ${JSON.stringify(forbidden)}`)
+  // The shared charter is governance, not corpus content: it is byte-identical in every
+  // sibling corpus and names corpus-level conventions such as `_change_log/`. Content pages
+  // must stay self-contained, so the sibling-name rule applies to them only.
+  if (path !== resolve(corpusRoot, 'CORPUS-CHARTER.md')) {
+    for (const forbidden of forbiddenResearchReferences) {
+      if (source.includes(forbidden)) report(path, undefined, `references sibling research corpus ${JSON.stringify(forbidden)}`)
+    }
   }
 
   for (const { line, text } of activeMarkdownLines(source)) {

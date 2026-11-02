@@ -36,7 +36,7 @@
 
 本语料对 DSH 的全部理解都只从 DSH 的 GitHub 仓库 [`deepseek-ai/deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness/tree/master) 的一手内容挖出：源码、文档、`AGENTS.md`、`.agents/`、`.github/`、Skills、workflows，以及该仓库 git 历史中的 commit 与 tag。语料不使用任何二手转述或仓库外的描述性材料；其它研究目录不参与本语料的证据链。
 
-挖取按版本进行：本轮核验版本是 release tag `dsh-v0.2.1-rc.5`，但**目录外链接不固定到该 tag**。链接一律指向 `master`，使一条引用在各轮同步之间保持同一 URL，版本升级不产生语料 diff；核验版本记录在[维护页](./_coverage/00-corpus-maintenance.md)，不写在每条 URL 里。DSH 处于 developer preview，运行时接口与主仓制度都会演进；更新版本时应逐条复核并改写过时结论，不能只替换 URL。历史样本以日期、提交标题、PR 或 release tag 定位，不充当当前规则。
+挖取按版本进行：本轮核验版本记录在[维护页](./_coverage/00-corpus-maintenance.md)，**目录外链接不固定到该版本**。链接一律指向 `master`，使一条引用在各轮同步之间保持同一 URL，版本升级不产生语料 diff；核验版本不写在每条 URL 里。DSH 处于 developer preview，运行时接口与主仓制度都会演进；更新版本时应逐条复核并改写过时结论，不能只替换 URL。历史样本以日期、提交标题、PR 或 release tag 定位，不充当当前规则。
 
 具体做法是：结论先在正文里讲清楚，关键规则以 Markdown blockquote 摘录仓库原文，并给出来自该仓库的可核对链接与出处说明；读者不需要先理解 DSH 才能读懂主线，也可以顺着链接回到原文逐条核对。仓库没有声明的制度（例如它从未自称采用一套名为 SDD 的方法）在本语料中一律表述为“可观察机制的综合”，而不是官方方法名。
 
