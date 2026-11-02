@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 500" width="1180" height="500" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <rect width="1180" height="500" fill="#ffffff"/>
+  <text x="40" y="42" font-size="21" font-weight="700" fill="#1f2328">运行期三层同步：谁和谁排队</text>
+  <text x="40" y="68" font-size="13" fill="#6e7781">包操作走写锁，配置写入走 HMR 队列，树内变更走 effect——三者不共用一把锁</text>
+
+  <rect x="40" y="96" width="1100" height="104" rx="10" fill="#eef6ff" stroke="#9ecbff"/>
+  <text x="62" y="124" font-size="14" font-weight="700" fill="#0969da">① 包操作：profile 写锁</text>
+  <text x="62" y="150" font-size="12" fill="#424a53">安装 / 移除 / 更新（pnpm）→ 锁等待上限 lockWaitMs（默认 120000ms）</text>
+  <text x="62" y="172" font-size="12" fill="#cf222e">不在 HMR 队列里：pnpm 是长任务，塞进配置队列会让热更新停摆</text>
+  <text x="62" y="192" font-size="11.5" fill="#6e7781">共享者：Plugins 页 / plugin_manager / dsh plugin（另一个进程）</text>
+
+  <rect x="40" y="216" width="1100" height="104" rx="10" fill="#fff8e5" stroke="#eac54f"/>
+  <text x="62" y="244" font-size="14" font-weight="700" fill="#9a6700">② 配置写入：hmr.runExclusive 串行队列</text>
+  <text x="62" y="270" font-size="12" fill="#424a53">模块热替换 / profile patch 重载 / 行开关 / 配置编辑器 → 同一条队列</text>
+  <text x="62" y="292" font-size="12" fill="#cf222e">失败策略：只有本次新引入的失活条目才抛错；已存在的失败降级为 warning</text>
+  <text x="62" y="312" font-size="11.5" fill="#6e7781">候选失败不提交：正在服务的树继续用旧 patch 集</text>
+
+  <rect x="40" y="336" width="1100" height="104" rx="10" fill="#e8f5ec" stroke="#8fd19e"/>
+  <text x="62" y="364" font-size="14" font-weight="700" fill="#1a7f37">③ 树内变更：effect 的作用域</text>
+  <text x="62" y="390" font-size="12" fill="#424a53">注册 / 监听 / 子插件都由 ctx.effect 拥有；fiber 卸载时按登记逆序撤销</text>
+  <text x="62" y="412" font-size="12" fill="#424a53">跨顶层 effect 的清理是并发的，不保证全局顺序</text>
+  <text x="62" y="432" font-size="11.5" fill="#6e7781">需要顺序的两份资源，放进同一个 effect 里串行释放</text>
+
+  <text x="40" y="478" font-size="11.5" fill="#6e7781">判据：包操作失败要重试 → 看写锁；配置改了不生效 → 看 HMR 队列与候选策略；卸载后资源没释放 → 看 effect 归属。</text>
+</svg>

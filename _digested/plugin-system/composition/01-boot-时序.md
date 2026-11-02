@@ -8,7 +8,7 @@
 
 ## 入口是 `runProfile`，不是直接 `boot`
 
-产品 bin 走 `apps/cli/src/bin.ts` → `runProfile`。`boot()` 不知道 profile、bundle、home patch；它只收一份绝对路径的根 YAML 和一份已经展平的 `patches`。
+产品 bin 走 `apps/cli/src/bin.ts` → `runProfile`。`boot()` 不知道 profile、bundle、home patch；它只收一份绝对路径的根 YAML 和一份已经展平的 `patches`。（`apps/cli/src/profile-boot.ts:271`）；真正的挂载与结算在 `packages/boot/app-boot/src/index.ts:1200`，结算审计在同文件 `:1153`，启动窗口之后的致命失败由 `installFailLoud`（`:884`）接管。
 
 `runProfile` 做五件事，再把树交给插件自己过一辈子（或一次性 runner 自己退出）：
 
