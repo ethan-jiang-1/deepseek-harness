@@ -4,7 +4,7 @@
 
 这一页拆开 follow 流里的三类帧，以及客户端拿到 wire 事件之后还要过的那道逐字段白名单。
 
-### Web 会话流的三类帧
+## 三类帧
 
 客户端 `follow` 读到的帧有三类，`packages/api/session-controller/src/types.ts:570` 的 `SessionFollowFrame` 是它们的并集：
 

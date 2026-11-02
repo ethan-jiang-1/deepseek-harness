@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arrBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#1d4ed8"/></marker>
+    <marker id="arrOrange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#c2410c"/></marker>
+  </defs>
+  <rect width="960" height="420" fill="#fafafa" rx="6"/>
+  <text x="480" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一套框架、两棵树、一条线</text>
+  <text x="480" y="50" text-anchor="middle" font-size="11" fill="#6b7280">同一份 @deepseek-ai/cordis 在 Node 与浏览器各长一棵插件树；Host 拥有真相，Client 只投影。</text>
+
+  <rect x="40" y="70" width="290" height="250" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="60" y="98" font-size="13" font-weight="700" fill="#166534">Host 树 · Node 进程</text>
+  <text x="60" y="128" font-size="11" fill="#15803d">Loader 按 profile → bundle → patch 装树</text>
+  <text x="60" y="152" font-size="11" fill="#15803d">真源：service + append-only session log</text>
+  <text x="60" y="176" font-size="11" fill="#15803d">ctx.agents 驱动 agent loop</text>
+  <text x="60" y="200" font-size="11" fill="#15803d">每个贡献都是 effect，随 fiber 撤销</text>
+  <text x="60" y="236" font-size="10.5" fill="#166534">对外只暴露两样东西：</text>
+  <text x="60" y="256" font-size="10.5" fill="#166534">被 @Remote 标注的方法 · session 事件流</text>
+
+  <rect x="350" y="70" width="260" height="80" rx="10" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="480" y="96" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5b21b6">Typert 类型图</text>
+  <text x="480" y="118" text-anchor="middle" font-size="10.5" fill="#6d28d9">build 期从 Host 契约生成</text>
+  <text x="480" y="136" text-anchor="middle" font-size="10.5" fill="#6d28d9">descriptor · codec · 声明合并</text>
+
+  <rect x="350" y="165" width="260" height="80" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="480" y="191" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1e40af">Remote transport</text>
+  <text x="480" y="213" text-anchor="middle" font-size="10.5" fill="#2563eb">POST /api/&lt;namespace&gt;/&lt;method&gt;</text>
+  <text x="480" y="231" text-anchor="middle" font-size="10.5" fill="#2563eb">/api/remote.mux 承载逻辑流与 uplink</text>
+
+  <rect x="350" y="260" width="260" height="80" rx="10" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="480" y="286" text-anchor="middle" font-size="12.5" font-weight="700" fill="#075985">session 流</text>
+  <text x="480" y="308" text-anchor="middle" font-size="10.5" fill="#0369a1">follow / page（每 Session 一条）</text>
+  <text x="480" y="326" text-anchor="middle" font-size="10.5" fill="#0369a1">$events 白名单转发非 session 事件</text>
+
+  <rect x="630" y="70" width="290" height="250" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="650" y="98" font-size="13" font-weight="700" fill="#9a3412">Client 树 · 浏览器文档</text>
+  <text x="650" y="128" font-size="11" fill="#c2410c">window.__DSH_BOOT__ → module graph</text>
+  <text x="650" y="152" font-size="11" fill="#c2410c">PLATFORM_MODULES 播种 Cordis / React</text>
+  <text x="650" y="176" font-size="11" fill="#c2410c">投影：client models + slots</text>
+  <text x="650" y="200" font-size="11" fill="#c2410c">没有第二份 append-only log</text>
+  <text x="650" y="236" font-size="10.5" fill="#9a3412">对 HOST 只做两件事：</text>
+  <text x="650" y="256" font-size="10.5" fill="#9a3412">调 ctx.remote.&lt;ns&gt; · 读 follow 帧</text>
+
+  <line x1="330" y1="110" x2="348" y2="110" stroke="#1d4ed8" marker-end="url(#arrBlue)"/>
+  <text x="339" y="102" text-anchor="middle" font-size="9.5" fill="#1d4ed8">契约</text>
+  <line x1="610" y1="205" x2="628" y2="205" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="619" y="197" text-anchor="middle" font-size="9.5" fill="#4b5563">stub</text>
+  <line x1="630" y1="300" x2="612" y2="300" stroke="#c2410c" stroke-dasharray="4 3" marker-end="url(#arrOrange)"/>
+  <text x="621" y="292" text-anchor="middle" font-size="9.5" fill="#c2410c">调用</text>
+
+  <rect x="40" y="340" width="880" height="56" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="60" y="362" font-size="11" fill="#374151">vendor/cordis（同一份）：Plugin / Context / inject / Events / Effects</text>
+  <text x="60" y="382" font-size="10.5" fill="#6b7280">两棵树共用同一套原语、waterfall 的 next() 合同与 effect 的撤销时序；差别只在模块从哪来、谁拥有状态。</text>
+</svg>

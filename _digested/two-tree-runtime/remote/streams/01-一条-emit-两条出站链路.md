@@ -4,7 +4,7 @@
 
 这一页把一次 `emit('session/event')` 拆成两条互不相同的出站链路：session 事件走 follow 流，非 session 事件走白名单转发。
 
-## host / client 共享 `session/event`
+## emit 之后：两条链路
 
 ![session 事件从 append 走到浏览器 slots](../figures/session-mux.svg)
 

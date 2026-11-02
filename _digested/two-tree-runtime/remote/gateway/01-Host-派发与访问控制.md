@@ -4,6 +4,8 @@
 
 这一页跟一次调用的 Host 半边：注册 → registry → 派发 → 访问控制；Client 半边见 [`02`](./02-客户端-mount-与装配.md)。
 
+![一次 Remote 调用的派发顺序](../figures/gateway-dispatch.svg)
+
 **注册。** Loader 插件让每个在此组合中挂载的、带生成 export 的包自动把 Host 面反射与 schema 贡献给 registry，并在包或插件卸载时撤回；没有该 export 的包被静默跳过，所以把它加进任意组合都是安全的（`packages/typert/loader/README.md:12`、`:51`）。`validateTypertManifest()` 是「build 产物 → 类型化 registry」的模块边界：manifest 必须指名导出它的包、face 为 `host`、持有 zod v4 schema 工厂（`create()`，首次读取时才 materialize），invocation descriptor 必须用严格 codec，任一失败都点名包与缺陷（`packages/typert/loader/README.md:71`）。注册按 entry 名记账、经 `ctx.typert.register()` 返回的精确 disposer 撤回，在途 import 晚于 owner 消失就丢弃（`packages/typert/loader/README.md:75`、`packages/typert/loader/src/index.ts:445-449`）。它只发现 Host 面：Client 运行时要等另一个组合 owner 才能有等价发现（`packages/typert/loader/README.md:115`）。
 
 **registry。** 一次 contribution 是一次原子且 fiber 拥有的提交：`register()` 先校验包面身份、schema 与 invocation descriptor，再用一个 Cordis effect 提交全部内容，重复身份在任何状态变更前于 owning operation 边界失败（`packages/typert/registry/README.md:68`、`packages/typert/registry/src/service.ts:549-577`）。`ctx.typert` 把当前环境 descriptor、显式选中的 Remote 贡献、lookup provider、scoped Context provider 与资源 kind 分开存放（`docs/subsystems/typert.md:592`），对应 `local` / `remotes` / `lookups` / `contexts` / `resources` 五个子 registry（`packages/typert/registry/README.md:70-76`）。消费侧读 schema 用 `get(key)` / `resolve(key)` / `list(filter?)`，读包反射用 `getPackage(name, face?)` / `listPackages(filter?)`，`toJSONSchema(key)` 不缓存地把活 Zod schema 投成 JSON Schema（`packages/typert/registry/README.md:40`）。

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">声明期 → build 期 → 运行期：descriptor 从不跨过 wire</text>
+  <text x="480" y="50" text-anchor="middle" font-size="11" fill="#6b7280">同一个方法在三个时间点被三种东西看到：源码里的装饰器、生成产物、两侧各自的运行期反射。</text>
+
+  <rect x="40" y="78" width="280" height="220" rx="10" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="58" y="106" font-size="13" font-weight="700" fill="#5b21b6">① 声明期 · 业务包</text>
+  <text x="58" y="136" font-size="10.5" fill="#6d28d9">public 非 static 方法标 @Remote</text>
+  <text x="58" y="158" font-size="10.5" fill="#6d28d9">@Remote('create') 改名导出</text>
+  <text x="58" y="180" font-size="10.5" fill="#6d28d9">@Remote({ mode: 'stream' }) 逻辑流</text>
+  <text x="58" y="202" font-size="10.5" fill="#6d28d9">@RemoteScope 绑定 scoped receiver</text>
+  <text x="58" y="224" font-size="10.5" fill="#6d28d9">服务键绑成 wire namespace</text>
+  <text x="58" y="246" font-size="10.5" fill="#6d28d9">LookupMap / ContextMap 声明合并</text>
+  <text x="58" y="268" font-size="10.5" fill="#6d28d9">package.json 声明 ./typert 与 ./remote</text>
+
+  <rect x="350" y="78" width="280" height="220" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="368" y="106" font-size="13" font-weight="700" fill="#1e40af">② build 期 · generator</text>
+  <text x="368" y="136" font-size="10.5" fill="#2563eb">从 Host 的 ts.Program 抽 TypeGraph</text>
+  <text x="368" y="158" font-size="10.5" fill="#2563eb">FaceModel 与 emitter 分离</text>
+  <text x="368" y="180" font-size="10.5" fill="#2563eb">typert.host.*：反射 + 严格 descriptor</text>
+  <text x="368" y="202" font-size="10.5" fill="#2563eb">typert.remote-client.*：codec + 声明合并</text>
+  <text x="368" y="224" font-size="10.5" fill="#2563eb">typert-contracts 作为新鲜度门禁</text>
+  <text x="368" y="246" font-size="10.5" fill="#2563eb">改签名必须重跑 build:lib</text>
+  <text x="368" y="268" font-size="10.5" fill="#2563eb">SRC 启动：弱化 descriptor，不跑 compiler</text>
+
+  <rect x="660" y="78" width="280" height="220" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="678" y="106" font-size="13" font-weight="700" fill="#9a3412">③ 运行期 · 两侧</text>
+  <text x="678" y="136" font-size="10.5" fill="#c2410c">Host：ctx.typertGateway 按 descriptor 派发</text>
+  <text x="678" y="158" font-size="10.5" fill="#c2410c">解析 receiver Context 与每个参数</text>
+  <text x="678" y="180" font-size="10.5" fill="#c2410c">非 owner 先问 ctx.remoteAccess.decide()</text>
+  <text x="678" y="202" font-size="10.5" fill="#c2410c">Client：$mount → ctx.remote.&lt;ns&gt;</text>
+  <text x="678" y="224" font-size="10.5" fill="#c2410c">装配清单决定哪些方法可见</text>
+  <text x="678" y="246" font-size="10.5" fill="#c2410c">连接层的 rpcId / streamId 归 Connection</text>
+  <text x="678" y="268" font-size="10.5" fill="#c2410c">descriptor 不上线，只传 endpoint 与 args</text>
+
+  <line x1="320" y1="188" x2="348" y2="188" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="334" y="180" text-anchor="middle" font-size="9.5" fill="#4b5563">生成</text>
+  <line x1="630" y1="188" x2="658" y2="188" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="644" y="180" text-anchor="middle" font-size="9.5" fill="#4b5563">装配</text>
+
+  <rect x="40" y="322" width="900" height="52" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="58" y="344" font-size="11" fill="#374151">wire 上只有 endpoint 与命名的 { args }；descriptor 只活在各自进程里（docs/subsystems/typert.md:41、docs/api-gateway.md:126）</text>
+  <text x="58" y="364" font-size="10.5" fill="#6b7280">所以「哪些方法对某个 Client 可见」是 build 期的装配清单决定的，不是运行时发现。</text>
+</svg>

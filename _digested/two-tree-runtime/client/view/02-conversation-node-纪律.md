@@ -4,8 +4,6 @@
 
 这一页讲 Conversation 的扩展模型：一个业务特性一个 `ConversationNodeDefinition` 加一个 keyed renderer，事件 fold 不进 `Session`，也不进任何中央 dispatcher。
 
-## Conversation Node 纪律
-
 一个 Chat 业务特性注册**一个** `ConversationNodeDefinition` 加它的 keyed `conversation.chat.node` renderer；不得把该特性的事件 switch 或 fold 加进 `Session`、`SessionManager` 或某个中央 built-in dispatcher（`packages/client/AGENTS.md:107`）。`match(event)` 只读当前 `SessionEventLike`；多输入 Context 里的每个标量事件或 packed Assistant run 都要携带或独立派生出**同一个稳定业务 id**；`update` 把一次 Match 折进 State，并且必须能按逻辑 log `seq` 确定性地重放；packed 行是 update-only；消费 Assistant delta 的 Definition 必须同时实现标量与 `chunkrow/*` 两个分支而不展开成员（`packages/client/AGENTS.md:108`）。append 热路径与 renderer **绝不扫描**完整事件窗口、Contexts 或 Chat Nodes：累积靠 State，同一 Turn/Step 的事实经 `buildLocationData()` 发布，消费侧只用最终 Node 数据或受限的 Location hook（`packages/client/AGENTS.md:109`）。
 
 引擎侧的对应事实：`ui-conversation` 每 Session 一个 identity-stable binding、一个 `ConversationNodeAssembler`，对每个已注册 Definition 全量施加并给每个已注册 view target 发布独立 source（`docs/subsystems/conversation.md:11`）；`match` 是身份提取器而不是 fold，只收当前事件并返回 Definition 局部 id 与生命周期 role（`docs/subsystems/conversation.md:246`）；`target` 与 `buildViewNode(context)` 必须同时出现，`context.key` 是 React 面身份，Node 发布后必须持续返回同一 key，离开可见流时用 `visibility: 'hidden'` 而不是 `null` 撤回（`docs/subsystems/conversation.md:250`）。

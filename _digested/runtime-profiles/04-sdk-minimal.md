@@ -2,12 +2,12 @@
 
 ## 一句话
 
-`sdk-minimal` 是 SDK 的极简版本，工具面大幅收窄，用于 Python SDK 的捆绑单文件运行时（`dsh --profile sdk-minimal`）。模型看到**三个工具**：一个由平台选定的持久 shell（非 win32 → `persistent-bash`；win32 → `persistent-pwsh`）、`read_image`、`working_directory`；没有 subagent、skill、todo、web search。
+`sdk-minimal` 是 SDK 的极简版本，工具面大幅收窄，由 Python SDK 的极简示例与 sdk-minimal smoke 场景显式选用（**SDK 的默认 profile 仍是 `sdk`**，`dsh --profile sdk-minimal`）。模型看到**三个工具**：一个由平台选定的持久 shell（非 win32 → `persistent-bash`；win32 → `persistent-pwsh`）、`read_image`、`working_directory`；没有 subagent、skill、todo、web search。
 
 ## 怎么跑
 
 ```sh
-# Python SDK 捆绑运行时的 keyless smoke（python/development.md:32-35）
+# Python SDK 捆绑运行时的 keyless smoke（python/development.md:36-39）
 uv run --project python/sdk python scripts/smoke-python-runtime.py \
   --scenario sdk-minimal --exe dist-exe/deepseek-harness-sdk-runtime-macos-arm64
 
@@ -25,7 +25,7 @@ dsh --profile sdk-minimal
 |----|------|----|------|
 | `sdk-app-startup` | `@deepseek-ai/dsh-sdk-app` | `:6-9` | 带 `config: { profile: sdk-minimal }`；该 config 只用于 `dsh --profile <name> --help` 的命令语法渲染 |
 | `sdk-jsonrpc-server` | `@deepseek-ai/dsh-sdk-jsonrpc-server` | `:11-15` | JSON-RPC 协议处理器，`maxTokensAsSuccess: false` |
-| `llm-deepseek` | `@deepseek-ai/dsh-llm-deepseek` | `:26-31` | LLM 适配器，实配 `apiKeyEnv: DEEPSEEK_API_KEY`、`defaultContextWindow`（`DSH_CONTEXT_WINDOW`）、`streamIdleTimeoutMs: 172800000`；模型选择不在 bundle——Python 示例脚本把它作 `--model` 默认值（`python/sdk/examples/minimal.py:27`） |
+| `llm-deepseek` | `@deepseek-ai/dsh-llm-deepseek-api-key` | `:26-31` | LLM 适配器，实配 `apiKeyEnv: DEEPSEEK_API_KEY`、`defaultContextWindow`（`DSH_CONTEXT_WINDOW`）、`streamIdleTimeoutMs: 172800000`；模型选择不在 bundle——Python 示例脚本把它作 `--model` 默认值（`python/sdk/examples/minimal.py:27`） |
 | `deepseek-llm-api-extensions` / `session-log-deepseek` / `plugin-package-inventory-deepseek` | `@deepseek-ai/dsh-deepseek-llm-api-extensions` / `@deepseek-ai/dsh-session-log-deepseek` / `@deepseek-ai/dsh-plugin-package-inventory-deepseek` | `:17-18`、`:20-21`、`:23-24` | DeepSeek 专属的请求扩展、会话日志元数据与插件清单行，只在这份独立树里显式自持 |
 | `sandbox` | `@deepseek-ai/dsh-sandbox-local` | `:33-34` | 沙箱 |
 | `filesystem` / `attachment-local` / `tool-fs` | `@deepseek-ai/dsh-fs-local` / `@deepseek-ai/dsh-attachment-local` / `@deepseek-ai/dsh-tool-fs` | `:38-39`、`:41-42`、`:44-50` | 0011 新增：受限文件服务 + attachment store + 只暴露 `read_image` 的 tool-fs（`read` / `write` / `edit` 均为 `false`，`readImage: true`） |
@@ -67,7 +67,7 @@ dsh --profile sdk-minimal
 
 ## 独特之处
 
-- **Python SDK 捆绑运行时的默认组合**：`scripts/smoke-python-runtime.py` 的 `sdk-minimal` 场景把 model-visible 输出钉在 `scripts/snapshots/python-sdk-single-exe/minimal/model-visible.json`（win32 对应 `minimal/win-x64/model-visible.json`）。0011 重录后 Linux/macOS 三条请求各广告 `bash`、`read_image`、`working_directory` 三个工具，win-x64 各广告 `pwsh`、`read_image`、`working_directory`；系统段仍只有 `You are a helpful software engineer assistant.`（rc.1 那次重录是单工具 schema）。
+- **Python SDK 极简示例与 sdk-minimal smoke 显式选用的组合**：`scripts/smoke-python-runtime.py` 的 `sdk-minimal` 场景把 model-visible 输出钉在 `scripts/snapshots/python-sdk-single-exe/minimal/model-visible.json`（win32 对应 `minimal/win-x64/model-visible.json`）。0011 重录后 Linux/macOS 三条请求各广告 `bash`、`read_image`、`working_directory` 三个工具，win-x64 各广告 `pwsh`、`read_image`、`working_directory`；系统段仍只有 `You are a helpful software engineer assistant.`（rc.1 那次重录是单工具 schema）。SDK 的默认 profile 不是它，而是 `sdk`（`python/sdk` 的默认值；`sdk-minimal` 由示例与 smoke 显式选择）。
 - **工具面最窄的 Profile**：模型只看到一个平台选定的持久 shell，加上 `read_image` 与 `working_directory` 两个不带文件改写权的工具。
 - **`danger-full-access`**：没有沙箱保护，仅用于 disposable checkout 或容器。`workspaceRoot: !!js process.cwd()` 仍成立——它只是 sandbox-policy 的根；0011 起 `filesystem`（`fs-local`）重新在树里，但仍没有文件改写工具，也没有 `fs-sandbox` / `fs-observation-policy` 策略层。
 - **持久 PTY**：bash / pwsh 状态跨命令保持（`cd` 后 pwd 仍在新目录），5 分钟 timeout。

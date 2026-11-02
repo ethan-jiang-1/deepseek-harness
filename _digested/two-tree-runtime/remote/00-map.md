@@ -1,16 +1,20 @@
 # Remote · 两棵树之间的线
 
-核验入口：[`docs/subsystems/typert.md`](../../../docs/subsystems/typert.md)、[`docs/api-gateway.md`](../../../docs/api-gateway.md)、[`packages/typert/README.md`](../../../packages/typert/README.md)、[`packages/client/connection/README.md`](../../../packages/client/connection/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.md`、`.agents/notes/implemented/architecture/2026-07-27-compiler-independent-typert-model.md`。
+核验入口：[`docs/subsystems/typert.md`](../../../docs/subsystems/typert.md)、[`docs/api-gateway.md`](../../../docs/api-gateway.md)、[`packages/typert/README.md`](../../../packages/typert/README.md)、[`packages/client/connection/README.md`](../../../packages/client/connection/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.md`、`.agents/notes/implemented/architecture/2026-07-27-compiler-independent-typert-model.md`。产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`），各页核验值见 [`_coverage`](../../_coverage/00-index.md)。
 
 ## 一句话
 
 `Typert` 把「Host 上一个 Cordis Service 的方法」变成「Client 上一个具体函数」，全程只过三段：业务包在**声明期**用 `@Remote` / `@RemoteScope` 标注方法、把 Cordis 服务键绑成 wire `namespace`；**build 期** generator 从 Host 的 `ts.Program` 抽出 `TypeGraph`，为同一份契约发出 Host 反射与 Host-for-Client 投影；**运行期** Host 的 `ctx.typertGateway` 按 descriptor 解析活的 Service 并派发，Client 的 `ctx.remote.$mount()` 把同一份 descriptor 装成 `remote.<namespace>` 子服务上的具体方法。descriptor 是两侧本地反射、从不上线，wire 只传 endpoint 与 `{ args }`（`docs/subsystems/typert.md:41`、`docs/api-gateway.md:126`）。
 
-## 三段，四个孙目录
+![声明期 → build 期 → 运行期](./figures/three-stages.svg)
+
+## 一条线的四块
+
+前三块来自同一件事（Typert 的三段）；`connection/` 与 `streams/` 是这条线上另外两件正交的事——载体与会话流。
 
 | 目录 | 段 | 内容 |
 |------|----|------|
-| [`typert/`](./typert/) | 声明期 + build 期 | [`01`](./typert/01-声明期-装饰器与-namespace.md) 装饰器、namespace 键、声明合并、四个包与两个 `core` 服务；[`02`](./typert/02-类型图与两族产物.md) `TypeGraph`、`typert.host.*` / `typert.remote-client.*`、`typert-contracts` 门禁、SRC 弱化路径 |
+| [`typert/`](./typert/) | 声明期 + build 期 | [`01`](./typert/01-声明期-装饰器与-namespace.md) 装饰器、namespace 键、声明合并、四个包与三个 `core` 服务（`ctx.typert`、`ctx.typertGateway`、`ctx.remoteAccess`）；[`02`](./typert/02-类型图与两族产物.md) `TypeGraph`、`typert.host.*` / `typert.remote-client.*`、`typert-contracts` 门禁、SRC 弱化路径 |
 | [`gateway/`](./gateway/) | 运行期（Host 侧 + Client 侧） | [`01`](./gateway/01-Host-派发与访问控制.md) 注册、registry、派发顺序与 `ctx.remoteAccess`；[`02`](./gateway/02-客户端-mount-与装配.md) `$mount` 与 `api/remotes` 的装配清单 |
 | [`connection/`](./connection/) | 载体 | [`01`](./connection/01-载体-rpcId-与逻辑流.md) 信封、`rpcId`、`POST /api/<ns>/<method>`、mux 与 uplink；[`02`](./connection/02-认证与浏览器宿主.md) process-token URL、`dsh-auth-` cookie、桌面宿主 |
 | [`streams/`](./streams/) | 会话流 | [`01`](./streams/01-一条-emit-两条出站链路.md) `session/event` 与 `$events` 白名单两条出站链路；[`02`](./streams/02-三类帧与-wire-校验.md) follow 的三类帧与客户端 wire 校验 |

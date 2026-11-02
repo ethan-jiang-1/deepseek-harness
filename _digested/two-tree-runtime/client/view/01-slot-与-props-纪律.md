@@ -4,7 +4,7 @@
 
 这一页讲组合的唯一两个入口（`register` 与 `registerFactory`）和组件能拿到的派生 share；加 UI 之前先确认你要加的是 slot 还是 factory。
 
-## slot 与 props 纪律
+![slot 声明、授权与 props 派生](../figures/slot-props.svg)
 
 组合只有 `ctx.slots` 一个入口：`register`（父位声明）与 `registerFactory`（独立复用渲染）两种声明形式，没有独立的 slot 定义调用、没有 whitelist face 对象、没有 face-minting helper；`'root'` 只由 shell 渲染（`packages/client/AGENTS.md:11`、`docs/subsystems/slots.md:21`）。
 

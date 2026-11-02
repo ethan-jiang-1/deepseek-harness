@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="430" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">浏览器启动六步：从注入到第一次 renderSlot('root')</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">Host 写完注入就退场；后面五步全在浏览器里，失败会留在 boot page 上而不是白屏。</text>
+
+  <rect x="60" y="76" width="380" height="72" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="78" y="102" font-size="12.5" font-weight="700" fill="#9a3412">① Host 注入（webserver）</text>
+  <text x="78" y="122" font-size="10.5" fill="#c2410c">window.__DSH_BOOT__ + __ModuleLoader__ facade</text>
+  <text x="78" y="140" font-size="10.5" fill="#c2410c">body 尾脚本 resolve __DSH_BOOT_READY__</text>
+
+  <rect x="60" y="164" width="380" height="72" rx="9" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="78" y="190" font-size="12.5" font-weight="700" fill="#1e40af">② AppWebEntry.run 等就绪</text>
+  <text x="78" y="210" font-size="10.5" fill="#2563eb">await __DSH_BOOT_READY__?.promise</text>
+  <text x="78" y="228" font-size="10.5" fill="#2563eb">facade 缺失直接抛，不静默降级</text>
+
+  <rect x="60" y="252" width="380" height="72" rx="9" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="78" y="278" font-size="12.5" font-weight="700" fill="#1e40af">③ 建模块系统</text>
+  <text x="78" y="298" font-size="10.5" fill="#2563eb">moduleLoader.create({ boot, staticModules })</text>
+  <text x="78" y="316" font-size="10.5" fill="#2563eb">静态表 = PLATFORM_MODULES 的 11 个词</text>
+
+  <rect x="520" y="76" width="380" height="72" rx="9" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="538" y="102" font-size="12.5" font-weight="700" fill="#1e40af">④ 预取 immediately 行</text>
+  <text x="538" y="122" font-size="10.5" fill="#2563eb">只提前启动 transport；失败被吞掉</text>
+  <text x="538" y="140" font-size="10.5" fill="#2563eb">Loader 导入时重试并报该 bundle 的错</text>
+
+  <rect x="520" y="164" width="380" height="72" rx="9" fill="#dcfce7" stroke="#86efac"/>
+  <text x="538" y="190" font-size="12.5" font-weight="700" fill="#166534">⑤ bootClient：挂 Loader 建 entry</text>
+  <text x="538" y="210" font-size="10.5" fill="#15803d">ctx.plugin(Loader) → loader.internal = modules</text>
+  <text x="538" y="228" font-size="10.5" fill="#15803d">entries.start → await → assertEntriesActive</text>
+
+  <rect x="520" y="252" width="380" height="72" rx="9" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="538" y="278" font-size="12.5" font-weight="700" fill="#5b21b6">⑥ mountClient：交接给 renderer</text>
+  <text x="538" y="298" font-size="10.5" fill="#6d28d9">ctx.inject(['uiRenderer']) → uiRenderer.mount(container)</text>
+  <text x="538" y="316" font-size="10.5" fill="#6d28d9">uiRenderer 被替换就重新挂载</text>
+
+  <line x1="250" y1="148" x2="250" y2="162" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="250" y1="236" x2="250" y2="250" stroke="#4b5563" marker-end="url(#arr)"/>
+  <polyline points="440,288 480,288 480,112 518,112" fill="none" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="710" y1="148" x2="710" y2="162" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="710" y1="236" x2="710" y2="250" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="60" y="342" width="840" height="72" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="78" y="366" font-size="11" font-weight="700" fill="#374151">失败面（assertEntriesActive 一次报全部）：</text>
+  <text x="78" y="386" font-size="10.5" fill="#4b5563">import failed: &lt;reason&gt; · pending (waiting for services: a, b) · 其它状态直接打状态名。</text>
+  <text x="78" y="404" font-size="10.5" fill="#6b7280">不变量：模块顺序只决定能否物化，激活由 Cordis fiber 对 service 的 inject 等待决定（packages/client/web/src/boot-client.ts:36-89）。</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="470" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一次 Remote 调用的派发顺序</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">Connection 先解出 carrier envelope，再交给 ctx.typertGateway；顺序固定，任一步失败都停在原地。</text>
+
+  <rect x="60" y="78" width="380" height="64" rx="9" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="78" y="103" font-size="12.5" font-weight="700" fill="#1e40af">① Connection 解出 envelope</text>
+  <text x="78" y="124" font-size="10.5" fill="#2563eb">method / payload / rpcId / 取消信号 / 调用代表的 Peer</text>
+
+  <rect x="60" y="158" width="380" height="64" rx="9" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="78" y="183" font-size="12.5" font-weight="700" fill="#1e40af">② claimsEndpoint 认领</text>
+  <text x="78" y="204" font-size="10.5" fill="#2563eb">两段 endpoint + 严格 descriptor（或活 SRC 标记），否则交回 404</text>
+
+  <rect x="60" y="238" width="380" height="64" rx="9" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="78" y="263" font-size="12.5" font-weight="700" fill="#5b21b6">③ 解析 descriptor</text>
+  <text x="78" y="284" font-size="10.5" fill="#6d28d9">先查 ctx.typert.local.get(endpoint)；撤回后禁止降级 SRC</text>
+
+  <rect x="60" y="318" width="380" height="64" rx="9" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="78" y="343" font-size="12.5" font-weight="700" fill="#5b21b6">④ 校验 args 与 descriptor 一致</text>
+  <text x="78" y="364" font-size="10.5" fill="#6d28d9">多一个字段、少一个字段都当场失败，不做宽松匹配</text>
+
+  <rect x="520" y="78" width="380" height="64" rx="9" fill="#dcfce7" stroke="#86efac"/>
+  <text x="538" y="103" font-size="12.5" font-weight="700" fill="#166534">⑤ 解析 receiver Context</text>
+  <text x="538" y="124" font-size="10.5" fill="#15803d">从该 Context 取 descriptor.service，并校验绑定</text>
+
+  <rect x="520" y="158" width="380" height="64" rx="9" fill="#dcfce7" stroke="#86efac"/>
+  <text x="538" y="183" font-size="12.5" font-weight="700" fill="#166534">⑥ 逐个解析参数</text>
+  <text x="538" y="204" font-size="10.5" fill="#15803d">JSON 值 / lookup（按 wire id 解析回对象）/ Context 投影</text>
+
+  <rect x="520" y="238" width="380" height="64" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="538" y="263" font-size="12.5" font-weight="700" fill="#9a3412">⑦ 非 owner：ctx.remoteAccess.decide()</text>
+  <text x="538" y="284" font-size="10.5" fill="#c2410c">参数校验之后、任何 lookup 或 Context 解析之前；list 结果经 allows() 过滤</text>
+
+  <rect x="520" y="318" width="380" height="64" rx="9" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="538" y="343" font-size="12.5" font-weight="700" fill="#374151">⑧ 追加信号并调用</text>
+  <text x="538" y="364" font-size="10.5" fill="#6b7280">声明 cancellation 就在业务参数后追加信号，调用 implementation ?? method</text>
+
+  <line x1="250" y1="142" x2="250" y2="156" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="250" y1="222" x2="250" y2="236" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="250" y1="302" x2="250" y2="316" stroke="#4b5563" marker-end="url(#arr)"/>
+  <polyline points="440,350 480,350 480,110 518,110" fill="none" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="710" y1="142" x2="710" y2="156" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="710" y1="222" x2="710" y2="236" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="710" y1="302" x2="710" y2="316" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="60" y="402" width="840" height="52" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="78" y="424" font-size="10.5" fill="#374151">失败码都在 gateway/* 下：definition-unavailable（③）、signature-invalid（unary 与 stream 用错通道）、peer-disposed（调用方已卸）、uplink-overflow。</text>
+  <text x="78" y="444" font-size="10.5" fill="#6b7280">无法识别的异常折成 gateway/internal；结构上可识别的 RemoteError 连同 code 与 details 原样透传（docs/subsystems/typert.md:266、:410-428）。</text>
+</svg>

@@ -2,7 +2,7 @@
 
 ## 一句话
 
-`dsh --profile headless "run the tests"` 回答一条任务，打印最终 assistant 消息，然后 exit 0。没有 HTTP 服务、没有 browser、没有常驻进程。
+`dsh --profile headless "run the tests"` 回答一条任务，打印最终 assistant 消息；`completed` 退 0，其余结局（`max-tokens` / `error` / `aborted` 等，或没有 turn）退 1。没有 HTTP 服务、没有 browser、没有常驻进程。
 
 ## 怎么跑
 
@@ -11,6 +11,13 @@ dsh --profile headless "run the tests"
 dsh --profile headless --patch my.yml "refactor this module"
 dsh --profile headless --help
 ```
+
+### 运行契约
+
+- 默认 stdout 只写最终 assistant 文本；stderr 写推理进度与 `dsh: <code>: <message>` 诊断。`--json` 把 stdout 换成 newline-delimited run events（`session` … `final`；失败时以 `error` 收尾、没有 `final`）。
+- task 取 positional（多词按空格拼）；缺省或 `-` 时读 stdin（空白输入在开跑前拒绝）。
+- `--session-id <id>` 采纳已存 Session，需要 `sessionPersistence` 与 `sessionQuery`；未知或空白 id 失败。
+- `--help` 只打印帮助、不运行。flag 面在 `packages/bundle/headless/src/startup.ts:43-45`，IO 投影在 `packages/bundle/headless/src/index.ts:363`、`:393-394`。
 
 ## Bundle 组合
 
@@ -29,13 +36,15 @@ dsh --profile headless --help
 |----|---------|
 | `system-prompt` | 只设 `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/headless/cordis.patch.yml:9-12`）。0011 起 shipped 组合不再设 `personaSuffix`——loop 的内建 `{{cwd}}` 与目录从句退役，执行目录改由 `ctx.workingDirectory` 供给 |
 | `tools` | 透传 `DSH_TOOLS_MODE` |
+| `hmr` | `disabled: true`；一次性任务只做启动期组合 |
+| `credentials` / `authorization` / `deepseek-account` | 全部 `disabled: true`；一次性任务改用启动环境凭据（`packages/bundle/headless/cordis.patch.yml:32-43`） |
 
 ### `dsh-headless` 的 insert 行
 
 | id | 插件 | 作用 |
 |----|------|------|
 | `headless-startup` | `@deepseek-ai/dsh-headless/startup` | 解析 `"<task>"` 位置参数，提供 `headlessStartup` 服务 |
-| `headless-runner` | `@deepseek-ai/dsh-headless` | 注入 `headlessStartup`，读取 task，创建 Agent，驱动到完成，打印结果 |
+| `headless-runner` | `@deepseek-ai/dsh-headless` | 注入 `headlessStartup`，读取 task，创建 Agent，驱动到完成，打印结果（`config.task` / `sessionId` / `json` 取自 provider，patch `:27-30`） |
 
 （0008 复核注记：`ptc-runtime` 行曾误列在这里——它实为 **base** 层行，`packages/bundle/base/cordis.patch.yml:397-398`，所有 profile 共享；0.1.7 线自 code-runtime 随 PTC 命名重构改名。产品 bin 另依赖 `@deepseek-ai/dsh-experimental-ptc-runtime-python`（CPython 子进程后端，experimental，`apps/cli/package.json:127`），PTC runtime 呈双 provider 形态（node + 实验性 Python），base 挂载的仍是 node 行。）
 
@@ -49,7 +58,7 @@ dsh --profile headless "run the tests"
   → boot() → 启动 Loader 插件树
   → headless-startup 解析 task，提供 headlessStartup 服务
   → headless-runner 读取 task，创建 Agent，推进到完成
-  → 打印最终 assistant 消息 → exit 0
+  → 打印最终 assistant 消息 → `completed` 退 0，其余退 1
 ```
 
 最终消息的读取是逐 seq 的：runner 的 `summarize` 按 `session.eventAt(SessionSeq(seq))` 从首个 seq 读到捕获长度，读不到即 fail loud（`dsh: headless summary cannot read seq N below captured length M`；`packages/bundle/headless/src/index.ts:73-99`，fail-loud 抛在 `:82`，`tests/headless.spec.ts` 有对应用例）。进程中的推理进度另走 `streamReasoning`：它订阅 `agent/assistant-stream` 这个 process-local 帧（不是 WAL），只把非空 `reasoning-delta` 打到 stderr（`packages/bundle/headless/src/index.ts:109-165`，`:122` 是订阅点）——最终结局仍从耐久日志推导，两路不混。
@@ -58,7 +67,7 @@ dsh --profile headless "run the tests"
 
 - **唯一一次性退出的 Profile**：回答完就 exit，没有常驻进程。
 - **没有 HTTP 服务、没有 browser、没有常驻 event loop**：生命周期短于任何需要等待的进程。
-- **stdout 给最终结果**：进程退出前打印 assistant 的最后一条消息，适合脚本管道。
+- **stdout 给最终结果**：进程退出前打印 assistant 的最后一条消息，适合脚本管道；`--json` 时改成事件流。
 - **startup-only 重载**：一次性任务在运行中重载 patch 没有意义。
 - **不依赖会话级 preset**：tool-bash、tool-fs 等工具行直接在 host 平面挂载，而不是放到会话 preset 里。
 

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arrBlue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#1d4ed8"/></marker>
+  </defs>
+  <rect width="960" height="430" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">slot 声明、授权与 props 派生</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">组合只有 ctx.slots 一个入口；组件能渲染什么由 children 授权，能拿到什么由五个派生 share 决定。</text>
+
+  <rect x="40" y="74" width="280" height="86" rx="9" fill="#dcfce7" stroke="#86efac"/>
+  <text x="58" y="100" font-size="12.5" font-weight="700" fill="#166534">ctx.slots.register(spec, Component)</text>
+  <text x="58" y="122" font-size="10.5" fill="#15803d">父位声明：name / children / store / inject</text>
+  <text x="58" y="142" font-size="10.5" fill="#15803d">children = 声明 + 授权，key 才可渲染</text>
+
+  <rect x="340" y="74" width="280" height="86" rx="9" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="358" y="100" font-size="12.5" font-weight="700" fill="#1e40af">slot 注册表</text>
+  <text x="358" y="122" font-size="10.5" fill="#2563eb">名字即组合路径 &lt;domain&gt;.&lt;entry&gt;.&lt;hole&gt;</text>
+  <text x="358" y="142" font-size="10.5" fill="#2563eb">'root' 只由 shell 渲染</text>
+
+  <rect x="640" y="74" width="280" height="86" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="658" y="100" font-size="12.5" font-weight="700" fill="#9a3412">ctx.slots.inject(name, callback)</text>
+  <text x="658" y="122" font-size="10.5" fill="#c2410c">等真正的声明出现后再 register</text>
+  <text x="658" y="142" font-size="10.5" fill="#c2410c">owner 折叠即撤，重挂时 callback 重跑</text>
+
+  <line x1="320" y1="117" x2="338" y2="117" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="640" y1="117" x2="622" y2="117" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <line x1="480" y1="160" x2="480" y2="196" stroke="#1d4ed8" marker-end="url(#arrBlue)"/>
+  <text x="492" y="184" font-size="10.5" fill="#1d4ed8">全部派生，不手写、不在本地重新 type</text>
+
+  <rect x="36" y="200" width="168" height="72" rx="8" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="120" y="226" text-anchor="middle" font-size="11.5" font-weight="700" fill="#075985">PropsRuntime&lt;K&gt;</text>
+  <text x="120" y="246" text-anchor="middle" font-size="9.5" fill="#0369a1">owner params + session scope</text>
+  <text x="120" y="262" text-anchor="middle" font-size="9.5" fill="#0369a1">useSession / useSessions</text>
+
+  <rect x="216" y="200" width="168" height="72" rx="8" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="300" y="226" text-anchor="middle" font-size="11.5" font-weight="700" fill="#075985">PropsRenderSlots&lt;S&gt;</text>
+  <text x="300" y="246" text-anchor="middle" font-size="9.5" fill="#0369a1">children 的 key</text>
+  <text x="300" y="262" text-anchor="middle" font-size="9.5" fill="#0369a1">renderSlot(name)</text>
+
+  <rect x="396" y="200" width="168" height="72" rx="8" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="480" y="226" text-anchor="middle" font-size="11.5" font-weight="700" fill="#075985">PropsRenderFactories</text>
+  <text x="480" y="246" text-anchor="middle" font-size="9.5" fill="#0369a1">Factory children</text>
+  <text x="480" y="262" text-anchor="middle" font-size="9.5" fill="#0369a1">renderFactorySlot</text>
+
+  <rect x="576" y="200" width="168" height="72" rx="8" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="660" y="226" text-anchor="middle" font-size="11.5" font-weight="700" fill="#075985">PropsStore&lt;H&gt;</text>
+  <text x="660" y="246" text-anchor="middle" font-size="9.5" fill="#0369a1">useStore + actions</text>
+  <text x="660" y="262" text-anchor="middle" font-size="9.5" fill="#0369a1">cross-entry / remount</text>
+
+  <rect x="756" y="200" width="168" height="72" rx="8" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="840" y="226" text-anchor="middle" font-size="11.5" font-weight="700" fill="#5b21b6">inject face</text>
+  <text x="840" y="246" text-anchor="middle" font-size="9.5" fill="#6d28d9">plain data + callback</text>
+  <text x="840" y="262" text-anchor="middle" font-size="9.5" fill="#6d28d9">hooks 隔间放裸 observable</text>
+
+  <rect x="36" y="292" width="888" height="118" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="54" y="316" font-size="11" font-weight="700" fill="#374151">活数据只有三条通道：</text>
+  <text x="54" y="338" font-size="10.5" fill="#4b5563">parent 已知 → renderSlot 站点上的 owner props；只有组件自己知道 → local state；跨 entry 或跨 remount 存活 → register 时声明的 store。</text>
+  <text x="54" y="360" font-size="10.5" fill="#4b5563">派生数据是对 framework-hook 数据的纯函数（useMemo），不是自己的订阅；framework hook 只由框架制造，业务代码不得把 hook 或 selector 当 prop 值传。</text>
+  <text x="54" y="382" font-size="10.5" fill="#6b7280">业务组件里不许 useSyncExternalStore、不许手接 subscribe、不许把外部快照镜像进 local state 或第二个 store（packages/client/AGENTS.md:25-27）。</text>
+</svg>

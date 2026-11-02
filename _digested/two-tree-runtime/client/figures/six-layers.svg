@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="down" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="up" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#b91c1c"/></marker>
+  </defs>
+  <rect width="960" height="500" fill="#fafafa" rx="6"/>
+  <text x="480" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">六层与单向依赖链</text>
+  <text x="480" y="50" text-anchor="middle" font-size="11" fill="#6b7280">Host state → Remote transport → Client model → UI adapter → Conversation or presentation → Slots → React</text>
+
+  <rect x="40" y="68" width="620" height="52" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="58" y="89" font-size="12.5" font-weight="700" fill="#166534">1 · Host application</text>
+  <text x="58" y="108" font-size="10.5" fill="#15803d">packages/api/*-controller 的 Host 入口：权威状态、持久化、mutation 顺序、访问策略、流的生产</text>
+
+  <rect x="40" y="130" width="620" height="52" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="58" y="151" font-size="12.5" font-weight="700" fill="#1e40af">2 · Transport 与 API assembly</text>
+  <text x="58" y="170" font-size="10.5" fill="#2563eb">client/connection · api/gateway · api/remotes：建立 generation、暴露 ctx.remote、转发事件、承载取消</text>
+
+  <rect x="40" y="192" width="620" height="52" rx="8" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="58" y="213" font-size="12.5" font-weight="700" fill="#075985">3 · Client models</text>
+  <text x="58" y="232" font-size="10.5" fill="#0369a1">api/session-controller/client · api/workspace-controller/client：React-free 镜像、流/unary 竞态、对象身份</text>
+
+  <rect x="40" y="254" width="620" height="52" rx="8" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="58" y="275" font-size="12.5" font-weight="700" fill="#5b21b6">4 · UI adapters</text>
+  <text x="58" y="294" font-size="10.5" fill="#6d28d9">client/ui-session · client/ui-workspace：把 model observable 转成标准 slot source，不接管业务状态</text>
+
+  <rect x="40" y="316" width="620" height="52" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="58" y="337" font-size="12.5" font-weight="700" fill="#9a3412">5 · Conversation 与 presentation</text>
+  <text x="58" y="356" font-size="10.5" fill="#c2410c">ui-conversation · ui-chat · ui-trajectory：目标自有快照、共享 shell 与输入流</text>
+
+  <rect x="40" y="378" width="620" height="52" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="58" y="399" font-size="12.5" font-weight="700" fill="#374151">6 · Composition 与 rendering</text>
+  <text x="58" y="418" font-size="10.5" fill="#6b7280">ui-slots · ui-renderer · ui-layout：声明扩展位、派生 props、把 observable 绑到 React、挂载最终树</text>
+
+  <line x1="350" y1="120" x2="350" y2="128" stroke="#4b5563" marker-end="url(#down)"/>
+  <line x1="350" y1="182" x2="350" y2="190" stroke="#4b5563" marker-end="url(#down)"/>
+  <line x1="350" y1="244" x2="350" y2="252" stroke="#4b5563" marker-end="url(#down)"/>
+  <line x1="350" y1="306" x2="350" y2="314" stroke="#4b5563" marker-end="url(#down)"/>
+  <line x1="350" y1="368" x2="350" y2="376" stroke="#4b5563" marker-end="url(#down)"/>
+
+  <line x1="710" y1="430" x2="710" y2="72" stroke="#b91c1c" stroke-dasharray="5 4" marker-end="url(#up)"/>
+  <text x="722" y="250" font-size="10.5" fill="#b91c1c">用户动作沿回调反向：</text>
+  <text x="722" y="268" font-size="10.5" fill="#b91c1c">闭合在注入的 Client service</text>
+  <text x="722" y="286" font-size="10.5" fill="#b91c1c">或生成的 Remote namespace 上</text>
+
+  <text x="40" y="462" font-size="10.5" fill="#6b7280">硬约束：presentation component 永远不接收 Cordis ctx、transport 对象，或另一个 feature 插件的实现（docs/subsystems/web-client.md:20）。</text>
+</svg>

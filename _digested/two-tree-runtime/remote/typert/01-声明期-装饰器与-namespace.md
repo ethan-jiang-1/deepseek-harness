@@ -19,7 +19,7 @@
 
 权威正文是 `docs/subsystems/typert.md`，它自己的生成区从 `:502` 起（`<a id="cordis-surface">`），`:590` 是 `ctx.typert`、`:654` 是 `ctx.typertGateway`（同区 `:508` 是 0011 新增的 `ctx.remoteAccess`），该区由 `scripts/gen-cordis-catalog.ts` 生成、由 `pnpm run verify-cordis-catalog` 校验新鲜度（`docs/subsystems/typert.md:504`，生成器本身消费 `@deepseek-ai/dsh-typert-generator`：`scripts/gen-cordis-catalog.ts:29`）。
 
-## 声明期
+## 业务包怎么标注
 
 业务包把一个 public、非 static 的实例方法标成 `@Remote` 即可导出；`@Remote('create')` 声明一个与成员名不同的导出名，`@Remote({ mode: 'stream' })` 声明逻辑流，`@RemoteScope(key, exportName?)` 声明 receiver 从某个 scoped Context 解析（`packages/typert/protocol/src/index.ts:174-201`、`:226-233`）。装饰器只调度一个 initializer，把方法名、可选导出名与调用方式追加到 Service 原型上的 versioned descriptor；标记要求公开非静态实例方法且名字是字符串，同一方法上的冲突标记直接抛错（`packages/typert/protocol/src/index.ts:265-282`、`:284-311`）。`remoteMethods(service)` 读回的是脱离原 descriptor 的声明顺序快照，供 Gateway 的 source 模式兜底使用（`packages/typert/protocol/src/index.ts:235-245`）。
 

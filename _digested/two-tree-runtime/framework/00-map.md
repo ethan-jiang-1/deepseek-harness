@@ -1,6 +1,6 @@
 # Framework · 两棵树共用的框架本体
 
-产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`），增量见 [`_change_log/0011`](../../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
+产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`）。本专题四篇的结论在 `687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）上逐条核过；`rc.2 → rc.5` 的两个跨度（[`0012`](../../_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md)、[`0013`](../../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)）对 `vendor/` 零 diff（`git diff 687f282e..b830ec95 -- vendor` 为空），因此结论沿用，只把基线行对齐到 rc.5。rc.2 之前那次跨度对照的 OLD 侧为 `639ed015`（`dsh-v0.2.0-rc.2`），增量见 [`_change_log/0011`](../../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
 
 ## 一句话
 

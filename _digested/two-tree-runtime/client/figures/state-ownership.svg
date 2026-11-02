@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="down" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="380" fill="#fafafa" rx="6"/>
+  <text x="480" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一份状态住哪：三个问题定层</text>
+  <text x="480" y="50" text-anchor="middle" font-size="11" fill="#6b7280">先问「它是什么」，再决定「谁拥有它」；顺序反了就会写出第二份业务真相。</text>
+
+  <rect x="40" y="78" width="270" height="76" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="175" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1e40af">它会跟重启重建吗？</text>
+  <text x="175" y="132" text-anchor="middle" font-size="10.5" fill="#2563eb">耐久事实 · 权威状态</text>
+
+  <rect x="345" y="78" width="270" height="76" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="480" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1e40af">多个 entry 要共享吗？</text>
+  <text x="480" y="132" text-anchor="middle" font-size="10.5" fill="#2563eb">查看 / 交互状态</text>
+
+  <rect x="650" y="78" width="270" height="76" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="785" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1e40af">只属于这次渲染吗？</text>
+  <text x="785" y="132" text-anchor="middle" font-size="10.5" fill="#2563eb">组件本地的渲染态</text>
+
+  <line x1="175" y1="154" x2="175" y2="176" stroke="#4b5563" marker-end="url(#down)"/>
+  <line x1="480" y1="154" x2="480" y2="176" stroke="#4b5563" marker-end="url(#down)"/>
+  <line x1="785" y1="154" x2="785" y2="176" stroke="#4b5563" marker-end="url(#down)"/>
+
+  <rect x="40" y="180" width="270" height="110" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="175" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">对象层</text>
+  <text x="175" y="232" text-anchor="middle" font-size="10.5" fill="#15803d">Host controller 决定，Client model 持有投影</text>
+  <text x="175" y="252" text-anchor="middle" font-size="10.5" fill="#15803d">sessions / frames / connections 住这里</text>
+  <text x="175" y="272" text-anchor="middle" font-size="10.5" fill="#15803d">React-free，没有 hook 成员</text>
+
+  <rect x="345" y="180" width="270" height="110" rx="10" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="480" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">声明的 store</text>
+  <text x="480" y="232" text-anchor="middle" font-size="10.5" fill="#6d28d9">register 时声明，组件经 useStore 读写</text>
+  <text x="480" y="252" text-anchor="middle" font-size="10.5" fill="#6d28d9">只装 selection / draft / panel 宽度</text>
+  <text x="480" y="272" text-anchor="middle" font-size="10.5" fill="#6d28d9">跨 entry、跨 remount 存活</text>
+
+  <rect x="650" y="180" width="270" height="110" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="785" y="208" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">local state</text>
+  <text x="785" y="232" text-anchor="middle" font-size="10.5" fill="#c2410c">useState：只在这次渲染里成立</text>
+  <text x="785" y="252" text-anchor="middle" font-size="10.5" fill="#c2410c">不跨 entry，不跨 remount</text>
+  <text x="785" y="272" text-anchor="middle" font-size="10.5" fill="#c2410c">派生数据用 useMemo，不另起订阅</text>
+
+  <text x="40" y="318" font-size="10.5" fill="#374151">三个反例：把 sessions / frames / connections 放进 store；在组件里 useSyncExternalStore 或手接 subscribe；把外部快照镜像进 local state 或第二个 store。</text>
+  <text x="40" y="340" font-size="10.5" fill="#6b7280">依据：packages/client/AGENTS.md:25-27（读纪律）、:54-59（跨层四条不可谈判）。</text>
+</svg>

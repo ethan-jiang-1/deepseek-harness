@@ -17,17 +17,18 @@ sdk 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-sdk-app`）�
 
 ## 组合构成
 
-`dsh-sdk-app` bundle 是叠在 `dsh-base` 上的**薄协议层**，`cordis.patch.yml` 只做三件事：
+`dsh-sdk-app` bundle 是叠在 `dsh-base` 上的**薄协议层**，`cordis.patch.yml` 只做四件事：
 
 | 改动 | 内容 |
 |------|------|
 | `system-prompt` override | 只设 `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/sdk-app/cordis.patch.yml:3-6`）。0011 起 shipped 组合不再设 `personaSuffix`：loop 的内建 `{{cwd}}` 变量与目录从句退役，执行目录改由 `ctx.workingDirectory` 作必需用户上下文供给（升级指南 [`working-directory`](../../docs/upgrade-guide/v0.2.1-alpha.1/working-directory/guide.md)；0009 跨度那次「prefix 序 0 / suffix 序 10200」的拆分见归档 note [`2026-09-06-environment-prompt-suffix`](../../.agents/notes/archived/bug-fix/2026-09-06-environment-prompt-suffix.md)） |
 | `session-title-llm` `disabled: true` | stdout 只归 JSON-RPC 协议，标题生成关掉 |
-| `insert` | `sdk-app-startup`（带 `config: { profile: sdk }`，`:12-15`）+ `sdk-jsonrpc-server`（协议处理器，bundle `inject: [sdkAppStartup, loader]`）+ `workspace-dependencies`（`:29-33`）+ `skill-office`（`:35-41`，Office skills 载荷，`DSH_BUNDLED_OFFICE_*` 环境变量可覆盖） |
+| `hmr` `disabled: true` | 协议开始后不做运行时 patch 重载（`packages/bundle/sdk-app/cordis.patch.yml:23-24`） |
+| `insert` | `sdk-app-startup`（带 `config: { profile: sdk }`，`:12-15`）+ `sdk-jsonrpc-server`（协议处理器，bundle `inject: [sdkAppStartup, loader]`）+ `workspace-dependencies`（`:29-33`，仅在 `DSH_PRIMARY_RUNTIME ?? DSH_BUNDLED_PRIMARY_RUNTIME` 存在时启用）+ `skill-office`（`:35-41`，同一条件或 `DSH_BUNDLED_OFFICE_CLI`；Office skills 载荷，`DSH_BUNDLED_OFFICE_*` 环境变量可覆盖） |
 
 `sdk-app-startup` 的 `profile` config 只影响 `dsh --profile <name> --help` 打印的命令语法，不改变组合（`packages/bundle/sdk-app/src/index.ts:25`、`:30`、`:38-45`）。
 
-**sdk 的工具面不收窄**：`dsh-sdk-app` 没有禁用任何 base 工具行——bash / sandbox / web / goal / plan / skill / working-directory 全部从 `dsh-base` 继承；base 默认暴露 `web_fetch`（#3382，`packages/bundle/base/cordis.patch.yml:454-466,486-490`）后，sdk 工具面随之多出 `web_fetch`（`dsh-sdk-app` 无反向覆盖）；sdk 另自挂 `load_workspace_dependencies`（`packages/bundle/sdk-app/cordis.patch.yml:29-33`，工具在 `packages/skill/tool-workspace-dependencies/src/index.ts:295`），供模型查询捆绑的 Python / Node.js / pnpm 运行时载荷。**`str_replace_editor` 不在这份继承清单里**：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`），`tool-str-replace-editor` 行在**本次跨度（`a66e470204` → `183f08e9c6`）内**从所有 shipped `cordis.patch.yml` 下线（OLD 基线里 base 的该行在 `a66e470204:packages/bundle/base/cordis.patch.yml:424-425`；同一提交 `36a4665144` 也删掉了 sdk-app 与 web-app 的对应行）；包 `@deepseek-ai/dsh-tool-str-replace-editor` 仍在，任何组合（含 sdk）想要它都必须显式 `insert`（仓库里的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。真正把工具面收窄到「一个持久 shell」的是 [`sdk-minimal`](./04-sdk-minimal.md)，它是唯一不叠 base 的 profile。
+**sdk 的工具面不收窄**：`dsh-sdk-app` 没有禁用任何 base 工具行——bash / sandbox / web / goal / plan / skill / working-directory 全部从 `dsh-base` 继承；base 默认暴露 `web_fetch`（#3382，`packages/bundle/base/cordis.patch.yml:454-466,486-490`）后，sdk 工具面随之多出 `web_fetch`（`dsh-sdk-app` 无反向覆盖）；sdk 另自挂 `load_workspace_dependencies`（`packages/bundle/sdk-app/cordis.patch.yml:29-33`，工具在 `packages/skill/tool-workspace-dependencies/src/index.ts:295`），供模型查询捆绑的 Python / Node.js / pnpm 运行时载荷。**`str_replace_editor` 不在这份继承清单里**：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`），`tool-str-replace-editor` 行在**本次跨度（`a66e470204` → `183f08e9c6`）内**从所有 shipped `cordis.patch.yml` 下线（OLD 基线里 base 的该行在 `a66e470204:packages/bundle/base/cordis.patch.yml:424-425`；同一提交 `36a4665144` 也删掉了 sdk-app 与 web-app 的对应行）；包 `@deepseek-ai/dsh-tool-str-replace-editor` 仍在，任何组合（含 sdk）想要它都必须显式 `insert`（仓库里的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。真正把工具面收窄到三个工具（持久 shell + `read_image` + `working_directory`）的是 [`sdk-minimal`](./04-sdk-minimal.md)，它是唯一不叠 base 的 profile。
 
 ## 进程模型
 
@@ -40,7 +41,8 @@ dsh --profile sdk
     → 在 transport 上等 JSON-RPC 请求
   → initialize: 等 loader 树结算，返回 serverInfo
   → session/prompt: queue 消息，立刻返回 messageId
-  → 推送所有 session.event / session.status 通知
+  → session/resume / session/wait / session/working-directory/get|set: 按需分发（方法面见 surfaces/02）
+  → 推送所有 session.event / session.status 通知（另发 subagent.started / subagent.finished，后者仅 local）
   → shutdown: flush 响应，dispose 根 ctx，exit 0
   → EOF / SIGTERM / SIGINT: dispose 根 ctx，exit
 ```

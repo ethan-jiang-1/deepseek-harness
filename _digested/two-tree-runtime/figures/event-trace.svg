@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arrRed" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#b91c1c"/></marker>
+  </defs>
+  <rect width="960" height="430" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一条会话事件的七跳：assistant/message 从日志到 Chat 卡片</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">上去四跳在 Host 与 wire 上，下去三跳在浏览器里；每一跳都可能把事件丢掉。</text>
+
+  <rect x="40" y="76" width="200" height="80" rx="9" fill="#dcfce7" stroke="#86efac"/>
+  <text x="58" y="102" font-size="12.5" font-weight="700" fill="#166534">① Session.append</text>
+  <text x="58" y="122" font-size="10.5" fill="#15803d">落 log 后 emit session/event</text>
+  <text x="58" y="140" font-size="10.5" fill="#15803d">不是另一份广播缓存</text>
+
+  <rect x="270" y="76" width="200" height="80" rx="9" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="288" y="102" font-size="12.5" font-weight="700" fill="#1e40af">② follow 订阅</text>
+  <text x="288" y="122" font-size="10.5" fill="#2563eb">session-controller/history.ts</text>
+  <text x="288" y="140" font-size="10.5" fill="#2563eb">每 Session 一条流</text>
+
+  <rect x="500" y="76" width="200" height="80" rx="9" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="518" y="102" font-size="12.5" font-weight="700" fill="#1e40af">③ 三类帧</text>
+  <text x="518" y="122" font-size="10.5" fill="#2563eb">snapshot / durable / stream</text>
+  <text x="518" y="140" font-size="10.5" fill="#2563eb">SessionFollowFrame</text>
+
+  <rect x="730" y="76" width="200" height="80" rx="9" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="748" y="102" font-size="12.5" font-weight="700" fill="#5b21b6">④ wire 白名单</text>
+  <text x="748" y="122" font-size="10.5" fill="#6d28d9">assertSessionWireEvent</text>
+  <text x="748" y="140" font-size="10.5" fill="#6d28d9">只认固定字段，不改写</text>
+
+  <rect x="730" y="238" width="200" height="80" rx="9" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="748" y="264" font-size="12.5" font-weight="700" fill="#075985">⑤ Session 窗口</text>
+  <text x="748" y="284" font-size="10.5" fill="#0369a1">generation 整段 replace</text>
+  <text x="748" y="302" font-size="10.5" fill="#0369a1">live 按 seq append</text>
+
+  <rect x="500" y="238" width="200" height="80" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="518" y="264" font-size="12.5" font-weight="700" fill="#9a3412">⑥ Definition</text>
+  <text x="518" y="284" font-size="10.5" fill="#c2410c">match / update，按 seq 可重放</text>
+  <text x="518" y="302" font-size="10.5" fill="#c2410c">每个注册者全量施加</text>
+
+  <rect x="270" y="238" width="200" height="80" rx="9" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="288" y="264" font-size="12.5" font-weight="700" fill="#374151">⑦ slot renderer</text>
+  <text x="288" y="284" font-size="10.5" fill="#6b7280">keyed conversation.chat.node</text>
+  <text x="288" y="302" font-size="10.5" fill="#6b7280">没有注册就没有画面</text>
+
+  <rect x="40" y="238" width="200" height="80" rx="9" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="58" y="264" font-size="12.5" font-weight="700" fill="#991b1b">React</text>
+  <text x="58" y="284" font-size="10.5" fill="#b91c1c">props 由五个 share 派生</text>
+  <text x="58" y="302" font-size="10.5" fill="#b91c1c">组件拿不到 ctx</text>
+
+  <line x1="240" y1="116" x2="268" y2="116" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="470" y1="116" x2="498" y2="116" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="700" y1="116" x2="728" y2="116" stroke="#4b5563" marker-end="url(#arr)"/>
+  <polyline points="830,156 830,206 830,236" fill="none" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="730" y1="278" x2="702" y2="278" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="500" y1="278" x2="472" y2="278" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="270" y1="278" x2="242" y2="278" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="40" y="344" width="890" height="66" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="58" y="368" font-size="11" font-weight="700" fill="#b91c1c">六个丢事件的位置：</text>
+  <text x="58" y="388" font-size="10.5" fill="#4b5563">① 没成为 durable event · ② 白名单裁字段 · ③ generation 没保住身份 · ④ match 不认 · ⑤ visibility 用错 · ⑥ 没有 renderer。</text>
+  <text x="58" y="404" font-size="10" fill="#6b7280">细节：remote/streams/01 · remote/streams/02 · client/state/03 · client/view/02 · client/view/01。</text>
+</svg>
