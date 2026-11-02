@@ -1,16 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>把产品安排进 named profile</title>
+  <title>把发行版安排进 named profile</title>
   <desc>选模板、bundle 集、默认值、安装器、更新；右侧是不要做的启动方式。</desc>
 
   <rect width="1200" height="720" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">把产品安排进 named profile</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">产品 = 模板 + bundle 集 + 默认值 + 安装/升级说明；不是新可执行文件</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">把发行版安排进 named profile</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">发行版 = 六轴各定一次；不是新可执行文件</text>
 
   <g>
     <rect x="24" y="88" width="700" height="84" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
     <text x="44" y="116" font-size="12" font-weight="700" fill="#1e40af">① 选模板</text>
     <text x="44" y="140" font-size="9.5" fill="#334155">web / headless / sdk / sdk-minimal / acp；TUI 用自定义 + terminal app bundle</text>
-    <text x="44" y="160" font-size="9.5" fill="#64748b">desktop 保留给官方 Electron；产品不要占用</text>
+    <text x="44" y="160" font-size="9.5" fill="#64748b">desktop 保留给官方 Electron；发行版不要占用</text>
 
     <rect x="24" y="188" width="700" height="84" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
     <text x="44" y="216" font-size="12" font-weight="700" fill="#1e40af">② 选 bundle 集</text>
@@ -19,7 +19,7 @@
 
     <rect x="24" y="288" width="700" height="84" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
     <text x="44" y="316" font-size="12" font-weight="700" fill="#1e40af">③ 默认值</text>
-    <text x="44" y="340" font-size="9.5" fill="#334155">产品默认值写 bundle patch；首启/用户设置写 profile patch</text>
+    <text x="44" y="340" font-size="9.5" fill="#334155">发行版默认值写 bundle patch；首启/用户设置写 profile patch</text>
     <text x="44" y="360" font-size="9.5" fill="#64748b">机器级偏好 home patch；密钥走 env/credentials</text>
 
     <rect x="24" y="388" width="700" height="84" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
@@ -53,7 +53,7 @@
   <text x="772" y="288" font-size="9.5" fill="#64748b">这些都会绕开 named profile 或制造第二写者。</text>
 
   <rect x="752" y="336" width="424" height="236" rx="10" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="772" y="364" font-size="12" font-weight="700" fill="#3730a3">产品只拥有</text>
+  <text x="772" y="364" font-size="12" font-weight="700" fill="#3730a3">发行方只拥有</text>
   <text x="772" y="390" font-size="9.5" fill="#334155">· bundle 与默认值</text>
   <text x="772" y="414" font-size="9.5" fill="#334155">· 安装器、首启、升级说明</text>
   <text x="772" y="438" font-size="9.5" fill="#334155">· 设置页（写 profile patch）</text>

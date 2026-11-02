@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title>选形态：先看交付意图</title>
-  <desc>八种 profile 产品形态按交付意图选择：多个自有插件、重做交互、重做观感、替换宿主、进口套件、一条闭环；每种给出判据和要先想清楚的状态。</desc>
+  <desc>八种 profile 交付形态按交付意图选择：多个自有插件、重做交互、重做观感、替换宿主、进口套件、一条闭环；每种给出判据和要先想清楚的状态。</desc>
 
   <rect width="1200" height="600" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">选形态：先看交付意图</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">八种形态不是八种技术，是八种产品承诺；先选意图，再设计状态</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">八种形态不是八种技术，是八种交付承诺；先选意图，再设计状态</text>
 
   <rect x="24" y="84" width="276" height="32" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
   <text x="40" y="105" font-size="11" font-weight="700" fill="#3730a3">交付意图</text>

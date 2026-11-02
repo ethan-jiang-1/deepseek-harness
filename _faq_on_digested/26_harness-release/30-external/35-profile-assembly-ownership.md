@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-> **角色：外部参考层（E1/E2）。** 本篇把 [34](./34-profile-product-forms.md) 的八种形态拆开后共用的状态问题抽出来：同一套 bundle 机制，状态由谁写、怎么读回、失败后留下什么。证据来自 2026-10-31 固定版本复核，**没有安装、没有运行**；逐样本证据见 [36](./36-profile-evidence-ledger.md)。
+> **角色：外部参考层（E1/E2）。** 本篇把 [34](./34-profile-delivery-forms.md) 的八种形态拆开后共用的状态问题抽出来：同一套 bundle 机制，状态由谁写、怎么读回、失败后留下什么。证据来自 2026-10-31 固定版本复核，**没有安装、没有运行**；逐样本证据见 [36](./36-profile-evidence-ledger.md)。
 
 八种形态回答“怎么发”，本篇回答“发出去之后，profile 里到底有几种状态、各自归谁”。四层状态是第一性问题；身份、更新、接管、进口和资产都是它的分支。
 
@@ -29,7 +29,7 @@
 - **失败三级**：bundle skip / row pending 或 import warning / 整体失败；“应用能开、功能没有”是合法终态，不能按“全有或全无”设计救生逻辑。
 - **home 层能覆盖、不能供货**：插入该 profile 没装的包，dump 有行，真启动 `ERR_MODULE_NOT_FOUND` 且服务照常起。分发给每个 profile 各自装，不要用 home 层供货。
 
-阶段判据与 15 张样本见 [37](./37-lifecycle-stages.md)；本仓库隔离实测的非 bundle 与 home 供货见 [50/90](../50-lifecycle/90-evidence.md)。
+阶段判据与 15 张样本见 [37](./37-lifecycle-stages.md)；本篇隔离实测的非 bundle 与 home 供货见 [50/90](../50-lifecycle/90-evidence.md)。
 
 ## 身份、冲突与退役
 
@@ -90,7 +90,7 @@
 
 `better-session` 用一条用户闭环定义 bundle 边界：五个 exact 依赖、五条 rows、`session-rdb` 的 SQLite default 一起发布，发布 patch 就是可审阅的装配清单。但 README 的 edit/retry/fork 仍是 `[R]`：编辑回填不重放、重试才重放、fork 派生新 session；truncate 事件不等于撤销外部工具副作用，session schema/事务/迁移都没有源码证据。（`[SRC: 发布物]`/`[R]`）
 
-`dsh-wallpaper-engine` 把外观做成可分发资产：预设是带 `schema` 的完整设置快照，资产与设置分开，旧 schema 显式作废、不自动迁移，外观类样本还把“零模型注册”做成了静态 contract test。（`[SRC]`）逐字段的预设语义与格式准入见 [34 §8](./34-profile-product-forms.md#8-视觉资产dsh-wallpaper-engine)。
+`dsh-wallpaper-engine` 把外观做成可分发资产：预设是带 `schema` 的完整设置快照，资产与设置分开，旧 schema 显式作废、不自动迁移，外观类样本还把“零模型注册”做成了静态 contract test。（`[SRC]`）逐字段的预设语义与格式准入见 [34 §8](./34-profile-delivery-forms.md#8-视觉资产dsh-wallpaper-engine)。
 
 **做法**：一条闭环定义一个 bundle，发布 patch 当装配清单；区分 bundle 默认与 effective config；预设是版本化 schema，资产与设置分开，旧 schema 显式作废；外观类样本把零模型注册当可测试 contract。
 
@@ -111,6 +111,6 @@
 ## 边界
 
 - 四层状态与所有权来自固定版本源码/测试/CI 阅读（`[SRC]`），其中 `plugins-plus`/`better-session` 只到 README/发布物；没有安装、没有启动。
-- `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考；`better-session` 目标源码未 pin，发布 patch 之外的会话状态机都是 `[R]`/`[U]`（同 [34 的失效边界](./34-profile-product-forms.md#边界)）。
+- `dsh-plugins-plus` 的 npm 0.2.0 源码未对齐，接管/回滚/迁移只能当概念参考；`better-session` 目标源码未 pin，发布 patch 之外的会话状态机都是 `[R]`/`[U]`（同 [34 的失效边界](./34-profile-delivery-forms.md#边界)）。
 - 九条检查清单只在目标形态需要时采用；不是每份发行版都必须有聚合、接管或进口形态。
 - 证据分级与逐样本未验证项见 [36](./36-profile-evidence-ledger.md)；装/起/配/首启的阶段判据见 [37](./37-lifecycle-stages.md)；bundle patch 的 `insert`/override、web 命令行所有权与 startup session 见 [50](../50-lifecycle/00-index.md)。

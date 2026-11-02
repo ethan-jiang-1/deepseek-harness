@@ -6,12 +6,12 @@
 
 ## 问题从哪来
 
-普通插件为已有 DSH composition 增加一项能力。当作者想把一组插件交到用户手里时，他要交付的不是"一个变成产品的插件"，而是一份**完整可控的 Harness 发行版**：运行时从哪来、入口 profile 叫什么、配置层给谁覆盖、起哪个应用面、数据归谁、装完怎么更和怎么卸。这六件事里任何一件没定 owner，交付就不完整；任何一件要靠改 DSH 源码才能改，交付就不可控。
+普通插件为已有 DSH composition 增加一项能力。当作者想把一组插件交到用户手里时，他要交付的不是“一个变成产品的插件”，而是一份**完整可控的 Harness 发行版**：运行时从哪来、profile 叫什么、patch 层给谁覆盖、起哪个 app surface、数据归谁、装完怎么更和怎么卸。这六件事里任何一件没定 owner，交付就不完整；任何一件要靠改 DSH 源码才能改，交付就不可控。
 
-把这件事说成"插件即产品"会掩盖上面六件，还会把 profile 抬成产品边界——而 profile 只是 Harness home 里的具名组装。发行方需要分别决定：
+把这件事说成“插件即产品”会掩盖上面六件，还会把 profile 抬成产品边界——而 profile 只是 Harness home 里的具名组装。发行方需要分别决定：
 
-- 用户看到的产品入口由哪份 profile composition 提供？
-- 产品目录、Session 初始 `cwd` 与 DSH Workspace registration 如何对应？
+- 用户看到的入口由哪份 profile composition 提供？
+- 项目目录、Session 初始 `cwd` 与 DSH Workspace registration 如何对应？
 - 模型能调用哪些工具？每种工具怎样访问文件？
 - 每块用户数据由谁拥有、存在哪里、何时删除或迁移？
 - 多 profile、换 home、换机器或卸载后，哪些状态共享或保留？
@@ -34,8 +34,8 @@
 | Q7 | DSH 的五个家与客户端状态是什么关系？ | [11 五个家](./10-foundations/11-five-homes.md) |
 | Q8 | `present`、changes、attachments 和 spill 各服务谁？ | [14 产物](./10-foundations/14-artifacts.md) |
 | Q9 | DSH 存储能力的形成历史有什么当前影响？ | [22 原生数据历史](./20-native/22-native-data-history.md) |
-| Q10 | 外部插件与 profile 发行形态有哪些可借模式？ | [31](./30-external/31-external-community-patterns.md)、[32](./30-external/32-external-ecosystem.md)、[33](./30-external/33-external-plugin-patterns.md)、[34](./30-external/34-profile-product-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[36](./30-external/36-profile-evidence-ledger.md)、[37](./30-external/37-lifecycle-stages.md) |
-| Q11 | Profile bundle 如何安装、更新与卸载？数据清理由谁负责？ | [18 安装生命周期](./10-foundations/18-install-upgrade.md)、[34 profile 形态](./30-external/34-profile-product-forms.md)、[35 装配所有权](./30-external/35-profile-assembly-ownership.md)、[37 装/起/配/首启](./30-external/37-lifecycle-stages.md)、[50 安装启动](./50-lifecycle/00-index.md) |
+| Q10 | 外部插件与 profile 交付形态有哪些可借模式？ | [31](./30-external/31-external-community-patterns.md)、[32](./30-external/32-external-ecosystem.md)、[33](./30-external/33-external-plugin-patterns.md)、[34](./30-external/34-profile-delivery-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[36](./30-external/36-profile-evidence-ledger.md)、[37](./30-external/37-lifecycle-stages.md) |
+| Q11 | Profile bundle 如何安装、更新与卸载？数据清理由谁负责？ | [18 安装生命周期](./10-foundations/18-install-upgrade.md)、[34 profile 交付形态](./30-external/34-profile-delivery-forms.md)、[35 装配所有权](./30-external/35-profile-assembly-ownership.md)、[37 装/起/配/首启](./30-external/37-lifecycle-stages.md)、[50 安装启动](./50-lifecycle/00-index.md) |
 | Q12 | 如何从 profile 文件走到发行版 Session、工具和数据？ | [90 主线](./90-advisor/00-index.md)、[93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)、[91 数据卡](./90-advisor/91-checklist.md)、[92 参考矩阵](./90-advisor/92-native-reference-architectures.md) |
 
 ## 不回答什么
@@ -44,7 +44,7 @@
 - 不设计 DSH 不提供的多租户或跨机器同步服务；发行方可另行选择部署隔离和同步机制。
 - 不重新解释会话格式、compaction 或归档算法；仅说明它们的数据 owner 和删除影响。
 - 不提供可直接发布的 Kanban 实现；[93](./90-advisor/93-app-plugin-walkthrough.md) 是发行版组合流程示例，其中的 package 与工具代码是假想内容。
-- 不安装或运行外部 profile 产品；八个样本的证据分级与未验证项见 [36](./30-external/36-profile-evidence-ledger.md)。
+- 不安装或运行外部 profile 交付；八个样本的证据分级与未验证项见 [36](./30-external/36-profile-evidence-ledger.md)。
 
 ## 阅读顺序
 

@@ -38,14 +38,14 @@
   <text x="504" y="286" font-size="12" font-weight="700" fill="#3730a3">仍然不是“启动体验”的部分</text>
   <text x="504" y="312" font-size="9.5" fill="#334155">Client 的“当前 session”是浏览器状态；Host create 不会自动切换 UI。</text>
   <text x="504" y="336" font-size="9.5" fill="#334155">fresh client 可能自动选最新 blank；returning 保持 current；显式 openSession 才确定（T/C）。</text>
-  <text x="504" y="360" font-size="9.5" fill="#64748b">所以“建出来”与“让用户看到”是两层；产品首启要同时设计。</text>
+  <text x="504" y="360" font-size="9.5" fill="#64748b">所以“建出来”与“让用户看到”是两层；发行版首启要同时设计。</text>
 
   <text x="504" y="404" font-size="9.5" fill="#334155">约束：header.cwd 不可变；换目录 = 新 session；</text>
   <text x="504" y="426" font-size="9.5" fill="#334155">workspaceId 只是 registration，不授予文件权限；</text>
   <text x="504" y="448" font-size="9.5" fill="#334155">session create 返回的是 host 事实，不等于 UI selection。</text>
 
   <rect x="24" y="580" width="1152" height="76" rx="9" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="44" y="608" font-size="12" font-weight="700" fill="#b45309">给产品的建议</text>
+  <text x="44" y="608" font-size="12" font-weight="700" fill="#b45309">给发行方的建议</text>
   <text x="44" y="632" font-size="9.5" fill="#334155">首启：create workspace → create session(workspaceId, preset) → 用 client 插件把当前 session 指向它；不要只做 Host 侧。</text>
   <text x="44" y="650" font-size="9.5" fill="#64748b">T：隔离 home 实测；Client 选择 fresh/returning 已用 Playwright 实测。</text>
 

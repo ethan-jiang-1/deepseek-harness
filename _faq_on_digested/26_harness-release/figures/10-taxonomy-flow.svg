@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>产品运行组合与数据卡</title>
+  <title>发行版六轴与数据卡</title>
   <desc>Profile 决定 bundles 的启动组合。数据卡分别记录 Fact/Authority、Owner/Source、Mechanism/Scope/Key 和 Readers/Writers/Rebuildability/Retention。Workspace 导航和工具权限另行决定。</desc>
   <rect width="1200" height="420" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Profile 定组合；数据卡逐条记录事实</text>
@@ -15,7 +15,7 @@
   <text x="58" y="188" font-size="12" font-weight="700" fill="#1e40af">Fact + authority</text>
   <text x="58" y="214" font-size="10" fill="#334155">这是什么事实？</text>
   <text x="58" y="233" font-size="10" fill="#334155">哪份数据决定真值？</text>
-  <text x="58" y="270" font-size="9.5" fill="#64748b">用户 / Session / 产品</text>
+  <text x="58" y="270" font-size="9.5" fill="#64748b">用户 / Session / 发行方</text>
   <text x="58" y="286" font-size="9.5" fill="#64748b">provider / 外部服务</text>
 
   <path d="M306 238 L328 238" stroke="#94a3b8" stroke-width="2"/>
@@ -45,7 +45,7 @@
   <text x="940" y="188" font-size="12" font-weight="700" fill="#9f1239">Access + lifecycle</text>
   <text x="940" y="214" font-size="10" fill="#334155">谁能读？谁能写？可重建吗？</text>
   <text x="940" y="233" font-size="10" fill="#334155">谁备份、迁移或删除？</text>
-  <text x="940" y="270" font-size="9.5" fill="#64748b">用户 / 模型工具 / 产品</text>
+  <text x="940" y="270" font-size="9.5" fill="#64748b">用户 / 模型工具 / 发行方</text>
   <text x="940" y="286" font-size="9.5" fill="#64748b">保留 / 重建 / 恢复</text>
 
   <rect x="40" y="336" width="1120" height="60" rx="8" fill="#ffffff" stroke="#cbd5e1"/>

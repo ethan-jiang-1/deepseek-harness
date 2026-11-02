@@ -17,7 +17,7 @@
   <text x="44" y="286" font-size="9.5" fill="#334155">启动：dsh --profile web / dsh web</text>
   <text x="44" y="310" font-size="9.5" fill="#334155">welcome-notice 注册；onboarding 账本可用</text>
   <text x="44" y="334" font-size="9.5" fill="#64748b">同一个 Plugins 页；安装动作无 profile 参数</text>
-  <text x="44" y="358" font-size="9.5" fill="#15803d">产品文档：Plugins 页一句 + CLI（仅 web）</text>
+  <text x="44" y="358" font-size="9.5" fill="#15803d">发行版文档：Plugins 页一句 + CLI（仅 web）</text>
 
   <rect x="624" y="184" width="552" height="210" rx="10" fill="#fff7ed" stroke="#fdba74"/>
   <text x="644" y="212" font-size="12" font-weight="700" fill="#b45309">Desktop：profiles/desktop</text>

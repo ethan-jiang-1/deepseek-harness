@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-发行方通常要安排四类资产：随 bundle 发布的默认内容、用户项目文件、插件自己的状态，以及运行设置。本篇说明每类资产由谁拥有、哪些部分属于 DSH、以及卸载和换 home 时会发生什么。它不把 DSH Workspace registry 当作文件权限，也不把发行版项目当作 DSH 实体。
+“四个空间”是本目录按资产 owner 切的一张图，不是 DSH 的对象模型（存储通道的分法见 [11 五个家](./11-five-homes.md)）。发行方通常要安排四类资产：随 bundle 发布的默认内容、用户项目文件、插件自己的状态，以及运行设置。本篇说明每类资产由谁拥有、哪些部分属于 DSH、以及卸载和换 home 时会发生什么。它不把 DSH Workspace registry 当作文件权限，也不把发行版项目当作 DSH 实体。
 
 ![四类发行版资产：bundle、用户项目目录、插件状态与运行设置](../figures/15-four-spaces.svg)
 
@@ -34,7 +34,7 @@ bundle 是 DSH 的发布与组合单位。它可带 Cordis patch 和依赖的插
 
 ## 用户项目目录：不要与 DSH Workspace 混为一谈
 
-用户项目目录是项目内容的权威位置。模型是否能直接操作这些文件，取决于其 preset 中的工具和这些工具使用的 filesystem/subprocess providers 与 policy。Host 插件自己的代码不会因为 Session sandbox 而自动受限；插件应通过明确的产品授权与目标路径规则控制写入。
+用户项目目录是项目内容的权威位置。模型是否能直接操作这些文件，取决于其 preset 中的工具和这些工具使用的 filesystem/subprocess providers 与 policy。Host 插件自己的代码不会因为 Session sandbox 而自动受限；插件应通过明确的发行版授权与目标路径规则控制写入。
 
 DSH Workspace 是 Host 保存的一条目录登记，用于 Web 项目导航、Session 分组和 Workspace 操作。若只指定 Session 的工作目录，显式 `cwd` 更直接；若还要加入 DSH 侧栏分组，应引用已有 registration 的 `workspaceId`，让 Host 同时解析其 canonical path 并 attach Session。`WorkspaceId` 是这条 registration 的身份，不是文件路径，也不是发行版项目 ID。只传 `cwd` 不会自动创建 Workspace，因为登记还要有独立的 ID、标题、顺序和 Session account。路径输入应为绝对目录；Workspace create 要求目录已存在。Workspace registration 不提供文件读写 API、不赋予模型工具，也不拥有目录。
 

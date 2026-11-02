@@ -52,7 +52,7 @@
 
 这张表是索引，不是展开：后面各章展开其中七段。另三段的**机制**归 `10-foundations`，本篇只给做法、不重写它们——profile 首建与「装成功」的三个状态见 [18](../10-foundations/18-install-upgrade.md)，存储版本、接受集与迁移剧本见 [12](../10-foundations/12-state-homes.md)，卸载后各类数据的 owner 见 [18](../10-foundations/18-install-upgrade.md) 的卸载与保留一节。
 
-读法：本章用**发行方**指把这些插件交付出去的那一方，用 **Harness 发行版**指它交付的那一份。如果你一个人写一个插件、自己发布，你就是发行方——没有第四种角色，只是称呼不同。只写单插件、没有入口 profile 时，你交付的是插件而不是发行版；下面各章按需跳读。
+读法：本章用**发行方**指把这些插件交付出去的那一方，用 **Harness 发行版**指它交付的那一份。如果你一个人写一个插件、自己发布，你就是发行方——没有第四种角色，只是称呼不同。只写单插件、没有自己的 profile 时，你交付的是插件而不是发行版；下面各章按需跳读。
 
 ## 范围与相邻章节
 
@@ -63,7 +63,7 @@
 | 三轴模型、所有权表、受支持与禁止的边界 | [10](./10-model.md) |
 | 装 / 起 / 配 / 首启的阶段判据（外部参考层，15 张样本） | [37](../30-external/37-lifecycle-stages.md) |
 | 官方发布物只有 Desktop 与 CLI/Web 两份 | [23](../../23_standalone-vs-web-release-forms/answer.md) |
-| profile 交付形态与装配状态 | [34](../30-external/34-profile-product-forms.md) · [35](../30-external/35-profile-assembly-ownership.md) |
+| profile 交付形态与装配状态 | [34](../30-external/34-profile-delivery-forms.md) · [35](../30-external/35-profile-assembly-ownership.md) |
 | 从 profile 到发行版工作流 | [90](../90-advisor/00-index.md) |
 
 ## 总表之外，几条最常踩的
@@ -99,11 +99,11 @@
 
 - **C**：当前 DSH docs/types/implementation（CLI reference、Desktop README、app-boot、web bundle、SDK/ACP、architecture）。
 - **T**：在 `DSH_HOME=$(mktemp -d)` 的隔离 home 里执行的启动/配置实验，不碰用户 profile 与 Session。
-- 外部 profile 交付样本见 [34](../30-external/34-profile-product-forms.md)/[36](../30-external/36-profile-evidence-ledger.md)；本目录只做 C/T，不自行引用 S/R。
+- 外部 profile 交付样本见 [34](../30-external/34-profile-delivery-forms.md)/[36](../30-external/36-profile-evidence-ledger.md)；本目录只做 C/T，不自行引用 S/R。
 
 ## 边界
 
 - 只覆盖 DSH 约定内的分发、安装、初始化、配置、启动、更新与卸载；不设计新 bin、第二层 launcher/桌面壳、发布 profile 目录或 wildcard bind。
-- 实验只在 macOS、本仓库 checkout 与 `mktemp -d` 的隔离 home 上做；Windows/Linux 路径、Desktop 与安装器没有跑。
+- 实验只在 macOS、DSH 仓库 checkout 与 `mktemp -d` 的隔离 home 上做；Windows/Linux 路径、Desktop 与安装器没有跑。
 - 34–37 的外部 profile 交付只作对照，不是依赖背书；具体 package 采用前另核兼容、license 与数据生命周期。
 - 应用内 Plugins 页的 Desktop 侧行为来自 docs 与源码阅读，本机没有 Desktop，所以那部分是 C 不是 T。

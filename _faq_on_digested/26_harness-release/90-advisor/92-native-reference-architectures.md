@@ -4,13 +4,13 @@
 
 ## 依赖与自建机制
 
-先确认目标 profile 可解析所需 API/provider。普通 dependency 不会自动加入 Cordis rows，但其他 patch 可以显式挂载该 plugin；只有要自动应用 package 自带的 `dsh.bundle.patch` 时，才须把它作为 bundle 选入 profile。产品可以使用 DSH package、维护中的外部 package，或自行实现所需机制。逐项检查版本、兼容范围、license、供应链和数据生命周期；仅阅读源码或 README 不能证明 package 已验证。外部 service 还要承担网络、认证、隐私和运维责任。
+先确认目标 profile 可解析所需 API/provider。普通 dependency 不会自动加入 Cordis rows，但其他 patch 可以显式挂载该 plugin；只有要自动应用 package 自带的 `dsh.bundle.patch` 时，才须把它作为 bundle 选入 profile。发行版可以使用 DSH package、维护中的外部 package，或自行实现所需机制。逐项检查版本、兼容范围、license、供应链和数据生命周期；仅阅读源码或 README 不能证明 package 已验证。外部 service 还要承担网络、认证、隐私和运维责任。
 
-若产品以聚合、接管或进口形态发行，装配状态、更新恢复与所有权检查见 [35 装配状态与所有权](../30-external/35-profile-assembly-ownership.md)；安装/启动/命令行与 startup session 见 [50 生命周期](../50-lifecycle/00-index.md)；装/起/配/首启的阶段判据见 [37](../30-external/37-lifecycle-stages.md)。
+若发行版以聚合、接管或进口形态发行，装配状态、更新恢复与所有权检查见 [35 装配状态与所有权](../30-external/35-profile-assembly-ownership.md)；安装/启动/命令行与 startup session 见 [50 生命周期](../50-lifecycle/00-index.md)；装/起/配/首启的阶段判据见 [37](../30-external/37-lifecycle-stages.md)。
 
 ## 数据用途与机制选择
 
-| 用途 | DSH 提供 | 产品要决定 | 不要假设 |
+| 用途 | DSH 提供 | 发行方要决定 | 不要假设 |
 |---|---|---|---|
 | 项目知识 | 项目文件、`ctx.fs`、skills | 文件格式、并发、仓库污染与信任 | home 副本会随项目移动 |
 | 个人长期知识 | Storage domain、用户已有文件 | home 文件或 SQLite 的迁移、同步与删除 | Profile Config 跨 profile 共享 |
@@ -19,7 +19,7 @@
 | 任务/目标 | Session events/projections、todo/goal/schedule packages | authority、重试、重建和通知 | 每个 profile 都启用同一 package |
 | 交付物 | 用户文件、`present` | 可发现性、导出版本和留存 | Attachment/spill 是稳定交付物 |
 | 渠道/账号 | Profile Config、`ctx.credentials` | owner、轮换、授权撤销和迁移 | `CredentialKey` 能像 env ref 一样解析 |
-| 每项目 runtime | 无通用 Workspace plugin instance | 产品 scope/lease、信任、并发和崩溃恢复 | DSH 内建项目级 plugin instance |
+| 每项目 runtime | 无通用 Workspace plugin instance | 发行版 scope/lease、信任、并发和崩溃恢复 | DSH 内建项目级 plugin instance |
 | Client state | Browser storage、Session projections | origin、访问控制和清理 | localStorage 是账号级或跨设备存储 |
 | 同步/备份 | Session export、项目文件 | 用户 git 或显式导入/导出、冲突和回滚 | Session export 会打包项目文件 |
 | 发行版 profile | Named profile + ordered bundle patches | home 共享和 provider override | Profile 名隔离同一 `$DSH_HOME` |
@@ -34,21 +34,21 @@ Profile 选择 plugin composition 与 patch，不创建独立 home。先列出�
 |---|---|---|---|
 | 共享 `$DSH_HOME` | 不覆写 provider paths | Harness home stores 按 provider 共享 | Session、Workspace registry、credentials、profile files |
 | 选择性路径重定向 | 为 persistence/storage/attachment/credential/spill/search providers 配置不同路径 | 只隔离已覆写的 provider | `storage-json.root` 包括 Workspace registry 与 projection cache；未覆写的 home 文件和同 origin localStorage 仍共享 |
-| 独立 `$DSH_HOME` | Launcher 为产品进程设置独立 home | 隔离大多数默认 home stores | 需重新配置 model/credentials/profile；同一 Web origin 的 localStorage 仍共享，服务端口也需安排 |
+| 独立 `$DSH_HOME` | Launcher 为发行版进程设置独立 home | 隔离大多数默认 home stores | 需重新配置 model/credentials/profile；同一 Web origin 的 localStorage 仍共享，服务端口也需安排 |
 
 逐 provider 路径重定向不是统一的 DSH data-root 开关。还要检查默认写入 home 的 DeepSeek upload mapping 和 anonymous installation ID；若仍使用进程 `$DSH_HOME`，就会继续共享。按目标 package README/config catalog 核实，不能从几个 path overrides 推断完整隔离。
 
 独立 `$DSH_HOME` 之外，也要检查 `DSH_AGENTS_HOME`、环境变量/代理、system temp 和 Client origin。隔离范围按每份数据的 Owner 验证。
 
-## 产品目录与 Workspace
+## 发行版目录与 Workspace
 
 | 选择 | DSH 组合 | Session 初始 cwd | 适用场景 |
 |---|---|---|---|
 | 使用 DSH Workspace 导航 | Web 挂载 `dsh-workspace`、Workspace Controller 与 Client UI | Host 从 `workspaceId` 取得登记路径 | 需要项目侧栏、Session 分组或 Workspace operations |
-| 只传 Session cwd | 使用 Session Controller，不登记 Workspace | 调用方传绝对 `cwd` | 产品已有目录选择 UI，不需要 DSH 分组 |
-| 产品工具中介 | 按需组合；Workspace 可选 | 从 Session 或产品选择取得 | 模型不需通用文件工具，Host tool 自行校验读写范围 |
+| 只传 Session cwd | 使用 Session Controller，不登记 Workspace | 调用方传绝对 `cwd` | 发行版已有目录选择 UI，不需要 DSH 分组 |
+| 发行版工具中介 | 按需组合；Workspace 可选 | 从 Session 或发行版选择取得 | 模型不需通用文件工具，Host tool 自行校验读写范围 |
 
-这些选择可以组合：Kanban 可用 DSH Workspace 导航项目，同时只给 Kanban preset 暴露产品 tool；也可不登记 Workspace，让 Session 以显式项目 `cwd` 使用带 policy 的通用工具。分别验证目录 Owner、Session 分组、tool visibility 和执行 policy。
+这些选择可以组合：Kanban 可用 DSH Workspace 导航项目，同时只给 Kanban preset 暴露发行版 tool；也可不登记 Workspace，让 Session 以显式项目 `cwd` 使用带 policy 的通用工具。分别验证目录 Owner、Session 分组、tool visibility 和执行 policy。
 
 ## 边界
 

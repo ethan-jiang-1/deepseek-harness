@@ -20,7 +20,7 @@ grep -n "async edit(\|entries(): Entry" packages/boot/config-editor/src/index.ts
 
 ## 实际
 
-- Loader 在 fiber 上记录所属行：`entry?: Entry`（[vendor/loader/src/index.ts](../../../../vendor/loader/src/index.ts) 的 `Fiber.entry`），设置点是 `fiber.entry = fiber.parent[Entry.key]`。
+- Loader 在 fiber 上记录所属行：`entry?: Entry`（[vendor/loader/src/index.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/loader/src/index.ts) 的 `Fiber.entry`），设置点是 `fiber.entry = fiber.parent[Entry.key]`。
 - `ConfigEditor.entries()` 返回当前 profile 里可寻址的行；`edit(entry, change)` 接受一个 Entry，校验完整 Config 后写回 patch。
 - 因此插件可以用 `ctx.fiber.entry` 拿到自己那一行，再调 `configEditor.edit(entry, change)`。
 

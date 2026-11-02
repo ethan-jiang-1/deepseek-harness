@@ -2,9 +2,9 @@
 
 ## 这一篇回答什么
 
-> **角色：外部参考层（E1/E2），按阶段而不是按交付形态切。** 来源是 2026-11-01 的 `leverage-lifecycle`：4 个阶段、15 张阶段样本卡 + 1 张反例、8 条硬结论、六类启动载体与一份发布前检查表。本仓库**没有安装或运行这些样本**；行为结论按 C/T/S/R 读，样本事实按包清单/README 读。
+> **角色：外部参考层（E1/E2），按阶段而不是按交付形态切。** 来源是 2026-11-01 的 `leverage-lifecycle`：4 个阶段、15 张阶段样本卡 + 1 张反例、8 条硬结论、六类启动载体与一份发布前检查表。本篇**没有安装或运行这些样本**；行为结论按 C/T/S/R 读，样本事实按包清单/README 读。
 
-[34](./34-profile-product-forms.md) 回答“装成什么形态”，[35](./35-profile-assembly-ownership.md) 回答“装配状态归谁”，[36](./36-profile-evidence-ledger.md) 是逐样本台账。本篇补的是横切的一段：**一个插件从被拿到、到第一次成功，四个阶段分别由谁做、做在哪一层、失败长什么样**。
+[34](./34-profile-delivery-forms.md) 回答“装成什么形态”，[35](./35-profile-assembly-ownership.md) 回答“装配状态归谁”，[36](./36-profile-evidence-ledger.md) 是逐样本台账。本篇补的是横切的一段：**一个插件从被拿到、到第一次成功，四个阶段分别由谁做、做在哪一层、失败长什么样**。
 
 **先定调**：分发、安装、启动只走 DSH 给出的路。需要特别的东西，用 bundle 里的插件、流程和配置实现；不靠改宿主，也不另造一套分发。
 
@@ -46,7 +46,7 @@
 | dependency 写入 | `profiles/<p>/package.json.dependencies` |
 | 成为 profile 层 | `dsh.profile.bundles` 含该 bundle |
 
-**只有第三个让功能存在。** 没声明 `dsh.bundle.patch` 的包，CLI 通道是 exit 0、dependency 写入、roster 不变、只给一句 stderr `declares no dsh.bundle — installed as a plain dependency, not a profile layer`；应用内通道则先装后判，以 `not-bundle` 失败并回滚 `package.json` 与 lockfile。本仓库的隔离实测是 CLI 通道（T，见 [50/90](../50-lifecycle/90-evidence.md)）。
+**只有第三个让功能存在。** 没声明 `dsh.bundle.patch` 的包，CLI 通道是 exit 0、dependency 写入、roster 不变、只给一句 stderr `declares no dsh.bundle — installed as a plain dependency, not a profile layer`；应用内通道则先装后判，以 `not-bundle` 失败并回滚 `package.json` 与 lockfile。本篇的隔离实测是 CLI 通道（T，见 [50/90](../50-lifecycle/90-evidence.md)）。
 
 **patch 语义**：新增 row 用 `insert:`；裸 `- id` 是 override target，找不到目标只报 `entry "..." not found`，bundle 仍在 roster 但插件不跑。
 
@@ -97,7 +97,7 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 | home 层 | `$DSH_HOME/cordis.patch.yml` | 所有 profile | 用户 |
 | 临时覆盖 | `--patch <file>` | 这一次启动 | 调用方 |
 
-另有 settings 命名空间、自有文件、localStorage。**home 层能覆盖任意 profile 的行，但不能供货**：插入一个该 profile 没装的包，`--dump-config` 里好看，真启动 `ERR_MODULE_NOT_FOUND`，且**服务照常起来**。本仓库隔离实测复现（T）：warning `1 entry did not activate`，随后仍打印 token URL。
+另有 settings 命名空间、自有文件、localStorage。**home 层能覆盖任意 profile 的行，但不能供货**：插入一个该 profile 没装的包，`--dump-config` 里好看，真启动 `ERR_MODULE_NOT_FOUND`，且**服务照常起来**。本篇隔离实测复现（T）：warning `1 entry did not activate`，随后仍打印 token URL。
 
 **样本的三条配阶段教训**：
 
@@ -145,7 +145,7 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 
 ## 15 张阶段样本 + 1 张反例
 
-| 阶段 | 样本 | 载体 | 一句话机制 | 证据 | 本仓库没做的那一步 |
+| 阶段 | 样本 | 载体 | 一句话机制 | 证据 | 本篇没验证的那一步 |
 |---|---|---|---|---|---|
 | 装 | cfbridge | 自带 CLI | 五条自证命令，`files` 漏 `scripts/` | S/R | 没跑 `npm pack --dry-run`，也没逐条执行那五条命令 |
 | 装 | origin-plugin | 纯 host 行 | 入口工件决定能装，loader fiber 决定活着 | S/R | 没装一次确认 fiber 真的起来 |
@@ -164,7 +164,7 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 | 首启 | 24pa | boot hook | 预置工作区+会话，冲突换 id | S/R | 没 boot 后确认冲突换 id 的结果 |
 | 反例 | bootstrap | 自带 CLI | 机制齐全但无人用，发布后停更 | R | 只读了 README，没有作者访谈或使用数据 |
 
-> 原册对 `install/11`、`install/13`、`boot/21`、`config/31` 有隔离实测；本仓库没有重跑，故不升为 T。上表最后一列是把每行的“可迁移”主张反过来说：**这些检查都还没做**，谁要用某一行就先补哪一步。
+> 原册对 `install/11`、`install/13`、`boot/21`、`config/31` 有隔离实测；本篇没有重跑，故不升为 T。上表最后一列是把每行的“可迁移”主张反过来说：**这些检查都还没做**，谁要用某一行就先补哪一步。
 
 ## 发布前判据
 
@@ -179,7 +179,7 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 
 ## 与 34/35/36/50 的边界
 
-- [34](./34-profile-product-forms.md)：八种交付形态；本篇不重复形态，只给阶段判据。
+- [34](./34-profile-delivery-forms.md)：八种交付形态；本篇不重复形态，只给阶段判据。
 - [35](./35-profile-assembly-ownership.md)：四层状态、身份、更新、接管；本篇补安装三成功、失败三级、home 不能供货。
 - [36](./36-profile-evidence-ledger.md)：34 的八种形态样本的证据台账；本篇的 15 张阶段样本 + 1 张反例按行记在下方阶段样本表里，不并入 36。
 - [50 生命周期](../50-lifecycle/00-index.md)：DSH 约定内的做法层——打包、安装、初始化、配置、启动、更新与卸载该怎么写；本篇是外部参考层的阶段判据（15 张样本），不替代 50 的命令与实验。
@@ -187,6 +187,6 @@ profile 就是四个文件加依赖树：`package.json`（bundles）、`cordis.y
 ## 边界
 
 - 四阶段的 C 侧结论来自 DSH 源码与 docs；S/R 侧来自样本的包清单、源码与 README。本篇不给 DSH 规定安装流程，只给判据。
-- 15 张阶段样本 + 1 张反例在本仓库**没有安装、没有运行**；原册记录的隔离实测没有重跑。
+- 15 张阶段样本 + 1 张反例在本篇**没有安装、没有运行**；原册记录的隔离实测没有重跑。
 - 判据面向“一套 bundle 装进 profile”的交付；单插件、终端 surface、自带运行时的独立应用不在这四阶段的覆盖内。
 - 样本的版本、下载量、维护状态会漂移；引用时回到各自仓库当前版本。

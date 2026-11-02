@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>八种 profile 产品形态</title>
+  <title>八种 profile 交付形态</title>
   <desc>全家桶、界面套件、组合包、聚合补丁、接管套件、套件市场、闭环装配、视觉资产：每种形态的交付物、状态 owner 和最常抄错的地方。</desc>
 
   <rect width="1200" height="720" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">八种 profile 产品形态</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">八种 profile 交付形态</text>
   <text x="600" y="58" text-anchor="middle" fill="#64748b">同一套 bundle 机制，八种交付方式；状态 owner 不同，失败模式也不同</text>
 
   <!-- cards: 2 x 4 -->

@@ -2,7 +2,7 @@
 
 ## 这一篇回答什么
 
-> **角色：外部参考层（E1/E2）。** [34](./34-profile-product-forms.md) 写八种形态，[35](./35-profile-assembly-ownership.md) 写共用机制；本篇只记证据：每个样本 pin 在哪个版本、读了什么、哪些只是 README 主张、哪些根本没有验证；另有一次 2026-11-01 的 npm registry 只读核对。
+> **角色：外部参考层（E1/E2）。** [34](./34-profile-delivery-forms.md) 写八种形态，[35](./35-profile-assembly-ownership.md) 写共用机制；本篇只记证据：每个样本 pin 在哪个版本、读了什么、哪些只是 README 主张、哪些根本没有验证；另有一次 2026-11-01 的 npm registry 只读核对。
 
 **口径。** `[SRC]` = 读过固定 tag/commit 的目标源码；`[R]` = README/作者声明；`[DSH]` = DSH `0.2.1-rc.3` 契约；`[TEST]`/`[CI]` = 读过测试与同 SHA CI 记录，但本轮没有执行；`[OBS]` = 只读目录/注册表元数据的普查；**没有 `[RUN]`**（表示实际运行过）。npm 下载含 CI/镜像，星标不是质量。
 
@@ -31,7 +31,7 @@
 | `dsh-codex-ui` | ✓ 2.0.9 | `gitHead` | `gitHead` 与上表的 `29a999e` 一致；`engines.dsh: >=0.2.0-rc.1 <0.3.0-0`；带 SLSA provenance |
 | `dsh-suite` | ✓ 0.9.1 | 有 provenance、无 `gitHead` | 18 个 exact 依赖（与上表一致）；`dsh.bundle.patch` 是数组，含 `cordis.patch.yml` 与 `ptc-minimal.patch.yml`；**无 `gitHead`** |
 | `dsh-all` | ✓ 0.1.73 | 本地 tgz 发布 | 11 个 exact 依赖（与上表一致）；DSH 范围写在 `dsh.engines.dsh`——**DSH 不读这个字段**（`DshManifest` 只有 `manifestVersion`/`bundle`/`profile`/`client`），实际生效回退到 `@deepseek-ai/dsh` peer；**无 `gitHead`** |
-| `dsh-plugins-plus` | ✓ 0.2.0 | `gitHead` | `gitHead` 指向的 commit 里 `package.json` 是 **0.1.8**，与 [34](./34-profile-product-forms.md)/[35](./35-profile-assembly-ownership.md) 的说法一致；无 `engines.dsh`，靠 peer |
+| `dsh-plugins-plus` | ✓ 0.2.0 | `gitHead` | `gitHead` 指向的 commit 里 `package.json` 是 **0.1.8**，与 [34](./34-profile-delivery-forms.md)/[35](./35-profile-assembly-ownership.md) 的说法一致；无 `engines.dsh`，靠 peer |
 | `dsh-agent-plugins-market` | ✓ 0.13.0 | 有 provenance、无 `gitHead` | 26 个 DSH peer、无 `engines.dsh`；**无 `gitHead`** |
 | `better-session` | ✓ 0.1.10 | npm tarball | **无 `gitHead`**，GitHub `tags` 返回 `[]`——两条与上表一致；5 个 exact 依赖与 34 的清单逐条相同；`engines.dsh: >= 0.2.1-rc.1 < 0.2.2` |
 | `dsh-wallpaper-engine` | ✓ 1.4.0 | npm tarball | 7 个子包 + 主包 = 8；**没有 glass 子包**；`engines.dsh: ^0.2.0-rc.1`；**无 `gitHead`** |
@@ -48,7 +48,7 @@ gh api repos/morlay/dsh-plugin/tags --jq 'length'
 
 ## 生命周期样本（在 37，不在本篇）
 
-[37](./37-lifecycle-stages.md) 另列 15 张阶段样本 + 1 张反例（装 4、起 5、配 3、首启 3、反例 1），按“装/起/配/首启”而不是交付形态组织。**本篇台账不覆盖它们**：它们的逐行证据就在 37 的阶段样本表里（每行一个 S/R 字母），未验证项写在对应阶段小节。原册对 `install/11`、`install/13`、`boot/21`、`config/31` 有隔离实测，其余为包清单/源码/README；本仓库没有重跑，所以不把原册的实测升为本仓库的 T。
+[37](./37-lifecycle-stages.md) 另列 15 张阶段样本 + 1 张反例（装 4、起 5、配 3、首启 3、反例 1），按“装/起/配/首启”而不是交付形态组织。**本篇台账不覆盖它们**：它们的逐行证据就在 37 的阶段样本表里（每行一个 S/R 字母），未验证项写在对应阶段小节。原册对 `install/11`、`install/13`、`boot/21`、`config/31` 有隔离实测，其余为包清单/源码/README；本篇没有重跑，所以不把原册的实测升为本篇的 T。
 
 ## 采用信号与样本边界
 

@@ -24,7 +24,7 @@
 
 ## Profile 安排清单
 
-1. **名字**：入口 profile 用稳定、非 shipped 的名字；不要占用 `desktop`；`plugin` 需 `--profile plugin`。
+1. **名字**：profile 用稳定、非 shipped 的名字；不要占用 `desktop`；`plugin` 需 `--profile plugin`。
 2. **模板**：Web/headless/SDK/ACP 先选 shipped 模板；自定义 TUI 才从 base/自定义开始。
 3. **bundle 集**：base + app bundle + 发行版 bundle；顺序固定；发行版 bundle 在 app 之后。
 4. **默认值**：发行版端口/主题/preset/开关写 bundle patch；不要写进 app bundle。

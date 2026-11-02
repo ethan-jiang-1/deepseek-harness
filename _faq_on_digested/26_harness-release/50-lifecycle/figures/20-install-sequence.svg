@@ -32,11 +32,11 @@
     <text x="190" y="264" font-size="9.5" fill="#64748b">--from-default-profile 只用于首次/救援</text>
     <text x="520" y="244" font-size="9.5" fill="#334155">profiles/&lt;name&gt;/（manifest + patch + workspace）</text>
     <text x="520" y="264" font-size="9.5" fill="#64748b">bundles 列表、patch 为空</text>
-    <text x="850" y="244" font-size="9.5" fill="#334155">自定义名只得到 base；Web 产品没有 web-app</text>
+    <text x="850" y="244" font-size="9.5" fill="#334155">自定义名只得到 base；Web 发行版没有 web-app</text>
 
     <rect x="24" y="308" width="1152" height="86" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
     <text x="40" y="338" font-size="11" font-weight="700" fill="#1e40af">③ bundle</text>
-    <text x="40" y="358" font-size="9.5" fill="#64748b">装产品包</text>
+    <text x="40" y="358" font-size="9.5" fill="#64748b">装发行版包</text>
     <text x="190" y="338" font-size="9.5" fill="#334155">dsh plugin --profile &lt;name&gt; add &lt;spec&gt;</text>
     <text x="190" y="358" font-size="9.5" fill="#64748b">本地/registry/git；不手写 manifest</text>
     <text x="520" y="338" font-size="9.5" fill="#334155">dependency 出现；dsh.profile.bundles 含 bundle</text>

@@ -13,11 +13,11 @@
 
     <rect x="24" y="160" width="660" height="56" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
     <text x="44" y="184" font-size="11" font-weight="700" fill="#1e40af">bundle patch</text>
-    <text x="44" y="204" font-size="9.5" fill="#64748b">产品默认值；随 bundle 版本发布</text>
+    <text x="44" y="204" font-size="9.5" fill="#64748b">发行版默认值；随 bundle 版本发布</text>
 
     <rect x="24" y="228" width="660" height="56" rx="8" fill="#eef2ff" stroke="#818cf8"/>
     <text x="44" y="252" font-size="11" font-weight="700" fill="#1e40af">profile patch</text>
-    <text x="44" y="272" font-size="9.5" fill="#334155">用户/产品设置；Settings UI（Config.volatile）写这里</text>
+    <text x="44" y="272" font-size="9.5" fill="#334155">用户/发行版设置；Settings UI（Config.volatile）写这里</text>
 
     <rect x="24" y="296" width="660" height="56" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
     <text x="44" y="320" font-size="11" font-weight="700" fill="#1e40af">home patch</text>
@@ -73,5 +73,5 @@
   <text x="24" y="620" font-size="9.5" fill="#64748b">Settings UI 写 profile patch；home patch 是机器级共享；Desktop shell 设置独立。</text>
 
   <text x="24" y="700" font-size="9.5" fill="#64748b">C：CLI reference、config layers、web bundle；T：隔离 home 实验（见 90）。</text>
-  <text x="24" y="720" font-size="9.5" fill="#64748b">产品默认值放 bundle patch；用户覆盖留 profile/home；不要把凭据写进 patch。</text>
+  <text x="24" y="720" font-size="9.5" fill="#64748b">发行版默认值放 bundle patch；用户覆盖留 profile/home；不要把凭据写进 patch。</text>
 </svg>

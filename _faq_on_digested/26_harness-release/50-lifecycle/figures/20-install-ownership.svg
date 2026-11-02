@@ -25,7 +25,7 @@
     <text x="220" y="172" font-size="9.5" fill="#64748b">npm 全局 bin</text>
     <text x="450" y="150" font-size="10" fill="#334155">$DSH_HOME/profiles/&lt;name&gt;</text>
     <text x="450" y="172" font-size="9.5" fill="#64748b">dsh plugin add</text>
-    <text x="700" y="150" font-size="10" fill="#334155">用户 / 产品 updater</text>
+    <text x="700" y="150" font-size="10" fill="#334155">用户 / 发行版 updater</text>
     <text x="700" y="172" font-size="9.5" fill="#64748b">npm</text>
     <text x="900" y="150" font-size="9.5" fill="#334155">全局版本漂移、多副本、PATH</text>
     <text x="900" y="172" font-size="9.5" fill="#64748b">最接近默认路径</text>
@@ -50,8 +50,8 @@
     <text x="450" y="342" font-size="10" fill="#334155">显式 DSH_HOME</text>
     <text x="450" y="364" font-size="9.5" fill="#64748b">sdk / sdk-minimal</text>
     <text x="700" y="342" font-size="10" fill="#334155">Python 包</text>
-    <text x="700" y="364" font-size="9.5" fill="#64748b">产品/用户</text>
-    <text x="900" y="342" font-size="9.5" fill="#334155">以 stdio 为主，不是 Web 产品</text>
+    <text x="700" y="364" font-size="9.5" fill="#64748b">发行方/用户</text>
+    <text x="900" y="342" font-size="9.5" fill="#334155">以 stdio 为主，不是 Web 发行版</text>
     <text x="900" y="364" font-size="9.5" fill="#64748b">同一 launcher，显式 home</text>
 
     <rect x="24" y="408" width="1152" height="88" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
@@ -61,7 +61,7 @@
     <text x="220" y="460" font-size="9.5" fill="#64748b">需要 build</text>
     <text x="450" y="438" font-size="10" fill="#334155">同一个 home</text>
     <text x="450" y="460" font-size="9.5" fill="#64748b">linked resolution</text>
-    <text x="700" y="438" font-size="10" fill="#334155">开发者/产品</text>
+    <text x="700" y="438" font-size="10" fill="#334155">开发者/发行方</text>
     <text x="700" y="460" font-size="9.5" fill="#64748b">build / git pull</text>
     <text x="900" y="438" font-size="9.5" fill="#334155">缺 host/前端产物会启动失败</text>
     <text x="900" y="460" font-size="9.5" fill="#64748b">旧 bundle 可能跑旧前端</text>

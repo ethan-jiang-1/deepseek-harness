@@ -19,12 +19,12 @@
 
   <g>
     <rect x="24" y="120" width="1152" height="72" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
-    <text x="40" y="148" font-size="10" font-weight="700" fill="#1e40af">浏览器产品</text>
+    <text x="40" y="148" font-size="10" font-weight="700" fill="#1e40af">浏览器发行版</text>
     <text x="40" y="168" font-size="9.5" fill="#64748b">Web GUI</text>
     <text x="240" y="148" font-size="9.5" fill="#334155">web</text>
     <text x="240" y="168" font-size="9.5" fill="#64748b">base + web-app</text>
     <text x="440" y="148" font-size="9.5" fill="#334155">base + web-app + 发行版 bundle</text>
-    <text x="440" y="168" font-size="9.5" fill="#64748b">产品默认值在 bundle patch</text>
+    <text x="440" y="168" font-size="9.5" fill="#64748b">发行版默认值在 bundle patch</text>
     <text x="740" y="148" font-size="9.5" fill="#334155">dsh --profile / dsh web</text>
     <text x="740" y="168" font-size="9.5" fill="#64748b">--port/--no-open</text>
     <text x="980" y="148" font-size="9.5" fill="#334155">版本、端口、代理</text>

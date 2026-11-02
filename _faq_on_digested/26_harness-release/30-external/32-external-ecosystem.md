@@ -4,7 +4,7 @@
 
 > **角色：外部参考层（E1/E2）。** 本篇只看核心仓之外的 DSH 生态，并且只挑已经走进产品领域的插件：它们自己定义了产品级状态（项目绑定、设置、生命周期、迁移、团队凭据、协作），而不只是给已有 composition 加一个工具。外部指 DSH 生态的外围，不是其他产品的插件体系。
 
-DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端五个家）；外部插件在补的往往是产品层：项目怎么绑定、设置放哪、数据跟谁走、卸载后留什么。本篇从 15 个深读样本与目录样本里挑出八组可以借鉴的数据结构（其中 beauty-persist、codex-keychain、session_folders、insights 属目录/平台样本，不在那 15 个深读里）；[31](./31-external-community-patterns.md) 给单插件的九个维度和十八种手法，[33](./33-external-plugin-patterns.md) 给逐个案例与证据，[34](./34-profile-product-forms.md) 看 profile 的交付形态，[35](./35-profile-assembly-ownership.md) 看装配状态与所有权，[37](./37-lifecycle-stages.md) 看装/起/配/首启的阶段判据。
+DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端五个家）；外部插件在补的往往是产品层：项目怎么绑定、设置放哪、数据跟谁走、卸载后留什么。本篇从 15 个深读样本与目录样本里挑出八组可以借鉴的数据结构（其中 beauty-persist、codex-keychain、session_folders、insights 属目录/平台样本，不在那 15 个深读里）；[31](./31-external-community-patterns.md) 给单插件的九个维度和十八种手法，[33](./33-external-plugin-patterns.md) 给逐个案例与证据，[34](./34-profile-delivery-forms.md) 看 profile 的交付形态，[35](./35-profile-assembly-ownership.md) 看装配状态与所有权，[37](./37-lifecycle-stages.md) 看装/起/配/首启的阶段判据。
 
 **口径。** 深读 2026-10-27：97 个候选（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55）里选 15 个，读过源码或 README（S/R）。目录 2026-10-24：awesome-dsh-plugin 6704 条元数据，只读作者描述（R），没有安装。样本不是 census，U = 未确认。
 
@@ -53,7 +53,7 @@ kb-manager 把“一个知识库”做成一个单元：数据、索引、任务
 
 ### 凭据、迁移与协作
 
-credentials-mysql 证明凭据 provider 可以换：外部 DB、schema 版本 fail-closed、行锁、字段加密、owner scope；但卸载不清理 DB，迁移契约没人写。claude-move 用 scan → preview → apply 和幂等 `move.json`；codex-sync 暴露了双向同步真正的难点——映射和冲突策略。agent-mailbox 补持久 inbox/threads/receipts，session_folders 把 UI 状态放进 storage-domain。可借鉴的是“换后端、搬数据、跨会话消息”都被当成产品功能来设计，而不是一次性脚本。profile 级的进口形态与来源/安装/过滤分层见 [34](./34-profile-product-forms.md)/[35](./35-profile-assembly-ownership.md)。
+credentials-mysql 证明凭据 provider 可以换：外部 DB、schema 版本 fail-closed、行锁、字段加密、owner scope；但卸载不清理 DB，迁移契约没人写。claude-move 用 scan → preview → apply 和幂等 `move.json`；codex-sync 暴露了双向同步真正的难点——映射和冲突策略。agent-mailbox 补持久 inbox/threads/receipts，session_folders 把 UI 状态放进 storage-domain。可借鉴的是“换后端、搬数据、跨会话消息”都被当成产品功能来设计，而不是一次性脚本。profile 级的进口形态与来源/安装/过滤分层见 [34](./34-profile-delivery-forms.md)/[35](./35-profile-assembly-ownership.md)。
 
 ## 目录扫描：产品级样本池
 
@@ -62,7 +62,7 @@ credentials-mysql 证明凭据 provider 可以换：外部 DB、schema 版本 fa
 | 样本 | 类别 | 数据设计 | 可借鉴 |
 |---|---|---|---|
 | [ui-auth](https://github.com/0QwQ0/dsh-ui-auth) | security | 登录门禁、每用户 Key 加密、管理员不可读、JSONL 审计、fail-closed | 身份、凭据、数据按用户隔离；未配置即阻断 |
-| [team-cost](https://github.com/1569126506-sudo/dsh-team-cost) | usage | 按成员/工作区计费、预算、阈值 Webhook、超支拦截 | 团队成本当产品状态 |
+| [team-cost](https://github.com/1569126506-sudo/dsh-team-cost) | usage | 按成员/工作区计费、预算、阈值 Webhook、超支拦截 | 团队成本当一等状态 |
 | [backup](https://github.com/xiaoyuyu6420/dsh-backup) | dev | 全 home 备份/恢复、分级保留、sha256、失败回滚、凭据脱敏、救援页 | 备份带校验与回滚 |
 | [backup-sync](https://github.com/Arlenman/dsh-backup-sync) | dev | tar.gz + sha256、三方合并、凭据黑名单、导入前快照、WebDAV | 换机迁移做三方合并 |
 | [dsh-webdav](https://github.com/GaoHu1997/dsh-webdav) | dev | profile 五份、AES-256-GCM、分份三方合并、冲突留档 | 同步只存密文 |

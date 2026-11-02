@@ -4,16 +4,16 @@
 
 | 主题 | 来源 |
 |---|---|
-| 启动语法、profile、插件管理、Web 参数、关闭信号 | [`apps/cli/README.md`](../../../apps/cli/README.md)、[`apps/cli/reference/README.md`](../../../apps/cli/reference/README.md) |
-| 只有 named profile 是受支持启动、禁止 bin/demo | [`docs/architecture.md`](../../../docs/architecture.md#application-launch)、[`scripts/verify-application-entrypoints.ts`](../../../scripts/verify-application-entrypoints.ts) |
-| profile 组合、模板、skipped bundles、fail loud | [`packages/boot/app-boot/README.md`](../../../packages/boot/app-boot/README.md) |
-| 插件安装、版本兼容、exemptions | [`packages/boot/plugin-manager/README.md`](../../../packages/boot/plugin-manager/README.md) |
-| app 参数解析与优先级 | [`packages/boot/cmdline/README.md`](../../../packages/boot/cmdline/README.md) |
-| Web 端口/TLS/public-url/token | [`packages/bundle/web-app/README.md`](../../../packages/bundle/web-app/README.md) |
-| Desktop 壳、profile 独占、更新、运行时 | [`apps/desktop/README.md`](../../../apps/desktop/README.md) |
-| SDK/ACP 是 profile，不是 bin | [`packages/sdk/README.md`](../../../packages/sdk/README.md)、[`packages/acp/README.md`](../../../packages/acp/README.md) |
+| 启动语法、profile、插件管理、Web 参数、关闭信号 | [`apps/cli/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md)、[`apps/cli/reference/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md) |
+| 只有 named profile 是受支持启动、禁止 bin/demo | [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#application-launch)、[`scripts/verify-application-entrypoints.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-application-entrypoints.ts) |
+| profile 组合、模板、skipped bundles、fail loud | [`packages/boot/app-boot/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md) |
+| 插件安装、版本兼容、exemptions | [`packages/boot/plugin-manager/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md) |
+| app 参数解析与优先级 | [`packages/boot/cmdline/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/cmdline/README.md) |
+| Web 端口/TLS/public-url/token | [`packages/bundle/web-app/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/README.md) |
+| Desktop 壳、profile 独占、更新、运行时 | [`apps/desktop/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) |
+| SDK/ACP 是 profile，不是 bin | [`packages/sdk/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/sdk/README.md)、[`packages/acp/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/acp/README.md) |
 | 包/发布合同、bundle vs plugin vs profile | [FAQ 24 包合同](../../24_plugin-publish-and-agent-data-planes/02-package-contract.md)、[可发布形态](../../24_plugin-publish-and-agent-data-planes/01-publishable-forms.md) |
-| Desktop 打包/签名/更新 | [`apps/desktop/README.md`](../../../apps/desktop/README.md)、[Windows signing](../../../apps/desktop/windows-signing/README.md) |
+| Desktop 打包/签名/更新 | [`apps/desktop/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md)、[Windows signing](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/windows-signing/README.md) |
 
 ## T：隔离 home 实验（2026-11-01）
 
@@ -58,7 +58,7 @@
 
 ## 社区样本的位置
 
-社区 profile 交付的安装/启动样本已在 [34](../30-external/34-profile-product-forms.md)/[36](../30-external/36-profile-evidence-ledger.md) 按 `dsh plugin add` 的约定路径整理；本目录不再列非约定启动。需要对照时，只看它们如何把 bundle 装进 profile，不看自建 launcher。
+社区 profile 交付的安装/启动样本已在 [34](../30-external/34-profile-delivery-forms.md)/[36](../30-external/36-profile-evidence-ledger.md) 按 `dsh plugin add` 的约定路径整理；本目录不再列非约定启动。需要对照时，只看它们如何把 bundle 装进 profile，不看自建 launcher。
 
 ## claim → evidence
 
@@ -108,5 +108,5 @@
 ## 边界
 
 - 本目录只采用 DSH 约定内的路径；非约定启动不作为对照对象。
-- 实验只覆盖本仓库 checkout、macOS、scratch home；Windows/Linux 的路径、Desktop 壳、安装器没有跑。
-- DSH 的启动合同以当前 checkout 的 CLI/Desktop/app-boot 文档与源码为准；版本变化时回到对应 commit。
+- 实验只覆盖 DSH 仓库 checkout、macOS、scratch home；Windows/Linux 的路径、Desktop 壳、安装器没有跑。
+- DSH 的启动合同以当前 DSH checkout 的 CLI/Desktop/app-boot 文档与源码为准；版本变化时回到对应 commit。

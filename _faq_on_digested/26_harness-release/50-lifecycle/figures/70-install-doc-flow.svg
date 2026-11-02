@@ -9,7 +9,7 @@
   <g>
     <rect x="24" y="88" width="560" height="96" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
     <text x="44" y="116" font-size="12" font-weight="700" fill="#1e40af">① 这是什么</text>
-    <text x="44" y="140" font-size="9.5" fill="#334155">产品名、surface、适用范围、不做什么</text>
+    <text x="44" y="140" font-size="9.5" fill="#334155">发行版名、app surface、适用范围、不做什么</text>
     <text x="44" y="160" font-size="9.5" fill="#64748b">先让用户判断“是不是我要的”</text>
 
     <rect x="616" y="88" width="560" height="96" rx="9" fill="#ffffff" stroke="#c7d2fe"/>

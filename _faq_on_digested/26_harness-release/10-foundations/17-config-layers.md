@@ -83,7 +83,7 @@ Host plugin 代码在 DSH 进程中运行。它直接调用 `node:fs` 不受 Ses
 | sandboxed 写入范围 | sandbox mode 与平台 provider | `workspace-write` 还允许平台临时根；后端可能报告 partial enforcement |
 | Host 插件文件写入 | 插件代码与部署运行账户 | 不因 Session policy 自动受限 |
 
-具体合同见 [Sandbox](../../../docs/subsystems/sandbox.md)、[Filesystem](../../../docs/subsystems/filesystem.md)、[Working Directory](../../../docs/subsystems/working-directory.md) 与 [`dsh-fs-sandbox`](../../../packages/fs/fs-sandbox/README.md)。
+具体合同见 [Sandbox](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/sandbox.md)、[Filesystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/filesystem.md)、[Working Directory](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/working-directory.md) 与 [`dsh-fs-sandbox`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/fs-sandbox/README.md)。
 
 ## 秘密
 

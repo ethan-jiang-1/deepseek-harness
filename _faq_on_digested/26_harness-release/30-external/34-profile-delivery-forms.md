@@ -8,7 +8,7 @@
 
 **口径。** 源码读固定 tag/commit，标 `[SRC]`；README/作者主张标 `[R]`；DSH `0.2.1-rc.3` 契约标 `[DSH]`；没有安装或启动，所以没有行为观察。npm 下载含 CI/镜像，星标不是质量。
 
-![八种 profile 交付形态](../figures/34-profile-product-forms.svg)
+![八种 profile 交付形态](../figures/34-profile-delivery-forms.svg)
 
 ## 八种形态总表
 

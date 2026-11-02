@@ -2,9 +2,9 @@
 
 ## 一分钟结论
 
-1. **要交付的是一份 Harness 发行版，不是"一个产品化的插件"。** DSH 里 `product` 指整台运行中的 dsh（[architecture](../../docs/architecture.md#cordis)），所以交付单位必然是一整棵树：plugin 贡献能力，bundle 贡献可 patch 的 rows，profile 贡献组合入口，发行版把这四层连同运行时、应用面、home 与生命周期一起承诺出去。
-2. **完整与可控是两个可证伪的判据。** 六轴（运行时、入口 profile、配置层、应用面、home 与数据、生命周期）都有明确 owner = 完整；改任一条不用 fork DSH = 可控。缺轴的具体症状见 [10 六轴](./10-foundations/10-taxonomy.md)。
-3. **入口 profile 有三种控制态**：随包交付的模板名、自定义具名 profile（`--from-default-profile`）、application-owned profile（Desktop 保留的 `desktop`，`loadProfileDirectory` 加载且不经 CLI profile lookup）。控制态决定发行方与用户各能改多少，比“是不是发行版 profile”有用得多。
+1. **要交付的是一份 Harness 发行版，不是“一个产品化的插件”。** DSH 里 `product` 指整台运行中的 dsh（[architecture](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#cordis)），所以交付单位必然是一整棵树：plugin 贡献能力，bundle 贡献可 patch 的 rows，profile 决定起哪个 app surface，发行版把这三类对象连同运行时、app surface、Harness home 与生命周期一起承诺出去。
+2. **完整与可控是两个可证伪的判据。** 六轴（运行时、profile、patch 层、app surface、Harness home 与数据、生命周期）都有明确 owner = 完整；改任一条不用 fork DSH = 可控。缺轴的具体症状见 [10 六轴](./10-foundations/10-taxonomy.md)。
+3. **profile 有三种控制态**：随包交付的模板名、自定义具名 profile（`--from-default-profile`）、application-owned profile（Desktop 保留的 `desktop`，`loadProfileDirectory` 加载且不经 CLI profile lookup）。控制态决定发行方与用户各能改多少，比“是不是发行版 profile”有用得多。
 4. **每份事实分别记录 owner、authority、source、mechanism/path、scope/key、readers、writers、可重建性和保留责任。** 这些属性互不替代，不应合成一个分类标签。
 5. **DSH Workspace 是 Host 侧目录登记。** 它服务项目导航与 Session 分组；创建 Session 时可选择 `workspaceId`，也可直接提供 `cwd` 而不登记 Workspace。
 6. **模型权限来自可用工具与各工具的 provider/policy。** Workspace 不赋予模型文件操作；Host 插件代码也不自动受到 Session sandbox 约束。
@@ -16,10 +16,10 @@
 | 轴 | 发行方必须定 | DSH 提供的机制 | 读回方式 |
 |---|---|---|---|
 | 运行时 | 谁提供 dsh、版本 floor、签名/更新责任 | 用户自带 CLI、Desktop 内置、Python wheel、源码树 | `dsh --version`、`engines.dsh` |
-| 入口 profile | 用哪个模板、叫什么名、由谁拥有 | shipped template、`--from-default-profile`、application-owned profile | `$DSH_HOME/profiles/<name>/package.json` 的 `dsh.profile.bundles` |
-| 配置层 | 哪些字段作默认、允许谁覆盖 | bundle patches → profile patch → home patch → `--patch`，整份替换 | `dsh --profile <p> --dump-config`、`skippedBundles` |
-| 应用面 | 起哪个 surface、带哪些 client plugins | profile 选择 web/headless/sdk/sdk-minimal/acp | 启动日志的 `dsh web:` URL 或 runner 输出 |
-| home 与数据 | 哪些状态共享、哪些自建、卸载留什么 | storage domain、Workspace registry、Session log、`header.cwd` | 数据卡（[91](./90-advisor/91-checklist.md)）逐行读回 |
+| profile | 用哪个模板、叫什么名、由谁拥有 | shipped template、`--from-default-profile`、application-owned profile | `$DSH_HOME/profiles/<name>/package.json` 的 `dsh.profile.bundles` |
+| patch 层 | 哪些字段作默认、允许谁覆盖 | bundle patches → profile patch → home patch → `--patch`，整份替换 | `dsh --profile <p> --dump-config`、`skippedBundles` |
+| app surface | 起哪个 surface、带哪些 client plugins | profile 选择 web/headless/sdk/sdk-minimal/acp | 启动日志的 `dsh web:` URL 或 runner 输出 |
+| Harness home 与数据 | 哪些状态共享、哪些自建、卸载留什么 | storage domain、Workspace registry、Session log、`header.cwd` | 数据卡（[91](./90-advisor/91-checklist.md)）逐行读回 |
 | 生命周期 | 装/更/卸的入口与数据清理责任 | Plugins 页、`dsh plugin`、bundle membership 变更后重启 | 安装结果三态：exit 0 → 依赖写入 → 进 `dsh.profile.bundles` |
 
 ## 本篇如何回答问题
@@ -29,19 +29,19 @@
 | 问题 | 摘要 | 展开 |
 |---|---|---|
 | Q0：发行版与数据卡如何区分？ | 六轴定 owner；数据卡逐项记录事实属性 | [10 六轴](./10-foundations/10-taxonomy.md) |
-| Q1：交付单位是什么？ | 一份由入口 profile 启动、六轴各有 owner 的 Harness 发行版 | [FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)、[50](./50-lifecycle/00-index.md)、[90](./90-advisor/00-index.md) |
+| Q1：交付单位是什么？ | 一份由选定 profile 启动、六轴各有 owner 的 Harness 发行版 | [FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)、[50](./50-lifecycle/00-index.md)、[90](./90-advisor/00-index.md) |
 | Q2：资产放哪里？ | 发布包、用户目录、插件状态、设置与 Session history 由不同 owner 管理 | [15](./10-foundations/15-four-spaces.md) |
 | Q3：目录怎样选择？ | DSH Web 有 Workspace 首用与 picker；发行方 root resolver 是自建机制 | [16](./10-foundations/16-startup-resolution.md) |
 | Q4：配置如何生效？ | Patch 链按层覆盖完整 entry config；链外设置在更高层 | [17](./10-foundations/17-config-layers.md) |
 | Q5–Q8：作用域、存储、凭据与产物 | 按数据 owner 与 API 分别选择 | [11–14](./10-foundations/11-five-homes.md) |
 | Q9–Q10：设计来源与 DSH 外部生态 | DSH 当前行为以原生证据为准；外部材料仅供参考 | [21–22](./20-native/21-native-data-landscape.md)、[31–37](./30-external/31-external-community-patterns.md) |
-| Q11–Q12：安装与施工检查 | CLI 与 Plugin Manager 有不同更新结果；形态与装配见 34/35，装/起/配/首启见 37，安装/启动/命令行见 50，用 90–93 完成方案与验收 | [18](./10-foundations/18-install-upgrade.md)、[34](./30-external/34-profile-product-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[50](./50-lifecycle/00-index.md)、[90–93](./90-advisor/00-index.md) |
+| Q11–Q12：安装与施工检查 | CLI 与 Plugin Manager 有不同更新结果；形态与装配见 34/35，装/起/配/首启见 37，安装/启动/命令行见 50，用 90–93 完成方案与验收 | [18](./10-foundations/18-install-upgrade.md)、[34](./30-external/34-profile-delivery-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[50](./50-lifecycle/00-index.md)、[90–93](./90-advisor/00-index.md) |
 
 ## Profile、bundle 与数据 owner
 
-profile 是 Harness home 里的具名组装（[architecture](../../docs/architecture.md#profiles-and-bundles)）；bundle 是发布 Cordis patch 和 package dependencies 的形式（[architecture](../../docs/architecture.md#profiles-and-bundles)）。发行版的 package 可以提供 plugins、presets 和 Client plugins，但运行入口仍是 DSH 支持的 named profile。package 是否贡献 rows 取决于其 bundle manifest 和 profile 选择。
+profile 是 Harness home 里的具名组装（[architecture](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#profiles-and-bundles)）；bundle 是发布 Cordis patch 和 package dependencies 的形式（[architecture](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#profiles-and-bundles)）。发行版的 package 可以提供 plugins、presets 和 Client plugins，但运行入口仍是 DSH 支持的 named profile。package 是否贡献 rows 取决于其 bundle manifest 和 profile 选择。
 
-度量发行版的"完整度"时，不要给整份发行版套一个数据标签。对每份事实，用 [91 数据卡](./90-advisor/91-checklist.md) 分列 owner、authority、source、mechanism/path、scope/key、readers、writers、可重建性与保留责任。
+度量发行版的“完整度”时，不要给整份发行版套一个数据标签。对每份事实，用 [91 数据卡](./90-advisor/91-checklist.md) 分列 owner、authority、source、mechanism/path、scope/key、readers、writers、可重建性与保留责任。
 
 ## 数据归属
 
@@ -62,7 +62,7 @@ Preset 决定模型可见的工具；具体 consumer/provider 决定文件操作
 - 发行版 Host 工具如何限制其写入目标？
 - 项目导航是否需要 DSH Workspace？
 
-机制详情见 [sandbox](../../docs/subsystems/sandbox.md)、[working-directory](../../docs/subsystems/working-directory.md) 与 [17](./10-foundations/17-config-layers.md)。
+机制详情见 [sandbox](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/sandbox.md)、[working-directory](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/working-directory.md) 与 [17](./10-foundations/17-config-layers.md)。
 
 ## DSH Web 首用与发行方目录选择
 
@@ -84,7 +84,7 @@ DSH 配置 patch 顺序为 **ordered bundle patches → profile patch → home p
 
 安装默认走**应用内 Plugins 页**：`dsh web` 与 Desktop 用同一句话，因为该服务没有 profile 参数。CLI `dsh plugin --profile <p>` 是面绑定：可管理 web/headless/sdk 等显式 profile，**不能** `desktop`；面向 GUI 的 CLI 只作 web 自动化，必须标"仅 `dsh web`"。
 
-"装成功"有三个状态：pnpm exit 0 → dependency 写入 → 进 `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包在两条通道结果不同：CLI exit 0、roster 不变、只给 warning；应用内则以 `not-bundle` 失败并回滚 manifest。CLI 装完宿主不知道，必须重启；应用内装才可能返回 `restart-required`。
+“装成功”有三个状态：pnpm exit 0 → dependency 写入 → 进 `dsh.profile.bundles`；只有第三个让功能存在。无 `dsh.bundle.patch` 的包在两条通道结果不同：CLI exit 0、roster 不变、只给 warning；应用内则以 `not-bundle` 失败并回滚 manifest。CLI 装完宿主不知道，必须重启；应用内装才可能返回 `restart-required`。
 
 新建 Web 发行版 profile 时，若要 CLI 自动化，可从 shipped Web template 初始化，再加入发行版 bundle；GUI 用户不需要这一步。`dsh plugin` 不返回 Plugin Manager 的 `ChangeResult.application`；membership 变更后要重启 profile。
 

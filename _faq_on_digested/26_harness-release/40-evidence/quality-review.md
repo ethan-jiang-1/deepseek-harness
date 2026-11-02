@@ -12,7 +12,7 @@
 | 2 | 应用内 Plugins 页与 Desktop 通道未实测 | 本机没有 Desktop；应用内安装只在源码层读过 | 34–37 谈的跨面安装是 `C`，不是 `T` |
 | 3 | 启动竞态未执行 | [实验 01](./experiments/01-startup-race.md) 仍为 **U** | “发行版 onboarding 与 default Workspace 谁先”没有观测证据 |
 | 4 | 两个 profile 样本源码未 pin | `dsh-plugins-plus` 0.2.0 的 `gitHead` 指向别的 manifest；`better-session` 无 tag/无 `gitHead` | 这两家的机制只能当概念参考（`[R]`/`U`） |
-| 5 | 37 的 16 张阶段样本未重跑 | 每行一个 S/R 字母 + 一列“本仓库没做的那一步” | 沿用原册结论，本仓库不背书其运行行为 |
+| 5 | 37 的 16 张阶段样本未重跑 | 每行一个 S/R 字母 + 一列“本篇没验证的那一步” | 沿用原册结论，本篇不背书其运行行为 |
 | 6 | 浅克隆 | 2026-06 之前的 git 历史不可用 | 早期事件只能靠 Agent Note 与 docs 复述（`H` 不等于可 git 复核） |
 | 7 | 本机读数只代表那台机器 | 实验 04 的目录结构、`$DSH_HOME` 规模 | 不能当发行版默认值或容量规划依据 |
 
@@ -38,7 +38,7 @@
 | 2026-11-01 | 全树按 DSH 约定 review：CLI 语法、运行时来源计数、Host/Client 分层、未验证断言降级。 |
 | 2026-11-01 | 与 repo 逐条复核（结论见 §1）：修正 `dsh.compatibility` 伪字段、无 bundle 包的双通道行为、web flag 静默后果；拆清 34/35 的重复机制段。 |
 | 2026-11-01 | [50 生命周期](../50-lifecycle/00-index.md) 改为**插件作者的生命周期规范**：加最短路径五步与生命周期规矩总表；新增 [75 插件 README](../50-lifecycle/75-plugin-readme.md) 与其宿主读取字段图；目录由 `50-launch` 改名（launch 只覆盖启动，实际覆盖打包到卸载）；修正五处"可回滚"与一处已退役的"事务性重载"，并把初始化/特殊初始化/卸载三段的机制指回 10-foundations。 |
-| 2026-11-02 | 交付单位从“产品 profile / 插件即产品”改为 **Harness 发行版**，目录改名 `26_harness-release`；[10](../10-foundations/10-taxonomy.md) 由概念页改为**六轴定义页**（运行时、入口 profile、配置层、应用面、home 与数据、生命周期），每轴给 owner、DSH 机制、读回方式与缺轴症状；[50/10](../50-lifecycle/10-model.md) 的“三样东西”对齐六轴；全语料去掉 `产品型插件`／`产品 profile`／`产品 bundle`／`产品 project` 复合词，`产品` 只保留为对第三方样本的形容词（产品级、产品领域）。 |
+| 2026-11-02 | 交付单位从“产品 profile / 插件即产品”改为 **Harness 发行版**，目录改名 `26_harness-release`；[10](../10-foundations/10-taxonomy.md) 由概念页改为**六轴定义页**（运行时、profile、patch 层、app surface、Harness home 与数据、生命周期），每轴给 owner、DSH 机制、读回方式与缺轴症状；[50/10](../50-lifecycle/10-model.md) 的“三样东西”对齐六轴；全语料去掉 `产品型插件`／`产品 profile`／`产品 bundle`／`产品 project` 复合词；新增术语来源表，把 `Harness 发行版`／`发行方`／`六轴` 标为本目录自造，其余词沿用 repo 定义，`产品` 只保留为对第三方样本的形容词（产品级、产品领域）。 |
 
 ## 4. 样本去重
 

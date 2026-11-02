@@ -42,7 +42,7 @@ dsh --profile kanban --from-default-profile web --dump-default-config
 dsh plugin --profile kanban add <bundle-spec>
 ```
 
-自定义 Web profile 需要 ordered bundles `@deepseek-ai/dsh-base`、`@deepseek-ai/dsh-web-app` 和发行版 bundle。`dsh plugin` 安装后会把新 bundle 追加到 profile list；没有 `dsh.bundle.patch` 的 dependency 只作为普通 package，不贡献 profile layer。完整 package/patch 合同见 [app-boot profile reference](../../../packages/boot/app-boot/README.md#profiles) 与 [CLI profile reference](../../../apps/cli/reference/README.md#plugin-management)。
+自定义 Web profile 需要 ordered bundles `@deepseek-ai/dsh-base`、`@deepseek-ai/dsh-web-app` 和发行版 bundle。`dsh plugin` 安装后会把新 bundle 追加到 profile list；没有 `dsh.bundle.patch` 的 dependency 只作为普通 package，不贡献 profile layer。完整 package/patch 合同见 [app-boot profile reference](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md#profiles) 与 [CLI profile reference](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md#plugin-management)。
 
 profile 使用 DSH installation 与 profile node_modules 两个来源解析 bundle 名。若后加入的发行版 bundle 要覆盖前面的 row，应将它放在 bundle list 后方并使用相同 row id。
 

@@ -2,9 +2,9 @@
 
 ## 这一篇回答什么
 
-为什么“数据放哪”在 DSH 里必须拆成几个互不替代的家？每个家的权威是什么、边界在哪、混用会出什么错？
+为什么“数据放哪”在 DSH 里必须拆成几个互不替代的存储通道？每条通道的权威是什么、边界在哪、混用会出什么错？
 
-本篇说明 DSH 与 Client 提供的存储机制。Profile 组合和数据卡见 [10 概念层](./10-taxonomy.md)，发行版资产 owner 见 [15 四个空间](./15-four-spaces.md)，scope/key 见 [13](./13-scope-and-keys.md)。
+本篇说明 DSH 与 Client 提供的存储机制。Profile 组合和数据卡见 [10 六轴](./10-taxonomy.md)，发行版资产 owner 见 [15 四个空间](./15-four-spaces.md)，scope/key 见 [13](./13-scope-and-keys.md)。
 
 ## 一个事实只能有一个家
 
@@ -170,7 +170,7 @@ DSH 没有 `$DSH_HOME/plugins/<id>/` 的合同；本机或第三方 package 创�
 | 浏览器布局和当前选择 | Client storage | origin/device | 浏览器用户 |
 | 模板、提示词和默认 preset | bundle package | release | 发行方 |
 
-发行版不会自动改变这些机制的作用域；入口 profile 只是选择了哪些 package 与 patch 一起运行。
+发行版不会自动改变这些机制的作用域；profile 只是选择了哪些 package 与 patch 一起运行。
 
 ## 边界
 

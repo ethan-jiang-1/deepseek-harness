@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title>安装 → profile → 启动 → surface：谁拥有哪一层</title>
-  <desc>DSH 产品的五层：运行时来源、profile、launcher、surface、设置与状态；每层有不同 owner。</desc>
+  <desc>DSH 发行版的五层：运行时来源、profile、launcher、surface、设置与状态；每层有不同 owner。</desc>
 
   <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">安装 → profile → 启动 → surface：谁拥有哪一层</text>
@@ -17,7 +17,7 @@
   <text x="44" y="164" font-size="9.5" fill="#64748b">决定版本、签名、更新、是否需要 Node</text>
   <rect x="944" y="88" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
   <text x="960" y="116" font-size="10" font-weight="700" fill="#3730a3">owner</text>
-  <text x="960" y="140" font-size="9.5" fill="#334155">DSH / Desktop / 产品</text>
+  <text x="960" y="140" font-size="9.5" fill="#334155">DSH / Desktop / 发行方</text>
   <text x="960" y="160" font-size="9.5" fill="#64748b">谁提供运行时，谁管版本</text>
 
   <!-- layer 2 -->
@@ -28,7 +28,7 @@
   <text x="44" y="276" font-size="9.5" fill="#64748b">bundle patch → profile patch → home patch → CLI --patch</text>
   <rect x="944" y="200" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
   <text x="960" y="228" font-size="10" font-weight="700" fill="#3730a3">owner</text>
-  <text x="960" y="252" font-size="9.5" fill="#334155">用户 / 产品 / Desktop</text>
+  <text x="960" y="252" font-size="9.5" fill="#334155">用户 / 发行方 / Desktop</text>
   <text x="960" y="272" font-size="9.5" fill="#64748b">只能有一个写者</text>
 
   <!-- layer 3 -->
@@ -36,7 +36,7 @@
   <text x="44" y="340" font-size="13" font-weight="700" fill="#1e40af">③ launcher</text>
   <text x="44" y="366" font-size="10" fill="#334155">dsh --profile &lt;name&gt; / dsh web</text>
   <text x="330" y="366" font-size="10" fill="#334155">薄 bootstrap：设置环境，exec dsh</text>
-  <text x="44" y="388" font-size="9.5" fill="#64748b">不要第二 launcher；产品只提供 profile 与 bundle</text>
+  <text x="44" y="388" font-size="9.5" fill="#64748b">不要第二 launcher；发行方只提供 profile 与 bundle</text>
   <rect x="944" y="312" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
   <text x="960" y="340" font-size="10" font-weight="700" fill="#3730a3">owner</text>
   <text x="960" y="364" font-size="9.5" fill="#334155">DSH</text>
@@ -54,7 +54,7 @@
     <text x="44" y="500" font-size="9.5" fill="#64748b">每个面的参数、生命周期、产物、认证都不同</text>
   <rect x="944" y="424" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
   <text x="960" y="452" font-size="10" font-weight="700" fill="#3730a3">owner</text>
-  <text x="960" y="476" font-size="9.5" fill="#334155">surface / 产品</text>
+  <text x="960" y="476" font-size="9.5" fill="#334155">surface / 发行方</text>
   <text x="960" y="496" font-size="9.5" fill="#64748b">shipped vs product-owned</text>
 
   <!-- layer 5 -->
@@ -65,7 +65,7 @@
   <rect x="944" y="536" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
   <text x="960" y="564" font-size="10" font-weight="700" fill="#3730a3">owner</text>
   <text x="960" y="588" font-size="9.5" fill="#334155">按层分</text>
-  <text x="960" y="608" font-size="9.5" fill="#64748b">用户 / 产品 / 部署 / 浏览器</text>
+  <text x="960" y="608" font-size="9.5" fill="#64748b">用户 / 发行方 / 部署 / 浏览器</text>
 
   <!-- arrows -->
   <path d="M 474 180 L 474 196" stroke="#94a3b8" stroke-width="2"/>
@@ -77,6 +77,6 @@
   <path d="M 474 516 L 474 532" stroke="#94a3b8" stroke-width="2"/>
   <path d="M 468 524 L 474 534 L 480 524" stroke="#94a3b8" stroke-width="2" fill="none"/>
 
-  <text x="24" y="660" font-size="9.5" fill="#64748b">C：只有 named profile 是受支持启动；产品脚本可以包外层，但不能绕过 dsh。</text>
-  <text x="24" y="680" font-size="9.5" fill="#64748b">T：隔离 home 实验见 90；社区 profile 产品的安装样本见 34/36。</text>
+  <text x="24" y="660" font-size="9.5" fill="#64748b">C：只有 named profile 是受支持启动；发行版脚本可以包外层，但不能绕过 dsh。</text>
+  <text x="24" y="680" font-size="9.5" fill="#64748b">T：隔离 home 实验见 90；社区 profile 交付的安装样本见 34/36。</text>
 </svg>

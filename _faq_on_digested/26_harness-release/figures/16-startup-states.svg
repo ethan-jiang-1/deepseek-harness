@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 370" width="1200" height="370" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>DSH Web 首次 Workspace 流程与产品自建选择状态</title>
-  <desc>DSH Web Client 在 Workspace 与 Session 列表就绪且二者为空时请求初始化默认 Workspace，Host 在 Documents 下创建并登记该目录。产品自己的 configured、adopted 或待选择状态由产品实现。</desc>
+  <title>DSH Web 首次 Workspace 流程与发行版自建选择状态</title>
+  <desc>DSH Web Client 在 Workspace 与 Session 列表就绪且二者为空时请求初始化默认 Workspace，Host 在 Documents 下创建并登记该目录。发行版自己的 configured、adopted 或待选择状态由发行版实现。</desc>
 
   <rect width="1200" height="370" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">DSH Web 默认 Workspace 与产品目录状态分开处理</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">DSH Web 默认 Workspace 与发行版目录状态分开处理</text>
 
   <rect x="28" y="82" width="260" height="118" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
   <text x="48" y="109" font-size="12" font-weight="700" fill="#1e40af">1 · Client lists ready</text>
@@ -39,7 +39,7 @@
   <text x="954" y="182" font-size="9.5" fill="#64748b">当前 Session selection 在浏览器保存</text>
 
   <rect x="28" y="228" width="1144" height="104" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="48" y="256" font-size="12" font-weight="700" fill="#0f172a">产品自建目录选择（可选，非 DSH API）</text>
-  <text x="48" y="283" font-size="10" fill="#334155">部署配置 → 用户保存选择 → 产品默认 → 尚待用户选择；产品需声明优先级、失效处理、取消与恢复。</text>
+  <text x="48" y="256" font-size="12" font-weight="700" fill="#0f172a">发行版自建目录选择（可选，非 DSH API）</text>
+  <text x="48" y="283" font-size="10" fill="#334155">部署配置 → 用户保存选择 → 发行版默认 → 尚待用户选择；发行版需声明优先级、失效处理、取消与恢复。</text>
   <text x="48" y="307" font-size="10" fill="#334155">选择器使用 DSH Workspace picker 时，native 用 pick；browse 用 list/createDirectory。选完由 Workspace picker 调 workspace.create。</text>
 </svg>

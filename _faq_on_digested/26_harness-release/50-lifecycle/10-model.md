@@ -2,15 +2,15 @@
 
 ## 结论
 
-DSH 支持的 Node 应用启动只有一种：**named `dsh` profile**（[architecture](../../../docs/architecture.md#application-launch)）。发行版不发明第二个启动入口，只在这套模型上做六个决定；完整定义与判据见 [10 六轴](../10-foundations/10-taxonomy.md)。
+DSH 支持的 Node 应用启动只有一种：**named `dsh` profile**（[architecture](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#application-launch)）。发行版不发明第二个启动入口，只在这套模型上做六个决定；完整定义与判据见 [10 六轴](../10-foundations/10-taxonomy.md)。
 
 | 轴 | 本节的回答 | 展开在哪 |
 |---|---|---|
 | 运行时 | dsh 从哪来：npm 全局、Desktop 内置、Python wheel、源码树 | 本节「运行时」；[60](./60-packaging.md) |
-| 入口 profile | 用 shipped 模板、自定义具名 profile，还是 application-owned profile | 本节「入口 profile」；[20](./20-install-paths.md)、[40](./40-profile-integration.md) |
-| 配置层 | bundle patch → profile patch → home patch → CLI → env/args → client | [50](./50-settings.md) |
-| 应用面 | profile 选中哪个 surface，带哪些 client plugins | [30](./30-launch-surfaces.md)、[40](./40-profile-integration.md) |
-| home 与数据 | 哪些状态共享、哪些自建、卸载留什么 | [10-foundations](../10-foundations/11-five-homes.md)；[18](../10-foundations/18-install-upgrade.md) |
+| profile | 用 shipped 模板、自定义具名 profile，还是 application-owned profile | 本节「profile」；[20](./20-install-paths.md)、[40](./40-profile-integration.md) |
+| patch 层 | bundle patch → profile patch → home patch → CLI → env/args → client | [50](./50-settings.md) |
+| app surface | profile 选中哪个 surface，带哪些 client plugins | [30](./30-launch-surfaces.md)、[40](./40-profile-integration.md) |
+| Harness home 与数据 | 哪些状态共享、哪些自建、卸载留什么 | [10-foundations](../10-foundations/11-five-homes.md)；[18](../10-foundations/18-install-upgrade.md) |
 | 生命周期 | 装/更/卸的入口与数据清理责任 | 本节「所有权」；[20](./20-install-paths.md)–[70](./70-install-docs.md) |
 
 发行版**不**发布新的 DSH 启动可执行文件、不自建 launcher、不把 profile 当发布物。外层最多是一个薄 bootstrap：设置环境、确保 profile 存在、`exec dsh --profile <name>`。
@@ -23,9 +23,9 @@ DSH 支持的 Node 应用启动只有一种：**named `dsh` profile**（[archite
 
 容器/镜像属于部署包装，不是第五种运行时来源。
 
-## 入口 profile
+## profile
 
-三种控制态，控制权依次收紧（[app-boot README](../../../packages/boot/app-boot/README.md#profiles)）：
+三种控制态，控制权依次收紧（[app-boot README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md#profiles)）：
 
 | 控制态 | 谁拥有 | 发行方能改 | 用户能改 |
 |---|---|---|---|

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title>分发单位：包含什么、怎么装、谁更新、谁校验</title>
-  <desc>npm bundle、产品安装器、Desktop App、容器镜像、Python wheel、离线 tarball、目录索引七种分发单位的安装、更新与签名责任。</desc>
+  <desc>npm bundle、发行版安装器、Desktop App、容器镜像、Python wheel、离线 tarball、目录索引七种分发单位的安装、更新与签名责任。</desc>
 
   <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">分发单位：包含什么、怎么装、谁更新、谁校验</text>
@@ -28,12 +28,12 @@
     <text x="990" y="148" font-size="9.5" fill="#334155">checksum；provenance 可选</text>
 
     <rect x="24" y="192" width="1152" height="64" rx="7" fill="#ffffff" stroke="#e2e8f0"/>
-    <text x="40" y="220" font-size="10" font-weight="700" fill="#1e40af">产品安装器</text>
+    <text x="40" y="220" font-size="10" font-weight="700" fill="#1e40af">发行版安装器</text>
     <text x="40" y="238" font-size="9.5" fill="#64748b">首启/升级</text>
     <text x="240" y="220" font-size="9.5" fill="#334155">脚本 + profile bootstrap + 固定 bundle</text>
     <text x="540" y="220" font-size="9.5" fill="#334155">创建 profile + add</text>
     <text x="540" y="238" font-size="9.5" fill="#64748b">幂等；保留数据</text>
-    <text x="790" y="220" font-size="9.5" fill="#334155">产品 updater</text>
+    <text x="790" y="220" font-size="9.5" fill="#334155">发行版 updater</text>
     <text x="990" y="220" font-size="9.5" fill="#334155">checksum/签名</text>
 
     <rect x="24" y="264" width="1152" height="64" rx="7" fill="#ffffff" stroke="#e2e8f0"/>

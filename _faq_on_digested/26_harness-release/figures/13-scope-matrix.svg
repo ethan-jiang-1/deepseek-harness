@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="1200" height="360" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>Session、目录、Workspace 与产品项目身份</title>
+  <title>Session、目录、Workspace 与发行版项目身份</title>
   <desc>SessionId、初始 cwd、WorkspaceId、发行版 project ID、profile 和 home 分别标识不同对象。WorkspaceId 引用 DSH registration；cwd 表示初始工作目录。</desc>
   <rect width="1200" height="360" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">先问“这个 key 标识什么”</text>
@@ -22,7 +22,7 @@
 
   <rect x="30" y="196" width="555" height="92" rx="8" fill="#fdf2f8" stroke="#f9a8d4"/>
   <text x="50" y="222" font-size="12" font-weight="700" fill="#9d174d">发行版 project ID</text>
-  <text x="50" y="248" font-size="10.5" fill="#334155">由产品定义；只有产品需要跨目录移动、复制或 Workspace</text>
+  <text x="50" y="248" font-size="10.5" fill="#334155">由发行版定义；只有发行版需要跨目录移动、复制或 Workspace</text>
   <text x="50" y="269" font-size="9.5" fill="#64748b">registration 生命周期追踪同一业务项目时，才需要单独保存。</text>
 
   <rect x="615" y="196" width="555" height="92" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>

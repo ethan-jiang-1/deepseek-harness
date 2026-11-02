@@ -1,6 +1,6 @@
 # Reference 26 · DSH 出处与研究边界
 
-当前 DSH 行为以本 checkout 的 `docs/`、package README、公开类型与实现为准。部分 home 文件清单和本机观测记录来自原研究样本，只说明该样本，不是发行版默认值。
+当前 DSH 行为以 DSH 仓库的 `docs/`、package README、公开类型与实现为准。部分 home 文件清单和本机观测记录来自原研究样本，只说明该样本，不是发行版默认值。
 
 ## 数据 owner 与 DSH mechanism
 
@@ -35,23 +35,23 @@ Harness 发行版是运行组合，不是数据隔离单位。作者逐块填写
 
 | # | 机制 | 主要来源 |
 |---|---|---|
-| 1 | Profile 按 ordered bundle patches、profile patch、home patch、CLI overlays 合成；row config 整体替换 | [CLI reference](../../../apps/cli/reference/README.md#profile-boot)、`vendor/include/src/index.ts` |
-| 2 | Shipped Web template 与 custom profile 默认 bundle list | `packages/boot/app-boot/src/profile.ts`、[CLI reference](../../../apps/cli/reference/README.md#profile-boot) |
-| 3 | CLI `dsh plugin` 更新 profile package/bundle list 并返回退出状态 | [CLI plugin management](../../../apps/cli/reference/README.md#plugin-management)、`apps/cli/src/plugin.ts` |
+| 1 | Profile 按 ordered bundle patches、profile patch、home patch、CLI overlays 合成；row config 整体替换 | [CLI reference](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md#profile-boot)、`vendor/include/src/index.ts` |
+| 2 | Shipped Web template 与 custom profile 默认 bundle list | `packages/boot/app-boot/src/profile.ts`、[CLI reference](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md#profile-boot) |
+| 3 | CLI `dsh plugin` 更新 profile package/bundle list 并返回退出状态 | [CLI plugin management](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md#plugin-management)、`apps/cli/src/plugin.ts` |
 | 4 | Session create 可传 `workspaceId` 或 `cwd`；Workspace membership 按初始 header cwd 验证 | `packages/api/session-controller/src/types.ts`、`src/commands.ts`、`packages/workspace/workspace/src/entity.ts` |
-| 5 | Workspace 是 Host-side capability，不提供模型文件工具或拥有目录 | [Workspace subsystem](../../../docs/subsystems/workspace.md)、[workspace README](../../../packages/workspace/workspace/README.md) |
+| 5 | Workspace 是 Host-side capability，不提供模型文件工具或拥有目录 | [Workspace subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/workspace.md)、[workspace README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workspace/workspace/README.md) |
 | 6 | DSH Web first-use eligibility 与 Documents default path | `packages/client/ui-workspace/src/client/navigation.ts`、`packages/api/workspace-controller/src/default-directory.ts`、`packages/workspace/workspace/src/index.ts` |
-| 7 | Native picker `pick` 与 browse picker `list/createDirectory` 是不同 capabilities | `packages/api/workspace-controller/src/directory-picker.ts`、[adaptive picker README](../../../packages/host/directory-picker-auto/README.md) |
-| 8 | Sandbox policy 每次调用解析；`workspace-write` 还允许平台临时路径 | [Sandbox subsystem](../../../docs/subsystems/sandbox.md)、`packages/sandbox/sandbox/src/roots.ts` |
-| 9 | `working_directory` 不改变 Session 初始 cwd 或 sandbox roots | [Working Directory subsystem](../../../docs/subsystems/working-directory.md) |
-| 10 | File sandbox fence 约束接入该 backend 的写操作；Host plugin code 不自动进入 Session sandbox | [Filesystem subsystem](../../../docs/subsystems/filesystem.md)、[`dsh-fs-sandbox`](../../../packages/fs/fs-sandbox/README.md) |
-| 11 | `Config.volatile()` Settings 写当前 profile；home patch 与 CLI overlays 另有优先级 | [`dsh-settings`](../../../packages/settings/settings/README.md)、[`dsh-config-editor`](../../../packages/boot/config-editor/README.md) |
-| 12 | `CredentialRef.resolve` 与 `CredentialKey` records API 是不同接口 | [Credentials subsystem](../../../docs/subsystems/credentials.md)、`packages/credentials/credentials/src/types.ts` |
-| 13 | Storage domain 是静态 package schema；JSON per-record key 使用安全字符 | [Storage subsystem](../../../docs/subsystems/storage.md)、`packages/storage/storage-json/src/per-record-unit.ts` |
-| 14 | Workspace deletion 只移除 registration；Session history 和用户目录保留 | [Workspace README](../../../packages/workspace/workspace/README.md)、`packages/workspace/workspace/src/index.ts` |
-| 15 | 附件本地 backend 没有自动 GC；`present` 只记录 path | [Attachment](../../../docs/subsystems/attachment.md)、[Deliverables](../../../docs/subsystems/deliverables.md) |
-| 16 | `$DSH_HOME` 外还可能有 `DSH_AGENTS_HOME`、browser origin 和 OS state | [home paths](../../../packages/util/home-paths/README.md)、[92 隔离矩阵](../90-advisor/92-native-reference-architectures.md#profile-数据隔离) |
-| 17 | Session event vocabulary 可在类型层扩展；独立 package 还需满足 released reader/format compatibility | [Session subsystem](../../../docs/subsystems/session.md)、[session format status](../../../docs/session-format-status.md)、`packages/session/session-persistence/src/storage-contract.ts` |
+| 7 | Native picker `pick` 与 browse picker `list/createDirectory` 是不同 capabilities | `packages/api/workspace-controller/src/directory-picker.ts`、[adaptive picker README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/host/directory-picker-auto/README.md) |
+| 8 | Sandbox policy 每次调用解析；`workspace-write` 还允许平台临时路径 | [Sandbox subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/sandbox.md)、`packages/sandbox/sandbox/src/roots.ts` |
+| 9 | `working_directory` 不改变 Session 初始 cwd 或 sandbox roots | [Working Directory subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/working-directory.md) |
+| 10 | File sandbox fence 约束接入该 backend 的写操作；Host plugin code 不自动进入 Session sandbox | [Filesystem subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/filesystem.md)、[`dsh-fs-sandbox`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/fs-sandbox/README.md) |
+| 11 | `Config.volatile()` Settings 写当前 profile；home patch 与 CLI overlays 另有优先级 | [`dsh-settings`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/settings/settings/README.md)、[`dsh-config-editor`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/config-editor/README.md) |
+| 12 | `CredentialRef.resolve` 与 `CredentialKey` records API 是不同接口 | [Credentials subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/credentials.md)、`packages/credentials/credentials/src/types.ts` |
+| 13 | Storage domain 是静态 package schema；JSON per-record key 使用安全字符 | [Storage subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/storage.md)、`packages/storage/storage-json/src/per-record-unit.ts` |
+| 14 | Workspace deletion 只移除 registration；Session history 和用户目录保留 | [Workspace README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workspace/workspace/README.md)、`packages/workspace/workspace/src/index.ts` |
+| 15 | 附件本地 backend 没有自动 GC；`present` 只记录 path | [Attachment](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/attachment.md)、[Deliverables](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/deliverables.md) |
+| 16 | `$DSH_HOME` 外还可能有 `DSH_AGENTS_HOME`、browser origin 和 OS state | [home paths](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/util/home-paths/README.md)、[92 隔离矩阵](../90-advisor/92-native-reference-architectures.md#profile-数据隔离) |
+| 17 | Session event vocabulary 可在类型层扩展；独立 package 还需满足 released reader/format compatibility | [Session subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md)、[session format status](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/session-format-status.md)、`packages/session/session-persistence/src/storage-contract.ts` |
 
 ## 运行命令的观测
 
@@ -61,7 +61,7 @@ Harness 发行版是运行组合，不是数据隔离单位。作者逐块填写
 
 ## 外部研究
 
-第三方 package、插件与 DSH 外部生态样本见 [research-external](./research-external.md)、[31](../30-external/31-external-community-patterns.md)、[32](../30-external/32-external-ecosystem.md)、[33](../30-external/33-external-plugin-patterns.md)、[34](../30-external/34-profile-product-forms.md)、[35](../30-external/35-profile-assembly-ownership.md) 和 [36](../30-external/36-profile-evidence-ledger.md)；生命周期阶段判据见 [37](../30-external/37-lifecycle-stages.md)；安装/启动/设置实验见 [50/90](../50-lifecycle/90-evidence.md)。S/R/U 证据不建立 DSH API、兼容性或安装行为。
+第三方 package、插件与 DSH 外部生态样本见 [research-external](./research-external.md)、[31](../30-external/31-external-community-patterns.md)、[32](../30-external/32-external-ecosystem.md)、[33](../30-external/33-external-plugin-patterns.md)、[34](../30-external/34-profile-delivery-forms.md)、[35](../30-external/35-profile-assembly-ownership.md) 和 [36](../30-external/36-profile-evidence-ledger.md)；生命周期阶段判据见 [37](../30-external/37-lifecycle-stages.md)；安装/启动/设置实验见 [50/90](../50-lifecycle/90-evidence.md)。S/R/U 证据不建立 DSH API、兼容性或安装行为。
 
 ## 边界
 

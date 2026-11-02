@@ -13,7 +13,7 @@
 | **Session `header.cwd`** | Session header | Session 创建时记录的原始工作目录；默认作为 sandbox policy 的 workspace root |
 | **有效 working directory** | Session working-directory service | 当前 Session 后续相对文件操作和新进程的工作目录；可以改变 |
 
-只需指定 Session 工作目录时，传绝对 `cwd` 即可。若还要把 Session 放入 DSH Workspace 分组，传已有 registration 的 `workspaceId`；Host 从中取得 canonical path，并将 Session attach 到 Workspace。两者不能同时提供。Session header 保存绝对初始 cwd。`WorkspaceId` 是 registration ID，不是 path、权限 token 或发行版项目 ID。改变有效 working directory 不会更改原始 Session header cwd、Workspace membership 或 sandbox writable roots。[Working Directory](../../../docs/subsystems/working-directory.md) 说明运行语义；[Workspace](../../../docs/subsystems/workspace.md) 说明登记语义。
+只需指定 Session 工作目录时，传绝对 `cwd` 即可。若还要把 Session 放入 DSH Workspace 分组，传已有 registration 的 `workspaceId`；Host 从中取得 canonical path，并将 Session attach 到 Workspace。两者不能同时提供。Session header 保存绝对初始 cwd。`WorkspaceId` 是 registration ID，不是 path、权限 token 或发行版项目 ID。改变有效 working directory 不会更改原始 Session header cwd、Workspace membership 或 sandbox writable roots。[Working Directory](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/working-directory.md) 说明运行语义；[Workspace](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/workspace.md) 说明登记语义。
 
 ## DSH Web 首用流程
 

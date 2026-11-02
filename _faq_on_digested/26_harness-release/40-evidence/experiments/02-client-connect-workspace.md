@@ -19,7 +19,7 @@ grep -n "connectWorkspace" packages/client/ui-workspace/src/client/navigation.ts
 
 ## 实际
 
-- `UiWorkspaceService extends Service`，构造函数 `super(ctx, 'uiWorkspace')`（[navigation.ts](../../../../packages/client/ui-workspace/src/client/navigation.ts) 的 `UiWorkspaceService` 符号）。
+- `UiWorkspaceService extends Service`，构造函数 `super(ctx, 'uiWorkspace')`（[navigation.ts](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-workspace/src/client/navigation.ts) 的 `UiWorkspaceService` 符号）。
 - `connectWorkspace(workspaceId, options?)` 是实现 `UiWorkspace` 接口的公开方法；内部走 `connectBlank` → `createNamed({ workspaceId, ... })`。
 - 客户端插件通过 `ctx.get('uiWorkspace')` 取服务（服务名即注册名），不需要额外导出。
 
