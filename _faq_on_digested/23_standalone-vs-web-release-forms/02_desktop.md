@@ -2,7 +2,7 @@
 
 源码核验基线：工作树 `8d8940e6a3`（产品树 `687f282e86` / `dsh-v0.2.1-rc.2`）；供版读数与安装包链接为本机 2026-10-25 实测。
 
-## 版本与供版（可复现）
+## 版本与 release（可复现）
 
 ```sh
 curl -s https://download.deepseek.com/dsh-desk/feeds/mac-arm64/nightly-mac.yml | head -3

@@ -14,7 +14,7 @@ Workspace 在源码里到底是一个什么对象？它凭什么“记得”会�
 | `path` | 创建时对入参做 `fs.realpath` 的结果：尾斜杠、`..`、符号链接全部解开；此后永不改写，哪怕目录消失 |
 | `title` | 显示名，默认取路径最后一段；注册表允许重名（不同目录可以有同一个 basename），但重命名 API 会拒绝同名；改标题不动路径 |
 | `createdAt` / `updatedAt` | ISO-8601；创建算一次变更，之后每次成功写入都刷新 |
-| `sessionIds` | **有序账户**：成员资格的唯一真相；数组顺序是手动排序模式的基础顺序 |
+| `sessionIds` | **有序账户（ordered account）**：成员资格的唯一真相；数组顺序是手动排序模式的基础顺序 |
 
 四个动作分别是 `setTitle`、`attachSession`、`insertSessionBefore`、`detachSession`，外加一个不写盘的 `status()`（实时看目录还在不在，返回 `'ok'` 或 `'missing-dir'`）。
 
