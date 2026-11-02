@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 820" width="1200" height="820" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>DSH 原生数据 landscape：12 类数据场景 × 原生家</title>
-  <desc>会话历史、项目知识、个人记忆、任务、设置、秘密、交付物、附件、索引、协作、账号、客户端状态分别落在哪些家；空白处就是 DSH 的缺口。</desc>
+  <title>DSH 原生数据 landscape：12 类数据场景 × 原生存储（storage channel）</title>
+  <desc>会话历史、项目知识、个人记忆、任务、设置、秘密、交付物、附件、索引、协作、账号、客户端状态分别落在哪些通道；空白处就是 DSH 的缺口。</desc>
 
   <rect width="1200" height="820" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">DSH 原生数据 landscape：12 类数据场景 × 原生家</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">DSH 原生数据 landscape：12 类数据场景 × 原生存储（storage channel）</text>
   <text x="600" y="58" text-anchor="middle" fill="#64748b">N0 核心 / N1 随包插件 / N2 experimental / GAP；绿色=历史，黄色=状态，紫色=客户端，红色=缺口</text>
 
   <!-- header -->

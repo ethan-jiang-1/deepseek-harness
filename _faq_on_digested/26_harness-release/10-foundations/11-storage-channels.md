@@ -1,12 +1,12 @@
-# 11 · 五个家与一个只读层：内容、历史、状态、派生、客户端
+# 11 · 五类存储（storage channel）与一个只读层：内容、历史、状态、派生、客户端
 
 ## 这一篇回答什么
 
-为什么“数据放哪”在 DSH 里必须拆成几个互不替代的存储通道？每条通道的权威是什么、边界在哪、混用会出什么错？
+为什么“数据放哪”在 DSH 里必须拆成几条互不替代的存储通道（storage channel）？每条通道的权威是什么、边界在哪、混用会出什么错？
 
-本篇说明 DSH 与 Client 提供的存储机制。Profile 组合和数据卡见 [10 六轴](./10-taxonomy.md)，发行版资产 owner 见 [15 四个空间](./15-four-spaces.md)，scope/key 见 [13](./13-scope-and-keys.md)。
+本篇说明 DSH 与 Client 提供的存储机制。profile 组合和数据卡见 [10 六轴](./10-taxonomy.md)，发行版资产 owner 见 [15 资产 owner](./15-asset-owners.md)，scope/key 见 [13](./13-scope-and-keys.md)。
 
-## 一个事实只能有一个家
+## 一个事实只能有一个权威
 
 DSH 的持久化不是“一个数据库”，而是几条互不替代的通道：
 
@@ -20,28 +20,28 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 
 外加一个**只读层**：随包发布、升级即替换的提示词、技能、preset、工具定义。它不是用户数据，但作者经常把它和“数据”混在一起。
 
-**“一个事实一个家”** 是贯穿整套设计的规则：同一份事实只能有一个权威。其他家如果要提到它，只能存**引用**（路径、id、哈希、附件引用、事件 seq），不能存副本。否则用户改一处、你抄一处，两边必然漂移。
+**“一个事实一个权威”** 是贯穿整套设计的规则：同一份事实只能有一个权威。其他通道如果要提到它，只能存**引用**（路径、id、哈希、附件引用、事件 seq），不能存副本。否则用户改一处、你抄一处，两边必然漂移。
 
-![五个家与一个只读层](../figures/11-five-homes.svg)
+![五类存储与一个只读层](../figures/11-storage-channels.svg)
 
-| 家 | 权威 | 典型位置 | 作用域 | 寿命 | 谁看得见 |
+| 类别 | 权威 | 典型位置（英文机制） | 作用域 | 寿命 | 谁看得见 |
 |---|---|---|---|---|---|
-| **内容** | 用户 | 工作区目录、项目内约定目录（如 `.agents/`，E1 约定）、用户 `AGENTS.md`/`skills/` | project / 用户全局 | 跟目录/仓库 | 用户；模型经工具读 |
-| **历史** | 会话 | `$DSH_HOME/sessions/…` | session | 跟会话；日志不删 | 模型（surface）、Host（log-only） |
-| **状态** | 插件 / 用户配置 / 凭据 provider | `$DSH_HOME/storages`、`profiles/`、`.credentials.yaml` | project 键 / profile / home | 跟 home 或 profile | 插件；用户经设置页 |
-| **派生** | 无 | 投影缓存、`session_projcache`、索引 | 跟源 | 可重建 | 间接 |
-| **客户端** | 浏览器 / 设备 | `localStorage`、`userData/` | origin / 设备 | 跟浏览器配置 | 用户/浏览器；Host 看不到 |
-| **只读层** | npm 包 | profile 的 `node_modules` | 安装 | 升级替换 | 运行时读取；不写 |
+| **内容**（files） | 用户 | 工作区目录、项目内约定目录（如 `.agents/`，E1 约定）、用户 `AGENTS.md`/`skills/` | project / 用户全局 | 跟目录/仓库 | 用户；模型经工具读 |
+| **历史**（session log） | 会话 | `$DSH_HOME/sessions/…` | session | 跟会话；日志不删 | 模型（surface）、Host（log-only） |
+| **状态**（storage domain / config / credentials） | 插件 / 用户配置 / 凭据 provider | `$DSH_HOME/storages`、`profiles/`、`.credentials.yaml` | project 键 / profile / home | 跟 home 或 profile | 插件；用户经设置页 |
+| **派生**（derived） | 无 | 投影缓存、`session_projcache`、索引 | 跟源 | 可重建 | 间接 |
+| **客户端**（client state） | 浏览器 / 设备 | `localStorage`、`userData/` | origin / 设备 | 跟浏览器配置 | 用户/浏览器；Host 看不到 |
+| **只读层**（read-only layer） | npm 包 | profile 的 `node_modules` | 安装 | 升级替换 | 运行时读取；不写 |
 
 **原生优先**是 API 选择建议，不要求每个 package 都直接依赖某个随附 bundle。DSH 核心 API 与随附 package 的组成见 [21](../20-native/21-native-data-landscape.md)。发行版 bundle 可以声明实现和组合所需的 runtime package dependencies；profile 需要启用一个 package 的 Cordis rows 时，须将其 bundle 纳入组合。
 
-三个边界不是平等的家，但作者必须知道：
+三个边界不属于上面五条通道，但作者必须知道：
 
 - **外部服务**：MCP/HTTP/DB/对象存储；权威在外部，DSH 只存引用/配置。
 - **OS 临时**：spill、workspace-changes 快照、上传暂存；进程/会话级，可能被系统清理。
 - **发行版自建目录**：例如 `$DSH_HOME/<plugin>/`；没有通用 DSH 插件数据根合同，目录 owner 负责迁移、配额、备份、卸载和清理。
 
-## 内容家：用户拥有的字节
+## 内容（files）：用户拥有的字节
 
 **权威**：工作区目录里的文件。DSH 不拥有它们，也不替用户保管。
 
@@ -53,7 +53,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 
 插件直接调用 `ctx.fs` 时，不要假设自己受模型工具使用的 sandbox policy 约束。沙箱策略由接入该策略的能力调用点解析并传给文件系统；插件自己决定把什么路径交给 `ctx.fs`，部署也可能没有挂载 `dsh-fs-sandbox`。插件必须自行限制写入目标，不要以 Workspace registration 代替授权检查。
 
-## 历史家：会话日志
+## 历史（session log）：会话日志
 
 **权威**：`$DSH_HOME/sessions/--<normalized-cwd>--/<escaped-id>/` 里的会话日志，一个会话一份，追加写。
 
@@ -64,7 +64,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 - 会话日志**没有删除 API**：它会一直累积在 root 下，直到外部手动清理。外部插件有直接物理删除日志目录或改 header 的例子；这些不是推荐或受支持的 Session lifecycle API。
 - 客户端/模型看到的是**投影**：从日志折叠出来的当前值（标题、统计、todo、sandbox mode 等）。投影是可重建的，不是权威。
 
-插件什么时候用历史家？当事实**必须被模型看见**，或者**必须能回放/审计**时。对于 event extension：
+插件什么时候用历史通道？当事实**必须被模型看见**，或者**必须能回放/审计**时。对于 event extension：
 
 1. **不要把 TypeScript declaration merging 当作 released event compatibility mechanism。** `SessionEventMap` 在类型层可扩展，但 independently released plugin event 若未被 DSH reader、persistence validator 和 compatibility flow 识别，会造成旧 reader 拒绝重开 Session。新增持久 event 应与 DSH session-format owner 协调 writer/reader/catalog/migration；不能把声明合并本身描述为第三方保证。
 2. **模型可见输入应优先使用已有的消息通道。** `agent.inject()` 会记录带来源的 `user/message`；模型可见事实仍必须能从日志重建。
@@ -72,7 +72,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 
 插件私有的 Host 账本不要塞进会话日志：它会增加历史负担，并把内部 schema 变为 Session compatibility 责任。
 
-## 状态家：宿主域、配置、凭据
+## 状态（storage domain / config / credentials）
 
 **权威**：插件自己声明的持久记录，或用户可编辑的配置，或外部凭据源。
 
@@ -80,11 +80,11 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 - Config / Settings：插件 Config 中标记 `.volatile()` 的字段进入 Settings 表单，写回**当前 profile 的 `cordis.patch.yml`**；它是配置，不是跨 profile database。
 - 凭据分为两个 key space：`CredentialRef` 标识环境变量名，由 provider 的 `resolve(ref)` 按其优先级解析值；`CredentialKey` 标识插件拥有的 credential record，通过 `readRecord` / `modifyRecord` / `deleteRecord` 操作。它们不是可互换的“secret reference”。
 
-细节、失败方式与迁移责任在 [12](./12-state-homes.md)。
+细节、失败方式与迁移责任在 [12](./12-state-storage.md)。
 
-## 派生家：可以丢的东西
+## 派生（derived）：可以丢的东西
 
-**权威**：没有。它从上面几个家算出来，丢了能重算。
+**权威**：没有。它从上面几条通道算出来，丢了能重算。
 
 - 会话投影（`ctx.sessionProjections`）：纯同步 fold，从日志推导，带 `stateSchema`；持久缓存（`session_projcache`）只是为了加速。
 - 跨会话读取（`ctx.sessionQuery`）：live-preferred 的列表、精确读、过滤、关系追踪；挂 SQLite provider 并把它配成 `openAt: first-search|startup` 后才有全文检索（shipped base 默认 `openAt: never`，只挂载不搜索）。它的索引是派生，不是权威。
@@ -93,11 +93,11 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 
 判断方法：**删掉它，用户会丢东西吗？** 会 → 它不是派生；不会 → 放派生层，并写清楚重建路径。
 
-## 客户端家：浏览器/设备本地状态
+## 客户端（client state）：浏览器/设备本地状态
 
-这是五个家里最容易漏掉的一个。Web 客户端插件可以把 UI 状态写进 `localStorage`，桌面端则可能写 `userData/` 下的文件。
+这是五条通道里最容易漏掉的一个。Web 客户端插件可以把 UI 状态写进 `localStorage`，桌面端则可能写 `userData/` 下的文件。
 
-- 客户端家要拆两层：**纯 UI 状态**（布局、快捷键、折叠、最近选择）→ `localStorage`/`userData`，可丢弃；**session-derived 客户端事实**（标题、模型、preset、subagent）→ `SessionProjectionMap`，必须能从日志重建。把后者存 localStorage 会造第二个权威。**C/H**
+- 客户端通道要拆两层：**纯 UI 状态**（布局、快捷键、折叠、最近选择）→ `localStorage`/`userData`，可丢弃；**session-derived 客户端事实**（标题、模型、preset、subagent）→ `SessionProjectionMap`，必须能从日志重建。把后者存 localStorage 会造第二个权威。**C/H**
 - Web 的 `localStorage` 按**源**（origin）隔离：`127.0.0.1:3080` 和 `127.0.0.1:3081` 是两份；换端口、换浏览器、清站点数据就没了。
 - 它**不在 `$DSH_HOME` 里**，Host 进程看不到，模型更看不到；多开浏览器/多设备不会共享。
 - 同一个源上跑两个不同的 `DSH_HOME`/Host，会共用同一份 `localStorage`；不要把“用户身份”或“项目身份”只存在这里。
@@ -110,7 +110,7 @@ DSH 的持久化不是“一个数据库”，而是几条互不替代的通道�
 提示词、技能、preset、工具定义、图标、模板，都是包的一部分：运行时只读，版本化交给 npm，升级时整体替换。
 
 - 不要写进包目录（包括 `import.meta.url` 旁边的 `data/`）：安装/升级会替换，`files` 会裁剪，link 安装又直接指向 checkout。
-- 需要用户可编辑的“知识”，发布成技能或让用户写 `AGENTS.md`；需要插件可写的状态，走状态家。
+- 需要用户可编辑的“知识”，发布成技能或让用户写 `AGENTS.md`；需要插件可写的状态，走状态存储（storage domain / config / credentials）。
 - 包目录里的 `node_modules` 是安装位置，不是用户数据目录。
 
 ## 为什么 Workspace 不是“存储引擎”

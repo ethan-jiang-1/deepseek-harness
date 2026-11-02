@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title>安装 → profile → 启动 → surface：谁拥有哪一层</title>
-  <desc>DSH 发行版的五层：运行时来源、profile、launcher、surface、设置与状态；每层有不同 owner。</desc>
+  <desc>一份 Harness 发行版的五层：运行时来源、profile、launcher、surface、设置与状态；每层有不同 owner。</desc>
 
   <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">安装 → profile → 启动 → surface：谁拥有哪一层</text>

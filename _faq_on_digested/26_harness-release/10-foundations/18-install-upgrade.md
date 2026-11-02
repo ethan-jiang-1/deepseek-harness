@@ -1,8 +1,8 @@
-# 18 · Profile bundles：安装、更新与数据退出
+# 18 · profile bundles：安装、更新与数据退出
 
 ## 这一篇回答什么
 
-DSH profile 决定一个应用组合由哪些 bundles 和 patches 构成。Plugin package 的安装、profile layer 的选择、当前进程是否重组以及发行版数据清理是不同操作；本篇说明它们各自的 owner。
+DSH profile 决定一个应用组合由哪些 bundles 和 patches 构成。plugin package 的安装、profile layer 的选择、当前进程是否重组以及发行版数据清理是不同操作；本篇说明它们各自的 owner。
 
 ## 安装通道与 profile
 
@@ -60,7 +60,7 @@ CLI `dsh plugin` 运行 pnpm 并更新磁盘上的 dependency/bundle list；它�
 
 应用内安装由宿主自己执行，可能返回 `restart-required`（例如 `no-hmr`）；只有该接口明确 `applied` 时才是 HMR 生效。不要把 CLI 的 exit 0 或 Plugin Manager 的返回值套用到另一条路径。
 
-Profile/home patch 的生效方式取决于已启动 composition 是否配置 patch reload。Config editor 对 profile patch 的写入还受高优先级 home patch 和 CLI overlay 影响；详见 [17](./17-config-layers.md)。
+profile/home patch 的生效方式取决于已启动 composition 是否配置 patch reload。Config editor 对 profile patch 的写入还受高优先级 home patch 和 CLI overlay 影响；详见 [17](./17-config-layers.md)。
 
 ## 兼容性与跳过 bundle
 
@@ -74,11 +74,11 @@ bundle 作者应在 `package.json` 声明准确的 `engines.dsh` 或 DSH peer ra
 
 | 类别 | Owner | 作者要处理什么 |
 |---|---|---|
-| Bundle composition | DSH profile / package manager | 检查依赖版本、bundle 顺序和当前进程生效边界 |
+| bundle composition | DSH profile / package manager | 检查依赖版本、bundle 顺序和当前进程生效边界 |
 | 用户 patch | 用户与 profile | 保持或迁移 row override；记住 patch 对整份 `config` 替换 |
 | 发行版数据 | 发行方或用户 | 提供 schema version、迁移、备份、失败恢复与保留策略 |
 
-Bundle 更新不应静默重写用户的 profile patch。发行版数据不兼容时应迁移或报告可恢复错误，不要静默建一个空数据根冒充成功。
+bundle 更新不应静默重写用户的 profile patch。发行版数据不兼容时应迁移或报告可恢复错误，不要静默建一个空数据根冒充成功。
 
 外部样本的更新补偿、四层装配状态与恢复失败语义见 [35](../30-external/35-profile-assembly-ownership.md)；那是对照，不是 DSH 合同。
 
@@ -98,5 +98,5 @@ Bundle 更新不应静默重写用户的 profile patch。发行版数据不兼�
 ## 边界
 
 - `dataRoot` 是发行版可定义的 Config 字段，不是 DSH 通用服务。
-- Profile、Workspace、Session 和发行版数据有独立 owner 与生命周期。
+- profile、Workspace、Session 和发行版数据有独立 owner 与生命周期。
 - CLI package management 与 Plugin Manager 的返回值、HMR 和 restart 语义不同。

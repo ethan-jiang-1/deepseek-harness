@@ -30,14 +30,14 @@
 |---|---|---|
 | Q0：发行版与数据卡如何区分？ | 六轴定 owner；数据卡逐项记录事实属性 | [10 六轴](./10-foundations/10-taxonomy.md) |
 | Q1：交付单位是什么？ | 一份由选定 profile 启动、六轴各有 owner 的 Harness 发行版 | [FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)、[50](./50-lifecycle/00-index.md)、[90](./90-advisor/00-index.md) |
-| Q2：资产放哪里？ | 发布包、用户目录、插件状态、设置与 Session history 由不同 owner 管理 | [15](./10-foundations/15-four-spaces.md) |
+| Q2：资产放哪里？ | 发布包、用户目录、插件状态、设置与 Session history 由不同 owner 管理 | [15](./10-foundations/15-asset-owners.md) |
 | Q3：目录怎样选择？ | DSH Web 有 Workspace 首用与 picker；发行方 root resolver 是自建机制 | [16](./10-foundations/16-startup-resolution.md) |
 | Q4：配置如何生效？ | Patch 链按层覆盖完整 entry config；链外设置在更高层 | [17](./10-foundations/17-config-layers.md) |
-| Q5–Q8：作用域、存储、凭据与产物 | 按数据 owner 与 API 分别选择 | [11–14](./10-foundations/11-five-homes.md) |
+| Q5–Q8：作用域、存储、凭据与产物 | 按数据 owner 与 API 分别选择 | [11–14](./10-foundations/11-storage-channels.md) |
 | Q9–Q10：设计来源与 DSH 外部生态 | DSH 当前行为以原生证据为准；外部材料仅供参考 | [21–22](./20-native/21-native-data-landscape.md)、[31–37](./30-external/31-external-community-patterns.md) |
 | Q11–Q12：安装与施工检查 | CLI 与 Plugin Manager 有不同更新结果；形态与装配见 34/35，装/起/配/首启见 37，安装/启动/命令行见 50，用 90–93 完成方案与验收 | [18](./10-foundations/18-install-upgrade.md)、[34](./30-external/34-profile-delivery-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[50](./50-lifecycle/00-index.md)、[90–93](./90-advisor/00-index.md) |
 
-## Profile、bundle 与数据 owner
+## profile、bundle 与数据 owner
 
 profile 是 Harness home 里的具名组装（[architecture](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#profiles-and-bundles)）；bundle 是发布 Cordis patch 和 package dependencies 的形式（[architecture](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#profiles-and-bundles)）。发行版的 package 可以提供 plugins、presets 和 Client plugins，但运行入口仍是 DSH 支持的 named profile。package 是否贡献 rows 取决于其 bundle manifest 和 profile 选择。
 
@@ -45,7 +45,7 @@ profile 是 Harness home 里的具名组装（[architecture](https://github.com/
 
 ## 数据归属
 
-发行版 bundle、用户项目目录、插件状态和运行设置各有 owner；DSH Session history、Workspace registration 和 browser state 也各有自己的生命周期。详见 [15 四个空间](./10-foundations/15-four-spaces.md) 与 [11 存储机制](./10-foundations/11-five-homes.md)。
+发行版 bundle、用户项目目录、插件状态和运行设置各有 owner；DSH Session history、Workspace registration 和 browser state 也各有自己的生命周期。详见 [15 资产 owner](./10-foundations/15-asset-owners.md) 与 [11 存储通道](./10-foundations/11-storage-channels.md)。
 
 发行方自建 `$DSH_HOME/<plugin>/` 只是路径约定，不是 DSH 服务。发行方需自行说明迁移、备份和卸载责任。
 

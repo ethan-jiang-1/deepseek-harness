@@ -20,7 +20,7 @@
 
 - **证据分级**：`T` 可复现命令+输出、`C` 当前合同（docs/源码）、`H` 历史、`P` 提案、`S` 第三方源码、`R` 第三方 README、`U` 未确认；外部章另用 `[SRC]`/`[R]`/`[DSH]`/`[TEST]`/`[CI]`/`[OBS]`，本轮没有 `[RUN]`。
 - **外部样本不支撑 C**：第三方源码/README 只能到 S/R。
-- **一个事实一个家**：每个数据事实只有一个权威，其他家只存引用（[11](../10-foundations/11-five-homes.md)）。
+- **一个事实一个权威**：每个数据事实只有一个权威，其他通道只存引用（[11](../10-foundations/11-storage-channels.md)）。
 - **数据卡是唯一记录格式**：owner / authority / source / mechanism / scope·key / readers / writers / rebuildability / retention（[91](../90-advisor/91-checklist.md)）。
 - **分章不重复 owner**：机制细节归 10-foundations 与 50-lifecycle，外部样本归 31–37，施工流程归 90–93。
 
@@ -39,6 +39,7 @@
 | 2026-11-01 | 与 repo 逐条复核（结论见 §1）：修正 `dsh.compatibility` 伪字段、无 bundle 包的双通道行为、web flag 静默后果；拆清 34/35 的重复机制段。 |
 | 2026-11-01 | [50 生命周期](../50-lifecycle/00-index.md) 改为**插件作者的生命周期规范**：加最短路径五步与生命周期规矩总表；新增 [75 插件 README](../50-lifecycle/75-plugin-readme.md) 与其宿主读取字段图；目录由 `50-launch` 改名（launch 只覆盖启动，实际覆盖打包到卸载）；修正五处"可回滚"与一处已退役的"事务性重载"，并把初始化/特殊初始化/卸载三段的机制指回 10-foundations。 |
 | 2026-11-02 | 交付单位从“产品 profile / 插件即产品”改为 **Harness 发行版**，目录改名 `26_harness-release`；[10](../10-foundations/10-taxonomy.md) 由概念页改为**六轴定义页**（运行时、profile、patch 层、app surface、Harness home 与数据、生命周期），每轴给 owner、DSH 机制、读回方式与缺轴症状；[50/10](../50-lifecycle/10-model.md) 的“三样东西”对齐六轴；全语料去掉 `产品型插件`／`产品 profile`／`产品 bundle`／`产品 project` 复合词；新增术语来源表，把 `Harness 发行版`／`发行方`／`六轴` 标为本目录自造，其余词沿用 repo 定义，`产品` 只保留为对第三方样本的形容词（产品级、产品领域）。 |
+| 2026-11-02 | 术语第二回合：退役“五个家／四个空间”及其派生简称，按 repo 机制名重写（files、session log、storage domain、client state）并保留资产 owner 视角；`11-five-homes.md`→[11-storage-channels.md](../10-foundations/11-storage-channels.md)、`12-state-homes.md`→[12-state-storage.md](../10-foundations/12-state-storage.md)、`15-four-spaces.md`→[15-asset-owners.md](../10-foundations/15-asset-owners.md)，两张同名图同步改名；消掉 `DSH 发行版` 变体，`Harness 发行版` 只留在首次定义、单插件对比与章标题；承重词保留英文，自造词在台账配英文锚点；`verify.mjs` 增加退役词扫描与台账登记检查。 |
 
 ## 4. 样本去重
 

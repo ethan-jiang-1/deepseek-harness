@@ -14,7 +14,7 @@ FAQ 24 已经拆过包的角色：**bundle 是唯一可安装并自动启用的�
 | 离线 tarball | npm tgz / 离线 registry 镜像 | 本地 `dsh plugin add` | 手动 | checksum |
 | 目录/市场索引 | 元数据，不含安装 | 不安装 | 索引刷新 | 不适用 |
 
-## Bundle 打包的最小要求
+## bundle 打包的最小要求
 
 - `package.json` 声明 `dsh.bundle.patch`（一个文件或有序列表），否则只是普通依赖，不会自动启用。
 - 自包含：不要依赖你的 workspace；`files`/`exports`/`dependencies` 要能让 profile 的 pnpm 解析。

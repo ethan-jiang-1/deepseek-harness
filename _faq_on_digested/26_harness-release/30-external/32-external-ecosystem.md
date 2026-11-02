@@ -4,7 +4,7 @@
 
 > **角色：外部参考层（E1/E2）。** 本篇只看核心仓之外的 DSH 生态，并且只挑已经走进产品领域的插件：它们自己定义了产品级状态（项目绑定、设置、生命周期、迁移、团队凭据、协作），而不只是给已有 composition 加一个工具。外部指 DSH 生态的外围，不是其他产品的插件体系。
 
-DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端五个家）；外部插件在补的往往是产品层：项目怎么绑定、设置放哪、数据跟谁走、卸载后留什么。本篇从 15 个深读样本与目录样本里挑出八组可以借鉴的数据结构（其中 beauty-persist、codex-keychain、session_folders、insights 属目录/平台样本，不在那 15 个深读里）；[31](./31-external-community-patterns.md) 给单插件的九个维度和十八种手法，[33](./33-external-plugin-patterns.md) 给逐个案例与证据，[34](./34-profile-delivery-forms.md) 看 profile 的交付形态，[35](./35-profile-assembly-ownership.md) 看装配状态与所有权，[37](./37-lifecycle-stages.md) 看装/起/配/首启的阶段判据。
+DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端五类存储）；外部插件在补的往往是产品层：项目怎么绑定、设置放哪、数据跟谁走、卸载后留什么。本篇从 15 个深读样本与目录样本里挑出八组可以借鉴的数据结构（其中 beauty-persist、codex-keychain、session_folders、insights 属目录/平台样本，不在那 15 个深读里）；[31](./31-external-community-patterns.md) 给单插件的九个维度和十八种手法，[33](./33-external-plugin-patterns.md) 给逐个案例与证据，[34](./34-profile-delivery-forms.md) 看 profile 的交付形态，[35](./35-profile-assembly-ownership.md) 看装配状态与所有权，[37](./37-lifecycle-stages.md) 看装/起/配/首启的阶段判据。
 
 **口径。** 深读 2026-10-27：97 个候选（memory/session 23、workflow/tools/notify 19、runtime/account/UI/theme 55）里选 15 个，读过源码或 README（S/R）。目录 2026-10-24：awesome-dsh-plugin 6704 条元数据，只读作者描述（R），没有安装。样本不是 census，U = 未确认。
 
@@ -14,7 +14,7 @@ DSH 原生插件覆盖基础层（内容、历史、状态、派生、客户端�
 
 | 层 | 是什么 | 典型 | 数据含义 |
 |---|---|---|---|
-| E1 插件包 | npm 包 + Cordis 插件或 bundle patch | project-context、workspace-overlay、kb-manager、渠道插件 | 运行在 Host/Client，自己挑数据家 |
+| E1 插件包 | npm 包 + Cordis 插件或 bundle patch | project-context、workspace-overlay、kb-manager、渠道插件 | 运行在 Host/Client，自己挑数据通道 |
 | E2 服务 | 插件调用的外部能力 | MCP server、HTTP API、外部 DB、对象存储 | 权威在外部，DSH 侧只存引用和配置 |
 | 分发与目录 | 让用户找到并安装 | npm、profile bundle、awesome-deepseek-harness-plugins、dshbase | 目录计数只说明曝光，不是质量证据 |
 
@@ -31,7 +31,7 @@ E1 与 E2 的分界是数据权威在哪。本篇讨论的结构几乎都在 E1�
 | 生命周期/保留 | archive-retention：宽限期 + 审计清单 + 绝不删 live；memory-evolve：确认队列 | 保留期产品化；AI 写入先提议、用户确认；失败保守 | 物理删日志当常规操作 |
 | 凭据/团队 | credentials-mysql：外部 provider + schema fail-closed + 行锁 + 字段加密；codex-keychain | provider seam 可替换；版本 fail-closed；owner scope | 换 provider 没有迁移/卸载契约 |
 | 迁移/导入 | claude-move：scan → preview → apply + 幂等 `move.json`；codex-sync：映射 + 冲突状态 | 高风险写先预览；幂等标记；冲突三选一 + dry-run | 双向同步没有冲突策略 |
-| 协作/面板 | agent-mailbox：持久 inbox/threads/receipts；session_folders：storage-domain UI 状态；insights：只存派生检查点 | 持久消息家；服务端 UI 状态；面板只存可重建的派生 | 纯 localStorage；未读源码就依赖 |
+| 协作/面板 | agent-mailbox：持久 inbox/threads/receipts；session_folders：storage-domain UI 状态；insights：只存派生检查点 | 持久消息通道；服务端 UI 状态；面板只存可重建的派生 | 纯 localStorage；未读源码就依赖 |
 
 ### 项目与运行时
 

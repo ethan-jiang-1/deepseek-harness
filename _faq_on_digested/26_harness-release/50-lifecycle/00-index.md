@@ -50,7 +50,7 @@
 | **卸载** | 只回收包与 patch 层，数据一律留下 | 自己文档化数据位置与清理方式 | 用户以为删了，其实还在 |
 | **文档** | Plugins 页读 `package.json` 与导出的 locale；README 有固定形 | 按骨架写，交代装 / 验 / 配 / 升 / 卸 / 数据 | 用户和 agent 都得读源码才知道怎么用 |
 
-这张表是索引，不是展开：后面各章展开其中七段。另三段的**机制**归 `10-foundations`，本篇只给做法、不重写它们——profile 首建与「装成功」的三个状态见 [18](../10-foundations/18-install-upgrade.md)，存储版本、接受集与迁移剧本见 [12](../10-foundations/12-state-homes.md)，卸载后各类数据的 owner 见 [18](../10-foundations/18-install-upgrade.md) 的卸载与保留一节。
+这张表是索引，不是展开：后面各章展开其中七段。另三段的**机制**归 `10-foundations`，本篇只给做法、不重写它们——profile 首建与「装成功」的三个状态见 [18](../10-foundations/18-install-upgrade.md)，存储版本、接受集与迁移剧本见 [12](../10-foundations/12-state-storage.md)，卸载后各类数据的 owner 见 [18](../10-foundations/18-install-upgrade.md) 的卸载与保留一节。
 
 读法：本章用**发行方**指把这些插件交付出去的那一方，用 **Harness 发行版**指它交付的那一份。如果你一个人写一个插件、自己发布，你就是发行方——没有第四种角色，只是称呼不同。只写单插件、没有自己的 profile 时，你交付的是插件而不是发行版；下面各章按需跳读。
 

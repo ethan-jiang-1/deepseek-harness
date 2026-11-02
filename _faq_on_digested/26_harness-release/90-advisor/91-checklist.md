@@ -43,7 +43,7 @@
 - Secret 是否使用正确 API？`CredentialRef.resolve` 读取命名的环境变量；`CredentialKey` 访问 credential records，两者用途不同。
 - JSON `per-record` storage-domain key 是否符合后端约束？字符必须匹配 `[a-zA-Z0-9_-]+`；路径应使用带前缀的 hash。
 - `WorkspaceId` 是否只表示 DSH Workspace registration？删除后重建会产生新 ID，不能作为稳定发行版项目 ID。
-- 持久 Session event 是否有兼容的 reader？仅做 TypeScript declaration merging 不建立已发布的 reader compatibility；见[11 存储机制](../10-foundations/11-five-homes.md)。
+- 持久 Session event 是否有兼容的 reader？仅做 TypeScript declaration merging 不建立已发布的 reader compatibility；见[11 存储机制](../10-foundations/11-storage-channels.md)。
 
 ## 检查实现与故障恢复
 
@@ -75,7 +75,7 @@
 2. **工具：** 列出模型可见的发行版工具与通用文件/进程工具；分别核验 provider 和 policy。
 3. **项目选择：** 区分 DSH Web 默认 Workspace/picker 与发行版自建的项目选择、取消和恢复。
 4. **Workspace：** Session 要加入 Host registration 时传 `workspaceId`；只需起始目录时传绝对 `cwd`。
-5. **隔离：** 列出共享的 `$DSH_HOME` stores、path overrides、browser origins 和外部 services。Profile 名本身不隔离数据。
+5. **隔离：** 列出共享的 `$DSH_HOME` stores、path overrides、browser origins 和外部 services。profile 名本身不隔离数据。
 6. **升级与卸载：** 说明 profile 重启、数据迁移、保留的用户文件和发行版数据清理方式。
 
 ## 检查装配与启动

@@ -4,7 +4,7 @@
 
 Kanban Studio 是假想发行版。这里只展示 profile manifest、bundle manifest、preset patch 和 Session request 怎样连接；DSH 仓库没有 Kanban package、board format、tool 或 UI。
 
-## Profile 的 `package.json`
+## profile 的 `package.json`
 
 发行版安装默认在应用内 **Plugins** 页（web 与 Desktop 同一句）。下面用 CLI 自动化生成/验证 custom profile；`--from-default-profile` 会替换同名 custom profile 的 dependencies 与用户 patch，必须用新名字或先备份已有 profile。以下 `dsh` 是已安装的 CLI；从源码检出目录运行时按 [90](./00-index.md) 改用 `pnpm dsh`。
 
@@ -14,7 +14,7 @@ dsh plugin --profile kanban add <kanban-bundle-spec>
 dsh --profile kanban --dump-config
 ```
 
-Profile manifest 关键结构：
+profile manifest 关键结构：
 
 ```json
 {
@@ -37,7 +37,7 @@ Profile manifest 关键结构：
 
 这段展示 manifest 字段，不是已发布的 Kanban package。CLI add 会写入真实 package spec 并更新 bundle list；`dependencies` 表示代码可安装/解析，`dsh.profile.bundles` 表示该 bundle 的 patch layer 进入组合。这里的 `base` 和 `web-app` 可由运行中的 DSH 安装提供，不必作为 profile 的直接 dependency；发行版 bundle 则在此示例中安装于 profile。
 
-## Bundle 的 `package.json`
+## bundle 的 `package.json`
 
 ```json
 {

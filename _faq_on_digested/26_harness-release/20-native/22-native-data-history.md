@@ -1,10 +1,10 @@
-# 22 · DSH 原生数据历史：这些家是怎么长出来的
+# 22 · DSH 原生数据历史：这些通道是怎么长出来的
 
 ## 这一篇回答什么
 
 > 只讲 DSH 原生核心/随包插件/experimental 的演进；外部插件只作反例参考，不是原生历史的一部分。
 
-不是“DSH 现在有哪些家”，而是：**这些家为什么是现在这样？哪些是刻意、哪些是欠账、哪些被否决过？**
+不是“DSH 现在有哪些存储通道”，而是：**这些通道为什么是现在这样？哪些是刻意、哪些是欠账、哪些被否决过？**
 
 证据标签：**T** 可复现实验/探针（命令+输出） · **C** 当前合同（docs/源码，精确到符号） · **H** 历史事实 · **P** 提案 · **S** 第三方源码阅读 · **R** 第三方 README/作者声明 · **U** 未确认。DSH 仓库是浅克隆，2026-06 之前的 git 历史不可用；早期事实以 Agent Note 与 docs 为准。
 
@@ -12,7 +12,7 @@
 
 ## 一条时间线（22 个事件）
 
-| 日期 | 变化 | 之前 | 之后 | 证据 | 层/空间 |
+| 日期 | 变化 | 之前 | 之后 | 证据 | 层/通道 |
 |---|---|---|---|---|---|
 | 2026-06-14 | 会话持久化抽成 `SessionPersistence` | 会话状态与文件耦合 | 追加日志 + 可恢复句柄 | H | 历史 |
 | 2026-06-18 | 共享写协调器 | 多个消费者各自持有写路径 | 单写者、按 id 路由 | H | 历史 |
@@ -37,14 +37,14 @@
 | 2026-10-09 | 存储凭据优先 | 环境变量可能盖过已存值 | 文件 > 启动环境 > 项目 `.env` > home `.env` | C/H | 全局设置（凭据） |
 | 2026-10-12 | headless 不挂凭据 store | 所有 profile 共享 store | headless 无持久凭据，per-run 覆盖 | C/H | 配置/凭据 |
 
-### 22 个事件按空间归组
+### 22 个事件按通道归组
 
 | 事件组 | 影响的层 | 今天的后果 |
 |---|---|---|
-| 会话持久化、写协调、zstd、按项目分目录 | 历史 | 会话是历史家；项目归属写进 `header.cwd` |
+| 会话持久化、写协调、zstd、按项目分目录 | 历史 | 会话是历史通道；项目归属写进 `header.cwd` |
 | 文件路径按 cwd、单一 home 解析器 | 作用域/键 | canonical path 与 home 单一来源 |
 | spill、附件、投影缓存 | 派生/状态 | 可重建与不可重建的分界线 |
-| domain KV + workspace 提案、storage root | 状态/空间 | 账本有了 domain；但没有"插件数据根" |
+| domain KV + workspace 提案、storage root | 状态（storage domain） | 账本有了 domain；但没有"插件数据根" |
 | settings seam、凭据记录 | 状态/配置 | Config 按 profile；凭据只存引用 |
 | 无主的 `auto-approval-llm/` 等 | 账本（自造） | 自建目录由创建它的 package owner 维护迁移与清理 |
 
@@ -54,7 +54,7 @@
 
 **决定**：一个 `$DSH_HOME`（`explicit > $DSH_HOME > ~/.dsh`），不拆 XDG；`~/.agents`（`$DSH_AGENTS_HOME`）故意在 home 之外，供多个 agent 工具共享；空 `$DSH_HOME` 视为未设，避免 `resolve('')` 把 home 放到 cwd。**C/H**
 
-**为什么**：之前有两个 `resolveDshHome` 实现已经漂移（一个展开 `~`，一个不展开）；XDG 会把“一个家”拆成 config/data/cache 三类，需要给每个 `~/.dsh` 消费者重新分类。单根是刻意选择。
+**为什么**：之前有两个 `resolveDshHome` 实现已经漂移（一个展开 `~`，一个不展开）；XDG 会把一份 home 拆成 config/data/cache 三类，需要给每个 `~/.dsh` 消费者重新分类。单根是刻意选择。
 
 **代价**：同一台机器多个 profile 共享同一个 home，包括 `.credentials.yaml`；profile 只是组合/设置边界，不是数据隔离边界。**C**
 
@@ -110,7 +110,7 @@
 
 **代价（proposed 明确 out-of-scope）**：session delete、`log` facet、多进程写保护、跨进程 change、data migration、多段键、**scope dimension**（每 workspace 一个 domain）、跨表事务、二级索引、跨 workspace 移动。
 
-**P** 这是理解“为什么没有 per-workspace 数据家”的关键。
+**P** 这是理解“为什么没有 per-workspace 存储域”的关键。
 
 ### 8. 附件：不可变对象，故意不 GC
 
@@ -160,7 +160,7 @@
 2. **作用域身份**：path vs `workspaceId`；profile vs account；workspace vs project root（git 顶层）。没有一套名字同时满足“稳定、可读、可移植”。
 3. **删除与保留**：session、attachment、`.bak`、legacy cache 都没有统一回收；作者要自己写清理，而平台没有“卸载契约”。
 4. **追加 vs 编辑**：日志只追加；用户要可编辑的 Markdown；journal+render、present 引用都是折中。
-5. **进程边界**：session 有 kernel lease；domain JSON 没有跨进程锁；spill 在 OS temp；多 Host 共享 home 不支持（见 [12](../10-foundations/12-state-homes.md)）。
+5. **进程边界**：session 有 kernel lease；domain JSON 没有跨进程锁；spill 在 OS temp；多 Host 共享 home 不支持（见 [12](../10-foundations/12-state-storage.md)）。
 6. **秘密边界**：`0600` 挡其他用户，不挡同 uid 的模型；备份副本绕过“不 hoist”。
 7. **派生 vs 权威**：projcache 可重建却与 workspace 同目录同后端；没有统一的 authority 声明。
 
@@ -180,7 +180,7 @@
 
 1. **不要从“当前文件布局”推断合同**：`sessions/`、`storages/`、`attachments/` 是实现，不是插件写入 API。
 2. **session 日志不是插件存储**：第三方不能新增事件类型；`plugin:` 只限 experimental；会话私有状态要从事件重算或放 home 域。
-3. **workspace 级状态没有核心家**：要么项目内文件，要么 home 域 + 稳定路径键；`workspaceId` 会随删除重加变化。
+3. **workspace 级状态没有核心存储**：要么项目内文件，要么 home 域 + 稳定路径键；`workspaceId` 会随删除重加变化。
 4. **profile 不是账号**：settings 只对 profile 生效；跨 profile 用 home 域。
 5. **删除/卸载要自己设计**：平台没有统一的 GC/卸载清理；README 必须写清数据在哪、怎么删。
 6. **秘密是约定不是边界**：不要把 `.credentials.yaml` 的内容写进日志/提示词；也不要以为文件权限能挡住模型。

@@ -10,7 +10,7 @@ DSH 支持的 Node 应用启动只有一种：**named `dsh` profile**（[archite
 | profile | 用 shipped 模板、自定义具名 profile，还是 application-owned profile | 本节「profile」；[20](./20-install-paths.md)、[40](./40-profile-integration.md) |
 | patch 层 | bundle patch → profile patch → home patch → CLI → env/args → client | [50](./50-settings.md) |
 | app surface | profile 选中哪个 surface，带哪些 client plugins | [30](./30-launch-surfaces.md)、[40](./40-profile-integration.md) |
-| Harness home 与数据 | 哪些状态共享、哪些自建、卸载留什么 | [10-foundations](../10-foundations/11-five-homes.md)；[18](../10-foundations/18-install-upgrade.md) |
+| Harness home 与数据 | 哪些状态共享、哪些自建、卸载留什么 | [10-foundations](../10-foundations/11-storage-channels.md)；[18](../10-foundations/18-install-upgrade.md) |
 | 生命周期 | 装/更/卸的入口与数据清理责任 | 本节「所有权」；[20](./20-install-paths.md)–[70](./70-install-docs.md) |
 
 发行版**不**发布新的 DSH 启动可执行文件、不自建 launcher、不把 profile 当发布物。外层最多是一个薄 bootstrap：设置环境、确保 profile 存在、`exec dsh --profile <name>`。

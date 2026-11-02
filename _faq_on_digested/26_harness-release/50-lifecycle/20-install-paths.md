@@ -32,7 +32,7 @@
 
 “装成功”有三个独立状态（pnpm 成功 / dependency 写入 / 进入 `dsh.profile.bundles`），只有第三个让功能存在；状态判据的完整机制见 [18](../10-foundations/18-install-upgrade.md)。无 `dsh.bundle.patch` 的包，CLI 通道 exit 0、roster 不变、只给一句 stderr warning；应用内通道以 `not-bundle` 失败并回滚 manifest（实验见 [90](./90-evidence.md)）。
 
-## Profile 初始化
+## profile 初始化
 
 | 入口 | 行为 |
 |---|---|
@@ -47,7 +47,7 @@
 
 注意：`dsh plugin` 对自定义名字只初始化 **base**；Web/SDK/ACP 发行版要么首次用 `--from-default-profile <template>` 建 profile，要么显式把对应 app bundle 加进去。不要用 base-only profile 期待 Web 界面。
 
-## Bundle 安装（CLI，面绑定）
+## bundle 安装（CLI，面绑定）
 
 应用内 Plugins 页是默认安装路径；CLI 是面绑定自动化：可管理显式非 `desktop` profile，面向 GUI 时只作 web 自动化。
 

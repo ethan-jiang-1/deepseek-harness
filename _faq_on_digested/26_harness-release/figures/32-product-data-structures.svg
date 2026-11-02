@@ -91,7 +91,7 @@
     <text x="40" y="598" font-size="9.5" fill="#64748b">持久消息 / UI 状态</text>
     <text x="222" y="578" font-size="10" fill="#334155">agent-mailbox：持久 inbox/threads/receipts；</text>
     <text x="222" y="598" font-size="9.5" fill="#64748b">session_folders：storage-domain UI 状态</text>
-    <text x="616" y="578" font-size="10" fill="#334155">持久消息家；服务端 UI 状态；</text>
+    <text x="616" y="578" font-size="10" fill="#334155">持久消息通道；服务端 UI 状态；</text>
     <text x="616" y="598" font-size="9.5" fill="#64748b">面板只存可重建派生</text>
     <text x="946" y="578" font-size="10" fill="#b45309">纯 localStorage；</text>
     <text x="946" y="598" font-size="9.5" fill="#b45309">未读源码就依赖</text>

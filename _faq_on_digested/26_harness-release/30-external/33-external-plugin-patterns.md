@@ -10,7 +10,7 @@
 
 **没有安装、没有运行**；S = 读过源码，R = README/作者声明，U = 未确认。样本不是 census。所有结论只描述 DSH 外部插件，不是 DSH 合同。
 
-![外部插件样本 × 数据家](../figures/33-external-market-map.svg)
+![外部插件样本 × 数据通道](../figures/33-external-market-map.svg)
 
 ## 外部模式 → 原生替代
 
@@ -135,7 +135,7 @@
 - **可抄**：scan→preview→apply、幂等 `move.json`、审批门、不回传正文/凭据。
 - **不要抄**：依赖外部私有格式；没有版本/回滚。
 
-### 11. dsh-agent-mailbox（R）——DSH 没有的持久消息家
+### 11. dsh-agent-mailbox（R）——DSH 没有的持久消息通道
 
 - **问题**：跨会话 Agent 消息：线程、回执、搜索、在线状态。
 - **数据**：持久 inbox/thread/receipt（落点 U，可能文件/SQLite）。**R**

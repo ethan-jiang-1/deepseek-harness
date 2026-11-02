@@ -13,22 +13,22 @@
 | 用途 | DSH 提供 | 发行方要决定 | 不要假设 |
 |---|---|---|---|
 | 项目知识 | 项目文件、`ctx.fs`、skills | 文件格式、并发、仓库污染与信任 | home 副本会随项目移动 |
-| 个人长期知识 | Storage domain、用户已有文件 | home 文件或 SQLite 的迁移、同步与删除 | Profile Config 跨 profile 共享 |
+| 个人长期知识 | Storage domain、用户已有文件 | home 文件或 SQLite 的迁移、同步与删除 | profile Config 跨 profile 共享 |
 | Session 归档/删除 | Workspace archive 可隐藏；没有通用 Session delete API | 保留期、审计与 live Session 保护 | 物理删除 Session 是受支持 API |
 | 知识库/RAG | Storage domain、SQLite backend | schema、重建、模型成本和不可信召回 | DSH 提供通用 RAG/向量索引 |
 | 任务/目标 | Session events/projections、todo/goal/schedule packages | authority、重试、重建和通知 | 每个 profile 都启用同一 package |
 | 交付物 | 用户文件、`present` | 可发现性、导出版本和留存 | Attachment/spill 是稳定交付物 |
-| 渠道/账号 | Profile Config、`ctx.credentials` | owner、轮换、授权撤销和迁移 | `CredentialKey` 能像 env ref 一样解析 |
+| 渠道/账号 | profile Config、`ctx.credentials` | owner、轮换、授权撤销和迁移 | `CredentialKey` 能像 env ref 一样解析 |
 | 每项目 runtime | 无通用 Workspace plugin instance | 发行版 scope/lease、信任、并发和崩溃恢复 | DSH 内建项目级 plugin instance |
 | Client state | Browser storage、Session projections | origin、访问控制和清理 | localStorage 是账号级或跨设备存储 |
 | 同步/备份 | Session export、项目文件 | 用户 git 或显式导入/导出、冲突和回滚 | Session export 会打包项目文件 |
-| 发行版 profile | Named profile + ordered bundle patches | home 共享和 provider override | Profile 名隔离同一 `$DSH_HOME` |
+| 发行版 profile | Named profile + ordered bundle patches | home 共享和 provider override | profile 名隔离同一 `$DSH_HOME` |
 
 这张表比较用途和机制，不定义数据类别。每份事实的 Owner、Authority、Source、Scope/key 和 Retention 用[91 数据卡](./91-checklist.md)记录。
 
-## Profile 数据隔离
+## profile 数据隔离
 
-Profile 选择 plugin composition 与 patch，不创建独立 home。先列出共享的 Harness stores、provider paths 和 browser-origin data：
+profile 选择 plugin composition 与 patch，不创建独立 home。先列出共享的 Harness stores、provider paths 和 browser-origin data：
 
 | 方案 | 覆盖范围 | 隔离结果 | 仍需检查 |
 |---|---|---|---|
@@ -53,5 +53,5 @@ Profile 选择 plugin composition 与 patch，不创建独立 home。先列出�
 ## 边界
 
 - 本页是参考矩阵，不是 DSH 要求实现的唯一设计。
-- Bundle 是否进入 profile，取决于该 profile 的 bundle selection。
+- bundle 是否进入 profile，取决于该 profile 的 bundle selection。
 - 外部研究不是 DSH API 或 dependency 背书；具体 package/service 需单独审核。

@@ -1,4 +1,4 @@
-# 34 · profile 交付形态（参考）：八种把插件装成一份发行版的方式
+# 34 · profile 交付形态（delivery form，参考）：八种把插件装成一份发行版的方式
 
 ## 这一篇回答什么
 
@@ -75,7 +75,7 @@
 
 **可迁移。** 明确 patch 是“新增 row”还是“覆盖/禁用 row”；对 aggregate + member 混装做检测/禁止；共享库用普通依赖而非 row，并把 singleton 版本纳入发布检查；安装前列每个成员的 tools/prompt/UI 与文件/网络/进程副作用；把 profile CRUD 当受保护的 filesystem/process 界面单独做威胁建模。
 
-**失效边界。** 重复安装会冲突；依赖/row 由 generator 生成，source check 只证明仓库产物一致，不证明任意 profile 的 partial install 会回滚；Profile manager 的真实 OS 权限、symlink、恶意浏览器请求、磁盘故障未运行验证。（`[SRC]`/`U`）
+**失效边界。** 重复安装会冲突；依赖/row 由 generator 生成，source check 只证明仓库产物一致，不证明任意 profile 的 partial install 会回滚；profile manager 的真实 OS 权限、symlink、恶意浏览器请求、磁盘故障未运行验证。（`[SRC]`/`U`）
 
 ## 5. 接管套件：dsh-plugins-plus
 

@@ -21,11 +21,11 @@ memory-evolve、project-context、graphmemory、workspace-memories、kb-manager�
 
 | 结论 | 样本 | 等级 |
 |---|---|---|
-| 没有统一 workspace-scoped 数据家；至少 4 种表示 | workspace-overlay/custom-workspace/session_folders/workspace-memories | S/R |
+| 没有统一 workspace-scoped 数据通道；至少 4 种表示 | workspace-overlay/custom-workspace/session_folders/workspace-memories | S/R |
 | 没有统一插件数据根；各自造 `~/.dsh/<plugin>/` | memory-evolve/project-context/PromptRecall/kb-manager/beauty-persist | S/R |
 | 没有 session delete；插件物理删日志 | archive-retention/archive-manager/archive-purge/session-workspace-organizer | R |
 | 直接改日志 header 是现实需求 | session-workspace-organizer | R |
-| 凭据三种互斥家 | codex-keychain/credentials-mysql/credential-manager/api-key-pool | S/R |
+| 凭据三种互斥存放位置 | codex-keychain/credentials-mysql/credential-manager/api-key-pool | S/R |
 | 客户端状态默认 localStorage；跨 origin 丢失 | beauty-persist/PromptRecall/theme 8/8 | S/R |
 | 卸载不是数据生命周期 | credential-manager/cursor-theme/archive-manager | R |
 | 迁移只出现在严肃数据 | credentials-mysql/task-board/kb-manager/project-context | S/R |

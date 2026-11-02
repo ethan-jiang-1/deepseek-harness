@@ -28,7 +28,7 @@ $ f=$(ls "$DSH_HOME"/sessions/*/*/session.v4.jsonl.zstd | head -1); zstd -dc "$f
 
 （第二行的 `id`、`cwd`、`agentPreset` 实际值已脱敏；命令保留，可在本机复现。）
 
-**结论**：workspace domain 是 `workspace` v2，表为 `workspaces`；会话日志为 V4，首帧含 `cwd` 与 `agentPreset`。这两条支撑 [00-answer](../../00-answer.md) 与 [15](../../10-foundations/15-four-spaces.md) 的 T 级断言。
+**结论**：workspace domain 是 `workspace` v2，表为 `workspaces`；会话日志为 V4，首帧含 `cwd` 与 `agentPreset`。这两条支撑 [00-answer](../../00-answer.md) 与 [15](../../10-foundations/15-asset-owners.md) 的 T 级断言。
 
 ## 为什么不做脚本
 

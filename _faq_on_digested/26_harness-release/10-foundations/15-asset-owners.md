@@ -1,12 +1,12 @@
-# 15 · 四个空间：发布包、项目目录、插件状态与运行设置
+# 15 · 四类资产的 owner（asset owner）：bundle 发布内容、项目目录、插件状态与运行设置
 
 ## 这一篇回答什么
 
-“四个空间”是本目录按资产 owner 切的一张图，不是 DSH 的对象模型（存储通道的分法见 [11 五个家](./11-five-homes.md)）。发行方通常要安排四类资产：随 bundle 发布的默认内容、用户项目文件、插件自己的状态，以及运行设置。本篇说明每类资产由谁拥有、哪些部分属于 DSH、以及卸载和换 home 时会发生什么。它不把 DSH Workspace registry 当作文件权限，也不把发行版项目当作 DSH 实体。
+“四类资产”是本目录按资产 owner（asset owner）切的一张图，不是 DSH 的对象模型（存储机制的分法见 [11 五类存储](./11-storage-channels.md)）。发行方通常要安排四类资产：随 bundle 发布的默认内容、用户项目文件、插件自己的状态，以及运行设置。本篇说明每类资产由谁拥有、哪些部分属于 DSH、以及卸载和换 home 时会发生什么。它不把 DSH Workspace registry 当作文件权限，也不把发行版项目当作 DSH 实体。
 
-![四类发行版资产：bundle、用户项目目录、插件状态与运行设置](../figures/15-four-spaces.svg)
+![四类发行版资产：bundle、用户项目目录、插件状态与运行设置](../figures/15-asset-owners.svg)
 
-## 四个空间
+## 四类资产
 
 ```text
 发布 bundle（只读输入）     模板 / 默认 preset / bundled skills —— 随包版本更新
@@ -15,9 +15,9 @@
 运行设置（作用域由发行版选） profile Config、volatile Settings 或自建共享存储
 ```
 
-这四个空间描述资产的所有权，不是 DSH 的四种原生存储 API：
+这四类资产描述所有权，不是 DSH 的四种原生存储 API：
 
-| 空间 | 可能的机制 | 说明 |
+| 资产类别 | 可能的机制 | 说明 |
 |---|---|---|
 | 发布 bundle | package files、Cordis patch、Client bundle | 安装包是默认资产来源；不要将运行时写入包目录 |
 | 用户项目目录 | `ctx.fs`、模型文件工具或发行版自己的工具 | 文件属于用户；是否可通过 DSH Web 分组取决于是否登记 Workspace |
@@ -65,7 +65,7 @@ DSH 的 `Config.volatile()` Settings 表单写回当前 profile 的 patch。它�
 
 | 事实 | 权威 | 常见位置 | 删除/迁移责任 |
 |---|---|---|---|
-| 出厂模板、默认 preset | bundle 发布版本 | package files | 随包升级；用户修改应写入其他空间 |
+| 出厂模板、默认 preset | bundle 发布版本 | package files | 随包升级；用户修改应写入其他类别 |
 | 项目内容 | 用户 | 项目目录 | 用户决定；卸载发行版不应擅删 |
 | Workspace 登记 | DSH Workspace registry | DSH storage domain | `workspace.delete` 只删登记；发行版不能声称它会删项目 |
 | 项目索引 | 源文件或日志 | domain/cache/发行版目录 | 派生数据可重建；清理规则由拥有者说明 |

@@ -26,16 +26,16 @@
 |---|---|---|
 | Q0 | Harness 发行版由哪六轴组成？每轴的 owner、DSH 机制与读回方式是什么？ | [10 六轴](./10-foundations/10-taxonomy.md) |
 | Q1 | plugin、bundle 与 profile 各是什么？发行版入口怎样启动？ | [answer](./00-answer.md)、[FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)、[50 生命周期](./50-lifecycle/00-index.md) |
-| Q2 | 发布包、用户目录、插件状态与设置分别由谁拥有？ | [15 四个空间](./10-foundations/15-four-spaces.md) |
+| Q2 | 发布包、用户目录、插件状态与设置分别由谁拥有？ | [15 资产 owner](./10-foundations/15-asset-owners.md) |
 | Q3 | DSH Web 首次怎样建立 Workspace？发行方若自选项目目录要自建什么？ | [16 首用与项目目录](./10-foundations/16-startup-resolution.md)、[37 首启](./30-external/37-lifecycle-stages.md) |
 | Q4 | Patch 优先级、Config 默认值和链外设置如何区分？ | [17 配置、工具与权限](./10-foundations/17-config-layers.md)、[37 配阶段](./30-external/37-lifecycle-stages.md) |
 | Q5 | Session、项目根、Workspace、profile、home 与 device 的作用域有何不同？ | [13 作用域与键](./10-foundations/13-scope-and-keys.md) |
-| Q6 | storage domain、Config、CredentialRef 与 CredentialKey 各保存什么？ | [12 状态机制](./10-foundations/12-state-homes.md) |
-| Q7 | DSH 的五个家与客户端状态是什么关系？ | [11 五个家](./10-foundations/11-five-homes.md) |
+| Q6 | storage domain、Config、CredentialRef 与 CredentialKey 各保存什么？ | [12 状态机制](./10-foundations/12-state-storage.md) |
+| Q7 | DSH 的五类存储与客户端状态是什么关系？ | [11 五类存储](./10-foundations/11-storage-channels.md) |
 | Q8 | `present`、changes、attachments 和 spill 各服务谁？ | [14 产物](./10-foundations/14-artifacts.md) |
 | Q9 | DSH 存储能力的形成历史有什么当前影响？ | [22 原生数据历史](./20-native/22-native-data-history.md) |
 | Q10 | 外部插件与 profile 交付形态有哪些可借模式？ | [31](./30-external/31-external-community-patterns.md)、[32](./30-external/32-external-ecosystem.md)、[33](./30-external/33-external-plugin-patterns.md)、[34](./30-external/34-profile-delivery-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[36](./30-external/36-profile-evidence-ledger.md)、[37](./30-external/37-lifecycle-stages.md) |
-| Q11 | Profile bundle 如何安装、更新与卸载？数据清理由谁负责？ | [18 安装生命周期](./10-foundations/18-install-upgrade.md)、[34 profile 交付形态](./30-external/34-profile-delivery-forms.md)、[35 装配所有权](./30-external/35-profile-assembly-ownership.md)、[37 装/起/配/首启](./30-external/37-lifecycle-stages.md)、[50 安装启动](./50-lifecycle/00-index.md) |
+| Q11 | profile bundle 如何安装、更新与卸载？数据清理由谁负责？ | [18 安装生命周期](./10-foundations/18-install-upgrade.md)、[34 profile 交付形态](./30-external/34-profile-delivery-forms.md)、[35 装配所有权](./30-external/35-profile-assembly-ownership.md)、[37 装/起/配/首启](./30-external/37-lifecycle-stages.md)、[50 安装启动](./50-lifecycle/00-index.md) |
 | Q12 | 如何从 profile 文件走到发行版 Session、工具和数据？ | [90 主线](./90-advisor/00-index.md)、[93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)、[91 数据卡](./90-advisor/91-checklist.md)、[92 参考矩阵](./90-advisor/92-native-reference-architectures.md) |
 
 ## 不回答什么
@@ -49,7 +49,7 @@
 ## 阅读顺序
 
 1. **先看摘要**：[00-answer](./00-answer.md) 了解发行版六轴与数据维度。
-2. **准备设计**：[10 六轴](./10-foundations/10-taxonomy.md) → [15](./10-foundations/15-four-spaces.md) → [16](./10-foundations/16-startup-resolution.md) → [17](./10-foundations/17-config-layers.md)。
-3. **逐块选数据机制**：按需读 [11](./10-foundations/11-five-homes.md)、[12](./10-foundations/12-state-homes.md)、[13](./10-foundations/13-scope-and-keys.md)、[14](./10-foundations/14-artifacts.md)。
+2. **准备设计**：[10 六轴](./10-foundations/10-taxonomy.md) → [15](./10-foundations/15-asset-owners.md) → [16](./10-foundations/16-startup-resolution.md) → [17](./10-foundations/17-config-layers.md)。
+3. **逐块选数据机制**：按需读 [11](./10-foundations/11-storage-channels.md)、[12](./10-foundations/12-state-storage.md)、[13](./10-foundations/13-scope-and-keys.md)、[14](./10-foundations/14-artifacts.md)。
 4. **开始动手**：先看 [50 生命周期](./50-lifecycle/00-index.md) 选交付方式，装/起/配/首启的阶段判据见 [37](./30-external/37-lifecycle-stages.md)，再沿 [90 主线](./90-advisor/00-index.md) → [93 Kanban 文件例子](./90-advisor/93-app-plugin-walkthrough.md)；完工用 [91](./90-advisor/91-checklist.md) 验收。遇到存储或隔离取舍，再查 [92](./90-advisor/92-native-reference-architectures.md) 和 [18](./10-foundations/18-install-upgrade.md)。
 5. **核实研究材料**：[21/22](./20-native/21-native-data-landscape.md) 提供 DSH 参考；[31–37](./30-external/31-external-community-patterns.md) 是 DSH 外部生态模式，不是 DSH 合同；[40-evidence](./40-evidence/00-index.md) 提供来源与命令。

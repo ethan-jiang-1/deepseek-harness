@@ -66,7 +66,7 @@
 - workspace-memories：Markdown 文件本身就是权威，没有第二层。
 - memory-evolve：`~/.dsh/memories/` 文件是权威；git 同步是显式批处理，不是每次写入都提交。
 
-补充观察（2026-10-27）：生态里凭据有三种互斥的家（OS keychain / `ctx.credentials` / 明文 JSON/settings），迁移路径不明；卸载也不是数据生命周期——有的明确保留 metadata+secrets，有的物理删日志目录，“清理”既可能缺失也可能过度。
+补充观察（2026-10-27）：生态里凭据有三种互斥的存放位置（OS keychain / `ctx.credentials` / 明文 JSON/settings），迁移路径不明；卸载也不是数据生命周期——有的明确保留 metadata+secrets，有的物理删日志目录，“清理”既可能缺失也可能过度。
 
 判断方法没变：**删掉它，用户会丢东西吗？** 会 → 权威；不会 → 派生。社区里做得好的插件，README 都会写清楚“哪个文件是权威、哪个可以删、怎么重建”。
 
@@ -215,7 +215,7 @@ custom-workspace 在 0.1.0-rc.6 上为此造了自定义 RPC；新插件应先�
 
 ## 将外部模式转成数据卡
 
-外部样本展示的是不同实现，并不提供统一分类。迁移到 DSH 发行版时，分别写清 owner、mechanism/path、scope/key、readers/writers、rebuildability 和 retention。例如：只读知识仍由用户文件权威；journal 可作为用户内容的权威而 Markdown index 是派生；home 记忆由 plugin 拥有；每项目 runtime 需要发行版自己定义 scope/lease，或审核一个实际依赖的 E1 package。其他数据用途见 [92](../90-advisor/92-native-reference-architectures.md)。
+外部样本展示的是不同实现，并不提供统一分类。迁移到一份 Harness 发行版时，分别写清 owner、mechanism/path、scope/key、readers/writers、rebuildability 和 retention。例如：只读知识仍由用户文件权威；journal 可作为用户内容的权威而 Markdown index 是派生；home 记忆由 plugin 拥有；每项目 runtime 需要发行版自己定义 scope/lease，或审核一个实际依赖的 E1 package。其他数据用途见 [92](../90-advisor/92-native-reference-architectures.md)。
 
 ## 边界
 

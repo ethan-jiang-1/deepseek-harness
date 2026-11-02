@@ -10,9 +10,9 @@
 | Session 可见历史 | Session | Session persistence、projections、`sessionQuery` |
 | 项目文件与交付物 | 用户 | `ctx.fs`、`present` |
 | 发行版索引/状态 | 发行版插件 | `ctx.storageDomain` 或发行版自建存储 |
-| Profile-local 配置 | 用户/部署者 | `Config.volatile()` / Settings |
+| profile-local 配置 | 用户/部署者 | `Config.volatile()` / Settings |
 | Secret value | Credentials provider | `CredentialRef.resolve` |
-| Plugin-owned credential record | Plugin/provider | `CredentialKey` records API |
+| plugin-owned credential record | plugin/provider | `CredentialKey` records API |
 | Pure client UI state | Browser/device | browser storage / desktop userData |
 
 Harness 发行版是运行组合，不是数据隔离单位。作者逐块填写 [91 数据卡](../90-advisor/91-checklist.md)，分别记录各项数据属性。
@@ -35,7 +35,7 @@ Harness 发行版是运行组合，不是数据隔离单位。作者逐块填写
 
 | # | 机制 | 主要来源 |
 |---|---|---|
-| 1 | Profile 按 ordered bundle patches、profile patch、home patch、CLI overlays 合成；row config 整体替换 | [CLI reference](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md#profile-boot)、`vendor/include/src/index.ts` |
+| 1 | profile 按 ordered bundle patches、profile patch、home patch、CLI overlays 合成；row config 整体替换 | [CLI reference](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md#profile-boot)、`vendor/include/src/index.ts` |
 | 2 | Shipped Web template 与 custom profile 默认 bundle list | `packages/boot/app-boot/src/profile.ts`、[CLI reference](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md#profile-boot) |
 | 3 | CLI `dsh plugin` 更新 profile package/bundle list 并返回退出状态 | [CLI plugin management](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md#plugin-management)、`apps/cli/src/plugin.ts` |
 | 4 | Session create 可传 `workspaceId` 或 `cwd`；Workspace membership 按初始 header cwd 验证 | `packages/api/session-controller/src/types.ts`、`src/commands.ts`、`packages/workspace/workspace/src/entity.ts` |

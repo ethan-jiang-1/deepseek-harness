@@ -16,9 +16,12 @@
 | `composition`、plugin tree、patch、patch 行／row、`dsh.profile.bundles` | REPO | 组合与 patch 层词汇（[architecture](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#profiles-and-bundles)） |
 | shipped template、custom profile、application-owned profile | REPO | 三种 profile 归属（[app-boot](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md#profiles)） |
 | `app surface` | REPO | profile 决定同一个 launcher 起哪个 surface（[app-boot](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md#profiles)） |
-| **Harness 发行版** | 本目录 | 不是 DSH 对象，也不是新机制：指“一份交付出去、六轴各有 owner 的 Harness”。注意 repo 中文文档里的“发行版”指 DSH 自己的分发（shipped profile“作为模板随发行版交付”，[architecture.zh](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.zh.md#profile-与组合包)）；本目录加上 Harness 限定，指第三方交付的那一份，两者不混用。 |
-| **发行方** | 本目录 | 角色标签，指交付这份发行版的一方。DSH 没有这个角色名；单插件作者通常不是发行方。 |
-| **六轴** | 本目录 | 检查表装置，不是对象模型。DSH 的对象只有 plugin／bundle／profile 与它们的运行时数据。 |
+| `Harness home`、`storage domain`、roster | REPO | 机器本地状态根、插件 KV 域、profile 的 bundle 列表（`dsh.profile.bundles`）；本目录不另译这三个词 |
+| **发行版**（distribution） | 本目录 | 交付单位：plugin、bundle、profile 加上运行时来源、app surface、Harness home 策略与生命周期，作为一个交付承诺。repo 中文文档里的“发行版”指 DSH 自己的分发（shipped profile“作为模板随发行版交付”，[architecture.zh](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.zh.md#profile-与组合包)）；本目录把同一个词用于第三方交付的那一份，**只在必须强调“不是单个插件”时写「Harness 发行版」**。 |
+| **发行方**（distributor） | 本目录 | 角色标签，指交付这份发行版的一方。DSH 没有这个角色名；单插件作者通常不是发行方。 |
+| **六轴**（six axes） | 本目录 | 检查表装置，不是对象模型。DSH 的对象只有 plugin／bundle／profile 与它们的运行时数据。 |
+
+**写法规则。** 承重词保留英文，或写成“英文（中文说明）”；中文只在 repo 自己已有中文译名时单独出现（组合包、会话日志、具名组装、发行版）。本目录新造的两个视角名在定义处配英文锚点：**存储通道**（storage channel，[11](./11-storage-channels.md)）与**资产 owner**（asset owner，[15](./15-asset-owners.md)）。三个自造词只在需要区分“整份 Harness 还是单件”的位置出现：`Harness 发行版` 限于首次定义、与单插件对比、章标题三种位置，其余承接指代写「发行版」；`发行方` 与 `六轴` 没有变体。本目录不使用 `产品型插件`／`产品 profile`／`产品 bundle`／`产品 project`／`入口 profile`／`应用面`／`五个家`／`四个空间`／`内容家` 一类复合词或助记词；`产品` 只作第三方样本的形容词（产品级、产品领域）。<!-- term-policy: 本行登记退役词，校验器跳过 -->
 
 ## 三个对象，三种种类
 
@@ -70,18 +73,18 @@ DSH 里这三个词是三个种类，不是三个级别：
 
 ## 参考页
 
-- 六轴里的 Harness home 与数据：见 [11](./11-five-homes.md) 与 [12](./12-state-homes.md)。
-- bundle、用户目录、插件状态与设置的 owner：见 [15](./15-four-spaces.md)。
+- 六轴里的 Harness home 与数据：见 [11](./11-storage-channels.md) 与 [12](./12-state-storage.md)。
+- bundle、用户目录、插件状态与设置的 owner：见 [15](./15-asset-owners.md)。
 - Session、项目根、DSH Workspace、profile、home 和 device 的生命周期/key：见 [13](./13-scope-and-keys.md)。
 - 工具权限、目录和 patch：见 [16](./16-startup-resolution.md) 与 [17](./17-config-layers.md)。
 - patch 层与生命周期的推荐做法：见 [50](../50-lifecycle/00-index.md)。
-- “五个家”（[11](./11-five-homes.md)）与“四个空间”（[15](./15-four-spaces.md)）是两个不同的切法，不要互相替代：前者按存储通道分（内容／历史／状态／派生／客户端），后者按资产 owner 分（发布 bundle／用户目录／插件状态／运行设置）。两者都是本目录的助记，不是 DSH 的对象模型。
+- 存储通道（[11](./11-storage-channels.md)）与资产 owner（[15](./15-asset-owners.md)）是两个不同的切法，不要互相替代：前者按存储机制分（内容／历史／状态／派生／客户端），后者按资产 owner 分（发布包／项目目录／插件状态／运行设置）。两者都是本目录的检查视角，不是 DSH 的对象模型。
 
 这些页面是查找不同机制的参考，不是固定实现管线。先定六轴 owner，再选择匹配的 API。
 
 ## 边界
 
-- Profile 是 DSH composition，不是数据 scope、发布物或隔离边界。
+- profile 是 DSH composition，不是数据 scope、发布物或隔离边界。
 - Workspace registration 不授予模型文件权限；Session cwd、有效 working directory 和发行版项目根也不同。
 - DSH 不提供通用 product data root、多租户隔离或跨机器同步；发行方自建的目录不是 DSH 服务。
 - 外部社区材料提供设计参考，不定义 DSH API 合同。

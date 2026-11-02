@@ -1,8 +1,8 @@
-# 12 · 状态的家：domain、settings、credential 各管什么
+# 12 · 状态存储：domain、settings、credential 各管什么
 
 ## 这一篇回答什么
 
-这一篇展开的是**状态家**：四层词汇见 [10](./10-taxonomy.md)，五个家见 [11](./11-five-homes.md)。
+这一篇展开的是**状态（storage domain / config / credentials）**：四层词汇见 [10](./10-taxonomy.md)，五类存储见 [11](./11-storage-channels.md)。
 
 插件要持久化一点东西时，DSH 给了三个看起来都像“存数据”的东西：`ctx.storageDomain`、Config/settings、`ctx.credentials`。它们不是同一层的替代品；选错的代价是数据不可迁移、秘密泄漏、或者把配置当数据库写坏。
 
@@ -21,7 +21,7 @@
 
 发行版若需要跨 profile 共享设置，需明确选择共享机制，例如自建 home 文件或插件拥有的 home domain singleton。`Config.volatile()` Settings 写当前 profile，不会自动跨 profile 共享；自建文件不是 DSH 统一的 `dataRoot` API。选择细节见 [17 配置分层](./17-config-layers.md)。
 
-但 domain 不是“插件数据根”：它没有 per-plugin 目录、配额、scope、卸载清理；域名是包级静态声明，一个 Host 一个名字只能开一次。需要“按插件 id 隔离”的状态，要么用记录键，要么自造目录并承担生命周期（见 [11](./11-five-homes.md) 的“没有插件数据根”）。
+但 domain 不是“插件数据根”：它没有 per-plugin 目录、配额、scope、卸载清理；域名是包级静态声明，一个 Host 一个名字只能开一次。需要“按插件 id 隔离”的状态，要么用记录键，要么自造目录并承担生命周期（见 [11](./11-storage-channels.md) 的“没有插件数据根”）。
 
 ## `ctx.storageDomain`：有 schema 的宿主 KV
 
@@ -173,7 +173,7 @@ OAuth grant、代理凭据这类**多字段、需要读-改-写**的东西，用
 
 三条规则：
 
-1. 账本里再分"可重建索引 / 不可重建状态"（[15](./15-four-spaces.md)）；
+1. 账本里再分"可重建索引 / 不可重建状态"（[15](./15-asset-owners.md)）；
 2. 同一字段不要同时给 settings 和文件两个入口；
 3. 跨 profile 的发行版设置不能只靠当前 profile 的 Settings field；由发行版选择共享的 home mechanism。
 

@@ -52,12 +52,12 @@ Domain name 是 package 声明的静态值，不能按 Workspace 动态创建。
 | DSH Workspace grouping | DSH Workspace + Session | Workspace registry | `WorkspaceId` + `SessionId` |
 | 发行版 Session 绑定 | 发行版定义的 project + Session | 发行版账本 | `SessionId` + 发行版项目 ID |
 | 当前 UI 选择 | client/device | browser storage | origin + local key |
-| Profile-local 设置 | profile | volatile Config | profile entry + field |
+| profile-local 设置 | profile | volatile Config | profile entry + field |
 
 需要跨 profile 的设置不应假设由 profile Config 自动共享；见 [17](./17-config-layers.md)。
 
 ## 边界
 
-- Profile 组合不是 scope，也不提供 home 隔离。
+- profile 组合不是 scope，也不提供 home 隔离。
 - Workspace deletion 只删除 Host registration，不删除项目目录、发行版账本或 Session log。
 - DSH 没有内建的多租户或跨机器 project-ID 同步服务。

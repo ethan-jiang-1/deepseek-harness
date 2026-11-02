@@ -22,11 +22,11 @@
 
 ## 术语前提
 
-DSH repo 里 `product` 要么指**整台运行中的 dsh**（“Every part of the product is a plugin”，[architecture](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#cordis)），要么作形容词（`product data`、`product use`、`product-user-visible`）。它从来不修饰单个对象——没有“产品 + 对象名”这种复合类型，因为**插件本身不构成 product，整棵树才构成**。本目录因此不造 `产品型插件`／`产品 profile`／`产品 bundle`。
+DSH repo 里 `product` 要么指**整台运行中的 dsh**（“Every part of the product is a plugin”，[architecture](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#cordis)），要么作形容词（`product data`、`product use`、`product-user-visible`）。它从来不修饰单个对象——没有“产品 + 对象名”这种复合类型，因为**插件本身不构成 product，整棵树才构成**。本目录因此不造 `产品型插件`／`产品 profile`／`产品 bundle`。<!-- term-policy: 本行登记退役词，校验器跳过 -->
 
 逐词来源（哪些是 repo 定义、哪些是本目录自造）只有一处：[10 的术语来源表](./10-foundations/10-taxonomy.md#术语来源哪些是-dsh-的哪些是本目录的)。本目录只新造三个词——**Harness 发行版**、**发行方**和**六轴**——其余全部沿用 repo 定义。
 
-**发布物 ≠ 发行版**：发布物是单个可下载产物（npm 包、Desktop 安装包、wheel）；发行版是这些产物加上 profile、Harness home 策略和 app surface 组成的完整交付。[23](../23_standalone-vs-web-release-forms/answer.md) 回答官方有几份发布物，[24](../24_plugin-publish-and-agent-data-planes/answer.md) 回答一个插件怎样才算能发布，本目录回答**你要交付的那一份发行版怎么组**。
+**发布物（release artifact）≠ 发行版（distribution）**：发布物是单个可下载产物（npm 包、Desktop 安装包、wheel）；发行版是这些产物加上 profile、Harness home 策略和 app surface 组成的完整交付。[23](../23_standalone-vs-web-release-forms/answer.md) 回答官方有几份发布物，[24](../24_plugin-publish-and-agent-data-planes/answer.md) 回答一个插件怎样才算能发布，本目录回答**你要交付的那一份发行版怎么组**。
 
 ## 按角色阅读
 
@@ -43,14 +43,14 @@ DSH repo 里 `product` 要么指**整台运行中的 dsh**（“Every part of th
 | [00-question](./00-question.md) | 原始问题与范围 |
 | [00-answer](./00-answer.md) | 摘要答案与问题索引 |
 | [10 六轴](./10-foundations/10-taxonomy.md) | 发行版定义、六轴 owner、数据卡 |
-| [11 存储机制](./10-foundations/11-five-homes.md) | 内容、Session history、插件状态、派生与 Client state |
-| [12 状态存储](./10-foundations/12-state-homes.md) | Storage domain、Config、credentials |
+| [11 存储通道](./10-foundations/11-storage-channels.md) | 内容、Session history、插件状态、派生与 Client state |
+| [12 状态存储](./10-foundations/12-state-storage.md) | Storage domain、Config、credentials |
 | [13 作用域与键](./10-foundations/13-scope-and-keys.md) | Session、项目根、Workspace、profile、home、device |
 | [14 产物](./10-foundations/14-artifacts.md) | `present`、changes、attachments、spill、export |
-| [15 四个空间](./10-foundations/15-four-spaces.md) | bundle、用户目录、插件状态与设置的 owner |
+| [15 资产 owner](./10-foundations/15-asset-owners.md) | bundle、用户目录、插件状态与设置的 owner |
 | [16 首次启动](./10-foundations/16-startup-resolution.md) | DSH Web 首用与发行方目录选择 |
 | [17 配置与工具](./10-foundations/17-config-layers.md) | Patch、runtime settings、tools 与 sandbox policy |
-| [18 安装升级](./10-foundations/18-install-upgrade.md) | Profile、升级、兼容与卸载 |
+| [18 安装升级](./10-foundations/18-install-upgrade.md) | profile、升级、兼容与卸载 |
 | [21 原生数据面](./20-native/21-native-data-landscape.md) | DSH 数据机制与 API 来源 |
 | [22 原生历史](./20-native/22-native-data-history.md) | DSH 存储能力的决策背景 |
 | [31 社区模式](./30-external/31-external-community-patterns.md) | 社区插件的数据做法（九个维度、18 种手法） |
@@ -61,10 +61,10 @@ DSH repo 里 `product` 要么指**整台运行中的 dsh**（“Every part of th
 | [36 样本台账](./30-external/36-profile-evidence-ledger.md) | 34 八样本的逐样本证据、采用信号与未验证项 |
 | [37 生命周期](./30-external/37-lifecycle-stages.md) | 装/起/配/首启、15 张阶段样本 + 反例、web/Desktop 分叉与发布判据 |
 | [50 生命周期](./50-lifecycle/00-index.md) | 打包、发布、安装、初始化、配置、启动、更新与卸载的推荐做法；分发打包与安装文档 |
-| [90 主线](./90-advisor/00-index.md) | Profile 文件、启动顺序、Kanban 运行和数据归属 |
+| [90 主线](./90-advisor/00-index.md) | profile 文件、启动顺序、Kanban 运行和数据归属 |
 | [91 数据卡](./90-advisor/91-checklist.md) | 数据事实、装配/发行、实现和退出检查 |
 | [92 参考架构](./90-advisor/92-native-reference-architectures.md) | 数据用途、DSH 能力、隔离与维护 |
-| [93 Kanban 文件例子](./90-advisor/93-app-plugin-walkthrough.md) | Profile JSON、bundle JSON、preset YAML 和 Session request |
+| [93 Kanban 文件例子](./90-advisor/93-app-plugin-walkthrough.md) | profile JSON、bundle JSON、preset YAML 和 Session request |
 
 ## 证据
 
@@ -72,7 +72,7 @@ DSH repo 里 `product` 要么指**整台运行中的 dsh**（“Every part of th
 
 34–36 用 `[SRC]`/`[DSH]` 分别对应 S/C；`[TEST]`/`[CI]` 表示读过测试/CI 记录但未执行；`[OBS]` 表示只读目录或注册表的普查记录；本轮没有 `[RUN]`（表示实际运行过）。
 
-Profile/template 的局部实验（CLI web 自动化；应用内安装未测）见 [05](./40-evidence/experiments/05-profile-bundle-install.md)；安装/启动/设置实验见 [50/90](./50-lifecycle/90-evidence.md)。证据来源见 [reference](./40-evidence/reference.md)、[research-native](./40-evidence/research-native.md) 和 [research-external](./40-evidence/research-external.md)。[Quality review](./40-evidence/quality-review.md) 记审计历史与仍开放的缺口，不是当前行为的 owner。
+profile/template 的局部实验（CLI web 自动化；应用内安装未测）见 [05](./40-evidence/experiments/05-profile-bundle-install.md)；安装/启动/设置实验见 [50/90](./50-lifecycle/90-evidence.md)。证据来源见 [reference](./40-evidence/reference.md)、[research-native](./40-evidence/research-native.md) 和 [research-external](./40-evidence/research-external.md)。[Quality review](./40-evidence/quality-review.md) 记审计历史与仍开放的缺口，不是当前行为的 owner。
 
 ## 引用约定
 

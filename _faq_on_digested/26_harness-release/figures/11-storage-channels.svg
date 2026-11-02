@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>五个家与一个只读层：内容、历史、状态、派生、客户端</title>
-  <desc>内容家是用户拥有的工作区与用户全局文件；历史家是模型可见的会话日志；状态家是插件拥有的宿主域、配置与凭据；派生家是可重建的投影与索引；客户端家是浏览器 localStorage 或桌面 userData。只读层是随包发布、升级即替换的资源，不是用户数据。每个家有自己的权威、位置、可见性与生命周期。</desc>
+  <title>五类存储与一个只读层：内容、历史、状态、派生、客户端</title>
+  <desc>内容通道是用户拥有的工作区与用户全局文件；历史通道是模型可见的会话日志；状态通道是插件拥有的宿主域、配置与凭据；派生通道是可重建的投影与索引；客户端通道是浏览器 localStorage 或桌面 userData。只读层是随包发布、升级即替换的资源，不是用户数据。每条通道有自己的权威、位置、可见性与生命周期。</desc>
 
   <rect width="1200" height="760" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">五个家，一个只读层</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">同一份事实只能有一个家；其他家只能存引用、哈希或可重建副本</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">五类存储，一个只读层</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">同一份事实只能有一个权威；其他通道只能存引用、哈希或可重建副本</text>
 
   <!-- 内容 -->
   <rect x="24" y="84" width="220" height="470" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
@@ -84,7 +84,7 @@
   <text x="824" y="132" text-anchor="middle" font-size="11" fill="#475569">可以丢的加速层</text>
   <line x1="734" y1="146" x2="914" y2="146" stroke="#e2e8f0"/>
   <text x="734" y="170" font-size="11" font-weight="700" fill="#334155">权威</text>
-  <text x="734" y="190" fill="#334155">没有；从上面几家算出来</text>
+  <text x="734" y="190" fill="#334155">没有；从上面几条通道算出来</text>
   <text x="734" y="208" fill="#64748b" font-size="10.5">丢了能重算，才叫派生</text>
   <text x="734" y="236" font-size="11" font-weight="700" fill="#334155">怎么碰</text>
   <text x="734" y="256" fill="#334155">projections / sessionQuery</text>
@@ -131,7 +131,7 @@
 
   <!-- footer -->
   <rect x="24" y="650" width="1140" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="44" y="674" font-size="12" font-weight="700" fill="#334155">跨家只存引用</text>
+  <text x="44" y="674" font-size="12" font-weight="700" fill="#334155">跨通道只存引用</text>
   <text x="44" y="696" fill="#334155" font-size="10.5">内容 → 历史：事件记录文件路径或附件引用；内容 → 状态：索引只存路径 + 哈希；历史 → 派生：投影从事件 fold，不反向写；状态 → 派生：缓存可重建，绝不回写权威。</text>
   <text x="44" y="718" fill="#64748b" font-size="10.5">判断顺序：先问“用户有没有 / 能不能重算”，再问“跟项目还是跟人”，最后才问“用哪个 API”。</text>
 </svg>

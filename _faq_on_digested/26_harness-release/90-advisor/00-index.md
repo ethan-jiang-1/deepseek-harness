@@ -10,20 +10,20 @@
 
 ## 1. 先认清启动文件
 
-Profile 是启动组合，不是项目目录，也不是隔离边界。`dsh --profile kanban` 由 CLI 读取 `$DSH_HOME/profiles/kanban/package.json`，选中其中有序的 bundles；app-boot 随后读取每个 bundle 声明的 patch 文件，Loader 最后挂载组合后的 rows。
+profile 是启动组合，不是项目目录，也不是隔离边界。`dsh --profile kanban` 由 CLI 读取 `$DSH_HOME/profiles/kanban/package.json`，选中其中有序的 bundles；app-boot 随后读取每个 bundle 声明的 patch 文件，Loader 最后挂载组合后的 rows。
 
 | 文件 | 谁读取 | 作用 |
 |---|---|---|
-| Profile `package.json` | CLI/app-boot、pnpm | `dsh.profile.bundles` 选择并排序 bundle；profile `dependencies` 安装可直接解析的 packages |
-| Bundle `package.json` | pnpm、app-boot | `dependencies` 解析代码；`dsh.bundle.patch` 指定单个或有序的 patch 文件列表 |
-| Bundle patch (`.yml`/`.json`) | app-boot、Loader | `insert` Host/Web rows 或 Agent preset；按 id 覆盖 row |
-| Profile `cordis.patch.yml` | app-boot | 该 profile 的用户 patch layer，应用在 bundles 之后 |
+| profile `package.json` | CLI/app-boot、pnpm | `dsh.profile.bundles` 选择并排序 bundle；profile `dependencies` 安装可直接解析的 packages |
+| bundle `package.json` | pnpm、app-boot | `dependencies` 解析代码；`dsh.bundle.patch` 指定单个或有序的 patch 文件列表 |
+| bundle patch (`.yml`/`.json`) | app-boot、Loader | `insert` Host/Web rows 或 Agent preset；按 id 覆盖 row |
+| profile `cordis.patch.yml` | app-boot | 该 profile 的用户 patch layer，应用在 bundles 之后 |
 | `$DSH_HOME/cordis.patch.yml` | app-boot | 同一 home 的 profiles 共用，优先级高于 profile patch |
 | CLI `--patch <path>` | app-boot | 仅本次启动的最后一层文件 overlay |
-| Profile `pnpm-workspace.yaml` | pnpm | profile package 安装策略；不是 DSH runtime rows |
-| Profile `cordis.yml` | Loader | CLI 生成的空 root Include 和路径锚点，不放发行版配置 |
+| profile `pnpm-workspace.yaml` | pnpm | profile package 安装策略；不是 DSH runtime rows |
+| profile `cordis.yml` | Loader | CLI 生成的空 root Include 和路径锚点，不放发行版配置 |
 
-在 JSON 中，`{}` 是字段对象，`[]` 是有序列表，字符串用双引号，不能写注释。Profile 的 `dependencies` 是“包名 → 版本或本地安装规格”的对象，`dsh.profile.bundles` 是 bundle 名称的有序数组；bundle 的 `dsh.bundle.patch` 则是 patch 文件路径或有序路径数组。[93](./93-app-plugin-walkthrough.md) 把这几个字段放在一起展示。
+在 JSON 中，`{}` 是字段对象，`[]` 是有序列表，字符串用双引号，不能写注释。profile 的 `dependencies` 是“包名 → 版本或本地安装规格”的对象，`dsh.profile.bundles` 是 bundle 名称的有序数组；bundle 的 `dsh.bundle.patch` 则是 patch 文件路径或有序路径数组。[93](./93-app-plugin-walkthrough.md) 把这几个字段放在一起展示。
 
 `dependencies` 让 package 可解析；只有选中的 bundle 才会自动应用它自身声明的 patch。其他 patch 也可以显式插入可解析的普通 plugin row。Patch 文件通常写 YAML，也可用 JSON 表示同一顶层 patch list；两种语法没有不同的优先级。Patch 按 row id 操作，给出的 `config` 会整体替换原 `config`，不做递归合并。启动时，若 `DSH_TELEMETRY_DISABLED` 非空且组合中存在 `session-telemetry-otel` row，Launcher 还会在文件 overlays 之后追加该 row 的禁用 patch。
 
@@ -39,7 +39,7 @@ dsh plugin --profile kanban add <kanban-bundle-spec>
 dsh --profile kanban --dump-config
 ```
 
-`<kanban-bundle-spec>` 是尚未提供的发行版包占位符，需替换为实际安装规格。`--dump-default-config` 只查看所选 bundle 层；`--dump-config` 显示合成的文件配置，但不挂载 plugin、验证发行版行为或反映启动时的 telemetry 环境开关。Bundle 加载或兼容性检查失败时会被跳过并报告；plugin row 的运行时准入与激活仍需启动后核查。
+`<kanban-bundle-spec>` 是尚未提供的发行版包占位符，需替换为实际安装规格。`--dump-default-config` 只查看所选 bundle 层；`--dump-config` 显示合成的文件配置，但不挂载 plugin、验证发行版行为或反映启动时的 telemetry 环境开关。bundle 加载或兼容性检查失败时会被跳过并报告；plugin row 的运行时准入与激活仍需启动后核查。
 
 dump 只覆盖文件配置层；包已安装、bundle 在 roster、row 存在、row 当前 enabled/config 生效是四层状态，聚合/接管/进口形态还要检查身份冲突、更新恢复和来源所有权，见 [35 装配状态与所有权](../30-external/35-profile-assembly-ownership.md)。
 

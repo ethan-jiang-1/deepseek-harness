@@ -48,7 +48,7 @@
 
   <rect x="24" y="632" width="1152" height="64" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
   <text x="44" y="658" font-size="10" font-weight="700" fill="#3730a3">阶段判据</text>
-  <text x="130" y="658" font-size="9.5" fill="#334155">装：进 roster + dump 有行；起：真启动无 did not activate；配：选对家；首启：可推迟且 Desktop 成立。</text>
+  <text x="130" y="658" font-size="9.5" fill="#334155">装：进 roster + dump 有行；起：真启动无 did not activate；配：选对来源；首启：可推迟且 Desktop 成立。</text>
   <text x="44" y="680" font-size="9.5" fill="#64748b">C：DSH 合同；T：隔离实测（50/90）；S/R：样本包清单/README。不要用 exit 0 代表“装好了”。</text>
 
   <text x="24" y="730" font-size="9.5" fill="#64748b">生命周期册的判据不是流程文档：每个阶段只问“谁做、做在哪层、失败长什么样”。</text>

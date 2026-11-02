@@ -10,7 +10,7 @@
 
 ## 1. DSH 数据落点（33）
 
-| id | 家 | 位置 | 权威 | 作用域 | 寿命 | 证据 |
+| id | 通道 | 位置 | 权威 | 作用域 | 寿命 | 证据 |
 |---|---|---|---|---|---|---|
 | SESS-LOG | 会话日志 | `$DSH_HOME/sessions/--<cwd>--/<id>/session.v<N>.jsonl[.zstd]` | 会话 | session | 永久，无删除 API | C |
 | SESS-GEN | 旧格式世代 | 同目录 | 只读历史 | session | 永久 | C |
@@ -74,7 +74,7 @@
 
 状态：I=implemented、A=archived、P=proposed、R=rejected、C=current contract。A 是历史，不是现状。
 
-| 日期 | Note | 状态 | 影响的家 | 一句话 |
+| 日期 | Note | 状态 | 影响的通道 | 一句话 |
 |---|---|---|---|---|
 | 2026-06-14 | session-persistence | A | SESS-LOG | 持久化抽成 `SessionPersistence` 抽象服务，实体化 `SessionEvent`，不引入平行事件类型 |
 | 2026-06-15 | turn-enclosure-invariant | A | SESS-LOG | 每个事件必须落在某个 turn 内，日志可安全截断到 turn 边界 |

@@ -18,12 +18,12 @@ ordered bundle patches
 
 最后一行只在该环境变量非空、且组合里存在 `session-telemetry-otel` row 时出现；它由启动器生成，不是用户写的 patch 文件。
 
-后续 patch 可覆盖 entry 或插入 rows。覆盖既有 row 的 `config` 是**整对象替换**，不是深合并。Profile Config schema 会为具有定义默认值的字段填充默认；只有写在低层 patch、且没有 schema/code default 的字段，不会因为高层只改另一个字段而继续继承。
+后续 patch 可覆盖 entry 或插入 rows。覆盖既有 row 的 `config` 是**整对象替换**，不是深合并。profile Config schema 会为具有定义默认值的字段填充默认；只有写在低层 patch、且没有 schema/code default 的字段，不会因为高层只改另一个字段而继续继承。
 
 | 来源 | 作用域 | 适合内容 |
 |---|---|---|
-| Bundle patch | profile composition | 发行版 bundle 的默认 rows/config |
-| Profile patch | 当前 profile | 用户或 Settings 保存的 profile-local 覆盖 |
+| bundle patch | profile composition | 发行版 bundle 的默认 rows/config |
+| profile patch | 当前 profile | 用户或 Settings 保存的 profile-local 覆盖 |
 | Home patch | 同一个 `$DSH_HOME` 下的 profile | 机器级配置，优先于 profile patch |
 | `--patch` | 一次启动 | 临时部署/调试覆盖 |
 | Config schema defaults | plugin entry config | 字段缺失时的代码默认，不是 patch layer |
@@ -94,7 +94,7 @@ Host plugin 代码在 DSH 进程中运行。它直接调用 `node:fs` 不受 Ses
 ## 检查清单
 
 - [ ] 使用实际组合的有序 bundle list，并写明覆盖 row 的 owner。
-- [ ] Profile patch、home patch 与 CLI overlays 的优先级写清楚。
+- [ ] profile patch、home patch 与 CLI overlays 的优先级写清楚。
 - [ ] 说明整对象替换及哪些默认值来自 schema/code、哪些只在 bundle patch。
 - [ ] Settings 表单字段仅用于预期的 profile scope。
 - [ ] 若运行设置跨 profile 共享，声明实际文件/domain 路径及生命周期 owner。
@@ -108,4 +108,4 @@ Host plugin 代码在 DSH 进程中运行。它直接调用 `node:fs` 不受 Ses
 
 - Patch precedence 与 entry config replacement 是 DSH composition 机制；发行版运行时文件/domain 的读取顺序由发行版拥有。
 - 本篇不定义发行版级 `dataRoot`、Workspace root resolver 或数据隔离 API。
-- DSH Profile 属于同一 `$DSH_HOME` 时，共享与否按每个 provider/store 的路径和客户端 origin 判断，不能从 profile 名推断。
+- DSH profile 属于同一 `$DSH_HOME` 时，共享与否按每个 provider/store 的路径和客户端 origin 判断，不能从 profile 名推断。

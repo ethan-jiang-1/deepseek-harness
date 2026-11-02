@@ -22,7 +22,7 @@
 
 **没有“自建第二层 launcher/桌面壳”这一行。** 发行版要桌面体验就用官方 Desktop；要做 Web 就用 web profile + 应用内 Plugins 页/CLI 自动化；容器是部署包装。
 
-## Profile 安排清单
+## profile 安排清单
 
 1. **名字**：profile 用稳定、非 shipped 的名字；不要占用 `desktop`；`plugin` 需 `--profile plugin`。
 2. **模板**：Web/headless/SDK/ACP 先选 shipped 模板；自定义 TUI 才从 base/自定义开始。
