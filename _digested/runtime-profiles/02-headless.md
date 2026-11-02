@@ -2,7 +2,7 @@
 
 ## 一句话
 
-`dsh --profile headless "run the tests"` 回答一条任务，打印最终 assistant 消息；`completed` 退 0，其余结局（`max-tokens` / `error` / `aborted` 等，或没有 turn）退 1。没有 HTTP 服务、没有 browser、没有常驻进程。
+`dsh --profile headless "run the tests"` 回答一条任务，打印最终 assistant 消息，然后退出；输出与退出码契约见 [`../surfaces-entrypoints/01-启动面与session流.md`](../surfaces-entrypoints/01-启动面与session流.md)。没有 HTTP 服务、没有 browser、没有常驻进程。
 
 ## 怎么跑
 
@@ -55,7 +55,7 @@ dsh --profile headless "run the tests"
   → boot() → 启动 Loader 插件树
   → headless-startup 解析 task，提供 headlessStartup 服务
   → headless-runner 读取 task，创建 Agent，推进到完成
-  → 打印最终 assistant 消息 → `completed` 退 0，其余退 1
+  → 打印最终 assistant 消息 → 退出（输出与退出码契约见 surfaces/01）
 ```
 
 最终消息的读取是逐 seq 的：runner 的 `summarize` 按 `session.eventAt(SessionSeq(seq))` 从首个 seq 读到捕获长度，读不到即 fail loud（`dsh: headless summary cannot read seq N below captured length M`；`packages/bundle/headless/src/index.ts:73-99`，fail-loud 抛在 `:82`，`tests/headless.spec.ts` 有对应用例）。进程中的推理进度另走 `streamReasoning`：它订阅 `agent/assistant-stream` 这个 process-local 帧（不是 WAL），只把非空 `reasoning-delta` 打到 stderr（`packages/bundle/headless/src/index.ts:109-165`，`:122` 是订阅点）——最终结局仍从耐久日志推导，两路不混。

@@ -51,7 +51,7 @@ dsh --profile sdk
 
 - **stdout 是纯数据管道**：任何 stdout logger 都会污染协议帧。诊断只能走 stderr。
 - **协议层接线**：bundle `inject: [sdkAppStartup, loader]`；server 按 sessionId get-or-create agent，经 `ctx.agents` 驱动。
-- **推送所有耐久事实**：每条 `session/event` 转成 `session.event` 通知，每条 `agent/status` 转成 `session.status`；`session/created` 的子 Session 发 `subagent.started`，`subagent/end` 只在 `local` 为 true 时发 `subagent.finished`（`packages/sdk/server/src/server.ts:120-147`）。
+- **推送全部耐久事实**：事件映射、子 Session 通知与 `local` 过滤的单点在 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md)；本页只记它是 sdk-app 的组合后果。
 - **`initialize.maxTokens`** 可变成 SDK 创建的 agent 及其后代的输出上限。
 - **无 per-prompt 结果**：`session/prompt` 立刻返回 `messageId`（inbox 准入 id），不等 idle。自动化区间由客户端自己定义。
 - **startup-only 重载**：协议开始后 patch 重载会打散生命周期。

@@ -29,7 +29,7 @@
   <line x1="90" y1="176" x2="70" y2="204" stroke="#595959" stroke-width="1.5"/>
   <line x1="90" y1="176" x2="105" y2="204" stroke="#595959" stroke-width="1.5"/>
   <line x1="90" y1="176" x2="140" y2="204" stroke="#595959" stroke-width="1.5"/>
-  <text x="160" y="216" font-size="9.5" fill="#8c8c8c">children（depth 1，≤1000）</text>
+  <text x="160" y="216" font-size="9.5" fill="#8c8c8c">children（depth 1；广度受各 runtime 容量约束）</text>
   <text x="60" y="252" font-size="10" fill="#333">子节点不能再挂子节点：默认 maxDepth = 1</text>
   <text x="60" y="270" font-size="10" fill="#333">（广度开放、深度关闭——用预算表达嵌套边界）</text>
   <text x="60" y="292" font-size="9.5" fill="#8c8c8c">机制见 03/08 页：这是权限、通知、结算的骨架</text>

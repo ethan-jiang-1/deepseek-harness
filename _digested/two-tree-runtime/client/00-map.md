@@ -10,7 +10,7 @@ Web Client 是浏览器侧一棵由独立载入的插件组装成的 Cordis 应�
 
 ## 和 Host 树的不对称
 
-Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mutation 结果，Client model 维护最新可用的本地投影并编码「延迟响应与替换基线如何合并」；`presentation component` 永远不接收 Cordis `ctx`、transport 对象或另一个 feature 插件的实现（`docs/subsystems/web-client.md:20`、`:54`）。刷新 / 重连从持久化再 hydrate，仍然读同一条 session 的事件——**client 没有第二份 append-only log**（[`../remote/streams/01`](../remote/streams/01-一条-emit-两条出站链路.md)）。
+Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mutation 结果，Client model 维护最新可用的本地投影并编码「延迟响应与替换基线如何合并」；`presentation component` 永远不接收 Cordis `ctx`、transport 对象或另一个 feature 插件的实现（`docs/subsystems/web-client.md:20`）；Host 控制器拥有耐久状态，Client model 只保留可用的本地投影（`:54`）。刷新 / 重连从持久化再 hydrate，仍然读同一条 session 的事件——**client 没有第二份 append-only log**（[`../remote/streams/01`](../remote/streams/01-一条-emit-两条出站链路.md)）。
 
 ## 四问：四个孙目录
 

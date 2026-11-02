@@ -57,7 +57,7 @@ dsh --profile acp
 ## 独特之处
 
 - **标准化协议**：ACP 是 Agent Client Protocol 标准实现，为跨平台 agent 互操作设计。
-- **只投递 committed 事实**：`session/update` 发的是已提交 `assistant/message` 的文本 / 图像块与 reasoning 块（`agent_message_chunk` / `agent_thought_chunk`）、已提交 `tool/call` 与 `tool/result` 的通用 tool 生命周期（`tool_call` / `tool_call_update`）、以及可用时的一条 `usage_update`（`packages/acp/acp/src/updates.ts:36`、`:54`、`:80`、`:98`）；模型/适配器拓扑变化时另发一条 `config_option_update`（`index.ts:152-153` → `session.ts:214-237`，`:224`）。raw provider delta、retry attempt、plan、title、todo、terminal 这类 DSH 展示面不上线。
+- **只投递 committed 事实**：ACP 语义更新、图像准入与 raw delta 边界的单点在 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md)；本页只记它是 acp-app 的组合后果。
 - **每会话一个 in-flight prompt**：`session/prompt` 排他，不能同时有两个 prompt 互窜。
 - **图像处理**：支持 PNG / JPEG / WebP / GIF，inline base64 准入后丢弃，日志只留 attachment 引用。图像投递前再读并校验完整性。
 - **审批转发**：`approval/request` 事件转发为 `session/request_permission` 到客户端，客户端可自动答。

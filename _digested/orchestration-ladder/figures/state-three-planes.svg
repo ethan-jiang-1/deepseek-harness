@@ -21,7 +21,7 @@
   <text x="475" y="230" font-size="14" fill="#333">• goal view / phase</text>
   <text x="475" y="262" font-size="14" fill="#333">• team roster / ready</text>
   <text x="475" y="294" font-size="14" fill="#333">• todo 当前列表</text>
-  <text x="475" y="326" font-size="14" fill="#333">• job view / cursor</text>
+  <text x="475" y="326" font-size="14" fill="#333">• job view</text>
   <text x="475" y="358" font-size="14" fill="#333">• UI 与模型查询面</text>
   <text x="475" y="405" font-size="12" fill="#595959">重启后：从 owner 事实重算</text>
 

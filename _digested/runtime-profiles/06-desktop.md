@@ -8,7 +8,7 @@
 
 - profile 目录与锁：`$DSH_HOME/profiles/desktop` 及其下的 `lock`（`apps/desktop/src/paths.ts:17-21`）。`DesktopProjectManager.withLock` 持有该锁完成全部 profile 写事务，并回收陈旧进程留下的死锁文件（`apps/desktop/src/project-manager.ts:93-130`）。
 - 组合起点：`WEB_PROFILE = PROFILE_TEMPLATES.web`，desktop profile 的 `dsh.profile.bundles` 就是 web 那两个 bundle（`apps/desktop/src/project-manager.ts:32`；manifest 在 `:142`、`:167` 直接写入，`:175` 经 `initProfile`；模板定义 `packages/boot/app-boot/src/profile.ts:179-195`）。用户插件由主窗口 Plugins 页经共享 Web Plugin Manager 追加进同一 manifest（`apps/desktop/README.md:168`）。
-- CLI 的 boot / dump 入口一律拒绝这个名字；`plugin` 子命令默认也拒绝，只有 Desktop 自带 CLI 以 `manageDesktopProfile: true` 放行（`apps/desktop-host/src/cli.ts:15-16`）：`rejectElectronProfile`（`apps/cli/src/args.ts:83-87`，错误文案 `:85`），调用点在根命令 action（`:183`，一次覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`）与 `plugin` 子命令（`:199`）。`desktop` 也**不是** `PROFILE_TEMPLATES` 成员（`packages/boot/app-boot/src/profile.ts:179-195`），所以 `--from-default-profile desktop` 以「unknown default profile」被拒（`apps/cli/src/profile-boot.ts:117-122`）。
+- CLI 的 boot / dump / `plugin` 入口拒绝 `desktop`（`rejectElectronProfile` 与 `manageDesktopProfile` 例外的入口证据见 [`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)）；本页只记 profile 事实：`desktop` **不是** `PROFILE_TEMPLATES` 成员，`--from-default-profile desktop` 以「unknown default profile」被拒（`apps/cli/src/profile-boot.ts:117-122`）。
 
 `docs/architecture.md` 把这条归属单独写在 `## Desktop application`（`:49-53`），`:53` 原文是「Desktop listens on an OS-assigned port by default; profile configuration can override it.」；`## Application launch`（`:41-47`）仍然只列 5 个 CLI profile、不计 Desktop。
 
