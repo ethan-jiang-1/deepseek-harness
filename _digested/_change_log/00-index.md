@@ -126,5 +126,5 @@ pnpm run verify-repository-references  # 验证第 6 项例外仍然生效
 1. 在本目录新增一条记录，写清产品源码 commit 范围和触及的专题。
 2. 更新 [`../catalog.json`](../catalog.json) 的 `baseline`（唯一一处）；[`../00-index.md`](../00-index.md) 与 [`../_coverage/00-index.md`](../_coverage/00-index.md) 的渲染行由 `render-indexes.mjs` 更新。
 3. 在 `catalog.json` 把受影响页面的 `status` 标为 `needs-recheck`；完成源码、图与链接审计后写入 `verifiedAt` 与最终状态。
-4. 更新 `../verify.mjs` 的 `EXPECTED_BASELINE` 与 `../harness-idea/claims.json` 的 `baseline` 为新 tag 的完整哈希；若计数指标（包数、notes 数）随版本变化，一并改 `claims.json` 的 expected 值。
+4. `verify.mjs` 不再维护单独的基线常量，读取 `catalog.json` 的 `baseline`；`claims.json` 不再有 `baseline` 字段。若计数指标（包数、notes 数、服务/工具数）随版本变化，一并改 `claims.json` 的 expected 值。
 5. 运行 `node _digested/render-indexes.mjs`、`node _digested/verify.mjs` 与 `pnpm run verify-repository-references`。
