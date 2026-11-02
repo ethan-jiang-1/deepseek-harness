@@ -28,7 +28,7 @@ DSH 支持很多开发习惯——spec-first、TDD、plan-first、全量验证�
 
 这六步就是每个 `dsh-*` skill 反复展开的同一个骨架——写作树上是 10 个 `dsh-*` skill（语料分析取其中 9 个，排除仅限用户显式调用的 dsh-translate-docs），到 `fb2c4b9e69` 已是 11 个：`dsh-doc` 合并了原 doc-standards 与 doc-site-sync，OLD 之前新增 `dsh-ci-test-reliability`，本次跨度新增 `dsh-speed-up-perf`。
 
-## 第二节 "轻松"的来源一：记忆外包——门禁替你记得规则
+## 第二节 "轻松"的来源一：记忆外包——gate（门禁）替你记得规则
 
 ![「轻松」的三个机制来源：记忆外包、反馈延迟最小、犯错代价低——三者合流使正确路径成为最省力路径（第二~四节总览）](./figures/lightness-mechanisms.svg)
 
