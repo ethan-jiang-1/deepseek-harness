@@ -114,3 +114,16 @@ bootstrap-only 名字（`PATH`、代理、`DEEPSEEK_BASE_URL`、一切 `DSH_` �
 启动环境冻住之后、任何行 mount 之前，`runProfile` 就从这份快照装进程级出网代理（见上文第 0 步）；`.env` 里声明的代理因此在首个插件发请求前生效。
 
 快照经 `prepare` provide，插件读同一份不可变出处，不自己再扫一遍 `.env`。
+
+
+## 自证配方
+
+```sh
+# 层叠对没有：只看不启动
+dsh --profile <name> --dump-config | sed -n '/^# == /p'
+
+# 真启动：两段失败标签与失活警告
+DSH_HOME=$(mktemp -d) dsh --profile web --no-open --port 0 2>&1 | head -20
+```
+
+判据：`host preparation failed` 说明 `prepare` 之前就炸了；`plugin tree failed to load` 说明问题在树内。启动窗口之后才冒出来的 rejection 走 `installFailLoud`，stderr 第一行是 `dsh: fatal load failure:`。

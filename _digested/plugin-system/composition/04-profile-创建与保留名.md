@@ -72,3 +72,14 @@ dsh --profile rescue --from-default-profile web --dump-config
 ## launcher 的父选项归属
 
 launcher 参数在 0.1.7 线改为 **positional 直通**：解析器把首个非 flag、非 `plugin` 的 positional 展开成 `['--profile', ...argv]`（`apps/cli/src/args.ts:206-208`），旧 `rejectParentOptions` / `allowUnknownOption` 机制已不存在。因此 `dsh web --from-default-profile x` 现在被**接受**为 launcher 选项（与直通前 `apps/cli/tests/args.spec.ts` 钉过的 pass-through 语义相反方向），而 `dsh --from-default-profile x web` 在解析期报 `--profile <name> is required`（flag 出现在 positional 展开之前、没有显式 `--profile` 可绑定）。两种拼写的效果差异以 `parseDshArgs` 的实际展开为准，写脚本时显式用 `--profile <name> --from-default-profile <模板>` 最稳。
+
+
+## 自证配方
+
+```sh
+dsh --profile rescue --from-default-profile web --dump-default-config   # 只在全新或救援时
+dsh plugin --profile demo list                                          # 初始化 base-backed
+dsh --profile desktop --dump-config                                     # 应被拒绝
+```
+
+判据：`--from-default-profile` 会删掉原有依赖与用户 patch；它不是升级。`desktop` 名字两个入口都拒绝。

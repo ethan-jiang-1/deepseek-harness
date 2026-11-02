@@ -78,3 +78,13 @@ Include 对「目标 id 不在当前索引」记一条 patch skip。dump 没有 
 | insert 立刻进索引（vendor 本地修改） | `--dump-default-config` 含用户层 |
 
 产品代码里再手写一份「类似的 patch」会和真树漂移。这是 vendor Include 导出 `applyEntryPatches` 的原因，见 [`../../cordis-runtime/04-vendor-本地修改.md`](../../cordis-runtime/04-vendor-本地修改.md)。
+
+
+## 自证配方
+
+```sh
+dsh --profile <name> --dump-default-config   # 只有 bundle 层
+dsh --profile <name> --dump-config           # 再加 profile / home / --patch
+```
+
+判据：两份输出的差异**只应**来自后三层；`!!js` 表达式在两份里都保持原样，不会被求值。若某行的 `config` 在 dump 里少了字段，说明有一层做过整份替换。

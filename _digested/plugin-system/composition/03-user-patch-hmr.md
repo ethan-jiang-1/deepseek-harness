@@ -51,3 +51,13 @@ reconcile 的事务边界在 Include / Loader：`entry.update` 的候选失败�
 | HMR refresh | 保留好树，日志/事件可见，进程继续；只有**新引入**的失败升级为抛错 |
 
 长寿命表面（web / desktop 经 `runProfile` 的启动）靠第三行；headless / sdk / acp 这类一次性表面显式关断，调试它们要重启。
+
+
+## 自证配方
+
+```sh
+$EDITOR "$DSH_HOME/profiles/<name>/cordis.patch.yml"   # 改一行
+# 有 HMR：日志出现 config-reload；无 HMR：重启才生效
+```
+
+判据：只有**本次新引入**的失活条目才抛错；先前已坏的条目只逐条 warning。候选失败不提交，正在服务的树继续用旧 patch 集。
