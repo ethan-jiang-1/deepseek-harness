@@ -22,17 +22,17 @@
   <text x="78" y="343" font-size="12.5" font-weight="700" fill="#5b21b6">④ 校验 args 与 descriptor 一致</text>
   <text x="78" y="364" font-size="10.5" fill="#6d28d9">多一个字段、少一个字段都当场失败，不做宽松匹配</text>
 
-  <rect x="520" y="78" width="380" height="64" rx="9" fill="#dcfce7" stroke="#86efac"/>
-  <text x="538" y="103" font-size="12.5" font-weight="700" fill="#166534">⑤ 解析 receiver Context</text>
-  <text x="538" y="124" font-size="10.5" fill="#15803d">从该 Context 取 descriptor.service，并校验绑定</text>
+  <rect x="520" y="78" width="380" height="64" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="538" y="103" font-size="12.5" font-weight="700" fill="#9a3412">⑤ 非 owner：ctx.remoteAccess.decide()</text>
+  <text x="538" y="124" font-size="10.5" fill="#c2410c">参数校验之后、任何 lookup 或 Context 解析之前；list 结果经 allows() 过滤</text>
 
   <rect x="520" y="158" width="380" height="64" rx="9" fill="#dcfce7" stroke="#86efac"/>
-  <text x="538" y="183" font-size="12.5" font-weight="700" fill="#166534">⑥ 逐个解析参数</text>
+  <text x="538" y="183" font-size="12.5" font-weight="700" fill="#166534">⑦ 逐个解析参数</text>
   <text x="538" y="204" font-size="10.5" fill="#15803d">JSON 值 / lookup（按 wire id 解析回对象）/ Context 投影</text>
 
-  <rect x="520" y="238" width="380" height="64" rx="9" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="538" y="263" font-size="12.5" font-weight="700" fill="#9a3412">⑦ 非 owner：ctx.remoteAccess.decide()</text>
-  <text x="538" y="284" font-size="10.5" fill="#c2410c">参数校验之后、任何 lookup 或 Context 解析之前；list 结果经 allows() 过滤</text>
+  <rect x="520" y="238" width="380" height="64" rx="9" fill="#dcfce7" stroke="#86efac"/>
+  <text x="538" y="263" font-size="12.5" font-weight="700" fill="#166534">⑥ 解析 receiver Context</text>
+  <text x="538" y="284" font-size="10.5" fill="#15803d">从该 Context 取 descriptor.service，并校验绑定</text>
 
   <rect x="520" y="318" width="380" height="64" rx="9" fill="#f3f4f6" stroke="#d1d5db"/>
   <text x="538" y="343" font-size="12.5" font-weight="700" fill="#374151">⑧ 追加信号并调用</text>

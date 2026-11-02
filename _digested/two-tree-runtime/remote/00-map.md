@@ -31,7 +31,7 @@
 | 非 owner Peer 的访问控制（core） | `packages/api/remote-access` | 按资源 kind 的 role 策略判定一次调用，过滤 list 结果，并给每个 Peer 一条访问快照（`docs/api-gateway.md:93`、`docs/subsystems/typert.md:287-357`） |
 | Client `ctx.remote` 与 namespace 子服务 | `packages/api/gateway/src/client` | mount 生成 descriptor、发起/校验/取消调用（`docs/api-gateway.md:94`） |
 | 选择与 mount 哪些 namespace | `packages/api/remotes/src/client` | 显式选择应用允许的 `/remote` 贡献，并带入对应声明合并（`docs/api-gateway.md:95`） |
-| 业务方法契约与 namespace 键 | 各业务包（如 `api-session-controller` 的 `session`、`goal`） | 拥有 `@Remote` 方法与自己的 `/typert`、`/remote` 导出（`packages/api/session-controller/src/index.ts:121`、`packages/goal/goal/package.json:33-40`） |
+| 业务方法契约与 namespace 键 | 各业务包（如 `api-session-controller` 的 `session`、`goal`） | 拥有 `@Remote` 方法与自己的 `/typert`、`/remote` 导出（`packages/api/session-controller/src/index.ts:158`、`packages/goal/goal/package.json:33-40`） |
 | RPC carrier | `packages/client/connection` | 提供 RPC、request correlation、信任边界、取消、响应信封与 `/api` HTTP 桥（`docs/api-gateway.md:96`） |
 
 ## 插件作者视角
