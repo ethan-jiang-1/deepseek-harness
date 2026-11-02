@@ -12,7 +12,7 @@
   </defs>
 
   <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">workflow 编排栈：模型可见工具 → 单例引擎 → PTC fresh Node 进程</text>
-  <text x="40" y="54" font-size="12" fill="#8c8c8c">三层分离：工具拥有模型可见面，引擎拥有解析/执行/上限/取消，进程拥有隔离（组装顺序 packages/bundle/base/cordis.patch.yml:390-400）</text>
+  <text x="40" y="54" font-size="12" fill="#8c8c8c">三层分离：工具拥有模型可见面，引擎拥有解析/执行/上限/取消，进程拥有隔离（组装顺序 packages/bundle/base/cordis.patch.yml:397-406）</text>
 
   <rect x="40" y="76" width="600" height="86" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
   <text x="60" y="102" font-size="14" font-weight="bold" fill="#1677ff">tool-workflow（模型可见工具）</text>
