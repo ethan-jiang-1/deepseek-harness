@@ -20,6 +20,8 @@ boot 叠完的树不是一次性的。profile 的 `cordis.patch.yml`、home 层 
 
 ## 刷新做什么
 
+![热更新只换用户层](./figures/live-recompose.svg)
+
 任一被监视文件变化 → `refresh()`（`:388-405`）：
 
 1. 重读三份文件内容做指纹比对，无变化直接返回；ENOENT 视为该层为空。

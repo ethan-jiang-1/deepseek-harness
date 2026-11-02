@@ -1,6 +1,6 @@
 # 05 · 插件分类与设计思考
 
-产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）；快照式清单的重测义务见 [`_coverage/`](../../_coverage/00-index.md)。
+产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）；2026-11-02 在 rc.5 树复核：包 **343**、`packages/experimental/` **47**，与本页数字一致；快照式清单的重测义务见 [`_coverage/`](../../_coverage/00-index.md)。
 
 ## 一句话
 
@@ -27,6 +27,20 @@
 **lib（纯库）回答「哪些不是插件」。** util 组 18 包零运行时依赖，被 import 不被挂载。货架上必须有这一栏，否则「343 个包」会被误读成「343 个插件位」。
 
 **驱动（启动胶水）回答「谁把服务接成通路」。** `goal-round-driver`、`browser-use-runtime` 这类包不注册面向模型的能力，只把现成服务接成一条执行路径——出路四（写胶水插件）的官方参照物。0.2.1 线把 `subagent-in-process-driver` 整包解散、驱动逻辑并入 `subagent`，是这条形态的边界案例：驱动可以只是一条 seam 的内部实现。
+
+| 形态 | 回答的问题 | 典型例子 | 判据 |
+|---|---|---|---|
+| **Def**（合同定义） | 这个能力长什么样？ | `ctx.tools`、`ctx.llm` 的接口面 | 只有定义没有实现时，消费者等它 |
+| **Impl**（Provider 实现） | 谁在兑现合同？ | `bash-sandbox`、`fs-ssh`、`ptc-runtime-python` | 同一 Def 的第二个真实实现出现，才构成 seam |
+| **Tool**（模型可见工具） | 模型看见什么？ | `web_search`、`todo_write` | 注册进 `ctx.tools`，schema 进 prompt 组装 |
+| **cmd**（人类命令） | 人从哪里进？ | `/goal`、`/compact`、`/export` | 与模型工具共用运行时，但入口分离 |
+| **UI**（client 半边） | 浏览器里放什么？ | `ui-settings-*`、`ui-chat` | host 行与 `dsh.client` 罗盘行成对出现 |
+| **adapter**（LLM 接入） | 模型从哪来？ | `llm-pi-ai` 等 Provider | 挂在 `ctx.llm`，可休眠挂载 |
+| **bundle**（交付打包） | 怎么发货？ | `dsh-base`、`dsh-web-app` | 带 `dsh.bundle.patch`，贡献一层配置 |
+| **lib**（纯库） | 哪些不是插件？ | `util/` 组 18 包 | 被 import，不被挂载 |
+| **驱动**（启动胶水） | 谁把服务接成通路？ | `goal-round-driver`、`browser-use-runtime` | 不注册模型能力，只把现成服务连成路径 |
+
+这张表是**检索入口**，不是新分类：九个形态各自的判据都落在具体的注册调用或清单字段上，可以在包里逐一核对。
 
 ## role 语法：core / seam / service / bundle 怎么判
 
