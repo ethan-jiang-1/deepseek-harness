@@ -24,6 +24,7 @@
 - [`0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](./0008-0.1.5-rc.2-to-0.1.7-rc.1.md)——第八次合入（3304 commits，历次最大；session 格式升 v4、sandbox 组转正、整树照搬口径自本卷生效；页尾附 0008 独立复核勘误节）
 - [`0008-independent-recheck.md`](./0008-independent-recheck.md)——0008 轮语料维护的独立反查（五路并行审计 + 修复执行记录；约 60 处过期断言、20 处缺落点、3 孤儿页、4 处口径矛盾）
 - [`0009-0.1.7-rc.1-to-0.2.0-rc.2.md`](./0009-0.1.7-rc.1-to-0.2.0-rc.2.md)——第九次合入（794 commits；session 格式保持 v4、Schedule 转正为 bundle、账号/模型面大改、user-questions timed waits、llm 动态工具更新；语料反查随同步执行，另完成独立反查，见 [`0009-independent-recheck.md`](./0009-independent-recheck.md)）
+- [`0009-span-fact-inventory.md`](./0009-span-fact-inventory.md)——0009 跨度事实清单（源码→语料反向审计底稿，供覆盖审计使用）
 - [`0010-ledger-and-pin-recheck.md`](./0010-ledger-and-pin-recheck.md)——0010 轮**同基线换角反查**（变更三账本＋merge 主题正查＋无引文行号钉专项；约 60 处漂移重锚、图鉴补 acp/sdk 两节、subprocess 计数与 release 间隔口径回归）
 - [`0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](./0011-0.2.0-rc.2-to-0.2.1-rc.2.md)——第十次合入（1925 commits；**对齐口径在本卷定型**，见下节）
 - [`0011-independent-recheck.md`](./0011-independent-recheck.md)——0011 轮**独立反查**（按维度而非目录切：D1 引用反查、D2 正向覆盖、D3 硬数字残留、D4 钉版锚点、D5 文风纪律；实测并定义了「按路径求交」的三类盲区——按数字陈述的文件、引用已整族删除机制的文件、引文不可溯源的文件）
@@ -31,7 +32,7 @@
 - [`0012-0.2.1-rc.2-to-0.2.1-rc.3.md`](./0012-0.2.1-rc.2-to-0.2.1-rc.3.md)——第十二次合入（6 个提交、640 个文件；导航入口自定义与 New Session 空白复用、官方 `/models` listing 进入共享 transport、客户端分析事件、侧栏 pin/selection 分离；343 包；**口径定稿**：对齐已发布 tag，不跟 master 分支头、不 merge）
 - [`0013-0.2.1-rc.3-to-0.2.1-rc.5.md`](./0013-0.2.1-rc.3-to-0.2.1-rc.5.md)——第十三次合入（跨 rc.4 与 rc.5，6 个内容提交、388 个文件；思考块渲染可定制、ACP stdout 诊断纪律、客户端 tooltip；343 包不变；**例外扩为 6 项、验收改为内容级**，见「同步操作手册」）
 
-编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
+编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。记录里的路径与页面名是**当轮**的样子；页面后来迁移或改名时，现行入口以 [`catalog.json`](../catalog.json) 与 [`_coverage`](../_coverage/00-index.md) 为准，不改写历史记录。
 
 **选基线的口径（0012 定稿）**：只同步**已发布版本的内容**，目标是当前版本的 **release tag**（取 [`../catalog.json`](../catalog.json) 的 `baseline.tag`）。alpha / beta 不追；0.2.1 线尚未 final，所以取最后一个 RC。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`，0007 起改成「最后一个 RC」，沿用至今。
 

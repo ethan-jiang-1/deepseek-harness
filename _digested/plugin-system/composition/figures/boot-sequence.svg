@@ -19,7 +19,7 @@
 
   <rect x="360" y="64" width="280" height="200" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
   <text x="500" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">2. composeProfile</text>
-  <text x="376" y="118" font-size="11" fill="#2563eb">healProfilesModuleFallback（loadProfile 之后）</text>
+  <text x="376" y="118" font-size="11" fill="#2563eb">removeLinkProjections（装载期清旧 link 投影）</text>
   <text x="376" y="136" font-size="11" fill="#1e40af">bundle patches（声明顺序）</text>
   <text x="376" y="154" font-size="11" fill="#2563eb">+ profile cordis.patch.yml</text>
   <text x="376" y="172" font-size="11" fill="#2563eb">+ home cordis.patch.yml</text>

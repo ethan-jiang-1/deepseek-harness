@@ -3,7 +3,7 @@
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
   <rect width="960" height="470" fill="#fafafa" rx="6"/>
-  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">组装漏斗：342 个包怎么收敛成一次启动</text>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">组装漏斗：343 个包怎么收敛成一次启动</text>
   <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">包 → bundle（交付）→ profile（组合）→ preset（会话级）→ 一棵运行树。三层各管一件事，互不越权。</text>
 
   <rect x="36" y="66" width="890" height="72" rx="10" fill="#dbeafe" stroke="#93c5fd"/>

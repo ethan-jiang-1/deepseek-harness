@@ -6,7 +6,7 @@
   </defs>
 
   <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">工作编排原语阶梯：拆解 → 委派 → 编排 → 跨时间推进</text>
-  <text x="40" y="54" font-size="12" fill="#8c8c8c">从驾驶座视角看 DSH 提供的全部工作编排原语（基线 dsh-v0.2.0-rc.2）；阶梯自左下向右上，底轴为上下文隔离与扇出规模，左轴为时间跨度</text>
+  <text x="40" y="54" font-size="12" fill="#8c8c8c">从驾驶座视角看 DSH 提供的全部工作编排原语；阶梯自左下向右上，底轴为上下文隔离与扇出规模，左轴为时间跨度</text>
 
   <line x1="70" y1="620" x2="1030" y2="620" stroke="#595959" stroke-width="2" marker-end="url(#axis)"/>
   <text x="560" y="648" font-size="12" fill="#595959" text-anchor="middle">上下文隔离与扇出规模 →（同上下文 → 独立子上下文 → 独立持久会话）</text>
