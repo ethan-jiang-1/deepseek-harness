@@ -8,7 +8,7 @@
 
 ## 保真对象是组合算法
 
-`composeEntries(layers)` 是 `applyEntryPatches([], structuredClone(layers.flat()), warn)`。boot 的根 Include 对同一份空 `cordis.yml` 再调一次 `applyEntryPatches`。dump 的 `renderConfigDump` 对同一文件、同一函数、同一 `entryListSchema`。
+`composeEntries(layers)` 是 `applyEntryPatches([], structuredClone(layers.flat()), warn)`。boot 的根 Include 对同一份空 `cordis.yml` 再调一次 `applyEntryPatches`。dump 的 `renderConfigDump`（`packages/boot/app-boot/src/index.ts:635`）对同一文件、同一函数、同一 `entryListSchema`（`vendor/include/src/index.ts:23`，`applyEntryPatches` 在同文件 `:57`）。
 
 测试 `config-dump.spec.ts` 明确钉的是「所有层展平成**一次** `applyEntryPatches`，和 `boot()` 一样」：
 

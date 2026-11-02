@@ -40,7 +40,7 @@
 | **lib**（纯库） | 哪些不是插件？ | `util/` 组 18 包 | 被 import，不被挂载 |
 | **驱动**（启动胶水） | 谁把服务接成通路？ | `goal-round-driver`、`browser-use-runtime` | 不注册模型能力，只把现成服务连成路径 |
 
-这张表是**检索入口**，不是新分类：九个形态各自的判据都落在具体的注册调用或清单字段上，可以在包里逐一核对——bundle 与 profile 的清单字段见 `packages/util/package-manifest/src/types.ts:69`、`:75`；client 半边的声明见同文件 `:81`；bundle 档位（随装出货 / 按需）见 `packages/boot/app-boot/src/profile.ts:223` 与 `packages/boot/app-boot/src/official-bundle-packages.ts:4`；工具的模型可见名以生成目录 `docs/tool-catalog.md` 的 Tool Package Map（33 行）为真源。
+这张表是**检索入口**，不是新分类：九个形态各自的判据都落在具体的注册调用或清单字段上，可以在包里逐一核对——工具用 `defineTool`（`packages/core/tools/src/schema.ts:554`），人类命令走 `ctx.commands.register`（`packages/compaction/command-compact/src/index.ts:101`），驱动型插件不注册能力只接线（`packages/goal/goal-round-driver/src/index.ts:77` 的 `apply`）；bundle 与 profile 的清单字段见 `packages/util/package-manifest/src/types.ts:69`、`:75`；client 半边的声明见同文件 `:81`；bundle 档位（随装出货 / 按需）见 `packages/boot/app-boot/src/profile.ts:223` 与 `packages/boot/app-boot/src/official-bundle-packages.ts:4`；工具的模型可见名以生成目录 `docs/tool-catalog.md` 的 Tool Package Map（33 行）为真源。
 
 ## role 语法：core / seam / service / bundle 怎么判
 

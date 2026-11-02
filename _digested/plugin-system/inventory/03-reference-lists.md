@@ -59,7 +59,7 @@ P≥2 的 seam 换 Provider 不改调用方；P=0 与自消费（P、C 同包）
 
 ## 3.2 模型可见工具 — 每个 profile 实际暴露什么
 
-33 个工具包的模型可见名以生成目录 [`docs/tool-catalog.md`](../../../docs/tool-catalog.md):18-50 的 Tool Package Map 为真源；下表按 bundle patch 行推每 profile 的实际暴露。
+33 个工具包的模型可见名以生成目录 [`docs/tool-catalog.md`](../../../docs/tool-catalog.md):18-50 的 Tool Package Map 为真源（2026-11-02 数得该表 33 行）；bundle 档位的声明源是 `packages/boot/app-boot/src/profile.ts:223`（随装出货、默认关）与 `packages/boot/app-boot/src/official-bundle-packages.ts:4`（按需安装）；base 层的工具面示例见 `packages/bundle/base/cordis.patch.yml:486`；preset 的声明式 patch 在 `packages/bundle/web-app/presets/`（`standard` / `ptc` / `minimal` 等），seam 的 P/C 机械提取见生成目录 `docs/capability-seams.md:614` 起的服务表；工具目录的入口表头在 `docs/tool-catalog.md:12`；下表按 bundle patch 行推每 profile 的实际暴露。
 
 | profile | 暴露 |
 |---|---|

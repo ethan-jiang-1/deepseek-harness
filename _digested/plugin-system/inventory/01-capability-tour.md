@@ -9,6 +9,8 @@
 3. 同一个能力常常有多个插件实现（换搜索引擎、换 LLM 后端），**换实现不改调用方**——这是整台机器最重要的性质。
 4. 术语最小集：**插件**＝导出 `apply` 的模块；**ctx**＝服务总线；**seam**＝三角色齐备的可替换能力；**role**＝core/seam/service/bundle；**形态**＝Def/Impl/Tool/cmd/UI/adapter/lib/bundle/驱动；**可见性**＝base/web/min/preset/opt/—。完整版见 [`../00-index.md`](../../00-index.md) 的术语速查与 [`05`](./05-taxonomy-and-design.md)。
 
+本页提到的能力，到货档位只有三种：随装出货且默认开（base/web 层）、随装出货但默认关（`packages/boot/app-boot/src/profile.ts:223` 的 12 条）、不随装出货按需安装（`packages/boot/app-boot/src/official-bundle-packages.ts:4` 的 2 条）。逐个工具包的模型可见名以 `docs/tool-catalog.md:12` 的 Tool Package Map 为真源；profile 模板与默认组合见 `packages/boot/app-boot/src/profile.ts:179`（`PROFILE_TEMPLATES`）。
+
 ## 八类能力：你想干什么 ↔ dsh 给了什么
 
 每一类末尾列出它覆盖的包组——52 个组全部有着落，读完即知全量分布；逐包明细回 [`02`](./02-plugin-catalog.md)。

@@ -23,6 +23,8 @@
 
 **形态图例**：Def＝Service Definition（`ctx` 服务声明）；Impl＝Provider 实现；Tool＝模型可见工具；cmd＝人类命令插件；UI＝client UI 插件；adapter＝LLM adapter；lib＝纯库；bundle＝组合清单包；驱动＝启动胶水。九种形态的判定与设计逻辑见 [`05-taxonomy-and-design.md`](./05-taxonomy-and-design.md)。
 
+本表是快照：服务与 role 的机械提取以生成目录 `docs/capability-seams.md:614` 起的服务表为真源，工具包以 `docs/tool-catalog.md:12` 的 Tool Package Map 为真源；包数按 `packages/*/*/package.json` 计数。
+
 ## core/（8 包）
 
 | 包 | 形态 | 可见 | 关键键 | Config | 职责 |
