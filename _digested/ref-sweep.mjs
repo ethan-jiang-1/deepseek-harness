@@ -3,7 +3,7 @@
 //
 // 用法：
 //   node _digested/ref-sweep.mjs            # 全量：四个语料目录的路径与行号核验
-//   node _digested/ref-sweep.mjs --quotes   # 追加严格引文-锚点核对（只认纯 ASCII 引文）
+//   node _digested/ref-sweep.mjs --quotes   # 追加严格引文-锚点核对（纯 ASCII；支持同句多锚点与 `:N` 简写）
 //   node _digested/ref-sweep.mjs _digested  # 只扫指定语料目录
 //
 // 输出是报告不是门禁（恒退出 0）：带退役注记的历史路径、git show 式旧基线引用、
