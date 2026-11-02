@@ -63,6 +63,7 @@ dsh 里最容易踩的事件合同就是 waterfall。它是 around-middleware，
 | [`02-waterfall-与事件合同.md`](./02-waterfall-与事件合同.md) | `waterfall` 源码算法；`agent/pre-step` vs `agent/turn-stopping` |
 | [`03-loader-include-与js插值.md`](./03-loader-include-与js插值.md) | `!!js` 两处求值；`applyEntryPatches` 为何能叠 bundle |
 | [`04-vendor-本地修改.md`](./04-vendor-本地修改.md) | 产品依赖的 vendor 修改及其后果 |
+| [`05-group与isolate-realm.md`](./05-group与isolate-realm.md) | group 与 isolate：组合单元 vs 服务作用域 |
 
 Profile / boot 时序见 [`../plugin-system/composition/01-boot-时序.md`](../../plugin-system/composition/01-boot-时序.md)。
 

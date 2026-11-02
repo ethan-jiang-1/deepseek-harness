@@ -6,7 +6,9 @@
 
 ## 为什么单独成专题
 
-根 `AGENTS.md` 的仓库布局行现为 `experimental/  evaluated capabilities without a product-support commitment`（`AGENTS.md:67`），并新增一句把成熟度与出货彻底解耦：`Experimental status is independent of optional delivery; nonexperimental packages need product use or an explicit classification (scripts/product-package-policy.ts).`（`AGENTS.md:79`）。三个词的分工由组 README 定义（`packages/experimental/README.md#status`）：**Experimental**＝完整公开能力仍在评估、无支持承诺；**Optional**＝由用户显式选择；**Official**＝项目维护并列入插件页——三者互不蕴含，发布、默认安装与 GUI 露出都不决定成熟度。
+根 `AGENTS.md` 的仓库布局行现为 `experimental/  evaluated capabilities without a product-support commitment`（`AGENTS.md:67`），并新增一句把成熟度与出货彻底解耦：`Experimental status is independent of optional delivery; nonexperimental packages need product use or an explicit classification (scripts/product-package-policy.ts).`（`AGENTS.md:79`）。
+
+三个词的分工由组 README 定义（`packages/experimental/README.md#status`）：**Experimental**＝完整公开能力仍在评估、无支持承诺；**Optional**＝由用户显式选择；**Official**＝项目维护并列入插件页——三者互不蕴含，发布、默认安装与 GUI 露出都不决定成熟度。
 
 命名与发布走 `scripts/experimental-package-policy.ts`：默认前缀 `@deepseek-ai/dsh-experimental-`（`:19`），11 个「保留旧 npm 名」例外列在 `:4`-`:16`（`cua`、`tool-session-query`、`session-title-all-prompts-llm`、`tool-terminal`、`tool-ralph`、`skill-badge`、`hook-protocol`、`hooks-claude-code`、`hooks-codex`、`webhook`、`webhook-github`）；private 名单常量 `PRIVATE_EXPERIMENTAL_PACKAGE_DIRECTORIES` 仍为**空数组**（`:53`），即 47 包全部 public、加入 dsh release 家族。隔离规则未变：release 包和 apps 不得在 dependencies / optionalDependencies / peerDependencies 里点名它们（`packages/experimental/AGENTS.md`），目录正则 `packages/(?!experimental/)` 仍排除整个目录（`scripts/check-workspace-constraints.ts:67`），并由 `scripts/verify-default-product-isolation.ts` 覆盖传递安装、运行时 import 与 shipped 组合；新增的 `scripts/verify-product-use.ts` 反向要求**非实验包**要么被有效出货组合/预设子行/运行时 import 用到、要么在 `scripts/product-package-policy.ts` 里显式分类。落点核验：`packages/bundle/` 全部 yml/json/md 中 grep 不到任何 `experimental` 引用——shipped bundle 组合仍然零挂载。
 

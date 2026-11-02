@@ -68,6 +68,14 @@
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
           "status": "reverified",
           "source": "page"
+        },
+        {
+          "file": "02-桌面-同一个形状的第三个落脚点.md",
+          "title": "桌面：同一个形状的第三个落脚点",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
         }
       ]
     },
@@ -117,6 +125,14 @@
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
+        },
+        {
+          "file": "05-group与isolate-realm.md",
+          "title": "group 与 isolate realm",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
         }
       ]
     },
@@ -218,6 +234,14 @@
         {
           "file": "tree/03-浏览器启动与首屏交接.md",
           "title": "浏览器启动与首屏交接",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "tree/04-客户端热更新与模块缓存.md",
+          "title": "客户端热更新与模块缓存",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
           "status": "reverified",

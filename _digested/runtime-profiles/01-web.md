@@ -22,7 +22,7 @@ dsh --profile web --patch my.yml       # 叠加 patch
 | 层 | 从哪里来 | 作用 |
 |----|---------|------|
 | `dsh-base` | `packages/bundle/base/` | 所有 profile 共享的核心插件（LLM、session、tools、agent-loop、sandbox、subagent、goal、web 搜索等） |
-| `dsh-web-app` | `packages/bundle/web-app/` | Web 特有层：overrides base 行 + 插入 browser client、HTTP server、storage、preset patch（0.1.7 线起旧 agent-presets 退役、改造为声明式 agent-preset + agent-preset-registry，shipped presets 以 `presets/*.patch.yml` 随 bundle 携带） |
+| `dsh-web-app` | `packages/bundle/web-app/` | Web 特有层：overrides base 行 + 插入 browser client、HTTP server、storage、preset patch（旧 agent-presets 已退役，改为声明式 agent-preset + agent-preset-registry；shipped presets 以 `presets/*.patch.yml` 随 bundle 携带） |
 
 ### `dsh-web-app` 的 override 行
 
@@ -31,7 +31,7 @@ dsh --profile web --patch my.yml       # 叠加 patch
 | `system-prompt` | 设 persona prefix：`personaPrefix`（`You are a coding agent powered by the {{model}} model.`，`:17-20`）。shipped 组合不设 `personaSuffix`；执行目录由 `ctx.workingDirectory` 供给 |
 | `session-query-sqlite` | 设 `:memory:` + `openAt: never`（按需才开 SQLite） |
 | `tools` | 透传 `DSH_TOOLS_MODE` 环境变量 |
-| `tool-bash`, `tool-pwsh`, `tool-fs`, `tool-skill`, `tool-goal` 等 | **disable** 由会话级 preset 接管的 model-facing 工具行（0.1.7 线起由 bundle 携带的 preset patch 承担）；`working_directory` 是例外——base 的 `tool-working-directory` 行保留在 host 平面。base 双开 `search`+`fetch`（#3382）后，`tool-web` 的语义是 host 行整行 disable、由 preset 按档位组合两工具（base patch 注释与行，`packages/bundle/base/cordis.patch.yml:454-466,486-490`）；shipped 各 preset 的 `tool-web` 均 `fetch: true`，可作对照 |
+| `tool-bash`, `tool-pwsh`, `tool-fs`, `tool-skill`, `tool-goal` 等 | **disable** 由会话级 preset 接管的 model-facing 工具行（由 bundle 携带的 preset patch 承担）；`working_directory` 是例外——base 的 `tool-working-directory` 行保留在 host 平面。base 双开 `search`+`fetch`（#3382）后，`tool-web` 的语义是 host 行整行 disable、由 preset 按档位组合两工具（base patch 注释与行，`packages/bundle/base/cordis.patch.yml:454-466,486-490`）；shipped 各 preset 的 `tool-web` 均 `fetch: true`，可作对照 |
 
 web-app 的 disable 名单里**没有** `tool-str-replace-editor`：它和 base 的那一行都不在 shipped bundle 里，web-app 自己的 disable 行也随之删除。
 
@@ -39,19 +39,109 @@ web-app 的 disable 名单里**没有** `tool-str-replace-editor`：它和 base 
 
 ### `dsh-web-app` 的 insert 行
 
-本节行号均指 `packages/bundle/web-app/cordis.patch.yml`（下文 `:N` 即该文件行号）：第一个 insert 块 90 行（`:44` 起）+ 第二个 insert 块 1 行 `agent-preset-registry`（`:590` 起）＝ 91 行；0009 时记的是 84+1＝85 行，更早的旧文记 18+5+44(+1)=68。0011 的差量是 5 条新行：`schedule`（`:139-140`）与 `ui-schedule`（`:398-399`）——Schedule 从可选实验 bundle 改为**直接进本组合**，`@deepseek-ai/dsh-experimental-schedule-bundle` 退役并进 `RETIRED_BUNDLES`；`harness-dev-context`（`:211-212`，Layer 2）；`ui-secret-mask`（`:388-389`，Layer 3）；`ui-deepseek-model-label-1017`（`:415-416`，Layer 3，temporary 徽标）。0012 的差量是 1 条新行：`entry-customization`（`:428-429`，前有 2 行注释），插在 `ui-agent-preset` 之后，使 `:425` 之后的 web-app 行号整体 +5。`ptc-runtime` 仍是 base 层行（`packages/bundle/base/cordis.patch.yml:397-398`）。
+本节行号均指 `packages/bundle/web-app/cordis.patch.yml`；按行 id 检索，不再逐行钉行号。当前快照：第一个 insert 块 90 行（25 + 6 + 59），第二个 insert 块 1 行 `agent-preset-registry`，共 91 行。`ptc-runtime` 仍是 base 层行（`packages/bundle/base/cordis.patch.yml:397-398`）。
 
 **Layer 1 — 基础设施（25 条，`:45-164`）：**
-`desktop-product-telemetry`（desktop 专属 OTel 遥测导出，非 desktop profile 整行 disabled，`:45-55`）、`product-analytics`（desktop 专属 client 产品分析，同上 disabled 条件，`:57-62`）、`subagent-model-selection-settings`（`:66-67`）、`message-feedback`（`:69-72`）、`session-log-download`（`/export` 命令加共享下载对话框，`:75-76`）、`open-in-app`（宿主侧应用解析，含 timeout config，`:81-86`）/ `ui-open-in-app`（浏览器半边，`:88-89`）、`workspace`（`:91-92`）、`session-reference`（`:94-95`）、`file-reference-local`（`:97-98`）、`session-stats`（`:102-103`）、`session-turn-outline`（`:107-108`）、`directory-picker`（`:113-114`）、`plugin-inventory`（`:117-118`）、`session-controller`（session 命令、冷读与 Typert Remote 实时控制，`:121-122`）/ `job-controller`（单个后台 job 的观察记录流，roster 搭其上的 session 控制流，`:126-127`）/ `terminal-controller`（`:130-131`）/ `workspace-files`（会话工作区内的有界读取、目录列举与 agent 写入变更流，`:132-133`）/ `schedule`（Schedule 服务主机行，0011 起随出厂组合直接挂载，`:139-140`）/ `ui-settings-account`（Typert Remote 上的配置面读写，settings-domain provider 缺席时报可操作错误，`:144-145`）/ `account-controller`（`:147-148`）/ `settings-controller`（`:150-151`）/ `workspace-controller`（Workspace 命令与 reconnect-safe 投影，`:154-155`）（Remote 控制器）、`cordis-host-runner`（`:157-158`）、`cordis-inspect-providers`（Host inspect providers 进程全局注册一次，各 preset 的 `tool-cordis` 行读取，`:163-164`）（storage / session-projection-cache / typert-gateway 等结构化存储与 RPC 网关基础设施在 `dsh-base`，非 web-app insert。）
+
+- `desktop-product-telemetry`：desktop 专属 OTel 遥测导出，非 desktop profile 整行 disabled
+- `product-analytics`：desktop 专属 client 产品分析，同上 disabled 条件
+- `subagent-model-selection-settings`
+- `message-feedback`
+- `session-log-download`：`/export` 命令加共享下载对话框
+- `open-in-app`：宿主侧应用解析，含 timeout config
+- `ui-open-in-app`：浏览器半边
+- `workspace`
+- `session-reference`
+- `file-reference-local`
+- `session-stats`
+- `session-turn-outline`
+- `directory-picker`
+- `plugin-inventory`
+- `session-controller`：session 命令、冷读与 Typert Remote 实时控制
+- `job-controller`：单个后台 job 的观察记录流，roster 搭其上的 session 控制流
+- `terminal-controller`
+- `workspace-files`：会话工作区内的有界读取、目录列举与 agent 写入变更流
+- `schedule`：Schedule 服务主机行，随出厂组合直接挂载
+- `ui-settings-account`：Typert Remote 上的配置面读写，settings-domain provider 缺席时报可操作错误
+- `account-controller`
+- `settings-controller`
+- `workspace-controller`：Workspace 命令与 reconnect-safe 投影（Remote 控制器）
+- `cordis-host-runner`
+- `cordis-inspect-providers`：Host inspect providers 进程全局注册一次，各 preset 的 `tool-cordis` 行读取（storage / session-projection-cache / typert-gateway 等结构化存储与 RPC 网关基础设施在 `dsh-base`，非 web-app insert。）
 
 **Layer 2 — 传输层（6 条）：**
-`web-startup`（解析命令行 flag 的普通 provider，`webserver`/`web-runtime` 注入其 `webStartup` 服务，`:168-169`）、`webserver`（HTTP 服务，host/port 取自 `webStartup` provider、回退 `127.0.0.1:3080`，gzip，拒绝通配绑定，`:179-188`）、`web-runtime`（前端 dist 分发、URL 打印，并 provide 新 core 服务 `ctx.webApp` 的 `getAdvertisedUrl()`，`:197-204`）、`harness-dev-context`（0011 新增：给检视/扩展本 GUI 的 agent 提供无值 prompt section 与可选 runtime context，`:211-212`）、`client-hmr`（client 插件热重载链，常挂、空闲直至重建 watcher 重写 client bundles，`:218-219`）、`file-upload`（Raw Blob / ReadableStream 上传，独立于 Connection 的 RPC 与 generation 服务，`:245-246`）
 
-**Layer 3 — Browser 插件罗盘（`dsh.client` 行，59 条；roster 区块（`:221` 起）第 3 行 `file-upload`（`:245-246`）计入 Layer 2 的传输层）：**
-`modules`（node 半边扫本树组装 `window.__DSH_BOOT__` 并 serve `/plugins/<id>/client.js`，同时是 host 行，`:227-228`）、`connection`（web 传输两端：node 半边把 gateway 挂到 webserver 的 `/api` 下，浏览器半边是 fetch/SSE client，`:234-241`）、`api-remotes`（`:248-249`）、`cordis-client-runner`（`:251-252`）、`ui-theme`（`:254-255`）、`locale`（`:257-258`）、`shortcuts`（`:260-261`）、`ui-shortcuts`（`:263-264`）、`ui-layout`（`:266-267`）、`ui-renderer`（`:269-270`）、`ui-session`（`:272-273`）、`resources`（协议 provider 汇成 `useResource` 的统一资源模型，`:276-277`）、`ui-sidebar`（`:279-280`）、`ui-sidebar-right`（右栏停靠面，`:283-284`）、`office-to-pdf`（`:287-288`）、`ui-sidebar-documentpreview`（右栏文档页：有界读 + Markdown/代码/HTML/PDF/Office/纯文本渲染，`:292-293`）、`ui-sidebar-browser`（Web profile 需 opt in、Desktop 保留沙箱 HTTP(S) Browser 标签页，非 desktop 整行 disabled，`:296-298`）、`ui-sidebar-terminal`（`:300-301`）、`ui-sidebar-files`（右栏工作区文件树页，`:303-304`）、`ui-settings`（`:306-307`）、`ui-settings-general`（`:309-310`）、`ui-settings-models`（`:312-313`）、`ui-plugin-manager`（sidebar Plugins 页：经 `pluginManager` Remote 安装/启用/禁用/移除 profile bundles，无 profile 宿主时自报不可用，`:318-319`）、`ui-settings-plugin-inventory`（Settings Plugins 区的只读 Plugin 列表页，sidebar 页未收录的内建 bundle 在此查看，`:323-324`）、`ui-conversation`（`:326-327`）、`ui-approval`（`:329-330`）、`ui-chat`（`:332-333`）、`ui-brand-official`（`:336-337`）、`ui-attachment`（`:339-340`）、`ui-tool`（`:343-344`）、`ui-cordis`（`:346-347`）、`ui-deliverables`（turn 尾部：收尾 assistant 消息下的 changed-files 卡与交付卡，`:352-353`）、`workspace-changes`（按 git working-tree 快照记录每个顶层 turn 的变更文件，其事件由上面的 changed-files 卡渲染，`:357-358`）、`ui-workspace`（`:361-362`）、`ui-workflow-run`（`:366-367`）、`ui-input-trigger`（`:371-372`）、`ui-commands`（`:374-375`）、`ui-skill`（`:377-378`）、`ui-subagent`（`:380-381`）、`ui-reference`（`:383-384`）、`ui-secret-mask`（0011 新增：对已发送用户文本里识别出的凭据做显示掩码，交互消息内可逐值揭示，`:388-389`）、`ui-jobs`（`:393-394`）、`ui-schedule`（Schedule 任务页，0011 起随出厂组合直接挂载，`:398-399`）、`ui-goal`（`:402-403`）、`ui-message-feedback`（`:408-409`）、`ui-model-selection`（`:412-413`）、`ui-deepseek-model-label-1017`（0011 新增的临时 1017 徽标，`:415-416`）、`ui-permission`（`:418-419`）、`ui-agent-preset`（`:423-424`）、`entry-customization`（0012 新增：左栏 / Conversation View / 右栏 guide 三处 More 菜单的 browse 与 Creator 草稿入口，`:428-429`）、`ui-settings-session-log`（`:431-432`）、`ui-settings-plugins`（`:437-438`）、`ui-settings-shell`（`:443-444`）/ `ui-settings-agent-loop`（`:446-447`）/ `ui-settings-subagent`（`:449-450`）/ `ui-settings-web-search`（`:452-453`）（官方配置页 companion 行，按 host-plane namespace 各注册一页进 Plugins 页）、`ui-plan`（`:456-457`）、`ui-user-questions`（`:459-460`）、`ui-trajectory`（`:462-463`）
+- `web-startup`：解析命令行 flag 的普通 provider，`webserver`/`web-runtime` 注入其 `webStartup` 服务
+- `webserver`：HTTP 服务，host/port 取自 `webStartup` provider、回退 `127.0.0.1:3080`，gzip，拒绝通配绑定
+- `web-runtime`：前端 dist 分发、URL 打印，并 provide 新 core 服务 `ctx.webApp` 的 `getAdvertisedUrl()`
+- `harness-dev-context`：给检视/扩展本 GUI 的 agent 提供无值 prompt section 与可选 runtime context
+- `client-hmr`：client 插件热重载链，常挂、空闲直至重建 watcher 重写 client bundles
+- `file-upload`：Raw Blob / ReadableStream 上传，独立于 Connection 的 RPC 与 generation 服务
+
+**Layer 3 — Browser 插件罗盘（59 条，`dsh.client` 行；`file-upload` 计入 Layer 2）：**
+
+- `modules`：node 半边扫本树组装 `window.__DSH_BOOT__` 并 serve `/plugins/<id>/client.js`，同时是 host 行
+- `connection`：web 传输两端：node 半边把 gateway 挂到 webserver 的 `/api` 下，浏览器半边是 fetch/SSE client
+- `api-remotes`
+- `cordis-client-runner`
+- `ui-theme`
+- `locale`
+- `shortcuts`
+- `ui-shortcuts`
+- `ui-layout`
+- `ui-renderer`
+- `ui-session`
+- `resources`：协议 provider 汇成 `useResource` 的统一资源模型
+- `ui-sidebar`
+- `ui-sidebar-right`：右栏停靠面
+- `office-to-pdf`
+- `ui-sidebar-documentpreview`：右栏文档页：有界读 + Markdown/代码/HTML/PDF/Office/纯文本渲染
+- `ui-sidebar-browser`：Web profile 需 opt in、Desktop 保留沙箱 HTTP(S) Browser 标签页，非 desktop 整行 disabled
+- `ui-sidebar-terminal`
+- `ui-sidebar-files`：右栏工作区文件树页
+- `ui-settings`
+- `ui-settings-general`
+- `ui-settings-models`
+- `ui-plugin-manager`：sidebar Plugins 页：经 `pluginManager` Remote 安装/启用/禁用/移除 profile bundles，无 profile 宿主时自报不可用
+- `ui-settings-plugin-inventory`：Settings Plugins 区的只读 Plugin 列表页，sidebar 页未收录的内建 bundle 在此查看
+- `ui-conversation`
+- `ui-approval`
+- `ui-chat`
+- `ui-brand-official`
+- `ui-attachment`
+- `ui-tool`
+- `ui-cordis`
+- `ui-deliverables`：turn 尾部：收尾 assistant 消息下的 changed-files 卡与交付卡
+- `workspace-changes`：按 git working-tree 快照记录每个顶层 turn 的变更文件，其事件由上面的 changed-files 卡渲染
+- `ui-workspace`
+- `ui-workflow-run`
+- `ui-input-trigger`
+- `ui-commands`
+- `ui-skill`
+- `ui-subagent`
+- `ui-reference`
+- `ui-secret-mask`：对已发送用户文本里识别出的凭据做显示掩码，交互消息内可逐值揭示
+- `ui-jobs`
+- `ui-schedule`：Schedule 任务页，随出厂组合直接挂载
+- `ui-goal`
+- `ui-message-feedback`
+- `ui-model-selection`
+- `ui-deepseek-model-label-1017`：临时 1017 徽标
+- `ui-permission`
+- `ui-agent-preset`
+- `entry-customization`：左栏 / Conversation View / 右栏 guide 三处 More 菜单的 browse 与 Creator 草稿入口
+- `ui-settings-session-log`
+- `ui-settings-plugins`
+- `ui-settings-shell`
+- `ui-settings-agent-loop`
+- `ui-settings-subagent`
+- `ui-settings-web-search`：官方配置页 companion 行，按 host-plane namespace 各注册一页进 Plugins 页
+- `ui-plan`
+- `ui-user-questions`
+- `ui-trajectory`
 
 **Layer 4 — Agent Presets：**
-`agent-preset` preset patch（默认 `standard`，可选 `ptc`、`minimal`、`cordis`；0.1.7 线声明式重设计），shipped preset 声明以 `presets/*.patch.yml` 随 bundle 携带（`:587-589` 注释、`package.json` `dsh.bundle.patch` 次序），其行不计入本文件 91 条 insert 行；preset 选择注册表由第二个 insert 块唯一一行 `agent-preset-registry` 承载（`default: standard`，`:590-594`）。
+`agent-preset` preset patch（默认 `standard`，可选 `ptc`、`minimal`、`cordis`；声明式重设计），shipped preset 声明以 `presets/*.patch.yml` 随 bundle 携带（`:587-589` 注释、`package.json` `dsh.bundle.patch` 次序），其行不计入本文件 91 条 insert 行；preset 选择注册表由第二个 insert 块唯一一行 `agent-preset-registry` 承载（`default: standard`，`:590-594`）。
 
 ## 进程模型
 
@@ -70,7 +160,7 @@ dsh --profile web
 
 - **shipped 模板中唯一支持运行时 patch 重载的 Profile**：`hmr` 插件监视 profile patch 与包清单，`HmrService.reconcileProfile()` 调 app-boot 的 `recomposeProfile` 完成重组合，新失败抛错回滚（`packages/boot/hmr/src/index.ts:925`、`packages/boot/app-boot/src/index.ts:307`；机制见 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)）。该「唯一」限 shipped 模板——base 行按 `profileContext` 门控，自定义 launcher profile 默认同样开启。
 - **CLI launcher profile 中唯一有 browser 侧的 Profile**：browser 半边（`packages/client/`）通过 `window.__DSH_BOOT__` 初始化，经 `dsh.client` 插件罗盘构造核。Electron desktop 复用**同一套** web 组合与匹配的 client 图（desktop-host 经 `runProfile` 起 `desktop` profile），但它不是 CLI launcher profile（[`06-desktop.md`](./06-desktop.md)）。
-- **CLI launcher profile 中唯一使用会话级 preset 的 Profile**：session 级别选择 standard / ptc / minimal / cordis，host 平面除 `working_directory` 外不直接挂 model-facing 工具。（desktop 的 preset roots 改写机制已随 0.1.7 线 preset 重设计退役：desktop-host 改为 `loadProfileDirectory` 在安装期组装 profile，`apps/desktop-host/src/index.ts` 现无 roots 改写。）
+- **CLI launcher profile 中唯一使用会话级 preset 的 Profile**：session 级别选择 standard / ptc / minimal / cordis，host 平面除 `working_directory` 外不直接挂 model-facing 工具。（desktop 的 preset 由 `loadProfileDirectory` 在安装期组装，host 不再改写 roots。）
 - **stdout 给用户**：可以装 logger、打印 URL、输出诊断信息。
 
 ## 源码入口

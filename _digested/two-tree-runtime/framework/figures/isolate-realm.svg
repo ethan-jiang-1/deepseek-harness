@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">group 是组合单元，isolate 是服务作用域</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">前者改变「哪些 entry 一起装卸、id 怎么拼」；后者改变「同一个服务名在这棵子树里解析到谁」。</text>
+
+  <rect x="40" y="76" width="420" height="240" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="58" y="104" font-size="13" font-weight="700" fill="#166534">group：一起装、一起卸</text>
+  <rect x="70" y="122" width="170" height="46" rx="8" fill="#ffffff" stroke="#86efac"/>
+  <text x="155" y="150" text-anchor="middle" font-size="11" fill="#166534">tools（group: true）</text>
+  <line x1="155" y1="168" x2="155" y2="186" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="70" y="190" width="170" height="40" rx="8" fill="#ffffff" stroke="#86efac"/>
+  <text x="155" y="215" text-anchor="middle" font-size="10.5" fill="#15803d">tools:logger</text>
+  <rect x="70" y="240" width="170" height="40" rx="8" fill="#ffffff" stroke="#86efac"/>
+  <text x="155" y="265" text-anchor="middle" font-size="10.5" fill="#15803d">tools:shell</text>
+  <text x="270" y="150" font-size="10.5" fill="#15803d">子 id 用 : 拼在父 id 后面</text>
+  <text x="270" y="172" font-size="10.5" fill="#15803d">patch 打的是拼出来的 id</text>
+  <text x="270" y="206" font-size="10.5" fill="#15803d">group 行自身总被视为 enabled</text>
+  <text x="270" y="228" font-size="10.5" fill="#15803d">禁用 group 会挡住子行</text>
+
+  <rect x="500" y="76" width="420" height="240" rx="10" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="518" y="104" font-size="13" font-weight="700" fill="#5b21b6">isolate：同名服务，换一个实例</text>
+  <rect x="530" y="122" width="160" height="76" rx="8" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="610" y="146" text-anchor="middle" font-size="10.5" fill="#5b21b6">子树 A</text>
+  <text x="610" y="168" text-anchor="middle" font-size="10.5" fill="#6d28d9">ctx.shell → 实现 A</text>
+  <text x="610" y="186" text-anchor="middle" font-size="10.5" fill="#6d28d9">isolate('shell', labelA)</text>
+  <rect x="730" y="122" width="160" height="76" rx="8" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="810" y="146" text-anchor="middle" font-size="10.5" fill="#5b21b6">子树 B</text>
+  <text x="810" y="168" text-anchor="middle" font-size="10.5" fill="#6d28d9">ctx.shell → 实现 B</text>
+  <text x="810" y="186" text-anchor="middle" font-size="10.5" fill="#6d28d9">isolate('shell', labelB)</text>
+  <text x="530" y="228" font-size="10.5" fill="#6d28d9">同一个 label 的两次 isolate 共享作用域</text>
+  <text x="530" y="250" font-size="10.5" fill="#6d28d9">Consumer 代码不变：仍然写 ctx.shell</text>
+  <text x="530" y="272" font-size="10.5" fill="#6d28d9">只造子 ctx，不改父（同 extend / intercept）</text>
+
+  <rect x="40" y="332" width="880" height="52" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
+  <text x="58" y="354" font-size="10.5" fill="#374151">选型：要「一组 entry 一起装卸、能被同一个 patch 打中」用 group；要「同一个进程里两套同名不同实现的子树」用 isolate。</text>
+  <text x="58" y="374" font-size="10.5" fill="#6b7280">两者都不是 per-agent 隔离——那是 agent 作用域（agent.ctx 与 core/scope）的事。</text>
+</svg>

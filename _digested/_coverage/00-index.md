@@ -10,9 +10,9 @@
 | 专题 | 范围 | 页数 | 已核验 | 沿用 | 未登记 |
 |---|---|---:|---:|---:|---:|
 | [`system-overview/`](../system-overview/00-map.md) | 按下回车之后，插件怎么拼成一次能跑的对话；扩展点、单 loop 对照与门禁/基准。 | 4 | 0 | 4 | 0 |
-| [`two-tree-runtime/`](../two-tree-runtime/00-map.md) | 同一套 Cordis 在 Node 与浏览器各长一棵树，中间是类型化的线；一条会话事件穿过两棵树。 | 2 | 2 | 0 | 0 |
-| [`two-tree-runtime/framework/`](../two-tree-runtime/framework/00-map.md) | 两棵树共用的框架本体：五原语、waterfall、Loader/Include、vendor 本地修改。 | 5 | 1 | 4 | 0 |
-| [`two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) | 分层与单向依赖、模块身份与激活、浏览器启动、状态所有权、资源与视图、插件纪律。 | 15 | 4 | 11 | 0 |
+| [`two-tree-runtime/`](../two-tree-runtime/00-map.md) | 同一套 Cordis 在 Node 与浏览器各长一棵树，中间是类型化的线；一条会话事件穿过两棵树。 | 3 | 3 | 0 | 0 |
+| [`two-tree-runtime/framework/`](../two-tree-runtime/framework/00-map.md) | 两棵树共用的框架本体：五原语、waterfall、Loader/Include、vendor 本地修改。 | 6 | 2 | 4 | 0 |
+| [`two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) | 分层与单向依赖、模块身份与激活、浏览器启动、状态所有权、资源与视图、插件纪律。 | 16 | 5 | 11 | 0 |
 | [`two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md) | Typert 声明、Gateway 派发、载体与认证、两条出站链路与 wire 校验。 | 9 | 1 | 8 | 0 |
 | [`runtime-profiles/`](../runtime-profiles/00-map.md) | 一次启动装入什么：五个 launcher profile 与 desktop 应用自有 profile 的组合、差异与装载路径。 | 7 | 2 | 5 | 0 |
 | [`session-and-loop/`](../session-and-loop/00-map.md) | 会话存在哪、怎么读回来：事件映射、inbox/turn 时序、换 loop 的半径、格式世代。 | 5 | 0 | 5 | 0 |
@@ -46,6 +46,7 @@
 |---|---|---|---|---|
 | [`00-map`](../two-tree-runtime/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
 | [`01-一条会话事件穿过两棵树`](../two-tree-runtime/01-一条会话事件穿过两棵树.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`02-桌面-同一个形状的第三个落脚点`](../two-tree-runtime/02-桌面-同一个形状的第三个落脚点.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `two-tree-runtime/framework/`
 
@@ -56,6 +57,7 @@
 | [`02-waterfall-与事件合同`](../two-tree-runtime/framework/02-waterfall-与事件合同.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
 | [`03-loader-include-与js插值`](../two-tree-runtime/framework/03-loader-include-与js插值.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
 | [`04-vendor-本地修改`](../two-tree-runtime/framework/04-vendor-本地修改.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`05-group与isolate-realm`](../two-tree-runtime/framework/05-group与isolate-realm.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `two-tree-runtime/client/`
 
@@ -73,6 +75,7 @@
 | [`tree/01-六层与单向依赖链`](../two-tree-runtime/client/tree/01-六层与单向依赖链.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
 | [`tree/02-模块身份与激活顺序`](../two-tree-runtime/client/tree/02-模块身份与激活顺序.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
 | [`tree/03-浏览器启动与首屏交接`](../two-tree-runtime/client/tree/03-浏览器启动与首屏交接.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`tree/04-客户端热更新与模块缓存`](../two-tree-runtime/client/tree/04-客户端热更新与模块缓存.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`view/01-slot-与-props-纪律`](../two-tree-runtime/client/view/01-slot-与-props-纪律.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
 | [`view/02-conversation-node-纪律`](../two-tree-runtime/client/view/02-conversation-node-纪律.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
 | [`view/03-右栏-与-document-preview`](../two-tree-runtime/client/view/03-右栏-与-document-preview.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |

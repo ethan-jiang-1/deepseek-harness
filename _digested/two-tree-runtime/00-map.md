@@ -33,7 +33,7 @@ Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一�
 | [`client/`](./client/00-map.md) | 浏览器那棵树：六层与依赖链、模块身份、浏览器启动、谁拥有状态、slot 与 conversation、插件纪律 | 加 UI、加 client 包、查「这条状态该住哪」「包为什么没启动」 |
 | [`remote/`](./remote/00-map.md) | 两棵树之间的线：`@Remote` 声明 → build 产物 → Gateway 派发 → Client mount；载体、认证、流 | 加一个跨边界方法、加一种推给浏览器的事实、查认证或重连 |
 
-桌面不是第三棵树：Electron 壳起一个私有 host，host 经 `runProfile` 起完整 web 应用，窗口加载同一份 client 产物——还是 Host 树 + Client 树，只是启动方式不同（[`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)）。headless / sdk / sdk-minimal / acp 则只有 Host 树，本专题描述的是「有两个端点时」的形状。
+桌面不是第三棵树：Electron 壳起一个私有 host，host 经 `runProfile` 起完整 web 应用，窗口加载同一份 client 产物——还是 Host 树 + Client 树，只是启动方式不同（[`02-桌面-同一个形状的第三个落脚点.md`](./02-桌面-同一个形状的第三个落脚点.md)、[`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)）。headless / sdk / sdk-minimal / acp 则只有 Host 树，本专题描述的是「有两个端点时」的形状。
 
 ## 先看一条事件怎么走
 
@@ -58,7 +58,7 @@ Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一�
 
 主干：`framework/01` → `client/tree/01` → `client/state/01` → `remote/00-map`。这三跳刚好对应「同一套原语 / 一棵树怎么分层 / 两棵树怎么同步」。
 
-按问题查：写插件看上面的表；查「为什么浏览器拿不到某个值」先看 `client/state/01` 的所有权，再看 `remote/` 的线；查「装了为什么没生效」看 [`../plugin-system/`](../plugin-system/00-map.md)，本专题不重复组合与生命周期。
+按问题查：写插件看上面的表；查「为什么浏览器拿不到某个值」先看 `client/state/01` 的所有权，再看 `remote/` 的线；查「装了为什么没生效」看 [`../plugin-system/`](../plugin-system/00-map.md)，本专题不重复组合与生命周期。查「桌面为什么和 Web 不一样」看 [`02-桌面`](./02-桌面-同一个形状的第三个落脚点.md)。
 
 ## 自检与同步
 

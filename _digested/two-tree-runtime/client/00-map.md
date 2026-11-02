@@ -18,7 +18,7 @@ Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mut
 
 | 目录 | 回答 | 文件 |
 |------|------|------|
-| [`tree/`](./tree/) | 这棵树怎么分层、模块与激活怎么走、怎么启动 | [`01-六层与单向依赖链`](./tree/01-六层与单向依赖链.md)、[`02-模块身份与激活顺序`](./tree/02-模块身份与激活顺序.md)、[`03-浏览器启动与首屏交接`](./tree/03-浏览器启动与首屏交接.md) |
+| [`tree/`](./tree/) | 这棵树怎么分层、模块与激活怎么走、怎么启动 | [`01-六层与单向依赖链`](./tree/01-六层与单向依赖链.md)、[`02-模块身份与激活顺序`](./tree/02-模块身份与激活顺序.md)、[`03-浏览器启动与首屏交接`](./tree/03-浏览器启动与首屏交接.md)、[`04-客户端热更新与模块缓存`](./tree/04-客户端热更新与模块缓存.md) |
 | [`state/`](./state/) | 谁拥有一份状态、一个值活多久 | [`01-谁拥有一份状态`](./state/01-谁拥有一份状态.md)、[`02-资源模型与-holder-生命周期`](./state/02-资源模型与-holder-生命周期.md)、[`03-会话窗口与-generation`](./state/03-会话窗口与-generation.md)、[`04-workspace-模型`](./state/04-workspace-模型.md) |
 | [`view/`](./view/) | 值怎么变成画面、扩展位怎么声明 | [`01-slot-与-props-纪律`](./view/01-slot-与-props-纪律.md)、[`02-conversation-node-纪律`](./view/02-conversation-node-纪律.md)、[`03-右栏-与-document-preview`](./view/03-右栏-与-document-preview.md) |
 | [`rules/`](./rules/) | 谁能 import 谁、起包要补什么 | [`01-export-与包内目录`](./rules/01-export-与包内目录.md)、[`02-依赖-构建期环境与三处注册面`](./rules/02-依赖-构建期环境与三处注册面.md)、[`03-样式与本地化`](./rules/03-样式与本地化.md)、[`04-测试阶梯与三道-gate`](./rules/04-测试阶梯与三道-gate.md) |
@@ -35,6 +35,7 @@ Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mut
 | 读 Host 的状态、调 Host 的命令 | [`state/01`](./state/01-谁拥有一份状态.md) | [`../remote/gateway/02`](../remote/gateway/02-客户端-mount-与装配.md) |
 | 加样式或用户可见文案 | [`rules/03`](./rules/03-样式与本地化.md) | — |
 | 查「会话或工作区状态为什么不对」 | [`state/03`](./state/03-会话窗口与-generation.md)（会话窗口与重连） | [`state/04`](./state/04-workspace-模型.md)（workspace 行、归档与 pin） |
+| 查「改了代码为什么没生效」 | [`tree/04`](./tree/04-客户端热更新与模块缓存.md)（HMR 与缓存修订） | [`rules/02`](./rules/02-依赖-构建期环境与三处注册面.md)（模块身份改了要重启） |
 
 三个最常见的返工：**业务数据放进 entry 的 store**（store 只装查看/交互状态，sessions、frames、connections 留在对象层）；**在组件里直接订阅或 `useSyncExternalStore`**（一切变化都经 framework hook 进来）；**为让测试编译而放宽公开 API**（同包测试直接 import 内部路径）。
 
@@ -56,4 +57,5 @@ Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mut
 4. [`docs/subsystems/client-modules.md`](../../../docs/subsystems/client-modules.md)：`WebBootGraph` wire、scan、bundle route、`rebuilt()` 与缓存修订。
 5. [`docs/subsystems/conversation.md`](../../../docs/subsystems/conversation.md)：Context/Location/View 归属、身份与重放、window 更新三条路径、publication。
 6. [`docs/web-styling.md`](../../../docs/web-styling.md)：token 与样式归属、组件规则、改系统流程；统一圆角刻度与适用面另见 [`docs/ui-radius.md`](../../../docs/ui-radius.md)（0009 新增）。
-7. 三道 gate：[`scripts/verify-client-packages.ts`](../../../scripts/verify-client-packages.ts)（模块请求与环）、[`scripts/verify-client-domain-graph.ts`](../../../scripts/verify-client-domain-graph.ts)（包内层级）、[`scripts/verify-client-ui-i18n.ts`](../../../scripts/verify-client-ui-i18n.ts)（文案归属）。
+7. [`packages/client/hmr/README.md`](../../../packages/client/hmr/README.md)：重载链的两半、失败策略与 `pollIntervalMs`。
+8. 三道 gate：[`scripts/verify-client-packages.ts`](../../../scripts/verify-client-packages.ts)（模块请求与环）、[`scripts/verify-client-domain-graph.ts`](../../../scripts/verify-client-domain-graph.ts)（包内层级）、[`scripts/verify-client-ui-i18n.ts`](../../../scripts/verify-client-ui-i18n.ts)（文案归属）。

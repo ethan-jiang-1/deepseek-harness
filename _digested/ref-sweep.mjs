@@ -97,6 +97,7 @@ for (const corpus of corpora) {
       check(match[1], match[2] === undefined ? undefined : match[2] + (match[3] ? `-${match[3]}` : ''), sourceLine)
     }
     if (!withQuotes) continue
+    const normalize = (s) => s.replace(/\\(['\"])/g, '$1').replace(/['\"]\s*\+\s*['\"]/g, '').replace(/[`*~]/g, '').replace(/\s+/g, '')
     for (const line of text.split('\n')) {
       const quotes = [...line.matchAll(QUOTE)]
         .map((m) => m[1].replace(/[`*~]/g, ''))
@@ -105,6 +106,10 @@ for (const corpus of corpora) {
           return ascii === q.length && /[_(){}:=>.<]|^[a-z]+([A-Z][a-z]+)+/.test(q)
         })
       if (quotes.length === 0) continue
+      // A sentence can cite several anchors; a quote matches if ANY of them
+      // contains it within the window. Checking each anchor independently
+      // reported the quote against every non-owning anchor on the line.
+      const anchors = []
       REF.lastIndex = 0
       while ((match = REF.exec(line))) {
         const abs = resolveTarget(match[1], file)
@@ -112,14 +117,42 @@ for (const corpus of corpora) {
         const all = readFileSync(abs, 'utf8').split('\n')
         const start = parseInt(match[2], 10)
         const end = match[3] ? parseInt(match[3], 10) : start
-        const windowText = all.slice(Math.max(0, start - 6), Math.min(all.length, end + 6)).join('\n')
-        const normalize = (s) => s.replace(/\s+/g, '')
-        for (const quote of quotes) {
-          if (normalize(windowText).includes(normalize(quote))) break
-          if (quote === quotes[quotes.length - 1]) {
-            quoteDrift.push(`${rel} → ${match[1]}:${start}-${end}  「${quote.slice(0, 70)}」±6 行未命中`)
-          }
-        }
+        anchors.push({
+          raw: match[1],
+          start,
+          end,
+          pos: match.index,
+          abs,
+          text: normalize(all.slice(Math.max(0, start - 6), Math.min(all.length, end + 6)).join('\n')),
+        })
+      }
+      // Shorthand anchors after a full path on the same line: `:123` or
+      // `:123`-`124`. They belong to the preceding full reference; without
+      // this, quotes cited through shorthand are reported against the wrong
+      // (usually the first) anchor.
+      const SHORT = /`:(\d+)(?:-(\d+))?`/g
+      let short
+      while ((short = SHORT.exec(line))) {
+        let owner
+        for (const anchor of anchors) if (anchor.pos < short.index) owner = anchor
+        if (owner === undefined) continue
+        const start = parseInt(short[1], 10)
+        const end = short[2] ? parseInt(short[2], 10) : start
+        const all = readFileSync(owner.abs, 'utf8').split('\n')
+        anchors.push({
+          raw: owner.raw,
+          start,
+          end,
+          pos: short.index,
+          abs: owner.abs,
+          text: normalize(all.slice(Math.max(0, start - 6), Math.min(all.length, end + 6)).join('\n')),
+        })
+      }
+      if (anchors.length === 0) continue
+      for (const quote of quotes) {
+        if (anchors.some((anchor) => anchor.text.includes(normalize(quote)))) continue
+        const first = anchors[0]
+        quoteDrift.push(`${rel} → ${first.raw}:${first.start}-${first.end}  「${quote.slice(0, 70)}」±6 行未命中（本行 ${anchors.length} 个锚点均未命中）`)
       }
     }
   }
