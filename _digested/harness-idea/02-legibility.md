@@ -58,7 +58,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
-> —— `packages/AGENTS.md:27`（基线 `687f282e86…`）
+> —— `packages/AGENTS.md:28`（基线 `687f282e86…`）
 - 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`graph-atlas`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
 
 手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
