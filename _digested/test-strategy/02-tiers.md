@@ -115,7 +115,7 @@
 
 | 后缀 / 形态 | 计数 | 备注 |
 |---|---|---|
-| `*.spec.{ts,tsx}`（unit） | **2134** | packages 1505 `.ts` + 296 `.tsx`、apps 176+1、scripts 151、website 5 |
+| `*.spec.{ts,tsx}`（unit） | **2150** | packages 1518 `.ts` + 298 `.tsx`、apps 176+1、scripts 152、website 5 |
 | `*.e2e.ts`（e2e 车道） | **110** | 按 `vitest.e2e.config.ts` 的 include（`packages/*/*/tests/**`、`apps/{cli,desktop}/tests/**`）减 exclude（`*.expected.e2e.ts` 与 inspector 的 `client-browser.e2e.ts`）实测；物理总数 320，归 web 车道的 190 个与归 expected 层的 20 个不在内 |
 | `*.expected.e2e.ts` | **20**（apps/cli）+ 8（apps/web，归 web 车道） | 另有 1 个 `*.expected.spec.ts` 走 unit——"Package/script expectations use `test`"的实例 |
 | `*.snapshot.ts` 驱动 | **3** + 1 corpus | 场景数据面：snapshots/session **150**、sdk **27**、acp **9**、web **64** = **250 个录制场景** |

@@ -4,7 +4,7 @@
 
 ## 现象是什么：一个把测试政策压缩到 55 行的仓库
 
-DSH 仅单元测试就有 2134 个 spec 文件，而它的测试政策只有 55 行。开篇一句自述定位：
+DSH 仅单元测试就有 2150 个 spec 文件，而它的测试政策只有 55 行。开篇一句自述定位：
 
 > "How this repo tests, tier by tier, and the rules that keep a green suite meaningful."
 

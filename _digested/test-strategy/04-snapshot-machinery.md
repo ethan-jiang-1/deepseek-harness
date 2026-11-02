@@ -4,7 +4,7 @@
 
 ## 现象是什么：把一次真实会话变成无 key 的期望值
 
-Snapshot 层的定义（`docs/testing.md`）是 **keyless recorded-session replay**：录制时用真模型跑一次完整会话，把"用户输入 + 模型回放 + 持久化结果"固化成场景资产；CI 里无 key 回放——同一份输入喂给回放的模型流，断言持久化结果与期望一致。`snapshots/` 树在基线下有 1278 个文件（1271 常规文件 + 7 个跨 profile sidecar 符号链接），分四个面：`snapshots/session/`（headless）、`snapshots/sdk/`、`snapshots/acp/`、`snapshots/web/`。
+Snapshot 层的定义（`docs/testing.md`）是 **keyless recorded-session replay**：录制时用真模型跑一次完整会话，把"用户输入 + 模型回放 + 持久化结果"固化成场景资产；CI 里无 key 回放——同一份输入喂给回放的模型流，断言持久化结果与期望一致。`snapshots/` 树在基线下有 1682 个文件（1675 常规文件 + 7 个跨 profile sidecar 符号链接），分四个面：`snapshots/session/`（headless）、`snapshots/sdk/`、`snapshots/acp/`、`snapshots/web/`。
 
 一句话定位：**with-key e2e 证明"现在还对真模型工作"，快照证明"组装后的完整转录没有意外变化"**。前者是活的，后者是固化的；两者互补，谁也不能替代谁（"package, e2e, mock-only, and rationale evidence does not replace the assembled transcript"）。
 
@@ -94,7 +94,7 @@ session JSONL 一行一事件、首行 header；身份与路径全部用类型�
 
 ### 驱动与模式链（DSH_SNAPSHOT 三值）
 
-- **驱动**：`snapshots/session/headless.snapshot.ts` 按目录枚举 `snapshot.yml` 生成 per-scenario 用例，经 `dsh --profile headless` + `cordis.snapshot.yml`（replay overlay patch）回放比较。场景计数：session **122**、sdk **24**、acp **9**、web **55**，共 **210 个**。
+- **驱动**：`snapshots/session/headless.snapshot.ts` 按目录枚举 `snapshot.yml` 生成 per-scenario 用例，经 `dsh --profile headless` + `cordis.snapshot.yml`（replay overlay patch）回放比较。场景计数：session **150**、sdk **27**、acp **9**、web **64**，共 **250 个**。
 - **模式解析**：每个消费侧 suite 自带 `snapshotMode()`——`undefined|''|'replay'→replay`；`'record'`；`'refresh'`；其余值 throw。
 - **env 注入**：`packages/test-support/session-snapshot/src/harness.ts` 向子进程注入 `DSH_SNAPSHOT` / `DSH_SNAPSHOT_FILE` / `DSH_SNAPSHOT_OVERRIDE` / `DSH_SNAPSHOT_CHILD_FILES` 等。
 - **消费者**：`@deepseek-ai/dsh-llm-replay` 插件——config 的 `file/overrideFile/childFiles` 缺省取上述 env；嵌套 agent 按 first-call-order 绑定；`assertConsumed()` 把静默 underrun 变成明确诊断。

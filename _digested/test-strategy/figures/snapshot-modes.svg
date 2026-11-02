@@ -43,8 +43,8 @@
   <text x="365" y="382" font-weight="700" fill="#1d4e13">(DSH_SNAPSHOT_MAX_CONCURRENCY)</text>
   <text x="365" y="406" fill="#333">同一份输入喂给回放的模型流，</text>
   <text x="365" y="426" fill="#333">断言持久化结果与期望一致</text>
-  <text x="365" y="452" fill="#666">210 个录制场景：session 122 /</text>
-  <text x="365" y="470" fill="#666">sdk 24 / acp 9 / web 55</text>
+  <text x="365" y="452" fill="#666">250 个录制场景：session 150 /</text>
+  <text x="365" y="470" fill="#666">sdk 27 / acp 9 / web 64</text>
   <text x="365" y="484" fill="#666">不写任何已提交输出</text>
 
   <rect x="630" y="232" width="270" height="270" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
