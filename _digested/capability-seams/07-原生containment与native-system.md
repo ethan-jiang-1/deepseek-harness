@@ -36,7 +36,7 @@ macOS 普通启动、Windows ConPTY 和其他未支持宿主保留原有 PGID / 
 
 入口包暴露两个并列的能力子路径、**没有根导出**：`./landlock-run`（`:12`）与 `./flock`（`:16`）；import 任一入口都不会加载 addon，缺 Landlock 二进制时 probe 为不可用，缺 flock 绑定时获取 reject，都不静默授予（`native/system/AGENTS.md:11`）。新增的 flock 是 `tryLockExclusive(fd): Promise<void>`（`native/system/packages/entry/src/flock.ts:46`）：Node-API v8，在异步 work 里跑一次 `flock(fd, LOCK_EX | LOCK_NB)`，只做非阻塞互斥，不提供阻塞等待或共享锁 API，调用方持有 fd 并靠 close 释放；逐条行为合同（独立 C oracle、跨进程、fd 继承、EBADF 等条件）写在 `native/system/docs/flock-contract.md:3`。
 
-平台矩阵从 2 个平台包扩到 4 个：新增 `darwin-x64` / `darwin-arm64`，只含 `bin/system.node`（`native/system/packages/darwin-arm64/prebuilds.json:3`）；Linux 包继续含 `bin/landlock-run` + `bin/glibc/system.node` + `bin/musl/system.node`（`native/system/packages/linux-x64/prebuilds.json:5`、`:14`、`:21`；`native/system/docs/support-matrix.md:7`、`:8`）。二进制命名不变（`native/system/docs/naming.md:16`）。`native/system/test/link-platform.mjs:1` 只是把下载下来的平台产物 symlink 进 entry 的 `node_modules/@deepseek-ai/` 的 **ABI 测试辅助脚本**；native 侧没有新增名为 link 的产品能力。
+平台矩阵从 2 个平台包扩到 4 个：新增 `darwin-x64` / `darwin-arm64`，只含 `bin/system.node`（`native/system/packages/darwin-arm64/prebuilds.json:4`）；Linux 包继续含 `bin/landlock-run` + `bin/glibc/system.node` + `bin/musl/system.node`（`native/system/packages/linux-x64/prebuilds.json:7`、`:14`、`:21`；`native/system/docs/support-matrix.md:7`、`:8`）。二进制命名不变（`native/system/docs/naming.md:16`）。`native/system/test/link-platform.mjs:1` 只是把下载下来的平台产物 symlink 进 entry 的 `node_modules/@deepseek-ai/` 的 **ABI 测试辅助脚本**；native 侧没有新增名为 link 的产品能力。
 
 ## 产品消费者：session 写租约
 

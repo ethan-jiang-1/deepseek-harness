@@ -32,7 +32,7 @@ Service Definition 的 `sendMessage`（`packages/subagent/subagent/src/index.ts:
 
 ## parent-owned 子代理目录
 
-父 Session 的 `subagent/catalog` 事件是 direct-child 发现的持久权威：每个成功创建事实写一条事件，`subagentCatalog` projection 负责物化（`stateVersion: 6`，payload version 0 / 1 / 2，`dsh-chunked-list` 分块存储，fork 用 `inheritedEventCount` 过滤继承段），取代了已删除的 `descriptor-seed.ts`。这改变的是「父如何枚举与恢复 direct child」，不是 activation 的执行与通知路由。投影、写入点与失败语义见 [`05-subagent-catalog与host交付.md`](./05-subagent-catalog与host交付.md)。
+父 Session 的 `subagent/catalog` 事件是 direct-child 发现的持久权威；目录的 stateVersion、payload 版本、分块与 `inheritedEventCount` 事实归 [`05-subagent-catalog与host交付.md`](./05-subagent-catalog与host交付.md)。这里只记它与 activation 的边界：目录改变的是「父如何枚举与恢复 direct child」，不是 activation 的执行与通知路由。
 
 ## 宿主消息的 Queue / Steer 双交付
 

@@ -60,16 +60,7 @@ Electron shell
 
 壳侧准备不跑 pnpm：`applyRelease` 只校验 `desktop-runtime.json` 描述符、迁移 profile 的 pnpm 设置、`createPluginProfile`（`:255-281` 的 `initProfile` 补齐缺失的 manifest / 空 user patch / pnpm workspace 文件）并摘除旧 link 后端写下的 `.dsh-module-fallback` 投影（`apps/desktop/src/project-manager.ts:83-91`、`:173-176`；`packages/boot/app-boot/src/profile.ts:283-301` 的 `removeLinkProjections`）。
 
-Node IPC 承载生命周期与控制（事件形状在 `apps/desktop/src/host-process.ts:8-37`，host 侧处理在 `apps/desktop-host/src/index.ts:48-90`）：
-
-| 消息 | 方向 | 内容 |
-|------|------|------|
-| `ready` | host → 壳 | `{url, injections}`（index 注入表）；壳用 URL 换认证 cookie（`apps/desktop/src/web-document.ts:43-53`） |
-| `fatal` | host → 壳 | 消息 + `inspect` 截到 64×1024 字符的完整诊断；退出码 1（`apps/desktop-host/src/index.ts:107-108`、`:110-121`，截断 `:116`、退出码 `:119`） |
-| `shutdown` / `shutdown-complete` | 壳 → host → 壳 | `shutdown.shutdown(0)` 后断开 IPC；壳侧 10 s 未退发 SIGTERM、再 5 s SIGKILL（`apps/desktop-host/src/index.ts:52-58`；`apps/desktop/src/host-process.ts:293-300`） |
-| `quit-inspection` | 双向 | 壳问普通退出会打断什么；Host 答 active tasks（运行中 agent、排队消息与 running/stopping job）与已排期提醒，2 s 超时视为有活、由壳弹退出确认（host 侧 `apps/desktop-host/src/index.ts:62-77`；壳侧 `apps/desktop/src/host-process.ts:254-258`，超时常量 `:49`） |
-| `update-tasks` | 双向 | inspect / lock / unlock；lock 拒新请求（503）、排空已准入请求后检查运行中的 agent 与 job（`apps/desktop-host/src/update-tasks.ts:16-23`、`:28-62`） |
-| `platform-session` | host → 壳 | Platform 账户凭据，仅进主进程的 Platform 视图，不进渲染端（`apps/desktop-host/src/platform-session.ts:10-36`；壳侧校验 `apps/desktop/src/host-process.ts:20-23`、`:53-90`） |
+Node IPC 的生命周期与控制消息（`ready`、`fatal`、`shutdown`、`quit-inspection`、`update-tasks`、`platform-session`）属于入口契约，单点在 [`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)；本页只保留 profile 装载与组合差异。
 
 Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runtimeDir, source, root })`，`root` 固定为 `$DSH_HOME/dsh-runtimes/dsh-primary-runtime`（离线 Python / pnpm 载荷的安装根），`source` 是随包的 runtime 载荷目录（`argv[4]` 或 `<runtimeDir>/../runtime/primary-runtime`），`office-skills` 取其同级（`apps/desktop-host/src/index.ts:95-99`；`office.ts:28-38`）。断连即停：`process.once('disconnect', stop)`（`apps/desktop-host/src/index.ts:91`）。
 
