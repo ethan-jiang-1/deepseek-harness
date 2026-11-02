@@ -1,6 +1,6 @@
 # 05 · 插件分类与设计思考
 
-快照式清单的重测义务见 [`_coverage/`](../../_coverage/00-index.md)；具体核验点见 [`catalog.json`](../../catalog.json)。
+快照式清单；核验状态见 [`catalog.json`](../../catalog.json)，覆盖矩阵由它生成。
 
 ## 一句话
 

@@ -1,6 +1,6 @@
 # 02 · 插件货架：343 包逐组图鉴
 
-基线 `dsh-v0.2.1-rc.3`（快照式清单，重测义务见 [`_coverage/`](../../_coverage/00-index.md)）；组序与 [`packages/README.md`](../../../packages/README.md) 一致。总量：343 包、52 个包组（含 experimental）。
+快照式清单；核验状态见 [`catalog.json`](../../catalog.json)，覆盖矩阵由它生成。组序与 [`packages/README.md`](../../../packages/README.md) 一致。总量：343 包、52 个包组（含 experimental）。
 
 枚举口径是深度精确的 `^packages/[^/]+/[^/]+/package\.json$`（`_digested/verify.mjs` 的 `gitPackageOwners`）；`Config` 列是该包声明式配置的顶层字段数，取自生成目录 [`docs/config-catalog.md`](../../../docs/config-catalog.md)。
 

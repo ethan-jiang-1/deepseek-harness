@@ -24,7 +24,7 @@ acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）�
 
 | 改动 | 内容 |
 |------|------|
-| `system-prompt` override | 只设 `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/acp-app/cordis.patch.yml:3-6`）；0011 起 shipped 组合不再设 `personaSuffix`（`{{cwd}}` 退役，执行目录走 `ctx.workingDirectory`） |
+| `system-prompt` override | 只设 `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/acp-app/cordis.patch.yml:3-6`）。shipped 组合不设 `personaSuffix`（`{{cwd}}` 退役，执行目录走 `ctx.workingDirectory`） |
 | `session-title-llm` `disabled: true` | stdout 只归 ACP 协议 |
 | `insert` | `acp-app-startup` + `acp`（ACP 桥；bundle `inject: [acpAppStartup]`，插件自身 `inject: ['agents','llm','sessionPersistence','sessions']`，config 定 provider/model，`:15-20`） |
 
@@ -61,7 +61,7 @@ dsh --profile acp
 - **图像处理**：支持 PNG / JPEG / WebP / GIF，inline base64 准入后丢弃，日志只留 attachment 引用。图像投递前再读并校验完整性。
 - **审批转发**：`approval/request` 事件转发为 `session/request_permission` 到客户端，客户端可自动答。
 - **startup-only 重载**：协议开始后不能在运行时重载 patch。
-- **stdout 是纯数据管道**：任何 stdout logger 都会污染 ACP 协议帧。rc.5 修的两条把判据说清楚了：一条诊断会不会破帧，不取决于它是警告还是信息，而取决于它写 `console` 的哪个方法——`console.info`/`console.log` 落 stdout，`console.warn`/`console.error` 落 stderr。`llm-deepseek-account` 的目录诊断原本用 `console.info`，而 `.info` 是**成功加载也会触发**的常规通道，所以它才是真正的泪点，现改为 `console.error`（`packages/llm/llm-deepseek-account/src/index.ts:57-58`，注释写明「including during successful catalog loads」）；`mcp-client` 的 resources 列表则加了能力门，未声明 capability 时直接返回空页而不调 SDK——因为 SDK 的 fallback 会写 `console.debug`（详见 [`capability-seams/08`](../capability-seams/08-外部生态桥：MCP与hooks.md)）。回归见 `apps/cli/tests/profiles/acp/tests/stdout.expected.e2e.ts`。
+- **stdout 是纯数据管道**：任何 stdout logger 都会污染 ACP 协议帧。判据不是警告/信息级别，而是写 `console` 的哪个方法——`console.info`/`console.log` 落 stdout，`console.warn`/`console.error` 落 stderr。`llm-deepseek-account` 的目录诊断走 `console.error`（`.info` 是**成功加载也会触发**的常规通道，`packages/llm/llm-deepseek-account/src/index.ts:57-58`）；`mcp-client` 的 resources 列表在未声明 capability 时直接返回空页而不调 SDK——SDK 的 fallback 会写 `console.debug`（详见 [`capability-seams/08`](../capability-seams/08-外部生态桥：MCP与hooks.md)）。回归见 `apps/cli/tests/profiles/acp/tests/stdout.expected.e2e.ts`。
 
 ## 源码入口
 

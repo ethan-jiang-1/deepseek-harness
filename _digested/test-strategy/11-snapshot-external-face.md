@@ -1,6 +1,6 @@
 # 11 — 快照机制的对外面：插件仓能拿到的发布包、夹具与接线事实
 
-> 本篇补 [04](./04-snapshot-machinery.md) 的一个视角缺口：04 站在**主仓语料消费者**一侧讲机制（世代、四面、manifest、sidecar、门禁）；本篇讲同一套机制**作为发布物**对仓外暴露了什么。与 [08–10](./08-plugin-testing.md) 同族，面向插件作者。只收 DSH 一手事实（基线 `687f282e8625c6b8d11ff58211a90524be2e4317`，`dsh-v0.2.1-rc.2`）；外部仓的实践校准、组织与价值判断在 `_faq_on_digested/21_recorded-session-snapshots/`，本篇不重复。
+> 本篇补 [04](./04-snapshot-machinery.md) 的一个视角缺口：04 站在**主仓语料消费者**一侧讲机制（世代、四面、manifest、sidecar、门禁）；本篇讲同一套机制**作为发布物**对仓外暴露了什么。与 [08–10](./08-plugin-testing.md) 同族，面向插件作者。只收 DSH 一手事实（核验点见 [`catalog.json`](../catalog.json)）；外部仓的实践校准、组织与价值判断在 `_faq_on_digested/21_recorded-session-snapshots/`，本篇不重复。
 
 ## 现象是什么：一个半公开的机制
 

@@ -1,6 +1,6 @@
 # Plugin inventory · 现成插件货架
 
-本专题是**快照式清单**：包数、服务数、组合成员随每次 upstream 同步漂移，重测义务登记在 [`_coverage/`](../../_coverage/00-index.md)；引用生成目录与 bundle patch 时给区块级行号，结构变化以生成目录为真源。
+本专题是**快照式清单**：包数、服务数、组合成员随每次 upstream 同步漂移，核验状态登记在 [`catalog.json`](../../catalog.json)，覆盖矩阵由它生成；引用生成目录与 bundle patch 时给区块级行号，结构变化以生成目录为真源。
 
 ## 一句话
 

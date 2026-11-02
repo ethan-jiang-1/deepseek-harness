@@ -198,6 +198,24 @@
       "description": "baseline 下 docs/testing.md 的行数",
       "metric": "testing-doc-lines",
       "expected": 55
+    },
+    {
+      "id": "N12",
+      "description": "baseline 下 docs/capability-seams.md 的 ctx 服务表行数",
+      "metric": "ctx-service-count",
+      "expected": 99
+    },
+    {
+      "id": "N13",
+      "description": "baseline 下 docs/tool-catalog.md 的 Tool Package Map 数据行数",
+      "metric": "tool-package-count",
+      "expected": 33
+    },
+    {
+      "id": "N14",
+      "description": "baseline 下 .agents/notes/archived 的 .md 文件数",
+      "metric": "notes-archived-md",
+      "expected": 1849
     }
   ]
 }

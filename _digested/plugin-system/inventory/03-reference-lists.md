@@ -1,6 +1,6 @@
 # 03 · 五张横切清单：按「要什么」查
 
-基线 `dsh-v0.2.1-rc.2`（快照式清单，重测义务见 [`_coverage/`](../../_coverage/00-index.md)）。[`02-plugin-catalog.md`](./02-plugin-catalog.md) 按包组纵着看，本页按能力类型横着看。
+快照式清单；核验状态见 [`catalog.json`](../../catalog.json)，覆盖矩阵由它生成。[`02-plugin-catalog.md`](./02-plugin-catalog.md) 按包组纵着看，本页按能力类型横着看。
 
 ## 3.1 ctx 服务清单 — 99 = 58 core + 35 seam + 5 service + 1 bundle
 

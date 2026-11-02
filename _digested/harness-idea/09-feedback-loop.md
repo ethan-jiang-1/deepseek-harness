@@ -10,7 +10,7 @@ loop engineering 的讨论把一轮循环拆成控制链：目标 → 行动 →
 
 ## 基线
 
-本篇证据锚定 `dsh-v0.2.1-rc.2`（commit `687f282e8625c6b8d11ff58211a90524be2e4317`），与本专题其余篇章同一基线。上次同步（`_change_log/0009`）对本篇引用件的已知变更已包含在本篇锚内：user-questions 的 timed waits 与 late replies 即 0009 引入，本篇引用其当前形态；`0.2.0-rc.2` → `0.2.1-rc.2` 跨度内，`packages/core/tools`、`packages/core/agent-loop`、`packages/jobs/tool-jobs`、`packages/plan/plan-mode`、`packages/goal/goal-round-driver` 的行号已重锚；tool-bash render、subprocess 输出收集、guard 家族、feedback、repair 未见变更。`0.1.7-rc.1` 线上的 `dsh-agent-loop/invariant` 已随运行时 invariant 机制整族退役，见 [`03`](./03-paved-road.md) 机制六。
+本篇与本专题其余篇章同一核验点，见 [`catalog.json`](../catalog.json)。user-questions 的 timed waits 与 late replies 按当前形态引用；`packages/core/tools`、`packages/core/agent-loop`、`packages/jobs/tool-jobs`、`packages/plan/plan-mode`、`packages/goal/goal-round-driver` 的行号随当前树；tool-bash render、subprocess 输出收集、guard 家族、feedback、repair 未见变更。`dsh-agent-loop/invariant` 已随运行时 invariant 机制整族退役，见 [`03`](./03-paved-road.md) 机制六。
 
 ## 机制一：失败是标记文本，不是异常
 

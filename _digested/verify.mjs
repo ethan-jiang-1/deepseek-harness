@@ -620,6 +620,9 @@ const claimMetrics = new Set([
   'forwarded-event-count',
   'vendor-local-modification-count',
   'testing-doc-lines',
+  'ctx-service-count',
+  'notes-archived-md',
+  'tool-package-count',
 ])
 
 function gitOutput(args) {
@@ -655,6 +658,10 @@ function computeClaimMetric(metric) {
   }
   if (metric === 'notes-implemented-md') {
     return gitTrackedLines(baselineCommit, '.agents/notes/implemented')
+      .filter(line => line.endsWith('.md')).length
+  }
+  if (metric === 'notes-archived-md') {
+    return gitTrackedLines(baselineCommit, '.agents/notes/archived')
       .filter(line => line.endsWith('.md')).length
   }
   if (metric === 'architecture-extension-rows') {
@@ -709,6 +716,19 @@ function computeClaimMetric(metric) {
   if (metric === 'testing-doc-lines') {
     const source = gitOutput(['show', `${baselineCommit}:docs/testing.md`])
     return source.endsWith('\n') ? source.split('\n').length - 1 : source.split('\n').length
+  }
+  if (metric === 'ctx-service-count') {
+    return gitOutput(['show', `${baselineCommit}:docs/capability-seams.md`])
+      .split(/\r?\n/).filter(line => /^\| `ctx\./.test(line)).length
+  }
+  if (metric === 'tool-package-count') {
+    const source = gitOutput(['show', `${baselineCommit}:docs/tool-catalog.md`])
+    const start = source.indexOf('## Tool Package Map')
+    if (start === -1) return null
+    const rest = source.slice(start + 1)
+    const next = rest.indexOf('\n## ', 1)
+    const section = next === -1 ? rest : rest.slice(0, next)
+    return section.split(/\r?\n/).filter(line => /^\|/.test(line)).length - 2
   }
   return undefined
 }

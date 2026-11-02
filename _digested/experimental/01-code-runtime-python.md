@@ -1,4 +1,4 @@
-> **页名注记**：本篇文件名沿用 0.1.7 线改名前的话题名 `code-runtime-python`，正文按现行包名 `ptc-runtime-python` 与 seam 键 `ctx.ptcRuntime` 重锚；页内全部路径与行号对 `dsh-v0.2.1-rc.2` 成立。
+> **页名注记**：本篇文件名沿用 0.1.7 线改名前的话题名 `code-runtime-python`，正文按现行包名 `ptc-runtime-python` 与 seam 键 `ctx.ptcRuntime` 重锚；页内全部路径与行号对当前基线成立（见 [`catalog.json`](../catalog.json)）。
 
 # ptc-runtime-python：CPython 子进程后端
 

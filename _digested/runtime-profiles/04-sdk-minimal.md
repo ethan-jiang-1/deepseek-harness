@@ -28,10 +28,10 @@ dsh --profile sdk-minimal
 | `llm-deepseek` | `@deepseek-ai/dsh-llm-deepseek-api-key` | `:26-31` | LLM 适配器，实配 `apiKeyEnv: DEEPSEEK_API_KEY`、`defaultContextWindow`（`DSH_CONTEXT_WINDOW`）、`streamIdleTimeoutMs: 172800000`；模型选择不在 bundle——Python 示例脚本把它作 `--model` 默认值（`python/sdk/examples/minimal.py:27`） |
 | `deepseek-llm-api-extensions` / `session-log-deepseek` / `plugin-package-inventory-deepseek` | `@deepseek-ai/dsh-deepseek-llm-api-extensions` / `@deepseek-ai/dsh-session-log-deepseek` / `@deepseek-ai/dsh-plugin-package-inventory-deepseek` | `:17-18`、`:20-21`、`:23-24` | DeepSeek 专属的请求扩展、会话日志元数据与插件清单行，只在这份独立树里显式自持 |
 | `sandbox` | `@deepseek-ai/dsh-sandbox-local` | `:33-34` | 沙箱 |
-| `filesystem` / `attachment-local` / `tool-fs` | `@deepseek-ai/dsh-fs-local` / `@deepseek-ai/dsh-attachment-local` / `@deepseek-ai/dsh-tool-fs` | `:38-39`、`:41-42`、`:44-50` | 0011 新增：受限文件服务 + attachment store + 只暴露 `read_image` 的 tool-fs（`read` / `write` / `edit` 均为 `false`，`readImage: true`） |
-| `working-directory` / `tool-working-directory` | `@deepseek-ai/dsh-working-directory` / `@deepseek-ai/dsh-tool-working-directory` | `:52-53`、`:55-56` | 0011 新增：新 seam `ctx.workingDirectory` 与 `working_directory` 工具（`Session.header.cwd` 只留原始项目身份） |
+| `filesystem` / `attachment-local` / `tool-fs` | `@deepseek-ai/dsh-fs-local` / `@deepseek-ai/dsh-attachment-local` / `@deepseek-ai/dsh-tool-fs` | `:38-39`、`:41-42`、`:44-50` | 受限文件服务 + attachment store + 只暴露 `read_image` 的 tool-fs（`read` / `write` / `edit` 均为 `false`，`readImage: true`） |
+| `working-directory` / `tool-working-directory` | `@deepseek-ai/dsh-working-directory` / `@deepseek-ai/dsh-tool-working-directory` | `:52-53`、`:55-56` | 新 seam `ctx.workingDirectory` 与 `working_directory` 工具（`Session.header.cwd` 只留原始项目身份） |
 | `session-projection` | `@deepseek-ai/dsh-session-projection` | `:58-59` | 共享投影注册表（早于本跨度，OLD 基线里已有且逐字相同），`sandbox-policy` 与 `terminal-bash` 通过它的 units 折叠 sandbox-mode 状态，并把它作为硬注入 |
-| `token-meter` / `compaction-basic` / `image-offload` | `@deepseek-ai/dsh-token-meter` / `@deepseek-ai/dsh-compaction-basic` / `@deepseek-ai/dsh-compaction-image-offload` | `:61-62`、`:64-65`、`:67-68` | 0011 新增：token 计量、基础压缩与图像卸载 |
+| `token-meter` / `compaction-basic` / `image-offload` | `@deepseek-ai/dsh-token-meter` / `@deepseek-ai/dsh-compaction-basic` / `@deepseek-ai/dsh-compaction-image-offload` | `:61-62`、`:64-65`、`:67-68` | token 计量、基础压缩与图像卸载 |
 | `sandbox-policy` | `@deepseek-ai/dsh-sandbox-policy` | `:70-74` | `mode: danger-full-access`、`workspaceRoot: !!js process.cwd()` |
 | `subprocess` | `@deepseek-ai/dsh-subprocess-local` | `:76-77` | 子进程管理 |
 | `pty` | `@deepseek-ai/dsh-terminal` | `:79-80` | 持久 PTY |
@@ -51,16 +51,16 @@ dsh --profile sdk-minimal
 |------|-----|-------------|
 | `maxTokensAsSuccess` | `true`（环境变量控制） | `false` |
 | `tool-bash` | 普通 foreground bash | 平台选定的持久 shell（PTY，5 分钟） |
-| 模型可见工具数 | base 的完整工具面 | **3 个**（`bash` 或 `pwsh` + `read_image` + `working_directory`；0011 前是 1 个） |
+| 模型可见工具数 | base 的完整工具面 | **3 个**（`bash` 或 `pwsh` + `read_image` + `working_directory`） |
 | `tool-fs` | `read` / `write` / `edit` 完整工具 + `tool-fs-search` | 有行但只开 `readImage`（`read` / `write` / `edit` 均为 `false`），即只暴露 `read_image`；文本读写一律走 shell |
 | `str_replace_editor` | **无**（base 在 0008 跨度下线该行；要它必须显式 `insert`） | **无**（同上） |
 | 文件系统服务 | 有（base 的 `fs-sandbox`、`fs-observation-policy`） | 有 `filesystem`（`fs-local`）与 `attachment-local`，但没有 `fs-sandbox` / `fs-observation-policy` 这两层策略 |
 | `subagent` | 有 | **无** |
 | `tool-todo` | 有 | **无** |
-| `compaction` | `compaction-basic` | 有 `compaction-basic` + `image-offload`（0011 前无） |
+| `compaction` | `compaction-basic` | 有 `compaction-basic` + `image-offload` |
 | `sandbox` 策略 | 有（sdk 继承 base：sandbox-policy 默认 `workspace-write`） | `danger-full-access`（同时挂 `fs-local` 作受限文件服务） |
 | `session-checkpoint` | 有 | **无** |
-| `token-meter` | 有 | 有（0011 前无） |
+| `token-meter` | 有 | 有 |
 | 系统提示词 | 只有 `personaPrefix`（shipped 组合不设 `personaSuffix`） | 只有 `personaPrefix`，`DSH_SYSTEM_PROMPT` 覆盖，缺省 `"You are a helpful software engineer assistant."`；不设 suffix |
 | `includeHarnessIdentity` | 默认 true | `false` |
 | `includeRuntimeContext` | 默认 true | `false` |
