@@ -2,7 +2,7 @@
 
 ## DSH 不只为自身贡献者组织知识
 
-前面各篇讲的是 DSH 自己的开发体系；DSH 同时为**插件作者**维护了一条独立的文档 tier。这条线不是附属说明，而是有分层课程的正式入口：先教 Cordis 运行时（`docs/cordis-tutorial/` 七讲），再教 Harness 插件（`docs/user/develop/` 的 basic / framework / practice 三层），最后给出打包与安装模型。插件作者与 DSH 自身开发者共享同一套概念词汇——plugin、apply/ctx、Service Definition、bundle、profile。
+前面各篇讲的是 DSH 自己的开发体系；DSH 同时为**插件作者**维护了一条独立的文档 tier。这条线不是附属说明，而是有分层课程的正式入口：先教 Cordis 运行时（`docs/cordis-tutorial/` 七讲），再教 Harness 插件（`docs/user/develop/` 的 basic / framework / practice 三层），最后给出打包与安装模型。插件作者与 DSH 自身开发者共享同一套概念词汇——plugin、apply/ctx、Service Definition、bundle、profile。下面先讲 Host 插件；Web 的 Client 插件是另一条加载路径，见 §5。
 
 ![DSH 仓库、插件仓库与运行时组合的三个结构](./figures/plugin-three-structures.svg)
 
@@ -38,7 +38,7 @@ Cordis tutorial 面向 agent 开发者，每讲都是在仓库 scratch 目录里
 
 采用自动启用配置层的分发路径时，链路是 plugin → bundle → profile：作者把插件模块与 patch 层打包为 bundle，用户安装后由 profile 组合并启动。它不是所有插件唯一的发布形态：插件也可作为本地模块或普通 npm 模块由配置显式挂载；没有 `dsh.bundle` 声明的包不会因安装而自动激活配置层。bundle 还可以在 `package.json` 声明 `engines.dsh` SemVer 范围（例如 `>=0.2.0 <0.3.0`）说明支持的 DSH 版本：安装与 profile 启动会拒绝运行中的 DSH 不满足该范围的 bundle，没有该字段时改查它的 `@deepseek-ai/dsh*` peer dependency 范围。这条安装组合链与 DSH 主仓自己的 npm 发布序列是不同问题；后者不约束外部插件仓。
 
-安装不只是把文件放进 profile。`dsh plugin add` 会在本机执行依赖的构建脚本；git 源的 `prepare` 脚本默认被 pnpm 拦下，用户显式放行后才会执行，放行等于授权该包在安装时运行代码，且位于 workspace sandbox 之外。只解除准入的版本豁免不授权任何脚本。插件 README 应写明安装会执行什么、需要哪些权限、如何验证来源；不要把“加一个 bundle”写成无副作用的配置步骤。依据：DSH [git 安装与构建放行](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#installing-from-github-the-build-script-catch) 与 [版本豁免](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md#version-compatibility-and-exemptions)。
+安装不只是把文件放进 profile。`dsh plugin add` 可能在本机执行依赖的构建脚本；pnpm 会先拦下未批准的脚本，用户显式放行后才运行。git 源的 `prepare` 脚本尤其如此，放行等于授权该包在安装时运行代码，且位于 workspace sandbox 之外。只解除准入的版本豁免不授权任何脚本。插件 README 应写明安装会执行什么、需要哪些权限、如何验证来源；不要把“加一个 bundle”写成无副作用的配置步骤。依据：DSH [git 安装与构建放行](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#installing-from-github-the-build-script-catch) 与 [版本豁免](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md#version-compatibility-and-exemptions)。
 
 ## 4. 为什么插件仓库要与这套词汇对齐
 
@@ -48,7 +48,7 @@ Cordis tutorial 面向 agent 开发者，每讲都是在仓库 scratch 目录里
 
 ## 5. Host 插件与 Client 插件是两条加载路径
 
-前面的 `apply(ctx)`、`cordis.yml`、`bundle`、`profile` 描述的是 **Host 插件**：Node 侧的 Loader 按组合后的 row 挂载模块。Web 还有第二棵 Cordis 树：浏览器侧由 `@deepseek-ai/dsh-client-web` 按 Host 推送的 client entry graph 建立模块系统与插件树，扩展点是 `ctx.slots.register`、`ctx.remote.<namespace>` 和资源 provider，而不是 `cordis.yml` 的 row。两边共享 `apply(ctx)` 与 Cordis 生命周期，但模块怎么到、状态归谁、怎么测试不同。
+前面的 `apply(ctx)`、`cordis.yml` 与 Loader 组合描述的是 **Host 插件**：Node 侧的 Loader 按组合后的 row 挂载模块。`bundle`/`profile` 仍是 Host 进程的组合层；Client 产物可以由 bundle 携带，但浏览器侧的加载走 Host 推送的 client entry graph，而不是 `cordis.yml` 的 row。Web 还有第二棵 Cordis 树：浏览器侧由 `@deepseek-ai/dsh-client-web` 建立模块系统与插件树，扩展点是 `ctx.slots.register`、`ctx.remote.<namespace>` 和资源 provider。两边共享 `apply(ctx)` 与 Cordis 生命周期，但模块怎么到、状态归谁、怎么测试不同。
 
 给 Web 加界面时，先判断你要写的是 Host 服务还是 Client 插件：只加 Host capability 不需要 client 包；要让界面出现新的 slot、右栏内容或 conversation node，才进入 client 树。入口：DSH [Web client](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/web-client.md)、[Client modules](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/client-modules.md)、[Slots](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/slots.md) 与 [Client 包规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/AGENTS.md)。
 

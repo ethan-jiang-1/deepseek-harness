@@ -46,7 +46,7 @@ DSH 主仓对每个非平凡（non-trivial）的模型、协议或用户可见�
 
 源码 checkout 测试不能替代构建与打包验证。若插件通过 npm package 或 DSH bundle 分发，应在干净 profile/config 中安装构建或打包后的产物，确认入口、依赖声明、配置和资源都存在，并至少运行一次可观察 smoke。这里的“干净 profile”要先有表面：`dsh plugin` 对自定义 profile 只初始化 `base`，而 `base` 没有 Web、headless、SDK 或 ACP 入口。先用 `dsh --profile <name> --from-default-profile web`（或 `headless`、`sdk`、`acp`）建一个有表面的 profile，再执行 `dsh plugin --profile <name> add <spec>`；用 `--dump-config` 确认 bundle 的层注释与目标 row 真的出现。`--from-default-profile` 对已存在的自定义 profile 是替换，会连同依赖、`node_modules` 和 `cordis.patch.yml` 一起换掉，别在已经装好的 profile 上重复执行。依据：DSH [profile manifest 与创建规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-profile-manifest) 与 [`--from-default-profile` 的替换语义](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/upgrade-guide/v0.2.1-alpha.2/from-default-profile-replaces-target/guide.md)。
 
-若插件支持多个 DSH 版本，应在仓库中声明已验证的版本范围，并对范围变化执行兼容验证；不要把未经验证的版本写成兼容承诺。安装会执行依赖构建脚本；信任面见[插件作者入口](../repo-harness/09-plugin-author-entry.md)的 bundle/install 段。
+若插件支持多个 DSH 版本，应在仓库中声明已验证的版本范围，并对范围变化执行兼容验证；不要把未经验证的版本写成兼容承诺。安装可能执行依赖构建脚本；信任面见[插件作者入口](../repo-harness/09-plugin-author-entry.md) §3 的安装段。
 
 这些检查服务于插件自己的发布合同，不要求复制 DSH 主仓库全部发布 workflow、平台矩阵或 approval score。独立仓的发布步骤和安全条件由该仓库自己拥有。
 

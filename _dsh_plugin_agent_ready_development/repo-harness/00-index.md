@@ -46,7 +46,7 @@ DSH 分别给出可查入口：
 | [`06-runtime-inspection.md`](./06-runtime-inspection.md) | agent 怎样查询实际配置和活运行时，而不是只猜源码 |
 | [`07-boundaries-and-costs.md`](./07-boundaries-and-costs.md) | 哪些原则可以迁移，哪些 DSH 成本不能忽略 |
 | [`08-repository-taxonomy.md`](./08-repository-taxonomy.md) | 什么放在哪里：顶层分区、包分组与内容的五种维护形态 |
-| [`09-plugin-author-entry.md`](./09-plugin-author-entry.md) | DSH 为外部插件作者提供的文档 tier 与 bundle/profile 组合词汇 |
+| [`09-plugin-author-entry.md`](./09-plugin-author-entry.md) | DSH 为外部插件作者提供的文档 tier、bundle/profile 组合词汇与 Host/Client 两条插件加载路径 |
 
 第一次阅读建议按顺序进行。只想理解复杂 PR 怎样经过 GitHub 时，应进入 [SDLC Reference](../sdlc-reference/00-index.md)；那里讲流程的精确条件，这里讲仓库为什么能让 agent 参与这些流程。
 
