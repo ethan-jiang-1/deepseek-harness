@@ -74,6 +74,11 @@ _faq_on_digested/
 | 供给侧 / 需求侧 | Service Providers / Consumers | [08](./08_plugin-seam-maturity/answer.md) | `docs/capability-seams.md` 的 implementations 与 direct consumers 两列 |
 | 可替换率 | replaceability rate | [08](./08_plugin-seam-maturity/answer.md) | 由上面两列算出的比例，是本篇指标，不是 repo 字段 |
 | 数据卡 | data card | [24](./24_plugin-publish-and-agent-data-planes/00-index.md) | 无 repo 对应；记录 owner、authority、path、scope/key 等十格 |
+| 方案 A–D | option A–D | [13](./13_expert-plugin-repo-organization/answer.md) | pinned source copy（`vendor/`）／monorepo workspace／外部依赖／registry；代号不是 repo 命名 |
+| 三根正交的轴 | tool presentation / persona / plugin row | [16](./16_preset-modes-specialty/answer.md) | `dsh-agent-tool-presentation` 的 `mode`、persona 覆盖、plugin-manager 行 |
+| 三把尺子 / 岔口 | analytic frames / decision point | [27](./27_runtime-orchestration-choice/00-frame.md) | 承诺、选择面是本篇分析词；repo 无对应字段 |
+| 落位 / 面 | one home per fact / artifact | [06](./06_change-landing-path/answer.md) | 每个事实的 home（`docs/AGENTS.md` 的 tier taxonomy）；面按 artifact 列（Issue / Agent Note / docs / tests） |
+| 三棵树 | Repository layout / module graph / plugin tree | [01](./01_repository-organization/01-three-trees.md) | 三个 repo 原名，不是一份新图 |
 
 编号式编排（三棵树、四仓、六步、十维一类）只要在首次出现处说明是本文的组织方式即可，不必登记；**需要登记的是可能被误当成 DSH 类型、字段或官方命名的词**。新增这类词时，先在上表加一行，再在正文使用。
 
