@@ -103,7 +103,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 6. [`入口链`](./07-agents-entry-chain.md)——AGENTS.md 的文件态与会话态；agent 的第一印象。
 7. [`执行链`](./08-task-execution-chain.md)——一个 tool-call 从策略、审批、沙箱、执行到落日志的完整管线。
-8. [`反馈`](./09-executable-feedback.md)——六层反馈 + 负例控制，做 Phase 4 时读。
+8. [`反馈`](./09-executable-feedback.md)——五层反馈 + 负例控制，做 Phase 4 时读。
 
 其余四篇按需进站：
 
@@ -138,7 +138,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 - [`06-step-by-step-guide.md`](./06-step-by-step-guide.md)：【分水岭】**一步一步怎么做——落地总纲**
 - [`07-agents-entry-chain.md`](./07-agents-entry-chain.md)：【术·三巨头】入口链——agent 读什么：AGENTS.md 文件态与会话态
 - [`08-task-execution-chain.md`](./08-task-execution-chain.md)：【术·三巨头】执行链——agent 做什么：tool-call 从策略到落日志的管线
-- [`09-executable-feedback.md`](./09-executable-feedback.md)：【术·三巨头】反馈——做错了会被抓住：六层反馈 + 负例控制
+- [`09-executable-feedback.md`](./09-executable-feedback.md)：【术·三巨头】反馈——做错了会被抓住：五层反馈 + 负例控制
 - [`10-transfer-playbook.md`](./10-transfer-playbook.md)：【术】迁移清单——优先级与四个边界
 - [`11-skills-as-procedural-memory.md`](./11-skills-as-procedural-memory.md)：【术】Skills——程序化工作记忆（含 Skill 文件落地实物）
 - [`12-runtime-inspection.md`](./12-runtime-inspection.md)：【术】运行时查询——不靠猜源码

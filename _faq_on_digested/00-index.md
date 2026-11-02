@@ -36,6 +36,47 @@ _faq_on_digested/
 
 `NN_` 数字前缀按创建时间排序（01 最早），方便了解问题是按什么次序产生和探究的。
 
+## 术语约定
+
+本目录的承重词优先用 DSH repo 自己的词，并保留英文原文：权威定义在 [`docs/glossary.md`](../docs/glossary.md)，中文版是 [`docs/glossary.zh.md`](../docs/glossary.zh.md)；机制名以 `docs/` 与各包 README 为准。中文只在两种情况下单独出现——repo 已有中文译名（组合包、会话日志、具名组装、一个事实一个家、发行版），或本目录自己的分析装置（下表二，登记后才可用）。
+
+**一、repo 词（本目录照用，不改造）**
+
+| 术语 | 在本目录指什么 |
+|---|---|
+| seam | Service Definition + Provider + Consumer 三角色齐备的可替换能力；不是单个插件 |
+| scope / scope key | 按 agent 划分的注册单位；不是权限、也不是隔离边界 |
+| turn / step / round / exchange | 轮次／步骤／Round／交互段；四个层级不混用 |
+| goal / Goal Round | 附着在会话上的持久完成目标，及其续行周期 |
+| human command | `/goal` 这类由人类适配器执行的斜杠指令，不是模型工具 |
+| patch | 按 id 定位 row 并替换整份 config 的一层；不是深合并 |
+| roster | profile 的 `dsh.profile.bundles` 有序列表 |
+| slot | Client 侧的 UI 挂载点 |
+| waterfall | Cordis 的监听器链派发；监听器必须调 `next()` 委托，不调即短路 |
+
+**二、本目录的分析装置（不是 DSH 的对象模型）**
+
+这些词是本目录为了比较和教学造的，可以出现在正文，但不得替代上面的 repo 词，也不得让读者以为它们是 DSH 的类型或字段。新增一个装置时，先在这里登记它出自哪一篇、英文锚点是什么、对应哪条 repo 机制。
+
+| 装置 | 英文锚点 | 出自 | 它对应的 repo 机制 |
+|---|---|---|---|
+| 发行版 / 发行方 | distribution / distributor | [26](./26_harness-release/10-foundations/10-taxonomy.md) | 交付出去的 Harness 组合；repo 的 `发行版` 指 DSH 自己的分发 |
+| 六轴 | six axes | [26](./26_harness-release/10-foundations/10-taxonomy.md) | 检查表装置，不是对象模型 |
+| 五类存储 | storage channel | [26](./26_harness-release/10-foundations/11-storage-channels.md) | files、session log、storage domain、derived、client state |
+| 资产 owner | asset owner | [26](./26_harness-release/10-foundations/15-asset-owners.md) | bundle 发布内容、项目目录、插件状态、运行设置 |
+| 平面 / 落点 | plane / landing site | [24](./24_plugin-publish-and-agent-data-planes/00-index.md) | storage domain、session log、`$DSH_HOME`、package files；repo 的 `plane` 只用于 command plane |
+| 门禁 / 质量线 | gate / quality line | [24](./24_plugin-publish-and-agent-data-planes/00-index.md) | 安装与启动期的 refuse / reject / skip；repo 的 `quality gate` 专指 CI 与文档检查 |
+| 载体 | carrier | [06](./06_change-landing-path/09-six-layers-and-limits.md) | owner 与 home；repo 的 `carrier` 只指传输载体，不复用 |
+| 可见面 / 记录面 | model-visible / session log | [22](./22_spec-drift-and-context-rot/02-runtime-anti-rot.md) | 模型实际看到的内容 与 会话日志；不要说成 "surface" |
+| 循环 / 承诺 / 选择面 | loop / commitment / tool surface | [27](./27_runtime-orchestration-choice/00-frame.md) | 谁决定下一步 ／ 开跑前固定的东西 ／ `model-facing tools`；不要与 `agent loop` 混用 |
+| 参与阶梯 L0–L3 | participation ladder | [09](./09_plugin-business-ladder/04-阶梯与四件缺.md) | 调配置 → patch → 挂包 → 写胶水；非官方分级 |
+| 证据阶梯 L0–L4 | evidence tier | [21](./21_recorded-session-snapshots/05-plugin-repo-organization.md) | repo 的 `tier`（required tier）；不是 DSH 的编号体系 |
+| 供给侧 / 需求侧 | Service Providers / Consumers | [08](./08_plugin-seam-maturity/answer.md) | `docs/capability-seams.md` 的 implementations 与 direct consumers 两列 |
+| 可替换率 | replaceability rate | [08](./08_plugin-seam-maturity/answer.md) | 由上面两列算出的比例，是本篇指标，不是 repo 字段 |
+| 数据卡 | data card | [24](./24_plugin-publish-and-agent-data-planes/00-index.md) | 无 repo 对应；记录 owner、authority、path、scope/key 等十格 |
+
+编号式编排（三棵树、四仓、六步、十维一类）只要在首次出现处说明是本文的组织方式即可，不必登记；**需要登记的是可能被误当成 DSH 类型、字段或官方命名的词**。新增这类词时，先在上表加一行，再在正文使用。
+
 ## 已有问题
 
 | 编号 | 问题 | 主回答 |

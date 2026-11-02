@@ -70,7 +70,7 @@
 - [组件测试](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-settings-models/tests/provider-form.client.spec.tsx)：案例的断言反转所在（第 612、753 行附近）。
 - [PR 模板](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/pull_request_template.md)：意图/变化/证据三分节的现行模板。
 - [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)：本地相关检查与 CI 分工的原始规则。
-- [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：negative control（负例控制）与真实入口的原始要求。
+- [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：真实入口与“改动的验收路径必须拒绝无效用例”的原始要求（`AGENTS.md` 的 run-checks 条目）；[pre-push-checks](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md) 用 negative-control 形容这类证据。
 
 ## 02 · 归属
 

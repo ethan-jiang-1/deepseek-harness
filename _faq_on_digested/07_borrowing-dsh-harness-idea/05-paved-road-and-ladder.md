@@ -14,7 +14,7 @@ agent「读懂了系统」和「改对了地方」是两件事。知识外置解
 
 ## DSH 怎么应对
 
-DSH 的对策是 paved road（正确路径）：为常见变化提供首选扩展点、生产范本、生命周期规则和对应证据，让「做对」成为阻力最小的路径。核心原则一句话，DSH 原话：
+DSH 的对策可以概括成一条外部生态常说的“paved road”（正确路径；这个词不是 DSH 的术语，repo 里没有）：为常见变化提供首选扩展点、生产范本、生命周期规则和对应证据，让「做对」成为阻力最小的路径。核心原则一句话，DSH 原话：
 
 > **DSH 原话 ·** 新行为接在文档化的扩展点上（[docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 的 Where new behavior goes 一节）
 >

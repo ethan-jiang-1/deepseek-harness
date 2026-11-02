@@ -10,7 +10,7 @@
 
 - 前 1–3 个窗口正常，再多开就卡：页面框架渲染出来、应用停在加载态、无任何错误提示；关掉卡住的窗口后恢复；三大浏览器全部复现 → 直觉指向"启动并发上限"或"浏览器每 origin 连接数限制"，两者都是错的。
 - 真正的边界不是窗口数量，而是**这个窗口有没有跨过一次 rev 轮换**：轮换（重启 `dsh web`、dshmarket 一键重启、插件更新）之前开的窗口早已把模块加载进内存，继续正常；轮换之后新开的窗口若命中缓存的旧 index，就按死 rev 请求模块、全 404、卡住。哪一扇窗口是"第 4 个"纯属偶然，取决于哪扇第一次拿到陈旧 index。
-- 控制台其实有线索：一串动态模块的 404。页面不弹错是因为壳层 HTML 本身是 200 且完整。
+- 控制台其实有线索：一串动态模块的 404。页面不弹错是因为Web shell 的 HTML 本身是 200 且完整。
 
 ## 机制（源码确认）
 
@@ -22,7 +22,7 @@
 
 ## 为什么敢排除并发（实测证据）
 
-- 5 个标签页 × chromium + webkit 两种引擎、headless 与 headed 两种模式，分别打 live 3080 与源码实例，全部完整可用（测的是功能：WS 帧到达、长连接保持、正文渲染，不是壳层 onload）；node 侧并发挂 58+ socket 无压力、无拒绝。
+- 5 个标签页 × chromium + webkit 两种引擎、headless 与 headed 两种模式，分别打 live 3080 与源码实例，全部完整可用（测的是功能：WS 帧到达、长连接保持、正文渲染，不是 Web shell onload）；node 侧并发挂 58+ socket 无压力、无拒绝。
 - 每个标签页实测长期连接约 6 条：3 条 WebSocket（`/api/remote.mux` + better-sidebar 的两条 `/sidebar/ws/*`）+ 3 条 HTTP（web bundle 无条件的 HMR SSE `/plugins/events`、`@quill507/dsh-auto-approval-llm` 的 20 秒 long-poll `/session-review-status`、`/api/auto-continue-bridge`）——全部被服务端正常接受，代码里也不存在任何连接数上限。
 - 现代引擎对这个本地页面场景没有 enforce 老的"每 origin 6 连接"限制。
 

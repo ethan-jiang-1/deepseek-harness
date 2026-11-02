@@ -10,7 +10,7 @@
 
 ## 判据：供给侧与需求侧是两个独立的问题
 
-- **供给侧（换得掉吗）**：Provider ≥2 且真实可互换。第二个真实 Provider 出现、Consumer 一行不改，是商品化的直接读数——E2B 组合即范例：`fs-e2b` 与 `subprocess-e2b` 注入同一 `ctx.e2b`，Consumer 不改换整个执行世界（[`docs/capability-seams.md`](../../docs/capability-seams.md)）。
+- **供给侧（换得掉吗）**：Provider ≥2 且真实可互换。第二个真实 Provider 出现、Consumer 一行不改，是可替换（replaceable）的直接读数——E2B 组合即范例：`fs-e2b` 与 `subprocess-e2b` 注入同一 `ctx.e2b`，Consumer 不改换整个执行世界（[`docs/capability-seams.md`](../../docs/capability-seams.md)）。
 - **需求侧（换给谁）**：Consumer 覆盖的面数——模型工具、host wire（Remote / gateway 走浏览器）、hooks、内部组合（如 `bash-sandbox` 消费 `subprocess`）。面数 ≥2 说明该能力不是某个单点的私产。
 - **L0 可解性**：patch 一行换 provider 常见需求即可解决，说明 Definition 已稳定到不需要新代码。
 - **三条反向信号**：**自消费 seam**——Provider 与唯一 Consumer 是同一个包，等于还没有市场；**零 Provider seam**——Definition 立了、连默认实现都没有，API 形状仍可能在第一个实现落地时被改；**零 Consumer seam**——生成表 direct consumers 列为空（`sessionTelemetry`、`sessionTitle` 两条），两条各有出口（telemetry 离进程、title 经 projection），所以只算"待核查"信号，不作赤字结论；同组原先也为空的 `fileReferences` 在 OLD 之前已有 direct consumer `api-session-controller`。
@@ -47,13 +47,13 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 | `ctx.sandbox` | 2 | 2 | 组合件（bash/terminal 的 confine 前包装） |
 | `ctx.ptcRuntime` | 2 | 2 | 双 Provider（0008 复核新增：接替退役的 `ctx.codeRuntime`，PTC 命名重构） |
 | `ctx.deepseekLlmApiExtensions` | 2 | 1 | 原文整行漏收的 seam（OLD 时已是 2/1） |
-| `ctx.storage` | 2 | 1 | 商品化（json/sqlite 并列注册） |
+| `ctx.storage` | 2 | 1 | 可替换（replaceable，json/sqlite 并列注册） |
 | `ctx.directoryPicker` | 2 | 1 | GUI-only seam（native/browse） |
 | `ctx.sessionTitle` | 2 | 0 | 双 provider，经 projection 间接消费 |
-| `ctx.shell` | 3 | 4 | 商品化（bash-local/sandbox、pwsh-local） |
+| `ctx.shell` | 3 | 4 | 可替换（replaceable，bash-local/sandbox、pwsh-local） |
 | `ctx.browserUse` | 3 | 3 | 三 Provider（0008 复核新增：stagehand-native / chrome-devtools-mcp / playwright-mcp 驱动） |
 | `ctx.llm` | 3 | 2 | 含 1 个测试支持包（见下） |
-| `ctx.fs` | 3 | 1 | 商品化（local/sandbox/ssh），消费 1 面 |
+| `ctx.fs` | 3 | 1 | 可替换（replaceable，local/sandbox/ssh），消费 1 面 |
 | `ctx.skills` | 4 | 1 | 四 provider 但**语义不可互换**：`skill-filesystem` 是通用加载器，`skill-badge` 只提供一条官方 badge 技能且已从 base 的 `disabled: true` 行改为可选 bundle `badge-skill-bundle`（0011 起），`skill-office` 提供 office 文档技能，`sandbox-windows-acl` 只提供一条 Windows ACL 诊断技能（0009 复核新增） |
 | `ctx.web` | 5 | 1 | 四家搜索 + 一 fetch：`web-search-exa`/`-perplexity`/`-deepseek` 三同构，`web-deepseek-api` 一个包注册 DeepSeek Search 与 Fetch 两个 provider（0011 起），`web-fetch-http` 兜底（见下） |
 | `ctx.subagents` | 6 | 3 | 数量最多，语义只有三种位置 |

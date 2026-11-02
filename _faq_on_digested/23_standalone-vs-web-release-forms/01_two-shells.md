@@ -12,7 +12,7 @@
 | session 的 "standalone events" | 不属于任何 turn 的日志事件（[`docs/subsystems/session.md`](../../docs/subsystems/session.md)） | 无关 |
 | 独立安装的 **Desktop App** | `apps/desktop` 的 Electron 壳 + 私有 Host 子进程 | 本文讨论的桌面形态 |
 
-## 官方发布物只有两个
+## 官方发布物（release artifact）只有两个
 
 `apps/` 下是 `cli`、`web`、`desktop`、`desktop-host`、`plugin-market-generator`。其中真正「装成一个可运行的应用」的只有两份产物（Python SDK 的 wheel 打包的是同一个 `dsh` 命令，不是另一种应用形态）：
 

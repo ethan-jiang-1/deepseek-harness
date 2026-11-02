@@ -14,7 +14,7 @@ DSH 根目录最显眼的设计是：**README 对人，AGENTS 对模型。**
 
 这句话把模型从“产品入口”送到“工作入口”，避免模型把 README 当成任务规则来读。`CLAUDE.md` 则是 `AGENTS.md` 的 symlink，因此 Claude Code 自动读取的入口与通用 agent 入口是同一份事实，不会出现两套规则漂移。
 
-## 根 AGENTS.md：常驻上下文的“内核页表”
+## 根 AGENTS.md：常驻上下文的 standing orders
 
 根 `AGENTS.md` 开头第一段只有一句实质内容，但承担两条路由：
 

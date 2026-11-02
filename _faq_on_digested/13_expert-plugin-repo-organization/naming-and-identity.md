@@ -1,12 +1,12 @@
-# Naming · 身份与皮肤：DSH 插件里那些"定了就难改"的名字
+# Naming · 身份与人读文案（locale-owned copy）：DSH 插件里那些"定了就难改"的名字
 
 ## 问题
 
 一套专家插件要起很多名字：npm 包名、插件行 `id`、ctx 服务键、工具 wire 名、SessionEventMap 事件名、preset id、settings namespace、slot 名、面板上的标题……它们不在一个平面：有的被会话日志、注册表、下游 patch、用户设置文档钉死，改一次就是一次断兼容；有的纯展示、走 locale、改了只是改文案。这类名字**第 0 天就要定**——不是因为它难起，因为发布后调整的代价不对称：身份名字的改动会同时砸到旧会话重放、用户的 patch overlay、下游 Consumer 的 `inject`、用户的设置文档，而且每处的报错形态都不同（有的 fail-loud，有的静默失配）。
 
-判别式一句话：**被机器在边界上引用或持久化的名字是身份，只被人读的名字是皮肤。** 身份进第 0 天的决策清单并配稳定性纪律；皮肤交给 locale，随时改。
+判别式一句话：**被机器在边界上引用或持久化的名字是身份，只被人读的名字是人读文案（locale-owned copy）。** 身份进第 0 天的决策清单并配稳定性纪律；人读文案交给 locale，随时改。
 
-## 三层总表：身份 / 中间地带 / 皮肤
+## 三层总表：身份 / 中间地带 / 人读文案
 
 | 名字 | 文法或约束 | 唯一性范围 | 谁钉死了它 | 发布后改名的代价 |
 |---|---|---|---|---|
@@ -20,8 +20,8 @@
 | slot 名 | `<domain>.<entry>.<hole>` 文法，镜像组合路径；声明冲突在装载期 fail（`packages/client/AGENTS.md`） | client 树内 | 注册方与消费方的合约；`dsh.client.inject` 的模块引用 DSH client 包名 | 注入方与占用方失配；占用 DSH 已声明域 = 装载失败 |
 | registry.json 专家 id（方案 D） | 建议与 preset id 同名对齐 | 本 repo | registry → 目录 → 兼容矩阵三处一致（validate 脚本的校验面） | 三处失配，`dsh plugin add` 逐专家装的入口断 |
 | `dsh.*` 字段键 | DSH 拥有：`dsh.bundle.patch`、`dsh.client.inject`；生态扩展 `dsh.compatibility`、`dsh.platform` 是事实标准而非 DSH 机制 | — | DSH 读取前两者；后者靠生态自觉 | 不是你的命名空间，别发明新键当机制用 |
-| **（皮肤）** preset display name / description | 无 | — | 只进 picker 展示；copy-only authoring 保留 description、给新 id 与可选 display name | 无代价，随时改 |
-| **（皮肤）** 面板标题 / UI 文案 | locale-owned：typed dictionaries + `t`；`verify-client-ui-i18n` 拒绝硬编码文案；`README.i18n.yaml` 双语配对 | — | 只被人读 | 无身份代价，走 locale 流程改 |
+| **（人读文案）** preset display name / description | 无 | — | 只进 picker 展示；copy-only authoring 保留 description、给新 id 与可选 display name | 无代价，随时改 |
+| **（人读文案）** 面板标题 / UI 文案 | locale-owned：typed dictionaries + `t`；`verify-client-ui-i18n` 拒绝硬编码文案；`README.i18n.yaml` 双语配对 | — | 只被人读 | 无身份代价，走 locale 流程改 |
 | **（中间地带）** 工具 description / 参数描述 | — | — | 名字是身份，**description 是模型可见输入**：改它不是身份变更，是行为变更 | 不破坏兼容，但触发 model-visible 纪律：配快照、当行为变更走 dev-loop |
 
 ## DSH 保留面（不是你的命名空间）
@@ -45,7 +45,7 @@
 7. settings namespace：`[a-z0-9-]`；一旦有用户装了就别改（用户覆盖层按它持久化）。
 8. slot 域名：`<你的域>.<entry>.<hole>`，第一段用专家前缀，不占 DSH 已声明域。
 
-**不用定（皮肤）**：preset display name、面板/设置页标题、一切 UI 文案——走 locale dictionary；工具 description 属行为层，迭代时当行为变更处理。
+**不用定（人读文案）**：preset display name、面板/设置页标题、一切 UI 文案——走 locale dictionary；工具 description 属行为层，迭代时当行为变更处理。
 
 ## 改名代价速查：什么时候还能反悔
 
@@ -55,9 +55,9 @@
 
 ## 市场对照（五个生态的一手规则，来源 URL 见 [research.md 第四节](./research.md)）
 
-**共性规律**：每个生态都有"机器标识 vs 人类展示"二分——VS Code 与 Claude Code 的 `name`/`displayName`、MCP 的 `name`/`title`、Obsidian 的 `id`/`name`（npm 例外：包名既身份又展示）；身份字段全部被**引用图**钉死（设置键、依赖声明、CLI 参数、URL、缓存/数据目录、命名空间前缀）；防抢注是不可变的深层原因（VS Code Remove 后名字永久保留、npm `name@version` 永久不可复用、MCP Registry 反向 DNS + 所有权验证）；五个生态中**唯一的官方改名迁移**是 Claude Code 的 marketplace `renames` 映射，其余一律"改名 = 新身份"。本篇的"身份 vs 皮肤"判别式就是这条共性在 DSH 上的投影。
+**共性规律**：每个生态都有"机器标识 vs 人类展示"二分——VS Code 与 Claude Code 的 `name`/`displayName`、MCP 的 `name`/`title`、Obsidian 的 `id`/`name`（npm 例外：包名既身份又展示）；身份字段全部被**引用图**钉死（设置键、依赖声明、CLI 参数、URL、缓存/数据目录、命名空间前缀）；防抢注是不可变的深层原因（VS Code Remove 后名字永久保留、npm `name@version` 永久不可复用、MCP Registry 反向 DNS + 所有权验证）；五个生态中**唯一的官方改名迁移**是 Claude Code 的 marketplace `renames` 映射，其余一律"改名 = 新身份"。本篇的"身份 vs 人读文案"判别式就是这条共性在 DSH 上的投影。
 
-- **VS Code**：身份 `publisher.name`（publisher ID 创建后不可改；Remove 后扩展名永久保留防冒名）；展示 `displayName` 随时改零代价，publisher 展示名可改但吊销 verified 徽章——**连"改皮肤"都有副作用分级**。
+- **VS Code**：身份 `publisher.name`（publisher ID 创建后不可改；Remove 后扩展名永久保留防冒名）；展示 `displayName` 随时改零代价，publisher 展示名可改但吊销 verified 徽章——**连"改人读文案"都有副作用分级**。
 - **Obsidian**：身份 manifest `id`（小写+连字符、不得含 `obsidian`、全目录唯一；命令 ID 自动带 id 前缀）；展示 `name` 可改、无效值被目录下架。与 DSH preset id 同构度最高：`[a-z0-9-]` 文法 + "id 即身份、名字走展示"。
 - **Claude Code**：plugin `name` 官方明文 "**stable identifier**"——`enabledPlugins` 键、缓存路径 `<marketplace>/<plugin>/<version>/`、技能/子代理/MCP 工具的命名空间前缀全钉在它上；`displayName` "Not used for namespacing or lookup" 是官方指定的改名替代。**DSH 对应物**：preset display name 正是这个机制（`presetDisplayText` 以 id 为 key 映射文案）；但 DSH 工具名没有 displayName 通道——工具名本身就是模型接口，想"换皮"只能走 `toolName` Config。
 - **npm**：无 rename；`name@version` 永久不可复用（unpublish 也烧不掉）；整包 unpublish 后 24h 禁再发；弃用走 `deprecate`。DSH 第三方包的包名直接继承这套规则——第 0 天起名就是在 npm 的全局命名空间里永久占位。

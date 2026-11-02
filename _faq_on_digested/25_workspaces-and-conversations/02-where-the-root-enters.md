@@ -34,11 +34,11 @@
 
 它不做的事：不监视目录、不拥有目录里的文件、不因为目录搬走而改写自己；`status()` 只是临时问一句“还在不在”。
 
-### ③ 会话根：一张一次性门票 + 一条长期边界
+### ③ 会话根：一张一次性门票（membership 校验）+ 一条长期边界
 
 `header.cwd` 在会话创建时写入，之后不可变（worktree 移动、目录改名都不会改写它）。它同时是：
 
-- **门票**：attach 时 realpath 必须等于工作区路径（`workspace/src/entity.ts:110`）；
+- **门票（membership 校验）**：attach 时 realpath 必须等于工作区路径（`workspace/src/entity.ts:110`）；
 - **工具目录**：模型执行的 bash / 文件工具默认在这里；
 - **沙箱边界**：`workspace-write` 的可写根就是它（`sandbox-policy/src/index.ts:168`）。
 

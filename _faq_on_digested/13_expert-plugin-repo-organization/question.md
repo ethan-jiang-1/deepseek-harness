@@ -34,7 +34,7 @@
 ## 阅读入口
 
 - 先读：[总答案：五个决策 × 四个方案](./answer.md)
-- 哪些名字定了就难改：[身份与皮肤——包名/行 id/ctx 键/工具名/事件名/preset id/settings namespace/面板标题](./naming-and-identity.md)
+- 哪些名字定了就难改：[身份与人读文案——包名/行 id/ctx 键/工具名/事件名/preset id/settings namespace/面板标题](./naming-and-identity.md)
 - 开发过程：[机制层四方案共享；"落地"列按方案 A 的形状写给 A/C/D 家族，C/D 增量就地标记；方案 B 的 repo 即 DSH，流程走原生件、见 option-b](./dev-loop.md)
 - 官方安装的 DSH 怎么保护：[双 home 隔离——开发做崩不碰日用](./dual-home-isolation.md)
 - 方案 A：[独立专家 repo + pinned DSH submodule](./option-a-standalone-with-pinned-dsh.md)

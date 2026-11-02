@@ -216,17 +216,19 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | **profile** | 用户侧的运行组合；`$DSH_HOME/profiles/<name>` 下的依赖 + 有序 bundle 列表 + 用户覆盖层 |
 | **preset** | `@deepseek-ai/dsh-agent-preset` 的一行声明；会话按 id 选择，Agent 按 revision 持有 |
 | **skill** | 给模型的按需指令资源；有 bundled / project / deployer / user 四种所有权 |
-| **平面** | 数据的落点分类；本篇用 6+2：D/C/W/U/S/H + K/X |
-| **门禁** | DSH 会拒绝、跳过或拒行的硬检查；与“质量线”相对 |
-| **质量线** | 不通过不会立刻报错，但会造成维护债的发布要求 |
-| **三归属** | workspace / home / session 的导航三分；不是实现模型 |
-| **6+2** | D 定义 / C 代码 / W workspace / U home / S session / H host state，加 K cache / X credentials |
+| **平面（plane）** | 数据的落点分类；本篇用 6+2：D/C/W/U/S/H + K/X。repo 的 `plane` 只用于 command plane，这里的“数据平面”是本篇的分类装置 |
+| **门禁**（本篇） | DSH 会拒绝、跳过或拒行的硬检查。repo 的 `quality gate` 专指 CI 与文档门禁，`docs/AGENTS.md` 也要求写具体检查名而不说“gate”，所以这里只当作本篇的说法，具体动作写 refuse / reject / skip |
+| **质量线**（本篇） | 不通过不会立刻报错，但会造成维护债的发布要求 |
+| **三归属**（本篇） | workspace / home / session 的导航三分；不是实现模型 |
+| **6+2**（本篇） | D 定义 / C 代码 / W workspace / U home / S session / H host state，加 K cache / X credentials |
 | **home（本篇）** | 本篇的 home 指 `$DSH_HOME` 用户数据根；repo 的 `one home per fact`（一个事实一个家）说的是归属处，不是这个路径 |
 | **五类存储（storage channel）** | 另一套切法：内容 / 历史 / 状态 / 派生 / 客户端；对应机制是 files、session log、storage domain、derived、client state；与本篇 6+2 的对应见 [10 篇 §13](./10-data-design-advisor.md) |
-| **P0–P4** | 五种数据承诺：纯引用 / 会话派生 / 用户可见文件 / 宿主账本 / profile 配置（含凭据）；见 [10 篇 §3](./10-data-design-advisor.md) |
-| **数据卡** | 一块事实的十格设计卡：事实、拥有者、关于谁、寿命、可见性、权威、落点、键、删除、迁移 |
-| **原生能力** | 随 DSH 发行或由 Host 提供的服务/插件，例如 `ctx.fs`、`ctx.storageDomain`；不是第三方依赖 |
+| **P0–P4**（本篇） | 五种数据承诺：纯引用 / 会话派生 / 用户可见文件 / 宿主账本 / profile 配置（含凭据）；见 [10 篇 §3](./10-data-design-advisor.md) |
+| **数据卡**（本篇） | 一块事实的十格设计卡：事实、拥有者、关于谁、寿命、可见性、权威、落点、键、删除、迁移 |
+| **原生能力**（本篇） | 随 DSH 发行或由 Host 提供的服务/插件，例如 `ctx.fs`、`ctx.storageDomain`；不是第三方依赖 |
 | **`$DSH_HOME`** | 用户数据根（默认 `~/.dsh`），可用 `DSH_HOME` 覆盖；与共享的 `~/.agents` 分开 |
+
+表中标「本篇」的是分析装置，不是 DSH 的类型或字段；它们的英文锚点与对应机制登记在 [根索引的术语约定](../00-index.md#术语约定)。其余各行都是 repo 词，定义以 [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md) 与各包 README 为准。
 
 ## 证据等级
 
