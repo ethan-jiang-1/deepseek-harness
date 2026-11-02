@@ -4,7 +4,7 @@
 
 DSH 是一个规则密度很高的仓库（AGENTS.md、双层 AGENTS、门禁脚本、skills、Note 制度），理论上它"支持"很多种开发习惯：spec-first、TDD、plan-first、全量验证仪式、goal 续轮长跑……但在这之中，**哪一种是阻力最小、被制度反复强化、做起来最不需要意志力的那条路径**？更进一步：很多人（尤其是让 agent 在里面干活的观察者）会感到"驾驭 DSH 写东西非常轻松、很愉悦"，这个体感的机制根源是什么？
 
-这个问题不能从单份文档得出。`AGENTS.md` 是义务清单，不告诉你哪条路最常被走；FAQ 19/06 与 06 重建的"分层规格"是静态结构，不告诉你马达怎么转；FAQ 10（v4flash 三条体感）解释的是运行时体感，不是开发体感。需要把三类证据放在一起才能收敛：
+这个问题不能从单份文档得出。`AGENTS.md` 是义务清单，不告诉你哪条路最常被走；FAQ 06/09 与 FAQ 06 重建的"分层规格"是静态结构，不告诉你马达怎么转；FAQ 10（v4flash 三条体感）解释的是运行时体感，不是开发体感。需要把三类证据放在一起才能收敛：
 
 1. 仓库自己的 `dsh-*` skills（写作时 10 个、语料取其中 9 个，其中 dsh-translate-docs 仅限显式调用；到 `fb2c4b9e69` 为 11 个）——它们是"反复出现的场景"的固化，每个 skill 都暗示了一种没它就会痛的工作方式；
 2. git 历史（upstream/master）——文档声称的习惯是否真的被实践，可量化；
@@ -22,10 +22,10 @@ DSH 是一个规则密度很高的仓库（AGENTS.md、双层 AGENTS、门禁脚
 
 ## 范围
 
-行为与制度结论以 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）的文档、Notes、skills 为准（写作时为 checkout `08b582ea02`）；git 历史量化取自 `upstream/master`（tip `0a53fb55be`，release `0.1.2-alpha.2`，最近 100 个 PR landing merge），本次同步未重算。输入参考（FAQ 02 spec-driven、FAQ 10 goal-plan 三根）只作为待检验假设，结论独立重建后再对位。
+行为与制度结论以 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）的文档、Notes、skills 为准（写作时为 checkout `08b582ea02`）；git 历史量化取自 `upstream/master`（tip `0a53fb55be`，release `0.1.2-alpha.2`，最近 100 个 PR landing merge），本次同步未重算。输入参考（FAQ 06/09 的六层规格、FAQ 10 goal-plan 三根）只作为待检验假设，结论独立重建后再对位。
 
 ## 阅读入口
 
-- 主回答：[窄证据切片闭环：最自然的开发习惯与"轻松"的机制](./answer.md)
+- 主回答：[`answer.md`](./answer.md)
 - 三路调查原始发现：[研究底稿](./research.md)
 - 分角色与分层的展开：[开发结构总览](./developer-journey-structure.md)、[插件旅程实例推演](./developer-journey.md)、[传统代码插件](./developer-journey-plugin.md)、[智能体工作流插件](./developer-journey-workflow.md)、[运行时用户旅程](./runtime-user-journey.md)

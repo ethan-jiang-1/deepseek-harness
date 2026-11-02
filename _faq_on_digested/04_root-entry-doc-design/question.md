@@ -29,7 +29,7 @@
 
 ## 文件
 
-- [`answer.md`](./answer.md)：一句话结论与总览
+- [`answer.md`](./answer.md)：总览
 - [`01-root-split-and-map.md`](./01-root-split-and-map.md)：根入口的读者分流与地图
 - [`02-tier-routing-and-indexes.md`](./02-tier-routing-and-indexes.md)：一层事实一个家，以及生成索引
 - [`03-progressive-disclosure-as-cache.md`](./03-progressive-disclosure-as-cache.md)：为什么渐进式披露难，DSH 怎么把它变成缓存层次和门禁

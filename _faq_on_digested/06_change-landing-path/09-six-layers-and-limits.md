@@ -1,6 +1,6 @@
-# 06 · 六层规格：静态载体地图与不能推出的结论
+# 09 · 六层规格：静态载体地图与不能推出的结论
 
-01–05 跟着一笔真实交付走，回答“一次变更怎样发生”。这一页把镜头拉回静态结构：**规格在 DSH 里不是一个文件，而是六层各归其位的载体**；顺带划清从仓库事实不能推出什么。
+[07](./07-model-selector-case.md) 跟着一笔真实交付走，[02](./02-intent-decision-plan.md)–[04](./04-implemented-note-and-review.md) 拆解上游、中游、下游。这一页把镜头拉回静态结构：**规格在 DSH 里不是一个文件，而是六层各归其位的载体**；顺带划清从仓库事实不能推出什么。
 
 ## 六层，各回答一个问题
 
@@ -44,8 +44,8 @@
 4. **让插件化改动完整落地。** capability seam、composition、session log 和 presentation 的检查项迫使计划覆盖完整行为，而不是只实现一个局部函数。
 5. **允许快速纠正。** 公开 API 是 pre-stable：`AGENTS.md` 要求更新每一个消费方；当规格证明旧基础不对时，可以同步改代码、格式、测试、文档和引用。已发布的 Session 数据例外：相邻迁移只能新增版本命名的后继代，不承诺回退或降级。
 
-## 与 01–05 的关系
+## 与动态走查的关系
 
-这一页是静态地图；01–05 是动态走查。先读哪边都行：需要判断“这个事实该放哪”看本页；需要看“一笔变更实际怎么走”看 [01](./01-follow-a-change.md) 到 [05](./05-review-and-merge.md)。
+这一页是静态地图；07 与 02–04 是动态走查。先读哪边都行：需要判断“这个事实该放哪”看本页；需要看“一笔变更实际怎么走”看 [07](./07-model-selector-case.md) 与 [02](./02-intent-decision-plan.md)–[04](./04-implemented-note-and-review.md)。
 
-下一篇进入协作部分：[GitHub Flow](./03-github-flow.md)。
+协作部分见 [GitHub Flow](./08-github-flow.md) 与 [Review/merge](./04-implemented-note-and-review.md)。

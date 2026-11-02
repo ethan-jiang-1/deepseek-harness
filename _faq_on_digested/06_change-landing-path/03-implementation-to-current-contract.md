@@ -62,3 +62,23 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
 - [`docs/testing.md`](../../docs/testing.md) 第 27-55 行
 - [`docs/tool-catalog.md`](../../docs/tool-catalog.md) 第 1-2 行
 - [`docs/config-catalog.md`](../../docs/config-catalog.md) 第 1-2 行
+
+## 5. 证据对照与红灯
+
+“测试通过”不等于“变更完整”。主例（模型 ID 显示，[07](./07-model-selector-case.md)）的 7 个文件可以逐面核对证据：
+
+| 变更面 | 证据 | 它证明什么 |
+|---|---|---|
+| 组件行为：候选行从显示名换成 `{candidate.id}` | 组件测试两个场景的断言反转 | 可访问名从 `Fresh` 变 `fresh`；旧显示名不再出现 |
+| 搜索行为：按名称搜索仍可用 | 同一测试文件的搜索场景 | 显示换了，搜索没坏 |
+| 真实入口：Web 设置页 | e2e 场景更新 | 真实浏览器里勾选 `gpt-6-astra` 走通 |
+| 当前合同：README 双语 | 两语言同步改述 + `README.i18n.yaml` 重录 | 文档与行为一致、中英相等 |
+| 等宽字体 + 悬停名称 | **只有 README 声明** | 无断言覆盖，如实标记为证据缺口 |
+
+“测试会在旧行为上失败”要靠实测，不能靠文件名承诺：保留新测试、只回滚实现，聚焦组件测试跑出 **2 红 95 绿**。第一次实验曾跑出 97 全绿——因为 `git revert` 把源码和测试一起回滚了；这正说明红灯对照必须只回滚实现。
+
+未运行项要如实分开：e2e 需要浏览器环境、`doc-sync` 与远端 CI 由正式交付执行；mock 测试不能替代真实入口的证据。
+
+## 6. 本地检查与 PR CI 是两层
+
+本地检查针对当前待推送的 diff 选最小可信证据，push 前抓住相关回归；PR CI 在远端跑完整矩阵。两层不是二选一：本地快、有针对性；CI 统一、覆盖广。证据路由的精确方法见 [`dsh-pre-push-checks`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)。

@@ -68,3 +68,19 @@ implemented Note（现在式决定）
 - [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 13、42、121 行
 - [`dsh-code-review`](../../.agents/skills/dsh-code-review/SKILL.md)
 - [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)
+
+## 5. GitHub checks、review 与 merge
+
+到终点前要分清三种判断，谁也不能替代谁：
+
+| 判断 | 主要回答 | 不能替代 |
+|---|---|---|
+| automated checks | 类型、格式、测试、构建和平台结果是否满足规则 | 意图和设计是否正确 |
+| semantic review | 实现、文档和证据是否真的符合任务意图、适用的 Issue 与 Agent Note | 实际运行检查或用户决定 |
+| explicit user interaction | Plan 是否批准、受限操作是否授权、交互问题是否回答 | 代码质量与 CI 结果 |
+
+Semantic review 可以由具备上下文的人或 agent 执行；`.github` 的 human-review policy 约束人类作者 PR 的 metadata 适用范围，不规定 reviewer 必须是人。
+
+PR 创建后，模板、workflow 与 policy 接管远端协作：Motivation 引用同仓库 Issue，Changes 分开写命令/配置/API/协议与可观察行为，Testing 把每种证据放进对应的 Proof 折叠区。CI 的检查逻辑在 `scripts/run-gates.ts` 等仓库代码里，workflow 只管何时跑、在哪跑、怎么汇总；`all-checks-passed` 聚合必需 job 后才允许 merge。完整形态见 [08](./08-github-flow.md)。
+
+新的 push 会更新 PR head，旧的 review 结论和 checks 可能失效；合并前要重新读当前 diff、未解决线程和 checks。Merge 只改变分支和 PR 状态，不会自动改变 Agent Note 生命周期；合并后，fresh agent 仍要能从源码/README、owning Note 与 tests/snapshots 回答“现在是什么、为什么这样决定、什么固定住它”。

@@ -8,7 +8,7 @@
 > 2. DSH 还是要有很多自己改造的地方。例如上文的 dynamic workflow，多路并行，diff 预览，markdown 预览，word 预览，ppt 预览，codex 右侧边栏产出物等功能自己打造，其实官方已经有了很多实践，不多多试试。
 > 3. 别用 V4 Pro，多用 vision。
 
-这不是普通用户反馈：说话人清楚 goal、plan、dynamic workflow、多路并行这些**运行时原语的名字**，也在要求 diff/markdown/word/ppt 预览和 Codex 式侧边栏产出物这种**宿主 UI 能力**。三条分别落在 harness 的不同层面——模型路由、驱动循环、宿主投影。
+这三条可能分别落在模型路由、驱动循环、宿主投影等不同层面；需要逐条判定，而不是按一句话归类。
 
 ## 要回答的问题
 

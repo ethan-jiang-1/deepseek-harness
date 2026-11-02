@@ -22,17 +22,17 @@
 ## 背景
 
 - `standalone` 在仓库里至少指三样东西（`sdk-minimal` 的独立 bundle、session 的 standalone 事件、独立安装的桌面 App），先拆词才能谈「发布形态」。
-- `apps/desktop` 是 Electron 壳，`dsh --profile desktop` 被 CLI 显式拒绝——桌面不是第五个 CLI profile，所以「桌面底下怎么装插件」跟「CLI 底下怎么装插件」不是同一条路径。
+- `apps/desktop` 是 Electron 壳，`dsh --profile desktop` 被 CLI 显式拒绝；桌面与 CLI 的插件安装路径是否相同，需要分别核对。
 - 开发期注入手段散落在 CLI reference、plugin-manager README、desktop README、`apps/web/tests/*.overlay.yml` 和教程里，没有一处集中列过。
 
 ## 要回答的问题
 
-- 给出两个发布物的**当前状态判据**（可复现：`dsh --version` 看本机、`curl` 看 feed、`curl` 看固定下载链接），而不是「据说很成熟/还早」。
-- 把「社区反应」落成数字 + 原话 + 社区自己承认的边界。
-- 把插件安装按**执行位置**分类：装在哪台机器、哪个 profile、由谁执行 pnpm。
-- 把开发期注入按**层顺序**排开，每条给出适用形态与失效条件。
-- 把 `$DSH_HOME` 的数据清单列全：路径、内容、共享范围、敏感度、迁移建议。
-- 明确写清未验证项（社区条目、桌面稳定通道是否存在、隔离命令未真机实跑）。
+1. 两个发布物各自打包了什么、进程跑在哪、谁执行安装？当前状态有哪些可复现判据（`dsh --version`、feed、固定下载链接）？
+2. Desktop 的版本同步、稳定通道、发布工程（签名 / 公证 / 更新 / 回滚）与已知缺口分别是什么？
+3. 社区的实际反应有哪些可核对数字（star / 下载 / 讨论量）和可引用原话？社区自己承认哪些边界？
+4. 插件安装入口有几个？Desktop 与 CLI/Web 的差别在哪？「装到哪」由什么决定？
+5. 开发期不走正式发布，有哪些把插件或配置行塞进运行树的办法？各在哪一层生效、何时失效？
+6. `$DSH_HOME` 里有哪些数据？哪些按 home 共享、哪些按 profile 分开？哪些项尚未验证？
 
 ## 不在范围
 

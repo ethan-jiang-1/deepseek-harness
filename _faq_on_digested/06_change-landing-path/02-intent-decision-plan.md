@@ -60,7 +60,7 @@ Plan Mode 把“边写边设计”压缩掉：
 
 来源：`packages/plan/plan-mode/README.md:184`
 
-所以 [FAQ 19 的六层规格](../19_dsh-native-development-process/06-six-layers-and-limits.md) 也明确说：Plan Mode 是会话可选状态，不能证明每个历史 PR 都使用过它。它能证明 DSH 原生支持「先计划、后实施」的可选工作方式，但不是全仓库统一瀑布的一环。
+所以 [本目录 09 的六层规格](./09-six-layers-and-limits.md) 也明确说：Plan Mode 是会话可选状态，不能证明每个历史 PR 都使用过它。它能证明 DSH 原生支持「先计划、后实施」的可选工作方式，但不是全仓库统一瀑布的一环。
 
 这层的计划不是 prose 文件：计划文本作为 `exit_plan_mode` 的 `plan` 参数进入 review，README 明确“每个 plan 参数与 review 结果保留在 conversation history”里；`plan/mode` 状态才写入 session log。
 
@@ -87,3 +87,23 @@ Plan   = 具体改哪里，怎么验证
 - [`.github/issue-management/rules.mjs`](../../.github/issue-management/rules.mjs) 第 60-70、252、265 行
 - [`docs/subsystems/plan.md`](../../docs/subsystems/plan.md) 第 5、33 行
 - [`packages/plan/plan-mode/README.md`](../../packages/plan/plan-mode/README.md) 第 93、171、184 行
+
+## 4. Agent Note 的生命周期与两笔对照
+
+`.agents/notes/` 的目录名就是生命周期：
+
+```text
+implemented/   ← 已交付决定，按 architecture / bug-fix / feature / process / simplification / testing 分家
+proposed/      ← 待评审提案
+rejected/      ← 驳回记录（只在仍能防一个可信错误时保留）
+archived/      ← 冻结历史，不作当前权威
+```
+
+进入 `implemented/` 时，`## Proposal` 必须改写成现在式 `## Decision`，`## Acceptance criteria` 与 `## Risks` 折入 `## Consequences`；不能原样保留未来式提案。Note 的格式由 `verify-agent-note-format` 检查，但“这个 diff 是否非平凡、是否该有 Note”仍由 review 做语义判断。
+
+两笔真实修改并排看：
+
+- **无需 Note**：模型选择器显示 ID（提交 `5124a2a310`）。局部呈现修改，任务意图、当前合同、回归证据各有 owner，没有“为什么选当前方案、放弃了什么”的持久取舍；理由读完源码和 README 就完整。
+- **需要 Note**：pnpm 子进程长期占用 profile lock（提交 `ccaa0dc11c`）。Problem 记录 22 分钟锁持有与 worker-pool 缺陷，Decision 记录进程退出信号与有界排水，Alternatives 列五条被否路线，Testing 指四个测试文件，Consequences 写接受哪些代价。
+
+Plan 与 Agent Note 面向不同时间：Plan 回答“这一次准备怎样做”，服务当前会话；Note 回答“仓库为什么长期采用这个决定”，服务未来维护者。具体案例见 [07](./07-model-selector-case.md)。

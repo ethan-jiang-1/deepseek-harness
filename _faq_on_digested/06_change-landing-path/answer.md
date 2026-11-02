@@ -76,7 +76,7 @@ d01f5f73b7 Add web capability seam: ctx.web, search/fetch providers, web tools
   → docs/architecture.md、packages/README.md、packages/web/**（README/src/tests）
 ```
 
-Issue 与 GitHub review 不在 git tree 里，这个例子不能证明 Plan Mode 被使用；它证明的是“提案 → 实现 + 合同 + 行为证据 → implemented Note”这一段，而不是九个面全部。所以对“能否从头看到尾”的诚实回答是：仓库内 git 对象没有能覆盖九个面的单一例子，Web capability seam 是核心段证据最完整的例子。详细见 [`05-example-web-capability-seam.md`](./05-example-web-capability-seam.md)。
+Issue 与 GitHub review 不在 git tree 里，这个例子不能证明 Plan Mode 被使用；另一个小交付案例见 [07](./07-model-selector-case.md)，远端协作见 [08](./08-github-flow.md)。它证明的是“提案 → 实现 + 合同 + 行为证据 → implemented Note”这一段，而不是九个面全部。所以对“能否从头看到尾”的诚实回答是：仓库内 git 对象没有能覆盖九个面的单一例子，Web capability seam 是核心段证据最完整的例子。详细见 [`05-example-web-capability-seam.md`](./05-example-web-capability-seam.md)。
 
 ## 继续阅读
 
@@ -86,6 +86,9 @@ Issue 与 GitHub review 不在 git tree 里，这个例子不能证明 Plan Mode
 - [`04-implemented-note-and-review.md`](./04-implemented-note-and-review.md)
 - [`05-example-web-capability-seam.md`](./05-example-web-capability-seam.md)
 - [`06-human-and-agent-roles.md`](./06-human-and-agent-roles.md)
+- [`07-model-selector-case.md`](./07-model-selector-case.md)：一个小交付的完整案例
+- [`08-github-flow.md`](./08-github-flow.md)：PR、CI、policy 与 merge
+- [`09-six-layers-and-limits.md`](./09-six-layers-and-limits.md)：六层规格、不能推出的结论与历史样本
 - [`research.md`](./research.md)
 
 ## 后见（FAQ 15 复核与本目录更名）
@@ -94,4 +97,4 @@ Issue 与 GitHub review 不在 git tree 里，这个例子不能证明 Plan Mode
 
 Agent Note 的 proposed/implemented 路径记录决策生命周期，却不保证跨 feature 的任务顺序和在途状态可见。DSH Note 树不建集中 `INDEX.md` 的仓内规则，不能推广为插件仓不准建立 ROADMAP、tasks 或规格；反过来，一张队列也不能替代人对目标范围和交付质量的判断。需求先写在 OpenSpec/Spec Kit 的产物里，再由 DSH agent 循环执行和验证，也是兼容的组合；哪一步必须审阅由本项目的风险与授权决定。
 
-另：本目录原名 `06_spec-change-path`，题名与正文曾以 "SPEC 路径" 作统一框架词；按 FAQ 11 的因果反转与 FAQ 15 的两层之分，已更名为 `06_change-landing-path` 并改用「变更落位/载体」框架，演变说明见 [question.md](./question.md) 的框架演变节。
+另：本目录原名 `06_spec-change-path`，题名与正文曾以 "SPEC 路径" 作统一框架词；按 FAQ 11 的因果反转与 FAQ 15 的两层之分，已更名为 `06_change-landing-path` 并改用「变更落位/载体」框架，本目录不再保留旧框架的叙述，当前口径以本页与 [09](./09-six-layers-and-limits.md) 为准。

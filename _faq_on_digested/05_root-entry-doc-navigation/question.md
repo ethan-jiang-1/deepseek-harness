@@ -4,7 +4,7 @@
 
 [`04_root-entry-doc-design`](../04_root-entry-doc-design/question.md) 回答了**静态一半**：DSH 怎么设计这张地图（读者分流、tier、预算、门禁）。但“地图画对了”不等于“模型真的走了对的路”——一张再好的地图，如果运行时没人把入口塞进模型上下文、模型读完入口不知道该用哪个工具去读下一份文档、上下文超了预算没人回收，按图索骥仍然落空。
 
-本问题回答**动态一半**：DSH 一旦跑起来，根入口文档在运行时实际经历了什么。核心疑点是原 04 里那个被静态答案答非所问的子问题——“coding agent 会主动读 package README 吗？DSH 怎么保证它被读到、并且被维护？”
+本问题回答**动态一半**：DSH 一旦跑起来，根入口文档在运行时实际经历了什么。核心疑点是 04 的静态设计没有覆盖的子问题——“coding agent 会主动读 package README 吗？DSH 怎么保证它被读到、并且被维护？”
 
 ## 要回答的问题
 
@@ -24,7 +24,7 @@
 
 ## 文件
 
-- [`answer.md`](./answer.md)：一句话结论与总览
+- [`answer.md`](./answer.md)：总览
 - [`01-runtime-injection.md`](./01-runtime-injection.md)：根 AGENTS 链怎么被注入（baseline + touch-driven）
 - [`02-on-demand-navigation.md`](./02-on-demand-navigation.md)：模型怎么按需走图（read/grep/glob + skill + README）
 - [`03-budget-and-guarantee.md`](./03-budget-and-guarantee.md)：运行时预算/回收，以及 README 怎么保证被读到/被维护

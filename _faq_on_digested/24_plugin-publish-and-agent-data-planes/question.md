@@ -18,7 +18,7 @@
 
 ## 本篇要回答的具体问题
 
-| # | 问题 | 主回答 |
+| # | 问题 | 对应页面 |
 |---|---|---|
 | Q1 | DSH 认哪些“插件形态”？plugin / bundle / profile / preset / skill / client / MCP 各是什么角色，谁能被安装并自动启用？ | [01 篇](./01-publishable-forms.md) |
 | Q2 | 一个可发布的插件包，manifest、入口、patch、配置、兼容性、说明文字要满足什么？哪些是硬门禁，哪些是质量线？ | [02 篇](./02-package-contract.md) |

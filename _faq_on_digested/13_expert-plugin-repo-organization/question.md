@@ -4,7 +4,7 @@
 
 想写一个 DSH 插件，它是一个**领域专家**：有自己的信息处理流（可能多条，入口形态待定），依赖 DSH 的一些能力包（session、tools、subagent、context、web、skill……），上下文/工具/提示词完全自己安排——核心诉求是让这个专家有一个**很好控制的上下文**；另外可能有 UI 表达。希望整个 repo 能**看到 DSH 本身**，这样 coding agent 可以在 repo 内探索 DSH 的文档和源码，找到最合理的实现答案；也希望开发容易、容易插拔、容易调整，整个过程尽量借力 DSH 已有的流程（preset / bundle / patch / 测试门禁），不行再考虑 OpenSpec 这类外部 spec 流程。
 
-这个问题表面在问"目录怎么摆"，实际同时压着五个决策：
+这个问题同时涉及五个决策：
 
 1. **入口形态**：专家的"入口"到底是什么？新可执行程序、新 profile、agent preset、还是 bundle + 插件行？
 2. **包的粒度**：一个包还是按 Service Definition / Provider / Consumer 拆？什么时候拆？
@@ -37,7 +37,7 @@
 - 哪些名字定了就难改：[身份与皮肤——包名/行 id/ctx 键/工具名/事件名/preset id/settings namespace/面板标题](./naming-and-identity.md)
 - 开发过程：[机制层四方案共享；"落地"列按方案 A 的形状写给 A/C/D 家族，C/D 增量就地标记；方案 B 的 repo 即 DSH，流程走原生件、见 option-b](./dev-loop.md)
 - 官方安装的 DSH 怎么保护：[双 home 隔离——开发做崩不碰日用](./dual-home-isolation.md)
-- 方案 A（推荐起点）：[独立专家 repo + pinned DSH submodule](./option-a-standalone-with-pinned-dsh.md)
+- 方案 A：[独立专家 repo + pinned DSH submodule](./option-a-standalone-with-pinned-dsh.md)
 - 方案 B：[直接在 DSH monorepo 里长](./option-b-in-dsh-monorepo.md)
 - 方案 C：[纯外部依赖、DSH 不进 repo](./option-c-external-dependency-only.md)
 - 方案 D：[多专家 marketplace 式 monorepo](./option-d-marketplace-monorepo.md)

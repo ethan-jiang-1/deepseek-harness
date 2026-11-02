@@ -1,4 +1,4 @@
-# 03 · GitHub Flow：DSH 怎样把协作规则做成代码
+# 08 · GitHub Flow：协作规则怎样做成代码
 
 ## GitHub Flow 解决什么问题
 
@@ -17,10 +17,10 @@ Push 之前，每件事都是作者可观察、可复现的：
 | 事实 | 本地怎么拥有 | 主例中 |
 |---|---|---|
 | 改动面 | `git status` / `git diff` | 7 文件，UI 组件 + 文档 + 测试 |
-| 行为正确性 | 聚焦测试、红灯对照 | 组件测试两个场景共 6 条断言反转（[04](./04-implementation-and-evidence.md) 有实测） |
+| 行为正确性 | 聚焦测试、红灯对照 | 组件测试两个场景共 6 条断言反转（[03](./03-implementation-to-current-contract.md) 有实测） |
 | 文档同步 | 双语 README + 配对 hash | 两语言改述 + `README.i18n.yaml` 重录 |
 
-Push 前不机械跑全部命令，而是**选择能覆盖当前 diff 的检查**——这个选择本身就是工程判断，[04](./04-implementation-and-evidence.md) 展开演练。
+Push 前不机械跑全部命令，而是**选择能覆盖当前 diff 的检查**——这个选择本身就是工程判断，[03](./03-implementation-to-current-contract.md) 展开演练。
 
 ## Push 之后：`.github/` 接管远端协作
 
@@ -30,7 +30,7 @@ PR 一旦创建，模板、workflow 和 policy 成为协作的骨架。先打开
 - **Changes**：分别说明命令/配置/API/协议层面与可观察行为层面的变化，没有则写 None；
 - **Testing**：每种测试方法一个条目，可复核的证据（输出、截图、日志）放进对应的 Proof 折叠区。
 
-这个模板的用意值得体会：意图（Motivation）放在最前面，证据（Proof）做成结构化的折叠条目——和 [01](./01-follow-a-change.md) 的任务重建、[04](./04-implementation-and-evidence.md) 的证据选择是同一个思路，只是搬到了远端。
+这个模板的用意值得体会：意图（Motivation）放在最前面，证据（Proof）做成结构化的折叠条目——和 [07](./07-model-selector-case.md) 的任务重建、[03](./03-implementation-to-current-contract.md) 的证据选择是同一个思路，只是搬到了远端。
 
 ### 主例的示意 PR 摘要
 
@@ -49,11 +49,11 @@ PR #5004 的原始页面本语料核验时无法访问（`需查 GitHub`），�
 >
 > - `pnpm vitest run packages/client/ui-settings-models/tests/provider-form.client.spec.tsx`：断言选择器显示 id、按名称搜索仍可用
 >
->   <details><summary>Proof</summary>交付态 97 绿；旧行为对照 2 红 95 绿（实测记录见 [04](./04-implementation-and-evidence.md)）</details>
+>   <details><summary>Proof</summary>交付态 97 绿；旧行为对照 2 红 95 绿（实测记录见 [03](./03-implementation-to-current-contract.md)）</details>
 >
 > - Web e2e 场景更新：真实浏览器勾选 `gpt-6-astra`
 >
->   <details><summary>Proof</summary>（e2e 需要浏览器环境，本示意未执行——未运行项要如实分开，见 [04](./04-implementation-and-evidence.md)）</details>
+>   <details><summary>Proof</summary>（e2e 需要浏览器环境，本示意未执行——未运行项要如实分开，见 [03](./03-implementation-to-current-contract.md)）</details>
 
 对比真实提交标题 `fix(web): show model IDs in monospace and names on hover (#5004)`：提交信息讲清了改什么，PR 摘要按模板讲清为什么、怎么验证。**两者的分工**：commit message 属于 git 历史，PR body 属于协作页——都可在 GitHub 上查到，但内容义务不同。
 
@@ -76,13 +76,13 @@ CI 的调度由 workflow（GitHub Actions 的流程定义文件）声明：何�
 
 Reviewer 阅读任务意图、适用时的 Agent Note、diff、当前文档和测试证据，判断它们是否一致。Review 提出问题后，作者继续修改同一分支并 push；PR 自动显示新 diff，CI 也针对新 head 重新运行——所以 review 的结论也要对着**当前** head 读，不是沿用上一次查看的状态。
 
-主例里 reviewer 会问的问题（[05](./05-review-and-merge.md) 让你亲自做一次）：README 说“悬停显示名称”，测试钉住这个行为了吗？——这是语义层面的问题，CI 无法回答。
+主例里 reviewer 会问的问题（[04](./04-implemented-note-and-review.md) 让你亲自做一次）：README 说“悬停显示名称”，测试钉住这个行为了吗？——这是语义层面的问题，CI 无法回答。
 
 ## Merge：目标分支接收完整交付组合
 
 Required checks（必需检查，即上文的 `all-checks-passed`）通过、评审要求满足、PR 不再是 Draft（草稿状态）时，才能 merge。合并后，目标分支包含上一页看到的完整交付组合——实现、文档、证据——而不是只有代码。
 
-Merge 之后知识怎样归位、谁来验证“合并不等于发布”，见 [05](./05-review-and-merge.md)。
+Merge 之后知识怎样归位、谁来验证“合并不等于发布”，见 [04](./04-implemented-note-and-review.md)。
 
 ## 这页的演练：现行规范 ≠ 当时历史
 
@@ -90,4 +90,4 @@ Merge 之后知识怎样归位、谁来验证“合并不等于发布”，见 [
 
 这一页是**“规则是可执行代码”**的主场：PR 模板、CI workflow、policy 脚本、审批配置——协作的每个环节都是能打开读、能跑起来的文件。通用仓库把这些约定写在 CONTRIBUTING 和会议纪要里，新旧全凭自觉；DSH 的选择是让违规直接红在检查里。
 
-下一篇：[实现与证据](./04-implementation-and-evidence.md)。
+下一篇：[实现与合同](./03-implementation-to-current-contract.md)。

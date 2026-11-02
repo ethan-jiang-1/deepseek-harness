@@ -6,9 +6,7 @@
 
 ## 问题从哪来
 
-普通插件为已有 DSH composition 增加一项能力。所谓“插件就是产品”通常实际表示：用户通过一份产品 profile 启动 DSH Web 或其他受支持 surface，而该 profile 选入产品 bundle、preset、plugins 与用户配置。
-
-这不会改变 DSH 的启动模型：应用仍由 `dsh --profile <name>` 启动；profile 是 named composition，bundle 是发布 patch 与代码依赖的形式。换 profile 不会自动建立独立 `$DSH_HOME`，也不会隔离同一个 home 下的 Session history、Workspace registry 或凭据。
+普通插件为已有 DSH composition 增加一项能力。当作者想把插件做成一个产品时，需要先判断：产品入口由哪份 profile 组合提供？profile、bundle、preset 各自承担什么？换 profile 是否真的带来独立的数据环境？这些判断不能靠名字推断，要回到启动模型与数据 owner。
 
 产品作者需要分别决定：
 
@@ -24,7 +22,7 @@
 
 ## 本篇要回答的具体问题
 
-| # | 问题 | 主回答 |
+| # | 问题 | 对应页面 |
 |---|---|---|
 | Q0 | 产品 profile、数据 owner、存储机制和作用域如何区分？ | [10 概念层](./10-foundations/10-taxonomy.md) |
 | Q1 | 插件、bundle 与 profile 各是什么？产品入口怎样启动？ | [answer](./00-answer.md)、[FAQ 24](../24_plugin-publish-and-agent-data-planes/answer.md)、[50 生命周期](./50-lifecycle/00-index.md) |
@@ -39,12 +37,6 @@
 | Q10 | DSH 外部插件与 profile 产品有哪些可借模式？ | [31](./30-external/31-external-community-patterns.md)、[32](./30-external/32-external-ecosystem.md)、[33](./30-external/33-external-plugin-patterns.md)、[34](./30-external/34-profile-product-forms.md)、[35](./30-external/35-profile-assembly-ownership.md)、[36](./30-external/36-profile-evidence-ledger.md)、[37](./30-external/37-lifecycle-stages.md) |
 | Q11 | Profile bundle 如何安装、更新与卸载？数据清理由谁负责？ | [18 安装生命周期](./10-foundations/18-install-upgrade.md)、[34 profile 形态](./30-external/34-profile-product-forms.md)、[35 装配所有权](./30-external/35-profile-assembly-ownership.md)、[37 装/起/配/首启](./30-external/37-lifecycle-stages.md)、[50 安装启动](./50-lifecycle/00-index.md) |
 | Q12 | 如何从 profile 文件走到产品 Session、工具和数据？ | [90 主线](./90-advisor/00-index.md)、[93 Kanban 文件走查](./90-advisor/93-app-plugin-walkthrough.md)、[91 数据卡](./90-advisor/91-checklist.md)、[92 参考矩阵](./90-advisor/92-native-reference-architectures.md) |
-
-## 一句话预告
-
-产品型 profile 是产品发布的运行组合。每块数据都要说明 owner、authority、source、保存机制、scope/key、readers、writers、能否重建及保留责任；产品目录选择与 DSH Workspace 导航不是同一个状态。
-
-![产品运行组合与数据卡](./figures/10-taxonomy-flow.svg)
 
 ## 不回答什么
 
