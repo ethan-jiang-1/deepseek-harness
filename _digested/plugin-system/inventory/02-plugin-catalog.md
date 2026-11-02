@@ -541,7 +541,7 @@ UI 插件（57）：
 本页与文件系统的一致性可机械复核（每次 upstream 同步后重跑）：
 
 ```sh
-for d in packages/*/*/; do [ -f "$d/package.json" ] && basename "$d"; done | while read n; do grep -q "$n" _digested/plugin-inventory/02-plugin-catalog.md || echo "missing: $n"; done
+for d in packages/*/*/; do [ -f "$d/package.json" ] && basename "$d"; done | while read n; do grep -q "$n" _digested/inventory/02-plugin-catalog.md || echo "missing: $n"; done
 ```
 
 0009 独立反查时该扫描曾抓到 32 个缺名包（缩写引用与整组漏节），已全部补齐；此后新增包只要落一个组行即保持零缺失。但它是 **basename 级**匹配、有假阴性：包名（如 `acp`、`client`、`protocol`、`server`）在本页其他行出现即漏报——0010 轮实证 sdk/、acp/ 两组曾借此整组漏节（4 包零落点），复核时必须辅以「按 `##` 节清点组数与每组包数」的分组核对，不能只信本命令的零输出。
