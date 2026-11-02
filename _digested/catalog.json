@@ -293,8 +293,8 @@
           "title": "载体、rpcId 与逻辑流",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
-          "source": "matrix"
+          "status": "needs-recheck",
+          "source": "page"
         },
         {
           "file": "connection/02-认证与浏览器宿主.md",
@@ -309,16 +309,16 @@
           "title": "Host 派发与访问控制",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
-          "source": "matrix"
+          "status": "needs-recheck",
+          "source": "page"
         },
         {
           "file": "gateway/02-客户端-mount-与装配.md",
           "title": "客户端 mount 与装配",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
-          "source": "matrix"
+          "status": "needs-recheck",
+          "source": "page"
         },
         {
           "file": "streams/01-一条-emit-两条出站链路.md",
@@ -341,16 +341,16 @@
           "title": "声明期：装饰器、namespace 与三个 core 服务",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
-          "source": "matrix"
+          "status": "needs-recheck",
+          "source": "page"
         },
         {
           "file": "typert/02-类型图与两族产物.md",
           "title": "build 期：类型图与两族产物",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
-          "source": "matrix"
+          "status": "needs-recheck",
+          "source": "page"
         }
       ]
     },

@@ -30,7 +30,7 @@ dsh --profile sdk-minimal
 | `sandbox` | `@deepseek-ai/dsh-sandbox-local` | `:33-34` | 沙箱 |
 | `filesystem` / `attachment-local` / `tool-fs` | `@deepseek-ai/dsh-fs-local` / `@deepseek-ai/dsh-attachment-local` / `@deepseek-ai/dsh-tool-fs` | `:38-39`、`:41-42`、`:44-50` | 受限文件服务 + attachment store + 只暴露 `read_image` 的 tool-fs（`read` / `write` / `edit` 均为 `false`，`readImage: true`） |
 | `working-directory` / `tool-working-directory` | `@deepseek-ai/dsh-working-directory` / `@deepseek-ai/dsh-tool-working-directory` | `:52-53`、`:55-56` | 新 seam `ctx.workingDirectory` 与 `working_directory` 工具（`Session.header.cwd` 只留原始项目身份） |
-| `session-projection` | `@deepseek-ai/dsh-session-projection` | `:58-59` | 共享投影注册表（早于本跨度，OLD 基线里已有且逐字相同），`sandbox-policy` 与 `terminal-bash` 通过它的 units 折叠 sandbox-mode 状态，并把它作为硬注入 |
+| `session-projection` | `@deepseek-ai/dsh-session-projection` | `:58-59` | 共享投影注册表，`sandbox-policy` 与 `terminal-bash` 通过它的 units 折叠 sandbox-mode 状态，并把它作为硬注入 |
 | `token-meter` / `compaction-basic` / `image-offload` | `@deepseek-ai/dsh-token-meter` / `@deepseek-ai/dsh-compaction-basic` / `@deepseek-ai/dsh-compaction-image-offload` | `:61-62`、`:64-65`、`:67-68` | token 计量、基础压缩与图像卸载 |
 | `sandbox-policy` | `@deepseek-ai/dsh-sandbox-policy` | `:70-74` | `mode: danger-full-access`、`workspaceRoot: !!js process.cwd()` |
 | `subprocess` | `@deepseek-ai/dsh-subprocess-local` | `:76-77` | 子进程管理 |
@@ -43,7 +43,7 @@ dsh --profile sdk-minimal
 
 两处 `description` 里的网络说明不一致：bash 侧写「Network access depends on the task environment. Prefer configured mirrors/proxies when they are available.」（`:148`），pwsh 侧写「You don't have access to the internet via this tool.」（`:162`）。两处不一致，改文案时一起看。
 
-`tool-str-replace-editor` 与 `fs-local` 不在 minimal 组合里：编辑器提供第二个文件改写接口，并把完整 schema 塞进每次 minimal 请求，而 shell 已经能查文件、改文件；`fs-local` 当前以 `filesystem` 行挂回，供 `working-directory` 与只开 `read_image` 的 `tool-fs` 使用；`tool-str-replace-editor` 仍没有 minimal 行。
+`tool-str-replace-editor` 不在 minimal 组合里：它提供第二个文件改写接口，并把完整 schema 塞进每次 minimal 请求，而 shell 已经能查文件、改文件；`fs-local` 以 `filesystem` 行在树里，供 `working-directory` 与只开 `read_image` 的 `tool-fs` 使用；`tool-str-replace-editor` 仍没有 minimal 行。
 
 ## 与 sdk 的差异
 

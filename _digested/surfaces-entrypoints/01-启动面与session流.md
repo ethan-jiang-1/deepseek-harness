@@ -8,7 +8,7 @@
 
 ![pnpm dsh 走 tsx ESM](./figures/source-vs-built.svg)
 
-## 三条启动面
+## 两条 CLI 启动面 + Desktop
 
 | | 命令 | 解析 |
 |--|------|------|

@@ -68,7 +68,7 @@ Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一�
 
 1. `node _digested/ref-sweep.mjs _digested/two-tree-runtime --quotes`：报路径不存在、行号越界、引文-锚点漂移。报告是候选不是门禁，按 [`_change_log/0009`](../_change_log/0009-independent-recheck.md) 的三态口径分诊；`require.async("./client.<name>.js")` 这类会被正则截成 `./client.js` 的，属误报。
 2. `node _digested/verify.mjs`：链接与锚点、SVG、编码、结尾换行、catalog 与覆盖矩阵一致性、表格列数、宪章副本。
-3. 四个会漂的数由 `claims.json` 的 `client-package-total`、`remote-import-count`、`forwarded-event-count`、`vendor-local-modification-count` 机械核对；要复测就读这四项的 expected 值，不要在正文抄数字。
+3. 四个会漂的数由 [`claims.json`](../harness-idea/claims.json) 的 `client-package-total`、`remote-import-count`、`forwarded-event-count`、`vendor-local-modification-count` 机械核对；要复测就读这四项的 expected 值，不要在正文抄数字。
 4. 换基线时只改 [`catalog.json`](../catalog.json) 的 `baseline`；本页与 `client/`、`remote/` 不再保留核验行，逐页状态由覆盖矩阵渲染。
 
 ## 与其它专题的边界

@@ -72,7 +72,7 @@ goal round N
   │          `packages/core/agent-loop/src/agent.ts:234`；driver 的调度任务本身则跑在
   │          `withoutInitiator` 内，`packages/goal/goal-round-driver/src/index.ts:231`）
   │
-  ├─ 6. turn() 开始新 turn（agent-loop/src/agent.ts:269）
+  ├─ 6. turn() 开始新 turn（agent-loop/src/agent.ts:298）
   │      │
   │      ├─ turn/start 事件写入 session
   │      ├─ preStep('next-turn') → inbox.claim() 取出 round 消息

@@ -6,7 +6,7 @@
 
 ## 你的核心问题：goal 是怎么被创建的？
 
-DSH 没有隐藏的「意图理解引擎」来自动创建 goal。goal 只能通过以下方式产生：
+DSH 没有隐藏的「意图理解引擎」来自动创建 goal。goal 通常经以下方式产生；另有 Host Remote `goals.create`（`packages/goal/goal/src/index.ts:646-650`），进程外 client 可直接调用，不受 tool/command 面限制：
 
 ### 路径一：模型通过 `create_goal` tool 创建 ← 你看到的效果
 

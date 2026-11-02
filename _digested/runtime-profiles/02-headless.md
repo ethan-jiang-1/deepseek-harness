@@ -43,7 +43,7 @@ dsh --profile headless --help
 | `headless-startup` | `@deepseek-ai/dsh-headless/startup` | 解析 `"<task>"` 位置参数，提供 `headlessStartup` 服务 |
 | `headless-runner` | `@deepseek-ai/dsh-headless` | 注入 `headlessStartup`，读取 task，创建 Agent，驱动到完成，打印结果（`config.task` / `sessionId` / `json` 取自 provider，patch `:27-30`） |
 
-（`ptc-runtime` 是 **base** 层行（`packages/bundle/base/cordis.patch.yml:397-398`），所有 profile 共享。产品 bin 另依赖 `@deepseek-ai/dsh-experimental-ptc-runtime-python`（CPython 子进程后端，experimental，`apps/cli/package.json:127`），PTC runtime 呈双 provider 形态（node + 实验性 Python），base 挂载的仍是 node 行。）
+（`ptc-runtime` 是 **base** 层行（`packages/bundle/base/cordis.patch.yml:397-398`），所有 profile 共享。产品 bin 另把 `@deepseek-ai/dsh-experimental-ptc-runtime-python` 声明为 devDependency（CPython 子进程后端，experimental，`apps/cli/package.json:127`；shipped 组合不挂载它），PTC runtime 呈双 provider 形态（node + 实验性 Python），base 挂载的仍是 node 行。）
 
 ## 进程模型
 

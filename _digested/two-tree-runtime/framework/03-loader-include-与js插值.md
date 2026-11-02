@@ -25,7 +25,7 @@ fiber `_reload()` 里 `_resolveConfig(raw)`：
 1. `ctx.waterfall(fiber, 'internal/config', raw, () => raw)`
 2. 再用插件的 `Config` schema `resolveConfig`
 
-Loader 在 `internal/config` 上挂了全局监听器：先 `next()` 拿到下游结果，再按三道分支决定是否插值——`vendor/loader/src/index.ts:92`-`:101`：没有 entry、或该 fiber 就是 entry 自己的根 fiber 时**原样返回**；插件带 `EntryGroup.key`（行内挂载的子插件）时也**原样返回**；只有走到最后的 entry 根 fiber 才 `interpolate(this.ctx, config)`。这里的 `this` 是 **Fiber**，`this.ctx` 是**这个插件**的 context。inject 已经激活，所以表达式可以写 `ctx.tools` 这类服务名。
+Loader 在 `internal/config` 上挂了全局监听器：先 `next()` 拿到下游结果，再按分支决定是否插值——`vendor/loader/src/index.ts:104-113`：没有 entry，或本 fiber 是 entry 根 fiber 的行内子插件（`this.parent.fiber?.entry === this.entry`）时**原样返回**；插件带 `EntryGroup.key`（Group、Include）时也**原样返回**；只有 entry 根 fiber 自己才 `interpolate(this.ctx, config)`。这里的 `this` 是 **Fiber**，`this.ctx` 是**这个插件**的 context。inject 已经激活，所以表达式可以写 `ctx.tools` 这类服务名。
 
 **Tree carrier 例外。** 插件若带 `EntryGroup.key`（Group、Include），监听器原样返回 config，不 interpolate。它们的 config 是「别人的行」：entry 列表、patch 列表。那些行里的 `!!js` 属于**目标行自己的 fiber**，现在求值会用错 ctx，也会把表达式提前吃掉。
 
@@ -56,7 +56,7 @@ Loader 在 `internal/config` 上挂了全局监听器：先 `next()` 拿到下�
 
 **不跨 include 边界。** 外层列表改不了子 Include 文件里的 id。这就是为什么用户 overlay 必须叠在同一 Include 上，而不是再套一层文件却指望 id 穿透。
 
-## Include 内部的串行化（0.1.7 线现状）
+## Include 内部的串行化（applyQueue 已删除，现存 writeQueue）
 
 ~~Group 的事务性 `update` 不可重入；Include 把初始 apply、refresh、HMR 触发的再 apply 全部经 `applyQueue` 串行~~（0.1.7 线事务重载退役，`applyQueue` 已从 include 源删除；本段留作机制记录，编号所指的旧「第 12 条」现指向 activation observer——`vendor/loader/src/config/entry.ts` 的 detached `Entry.init()` 完成观察者，两种结局都处理、fiber 保留激活错误供显式审计）。现存的串行点是**持久化写队列**：`writeQueue`（`vendor/include/src/index.ts:176`，`:323-328` 的链式 `then`）把配置文件的防抖写串起来、瞬时可重试、终态失败由 `Include.stop()` 重抛（vendor 清单第 14 条）。HMR 的模块替换与配置刷新改由产品侧 `packages/boot/hmr` 的同一条操作队列串行（见 [`../plugin-system/composition/03-user-patch-hmr.md`](../../plugin-system/composition/03-user-patch-hmr.md)），不再依赖 include 内部的 apply 队列。
 

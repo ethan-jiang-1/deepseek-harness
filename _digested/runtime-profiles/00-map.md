@@ -93,7 +93,7 @@ stdout 给谁，决定了能不能装 logger、能不能写 HMR 信息：
 | Profile | stdout 用途 | 是否能装 logger |
 |---------|------------|---------------|
 | web | 用户可见（启动 URL、日志） | 可以 |
-| headless | 最终 assistant 回复 | 可以（结束后退出） |
+| headless | 最终 assistant 回复，纯数据管道 | **不能**装 stdout logger，否则污染最终回复 |
 | sdk / sdk-minimal | JSON-RPC 协议帧，纯数据管道 | **不能**装 stdout logger，否则污染协议 |
 | acp | ACP 协议帧，纯数据管道 | **不能**装 stdout logger |
 
@@ -120,7 +120,7 @@ stdout 给谁，决定了能不能装 logger、能不能写 HMR 信息：
 | **sdk-minimal** | `dsh-sdk-minimal` bundle：独立树不叠 base——工具面收窄到**平台选定的一个持久 shell**（非 win32 `persistent-bash` / win32 `persistent-pwsh`）加 `read_image` 与 `working_directory` 两个工具；无 subagent、todo、skill、web 搜索（compaction 与 token-meter 随 0011 的目录上下文收编进树内） |
 | **acp** | `dsh-acp-app` bundle：base + 薄自动化层（persona override + `acp-app-startup` + `acp`，`inject: [acpAppStartup]`）；持久化/检查点/查询在 base，不自持 |
 
-共同点：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`）；`tool-str-replace-editor` 不在 shipped bundle 里，任何 profile 想要 `str_replace_editor` 都必须显式 `insert`（仓库里的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。各 bundle 的 `system-prompt` 只设 `personaPrefix`（模型介绍），shipped 组合不设 `personaSuffix`；会话当前执行目录由 `ctx.workingDirectory` 作必需的用户上下文供给（升级指南 [`working-directory`](../../docs/upgrade-guide/v0.2.1-alpha.1/working-directory/guide.md)）。
+共同点：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`）；`tool-str-replace-editor` 不在 shipped bundle 里，任何 profile 想要 `str_replace_editor` 都必须显式 `insert`（仓库里的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。base-backed 各 bundle 的 `system-prompt` 只设 `personaPrefix`（模型介绍），shipped 组合不设 `personaSuffix`；会话当前执行目录由 `ctx.workingDirectory` 作必需的用户上下文供给（升级指南 [`working-directory`](../../docs/upgrade-guide/v0.2.1-alpha.1/working-directory/guide.md)）。
 
 ## 阅读路径
 

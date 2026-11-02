@@ -160,7 +160,7 @@ dsh --profile web
 
 - **shipped 模板中唯一支持运行时 patch 重载的 Profile**：`hmr` 插件监视 profile patch 与包清单，`HmrService.reconcileProfile()` 调 app-boot 的 `recomposeProfile` 完成重组合，新失败抛错回滚（`packages/boot/hmr/src/index.ts:925`、`packages/boot/app-boot/src/index.ts:307`；机制见 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)）。该「唯一」限 shipped 模板——base 行按 `profileContext` 门控，自定义 launcher profile 默认同样开启。
 - **CLI launcher profile 中唯一有 browser 侧的 Profile**：browser 半边（`packages/client/`）通过 `window.__DSH_BOOT__` 初始化，经 `dsh.client` 插件罗盘构造核。Electron desktop 复用**同一套** web 组合与匹配的 client 图（desktop-host 经 `runProfile` 起 `desktop` profile），但它不是 CLI launcher profile（[`06-desktop.md`](./06-desktop.md)）。
-- **CLI launcher profile 中唯一使用会话级 preset 的 Profile**：session 级别选择 standard / ptc / minimal / cordis，host 平面除 `working_directory` 外不直接挂 model-facing 工具。（desktop 的 preset 由 `loadProfileDirectory` 在安装期组装，host 不再改写 roots。）
+- **CLI launcher profile 中唯一使用会话级 preset 的 Profile**：session 级别选择 standard / ptc / minimal / cordis，host 平面除 `working_directory` 外不直接挂 model-facing 工具。（desktop 的 preset 由 `loadProfileDirectory` 在每次 host 启动时组装，host 不再改写 roots。）
 - **stdout 给用户**：可以装 logger、打印 URL、输出诊断信息。
 
 ## 源码入口

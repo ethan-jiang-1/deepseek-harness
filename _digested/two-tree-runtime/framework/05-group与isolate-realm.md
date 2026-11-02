@@ -21,7 +21,7 @@
 
 - 子 entry 的 id 用 `:` 拼在父 id 后面（`tools:logger`）——patch 打的就是这个拼出来的 id。
 - group 行**自身总被视为 enabled**（它只是容器），但禁用它会让子行不再运行（`vendor/group/README.md`）。
-- 产品里 `cordis:group` 的 isolate realm 就是下一节的 isolate（本仓 [`03-loader-include-与js插值.md`](./03-loader-include-与js插值.md) 的配置行一节也提到它）。
+- 产品里 `cordis:group` 不自动造 realm；`isolate` 是 entry 的配置项，实现在 `vendor/loader/src/config/isolate.ts:71`，和 group 是两个维度。
 
 ## isolate：同一个服务名，换一个实例
 

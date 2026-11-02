@@ -49,7 +49,7 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 - 配置从空 entry list 开始，按 Bundle → Profile patch → home patch → `--patch` 的顺序叠加；顺序就是数据。
 - 后层按 entry id 整份替换 config，或插入新行。
 - `dsh --dump-config` 输出的不是「可能加载什么」，而是**这台机器实际会挂什么**；dump 与 boot 共用同一 `applyEntryPatches`（官方落点：`docs/architecture.md:34` 的 dump 命令与 [`vendor/README.md`](../../vendor/README.md) 本地修改清单第 11 条）。
-- 用户 patch 的 HMR 是事务性的：候选配置失败时保留上一棵好树（[`vendor/README.md`](../../vendor/README.md) 本地修改清单第 8 条：restores the previous plugin or config when candidate application fails）。
+- 用户 patch 的 HMR 只有**解析级保护**：文件非法时保留正在运行的树；插件激活失败可以留下半应用的树，Loader 的 entry/group/tree 变更按 eager、非事务实现，不恢复上一份插件或选项（[`vendor/README.md`](../../vendor/README.md) 本地修改清单第 8 条）。
 
 因此静态 import 图只能说明「可能加载什么」，最终配置树才说明「实际是什么」。参与 L0 的最低可核查动作就是读 `dump-config`，而不是读源码目录猜组合。
 

@@ -5,7 +5,7 @@
   </defs>
   <rect width="960" height="430" fill="#fafafa" rx="6"/>
   <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一条会话事件的七跳：assistant/message 从日志到 Chat 卡片</text>
-  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">上去四跳在 Host 与 wire 上，下去三跳在浏览器里；每一跳都可能把事件丢掉。</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">上去三跳在 Host 与 wire 上，下去四跳在浏览器里；每一跳都可能把事件丢掉。</text>
 
   <rect x="40" y="76" width="200" height="80" rx="9" fill="#dcfce7" stroke="#86efac"/>
   <text x="58" y="102" font-size="12.5" font-weight="700" fill="#166534">① Session.append</text>

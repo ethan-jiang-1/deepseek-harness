@@ -101,7 +101,7 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 
 ## 与出网代理：分歧已消除
 
-0.1.7 线之前的基线结论「desktop-host 不装代理、`.env` 代理对 desktop 不生效」已随 desktop-host 重构失效：host 调用的 `runProfile` 在第一个插件挂载前就 `installProxyFromEnvironment`（`apps/cli/src/profile-boot.ts:276-279`），shutdown 时还原（`:283-290`）。desktop 的环境快照同样来自 `loadLayeredEnv('dsh')`（`apps/desktop-host/src/index.ts:26`），所以 `$DSH_HOME/.env` 里豁免的四个代理名对 desktop 与 CLI 生效路径一致。note [`2026-08-27-outbound-proxy-policy`](../../.agents/notes/implemented/architecture/2026-08-27-outbound-proxy-policy.md) 的结论（`runProfile` 一处安装覆盖每个 profile）现在对 desktop 成立；其论据「`loadLayeredEnv` 只有一个调用者」已过时——现在有两个（`apps/cli/src/bin.ts:36`、`apps/desktop-host/src/index.ts:26`）。逐调用点证据见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/06-外发代理策略.md)。
+0.1.7 线之前的基线结论「desktop-host 不装代理、`.env` 代理对 desktop 不生效」已随 desktop-host 重构失效：host 调用的 `runProfile` 在第一个插件挂载前就 `installProxyFromEnvironment`（`apps/cli/src/profile-boot.ts:276-279`），shutdown 时还原（`:283-290`）。desktop 的环境快照同样来自 `loadLayeredEnv('dsh')`（`apps/desktop-host/src/index.ts:26`），所以 `$DSH_HOME/.env` 里豁免的四个代理名对 desktop 与 CLI 生效路径一致。note [`2026-08-27-outbound-proxy-policy`](../../.agents/notes/implemented/architecture/2026-08-27-outbound-proxy-policy.md) 的结论（`runProfile` 一处安装覆盖每个 profile）现在对 desktop 成立；其论据「`loadLayeredEnv` 只有一个调用者」已过时——现在有三个（`apps/cli/src/bin.ts:36`、`apps/desktop-host/src/index.ts:26`、`packages/experimental/webworker-runtime/src/worker-host.ts:436`）。逐调用点证据见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/06-外发代理策略.md)。
 
 ## 源码入口
 

@@ -6,7 +6,7 @@
 
 组合差异（bundle 行、工具面、stdout 归属）见 [`../runtime-profiles/03-sdk.md`](../runtime-profiles/03-sdk.md) 与 [`05-acp.md`](../runtime-profiles/05-acp.md)；本页只写对调用方的协议保证。
 
-下面两节的保证清单按当前树重核；SDK 的请求面是 7 个（见下），ACP 的方法面与能力广告以 `packages/acp/acp/README.md` 为准。
+下面两节的保证清单沿用上一轮的页面记录，逐条锚点以当前树为准；SDK 的请求面是 7 个（见下），ACP 的方法面与能力广告以 `packages/acp/acp/README.md` 为准。
 
 ## ACP：自动化适配器，不是 IDE
 

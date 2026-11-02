@@ -17,15 +17,16 @@ Loop 管推进，结束却分好几层：Loop 不是「模型回答完就结束�
 
 **Agent idle 不代表任务完成**——它只说明此刻没有待处理的消息。Goal 如果还是 `active + armed`，Goal Round Driver 会在 idle 时自动发起下一轮。
 
-## 三种创建 Goal 的路径
+## 创建 Goal 的四条路径
 
-这是你最关心的实际问题。DSH 没有隐藏的意图理解引擎。Goal 只能通过以下三种方式产生：
+DSH 没有隐藏的意图理解引擎。Goal 通常经以下路径产生，另有 Host Remote 直调：
 
 | 路径 | 触发器 | 代码入口 | 典型场景 |
 |------|--------|---------|---------|
 | **Human `/goal`** | 用户手敲 `/goal 重构整个模块` | `packages/goal/command-goal/` | 你明确想设一个持久目标 |
 | **Model `create_goal`** | LLM 在 turn 中调用 `create_goal` tool | `packages/goal/tool-goal/` | 你给了一个需求，模型判断这是长期任务、主动创建 goal |
 | **Goal Round Driver** | 不创建，只延续。在 active + armed goal 下按 idle → 下一轮 | `packages/goal/goal-round-driver/` | 自动续轮，不会自动创建 |
+| **Host Remote `goals.create`** | 进程外 client 直接调用 | `GoalService` 的 `@Remote('create')`（`packages/goal/goal/src/index.ts:646-650`），经 `goalsRemote` 暴露（`packages/api/remotes/src/client/index.ts:12`） | 自动化、测试与嵌入式客户端 |
 
 **你遇到的「需求进去后 DSH 理解为 ongoing goal」——这是模型（LLM）通过 `create_goal` tool 做到的**，不是系统自动推断的。
 

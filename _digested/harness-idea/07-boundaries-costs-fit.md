@@ -83,7 +83,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 | 无元验证 | 门禁能被刷绿、测试相信自报 | 「guard 必须被负例证明」；verify the world；真实入口 smoke |
 | 负知识缺失 | 被否方案和已知限制只在人脑里 | rejected notes；归档 note 冻结且不当现行权威；README Known Limitations 被门禁检查 |
 | 上下文预算爆炸 | 规则多到读不完、装不进上下文 | 规则分层 + 一个事实一个家 + `verify-doc-budgets` 字数预算 |
-| 无基线漂移 | 判断不钉 commit，上游改了没法复核 | 本专题：全部判断钉 `687f282e86…` 基线 + 证据锚点 |
+| 无基线漂移 | 判断不钉 commit，上游改了没法复核 | 本专题：全部判断对照 [`catalog.json`](../catalog.json) 的 baseline + 证据锚点 |
 | 分布洗钱 | 人类播种的洞察被磨成模型输出，出处丢失 | 本专题：判断标注出处（`[原文]` / `[源码]` / `[推断]` / `[框架]`） |
 
 ## 用三个问题检验一个 harness
@@ -101,7 +101,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 | 成本 | 表现 | dsh 侧证据 |
 |------|------|-----------|
 | 静态代码 ≠ 实际系统 | import 图只说明可能性，最终拓扑要看 profile/patch/realm | `dsh --dump-config` 是排障第一证据；[`docs/architecture.md`](../../docs/architecture.md) |
-| 动态依赖放大因果链 | provider 变化引发一组 consumer 重载，排障要看 fiber epoch 与收敛 | HMR 事务与生命周期测试；[`vendor/README.md`](../../vendor/README.md) 本地修改清单第 8、12 条 |
+| 动态依赖放大因果链 | provider 变化引发一组 consumer 重载，排障要看 fiber epoch 与收敛 | HMR 解析级保护与生命周期测试；[`vendor/README.md`](../../vendor/README.md) 本地修改清单第 8、12 条 |
 | 可逆 ≠ 事务 | effect 能回收声明过的资源，不能补偿网络消息、文件写入、支付 | Cordis effect 语义；[`docs/cordis-primer.md`](../../docs/cordis-primer.md) |
 | 插件化 ≠ 安全 | `inject` 约束 Context 使用，阻止不了同进程代码直接 import Node API | self-modification 明确是 opt-in、bash-equivalent trust；[`05`](./05-dynamic-legibility.md) |
 | 元框架与本地分叉成为新核心 | Cordis 根、Loader、Boot 必须先存在；vendor 带本地修改与 sync 成本 | [`docs/architecture.md`](../../docs/architecture.md) 的 Cordis 段与 [`vendor/README.md`](../../vendor/README.md) |

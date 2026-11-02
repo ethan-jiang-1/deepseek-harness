@@ -23,7 +23,7 @@
   <text x="480" y="88" text-anchor="middle" font-size="14" font-weight="700" fill="#b91c1c">本仓库本地修改</text>
   <text x="356" y="120" font-size="12" fill="#991b1b">记在 vendor/README.md</text>
   <text x="356" y="148" font-size="12" fill="#7f1d1d">fiber 卸载加固</text>
-  <text x="356" y="166" font-size="12" fill="#7f1d1d">Loader 事务性调和</text>
+  <text x="356" y="166" font-size="12" fill="#7f1d1d">Loader 非事务刷新</text>
   <text x="356" y="184" font-size="12" fill="#7f1d1d">applyEntryPatches 导出</text>
   <text x="356" y="202" font-size="12" fill="#7f1d1d">insert 行可被后续 patch</text>
   <text x="356" y="220" font-size="12" fill="#7f1d1d">!!js 惰性求值</text>

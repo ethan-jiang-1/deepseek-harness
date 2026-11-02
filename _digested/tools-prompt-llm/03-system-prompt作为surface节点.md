@@ -44,7 +44,7 @@ wire 请求不变。DeepSeek 序列化器把历史里的 `role: 'system'` 消息
 
 以前「前缀稳定」= `header.system` 字节不变；现在 = **surface node 0 的 `system/message` 文本不变**。同一个结论，不同的载体；KV cache 的机械原因没变，比较的对象变了。
 
-不 capable 的 route 上，prompt 变化 = 替换 node 0（必要时先空掉后面的活动节点），紧随一条 `reason: 'series'` 的 header（若这一次 header 自身也变了，则是一条带 `startsSeries` 的 `change`）；如果有效文本没变、也没有节点被清空，则一条操作都不发，series 不换、header 也不写。capable 的 route 上（见 [`04-in-history提示词替换.md`](./04-in-history提示词替换.md)），变化可以 append 成新节点、完全不重写 node 0，缓存前缀因此可能保住；append 本身不需要 `request/header`。
+不 capable 的 route 上，prompt 变化 = 替换 node 0（必要时先空掉后面的活动节点），紧随一条 `reason: 'series'` 的 header（若这一次 header 自身也变了，则是一条带 `startsSeries` 的 `change`）；如果有效文本没变、也没有节点被清空，则不发 **node 操作**；但 header 的 `series` / `change` 仍按 `startsRequestSeries` 独立写（`packages/core/agent-loop/src/agent.ts:632-651`），两件事不能混成一句。capable 的 route 上（见 [`04-in-history提示词替换.md`](./04-in-history提示词替换.md)），变化可以 append 成新节点、完全不重写 node 0，缓存前缀因此可能保住；append 本身不需要 `request/header`。
 
 `resume` 不是 series start，所以重启后改过的 prompt 在 capable route 上是 append，provider 缓存可能跨进程仍然有效；在不 capable 的 route 上则回落到归一化。
 

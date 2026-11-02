@@ -20,12 +20,13 @@ acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）�
 
 ## 组合构成
 
-`dsh-acp-app` bundle 是叠在 `dsh-base` 上的**薄自动化层**，`cordis.patch.yml` 只做三件事：
+`dsh-acp-app` bundle 是叠在 `dsh-base` 上的**薄自动化层**，`cordis.patch.yml` 只做四件事：
 
 | 改动 | 内容 |
 |------|------|
 | `system-prompt` override | 只设 `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/acp-app/cordis.patch.yml:3-6`）。shipped 组合不设 `personaSuffix`（`{{cwd}}` 退役，执行目录走 `ctx.workingDirectory`） |
 | `session-title-llm` `disabled: true` | stdout 只归 ACP 协议 |
+| `hmr` `disabled: true` | 协议开始后不做运行时 patch 重载（`packages/bundle/acp-app/cordis.patch.yml:22-23`） |
 | `insert` | `acp-app-startup` + `acp`（ACP 桥；bundle `inject: [acpAppStartup]`，插件自身 `inject: ['agents','llm','sessionPersistence','sessions']`，config 定 provider/model，`:15-20`） |
 
 JSONL 持久化（`session-persistence-jsonl`）、`session-checkpoint-policy`、`session-query-sqlite` 都在 `dsh-base`——acp-app 不自持，digest 旧版写的「effect 卸载顺序：先拆查询 → 检查点 → 持久化」那层不存在。
