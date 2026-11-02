@@ -4,7 +4,7 @@
 
 ## 现象是什么：一个半公开的机制
 
-`packages/test-support/` 的两个快照支撑包都是 **npm 公开发布物**：`package.json` 里 `publishConfig.access: "public"`、无 `private`，版本 `0.2.1-rc.2` 与产品同版本矩阵（`@deepseek-ai/dsh-llm-replay`、`@deepseek-ai/dsh-session-snapshot`）。但 `docs/user/develop/` 与 `docs/cookbook/` 对它们**零提及**（grep 事实）——`llm-replay` 在 `docs/` 里只出现在生成的目录中（config-catalog、module-graph、capability-seams、event-producer-consumer），唯一权威是包自己的 README 与 `src/`。
+`packages/test-support/` 的两个快照支撑包都是 **npm 公开发布物**：`package.json` 里 `publishConfig.access: "public"`、无 `private`，版本随产品矩阵（当前 `0.2.1-rc.5`；`@deepseek-ai/dsh-llm-replay`、`@deepseek-ai/dsh-session-snapshot`）。`docs/user/develop/` 与 `docs/cookbook/` 没有面向外部的使用文档；`docs/cookbook/adding-a-session-format-version.md:85` 与 `upgrade-guide/v0.2.1-alpha.1/session-title-adapters/guide.md:16` 只是顺带提及。
 
 一句话定性：**能装、能挂、能自带夹具，但没有面向外部作者的文档。** 主仓把它们当内部测试基建使用并随矩阵发布；外部消费是「事实可行」，不是「官方支持面」。
 

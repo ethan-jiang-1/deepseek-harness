@@ -22,7 +22,7 @@
   <rect x="48" y="180" width="384" height="128" rx="10" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
   <text x="64" y="206" font-weight="700" fill="#38761c">是 —— 录制 Session 双角色场景（无 key 回放往返）</text>
   <text x="64" y="230" fill="#333">→ 顶层 snapshots/ 树（唯一收留形态）</text>
-  <text x="64" y="250" fill="#333">四面：session 122 · sdk 24 · acp 9 · web 55</text>
+  <text x="64" y="250" fill="#333">四面：session 150 · sdk 27 · acp 9 · web 64</text>
   <text x="64" y="270" fill="#333">committed JSONL 身兼回放输入与预期输出</text>
   <text x="64" y="292" fill="#666" font-size="11">CI 统一回放=全局门；record/refresh 只有 owner 本人才写</text>
 

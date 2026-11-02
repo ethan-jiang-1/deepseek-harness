@@ -37,7 +37,7 @@
   <!-- row 3 -->
   <rect x="30" y="218" width="300" height="50" rx="8" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
   <text x="46" y="239" fill="#531dab" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">*.expected.e2e.ts</text>
-  <text x="46" y="257" fill="#666">apps/cli/tests（18 个驱动）</text>
+  <text x="46" y="257" fill="#666">apps/cli/tests（21 个驱动）</text>
   <line x1="332" y1="243" x2="392" y2="243" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="396" y="218" width="230" height="50" rx="8" fill="#fff" stroke="#9ca3af"/>
   <text x="511" y="248" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#374151">vitest.expected.config.ts</text>
@@ -92,7 +92,7 @@
   <!-- row 8 -->
   <rect x="30" y="518" width="300" height="50" rx="8" fill="#fff0f6" stroke="#eb2f96" stroke-width="1.5"/>
   <text x="46" y="539" fill="#c41d7f" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">*.bench.ts / *.bench.client.ts</text>
-  <text x="46" y="557" fill="#666">benchmarks/**（5 Host + 2 Client）</text>
+  <text x="46" y="557" fill="#666">benchmarks/**（7 Host + 3 Client）</text>
   <line x1="332" y1="543" x2="392" y2="543" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
   <rect x="396" y="518" width="230" height="50" rx="8" fill="#fff" stroke="#9ca3af"/>
   <text x="511" y="548" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#374151">vitest.bench.config.ts</text>
@@ -104,5 +104,5 @@
   <rect x="30" y="584" width="902" height="40" rx="8" fill="#fff" stroke="#d4380d" stroke-dasharray="5 3"/>
   <text x="46" y="609" fill="#a8071a">互斥标注：e2e 配置显式 exclude *.expected.e2e.ts（归 expected 层）与 inspector 的 client-browser.e2e.ts（归 web 层）</text>
   <rect x="30" y="632" width="902" height="36" rx="8" fill="#f5f5f5" stroke="#9ca3af" stroke-dasharray="5 3"/>
-  <text x="46" y="655" fill="#4b5563">特例：各包的 tests/harness.ts（8 个共享 fixture）刻意不被任何 include 选中——import 它不会重复注册别人的 describe 或重复真实 API 调用</text>
+  <text x="46" y="655" fill="#4b5563">特例：各包的 tests/harness.ts（10 个共享 fixture）刻意不被任何 include 选中——import 它不会重复注册别人的 describe 或重复真实 API 调用</text>
 </svg>

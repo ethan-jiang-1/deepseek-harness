@@ -2,7 +2,7 @@
 
 ## 问题
 
-本专题主张「关键规则要下沉到可执行层」，但它自己主要是 prose。`_digested/verify.mjs` 查链接、UTF-8 与 SVG 结构，还读取 [`claims.json`](./claims.json) 核对基线与每个 claim 的证据路径，并用 `git ls-tree` / `git show` 重算四项指标，但不查判断真伪。所以本专题需要一套替代纪律，并且要诚实说明它的边界。
+本专题主张「关键规则要下沉到可执行层」，但它自己主要是 prose。`_digested/verify.mjs` 查链接、UTF-8 与 SVG 结构，还读取 [`claims.json`](./claims.json) 核对基线与每个 claim 的证据路径，并用 `git ls-tree` / `git show` 重算 14 项指标，但不查判断真伪。所以本专题需要一套替代纪律，并且要诚实说明它的边界。
 
 ## 基线
 

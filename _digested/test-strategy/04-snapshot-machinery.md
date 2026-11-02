@@ -84,7 +84,7 @@ Web 渲染可以显式借用另一个场景的 canonical session（"a Web render
 | `snapshot.yml` | 场景清单：`version`、`scenario`、`profile: headless`、`composition: default`、`recording: live`、`header.class`、`workspace.final: true` |
 | `workspace/greeting.txt` | 种子工作区（运行前拷进被测 cwd） |
 | `workspace.expected/greeting.txt` | 完整期望终态树（record/refresh 永不改写） |
-| `session.v2.jsonl` + `session.v3.jsonl` | **多代并存**；harness 选数值最高代（v3） |
+| `session.v2.jsonl` + `session.v3.jsonl` + `session.v4.jsonl` | **多代并存**；harness 选数值最高代（v4） |
 
 ![最小场景的物理构成：清单 / 多代 JSONL / 种子工作区 / 只读期望世界树](./figures/scenario-anatomy.svg)
 

@@ -18,7 +18,8 @@
   <text x="64" y="178" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#531dab">├─ session.v2.jsonl</text>
   <text x="248" y="178" fill="#666" font-size="11">历史代</text>
   <rect x="48" y="208" width="290" height="36" rx="8" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
-  <text x="64" y="230" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#531dab">├─ session.v3.jsonl</text>
+  <text x="64" y="230" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#531dab">├─ session.v3.jsonl
+  <text x="64" y="254" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#531dab">├─ session.v4.jsonl</text></text>
   <text x="230" y="230" font-weight="700" fill="#a8071a" font-size="11">← harness 选它</text>
   <text x="356" y="180" font-weight="700" fill="#531dab">回放输入 + 转录期望 —— 最高录制父代</text>
   <text x="356" y="200" fill="#333">父代提供用户输入与模型回放，其持久化结果就是期望值</text>

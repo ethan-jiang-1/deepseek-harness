@@ -3,7 +3,7 @@
 > 本篇消化 DSH 的 CI 编排层：`scripts/run-gates.ts`（门禁注册表）、`.github/workflows/`（lane 结构）、Wine 与热备演练。分层定义见 [02](./02-tiers.md)，政策见 [01](./01-doctrine.md)，可靠性纪律见 [06](./06-reliability.md)。
 > 门禁聚合器与 leaf 家族的机制概述由 [`system-overview/03-门禁与性能基准.md`](../system-overview/03-门禁与性能基准.md) 承载，本篇不重复家族图。
 
-## 现象是什么：一个 1687 行的门禁注册表
+## 现象是什么：一个 1697 行的门禁注册表
 
 DSH 的 CI 不是一堆散装的 workflow 步骤，而是一个**可编程门禁图**：`scripts/run-gates.ts`（基线下 1697 行）注册了 **18 个聚合模式**，每个模式是一张带依赖关系的门禁 DAG。workflow 只是调用入口，门禁的拓扑、并发、失败语义全部由这张注册表统一声明。
 

@@ -33,7 +33,7 @@
 
 - `benchmarks/support/built-worker.ts`：spawn 前从子进程 env 删除 `NODE_OPTIONS` 与 `TSX_TSCONFIG_PATH`、拒绝非 `.dsh-build/` 编译产物入口（[02](./02-tiers.md) "四层落实"）。
 - `benchmarks/support/calibration.ts`：`CI_TIME_SCALE = 2` × `PERFORMANCE_BUDGET_HEADROOM = 1.25`；预算是 reviewed source constants，环境变量不得覆盖。
-- vitest setup 两件套：`scripts/test-proxy-environment.ts`、`test-dom-environment.ts`——unit 层全部 project 共用（`scripts/test-invariants.ts` 已随运行时 invariant 机制整族退役，commit `f028f25667`）。
+- vitest setup 三件套：`scripts/test-proxy-environment.ts`、`test-dom-environment.ts`、`test-official-listing-guard.ts`——unit 层全部 project 共用（`scripts/test-invariants.ts` 已随运行时 invariant 机制整族退役，commit `f028f25667`）。
 
 ## Python 面（双 SDK 投影的另一半）
 

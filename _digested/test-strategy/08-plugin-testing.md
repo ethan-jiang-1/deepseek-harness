@@ -90,7 +90,7 @@ await ctx.loader.await()
 ## 配套纪律（与台阶同交）
 
 - **mock 白名单**：插件测试里唯一常见 mock 是脚本化模型（`MockAdapter`，跨包经源码平面相对导入复用）；网络/时钟才可 mock。with-key e2e 用共享 harness 挂全真栈（`packages/fs/tool-fs/tests/harness.ts` 挂 AgentLoop + LlmDeepSeek + LocalFileSystem + FsPolicy + ToolFs），harness 放 include 之外（[02](./02-tiers.md)）。
-- **face 命名**：`.host.spec`（全仓 98 个）与 `.client.spec.*`（722 个，含 `.ts` 与 `.tsx`）后缀决定该文件被哪个 tsc face program 类型检查（[02](./02-tiers.md) "测试代码自身也过静态门"）；client 侧再加 `@vitest-environment jsdom` pragma。
+- **face 命名**：`.host.spec`（全仓 98 个）与 `.client.spec.*`（734 个，含 `.ts` 与 `.tsx`）后缀决定该文件被哪个 tsc face program 类型检查（[02](./02-tiers.md) "测试代码自身也过静态门"）；client 侧再加 `@vitest-environment jsdom` pragma。
 - **运行时不变量已整族退役**：本跨度 `f028f25667`（`refactor: remove runtime invariant plugins`）删除了每包的 `./invariant` companion、`InvariantRegistry`、`scripts/test-invariants.ts` 与 `verify-package-invariants`，**无继任**——插件不再发布 invariant 入口，运行时关系由类型与产品面测试守卫（升级路径见 `docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`）。
 - **README 限制清单**：`verify-package-readme-limitations` 门要求插件 README 带已知限制节——mock 证明不了什么，要写下来（[07](./07-infrastructure.md)）。
 
