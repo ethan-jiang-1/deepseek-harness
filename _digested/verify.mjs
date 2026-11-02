@@ -497,9 +497,12 @@ function checkOrphanPages() {
   for (const path of files) {
     const rel = relative(corpusRoot, path)
     const segments = rel.split('/')
-    if (segments.length !== 2) continue
-    const [topic, filename] = segments
-    if (orphanExemptPrefixes.includes(topic) || orphanExemptNames.has(filename)) continue
+    // Two levels for a flat topic, three for a topic that groups sub-axes
+    // (e.g. plugin-system/lifecycle); deeper paths stay unenforced.
+    if (segments.length !== 2 && segments.length !== 3) continue
+    const topic = segments.length === 3 ? `${segments[0]}/${segments[1]}` : segments[0]
+    const filename = segments[segments.length - 1]
+    if (orphanExemptPrefixes.includes(segments[0]) || orphanExemptNames.has(filename)) continue
     if (!/^0[1-9]/.test(filename)) continue
     const basename = filename.replace(/\.md$/, '')
     let referenced = false

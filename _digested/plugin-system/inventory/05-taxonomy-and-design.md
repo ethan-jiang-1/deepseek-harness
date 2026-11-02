@@ -1,6 +1,6 @@
 # 05 · 插件分类与设计思考
 
-产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）；快照式清单的重测义务见 [`_coverage/`](../_coverage/00-index.md)。
+产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）；快照式清单的重测义务见 [`_coverage/`](../../_coverage/00-index.md)。
 
 ## 一句话
 
@@ -12,7 +12,7 @@
 
 **Def（服务声明）回答「合同归谁」。** Service Definition 是抽象类或注册表，占住 `ctx.<key>`；刻意不是 TypeScript interface，因为合同需要运行时存在（可 `ctx.get`、可校验）。扩展插件只依赖 Def 不依赖实现——这是「换一个后端、整面产品跟着变」的根。判据：遇到一个 `ctx.<key>`，先找它的 Def 住在哪个包（生成表 owner 列）。
 
-**Impl（Provider 实现）回答「谁在兑现合同」。** 同一 Def 可以有本地、沙箱、远程、进程外多个 Impl（bash-sandbox、fs-ssh、ptc-runtime-python）。第二个真实 Provider 出现而 Consumer 一行不改，是该能力商品化的直接读数（[`_faq_on_digested/08`](../../_faq_on_digested/08_plugin-seam-maturity/answer.md) 的供给侧判据）。
+**Impl（Provider 实现）回答「谁在兑现合同」。** 同一 Def 可以有本地、沙箱、远程、进程外多个 Impl（bash-sandbox、fs-ssh、ptc-runtime-python）。第二个真实 Provider 出现而 Consumer 一行不改，是该能力商品化的直接读数（[`_faq_on_digested/08`](../../../_faq_on_digested/08_plugin-seam-maturity/answer.md) 的供给侧判据）。
 
 **Tool（模型可见工具）回答「模型看见什么」。** `defineTool` 注册进 `ctx.tools`，schema 自动进 prompt 组装。工具名稳定、Provider 可换：`web_search` 一直叫 `web_search`，后端可从官方搜索换成 exa。33 个工具包的全集与逐 profile 暴露见 [`03`](./03-reference-lists.md)。
 
@@ -22,7 +22,7 @@
 
 **adapter（LLM 接入）回答「模型从哪来」。** `ctx.llm` 的 Provider，可休眠挂载——`llm-pi-ai` 雏形零 routes，settings 出现 `llm-pi-ai:` 段才注册多 Provider。第三家 Provider 的接入位现成，不用改 loop。
 
-**bundle（交付打包）回答「怎么发货」。** patch 层是交付单位，profile 是组合单位，二者刻意二分（「Nothing is both」，[`_dsh_plugin_agent_ready_development/repo-harness/09`](../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md)）。OPTIONAL_BUNDLES 是中间档：随安装出货、默认关、插件页一键开；官方另有 `ON_DEMAND_BUNDLES` 按需安装档。
+**bundle（交付打包）回答「怎么发货」。** patch 层是交付单位，profile 是组合单位，二者刻意二分（「Nothing is both」，[`_dsh_plugin_agent_ready_development/repo-harness/09`](../../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md)）。OPTIONAL_BUNDLES 是中间档：随安装出货、默认关、插件页一键开；官方另有 `ON_DEMAND_BUNDLES` 按需安装档。
 
 **lib（纯库）回答「哪些不是插件」。** util 组 18 包零运行时依赖，被 import 不被挂载。货架上必须有这一栏，否则「343 个包」会被误读成「343 个插件位」。
 
@@ -30,7 +30,7 @@
 
 ## role 语法：core / seam / service / bundle 怎么判
 
-一条 seam 必须三角色齐备（Definition + Provider + Consumer），只有单一实现的主干是 core，独立发布的观测与分析面是 service，组合点是 bundle。判定不靠感觉：生成表 [`docs/capability-seams.md`](../../docs/capability-seams.md) 的 implementations 与 direct consumers 两列就是判定数据，成熟度信号（P≥2、单 Provider、自消费、零 Provider）由 FAQ 08 承载，本专题不重复计数。
+一条 seam 必须三角色齐备（Definition + Provider + Consumer），只有单一实现的主干是 core，独立发布的观测与分析面是 service，组合点是 bundle。判定不靠感觉：生成表 [`docs/capability-seams.md`](../../../docs/capability-seams.md) 的 implementations 与 direct consumers 两列就是判定数据，成熟度信号（P≥2、单 Provider、自消费、零 Provider）由 FAQ 08 承载，本专题不重复计数。
 
 ## 可见性是配置，不是身份
 
@@ -49,4 +49,4 @@
 
 ## 与参与阶梯对齐
 
-四条出路（调配置 / patch 换 / 挂包 / 写胶水）正好是 [`_faq_on_digested/09`](../../_faq_on_digested/09_plugin-business-ladder/answer.md) 的 L0–L3 参与阶梯：代价越低越靠前，「写新插件」在阶梯与决策树上都排最后。判断一类插件对自用 owner 值不值，用 FAQ 09 的三层价值；判断一个 seam 缺口值不值得补，用 FAQ 08 的信号强度排序；插件的 repo 组织与发布选择，用 [`_faq_on_digested/13`](../../_faq_on_digested/13_expert-plugin-repo-organization/answer.md) 的方案 A。
+四条出路（调配置 / patch 换 / 挂包 / 写胶水）正好是 [`_faq_on_digested/09`](../../../_faq_on_digested/09_plugin-business-ladder/answer.md) 的 L0–L3 参与阶梯：代价越低越靠前，「写新插件」在阶梯与决策树上都排最后。判断一类插件对自用 owner 值不值，用 FAQ 09 的三层价值；判断一个 seam 缺口值不值得补，用 FAQ 08 的信号强度排序；插件的 repo 组织与发布选择，用 [`_faq_on_digested/13`](../../../_faq_on_digested/13_expert-plugin-repo-organization/answer.md) 的方案 A。

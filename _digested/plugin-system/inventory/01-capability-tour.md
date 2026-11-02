@@ -7,7 +7,7 @@
 1. dsh 的进程里是一棵**插件树**：对话循环、读文件、跑命令、接模型、画界面，都是树上的插件，全部经 `ctx` 总线互相使用。
 2. 包要经过**三层才到你面前**：bundle 打包 → profile 组装 → preset 选模式。所以「dsh 有没有 X」永远要按层查，不能只看一层。
 3. 同一个能力常常有多个插件实现（换搜索引擎、换 LLM 后端），**换实现不改调用方**——这是整台机器最重要的性质。
-4. 术语最小集：**插件**＝导出 `apply` 的模块；**ctx**＝服务总线；**seam**＝三角色齐备的可替换能力；**role**＝core/seam/service/bundle；**形态**＝Def/Impl/Tool/cmd/UI/adapter/lib/bundle/驱动；**可见性**＝base/web/min/preset/opt/—。完整版见 [`../00-index.md`](../00-index.md) 的术语速查与 [`05`](./05-taxonomy-and-design.md)。
+4. 术语最小集：**插件**＝导出 `apply` 的模块；**ctx**＝服务总线；**seam**＝三角色齐备的可替换能力；**role**＝core/seam/service/bundle；**形态**＝Def/Impl/Tool/cmd/UI/adapter/lib/bundle/驱动；**可见性**＝base/web/min/preset/opt/—。完整版见 [`../00-index.md`](../../00-index.md) 的术语速查与 [`05`](./05-taxonomy-and-design.md)。
 
 ## 八类能力：你想干什么 ↔ dsh 给了什么
 
@@ -31,7 +31,7 @@
 
 ### ⑤ 派活与自动化（子代理、后台任务、定时）
 
-`tool-subagent`/`subagent_fork` 委派子代理（进程内、ACP、Codex、Claude Code、SDK 多后端；Codex 与 Claude Code 走官方按需安装通道）；`jobs` 管后台任务（`job_list/job_output/job_kill`）；`workflow` 编排多步；`schedule` 定时提醒（Web 组合自带服务，四工具由 standard/ptc/cordis preset 声明）；experimental 里有 Agent Teams、session-search、ralph、worktree、auto-review。**覆盖组**：subagent、jobs、workflow、schedule、experimental 的 teams/检索/review 家族、browser-use / computer-use（让模型操作浏览器与桌面）。这一族原语的机制深挖（什么时候用哪个、各自保证什么、怎么组合）见 [`../orchestration-ladder/00-map.md`](../orchestration-ladder/00-map.md)。
+`tool-subagent`/`subagent_fork` 委派子代理（进程内、ACP、Codex、Claude Code、SDK 多后端；Codex 与 Claude Code 走官方按需安装通道）；`jobs` 管后台任务（`job_list/job_output/job_kill`）；`workflow` 编排多步；`schedule` 定时提醒（Web 组合自带服务，四工具由 standard/ptc/cordis preset 声明）；experimental 里有 Agent Teams、session-search、ralph、worktree、auto-review。**覆盖组**：subagent、jobs、workflow、schedule、experimental 的 teams/检索/review 家族、browser-use / computer-use（让模型操作浏览器与桌面）。这一族原语的机制深挖（什么时候用哪个、各自保证什么、怎么组合）见 [`../../orchestration-ladder/00-map.md`](../../orchestration-ladder/00-map.md)。
 
 ### ⑥ 记忆、检索、技能（会话的持久半边）
 
@@ -45,7 +45,7 @@
 
 `boot` 组管启动（profile、hmr、plugin-manager、config-editor）与插件市场（`plugin-market`＋`util/plugin-market-index`＋`ui-plugin-market`，随 plugin-market-bundle 默认关）；`bundle`/`preset` 组是交付与模式单位；`extensions` 的 cordis-host-runner 支持运行时动态插件；`mcp-client` 把任一 MCP 服务器的工具接进来；`guard` 防重复调用与超时；`identity`/`telemetry`/otel 是运营遥测；`test-support`/`util`/`typert` 是支撑层（不挂载）。**覆盖组**：boot、bundle、preset、extensions、mcp、guard、identity、telemetry、test-support、util、typert。
 
-`packages/hooks/` 组已解散、`hook-protocol`/`hooks-claude-code`/`hooks-codex` 三个桥接包整组并入 [`experimental/`](../experimental/00-map.md)；`packages/runtime-diagnostics/` 组随 `invariants` 删除（commit `f028f25667`）而消失，`ctx.invariants` 服务不再存在。`webhook` 两个包同样迁入 experimental。
+`packages/hooks/` 组已解散、`hook-protocol`/`hooks-claude-code`/`hooks-codex` 三个桥接包整组并入 [`experimental/`](../../experimental/00-map.md)；`packages/runtime-diagnostics/` 组随 `invariants` 删除（commit `f028f25667`）而消失，`ctx.invariants` 服务不再存在。`webhook` 两个包同样迁入 experimental。
 
 ## 六个场景走一遍（每个都是「你以为要写插件，其实不用」）
 

@@ -1,10 +1,10 @@
 # 03 · 五张横切清单：按「要什么」查
 
-基线 `dsh-v0.2.1-rc.2`（快照式清单，重测义务见 [`_coverage/`](../_coverage/00-index.md)）。[`02-plugin-catalog.md`](./02-plugin-catalog.md) 按包组纵着看，本页按能力类型横着看。
+基线 `dsh-v0.2.1-rc.2`（快照式清单，重测义务见 [`_coverage/`](../../_coverage/00-index.md)）。[`02-plugin-catalog.md`](./02-plugin-catalog.md) 按包组纵着看，本页按能力类型横着看。
 
 ## 3.1 ctx 服务清单 — 99 = 58 core + 35 seam + 5 service + 1 bundle
 
-真源是生成目录 [`docs/capability-seams.md`](../../docs/capability-seams.md):612-712 的表格（角色列可用 awk 复核 58/35/5/1）。
+真源是生成目录 [`docs/capability-seams.md`](../../../docs/capability-seams.md):612-712 的表格（角色列可用 awk 复核 58/35/5/1）。
 
 **非 seam 的 6 条（core/service/bundle 概览）：**
 
@@ -55,11 +55,11 @@
 | `ctx.web` | 5 | 1 | web/web | deepseek / http / exa / perplexity / deepseek-api |
 | `ctx.subagents` | 6 | 3 | subagent/subagent | in-process×2 / acp / codex / claude-code / dsh-sdk |
 
-P≥2 的 seam 换 Provider 不改调用方；P=0 与自消费（P、C 同包）是成熟度警戒信号——完整信号分析见 [`_faq_on_digested/08`](../../_faq_on_digested/08_plugin-seam-maturity/answer.md)。可替换率 15/35 = 42.9%（上一轮 0009 复核为 15/33）。
+P≥2 的 seam 换 Provider 不改调用方；P=0 与自消费（P、C 同包）是成熟度警戒信号——完整信号分析见 [`_faq_on_digested/08`](../../../_faq_on_digested/08_plugin-seam-maturity/answer.md)。可替换率 15/35 = 42.9%（上一轮 0009 复核为 15/33）。
 
 ## 3.2 模型可见工具 — 每个 profile 实际暴露什么
 
-33 个工具包的模型可见名以生成目录 [`docs/tool-catalog.md`](../../docs/tool-catalog.md):18-50 的 Tool Package Map 为真源；下表按 bundle patch 行推每 profile 的实际暴露。
+33 个工具包的模型可见名以生成目录 [`docs/tool-catalog.md`](../../../docs/tool-catalog.md):18-50 的 Tool Package Map 为真源；下表按 bundle patch 行推每 profile 的实际暴露。
 
 | profile | 暴露 |
 |---|---|
@@ -77,7 +77,7 @@ P≥2 的 seam 换 Provider 不改调用方；P=0 与自消费（P、C 同包）
 | bundle | 说明 |
 |---|---|
 | `dsh-base` | 共享核心 patch 层，五个 launcher profile 里四个都叠它 |
-| `dsh-web-app` | 浏览器层＋`presets/` 四文件（insert 行明细见 [`runtime-profiles/01`](../runtime-profiles/01-web.md)） |
+| `dsh-web-app` | 浏览器层＋`presets/` 四文件（insert 行明细见 [`runtime-profiles/01`](../../runtime-profiles/01-web.md)） |
 | `dsh-headless` | 一次性任务层，无 Host/HTTP/Web |
 | `dsh-acp-app` | ACP stdio 层 |
 | `dsh-sdk-app` | SDK stdio 层 |
@@ -97,7 +97,7 @@ profile→bundle 组装：acp=[base,acp-app]、web=[base,web-app]、headless=[ba
 | minimal（3） | **persona 轴**（`complete: true`＋`includeRuntimeContext: false`）＋**shell 轴**（持久 PTY bash/pwsh 替代一次性工具）＋只读 fs 面 |
 | cordis（4） | **creator 轴**：＋`cordis_inspect_*`、`plugin_manager`/`plugin_market` 工具、creator skills 目录（customSkillDirs 指向 dsh-agent-preset/skills） |
 
-四模式逐行实差的机制解剖在 [`_faq_on_digested/16`](../../_faq_on_digested/16_preset-modes-specialty/answer.md)。
+四模式逐行实差的机制解剖在 [`_faq_on_digested/16`](../../../_faq_on_digested/16_preset-modes-specialty/answer.md)。
 
 ## 3.5 skills 清单（19 个）
 

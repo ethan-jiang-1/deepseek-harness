@@ -1,8 +1,8 @@
 # 02 · 插件货架：343 包逐组图鉴
 
-基线 `dsh-v0.2.1-rc.3`（快照式清单，重测义务见 [`_coverage/`](../_coverage/00-index.md)）；组序与 [`packages/README.md`](../../packages/README.md) 一致。总量：343 包、52 个包组（含 experimental）。
+基线 `dsh-v0.2.1-rc.3`（快照式清单，重测义务见 [`_coverage/`](../../_coverage/00-index.md)）；组序与 [`packages/README.md`](../../../packages/README.md) 一致。总量：343 包、52 个包组（含 experimental）。
 
-枚举口径是深度精确的 `^packages/[^/]+/[^/]+/package\.json$`（`_digested/verify.mjs` 的 `gitPackageOwners`）；`Config` 列是该包声明式配置的顶层字段数，取自生成目录 [`docs/config-catalog.md`](../../docs/config-catalog.md)。
+枚举口径是深度精确的 `^packages/[^/]+/[^/]+/package\.json$`（`_digested/verify.mjs` 的 `gitPackageOwners`）；`Config` 列是该包声明式配置的顶层字段数，取自生成目录 [`docs/config-catalog.md`](../../../docs/config-catalog.md)。
 
 **这页是图鉴，不是教程**：先读 [`01-capability-tour.md`](./01-capability-tour.md) 建立八类地图，再按组回来查。新人最高频的十个包：
 
@@ -213,7 +213,7 @@
 | tool-subagent | Tool 多实例 | base+preset | 7 | `subagent`/`subagent_fork`＋`ctx.subagentModelSelection` |
 | tool-subagent-control | Tool×3 | base+preset | — | `send_message`/`interrupt_agent`/`list_agents` |
 
-`subagent-in-process-driver` 已在 0.2.1 线整包解散并入 `subagent`（激活生命周期统一，见 [`_change_log`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)）；Codex 与 Claude Code 两个后端改由官方按需安装通道出货（`ON_DEMAND_BUNDLES`，`packages/boot/app-boot/src/official-bundle-packages.ts`），preset 不再有占位 disabled 行。
+`subagent-in-process-driver` 已在 0.2.1 线整包解散并入 `subagent`（激活生命周期统一，见 [`_change_log`](../../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)）；Codex 与 Claude Code 两个后端改由官方按需安装通道出货（`ON_DEMAND_BUNDLES`，`packages/boot/app-boot/src/official-bundle-packages.ts`），preset 不再有占位 disabled 行。
 
 ## jobs/（3 包）
 
@@ -301,7 +301,7 @@
 
 `hook-protocol` 与两个 hooks 桥接包已整组并入 experimental（`packages/hooks/` 组解散），见下文 experimental 一节。
 
-## experimental/（47 包——合同随时会变，机制页见 [`experimental/`](../experimental/00-map.md)）
+## experimental/（47 包——合同随时会变，机制页见 [`experimental/`](../../experimental/00-map.md)）
 
 | 包 | 家族 | 形态 | 可见 | Config |
 |---|---|---|---|---|

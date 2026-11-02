@@ -17,7 +17,7 @@
 | `tools-prompt-llm/` | **改 + 扩** | 大 | section order 重排（-900/-800 → 10000/10100，persona 拆 prefix/suffix）；「更负更稳」规律失效；chunk→settlement；PTC 改名补齐日志层；新增 `03`–`06` 四页 |
 | `agent-loop/` | 改 + 扩 | 中 | goal resume 模型通道收紧（`paused` 抛 `GOAL_TOOL_RESUME_PAUSED`）；activity initiator 边界；行号整体 +12；新增 `04` |
 | `capability-seams/` | 改 + 扩 | 大 | parent-owned subagent 目录与 host Queue/Steer；外发代理策略；原生 containment；Remote namespace 12→15；新增 `05`–`07` |
-| `composition-boot/` | 改 + 扩 | 中 | `--from-default-profile`；`runProfile` 第 0 步装代理；home `.env` 代理名豁免；新增 `04` |
+| `plugin-system/composition/` | 改 + 扩 | 中 | `--from-default-profile`；`runProfile` 第 0 步装代理；home `.env` 代理名豁免；新增 `04` |
 | `runtime-profiles/` | 改 + 扩 | 中 | sdk-minimal 收窄为平台选定单一持久 shell；`str_replace_editor` 全面下线；desktop 第五个组合；新增 `06` |
 | `surfaces-entrypoints/` | 改 + 扩 | 大 | 入口 4→5（Desktop）；客户端资源模型与右栏；session 流两类帧；Remote 白名单 18→19；新增 `03`、`04` |
 | `system-overview/` | 改 | 中 | 扩展表落点、loop 对照页随 header/system prompt 迁移改写 |
@@ -40,7 +40,7 @@
 | `capability-seams/05-subagent-catalog与host交付.md` | 委派 seam | parent-owned 目录与 Queue/Steer 双交付 |
 | `capability-seams/06-外发代理策略.md` | 进程级库 | 为什么刻意不是 seam；唯一安装点与豁免 |
 | `capability-seams/07-原生containment与native-system.md` | 进程 seam | 受管范围、两条 native 路径、flock 写租约 |
-| `composition-boot/04-profile-创建与保留名.md` | 启动组合 | `--from-default-profile` 与 `desktop` 保留名 |
+| `plugin-system/composition/04-profile-创建与保留名.md` | 启动组合 | `--from-default-profile` 与 `desktop` 保留名 |
 | `runtime-profiles/06-desktop.md` | 运行时组合 | Electron 第五个组合，不属 launcher profile |
 | `surfaces-entrypoints/03-桌面入口.md` | 入口面 | `dsh-app://`、fd 管道、`openStream` 旁路 |
 | `surfaces-entrypoints/04-客户端资源模型与右栏.md` | 入口面 | 地址/provider/四态/pin/右栏 tab |
@@ -79,11 +79,11 @@
 - [x] 新建 `05`、`06`、`07`
 - [x] `experimental/00-map.md`（public 例外）、`02-agent-teams.md`（10→9 工具）、`01`（行锚）、`cordis-runtime/04`（vendor 零改动备注）
 
-### `composition-boot/` 与 `runtime-profiles/`
+### `plugin-system/composition/` 与 `runtime-profiles/`
 - [x] `sdk-minimal` 工具面重写（平台选定 shell、去 `fs-local`/`str-replace-editor`）
 - [x] `persona` → `personaPrefix`/`personaSuffix` 覆盖 5 个 profile 页
 - [x] home `.env` 代理名豁免；`runProfile` 第 0 步装代理
-- [x] 新建 `composition-boot/04`、`runtime-profiles/06-desktop.md`
+- [x] 新建 `plugin-system/composition/04`、`runtime-profiles/06-desktop.md`
 - [x] 行号批量刷新（见专题报告清单）
 
 ### `surfaces-entrypoints/`

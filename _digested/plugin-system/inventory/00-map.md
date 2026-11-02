@@ -1,6 +1,6 @@
 # Plugin inventory · 现成插件货架
 
-产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）；本专题是**快照式清单**：包数、服务数、组合成员随每次 upstream 同步漂移，重测义务登记在 [`_coverage/`](../_coverage/00-index.md) 的本专题行；引用生成目录与 bundle patch 时给区块级行号，结构变化以生成目录为真源。
+产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）；本专题是**快照式清单**：包数、服务数、组合成员随每次 upstream 同步漂移，重测义务登记在 [`_coverage/`](../../_coverage/00-index.md) 的本专题行；引用生成目录与 bundle patch 时给区块级行号，结构变化以生成目录为真源。
 
 ## 一句话
 
@@ -30,11 +30,11 @@
 | 问题 | 去哪 |
 |------|------|
 | 有哪些现成的、从哪拿 | 本专题 |
-| 换一个实现、三角色怎么分装 | [`capability-seams/`](../capability-seams/00-map.md) |
-| 启动时怎么挂成一棵树 | [`composition-boot/`](../composition-boot/00-map.md) |
-| 找到了之后怎么装、怎么更、怎么卸 | [`plugin-lifecycle/`](../plugin-lifecycle/00-map.md) |
-| 某种启动方式带了什么 | [`runtime-profiles/`](../runtime-profiles/00-map.md) |
-| 生成目录怎么当量化底座 | [`harness-idea/05`](../harness-idea/05-dynamic-legibility.md) |
+| 换一个实现、三角色怎么分装 | [`capability-seams/`](../../capability-seams/00-map.md) |
+| 启动时怎么挂成一棵树 | [`composition-boot/`](../composition/00-map.md) |
+| 找到了之后怎么装、怎么更、怎么卸 | [`plugin-lifecycle/`](../lifecycle/00-map.md) |
+| 某种启动方式带了什么 | [`runtime-profiles/`](../../runtime-profiles/00-map.md) |
+| 生成目录怎么当量化底座 | [`harness-idea/05`](../../harness-idea/05-dynamic-legibility.md) |
 | 「我想做 X，dsh 有现成的吗」 | 步骤 2 → [`01`](./01-capability-tour.md) 走场景 |
 | 「找到了，怎么用上 / 是不是要自己写」 | 步骤 4 → [`04`](./04-reuse-paths-and-gaps.md) |
 | 「分类怎么定的、背后在设计什么」 | 深挖 → [`05`](./05-taxonomy-and-design.md) |

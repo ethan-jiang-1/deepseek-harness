@@ -14,7 +14,7 @@ profile 目录不是手写的：五个 shipped 名首次使用自动建，自定
 
 三条路径最终都落到 `initProfile`（`packages/boot/app-boot/src/profile.ts:262-281`）：写 `package.json`（`dsh.profile.bundles`、空 `dependencies`）、空 `cordis.patch.yml`（内容就是模板注释加 `[]`）、hoisted 的 `pnpm-workspace.yaml`。已有文件一律不覆盖。（~~旧表里的 `patchReload` 列~~——0.1.7 线该字段连同 `DEFAULT_PROFILE_PATCH_RELOAD` 一起删除：manifest 只剩 bundle 列表，patch 重载改由 `hmr` 插件按 `profileContext` 门控承担，见 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)。）
 
-`PROFILE_TEMPLATES` 仍是那五个、内容仍是 bundle-only（`packages/boot/app-boot/src/profile.ts:179-195`）：`acp`、`web`、`headless`、`sdk`、`sdk-minimal`。rc.1 没有增删改名，新增的是从模板**派生**自定义 profile 的选项；另有 `OPTIONAL_BUNDLES`（12 条，`profile.ts:223-236`）：`session-search`、`ralph-bundle`、`terminal-bundle`、`badge-skill-bundle`、`session-titles-bundle`、`agent-team-profile`、`voice-input-bundle`、`cot-translation-bundle`、`auto-review`、`inspector-profile`、`plugin-market-bundle`、`tool-worktree`；它们随安装出货、默认关断，由插件管理面逐条开关。0009 时的 `schedule-bundle` 已退役（`RETIRED_BUNDLES`，`profile.ts:206-210`），Schedule 改为直接进 Web 组合（见 [`../runtime-profiles/01-web.md`](../runtime-profiles/01-web.md)）。与它并列的还有另一个档位 `ON_DEMAND_BUNDLES`（`packages/boot/app-boot/src/official-bundle-packages.ts`，2 条：`subagent-claude-code`、`subagent-codex`）——按需安装，不随安装出货。
+`PROFILE_TEMPLATES` 仍是那五个、内容仍是 bundle-only（`packages/boot/app-boot/src/profile.ts:179-195`）：`acp`、`web`、`headless`、`sdk`、`sdk-minimal`。rc.1 没有增删改名，新增的是从模板**派生**自定义 profile 的选项；另有 `OPTIONAL_BUNDLES`（12 条，`profile.ts:223-236`）：`session-search`、`ralph-bundle`、`terminal-bundle`、`badge-skill-bundle`、`session-titles-bundle`、`agent-team-profile`、`voice-input-bundle`、`cot-translation-bundle`、`auto-review`、`inspector-profile`、`plugin-market-bundle`、`tool-worktree`；它们随安装出货、默认关断，由插件管理面逐条开关。0009 时的 `schedule-bundle` 已退役（`RETIRED_BUNDLES`，`profile.ts:206-210`），Schedule 改为直接进 Web 组合（见 [`../../runtime-profiles/01-web.md`](../../runtime-profiles/01-web.md)）。与它并列的还有另一个档位 `ON_DEMAND_BUNDLES`（`packages/boot/app-boot/src/official-bundle-packages.ts`，2 条：`subagent-claude-code`、`subagent-codex`）——按需安装，不随安装出货。
 
 ## `--from-default-profile`：原子替换一次，然后独立
 
@@ -54,7 +54,7 @@ dsh --profile rescue --from-default-profile web --dump-config
 - 根命令 action（`apps/cli/src/args.ts:183`）——同时覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`。
 - `plugin` 子命令（`apps/cli/src/args.ts:199`）——CLI 不能 `pnpm add` 进这个 profile。
 
-装载路径也不一样：desktop 不走 `loadProfile` 的 Harness home 发现与 shipped 归一化，而是走 `loadProfileDirectory` + 共享的 `runProfile`（[`../runtime-profiles/06-desktop.md`](../runtime-profiles/06-desktop.md)；0.1.7 线起 desktop-host 经 `runProfile` 起完整 web 应用）。`--from-default-profile` 与它无关——它只认五个 shipped 模板名；`initializeProfileFromDefault` 对 `desktop` 目标名报「shipped and cannot be a custom profile target」同款错误语义，CLI 入口则更早被 `rejectElectronProfile` 拦下。
+装载路径也不一样：desktop 不走 `loadProfile` 的 Harness home 发现与 shipped 归一化，而是走 `loadProfileDirectory` + 共享的 `runProfile`（[`../../runtime-profiles/06-desktop.md`](../../runtime-profiles/06-desktop.md)；0.1.7 线起 desktop-host 经 `runProfile` 起完整 web 应用）。`--from-default-profile` 与它无关——它只认五个 shipped 模板名；`initializeProfileFromDefault` 对 `desktop` 目标名报「shipped and cannot be a custom profile target」同款错误语义，CLI 入口则更早被 `rejectElectronProfile` 拦下。
 
 ## 源码入口
 
@@ -67,7 +67,7 @@ dsh --profile rescue --from-default-profile web --dump-config
 | `apps/cli/src/dump-config.ts` | dump 路径上的同一 `fromDefaultProfile` |
 | `apps/cli/reference/README.md` | 命令级合同（profile 模式、`--from-default-profile`、`plugin` 模式各一段） |
 
-依据 note（均在 `implemented/`）：[`2026-08-05-profile-plugin-bundles`](../../.agents/notes/implemented/architecture/2026-08-05-profile-plugin-bundles.md)、[`2026-08-22-single-dsh-application-launcher`](../../.agents/notes/implemented/architecture/2026-08-22-single-dsh-application-launcher.md)、[`2026-08-25-electron-desktop-packaging-and-updates`](../../.agents/notes/implemented/architecture/2026-08-25-electron-desktop-packaging-and-updates.md)。
+依据 note（均在 `implemented/`）：[`2026-08-05-profile-plugin-bundles`](../../../.agents/notes/implemented/architecture/2026-08-05-profile-plugin-bundles.md)、[`2026-08-22-single-dsh-application-launcher`](../../../.agents/notes/implemented/architecture/2026-08-22-single-dsh-application-launcher.md)、[`2026-08-25-electron-desktop-packaging-and-updates`](../../../.agents/notes/implemented/architecture/2026-08-25-electron-desktop-packaging-and-updates.md)。
 
 ## launcher 的父选项归属
 

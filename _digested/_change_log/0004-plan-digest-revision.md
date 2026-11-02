@@ -15,7 +15,7 @@
 | `_coverage/00-index.md` | 全部标记 "需复核" | 小幅 | 八行全部改为需复核，基线更新 |
 | `system-overview/` | **改** + **扩** | 中幅 | 扩展表追加 webhook、API Remote、Application Launch 规则 |
 | `cordis-runtime/` | **改** + **扩** | 中幅 | vendor 4.0.2 Loader fromInternal 改进 |
-| `composition-boot/` | **改** | 中幅 | sdk/acp 变 launcher profile、agent-team profiles 新增 |
+| `plugin-system/composition/` | **改** | 中幅 | sdk/acp 变 launcher profile、agent-team profiles 新增 |
 | `runtime-profiles/` | **改（大幅重写）** | 大幅 | 核心变化：old "独立 bin vs launcher profile" 二分法瓦解 |
 | `session-and-loop/` | **改** | 中幅 | JSONL-only、projection 必须化、ignorable 来回、ToolCallId 重命名 |
 | `agent-loop/` | **改（初判有误）** | 中幅 | 源码 +120/-26 行：turnBoundary projection、startsRequestSeries |
@@ -51,7 +51,7 @@
 - [x] 00-map.md：vendor 4.0.2 升级标注
 - [x] 04-vendor-本地修改.md：新增 `fromInternal` 改进章节（不再按 Node 版本猜 API）
 
-### 6. `composition-boot/`
+### 6. `plugin-system/composition/`
 - [x] 00-map.md：sdk/acp 变 launcher profile 描述
 - [x] 00-map.md：`PROFILE_TEMPLATES` 示例扩展到 5 个
 - [x] 00-map.md：新增 `dsh-sdk-app`、`dsh-sdk-minimal`、`dsh-acp-app`、`agent-team-profile` 入口

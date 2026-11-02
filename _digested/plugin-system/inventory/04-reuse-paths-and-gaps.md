@@ -10,9 +10,9 @@
 2. **溢出与裁剪策略**：`spill-policy.maxInlineTokens`（base:417）与 `compaction-tool-result-pruner` 的 thresholdChars / headChars / tailChars（base:428）都是字段，不是代码常量。
 3. **权限档位**：`DSH_PERMISSION_MODE` 一个环境变量联动 `sandbox-policy.mode`（base:243-248）与 `approval.policy`（base:259-262），三档预设表在 permission-presets（base:264-277）。
 
-字段全集查生成目录 [`docs/config-catalog.md`](../../docs/config-catalog.md)（152 包有 config 条目、124 个有可调字段）。
+字段全集查生成目录 [`docs/config-catalog.md`](../../../docs/config-catalog.md)（152 包有 config 条目、124 个有可调字段）。
 
-**改配置的三种位置**（新人最容易卡在「改哪里」）：Web 设置页与环境变量（如 `DSH_PERMISSION_MODE`）适合交互式调整；profile 的 `cordis.patch.yml` 或用户 patch 适合部署级持久化（层叠与热重载机制见 [`../composition-boot/03-user-patch-hmr.md`](../composition-boot/03-user-patch-hmr.md)）；`dsh --patch` 覆盖层适合临时试验（例子 `apps/web/tests/pin-browse-picker.overlay.yml:7-13`）。
+**改配置的三种位置**（新人最容易卡在「改哪里」）：Web 设置页与环境变量（如 `DSH_PERMISSION_MODE`）适合交互式调整；profile 的 `cordis.patch.yml` 或用户 patch 适合部署级持久化（层叠与热重载机制见 [`../composition/03-user-patch-hmr.md`](../composition/03-user-patch-hmr.md)）；`dsh --patch` 覆盖层适合临时试验（例子 `apps/web/tests/pin-browse-picker.overlay.yml:7-13`）。
 
 ## 出路二：patch 换 Provider（模型可见面不变）
 
@@ -21,7 +21,7 @@
 3. **`--patch` 覆盖**：`apps/web/tests/pin-browse-picker.overlay.yml:7-13` 的 disable＋insert 对换目录挑选后端。
 4. **OPTIONAL_BUNDLES 一键开**：十二个实验 bundle 在 Web 插件页（或 `plugin_manager` 工具）开关，无需改文件（profile.ts:223-236）；`tool-ralph` 与 `tool-terminal`、`tool-session-query`、`tool-worktree` 的打开方式都是各自 bundle，base 层不再有注释示例。
 
-机制（为什么换 Provider 不用改 Consumer）归 [`capability-seams/`](../capability-seams/00-map.md)。
+机制（为什么换 Provider 不用改 Consumer）归 [`capability-seams/`](../../capability-seams/00-map.md)。
 
 ## 出路三：挂现成包
 
@@ -31,7 +31,7 @@
 
 最小 shipped 样本是 `@deepseek-ai/dsh-tool-present`（109 行，packages/deliverables/tool-present/src/index.ts）：`inject = ['tools', 'fs', 'sessionProjections', 'workingDirectory']`（:27），apply 里 `ctx.tools.register(defineTool({...}))` 注册 `present`（:39），文件解析、每会话交付状态与执行目录分别白拿 `ctx.fs`、`ctx.sessionProjections` 与 `ctx.workingDirectory`。一个功能插件＝name / Config / inject / apply 四件套（packages/AGENTS.md 的「Plugin exports」节），服务全部现成。
 
-两点核查纪律：生成表 `docs/capability-seams.md` 的消费者列对 agent 作用域注册的工具插件不完备（tool-present 不在 `ctx.tools` 消费者行里），以源码 `inject` 与 config-catalog 各节的 `inject` 行为准；插件的最小合同与发布纪律归 [`_dsh_plugin_agent_ready_development/repo-harness/09`](../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md)。
+两点核查纪律：生成表 `docs/capability-seams.md` 的消费者列对 agent 作用域注册的工具插件不完备（tool-present 不在 `ctx.tools` 消费者行里），以源码 `inject` 与 config-catalog 各节的 `inject` 行为准；插件的最小合同与发布纪律归 [`_dsh_plugin_agent_ready_development/repo-harness/09`](../../../_dsh_plugin_agent_ready_development/repo-harness/09-plugin-author-entry.md)。
 
 ## 缺口清单：这些现在必须自写
 
@@ -45,4 +45,4 @@
 | 第三家 LLM adapter | `ctx.llm` 的稳定实现只有 llm-deepseek 与休眠的 llm-pi-ai；第三家要么写 pi-ai settings profiles，要么自写 adapter | :630；base:128-136 |
 | 语音识别后端 | 唯一实现是实验性 SenseVoice（本地 ONNX）；接云端 ASR 要自写 Provider | :697 |
 
-写之前再对照两条：[`capability-seams/00-map`](../capability-seams/00-map.md) 的三角色分装纪律（Definition / Provider / Consumer 怎么拆包），与 [`_faq_on_digested/09`](../../_faq_on_digested/09_plugin-business-ladder/answer.md) 的自用价值判断（哪类插件对自用 owner 最值）。
+写之前再对照两条：[`capability-seams/00-map`](../../capability-seams/00-map.md) 的三角色分装纪律（Definition / Provider / Consumer 怎么拆包），与 [`_faq_on_digested/09`](../../../_faq_on_digested/09_plugin-business-ladder/answer.md) 的自用价值判断（哪类插件对自用 owner 最值）。

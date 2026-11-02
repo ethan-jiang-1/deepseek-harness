@@ -4,7 +4,7 @@
 
 ## 计划时（写代码之前）
 
-1. **先查货架**（[`plugin-inventory/00`](../plugin-inventory/00-map.md)）：能力是否已有现货；你的插件属于哪一形态（工具 / 命令 / 服务 / guard / toolview / provider…）。
+1. **先查货架**（[`plugin-system/inventory/00`](../plugin-system/inventory/00-map.md)）：能力是否已有现货；你的插件属于哪一形态（工具 / 命令 / 服务 / guard / toolview / provider…）。
 2. **点名测试面**：这个插件会动 model-visible 面吗（新工具、新 system prompt 注入、新投影事件）？会发布 `bin` 或 built 消费入口吗？——每个"会"都对应下表的一个台阶，在 PR 描述里写清。
 3. **缺快照基建要同 PR 补**：若你的插件需要现有 harness 不支持的录制/回放能力（新平台变体、新 sidecar 类型），支持代码与功能同一 PR 交付。
 

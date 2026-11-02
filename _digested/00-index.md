@@ -8,7 +8,7 @@
 
 ## 30 秒看懂
 
-dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、跑命令、接模型、画 Web 界面，都是树上的插件。本目录按这棵树的主轴切专题，每个专题看它的一个面——所以「插件」不是某个目录的主题，而是所有目录的底座。三个例外：`capability-seams/` 讲同一个能力有多个插件实现时怎么换实现而不改调用方（插件的竞聘位），`plugin-inventory/` 讲动手写之前先看现成插件给了什么（插件的货架），`plugin-lifecycle/` 讲一个包怎么变成活插件、又怎么被更新和移除（插件的交付与退役）。
+dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、跑命令、接模型、画 Web 界面，都是树上的插件。本目录按这棵树的主轴切专题，每个专题看它的一个面——所以「插件」不是某个目录的主题，而是所有目录的底座。两个例外：`capability-seams/` 讲同一个能力有多个插件实现时怎么换实现而不改调用方（插件的竞聘位）；`plugin-system/` 把「插件」当成主题本身，分三个轴讲透——有什么（inventory）、怎么变成活树（composition）、怎么走完一生（lifecycle）。
 
 `_digested/` 面向已熟悉 agent harness / plugin 运行时，但尚未建立 DeepSeek Harness 概念体系的读者。这里先抓住思想主轴，再进入源码机制——而不是把 `packages/` 目录平铺成分类货架。
 
@@ -44,14 +44,12 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 |------|------|--------|
 | `system-overview/` | 总体系统专题 | 按下回车之后，这些插件怎么拼成一次能跑的对话——先读这。 |
 | `cordis-runtime/` | 被 vendor 的框架 | 插件框架本体：插件长什么样、`ctx` 从哪来、事件怎么派发。 |
-| `composition-boot/` | 启动组合 | 开机那一下：配置文件怎么变成一棵运行中的插件树（profile、bundle、patch 三层）。 |
-| `plugin-lifecycle/` | 从打包到卸载 | 一个插件走完的七段：打包、分发、安装、启动、一次性初始化、更新启停、卸载——以及每段结尾那个不可逆边界。 |
 | `runtime-profiles/` | 运行时配置 | 五种官方启动方式（web / headless / sdk / sdk-minimal / acp）各自带哪些插件、差在哪。 |
 | `session-and-loop/` | 会话与驱动 | 对话存在哪、怎么读回来：session log 的格式、世代与投影。 |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
 | `orchestration-ladder/` | 工作编排原语阶梯 | 从驾驶座视角：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个、怎么组合。 |
 | `capability-seams/` | 可替换能力 | 同一个能力（读文件、跑命令……）有多个插件实现时，怎么换实现而不改调用方——插件的竞聘位。 |
-| `plugin-inventory/` | 现成插件货架 | 343 个包按组列成清单：能力在哪、以什么形态给、怎么拿——动手写之前先查这里。 |
+| `plugin-system/` | 插件系统（三轴） | 插件系统的三个面：`composition/` 怎么叠成活树、`lifecycle/` 从打包到卸载的七段、`inventory/` 343 个包按组列成清单。动手写、要交付、或查「装了为什么没生效」都从这里进。 |
 | `experimental/` | 可选能力与原型 | 已评估但未承诺产品支持的能力（47 包）。**实验身份与「可选交付」相互独立**：可选包收编进本组，而非 experimental 的包才需要产品用途或显式分类（`scripts/product-package-policy.ts`）。 |
 | `tools-prompt-llm/` | 模型可见面 | 模型每一步看见什么：工具清单、系统提示词、历史投影怎么组装。 |
 | `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、Web、桌面、ACP、SDK 五个入口怎么复用同一台运行时。 |
@@ -85,13 +83,11 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **熟悉 agent / plugin 运行时，但不熟 dsh** → [`system-overview/00-map.md`](./system-overview/00-map.md)
 - **想先搞懂 Cordis 在这棵树里到底是什么** → [`cordis-runtime/00-map.md`](./cordis-runtime/00-map.md)，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
 - **想搞懂 `dsh --profile web` 怎么变成进程的** → [`runtime-profiles/00-map.md`](./runtime-profiles/00-map.md)
-- **想搞懂一次 `dsh --profile web` 怎么变成插件树** → [`composition-boot/00-map.md`](./composition-boot/00-map.md)
-- **想搞懂一个插件从打包、安装、更新到卸载要走哪几步、哪一步不可逆** → [`plugin-lifecycle/00-map.md`](./plugin-lifecycle/00-map.md)
+- **想搞懂插件系统本身（怎么成树、怎么走完一生、现成有什么）** → [`plugin-system/00-map.md`](./plugin-system/00-map.md)
 - **想搞懂一轮对话怎么跑** → [`session-and-loop/00-map.md`](./session-and-loop/00-map.md)
 - **想搞懂 DSH 给了哪些工作编排原语、什么时候用哪个** → [`orchestration-ladder/00-map.md`](./orchestration-ladder/00-map.md)
 - **想搞懂磁盘上的 session 文件怎么跨格式世代读** → [`session-and-loop/04-格式世代与迁移.md`](./session-and-loop/04-格式世代与迁移.md)
 - **想加能力或换后端** → [`capability-seams/00-map.md`](./capability-seams/00-map.md)
-- **想先看 dsh 已经给了什么再动手** → [`plugin-inventory/00-map.md`](./plugin-inventory/00-map.md)
 - **想研究实验与可选能力** → [`experimental/00-map.md`](./experimental/00-map.md)
 - **想搞懂模型看见什么** → [`tools-prompt-llm/00-map.md`](./tools-prompt-llm/00-map.md)
 - **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → [`surfaces-entrypoints/00-map.md`](./surfaces-entrypoints/00-map.md)
@@ -105,8 +101,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 ```text
 system-overview/
   → cordis-runtime/
-  → composition-boot/
-  → plugin-lifecycle/
+  → plugin-system/
   → session-and-loop/
   → capability-seams/ 或 tools-prompt-llm/
   → surfaces-entrypoints/

@@ -23,19 +23,19 @@
 
 | # | 段 | 这一段结束后不可逆的东西 | 正文 | 深挖入口（机制在别的专题） |
 |---|----|--------------------------|------|------------------------------|
-| ① | **打包** | 包发布后 `name@version` 固定，作者改不了用户机器上的那一份 | [`01-打包.md`](./01-打包.md) | [`plugin-inventory/05`](../plugin-inventory/05-taxonomy-and-design.md) 的形态分类 |
+| ① | **打包** | 包发布后 `name@version` 固定，作者改不了用户机器上的那一份 | [`01-打包.md`](./01-打包.md) | [`plugin-inventory/05`](../inventory/05-taxonomy-and-design.md) 的形态分类 |
 | ② | **分发** | 包已在机器上，但还没有任何 profile 引用它 | [`02-分发.md`](./02-分发.md) | — |
-| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-安装.md`](./03-安装.md) | [`cordis-runtime/01`](../cordis-runtime/01-五条原语对照源码.md) 的 fiber 与 inject |
-| ④ | **启动** | 行被挂进活树，`ctx` 服务开始对外提供 | [`04-启动.md`](./04-启动.md) | [`composition-boot/05`](../composition-boot/05-启动窗口与首屏交接.md) 的启动窗口与首屏交接 |
-| ⑤ | **特殊初始化** | 只跑一次的导入或版本戳写入完成，旧状态被改名、被接受或被拒绝 | [`05-特殊初始化.md`](./05-特殊初始化.md) | [`session-and-loop/04`](../session-and-loop/04-格式世代与迁移.md) 的格式世代 |
-| ⑥ | **更新与启停** | 选择列表顺序改变，配置优先级随之改变 | [`06-更新与启停.md`](./06-更新与启停.md) | [`composition-boot/03`](../composition-boot/03-user-patch-hmr.md) 的 HMR 事务 |
+| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-安装.md`](./03-安装.md) | [`cordis-runtime/01`](../../cordis-runtime/01-五条原语对照源码.md) 的 fiber 与 inject |
+| ④ | **启动** | 行被挂进活树，`ctx` 服务开始对外提供 | [`04-启动.md`](./04-启动.md) | [`composition-boot/05`](../composition/05-启动窗口与首屏交接.md) 的启动窗口与首屏交接 |
+| ⑤ | **特殊初始化** | 只跑一次的导入或版本戳写入完成，旧状态被改名、被接受或被拒绝 | [`05-特殊初始化.md`](./05-特殊初始化.md) | [`session-and-loop/04`](../../session-and-loop/04-格式世代与迁移.md) 的格式世代 |
+| ⑥ | **更新与启停** | 选择列表顺序改变，配置优先级随之改变 | [`06-更新与启停.md`](./06-更新与启停.md) | [`composition-boot/03`](../composition/03-user-patch-hmr.md) 的 HMR 事务 |
 | ⑦ | **卸载** | 代码与 patch 层消失，数据留下 | [`07-卸载与数据留存.md`](./07-卸载与数据留存.md) | — |
 
 这张表是**时间轴**；「深挖入口」一列是**结构轴**上的专题。两者不合并：时间轴回答「什么时候做什么」，结构轴回答「它到底怎么实现」。当某一段的机制正文超过三页时，那一段才值得在 `plugin-lifecycle/` 下开子目录；在那之前，深挖留在原专题，避免把两种轴混成一个目录。
 
 ⑤ 是唯一与 ④ 交织的一段：profile 首建发生在 boot 之前，`settings.yaml` 导入在 Loader 结算之后，desktop 的运行树校验在 Host 起来之前。表里的顺序是**逻辑顺序**，不是时间顺序——每一段在自己的时点触发，只是它们共享同一条「只跑一次」的判据。
 
-这条切法与仓库自己的两条纪律同源：把正确性写进结构（显式生命周期、显式条件）而不是事后补偿，以及一个事实只有一个家（[`docs/defensive-patterns/README.md`](../../docs/defensive-patterns/README.md) 的五条习惯）。前一条解释了为什么每一段都有可判定的边界，后一条解释了本专题为什么要存在。
+这条切法与仓库自己的两条纪律同源：把正确性写进结构（显式生命周期、显式条件）而不是事后补偿，以及一个事实只有一个家（[`docs/defensive-patterns/README.md`](../../../docs/defensive-patterns/README.md) 的五条习惯）。前一条解释了为什么每一段都有可判定的边界，后一条解释了本专题为什么要存在。
 
 一条贯穿全部七段的判据（本专题的归纳，不是某份文档的原话）：**DSH 只在它拥有所有权的边界上做准入与撤销**。版本门在写依赖之前拒绝（③），行不合法就在挂树前拒绝（④），运行中的替代靠 effect 撤销（④），代码移除不动数据（⑦）。越过这些边界的后果由插件自己承担。
 
@@ -69,15 +69,15 @@
 
 | 问题 | 去哪 |
 |------|------|
-| fiber 状态机、effect 撤销顺序、waterfall 合同 | [`cordis-runtime/`](../cordis-runtime/00-map.md) |
-| 配置层顺序、dump 保真、patch 算法 | [`composition-boot/`](../composition-boot/00-map.md) |
-| 每个 profile 出厂带哪些插件 | [`runtime-profiles/`](../runtime-profiles/00-map.md) |
-| 现成插件有什么、能不能直接复用 | [`plugin-inventory/`](../plugin-inventory/00-map.md) |
-| 一个能力怎么换实现而不改调用方 | [`capability-seams/`](../capability-seams/00-map.md) |
-| 插件作者要交什么测试证据 | [`test-strategy/08`](../test-strategy/08-plugin-testing.md) · [`09`](../test-strategy/09-plugin-testing-playbook.md) · [`10`](../test-strategy/10-plugin-testing-checklist.md) |
+| fiber 状态机、effect 撤销顺序、waterfall 合同 | [`cordis-runtime/`](../../cordis-runtime/00-map.md) |
+| 配置层顺序、dump 保真、patch 算法 | [`composition-boot/`](../composition/00-map.md) |
+| 每个 profile 出厂带哪些插件 | [`runtime-profiles/`](../../runtime-profiles/00-map.md) |
+| 现成插件有什么、能不能直接复用 | [`plugin-inventory/`](../inventory/00-map.md) |
+| 一个能力怎么换实现而不改调用方 | [`capability-seams/`](../../capability-seams/00-map.md) |
+| 插件作者要交什么测试证据 | [`test-strategy/08`](../../test-strategy/08-plugin-testing.md) · [`09`](../../test-strategy/09-plugin-testing-playbook.md) · [`10`](../../test-strategy/10-plugin-testing-checklist.md) |
 | **装 / 更 / 卸 / 首启的机制与失败语义** | **本专题** |
 
-本专题不重写配置层顺序与 dump 保真，只链接 [`composition-boot/`](../composition-boot/00-map.md)；不重写 fiber 状态机，只链接 [`cordis-runtime/01`](../cordis-runtime/01-五条原语对照源码.md)。
+本专题不重写配置层顺序与 dump 保真，只链接 [`composition-boot/`](../composition/00-map.md)；不重写 fiber 状态机，只链接 [`cordis-runtime/01`](../../cordis-runtime/01-五条原语对照源码.md)。
 
 ## 阅读路径
 
@@ -101,5 +101,5 @@
 | `packages/boot/plugin-manager/src/index.ts` | `listBundles` / `installBundle` / `removeBundle` / `setBundleEnabled` |
 | `apps/cli/src/plugin.ts` | `dsh plugin`：初始化 profile、跑 pnpm、按已安装状态对账 bundles |
 | `apps/desktop/src/project-manager.ts` | desktop profile 准备与原生恢复（`sanitizeProfile`） |
-| [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md) | profile 机器合同与启动/重载失败表 |
-| [`packages/boot/plugin-manager/README.md`](../../packages/boot/plugin-manager/README.md) | 安装、更新、移除的操作语义与失败表 |
+| [`packages/boot/app-boot/README.md`](../../../packages/boot/app-boot/README.md) | profile 机器合同与启动/重载失败表 |
+| [`packages/boot/plugin-manager/README.md`](../../../packages/boot/plugin-manager/README.md) | 安装、更新、移除的操作语义与失败表 |

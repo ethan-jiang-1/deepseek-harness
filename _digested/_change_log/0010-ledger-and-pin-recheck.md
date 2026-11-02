@@ -6,7 +6,7 @@
 
 ## 方法论发现（本轮最重要产出）
 
-1. **无引文的行号区间钉（`path:N` / `path:N-M`）是 ref-sweep 的盲区**：`--quotes` 只核对显式引文与越界，钉在文件行数以内但指错位置的钉全部漏网。本轮实证约 60 处此类漂移（composition-boot/00-map 的钉甚至是 0.1.5-rc.1 旧值、与其自称基线都不符；agent.ts 在 0009 跨度内 +55 行导致 agent-loop 一整簇漂移），全部人工重锚。后续轮次应把「承重钉抽样实证」固化为每轮必做动作。
+1. **无引文的行号区间钉（`path:N` / `path:N-M`）是 ref-sweep 的盲区**：`--quotes` 只核对显式引文与越界，钉在文件行数以内但指错位置的钉全部漏网。本轮实证约 60 处此类漂移（plugin-system/composition/00-map 的钉甚至是 0.1.5-rc.1 旧值、与其自称基线都不符；agent.ts 在 0009 跨度内 +55 行导致 agent-loop 一整簇漂移），全部人工重锚。后续轮次应把「承重钉抽样实证」固化为每轮必做动作。
 2. **02 图鉴的 basename 复核命令有假阴性**：包名在他行出现即漏报——sdk/、acp/ 两组曾借此整组漏节（4 包零落点），本页复核命令已补警示（见 02 尾注）。
 3. **ref-sweep 引文漂移候选三态分流后全部为误报或历史引用**：±1 行容差内的钉（verify-client-packages 三段）、引文归属错钉（tools-prompt-llm/06 的 content.ts:199 与 index.ts:1065 双钉实为各自正确）、引文出自归档 note 且页面自带过期声明（harness-idea/05）。
 
@@ -14,10 +14,10 @@
 
 | 文件 | 修复 |
 |---|---|
-| `composition-boot/00-map.md` | 页头基线升 `0.2.0-rc.2`、增量指针 0007→0009；PROFILE_TEMPLATES `:158-174`→`:179-195`；tool-web `:450-454`→`:486-490`、disable 注释 `:425-435`→`:461-463`；代理放行 `:126/:168-169`→`:132/:165/:208-209` |
-| `composition-boot/01-boot-时序.md` | proxy 调用 `:242-250`→`:249-252`、dispose `:254-256`→`:256-260`；appReady `:315`→`:317`；removeLinkProjections `:240-258`→`:275-283`；createRuntimeResolution `:406-439`→`:431-464`；BOOTSTRAP/白名单 `:130/:163/:207`→`:132/:165/:208-209` |
-| `composition-boot/03-user-patch-hmr.md` | appReady 三连 `:266/:308/:315`→`:268/:310/:317`；desktop-host ready `:82`→`:104`；config-editor `:141`→`:153`；emit `:298`→`:300` |
-| `composition-boot/04-profile-创建与保留名.md` | `--from-default-profile` `:168`→`:169`；initProfile `:141`→`:139`；prepareProfile `:166`→`:167`、composeProfile 路径 `:201`→`:203`；根 action `:182`→`:183`；plugin 子命令 `:194`→`:195`；positional 展开 `:201-206`→`:202-204` |
+| `plugin-system/composition/00-map.md` | 页头基线升 `0.2.0-rc.2`、增量指针 0007→0009；PROFILE_TEMPLATES `:158-174`→`:179-195`；tool-web `:450-454`→`:486-490`、disable 注释 `:425-435`→`:461-463`；代理放行 `:126/:168-169`→`:132/:165/:208-209` |
+| `plugin-system/composition/01-boot-时序.md` | proxy 调用 `:242-250`→`:249-252`、dispose `:254-256`→`:256-260`；appReady `:315`→`:317`；removeLinkProjections `:240-258`→`:275-283`；createRuntimeResolution `:406-439`→`:431-464`；BOOTSTRAP/白名单 `:130/:163/:207`→`:132/:165/:208-209` |
+| `plugin-system/composition/03-user-patch-hmr.md` | appReady 三连 `:266/:308/:315`→`:268/:310/:317`；desktop-host ready `:82`→`:104`；config-editor `:141`→`:153`；emit `:298`→`:300` |
+| `plugin-system/composition/04-profile-创建与保留名.md` | `--from-default-profile` `:168`→`:169`；initProfile `:141`→`:139`；prepareProfile `:166`→`:167`、composeProfile 路径 `:201`→`:203`；根 action `:182`→`:183`；plugin 子命令 `:194`→`:195`；positional 展开 `:201-206`→`:202-204` |
 | `session-and-loop/`（00/01/02/03/04） | 00-map 基线升 rc.2＋指针 0009；JSONL 簇 6 钉、gen-catalog 5 钉、invariant、buildCell、runtime-types、inbox.spec 等全部重锚；新增 `user-question-reply` 与 timed waits 两个落点段（C1/C2，口径＝加生产者 kind 不加事件类型、不 bump v4） |
 | `agent-loop/`（01/02/03/04） | goal 注册/解析/resume、agent.ts status/turn/step/kick 全簇、closers、四层关停表、initiator 三 API（含声明顺序改正 327/295/342）、continuation-activation 等 30+ 钉重锚 |
 | `tools-prompt-llm/02、04` | agent.ts `413-415`→`:414` |
@@ -29,9 +29,9 @@
 | `system-overview/03-门禁与性能基准.md` | `verify-vendored-links`（d225dbba50 退役）移出 leaf 族；`verify-cordis-api` 改注独立 check 脚本（未注册进 run-gates） |
 | `experimental/00-map.md` | auto-review 触发钉 `:657/:660`→`:691/:723` |
 | `experimental/01-code-runtime-python.md` | headless 改「经 base 继承 worker 后端」（base:390-391，rc.1 起 headless patch 无此行）；devDeps 钉 `:116`→`:117`、并列说法「三个包」→「两个包相邻」 |
-| `plugin-inventory/01-capability-tour.md` | 术语形态表补 bundle |
-| `plugin-inventory/02-plugin-catalog.md` | **补 acp/（1 包）与 sdk/（3 包）两节**（dsh-acp、dsh-sdk-client、dsh-sdk-protocol、dsh-sdk-jsonrpc-server 此前零落点）；形态图例补 bundle/驱动；覆盖复核命令补 basename 假阴性警示 |
-| `plugin-inventory/03-reference-lists.md` | ctx.subprocess P 1→2（subprocess-local＋ssh/subprocess-ssh），行移入 P=2 区块（同页 ctx.fs/ctx.sandbox 均计 ssh，唯此行漏计） |
+| `plugin-system/inventory/01-capability-tour.md` | 术语形态表补 bundle |
+| `plugin-system/inventory/02-plugin-catalog.md` | **补 acp/（1 包）与 sdk/（3 包）两节**（dsh-acp、dsh-sdk-client、dsh-sdk-protocol、dsh-sdk-jsonrpc-server 此前零落点）；形态图例补 bundle/驱动；覆盖复核命令补 basename 假阴性警示 |
+| `plugin-system/inventory/03-reference-lists.md` | ctx.subprocess P 1→2（subprocess-local＋ssh/subprocess-ssh），行移入 P=2 区块（同页 ctx.fs/ctx.sandbox 均计 ssh，唯此行漏计） |
 | `sdlc-reference/11-release.md` ＋ `_coverage/00-corpus-maintenance.md:120` | release 间隔回归 **19–41 分钟**（0010 重测 23m48s/40m34s/19m27s），删除「19 来自 release-commit 端点」的不可复现归因 |
 
 ## 三态分诊（未改动项）
