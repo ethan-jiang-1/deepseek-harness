@@ -1,6 +1,6 @@
 # desktop — Electron 应用自有 profile
 
-产品源码基线：`687f282e86`（`dsh-v0.2.1-rc.2`）；上一消化基线 `46a7f68b09`（`dsh-v0.1.7-rc.1`），增量见 [`_change_log/0011`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
+产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`）；上一消化基线 `687f282e86`（`dsh-v0.2.1-rc.2`），`rc.2` → `rc.3` 的增量见 [`_change_log/0012`](../_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md)，`rc.3` → `rc.5` 见 [`0013`](../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)。
 
 ## 一句话
 
@@ -9,9 +9,9 @@
 ## 归属：保留名 + 独占目录
 
 - profile 目录与锁：`$DSH_HOME/profiles/desktop` 及其下的 `lock`（`apps/desktop/src/paths.ts:17-21`）。`DesktopProjectManager.withLock` 持有该锁完成全部 profile 写事务，并回收陈旧进程留下的死锁文件（`apps/desktop/src/project-manager.ts:93-130`）。
-- 组合起点：`WEB_PROFILE = PROFILE_TEMPLATES.web`，desktop profile 的 `dsh.profile.bundles` 就是 web 那两个 bundle（`apps/desktop/src/project-manager.ts:32`，经 `initProfile` 写入 manifest：`:142`、`:167`、`:175`；模板定义 `packages/boot/app-boot/src/profile.ts:179-195`）。用户插件由主窗口 Plugins 页经共享 Web Plugin Manager 追加进同一 manifest（`apps/desktop/README.md:80`）。
-- 生产 runtime 由签名应用自带：`resources/app.asar/dsh` 携带完整生产依赖树，core 包不复制进 profile 存储、首启不跑 pnpm（`apps/desktop/README.md:76`、`:77`、`:119`）。
-- CLI 的 boot / dump / `plugin` 三条入口一律拒绝这个名字：`rejectElectronProfile`（`apps/cli/src/args.ts:83-87`，错误文案 `:85`），调用点在根命令 action（`:183`，一次覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`）与 `plugin` 子命令（`:199`）。`desktop` 也**不是** `PROFILE_TEMPLATES` 成员（`packages/boot/app-boot/src/profile.ts:179-195`），所以 `--from-default-profile desktop` 以「unknown default profile」被拒（`apps/cli/src/profile-boot.ts:117-122`）。
+- 组合起点：`WEB_PROFILE = PROFILE_TEMPLATES.web`，desktop profile 的 `dsh.profile.bundles` 就是 web 那两个 bundle（`apps/desktop/src/project-manager.ts:32`；manifest 在 `:142`、`:167` 直接写入，`:175` 经 `initProfile`；模板定义 `packages/boot/app-boot/src/profile.ts:179-195`）。用户插件由主窗口 Plugins 页经共享 Web Plugin Manager 追加进同一 manifest（`apps/desktop/README.md:168`）。
+- 生产 runtime 由签名应用自带：`resources/app.asar/dsh` 携带完整生产依赖树，core 包不复制进 profile 存储、首启不跑 pnpm（`apps/desktop/README.md:117`、`:166`）。
+- CLI 的 boot / dump 入口一律拒绝这个名字；`plugin` 子命令默认也拒绝，只有 Desktop 自带 CLI 以 `manageDesktopProfile: true` 放行（`apps/desktop-host/src/cli.ts:15-16`）：`rejectElectronProfile`（`apps/cli/src/args.ts:83-87`，错误文案 `:85`），调用点在根命令 action（`:183`，一次覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`）与 `plugin` 子命令（`:199`）。`desktop` 也**不是** `PROFILE_TEMPLATES` 成员（`packages/boot/app-boot/src/profile.ts:179-195`），所以 `--from-default-profile desktop` 以「unknown default profile」被拒（`apps/cli/src/profile-boot.ts:117-122`）。
 
 `docs/architecture.md` 把这条归属单独写在 `## Desktop application`（`:49-53`），`:53` 原文是「Desktop listens on an OS-assigned port by default; profile configuration can override it.」；`## Application launch`（`:41-47`）仍然只列 5 个 CLI profile、不计 Desktop。
 
@@ -32,7 +32,7 @@ const application = runProfile({
   ...
 ```
 
-`loadProfileDirectory(binName, dir, installAnchor)`（`packages/boot/app-boot/src/profile.ts:740-774`）接受一个**已初始化的绝对 profile 目录**：不经过 Harness home 发现、不做 shipped 归一化、不认 `PROFILE_TEMPLATES`；它只读该目录 manifest 的 `dsh.profile.bundles`，逐个把 bundle 解析成 patch 层，再读该目录自己的 `cordis.patch.yml` 作 user 层。bundle 的解析锚点是 installAnchor 优先、profile 目录其次（`resolveBundleDir`，`:630-640`）：`dsh-base` / `dsh-web-app` 解析进签名 runtime 树，外部插件解析进 profile 自己 pnpm 装的 `node_modules`。
+`loadProfileDirectory(binName, dir, installAnchor)`（`packages/boot/app-boot/src/profile.ts:740-774`）接受一个**已初始化的绝对 profile 目录**：不经过 Harness home 发现、不做 shipped 归一化、不认 `PROFILE_TEMPLATES`；它只读该目录 manifest 的 `dsh.profile.bundles`，逐个把 bundle 解析成 patch 层，再读该目录自己的 `cordis.patch.yml` 作 user 层。bundle 的解析锚点是 installAnchor 优先、profile 目录其次（`resolveBundleDir`，`:714-724`）：`dsh-base` / `dsh-web-app` 解析进签名 runtime 树，外部插件解析进 profile 自己 pnpm 装的 `node_modules`。
 
 `runProfile`（`apps/cli/src/profile-boot.ts:271-352`）正是为这类应用自有 profile 留的口：desktop 传入自己的 profile 与安装锚点（`apps/desktop-host/src/index.ts:27-28`）、`patchFiles: []`（`:29`），并把打包 pnpm 与 Electron Node 模式可执行交给 `packageManager`（`:31-41`，`ELECTRON_RUN_AS_NODE: '1'` 在 `:36`），只作用于插件包操作。`composeProfile` 对应用自有 profile 不做模板初始化，只重写空根配置、直接用已装载的 profile（`apps/cli/src/profile-boot.ts:230`）。
 
@@ -46,7 +46,7 @@ desktop 与 CLI 组合的三处差异：
 
 ```text
 Electron shell
-  → 取进程级单实例锁（apps/desktop/src/single-instance.ts:16-20；main.ts:1336）
+  → 取进程级单实例锁（apps/desktop/src/single-instance.ts:16-20；main.ts:1343）
   → 立即加载 dsh-app://app/ 的打包 Web 入口（共享加载页，等 Host 启动注入）
   → 校验 runtime 描述符 / 准备 profile（不跑 pnpm）
   → spawn Electron Node 模式子进程 @deepseek-ai/dsh-desktop-host
@@ -57,11 +57,11 @@ Electron shell
      → installProxyFromEnvironment（共享路径，见「与出网代理」）
      → boot：bundle 层 + profile user 层 + home 层 + 遥测开关
   → installDesktopUpdateTaskControl / ctx.plugin(desktopOffice) / installPlatformSessionPublisher
-  → url = ctx.connection.authenticatedUrl('http://127.0.0.1:' + webServer.port)
+  → url = ctx.connection.authenticatedUrl(`${ctx.webServer.protocol}//127.0.0.1:${ctx.webServer.port}`)
   → IPC ready {url, injections} → 壳换认证 cookie → dsh-app://app 请求转发到 Host
 ```
 
-壳侧准备不跑 pnpm：`applyRelease` 只校验 `desktop-runtime.json` 描述符、迁移 profile 的 pnpm 设置、`createPluginProfile`（`initProfile` 补齐缺失的 manifest / 空 user patch / pnpm workspace 文件）并摘除旧 link 后端写下的 `.dsh-module-fallback` 投影（`apps/desktop/src/project-manager.ts:83-91`、`:173-176`；`packages/boot/app-boot/src/profile.ts:219-238`、`:250`）。
+壳侧准备不跑 pnpm：`applyRelease` 只校验 `desktop-runtime.json` 描述符、迁移 profile 的 pnpm 设置、`createPluginProfile`（`:255-281` 的 `initProfile` 补齐缺失的 manifest / 空 user patch / pnpm workspace 文件）并摘除旧 link 后端写下的 `.dsh-module-fallback` 投影（`apps/desktop/src/project-manager.ts:83-91`、`:173-176`；`packages/boot/app-boot/src/profile.ts:283-301` 的 `removeLinkProjections`）。
 
 Node IPC 承载生命周期与控制（事件形状在 `apps/desktop/src/host-process.ts:8-37`，host 侧处理在 `apps/desktop-host/src/index.ts:48-90`）：
 
@@ -74,7 +74,7 @@ Node IPC 承载生命周期与控制（事件形状在 `apps/desktop/src/host-pr
 | `update-tasks` | 双向 | inspect / lock / unlock；lock 拒新请求（503）、排空已准入请求后检查运行中的 agent 与 job（`apps/desktop-host/src/update-tasks.ts:16-23`、`:28-62`） |
 | `platform-session` | host → 壳 | Platform 账户凭据，仅进主进程的 Platform 视图，不进渲染端（`apps/desktop-host/src/platform-session.ts:10-36`；壳侧校验 `apps/desktop/src/host-process.ts:20-23`、`:53-90`） |
 
-Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runtimeDir, source, root })`，`root` 固定为 `$DSH_HOME/dsh-runtimes/dsh-primary-runtime`（离线 Python / pnpm 载荷的安装根），`source` 是随包的 `office-skills` 资源目录（`apps/desktop-host/src/index.ts:95-99`；`office.ts:28-38`）。断连即停：`process.once('disconnect', stop)`（`apps/desktop-host/src/index.ts:91`）。
+Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runtimeDir, source, root })`，`root` 固定为 `$DSH_HOME/dsh-runtimes/dsh-primary-runtime`（离线 Python / pnpm 载荷的安装根），`source` 是随包的 runtime 载荷目录（`argv[4]` 或 `<runtimeDir>/../runtime/primary-runtime`），`office-skills` 取其同级（`apps/desktop-host/src/index.ts:95-99`；`office.ts:28-38`）。断连即停：`process.once('disconnect', stop)`（`apps/desktop-host/src/index.ts:91`）。
 
 ## 与 web profile 的关系
 
@@ -87,7 +87,7 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 | 端口 | `webserver` 绑 `127.0.0.1:3080`（`ctx.webStartup.port ?? 3080`） | 同一 `webserver` 行；host 以 `--host 127.0.0.1 --port 0` 启动，端口由 OS 分配后经 ready URL 交给壳；`webserver.config.port` patch 可覆盖（`docs/architecture.md:53`） |
 | 浏览器 | `web-startup` 解析 `--open`，`web-runtime` 打印 URL、可自动打开 | host 以 `--no-open` 启动；URL 走 IPC 交给壳，无浏览器启动 |
 | 目录选择 | `directory-picker` auto 行按主机事实解析 native / browse | 同一行共享；native 面的对话框由壳的窗口 IPC 承担（`apps/desktop/src/directory-picker.ts:10-30`） |
-| 运行时 patch 重载 | base bundle 的 `hmr` 行（有 `profileContext` 即挂载）监视 profile 与 home 两份 `cordis.patch.yml` 并 reconcile | 同左：desktop 也经 `runProfile`，`profileContext` 在场，同一 watcher 生效（`packages/bundle/base/cordis.patch.yml:28-32`；`packages/boot/hmr/src/index.ts:367-407`）。~~patchReload: live~~（0.1.7 线退役：patch 重载语义从 profile 文件机制改为 base bundle 的 `hmr` 行） |
+| 运行时 patch 重载 | base bundle 的 `hmr` 行（有 `profileContext` 即挂载）监视 profile 与 home 两份 `cordis.patch.yml` 并 reconcile | 同左：desktop 也经 `runProfile`，`profileContext` 在场，同一 watcher 生效（`packages/bundle/base/cordis.patch.yml:28-32`；`packages/boot/hmr/src/index.ts:925` 的 `reconcileProfile`）。~~patchReload: live~~（0.1.7 线退役：patch 重载语义从 profile 文件机制改为 base bundle 的 `hmr` 行） |
 | `agent-preset` | `agent-preset-registry`，`default: standard` | 同左（同一 bundle 层） |
 | client 图 | `packages/client/` 经 `window.__DSH_BOOT__` 注入 | 同一套：静态 dist 由壳从打包资源直接发出，`/plugins/` bundle 经 `dsh-app://app` 转发到 Host |
 
@@ -97,7 +97,7 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 
 ## 与出网代理：分歧已消除
 
-0.1.7 线之前的基线结论「desktop-host 不装代理、`.env` 代理对 desktop 不生效」已随 desktop-host 重构失效：host 调用的 `runProfile` 在第一个插件挂载前就 `installProxyFromEnvironment`（`apps/cli/src/profile-boot.ts:243-250`），shutdown 时还原（`:254-256`）。desktop 的环境快照同样来自 `loadLayeredEnv('dsh')`（`apps/desktop-host/src/index.ts:26`），所以 `$DSH_HOME/.env` 里豁免的四个代理名对 desktop 与 CLI 生效路径一致。note [`2026-08-27-outbound-proxy-policy`](../../.agents/notes/implemented/architecture/2026-08-27-outbound-proxy-policy.md) 的结论（`runProfile` 一处安装覆盖每个 profile）现在对 desktop 成立；其论据「`loadLayeredEnv` 只有一个调用者」已过时——现在有两个（`apps/cli/src/bin.ts:36`、`apps/desktop-host/src/index.ts:26`）。逐调用点证据见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/06-外发代理策略.md)。
+0.1.7 线之前的基线结论「desktop-host 不装代理、`.env` 代理对 desktop 不生效」已随 desktop-host 重构失效：host 调用的 `runProfile` 在第一个插件挂载前就 `installProxyFromEnvironment`（`apps/cli/src/profile-boot.ts:276-279`），shutdown 时还原（`:283-290`）。desktop 的环境快照同样来自 `loadLayeredEnv('dsh')`（`apps/desktop-host/src/index.ts:26`），所以 `$DSH_HOME/.env` 里豁免的四个代理名对 desktop 与 CLI 生效路径一致。note [`2026-08-27-outbound-proxy-policy`](../../.agents/notes/implemented/architecture/2026-08-27-outbound-proxy-policy.md) 的结论（`runProfile` 一处安装覆盖每个 profile）现在对 desktop 成立；其论据「`loadLayeredEnv` 只有一个调用者」已过时——现在有两个（`apps/cli/src/bin.ts:36`、`apps/desktop-host/src/index.ts:26`）。逐调用点证据见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/06-外发代理策略.md)。
 
 ## 源码入口
 

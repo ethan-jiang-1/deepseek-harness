@@ -30,7 +30,7 @@ acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）�
 
 JSONL 持久化（`session-persistence-jsonl`）、`session-checkpoint-policy`、`session-query-sqlite` 都在 `dsh-base`——acp-app 不自持，digest 旧版写的「effect 卸载顺序：先拆查询 → 检查点 → 持久化」那层不存在。
 
-**与 base 不一致的默认模型**：`acp` 行硬编码 `provider: deepseek-official` / `model: deepseek-v4-flash`（`packages/bundle/acp-app/cordis.patch.yml:19-20`），而 base 的 `agent-default-model` 用 `deepseek-flash`（`packages/bundle/base/cordis.patch.yml:94`）。0009 起目录语义有变：advisory catalog 收缩为两条目（`packages/llm/llm-deepseek/src/models.ts:8-23`：`deepseek-flash`（name `DeepSeek-V4.1-Flash`）与 `deepseek-v4-pro`），`deepseek-v4-flash` **不再是默认 catalog 条目**——acp 硬编码的 id 仍可用（未列 id 经 passthrough 作 text-only 路由提交，GUI 选择才要求 catalog 条目，`packages/llm/llm-deepseek/README.md:53`），但这不再是「目录内两个条目二选一」而是「catalog 条目 + passthrough id」的搭配；同一个仓库里两处默认值不统一，改模型目录时需同时看这两处。0012 起官方 endpoint 的 api-key route 默认跟随官方 listing，模型选择器的可选集合由当前 listing 决定，内建两条目只在 listing 不可用时兜底。
+**与 base 不一致的默认模型**：`acp` 行硬编码 `provider: deepseek-official` / `model: deepseek-v4-flash`（`packages/bundle/acp-app/cordis.patch.yml:19-20`），而 base 的 `agent-default-model` 用 `deepseek-flash`（`packages/bundle/base/cordis.patch.yml:94`）。advisory catalog 是两条目（`packages/llm/llm-deepseek/src/models.ts:8-23`：`deepseek-flash`（name `DeepSeek-V4.1-Flash`）与 `deepseek-v4-pro`），`deepseek-v4-flash` **不在默认 catalog 里**——acp 硬编码的 id 仍可用（未列 id 经 passthrough 作 text-only 路由提交，GUI 选择才要求 catalog 条目，`packages/llm/llm-deepseek/README.md:53`），所以这里是「catalog 条目 + passthrough id」的搭配；同一个仓库里两处默认值不统一，改模型目录时需同时看这两处。0012 起官方 endpoint 的 api-key route 默认跟随官方 listing，模型选择器的可选集合由当前 listing 决定，内建两条目只在 listing 不可用时兜底。
 
 ## 进程模型
 
@@ -39,7 +39,7 @@ dsh --profile acp
   → runProfile → composeProfile → boot()
   → acp-app 组合 apply
     → mount dsh-base → ACP transport 等
-  → ACP 插件经 @agentclientprotocol/sdk 接线 stdio：createAcpAgentApp + ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin))（`packages/acp/acp/src/index.ts:21-47` 导入、`:374-378` 接线）
+  → ACP 插件经 @agentclientprotocol/sdk 接线 stdio：createAcpAgentApp + ndJsonStream(Writable.toWeb(process.stdout), Readable.toWeb(process.stdin))（`packages/acp/acp/src/index.ts:21-47` 导入、`:377-382` 接线）
   → 等待客户端连接
   → initialize: 返回 protocolVersion、agentCapabilities（图像能力取决于精确 route）
   → session/new: 创建新鲜 agent（绝对 cwd）
@@ -56,12 +56,12 @@ dsh --profile acp
 ## 独特之处
 
 - **标准化协议**：ACP 是 Agent Client Protocol 标准实现，为跨平台 agent 互操作设计。
-- **只投递 committed 事实**：`session/update` 发的是已提交 `assistant/message` 的文本 / 图像块与 reasoning 块（`agent_message_chunk` / `agent_thought_chunk`）、已提交 `tool/call` 与 `tool/result` 的通用 tool 生命周期（`tool_call` / `tool_call_update`）、以及可用时的一条 `usage_update`（`packages/acp/acp/src/updates.ts:36`、`:54`、`:80`、`:98`）；raw provider delta、retry attempt、plan、title、todo、terminal 这类 DSH 展示面不上线。
+- **只投递 committed 事实**：`session/update` 发的是已提交 `assistant/message` 的文本 / 图像块与 reasoning 块（`agent_message_chunk` / `agent_thought_chunk`）、已提交 `tool/call` 与 `tool/result` 的通用 tool 生命周期（`tool_call` / `tool_call_update`）、以及可用时的一条 `usage_update`（`packages/acp/acp/src/updates.ts:36`、`:54`、`:80`、`:98`）；模型/适配器拓扑变化时另发一条 `config_option_update`（`index.ts:152-153` → `session.ts:214-237`，`:224`）。raw provider delta、retry attempt、plan、title、todo、terminal 这类 DSH 展示面不上线。
 - **每会话一个 in-flight prompt**：`session/prompt` 排他，不能同时有两个 prompt 互窜。
 - **图像处理**：支持 PNG / JPEG / WebP / GIF，inline base64 准入后丢弃，日志只留 attachment 引用。图像投递前再读并校验完整性。
 - **审批转发**：`approval/request` 事件转发为 `session/request_permission` 到客户端，客户端可自动答。
 - **startup-only 重载**：协议开始后不能在运行时重载 patch。
-- **stdout 是纯数据管道**：任何 stdout logger 都会污染 ACP 协议帧。rc.5 修的三条把判据说清楚了：一条诊断会不会破帧，不取决于它是警告还是信息，而取决于它写 `console` 的哪个方法——`console.info`/`console.log` 落 stdout，`console.warn`/`console.error` 落 stderr。`llm-deepseek-account` 的目录诊断原本用 `console.info`，而 `.info` 是**成功加载也会触发**的常规通道，所以它才是真正的泪点，现改为 `console.error`（`packages/llm/llm-deepseek-account/src/index.ts:57-58`，注释写明「including during successful catalog loads」）；`mcp-resources` 的资源列表诊断同样改走 logger；`mcp-client` 的 resources 列表则加了能力门，未声明 capability 时直接返回空页而不调 SDK——因为 SDK 的 fallback 会写 `console.debug`（详见 [`capability-seams/08`](../capability-seams/08-外部生态桥：MCP与hooks.md)）。回归见 `apps/cli/tests/profiles/acp/tests/stdout.expected.e2e.ts`。
+- **stdout 是纯数据管道**：任何 stdout logger 都会污染 ACP 协议帧。rc.5 修的两条把判据说清楚了：一条诊断会不会破帧，不取决于它是警告还是信息，而取决于它写 `console` 的哪个方法——`console.info`/`console.log` 落 stdout，`console.warn`/`console.error` 落 stderr。`llm-deepseek-account` 的目录诊断原本用 `console.info`，而 `.info` 是**成功加载也会触发**的常规通道，所以它才是真正的泪点，现改为 `console.error`（`packages/llm/llm-deepseek-account/src/index.ts:57-58`，注释写明「including during successful catalog loads」）；`mcp-client` 的 resources 列表则加了能力门，未声明 capability 时直接返回空页而不调 SDK——因为 SDK 的 fallback 会写 `console.debug`（详见 [`capability-seams/08`](../capability-seams/08-外部生态桥：MCP与hooks.md)）。回归见 `apps/cli/tests/profiles/acp/tests/stdout.expected.e2e.ts`。
 
 ## 源码入口
 

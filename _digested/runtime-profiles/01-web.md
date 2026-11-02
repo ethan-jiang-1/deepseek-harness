@@ -31,7 +31,7 @@ dsh --profile web --patch my.yml       # 叠加 patch
 | `system-prompt` | 设 persona prefix：`personaPrefix`（`You are a coding agent powered by the {{model}} model.`，`:17-20`）。0011 起 shipped 组合不再设 `personaSuffix`——loop 的内建 `{{cwd}}` 与目录从句一并退役，执行目录改由 `ctx.workingDirectory` 供给 |
 | `session-query-sqlite` | 设 `:memory:` + `openAt: never`（按需才开 SQLite） |
 | `tools` | 透传 `DSH_TOOLS_MODE` 环境变量 |
-| `tool-bash`, `tool-pwsh`, `tool-fs`, `tool-skill`, `tool-goal` 等 | **disable** 所有 model-facing 工具行——这些交给会话级 preset 挂载（0.1.7 线起由 bundle 携带的 preset patch 承担）。base 双开 `search`+`fetch`（#3382）后，`tool-web` 的语义是 host 行整行 disable、由 preset 按档位组合两工具（base patch 注释与行，`packages/bundle/base/cordis.patch.yml:454-466,486-490`）；shipped 各 preset 的 `tool-web` 均 `fetch: true`，可作对照 |
+| `tool-bash`, `tool-pwsh`, `tool-fs`, `tool-skill`, `tool-goal` 等 | **disable** 由会话级 preset 接管的 model-facing 工具行（0.1.7 线起由 bundle 携带的 preset patch 承担）；`working_directory` 是例外——base 的 `tool-working-directory` 行保留在 host 平面。base 双开 `search`+`fetch`（#3382）后，`tool-web` 的语义是 host 行整行 disable、由 preset 按档位组合两工具（base patch 注释与行，`packages/bundle/base/cordis.patch.yml:454-466,486-490`）；shipped 各 preset 的 `tool-web` 均 `fetch: true`，可作对照 |
 
 web-app 的 disable 名单里**没有** `tool-str-replace-editor`：它随 base 的那一行一起在**本次跨度（`a66e470204` → `183f08e9c6`）内**全仓下线（OLD 基线里 web-app 自己那行是 `disabled: true`，见 `a66e470204:packages/bundle/web-app/cordis.patch.yml:350-351`），该 disable 行也随之删除（删 1 个 disable 行、增 8 条 insert 行，insert 行 60 → 68）。
 
@@ -41,7 +41,7 @@ web-app 的 disable 名单里**没有** `tool-str-replace-editor`：它随 base 
 
 本节行号均指 `packages/bundle/web-app/cordis.patch.yml`（下文 `:N` 即该文件行号）：第一个 insert 块 90 行（`:44` 起）+ 第二个 insert 块 1 行 `agent-preset-registry`（`:590` 起）＝ 91 行；0009 时记的是 84+1＝85 行，更早的旧文记 18+5+44(+1)=68。0011 的差量是 5 条新行：`schedule`（`:139-140`）与 `ui-schedule`（`:398-399`）——Schedule 从可选实验 bundle 改为**直接进本组合**，`@deepseek-ai/dsh-experimental-schedule-bundle` 退役并进 `RETIRED_BUNDLES`；`harness-dev-context`（`:211-212`，Layer 2）；`ui-secret-mask`（`:388-389`，Layer 3）；`ui-deepseek-model-label-1017`（`:415-416`，Layer 3，temporary 徽标）。0012 的差量是 1 条新行：`entry-customization`（`:428-429`，前有 2 行注释），插在 `ui-agent-preset` 之后，使 `:425` 之后的 web-app 行号整体 +5。`ptc-runtime` 仍是 base 层行（`packages/bundle/base/cordis.patch.yml:397-398`）。
 
-**Layer 1 — 基础设施（25 条，`:45-167`）：**
+**Layer 1 — 基础设施（25 条，`:45-164`）：**
 `desktop-product-telemetry`（desktop 专属 OTel 遥测导出，非 desktop profile 整行 disabled，`:45-55`）、`product-analytics`（desktop 专属 client 产品分析，同上 disabled 条件，`:57-62`）、`subagent-model-selection-settings`（`:66-67`）、`message-feedback`（`:69-72`）、`session-log-download`（`/export` 命令加共享下载对话框，`:75-76`）、`open-in-app`（宿主侧应用解析，含 timeout config，`:81-86`）/ `ui-open-in-app`（浏览器半边，`:88-89`）、`workspace`（`:91-92`）、`session-reference`（`:94-95`）、`file-reference-local`（`:97-98`）、`session-stats`（`:102-103`）、`session-turn-outline`（`:107-108`）、`directory-picker`（`:113-114`）、`plugin-inventory`（`:117-118`）、`session-controller`（session 命令、冷读与 Typert Remote 实时控制，`:121-122`）/ `job-controller`（单个后台 job 的观察记录流，roster 搭其上的 session 控制流，`:126-127`）/ `terminal-controller`（`:130-131`）/ `workspace-files`（会话工作区内的有界读取、目录列举与 agent 写入变更流，`:132-133`）/ `schedule`（Schedule 服务主机行，0011 起随出厂组合直接挂载，`:139-140`）/ `ui-settings-account`（Typert Remote 上的配置面读写，settings-domain provider 缺席时报可操作错误，`:144-145`）/ `account-controller`（`:147-148`）/ `settings-controller`（`:150-151`）/ `workspace-controller`（Workspace 命令与 reconnect-safe 投影，`:154-155`）（Remote 控制器）、`cordis-host-runner`（`:157-158`）、`cordis-inspect-providers`（Host inspect providers 进程全局注册一次，各 preset 的 `tool-cordis` 行读取，`:163-164`）（storage / session-projection-cache / typert-gateway 等结构化存储与 RPC 网关基础设施在 `dsh-base`，非 web-app insert。）
 
 **Layer 2 — 传输层（6 条）：**
@@ -68,9 +68,9 @@ dsh --profile web
 
 ## 独特之处
 
-- **shipped 模板中唯一支持运行时 patch 重载的 Profile**：`hmr` 插件监视 profile patch 与包清单、`reconcileProfilePatches` 调和、新失败抛错回滚（`packages/boot/hmr/src/index.ts:388-407`；机制见 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)）。该「唯一」限 shipped 模板——base 行按 `profileContext` 门控，自定义 launcher profile 默认同样开启。
+- **shipped 模板中唯一支持运行时 patch 重载的 Profile**：`hmr` 插件监视 profile patch 与包清单，`HmrService.reconcileProfile()` 调 app-boot 的 `recomposeProfile` 完成重组合，新失败抛错回滚（`packages/boot/hmr/src/index.ts:925`、`packages/boot/app-boot/src/index.ts:307`；机制见 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)）。该「唯一」限 shipped 模板——base 行按 `profileContext` 门控，自定义 launcher profile 默认同样开启。
 - **CLI launcher profile 中唯一有 browser 侧的 Profile**：browser 半边（`packages/client/`）通过 `window.__DSH_BOOT__` 初始化，经 `dsh.client` 插件罗盘构造核。Electron desktop 复用**同一套** web 组合与匹配的 client 图（desktop-host 经 `runProfile` 起 `desktop` profile），但它不是 CLI launcher profile（[`06-desktop.md`](./06-desktop.md)）。
-- **CLI launcher profile 中唯一使用会话级 preset 的 Profile**：session 级别选择 standard / ptc / minimal / cordis，host 平面不直接挂 model-facing 工具。（desktop 的 preset roots 改写机制已随 0.1.7 线 preset 重设计退役：desktop-host 改为 `loadProfileDirectory` 在安装期组装 profile，`apps/desktop-host/src/index.ts` 现无 roots 改写。）
+- **CLI launcher profile 中唯一使用会话级 preset 的 Profile**：session 级别选择 standard / ptc / minimal / cordis，host 平面除 `working_directory` 外不直接挂 model-facing 工具。（desktop 的 preset roots 改写机制已随 0.1.7 线 preset 重设计退役：desktop-host 改为 `loadProfileDirectory` 在安装期组装 profile，`apps/desktop-host/src/index.ts` 现无 roots 改写。）
 - **stdout 给用户**：可以装 logger、打印 URL、输出诊断信息。
 
 ## 源码入口
