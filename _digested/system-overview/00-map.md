@@ -67,7 +67,7 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 
 | 层 | 它回答的问题 | 专题 |
 |----|--------------|------|
-| Cordis runtime | 插件怎么注册、怎么卸、事件怎么传 | [`../cordis-runtime/00-map.md`](../cordis-runtime/00-map.md) |
+| Cordis runtime | 插件怎么注册、怎么卸、事件怎么传 | [`../two-tree-runtime/framework/00-map.md`](../two-tree-runtime/framework/00-map.md) |
 | Composition | 这一次进程里到底装着哪棵树 | [`../plugin-system/composition/00-map.md`](../plugin-system/composition/00-map.md) |
 | Product spine | 会话、提示词、工具、Agent 句柄归谁 | 本篇 + [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md) |
 | Capability seams | 换后端时哪些东西必须一起走 | [`../capability-seams/00-map.md`](../capability-seams/00-map.md) |
@@ -105,4 +105,4 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 | [`02-对照单一loop.md`](./02-对照单一loop.md) | 从「一个 loop + tools 数组」迁过来时落在哪一层 |
 | [`03-门禁与性能基准.md`](./03-门禁与性能基准.md) | `run-gates` 聚合器与 leaf 家族；`benchmarks/` 性能门禁树 |
 
-Loader / fiber 如何卸载插件贡献，见 [`../cordis-runtime/04-vendor-本地修改.md`](../cordis-runtime/04-vendor-本地修改.md) 与 [`../cordis-runtime/01-五条原语对照源码.md`](../cordis-runtime/01-五条原语对照源码.md)。
+Loader / fiber 如何卸载插件贡献，见 [`../two-tree-runtime/framework/04-vendor-本地修改.md`](../two-tree-runtime/framework/04-vendor-本地修改.md) 与 [`../two-tree-runtime/framework/01-五条原语对照源码.md`](../two-tree-runtime/framework/01-五条原语对照源码.md)。

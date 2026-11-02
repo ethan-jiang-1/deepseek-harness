@@ -27,16 +27,16 @@
 | 我的插件装了但没生效 | lifecycle 的定位表 → composition 的准入与窗口 |
 | 我要改启动/首屏行为 | composition 的 05 章（启动窗口与首屏交接） |
 
-## 第四轴：插件怎么对外暴露（暂在别处）
+## 第四轴：插件怎么对外暴露（在 two-tree-runtime）
 
-三个轴讲的是**插件本身**；还有一轴讲**插件对外露出什么**——它贡献给浏览器 UI 的东西、以及它在 wire 上提供的服务。这一轴的正文目前住在 `surfaces-entrypoints/`：
+三个轴讲的是**插件本身**；还有一轴讲**插件对外露出什么**——它贡献给浏览器 UI 的东西、以及它在 wire 上提供的服务。这一轴已独立成 [`../two-tree-runtime/`](../two-tree-runtime/00-map.md)：
 
-| 页 | 讲什么 | 为什么不算进三轴 |
+| 目录 | 讲什么 | 为什么不算进三轴 |
 |---|---|---|
-| [`05-客户端架构与插件纪律`](../surfaces-entrypoints/05-客户端架构与插件纪律.md) | 浏览器侧插件树：模块载入、slot 组合、状态归属、import 纪律 | 一半是 client 运行时本体，不是插件产物 |
-| [`06-Typert类型图与Remote生成`](../surfaces-entrypoints/06-Typert类型图与Remote生成.md) | 一个 `@Remote` 声明怎么变成类型化 stub（声明期→build→运行期） | 它讲的是服务如何跨进程暴露，不是插件如何被组装 |
+| [`client/`](../two-tree-runtime/client/00-map.md) | 浏览器那棵树的运行时与插件纪律 | 是另一棵树的运行时本体，不是 Host 插件的产物 |
+| [`remote/`](../two-tree-runtime/remote/00-map.md) | 一个 `@Remote` 声明怎么变成类型化 stub，以及两棵树之间的流 | 讲的是服务如何跨进程暴露，不是插件如何被组装 |
 
-如果这一轴将来单独成页，就把它移进本目录做第四个子目录；在那之前，从这两页进。
+交付这类插件时的打包与安装顺序仍走 [`lifecycle/`](./lifecycle/00-map.md)；本目录只管「怎么组装成树」。
 
 
 ## 三条不变量（三轴共同的底层判断）
@@ -56,7 +56,7 @@
 | 问题 | 去哪 |
 |---|---|
 | 人怎么进来（CLI / Web / 桌面 / ACP / SDK） | [`../surfaces-entrypoints/00-map.md`](../surfaces-entrypoints/00-map.md) |
-| fiber 状态机、effect 撤销、事件派发 | [`../cordis-runtime/00-map.md`](../cordis-runtime/00-map.md) |
+| fiber 状态机、effect 撤销、事件派发 | [`../two-tree-runtime/framework/00-map.md`](../two-tree-runtime/framework/00-map.md) |
 | 同一能力换实现（seam 三角色） | [`../capability-seams/00-map.md`](../capability-seams/00-map.md) |
 | 模型每一步看见什么 | [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md) |
 | 每种官方启动方式带了哪些插件 | [`../runtime-profiles/00-map.md`](../runtime-profiles/00-map.md) |

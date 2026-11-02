@@ -25,7 +25,7 @@
 |---|----|--------------------------|------|------------------------------|
 | ① | **打包** | 包发布后 `name@version` 固定，作者改不了用户机器上的那一份 | [`01-打包.md`](./01-打包.md) | [`inventory/05`](../inventory/05-taxonomy-and-design.md) 的形态分类 |
 | ② | **分发** | 包已在机器上，但还没有任何 profile 引用它 | [`02-分发.md`](./02-分发.md) | — |
-| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-安装.md`](./03-安装.md) | [`cordis-runtime/01`](../../cordis-runtime/01-五条原语对照源码.md) 的 fiber 与 inject |
+| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-安装.md`](./03-安装.md) | [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-五条原语对照源码.md) 的 fiber 与 inject |
 | ④ | **启动** | 行被挂进活树，`ctx` 服务开始对外提供 | [`04-启动.md`](./04-启动.md) | [`composition/05`](../composition/05-启动窗口与首屏交接.md) 的启动窗口与首屏交接 |
 | ⑤ | **特殊初始化** | 只跑一次的导入或版本戳写入完成，旧状态被改名、被接受或被拒绝 | [`05-特殊初始化.md`](./05-特殊初始化.md) | [`session-and-loop/04`](../../session-and-loop/04-格式世代与迁移.md) 的格式世代 |
 | ⑥ | **更新与启停** | 选择列表顺序改变，配置优先级随之改变 | [`06-更新与启停.md`](./06-更新与启停.md) | [`composition/03`](../composition/03-user-patch-hmr.md) 的 HMR 事务 |
@@ -71,7 +71,7 @@
 
 | 问题 | 去哪 |
 |------|------|
-| fiber 状态机、effect 撤销顺序、waterfall 合同 | [`cordis-runtime/`](../../cordis-runtime/00-map.md) |
+| fiber 状态机、effect 撤销顺序、waterfall 合同 | [`two-tree-runtime/framework/`](../../two-tree-runtime/framework/00-map.md) |
 | 配置层顺序、dump 保真、patch 算法 | [`composition/`](../composition/00-map.md) |
 | 每个 profile 出厂带哪些插件 | [`runtime-profiles/`](../../runtime-profiles/00-map.md) |
 | 现成插件有什么、能不能直接复用 | [`inventory/`](../inventory/00-map.md) |
@@ -79,7 +79,7 @@
 | 插件作者要交什么测试证据 | [`test-strategy/08`](../../test-strategy/08-plugin-testing.md) · [`09`](../../test-strategy/09-plugin-testing-playbook.md) · [`10`](../../test-strategy/10-plugin-testing-checklist.md) |
 | **装 / 更 / 卸 / 首启的机制与失败语义** | **本专题** |
 
-本专题不重写配置层顺序与 dump 保真，只链接 [`composition/`](../composition/00-map.md)；不重写 fiber 状态机，只链接 [`cordis-runtime/01`](../../cordis-runtime/01-五条原语对照源码.md)。
+本专题不重写配置层顺序与 dump 保真，只链接 [`composition/`](../composition/00-map.md)；不重写 fiber 状态机，只链接 [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-五条原语对照源码.md)。
 
 ## 阅读路径
 

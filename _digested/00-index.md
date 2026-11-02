@@ -43,7 +43,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | 目录 | 聚焦 | 一句话 |
 |------|------|--------|
 | `system-overview/` | 总体系统专题 | 按下回车之后，这些插件怎么拼成一次能跑的对话——先读这。 |
-| `cordis-runtime/` | 被 vendor 的框架 | 插件框架本体：插件长什么样、`ctx` 从哪来、事件怎么派发。 |
+| `two-tree-runtime/` | 两个运行时 | 同一套 Cordis 在 Node 与浏览器各长一棵插件树，中间是类型化的线：`framework/` 框架本体、`client/` 浏览器那棵树、`remote/` 两棵树之间。写插件、加 slot、加 `@Remote` 方法都从这里进。 |
 | `runtime-profiles/` | 运行时配置 | 五种官方启动方式（web / headless / sdk / sdk-minimal / acp）各自带哪些插件、差在哪。 |
 | `session-and-loop/` | 会话与驱动 | 对话存在哪、怎么读回来：session log 的格式、世代与投影。 |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
@@ -52,7 +52,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `plugin-system/` | 插件系统（三轴） | 插件系统的三个面：`composition/` 怎么叠成活树、`lifecycle/` 从打包到卸载的七段、`inventory/` 343 个包按组列成清单。动手写、要交付、或查「装了为什么没生效」都从这里进。 |
 | `experimental/` | 可选能力与原型 | 已评估但未承诺产品支持的能力（47 包）。**实验身份与「可选交付」相互独立**：可选包收编进本组，而非 experimental 的包才需要产品用途或显式分类（`scripts/product-package-policy.ts`）。 |
 | `tools-prompt-llm/` | 模型可见面 | 模型每一步看见什么：工具清单、系统提示词、历史投影怎么组装。 |
-| `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、Web、桌面、ACP、SDK 五个入口怎么复用同一台运行时。 |
+| `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、headless、Web、ACP、SDK、桌面六个入口怎么复用同一台运行时。 |
 | `test-strategy/` | 测试体系 | DSH 怎么测：七层证据形态、录制会话快照、CI 门禁与防假绿、可靠性纪律与测试基建——55 行测试政策的完整展开。 |
 | `_coverage/` | 覆盖矩阵 | 维护索引：每个专题承诺回答什么、最后对到哪个源码 commit。 |
 | `harness-idea/` | 消化后的理解与判断 | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪。 |
@@ -81,7 +81,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 ![消化阅读主干](./figures/topics.svg)
 
 - **熟悉 agent / plugin 运行时，但不熟 dsh** → [`system-overview/00-map.md`](./system-overview/00-map.md)
-- **想先搞懂 Cordis 在这棵树里到底是什么** → [`cordis-runtime/00-map.md`](./cordis-runtime/00-map.md)，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
+- **想先搞懂 Cordis 在这棵树里到底是什么** → [`two-tree-runtime/framework/00-map.md`](./two-tree-runtime/framework/00-map.md)；两棵树怎么分工见 [`two-tree-runtime/00-map.md`](./two-tree-runtime/00-map.md)，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
 - **想搞懂 `dsh --profile web` 怎么变成进程的** → [`runtime-profiles/00-map.md`](./runtime-profiles/00-map.md)
 - **想搞懂插件系统本身（怎么成树、怎么走完一生、现成有什么）** → [`plugin-system/00-map.md`](./plugin-system/00-map.md)
 - **想搞懂一轮对话怎么跑** → [`session-and-loop/00-map.md`](./session-and-loop/00-map.md)
@@ -90,9 +90,9 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **想加能力或换后端** → [`capability-seams/00-map.md`](./capability-seams/00-map.md)
 - **想研究实验与可选能力** → [`experimental/00-map.md`](./experimental/00-map.md)
 - **想搞懂模型看见什么** → [`tools-prompt-llm/00-map.md`](./tools-prompt-llm/00-map.md)
-- **想搞懂 CLI / Web / 桌面 / ACP 怎么复用同一套 runtime spine** → [`surfaces-entrypoints/00-map.md`](./surfaces-entrypoints/00-map.md)
-- **想给 Web UI 加功能、或新增一个 `packages/client/*` 插件包** → [`surfaces-entrypoints/05-客户端架构与插件纪律.md`](./surfaces-entrypoints/05-客户端架构与插件纪律.md)
-- **想搞懂一个 `@Remote` 方法怎么变成 `ctx.remote.<ns>` 上的类型化 stub** → [`surfaces-entrypoints/06-Typert类型图与Remote生成.md`](./surfaces-entrypoints/06-Typert类型图与Remote生成.md)
+- **想搞懂 CLI / headless / Web / 桌面 / ACP / SDK 怎么复用同一套 runtime spine** → [`surfaces-entrypoints/00-map.md`](./surfaces-entrypoints/00-map.md)
+- **想给 Web UI 加功能、或新增一个 `packages/client/*` 插件包** → [`two-tree-runtime/client/00-map.md`](./two-tree-runtime/client/00-map.md)
+- **想搞懂一个 `@Remote` 方法怎么变成 `ctx.remote.<ns>` 上的类型化 stub** → [`two-tree-runtime/remote/00-map.md`](./two-tree-runtime/remote/00-map.md)
 - **想搞懂 DSH 自己怎么测试（分层、快照、门禁、可靠性）** → [`test-strategy/00-map.md`](./test-strategy/00-map.md)
 - **想搞懂 dsh 为什么对读者友好（harness 思想）** → [`harness-idea/00-map.md`](./harness-idea/00-map.md)
 
@@ -100,7 +100,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 
 ```text
 system-overview/
-  → cordis-runtime/
+  → two-tree-runtime/
   → plugin-system/
   → session-and-loop/
   → capability-seams/ 或 tools-prompt-llm/

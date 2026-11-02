@@ -50,7 +50,7 @@ dump 也接受 `--from-default-profile <模板>`（`apps/cli/src/dump-config.ts:
 
 ## `!!js` 原文打出
 
-dump 不 boot，没有 inject 齐了的插件 ctx，不能求值。`entryListSchema` 把 `!!js expr` 收成 `__jsExpr` 节点；YAML 写回仍是 `!!js`。求值时机见 [`../../cordis-runtime/03-loader-include-与js插值.md`](../../cordis-runtime/03-loader-include-与js插值.md)。
+dump 不 boot，没有 inject 齐了的插件 ctx，不能求值。`entryListSchema` 把 `!!js expr` 收成 `__jsExpr` 节点；YAML 写回仍是 `!!js`。求值时机见 [`../../two-tree-runtime/framework/03-loader-include-与js插值.md`](../../two-tree-runtime/framework/03-loader-include-与js插值.md)。
 
 所以 dump 是「将要交给 Loader 的字面量树」，不是「`!!js` 跑完之后进程里的值」。
 
@@ -77,7 +77,7 @@ Include 对「目标 id 不在当前索引」记一条 patch skip。dump 没有 
 | 打不中 → warn 并继续 | dump 文本等于 `ctx.loader` 里每一行的当前 config |
 | insert 立刻进索引（vendor 本地修改） | `--dump-default-config` 含用户层 |
 
-产品代码里再手写一份「类似的 patch」会和真树漂移。这是 vendor Include 导出 `applyEntryPatches` 的原因，见 [`../../cordis-runtime/04-vendor-本地修改.md`](../../cordis-runtime/04-vendor-本地修改.md)。
+产品代码里再手写一份「类似的 patch」会和真树漂移。这是 vendor Include 导出 `applyEntryPatches` 的原因，见 [`../../two-tree-runtime/framework/04-vendor-本地修改.md`](../../two-tree-runtime/framework/04-vendor-本地修改.md)。
 
 
 ## 自证配方

@@ -74,7 +74,7 @@ loop 看到 `reject`，或**第一个 step** 的 enter 消息长度为 0：关�
 
 ### 同家族的 waterfall
 
-这些才和 pre-step 同类：`agent/request`、`llm/stream`、`tools/pre-execute`、`tools/execute`、`tools/post-execute`。管道细节在 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。
+这些才和 pre-step 同类：`agent/request`、`llm/stream`、`tools/pre-execute`、`tools/execute`、`tools/post-execute`。管道细节在 [`../tools-prompt-llm/00-map.md`](../../tools-prompt-llm/00-map.md)。
 
 ## 声明合同
 

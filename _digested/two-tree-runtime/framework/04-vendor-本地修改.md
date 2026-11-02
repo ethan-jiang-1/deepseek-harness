@@ -1,6 +1,6 @@
 # vendor 本地修改：产品踩在哪些补丁上
 
-源码核验入口：[`vendor/README.md`](../../vendor/README.md)「Local modifications」（现 **24** 条编号条目）及其列出的 vendored 文件，以及拟升级计划 [`vendor/cordis-rc11-upgrade-plan.md`](../../vendor/cordis-rc11-upgrade-plan.md)。上游同步必须逐条重放或退役；本篇只解释 dsh 组合模型直接依赖的修改。
+源码核验入口：[`vendor/README.md`](../../../vendor/README.md)「Local modifications」（现 **24** 条编号条目）及其列出的 vendored 文件，以及拟升级计划 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。上游同步必须逐条重放或退役；本篇只解释 dsh 组合模型直接依赖的修改。
 
 这些修改支撑 profile 叠层、dump 保真、profile patch 热更新与 volatile 配置。
 
@@ -18,7 +18,7 @@ setup 期间插件会再 `ctx.on` / `ctx.effect`。若此时有人开始卸（�
 
 清单第 8 条（0.1.7 线重写）：Include 校验顶层 entry 数组后才缓存解析内容、记录刷新失败、文件或 Include config 变更后重放 patch、veto restart 时更新 Include config、仅 ENOENT 后才用 `initial`。这些解析保护让坏文件**保住正在跑的树**；但同一行明写：**Loader 的 entry/group/tree 变更走钉死的 eager、非事务实现，不恢复先前的插件或 options，插件激活失败可能留下部分应用的树**。~~旧第 8 条的「Include 事务：候选失败恢复上一份插件或 config、改名 entry 先 import 再 dispose」~~（0.1.7 线随事务性重载退役退役——commit `e07f41d5fd` 回滚事务重载、`2abb542a22` 适配非事务 Loader，note `2026-09-09-nontransactional-loader.md`；编号已被现第 8 条复用）。
 
-产品侧的对应物：用户 `cordis.patch.yml` 写坏时，解析保护保住树；`hmr` 插件的 `reconcileProfilePatches` 只对**本次新引入**的失活抛错（见 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)），但这个「事务」是 hmr/app-boot 层的组合语义，不是 vendor Include 内置的回滚。
+产品侧的对应物：用户 `cordis.patch.yml` 写坏时，解析保护保住树；`hmr` 插件的 `reconcileProfilePatches` 只对**本次新引入**的失活抛错（见 [`../plugin-system/composition/03-user-patch-hmr.md`](../../plugin-system/composition/03-user-patch-hmr.md)），但这个「事务」是 hmr/app-boot 层的组合语义，不是 vendor Include 内置的回滚。
 
 ## `applyEntryPatches` 导出 + insert 索引
 
@@ -58,12 +58,12 @@ Include 的配置文件写串行化并跟踪：瞬时 `EACCES`/`EBUSY`/`EPERM` r
 - **#23**：`loader/src/config/entry.ts` 模块身份——保存每个 entry 的原始 import 结果（`moduleNamespace`），取在插件导出归一化**之前**；HMR 用它匹配 Node 已缓存的模块命名空间，并在成功重载后更新该字段（commit `b1c5f861b6`，`loader/README.md` 记录这个新增字段）。
 - **#24**：`timer/locale/{en,zh}.json` 显示元数据——Settings 插件清单用的中英文标题与描述；`timer/package.json` 导出并发布这两份 locale 资源（commit `c7d61ecc11`）。
 
-**拟升级 cordis rc.11**：[`vendor/cordis-rc11-upgrade-plan.md`](../../vendor/cordis-rc11-upgrade-plan.md)（状态 proposed）把升级拆成独立可评审的 PR：先升 Core 并做最小跨包兼容，再分别完成 Loader / Include / vendor HMR；每个 PR 记录它对本篇 24 条本地修改的处置（retire / partial / retain）。计划本身不含运行时改动，也不批准其中留下的开放决定。
+**拟升级 cordis rc.11**：[`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)（状态 proposed）把升级拆成独立可评审的 PR：先升 Core 并做最小跨包兼容，再分别完成 Loader / Include / vendor HMR；每个 PR 记录它对本篇 24 条本地修改的处置（retire / partial / retain）。计划本身不含运行时改动，也不批准其中留下的开放决定。
 
 **上游同步要求随 0008 改写**：~~0006 跨度「vendor 零改动、无需重放」的结论~~已被 0008 跨度推翻——`git diff fb2c4b9e69..46a7f68b09 -- vendor/` 大量命中（事务重载退役 + 新增四条），0011 跨度再添两条并写下 rc.11 计划，下一次同步**必须**按 24 条清单逐条重放或退役，并按下面那条双核对规则确认版本列。
 
-版本核对提醒仍然成立：[`vendor/README.md`](../../vendor/README.md) manifest 的版本列（`1.8.1` / `3.18.0` / `4.0.0-rc.7` / `1.0.0-rc.5` / `1.0.4` / `1.0.0` / `1.1.2` / `1.0.15` / `1.0.0`）与各 `vendor/*/package.json`（`1.8.6` / `3.18.5` / `4.0.5` / `1.0.6` / `1.0.10` / `1.0.5` / `1.1.7` / `1.0.20` / `1.0.5`）**按设计就不同**：manifest 那一列记录的是 pinned 上游快照版本，`package.json` 的 `version` 是本仓的发布版本（`docs/rescope.md:25`；`scripts/release/families.ts` 的 vendor family 只 bump `vendor/*/package.json`）。不要把两列不一致读成漏同步。
+版本核对提醒仍然成立：[`vendor/README.md`](../../../vendor/README.md) manifest 的版本列（`1.8.1` / `3.18.0` / `4.0.0-rc.7` / `1.0.0-rc.5` / `1.0.4` / `1.0.0` / `1.1.2` / `1.0.15` / `1.0.0`）与各 `vendor/*/package.json`（`1.8.6` / `3.18.5` / `4.0.5` / `1.0.6` / `1.0.10` / `1.0.5` / `1.1.7` / `1.0.20` / `1.0.5`）**按设计就不同**：manifest 那一列记录的是 pinned 上游快照版本，`package.json` 的 `version` 是本仓的发布版本（`docs/rescope.md:25`；`scripts/release/families.ts` 的 vendor family 只 bump `vendor/*/package.json`）。不要把两列不一致读成漏同步。
 
 ## 上游同步要求
 
-上游合入等价行为时，退役 [`vendor/README.md`](../../vendor/README.md) 中对应的本地修改，并同步更新本页的产品依赖。产品包不得绕过这些修改另写一套 Cordis 生命周期。
+上游合入等价行为时，退役 [`vendor/README.md`](../../../vendor/README.md) 中对应的本地修改，并同步更新本页的产品依赖。产品包不得绕过这些修改另写一套 Cordis 生命周期。

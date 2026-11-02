@@ -3,40 +3,46 @@
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
   <rect width="960" height="420" fill="#fafafa" rx="6"/>
-  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">五个入口复用一套 runtime spine，不是五套 agent 实现</text>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">六个入口复用一套 runtime spine，不是六套 agent 实现</text>
   <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">它们启动不同进程和插件组合，但都驱动 ctx.agents，并遵守同一套 session 语义。</text>
 
-  <rect x="40" y="70" width="160" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="120" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">CLI dsh</text>
-  <text x="120" y="126" text-anchor="middle" font-size="10.5" fill="#475569">产品 bin，不走 profile</text>
-  <text x="120" y="145" text-anchor="middle" font-size="10.5" fill="#475569">源码 tsx · 发行 lib</text>
+  <rect x="10" y="70" width="140" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="80" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">CLI dsh</text>
+  <text x="80" y="126" text-anchor="middle" font-size="10.5" fill="#475569">产品 bin；启动 profile</text>
+  <text x="80" y="145" text-anchor="middle" font-size="10.5" fill="#475569">源码 tsx · 发行 lib</text>
 
-  <rect x="220" y="70" width="160" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="300" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">Web</text>
-  <text x="300" y="126" text-anchor="middle" font-size="10.5" fill="#475569">host API + client 壳</text>
-  <text x="300" y="145" text-anchor="middle" font-size="10.5" fill="#475569">slots + 资源模型</text>
+  <rect x="170" y="70" width="140" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="240" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">Headless</text>
+  <text x="240" y="126" text-anchor="middle" font-size="10.5" fill="#475569">一次性 · 跑完即退</text>
+  <text x="240" y="145" text-anchor="middle" font-size="10.5" fill="#475569">stdout 最终消息</text>
 
-  <rect x="400" y="70" width="160" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="480" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">ACP</text>
-  <text x="480" y="126" text-anchor="middle" font-size="10.5" fill="#475569">自动化协议服务器</text>
-  <text x="480" y="145" text-anchor="middle" font-size="10.5" fill="#475569">stdio 协议帧</text>
+  <rect x="330" y="70" width="140" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="400" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">Web</text>
+  <text x="400" y="126" text-anchor="middle" font-size="10.5" fill="#475569">host API + client 壳</text>
+  <text x="400" y="145" text-anchor="middle" font-size="10.5" fill="#475569">slots + 资源模型</text>
 
-  <rect x="580" y="70" width="160" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="660" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">JSON-RPC SDK</text>
-  <text x="660" y="126" text-anchor="middle" font-size="10.5" fill="#475569">进程外协议 + TS client</text>
-  <text x="660" y="145" text-anchor="middle" font-size="10.5" fill="#475569">server 是树上插件</text>
+  <rect x="490" y="70" width="140" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="560" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">ACP</text>
+  <text x="560" y="126" text-anchor="middle" font-size="10.5" fill="#475569">自动化协议服务器</text>
+  <text x="560" y="145" text-anchor="middle" font-size="10.5" fill="#475569">stdio 协议帧</text>
 
-  <rect x="760" y="70" width="160" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="840" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">Desktop</text>
-  <text x="840" y="126" text-anchor="middle" font-size="10.5" fill="#475569">Electron 壳 + 私有 host</text>
-  <text x="840" y="145" text-anchor="middle" font-size="10.5" fill="#475569">dsh-app:// · 无端口</text>
+  <rect x="650" y="70" width="140" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="720" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">JSON-RPC SDK</text>
+  <text x="720" y="126" text-anchor="middle" font-size="10.5" fill="#475569">进程外协议 + TS client</text>
+  <text x="720" y="145" text-anchor="middle" font-size="10.5" fill="#475569">server 是树上插件</text>
 
-  <line x1="120" y1="160" x2="120" y2="198" stroke="#4b5563"/>
-  <line x1="300" y1="160" x2="300" y2="198" stroke="#4b5563"/>
-  <line x1="480" y1="160" x2="480" y2="198" stroke="#4b5563"/>
-  <line x1="660" y1="160" x2="660" y2="198" stroke="#4b5563"/>
-  <line x1="840" y1="160" x2="840" y2="198" stroke="#4b5563"/>
-  <line x1="120" y1="198" x2="840" y2="198" stroke="#4b5563"/>
+  <rect x="810" y="70" width="140" height="90" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="880" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">Desktop</text>
+  <text x="880" y="126" text-anchor="middle" font-size="10.5" fill="#475569">Electron 壳 + 私有 host</text>
+  <text x="880" y="145" text-anchor="middle" font-size="10.5" fill="#475569">dsh-app:// · 认证 HTTP</text>
+
+  <line x1="80" y1="160" x2="80" y2="198" stroke="#4b5563"/>
+  <line x1="240" y1="160" x2="240" y2="198" stroke="#4b5563"/>
+  <line x1="400" y1="160" x2="400" y2="198" stroke="#4b5563"/>
+  <line x1="560" y1="160" x2="560" y2="198" stroke="#4b5563"/>
+  <line x1="720" y1="160" x2="720" y2="198" stroke="#4b5563"/>
+  <line x1="880" y1="160" x2="880" y2="198" stroke="#4b5563"/>
+  <line x1="80" y1="198" x2="880" y2="198" stroke="#4b5563"/>
   <line x1="480" y1="198" x2="480" y2="220" stroke="#4b5563" marker-end="url(#arr)"/>
 
   <rect x="200" y="224" width="560" height="130" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
