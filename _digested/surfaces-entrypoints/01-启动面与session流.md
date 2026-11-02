@@ -1,6 +1,9 @@
 # 源码启动、built bin 与 launcher profile
 
 源码核验入口：根 `package.json` 的 `dsh` script、`apps/cli/package.json` 的 `bin`、`apps/cli/src/bin.ts`、`apps/cli/src/args.ts`、`packages/boot/app-boot/src/profile.ts`。
+
+本页只写启动面与 headless 的入口契约；各 profile 的 bundle 组合、`PROFILE_TEMPLATES` 与装载细节见 [`../runtime-profiles/00-map.md`](../runtime-profiles/00-map.md)。
+
 五个 Launcher Profile 可以 boot 不同的 bundle 或组合，因此不一定共享同一进程或同一棵 Cordis 树；它们复用 `ctx.agents`、session log 和事件语义。桌面应用不在其中：`dsh --profile desktop` 被显式拒绝，它由 Electron 壳启动私有 host，见 [`03-桌面入口.md`](./03-桌面入口.md)。
 
 ![pnpm dsh 走 tsx ESM](./figures/source-vs-built.svg)

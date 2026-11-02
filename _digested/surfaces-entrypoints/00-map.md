@@ -1,10 +1,12 @@
 # Surfaces · 人对机器的入口
 
-产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`），本专题六页的结论与该 commit 的项目树一致；`rc.2` → `rc.3` 的增量见 [`_change_log/0012`](../_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md)，`rc.3` → `rc.5` 见 [`0013`](../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)；历史跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）、上一消化基线为 `46a7f68b09`（`dsh-v0.1.7-rc.1`）。
+产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`），本专题三页（01–03）的结论与该 commit 的项目树一致；`rc.2` → `rc.3` 的增量见 [`_change_log/0012`](../_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md)，`rc.3` → `rc.5` 见 [`0013`](../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)；历史跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）、上一消化基线为 `46a7f68b09`（`dsh-v0.1.7-rc.1`）。
 
 ## 一句话
 
 CLI、headless、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`Agent` 接口和 session 事件模型，不是六套 agent 实现。不同入口可以启动不同进程和不同插件组合；每棵组合后的树都通过 `ctx.agents` 驱动 agent，并从 `session/event` 渲染或投影。
+
+本卷回答的是**入口契约**：人/程序从哪里进、每个入口对调用方保证什么、它们如何复用同一套 spine。**进程里装了什么**——`PROFILE_TEMPLATES`、bundle 层叠、行级差异、profile 装载与 HMR——在 [`../runtime-profiles/`](../runtime-profiles/00-map.md)。两卷按事实单点归属：profile 组合归 profiles，入口清单、CLI/SDK/ACP 契约、输出与退出、认证载体归本卷。
 
 ## 六个入口，一套运行时模型
 
@@ -72,10 +74,10 @@ CLI、headless、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`
 
 | 文件 | 内容 |
 |------|------|
-| [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；三条启动面与 `bin.ts` 的分发；headless 一次性入口的输出契约 |
+| [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；三条启动面与 `bin.ts` 的分发；headless 一次性入口的输出契约；session 流与认证的正文在 `two-tree-runtime/remote` |
 | [`02-acp与jsonrpc.md`](./02-acp与jsonrpc.md) | ACP 只把 committed 事实表达成标准语义更新；SDK 推 Context 内全部耐久事实 |
 | [`03-桌面入口.md`](./03-桌面入口.md) | Electron 壳 + 私有 host；desktop-host 经 `runProfile` 起完整 web 应用（`127.0.0.1` 上由 OS 分配端口的认证 URL，0.1.7 线起；~~dsh-app 分帧字节管道~~已退役）；打包与更新 |
 
-客户端的资源模型、右栏、slots 与 Remote 已移出本专题：正文在 [`../two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md)（资源与右栏三个孙目录：`state/`、`view/`）与 [`../two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md)。本专题只保留「人从哪个入口进来、进来之后怎么启动」这条线。
+客户端的资源模型、右栏、slots 与 Typert/Remote 不在本卷：正文在 [`../two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) 与 [`../two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md)。本卷只保留「人从哪个入口进来、进来之后怎么启动」这条线。
 
 dump 与 boot 的层差不在入口，在 [`../plugin-system/composition/02-dump-与boot-保真.md`](../plugin-system/composition/02-dump-与boot-保真.md)。
