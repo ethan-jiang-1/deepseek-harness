@@ -26,8 +26,8 @@
   <text x="50" y="269" font-size="9.5" fill="#64748b">registration 生命周期追踪同一业务项目时，才需要单独保存。</text>
 
   <rect x="615" y="196" width="555" height="92" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
-  <text x="635" y="222" font-size="12" font-weight="700" fill="#334155">Profile 与 home</text>
-  <text x="635" y="248" font-size="10.5" fill="#334155">Profile 是 plugin composition；`$DSH_HOME` 是多项 DSH 状态的 home。</text>
+  <text x="635" y="222" font-size="12" font-weight="700" fill="#334155">profile 与 home</text>
+  <text x="635" y="248" font-size="10.5" fill="#334155">profile 是 plugin composition；`$DSH_HOME` 是多项 DSH 状态的 home。</text>
   <text x="635" y="269" font-size="9.5" fill="#64748b">换 profile 不自动隔离同一 home 的数据。</text>
 
   <text x="600" y="326" text-anchor="middle" font-size="10" font-weight="700" fill="#475569">只需设 Session 目录 → 传 `cwd`；还需进入 DSH 项目分组 → 先有 Workspace registration，再传 `WorkspaceId`。</text>
