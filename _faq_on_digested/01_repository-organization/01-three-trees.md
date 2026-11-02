@@ -53,7 +53,7 @@ base bundle ───→ 具体插件 package 的发布闭包
 
 ## 第三棵：运行时插件树
 
-运行时插件树由 Cordis Loader 根据 entry list 建立。对产品 profile 来说，entry list 从空根开始，由 bundle patch、profile patch、home patch、`--patch` overlay 按顺序合成；每一行选择插件名、配置、禁用状态、group 和 isolate。
+运行时插件树由 Cordis Loader 根据 entry list 建立。对发行版 profile 来说，entry list 从空根开始，由 bundle patch、profile patch、home patch、`--patch` overlay 按顺序合成；每一行选择插件名、配置、禁用状态、group 和 isolate。
 
 它回答的是动态问题：
 
