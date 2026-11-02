@@ -54,7 +54,7 @@ rc.1 没有增删任何模板、也没有改名：新增的是从模板派生自
 
 **消息通道**：子代理回传统一为 settle notice + `send_message` steer，fork continuable 没有 child-only section 的 KV 前缀代价——这两条都早于本跨度基线（`a66e470204` 里 `tool-subagent-report` 已不存在，`tool-subagent-fork` 注释已是「preset 层可选 continuable，无需 child-only section」），不是 rc.1 周期内的变化。
 
-**进程级重用**：五个入口都通过 `ctx.agents` 驱动 agent，从 `session/event` 渲染或投影。不是五套 Agent 实现。
+**进程级重用**：这些宿主形态都通过 `ctx.agents` 驱动 agent，从 `session/event` 渲染或投影；入口层的契约（从哪进、对调用方保证什么）单点在 [`../surfaces-entrypoints/00-map.md`](../surfaces-entrypoints/00-map.md)。不是多套 Agent 实现。
 
 ### Bundle 层叠（所有 profile 共享）
 

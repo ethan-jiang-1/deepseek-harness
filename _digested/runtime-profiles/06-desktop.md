@@ -93,13 +93,7 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 
 ## 传输与认证
 
-传输就是 web 的 HTTP + Cookie 认证，载体换成了壳：
-
-- Connection 激活时从凭据库装载（没有则生成）32 字节 HMAC 秘钥，持久化在 `credentialKey('client-connection', 'browser-session')` 记录里（`packages/client/connection/src/browser-auth.ts:12`、`:161-178`；挂载点 `packages/client/connection/src/index.ts:137`）。
-- 每个进程一个 launch token（按进程 owner 缓存在 `WeakMap`，`browser-auth.ts:52-58`）；`authenticatedUrl` 把 token 追加为查询参数（`:223-227`）。
-- 首次 `GET /` 且 token 匹配时，Host 签发 `dsh-auth-<sha256(authority)>` cookie 并 303 到 `./`（`:246-262`）；cookie 载荷是 `v1.{body}.{HMAC-SHA256}`，绑定 authority、默认 30 天（`cookieMaxAgeDays`）、`HttpOnly; SameSite=Strict`（`:106-108`、`:121-123`）。此后请求靠 cookie 认证，其余一律 401（`:287-300`、`:302-310`）。
-- 壳在 ready 后用 host 报来的 URL 做一次 token 换 cookie（`apps/desktop/src/web-document.ts:43-53`），此后把 `dsh-app://app` 的应用请求转发到 Host 并只附壳自己持有的 cookie；`set-cookie` 不透传给页面（`:58-64`、`:85`、`:90`）；`/plugins/` bundle 响应改 `no-store`（`:91`）。WebSocket 的 cookie 只对主窗口注入（`apps/desktop/src/main.ts:710-721`）。
-- `/api` 请求先过 401/403 准入再进瀑布（`packages/client/connection/src/index.ts:145-152`）；desktop 的 update-tasks 准入锁挂在 `connection/request` 瀑布上（`apps/desktop-host/src/update-tasks.ts:34-44`）。
+桌面复用 web 的 HTTP + cookie 认证，只是载体换成 Electron 壳：host 把认证 URL 经 IPC 报回、壳做一次 token→cookie、`dsh-app://app` 的请求转发到 Host。这部分属于**入口契约**，单点在 [`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)；本页不重复。profile 装载侧独有的差异只有安装锚点（签名 runtime 树里的 `node_modules/@deepseek-ai/dsh/package.json`）与 `patchFiles: []`。
 
 ## 与出网代理：分歧已消除
 

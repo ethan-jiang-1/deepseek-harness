@@ -13,6 +13,8 @@ dsh --profile sdk
 
 sdk 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-sdk-app`）。走 bundle 层叠。源码启动走 `pnpm dsh --profile sdk`。
 
+协议方法面与对调用方的保证见 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md)；本页只写 profile 组合与启动。
+
 ## 组合构成
 
 `dsh-sdk-app` bundle 是叠在 `dsh-base` 上的**薄协议层**，`cordis.patch.yml` 只做三件事：

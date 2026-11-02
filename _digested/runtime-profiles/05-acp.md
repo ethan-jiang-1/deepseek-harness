@@ -51,16 +51,7 @@ dsh --profile acp
 
 ## 与 SDK 的核心差异
 
-| 维度 | SDK | ACP |
-|------|-----|-----|
-| 协议 | 自定义 JSON-RPC（`dsh-sdk-protocol`） | 标准 Agent Client Protocol |
-| prompt 返回 | 立刻 `messageId` | 等到 idle，带 `stopReason` |
-| 线上内容 | 每条 `session/event` + `agent/status` | 只投递 committed 事实的语义更新：文本与图像块、非空 reasoning、通用 tool 生命周期、context usage（`packages/acp/acp/src/updates.ts`） |
-| 取消 | 无 per-prompt cancel | `session/cancel` 对准该 prompt |
-| 会话创建 | get-or-create 按 `sessionId` | `session/new` 始终创建新 agent |
-| 审批 | 运行时控制（通过 approval 插件） | `session/request_permission` 发送到客户端 |
-| image | 无特殊处理 | 批量准入、校验、投递 |
-| 典型消费者 | 进程外 SDK 脚本 | 另一个 Harness 的 `dsh-subagent-acp`，或标准 ACP 客户端 |
+面向调用方的差异（prompt 返回、线上内容、取消、审批、图像、典型消费者）单点在 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md) 的对照表；本页只记组合后果：两者都是 `dsh-base` 上的薄协议层，`dsh-acp-app` 另设 `session-title-llm: disabled` 与硬编码的默认 model，而 `dsh-sdk-app` 保持 base 的模型与工具面。
 
 ## 独特之处
 
