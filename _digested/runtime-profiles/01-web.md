@@ -28,12 +28,12 @@ dsh --profile web --patch my.yml       # 叠加 patch
 
 | id | 做了什么 |
 |----|---------|
-| `system-prompt` | 设 persona prefix：`personaPrefix`（`You are a coding agent powered by the {{model}} model.`，`:17-20`）。0011 起 shipped 组合不再设 `personaSuffix`——loop 的内建 `{{cwd}}` 与目录从句一并退役，执行目录改由 `ctx.workingDirectory` 供给 |
+| `system-prompt` | 设 persona prefix：`personaPrefix`（`You are a coding agent powered by the {{model}} model.`，`:17-20`）。shipped 组合不设 `personaSuffix`；执行目录由 `ctx.workingDirectory` 供给 |
 | `session-query-sqlite` | 设 `:memory:` + `openAt: never`（按需才开 SQLite） |
 | `tools` | 透传 `DSH_TOOLS_MODE` 环境变量 |
 | `tool-bash`, `tool-pwsh`, `tool-fs`, `tool-skill`, `tool-goal` 等 | **disable** 由会话级 preset 接管的 model-facing 工具行（0.1.7 线起由 bundle 携带的 preset patch 承担）；`working_directory` 是例外——base 的 `tool-working-directory` 行保留在 host 平面。base 双开 `search`+`fetch`（#3382）后，`tool-web` 的语义是 host 行整行 disable、由 preset 按档位组合两工具（base patch 注释与行，`packages/bundle/base/cordis.patch.yml:454-466,486-490`）；shipped 各 preset 的 `tool-web` 均 `fetch: true`，可作对照 |
 
-web-app 的 disable 名单里**没有** `tool-str-replace-editor`：它随 base 的那一行一起在**本次跨度（`a66e470204` → `183f08e9c6`）内**全仓下线（OLD 基线里 web-app 自己那行是 `disabled: true`，见 `a66e470204:packages/bundle/web-app/cordis.patch.yml:350-351`），该 disable 行也随之删除（删 1 个 disable 行、增 8 条 insert 行，insert 行 60 → 68）。
+web-app 的 disable 名单里**没有** `tool-str-replace-editor`：它和 base 的那一行都不在 shipped bundle 里，web-app 自己的 disable 行也随之删除。
 
 `hmr` 不在上表：web-app 自身没有 `hmr` 行，模块热更新的 disable 来自 base 层（`packages/bundle/base/cordis.patch.yml:27-32`）；Web 的 client 侧热重载由独立的 `client-hmr` 行负责（`packages/bundle/web-app/cordis.patch.yml:218-219`）。
 

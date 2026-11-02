@@ -839,6 +839,8 @@ function commitExists(commit) {
  */
 function checkCatalog(files) {
   if (catalog === null) return null
+  const catalogSource = decodeText(catalogPath)
+  if (catalogSource !== undefined) checkFileEnding(catalogPath, catalogSource)
   if (catalog.schemaVersion !== 1) report(catalogPath, undefined, 'schemaVersion must be 1')
   const baseline = catalog.baseline
   if (baseline === null || typeof baseline !== 'object' || Array.isArray(baseline)) {
@@ -987,6 +989,9 @@ function checkTables(files) {
       if (!/^\s*\|/.test(header.text)) continue
       if (!/^\s*\|[\s:|-]+\|\s*$/.test(lines[index + 1].text)) continue
       const columns = count(header.text)
+      if (count(lines[index + 1].text) !== columns) {
+        report(path, lines[index + 1].line, `table delimiter has ${count(lines[index + 1].text) - 2} cells, header has ${columns - 2}`)
+      }
       for (let row = index + 2; row < lines.length; row += 1) {
         if (!/^\s*\|/.test(lines[row].text)) break
         if (count(lines[row].text) !== columns) {

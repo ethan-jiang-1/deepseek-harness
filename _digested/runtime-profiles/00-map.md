@@ -10,7 +10,7 @@ Runtime Profile 决定一个 `dsh` 进程**启动时装入什么**：浏览器�
 
 ## 五个宿主形态
 
-ruofei 文章列了 5 个 Runtime Profile。**它们都是 launcher profile**（`dsh --profile <name>`），统一走 bundle 层叠路径。`PROFILE_TEMPLATES`（`packages/boot/app-boot/src/profile.ts:179-195`）登记：
+五个 Runtime Profile **都是 launcher profile**（`dsh --profile <name>`），统一走 bundle 层叠路径。`PROFILE_TEMPLATES`（`packages/boot/app-boot/src/profile.ts:179-195`）登记：
 
 ```ts
 web:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app']
@@ -22,7 +22,7 @@ acp:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
 
 （这里按阅读顺序列；源码声明顺序是 `acp` / `web` / `headless` / `sdk` / `sdk-minimal`，顺序无语义。）
 
-rc.1 没有增删任何模板、也没有改名：新增的是从模板派生自定义 profile 的 `dsh --from-default-profile <模板>`（[`../plugin-system/composition/04-profile-创建与保留名.md`](../plugin-system/composition/04-profile-创建与保留名.md)），以及被 Electron 保留、CLI 一律拒绝的 `desktop` 名。0011 起该选项的语义从「只建缺失的 profile」变成「在暂存目录里组装模板副本、原子改名覆盖目标目录」，重复执行同一条命令是重建而不是报错。
+从模板派生自定义 profile 用 `dsh --from-default-profile <模板>`（[`../plugin-system/composition/04-profile-创建与保留名.md`](../plugin-system/composition/04-profile-创建与保留名.md)）；`desktop` 名被 Electron 保留、CLI 一律拒绝。该选项在暂存目录里组装模板副本、原子改名覆盖目标目录；重复执行同一条命令是重建而不是报错。
 
 | 名称 | 是什么 | 命令 | 启动机制 | stdout | 进程常驻？ |
 |------|--------|------|----------|--------|-----------|
@@ -52,7 +52,7 @@ web / headless / sdk / acp 与桌面这五个 base-backed 组合共享 `dsh-base
 | Goal | 持久完成目标 | `dsh-base` 的 `goal`、`goal-round-driver`、`tool-goal`（sdk 继承 base；仅 sdk-minimal 无） |
 | 文件系统 | 受限文件访问 | `dsh-base` 的 `fs-sandbox`、`fs-observation-policy` |
 
-**消息通道**：子代理回传统一为 settle notice + `send_message` steer，fork continuable 没有 child-only section 的 KV 前缀代价——这两条都早于本跨度基线（`a66e470204` 里 `tool-subagent-report` 已不存在，`tool-subagent-fork` 注释已是「preset 层可选 continuable，无需 child-only section」），不是 rc.1 周期内的变化。
+**消息通道**：子代理回传统一为 settle notice + `send_message` steer；fork continuable 没有 child-only section 的 KV 前缀代价。
 
 **进程级重用**：这些宿主形态都通过 `ctx.agents` 驱动 agent，从 `session/event` 渲染或投影；入口层的契约（从哪进、对调用方保证什么）单点在 [`../surfaces-entrypoints/00-map.md`](../surfaces-entrypoints/00-map.md)。不是多套 Agent 实现。
 
@@ -69,7 +69,7 @@ web / headless / sdk / acp 与桌面这五个 base-backed 组合共享 `dsh-base
 
 ## 应用自有 profile
 
-launcher profile 住在 Harness home，由 `loadProfile` 经 `$DSH_HOME/profiles/<name>` 发现并做 shipped 归一化。rc.1 起还有第二种所有者：**应用自己持有的 profile 目录**，用 `loadProfileDirectory(binName, dir, installAnchor, options)`（`packages/boot/app-boot/src/profile.ts:740-774`）直接装载一个**已初始化的绝对目录**——不经过 Harness home 发现、不做 shipped 归一化、也不认 `PROFILE_TEMPLATES`。`loadProfile` 现在只是「解析目录 → `normalizeShippedProfile` → `loadProfileDirectory`」（`:789-806`；目录缺 manifest 时先 `initProfile`（`:794-801`），装载前再 `removeLinkProjections`（`:803`））。导出见 `packages/boot/app-boot/src/index.ts`。
+launcher profile 住在 Harness home，由 `loadProfile` 经 `$DSH_HOME/profiles/<name>` 发现并做 shipped 归一化。另有第二种所有者：**应用自己持有的 profile 目录**，用 `loadProfileDirectory(binName, dir, installAnchor, options)`（`packages/boot/app-boot/src/profile.ts:740-774`）直接装载一个**已初始化的绝对目录**——不经过 Harness home 发现、不做 shipped 归一化、也不认 `PROFILE_TEMPLATES`。`loadProfile` 现在只是「解析目录 → `normalizeShippedProfile` → `loadProfileDirectory`」（`:789-806`；目录缺 manifest 时先 `initProfile`（`:794-801`），装载前再 `removeLinkProjections`（`:803`））。导出见 `packages/boot/app-boot/src/index.ts`。
 
 目前的唯一实例是 Electron 的 `desktop`：`$DSH_HOME/profiles/desktop` 这个路径**仍然**在 Harness home 下、仍然叫 `profiles/<name>`，但没有 CLI 能打开它——`desktop` 不是 `PROFILE_TEMPLATES` 成员，CLI 的 boot / dump 入口被 `rejectElectronProfile` 拒绝，`plugin` 子命令默认也拒绝、仅 Desktop 自带 carrier 以 `manageDesktopProfile` 放行（`apps/cli/src/args.ts:83`、`:199`）。它由 `apps/desktop-host/` 用 `loadProfileDirectory` 装载，再交给共享的 `runProfile` 起 web 应用（0.1.7 线起；~~旧的「叠私有覆盖层、自己调 boot()、不走 runProfile」~~已随 desktop-host 重构退役）。
 
@@ -106,21 +106,21 @@ stdout 给谁，决定了能不能装 logger、能不能写 HMR 信息：
 | sdk / sdk-minimal | startup-only（协议已开始，重载打散生命周期；sdk-app 行 `packages/bundle/sdk-app/cordis.patch.yml:24`） |
 | acp | startup-only（同 SDK，`packages/bundle/acp-app/cordis.patch.yml:23`） |
 
-机制说明：base bundle 的 `hmr` 行用 `disabled: !!js "!ctx.get('profileContext')"` 门控（`packages/bundle/base/cordis.patch.yml:27-32`），所以只在 launcher profile 语境下默认开启。旧 `composeLive` / `patchReload` 机制已随 0.1.7 线移除。
+机制说明：base bundle 的 `hmr` 行用 `disabled: !!js "!ctx.get('profileContext')"` 门控（`packages/bundle/base/cordis.patch.yml:27-32`），只在 launcher profile 语境下默认开启；一次性协议的 profile 显式禁用它。
 
-ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启动时应用一次。」
+`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启动时应用一次。
 
 ## 各 Profile 的独有插件
 
 | Profile | 独有插件 / bundle |
 |---------|------------------|
-| **web** | `dsh-web-app` bundle：webserver、web-runtime、client-*（浏览器壳、wire、slots、ui-*）、session-controller 等 Remote 控制器、directory-picker、plugin-inventory、preset patch（0.1.7 线起 agent-presets 已退役、重设计为声明式 agent-preset；storage/sandbox/typert-gateway 等基础设施在 base）。0009 跨度（`a66e470204` → `183f08e9c6`）新增 8 条 insert 行：`open-in-app` / `ui-open-in-app` / `workspace-files`（基础设施）、`file-upload`（传输）、`resources` / `ui-sidebar-right` / `ui-sidebar-documentpreview` / `ui-sidebar-files`（浏览器罗盘）；0011 跨度又新增 5 条：`schedule` / `ui-schedule`（Schedule 改直接进 Web 组合）、`harness-dev-context`、`ui-secret-mask`、`ui-deepseek-model-label-1017`，详见 [`01-web.md`](./01-web.md) |
+| **web** | `dsh-web-app` bundle：webserver、web-runtime、client-*（浏览器壳、wire、slots、ui-*）、session-controller 等 Remote 控制器、directory-picker、plugin-inventory、preset patch（agent-presets 已退役、重设计为声明式 agent-preset；storage/sandbox/typert-gateway 等基础设施在 base）。Web 组合还带 `open-in-app` / `ui-open-in-app` / `workspace-files`、`file-upload`、`resources` / `ui-sidebar-right` / `ui-sidebar-documentpreview` / `ui-sidebar-files`、`schedule` / `ui-schedule`、`harness-dev-context`、`ui-secret-mask`、`ui-deepseek-model-label-1017` 等行，详见 [`01-web.md`](./01-web.md) |
 | **headless** | `dsh-headless` bundle：`headless-startup`（命令行解析）、`headless-runner`（驱动任务、打印结果） |
 | **sdk** | `dsh-sdk-app` bundle：base + 薄协议层（persona override + `sdk-app-startup`（带 `config.profile: sdk`）+ `sdk-jsonrpc-server`，`inject: [sdkAppStartup, loader]`）；不反向禁用 base 工具，另按环境条件插入 `workspace-dependencies` 与 `skill-office` |
 | **sdk-minimal** | `dsh-sdk-minimal` bundle：独立树不叠 base——工具面收窄到**平台选定的一个持久 shell**（非 win32 `persistent-bash` / win32 `persistent-pwsh`）加 `read_image` 与 `working_directory` 两个工具；无 subagent、todo、skill、web 搜索（compaction 与 token-meter 随 0011 的目录上下文收编进树内） |
 | **acp** | `dsh-acp-app` bundle：base + 薄自动化层（persona override + `acp-app-startup` + `acp`，`inject: [acpAppStartup]`）；持久化/检查点/查询在 base，不自持 |
 
-共同点变更：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`），`tool-str-replace-editor` 在 0009 跨度（`a66e470204` → `183f08e9c6`）内从全仓 shipped bundle 下线（OLD 基线里 base 仍有该行，`a66e470204:packages/bundle/base/cordis.patch.yml:424-425`；同一提交 `36a4665144` 也删掉了 sdk-app 与 web-app 的对应行）——包还在，但任何 profile 想要 `str_replace_editor` 都必须显式 `insert`（仓库里现存的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。各 bundle 的 `system-prompt` 也曾在 0009 跨度内从单个 `persona` 字段拆成 `personaPrefix`（模型介绍，section 序 0）+ `personaSuffix` 两段（`packages/core/system-prompt/src/index.ts:164` 的 `DEPLOYMENT_PERSONA_SUFFIX: 10200`、`:193` 的 `PERSONA_SUFFIX_SECTION`、`:267`/`:272` 的两个 config 字段；拆分的 `40792330c0` 是 NEW 的祖先、不是 OLD 的祖先）；**0011 起 shipped 组合不再设 `personaSuffix`**——loop 的内建 `{{cwd}}` 变量与 `personaSuffix` 里的目录从句一并退役，会话当前执行目录改由新 seam `ctx.workingDirectory` 作必需的用户上下文供给（升级指南 [`working-directory`](../../docs/upgrade-guide/v0.2.1-alpha.1/working-directory/guide.md)；归档 note [`2026-09-06-environment-prompt-suffix`](../../.agents/notes/archived/bug-fix/2026-09-06-environment-prompt-suffix.md) 只作历史）。
+共同点：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`）；`tool-str-replace-editor` 不在 shipped bundle 里，任何 profile 想要 `str_replace_editor` 都必须显式 `insert`（仓库里的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。各 bundle 的 `system-prompt` 只设 `personaPrefix`（模型介绍），shipped 组合不设 `personaSuffix`；会话当前执行目录由 `ctx.workingDirectory` 作必需的用户上下文供给（升级指南 [`working-directory`](../../docs/upgrade-guide/v0.2.1-alpha.1/working-directory/guide.md)）。
 
 ## 阅读路径
 
@@ -140,7 +140,7 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 | 路径 | 角色 |
 |------|------|
 | `packages/boot/app-boot/src/profile.ts` | `PROFILE_TEMPLATES`、`initProfile`、`loadProfile`、`loadProfileDirectory`、launcher 层的 profile 发现 |
-| `packages/util/package-manifest/` | `DshManifest`、`DshBundleManifest` 等 profile / bundle manifest 类型（本次跨度从 `app-boot` 迁出） |
+| `packages/util/package-manifest/` | `DshManifest`、`DshBundleManifest` 等 profile / bundle manifest 类型（从 `app-boot` 迁出） |
 | `packages/util/http-proxy/` | `installProxyFromEnvironment`：launcher 在任何行 mount 之前装的进程级出网代理 |
 | `packages/session/working-directory/`、`packages/session/tool-working-directory/` | 新 seam `ctx.workingDirectory` 与 `working_directory` 工具：会话当前执行目录（`Session.header.cwd` 只留原始项目身份）；base 与 sdk-minimal 都显式挂 |
 | `packages/web/web-deepseek-api/` | `deepseek-search-api` / `deepseek-fetch-api` 两个 provider，共享一份凭据与 API base（base 的 `web-deepseek-api` 行） |

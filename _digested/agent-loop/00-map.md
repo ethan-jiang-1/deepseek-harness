@@ -2,7 +2,7 @@
 
 ## 一句话
 
-ruofei 说「Agent Loop 管推进，结束却分好几层」。Loop 不是「模型回答完就结束」——一次 step 结束不等于 turn 结束，agent idle 不等于任务完成，因为 Goal 可能还是 `active`，随时发起新一轮。
+Loop 管推进，结束却分好几层：Loop 不是「模型回答完就结束」——一次 step 结束不等于 turn 结束，agent idle 不等于任务完成，因为 Goal 可能还是 `active`，随时发起新一轮。
 
 ![四层边界](./figures/layers.svg)
 

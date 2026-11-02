@@ -20,7 +20,7 @@ dsh --profile headless --help
 
 `PROFILE_TEMPLATES.headless` = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']`
 
-**注意**：`INSTALLATION_OWNED_PROFILE_TUPLES.headless` = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@deepseek-ai/dsh-headless']`（`packages/boot/app-boot/src/profile.ts:198-200`），但 `loadProfile` 中的 `normalizeShippedProfile` 会在首次加载时把它**整理回** `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']`：代码把这个 tuple 登记为「installation-owned」，即安装方曾写下的旧值，加载时按 shipped 模板重写（旧机制附带的 `patchReload` 补写已随 0.1.7 线移除——patch 重载改由 `hmr` 插件承担，headless 行显式 `disabled: true`）；用户自己改过的 bundle 列表不会被触碰（`packages/boot/app-boot/src/profile.ts:659-669`）。
+**注意**：`INSTALLATION_OWNED_PROFILE_TUPLES.headless` = `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@deepseek-ai/dsh-headless']`（`packages/boot/app-boot/src/profile.ts:198-200`），但 `loadProfile` 中的 `normalizeShippedProfile` 会在首次加载时把它**整理回** `['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']`：这个 tuple 登记为 installation-owned（安装方写下的旧值），加载时按 shipped 模板重写；用户自己改过的 bundle 列表不会被触碰（`:659-669`）。
 
 | 层 | 从哪里来 | 作用 |
 |----|---------|------|
@@ -31,7 +31,7 @@ dsh --profile headless --help
 
 | id | 做了什么 |
 |----|---------|
-| `system-prompt` | 只设 `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/headless/cordis.patch.yml:9-12`）。0011 起 shipped 组合不再设 `personaSuffix`——loop 的内建 `{{cwd}}` 与目录从句退役，执行目录改由 `ctx.workingDirectory` 供给 |
+| `system-prompt` | 只设 `personaPrefix`（`You are a coding agent powered by the {{model}} model.`）（`packages/bundle/headless/cordis.patch.yml:9-12`）。shipped 组合不设 `personaSuffix`；执行目录由 `ctx.workingDirectory` 供给 |
 | `tools` | 透传 `DSH_TOOLS_MODE` |
 | `hmr` | `disabled: true`；一次性任务只做启动期组合 |
 | `credentials` / `authorization` / `deepseek-account` | 全部 `disabled: true`；一次性任务改用启动环境凭据（`packages/bundle/headless/cordis.patch.yml:32-43`） |
@@ -43,7 +43,7 @@ dsh --profile headless --help
 | `headless-startup` | `@deepseek-ai/dsh-headless/startup` | 解析 `"<task>"` 位置参数，提供 `headlessStartup` 服务 |
 | `headless-runner` | `@deepseek-ai/dsh-headless` | 注入 `headlessStartup`，读取 task，创建 Agent，驱动到完成，打印结果（`config.task` / `sessionId` / `json` 取自 provider，patch `:27-30`） |
 
-（0008 复核注记：`ptc-runtime` 行曾误列在这里——它实为 **base** 层行，`packages/bundle/base/cordis.patch.yml:397-398`，所有 profile 共享；0.1.7 线自 code-runtime 随 PTC 命名重构改名。产品 bin 另依赖 `@deepseek-ai/dsh-experimental-ptc-runtime-python`（CPython 子进程后端，experimental，`apps/cli/package.json:127`），PTC runtime 呈双 provider 形态（node + 实验性 Python），base 挂载的仍是 node 行。）
+（`ptc-runtime` 是 **base** 层行（`packages/bundle/base/cordis.patch.yml:397-398`），所有 profile 共享。产品 bin 另依赖 `@deepseek-ai/dsh-experimental-ptc-runtime-python`（CPython 子进程后端，experimental，`apps/cli/package.json:127`），PTC runtime 呈双 provider 形态（node + 实验性 Python），base 挂载的仍是 node 行。）
 
 ## 进程模型
 

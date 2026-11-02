@@ -6,7 +6,7 @@
 
 组合差异（bundle 行、工具面、stdout 归属）见 [`../runtime-profiles/03-sdk.md`](../runtime-profiles/03-sdk.md) 与 [`05-acp.md`](../runtime-profiles/05-acp.md)；本页只写对调用方的协议保证。
 
-`a66e470204`（`dsh-v0.1.2-rc.1`）→ `183f08e9c6`（`dsh-v0.1.5-rc.1`）这个跨度内，ACP 的 `src/` 只有内部 API 适配（`persistence.ensureMaterialized` → `ctx.sessions.flush`、`persistence.list(signal)` → `persistence.list({ signal })`、resume 改走 `persistence.stat(...)`、`setup(agentCtx, agent)` 签名），方法面与能力广告未变；`packages/sdk/` 的 `src/` 一行未改。下面两节的保证清单在该跨度内只需核对行号；rc.2 起 SDK 的请求面已从 3 个扩到 7 个（见下），保证清单按当前树重核。
+下面两节的保证清单按当前树重核；SDK 的请求面是 7 个（见下），ACP 的方法面与能力广告以 `packages/acp/acp/README.md` 为准。
 
 ## ACP：自动化适配器，不是 IDE
 
@@ -57,7 +57,7 @@
 
 Python SDK（`python/sdk`）是同一 stdio JSON-RPC wire 的第二个官方客户端：它镜像 `packages/sdk/protocol` 的消息 shapes 而不 import TypeScript 包，并由 `python/sdk-runtime` 打包同版本的 `dsh` CLI、以 `--profile sdk` 启动。本页只讲 server 侧的投影，客户端形态见 [`python/sdk/README.md`](../../python/sdk/README.md)。
 
-「`src/` 没变」不等于「线上内容没变」：SDK 是无过滤透传层，而同一跨度内 `SESSION_FORMAT_VERSION` 从 `0` 走到 `3`（现值 `4`，`packages/core/session/src/types.ts:90`；0009 跨度仍为 v4），所以线上词汇表实际发生断裂（`assistant/chunk` 归零、`assistant/message` 内嵌 `data.stream`、新增 `assistant/attempt` / `system/message` / `feedback/*` / `command/*` / `tool/ptc-dispatch*`）。那是 session-format 专题的事实，这里只记它由 SDK 透传。
+SDK 是无过滤透传层，线上词汇表由 session 格式决定（`SESSION_FORMAT_VERSION` 现值 `4`，`packages/core/session/src/types.ts:90`）：`assistant/chunk` 已归零、`assistant/message` 内嵌 `data.stream`，并新增 `assistant/attempt` / `system/message` / `feedback/*` / `command/*` / `tool/ptc-dispatch*`。那是 session-format 专题的事实，这里只记它由 SDK 透传。
 
 ## 对照
 

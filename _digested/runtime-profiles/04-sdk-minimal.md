@@ -15,7 +15,7 @@ uv run --project python/sdk python scripts/smoke-python-runtime.py \
 dsh --profile sdk-minimal
 ```
 
-`sdk-minimal` 是 `PROFILE_TEMPLATES` 中的一个名字（只挂 `@deepseek-ai/dsh-sdk-minimal` 一个 bundle，`packages/boot/app-boot/src/profile.ts:192-194`）。它是唯一**不叠 `dsh-base`** 的 profile：`dsh-sdk-minimal` bundle 的 `cordis.patch.yml` 是一个 `insert`，自己持有完整（虽已收窄）的工具树。0011 起这棵树重新挂上了受限文件面与目录上下文（`filesystem`、`attachment-local`、只开 `read_image` 的 `tool-fs`、`working-directory` / `tool-working-directory`、`token-meter`、`compaction-basic`、`image-offload`、`mcp-resources`），同时删掉五个 invariant 行。
+`sdk-minimal` 是 `PROFILE_TEMPLATES` 中的一个名字（只挂 `@deepseek-ai/dsh-sdk-minimal` 一个 bundle，`packages/boot/app-boot/src/profile.ts:192-194`）。它是唯一**不叠 `dsh-base`** 的 profile：`dsh-sdk-minimal` bundle 的 `cordis.patch.yml` 是一个 `insert`，自己持有完整（虽已收窄）的工具树。这棵树挂载受限文件面与目录上下文（`filesystem`、`attachment-local`、只开 `read_image` 的 `tool-fs`、`working-directory` / `tool-working-directory`、`token-meter`、`compaction-basic`、`image-offload`、`mcp-resources`）。
 
 ## 组合构成
 
@@ -41,9 +41,9 @@ dsh --profile sdk-minimal
 | `persistent-pwsh` | `@deepseek-ai/dsh-tool-pwsh-persistent` | `:154-166` | win32 的持久 PowerShell（5 分钟 timeout） |
 | `sessions` | `@deepseek-ai/dsh-session-persistence-jsonl` | `:168-172` | JSONL 持久化，`compression: none` |
 
-两处 `description` 里的网络说明不一致：bash 侧写的是「Network access depends on the task environment. Prefer configured mirrors/proxies when they are available.」（`:148`，0008 跨度内从「无互联网，有 apt/pip 镜像」改过来），pwsh 侧仍写「You don't have access to the internet via this tool.」（`:162`，未同步改写）。
+两处 `description` 里的网络说明不一致：bash 侧写「Network access depends on the task environment. Prefer configured mirrors/proxies when they are available.」（`:148`），pwsh 侧写「You don't have access to the internet via this tool.」（`:162`）。两处不一致，改文案时一起看。
 
-`tool-str-replace-editor` 与 `fs-local` 两行曾在 **0008 跨度（`a66e470204` → `183f08e9c6`）内**从这份组合里删除——OLD 基线（`0.1.2-rc.1`）里它们分别是 `a66e470204:packages/bundle/sdk-minimal/cordis.patch.yml:159-160` 与 `a66e470204:packages/bundle/sdk-minimal/cordis.patch.yml:68-69`。`package.json` 依赖同步去掉了 `@deepseek-ai/dsh-tool-str-replace-editor` 与 `@deepseek-ai/dsh-fs-local`：编辑器提供第二个文件改写接口、并把完整 schema 塞进每次 minimal 请求，而 shell 已经能查文件、改文件；`fs-local` 则没有任何 minimal 行消费它（依据归档 note [`2026-09-03-minimal-profiles-persistent-shell-only`](../../.agents/notes/archived/simplification/2026-09-03-minimal-profiles-persistent-shell-only.md)）。**0011 把 `fs-local` 以 `filesystem` 行重新挂回**：目录上下文收编后 `working-directory` 与只开 `read_image` 的 `tool-fs` 需要受限文件服务与 attachment store；`tool-str-replace-editor` 至今没有任何 minimal 行重新引入。
+`tool-str-replace-editor` 与 `fs-local` 不在 minimal 组合里：编辑器提供第二个文件改写接口，并把完整 schema 塞进每次 minimal 请求，而 shell 已经能查文件、改文件；`fs-local` 当前以 `filesystem` 行挂回，供 `working-directory` 与只开 `read_image` 的 `tool-fs` 使用；`tool-str-replace-editor` 仍没有 minimal 行。
 
 ## 与 sdk 的差异
 
@@ -58,18 +58,18 @@ dsh --profile sdk-minimal
 | `subagent` | 有 | **无** |
 | `tool-todo` | 有 | **无** |
 | `compaction` | `compaction-basic` | 有 `compaction-basic` + `image-offload`（0011 前无） |
-| `sandbox` 策略 | 有（sdk 继承 base：sandbox-policy 默认 `workspace-write`） | `danger-full-access`（0011 起同时挂 `fs-local` 作受限文件服务） |
+| `sandbox` 策略 | 有（sdk 继承 base：sandbox-policy 默认 `workspace-write`） | `danger-full-access`（同时挂 `fs-local` 作受限文件服务） |
 | `session-checkpoint` | 有 | **无** |
 | `token-meter` | 有 | 有（0011 前无） |
-| 系统提示词 | 只有 `personaPrefix`（0011 起 shipped 组合一律不设 `personaSuffix`） | 只有 `personaPrefix`，`DSH_SYSTEM_PROMPT` 覆盖，缺省 `"You are a helpful software engineer assistant."`；不设 suffix |
+| 系统提示词 | 只有 `personaPrefix`（shipped 组合不设 `personaSuffix`） | 只有 `personaPrefix`，`DSH_SYSTEM_PROMPT` 覆盖，缺省 `"You are a helpful software engineer assistant."`；不设 suffix |
 | `includeHarnessIdentity` | 默认 true | `false` |
 | `includeRuntimeContext` | 默认 true | `false` |
 
 ## 独特之处
 
-- **Python SDK 极简示例与 sdk-minimal smoke 显式选用的组合**：`scripts/smoke-python-runtime.py` 的 `sdk-minimal` 场景把 model-visible 输出钉在 `scripts/snapshots/python-sdk-single-exe/minimal/model-visible.json`（win32 对应 `minimal/win-x64/model-visible.json`）。0011 重录后 Linux/macOS 三条请求各广告 `bash`、`read_image`、`working_directory` 三个工具，win-x64 各广告 `pwsh`、`read_image`、`working_directory`；系统段仍只有 `You are a helpful software engineer assistant.`（rc.1 那次重录是单工具 schema）。SDK 的默认 profile 不是它，而是 `sdk`（`python/sdk` 的默认值；`sdk-minimal` 由示例与 smoke 显式选择）。
+- **Python SDK 极简示例与 sdk-minimal smoke 显式选用的组合**：`scripts/smoke-python-runtime.py` 的 `sdk-minimal` 场景把 model-visible 输出钉在 `scripts/snapshots/python-sdk-single-exe/minimal/model-visible.json`（win32 对应 `minimal/win-x64/model-visible.json`）。当前 Linux/macOS 三条请求各广告 `bash`、`read_image`、`working_directory` 三个工具，win-x64 各广告 `pwsh`、`read_image`、`working_directory`；系统段仍只有 `You are a helpful software engineer assistant.`。SDK 的默认 profile 不是它，而是 `sdk`（`python/sdk` 的默认值；`sdk-minimal` 由示例与 smoke 显式选择）。
 - **工具面最窄的 Profile**：模型只看到一个平台选定的持久 shell，加上 `read_image` 与 `working_directory` 两个不带文件改写权的工具。
-- **`danger-full-access`**：没有沙箱保护，仅用于 disposable checkout 或容器。`workspaceRoot: !!js process.cwd()` 仍成立——它只是 sandbox-policy 的根；0011 起 `filesystem`（`fs-local`）重新在树里，但仍没有文件改写工具，也没有 `fs-sandbox` / `fs-observation-policy` 策略层。
+- **`danger-full-access`**：没有沙箱保护，仅用于 disposable checkout 或容器。`workspaceRoot: !!js process.cwd()` 仍成立——它只是 sandbox-policy 的根；`filesystem`（`fs-local`）在树里，但仍没有文件改写工具，也没有 `fs-sandbox` / `fs-observation-policy` 策略层。
 - **持久 PTY**：bash / pwsh 状态跨命令保持（`cd` 后 pwd 仍在新目录），5 分钟 timeout。
 - **`maxTokensAsSuccess: false`**：token 限制的 turn 报错而不软成功。
 - **内核行显式化**：不像 base-backed profile 那样靠 `dsh-base` 提供 `timer` / `llm` / `session` / `agent` / `agent-loop` 等服务行，这份组合逐行自持（`:95-138`），只省略它不用的可选 producer。
@@ -79,12 +79,12 @@ dsh --profile sdk-minimal
 | 路径 | 角色 |
 |------|------|
 | `packages/bundle/sdk-minimal/cordis.patch.yml` | 极简组合定义 |
-| `packages/bundle/sdk-minimal/package.json` | 依赖清单（0008 跨度去掉 `dsh-fs-local` / `dsh-tool-str-replace-editor`；0011 重新加回 `dsh-fs-local`、`dsh-attachment-local`、`dsh-tool-fs`、`dsh-working-directory`、`dsh-tool-working-directory`、`dsh-token-meter`、`dsh-compaction-basic`、`dsh-compaction-image-offload`、`dsh-mcp-resources`） |
+| `packages/bundle/sdk-minimal/package.json` | 依赖清单：`filesystem` / `attachment-local` / `tool-fs` / `working-directory` / `tool-working-directory` / `token-meter` / `compaction-basic` / `image-offload` / `mcp-resources`；不含 `fs-sandbox` / `fs-observation-policy` / `tool-str-replace-editor` |
 | `packages/bundle/sdk-app/src/index.ts` | `sdk-app-startup` 的 `profile` config 与 `--help` 命令语法 |
 | `packages/boot/app-boot/src/profile.ts` | `PROFILE_TEMPLATES['sdk-minimal']` |
 | `scripts/smoke-python-runtime.py` | smoke 测试（含 `minimal/model-visible.json` 快照） |
-| `scripts/snapshots/python-sdk-single-exe/minimal/` | model-visible 快照（0011 起每请求三个工具；含 `win-x64/`） |
+| `scripts/snapshots/python-sdk-single-exe/minimal/` | model-visible 快照（每请求三个工具；含 `win-x64/`） |
 | `python/development.md` | 开发说明 |
 | `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |
 
-依据 note（0011 起全部在 `archived/`）：[`2026-09-03-minimal-profiles-persistent-shell-only`](../../.agents/notes/archived/simplification/2026-09-03-minimal-profiles-persistent-shell-only.md)、[`2026-09-05-base-default-file-editor`](../../.agents/notes/archived/simplification/2026-09-05-base-default-file-editor.md)、[`2026-08-11-minimal-profiles-bare-two-tool-runtime`](../../.agents/notes/archived/feature/2026-08-11-minimal-profiles-bare-two-tool-runtime.md)；[`2026-08-24-standalone-sdk-minimal-profile`](../../.agents/notes/archived/architecture/2026-08-24-standalone-sdk-minimal-profile.md) 与 [`2026-08-23-python-sdk-dsh-profile-runtime`](../../.agents/notes/archived/architecture/2026-08-23-python-sdk-dsh-profile-runtime.md) 同样只作历史。0011 的目录上下文收编见升级指南 [`working-directory`](../../docs/upgrade-guide/v0.2.1-alpha.1/working-directory/guide.md)。
+依据 note（均在 `archived/`）：[`2026-09-03-minimal-profiles-persistent-shell-only`](../../.agents/notes/archived/simplification/2026-09-03-minimal-profiles-persistent-shell-only.md)、[`2026-09-05-base-default-file-editor`](../../.agents/notes/archived/simplification/2026-09-05-base-default-file-editor.md)、[`2026-08-11-minimal-profiles-bare-two-tool-runtime`](../../.agents/notes/archived/feature/2026-08-11-minimal-profiles-bare-two-tool-runtime.md)；[`2026-08-24-standalone-sdk-minimal-profile`](../../.agents/notes/archived/architecture/2026-08-24-standalone-sdk-minimal-profile.md) 与 [`2026-08-23-python-sdk-dsh-profile-runtime`](../../.agents/notes/archived/architecture/2026-08-23-python-sdk-dsh-profile-runtime.md) 同样只作历史。目录上下文收编见升级指南 [`working-directory`](../../docs/upgrade-guide/v0.2.1-alpha.1/working-directory/guide.md)。

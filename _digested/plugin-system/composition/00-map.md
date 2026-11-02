@@ -57,7 +57,7 @@ PTC 相对 standard 的实质差异（#3425 起步，0.1.7 线重新落地）：
 | 路径 | 角色 |
 |------|------|
 | `packages/boot/app-boot/` | `boot`、`loadProfile`、`loadProfileDirectory`、`initProfile`、`composeEntries`、`renderConfigDump` |
-| `packages/util/package-manifest/` | `DshManifest` 等 profile / bundle manifest 类型（本次跨度从 `app-boot` 迁出） |
+| `packages/util/package-manifest/` | `DshManifest` 等 profile / bundle manifest 类型（从 `app-boot` 迁出） |
 | `packages/util/http-proxy/` | 进程级出网代理安装（launcher 在任何行 mount 之前调用） |
 | `packages/boot/cmdline/` | CLI 如何选 profile / patch |
 | `packages/bundle/base/` | 每个 profile 的第一层（web、headless、sdk、acp 共享） |
