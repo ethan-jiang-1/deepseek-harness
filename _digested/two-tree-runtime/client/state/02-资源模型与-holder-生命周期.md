@@ -2,7 +2,7 @@
 
 核验入口：[`docs/subsystems/client-resources.md`](../../../../docs/subsystems/client-resources.md)、[`docs/subsystems/sidebar-right.md`](../../../../docs/subsystems/sidebar-right.md)、[`packages/client/resources/README.md`](../../../../packages/client/resources/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-09-05-client-resource-model.md`、`.agents/notes/archived/architecture/2026-09-05-sidebar-tab-types-and-navigation.md`（已归档，只作历史）、`.agents/notes/archived/architecture/2026-09-07-workspace-files-dual-face-package.md`（已归档，只作历史）。
 
-`a66e470204`（`dsh-v0.1.2-rc.1`）→ `183f08e9c6`（`dsh-v0.1.5-rc.1`）是 client 侧最大的一次结构性变化：给 Web UI 加内容不再只等于「找一个 slot 注册组件」，而是「声明一条资源协议 → 注册该协议的 provider → 用地址读」。右栏是这套模型的第一个消费者。旧写法（每个消费者自己拉数据、自己管取消）在这条路径上被替换成：一个地址只有一条流，谁持有谁负责释放。
+给 Web UI 加内容不是「找一个 slot 注册组件」，而是「声明一条资源协议 → 注册该协议的 provider → 用地址读」。右栏是这套模型的第一个消费者：一个地址只有一条流，谁持有谁负责释放。
 
 ![资源地址的四态与 holder 生命周期](../figures/resource-lifecycle.svg)
 
