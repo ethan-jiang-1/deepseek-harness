@@ -1,7 +1,5 @@
 # 工具管道、审批、timeout，以及 chunk 如何沉淀为 settlement
 
-产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`，2026-10-25 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
-
 源码核验入口：`packages/core/tools/src/index.ts` 事件、`packages/core/tools/src/ptc.ts`、`packages/llm/llm/src/assembler.ts`、`packages/llm/llm/src/assistant-stream.ts`、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
 
 本篇说明工具监听器的挂载位置，以及流式 chunk 如何形成一条内嵌流的 settlement 事件。

@@ -94,9 +94,9 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 
 ## 自我适用：用三个问题检验本专题
 
-1. **规则在哪层？** 本专题的判断主体仍落在第二层（prose），但最小第三层已经存在：`_digested/verify.mjs` 读取 [`claims.json`](./claims.json)，检查 baseline、每个 claim 的证据路径存在，并用 `git ls-tree` / `git show` 重新计算四项指标（note 文件总数、活跃 implemented 数、扩展表行数、包总数）。它仍不判断 claim 语义真伪——诚实边界在这里。
+1. **规则在哪层？** 本专题的判断主体仍落在第二层（prose），但最小第三层已经存在：`_digested/verify.mjs` 读取 [`catalog.json`](../catalog.json) 的 `baseline` 与 [`claims.json`](./claims.json)，检查每个 claim 的证据路径存在，并用 `git ls-tree` / `git show` 重新计算 11 项指标（notes 两层、扩展表行数、包总数与包组数、client / experimental 包数、`/remote` 导入数、转发事件数、vendor 本地修改数、测试政策行数）。它仍不判断 claim 语义真伪——诚实边界在这里。
 2. **正确路径与错误路径的摩擦差多少？** 每条判断带出处标记：`[原文]` / `[源码]` 与 `[推断]` / `[框架]` 分开。「说不出从哪挖出来的判断」因此变得显眼——这是本专题自己的 paved road。
-3. **错误何时被发现？** 上游同步时按 `_change_log/` 复核（基线变了会牵动证据锚点），以及每次人读时。没有机器帮本专题抓错——诚实地说，这就是第二层载体的处境，也是第三层载体更值得向往的原因。
+3. **错误何时被发现？** 上游同步时按 `_change_log/` 复核（基线变了会牵动证据锚点）；`catalog.json` 与 `verify.mjs` 会把页面清单、覆盖矩阵、基线唯一性与 claim 证据路径变成红灯；判断本身的语义真伪仍只在每次人读时检验。诚实地说，第三层只覆盖可机械判定的部分。
 
 ## 结论
 

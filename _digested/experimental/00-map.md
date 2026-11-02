@@ -1,7 +1,5 @@
 # Experimental · 实验能力收编地
 
-产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`），增量见 [`_change_log/0011`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
-
 ## 一句话
 
 `packages/experimental/` 是**全部实验能力的收编地**，当前 **47 个包**：0.2.1 线把此前散落在产品组里的可选包整族迁入（`packages/hooks/`、`packages/webhook/` 两个组解散，`tool-session-query`、`tool-terminal`、`tool-ralph`、`skill-badge`、`session-title-all-prompts-llm` 等从各自产品组移出，commit `b48384223a`）。它的定义不是「未发布区」，而是：完整公开合同仍在评估、没有产品支持承诺。单独成专题的理由不是这些包彼此相似，而是它们共享同一条边界——**实验合同**：行为或 API 可变、能力可被撤下，但工程、安全、文档、测试与已发布数据的义务一条不减。

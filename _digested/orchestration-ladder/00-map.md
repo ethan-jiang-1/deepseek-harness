@@ -1,7 +1,5 @@
 # Work Orchestration Primitives Ladder · 工作编排原语阶梯
 
-专题基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）。本页与全部结论页的 path:line 均按该产品源码 commit 复核；上一基线是 `639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）。**专题 HEAD 指产品源码 commit，不是文档 commit**；若再同步到新的产品 commit，应重新运行引用复核并重写漂移行号。
-
 ## 一句话
 
 ruofei 说「这个其实是一个 agent harness 今后的一个趋势，我们要好好充分利用一下 DSH 这个能力」。本专题从**驾驶座视角**（harness 的使用者，不是插件开发者）回答一个家族问题：**DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语？各自保证什么、隔离什么？什么时候用哪个？怎么组合？**

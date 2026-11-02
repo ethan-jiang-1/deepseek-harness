@@ -1,7 +1,5 @@
 # Framework · 两棵树共用的框架本体
 
-产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`）。本专题四篇的结论在 `687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`）上逐条核过；`rc.2 → rc.5` 的两个跨度（[`0012`](../../_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md)、[`0013`](../../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)）对 `vendor/` 零 diff（`git diff 687f282e..b830ec95 -- vendor` 为空），因此结论沿用，只把基线行对齐到 rc.5。rc.2 之前那次跨度对照的 OLD 侧为 `639ed015`（`dsh-v0.2.0-rc.2`），增量见 [`_change_log/0011`](../../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
-
 ## 一句话
 
 Harness 把 Cordis 源码放进 `vendor/`，rescoped 成 `@deepseek-ai/cordis`，再在上面长产品。读 dsh 之前先分清三件事：**上游原语**、**本仓库记在 `vendor/README.md` 的本地修改**、**产品插件怎么用它们**。包名映射（上游包名 ↔ `@deepseek-ai/*` 产品名）的权威是 [`docs/rescope.md`](../../../docs/rescope.md)，`vendor/README.md` 只记版本与本地修改。

@@ -33,7 +33,7 @@
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。
 
-**选基线的口径（0012 定稿）**：只同步**已发布版本的内容**，目标是当前版本的 **release tag**（本轮 `dsh-v0.2.1-rc.3`）。alpha / beta 不追；0.2.1 线尚未 final，所以取最后一个 RC。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`，0007 起改成「最后一个 RC」，沿用至今。
+**选基线的口径（0012 定稿）**：只同步**已发布版本的内容**，目标是当前版本的 **release tag**（本轮 `dsh-v0.2.1-rc.5`）。alpha / beta 不追；0.2.1 线尚未 final，所以取最后一个 RC。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`，0007 起改成「最后一个 RC」，沿用至今。
 
 **「跟上 master」的正确含义**：取 master 上**已发布版本的内容**，不是 master 分支头。master 可能领先 release tag 很多未发版提交（0012 时是 **1533 个**）；跟分支头会把未发布机制写进语料，也会让「版本」失去意义。tag 就是目标的唯一名字。
 
@@ -102,7 +102,7 @@ comm -23 /tmp/a.txt /tmp/b.txt   # 缺失，必须为空
 
 - **把「跟上 master」读成 master 分支头**（0012）。当时对齐到 `22ddee37`，多出 1533 个未发版提交，已回退。target 的唯一名字是 **tag**。0013 时 master 领先 rc.5 达 2508 个未发版提交，同样不跟。
 - **用临时 index + `git add -A` 做验收**（0013）。空 index 会让所有文件都算 untracked，`.gitignore` 于是生效，`*.local`、`snapshots/.../workspace.expected/.agents/worktrees/` 下的夹具被静默漏掉，产出假的「4 个文件缺失」。验收只走上面两条：tag 树 vs index 树、集合 comm。
-- **把版本号写进链接路径，然后每轮批量替换**（0013）。语料的外部引用曾经固定到 `blob/dsh-v0.2.1-rc.N/...`，结果是「换一个版本核验」变成改 322 行文本。实测 128 个目标路径中 125 个在 rc.2 与 rc.5 之间逐字节相同——版本号在链接里不承载信息。**已改为链接一律指向 `blob/master/`**，核验版本只记在索引页；`_dsh_plugin_agent_ready_development/verify.mjs` 的白名单锁死只允许 `master`（`main`、tag、SHA 一律拒）。**同步时不要再改这批链接**；真需要版本的地方只写路径与文字，不写裸 URL。
+- **把版本号写进链接路径，然后每轮批量替换**（0013）。语料的外部引用曾经固定到 `blob/dsh-v0.2.1-rc.N/...`，结果是「换一个版本核验」变成改 322 行文本。实测 128 个目标路径中 125 个在 rc.2 与 rc.5 之间逐字节相同——版本号在链接里不承载信息。**已改为链接一律指向 `blob/master/`**，核验版本只记在 `catalog.json` 一处；`_digested/verify.mjs` 与 `_dsh_plugin_agent_ready_development/verify.mjs` 的白名单锁死只允许 `master`（`main`、tag、SHA 一律拒）。**同步时不要再改这批链接**；真需要版本的地方只写路径与文字，不写裸 URL。
 - **只看路径不看内容**。`read-tree` 之后的 index 与工作区可能短暂不一致，必须 `git write-tree` 后比 blob，才叫零差异。
 - **中文路径的 `quotePath` 陷阱**。`git ls-tree` 不转义、`git ls-files` 默认转义，混用时会出现约 65 条假差异（正好是语料里带中文的文件数）。两边都加 `-c core.quotePath=false`。
 
@@ -117,14 +117,14 @@ pnpm run verify-repository-references  # 验证第 6 项例外仍然生效
 
 ### 语料自身怎么改：读宪章
 
-同步口径管的是「产品树怎么追上上游」，不管「语料内容怎么写」。语料内部的引用形态、版本号能出现在哪、升级时哪些动作该做哪些不该做，见 [`../CORPUS-CHARTER.md`](../CORPUS-CHARTER.md)。四份语料各带一份内容相同的副本（因为每份都得能单独取走使用），改一处时四份一起改。
+同步口径管的是「产品树怎么追上上游」，不管「语料内容怎么写」。语料内部的引用形态、版本号能出现在哪、升级时哪些动作该做哪些不该做，见 [`../CORPUS-CHARTER.md`](../CORPUS-CHARTER.md)。四份语料各带一份**逐字一致**的副本（语料名已在正文中中性化；`_misc` 的冻结存档例外写在公共正文里），因为每份都得能单独取走使用；改一处时四份一起改，由校验器比对哈希。
 
 最关键的一条提前说：**改 URL 不等于复核**。把一批链接从旧 tag 扫成新 tag，一个结论都没核对，却消耗了整轮注意力，还制造出「修订了很多」的错觉。
 
 每次 sync 同时执行以下维护动作：
 
 1. 在本目录新增一条记录，写清产品源码 commit 范围和触及的专题。
-2. 更新 [`../00-index.md`](../00-index.md) 的产品源码审计基线。
-3. 在 [`../_coverage/00-index.md`](../_coverage/00-index.md) 将受影响专题标为“需复核”；完成源码、图和链接审计后再更新其最近核验 commit。
+2. 更新 [`../catalog.json`](../catalog.json) 的 `baseline`（唯一一处）；[`../00-index.md`](../00-index.md) 与 [`../_coverage/00-index.md`](../_coverage/00-index.md) 的渲染行由 `render-indexes.mjs` 更新。
+3. 在 `catalog.json` 把受影响页面的 `status` 标为 `needs-recheck`；完成源码、图与链接审计后写入 `verifiedAt` 与最终状态。
 4. 更新 `../verify.mjs` 的 `EXPECTED_BASELINE` 与 `../harness-idea/claims.json` 的 `baseline` 为新 tag 的完整哈希；若计数指标（包数、notes 数）随版本变化，一并改 `claims.json` 的 expected 值。
-5. 运行 `node _digested/verify.mjs` 与 `pnpm run verify-repository-references`。
+5. 运行 `node _digested/render-indexes.mjs`、`node _digested/verify.mjs` 与 `pnpm run verify-repository-references`。

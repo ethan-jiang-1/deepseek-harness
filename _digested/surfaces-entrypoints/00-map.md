@@ -1,7 +1,5 @@
 # Surfaces · 人对机器的入口
 
-产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`），本专题三页（01–03）的结论与该 commit 的项目树一致；`rc.2` → `rc.3` 的增量见 [`_change_log/0012`](../_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md)，`rc.3` → `rc.5` 见 [`0013`](../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)；历史跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`）、上一消化基线为 `46a7f68b09`（`dsh-v0.1.7-rc.1`）。
-
 ## 一句话
 
 CLI、headless、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`Agent` 接口和 session 事件模型，不是六套 agent 实现。不同入口可以启动不同进程和不同插件组合；每棵组合后的树都通过 `ctx.agents` 驱动 agent，并从 `session/event` 渲染或投影。

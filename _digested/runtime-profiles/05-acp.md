@@ -51,7 +51,7 @@ dsh --profile acp
 
 ## 与 SDK 的核心差异
 
-面向调用方的差异（prompt 返回、线上内容、取消、审批、图像、典型消费者）单点在 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md) 的对照表；本页只记组合后果：两者都是 `dsh-base` 上的薄协议层，`dsh-acp-app` 另设 `session-title-llm: disabled` 与硬编码的默认 model，而 `dsh-sdk-app` 保持 base 的模型与工具面。
+面向调用方的差异（prompt 返回、线上内容、取消、审批、图像）见 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md) 的正文与对照表；本页只记组合后果：两者都是 `dsh-base` 上的薄协议层，都 override `system-prompt` 的 `personaPrefix` 并关掉 `session-title-llm`。`dsh-acp-app` 另硬编码默认 model（`deepseek-official` / `deepseek-v4-flash`），`dsh-sdk-app` 另按环境条件插入 `workspace-dependencies` 与 `skill-office`——sdk 的工具面是 base 加这两行，不是原样继承。
 
 ## 独特之处
 

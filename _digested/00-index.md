@@ -2,7 +2,7 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **产品源码审计基线**：DeepSeek Harness `dsh-v0.2.1-rc.5`，commit `b830ec950faba0a46dda564be3e2d854afed94f1`。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐专题复核。最近一次合入见 [`_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md`](./_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)；**执行口径与可照做的同步操作手册**的唯一权威在 [`_change_log/00-index.md`](./_change_log/00-index.md)（`ethan` = 目标 release tag 的原样 + 6 项本地独有内容，按内容级而非路径级验收，没有 merge 这回事）。0008 轮语料维护的**独立复核**见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)；0009 轮的**独立反查**见 [`_change_log/0009-independent-recheck.md`](./_change_log/0009-independent-recheck.md)。本地维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个语料目录、`.pi/`、`scripts/verify-repository-references.{ts,spec.ts}` 的本地补丁，以及 `_misc/` 下**不入库**的 `_model_vendors/`（多 vendor 研究笔记，高频改动且可能含账号/密钥材料，忽略规则在 `_misc/.gitignore`）。`_misc` 为低重要性杂项：`_references` 冻结存档只随轮更新基线行，`_scratch` 不跟踪内容。
+> **产品源码审计基线**：以 [`catalog.json`](./catalog.json) 的 `baseline` 为准；当前渲染值见 [`_coverage/00-index.md`](./_coverage/00-index.md)。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐页复核。合入记录与**执行口径与可照做的同步操作手册**的唯一权威在 [`_change_log/00-index.md`](./_change_log/00-index.md)（`ethan` = 目标 release tag 的原样 + 6 项本地独有内容，按内容级而非路径级验收，没有 merge 这回事）。0008 轮语料维护的**独立复核**见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)；0009 轮的**独立反查**见 [`_change_log/0009-independent-recheck.md`](./_change_log/0009-independent-recheck.md)。本地维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个语料目录、`.pi/`、`scripts/verify-repository-references.{ts,spec.ts}` 的本地补丁，以及 `_misc/` 下**不入库**的 `_model_vendors/`（多 vendor 研究笔记，高频改动且可能含账号/密钥材料，忽略规则在 `_misc/.gitignore`）。`_misc` 为低重要性杂项：`_references` 冻结存档只随轮更新基线行，`_scratch` 不跟踪内容。
 
 > **维护宪章**：[`CORPUS-CHARTER.md`](./CORPUS-CHARTER.md)。改本目录前先读它——引用形态、版本号能写在哪、升级时改什么不改什么、以及为什么这些规则是强制而不是建议。它优先于任何单轮记录。
 
@@ -24,7 +24,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `ethan` | 研究分支。源码整树照搬 upstream tag；研究材料位于 `_digested/`、`_dsh_plugin_agent_ready_development/`、`_faq_on_digested/` 与 `_misc/`。 |
 | `ethan2` | `ethan` 的工作副本，两者在每次同步后保持指向同一提交。 |
 
-同步方式（权威口径见 [`_change_log/00-index.md`](./_change_log/00-index.md) 的「同步操作手册」）：把产品源码**整树对齐到当前发布版本的 release tag**（本轮 `dsh-v0.2.1-rc.5`；不做内容合并、不跟 master 分支头、除 6 项本地独有内容外不留任何本地源码补丁），再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。旧口径「非快进 merge + 逐冲突解决」在 0008 退役。**不要读成「跟 master 分支头」**——master 上未发版的提交不属于本轮（0012 时领先 1533 个、0013 时领先 2508 个，0012 曾因此返工一次）。
+同步方式（权威口径见 [`_change_log/00-index.md`](./_change_log/00-index.md) 的「同步操作手册」）：把产品源码**整树对齐到当前发布版本的 release tag**（取 [`catalog.json`](./catalog.json) 的 `baseline.tag`；不做内容合并、不跟 master 分支头、除 6 项本地独有内容外不留任何本地源码补丁），再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。旧口径「非快进 merge + 逐冲突解决」在 0008 退役。**不要读成「跟 master 分支头」**——master 上未发版的提交不属于目标版本；具体领先量记在当轮 `_change_log`。
 
 ## 与同级目录的关系
 
@@ -49,11 +49,11 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
 | `orchestration-ladder/` | 工作编排原语阶梯 | 从驾驶座视角：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个、怎么组合。 |
 | `capability-seams/` | 可替换能力 | 同一个能力（读文件、跑命令……）有多个插件实现时，怎么换实现而不改调用方——插件的竞聘位。 |
-| `plugin-system/` | 插件系统（三轴） | 插件系统的三个面：`composition/` 怎么叠成活树、`lifecycle/` 从打包到卸载的七段、`inventory/` 343 个包按组列成清单。动手写、要交付、或查「装了为什么没生效」都从这里进。 |
-| `experimental/` | 可选能力与原型 | 已评估但未承诺产品支持的能力（47 包）。**实验身份与「可选交付」相互独立**：可选包收编进本组，而非 experimental 的包才需要产品用途或显式分类（`scripts/product-package-policy.ts`）。 |
+| `plugin-system/` | 插件系统（三轴） | 插件系统的三个面：`composition/` 怎么叠成活树、`lifecycle/` 从打包到卸载的七段、`inventory/` 把现成包按组列成清单（数量以该专题为准）。动手写、要交付、或查「装了为什么没生效」都从这里进。 |
+| `experimental/` | 可选能力与原型 | 已评估但未承诺产品支持的实验能力。**实验身份与「可选交付」相互独立**：可选包收编进本组，而非 experimental 的包才需要产品用途或显式分类（`scripts/product-package-policy.ts`）。 |
 | `tools-prompt-llm/` | 模型可见面 | 模型每一步看见什么：工具清单、系统提示词、历史投影怎么组装。 |
 | `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、headless、Web、ACP、SDK、桌面六个入口怎么复用同一台运行时。 |
-| `test-strategy/` | 测试体系 | DSH 怎么测：七层证据形态、录制会话快照、CI 门禁与防假绿、可靠性纪律与测试基建——55 行测试政策的完整展开。 |
+| `test-strategy/` | 测试体系 | DSH 怎么测：七层证据形态、录制会话快照、CI 门禁与防假绿、可靠性纪律与测试基建——`docs/testing.md` 测试政策的完整展开。 |
 | `_coverage/` | 覆盖矩阵 | 维护索引：每个专题承诺回答什么、最后对到哪个源码 commit。 |
 | `harness-idea/` | 消化后的理解与判断 | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪。 |
 | `_change_log/` | 上游同步记录 | 每次 upstream 同步的范围、审计与修复记录。 |
@@ -114,9 +114,10 @@ system-overview/
 修改本目录后运行：
 
 ```sh
+node _digested/render-indexes.mjs   # 从 catalog.json 重生成覆盖矩阵
 node _digested/verify.mjs
 ```
 
-该检查验证 Markdown / SVG / 校验脚本的严格 UTF-8 与单个结尾换行、Markdown 相对链接和锚点，以及 SVG 的 XML 结构与实体。
+`verify.mjs` 校验：Markdown / SVG / 校验脚本的严格 UTF-8 与单个结尾换行、Markdown 相对链接和锚点、SVG 的 XML 结构与实体、外部链接近 `master`、`catalog.json` 与文件树双向一致、覆盖矩阵与 catalog 渲染一致、Markdown 表列数与表头一致、四份宪章副本逐字一致，以及 `claims.json` 的 claim 与计数指标。
 
-宿主门禁的关系：仓库根的 `verify-repository-references` 拒绝维护文件里出现真实 commit 标识符，但**研究语料已被显式豁免**（`scripts/verify-repository-references.ts:20` 的 `researchPrefixes` 覆盖本目录与 `_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/`），因为本语料按自身引用规范要求标注基线与历史提交号。该门禁对本目录预期为**绿**；它仍对语料做组织 URL 检查。本目录的权威校验器仍是上面的 `verify.mjs`。
+宿主门禁的关系：仓库根的 `verify-repository-references` 拒绝维护文件里出现真实 commit 标识符，但**研究语料已被显式豁免**（`scripts/verify-repository-references.ts:20` 的 `researchPrefixes` 覆盖本目录与 `_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/`），因为本语料仍需要引用历史 commit 作为证据与 `_change_log/` 记录。该门禁对本目录预期为**绿**；它仍对语料做组织 URL 检查。本目录的权威校验器仍是上面的 `verify.mjs`。

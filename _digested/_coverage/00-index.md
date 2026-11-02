@@ -2,92 +2,317 @@
 
 本页记录 `_digested` 明确回答了哪些问题、结论住在哪篇机制参考、最后对哪个产品源码 commit 复核。它不按篇数估算“完成度”，也不承诺覆盖未列出的包或行为；完整包组清单由 [`packages/README.md`](../../packages/README.md) 维护。
 
-产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`）。受影响行的判定见 [`../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md`](../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)。
+<!-- catalog:coverage:start -->
+产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`）。本块由 [`render-indexes.mjs`](../render-indexes.mjs) 从 [`catalog.json`](../catalog.json) 生成；不要手改。
 
-「最近核验」列写的是该专题最后对到的产品 commit，可能**小于等于**产品源码基线：上游同步并未触及某个专题时，其核验值沿用上一轮，不会被基线更新。这不是口径不一致，只说明该专题的入口在本次同步中无 diff。0005 复核后当时的九行曾全部对齐 `a66e470204`；0006 跨度（1512 个提交，含 session 格式升到 v3、客户端资源面、subprocess containment、约 700 篇 Note 归档）触及全部专题，故全部重新标为「需复核」，逐专题审计后写回新值。矩阵补上了两个此前从未登记的行：0006 的 `runtime-profiles/`，以及 0007 复核时发现的 `harness-idea/`——它从 0004 起就是 `00-index.md` 列出的专题，却一直没进本矩阵，因此 0007 前本页只声明十行而实际有十一个专题。0008 跨度（3304 个提交：session 格式升 v4 并新增 persistence-changes 声明树、sandbox 组转正、ssh/browser-use/computer-use/deliverables/document/ptc-runtime/mcp-resources 等新面、tool-cordis 缩减为两工具、preset 声明式重设计、E2B/code-runtime/agent-presets 等 332 个旧路径退役）同样触及全部十一行，复核后全部写回 `46a7f68b09`。0009 跨度（794 个提交：Schedule 转正为 schedule-bundle、账号/模型面与遥测大改、user-questions timed waits、llm 动态工具更新、desktop/web/client 大批 UI 修复；vendor 零 diff，session 格式保持 v4）再次触及全部十一行，同步执行时全部标为「需复核」，逐专题审计后写回新值。0011 跨度（1925 个提交：`packages/experimental/` 收编全部可选包并使 `hooks`/`webhook`/`runtime-diagnostics` 三组解散、包 316 → 342、新增插件市场/远程访问 RBAC/DeepSeek Search-Fetch/working-directory 等面、`build` 拆为 `build:artifacts` + `build:check`；session 格式保持 v4，vendor cordis 仍 rc.7 但新增两处本地修改）同样触及全部行，同步执行时全部标为「需复核」，随后按专题分九批完成吸纳（路径失效找继任或登记退役、行号漂移重锚、断言与硬数字按新树重测、新面补落点四类动作在每批内一次做完），**已全部写回** `687f282e86`。本轮同时发现并修正了三类「按路径求交覆盖不到」的存量缺陷：按数字陈述而不引用变动路径的文件、引用已整族删除机制的文件、以及引文本身不可溯源的文件（两条假引文，其中一条带历史标注、另一条只在两个 commit 之间存活了 7 分钟）——判据见 [`../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md) 的「反查纪律」节。
+## 专题总览
 
-0012 跨度只有 6 个提交，触及五个专题（runtime-profiles、capability-seams、plugin-inventory、tools-prompt-llm、surfaces-entrypoints）与两篇 FAQ；这五行写回 `1f81c047fc`，其余行沿用 `687f282e86`——它们的入口在本次跨度内零 diff。
+| 专题 | 范围 | 页数 | 已核验 | 沿用 | 未登记 |
+|---|---|---:|---:|---:|---:|
+| [`system-overview/`](../system-overview/00-map.md) | 按下回车之后，插件怎么拼成一次能跑的对话；扩展点、单 loop 对照与门禁/基准。 | 4 | 0 | 4 | 0 |
+| [`two-tree-runtime/`](../two-tree-runtime/00-map.md) | 同一套 Cordis 在 Node 与浏览器各长一棵树，中间是类型化的线；一条会话事件穿过两棵树。 | 2 | 2 | 0 | 0 |
+| [`two-tree-runtime/framework/`](../two-tree-runtime/framework/00-map.md) | 两棵树共用的框架本体：五原语、waterfall、Loader/Include、vendor 本地修改。 | 5 | 1 | 4 | 0 |
+| [`two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) | 分层与单向依赖、模块身份与激活、浏览器启动、状态所有权、资源与视图、插件纪律。 | 15 | 4 | 11 | 0 |
+| [`two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md) | Typert 声明、Gateway 派发、载体与认证、两条出站链路与 wire 校验。 | 9 | 1 | 8 | 0 |
+| [`runtime-profiles/`](../runtime-profiles/00-map.md) | 一次启动装入什么：五个 launcher profile 与 desktop 应用自有 profile 的组合、差异与装载路径。 | 7 | 2 | 5 | 0 |
+| [`session-and-loop/`](../session-and-loop/00-map.md) | 会话存在哪、怎么读回来：事件映射、inbox/turn 时序、换 loop 的半径、格式世代。 | 5 | 0 | 5 | 0 |
+| [`agent-loop/`](../agent-loop/00-map.md) | 一次对话怎么推进与收尾：turn/step/activity/goal 边界、goal 状态机与自动续轮。 | 5 | 0 | 5 | 0 |
+| [`orchestration-ladder/`](../orchestration-ladder/00-map.md) | 从驾驶座看工作编排原语：todo、subagent、workflow、ralph、goal、jobs、schedule、teams 的保证与组合。 | 16 | 0 | 16 | 0 |
+| [`capability-seams/`](../capability-seams/00-map.md) | 同一能力有多个实现时怎么换而不改调用方；从 bash 到 SSH、MCP、hooks 与新执行面。 | 11 | 0 | 11 | 0 |
+| [`plugin-system/`](../plugin-system/00-map.md) | 插件系统的三个轴：有什么、怎么成树、怎么走完一生；对外暴露另见 two-tree-runtime。 | 1 | 1 | 0 | 0 |
+| [`plugin-system/composition/`](../plugin-system/composition/00-map.md) | 一份 profile 怎么叠成运行中的插件树；dump、HMR、启动窗口与首屏交接。 | 6 | 1 | 5 | 0 |
+| [`plugin-system/lifecycle/`](../plugin-system/lifecycle/00-map.md) | 插件从打包到卸载的七段；安装、启动、首启、配置、诊断、信任与端到端。 | 13 | 5 | 8 | 0 |
+| [`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) | 现成包、服务与工具的横切清单、复用出路与分类法。 | 6 | 0 | 6 | 0 |
+| [`experimental/`](../experimental/00-map.md) | 已评估但未承诺产品支持的实验能力：Python 子进程、Agent Teams、Inspector。 | 4 | 0 | 4 | 0 |
+| [`tools-prompt-llm/`](../tools-prompt-llm/00-map.md) | 模型每一步看见什么：工具清单、系统提示词、历史投影与内容块。 | 7 | 0 | 7 | 0 |
+| [`surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md) | 人/程序从哪里进：CLI、headless、Web、ACP、SDK、桌面，以及它们复用的 runtime spine。 | 4 | 2 | 2 | 0 |
+| [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：七层证据、快照机制、CI 门禁、可靠性、插件作者测试面与快照对外面。 | 12 | 0 | 12 | 0 |
+| [`harness-idea/`](../harness-idea/00-map.md) | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。 | 10 | 0 | 10 | 0 |
 
-0013 跨度跨两个 tag（rc.4、rc.5）共 6 个内容提交，实际源码变更 39 个文件（不含 `package.json` 版本位）。变更集中在客户端 UI 渲染（`ui-chat` 新增 reasoning body 槽位与 `reasoningText()`、`ui-conversation` tooltip）与 ACP stdout 诊断纪律（`llm-deepseek-account`、`mcp-resources`、`mcp-client` 的 resources 能力门），因此标为「需复核」的只有 `surfaces-entrypoints/`、`runtime-profiles/`、`capability-seams/` 三行；`plugin-system/inventory/` 的包数在 rc.3 → rc.5 之间保持 343 不变，其余行入口零 diff。
+## 页面明细
 
-复核已完成并写回 `b830ec950f`：`surfaces-entrypoints/05` 的「slot 与 props 纪律」补了 `ReasoningBodyOwnerProps` 从 `{text,running}` 到 `{rawText,text,running}` 的改义、`reasoningText()` 的 signature 剥离规则与 `process-activity` 的复用关系、以及 Content Factory 不再继承 owner props 这条收缩；`capability-seams/08` 补了 `mcp-client` 的 resources 能力门（未声明 capability 时返回空页而不调用 SDK，理由正是 SDK 会往 stdout 写 `console.debug`）——这把「stdout 是协议通道」从 profile 侧的描述提升成了对 seam 的反向约束。`runtime-profiles/05-acp` 与 `surfaces-entrypoints/02` 原已把「stdout 是纯协议帧」显式写成不变量，无需修改。三项硬计数重测均不变。
+### `system-overview/`
 
-## 状态
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../system-overview/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
+| [`01-扩展表非显然落点`](../system-overview/01-扩展表非显然落点.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`02-对照单一loop`](../system-overview/02-对照单一loop.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`03-门禁与性能基准`](../system-overview/03-门禁与性能基准.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+
+### `two-tree-runtime/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../two-tree-runtime/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-一条会话事件穿过两棵树`](../two-tree-runtime/01-一条会话事件穿过两棵树.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+
+### `two-tree-runtime/framework/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../two-tree-runtime/framework/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-五条原语对照源码`](../two-tree-runtime/framework/01-五条原语对照源码.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`02-waterfall-与事件合同`](../two-tree-runtime/framework/02-waterfall-与事件合同.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`03-loader-include-与js插值`](../two-tree-runtime/framework/03-loader-include-与js插值.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`04-vendor-本地修改`](../two-tree-runtime/framework/04-vendor-本地修改.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+
+### `two-tree-runtime/client/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../two-tree-runtime/client/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`rules/01-export-与包内目录`](../two-tree-runtime/client/rules/01-export-与包内目录.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`rules/02-依赖-构建期环境与三处注册面`](../two-tree-runtime/client/rules/02-依赖-构建期环境与三处注册面.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`rules/03-样式与本地化`](../two-tree-runtime/client/rules/03-样式与本地化.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`rules/04-测试阶梯与三道-gate`](../two-tree-runtime/client/rules/04-测试阶梯与三道-gate.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`state/01-谁拥有一份状态`](../two-tree-runtime/client/state/01-谁拥有一份状态.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`state/02-资源模型与-holder-生命周期`](../two-tree-runtime/client/state/02-资源模型与-holder-生命周期.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`state/03-会话窗口与-generation`](../two-tree-runtime/client/state/03-会话窗口与-generation.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`state/04-workspace-模型`](../two-tree-runtime/client/state/04-workspace-模型.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`tree/01-六层与单向依赖链`](../two-tree-runtime/client/tree/01-六层与单向依赖链.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`tree/02-模块身份与激活顺序`](../two-tree-runtime/client/tree/02-模块身份与激活顺序.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`tree/03-浏览器启动与首屏交接`](../two-tree-runtime/client/tree/03-浏览器启动与首屏交接.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`view/01-slot-与-props-纪律`](../two-tree-runtime/client/view/01-slot-与-props-纪律.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`view/02-conversation-node-纪律`](../two-tree-runtime/client/view/02-conversation-node-纪律.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`view/03-右栏-与-document-preview`](../two-tree-runtime/client/view/03-右栏-与-document-preview.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+
+### `two-tree-runtime/remote/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../two-tree-runtime/remote/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`connection/01-载体-rpcId-与逻辑流`](../two-tree-runtime/remote/connection/01-载体-rpcId-与逻辑流.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`connection/02-认证与浏览器宿主`](../two-tree-runtime/remote/connection/02-认证与浏览器宿主.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`gateway/01-Host-派发与访问控制`](../two-tree-runtime/remote/gateway/01-Host-派发与访问控制.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`gateway/02-客户端-mount-与装配`](../two-tree-runtime/remote/gateway/02-客户端-mount-与装配.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`streams/01-一条-emit-两条出站链路`](../two-tree-runtime/remote/streams/01-一条-emit-两条出站链路.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`streams/02-三类帧与-wire-校验`](../two-tree-runtime/remote/streams/02-三类帧与-wire-校验.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`typert/01-声明期-装饰器与-namespace`](../two-tree-runtime/remote/typert/01-声明期-装饰器与-namespace.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`typert/02-类型图与两族产物`](../two-tree-runtime/remote/typert/02-类型图与两族产物.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+
+### `runtime-profiles/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../runtime-profiles/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-web`](../runtime-profiles/01-web.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
+| [`02-headless`](../runtime-profiles/02-headless.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
+| [`03-sdk`](../runtime-profiles/03-sdk.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
+| [`04-sdk-minimal`](../runtime-profiles/04-sdk-minimal.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
+| [`05-acp`](../runtime-profiles/05-acp.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
+| [`06-desktop`](../runtime-profiles/06-desktop.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+
+### `session-and-loop/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../session-and-loop/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
+| [`01-session-event-map`](../session-and-loop/01-session-event-map.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`02-inbox-与turn-时序`](../session-and-loop/02-inbox-与turn-时序.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`03-换loop的半径`](../session-and-loop/03-换loop的半径.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`04-格式世代与迁移`](../session-and-loop/04-格式世代与迁移.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+
+### `agent-loop/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../agent-loop/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
+| [`01-goal-lifecycle`](../agent-loop/01-goal-lifecycle.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`02-goal-round-driver`](../agent-loop/02-goal-round-driver.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`03-activity-vs-goal-boundaries`](../agent-loop/03-activity-vs-goal-boundaries.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`04-agent-runtime-identity`](../agent-loop/04-agent-runtime-identity.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+
+### `orchestration-ladder/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../orchestration-ladder/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
+| [`01-workflow-模型编写的JS编排脚本与子代理扇出机制`](../orchestration-ladder/01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`02-什么时候用哪个原语-官方选择决策语义全景`](../orchestration-ladder/02-什么时候用哪个原语-官方选择决策语义全景.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面`](../orchestration-ladder/03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`04-ralph-fresh-agent循环的轮间传递与固定脚本机制`](../orchestration-ladder/04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`05-goal-驾驶座用法-objective写法轮预算与终结纪律`](../orchestration-ladder/05-goal-驾驶座用法-objective写法轮预算与终结纪律.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`06-jobs与schedule-后台作业平台与定时跟进的时间平面`](../orchestration-ladder/06-jobs与schedule-后台作业平台与定时跟进的时间平面.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律`](../orchestration-ladder/07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`08-组合模式-归属链深度预算通知通道与收尾纪律`](../orchestration-ladder/08-组合模式-归属链深度预算通知通道与收尾纪律.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相`](../orchestration-ladder/09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`10-完成语义与崩溃窗口-接受可见静止处置`](../orchestration-ladder/10-完成语义与崩溃窗口-接受可见静止处置.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`11-图计算的本质-不变量推导与执行的三件分置`](../orchestration-ladder/11-图计算的本质-不变量推导与执行的三件分置.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`12-Session谱系与Agent实例-持久边与活体权限`](../orchestration-ladder/12-Session谱系与Agent实例-持久边与活体权限.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`13-持久事实派生投影与内存权限-状态三分法`](../orchestration-ladder/13-持久事实派生投影与内存权限-状态三分法.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`14-资源预算与公平性-深度并发总量与容量边界`](../orchestration-ladder/14-资源预算与公平性-深度并发总量与容量边界.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`15-workflow可复现性与生命周期-动态结果取消和观察记录`](../orchestration-ladder/15-workflow可复现性与生命周期-动态结果取消和观察记录.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+
+### `capability-seams/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../capability-seams/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
+| [`01-三角色与分包装`](../capability-seams/01-三角色与分包装.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`02-一次bash从tool到sandbox`](../capability-seams/02-一次bash从tool到sandbox.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`03-subagent后台与产品provider`](../capability-seams/03-subagent后台与产品provider.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`04-新增seam与Remote`](../capability-seams/04-新增seam与Remote.md) | mechanism | 沿用 | 687f282e86 | 页面声明 |
+| [`05-subagent-catalog与host交付`](../capability-seams/05-subagent-catalog与host交付.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`06-外发代理策略`](../capability-seams/06-外发代理策略.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`07-原生containment与native-system`](../capability-seams/07-原生containment与native-system.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`08-外部生态桥：MCP与hooks`](../capability-seams/08-外部生态桥：MCP与hooks.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`09-ssh远程执行族`](../capability-seams/09-ssh远程执行族.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`10-新执行面与编排seam`](../capability-seams/10-新执行面与编排seam.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+
+### `plugin-system/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../plugin-system/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+
+### `plugin-system/composition/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../plugin-system/composition/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
+| [`01-boot-时序`](../plugin-system/composition/01-boot-时序.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`02-dump-与boot-保真`](../plugin-system/composition/02-dump-与boot-保真.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`03-user-patch-hmr`](../plugin-system/composition/03-user-patch-hmr.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`04-profile-创建与保留名`](../plugin-system/composition/04-profile-创建与保留名.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`05-启动窗口与首屏交接`](../plugin-system/composition/05-启动窗口与首屏交接.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+
+### `plugin-system/lifecycle/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../plugin-system/lifecycle/00-map.md) | map | 沿用 | 1f81c047fc | 页面声明 |
+| [`01-打包`](../plugin-system/lifecycle/01-打包.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`02-分发`](../plugin-system/lifecycle/02-分发.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`03-安装`](../plugin-system/lifecycle/03-安装.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`04-启动`](../plugin-system/lifecycle/04-启动.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`05-特殊初始化`](../plugin-system/lifecycle/05-特殊初始化.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`06-更新与启停`](../plugin-system/lifecycle/06-更新与启停.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`07-卸载与数据留存`](../plugin-system/lifecycle/07-卸载与数据留存.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`08-首启与产品初始化`](../plugin-system/lifecycle/08-首启与产品初始化.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`09-配置与设置面`](../plugin-system/lifecycle/09-配置与设置面.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`10-诊断地图`](../plugin-system/lifecycle/10-诊断地图.md) | playbook | 已核验 | b830ec950f | 页面声明 |
+| [`11-信任与执行边界`](../plugin-system/lifecycle/11-信任与执行边界.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`12-从零到一个能跑的插件`](../plugin-system/lifecycle/12-从零到一个能跑的插件.md) | playbook | 已核验 | b830ec950f | 页面声明 |
+
+### `plugin-system/inventory/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../plugin-system/inventory/00-map.md) | map | 沿用 | 1f81c047fc | 页面声明 |
+| [`01-capability-tour`](../plugin-system/inventory/01-capability-tour.md) | mechanism | 沿用 | 1f81c047fc | 矩阵沿用 |
+| [`02-plugin-catalog`](../plugin-system/inventory/02-plugin-catalog.md) | mechanism | 沿用 | 1f81c047fc | 矩阵沿用 |
+| [`03-reference-lists`](../plugin-system/inventory/03-reference-lists.md) | mechanism | 沿用 | 1f81c047fc | 矩阵沿用 |
+| [`04-reuse-paths-and-gaps`](../plugin-system/inventory/04-reuse-paths-and-gaps.md) | mechanism | 沿用 | 1f81c047fc | 矩阵沿用 |
+| [`05-taxonomy-and-design`](../plugin-system/inventory/05-taxonomy-and-design.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+
+### `experimental/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../experimental/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
+| [`01-code-runtime-python`](../experimental/01-code-runtime-python.md) | experiment | 沿用 | 687f282e86 | 专题声明 |
+| [`02-agent-teams`](../experimental/02-agent-teams.md) | experiment | 沿用 | 687f282e86 | 专题声明 |
+| [`03-inspector`](../experimental/03-inspector.md) | experiment | 沿用 | 687f282e86 | 专题声明 |
+
+### `tools-prompt-llm/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../tools-prompt-llm/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
+| [`01-section顺序与前缀`](../tools-prompt-llm/01-section顺序与前缀.md) | mechanism | 沿用 | 687f282e86 | 页面声明 |
+| [`02-管道审批timeout与chunk`](../tools-prompt-llm/02-管道审批timeout与chunk.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`03-system-prompt作为surface节点`](../tools-prompt-llm/03-system-prompt作为surface节点.md) | mechanism | 沿用 | 687f282e86 | 页面声明 |
+| [`04-in-history提示词替换`](../tools-prompt-llm/04-in-history提示词替换.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`05-chunk到settlement`](../tools-prompt-llm/05-chunk到settlement.md) | mechanism | 沿用 | 687f282e86 | 页面声明 |
+| [`06-文件块与内容块投影`](../tools-prompt-llm/06-文件块与内容块投影.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+
+### `surfaces-entrypoints/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../surfaces-entrypoints/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-启动面与session流`](../surfaces-entrypoints/01-启动面与session流.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`02-acp与jsonrpc`](../surfaces-entrypoints/02-acp与jsonrpc.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`03-桌面入口`](../surfaces-entrypoints/03-桌面入口.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+
+### `test-strategy/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../test-strategy/00-map.md) | map | 沿用 | 639ed01539 | 页面声明 |
+| [`01-doctrine`](../test-strategy/01-doctrine.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`02-tiers`](../test-strategy/02-tiers.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`03-rules-ownership`](../test-strategy/03-rules-ownership.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`04-snapshot-machinery`](../test-strategy/04-snapshot-machinery.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`05-ci-gates`](../test-strategy/05-ci-gates.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`06-reliability`](../test-strategy/06-reliability.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`07-infrastructure`](../test-strategy/07-infrastructure.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`08-plugin-testing`](../test-strategy/08-plugin-testing.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
+| [`09-plugin-testing-playbook`](../test-strategy/09-plugin-testing-playbook.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
+| [`10-plugin-testing-checklist`](../test-strategy/10-plugin-testing-checklist.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
+| [`11-snapshot-external-face`](../test-strategy/11-snapshot-external-face.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+
+### `harness-idea/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../harness-idea/00-map.md) | map | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`01-role-and-substrate`](../harness-idea/01-role-and-substrate.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`02-legibility`](../harness-idea/02-legibility.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`03-paved-road`](../harness-idea/03-paved-road.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`04-participation-paths`](../harness-idea/04-participation-paths.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`05-dynamic-legibility`](../harness-idea/05-dynamic-legibility.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`06-tech-and-language-fit`](../harness-idea/06-tech-and-language-fit.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`07-boundaries-costs-fit`](../harness-idea/07-boundaries-costs-fit.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`08-judgement-discipline`](../harness-idea/08-judgement-discipline.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`09-feedback-loop`](../harness-idea/09-feedback-loop.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+<!-- catalog:coverage:end -->
+
+## 状态说明
 
 | 状态 | 含义 |
 |------|------|
-| 已核验 | 结论页已按“最近核验”所列产品 commit 对照源码 |
-| 需复核 | 上游同步触及来源，结论尚未重新核验 |
-| 未覆盖 | 问题已登记，但还没有机制参考 |
+| 已核验 | 页面自己登记了当前基线，结论按该 commit 对照过源码 |
+| 沿用 | 页面登记的是更早的 commit，或核验点来自专题声明 / 矩阵沿用；结论未按当前基线重核 |
+| 未登记 | 没有页面级或专题级核验记录 |
+| 需复核 | 上游同步触及来源，尚未重新核验 |
 
-## 核验矩阵
+「最近核验」是页面自己的记录点，可以早于产品基线；`来源` 说明它来自页面声明、专题声明还是矩阵沿用。`沿用` 不等于按当前基线核过。状态由 [`catalog.json`](../catalog.json) 的 `verifiedAt` / `status` 派生，本页不手工维护。
 
-| 专题 | 已核验问题 | 结论页 | 状态 | 最近核验 |
-|------|------------|--------|------|----------|
-| `system-overview/` | 扩展表中非显然的落点；从单体 loop 迁移时各职责归属；门禁聚合器与性能基准树 | [`01`](../system-overview/01-扩展表非显然落点.md) · [`02`](../system-overview/02-对照单一loop.md) · [`03`](../system-overview/03-门禁与性能基准.md) | 已核验 | `687f282e8625c6b8d11ff58211a90524be2e4317` |
-| `two-tree-runtime/framework/` | 五条原语；waterfall 派发；Loader/Include 与 `!!js`；产品依赖的 vendor 修改 | [`01`](../two-tree-runtime/framework/01-五条原语对照源码.md) · [`02`](../two-tree-runtime/framework/02-waterfall-与事件合同.md) · [`03`](../two-tree-runtime/framework/03-loader-include-与js插值.md) · [`04`](../two-tree-runtime/framework/04-vendor-本地修改.md) | 已核验 | `687f282e8625c6b8d11ff58211a90524be2e4317` |
-| `plugin-system/composition/` | profile boot 时序；dump 与 boot 的共同算法和层差；用户 patch HMR 事务；profile 创建路径与保留名；**启动窗口与首屏交接**（六段流水线、作者四窗 A–D、首屏五步 token→303+cookie→注入→两段式启动、硬限制与自证配方） | [`01`](../plugin-system/composition/01-boot-时序.md) · [`02`](../plugin-system/composition/02-dump-与boot-保真.md) · [`03`](../plugin-system/composition/03-user-patch-hmr.md) · [`04`](../plugin-system/composition/04-profile-创建与保留名.md) · [`05`](../plugin-system/composition/05-启动窗口与首屏交接.md) | 已核验 | `b830ec950faba0a46dda564be3e2d854afed94f1`（05 与全量锚点 2026-11-02 核到 rc.5；01–04 结论沿用上一轮） |
-| `plugin-system/lifecycle/` | 插件产品生命周期七段及其不可逆边界：bundle 与 profile 的 manifest 二分与 `engines.dsh` 准入声明；四条 spec 通道与三个目录档位（可选档/按需档/市场）、registry 回退与 git 预检；安装的写盘面（两文件）、版本门的两处时机、`compatibility.json` 精确豁免、四行失败表、profile 写锁、三种互不互换的执行授权；启动期的两道准入（bundle 跳过 / 行级 detached disabled）、结算审计四态、optional/required/HMR 三列失败矩阵、`recomposeProfile` 的回滚边界；四个一次性初始化实例及其凭据（profile 首建、`settings.yaml` 先改名后导入、存储三层版本语义的接受集与拒绝、desktop 运行树与首启设置）、两条「什么不算一次性」的反例（Session 读时流式转换、`appReady` 闸门）与「没有统一插件迁移钩子」这条空白；启停写不同文件的优先级后果、更新 = 移除+安装与 `restart-required`、三层同步边界、配置重载只对新失败大声；卸载的三个拒绝码与四步顺序、失败停留在半步、退休 bundle 只取消选择、`~/.dsh` 在应用卸载下的免疫、以及数据卸载契约的缺失；三个 profile 分叉点（web/base-backed、desktop、一次性表面）与 `sdk-minimal` 的第四种；**首启与产品初始化**（无钩子下的自建状态机、凭据/幂等/原子性/lease、home 与 workspace 作用域、三种变更手段、workspace 两条路线、首屏五层与配置呈现四手段、决策表） | **配置与设置面**（五个层与两个消费者、`!!js` 表达式与 app 参数的关系、`.volatile()` 进表单的判据、三个坑与决策表） | **端到端最短路径**（六条命令从空目录到跑起来的行、最小 bundle 三份文件、实测原文与反面） | **诊断地图**（三个诊断入口、六类症状的判定命令与失败信号、速查表） | **信任与执行边界**（四类执行者 × 四条边界、谁批准什么、三条落地判断） | [`00`](../plugin-system/lifecycle/00-map.md) · [`01`](../plugin-system/lifecycle/01-打包.md) · [`02`](../plugin-system/lifecycle/02-分发.md) · [`03`](../plugin-system/lifecycle/03-安装.md) · [`04`](../plugin-system/lifecycle/04-启动.md) · [`05`](../plugin-system/lifecycle/05-特殊初始化.md) · [`06`](../plugin-system/lifecycle/06-更新与启停.md) · [`07`](../plugin-system/lifecycle/07-卸载与数据留存.md) · [`08`](../plugin-system/lifecycle/08-首启与产品初始化.md) · [`09`](../plugin-system/lifecycle/09-配置与设置面.md) · [`10`](../plugin-system/lifecycle/10-诊断地图.md) · [`11`](../plugin-system/lifecycle/11-信任与执行边界.md) · [`12`](../plugin-system/lifecycle/12-从零到一个能跑的插件.md) | 已核验 | `b830ec950faba0a46dda564be3e2d854afed94f1`（08/09 与全量锚点 2026-11-02 核到 rc.5；01–07 结论沿用上一轮） |
-| `runtime-profiles/` | 五个 Launcher Profile 的共同基底与差异；桌面这一应用自有组合 | [`00`](../runtime-profiles/00-map.md) · [`01`](../runtime-profiles/01-web.md) · [`02`](../runtime-profiles/02-headless.md) · [`03`](../runtime-profiles/03-sdk.md) · [`04`](../runtime-profiles/04-sdk-minimal.md) · [`05`](../runtime-profiles/05-acp.md) · [`06`](../runtime-profiles/06-desktop.md) | 已核验 | `b830ec950faba0a46dda564be3e2d854afed94f1` |
-| `session-and-loop/` | session 世代与迁移机制；inbox/turn/step 时序；替换默认 loop 的运行时义务 | [`01`](../session-and-loop/01-session-event-map.md) · [`02`](../session-and-loop/02-inbox-与turn-时序.md) · [`03`](../session-and-loop/03-换loop的半径.md) · [`04`](../session-and-loop/04-格式世代与迁移.md) | 已核验 | `687f282e8625c6b8d11ff58211a90524be2e4317` |
-| `capability-seams/` | 三种角色与分包装；E2B provider 组合（0008 起 E2B 组退役，接替面为 sandbox 组与 ssh 组——ssh 族见 09）；bash 的本地 confinement 调用链与原生 containment；subagent 后台、目录与宿主交付；外发代理这类「刻意不是 seam」的进程级策略；外部生态桥（MCP 客户端与 hook 桥，两者都 opt-in）与新执行面/编排 seam 地图 | [`01`](../capability-seams/01-三角色与分包装.md) · [`02`](../capability-seams/02-一次bash从tool到sandbox.md) · [`03`](../capability-seams/03-subagent后台与产品provider.md) · [`04`](../capability-seams/04-新增seam与Remote.md) · [`05`](../capability-seams/05-subagent-catalog与host交付.md) · [`06`](../capability-seams/06-外发代理策略.md) · [`07`](../capability-seams/07-原生containment与native-system.md) · [`08`](../capability-seams/08-外部生态桥：MCP与hooks.md) · [`09`](../capability-seams/09-ssh远程执行族.md) · [`10`](../capability-seams/10-新执行面与编排seam.md) | 已核验 | `b830ec950faba0a46dda564be3e2d854afed94f1` |
-| `plugin-system/inventory/` | 现成插件货架：新人路线（八类能力与场景 → 货架图鉴 → 横切清单 → 复用出路与缺口 → 分类法与设计思考）；343 包逐组明细与可见性图例；ctx 服务 35 seam 全景（P/C 机械提取）/工具×profile/bundle/preset/skills 五张横切清单；复用四条出路与零 Provider 缺口白名单；九形态×四 role 分类法与设计思考；四张 SVG（taxonomy/spectrum/reuse-paths/funnel）。快照式清单，随每次同步重测计数 | [`00`](../plugin-system/inventory/00-map.md) · [`01`](../plugin-system/inventory/01-capability-tour.md) · [`02`](../plugin-system/inventory/02-plugin-catalog.md) · [`03`](../plugin-system/inventory/03-reference-lists.md) · [`04`](../plugin-system/inventory/04-reuse-paths-and-gaps.md) · [`05`](../plugin-system/inventory/05-taxonomy-and-design.md) | 已核验 | `1f81c047fc48fa190a683e469daa699857e9afe8` |
-| `tools-prompt-llm/` | prompt section 顺序与稳定前缀；system prompt 作为 surface 节点；in-history 替换能力；工具审批/timeout；chunk 到 settlement 的日志关系；内容块投影 | [`01`](../tools-prompt-llm/01-section顺序与前缀.md) · [`02`](../tools-prompt-llm/02-管道审批timeout与chunk.md) · [`03`](../tools-prompt-llm/03-system-prompt作为surface节点.md) · [`04`](../tools-prompt-llm/04-in-history提示词替换.md) · [`05`](../tools-prompt-llm/05-chunk到settlement.md) · [`06`](../tools-prompt-llm/06-文件块与内容块投影.md) | 已核验 | `1f81c047fc48fa190a683e469daa699857e9afe8` |
-| `surfaces-entrypoints/` | 源码与 built 启动面；headless 一次性入口的输出契约；ACP 与 JSON-RPC 的不同投影保证；桌面这一 Electron 入口 | [`01`](../surfaces-entrypoints/01-启动面与session流.md) · [`02`](../surfaces-entrypoints/02-acp与jsonrpc.md) · [`03`](../surfaces-entrypoints/03-桌面入口.md) | 已核验 | `b830ec950faba0a46dda564be3e2d854afed94f1` |
-| `two-tree-runtime/client/` | 六层归属与单向依赖链；模块身份与激活顺序；状态所有权与不可谈判项；资源协议与 holder 生命周期；右栏与 document preview；slot/props；Conversation Node；export、包内目录、依赖、样式与测试阶梯 | [`tree/01`](../two-tree-runtime/client/tree/01-六层与单向依赖链.md) · [`tree/02`](../two-tree-runtime/client/tree/02-模块身份与激活顺序.md) · [`state/01`](../two-tree-runtime/client/state/01-谁拥有一份状态.md) · [`state/02`](../two-tree-runtime/client/state/02-资源模型与-holder-生命周期.md) · [`view/01`](../two-tree-runtime/client/view/01-slot-与-props-纪律.md) · [`view/02`](../two-tree-runtime/client/view/02-conversation-node-纪律.md) · [`view/03`](../two-tree-runtime/client/view/03-右栏-与-document-preview.md) · [`rules/01`](../two-tree-runtime/client/rules/01-export-与包内目录.md) · [`rules/02`](../two-tree-runtime/client/rules/02-依赖-构建期环境与三处注册面.md) · [`rules/03`](../two-tree-runtime/client/rules/03-样式与本地化.md) · [`rules/04`](../two-tree-runtime/client/rules/04-测试阶梯与三道-gate.md) | 已核验 | `b830ec950faba0a46dda564be3e2d854afed94f1`（拆分自原 `surfaces-entrypoints/04`、`05`，结论未改） |
-| `two-tree-runtime/remote/` | Typert 声明期、build 期两族产物与 SRC 兜底；Gateway 派发与 `ctx.remoteAccess`；Client mount 与装配；载体、`rpcId`、逻辑流与 uplink；process-token URL 与 cookie 认证；`session/event` 两条出站链路与 follow 三类帧 | [`typert/01`](../two-tree-runtime/remote/typert/01-声明期-装饰器与-namespace.md) · [`typert/02`](../two-tree-runtime/remote/typert/02-类型图与两族产物.md) · [`gateway/01`](../two-tree-runtime/remote/gateway/01-Host-派发与访问控制.md) · [`gateway/02`](../two-tree-runtime/remote/gateway/02-客户端-mount-与装配.md) · [`connection/01`](../two-tree-runtime/remote/connection/01-载体-rpcId-与逻辑流.md) · [`connection/02`](../two-tree-runtime/remote/connection/02-认证与浏览器宿主.md) · [`streams/01`](../two-tree-runtime/remote/streams/01-一条-emit-两条出站链路.md) · [`streams/02`](../two-tree-runtime/remote/streams/02-三类帧与-wire-校验.md) | 已核验 | `b830ec950faba0a46dda564be3e2d854afed94f1`（拆分自原 `surfaces-entrypoints/01`、`06`，结论未改） |
-| `agent-loop/` | step/turn/activity/goal 四层结束边界；goal 创建的三条路径与状态机（含模型通道的 `paused` 禁令）；Goal Round Driver 的自动续轮、竞态栅栏与重启后 re-arm；Agent 运行时身份与 initiator 权限判据 | [`00`](../agent-loop/00-map.md) · [`01`](../agent-loop/01-goal-lifecycle.md) · [`02`](../agent-loop/02-goal-round-driver.md) · [`03`](../agent-loop/03-activity-vs-goal-boundaries.md) · [`04`](../agent-loop/04-agent-runtime-identity.md) | 已核验 | `687f282e8625c6b8d11ff58211a90524be2e4317` |
-| `experimental/` | python 子进程后端；Agent Teams 服务/工具/双 profile（含 public 例外边界）；Inspector CDP 调试面 | [`00`](../experimental/00-map.md) · [`01`](../experimental/01-code-runtime-python.md) · [`02`](../experimental/02-agent-teams.md) · [`03`](../experimental/03-inspector.md) | 已核验 | `687f282e8625c6b8d11ff58211a90524be2e4317` |
-| `harness-idea/` | dsh 作为 harness 的职责与基底（插件图 + 事件流回答哪五个运行时问题）；可读性的两个来源；正确路径为何是阻力最小路径；参与阶梯的四层路由；动态可读性（可回答 + 可试验）；技术选型与语言贴合；原则与适用条件的边界及成本；本专题自身的判断纪律 | [`00`](../harness-idea/00-map.md) · [`01`](../harness-idea/01-role-and-substrate.md) · [`02`](../harness-idea/02-legibility.md) · [`03`](../harness-idea/03-paved-road.md) · [`04`](../harness-idea/04-participation-paths.md) · [`05`](../harness-idea/05-dynamic-legibility.md) · [`06`](../harness-idea/06-tech-and-language-fit.md) · [`07`](../harness-idea/07-boundaries-costs-fit.md) · [`08`](../harness-idea/08-judgement-discipline.md) | 已核验 | `687f282e8625c6b8d11ff58211a90524be2e4317` |
-| `orchestration-ladder/` | 编排原语阶梯全景与默认挂载状态（哪些开箱即用、哪些 disabled/optional 及出处）；workflow 编排脚本机制（工具面与 Config、引擎单例 seam、脚本钩子与并发槽、schema 子集、fatal 与逐 item null 两级失败纪律、PTC fresh Node 进程与取消、parent 归属与 durable 记录、jobs 后台接入、ralph 固定脚本关系）；什么时候用哪个原语的官方选择决策语义（双通道与 master convention、逐原语边界句、跨原语路由规则、升级阶梯证据、九项矛盾与空白）；subagent/fork 委派语义（能力旗标 fail-loud、fork 的 balanced completed-turn 前缀种子与一次性快照、inheritedEventCount 边界、KV 前缀复用条件与回传指引字节稳定、delegationDepth 双字段与三层 maxDepth 默认 1、delegated permission 与 preset join 工具面、one-shot/continuable 生命周期与 settle notice、Activation 所有权图、控制面三工具的双向/单向授权半径、base 与 web preset 组合差异、进程外后端能力差异、goal 对子代理的三道拒绝）；ralph 固定脚本机制（五字段结构化报告与状态条件校验、六段轮 prompt、四种终局含 round-failed、跨进程防御性解码、双层轮预算、requireFreshProvider、goal 与 ralph 两策略分裂的决策记录与已拒绝的通用 loop 服务、四条已知限制）；goal 驾驶座用法（objective 参数的 concrete-completion-inferred 指引、<goal_round> 轮 prompt 与检查工作区纪律、<goal_complete>/<goal_blocked> 收尾指令与 grounding、maxGoalRounds 256 / blockedAfterConsecutiveRounds 3 两个预算的语义与只计 admitted 轮、终结判定三纪律、action 权限表与 disarmed/resume 语义、/goal 整词命令面、goal round 的组合触点）；jobs 与 schedule（JobRegistry 平台合同：<kind>-N id/owner 授权边界/first-wins 与 awaited 防重播/输出环双受众与归档联动、controller 闸门、四个 shipped producer、通知经济学 busy-step 注入与 idle 唤醒/maxConsecutiveWakes 自激链上限/quiet 模式/wait clamp、schedule 六选择器与 DST 规则/Host 冷恢复与 session/flush 后 commit 的重投根源/catch-up 只交付最新错过/Session 归档互锁/complete-record CAS update/experimental bundle 启用面与 headless 限制、三个正交平面的注入通道对照）；agent-teams 驾驶座用法（启用代价组合互斥表：disable 全局控制面与 subagent/fork 工具/workflow 保留 spawn、服务上限 maxMembers 8/16 等、Lead 九工具工作流串联、send_message 成功即持久勿重发、wait_agent 只观察不唤醒与 re-list 纪律、任务板 CAS claim 工作流与 task readiness never starts an owner、POLICY 四条协作纪律：写域 advisory 非 lock/FS_STALE_VERSION 重试协议/状态词汇表/Lead 收尾门槛、跨崩溃持久语义、与 subagent/workflow 的选择判据）；组合模式综合页（in-process parent 关系与 provider 差异、深度/并发/总量容量的分层限制、四条注入通道 busy/idle 行为对照表；五个协同形态：goal 扇出-收敛循环、后台扇出跨轮收割、fork 对话延续链、goal vs ralph 两策略判据、teams 进入退出；goal×jobs 收尾顺序张力与六条跨模式收尾纪律）；外部叙事对照台账（十条声称逐条三态判定：Captain 规划器/Kahn 调度引擎/Reviewer 工件门禁/七状态生命周期/dsh rollback 子命令/节点 Telemetry 指标看板均不存在或形态不同——auto-review 实为权限预审、遥测实为 OTLP 导出管道；事件溯源/依赖建模/沙箱/前缀稳定设计目标真实；三条形态纠正：编排是原语阶梯非中心引擎、恢复是会话级非任务级、前缀复用是组合纪律非优化器）；todo/plan 轻量计划面的分布覆盖（02 边界句 + 08 顺序纪律 + 本专题 map 两表）；图计算的本质（三个真实图：归属树/任务 DAG/脚本控制流；task-graph.ts 写时全图校验三类违规与 DFS 环检测、两个调用点含重放重验、taskReady 入度零条件的读时纯函数推导、ready 用于视图/过滤与 claim/reassign 准入、writeScopeWarnings advisory；执行分置：Task readiness never starts an owner、派发归对话；与 Kahn 线性化的对照与重规划常态论证；in-process Agent 路径的受限统一重述：能力包络=智力×体力×许可、关系骨架是代码电流是语言、代码-语言维度作为描述性比较、进程作业与计划账本需单独区分；归属树的三种表示：parentSession durable 边/ancestry WeakSet 活体授权/ownedChildren 生命周期闭包与各自查询模式、两套只读遍历；workflow 取舍记录：宿主载体三选（进程内 vm/isolated-vm/PTC）、meta 参数化对内嵌头、schema 作为 wire data 与手写子集校验器对 ajv、capture tool 对 JSON mode——统一原则"模型文本是数据直到穿过受限边界"；Kahn 与 DFS 形式化对比：线性化 vs 合法性、入度零调度 vs 就绪过滤、无全局拓扑视图是分置的代价；确定性边界与 harness-idea 的连接）；完成语义与崩溃窗口（四个时刻 accepted/model-visible/turn-quiescent/resources-disposed 与各自不能推出什么；逐原语完成证据：one-shot subagent 与 workflow 句柄、continuable 的 inbox 接受与 settle notice、goal 的准入检查与 wrapup、jobs 的 done 只指资源释放与首次消费读取、teams 消息 queued/delivered 与任务 completed 的边界、schedule flush 与 retire/advance 非原子；五类崩溃窗口；审查四问）；Session 谱系与 Agent 实例（四种身份 Session/Agent/Activation/Provider 的生命周期与能否单独证明执行存在；lineage/fork seed/live parent authority 三个不同问题；Activation epoch 与 resident 不写盘、coldResume 不经 provider；委派权限捕获与 approval 固定 never；控制面授权半径 durable parent vs exact live ancestor；外部 provider 不共享同一模型）；状态三分法（持久事实/派生投影/内存权限三层及其重启语义；goal phase 持久但 activation 在 WeakMap、todo projection 于下个 turn/start 清空、plan pending intent 未提交窗口、jobs-local 全内存、teams 事实在 Lead log；统一恢复四问）；资源预算与公平性（七个维度及各自默认值与触发语义；深度是纵向非横向容量；workflow 排队与 fatal cap 两套机制、total 检查先于 slot 获取；jobs owner fence 与 owner capacity 不同；Teams 持久上限不是调度器；无全局公平性）；workflow 可复现性与生命周期（动态控制流不是静态 DAG、phase 非 barrier；失败三级传播 item-local null vs run-fatal、带 schema 无 structured output 算 child failure、provider rejection 升为 AGENT_RESULT；start-after-abort 处置、取消结算与合成 agent-end(cancelled)；观察事件不是恢复 checkpoint，workflow/end 不含 result value；可复现性审查七问）） | [`00`](../orchestration-ladder/00-map.md) · [`01`](../orchestration-ladder/01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) · [`02`](../orchestration-ladder/02-什么时候用哪个原语-官方选择决策语义全景.md) · [`03`](../orchestration-ladder/03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md) · [`04`](../orchestration-ladder/04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md) · [`05`](../orchestration-ladder/05-goal-驾驶座用法-objective写法轮预算与终结纪律.md) · [`06`](../orchestration-ladder/06-jobs与schedule-后台作业平台与定时跟进的时间平面.md) · [`07`](../orchestration-ladder/07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md) · [`08`](../orchestration-ladder/08-组合模式-归属链深度预算通知通道与收尾纪律.md) · [`09`](../orchestration-ladder/09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md) · [`10`](../orchestration-ladder/10-完成语义与崩溃窗口-接受可见静止处置.md) · [`11`](../orchestration-ladder/11-图计算的本质-不变量推导与执行的三件分置.md) · [`12`](../orchestration-ladder/12-Session谱系与Agent实例-持久边与活体权限.md) · [`13`](../orchestration-ladder/13-持久事实派生投影与内存权限-状态三分法.md) · [`14`](../orchestration-ladder/14-资源预算与公平性-深度并发总量与容量边界.md) · [`15`](../orchestration-ladder/15-workflow可复现性与生命周期-动态结果取消和观察记录.md) | 已核验 | `687f282e8625c6b8d11ff58211a90524be2e4317` |
-| `test-strategy/` | 测试思想与成文政策（`docs/testing.md` 九条教义、测试指导的七层文档分布）；七层证据分层与后缀选中机制、覆盖率门与平台豁免；规矩与所有权（root `AGENTS.md` 条令、`snapshots/AGENTS.md` 七条、pre-push 选取纪律）；录制会话快照机制（世代文法、四面分工、record/refresh 语义、workspace 预期树、语料校验）；CI 门禁编排（18 聚合与调度语义、`all-checks-passed` 聚合、Wine 与热备演练）与防假绿五机制；测试可靠性纪律（reliability skill 六类规则、flake 八类分类与五级复现阶梯）；测试基建（test-support 七件套、Python 投影面）；插件作者的测试面（08–10：五台阶政策、五套真实组合解剖、PR 检查单）；快照机制的对外面（11：发布包、夹具双接受、接线语义与 patch 静默失效、git 卫生实测、四篇 postmortem 校准）；专题配 10 张机制 SVG（分层总览、后缀车道、快照三态、防假绿、共享世界、证据阶梯、规矩载体分布、落位判定、场景解剖、接线三坑） | [`00`](../test-strategy/00-map.md) · [`01`](../test-strategy/01-doctrine.md) · [`02`](../test-strategy/02-tiers.md) · [`03`](../test-strategy/03-rules-ownership.md) · [`04`](../test-strategy/04-snapshot-machinery.md) · [`05`](../test-strategy/05-ci-gates.md) · [`06`](../test-strategy/06-reliability.md) · [`07`](../test-strategy/07-infrastructure.md) · [`08`](../test-strategy/08-plugin-testing.md) · [`09`](../test-strategy/09-plugin-testing-playbook.md) · [`10`](../test-strategy/10-plugin-testing-checklist.md) · [`11`](../test-strategy/11-snapshot-external-face.md) | 已核验 | `687f282e8625c6b8d11ff58211a90524be2e4317` |
+## 怎么读
 
-上游同步先按变更路径定位受影响行，将其改为“需复核”；复核结论、源码入口和图后，再写入新的产品 commit。未受影响的行保留原最近核验值。当前矩阵的既有专题行仍以各行的“最近核验”值为准；`orchestration-ladder/` 是后来按当前产品树建立的跨原语专题，不能继续用“十三行”或早期未覆盖问题清单概括。该专题目前已形成 00–15 页和 13 张 SVG，覆盖原语选择、运行时、状态、容量、生命周期、质量闭环及结构收敛；后续复核仍应以专题页自己的当前 HEAD 声明和引用检查为准。2026-10-04 新增 `test-strategy/` 行（按当前产品树建立）：「已知未覆盖」中的 CI 平台矩阵一行移交该专题承载（`test-strategy/05`），门禁 mode、录制会话快照所有权、Python 发行物三行改为部分覆盖注记。2026-10-09 该行补登 08–10（插件作者测试面，建页于基线期但此前未入结论页列表）并新增 11（快照机制的对外面：发布包、夹具双接受、接线语义、git 卫生、postmortem 校准，全部锚点按基线树 `639ed01539` 核验；触发来源是 `_faq_on_digested/21` 的外部仓研究，本语料只收 DSH 一手事实部分）。
+- **专题总览**回答「这个专题覆盖什么、当前有多少页已核验 / 沿用 / 未登记」。
+- **页面明细**回答「这一页最后对到哪个 commit、这个记录点来自哪里」。
+- 要判断一条结论是否仍可信，先看页面的 `最近核验` 与 `来源`，再按 [`../_change_log/`](../_change_log/00-index.md) 的跨度记录判断来源路径是否被触及。
+- 轮次叙事、受影响文件清单与修复记录在 [`../_change_log/`](../_change_log/00-index.md)；本页只保留当前矩阵。
 
-## 覆盖方式与已知未覆盖
-
-上面的矩阵回答的是「本语料声称回答了哪些问题」，不是「包级覆盖率」。这两种口径必须分开看：**本语料是问题驱动的，不承诺覆盖每一个包或每一种行为**，所以「某包没被提到」本身不是缺陷。为了让边界可查，这里登记两件事。
-
-### 覆盖是怎么核出来的
+## 覆盖方式
 
 反向核验（引用对不对）与正向覆盖（有没有漏）是两件事，本语料两件都做：
 
-1. **反向**：全部 `path:line` 引用解析成仓库相对路径后逐条打开源码核对；合并校验器覆盖三语料 266 个 Markdown/SVG、1486 条 HEAD 行引用 + 6 条历史引用，并逐字核对了带引文主体的 `> ——` 引用块（校验器识别出 12 组；三语料里 `^> ——` 行共 54 条，其余是紧随正文的单行出处标注）。
-2. **正向**（0007 复核时补做）：把项目树摊开与语料求差，逐项判定。判定结果按「该机制是不是本语料会覆盖的那类机制」分三类：**已补齐**（见下表）、**登记为已知未覆盖**、**确认覆盖良好**。
-   - 生成目录差分：跨 0006 跨度新增的 18 个包与 5 篇 docs **全部**在语料中有落点，只有 3 个纯 UI 包（`client/ui-open-in-app`、`client/ui-sidebar-files`、`host/open-in-app`）未点名，而其机制由 `surfaces-entrypoints/03-桌面入口` 与 `surfaces-entrypoints/04-客户端资源模型与右栏` 承载（0008 独立复核时同名 03 旧页 `03-客户端资源与侧栏.md` 已删）。
-   - 扩展面差分：跨 0006 跨度新增 3 个 `ctx` 服务（`fileUploads`/`sessionFeedback`/`workspaceFiles`）、新增工具 `present`、退役工具 `followup_task`、新增事件 `agent/assistant-stream`/`feedback/committed`/`goal/activation-changed`——逐条在语料中找到落点或已补齐。
-   - 零命中的工具与服务名**全部**在跨度之前就存在（即属于既有范围选择），不是本轮同步漏掉的。
-   - 文件级回归：两语料相对同步前**没有任何文件被删除**（`_digested` 108 → 126、`_faq_on_digested` 92 → 93）。
+1. **反向**：`ref-sweep.mjs` 把全部 `path:line` 引用解析成仓库相对路径，逐条检查路径存在、行号在文件长度内，并可对带引文的 `> ——` 行做锚点漂移核对。报告是候选不是门禁；历史路径、冻结存档与注记过的退役面按 [`../_change_log/0009-independent-recheck.md`](../_change_log/0009-independent-recheck.md) 的三态口径分诊。
+2. **正向**：把项目树摊开与语料求差，逐项判定「已补齐」「登记为已知未覆盖」「确认覆盖良好」三类。`verify.mjs` 现在强制页面清单与文件树双向一致，漏登记会直接失败；生成目录、扩展面与文件级回归的判定方法见 [`../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md) 的「反查纪律」节。
 
-### 0007 复核补齐的覆盖
-
-| 补齐项 | 落点 |
-|--------|------|
-| Web Client 三层架构、slot/props 四份共享、客户端模块身份、导出与依赖声明纪律、域图门禁、样式与文案所有权、测试阶梯、新增包三处注册面 | [`two-tree-runtime/client/00-map.md`](../two-tree-runtime/client/00-map.md) |
-| Typert 类型图 → Remote 生成（声明期 / build 期 / 运行期） | [`two-tree-runtime/remote/00-map.md`](../two-tree-runtime/remote/00-map.md) |
-| MCP 客户端桥；Claude Code / Codex hook 桥与 `hook-protocol` 线协议 | [`capability-seams/08-外部生态桥：MCP与hooks.md`](../capability-seams/08-外部生态桥：MCP与hooks.md) |
-| `feedback/committed` 进程内事件 | [`capability-seams/04`](../capability-seams/04-新增seam与Remote.md) 的 messageFeedback 段 |
-| typert 类型图（此前仅有旁述） | 见上表第 2 行 |
-
-### 登记为已知未覆盖（本语料不追，需要时另开专题）
+## 已知未覆盖
 
 这些是**真实存在且有 owner 的机制**，本语料目前不覆盖，登记在此以免被读成遗漏。每项都给了权威入口。
 
 | 未覆盖项 | 权威入口 | 为什么不在本语料 |
 |----------|----------|------------------|
-| 门禁系统自身的 mode 分类与阻断语义（`scripts/run-gates.ts` 的 18 个 mode，0009 新增 `ci-unit`、`allowFailure`/`quick`） | `scripts/run-gates.ts`、`scripts/AGENTS.md`；聚合清单与调度语义已由 `test-strategy/05-ci-gates.md` 承载（2026-10-04），机制级概述见 `system-overview/03-门禁与性能基准.md` | 逐 mode 的完整语义仍以 `run-gates.ts` 为权威，语料不逐条展开 |
-| 录制会话快照的所有权与规范化规则 | `snapshots/AGENTS.md`；所有权七条与规范化机制已由 `test-strategy/03-rules-ownership.md`、`test-strategy/04-snapshot-machinery.md` 承载（2026-10-04） | 原登记撤销：义务已由 test-strategy 专题成页 |
-| Python 发行物（SDK / runtime 拆分、单文件可执行、wheel 的发行机制） | `python/README.md`、`python/development.md` | 测试面（pytest、单 exe 快照、installed-wheel 黑盒 CI）已由 `test-strategy/07-infrastructure.md` 承载（2026-10-04）；发行物拆分与打包机制仍未覆盖 |
+| 门禁系统自身的 mode 分类与阻断语义（`scripts/run-gates.ts` 的 18 个 mode，0009 新增 `ci-unit`、`allowFailure`/`quick`） | `scripts/run-gates.ts`、`scripts/AGENTS.md`；聚合清单与调度语义已由 `test-strategy/05-ci-gates.md` 承载，机制级概述见 `system-overview/03-门禁与性能基准.md` | 逐 mode 的完整语义仍以 `run-gates.ts` 为权威，语料不逐条展开 |
+| 录制会话快照的所有权与规范化规则 | `snapshots/AGENTS.md`；所有权七条与规范化机制已由 `test-strategy/03-rules-ownership.md`、`test-strategy/04-snapshot-machinery.md` 承载 | 原登记撤销：义务已由 test-strategy 专题成页 |
+| Python 发行物（SDK / runtime 拆分、单文件可执行、wheel 的发行机制） | `python/README.md`、`python/development.md` | 测试面（pytest、单 exe 快照、installed-wheel 黑盒 CI）已由 `test-strategy/07-infrastructure.md` 承载；发行物拆分与打包机制仍未覆盖 |
 | PR 历史的当前契约（官方 stack 对象、`gh stack merge`、lease 重写） | `AGENTS.md` 的「Choose PR history deliberately」、`dsh-merging-stacked-prs` skill | `_faq_on_digested/11` 记的是历史观察，非当前契约 |
 | GitHub 标签法与加权审批 | `AGENTS.md` 的 Labels 行、`docs`/`.github/issue-management/policy.mjs`、`.github/review-ownership/` | 同上 |
 | 根级政策文档 `SAFETY.md` / `BRAND_GUIDELINES.md` | 仓库根 | 非机制 |
 | `docs/rescope.md` 的 vendored 包命名映射权威 | `docs/rescope.md`、`vendor/README.md` | 概念已覆盖（`two-tree-runtime/framework/00-map.md`），文件名未引 |
 | `docs/graph-atlas.md` 作为生成目录之一 | `docs/graph-atlas.md` | 生成目录枚举里漏列 |
-| `docs/ui-radius.md`（0009 新增顶层页）与 `docs/deepseek-llm-api-wire-extensions.md` 的逐条细则 | 两页本体；权威入口已挂 `surfaces-entrypoints/05`、`tools-prompt-llm/00-map.md` | 语料只引权威入口，不逐条展开视觉 token 与线协议字段（0009 独立反查登记） |
-| 未挂载 shipped 组合的工具族与零落点事件键：`tool-session-query` 5 工具、`tool-terminal` 6 工具、`list_subagent_models`、`lsp` 工具名；事件键 `session/title(-llm-request)`、`web/deepseek-search-llm-request`、`llm/retry(-started)` | `packages/experimental/tool-session-query/src/index.ts:65-108`、`packages/experimental/tool-terminal/src/index.ts:163-390`、`packages/subagent/tool-subagent/src/list-models.ts:87`、`packages/lsp/tool-lsp/src/index.ts:109`、`packages/core/session/src/known-event-types.ts:22-82` | 整族零落点但机制近邻有承载（`capability-seams/10`、`runtime-profiles/01:32`）；事件名零落点、机制旁及（0009 独立反查登记） |
-| 配置字段级落点：`compaction-basic` 的 `thresholdRatio`、`deepseek-account-platform` 的 `platformOrigin` | `docs/config-catalog.md` | 机制页有落点（`tools-prompt-llm/03`、`capability-seams/10:25`），字段名不逐一收录（0009 独立反查登记） |
-| 既有面（0009 前即无落点，属既有范围选择）：`ctx.shellEnv` 的 DSH_* 注册表、`ctx.sessionSkillCatalog`（Host 侧 skills namespace 适配器）、`identity/anonymous-user-id`、`compaction/command-compact` | `packages/shell/shell-env/`、`packages/api/session-controller/src/skill-catalog.ts:24`、`packages/identity/anonymous-user-id/`、`packages/compaction/command-compact/` | 机制近邻有承载（`capability-seams/02` bash 链、`runtime-profiles/01:50` ui-skill、遥测事实行、`tools-prompt-llm/03:41` 压缩机制）；0009 独立反查登记 |
+| `docs/ui-radius.md` 与 `docs/deepseek-llm-api-wire-extensions.md` 的逐条细则 | 两页本体；权威入口已挂 `two-tree-runtime/client/rules/03`、`tools-prompt-llm/00-map.md` | 语料只引权威入口，不逐条展开视觉 token 与线协议字段 |
+| 未挂载 shipped 组合的工具族与零落点事件键：`tool-session-query` 5 工具、`tool-terminal` 6 工具、`list_subagent_models`、`lsp` 工具名；事件键 `session/title(-llm-request)`、`web/deepseek-search-llm-request`、`llm/retry(-started)` | `packages/experimental/tool-session-query/src/index.ts:65-108`、`packages/experimental/tool-terminal/src/index.ts:163-390`、`packages/subagent/tool-subagent/src/list-models.ts:87`、`packages/lsp/tool-lsp/src/index.ts:109`、`packages/core/session/src/known-event-types.ts:22-82` | 整族零落点但机制近邻有承载（`capability-seams/10`、`runtime-profiles/01-web`）；事件名零落点、机制旁及 |
+| 配置字段级落点：`compaction-basic` 的 `thresholdRatio`、`deepseek-account-platform` 的 `platformOrigin` | `docs/config-catalog.md` | 机制页有落点（`tools-prompt-llm/03`、`capability-seams/10`），字段名不逐一收录 |
+| 既有面（0009 前即无落点，属既有范围选择）：`ctx.shellEnv` 的 DSH_* 注册表、`ctx.sessionSkillCatalog`（Host 侧 skills namespace 适配器）、`identity/anonymous-user-id`、`compaction/command-compact` | `packages/shell/shell-env/`、`packages/api/session-controller/src/skill-catalog.ts:24`、`packages/identity/anonymous-user-id/`、`packages/compaction/command-compact/` | 机制近邻有承载（`capability-seams/02` bash 链、`runtime-profiles/01-web` 的 ui-skill、遥测事实行、`tools-prompt-llm/03` 压缩机制） |
 | `native/` 的 Windows job 名与 source-of-record 表述 | `native/README.md`、`.github/workflows/node-addon-system.yml` | 区域级已覆盖，未到 job 级 |
-| `client/hmr`、`client/locale`、`client/store` 等平台包的内部机制 | 各自 package README | 属客户端基础设施，`surfaces-entrypoints/05` 覆盖其对外纪律 |
+| `client/hmr`、`client/locale`、`client/store` 等平台包的内部机制 | 各自 package README | 属客户端基础设施，`two-tree-runtime/client/` 的 rules 覆盖其对外纪律 |
 | ssh 各 provider 的逐行传输合同（master channel、TLS-PSK、心跳租约的深读） | `packages/ssh/`、`capability-seams/09-ssh远程执行族.md`（本语料已有族级页） | 0008 独立复核补的是族级机制页；逐条 wire 细节待有需要再扩 |
 | browser-use / computer-use driver 的内部契约（stagehand-native / MCP 挂载细节） | `packages/browser-use/`、`packages/computer-use/`、`capability-seams/10-新执行面与编排seam.md`（地图页） | 同上——地图先行，深读待该面有真实使用压力 |

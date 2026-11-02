@@ -1,7 +1,5 @@
 # system prompt 作为 surface 节点
 
-产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`，2026-10-18 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
-
 源码核验入口：`packages/core/session/src/types.ts` 的事件定义、`packages/core/session/src/request-header.ts`、`packages/core/agent-loop/src/runtime-context.ts`、`packages/core/agent-loop/src/agent.ts` 的 `buildRequest`。
 
 本篇回答一个表示的搬迁：渲染后的 system prompt 从 `request/header` 的 `system` 字段，搬成一条普通的 surface 会话事件 `system/message`，占据 surface node 0。

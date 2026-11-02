@@ -1,7 +1,5 @@
 # desktop — Electron 应用自有 profile
 
-产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`）；上一消化基线 `687f282e86`（`dsh-v0.2.1-rc.2`），`rc.2` → `rc.3` 的增量见 [`_change_log/0012`](../_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md)，`rc.3` → `rc.5` 见 [`0013`](../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)。
-
 ## 一句话
 
 `desktop` 是第五个「base + 产品层」的 bundle 组合（web / headless / sdk / acp 之后；`sdk-minimal` 是不叠 base 的独立树，不算在内），也是唯一的**应用自有 profile**：它不进 `PROFILE_TEMPLATES`、不走 `dsh` CLI、没有 `--profile desktop` 这条路。Electron 壳启动一个 Electron Node 模式的私有子进程（`apps/desktop-host/`，下称 host），host 用 `loadProfileDirectory` 装载 `$DSH_HOME/profiles/desktop`，再经**共享的** `runProfile` 起完整的 web 应用（webserver 以 `--host 127.0.0.1 --port 0` 启动、端口由 OS 分配），把认证 URL 经 Node IPC 报回壳进程（`apps/desktop-host/src/index.ts:23`、`:25-42`、`:103-104`）。壳窗口加载 `dsh-app://app/` 的打包 Web 入口，把页面里的应用请求转发给这个已认证 Host。
@@ -10,7 +8,6 @@
 
 - profile 目录与锁：`$DSH_HOME/profiles/desktop` 及其下的 `lock`（`apps/desktop/src/paths.ts:17-21`）。`DesktopProjectManager.withLock` 持有该锁完成全部 profile 写事务，并回收陈旧进程留下的死锁文件（`apps/desktop/src/project-manager.ts:93-130`）。
 - 组合起点：`WEB_PROFILE = PROFILE_TEMPLATES.web`，desktop profile 的 `dsh.profile.bundles` 就是 web 那两个 bundle（`apps/desktop/src/project-manager.ts:32`；manifest 在 `:142`、`:167` 直接写入，`:175` 经 `initProfile`；模板定义 `packages/boot/app-boot/src/profile.ts:179-195`）。用户插件由主窗口 Plugins 页经共享 Web Plugin Manager 追加进同一 manifest（`apps/desktop/README.md:168`）。
-- 生产 runtime 由签名应用自带：`resources/app.asar/dsh` 携带完整生产依赖树，core 包不复制进 profile 存储、首启不跑 pnpm（`apps/desktop/README.md:117`、`:166`）。
 - CLI 的 boot / dump 入口一律拒绝这个名字；`plugin` 子命令默认也拒绝，只有 Desktop 自带 CLI 以 `manageDesktopProfile: true` 放行（`apps/desktop-host/src/cli.ts:15-16`）：`rejectElectronProfile`（`apps/cli/src/args.ts:83-87`，错误文案 `:85`），调用点在根命令 action（`:183`，一次覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`）与 `plugin` 子命令（`:199`）。`desktop` 也**不是** `PROFILE_TEMPLATES` 成员（`packages/boot/app-boot/src/profile.ts:179-195`），所以 `--from-default-profile desktop` 以「unknown default profile」被拒（`apps/cli/src/profile-boot.ts:117-122`）。
 
 `docs/architecture.md` 把这条归属单独写在 `## Desktop application`（`:49-53`），`:53` 原文是「Desktop listens on an OS-assigned port by default; profile configuration can override it.」；`## Application launch`（`:41-47`）仍然只列 5 个 CLI profile、不计 Desktop。
@@ -90,6 +87,13 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 | 运行时 patch 重载 | base bundle 的 `hmr` 行（有 `profileContext` 即挂载）监视 profile 与 home 两份 `cordis.patch.yml` 并 reconcile | 同左：desktop 也经 `runProfile`，`profileContext` 在场，同一 watcher 生效（`packages/bundle/base/cordis.patch.yml:28-32`；`packages/boot/hmr/src/index.ts:925` 的 `reconcileProfile`）。~~patchReload: live~~（0.1.7 线退役：patch 重载语义从 profile 文件机制改为 base bundle 的 `hmr` 行） |
 | `agent-preset` | `agent-preset-registry`，`default: standard` | 同左（同一 bundle 层） |
 | client 图 | `packages/client/` 经 `window.__DSH_BOOT__` 注入 | 同一套：静态 dist 由壳从打包资源直接发出，`/plugins/` bundle 经 `dsh-app://app` 转发到 Host |
+
+## 发布、runtime 与开发
+
+- **共享与隔离**：CLI 与桌面共享 `$DSH_HOME` 下的产品数据（会话、设置、凭据、工作区），但**不**共享可执行包、插件激活、lockfile 或 `node_modules`（`apps/desktop/README.md:118`）。壳进程另取进程级单实例锁（`apps/desktop/src/single-instance.ts:16-22`）。
+- **生产 runtime**：签名应用自带一棵可搬迁树。打包期用本地签名包集（`desktop-packages.json` + `desktop-packages/*.tgz`，`apps/desktop/src/core-package-set.ts:8-11`、校验 `:131`）物化出 `resources/app.asar/dsh`，再封 `desktop-runtime.json` 完整性描述符（`apps/desktop/src/runtime-tree.ts:12`，校验失败抛错 `:211`）。启动时只校验描述符、准备 profile、摘除旧投影，**不跑 pnpm**（`apps/desktop/src/project-manager.ts:83-91`；`apps/desktop/README.md:166`）。host 用 `installAnchor` 指向这棵树解析 `dsh-base` / `dsh-web-app`，外部插件装在 profile 自己的 `node_modules`。原生恢复可在 Host 起不来时禁用第三方 bundle 并备份 profile patch（`apps/desktop/src/project-manager.ts:77`；`packages/boot/app-boot/src/profile-sanitize.ts:18-33`）。
+- **发布身份**：Electron 与 `@deepseek-ai/dsh` 恒为同一精确版本，升级 dsh 就是一次桌面发布；签名更新单元 = 壳 + 匹配 dsh runtime + pnpm（`apps/desktop/README.md:115`、`:121`）。安装/更新交接经 host 的 `update-tasks` inspect / lock / unlock：lock 拒新请求（503）、排空已准入请求后再查运行中的 agent 与 job（`apps/desktop-host/src/index.ts:78-89`；`apps/desktop-host/src/update-tasks.ts:28-62`）。发布目标是 macOS arm64 / x64 与 Windows x64，Linux 不是受支持的桌面发布目标（`apps/desktop/packaging/README.md:96`）。
+- **开发**：`pnpm run dev:desktop`（根 `package.json:31`）把 CLI 与私有 host 包连同 workspace 依赖投影进一次性 npm 工程（`apps/desktop/.desktop-build/development/project`），默认 Harness home 也投影到 `.desktop-build/development/home`；`pnpm run start:desktop`（根 `package.json:32`）跳过构建复用既有产物（`apps/desktop/README.md:191-199`）。
 
 ## 传输与认证
 

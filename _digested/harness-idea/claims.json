@@ -1,5 +1,4 @@
 {
-  "baseline": "b830ec950faba0a46dda564be3e2d854afed94f1",
   "claims": [
     {
       "id": "C1",
@@ -157,6 +156,48 @@
       "description": "baseline 下所有 packages 所有者包总数（packages/*/*/package.json，深度精确）",
       "metric": "package-total",
       "expected": 343
+    },
+    {
+      "id": "N5",
+      "description": "baseline 下 packages/*/*/package.json 的包组数（packages 下的一级目录）",
+      "metric": "package-group-total",
+      "expected": 52
+    },
+    {
+      "id": "N6",
+      "description": "baseline 下 packages/client/*/package.json 的 client 包数",
+      "metric": "client-package-total",
+      "expected": 67
+    },
+    {
+      "id": "N7",
+      "description": "baseline 下 packages/experimental/*/package.json 的实验包数",
+      "metric": "experimental-package-total",
+      "expected": 47
+    },
+    {
+      "id": "N8",
+      "description": "baseline 下 packages/api/remotes/src/client/index.ts 的 /remote 导入语句数",
+      "metric": "remote-import-count",
+      "expected": 26
+    },
+    {
+      "id": "N9",
+      "description": "baseline 下 API_REMOTE_FORWARDED_EVENTS 的条目数",
+      "metric": "forwarded-event-count",
+      "expected": 28
+    },
+    {
+      "id": "N10",
+      "description": "baseline 下 vendor/README.md 的 Local modifications 编号条目数",
+      "metric": "vendor-local-modification-count",
+      "expected": 24
+    },
+    {
+      "id": "N11",
+      "description": "baseline 下 docs/testing.md 的行数",
+      "metric": "testing-doc-lines",
+      "expected": 55
     }
   ]
 }

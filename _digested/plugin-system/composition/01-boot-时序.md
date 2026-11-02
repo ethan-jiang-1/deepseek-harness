@@ -115,7 +115,6 @@ bootstrap-only 名字（`PATH`、代理、`DEEPSEEK_BASE_URL`、一切 `DSH_` �
 
 快照经 `prepare` provide，插件读同一份不可变出处，不自己再扫一遍 `.env`。
 
-
 ## 自证配方
 
 ```sh

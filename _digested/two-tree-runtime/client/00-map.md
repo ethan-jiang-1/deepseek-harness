@@ -1,12 +1,12 @@
 # Client · 浏览器里那棵树
 
-核验入口：[`docs/subsystems/web-client.md`](../../../docs/subsystems/web-client.md)、[`docs/subsystems/client-modules.md`](../../../docs/subsystems/client-modules.md)、[`docs/subsystems/slots.md`](../../../docs/subsystems/slots.md)、[`docs/subsystems/conversation.md`](../../../docs/subsystems/conversation.md)、[`packages/client/AGENTS.md`](../../../packages/client/AGENTS.md)。产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`），各页核验值见 [`_coverage`](../../_coverage/00-index.md)。
+核验入口：[`docs/subsystems/web-client.md`](../../../docs/subsystems/web-client.md)、[`docs/subsystems/client-modules.md`](../../../docs/subsystems/client-modules.md)、[`docs/subsystems/slots.md`](../../../docs/subsystems/slots.md)、[`docs/subsystems/conversation.md`](../../../docs/subsystems/conversation.md)、[`packages/client/AGENTS.md`](../../../packages/client/AGENTS.md)。
 
 ## 一句话
 
 Web Client 是浏览器侧一棵由独立载入的插件组装成的 Cordis 应用（`docs/subsystems/web-client.md:5`）；它复用四块基础设施 —— Client Modules 载插件图、API Gateway 做类型化 Host 通信、Slots 组合 React、Conversation 把 Session 窗口变成目标自有的视图 —— 其余规则都是在这四块之上规定「谁拥有一份状态、谁能 import 谁、一个值走哪条通道」。
 
-`packages/client/` 下当前 **67** 个包目录（2026-11-02 重测：`ls packages/client/*/package.json`，`rc.5`）。这个数只用来判断「一个目录还是一个族包」，每次同步都会变，不要当常量引用。
+`packages/client/` 的包目录数量以 [`claims.json`](../../harness-idea/claims.json) 的 `client-package-total` 指标为准；这个数只用来判断「一个目录还是一个族包」，每次同步都会变，不要当常量引用。
 
 ## 和 Host 树的不对称
 

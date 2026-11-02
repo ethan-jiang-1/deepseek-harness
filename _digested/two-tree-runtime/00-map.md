@@ -1,6 +1,6 @@
 # Two-tree runtime · 一套框架、两棵树、一条线
 
-产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`）。各页各自的核验值以 [`_coverage`](../_coverage/00-index.md) 为准；本页只定形状。
+各页核验值以 [`catalog.json`](../catalog.json) 与 [`_coverage`](../_coverage/00-index.md) 为准；本页只定形状。
 
 ## 一句话
 
@@ -68,8 +68,8 @@ Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一�
 
 1. `node _digested/ref-sweep.mjs _digested/two-tree-runtime --quotes`：报路径不存在、行号越界、引文-锚点漂移。报告是候选不是门禁，按 [`_change_log/0009`](../_change_log/0009-independent-recheck.md) 的三态口径分诊；`require.async("./client.<name>.js")` 这类会被正则截成 `./client.js` 的，属误报。
 2. `node _digested/verify.mjs`：链接、锚点、SVG、编码、结尾换行。
-3. 重测四个会漂的数：`ls packages/client/*/package.json | wc -l`（本基线 67）、`packages/api/remotes/src/client/index.ts` 里的 `/remote` 导入数（26）、`packages/api/remotes/src/remote-events.ts` 的 `API_REMOTE_FORWARDED_EVENTS` 条目数（28）、`vendor/README.md` 的本地修改条数（24）。
-4. 换基线时只改集中声明处：本页、[`client/`](./client/00-map.md)、[`remote/`](./remote/00-map.md) 三行；`framework/` 各篇保留自己的核验行，不跟着改。
+3. 四个会漂的数由 `claims.json` 的 `client-package-total`、`remote-import-count`、`forwarded-event-count`、`vendor-local-modification-count` 机械核对；要复测就读这四项的 expected 值，不要在正文抄数字。
+4. 换基线时只改 [`catalog.json`](../catalog.json) 的 `baseline`；本页与 `client/`、`remote/` 不再保留核验行，逐页状态由覆盖矩阵渲染。
 
 ## 与其它专题的边界
 

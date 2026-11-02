@@ -18,7 +18,7 @@
 - `session/list` / `session/resume` / `session/close` / `session/set_config_option`：均已实现并注册（`packages/acp/acp/src/index.ts:389-392`）。`initialize` 的 `sessionCapabilities` 只广告 `close` / `list` / `resume`（`:190`）；`set_config_option` 由 `session/new` / `session/resume` 返回的 configOptions 与 `:392` 的注册体现，不是独立能力位。list 是确定性 newest-first 分页（`sessionListPageSize` 可配），按物理目录身份过滤 `cwd`，只列持久化的 root 会话（排除活跃、subagent origin、带 parent 的条目，`:310-314`）；resume 校验同目录后才恢复持久 log，排除 origin / parentSession（`:253`）；set_config_option 序列化更新广告的 `model` / `reasoning_effort`。
 - `initialize`：仅当挂了 durable attachment store、且配置的精确 provider/model 声明了 image input 时，才广告图像 prompt；音频和 embedded context 恒为 false。
 - `session/prompt`：按线序保留文本与受支持的 inline 图像；resource link 变成 `[resource_link name=… uri=…]`。整批图像先校验、再按最新精确 route 复核，然后在 user 事件之前全部 commit。inline base64 准入后丢弃，日志里只留 attachment 引用。每会话一个 in-flight。等到准入、整个 agent idle、以及有序输出投递。正常静默 → `end_turn`，token-limit → `max_tokens`；ACP 取消 / dispose / 未被准入的 turnless slot → `cancelled`。
-- `session/cancel`：先中止尚未进 inbox 的 admission，不取消无关 agent 工作；prompt 一旦进 inbox，才取消该 agent 并等到所拥有区间静默。没有 in-flight prompt 时取消自主工作。请求级取消走 ACP 的 `$/cancel_request`：SDK 把 prompt 请求的 signal abort，落到同一个 `cancelPrompt`（`packages/acp/acp/src/session.ts:273-274`，README 的 `session/cancel` / `$/cancel_request` 行）。
+- `session/cancel`：先中止尚未进 inbox 的 admission，不取消无关 agent 工作；prompt 一旦进 inbox，才取消该 agent 并等到所拥有区间静默。没有 in-flight prompt 时取消自主工作。请求级取消走 ACP 的 `$/cancel_request`：`@agentclientprotocol/sdk` 把 prompt 请求的 signal abort，落到同一个 `cancelPrompt`（`packages/acp/acp/src/session.ts:273-274`，README 的 `session/cancel` / `$/cancel_request` 行）。
 - `session/update`：只投递 committed 事实的语义更新，保序、每会话串行化——已提交 `assistant/message` 里每个非空文本或图像块一个 `agent_message_chunk`、每个非空 reasoning 块一个 `agent_thought_chunk`、已提交 `tool/call` / `tool/result` 一对 `tool_call` / `tool_call_update`、可用时一条 `usage_update`（`packages/acp/acp/src/updates.ts:36`、`:54`、`:80`、`:98`），以及 model / reasoning_effort 的 `config_option_update`（`packages/acp/acp/src/session.ts:224`，由 `llm/adapters-updated` 触发，`index.ts:152-154`）。**assistant** 图像投递前再读并校验完整性；缺失或损坏会使这次 prompt 失败，而不是发占位符。tool/result 里的图像转换失败只记 warn 并丢弃该条 `tool_call_update` 的附加内容，不影响所选 turn 的结算（`session.ts:377-388`）。
 - `session/request_permission`：带 tool call id 的、桥拥有的审批，一次性 allow/reject。客户端可自动答。
 - 拆连接与 Cordis dispose 共用一份 teardown：先拒新 session/prompt，取消并排空 admission / agent 活动 / 有序输出，只排空本连接拥有的可续后代，flush persistence，再并行 dispose。别的前端共用 Context 时，它们的森林还在。
@@ -63,10 +63,14 @@ Python SDK（`python/sdk`）是同一 stdio JSON-RPC wire 的第二个官方客�
 
 | | ACP | JSON-RPC SDK |
 |--|-----|----------------|
+| 协议 | 标准 Agent Client Protocol | 自定义 JSON-RPC（`dsh-sdk-protocol`） |
 | prompt 返回 | 等到 idle，带 `stopReason` | 立刻 `messageId` |
 | 线上可见 | committed 事实的语义更新：文本 / 图像 / reasoning 块、通用 tool 生命周期、usage、配置更新 | Context 内每条 log 事件与 agent 状态 |
+| 会话创建 | `session/new` 始终创建新 agent | 按 `sessionId` get-or-create |
 | resume / fork | `session/resume`；无 fork | `session/resume`（持久恢复，不重放历史）；无 fork |
-| 取消 | `session/cancel` 对准该 agent | 无 per-prompt cancel |
+| 取消 | `session/cancel` 对准该 agent；`$/cancel_request` 取消该 prompt 请求 | 无 per-prompt cancel |
+| 审批 | `approval/request` 转成 `session/request_permission`，一次性 allow/reject | 无协议级审批方法；审批仍由进程内 approval 插件处理 |
+| 图像 | 批量准入、按最新 route 复核、提交后丢弃 inline base64；assistant 图投递前重读校验 | 按普通内容块 / attachment 引用随 session 事件透传，无准入与重读 |
 | 典型消费者 | 另一个产品里的 subagent | 进程外 SDK / 脚本 |
 
 两者都驱动 `ctx.agents`，都不在入口里实现 loop。差别是投影：ACP 只把 committed 事实重新表达成标准 ACP 语义更新，raw delta、retry attempt 与 DSH 展示面留在 session log，但在广告了图像能力时投递已提交的光栅图；SDK 把 log 当产品。

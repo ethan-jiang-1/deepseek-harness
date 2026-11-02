@@ -54,7 +54,6 @@ reconcile 的事务边界在 Include / Loader：`entry.update` 的候选失败�
 
 长寿命表面（web / desktop 经 `runProfile` 的启动）靠第三行；headless / sdk / acp 这类一次性表面显式关断，调试它们要重启。
 
-
 ## 自证配方
 
 ```sh

@@ -1,7 +1,5 @@
 # Runtime Profiles · 运行时配置
 
-产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`），本专题各页结论与该 commit 的项目树一致；`rc.2` → `rc.3` 的增量见 [`_change_log/0012`](../_change_log/0012-0.2.1-rc.2-to-0.2.1-rc.3.md)，`rc.3` → `rc.5` 见 [`0013`](../_change_log/0013-0.2.1-rc.3-to-0.2.1-rc.5.md)；历史跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`0.2.0-rc.2` → `0.2.1-rc.2` 的增量见 [`0011`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
-
 ## 一句话
 
 Runtime Profile 决定一个 `dsh` 进程**启动时装入什么**：浏览器应用、一次性无界面任务、JSON-RPC 服务、极简 SDK 还是自动化 ACP 服务。会话存在哪里、用哪个模型、是否接沙箱和审批，也在这里定下来。
@@ -38,7 +36,7 @@ rc.1 没有增删任何模板、也没有改名：新增的是从模板派生自
 
 ## 共同基底
 
-所有 5 个宿主形态共享 `dsh-base` 或其等效层
+web / headless / sdk / acp 与桌面这五个 base-backed 组合共享 `dsh-base`。`sdk-minimal` 是唯一不叠 base 的独立树，下表按 base 陈述的来源对它不成立；它自己的清单与偏离见 [`04-sdk-minimal.md`](./04-sdk-minimal.md)，表中括注只标它与 base 的差异，不表示其余行都存在于它的树里。
 
 | 领域 | 概念级共同能力 | 来源 |
 |------|---------------|------|
@@ -118,7 +116,7 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 |---------|------------------|
 | **web** | `dsh-web-app` bundle：webserver、web-runtime、client-*（浏览器壳、wire、slots、ui-*）、session-controller 等 Remote 控制器、directory-picker、plugin-inventory、preset patch（0.1.7 线起 agent-presets 已退役、重设计为声明式 agent-preset；storage/sandbox/typert-gateway 等基础设施在 base）。0009 跨度（`a66e470204` → `183f08e9c6`）新增 8 条 insert 行：`open-in-app` / `ui-open-in-app` / `workspace-files`（基础设施）、`file-upload`（传输）、`resources` / `ui-sidebar-right` / `ui-sidebar-documentpreview` / `ui-sidebar-files`（浏览器罗盘）；0011 跨度又新增 5 条：`schedule` / `ui-schedule`（Schedule 改直接进 Web 组合）、`harness-dev-context`、`ui-secret-mask`、`ui-deepseek-model-label-1017`，详见 [`01-web.md`](./01-web.md) |
 | **headless** | `dsh-headless` bundle：`headless-startup`（命令行解析）、`headless-runner`（驱动任务、打印结果） |
-| **sdk** | `dsh-sdk-app` bundle：base + 薄协议层（persona override + `sdk-app-startup`（带 `config.profile: sdk`）+ `sdk-jsonrpc-server`，`inject: [sdkAppStartup, loader]`）；工具面**不收窄**，继承 base |
+| **sdk** | `dsh-sdk-app` bundle：base + 薄协议层（persona override + `sdk-app-startup`（带 `config.profile: sdk`）+ `sdk-jsonrpc-server`，`inject: [sdkAppStartup, loader]`）；不反向禁用 base 工具，另按环境条件插入 `workspace-dependencies` 与 `skill-office` |
 | **sdk-minimal** | `dsh-sdk-minimal` bundle：独立树不叠 base——工具面收窄到**平台选定的一个持久 shell**（非 win32 `persistent-bash` / win32 `persistent-pwsh`）加 `read_image` 与 `working_directory` 两个工具；无 subagent、todo、skill、web 搜索（compaction 与 token-meter 随 0011 的目录上下文收编进树内） |
 | **acp** | `dsh-acp-app` bundle：base + 薄自动化层（persona override + `acp-app-startup` + `acp`，`inject: [acpAppStartup]`）；持久化/检查点/查询在 base，不自持 |
 
@@ -126,7 +124,7 @@ ruofei 文章原话：「`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启�
 
 ## 阅读路径
 
-如果对「一个进程怎么启动」还不太清楚，先读 `plugin-system/composition/00-map.md`。如果想知道 ACP 和 SDK 协议的具体保证，然后读 `surfaces-entrypoints/02-acp与jsonrpc.md`。下面每个文件的正文深入 Profile 各自的机制。
+如果对「一个进程怎么启动」还不太清楚，先读 `plugin-system/composition/00-map.md`。如果想知道 ACP 和 SDK 协议的具体保证，读 `surfaces-entrypoints/02-acp与jsonrpc.md`。下面每个文件的正文深入 Profile 各自的机制。
 
 | 文件 | 内容 |
 |------|------|

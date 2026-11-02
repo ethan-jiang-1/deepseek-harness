@@ -79,7 +79,6 @@ Include 对「目标 id 不在当前索引」记一条 patch skip。dump 没有 
 
 产品代码里再手写一份「类似的 patch」会和真树漂移。这是 vendor Include 导出 `applyEntryPatches` 的原因，见 [`../../two-tree-runtime/framework/04-vendor-本地修改.md`](../../two-tree-runtime/framework/04-vendor-本地修改.md)。
 
-
 ## 自证配方
 
 ```sh

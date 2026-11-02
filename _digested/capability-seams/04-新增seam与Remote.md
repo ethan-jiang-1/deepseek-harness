@@ -2,8 +2,6 @@
 
 本篇记录上游同步 0004（`0.1.1-rc.2` → `0.1.2-alpha.3`）引入的**新能力**，以及一种**非三角色**的 BFF 通信模式（API Remote）；末尾补记同步 0006（`0.1.2-rc.1` → `0.1.5-rc.1`）的增量——三个新 `core` 服务与 `ctx.messageFeedback` 的 canonical-log 迁移。其中 Schedule 与 Webhook **都不是**三角色 seam，但形态不同：schedule 连 `ctx` 键都没有，webhook 是一个 `core` 服务加一个消费者适配器（对照反例）。传统三角色（Definition / Provider / Consumer）仍见 [`01-三角色与分包装.md`](./01-三角色与分包装.md)。
 
-产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`，2026-10-18 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
-
 源码核验入口：`packages/schedule/schedule/`、`packages/schedule/tool-schedule/`、`packages/experimental/webhook/`、`packages/experimental/webhook-github/`、`packages/api/remotes/`、`packages/typert/`、`packages/feedback/`、`packages/client/file-upload/`、`packages/api/workspace-files/`。
 
 ## Schedule：不是 seam 的提醒能力（反例；0.2.0 线整块重写）

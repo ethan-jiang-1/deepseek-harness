@@ -1,6 +1,6 @@
 # workspace 模型
 
-核验入口：[`docs/subsystems/web-client.md`](../../../../docs/subsystems/web-client.md) 的「Workspaces」、[`packages/api/workspace-controller/README.md`](../../../../packages/api/workspace-controller/README.md)、[`packages/api/workspace-controller/src/client/`](../../../../packages/api/workspace-controller/src/client/)（`model.ts` / `service.ts`）。产品源码基线：`b830ec95`（`dsh-v0.2.1-rc.5`）。
+核验入口：[`docs/subsystems/web-client.md`](../../../../docs/subsystems/web-client.md) 的「Workspaces」、[`packages/api/workspace-controller/README.md`](../../../../packages/api/workspace-controller/README.md)、[`packages/api/workspace-controller/src/client/`](../../../../packages/api/workspace-controller/src/client/)（`model.ts` / `service.ts`）。
 
 会话窗口之外的另一份客户端状态：workspace 行、它们的顺序、归档与 pin。它和会话窗口共用同一套「完整 baseline + 增量 + generation 整体替换」的写法。
 

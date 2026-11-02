@@ -1,7 +1,5 @@
 # Prompt section 顺序与前缀稳定
 
-产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`，2026-10-18 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
-
 源码核验入口：`packages/core/system-prompt/src/index.ts`。
 
 模型每一步的 system 文本是注册表当场拼的。顺序就是 KV cache 能不能命中前缀的机械原因。

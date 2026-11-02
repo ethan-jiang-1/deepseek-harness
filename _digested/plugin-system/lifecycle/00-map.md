@@ -1,8 +1,5 @@
 # Plugin lifecycle · 插件生命周期
 
-产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）。本专题按当前产品树建立，结论对到该 commit。
-2026-11-02 复核：`rc.3 → rc.5` 对本专题引用的源目录无源码变更（`git diff --stat dsh-v0.2.1-rc.3..HEAD` 在这些路径上只有 `package.json` 版本位），因此结论沿用；两个专题共 71 条 `path:line` 已逐条打印核验，修正 4 处行号漂移（`auditStartupEntries` 1151→1153、`evaluatePluginCompatibility` 78→87、`STORAGE_SQLITE_SCHEMA_VERSION` 12→20、`prepareProfilePatches` 72→180）。
-
 ## 一句话
 
 一个插件要走完「打包 → 分发 → 安装 → 启动 → 一次性初始化 → 更新与启停 → 卸载」七段才算真正交付。语料其余专题按**运行时插件树**切分，于是每一段散落在不同专题的正文与脚注里；本专题把它们收在一处，并且只写段与段之间的接缝——谁在什么时刻写盘、哪一步不可逆、失败停在哪、什么数据会留下来。

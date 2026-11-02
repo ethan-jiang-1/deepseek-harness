@@ -1,6 +1,6 @@
 # 05 · 插件分类与设计思考
 
-产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）；2026-11-02 在 rc.5 树复核：包 **343**、`packages/experimental/` **47**，与本页数字一致；快照式清单的重测义务见 [`_coverage/`](../../_coverage/00-index.md)。
+快照式清单的重测义务见 [`_coverage/`](../../_coverage/00-index.md)；具体核验点见 [`catalog.json`](../../catalog.json)。
 
 ## 一句话
 

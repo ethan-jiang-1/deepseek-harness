@@ -1,6 +1,6 @@
 # Remote · 两棵树之间的线
 
-核验入口：[`docs/subsystems/typert.md`](../../../docs/subsystems/typert.md)、[`docs/api-gateway.md`](../../../docs/api-gateway.md)、[`packages/typert/README.md`](../../../packages/typert/README.md)、[`packages/client/connection/README.md`](../../../packages/client/connection/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.md`、`.agents/notes/implemented/architecture/2026-07-27-compiler-independent-typert-model.md`。产品源码基线：`b830ec950faba0a46dda564be3e2d854afed94f1`（`dsh-v0.2.1-rc.5`），各页核验值见 [`_coverage`](../../_coverage/00-index.md)。
+核验入口：[`docs/subsystems/typert.md`](../../../docs/subsystems/typert.md)、[`docs/api-gateway.md`](../../../docs/api-gateway.md)、[`packages/typert/README.md`](../../../packages/typert/README.md)、[`packages/client/connection/README.md`](../../../packages/client/connection/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.md`、`.agents/notes/implemented/architecture/2026-07-27-compiler-independent-typert-model.md`。
 
 ## 一句话
 

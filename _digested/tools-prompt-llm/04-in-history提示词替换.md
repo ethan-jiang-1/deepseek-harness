@@ -1,7 +1,5 @@
 # in-history 提示词替换
 
-产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`，2026-10-25 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
-
 源码核验入口：`packages/llm/llm/src/types.ts`、`packages/llm/llm/src/index.ts` 的 `normalizeModelInfo`、`packages/llm/llm-deepseek/src/models.ts` 的 catalog、`packages/core/agent-loop/src/runtime-context.ts:88-103`。
 
 本篇写一条**按模型能力分路**的替换语义：同一次 prompt 变化，不 capable 的 route 要重写 message 0，capable 的 route 可以把新 prompt 追加在已缓存历史之后。

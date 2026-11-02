@@ -25,9 +25,17 @@ ACP：`dsh --profile acp`。launcher profile，stdout 留给协议帧。
 
 ### headless：唯一一次性入口
 
-`dsh --profile headless [task...]` 是这 6 个入口里唯一跑完即退出的：组合是 `dsh-base` + `dsh-headless`，不 mount Host、HTTP server、Web runtime 或 browser（`packages/bundle/headless/cordis.patch.yml`）。输出契约：stdout 只放最终 assistant 文本（`--json` 时换成 newline-delimited run events，`packages/bundle/headless/src/json-stream.ts`），stderr 放诊断与非空 provider reasoning；成功 exit 0，失败 exit 1 并打 `dsh: <code>: <message>`。任务取 positional（多词按空格拼）或 stdin（缺省或 `-`；空 positional / 空 pipe 在开跑前拒绝）；`--session-id` 精确收养持久 Session，未知 id 报错；flag 面在 `packages/bundle/headless/src/startup.ts:41-51`。
+`dsh --profile headless [task...]` 是六个入口里唯一跑完即退出的：组合是 `dsh-base` + `dsh-headless`，不 mount Host、HTTP server、Web runtime 或 browser（`packages/bundle/headless/cordis.patch.yml`）。对调用方的契约：
 
-runner 的最终消息从耐久日志按 seq 读，读不到即 fail loud（`packages/bundle/headless/src/index.ts:82`；读取区间 `:73-99`），推理进度另走 process-local 的 `agent/assistant-stream`（订阅 `:122`，reasoning 分支 `:134`），最后 flush Session 再退出（`:390`）。它禁用 managed credential store / authorization / account 消费者，API key 走 launch env → `<cwd>/.env` → `$DSH_HOME/.env`（`packages/bundle/headless/README.md` 的 Credentials）。profile 层叠与其他入口的差异见 [`../runtime-profiles/02-headless.md`](../runtime-profiles/02-headless.md)。
+- **stdout**：默认只写最终 assistant 文本；`--json` 换成 newline-delimited run events（`session` … `final`；失败以 `error` 收尾、没有 `final`，`packages/bundle/headless/src/json-stream.ts`）。
+- **stderr**：诊断、`dsh: <code>: <message>` 错误行与非空 provider reasoning；reasoning 是 process-local 投影，不落日志。
+- **退出码**：`completed` 退 0；`max-tokens` / `error` / `aborted` 等非 completed 结局或无 turn 退 1（`packages/bundle/headless/src/index.ts:398`）。
+- **任务输入**：positional 多词按空格拼；缺省或 `-` 读 stdin，空白输入在开跑前拒绝。
+- **`--session-id <id>`**：采纳已存 Session，需要 `sessionPersistence` 与 `sessionQuery`；未知或空白 id 失败。
+- **凭据**：managed credential store / authorization / account 消费者被禁用；API key 走启动环境 → `<invocation cwd>/.env` → `$DSH_HOME/.env`（`packages/bundle/headless/README.md` 的 Credentials）。
+- **flag 面**：`--json` / `--session-id` / `[task...]` 在 `packages/bundle/headless/src/startup.ts:43-45`；`--help` 只打印帮助、不运行。
+
+最终消息按 seq 从耐久日志读取、推理进度走 `agent/assistant-stream` 的实现见 [`../runtime-profiles/02-headless.md`](../runtime-profiles/02-headless.md)；本页只写入口契约。
 
 ## 这一页不再讲的东西
 

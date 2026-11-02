@@ -10,7 +10,7 @@
 
 ## JobRegistry：后台作业的平台合同
 
-jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`packages/jobs/jobs/README.md:12`）：`JobRegistry` 是抽象 Cordis 服务，直接加载实现类即 throw（组合配错在装载时就失败）；`jobs-local` 是 shipped 的进程内实现——**job 随 harness 进程死亡，跨重启的持久执行需要别的后端实现同一合同**（`README.md:33`）。
+jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`packages/jobs/jobs/README.md:12`）：`JobRegistry` 是抽象 Cordis 服务，直接加载实现类即 throw（组合配错在装载时就失败）；`jobs-local` 是 shipped 的进程内实现——**job 随 harness 进程死亡，跨重启的持久执行需要别的后端实现同一合同**（`packages/jobs/jobs/README.md:33`）。
 
 一个 job 给你什么（`packages/jobs/jobs/README.md:30`-`32`）：
 

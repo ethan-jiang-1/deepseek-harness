@@ -1,7 +1,5 @@
 # chunk 到 settlement
 
-产品源码基线：`687f282e8625c6b8d11ff58211a90524be2e4317`（`dsh-v0.2.1-rc.2`，2026-10-18 同步轮核验；OLD 侧 `639ed015397290b3745d163aafe02ffee4aa3f84`）。
-
 源码核验入口：`packages/core/session/src/types.ts` 的 assistant 事件、`packages/llm/llm/src/assistant-stream.ts`、`packages/core/agent-loop/src/{agent,assistant-stream}.ts`、`packages/llm/token-meter/src/index.ts`。
 
 本篇写 session format v2 之后「流式 chunk 如何入 log」的完整替代关系：**顶层 `assistant/chunk` 事件已不存在**，一次模型 attempt 只提交一条 settlement，流内嵌其中。

@@ -1,6 +1,6 @@
 # 会话窗口与 generation
 
-核验入口：[`docs/subsystems/web-client.md`](../../../../docs/subsystems/web-client.md) 的「Sessions」、[`packages/api/session-controller/README.md`](../../../../packages/api/session-controller/README.md)、[`packages/api/session-controller/src/client/sessions/`](../../../../packages/api/session-controller/src/client/sessions/)（`service.ts` / `manager.ts` / `session.ts`）。产品源码基线：`b830ec95`（`dsh-v0.2.1-rc.5`）。
+核验入口：[`docs/subsystems/web-client.md`](../../../../docs/subsystems/web-client.md) 的「Sessions」、[`packages/api/session-controller/README.md`](../../../../packages/api/session-controller/README.md)、[`packages/api/session-controller/src/client/sessions/`](../../../../packages/api/session-controller/src/client/sessions/)（`service.ts` / `manager.ts` / `session.ts`）。
 
 这一页讲浏览器侧那份会话状态：它由哪三个对象分担、一份窗口怎么被整段替换、断线之后为什么能接着读。
 

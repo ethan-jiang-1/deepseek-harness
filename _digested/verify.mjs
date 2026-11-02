@@ -2,13 +2,14 @@
  * Self-contained integrity checks for the source-digestion corpus.
  *
  * Validates strict UTF-8 and one trailing LF for corpus text, relative
- * Markdown links and fragments, every SVG figure's XML and entities, and the
- * harness-idea claim register in harness-idea/claims.json.
+ * Markdown links and fragments, every SVG figure's XML and entities, the
+ * catalog/file-tree bijection and generated coverage matrix, Markdown table
+ * shapes, charter-copy equality, and the harness-idea claim register in
+ * harness-idea/claims.json.
  */
 
-import {
-  execFileSync,
-} from 'node:child_process'
+import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import {
   existsSync,
   readFileSync,
@@ -23,6 +24,7 @@ import {
   resolve,
 } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { applyCoverage, renderCoverage } from './render-indexes.mjs'
 
 const corpusRoot = dirname(fileURLToPath(import.meta.url))
 const repositoryRoot = dirname(corpusRoot)
@@ -33,6 +35,25 @@ const decoder = new TextDecoder('utf-8', { fatal: true })
 // verification baseline, not in the URL. Event and discussion permalinks are not content addressing.
 const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:(?:blob|tree)\/master(?:[/?#]|$)|(?:commit|discussions|issues|pull)\/)/
 const failures = []
+const catalogPath = resolve(corpusRoot, 'catalog.json')
+const coveragePath = resolve(corpusRoot, '_coverage', '00-index.md')
+const catalog = loadCatalog()
+const baselineCommit = catalog?.baseline?.commit ?? ''
+
+/** Load the page/baseline catalog; a failure is recorded once and skips catalog checks. */
+function loadCatalog() {
+  try {
+    const parsed = JSON.parse(readFileSync(catalogPath, 'utf8'))
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      failures.push('catalog.json: root must be an object')
+      return null
+    }
+    return parsed
+  } catch (error) {
+    failures.push(`catalog.json: ${error instanceof Error ? error.message : String(error)}`)
+    return null
+  }
+}
 
 function corpusFiles(directory) {
   const files = []
@@ -284,7 +305,7 @@ function checkMarkdownLinks(path, source) {
     for (const url of markdownUrls(text)) {
       if (isExternal(url)) {
         if (url.includes('github.com/deepseek-ai/deepseek-harness/') && !dshExternalUrl.test(url)) {
-          report(path, line, `DSH link must target the default branch, not a tag or commit: ${JSON.stringify(rawUrl)}`)
+          report(path, line, `DSH link must target the default branch, not a tag or commit: ${JSON.stringify(url)}`)
         }
         continue
       }
@@ -478,7 +499,6 @@ function checkSvg(path, source) {
   if (stack.length > 0) report(path, undefined, `unclosed XML tag <${stack.at(-1)}>`)
 }
 
-const EXPECTED_BASELINE = 'b830ec950faba0a46dda564be3e2d854afed94f1'
 const claimsPath = resolve(corpusRoot, 'harness-idea', 'claims.json')
 
 /**
@@ -593,6 +613,13 @@ const claimMetrics = new Set([
   'notes-implemented-md',
   'architecture-extension-rows',
   'package-total',
+  'package-group-total',
+  'client-package-total',
+  'experimental-package-total',
+  'remote-import-count',
+  'forwarded-event-count',
+  'vendor-local-modification-count',
+  'testing-doc-lines',
 ])
 
 function gitOutput(args) {
@@ -623,15 +650,15 @@ function gitPackageOwners(commit) {
 
 function computeClaimMetric(metric) {
   if (metric === 'notes-md-total') {
-    return gitTrackedLines(EXPECTED_BASELINE, '.agents/notes')
+    return gitTrackedLines(baselineCommit, '.agents/notes')
       .filter(line => line.endsWith('.md')).length
   }
   if (metric === 'notes-implemented-md') {
-    return gitTrackedLines(EXPECTED_BASELINE, '.agents/notes/implemented')
+    return gitTrackedLines(baselineCommit, '.agents/notes/implemented')
       .filter(line => line.endsWith('.md')).length
   }
   if (metric === 'architecture-extension-rows') {
-    const source = gitOutput(['show', `${EXPECTED_BASELINE}:docs/architecture.md`])
+    const source = gitOutput(['show', `${baselineCommit}:docs/architecture.md`])
     const lines = source.split(/\r?\n/)
     const header = lines.findIndex(line => line.startsWith('| Goal | Mechanism |'))
     if (header === -1) return null
@@ -644,7 +671,45 @@ function computeClaimMetric(metric) {
     }
     return count
   }
-  if (metric === 'package-total') return gitPackageOwners(EXPECTED_BASELINE).length
+  if (metric === 'package-total') return gitPackageOwners(baselineCommit).length
+  if (metric === 'package-group-total') {
+    return gitOutput(['ls-tree', '-d', '--name-only', baselineCommit, 'packages/'])
+      .split('\n')
+      .filter(line => /^packages\/[^/]+$/.test(line)).length
+  }
+  if (metric === 'client-package-total') {
+    return gitPackageOwners(baselineCommit).filter(line => line.startsWith('packages/client/')).length
+  }
+  if (metric === 'experimental-package-total') {
+    return gitPackageOwners(baselineCommit).filter(line => line.startsWith('packages/experimental/')).length
+  }
+  if (metric === 'remote-import-count') {
+    return gitOutput(['show', `${baselineCommit}:packages/api/remotes/src/client/index.ts`])
+      .split(/\r?\n/)
+      .filter(line => /^import .* from '.*\/remote'/.test(line)).length
+  }
+  if (metric === 'forwarded-event-count') {
+    const source = gitOutput(['show', `${baselineCommit}:packages/api/remotes/src/remote-events.ts`])
+    const start = source.indexOf('API_REMOTE_FORWARDED_EVENTS = [')
+    if (start === -1) return null
+    const body = source.slice(start)
+    const end = body.indexOf('\n]')
+    if (end === -1) return null
+    return body.slice(0, end).split(/\r?\n/).filter(line => /^\s{2}\{ event: /.test(line)).length
+  }
+  if (metric === 'vendor-local-modification-count') {
+    const source = gitOutput(['show', `${baselineCommit}:vendor/README.md`])
+    const start = source.indexOf('\n## Local modifications')
+    if (start === -1) return null
+    const rest = source.slice(start + 1)
+    const next = rest.indexOf('\n## ', 1)
+    const section = next === -1 ? rest : rest.slice(0, next)
+    return section.split(/\r?\n/).filter(line => /^\d+\.\s/.test(line)).length
+  }
+  if (metric === 'testing-doc-lines') {
+    const source = gitOutput(['show', `${baselineCommit}:docs/testing.md`])
+    return source.endsWith('\n') ? source.split('\n').length - 1 : source.split('\n').length
+  }
   return undefined
 }
 
@@ -670,16 +735,16 @@ function checkClaimRegister() {
   }
 
   try {
-    execFileSync('git', ['cat-file', '-e', `${EXPECTED_BASELINE}^{commit}`], {
+    execFileSync('git', ['cat-file', '-e', `${baselineCommit}^{commit}`], {
       cwd: repositoryRoot,
       stdio: 'ignore',
     })
   } catch {
-    report(claimsPath, undefined, `baseline commit does not exist in this checkout: ${EXPECTED_BASELINE}`)
+    report(claimsPath, undefined, `baseline commit does not exist in this checkout: ${baselineCommit}`)
   }
 
-  if (register.baseline !== EXPECTED_BASELINE) {
-    report(claimsPath, undefined, `baseline must be ${EXPECTED_BASELINE}, got ${JSON.stringify(register.baseline)}`)
+  if (Object.hasOwn(register, 'baseline')) {
+    report(claimsPath, undefined, 'baseline belongs to catalog.json; remove it from the claim register')
   }
 
   if (!Array.isArray(register.claims)) report(claimsPath, undefined, 'claims must be an array')
@@ -752,6 +817,215 @@ function checkClaimRegister() {
   return { claims: entries.length, metrics: metrics.length }
 }
 
+const catalogRoles = new Set(['map', 'mechanism', 'playbook', 'experiment', 'analysis'])
+const catalogStatuses = new Set(['reverified', 'carried', 'unrecorded', 'needs-recheck'])
+const catalogSources = new Set(['page', 'topic', 'matrix'])
+
+/** Confirm an object name resolves as a commit in this checkout. */
+function commitExists(commit) {
+  try {
+    execFileSync('git', ['cat-file', '-e', `${commit}^{commit}`], { cwd: repositoryRoot, stdio: 'ignore' })
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Validate catalog.json and its bijection with the Markdown page tree. The
+ * catalog is the single home for the baseline, the page inventory, and each
+ * page's verification point; a page missing from it is not covered by any
+ * regeneration path, and a stale entry fails closed.
+ */
+function checkCatalog(files) {
+  if (catalog === null) return null
+  if (catalog.schemaVersion !== 1) report(catalogPath, undefined, 'schemaVersion must be 1')
+  const baseline = catalog.baseline
+  if (baseline === null || typeof baseline !== 'object' || Array.isArray(baseline)) {
+    report(catalogPath, undefined, 'baseline must be an object')
+  } else {
+    if (typeof baseline.tag !== 'string' || baseline.tag.length === 0) report(catalogPath, undefined, 'baseline.tag must be a non-empty string')
+    if (typeof baseline.commit !== 'string' || !/^[0-9a-f]{40}$/.test(baseline.commit)) {
+      report(catalogPath, undefined, 'baseline.commit must be a 40-character lowercase commit id')
+    } else if (!commitExists(baseline.commit)) {
+      report(catalogPath, undefined, `baseline.commit does not exist: ${baseline.commit}`)
+    }
+    if (typeof baseline.tag === 'string' && typeof baseline.commit === 'string') {
+      try {
+        const resolved = execFileSync('git', ['rev-parse', `${baseline.tag}^{commit}`], { cwd: repositoryRoot, encoding: 'utf8' }).trim()
+        if (resolved !== baseline.commit) report(catalogPath, undefined, `baseline.tag ${baseline.tag} resolves to ${resolved}, not ${baseline.commit}`)
+      } catch {
+        report(catalogPath, undefined, `baseline.tag does not resolve: ${baseline.tag}`)
+      }
+    }
+  }
+  if (!Array.isArray(catalog.topics)) {
+    report(catalogPath, undefined, 'topics must be an array')
+    return null
+  }
+
+  const seenDirs = new Set()
+  const seenPages = new Map()
+  let pageCount = 0
+  for (const topic of catalog.topics) {
+    if (topic === null || typeof topic !== 'object' || Array.isArray(topic)) {
+      report(catalogPath, undefined, 'topic entry must be an object')
+      continue
+    }
+    if (typeof topic.dir !== 'string' || topic.dir.length === 0) {
+      report(catalogPath, undefined, 'topic.dir must be a non-empty string')
+      continue
+    }
+    if (seenDirs.has(topic.dir)) report(catalogPath, undefined, `duplicate topic.dir ${topic.dir}`)
+    seenDirs.add(topic.dir)
+    const dir = resolve(corpusRoot, topic.dir)
+    if (!pathInsideRepository(dir) || !existsSync(dir) || !statSync(dir).isDirectory()) {
+      report(catalogPath, undefined, `topic.dir does not exist: ${topic.dir}`)
+      continue
+    }
+    if (typeof topic.title !== 'string' || topic.title.trim().length === 0) report(catalogPath, undefined, `${topic.dir}: title must be a non-empty string`)
+    if (typeof topic.intent !== 'string' || topic.intent.trim().length === 0) report(catalogPath, undefined, `${topic.dir}: intent must be a non-empty string`)
+    if (topic.kind !== 'topic' && topic.kind !== 'group') report(catalogPath, undefined, `${topic.dir}: kind must be topic or group`)
+    if (typeof topic.map !== 'string' || topic.map.length === 0) {
+      report(catalogPath, undefined, `${topic.dir}: map must be a non-empty string`)
+    } else if (!existsSync(resolve(dir, topic.map))) {
+      report(catalogPath, undefined, `${topic.dir}: map does not exist: ${topic.map}`)
+    }
+    if (!Array.isArray(topic.pages)) {
+      report(catalogPath, undefined, `${topic.dir}: pages must be an array`)
+      continue
+    }
+    for (const page of topic.pages) {
+      if (page === null || typeof page !== 'object' || Array.isArray(page)) {
+        report(catalogPath, undefined, `${topic.dir}: page entry must be an object`)
+        continue
+      }
+      if (typeof page.file !== 'string' || page.file.length === 0) {
+        report(catalogPath, undefined, `${topic.dir}: page.file must be a non-empty string`)
+        continue
+      }
+      const target = resolve(dir, page.file)
+      const prefix = `${dir}${process.platform === 'win32' ? '\\' : '/'}`
+      if (!pathInsideRepository(target) || !target.startsWith(prefix)) {
+        report(catalogPath, undefined, `${topic.dir}: page escapes the topic directory: ${page.file}`)
+        continue
+      }
+      if (!existsSync(target) || !statSync(target).isFile()) report(catalogPath, undefined, `${topic.dir}: page does not exist: ${page.file}`)
+      if (seenPages.has(target)) report(catalogPath, undefined, `page appears twice: ${page.file} (${seenPages.get(target)} and ${topic.dir})`)
+      seenPages.set(target, topic.dir)
+      pageCount += 1
+      if (!catalogRoles.has(page.role)) report(catalogPath, undefined, `${topic.dir}/${page.file}: unknown role ${JSON.stringify(page.role)}`)
+      if (!catalogStatuses.has(page.status)) report(catalogPath, undefined, `${topic.dir}/${page.file}: unknown status ${JSON.stringify(page.status)}`)
+      if (page.source !== null && !catalogSources.has(page.source)) report(catalogPath, undefined, `${topic.dir}/${page.file}: unknown source ${JSON.stringify(page.source)}`)
+      if (page.verifiedAt !== null) {
+        if (typeof page.verifiedAt !== 'string' || !/^[0-9a-f]{40}$/.test(page.verifiedAt)) {
+          report(catalogPath, undefined, `${topic.dir}/${page.file}: verifiedAt must be null or a 40-character commit id`)
+        } else if (!commitExists(page.verifiedAt)) {
+          report(catalogPath, undefined, `${topic.dir}/${page.file}: verifiedAt does not exist: ${page.verifiedAt}`)
+        }
+      }
+    }
+  }
+
+  const expected = new Map()
+  for (const path of files) {
+    if (extname(path) !== '.md') continue
+    const rel = relative(corpusRoot, path)
+    if (rel === '00-index.md' || rel === 'CORPUS-CHARTER.md') continue
+    if (rel.startsWith('_change_log/') || rel.startsWith('_coverage/')) continue
+    expected.set(path, rel)
+  }
+  for (const [path, rel] of expected) {
+    if (!seenPages.has(path)) report(path, undefined, `page is not registered in catalog.json: ${rel}`)
+  }
+  for (const target of seenPages.keys()) {
+    if (!expected.has(target)) report(catalogPath, undefined, `catalog page is not an inventory page: ${relative(corpusRoot, target)}`)
+  }
+  return { topics: catalog.topics.length, pages: pageCount }
+}
+
+/** The committed coverage matrix must equal the catalog rendering. */
+function checkCoverage() {
+  if (catalog === null) return
+  const source = decodeText(coveragePath)
+  if (source === undefined) return
+  try {
+    const rendered = applyCoverage(catalog, source)
+    if (rendered !== source) report(coveragePath, undefined, 'generated coverage matrix is stale; run node _digested/render-indexes.mjs')
+  } catch (error) {
+    report(coveragePath, undefined, error instanceof Error ? error.message : String(error))
+  }
+}
+
+/** Every page must be linked from its topic map. */
+function checkMapLinks() {
+  if (catalog === null) return
+  for (const topic of catalog.topics) {
+    if (!Array.isArray(topic.pages)) continue
+    const mapPath = resolve(corpusRoot, topic.dir, topic.map)
+    if (!existsSync(mapPath)) continue
+    const source = readFileSync(mapPath, 'utf8')
+    for (const page of topic.pages) {
+      if (page.file === topic.map) continue
+      const base = page.file.split('/').pop()
+      if (!source.includes(page.file) && !source.includes(base)) {
+        report(mapPath, undefined, `topic map does not link ${page.file}`)
+      }
+    }
+  }
+}
+
+/** Every Markdown table row must have the same cell count as its header. */
+function checkTables(files) {
+  for (const path of files) {
+    if (extname(path) !== '.md') continue
+    const source = readFileSync(path, 'utf8')
+    const lines = activeMarkdownLines(source)
+    const count = (line) => line.replaceAll('\\|', '\u0000').split('|').length
+    for (let index = 0; index + 1 < lines.length; index += 1) {
+      const header = lines[index]
+      if (!/^\s*\|/.test(header.text)) continue
+      if (!/^\s*\|[\s:|-]+\|\s*$/.test(lines[index + 1].text)) continue
+      const columns = count(header.text)
+      for (let row = index + 2; row < lines.length; row += 1) {
+        if (!/^\s*\|/.test(lines[row].text)) break
+        if (count(lines[row].text) !== columns) {
+          report(path, lines[row].line, `table row has ${count(lines[row].text) - 2} cells, header has ${columns - 2}`)
+        }
+      }
+    }
+  }
+}
+
+/** The shared charter must be byte-identical in every sibling corpus present. */
+function checkCharterCopies() {
+  const charter = resolve(corpusRoot, 'CORPUS-CHARTER.md')
+  if (!existsSync(charter)) return
+  const expected = createHash('sha256').update(readFileSync(charter)).digest('hex')
+  for (const sibling of ['_faq_on_digested', '_dsh_plugin_agent_ready_development', '_misc']) {
+    const copy = resolve(repositoryRoot, sibling, 'CORPUS-CHARTER.md')
+    if (!existsSync(copy)) continue
+    const actual = createHash('sha256').update(readFileSync(copy)).digest('hex')
+    if (actual !== expected) report(copy, undefined, 'charter copy differs from _digested/CORPUS-CHARTER.md')
+  }
+}
+
+/** Page-level baseline declarations are retired; the catalog owns the baseline. */
+function checkBaselineDeclarations(files) {
+  for (const path of files) {
+    if (extname(path) !== '.md') continue
+    const rel = relative(corpusRoot, path)
+    if (rel === '00-index.md' || rel === 'CORPUS-CHARTER.md') continue
+    if (rel.startsWith('_change_log/') || rel.startsWith('_coverage/')) continue
+    const lines = readFileSync(path, 'utf8').split('\n')
+    for (let index = 0; index < lines.length; index += 1) {
+      if (/(产品源码基线|专题基线)[：:]/.test(lines[index])) {
+        report(path, index + 1, 'page-level baseline declaration is retired; register the page in catalog.json instead')
+      }
+    }
+  }
+}
+
 const files = corpusFiles(corpusRoot)
 let markdownCount = 0
 let scriptCount = 0
@@ -773,6 +1047,12 @@ for (const path of files) {
   }
 }
 
+const catalogSummary = checkCatalog(files)
+checkCoverage()
+checkMapLinks()
+checkTables(files)
+checkCharterCopies()
+checkBaselineDeclarations(files)
 claimRegister = checkClaimRegister()
 checkOrphanPages()
 checkRetiredTerms(files)
@@ -783,5 +1063,6 @@ if (failures.length > 0) {
   process.exitCode = 1
 } else {
   const claims = claimRegister === null ? 'no claim register' : `${claimRegister.claims} claims and ${claimRegister.metrics} computed metrics`
-  console.log(`_digested verification passed: ${markdownCount} Markdown files, ${scriptCount} scripts, ${svgCount} SVG files, and ${claims}.`)
+  const inventory = catalogSummary === null ? '' : ` ${catalogSummary.topics} topics / ${catalogSummary.pages} catalog pages;`
+  console.log(`_digested verification passed: ${markdownCount} Markdown files, ${scriptCount} scripts, ${svgCount} SVG files,${inventory} and ${claims}.`)
 }

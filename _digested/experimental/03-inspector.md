@@ -8,7 +8,7 @@
 
 ## 暴露面
 
-Host 与 Client 的 Console 上下文、Host Sources 与断点/续跑、捕获的 Host fetch（`captureFetch` 默认开、不脱敏——`packages/experimental/inspector/src/index.ts:80` 默认 `true`，`README.md:136` 明说记录完整 URL、全部头、请求与响应体且不脱敏）、共享 Cordis 树投影进 Elements，外加不依赖 CDP 的语义查询 `ctx.inspector.cordis.getTree()`（`packages/experimental/inspector/src/shared/cordis/reader.ts:12`；README `:118` 说明它读 Worker 的最新快照、不建 CDP 会话）。Client 侧只声明 Runtime + Console + 只读 Sources：`Debugger.enable` 只发布构建出的 `lib/client.js` 目录，Client 脚本断点/单步不支持，全局 pause/resume 只控制 Host debugger（`packages/experimental/inspector/README.md:59`、`:164`）。方向与宿主相反——生产者只发内部观察记录，Worker 校验每帧、持有全部源状态并翻译成标准 CDP 域，Worker 从不触碰活的 Cordis 对象（前引 inspector README `:63`、`:118`）。
+Host 与 Client 的 Console 上下文、Host Sources 与断点/续跑、捕获的 Host fetch（`captureFetch` 默认开、不脱敏——`packages/experimental/inspector/src/index.ts:80` 默认 `true`，`packages/experimental/inspector/README.md:136` 明说记录完整 URL、全部头、请求与响应体且不脱敏）、共享 Cordis 树投影进 Elements，外加不依赖 CDP 的语义查询 `ctx.inspector.cordis.getTree()`（`packages/experimental/inspector/src/shared/cordis/reader.ts:12`；`packages/experimental/inspector/README.md:118` 说明它读 Worker 的最新快照、不建 CDP 会话）。Client 侧只声明 Runtime + Console + 只读 Sources：`Debugger.enable` 只发布构建出的 `lib/client.js` 目录，Client 脚本断点/单步不支持，全局 pause/resume 只控制 Host debugger（`packages/experimental/inspector/README.md:59`、`:164`）。方向与宿主相反——生产者只发内部观察记录，Worker 校验每帧、持有全部源状态并翻译成标准 CDP 域，Worker 从不触碰活的 Cordis 对象（前引 inspector README `:63`、`:118`）。
 
 ## 连接方式
 

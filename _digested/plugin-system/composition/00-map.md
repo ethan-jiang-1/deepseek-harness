@@ -1,8 +1,5 @@
 # Composition · 启动组合
 
-产品源码基线：`687f282e86`（`dsh-v0.2.1-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`0.2.0-rc.2` → `0.2.1-rc.2` 的增量见 [`_change_log/0011`](../../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
-2026-11-02 复核：`rc.3 → rc.5` 对本专题引用的源目录无源码变更（`git diff --stat dsh-v0.2.1-rc.3..HEAD` 在这些路径上只有 `package.json` 版本位），因此结论沿用；两个专题共 71 条 `path:line` 已逐条打印核验，修正 4 处行号漂移（`auditStartupEntries` 1151→1153、`evaluatePluginCompatibility` 78→87、`STORAGE_SQLITE_SCHEMA_VERSION` 12→20、`prepareProfilePatches` 72→180）。
-
 ## 一句话
 
 一次正在跑的 `dsh` 是 boot 时按层**叠出来的插件树**。profile 是 Harness home 里的具名组合，bundle 是可安装的 patch 层，用户的 `cordis.patch.yml` 叠在所有 bundle 之上。

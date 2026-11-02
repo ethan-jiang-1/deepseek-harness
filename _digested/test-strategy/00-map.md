@@ -1,6 +1,6 @@
 # Test Strategy · 测试思想、分层、快照与门禁
 
-产品源码基线：`639ed015397290b3745d163aafe02ffee4aa3f84`（`dsh-v0.2.0-rc.2`）；本专题结论与该 commit 的项目树一致，规模计数与配置事实按该树实测。上游同步触及测试面时，按 [`_coverage/`](../_coverage/00-index.md) 的口径复核本专题。
+上游同步触及测试面时，按 [`_coverage/`](../_coverage/00-index.md) 的口径复核本专题；具体核验点见 [`catalog.json`](../catalog.json)。
 
 ## 一句话
 

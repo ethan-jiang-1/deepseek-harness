@@ -14,10 +14,7 @@ dsh --profile headless --help
 
 ### 运行契约
 
-- 默认 stdout 只写最终 assistant 文本；stderr 写推理进度与 `dsh: <code>: <message>` 诊断。`--json` 把 stdout 换成 newline-delimited run events（`session` … `final`；失败时以 `error` 收尾、没有 `final`）。
-- task 取 positional（多词按空格拼）；缺省或 `-` 时读 stdin（空白输入在开跑前拒绝）。
-- `--session-id <id>` 采纳已存 Session，需要 `sessionPersistence` 与 `sessionQuery`；未知或空白 id 失败。
-- `--help` 只打印帮助、不运行。flag 面在 `packages/bundle/headless/src/startup.ts:43-45`，IO 投影在 `packages/bundle/headless/src/index.ts:363`、`:393-394`。
+对调用方的 stdout / stderr、`--json`、退出码、task 输入与 `--session-id` 契约见 [`../surfaces-entrypoints/01-启动面与session流.md`](../surfaces-entrypoints/01-启动面与session流.md)；本页只写组合与执行机制。
 
 ## Bundle 组合
 
@@ -67,7 +64,7 @@ dsh --profile headless "run the tests"
 
 - **唯一一次性退出的 Profile**：回答完就 exit，没有常驻进程。
 - **没有 HTTP 服务、没有 browser、没有常驻 event loop**：生命周期短于任何需要等待的进程。
-- **stdout 给最终结果**：进程退出前打印 assistant 的最后一条消息，适合脚本管道；`--json` 时改成事件流。
+- **stdout 不装 logger**：默认只承载最终结果，`--json` 时承载事件流；任何额外 stdout 输出都会污染脚本管道。
 - **startup-only 重载**：一次性任务在运行中重载 patch 没有意义。
 - **不依赖会话级 preset**：tool-bash、tool-fs 等工具行直接在 host 平面挂载，而不是放到会话 preset 里。
 
