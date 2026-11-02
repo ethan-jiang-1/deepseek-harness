@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 640" width="1180" height="640" font-family="-apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif">
+  <rect width="1180" height="640" fill="#ffffff"/>
+  <text x="40" y="42" font-size="21" font-weight="700" fill="#1f2328">作者四窗：插件代码能落在哪一段</text>
+  <text x="40" y="68" font-size="13" fill="#6e7781">窗口越靠前，能改的东西越少、失败越致命；越靠后，能做的事越多、越依赖「树已经稳定」这个前提</text>
+
+  <rect x="40" y="96" width="255" height="420" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="60" y="128" font-size="16" font-weight="700" fill="#1f2328">A · 启动前</text>
+  <text x="60" y="150" font-size="12" fill="#6e7781">runProfile 的 prepare</text>
+  <line x1="60" y1="166" x2="275" y2="166" stroke="#d0d7de"/>
+  <text x="60" y="192" font-size="12" font-weight="700" fill="#1a7f37">能做</text>
+  <text x="60" y="214" font-size="12" fill="#424a53">· 装进程级代理</text>
+  <text x="60" y="234" font-size="12" fill="#424a53">· 快照启动环境</text>
+  <text x="60" y="254" font-size="12" fill="#424a53">· provide 启动上下文</text>
+  <text x="60" y="288" font-size="12" font-weight="700" fill="#cf222e">不能做</text>
+  <text x="60" y="310" font-size="12" fill="#424a53">· 跑插件（没有 ctx）</text>
+  <text x="60" y="330" font-size="12" fill="#424a53">· 读 Loader / 挂行</text>
+  <rect x="60" y="470" width="215" height="30" rx="6" fill="#ffebe9"/>
+  <text x="72" y="490" font-size="12" fill="#cf222e">阻塞 readiness：抛错即起不来</text>
+
+  <rect x="309" y="96" width="255" height="420" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="329" y="128" font-size="16" font-weight="700" fill="#1f2328">B · 组合期</text>
+  <text x="329" y="150" font-size="12" fill="#6e7781">叠层 + 两道准入</text>
+  <line x1="329" y1="166" x2="544" y2="166" stroke="#d0d7de"/>
+  <text x="329" y="192" font-size="12" font-weight="700" fill="#1a7f37">能做</text>
+  <text x="329" y="214" font-size="12" fill="#424a53">· patch 插入自己的行</text>
+  <text x="329" y="234" font-size="12" fill="#424a53">· 改默认值</text>
+  <text x="329" y="254" font-size="12" fill="#424a53">· 声明 engines.dsh</text>
+  <text x="329" y="288" font-size="12" font-weight="700" fill="#cf222e">不能做</text>
+  <text x="329" y="310" font-size="12" fill="#424a53">· 运行时决定层</text>
+  <text x="329" y="330" font-size="12" fill="#424a53">· 改已启用成员（要重启）</text>
+  <rect x="329" y="470" width="215" height="30" rx="6" fill="#ffebe9"/>
+  <text x="341" y="490" font-size="12" fill="#cf222e">阻塞 readiness：坏配置起不来</text>
+
+  <rect x="578" y="96" width="255" height="420" rx="10" fill="#eef6ff" stroke="#9ecbff"/>
+  <text x="598" y="128" font-size="16" font-weight="700" fill="#1f2328">C · 挂树期</text>
+  <text x="598" y="150" font-size="12" fill="#6e7781">apply(ctx, config)</text>
+  <line x1="598" y1="166" x2="813" y2="166" stroke="#9ecbff"/>
+  <text x="598" y="192" font-size="12" font-weight="700" fill="#1a7f37">能做</text>
+  <text x="598" y="214" font-size="12" fill="#424a53">· 注册服务 / 工具 / 监听</text>
+  <text x="598" y="234" font-size="12" fill="#424a53">· 起子插件</text>
+  <text x="598" y="254" font-size="12" fill="#424a53">· ctx.effect 管生命周期</text>
+  <text x="598" y="288" font-size="12" font-weight="700" fill="#cf222e">不能做</text>
+  <text x="598" y="310" font-size="12" fill="#424a53">· 假定兄弟行已激活</text>
+  <text x="598" y="330" font-size="12" fill="#424a53">· 拖慢就绪的长任务</text>
+  <rect x="598" y="462" width="215" height="46" rx="6" fill="#fff8e5"/>
+  <text x="610" y="481" font-size="12" fill="#9a6700">optional 失败=警告</text>
+  <text x="610" y="499" font-size="12" fill="#9a6700">required 失败=停止启动</text>
+
+  <rect x="847" y="96" width="293" height="420" rx="10" fill="#e8f5ec" stroke="#8fd19e"/>
+  <text x="867" y="128" font-size="16" font-weight="700" fill="#1f2328">D · 就绪后</text>
+  <text x="867" y="150" font-size="12" fill="#6e7781">appReady 提交之后</text>
+  <line x1="867" y1="166" x2="1120" y2="166" stroke="#8fd19e"/>
+  <text x="867" y="192" font-size="12" font-weight="700" fill="#1a7f37">能做</text>
+  <text x="867" y="214" font-size="12" fill="#424a53">· 首屏准备 / 欢迎页</text>
+  <text x="867" y="234" font-size="12" fill="#424a53">· workspace / session 创建</text>
+  <text x="867" y="254" font-size="12" fill="#424a53">· 一次性初始化</text>
+  <text x="867" y="288" font-size="12" font-weight="700" fill="#cf222e">不能做</text>
+  <text x="867" y="310" font-size="12" fill="#424a53">· 从宿主强选 UI</text>
+  <text x="867" y="330" font-size="12" fill="#424a53">· 改 bundle 成员</text>
+  <text x="867" y="350" font-size="12" fill="#424a53">· 绕过 token</text>
+  <rect x="867" y="470" width="253" height="46" rx="6" fill="#dafbe1"/>
+  <text x="879" y="489" font-size="12" fill="#1a7f37">不阻塞 readiness；</text>
+  <text x="879" y="507" font-size="12" fill="#1a7f37">做错只让用户看到空首屏</text>
+
+  <rect x="40" y="544" width="1100" height="66" rx="10" fill="#fff8e5" stroke="#eac54f"/>
+  <text x="62" y="570" font-size="13" font-weight="700" fill="#9a6700">判断：想在启动时「主动做事」的代码，几乎都该落在 D</text>
+  <text x="62" y="592" font-size="12" fill="#424a53">落在 C 会拖慢就绪，且拿不到「树已稳定」这个前提；落在 A/B 不是插件代码，而是 launcher 与 patch。</text>
+</svg>

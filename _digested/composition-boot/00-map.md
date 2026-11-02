@@ -1,6 +1,7 @@
 # Composition · 启动组合
 
 产品源码基线：`687f282e86`（`dsh-v0.2.1-rc.2`）；本专题结论与该 commit 的项目树一致，跨度对照的 OLD 侧为 `a66e470204`（`0.1.2-rc.1`），`0.2.0-rc.2` → `0.2.1-rc.2` 的增量见 [`_change_log/0011`](../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)。
+2026-11-02 复核：`rc.3 → rc.5` 对本专题引用的源目录无源码变更（`git diff --stat dsh-v0.2.1-rc.3..HEAD` 在这些路径上只有 `package.json` 版本位），因此结论沿用；两个专题共 71 条 `path:line` 已逐条打印核验，修正 4 处行号漂移（`auditStartupEntries` 1151→1153、`evaluatePluginCompatibility` 78→87、`STORAGE_SQLITE_SCHEMA_VERSION` 12→20、`prepareProfilePatches` 72→180）。
 
 ## 一句话
 
@@ -83,6 +84,7 @@ PTC 相对 standard 的实质差异（#3425 起步，0.1.7 线重新落地）：
 | [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md) | 同一 `applyEntryPatches`；dump 不含 launcher 派生层；`!!js` 不求值 |
 | [`03-user-patch-hmr.md`](./03-user-patch-hmr.md) | `hmr` 插件监视 profile/home patch 与包清单，`reconcileProfilePatches` 调和；新失败大声、旧失败保留好树 |
 | [`04-profile-创建与保留名.md`](./04-profile-创建与保留名.md) | `--from-default-profile` 的复制语义与独占抢占；与 `dsh plugin` 初始化路径的分工；`desktop` 保留名 |
+| [`05-启动窗口与首屏交接.md`](./05-启动窗口与首屏交接.md) | 六段流水线；作者四窗 A–D；首屏五步（token→303+cookie→注入→两段式启动）；硬限制与自证配方 |
 
 装进来之前与装进来之后属于另一个专题：包怎么成为 bundle、怎么装进 profile、坏了怎么更新与卸载，见 [`../plugin-lifecycle/00-map.md`](../plugin-lifecycle/00-map.md)。
 

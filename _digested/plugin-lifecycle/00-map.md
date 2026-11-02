@@ -1,6 +1,7 @@
 # Plugin lifecycle · 插件生命周期
 
 产品源码基线：`1f81c047fc48fa190a683e469daa699857e9afe8`（`dsh-v0.2.1-rc.3`）。本专题按当前产品树建立，结论对到该 commit。
+2026-11-02 复核：`rc.3 → rc.5` 对本专题引用的源目录无源码变更（`git diff --stat dsh-v0.2.1-rc.3..HEAD` 在这些路径上只有 `package.json` 版本位），因此结论沿用；两个专题共 71 条 `path:line` 已逐条打印核验，修正 4 处行号漂移（`auditStartupEntries` 1151→1153、`evaluatePluginCompatibility` 78→87、`STORAGE_SQLITE_SCHEMA_VERSION` 12→20、`prepareProfilePatches` 72→180）。
 
 ## 一句话
 
@@ -20,15 +21,17 @@
 
 ![插件生命周期的七段](./figures/lifecycle-stages.svg)
 
-| # | 段 | 这一段结束后不可逆的东西 | 正文 |
-|---|----|--------------------------|------|
-| ① | **打包** | 包发布后 `name@version` 固定，作者改不了用户机器上的那一份 | [`01-打包.md`](./01-打包.md) |
-| ② | **分发** | 包已在机器上，但还没有任何 profile 引用它 | [`02-分发.md`](./02-分发.md) |
-| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-安装.md`](./03-安装.md) |
-| ④ | **启动** | 行被挂进活树，`ctx` 服务开始对外提供 | [`04-启动.md`](./04-启动.md) |
-| ⑤ | **特殊初始化** | 只跑一次的导入或版本戳写入完成，旧状态被改名、被接受或被拒绝 | [`05-特殊初始化.md`](./05-特殊初始化.md) |
-| ⑥ | **更新与启停** | 选择列表顺序改变，配置优先级随之改变 | [`06-更新与启停.md`](./06-更新与启停.md) |
-| ⑦ | **卸载** | 代码与 patch 层消失，数据留下 | [`07-卸载与数据留存.md`](./07-卸载与数据留存.md) |
+| # | 段 | 这一段结束后不可逆的东西 | 正文 | 深挖入口（机制在别的专题） |
+|---|----|--------------------------|------|------------------------------|
+| ① | **打包** | 包发布后 `name@version` 固定，作者改不了用户机器上的那一份 | [`01-打包.md`](./01-打包.md) | [`plugin-inventory/05`](../plugin-inventory/05-taxonomy-and-design.md) 的形态分类 |
+| ② | **分发** | 包已在机器上，但还没有任何 profile 引用它 | [`02-分发.md`](./02-分发.md) | — |
+| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-安装.md`](./03-安装.md) | [`cordis-runtime/01`](../cordis-runtime/01-五条原语对照源码.md) 的 fiber 与 inject |
+| ④ | **启动** | 行被挂进活树，`ctx` 服务开始对外提供 | [`04-启动.md`](./04-启动.md) | [`composition-boot/05`](../composition-boot/05-启动窗口与首屏交接.md) 的启动窗口与首屏交接 |
+| ⑤ | **特殊初始化** | 只跑一次的导入或版本戳写入完成，旧状态被改名、被接受或被拒绝 | [`05-特殊初始化.md`](./05-特殊初始化.md) | [`session-and-loop/04`](../session-and-loop/04-格式世代与迁移.md) 的格式世代 |
+| ⑥ | **更新与启停** | 选择列表顺序改变，配置优先级随之改变 | [`06-更新与启停.md`](./06-更新与启停.md) | [`composition-boot/03`](../composition-boot/03-user-patch-hmr.md) 的 HMR 事务 |
+| ⑦ | **卸载** | 代码与 patch 层消失，数据留下 | [`07-卸载与数据留存.md`](./07-卸载与数据留存.md) | — |
+
+这张表是**时间轴**；「深挖入口」一列是**结构轴**上的专题。两者不合并：时间轴回答「什么时候做什么」，结构轴回答「它到底怎么实现」。当某一段的机制正文超过三页时，那一段才值得在 `plugin-lifecycle/` 下开子目录；在那之前，深挖留在原专题，避免把两种轴混成一个目录。
 
 ⑤ 是唯一与 ④ 交织的一段：profile 首建发生在 boot 之前，`settings.yaml` 导入在 Loader 结算之后，desktop 的运行树校验在 Host 起来之前。表里的顺序是**逻辑顺序**，不是时间顺序——每一段在自己的时点触发，只是它们共享同一条「只跑一次」的判据。
 
@@ -82,6 +85,7 @@
 - 想知道「装坏了会怎样、会不会把进程打死」→ [`04`](./04-启动.md) 的失败矩阵，再看 [`03`](./03-安装.md) 的失败表
 - 想知道「升级 DSH 之后插件的旧数据还认不认」→ [`05`](./05-特殊初始化.md) → [`07`](./07-卸载与数据留存.md)
 - 想知道「为什么在 Plugins 页点一下，配置就变了」→ [`03`](./03-安装.md) → [`06`](./06-更新与启停.md)
+- 想知道「没有 first-run 钩子时，首启该怎么做」→ [`08`](./08-首启与产品初始化.md)
 
 ## 源码入口
 
@@ -93,7 +97,7 @@
 | `packages/boot/app-boot/src/plugin-compatibility.ts` | `engines.dsh` / peer 准入判定，不导入插件代码 |
 | `packages/boot/app-boot/src/profile-compatibility.ts` | `compatibility.json` 的读取与豁免写入 |
 | `packages/boot/app-boot/src/compatibility-preflight.ts` | 组合期逐行准入，拒绝的行变成 detached `disabled: true` |
-| `packages/boot/app-boot/src/index.ts` | `boot`（`:1200`）、`recomposeProfile`（`:307`）、`reconcileProfilePatches`（`:322`）、`auditStartupEntries`（`:1151`） |
+| `packages/boot/app-boot/src/index.ts` | `boot`（`:1200`）、`recomposeProfile`（`:307`）、`reconcileProfilePatches`（`:322`）、`auditStartupEntries`（`:1153`） |
 | `packages/boot/plugin-manager/src/index.ts` | `listBundles` / `installBundle` / `removeBundle` / `setBundleEnabled` |
 | `apps/cli/src/plugin.ts` | `dsh plugin`：初始化 profile、跑 pnpm、按已安装状态对账 bundles |
 | `apps/desktop/src/project-manager.ts` | desktop profile 准备与原生恢复（`sanitizeProfile`） |
