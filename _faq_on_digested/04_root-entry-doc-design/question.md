@@ -9,7 +9,7 @@
 
 流行解法叫“渐进式披露”（progressive disclosure），但它的难点在于**度量**：披露多少算合适？顺序怎样算对？对一个模型而言，“读懂”本身又很难直接观测。
 
-本问题只回答**静态一半**：DSH 作为框架，是怎么**设计**根入口文档与文档组织的——地图是怎么画出来的、为什么这么画、怎么保证地图不坏。跑起来之后这些文档**怎么被消费**（谁注入、模型怎么走、超预算怎么办），是另一个问题，见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/question.md)。也不重复 `_digested/harness-idea/` 里关于 harness 参与机制的全部判断。
+本问题只回答**静态一半**：DSH 作为框架，是怎么**设计**根入口文档与文档组织的——地图是怎么画出来的、为什么这么画、怎么保证地图不坏。跑起来之后这些文档**怎么被消费**（谁注入、模型怎么走、超预算怎么办），是另一个问题，见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/question.md)。也不展开关于 harness 参与机制的完整判断。
 
 ## 要回答的问题
 
@@ -24,7 +24,7 @@
 
 - 结论只引用 DSH 官方文件：根 `README.md`、根 `AGENTS.md`、`docs/AGENTS.md`、`docs/architecture.md`、生成目录、package README、`docs/development.md` 等。
 - 运行时的加载/导航机制（`dsh-agent-instructions`、skill catalog、token meter 等）不属于本问题，归 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/question.md)。
-- `_digested/harness-idea/` 只作为已有消化视角，不作为原始证据。
+- 二手分析只作为参照，不作为原始证据。
 - 当前源码基线：`dsh-v0.1.7-rc.1`，commit `46a7f68b0922371ce7144b668b90e377d8e799f4`。
 
 ## 文件

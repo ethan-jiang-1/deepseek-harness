@@ -60,7 +60,7 @@ Plan Mode 把“边写边设计”压缩掉：
 
 来源：`packages/plan/plan-mode/README.md:184`
 
-所以 [`02_spec-driven-development`](../02_spec-driven-development/answer.md) 的完整 SDD 判断也明确说：Plan Mode 是会话可选状态，不能证明每个历史 PR 都使用过它。它能证明 DSH 原生支持「先计划、后实施」的可选工作方式，但不是全仓库统一瀑布的一环。
+所以 [FAQ 19 的六层规格](../19_dsh-native-development-process/06-six-layers-and-limits.md) 也明确说：Plan Mode 是会话可选状态，不能证明每个历史 PR 都使用过它。它能证明 DSH 原生支持「先计划、后实施」的可选工作方式，但不是全仓库统一瀑布的一环。
 
 这层的计划不是 prose 文件：计划文本作为 `exit_plan_mode` 的 `plan` 参数进入 review，README 明确“每个 plan 参数与 review 结果保留在 conversation history”里；`plan/mode` 状态才写入 session log。
 

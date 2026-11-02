@@ -117,9 +117,6 @@
 
 来源：`docs/AGENTS.md:39`（基线 `46a7f68b09…`）
 
-## 已核对的相关消化材料
+## 相关研究
 
-- `_digested/harness-idea/00-map.md`：harness 思想的入口
-- `_digested/harness-idea/02-legibility.md`：静态可读性与上下文预算
-- `_digested/harness-idea/04-participation-paths.md`：参与阶梯
 - `_faq_on_digested/01_repository-organization/answer.md`：目录组织的三张树

@@ -23,13 +23,13 @@ PreCompact/PostCompact、Notification、Codex `PermissionRequest` 明确在这�
 
 ## 第二节 · 兼容层：两个桥
 
-两个桥把外部方言翻译到上面同一批扩展点，共享一个 `dsh-hook-protocol` 引擎，方言差异被压到**一个轴**（matcher 解释模式）加 payload/环境细节。机制级逐条出处已收敛在 [`_digested/capability-seams/08-外部生态桥：MCP与hooks.md`](../../_digested/capability-seams/08-外部生态桥：MCP与hooks.md)，这里只列比较需要的骨架：
+两个桥把外部方言翻译到上面同一批扩展点，共享一个 `dsh-hook-protocol` 引擎，方言差异被压到**一个轴**（matcher 解释模式）加 payload/环境细节。机制级逐条出处已收敛在 [`packages/experimental/hook-protocol/README.md`](../../packages/experimental/hook-protocol/README.md)，这里只列比较需要的骨架：
 
 - **支持的事件**：CC 臂 7 个（`SessionStart`、`UserPromptSubmit`、`PreToolUse`、`PostToolUse`、`Stop`、`SubagentStart`、`SubagentStop`）；Codex 臂 5 个（无两个 Subagent 事件）（`packages/experimental/hooks-claude-code/src/config.ts:11`、`packages/experimental/hooks-codex/src/config.ts:11`）。
 - **决策能力**：CC 臂 `PreToolUse` 支持 `ask`；Codex 臂只有 block——没有 pre-tool approval 或 rewrite 路径，这是刻意保真（「Dialect-shaped, not maximal」）。
 - **审计**：每次调用写一对 log-only 的 `hook/invoked` / `hook/result` 会话事件（按 `handlerId` 配对、必须落在打开的 turn 内），进会话日志但**不是 model-visible**——模型只看到决策的效果（[session 事件文档](../../docs/subsystems/session.md)）。
 - **合并**：`deny > ask > allow` 最严合并，第一个 `continue:false` 的 stop sticky（`packages/experimental/hook-protocol/src/merge.ts:3`）。
-- **默认不挂**：六个 profile bundle 的 patch 层没有任何一行挂这两个桥，也没有 MCP 那样的动态挂载路径，只能显式 opt-in（digest 08「默认启用还是 opt-in」节）。两包与 `hook-protocol` 已随 0011 的实验包收编从 `packages/hooks/` 整组迁入 `packages/experimental/` 同名目录，`packages/hooks/` 组解散、组 README 无继任。
+- **默认不挂**：六个 profile bundle 的 patch 层没有任何一行挂这两个桥，也没有 MCP 那样的动态挂载路径，只能显式 opt-in。两包与 `hook-protocol` 已随 0011 的实验包收编从 `packages/hooks/` 整组迁入 `packages/experimental/` 同名目录，`packages/hooks/` 组解散、组 README 无继任。
 
 ## 第三节 · 三家对照
 
@@ -82,5 +82,5 @@ PreCompact/PostCompact、Notification、Codex `PermissionRequest` 明确在这�
 
 ## 出处
 
-- DSH 机制：[digest 08 外部生态桥](../../_digested/capability-seams/08-外部生态桥：MCP与hooks.md)（逐条源码行号在那里）；[hook-protocol README](../../packages/experimental/hook-protocol/README.md)、[hooks-claude-code README](../../packages/experimental/hooks-claude-code/README.md)、[hooks-codex README](../../packages/experimental/hooks-codex/README.md)；原 `packages/hooks/` 组 README 随组解散退役；[interception Note](../../.agents/notes/archived/feature/2026-06-30-interception-extension-points.md)。
+- DSH 机制：[`hook-protocol` README](../../packages/experimental/hook-protocol/README.md)（逐条源码行号在那里）、[hooks-claude-code README](../../packages/experimental/hooks-claude-code/README.md)、[hooks-codex README](../../packages/experimental/hooks-codex/README.md)；原 `packages/hooks/` 组 README 随组解散退役；[interception Note](../../.agents/notes/archived/feature/2026-06-30-interception-extension-points.md)。
 - 外部：[research.md](./research.md)（CC `code.claude.com/docs/en/hooks`；Codex `learn.chatgpt.com/docs/hooks` 等，检索 2026-09-22）。

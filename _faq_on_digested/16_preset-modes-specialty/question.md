@@ -11,18 +11,18 @@ Web UI 新建任务的模式选择器里有四个内置选项：Standard / PTC /
 
 更进一步：这四个"模式"在机制层是不是同一类东西？各自动的到底是宿主的哪一根轴——工具目录、提示词身份，还是别的什么？
 
-## 回答目标
+## 要回答的问题
 
-读完本 FAQ，应当能够：
+要回答：
 
-1. 一句话说出四个模式各自动的轴：Standard **三轴都不动**（因此是 diff 基准），PTC 动**呈现层**（工具目录如何投影给模型），Minimal 动**身份层**（系统提示词与运行时上下文整体替换 + 持久终端），Creator 动**扩展层**（把宿主自身的可修改性交给 agent）。
-2. 对每个模式列出"改了什么 / 没改什么 / 为什么"，且每条能指到源码位置；对 Standard 还能报出工具家族清单与三组刻意缺席。
-3. 回答几个具体困惑：PTC 预设为什么把 workflow 工具禁了；Minimal 的 `complete: true` 到底抑制了什么；Creator 的三个技能从哪来、`plugin-manager` 那行 `!!js` 条件在判什么。
-4. 分清三组容易混淆的名字：agent preset vs runtime profile、`minimal` preset vs `sdk-minimal` profile、`cordis` preset id vs "Creator mode" 显示名。
+1. 四个内置模式（Standard / PTC / Minimal / Creator）各自改动了宿主组合的哪一层？哪些地方没有改？
+2. 每个模式的 wire 工具表、系统提示词、shell/终端、扩展点分别是什么形态？逐项能指到哪份 preset patch 与源码？
+3. PTC 为什么禁用 workflow 工具？Minimal 的 `complete: true` 抑制了什么？Creator 的 `plugin_manager` 条件在判什么？
+4. 三组容易混淆的名字（agent preset vs runtime profile、`minimal` preset vs `sdk-minimal` profile、`cordis` preset id vs "Creator mode" 显示名）各自指什么？
 
 ## 范围与基线
 
-源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e86`。本轮四份 preset 都随上游变动重测：standard 的 wire 工具从 26 涨到 31、`tool-subagent-codex`/`tool-subagent-claude-code`/`tool-ralph` 三行退出默认目录（两个 subagent 后端改由 on-demand bundle 提供），minimal 新增 `read_image`、`working_directory` 与 compaction 组，四份都新增 `time-context` 与 `tool-schedule` 行；下文计数与行号以该树为准，上游合入后按 `_digested/_change_log/` 复核。
+源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e86`。本轮四份 preset 都随上游变动重测：standard 的 wire 工具从 26 涨到 31、`tool-subagent-codex`/`tool-subagent-claude-code`/`tool-ralph` 三行退出默认目录（两个 subagent 后端改由 on-demand bundle 提供），minimal 新增 `read_image`、`working_directory` 与 compaction 组，四份都新增 `time-context` 与 `tool-schedule` 行；下文计数与行号以该树为准，上游合入后按产品源码变更复核。
 
 四份预设声明的唯一事实源是 `packages/bundle/web-app/presets/` 下四个 `*.patch.yml`（[`standard.patch.yml`](../../packages/bundle/web-app/presets/standard.patch.yml)、[`ptc.patch.yml`](../../packages/bundle/web-app/presets/ptc.patch.yml)、[`minimal.patch.yml`](../../packages/bundle/web-app/presets/minimal.patch.yml)、[`cordis.patch.yml`](../../packages/bundle/web-app/presets/cordis.patch.yml)）；GUI 文案（模式名、描述、引导文）来自 [`packages/client/ui-agent-preset/src/client/locales.ts`](../../packages/client/ui-agent-preset/src/client/locales.ts) 与 [`guide-locales.ts`](../../packages/client/ui-agent-preset/src/client/guide-locales.ts)。行为事实另有快照/e2e 钉住：[`apps/web/tests/minimal-preset.snapshot.ts`](../../apps/web/tests/minimal-preset.snapshot.ts)、[`apps/web/tests/ptc-round.e2e.ts`](../../apps/web/tests/ptc-round.e2e.ts)、[`apps/web/tests/ptc-escalation.e2e.ts`](../../apps/web/tests/ptc-escalation.e2e.ts)、[`apps/web/tests/shipped-composition.e2e.ts`](../../apps/web/tests/shipped-composition.e2e.ts)。
 

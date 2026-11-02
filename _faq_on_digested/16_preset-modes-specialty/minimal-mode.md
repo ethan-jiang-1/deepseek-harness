@@ -31,7 +31,7 @@ Minimal 用的是一个 `isolate: terminals` 的组，装 `dsh-terminal` + `dsh-
 
 ## 和 `sdk-minimal` 是什么关系？（名字撞车）
 
-没有关系，是两个层面（[`../_digested/runtime-profiles/00-map.md`](../../_digested/runtime-profiles/00-map.md)、[`../_digested/runtime-profiles/04-sdk-minimal.md`](../../_digested/runtime-profiles/04-sdk-minimal.md)）：
+没有关系，是两个层面（profile 组合见 [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md)，preset 注册见 [`packages/preset/agent-preset-registry/README.md`](../../packages/preset/agent-preset-registry/README.md)）：
 
 | | `minimal` agent preset | `sdk-minimal` runtime profile |
 |---|---|---|

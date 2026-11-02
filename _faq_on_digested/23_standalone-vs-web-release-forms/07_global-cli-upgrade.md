@@ -1,4 +1,6 @@
-# 答案:全局 DSH CLI 的安全升级路径(所有未来升级通用)
+# 07 · 全局 CLI 升级：latest 通道与可复用 runbook
+
+> 读数日期 2026-09-30（当时 npm `latest` = `0.2.0-rc.2`）。命令、脚本与检查项不随版本变化；`dist-tags` 与 engines 以升级当天的 registry 与仓库 `package.json` 为准。本篇只管**全局 CLI 包**的升级，plugin/profile 的安装与更新见 [04](./04_plugin-paths.md) 与 [05](./05_dev-injection.md)。
 
 ## 结论
 
@@ -13,9 +15,9 @@ npm install -g @deepseek-ai/dsh@latest
 把前后检查、确认、安装、校验、回滚固化成的脚本在本目录:
 
 ```sh
-bash _faq_on_digested/18_global-dsh-upgrade/upgrade-dsh-global.sh          # 交互模式
-bash _faq_on_digested/18_global-dsh-upgrade/upgrade-dsh-global.sh --dry-run # 只做检查,不安装
-bash _faq_on_digested/18_global-dsh-upgrade/upgrade-dsh-global.sh --yes     # 免确认(不自动跑 sudo)
+bash _faq_on_digested/23_standalone-vs-web-release-forms/upgrade-dsh-global.sh          # 交互模式
+bash _faq_on_digested/23_standalone-vs-web-release-forms/upgrade-dsh-global.sh --dry-run # 只做检查,不安装
+bash _faq_on_digested/23_standalone-vs-web-release-forms/upgrade-dsh-global.sh --yes     # 免确认(不自动跑 sudo)
 ```
 
 ## 事实链
@@ -46,7 +48,7 @@ bash _faq_on_digested/18_global-dsh-upgrade/upgrade-dsh-global.sh --yes     # �
 
 ## 今后每次升级的 runbook
 
-1. `bash _faq_on_digested/18_global-dsh-upgrade/upgrade-dsh-global.sh`(或先 `--dry-run` 预览);
+1. `bash _faq_on_digested/23_standalone-vs-web-release-forms/upgrade-dsh-global.sh`(或先 `--dry-run` 预览);
 2. 升级完成后按脚本末尾提示过一遍 `docs/upgrade-guide/v<新版本>/` 的迁移条目;
 3. 有问题用脚本打印的回滚命令退回旧版本,`~/.dsh` 数据不受影响。
 

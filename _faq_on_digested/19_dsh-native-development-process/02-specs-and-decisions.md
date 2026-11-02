@@ -17,7 +17,7 @@
 | 什么能抓住回归 | tests、snapshots（录制会话的回放证据） | 组件测试 + e2e | 真实子进程测试 |
 | PR 现在能否推进 | GitHub checks、review | `需查 GitHub` | `需查 GitHub` |
 
-这就是 distributed specification（分布式规格）：每类事实有自己的 owner（主要维护位置），它们通过同一个变更保持一致。
+这就是 distributed specification（分布式规格）：每类事实有自己的 owner（主要维护位置），它们通过同一个变更保持一致。 静态的六层载体地图与“不能推出的结论”见 [06](./06-six-layers-and-limits.md)。
 
 ## Agent Note：目录本身就是流程
 

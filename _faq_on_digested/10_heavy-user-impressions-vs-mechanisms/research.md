@@ -2,7 +2,7 @@
 
 ## 基线
 
-- 消化基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d6…`；同步后与 `_digested/` 同一基线 `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（[`_digested/00-index.md`](../../_digested/00-index.md)）。
+- 写作基线：DeepSeek Harness `dsh-v0.1.2-alpha.3`，commit `dd6322d6…`；同步后产品基线为 `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`。
 - 本文写入树：commit `08b582ea02cf16812d48e6323c91d784210cf38e`（2026-08-31）；本次同步复核树为 `dsh-v0.2.0-rc.2`（`639ed01539`），文中行号已按复核树更新。模型名、默认 catalog、事件词表等部署事实随上游漂移。
 
 ## 方法

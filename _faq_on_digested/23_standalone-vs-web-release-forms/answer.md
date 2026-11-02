@@ -18,6 +18,7 @@ DSH 对外只有两种「装成应用」的发布物：**Desktop**（Electron �
 | 04 | [插件安装途径：同一管道，三种入口](./04_plugin-paths.md) | Desktop 的六种装法、CLI/Web 的三条入口、装完之后的生效边界 |
 | 05 | [开发期注入：四层叠加 + 三种绕开正式发布的手法](./05_dev-injection.md) | `--patch` / profile patch / home patch / 本地 spec / link / 另起 profile；每种失效条件与五个坑 |
 | 06 | [把 Desktop 关进实验室：隔离 runbook](./06_desktop-lab-isolation.md) | 两个根（`DSH_HOME` + `--user-data-dir`）怎么设、数据侧到底有哪些东西、直接双击为什么会失效、怎么验证、哪些仍共享 |
+| 07 | [全局 CLI 升级：latest 通道与可复用 runbook](./07_global-cli-upgrade.md) | npm 全局包的预检、目标解析、确认、安装、校验与回滚；`~/.dsh` 数据不随包安装变化 |
 
 ## 关键图
 
@@ -66,8 +67,8 @@ DSH 对外只有两种「装成应用」的发布物：**Desktop**（Electron �
 - [`docs/user/guide/plugin-market.md`](../../docs/user/guide/plugin-market.md) — 官方不带 index 源
 - [`docs/user/develop/basic/publish.md`](../../docs/user/develop/basic/publish.md) — `dsh plugin add`、`link:`、tarball
 - [`apps/web/tests/pin-browse-picker.overlay.yml`](../../apps/web/tests/pin-browse-picker.overlay.yml) — overlay 最小模板
-- [`_digested/surfaces-entrypoints/03-桌面入口.md`](../../_digested/surfaces-entrypoints/03-桌面入口.md) — 桌面入口的装载路径
-- [`_digested/runtime-profiles/06-desktop.md`](../../_digested/runtime-profiles/06-desktop.md) — desktop profile
+- [`apps/desktop-host/src/index.ts`](../../apps/desktop-host/src/index.ts) — 桌面入口的装载路径
+- [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md) — desktop profile 的组合与装载
 
 外部（访问日期 2026-10-25）：
 

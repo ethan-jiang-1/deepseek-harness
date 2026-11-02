@@ -38,7 +38,7 @@ DSH 没有正式声明采用一套名为 Spec-driven Development（SDD，规格�
 
 ## 按问题查找
 
-下面五页围绕同一历史案例，各自回答一个问题；可从最接近当前任务的一页开始：
+下面六页围绕同一历史案例，各自回答一个问题；可从最接近当前任务的一页开始：
 
 | 章节 | 读完能回答 |
 |---|---|
@@ -47,6 +47,7 @@ DSH 没有正式声明采用一套名为 Spec-driven Development（SDD，规格�
 | [`03-github-flow.md`](./03-github-flow.md) | 本地与 push 后分别谁拥有证据；模板、CI、policy 怎样长成代码 |
 | [`04-implementation-and-evidence.md`](./04-implementation-and-evidence.md) | 变更面怎样对应证据；红灯对照怎样做 |
 | [`05-review-and-merge.md`](./05-review-and-merge.md) | 自动检查、语义评审、用户决定各管什么；合并后知识在哪 |
+| [`06-six-layers-and-limits.md`](./06-six-layers-and-limits.md) | 六层规格各住在哪；从仓库事实不能推出什么；四种真实生命周期样本 |
 
 ## 与相邻目录的分工
 

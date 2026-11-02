@@ -46,7 +46,7 @@ DSH 的组合链是固定的：package 实现 → bundle 给默认插件行 → 
 - **一个 bundle 层**（`package.json` 的 `dsh.bundle` 字段指向 `cordis.patch.yml`）：声明默认插件行，让部署方可以 `dsh plugin add` 或 patch 替换。
 - 多条信息处理流 = 多个插件，各占自己的 ctx 键、声明 `inject` 依赖；跨流编排用 `ctx.workflowEngine` / `ctx.subagents`，不自造调度器。
 
-注意 pack 里带的 preset **不会自动进 roster**：0.1.7 线起 `agent-preset-registry` **既不扫目录、也不接受 preset 路径**——「shipped 根 / 配置 `roots` / 用户根 `<dshHome>/.agent-presets`」的三根扫描模型已随 preset 重设计退役（registry README：「Definitions are ordinary plugin rows; the registry neither scans directories nor accepts preset paths」）。现在只有一条落法：一个新 preset 或对 shipped preset 的 override 都是 **bundle patch**——insert 一条 `@deepseek-ai/dsh-agent-preset` 行，或按该行 id 打 key 的 patch，经 `plugin_manager` 装进 profile（`packages/preset/agent-preset-registry/README.md`）。patch 对一行是**整行配置替换**，在 pack 自己的 `cordis.patch.yml` 里动 shipped 行就得连原行一起重述，更稳的位置是 profile/home 层的 patch。（旧三根模型的机制记录见 `_digested/_change_log/0008`。）
+注意 pack 里带的 preset **不会自动进 roster**：0.1.7 线起 `agent-preset-registry` **既不扫目录、也不接受 preset 路径**——「shipped 根 / 配置 `roots` / 用户根 `<dshHome>/.agent-presets`」的三根扫描模型已随 preset 重设计退役（registry README：「Definitions are ordinary plugin rows; the registry neither scans directories nor accepts preset paths」）。现在只有一条落法：一个新 preset 或对 shipped preset 的 override 都是 **bundle patch**——insert 一条 `@deepseek-ai/dsh-agent-preset` 行，或按该行 id 打 key 的 patch，经 `plugin_manager` 装进 profile（`packages/preset/agent-preset-registry/README.md`）。patch 对一行是**整行配置替换**，在 pack 自己的 `cordis.patch.yml` 里动 shipped 行就得连原行一起重述，更稳的位置是 profile/home 层的 patch。
 
 ## 装法与开发环
 

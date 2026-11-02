@@ -23,7 +23,7 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 └── scripts/run-gates.ts        # 第 7 阶段：checks 选择走 DSH 现成闸门，不另造 verify
 ```
 
-方案的代价面也在这棵树里：上游同步税落在 `packages/expert/` 的每一份结论上（每次 rc 同步按 `_change_log/` 复核）。
+方案的代价面也在这棵树里：上游同步税落在 `packages/expert/` 的每一份结论上（每次 rc 同步按产品源码变更复核）。
 
 ## 能借到什么（这是它最大的论据）
 
@@ -39,7 +39,7 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 | 借力 DSH 流程 | ✅✅ 全部：门禁、文档、snapshot、client、生成目录 |
 | UI 表达上限 | ✅ 最高：改内置卡片组件本体与深度组装只有这里可做 |
 | coding agent 探索 | ✅ 天然（整个 repo 就是 DSH） |
-| 发布与身份 | ❌ 你的代码绑死 DSH 发布节奏；上游每次同步要按 `_change_log/` 复核自己的结论（FAQ 01/08 都吃过这个税） |
+| 发布与身份 | ❌ 你的代码绑死 DSH 发布节奏；上游每次同步要按产品源码变更复核自己的结论（FAQ 01/08 都吃过这个税） |
 | 语义 | ❌ 这是"改 DSH"，不是"做专家包"；第三方用户没法 `dsh plugin add` 一个 fork 里的包 |
 
 ## 市场背书
@@ -55,7 +55,7 @@ deepseek-harness/               # 你 fork/branch 的 DSH repo —— 生命周�
 - 插拔/调试用 DSH 自己的流程：插件行进 `bundle/base` 或自组 profile，`--dump-config`、live reload、官方 snapshot harness（一场景一目录、各带自己的 `snapshot.yml` 声明 profile/recording 等）全在树上。
 - 门禁照单全收：`test:coverage` per-file 100%、`doc-sync`（含双语）、`duplication`、非平凡变更必备 Agent Note、model-visible 变更必配快照——这些在 A/C/D 里是"自建最小版"，这里是义务；Notes 也不搬，直接写在原生 `.agents/notes/` 树，双语三件套与格式门禁现成（树内卡片组件的去留记在 repo 级 Note）。
 - 新包落位按 `packages/README.md` 的组规则：**新包优先加入既有组**——给 DSH 上游提的 seam 落在拥有它的组（如新的文件系统能力进 `fs/`）；自成一家的领域才立新组，立组要同步组 README 与 `packages/README.md` 总表，且组默认按 product 期望（stable API）发布，想要无稳定性承诺的试验场落 `packages/experimental/`。
-- 日常多了一个新环：**上游同步**。每次 rc 同步按 `_change_log/` 复核自己的包与文档结论（FAQ 01/08 都吃过漂移的亏），compatibility 影响写进自己包的 README。
+- 日常多了一个新环：**上游同步**。每次 rc 同步按产品源码变更复核自己的包与文档结论（FAQ 01/08 都吃过漂移的亏），compatibility 影响写进自己包的 README。
 - 驱动 agent 最顺：AGENTS.md/CLAUDE.md、skills、生成目录全是现成的，agent 的六步闭环直接在 DSH 语境里跑。
 
 ## 定位：不是长期形态，是两个专用形态

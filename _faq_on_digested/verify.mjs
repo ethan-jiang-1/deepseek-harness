@@ -10,6 +10,8 @@
  * - `cordis-primer.md` — a bare link excerpted from DSH docs resolves from `docs/`.
  * - `node_modules/…` and out-of-repository paths (e.g. sibling research repos)
  *   are reported as warnings, not failures: no local check can verify them.
+ * - Links into `_digested/` fail: this corpus is self-contained and must not
+ *   depend on another research corpus.
  *
  * The directory has no generated catalogs or claim register, so freshness of
  * numbers and baseline-sync review stay a documented manual step (00-index.md).
@@ -331,6 +333,10 @@ function checkMarkdownLinks(path, source) {
           const fromDocs = resolve(repositoryRoot, 'docs', parts.path)
           if (existsSync(fromDocs)) target = fromDocs
         }
+      }
+      if (target.split(sep).includes('_digested')) {
+        report(path, line, `link must not depend on _digested/: ${JSON.stringify(rawUrl)}`)
+        continue
       }
       if (target.includes(`${sep}node_modules${sep}`)) {
         warnings.push(`${displayPath(path)}${line === undefined ? '' : `:${line}`}: citation resolves into node_modules (left unverified): ${JSON.stringify(rawUrl)}`)

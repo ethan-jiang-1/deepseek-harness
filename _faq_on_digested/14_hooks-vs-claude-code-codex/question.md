@@ -14,17 +14,17 @@ Claude Code 和 Codex 都有 hooks 机制：在 settings / config 里声明 shel
 
 以及 DSH 自己的定位：它做 hooks 是为了「兼容外部生态」还是「原生扩展」？两条路各自的能力边界在哪，什么场景该选哪条？
 
-## 回答目标
+## 要回答的问题
 
-读完本 FAQ，应当能够：
+要回答：
 
-1. 一句话回答「DSH 有没有 hooks」：**两条路都有**——原生 Cordis 插件直接编程的拦截扩展点（typed Decision），加两个把 Claude Code / Codex 现有 `hooks.json` 原样跑起来的兼容桥。
-2. 对照三家的官方合同，逐轴比较声明、事件、执行、控制力、审计。
-3. 说出 DSH 桥相对参考实现的取舍：支持哪些事件、刻意不做什么（payload 字段、并行、配置分层、`continue:false`）、为什么。
-4. 知道什么场景用桥（复用已有 hooks.json）、什么场景写原生插件（全 API、无序列化边界）。
+1. DSH 有没有与 Claude Code / Codex 对应的 hooks 机制？如果有，有哪几层？
+2. 三家的官方合同在声明、事件、执行、控制力、审计五轴上分别是什么？
+3. DSH 的兼容桥支持哪些事件、刻意不做什么、为什么？
+4. 什么场景用桥、什么场景写原生插件？
 
 ## 范围与基线
 
-DSH 侧机制结论以本仓库工作树为准（`ethan` 分支 `207b02e809946e7fe27b6aa9db93ebf4e7c74fbf`；其产品源码与 `_digested/` 基线 `dsh-v0.1.5-rc.2`=`fb2c4b9e` 一致，HEAD 之上的提交只动了研究目录），与 FAQ 01/08 同源；上游合入后按 `_digested/_change_log/` 复核。DSH 侧机制细节的逐条出处已收敛在 [`../_digested/capability-seams/08-外部生态桥：MCP与hooks.md`](../../_digested/capability-seams/08-外部生态桥：MCP与hooks.md)，本篇在其上做跨生态比较，不重复抄源码行号。
+DSH 侧机制结论以本仓库工作树为准（`ethan` 分支 `207b02e809946e7fe27b6aa9db93ebf4e7c74fbf`），与 FAQ 01/08 同源；上游合入后按产品源码变更复核。DSH 侧机制细节的逐条出处已收敛在 [`packages/experimental/hook-protocol/README.md`](../../packages/experimental/hook-protocol/README.md)，本篇在其上做跨生态比较，不重复抄源码行号。
 
 外部两家的结论来自官方文档（检索时点与全部来源 URL 记在 [research.md](./research.md)）；外部文档随时间漂移，DSH 桥 README 各自声明了撰写时的对照基线（Claude Code 30 个事件、Codex 10 个事件），research.md 记录的是复核时的读数，两者可能不同。

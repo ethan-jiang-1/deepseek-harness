@@ -82,15 +82,15 @@
 
 | 结论 | 出处 | 状态 |
 |---|---|---|
-| 无中心 DAG executor；外部叙事逐条核对 | [digest 09](../../_digested/orchestration-ladder/09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md) | ✅ |
-| 写时校验 + 读时推导 + 对话派发的三件分置 | [digest 11](../../_digested/orchestration-ladder/11-图计算的本质-不变量推导与执行的三件分置.md) | ✅ |
+| 无中心 DAG executor；外部叙事逐条核对 | [`docs/subsystems/workflow.md`](../../docs/subsystems/workflow.md)、[`docs/subsystems/agent-team.md`](../../docs/subsystems/agent-team.md) | ✅ |
+| 写时校验 + 读时推导 + 对话派发的三件分置 | [`docs/subsystems/workflow.md`](../../docs/subsystems/workflow.md) | ✅ |
 | subagent 工具深度默认 1（workflow 启动 child 时不传该上限）、脚本无嵌套钩子 | [`subagent/src/index.ts:196`](../../packages/subagent/subagent/src/index.ts)、[`workflow/README.md:128`](../../packages/workflow/workflow/README.md)、[`workflow-ptc/src/host.ts:203-218`](../../packages/workflow/workflow-ptc/src/host.ts) | ✅ |
 | Team 只有 Lead 能拉人 | [`agent-team/README.md`](../../packages/experimental/agent-team/README.md) 的 Teammates 节 | ✅ |
-| 无任务级回滚（CLI 无 `rollback` 子命令） | [digest 09](../../_digested/orchestration-ladder/09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md) 第 6 条 | ✅ |
+| 无任务级回滚（CLI 无 `rollback` 子命令） | [`apps/cli/src/args.ts`](../../apps/cli/src/args.ts) | ✅ |
 
 ## 已知漂移
 
-- [digest 07](../../_digested/orchestration-ladder/07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md) 记录 Team 有 `maxPendingMessagesPerMember: 64`；当前 `Config` 只有 `maxMembers`、`maxTasks`、`maxMessageBytes`、`disposalTimeoutMs` 四项（[`agent-team/src/types.ts:153-162`](../../packages/experimental/agent-team/src/types.ts)）。本篇不引用该字段。
+- 旧版本记录 Team 有 `maxPendingMessagesPerMember: 64`；当前 `Config` 只有 `maxMembers`、`maxTasks`、`maxMessageBytes`、`disposalTimeoutMs` 四项（[`agent-team/src/types.ts:153-162`](../../packages/experimental/agent-team/src/types.ts)）。本篇不引用该字段。
 - Team 的成员上限在包默认值（16）与 profile 钉值（8）之间不同，引用时按场景说明。
 - workflow 的 child 是否进入父 subagent 目录，[`workflow-ptc/README.md`](../../packages/workflow/workflow-ptc/README.md) 在不同小节表述有张力（Results 节说「不加入父 catalog」，Internals 节说「本地 child 完成后留在父 catalog」）。本篇只用两处一致的部分：**不向父模型发完成通知，结果在脚本内消化**。
 
@@ -100,5 +100,5 @@
 - webhook 触发线（`ctx.webhookRuntime`）未纳入。
 - 不同模型在相同选择面下的实际选择差异，没有实测数据；本篇只讨论「它看得见什么」，不预测「它会怎么选」。
 - 「循环归谁」「承诺」「选择面」是分析框架，不是 DSH 源码概念；本篇不声称产品使用这些词，也不把三者当成官方分类。
-- 引用的 digest 页基线为 rc.2（`687f282e`）；本篇用到的每条源码事实都在 rc.3 树上重新核对（见上表），但没有逐页重校 digest 的叙述性结论。
+- 本篇用到的每条源码事实都在 rc.3 树上重新核对（见上表）；叙述性结论按当前树复核，不沿用旧页。
 - 图是理解辅助，不是证据；每条事实以正文的 path:line 为准。

@@ -25,7 +25,7 @@
 - `apps/desktop` 是 Electron 壳，`dsh --profile desktop` 被 CLI 显式拒绝——桌面不是第五个 CLI profile，所以「桌面底下怎么装插件」跟「CLI 底下怎么装插件」不是同一条路径。
 - 开发期注入手段散落在 CLI reference、plugin-manager README、desktop README、`apps/web/tests/*.overlay.yml` 和教程里，没有一处集中列过。
 
-## 回答目标
+## 要回答的问题
 
 - 给出两个发布物的**当前状态判据**（可复现：`dsh --version` 看本机、`curl` 看 feed、`curl` 看固定下载链接），而不是「据说很成熟/还早」。
 - 把「社区反应」落成数字 + 原话 + 社区自己承认的边界。
@@ -39,3 +39,4 @@
 - 不审计社区插件的源码安全性；只引用它们自己声明的能力与数字。
 - 不评估模型质量、不比较其他 agent harness。
 - 不做桌面安装包逆向或签名链验证——那需要 release 环境。
+- 不评估 npm 全局 CLI 包自身的升级通道与脚本（那是 [07 篇](./07_global-cli-upgrade.md) 的范围）；本篇只把「CLI/Web 怎么装成应用」讲到安装与生效边界。

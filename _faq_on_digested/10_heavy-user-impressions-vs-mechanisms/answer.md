@@ -2,7 +2,7 @@
 
 ## 方法与基线
 
-用户原文是转述（见 [question.md](./question.md)），本篇不考据说话人，只把三条体感当成**待验证命题**，逐条对照源码与 [`_digested/`](../../_digested/00-index.md)。机制结论以消化基线 DeepSeek Harness `dsh-v0.1.2-alpha.3`（commit `dd6322d6…`）为底；写作时的复核树是 `08b582ea02…`，本次同步已按 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）重核，0009 同步再按 `dsh-v0.2.0-rc.2`（commit `639ed01539`）重核，0011 同步按 `dsh-v0.2.1-rc.2`（commit `687f282e86`）重核，引用的行号以该树为准。调查方式：四路并行子代理分别深挖 workflow 编排、goal/plan/todo 三件套、vision 与预览产出物链路、定制扩展机制，captain 对其中的强论断逐条用 grep 抽查复核。0.1.5 复核的最大修正是写作时的一条强论断——"`ui-tool` 全包无 image 渲染分支"——已被跨度内交付推翻（见 [02 第二节](./02-self-built-previews.md)）。证据底稿在 [research.md](./research.md)。
+用户原文是转述（见 [question.md](./question.md)），本篇不考据说话人，只把三条体感当成**待验证命题**，逐条对照源码与产品文档。机制结论以写作基线 DeepSeek Harness `dsh-v0.1.2-alpha.3`（commit `dd6322d6…`）为底；写作时的复核树是 `08b582ea02…`，本次同步已按 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）重核，0009 同步再按 `dsh-v0.2.0-rc.2`（commit `639ed01539`）重核，0011 同步按 `dsh-v0.2.1-rc.2`（commit `687f282e86`）重核，引用的行号以该树为准。调查方式：四路并行子代理分别深挖 workflow 编排、goal/plan/todo 三件套、vision 与预览产出物链路、定制扩展机制，captain 对其中的强论断逐条用 grep 抽查复核。0.1.5 复核的最大修正是写作时的一条强论断——"`ui-tool` 全包无 image 渲染分支"——已被跨度内交付推翻（见 [02 第二节](./02-self-built-previews.md)）。证据底稿在 [research.md](./research.md)。
 
 三条体感恰好各落在 harness 的一层：**模型路由层**（第 1、3 条）、**驱动循环层**（第 1 条）、**宿主投影层**（第 2 条）。这个分层本身就是第一个发现：说话人没有把三件事混成一团"体验"，而 FAQ 的价值是把每一层拆到机制。
 
@@ -28,7 +28,7 @@
 - **根 2（委派 spine）**：`ctx.subagents` 以 6 个 Provider 居全部 seam 之首，goal 域 4 包 + workflow 组 3 包 + experimental agent-team——"分给很多小执行者、汇回一本日志"是官方投资最重的方向；时间维度（goal 轮次）× 空间维度（fan-out）两条拆分轴，把每个叶子节点切成小模型的最优工作区。
 - **根 3（组合层）**："开箱"二字住在这里——默认姿态是 bundle 层的组合决策；`packages/extensions`（原 self-modification）更进一步，让 harness 用自己改自己。
 
-三条根缺一，体感都不成立；反例检验（patch 掉 goal/plan 后哪些体感会死、哪些存活）与展开见 [05](./05-other-roots.md)。这也对应 [`harness-idea/05-dynamic-legibility`](../../_digested/harness-idea/05-dynamic-legibility.md) 的论点：可读性不是 UI 恩赐，是日志结构的推论。
+三条根缺一，体感都不成立；反例检验（patch 掉 goal/plan 后哪些体感会死、哪些存活）与展开见 [05](./05-other-roots.md)。这也对应「可读性不是 UI 恩赐，是日志结构的推论」这条判断。
 
 ## 诚实边界
 

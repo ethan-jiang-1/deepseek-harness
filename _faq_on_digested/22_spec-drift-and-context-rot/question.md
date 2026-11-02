@@ -27,9 +27,9 @@
 
 ## 范围与边界
 
-- **源码核验基线**：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（2026-10-18），与 `_digested/`、`_faq_on_digested/` 其余篇目同一基线。本文所有 `path:line` 都以该工作树实测为准，逐条出处集中在 [`reference.md`](./reference.md)。
-- **三类陈述分开标注**：`[原文]` 是仓库里的直接陈述（`AGENTS.md`、Note 规则、package README、官方文档）；`[源码]` 是从本基线源码或生成物核对过的机制事实；`[推断]` 是从事实推出的解释，包括「搬去传统应用开发还剩什么」。这条分级沿用 [`_digested/harness-idea/08-judgement-discipline.md`](../../_digested/harness-idea/08-judgement-discipline.md) 的出处纪律（`[框架]` 一档本组不使用：凡不依赖 DSH 的通式都标 `[推断]`）。
-- **不重写已有整理**：Agent Note 的写作判据、格式、三件套与归档判据归 [FAQ 20](../20_agent-note-quality-bar/answer.md)；一次变更各面的落位归 [FAQ 06](../06_change-landing-path/answer.md)；六步闭环与「spec 感是沉淀物」归 [FAQ 11](../11_native-development-loop/answer.md)；SDD 分层归 [FAQ 02](../02_spec-driven-development/answer.md)。本文补的是这些篇目都没合并回答的那一问：**堆积本身**。
+- **源码核验基线**：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（2026-10-18），与本目录其余篇目同一基线。本文所有 `path:line` 都以该工作树实测为准，逐条出处集中在 [`reference.md`](./reference.md)。
+- **三类陈述分开标注**：`[原文]` 是仓库里的直接陈述（`AGENTS.md`、Note 规则、package README、官方文档）；`[源码]` 是从本基线源码或生成物核对过的机制事实；`[推断]` 是从事实推出的解释，包括「搬去传统应用开发还剩什么」。这条分级按出处纪律执行（`[框架]` 一档本组不使用：凡不依赖 DSH 的通式都标 `[推断]`）。
+- **不重写已有整理**：Agent Note 的写作判据、格式、三件套与归档判据归 [FAQ 20](../20_agent-note-quality-bar/answer.md)；一次变更各面的落位归 [FAQ 06](../06_change-landing-path/answer.md)；六步闭环与「spec 感是沉淀物」归 [FAQ 11](../11_native-development-loop/answer.md)；SDD 分层归 [FAQ 19/06](../19_dsh-native-development-process/06-six-layers-and-limits.md)。本文补的是这些篇目都没合并回答的那一问：**堆积本身**。
 - **插件仓部分引用同仓语料**：独立插件仓的落地做法引 [`_dsh_plugin_agent_ready_development/`](../../_dsh_plugin_agent_ready_development/00-index.md)，不重复它的机制清单。该语料已吸纳本主题的运行时会话侧机制，独立发行版是 [`native-development-model/03-context-and-drift.md`](../../_dsh_plugin_agent_ready_development/native-development-model/03-context-and-drift.md)；两份对照同一基线，下一轮同步时一起复核。
 - **git 历史是浅克隆**：`.git/shallow` 有 158 个边界提交，边界之外无法核对；本文凡引用历史案例都给出仍存在于当前工作树的文件与提交号，无法核对的早期历史明确不引。
 

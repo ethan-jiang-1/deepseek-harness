@@ -18,17 +18,9 @@
 - 每块用户数据由谁拥有、存在哪里、何时删除或迁移？
 - 多 profile、换 home、换机器或卸载后，哪些状态共享或保留？
 
-## 为什么不能只说“可写目录”
+## 这个问题的难点
 
-“Workspace”“Session cwd”“有效 working directory”“sandbox root”和“产品 project root”名称接近，但回答不同问题：
-
-- DSH Workspace 是 Host 侧的目录登记，用于 Web 导航与 Session 分组；registration 不给模型文件工具。
-- 只需指定 Session 初始工作目录时，传绝对 `cwd`；还要加入 DSH Workspace 侧栏分组时，才传已有 registration 的 `workspaceId`，由 Host 取 canonical path 并 attach Session。两者不能同时传；`WorkspaceId` 是 registration ID，不是 path、权限 token 或产品 project ID。
-- `header.cwd` 标识 Session 的原始项目目录，也是正常 sandbox policy 的默认 workspace root。`working_directory` 可以改变后续操作目录，但不会改变 header 或 sandbox writable roots。
-- Preset 决定模型可调用的工具。Sandbox policy 只约束接入它的 consumer；Host 插件代码不自动受到 Session sandbox 限制。
-- `workspace-write` 除 Session 根外还允许平台临时目录；文件读取也不由这条写入围栏限制。
-
-因此，本篇将目录导航、模型工具面、sandbox policy 和产品数据 owner 作为独立设计维度处理。
+“Workspace”“Session cwd”“有效 working directory”“sandbox root”和“产品 project root”名称接近，但在 DSH 里回答不同问题。产品作者需要先把目录身份、模型工具面、sandbox policy 与数据 owner 分开，再判断每一层分别由谁负责、哪些是 DSH 已有的机制、哪些要产品自己设计。
 
 ## 本篇要回答的具体问题
 

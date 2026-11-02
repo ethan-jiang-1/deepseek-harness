@@ -12,20 +12,20 @@
 4. **UI 表达走哪层**：工具卡的 card render intent + `presentationMeta`，还是 client 侧专门卡片 / View？
 5. **spec 流程**：借 DSH 的 docs-as-contract + notes 纪律，还是上 OpenSpec？
 
-## 回答目标
+## 要回答的问题
 
-读完本 FAQ，应当能够：
+要回答：
 
-1. 说出 DSH 对上述五个决策各自已经提供了什么正式载体，哪些不需要发明。
-2. 对四种 repo 组织方案（独立 repo + pinned DSH / 在 DSH monorepo 内长 / 纯外部依赖 / marketplace 式多专家 monorepo）说出结构、装法、开发环和取舍（插拔/调试/驱动 agent 的共享细节收敛在 dev-loop，方案文件只写形态带来的增量）。
-3. 用市场实证（Claude Code plugins、OpenClaw、MCP servers、Cursor plugins、第三方 DSH 插件）为每个方案的取舍背书。
-4. 给一条明确的推荐路径和升级触发条件（什么时候从方案 A 升到 B/D、什么时候引入 OpenSpec）。
+1. 专家插件 repo 需要做哪几个决策（入口形态、包粒度、DSH 源码位置、UI 层、spec 流程）？
+2. 每个决策 DSH 已提供什么正式载体？哪些不需要发明？
+3. 独立 repo + pinned DSH、DSH monorepo 内、纯外部依赖、marketplace 多专家 monorepo 四种方案各自的形态、装法、开发环与取舍是什么？
+4. 市场与生态证据支持哪种选择？推荐路径与升级/迁移触发条件是什么？
 
 ## 范围与基线：信息来源
 
 本 FAQ 的信息主要有三条来源，各自独立声明新鲜度：
 
-1. **DSH 机制事实（主来源）**：直接核对 DSH 本仓库工作树（当前基线 `dsh-v0.1.7-rc.1`，commit `46a7f68b09…`）的文档与源码，与 FAQ 01/08 同源同基线——00-index 的 pinned-commit 基线管运行时行为结论的新鲜度，本篇的机制表述（profile/patch 层级、preset、卡片层）均在当前工作树逐条对过源码文档（0008 复核时随 preset 重设计改述）；上游合入后按 `_digested/_change_log/` 复核。涉及的机制文档：`docs/architecture.md`（profile / bundle / patch 层级）、`docs/cookbook/extension-cookbook.md`（扩展形态参考与 feature→机制映射，dev-loop 第 0 阶段探索路由的形态入口）、`packages/preset/agent-preset-registry/README.md`（agent preset 声明式注册表、bundle-patch override）、`docs/cookbook/adding-a-tool.md`（卡片渲染意图与 Web 消费边界）、`docs/subsystems/conversation.md`（View 注册通道）、`packages/boot/app-boot/README.md`（Profiles 与 profile 目录）、`docs/cordis-primer.md`（entry `disabled`）、`.agents/notes/README.md` 及其各目录 `AGENTS.md`（Agent Notes 生命周期与格式）、`scripts/agent-note-tree.ts` / `scripts/verify-agent-note-format.ts`（结构与格式门禁）、`docs/postmortem/README.md`（事故层）、`docs/development.md` / `docs/testing.md` / `lefthook.yml` / `.github/ISSUE_TEMPLATE/` / `packages/plan/README.md` / `packages/todo/README.md`（开发流程与协作反馈面，dev-loop 的依据）、`docs/cordis-tutorial/index.md` 与 `docs/user/develop/`（插件作者文档线，dev-loop 第 0 阶段探索路由的作者侧入口）、`packages/README.md`（组、发布期望与依赖方向规则，option-b 落位与 dev-loop 第 3 阶段设计四问的依据）。
+1. **DSH 机制事实（主来源）**：直接核对 DSH 本仓库工作树（当前基线 `dsh-v0.1.7-rc.1`，commit `46a7f68b09…`）的文档与源码，与 FAQ 01/08 同源同基线——00-index 的 pinned-commit 基线管运行时行为结论的新鲜度，本篇的机制表述（profile/patch 层级、preset、卡片层）均在当前工作树逐条对过源码文档（0008 复核时随 preset 重设计改述）；上游合入后按产品源码变更复核。涉及的机制文档：`docs/architecture.md`（profile / bundle / patch 层级）、`docs/cookbook/extension-cookbook.md`（扩展形态参考与 feature→机制映射，dev-loop 第 0 阶段探索路由的形态入口）、`packages/preset/agent-preset-registry/README.md`（agent preset 声明式注册表、bundle-patch override）、`docs/cookbook/adding-a-tool.md`（卡片渲染意图与 Web 消费边界）、`docs/subsystems/conversation.md`（View 注册通道）、`packages/boot/app-boot/README.md`（Profiles 与 profile 目录）、`docs/cordis-primer.md`（entry `disabled`）、`.agents/notes/README.md` 及其各目录 `AGENTS.md`（Agent Notes 生命周期与格式）、`scripts/agent-note-tree.ts` / `scripts/verify-agent-note-format.ts`（结构与格式门禁）、`docs/postmortem/README.md`（事故层）、`docs/development.md` / `docs/testing.md` / `lefthook.yml` / `.github/ISSUE_TEMPLATE/` / `packages/plan/README.md` / `packages/todo/README.md`（开发流程与协作反馈面，dev-loop 的依据）、`docs/cordis-tutorial/index.md` 与 `docs/user/develop/`（插件作者文档线，dev-loop 第 0 阶段探索路由的作者侧入口）、`packages/README.md`（组、发布期望与依赖方向规则，option-b 落位与 dev-loop 第 3 阶段设计四问的依据）。
 2. **流程模型**：dev-loop 沿 FAQ 06（spec 从意图走到当前合同的完整路径）与 FAQ 11（六步执行闭环）的已核结论展开，不重复论证。
 3. **市场实证**：公开 repo 与官方文档，来源 URL 一律记在 [research.md](./research.md)，检索时点为 2026-09；外部 repo 结构随时间漂移，引用时以 research.md 里留档的树为准。
 

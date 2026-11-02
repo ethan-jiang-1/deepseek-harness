@@ -145,8 +145,7 @@ Status: implemented
 
 限制：这个例子实证 proposed → implemented 核心段；d01 时代尚无今天的 Note 格式规则，Decision/Consequences 是 e6fad266a6 才落到这份文件；Issue、Plan、review 不在 git tree，不能用它声称九个面全链路。
 
-## 相关消化材料
+## 相关研究
 
-- `_faq_on_digested/02_spec-driven-development/answer.md`
+- `_faq_on_digested/19_dsh-native-development-process/06-six-layers-and-limits.md`
 - `_faq_on_digested/04_root-entry-doc-design/answer.md`
-- `_digested/harness-idea/04-participation-paths.md`

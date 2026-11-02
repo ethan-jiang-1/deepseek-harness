@@ -12,7 +12,7 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 
 三句话把价值收紧：
 
-1. **敢放手**——它干过的每一件模型可见的事都能从日志重建，审批成对、无人可答就失败关闭，会话格式有版本纪律。这些是运行时行为与格式纪律，不是文档承诺（机制见 [FAQ 08](../08_plugin-seam-maturity/answer.md) 边界 3 与 [`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)）。
+1. **敢放手**——它干过的每一件模型可见的事都能从日志重建，审批成对、无人可答就失败关闭，会话格式有版本纪律。这些是运行时行为与格式纪律，不是文档承诺（机制见 [FAQ 08](../08_plugin-seam-maturity/answer.md) 边界 3）。
 2. **省手**——执行世界（shell/fs/subprocess）、会话标题与 subagents 这些簇已有 ≥2 个 Provider 可无痛替换（全树 35 条 seam 共 15 条，见 [FAQ 08](../08_plugin-seam-maturity/answer.md) 的 0011 基线读数）：装一个等于雇一个能换底座的劳力，换本地 / 云沙箱都不用改调它的代码。
 3. **可复用**——preset + bundle + patch 把一棵树从一个人带到整个队、从一个项目带到另一个项目，diff 不进 `packages/`。今天一个人用，明天三个人同一套底座。
 
@@ -22,9 +22,9 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 
 生产力最卡的地方往往不是 agent 不够强，而是**我不敢放手——agent 干得再快，我一步都不敢离开**。敢放手靠三条不变式（这些是 DSH 本身的内生能力，不是第三方插件自带的东西）：
 
-- model-visible ⟺ logged 是仓库级硬约定（根 `AGENTS.md`）＋每个 model-visible 输入同 PR 配会话事件，不是文档里的软承诺（[`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)）；0.2.1 线起运行时 invariant companion 机制整族退役，这条规则由测试面与 review 把关。
+- model-visible ⟺ logged 是仓库级硬约定（根 `AGENTS.md`）＋每个 model-visible 输入同 PR 配会话事件，不是文档里的软承诺；0.2.1 线起运行时 invariant companion 机制整族退役，这条规则由测试面与 review 把关。
 - 审批是成对的 `asked/decided` 审计事件；没有 answerer 时 **fail-closed** 到 `unavailable`，绝不静默放过；审计写入失败会拒签，而不是返回一笔未记录的决策（[`user-approval` README](../../packages/interaction/user-approval/README.md)）；
-- 会话格式有版本纪律，冷读可恢复（[`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md) 的持久化与格式世代段，机制见 [`04-格式世代与迁移`](../../_digested/session-and-loop/04-格式世代与迁移.md)）。
+- 会话格式有版本纪律，冷读可恢复（[`docs/subsystems/session.md`](../../docs/subsystems/session.md) 的持久化与格式世代段，机制见 [`docs/session-format-status.md`](../../docs/session-format-status.md)）。
 
 这三样不是拿来"卖合规"，而是**给 owner 自己一份回放**——"它干了什么、谁批的、能不能恢复"。所以"信任"不是一个销售词，是"我过夜把手交给它，心里有底"的那个"底"。
 
@@ -58,7 +58,7 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 | L2 组织化 | 你和一小队共用一棵树 | 不用给每个人从头教学 | 多 answerer / 组织策略 |
 | L3 替代外包 | 一人干一个小分队 | 一个人的体量做出一小队的量 | 审批 + 渠道 + 记忆 + 编排成体系 |
 
-三道门槛的现实状态（知识外置、识字门槛部分降低、判断门槛仍被拆小）见 [`harness-idea/07`](../../_digested/harness-idea/07-boundaries-costs-fit.md)。
+三道门槛的现实状态：知识外置基本完成、识字门槛部分降低、判断门槛仍被拆小。
 
 ## 四件缺的（已有机制 / 缺 / 对 owner 的作用 / 不装则）
 
@@ -67,7 +67,7 @@ DSH 不是"卖平台给开发者 / 卖给企业"的生意，而是让**一个自
 | 渠道 | Remote 层把审批 wire 派发到浏览器（[remotes](../../packages/api/remotes/src/index.ts)）、`asked/decided` 在 `request()` 里成对写出、只进审计日志（[user-approval README](../../packages/interaction/user-approval/README.md)） | 官方 IM answerer 全缺 | 人在与不在场，决策都在场 | 只能从 ≥8 个第三方方言里拼一个 |
 | 审批形状 | fail-closed、成对、取消（[README](../../packages/interaction/user-approval/README.md)） | 表单 / 多选项渲染、多 answerer 顺序语义 | 从"你同意吗"变成"请确认这几件事" | GUI 层离官方最近，个人没得选 |
 | 可重建消费 | 日志重建纪律 + 版本纪律 | 导出 / 检索 / 复盘界面 | 你不光存，还能复盘"这段真过程" | 只能读原始 session log |
-| 可复用预设 | preset / scope restrict（restrict 语义见 [`session-and-loop/00-map`](../../_digested/session-and-loop/00-map.md)；subagent 侧见 [`capability-seams/03`](../../_digested/capability-seams/03-subagent后台与产品provider.md)） | 官方目录 + 签名 / 审核 | 一次配好，多人 / 多项目复用 | 只能靠 git 各自剪一半 |
+| 可复用预设 | preset / scope restrict（restrict 语义见 [`packages/preset/agent-preset-registry/README.md`](../../packages/preset/agent-preset-registry/README.md)；subagent 侧见 [`packages/subagent/README.md`](../../packages/subagent/README.md)） | 官方目录 + 签名 / 审核 | 一次配好，多人 / 多项目复用 | 只能靠 git 各自剪一半 |
 
 ## 三个能"自我验证"它值不值（比"杀档线"更贴 owner 自己）
 

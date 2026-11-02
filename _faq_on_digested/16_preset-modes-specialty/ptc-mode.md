@@ -28,7 +28,7 @@ PTC = **Programmatic Tool Calling**（GUI 文案原话，[`guide-locales.ts`](..
 
 - 工具在可见 store 里照常存在（fs、search、subagent、web、todo、ask-user……都还在 preset 里），只是投影成 SDK 里的函数声明；SDK 按字典序排列保证字节稳定，利于 provider 缓存。
 - 程序是 async 函数体，`await tools.name(args)` 调用；SDK 明示合同：只读调用可用 `Promise.all` 重叠，互斥调用按提交顺序串行，有依赖就 `await`。
-- **只有 print/return 进上下文**；子工具若返回 image block，不会嵌进父 tool 结果，而是在 `run_code` 结束后 defer 成一条 user message（[`../_digested/tools-prompt-llm/00-map.md`](../../_digested/tools-prompt-llm/00-map.md)「历史」节）。
+- **只有 print/return 进上下文**；子工具若返回 image block，不会嵌进父 tool 结果，而是在 `run_code` 结束后 defer 成一条 user message。
 
 ## 子调用还受管吗？（权限、审计、并发）
 
