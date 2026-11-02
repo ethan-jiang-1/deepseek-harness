@@ -10,7 +10,7 @@
 
 ## 与默认 node provider 的关系
 
-两者都是 `ctx.ptcRuntime` 的实现，谁生效不是「后装者赢」——vendored Cordis 对同一 isolate 的重复服务注册直接抛错 `service "ptcRuntime" has been registered at <fiber>`（`vendor/cordis/src/reflect.ts`），同时挂两个等于 load 失败，选择永远是组合层的决定。headless 不再自带这一行、经 base 继承 node 后端（`packages/bundle/base/cordis.patch.yml:397-398`；0.1.7-rc.1 起 headless patch 已无此行）；`apps/cli/package.json:127` 把 python 包声明为 devDependency，供快照与 profile 组合经真实 Loader 解析，shipped 组合无一挂载它。启用样板见 keyless 快照 `snapshots/session/ptc-python-turn/cordis.yml`：先把默认 PTC runtime 行 `disabled: true`（`:25`-`:26`），再 insert `@deepseek-ai/dsh-experimental-ptc-runtime-python`（`:35`-`:36`）——工具面不变，PTC 模式的消费者仍只绑 seam 键。
+两者都是 `ctx.ptcRuntime` 的实现，谁生效不是「后装者赢」——vendored Cordis 对同一 isolate 的重复服务注册直接抛错 `service "ptcRuntime" has been registered at <fiber>`（`vendor/cordis/src/reflect.ts`），同时挂两个等于 load 失败，选择永远是组合层的决定。headless 经 base 继承 node 后端（`packages/bundle/base/cordis.patch.yml:397-398`；headless patch 不含此行）；`apps/cli/package.json:127` 把 python 包声明为 devDependency，供快照与 profile 组合经真实 Loader 解析，shipped 组合无一挂载它。启用样板见 keyless 快照 `snapshots/session/ptc-python-turn/cordis.yml`：先把默认 PTC runtime 行 `disabled: true`（`:25`-`:26`），再 insert `@deepseek-ai/dsh-experimental-ptc-runtime-python`（`:35`-`:36`）——工具面不变，PTC 模式的消费者仍只绑 seam 键。
 
 ## 进程模型
 
