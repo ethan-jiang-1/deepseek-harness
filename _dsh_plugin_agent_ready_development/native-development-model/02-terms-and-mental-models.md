@@ -63,11 +63,15 @@ Loader 不等于 TypeScript 编译器，也不保证用户行为已正确。路�
 
 因此，“没看到错误”不等于“插件已运行”。新仓 smoke 应确认插件实际激活并产生目标结果；排查不加载的问题时，先核对 inject 与 provider 是否齐全。依据：DSH [不加载插件的诊断](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md#diagnosing-a-plugin-that-never-loads)。
 
+排查顺序也可以固定下来：先用 `dsh --profile <name> --dump-config` 看组合出来的层与行，再看启动 stderr 的 `did not activate`、`skippedBundles` 与 `PENDING` 点名，最后看 `$DSH_HOME/profiles/<name>/.plugin-manager/logs/` 的 pnpm 输出。顺序反过来，容易把“没装进去”误判成“装了没生效”。依据：DSH [启动诊断](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md#profiles) 与 [插件管理日志](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md)。
+
 ### Config（插件配置）
 
 **Config**定义插件接受的配置数据与验证方式。部署方会改变的选择应通过配置表达，而不是藏在代码常量、默认分支或仅测试可调用的钩子里。
 
 Config 不等于全部 `cordis.yml`：一个插件的 Config 只拥有该插件的选择；整个文件还包含模块名、entry id、disabled、group 等加载元数据。依据：DSH [配置教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/05-config.md)与 [根级开发规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)。
+
+选配置放哪一层，和写 Config 同样重要。DSH 的层序是：Config schema 默认值 → bundle patch → profile patch（`cordis.patch.yml`）→ home patch → `--patch`，越后的层越优先。只有标了 `Config.volatile()` 的字段才会进入设置表单，表单写入落在当前 profile 的 patch；把用户可改的字段留在非 volatile 的 bundle 默认值里，设置页不会出现。把 `!!js` 表达式写成字面值，`--port` 这类启动参数会静默失效。依据：DSH [设置服务](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/settings.md)、[添加设置卡](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-settings-card.md) 与 [加载顺序](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-loading-order)。
 
 ### effect 与 disposer
 
@@ -116,6 +120,8 @@ Profile 不等于一个插件，也不等于给某位 agent 的人格定义。�
 ### patch 与 overlay
 
 **Patch**在本语境指修改插件配置树的数据，如插入或覆盖条目；**overlay**常指开发或部署时加在基础组合上的配置覆盖层。它们不是 Git patch，也不是直接修改宿主源码。
+
+两条机械规则要先记住：按 `id` 覆盖已有 row 时，patch 替换的是该行的**整个 `config`**，不是逐字段深合并，想保留的键必须一起重写；`insert` 则加新行。列出的 bundle 若没有 `dsh.bundle` 声明，启动失败而不是静默跳过。依据：DSH [加载顺序与覆盖](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-loading-order)。
 
 不要把 patch 文件所在目录当成全部模块引用的新工作目录。官方本地开发示例明确要求绝对插件路径，因为额外 patch 不改变 profile 的模块解析目录；bundle patch 的相对路径另有规则。依据：DSH [本地挂载指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md#register-it-in-cordisyml)与 [bundle patch 规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-bundle-manifest)。
 

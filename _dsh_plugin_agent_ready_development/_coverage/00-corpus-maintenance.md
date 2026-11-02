@@ -267,3 +267,16 @@ re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、
 核对后未改动的部分：`docs/persistence-changes/releases/` 仍是 26 个 release 页；AGENTS.md 总数仍是 22（根加 21 个子树；`snapshots/**/workspace/` 内的同名 fixture 不计）；`run-gates.ts` 仍是 18 个 mode；`SESSION_FORMAT_VERSION` 仍是 4；vendor cordis 仍是 `4.0.0-rc.7`；`tool-cordis` 仍只注册 `cordis_inspect_list`/`cordis_inspect_query` 两个只读工具；`snapshots/AGENTS.md`、`.github/` policy、`scripts/release/**`、review-ownership 与各发布 lane 的机制陈述逐条复核后仍成立。
 
 验证：`node _dsh_plugin_agent_ready_development/verify.mjs` 通过（35 Markdown、2 scripts、26 SVG）；`node _dsh_plugin_agent_ready_development/verify.test.mjs` 通过（1 个接受 case、8 个拒绝 case）；`node _misc/verify.mjs` 通过；外部引用反查对本语料报 0 处路径失效、0 处行号越界、0 处引文漂移。repository-level `doc-sync` 未重跑，2026-08-24 条目记录的目录外阻断仍然适用。
+
+## 2026-11-02 的内容补强：安装判定、patch 语义与两类插件树
+
+基线不变（`dsh-v0.2.1-rc.5`）。本轮不 re-pin，只把一手来源已核实、但本语料尚未承接的插件作者内容补进正文：
+
+1. `native-development-model/01` §2/§5：补 `dsh plugin remove` 的数据留存边界；补“先建一个有表面的 profile”与 `--from-default-profile` 的替换语义，避免在 base-only profile 上把“没有界面”误判成插件失败。
+2. `native-development-model/02` 的 PENDING/Patch/Config 三节：补三段式诊断顺序；补 id 命中整份替换 `config`、`insert` 加新行、没有 `dsh.bundle` 的包不会成为层；补配置五层与 `Config.volatile()` 的设置面。
+3. `repo-harness/09` §3/§5：补安装的授权面（构建脚本、git `prepare` 放行、版本豁免不授权脚本）；新增 Host 插件与 Client 插件的加载路径区分，明确本卷前面的 `cordis.yml` 路径只覆盖 Host 插件。
+4. `repo-harness/04`：补 Preset 与 Profile 的层级区别。
+
+核对后未改动的部分：三卷的 owner/证据/评审主线、`sdlc-reference/` 的主仓制度、图示与既有引用政策不变；新增外链全部指向 DSH `master` 的一手文档或源码。
+
+验证：`node verify.mjs` 通过（37 Markdown、2 scripts、27 SVG）；`node verify.test.mjs` 通过（1 个接受 case + 10 个拒绝 case，新增一条兄弟语料引用负例）。共享宪章从内容页的兄弟语料扫描中豁免，内容页的禁令不变。

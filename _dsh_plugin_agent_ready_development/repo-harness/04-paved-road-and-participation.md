@@ -36,6 +36,8 @@ Agent loop 位于两者之间：从当前插件树取得能力，把模型和工
 
 阶梯不是价值排序。L0 的部署替换是完整系统能力，不是“较低级的代码”；L3 也不是更先进，只是影响范围最大、同步义务最多。
 
+L0 里的 Preset 与 Profile 不是同一层：profile 决定一个 `dsh` 进程启动时装什么，preset 决定单个 Session 的 Agent 拿哪些子插件；shipped preset 由 bundle 携带。只改某类会话的能力时，先看 preset，不要改 profile。依据：DSH [agent preset](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset/README.md)。
+
 Session 持久化是横切义务，不是从 L0、L1 或 L2 升级到 L3 的判据。任何层级新增模型可见事实时，都要同时扩展 `SessionEventMap`，并从日志投影和重建该事实。
 
 ## 先用归属问题缩小选择

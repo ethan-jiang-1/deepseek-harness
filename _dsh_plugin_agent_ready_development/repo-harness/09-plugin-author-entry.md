@@ -38,17 +38,26 @@ Cordis tutorial 面向 agent 开发者，每讲都是在仓库 scratch 目录里
 
 采用自动启用配置层的分发路径时，链路是 plugin → bundle → profile：作者把插件模块与 patch 层打包为 bundle，用户安装后由 profile 组合并启动。它不是所有插件唯一的发布形态：插件也可作为本地模块或普通 npm 模块由配置显式挂载；没有 `dsh.bundle` 声明的包不会因安装而自动激活配置层。bundle 还可以在 `package.json` 声明 `engines.dsh` SemVer 范围（例如 `>=0.2.0 <0.3.0`）说明支持的 DSH 版本：安装与 profile 启动会拒绝运行中的 DSH 不满足该范围的 bundle，没有该字段时改查它的 `@deepseek-ai/dsh*` peer dependency 范围。这条安装组合链与 DSH 主仓自己的 npm 发布序列是不同问题；后者不约束外部插件仓。
 
+安装不只是把文件放进 profile。`dsh plugin add` 会在本机执行依赖的构建脚本；git 源的 `prepare` 脚本默认被 pnpm 拦下，用户显式放行后才会执行，放行等于授权该包在安装时运行代码，且位于 workspace sandbox 之外。只解除准入的版本豁免不授权任何脚本。插件 README 应写明安装会执行什么、需要哪些权限、如何验证来源；不要把“加一个 bundle”写成无副作用的配置步骤。依据：DSH [git 安装与构建放行](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#installing-from-github-the-build-script-catch) 与 [版本豁免](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md#version-compatibility-and-exemptions)。
+
 ## 4. 为什么插件仓库要与这套词汇对齐
 
 本文的归纳（DSH 没有为外部插件仓库写参与规则）：开发 DSH 插件的 coding agent 同时读两个仓库。当插件仓库沿用 DSH 的同一套概念——插件是导出 `apply` 的模块、配置走 schema、依赖 Service Definition 而非具体 provider、采用自动启用配置层的分发路径时使用 bundle——agent 在两边使用同样的检索模式与判断标准：同样的 `inject` 声明、同样的 `ctx.tools.register`、同样的“能力 = Service Definition + Provider + Consumer”分解。哪边自造词汇或颠倒这些方向，agent 就要在哪边重新建立一套局部模型，冲突与困惑由此产生。
 
 需要同样明确的是继承的边界：DSH 并不要求插件仓库复制 `AGENTS.md`、Agent Notes、gates 或发布序列——那些是 DSH 自身作为开发 Harness 的参与机制。插件作者从 DSH 直接继承的是插件形态、配置与打包模型和术语；[分类学精神](./08-repository-taxonomy.md)（一个事实一个 owner、生成物有生成器、决定有记录）是可迁移的原则，不是对插件仓库的强制要求。
 
+## 5. Host 插件与 Client 插件是两条加载路径
+
+前面的 `apply(ctx)`、`cordis.yml`、`bundle`、`profile` 描述的是 **Host 插件**：Node 侧的 Loader 按组合后的 row 挂载模块。Web 还有第二棵 Cordis 树：浏览器侧由 `@deepseek-ai/dsh-client-web` 按 Host 推送的 client entry graph 建立模块系统与插件树，扩展点是 `ctx.slots.register`、`ctx.remote.<namespace>` 和资源 provider，而不是 `cordis.yml` 的 row。两边共享 `apply(ctx)` 与 Cordis 生命周期，但模块怎么到、状态归谁、怎么测试不同。
+
+给 Web 加界面时，先判断你要写的是 Host 服务还是 Client 插件：只加 Host capability 不需要 client 包；要让界面出现新的 slot、右栏内容或 conversation node，才进入 client 树。入口：DSH [Web client](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/web-client.md)、[Client modules](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/client-modules.md)、[Slots](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/slots.md) 与 [Client 包规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/AGENTS.md)。
+
 ## 证据入口
 
 - DSH [`docs/cordis-tutorial/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/index.md)：Cordis 七讲教程的入口、受众与 scratch 运行方式。
 - DSH [`docs/user/develop/basic/index.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md)：插件的最小定义与第一个插件的完整路径。
 - DSH [`docs/user/develop/basic/publish.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)：bundle/profile 二分、manifest 语义与 `dsh plugin add` 安装。
+- DSH [`docs/subsystems/web-client.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/web-client.md)、[`client-modules.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/client-modules.md)、[`slots.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/slots.md) 与 [`packages/client/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/AGENTS.md)：Web 第二棵 Cordis 树的模块加载、slot 与 client 包规则。
 - DSH [`docs/user/develop/framework/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/user/develop/framework) 与 [`docs/user/develop/practice/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/user/develop/practice)：事件、服务依赖与 LLM adapter、动态插件配置的进阶层。
 - DSH [`docs/cordis-primer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md)：教程之外的浓缩概念参考。
 - DSH [`packages/README.md` 的 “Dependencies”](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md#dependencies)：扩展插件依赖 Service Definition、不依赖具体 provider 的方向规则。
