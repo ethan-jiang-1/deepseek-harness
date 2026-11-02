@@ -6,7 +6,7 @@
 
 ## 为什么是这个形状：设计考量
 
-**为什么是抽象平台合同而不是各工具自己做后台**：没有统一 JobRegistry，每个工具（bash、subagent、workflow）都要自己解决「agent 继续干活时工作挂着、完成了怎么通知、谁有权读停」——四套实现、四种通知语义、四种隔离规则。DSH 把它抽成一个**合同与实现分包**的抽象服务：直接加载 `JobRegistry` 实现类即 throw（组合配错在装载时就失败，而不是运行时静默缺功能）；一个进程一个 registry、owner 相对应答；注册的 job **活得比 producer 和 controller 的 fiber 都长**（`packages/jobs/jobs/README.md` 设计哲学节）。「owner 围栏是授权不是保密」是个精确的取舍声明：id 可见（`<kind>-<16 位 hex>`）但不承载权限，边界仍是权限检查而不是隐藏——它防的是**误操作与越权**，不防偷窥。schedule 的交付形态同样是考量结果：提醒**作为原会话里的普通 follow-up message** 交付（不是邮件/短信/推送）——提醒的价值在于带着会话上下文回来继续干活，而不是把你拉走；交付只在 Session 确认 `session/flush` 后 commit——**正确性优先于恰好一次**：崩溃后宁可重投一次，也不交付一个没落盘的提醒。
+**为什么是抽象平台合同而不是各工具自己做后台**：没有统一 JobRegistry，每个工具（bash、pwsh、workflow、terminal）都要自己解决「agent 继续干活时工作挂着、完成了怎么通知、谁有权读停」——四套实现、四种通知语义、四种隔离规则。DSH 把它抽成一个**合同与实现分包**的抽象服务：直接加载 `JobRegistry` 实现类即 throw（组合配错在装载时就失败，而不是运行时静默缺功能）；一个进程一个 registry、owner 相对应答；注册的 job **活得比 producer 和 controller 的 fiber 都长**（`packages/jobs/jobs/README.md` 设计哲学节）。「owner 围栏是授权不是保密」是个精确的取舍声明：id 可见（`<kind>-<16 位 hex>`）但不承载权限，边界仍是权限检查而不是隐藏——它防的是**误操作与越权**，不防偷窥。schedule 的交付形态同样是考量结果：提醒**作为原会话里的普通 follow-up message** 交付（不是邮件/短信/推送）——提醒的价值在于带着会话上下文回来继续干活，而不是把你拉走；交付只在 Session 确认 `session/flush` 后 commit——**正确性优先于恰好一次**：崩溃后宁可重投一次，也不交付一个没落盘的提醒。
 
 ## JobRegistry：后台作业的平台合同
 
@@ -37,9 +37,9 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 | workflow | `workflow`（[`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)：`JobKindMap` 声明合并 + mirror 写 ring） | `run_in_background` 参数 |
 | terminal | `pty-send`（`packages/experimental/tool-terminal/src/index.ts:251`-`:263`） | `run_in_background` 参数 |
 
-kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 registry。上表列出当前已核验的五类 shipped producer；其他插件也可以通过同一声明合并与 `jobs.start()` 接入。**controller 是启动的闸门**（`packages/jobs/jobs/README.md:40`-`42`）：producer 只能在"有服务该 owner 的 controller 在场"时启动（加载 `tool-jobs` 即挂上一个）；没有 controller 的组合 `start()` 直接失败并**点名缺失的组件**——绝不启动一个 agent 永远收不回也停不掉的工作。
+kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 registry。上表列出当前四类 shipped producer（bash / pwsh / workflow / terminal）；subagent 已退出 jobs 平面，其结算通知走 subagent 自己的通道，不借 jobs 通知模板。其他插件也可以通过同一声明合并与 `jobs.start()` 接入。**controller 是启动的闸门**（`packages/jobs/jobs/README.md:40`-`42`）：producer 只能在"有服务该 owner 的 controller 在场"时启动（加载 `tool-jobs` 即挂上一个）；没有 controller 的组合 `start()` 直接失败并**点名缺失的组件**——绝不启动一个 agent 永远收不回也停不掉的工作。
 
-**可写接口**（`packages/jobs/tool-jobs/src/index.ts:312`-`400`）：`{"job_id": "workflow-3f9c1a7e2b4d6f80", "wait": true, "timeout_ms": 60000}`（`job_output`；流式 job 返回自上次读取的增量，`wait` 超时返回 `[status: running]` 不算失败）；`{"job_id": "bash-2a7e4c9d1b6f8035", "reason": "不再需要"}`（`job_kill`）；`job_list` 无参数。**通知模板**：`background job <id> (<kind>: <label>) finished [status: …]. Read its output with job_output.`；subagent 结算通知带 `Its closing message:` 前缀。
+**可写接口**（`packages/jobs/tool-jobs/src/index.ts:312`-`400`）：`{"job_id": "workflow-3f9c1a7e2b4d6f80", "wait": true, "timeout_ms": 60000}`（`job_output`；流式 job 返回自上次读取的增量，`wait` 超时返回 `[status: running]` 不算失败）；`{"job_id": "bash-2a7e4c9d1b6f8035", "reason": "不再需要"}`（`job_kill`）；`job_list` 无参数。**通知模板**：`background job <id> (<kind>: <label>) finished [status: …]. Read its output with job_output.`。
 
 ## 通知经济学：完成什么时候打断你
 

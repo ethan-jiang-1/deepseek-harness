@@ -97,14 +97,14 @@ goal 的状态机与 Round Driver 深挖在 [`../agent-loop/00-map.md`](../agent
 
 ## 问题登记与复核状态
 
-以下登记项均已完成当前源码与测试交叉核验；删除线表示对应结论页已建立。若产品源码继续变化，按专题 HEAD 声明重新复核：
+以下登记项按当前树复核；删除线表示对应结论页已建立。若产品源码继续变化，按 [`catalog.json`](../catalog.json) 的核验点复核：
 
 - ~~Session lineage 与 Agent incarnation：冷恢复、owner disposal 和 ancestry 授权的差异。~~ 已单独立页见 [`12`](./12-Session谱系与Agent实例-持久边与活体权限.md)。
 - ~~资源预算与公平性：depth、Activation pool、workflow FIFO 和 job owner 容量怎样共同约束工作。~~ 已单独立页见 [`14`](./14-资源预算与公平性-深度并发总量与容量边界.md)。
 - ~~持久事实、派生投影和内存权限：todo/plan/goal/jobs 各自恢复哪些状态。~~ 已单独立页见 [`13`](./13-持久事实派生投影与内存权限-状态三分法.md)。
 - ~~动态 workflow 的可复现性：模型结果、未 await 的调用、启动/取消竞态及最终输出之间的关系。~~ 已单独立页见 [`15`](./15-workflow可复现性与生命周期-动态结果取消和观察记录.md)。
 
-当前问题登记均有对应结论页；若后续同步到新的产品 commit，按 [`../_coverage/00-index.md`](../_coverage/00-index.md) 的流程定位受影响行，并更新本页的复核 HEAD。
+当前问题登记均有对应结论页；若后续同步到新的产品 commit，按 [`../_coverage/00-index.md`](../_coverage/00-index.md) 的流程定位受影响行，并按 catalog 的核验点复核。
 
 ## 阅读路径
 
