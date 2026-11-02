@@ -30,7 +30,7 @@ continuable Activation 保存 `childId`、持久 direct parent、当前 provider
 - `ownedChildren: Set<SessionId>` 用于生命周期闭包，非空会阻止 child settlement；
 - Activation registry 的 `resident` 是进程内表，不写入 Session，新的 Activation 可以复用同一个 child Session id。
 
-child 的投递、释放和处置通过 per-child lock 串行化。`startContinuable` 在首个 inbox prompt 被接受后返回 `{ childId, messageId }`；创建、持久化、权限捕获或提交失败时回滚 Activation 和 parent ownership，不返回可用 id（`packages/subagent/subagent/src/manager.ts:744`-`800`；`390fbe8852` 把原 `continuation.ts` 并入 `manager.ts`）。
+child 的投递、释放和处置通过 per-child lock 串行化。`startActivation` 在首个 inbox prompt 被接受后返回 `{ childId, messageId? }`（`messageId` 仅本地 backend 有）；创建、持久化、权限捕获或提交失败时回滚 Activation 和 parent ownership，不返回可用 id（`packages/subagent/subagent/src/manager.ts:744`-`800`；`390fbe8852` 把原 `continuation.ts` 并入 `manager.ts`）。
 
 ## 权限：持久来源与活体来源必须同时成立
 

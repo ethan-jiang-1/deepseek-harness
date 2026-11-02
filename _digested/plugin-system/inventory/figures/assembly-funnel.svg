@@ -15,7 +15,7 @@
   <text x="500" y="154" fill="#6b7280">打包成 patch 层</text>
 
   <rect x="96" y="162" width="770" height="72" rx="10" fill="#dcfce7" stroke="#86efac"/>
-  <text x="122" y="188" font-size="13" font-weight="700" fill="#166534">18 个 bundle：6 个 profile bundle ＋ 12 个 OPTIONAL_BUNDLES</text>
+  <text x="122" y="188" font-size="13" font-weight="700" fill="#166534">20 个 bundle：6 个 profile bundle ＋ 12 个 OPTIONAL_BUNDLES ＋ 2 个 ON_DEMAND_BUNDLES</text>
   <text x="122" y="208" fill="#14532d">base / web-app / headless / acp-app / sdk-app / sdk-minimal ＋ session-search / ralph-bundle / terminal-bundle / badge-skill-bundle / agent-team-profile / inspector-profile / plugin-market-bundle / tool-worktree …</text>
   <text x="122" y="226" fill="#6b7280">bundle 只做交付：一个 patch 文件＋package.json 的 dsh.bundle 声明；不参与启动选择</text>
 

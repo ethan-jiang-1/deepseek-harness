@@ -59,7 +59,7 @@
 1. **everything-is-a-plugin → 先查货架再动手。** 对话循环、读写文件、跑命令、接模型、画界面都是树上的插件，所以「我要的能力多半已注册在 ctx 上」是默认假设，写新插件是例外而非起点。
 2. **显式优于隐式 → 换实现永远是组合层的显式动作。** 出厂 Provider 被换掉，靠的是后续层一行 disabled / insert；OPTIONAL_BUNDLES 一键开但默认关。运行时不替部署猜。
 3. **模型可见 ⟺ 已注册 → 工具面可查表。** 模型看见的一切来自 `ctx.tools` 注册与 preset patch，所以「模型能做什么」可以用 tool-catalog 与四个 preset patch 文件逐行回答，不需要跑起来试。
-4. **交付、组合、会话三层分离 → 各改各的。** bundle 管发货、profile 管启动选型、preset 管会话级模式；这解释了为什么换 Provider 不动 bundle、切模式不换 profile。三层的收敛关系（342 包 → 6 个 profile bundle ＋ 12 个可选 bundle（＋2 个官方按需）→ 5 个 launcher profile → 1 棵运行树）见 [`00-map`](./00-map.md) 的组装漏斗图。
+4. **交付、组合、会话三层分离 → 各改各的。** bundle 管发货、profile 管启动选型、preset 管会话级模式；这解释了为什么换 Provider 不动 bundle、切模式不换 profile。三层的收敛关系（343 包 → 6 个 profile bundle ＋ 12 个可选 bundle（＋2 个官方按需）→ 5 个 launcher profile → 1 棵运行树）见 [`00-map`](./00-map.md) 的组装漏斗图。
 
 ## 与参与阶梯对齐
 

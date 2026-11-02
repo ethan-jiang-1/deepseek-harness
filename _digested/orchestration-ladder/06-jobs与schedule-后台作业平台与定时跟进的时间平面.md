@@ -6,7 +6,7 @@
 
 ## 为什么是这个形状：设计考量
 
-**为什么是抽象平台合同而不是各工具自己做后台**：没有统一 JobRegistry，每个工具（bash、subagent、workflow）都要自己解决「agent 继续干活时工作挂着、完成了怎么通知、谁有权读停」——四套实现、四种通知语义、四种隔离规则。DSH 把它抽成一个**合同与实现分包**的抽象服务：直接加载 `JobRegistry` 实现类即 throw（组合配错在装载时就失败，而不是运行时静默缺功能）；一个进程一个 registry、owner 相对应答；注册的 job **活得比 producer 和 controller 的 fiber 都长**（`packages/jobs/jobs/README.md` 设计哲学节）。「owner 围栏是授权不是保密」是个精确的取舍声明：id 可预测（`bash-1`），所以边界设计成权限检查而不是隐藏——它防的是**误操作与越权**，不防偷窥。schedule 的交付形态同样是考量结果：提醒**作为原会话里的普通 follow-up message** 交付（不是邮件/短信/推送）——提醒的价值在于带着会话上下文回来继续干活，而不是把你拉走；交付只在 Session 确认 `session/flush` 后 commit——**正确性优先于恰好一次**：崩溃后宁可重投一次，也不交付一个没落盘的提醒。
+**为什么是抽象平台合同而不是各工具自己做后台**：没有统一 JobRegistry，每个工具（bash、subagent、workflow）都要自己解决「agent 继续干活时工作挂着、完成了怎么通知、谁有权读停」——四套实现、四种通知语义、四种隔离规则。DSH 把它抽成一个**合同与实现分包**的抽象服务：直接加载 `JobRegistry` 实现类即 throw（组合配错在装载时就失败，而不是运行时静默缺功能）；一个进程一个 registry、owner 相对应答；注册的 job **活得比 producer 和 controller 的 fiber 都长**（`packages/jobs/jobs/README.md` 设计哲学节）。「owner 围栏是授权不是保密」是个精确的取舍声明：id 可见（`<kind>-<16 位 hex>`）但不承载权限，边界仍是权限检查而不是隐藏——它防的是**误操作与越权**，不防偷窥。schedule 的交付形态同样是考量结果：提醒**作为原会话里的普通 follow-up message** 交付（不是邮件/短信/推送）——提醒的价值在于带着会话上下文回来继续干活，而不是把你拉走；交付只在 Session 确认 `session/flush` 后 commit——**正确性优先于恰好一次**：崩溃后宁可重投一次，也不交付一个没落盘的提醒。
 
 ## JobRegistry：后台作业的平台合同
 
@@ -14,12 +14,12 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 
 一个 job 给你什么（`packages/jobs/jobs/README.md:30`-`32`）：
 
-- **稳定 id** `<kind>-N`（如 `bash-1`），producer 注册时给 kind + 一行 label；
+- **稳定 id** `<kind>-<16 位 hex>`（如 `bash-3f9c1a7e2b4d6f80`），producer 注册时给 kind + 一行 label；
 - **状态投影**：`running` → `stopping` → 终态 `completed`/`killed`/`failed`，每次读都是新鲜投影；
 - **结算经事件流播报**，`tool-jobs` 把它变成会话内通知——不需要轮询；
 - **有界输出**：producer 可选字节上限，模型侧每次完整读取或通知都有界。
 
-**owner 隔离是授权不是保密**（`packages/jobs/jobs/README.md:36`-`38`）：job 属于启动它的 agent session，别的 agent 不能读不能停；id 可预测（`bash-1`），所以围栏的意义在授权。无 owner 的 job 对任何 caller 开放、活到 service dispose。
+**owner 隔离是授权不是保密**（`packages/jobs/jobs/README.md:36`-`38`）：job 属于启动它的 agent session，别的 agent 不能读不能停；id 可见但不承载权限，围栏的意义在授权。无 owner 的 job 对任何 caller 开放、活到 service dispose。
 
 **first-wins 结算 + `awaited` 防重播**（`packages/jobs/jobs/README.md:87`）：一个终局记录、释放全部 waiter、再一轮 contained 事件投递；`settled` 事件报告它是否释放了一个 live `wait`（`awaited`）——所以 `tool-jobs` **从不播报一个等待者已经收集过的完成**（无论是 `job_output` 的 wait 还是 shell 工具等自己前台命令的 wait）。
 
@@ -39,7 +39,7 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 
 kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 registry。上表列出当前已核验的五类 shipped producer；其他插件也可以通过同一声明合并与 `jobs.start()` 接入。**controller 是启动的闸门**（`packages/jobs/jobs/README.md:40`-`42`）：producer 只能在"有服务该 owner 的 controller 在场"时启动（加载 `tool-jobs` 即挂上一个）；没有 controller 的组合 `start()` 直接失败并**点名缺失的组件**——绝不启动一个 agent 永远收不回也停不掉的工作。
 
-**可写接口**（`packages/jobs/tool-jobs/src/index.ts:312`-`400`）：`{"job_id": "workflow-1", "wait": true, "timeout_ms": 60000}`（`job_output`；流式 job 返回自上次读取的增量，`wait` 超时返回 `[status: running]` 不算失败）；`{"job_id": "bash-2", "reason": "不再需要"}`（`job_kill`）；`job_list` 无参数。**通知模板**：`background job <id> (<kind>: <label>) finished [status: …]. Read its output with job_output.`；subagent 结算通知带 `Its closing message:` 前缀。
+**可写接口**（`packages/jobs/tool-jobs/src/index.ts:312`-`400`）：`{"job_id": "workflow-3f9c1a7e2b4d6f80", "wait": true, "timeout_ms": 60000}`（`job_output`；流式 job 返回自上次读取的增量，`wait` 超时返回 `[status: running]` 不算失败）；`{"job_id": "bash-2a7e4c9d1b6f8035", "reason": "不再需要"}`（`job_kill`）；`job_list` 无参数。**通知模板**：`background job <id> (<kind>: <label>) finished [status: …]. Read its output with job_output.`；subagent 结算通知带 `Its closing message:` 前缀。
 
 ## 通知经济学：完成什么时候打断你
 

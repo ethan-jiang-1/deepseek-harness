@@ -3,7 +3,7 @@
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
   <rect width="960" height="400" fill="#fafafa" rx="6"/>
-  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">热更新只换用户层；bundle 和 --patch 不许被用户文件挤掉</text>
+  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">热更新重放完整 patch 列表；用户层不挤掉 bundle 与 overlay</text>
   <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">refresh() → readProfilePatches → reconcileProfilePatches → entry.update · hmr.runExclusive 串行</text>
 
   <rect x="40" y="68" width="880" height="52" rx="8" fill="#dcfce7" stroke="#86efac"/>
@@ -16,10 +16,10 @@
   <text x="705" y="164" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">重读 home cordis.patch.yml</text>
 
   <rect x="40" y="196" width="880" height="52" rx="8" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="480" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">--patch / telemetry overlays 不在 reconcile 的 patch 列表里，保持不动</text>
+  <text x="480" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">overlays（--patch + telemetry）也在 readProfilePatches 里重读/重算</text>
 
   <rect x="40" y="268" width="880" height="100" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
   <text x="60" y="296" font-size="12" fill="#374151">refresh() 先做三份文件指纹比对；无变化直接返回，ENOENT 视为该层为空。</text>
-  <text x="60" y="320" font-size="12" fill="#374151">readProfilePatches 组完整列表 → reconcileProfilePatches 拆旧 patches、prepare、entry.update 一次提交。</text>
+  <text x="60" y="320" font-size="12" fill="#374151">readProfilePatches 组完整列表（bundle + profile + home + overlays + telemetry）→ reconcileProfilePatches 拆旧 patches、prepare、entry.update 一次提交。</text>
   <text x="60" y="344" font-size="12" fill="#374151">候选失败不提交：旧树继续服务；只有本次新引入的失活条目抛错。</text>
 </svg>

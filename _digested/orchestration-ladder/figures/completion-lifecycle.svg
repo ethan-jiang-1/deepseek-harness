@@ -34,7 +34,7 @@
   <text x="70" y="290" font-size="15" font-weight="700" fill="#333">不同组件确认不同事实</text>
   <line x1="70" y1="310" x2="1050" y2="310" stroke="#d9d9d9"/>
   <text x="85" y="342" font-size="13" fill="#333">JobRegistry</text><text x="250" y="342" font-size="13" fill="#595959">注册、终态、ring、cursor、awaited</text>
-  <text x="85" y="378" font-size="13" fill="#333">Teams mailbox</text><text x="250" y="378" font-size="13" fill="#595959">queued → target receipt → delivered</text>
+  <text x="85" y="378" font-size="13" fill="#333">Teams inbox</text><text x="250" y="378" font-size="13" fill="#595959">accept（不投递/不重试）</text>
   <text x="85" y="414" font-size="13" fill="#333">Schedule Host</text><text x="250" y="414" font-size="13" fill="#595959">Session flush → task retire / advance</text>
   <text x="85" y="450" font-size="13" fill="#333">Goal driver</text><text x="250" y="450" font-size="13" fill="#595959">checkpoint、round reservation、wrapup</text>
   <text x="85" y="486" font-size="13" fill="#333">Workflow recorder</text><text x="250" y="486" font-size="13" fill="#595959">观察日志，不是执行恢复 checkpoint</text>

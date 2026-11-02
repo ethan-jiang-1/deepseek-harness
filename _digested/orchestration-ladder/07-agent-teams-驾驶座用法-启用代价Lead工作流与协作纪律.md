@@ -21,7 +21,7 @@
 | insert `agent-team` + `tool-agent-team` + `ui-agent-team` | TeamService、九工具、Web 会话头部的 Team 动作（名册/任务板/队友导航，读投影无 RPC） |
 | **workflow 不动** | Workflow 保留 base 的 `spawn` provider——脚本扇出 fresh children 照常可用 |
 
-服务上限（`packages/experimental/agent-team/src/index.ts:55`-`90`；profile 把 `maxMembers` 钉回 8）：`maxMembers` 代码默认 16 / profile 钉 8、`maxTasks` 256、`maxPendingMessagesPerMember` 64、`maxMessageBytes` 65536、`disposalTimeoutMs` 5000。**团队面需要持久 session 存储才激活**（机制见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）。
+服务上限（`packages/experimental/agent-team/src/index.ts:55`-`90`；profile 把 `maxMembers` 钉回 8）：`maxMembers` 代码默认 16 / profile 钉 8、`maxTasks` 256、`maxMessageBytes` 65536、`disposalTimeoutMs` 5000。**团队面需要持久 session 存储才激活**（机制见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）。
 
 ## Lead 的工作流：九个工具怎么串
 
@@ -39,7 +39,7 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
 
 驾驶座要点（工具描述与 `POLICY`，`packages/experimental/tool-agent-team/src/index.ts:34`-`41`、`:185`-`:365`）：
 
-- **`send_message` 成功即持久**："A successful send is already durable even when its result says queued; **do not resend it**."——steer 运行中目标于最近 step 边界、start/resume inactive 目标；送达的 peer 消息以稳定 message id + sender 名开头；
+- **`send_message` 成功即接纳**："A successful send does not mean the recipient has processed it."——steer 运行中目标于最近 step 边界、start/resume inactive 目标；送达的 peer 消息以稳定 message id + sender 名开头；
 - **`wait_agent` 只观察不唤醒**："Wait for the next teammate status, mailbox, or shared-task change **after this call starts**. This never wakes inactive members and returns noProgress immediately when no other member is running or provisioning. **Re-list after wakeup or timeout instead of polling.**"（`timeout_ms` 10000–3600000，默认 30000）；等待前先 `list_agents` 确认有 running/provisioning 的队友，inactive 的先用 `send_message` 唤醒（`NO_ACTIVE_PEER_MESSAGE`，`:41`-`42`）；
 - **任务板是 CAS 工作流**："Shared-task workflow is list, get, **claim with the current revision**, perform the work, then complete."——`team_task_update` 用 `expected_revision` 做前置条件（"Compare-and-set a shared task action using the latest revision"，`:362`）；`team_task_list` 返回 readiness/owner/revision/blockers/**write-scope warnings**；
 - **任务就绪不自动开工**："**Task readiness never starts an owner.**"——依赖解开只是就绪，owner 不会因此开 turn，要 `send_message` 去叫。
@@ -89,10 +89,10 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 ![一次 agent-teams 会话的走查](./figures/team-session-walkthrough.svg)
 
-1. **你说「开个 team，把引用复核一遍」**——过了 explicit-ask 门槛（POLICY 首句：只在用户显式要求时才建队友）；当前会话的 agent 成为隐式 Lead。
+1. **你说「开个 team，把引用复核一遍」**——部署级 opt-in 已启用（optional bundle）；当前会话的 agent 成为隐式 Lead。
 2. **Lead 派两个 auditor，都用 `fresh`**——读文件核行号不需要对话历史（`fork` 留给要继承 Lead 勘察轮次的角色，比如让一个队友评审 Lead 自己的初步结论——种子语义见 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）。
 3. **建三个任务如上表**：两个 audit 无依赖并行跑，fix 汇聚等两者——顺序用 `blocked_by` 表达、写域不相交；但这是 **advisory 不是锁**（POLICY 纪律 1）。
-4. **`send_message` 各派一个 audit**——成功即持久，即使结果显示 queued 也不重发。两个 auditor 各自按 CAS 工作流认领：list → get → claim（带当前 revision）→ perform → complete。
+4. **`send_message` 各派一个 audit**——成功只代表 inbox 接纳，不代表对方已处理；用 `list_agents` 看状态，不要凭「已发送」假设完成。两个 auditor 各自按 CAS 工作流认领：list → get → claim（带当前 revision）→ perform → complete。
 5. **auditor-b 写抽查记录时撞上 `FS_STALE_VERSION`**——因为 Lead 同一时刻正在改 00-map（共享文件系统、编辑即时可见，这正是 teams 的核心假设）——按协议 read → rebase 到新内容 → retry。
 6. **auditor-b 用 `send_message` 回话给 Lead**（child→parent 的 relay 通道，消息带 sender 名）：06 页有一条引用行号可疑。
 7. **Lead `wait_agent` 等两个 audit**——先 `list_agents` 确认有 running 的队友再等（否则 noProgress 立即返回）；醒来后 re-list，不轮询。两个 audit complete，fix 就绪——**但没人动**——「Task readiness never starts an owner」，就绪不会自动开工（新手最容易栽的坑：等半天没人动，其实要主动唤）。Lead 自己领 fix。

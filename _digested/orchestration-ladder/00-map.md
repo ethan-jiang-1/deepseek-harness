@@ -27,7 +27,7 @@
 | goal | 当前 Session 的 Agent incarnation | goal/change + durable phase | Goal Round Driver | armed、revision、idle/quiescence、round cap | complete/blocked + wrapup |
 | jobs | producer 进程/资源 | registry state、ring、cursor（provider决定持久性） | producer + JobRegistry | exact-owner fence、owner capacity | terminal state、awaited/read；通知可唤醒或注入 |
 | schedule | Host runtime + 目标 Session | Host task record + Session message | wall-clock Host | original Session binding、timer/serialized drive | inbox flush 后 retire/advance；follow-up |
-| agent-teams | Lead、具名队友、task board | Lead log + projection + mailbox receipt | Lead/队友对话；ready 不自动派发 | roster/task/mailbox caps、CAS、owner | task/message transitions；peer message/wait；质量需 Lead 显式复核 |
+| agent-teams | Lead、具名队友、task board | Lead log + projection + mailbox receipt | Lead/队友对话；ready 不自动派发 | roster/task/message-byte caps、CAS、owner | task/message transitions；peer message/wait；质量需 Lead 显式复核 |
 
 这张矩阵只维护跨页的比较轴；每个原语的详细机制和限制仍以对应专题页为准。`completed`、`settled` 或 `delivered` 都不是业务正确性的自动证明；需要质量判断时，查 [`07`](./07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md) 的验收闭环和 [`10`](./10-完成语义与崩溃窗口-接受可见静止处置.md) 的完成分层。
 

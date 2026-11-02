@@ -26,7 +26,7 @@
   <text x="840" y="120" text-anchor="middle" font-size="11" fill="#4b5563">卡住也要退出</text>
 
   <rect x="40" y="170" width="880" height="140" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="60" y="198" font-size="12" fill="#374151">assertEntriesActivated 已经折进诊断的 rejection，在 checkpoint 窗口里被忽略，避免 Loader 再丢一次同样的 promise 变成第二条 fatal。</text>
+  <text x="60" y="198" font-size="12" fill="#374151">auditStartupEntries 已经折进诊断的 rejection，在 checkpoint 窗口里被忽略，避免 Loader 再丢一次同样的 promise 变成第二条 fatal。</text>
   <text x="60" y="222" font-size="12" fill="#374151">latch：第一个 rejection 是报告的那个。release 期间 handler 仍装着，后来的（含 teardown 自己的）吞掉，以免中途被 Node 杀掉、终端卡在 raw mode。</text>
   <text x="60" y="246" font-size="12" fill="#374151">timer 保持 referenced：永不结束的 disposer 不能让事件循环空转成 exit 0。</text>
   <text x="60" y="278" font-size="11" fill="#6b7280">stdout 不动，给 ACP。profile-boot 的 release 是 dispose 整棵 root fiber。</text>

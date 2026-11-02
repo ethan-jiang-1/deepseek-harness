@@ -60,7 +60,7 @@ new Context()
   mountRootInclude(...)
   loader.await()
   若 loader 已消失 → 直接返回 ctx
-  assertEntriesActivated
+  auditStartupEntries(ctx, binName, warn)
 ```
 
 `mountRootInclude` 静态 import Include / Group，固定 id `'include'`，config 是 `{ path: fileURL, patches }`。稳定 id 使诊断和 snapshot 可重复。Group 一起注册，才能给 provider 和 consumers 同一个 `isolate` realm。
@@ -77,17 +77,18 @@ new Context()
 
 ## 结算审计
 
-`assertEntriesActivated` 先 `assertEntriesLoaded`：enabled 却没有 fiber → 解析失败，点名 `options.name`。
-
-然后扫 fiber 状态（数值与 `tool-cordis` / web client 对齐，Cordis const enum 没有可 import 的运行时对象）：
+`auditStartupEntries` 先收集 `inactiveEntries`，再按 fiber 状态分诊（数值与 `tool-cordis` / web client 对齐，Cordis const enum 没有可 import 的运行时对象）：
 
 | 状态 | 处理 |
 |------|------|
+| disabled | 跳过 |
+| 无 fiber / FIBER_DISPOSED | 尝试 import；失败 → `failed`（import 错误，点名 `options.name`） |
 | ACTIVE | 通过 |
-| 无 fiber / disabled | 跳过 |
 | FAILED | `await fiber.await()` 收回原 rejection，保留原 stack |
 | PENDING | 在**该 fiber 自己的 ctx** 上点名还缺的服务 |
-| 其它数字 | 原样写进诊断 |
+| 其它数字 | `failed`，原样写进诊断 |
+
+只有 bootstrap Include 与 `requiredStartupEntryIds` 命中时才抛 `StartupError`；其余失败走 `warn`，进程继续起（`packages/boot/app-boot/src/index.ts:1153-1173`）。
 
 FAILED 的 rejection 会先经过 process checkpoint，让 Loader 再丢一次同样的 promise 时被 `installFailLoud` 忽略，避免第二条 fatal。
 

@@ -48,7 +48,7 @@
   <line x1="414" y1="296" x2="646" y2="296" stroke="#1677ff" stroke-width="2" marker-end="url(#ab)"/>
   <line x1="414" y1="316" x2="926" y2="316" stroke="#1677ff" stroke-width="2" marker-end="url(#ab)"/>
   <text x="670" y="289" font-size="10.5" fill="#333" text-anchor="middle">send_message 各派一个</text>
-  <text x="670" y="330" font-size="9.5" fill="#8c8c8c" text-anchor="middle">成功即持久（即使显示 queued），勿重发</text>
+  <text x="670" y="330" font-size="9.5" fill="#8c8c8c" text-anchor="middle">成功 = inbox 接纳；不代表已处理</text>
 
   <rect x="586" y="346" width="128" height="44" rx="5" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
   <text x="650" y="364" font-size="10" fill="#52c41a" text-anchor="middle">claim（CAS revision）</text>

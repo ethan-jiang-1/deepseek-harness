@@ -49,7 +49,7 @@
 
   <rect x="690" y="188" width="350" height="150" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
   <text x="710" y="214" font-size="13" font-weight="bold" fill="#333">subagent seam 扇出</text>
-  <text x="710" y="236" font-size="11" fill="#333">每个 agent() 经 subagents.start(provider,</text>
+  <text x="710" y="236" font-size="11" fill="#333">每个 agent() 经 startActivation({ provider,</text>
   <text x="710" y="254" font-size="11" fill="#333">{ prompt, parent: this.parent, outputSchema? })</text>
   <text x="710" y="276" font-size="11" fill="#333">→ child 全部归属 caller（depth+1）</text>
   <text x="710" y="298" font-size="11" fill="#333">→ durable 记录写进 parent 的 Session（顶层调用才记）</text>
