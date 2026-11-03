@@ -164,3 +164,5 @@ DSH 把传统单体里隐含的选择显式化了：哪个后端、哪条策略�
 - [`packages/README.md`](../../packages/README.md)
 - [`pnpm-workspace.yaml`](../../pnpm-workspace.yaml)
 - [`docs/module-graph.md`](../../docs/module-graph.md)
+
+> **「三棵树」不是 DSH 的术语。** 它是对三个 repo 事实的合称：Repository layout、module dependency graph 与 plugin tree。

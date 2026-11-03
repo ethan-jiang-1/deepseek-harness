@@ -389,26 +389,6 @@ const topicRetiredTerms = new Map([['26_harness-release', ['DSH 发行版']]])
 const termPolicyMarker = 'term-policy'
 const topicScope = resolve(corpusRoot, '26_harness-release')
 const frozenTerminology = new Set(['26_harness-release/40-evidence/quality-review.md'])
-// Every coined label must stay registered in the one ledger page, so a reader can tell a repo term
-// from a corpus-local one without searching the whole directory.
-const ledgerPage = resolve(corpusRoot, '00-index.md')
-const registeredTerms = [
-  '发行版',
-  '发行方',
-  '六轴',
-  '五类存储',
-  '资产 owner',
-  '平面',
-  '门禁',
-  '载体',
-  '可见面',
-  '参与阶梯',
-  '证据阶梯',
-  '供给侧',
-  '可替换率',
-  '数据卡',
-]
-
 function checkTerminology(path, source) {
   const localPath = relative(corpusRoot, path)
   if (frozenTerminology.has(localPath)) return
@@ -424,16 +404,6 @@ function checkTerminology(path, source) {
   })
 }
 
-function checkTermRegistry() {
-  const ledger = decodeText(ledgerPage)
-  if (ledger === undefined) return
-  for (const term of registeredTerms) {
-    if (!ledger.includes(term)) {
-      report(ledgerPage, undefined, `term ledger does not register ${JSON.stringify(term)}`)
-    }
-  }
-}
-
 const files = corpusFiles(corpusRoot)
 let markdownCount = 0
 
@@ -445,8 +415,6 @@ for (const path of files) {
   checkMarkdownLinks(path, source)
   checkTerminology(path, source)
 }
-checkTermRegistry()
-
 // Figure labels are prose too: a renamed concept must not survive in an SVG caption.
 for (const path of corpusFiles(corpusRoot, ['.svg'])) {
   const source = decodeText(path)

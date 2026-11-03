@@ -57,3 +57,5 @@ DSH 的原生开发环（FAQ 11 结论：这是它"最自然"的习惯）搬到�
 4. **向 DSH 上游提 seam**：方案 B + OpenSpec 一起上；**仅引入第二贡献者**则留在 A，只加 OpenSpec。
 
 每个方案的完整目录树、装法、取舍表与市场背书见各自文件（各自的"开发过程差异"一节只写形态带来的增量）；**插拔、调试、驱动 coding agent 的机制层与 DSH 推荐流程**收敛在 [dev-loop.md](./dev-loop.md)（机制层四方案共享；"专家 repo 落地"列按方案 A 的形状写给 A/C/D 家族，C/D 的增量就地标记；方案 B 的 repo 就是 DSH、流程即原生件，其特有环只在 option-b 的差异节），**官方安装的 DSH 与插件开发的隔离**（双 home）在 [dual-home-isolation.md](./dual-home-isolation.md)；全部外部证据与 URL 在 [research.md](./research.md)。
+
+> **方案 A–D 是本篇的代号。** repo 没有这四个名字；对应机制分别是 `vendor/` 的 pinned source copy、monorepo workspace、外部 `@deepseek-ai/dsh-*` 依赖与 registry 目录。

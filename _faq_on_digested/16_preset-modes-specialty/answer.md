@@ -46,3 +46,5 @@ Standard 之所以值得单独立篇，恰恰因为它**三根轴都不动**：�
 三根轴互不排斥——理论上可以写一份 `complete: true` 又 `mode: ptc` 的自定义 preset；内置四份 = 三个单轴极端 + 一个不动轴的基线。这也解释了为什么 Creator 的 guide 文案说"模式是一份 Agent 预设"：**自定义模式没有新机制，就是再写一份声明**（[`guide-locales.ts`](../../packages/client/ui-agent-preset/src/client/guide-locales.ts)）。
 
 分篇展开：[standard-mode.md](./standard-mode.md)（基线目录）、[ptc-mode.md](./ptc-mode.md)（呈现轴）、[minimal-mode.md](./minimal-mode.md)（身份轴）、[creator-mode.md](./creator-mode.md)（扩展轴）。
+
+> **本页的三根轴不是 DSH 的分类。** 呈现轴 / 身份轴 / 扩展轴是本篇为了比较四个 preset 起的名字；对应机制分别是 tool presentation 的 `mode`、persona 覆盖与 plugin-manager 行。

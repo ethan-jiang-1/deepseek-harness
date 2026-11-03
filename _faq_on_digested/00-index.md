@@ -54,33 +54,14 @@ _faq_on_digested/
 | slot | Client 侧的 UI 挂载点 |
 | waterfall | Cordis 的监听器链派发；监听器必须调 `next()` 委托，不调即短路 |
 
-**二、本目录的分析装置（不是 DSH 的对象模型）**
+**二、本目录的分析装置**
 
-这些词是本目录为了比较和教学造的，可以出现在正文，但不得替代上面的 repo 词，也不得让读者以为它们是 DSH 的类型或字段。新增一个装置时，先在这里登记它出自哪一篇、对应哪条 repo 机制；第三列的英文只用于检索，**不是 DSH 的官方译名**，不要拿它去 repo 里当术语搜。
+本目录为了比较和教学造过一些名字——阶梯、比例、平面、卡片一类。它们不是 DSH 的类型、字段或官方命名，因此：
 
-| 装置 | 英文说明（非官方译名） | 出自 | 它对应的 repo 机制 |
-|---|---|---|---|
-| 发行版 / 发行方 | distribution / distributor | [26](./26_harness-release/10-foundations/10-taxonomy.md) | 交付出去的 Harness 组合；repo 的 `发行版` 指 DSH 自己的分发 |
-| 六轴 | six axes | [26](./26_harness-release/10-foundations/10-taxonomy.md) | 检查表装置，不是对象模型 |
-| 五类存储 | storage channel | [26](./26_harness-release/10-foundations/11-storage-channels.md) | files、session log、storage domain、derived、client state |
-| 资产 owner | asset owner | [26](./26_harness-release/10-foundations/15-asset-owners.md) | bundle 发布内容、项目目录、插件状态、运行设置 |
-| 平面 / 落点 | plane / landing site | [24](./24_plugin-publish-and-agent-data-planes/00-index.md) | storage domain、session log、`$DSH_HOME`、package files；repo 的 `plane` 只用于 command plane |
-| 门禁 / 质量线 | gate / quality line | [24](./24_plugin-publish-and-agent-data-planes/00-index.md) | 安装与启动期的 refuse / reject / skip；repo 的 `quality gate` 专指 CI 与文档检查 |
-| 载体 | carrier | [06](./06_change-landing-path/09-six-layers-and-limits.md) | owner 与 home；repo 的 `carrier` 只指传输载体，不复用 |
-| 可见面 / 记录面 | model-visible / session log | [22](./22_spec-drift-and-context-rot/02-runtime-anti-rot.md) | 模型实际看到的内容 与 会话日志；不要说成 "surface" |
-| 循环 / 承诺 / 选择面 | loop / commitment / tool surface | [27](./27_runtime-orchestration-choice/00-frame.md) | 谁决定下一步 ／ 开跑前固定的东西 ／ `model-facing tools`；不要与 `agent loop` 混用 |
-| 参与阶梯 L0–L3 | participation ladder | [09](./09_plugin-business-ladder/04-阶梯与四件缺.md) | 调配置 → patch → 挂包 → 写胶水；非官方分级 |
-| 证据阶梯 L0–L4 | evidence tier | [21](./21_recorded-session-snapshots/05-plugin-repo-organization.md) | repo 的 `tier`（required tier）；不是 DSH 的编号体系 |
-| 供给侧 / 需求侧 | Service Providers / Consumers | [08](./08_plugin-seam-maturity/answer.md) | `docs/capability-seams.md` 的 implementations 与 direct consumers 两列 |
-| 可替换率 | replaceability rate | [08](./08_plugin-seam-maturity/answer.md) | 由上面两列算出的比例，是本篇指标，不是 repo 字段 |
-| 数据卡 | data card | [24](./24_plugin-publish-and-agent-data-planes/00-index.md) | 无 repo 对应；记录 owner、authority、path、scope/key 等十格 |
-| 方案 A–D | option A–D | [13](./13_expert-plugin-repo-organization/answer.md) | pinned source copy（`vendor/`）／monorepo workspace／外部依赖／registry；代号不是 repo 命名 |
-| 三根正交的轴 | tool presentation / persona / plugin row | [16](./16_preset-modes-specialty/answer.md) | `dsh-agent-tool-presentation` 的 `mode`、persona 覆盖、plugin-manager 行 |
-| 三把尺子 / 岔口 | analytic frames / decision point | [27](./27_runtime-orchestration-choice/00-frame.md) | 承诺、选择面是本篇分析词；repo 无对应字段 |
-| 落位 / 面 | one home per fact / artifact | [06](./06_change-landing-path/answer.md) | 每个事实的 home（`docs/AGENTS.md` 的 tier taxonomy）；面按 artifact 列（Issue / Agent Note / docs / tests） |
-| 三棵树 | Repository layout / module graph / plugin tree | [01](./01_repository-organization/01-three-trees.md) | 三个 repo 原名，不是一份新图 |
-
-编号式编排（三棵树、四仓、六步、十维一类）只要在首次出现处说明是本文的组织方式即可，不必登记；**需要登记的是可能被误当成 DSH 类型、字段或官方命名的词**。新增这类词时，先在上表加一行，再在正文使用。
+- **不在索引层登记，也不给英文名。** 索引只放 DSH 自己的词；给自造词配英文，会让它们看起来像官方术语。
+- **在首次出现的那一页声明。** 固定写法是「这是本篇的说法，不是 DSH 的术语」，并指出它对应哪条 repo 机制。
+- **不得替代上面的 repo 词**，也不得让读者以为可以拿去 repo 里搜。
+- 一旦发现某个词被读成 DSH 的机制，就在那一页改掉；确实退役的，由 `verify.mjs` 的退役词表守着。
 
 ## 已有问题
 

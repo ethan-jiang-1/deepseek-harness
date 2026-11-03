@@ -105,3 +105,5 @@ P = implementation 包数，C = direct consumer 包数，按生成表 implementa
 ## 度量：数字怎么来的，下次怎么自动来
 
 P/C 从生成表 implementations / direct consumers 两列按逗号切分计数，即得 42.9%、17 条单 Provider、3 条零 Provider（`authorization`、`userQuestions`、`approval`）。四个已知坑：provider 计数会掺进测试包与同构包（所以 42.9% 只能读作"至少能换"的下界，不能读作"已商品化"）；consumer 面数需要按消费包所属面二次分类，表列给不出；direct consumers 列为空不代表没人用（`sessionTelemetry` 的输出离开进程、`sessionTitle` 经 projection 被间接消费）；行集随上游漂移（`agentTeams`、`authorization` 是晚于写作基线的两行实例，0011 又新增 `workingDirectory`、`worktrees` 两行，`deepseekLlmApiExtensions` 则是原文整行漏收的一条 seam）。建议方向：把 provider 角色与 consumer 面分类并入 [`scripts/gen-doc-graphs.ts`](../../scripts/gen-doc-graphs.ts) 的输出闸门，让"可替换率"变成每次 rc 同步自动重算的一行数字，而不是一次性手工点数。
+
+> **本页的指标不是 DSH 的字段。** 供给侧 / 需求侧、可替换率、饱和区 / 缺口区都是本篇按 `docs/capability-seams.md` 的 implementations 与 direct consumers 两列算出来的说法；repo 没有这两个指标，也没有这四个区。

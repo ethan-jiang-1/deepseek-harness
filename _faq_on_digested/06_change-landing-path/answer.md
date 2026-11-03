@@ -98,3 +98,5 @@ Issue 与 GitHub review 不在 git tree 里，这个例子不能证明 Plan Mode
 Agent Note 的 proposed/implemented 路径记录决策生命周期，却不保证跨 feature 的任务顺序和在途状态可见。DSH Note 树不建集中 `INDEX.md` 的仓内规则，不能推广为插件仓不准建立 ROADMAP、tasks 或规格；反过来，一张队列也不能替代人对目标范围和交付质量的判断。需求先写在 OpenSpec/Spec Kit 的产物里，再由 DSH agent 循环执行和验证，也是兼容的组合；哪一步必须审阅由本项目的风险与授权决定。
 
 另：本目录原名 `06_spec-change-path`，题名与正文曾以 "SPEC 路径" 作统一框架词；按 FAQ 11 的因果反转与 FAQ 15 的两层之分，已更名为 `06_change-landing-path` 并改用「变更落位/载体」框架，本目录不再保留旧框架的叙述，当前口径以本页与 [09](./09-six-layers-and-limits.md) 为准。
+
+> **「落位」「面」是本篇的说法。** 对应机制是 `one home per fact`（事实的 home）与按 artifact 划分（Issue / Agent Note / docs / tests），repo 没有这两个名词。

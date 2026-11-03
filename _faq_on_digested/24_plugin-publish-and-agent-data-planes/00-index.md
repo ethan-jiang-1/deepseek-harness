@@ -228,7 +228,7 @@ workspace / home / session 回答的是“大致在哪”；一旦要决定“�
 | **原生能力**（本篇） | 随 DSH 发行或由 Host 提供的服务/插件，例如 `ctx.fs`、`ctx.storageDomain`；不是第三方依赖 |
 | **`$DSH_HOME`** | 用户数据根（默认 `~/.dsh`），可用 `DSH_HOME` 覆盖；与共享的 `~/.agents` 分开 |
 
-表中标「本篇」的是分析装置，不是 DSH 的类型或字段；它们的英文锚点与对应机制登记在 [根索引的术语约定](../00-index.md#术语约定)。其余各行都是 repo 词，定义以 [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md) 与各包 README 为准。
+表中标「本篇」的是分析装置，不是 DSH 的类型或字段：它们只在本篇成立，英文只用于检索，不是官方译名；对应机制在「对应」一栏。其余各行都是 repo 词，定义以 [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md) 与各包 README 为准。
 
 ## 证据等级
 

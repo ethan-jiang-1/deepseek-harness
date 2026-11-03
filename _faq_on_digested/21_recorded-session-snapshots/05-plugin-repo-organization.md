@@ -135,3 +135,5 @@ your-plugin-repo/
 - **落点**：独立 agent 运营仓选形状二（顶层 `snapshots/` 证据面），形状一是降级形态，方案 B 两个都不建。不变量是五条性质，不是路径。
 - 只依赖 `dsh-llm-replay`，不依赖 `dsh-session-snapshot`。
 - 独立 oracle 和语义断言不是可选项——它们是这条轨迹值不值得存在的前提。
+
+> **本页的阶梯不是 DSH 的编号体系。** 证据阶梯 L0–L4 是本篇的编排；repo 用 `docs/testing.md` 的 required tier 与各级检查，没有 L 编号。
