@@ -75,3 +75,5 @@ tool 的 UI 渲染意图是设计的一部分，一开始就要定：call-time �
 | [`06-文件块与内容块投影.md`](./06-文件块与内容块投影.md) | `FileBlock` 与 `FileAttachmentRef`、文件无条件投影 vs 图像条件投影、模态与内容块之分 |
 
 入口如何投影同一条流：[`../surfaces-entrypoints/00-map.md`](../surfaces-entrypoints/00-map.md)。
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

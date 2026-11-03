@@ -106,3 +106,5 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 | [`10-新执行面与编排seam.md`](./10-新执行面与编排seam.md) | 执行面与编排新面地图：`browserUse` / `computerUse` 独占注册位（全 experimental driver）、`speechToText`、`deepseekAccount`、`mcpResources`、`officeToPdf`、deliverables 事件族、plugin_manager + config-editor；0.2.1 线新增 `remoteAccess` / `workingDirectory` / `worktrees` / `pluginMarket` / `translator` / `cotTranslation` / `claudeCodeMods` / `webApp` 与 `web-deepseek-api` |
 
 模型可见的 tool 管道在 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

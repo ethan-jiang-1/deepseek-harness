@@ -61,3 +61,5 @@
 3. [`packages/typert/README.md`](../../../packages/typert/README.md)：四包分工与各自 README 入口。
 4. [`packages/typert/protocol/README.md`](../../../packages/typert/protocol/README.md)：装饰器、协议 map、失败词汇与事件转发声明。
 5. [`packages/api/gateway/src/index.ts`](../../../packages/api/gateway/src/index.ts) 与 [`packages/api/gateway/src/client/index.ts`](../../../packages/api/gateway/src/client/index.ts)：Host 派发与 Client mount 两侧的实现。
+
+> 承重词按 [`canon/GLOSSARY.md`](../../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

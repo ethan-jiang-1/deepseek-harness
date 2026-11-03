@@ -65,3 +65,5 @@
 ```sh
 node _digested/verify.mjs
 ```
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

@@ -104,3 +104,5 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 | [`03-门禁与性能基准.md`](./03-门禁与性能基准.md) | `run-gates` 聚合器与 leaf 家族；`benchmarks/` 性能门禁树 |
 
 Loader / fiber 如何卸载插件贡献，见 [`../two-tree-runtime/framework/04-vendor-本地修改.md`](../two-tree-runtime/framework/04-vendor-本地修改.md) 与 [`../two-tree-runtime/framework/01-五条原语对照源码.md`](../two-tree-runtime/framework/01-五条原语对照源码.md)。
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

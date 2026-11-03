@@ -164,3 +164,5 @@ goal 的状态机与 Round Driver 深挖在 [`../agent-loop/00-map.md`](../agent
 4. **如何验证结果？** 对代码或文档任务，验收条件应指向可执行的测试、构建、引用扫描、diff 检查或人工复核；Agent 自报和任务状态只证明报告或状态提交。
 
 同步流程：先读取产品源码 HEAD（不是文档 commit），再运行 `node _digested/ref-sweep.mjs _digested/orchestration-ladder`，检查 SVG XML 和 `node _digested/verify.mjs`，最后复读受影响页面的矩阵、源码入口、失败边界和导航。
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

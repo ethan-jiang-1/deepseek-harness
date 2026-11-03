@@ -38,3 +38,5 @@
 | 「我想做 X，dsh 有现成的吗」 | 步骤 2 → [`01`](./01-capability-tour.md) 走场景 |
 | 「找到了，怎么用上 / 是不是要自己写」 | 步骤 4 → [`04`](./04-reuse-paths-and-gaps.md) |
 | 「分类怎么定的、背后在设计什么」 | 深挖 → [`05`](./05-taxonomy-and-design.md) |
+
+> 承重词按 [`canon/GLOSSARY.md`](../../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

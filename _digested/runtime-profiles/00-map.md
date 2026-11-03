@@ -157,3 +157,5 @@ stdout 给谁，决定了能不能装 logger、能不能写 HMR 信息：
 | `_digested/plugin-system/composition/00-map.md` | 启动组合机制（profile 目录、bundle 层叠） |
 | `_digested/plugin-system/composition/04-profile-创建与保留名.md` | profile 创建路径与 `desktop` 保留名 |
 | `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

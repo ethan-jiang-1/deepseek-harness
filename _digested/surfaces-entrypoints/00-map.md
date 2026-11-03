@@ -79,3 +79,5 @@ CLI、headless、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`
 客户端的资源模型、右栏、slots 与 Typert/Remote 不在本卷：正文在 [`../two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) 与 [`../two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md)。本卷只保留「人从哪个入口进来、进来之后怎么启动」这条线。
 
 dump 与 boot 的层差不在入口，在 [`../plugin-system/composition/02-dump-与boot-保真.md`](../plugin-system/composition/02-dump-与boot-保真.md)。
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

@@ -86,3 +86,5 @@ fork、resume、transcript、遥测、持久化（JSONL-only）都从这一条�
 | [`04-格式世代与迁移.md`](./04-格式世代与迁移.md) | 五个世代、相邻迁移链、权威与门禁、读方向与读准备/写发布 |
 
 下一专题：[`../capability-seams/00-map.md`](../capability-seams/00-map.md) 或 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

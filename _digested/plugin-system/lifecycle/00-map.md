@@ -106,3 +106,5 @@
 | `apps/desktop/src/project-manager.ts` | desktop profile 准备与原生恢复（`sanitizeProfile`） |
 | [`packages/boot/app-boot/README.md`](../../../packages/boot/app-boot/README.md) | profile 机器合同与启动/重载失败表 |
 | [`packages/boot/plugin-manager/README.md`](../../../packages/boot/plugin-manager/README.md) | 安装、更新、移除的操作语义与失败表 |
+
+> 承重词按 [`canon/GLOSSARY.md`](../../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

@@ -59,3 +59,5 @@ Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mut
 6. [`docs/web-styling.md`](../../../docs/web-styling.md)：token 与样式归属、组件规则、改系统流程；统一圆角刻度与适用面另见 [`docs/ui-radius.md`](../../../docs/ui-radius.md)（0009 新增）。
 7. [`packages/client/hmr/README.md`](../../../packages/client/hmr/README.md)：重载链的两半、失败策略与 `pollIntervalMs`。
 8. 三道 gate：[`scripts/verify-client-packages.ts`](../../../scripts/verify-client-packages.ts)（模块请求与环）、[`scripts/verify-client-domain-graph.ts`](../../../scripts/verify-client-domain-graph.ts)（包内层级）、[`scripts/verify-client-ui-i18n.ts`](../../../scripts/verify-client-ui-i18n.ts)（文案归属）。
+
+> 承重词按 [`canon/GLOSSARY.md`](../../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

@@ -76,3 +76,5 @@ Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一�
 - 入口与启动面（CLI / Web / ACP / SDK / 桌面怎么进来）留在 [`../surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md)。
 - profile / bundle / patch / HMR 的层叠与插件从打包到卸载的七段在 [`../plugin-system/`](../plugin-system/00-map.md)。
 - session 格式、世代与投影在 [`../session-and-loop/`](../session-and-loop/00-map.md)；本专题只讲它在 wire 上怎么走。
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

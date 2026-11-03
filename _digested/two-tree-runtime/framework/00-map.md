@@ -79,3 +79,5 @@ Profile / boot 时序见 [`../plugin-system/composition/01-boot-时序.md`](../.
 | 依赖帧卸载时序、配置热更、持久化写 | [`04`](./04-vendor-本地修改.md) | 上游 Cordis 没这个行为——同步 vendor 时会被改回去 |
 
 最短路径：先读 [`01`](./01-五条原语对照源码.md) 的五原语表，再照 [`../plugin-system/lifecycle/12-从零到一个能跑的插件.md`](../../plugin-system/lifecycle/12-从零到一个能跑的插件.md) 走一遍最小插件；本层只解释「为什么这样写才成立」。
+
+> 承重词按 [`canon/GLOSSARY.md`](../../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

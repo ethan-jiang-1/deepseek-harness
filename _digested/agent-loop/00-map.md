@@ -118,3 +118,5 @@ Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/se
 | `_digested/orchestration-ladder/05-goal-驾驶座用法-objective写法轮预算与终结纪律.md` | goal 的驾驶座用法：objective 写法、轮预算、终结纪律、wrapup 收尾 |
 
 `packages/goal/goal/src/invariant.ts` 已随 `f028f25667`（`refactor: remove runtime invariant plugins`）删除，**无继任**：goal stream 的运行时 invariant 断言面不再存在，回放一致性由 `fold.ts` 的纯函数重放本身承担（升级路径见 `docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`）。
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

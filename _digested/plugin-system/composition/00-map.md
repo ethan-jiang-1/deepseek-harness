@@ -86,3 +86,5 @@ PTC 相对 standard 的实质差异（#3425 起步，0.1.7 线重新落地）：
 装进来之前与装进来之后属于另一个专题：包怎么成为 bundle、怎么装进 profile、坏了怎么更新与卸载，见 [`../lifecycle/00-map.md`](../lifecycle/00-map.md)。
 
 Session 与 turn 驱动见 [`../../session-and-loop/00-map.md`](../../session-and-loop/00-map.md)。
+
+> 承重词按 [`canon/GLOSSARY.md`](../../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

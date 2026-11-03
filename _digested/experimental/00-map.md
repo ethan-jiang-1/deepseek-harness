@@ -78,3 +78,5 @@
 | [`03-inspector.md`](./03-inspector.md) | Inspector 四个子目录、暴露面、CDP 连接方式与鉴权 |
 
 三页共同回答一个问题：public-by-default（private 名单为空）但合同随时会变的实验能力在 DSH 里长什么样、怎么挂进来、毕业时往哪走；其余家族以本页家族表为地图，机制页待有需要再补。
+
+> 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。
