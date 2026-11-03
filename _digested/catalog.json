@@ -1335,6 +1335,79 @@
           "source": "matrix"
         }
       ]
+    },
+    {
+      "dir": "canon",
+      "title": "词的用法、常规流程与生态惯例",
+      "intent": "宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。",
+      "kind": "topic",
+      "map": "00-map.md",
+      "pages": [
+        {
+          "file": "00-map.md",
+          "title": "Canon · 词、流程与生态惯例",
+          "role": "map",
+          "verifiedAt": null,
+          "status": "unrecorded",
+          "source": "page"
+        },
+        {
+          "file": "GLOSSARY.md",
+          "title": "词表：repo 原词与本卷用法",
+          "role": "analysis",
+          "verifiedAt": null,
+          "status": "unrecorded",
+          "source": "page"
+        },
+        {
+          "file": "02-thinking.md",
+          "title": "词背后的七条判断",
+          "role": "analysis",
+          "verifiedAt": null,
+          "status": "unrecorded",
+          "source": "page"
+        },
+        {
+          "file": "03-retired.md",
+          "title": "退役词与本地装置登记",
+          "role": "analysis",
+          "verifiedAt": null,
+          "status": "unrecorded",
+          "source": "page"
+        },
+        {
+          "file": "04-writing.md",
+          "title": "措辞与引用纪律",
+          "role": "analysis",
+          "verifiedAt": null,
+          "status": "unrecorded",
+          "source": "page"
+        },
+        {
+          "file": "05-decisions.md",
+          "title": "已经定下的词义决定",
+          "role": "analysis",
+          "verifiedAt": null,
+          "status": "unrecorded",
+          "source": "page"
+        },
+        {
+          "file": "10-process.md",
+          "title": "常规流程的名字与边界",
+          "role": "analysis",
+          "verifiedAt": null,
+          "status": "unrecorded",
+          "source": "page"
+        },
+        {
+          "file": "11-ecosystem.md",
+          "title": "DSH 生态的做法与证据等级",
+          "role": "analysis",
+          "verifiedAt": null,
+          "status": "unrecorded",
+          "source": "page"
+        }
+      ]
     }
   ]
 }

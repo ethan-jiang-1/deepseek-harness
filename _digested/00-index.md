@@ -56,25 +56,18 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `test-strategy/` | 测试体系 | DSH 怎么测：七层证据形态、录制会话快照、CI 门禁与防假绿、可靠性纪律与测试基建——`docs/testing.md` 测试政策的完整展开。 |
 | `_coverage/` | 覆盖矩阵 | 维护索引：每个专题承诺回答什么、最后对到哪个源码 commit。 |
 | `harness-idea/` | 消化后的理解与判断 | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪。 |
+| `canon/` | 词、流程与生态惯例 | 宪章层：每个承重词的 repo 原文与它排除的写法、常规流程的名字与边界、生态做法的证据等级。写页或审页之前先查。 |
 | `_change_log/` | 上游同步记录 | 每次 upstream 同步的范围、审计与修复记录。 |
 
 ## 术语速查
 
-这里的一行解释只求能定位到专题；权威定义见官方术语表 [`docs/glossary.md`](../docs/glossary.md) 与生成目录 [`docs/capability-seams.md`](../docs/capability-seams.md)。
+权威定义在 [`docs/glossary.md`](../docs/glossary.md)；「本卷怎么用这些词」的完整版在 [`canon/`](./canon/00-map.md)。这里只放三条入口，细节不在此重复：
 
-| 术语 | 在本仓库指什么 |
-|------|----------------|
-| plugin | 最小扩展单元：导出 `apply(ctx, config)` 的模块，经 `ctx.effect()` 注册能力 |
-| `ctx` | 插件共享的服务总线；`ctx.fs`、`ctx.tools`、`ctx.llm` 都是它上面的键 |
-| Cordis | dsh vendor 进来的插件框架；`ctx`、事件、waterfall、Loader 都属于它 |
-| seam | 同一能力的 Service Definition + Provider + Consumer 三角色齐备，换实现不改调用方 |
-| core / service / bundle | 生成表里非 seam 的服务形态：主干服务、独立服务、组合点（`ctx.agentLoop` 是 bundle） |
-| bundle | 插件的打包交付单位（`dsh-base`、`dsh-web-app`……）；profile 由 bundle 叠出 |
-| profile | 一次启动的 bundle 组合名：web / headless / sdk / sdk-minimal / acp，桌面是应用自有组合 |
-| preset | Web 端四个内置模式（Standard / PTC / Minimal / Creator）的声明式 patch |
-| surface | 「面」：模型可见面（prompt 与工具 schema），或人对机器的入口（CLI / Web / 桌面 / ACP / SDK） |
-| gate | 可机械失败的检查脚本，由 `scripts/run-gates.ts` 按 mode 聚合 |
-| waterfall | Cordis 的监听器链派发；监听器必须调 `next()` 委托，不调即短路 |
+| 你要 | 去哪 |
+|---|---|
+| 查一个词该写成什么、不要写成什么 | [`canon/GLOSSARY.md`](./canon/GLOSSARY.md) |
+| 弄清为什么是这个词（七条设计判断） | [`canon/02-thinking.md`](./canon/02-thinking.md) |
+| 查常规流程的名字、或判断一个生态做法能不能借 | [`canon/10-process.md`](./canon/10-process.md)、[`canon/11-ecosystem.md`](./canon/11-ecosystem.md) |
 
 ## 阅读路径
 
