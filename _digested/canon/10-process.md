@@ -1,41 +1,45 @@
-# 10 · 常规流程的名字与边界
+# 10 · DSH 自己的常规流程
 
-本卷反复提到几件"平时就该这么做"的事。它们各有机制主人，本篇只固定**名字、边界与判据**，机制细节一律指回原专题——同一个事实不在这里再讲一遍。
+这些是 DSH 仓库对自己规定的做法。每条只给两句：**它怎么说**（逐字引用）、**因此怎么写**（对语料的约束）。机制细节归各专题，这里不重复。
 
-## 一次变更怎么落地
+## 改代码就改文档
 
-| 名字 | repo 原文 | 边界（机制归谁） |
-|---|---|---|
-| 同一变更交付代码与文档 | 「Docs accompany every code change」；改动影响 README／JSDoc 时同批更新（[AGENTS](../../AGENTS.md)） | 文档层级怎么分归 [`docs/AGENTS.md`](../../docs/AGENTS.md)；具体写法归 [`04`](./04-writing.md) |
-| 同批写升级指南 | 外部可感知的破坏性改动「record … immediately in an upgrade guide」（[AGENTS](../../AGENTS.md)） | 指南模板归 `.agents/skills/dsh-create-upgrade-guide/` |
-| 决策留痕 | 只有「难回退 + 离开上下文会让人意外 + 真的有权衡」才写 Agent Note | Note 的格式与生命周期归 [`../../.agents/notes/README.md`](../../.agents/notes/README.md) |
+**它怎么说**：「Docs accompany every code change: update affected README and JSDoc contracts together.」（[AGENTS](../../AGENTS.md)）
 
-判据一句话：**这次改动会不会让某个读者下次读到时问「为什么」？** 会 → 留痕；不会 → 只改代码与文档。
+**因此怎么写**：讲某机制的页面改了口径时，同批改它引用的 README 与注释；只改一边等于没改。
 
-## 检查怎么选
+## 破坏性改动当场记
 
-| 名字 | repo 原文 | 判据 |
-|---|---|---|
-| 最窄证据 | 「narrowest available test or purpose-built check that would fail for its regression」（[pre-push-checks](../../.agents/skills/dsh-pre-push-checks/SKILL.md)） | 能用一行测试证明的，就不跑全量 |
-| 改动的验收路径要拒绝无效用例 | 「prove each changed acceptance path rejects an invalid case」（[AGENTS](../../AGENTS.md)） | 新检查上线前先证明它会红（`negative control`） |
-| 可机械失败 | 检查以非零退出码失败，由 `scripts/run-gates.ts` 按 mode 聚合 | 点不出脚本名的，不是 gate，是约定 |
+**它怎么说**：「Record each externally perceptible breaking change immediately in an upgrade guide.」；「Public APIs are pre-stable; update every consumer.」（[AGENTS](../../AGENTS.md)）
 
-边界：全量矩阵与平台覆盖归 CI，本地不重复；「跑一遍全部」只在明确要求、诊断 CI 失败或改动确实横跨全仓时才做。
+**因此怎么写**：CLI、profile、`cordis.yml`、持久化数据、SDK 或 wire 契约一变，页面要指到对应的升级指南。
 
-## DSH 的生命周期纪律
+## 已提交的世代不动
 
-| 名字 | repo 原文 | 一句话 |
-|---|---|---|
-| schema 版本单调 | SQLite 用单调 `SCHEMA_VERSION`；会话格式只在既有判别式无法避免误读时才 `bump` | 版本号是兼容承诺，不是发布号 |
-| 已提交的世代不改 | 相邻迁移可以加版本命名的后继，但不移动、不覆盖、不删除已提交的世代 | 历史是只追加的 |
-| 模型可见 ⟺ 已记录 | 任何进入模型请求的输入都必须能从会话日志重建 | 新输入 → 新事件 |
+**它怎么说**：「[Adjacent migration] may add a version-named successor but never move, overwrite, or delete committed generations; predecessors imply neither fallback nor downgrade support. SQLite uses monotonic `SCHEMA_VERSION`.」（[AGENTS](../../AGENTS.md)）
 
-边界：会话格式的完整规则归 [`../session-and-loop/`](../session-and-loop/00-map.md)，不在这里展开。
+**因此怎么写**：写历史时按「追加」写；不要描述成「升级时会被改写」。
 
-## 什么时候该回头改本卷
+## 选最窄的证据
 
-出现下面任一条，说明流程的名字或边界写错了，而不是执行得不够勤快：
+**它怎么说**：「narrowest available test or purpose-built check that would fail for its regression」（[pre-push-checks](../../.agents/skills/dsh-pre-push-checks/SKILL.md)）
 
-1. 同一件事在两个专题里各有一套步骤。
-2. 某个步骤每轮同步都要重做一遍。
-3. 有人问「这一步的机制归谁」，本卷答不出来。
+**因此怎么写**：讲「怎么验」时给出那条具体的测试或检查，不要写「跑一遍全部」。
+
+## 新检查要先证明它会红
+
+**它怎么说**：「prove each changed acceptance path rejects an invalid case」（[AGENTS](../../AGENTS.md)）
+
+**因此怎么写**：说某个 gate 有效，要能指出它拒绝过什么；指不出就是没验过。
+
+## 模型可见就是已记录
+
+**它怎么说**：「Model-visible means logged. Every model request must be reconstructable from the log. New model-visible inputs require session events.」（[architecture](../../docs/architecture.md)）
+
+**因此怎么写**：讲「模型能看到 X」时，同句给出它对应的会话事件。
+
+## 怎么用这篇
+
+- 这里只有六条，都是 DSH 写下来的；本语料自己的流程编排（比如某篇的施工顺序）不在此列。
+- 「因此怎么写」是推论，引用时引第一段。
+- 生命周期机制本身归 [`../session-and-loop/`](../session-and-loop/00-map.md)，组合与启动归 [`../plugin-system/`](../plugin-system/00-map.md)。

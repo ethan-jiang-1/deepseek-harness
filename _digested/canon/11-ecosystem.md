@@ -1,50 +1,42 @@
-# 11 · DSH 生态的做法与它的证据等级
+# 11 · 外部说法的定级与写法
 
-DSH 之外还有一圈：社区插件、聚合包、市场索引、第三方壳。它们提供了大量可借鉴的做法，也制造了本卷最常见的一类错误——**把生态惯例写成 DSH 的机制**。本篇固定三件事：怎么称呼这一圈、怎么给它们的说法定级、哪些做法能借。
+DSH 之外的说法（第三方包、作者声明、社区文章）不是 DSH 的合同。这篇只定一件事：**怎么说它们，才不会被读成 DSH 的机制**。外部事实本身归各专题，不在这里复述。
 
-## 一圈里都有谁
+## 两条已有原文支撑的边界
 
-| 角色 | 是什么 | 不是 |
+**它怎么说**：「Application-owned npm projects, such as Electron's reserved Desktop profile, use `loadProfileDirectory` to load an already initialized directory without exposing it through CLI profile lookup.」（[app-boot](../../packages/boot/app-boot/README.md)）
+
+**因此怎么写**：讲哪个应用拥有 profile 时，用 `application-owned` 这个说法和入口名，不要泛化成「应用层」。
+
+**它怎么说**：「A bundle is not a row.」（[app-boot](../../packages/boot/app-boot/README.md)，上下文见 `skippedBundles` 一段）
+
+**因此怎么写**：bundle 与 row 是两个层级；说「装了就有功能」时，要落到 row 是否启用。
+
+## 定级
+
+| 级别 | 是什么 | 能不能推出 DSH 的行为 |
 |---|---|---|
-| 官方发布物 | DSH 自己发布的产物：CLI、Desktop、wheel | 不是「所有能装的东西」 |
-| 第三方插件包 | 声明 `dsh.bundle.patch` 或提供 Cordis 插件的 npm 包 | 不是 DSH 的一部分；生命周期由作者负责 |
-| 聚合包 / 套件 | 把多个插件打成一层 patch 的包 | 不是 profile；它只贡献一层 |
-| 市场 / 索引 | 发现与安装的入口 | 不是 DSH 的服务，也不定义兼容性 |
+| **原文** | `docs/`、包 README、`AGENTS.md`、源码里的句子 | 能；只有这一档能 |
+| **译** | 上述英文的中译 | 能，但引用时给原文 |
+| **外部** | 第三方 README、作者声明、社区文章 | 不能；只能说明「有人这么说」 |
+| **未确认** | 听说过、没核过 | 不能；不能当论据 |
 
-这一圈的共同点：**它们遵守 DSH 的公开合同，但 DSH 不为它们的行为背书。**
+写法：外部材料必须带级别；**不得使用「DSH 的做法是……」这类句式**，除非同时给了原文出处。
 
-## 证据等级
+## 一个真实的反例
 
-| 等级 | 含义 | 能不能推出 DSH 行为 |
-|---|---|---|
-| **R** | repo 原文：`docs/`、包 README、源码 | 能，且是唯一能的一档 |
-| **S** | 第三方源码读出来的事实 | 不能；只能说明「它是这么实现的」 |
-| **R**（外部） | 第三方 README 或作者声明 | 不能；只能说明「作者这么说」 |
-| **U** | 未确认 | 不能；不能当论据 |
+`paved road` 听起来像 DSH 的术语，但 repo 里 grep 不到；DSH 自己的原话是「New behavior attaches to a documented extension point」（[architecture](../../docs/architecture.md)）。
 
-写法要求：外部材料必须带等级标记，并且**不得使用「DSH 的做法是……」这类句式**，除非同时给了 REPO 出处。
+这类错误的共同点：**话是对的，但归属错了**。读者不会去核对，他们会按「DSH 这么设计的」去引用。
 
-## 能借的三类，不能借的两类
+## 对策只有一条
 
-| 能借 | 为什么 | 借的时候要改什么 |
-|---|---|---|
-| 数据结构（目录布局、键设计、迁移脚本） | 属于作者自己的领域，不与 DSH 合同冲突 | 换成 DSH 的 scope／key 语汇再写 |
-| 分发形态（聚合、套件、市场） | 只是 bundle 的不同打包方式 | 不能把「它自动安装」写成 DSH 的能力 |
-| 运维经验（清理、备份、配额） | DSH 没有统一的卸载清理，作者必须自己做 | 明确写「这是作者责任」，不是平台承诺 |
+凡是加引号的「DSH 原话」，必须能在 repo 里点到。点不到就二选一：
 
-| 不能借 | 为什么 |
-|---|---|
-| 自造的兼容矩阵（`dsh.compatibility` 一类） | DSH 不读它；真正的门是 `engines.dsh`／peer |
-| 「安装成功 = 已启用」的判定 | 装成功只有三态：退出 0 → 依赖写入 → 进 `dsh.profile.bundles`；只有第三态让功能存在 |
-
-## 最容易犯的一个错
-
-把一个**生态里流行的说法**当成 repo 的原话。典型例子：`paved road` 听起来像 DSH 的术语，但 repo 里 grep 不到；DSH 自己的原话是「New behavior attaches to a documented extension point」（[architecture](../../docs/architecture.md)）。
-
-写法上的对策只有一条：**凡是加引号的「DSH 原话」，必须能在 repo 里点到。** 点不到就改成「外部生态常说」，或删掉。
+1. 改成「外部生态常说……」，并补一句 DSH 自己的原话；
+2. 删掉。
 
 ## 边界
 
-- 本篇不评价第三方包的质量，也不承诺任何外部依赖可用。
-- 生态样本的逐条证据归 [`../harness-idea/`](../harness-idea/00-map.md) 与各专题；本篇只管**称呼与定级**。
-- DSH 不为生态做法背书，生态做法也不反过来定义 DSH 的词。
+- 本篇不评价任何第三方包的质量，也不承诺外部依赖可用。
+- 生态样本的逐条证据归 [`../harness-idea/`](../harness-idea/00-map.md) 与各专题；本篇只管称呼与定级。

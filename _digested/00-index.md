@@ -66,7 +66,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | 你要 | 去哪 |
 |---|---|
 | 查一个词该写成什么、不要写成什么 | [`canon/GLOSSARY.md`](./canon/GLOSSARY.md) |
-| 弄清为什么是这个词（七条设计判断） | [`canon/02-thinking.md`](./canon/02-thinking.md) |
+| 弄清为什么是这个词（七条设计判断） | [`canon/02-judgements.md`](./canon/02-judgements.md) |
 | 查常规流程的名字、或判断一个生态做法能不能借 | [`canon/10-process.md`](./canon/10-process.md)、[`canon/11-ecosystem.md`](./canon/11-ecosystem.md) |
 
 ## 阅读路径
@@ -77,6 +77,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **想先搞懂 Cordis 在这棵树里到底是什么** → [`two-tree-runtime/framework/00-map.md`](./two-tree-runtime/framework/00-map.md)；两棵树怎么分工见 [`two-tree-runtime/00-map.md`](./two-tree-runtime/00-map.md)，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
 - **想搞懂 `dsh --profile web` 怎么变成进程的** → [`runtime-profiles/00-map.md`](./runtime-profiles/00-map.md)
 - **想搞懂插件系统本身（怎么成树、怎么走完一生、现成有什么）** → [`plugin-system/00-map.md`](./plugin-system/00-map.md)
+- **要确认一个词 DSH 到底怎么讲，或动笔前对一遍引用纪律** → [`canon/00-map.md`](./canon/00-map.md)
 - **想搞懂一轮对话怎么跑** → [`session-and-loop/00-map.md`](./session-and-loop/00-map.md)
 - **想搞懂 DSH 给了哪些工作编排原语、什么时候用哪个** → [`orchestration-ladder/00-map.md`](./orchestration-ladder/00-map.md)
 - **想搞懂磁盘上的 session 文件怎么跨格式世代读** → [`session-and-loop/04-格式世代与迁移.md`](./session-and-loop/04-格式世代与迁移.md)

@@ -28,7 +28,7 @@
 | [`surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md) | 人/程序从哪里进：CLI、headless、Web、ACP、SDK、桌面，以及它们复用的 runtime spine。 | 4 | 2 | 2 | 0 |
 | [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：七层证据、快照机制、CI 门禁、可靠性、插件作者测试面与快照对外面。 | 12 | 0 | 12 | 0 |
 | [`harness-idea/`](../harness-idea/00-map.md) | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。 | 10 | 0 | 10 | 0 |
-| [`canon/`](../canon/00-map.md) | 宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。 | 8 | 0 | 0 | 8 |
+| [`canon/`](../canon/00-map.md) | 宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。 | 7 | 0 | 0 | 7 |
 
 ## 页面明细
 
@@ -278,10 +278,9 @@
 |---|---|---|---|---|
 | [`00-map`](../canon/00-map.md) | map | 未登记 | — | — |
 | [`GLOSSARY`](../canon/GLOSSARY.md) | analysis | 未登记 | — | — |
-| [`02-thinking`](../canon/02-thinking.md) | analysis | 未登记 | — | — |
+| [`02-judgements`](../canon/02-judgements.md) | analysis | 未登记 | — | — |
 | [`03-retired`](../canon/03-retired.md) | analysis | 未登记 | — | — |
 | [`04-writing`](../canon/04-writing.md) | analysis | 未登记 | — | — |
-| [`05-decisions`](../canon/05-decisions.md) | analysis | 未登记 | — | — |
 | [`10-process`](../canon/10-process.md) | analysis | 未登记 | — | — |
 | [`11-ecosystem`](../canon/11-ecosystem.md) | analysis | 未登记 | — | — |
 <!-- catalog:coverage:end -->

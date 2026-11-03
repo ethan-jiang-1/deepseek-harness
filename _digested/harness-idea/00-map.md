@@ -33,7 +33,7 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 
 ## 术语对照
 
-本专题的重要术语首次出现时中英对照；官方定义以 [`docs/glossary.md`](../../docs/glossary.md) 为准，本表只收录本专题自己的判断性词汇。
+本专题的重要术语首次出现时中英对照；DSH 自己的词见 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md)，官方定义以 [`docs/glossary.md`](../../docs/glossary.md) 为准，本表只收录本专题自己的判断性词汇。
 
 | 中文 | English | 含义 |
 |------|---------|------|

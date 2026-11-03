@@ -1360,8 +1360,8 @@
           "source": "page"
         },
         {
-          "file": "02-thinking.md",
-          "title": "词背后的七条判断",
+          "file": "02-judgements.md",
+          "title": "DSH 自己立下的七条判断",
           "role": "analysis",
           "verifiedAt": null,
           "status": "unrecorded",
@@ -1369,7 +1369,7 @@
         },
         {
           "file": "03-retired.md",
-          "title": "退役词与本地装置登记",
+          "title": "不再使用的写法",
           "role": "analysis",
           "verifiedAt": null,
           "status": "unrecorded",
@@ -1378,14 +1378,6 @@
         {
           "file": "04-writing.md",
           "title": "措辞与引用纪律",
-          "role": "analysis",
-          "verifiedAt": null,
-          "status": "unrecorded",
-          "source": "page"
-        },
-        {
-          "file": "05-decisions.md",
-          "title": "已经定下的词义决定",
           "role": "analysis",
           "verifiedAt": null,
           "status": "unrecorded",
@@ -1401,7 +1393,7 @@
         },
         {
           "file": "11-ecosystem.md",
-          "title": "DSH 生态的做法与证据等级",
+          "title": "外部说法的定级与写法",
           "role": "analysis",
           "verifiedAt": null,
           "status": "unrecorded",

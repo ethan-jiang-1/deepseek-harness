@@ -7,7 +7,7 @@
 1. dsh 的进程里是一棵**插件树**：对话循环、读文件、跑命令、接模型、画界面，都是树上的插件，全部经 `ctx` 总线互相使用。
 2. 包要经过**三层才到你面前**：bundle 打包 → profile 组装 → preset 选模式。所以「dsh 有没有 X」永远要按层查，不能只看一层。
 3. 同一个能力常常有多个插件实现（换搜索引擎、换 LLM 后端），**换实现不改调用方**——这是整台机器最重要的性质。
-4. 术语最小集：**插件**＝导出 `apply` 的模块；**ctx**＝服务总线；**seam**＝三角色齐备的可替换能力；**role**＝core/seam/service/bundle；**形态**＝Def/Impl/Tool/cmd/UI/adapter/lib/bundle/驱动；**可见性**＝base/web/min/preset/opt/—。完整版见 [`../00-index.md`](../../00-index.md) 的术语速查与 [`05`](./05-taxonomy-and-design.md)。
+4. 术语：`plugin`、`ctx`、`seam` 的 DSH 说法见 [`canon/GLOSSARY.md`](../../canon/GLOSSARY.md)；**role**（core/seam/service/bundle）、**形态**（Def/Impl/Tool/cmd/UI/adapter/lib/bundle/驱动）与**可见性**档位是本专题自己的分类，不是 DSH 的词，见 [`05`](./05-taxonomy-and-design.md)。
 
 本页提到的能力，到货档位只有三种：随装出货且默认开（base/web 层）、随装出货但默认关（`packages/boot/app-boot/src/profile.ts:223` 的 12 条）、不随装出货按需安装（`packages/boot/app-boot/src/official-bundle-packages.ts:4` 的 2 条）。逐个工具包的模型可见名以 `docs/tool-catalog.md:12` 的 Tool Package Map 为真源；profile 模板与默认组合见 `packages/boot/app-boot/src/profile.ts:179`（`PROFILE_TEMPLATES`）。
 
