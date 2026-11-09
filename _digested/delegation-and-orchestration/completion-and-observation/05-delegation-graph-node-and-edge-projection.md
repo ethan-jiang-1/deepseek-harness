@@ -106,7 +106,7 @@ DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只管 child，wo
 | 你以为 | 实际上 |
 |---|---|
 | 图能取消或调度 | 只读投影，没有控制面 |
-| 父会话能看到整条链 | 一个会话只看到自己的 direct children 与已知信息 |
+| 父会话能看到整条链 | 本会话能列 direct children，并用 `list_agents(descendants)` 走完整棵子树（one-shot 行被过滤、深层只能 interrupt）；看不到的是其它会话或其它通道的链 |
 | 空状态就是失败 | 可能是三个缺口词之一，各自含义不同 |
 | runtime 事件可以当持久源 | `workflow/*` 与 `subagent/start\|end` 是 runtime bus 事件 |
 

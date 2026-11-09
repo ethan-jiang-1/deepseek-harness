@@ -47,5 +47,5 @@
   <text x="950" y="107" font-size="11.5" font-weight="bold" fill="#52c41a" text-anchor="middle">Web 组合直挂</text>
   <rect x="860" y="132" width="180" height="32" rx="5" fill="#ffffff" stroke="#52c41a" stroke-width="1"/>
   <text x="872" y="153" font-size="10.5" font-weight="normal" fill="#333">schedule</text>
-  <text x="40" y="432" font-size="10.5" font-weight="normal" fill="#595959">判据：工具行在 base → 所有 shipped profile 默认可见；在 OPTIONAL_BUNDLES → 要显式安装；在 ON_DEMAND_BUNDLES → 按需安装；schedule 走 Web 组合的直接行。</text>
+  <text x="40" y="432" font-size="10.5" font-weight="normal" fill="#595959">判据：工具行在 base → 叠了 base 的 profile 默认可见（web / headless / sdk / acp）；OPTIONAL_BUNDLES 要显式安装；ON_DEMAND_BUNDLES 按需安装；schedule 走 Web 组合的直接行。</text>
 </svg>

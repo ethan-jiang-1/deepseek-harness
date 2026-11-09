@@ -14,7 +14,7 @@
 
 一句话：**「模型看不见」多数是档位问题，不是 bug。**
 
-- 三档货架：base 随任何 shipped profile 可见；`OPTIONAL_BUNDLES` 要显式安装；`ON_DEMAND_BUNDLES` 由工具按需触发安装。schedule 是第四种：直接挂在 Web 组合里。
+- 三档货架：base 是 web / headless / sdk / acp 的共享层（`sdk-minimal` 是刻意例外：一个 bundle 拥有完整树，不叠 base）；`OPTIONAL_BUNDLES` 要显式安装；`ON_DEMAND_BUNDLES` 由工具按需触发安装。schedule 是第四种：直接挂在 Web 组合里。
 - 档位只回答「默认开不开」，不回答「装着能不能用」——还要过 preset 行、provider 能力位与深度预算。
 - 默认不装的东西通常有理由：ralph 的完成是 worker 自报，实验性能力没有稳定性承诺。
 
@@ -39,7 +39,7 @@
 
 ## 怎么读这张表
 
-1. **先看 base**：工具行在 `packages/bundle/base/cordis.patch.yml` 里 → 所有 shipped profile 默认可见；配置也在那一行。
+1. **先看 base**：工具行在 `packages/bundle/base/cordis.patch.yml` 里 → 叠了 base 的 profile 默认可见（web / headless / sdk / acp）；配置也在那一行。
 2. **不在 base 再看 optional / Web**：`OPTIONAL_BUNDLES` 成员要显式安装；schedule 走 Web 组合的直接行，不在 optional 清单里。
 3. **外部 provider 看 on-demand**：codex / claude-code 走 `ON_DEMAND_BUNDLES`，且行上 `maxDepth: provider-managed`。
 

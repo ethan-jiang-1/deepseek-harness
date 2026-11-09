@@ -15,7 +15,7 @@
 一句话：**child 是一个 durable Session，加至多一个进程内 Activation。**
 
 - Session 是事实：日志、header、`parentSession`、深度都在里面；Activation 只是驻留期，`settled` 只释放它——所以已结算的 child 仍可冷恢复。
-- 一次委派分两半：服务侧做准备（深度解析、descriptor 快照、权限捕获、容量占位），provider 侧才执行；冷恢复不走 provider。
+- 一次委派分三步：服务侧做准备（深度解析、descriptor 快照、权限捕获）→ provider 只贡献 seed → manager 做容量占位并创建 child。只有 external provider 的 `start` 才执行；冷恢复不走 provider。
 - 工具面在 child 创建窗口内按父 preset 重建，权限在第一个 `await` 之前捕获——child 的工具面与父几乎相同，而权限是启动那一刻的快照。
 
 ## 为什么是这个形状：设计考量
@@ -113,7 +113,7 @@ Activation 所有权图（`packages/subagent/subagent/src/activation.ts:39`-`111
 - **上行**（child→父）：resident continuable child 以自己 parentSession 为目标发送 → `sendToParent`——`Agent ${sender.id} sent a message: ` 前缀（`packages/subagent/subagent/src/continuation-messages.ts:67`）+ `AgentMessageSource{kind: 'agent-message', form: 'relay'}`（`continuation-messages.ts:63`-`72`、`manager.ts:543`-`600`）；
 - 只确认送达（返回 `{messageId}`——inbox id 即回执），不回答案；兄弟、超一跳祖先、self、stale agent、非 continuable child 全部拒绝（`docs/subsystems/subagent.md:174`-`176`）。
 
-**`interrupt_agent` 不等待停止**（`packages/subagent/tool-subagent-control/src/index.ts:74`-`111`；`packages/subagent/subagent/src/manager.ts:200`-`240`）：同步授权（exact live caller、禁 self、ancestry WeakSet 必须含 caller；user authority 则 child header 的 parentSession 须匹配）→ `agent.cancel(cause, { keepInbox: true })` 即返回。Activation、未认领 inbox 工作、已发布后代**不受影响**；被中断 driver idle 后，一次 waking send 恢复 parked FIFO。目标缺席（未知/one-shot/已结算）是合法 no-op；越权抛 `UNAUTHORIZED`。授权两型：`user`（人类出示的 durable direct-parent 地址）| `ancestor`（精确 live Agent 对象，任意深度的 live 祖先——**这就是深度 >1 条目只剩 interrupt 的机制本体**：send_message 限相邻一跳，interrupt 限 live 祖先链）。
+**`interrupt_agent` 不等待停止**（`packages/subagent/tool-subagent-control/src/index.ts:74`-`111`；`packages/subagent/subagent/src/manager.ts:200`-`240`）：同步授权（exact live caller、禁 self、ancestry WeakSet 必须含 caller；user authority 则 child header 的 parentSession 须匹配）→ 对 local child 走 `agent.cancel(cause, { keepInbox: true })` 即返回——Activation、未认领 inbox 工作与已发布后代不受影响；被中断 driver idle 后，一次 waking send 恢复 parked FIFO。对 external child 则是 `controller.abort()` 加整台 Activation 处置，之后不可续。目标缺席（未知/one-shot/已结算）是合法 no-op；越权抛 `UNAUTHORIZED`。授权两型：`user`（人类出示的 durable direct-parent 地址）| `ancestor`（精确 live Agent 对象，任意深度的 live 祖先——**这就是深度 >1 条目只剩 interrupt 的机制本体**：send_message 限相邻一跳，interrupt 限 live 祖先链）。
 
 **`list_agents` 只列 continuable 条目**（`packages/subagent/tool-subagent-control/src/list-agents.ts:49`-`80`）：one-shot 仍是 descendants 遍历的通路但不列出（`:69`「One-shot children cannot be continued by send_message」）；`scope` 默认 `children`（`:51`）；status 由 `agents.get(id)?.status === 'running'` 派生；深度规则写在模型可见描述里（`:98`「entries deeper than 1 accept only interrupt_agent」），机制本体是上述两个授权半径的差。底层列表不加载/resume 任何 Agent；`list_agents` 面依赖 session-projection 挂载，缺了 fail loud（`packages/bundle/base/cordis.patch.yml:164`-`168`）。
 
@@ -130,7 +130,7 @@ Activation 所有权图（`packages/subagent/subagent/src/activation.ts:39`-`111
 | fork 会持续同步父的新消息 | 种子在创建时固化；父后续轮次不进 child，新消息只能经 `send_message` |
 | 子代理继承父的权限、可以在内部提权 | 权限在第一个 `await` 前捕获；运行时上下文明确它「cannot be widened from inside this session」 |
 | 深度是「这一层还能再分几层」 | 深度是绝对量，持久 header 是单调 floor；`maxDepth` 是绝对上限，不做预算分配 |
-| `interrupt_agent` 会等目标停下来 | 同步返回；只取消当前 agent，不动 Activation、未认领 inbox 与已发布后代 |
+| `interrupt_agent` 会等目标停下来 | 同步返回。local child 只取消当前 turn（keepInbox，Activation 保留）；external child 的 Activation 被整台处置、不可续 |
 | one-shot / continuable 是每次调用的参数 | 由 provider 是否实现 `prepareContinuable` 决定，不是调用方开关 |
 
 ## 源码入口

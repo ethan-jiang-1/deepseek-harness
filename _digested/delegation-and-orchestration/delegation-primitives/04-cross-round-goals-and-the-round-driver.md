@@ -117,7 +117,7 @@ goal round 是一个 **goal-attributed 的普通 turn**：模型保持完整工�
 | 恢复会话后 goal 接着跑 | activation 不持久；resume / fork 后一律 disarmed，人类说「继续」才 rearm |
 | 轮数用完就算完成 | 到上限只是停；完成要 `update_goal complete`，而且那也只是自报 |
 | 子代理可以推进 goal | goal 操作要求 runtime root 与类人类授权；子代理被三道门挡住 |
-| `blocked` 可以随时报 | admitted 轮数不足 `blockedAfterConsecutiveRounds`（默认 3）时直接被拒 |
+| `blocked` 可以随时报 | 只有在 goal 自动续轮里，admitted 轮数不足 `blockedAfterConsecutiveRounds`（默认 3）才被机械拒绝；直接人类 turn 不过这道门 |
 
 ## 源码入口
 
