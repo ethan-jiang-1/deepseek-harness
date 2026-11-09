@@ -292,3 +292,19 @@ re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、
 3. 本语料不登记委派深度、终态词表或通道能力矩阵，因此没有需要跟随「workflow 分支计数但不设闸」口径的段落。
 
 验证：`node _dsh_plugin_agent_ready_development/verify.mjs` 通过；本语料的外部引用反查报 0 路径失效、0 行号越界、0 引文漂移。
+
+## 2026-11-10 委派/编排专题二轮复核
+
+基线不变（`dsh-v0.2.1-rc.5`）。动因：2026-11-09 的审计早于委派与编排专题当日后续的源码复核（13:48–18:24）；这些复核改了 `blocked` 的机械门槛、Team 消息持久化、child preset 范围、`interrupt_agent` 的后端差异与终态词表，需要按这些增量重查本语料是否仍成立。
+
+方法：全文检索 `blocked`、`complete`、`rearm`、`preset`、`agentPreset`、`interrupt`、`run_in_background`、`settle`、`终态`、`tool description`、`README`、`request/header`、`实际工具面`；命中的正文逐段读，再回 DSH 一手来源核对。结论：
+
+1. 本语料没有 Team、`interrupt_agent`、`run_in_background`、委派终态词表或通道能力矩阵的对应陈述；这些修正不改变正文。
+2. `native-development-model/02` 的 Tool 定义补一句：工具 `description` 是模型看到的选择策略；包 README 与 JSDoc 是仓库内文档，不会自动进入模型请求。依据 `docs/cookbook/adding-a-tool.md` 的 The minimal shape 节（注释 “what the model sees”）与 `docs/architecture.md` 的 Turn flow 节（请求装配只列 prompt sections + tool schemas）。
+3. `native-development-model/02` 的 goal 定义补上持久相位与 `blocked` 的区分：相位有 `active`、`paused`、`blocked`、`complete`；`blocked` 是停止续跑的另一种相位，不是完成，可在剩余轮预算内 `resume`。原句「`complete` 是目标状态，不是独立完成认证」保留。依据 `packages/goal/goal/README.md` 的 Drive the lifecycle 节与 `docs/subsystems/goal.md`。
+4. `native-development-model/02` 的「Goal 服务保存状态；何时续轮由其他 consumer/driver 决定」、`native-development-model/03` 的 fork/spawn 上下文边界与 resume/fork 后 rearm 的表述仍成立；child preset 范围与模型路由不在本语料范围内。
+5. 本语料的「真实组合 / 逐层证据」表述与委派专题的证据分层一致：Loader 加载不等于行为成立，模型请求、持久状态或用户可见结果才是行为证据；未改正文。
+
+核对后未改动的部分：三卷的 owner/证据/评审主线、`sdlc-reference/` 的主仓制度、图示与既有引用政策不变。
+
+验证：`node _dsh_plugin_agent_ready_development/verify.mjs` 通过（37 Markdown、2 scripts、27 SVG）；`node _dsh_plugin_agent_ready_development/verify.test.mjs` 通过（11 个 case）。新增的三条外链（`packages/goal/goal/README.md#drive-the-lifecycle`、`docs/cookbook/adding-a-tool.md#the-minimal-shape`、`docs/architecture.md#turn-flow`）已按本地 rc.5 树核对路径与锚点；未重跑全量外部引用反查。

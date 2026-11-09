@@ -87,9 +87,9 @@ HMR 不等于浏览器刷新，也不意味着任意文件保存都能更新当�
 
 ### Event 与 Tool
 
-**Event**是插件或服务间的通信点；不同 dispatch mode 决定监听器怎样观察、委派、串行或并行执行。**Tool**是模型可发现并调用的能力，有名称、描述、参数与结果，并经过真实工具执行管线。
+**Event**是插件或服务间的通信点；不同 dispatch mode 决定监听器怎样观察、委派、串行或并行执行。**Tool**是模型可发现并调用的能力，有名称、描述、参数与结果，并经过真实工具执行管线。工具 `description` 是模型看到的选择策略（DSH cookbook 把该字段注为 “what the model sees”）；包 README 与 JSDoc 是仓库内文档，不会自动进入模型请求。
 
-事件监听器不是模型工具；把函数写出来也不等于模型已经能调用它。工具 schema、注册、执行、结果和日志必须一起核对。依据：DSH [事件教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/04-events.md)与 [接入 Harness 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/07-into-the-harness.md)。
+事件监听器不是模型工具；把函数写出来也不等于模型已经能调用它。工具 schema、注册、执行、结果和日志必须一起核对。依据：DSH [事件教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/04-events.md)、[接入 Harness 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/07-into-the-harness.md)、[adding-a-tool cookbook 的 minimal shape](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md#the-minimal-shape)与 [architecture 的 Turn flow](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow)。
 
 ### Capability seam（可替换能力）
 
@@ -165,9 +165,9 @@ Plan Mode 本身不禁止文件、进程或网络操作。计划认可不是扩�
 
 ### goal（会话目标）
 
-**Goal**是绑定到既有 Session 的一个持久完成目标，可跨轮、恢复和重启保留。Goal 服务保存状态；何时续轮由其他 consumer/driver 决定，不是 goal 服务自己安排工作。
+**Goal**是绑定到既有 Session 的一个持久完成目标，可跨轮、恢复和重启保留。Goal 服务保存状态；何时续轮由其他 consumer/driver 决定，不是 goal 服务自己安排工作。持久相位有 `active`、`paused`、`blocked`、`complete`；`blocked` 是停止续跑的另一种相位，不是完成，带一个稳定的阻塞 code 与说明（`resume` 可在剩余轮预算内重新开始）。
 
-`complete` 是目标状态，不是独立完成认证。Goal 不是 feature 看板、并行目标数据库或任意需求的自动评估器。依据：DSH [规范词汇](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md#goal)与 [goal 限制](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/goal/README.md#known-limitations-and-deferred-work)。
+`complete` 是目标状态，不是独立完成认证。Goal 不是 feature 看板、并行目标数据库或任意需求的自动评估器。依据：DSH [规范词汇](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md#goal)、[goal 生命周期](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/goal/README.md#drive-the-lifecycle)与 [goal 限制](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/goal/README.md#known-limitations-and-deferred-work)。
 
 ### sandbox 与 approval policy
 
