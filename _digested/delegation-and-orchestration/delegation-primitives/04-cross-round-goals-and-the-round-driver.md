@@ -1,6 +1,6 @@
 # Cross-Round Goals and the Round Driver · 跨轮 goal 与 Round Driver
 
-源码核验入口：`packages/goal/tool-goal/src/index.ts`（工具 schema 与政策 guidance）、`packages/goal/tool-goal/src/wrapup.ts`（终结收尾指令）、`packages/goal/goal-round-driver/src/prompt.ts`（轮 prompt）、`packages/goal/goal/src/index.ts`（服务 Config）、`packages/goal/command-goal/src/index.ts`（`/goal` 命令）、`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md`（两策略决策）。
+源码核验入口：`packages/goal/tool-goal/src/index.ts`（工具 schema 与政策 guidance）、`packages/goal/tool-goal/src/wrapup.ts`（终结收尾指令）、`packages/goal/goal-round-driver/src/prompt.ts`（轮 prompt）、`packages/goal/goal/src/index.ts`（服务 Config）、`packages/goal/command-goal/src/index.ts`（`/goal` 命令）、`.agents/notes/archived/feature/2026-07-16-harness-level-loop.md`（两策略决策）。
 
 本页回答：作为 goal 的使用者（驾驶座），objective 该怎么写、轮预算怎么定、complete/blocked 怎么判定、`/goal` 命令面有什么、resume 之后怎么重新武装？**机制不重复**：goal 状态机与 CAS 见 [`../agent-loop/01-goal-lifecycle.md`](../../agent-loop/01-goal-lifecycle.md)，Round Driver 的自动续轮见 [`../agent-loop/02-goal-round-driver.md`](../../agent-loop/02-goal-round-driver.md)，四层结束边界见 [`../agent-loop/03-activity-vs-goal-boundaries.md`](../../agent-loop/03-activity-vs-goal-boundaries.md)；什么时候选 goal（而不是 subagent/workflow/ralph）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
 
@@ -20,7 +20,7 @@
 
 ## 为什么是这个形状：设计考量
 
-goal 的设计围绕一个核心区分展开：**durable 的生命周期 ≠ 继续执行的权限**（`.agents/notes/implemented/feature/2026-07-19-persisted-same-session-goal-domain.md` Problem 节）。目标放内存循环变量里重启即失、放 UI 状态里模型行为无法重建——所以要进 session 日志；但「会话里有个 active 目标」和「可以自动开始干活」是两件事——把每个 session turn 都当进展会让无关的人类消息也消耗自动工作预算，重开一个会话就静默开始干活则令人惊吓。答案是 phase 持久化 + activation **从不写盘**（armed/disarmed 只在进程内），重开永远 disarmed，人类说「继续」才重新武装。工具层同样的考量（`.agents/notes/implemented/feature/2026-07-19-model-facing-goal-tools.md` Problem 节）：**prompt 引导无法确立授权**——子代理、注入的插件消息、过期的模型 turn、恢复的会话都能产生一模一样的工具参数，所以权限判定必须在 authority 层而不在 prompt 文本里；同时自动续轮要能报告完成/阻塞，但**不能因此获得** edit/pause/resume/替换人类目标的权力——所以 action 权限表是两层的（edit/pause/resume 需直接人类；complete/blocked 也接受 goal-round authority）。这些考量解释了本页后面所有驾驶座规则为什么长那样。
+goal 的设计围绕一个核心区分展开：**durable 的生命周期 ≠ 继续执行的权限**（`.agents/notes/archived/feature/2026-07-19-persisted-same-session-goal-domain.md` Problem 节）。目标放内存循环变量里重启即失、放 UI 状态里模型行为无法重建——所以要进 session 日志；但「会话里有个 active 目标」和「可以自动开始干活」是两件事——把每个 session turn 都当进展会让无关的人类消息也消耗自动工作预算，重开一个会话就静默开始干活则令人惊吓。答案是 phase 持久化 + activation **从不写盘**（armed/disarmed 只在进程内），重开永远 disarmed，人类说「继续」才重新武装。工具层同样的考量（`.agents/notes/implemented/feature/2026-07-19-model-facing-goal-tools.md` Problem 节）：**prompt 引导无法确立授权**——子代理、注入的插件消息、过期的模型 turn、恢复的会话都能产生一模一样的工具参数，所以权限判定必须在 authority 层而不在 prompt 文本里；同时自动续轮要能报告完成/阻塞，但**不能因此获得** edit/pause/resume/替换人类目标的权力——所以 action 权限表是两层的（edit/pause/resume 需直接人类；complete/blocked 也接受 goal-round authority）。这些考量解释了本页后面所有驾驶座规则为什么长那样。
 
 ## 一场 goal 的驾驶座时间线
 
@@ -52,7 +52,7 @@ objective 的**逐字持久**是它区别于 todo 的本质：每轮 prompt 注�
 
 ### 每轮模型看到什么：<goal_round> prompt
 
-Round Driver 注入的完整轮指令（`packages/goal/goal-round-driver/src/prompt.ts:14`-`28`）：
+Round Driver 注入的完整轮指令（`packages/goal/goal-round-driver/src/prompt.ts:12`-`26`）：
 
 > `<goal_round>` Objective: <逐字> / Round: N/maxGoalRounds / "Continue working toward the objective in this same session. **Treat the current workspace, tool results, and durable session state as authoritative; inspect them instead of assuming earlier narration is still current.** Make concrete progress and verify the result. Before claiming completion, gather evidence that the whole objective is achieved, read the current goal, and mark it complete. If work remains, leave the goal active for the next round. Follow the configured goal-tool policy before reporting a blocker."
 
@@ -60,7 +60,7 @@ Round Driver 注入的完整轮指令（`packages/goal/goal-round-driver/src/pro
 
 ### 终结时用户收到什么：wrapup 收尾指令
 
-模型自报 `complete`/`blocked` 后，不是硬停 turn，而是注入收尾上下文（`packages/goal/tool-goal/src/wrapup.ts:21`-`45`，经 `ToolRunContext.deferContext()`）：
+模型自报 `complete`/`blocked` 后，不是硬停 turn，而是注入收尾上下文（`packages/goal/tool-goal/src/wrapup.ts:17`-`41`，经 `ToolRunContext.deferContext()`）：
 
 - `<goal_complete>`：写给用户的收尾消息必须——说明结果、总结**做了什么、怎么验证的**、指向具体产物（files, commits, or other artifacts）、指出用户接下来该 review 什么、直接称呼用户、**不再调用任何工具**；
 - `<goal_blocked>`：必须——说明已完成部分、描述具体阻塞条件与已尝试的办法、**说清需要用户做什么才能继续**；
@@ -72,8 +72,8 @@ Round Driver 注入的完整轮指令（`packages/goal/goal-round-driver/src/pro
 
 | 数字 | 默认 | 谁配 | 语义 |
 |------|------|------|------|
-| `maxGoalRounds` | 256（`packages/goal/goal/src/index.ts:243`-`245`，goal 服务 `defaultMaxGoalRounds`） | `create_goal` 的 `max_goal_rounds` 参数；`update_goal action: edit` 可替换 | **只计 admitted goal rounds**——人类消息与无关 turn 不消耗轮预算（`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md`） |
-| `blockedAfterConsecutiveRounds` | 3（`packages/goal/tool-goal/src/index.ts:38`-`40`，tool 政策） | 部署组合（volatile） | **机械下界**：admitted 轮数不足此值时，模型自报 `blocked` 直接被工具层拒绝（"blocked is rejected before the configured minimum round count"，update_goal 参数描述） |
+| `maxGoalRounds` | 256（`packages/goal/goal/src/index.ts:243`-`245`，goal 服务 `defaultMaxGoalRounds`） | `create_goal` 的 `max_goal_rounds` 参数；`update_goal action: edit` 可替换 | **只计 admitted goal rounds**——人类消息与无关 turn 不消耗轮预算（`.agents/notes/archived/feature/2026-07-16-harness-level-loop.md`） |
+| `blockedAfterConsecutiveRounds` | 3（`packages/goal/tool-goal/src/index.ts:38`-`40`，tool 政策） | 加载期部署配置（非 volatile） | **机械下界**：admitted 轮数不足此值时，模型自报 `blocked` 直接被工具层拒绝（"blocked is rejected before the configured minimum round count"，update_goal 参数描述） |
 
 第二个数字的 JSDoc 原话："Minimum admitted goal rounds before the model may self-report `blocked`"（`:33`-`34`）——它不评估语义相似性，只挡"第一轮就喊卡"的早泄行为。
 
@@ -94,9 +94,9 @@ Round Driver 注入的完整轮指令（`packages/goal/goal-round-driver/src/pro
 | `edit` / `pause` / `resume` | 需**直接顶层人类请求**（`requireDirectHuman`，runtime-root 检查——子代理被拒的三道门见 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)） |
 | `complete` / `blocked` | 人类 turn **或** 本 goal 的自动续轮内皆可（goal-round authority） |
 
-CAS 防写冲突：`goal_id` + `revision` 必须与 `get_goal` 返回的精确匹配。**paused 的 resume 归用户**：`/goal resume`、Web 控制、或直接调 goal 服务；模型工具路径拒绝（user-owned pause，`.agents/notes/implemented/bug-fix/2026-09-03-user-owned-goal-pause-activation.md`）。
+CAS 防写冲突：`goal_id` + `revision` 必须与 `get_goal` 返回的精确匹配。**paused 的 resume 归用户**：`/goal resume`、Web 控制、或直接调 goal 服务；模型工具路径拒绝（user-owned pause，`.agents/notes/archived/bug-fix/2026-09-03-user-owned-goal-pause-activation.md`）。
 
-**disarmed 是恢复语义的核心**：goal 的 phase（active/paused/blocked/complete）持久在 session log 里，但 activation（armed/disarmed）**从不持久**——会话重开、fork、driver 替换/拆除后一律 disarmed，**重开永远不会自己开始干活**；人类说一声「继续」（任何措辞任何语言），模型在那个 turn 里调 `update_goal action: 'resume'` 重新武装。fork 出的会话继承 goal 前缀但 disarmed——继承不等于执行授权（`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md`）。
+**disarmed 是恢复语义的核心**：goal 的 phase（active/paused/blocked/complete）持久在 session log 里，但 activation（armed/disarmed）**从不持久**——会话重开、fork、driver 替换/拆除后一律 disarmed，**重开永远不会自己开始干活**；人类说一声「继续」（任何措辞任何语言），模型在那个 turn 里调 `update_goal action: 'resume'` 重新武装。fork 出的会话继承 goal 前缀但 disarmed——继承不等于执行授权（`.agents/notes/archived/feature/2026-07-16-harness-level-loop.md`）。
 
 ## /goal 命令面
 
@@ -128,8 +128,8 @@ goal round 是一个 **goal-attributed 的普通 turn**：模型保持完整工�
 | `packages/goal/tool-goal/src/index.ts:115`-`123` | `tool:goal` 政策节：complete/blocked/resume 三条纪律 |
 | `packages/goal/tool-goal/src/index.ts:244`-`247` | update_goal action 权限表 |
 | `packages/goal/tool-goal/src/index.ts:38`-`40` | `blockedAfterConsecutiveRounds` 默认 3（机械下界） |
-| `packages/goal/tool-goal/src/wrapup.ts:21`-`45` | `<goal_complete>`/`<goal_blocked>` 收尾指令与 grounding 纪律 |
-| `packages/goal/goal-round-driver/src/prompt.ts:14`-`28` | `<goal_round>` 轮 prompt 全文 |
+| `packages/goal/tool-goal/src/wrapup.ts:17`-`41` | `<goal_complete>`/`<goal_blocked>` 收尾指令与 grounding 纪律 |
+| `packages/goal/goal-round-driver/src/prompt.ts:12`-`26` | `<goal_round>` 轮 prompt 全文 |
 | `packages/goal/goal/src/index.ts:243`-`245` | `defaultMaxGoalRounds` 256 |
 | `packages/goal/command-goal/src/index.ts:193`-`196` | `/goal` 命令注册与整词解析 |
-| `.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md` | 两策略决策：round 只计 admitted、disarmed 语义、paused 归用户 |
+| `.agents/notes/archived/feature/2026-07-16-harness-level-loop.md` | 两策略决策：round 只计 admitted、disarmed 语义、paused 归用户 |

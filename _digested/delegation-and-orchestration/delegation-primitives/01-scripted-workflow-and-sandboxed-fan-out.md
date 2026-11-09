@@ -36,7 +36,7 @@ workflow-ptc（执行 provider：脚本解析、钩子实现、caps、取消）
 PTC fresh Node 进程（脚本 VM 只注入钩子与 args；子代理经 subagent seam 派发）
 ```
 
-工具拥有模型可见面（schema、系统提示节、结果渲染），引擎拥有脚本解析、执行、上限与取消；「caller 必须供应执行引擎，隔离策略可换而可见行为不变」（`packages/workflow/workflow/README.md:12`、`packages/workflow/tool-workflow/README.md:66`）。shipped base 组合依次加载 `dsh-ptc-runtime-node` → `dsh-workflow-ptc`（`provider: spawn`）→ `dsh-tool-workflow`（`packages/bundle/base/cordis.patch.yml:397`-`400`）。
+工具拥有模型可见面（schema、系统提示节、结果渲染），引擎拥有脚本解析、执行、上限与取消；「caller 必须供应执行引擎，隔离策略可换而可见行为不变」（`packages/workflow/workflow/README.md:12`、`packages/workflow/tool-workflow/README.md:66`）。shipped base 组合依次加载 `dsh-ptc-runtime-node` → `dsh-workflow-ptc`（`provider: spawn`）→ `dsh-tool-workflow`（`packages/bundle/base/cordis.patch.yml:397`-`406`）。
 
 引擎是单例 seam：`ctx.workflowEngine` 之上无命名 provider 注册表，同 scope 第二次 provide 直接 throw（cordis 通用规则，`vendor/cordis/src/reflect.ts:290`；`docs/subsystems/workflow.md:5`）。换引擎 = 改组合里加载哪个引擎插件行（`packages/workflow/workflow/README.md:71`）。
 
@@ -167,4 +167,4 @@ live output 经 mirror 订阅引擎事件写进 job 的 output ring（`packages/
 | `packages/jobs/jobs/src/index.ts` | JobRegistry：start/kill/output ring/settled 留存 |
 | `packages/experimental/tool-ralph/src/index.ts` | ralph：固定脚本消费方、provider 预检 |
 | `docs/subsystems/workflow.md` | seam 层权威文档：start request、事件 observe-only、durable 记录协议 |
-| `packages/bundle/base/cordis.patch.yml` | shipped 执行链组装顺序（`:390`-`400`） |
+| `packages/bundle/base/cordis.patch.yml` | shipped 执行链组装顺序（`:397`-`406`） |

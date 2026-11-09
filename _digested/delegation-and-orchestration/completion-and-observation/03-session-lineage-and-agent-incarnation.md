@@ -41,7 +41,7 @@ fork 的 inherited prefix 只表示创建时复制到 child 的已完成父历�
 
 ## Activation：Session 不变，runtime epoch 可更换
 
-continuable Activation 保存 `childId`、持久 direct parent、当前 provider、AgentHandle、child inbox、活体 ancestry 和 owned children（`packages/subagent/subagent/src/activation.ts:39`-`111`；`390fbe8852` 前在 `continuation-activation.ts`）。其中：
+continuable Activation 保存 `childId`、live `parent`、delivery、执行资源（`AgentHandle` 或外部 controller）、活体 ancestry、owned children 与结算句柄；provider 与谱系不在 Activation 里，冷恢复时从 descriptor 与 child header 读（`packages/subagent/subagent/src/activation.ts:39`-`111`；`390fbe8852` 前在 `continuation-activation.ts`）。其中：
 
 - `parentSession` 用于在 handle 释放后定位持久 direct parent；
 - `ancestry: WeakSet<Agent>` 只回答某个 live caller 是否属于当次 materialization 观察到的祖先链，不能枚举父节点；

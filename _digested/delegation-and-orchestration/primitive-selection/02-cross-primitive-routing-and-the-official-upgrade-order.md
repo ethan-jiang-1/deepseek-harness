@@ -31,7 +31,7 @@
 | agent-teams → spawn/fork 语义复用 | `spawn_teammate` 的 `context` 参数："fresh starts without Lead history; fork inherits completed Lead turns. Defaults to fresh."（`packages/experimental/tool-agent-team/src/index.ts:202`） |
 | todo_write ↔ exit_plan_mode（plan 模式内互斥） | `packages/bundle/base/cordis.patch.yml:340` |
 | ask_user_question ↔ 自行查证 | `packages/bundle/base/cordis.patch.yml:342` |
-| jobs ↔ 各 producer 工具 | workflow 的背景参数描述指名 `job_output`/`job_kill`（`packages/workflow/tool-workflow/src/index.ts:405`）；subagent 已无 `run_in_background` 与 job 字样 |
+| jobs ↔ 各 producer 工具 | workflow 的后台结果渲染文本指名 `job_output`/`job_kill`（`packages/workflow/tool-workflow/src/index.ts:405`）；subagent 已无 `run_in_background` 与 job 字样 |
 | todo_write 并行开关 ↔ 编排原语 | "Set `true` for agents that may run work concurrently (subagents, background commands, workflow fan-out)"（`packages/todo/tool-todo/README.md:36`） |
 | workflow → subagent（构成性） | workflow 脚本钩子 `agent(prompt, opts)` 就是 subagent 调用（`packages/workflow/tool-workflow/src/index.ts:161`） |
 

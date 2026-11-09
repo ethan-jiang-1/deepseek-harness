@@ -67,12 +67,12 @@
   <text x="220" y="410" font-size="12" font-weight="bold" fill="#fa8c16" text-anchor="middle">① 不变量（写时，确定性）</text>
   <text x="220" y="432" font-size="10.5" fill="#333" text-anchor="middle">assertTaskGraphCandidate：每次任务写入后全图校验</text>
   <text x="220" y="450" font-size="10.5" fill="#333" text-anchor="middle">DFS visiting/visited 环检测；missing/duplicate/self 拒绝</text>
-  <text x="220" y="472" font-size="9.5" fill="#8c8c8c" text-anchor="middle">agent-team/src/task-graph.ts:34-77</text>
+  <text x="220" y="472" font-size="9.5" fill="#8c8c8c" text-anchor="middle">agent-team/src/task-graph.ts:26-69</text>
   <rect x="410" y="386" width="300" height="106" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
   <text x="560" y="410" font-size="12" font-weight="bold" fill="#1677ff" text-anchor="middle">② 推导（读时，纯函数）</text>
   <text x="560" y="432" font-size="10.5" fill="#333" text-anchor="middle">taskReady = blockedBy.every(completed)——「入度为零」</text>
   <text x="560" y="450" font-size="10.5" fill="#333" text-anchor="middle">条件的逐任务版本；只用于显示与过滤，不触发任何动作</text>
-  <text x="560" y="472" font-size="9.5" fill="#8c8c8c" text-anchor="middle">agent-team/src/task-view.ts:28-31</text>
+  <text x="560" y="472" font-size="9.5" fill="#8c8c8c" text-anchor="middle">agent-team/src/task-view.ts:24-26</text>
   <rect x="750" y="386" width="300" height="106" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
   <text x="900" y="410" font-size="12" font-weight="bold" fill="#52c41a" text-anchor="middle">③ 执行（对话，概率性）</text>
   <text x="900" y="432" font-size="10.5" fill="#333" text-anchor="middle">「Task readiness never starts an owner」——就绪不派发</text>
@@ -85,7 +85,7 @@
   <text x="60" y="618" font-size="11" fill="#333">DSH 只做 ①②：无环校验与就绪推导是可以机械保证的（确定性）；③ 涉及「接下来什么更值得做」的判断——那是概率组件（模型）的领地。</text>
   <text x="60" y="640" font-size="11" fill="#333">证据：外部叙事自己的状态机里有 REPLANNING（Captain 动态改图）——静态 DAG 表达不了「根据发现重规划」，只能开逃逸舱；逃逸舱就是模型。</text>
   <text x="60" y="662" font-size="11" fill="#333">DSH 让模型成为默认而非例外：图是知识与过程（归模型与代码），树是权威与状态（归引擎）。</text>
-  <text x="60" y="684" font-size="9.5" fill="#8c8c8c">形式化对比与 harness-idea 连接见后续深挖轮次（本页第一版）</text>
+  <text x="60" y="684" font-size="9.5" fill="#8c8c8c">形式化对比见本页「与 Kahn 的对照」，harness-idea 连接见文末延伸阅读</text>
 
   <text x="40" y="726" font-size="10" fill="#8c8c8c">源码核验：packages/experimental/agent-team/src/task-graph.ts · task-view.ts · packages/workflow/tool-workflow/src/index.ts（脚本合同）· 03/08 页（归属树）</text>
 </svg>

@@ -59,7 +59,7 @@ DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只管 child，wo
 | `channel` | catalog 的 `mode` + 谁记录的边（workflow 事件 / team member / job） | 推不出就 `unavailable`，不要按工具名猜 |
 | `status` | `turn/end` 折叠 + catalog/team 的 phase | 没有终态记录 → `missing`（本该有）或 `lost`（曾有过、重启后没了） |
 | `address` | 该通道的寻址面（session id / 成员名 / run id / job id） | 不适用就 `null`，不要编造统一 id |
-| `terminal` | `SubagentStopReason` / `WorkflowStopReason` / `JobStatus` 的终态子集（`completed/killed/failed`，不含 `running/stopping`） | 不要用一个统一词表把三者压成 `completed/failed` |
+| `terminal` | 各词表自己的终态子集：`JobStatus` 去掉 `running/stopping`；subagent 取五种；workflow 取 `completed/cancelled/error` | 不要用一个统一词表把三者压成 `completed/failed` |
 
 ## 三个缺口词，禁止互相折算
 
@@ -96,11 +96,6 @@ DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只管 child，wo
 - **跨通道用 id 关联，不造统一 id**：`childId`（session id）、`runId`、成员名、`jobId` 各是各的；一张图里可以并存，但不要伪造一个“全局委派 id”。
 - **只投影已证明的字段**：图上的每个字段都应有源码/日志证据；扩展字段等有证据再加。
 
-## 待证（不要写成已证）
-
-- 冷恢复后 catalog walk 对**外部 provider** 子代的覆盖：源码显示 external 无 header，实际能否从 catalog 还原边与终态需要一次重启会话验证。
-- 客户端可拿到的投影范围（哪些字段必须由 host 补）：需要一次真实 Web 会话核对，而不是读类型推断。
-
 ## 常见误解
 
 | 你以为 | 实际上 |
@@ -109,6 +104,11 @@ DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只管 child，wo
 | 父会话能看到整条链 | 本会话能列 direct children，并用 `list_agents(descendants)` 走完整棵子树（one-shot 行被过滤、深层只能 interrupt）；看不到的是其它会话或其它通道的链 |
 | 空状态就是失败 | 可能是三个缺口词之一，各自含义不同 |
 | runtime 事件可以当持久源 | `workflow/*` 与 `subagent/start\|end` 是 runtime bus 事件 |
+
+## 待证（不要写成已证）
+
+- 冷恢复后 catalog walk 对**外部 provider** 子代的覆盖：源码显示 external 无 header，实际能否从 catalog 还原边与终态需要一次重启会话验证。
+- 客户端可拿到的投影范围（哪些字段必须由 host 补）：需要一次真实 Web 会话核对，而不是读类型推断。
 
 ## 源码入口
 

@@ -51,7 +51,7 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 
 ## 一个 shipped preset 里通常有什么
 
-以 Web 组合的 `standard` 为例（`packages/bundle/web-app/presets/standard.patch.yml:6`-`127`），一株 preset 的子行按职责可以分成六类：
+以 Web 组合的 `standard` 为例（`packages/bundle/web-app/presets/standard.patch.yml:6`-`127`），一株 preset 的子行按职责可以分成七类：
 
 | 类别 | 典型行 | 作用 |
 |---|---|---|
@@ -67,7 +67,7 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 
 ## 名册、编辑与锁定
 
-- **名册是给 UI 的，不是给模型的**：`agentPresets/list` 返回 id、`isDefault`、名称与 `broken`，`agentPresets/read` 读一份声明的 YAML；模型只有在某个工具的 `agent_preset` 参数里才看得到候选（`preset-selection.ts:46`-`50`、`:65`-`70`）。
+- **名册是给 UI 的，不是给模型的**：`agentPresets/list` 返回 id、`isDefault`、名称、`description` 与 `broken`，`agentPresets/read` 读一份声明的 YAML；模型只有在某个工具的 `agent_preset` 参数里才看得到候选（`preset-selection.ts:46`-`50`、`:65`-`70`）。
 - **编辑落点是 profile patch**：Web 组合把用户编辑持久化到 `$DSH_HOME/profiles/web/cordis.patch.yml`（`packages/bundle/web-app/README.md:91`）；仓库里每个 shipped preset 自己一份 patch 文件，按 manifest 顺序应用（`packages/bundle/web-app/README.md:123`、`package.json` 的 `dsh.bundle.patch`）。
 - **会话开始后不能换**：session 已启动再选 preset 会被拒（`agent-preset/locked`），未知 id 与非法声明分别报 `agent-preset/not-found` / `agent-preset/invalid`（`agent-preset-registry/src/index.ts:207`、`:243`、`:353`）。
 - **坏声明不会拖垮整棵名册**：激活失败被记成 `broken` 并告警，已有 Agent 保留它们正在用的组合（`index.ts:106`-`118`）。
@@ -99,11 +99,6 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 - **改动的作用域是“之后创建的 Agent”**：把 preset 当成不可变修订理解，才能解释为什么热改不生效、为什么跑着的子代仍用旧修订。
 - **运行期没有继承，所以重复是结构性的**：想消除重复只能在构建期做（模板/生成器），并且生成物要被回读校验；不要在运行期等一个不存在的 base。
 
-## 待证（不要写成已证）
-
-- 生成器保真：注释、`!!js` 表达式、行序在“生成 → 回读 → 与 dump 比对”里能否逐字保持——需要一次原型。
-- 名册/选择器在大规模 preset（数十个）下的可读性——属产品体验，不是引擎合同；触发条件是预设数超过一屏或出现误选报告。
-
 ## 常见误解
 
 | 你以为 | 实际上 |
@@ -112,6 +107,11 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | preset 之间是继承树 | 每份自包含，组合是 join，不是继承 |
 | 能力清单可以手写 | 必须从声明派生，否则与实际挂载漂移 |
 | 给子代理同名 preset 会跟随父的修订 | 显式给 id 挂的是当前可用修订 |
+
+## 待证（不要写成已证）
+
+- 生成器保真：注释、`!!js` 表达式、行序在“生成 → 回读 → 与 dump 比对”里能否逐字保持——需要一次原型。
+- 名册/选择器在大规模 preset（数十个）下的可读性——属产品体验，不是引擎合同；触发条件是预设数超过一屏或出现误选报告。
 
 ## 源码入口
 
@@ -127,4 +127,4 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | `packages/preset/agent-preset-registry/src/index.ts:195`-`207`、`:243`、`:353` | 名册/读取远程、未知/非法/锁定三类拒绝 |
 | `packages/preset/agent-preset-registry/README.md:99`、`:60` | 重启后冷恢复使用该 id 的当前定义；旧修订不跨进程保留 |
 | `packages/bundle/web-app/README.md:91`、`:123` | 用户编辑落点与 shipped preset 的 patch 文件 |
-| `packages/bundle/web-app/presets/standard.patch.yml:6`-`127` | standard preset 的子行全貌（六类职责） |
+| `packages/bundle/web-app/presets/standard.patch.yml:6`-`127` | standard preset 的子行全貌（七类职责） |

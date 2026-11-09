@@ -52,7 +52,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 - 非空数组才会把 `agent_preset` 参数暴露给模型；省略则完全禁用模型选择（`preset-selection.ts:10`-`11`、`:91`-`95`）。
 - 校验时机随挂载位置：Host 挂载的工具在加载时校验，preset 内的工具在每个 Agent 初始化时校验（`tool-subagent/README.md:70`）；重复 id、默认值不在集合内都直接失败（`:24`-`32`）；每个 id 都会被 `readDocument` 读一遍，但**不激活**候选（`:65`-`70`）。
 - provider 必须满足 `capabilities.agentPreset && !inheritsParentContext`，否则挂载或启动前拒绝（`:79`-`81`；`subagent/src/index.ts:632`-`636`）。
-- 模型可见的措辞随配置生成：省略时说 `Omit to use <preset>.`，没配默认时说 `Omit to inherit the parent agent's current preset.`（`:46`-`49`）。
+- 模型可见的措辞随配置生成：配了默认时说 `Omit to use <preset>.`；没配默认时说 `Omit to inherit the parent agent's current preset.`（`:46`-`49`）。
 
 **何时该放宽、放宽到哪一档，必须由随工具走的合同文本约束**（见 [`composition/04`](./04-contract-placement-between-policy-and-engine.md)）；引擎只保证“选中的 id 合法”，不保证“选得对”。
 
@@ -84,11 +84,6 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 - **名字不等于能力**：team 成员继承 Lead 组合，把成员起名 `vp-eng` 不会让它获得 `vp-eng` 的 workflow 行（[`composition/01`](./01-channel-capability-differences-and-inheritance.md)）。
 - **可见性要产品自己负责**：没有 hidden 标志，内部 worker 会出现在选择器里；要么接受，要么在客户端按 id 过滤（那是产品决定，不是引擎能力）。
 
-## 待证（不要写成已证）
-
-- `allowedAgentPresets` 打开后模型的**误选率**与升级条件是否被遵守：需要真模型探针，记录每次 `agent_preset` 与任务类型的匹配。
-- 薄 preset 是否真的减少了误用（例如嵌套委派、控制面混淆）：需要对照会话，而不是静态读数。
-
 ## 常见误解
 
 | 你以为 | 实际上 |
@@ -97,6 +92,11 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 | `toolFilter` / `persona` 还能配 | 已退役，加载即报错；历史 descriptor 只在冷恢复时重放 |
 | 省略 preset 会得到一个最小代理 | 等于角色克隆：加入父的当前修订 |
 | 显式给 id 会跟随父的修订 | 挂的是当前可用修订 |
+
+## 待证（不要写成已证）
+
+- `allowedAgentPresets` 打开后模型的**误选率**与升级条件是否被遵守：需要真模型探针，记录每次 `agent_preset` 与任务类型的匹配。
+- 薄 preset 是否真的减少了误用（例如嵌套委派、控制面混淆）：需要对照会话，而不是静态读数。
 
 ## 源码入口
 

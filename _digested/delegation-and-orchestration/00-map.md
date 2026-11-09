@@ -34,7 +34,7 @@
 1. **策略随工具走**：使用边界住在工具的 description 与 prompt section 里，不在部署 persona 里；`docs/` 与包 README 不会被自动注入，模型可以读，但没有任何保证（[`perspectives/03`](./design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md)）。
 2. **深度是绝对量**：child 深度 = parent 深度 + 1，持久 header 是单调 floor；`maxDepth` 是上限，不是预算分配。workflow 的 `agent()` 不传这个上限，但分支 child 仍然计数（[`composition/06`](./preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md)）。
 3. **shipped 里只有 in-process spawn 能钉独立 preset**：fork / workflow / team 加入父或 Lead 的组合修订；外部 provider 自管运行时且能力位更少——三者都不能按子代收窄能力面（[`composition/01`](./preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md)）。
-4. **委派 / 工作流 / 作业单元不自动重试**：终态是模型可见的结果，重试是父代理的有界策略；模型请求自身的 retry policy 是另一层（[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md)）。
+4. **委派 / workflow / 作业单元不自动重试**：终态是模型可见的结果，重试是父代理的有界策略；模型请求自身的 retry policy 是另一层（[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md)）。
 5. **观测是只读投影**：图不调度、不取消、不写状态；缺数据标 `unavailable`，不伪造（[`observation/05`](./completion-and-observation/05-delegation-graph-node-and-edge-projection.md)）。
 6. **挂载绿 ≠ 行为绿**：证据分层，每层只证明自己那层（[`observation/07`](./completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)）。
 

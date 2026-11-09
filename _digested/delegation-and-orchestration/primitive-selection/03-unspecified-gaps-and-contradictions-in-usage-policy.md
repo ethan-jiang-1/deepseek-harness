@@ -27,7 +27,7 @@
 5. **goal ↔ schedule 无互斥说明**：两者都跨时间推进（objective 续跑 vs wall-clock 提醒），互不提及，无选择 guidance。
 6. **「何时转后台」无统一规则**：jobs 的 prompt section 只讲跟踪与收尾纪律；`run_in_background: true` 的决策散落在各 producer 的参数描述里。
 7. **ralph 的 explicit-ask 仅是 prompt 约束**：无机械执行；且 shipped 组合里该工具默认 disabled，模型根本看不到。
-8. **fork 无并发提示**：continuable 的并发 prompt section（"Start independent delegations with … together in one assistant message and continue useful work while they run."，`packages/subagent/tool-subagent/src/index.ts:370`-`380`）只在该 delegation tool 可见时注册；`subagent_fork` 侧是否出现取决于它是否 visible——两个工具共享同一条 section 生成逻辑。
+8. **fork 无并发提示**：continuable 的并发 prompt section（"Start independent delegations with … together in one assistant message and continue useful work while they run."，`packages/subagent/tool-subagent/src/index.ts:368`-`380`）始终注册；文本只由名称排序最前的可见 delegation 工具输出（base 双挂时 fork 侧恒为空）——两个工具共享同一条 section 生成逻辑。
 9. **ask_user_question 的 timed/blocking 二选一**：随部署 mode 切换（`packages/interaction/tool-ask-user/src/index.ts:31` vs `src/timed.ts:27`-`30`），何时该开 timed 无模型级 guidance。
 
 ## 空白的设计后果
@@ -53,7 +53,7 @@
 |------|--------|
 | `packages/workflow/workflow/README.md:28` | “the model explicitly asks” 与工具侧 “the user explicitly asks” 的主语冲突 |
 | `docs/tool-catalog.md:41` | 目录渲染与实际组合已对齐的旁证 |
-| `packages/subagent/tool-subagent/src/index.ts:370`-`380` | 只在 delegation tool 可见时注册的并发提示 |
+| `packages/subagent/tool-subagent/src/index.ts:368`-`380` | 并发提示：section 常在，文本只在名称排序最前时输出 |
 | `packages/experimental/tool-ralph/src/index.ts:177`-`182` | explicit-ask 只是 prompt 约束、默认不装的组合事实 |
 | `packages/interaction/tool-ask-user/src/index.ts:31`、`src/timed.ts:27`-`30` | timed/blocking 二选一随部署切换 |
 | `packages/bundle/base/cordis.patch.yml:340`、`:342` | plan/todo 顺序与 ask_user 的部署 guidance |

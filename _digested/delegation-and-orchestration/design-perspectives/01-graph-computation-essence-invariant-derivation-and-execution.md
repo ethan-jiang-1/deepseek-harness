@@ -36,9 +36,9 @@
 
 - `missing`：blocker 不存在或已删除（"blocker task … is missing or deleted"，`:46`）；
 - `duplicate`：同一 blocker 重复列出（"repeats blocker"，`:41`）；
-- `cycle`：**自引用**（"cannot block itself"，`:38`）或**依赖环**——后者用经典 DFS 三色标记检测：`visiting`/`visited` 两个 Set，访问中再遇即环（":54`-`65`）。这不是 Kahn 算法（Kahn 是反复摘入度零节点来线性化），是环检测——校验的目的是**拒绝非法图**，不是排出执行序。
+- `cycle`：**自引用**（"cannot block itself"，`:38`）或**依赖环**——后者用经典 DFS 三色标记检测：`visiting`/`visited` 两个 Set，访问中再遇即环（`:54`-`:65`）。这不是 Kahn 算法（Kahn 是反复摘入度零节点来线性化），是环检测——校验的目的是**拒绝非法图**，不是排出执行序。
 
-校验有**两个调用点**：任务板命令事务内（`packages/experimental/agent-team/src/task-board.ts:242`，提交前）与事件折叠时（`projection.ts:280`）——**重放也重验**。折叠器捕获异常并将 terminal `failure` 保存在 projection（`projection.ts:225`-`:237`），不会把异常直接抛给事件驱动；后续 `journal.state()` 看到该 failure 后拒绝权威操作（`journal.ts:29`-`:33`）。因此 durable 的保证是非法日志不能继续成为可操作的合法状态，而不是日志重放永远不会产生失败。
+校验有**两个调用点**：任务板命令事务内（`packages/experimental/agent-team/src/task-board.ts:242`，提交前）与事件折叠时（`projection.ts:280`）——**重放也重验**。折叠器捕获异常并将 terminal `failure` 保存在 projection（`projection.ts:225`-`:237`），不会把异常直接抛给事件订阅者；后续 `journal.state()` 看到该 failure 后拒绝权威操作（`journal.ts:29`-`:33`）。因此 durable 的保证是非法日志不能继续成为可操作的合法状态，而不是日志重放永远不会产生失败。
 
 **读时推导（纯函数）**：就绪不是一个存储的状态，是每次读取时推导的（`packages/experimental/agent-team/src/task-view.ts:24`-`26`）：
 
@@ -82,7 +82,7 @@ export function taskReady(state: TeamState, task: TeamTaskSnapshot): boolean {
 
 | 表示 | 存在哪 | 回答什么查询 | 为什么是这种形态 |
 |------|--------|-------------|----------------|
-| **durable 边**：`parentSession`（SessionId） | child 的 session header（`child-agent.ts:149`；`packages/core/session/src/types.ts:107`） | 向上**一跳**（持久） | lineage trace 递归向上（`session-query/src/tracing.ts:135`-`150`）、冷恢复授权（header.parentSession 必须匹配 sender）、settle notice 在 handle 死后仍要找到 durable direct parent |
+| **durable 边**：`parentSession`（SessionId） | child 的 session header（`child-agent.ts:146`；`packages/core/session/src/types.ts:107`） | 向上**一跳**（持久） | lineage trace 递归向上（`session-query/src/tracing.ts:135`-`150`）、冷恢复授权（header.parentSession 必须匹配 sender）、settle notice 在 handle 死后仍要找到 durable direct parent |
 | **活体成员**：`ancestry: WeakSet<Agent>` | 每个 Activation（`activation.ts:55`-`59`） | "这个 caller 在我的**活体**祖先链里吗"（interrupt 授权） | Weak 成员判定保 host-scope 身份，中间祖先退出 registry 也不滞留其 runtime；**不可枚举**——所以 durable parent 要单独存（`activation.ts:55` 的注释明说 WeakSet 只记物化时观察到的 live ancestry） |
 | **向下集合**：`ownedChildren: Set<SessionId>` | 每个 Activation（`activation.ts:65`） | 我还欠谁的命（生命周期闭包） | 一个 Session 至多一个活 Activation，所以 Session id 即可定位活 child，无需再持 runtime 引用；**非空阻塞父结算** |
 

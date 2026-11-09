@@ -58,17 +58,17 @@ workflow runtime 在 `agent()` 开始时先检查 `maxTotalAgents`，递增 star
 
 ## Jobs：owner fence 与 owner capacity 不同
 
-jobs-local 按 exact live owner 计数，只统计 `running` 与 `stopping`；默认上限是 10（`packages/jobs/jobs-local/src/index.ts:33`-`35`、`:207`-`215`）。owner fence 控制谁能读、停和接收通知，capacity 控制该 owner 可以同时占用多少 registry 记录。一个 job 进入 `stopping` 后仍占用容量，直到 producer 的 `done` 结算并释放资源。
+jobs-local 按 exact live owner 计数，只统计 `running` 与 `stopping`；默认上限是 10（`packages/jobs/jobs-local/src/index.ts:33`-`35`、`:220`-`225`）。owner fence 控制谁能读、停和接收通知，capacity 控制该 owner 可以同时占用多少 registry 记录。一个 job 进入 `stopping` 后仍占用容量，直到 producer 的 `done` 结算并释放资源。
 
 jobs-local 的容量和记录是 process-local。进程重启不会恢复旧 registry、ring 或 cursor；不能把 capacity 统计误读成跨重启的持久配额。
 
 ## Agent Teams：持久数据上限不是调度器
 
-Teams 对成员数、任务数、pending mailbox 和消息字节数设硬上限。任务 readiness 会作为 `claim` 和带 owner 的 `reassign` 准入，但 readiness 不会自动启动 owner。write-scope overlap 只是 warning，不是锁；任务 completed 也不释放一个通用调度队列，因为系统没有由 ready 队列自动派工的中心 executor。
+Teams 对成员数、任务数与单条消息字节数设硬上限。任务 readiness 会作为 `claim` 和带 owner 的 `reassign` 准入，但 readiness 不会自动启动 owner。write-scope overlap 只是 warning，不是锁；任务 completed 也不释放一个通用调度队列，因为系统没有由 ready 队列自动派工的中心 executor。
 
 ## 公平性边界
 
-当前源码提供局部公平或隔离机制：workflow 自身的 FIFO slot、jobs 的 exact-owner bucket、teams mailbox 的 per-member pending cap、continuable 的共享 Activation pool。它们不组成跨原语的全局 scheduler：没有一个组件按所有 Agent 的成本、优先级、token、wall-clock 或 job 类型计算全局配额。因此文档应使用“局部容量、队列顺序、owner fence”描述已实现保证，不应声称系统提供全局公平性或饥饿自由。
+当前源码提供局部公平或隔离机制：workflow 自身的 FIFO slot、jobs 的 exact-owner bucket、teams 的单条消息字节上限、continuable 的共享 Activation pool。它们不组成跨原语的全局 scheduler：没有一个组件按所有 Agent 的成本、优先级、token、wall-clock 或 job 类型计算全局配额。因此文档应使用“局部容量、队列顺序、owner fence”描述已实现保证，不应声称系统提供全局公平性或饥饿自由。
 
 ## 驾驶座检查顺序
 
@@ -95,6 +95,6 @@ Teams 对成员数、任务数、pending mailbox 和消息字节数设硬上限�
 | `packages/workflow/workflow-ptc/src/index.ts:106`-`112` | workflow Config 默认限制 |
 | `packages/workflow/workflow-ptc/src/runtime.ts:142`-`:180` | FIFO concurrency slot 与 total cap |
 | `packages/workflow/workflow-ptc/src/runtime.ts:342`-`:347` | per-call item cap |
-| `packages/jobs/jobs-local/src/index.ts:33`-`35`、`:207`-`215` | owner capacity 默认值与拒绝 |
+| `packages/jobs/jobs-local/src/index.ts:33`-`35`、`:220`-`225` | owner capacity 默认值与拒绝 |
 | `packages/experimental/agent-team/src/index.ts:55`-`:90` | Team 成员、任务、消息和字节限制 |
 | `packages/experimental/agent-team/src/task-board.ts:129`-`:186` | ready 的 claim/reassign 准入 |

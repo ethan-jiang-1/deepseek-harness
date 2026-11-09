@@ -27,11 +27,11 @@
 | 工具 description / 参数 description | `ctx.tools.register`（各 tool-* 包） | `create_goal` 的 "Use it when the direct human request is a long-running objective" |
 | 工具自带的 systemPrompt section | `ctx.systemPrompt.section`（各 tool-* 包） | `tool:workflow` 节的 "ONLY when the user explicitly asks" |
 
-约定（master convention）写在工作流工具的源码注释里：
+约定（master convention）写在 `workflow` 工具的源码注释里：
 
 > "Usage policy ships with the tool (the master convention: tool guidance lives in tool plugins as prompt sections, not in the deployment persona)."
 
-—— `packages/workflow/tool-workflow/src/index.ts:324`-`326`
+—— `packages/workflow/tool-workflow/src/index.ts:324`-`325`
 
 即：**使用策略随工具插件走，不放进部署 persona**。换掉工具插件，它的策略文本一起走；同包双实例（如 `subagent` 与 `subagent_fork`）各自携带自己的 wording。包 README 的 "Use this package" / "When to choose it" 节是同一语义的部署者视角转述，可作旁证但不进模型上下文。
 
@@ -41,7 +41,7 @@
 
 > "Record and update a task list to plan multi-step work and show progress; **skip it for trivial single-step tasks**. Add one todo per concrete step before you start."
 
-—— `packages/todo/tool-todo/src/index.ts:46`-`48`
+—— `packages/todo/tool-todo/src/index.ts:45`-`47`
 
 可写接口：`{"todos": [{"content": "修 ref-sweep 越界", "status": "in_progress"}, {"content": "复跑校验", "status": "pending"}]}`——`todos` 是**全量替换**（"The COMPLETE task list, replacing any previous list"，`:142`），status 枚举 `pending/in_progress/completed`。
 
@@ -53,13 +53,13 @@ plan 模式内与 `exit_plan_mode` 互斥（base bundle 的 plan-mode 部署 gui
 
 ### subagent / subagent_fork（有界委派）
 
-同一插件 `@deepseek-ai/dsh-tool-subagent` 按 provider 生成两套 wording（`providerWording(inheritsParentContext)`，`packages/subagent/tool-subagent/src/index.ts:113`-`137`）。
+同一插件 `@deepseek-ai/dsh-tool-subagent` 按 provider 生成两套 wording（`providerWording(inheritsConversation)`，`packages/subagent/tool-subagent/src/index.ts:113`-`137`）。
 
 `subagent`（spawn，fresh）：
 
 > "Delegate a self-contained task to a subagent (a separate agent that works in its own context) to offload focused, independent work — research, a scoped implementation, an analysis — so it does not consume this conversation's context. The subagent returns its result, not its intermediate steps."
 
-—— `packages/subagent/tool-subagent/src/index.ts:130`-`133`；prompt 参数："The complete, self-contained task for the subagent. It does not share this conversation's context, so include everything it needs."（`:135`-`136`）
+—— `packages/subagent/tool-subagent/src/index.ts:129`-`132`；prompt 参数："The complete, self-contained task for the subagent. It does not share this conversation's context, so include everything it needs."（`:134`-`135`）
 
 `subagent_fork`（fork，继承已完成轮次）：
 
@@ -67,7 +67,7 @@ plan 模式内与 `exit_plan_mode` 互斥（base bundle 的 plan-mode 部署 gui
 
 —— `packages/subagent/tool-subagent/src/index.ts:117`-`121`；prompt 参数（`packages/subagent/tool-subagent/src/index.ts:123-124`）："It already sees this conversation's completed turns, so build on them freely and state only what is new."
 
-`backgroundMode` 配置已不存在。现行语义由 `packages/subagent/subagent` 的统一 activation API 承担：**每次委派都变成一次 managed activation，立即返回 child id；continuable 由 per-delegation-tool 选择**（base 注释在 `packages/bundle/base/cordis.patch.yml:373`-`374`：「Continuable background children are selected per delegation tool. The separately loaded follow-up tool registers the one global `send_message`.」）。base 组合只是 `subagent`（provider spawn）与 `subagent_fork`（provider fork）两行（`:380`-`384`、`:391`-`396`），本地 child 接受后续消息、进程外后端自动报告其单次执行（`docs/tool-catalog.md:41`）。README 的选择句："Choose it when the child needs the conversation's completed turns — a follow-up analysis, a review, a continuation. Choose spawn when the child should start clean, or an out-of-process backend when ..."（`packages/subagent/subagent-fork-in-process/README.md:33`）。
+`backgroundMode` 配置已不存在。现行语义由 `packages/subagent/subagent` 的统一 activation API 承担：**每次委派都变成一次 managed activation，立即返回 child id；continuable 由 per-delegation-tool 选择**（base 注释在 `packages/bundle/base/cordis.patch.yml:373`-`374`：「Continuable background children are selected per delegation tool. The separately loaded follow-up tool registers the one global `send_message`.」）。base 组合只是 `subagent`（provider spawn）与 `subagent_fork`（provider fork）两行（`:380`-`384`、`:391`-`396`），本地 child 接受后续消息、进程外后端自动报告其单次执行（`docs/tool-catalog.md:41`）。README 的选择句："Choose fork when the child needs the conversation's completed turns — a follow-up analysis, a review, a continuation. Choose spawn when the child should start clean, or an out-of-process backend when ..."（`packages/subagent/subagent-fork-in-process/README.md:32`）。
 
 ### workflow（规模扇出，需用户显式要求）
 
@@ -101,7 +101,7 @@ prompt section 补充路由："Use same-session goal tools for ordinary long-run
 
 ### jobs（后台平面：跟踪与收尾纪律）
 
-四个工具的 description 只定义操作（`job_output`/`job_list`/`job_kill`，`packages/jobs/tool-jobs/src/index.ts:312`、`:353`、`:373`）；选择语义在 prompt section（`tool:jobs`）：
+三个工具的 description 只定义操作（`job_output`/`job_list`/`job_kill`，`packages/jobs/tool-jobs/src/index.ts:312`、`:353`、`:373`）；选择语义在 prompt section（`tool:jobs`）：
 
 > "Track every background job id you start. You are notified in-session when a job finishes — **do not busy-poll or sleep on one; keep working on independent steps and do not duplicate a running job's work.** Before giving a final answer, collect every still-relevant job with job_output (**set wait: true only when you are genuinely blocked on it**), and job_kill jobs that stopped mattering."
 

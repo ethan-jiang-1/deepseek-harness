@@ -28,18 +28,18 @@
 
 jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`packages/jobs/jobs/README.md:12`）：`JobRegistry` 是抽象 Cordis 服务，直接加载实现类即 throw（组合配错在装载时就失败）；`jobs-local` 是 shipped 的进程内实现——**job 随 harness 进程死亡，跨重启的持久执行需要别的后端实现同一合同**（`packages/jobs/jobs/README.md:33`）。
 
-一个 job 给你什么（`packages/jobs/jobs/README.md:30`-`32`）：
+一个 job 给你什么（`packages/jobs/jobs/README.md:30`-`34`）：
 
 - **稳定 id** `<kind>-<16 位 hex>`（如 `bash-3f9c1a7e2b4d6f80`），producer 注册时给 kind + 一行 label；
 - **状态投影**：`running` → `stopping` → 终态 `completed`/`killed`/`failed`，每次读都是新鲜投影；
 - **结算经事件流播报**，`tool-jobs` 把它变成会话内通知——不需要轮询；
 - **有界输出**：producer 可选字节上限，模型侧每次完整读取或通知都有界。
 
-**owner 隔离是授权不是保密**（`packages/jobs/jobs/README.md:36`-`38`）：job 属于启动它的 agent session，别的 agent 不能读不能停；id 可见但不承载权限，围栏的意义在授权。无 owner 的 job 对任何 caller 开放、活到 service dispose。
+**owner 隔离是授权不是保密**（`packages/jobs/jobs/README.md:38`-`40`）：job 属于启动它的 agent session，别的 agent 不能读不能停；id 可见但不承载权限，围栏的意义在授权。无 owner 的 job 对任何 caller 开放、活到 service dispose。
 
-**first-wins 结算 + `awaited` 防重播**（`packages/jobs/jobs/README.md:87`）：一个终局记录、释放全部 waiter、再一轮 contained 事件投递；`settled` 事件报告它是否释放了一个 live `wait`（`awaited`）——所以 `tool-jobs` **从不播报一个等待者已经收集过的完成**（无论是 `job_output` 的 wait 还是 shell 工具等自己前台命令的 wait）。
+**first-wins 结算 + `awaited` 防重播**（`packages/jobs/jobs/README.md:74`）：一个终局记录、释放全部 waiter、再一轮 contained 事件投递；`settled` 事件报告它是否释放了一个 live `wait`（`awaited`）——所以 `tool-jobs` **从不播报一个等待者已经收集过的完成**（无论是 `job_output` 的 wait 还是 shell 工具等自己前台命令的 wait）。
 
-**输出环的两个受众**（`packages/jobs/jobs/README.md:31`）：producer 用 pull sources（registry 按自己节奏泵的非消费 offset 读者）或经 `JobHandle` 推块，都落进有界 ring——**`stdout`/`stderr` 块进模型，`log` 块只进观察者**（这就是 workflow mirror 的 log 通道不进 `job_output` 渲染的平台根源，[`01`](./01-scripted-workflow-and-sandboxed-fan-out.md)）。观察者按绝对字节偏移读留存块、推进有信号；`readAt` 不消费任何东西、对模型不可见；`updateProgress` 把活进度行发布进每个投影直到结算。
+**输出环的两个受众**（`packages/jobs/jobs/README.md:34`）：producer 用 pull sources（registry 按自己节奏泵的非消费 offset 读者）或经 `JobHandle` 推块，都落进有界 ring——**`stdout`/`stderr` 块进模型，`log` 块只进观察者**（这就是 workflow mirror 的 log 通道不进 `job_output` 渲染的平台根源，[`01`](./01-scripted-workflow-and-sandboxed-fan-out.md)）。观察者按绝对字节偏移读留存块、推进有信号；`readAt` 不消费任何东西、对模型不可见；`updateProgress` 把活进度行发布进每个投影直到结算。
 
 **归档联动**（`packages/jobs/jobs/README.md:96`）：`workspace/session-activity` 把该 Session 拥有的 running/stopping job 报成 `job` 家族；`workspace/session-stop` 以 reason `session archived` 逐个 kill（一个 producer 取消时抛错只记日志，其余 job 继续停）；无主 job 永不为某个 Session 报告或停止。
 
@@ -91,9 +91,9 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 
 `update` 的可写形态是 **complete-record CAS**：`{sessionId, id, expected: <编辑前完整记录>, title?, prompt?, change?}`——`change` 是判别联合（`at`/`every`/`daily`/`weekly`/`cron`），可跨 kind；等价归一化规则是 no-op。DST 规则：本地不存在的时刻跳过、重叠取更早且每天只一次；`every_seconds: 86400` 是固定间隔，不等于 daily 的 wall-clock 语义。`title` 必填（trim 后非空、≤120 字符、**从不从 instruction 派生**）。
 
-绑定与操作边界（`packages/schedule/schedule/README.md:46`-`56`）：reminder 绑定**创建它的 Agent Session**；`schedule_list` 只返 active；这些操作**不激活任何 Agent、不读 Session 日志**；显式删除 = 停未来交付 + 删任务行 + 删交付记录，**已进队列的消息不撤回**。update 是 **complete-record CAS**（与创建/删除同一 FIFO）：可跨 kind（daily 改 cron）、保留 id/绑定/状态/历史，等价归一化规则是 no-op，冲突返回 `schedule_conflict` 不覆写。
+绑定与操作边界（`packages/schedule/schedule/README.md:46`-`56`）：reminder 绑定**创建它的 Agent Session**；`schedule_list` 只返 active；这些操作**不激活任何 Agent、不读 Session 日志**；显式删除 = 停未来交付 + 删任务行 + 删交付记录，**已进队列的消息不撤回**。更新保留 id、绑定、状态与历史，冲突返回 `schedule_conflict` 而不覆写。
 
-**与 Session 归档互锁**（`packages/schedule/schedule/README.md:54`）：有 active reminder 的 Session **归档被拒**，直到它们停止；选择停止 = 删除全部 active reminder；unarchive 不复活它们。
+**与 Session 归档互锁**（`packages/schedule/schedule/README.md:49`）：有 active reminder 的 Session **归档被拒**，直到它们停止；选择停止 = 删除全部 active reminder；unarchive 不复活它们。
 
 **启用面**（`packages/schedule/schedule/README.md:26`；`packages/bundle/web-app/cordis.patch.yml:139`-`140`、`:398`-`399`）：schedule **直接进 Web 组合**——`id: schedule` 服务行与 `id: ui-schedule` 客户端行都在 web-app bundle 里（当前树没有 `experimental/schedule-bundle`）；新工具包 `packages/schedule/tool-schedule` 提供 `schedule_create`/`schedule_list`/`schedule_delete`/`schedule_update`。`Config` 里 `deliveryHistoryDays` 默认 30、`deliveryHistoryRecords` 默认 200；**headless/SDK-only 组合不能单独挂 schedule**——交付依赖 Host Web Session controller 与 Session 持久化后端。
 

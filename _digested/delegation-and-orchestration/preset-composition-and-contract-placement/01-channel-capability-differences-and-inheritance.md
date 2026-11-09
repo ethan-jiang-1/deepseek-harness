@@ -69,12 +69,6 @@
 - **team 成员的能力面 = Lead 的能力面**：需要“某个成员更窄”时，DSH 当前没有这个选项；可行做法是让成员只做 Lead 能做的事，或把窄活交给 spawn 的 child。
 - **控制面按通道分家**：`send_message` 到不了非成员的命名 child、workflow 分支没有按 id 的取消工具、job 的终态不等于模型读过结果（见 [`observation/05`](../completion-and-observation/05-delegation-graph-node-and-edge-projection.md)）。
 
-## 待证（不要写成已证）
-
-- `allowedAgentPresets` 打开后，模型在真实任务里的**误选率**：需要一次真模型探针（记录 `agent_preset` 参数与任务匹配度）。
-- 外部 provider（ACP / Codex / Claude Code / SDK）的能力位差异对继承与寻址的影响：本页只覆盖进程内 spawn/fork；核对方法是分别读 `SubagentCapabilities`（`packages/subagent/subagent/src/types.ts:123`-`129`，进程外后端由 `NO_START_CAPABILITIES` 一律置 `false`，见 `out-of-process.ts:56`-`61`）与 `SubagentProvider.inheritsParentContext`（`types.ts:323`，描述性、非 start 能力位），再用一次外部后端会话验证寻址。
-- team 成员在 `context: 'fork'` 下与 Lead 的修订关系是否与 `fresh` 完全相同：源码路径一致，但缺少真会话证据。
-
 ## 常见误解
 
 | 你以为 | 实际上 |
@@ -83,6 +77,12 @@
 | 外部 provider 只是「远端 spawn」 | 能力位更少，声明 `agentPreset: false`，且不接受后续消息 |
 | 通道能改变深度规则 | 深度是绝对量，任何通道起的 child 都 +1 |
 | 通道只影响性能 | 它决定子代拿到的身份、上下文、工具面与寻址 |
+
+## 待证（不要写成已证）
+
+- `allowedAgentPresets` 打开后，模型在真实任务里的**误选率**：需要一次真模型探针（记录 `agent_preset` 参数与任务匹配度）。
+- 外部 provider（ACP / Codex / Claude Code / SDK）的能力位差异对继承与寻址的影响：本页只覆盖进程内 spawn/fork；核对方法是分别读 `SubagentCapabilities`（`packages/subagent/subagent/src/types.ts:123`-`129`，进程外后端由 `NO_START_CAPABILITIES` 一律置 `false`，见 `out-of-process.ts:56`-`61`）与 `SubagentProvider.inheritsParentContext`（`types.ts:323`，描述性、非 start 能力位），再用一次外部后端会话验证寻址。
+- team 成员在 `context: 'fork'` 下与 Lead 的修订关系是否与 `fresh` 完全相同：源码路径一致，但缺少真会话证据。
 
 ## 源码入口
 

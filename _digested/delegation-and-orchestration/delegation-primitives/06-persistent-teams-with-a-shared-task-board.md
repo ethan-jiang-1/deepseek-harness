@@ -16,7 +16,7 @@
 
 - 每个普通 runtime root 都是隐式 Lead，`TeamId` 就是它的 `SessionId`；没有「创建团队」这一步。
 - 任务板是协调数据（CAS + 写时校验依赖 + 读时推导就绪），不是执行计划——**就绪不派工**，派工靠消息。
-- 成员各自有持久会话；协调状态活在 Lead 日志与各自会话里，重启后 resume 接着来。
+- 成员各自有持久会话；协调状态活在 Lead Session 的事件日志与投影里，重启后 resume 接着来。
 
 ## 为什么是这个形状：设计考量
 
@@ -51,14 +51,14 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
   → Lead 等齐 required teammates → 最终答案
 ```
 
-驾驶座要点（工具描述与 `POLICY`，`packages/experimental/tool-agent-team/src/index.ts:34`-`41`、`:185`-`:365`）：
+驾驶座要点（工具描述与 `POLICY`，`packages/experimental/tool-agent-team/src/index.ts:34`-`41`、`:185`-`:400`）：
 
 - **`send_message` 成功即接纳**："A successful send does not mean the recipient has processed it."——steer 运行中目标于最近 step 边界、start/resume inactive 目标；送达的 peer 消息以稳定 message id + sender 名开头；
-- **`wait_agent` 只观察不唤醒**："Wait for the next teammate status, mailbox, or shared-task change **after this call starts**. This never wakes inactive members and returns noProgress immediately when no other member is running or provisioning. **Re-list after wakeup or timeout instead of polling.**"（`timeout_ms` 10000–3600000，默认 30000）；等待前先 `list_agents` 确认有 running/provisioning 的队友，inactive 的先用 `send_message` 唤醒（`NO_ACTIVE_PEER_MESSAGE`，`:41`-`42`）；
-- **任务板是 CAS 工作流**："Shared-task workflow is list, get, **claim with the current revision**, perform the work, then complete."——`team_task_update` 用 `expected_revision` 做前置条件（"Compare-and-set a shared task action using the latest revision"，`:362`）；`team_task_list` 返回 readiness/owner/revision/blockers/**write-scope warnings**；
+- **`wait_agent` 只观察不唤醒**："Wait for the next teammate status, mailbox, or shared-task change **after this call starts**. This never wakes inactive members and returns noProgress immediately when no other member is running or provisioning. **Re-list after wakeup or timeout instead of polling.**"（`timeout_ms` 10000–3600000，默认 30000）；等待前先 `list_agents` 确认有 running/provisioning 的队友，inactive 的先用 `send_message` 唤醒（`NO_ACTIVE_PEER_MESSAGE`，`:45`）；
+- **任务板是 CAS 工作流**："Shared-task workflow is list, get, **claim with the current revision**, perform the work, then complete."——`team_task_update` 用 `expected_revision` 做前置条件（"Compare-and-set a shared task action using the latest revision"，`:371`）；`team_task_list` 返回 readiness/owner/revision/blockers/**write-scope warnings**；
 - **任务就绪不自动开工**："**Task readiness never starts an owner.**"——依赖解开只是就绪，owner 不会因此开 turn，要 `send_message` 去叫。
 
-**可写接口**（`packages/experimental/tool-agent-team/src/index.ts:185`-`365`）：
+**可写接口**（`packages/experimental/tool-agent-team/src/index.ts:185`-`:400`）：
 
 ```json
 { "description": "审计 01-05 页引用", "context": "fresh" }
@@ -67,7 +67,7 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
 { "task_id": "t3", "expected_revision": 2, "action": "claim" }
 ```
 
-`context`：`fresh`（无 Lead 历史）/ `fork`（继承已完成轮次）；`write_scopes` 是 **advisory** 工作区相对前缀（"Advisory workspace-relative file or directory prefixes this task expects to modify"，`:295`-`298`）；任务状态、依赖、描述和 owner 的每次变更都通过带 `expected_revision` 的 CAS 请求提交。
+`context`：`fresh`（无 Lead 历史）/ `fork`（继承已完成轮次）；`write_scopes` 是 **advisory** 工作区相对前缀（"Advisory workspace-relative file or directory prefixes this task expects to modify"，`:308`）；任务状态、依赖、描述和 owner 的每次变更都通过带 `expected_revision` 的 CAS 请求提交。
 
 ## 子 Agent 能否继续启动子 Agent？
 
@@ -115,7 +115,7 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 **你会看到什么**（Web 会话头部的 Team 动作，读 Lead Session 投影）：名册里两个 auditor 的状态行 provisioning → running → inactive（注意 `inactive` 不代表完成——状态词汇表）；任务板上两个 audit 从 pending 走到 completed、fix 从 blocked → ready → in_progress → completed；写域若有重叠会显示警告。
 
-**任意一步崩溃**：消息与任务板都在 Lead Session 的事件日志里（四个 log-only 事件 + 投影，见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）——重启后队友 resume 时收到排队的消息，任务板原样；对照外部叙事虚构的 `dsh rollback --task`：真实的恢复语义是**会话级持久**，不是任务级回滚。走查中每条规则的出处：explicit-ask/唤醒/收尾门槛在 `packages/experimental/tool-agent-team/src/index.ts:31`-`37`；CAS 与工具描述在 `:177`-`365`；fork 种子在 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
+**任意一步崩溃**：消息与任务板都在 Lead Session 的事件日志里（四个 log-only 事件 + 投影，见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）——重启后队友 resume 时收到排队的消息，任务板原样；对照外部叙事虚构的 `dsh rollback --task`：真实的恢复语义是**会话级持久**，不是任务级回滚。走查中每条规则的出处：explicit-ask/唤醒/收尾门槛在 `packages/experimental/tool-agent-team/src/index.ts:31`-`37`；CAS 与工具描述在 `:177`-`:400`；fork 种子在 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
 ## POLICY 的协作纪律（共享文件系统是核心假设）
 
@@ -159,9 +159,9 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 | 路径 | 一句话 |
 |------|--------|
 | `packages/experimental/tool-agent-team/src/index.ts:34`-`41` | `POLICY` 全文：写域纪律、FS_STALE_VERSION 协议、状态词汇、收尾门槛 |
-| `packages/experimental/tool-agent-team/src/index.ts:185`-`365` | 九个成员级工具的描述（spawn/wait/task 族） |
+| `packages/experimental/tool-agent-team/src/index.ts:185`-`:400` | 九个成员级工具的描述（spawn/wait/task 族） |
 | `packages/experimental/tool-agent-team/src/index.ts:45` | `NO_ACTIVE_PEER_MESSAGE`：wait 前先唤醒的指令 |
-| `packages/experimental/agent-team-profile/cordis.patch.yml` | 组合代价：四个 disable 行（`:4`-`14`）+ insert 三插件（`:16`-`33`） |
+| `packages/experimental/agent-team-profile/cordis.patch.yml` | 组合代价：四个 disable 行（`:4`-`14`）+ insert 三插件（`:16`-`32`） |
 | `packages/experimental/agent-team-profile/README.md:49` | "subagent 与 fork 工具被 disable；Workflow 保留 spawn" |
 | `packages/experimental/agent-team/src/index.ts:55`-`90` | 服务上限（maxMembers 16/8、maxTasks 256 等） |
 | `packages/experimental/agent-team/README.md:12` | 持久语义一句话（crashes/reloads/interruptions） |

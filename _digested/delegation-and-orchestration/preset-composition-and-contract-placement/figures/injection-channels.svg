@@ -18,7 +18,7 @@
   </defs>
 
   <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">组合的结构：单一归属链、深度预算与四条注入通道</text>
-  <text x="40" y="54" font-size="12" fill="#8c8c8c">一切 child（subagent / workflow 的 agent() / teams 成员）归属发起 run 的 agent（host.ts:197-212）；四条通道汇入同一个 inbox，busy/idle 行为各异</text>
+  <text x="40" y="54" font-size="12" fill="#8c8c8c">in-process child（subagent / workflow 的 agent() / teams 成员）归属发起 run 的 agent（host.ts:197-212）；外部 provider 不共享同一 runtime 树；四条通道汇入同一个 inbox，busy/idle 行为各异</text>
 
   <rect x="40" y="150" width="250" height="88" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
   <text x="55" y="176" font-size="12" font-weight="bold" fill="#1677ff">job 完成通知</text>
@@ -72,7 +72,7 @@
   <line x1="656" y1="350" x2="696" y2="320" stroke="#595959" stroke-width="2" marker-end="url(#a)"/>
 
   <rect x="700" y="334" width="340" height="96" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
-  <text x="720" y="360" font-size="13" font-weight="bold" fill="#52c41a">children（depth 1 · 全部归属 caller）</text>
+  <text x="720" y="360" font-size="13" font-weight="bold" fill="#52c41a">children（depth 1 · in-process 均归属 caller）</text>
   <text x="720" y="382" font-size="10.5" fill="#333">subagent（continuable/one-shot）· workflow 的</text>
   <text x="720" y="398" font-size="10.5" fill="#333">每个 agent()（最多 1000）· teams 成员（spawn/fork）</text>
   <text x="720" y="420" font-size="10" fill="#8c8c8c">settle notice 回 caller inbox；产物落 caller Session</text>

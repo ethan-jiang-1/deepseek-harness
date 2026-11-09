@@ -47,7 +47,7 @@
 
 一个 goal round 内：`todo_write`（并行模式，shipped 即 `allowParallelInProgress: true`——该开关的存在理由就是"agents that may run work concurrently (subagents, background commands, workflow fan-out)"，`packages/todo/tool-todo/README.md:36`）→ 起若干 subagent 有界委派（读码/研究/评审）→ **不忙轮询**（[`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md) tool:jobs 纪律）→ settle notice steer 进当前 step 或 queue 成 turn → 回写产物 → agent idle → Round Driver 注入下一轮 `<goal_round>`（"inspect workspace instead of assuming earlier narration"，[`primitives/04`](../delegation-primitives/04-cross-round-goals-and-the-round-driver.md)）。
 
-支撑事实：goal round 是全工具普通 turn（05）；subagent continuable 默认后台 + settle notice 三态投递（03）；fork 可让子任务建立在已完成轮次上且保 KV 前缀（03）。
+支撑事实：goal round 是全工具普通 turn（[`primitives/04`](../delegation-primitives/04-cross-round-goals-and-the-round-driver.md)）；subagent continuable 默认后台 + settle notice 三态投递（[`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)）；fork 可让子任务建立在已完成轮次上且保 KV 前缀（[`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)）。
 
 ## 模式 B：后台扇出 + 跨轮收割
 
@@ -90,8 +90,8 @@
 | 路径 | 一句话 |
 |------|--------|
 | `packages/workflow/workflow-ptc/src/host.ts:200`-`212` | 事实一：每个 `agent()` child 归属 run 的 parent |
-| `packages/goal/tool-goal/src/wrapup.ts:27`、`:37` | 事实四：终结后 wrapup 禁再调工具 |
-| `packages/jobs/tool-jobs/src/index.ts:254` | 事实五：最终答案前收 job 纪律 |
+| `packages/goal/tool-goal/src/wrapup.ts:27`、`:37` | 收尾纪律①：终结后 wrapup 禁再调工具 |
+| `packages/jobs/tool-jobs/src/index.ts:254` | 收尾纪律②：最终答案前收 job |
 | `packages/todo/tool-todo/README.md:36` | todo 并行开关的组合理由 |
 | `packages/bundle/base/cordis.patch.yml:340` | plan 与 todo 的顺序纪律 |
 | `packages/subagent/subagent/src/manager.ts:1186`-`1206` | 结算通知的三种投递（queue/steer/inject）与公告门 |

@@ -45,7 +45,7 @@ workflow 必须区分三种失败：
 
 ## 启动、取消与处置竞态
 
-一次 child 启动先进入 `children.startAgent()`，provider 可能在 `AbortSignal` 已触发后才发布 run。host 在发布后再次检查 signal；如果已取消，就立即处置 child 并拒绝这次 start（`packages/workflow/workflow-ptc/src/host.ts:200`-`:219`）。这避免把取消窗口中的 child 当成成功启动。
+一次 child 启动先进入 `children.startAgent()`，provider 可能在 `AbortSignal` 已触发后才发布 run。host 在发布后再次检查 signal；如果已取消，就立即处置 child 并拒绝这次 start（`packages/workflow/workflow-ptc/src/host.ts:200`-`:227`）。这避免把取消窗口中的 child 当成成功启动。
 
 取消 workflow 时，host 将脚本 signal 置为 aborted，run 结果结算为 `cancelled`；随后处置已发布 child，并等待 pending startup 与 child disposal 完成。未在 start 后发布 child 的调用不会伪造一对生命周期事件；仍处于 live map 的成员会在最终处置阶段合成 `agent-end(cancelled)`（`packages/workflow/workflow-ptc/src/host.ts:276`-`:303`）。
 
@@ -53,7 +53,7 @@ workflow 必须区分三种失败：
 
 ## 观察记录不是恢复 checkpoint
 
-`workflow/start`、`workflow/phase`、`workflow/log`、`workflow/agent-start`、`workflow/agent-end` 和 `workflow/end` 为观察者提供生命周期与进度事实。`workflow/end` 刻意不包含最终 result value；tool recorder 将这些事件追加到父 Session，但 recorder append 失败时只记录警告并停止后续记录，不影响正在运行的 workflow（`packages/workflow/tool-workflow/src/index.ts:89`-`:149`）。
+`workflow/start`、`workflow/phase`、`workflow/log`、`workflow/agent-start`、`workflow/agent-end` 和 `workflow/end` 为观察者提供生命周期与进度事实。`workflow/end` 刻意不包含最终 result value；tool recorder 把这些运行时事件转写成 `tool-workflow/*` 记录追加到父 Session，但 recorder append 失败时只记录警告并停止后续记录，不影响正在运行的 workflow（`packages/workflow/tool-workflow/src/index.ts:89`-`:149`）。
 
 因此日志能够回答“曾经观察到什么”，不能回答“从哪一行恢复脚本”。PTC 脚本、未完成的 Promise、child handles 和 VM 内局部变量都不由这些事件重建。
 

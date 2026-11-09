@@ -23,8 +23,8 @@
   <text x="76" y="259" font-size="10.5" fill="#ad4e00">runId、seq、label、phase、childId、outcome</text>
 
   <rect x="60" y="278" width="330" height="46" rx="7" fill="#fce7f3" stroke="#db2777" stroke-width="1.5"/>
-  <text x="76" y="298" font-size="12" font-weight="bold" fill="#9d174d">team/member · task · message（Lead 会话）</text>
-  <text x="76" y="315" font-size="10.5" fill="#9d174d">名册、任务板、消息收发；agentTeam 投影</text>
+  <text x="76" y="298" font-size="12" font-weight="bold" fill="#9d174d">team/member · task（Lead 会话）</text>
+  <text x="76" y="315" font-size="10.5" fill="#9d174d">名册与任务板；agentTeam 投影。历史 team/message/* 只可解码</text>
 
   <rect x="60" y="334" width="330" height="46" rx="7" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
   <text x="76" y="354" font-size="12" font-weight="bold" fill="#237804">job/registered · job/settled（owner 会话）</text>
@@ -36,7 +36,7 @@
 
   <rect x="60" y="446" width="330" height="46" rx="7" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
   <text x="76" y="466" font-size="12" font-weight="bold" fill="#434343">turn/end（各自会话）</text>
-  <text x="76" y="483" font-size="10.5" fill="#595959">completed / aborted / blocked / error / max-tokens / interrupted</text>
+  <text x="76" y="483" font-size="10.5" fill="#595959">completed / aborted / blocked / error / max-tokens / interrupted / forked（仅 fork 种子）</text>
 
   <path d="M390 133 L470 220" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
   <path d="M390 189 L470 240" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
