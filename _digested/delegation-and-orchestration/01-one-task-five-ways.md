@@ -16,8 +16,8 @@
 |---|---|---|---|---|
 | 自己做 | 当前 Agent | 当前会话 | 每个 step | 你自己的判断 |
 | `subagent` | 子代理 | child 自己的会话 | 结算时一条通知 | child 的最终回答 |
-| `workflow` | 模型写的脚本 | 脚本变量 + 各 child 会话 | 脚本返回时（后台则通知） | 脚本返回值 + `stopReason` |
-| `goal` | Goal Round Driver | 同一个会话，跨轮 | 每轮结束 | `complete` / `blocked`，且要人认可 |
+| `workflow` | 模型写的脚本 | 脚本变量 + 各 child 会话 | 脚本返回时（后台则通知） | 脚本返回值；run 级 `stopReason` 在引擎结果与 run-end 上 |
+| `goal` | Goal Round Driver | 同一个会话，跨轮 | 每轮结束 | `complete`（模型自报）；`blocked` 是另一终态，不是完成 |
 | `agent-teams` | Lead 与各成员 | 各自会话 + 任务板 | 持续 | 任务状态 + Lead 把关 |
 
 ![五种交付：横向是「谁持循环」，纵向是三件你迟早要问的事——记忆放哪、结果怎么回来、凭什么算完成](./figures/five-ways.svg)
@@ -65,8 +65,8 @@
 - **你怎么说**：`create_goal({ objective: "……" })`。objective 与验收标准写在同一句里。
 - **谁持循环**：Goal Round Driver。会话空闲后它开下一轮，模型在轮内自己决定做什么。
 - **它活在哪**：**同一个会话**，跨轮累积。目标本身是一条持久事件，恢复会话后还在。
-- **你什么时候看到**：每轮结束；轮与轮之间你可以 `get_goal` / `update_goal`。
-- **怎么算完成**：`update_goal complete`，而且只在目标真的达成时用；撞同一个阻塞连续三轮才允许报 `blocked`（工具默认门槛 3）。
+- **你什么时候看到**：每轮结束；goal 工具在某一轮的模型 turn 内调用，轮与轮之间没有 turn，工具用不了（人可以走 `/goal` 命令或 UI）。
+- **怎么算完成**：`update_goal complete`，而且只在目标真的达成时用。`blocked` 是另一条终态：自动续轮里要已开始至少 3 轮才允许报（默认门槛；工具只挡早报，不校验是否同一阻塞条件），直接人类 turn 不受这个门槛限制。
 - **典型失败**：单轮任务开 goal，答完又自己开一轮；objective 写得太虚，每轮都在重新解释它；恢复会话后以为它还在跑——resume / fork 之后 goal 是 disarmed 的，要显式 `resume`。
 - **深读**：[`primitives/04`](./delegation-primitives/04-cross-round-goals-and-the-round-driver.md)；轮次状态机在 [`../agent-loop/01-goal-lifecycle.md`](../agent-loop/01-goal-lifecycle.md)。
 
@@ -112,6 +112,6 @@
 | workflow 前台 / 后台两种返回物 | `packages/workflow/tool-workflow/src/index.ts:315`、`:463` |
 | workflow 只把最终值还给父、子代理失败变 `null` | `packages/workflow/tool-workflow/README.md:38`、`packages/workflow/tool-workflow/src/index.ts:158`-`170` |
 | goal 的创建语义、resume/fork 后 disarm | `packages/goal/tool-goal/src/index.ts:51`-`54`、`:117` |
-| `blocked` 的连续轮次门槛默认 3 | `packages/goal/tool-goal/src/index.ts:39` |
+| `blocked` 的轮次门槛默认 3，且只在 goal-round 授权下检查 | `packages/goal/tool-goal/src/index.ts:39`、`:305`-`312`、`packages/goal/tool-goal/src/authority.ts:105`-`116` |
 | Team 的默认成员 / 任务上限与 profile 钉值 | `packages/experimental/agent-team/src/index.ts:42`-`45`、`packages/experimental/agent-team-profile/cordis.patch.yml:16`-`22` |
 | Team 就绪不派发、Lead 必须等齐 | `packages/experimental/tool-agent-team/src/index.ts:41` |

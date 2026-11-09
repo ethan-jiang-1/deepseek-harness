@@ -28,7 +28,7 @@
 
 ### 4. 能不能让子代理用更便宜的模型
 
-只有当那个工具行开启了模型选择时，参数面里才会出现 `provider` / `model` / `reasoning_effort`。base 的 `subagent` 行没开；web preset 开了；`subagent_fork` 行永远不开——它要保持与父同路由以复用前缀缓存。
+只有当那个工具行开启了模型选择时，参数面里才会出现 `provider` / `model` / `reasoning_effort`。base 的 `subagent` 行没开，web preset 开了；shipped 的 `subagent_fork` 行也不开——它要保持与父同路由以复用前缀缓存。工具本身支持对继承上下文的 provider 开启模型选择，但会警告前缀复用可能失效。
 
 外部 provider（Codex、Claude Code、ACP、SDK）自管运行时，能力位更少，参数面也不同。深读 [`composition/01`](./preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md)。
 
@@ -52,9 +52,7 @@ fatal 不会变成 `null`：写错的选项、非法 schema、触到 cap 都会�
 
 ### 8. goal 明明做完了，为什么还在开下一轮
 
-因为「做完」是你说的，不是工具状态说的。停自动续跑只有两条路：模型调用 `update_goal complete`，或人显式 `pause`；而 `complete` 本身也只是自报——它不证明目标达成。
-
-轮次还有上限；到上限会停，但那不是完成。深读 [`primitives/04`](./delegation-primitives/04-cross-round-goals-and-the-round-driver.md)。
+因为「做完」是你说的，不是工具状态说的。停自动续跑的路径不止一条：`complete`（模型自报）、`blocked`、人显式 `pause`，或轮次到上限——其中只有 `complete` 声称做完了，而它也只是自报，不证明目标达成。深读 [`primitives/04`](./delegation-primitives/04-cross-round-goals-and-the-round-driver.md)。
 
 ### 9. resume 之后 goal 为什么不动了
 
@@ -93,11 +91,11 @@ fatal 不会变成 `null`：写错的选项、非法 schema、触到 cap 都会�
 | fresh / fork 的历史边界 | `packages/subagent/tool-subagent/src/index.ts:113`-`137` |
 | 冷恢复不经过 provider | `packages/subagent/subagent/src/manager.ts:1254`-`1329` |
 | job 进程内、随 harness 结束 | `packages/jobs/jobs-local/README.md:12`、`:61` |
-| child 按父 preset 重建工具面、shipped 无 toolFilter | `packages/subagent/subagent/src/child-agent.ts:186`-`215` |
+| child 按父 preset 重建工具面；shipped 组合不配 toolFilter | `packages/subagent/subagent/src/child-agent.ts:186`-`218`、`packages/subagent/tool-subagent/src/index.ts:147`-`151` |
 | 模型选择参数的出现条件 | `packages/subagent/tool-subagent/src/index.ts:214`-`262`、`packages/bundle/web-app/presets/cordis.patch.yml:92`-`103` |
 | workflow 的 `null` 与 fatal 两级 | `packages/workflow/workflow/src/index.ts:121`-`148` |
 | `log` channel 仅人可见 | `packages/workflow/tool-workflow/src/record.ts:1`-`6` |
-| goal 的 complete 语义与 disarm | `packages/goal/tool-goal/src/index.ts:51`-`54`、`:117` |
+| goal 的创建语义与 resume / fork 后的 disarm | `packages/goal/tool-goal/src/index.ts:51`-`54`、`:117` |
 | Team 的四个 disable 行 | `packages/experimental/agent-team-profile/cordis.patch.yml:3`-`14` |
 | 证据分层 | `docs/testing.md`、[`observation/07`](./completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md) |
-| 深度的绝对量与 workflow 分支计数 | `packages/subagent/subagent/src/depth.ts:20`-`35`、`packages/workflow/workflow-ptc/src/host.ts:203`-`219` |
+| 深度的绝对量与 workflow 分支计数 | `packages/subagent/subagent/src/child-agent.ts:49`-`58`、`packages/subagent/subagent/src/index.ts:196`、`packages/subagent/subagent/src/depth.ts:20`-`35`、`packages/workflow/workflow-ptc/src/host.ts:203`-`219` |

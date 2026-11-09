@@ -41,13 +41,13 @@ DSH 自己的词以 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 为准（`plugin
 | 收窄 | 无对应类型 | 让子代理比父更窄；现役杠杆只有给 spawn 行钉一个薄 preset | 「沙箱」「权限」 |
 | 合同载体 | 无对应类型 | 承载规则的五个位置：工具 description、prompt 段、`SKILL.md`、`AGENTS.md`、`docs/` | 「文档」 |
 | 终态 | 五个成员，merge-extensible | 一次子代理运行的结局分类 | 「完成」「失败」 |
-| 结算 / settle | 无 pending inbox 且无 owned children | 结果固定、父收到通知的那一刻 | 「完成」 |
+| 结算 / settle | 无 pending inbox 且无 owned children | 结果固定与资源释放；通知只对 parent delivery 发 | 「完成」 |
 | 谱系 / lineage | `parentSession` 链 | 谁是谁的父；深度从根往下数 | 「调用栈」 |
 | 证据层（本组词） | 无对应类型 | 声明 / 挂载 / 有效工具面 / 行为，四层各证各的 | 「测试」 |
 
 ## 五组最容易混的词
 
-1. **`subagent`（工具）vs child（Agent）**：前者是一次调用，后者是会持久存在的 Agent 与会话。工具返回了，child 才开始跑。
+1. **`subagent`（工具）vs child（Agent）**：前者是一次调用，后者是会持久存在的 Agent 与会话。工具返回的是启动结果（child id），child 此时已经在跑。
 2. **Session vs Activation**：会话是日志，Activation 是驻留。`settled` 只释放 Activation，会话还在，所以还能冷恢复。
 3. **preset vs profile**：profile 是进程级装入什么，preset 是会话级组合。子代理能不能钉自己的 preset，取决于通道，不取决于 profile。
 4. **终态 vs 完成**：五个终态是运行的结局，不是任务的成功证明。`completed` 与「用户要的东西做对了」是两件事。
@@ -67,7 +67,7 @@ DSH 自己的词以 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 为准（`plugin
 
 | 事实 | 出处 |
 |---|---|
-| child 是独立上下文里的 Agent，返回结果而非中间步骤 | `packages/subagent/tool-subagent/src/index.ts:215`-`218` |
+| child 是独立上下文里的 Agent，返回结果而非中间步骤 | `packages/subagent/tool-subagent/src/index.ts:113`-`137`（fresh / fork 两份边界句） |
 | 一个 durable Session、至多一个进程内 Activation | `docs/subsystems/subagent.md`、`.agents/notes/implemented/feature/2026-07-28-continuable-subagent-conversations.md` |
 | 有效工具面记录在 `request/header.tools` | `docs/subsystems/session.md` |
 | job 进程内、随 harness 结束；已持久的事件仍可读 | `packages/jobs/jobs-local/README.md:12`、`:32`、`:61` |
