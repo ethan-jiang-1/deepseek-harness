@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 524" width="1080" height="524" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+  </defs>
+<rect x="0" y="0" width="1080" height="524" fill="#ffffff"/>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">五种交付：同一个任务，换掉的到底是哪一件东西</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">任务不变（查清四十处调用点并给出改法）；每换一列，就换掉一种你能依赖的东西</text>
+  <rect x="200" y="84" width="200" height="26" rx="4" fill="#f5f5f5" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="300" y="101" font-size="11.5" font-weight="bold" fill="#333" text-anchor="middle">谁持循环</text>
+  <rect x="412" y="84" width="210" height="26" rx="4" fill="#f5f5f5" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="517" y="101" font-size="11.5" font-weight="bold" fill="#333" text-anchor="middle">记忆放在哪</text>
+  <rect x="634" y="84" width="200" height="26" rx="4" fill="#f5f5f5" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="734" y="101" font-size="11.5" font-weight="bold" fill="#333" text-anchor="middle">结果何时回来</text>
+  <rect x="846" y="84" width="194" height="26" rx="4" fill="#f5f5f5" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="943" y="101" font-size="11.5" font-weight="bold" fill="#333" text-anchor="middle">凭什么算完成</text>
+  <rect x="40" y="116" width="152" height="62" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="116" y="140" font-size="13" font-weight="bold" fill="#1677ff" text-anchor="middle">自己做</text>
+  <text x="116" y="157" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">同上下文</text>
+  <text x="212" y="140" font-size="11" font-weight="bold" fill="#333">当前 Agent</text>
+  <text x="212" y="157" font-size="10" font-weight="normal" fill="#8c8c8c">模型每步现决定</text>
+  <text x="424" y="140" font-size="11" font-weight="bold" fill="#333">当前会话</text>
+  <text x="424" y="157" font-size="10" font-weight="normal" fill="#8c8c8c">中间结果全留在上下文</text>
+  <text x="646" y="140" font-size="11" font-weight="bold" fill="#333">每个 step</text>
+  <text x="646" y="157" font-size="10" font-weight="normal" fill="#8c8c8c">同步返回</text>
+  <text x="858" y="140" font-size="11" font-weight="bold" fill="#333">你自己的判断</text>
+  <text x="858" y="157" font-size="10" font-weight="normal" fill="#8c8c8c">没有外部证据</text>
+  <line x1="40" y1="185" x2="1040" y2="185" stroke="#f0f0f0" stroke-width="1"/>
+  <rect x="40" y="190" width="152" height="62" rx="6" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="116" y="214" font-size="13" font-weight="bold" fill="#52c41a" text-anchor="middle">subagent</text>
+  <text x="116" y="231" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">独立子上下文</text>
+  <text x="212" y="214" font-size="11" font-weight="bold" fill="#333">子代理</text>
+  <text x="212" y="231" font-size="10" font-weight="normal" fill="#8c8c8c">自己的 step 循环</text>
+  <text x="424" y="214" font-size="11" font-weight="bold" fill="#333">child 自己的会话</text>
+  <text x="424" y="231" font-size="10" font-weight="normal" fill="#8c8c8c">父对话只留结果</text>
+  <text x="646" y="214" font-size="11" font-weight="bold" fill="#333">结算时一条通知</text>
+  <text x="646" y="231" font-size="10" font-weight="normal" fill="#8c8c8c">调用当场只返回 id</text>
+  <text x="858" y="214" font-size="11" font-weight="bold" fill="#333">child 的最终回答</text>
+  <text x="858" y="231" font-size="10" font-weight="normal" fill="#8c8c8c">completed ≠ 正确</text>
+  <line x1="40" y1="259" x2="1040" y2="259" stroke="#f0f0f0" stroke-width="1"/>
+  <rect x="40" y="264" width="152" height="62" rx="6" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="116" y="288" font-size="13" font-weight="bold" fill="#fa8c16" text-anchor="middle">workflow</text>
+  <text x="116" y="305" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">脚本控制流</text>
+  <text x="212" y="288" font-size="11" font-weight="bold" fill="#333">模型写的脚本</text>
+  <text x="212" y="305" font-size="10" font-weight="normal" fill="#8c8c8c">代码决定并发与分支</text>
+  <text x="424" y="288" font-size="11" font-weight="bold" fill="#333">脚本变量 + 各 child 会话</text>
+  <text x="424" y="305" font-size="10" font-weight="normal" fill="#8c8c8c">父看不到中间过程</text>
+  <text x="646" y="288" font-size="11" font-weight="bold" fill="#333">脚本返回时</text>
+  <text x="646" y="305" font-size="10" font-weight="normal" fill="#8c8c8c">后台则等 job 通知</text>
+  <text x="858" y="288" font-size="11" font-weight="bold" fill="#333">返回值 + stopReason</text>
+  <text x="858" y="305" font-size="10" font-weight="normal" fill="#8c8c8c">单项失败变 null</text>
+  <line x1="40" y1="333" x2="1040" y2="333" stroke="#f0f0f0" stroke-width="1"/>
+  <rect x="40" y="338" width="152" height="62" rx="6" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="116" y="362" font-size="13" font-weight="bold" fill="#d4380d" text-anchor="middle">goal</text>
+  <text x="116" y="379" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">跨轮次</text>
+  <text x="212" y="362" font-size="11" font-weight="bold" fill="#333">Goal Round Driver</text>
+  <text x="212" y="379" font-size="10" font-weight="normal" fill="#8c8c8c">空闲后开下一轮</text>
+  <text x="424" y="362" font-size="11" font-weight="bold" fill="#333">同一个会话</text>
+  <text x="424" y="379" font-size="10" font-weight="normal" fill="#8c8c8c">跨轮累积，目标持久</text>
+  <text x="646" y="362" font-size="11" font-weight="bold" fill="#333">每轮结束</text>
+  <text x="646" y="379" font-size="10" font-weight="normal" fill="#8c8c8c">轮与轮之间可干预</text>
+  <text x="858" y="362" font-size="11" font-weight="bold" fill="#333">complete / blocked</text>
+  <text x="858" y="379" font-size="10" font-weight="normal" fill="#8c8c8c">要人认可才算业务完成</text>
+  <line x1="40" y1="407" x2="1040" y2="407" stroke="#f0f0f0" stroke-width="1"/>
+  <rect x="40" y="412" width="152" height="62" rx="6" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="116" y="436" font-size="13" font-weight="bold" fill="#722ed1" text-anchor="middle">agent-teams</text>
+  <text x="116" y="453" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">持续协作</text>
+  <text x="212" y="436" font-size="11" font-weight="bold" fill="#333">Lead 与各成员</text>
+  <text x="212" y="453" font-size="10" font-weight="normal" fill="#8c8c8c">Lead 用对话派活</text>
+  <text x="424" y="436" font-size="11" font-weight="bold" fill="#333">各自会话 + 任务板</text>
+  <text x="424" y="453" font-size="10" font-weight="normal" fill="#8c8c8c">消息与任务都持久</text>
+  <text x="646" y="436" font-size="11" font-weight="bold" fill="#333">持续</text>
+  <text x="646" y="453" font-size="10" font-weight="normal" fill="#8c8c8c">消息与状态随时可查</text>
+  <text x="858" y="436" font-size="11" font-weight="bold" fill="#333">任务状态 + Lead 把关</text>
+  <text x="858" y="453" font-size="10" font-weight="normal" fill="#8c8c8c">ready 不等于已派发</text>
+  <text x="40" y="506" font-size="11.5" font-weight="normal" fill="#595959">读法：先看你需要哪一列不变——需要父对话保留过程就别交出去；需要跨轮就换 driver；需要持续协作就得接受组合被换掉。</text>
+</svg>

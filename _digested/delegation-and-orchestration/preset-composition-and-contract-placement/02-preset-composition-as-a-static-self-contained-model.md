@@ -4,6 +4,20 @@
 
 本页回答：**一个 preset 到底声明了什么？它是模型还是投影？能力面藏在哪、怎么被证明？** 通道差异见 [`composition/01`](./01-channel-capability-differences-and-inheritance.md)，收窄见 [`composition/03`](./03-worker-profiles-and-the-only-narrowing-lever.md)，合同见 [`composition/04`](./04-contract-placement-between-policy-and-engine.md)。
 
+## 读完你能回答
+
+- 一个 preset 到底声明了什么，能力面藏在哪几处？
+- 为什么「能力清单」必须从声明派生，而不能手写？
+- 改了 preset，为什么跑着的 Agent 没变？
+
+## 心智模型
+
+核心判断：**preset 是一份静态、自包含的声明，Agent 在创建时 join 一次。**
+
+- 声明 = `id` + `plugins` 子列表；没有 hidden 标志，也没有工具过滤字段。
+- Agent 加入的是「那一代 revision」；显式给 id（哪怕等于父的 id）挂的是当前可用修订，不是父那一代。
+- 所以改 preset 影响之后创建的 Agent，不影响已经跑着的会话。
+
 ## 一句话
 
 preset 不是一份能力清单，而是**一株静态、自包含、eager 加载的插件子树**：能力在子插件行里、合同在这些插件的 prompt/skill 里、深度在行配置里——**没有任何一个字段声称「这个 preset 能做什么」**。想知道它实际能做什么，只能读组合、挂载、看会话实际工具面。
@@ -89,6 +103,15 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 
 - 生成器保真：注释、`!!js` 表达式、行序在“生成 → 回读 → 与 dump 比对”里能否逐字保持——需要一次原型。
 - 名册/选择器在大规模 preset（数十个）下的可读性——属产品体验，不是引擎合同；触发条件是预设数超过一屏或出现误选报告。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| preset 是运行时开关 | 静态声明；改动只影响之后创建的 Agent |
+| preset 之间是继承树 | 每份自包含，组合是 join，不是继承 |
+| 能力清单可以手写 | 必须从声明派生，否则与实际挂载漂移 |
+| 给子代理同名 preset 会跟随父的修订 | 显式给 id 挂的是当前可用修订 |
 
 ## 源码入口
 

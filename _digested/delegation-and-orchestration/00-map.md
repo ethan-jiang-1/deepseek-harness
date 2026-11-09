@@ -6,6 +6,38 @@
 
 外部叙事常把 DSH 描绘成「Captain 规划 + Kahn 入度队列 + Reviewer 门禁」的中心化 Task DAG 调度引擎。当前源码没有一个按 ready 队列自动派工的中心 executor；实际系统由可组合原语、workflow 局部控制流、Teams 任务图准入、Host schedule 和 JobRegistry 等多个机制组成。模型按任务的时间跨度与隔离需求选择原语；选择边界住在工具的 description（部分工具另有 prompt section）里，包 README 只是部署者视角的转述（证据见 [`selection/01`](./primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)）。
 
+## 第一次来：先读三页
+
+| 你现在的状态 | 读 | 为什么是这页 |
+|---|---|---|
+| 完全不知道这些工具在干什么 | [`01 五种交付`](./01-one-task-five-ways.md) | 同一个任务交给五种原语，看清每次换掉了什么 |
+| 名词（seam / preset / Activation / 终态）看不懂 | [`02 词与平面`](./02-terms-and-planes.md) | 14 个承重词 + 三个平面，读完再进机制页 |
+| 有具体困惑，只想查一句 | [`03 十二问`](./03-newcomer-questions.md) | 新人最常问的十二个问题，每问一段 |
+
+这三页只铺地基，不下机制结论；所有数字、行为与失败面都在后面的机制页。
+
+## 四条读法
+
+![四条读法：十分钟选型、半天写插件、一小时复核、只看结论](./figures/reading-routes.svg)
+
+| 你有多少时间 / 要做什么 | 路线 |
+|---|---|
+| **10 分钟，决定用哪个** | [`01`](./01-one-task-five-ways.md) → [`selection/02`](./primitive-selection/02-cross-primitive-routing-and-the-official-upgrade-order.md) 的路由表 → 目标原语页的「心智模型」 |
+| **半天，要写会委派的插件** | [`02`](./02-terms-and-planes.md) → [`primitives/00`](./delegation-primitives/00-map.md) 的维度矩阵 → [`composition/01`](./preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md) 通道差异 → [`composition/03`](./preset-composition-and-contract-placement/03-worker-profiles-and-the-only-narrowing-lever.md) 收窄 → [`composition/06`](./preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md) 深度与容量 → [`observation/07`](./completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md) 证据分层 |
+| **一小时，复核一条断言** | 下面的「症状 → 页」→ 对应机制页 → 页末「源码入口」→ `node _digested/ref-sweep.mjs --quotes _digested/delegation-and-orchestration` |
+| **只想看结论** | 下面六条不变量；要展开就点每条后面的链接 |
+
+## 六条不变量（本组承重结论）
+
+这些话在本组每页都成立，重复出现是为了让单页也能独立读：
+
+1. **策略随工具走**：使用边界住在工具的 description 与 prompt section 里，不在部署 persona 里；`docs/` 与包 README 不会被自动注入，模型可以读，但没有任何保证（[`perspectives/03`](./design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md)）。
+2. **深度是绝对量**：child 深度 = parent 深度 + 1，持久 header 是单调 floor；`maxDepth` 是上限，不是预算分配。workflow 的 `agent()` 不传这个上限，但分支 child 仍然计数（[`composition/06`](./preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md)）。
+3. **shipped 里只有 in-process spawn 能钉独立 preset**：fork / workflow / team 加入父或 Lead 的组合修订；外部 provider 自管运行时且能力位更少——三者都不能按子代收窄能力面（[`composition/01`](./preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md)）。
+4. **委派 / 工作流 / 作业单元不自动重试**：终态是模型可见的结果，重试是父代理的有界策略；模型请求自身的 retry policy 是另一层（[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md)）。
+5. **观测是只读投影**：图不调度、不取消、不写状态；缺数据标 `unavailable`，不伪造（[`observation/05`](./completion-and-observation/05-delegation-graph-node-and-edge-projection.md)）。
+6. **挂载绿 ≠ 行为绿**：证据分层，每层只证明自己那层（[`observation/07`](./completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)）。
+
 ## 三类读者，别坐混
 
 本组同时服务三类读者，但页面按座位/用途分开：
@@ -58,17 +90,7 @@
 | 某个节点状态是空的，不知道算不算失败 | [`observation/05`](./completion-and-observation/05-delegation-graph-node-and-edge-projection.md) 的三个缺口词 |
 | team 会话里全局 subagent 控制面被替换 / 根会话的控制名让位 | [`primitives/06`](./delegation-primitives/06-persistent-teams-with-a-shared-task-board.md) |
 | workflow 分支返回 `null` | [`observation/06`](./completion-and-observation/06-workflow-reproducibility-cancellation-and-missing-results.md)、[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md) |
-
-## 组内不变量
-
-这些话在本组每页都成立，重复出现是为了让单页也能独立读：
-
-1. **策略随工具走**：使用边界住在工具的 description 与 prompt section 里，不在部署 persona 里；docs 不会被自动注入（[`perspectives/03`](./design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md)）。
-2. **深度是绝对量**：child 深度 = parent 深度 + 1，持久 header 是单调 floor；`maxDepth` 是上限，不是预算分配（[`composition/06`](./preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md)）。
-3. **shipped 里只有 in-process spawn 能钉独立 preset**：fork / workflow / team 加入父或 Lead 的组合修订；外部 provider 自管运行时且能力位更少——三者都不能按子代收窄能力面（[`composition/01`](./preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md)）。
-4. **委派/工作流/作业单元不自动重试**：终态是模型可见的结果，重试是父代理的有界策略；模型请求自身的 retry policy 是另一层（[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md)）。
-5. **观测是只读投影**：图不调度、不取消、不写状态；缺数据标 `unavailable`，不伪造（[`observation/05`](./completion-and-observation/05-delegation-graph-node-and-edge-projection.md)）。
-6. **挂载绿 ≠ 行为绿**：证据分层，每层只证明自己那层（[`observation/07`](./completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)）。
+| 派出去之后不知道它跑没跑 / 关掉窗口还会不会继续 | [`03 十二问`](./03-newcomer-questions.md) 第 2、5 问 |
 
 ## 子专题
 

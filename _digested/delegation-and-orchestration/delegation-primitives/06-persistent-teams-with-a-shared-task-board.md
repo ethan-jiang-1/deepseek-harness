@@ -4,6 +4,20 @@
 
 本页回答：启用 agent-teams 的组合代价是什么（你换掉了什么）？Lead 的实际工作流怎么串九个工具？`team:policy` 里的协作纪律有哪些？机制（TeamService、journal、投影、九工具注册、UI 落点）见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)；选择语义（仅显式要求、与 subagent 控制面互斥）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；队友创建复用的 spawn/fork 语义见 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
+## 读完你能回答
+
+- 启用 team 之后，哪些工具从模型视野里消失了？
+- Lead 的九个工具怎么串成一条工作流，谁负责派发？
+- 为什么任务 `ready` 不等于已派发、`completed` 不等于完成？
+
+## 心智模型
+
+一句话：**Team 不是「多了几个工具」，是换掉委派工具面的一种协作模式。**
+
+- 每个普通 runtime root 都是隐式 Lead，`TeamId` 就是它的 `SessionId`；没有「创建团队」这一步。
+- 任务板是协调数据（CAS + 写时校验依赖 + 读时推导就绪），不是执行计划——**就绪不派工**，派工靠消息。
+- 成员各自有持久会话；协调状态活在 Lead 日志与各自会话里，重启后 resume 接着来。
+
 ## 为什么是这个形状：设计考量
 
 **为什么需要 teams 这个原语**：subagent 委派解决「一次性把活交出去」，但**协调状态活不过一次委派**——任务清单、成员分工、相互消息在 one-shot 结束时全部蒸发；全局控制面（`list_agents`/`send_message`）是**人类驱动**的：要人（或顶层模型）逐个派活、逐个收结果。当工作是「几个人**持续**协作、互相等、共享一个任务板」时，这两者都撑不住。teams 的答案是给 Lead 一套**持久的协调状态**：具名队友（可 offline/resume）、跨崩溃的任务板与邮箱（事件日志 + 投影，见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）——**协调状态本身成为会话的可重放事实**。这个选择的代价是组合互斥（见下节启用代价表）：重名控制面与 subagent/fork 工具行必须让位——**DSH 用「换掉低层原语」而不是「叠加」来表达这是一个不同的协作模式**，避免同一会话里两套控制语义打架。experimental 的包装也是考量：用户要能从 npm 一键装完整组合，而内部原型保持私有——所以它是 `OPTIONAL_BUNDLES` 里的一个独立 bundle，而非散装包（`.agents/notes/archived/architecture/2026-08-18-experimental-agent-teams-packages.md`）。
@@ -128,6 +142,17 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 | 与 subagent 工具 | — | 保留 spawn provider | **互斥替代**（工具行 disable；Subagent 服务保留） |
 
 一句话判据：**一次性委派用 subagent，吞吐型扇出用 workflow，需要长驻协作与共享任务板才上 teams**——而 teams 的成员创建机制就是 spawn/fork（[`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)），所以它买到的是协调状态，不是新的委派原语。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| 装 Team 只是多几个协作工具 | 它 disable 四行 subagent 工具，直接委派改走 `spawn_teammate` |
+| 任务 `ready` 会自动开工 | readiness never starts an owner；要 Lead 发消息 |
+| `writeScopes` 是写锁 | 只是告警；Bash、格式化工具、代码生成器不受版本守卫保护 |
+| `wait_agent` 会叫醒成员 | 只观察之后发生的变化；要叫醒先 `send_message` |
+| 队友可以再拉队友 | 只有 Lead 能 `spawn_teammate` |
+| Team 与 workflow 互斥 | bundle 只 disable subagent 系列；workflow 保留 spawn provider，仍可扇出 |
 
 ## 源码入口
 

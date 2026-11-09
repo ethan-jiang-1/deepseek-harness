@@ -17,7 +17,7 @@
 | [`runtime-profiles/`](../runtime-profiles/00-map.md) | 一次启动装入什么：五个 launcher profile 与 desktop 应用自有 profile 的组合、差异与装载路径。 | 7 | 2 | 5 | 0 |
 | [`session-and-loop/`](../session-and-loop/00-map.md) | 会话存在哪、怎么读回来：事件映射、inbox/turn 时序、换 loop 的半径、格式世代。 | 5 | 0 | 5 | 0 |
 | [`agent-loop/`](../agent-loop/00-map.md) | 一次对话怎么推进与收尾：turn/step/activity/goal 边界、goal 状态机与自动续轮。 | 5 | 0 | 5 | 0 |
-| [`delegation-and-orchestration/`](../delegation-and-orchestration/00-map.md) | 两条座位：驾驶座看原语机制与选择，作者座看组合、合同、终态与观测；含九条陷阱与源码入口。 | 1 | 1 | 0 | 0 |
+| [`delegation-and-orchestration/`](../delegation-and-orchestration/00-map.md) | 入门三页 + 两条座位：驾驶座看原语机制与选择，作者座看组合、合同、终态与观测；含九条陷阱与源码入口。 | 4 | 4 | 0 | 0 |
 | [`delegation-and-orchestration/delegation-primitives/`](../delegation-and-orchestration/delegation-primitives/00-map.md) | 每个原语是什么、保证什么、隔离什么、谁推进、怎么结算。 | 8 | 2 | 6 | 0 |
 | [`delegation-and-orchestration/primitive-selection/`](../delegation-and-orchestration/primitive-selection/00-map.md) | 官方边界句、互路由、升级阶梯、没说清的部分。 | 4 | 3 | 1 | 0 |
 | [`delegation-and-orchestration/preset-composition-and-contract-placement/`](../delegation-and-orchestration/preset-composition-and-contract-placement/00-map.md) | 能力面怎么组合、怎么收窄、合同放哪、深度与通知怎么叠加。 | 7 | 7 | 0 | 0 |
@@ -137,6 +137,9 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../delegation-and-orchestration/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-one-task-five-ways`](../delegation-and-orchestration/01-one-task-five-ways.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`02-terms-and-planes`](../delegation-and-orchestration/02-terms-and-planes.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`03-newcomer-questions`](../delegation-and-orchestration/03-newcomer-questions.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `delegation-and-orchestration/delegation-primitives/`
 

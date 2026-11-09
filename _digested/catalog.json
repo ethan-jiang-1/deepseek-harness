@@ -520,7 +520,7 @@
     {
       "dir": "delegation-and-orchestration",
       "title": "委派与编排",
-      "intent": "两条座位：驾驶座看原语机制与选择，作者座看组合、合同、终态与观测；含九条陷阱与源码入口。",
+      "intent": "入门三页 + 两条座位：驾驶座看原语机制与选择，作者座看组合、合同、终态与观测；含九条陷阱与源码入口。",
       "kind": "group",
       "map": "00-map.md",
       "pages": [
@@ -528,6 +528,30 @@
           "file": "00-map.md",
           "title": "Delegation and Orchestration · 委派与编排",
           "role": "map",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "01-one-task-five-ways.md",
+          "title": "One Task, Five Deliveries · 同一个任务，五种交付",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "02-terms-and-planes.md",
+          "title": "Terms and Planes · 本组的词与三个平面",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "03-newcomer-questions.md",
+          "title": "Questions Newcomers Ask · 新手十二问",
+          "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
           "status": "reverified",
           "source": "page"

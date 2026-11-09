@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 434" width="1080" height="434" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+  </defs>
+<rect x="0" y="0" width="1080" height="434" fill="#ffffff"/>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">一次后台作业的生命周期：注册、运行、结算、通知</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">producer 干活，registry 管生命周期与观察；owner 围栏决定谁能读、谁能停</text>
+  <rect x="40" y="100" width="170" height="54" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.2"/>
+  <text x="125" y="122" font-size="11.5" font-weight="bold" fill="#1677ff" text-anchor="middle">producer</text>
+  <text x="125" y="140" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">bash / pwsh / workflow</text>
+  <line x1="213" y1="127" x2="256" y2="127" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="260" y="100" width="170" height="54" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.2"/>
+  <text x="345" y="122" font-size="11.5" font-weight="bold" fill="#1677ff" text-anchor="middle">注册</text>
+  <text x="345" y="140" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">id + owner + kind</text>
+  <line x1="433" y1="127" x2="476" y2="127" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="480" y="100" width="170" height="54" rx="6" fill="#f6ffed" stroke="#52c41a" stroke-width="1.2"/>
+  <text x="565" y="122" font-size="11.5" font-weight="bold" fill="#52c41a" text-anchor="middle">running</text>
+  <text x="565" y="140" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">输出进有界 ring</text>
+  <line x1="653" y1="127" x2="696" y2="127" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="700" y="100" width="170" height="54" rx="6" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.2"/>
+  <text x="785" y="122" font-size="11.5" font-weight="bold" fill="#fa8c16" text-anchor="middle">settled</text>
+  <text x="785" y="140" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">first-wins，一个终局</text>
+  <line x1="873" y1="127" x2="896" y2="127" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="900" y="100" width="170" height="54" rx="6" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.2"/>
+  <text x="985" y="122" font-size="11.5" font-weight="bold" fill="#722ed1" text-anchor="middle">通知</text>
+  <text x="985" y="140" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">idle 开轮 / busy 注入</text>
+  <rect x="40" y="178" width="420" height="96" rx="6" fill="#ffffff" stroke="#52c41a" stroke-width="1"/>
+  <text x="54" y="196" font-size="10" font-weight="bold" fill="#52c41a">输出环的两个受众</text>
+  <text x="54" y="214" font-size="9" font-weight="normal" fill="#595959">stdout / stderr 块 → 进模型（job_output 渲染）</text>
+  <text x="54" y="230" font-size="9" font-weight="normal" fill="#595959">log 块 → 只进观察者（UI 可见，模型不可见）</text>
+  <text x="54" y="246" font-size="9" font-weight="normal" fill="#8c8c8c">wait 与 read 推进游标；超时返回 [status: running]</text>
+  <text x="54" y="262" font-size="9" font-weight="normal" fill="#8c8c8c">first-wins 结算后不再重复播报</text>
+  <rect x="700" y="178" width="340" height="96" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="714" y="196" font-size="10" font-weight="bold" fill="#1677ff">owner 围栏</text>
+  <text x="714" y="214" font-size="9" font-weight="normal" fill="#595959">job 属于启动它的 agent</text>
+  <text x="714" y="230" font-size="9" font-weight="normal" fill="#595959">别的 agent 读不到也停不了</text>
+  <text x="714" y="246" font-size="9" font-weight="normal" fill="#595959">id 可见，但不承载权限</text>
+  <text x="714" y="262" font-size="9" font-weight="normal" fill="#8c8c8c">防误操作与越权，不防看见</text>
+  <line x1="565" y1="156" x2="565" y2="296" stroke="#d4380d" stroke-width="1.2"/>
+  <rect x="480" y="296" width="170" height="46" rx="6" fill="#fff1f0" stroke="#d4380d" stroke-width="1.2"/>
+  <text x="565" y="316" font-size="11" font-weight="bold" fill="#d4380d" text-anchor="middle">job_kill</text>
+  <text x="565" y="332" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">取消 → stopping → settled</text>
+  <rect x="40" y="372" width="1000" height="44" rx="6" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="56" y="391" font-size="10.5" font-weight="normal" fill="#595959">进程内实现：job 随 harness 结束，输出 ring 不续；只有已经写进 Session 的注册与结算事件还能读到。</text>
+  <text x="56" y="408" font-size="10.5" font-weight="normal" fill="#595959">schedule 不在这一条线上：它是时间平面，到点只投一条 follow-up 消息回原会话。</text>
+</svg>

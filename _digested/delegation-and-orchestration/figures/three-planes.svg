@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 542" width="1080" height="542" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+  </defs>
+<rect x="0" y="0" width="1080" height="542" fill="#ffffff"/>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">三个平面：执行、持久、观测——它们之间没有自动一致性</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">判断任何现象前先问：这条事实属于哪一面？它活过进程吗？谁能改它？</text>
+  <rect x="40" y="84" width="300" height="32" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="190" y="105" font-size="12" font-weight="bold" fill="#1677ff" text-anchor="middle">执行面 · 现在谁在跑</text>
+  <rect x="40" y="132" width="300" height="56" rx="6" fill="#ffffff" stroke="#1677ff" stroke-width="1"/>
+  <text x="54" y="155" font-size="11.5" font-weight="bold" fill="#333">循环归属</text>
+  <text x="54" y="174" font-size="10" font-weight="normal" fill="#8c8c8c">模型 / 脚本 / driver / Lead</text>
+  <rect x="40" y="198" width="300" height="56" rx="6" fill="#ffffff" stroke="#1677ff" stroke-width="1"/>
+  <text x="54" y="221" font-size="11.5" font-weight="bold" fill="#333">进程位置</text>
+  <text x="54" y="240" font-size="10" font-weight="normal" fill="#8c8c8c">Host、PTC 子进程、外部 provider</text>
+  <rect x="40" y="264" width="300" height="56" rx="6" fill="#ffffff" stroke="#1677ff" stroke-width="1"/>
+  <text x="54" y="287" font-size="11.5" font-weight="bold" fill="#333">并发与配额</text>
+  <text x="54" y="306" font-size="10" font-weight="normal" fill="#8c8c8c">FIFO 槽、total / item cap</text>
+  <rect x="40" y="330" width="300" height="56" rx="6" fill="#ffffff" stroke="#1677ff" stroke-width="1"/>
+  <text x="54" y="353" font-size="11.5" font-weight="bold" fill="#333">权限捕获</text>
+  <text x="54" y="372" font-size="10" font-weight="normal" fill="#8c8c8c">第一个 await 之前固定</text>
+  <rect x="40" y="396" width="300" height="56" rx="6" fill="#ffffff" stroke="#1677ff" stroke-width="1"/>
+  <text x="54" y="419" font-size="11.5" font-weight="bold" fill="#333">取消</text>
+  <text x="54" y="438" font-size="10" font-weight="normal" fill="#8c8c8c">cancel / abort / interrupt</text>
+  <rect x="390" y="84" width="300" height="32" rx="6" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="540" y="105" font-size="12" font-weight="bold" fill="#52c41a" text-anchor="middle">持久面 · 什么活过了进程</text>
+  <rect x="390" y="132" width="300" height="56" rx="6" fill="#ffffff" stroke="#52c41a" stroke-width="1"/>
+  <text x="404" y="155" font-size="11.5" font-weight="bold" fill="#333">Session 日志</text>
+  <text x="404" y="174" font-size="10" font-weight="normal" fill="#8c8c8c">追加写的事实源</text>
+  <rect x="390" y="198" width="300" height="56" rx="6" fill="#ffffff" stroke="#52c41a" stroke-width="1"/>
+  <text x="404" y="221" font-size="11.5" font-weight="bold" fill="#333">child 会话与 header</text>
+  <text x="404" y="240" font-size="10" font-weight="normal" fill="#8c8c8c">parentSession、depth</text>
+  <rect x="390" y="264" width="300" height="56" rx="6" fill="#ffffff" stroke="#52c41a" stroke-width="1"/>
+  <text x="404" y="287" font-size="11.5" font-weight="bold" fill="#333">descriptor</text>
+  <text x="404" y="306" font-size="10" font-weight="normal" fill="#8c8c8c">冷恢复用的身份</text>
+  <rect x="390" y="330" width="300" height="56" rx="6" fill="#ffffff" stroke="#52c41a" stroke-width="1"/>
+  <text x="404" y="353" font-size="11.5" font-weight="bold" fill="#333">goal / 任务板 / 邮箱</text>
+  <text x="404" y="372" font-size="10" font-weight="normal" fill="#8c8c8c">协调状态本身是事件</text>
+  <rect x="390" y="396" width="300" height="56" rx="6" fill="#ffffff" stroke="#52c41a" stroke-width="1"/>
+  <text x="404" y="419" font-size="11.5" font-weight="bold" fill="#333">job 注册与结算记录</text>
+  <text x="404" y="438" font-size="10" font-weight="normal" fill="#8c8c8c">事件留存，运行不留存</text>
+  <rect x="740" y="84" width="300" height="32" rx="6" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="890" y="105" font-size="12" font-weight="bold" fill="#fa8c16" text-anchor="middle">观测面 · 谁看得见</text>
+  <rect x="740" y="132" width="300" height="56" rx="6" fill="#ffffff" stroke="#fa8c16" stroke-width="1"/>
+  <text x="754" y="155" font-size="11.5" font-weight="bold" fill="#333">模型可见面</text>
+  <text x="754" y="174" font-size="10" font-weight="normal" fill="#8c8c8c">工具结果、通知、job_output</text>
+  <rect x="740" y="198" width="300" height="56" rx="6" fill="#ffffff" stroke="#fa8c16" stroke-width="1"/>
+  <text x="754" y="221" font-size="11.5" font-weight="bold" fill="#333">有效工具面</text>
+  <text x="754" y="240" font-size="10" font-weight="normal" fill="#8c8c8c">request/header.tools</text>
+  <rect x="740" y="264" width="300" height="56" rx="6" fill="#ffffff" stroke="#fa8c16" stroke-width="1"/>
+  <text x="754" y="287" font-size="11.5" font-weight="bold" fill="#333">投影</text>
+  <text x="754" y="306" font-size="10" font-weight="normal" fill="#8c8c8c">catalog、team view、状态</text>
+  <rect x="740" y="330" width="300" height="56" rx="6" fill="#ffffff" stroke="#fa8c16" stroke-width="1"/>
+  <text x="754" y="353" font-size="11.5" font-weight="bold" fill="#333">证据</text>
+  <text x="754" y="372" font-size="10" font-weight="normal" fill="#8c8c8c">快照、e2e、引用扫描</text>
+  <rect x="740" y="396" width="300" height="56" rx="6" fill="#ffffff" stroke="#fa8c16" stroke-width="1"/>
+  <text x="754" y="419" font-size="11.5" font-weight="bold" fill="#333">UI 卡片</text>
+  <text x="754" y="438" font-size="10" font-weight="normal" fill="#8c8c8c">另一棵树上的呈现</text>
+  <line x1="344" y1="292" x2="382" y2="292" stroke="#595959" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="363" y="282" font-size="9.5" font-weight="normal" fill="#8c8c8c" text-anchor="middle">产生</text>
+  <line x1="694" y1="292" x2="732" y2="292" stroke="#595959" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="713" y="282" font-size="9.5" font-weight="normal" fill="#8c8c8c" text-anchor="middle">折叠</text>
+  <rect x="40" y="468" width="1000" height="54" rx="6" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="56" y="490" font-size="11.5" font-weight="bold" fill="#333">三个不许跨的等号</text>
+  <text x="56" y="509" font-size="11.5" font-weight="normal" fill="#595959">执行面完成 ≠ 业务完成   ·   持久面有记录 ≠ 模型读过   ·   观测面绿 ≠ 行为对</text>
+</svg>

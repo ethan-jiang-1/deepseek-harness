@@ -4,6 +4,20 @@
 
 本页回答：**一次委派/一次 run 结束时到底有哪几种下场？父代理怎么知道？谁有权重试、最多几次、什么不该重试？** 五个“完成时刻”的区分见 [`observation/01`](./01-acceptance-visibility-quiescence-and-disposal.md)，workflow 的不可复现性见 [`observation/06`](./06-workflow-reproducibility-cancellation-and-missing-results.md)。
 
+## 读完你能回答
+
+- 五个终态分别是什么，`interrupted` 与 `lost` 各属于哪一层？
+- 父代理怎么知道 child 结束了？
+- 为什么引擎不重试，父侧该按什么判据重试？
+
+## 心智模型
+
+核心判断：**终态是运行的结局，不是任务的成败；通知是一条持久消息，不是返回值。**
+
+- five 个成员：`completed` / `aborted` / `error` / `max-tokens` / `refusal`，表是 merge-extensible。
+- `interrupted` 是 turn-end 标记，折叠到 `aborted`；`lost` 是观测面的缺口词，不是引擎状态。
+- 重试发生在父侧，有界、有停止条件；引擎只负责把结局记下来。
+
 ## 一句话
 
 DSH 的委派/工作流/作业单元**不重试**（模型请求的重试是 provider 的 retry policy，属另一层）：引擎只把一次执行收敛到一个可命名的终态，并把抓到的结果以一条持久消息交给父代理。重试是**父代理的策略**，必须可见、有界、过幂等门；把“引擎没重试”误读成“父代理应该兜底”是这类事故的起点。
@@ -21,6 +35,8 @@ DSH 的委派/工作流/作业单元**不重试**（模型请求的重试是 pro
 | `refusal` | 子代理拒绝任务（含 pre-step `blocked`） | `… declined the task.` |
 
 证据：`packages/subagent/subagent/src/types.ts:227`-`247`；结算提示文案在 `continuation-messages.ts:106`-`129`。
+
+![五个终态与 turn-end 的折叠：未知变体默认落到 error，而不是 completed](./figures/terminal-states.svg)
 
 ### turn-end → 终态的折叠规则
 
@@ -114,6 +130,15 @@ DSH 的委派/工作流/作业单元**不重试**（模型请求的重试是 pro
 
 - 模型在真实任务里**是否会按上表重试**：需要真模型探针（fake provider 只能证明机制，不证明行为）。
 - notice 在不同父状态下被模型实际处理的概率：需要录制会话统计，而不是读源码推断。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| 终态只有四个 | 五个，还有 `refusal`；表是 merge-extensible |
+| `interrupted` 是第六个终态 | 它是 turn-end 标记，折叠到 `aborted` |
+| `lost` 是引擎状态 | 它是观测面的缺口词 |
+| 子代理失败会自动重试 | 不自动；重试是父代理自己写的有界策略 |
 
 ## 源码入口
 

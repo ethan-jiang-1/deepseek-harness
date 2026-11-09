@@ -4,9 +4,25 @@
 
 本页回答：**怎么让子代理比父“更窄”？DSH 给不给 per-agent 的工具白名单？为什么子代理常常拿到父的全部工具？** 通道差异见 [`composition/01`](./01-channel-capability-differences-and-inheritance.md)，preset 是什么见 [`composition/02`](./02-preset-composition-as-a-static-self-contained-model.md)。
 
+## 读完你能回答
+
+- 子代理为什么默认拿到父的全部工具？
+- DSH 给不给 per-agent 的工具白名单，为什么？
+- 省略 `agent_preset` 到底等于什么？
+
+## 心智模型
+
+核心判断：**收窄不是过滤工具，是换一个更薄的 preset。**
+
+- 省略 preset = 加入父当前修订：工具面与父相同。
+- 没有 `toolFilter` / `allowedTools`；`persona` / `toolFilter` 配置已退役，加载即报迁移错误。
+- 要更窄：先把 leaf 需要的那几行做成一份 preset，再让 spawn 行指向它。
+
 ## 一句话
 
 DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给它钉一个薄 preset。省略 `agentPreset` 的子代理不是“权限更少的 worker”，而是**加入父当前那一代 preset 的新成员**——工具面与父相同。没有 per-agent 的工具允许列表；工具侧的 `persona`/`toolFilter` 配置已退役，加载即报迁移错误；描述符里的历史 `toolFilter` 只在冷恢复时重放。
+
+![唯一收窄杠杆：spawn + 薄 preset；fork / workflow / team 无法按子代收窄](./figures/narrowing-lever.svg)
 
 ## 机制：省略 = 加入父修订
 
@@ -72,6 +88,15 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 
 - `allowedAgentPresets` 打开后模型的**误选率**与升级条件是否被遵守：需要真模型探针，记录每次 `agent_preset` 与任务类型的匹配。
 - 薄 preset 是否真的减少了误用（例如嵌套委派、控制面混淆）：需要对照会话，而不是静态读数。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| 可以给子代理一个工具白名单 | 没有 per-agent allowlist；低层 `tools.restrict` 只在紧作用域里由生产代码调用 |
+| `toolFilter` / `persona` 还能配 | 已退役，加载即报错；历史 descriptor 只在冷恢复时重放 |
+| 省略 preset 会得到一个最小代理 | 等于角色克隆：加入父的当前修订 |
+| 显式给 id 会跟随父的修订 | 挂的是当前可用修订 |
 
 ## 源码入口
 

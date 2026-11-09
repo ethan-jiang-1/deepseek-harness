@@ -4,6 +4,20 @@
 
 本页回答：模型写的 workflow 编排脚本在什么进程里跑、能调用什么钩子、失败如何结算、结果如何持久化？工具的选择边界（什么时候该用）不在本页，见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
 
+## 读完你能回答
+
+- 脚本在哪个进程里跑、能调用哪五个钩子、拿不到什么？
+- 哪些错误会杀掉整个脚本，哪些只让一项变成 `null`？
+- 前台与后台两种跑法，父对话分别看到什么、谁能取消？
+
+## 心智模型
+
+一句话：**循环在脚本里，能力面在工具里，隔离在 PTC 进程里。**
+
+1. 工具层拥有模型可见面（schema、`tool:workflow` prompt 段、结果 envelope），引擎层拥有解析、上限与取消，PTC 层拥有进程与文件策略——三层各自可换，换引擎不改可见行为。
+2. 脚本里没有文件系统、网络、timer 或 Node API；能扇出的只有 `agent()`，所以「干活的是 agents」。
+3. 父对话只收最终值，中间值活在脚本变量里——这是它与「多轮委派」最本质的差别。
+
 ## 为什么是这个形状：设计考量
 
 没有 workflow 时，扇出型工作（多文件审计、迁移、多角度调研）只能**逐轮委派**：每个中间结果都落进父上下文、计划无处持久、每步协调花一次模型往返（`.agents/notes/archived/feature/2026-07-05-dynamic-workflows.md` Problem 节）。设计者的答案是让**脚本而不是对话**持有循环、分支与中间结果——模型写一段 JS 编排脚本，脚本扇出子代理、自己消化中间值，父上下文只收最终结果。这是 Claude Code dynamic workflows 的合同（meta 字段词汇对齐），但有一个**故意的分歧**：钩子滥用（写错的选项、越界的 schema、触顶）在 CC 里会溶进一个与子代理失败无法区分的 `null`，DSH 把它升级为 fatal——「一个 typo 的选项绝不能溶解成 null，那正是本仓库禁止的 accepted-then-ignored 失败模式」（同 note Decision 节）。引擎侧同样有取舍：`ctx.workflowEngine` 一个上下文只有一个引擎、无命名 provider 注册表——**引擎是部署替换件，不是共居者**（子代理的 transports 才是共居的）；`result` 永不 reject（失败结算为 stopReason，消费方永不处理 rejection）；`workflow/*` 事件是 observe-only 的数据快照——**控制权留在 run 的持有者手里**，订阅者拿不到 cancel。
@@ -127,6 +141,15 @@ live output 经 mirror 订阅引擎事件写进 job 的 output ring（`packages/
 - **provider 预检**：必须存在、支持 `outputSchema`、`inheritsParentContext: false`（真 fresh child，`:218`-`230`）；轮数上限经 `maxTotalAgents` 与引擎总量 backstop 协调（`:449`-`450`）。
 - **前台 only**：无 job id / 后台（`packages/experimental/tool-ralph/README.md:163`）；终局 `complete`/`blocked`/`budget-limited` + 报告，普通 child 失败即终局不重试（`packages/experimental/tool-ralph/README.md:167`）。
 - **默认不装**：base 组合已无 ralph 行；它由 optional bundle `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 提供（`subagentProvider: spawn`、`maxRounds: 64`），是 `OPTIONAL_BUNDLES` 成员之一（`packages/boot/app-boot/src/profile.ts:223`-`236`），默认状态见 [`00-map.md`](../00-map.md)。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| 脚本是 TypeScript，可以写类型与 `export const meta` | 纯 JS 函数体；带 `export const meta` 头会被拒绝，`meta` 走工具参数（`packages/workflow/tool-workflow/src/index.ts:338`-`360`） |
+| `log()` 写的内容模型也看得到 | 前台不进上下文；后台进 job 的 `log` channel，`job_output` 不渲染它 |
+| 子代理失败会让整个脚本失败 | 局部失败降级为该项 `null`；只有 fatal（错误选项、非法 schema、触 cap）杀脚本 |
+| 后台 run 可以像前台那样随父 step 取消 | 后台没有 tool-step signal，只能 `job_kill`、列表停止控件或 owner teardown |
 
 ## 源码入口
 

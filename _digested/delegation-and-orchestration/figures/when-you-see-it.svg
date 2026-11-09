@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 546" width="1080" height="546" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+  </defs>
+<rect x="0" y="0" width="1080" height="546" fill="#ffffff"/>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">你什么时候看到结果：只有第一种是同步的</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">同一条时间轴，五种交付。父会话（或人）看到结果的动作在每行右侧；虚线是「它在后台跑，你看不见」</text>
+  <line x1="190" y1="92" x2="1030" y2="92" stroke="#bfbfbf" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="1030" y="84" font-size="11" font-weight="normal" fill="#8c8c8c" text-anchor="end">时间 →</text>
+  <text x="40" y="146" font-size="12" font-weight="bold" fill="#1677ff">自己做</text>
+  <text x="198" y="122" font-size="9.5" font-weight="normal" fill="#8c8c8c">每次工具返回都进当前上下文</text>
+  <rect x="198" y="134" width="760" height="20" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <line x1="318" y1="134" x2="318" y2="154" stroke="#1677ff" stroke-width="1"/>
+  <line x1="488" y1="134" x2="488" y2="154" stroke="#1677ff" stroke-width="1"/>
+  <line x1="658" y1="134" x2="658" y2="154" stroke="#1677ff" stroke-width="1"/>
+  <line x1="828" y1="134" x2="828" y2="154" stroke="#1677ff" stroke-width="1"/>
+  <text x="968" y="146" font-size="10.5" font-weight="bold" fill="#1677ff">立刻可见</text>
+  <line x1="40" y1="177" x2="1040" y2="177" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="40" y="208" font-size="12" font-weight="bold" fill="#52c41a">subagent</text>
+  <circle cx="204" cy="204" r="5" fill="#fff" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="216" y="194" font-size="10" font-weight="normal" fill="#52c41a">返回 started subagent</text>
+  <line x1="338" y1="204" x2="820" y2="204" stroke="#52c41a" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="598" y="196" font-size="10" font-weight="normal" fill="#8c8c8c">child 在自己的会话里跑；父对话看不到过程</text>
+  <circle cx="830" cy="204" r="6" fill="#52c41a" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="844" y="208" font-size="10.5" font-weight="bold" fill="#52c41a">结算通知 + closing message</text>
+  <line x1="40" y1="239" x2="1040" y2="239" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="40" y="270" font-size="12" font-weight="bold" fill="#fa8c16">workflow（前台）</text>
+  <rect x="198" y="254" width="592" height="24" rx="12" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="398" y="270" font-size="10" font-weight="normal" fill="#fa8c16">父会话在这一次工具调用里等待；进度只进观察面（模型看不到）</text>
+  <circle cx="790" cy="266" r="6" fill="#fa8c16" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="804" y="270" font-size="10.5" font-weight="bold" fill="#fa8c16">脚本返回值（唯一结果）</text>
+  <line x1="40" y1="301" x2="1040" y2="301" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="40" y="332" font-size="12" font-weight="bold" fill="#fa8c16">workflow（后台）</text>
+  <circle cx="204" cy="328" r="5" fill="#fff" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="216" y="318" font-size="10" font-weight="normal" fill="#fa8c16">返回 { jobId, runId }</text>
+  <line x1="328" y1="328" x2="780" y2="328" stroke="#fa8c16" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <circle cx="790" cy="328" r="6" fill="#fa8c16" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="804" y="332" font-size="10.5" font-weight="bold" fill="#fa8c16">job 完成通知 → job_output</text>
+  <line x1="40" y1="363" x2="1040" y2="363" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="40" y="394" font-size="12" font-weight="bold" fill="#d4380d">goal</text>
+  <text x="198" y="368" font-size="9.5" font-weight="normal" fill="#8c8c8c">每轮末看到这一轮产出；idle 后 driver 自动开下一轮</text>
+  <rect x="198" y="378" width="118" height="24" rx="6" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="257" y="394" font-size="10" font-weight="normal" fill="#d4380d" text-anchor="middle">第 1 轮</text>
+  <line x1="328" y1="390" x2="394" y2="390" stroke="#d4380d" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="408" y="378" width="118" height="24" rx="6" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="467" y="394" font-size="10" font-weight="normal" fill="#d4380d" text-anchor="middle">第 2 轮</text>
+  <line x1="538" y1="390" x2="604" y2="390" stroke="#d4380d" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="618" y="378" width="118" height="24" rx="6" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="677" y="394" font-size="10" font-weight="normal" fill="#d4380d" text-anchor="middle">第 3 轮</text>
+  <text x="756" y="394" font-size="12" font-weight="normal" fill="#d4380d">…</text>
+  <line x1="40" y1="425" x2="1040" y2="425" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="40" y="456" font-size="12" font-weight="bold" fill="#722ed1">agent-teams</text>
+  <rect x="218" y="443" width="56" height="18" rx="4" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="246" y="456" font-size="9" font-weight="normal" fill="#722ed1" text-anchor="middle">任务</text>
+  <rect x="302" y="443" width="56" height="18" rx="4" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="330" y="456" font-size="9" font-weight="normal" fill="#722ed1" text-anchor="middle">消息</text>
+  <rect x="386" y="443" width="56" height="18" rx="4" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="414" y="456" font-size="9" font-weight="normal" fill="#722ed1" text-anchor="middle">消息</text>
+  <rect x="470" y="443" width="56" height="18" rx="4" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="498" y="456" font-size="9" font-weight="normal" fill="#722ed1" text-anchor="middle">任务</text>
+  <rect x="554" y="443" width="56" height="18" rx="4" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="582" y="456" font-size="9" font-weight="normal" fill="#722ed1" text-anchor="middle">消息</text>
+  <rect x="638" y="443" width="56" height="18" rx="4" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="666" y="456" font-size="9" font-weight="normal" fill="#722ed1" text-anchor="middle">消息</text>
+  <rect x="722" y="443" width="56" height="18" rx="4" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="750" y="456" font-size="9" font-weight="normal" fill="#722ed1" text-anchor="middle">任务</text>
+  <rect x="806" y="443" width="56" height="18" rx="4" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="834" y="456" font-size="9" font-weight="normal" fill="#722ed1" text-anchor="middle">消息</text>
+  <rect x="890" y="443" width="56" height="18" rx="4" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="918" y="456" font-size="9" font-weight="normal" fill="#722ed1" text-anchor="middle">消息</text>
+  <text x="1030" y="456" font-size="10.5" font-weight="bold" fill="#722ed1" text-anchor="end">持续可查</text>
+  <text x="40" y="524" font-size="11.5" font-weight="normal" fill="#595959">「它怎么还没回来」的答案几乎都在这一页：只有「自己做」在等一次工具返回，其余四种都在等一个事件。</text>
+</svg>

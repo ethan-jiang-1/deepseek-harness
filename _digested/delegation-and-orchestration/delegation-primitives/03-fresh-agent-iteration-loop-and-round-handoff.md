@@ -4,6 +4,20 @@
 
 本页回答：ralph 轮间到底传什么、固定脚本锁死了什么、四种终局怎么结算、为什么 DSH 把「长任务」显式分裂成 goal 与 ralph 两种策略？工具的选择边界（仅人类显式要求）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；它跑在哪个引擎/进程里见 [`primitives/01`](./01-scripted-workflow-and-sandboxed-fan-out.md)（ralph 是 `ctx.workflowEngine` + `ctx.subagents` 之上的普通插件，复用 PTC 执行链）。
 
+## 读完你能回答
+
+- ralph 与 goal 的差别到底在哪，为什么长任务要分成两种策略？
+- 轮与轮之间到底传什么、为什么只有五个字段？
+- 四种终局分别怎么来的，哪一种等于「失败」？
+
+## 心智模型
+
+一句话：**ralph 是「固定脚本 + 每轮一个无种子 child」，不是第二个引擎。**
+
+- 模型只供数据（`objective` / `maxRounds`）；循环、provider 路由、schema 与 handoff 校验全在部署侧。
+- 每轮的记忆只有两样：workspace 与上一轮那份有界报告；对话推理随轮消失。
+- 预算只有一个数字：`maxTotalAgents = maxRounds`——轮数就是总投入的上限。
+
 ## 一轮 ralph 到底发生了什么
 
 ![ralph 轮循环与四种终局](./figures/ralph-rounds.svg)
@@ -87,6 +101,16 @@ fresh-agent：Ralph Run → Ralph Round → fresh child Turn → Step（每轮�
 - **一轮一个 fresh child**——轮内无扇出、无模型/provider 切换、无 fork context、无模型调用侧选 provider；
 - **无强制的递归 ralph 拒绝**——没有结构性拒绝，prompt guidance 不构成递归禁令（`:165`）；
 - **只有轮数约束总投入**——token、价格与墙钟预算延后（`:167`）。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| ralph 是独立引擎或独立的 agent 模式 | 它是 `ctx.workflowEngine` + `ctx.subagents` 之上的普通插件，复用 PTC 执行链 |
+| 上一轮的对话会带进下一轮 | 每轮全新 child；过去的是 workspace 与那份 JSON 报告 |
+| 完成由独立评审判定 | worker 自报；渲染文案永远是 "worker **reported** completion" |
+| child 失败会自动重试 | 失败即终局（`round-failed`），不重试 |
+| 轮上限默认 256 | 包默认 256，但 optional bundle 把 shipped 值钉成 64 |
 
 ## 源码入口
 

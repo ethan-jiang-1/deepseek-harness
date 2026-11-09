@@ -4,6 +4,20 @@
 
 本页回答：Session、Agent、Activation、provider 各是什么？冷恢复后哪些身份与边还在、权限属于谁？
 
+## 读完你能回答
+
+- Session 谱系与 Activation epoch 各自持久什么？
+- 冷恢复之后，哪些边还在、哪些是新长出来的？
+- 为什么权限要「持久来源 + 活体来源」同时成立？
+
+## 心智模型
+
+核心判断：**会话是持久的，运行是临时的；冷恢复重建运行，不重建身份。**
+
+- Session 与它的 header（`parentSession`、深度、preset 引用）是持久事实。
+- Activation 是运行期驻留；重启后不存在，靠 descriptor 重建一个新的。
+- 身份投影 last-wins 折叠；继承前缀的边界由会话自己记着。
+
 编排系统同时使用 Session、Agent、Activation 和 provider。它们不是同一个对象：Session 保存可重建的历史与身份，Agent 是某次运行中的驱动实例，continuable Activation 是一个 Agent 的进程内驻留期，provider 只负责特定创建或传输路径。混淆这些对象会错误理解冷恢复、权限和资源释放。
 
 ![Session 谱系与 Agent 实例](./figures/lineage-incarnation.svg)
@@ -59,6 +73,15 @@ in-process spawn/fork 可以使用 parent Session、child header、Agent scope �
 ## 审查问题
 
 审查一个编排路径时，分别确认：谱系边写入哪个 durable header；当前权限来自哪个事件；哪个对象持有取消和处置责任；授权检查需要 durable parent 还是 exact live Agent；冷恢复依赖 descriptor 还是重新调用 provider；Session、Agent 和 Activation 的 id 是否被错误地当成同一身份。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| 重启后 child 的 Activation 还在 | Activation 不持久；冷恢复重建一个 |
+| 冷恢复会重新调用 provider | 不经过任何 provider，从 descriptor 重建 |
+| 谱系只看 `parentSession` | 还要看深度与继承前缀边界 |
+| 恢复后权限沿用重启前的活体授权 | 活体授权不复存在，需要重新成立 |
 
 ## 源码入口
 

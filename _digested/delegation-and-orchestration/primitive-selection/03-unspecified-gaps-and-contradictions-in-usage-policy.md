@@ -4,6 +4,20 @@
 
 本页回答：官方选择语义**哪里没说、哪里互相矛盾、哪里只是 prompt 约束而非机械约束**？这些空白对插件作者意味着什么？逐原语边界句见 [`selection/01`](./01-per-primitive-usage-sentences-from-tool-descriptions.md)，路由见 [`selection/02`](./02-cross-primitive-routing-and-the-official-upgrade-order.md)。
 
+## 读完你能回答
+
+- 官方没写清的有哪几处？
+- 这些空白该怎么处理，能不能自己补一条规则？
+- 两处措辞不同，什么时候是矛盾、什么时候只是不同层？
+
+## 心智模型
+
+核心判断：**空白是设计的一部分：边界句之间的缝由判断填，不能升格成事实。**
+
+- 没写不等于禁止，也不等于允许；它是一个需要决策的地方。
+- 措辞冲突先分层：工具描述、包 README、`docs/` 常常说的是不同层面的事。
+- 本组对空白的写法是标注，不是补规则。
+
 ## 矛盾与空白（官方未说清的部分）
 
 1. **主语不一致**：tool-workflow 的 README 与 prompt section 说 "the **user** explicitly asks"，引擎包 `packages/workflow/workflow/README.md:28` 写 "the **model** explicitly asks for workflow-style orchestration"——引擎包疑似笔误；prompt section 是权威模型可见文本。ralph 用 "the direct human"，workflow 用 "the user"，粒度也不同。
@@ -24,6 +38,14 @@
 - **“用户显式要求”只是 prompt 约束**（ralph 甚至默认不装）：把工具的可见性当成授权闸是错的；真正的闸是组合与审批。
 - **`run_in_background` 没有统一决策规则**：后台化是每个 producer 自己的参数语义，插件作者不能假设存在一个全局“何时后台”的策略。
 - **fresh/fork 没有模型级路由**：两个工具的 description 各自承担全部选择语义，缩短或改写 description 会直接改变模型的选择分布。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| 没写就等于禁止 | 没写只是没写，需要判断 |
+| 两处措辞不同就是矛盾 | 先看是不是不同层在说不同的东西 |
+| 可以自己补一条官方规则 | 空白要标成空白，不能写成事实 |
 
 ## 源码入口
 

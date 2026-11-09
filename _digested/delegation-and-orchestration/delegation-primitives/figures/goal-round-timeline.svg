@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 528" width="1080" height="528" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+  </defs>
+<rect x="0" y="0" width="1080" height="528" fill="#ffffff"/>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">goal 的两条生命周期：目标持久，续跑许可不持久</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">上：一轮怎么开始与结束；下：两个字段分别活到哪里；底部：四个 action 的权限</text>
+  <text x="40" y="88" font-size="12" font-weight="bold" fill="#333">一轮的生命周期</text>
+  <rect x="40" y="106" width="110" height="50" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="95" y="128" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">人类请求</text>
+  <text x="95" y="145" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">可不说 goal</text>
+  <line x1="153" y1="131" x2="166" y2="131" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="170" y="106" width="110" height="50" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="225" y="128" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">create_goal</text>
+  <text x="225" y="145" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">objective</text>
+  <line x1="283" y1="131" x2="296" y2="131" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="300" y="106" width="100" height="50" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="350" y="128" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">active · armed</text>
+  <text x="350" y="145" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">driver 可续轮</text>
+  <line x1="403" y1="131" x2="426" y2="131" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="430" y="106" width="80" height="50" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="470" y="128" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">idle</text>
+  <text x="470" y="145" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">会话空闲</text>
+  <line x1="513" y1="131" x2="556" y2="131" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="560" y="106" width="110" height="50" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="615" y="128" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">第 1 轮</text>
+  <text x="615" y="145" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">一个 turn</text>
+  <line x1="673" y1="131" x2="686" y2="131" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="690" y="106" width="110" height="50" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="745" y="128" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">第 2 轮</text>
+  <text x="745" y="145" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">一个 turn</text>
+  <line x1="803" y1="131" x2="816" y2="131" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="820" y="106" width="40" height="50" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="840" y="128" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">…</text>
+  <line x1="863" y1="131" x2="876" y2="131" stroke="#595959" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <rect x="880" y="106" width="160" height="50" rx="6" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="960" y="128" font-size="10.5" font-weight="bold" fill="#d4380d" text-anchor="middle">complete / blocked</text>
+  <text x="960" y="145" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">模型自报</text>
+  <path d="M745 158 L745 186 L470 186 L470 162" fill="none" stroke="#1677ff" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#arrowBlue)"/>
+  <text x="600" y="200" font-size="9.5" font-weight="normal" fill="#8c8c8c" text-anchor="middle">轮末：回到 idle，driver 决定是否再开一轮</text>
+  <text x="1040" y="176" font-size="8.5" font-weight="normal" fill="#d4380d" text-anchor="end">→ 收尾：注入 &lt;goal_complete&gt; / &lt;goal_blocked&gt;</text>
+  <text x="40" y="246" font-size="12" font-weight="bold" fill="#333">两个字段，两条生命周期</text>
+  <text x="40" y="292" font-size="11.5" font-weight="bold" fill="#52c41a">phase</text>
+  <text x="40" y="308" font-size="9" font-weight="normal" fill="#8c8c8c">持久 · 写 session</text>
+  <rect x="180" y="274" width="260" height="30" rx="4" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="310" y="294" font-size="10.5" font-weight="normal" fill="#52c41a" text-anchor="middle">active</text>
+  <rect x="440" y="274" width="180" height="30" rx="4" fill="#f5f5f5" stroke="#bfbfbf" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="530" y="294" font-size="10" font-weight="normal" fill="#595959" text-anchor="middle">paused（人类）</text>
+  <rect x="620" y="274" width="380" height="30" rx="4" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="810" y="294" font-size="10.5" font-weight="normal" fill="#d4380d" text-anchor="middle">blocked / complete</text>
+  <text x="40" y="352" font-size="11.5" font-weight="bold" fill="#fa8c16">activation</text>
+  <text x="40" y="368" font-size="9" font-weight="normal" fill="#8c8c8c">进程内 · 不写盘</text>
+  <rect x="180" y="334" width="420" height="30" rx="4" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="390" y="354" font-size="10.5" font-weight="normal" fill="#fa8c16" text-anchor="middle">armed（driver 可以开下一轮）</text>
+  <rect x="600" y="334" width="400" height="30" rx="4" fill="#f5f5f5" stroke="#bfbfbf" stroke-width="1.5"/>
+  <text x="800" y="354" font-size="10.5" font-weight="normal" fill="#595959" text-anchor="middle">disarmed（目标还在，许可没了）</text>
+  <line x1="596" y1="328" x2="604" y2="370" stroke="#333" stroke-width="2"/>
+  <text x="600" y="386" font-size="9" font-weight="normal" fill="#333" text-anchor="middle">进程边界：重启 / fork / driver 替换</text>
+  <text x="180" y="412" font-size="10" font-weight="normal" fill="#595959">重开只重放 phase；activation 从 disarmed 开始。人类说「继续」——任何措辞——模型调 update_goal action: resume 重新武装。</text>
+  <text x="40" y="448" font-size="12" font-weight="bold" fill="#333">谁能动哪个 action</text>
+  <rect x="40" y="462" width="480" height="44" rx="6" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="56" y="480" font-size="11" font-weight="bold" fill="#1677ff">edit / pause / resume</text>
+  <text x="56" y="497" font-size="9.5" font-weight="normal" fill="#8c8c8c">需要直接顶层人类请求</text>
+  <rect x="540" y="462" width="500" height="44" rx="6" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="556" y="480" font-size="11" font-weight="bold" fill="#52c41a">complete / blocked</text>
+  <text x="556" y="497" font-size="9.5" font-weight="normal" fill="#8c8c8c">人类 turn，或本 goal 的自动续轮内</text>
+</svg>

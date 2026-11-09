@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 578" width="1080" height="578" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+  </defs>
+<rect x="0" y="0" width="1080" height="578" fill="#ffffff"/>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">九个陷阱，一个形状：把「看起来像事实」的东西当成事实</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">每格给一个症状与一条判据；判据都能落到一处可读的证据上</text>
+  <rect x="40" y="92" width="320" height="124" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.2"/>
+  <circle cx="62" cy="116" r="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="62" y="120" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">1</text>
+  <text x="82" y="120" font-size="11.5" font-weight="bold" fill="#333">角色克隆</text>
+  <text x="54" y="148" font-size="9.5" font-weight="normal" fill="#595959">症状：以为子代理比父窄</text>
+  <text x="54" y="170" font-size="9.5" font-weight="normal" fill="#8c8c8c">判据：比 `request/header.tools` 与父是否相同</text>
+  <rect x="380" y="92" width="320" height="124" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.2"/>
+  <circle cx="402" cy="116" r="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="402" y="120" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">2</text>
+  <text x="422" y="120" font-size="11.5" font-weight="bold" fill="#333">修一个 bug 加一句</text>
+  <text x="394" y="148" font-size="9.5" font-weight="normal" fill="#595959">症状：合同越修越长，没人知道哪句还有效</text>
+  <text x="394" y="170" font-size="9.5" font-weight="normal" fill="#8c8c8c">判据：这句在升 pin 时会变吗？会 → 引擎段</text>
+  <rect x="720" y="92" width="320" height="124" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.2"/>
+  <circle cx="742" cy="116" r="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="742" y="120" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">3</text>
+  <text x="762" y="120" font-size="11.5" font-weight="bold" fill="#333">无执行者的声明</text>
+  <text x="734" y="148" font-size="9.5" font-weight="normal" fill="#595959">症状：能力矩阵没有任何消费者</text>
+  <text x="734" y="170" font-size="9.5" font-weight="normal" fill="#8c8c8c">判据：删掉它，哪条测试会红？</text>
+  <rect x="40" y="232" width="320" height="124" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.2"/>
+  <circle cx="62" cy="256" r="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="62" y="260" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">4</text>
+  <text x="82" y="260" font-size="11.5" font-weight="bold" fill="#333">问 fork 证明继承</text>
+  <text x="54" y="288" font-size="9.5" font-weight="normal" fill="#595959">症状：让 child 自述看到了什么</text>
+  <text x="54" y="310" font-size="9.5" font-weight="normal" fill="#8c8c8c">判据：证据看子会话日志前缀，不看叙述</text>
+  <rect x="380" y="232" width="320" height="124" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.2"/>
+  <circle cx="402" cy="256" r="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="402" y="260" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">5</text>
+  <text x="422" y="260" font-size="11.5" font-weight="bold" fill="#333">parentId 折状态</text>
+  <text x="394" y="288" font-size="9.5" font-weight="normal" fill="#595959">症状：用 parentId 反推深度与终态</text>
+  <text x="394" y="310" font-size="9.5" font-weight="normal" fill="#8c8c8c">判据：这个字段有持久来源吗？没有 → unavailable</text>
+  <rect x="720" y="232" width="320" height="124" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.2"/>
+  <circle cx="742" cy="256" r="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="742" y="260" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">6</text>
+  <text x="762" y="260" font-size="11.5" font-weight="bold" fill="#333">fake 证真</text>
+  <text x="734" y="288" font-size="9.5" font-weight="normal" fill="#595959">症状：fake 单测绿就以为真实装配可用</text>
+  <text x="734" y="310" font-size="9.5" font-weight="normal" fill="#8c8c8c">判据：断言里有没有「真实存在」的前提？</text>
+  <rect x="40" y="372" width="320" height="124" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.2"/>
+  <circle cx="62" cy="396" r="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="62" y="400" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">7</text>
+  <text x="82" y="400" font-size="11.5" font-weight="bold" fill="#333">抬预算救另一层</text>
+  <text x="54" y="428" font-size="9.5" font-weight="normal" fill="#595959">症状：调大 maxDepth 去解另一层的拒绝</text>
+  <text x="54" y="450" font-size="9.5" font-weight="normal" fill="#8c8c8c">判据：拒绝发生在执行该跳的那一行吗？</text>
+  <rect x="380" y="372" width="320" height="124" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.2"/>
+  <circle cx="402" cy="396" r="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="402" y="400" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">8</text>
+  <text x="422" y="400" font-size="11.5" font-weight="bold" fill="#333">没有闸 ≠ 不计数</text>
+  <text x="394" y="428" font-size="9.5" font-weight="normal" fill="#595959">症状：workflow 无 maxDepth 参数 = 不计深度</text>
+  <text x="394" y="450" font-size="9.5" font-weight="normal" fill="#8c8c8c">判据：去读 resolveChildDepth 的输入是谁</text>
+  <rect x="720" y="372" width="320" height="124" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.2"/>
+  <circle cx="742" cy="396" r="12" fill="#e6f4ff" stroke="#1677ff" stroke-width="1"/>
+  <text x="742" y="400" font-size="10.5" font-weight="bold" fill="#1677ff" text-anchor="middle">9</text>
+  <text x="762" y="400" font-size="11.5" font-weight="bold" fill="#333">续驶代替可读结果</text>
+  <text x="734" y="428" font-size="9.5" font-weight="normal" fill="#595959">症状：结果读不出，就加一条「继续问」</text>
+  <text x="734" y="450" font-size="9.5" font-weight="normal" fill="#8c8c8c">判据：结果通道的截断与结构化语义是什么</text>
+  <rect x="40" y="514" width="1000" height="46" rx="6" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="56" y="534" font-size="11" font-weight="bold" fill="#333">自查三问</text>
+  <text x="56" y="552" font-size="10.5" font-weight="normal" fill="#595959">它属于哪一层（执行 / 持久 / 观测）？谁读它、读的是不是原始事实？删掉它，哪条证据会变红？</text>
+</svg>

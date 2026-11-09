@@ -4,6 +4,20 @@
 
 本页回答：每一级原语的**官方边界句**是什么？这些句子住在哪个模型可见面（工具 description 还是 systemPrompt section），逐字怎么写？路由与阶梯见 [`selection/02`](./02-cross-primitive-routing-and-the-official-upgrade-order.md)，官方没说清的部分见 [`selection/03`](./03-unspecified-gaps-and-contradictions-in-usage-policy.md)，机制见 [`primitives/`](../delegation-primitives/00-map.md)。
 
+## 读完你能回答
+
+- 每个原语的边界句逐字是什么、住在哪个模型可见面？
+- 哪些原语的边界句带「仅人类显式要求」？
+- 读工具 description 与读包 README，哪一种才是模型看到的？
+
+## 心智模型
+
+核心判断：**边界句就是策略，而且它只住在模型看得见的那一面。**
+
+- 模型看见的是工具 schema 与注册在它作用域里的 prompt 段；包 README 是部署者视角的转述，不进上下文。
+- 边界句是提示，不是闸：没有组件会因为你违反一句话而拒绝调用。
+- 所以「模型为什么选了不该选的」通常要回到它当时看见了什么。
+
 ## 语义住在哪：两个通道 + 一个约定
 
 官方选择语义编码在两类**模型可见文本**里：
@@ -126,6 +140,14 @@ README 的选择句："Choose plan mode when the agent should explore and design
 —— `packages/experimental/tool-agent-team/src/index.ts:35`-`41`
 
 组合层的互斥替代："The `subagent` and `subagent_fork` tools and overlapping global child controls are disabled. Workflow retains the base profile's `spawn` provider."（`packages/experimental/agent-team-profile/README.md:49`）。机制深挖见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| 工具描述只是给人看的文档 | 它就是模型看到的选择策略 |
+| 包 README 与工具描述是同一份内容 | README 是部署者转述，不进模型上下文 |
+| 边界句会被机械执行 | 靠模型遵守，没有执行器 |
 
 ## 源码入口
 

@@ -31,6 +31,7 @@
 
 - [`0012-0.2.1-rc.2-to-0.2.1-rc.3.md`](./0012-0.2.1-rc.2-to-0.2.1-rc.3.md)——第十二次合入（6 个提交、640 个文件；导航入口自定义与 New Session 空白复用、官方 `/models` listing 进入共享 transport、客户端分析事件、侧栏 pin/selection 分离；343 包；**口径定稿**：对齐已发布 tag，不跟 master 分支头、不 merge）
 - [`0013-0.2.1-rc.3-to-0.2.1-rc.5.md`](./0013-0.2.1-rc.3-to-0.2.1-rc.5.md)——第十三次合入（跨 rc.4 与 rc.5，6 个内容提交、388 个文件；思考块渲染可定制、ACP stdout 诊断纪律、客户端 tooltip；343 包不变；**例外扩为 6 项、验收改为内容级**，见「同步操作手册」）
+- [`0014-delegation-corpus-onboarding.md`](./0014-delegation-corpus-onboarding.md)——同基线内容修订（委派专题新增入门三页、28 页统一骨架、10 张新图；跨语料对齐 FAQ 27 的委派深度口径与基线，FAQ 22 引文锚点）
 
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。记录里的路径与页面名是**当轮**的样子；页面后来迁移或改名时，现行入口以 [`catalog.json`](../catalog.json) 与 [`_coverage`](../_coverage/00-index.md) 为准，不改写历史记录。
 

@@ -4,9 +4,25 @@
 
 本页回答：JobRegistry 这个后台作业平台给了什么保证（id、隔离、结算、通知）？谁是 producer？"何时转后台"的官方边界？schedule 的时序语义与交付形态？工具描述里的跟踪纪律（不忙轮询、收尾前收集）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；workflow 与 subagent 两个 producer 的接入细节见 [`01`](./01-scripted-workflow-and-sandboxed-fan-out.md) 与 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
+## 读完你能回答
+
+- job 的 id、owner、通知各自保证什么，谁才有权读和停？
+- first-wins 结算与 `awaited` 解决的是哪一个重复问题？
+- schedule 到期后到底发生了什么，它和 job 差在哪？
+
+## 心智模型
+
+一句话：**jobs 是一个平面，不是执行器。**
+
+- 干活的是 producer（`bash`、`pwsh`、workflow），registry 管生命周期与观察：注册、投影、输出环、结算、通知。
+- owner 围栏是**授权不是保密**：id 可见，但别的 agent 读不到也停不了；它防误操作与越权，不防看见。
+- 通知会打断你，超时不会：`job_output` 超时返回 `[status: running]`，job 还活着。
+
 ## 为什么是这个形状：设计考量
 
 **为什么是抽象平台合同而不是各工具自己做后台**：没有统一 JobRegistry，每个工具（bash、pwsh、workflow、terminal）都要自己解决「agent 继续干活时工作挂着、完成了怎么通知、谁有权读停」——四套实现、四种通知语义、四种隔离规则。DSH 把它抽成一个**合同与实现分包**的抽象服务：直接加载 `JobRegistry` 实现类即 throw（组合配错在装载时就失败，而不是运行时静默缺功能）；一个进程一个 registry、owner 相对应答；注册的 job **活得比 producer 和 controller 的 fiber 都长**（`packages/jobs/jobs/README.md` 设计哲学节）。「owner 围栏是授权不是保密」是个精确的取舍声明：id 可见（`<kind>-<16 位 hex>`）但不承载权限，边界仍是权限检查而不是隐藏——它防的是**误操作与越权**，不防偷窥。schedule 的交付形态同样是考量结果：提醒**作为原会话里的普通 follow-up message** 交付（不是邮件/短信/推送）——提醒的价值在于带着会话上下文回来继续干活，而不是把你拉走；交付只在 Session 确认 `session/flush` 后 commit——**正确性优先于恰好一次**：崩溃后宁可重投一次，也不交付一个没落盘的提醒。
+
+![一次后台作业的生命周期：注册、运行、结算、通知，以及 kill 与 owner 围栏](./figures/jobs-lifecycle.svg)
 
 ## JobRegistry：后台作业的平台合同
 
@@ -90,6 +106,16 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 | goal（目标平面） | objective + idle | Round Driver 的 `<goal_round>` prompt（[`04`](./04-cross-round-goals-and-the-round-driver.md)） |
 
 三条注入通道互相独立：一个 goal round 里可以收 job 完成通知（step 注入不开新 turn），一个 schedule 到期可以唤醒一个 goal 活跃中的 idle agent。官方对「goal vs schedule 怎么选」没有明文路由（[`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md) 矛盾与空白第 5 条）——实操判据：**持续推进到完成用 goal，固定时刻提醒用 schedule**，两者可并存于同一 Session。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| jobs 会替你执行工作 | 它只是注册表与观察面；干活的是 producer |
+| job 会活过 harness 进程 | 进程内注册表，随进程结束；只有已经写进 Session 的事件还在 |
+| job 的所有输出模型都能看到 | `stdout`/`stderr` 块进模型，`log` 块只进观察者 |
+| `job_output` 超时说明失败了 | 返回 `[status: running]`，job 仍在跑；超时不是失败 |
+| schedule 是调度器 | 它只在到点时投一条 follow-up 消息回原会话；工作仍然要在会话里发生 |
 
 ## 源码入口
 

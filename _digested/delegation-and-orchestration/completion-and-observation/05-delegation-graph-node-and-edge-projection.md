@@ -4,6 +4,20 @@
 
 本页回答：**一条混合链（spawn → workflow → spawn → team）的状态图从哪来、能保证什么、缺数据时怎么标？** 五个完成时刻见 [`observation/01`](./01-acceptance-visibility-quiescence-and-disposal.md)，状态三分见 [`observation/04`](./04-persistent-facts-derived-projections-and-live-authority.md)。
 
+## 读完你能回答
+
+- 委派图能画什么、明确不能画什么？
+- 节点与边来自哪些持久源？
+- 三个缺口词分别是什么意思，为什么不能互相折算？
+
+## 心智模型
+
+核心判断：**图是只读投影：它不调度、不取消、不写状态。**
+
+- 持久源只有几处：subagent catalog/descriptor、workflow 记录、team 投影、job 事件、session header、`turn/end`。
+- 缺数据要标 `unavailable` 一类缺口词，不能补一个看起来合理的值。
+- runtime 的 bus 事件（`workflow/*`、`subagent/start|end`）不是持久源。
+
 ## 一句话
 
 DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只管 child，workflow 只管自己的 run 与分支，team 只管名册/任务/消息，jobs 只管作业；没有任何一个组件把它们合成一张图。能画出来的图只能由**持久事实折叠**而成；折叠不出来的格子必须标 `unavailable`，不能拿 `parentId` 硬折出一个看起来像状态的空。
@@ -86,6 +100,15 @@ DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只管 child，wo
 
 - 冷恢复后 catalog walk 对**外部 provider** 子代的覆盖：源码显示 external 无 header，实际能否从 catalog 还原边与终态需要一次重启会话验证。
 - 客户端可拿到的投影范围（哪些字段必须由 host 补）：需要一次真实 Web 会话核对，而不是读类型推断。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| 图能取消或调度 | 只读投影，没有控制面 |
+| 父会话能看到整条链 | 一个会话只看到自己的 direct children 与已知信息 |
+| 空状态就是失败 | 可能是三个缺口词之一，各自含义不同 |
+| runtime 事件可以当持久源 | `workflow/*` 与 `subagent/start\|end` 是 runtime bus 事件 |
 
 ## 源码入口
 

@@ -4,6 +4,20 @@
 
 本页回答：**同样是「把活交给别人」，spawn / fork / workflow 分支 / team 成员这四条通道，换掉的到底是什么？** 机制细节见 [`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)、[`primitives/01`](../delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md)、[`primitives/06`](../delegation-primitives/06-persistent-teams-with-a-shared-task-board.md)；深度与容量的完整叠加见 [`composition/06`](./06-depth-concurrency-and-capacity-limits.md)。
 
+## 读完你能回答
+
+- 四条通道各自换掉了什么：子代身份、独立 preset、上下文、深度、寻址？
+- 为什么只有 in-process spawn 能钉独立 preset？
+- 外部 provider 的能力位差在哪，为什么它不能当成「另一条本地通道」？
+
+## 心智模型
+
+核心判断：**能力面由通道决定，不由任务决定。**
+
+- 四条通道：spawn（独立子会话）、fork（父已完成轮前缀）、workflow 分支（脚本调用）、team 成员（Lead 的协作面）。
+- 只有 spawn 能钉独立 preset；其余三条加入父或 Lead 的组合修订——「给子代理换一套工具」在这些通道上不成立。
+- 深度是同一套绝对计数；通道改的是继承与寻址，不改深度规则。
+
 ## 一句话
 
 四条通道的差别不在「能不能派人」，而在三件事：**子代拿到什么组合、按什么寻址控制、深度从哪里算。** 其中**在 shipped provider 里只有 in-process spawn 能给子代挂一个与父不同的 preset**——这不是配置口味，是 provider 能力位与上下文契约共同决定的；ACP / Codex / Claude Code / SDK 都声明 `agentPreset: false`。
@@ -60,6 +74,15 @@
 - `allowedAgentPresets` 打开后，模型在真实任务里的**误选率**：需要一次真模型探针（记录 `agent_preset` 参数与任务匹配度）。
 - 外部 provider（ACP / Codex / Claude Code / SDK）的能力位差异对继承与寻址的影响：本页只覆盖进程内 spawn/fork；核对方法是分别读 `SubagentCapabilities`（`packages/subagent/subagent/src/types.ts:123`-`129`，进程外后端由 `NO_START_CAPABILITIES` 一律置 `false`，见 `out-of-process.ts:56`-`61`）与 `SubagentProvider.inheritsParentContext`（`types.ts:323`，描述性、非 start 能力位），再用一次外部后端会话验证寻址。
 - team 成员在 `context: 'fork'` 下与 Lead 的修订关系是否与 `fresh` 完全相同：源码路径一致，但缺少真会话证据。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| `agent_preset` 传了就生效 | 只有 in-process spawn 支持；fork / workflow / team 跟随父或 Lead 的组合修订 |
+| 外部 provider 只是「远端 spawn」 | 能力位更少，声明 `agentPreset: false`，且不接受后续消息 |
+| 通道能改变深度规则 | 深度是绝对量，任何通道起的 child 都 +1 |
+| 通道只影响性能 | 它决定子代拿到的身份、上下文、工具面与寻址 |
 
 ## 源码入口
 

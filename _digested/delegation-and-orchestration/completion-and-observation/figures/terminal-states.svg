@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 546" width="1080" height="546" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+  </defs>
+<rect x="0" y="0" width="1080" height="546" fill="#ffffff"/>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">五个终态：turn 怎么结束，折叠成什么</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">左列是 turn-end 的取值，右列是父代理看到的终点；中间是 epochStopReason 的一次折叠</text>
+  <text x="40" y="82" font-size="11" font-weight="bold" fill="#8c8c8c">turn-end</text>
+  <text x="680" y="82" font-size="11" font-weight="bold" fill="#8c8c8c">终态（父代理看到的终点）</text>
+  <rect x="40" y="92" width="300" height="40" rx="6" fill="#ffffff" stroke="#1677ff" stroke-width="1.2"/>
+  <text x="52" y="117" font-size="10.5" font-weight="normal" fill="#333">completed / 无 turn</text>
+  <rect x="40" y="150" width="300" height="40" rx="6" fill="#ffffff" stroke="#fa8c16" stroke-width="1.2"/>
+  <text x="52" y="175" font-size="10.5" font-weight="normal" fill="#333">aborted / interrupted</text>
+  <rect x="40" y="208" width="300" height="40" rx="6" fill="#ffffff" stroke="#d4380d" stroke-width="1.2"/>
+  <text x="52" y="233" font-size="10.5" font-weight="normal" fill="#333">error</text>
+  <rect x="40" y="266" width="300" height="40" rx="6" fill="#ffffff" stroke="#8c8c8c" stroke-width="1.2"/>
+  <text x="52" y="291" font-size="10.5" font-weight="normal" fill="#333">forked / 未知变体（默认 error）</text>
+  <rect x="40" y="324" width="300" height="40" rx="6" fill="#ffffff" stroke="#722ed1" stroke-width="1.2"/>
+  <text x="52" y="349" font-size="10.5" font-weight="normal" fill="#333">max-tokens</text>
+  <rect x="40" y="382" width="300" height="40" rx="6" fill="#ffffff" stroke="#fa8c16" stroke-width="1.2"/>
+  <text x="52" y="407" font-size="10.5" font-weight="normal" fill="#333">blocked（pre-step 拒绝）</text>
+  <rect x="680" y="92" width="360" height="46" rx="6" fill="#ffffff" stroke="#52c41a" stroke-width="1.4"/>
+  <text x="694" y="111" font-size="11.5" font-weight="bold" fill="#52c41a">completed</text>
+  <text x="694" y="128" font-size="9.5" font-weight="normal" fill="#8c8c8c">干净结束且无剩余工作</text>
+  <rect x="680" y="158" width="360" height="46" rx="6" fill="#ffffff" stroke="#fa8c16" stroke-width="1.4"/>
+  <text x="694" y="177" font-size="11.5" font-weight="bold" fill="#fa8c16">aborted</text>
+  <text x="694" y="194" font-size="9.5" font-weight="normal" fill="#8c8c8c">被取消或被打断</text>
+  <rect x="680" y="224" width="360" height="46" rx="6" fill="#ffffff" stroke="#d4380d" stroke-width="1.4"/>
+  <text x="694" y="243" font-size="11.5" font-weight="bold" fill="#d4380d">error</text>
+  <text x="694" y="260" font-size="9.5" font-weight="normal" fill="#8c8c8c">模型 / 传输故障、不可命名的结尾</text>
+  <rect x="680" y="290" width="360" height="46" rx="6" fill="#ffffff" stroke="#722ed1" stroke-width="1.4"/>
+  <text x="694" y="309" font-size="11.5" font-weight="bold" fill="#722ed1">max-tokens</text>
+  <text x="694" y="326" font-size="9.5" font-weight="normal" fill="#8c8c8c">撞到 token 上限</text>
+  <rect x="680" y="356" width="360" height="46" rx="6" fill="#ffffff" stroke="#fa8c16" stroke-width="1.4"/>
+  <text x="694" y="375" font-size="11.5" font-weight="bold" fill="#fa8c16">refusal</text>
+  <text x="694" y="392" font-size="9.5" font-weight="normal" fill="#8c8c8c">子代理拒绝任务</text>
+  <text x="510" y="212" font-size="10" font-weight="bold" fill="#595959" text-anchor="middle">epochStopReason</text>
+  <text x="510" y="228" font-size="9" font-weight="normal" fill="#8c8c8c" text-anchor="middle">一次折叠，不是同义词</text>
+  <path d="M340 112 C470 112 550 115 676 115" fill="none" stroke="#595959" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <path d="M340 170 C470 170 550 181 676 181" fill="none" stroke="#595959" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <path d="M340 228 C470 228 550 247 676 247" fill="none" stroke="#595959" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <path d="M340 286 C470 286 550 247 676 247" fill="none" stroke="#8c8c8c" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+  <path d="M340 344 C470 344 550 313 676 313" fill="none" stroke="#595959" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <path d="M340 402 C470 402 550 379 676 379" fill="none" stroke="#595959" stroke-width="1.3" marker-end="url(#arrow)"/>
+  <rect x="40" y="482" width="1000" height="44" rx="6" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="56" y="501" font-size="10.5" font-weight="normal" fill="#595959">父代理看到的是通知，不是返回值：`subagent` 启动即返回 id，终态经一条持久 user/message 送达（queue / steer / inject 三种投递）。</text>
+  <text x="56" y="517" font-size="10.5" font-weight="normal" fill="#595959">引擎不重试：五个终态都是结果，重试是父代理写的有界策略——error 最多一次，aborted / max-tokens / refusal / completed 都不自动重试。</text>
+</svg>

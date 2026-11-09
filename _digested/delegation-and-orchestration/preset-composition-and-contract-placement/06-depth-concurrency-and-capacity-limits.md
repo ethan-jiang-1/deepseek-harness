@@ -4,6 +4,20 @@
 
 本页回答：一条链的纵向深度与横向容量分别由什么限制、哪一个先触发？DSH 的编排限制不是一个统一的“任务预算”。不同层分别限制递归深度、活体 Agent 数、workflow 并发、单次项目数、总子代理调用、owner 的后台 job 数量，以及 teams 的成员、任务和 mailbox 容量。一个组合请求的实际上限由这些边界中最先触发的一层决定。
 
+## 读完你能回答
+
+- 纵向深度与横向容量分别被什么限制？
+- 为什么调大一个预算解决不了另一层的拒绝？
+- workflow 分支算不算深度？
+
+## 心智模型
+
+一句话：**深度是绝对量，容量是局部量，两者不相加。**
+
+- 深度从根数起，持久 header 是单调 floor；`maxDepth` 是绝对上限。
+- 横向各有各的池：continuable Activation、workflow FIFO 槽与 cap、owner job bucket、team 成员与任务。
+- 一个请求能不能起，取决于最先触发的那一层；没有全局公平调度器。
+
 ![资源预算与容量边界](./figures/resource-budgets.svg)
 
 ## 预算维度
@@ -59,6 +73,15 @@ Teams 对成员数、任务数、pending mailbox 和消息字节数设硬上限�
 ## 驾驶座检查顺序
 
 遇到“为什么没有继续启动”时，按以下顺序检查：当前 delegation depth；continuable Activation 是否达到上限；workflow 是否在 FIFO slot 等待；workflow total/item cap 是否已触发；owner 的 running/stopping job 数；Team member/task/mailbox 上限；最后检查 provider capability 和服务组合。不要只提高一个总预算来解决另一个层的拒绝。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| `maxDepth` 是「每层还能分几份」 | 绝对上限，从根数起 |
+| 调大 `maxDepth` 就能起更多 child | 横向受各层容量限制 |
+| workflow 分支不占深度 | 分支 child = parent + 1；没有闸，但计数 |
+| 系统有一个全局预算 | 没有；各层各自限制，最先触发的赢 |
 
 ## 源码入口
 

@@ -4,6 +4,20 @@
 
 本页回答：一次委派到底隔离了什么、fork 继承了什么、one-shot 与 continuable 差在哪、控制面（`send_message`/`interrupt_agent`/`list_agents`）的边界规则是什么？工具描述里的选择语义（什么时候用）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；seam 的 provider 结构、catalog 投影与 host Queue/Steer 交付见 [`../capability-seams/03-subagent后台与产品provider.md`](../../capability-seams/03-subagent后台与产品provider.md) 与 [`../capability-seams/05-subagent-catalog与host交付.md`](../../capability-seams/05-subagent-catalog与host交付.md)，本页不重复。
 
+## 读完你能回答
+
+- 一次委派隔离了什么，fork 到底继承了哪一段历史？
+- one-shot 与 continuable 由什么决定，什么时候需要 `send_message`？
+- `send_message` / `interrupt_agent` / `list_agents` 各自的作用半径到哪为止？
+
+## 心智模型
+
+一句话：**child 是一个 durable Session，加至多一个进程内 Activation。**
+
+- Session 是事实：日志、header、`parentSession`、深度都在里面；Activation 只是驻留期，`settled` 只释放它——所以已结算的 child 仍可冷恢复。
+- 一次委派分两半：服务侧做准备（深度解析、descriptor 快照、权限捕获、容量占位），provider 侧才执行；冷恢复不走 provider。
+- 工具面在 child 创建窗口内按父 preset 重建，权限在第一个 `await` 之前捕获——child 的工具面与父几乎相同，而权限是启动那一刻的快照。
+
 ## 为什么是这个形状：设计考量
 
 **设计理由（取自 note，历史快照已标注）**：①`ctx.subagents` 是具名 provider 注册表而不是单执行器——同一会话里进程内 spawn 与进程外后端可以共存（`.agents/notes/archived/feature/2026-06-21-subagent-capability-seam.md`，已归档）。②continuable 的形态是「一个 durable Session + 至多一个进程内 Activation」：Activation 只是 residency epoch，可跑多个 FIFO turn、等后代时可驻留，但不是请求/结果/取消边界；Agent inbox 是唯一 turn FIFO（`.agents/notes/implemented/feature/2026-07-28-continuable-subagent-conversations.md`）。③fork 的种子在创建时固化，回报是 provider 侧前缀复用；任何 child-only 的 prompt 节或工具 schema 排在继承历史之前都会毁掉复用——所以 fork 行与 spawn 行只在 `provider`/`toolName` 上不同（`.agents/notes/implemented/architecture/2026-08-10-fork-children-stay-one-shot.md`）。
@@ -103,6 +117,16 @@ Activation 所有权图（`packages/subagent/subagent/src/activation.ts:39`-`111
 - **workflow 的 `agent()` 钩子就是 subagent 调用**：每次 `agent()` 经 `ctx.subagents.startActivation({ provider, delivery: 'caller', request: { parent } })` 发布 child（[`01`](./01-scripted-workflow-and-sandboxed-fan-out.md) 归属节）；
 - **agent-teams 复用 spawn/fork provider**：成员创建直接走 subagent seam 的 spawn/fork（[`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）；
 - **goal 工具对子代理可见但操作被 authority 层拒绝**：`hasDirectHumanInput` 要求 `ctx.agents.roots().includes(execution.agent)`——非 runtime root 的子代理不满足（`packages/goal/tool-goal/src/authority.ts:80`-`83`，拒绝文案「this goal operation requires a direct human turn on a top-level agent」，`:102`）；`complete`/`blocked` 另接受 exact goal-round authority（`:109`-`116`），但 **fork/resume 后 goal 一律 disarmed**（`packages/goal/tool-goal/src/index.ts:117`；`goal.spec.ts:227`-`233`：fork child 继承 goal 但 `activation: 'disarmed'`）——子代理继承的 goal 永远不会自己跑轮。三道门合起来：子代理实际无法有效操作 goal。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| fork 会持续同步父的新消息 | 种子在创建时固化；父后续轮次不进 child，新消息只能经 `send_message` |
+| 子代理继承父的权限、可以在内部提权 | 权限在第一个 `await` 前捕获；运行时上下文明确它「cannot be widened from inside this session」 |
+| 深度是「这一层还能再分几层」 | 深度是绝对量，持久 header 是单调 floor；`maxDepth` 是绝对上限，不做预算分配 |
+| `interrupt_agent` 会等目标停下来 | 同步返回；只取消当前 agent，不动 Activation、未认领 inbox 与已发布后代 |
+| one-shot / continuable 是每次调用的参数 | 由 provider 是否实现 `prepareContinuable` 决定，不是调用方开关 |
 
 ## 源码入口
 

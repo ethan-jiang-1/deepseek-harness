@@ -4,6 +4,20 @@
 
 本页回答：原语叠起来用时，结构性的事实是什么？哪些协同形态被源码直接支撑？收尾时要守哪些跨原语纪律？选择语义（单原语什么时候用）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
 
+## 读完你能回答
+
+- 原语叠起来之后有哪三个结构性事实？
+- 通知有几条通道，各自投递到哪？
+- 跨模式收尾为什么要守顺序？
+
+## 心智模型
+
+一句话：**收尾是顺序问题：先收下游，再报结算，最后放所有权。**
+
+- 父在 owned children 非空时不能被结算（holdOwnership）。
+- 结算通知先于所有权释放（`releaseSlot → notifySettlement → releaseOwnership`）。
+- 收尾清单的顺序，就是这三步的展开。
+
 ## 为什么是这个形状：设计考量
 
 本页不重新定义原语，也不重复 [`00-map`](../00-map.md) 的总矩阵；它只记录几个组合时会改变操作顺序的局部事实：in-process 子代理的归属与生命周期关系、通知通道的 busy/idle 分工，以及深度/并发/总量共同组成的资源预算。原语选择边界见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)，生命周期语义见 [`observation/01`](../completion-and-observation/01-acceptance-visibility-quiescence-and-disposal.md)，资源上限见 [`06`](./06-depth-concurrency-and-capacity-limits.md)。
@@ -61,6 +75,15 @@
 4. **plan → todo 的顺序**：plan 模式内不用 todo_write（计划本身属于 `exit_plan_mode`）；批准后的**实施**才用 todo 跟踪（`packages/bundle/base/cordis.patch.yml:340`）；
 5. **wait_agent 醒后 re-list、不轮询**；**send_message 成功即持久勿重发**（[`primitives/06`](../delegation-primitives/06-persistent-teams-with-a-shared-task-board.md)）；
 6. **KV 前缀经济**：fork 不选模型（保前缀）；组合链上保持 child 的 provider/model 与前缀稳定（persona/toolFilter 只作为历史描述符字段存在，不是现役配置面，见 [`composition/03`](./03-worker-profiles-and-the-only-narrowing-lever.md)）。
+
+## 常见误解
+
+| 你以为 | 实际上 |
+|---|---|
+| 父 idle 就会被结算 | 有 owned children 时被 hold，不能结算 |
+| 通知在所有权释放之后发 | 通知先于释放 |
+| 收尾顺序无关 | 顺序决定会不会丢通知或丢结果 |
+| 组合只影响工具数量 | 它同时改变所有权、通知与收尾 |
 
 ## 源码入口
 
