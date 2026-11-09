@@ -65,7 +65,7 @@
 
 ## 一个容易被忽略的组合事实
 
-Team 与 workflow **可以共存**：bundle 禁的是 `subagent` 系列工具，workflow 保留 base 的 `spawn` provider，所以 Team 会话里的成员仍然可以用 workflow 做批量 fresh 扇出（[patch](../../packages/experimental/agent-team-profile/cordis.patch.yml) 只 disable 了 subagent 系列，没有动 workflow 行；workflow 启动 child 时也不经过 subagent 的深度上限）。真正互斥的是 **Team 与普通 subagent 委派**，不是 Team 与 workflow。
+Team 与 workflow **可以共存**：bundle 禁的是 `subagent` 系列工具，workflow 保留 base 的 `spawn` provider，所以 Team 会话里的成员仍然可以用 workflow 做批量 fresh 扇出（[patch](../../packages/experimental/agent-team-profile/cordis.patch.yml) 只 disable 了 subagent 系列，没有动 workflow 行；workflow 启动 child 时不传这个上限，但分支 child 仍按 parent+1 计深度）。真正互斥的是 **Team 与普通 subagent 委派**，不是 Team 与 workflow。
 
 ## 出口
 

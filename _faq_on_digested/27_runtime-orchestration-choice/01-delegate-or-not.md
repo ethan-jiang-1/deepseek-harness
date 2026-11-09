@@ -29,7 +29,7 @@
 1. **能不能一段话自包含。** 不能，就先自己探索到能写清为止；派出去只会换来一次答非所问。判断标准很土：把 prompt 给一个不在场的人看，他能不能直接开工。
 2. **结果要不要回到当前对话。** 要，就委派并把结果带回来；不要、只是要它跑完，那属于后台平面，见 [05](./05-async-and-clock.md)。
 3. **需不需要这段对话的历史。** 需要 → `subagent_fork`；不需要 → `subagent`，省 token，也不把无关上下文和它的约束一起带过去。
-4. **深度预算够不够。** 委派深度默认 `maxDepth=1`（[subagent config](../../packages/subagent/subagent/src/index.ts):196），子代理不能再通过 `subagent` 派子代理；workflow 不走这个上限（见 [07](./07-why-this-shape.md)）。如果你的方案依赖「它自己再找几个帮手」，先改方案。
+4. **深度预算够不够。** 委派深度默认 `maxDepth=1`（[subagent config](../../packages/subagent/subagent/src/index.ts):196），子代理不能再通过 `subagent` 派子代理；workflow 的 `agent()` 不传这个上限，但分支 child 仍按 parent+1 计深度，分支里再派活撞的是同一个绝对上限（见 [07](./07-why-this-shape.md)）。如果你的方案依赖「它自己再找几个帮手」，先改方案。
 
 ## 官方边界
 

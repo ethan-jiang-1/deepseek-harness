@@ -21,7 +21,7 @@ DSH 的选择是不引入中心调度器：派发由模型、它写的脚本或 
 
 这套系统的默认值是浅的：
 
-- subagent 工具的委派深度默认 1 层（[subagent config](../../packages/subagent/subagent/src/index.ts):196）。这是**工具策略**，不是全局不变量：workflow 引擎启动 child 时不传这个上限。
+- subagent 工具的委派深度默认 1 层（[subagent config](../../packages/subagent/subagent/src/index.ts):196）。这是**工具策略**，不是全局不变量：workflow 引擎启动 child 时不传这个上限，但分支 child 仍按 parent+1 计数。
 - workflow 脚本里没有嵌套的 `workflow()` 钩子（[workflow README](../../packages/workflow/workflow/README.md):128）；但 child 本身是完整 agent，如果它的 preset 里有 workflow 工具，理论上可以自己再调一层。
 - Team 只有 Lead 能拉人，队友不能再拉队友。
 - 换来的是：workflow 一次默认最多 1000 个 child、单次调用 4096 项。
@@ -29,11 +29,11 @@ DSH 的选择是不引入中心调度器：派发由模型、它写的脚本或 
 | 路径 | 深度检查 | 说明 |
 |---|---|---|
 | `subagent` 工具 | 有，默认 1 层 | 工具把 `maxDepth` 传给服务 |
-| `workflow` 的 `agent()` | 无 | 引擎启动 child 时不传 `maxDepth` |
+| `workflow` 的 `agent()` | 不设闸 | 引擎启动 child 时不传 `maxDepth`，但分支 child 仍按 parent+1 计深度 |
 | `team` 的 `spawn_teammate` | 无（Lead-only 授权） | 队友不能再拉队友；但成员仍可用 workflow |
 | `ralph` | 无（走 workflow） | 固定脚本每轮起 fresh child |
 
-所以「深度 1 层」是 `subagent` 工具的默认，不是系统的硬边界。宁可宽，不愿深——但这是默认值与配额的取向，不是结构上的禁止。深层次委托会让归属、预算、取消和验收全部变复杂；宽扇出只是数量问题，每个 child 的边界都是清晰的。
+所以「深度 1 层」是 `subagent` 工具的默认，不是系统的硬边界；workflow 分支不受这个默认值约束，但它照样占一层——「没有闸」不等于「不计数」。宁可宽，不愿深——但这是默认值与配额的取向，不是结构上的禁止。深层次委托会让归属、预算、取消和验收全部变复杂；宽扇出只是数量问题，每个 child 的边界都是清晰的。
 
 ## 三条可迁移原则
 

@@ -280,3 +280,15 @@ re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、
 核对后未改动的部分：三卷的 owner/证据/评审主线、`sdlc-reference/` 的主仓制度、图示与既有引用政策不变；新增外链全部指向 DSH `master` 的一手文档或源码。
 
 验证：`node verify.mjs` 通过（37 Markdown、2 scripts、27 SVG）；`node verify.test.mjs` 通过（1 个接受 case + 10 个拒绝 case，新增一条兄弟语料引用负例）。共享宪章从内容页的兄弟语料扫描中豁免，内容页的禁令不变。
+
+## 2026-11-09 委派/编排断言对齐审计
+
+基线不变（`dsh-v0.2.1-rc.5`）。动因：同一基线上另一份研究语料重做了委派与编排专题的入门层与口径，需要确认本语料是否含会与之冲突的机制断言。
+
+方法：全文检索 `subagent`、`workflow`、`ralph`、`goal`、`委派`、`并行`、`depth`；命中的正文逐段读。结论：
+
+1. 本语料里的 `workflow` 全部是 GitHub Actions 语义（`.github/workflows/**`、policy workflow、release workflow），不含委派原语的机制陈述；三卷没有 `subagent`/`ralph` 的专节。
+2. 涉及 goal 与 fork/spawn 的四处陈述与对齐后的口径一致，未改正文：`native-development-model/02` 的「Goal 服务保存状态；何时续轮由其他 consumer/driver 决定」与「`complete` 是目标状态，不是独立完成认证」；`native-development-model/03` 的「fork 拿父级已完成 turn 的一次性快照，spawn 从空会话开始」与「resume 或 fork 之后要显式 rearm」。
+3. 本语料不登记委派深度、终态词表或通道能力矩阵，因此没有需要跟随「workflow 分支计数但不设闸」口径的段落。
+
+验证：`node _dsh_plugin_agent_ready_development/verify.mjs` 通过；本语料的外部引用反查报 0 路径失效、0 行号越界、0 引文漂移。

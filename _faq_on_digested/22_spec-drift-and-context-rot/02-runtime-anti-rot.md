@@ -67,7 +67,9 @@
 
 > Each admitted round is one retained user-role `<goal_round>` block naming the full objective and positive round number. … Later requests resend retained rounds until compaction shadows them.
 
-出处：`packages/goal/goal-round-driver/README.md:108`、`:112`（`[原文]`）。终结轮还有一条配套的收紧指令：「Report only what earlier rounds and tool results in this session actually establish.」（`packages/goal/tool-goal/src/wrapup.ts:6`，`[源码]`）。
+出处：`packages/goal/goal-round-driver/README.md:108`、`:112`（`[原文]`）。
+
+终结轮还有一条配套的收紧指令：「Report only what earlier rounds and tool results in this session actually establish; when a detail is not in the session, say so instead of inventing it.」出处：`packages/goal/tool-goal/src/wrapup.ts:5`-`7`（`[源码]`）。
 
 **3. 指令基线被压缩遮蔽后，会在下一次 pre-step 重新注入。**
 
