@@ -27,9 +27,9 @@
   <line x1="530" y1="172" x2="585" y2="172" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
   <line x1="795" y1="172" x2="850" y2="172" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
   <path d="M975 230 C975 315 160 315 160 230" fill="none" stroke="#cf1322" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arrow)"/>
-  <text x="570" y="305" text-anchor="middle" font-size="12" fill="#cf1322">重试是 Lead 的显式决定，不是平台自动推断</text>
+  <text x="570" y="330" text-anchor="middle" font-size="12" fill="#cf1322">重试是 Lead 的显式决定，不是平台自动推断</text>
 
   <rect x="170" y="380" width="840" height="64" rx="10" fill="#fafafa" stroke="#d9d9d9"/>
-  <text x="590" y="407" text-anchor="middle" font-size="14" font-weight="700" fill="#333">teammate 自报完成 ≠ 质量已证明</text>
-  <text x="590" y="429" text-anchor="middle" font-size="12" fill="#595959">任务板持久化状态 ≠ 正确性判定；测试与 Lead 最终审查负责证据</text>
+  <text x="590" y="407" text-anchor="middle" font-size="14" font-weight="700" fill="#333">teammate 自报完成 不等于 质量已证明</text>
+  <text x="590" y="429" text-anchor="middle" font-size="12" fill="#595959">任务板状态 不代表 正确性判定；测试与 Lead 最终审查负责证据</text>
 </svg>

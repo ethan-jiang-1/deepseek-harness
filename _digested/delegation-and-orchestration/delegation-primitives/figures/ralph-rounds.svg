@@ -1,65 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 632" width="1080" height="632" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
   <defs>
-    <marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
-    </marker>
-    <marker id="ag" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M0 0 L10 5 L0 10 Z" fill="#52c41a"/>
-    </marker>
-    <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M0 0 L10 5 L0 10 Z" fill="#d4380d"/>
-    </marker>
-    <marker id="ab" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
-    </marker>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#595959"/></marker>
+    <marker id="arrowG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#52c41a"/></marker>
   </defs>
-
+  <rect x="0" y="0" width="1080" height="632" fill="#ffffff"/>
   <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">ralph 轮循环：fresh child、五字段报告与四种终局</text>
-  <text x="40" y="54" font-size="12" fill="#8c8c8c">固定脚本 RALPH_SCRIPT 由部署持有，模型只供数据（objective / maxRounds）；maxTotalAgents = maxRounds 把引擎上限钉到轮预算（tool-ralph/src/index.ts:88-175、:445-453）</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">固定脚本 RALPH_SCRIPT 由部署持有，模型只供数据（objective / maxRounds）；maxTotalAgents = maxRounds 把轮数钉成总预算。</text>
+  <rect x="56" y="80" width="560" height="148" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.4"/>
+  <text x="74" y="104" font-size="12.5" font-weight="bold" fill="#fa8c16">第 N 轮 prompt（固定脚本拼接六段）</text>
+  <text x="74" y="128" font-size="10" font-weight="normal" fill="#333">① fresh worker 身份：不接受父对话与前轮会话，且不得再调 ralph</text>
+  <text x="74" y="145" font-size="10" font-weight="normal" fill="#333">② 不可变 objective（逐字传入，每轮相同）</text>
+  <text x="74" y="162" font-size="10" font-weight="normal" fill="#333">③ Round: N of M</text>
+  <text x="74" y="179" font-size="10" font-weight="normal" fill="#333">④ workspace 是唯一长期记忆；上一份报告只是有界 handoff，须对 workspace 核实</text>
+  <text x="74" y="196" font-size="10" font-weight="normal" fill="#333">⑤ 上一轮五字段报告（首轮为 none）</text>
+  <text x="74" y="213" font-size="10" font-weight="normal" fill="#333">⑥ 报告格式指令（三种 status 的使用条件）</text>
+  <line x1="336" y1="230" x2="336" y2="258" stroke="#595959" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="350" y="248" font-size="9.5" font-weight="normal" fill="#8c8c8c">agent(prompt, { label, phase, schema: reportSchema })</text>
+  <rect x="56" y="260" width="560" height="86" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.4"/>
+  <text x="74" y="284" font-size="12.5" font-weight="bold" fill="#1677ff">fresh child（全新子会话，没有种子）</text>
+  <text x="74" y="306" font-size="10" font-weight="normal" fill="#333">provider 预检：必须存在、支持 outputSchema、inheritsParentContext = false（fork provider 被拒）</text>
+  <text x="74" y="326" font-size="10" font-weight="normal" fill="#333">每轮一个全新子会话：父 transcript 与前轮 child transcript 都不是种子</text>
+  <line x1="336" y1="348" x2="336" y2="376" stroke="#595959" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="56" y="378" width="560" height="122" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.4"/>
+  <text x="74" y="402" font-size="12.5" font-weight="bold" fill="#52c41a">五字段结构化报告（≤ maxHandoffChars 16384）</text>
+  <text x="74" y="424" font-size="10" font-weight="normal" fill="#333">status: continue / complete / blocked   ·   summary   ·   evidence[]   ·   nextSteps[]   ·   blocker</text>
+  <text x="74" y="444" font-size="10" font-weight="normal" fill="#333">全字段必填、additionalProperties: false；continue 要求 nextSteps 非空且 blocker 为空串</text>
+  <text x="74" y="464" font-size="10" font-weight="normal" fill="#333">两道校验：脚本内 validateReport + 工具层 readReport / readRunResult（跨进程边界再验一次）</text>
+  <text x="74" y="484" font-size="10" font-weight="normal" fill="#8c8c8c">序列化长度超限即失败——这是「有界」的字面执行点</text>
+  <path d="M56 470 L24 470 L24 154 L52 154" fill="none" stroke="#52c41a" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrowG)"/>
+  <text x="16" y="330" font-size="9.5" font-weight="normal" fill="#52c41a" text-anchor="middle" transform="rotate(-90 16 330)">continue：previous = report，第 N+1 轮</text>
+  <path d="M616 440 L640 440 L640 190 L660 190" fill="none" stroke="#595959" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="664" y="80" width="380" height="220" fill="#fff1f0" stroke="#d4380d" stroke-width="1.4" rx="8"/>
+  <text x="682" y="104" font-size="12.5" font-weight="bold" fill="#d4380d">四种终局（readRunResult 严格校验）</text>
+  <text x="682" y="130" font-size="10.5" font-weight="bold" fill="#d4380d">complete</text>
+  <text x="682" y="145" font-size="9" fill="#333">report 合法：evidence 非空、nextSteps 空、blocker 空</text>
+  <text x="682" y="159" font-size="9" fill="#333">文案是 worker reported completion，不写成任务完成</text>
+  <text x="682" y="181" font-size="10.5" font-weight="bold" fill="#d4380d">blocked</text>
+  <text x="682" y="196" font-size="9" fill="#333">report 必须合法 blocked；blocker 必须是具体阻塞条件</text>
+  <text x="682" y="218" font-size="10.5" font-weight="bold" fill="#d4380d">budget-limited</text>
+  <text x="682" y="233" font-size="9" fill="#333">roundsStarted == maxRounds；report 必须是合法 continue</text>
+  <text x="682" y="255" font-size="10.5" font-weight="bold" fill="#d4380d">round-failed</text>
+  <text x="682" y="270" font-size="9" fill="#333">child 失败即终局、不重试；渲染为错误 + 最后成功 handoff</text>
 
-  <rect x="40" y="76" width="400" height="110" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
-  <text x="60" y="102" font-size="13" font-weight="bold" fill="#fa8c16">第 N 轮 prompt（六段拼接）</text>
-  <text x="60" y="124" font-size="10.5" fill="#333">① fresh worker 身份（收不到父对话与前 child 会话；勿再调 ralph）</text>
-  <text x="60" y="142" font-size="10.5" fill="#333">② 不可变 objective（逐字，轮轮相同） ③ Round: N of M</text>
-  <text x="60" y="160" font-size="10.5" fill="#333">④ workspace 是唯一长期记忆；上一份报告只是有界 handoff，须对照核实</text>
-  <text x="60" y="178" font-size="10.5" fill="#333">⑤ 上一轮结构化 handoff（首轮为 none） ⑥ 报告格式指令</text>
-
-  <line x1="240" y1="186" x2="240" y2="216" stroke="#595959" stroke-width="2" marker-end="url(#a)"/>
-  <text x="252" y="206" font-size="11" fill="#595959">agent(prompt, { schema: reportSchema })</text>
-
-  <rect x="40" y="218" width="400" height="72" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
-  <text x="60" y="244" font-size="13" font-weight="bold" fill="#1677ff">fresh child（全新子会话）</text>
-  <text x="60" y="266" font-size="10.5" fill="#333">provider 预检：存在 · 支持 outputSchema · 非 inheritsParentContext（fork 被拒）</text>
-  <text x="60" y="284" font-size="10.5" fill="#8c8c8c">label「Ralph round N」· phase「Fresh-agent rounds」</text>
-
-  <line x1="240" y1="290" x2="240" y2="320" stroke="#595959" stroke-width="2" marker-end="url(#a)"/>
-
-  <rect x="40" y="322" width="400" height="86" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
-  <text x="60" y="348" font-size="13" font-weight="bold" fill="#52c41a">五字段结构化报告（≤ maxHandoffChars 16384）</text>
-  <text x="60" y="370" font-size="10.5" fill="#333">status: continue | complete | blocked（enum）</text>
-  <text x="60" y="388" font-size="10.5" fill="#333">summary · evidence[] · nextSteps[] · blocker（全必填，additionalProperties: false）</text>
-  <text x="60" y="404" font-size="10.5" fill="#8c8c8c">validateReport 状态条件 + 工具层 readRunResult 跨进程再验（精确键集）</text>
-
-  <path d="M440 365 C510 365 510 130 240 130 C170 130 170 90 200 88" fill="none" stroke="#52c41a" stroke-width="2" marker-end="url(#ag)"/>
-  <text x="560" y="250" font-size="11" fill="#52c41a">continue → previous = report → 第 N+1 轮</text>
-  <text x="560" y="268" font-size="10.5" fill="#8c8c8c">（continue 要求 nextSteps 非空且 blocker 为空串）</text>
-
-  <rect x="560" y="322" width="480" height="86" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
-  <text x="580" y="348" font-size="13" font-weight="bold" fill="#d4380d">四种终局（readRunResult 严格校验）</text>
-  <text x="580" y="370" font-size="10.5" fill="#333">complete：evidence 非空 + nextSteps 空 → 「worker reported completion after N rounds」</text>
-  <text x="580" y="388" font-size="10.5" fill="#333">blocked：blocker 非空 → 「worker reported a blocker」；budget-limited：roundsStarted === maxRounds 强制相等</text>
-  <text x="580" y="404" font-size="10.5" fill="#333">round-failed：child 失败即终局不重试 → 工具错误 + 最后成功 handoff（首轮失败则无 handoff）</text>
-
-  <line x1="440" y1="365" x2="556" y2="365" stroke="#d4380d" stroke-width="2" marker-end="url(#ar)"/>
-  <text x="450" y="356" font-size="10" fill="#d4380d">complete / blocked / 轮耗尽</text>
-
-  <path d="M240 408 C240 470 240 470 240 470" fill="none" stroke="#1677ff" stroke-width="2" marker-end="url(#ab)"/>
-  <rect x="40" y="474" width="1000" height="104" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
-  <text x="58" y="500" font-size="12.5" font-weight="bold" fill="#333">渲染与信任纪律</text>
-  <text x="58" y="522" font-size="11" fill="#333">「without presenting self-report as certification」——文案永远是 worker *reported* completion，不写成任务完成</text>
-  <text x="58" y="542" font-size="11" fill="#333">stopReasonError：非 completed 的 workflow 结算一律是错误，绝不把部分输出当部分成功</text>
-  <text x="58" y="562" font-size="11" fill="#333">maxResultChars 16384 用 boundResult 封顶含 envelope 与截断标记的完整文本</text>
-  <text x="58" y="580" font-size="10.5" fill="#8c8c8c">已知限制：完成是 worker 自声明（无独立评估器）· 仅前台 · workspace 是唯一跨轮记忆 · 一轮一个 fresh child</text>
-
-  <text x="40" y="612" font-size="10.5" fill="#8c8c8c">两策略背景：goal 管同会话持久目标（Goal → Goal Round → Turn → Step），ralph 管有意丢弃上下文的 fresh 迭代（Ralph Run → Ralph Round → child Turn → Step）——.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md</text>
+  <rect x="664" y="320" width="380" height="180" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1"/>
+  <text x="682" y="344" font-size="12" font-weight="bold" fill="#333">渲染与信任纪律</text>
+  <text x="682" y="366" font-size="9.5" font-weight="normal" fill="#595959">「without presenting self-report as certification」：</text>
+  <text x="682" y="382" font-size="9.5" font-weight="normal" fill="#595959">文案永远是 worker reported completion，不写成任务完成。</text>
+  <text x="682" y="404" font-size="9.5" font-weight="normal" fill="#595959">stopReasonError：非 completed 的 workflow 结算一律是错误，</text>
+  <text x="682" y="420" font-size="9.5" font-weight="normal" fill="#595959">绝不把部分输出当部分成功。</text>
+  <text x="682" y="442" font-size="9.5" font-weight="normal" fill="#595959">boundResult：含 envelope 与截断标记的完整文本封顶。</text>
+  <text x="682" y="464" font-size="9.5" font-weight="normal" fill="#8c8c8c">maxResultChars 默认 16384。</text>
+  <rect x="56" y="520" width="988" height="46" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1"/>
+  <text x="74" y="540" font-size="9.5" font-weight="normal" fill="#595959">已知限制（README 明文）：完成是 worker 自声明、没有独立评估器；仅前台、无 job id；workspace 是唯一跨轮记忆；一轮一个 fresh child、轮内无扇出；只有轮数约束总投入。</text>
+  <text x="74" y="557" font-size="9.5" font-weight="normal" fill="#8c8c8c">所以 ralph 的「完成」是报告，不是认证——验收仍要人看产物。</text>
+  <text x="40" y="592" font-size="10" font-weight="normal" fill="#8c8c8c">两策略背景：goal 管同会话持久目标（Goal → Goal Round → Turn → Step），ralph 管有意丢弃上下文的 fresh 迭代（Ralph Run → Round → child Turn）。</text>
+  <text x="40" y="612" font-size="10" font-weight="normal" fill="#8c8c8c">源码：tool-ralph/src/index.ts:88-175（固定脚本）、:244-331（跨进程解码）、:402-477（工具注册）；ralph-bundle/cordis.patch.yml:12-16（maxRounds 64）。</text>
 </svg>

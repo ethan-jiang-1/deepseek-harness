@@ -1,39 +1,41 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 640" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 600" width="1080" height="600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#595959"/></marker>
-    <marker id="green-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#389e0d"/></marker>
+    <marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#52c41a"/></marker>
   </defs>
-  <text x="40" y="36" font-size="20" font-weight="700" fill="#262626">Session 谱系 ≠ Agent 实例 ≠ Activation epoch</text>
-  <text x="40" y="62" font-size="13" fill="#8c8c8c">持久边负责恢复与追溯；活体身份负责授权；Activation 负责进程内驻留和处置</text>
-
-  <rect x="70" y="110" width="1040" height="170" rx="12" fill="#fafafa" stroke="#d9d9d9" stroke-width="2"/>
-  <text x="95" y="142" font-size="16" font-weight="700" fill="#333">持久层：Session event log / header</text>
-  <rect x="105" y="170" width="260" height="70" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
-  <text x="235" y="198" text-anchor="middle" font-size="16" font-weight="700" fill="#1677ff">Parent Session</text>
-  <text x="235" y="222" text-anchor="middle" font-size="12" fill="#333">id = P · durable history</text>
-  <rect x="505" y="170" width="260" height="70" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
-  <text x="635" y="198" text-anchor="middle" font-size="16" font-weight="700" fill="#1677ff">Child Session</text>
-  <text x="635" y="222" text-anchor="middle" font-size="12" fill="#333">id = C · parentSession = P</text>
-  <line x1="365" y1="205" x2="505" y2="205" stroke="#1677ff" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="435" y="190" text-anchor="middle" font-size="11" fill="#1677ff">持久谱系边</text>
-
-  <rect x="70" y="330" width="1040" height="220" rx="12" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
-  <text x="95" y="362" font-size="16" font-weight="700" fill="#333">活体层：process-local runtime</text>
-  <rect x="105" y="398" width="230" height="86" rx="8" fill="#fff1f0" stroke="#d4380d" stroke-width="2"/>
-  <text x="220" y="428" text-anchor="middle" font-size="16" font-weight="700" fill="#cf1322">Agent P₁</text>
-  <text x="220" y="452" text-anchor="middle" font-size="12" fill="#333">live identity / inbox</text>
-  <text x="220" y="470" text-anchor="middle" font-size="11" fill="#8c8c8c">旧 incarnation</text>
-  <rect x="470" y="398" width="230" height="86" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
-  <text x="585" y="428" text-anchor="middle" font-size="16" font-weight="700" fill="#389e0d">Activation C₁</text>
-  <text x="585" y="452" text-anchor="middle" font-size="12" fill="#333">AgentHandle / ownedChildren</text>
-  <text x="585" y="470" text-anchor="middle" font-size="11" fill="#8c8c8c">resident epoch</text>
-  <rect x="835" y="398" width="230" height="86" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
-  <text x="950" y="428" text-anchor="middle" font-size="16" font-weight="700" fill="#389e0d">Activation C₂</text>
-  <text x="950" y="452" text-anchor="middle" font-size="12" fill="#333">same Session id C</text>
-  <text x="950" y="470" text-anchor="middle" font-size="11" fill="#8c8c8c">cold-resumed epoch</text>
-  <line x1="335" y1="441" x2="470" y2="441" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="700" y1="441" x2="835" y2="441" stroke="#389e0d" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#green-arrow)"/>
-  <text x="768" y="425" text-anchor="middle" font-size="11" fill="#389e0d">settle → resume</text>
-
-  <text x="95" y="600" font-size="13" fill="#333">授权：durable parentSession 用于冷恢复；exact live Agent ancestry 用于 interrupt；两者都不等于“只要 Session 存在就能执行”。</text>
+  <rect x="0" y="0" width="1080" height="600" fill="#ffffff"/>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">Session 谱系 / Agent 实例 / Activation epoch：三者不同</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">持久层负责恢复与追溯，活体层负责授权与处置；同一个 child Session 可以换很多代运行。</text>
+  <rect x="40" y="76" width="1000" height="150" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.2"/>
+  <text x="60" y="100" font-size="13" font-weight="bold" fill="#1677ff">持久层：Session event log / header</text>
+  <rect x="80" y="120" width="240" height="84" rx="8" fill="#ffffff" stroke="#1677ff" stroke-width="1.6"/>
+  <text x="200" y="146" font-size="14" font-weight="bold" fill="#1677ff" text-anchor="middle">Parent Session P</text>
+  <text x="200" y="168" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">id = P · durable history</text>
+  <line x1="320" y1="162" x2="468" y2="162" stroke="#1677ff" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="394" y="150" font-size="10" font-weight="normal" fill="#1677ff" text-anchor="middle">parentSession = P</text>
+  <rect x="480" y="120" width="300" height="84" rx="8" fill="#ffffff" stroke="#1677ff" stroke-width="1.6"/>
+  <text x="630" y="146" font-size="14" font-weight="bold" fill="#1677ff" text-anchor="middle">Child Session C</text>
+  <text x="630" y="168" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">header：父 id / 深度 / preset / seed 标志</text>
+  <text x="630" y="186" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">inherited prefix 只在创建时固化</text>
+  <rect x="40" y="250" width="1000" height="180" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.2"/>
+  <text x="60" y="274" font-size="13" font-weight="bold" fill="#fa8c16">活体层：process-local runtime（不写盘，进程结束即消失）</text>
+  <text x="80" y="300" font-size="10.5" font-weight="normal" fill="#595959">Child Session C 为同一份持久事实；下面是它的一代代运行。</text>
+  <rect x="80" y="320" width="380" height="92" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.6"/>
+  <text x="270" y="346" font-size="13" font-weight="bold" fill="#52c41a" text-anchor="middle">Agent C¹ + Activation C¹</text>
+  <text x="270" y="368" font-size="10" font-weight="normal" fill="#333" text-anchor="middle">AgentHandle / inbox / ownedChildren</text>
+  <text x="270" y="386" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">resident epoch</text>
+  <line x1="462" y1="366" x2="554" y2="366" stroke="#52c41a" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#green)"/>
+  <text x="508" y="350" font-size="10" font-weight="normal" fill="#52c41a" text-anchor="middle">settle → 冷恢复</text>
+  <text x="508" y="388" font-size="9.5" font-weight="normal" fill="#8c8c8c" text-anchor="middle">descriptor 重建</text>
+  <rect x="560" y="320" width="380" height="92" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.6"/>
+  <text x="750" y="346" font-size="13" font-weight="bold" fill="#52c41a" text-anchor="middle">Agent C² + Activation C²</text>
+  <text x="750" y="368" font-size="10" font-weight="normal" fill="#333" text-anchor="middle">同一 Session id C；新的 incarnation</text>
+  <text x="750" y="386" font-size="10" font-weight="normal" fill="#8c8c8c" text-anchor="middle">不调用原 provider</text>
+  <rect x="40" y="454" width="1000" height="68" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1"/>
+  <text x="60" y="476" font-size="11.5" font-weight="bold" fill="#333">权限必须同时成立</text>
+  <text x="60" y="496" font-size="10" font-weight="normal" fill="#595959">持久来源：委派时写入 child Session 的 delegation 事件（sandbox override、permission preset；approval 固定 never），冷恢复只重放它。</text>
+  <text x="60" y="512" font-size="10" font-weight="normal" fill="#595959">活体来源：当前 exact live Agent / ancestry。旧 Agent 即使持有同一 Session id，也不能充当活体授权者。</text>
+  <text x="40" y="552" font-size="11" font-weight="normal" fill="#8c8c8c">授权半径：冷恢复看 durable parentSession；interrupt_agent 看 exact live ancestry；send_message 只走相邻一跳。</text>
+  <text x="40" y="574" font-size="11" font-weight="normal" fill="#8c8c8c">三者都不等于「只要 Session 存在就能执行」——Session 可以没有 live Agent。</text>
 </svg>

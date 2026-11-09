@@ -36,9 +36,9 @@
   <text x="845" y="405" font-size="12" fill="#595959">重启后：丢弃、重建、重新授权</text>
 
   <line x1="370" y1="270" x2="440" y2="270" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="740" y1="270" x2="810" y2="270" stroke="#595959" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="740" y1="270" x2="810" y2="270" stroke="#bfbfbf" stroke-width="1.5" stroke-dasharray="5 4"/>
   <text x="405" y="250" text-anchor="middle" font-size="11" fill="#595959">fold</text>
-  <text x="775" y="250" text-anchor="middle" font-size="11" fill="#595959">authorize</text>
+  <text x="775" y="258" text-anchor="middle" font-size="10.5" fill="#8c8c8c">不派生</text>
 
   <rect x="120" y="500" width="940" height="60" rx="10" fill="#fafafa" stroke="#d9d9d9"/>
   <text x="590" y="526" text-anchor="middle" font-size="14" font-weight="700" fill="#333">不要把 active、ready、settled 或 delivered 当成同一种“完成”</text>

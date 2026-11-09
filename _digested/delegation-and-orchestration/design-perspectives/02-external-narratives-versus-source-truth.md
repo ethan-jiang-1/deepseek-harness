@@ -35,7 +35,7 @@
 
 ## 三条最重要的形态纠正
 
-![图计算的本质：不变量、推导、执行](./figures/graph-essence-three-layers.svg)
+![十个外部声称的三态判定：真实 / 风格化 / 不存在](./figures/narrative-verdicts.svg)
 
 图的完整分置（三个真实的图、写时校验与读时推导、为什么分界画在这里）见 [`01`](./01-graph-computation-essence-invariant-derivation-and-execution.md)。
 

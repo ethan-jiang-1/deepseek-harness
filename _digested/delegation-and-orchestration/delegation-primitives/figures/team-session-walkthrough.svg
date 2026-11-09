@@ -54,11 +54,11 @@
   <text x="650" y="364" font-size="10" fill="#52c41a" text-anchor="middle">claim（CAS revision）</text>
   <text x="650" y="380" font-size="10" fill="#52c41a" text-anchor="middle">perform → complete</text>
 
-  <rect x="866" y="346" width="128" height="62" rx="5" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <rect x="866" y="346" width="128" height="88" rx="5" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
   <text x="930" y="364" font-size="10" fill="#fa8c16" text-anchor="middle">写 audit 文档撞上</text>
   <text x="930" y="379" font-size="10" fill="#fa8c16" text-anchor="middle">FS_STALE_VERSION</text>
-  <text x="930" y="394" font-size="9.5" fill="#8c8c8c" text-anchor="middle">（Lead 同时在改 00-map——</text>
-  <text x="930" y="407" font-size="9.5" fill="#8c8c8c" text-anchor="middle">共享文件系统，编辑即时可见）</text>
+  <text x="930" y="394" font-size="9" fill="#8c8c8c" text-anchor="middle">（Lead 同时改 00-map：</text>
+  <text x="930" y="407" font-size="9" fill="#8c8c8c" text-anchor="middle">共享文件系统，编辑即时可见）</text>
   <text x="930" y="422" font-size="9.5" fill="#8c8c8c" text-anchor="middle">read → rebase → retry</text>
 
   <line x1="926" y1="440" x2="366" y2="440" stroke="#fa8c16" stroke-width="2" marker-end="url(#ao)"/>
@@ -68,9 +68,10 @@
   <text x="451" y="480" font-size="10" fill="#d4380d" text-anchor="middle">两个 audit complete → fix 就绪</text>
   <text x="451" y="496" font-size="9.5" fill="#d4380d" text-anchor="middle">但 task readiness never starts an owner —— 就绪不自动开工</text>
 
-  <rect x="620" y="462" width="108" height="44" rx="5" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
-  <text x="674" y="480" font-size="10" fill="#1677ff" text-anchor="middle">wait_agent</text>
-  <text x="674" y="496" font-size="9.5" fill="#8c8c8c" text-anchor="middle">先 list_agents 再等；醒后 re-list</text>
+  <rect x="620" y="462" width="108" height="52" rx="5" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="674" y="478" font-size="10" fill="#1677ff" text-anchor="middle">wait_agent</text>
+  <text x="674" y="493" font-size="9" fill="#8c8c8c" text-anchor="middle">先 list_agents</text>
+  <text x="674" y="506" font-size="9" fill="#8c8c8c" text-anchor="middle">醒后 re-list</text>
   <line x1="596" y1="484" x2="616" y2="484" stroke="#1677ff" stroke-width="2" marker-end="url(#ab)"/>
 
   <rect x="306" y="534" width="290" height="62" rx="5" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>

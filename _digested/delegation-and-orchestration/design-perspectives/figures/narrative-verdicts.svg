@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 620" width="1080" height="620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="1080" height="620" fill="#ffffff"/>
+  <text x="40" y="34" font-size="16" font-weight="bold" fill="#333">十个外部声称的三态判定：真实 / 风格化 / 不存在</text>
+  <text x="40" y="54" font-size="12" font-weight="normal" fill="#8c8c8c">判据只有一条：每条声称能不能指到源码的 path:line。指不到，就判「无源」。</text>
+  <rect x="40" y="78" width="1000" height="26" rx="4" fill="#f5f5f5" stroke="#d9d9d9" stroke-width="1.2"/>
+  <text x="56" y="96" font-size="11" font-weight="bold" fill="#595959">外部声称</text>
+  <text x="430" y="96" font-size="11" font-weight="bold" fill="#595959">判定</text>
+  <text x="560" y="96" font-size="11" font-weight="bold" fill="#595959">源码真相</text>
+  <rect x="40" y="104" width="1000" height="46" rx="0" fill="#fafafa" stroke="none" stroke-width="1.2"/>
+  <text x="56" y="132" font-size="10.5" font-weight="normal" fill="#333">dsh-agent-teams = Kahn 拓扑就绪调度</text>
+  <rect x="420" y="113" width="92" height="26" rx="13" fill="#fff7e6" stroke="#fa8c16" stroke-width="1"/>
+  <text x="466" y="131" font-size="10.5" font-weight="bold" fill="#fa8c16" text-anchor="middle">风格化</text>
+  <text x="560" y="132" font-size="10.5" font-weight="normal" fill="#595959">任务板依赖 + 脚本控制流 + FIFO 槽，没有入度队列</text>
+  <text x="56" y="178" font-size="10.5" font-weight="normal" fill="#333">Captain 动态规划器：输出 JSON DAG</text>
+  <rect x="420" y="159" width="92" height="26" rx="13" fill="#fff7e6" stroke="#fa8c16" stroke-width="1"/>
+  <text x="466" y="177" font-size="10.5" font-weight="bold" fill="#fa8c16" text-anchor="middle">风格化</text>
+  <text x="560" y="178" font-size="10.5" font-weight="normal" fill="#595959">模型写 JS 编排脚本，或由 Lead 把工作分解进任务板</text>
+  <rect x="40" y="196" width="1000" height="46" rx="0" fill="#fafafa" stroke="none" stroke-width="1.2"/>
+  <text x="56" y="224" font-size="10.5" font-weight="normal" fill="#333">Reviewer 工件验收门禁</text>
+  <rect x="420" y="205" width="92" height="26" rx="13" fill="#fff1f0" stroke="#d4380d" stroke-width="1"/>
+  <text x="466" y="223" font-size="10.5" font-weight="bold" fill="#d4380d" text-anchor="middle">不存在</text>
+  <text x="560" y="224" font-size="10.5" font-weight="normal" fill="#595959">auto-review 是权限预审：审待执行动作，不审产出质量</text>
+  <text x="56" y="270" font-size="10.5" font-weight="normal" fill="#333">七状态任务生命周期（含 REVIEWING/REPLANNING）</text>
+  <rect x="420" y="251" width="92" height="26" rx="13" fill="#fff1f0" stroke="#d4380d" stroke-width="1"/>
+  <text x="466" y="269" font-size="10.5" font-weight="bold" fill="#d4380d" text-anchor="middle">不存在</text>
+  <text x="560" y="270" font-size="10.5" font-weight="normal" fill="#595959">jobs / team tasks / goal 三套状态机，都没有这两个状态</text>
+  <rect x="40" y="288" width="1000" height="46" rx="0" fill="#fafafa" stroke="none" stroke-width="1.2"/>
+  <text x="56" y="316" font-size="10.5" font-weight="normal" fill="#333">Append-only 事件溯源会话</text>
+  <rect x="420" y="297" width="92" height="26" rx="13" fill="#f6ffed" stroke="#52c41a" stroke-width="1"/>
+  <text x="466" y="315" font-size="10.5" font-weight="bold" fill="#52c41a" text-anchor="middle">真实</text>
+  <text x="560" y="316" font-size="10.5" font-weight="normal" fill="#595959">机制是根基；叙事里的 TASK_* 事件名是虚构的</text>
+  <text x="56" y="362" font-size="10.5" font-weight="normal" fill="#333">dsh rollback --task &lt;id&gt;</text>
+  <rect x="420" y="343" width="92" height="26" rx="13" fill="#fff1f0" stroke="#d4380d" stroke-width="1"/>
+  <text x="466" y="361" font-size="10.5" font-weight="bold" fill="#d4380d" text-anchor="middle">不存在</text>
+  <text x="560" y="362" font-size="10.5" font-weight="normal" fill="#595959">CLI 无此子命令；真实恢复是会话级（resume / 冷恢复 / fork 快照）</text>
+  <rect x="40" y="380" width="1000" height="46" rx="0" fill="#fafafa" stroke="none" stroke-width="1.2"/>
+  <text x="56" y="408" font-size="10.5" font-weight="normal" fill="#333">Web 端动态 DAG 实时看板</text>
+  <rect x="420" y="389" width="92" height="26" rx="13" fill="#fff7e6" stroke="#fa8c16" stroke-width="1"/>
+  <text x="466" y="407" font-size="10.5" font-weight="bold" fill="#fa8c16" text-anchor="middle">风格化</text>
+  <text x="560" y="408" font-size="10.5" font-weight="normal" fill="#595959">job 流 + workflow-run Chat 节点 + teams 名册/任务板</text>
+  <text x="56" y="454" font-size="10.5" font-weight="normal" fill="#333">推理指标看板：TTFT / KV 命中率 / 租约配额</text>
+  <rect x="420" y="435" width="92" height="26" rx="13" fill="#fff1f0" stroke="#d4380d" stroke-width="1"/>
+  <text x="466" y="453" font-size="10.5" font-weight="bold" fill="#d4380d" text-anchor="middle">不存在</text>
+  <text x="560" y="454" font-size="10.5" font-weight="normal" fill="#595959">dsh-otel 是导出通道，自身不采集任何推理指标</text>
+  <rect x="40" y="472" width="1000" height="46" rx="0" fill="#fafafa" stroke="none" stroke-width="1.2"/>
+  <text x="56" y="500" font-size="10.5" font-weight="normal" fill="#333">KV Cache 前缀对齐优化（命中 85–95%）</text>
+  <rect x="420" y="481" width="92" height="26" rx="13" fill="#fff7e6" stroke="#fa8c16" stroke-width="1"/>
+  <text x="466" y="499" font-size="10.5" font-weight="bold" fill="#fa8c16" text-anchor="middle">风格化</text>
+  <text x="560" y="500" font-size="10.5" font-weight="normal" fill="#595959">前缀稳定是组合纪律（至少四处）；命中率数字无源</text>
+  <text x="56" y="546" font-size="10.5" font-weight="normal" fill="#333">指标与拓扑合一的可观测性平台</text>
+  <rect x="420" y="527" width="92" height="26" rx="13" fill="#fff1f0" stroke="#d4380d" stroke-width="1"/>
+  <text x="466" y="545" font-size="10.5" font-weight="bold" fill="#d4380d" text-anchor="middle">不存在</text>
+  <text x="560" y="546" font-size="10.5" font-weight="normal" fill="#595959">第 7 与第 8 条都不存在</text>
+  <text x="40" y="586" font-size="10.5" font-weight="normal" fill="#8c8c8c">三类判定的读法：真实 = 机制在、词汇/形态可能不同；风格化 = 有真实对应物但被写成了另一种形态；不存在 = 指不到任何源码。</text>
+  <text x="40" y="604" font-size="10.5" font-weight="normal" fill="#8c8c8c">共同模式：能力存在、形态虚构——包名（agent-team / auto-review）是主要误导源。逐条出处见本页「逐条核对表」与「源码入口」。</text>
+</svg>
