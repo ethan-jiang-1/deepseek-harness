@@ -26,7 +26,7 @@
 
 ## JobRegistry：后台作业的平台合同
 
-jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`packages/jobs/jobs/README.md:12`）：`JobRegistry` 是抽象 Cordis 服务，直接加载实现类即 throw（组合配错在装载时就失败）；`jobs-local` 是 shipped 的进程内实现——**job 随 harness 进程死亡，跨重启的持久执行需要别的后端实现同一合同**（`packages/jobs/jobs/README.md:33`）。
+jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`packages/jobs/jobs/README.md:12`）：`JobRegistry` 是抽象 Cordis 服务，直接加载实现类即 throw（组合配错在装载时就失败）；`jobs-local` 是 shipped 的进程内实现——**job 随 harness 进程死亡，跨重启的持久执行需要别的后端实现同一合同**（`packages/jobs/jobs-local/README.md:32`）。
 
 一个 job 给你什么（`packages/jobs/jobs/README.md:30`-`34`）：
 
@@ -41,7 +41,7 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 
 **输出环的两个受众**（`packages/jobs/jobs/README.md:34`）：producer 用 pull sources（registry 按自己节奏泵的非消费 offset 读者）或经 `JobHandle` 推块，都落进有界 ring——**`stdout`/`stderr` 块进模型，`log` 块只进观察者**（这就是 workflow mirror 的 log 通道不进 `job_output` 渲染的平台根源，[`01`](./01-scripted-workflow-and-sandboxed-fan-out.md)）。观察者按绝对字节偏移读留存块、推进有信号；`readAt` 不消费任何东西、对模型不可见；`updateProgress` 把活进度行发布进每个投影直到结算。
 
-**归档联动**（`packages/jobs/jobs/README.md:96`）：`workspace/session-activity` 把该 Session 拥有的 running/stopping job 报成 `job` 家族；`workspace/session-stop` 以 reason `session archived` 逐个 kill（一个 producer 取消时抛错只记日志，其余 job 继续停）；无主 job 永不为某个 Session 报告或停止。
+**归档联动**（`packages/jobs/jobs/README.md:91`）：`workspace/session-activity` 把该 Session 拥有的 running/stopping job 报成 `job` 家族；`workspace/session-stop` 以 reason `session archived` 逐个 kill（一个 producer 取消时抛错只记日志，其余 job 继续停）；无主 job 永不为某个 Session 报告或停止。
 
 ## Shipped producer 与 controller 要求
 
@@ -91,7 +91,7 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 
 `update` 的可写形态是 **complete-record CAS**：`{sessionId, id, expected: <编辑前完整记录>, title?, prompt?, change?}`——`change` 是判别联合（`at`/`every`/`daily`/`weekly`/`cron`），可跨 kind；等价归一化规则是 no-op。DST 规则：本地不存在的时刻跳过、重叠取更早且每天只一次；`every_seconds: 86400` 是固定间隔，不等于 daily 的 wall-clock 语义。`title` 必填（trim 后非空、≤120 字符、**从不从 instruction 派生**）。
 
-绑定与操作边界（`packages/schedule/schedule/README.md:46`-`56`）：reminder 绑定**创建它的 Agent Session**；`schedule_list` 只返 active；这些操作**不激活任何 Agent、不读 Session 日志**；显式删除 = 停未来交付 + 删任务行 + 删交付记录，**已进队列的消息不撤回**。更新保留 id、绑定、状态与历史，冲突返回 `schedule_conflict` 而不覆写。
+绑定与操作边界（`packages/schedule/schedule/README.md:47`-`:49`、`:55`）：reminder 绑定**创建它的 Agent Session**；`schedule_list` 只返 active；这些操作**不激活任何 Agent、不读 Session 日志**；显式删除 = 停未来交付 + 删任务行 + 删交付记录，**已进队列的消息不撤回**。更新保留 id、绑定、状态与历史，冲突返回 `schedule_conflict` 而不覆写。
 
 **与 Session 归档互锁**（`packages/schedule/schedule/README.md:49`）：有 active reminder 的 Session **归档被拒**，直到它们停止；选择停止 = 删除全部 active reminder；unarchive 不复活它们。
 

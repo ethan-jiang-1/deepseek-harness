@@ -109,7 +109,7 @@ VM 上下文 `createContext({})` 后只注入五个冻结函数（`agent`/`paral
 执行中再分两级：
 
 - **fatal（杀整个脚本）**：所有 `WorkflowError` 默认 `fatal: true`（`packages/workflow/workflow/src/index.ts:134`-`138`）；`parallel()`/`pipeline()` 对 fatal **re-throw** 而不是把 item 变 null——「写错的选项必须响亮地杀死脚本，绝不溶进一个读起来像普通子代理失败的 null」（`:121`-`129` JSDoc）。fatality 判定用 host realm 的 `instanceof`，脚本 realm 造的对象无法伪造也无法误触发（`:146`-`148`）。
-- **逐 item `null`（只留给局部失败）**：子代理自身失败（stopReason 非 completed）与普通 stage/thunk 错误（`packages/workflow/workflow/README.md:92`；`packages/workflow/workflow-ptc/src/runtime.ts:221`-`222`、`:332`-`338`）。
+- **逐 item `null`（只留给局部失败）**：子代理自身失败（stopReason 非 completed）与普通 stage/thunk 错误（`packages/workflow/workflow/README.md:91`；`packages/workflow/workflow-ptc/src/runtime.ts:221`-`222`、`:332`-`338`）。
 
 上限是协作式配额而非主机强制（`packages/workflow/workflow-ptc/README.md:155`）：总子代理数 `AGENT_CAP` 默认 1000（`packages/workflow/workflow-ptc/src/runtime.ts:168`-`173`、`packages/workflow/workflow-ptc/src/index.ts:108`）、单次 parallel/pipeline 条目 `ITEM_CAP` 默认 4096（`packages/workflow/workflow-ptc/src/runtime.ts:342`-`349`、`packages/workflow/workflow-ptc/src/index.ts:109`）。子代理 result **reject**（基础设施故障）≠ 子代理失败：配对 lifecycle 后抛 fatal `AGENT_RESULT`（`packages/workflow/workflow-ptc/src/runtime.ts:198`-`206`）。返回值不可物化为 lossless JSON（exotic 原型/循环/稀疏数组/bigint/嵌套 undefined 等）→ `RESULT_UNSERIALIZABLE`（`packages/workflow/workflow-ptc/src/runtime.ts:127`-`140`、`packages/workflow/workflow-ptc/src/realm.ts:74`-`147`）。
 
@@ -117,7 +117,7 @@ VM 上下文 `createContext({})` 后只注入五个冻结函数（`agent`/`paral
 
 - **fresh Node 进程**：引擎把自包含 guest 程序（data: URL ESM）交给 `ctx.ptcRuntime.run(...)`；Node PTC provider 每次 run 起新进程（`packages/workflow/workflow-ptc/src/index.ts:161`-`167`、`packages/workflow/workflow-ptc/src/host.ts:276`-`300`；`packages/ptc-runtime/ptc-runtime-node/README.md:12`）。
 - **调用方 Session 的文件沙箱**：引擎按 `runCtx.sandboxPolicy.resolve({ session: request.parent.session })` 解析父会话的常设策略，cwd 取 `policy.workspaceRoot`（`packages/workflow/workflow-ptc/src/index.ts:166`；`packages/workflow/workflow-ptc/src/host.ts:279`-`280`）。
-- **取消**：`cancel(reason)`（首个 reason 生效）→ `controller.abort()` + 立即 dispose 所有已发布 child——**立即中止受管进程，不等 guest 确认**（`packages/workflow/workflow-ptc/src/host.ts:148`-`153`；`packages/workflow/workflow-ptc/README.md:98`）；终局 finally 处置全部 child、为残余 liveAgents 合成 `cancelled` agent-end（`packages/workflow/workflow-ptc/src/host.ts:293`-`303`）。工具层把 `exec.signal` 桥为 `run.cancel('parent step aborted')`（`packages/workflow/tool-workflow/src/index.ts:444`-`448`）。
+- **取消**：`cancel(reason)`（首个 reason 生效）→ `controller.abort()` + 立即 dispose 所有已发布 child——**立即中止受管进程，不等 guest 确认**（`packages/workflow/workflow-ptc/src/host.ts:151`-`155`；`packages/workflow/workflow-ptc/README.md:97`）；终局 finally 处置全部 child、为残余 liveAgents 合成 `cancelled` agent-end（`packages/workflow/workflow-ptc/src/host.ts:307`-`316`）。工具层把 `exec.signal` 桥为 `run.cancel('parent step aborted')`（`packages/workflow/tool-workflow/src/index.ts:450`-`451`）。
 - **无整体 elapsed deadline**：`timeoutMs: null` 显式请求免计时器（`packages/workflow/workflow-ptc/src/host.ts:295`；`packages/workflow/workflow-ptc/README.md:156`）；仅初始同步片有 `syncTimeoutMs`（默认 5000ms，`packages/workflow/workflow-ptc/src/index.ts:110`）。旁路限制：Node provider 的 `maxPendingCalls`（默认 128）同时限制 workflow 并发（`packages/workflow/workflow-ptc/README.md:49`）。
 - **装载约束**：要求 Node **TypeScript** PTC runtime，否则装载即 throw；Python PTC 组合必须禁用 workflow-ptc/tool-workflow/tool-ralph 行（`packages/workflow/workflow-ptc/src/index.ts:117`；`packages/workflow/workflow-ptc/README.md:28`）。
 

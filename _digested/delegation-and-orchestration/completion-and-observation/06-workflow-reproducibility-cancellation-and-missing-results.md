@@ -90,5 +90,5 @@ workflow 必须区分三种失败：
 | `packages/workflow/workflow-ptc/src/host.ts:200`-`:247` | start-after-abort、result race 与 child disposal |
 | `packages/workflow/workflow-ptc/src/host.ts:276`-`:303` | cancellation、pending startup 与合成 lifecycle end |
 | `packages/workflow/workflow/src/runtime-types.ts:36`-`:49` | holder-owned result/cancel/dispose contract |
-| `packages/workflow/workflow/src/index.ts:35`-`:134` | event pairing 与 fatal error taxonomy |
+| `packages/workflow/workflow/src/index.ts:36`-`:90`、`:102`-`:119`、`:121`-`:148`、`:175`-`:186` | event pairing、fatal 错误码清单与监听器容器化 |
 | `packages/workflow/tool-workflow/src/index.ts:89`-`:149` | Session observation recorder 的 contained failure |

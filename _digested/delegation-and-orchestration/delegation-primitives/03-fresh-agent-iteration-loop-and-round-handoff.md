@@ -87,7 +87,7 @@ round-failed 的渲染与校验在 `:281`-`331`（readRunResult）、`:383`-`390
 **两套词汇表**（Round 是外层策略迭代，不是 turn 的同义词）：
 
 ```text
-同会话：  Goal → Goal Round → Turn → Step        （目标持久在会话里，激活可续轮）
+同会话：  Goal → Goal Round → Turn → Step        （目标持久在会话里，armed 才续轮）
 fresh-agent：Ralph Run → Ralph Round → fresh child Turn → Step（每轮一个新子会话）
 ```
 

@@ -34,9 +34,10 @@
   <text x="76" y="410" font-size="12" font-weight="bold" fill="#434343">session header（每个会话）</text>
   <text x="76" y="427" font-size="10.5" fill="#595959">parentSession、delegationDepth、origin、agentPreset</text>
 
-  <rect x="60" y="446" width="330" height="46" rx="7" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
+  <rect x="60" y="446" width="330" height="60" rx="7" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
   <text x="76" y="466" font-size="12" font-weight="bold" fill="#434343">turn/end（各自会话）</text>
-  <text x="76" y="483" font-size="10.5" fill="#595959">completed / aborted / blocked / error / max-tokens / interrupted / forked（仅 fork 种子）</text>
+  <text x="76" y="483" font-size="10.5" fill="#595959">completed / aborted / blocked / error /</text>
+  <text x="76" y="497" font-size="10.5" fill="#595959">max-tokens / interrupted / forked*</text>
 
   <path d="M390 133 L470 220" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
   <path d="M390 189 L470 240" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
@@ -74,5 +75,5 @@
   <text x="76" y="580" font-size="10.5" fill="#8c8c8c">job ring / cursor / 等待者（进程内）</text>
   <text x="76" y="598" font-size="10.5" fill="#8c8c8c">客户端只拿到部分投影，depth/terminal 在 host</text>
 
-  <text x="40" y="640" font-size="11" fill="#8c8c8c">折叠顺序：catalog 给直接子代 → header 补 depth/origin → workflow/team/job 事件补边 → turn/end 与通知补终态。</text>
+  <text x="40" y="640" font-size="11" fill="#8c8c8c">折叠顺序：catalog 给直接子代 → header 补 depth/origin → workflow/team/job 事件补边 → turn/end 与通知补终态。* forked 只出现在 fork 种子历史里。</text>
 </svg>

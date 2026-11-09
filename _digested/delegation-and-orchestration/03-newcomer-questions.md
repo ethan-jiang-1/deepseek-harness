@@ -98,6 +98,6 @@ fatal 不会变成 `null`：写错的选项、非法 schema、触到 cap 都会�
 | workflow 的 `null` 与 fatal 两级 | `packages/workflow/workflow/src/index.ts:121`-`148` |
 | `log` channel 仅人可见 | `packages/workflow/tool-workflow/src/record.ts:1`-`6` |
 | goal 的创建语义与 resume / fork 后的 disarm | `packages/goal/tool-goal/src/index.ts:51`-`54`、`:117` |
-| Team 的四个 disable 行 | `packages/experimental/agent-team-profile/cordis.patch.yml:3`-`14` |
+| Team 的四个 disable 行 | `packages/experimental/agent-team-profile/cordis.patch.yml:4`-`14` |
 | 证据分层 | `docs/testing.md`、[`observation/07`](./completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md) |
 | 深度的绝对量与 workflow 分支计数 | `packages/subagent/subagent/src/child-agent.ts:49`-`58`、`packages/subagent/subagent/src/index.ts:196`、`packages/subagent/subagent/src/depth.ts:20`-`35`、`packages/workflow/workflow-ptc/src/host.ts:203`-`219` |

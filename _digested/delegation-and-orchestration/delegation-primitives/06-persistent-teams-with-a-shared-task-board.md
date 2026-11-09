@@ -81,7 +81,7 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 质量保障必须由 Lead 把它设计成工作流，而不是期待平台替你判断。最小可靠闭环是：**定义验收条件 → 委派执行 → 读取产物 → 独立复核或运行测试 → 通过则 complete，不通过则 reopen/reassign 或发送带缺口的修订任务 → 再复核**。复核可以由 Lead 自己完成，也可以由另一个 teammate 作为 reviewer 完成；但 reviewer 也是模型 Agent，不能替代测试、编译器、`ref-sweep` 或其他可执行证据。
 
-当质量不满足时，确实可以再次启动工作，但它是**显式的重试/修订动作**：Lead 读取新结果，指出具体缺口，通过 `send_message` 让原队友继续修订，或用 `team_task_update` 的 `reopen` / `reassign` 把任务重新打开或交给另一名队友；Lead 也可以 `interrupt_agent` 停止当前回合并保留其 pending inbox。系统不记录一个自动 retry counter，也不保证第二次结果会比第一次更好，因此应在任务描述中写清验收条件、失败证据和最大重试策略。
+当质量不满足时，确实可以再次启动工作，但它是**显式的重试/修订动作**：Lead 读取新结果，指出具体缺口，通过 `send_message` 让原队友继续修订，或用 `team_task_update` 的 `reopen` / `reassign` 把任务重新打开或交给另一名队友；Lead 也可以 `interrupt_agent` 停止当前轮次并保留其 pending inbox。系统不记录一个自动 retry counter，也不保证第二次结果会比第一次更好，因此应在任务描述中写清验收条件、失败证据和最大重试策略。
 
 推荐的分工是：执行者负责修改，复核者负责寻找反例，Lead 负责解释验收标准并作最终合并判断。对于代码或文档，最终质量证据应优先来自测试、类型检查、格式检查、引用扫描、构建或人工逐项审查，而不是来自 teammate 的自报。共享文件系统使执行者和复核者看到同一工作区，也使未协调的并行写入产生冲突；`write_scopes` 只是 advisory，不能代替 Lead 的 diff 审查。
 
