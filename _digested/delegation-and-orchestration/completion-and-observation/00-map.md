@@ -6,7 +6,7 @@
 
 ## 五个时刻，别混成一个“完成”
 
-「完成」在这套系统里至少分成五件不同的事：**结果被接受**、**模型看得见**、**运行静止**、**资源被处置**、**业务上完成**（[`01`](./01-acceptance-visibility-quiescence-and-disposal.md)）。混用会直接导致错误报告：`completed` 不等于正确，`settled` 不等于读过，`delivered` 不等于处理。
+「完成」在这套系统里至少分成四件机制上的事：**结果被接受**、**模型看得见**、**运行静止**、**资源被处置**；**业务上完成**是第五件，但它推不出来，需要人/合同判断（[`01`](./01-acceptance-visibility-quiescence-and-disposal.md)）。混用会直接导致错误报告：`completed` 不等于正确，`settled` 不等于读过，`delivered` 不等于处理。
 
 ## 页面
 

@@ -4,8 +4,6 @@
 
 本页回答：**阶梯上每一级在 shipped 组合里是开箱即用，还是要显式打开？** 这是「充分利用 DSH」的第一手事实，也是判断“模型为什么看不见某个原语”的起点。
 
-阶梯上每一级在 shipped 组合里的开/关，是「充分利用 DSH」的第一手事实：谁开箱即用、谁要显式打开，全部落在 `packages/bundle/base/cordis.patch.yml` 与 optional bundle 清单里。
-
 | 原语 | 默认状态 | 出处 |
 |------|---------|------|
 | `todo_write` | base 挂载，`allowParallelInProgress: true` | `packages/bundle/base/cordis.patch.yml:437`-`441` |
@@ -17,8 +15,8 @@
 | goal 三件套 + `/goal` | base 挂载（`goal`、`goal-round-driver`、`command-goal`、`tool-goal`） | `packages/bundle/base/cordis.patch.yml:323`-`332`、`444` |
 | jobs | base 挂载（`jobs-local` 服务 + `tool-jobs` 工具） | `packages/bundle/base/cordis.patch.yml:97`、`289` |
 | `tool-worktree` | **不在 base**：`OPTIONAL_BUNDLES` 成员，按需给并行工作提供 `ctx.worktrees` 隔离目录 | `packages/boot/app-boot/src/profile.ts:223`-`236`、`packages/experimental/tool-worktree/src/index.ts:39` |
-| schedule | **不在 optional bundle**：直接进 Web 组合（`experimental/schedule-bundle` 已退役；组合行 `id: schedule` 与 `id: ui-schedule`） | `packages/bundle/web-app/cordis.patch.yml:139`-`140`、`:398`-`399` |
-| agent-teams / auto-review | 不在 base：experimental optional bundle（`OPTIONAL_BUNDLES` 12 成员） | `packages/boot/app-boot/src/profile.ts:223`-`236` |
+| schedule | **不在 optional bundle**：直接进 Web 组合（`experimental/schedule-bundle` 已退役，历史见 `_change_log/`；组合行 `id: schedule` 与 `id: ui-schedule`） | `packages/bundle/web-app/cordis.patch.yml:139`-`140`、`:398`-`399` |
+| agent-teams / auto-review | 不在 base：experimental optional bundle（`OPTIONAL_BUNDLES` 成员） | `packages/boot/app-boot/src/profile.ts:223`-`236` |
 | `subagent_codex` / `subagent_claude_code` | 不在 base、也不在 `OPTIONAL_BUNDLES`：**按需安装档位** `ON_DEMAND_BUNDLES` 提供（进程外 provider 行，`maxDepth: provider-managed`） | `packages/boot/app-boot/src/official-bundle-packages.ts:4`-`7`、`packages/subagent/subagent-codex/cordis.patch.yml:1`-`10` |
 
 > 组合会随版本变化；本页只写当前 pin 的 shipped 状态，历史差异见 `_change_log/`。

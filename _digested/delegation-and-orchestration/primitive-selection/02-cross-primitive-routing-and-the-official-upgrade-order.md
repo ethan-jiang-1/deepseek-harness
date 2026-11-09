@@ -8,7 +8,7 @@
 
 | 关系 | 官方句子（出处） |
 |------|------------------|
-| workflow → subagent（互斥推荐） | "For one or two delegations, prefer plain subagent calls."（`packages/workflow/tool-workflow/src/index.ts:333`） |
+| workflow → subagent（互斥推荐） | "For one or two delegations, prefer plain subagent calls."（`packages/workflow/tool-workflow/src/index.ts:329`） |
 | ralph → goal / subagent / workflow（三分路由） | "Use same-session goal tools for ordinary long-running objectives, and plain subagents or workflows for bounded delegation and fan-out."（`packages/experimental/tool-ralph/src/index.ts:408`） |
 | ralph → goal | "Ordinary long-running same-session work belongs to goal tools."（`packages/experimental/tool-ralph/src/index.ts:181`-`182`） |
 | goal → 单轮（互斥） | "not for single-turn work"（`packages/goal/tool-goal/src/index.ts:54`） |

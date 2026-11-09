@@ -43,7 +43,7 @@
 
 ## 模式 C：fork 的对话延续链
 
-子任务需要"建立在这次对话已完成轮次上"时用 `subagent_fork`（继承 balanced completed-turn 前缀、KV 前缀字节复用，[`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)）→ child 可经 `send_message` 回话给父（relay 语义）→ 父随时 `send_message` 续命 / `interrupt_agent` 打断（keepInbox 保留未领工作）→ child settled 后仍可冷恢复。组合要点：**fork 的省钱前提是别动 provider/model/persona/toolFilter**（任何变更毁掉继承前缀的复用资格）。
+子任务需要"建立在这次对话已完成轮次上"时用 `subagent_fork`（继承 balanced completed-turn 前缀、KV 前缀字节复用，[`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)）→ child 可经 `send_message` 回话给父（relay 语义）→ 父随时 `send_message` 续命 / `interrupt_agent` 打断（keepInbox 保留未领工作）→ child settled 后仍可冷恢复。组合要点：**fork 的省钱前提是别动 provider/model**（任何变更毁掉继承前缀的复用资格）；`persona`/`toolFilter` 是历史描述符字段，不是现役配置面。
 
 ## 模式 D：两种长任务形态的选择（goal vs ralph）
 

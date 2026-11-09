@@ -6,7 +6,7 @@
 
 ## 一句话
 
-DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给它钉一个薄 preset。省略 `agentPreset` 的子代理不是“权限更少的 worker”，而是**加入父当前那一代 preset 的新成员**——工具面与父相同。没有 per-agent 的工具允许列表；工具侧的 `persona`/`toolFilter` 已退役，加载即报迁移错误。
+DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给它钉一个薄 preset。省略 `agentPreset` 的子代理不是“权限更少的 worker”，而是**加入父当前那一代 preset 的新成员**——工具面与父相同。没有 per-agent 的工具允许列表；工具侧的 `persona`/`toolFilter` 配置已退役，加载即报迁移错误；描述符里的历史 `toolFilter` 只在冷恢复时重放。
 
 ## 机制：省略 = 加入父修订
 
@@ -14,7 +14,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 |---|---|
 | `agentPreset` 省略时，本地子代理**加入父当前的 preset 修订**（引用同一条目，不复制 YAML） | `packages/subagent/subagent/README.md:65`；`manager.ts:896`；`child-agent.ts:200`；`agent-preset-registry/src/index.ts:292`-`310` |
 | 显式给 id（哪怕等于父的 id）会挂载**当前可用修订**，不是父那一代 | `packages/subagent/subagent/README.md:65` |
-| 子会话把继承到的 preset id 写进 header | `child-agent.ts:142`；`manager.ts:445` |
+| 子会话把继承到的 preset id 写进 header | `child-agent.ts:142`-`145`；`manager.ts:445` |
 | 子代理的工具面 = 组合完成后注册进该 scope 的工具；与父共用同一修订意味着同一份工具行 | `child-agent.ts:186`-`202`；`applyChildOverrides` 只加 delegation context / persona / 历史 toolFilter |
 
 ## 为什么没有“工具白名单”
@@ -25,7 +25,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 | preset 定义里的工具过滤字段 | 不存在；定义字段只有 `id/name/description/order/plugins`（`agent-preset-registry/src/definition.ts:5`-`11`） |
 | per-agent 的 `allowedTools` / allowlist | `packages/preset`、`packages/core/agent` 中无此字段（搜索范围：`toolFilter`、`allowedTools`、`allowlist`） |
 | 低层 `ctx.tools.restrict({ allow, deny })` | 存在，但只能绑在**紧作用域**上调用；现役唯一调用点是“历史子代理描述符在冷恢复时重放 toolFilter”（`child-agent.ts:160`-`163`、`:217`；`core/tools/src/index.ts:701`-`706`、`:1105`-`1108`） |
-| 隐藏内部 preset | 没有 hidden 标志；`AgentPresetRow` 只有 `isDefault/name/description/order/broken`（`agent-preset-registry/src/types.ts:8`-`19`） |
+| 隐藏内部 preset | 没有 hidden 标志；`AgentPresetRow` 只有 `id/isDefault/name/description/broken`（`agent-preset-registry/src/types.ts:8`-`19`） |
 
 所以“worker”在 DSH 里不是一个内建类型，而是一种**组合技法**：把 leaf 需要的那几行单独做成一个 preset，然后让 spawn 行的 `agentPreset` 指向它。
 
@@ -34,7 +34,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 `allowedAgentPresets` 是唯一“把选择权交给模型”的原生机制：
 
 - 非空数组才会把 `agent_preset` 参数暴露给模型；省略则完全禁用模型选择（`preset-selection.ts:10`-`11`、`:91`-`95`）。
-- 挂载时校验：重复 id、默认值不在集合内都直接失败（`:26`-`31`）；每个 id 都会被 `readDocument` 读一遍，但**不激活**候选（`:65`-`70`；`tool-subagent/README.md:70`）。
+- 校验时机随挂载位置：Host 挂载的工具在加载时校验，preset 内的工具在每个 Agent 初始化时校验（`tool-subagent/README.md:70`）；重复 id、默认值不在集合内都直接失败（`:24`-`32`）；每个 id 都会被 `readDocument` 读一遍，但**不激活**候选（`:65`-`70`）。
 - provider 必须满足 `capabilities.agentPreset && !inheritsParentContext`，否则挂载或启动前拒绝（`:79`-`81`；`subagent/src/index.ts:632`-`636`）。
 - 模型可见的措辞随配置生成：省略时说 `Omit to use <preset>.`，没配默认时说 `Omit to inherit the parent agent's current preset.`（`:46`-`49`）。
 
@@ -46,7 +46,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 |---|---|---|---|---|
 | `worker.leaf` | 只列取证/读写/命令/搜索/计划这类行 | 无 `subagent`、无 `workflow`、无 team、无控制工具 | 0 | 读码、盘点、测量；只回证据 |
 | `worker.orchestrator` | leaf + 一条 `subagent` 行 | 只能再派一层 | 1 | 小工头带一两个叶子手 |
-| `worker.workflow` | leaf + `workflow` 两行 | 能扇出，但分支默认叶 | 0 | 并行取证、批量审计 |
+| `worker.workflow` | leaf + `workflow` 两行 | 能扇出；分支继承父组合，再派/再扇出只受深度上限约束 | 0 | 并行取证、批量审计 |
 | `worker.full` | 完整角色组合 + 显式预算 | 与角色同权 | 按行 | 受信任的子负责人；需要单独评审 |
 
 这张表是**组合配方**：每一格都要落到真实的插件行；DSH 不认识 `worker.leaf` 这个名字，也不会替你校验“leaf 真的没有 subagent 行”——校验只能由读组合的测试做（见 [`observation/07`](../completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)）。
@@ -59,7 +59,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 | 给 worker 加了 `toolFilter` 以为能收窄 | 配置已退役，加载即报错 | 挂载失败信息 |
 | 给 fork 钉 worker preset | provider 能力位不允许 | 挂载/启动前拒绝 |
 | worker 出现在用户的选择器里 | 没有 hidden 标志 | 名册/UI 可见；需要产品侧自行标注 |
-| 升级到 orchestrator 后链路变深、撞上限 | `allowedAgentPresets` 只改名册，不改深度；深度仍按行上的 `maxDepth` 算 | [`composition/06`](./06-depth-concurrency-and-capacity-limits.md) |
+| 升级到 orchestrator 后链路变深、撞上限 | `allowedAgentPresets` 只改名册，不改深度；行内 `maxDepth` 优先，省略时每次委派读 Host `subagent.maxDepth`（初始 1） | [`composition/06`](./06-depth-concurrency-and-capacity-limits.md) |
 
 ## 推论与模式（不是 DSH 的词）
 
@@ -78,7 +78,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 | 路径 | 一句话 |
 |------|--------|
 | `packages/subagent/tool-subagent/src/preset-selection.ts:8`-`95` | 默认/枚举/校验/provider 拒绝/模型措辞 |
-| `packages/subagent/tool-subagent/src/index.ts:96`-`98`、`:147`-`158` | Config schema、退役字段、maxDepth 迁移 |
+| `packages/subagent/tool-subagent/src/index.ts:96`-`98`、`:147`-`158` | Config schema、退役字段、maxDepth 校验（`provider-managed` 语义） |
 | `packages/subagent/subagent/src/child-agent.ts:135`-`163`、`:186`-`217` | 子会话 header、加入父修订、覆盖顺序 |
 | `packages/subagent/subagent/src/manager.ts:445`-`451`、`:883`-`896` | 组合选择与子会话 meta |
 | `packages/preset/agent-preset-registry/src/index.ts:292`-`310` | 加入父保留的修订 |

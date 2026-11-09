@@ -26,6 +26,7 @@
 | [`04`](./04-cross-round-goals-and-the-round-driver.md) | `goal` | 跨轮次长目标 + idle 自动续跑；objective 写法、轮预算与终结纪律 |
 | [`05`](./05-background-jobs-and-wall-clock-schedules.md) | `jobs` / `schedule` | 后台作业平台（id/owner/first-wins/通知）与 wall-clock 提醒（到期进原会话，不是推送） |
 | [`06`](./06-persistent-teams-with-a-shared-task-board.md) | `agent-teams` | Lead + 具名队友 + 任务板 + 邮箱；启用代价是全局 subagent 控制面被 shadow |
+| [`07`](./07-shipped-mount-state.md) | shipped 组合 | 每一级原语在 base / optional / on-demand 里的默认开关与出处 |
 
 ## 入口问题
 

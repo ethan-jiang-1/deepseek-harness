@@ -18,7 +18,7 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | 定义里的字段只有 `id / name / description / order / plugins` | `packages/preset/agent-preset-registry/src/definition.ts:5`-`11` |
 | 声明行的 `id` 给 Loader 编辑用；`config.id` 才是 session 保存的 preset 身份 | `packages/preset/agent-preset/README.md:48` |
 | 定义 **eagerly 加载**：注册即激活、即挂载；激活失败留在名册里可见 | `README.md:12`；`agent-preset-registry/src/index.ts:77`、`:98`-`110` |
-| 编辑会退役旧修订；**跑着的 Agent 保留引用**，新 Agent 才看到新定义 | `README.md:78`；`agent-preset-registry/README.md:56`、`:93` |
+| 编辑会退役旧修订；**跑着的 Agent 保留引用**，新 Agent 才看到新定义（仅同进程；重启后冷恢复用该 id 的当前定义） | `README.md:78`；`agent-preset-registry/README.md:56`、`:93` |
 | **没有运行期继承**：没有 `extends`/`base`/parent 字段；用户覆盖是整份子列表替换，不合并 | `definition.ts:5`-`11`；`agent-preset-registry/README.md:99` |
 | 唯一的分层是加载期 YAML patch 在 `config.plugins` 内做操作 | `docs/architecture.md:25` |
 | 注册表不扫目录、不接受 preset 路径 | `agent-preset-registry/README.md:46` |
@@ -33,7 +33,7 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | 递归预算 | 每个 delegation 行自己的 `maxDepth` | 逐行看，链的总预算没有单点声明 |
 | 模型与 persona | 组合行里的 model / persona 段 | 读行配置与注入文本 |
 
-这个形状的后果是：**「这个 preset 能干什么」是一个需要计算的结论**，不是一个可查询的字段。把九份 preset 并排读，你能看出哪些行共有、哪些是 delta，但看不出“它是否允许三层委派”——那要沿 delegation 行、bundle 组合与深度默认值一起推。
+这个形状的后果是：**「这个 preset 能干什么」是一个需要计算的结论**，不是一个可查询的字段。把 shipped 的四份 preset（`packages/bundle/web-app/presets/` 的 cordis/minimal/ptc/standard）并排读，你能看出哪些行共有、哪些是 delta，但看不出“它是否允许三层委派”——那要沿 delegation 行、bundle 组合与深度默认值一起推。
 
 ## 一个 shipped preset 里通常有什么
 
@@ -75,8 +75,8 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | 改了 preset，正在跑的 Agent 没变 | 旧修订被引用；编辑只影响之后创建的 Agent（`README.md:78`） |
 | 用户覆盖后内置新增行不见了 | 覆盖是整份子列表替换，不自动合入内置更新（`agent-preset-registry/README.md:99`） |
 | preset 激活失败但名册里还在 | 失败定义保留可见（`README.md:2`；`registry/src/index.ts:77`） |
-| 以为 preset 能隐藏内部 worker | 没有 hidden 标志；`AgentPresetRow` 只有 `isDefault/name/description/order/broken`（`agent-preset-registry/src/types.ts:8`-`19`） |
-| 以为 preset 能按 agent 过滤工具 | 定义里没有工具过滤字段；工具侧的 `toolFilter/persona` 已退役，加载即报迁移错误（`tool-subagent/src/index.ts:147`-`150`） |
+| 以为 preset 能隐藏内部 worker | 没有 hidden 标志；`AgentPresetRow` 只有 `id/isDefault/name/description/broken`（`agent-preset-registry/src/types.ts:8`-`19`）；`order` 属于 `AgentPreset`（`preset.ts:4`-`10`），不在对外行类型里 |
+| 以为 preset 能按 agent 过滤工具 | 定义里没有工具过滤字段；工具侧的 `toolFilter/persona` 配置已退役，加载即报迁移错误（`tool-subagent/src/index.ts:147`-`150`）；描述符里的历史 `toolFilter` 仍会在冷恢复时重放（`child-agent.ts:160`-`163`、`:217`） |
 
 ## 推论与模式（不是 DSH 的词）
 
@@ -102,5 +102,6 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | `packages/core/session/src/types.ts:241`-`247` | `EpochHeader.tools`：会话实际工具面的持久记录 |
 | `apps/cli/tests/dump-config-schema.expected.e2e.ts:355` | `--dump-config` 的 boot-free 声明面定位 |
 | `packages/preset/agent-preset-registry/src/index.ts:195`-`207`、`:243`、`:353` | 名册/读取远程、未知/非法/锁定三类拒绝 |
+| `packages/preset/agent-preset-registry/README.md:99`、`:60` | 重启后冷恢复使用该 id 的当前定义；旧修订不跨进程保留 |
 | `packages/bundle/web-app/README.md:91`、`:123` | 用户编辑落点与 shipped preset 的 patch 文件 |
 | `packages/bundle/web-app/presets/standard.patch.yml:6`-`127` | standard preset 的子行全貌（六类职责） |

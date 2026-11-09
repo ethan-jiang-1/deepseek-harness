@@ -33,15 +33,11 @@
 | fork 继承父上下文 | 到最后一个 `turn/end` 的**已完成轮前缀**，创建时捕获一次；in-flight turn 不在内；父之后的轮不进种子（新消息仍可经 `send_message` 到达） | `subagent-fork-in-process/src/index.ts:5`-`6`、`:39`-`41`、`:73`-`77` |
 | spawn/fork/workflow/team 省略 preset | 子代**加入父当前的那一代 preset**（引用同一修订，不是复制一份 YAML）；显式给 id 才挂“当前可用修订” | `manager.ts:896`、`child-agent.ts:200`、`agent-preset-registry/src/index.ts:292`-`310` |
 
-第二行是作者座最常踩的坑：**「继承组合」不等于「复制能力」**。子代加入的是父的修订引用，所以父有什么工具行，子代就有什么；改 preset 只影响之后创建的 Agent，跑着的父及其子代仍用旧修订（`packages/preset/agent-preset/README.md:12`、`:78`）。
+第二行是作者座最常踩的坑：**「继承组合」不等于「复制能力」**。子代加入的是父的修订引用，所以父有什么工具行，子代就有什么；改 preset 只影响**同进程内之后创建**的 Agent，跑着的父及其子代仍用旧修订（`packages/preset/agent-preset/README.md:12`、`:78`）；进程重启后的冷恢复改用该 id 的当前定义（`agent-preset-registry/README.md:99`、`:60`）。
 
 ## 深度从哪里算
 
-`resolveChildDepth(parent, maxDepth)` 恒为 `delegationDepthOf(parent) + 1`（`packages/subagent/subagent/src/child-agent.ts:49`-`58`），而 `delegationDepthOf` 取 `max(header.delegationDepth, options.subagentDepth)`——持久 header 是单调 floor（`packages/subagent/subagent/src/depth.ts:20`-`35`）。所以：
-
-- workflow 分支的 parent 是 **run 的 parent**（`host.ts:211` 的 `parent: this.parent`），不是 run 本身；分支再 spawn，深度继续 +1，撞的是绝对上限。
-- team 成员的 parent 是 **Lead**（`roster.ts:271`），所以成员再 spawn 也是从 Lead 往下数。
-- 「某通道没有闸」与「某通道不计数」是两件事：workflow 的 `agent()` 不收 `maxDepth` 参数，但它启动的 child 仍带着算出来的绝对深度（见 [`composition/06`](./06-depth-concurrency-and-capacity-limits.md)）。
+三种「parent」决定深度从谁算起：spawn/fork 是发起委派的 Agent，workflow 分支是 **run 的 parent**（`host.ts:211`），team 成员是 **Lead**（`roster.ts:271`）。深度是绝对量、持久 header 是单调 floor——完整算术、`maxDepth` 取用顺序与「没有闸不等于不计数」的展开在 [`composition/06`](./06-depth-concurrency-and-capacity-limits.md)，本页不重复。
 
 ## 失败面
 
@@ -50,7 +46,7 @@
 | 给 fork 行配 `agentPreset` | 挂载时（工具）或 `startActivation` 前（服务） | `provider "fork" does not support independent agent preset selection` |
 | 在 workflow `agent()` 里传 `agentPreset` / `maxDepth` | 脚本执行到该调用时 | `agent() option "…" is not recognized (supported: label, phase, schema, provider, model)` |
 | 以为 team 成员名字等于能力（如起名 `vp-eng`） | 不炸——静默地拿到 Lead 的组合 | 无错误，只有行为差异 |
-| 以为改了 preset 会影响在跑的链 | 不炸——旧修订仍被引用 | 无错误，只有“为什么没变” |
+| 以为改了 preset 会影响在跑的链 | 不炸——旧修订仍被引用（重启后的冷恢复才改用当前定义） | 无错误，只有“为什么没变” |
 
 ## 推论与模式（不是 DSH 的词）
 
