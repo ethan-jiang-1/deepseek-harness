@@ -1,5 +1,7 @@
 # Acceptance, Visibility, Quiescence and Disposal · 接受、可见、静止与处置
 
+源码核验入口：`packages/core/session/src/types.ts`、`packages/core/agent/src/`、`packages/subagent/subagent/src/{manager,activation,continuation-messages}.ts`、`packages/jobs/jobs/src/`。
+
 本页补齐编排专题中最容易混淆的词：一个请求被接受，不等于模型已经看见；模型看见，不等于 turn 已经静止；资源终态，也不等于结果已经被消费。不同原语把这些时刻交给不同的日志、投影、inbox、句柄和 Host 存储。
 
 ![完成生命周期与崩溃窗口](./figures/completion-lifecycle.svg)

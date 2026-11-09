@@ -6,17 +6,17 @@
 
 外部叙事常把 DSH 描绘成「Captain 规划 + Kahn 入度队列 + Reviewer 门禁」的中心化 Task DAG 调度引擎。当前源码没有一个按 ready 队列自动派工的中心 executor；实际系统由可组合原语、workflow 局部控制流、Teams 任务图准入、Host schedule 和 JobRegistry 等多个机制组成。模型按任务的时间跨度与隔离需求选择原语，工具描述与包 README 携带各自的选择边界（证据见 [`selection/01`](./primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)）。
 
-## 两个座位，别坐混
+## 三类读者，别坐混
 
-本组同时服务两种读者，但页面按座位分开：
+本组同时服务三类读者，但页面按座位/用途分开：
 
-| 座位 | 问题 | 入口 |
+| 读者 | 问题 | 入口 |
 |---|---|---|
 | **驾驶座**（用现成原语干活） | 这个任务该用哪个原语？它保证什么、隔离什么？ | [`primitives/`](./delegation-primitives/00-map.md)、[`selection/`](./primitive-selection/00-map.md) |
 | **作者座**（写插件 / 组 preset / 交付一条链） | 能力面怎么组合出来？怎么收窄？合同放哪？失败谁重试？怎么观测？ | [`composition/`](./preset-composition-and-contract-placement/00-map.md)、[`observation/`](./completion-and-observation/00-map.md) |
 | **复核者**（同步 pin / 审一条结论） | 这条断言的源码锚在哪？它会怎么漂？ | 每页末尾的「源码入口」，以及本页[可审查性清单](#可审查性清单) |
 
-作者座是本组与「驾驶座机制地图」的分界：`primitives/` 与 `selection/` 回答**引擎怎么样**；`composition/` 与 `observation/` 回答**你在它上面搭的东西会怎么坏、怎么证明**。
+作者座是本组与「驾驶座机制地图」的分界：`primitives/` 与 `selection/` 回答**引擎怎么样**；`composition/` 与 `observation/` 回答**你在它上面搭的东西会怎么坏、怎么证明**；复核者没有专属页面，走每页末尾的源码入口复核前两者的结论。
 
 ## 阶梯总表
 
@@ -49,21 +49,21 @@
 | 你看到的现象 | 最可能的机制页 |
 |---|---|
 | 给了 `agentPreset` 但子代理没变 / 子代理拿到父的全部工具 | [`composition/01`](./preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md) |
-| 第三层被拒 / 不知道预算写在哪一行 | [`composition/06`](./preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md)、[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md) |
+| 第三层被拒 / 不知道预算写在哪一行 | [`composition/06`](./preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md) |
 | 合同写进 skill/文档但模型不照做 / skill 被裁半截 | [`composition/04`](./preset-composition-and-contract-placement/04-contract-placement-between-policy-and-engine.md) |
 | 改了 preset，跑着的 Agent 没变 | [`composition/02`](./preset-composition-and-contract-placement/02-preset-composition-as-a-static-self-contained-model.md) |
 | 父会话看不到整条链 / 想画流程图 | [`observation/05`](./completion-and-observation/05-delegation-graph-node-and-edge-projection.md) |
 | 子代理失败，犹豫要不要重试 | [`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md) |
 | 挂载绿了但行为不对 / 想证明模型会选 | [`observation/07`](./completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md) |
-| 某个节点状态是空的，不知道算不算失败 | [`observation/05`](./completion-and-observation/05-delegation-graph-node-and-edge-projection.md)、[`observation/01`](./completion-and-observation/01-acceptance-visibility-quiescence-and-disposal.md) |
-| preset 里声明的全局控制工具在根会话不生效 | [`primitives/06`](./delegation-primitives/06-persistent-teams-with-a-shared-task-board.md) |
+| 某个节点状态是空的，不知道算不算失败 | [`observation/05`](./completion-and-observation/05-delegation-graph-node-and-edge-projection.md) 的三个缺口词 |
+| team 会话里全局 subagent 控制面被替换 / 根会话的控制名让位 | [`primitives/06`](./delegation-primitives/06-persistent-teams-with-a-shared-task-board.md) |
 | workflow 分支返回 `null` | [`observation/06`](./completion-and-observation/06-workflow-reproducibility-cancellation-and-missing-results.md)、[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md) |
 
 ## 组内不变量
 
 这些话在本组每页都成立，重复出现是为了让单页也能独立读：
 
-1. **策略随工具走**：使用边界住在工具的 description 与 prompt section 里，不在部署 persona 或 docs 里（[`perspectives/03`](./design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md)）。
+1. **策略随工具走**：使用边界住在工具的 description 与 prompt section 里，不在部署 persona 里；docs 不会被自动注入（[`perspectives/03`](./design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md)）。
 2. **深度是绝对量**：child 深度 = parent 深度 + 1，持久 header 是单调 floor；`maxDepth` 是上限，不是预算分配（[`composition/06`](./preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md)）。
 3. **shipped 里只有 in-process spawn 能钉独立 preset**：fork / workflow / team / 外部 provider 从父组合克隆，能力面不可按子代收窄（[`composition/01`](./preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md)）。
 4. **引擎不自动重试**：终态是模型可见的结果，重试是父代理的有界策略（[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md)）。
@@ -79,6 +79,18 @@
 | [`preset-composition-and-contract-placement/`](./preset-composition-and-contract-placement/00-map.md) | 能力面怎么组合、怎么收窄、合同放哪、深度与通知怎么叠加 | 作者座：写插件、组 preset |
 | [`completion-and-observation/`](./completion-and-observation/00-map.md) | 终态、重试、谱系、状态三分、图投影、证据分层 | 作者座 / 运维：怎么看见与证明 |
 | [`design-perspectives/`](./design-perspectives/00-map.md) | 为什么是这个形状、外部叙事逐条对照、九条陷阱 | 复核者 / 做架构判断的人 |
+
+## 目录简称
+
+正文里的 `primitives/`、`selection/`、`composition/`、`observation/`、`perspectives/` 是下列目录的简称，只为行文短：
+
+| 简称 | 实际目录 |
+|---|---|
+| `primitives/` | [`delegation-primitives/`](./delegation-primitives/00-map.md) |
+| `selection/` | [`primitive-selection/`](./primitive-selection/00-map.md) |
+| `composition/` | [`preset-composition-and-contract-placement/`](./preset-composition-and-contract-placement/00-map.md) |
+| `observation/` | [`completion-and-observation/`](./completion-and-observation/00-map.md) |
+| `perspectives/` | [`design-perspectives/`](./design-perspectives/00-map.md) |
 
 ## 与其他专题的关系
 

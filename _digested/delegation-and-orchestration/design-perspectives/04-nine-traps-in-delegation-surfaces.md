@@ -19,13 +19,13 @@
 ### 2. 修一个 bug 加一句
 
 **症状**：合同没有分层，引擎事实、公司政策、事故注解全塞进一个 skill；每修一次 bug 加一句，句子越来越长，最后没人知道哪句还有效。
-**机制**：载体没有生命周期划分（[`composition/04`](../preset-composition-and-contract-placement/04-contract-placement-between-policy-and-engine.md)）。
+**机制**：政策与引擎事实被塞进同一载体（[`composition/04`](../preset-composition-and-contract-placement/04-contract-placement-between-policy-and-engine.md) 的两种生命周期）；“每修一次加一句”是判断，不是机制。
 **判据**：这句话在升 pin 时会变吗？会 → 引擎段；不会 → 政策段。两段不能住同一家。
 
 ### 3. 无执行者的声明
 
 **症状**：写了一张家/能力/期望矩阵，没有任何代码或测试读它；它在下一次改配置时变成谎言。
-**机制**：声明没有消费者（[`observation/07`](../completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)）。
+**机制**：声明没有被任何消费者读取（[`composition/02`](../preset-composition-and-contract-placement/02-preset-composition-as-a-static-self-contained-model.md) 的“三个消费者”）。
 **判据**：删掉这份声明，哪条测试会红？没有 → 它只是文档。
 
 ### 4. 问 fork 证明继承
@@ -37,7 +37,7 @@
 ### 5. parentId 硬折伪造状态
 
 **症状**：客户端只有 sessions 投影，于是用 `parentId` 反推深度与终态；缺失被渲染成“未开始/失败/空白”。
-**机制**：depth 可从 catalog/header 投影推，terminal 只在父会话通知与子会话 `turn/end` 里；这些不都在客户端投影里（[`observation/05`](../completion-and-observation/05-delegation-graph-node-and-edge-projection.md)）。
+**机制**：depth 在 session header/catalog 投影里，terminal 只在父会话通知与子会话 `turn/end` 里；客户端投影覆盖范围未核对（[`observation/05`](../completion-and-observation/05-delegation-graph-node-and-edge-projection.md) 的待证），`lost` 是缺口标记、不是字段。
 **判据**：这个字段有持久来源吗？没有 → `unavailable`，不是推断值。
 
 ### 6. fake 证真
@@ -50,12 +50,12 @@
 
 **症状**：三层链被拒，于是把某一行的 `maxDepth` 调大；结果深度仍然在另一行被卡，或者把无关路径也放开了。
 **机制**：深度是绝对量、按行声明、持久 header 是单调 floor（[`composition/06`](../preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md)）。
-**判据**：先测真实算法（哪一行在哪个深度拒绝），再改；不要用“总体调大”代替定位。
+**判据**：拒绝发生在执行该跳的行的 `maxDepth` 上，调大别的行不生效；先测真实算法再改。
 
 ### 8. 把 no gate 读成 no counting
 
 **症状**：看到 workflow 的 `agent()` 没有 `maxDepth` 参数，就以为分支内的 spawn 不计深度。
-**机制**：workflow 不给“闸”，但分支 child 仍按 `parent + 1` 计算绝对深度（[`composition/01`](../preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md)）。
+**机制**：workflow 不给“闸”，但分支 child 仍按 `parent + 1` 计算绝对深度（[`composition/06`](../preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md)）。
 **判据**：“没有参数”不等于“没有计数”；去读 `resolveChildDepth` 的输入是谁。
 
 ### 9. 续驶代替可读结果

@@ -6,7 +6,7 @@
 
 ## 一句话
 
-DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只看 child，workflow 只看 run，team 只看名册，jobs 只看作业。能画出来的图只能由**持久事实折叠**而成；折叠不出来的格子必须标 `unavailable`，不能拿 `parentId` 硬折出一个看起来像状态的空。
+DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只管 child，workflow 只管自己的 run 与分支，team 只管名册/任务/消息，jobs 只管作业；没有任何一个组件把它们合成一张图。能画出来的图只能由**持久事实折叠**而成；折叠不出来的格子必须标 `unavailable`，不能拿 `parentId` 硬折出一个看起来像状态的空。
 
 ![委派图的持久源与三个缺口词](./figures/delegation-graph-sources.svg)
 
@@ -26,10 +26,10 @@ DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只看 child，wo
 |---|---|---|---|
 | `subagent/catalog` | 父会话 | child id、`childCreatedAt`、`mode`（`one-shot/continuable/external/unknown`）、label | 子代内部状态、终态（终态在结算通知与子会话 `turn/end` 里，不在 catalog 行） |
 | `subagent/descriptor` | 子会话 | mode、provider、label、模型/推理、persona、历史 toolFilter；log-only、不进模型历史 | 父侧视角的边（要配 catalog） |
-| `tool-workflow/run-start` / `agent-start` / `agent-end` / `run-end` | 父会话 | `runId`、`seq`、`label`、可选 `phase`、`childId`、`outcome`、run 终态 | 分支内部步骤、脚本变量 |
-| `team/member` / `team/task` / `team/message/queued` / `team/message/delivered` | Lead 会话 | 名册、任务板、消息收发；由 `agentTeam` projection 消费 | 成员内部 turn 细节 |
+| `tool-workflow/run-start` / `agent-start` / `agent-end` / `run-end` | 父会话 | run-start `{runId,name}`；agent-start `{runId,seq,label,phase?,childId}`；agent-end `{runId,seq,outcome}`；run-end `{runId,stopReason}` | 分支内部步骤、脚本变量 |
+| `team/member` / `team/task`（`team/message/queued\|delivered` 是历史 mailbox 事件，现已无生产者） | Lead 会话 | 名册、任务板；由 `agentTeam` projection 消费 | 成员内部 turn 细节；当前消息在目标会话的 `user/message`（`agent-message`）里 |
 | `job/registered` / `job/settled` | owner 会话 | job id、终态、producer 报告 | “模型读过结果”（读取游标在内存里） |
-| 会话 header | 每个 session | `parentSession`、`delegationDepth`、`origin: 'subagent'`、`agentPreset`（fork 也有 `parentSession`，但没有 `origin`/depth） | external 子代理没有子会话，因此没有这条边 |
+| 会话 header | 每个 session | `parentSession`、`delegationDepth`、`origin: 'subagent'`、`agentPreset`（subagent 的 fork 也是子代理，同样有 depth；只有**会话级 fork** 是 `parentSession`+`isSeeded`、无 `origin`/depth） | external 子代理没有子会话，因此没有这条边 |
 | `turn/end` | 各自会话 | 终态原因（`completed/aborted/blocked/error/max-tokens/interrupted/forked`） | 归属关系 |
 
 ## 投影形状（本页建议，不是 DSH 类型）
@@ -45,7 +45,7 @@ DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只看 child，wo
 | `channel` | catalog 的 `mode` + 谁记录的边（workflow 事件 / team member / job） | 推不出就 `unavailable`，不要按工具名猜 |
 | `status` | `turn/end` 折叠 + catalog/team 的 phase | 没有终态记录 → `missing`（本该有）或 `lost`（曾有过、重启后没了） |
 | `address` | 该通道的寻址面（session id / 成员名 / run id / job id） | 不适用就 `null`，不要编造统一 id |
-| `terminal` | `SubagentStopReason` / `WorkflowStopReason` / `JobStatus` | 不要用一个统一词表把三者压成 `completed/failed` |
+| `terminal` | `SubagentStopReason` / `WorkflowStopReason` / `JobStatus` 的终态子集（`completed/killed/failed`，不含 `running/stopping`） | 不要用一个统一词表把三者压成 `completed/failed` |
 
 ## 三个缺口词，禁止互相折算
 
@@ -69,7 +69,7 @@ DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只看 child，wo
 
 | 现象 | 机制 |
 |---|---|
-| 图上看不到第三层 | 父会话只记录**直接** child；更深层在各自父会话里，需要递归 catalog walk（`listChildren`/`listDescendants`） |
+| 图上看不到第三层 | 父会话只记录**直接** child；`listChildren` 只列直接子代，递归要用 `listDescendants`（`list-children.ts:31`-`126`） |
 | 外部子代理没有子节点 | external 只有 catalog 行，没有子会话 header（`catalog.ts:156`-`169`） |
 | 重启后节点“消失” | 内存 registry（job ring、cursor、等待者）不持久；持久的是 `job/registered\|settled` 与 session log |
 | 把 `subagent/start/end` 当持久事件 | 它们只是运行时总线事件，不在 `SessionEventMap` 里（`subagent/src/index.ts:149`-`166`） |
@@ -91,7 +91,7 @@ DSH **没有**跨通道的统一委派视图：`ctx.subagents` 只看 child，wo
 
 | 路径 | 一句话 |
 |------|--------|
-| `packages/subagent/subagent/src/catalog.ts:38`-`45`、`:144`-`169` | `subagent/catalog` 与 external 行 |
+| `packages/subagent/subagent/src/catalog.ts:38`-`49`、`:144`-`169` | `subagent/catalog` 事件声明与 external 行 |
 | `packages/subagent/subagent/src/descriptor.ts:29`-`39` | `subagent/descriptor` 的持久身份 |
 | `packages/subagent/subagent/src/list-children.ts:56`-`126` | 递归 catalog walk 与诊断 |
 | `packages/workflow/tool-workflow/src/index.ts:73`-`148` | 四个 log-only 事件与载荷 |

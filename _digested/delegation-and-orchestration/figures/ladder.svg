@@ -47,7 +47,7 @@
   <text x="106" y="148" font-size="11.5" fill="#333">普通长任务 → goal 工具（不需要用户说出 goal 一词）</text>
   <text x="106" y="168" font-size="11.5" fill="#333">有界委派（一两次）→ 普通 subagent 调用；大型多代理编排 → workflow（用户显式要求）</text>
   <text x="106" y="188" font-size="11.5" fill="#333">Ralph 式 fresh-agent 迭代 → 仅用户显式要求；agent-teams → 实验性统一 bundle</text>
-  <text x="106" y="208" font-size="10.5" fill="#8c8c8c">出处逐条见 02-什么时候用哪个原语-官方选择决策语义全景.md</text>
+  <text x="106" y="208" font-size="10.5" fill="#8c8c8c">出处逐条见 primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md</text>
 
   <text x="90" y="530" font-size="10.5" fill="#8c8c8c">轻：留在同一对话上下文</text>
   <text x="840" y="130" font-size="10.5" fill="#8c8c8c">重：独立会话 + 持久协调状态</text>
