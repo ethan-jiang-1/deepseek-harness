@@ -24,7 +24,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 | `tool-subagent` 的 `toolFilter` / `persona` 配置 | **已退役**：加载时抛 `no longer supported; configure persona and tool plugins in an Agent Preset and select it with agentPreset (spawn only)`（`tool-subagent/src/index.ts:147`-`150`） |
 | preset 定义里的工具过滤字段 | 不存在；定义字段只有 `id/name/description/order/plugins`（`agent-preset-registry/src/definition.ts:5`-`11`） |
 | per-agent 的 `allowedTools` / allowlist | `packages/preset`、`packages/core/agent` 中无此字段（搜索范围：`toolFilter`、`allowedTools`、`allowlist`） |
-| 低层 `ctx.tools.restrict({ allow, deny })` | 存在，但只能绑在**紧作用域**上调用；现役唯一调用点是“历史子代理描述符在冷恢复时重放 toolFilter”（`child-agent.ts:160`-`163`、`:217`；`core/tools/src/index.ts:701`-`706`、`:1105`-`1108`） |
+| 低层 `ctx.tools.restrict({ allow, deny })` | 存在，但只能绑在**紧作用域**上调用。树内生产调用点有两个：子代理冷恢复重放历史 toolFilter（`child-agent.ts:160`-`163`、`:217`）与 browser-use 的 MCP 掩码（`packages/experimental/browser-use-runtime/src/mcp.ts:121`）；过滤结构见 `core/tools/src/index.ts:701`-`706`、`:1105`-`1108` |
 | 隐藏内部 preset | 没有 hidden 标志；`AgentPresetRow` 只有 `id/isDefault/name/description/broken`（`agent-preset-registry/src/types.ts:8`-`19`） |
 
 所以“worker”在 DSH 里不是一个内建类型，而是一种**组合技法**：把 leaf 需要的那几行单独做成一个 preset，然后让 spawn 行的 `agentPreset` 指向它。

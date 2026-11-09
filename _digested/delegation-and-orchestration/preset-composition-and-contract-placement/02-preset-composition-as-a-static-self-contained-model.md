@@ -74,7 +74,7 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 |---|---|
 | 改了 preset，正在跑的 Agent 没变 | 旧修订被引用；编辑只影响之后创建的 Agent（`README.md:78`） |
 | 用户覆盖后内置新增行不见了 | 覆盖是整份子列表替换，不自动合入内置更新（`agent-preset-registry/README.md:99`） |
-| preset 激活失败但名册里还在 | 失败定义保留可见（`README.md:2`；`registry/src/index.ts:77`） |
+| preset 激活失败但名册里还在 | 失败定义保留可见（`agent-preset-registry/README.md:2`；`registry/src/index.ts:77`） |
 | 以为 preset 能隐藏内部 worker | 没有 hidden 标志；`AgentPresetRow` 只有 `id/isDefault/name/description/broken`（`agent-preset-registry/src/types.ts:8`-`19`）；`order` 属于 `AgentPreset`（`preset.ts:4`-`10`），不在对外行类型里 |
 | 以为 preset 能按 agent 过滤工具 | 定义里没有工具过滤字段；工具侧的 `toolFilter/persona` 配置已退役，加载即报迁移错误（`tool-subagent/src/index.ts:147`-`150`）；描述符里的历史 `toolFilter` 仍会在冷恢复时重放（`child-agent.ts:160`-`163`、`:217`） |
 
