@@ -8,7 +8,7 @@
 
 DSH 把路由知识放在**原语自身**：工具 description 与 prompt section 携带自己的使用边界，模型读了边界自己选。没有中心选择器，也没有一层“编排策略”组件。因此：
 
-- **看不见的原语不会被选中**：没装工具行，边界句也不在模型视野里；组合是选择面的唯一开关（[`02`](./02-cross-primitive-routing-and-the-official-upgrade-order.md)）。
+- **看不见的原语不会被选中**：没装工具行，边界句也不在模型视野里；组合是原语可见性的开关，preset 的 `allowedAgentPresets` 是子选择的开关（[`02`](./02-cross-primitive-routing-and-the-official-upgrade-order.md)）。
 - **边界句是提示，不是闸**：`ONLY when the user explicitly asks` 之类的句子靠模型遵守，没有机械执行（[`03`](./03-unspecified-gaps-and-contradictions-in-usage-policy.md)）。
 - **选错不会被上层纠正**：正确性只能靠证据分层去证明（[`../completion-and-observation/07`](../completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)）。
 

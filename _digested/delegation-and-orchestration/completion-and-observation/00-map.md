@@ -4,7 +4,7 @@
 
 本组回答：**一次委派/一次 run 结束时到底发生了什么，以及你怎么把它看见、证明、不撒谎。** 机制在 [`../delegation-primitives/`](../delegation-primitives/00-map.md)，能力面与合同在 [`../preset-composition-and-contract-placement/`](../preset-composition-and-contract-placement/00-map.md)。
 
-## 五个时刻，别混成一个“完成”
+## 五个时刻，其中四个是机制
 
 「完成」在这套系统里至少分成四件机制上的事：**结果被接受**、**模型看得见**、**运行静止**、**资源被处置**；**业务上完成**是第五件，但它推不出来，需要人/合同判断（[`01`](./01-acceptance-visibility-quiescence-and-disposal.md)）。混用会直接导致错误报告：`completed` 不等于正确，`settled` 不等于读过，`delivered` 不等于处理。
 
@@ -12,7 +12,7 @@
 
 | 页 | 回答 |
 |---|---|
-| [`01`](./01-acceptance-visibility-quiescence-and-disposal.md) | 接受、可见、静止、处置、业务完成五个时刻；跨日志崩溃窗口 |
+| [`01`](./01-acceptance-visibility-quiescence-and-disposal.md) | 四个机制时刻（接受/可见/静止/处置）与业务完成；跨日志崩溃窗口 |
 | [`02`](./02-terminal-states-and-bounded-retry-authority.md) | 五终态、turn-end 折叠、通知投递、为什么引擎不重试、父侧重试判据 |
 | [`03`](./03-session-lineage-and-agent-incarnation.md) | Session 谱系、Agent incarnation、Activation epoch：冷恢复后哪些边还在 |
 | [`04`](./04-persistent-facts-derived-projections-and-live-authority.md) | 持久事实、派生 projection、内存 authority（状态三分法） |

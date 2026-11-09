@@ -53,7 +53,7 @@ plan 模式内与 `exit_plan_mode` 互斥（base bundle 的 plan-mode 部署 gui
 
 —— `packages/subagent/tool-subagent/src/index.ts:117`-`121`；prompt 参数（`packages/subagent/tool-subagent/src/index.ts:123-124`）："It already sees this conversation's completed turns, so build on them freely and state only what is new."
 
-`backgroundMode` 配置已不存在（`0.2.0-rc.2` 基线上按 continuable/one-shot 二选一）。现行语义由 `packages/subagent/subagent` 的统一 activation API 承担：**每次委派都变成一次 managed activation，立即返回 child id；continuable 由 per-delegation-tool 选择**（base 注释在 `packages/bundle/base/cordis.patch.yml:373`-`374`：「Continuable background children are selected per delegation tool. The separately loaded follow-up tool registers the one global `send_message`.」）。base 组合只是 `subagent`（provider spawn）与 `subagent_fork`（provider fork）两行（`:380`-`384`、`:391`-`396`），本地 child 接受后续消息、进程外后端自动报告其单次执行（`docs/tool-catalog.md:41`）。README 的选择句："Choose it when the child needs the conversation's completed turns — a follow-up analysis, a review, a continuation. Choose spawn when the child should start clean, or an out-of-process backend when ..."（`packages/subagent/subagent-fork-in-process/README.md:33`）。
+`backgroundMode` 配置已不存在。现行语义由 `packages/subagent/subagent` 的统一 activation API 承担：**每次委派都变成一次 managed activation，立即返回 child id；continuable 由 per-delegation-tool 选择**（base 注释在 `packages/bundle/base/cordis.patch.yml:373`-`374`：「Continuable background children are selected per delegation tool. The separately loaded follow-up tool registers the one global `send_message`.」）。base 组合只是 `subagent`（provider spawn）与 `subagent_fork`（provider fork）两行（`:380`-`384`、`:391`-`396`），本地 child 接受后续消息、进程外后端自动报告其单次执行（`docs/tool-catalog.md:41`）。README 的选择句："Choose it when the child needs the conversation's completed turns — a follow-up analysis, a review, a continuation. Choose spawn when the child should start clean, or an out-of-process backend when ..."（`packages/subagent/subagent-fork-in-process/README.md:33`）。
 
 ### workflow（规模扇出，需用户显式要求）
 
@@ -75,7 +75,7 @@ prompt section（`tool:workflow`）：
 
 —— `packages/experimental/tool-ralph/src/index.ts:177`-`182`
 
-prompt section 补充路由："Use same-session goal tools for ordinary long-running objectives, and plain subagents or workflows for bounded delegation and fan-out."（`:405`-`409`）。ralph 不在 base bundle：由 optional bundle `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 提供（`maxRounds: 64`），是 `OPTIONAL_BUNDLES` 12 成员之一（`packages/boot/app-boot/src/profile.ts:223`-`236`），默认不装；README 自述理由："Completion is worker self-declaration — there is no independent evaluator or verifier deciding whether the objective is complete"（`packages/experimental/tool-ralph/README.md:161`）。
+prompt section 补充路由："Use same-session goal tools for ordinary long-running objectives, and plain subagents or workflows for bounded delegation and fan-out."（`:405`-`409`）。ralph 不在 base bundle：由 optional bundle `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 提供（`maxRounds: 64`），是 `OPTIONAL_BUNDLES` 成员之一（`packages/boot/app-boot/src/profile.ts:223`-`236`），默认不装；README 自述理由："Completion is worker self-declaration — there is no independent evaluator or verifier deciding whether the objective is complete"（`packages/experimental/tool-ralph/README.md:161`）。
 
 ### goal（跨轮次长目标的默认档）
 

@@ -2,7 +2,7 @@
 
 源码核验入口：`packages/subagent/subagent/src/{index,child-agent,depth}.ts`、`packages/workflow/workflow-ptc/src/{index,runtime}.ts`、`packages/jobs/jobs-local/src/index.ts`、`packages/experimental/agent-team/src/{index,roster,task-board}.ts`。
 
-DSH 的编排限制不是一个统一的“任务预算”。不同层分别限制递归深度、活体 Agent 数、workflow 并发、单次项目数、总子代理调用、owner 的后台 job 数量，以及 teams 的成员、任务和 mailbox 容量。一个组合请求的实际上限由这些边界中最先触发的一层决定。
+本页回答：一条链的纵向深度与横向容量分别由什么限制、哪一个先触发？DSH 的编排限制不是一个统一的“任务预算”。不同层分别限制递归深度、活体 Agent 数、workflow 并发、单次项目数、总子代理调用、owner 的后台 job 数量，以及 teams 的成员、任务和 mailbox 容量。一个组合请求的实际上限由这些边界中最先触发的一层决定。
 
 ![资源预算与容量边界](./figures/resource-budgets.svg)
 
@@ -10,7 +10,7 @@ DSH 的编排限制不是一个统一的“任务预算”。不同层分别限�
 
 | 维度 | 默认或来源 | 作用 | 触发后的语义 |
 |------|------------|------|--------------|
-| delegation depth | 工具行显式 `maxDepth`（含 `'provider-managed'`）优先；省略时用 subagent 服务默认 1；`0` 禁止委派 | 限制嵌套委派的纵向深度；**绝对量**，从根往下数 | `SubagentDepthError`，不把越界委派当成成功；`provider-managed` 时由 provider 自己的预算负责 |
+| delegation depth | 工具行显式 `maxDepth`（含 `'provider-managed'`）优先；省略时读 Host 的 `subagent.maxDepth`（初始 1）；`0` 禁止委派 | 限制嵌套委派的纵向深度；**绝对量**，从根往下数 | `SubagentDepthError`，不把越界委派当成成功；`provider-managed` 时由 provider 自己的预算负责 |
 | continuable capacity | `maxActiveSubagents` 默认 8，共享于不间断 continuable 链 | 限制同时驻留的 continuable Activation | `ACTIVATION_LIMIT_REACHED`，调用方需等待已有 child 结束或继续当前工作 |
 | workflow concurrency | `maxConcurrentAgents` 默认按 `min(16, max(1, cores - 2))` 解析 | 限制一个 workflow 同时运行的 child agent 数 | 后续 `agent()` 按 FIFO slot 排队 |
 | workflow total | `maxTotalAgents` 默认 1000 | 限制一个 workflow 已开始的 `agent()` 调用总数 | `AGENT_CAP` fatal，整个脚本失败 |
@@ -26,7 +26,7 @@ DSH 的编排限制不是一个统一的“任务预算”。不同层分别限�
 
 `resolveChildDepth(parent, maxDepth)` 恒为 `delegationDepthOf(parent) + 1`；`delegationDepthOf` 取 `max(session.header.delegationDepth, options.subagentDepth)`——持久 header 是单调 floor，恢复出来的 child 不会被当成顶层（`packages/subagent/subagent/src/child-agent.ts:49`-`58`、`depth.ts:20`-`35`）。这带来三个直接后果：
 
-1. **预算是“行上的上限”，不是“链上的分配”**：一条 `CEO → vp_eng → worker` 的链能到几层，取决于每一跳所在行的 `maxDepth` 与默认值；没有任何工件声明“这条链的总预算”。
+1. **预算是“行上的上限”，不是“链上的分配”**：一条 `root → 命名 child → worker` 的链能到几层，取决于每一跳所在行的 `maxDepth` 与默认值；没有任何工件声明“这条链的总预算”。
 2. **workflow 的 `agent()` 不收 `maxDepth`，但分支 child 仍然算深度**：分支的 parent 是 run 的 parent（`workflow-ptc/src/host.ts:211`），分支 child 是 parent+1；分支里再 spawn 继续 +1，撞的是同一个绝对上限。“没有闸”不等于“不计数”。
 3. **team 成员从 Lead 数**：成员的 parent 是 Lead（`agent-team/src/roster.ts:271`），后续委派从 Lead 的深度继续。
 

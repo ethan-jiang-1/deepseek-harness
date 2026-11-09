@@ -140,5 +140,5 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 | `packages/experimental/agent-team-profile/README.md:49` | "subagent 与 fork 工具被 disable；Workflow 保留 spawn" |
 | `packages/experimental/agent-team/src/index.ts:55`-`90` | 服务上限（maxMembers 16/8、maxTasks 256 等） |
 | `packages/experimental/agent-team/README.md:12` | 持久语义一句话（crashes/reloads/interruptions） |
-| `packages/boot/app-boot/src/profile.ts:223`-`236` | OPTIONAL_BUNDLES（12 条） |
+| `packages/boot/app-boot/src/profile.ts:223`-`236` | OPTIONAL_BUNDLES 成员 |
 | `_digested/experimental/02-agent-teams.md` | 机制深挖（引用不重复） |

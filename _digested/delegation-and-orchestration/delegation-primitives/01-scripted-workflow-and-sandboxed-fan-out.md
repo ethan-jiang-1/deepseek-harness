@@ -111,7 +111,7 @@ VM 上下文 `createContext({})` 后只注入五个冻结函数（`agent`/`paral
 
 `WorkflowStartRequest.parent` **必填**——脚本起的每个 child 都归属到这个 live Agent，cwd、谱系与深度经 subagent seam 传递（`packages/workflow/workflow/src/runtime-types.ts:30`-`31`）。工具层取 `exec.agent` 作 parent，无调用 agent 即 fail loud（`packages/workflow/tool-workflow/src/index.ts:407`-`413`）；host 每次 `agent()` 经 `this.subagents.startActivation({ provider, label, delivery: 'caller', signal, request: { prompt, parent: this.parent, ... } })` 发布 child（`packages/workflow/workflow-ptc/src/host.ts:197`-`211`）；本地 run 在 child session 的 `parentSession` header 记录父会话 id（`docs/subsystems/subagent.md:389`）。引擎在 start 时捕获 `subagents`/`ptcRuntime` 服务句柄，引擎卸载不撤销已接受的 run；调用方必须 dispose 每个 run（`packages/workflow/workflow-ptc/src/index.ts:154`-`156`；`packages/workflow/workflow/README.md:53`）。
 
-持久 Chat 记录（只顶层 transport 调用记录，嵌套不记，`packages/workflow/tool-workflow/src/index.ts:440`-`442`、`packages/workflow/tool-workflow/README.md:174`）：`tool-workflow/run-start` 在 run 被接受后写入；成员 start/end 按 `runId + seq` 配对；`tool-workflow/run-end` 只在结果已知且 disposal 静默后写入；首次 append 失败即停写该 run，日志保持空或合法前缀（`docs/subsystems/workflow.md:124`）。`packages/workflow/tool-workflow` 的 record 校验在 live commit 前与 Session 装载时校验同一协议（该校验原先在 `dsh-tool-workflow/invariant` companion 里，运行时 invariant 机制已在 `f028f25667` 整族退役）：一 run 一 start、正数唯一成员序列、成员配对、无 open member 结束的 run 结尾（`docs/subsystems/workflow.md:126`）。
+持久 Chat 记录（只顶层 transport 调用记录，嵌套不记，`packages/workflow/tool-workflow/src/index.ts:440`-`442`、`packages/workflow/tool-workflow/README.md:174`）：`tool-workflow/run-start` 在 run 被接受后写入；成员 start/end 按 `runId + seq` 配对；`tool-workflow/run-end` 只在结果已知且 disposal 静默后写入；首次 append 失败即停写该 run，日志保持空或合法前缀（`docs/subsystems/workflow.md:124`）。`packages/workflow/tool-workflow` 的 record 校验在 live commit 前与 Session 装载时校验同一协议：一 run 一 start、正数唯一成员序列、成员配对、无 open member 结束的 run 结尾（`docs/subsystems/workflow.md:126`）。
 
 ## 后台模式：接入 jobs 体系
 
@@ -126,7 +126,7 @@ live output 经 mirror 订阅引擎事件写进 job 的 output ring（`packages/
 - **固定脚本**：`RALPH_SCRIPT` 由部署持有，模型只供数据（objective/maxRounds），改不了 loop、provider 路由、schema 与 handoff 校验（`packages/experimental/tool-ralph/src/index.ts:88`-`175`、`:445`-`453`）。
 - **provider 预检**：必须存在、支持 `outputSchema`、`inheritsParentContext: false`（真 fresh child，`:218`-`230`）；轮数上限经 `maxTotalAgents` 与引擎总量 backstop 协调（`:449`-`450`）。
 - **前台 only**：无 job id / 后台（`packages/experimental/tool-ralph/README.md:163`）；终局 `complete`/`blocked`/`budget-limited` + 报告，普通 child 失败即终局不重试（`packages/experimental/tool-ralph/README.md:167`）。
-- **默认不装**：base 组合已无 ralph 行；它由 optional bundle `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 提供（`subagentProvider: spawn`、`maxRounds: 64`），是 `OPTIONAL_BUNDLES` 12 成员之一（`packages/boot/app-boot/src/profile.ts:223`-`236`），默认状态见 [`00-map.md`](../00-map.md)。
+- **默认不装**：base 组合已无 ralph 行；它由 optional bundle `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 提供（`subagentProvider: spawn`、`maxRounds: 64`），是 `OPTIONAL_BUNDLES` 成员之一（`packages/boot/app-boot/src/profile.ts:223`-`236`），默认状态见 [`00-map.md`](../00-map.md)。
 
 ## 源码入口
 

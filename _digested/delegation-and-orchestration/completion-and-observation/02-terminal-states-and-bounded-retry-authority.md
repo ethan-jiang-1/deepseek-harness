@@ -56,7 +56,7 @@ DSH 的委派/工作流/作业单元**不重试**（模型请求的重试是 pro
 
 这决定了重试的判据：**reject 是基础设施问题，重试要谨慎；非 `completed` 的 resolve 是业务结果，按终态分类处理。**
 
-## 引擎没有自动重试
+## 委派/工作流/作业单元没有自动重试
 
 | 包 | 有没有重试 | 证据 |
 |---|---|---|
@@ -64,7 +64,7 @@ DSH 的委派/工作流/作业单元**不重试**（模型请求的重试是 pro
 | `packages/workflow` | owned source 里没有 retry 记号（生成的 `lib/tsconfig.tsbuildinfo` 不算） | `grep -rni retry packages/workflow/*/src` 零命中 |
 | `packages/jobs` | 只有 id 冲突的铸造循环与容量上限提示语（“kill 后重试”是给模型的建议，不是自动路径） | `jobs-local/src/index.ts:223`、`:228`-`232` |
 
-因此重试只能是**上层**（父代理或脚本）的行为。把“父代理应该会看到失败”当作兜底，等于把可靠性押在模型的注意力上——而 notice 可能落在 `steer`、`queue` 或 `inject`，三种投递的时机不同。
+因此重试只能是**上层**（父代理或脚本）的行为；模型请求自身的 retry policy 属于 provider 层，不是委派重试。把“父代理应该会看到失败”当作兜底，等于把可靠性押在模型的注意力上——而 notice 可能落在 `steer`、`queue` 或 `inject`，三种投递的时机不同。
 
 ## 父侧重试：一张判据表
 

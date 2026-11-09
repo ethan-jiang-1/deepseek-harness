@@ -20,3 +20,21 @@
 | `subagent_codex` / `subagent_claude_code` | 不在 base、也不在 `OPTIONAL_BUNDLES`：**按需安装档位** `ON_DEMAND_BUNDLES` 提供（进程外 provider 行，`maxDepth: provider-managed`） | `packages/boot/app-boot/src/official-bundle-packages.ts:4`-`7`、`packages/subagent/subagent-codex/cordis.patch.yml:1`-`10` |
 
 > 组合会随版本变化；本页只写当前 pin 的 shipped 状态，历史差异见 `_change_log/`。
+
+## 怎么读这张表
+
+1. **先看 base**：工具行在 `packages/bundle/base/cordis.patch.yml` 里 → 所有 shipped profile 默认可见；配置也在那一行。
+2. **不在 base 再看 optional / Web**：`OPTIONAL_BUNDLES` 成员要显式安装；schedule 走 Web 组合的直接行，不在 optional 清单里。
+3. **外部 provider 看 on-demand**：codex / claude-code 走 `ON_DEMAND_BUNDLES`，且行上 `maxDepth: provider-managed`。
+
+这张表只回答“默认开不开”，不回答“装上后能不能用”：装了 bundle 仍受 preset 行、provider 能力位与深度预算约束（见 [`composition/01`](../preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md)、[`composition/06`](../preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md)）。
+
+## 源码入口
+
+| 路径 | 关注点 |
+|------|--------|
+| `packages/bundle/base/cordis.patch.yml` | base 组合里挂了哪些原语与默认配置 |
+| `packages/bundle/web-app/cordis.patch.yml` | Web 组合的 schedule / UI 行 |
+| `packages/boot/app-boot/src/profile.ts:223`-`236` | `OPTIONAL_BUNDLES` 清单 |
+| `packages/boot/app-boot/src/official-bundle-packages.ts:4`-`7` | `ON_DEMAND_BUNDLES` 清单 |
+| `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` | ralph 的可选 bundle 行与 `maxRounds` |

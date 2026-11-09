@@ -10,10 +10,10 @@
 |---|---|
 | [`01`](./01-graph-computation-essence-invariant-derivation-and-execution.md) | 编排里真实的图有哪几个、引擎对图做什么与拒绝什么：不变量、准入与派发三件分置 |
 | [`02`](./02-external-narratives-versus-source-truth.md) | Captain 规划器、Kahn 调度、`dsh rollback --task`、KV Cache 看板这些外部说法，逐条的源码真相 |
-| [`03`](./03-why-primitives-instead-of-a-central-scheduler.md) | DSH 为什么把路由放进工具而不是中心调度器，以及这对插件作者的三个后果 |
+| [`03`](./03-why-primitives-instead-of-a-central-scheduler.md) | DSH 为什么把路由放进工具而不是中心调度器，以及这对插件作者的四个后果 |
 | [`04`](./04-nine-traps-in-delegation-surfaces.md) | 九个反模式：从“worker 是角色克隆”到“续驶代替可读结果”，附自查表 |
 
-## 三个判断，先记住
+## 四个判断，先记住
 
 1. **图不是被调度的对象**：workflow 的“图”是一段 JS，Teams 的图是任务板准入，goal 的图是轮次；没有拓扑排序器（[`01`](./01-graph-computation-essence-invariant-derivation-and-execution.md)）。
 2. **策略住在选择面上**：工具的描述文本就是策略；换工具即换策略，没有全局开关（[`03`](./03-why-primitives-instead-of-a-central-scheduler.md)）。

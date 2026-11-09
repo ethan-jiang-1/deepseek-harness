@@ -74,4 +74,4 @@
 | `packages/subagent/subagent/src/manager.ts:1186`-`1206` | 结算通知的三种投递（queue/steer/inject）与公告门 |
 | `packages/subagent/subagent/src/types.ts:42`-`43` | `delivery: parent \| caller` 的语义差异 |
 | `packages/subagent/tool-subagent-control/src/index.ts:32` | `send_message` 返回投递确认，不是回答 |
-| 本专题 01-07 各页 | 模式支撑事实的全部出处（页内已带 path:line） |
+| 本组 `primitives/01`-`06` 与 `composition/03` 各页 | 模式支撑事实的全部出处（页内已带 path:line） |

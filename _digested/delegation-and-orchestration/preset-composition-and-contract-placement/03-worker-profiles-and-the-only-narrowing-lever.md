@@ -42,12 +42,12 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 
 ## 一张可复用的 worker 形态表（模式，不是 DSH 的词）
 
-| profile | 组合形状 | 能力面 | 深度 | 适用 |
+| profile | 组合形状 | 能力面 | 行上的 `maxDepth`（绝对深度上限） | 适用 |
 |---|---|---|---|---|
-| `worker.leaf` | 只列取证/读写/命令/搜索/计划这类行 | 无 `subagent`、无 `workflow`、无 team、无控制工具 | 0 | 读码、盘点、测量；只回证据 |
-| `worker.orchestrator` | leaf + 一条 `subagent` 行 | 只能再派一层 | 1 | 小工头带一两个叶子手 |
-| `worker.workflow` | leaf + `workflow` 两行 | 能扇出；分支继承父组合，再派/再扇出只受深度上限约束 | 0 | 并行取证、批量审计 |
-| `worker.full` | 完整角色组合 + 显式预算 | 与角色同权 | 按行 | 受信任的子负责人；需要单独评审 |
+| `worker.leaf` | 只列取证/读写/命令/搜索/计划这类行 | 无 `subagent`、无 `workflow`、无 team、无控制工具 | `0`（禁止再委派） | 读码、盘点、测量；只回证据 |
+| `worker.orchestrator` | leaf + 一条 `subagent` 行 | 能再派一层 | 父深度 + 1（根下的 orchestrator 行填 `2`） | 小工头带一两个叶子手 |
+| `worker.workflow` | leaf + `workflow` 两行 | 能扇出；分支继承父组合，再派/再扇出仍计绝对深度 | workflow 行不收 `maxDepth`（分支按绝对深度算） | 并行取证、批量审计 |
+| `worker.full` | 完整角色组合 + 显式预算 | 与角色同权 | 按预算显式写 | 受信任的子负责人；需要单独评审 |
 
 这张表是**组合配方**：每一格都要落到真实的插件行；DSH 不认识 `worker.leaf` 这个名字，也不会替你校验“leaf 真的没有 subagent 行”——校验只能由读组合的测试做（见 [`observation/07`](../completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)）。
 
@@ -55,7 +55,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 
 | 现象 | 机制 | 怎么发现 |
 |---|---|---|
-| 子代理拿到了父的全部工具 | 省略 `agentPreset` → 加入父修订 | 读子会话 `subagent/descriptor` 与 `request/header.tools` |
+| 子代理拿到了父的全部工具 | 省略 `agentPreset` → 加入父修订 | 读子会话的 `request/header.tools`（`subagent/descriptor` 只给身份，不给工具面） |
 | 给 worker 加了 `toolFilter` 以为能收窄 | 配置已退役，加载即报错 | 挂载失败信息 |
 | 给 fork 钉 worker preset | provider 能力位不允许 | 挂载/启动前拒绝 |
 | worker 出现在用户的选择器里 | 没有 hidden 标志 | 名册/UI 可见；需要产品侧自行标注 |
@@ -63,7 +63,7 @@ DSH 里把子代理收窄的**唯一现役杠杆**是：让它是 spawn，并给
 
 ## 推论与模式（不是 DSH 的词）
 
-- **默认窄、显式放宽**：`agentPreset` 指向 leaf，`allowedAgentPresets` 只列 leaf/orchestrator；升级条件写进合同文本，而不是写进工具描述的一句口号。
+- **默认窄、显式放宽**：`agentPreset` 指向 leaf，`allowedAgentPresets` 只列 leaf/orchestrator；升级条件写进随组合走的合同文本（section/skill），不要只靠工具描述里一句口号。
 - **worker 是“组合差异”，不是“角色克隆”**：判断一个 worker 是否真的窄，看它钉的 preset 里有没有 `subagent`/`workflow`/team/控制行，而不是看它的名字。
 - **名字不等于能力**：team 成员继承 Lead 组合，把成员起名 `vp-eng` 不会让它获得 `vp-eng` 的 workflow 行（[`composition/01`](./01-channel-capability-differences-and-inheritance.md)）。
 - **可见性要产品自己负责**：没有 hidden 标志，内部 worker 会出现在选择器里；要么接受，要么在客户端按 id 过滤（那是产品决定，不是引擎能力）。

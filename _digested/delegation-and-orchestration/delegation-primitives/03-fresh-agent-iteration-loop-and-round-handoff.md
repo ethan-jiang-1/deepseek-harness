@@ -47,7 +47,7 @@ child 经 `agent(prompt, { label: 'Ralph round N', phase: 'Fresh-agent rounds', 
 
 **工具层再验一遍**：固定脚本的返回从 PTC 进程跨回工具，`readReport`/`readRunResult` 做防御性解码（`:244`-`331`）——精确键集检查（排序后 join 必须等于 `blocker,evidence,nextSteps,status,summary`）、状态匹配、归一化复检、per-status 不变量、尺寸上限。脚本内校验 + 进程边界校验是两道独立的门。
 
-## 四种终局
+## 四种终局（ralph 自己的词表，不是 `SubagentStopReason`）
 
 | 终局 | 触发 | 校验要点 | 呈现 |
 |------|------|---------|------|
@@ -60,7 +60,7 @@ round-failed 的渲染与校验在 `:281`-`331`（readRunResult）、`:383`-`390
 
 `maxResultChars`（默认 16384）用 `boundResult` 封顶**含 envelope 与截断标记在内的完整文本**（`:349`-`356`）。
 
-两个 Config 默认值要区分**包默认**与 **shipped 组合值**：包默认 `maxRounds` 256（`packages/experimental/tool-ralph/src/index.ts:187`），而可选 bundle 行把 shipped 值覆盖为 **64**（`packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 的 `maxRounds: 64`）——装上 `ralph-bundle` 后，实际生效的默认轮预算是 64。ralph 已不在 base：它由该 optional bundle 提供（`packages/boot/app-boot/src/profile.ts:223`-`236` 的 `OPTIONAL_BUNDLES` 12 成员之一），默认不装。
+两个 Config 默认值要区分**包默认**与 **shipped 组合值**：包默认 `maxRounds` 256（`packages/experimental/tool-ralph/src/index.ts:187`），而可选 bundle 行把 shipped 值覆盖为 **64**（`packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 的 `maxRounds: 64`）——装上 `ralph-bundle` 后，实际生效的默认轮预算是 64。ralph 已不在 base：它由该 optional bundle 提供（`packages/boot/app-boot/src/profile.ts:223`-`236` 的 `OPTIONAL_BUNDLES` 成员之一），默认不装。
 
 ## 为什么分成 goal 与 ralph 两种策略
 

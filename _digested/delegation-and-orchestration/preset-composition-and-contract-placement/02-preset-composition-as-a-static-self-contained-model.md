@@ -17,8 +17,8 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | 一个 preset 就是一行普通 Cordis 插件，`config` 即定义；`config.plugins` 是子插件入口列表 | `packages/preset/agent-preset/src/index.ts:9`、`:16`-`23` |
 | 定义里的字段只有 `id / name / description / order / plugins` | `packages/preset/agent-preset-registry/src/definition.ts:5`-`11` |
 | 声明行的 `id` 给 Loader 编辑用；`config.id` 才是 session 保存的 preset 身份 | `packages/preset/agent-preset/README.md:48` |
-| 定义 **eagerly 加载**：注册即激活、即挂载；激活失败留在名册里可见 | `README.md:12`；`agent-preset-registry/src/index.ts:77`、`:98`-`110` |
-| 编辑会退役旧修订；**跑着的 Agent 保留引用**，新 Agent 才看到新定义（仅同进程；重启后冷恢复用该 id 的当前定义） | `README.md:78`；`agent-preset-registry/README.md:56`、`:93` |
+| 定义 **eagerly 加载**：注册即激活、即挂载；激活失败留在名册里可见 | `agent-preset/README.md:12`；`agent-preset-registry/src/index.ts:77`、`:98`-`110` |
+| 编辑会退役旧修订；**跑着的 Agent 保留引用**，新 Agent 才看到新定义（仅同进程；重启后冷恢复用该 id 的当前定义） | `agent-preset/README.md:78`；`agent-preset-registry/README.md:56`、`:93`、`:99` |
 | **没有运行期继承**：没有 `extends`/`base`/parent 字段；用户覆盖是整份子列表替换，不合并 | `definition.ts:5`-`11`；`agent-preset-registry/README.md:99` |
 | 唯一的分层是加载期 YAML patch 在 `config.plugins` 内做操作 | `docs/architecture.md:25` |
 | 注册表不扫目录、不接受 preset 路径 | `agent-preset-registry/README.md:46` |
@@ -49,7 +49,7 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | 上下文治理 | `compaction-basic`、`command-compact`、`tool-result-pruner`（8192/4096/1024） | 压缩与工具结果裁剪 |
 | 产品能力 | `tool-present`、plugin-manager / plugin-market 的 tools | 呈现与插件管理（按部署增减） |
 
-这张表的用法不是“抄一份 standard”，而是判断**你缺哪一类**：例如只有 `tool-subagent` 没有 `tool-subagent-control`，就没有 `send_message`/`interrupt_agent`；只有 `tool-workflow` 没有 `workflow-ptc`，工具挂载会失败；`skill-filesystem` 没配 `customSkillDirs`，你的共享合同 skill 根本不会被发现。
+这张表的用法不是“抄一份 standard”，而是判断**你缺哪一类**：例如只有 `tool-subagent` 没有 `tool-subagent-control`，就没有 `send_message`/`interrupt_agent`；只有 `tool-workflow` 没有 `workflow-ptc`，工具挂载会失败；如果你的共享合同 skill 不在默认扫描根（`.dsh/skills` 等），又没配 `customSkillDirs`，它就发现不了。
 
 ## 名册、编辑与锁定
 
@@ -82,7 +82,7 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 
 - **把组合当投影，而不是当源**：如果你的仓库需要“能力清单”，让它由组合派生（生成或测试读取），不要手写第二份；否则它会在下一次改 YAML 时变成谎言。
 - **一处声明、三类消费者**：Loader 消费它、人读清单从它生成、测试从它断言。发现第二份期望矩阵就停。
-- **改动的作用域是“之后创建的 Agent”**：把 preset 当成不可变修订理解，才能解释为什么热改不生效、为什么 fork 能复用同一前缀。
+- **改动的作用域是“之后创建的 Agent”**：把 preset 当成不可变修订理解，才能解释为什么热改不生效、为什么跑着的子代仍用旧修订。
 - **运行期没有继承，所以重复是结构性的**：想消除重复只能在构建期做（模板/生成器），并且生成物要被回读校验；不要在运行期等一个不存在的 base。
 
 ## 待证（不要写成已证）

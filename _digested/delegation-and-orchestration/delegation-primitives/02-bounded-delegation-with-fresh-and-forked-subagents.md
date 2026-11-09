@@ -6,7 +6,7 @@
 
 ## 为什么是这个形状：设计考量
 
-**为什么是多 provider 注册表而不是单实现**：同一个会话里，父可能既要一个便宜的进程内 child 干零活，又要一个隔离的进程外 child（ACP/Codex/Claude Code）——transports 是**共居的选择**而非部署的替换，所以 `ctx.subagents` 是具名注册表（像 LLM adapter），不像 bash 的单执行器（`.agents/notes/archived/feature/2026-06-21-subagent-capability-seam.md`，已归档，历史快照；Problem 节）。**为什么 continuable 是「一个 durable Session + 至多一个进程内 Activation」**：旧设计把 Task、provider 执行、结果边界绑成同一生命周期——结算即销毁 child、完成即注入通知；这带来三个病：两条 FIFO 没有单一顺序权威、走 Jobs 会复制 Agent loop 的准入/取消/静止机制、父 runtime 生命周期比一个 turn 宽（child 还在跑时不能销毁父）。答案是 Activation 只是「一个 residency epoch」——它可能跑多个 FIFO turn、等后代时可保持驻留，但它**不是**请求/结果/取消/Task 边界；Agent inbox 是唯一 turn FIFO（`.agents/notes/implemented/feature/2026-07-28-continuable-subagent-conversations.md` Problem 与 Decision 节）。**为什么 fork 曾以 one-shot 出现**：fork 的种子要花 token，它的回报是 provider 侧前缀复用——任何 child-only 的 prompt 节或工具 schema 排在继承历史**之前**都会毁掉这个回报；早期的 one-shot 限制是旧 child-only return 工具的**后果**而非 fork 的本质属性（`.agents/notes/implemented/architecture/2026-08-10-fork-children-stay-one-shot.md` Problem 节）。统一 activation 生命周期之后，组合不再引入 child-only section（回传指引排在继承历史之后），fork 行与 spawn 行现在只在 `provider`/`toolName` 上不同。
+**设计理由（取自 note，历史快照已标注）**：①`ctx.subagents` 是具名 provider 注册表而不是单执行器——同一会话里进程内 spawn 与进程外后端可以共存（`.agents/notes/archived/feature/2026-06-21-subagent-capability-seam.md`，已归档）。②continuable 的形态是「一个 durable Session + 至多一个进程内 Activation」：Activation 只是 residency epoch，可跑多个 FIFO turn、等后代时可驻留，但不是请求/结果/取消边界；Agent inbox 是唯一 turn FIFO（`.agents/notes/implemented/feature/2026-07-28-continuable-subagent-conversations.md`）。③fork 的种子在创建时固化，回报是 provider 侧前缀复用；任何 child-only 的 prompt 节或工具 schema 排在继承历史之前都会毁掉复用——所以 fork 行与 spawn 行只在 `provider`/`toolName` 上不同（`.agents/notes/implemented/architecture/2026-08-10-fork-children-stay-one-shot.md`）。
 
 ## 一次 start 与 provider 能力
 
@@ -20,7 +20,7 @@ fork 种子的构造（`packages/subagent/subagent-fork-in-process/src/index.ts:
 
 1. **无已完成 turn → 种子为 `[]`**，child 等价 fresh spawn（`start` 只在 `seed.length > 0` 时传 seed，`:74`-`83`）；
 2. **in-flight turn 被排除**因为它 unbalanced、无法作为合法子会话重放（模块头注释 `:1`-`8`；`docs/subsystems/subagent.md:168` 的 seed 合同只接受 contiguous from seq 0、lossless JSON、balanced 的前缀）；
-3. **快照是一次性的**：one-shot `start()` 每次现算；continuable `prepareContinuable()` 在创建时固化——「The fork prefix is captured ONCE, at creation: it becomes part of the child's own durable transcript, so a later cold resume replays that prefix instead of re-forking the parent's newer history」（`:85`-`91`）；父的后续 turn 永远到不了 child，没有 live context sharing。
+3. **快照是一次性的**：one-shot `start()` 每次现算；continuable `prepareContinuable()` 在创建时固化——「The fork prefix is captured ONCE, at creation: it becomes part of the child's own durable transcript, so a later cold resume replays that prefix instead of re-forking the parent's newer history」（`:85`-`91`）；父的后续 turn 不进种子；新消息仍可经 `send_message` 到达 child（没有 live context sharing）。
 
 推论与边界：
 
@@ -60,7 +60,7 @@ child 的 session header 由 `childSessionMeta` 写入（`packages/subagent/suba
 
 ## 一次委派一种形态：managed activation
 
-`0.2.0-rc.2` 基线上的 `backgroundMode`（continuable / one-shot 二选一）已不存在：`dsh-tool-subagent` 的 Config 现在只有 `provider`/`toolName`/`modelSelectionSettings`/`agentOptions`/`agentPreset`/`allowedAgentPresets`/`maxDepth`（`packages/subagent/tool-subagent/src/index.ts:50`-`77`）。工具描述自述现行语义：
+`backgroundMode`（continuable / one-shot 二选一）已不存在：`dsh-tool-subagent` 的 Config 现在只有 `provider`/`toolName`/`modelSelectionSettings`/`agentOptions`/`agentPreset`/`allowedAgentPresets`/`maxDepth`（`packages/subagent/tool-subagent/src/index.ts:50`-`77`）。工具描述自述现行语义：
 
 > This tool starts an independently managed subagent and immediately returns its id. The runtime notifies you when it finishes.
 >

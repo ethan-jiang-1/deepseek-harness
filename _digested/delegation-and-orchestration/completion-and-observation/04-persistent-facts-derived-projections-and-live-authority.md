@@ -1,5 +1,7 @@
 # Persistent Facts, Derived Projections and Live Authority · 持久事实、派生投影与活体权限
 
+源码核验入口：`packages/core/session/src/types.ts`、`packages/subagent/subagent/src/{catalog,projection}.ts`、`packages/experimental/agent-team/src/{journal,projection}.ts`、`packages/jobs/jobs/src/types.ts:53`-`66`。
+
 DSH 的编排状态不能只按“有没有保存”二分。当前实现至少分成三层：Session 或 Host 存储中的持久事实、由事实折叠得到的派生投影、只存在于进程内并决定当前操作资格的 runtime authority。三层的恢复和失效规则不同。
 
 ![持久事实、派生投影与内存权限](./figures/state-three-planes.svg)

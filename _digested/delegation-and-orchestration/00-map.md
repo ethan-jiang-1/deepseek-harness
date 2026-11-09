@@ -4,7 +4,7 @@
 
 本组回答一个家族问题：**DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语；它们各自的保证怎么组合成一条链；在 DSH 上搭这套面的插件作者该怎么做。**
 
-外部叙事常把 DSH 描绘成「Captain 规划 + Kahn 入度队列 + Reviewer 门禁」的中心化 Task DAG 调度引擎。当前源码没有一个按 ready 队列自动派工的中心 executor；实际系统由可组合原语、workflow 局部控制流、Teams 任务图准入、Host schedule 和 JobRegistry 等多个机制组成。模型按任务的时间跨度与隔离需求选择原语，工具描述与包 README 携带各自的选择边界（证据见 [`selection/01`](./primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)）。
+外部叙事常把 DSH 描绘成「Captain 规划 + Kahn 入度队列 + Reviewer 门禁」的中心化 Task DAG 调度引擎。当前源码没有一个按 ready 队列自动派工的中心 executor；实际系统由可组合原语、workflow 局部控制流、Teams 任务图准入、Host schedule 和 JobRegistry 等多个机制组成。模型按任务的时间跨度与隔离需求选择原语；选择边界住在工具的 description（部分工具另有 prompt section）里，包 README 只是部署者视角的转述（证据见 [`selection/01`](./primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)）。
 
 ## 三类读者，别坐混
 
@@ -32,7 +32,7 @@
 | schedule | `packages/schedule/schedule/` + `packages/schedule/tool-schedule/` | 定时跟进（直接进 Web 组合） | — | 定时触发 |
 | agent-teams * | `packages/experimental/agent-team/` 服务；`packages/experimental/tool-agent-team/` 工具；`packages/experimental/agent-team-profile/` 组合；`packages/experimental/client-ui-agent-team/` UI | Lead + 具名队友 + 持久消息 + 共享任务板 | 独立持久会话 | 持续协作 |
 
-\* experimental：无稳定合同承诺，随时可能改名或消失。
+\* experimental：无稳定合同承诺，随时可能改名或消失。`todo_write` 与 plan mode 没有独立机制页：它们的边界句在 [`selection/01`](./primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)，组合位置见本表与 [`primitives/07`](./delegation-primitives/07-shipped-mount-state.md)。
 
 ![阶梯全景](./figures/ladder.svg)
 
@@ -65,8 +65,8 @@
 
 1. **策略随工具走**：使用边界住在工具的 description 与 prompt section 里，不在部署 persona 里；docs 不会被自动注入（[`perspectives/03`](./design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md)）。
 2. **深度是绝对量**：child 深度 = parent 深度 + 1，持久 header 是单调 floor；`maxDepth` 是上限，不是预算分配（[`composition/06`](./preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md)）。
-3. **shipped 里只有 in-process spawn 能钉独立 preset**：fork / workflow / team / 外部 provider 从父组合克隆，能力面不可按子代收窄（[`composition/01`](./preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md)）。
-4. **引擎不自动重试**：终态是模型可见的结果，重试是父代理的有界策略（[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md)）。
+3. **shipped 里只有 in-process spawn 能钉独立 preset**：fork / workflow / team 加入父或 Lead 的组合修订；外部 provider 自管运行时且能力位更少——三者都不能按子代收窄能力面（[`composition/01`](./preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md)）。
+4. **委派/工作流/作业单元不自动重试**：终态是模型可见的结果，重试是父代理的有界策略；模型请求自身的 retry policy 是另一层（[`observation/02`](./completion-and-observation/02-terminal-states-and-bounded-retry-authority.md)）。
 5. **观测是只读投影**：图不调度、不取消、不写状态；缺数据标 `unavailable`，不伪造（[`observation/05`](./completion-and-observation/05-delegation-graph-node-and-edge-projection.md)）。
 6. **挂载绿 ≠ 行为绿**：证据分层，每层只证明自己那层（[`observation/07`](./completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)）。
 

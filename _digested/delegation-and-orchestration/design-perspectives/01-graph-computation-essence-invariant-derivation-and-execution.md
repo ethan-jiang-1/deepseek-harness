@@ -2,7 +2,7 @@
 
 源码核验入口：`packages/experimental/agent-team/src/task-graph.ts`（图校验）、`packages/experimental/agent-team/src/task-view.ts`（就绪推导）、`packages/experimental/agent-team/src/task-board.ts:242` 与 `projection.ts:280`（两个校验调用点）、`packages/experimental/tool-agent-team/src/index.ts`（POLICY 与 ready 过滤）、`packages/workflow/tool-workflow/src/index.ts`（脚本合同）。
 
-编排的骨子里确实是**图计算问题**——但 DSH 对它的回答不是「造一个图引擎」，而是把图计算**拆成三件分置的事**：引擎只做能机械保证的前两件，第三件交给对话与模型。本页逐行核验这个分置在源码里的形态，并回答：编排里真实的图有哪些？引擎对图做了什么、拒绝做什么？为什么这个分界画在这里？
+本页回答：编排里真实的图有哪几张、引擎对图做什么与拒绝做什么、这条分界为什么画在这里。编排的骨子里确实是**图计算问题**——但 DSH 对它的回答不是「造一个图引擎」，而是把图计算**拆成三件分置的事**：引擎只做能机械保证的前两件，第三件交给对话与模型。本页逐行核验这个分置在源码里的形态，并回答：编排里真实的图有哪些？引擎对图做了什么、拒绝做什么？为什么这个分界画在这里？
 
 ![图计算的三件分置](./figures/graph-essence-three-layers.svg)
 

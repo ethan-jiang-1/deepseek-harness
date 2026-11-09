@@ -79,7 +79,7 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 
 **与 Session 归档互锁**（`packages/schedule/schedule/README.md:54`）：有 active reminder 的 Session **归档被拒**，直到它们停止；选择停止 = 删除全部 active reminder；unarchive 不复活它们。
 
-**启用面**（`packages/schedule/schedule/README.md:26`；`packages/bundle/web-app/cordis.patch.yml:139`-`140`、`:398`-`399`）：schedule 现在**直接进 Web 组合**——`id: schedule` 服务行与 `id: ui-schedule` 客户端行都在 web-app bundle 里，`experimental/schedule-bundle` 已退役；新工具包 `packages/schedule/tool-schedule` 提供 `schedule_create`/`schedule_list`/`schedule_delete`/`schedule_update`。`Config` 里 `deliveryHistoryDays` 默认 30、`deliveryHistoryRecords` 默认 200；**headless/SDK-only 组合不能单独挂 schedule**——交付依赖 Host Web Session controller 与 Session 持久化后端。
+**启用面**（`packages/schedule/schedule/README.md:26`；`packages/bundle/web-app/cordis.patch.yml:139`-`140`、`:398`-`399`）：schedule **直接进 Web 组合**——`id: schedule` 服务行与 `id: ui-schedule` 客户端行都在 web-app bundle 里（当前树没有 `experimental/schedule-bundle`）；新工具包 `packages/schedule/tool-schedule` 提供 `schedule_create`/`schedule_list`/`schedule_delete`/`schedule_update`。`Config` 里 `deliveryHistoryDays` 默认 30、`deliveryHistoryRecords` 默认 200；**headless/SDK-only 组合不能单独挂 schedule**——交付依赖 Host Web Session controller 与 Session 持久化后端。
 
 ## jobs 与 schedule 与 goal：三个正交平面
 
@@ -103,4 +103,4 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 | `packages/schedule/schedule/README.md` | 六选择器/DST/CAS update/归档互锁/启用面 |
 | `packages/schedule/tool-schedule/src/index.ts:185`-`199`、`:454`-`:520` | 四个工具的模型可见描述 |
 | `packages/schedule/README.md:12` | 「follow-up message，不是通知推送」形态边界 |
-| `packages/boot/app-boot/src/profile.ts:223`-`236` | `OPTIONAL_BUNDLES`（12 条）：**不含 schedule**——schedule 已改为直接进 Web 组合 |
+| `packages/boot/app-boot/src/profile.ts:223`-`236` | `OPTIONAL_BUNDLES` 成员：**不含 schedule**——schedule 已改为直接进 Web 组合 |

@@ -7,7 +7,7 @@
 ## 矛盾与空白（官方未说清的部分）
 
 1. **主语不一致**：tool-workflow 的 README 与 prompt section 说 "the **user** explicitly asks"，引擎包 `packages/workflow/workflow/README.md:28` 写 "the **model** explicitly asks for workflow-style orchestration"——引擎包疑似笔误；prompt section 是权威模型可见文本。ralph 用 "the direct human"，workflow 用 "the user"，粒度也不同。
-2. **目录渲染与实际组合已一致**：`docs/tool-catalog.md:41` 的 subagent 行写 "Every delegation returns a child id promptly; local children accept follow-ups, while external backends report their single execution automatically."，与 base 组合的 provider 语义对齐；`0.2.0-rc.2` 基线上目录曾渲染 one-shot 默认句并与 base 组合矛盾，该矛盾随统一 activation 生命周期消解。
+2. **目录渲染与实际组合已一致**：`docs/tool-catalog.md:41` 的 subagent 行写 "Every delegation returns a child id promptly; local children accept follow-ups, while external backends report their single execution automatically."，与 base 组合的 provider 语义对齐。
 3. **fresh ↔ fork 无模型级路由**：选择语义只在两个工具各自的 description 与 README 里，没有针对二者的 prompt section 或部署 guidance——工具描述独自承担全部路由。
 4. **goal 侧无反向路由**：goal 的描述/README 从不提 ralph、workflow、subagent 或 schedule；路由是单向的（ralph→goal、workflow→subagent），goal 语境下没有官方降级/升级指引。
 5. **goal ↔ schedule 无互斥说明**：两者都跨时间推进（objective 续跑 vs wall-clock 提醒），互不提及，无选择 guidance。
