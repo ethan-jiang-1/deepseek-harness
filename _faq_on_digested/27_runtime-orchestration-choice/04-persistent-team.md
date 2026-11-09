@@ -16,13 +16,13 @@
 ![两种拓扑：workflow 是星形，脚本持循环、child 之间没有边；team 是网状加一块共享任务板，任意成员可互发，但就绪不会自动派活](./figures/04-topology.svg)
 
 1. **workflow + 人**——脚本负责扇出，人负责协调与裁决。
-2. **Agent Team**——Lead 加具名队友，共享任务板与邮箱，状态持久。
+2. **Agent Team**——Lead 加具名队友，共享任务板；roster 与任务状态持久，消息走各自目标 Agent 的 inbox。
 3. **[02](./02-fan-out-shape.md) 的批量扇出**——如果其实只是「多」，不是「协作」。
 
 ## 判据
 
 1. **成员之间要不要持续通信。** 要 → Team；只是父收集结果 → workflow。这是最硬的一条分界。
-2. **协调状态要不要持久。** 要 → Team（roster、任务、邮箱都是 durable）；一次性 → workflow。
+2. **协调状态要不要持久。** 要 → Team（roster 与任务板是 Lead 日志里的 durable 事实）；一次性 → workflow。**消息不是 Team 的持久记录**：已接受的消息跟随目标 Agent 的普通持久化策略，新的发送不再写 `team/message/*`，历史记录只可解码、不再投递。
 3. **规模。** 几十个对象的批量 → workflow（默认最多 1000 个 child）；几个角色的协作 → Team（默认 16 成员，profile 钉 8）。
 4. **接不接受组合替换。** Team bundle 会 disable `tool-subagent`、`tool-subagent-fork`、`tool-subagent-control` 与 `tool-subagent-list-agents`（[agent-team-profile patch](../../packages/experimental/agent-team-profile/cordis.patch.yml):3-14）。接受不了，就别用。启用方式是装一个 bundle（`@deepseek-ai/dsh-experimental-agent-team-profile`，走 profile 或 Web 插件管理器）。
 

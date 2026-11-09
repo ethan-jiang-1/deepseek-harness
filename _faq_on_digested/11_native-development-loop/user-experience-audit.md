@@ -203,9 +203,8 @@
   [`packages/guard/repeat-tool-reminder/src/index.ts:53`](../../packages/guard/repeat-tool-reminder/src/index.ts)）
   且是 advisory（`:209-224`），注册在 post-execute 正是为了让*被拒绝的*调用获得指导。
   卡住 → 被引导，而非被杀。
-- **可读的最终交付。** 后台子会话 settle 时，运行时把 outcome 与 final message 作为 notice 交回父会话
-  （"When a background run settles, the runtime sends you a notice containing its outcome and any final
-  assistant message" 的现行文案收在 [`packages/subagent/tool-subagent/src/index.ts:379`](../../packages/subagent/tool-subagent/src/index.ts)，settle 回交合同见 [`docs/subsystems/subagent.md:176`](../../docs/subsystems/subagent.md)）。
+- **可读的最终交付。** `subagent` 调用在运行时接纳 child 后立即返回 `started subagent <childId>`；子会话结算时，运行时把 outcome 与 final message 放进 completion notice 交回父会话
+  （现行文案在 [`packages/subagent/tool-subagent/src/index.ts:215`](../../packages/subagent/tool-subagent/src/index.ts) 的 description，[`README.md:59-61`](../../packages/subagent/tool-subagent/README.md) 的 Managed delegation 节；settle 回交合同见 [`docs/subsystems/subagent.md:176`](../../docs/subsystems/subagent.md)；2026-11-09 按 rc.5 树复核本条）。
   rc.1 删除了独立的自足 `report` 工具（`tool-subagent-report`）。
   对 (A) 用户而言，最顶层的对应物仍是可读的完成报告，而不是六步循环。
 - **可重放性 / 对 transcript 的信任。** `model-visible ⟺ logged` 不变量

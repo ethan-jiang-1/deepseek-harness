@@ -22,7 +22,7 @@
 
 外部 provider（Codex、Claude Code、ACP、DSH SDK）是同一条委派轴上的另一种后端：它们一律不接受后续消息，能力集也与本地 spawn/fork 不同，但「要不要交出去」的判断不变，本篇不展开。
 
-委派还有一条常被忽略的理由：provider 支持时，child 可以用独立的 preset 与模型——贵活给强模型，杂活给便宜模型，而父对话只留结果。
+委派还有一条常被忽略的理由：**in-process spawn 的 child 可以钉一个独立 preset**——贵活给强组合，杂活给薄组合，而父对话只留结果。这条杠杆只在 spawn 上成立：fork / workflow / team 的 child 加入父或 Lead 的组合修订，外部 provider 自管运行时、能力位更少。模型路由再叠一层条件：该工具行开启模型选择、provider 支持 `agentOptions`；shipped 的 `subagent_fork` 行不开（工具本身支持，但会失去父前缀复用）。
 
 ## 判据
 

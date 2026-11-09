@@ -28,10 +28,10 @@
 `<goal_round>` 每轮注入给模型的提示词是固定的（`packages/goal/goal-round-driver/src/prompt.ts:12-26`），要点：以当前 workspace、工具结果与持久会话状态为权威，"inspect them instead of assuming earlier narration is still current"；完成前必须收集客观已达成的证据并读当前 goal 再 `complete`。配套的授权设计：
 
 - **自动续轮预算**：`maxGoalRounds` 正 safe integer，部署默认 **256**（`packages/goal/goal/src/index.ts:244`）；轮次记账只认 goal 来源消息，**人的插话与澄清永不消耗预算**（`fold.ts:326-331` 校验 `source.kind==='goal'` 且 round 连续）。
-- **blocked 下限**：同因阻塞不足 3 个连续轮次时，机械拒绝 `blocked`（`GOAL_TOOL_BLOCK_THRESHOLD`），语义判断留给模型——"difficulty, uncertainty, or useful remaining work is not blocked"（`tool:goal` section，order 2400，`packages/core/system-prompt/src/index.ts:151`；文案在 `tool-goal/src/index.ts:120-121`）。
+- **blocked 下限**：只在 goal 自动续轮里检查——`roundsStarted` 不足 3 时机械拒绝 `blocked`（`GOAL_TOOL_BLOCK_THRESHOLD`），语义判断留给模型——"difficulty, uncertainty, or useful remaining work is not blocked"（`tool:goal` section，order 2400，`packages/core/system-prompt/src/index.ts:151`；文案在 `tool-goal/src/index.ts:120-121`，执行器检查在 `:305-312`）。执行器只数轮次，不校验「同一阻塞条件」；直接人类 turn 不受这道门限制。
 - **自动性永远锚在人类权威上**：重启/fork 后持久 phase 还原但 activation 一律 disarm（`agent/session-start` 边沿统一 disarm，`goal/src/index.ts:255-256`），人类一句"继续" → 模型 `update_goal resume` 重新武装。设计笔记把这拆成两个不同事实：*"durable lifecycle 与'继续的许可（activation）'是两个不同事实"*（`2026-07-19-persisted-same-session-goal-domain.md:17`）。
 
-这套结构回答了"为什么 3 小时敢不看屏幕"：不是信任模型，是**预算有上限、完成有证据门、阻塞有 3 轮下限、恢复必须过人手**。DSH 把"自主"做成了一个带闸门的系统属性，而不是一段激励性的提示词。（本节是概要；goal 机制的源码级全展开——状态机、驱动循环、失败结算表、授权矩阵——见主篇 [04](./04-goal-plan-small-model.md)。）
+这套结构回答了"为什么 3 小时敢不看屏幕"：不是信任模型，是**预算有上限、完成有证据门、阻塞在自动续轮里有 3 轮下限、恢复必须过人手**。DSH 把"自主"做成了一个带闸门的系统属性，而不是一段激励性的提示词。（本节是概要；goal 机制的源码级全展开——状态机、驱动循环、失败结算表、授权矩阵——见主篇 [04](./04-goal-plan-small-model.md)。）
 
 ## 第四节 "dynamic workflow"这个造词的机制解读
 
@@ -50,7 +50,7 @@
 - goal 轮次在 agent idle 时自动续（就绪条件：fiber ACTIVE、agent 精确 live 且 idle、无竞争排队；先 `ctx.sessions.flush` checkpoint 再 followup，`goal-round-driver/src/index.ts:146-221`）；
 - `workflow` 的 `parallel()/pipeline()` 让独立子任务无 barrier 并行，`pipeline()` 明确"stages 之间没有全局栅栏"；
 - 单 turn 内工具池 `maxParallelToolCalls` 控制无依赖工具调用并行；
-- 后台 subagent（`subagent`/`subagent_fork`）不占 captain 上下文，完成时通知回流；
+- 异步 subagent（`subagent`/`subagent_fork`）不占 captain 上下文，完成时通知回流；
 - 一切状态在日志里：进程崩了 checkpoint 恢复，续轮继续。
 
 **上限（harness 不保证的部分）**：模型对 plan 的翻译质量、workflow 脚本里验收标准写得是否可判、以及第二节那笔 token 账会不会先烧穿预算。

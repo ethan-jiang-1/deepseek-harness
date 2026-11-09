@@ -2,7 +2,7 @@
 
 ## 第一节 修正："goal/plan 是根"只对了一半
 
-检验方法很直接：想象把 `goal`、`goal-round-driver`、`plan-mode` 三行从 `dsh-base` 里 patch 掉（这是合法操作，patch 一行的事）。哪些体感会死？"敢让它自己跑三小时"会死——没有续轮与授权结构，无人值守失去闸门。哪些体感**不会**死？"多路并行"还在（workflow、后台 subagent、工具池与 goal 无关）、"可恢复可审计"还在（会话日志、fork、投影与 goal 无关）、"快"还在（模型路由与 cache 与 goal 无关）。**所以 goal/plan 是最贴近体感的那条根，但不是唯一的根。** 往下挖还有两层，其中一层恰好是 DSH 官方投资最重、最"喜欢"的方向。
+检验方法很直接：想象把 `goal`、`goal-round-driver`、`plan-mode` 三行从 `dsh-base` 里 patch 掉（这是合法操作，patch 一行的事）。哪些体感会死？"敢让它自己跑三小时"会死——没有续轮与授权结构，无人值守失去闸门。哪些体感**不会**死？"多路并行"还在（workflow、异步 subagent、工具池与 goal 无关）、"可恢复可审计"还在（会话日志、fork、投影与 goal 无关）、"快"还在（模型路由与 cache 与 goal 无关）。**所以 goal/plan 是最贴近体感的那条根，但不是唯一的根。** 往下挖还有两层，其中一层恰好是 DSH 官方投资最重、最"喜欢"的方向。
 
 ## 第二节 根 1（更深）：日志基底（session log）——goal/plan 自己就是它的下游
 
@@ -16,11 +16,11 @@ goal/plan 的全部机制细节（[04 第二节、第三节](./04-goal-plan-smal
 
 ## 第三节 根 2（DSH 最擅长最喜欢的）：委派（ctx.subagents）
 
-看官方把钱花在哪：`ctx.subagents` 有 **6 个 Provider**，是全部 35 条 seam 里数量最多的（[FAQ 08](../08_plugin-seam-maturity/answer.md)："数量最多，语义只有三种位置"——进程内 spawn/fork、进程外 ACP/Codex/Claude Code、SDK 驱动；机制见 [`packages/subagent/README.md`](../../packages/subagent/README.md)）。再数包：goal 域 4 个包、workflow 组 3 个（engine + workflow-ptc + tool-workflow）、experimental 的 agent-team（durable roster + task board + mailbox）与 tool-agent-team、外加 `ctx.jobs` 后台任务。**"把一件事分给很多小执行者，再把结果汇回一本日志"是官方反复重仓的方向**——这个家族的包数超过任何其他领域。
+看官方把钱花在哪：`ctx.subagents` 有 **6 个 Provider**，是全部 35 条 seam 里数量最多的（[FAQ 08](../08_plugin-seam-maturity/answer.md)："数量最多，语义只有三种位置"——进程内 spawn/fork、进程外 ACP/Codex/Claude Code、SDK 驱动；机制见 [`packages/subagent/README.md`](../../packages/subagent/README.md)）。再数包：goal 域 4 个包、workflow 组 3 个（engine + workflow-ptc + tool-workflow）、experimental 的 agent-team（durable roster + task board；消息跟随目标会话）与 tool-agent-team、外加 `ctx.jobs` 后台任务。**"把一件事分给很多小执行者，再把结果汇回一本日志"是官方反复重仓的方向**——这个家族的包数超过任何其他领域。
 
 说它"最喜欢"还有一个现场证据：一个开箱 DSH 会话的 captain 默认工具箱里，编排家族（`subagent`/`subagent_fork`/`workflow`/goal 三件套/agent-teams/`job_*`）占据的席位远超其他任何能力族；`ralph` 在本跨度已从四份 preset 的默认目录退为可选 `ralph-bundle`。**DSH 的"native 姿态"就是编排者。**
 
-而且委派（`ctx.subagents`）是"快而小模型优秀"的另一半答案——goal 轮次管**时间维度**的拆分（把三小时切成 256 轮以内），委派 spine 管**空间维度**的拆分（`workflow` 的 `agent()`、后台 `subagent`，把一个重构切成 N 个并行子任务）。fan-out 的规模越大，每个叶子节点的任务越小、上下文越新鲜、验收标准越具体——**这恰好是小模型的最优工作区**。两条拆分轴的产物（goal 轮消息、子会话）又全部汇进同一本日志：三条根在"日志"上合流。
+而且委派（`ctx.subagents`）是"快而小模型优秀"的另一半答案——goal 轮次管**时间维度**的拆分（把三小时切成 256 轮以内），委派 spine 管**空间维度**的拆分（`workflow` 的 `agent()`、异步 `subagent`，把一个重构切成 N 个并行子任务）。fan-out 的规模越大，每个叶子节点的任务越小、上下文越新鲜、验收标准越具体——**这恰好是小模型的最优工作区**。两条拆分轴的产物（goal 轮消息、子会话）又全部汇进同一本日志：三条根在"日志"上合流。
 
 ## 第四节 根 3：组合层——"开箱"的家
 

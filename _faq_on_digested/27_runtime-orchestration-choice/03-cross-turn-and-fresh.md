@@ -45,7 +45,7 @@
 | 终止 | 人判断 | complete / blocked / 轮上限 | complete / blocked / 预算 |
 | 主要风险 | 忘了继续 | 目标漂移、上下文腐化 | 自报完成、轮次烧完 |
 
-两个数字值得记住：goal 的 `blocked` 默认门槛是**同一个阻塞条件连续 3 轮**（[tool-goal:39](../../packages/goal/tool-goal/src/index.ts)），一次失败不等于 blocked；ralph 的轮上限工具默认 256，optional bundle 把它钉到 64（[ralph-bundle patch](../../packages/experimental/ralph-bundle/cordis.patch.yml)）。
+两个数字值得记住：goal 的 `blocked` 机械门槛是**在 goal 自动续轮里已开始至少 3 轮**（[tool-goal:39](../../packages/goal/tool-goal/src/index.ts)、`:305-312`）；执行器只看 `roundsStarted`，不校验是不是同一阻塞条件，直接人类 turn 也不受这道门限制。模型可见的 guidance 仍要求「同一阻塞条件持续 3 轮」（`:120-121`），那是政策文本，靠模型遵守，不是执行器校验。ralph 的轮上限工具默认 256，optional bundle 把它钉到 64（[ralph-bundle patch](../../packages/experimental/ralph-bundle/cordis.patch.yml)）。
 
 ## 反例与失败形态
 

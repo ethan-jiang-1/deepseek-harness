@@ -25,7 +25,7 @@
 
 轮次消息的 content 只有一个来源：入队时由 `renderGoalRoundPrompt(goal, round)` 从 fold 出的 goal 现渲染（`goal-round-driver/src/index.ts:191`）——轮与轮之间，模型连开场白的自由都没有。0.2.1 线起 `goal-round-driver/src/invariant.ts` 那条「重放消息必须与渲染结果深相等」的 companion 断言随运行时 invariant 机制整族退役，保留下来的是这个单一渲染来源与 retained prompt 的日志地位（`prompt.ts:12-26`）。注意这段提示词的认识论立场：**模型三小时前自己说的话，对它的后续步骤没有权威地位**；权威只属于 workspace、工具结果与持久会话状态。这是对"模型自述叙述"的制度性不信任。
 
-**blocked 与 wrap-up 把"放弃"和"结束"都做成了结构化事件。** `blocked` 有机械下限：同因不足 3 个连续轮次直接拒绝（`GOAL_TOOL_BLOCK_THRESHOLD`），语义判断留给模型——工具描述原文明说 "difficulty, uncertainty, or useful remaining work is not blocked"；blocked_reason 必填，持久化为稳定 code `'model-reported'`。goal 轮内的 complete/blocked 成功后，`exec.deferContext` 注入 `<goal_complete>`/`<goal_blocked>` 用户消息，turn 以普通"无工具调用"方式收尾——不是硬停（note `2026-08-02-goal-round-wrapup-message.md`）。
+**blocked 与 wrap-up 把"放弃"和"结束"都做成了结构化事件。** `blocked` 的机械下限只在 goal 自动续轮里生效：`roundsStarted` 不足 3 直接拒绝（`GOAL_TOOL_BLOCK_THRESHOLD`），语义判断留给模型——模型可见的 guidance 要求「同一阻塞条件持续 3 轮」，但执行器只数轮次、不校验是否同因；直接人类 turn 不受这道门限制。工具描述原文明说 "difficulty, uncertainty, or useful remaining work is not blocked"；blocked_reason 必填，持久化为稳定 code `'model-reported'`。goal 轮内的 complete/blocked 成功后，`exec.deferContext` 注入 `<goal_complete>`/`<goal_blocked>` 用户消息，turn 以普通"无工具调用"方式收尾——不是硬停（note `2026-08-02-goal-round-wrapup-message.md`）。
 
 **自主权永远死于重启，靠人复活。** `agent/session-start` 边沿一律 disarm，驱动器加载时对既有 agent 全部 disarm：重启/fork 后持久 phase 原样还原，但绝不会自动开工；人类一句"继续" → 模型 `update_goal resume` 重新武装。设计笔记把这拆成两个不同事实：*"durable lifecycle 与'继续的许可（activation）'是两个不同事实"*（归档 note `.agents/notes/archived/feature/2026-07-19-persisted-same-session-goal-domain.md:18`）。预算侧同样只对人开修改口：`maxGoalRounds` 默认 256，只有 `edit` 能改；轮次记账只认 goal 来源消息——**人的插话与澄清永不消耗预算**（`fold.ts:321-330` 校验 round 连续且来源匹配）。
 
@@ -50,7 +50,7 @@
 | 开发体验需要的能力 | 谁在供给 | 机制 |
 |---|---|---|
 | 记住三小时前的上下文 | 日志 | 每轮从 `deriveMessages()` 重投影模型历史；`<goal_round>` 明令 inspect 而非信任自己的叙述；compaction 管压力 |
-| 诚实地自报完成/阻塞 | 结构 | complete 前必须收集证据并重读当前 goal；blocked 有 3 轮机械下限；wrap-up 强制收尾轮 |
+| 诚实地自报完成/阻塞 | 结构 | complete 前必须收集证据并重读当前 goal；blocked 在自动续轮里有 3 轮机械下限（human turn 不受限）；wrap-up 强制收尾轮 |
 | 跨越时间保持可靠 | 驱动器 | 每轮先 flush checkpoint；error/max-tokens/取消分别 disarm/pause；严格重放 fold 对畸形 goal 事件 fail-loud，轮次 prompt 只有单一渲染来源 |
 | 保证预算与安全 | 授权 | 轮次记账只认 goal 来源消息；activation 与 lifecycle 分离；重启后一律 disarm，等人类复活 |
 | 把 plan/goal/workflow 集成成流程 | 模型自己——但只在"当下这一步" | 三个原语互不相识，集成发生在每一步的即时决策里；这就是 "dynamic workflow" 是**用法**而不是**功能**的原因（[01 第四节](./01-fast-is-good.md#第四节-dynamic-workflow这个造词的机制解读)） |
