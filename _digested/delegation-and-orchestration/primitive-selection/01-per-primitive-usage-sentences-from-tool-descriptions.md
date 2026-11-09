@@ -1,12 +1,8 @@
-# 什么时候用哪个原语：官方选择决策语义全景
+# Per-Primitive Usage Sentences from Tool Descriptions · 逐原语边界句
 
 源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/subagent/tool-subagent/src/index.ts`、`packages/goal/tool-goal/src/index.ts`、`packages/experimental/tool-ralph/src/index.ts`、`packages/todo/tool-todo/src/index.ts`、`packages/jobs/tool-jobs/src/index.ts`、`packages/schedule/tool-schedule/src/index.ts`、`packages/interaction/tool-ask-user/src/index.ts`、`packages/plan/plan-mode/src/index.ts`、`packages/experimental/tool-agent-team/src/index.ts`、`packages/bundle/base/cordis.patch.yml`。
 
-本页回答：DSH 对「什么时候用哪个编排原语」给了什么**明文语义**？原语之间怎么互相路由？哪里没说清？全部结论取自模型可见文本与部署组合，逐字引用附出处。阶梯全景与各原语的机制见 [`00-map.md`](./00-map.md)；workflow 的内部机制见 [`01-workflow-模型编写的JS编排脚本与子代理扇出机制.md`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)。
-
-## 为什么是这个形状：设计考量
-
-DSH 面对的编排问题是「谁来决定这个任务用哪种原语」。另一种显然的答案是**中心调度器**——一个读任务的引擎把工作分派到原语上（外部叙事想象的正是这个）。DSH 的答案相反：**路由知识分布在原语自身**——每个工具的描述文本和 prompt 节携带自己的使用边界，模型读了边界自己选。这个形状的考量：①策略**随工具插件走**（master convention，`packages/workflow/tool-workflow/src/index.ts:324`-`326`）——换掉工具，它的策略跟着走，不会留下指向不存在工具的孤儿规则；②同包双实例（`subagent` 与 `subagent_fork`）**各带各的 wording**——路由语义与具体工具形态绑定，而不是一份全局文档漂在上面；③它是**自描述且组合敏感的**——preset 层 disable 一个工具行，它的路由语义同时从模型视野消失，不需要任何中心配置同步。代价也真实：路由是单向的，缺少统一选择器；具体空白见本页后文。这个取舍与 [`09`](./09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md) 的证据索引相互对应，但不能据此推出系统没有其他全局视图或调度组件。
+本页回答：每一级原语的**官方边界句**是什么？这些句子住在哪个模型可见面（工具 description 还是 systemPrompt section），逐字怎么写？路由与阶梯见 [`selection/02`](./02-cross-primitive-routing-and-the-official-upgrade-order.md)，官方没说清的部分见 [`selection/03`](./03-unspecified-gaps-and-contradictions-in-usage-policy.md)，机制见 [`primitives/`](../delegation-primitives/00-map.md)。
 
 ## 语义住在哪：两个通道 + 一个约定
 
@@ -87,7 +83,7 @@ prompt section 补充路由："Use same-session goal tools for ordinary long-run
 
 —— `packages/goal/tool-goal/src/index.ts:52`-`54`
 
-共享 guidance 节（`tool:goal`）给出推断、续臂与 blocked 阈值语义："create_goal may infer goal intent from a direct human request in any language. After session resume or fork, an active goal is disarmed: when a human asks to continue or resume in any wording or language, use update_goal action resume to rearm it. Mark complete only when the objective is actually achieved. Mark blocked only after the same blocking condition persists for at least ${blockedAfter} consecutive goal rounds…"（`:116`-`:123`）。`update_goal` 的 action 参数描述区分权限：edit/pause/resume 需直接人类请求，complete/blocked 也允许在 goal 自动续轮中发生（`:244`-`245`）。goal 状态机与 Round Driver 深挖见 [`../agent-loop/01-goal-lifecycle.md`](../agent-loop/01-goal-lifecycle.md)。
+共享 guidance 节（`tool:goal`）给出推断、续臂与 blocked 阈值语义："create_goal may infer goal intent from a direct human request in any language. After session resume or fork, an active goal is disarmed: when a human asks to continue or resume in any wording or language, use update_goal action resume to rearm it. Mark complete only when the objective is actually achieved. Mark blocked only after the same blocking condition persists for at least ${blockedAfter} consecutive goal rounds…"（`:116`-`:123`）。`update_goal` 的 action 参数描述区分权限：edit/pause/resume 需直接人类请求，complete/blocked 也允许在 goal 自动续轮中发生（`:244`-`245`）。goal 状态机与 Round Driver 深挖见 [`../agent-loop/01-goal-lifecycle.md`](../../agent-loop/01-goal-lifecycle.md)。
 
 ### jobs（后台平面：跟踪与收尾纪律）
 
@@ -129,46 +125,7 @@ README 的选择句："Choose plan mode when the agent should explore and design
 
 —— `packages/experimental/tool-agent-team/src/index.ts:35`-`41`
 
-组合层的互斥替代："The `subagent` and `subagent_fork` tools and overlapping global child controls are disabled. Workflow retains the base profile's `spawn` provider."（`packages/experimental/agent-team-profile/README.md:49`）。机制深挖见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)。
-
-## 跨原语路由规则汇总
-
-| 关系 | 官方句子（出处） |
-|------|------------------|
-| workflow → subagent（互斥推荐） | "For one or two delegations, prefer plain subagent calls."（`packages/workflow/tool-workflow/src/index.ts:333`） |
-| ralph → goal / subagent / workflow（三分路由） | "Use same-session goal tools for ordinary long-running objectives, and plain subagents or workflows for bounded delegation and fan-out."（`packages/experimental/tool-ralph/src/index.ts:408`） |
-| ralph → goal | "Ordinary long-running same-session work belongs to goal tools."（`packages/experimental/tool-ralph/src/index.ts:181`-`182`） |
-| goal → 单轮（互斥） | "not for single-turn work"（`packages/goal/tool-goal/src/index.ts:54`） |
-| subagent(fresh) ↔ subagent_fork | "Choose fork when… Choose spawn when… or an out-of-process backend when the child must not share this process."（`packages/subagent/subagent-fork-in-process/README.md:32`） |
-| agent-teams ↔ subagent/fork（互斥替代） | "The `subagent` and `subagent_fork` tools and overlapping global child controls are disabled."（`packages/experimental/agent-team-profile/README.md:49`） |
-| agent-teams → spawn/fork 语义复用 | `spawn_teammate` 的 `context` 参数："fresh starts without Lead history; fork inherits completed Lead turns. Defaults to fresh."（`packages/experimental/tool-agent-team/src/index.ts:202`） |
-| todo_write ↔ exit_plan_mode（plan 模式内互斥） | `packages/bundle/base/cordis.patch.yml:340` |
-| ask_user_question ↔ 自行查证 | `packages/bundle/base/cordis.patch.yml:342` |
-| jobs ↔ 各 producer 工具 | workflow 的背景参数描述指名 `job_output`/`job_kill`（`packages/workflow/tool-workflow/src/index.ts:405`）；subagent 已无 `run_in_background` 与 job 字样 |
-| todo_write 并行开关 ↔ 编排原语 | "Set `true` for agents that may run work concurrently (subagents, background commands, workflow fan-out)"（`packages/todo/tool-todo/README.md:36`） |
-| workflow → subagent（构成性） | workflow 脚本钩子 `agent(prompt, opts)` 就是 subagent 调用（`packages/workflow/tool-workflow/src/index.ts:161`） |
-
-## 官方升级阶梯（从轻到重的排序证据）
-
-1. **todo_write**（最轻）："skip it for trivial single-step tasks"——多步但不扇出。
-2. **subagent**（一两次委派的默认档）："For one or two delegations, prefer plain subagent calls."——官方把 subagent 定为 workflow 之下的默认。
-3. **workflow**（规模扇出）："fans out across many independent pieces… instead of delegating turn by turn"——从逐轮委派升级为脚本编排，且需用户显式要求。
-4. **ralph**（长程 fresh-agent 循环）：仅人类显式要求，且被官方从 goal 中分出（"Ordinary long-running same-session work belongs to goal tools"）。
-5. **goal**（跨轮次长目标的默认档）：不需要用户说出 "goal"，从请求语义推断。
-6. **jobs / schedule**（正交平面）：jobs 是执行平面（"without blocking its own turn"，`packages/jobs/README.md:12`），schedule 是时间平面（wall-clock 提醒），不与阶梯竞争而是叠加。
-7. **agent-teams**（部署级 opt-in 顶配）：模型侧政策只声明 "Agent Teams is available in this session"；是否启用由 optional bundle 与部署决定。
-
-## 矛盾与空白（官方未说清的部分）
-
-1. **主语不一致**：tool-workflow 的 README 与 prompt section 说 "the **user** explicitly asks"，引擎包 `packages/workflow/workflow/README.md:28` 写 "the **model** explicitly asks for workflow-style orchestration"——引擎包疑似笔误；prompt section 是权威模型可见文本。ralph 用 "the direct human"，workflow 用 "the user"，粒度也不同。
-2. **目录渲染与实际组合已一致**：`docs/tool-catalog.md:41` 的 subagent 行写 "Every delegation returns a child id promptly; local children accept follow-ups, while external backends report their single execution automatically."，与 base 组合的 provider 语义对齐；`0.2.0-rc.2` 基线上目录曾渲染 one-shot 默认句并与 base 组合矛盾，该矛盾随统一 activation 生命周期消解。
-3. **fresh ↔ fork 无模型级路由**：选择语义只在两个工具各自的 description 与 README 里，没有针对二者的 prompt section 或部署 guidance——工具描述独自承担全部路由。
-4. **goal 侧无反向路由**：goal 的描述/README 从不提 ralph、workflow、subagent 或 schedule；路由是单向的（ralph→goal、workflow→subagent），goal 语境下没有官方降级/升级指引。
-5. **goal ↔ schedule 无互斥说明**：两者都跨时间推进（objective 续跑 vs wall-clock 提醒），互不提及，无选择 guidance。
-6. **「何时转后台」无统一规则**：jobs 的 prompt section 只讲跟踪与收尾纪律；`run_in_background: true` 的决策散落在各 producer 的参数描述里。
-7. **ralph 的 explicit-ask 仅是 prompt 约束**：无机械执行；且 shipped 组合里该工具默认 disabled，模型根本看不到。
-8. **fork 无并发提示**：continuable 的并发 prompt section（"Start independent delegations with … together in one assistant message and continue useful work while they run."，`packages/subagent/tool-subagent/src/index.ts:370`-`380`）只在该 delegation tool 可见时注册；`subagent_fork` 侧是否出现取决于它是否 visible——两个工具共享同一条 section 生成逻辑。
-9. **ask_user_question 的 timed/blocking 二选一**：随部署 mode 切换（`packages/interaction/tool-ask-user/src/index.ts:31` vs `src/timed.ts:27`-`30`），何时该开 timed 无模型级 guidance。
+组合层的互斥替代："The `subagent` and `subagent_fork` tools and overlapping global child controls are disabled. Workflow retains the base profile's `spawn` provider."（`packages/experimental/agent-team-profile/README.md:49`）。机制深挖见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)。
 
 ## 源码入口
 

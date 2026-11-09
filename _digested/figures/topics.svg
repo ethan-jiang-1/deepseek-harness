@@ -48,8 +48,8 @@
   <text x="115" y="532" text-anchor="middle" font-size="12" font-weight="700" fill="#854d0e">runtime-profiles/</text>
   <text x="115" y="550" text-anchor="middle" font-size="10.5" fill="#a16207">启动装入什么</text>
   <rect x="212" y="510" width="170" height="60" rx="7" fill="#fce7f3" stroke="#f9a8d4"/>
-  <text x="297" y="532" text-anchor="middle" font-size="12" font-weight="700" fill="#9d174d">orchestration-ladder/</text>
-  <text x="297" y="550" text-anchor="middle" font-size="10.5" fill="#be185d">把工作拆解与编排</text>
+  <text x="297" y="532" text-anchor="middle" font-size="10.5" font-weight="700" fill="#9d174d">delegation-and-orchestration/</text>
+  <text x="297" y="550" text-anchor="middle" font-size="10.5" fill="#be185d">委派、组合与观测</text>
   <rect x="394" y="510" width="170" height="60" rx="7" fill="#f1f5f9" stroke="#cbd5e1"/>
   <text x="479" y="532" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">experimental/</text>
   <text x="479" y="550" text-anchor="middle" font-size="10.5" fill="#475569">未承诺支持的实验面</text>

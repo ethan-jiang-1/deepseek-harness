@@ -1,8 +1,8 @@
-# workflow：模型编写的 JS 编排脚本与子代理扇出机制
+# Scripted Workflow and Sandboxed Fan-out · 脚本化 workflow 与沙箱扇出
 
 源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/workflow/src/index.ts`、`packages/workflow/workflow-ptc/src/`（`index.ts`/`runtime.ts`/`host.ts`/`guest.ts`/`meta.ts`/`realm.ts`）、`packages/core/tools/src/json-schema.ts`、`packages/jobs/jobs/src/index.ts`、`packages/experimental/tool-ralph/src/index.ts`、`packages/bundle/base/cordis.patch.yml`、`docs/subsystems/workflow.md`。
 
-本页回答：模型写的 workflow 编排脚本在什么进程里跑、能调用什么钩子、失败如何结算、结果如何持久化？工具的选择边界（什么时候该用）不在本页，见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)。
+本页回答：模型写的 workflow 编排脚本在什么进程里跑、能调用什么钩子、失败如何结算、结果如何持久化？工具的选择边界（什么时候该用）不在本页，见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
 
 ## 为什么是这个形状：设计考量
 
@@ -126,7 +126,7 @@ live output 经 mirror 订阅引擎事件写进 job 的 output ring（`packages/
 - **固定脚本**：`RALPH_SCRIPT` 由部署持有，模型只供数据（objective/maxRounds），改不了 loop、provider 路由、schema 与 handoff 校验（`packages/experimental/tool-ralph/src/index.ts:88`-`175`、`:445`-`453`）。
 - **provider 预检**：必须存在、支持 `outputSchema`、`inheritsParentContext: false`（真 fresh child，`:218`-`230`）；轮数上限经 `maxTotalAgents` 与引擎总量 backstop 协调（`:449`-`450`）。
 - **前台 only**：无 job id / 后台（`packages/experimental/tool-ralph/README.md:163`）；终局 `complete`/`blocked`/`budget-limited` + 报告，普通 child 失败即终局不重试（`packages/experimental/tool-ralph/README.md:167`）。
-- **默认不装**：base 组合已无 ralph 行；它由 optional bundle `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 提供（`subagentProvider: spawn`、`maxRounds: 64`），是 `OPTIONAL_BUNDLES` 12 成员之一（`packages/boot/app-boot/src/profile.ts:223`-`236`），默认状态见 [`00-map.md`](./00-map.md)。
+- **默认不装**：base 组合已无 ralph 行；它由 optional bundle `packages/experimental/ralph-bundle/cordis.patch.yml:12`-`16` 提供（`subagentProvider: spawn`、`maxRounds: 64`），是 `OPTIONAL_BUNDLES` 12 成员之一（`packages/boot/app-boot/src/profile.ts:223`-`236`），默认状态见 [`00-map.md`](../00-map.md)。
 
 ## 源码入口
 

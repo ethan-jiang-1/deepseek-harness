@@ -1,4 +1,4 @@
-# 图计算的本质：不变量、推导与执行的三件分置
+# Graph Computation Essence: Invariant Derivation and Execution · 图计算的本质
 
 源码核验入口：`packages/experimental/agent-team/src/task-graph.ts`（图校验）、`packages/experimental/agent-team/src/task-view.ts`（就绪推导）、`packages/experimental/agent-team/src/task-board.ts:242` 与 `projection.ts:280`（两个校验调用点）、`packages/experimental/tool-agent-team/src/index.ts`（POLICY 与 ready 过滤）、`packages/workflow/tool-workflow/src/index.ts`（脚本合同）。
 
@@ -10,11 +10,11 @@
 
 | 图 | 形态 | 归谁 | 本专题落点 |
 |----|------|------|-----------|
-| **归属树** | in-process 子代理可用 `parentSession` header、活体 ancestry 与 owned-children 表示不同查询域；默认 `maxDepth=1` 允许 fan-out，但 continuable 默认共享活体容量为 8，workflow 与 jobs 另有并发/总量/owner 限制 | **in-process 子代理运行时**维护的权限、通知与结算骨架；外部 provider 不都拥有同一 host Agent/session 结构 | [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)、[`08`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md) |
+| **归属树** | in-process 子代理可用 `parentSession` header、活体 ancestry 与 owned-children 表示不同查询域；默认 `maxDepth=1` 允许 fan-out，但 continuable 默认共享活体容量为 8，workflow 与 jobs 另有并发/总量/owner 限制 | **in-process 子代理运行时**维护的权限、通知与结算骨架；外部 provider 不都拥有同一 host Agent/session 结构 | [`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)、[`composition/05`](../preset-composition-and-contract-placement/05-ownership-depth-and-notification-channels.md) |
 | **任务 DAG** | teams 任务板的 `blocked_by`——唯一的显式 DAG，但它是**协调数据**不是执行引擎 | 引擎守不变量；语义归团队 | 本页逐行核验 |
-| **脚本控制流** | workflow 的编排图不是数据结构——是一段 JS：`for`/`await`/`Promise.all` 就是扇出与汇聚，`agent()` 是图的叶子 | 代码所有（图灵完备） | [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) |
+| **脚本控制流** | workflow 的编排图不是数据结构——是一段 JS：`for`/`await`/`Promise.all` 就是扇出与汇聚，`agent()` 是图的叶子 | 代码所有（图灵完备） | [`primitives/01`](../delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md) |
 
-外部叙事把这些关系捏成了一个「Kahn 拓扑调度引擎」；当前源码把任务图、脚本控制流与归属/生命周期关系分别实现。对外部叙事的逐条核对见 [`09`](./09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md)。
+外部叙事把这些关系捏成了一个「Kahn 拓扑调度引擎」；当前源码把任务图、脚本控制流与归属/生命周期关系分别实现。对外部叙事的逐条核对见 [`02`](./02-external-narratives-versus-source-truth.md)。
 
 ## 任务 DAG 的引擎侧：写时校验 + 读时推导
 
@@ -48,7 +48,7 @@ export function taskReady(state: TeamState, task: TeamTaskSnapshot): boolean {
 
 - **teams**：图（任务板）随时可改——`team_task_update` 换 `blocked_by` 即改图，改完立刻全图重校验（写时校验的设计动机正在于此：图是活的，每次改动都要保不变量）；
 - **workflow**：编排图干脆用**图灵完备代码**表达——循环里可以根据中间结果构造下一批节点，改图是原生能力，不需要 DSL 逃逸舱（取舍记录见 `.agents/notes/archived/feature/2026-07-05-dynamic-workflows.md`——脚本而不是对话持有循环、分支与中间结果）；
-- **goal/ralph**：连图都不预设——objective 驱动的轮次里每轮重新决定做什么（同会话持久目标 vs fresh 迭代的两策略分裂见 [`04`](./04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md)）。
+- **goal/ralph**：连图都不预设——objective 驱动的轮次里每轮重新决定做什么（同会话持久目标 vs fresh 迭代的两策略分裂见 [`primitives/03`](../delegation-primitives/03-fresh-agent-iteration-loop-and-round-handoff.md)）。
 
 ## 已核验问题登记
 
@@ -72,13 +72,13 @@ export function taskReady(state: TeamState, task: TeamTaskSnapshot): boolean {
 | **活体成员**：`ancestry: WeakSet<Agent>` | 每个 Activation（`activation.ts:55`-`59`） | "这个 caller 在我的**活体**祖先链里吗"（interrupt 授权） | Weak 成员判定保 host-scope 身份，中间祖先退出 registry 也不滞留其 runtime；**不可枚举**——所以 durable parent 要单独存（`activation.ts:55` 的注释明说 WeakSet 只记物化时观察到的 live ancestry） |
 | **向下集合**：`ownedChildren: Set<SessionId>` | 每个 Activation（`activation.ts:65`） | 我还欠谁的命（生命周期闭包） | 一个 Session 至多一个活 Activation，所以 Session id 即可定位活 child，无需再持 runtime 引用；**非空阻塞父结算** |
 
-另有两套**只读遍历**不加载任何 Agent：`listChildren`/`listDescendants` 走 catalog 投影（`docs/subsystems/subagent.md:375`-`390`）；session-query 的 lineage trace 递归 header 向上。initiator 判据（goal authority 的 runtime-root 检查）的运行时身份机制见 [`../agent-loop/04-agent-runtime-identity.md`](../agent-loop/04-agent-runtime-identity.md)。**为什么三种而不是一种**：三种查询的时效域不同（跨进程持久回溯 / 进程内活体授权 / 生命周期闭包）——单一结构要么丢持久性（WeakSet）、要么滞留 runtime（强引用 Set 当边表）。
+另有两套**只读遍历**不加载任何 Agent：`listChildren`/`listDescendants` 走 catalog 投影（`docs/subsystems/subagent.md:375`-`390`）；session-query 的 lineage trace 递归 header 向上。initiator 判据（goal authority 的 runtime-root 检查）的运行时身份机制见 [`../agent-loop/04-agent-runtime-identity.md`](../../agent-loop/04-agent-runtime-identity.md)。**为什么三种而不是一种**：三种查询的时效域不同（跨进程持久回溯 / 进程内活体授权 / 生命周期闭包）——单一结构要么丢持久性（WeakSet）、要么滞留 runtime（强引用 Set 当边表）。
 
 ## workflow 的取舍记录：模型文本是数据，直到穿过受限边界
 
 dynamic-workflows note 的 Alternatives 节（`.agents/notes/archived/feature/2026-07-05-dynamic-workflows.md`）没有正面辩论"JS 还是 DAG DSL"——语言问题被 Problem 陈述与 Claude Code 先例定了（脚本持有循环、分支与中间结果；DSL 的失败模式已在上面"重规划常态"论证）。它真正逐条记录的是**怎么托管与校验这段模型写的代码**，每一条都是同一原则的实例——**模型写的文本是数据，直到它穿过一个受限边界**：
 
-- **宿主载体**：进程内 `node:vm` 被拒（首段同步切片会阻塞 `start()` 的 caller；越过首个 await 的同步自旋在进程内**不可杀**；`dispose()` 只能在宿主 loop 上抛弃不安分的脚本）→ `isolated-vm` 被拒（独立 JS 引擎带来原生依赖）→ **PTC 进程**中选：保留 vm 语境的脚本 API，同时宿主不阻塞、终止受管（这就是 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) 进程模型的出处）；
+- **宿主载体**：进程内 `node:vm` 被拒（首段同步切片会阻塞 `start()` 的 caller；越过首个 await 的同步自旋在进程内**不可杀**；`dispose()` 只能在宿主 loop 上抛弃不安分的脚本）→ `isolated-vm` 被拒（独立 JS 引擎带来原生依赖）→ **PTC 进程**中选：保留 vm 语境的脚本 API，同时宿主不阻塞、终止受管（这就是 [`primitives/01`](../delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md) 进程模型的出处）；
 - **meta 位置**：CC 的 `export const meta = {...}`（内嵌脚本头）被拒——取 meta 需要在**宿主上求值模型写的文本**，连空的限时 vm context 也界定不了 script-controlled getters → meta 成为**纯 JSON 参数**，扫描器、求值、宿主自旋漏洞一并消失；
 - **schema 处理**：schema 是 **wire data**——穿过 vm realm 边界、逐字落进 forced tool 的 parameters；活 schema 对象（zod/schemastery）放不进这个位置，运行时消费原始 JSON Schema 又需第三方转换器 → 手写约 70 行的子集校验器；ajv 亦被拒（它校验**全量** JSON Schema，而子集闸门才是要点——每个被接受的关键字都必须是 harness 实际执行的；且它经 `new Function` 编译、会成 dsh-tools 首个运行时依赖）；
 - **结构化输出**：provider JSON mode 被拒（保证合法 JSON，不保证 schema 合规）→ **capture tool**：校验失败保留轮内重试。
@@ -94,21 +94,21 @@ dynamic-workflows note 的 Alternatives 节（`.agents/notes/archived/feature/20
 | 改图 | 序作废，算法重跑 | 每次写入后**全图重校验**（图是活的，改图是常规操作） |
 | 全局视野 | 有（拓扑序即进度视图） | 任务板可返回全量任务投影（`task-board.ts:90`-`95`），但**没有由该视图驱动的中心调度器**；`ready` 是逐任务派发前的状态与准入信号 |
 
-本质差异一句话：**Kahn 假设存在一个消费拓扑序的中心 executor；DSH 拆掉了这个假设**——校验（写时）、推导与准入（读时及状态转换）、派发（对话）三件分置之后，"线性化"这一步没有存在的理由。DSH 的真实代价不是没有任务全景，而是没有由任务全景自动推进 owner 的中心调度器；Lead 仍可读取全量任务并自行决定派发。这个分界与 [`../harness-idea/01-role-and-substrate.md`](../harness-idea/01-role-and-substrate.md) 的职责论述互为表里：**当前实现把可机械验证的图不变量、派发前准入和生命周期操作交给 harness，把需要任务语义判断的派发与重规划交给 Lead 或模型**。这描述当前 teams 任务板的职责分界，不是对所有编排算法或所有代码/语言关系的普遍定理。
+本质差异一句话：**Kahn 假设存在一个消费拓扑序的中心 executor；DSH 拆掉了这个假设**——校验（写时）、推导与准入（读时及状态转换）、派发（对话）三件分置之后，"线性化"这一步没有存在的理由。DSH 的真实代价不是没有任务全景，而是没有由任务全景自动推进 owner 的中心调度器；Lead 仍可读取全量任务并自行决定派发。这个分界与 [`../harness-idea/01-role-and-substrate.md`](../../harness-idea/01-role-and-substrate.md) 的职责论述互为表里：**当前实现把可机械验证的图不变量、派发前准入和生命周期操作交给 harness，把需要任务语义判断的派发与重规划交给 Lead 或模型**。这描述当前 teams 任务板的职责分界，不是对所有编排算法或所有代码/语言关系的普遍定理。
 
 ## Agent 是原子：全部原语的统一重述
 
-把三件分置再往下压一层，可以得到一个受限的统一模型：**in-process 模型工作的基本单位是 Agent**——一个 session、inbox 与驱动模型 turn 的 loop（loop 本身也是插件，`docs/architecture.md`；Agent 接口与 inbox 契约见 [`../agent-loop/00-map.md`](../agent-loop/00-map.md)）。这不是所有 runtime 工作的统一原子：外部 provider、PTC 脚本、普通进程 job、schedule 与 plan review 有各自的执行者和生命周期。对 in-process Agent 路径，可以把原语描述为「构造上下文 × 决定让哪个 Agent 何时跑 × 结果怎么回来」：
+把三件分置再往下压一层，可以得到一个受限的统一模型：**in-process 模型工作的基本单位是 Agent**——一个 session、inbox 与驱动模型 turn 的 loop（loop 本身也是插件，`docs/architecture.md`；Agent 接口与 inbox 契约见 [`../agent-loop/00-map.md`](../../agent-loop/00-map.md)）。这不是所有 runtime 工作的统一原子：外部 provider、PTC 脚本、普通进程 job、schedule 与 plan review 有各自的执行者和生命周期。对 in-process Agent 路径，可以把原语描述为「构造上下文 × 决定让哪个 Agent 何时跑 × 结果怎么回来」：
 
 | 原语 | 构造什么上下文 | 哪个 Agent | 何时跑 | 结果怎么回 |
 |------|--------------|-----------|--------|-----------|
-| subagent spawn | prompt + fresh session + preset 重组 + 委派权限（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)） | 新 child | 立即/后台 | 工具结果 / settle notice |
+| subagent spawn | prompt + fresh session + preset 重组 + 委派权限（[`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)） | 新 child | 立即/后台 | 工具结果 / settle notice |
 | subagent fork | 上述 + 种子=父已完成轮次（KV 前缀可复用） | 新 child（带历史） | 同上 | 同上 |
-| workflow | PTC 脚本按控制流和中间结果构造 prompt+schema；可用 FIFO slot、`parallel` 与 `pipeline` 组织并发（[`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)） | 一批 child 或无 child 的脚本 | 脚本控制流与运行时容量约束共同决定 | 脚本内消化，只回最终值 |
-| ralph | 六段 prompt + workspace 为唯一记忆（[`04`](./04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md)） | 每轮**全新** child | 上一轮结束 | 五字段有界报告 |
-| goal | `<goal_round>` 注入 + durable session（[`05`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md)） | 当前 Session 的 live Agent incarnation；恢复会创建新的 runtime identity | idle + armed，且通过轮次准入检查 | wrapup 收尾消息 |
-| teams | 任务板 + 邮箱 + POLICY 注入（[`07`](./07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md)） | 具名队友（spawn/fork） | 对话唤醒（就绪不派发） | relay 消息 + 任务状态 |
-| schedule | 到期提醒消息（[`06`](./06-jobs与schedule-后台作业平台与定时跟进的时间平面.md)） | Host scheduler；到期后向目标 Session 投递 | wall-clock | inbox accepted 的 follow-up 消息，不等于模型已完成处理 |
+| workflow | PTC 脚本按控制流和中间结果构造 prompt+schema；可用 FIFO slot、`parallel` 与 `pipeline` 组织并发（[`primitives/01`](../delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md)） | 一批 child 或无 child 的脚本 | 脚本控制流与运行时容量约束共同决定 | 脚本内消化，只回最终值 |
+| ralph | 六段 prompt + workspace 为唯一记忆（[`primitives/03`](../delegation-primitives/03-fresh-agent-iteration-loop-and-round-handoff.md)） | 每轮**全新** child | 上一轮结束 | 五字段有界报告 |
+| goal | `<goal_round>` 注入 + durable session（[`primitives/04`](../delegation-primitives/04-cross-round-goals-and-the-round-driver.md)） | 当前 Session 的 live Agent incarnation；恢复会创建新的 runtime identity | idle + armed，且通过轮次准入检查 | wrapup 收尾消息 |
+| teams | 任务板 + 邮箱 + POLICY 注入（[`primitives/06`](../delegation-primitives/06-persistent-teams-with-a-shared-task-board.md)） | 具名队友（spawn/fork） | 对话唤醒（就绪不派发） | relay 消息 + 任务状态 |
+| schedule | 到期提醒消息（[`primitives/05`](../delegation-primitives/05-background-jobs-and-wall-clock-schedules.md)） | Host scheduler；到期后向目标 Session 投递 | wall-clock | inbox accepted 的 follow-up 消息，不等于模型已完成处理 |
 
 需要单独区分：**bash/pwsh/terminal 后台 job 是非 Agent 进程工作**（无模型 loop）；**schedule 由 Host 时间驱动**；**todo 是短期列表投影，plan 还包含人类 review 与后续 step 变更**。jobs 是通用执行观察与控制容器，不是某一种工作的执行者。
 

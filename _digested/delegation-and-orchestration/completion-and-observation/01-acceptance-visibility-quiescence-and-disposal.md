@@ -1,4 +1,4 @@
-# 完成语义与崩溃窗口：接受、可见、静止与处置
+# Acceptance, Visibility, Quiescence and Disposal · 接受、可见、静止与处置
 
 本页补齐编排专题中最容易混淆的词：一个请求被接受，不等于模型已经看见；模型看见，不等于 turn 已经静止；资源终态，也不等于结果已经被消费。不同原语把这些时刻交给不同的日志、投影、inbox、句柄和 Host 存储。
 
@@ -19,17 +19,17 @@
 
 ### One-shot subagent 与 workflow
 
-one-shot subagent 的 `start` 接受后，run 句柄由持有者负责处置；provider 卸载不会撤销已接受的 run。`run.result` 表示 child run 的结算结果，`run.dispose()` 负责生命周期收尾，二者不是同一事件（`packages/subagent/subagent/src/index.ts`；专题 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）。
+one-shot subagent 的 `start` 接受后，run 句柄由持有者负责处置；provider 卸载不会撤销已接受的 run。`run.result` 表示 child run 的结算结果，`run.dispose()` 负责生命周期收尾，二者不是同一事件（`packages/subagent/subagent/src/index.ts`；专题 [`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)）。
 
 workflow 运行在 PTC 受管进程中。`result` 按 `completed`、`cancelled` 或 `error` 结算；脚本的 `workflow/*` 记录是观察性日志，不是可恢复执行 checkpoint。工具 recorder 在记录 append 失败后停止继续记录，但不会把记录故障升级为 workflow 执行失败（`packages/workflow/tool-workflow/src/index.ts:89`-`:149`）。
 
 ### Continuable subagent
 
-continuable start 返回的是初始 inbox 接受的 `childId` 与 `messageId`，不是一个已完成结果。child 只有在没有 pending inbox、没有 owned children 且当前 Activation 工作结束后才可能自然 settle；settle notice 只是把结算摘要投递给父，不表示父已经读取摘要。冷恢复会重建 Activation，但不会重新调用原 provider（专题 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）。
+continuable start 返回的是初始 inbox 接受的 `childId` 与 `messageId`，不是一个已完成结果。child 只有在没有 pending inbox、没有 owned children 且当前 Activation 工作结束后才可能自然 settle；settle notice 只是把结算摘要投递给父，不表示父已经读取摘要。冷恢复会重建 Activation，但不会重新调用原 provider（专题 [`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)）。
 
 ### Goal
 
-goal round 需要先通过 idle、竞争输入、目标 phase、activation 和 revision 等准入检查。需要 checkpoint 时，driver 先 await Session flush，再重新检查是否仍可保留下一轮；flush 抛错会 disarm。`complete` 或 `blocked` 是目标状态变更，随后还会注入 wrapup；wrapup 禁止继续调用工具，因此目标结算和最终用户消息之间仍然存在一个收尾步骤（`packages/goal/goal-round-driver/src/index.ts:102`-`:205`；专题 [`05`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md)）。
+goal round 需要先通过 idle、竞争输入、目标 phase、activation 和 revision 等准入检查。需要 checkpoint 时，driver 先 await Session flush，再重新检查是否仍可保留下一轮；flush 抛错会 disarm。`complete` 或 `blocked` 是目标状态变更，随后还会注入 wrapup；wrapup 禁止继续调用工具，因此目标结算和最终用户消息之间仍然存在一个收尾步骤（`packages/goal/goal-round-driver/src/index.ts:102`-`:205`；专题 [`primitives/04`](../delegation-primitives/04-cross-round-goals-and-the-round-driver.md)）。
 
 ### Jobs
 
@@ -39,7 +39,7 @@ Job producer 负责执行资源，JobRegistry 负责 id、状态、输出 ring�
 
 Teams 消息不再经过 Team outbox：`c772c85c17` 起**直接经 Agent inbox steering 投递**——新发送返回被接纳的 inbox `MessageId` 或抛错，用的是 live Lead Steer 或 host-only subagent Steer adapter，sender 仍由既有 `agent-message` source 承载。接纳遵循普通 Agent 持久化：**它既不代表模型已处理，也不提供同步 flush 保证**；Team 不保留未接纳的意图、不在重启后重试、不对显式重发去重。历史 mailbox 记录仍可解码与投影，让既有 Lead 日志可重放，但 Team 不再投递或确认它们（`.agents/notes/implemented/simplification/2026-09-26-team-direct-inbox.md`；`packages/experimental/agent-team/src/projection.ts:117`-`124`、`:181`-`195`）。
 
-任务 `completed` 只表示任务板上的 owner 完成了状态转换。它不自动证明 Agent settle，也不回滚已经运行的后继任务；`ready` 是当前 claim/reassign 的准入条件，不是持续锁（专题 [`11`](./11-图计算的本质-不变量推导与执行的三件分置.md)）。
+任务 `completed` 只表示任务板上的 owner 完成了状态转换。它不自动证明 Agent settle，也不回滚已经运行的后继任务；`ready` 是当前 claim/reassign 的准入条件，不是持续锁（专题 [`perspectives/01`](../design-perspectives/01-graph-computation-essence-invariant-derivation-and-execution.md)）。
 
 ### Schedule
 

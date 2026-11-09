@@ -518,139 +518,312 @@
       ]
     },
     {
-      "dir": "orchestration-ladder",
-      "title": "工作编排原语阶梯",
-      "intent": "从驾驶座看工作编排原语：todo、subagent、workflow、ralph、goal、jobs、schedule、teams 的保证与组合。",
+      "dir": "delegation-and-orchestration",
+      "title": "委派与编排",
+      "intent": "两条座位：驾驶座看原语机制与选择，作者座看组合、合同、终态与观测；含九条陷阱与源码入口。",
+      "kind": "group",
+      "map": "00-map.md",
+      "pages": [
+        {
+          "file": "00-map.md",
+          "title": "Delegation and Orchestration · 委派与编排",
+          "role": "map",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        }
+      ]
+    },
+    {
+      "dir": "delegation-and-orchestration/delegation-primitives",
+      "title": "原语机制",
+      "intent": "每个原语是什么、保证什么、隔离什么、谁推进、怎么结算。",
       "kind": "topic",
       "map": "00-map.md",
       "pages": [
         {
           "file": "00-map.md",
-          "title": "Work Orchestration Primitives Ladder · 工作编排原语阶梯",
+          "title": "Delegation Primitives · 原语机制",
           "role": "map",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
-          "file": "01-workflow-模型编写的JS编排脚本与子代理扇出机制.md",
-          "title": "workflow：模型编写的 JS 编排脚本与子代理扇出机制",
+          "file": "01-scripted-workflow-and-sandboxed-fan-out.md",
+          "title": "脚本化 workflow 与沙箱扇出",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "02-什么时候用哪个原语-官方选择决策语义全景.md",
-          "title": "什么时候用哪个原语：官方选择决策语义全景",
+          "file": "02-bounded-delegation-with-fresh-and-forked-subagents.md",
+          "title": "有界委派：fresh 与 fork",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md",
-          "title": "subagent 与 subagent_fork：有界委派的隔离、继承与 continuable 控制面",
+          "file": "03-fresh-agent-iteration-loop-and-round-handoff.md",
+          "title": "ralph：fresh-agent 循环与轮间传递",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md",
-          "title": "ralph：fresh-agent 循环的轮间传递与固定脚本机制",
+          "file": "04-cross-round-goals-and-the-round-driver.md",
+          "title": "跨轮 goal 与 Round Driver",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "05-goal-驾驶座用法-objective写法轮预算与终结纪律.md",
-          "title": "goal 的驾驶座用法：objective 写法、轮预算与终结纪律",
+          "file": "05-background-jobs-and-wall-clock-schedules.md",
+          "title": "后台作业与时钟平面",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "06-jobs与schedule-后台作业平台与定时跟进的时间平面.md",
-          "title": "jobs 与 schedule：后台作业平台与定时跟进的时间平面",
+          "file": "06-persistent-teams-with-a-shared-task-board.md",
+          "title": "持久团队与共享任务板",
+          "role": "mechanism",
+          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
+          "status": "carried",
+          "source": "matrix"
+        }
+      ]
+    },
+    {
+      "dir": "delegation-and-orchestration/primitive-selection",
+      "title": "原语选择",
+      "intent": "官方边界句、互路由、升级阶梯、没说清的部分。",
+      "kind": "topic",
+      "map": "00-map.md",
+      "pages": [
+        {
+          "file": "00-map.md",
+          "title": "Primitive Selection · 原语选择",
+          "role": "map",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "01-per-primitive-usage-sentences-from-tool-descriptions.md",
+          "title": "逐原语边界句",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md",
-          "title": "agent-teams 的驾驶座用法：启用代价、Lead 工作流与协作纪律",
+          "file": "02-cross-primitive-routing-and-the-official-upgrade-order.md",
+          "title": "跨原语路由与官方升级阶梯",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "03-unspecified-gaps-and-contradictions-in-usage-policy.md",
+          "title": "用法政策里没说清的部分",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        }
+      ]
+    },
+    {
+      "dir": "delegation-and-orchestration/preset-composition-and-contract-placement",
+      "title": "组合与合同",
+      "intent": "能力面怎么组合、怎么收窄、合同放哪、深度与通知怎么叠加。",
+      "kind": "topic",
+      "map": "00-map.md",
+      "pages": [
+        {
+          "file": "00-map.md",
+          "title": "Preset Composition and Contract Placement · 组合与合同",
+          "role": "map",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "01-channel-capability-differences-and-inheritance.md",
+          "title": "通道能力差异与继承",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "02-preset-composition-as-a-static-self-contained-model.md",
+          "title": "preset 作为静态自包含模型",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "03-worker-profiles-and-the-only-narrowing-lever.md",
+          "title": "worker 组合与唯一的收窄杠杆",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "04-contract-placement-between-policy-and-engine.md",
+          "title": "合同归属：政策与引擎",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "05-ownership-depth-and-notification-channels.md",
+          "title": "归属链、深度预算与通知通道",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "06-depth-concurrency-and-capacity-limits.md",
+          "title": "深度、并发与容量边界",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        }
+      ]
+    },
+    {
+      "dir": "delegation-and-orchestration/completion-and-observation",
+      "title": "终态与观测",
+      "intent": "五个完成时刻、谱系、状态三分、workflow 可复现性，及后续图投影与证据分层。",
+      "kind": "topic",
+      "map": "00-map.md",
+      "pages": [
+        {
+          "file": "00-map.md",
+          "title": "Completion and Observation · 终态与观测",
+          "role": "map",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "01-acceptance-visibility-quiescence-and-disposal.md",
+          "title": "接受、可见、静止与处置",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "08-组合模式-归属链深度预算通知通道与收尾纪律.md",
-          "title": "组合模式：归属链、深度预算、通知通道与收尾纪律",
+          "file": "02-terminal-states-and-bounded-retry-authority.md",
+          "title": "终态与有界重试权威",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "03-session-lineage-and-agent-incarnation.md",
+          "title": "Session 谱系与 Agent 实例",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md",
-          "title": "对照外部叙事：Captain 规划器、Kahn 调度、rollback 与 KV Cache 看板的逐条源码真相",
+          "file": "04-persistent-facts-derived-projections-and-live-authority.md",
+          "title": "持久事实、派生投影与活体权限",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "10-完成语义与崩溃窗口-接受可见静止处置.md",
-          "title": "完成语义与崩溃窗口：接受、可见、静止与处置",
+          "file": "05-delegation-graph-node-and-edge-projection.md",
+          "title": "委派图：节点与边的只读投影",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "06-workflow-reproducibility-cancellation-and-missing-results.md",
+          "title": "workflow 可复现性、取消与缺失结果",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "11-图计算的本质-不变量推导与执行的三件分置.md",
-          "title": "图计算的本质：不变量、推导与执行的三件分置",
+          "file": "07-evidence-layers-declaration-mount-mechanism-behaviour.md",
+          "title": "证据分层",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        }
+      ]
+    },
+    {
+      "dir": "delegation-and-orchestration/design-perspectives",
+      "title": "设计判断",
+      "intent": "为什么是这个形状、外部叙事逐条对照、九条陷阱。",
+      "kind": "topic",
+      "map": "00-map.md",
+      "pages": [
+        {
+          "file": "00-map.md",
+          "title": "Design Perspectives · 设计判断",
+          "role": "map",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "01-graph-computation-essence-invariant-derivation-and-execution.md",
+          "title": "图计算的本质",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "12-Session谱系与Agent实例-持久边与活体权限.md",
-          "title": "Session 谱系与 Agent 实例：持久边与活体权限",
+          "file": "02-external-narratives-versus-source-truth.md",
+          "title": "外部叙事与源码真相",
           "role": "mechanism",
           "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
           "status": "carried",
           "source": "matrix"
         },
         {
-          "file": "13-持久事实派生投影与内存权限-状态三分法.md",
-          "title": "持久事实、派生投影与内存权限：编排状态三分法",
+          "file": "03-why-primitives-instead-of-a-central-scheduler.md",
+          "title": "为什么是原语而不是中心调度器",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
-          "source": "matrix"
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
         },
         {
-          "file": "14-资源预算与公平性-深度并发总量与容量边界.md",
-          "title": "资源预算与公平性：深度、并发、总量与容量边界",
+          "file": "04-nine-traps-in-delegation-surfaces.md",
+          "title": "委派面的九个陷阱",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
-          "source": "matrix"
-        },
-        {
-          "file": "15-workflow可复现性与生命周期-动态结果取消和观察记录.md",
-          "title": "workflow 可复现性与生命周期：动态结果、取消和观察记录",
-          "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
-          "source": "matrix"
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
         }
       ]
     },

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 600" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#cf1322"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="38" font-size="17" font-weight="bold" fill="#262626">两种合同、两种生命周期：不要塞进同一个载体</text>
+  <text x="40" y="60" font-size="12" fill="#8c8c8c">政策由部署方拥有、变得慢；引擎事实随 pin 变、由上游拥有。混写的结果是可预测的：升 pin 改公司文件，改政策动引擎措辞。</text>
+
+  <rect x="60" y="92" width="420" height="300" rx="10" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="270" y="122" font-size="15" font-weight="bold" fill="#237804" text-anchor="middle">政策（Policy）</text>
+  <text x="270" y="144" font-size="11" fill="#237804" text-anchor="middle">什么该做、谁负责、失败怎么回报</text>
+
+  <text x="84" y="176" font-size="11" fill="#8c8c8c">拥有者</text>
+  <text x="84" y="196" font-size="12" fill="#262626">部署方 / 团队</text>
+  <text x="84" y="224" font-size="11" fill="#8c8c8c">变更频率</text>
+  <text x="84" y="244" font-size="12" fill="#262626">低（组织决定）</text>
+  <text x="84" y="272" font-size="11" fill="#8c8c8c">推荐载体</text>
+  <text x="84" y="292" font-size="12" fill="#262626">共享 skill（按能力挂载）/ 角色内 section</text>
+  <text x="84" y="320" font-size="11" fill="#8c8c8c">作用域</text>
+  <text x="84" y="340" font-size="12" fill="#262626">有委派能力的角色；leaf 不需要</text>
+  <text x="84" y="368" font-size="11" fill="#8c8c8c">成本</text>
+  <text x="84" y="388" font-size="12" fill="#262626">按需加载；受 8192 字符裁剪约束</text>
+
+  <rect x="560" y="92" width="420" height="300" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
+  <text x="770" y="122" font-size="15" font-weight="bold" fill="#ad4e00" text-anchor="middle">引擎事实（Engine）</text>
+  <text x="770" y="144" font-size="11" fill="#ad4e00" text-anchor="middle">null 的含义、截断、终态词表、重启语义</text>
+
+  <text x="584" y="176" font-size="11" fill="#8c8c8c">拥有者</text>
+  <text x="584" y="196" font-size="12" fill="#262626">上游 pin</text>
+  <text x="584" y="224" font-size="11" fill="#8c8c8c">变更频率</text>
+  <text x="584" y="244" font-size="12" fill="#262626">随版本（可能每轮）</text>
+  <text x="584" y="272" font-size="11" fill="#8c8c8c">推荐载体</text>
+  <text x="584" y="292" font-size="12" fill="#262626">capability-scoped prompt section</text>
+  <text x="584" y="320" font-size="11" fill="#8c8c8c">作用域</text>
+  <text x="584" y="340" font-size="12" fill="#262626">只有装了该工具的 preset（缺席时文本为空）</text>
+  <text x="584" y="368" font-size="11" fill="#8c8c8c">成本</text>
+  <text x="584" y="388" font-size="12" fill="#262626">常驻：每个会话、每次请求都占 token</text>
+
+  <text x="500" y="250" font-size="11" fill="#cf1322" text-anchor="middle" transform="rotate(-90 500 250)">靠人搬运</text>
+  <path d="M480 200 L560 200" stroke="#cf1322" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a3)"/>
+  <path d="M560 330 L480 330" stroke="#cf1322" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#a3)"/>
+
+  <text x="60" y="438" font-size="14" font-weight="bold" fill="#262626">四种载体的可见性</text>
+
+  <rect x="60" y="454" width="220" height="96" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="76" y="478" font-size="12" font-weight="bold" fill="#262626">工具 description</text>
+  <text x="76" y="498" font-size="10.5" fill="#595959">工具注册时才可见</text>
+  <text x="76" y="516" font-size="10.5" fill="#595959">适合：这个工具自己的边界句</text>
+  <text x="76" y="534" font-size="10.5" fill="#8c8c8c">随工具插件走</text>
+
+  <rect x="296" y="454" width="220" height="96" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="312" y="478" font-size="12" font-weight="bold" fill="#262626">prompt section</text>
+  <text x="312" y="498" font-size="10.5" fill="#595959">常驻；按 scope 注册</text>
+  <text x="312" y="516" font-size="10.5" fill="#595959">适合：行动前必须生效的规则</text>
+  <text x="312" y="534" font-size="10.5" fill="#8c8c8c">空文本自动消失</text>
+
+  <rect x="532" y="454" width="220" height="96" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="548" y="478" font-size="12" font-weight="bold" fill="#262626">skill</text>
+  <text x="548" y="498" font-size="10.5" fill="#595959">模型调用时才进入上下文</text>
+  <text x="548" y="516" font-size="10.5" fill="#595959">适合：长流程、references</text>
+  <text x="548" y="534" font-size="10.5" fill="#8c8c8c">结果受 8192 裁剪</text>
+
+  <rect x="768" y="454" width="212" height="96" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="784" y="478" font-size="12" font-weight="bold" fill="#8c8c8c">docs / README</text>
+  <text x="784" y="498" font-size="10.5" fill="#8c8c8c">不进入模型上下文</text>
+  <text x="784" y="516" font-size="10.5" fill="#8c8c8c">适合：维护面、审计</text>
+  <text x="784" y="534" font-size="10.5" fill="#8c8c8c">把合同写这里 = 模型看不到</text>
+
+  <text x="60" y="582" font-size="11" fill="#8c8c8c">判据：这句话在升 pin 时会变吗？会 → 引擎段；不会 → 政策段。两段都不能住进 docs。</text>
+</svg>

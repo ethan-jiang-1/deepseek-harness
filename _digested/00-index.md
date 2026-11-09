@@ -8,7 +8,7 @@
 
 ## 30 秒看懂
 
-dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、跑命令、接模型、画 Web 界面，都是树上的插件。本目录按这棵树的主轴切专题，每个专题看它的一个面——所以「插件」不是某个目录的主题，而是所有目录的底座。两个例外：`capability-seams/` 讲同一个能力有多个插件实现时怎么换实现而不改调用方（插件的竞聘位）；`plugin-system/` 把「插件」当成主题本身，分三个轴讲透——有什么（inventory）、怎么变成活树（composition）、怎么走完一生（lifecycle）。
+dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、跑命令、接模型、画 Web 界面，都是树上的插件。本目录按这棵树的主轴切专题，每个专题看它的一个面——所以「插件」不是某个目录的主题，而是所有目录的底座。三个例外：`capability-seams/` 讲同一个能力有多个插件实现时怎么换实现而不改调用方（插件的竞聘位）；`plugin-system/` 把「插件」当成主题本身，分三个轴讲透——有什么（inventory）、怎么变成活树（composition）、怎么走完一生（lifecycle）；`delegation-and-orchestration/` 按**座位**分轴——驾驶座看原语机制与选择，作者座看组合、合同、终态与观测。
 
 `_digested/` 面向已熟悉 agent harness / plugin 运行时，但尚未建立 DeepSeek Harness 概念体系的读者。这里先抓住思想主轴，再进入源码机制——而不是把 `packages/` 目录平铺成分类货架。
 
@@ -47,7 +47,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `runtime-profiles/` | 运行时配置 | 五种官方启动方式（web / headless / sdk / sdk-minimal / acp）各自带哪些插件、差在哪。 |
 | `session-and-loop/` | 会话与驱动 | 对话存在哪、怎么读回来：session log 的格式、世代与投影。 |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
-| `orchestration-ladder/` | 工作编排原语阶梯 | 从驾驶座视角：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个、怎么组合。 |
+| `delegation-and-orchestration/` | 委派与编排（两座位） | **驾驶座**：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个。**作者座**：能力面怎么组合与收窄、合同放哪、深度与通知怎么叠加、终态与图怎么观测。写「会委派的插件」或组 preset 从这里进。 |
 | `capability-seams/` | 可替换能力 | 同一个能力（读文件、跑命令……）有多个插件实现时，怎么换实现而不改调用方——插件的竞聘位。 |
 | `plugin-system/` | 插件系统（三轴） | 插件系统的三个面：`composition/` 怎么叠成活树、`lifecycle/` 从打包到卸载的七段、`inventory/` 把现成包按组列成清单（数量以该专题为准）。动手写、要交付、或查「装了为什么没生效」都从这里进。 |
 | `experimental/` | 可选能力与原型 | 已评估但未承诺产品支持的实验能力。**实验身份与「可选交付」相互独立**：可选包收编进本组，而非 experimental 的包才需要产品用途或显式分类（`scripts/product-package-policy.ts`）。 |
@@ -79,7 +79,8 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **想搞懂插件系统本身（怎么成树、怎么走完一生、现成有什么）** → [`plugin-system/00-map.md`](./plugin-system/00-map.md)
 - **要确认一个词 DSH 到底怎么讲，或动笔前对一遍引用纪律** → [`canon/00-map.md`](./canon/00-map.md)
 - **想搞懂一轮对话怎么跑** → [`session-and-loop/00-map.md`](./session-and-loop/00-map.md)
-- **想搞懂 DSH 给了哪些工作编排原语、什么时候用哪个** → [`orchestration-ladder/00-map.md`](./orchestration-ladder/00-map.md)
+- **想搞懂 DSH 给了哪些工作编排原语、什么时候用哪个** → [`delegation-and-orchestration/00-map.md`](./delegation-and-orchestration/00-map.md)
+- **要写一个会委派/会组合的插件、或想知道一条链为什么会断/怎么证明** → [`delegation-and-orchestration/00-map.md`](./delegation-and-orchestration/00-map.md) 的「症状 → 页」与作者座两个子专题
 - **想搞懂磁盘上的 session 文件怎么跨格式世代读** → [`session-and-loop/04-格式世代与迁移.md`](./session-and-loop/04-格式世代与迁移.md)
 - **想加能力或换后端** → [`capability-seams/00-map.md`](./capability-seams/00-map.md)
 - **想研究实验与可选能力** → [`experimental/00-map.md`](./experimental/00-map.md)
@@ -102,6 +103,20 @@ system-overview/
 ```
 
 按推荐顺序读 `00-map.md`，遇到具体机制再进入编号正文。专题承诺的核验范围以 [`_coverage/00-index.md`](./_coverage/00-index.md) 为准；未列问题不隐含完整覆盖。跨专题研究放在 `_faq_on_digested/`。
+
+## 按任务找
+
+不同任务该进哪个专题，比按目录顺序读快：
+
+| 你要做的事 | 从哪进 |
+|---|---|
+| 给插件加一条委派能力（谁来干、能不能再委派） | [`delegation-and-orchestration/preset-composition-and-contract-placement/`](./delegation-and-orchestration/preset-composition-and-contract-placement/00-map.md) |
+| 决定用哪个原语（subagent / workflow / goal / team / jobs） | [`delegation-and-orchestration/primitive-selection/`](./delegation-and-orchestration/primitive-selection/00-map.md) |
+| 把一条链的状态看见、画出来、证明它真的跑通 | [`delegation-and-orchestration/completion-and-observation/`](./delegation-and-orchestration/completion-and-observation/00-map.md) |
+| 写一个新插件包、接进组合、走完发布 | [`plugin-system/`](./plugin-system/00-map.md) |
+| 换掉一个能力的实现（文件、命令、模型、浏览器） | [`capability-seams/`](./capability-seams/00-map.md) |
+| 加 Web UI / 客户端投影 | [`two-tree-runtime/client/`](./two-tree-runtime/client/00-map.md) |
+| 决定模型每一步看见什么 | [`tools-prompt-llm/`](./tools-prompt-llm/00-map.md) |
 
 ## 验证
 

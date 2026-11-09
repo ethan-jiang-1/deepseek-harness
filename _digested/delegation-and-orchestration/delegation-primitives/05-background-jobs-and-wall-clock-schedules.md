@@ -1,8 +1,8 @@
-# jobs 与 schedule：后台作业平台与定时跟进的时间平面
+# Background Jobs and Wall-Clock Schedules · 后台作业与时钟平面
 
 源码核验入口：`packages/jobs/jobs/`（`README.md`/`src/index.ts`）、`packages/jobs/jobs-local/`、`packages/jobs/tool-jobs/src/index.ts` 与 `README.md`、`packages/shell/tool-bash/src/index.ts`、`packages/schedule/schedule/`（`README.md`）、`packages/schedule/tool-schedule/src/index.ts`、`packages/schedule/README.md`、`packages/boot/app-boot/src/profile.ts`、`packages/bundle/web-app/cordis.patch.yml`。
 
-本页回答：JobRegistry 这个后台作业平台给了什么保证（id、隔离、结算、通知）？谁是 producer？"何时转后台"的官方边界？schedule 的时序语义与交付形态？工具描述里的跟踪纪律（不忙轮询、收尾前收集）见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；workflow 与 subagent 两个 producer 的接入细节见 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) 与 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
+本页回答：JobRegistry 这个后台作业平台给了什么保证（id、隔离、结算、通知）？谁是 producer？"何时转后台"的官方边界？schedule 的时序语义与交付形态？工具描述里的跟踪纪律（不忙轮询、收尾前收集）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；workflow 与 subagent 两个 producer 的接入细节见 [`01`](./01-scripted-workflow-and-sandboxed-fan-out.md) 与 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
 ## 为什么是这个形状：设计考量
 
@@ -23,7 +23,7 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 
 **first-wins 结算 + `awaited` 防重播**（`packages/jobs/jobs/README.md:87`）：一个终局记录、释放全部 waiter、再一轮 contained 事件投递；`settled` 事件报告它是否释放了一个 live `wait`（`awaited`）——所以 `tool-jobs` **从不播报一个等待者已经收集过的完成**（无论是 `job_output` 的 wait 还是 shell 工具等自己前台命令的 wait）。
 
-**输出环的两个受众**（`packages/jobs/jobs/README.md:31`）：producer 用 pull sources（registry 按自己节奏泵的非消费 offset 读者）或经 `JobHandle` 推块，都落进有界 ring——**`stdout`/`stderr` 块进模型，`log` 块只进观察者**（这就是 workflow mirror 的 log 通道不进 `job_output` 渲染的平台根源，[`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)）。观察者按绝对字节偏移读留存块、推进有信号；`readAt` 不消费任何东西、对模型不可见；`updateProgress` 把活进度行发布进每个投影直到结算。
+**输出环的两个受众**（`packages/jobs/jobs/README.md:31`）：producer 用 pull sources（registry 按自己节奏泵的非消费 offset 读者）或经 `JobHandle` 推块，都落进有界 ring——**`stdout`/`stderr` 块进模型，`log` 块只进观察者**（这就是 workflow mirror 的 log 通道不进 `job_output` 渲染的平台根源，[`01`](./01-scripted-workflow-and-sandboxed-fan-out.md)）。观察者按绝对字节偏移读留存块、推进有信号；`readAt` 不消费任何东西、对模型不可见；`updateProgress` 把活进度行发布进每个投影直到结算。
 
 **归档联动**（`packages/jobs/jobs/README.md:96`）：`workspace/session-activity` 把该 Session 拥有的 running/stopping job 报成 `job` 家族；`workspace/session-stop` 以 reason `session archived` 逐个 kill（一个 producer 取消时抛错只记日志，其余 job 继续停）；无主 job 永不为某个 Session 报告或停止。
 
@@ -33,8 +33,8 @@ jobs 不是某个工具的私有功能，而是一个**抽象服务合同**（`p
 |----------|----------|--------|
 | bash | `bash`（`packages/shell/tool-bash/src/index.ts:278`；后台启动 `:509` 返回 `{kind:'background', jobId}`） | `run_in_background` 参数 |
 | pwsh | 同构（`packages/shell/tool-pwsh/src/index.ts:44` 的 `JobKindMap`） | 同上 |
-| subagent | — | **不再是 job producer**：统一 activation 生命周期后，每次委派立即返回 child id，前台 run 与 jobs 的 `jobs.start({kind:'subagent'})` 分支已移除（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）；要后台化请用 `job_*` 之外的 delegation 语义 |
-| workflow | `workflow`（[`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)：`JobKindMap` 声明合并 + mirror 写 ring） | `run_in_background` 参数 |
+| subagent | — | **不再是 job producer**：统一 activation 生命周期后，每次委派立即返回 child id，前台 run 与 jobs 的 `jobs.start({kind:'subagent'})` 分支已移除（[`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)）；要后台化请用 `job_*` 之外的 delegation 语义 |
+| workflow | `workflow`（[`01`](./01-scripted-workflow-and-sandboxed-fan-out.md)：`JobKindMap` 声明合并 + mirror 写 ring） | `run_in_background` 参数 |
 | terminal | `pty-send`（`packages/experimental/tool-terminal/src/index.ts:251`-`:263`） | `run_in_background` 参数 |
 
 kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 registry。上表列出当前四类 shipped producer（bash / pwsh / workflow / terminal）；subagent 已退出 jobs 平面，其结算通知走 subagent 自己的通道，不借 jobs 通知模板。其他插件也可以通过同一声明合并与 `jobs.start()` 接入。**controller 是启动的闸门**（`packages/jobs/jobs/README.md:40`-`42`）：producer 只能在"有服务该 owner 的 controller 在场"时启动（加载 `tool-jobs` 即挂上一个）；没有 controller 的组合 `start()` 直接失败并**点名缺失的组件**——绝不启动一个 agent 永远收不回也停不掉的工作。
@@ -87,9 +87,9 @@ kind 都经 `JobKindMap` **声明合并**注册——加一个 producer 不改 r
 |------|------|---------|
 | jobs（执行平面） | 工作完成时 | 完成通知（busy→step 注入 / idle→唤醒 turn） |
 | schedule（时间平面） | wall-clock 到期 | Host 冷恢复 Session 后的 follow-up message |
-| goal（目标平面） | objective + idle | Round Driver 的 `<goal_round>` prompt（[`05`](./05-goal-驾驶座用法-objective写法轮预算与终结纪律.md)） |
+| goal（目标平面） | objective + idle | Round Driver 的 `<goal_round>` prompt（[`04`](./04-cross-round-goals-and-the-round-driver.md)） |
 
-三条注入通道互相独立：一个 goal round 里可以收 job 完成通知（step 注入不开新 turn），一个 schedule 到期可以唤醒一个 goal 活跃中的 idle agent。官方对「goal vs schedule 怎么选」没有明文路由（[`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md) 矛盾与空白第 5 条）——实操判据：**持续推进到完成用 goal，固定时刻提醒用 schedule**，两者可并存于同一 Session。
+三条注入通道互相独立：一个 goal round 里可以收 job 完成通知（step 注入不开新 turn），一个 schedule 到期可以唤醒一个 goal 活跃中的 idle agent。官方对「goal vs schedule 怎么选」没有明文路由（[`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md) 矛盾与空白第 5 条）——实操判据：**持续推进到完成用 goal，固定时刻提醒用 schedule**，两者可并存于同一 Session。
 
 ## 源码入口
 

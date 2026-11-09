@@ -1,4 +1,4 @@
-# 持久事实、派生投影与内存权限：编排状态三分法
+# Persistent Facts, Derived Projections and Live Authority · 持久事实、派生投影与活体权限
 
 DSH 的编排状态不能只按“有没有保存”二分。当前实现至少分成三层：Session 或 Host 存储中的持久事实、由事实折叠得到的派生投影、只存在于进程内并决定当前操作资格的 runtime authority。三层的恢复和失效规则不同。
 
@@ -38,7 +38,7 @@ Job 记录本身由 registry 管理，producer 资源、终态、owner fence、�
 
 ## Teams：事实在 Lead log，projection 在读取侧
 
-Agent Teams 将成员、任务和 mailbox 事件追加到 Lead Session，并在 flush 成功后发布。任务视图由 roster、非删除任务、`ready` 派生；projection failure 会停止继续折叠并让 journal 后续权威读取拒绝操作。Mailbox 只保留接纳内容；历史 `team/message/queued` 与 `delivered` 记录仍可读，但 Team 不再投递、确认、重试或去重，投影不能把历史三段确认当成现行投递合同（专题 [`10`](./10-完成语义与崩溃窗口-接受可见静止处置.md)）。
+Agent Teams 将成员、任务和 mailbox 事件追加到 Lead Session，并在 flush 成功后发布。任务视图由 roster、非删除任务、`ready` 派生；projection failure 会停止继续折叠并让 journal 后续权威读取拒绝操作。Mailbox 只保留接纳内容；历史 `team/message/queued` 与 `delivered` 记录仍可读，但 Team 不再投递、确认、重试或去重，投影不能把历史三段确认当成现行投递合同（专题 [`01`](./01-acceptance-visibility-quiescence-and-disposal.md)）。
 
 ## 统一恢复问题
 

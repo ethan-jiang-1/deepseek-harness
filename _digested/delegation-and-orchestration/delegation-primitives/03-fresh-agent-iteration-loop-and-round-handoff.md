@@ -1,8 +1,8 @@
-# ralph：fresh-agent 循环的轮间传递与固定脚本机制
+# Fresh-Agent Iteration Loop and Round Handoff · ralph：fresh-agent 循环与轮间传递
 
 源码核验入口：`packages/experimental/tool-ralph/src/index.ts`（`RALPH_SCRIPT`、防御性解码、工具注册）、`packages/experimental/tool-ralph/README.md`、`.agents/notes/archived/feature/2026-07-16-harness-level-loop.md`（已归档，历史快照；两策略决策）、`packages/experimental/ralph-bundle/cordis.patch.yml`。
 
-本页回答：ralph 轮间到底传什么、固定脚本锁死了什么、四种终局怎么结算、为什么 DSH 把「长任务」显式分裂成 goal 与 ralph 两种策略？工具的选择边界（仅人类显式要求）见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；它跑在哪个引擎/进程里见 [`01-workflow-模型编写的JS编排脚本与子代理扇出机制.md`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md)（ralph 是 `ctx.workflowEngine` + `ctx.subagents` 之上的普通插件，复用 PTC 执行链）。
+本页回答：ralph 轮间到底传什么、固定脚本锁死了什么、四种终局怎么结算、为什么 DSH 把「长任务」显式分裂成 goal 与 ralph 两种策略？工具的选择边界（仅人类显式要求）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；它跑在哪个引擎/进程里见 [`primitives/01`](./01-scripted-workflow-and-sandboxed-fan-out.md)（ralph 是 `ctx.workflowEngine` + `ctx.subagents` 之上的普通插件，复用 PTC 执行链）。
 
 ## 一轮 ralph 到底发生了什么
 

@@ -38,7 +38,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 
 ## 不是 seam 的调度：schedule（host 作用域持久提醒）
 
-`packages/schedule/schedule/` 提供 host-wide durable reminders，不是 seam——没有 Definition/Provider 可分包装；生成表里是 core role（`ctx.schedule`，单一 owner，`docs/capability-seams.md:682`）。模型经 `schedule_create` / `schedule_list` / `schedule_update` / `schedule_delete` 四个工具管理一次性或固定间隔提醒，到期以 scheduled user message 回到原会话；任务独立于 Session activation 持久化，重启后仍投递。Web 组合直接挂 `schedule` 与 `ui-schedule` 两行，工具行由 preset 声明（`minimal` 不声明）。平台合同、通知经济学与交付时序见 [`../orchestration-ladder/06-jobs与schedule-后台作业平台与定时跟进的时间平面.md`](../orchestration-ladder/06-jobs与schedule-后台作业平台与定时跟进的时间平面.md)；本页只记它为什么不是 seam。
+`packages/schedule/schedule/` 提供 host-wide durable reminders，不是 seam——没有 Definition/Provider 可分包装；生成表里是 core role（`ctx.schedule`，单一 owner，`docs/capability-seams.md:682`）。模型经 `schedule_create` / `schedule_list` / `schedule_update` / `schedule_delete` 四个工具管理一次性或固定间隔提醒，到期以 scheduled user message 回到原会话；任务独立于 Session activation 持久化，重启后仍投递。Web 组合直接挂 `schedule` 与 `ui-schedule` 两行，工具行由 preset 声明（`minimal` 不声明）。平台合同、通知经济学与交付时序见 [`../delegation-and-orchestration/delegation-primitives/05-background-jobs-and-wall-clock-schedules.md`](../delegation-and-orchestration/delegation-primitives/05-background-jobs-and-wall-clock-schedules.md)；本页只记它为什么不是 seam。
 
 ## core 而非 seam：Webhook
 

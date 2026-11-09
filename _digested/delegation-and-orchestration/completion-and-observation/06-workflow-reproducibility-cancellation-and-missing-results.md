@@ -1,4 +1,4 @@
-# workflow 可复现性与生命周期：动态结果、取消和观察记录
+# Workflow Reproducibility, Cancellation and Missing Results · workflow 可复现性、取消与缺失结果
 
 workflow 把控制结构放进受管 PTC 脚本，但不把结果变成可复算的纯函数。脚本输入、模型子代理结果、provider 行为、workspace 和时间之外部因素都可能影响下一次控制流；运行时只保证脚本 API、容量、失败传播和资源处置的明确语义。
 

@@ -1,4 +1,4 @@
-# 资源预算与公平性：深度、并发、总量与容量边界
+# Depth, Concurrency and Capacity Limits · 深度、并发与容量边界
 
 DSH 的编排限制不是一个统一的“任务预算”。不同层分别限制递归深度、活体 Agent 数、workflow 并发、单次项目数、总子代理调用、owner 的后台 job 数量，以及 teams 的成员、任务和 mailbox 容量。一个组合请求的实际上限由这些边界中最先触发的一层决定。
 
@@ -8,7 +8,7 @@ DSH 的编排限制不是一个统一的“任务预算”。不同层分别限�
 
 | 维度 | 默认或来源 | 作用 | 触发后的语义 |
 |------|------------|------|--------------|
-| delegation depth | subagent runtime `maxDepth` 默认 1；请求可进一步收紧 | 限制嵌套委派的纵向深度 | `SubagentDepthError`，不把越界委派当成成功 |
+| delegation depth | 工具行显式 `maxDepth`（含 `'provider-managed'`）优先；省略时用 subagent 服务默认 1；`0` 禁止委派 | 限制嵌套委派的纵向深度；**绝对量**，从根往下数 | `SubagentDepthError`，不把越界委派当成成功；`provider-managed` 时由 provider 自己的预算负责 |
 | continuable capacity | `maxActiveSubagents` 默认 8，共享于不间断 continuable 链 | 限制同时驻留的 continuable Activation | `ACTIVATION_LIMIT_REACHED`，调用方需等待已有 child 结束或继续当前工作 |
 | workflow concurrency | `maxConcurrentAgents` 默认按 `min(16, max(1, cores - 2))` 解析 | 限制一个 workflow 同时运行的 child agent 数 | 后续 `agent()` 按 FIFO slot 排队 |
 | workflow total | `maxTotalAgents` 默认 1000 | 限制一个 workflow 已开始的 `agent()` 调用总数 | `AGENT_CAP` fatal，整个脚本失败 |
@@ -17,6 +17,18 @@ DSH 的编排限制不是一个统一的“任务预算”。不同层分别限�
 | Agent Teams | `maxMembers=16`、`maxTasks=256`、单消息 65,536 bytes | 限制一个 Team 的持久协作数据和成员规模 | 对应创建、发送或任务操作拒绝 |
 
 这些数值是部署和 provider 组合的一部分，不应概括为整个 DSH 的全局公平调度器。Teams profile 还可以把 `maxMembers` 覆盖为 8；workflow 的配置也可以改变默认并发和总量。
+
+## 深度是绝对量，不是每跳预算
+
+![深度是绝对量：workflow 分支仍计入绝对深度](./figures/depth-is-absolute.svg)
+
+`resolveChildDepth(parent, maxDepth)` 恒为 `delegationDepthOf(parent) + 1`；`delegationDepthOf` 取 `max(session.header.delegationDepth, options.subagentDepth)`——持久 header 是单调 floor，恢复出来的 child 不会被当成顶层（`packages/subagent/subagent/src/child-agent.ts:49`-`58`、`depth.ts:20`-`35`）。这带来三个直接后果：
+
+1. **预算是“行上的上限”，不是“链上的分配”**：一条 `CEO → vp_eng → worker` 的链能到几层，取决于每一跳所在行的 `maxDepth` 与默认值；没有任何工件声明“这条链的总预算”。
+2. **workflow 的 `agent()` 不收 `maxDepth`，但分支 child 仍然算深度**：分支的 parent 是 run 的 parent（`workflow-ptc/src/host.ts:211`），分支 child 是 parent+1；分支里再 spawn 继续 +1，撞的是同一个绝对上限。“没有闸”不等于“不计数”。
+3. **team 成员从 Lead 数**：成员的 parent 是 Lead（`agent-team/src/roster.ts:271`），后续委派从 Lead 的深度继续。
+
+`maxDepth` 的取用顺序也按行：工具行显式值优先（含 `'provider-managed'`），省略时由 `resolveMaxDepth` 回退到服务默认 1；数值上限要求 provider 的 `depthLimit` 能力位，否则挂载即失败（`subagent/src/index.ts:242`-`248`；`tool-subagent/src/index.ts:68`-`75`、`:166`-`170`）。
 
 ## 深度不是横向容量
 
@@ -51,6 +63,10 @@ Teams 对成员数、任务数、pending mailbox 和消息字节数设硬上限�
 | 路径 | 关注点 |
 |------|--------|
 | `packages/subagent/subagent/src/index.ts:185`-`197` | `maxDepth` 与 continuable capacity 默认值 |
+| `packages/subagent/subagent/src/child-agent.ts:49`-`58`、`src/depth.ts:20`-`35` | 绝对深度与单调 floor |
+| `packages/subagent/subagent/src/index.ts:242`-`248` | `resolveMaxDepth`：显式值 / provider-managed / 服务默认 |
+| `packages/subagent/tool-subagent/src/index.ts:68`-`75`、`:166`-`170` | `'provider-managed'` 语义与 `depthLimit` 挂载校验 |
+| `packages/workflow/workflow-ptc/src/host.ts:203`-`219` | 分支 child 的 parent（无 maxDepth 字段） |
 | `packages/workflow/workflow-ptc/src/index.ts:106`-`112` | workflow Config 默认限制 |
 | `packages/workflow/workflow-ptc/src/runtime.ts:142`-`:180` | FIFO concurrency slot 与 total cap |
 | `packages/workflow/workflow-ptc/src/runtime.ts:342`-`:347` | per-call item cap |

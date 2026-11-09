@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#cf1322"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="38" font-size="17" font-weight="bold" fill="#262626">四条委派通道：子代拿到什么、按什么寻址</text>
+  <text x="40" y="60" font-size="12" fill="#8c8c8c">只有 spawn 能给子代挂独立 preset；其余三条通道加入父/Lead 的组合修订，能力面不可按子代收窄</text>
+
+  <rect x="380" y="86" width="280" height="52" rx="8" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
+  <text x="520" y="108" font-size="13" font-weight="bold" fill="#262626" text-anchor="middle">父 Agent / Team Lead</text>
+  <text x="520" y="126" font-size="10.5" fill="#8c8c8c" text-anchor="middle">组合、深度、上下文都在这里定</text>
+
+  <line x1="420" y1="138" x2="150" y2="196" stroke="#595959" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="470" y1="138" x2="390" y2="196" stroke="#595959" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="570" y1="138" x2="650" y2="196" stroke="#595959" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="620" y1="138" x2="890" y2="196" stroke="#595959" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="40" y="200" width="220" height="330" rx="10" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="150" y="226" font-size="14" font-weight="bold" fill="#237804" text-anchor="middle">subagent (spawn)</text>
+  <text x="60" y="254" font-size="11" fill="#595959">子代身份</text>
+  <text x="60" y="272" font-size="12" fill="#262626">全新 child</text>
+  <text x="60" y="300" font-size="11" fill="#595959">组合来源</text>
+  <text x="60" y="318" font-size="12" fill="#237804">独立 preset（可窄）</text>
+  <text x="60" y="346" font-size="11" fill="#595959">上下文</text>
+  <text x="60" y="364" font-size="12" fill="#262626">不继承父对话</text>
+  <text x="60" y="392" font-size="11" fill="#595959">深度</text>
+  <text x="60" y="410" font-size="12" fill="#262626">父 + 1（绝对）</text>
+  <text x="60" y="438" font-size="11" fill="#595959">寻址 / 控制</text>
+  <text x="60" y="456" font-size="12" fill="#262626">child session id</text>
+  <text x="60" y="474" font-size="10.5" fill="#8c8c8c">send_message / interrupt_agent</text>
+  <rect x="60" y="492" width="180" height="24" rx="12" fill="#d9f7be"/>
+  <text x="150" y="508" font-size="10.5" fill="#237804" text-anchor="middle">唯一能收窄的能力面</text>
+
+  <rect x="280" y="200" width="220" height="330" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="390" y="226" font-size="14" font-weight="bold" fill="#ad4e00" text-anchor="middle">subagent_fork</text>
+  <text x="300" y="254" font-size="11" fill="#595959">子代身份</text>
+  <text x="300" y="272" font-size="12" fill="#262626">父的已完成轮快照</text>
+  <text x="300" y="300" font-size="11" fill="#595959">组合来源</text>
+  <text x="300" y="318" font-size="12" fill="#ad4e00">加入父修订（不可选）</text>
+  <text x="300" y="346" font-size="11" fill="#595959">上下文</text>
+  <text x="300" y="364" font-size="12" fill="#262626">到最后一个 turn/end 的前缀</text>
+  <text x="300" y="392" font-size="11" fill="#595959">深度</text>
+  <text x="300" y="410" font-size="12" fill="#262626">父 + 1（绝对）</text>
+  <text x="300" y="438" font-size="11" fill="#595959">寻址 / 控制</text>
+  <text x="300" y="456" font-size="12" fill="#262626">child session id</text>
+  <text x="300" y="474" font-size="10.5" fill="#8c8c8c">同上</text>
+  <rect x="300" y="492" width="180" height="24" rx="12" fill="#ffe7ba"/>
+  <text x="390" y="508" font-size="10.5" fill="#ad4e00" text-anchor="middle">独立 preset 被 provider 拒绝</text>
+
+  <rect x="520" y="200" width="220" height="330" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="630" y="226" font-size="14" font-weight="bold" fill="#0958d9" text-anchor="middle">workflow agent()</text>
+  <text x="540" y="254" font-size="11" fill="#595959">子代身份</text>
+  <text x="540" y="272" font-size="12" fill="#262626">run 的 parent 的新 child</text>
+  <text x="540" y="300" font-size="11" fill="#595959">组合来源</text>
+  <text x="540" y="318" font-size="12" fill="#0958d9">加入父修订（无 preset 参数）</text>
+  <text x="540" y="346" font-size="11" fill="#595959">上下文</text>
+  <text x="540" y="364" font-size="12" fill="#262626">provider 自己的上下文</text>
+  <text x="540" y="392" font-size="11" fill="#595959">深度</text>
+  <text x="540" y="410" font-size="12" fill="#262626">run 的 parent + 1（绝对）</text>
+  <text x="540" y="438" font-size="11" fill="#595959">寻址 / 控制</text>
+  <text x="540" y="456" font-size="12" fill="#262626">只有 run 返回值 / job id</text>
+  <text x="540" y="474" font-size="10.5" fill="#8c8c8c">没有按分支 id 的控制工具</text>
+  <rect x="540" y="492" width="180" height="24" rx="12" fill="#bae0ff"/>
+  <text x="630" y="508" font-size="10.5" fill="#0958d9" text-anchor="middle">分支“当叶子”只能靠合同</text>
+
+  <rect x="760" y="200" width="240" height="330" rx="10" fill="#fce7f3" stroke="#db2777" stroke-width="1.5"/>
+  <text x="880" y="226" font-size="14" font-weight="bold" fill="#9d174d" text-anchor="middle">team 成员</text>
+  <text x="780" y="254" font-size="11" fill="#595959">子代身份</text>
+  <text x="780" y="272" font-size="12" fill="#262626">Lead 的具名 child</text>
+  <text x="780" y="300" font-size="11" fill="#595959">组合来源</text>
+  <text x="780" y="318" font-size="12" fill="#9d174d">继承 Lead（不可选）</text>
+  <text x="780" y="346" font-size="11" fill="#595959">上下文</text>
+  <text x="780" y="364" font-size="12" fill="#262626">fresh 或 fork（context 参数）</text>
+  <text x="780" y="392" font-size="11" fill="#595959">深度</text>
+  <text x="780" y="410" font-size="12" fill="#262626">Lead + 1（绝对）</text>
+  <text x="780" y="438" font-size="11" fill="#595959">寻址 / 控制</text>
+  <text x="780" y="456" font-size="12" fill="#262626">成员名</text>
+  <text x="780" y="474" font-size="10.5" fill="#8c8c8c">send_message / wait_agent</text>
+  <rect x="780" y="492" width="200" height="24" rx="12" fill="#fbcfe8"/>
+  <text x="880" y="508" font-size="10.5" fill="#9d174d" text-anchor="middle">名字不等于能力</text>
+
+  <text x="40" y="566" font-size="11" fill="#8c8c8c">读法：从左到右，绿色是唯一能“换组合”的通道；橙色/蓝色/粉色都是“加入已有组合”。深度一律是绝对量，不是每跳预算。</text>
+  <text x="40" y="586" font-size="11" fill="#8c8c8c">源码：tool-subagent/src/preset-selection.ts:79；workflow-ptc/src/runtime.ts:33；agent-team/src/types.ts:165；child-agent.ts:49-58。</text>
+</svg>

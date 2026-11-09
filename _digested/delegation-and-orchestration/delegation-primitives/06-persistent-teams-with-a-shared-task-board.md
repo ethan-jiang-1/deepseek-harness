@@ -1,12 +1,12 @@
-# agent-teams 的驾驶座用法：启用代价、Lead 工作流与协作纪律
+# Persistent Teams with a Shared Task Board · 持久团队与共享任务板
 
 源码核验入口：`packages/experimental/tool-agent-team/src/index.ts`（`POLICY` 与九个成员级工具）、`packages/experimental/agent-team-profile/cordis.patch.yml` 与 `README.md`、`packages/experimental/agent-team/src/index.ts`（服务上限）、`packages/boot/app-boot/src/profile.ts`（OPTIONAL_BUNDLES）。
 
-本页回答：启用 agent-teams 的组合代价是什么（你换掉了什么）？Lead 的实际工作流怎么串九个工具？`team:policy` 里的协作纪律有哪些？机制（TeamService、journal、投影、九工具注册、UI 落点）见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)；选择语义（仅显式要求、与 subagent 控制面互斥）见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；队友创建复用的 spawn/fork 语义见 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
+本页回答：启用 agent-teams 的组合代价是什么（你换掉了什么）？Lead 的实际工作流怎么串九个工具？`team:policy` 里的协作纪律有哪些？机制（TeamService、journal、投影、九工具注册、UI 落点）见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)；选择语义（仅显式要求、与 subagent 控制面互斥）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；队友创建复用的 spawn/fork 语义见 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
 ## 为什么是这个形状：设计考量
 
-**为什么需要 teams 这个原语**：subagent 委派解决「一次性把活交出去」，但**协调状态活不过一次委派**——任务清单、成员分工、相互消息在 one-shot 结束时全部蒸发；全局控制面（`list_agents`/`send_message`）是**人类驱动**的：要人（或顶层模型）逐个派活、逐个收结果。当工作是「几个人**持续**协作、互相等、共享一个任务板」时，这两者都撑不住。teams 的答案是给 Lead 一套**持久的协调状态**：具名队友（可 offline/resume）、跨崩溃的任务板与邮箱（事件日志 + 投影，见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）——**协调状态本身成为会话的可重放事实**。这个选择的代价是组合互斥（见下节启用代价表）：重名控制面与 subagent/fork 工具行必须让位——**DSH 用「换掉低层原语」而不是「叠加」来表达这是一个不同的协作模式**，避免同一会话里两套控制语义打架。experimental 的包装也是考量：用户要能从 npm 一键装完整组合，而内部原型保持私有——所以它是 `OPTIONAL_BUNDLES` 里的一个独立 bundle，而非散装包（`.agents/notes/archived/architecture/2026-08-18-experimental-agent-teams-packages.md`）。
+**为什么需要 teams 这个原语**：subagent 委派解决「一次性把活交出去」，但**协调状态活不过一次委派**——任务清单、成员分工、相互消息在 one-shot 结束时全部蒸发；全局控制面（`list_agents`/`send_message`）是**人类驱动**的：要人（或顶层模型）逐个派活、逐个收结果。当工作是「几个人**持续**协作、互相等、共享一个任务板」时，这两者都撑不住。teams 的答案是给 Lead 一套**持久的协调状态**：具名队友（可 offline/resume）、跨崩溃的任务板与邮箱（事件日志 + 投影，见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）——**协调状态本身成为会话的可重放事实**。这个选择的代价是组合互斥（见下节启用代价表）：重名控制面与 subagent/fork 工具行必须让位——**DSH 用「换掉低层原语」而不是「叠加」来表达这是一个不同的协作模式**，避免同一会话里两套控制语义打架。experimental 的包装也是考量：用户要能从 npm 一键装完整组合，而内部原型保持私有——所以它是 `OPTIONAL_BUNDLES` 里的一个独立 bundle，而非散装包（`.agents/notes/archived/architecture/2026-08-18-experimental-agent-teams-packages.md`）。
 
 ## 启用代价：一个 bundle 换掉的东西
 
@@ -21,7 +21,7 @@
 | insert `agent-team` + `tool-agent-team` + `ui-agent-team` | TeamService、九工具、Web 会话头部的 Team 动作（名册/任务板/队友导航，读投影无 RPC） |
 | **workflow 不动** | Workflow 保留 base 的 `spawn` provider——脚本扇出 fresh children 照常可用 |
 
-服务上限（`packages/experimental/agent-team/src/index.ts:55`-`90`；profile 把 `maxMembers` 钉回 8）：`maxMembers` 代码默认 16 / profile 钉 8、`maxTasks` 256、`maxMessageBytes` 65536、`disposalTimeoutMs` 5000。**团队面需要持久 session 存储才激活**（机制见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）。
+服务上限（`packages/experimental/agent-team/src/index.ts:55`-`90`；profile 把 `maxMembers` 钉回 8）：`maxMembers` 代码默认 16 / profile 钉 8、`maxTasks` 256、`maxMessageBytes` 65536、`disposalTimeoutMs` 5000。**团队面需要持久 session 存储才激活**（机制见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）。
 
 ## Lead 的工作流：九个工具怎么串
 
@@ -49,7 +49,7 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
 ```json
 { "description": "审计 01-05 页引用", "context": "fresh" }
 { "subject": "fix-out-of-bounds", "description": "修复 ref-sweep 报告的全部越界引用", "blocked_by": ["t1","t2"],
-  "write_scopes": ["_digested/orchestration-ladder/"] }
+  "write_scopes": ["_digested/delegation-and-orchestration/"] }
 { "task_id": "t3", "expected_revision": 2, "action": "claim" }
 ```
 
@@ -71,7 +71,7 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 推荐的分工是：执行者负责修改，复核者负责寻找反例，Lead 负责解释验收标准并作最终合并判断。对于代码或文档，最终质量证据应优先来自测试、类型检查、格式检查、引用扫描、构建或人工逐项审查，而不是来自 teammate 的自报。共享文件系统使执行者和复核者看到同一工作区，也使未协调的并行写入产生冲突；`write_scopes` 只是 advisory，不能代替 Lead 的 diff 审查。
 
-任务板没有独立的 `reviewed`、`evidence` 或 `approval` 字段；它只保存任务描述、状态、owner、依赖、revision 和写域等信息。因此可以把验收标准写进 `description`，把验证命令和结果写进共享报告或消息，再由 Lead 根据外部证据决定是否 `complete`。一个可执行的任务描述至少应包含：`产物`、`验收条件`、`验证命令`、`失败时的修订动作`。例如：`产物：更新 07 页；验收：递归边界与质量闭环均有源码引用；验证：node _digested/ref-sweep.mjs _digested/orchestration-ladder；失败：保留 pending，发送具体缺口并 reopen`。这段文字是协作约定，不会被 Team service 自动解释为质量判定。
+任务板没有独立的 `reviewed`、`evidence` 或 `approval` 字段；它只保存任务描述、状态、owner、依赖、revision 和写域等信息。因此可以把验收标准写进 `description`，把验证命令和结果写进共享报告或消息，再由 Lead 根据外部证据决定是否 `complete`。一个可执行的任务描述至少应包含：`产物`、`验收条件`、`验证命令`、`失败时的修订动作`。例如：`产物：更新 07 页；验收：递归边界与质量闭环均有源码引用；验证：node _digested/ref-sweep.mjs _digested/delegation-and-orchestration；失败：保留 pending，发送具体缺口并 reopen`。这段文字是协作约定，不会被 Team service 自动解释为质量判定。
 
 复核者发现问题后，应先把失败证据发给 Lead，再由 Lead 选择修订路径：同一 owner 继续工作适合上下文仍有用的缺口；`reopen` 后重新 claim 适合需要重新进入任务流程的情况；`reassign` 适合需要换执行者，且该动作只有 Lead 可执行；独立 reviewer 适合验证执行者没有覆盖的反例。每次状态转换都必须带最新 `expected_revision`，过期 revision 会被拒绝，不会静默覆盖他人的更新。
 
@@ -90,7 +90,7 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 ![一次 agent-teams 会话的走查](./figures/team-session-walkthrough.svg)
 
 1. **你说「开个 team，把引用复核一遍」**——部署级 opt-in 已启用（optional bundle）；当前会话的 agent 成为隐式 Lead。
-2. **Lead 派两个 auditor，都用 `fresh`**——读文件核行号不需要对话历史（`fork` 留给要继承 Lead 勘察轮次的角色，比如让一个队友评审 Lead 自己的初步结论——种子语义见 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)）。
+2. **Lead 派两个 auditor，都用 `fresh`**——读文件核行号不需要对话历史（`fork` 留给要继承 Lead 勘察轮次的角色，比如让一个队友评审 Lead 自己的初步结论——种子语义见 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)）。
 3. **建三个任务如上表**：两个 audit 无依赖并行跑，fix 汇聚等两者——顺序用 `blocked_by` 表达、写域不相交；但这是 **advisory 不是锁**（POLICY 纪律 1）。
 4. **`send_message` 各派一个 audit**——成功只代表 inbox 接纳，不代表对方已处理；用 `list_agents` 看状态，不要凭「已发送」假设完成。两个 auditor 各自按 CAS 工作流认领：list → get → claim（带当前 revision）→ perform → complete。
 5. **auditor-b 写抽查记录时撞上 `FS_STALE_VERSION`**——因为 Lead 同一时刻正在改 00-map（共享文件系统、编辑即时可见，这正是 teams 的核心假设）——按协议 read → rebase 到新内容 → retry。
@@ -101,7 +101,7 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 **你会看到什么**（Web 会话头部的 Team 动作，读 Lead Session 投影）：名册里两个 auditor 的状态行 provisioning → running → inactive（注意 `inactive` 不代表完成——状态词汇表）；任务板上两个 audit 从 pending 走到 completed、fix 从 blocked → ready → in_progress → completed；写域若有重叠会显示警告。
 
-**任意一步崩溃**：消息与任务板都在 Lead Session 的事件日志里（四个 log-only 事件 + 投影，见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）——重启后队友 resume 时收到排队的消息，任务板原样；对照外部叙事虚构的 `dsh rollback --task`：真实的恢复语义是**会话级持久**，不是任务级回滚。走查中每条规则的出处：explicit-ask/唤醒/收尾门槛在 `packages/experimental/tool-agent-team/src/index.ts:31`-`37`；CAS 与工具描述在 `:177`-`365`；fork 种子在 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)。
+**任意一步崩溃**：消息与任务板都在 Lead Session 的事件日志里（四个 log-only 事件 + 投影，见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）——重启后队友 resume 时收到排队的消息，任务板原样；对照外部叙事虚构的 `dsh rollback --task`：真实的恢复语义是**会话级持久**，不是任务级回滚。走查中每条规则的出处：explicit-ask/唤醒/收尾门槛在 `packages/experimental/tool-agent-team/src/index.ts:31`-`37`；CAS 与工具描述在 `:177`-`365`；fork 种子在 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
 ## POLICY 的协作纪律（共享文件系统是核心假设）
 
@@ -114,11 +114,11 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 ## 持久语义：跨崩溃的协调状态
 
-消息与任务状态**完全走 Lead Session 的事件日志 + 投影**，不另设存储（机制见 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）：四个 log-only 事件先 append 后 flush，flush 成功才算操作成功；协调记录不进派生模型历史。驾驶座效果：**崩溃/重启/中断后，离线队友 resume 时收到排队的消息**——"Messages and task state survive crashes, reloads, and interruptions"（`packages/experimental/agent-team/README.md:12`）。
+消息与任务状态**完全走 Lead Session 的事件日志 + 投影**，不另设存储（机制见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）：四个 log-only 事件先 append 后 flush，flush 成功才算操作成功；协调记录不进派生模型历史。驾驶座效果：**崩溃/重启/中断后，离线队友 resume 时收到排队的消息**——"Messages and task state survive crashes, reloads, and interruptions"（`packages/experimental/agent-team/README.md:12`）。
 
 ## 与阶梯的关系：什么时候选 teams
 
-对照已核验的选择语义（[`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md)）：
+对照已核验的选择语义（[`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)）：
 
 | 维度 | subagent/fork | workflow | agent-teams |
 |------|--------------|----------|-------------|
@@ -127,7 +127,7 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 | 成员生命 | 一次或可续 | run 内 | **长驻具名队友（可 offline/resume）** |
 | 与 subagent 工具 | — | 保留 spawn provider | **互斥替代**（工具行 disable；Subagent 服务保留） |
 
-一句话判据：**一次性委派用 subagent，吞吐型扇出用 workflow，需要长驻协作与共享任务板才上 teams**——而 teams 的成员创建机制就是 spawn/fork（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)），所以它买到的是协调状态，不是新的委派原语。
+一句话判据：**一次性委派用 subagent，吞吐型扇出用 workflow，需要长驻协作与共享任务板才上 teams**——而 teams 的成员创建机制就是 spawn/fork（[`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)），所以它买到的是协调状态，不是新的委派原语。
 
 ## 源码入口
 

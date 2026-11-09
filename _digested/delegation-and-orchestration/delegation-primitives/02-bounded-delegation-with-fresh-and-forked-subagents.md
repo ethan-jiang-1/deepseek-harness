@@ -1,8 +1,8 @@
-# subagent 与 subagent_fork：有界委派的隔离、继承与 continuable 控制面
+# Bounded Delegation with Fresh and Forked Subagents · 有界委派：fresh 与 fork
 
 源码核验入口：`docs/subsystems/subagent.md`、`packages/subagent/subagent/src/`（`types.ts`/`index.ts`/`manager.ts`/`activation.ts`/`child-agent.ts`/`depth.ts`）、`packages/subagent/tool-subagent/src/index.ts`、`packages/subagent/tool-subagent-control/src/`、`packages/subagent/subagent-fork-in-process/src/`、`packages/bundle/base/cordis.patch.yml`、`packages/bundle/web-app/presets/cordis.patch.yml`。
 
-本页回答：一次委派到底隔离了什么、fork 继承了什么、one-shot 与 continuable 差在哪、控制面（`send_message`/`interrupt_agent`/`list_agents`）的边界规则是什么？工具描述里的选择语义（什么时候用）见 [`02-什么时候用哪个原语-官方选择决策语义全景.md`](./02-什么时候用哪个原语-官方选择决策语义全景.md)；seam 的 provider 结构、catalog 投影与 host Queue/Steer 交付见 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/03-subagent后台与产品provider.md) 与 [`../capability-seams/05-subagent-catalog与host交付.md`](../capability-seams/05-subagent-catalog与host交付.md)，本页不重复。
+本页回答：一次委派到底隔离了什么、fork 继承了什么、one-shot 与 continuable 差在哪、控制面（`send_message`/`interrupt_agent`/`list_agents`）的边界规则是什么？工具描述里的选择语义（什么时候用）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；seam 的 provider 结构、catalog 投影与 host Queue/Steer 交付见 [`../capability-seams/03-subagent后台与产品provider.md`](../../capability-seams/03-subagent后台与产品provider.md) 与 [`../capability-seams/05-subagent-catalog与host交付.md`](../../capability-seams/05-subagent-catalog与host交付.md)，本页不重复。
 
 ## 为什么是这个形状：设计考量
 
@@ -10,7 +10,7 @@
 
 ## 一次 start 与 provider 能力
 
-seam 的角色分工、`SubagentStartRequest` 的五个能力旗标、provider 只准备创建 spec 与冷恢复不走 provider 的完整解剖归 [`../capability-seams/03`](../capability-seams/03-subagent后台与产品provider.md)；本页只记驾驶座后果：多个具名 provider 共存，缺能力旗标即 `UNSUPPORTED_CAPABILITY` 拒绝；provider 卸载阻断新 start、不撤销已接受的 run；每个 child 拿新的 flat scope。
+seam 的角色分工、`SubagentStartRequest` 的五个能力旗标、provider 只准备创建 spec 与冷恢复不走 provider 的完整解剖归 [`../capability-seams/03`](../../capability-seams/03-subagent后台与产品provider.md)；本页只记驾驶座后果：多个具名 provider 共存，缺能力旗标即 `UNSUPPORTED_CAPABILITY` 拒绝；provider 卸载阻断新 start、不撤销已接受的 run；每个 child 拿新的 flat scope。
 
 ## fork 继承什么：balanced completed-turn 前缀
 
@@ -80,7 +80,7 @@ child 的 session header 由 `childSessionMeta` 写入（`packages/subagent/suba
 
 **本地 child（continuable）**：`startActivation` 在 **inbox 接纳 initial prompt 即返回** `{childId, messageId?}`——`messageId` 只在后端有本地 inbox 时存在；不等 turn 开始、不等消息进 Session log；manager 全流程（`packages/subagent/subagent/src/manager.ts:744`-`770`）：reserve childId（重复即 `DUPLICATE_CHILD`）→ 深度解析 → snapshot continuable descriptor（**版本 3**，`packages/subagent/subagent/src/descriptor.ts:48`）→ 首个 await 前 `captureDelegatedPolicyOverrides` → `holdOwnership`（idle 父不被结算，`:650`-`670`）→ `host.prepareContinuable`（provider 只贡献 seed）→ 锁内 `materialize` → `submitMaterialized` → `establishCatalogChild` commit；任何失败回滚整个 child。**child 是 durable session**（硬依赖 sessionPersistence，缺失即 `PERSISTENCE_UNAVAILABLE`，`:1458`-`1470`）；settled 只释放 Activation 与 handle，再 `send_message` 走冷恢复。容量：`maxActiveSubagents` 默认 **8**（volatile，`packages/subagent/subagent/src/index.ts:197`），ActivationPool 槽位在"不间断 continuable 链"间共享、root 间隔离（`packages/subagent/subagent/src/activation.ts:16`）。
 
-**外部执行（one-shot 形态的后端）**：由 provider 的 `start` 承担，service 侧流程是 expectProvider → `assertCapabilities` → 深度/schema 校验 → `provider.start` → `observeRun`（`packages/subagent/subagent/src/index.ts:216`、`:269`-`300`、`:631`-`655`）；结算映射 `settleRunResult`（completed→result 文本；本地取消→`killed`；其余→`failed`，`packages/subagent/subagent/src/out-of-process.ts:123`-`185`）。这类 backend 不接受后续消息，完成通知给出最终答案，**不再经过 `jobs.start({kind: 'subagent'})`**——`tool-subagent` 已不 inject jobs，显式后台化与收尾纪律由 `job_*` 工具面承担（见 [`06`](./06-jobs与schedule-后台作业平台与定时跟进的时间平面.md)）。
+**外部执行（one-shot 形态的后端）**：由 provider 的 `start` 承担，service 侧流程是 expectProvider → `assertCapabilities` → 深度/schema 校验 → `provider.start` → `observeRun`（`packages/subagent/subagent/src/index.ts:216`、`:269`-`300`、`:631`-`655`）；结算映射 `settleRunResult`（completed→result 文本；本地取消→`killed`；其余→`failed`，`packages/subagent/subagent/src/out-of-process.ts:123`-`185`）。这类 backend 不接受后续消息，完成通知给出最终答案，**不再经过 `jobs.start({kind: 'subagent'})`**——`tool-subagent` 已不 inject jobs，显式后台化与收尾纪律由 `job_*` 工具面承担（见 [`05`](./05-background-jobs-and-wall-clock-schedules.md)）。
 
 **settle notice**（结算通知）：settled 判定 = 无 pending inbox 且无 owned children（`packages/subagent/subagent/src/manager.ts:238`-`280`）；通知仅在 activation 曾被 announce 过、且 delivery 不是 caller 时发出（`:1187`），向 durable direct parent 投递一行结算摘要（如 `Background subagent <id> finished and will do no further work unless you send it more.` + `Its closing message:` + 最后非空 assistant text；消息构造在 `packages/subagent/subagent/src/continuation-messages.ts:150-160`，测试期望见 `packages/subagent/subagent/tests/continuation.spec.ts:2905`） blocks（无则 `It left no closing message.`）；source `kind: 'subagent-settled'` / `form: 'notice'`——与 agent-message 刻意区分，「a transcript that merged them would credit the child with words it never wrote」（`packages/subagent/subagent/src/continuation-messages.ts:61`-`80`、`:138`-`160`）；投递方式随父状态：idle → queue、运行中 → steer、父自身在 teardown → `parent.inject` 不唤醒（`manager.ts:1187`-`1205`）；**通知先于所有权释放**（`finishDisposal` 顺序：releaseSlot → notifySettlement → releaseOwnership，`:1176`-`1185`）。
 
@@ -100,8 +100,8 @@ Activation 所有权图（`packages/subagent/subagent/src/activation.ts:39`-`111
 
 ## 与相邻原语的关系
 
-- **workflow 的 `agent()` 钩子就是 subagent 调用**：每次 `agent()` 经 `ctx.subagents.startActivation({ provider, delivery: 'caller', request: { parent } })` 发布 child（[`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) 归属节）；
-- **agent-teams 复用 spawn/fork provider**：成员创建直接走 subagent seam 的 spawn/fork（[`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)）；
+- **workflow 的 `agent()` 钩子就是 subagent 调用**：每次 `agent()` 经 `ctx.subagents.startActivation({ provider, delivery: 'caller', request: { parent } })` 发布 child（[`01`](./01-scripted-workflow-and-sandboxed-fan-out.md) 归属节）；
+- **agent-teams 复用 spawn/fork provider**：成员创建直接走 subagent seam 的 spawn/fork（[`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）；
 - **goal 工具对子代理可见但操作被 authority 层拒绝**：`hasDirectHumanInput` 要求 `ctx.agents.roots().includes(execution.agent)`——非 runtime root 的子代理不满足（`packages/goal/tool-goal/src/authority.ts:80`-`83`，拒绝文案「this goal operation requires a direct human turn on a top-level agent」，`:102`）；`complete`/`blocked` 另接受 exact goal-round authority（`:109`-`116`），但 **fork/resume 后 goal 一律 disarmed**（`packages/goal/tool-goal/src/index.ts:117`；`goal.spec.ts:227`-`233`：fork child 继承 goal 但 `activation: 'disarmed'`）——子代理继承的 goal 永远不会自己跑轮。三道门合起来：子代理实际无法有效操作 goal。
 
 ## 源码入口

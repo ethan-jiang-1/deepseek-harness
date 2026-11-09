@@ -17,7 +17,12 @@
 | [`runtime-profiles/`](../runtime-profiles/00-map.md) | 一次启动装入什么：五个 launcher profile 与 desktop 应用自有 profile 的组合、差异与装载路径。 | 7 | 2 | 5 | 0 |
 | [`session-and-loop/`](../session-and-loop/00-map.md) | 会话存在哪、怎么读回来：事件映射、inbox/turn 时序、换 loop 的半径、格式世代。 | 5 | 0 | 5 | 0 |
 | [`agent-loop/`](../agent-loop/00-map.md) | 一次对话怎么推进与收尾：turn/step/activity/goal 边界、goal 状态机与自动续轮。 | 5 | 0 | 5 | 0 |
-| [`orchestration-ladder/`](../orchestration-ladder/00-map.md) | 从驾驶座看工作编排原语：todo、subagent、workflow、ralph、goal、jobs、schedule、teams 的保证与组合。 | 16 | 0 | 16 | 0 |
+| [`delegation-and-orchestration/`](../delegation-and-orchestration/00-map.md) | 两条座位：驾驶座看原语机制与选择，作者座看组合、合同、终态与观测；含九条陷阱与源码入口。 | 1 | 1 | 0 | 0 |
+| [`delegation-and-orchestration/delegation-primitives/`](../delegation-and-orchestration/delegation-primitives/00-map.md) | 每个原语是什么、保证什么、隔离什么、谁推进、怎么结算。 | 7 | 1 | 6 | 0 |
+| [`delegation-and-orchestration/primitive-selection/`](../delegation-and-orchestration/primitive-selection/00-map.md) | 官方边界句、互路由、升级阶梯、没说清的部分。 | 4 | 3 | 1 | 0 |
+| [`delegation-and-orchestration/preset-composition-and-contract-placement/`](../delegation-and-orchestration/preset-composition-and-contract-placement/00-map.md) | 能力面怎么组合、怎么收窄、合同放哪、深度与通知怎么叠加。 | 7 | 7 | 0 | 0 |
+| [`delegation-and-orchestration/completion-and-observation/`](../delegation-and-orchestration/completion-and-observation/00-map.md) | 五个完成时刻、谱系、状态三分、workflow 可复现性，及后续图投影与证据分层。 | 8 | 4 | 4 | 0 |
+| [`delegation-and-orchestration/design-perspectives/`](../delegation-and-orchestration/design-perspectives/00-map.md) | 为什么是这个形状、外部叙事逐条对照、九条陷阱。 | 5 | 3 | 2 | 0 |
 | [`capability-seams/`](../capability-seams/00-map.md) | 同一能力有多个实现时怎么换而不改调用方；从 bash 到 SSH、MCP、hooks 与新执行面。 | 11 | 0 | 11 | 0 |
 | [`plugin-system/`](../plugin-system/00-map.md) | 插件系统的三个轴：有什么、怎么成树、怎么走完一生；对外暴露另见 two-tree-runtime。 | 1 | 1 | 0 | 0 |
 | [`plugin-system/composition/`](../plugin-system/composition/00-map.md) | 一份 profile 怎么叠成运行中的插件树；dump、HMR、启动窗口与首屏交接。 | 6 | 1 | 5 | 0 |
@@ -127,26 +132,67 @@
 | [`03-activity-vs-goal-boundaries`](../agent-loop/03-activity-vs-goal-boundaries.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
 | [`04-agent-runtime-identity`](../agent-loop/04-agent-runtime-identity.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
 
-### `orchestration-ladder/`
+### `delegation-and-orchestration/`
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../orchestration-ladder/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
-| [`01-workflow-模型编写的JS编排脚本与子代理扇出机制`](../orchestration-ladder/01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`02-什么时候用哪个原语-官方选择决策语义全景`](../orchestration-ladder/02-什么时候用哪个原语-官方选择决策语义全景.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面`](../orchestration-ladder/03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`04-ralph-fresh-agent循环的轮间传递与固定脚本机制`](../orchestration-ladder/04-ralph-fresh-agent循环的轮间传递与固定脚本机制.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`05-goal-驾驶座用法-objective写法轮预算与终结纪律`](../orchestration-ladder/05-goal-驾驶座用法-objective写法轮预算与终结纪律.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`06-jobs与schedule-后台作业平台与定时跟进的时间平面`](../orchestration-ladder/06-jobs与schedule-后台作业平台与定时跟进的时间平面.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律`](../orchestration-ladder/07-agent-teams-驾驶座用法-启用代价Lead工作流与协作纪律.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`08-组合模式-归属链深度预算通知通道与收尾纪律`](../orchestration-ladder/08-组合模式-归属链深度预算通知通道与收尾纪律.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相`](../orchestration-ladder/09-对照外部叙事-Captain与Kahn调度与rollback与KV看板的逐条源码真相.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`10-完成语义与崩溃窗口-接受可见静止处置`](../orchestration-ladder/10-完成语义与崩溃窗口-接受可见静止处置.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`11-图计算的本质-不变量推导与执行的三件分置`](../orchestration-ladder/11-图计算的本质-不变量推导与执行的三件分置.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`12-Session谱系与Agent实例-持久边与活体权限`](../orchestration-ladder/12-Session谱系与Agent实例-持久边与活体权限.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`13-持久事实派生投影与内存权限-状态三分法`](../orchestration-ladder/13-持久事实派生投影与内存权限-状态三分法.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`14-资源预算与公平性-深度并发总量与容量边界`](../orchestration-ladder/14-资源预算与公平性-深度并发总量与容量边界.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`15-workflow可复现性与生命周期-动态结果取消和观察记录`](../orchestration-ladder/15-workflow可复现性与生命周期-动态结果取消和观察记录.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`00-map`](../delegation-and-orchestration/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+
+### `delegation-and-orchestration/delegation-primitives/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../delegation-and-orchestration/delegation-primitives/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-scripted-workflow-and-sandboxed-fan-out`](../delegation-and-orchestration/delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`02-bounded-delegation-with-fresh-and-forked-subagents`](../delegation-and-orchestration/delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`03-fresh-agent-iteration-loop-and-round-handoff`](../delegation-and-orchestration/delegation-primitives/03-fresh-agent-iteration-loop-and-round-handoff.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`04-cross-round-goals-and-the-round-driver`](../delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`05-background-jobs-and-wall-clock-schedules`](../delegation-and-orchestration/delegation-primitives/05-background-jobs-and-wall-clock-schedules.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`06-persistent-teams-with-a-shared-task-board`](../delegation-and-orchestration/delegation-primitives/06-persistent-teams-with-a-shared-task-board.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+
+### `delegation-and-orchestration/primitive-selection/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../delegation-and-orchestration/primitive-selection/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-per-primitive-usage-sentences-from-tool-descriptions`](../delegation-and-orchestration/primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`02-cross-primitive-routing-and-the-official-upgrade-order`](../delegation-and-orchestration/primitive-selection/02-cross-primitive-routing-and-the-official-upgrade-order.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`03-unspecified-gaps-and-contradictions-in-usage-policy`](../delegation-and-orchestration/primitive-selection/03-unspecified-gaps-and-contradictions-in-usage-policy.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+
+### `delegation-and-orchestration/preset-composition-and-contract-placement/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../delegation-and-orchestration/preset-composition-and-contract-placement/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-channel-capability-differences-and-inheritance`](../delegation-and-orchestration/preset-composition-and-contract-placement/01-channel-capability-differences-and-inheritance.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`02-preset-composition-as-a-static-self-contained-model`](../delegation-and-orchestration/preset-composition-and-contract-placement/02-preset-composition-as-a-static-self-contained-model.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`03-worker-profiles-and-the-only-narrowing-lever`](../delegation-and-orchestration/preset-composition-and-contract-placement/03-worker-profiles-and-the-only-narrowing-lever.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`04-contract-placement-between-policy-and-engine`](../delegation-and-orchestration/preset-composition-and-contract-placement/04-contract-placement-between-policy-and-engine.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`05-ownership-depth-and-notification-channels`](../delegation-and-orchestration/preset-composition-and-contract-placement/05-ownership-depth-and-notification-channels.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`06-depth-concurrency-and-capacity-limits`](../delegation-and-orchestration/preset-composition-and-contract-placement/06-depth-concurrency-and-capacity-limits.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+
+### `delegation-and-orchestration/completion-and-observation/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../delegation-and-orchestration/completion-and-observation/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-acceptance-visibility-quiescence-and-disposal`](../delegation-and-orchestration/completion-and-observation/01-acceptance-visibility-quiescence-and-disposal.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`02-terminal-states-and-bounded-retry-authority`](../delegation-and-orchestration/completion-and-observation/02-terminal-states-and-bounded-retry-authority.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`03-session-lineage-and-agent-incarnation`](../delegation-and-orchestration/completion-and-observation/03-session-lineage-and-agent-incarnation.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`04-persistent-facts-derived-projections-and-live-authority`](../delegation-and-orchestration/completion-and-observation/04-persistent-facts-derived-projections-and-live-authority.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`05-delegation-graph-node-and-edge-projection`](../delegation-and-orchestration/completion-and-observation/05-delegation-graph-node-and-edge-projection.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`06-workflow-reproducibility-cancellation-and-missing-results`](../delegation-and-orchestration/completion-and-observation/06-workflow-reproducibility-cancellation-and-missing-results.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`07-evidence-layers-declaration-mount-mechanism-behaviour`](../delegation-and-orchestration/completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+
+### `delegation-and-orchestration/design-perspectives/`
+
+| 页面 | 角色 | 状态 | 最近核验 | 来源 |
+|---|---|---|---|---|
+| [`00-map`](../delegation-and-orchestration/design-perspectives/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-graph-computation-essence-invariant-derivation-and-execution`](../delegation-and-orchestration/design-perspectives/01-graph-computation-essence-invariant-derivation-and-execution.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`02-external-narratives-versus-source-truth`](../delegation-and-orchestration/design-perspectives/02-external-narratives-versus-source-truth.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`03-why-primitives-instead-of-a-central-scheduler`](../delegation-and-orchestration/design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`04-nine-traps-in-delegation-surfaces`](../delegation-and-orchestration/design-perspectives/04-nine-traps-in-delegation-surfaces.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `capability-seams/`
 

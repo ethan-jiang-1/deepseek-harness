@@ -1,8 +1,8 @@
-# goal 的驾驶座用法：objective 写法、轮预算与终结纪律
+# Cross-Round Goals and the Round Driver · 跨轮 goal 与 Round Driver
 
 源码核验入口：`packages/goal/tool-goal/src/index.ts`（工具 schema 与政策 guidance）、`packages/goal/tool-goal/src/wrapup.ts`（终结收尾指令）、`packages/goal/goal-round-driver/src/prompt.ts`（轮 prompt）、`packages/goal/goal/src/index.ts`（服务 Config）、`packages/goal/command-goal/src/index.ts`（`/goal` 命令）、`.agents/notes/implemented/feature/2026-07-16-harness-level-loop.md`（两策略决策）。
 
-本页回答：作为 goal 的使用者（驾驶座），objective 该怎么写、轮预算怎么定、complete/blocked 怎么判定、`/goal` 命令面有什么、resume 之后怎么重新武装？**机制不重复**：goal 状态机与 CAS 见 [`../agent-loop/01-goal-lifecycle.md`](../agent-loop/01-goal-lifecycle.md)，Round Driver 的自动续轮见 [`../agent-loop/02-goal-round-driver.md`](../agent-loop/02-goal-round-driver.md)，四层结束边界见 [`../agent-loop/03-activity-vs-goal-boundaries.md`](../agent-loop/03-activity-vs-goal-boundaries.md)；什么时候选 goal（而不是 subagent/workflow/ralph）见 [`02`](./02-什么时候用哪个原语-官方选择决策语义全景.md)。
+本页回答：作为 goal 的使用者（驾驶座），objective 该怎么写、轮预算怎么定、complete/blocked 怎么判定、`/goal` 命令面有什么、resume 之后怎么重新武装？**机制不重复**：goal 状态机与 CAS 见 [`../agent-loop/01-goal-lifecycle.md`](../../agent-loop/01-goal-lifecycle.md)，Round Driver 的自动续轮见 [`../agent-loop/02-goal-round-driver.md`](../../agent-loop/02-goal-round-driver.md)，四层结束边界见 [`../agent-loop/03-activity-vs-goal-boundaries.md`](../../agent-loop/03-activity-vs-goal-boundaries.md)；什么时候选 goal（而不是 subagent/workflow/ralph）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
 
 ## 为什么是这个形状：设计考量
 
@@ -75,7 +75,7 @@ Round Driver 注入的完整轮指令（`packages/goal/goal-round-driver/src/pro
 
 | action | 权限 |
 |--------|------|
-| `edit` / `pause` / `resume` | 需**直接顶层人类请求**（`requireDirectHuman`，runtime-root 检查——子代理被拒的三道门见 [`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md)） |
+| `edit` / `pause` / `resume` | 需**直接顶层人类请求**（`requireDirectHuman`，runtime-root 检查——子代理被拒的三道门见 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)） |
 | `complete` / `blocked` | 人类 turn **或** 本 goal 的自动续轮内皆可（goal-round authority） |
 
 CAS 防写冲突：`goal_id` + `revision` 必须与 `get_goal` 返回的精确匹配。**paused 的 resume 归用户**：`/goal resume`、Web 控制、或直接调 goal 服务；模型工具路径拒绝（user-owned pause，`.agents/notes/implemented/bug-fix/2026-09-03-user-owned-goal-pause-activation.md`）。
@@ -84,14 +84,14 @@ CAS 防写冲突：`goal_id` + `revision` 必须与 `get_goal` 返回的精确�
 
 ## /goal 命令面
 
-`/goal`（`packages/goal/command-goal/src/index.ts:193`-`194`，描述 "Set or view the goal for a long-running task"）的子命令解析是**整词匹配**：`clear`/`pause`/`resume`/`edit <objective>`，其余一切输入（包括 `cleanup` 这种撞前缀的词）都视为**创建**，空输入 = show（解析细节见 [`../agent-loop/01-goal-lifecycle.md`](../agent-loop/01-goal-lifecycle.md)）。UI 输出刻意不暴露 CAS 内部（`:77`-`78` "Render direct UI output without exposing compare-and-set internals"）；blocked 状态显示 `code: message` 形式的阻塞原因（`:82`）。
+`/goal`（`packages/goal/command-goal/src/index.ts:193`-`194`，描述 "Set or view the goal for a long-running task"）的子命令解析是**整词匹配**：`clear`/`pause`/`resume`/`edit <objective>`，其余一切输入（包括 `cleanup` 这种撞前缀的词）都视为**创建**，空输入 = show（解析细节见 [`../agent-loop/01-goal-lifecycle.md`](../../agent-loop/01-goal-lifecycle.md)）。UI 输出刻意不暴露 CAS 内部（`:77`-`78` "Render direct UI output without exposing compare-and-set internals"）；blocked 状态显示 `code: message` 形式的阻塞原因（`:82`）。
 
 ## goal round 里能做什么（组合触点）
 
-goal round 是一个 **goal-attributed 的普通 turn**：模型保持完整工具集——读码、subagent、workflow 照常可用（工作原语不受限），goal 工具的 authority 恰好在此时开放 `complete`/`blocked` 两个 action。组合模式全景（goal × workflow × subagent × jobs）见 [`08`](./08-组合模式-归属链深度预算通知通道与收尾纪律.md)；两个已核验的触点：
+goal round 是一个 **goal-attributed 的普通 turn**：模型保持完整工具集——读码、subagent、workflow 照常可用（工作原语不受限），goal 工具的 authority 恰好在此时开放 `complete`/`blocked` 两个 action。组合模式全景（goal × workflow × subagent × jobs）见 [`composition/05`](../preset-composition-and-contract-placement/05-ownership-depth-and-notification-channels.md)；两个已核验的触点：
 
-- goal round 里起的 workflow/subagent 归属该 agent（parent = caller，见 [`01`](./01-workflow-模型编写的JS编排脚本与子代理扇出机制.md) 归属节）——产物落进同一 session 日志，下一轮的 "inspect workspace" 指令能接着用；
-- 子代理自己不能操作 goal（[`03`](./03-subagent与subagent-fork-有界委派的隔离继承与continuable控制面.md) 的三道门）——goal 的收敛判定永远发生在顶层会话。
+- goal round 里起的 workflow/subagent 归属该 agent（parent = caller，见 [`01`](./01-scripted-workflow-and-sandboxed-fan-out.md) 归属节）——产物落进同一 session 日志，下一轮的 "inspect workspace" 指令能接着用；
+- 子代理自己不能操作 goal（[`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md) 的三道门）——goal 的收敛判定永远发生在顶层会话。
 
 ## 源码入口
 

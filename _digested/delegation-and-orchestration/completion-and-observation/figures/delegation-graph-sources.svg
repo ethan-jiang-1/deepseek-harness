@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 660" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#8c8c8c"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="38" font-size="17" font-weight="bold" fill="#262626">委派图只能从持久事实折叠出来</text>
+  <text x="40" y="60" font-size="12" fill="#8c8c8c">没有跨通道统一视图：subagents 只看 child、workflow 只看 run、team 只看名册、jobs 只看作业；图是投影，不是控制器</text>
+
+  <text x="60" y="96" font-size="12" font-weight="bold" fill="#595959">持久源（各自日志）</text>
+
+  <rect x="60" y="110" width="330" height="46" rx="7" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="76" y="130" font-size="12" font-weight="bold" fill="#0958d9">subagent/catalog（父会话）</text>
+  <text x="76" y="147" font-size="10.5" fill="#0958d9">child id、createdAt、mode、label</text>
+
+  <rect x="60" y="166" width="330" height="46" rx="7" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="76" y="186" font-size="12" font-weight="bold" fill="#0958d9">subagent/descriptor（子会话）</text>
+  <text x="76" y="203" font-size="10.5" fill="#0958d9">provider、模型、persona、历史 toolFilter</text>
+
+  <rect x="60" y="222" width="330" height="46" rx="7" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="76" y="242" font-size="12" font-weight="bold" fill="#ad4e00">tool-workflow/run-start · agent-start · agent-end · run-end</text>
+  <text x="76" y="259" font-size="10.5" fill="#ad4e00">runId、seq、label、phase、childId、outcome</text>
+
+  <rect x="60" y="278" width="330" height="46" rx="7" fill="#fce7f3" stroke="#db2777" stroke-width="1.5"/>
+  <text x="76" y="298" font-size="12" font-weight="bold" fill="#9d174d">team/member · task · message（Lead 会话）</text>
+  <text x="76" y="315" font-size="10.5" fill="#9d174d">名册、任务板、消息收发；agentTeam 投影</text>
+
+  <rect x="60" y="334" width="330" height="46" rx="7" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="76" y="354" font-size="12" font-weight="bold" fill="#237804">job/registered · job/settled（owner 会话）</text>
+  <text x="76" y="371" font-size="10.5" fill="#237804">job id、终态、producerReported；读取游标在内存</text>
+
+  <rect x="60" y="390" width="330" height="46" rx="7" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
+  <text x="76" y="410" font-size="12" font-weight="bold" fill="#434343">session header（每个会话）</text>
+  <text x="76" y="427" font-size="10.5" fill="#595959">parentSession、delegationDepth、origin、agentPreset</text>
+
+  <rect x="60" y="446" width="330" height="46" rx="7" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
+  <text x="76" y="466" font-size="12" font-weight="bold" fill="#434343">turn/end（各自会话）</text>
+  <text x="76" y="483" font-size="10.5" fill="#595959">completed / aborted / blocked / error / max-tokens / interrupted</text>
+
+  <path d="M390 133 L470 220" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
+  <path d="M390 189 L470 240" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
+  <path d="M390 245 L470 270" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
+  <path d="M390 301 L470 300" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
+  <path d="M390 357 L470 340" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
+  <path d="M390 413 L470 380" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
+  <path d="M390 469 L470 410" stroke="#8c8c8c" stroke-width="1.5" marker-end="url(#a5)"/>
+
+  <rect x="470" y="110" width="510" height="190" rx="9" fill="#ffffff" stroke="#1677ff" stroke-width="2"/>
+  <text x="490" y="136" font-size="13" font-weight="bold" fill="#0958d9">节点</text>
+  <text x="490" y="160" font-size="11" fill="#595959">id · role/preset · parentId · channel</text>
+  <text x="490" y="182" font-size="11" fill="#595959">depth · status · terminal · address · result</text>
+  <text x="490" y="210" font-size="10.5" fill="#8c8c8c">channel 来自“谁记录了这条边”，不是按工具名猜</text>
+  <text x="490" y="230" font-size="10.5" fill="#8c8c8c">depth 来自 header 的 delegationDepth（绝对量）</text>
+  <text x="490" y="250" font-size="10.5" fill="#8c8c8c">terminal 保留各通道自己的词表，不压成一个 completed/failed</text>
+  <text x="490" y="278" font-size="10.5" fill="#8c8c8c">address 是 session id / 成员名 / run id / job id 之一，不造统一 id</text>
+
+  <rect x="470" y="312" width="510" height="110" rx="9" fill="#ffffff" stroke="#fa8c16" stroke-width="2"/>
+  <text x="490" y="338" font-size="13" font-weight="bold" fill="#ad4e00">边</text>
+  <text x="490" y="362" font-size="11" fill="#595959">from · to · channel · tool · depth · result</text>
+  <text x="490" y="388" font-size="10.5" fill="#8c8c8c">同一个 child 可能同时被 catalog 与 workflow 事件提到；</text>
+  <text x="490" y="406" font-size="10.5" fill="#8c8c8c">保留较晚的持久事件，并标出来源，不静默覆盖</text>
+
+  <rect x="470" y="440" width="510" height="120" rx="9" fill="#fff1f0" stroke="#cf1322" stroke-width="1.5"/>
+  <text x="490" y="466" font-size="13" font-weight="bold" fill="#a8071a">三个缺口词，禁止互相折算</text>
+  <text x="490" y="490" font-size="11" fill="#a8071a">unavailable — 数据源不可达（external、无投影、无权限）</text>
+  <text x="490" y="512" font-size="11" fill="#a8071a">missing — 本该有记录而日志里没有</text>
+  <text x="490" y="534" font-size="11" fill="#a8071a">lost — 曾有过，重启或处置后不可恢复</text>
+  <text x="490" y="554" font-size="10.5" fill="#cf1322">都不是 failed；把缺口折成状态 = 伪造</text>
+
+  <rect x="60" y="516" width="330" height="88" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="76" y="540" font-size="12" font-weight="bold" fill="#8c8c8c">不是持久事实，别拿来画图</text>
+  <text x="76" y="562" font-size="10.5" fill="#8c8c8c">subagent/start · end（运行时总线）</text>
+  <text x="76" y="580" font-size="10.5" fill="#8c8c8c">job ring / cursor / 等待者（进程内）</text>
+  <text x="76" y="598" font-size="10.5" fill="#8c8c8c">客户端只拿到部分投影，depth/terminal 在 host</text>
+
+  <text x="40" y="640" font-size="11" fill="#8c8c8c">折叠顺序：catalog 给直接子代 → header 补 depth/origin → workflow/team/job 事件补边 → turn/end 与通知补终态。</text>
+</svg>

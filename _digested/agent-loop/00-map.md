@@ -115,7 +115,7 @@ Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/se
 | `packages/bundle/base/cordis.patch.yml` | `goal`、`goal-round-driver`、`command-goal`、`tool-goal` 都在 base bundle 的 insert 里 |
 | `_digested/session-and-loop/00-map.md` | turn/step 基础词汇和事件骨架 |
 | `_digested/session-and-loop/02-inbox-与turn-时序.md` | turn() 内部时序、claim、pre-step |
-| `_digested/orchestration-ladder/05-goal-驾驶座用法-objective写法轮预算与终结纪律.md` | goal 的驾驶座用法：objective 写法、轮预算、终结纪律、wrapup 收尾 |
+| `_digested/delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md` | goal 的驾驶座用法：objective 写法、轮预算、终结纪律、wrapup 收尾 |
 
 `packages/goal/goal/src/invariant.ts` 已随 `f028f25667`（`refactor: remove runtime invariant plugins`）删除，**无继任**：goal stream 的运行时 invariant 断言面不再存在，回放一致性由 `fold.ts` 的纯函数重放本身承担（升级路径见 `docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`）。
 

@@ -1,4 +1,4 @@
-# Session 谱系与 Agent 实例：持久边与活体权限
+# Session Lineage and Agent Incarnation · Session 谱系与 Agent 实例
 
 编排系统同时使用 Session、Agent、Activation 和 provider。它们不是同一个对象：Session 保存可重建的历史与身份，Agent 是某次运行中的驱动实例，continuable Activation 是一个 Agent 的进程内驻留期，provider 只负责特定创建或传输路径。混淆这些对象会错误理解冷恢复、权限和资源释放。
 

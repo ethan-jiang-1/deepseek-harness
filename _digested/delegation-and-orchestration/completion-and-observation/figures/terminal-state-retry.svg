@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#595959"/>
+    </marker>
+    <marker id="a4red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#cf1322"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="38" font-size="17" font-weight="bold" fill="#262626">五个终态 → 一次有界重试</text>
+  <text x="40" y="60" font-size="12" fill="#8c8c8c">引擎只把执行收敛到终态并投递通知，不重试；重试是父代理的策略：幂等、最多一次、可见、失败记 exhausted</text>
+
+  <rect x="60" y="96" width="150" height="46" rx="7" fill="#fff1f0" stroke="#cf1322" stroke-width="1.5"/>
+  <text x="135" y="118" font-size="13" font-weight="bold" fill="#a8071a" text-anchor="middle">error</text>
+  <text x="135" y="134" font-size="10" fill="#a8071a" text-anchor="middle">模型 / 传输失败</text>
+
+  <rect x="60" y="158" width="150" height="46" rx="7" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="135" y="180" font-size="13" font-weight="bold" fill="#ad4e00" text-anchor="middle">aborted</text>
+  <text x="135" y="196" font-size="10" fill="#ad4e00" text-anchor="middle">含 interrupted</text>
+
+  <rect x="60" y="220" width="150" height="46" rx="7" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
+  <text x="135" y="242" font-size="13" font-weight="bold" fill="#434343" text-anchor="middle">refusal</text>
+  <text x="135" y="258" font-size="10" fill="#595959" text-anchor="middle">拒绝任务</text>
+
+  <rect x="60" y="282" width="150" height="46" rx="7" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
+  <text x="135" y="304" font-size="13" font-weight="bold" fill="#434343" text-anchor="middle">max-tokens</text>
+  <text x="135" y="320" font-size="10" fill="#595959" text-anchor="middle">预算问题</text>
+
+  <rect x="60" y="344" width="150" height="46" rx="7" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="135" y="366" font-size="13" font-weight="bold" fill="#237804" text-anchor="middle">completed</text>
+  <text x="135" y="382" font-size="10" fill="#237804" text-anchor="middle">正常结束</text>
+
+  <path d="M210 119 L300 119" stroke="#595959" stroke-width="1.5" marker-end="url(#a4)"/>
+  <path d="M210 181 L300 181" stroke="#595959" stroke-width="1.5" marker-end="url(#a4)"/>
+  <path d="M210 243 L300 243" stroke="#595959" stroke-width="1.5" marker-end="url(#a4)"/>
+  <path d="M210 305 L300 305" stroke="#595959" stroke-width="1.5" marker-end="url(#a4)"/>
+  <path d="M210 367 L300 367" stroke="#595959" stroke-width="1.5" marker-end="url(#a4)"/>
+
+  <rect x="300" y="96" width="220" height="58" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="410" y="120" font-size="12" font-weight="bold" fill="#0958d9" text-anchor="middle">幂等任务？</text>
+  <text x="410" y="138" font-size="10.5" fill="#0958d9" text-anchor="middle">非幂等写操作先对账，不重试</text>
+
+  <rect x="300" y="166" width="220" height="46" rx="8" fill="#fff2e8" stroke="#d4380d" stroke-width="1.5"/>
+  <text x="410" y="186" font-size="12" font-weight="bold" fill="#a8071a" text-anchor="middle">不自动重试</text>
+  <text x="410" y="202" font-size="10.5" fill="#a8071a" text-anchor="middle">是取消意图；先确认 child 已停</text>
+
+  <rect x="300" y="224" width="220" height="54" rx="8" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
+  <text x="410" y="246" font-size="12" font-weight="bold" fill="#434343" text-anchor="middle">不重试</text>
+  <text x="410" y="264" font-size="10.5" fill="#595959" text-anchor="middle">拒绝是合法回答；重试只会再被拒</text>
+
+  <rect x="300" y="290" width="220" height="54" rx="8" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
+  <text x="410" y="312" font-size="12" font-weight="bold" fill="#434343" text-anchor="middle">不自动重试</text>
+  <text x="410" y="330" font-size="10.5" fill="#595959" text-anchor="middle">缩任务 / 提预算 / 换模型，交给人或父</text>
+
+  <rect x="300" y="356" width="220" height="46" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="410" y="376" font-size="12" font-weight="bold" fill="#237804" text-anchor="middle">不重试</text>
+  <text x="410" y="392" font-size="10.5" fill="#237804" text-anchor="middle">已正常结束</text>
+
+  <path d="M520 119 L600 119" stroke="#595959" stroke-width="1.5" marker-end="url(#a4)"/>
+  <text x="560" y="110" font-size="10.5" fill="#595959" text-anchor="middle">是</text>
+  <path d="M520 125 L600 152" stroke="#cf1322" stroke-width="1.5" marker-end="url(#a4red)"/>
+  <text x="566" y="150" font-size="10.5" fill="#cf1322" text-anchor="middle">否</text>
+
+  <rect x="600" y="96" width="180" height="52" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="2"/>
+  <text x="690" y="118" font-size="12" font-weight="bold" fill="#237804" text-anchor="middle">attempt 2</text>
+  <text x="690" y="136" font-size="10.5" fill="#237804" text-anchor="middle">再派一次，带可见标记</text>
+
+  <rect x="600" y="164" width="180" height="52" rx="8" fill="#fff1f0" stroke="#cf1322" stroke-width="1.5"/>
+  <text x="690" y="186" font-size="12" font-weight="bold" fill="#a8071a" text-anchor="middle">exhausted</text>
+  <text x="690" y="204" font-size="10.5" fill="#a8071a" text-anchor="middle">不启动第三次</text>
+
+  <path d="M780 122 L830 122" stroke="#595959" stroke-width="1.5" marker-end="url(#a4)"/>
+  <text x="805" y="112" font-size="10.5" fill="#595959" text-anchor="middle">成功</text>
+  <path d="M780 145 L830 190" stroke="#cf1322" stroke-width="1.5" marker-end="url(#a4red)"/>
+  <text x="812" y="186" font-size="10.5" fill="#cf1322" text-anchor="middle">仍失败</text>
+
+  <rect x="830" y="96" width="170" height="52" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="915" y="118" font-size="12" font-weight="bold" fill="#237804" text-anchor="middle">按结果继续</text>
+  <text x="915" y="136" font-size="10.5" fill="#237804" text-anchor="middle">图/通知里两次 attempt 可辨</text>
+
+  <rect x="600" y="240" width="400" height="96" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="2"/>
+  <text x="800" y="266" font-size="13" font-weight="bold" fill="#0958d9" text-anchor="middle">引擎侧的事实</text>
+  <text x="800" y="288" font-size="10.5" fill="#0958d9" text-anchor="middle">delegation 工具立即返回 child id，不 await；终态以 user/message 通知到达</text>
+  <text x="800" y="306" font-size="10.5" fill="#0958d9" text-anchor="middle">subagent / workflow / jobs 都没有自动重试</text>
+  <text x="800" y="324" font-size="10.5" fill="#0958d9" text-anchor="middle">通知投递：idle → queue，busy → steer，父 teardown → inject</text>
+
+  <rect x="60" y="428" width="940" height="150" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5"/>
+  <text x="80" y="454" font-size="13" font-weight="bold" fill="#262626">四条纪律</text>
+  <text x="80" y="480" font-size="11.5" fill="#595959">1. 一次上限：同一任务最多再派一次；仍失败记 exhausted，不启动第三次。</text>
+  <text x="80" y="504" font-size="11.5" fill="#595959">2. 幂等门：只有可重复执行的任务才重试；非幂等写操作先对账，避免双重副作用。</text>
+  <text x="80" y="528" font-size="11.5" fill="#595959">3. 可见：attempt 编号进通知/图/UI；不能把两次结果静默合成一次。</text>
+  <text x="80" y="552" font-size="11.5" fill="#595959">4. 可靠通道优先：批量、必须成功、要聚合的活走 workflow，脚本内显式处理 null 与 missing。</text>
+
+  <text x="40" y="606" font-size="11" fill="#8c8c8c">源码：subagent/src/types.ts:227-247、lifecycle.ts:134-159、manager.ts:1186-1206；workflow-ptc/src/runtime.ts:196-222。</text>
+</svg>
