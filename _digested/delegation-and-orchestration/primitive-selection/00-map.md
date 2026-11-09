@@ -4,6 +4,8 @@
 
 本组回答：**官方对「什么时候用哪个原语」给了什么明文语义；原语之间怎么互相路由；哪里没说清。** 机制在各原语页（[`../delegation-primitives/`](../delegation-primitives/00-map.md)），组合与收窄在 [`../preset-composition-and-contract-placement/`](../preset-composition-and-contract-placement/00-map.md)。
 
+> 名词不熟（seam / preset / Activation / 终态 / 能力面）：先读 [`02` 词与平面](../02-terms-and-planes.md)，有具体困惑查 [`03` 十二问](../03-newcomer-questions.md)。
+
 ## 选择不是挑工具
 
 DSH 把路由知识放在**原语自身**：工具 description 与 prompt section 携带自己的使用边界，模型读了边界自己选。没有中心选择器，也没有一层“编排策略”组件。因此：

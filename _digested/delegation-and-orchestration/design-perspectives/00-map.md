@@ -4,6 +4,8 @@
 
 本组回答：**这套编排为什么长成这个形状，外部叙事哪里说错了，以及在这套面上最常见的九个陷阱。** 它不重复机制（在 [`../delegation-primitives/`](../delegation-primitives/00-map.md)），也不给操作步骤（在 [`../preset-composition-and-contract-placement/`](../preset-composition-and-contract-placement/00-map.md)）。
 
+> 名词不熟（seam / preset / Activation / 终态 / 能力面）：先读 [`02` 词与平面](../02-terms-and-planes.md)，有具体困惑查 [`03` 十二问](../03-newcomer-questions.md)。
+
 ## 页面
 
 | 页 | 回答 |

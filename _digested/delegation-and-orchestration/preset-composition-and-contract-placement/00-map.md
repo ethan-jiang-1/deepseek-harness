@@ -4,6 +4,8 @@
 
 本组是**作者座的核心**：回答「一条委派链的能力面是怎么组合出来的、怎么收窄、规则放哪、深度与通知怎么叠加」。机制在 [`../delegation-primitives/`](../delegation-primitives/00-map.md)，终态与观测在 [`../completion-and-observation/`](../completion-and-observation/00-map.md)。
 
+> 名词不熟（seam / preset / Activation / 终态 / 能力面）：先读 [`02` 词与平面](../02-terms-and-planes.md)，有具体困惑查 [`03` 十二问](../03-newcomer-questions.md)。
+
 ## 四个问题
 
 1. **能力面从哪来？** 委派通道决定子代拿到什么组合：只有 spawn 能钉独立 preset，fork / workflow / team 从父组合克隆（[`01`](./01-channel-capability-differences-and-inheritance.md)）。

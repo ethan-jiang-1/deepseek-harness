@@ -31,6 +31,13 @@
 - 六段「待证」保持原样（`composition/01`–`04`、`observation/02`、`observation/05`），没有把待证升格成结论。
 - 页面 `status`：只把新增页与重写的组页登记为 `reverified`；其余页面沿用上一轮的状态，没有把「补了导语」写成「整页复核」。
 
+## 复核
+
+两轮只读对抗审计（独立子代理，只读、不采信既有陈述），全部发现逐条对过源码后修正：
+
+- **入门三页**：11 处。goal 的完成证据不再写「要人认可」；`blocked` 门槛改成「只在 goal 自动续轮里按 admitted 轮数机械拒绝」；goal 工具只在某一轮的模型 turn 内可用；`subagent_fork` 的模型选择由「永远不开」改成「shipped 行不开、工具支持」；5 处出处改到真正包含该事实的行。
+- **27 页新增三节**：6 处。provider 在本地委派里只贡献 seed（执行是 manager 与 external provider 的事）；`interrupt_agent` 对 local 只取消当前 turn、对 external 会整台处置；`list_agents(descendants)` 能走完整棵子树；工具 description 仅在该工具注册于作用域时可见；`blocked` 门槛只在 goal-round 授权下；`sdk-minimal` 不叠 base。`mount-shelves.svg` 里同一条判据同步改。
+
 ## 验证
 
 ```sh

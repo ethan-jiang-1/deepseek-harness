@@ -4,6 +4,8 @@
 
 本组回答：**一次委派/一次 run 结束时到底发生了什么，以及你怎么把它看见、证明、不撒谎。** 机制在 [`../delegation-primitives/`](../delegation-primitives/00-map.md)，能力面与合同在 [`../preset-composition-and-contract-placement/`](../preset-composition-and-contract-placement/00-map.md)。
 
+> 名词不熟（seam / preset / Activation / 终态 / 能力面）：先读 [`02` 词与平面](../02-terms-and-planes.md)，有具体困惑查 [`03` 十二问](../03-newcomer-questions.md)。
+
 ## 五个时刻，其中四个是机制
 
 「完成」在这套系统里至少分成四件机制上的事：**结果被接受**、**模型看得见**、**运行静止**、**资源被处置**；**业务上完成**是第五件，但它推不出来，需要人/合同判断（[`01`](./01-acceptance-visibility-quiescence-and-disposal.md)）。混用会直接导致错误报告：`completed` 不等于正确，`settled` 不等于读过，`delivered` 不等于处理。

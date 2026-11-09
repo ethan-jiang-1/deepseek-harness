@@ -4,6 +4,8 @@
 
 本组回答：**每一级原语是什么、保证什么、隔离什么、谁推进、怎么结算。** 它不回答「什么时候用哪个」（见 [`../primitive-selection/00-map.md`](../primitive-selection/00-map.md)），也不回答「怎么在你的组合上收窄能力、放合同、做观测」（见 [`../preset-composition-and-contract-placement/00-map.md`](../preset-composition-and-contract-placement/00-map.md)、[`../completion-and-observation/00-map.md`](../completion-and-observation/00-map.md)）。
 
+> 名词不熟（seam / preset / Activation / 终态 / 能力面）：先读 [`02` 词与平面](../02-terms-and-planes.md)，有具体困惑查 [`03` 十二问](../03-newcomer-questions.md)。
+
 ## 三类对象，不是一类
 
 把阶梯上的原语都当「Agent 编排」是常见误读。按**执行者**分三类：
