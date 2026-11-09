@@ -58,7 +58,7 @@
 ## 待证（不要写成已证）
 
 - `allowedAgentPresets` 打开后，模型在真实任务里的**误选率**：需要一次真模型探针（记录 `agent_preset` 参数与任务匹配度）。
-- 外部 provider（ACP / Codex / Claude Code / SDK）的能力位差异对继承与寻址的影响：本页只覆盖进程内 spawn/fork；外部后端按其 provider 合同另算。
+- 外部 provider（ACP / Codex / Claude Code / SDK）的能力位差异对继承与寻址的影响：本页只覆盖进程内 spawn/fork；核对方法是分别读 `SubagentCapabilities`（`packages/subagent/subagent/src/types.ts:123`-`129`，进程外后端由 `NO_START_CAPABILITIES` 一律置 `false`，见 `out-of-process.ts:56`-`61`）与 `SubagentProvider.inheritsParentContext`（`types.ts:323`，描述性、非 start 能力位），再用一次外部后端会话验证寻址。
 - team 成员在 `context: 'fork'` 下与 Lead 的修订关系是否与 `fresh` 完全相同：源码路径一致，但缺少真会话证据。
 
 ## 源码入口

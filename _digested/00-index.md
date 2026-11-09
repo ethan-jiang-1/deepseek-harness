@@ -47,7 +47,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `runtime-profiles/` | 运行时配置 | 五种官方启动方式（web / headless / sdk / sdk-minimal / acp）各自带哪些插件、差在哪。 |
 | `session-and-loop/` | 会话与驱动 | 对话存在哪、怎么读回来：session log 的格式、世代与投影。 |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
-| `delegation-and-orchestration/` | 委派与编排（三类读者） | **驾驶座**：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个。**作者座**：能力面怎么组合与收窄、合同放哪、深度与通知怎么叠加、终态与图怎么观测。写「会委派的插件」或组 preset 从这里进。 |
+| `delegation-and-orchestration/` | 委派与编排（三类读者，5 个子专题） | **驾驶座**：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个。**作者座**：能力面怎么组合与收窄、合同放哪、深度与通知怎么叠加、终态与图怎么观测。子专题：`delegation-primitives/`（机制）、`primitive-selection/`（选择）、`preset-composition-and-contract-placement/`（组合与合同）、`completion-and-observation/`（终态与观测）、`design-perspectives/`（判断）。写「会委派的插件」或组 preset 从这里进。 |
 | `capability-seams/` | 可替换能力 | 同一个能力（读文件、跑命令……）有多个插件实现时，怎么换实现而不改调用方——插件的竞聘位。 |
 | `plugin-system/` | 插件系统（三轴） | 插件系统的三个面：`composition/` 怎么叠成活树、`lifecycle/` 从打包到卸载的七段、`inventory/` 把现成包按组列成清单（数量以该专题为准）。动手写、要交付、或查「装了为什么没生效」都从这里进。 |
 | `experimental/` | 可选能力与原型 | 已评估但未承诺产品支持的实验能力。**实验身份与「可选交付」相互独立**：可选包收编进本组，而非 experimental 的包才需要产品用途或显式分类（`scripts/product-package-policy.ts`）。 |

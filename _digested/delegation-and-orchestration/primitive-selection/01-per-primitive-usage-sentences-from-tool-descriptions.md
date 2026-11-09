@@ -95,7 +95,7 @@ prompt section 补充路由："Use same-session goal tools for ordinary long-run
 
 ### schedule（时间平面：wall-clock 提醒）
 
-`schedule_create` 的 description 定义时序语义（"Supply exactly one timing parameter: after_seconds, at, every_seconds, daily, weekly, or cron. …"，`packages/schedule/tool-schedule/src/index.ts:185`）。组 README 给出形态边界："Due reminders arrive as ordinary follow-up messages in the original conversation, **not email, SMS, or push notifications**."（`packages/schedule/README.md:12`）。schedule 现在**直接进 Web 组合**（`packages/bundle/web-app/cordis.patch.yml:139`-`140` 的服务行与 `:398`-`399` 的 UI 行），不再走 optional bundle：`experimental/schedule-bundle` 已退役，`packages/schedule/tool-schedule` 是新增的工具包。
+`schedule_create` 的 description 定义时序语义（"Supply exactly one timing parameter: after_seconds, at, every_seconds, daily, weekly, or cron. …"，`packages/schedule/tool-schedule/src/index.ts:185`）。组 README 给出形态边界："Due reminders arrive as ordinary follow-up messages in the original conversation, **not email, SMS, or push notifications**."（`packages/schedule/README.md:12`）。schedule **直接进 Web 组合**（`packages/bundle/web-app/cordis.patch.yml:139`-`140` 的服务行与 `:398`-`399` 的 UI 行），不在 optional bundle 清单里；工具包是 `packages/schedule/tool-schedule`。
 
 ### ask_user_question（人机路由）
 

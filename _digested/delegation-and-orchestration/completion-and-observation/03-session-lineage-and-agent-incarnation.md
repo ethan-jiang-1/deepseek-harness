@@ -2,6 +2,8 @@
 
 源码核验入口：`packages/core/session/src/types.ts:95`-`132`、`packages/subagent/subagent/src/{child-agent,manager,list-children}.ts`、`packages/core/agent/src/`。
 
+本页回答：Session、Agent、Activation、provider 各是什么？冷恢复后哪些身份与边还在、权限属于谁？
+
 编排系统同时使用 Session、Agent、Activation 和 provider。它们不是同一个对象：Session 保存可重建的历史与身份，Agent 是某次运行中的驱动实例，continuable Activation 是一个 Agent 的进程内驻留期，provider 只负责特定创建或传输路径。混淆这些对象会错误理解冷恢复、权限和资源释放。
 
 ![Session 谱系与 Agent 实例](./figures/lineage-incarnation.svg)
