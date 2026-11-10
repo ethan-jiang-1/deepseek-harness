@@ -1,6 +1,6 @@
 # 运行时用户旅程 · 可执行的 DSH 开发循环，从入口点到报告的证据
 
-基线：行为从当前 checkout 读取。配置声明来自已发布的组合层（`packages/bundle/base/cordis.patch.yml` → `packages/bundle/web-app/cordis.patch.yml` → shipped preset 声明 `packages/bundle/web-app/presets/standard.patch.yml`——0.1.7 线 preset 重设计后 `packages/preset/agent-presets/` 的 yml 目录森林已退役，preset 根改为 `agent-preset` + `agent-preset-registry`），由 `apps/cli/src/profile-boot.ts` 在空 profile 根之上（`PROFILE_ROOT_CONFIG`, `apps/cli/src/profile-boot.ts:81-85`）应用。UI 可见的声明仅来自 test/snapshot golden 文件（`apps/web/tests/`）；以下内容均非来自我未读的截图推断。所有路径相对于仓库根。
+核验状态见 [核验基线登记](../00-baseline.md)。
 
 受众说明：本文与 [answer.md](./answer.md) 回答的是**不同的问题**。answer.md 从 skills、git 历史和默认行为论证 DSH 让哪种开发习惯最自然（窄证据切片闭环）。本文重构人类在要求 DSH 修改仓库时所观察的**机械可观察的运行时循环**，并区分什么是由 harness 强制的（defaults）、什么是由仓库建议的（contributor policy）、什么是仓库恰好做了的（history-based convention）。修正一节纠正 answer.md 模糊这三层界限的地方。
 

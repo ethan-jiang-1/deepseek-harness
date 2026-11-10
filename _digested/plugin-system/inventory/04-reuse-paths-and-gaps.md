@@ -45,4 +45,4 @@
 | 第三家 LLM adapter | `ctx.llm` 的稳定实现只有 llm-deepseek 与休眠的 llm-pi-ai；第三家要么写 pi-ai settings profiles，要么自写 adapter | :630；base:128-136 |
 | 语音识别后端 | 唯一实现是实验性 SenseVoice（本地 ONNX）；接云端 ASR 要自写 Provider | :697 |
 
-写之前再对照两条：[`capability-seams/00-map`](../../capability-seams/00-map.md) 的三角色分装纪律（Definition / Provider / Consumer 怎么拆包），与 [`_faq_on_digested/09`](../../../_faq_on_digested/09_plugin-business-ladder/answer.md) 的自用价值判断（哪类插件对自用 owner 最值）。
+写之前再对照两条：[`capability-seams/00-map`](../../capability-seams/00-map.md) 的三角色分装纪律（Definition / Provider / Consumer 怎么拆包），与 [`_faq_on_digested/08`](../../../_faq_on_digested/08_plugin-seam-maturity/answer.md) 的缺口信号排序（自消费 / 零 Provider / P≥2，用来判断一个缺口值不值得补）。

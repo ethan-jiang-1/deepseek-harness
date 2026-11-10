@@ -18,7 +18,7 @@
 
 ## 必须自写的判定
 
-从 [`docs/capability-seams.md`](../../docs/capability-seams.md) 里 P=1 或 P=0 的行读出白名单：`ctx.approval` / `ctx.userQuestions` / `ctx.authorization` 三个零 Provider seam（headless 部署的审批与提问、新凭据流）、`ctx.worktrees` 的自有 Provider（唯一实现与消费方同族）、browserUse / computerUse / speechToText 的非实验 Provider、第三家 LLM adapter。写之前先按 [answer.md](./answer.md) 的信号（自消费、零 Provider、P≥2）确认缺口是真的，再按 [FAQ 09](../09_plugin-business-ladder/answer.md) 的 L0–L3 阶梯确认代价值得。
+从 [`docs/capability-seams.md`](../../docs/capability-seams.md) 里 P=1 或 P=0 的行读出白名单：`ctx.approval` / `ctx.userQuestions` / `ctx.authorization` 三个零 Provider seam（headless 部署的审批与提问、新凭据流）、`ctx.worktrees` 的自有 Provider（唯一实现与消费方同族）、browserUse / computerUse / speechToText 的非实验 Provider、第三家 LLM adapter。写之前先按 [answer.md](./answer.md) 的信号（自消费、零 Provider、P≥2）确认缺口是真的，再确认代价值得——缺口清单只说明「没人做」，不说明「做了有回报」。
 
 ## 三个过去踩的坑
 

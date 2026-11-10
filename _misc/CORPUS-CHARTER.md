@@ -32,7 +32,7 @@
 
 ## 二、基线只有一个家
 
-核验基线是必要的元信息：读者要能知道「这条结论是对着哪个版本核过的」。但它**只登记一次**：语料维护清单（`catalog.json`；等价实现是一个集中维护页）的 `baseline` 字段。
+核验基线是必要的元信息：读者要能知道「这条结论是对着哪个版本核过的」。但它**只登记一次**：语料维护清单（`catalog.json`；等价实现是一个集中维护页，例如语料根下的 `00-baseline.md`）的 `baseline` 字段。
 
 - 页面不写**当前基线**（release tag / commit / 「本页基线：…」）。需要说明可信度时写「核验状态见维护清单」，或链到该页的核验记录。正文引用历史 commit 作为证据时，按 §4 标注为历史。
 - 每页的最后核验点登记在同一清单的 `verifiedAt`。它允许早于 `baseline`，但必须标为 `carried`，不得写成「与当前基线一致」。
@@ -88,7 +88,7 @@ const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(
 
 | 事实 | 家 |
 |---|---|
-| 基线、页面清单、核验状态 | 语料维护清单（`catalog.json`） |
+| 基线、页面清单、核验状态 | 语料维护清单（`catalog.json`；本语料的等价实现是 `00-baseline.md`） |
 | profile 组合、`PROFILE_TEMPLATES`、bundle 层叠 | `runtime-profiles/` |
 | 入口清单、CLI/SDK/ACP 契约、输出与退出、认证载体 | `surfaces-entrypoints/` |
 | 两棵树的运行时、client/remote 机制、Typert | `two-tree-runtime/` |

@@ -1,6 +1,6 @@
 # AGENTS.md 入口链：文件态骨架 + 会话态加载
 
-> **术 · 入口链。** 本页是实战：入口链的文件怎么写、加载机制长什么样。十维评估里「归属」维亮红、或 [`落地总纲`](./06-step-by-step-guide.md) Phase 2 开工时，来这页抄作业。文件态的设计论证归 [FAQ 04](../04_root-entry-doc-design/answer.md)，会话态机制归 [FAQ 05](../05_root-entry-doc-navigation/answer.md)；本页拥有「两种状态各怎么落到你的仓库」。
+> **术 · 入口链。** 本页是实战：入口链的文件怎么写、加载机制长什么样。十维评估里「归属」维亮红、或 [`落地总纲`](./06-step-by-step-guide.md) Phase 2 开工时，来这页抄作业。文件态的设计论证归 [FAQ 04](../04_root-entry-doc/answer.md)，会话态机制归 [FAQ 04 运行时半](../04_root-entry-doc/03-runtime-consumption.md)；本页拥有「两种状态各怎么落到你的仓库」。
 
 ## 入口文件是 agent 唯一稳定的第一印象
 

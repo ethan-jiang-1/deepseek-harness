@@ -148,4 +148,4 @@ Status: implemented
 ## 相关研究
 
 - `_faq_on_digested/06_change-landing-path/09-six-layers-and-limits.md`
-- `_faq_on_digested/04_root-entry-doc-design/answer.md`
+- `_faq_on_digested/04_root-entry-doc/answer.md`

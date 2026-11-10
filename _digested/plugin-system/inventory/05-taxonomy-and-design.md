@@ -63,4 +63,4 @@
 
 ## 与参与阶梯对齐
 
-四条出路（调配置 / patch 换 / 挂包 / 写胶水）正好是 [`_faq_on_digested/09`](../../../_faq_on_digested/09_plugin-business-ladder/answer.md) 的 L0–L3 参与阶梯：代价越低越靠前，「写新插件」在阶梯与决策树上都排最后。判断一类插件对自用 owner 值不值，用 FAQ 09 的三层价值；判断一个 seam 缺口值不值得补，用 FAQ 08 的信号强度排序；插件的 repo 组织与发布选择，用 [`_faq_on_digested/13`](../../../_faq_on_digested/13_expert-plugin-repo-organization/answer.md) 的方案 A。
+四条出路（调配置 / patch 换 / 挂包 / 写胶水）按代价从低到高排列，「写新插件」在决策树上排最后。判断一个 seam 缺口值不值得补，用 [`_faq_on_digested/08`](../../../_faq_on_digested/08_plugin-seam-maturity/answer.md) 的信号强度排序；插件的 repo 组织与发布选择，用 [`_faq_on_digested/13`](../../../_faq_on_digested/13_expert-plugin-repo-organization/answer.md) 的方案 A。

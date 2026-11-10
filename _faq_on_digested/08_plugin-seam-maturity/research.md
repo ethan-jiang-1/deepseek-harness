@@ -57,4 +57,21 @@ EchoBird（⭐3.1K）一行文案覆盖 Claude Code / Codex / Grok / DeepSeek / 
 - **跨会话持久流程是被融资的缺口**：Temporal 围绕 durable execution 先 $146M（$1.72B 估值，2025-03）再 $300M Series D（2026-02，"make agentic AI real"）。外网把"agent 下的持久流程"当作独立生意，而 DSH 的 `workflowEngine` 还是单 Provider 无持久层——缺口区的第 5 位有外部融资背书。
 - **MCP 已被中性化，审计价值反而上升**：MCP 于 2025 年末捐赠给 Linux Foundation 治理的 Agentic AI Foundation；跟踪者报 ~10k server / 97M 累计下载；Invariant Labs 实证 MCP tool-poisoning（恶意 server 描述劫持 agent 行为）。"成为最好的 MCP host"这个定位已被协议中性化稀释；真实差一点是 harness 级的来源可审计性——经 `mcp-client` 注册的 MCP 工具走 `ctx.tools`，自动落在 model-visible ⟺ logged 不变式下，等于**每一个第三方 MCP 工具免费获得审计**，这是纯客户端做不到的价值。
 
-（上述三条的源 URL 与校验方式见 [FAQ 09 research](../09_plugin-business-ladder/research.md) 的引用节与子代理源表。）
+源 URL 与校验方式（检索/复核日 2026-08-27/28；标 live-check 的链接当日返回 200；标 search 的只用于方向性事实）：
+
+- 沙箱：E2B $21M Series A（Insight Partners，2025-07，公司博客）、Daytona $24M Series A（2026-02）。
+- 持久流程：Temporal $146M（$1.72B 估值，2025-03）与 $300M Series D（2026-02）。
+- MCP：捐赠 Agentic AI Foundation（[公告](https://modelcontextprotocol.info/blog/joins-agentic-ai-foundation/)，live-check）；tool-poisoning 实证见 [Invariant Labs](https://invariantlabs.ai/blog/toxic-flow-analysis)（live-check）。
+
+## 补：目录站的成与败，以及"审计可证明性"的需求侧证据（2026-08-27 迁移存档）
+
+本节原属已删除的「自用生产力」篇，因 08 的缺口 backlog 与 09 的响应设计依赖它，迁到此处作为外部证据。
+
+- **GPT Store（反面范本）**：收益分成从未超越一个小范围美国试点（[官方 FAQ](https://help.openai.com/ru-ru/articles/9119255-monetizing-your-gpt-faq)、[社区线程](https://community.openai.com/t/what-is-the-status-with-gpt-store-revenue-share/839172/4)，primary）；2026-08 中旬起对个人用户收紧 Custom GPT（[报道](https://chatgptaihub.com/openai-ends-custom-gpts-personal-plans-plus-pro-free-users-august-2026/)，live-check）。克隆/垃圾内容刷爆目录。**结论：无分成 + 无门禁的目录 = 垃圾场。**
+- **Koishi 商店（正面范本）**：官方市场只是 npm 之上的薄目录，发布到 npm 的 `koishi-plugin-*` 约 3 天自动同步（[官方论坛](https://forum.koishi.xyz/t/topic/12557/4)，primary）——**注册表即市场、目录不碰支付**；npm 最新 v4.18.11、月下载 ~21.4k（窗口 2026-08-13..2026-09-11，[registry API](https://registry.npmjs.org/koishi)），2026-09-16 live-check。
+- **Dify**：官方 Marketplace 走精选目录 + Git 镜像仓库（[aliyun/dify-plugins](https://github.com/aliyun/dify-plugins)，primary）——开源 agent 框架的一致收敛形态是"免费精选目录"。
+- **平台商店货币化在退潮**：Chrome Web Store 移除内置支付、只剩 $5 开发者费（[官方废弃文档](https://developer.chrome.com/docs/webstore/cws-payments-deprecation)，primary）；Open VSX 以第三方注册表身份赢得用户群，但因审查轻出现恶意包（[Eclipse 博客](https://blogs.eclipse.org/post/thomas-froment/cant-download-vsix-vs-code-use-openvsx)）。**结论：目录赚不到钱也守不住信任；信任只能靠可核对的来源 + 机器检查。**
+- **法定义务侧（primary）**：EU AI Act Art. 12 要求高风险系统技术上允许自动记录事件，Art. 19 要求 ≥6 个月日志留存，Arts. 11/18 要求技术文档留存 10 年（[Art.12 镜像](https://artificialintelligenceact.eu/article/12/)）；GPAI 义务 2025-08-02 生效、一般适用 2026-08-02，高风险义务经 Digital Omnibus 推迟向 2027-12（[时程说明](https://onvlaw.ro/ai-act-delayed/)，search，未逐字复核正文）。 **日志/留存是法定义务不是卖点话术。**
+- **需求侧（vendor 口径）**：Gartner 预测到 2027 年底前 >40% 的 agentic AI 项目将被取消，原因是 agent 经济学与风险控制不足（[官方预测](https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027)，2026-08 复核时 403，仅保留 search 来源）。
+- **"从聊天里批 agent"已是现货**：NanoClaw + Vercel 跨 15 个消息应用做策略设置与审批对话（[VentureBeat](https://venturebeat.com/orchestration/should-my-enterprise-ai-agent-do-that-nanoclaw-and-vercel-launch-easier-agentic-policy-setting-and-approval-dialogs-across-15-messaging-apps)，secondary）；n8n 的 human-in-the-loop（[官方文档](https://docs.n8n.io/build/integrate-ai/ai-examples/human-in-the-loop-for-tools)）、Temporal 的 durable Signal 审批（[AI cookbook](https://docs.temporal.io/ai-cookbook/human-in-the-loop-python)）；Claude Code 的权限提示 webhook 诉求（[#29827](https://github.com/anthropics/claude-code/issues/29827)，primary）2026-04-30 以 not planned 关闭。**现货里没人做的是"成对的 ask/decide 审计事件 + fail-closed + 整请求可重建"——差异化在账本，不在聊天窗口。**
+- **观测/追踪已是拥挤品类（备料，不进主线）**：LangSmith、Langfuse、Helicone、Braintrust、Phoenix、W&B Weave、AgentOps 均在 2026 年的 LLM/agent 可观测性对比清单内（secondary 综述）；DeepInspect 的定位语是 "Replaying What an Agent Did and Authorizing What It May Do"。这批厂商的买家是开发团队与合规部门，不是自用 owner 的赛场。

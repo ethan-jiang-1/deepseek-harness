@@ -146,4 +146,4 @@
 | profile 内持久 | `dsh plugin --profile <p> add file:./packages/expert-pack` | 验证真实安装形状；日常体验 Web |
 | 正式分发 | `dsh plugin --profile <p> add <npm-name>` / `github:<owner>/<repo>` | 用户视角；CI 测兼容矩阵 |
 
-**拔法**：会话不挂 preset（最轻）→ patch 里 `disabled: true`（行还在）→ 卸载（registrations are effects，无残留）。（`disabled` 是正式机制：Loader 在每次 mount 决策时求值它，shipped `bundle/base` 自己就在用；FAQ 12 记录过个别 client 行不生效的未解观察，异常时先用 `--dump-config` 对照实际组合再下结论。）
+**拔法**：会话不挂 preset（最轻）→ patch 里 `disabled: true`（行还在）→ 卸载（registrations are effects，无残留）。（`disabled` 是正式机制：Loader 在每次 mount 决策时求值它，shipped `bundle/base` 自己就在用。**未解观察**：`~/.dsh/profiles/web/cordis.patch.yml` 里 `better-sidebar` 与 `ui-skill-explorer` 的 `disabled: true` 曾不生效——host 侧路由仍在、client 仍在 roster，而 `agent-teams`、`auto-continue` 的禁用行为在两个实例间还不一致；原因未查。异常时先用 `--dump-config` 对照实际组合再下结论，不要假定「写了 `disabled` 就一定拔掉」。）

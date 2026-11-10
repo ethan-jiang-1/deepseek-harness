@@ -17,7 +17,7 @@
 
 本文只回答内容与结构要求，不回答「Agent Note 应该放在哪个目录」——目录名与位置是可替换的（DSH 放在 `.agents/notes/`，外部插件仓通常放在仓库根部的 `notes/`），`{生命周期}/{类型}/yyyy-mm-dd-topic-title.md` 这条路径语法才是要求本身。
 
-源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`。下文引用的规则文件、门禁脚本与 skill 全部位于本仓库根目录（`.agents/`、`docs/`、`scripts/`），行号以该工作树为准。本文不引用仓库外的任何目录。
+核验状态见 [核验基线登记](../00-baseline.md)。
 
 ## 入口
 

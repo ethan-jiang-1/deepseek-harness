@@ -1,6 +1,6 @@
 # Answer · 窄证据切片闭环：DSH 最自然的开发习惯，以及"轻松"从哪来
 
-基线：制度与文档以 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）复核（写作时为 checkout `08b582ea02`）；git 量化取自 `upstream/master` tip `0a53fb55be`（0.1.2-alpha.2）最近 100 个 PR landing merge，本次未重算。三路调查的原始材料见 [research.md](./research.md)。
+核验状态见 [核验基线登记](../00-baseline.md)。
 
 ## 结论先行
 

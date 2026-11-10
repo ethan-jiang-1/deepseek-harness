@@ -126,7 +126,7 @@ DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 age
 
 **自包含**：整套目录可以单独拿走用。指向 DSH 仓库的引用全部是 GitHub 绝对 URL（指向 `master`，不带版本号）——任何人、任何机器都能点开核对，不需要 clone 这个仓库；目录间互链只在 `_faq_on_digested` 家族内部。抄走这套 FAQ 的人，唯一断不了的依赖就是公网。
 
-**按状态读（静态/动态轴）**：这条轴本身由 [`静与动`](./04-static-vs-dynamic.md) 拥有（四层分界 + 三条切换纪律）。偏静态的章——归属、正确路径、入口链文件态、Skills 仓库面；偏动态的章——静与动、运行时查询、披露管线、入口链会话态、Skills 模型可见面。根入口文档的静态设计细节归 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)，运行时消费归 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)。
+**按状态读（静态/动态轴）**：这条轴本身由 [`静与动`](./04-static-vs-dynamic.md) 拥有（四层分界 + 三条切换纪律）。偏静态的章——归属、正确路径、入口链文件态、Skills 仓库面；偏动态的章——静与动、运行时查询、披露管线、入口链会话态、Skills 模型可见面。根入口文档的静态设计细节归 [`04_root-entry-doc`](../04_root-entry-doc/answer.md)，运行时消费归 [`04_root-entry-doc` 的运行时半](../04_root-entry-doc/03-runtime-consumption.md)。
 
 ## 继续阅读（按文件号索引，含段位与一句话定位）
 

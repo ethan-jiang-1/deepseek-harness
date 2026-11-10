@@ -97,7 +97,7 @@ profile→bundle 组装：acp=[base,acp-app]、web=[base,web-app]、headless=[ba
 | minimal（3） | **persona 轴**（`complete: true`＋`includeRuntimeContext: false`）＋**shell 轴**（持久 PTY bash/pwsh 替代一次性工具）＋只读 fs 面 |
 | cordis（4） | **creator 轴**：＋`cordis_inspect_*`、`plugin_manager`/`plugin_market` 工具、creator skills 目录（customSkillDirs 指向 dsh-agent-preset/skills） |
 
-四模式逐行实差的机制解剖在 [`_faq_on_digested/16`](../../../_faq_on_digested/16_preset-modes-specialty/answer.md)。
+四模式逐行实差的机制解剖在 [`_faq_on_digested/03`](../../../_faq_on_digested/03_preset-modes-specialty/answer.md)。
 
 ## 3.5 skills 清单（19 个）
 

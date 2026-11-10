@@ -91,12 +91,12 @@ Issue 与 GitHub review 不在 git tree 里，这个例子不能证明 Plan Mode
 - [`09-six-layers-and-limits.md`](./09-six-layers-and-limits.md)：六层规格、不能推出的结论与历史样本
 - [`research.md`](./research.md)
 
-## 后见（FAQ 15 复核与本目录更名）
+## 后见：边界与本目录更名
 
-本篇九段是 **DSH 仓库自身**从意图到交付可用的载体地图，不是插件作者必须走的九道门。[FAQ 15](../15_loop-engineering-vs-sdd/answer.md)进一步区分 DSH 产品能力、这个仓库的贡献制度和独立插件仓的工作安排。Plan Mode 可选且只提供指导；owner 有意选取的 20 个较大会话未进入 Plan Mode，而曾用 `ask_user_question` 呈批，不能据此推断全部会话或把人审等同于某个模式。
+本篇九段是 **DSH 仓库自身**从意图到交付可用的载体地图，不是插件作者必须走的九道门。区分 DSH 产品能力、这个仓库的贡献制度和独立插件仓的工作安排，见 [FAQ 07](../07_borrowing-dsh-harness-idea/answer.md) 的迁移视角。Plan Mode 可选且只提供指导；owner 有意选取的 20 个较大会话未进入 Plan Mode，而曾用 `ask_user_question` 呈批，不能据此推断全部会话或把人审等同于某个模式。
 
 Agent Note 的 proposed/implemented 路径记录决策生命周期，却不保证跨 feature 的任务顺序和在途状态可见。DSH Note 树不建集中 `INDEX.md` 的仓内规则，不能推广为插件仓不准建立 ROADMAP、tasks 或规格；反过来，一张队列也不能替代人对目标范围和交付质量的判断。需求先写在 OpenSpec/Spec Kit 的产物里，再由 DSH agent 循环执行和验证，也是兼容的组合；哪一步必须审阅由本项目的风险与授权决定。
 
-另：本目录原名 `06_spec-change-path`，题名与正文曾以 "SPEC 路径" 作统一框架词；按 FAQ 11 的因果反转与 FAQ 15 的两层之分，已更名为 `06_change-landing-path` 并改用「变更落位/载体」框架，本目录不再保留旧框架的叙述，当前口径以本页与 [09](./09-six-layers-and-limits.md) 为准。
+另：本目录原名 `06_spec-change-path`，题名与正文曾以 "SPEC 路径" 作统一框架词；按 FAQ 11 的因果反转与「产品能力 / 仓内纪律 / 插件仓流程」的两层之分，已更名为 `06_change-landing-path` 并改用「变更落位/载体」框架，本目录不再保留旧框架的叙述，当前口径以本页与 [09](./09-six-layers-and-limits.md) 为准。
 
 > **「落位」「面」是本篇的说法。** 对应机制是 `one home per fact`（事实的 home）与按 artifact 划分（Issue / Agent Note / docs / tests），repo 没有这两个名词。

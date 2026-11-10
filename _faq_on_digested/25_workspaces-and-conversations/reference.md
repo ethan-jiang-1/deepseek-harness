@@ -1,6 +1,6 @@
 # Reference 25 · 出处、口径与不确定处
 
-源码核验基线：`dsh-v0.2.1-rc.3`（`1f81c047fc48fa190a683e469daa699857e9afe8`）。行号按该 commit 的树；仓库若前移，以符号名（函数/字段名）为准。
+核验状态见 [核验基线登记](../00-baseline.md)。
 
 ## 一、结论与证据
 
@@ -131,5 +131,5 @@ console.log({ total, sub, noCwd })
 - 包合同与失败模式：[`packages/workspace/workspace/README.md`](../../packages/workspace/workspace/README.md)
 - Host/Client 控制面：[`packages/api/workspace-controller/README.md`](../../packages/api/workspace-controller/README.md)
 - 会话日志布局：[`packages/session/session-persistence-jsonl/README.md`](../../packages/session/session-persistence-jsonl/README.md)
-- 数据平面归属（workspace / home / session）：[FAQ 24 的 05 篇](../24_plugin-publish-and-agent-data-planes/05-data-planes.md)
+- 数据平面归属（workspace / home / session）：[FAQ 24 的 05 篇](../24_publish-and-release/05-data-planes.md)
 - `$DSH_HOME` 与发布形态：[FAQ 23](../23_standalone-vs-web-release-forms/answer.md)

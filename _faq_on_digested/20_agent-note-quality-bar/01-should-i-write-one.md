@@ -120,4 +120,4 @@
 
 ---
 
-*源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）；门槛相关的规则原文见 [`.agents/notes/README.md`](../../.agents/notes/README.md)。*
+核验状态见 [核验基线登记](../00-baseline.md)。

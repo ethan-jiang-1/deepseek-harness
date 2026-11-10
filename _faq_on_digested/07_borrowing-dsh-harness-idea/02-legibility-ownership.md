@@ -1,6 +1,6 @@
 # 一个事实一个 owner：知识的家
 
-> **道 · 归属。** 本页拥有「一个事实一个 owner」的完整逻辑：为什么需要归属、DSH 怎么应对、怎么落地。DSH 侧设计细节归 [`04_root-entry-doc-design`](../04_root-entry-doc-design/answer.md)，运行时消费见 [`05_root-entry-doc-navigation`](../05_root-entry-doc-navigation/answer.md)。
+> **道 · 归属。** 本页拥有「一个事实一个 owner」的完整逻辑：为什么需要归属、DSH 怎么应对、怎么落地。DSH 侧设计细节归 [`04_root-entry-doc`](../04_root-entry-doc/answer.md)，运行时消费见 [`04_root-entry-doc` 的运行时半](../04_root-entry-doc/03-runtime-consumption.md)。
 
 ## 为什么要有这道
 

@@ -8,7 +8,7 @@
 - 行号按下面的基线测量。**规则文件如果被改过，行号会漂，路径不会**——所以先看路径，再用行号定位。
 - 标「实测」的条目是我在本仓库跑命令数出来的，不是规则原文；仓库每天都在长，这类数字最先过期。
 
-> **源码核验基线：** DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）。本页行号按该基线逐条重核过；规则文件被上游改过之后行号会漂，路径不会。
+核验状态见 [核验基线登记](../00-baseline.md)。
 
 ## 一、规则原文的 owner 文件
 
@@ -99,10 +99,10 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 
 | 数字 | 怎么得到的 |
 |---|---|
-| 活跃 343 篇 = `proposed` 42 + `implemented` 293 + `rejected` 8；归档 924 篇 | 数 `.agents/notes/` 下各生命周期目录的 Note（**不含** `.zh.md` 与 `.i18n.yaml`，也**不含目录自身的 `AGENTS.md`/`CLAUDE.md`/`README.md`**——后三者是导航与指令文件，不是 Note；`implemented` 的 293 可由六类分项 177+40+34+11+18+13 交叉验证），基线 `dsh-v0.2.1-rc.2`（`687f282e86`），2026-10-18 |
-| implemented 各类型：architecture 177 / feature 40 / process 34 / bug-fix 11 / testing 18 / simplification 13 | 同上，按类型子目录分别计数 |
-| 6 篇 implemented 仍带 `## Risks` | 全树 grep `^## Risks`，逐篇确认其在 `implemented/` 下 |
-| 7 篇活跃 Note 使用 grandfather 注释（另有 8 篇在归档树） | 全树 grep `agent-note-format: alternatives-not-recorded` |
+| 活跃 692 篇 = `proposed` 84 + `implemented` 592 + `rejected` 16；归档 1848 篇 | 数 `.agents/notes/` 下各生命周期目录的 Note（**不含** `.zh.md` 与 `.i18n.yaml`，也**不含目录自身的 `AGENTS.md`/`CLAUDE.md`/`README.md`**——后三者是导航与指令文件，不是 Note；`implemented` 的 592 可由六类分项 360+80+22+68+36+26 交叉验证，两数必须相等），2026-11-10 实测 |
+| implemented 各类型：architecture 360 / feature 80 / process 68 / testing 36 / simplification 26 / bug-fix 22 | 同上，按类型子目录分别计数；**`simplification` 是后来新增的第六类**，早期读数的六类分项不含它 |
+| 8 篇 implemented 仍带 `## Risks` | 全树 grep `^## Risks`，逐篇确认其在 `implemented/` 下 |
+| 16 篇活跃 Note 使用 grandfather 注释（另有 16 篇在归档树） | 全树 grep `agent-note-format: alternatives-not-recorded` |
 | 跨生命周期的改名全部以 `rejected/` 为目标（`proposed/` → `rejected/`），没有一处反向 | `git log --diff-filter=R --name-status -- .agents/notes` |
 | 2026-09-18 之后一个月：新增 Note ≈ 110，非合并提交 ≈ 914 | Note 按文件名日期计，提交按 `--no-merges` 计；重命名与合并会同时抬高两侧，只用于给量级感，不做逐年比较 |
 
@@ -130,4 +130,4 @@ skill 只追加**判断的语义部分**，不重复门禁能机械检查的东�
 
 ---
 
-*源码核验基线：DeepSeek Harness `dsh-v0.2.1-rc.2`，commit `687f282e8625c6b8d11ff58211a90524be2e4317`（0011 同步轮复核）；本文引用的规则文件与门禁脚本在这一轮里有多处改动（行号已按新基线重核），数量类事实也会随仓库变化。*
+核验状态见 [核验基线登记](../00-baseline.md)。
