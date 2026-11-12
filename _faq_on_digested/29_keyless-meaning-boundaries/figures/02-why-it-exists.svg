@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="1020" height="620" fill="#fafafa" rx="6"/>
+  <text x="510" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">两个要求能同时满足，三个不能</text>
+  <text x="510" y="57" text-anchor="middle" font-size="11.5" fill="#6b7280">证据要真 × 人人都能跑 × 结果要稳 —— 直接做只能拿两个。keyless 把「跑一遍」切开，让每一半归到条件最好的一方。</text>
+
+  <!-- 上半：两种选择 -->
+  <text x="42" y="92" font-size="13" font-weight="700" fill="#374151">直接做的两种选择，各丢一个</text>
+
+  <!-- 左 -->
+  <rect x="42" y="106" width="452" height="140" rx="9" fill="#fff1f0" stroke="#d4380d" stroke-width="1.6"/>
+  <text x="268" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#a8071a">只用真 API</text>
+  <rect x="62" y="142" width="136" height="30" rx="5" fill="#f6ffed" stroke="#52c41a"/>
+  <text x="130" y="162" text-anchor="middle" font-size="11" fill="#38761c">✓ 证据真</text>
+  <rect x="210" y="142" width="136" height="30" rx="5" fill="#fff1f0" stroke="#d4380d" stroke-width="1.4"/>
+  <text x="278" y="162" text-anchor="middle" font-size="11" font-weight="700" fill="#a8071a">✗ 人能跑</text>
+  <rect x="358" y="142" width="114" height="30" rx="5" fill="#f6ffed" stroke="#52c41a"/>
+  <text x="415" y="162" text-anchor="middle" font-size="11" fill="#38761c">✓ 结果稳</text>
+  <text x="62" y="196" font-size="11.5" fill="#7c2d12">最干净，政策也偏向它（"do not ration real-API tests"）。</text>
+  <text x="62" y="216" font-size="11.5" font-weight="700" fill="#9a3412">但它是富人的方案：fork PR、机器人、外部贡献者都没有 key。</text>
+  <text x="62" y="236" font-size="11" fill="#9a3412">对他们的代码，这套证据等于不存在。</text>
+
+  <!-- 右 -->
+  <rect x="526" y="106" width="452" height="140" rx="9" fill="#fff1f0" stroke="#d4380d" stroke-width="1.6"/>
+  <text x="752" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#a8071a">只用 mock（手搭管道）</text>
+  <rect x="546" y="142" width="136" height="30" rx="5" fill="#fff1f0" stroke="#d4380d" stroke-width="1.4"/>
+  <text x="614" y="162" text-anchor="middle" font-size="11" font-weight="700" fill="#a8071a">✗ 证据真</text>
+  <rect x="694" y="142" width="136" height="30" rx="5" fill="#f6ffed" stroke="#52c41a"/>
+  <text x="762" y="162" text-anchor="middle" font-size="11" fill="#38761c">✓ 人能跑</text>
+  <rect x="842" y="142" width="114" height="30" rx="5" fill="#f6ffed" stroke="#52c41a"/>
+  <text x="899" y="162" text-anchor="middle" font-size="11" fill="#38761c">✓ 结果稳</text>
+  <text x="546" y="196" font-size="11.5" fill="#7c2d12">假管道自己不会出错，</text>
+  <text x="546" y="216" font-size="11.5" font-weight="700" fill="#9a3412">所以它永远不会告诉你真管道错了。</text>
+  <text x="546" y="236" font-size="11" fill="#9a3412">真实事故：178 测全绿 · 覆盖 100% · 功能全崩（postmortem 0001）</text>
+
+  <!-- 中间 -->
+  <text x="510" y="278" text-anchor="middle" font-size="13.5" font-weight="700" fill="#7c2d12">两个要求能同时满足，三个不能 —— 所以要切开</text>
+  <path d="M510 288 L510 310" stroke="#7c2d12" stroke-width="2"/>
+  <path d="M502 302 L510 312 L518 302" fill="none" stroke="#7c2d12" stroke-width="2"/>
+
+  <!-- 下半 -->
+  <rect x="42" y="322" width="410" height="176" rx="9" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.8"/>
+  <text x="247" y="348" text-anchor="middle" font-size="13.5" font-weight="700" fill="#531dab">record · 花 key · 只发生一次</text>
+  <text x="62" y="374" font-size="11.5" fill="#3b0764">真模型上场，真流程跑一遍并录下结果。</text>
+  <text x="62" y="398" font-size="11.5" font-weight="700" fill="#531dab">拿到 ✓ 证据要真（确实跑过）</text>
+  <text x="62" y="420" font-size="11" fill="#6b21a8">代价：只有持 key 的人做，做一次就够了</text>
+  <rect x="62" y="436" width="370" height="24" rx="4" fill="#722ed1"/>
+  <text x="247" y="453" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">test:snapshot:record</text>
+  <text x="62" y="484" font-size="10.5" fill="#9a3412">注意：这一步不叫 keyless</text>
+
+  <!-- 箭头 -->
+  <path d="M462 410 L528 410" stroke="#722ed1" stroke-width="2.5"/>
+  <path d="M518 401 L532 410 L518 419" fill="none" stroke="#722ed1" stroke-width="2.5"/>
+  <text x="495" y="396" text-anchor="middle" font-size="10.5" font-weight="700" fill="#531dab">提交进仓</text>
+  <text x="495" y="432" text-anchor="middle" font-size="10" fill="#6b21a8">snapshots/</text>
+
+  <rect x="542" y="322" width="436" height="176" rx="9" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.8"/>
+  <text x="760" y="348" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1d4ed8">replay · 不花 key · 发生 N 次</text>
+  <text x="562" y="374" font-size="11.5" fill="#1e3a8a">同一 profile、同一套真插件、同样落盘。</text>
+  <text x="562" y="394" font-size="11.5" fill="#1e3a8a">只有模型流换成录像。</text>
+  <text x="562" y="418" font-size="11.5" font-weight="700" fill="#1d4ed8">拿到 ✓ 人能跑（每个 PR 都行）</text>
+  <text x="562" y="438" font-size="11.5" font-weight="700" fill="#1d4ed8">拿到 ✓ 结果稳（模型流是死的）</text>
+  <rect x="562" y="452" width="396" height="24" rx="4" fill="#1677ff"/>
+  <text x="760" y="469" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">test:snapshot（默认档）</text>
+
+  <!-- 结论 -->
+  <rect x="42" y="512" width="936" height="52" rx="9" fill="#f6ffed" stroke="#52c41a" stroke-width="1.6"/>
+  <text x="510" y="534" text-anchor="middle" font-size="13.5" font-weight="700" fill="#38761c">结果：三个要求同时满足</text>
+  <text x="510" y="555" text-anchor="middle" font-size="11.5" fill="#166534">真模型的证据一次，无 key 的验证无限次。它不是省钱工具，是把确定性的部分切下来、把判断的部分留给真调。</text>
+
+  <!-- 警告 -->
+  <rect x="42" y="574" width="936" height="32" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="510" y="595" text-anchor="middle" font-size="11.5" font-weight="700" fill="#ad6800">但它不回答：智能体能不能干活 · 新 prompt 好不好 · 模型升级后准不准 —— 这三件必须真调</text>
+</svg>

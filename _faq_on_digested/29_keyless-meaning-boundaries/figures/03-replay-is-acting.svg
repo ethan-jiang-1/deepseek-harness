@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 680" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="1020" height="680" fill="#fafafa" rx="6"/>
+  <text x="510" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">replay 是「重演一遍」，不是「看一遍」</text>
+  <text x="510" y="57" text-anchor="middle" font-size="11.5" fill="#6b7280">最容易犯的误读。它必须跑 —— 用今天的代码，把同一件事重新执行一次。</text>
+
+  <!-- 上：旁观 vs 重演 -->
+  <rect x="42" y="82" width="452" height="160" rx="9" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="7 4"/>
+  <text x="268" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#6b7280">✗ 旁观：看日志</text>
+  <rect x="62" y="124" width="412" height="30" rx="5" fill="#fff" stroke="#9ca3af"/>
+  <text x="268" y="144" text-anchor="middle" font-size="11" fill="#6b7280">日志文件 → 眼睛读 → 得出印象</text>
+  <text x="62" y="178" font-size="11.5" fill="#6b7280">读的是<tspan font-weight="700">旧代码</tspan>跑出的<tspan font-weight="700">旧日志</tspan>。</text>
+  <text x="62" y="198" font-size="11.5" font-weight="700" fill="#4b5563">你今天改的那一行，日志里根本不存在。</text>
+  <text x="62" y="224" font-size="11" fill="#9ca3af">→ 不产生新证据，发现不了本次改动的影响</text>
+
+  <rect x="526" y="82" width="452" height="160" rx="9" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.8"/>
+  <text x="752" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">✓ 重演：跑一遍</text>
+  <rect x="546" y="124" width="412" height="30" rx="5" fill="#fff" stroke="#1677ff"/>
+  <text x="752" y="144" text-anchor="middle" font-size="11" fill="#1d4ed8">真代码 → 真跑 → 新日志 → 比对存档</text>
+  <text x="546" y="178" font-size="11.5" fill="#1e3a8a">用<tspan font-weight="700">今天的代码</tspan>按同样剧本再演一遍。</text>
+  <text x="546" y="198" font-size="11.5" font-weight="700" fill="#1e40af">任何改动都会体现在新日志里，逃不掉。</text>
+  <text x="546" y="224" font-size="11" fill="#4b5563">→ 产生新证据，这才是测试</text>
+
+  <!-- 中：跑的是什么 -->
+  <rect x="42" y="256" width="936" height="96" rx="9" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.6"/>
+  <text x="62" y="280" font-size="12.5" font-weight="700" fill="#531dab">replay 真的会跑这些东西（只有一处不跑）</text>
+  <text x="62" y="304" font-size="11.5" fill="#3b0764">✅ 真插件树、真 Loader　　✅ 真 shell、真沙箱　　✅ 真的往磁盘写 session log　　✅ 真走工具注册表与派发</text>
+  <text x="62" y="326" font-size="11.5" font-weight="700" fill="#a8071a">❌ 唯一不做的：那一次模型网络请求 —— 这一段由 fixture 提供</text>
+  <text x="62" y="344" font-size="11" fill="#6b21a8">所以它的性质是「执行」：跑完一次，磁盘上真的多出东西。</text>
+
+  <!-- 下：三样东西 -->
+  <text x="42" y="380" font-size="13" font-weight="700" fill="#374151">三样东西别混：产物 → 存档的产物 → 动作</text>
+
+  <rect x="42" y="394" width="286" height="128" rx="9" fill="#fff" stroke="#722ed1" stroke-width="1.6"/>
+  <text x="185" y="418" text-anchor="middle" font-size="13" font-weight="700" fill="#531dab">session log</text>
+  <text x="185" y="438" text-anchor="middle" font-size="10.5" fill="#6b21a8">跑完之后留下的记录</text>
+  <text x="185" y="460" text-anchor="middle" font-size="11" fill="#3b0764">模型收到什么、说了什么、</text>
+  <text x="185" y="477" text-anchor="middle" font-size="11" fill="#3b0764">每个工具调了什么、结果如何</text>
+  <rect x="60" y="490" width="250" height="22" rx="4" fill="#f9f0ff" stroke="#722ed1"/>
+  <text x="185" y="505" text-anchor="middle" font-size="10.5" font-weight="700" fill="#531dab">角色：产物</text>
+
+  <rect x="366" y="394" width="286" height="128" rx="9" fill="#f6ffed" stroke="#52c41a" stroke-width="1.8"/>
+  <text x="509" y="418" text-anchor="middle" font-size="13" font-weight="700" fill="#38761c">snapshot</text>
+  <text x="509" y="438" text-anchor="middle" font-size="10.5" fill="#4d7c0f">被选定、去噪、提交进仓的那份日志</text>
+  <text x="509" y="460" text-anchor="middle" font-size="11" fill="#166534">多做的三件事：去噪规范化、</text>
+  <text x="509" y="477" text-anchor="middle" font-size="11" fill="#166534">拆出模型流、进 git</text>
+  <rect x="384" y="490" width="250" height="22" rx="4" fill="#52c41a"/>
+  <text x="509" y="505" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">它仍然「就是日志」</text>
+
+  <rect x="690" y="394" width="288" height="128" rx="9" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.8"/>
+  <text x="834" y="418" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">replay</text>
+  <text x="834" y="438" text-anchor="middle" font-size="10.5" fill="#1e40af">拿 snapshot 当剧本重跑的动作</text>
+  <text x="834" y="460" text-anchor="middle" font-size="11" fill="#1e3a8a">真 profile、真插件、真落盘，</text>
+  <text x="834" y="477" text-anchor="middle" font-size="11" fill="#1e3a8a">只有模型流按剧本念</text>
+  <rect x="708" y="490" width="250" height="22" rx="4" fill="#1677ff"/>
+  <text x="833" y="505" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">角色：动作</text>
+
+  <path d="M330 458 L362 458" stroke="#9ca3af" stroke-width="2"/>
+  <path d="M352 451 L364 458 L352 465" fill="none" stroke="#9ca3af" stroke-width="2"/>
+  <path d="M654 458 L686 458" stroke="#9ca3af" stroke-width="2"/>
+  <path d="M676 451 L688 458 L676 465" fill="none" stroke="#9ca3af" stroke-width="2"/>
+
+  <!-- 关键纠正 -->
+  <rect x="42" y="540" width="936" height="70" rx="9" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.8"/>
+  <text x="62" y="564" font-size="12.5" font-weight="700" fill="#ad6800">所以「日志不够，才要 snapshot」是反的</text>
+  <text x="62" y="586" font-size="11.5" fill="#7c2d12">snapshot <tspan font-weight="700">就是</tspan>日志。恰恰相反 —— 因为日志本来就够，这套机制才立得起来。</text>
+  <text x="62" y="604" font-size="11.5" font-weight="700" fill="#9a3412">「模型可见 ⟺ 已记录」：日志重建不出来的部分，回放也救不了。</text>
+
+  <!-- 收尾 -->
+  <rect x="42" y="622" width="936" height="44" rx="9" fill="#f6ffed" stroke="#52c41a" stroke-width="1.6"/>
+  <text x="510" y="641" text-anchor="middle" font-size="12" font-weight="700" fill="#38761c">模型那句台词是录的，戏是真演的，演员也是今天的。</text>
+  <text x="510" y="659" text-anchor="middle" font-size="11" fill="#166534">这就是为什么 replay 值得跑 —— 不是为了回顾，是为了用今天的实现重演同一剧本，看结果变没变。</text>
+</svg>

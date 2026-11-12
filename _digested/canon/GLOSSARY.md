@@ -28,6 +28,12 @@
 | `slot` | **原文**「`ctx.slots.register({ name, children?, store?, inject? }, Component)` for a parent-owned extension position」（[client AGENTS](../../packages/client/AGENTS.md)） | UI 上的命名插槽 | 「组件位置」「容器」 |
 | `waterfall` | **原文**「Waterfall listeners MUST call `next()` to delegate; returning without it short-circuits the chain」（[AGENTS](../../AGENTS.md)） | 事件委托链 | 「钩子链」 |
 
+## 证据与验证
+
+| 词 | DSH 怎么说 | 它指什么 | 不要写成 |
+|---|---|---|---|
+| `keyless` | **原文**「The test-support group gives repository tests deterministic, keyless ways to exercise the real product」（[test-support](../../packages/test-support/README.md)）；「Replay is the keyless default」（[vitest.snapshot.config.ts](../../vitest.snapshot.config.ts)）；「A no-key test proves plumbing; only a with-key run proves the agent works against a real model」（[testing](../../docs/testing.md)） | 不发生真实 provider 调用的取证方式。`replay` 与 `refresh` 都 keyless，只有 `record` 是 live API；允许用哨兵假 key 让适配器启动起来 | 「mock」「离线测试」「无 key 测试」——它不 mock 产品，跑的是真插件真 profile，只有模型流是回放的；也不能写成「等价于真 API」，它与 with-key 是**成对**关系 |
+
 ## 时间与状态
 
 | 词 | DSH 怎么说 | 它指什么 | 不要写成 |

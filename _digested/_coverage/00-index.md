@@ -31,7 +31,7 @@
 | [`experimental/`](../experimental/00-map.md) | 已评估但未承诺产品支持的实验能力：Python 子进程、Agent Teams、Inspector。 | 4 | 0 | 4 | 0 |
 | [`tools-prompt-llm/`](../tools-prompt-llm/00-map.md) | 模型每一步看见什么：工具清单、系统提示词、历史投影与内容块。 | 7 | 0 | 7 | 0 |
 | [`surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md) | 人/程序从哪里进：CLI、headless、Web、ACP、SDK、桌面，以及它们复用的 runtime spine。 | 4 | 2 | 2 | 0 |
-| [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：七层证据、快照机制、CI 门禁、可靠性、插件作者测试面与快照对外面。 | 12 | 0 | 12 | 0 |
+| [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：七层证据、快照机制、CI 门禁、可靠性、插件作者测试面与快照对外面。 | 13 | 1 | 12 | 0 |
 | [`harness-idea/`](../harness-idea/00-map.md) | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。 | 10 | 0 | 10 | 0 |
 | [`canon/`](../canon/00-map.md) | 宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。 | 7 | 0 | 0 | 7 |
 
@@ -306,6 +306,7 @@
 | [`09-plugin-testing-playbook`](../test-strategy/09-plugin-testing-playbook.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
 | [`10-plugin-testing-checklist`](../test-strategy/10-plugin-testing-checklist.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
 | [`11-snapshot-external-face`](../test-strategy/11-snapshot-external-face.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`12-probe-作为取证动作`](../test-strategy/12-probe-作为取证动作.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 
 ### `harness-idea/`
 

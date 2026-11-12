@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 600" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="980" height="600" fill="#fafafa" rx="6"/>
+  <text x="490" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">probe 的三种产物：分叉、判断、事实</text>
+  <text x="490" y="54" text-anchor="middle" font-size="11" fill="#6b7280">同一个动作（问一句「现在到底能不能 / 变没变 / 从哪来」），三种用途，三种产物。没有一种直接生产测试资产。</text>
+
+  <!-- 三条泳道 -->
+  <!-- 1. 探前提 -->
+  <rect x="30" y="78" width="300" height="330" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
+  <text x="180" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">① 探前提</text>
+  <text x="180" y="124" text-anchor="middle" font-size="11" fill="#1d4ed8">跑在产品启动/分派路径上</text>
+
+  <rect x="50" y="140" width="260" height="46" rx="6" fill="#fff" stroke="#1677ff"/>
+  <text x="62" y="159" font-weight="700" fill="#1e3a8a">登录 shell 探针</text>
+  <text x="62" y="176" fill="#4b5563" font-size="11">spawn &lt;shell&gt; -ilc，读 env -0</text>
+
+  <rect x="50" y="196" width="260" height="46" rx="6" fill="#fff" stroke="#1677ff"/>
+  <text x="62" y="215" font-weight="700" fill="#1e3a8a">containment 探活</text>
+  <text x="62" y="232" fill="#4b5563" font-size="11">probeLinuxNative / probeWindowsJob</text>
+
+  <rect x="50" y="252" width="260" height="46" rx="6" fill="#fff" stroke="#1677ff"/>
+  <text x="62" y="271" font-weight="700" fill="#1e3a8a">revision 探测</text>
+  <text x="62" y="288" fill="#4b5563" font-size="11">fileRevision(stat)，判 memo 命中</text>
+
+  <path d="M180 306 L180 330" stroke="#1677ff" stroke-width="2"/>
+  <path d="M172 322 L180 332 L188 322" fill="none" stroke="#1677ff" stroke-width="2"/>
+
+  <rect x="50" y="336" width="260" height="52" rx="6" fill="#1677ff"/>
+  <text x="180" y="357" text-anchor="middle" font-weight="700" fill="#fff">产物：一条分支</text>
+  <text x="180" y="375" text-anchor="middle" fill="#dbeafe" font-size="11">灌环境 / 换降级 / 命中或重读</text>
+
+  <!-- 2. 探失败 -->
+  <rect x="340" y="78" width="300" height="330" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
+  <text x="490" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#38761c">② 探失败</text>
+  <text x="490" y="124" text-anchor="middle" font-size="11" fill="#38761c">跑在测试/门禁里</text>
+
+  <rect x="360" y="140" width="260" height="46" rx="6" fill="#fff" stroke="#52c41a"/>
+  <text x="372" y="159" font-weight="700" fill="#14532d">keyword probe</text>
+  <text x="372" y="176" fill="#4b5563" font-size="11">只读 agent 自己的输出 → 可作弊</text>
+
+  <rect x="360" y="196" width="260" height="46" rx="6" fill="#fff" stroke="#52c41a"/>
+  <text x="372" y="215" font-weight="700" fill="#14532d">host 能力探</text>
+  <text x="372" y="232" fill="#4b5563" font-size="11">hasPwsh / sandbox probe → 决定 skip</text>
+
+  <rect x="360" y="252" width="260" height="46" rx="6" fill="#fff" stroke="#52c41a"/>
+  <text x="372" y="271" font-weight="700" fill="#14532d">覆盖率豁免探</text>
+  <text x="372" y="288" fill="#4b5563" font-size="11">probe 与用例同一判据，才不错配豁免</text>
+
+  <path d="M490 306 L490 330" stroke="#52c41a" stroke-width="2"/>
+  <path d="M482 322 L490 332 L498 322" fill="none" stroke="#52c41a" stroke-width="2"/>
+
+  <rect x="360" y="336" width="260" height="52" rx="6" fill="#52c41a"/>
+  <text x="490" y="357" text-anchor="middle" font-weight="700" fill="#fff">产物：一个判断</text>
+  <text x="490" y="375" text-anchor="middle" fill="#ecfdf5" font-size="11">红 / 绿 / 这条用例该跳过</text>
+
+  <!-- 3. 探历史 -->
+  <rect x="650" y="78" width="300" height="330" rx="8" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
+  <text x="800" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#531dab">③ 探历史</text>
+  <text x="800" y="124" text-anchor="middle" font-size="11" fill="#531dab">只读，不改状态</text>
+
+  <rect x="670" y="140" width="260" height="46" rx="6" fill="#fff" stroke="#722ed1"/>
+  <text x="682" y="159" font-weight="700" fill="#3b0764">traceSession</text>
+  <text x="682" y="176" fill="#4b5563" font-size="11">parentSession 祖先链 + 递归子树</text>
+
+  <rect x="670" y="196" width="260" height="46" rx="6" fill="#fff" stroke="#722ed1"/>
+  <text x="682" y="215" font-weight="700" fill="#3b0764">traceEvent</text>
+  <text x="682" y="232" fill="#4b5563" font-size="11">replacedBy 链 / sourceEventSeqs</text>
+
+  <rect x="670" y="252" width="260" height="46" rx="6" fill="#fff" stroke="#722ed1"/>
+  <text x="682" y="271" font-weight="700" fill="#3b0764">ctx.otel</text>
+  <text x="682" y="288" fill="#4b5563" font-size="11">OTLP logs 出口，非 traces</text>
+
+  <path d="M800 306 L800 330" stroke="#722ed1" stroke-width="2"/>
+  <path d="M792 322 L800 332 L808 322" fill="none" stroke="#722ed1" stroke-width="2"/>
+
+  <rect x="670" y="336" width="260" height="52" rx="6" fill="#722ed1"/>
+  <text x="800" y="357" text-anchor="middle" font-weight="700" fill="#fff">产物：一个事实</text>
+  <text x="800" y="375" text-anchor="middle" fill="#ede9fe" font-size="11">回答「来路」，不回答「对错」</text>
+
+  <!-- 底部判据带 -->
+  <rect x="30" y="432" width="920" height="74" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
+  <text x="490" y="458" text-anchor="middle" font-size="14" font-weight="700" fill="#ad6800">分界线：探针不生产测试资产，它生产分叉、判断或事实</text>
+  <text x="490" y="480" text-anchor="middle" font-size="11.5" fill="#7c2d12">快照、夹具、断言是被「人看到信号之后决定保留」的；probe 自己只把那句话问出来。</text>
+  <text x="490" y="497" text-anchor="middle" font-size="11.5" fill="#7c2d12">所以 probe 的归属看产物去向，不看它长在哪：分叉归产品代码，判断归测试，事实归观测面。</text>
+
+  <!-- 易混三个词 -->
+  <rect x="30" y="520" width="920" height="60" rx="8" fill="#f3f4f6" stroke="#9ca3af"/>
+  <text x="490" y="542" text-anchor="middle" font-size="12" font-weight="700" fill="#374151">三个词不要混</text>
+  <text x="490" y="563" text-anchor="middle" font-size="11.5" fill="#4b5563">probe = 问「能不能 / 变没变」（探活、探测）　·　trace = 问「从哪来」（session log 血缘追溯）　·　span = 分布式调用跨度，DSH 没有</text>
+</svg>

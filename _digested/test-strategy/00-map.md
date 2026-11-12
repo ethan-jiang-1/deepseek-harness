@@ -31,7 +31,7 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 | CI 门禁编排 | `scripts/run-gates.ts` 18 个聚合模式；PR 必需 job 9 个 + 1 个观察性 |
 | 插件面 | 101 个包以 named export 导出 `inject`、57 个 client `ui-*` 包、612 个 `.client.spec`——插件作者的测试策略见 [08-10](./08-plugin-testing.md) |
 
-## 结构（11 篇机制参考）
+## 结构（12 篇机制参考）
 
 | 问题 | 阅读入口 |
 |---|---|
@@ -46,6 +46,7 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 | 真实插件的测试组合长什么样（实战解剖） | [`09-plugin-testing-playbook.md`](./09-plugin-testing-playbook.md) |
 | 一个插件 PR 的最小证据集与 CI 行为（检查单） | [`10-plugin-testing-checklist.md`](./10-plugin-testing-checklist.md) |
 | 快照机制对插件仓暴露了什么（发布包、夹具双接受、接线语义、git 卫生、postmortem 校准） | [`11-snapshot-external-face.md`](./11-snapshot-external-face.md) |
+| `probe` 是什么、产出分叉/判断/事实、该归哪个专题、与 `trace`/`span` 怎么分 | [`12-probe-作为取证动作.md`](./12-probe-作为取证动作.md) |
 
 ## 阅读路径
 
