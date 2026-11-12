@@ -37,7 +37,7 @@
 ## 它由三部分组成
 
 | 组件 | 做什么 | 花 key 吗 |
-|---|---|---|
+| --- | --- | --- |
 | **record** | 真调模型跑一次，录下结果 | 花，但只需要一次 |
 | **snapshot** | 那份录制去噪后提交进仓库 | 不花 |
 | **replay** | 拿 snapshot 当剧本，用当前代码重跑并比对 | 不花 |
@@ -48,7 +48,7 @@
 
 ## 值不值得这样绕
 
-值得，因为绕过去的那一步很贵，而绕开之后**证据的强度几乎没损失**——前提是你理解它损失了什么（见 [04 边界](./04-boundaries.md)）。
+值得，因为绕过去的那一步很贵，而绕开之后**证据的强度几乎没损失**——前提是你理解它损失了什么（见 [04](./04-boundaries.md#边界它证明什么不证明什么)）。
 
 具体收益：一份 `record` 的投入，换来的是**每一个提交 PR 的人都跑得起来**的完整流程测试。这个交换在开源协作下几乎是压倒性的，因为大部分人根本拿不到 key。
 
@@ -57,7 +57,7 @@
 `keyless` 不是某一个包，是一组协作的包与配置：
 
 | 位置 | 作用 |
-|---|---|
+| --- | --- |
 | `packages/test-support/session-snapshot/` | snapshot 套件工厂：场景表、夹具校验、规范化、四个 profile 适配器 |
 | `packages/test-support/llm-replay/` | 回放插件：挂上去顶替真 LLM adapter，从 fixture 读流喂给 agent |
 | `packages/test-support/loader-smoke/` | 真 Loader 冒烟：无模型地跑真子进程路径 |
@@ -65,14 +65,14 @@
 | `snapshots/{session,sdk,acp,web}/` | 那批录制资产本身 |
 | `vitest.snapshot.config.ts` | 三档 `DSH_SNAPSHOT` 环境的入口 |
 
-`llm-mock-server` 和 `llm-replay` 常被一起提，但它们做的是相反的事：前者**伪造**模型的故障行为（测重试、超时），后者**重放**模型的真实回答（测正常流程）。
+后四个包都落在 keyless 判据内（都不调真模型），但证据强度不同：只有 replay 回放的内容是模型**真的说过的**。四者的区分与强度见 [04 三、mock 也可以是 keyless](./04-boundaries.md#三mock-也可以是-keyless但它不是-replay)。
 
 ## 它不做什么
 
 - **不录制**——`record` 属于流程，`replay` 只消费产物。"this plugin does not record"（`llm-replay` README）
 - **不修复**——遇到不合规的 fixture 直接拒绝，绝不修补后继续
 - **不改写日志**——回放期间 runtime 照常写**完整**日志；被压缩的只是**输入** fixture
-- **不等于无凭据**——环境里可以有假 key（见 [04](./04-boundaries.md)）
+- **不等于无凭据**——环境里可以有假 key（见 [04 一](./04-boundaries.md#一假-key-也可以是-keyless)）
 
 ## 下一步
 

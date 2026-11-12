@@ -36,7 +36,7 @@
 | 25 Workspace | `dsh-v0.2.1-rc.3`（`1f81c047`） | carried | 含 2026-10-27 本机 `$DSH_HOME` 静态读数 |
 | 27 运行时编排 | `dsh-v0.2.1-rc.2` | carried | 五岔口与诊断表未变 |
 | 28 探针是什么 | `dsh-v0.2.1-rc.5` | reverified | 不变量与事件（`request/header` / `system/message`）按 rc.5 核；外仓 `probes/` 读数为 2026-11-10 本机静态清点 |
-| 29 keyless 的含义与边界 | `dsh-v0.2.1-rc.5` | reverified | 六篇结构（00 导览 + 01–05 正文）；判据、三档语义、四种形态与两处哨兵假 key 按 rc.5 核；postmortem 0001 读数引该篇原文；无计数类结论 |
+| 29 keyless 的含义与边界 | `dsh-v0.2.1-rc.5` | reverified | 七篇结构（00 导览 + 01–05 正文 + answer 结论页）；判据、三档语义（含 refresh 写会话 fixture）、五类测试证据、两处哨兵假 key、与四类不调真模型的测试包均落在判据内的结论按 rc.5 核；postmortem 0001 读数引该篇原文；无计数类结论 |
 
 ## 版本号能写在哪
 
