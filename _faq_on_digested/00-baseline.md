@@ -35,6 +35,7 @@
 | 24 发布与交付 | `dsh-v0.2.1-rc.3`（`1f81c047`） | carried | 包合同与六轴；`release/` 的 T 级实验日期见该目录 |
 | 25 Workspace | `dsh-v0.2.1-rc.3`（`1f81c047`） | carried | 含 2026-10-27 本机 `$DSH_HOME` 静态读数 |
 | 27 运行时编排 | `dsh-v0.2.1-rc.2` | carried | 五岔口与诊断表未变 |
+| 28 探针是什么 | `dsh-v0.2.1-rc.5` | reverified | 不变量与事件（`request/header` / `system/message`）按 rc.5 核；外仓 `probes/` 读数为 2026-11-10 本机静态清点 |
 
 ## 版本号能写在哪
 

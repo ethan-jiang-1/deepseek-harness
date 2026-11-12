@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>探针在证据层里的位置：它填的三个空洞，与撑住它的三条不变量</title>
+  <desc>左列是四层证据各连什么、缺什么：单测连假世界、确定性高但只证明预想的路由；覆盖率证明行跑过但不证明按发布形态工作；真 API e2e 连真模型但不确定、要 key；录制会话快照有基线可 diff 但只覆盖录下的路径。中列是探针及其填的三个空洞：还不知道期望值是什么、被断言的是装配之后的产物、要找的是缺席而不是不相等。右列是撑住这三件事的三条不变量：model-visible 与 logged 等价让请求侧可重建、日志可解析且有版本让黑盒可观测、确定性来自固定输入而非固定输出。底部是毕业路径：探针跑一次读出事实，人写成判据，判据加固定夹具成为断言，配上基线成为快照；以及三档退出码 0 通过、1 发现、2 环境未就绪的分工。</desc>
+  <defs>
+    <marker id="pb-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#0f766e"/>
+    </marker>
+    <marker id="pb-b" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#b45309"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="800" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">探针：证据层里的位置与撑住它的三条不变量</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">它不发名词，它是工作法 —— 产品树里没有这个机制，孔洞由「日志是合同」打开</text>
+
+  <!-- Column headers -->
+  <text x="40" y="92" font-size="12" font-weight="700" fill="#334155">四层证据：各连什么、缺什么</text>
+  <text x="440" y="92" font-size="12" font-weight="700" fill="#0f766e">探针：填的三个空洞</text>
+  <text x="820" y="92" font-size="12" font-weight="700" fill="#92400e">撑住它的三条不变量</text>
+
+  <!-- Left column -->
+  <rect x="40" y="104" width="360" height="66" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="58" y="126" font-size="12" font-weight="700" fill="#334155">单测</text>
+  <text x="58" y="145" font-size="11" fill="#64748b">连假世界 · 确定性高 · 断言精确</text>
+  <text x="58" y="162" font-size="11" fill="#b91c1c">缺：只证明预想的路由，不证明发布形态能工作</text>
+
+  <rect x="40" y="180" width="360" height="66" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="58" y="202" font-size="12" font-weight="700" fill="#334155">覆盖率门禁</text>
+  <text x="58" y="221" font-size="11" fill="#64748b">证明「这行跑过」</text>
+  <text x="58" y="238" font-size="11" fill="#b91c1c">缺：100% 绿、产品完全不能用的事故真实发生过</text>
+
+  <rect x="40" y="256" width="360" height="66" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="58" y="278" font-size="12" font-weight="700" fill="#334155">真 API e2e</text>
+  <text x="58" y="297" font-size="11" fill="#64748b">连真模型 · 看世界不看措辞</text>
+  <text x="58" y="314" font-size="11" fill="#b91c1c">缺：要 key、烧配额、结果不可复现</text>
+
+  <rect x="40" y="332" width="360" height="66" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="58" y="354" font-size="12" font-weight="700" fill="#334155">录制会话快照</text>
+  <text x="58" y="373" font-size="11" fill="#64748b">真进程 + 回放模型 · 有基线可 diff</text>
+  <text x="58" y="390" font-size="11" fill="#b91c1c">缺：只覆盖录下来的那条路径</text>
+
+  <!-- Center column: probe -->
+  <rect x="440" y="104" width="340" height="294" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
+  <text x="610" y="130" text-anchor="middle" font-size="14" font-weight="700" fill="#0f766e">探针 probe</text>
+  <text x="610" y="150" text-anchor="middle" font-size="11" fill="#134e4a">一次性 · 驱动真组合 · 产出事实 · 不承诺稳定</text>
+
+  <rect x="458" y="164" width="304" height="66" rx="8" fill="#ffffff" stroke="#99f6e4"/>
+  <text x="474" y="185" font-size="11" font-weight="700" fill="#0f766e">空洞① 期望值还不知道</text>
+  <text x="474" y="203" font-size="11" fill="#334155">写断言 = 先猜答案再验答案</text>
+  <text x="474" y="220" font-size="11" fill="#334155">探针只做前半步：跑一遍，把事实摊开</text>
+
+  <rect x="458" y="238" width="304" height="66" rx="8" fill="#ffffff" stroke="#99f6e4"/>
+  <text x="474" y="259" font-size="11" font-weight="700" fill="#0f766e">空洞② 装配之后无断言点</text>
+  <text x="474" y="277" font-size="11" fill="#334155">拼好的 system prompt、汇总的工具集合</text>
+  <text x="474" y="294" font-size="11" fill="#334155">不是任何函数的返回值，是装配的产物</text>
+
+  <rect x="458" y="312" width="304" height="66" rx="8" fill="#ffffff" stroke="#99f6e4"/>
+  <text x="474" y="333" font-size="11" font-weight="700" fill="#0f766e">空洞③ bug 是「缺席」不是「不相等」</text>
+  <text x="474" y="351" font-size="11" fill="#334155">段落没注入、工具没进清单、横幅没出现</text>
+  <text x="474" y="368" font-size="11" fill="#334155">为无穷多种缺席写期望，写不完</text>
+
+  <line x1="404" y1="250" x2="434" y2="250" stroke="#0f766e" stroke-width="2" marker-end="url(#pb-a)"/>
+  <line x1="786" y1="250" x2="814" y2="250" stroke="#b45309" stroke-width="2" marker-end="url(#pb-b)"/>
+
+  <!-- Right column: invariants -->
+  <rect x="820" y="104" width="340" height="90" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="838" y="126" font-size="12" font-weight="700" fill="#92400e">① model-visible ⟺ logged</text>
+  <text x="838" y="145" font-size="11" fill="#334155">任何到达模型请求的东西都能从会话日志重建</text>
+  <text x="838" y="163" font-size="11" fill="#334155">⇒「模型收到了什么」是可复核的事实，不是猜</text>
+  <text x="838" y="182" font-size="11" fill="#92400e">没有它 ⇒ 探针退化成「模型说它看到了」</text>
+
+  <rect x="820" y="204" width="340" height="108" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="838" y="226" font-size="12" font-weight="700" fill="#92400e">② 日志可解析、有版本</text>
+  <text x="838" y="245" font-size="11" fill="#334155">request/header —— envelope + 组装后的工具 schema</text>
+  <text x="838" y="263" font-size="11" fill="#334155">system/message —— 渲染后的 system prompt（不在 header）</text>
+  <text x="838" y="281" font-size="11" fill="#334155">⇒ 黑盒可观测，产品不需要为探针开接口</text>
+  <text x="838" y="300" font-size="11" fill="#92400e">两个地方、两种事件 —— 混着读必然读出假结论</text>
+
+  <rect x="820" y="322" width="340" height="76" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="838" y="344" font-size="12" font-weight="700" fill="#92400e">③ 确定性来自固定输入</text>
+  <text x="838" y="363" font-size="11" fill="#334155">dsh-llm-replay 用录好的模型流替掉真 adapter</text>
+  <text x="838" y="381" font-size="11" fill="#334155">⇒ 真装配 + 假模型 + 可复跑</text>
+
+  <line x1="40" y1="424" x2="1160" y2="424" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- Graduation path -->
+  <text x="40" y="452" font-size="12" font-weight="700" fill="#334155">毕业路径：探针读到的事实如何变成不再叫探针的东西</text>
+
+  <rect x="40" y="468" width="212" height="70" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="146" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">① 探针跑一次</text>
+  <text x="146" y="512" text-anchor="middle" font-size="11" fill="#64748b">产出事实：字节数、在场/缺席</text>
+  <text x="146" y="528" text-anchor="middle" font-size="11" fill="#64748b">无基线，第一次是发现</text>
+
+  <rect x="272" y="468" width="212" height="70" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="378" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">② 人写成判据</text>
+  <text x="378" y="512" text-anchor="middle" font-size="11" fill="#64748b">「这段应当在、约占 N 字节」</text>
+  <text x="378" y="528" text-anchor="middle" font-size="11" fill="#64748b">判据会错，要带校准日期</text>
+
+  <rect x="504" y="468" width="212" height="70" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="610" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">③ 判据 + 固定夹具</text>
+  <text x="610" y="512" text-anchor="middle" font-size="11" fill="#64748b">= 一条断言</text>
+  <text x="610" y="528" text-anchor="middle" font-size="11" fill="#64748b">同一份夹具两次跑应当一致</text>
+
+  <rect x="736" y="468" width="212" height="70" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="842" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">④ 配上基线</text>
+  <text x="842" y="512" text-anchor="middle" font-size="11" fill="#64748b">快照 / 渲染期望</text>
+  <text x="842" y="528" text-anchor="middle" font-size="11" fill="#64748b">漂了由 diff 说话</text>
+
+  <rect x="968" y="468" width="192" height="70" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="1064" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">⑤ 毕业</text>
+  <text x="1064" y="512" text-anchor="middle" font-size="11" fill="#166534">不再是探针</text>
+  <text x="1064" y="528" text-anchor="middle" font-size="11" fill="#334155">别再让它游荡</text>
+
+  <line x1="252" y1="503" x2="268" y2="503" stroke="#94a3b8" stroke-width="2" marker-end="url(#pb-a)"/>
+  <line x1="484" y1="503" x2="500" y2="503" stroke="#94a3b8" stroke-width="2" marker-end="url(#pb-a)"/>
+  <line x1="716" y1="503" x2="732" y2="503" stroke="#94a3b8" stroke-width="2" marker-end="url(#pb-a)"/>
+  <line x1="948" y1="503" x2="964" y2="503" stroke="#16a34a" stroke-width="2" marker-end="url(#pb-a)"/>
+
+  <!-- Exit codes -->
+  <rect x="40" y="560" width="1120" height="92" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="60" y="584" font-size="12" font-weight="700" fill="#334155">退出码是给机器的合同，不是给人的提示 —— 三档对应三种不同的动作</text>
+  <rect x="60" y="596" width="352" height="42" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="76" y="616" font-size="11" font-weight="700" fill="#166534">0 = 判据成立</text>
+  <text x="76" y="632" font-size="11" fill="#334155">agent 继续</text>
+  <rect x="424" y="596" width="352" height="42" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="440" y="616" font-size="11" font-weight="700" fill="#991b1b">1 = 判据不成立（这是发现）</text>
+  <text x="440" y="632" font-size="11" fill="#334155">停下、报告、按判据处置</text>
+  <rect x="788" y="596" width="352" height="42" rx="6" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="804" y="616" font-size="11" font-weight="700" fill="#92400e">2 = 环境未就绪（BLOCKED）</text>
+  <text x="804" y="632" font-size="11" fill="#334155">换环境重试，不当作失败</text>
+
+  <line x1="40" y1="670" x2="1160" y2="670" stroke="#cbd5e1" stroke-width="1"/>
+
+  <!-- Bottom line -->
+  <text x="40" y="696" font-size="11" fill="#64748b">探针不能替代的四件事：回归防线（没基线就没有 diff）、CI 信号（要浏览器 / key，永不 keyless）、正确性判决（它给事实，判断在人）、模型自主选择（回放里的回复是录制的）。</text>
+  <text x="40" y="720" font-size="11" fill="#64748b">探针唯一的严格性：同一份夹具 + 同一份判据 ⇒ 同一个结论。守住它，探针比任何自报都可信；守不住，它就是一个会撒谎的仪表。</text>
+
+  <rect x="40" y="736" width="1120" height="46" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="60" y="758" font-size="12" font-weight="700" fill="#991b1b">探针价值的三个因子：事实可信度 × 判据清晰度 × 它自己会不会撒谎 —— 任一项为 0，产出就是 0，而且看上去和满分没有区别。</text>
+  <text x="60" y="775" font-size="11" fill="#334155">三种静默失效：行 id 写错（不报错，真实 adapter 照答）、裸脚本塞进 file（整行不 activate）、工具使用藏住常驻状态（证明的是工具不是提示词）。</text>
+</svg>

@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 780" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>一根会话日志，四个探针接口：读哪里、回来什么、为什么可信</title>
+  <desc>图的上半是一条真实会话日志的时间轴，从左到右是 turn/start、step/start、system/message、user/message、request/header、assistant/message、tool/call、tool/result、step/end、turn/end。四个探针接口用不同颜色的引线指向它的不同位置：编号一从整条日志取事件直方图；编号二从 system/message 取提示词全文、从 request/header 取工具 schema 数组（两者分开，提示词不在 header 里）；编号三不在日志上，而在真浏览器渲染出的可访问性树上，用日志里对应的事件做交叉验证；编号四在最右边，读工作区里的独立 oracle 文件，也就是那个不该出现的文件没有出现。下方列出每根引线的返回值与它为什么可信。</desc>
+  <defs>
+    <marker id="ta-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#0f766e"/></marker>
+    <marker id="ta-b" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#b45309"/></marker>
+    <marker id="ta-c" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#1d4ed8"/></marker>
+    <marker id="ta-d" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#991b1b"/></marker>
+  </defs>
+
+  <rect width="1200" height="780" rx="8" fill="#f8fafc"/>
+  <text x="600" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">一根会话日志，四个探针接口</text>
+  <text x="600" y="55" text-anchor="middle" fill="#64748b">snapshots/session/bash-tool-turn/session.v4.jsonl —— 24 行真实事件，一行一个</text>
+
+  <!-- Timeline band -->
+  <rect x="40" y="72" width="1120" height="118" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="58" y="94" font-size="11" font-weight="700" fill="#64748b">日志时间轴（append-only· 类型化事件）</text>
+
+  <rect x="58" y="108" width="92" height="30" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="104" y="128" text-anchor="middle" font-size="10" fill="#334155">turn/start</text>
+
+  <rect x="158" y="108" width="92" height="30" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="204" y="128" text-anchor="middle" font-size="10" fill="#334155">step/start</text>
+
+  <rect x="258" y="108" width="112" height="30" rx="6" fill="#ecfdf5" stroke="#5eead4" stroke-width="2"/>
+  <text x="314" y="128" text-anchor="middle" font-size="10" font-weight="700" fill="#0f766e">system/message</text>
+
+  <rect x="378" y="108" width="100" height="30" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="428" y="128" text-anchor="middle" font-size="10" fill="#334155">user/message</text>
+
+  <rect x="486" y="108" width="112" height="30" rx="6" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
+  <text x="542" y="128" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">request/header</text>
+
+  <rect x="606" y="108" width="112" height="30" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="662" y="128" text-anchor="middle" font-size="10" fill="#334155">assistant/msg</text>
+
+  <rect x="726" y="108" width="86" height="30" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="769" y="128" text-anchor="middle" font-size="10" fill="#334155">tool/call</text>
+
+  <rect x="820" y="108" width="96" height="30" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="868" y="128" text-anchor="middle" font-size="10" fill="#334155">tool/result</text>
+
+  <rect x="924" y="108" width="86" height="30" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="967" y="128" text-anchor="middle" font-size="10" fill="#334155">step/end</text>
+
+  <rect x="1018" y="108" width="84" height="30" rx="6" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="1060" y="128" text-anchor="middle" font-size="10" fill="#334155">turn/end</text>
+
+  <text x="58" y="162" font-size="11" fill="#334155">提示词住在这里（surface 节点 0）</text>
+  <text x="58" y="178" font-size="11" fill="#b45309">工具 schema 住在这里（请求 envelope）</text>
+  <text x="600" y="162" font-size="11" fill="#b91c1c">两者分家 —— 去 header 里找 system 找不到，不等于提示词没进请求</text>
+
+  <!-- Probe 1 -->
+  <line x1="104" y1="194" x2="104" y2="228" stroke="#0f766e" stroke-width="2" marker-end="url(#ta-a)"/>
+  <rect x="40" y="232" width="268" height="130" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="56" y="254" font-size="12" font-weight="700" fill="#166534">① 只读：整条日志</text>
+  <text x="56" y="274" font-size="11" fill="#334155">遍历每个事件、累计（不解压以外的动作）</text>
+  <text x="56" y="292" font-size="11" fill="#166534">回来：事件直方图 + 工具名 + turnEnded</text>
+  <text x="56" y="312" font-size="11" fill="#64748b">24 行 →</text>
+  <text x="56" y="328" font-size="10" fill="#334155">{"eventCount":24, "types":{"turn/start":1,…},</text>
+  <text x="56" y="342" font-size="10" fill="#334155"> "tools":["bash",…], "turnEnded":true}</text>
+  <text x="56" y="356" font-size="10" fill="#166534">为什么可信：日志是完整轨迹，不是摘要</text>
+
+  <!-- Probe 2 -->
+  <line x1="314" y1="194" x2="314" y2="228" stroke="#0f766e" stroke-width="2" marker-end="url(#ta-a)"/>
+  <line x1="542" y1="194" x2="542" y2="228" stroke="#b45309" stroke-width="2" marker-end="url(#ta-b)"/>
+  <rect x="332" y="232" width="340" height="130" rx="8" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
+  <text x="348" y="254" font-size="12" font-weight="700" fill="#0f766e">② 请求侧：两个 sidecar，分开取</text>
+  <text x="348" y="274" font-size="11" fill="#334155">system-prompt.expected.md ← system/message</text>
+  <text x="348" y="292" font-size="11" fill="#334155">tool-schemas.expected.json ← request/header</text>
+  <text x="348" y="312" font-size="11" fill="#0f766e">回来：全文 + schema 数组（可 diff）</text>
+  <text x="348" y="330" font-size="10" fill="#334155">normalizedSystemPrompts() / normalizedToolSchemas()</text>
+  <text x="348" y="348" font-size="10" fill="#166534">systemPromptPrecedesRequests() 断言先后关系</text>
+
+  <!-- Probe 3 -->
+  <rect x="700" y="232" width="440" height="130" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="716" y="254" font-size="12" font-weight="700" fill="#1d4ed8">③ 渲染侧：不在日志上，在真浏览器里</text>
+  <text x="716" y="274" font-size="11" fill="#334155">起一次性 headless Chrome → captureStableAria()</text>
+  <text x="716" y="292" font-size="11" fill="#1d4ed8">回来：ui.expected.md（31 行可访问性树）</text>
+  <text x="716" y="312" font-size="10" fill="#334155">- button "Bash printf 'MINIMAL_BASH_CARD_OK\\n'" [expanded]</text>
+  <text x="716" y="330" font-size="10" fill="#334155">- text: "IN { … } OUT MINIMAL_BASH_CARD_OK [exit code 0]"</text>
+  <text x="716" y="348" font-size="10" fill="#1d4ed8">和日志的 tool/call + tool/result 逐条对照 = 一致性</text>
+  <line x1="662" y1="194" x2="662" y2="222" stroke="#1d4ed8" stroke-width="1" stroke-dasharray="4 3"/>
+  <line x1="662" y1="222" x2="700" y2="240" stroke="#1d4ed8" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#ta-c)"/>
+  <text x="672" y="216" font-size="10" fill="#1d4ed8">交叉验证</text>
+
+  <!-- Probe 4 -->
+  <line x1="1060" y1="194" x2="1060" y2="228" stroke="#991b1b" stroke-width="2" marker-end="url(#ta-d)"/>
+  <rect x="948" y="372" width="212" height="96" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+  <text x="964" y="394" font-size="12" font-weight="700" fill="#991b1b">④ 副作用：工作区 oracle</text>
+  <text x="964" y="414" font-size="10" fill="#334155">workspace.expected/</text>
+  <text x="964" y="430" font-size="10" fill="#334155">confinement-audit.json</text>
+  <text x="964" y="448" font-size="10" fill="#991b1b">{"confineCalls":1,"spawnCalls":0}</text>
+  <text x="964" y="462" font-size="10" fill="#64748b">+ 不该出现的文件确实不存在</text>
+
+  <!-- Bottom: the decision chain -->
+  <line x1="40" y1="500" x2="1160" y2="500" stroke="#cbd5e1"/>
+  <text x="40" y="524" font-size="12" font-weight="700" fill="#334155">先接哪一根：按成本从低到高问四句</text>
+
+  <rect x="40" y="536" width="266" height="76" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="56" y="558" font-size="11" font-weight="700" fill="#166534">① 有现成日志吗？</text>
+  <text x="56" y="576" font-size="11" fill="#334155">有 → 只读，几秒出结论</text>
+  <text x="56" y="594" font-size="10" fill="#64748b">能解决大部分「它到底跑没跑到」</text>
+
+  <rect x="322" y="536" width="266" height="76" rx="8" fill="#f0fdfa" stroke="#5eead4"/>
+  <text x="338" y="558" font-size="11" font-weight="700" fill="#0f766e">② 是请求侧的事吗？</text>
+  <text x="338" y="576" font-size="11" fill="#334155">是 → 读 sidecar / 起进程回放</text>
+  <text x="338" y="594" font-size="10" fill="#64748b">把装配问题变成文本 diff 问题</text>
+
+  <rect x="604" y="536" width="266" height="76" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="620" y="558" font-size="11" font-weight="700" fill="#1d4ed8">③ 界面上看得见吗？</text>
+  <text x="620" y="576" font-size="11" fill="#334155">是 → 起真浏览器取 ARIA 树</text>
+  <text x="620" y="594" font-size="10" fill="#64748b">树只收录真渲染出来的东西</text>
+
+  <rect x="886" y="536" width="274" height="76" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="902" y="558" font-size="11" font-weight="700" fill="#991b1b">④ 要证明外部效果吗？</text>
+  <text x="902" y="576" font-size="11" fill="#334155">是 → 工作区 oracle</text>
+  <text x="902" y="594" font-size="10" fill="#64748b">采信外部证据，不采信自述</text>
+
+  <line x1="306" y1="574" x2="316" y2="574" stroke="#94a3b8" stroke-width="2" marker-end="url(#ta-a)"/>
+  <line x1="588" y1="574" x2="598" y2="574" stroke="#94a3b8" stroke-width="2" marker-end="url(#ta-a)"/>
+  <line x1="870" y1="574" x2="880" y2="574" stroke="#94a3b8" stroke-width="2" marker-end="url(#ta-a)"/>
+
+  <rect x="40" y="632" width="1120" height="70" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="60" y="656" font-size="12" font-weight="700" fill="#92400e">贯穿四个接口的是同一条 DSH 规则与同一个证据习惯</text>
+  <text x="60" y="677" font-size="11" fill="#334155">规则：model-visible ⟺ logged —— 任何到达模型请求的东西都能从日志重建，所以请求侧永远有一份可离线解析的存档</text>
+  <text x="60" y="694" font-size="11" fill="#334155">习惯：验证世界，不是验证自报 —— 采信 tool/result.isError、采信 spawnCalls:0、采信文件不存在；不采信「模型说它做了」</text>
+  <text x="40" y="728" font-size="11" fill="#64748b">代价：越往右越贵 —— 只读是秒级零成本，请求侧要夹具被规范化维护，渲染侧要真浏览器，副作用要独立维护一条 oracle，而且它们</text>
+  <text x="40" y="746" font-size="11" fill="#64748b">全都必须先把不稳定字段令牌化（{{clock}} / {{duration}} / {{throughput}} / {{cwd}}），否则基线天天红。</text>
+</svg>

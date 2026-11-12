@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 860" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>探索循环与探针：六步探索，四个观测接口，一条搜索空间边界</title>
+  <desc>上半部分是探索式测试的六步循环，顺时针绕一圈：观察（先看先不判）、形成假设（人的工作）、造条件（改视口真并发注入挂起）、取证（证据目录加结构化判决）、校准判据（你的尺子可能错）、毕业（配基线变成防线）。下半部分是探针的四个观测接口按成本排列：日志、请求侧、渲染、副作用，每个标出它能探到什么和探不到什么。中间一条红色横线标出搜索空间边界：日志记录不到的东西任何接口都探不出来。右下角红色警示框标出唯一陷阱：探索到一次已经坏了的运行，刷新会把 bug 固化成正确，所以必须有一条独立于转录的语义断言。底部一句话说明探针不是测试的一种而是探索的一种。</desc>
+  <defs>
+    <marker id="ex-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#0f766e"/></marker>
+    <marker id="ex-b" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#b91c1c"/></marker>
+  </defs>
+
+  <rect width="1200" height="860" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">探索循环 × 探针：判据在现场形成，探索本身即产物</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">探针不是「测试的一种」，是「探索的一种」—— 三条定义特征全对上了</text>
+
+  <!-- ============ Top: the six-step loop ============ -->
+  <text x="40" y="92" font-size="12" font-weight="700" fill="#334155">① 探索式测试的六步，探针各接哪一段</text>
+
+  <!-- row 1: steps 1-3 -->
+  <rect x="40" y="104" width="360" height="118" rx="8" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
+  <text x="58" y="126" font-size="12" font-weight="700" fill="#0f766e">1 · 观察 —— 先看，不判</text>
+  <text x="58" y="146" font-size="10" fill="#334155">起点是「我还不知道哪里不对」，任何断言都是瞎猜</text>
+  <text x="58" y="165" font-size="10" fill="#334155">pnpm shots &lt;URL&gt; --dom --name before</text>
+  <text x="58" y="183" font-size="10" fill="#0f766e">拿到 visibleText / textOutline / controls / consoleErrors</text>
+  <text x="58" y="200" font-size="10" fill="#991b1b">测试必须先知道期望值 —— 而你现在还没有</text>
+  <text x="58" y="216" font-size="10" fill="#64748b">探针不可替代之处：制造事实</text>
+
+  <rect x="420" y="104" width="360" height="118" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="438" y="126" font-size="12" font-weight="700" fill="#334155">2 · 形成假设 —— 人的工作</text>
+  <text x="438" y="146" font-size="10" fill="#334155">「controls 里少了那个按钮」→ 假设形成</text>
+  <text x="438" y="164" font-size="10" fill="#334155">窄视口下它可能根本没被渲染出来</text>
+  <text x="438" y="186" font-size="11" font-weight="700" fill="#64748b">这一步探针不参与</text>
+  <text x="438" y="204" font-size="10" fill="#64748b">探针只保证你手上的事实是真的</text>
+
+  <rect x="800" y="104" width="360" height="118" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="818" y="126" font-size="12" font-weight="700" fill="#1d4ed8">3 · 造条件 —— 逼出那个状态</text>
+  <text x="818" y="146" font-size="10" fill="#334155">setViewportSize({width:360,height:700})</text>
+  <text x="818" y="164" font-size="10" fill="#334155">Promise.all([openDoor('cfo'), openDoor('coo')])</text>
+  <text x="818" y="182" font-size="10" fill="#334155">[{kind:'hang'}] / [{kind:'throw', accepted:true}]</text>
+  <text x="818" y="200" font-size="10" fill="#991b1b">单测的条件是假的；探针的条件发生在真系统里</text>
+  <text x="818" y="216" font-size="10" fill="#64748b">包括那些你根本写不出来的时序</text>
+
+  <!-- row 2: steps 4-6 -->
+  <rect x="800" y="240" width="360" height="118" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
+  <text x="818" y="262" font-size="12" font-weight="700" fill="#92400e">4 · 取证 —— 最大的浪费是没留下</text>
+  <text x="818" y="282" font-size="10" fill="#334155">verdict.json + page-360.png + console.log</text>
+  <text x="818" y="301" font-size="10" fill="#334155">一个输出路径只留一张图（成功或失败）</text>
+  <text x="818" y="319" font-size="10" fill="#334155">判决带 sessionId；日志按差分取不按最新取</text>
+  <text x="818" y="337" font-size="10" fill="#92400e">缺前置一律 BLOCKED（exit 2），不冒充 PASS</text>
+  <text x="818" y="353" font-size="10" fill="#64748b">人手探索完知识留在脑子里；探针留在 git 里</text>
+
+  <rect x="420" y="240" width="360" height="118" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+  <text x="438" y="262" font-size="12" font-weight="700" fill="#991b1b">5 · 校准判据 —— 你的尺子可能错</text>
+  <text x="438" y="282" font-size="10" fill="#334155">「旧判据『占位 = PASS』会把正确行为判红</text>
+  <text x="438" y="298" font-size="10" fill="#334155">—— 仪表反挂」（date-rule-probe 文件头）</text>
+  <text x="438" y="319" font-size="10" fill="#991b1b">一个测试的断言错了，你会怪代码</text>
+  <text x="438" y="337" font-size="10" fill="#991b1b">一个探针的判据错了，你会先怪探针</text>
+  <text x="438" y="353" font-size="10" fill="#64748b">因为在你的心里，它是从探索里长出来的</text>
+
+  <rect x="40" y="240" width="360" height="118" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="58" y="262" font-size="12" font-weight="700" fill="#166534">6 · 毕业 —— 变成防线</text>
+  <text x="58" y="282" font-size="10" fill="#334155">DSH_SNAPSHOT=refresh pnpm run test:web</text>
+  <text x="58" y="300" font-size="10" fill="#166534">之后它永远不用人再读了</text>
+  <text x="58" y="323" font-size="10" fill="#991b1b">但必须先过语义断言（见右下红色框）</text>
+  <text x="58" y="345" font-size="10" fill="#64748b">这一步把探索成果从「一次」变成「永久」</text>
+
+  <!-- arrows around the loop -->
+  <line x1="404" y1="163" x2="414" y2="163" stroke="#0f766e" stroke-width="2" marker-end="url(#ex-a)"/>
+  <line x1="784" y1="163" x2="794" y2="163" stroke="#0f766e" stroke-width="2" marker-end="url(#ex-a)"/>
+  <line x1="980" y1="226" x2="980" y2="236" stroke="#0f766e" stroke-width="2" marker-end="url(#ex-a)"/>
+  <line x1="794" y1="299" x2="784" y2="299" stroke="#0f766e" stroke-width="2" marker-end="url(#ex-a)"/>
+  <line x1="414" y1="299" x2="404" y2="299" stroke="#0f766e" stroke-width="2" marker-end="url(#ex-a)"/>
+
+  <!-- loop back note -->
+  <path d="M60 240 L60 230 Q60 222 68 222 L390 222 Q398 222 398 230 L398 236" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ex-a)"/>
+  <text x="228" y="217" text-anchor="middle" font-size="10" fill="#64748b">毕业之后它变成基线，下一轮探索从这里重新开始</text>
+
+  <!-- ============ Middle: search space boundary ============ -->
+  <line x1="40" y1="386" x2="1160" y2="386" stroke="#b91c1c" stroke-width="2" stroke-dasharray="8 5"/>
+  <rect x="360" y="372" width="480" height="28" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="600" y="391" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">搜索空间边界：日志记录不到的，任何接口都探不出来</text>
+
+  <!-- ============ Bottom: four interfaces ============ -->
+  <text x="40" y="424" font-size="12" font-weight="700" fill="#334155">② 四个观测接口 —— 它们的并集就是你能探索的范围</text>
+
+  <rect x="40" y="436" width="266" height="150" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="56" y="458" font-size="12" font-weight="700" fill="#166534">日志 · session.vN.jsonl</text>
+  <text x="56" y="479" font-size="10" font-weight="700" fill="#166534">探得到</text>
+  <text x="56" y="496" font-size="10" fill="#334155">事件时序、工具往返、turn/step 边界</text>
+  <text x="56" y="513" font-size="10" fill="#334155">call 与 result 是否成对</text>
+  <text x="56" y="534" font-size="10" font-weight="700" fill="#991b1b">探不到</text>
+  <text x="56" y="551" font-size="10" fill="#334155">界面上看不见的东西</text>
+  <text x="56" y="568" font-size="10" fill="#334155">日志压根没记录的东西</text>
+  <text x="56" y="580" font-size="10" fill="#64748b">成本：秒级</text>
+
+  <rect x="322" y="436" width="266" height="150" rx="8" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
+  <text x="338" y="458" font-size="12" font-weight="700" fill="#0f766e">请求侧 · 两个 sidecar</text>
+  <text x="338" y="479" font-size="10" font-weight="700" fill="#0f766e">探得到</text>
+  <text x="338" y="496" font-size="10" fill="#334155">模型真收到了什么（提示词 / 工具 schema）</text>
+  <text x="338" y="513" font-size="10" fill="#334155">装配的差异（可做文本 diff）</text>
+  <text x="338" y="534" font-size="10" font-weight="700" fill="#991b1b">探不到</text>
+  <text x="338" y="551" font-size="10" fill="#334155">模型看到之后会怎么做</text>
+  <text x="338" y="568" font-size="10" fill="#334155">（回放的回复是录制的）</text>
+  <text x="338" y="580" font-size="10" fill="#64748b">成本：秒级 + 夹具</text>
+
+  <rect x="604" y="436" width="266" height="150" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="620" y="458" font-size="12" font-weight="700" fill="#1d4ed8">渲染 · ARIA 树 + 控制台</text>
+  <text x="620" y="479" font-size="10" font-weight="700" fill="#1d4ed8">探得到</text>
+  <text x="620" y="496" font-size="10" fill="#334155">人眼看得到什么、崩在哪里</text>
+  <text x="620" y="513" font-size="10" fill="#334155">视口变化后的真实布局</text>
+  <text x="620" y="534" font-size="10" font-weight="700" fill="#991b1b">探不到</text>
+  <text x="620" y="551" font-size="10" fill="#334155">系统内部发生了什么</text>
+  <text x="620" y="568" font-size="10" fill="#334155">（要回日志交叉验证）</text>
+  <text x="620" y="580" font-size="10" fill="#64748b">成本：十几秒</text>
+
+  <rect x="886" y="436" width="274" height="150" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+  <text x="902" y="458" font-size="12" font-weight="700" fill="#991b1b">副作用 · workspace.expected/</text>
+  <text x="902" y="479" font-size="10" font-weight="700" fill="#991b1b">探得到</text>
+  <text x="902" y="496" font-size="10" fill="#334155">世界被改成了什么样</text>
+  <text x="902" y="513" font-size="10" fill="#334155">{"confineCalls":1,"spawnCalls":0}</text>
+  <text x="902" y="534" font-size="10" font-weight="700" fill="#991b1b">探不到</text>
+  <text x="902" y="551" font-size="10" fill="#334155">时序上的「谁先到」</text>
+  <text x="902" y="568" font-size="10" fill="#334155">（只能读终态）</text>
+  <text x="902" y="580" font-size="10" fill="#64748b">成本：最贵</text>
+
+  <text x="600" y="606" text-anchor="middle" font-size="11" fill="#0f766e">四条边的并集 = 探索的搜索空间 —— 超出这个并集，探针帮不了你（这不是缺陷，是所有观测仪器的性质）</text>
+
+  <!-- ============ Trap ============ -->
+  <line x1="40" y1="622" x2="1160" y2="622" stroke="#cbd5e1"/>
+
+  <rect x="40" y="636" width="700" height="112" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+  <text x="58" y="660" font-size="12" font-weight="700" fill="#991b1b">唯一的陷阱：探索到一次已经坏了的运行</text>
+  <text x="58" y="681" font-size="10" fill="#334155">postmortem 0002：七个文件系统场景调用了不存在的工具，日志里是 UNKNOWN_TOOL，</text>
+  <text x="58" y="698" font-size="10" fill="#334155">快照刷新把它们当成了新的期望输出 —— 套件全绿。</text>
+  <text x="58" y="716" font-size="10" fill="#991b1b">「A snapshot refresh is fixture production, not correctness review.」</text>
+  <text x="58" y="735" font-size="10" fill="#334155">毕业前必须加：语义断言（独立于转录）+ 独立 oracle + 刷新须人审</text>
+
+  <rect x="760" y="636" width="400" height="112" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
+  <text x="778" y="660" font-size="12" font-weight="700" fill="#0f766e">探索的边界还要再划一条</text>
+  <text x="778" y="681" font-size="10" fill="#334155">探针探索的是「系统行为」，不是「需求」。</text>
+  <text x="778" y="700" font-size="10" fill="#334155">它能告诉你：窄屏下按钮没渲染出来。</text>
+  <text x="778" y="719" font-size="10" fill="#334155">它不能告诉你：那个按钮该不该存在。</text>
+  <text x="778" y="738" font-size="10" fill="#991b1b">后者是人的判断 —— 该问就问，别让探针替你决定。</text>
+
+  <!-- ============ bottom line ============ -->
+  <rect x="40" y="764" width="1120" height="76" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="60" y="788" font-size="12" font-weight="700" fill="#92400e">一句话：探针是探索式测试在 DSH 上唯一的观测仪器</text>
+  <text x="60" y="809" font-size="11" fill="#334155">探索的问题你出，观测的面由日志决定；探索的成果才是判据，而判据必须独立于转录。</text>
+  <text x="60" y="830" font-size="11" fill="#0f766e">没有探针，探索式测试在 agent 系统里就只能靠肉眼看界面和读模型的自述 —— 那正是 postmortem 0003 栽的地方。</text>
+</svg>
