@@ -6,8 +6,6 @@
 >
 > 五段固定结构：**① 戳了哪儿 → ② 回来的原始材料 → ③ 结果 → ④ 为什么是这个结果 → ⑤ 这份结果买到了什么**。
 > 本目录的两张图分别对应本文的两端：[anatomy-of-a-probe.svg](./figures/anatomy-of-a-probe.svg) 是日志时间线上被打的四个点，[scenario-directory.svg](./figures/scenario-directory.svg) 是一个场景目录与四道毕业门。证据层的全景在 [02](./02-probe-vs-tests.md)。
->
-> 五段固定结构：**① 戳了哪儿 → ② 回来的原始材料 → ③ 结果 → ④ 为什么是这个结果 → ⑤ 这份结果买到了什么**。
 
 ![一根会话日志，四个探针接口：时间轴上标出 system/message 与 request/header 各自的位置，四个接口分别接在整条日志、两个请求侧 sidecar、真浏览器的可访问性树、工作区 oracle 上；底部是「按成本从低到高问四句」的决策链](./figures/anatomy-of-a-probe.svg)
 

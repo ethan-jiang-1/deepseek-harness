@@ -2,16 +2,30 @@
 
 > **查询手册，不是读物。** 想搞清这个词先读 [00 第 1 级](./00-ladder.md)；本篇是给「想确认这是不是官方术语」这一具体疑问。
 >
-> 这一篇回答的是词，不是机制。结论先说：**「探针」不是 DSH 的术语，也没有统一的探针机制；但探针作为一种已固化的做法散布在主仓五层，同时这个词在硬件与网络里是主词——被 agent 工程重新借用了。**
+> 一篇一句：**不是。** 探针不是 DSH 的术语，也没有统一的探针机制；但按 01 的四条特征去扫，主仓里确实有五层「自己长出来的探针」，而「探针」这个词在硬件、内核与网络里本来就是主词——被 agent 工程借用了。
+>
+> 为了让人能读懂，这篇分四步：**结论一** DSH 有没有探针框架、**结论二** 这个词从哪来、**结论三** agent 工程为什么需要它、**结论四** 用它时该声明什么。
 
 ## 结论一：DSH 没有统一的探针框架，但探针散布在五层
 
 **「探针」不是 DSH 的类型、字段或官方命名**——`docs/` 没有「探针」这一节，没有哪个 seam 叫 probe，也没有一条 `pnpm run probe` 命令。这一点决定了它不能当术语用。
 
-但**不能因此说「产品树里没有这个东西」**。按本篇 01 那四条特征（驱动真组合 / 一次性 / 产出结构化事实 / 不承诺稳定）去扫，主仓里能点出五层原生落点，而且它们不是同一个东西：
+**先用一句话说清「五层」是什么**：探针这个词在 DSH 里不是一个东西，是**一个词套在五类东西上**。下面先给一张速查表（只需要看第三列——**你什么时候会遇到它**），然后用一张详表补真实文件与配置项。
+
+| 层 | 一句话 | 你什么时候会遇到它 |
+| --- | --- | --- |
+| **1 运行时能力探针** | 产品跑起来以后，用廉价动作问「这个能力还在不在」 | 看代码时扫到 `registryProbe` / `--probe` / `process.kill(pid, 0)` |
+| **2 PATH 探针** | 启动时扫一眼环境（PATH 里有没有 `zenity`），据此选实现 | 改 directory-picker 相关代码 |
+| **3 复现探针** | 开发期写的一次性脚本：起真外部进程，把协议跑通一次 | 调 SSH helper / PTC worker 这类跨进程机制 |
+| **4 取证探针** | 不判对错，只把事实打印出来，人读了才知道 | 查 Windows ABI 这类「打印 sizeof / offsetof」的验证脚本 |
+| **5 诊断车道** | 有入口、不在 CI 主清单、产物给人看的跑法 | 跑 `--dump-config` 或 `.perf.ts` |
+
+**这五层里，哪几层就是 01 说的「探针」？** 只有 **3 复现探针**与 **4 取证探针**完全符合 01 的四条特征（驱动真组合、产出结构化事实、不承诺稳定、不冒充门禁）；**1** 是另一个意思（运行时自检）；**2** 是启动时的环境采样；**5** 是「不在 CI 主清单的诊断入口」。
+
+细节（每层的真实文件与配置项）：
 
 | 层 | 它是什么 | 原生落点 |
-|---|---|---|
+| --- | --- | --- |
 | **运行时能力探针** | 产品运行期间，用廉价动作问「某个东西还在不在 / 行不行」。这是工程上 probe 的另一个常见含义（health probe、capability probe），**不是本篇讲的探针** | `ctx.pluginRegistryProbe`（并发比较公共安装源响应，配置项 `registryProbeEnabled` / `registryProbeTimeoutMs` / `registryProbeCacheTtlMs`）、Sandbox 的 "functional probes arbitrate multi-runner chains"、`landlock --probe`、`process.kill(pid, 0)` 存活探针、CUA 的 `getCapabilities`（`AXIsProcessTrusted()` + `CGPreflightScreenCaptureAccess()`）、`resolvePythonBin` 的 `PYTHON_PROBE_TIMEOUT_MS` |
 | **PATH 探针** | 启动时采样一次环境事实，让下游据此选实现 | `packages/host/directory-picker-auto/src/probe.ts`——`hasLinuxChooserBinary()` 扫 `PATH` 找 `zenity` / `kdialog`，找不到就退回 `browse` 交互而不是每次 pick 都失败 |
 | **复现探针** | 开发期写的一次性脚本：起真外部进程，把线协议跑通一次，留下握手结果 | `scripts/ssh-helper/probe.ts`（`probeHelper()`：起真 helper、走私有 wire 做 `hello`/`close`、30 秒强杀）、`scripts/ssh-helper/worker-probe.ts`（在 Seatbelt 拒绝访问 checkout 的条件下跑 PTC worker）、`apps/web/tests/support/listen-probe.mjs`（monkey-patch `Server.prototype.listen` 记录监听） |
