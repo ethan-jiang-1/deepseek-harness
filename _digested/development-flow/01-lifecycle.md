@@ -1,6 +1,6 @@
-# 01 — 一条决定活在哪：两个设计轴、三种义务、四个看似维度
+# 01 — 一条决定活在哪：两个设计轴、三种义务、固定三层的树
 
-> 本篇讲 Agent Note 的**位置语义**：路径怎么编码状态与种类、三种生命周期各自背什么义务、为什么剩下的那些排布不是第三个轴。门禁细节见 [02](./02-gates.md)，状态之间的走动见 [03](./03-transitions.md)，终态的忘记见 [04](./04-forgetting.md)。
+> 本篇讲 Agent Note 的**位置语义**：路径怎么编码状态与种类、三种生命周期各自背什么义务、为什么剩下的那些排布不是第三个轴，以及树的深度为什么被钉死在三层。门禁细节见 [02](./02-gates.md)，状态之间的走动见 [03](./03-transitions.md)，终态的忘记见 [04](./04-forgetting.md)。
 
 ## 目录树：两个设计出来的轴
 
@@ -43,6 +43,79 @@ README 给的理由是两条叠加：集中索引**重复**了路径里已有的
 **其二，`rejected/` 不需要保持最新。** 它是提案期的快照，判决写在 `Status:` 行上（`Status: rejected — <one line why>`），因为读者来这里要的就是那句理由。正文保留提案时的章节，包括 `## Acceptance criteria` 和 `## Plan`——这些在 `implemented/` 里是被禁的。
 
 **其三，归档只接受一种是入口。** `archived/{class}/` 没有 `implemented` 这一层，README 说得很直白：「`implemented` is deliberately absent because only implemented notes can enter it」。
+
+## 树的深度被钉死在三层，所以「子目录怎么组织」这个问题不存在
+
+![树固定为三层，负载集中在四个叶子目录](./figures/flat-tree-load.svg)
+
+这一节回答一个在使用中一定会冒出来的问题：**notes 越积越多，能不能按主题/按月再分子目录？**
+答案是不能，而且这是设计出来的。`walkAgentNoteTree` 对深度的判断是等号：
+
+```js
+if (segs.length !== 3 || cls === undefined || base === undefined) {
+  errors.push(`structure: ${match} — expected {lifecycle}/{class}/file.md (got depth ${segs.length})`)
+}
+```
+
+`globSync('{lifecycle}/**/*.md')` 虽然写的是 `**`，但任何走出来的路径只要不是恰好三段就被拒绝。所以在 `.agents/notes/` 底下：
+
+| 深度 | 是什么 | 基数 | 能不能动 |
+| --- | --- | --- | --- |
+| 1 | lifecycle（`proposed` / `implemented` / `rejected` / `archived`） | 闭集 4 | 不能；多一个即 `unknown lifecycle folder` |
+| 2 | class（`feature` / `bug-fix` / `simplification` / `architecture` / `process` / `testing`） | 闭集 6 | 不能；多一个即 `unknown class folder` |
+| 3 | 三件套文件（`.md` / `.zh.md` / `.i18n.yaml`） | 每目录 N 篇 | 只能加文件，不能加目录 |
+| 4 | — | **不存在** | 出现即 `got depth 4` |
+
+24 个叶子目录，1271 篇英文正文（含 `.zh.md` 与 sidecar 共 2546 个文件），全部平摊在这里。实测**没有任何三级以下的目录**。
+
+### 实测负载：集中在四个目录
+
+| 叶子目录 | 英文正文 |
+| --- | ---: |
+| `archived/feature/` | **306** |
+| `archived/architecture/` | 185 |
+| `archived/bug-fix/` | 182 |
+| `implemented/architecture/` | **180** |
+| `archived/process/` | 120 |
+| `archived/simplification/` | 92 |
+| `implemented/feature/` | 40 |
+| `archived/testing/` | 39 |
+| 其余 12 个目录 | 1–34 |
+
+前四项占全树 853/1271 ≈ 67%。
+
+### 为什么平摊能撑住：两条红利
+
+**红利一：路径即元数据。** 状态在深度 1、种类在深度 2，所以「活跃的架构决策」是一个目录名，不需要索引、不需要标签、不会与真实位置不同步。这就是上文「一个被明确禁止的东西」里那条 `INDEX.md` 禁令的本钱。
+
+**红利二：命名即摘要。** [07](./07-naming-and-house-style.md) 讲的动词命名法让文件名本身可读，所以 `ls` 的原始输出就是一份人能读的目录。
+
+两条合起来，README 那句 `browse its lifecycle/class folders or search the repository` 才成立：**浏览退化为枚举，检索由仓库级搜索承担**，平摊不构成问题。
+
+### 什么时候这两条会失效
+
+红利一不随篇数变化（路径永远只三段），变的是红利二：**当单个目录越过几十篇，`ls` 输出的信息密度就掉到不可读**。可观测的迹象有三条：
+
+1. **时间切片丢失。** `implemented/architecture` 按月是 8 / 26 / 28 / **88** / 30——2026-09 那一波彼此强相关的架构决策在目录结构里完全不可见。
+2. **主题被日期打散。** 那 180 篇里 `session-` 开头 8 篇、`desktop-` 7 篇、`client-` 7 篇，本该聚在一起的一组被 `yyyy-mm-dd-` 前缀均匀摊开。
+3. **唯一替代品被禁止。** 想靠索引补回可浏览性时，`INDEX.md` 的专用报错会挡住——它的理由是「重复路径元数据 + 让无关修改争用同一文件」，两条都成立，所以不能靠放开它来解决。
+
+### 为什么仍然不加第四层
+
+这是本专题最愿意承认的一处**结构性取舍**，两边的账都要摆出来：
+
+| | 加第四层（`{class}/{topic-group}/file.md`） | 维持三层 |
+| --- | --- | --- |
+| 分组的判据 | **没有闭集**：分组名谁定、如何校验、两个组重名算谁 | class 是闭集 6，README 与源码双份维护（[06](./06-honest-gaps.md#缺口一分类门禁不读-readme闭集的双份副本)） |
+| 移动成本 | 归档要搬整只三件套，路径多一段就多一处断链面 | 只有一次移动，且深度固定 |
+| 失效保护 | 分错组后仍然只能 grep，且多了一套要维护的分类 | 分类错了至少还落在对的状态里 |
+| 可预测性 | 「这属于哪个组」在每次写入时重新争论一次 | 「这属于哪个 class」有 README 的 6 行表可查 |
+
+换句话说：**放弃第四层换取的是「分类只有一套、且有校验收口」**。代价是 `browse` 在 180 篇这个量级已经不堪用，检索事实上只剩 grep 一条路。
+
+所以准确的读法是：`browse its lifecycle/class folders or search the repository` 这句话在**小规模时是两条路**，在**当前规模下已经退化成一条**。这不是缺陷报告，而是维护者在考虑「要不要放开第四层」时必须先承认的现状——因为一旦承认 browse 已失效，`INDEX.md` 禁令的理由也要重新称量。
+
+这条现状与「判据没有门禁」是不同性质的：前者是**结构决定的可扩展上限**，后者是**判断无法机械化**。前者可以靠改结构解决，后者不能。
 
 ## 三个看似维度、其实不是的东西
 

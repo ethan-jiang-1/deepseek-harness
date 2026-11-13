@@ -1501,7 +1501,7 @@
         },
         {
           "file": "01-lifecycle.md",
-          "title": "01 — 一条决定活在哪：两个设计轴、三种义务、四个看似维度",
+          "title": "01 — 一条决定活在哪：两个设计轴、三种义务、固定三层的树",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
           "status": "reverified",
