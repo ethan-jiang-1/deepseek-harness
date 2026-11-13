@@ -31,7 +31,7 @@
 | [`experimental/`](../experimental/00-map.md) | 已评估但未承诺产品支持的实验能力：Python 子进程、Agent Teams、Inspector。 | 4 | 0 | 4 | 0 |
 | [`tools-prompt-llm/`](../tools-prompt-llm/00-map.md) | 模型每一步看见什么：工具清单、系统提示词、历史投影与内容块。 | 7 | 0 | 7 | 0 |
 | [`surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md) | 人/程序从哪里进：CLI、headless、Web、ACP、SDK、桌面，以及它们复用的 runtime spine。 | 4 | 2 | 2 | 0 |
-| [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：七层证据、快照机制、CI 门禁、可靠性、插件作者测试面与快照对外面。 | 13 | 1 | 12 | 0 |
+| [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：资产分布与成本、防漏机制、选层决策程序、CI 门禁、快照机制，以及插件项目的测试契约。 | 16 | 7 | 9 | 0 |
 | [`harness-idea/`](../harness-idea/00-map.md) | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。 | 10 | 0 | 10 | 0 |
 | [`canon/`](../canon/00-map.md) | 宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。 | 7 | 0 | 0 | 7 |
 
@@ -294,19 +294,22 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../test-strategy/00-map.md) | map | 沿用 | 639ed01539 | 页面声明 |
+| [`00-map`](../test-strategy/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
 | [`01-doctrine`](../test-strategy/01-doctrine.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`02-tiers`](../test-strategy/02-tiers.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`03-rules-ownership`](../test-strategy/03-rules-ownership.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`04-snapshot-machinery`](../test-strategy/04-snapshot-machinery.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`05-ci-gates`](../test-strategy/05-ci-gates.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`06-reliability`](../test-strategy/06-reliability.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`07-infrastructure`](../test-strategy/07-infrastructure.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`08-plugin-testing`](../test-strategy/08-plugin-testing.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
-| [`09-plugin-testing-playbook`](../test-strategy/09-plugin-testing-playbook.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
-| [`10-plugin-testing-checklist`](../test-strategy/10-plugin-testing-checklist.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
+| [`02-tiers`](../test-strategy/02-tiers.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`03-asset-census`](../test-strategy/03-asset-census.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`04-anti-omission`](../test-strategy/04-anti-omission.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`05-decision-procedure`](../test-strategy/05-decision-procedure.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`06-rules-ownership`](../test-strategy/06-rules-ownership.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`07-ci-gates`](../test-strategy/07-ci-gates.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`08-reliability`](../test-strategy/08-reliability.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`09-infrastructure`](../test-strategy/09-infrastructure.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`10-snapshot-machinery`](../test-strategy/10-snapshot-machinery.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
 | [`11-snapshot-external-face`](../test-strategy/11-snapshot-external-face.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
 | [`12-probe-作为取证动作`](../test-strategy/12-probe-作为取证动作.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`13-plugin-testing`](../test-strategy/13-plugin-testing.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
+| [`14-plugin-testing-playbook`](../test-strategy/14-plugin-testing-playbook.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
+| [`15-plugin-testing-contract`](../test-strategy/15-plugin-testing-contract.md) | playbook | 已核验 | b830ec950f | 页面声明 |
 
 ### `harness-idea/`
 
@@ -367,9 +370,9 @@
 
 | 未覆盖项 | 权威入口 | 为什么不在本语料 |
 |----------|----------|------------------|
-| 门禁系统自身的 mode 分类与阻断语义（`scripts/run-gates.ts` 的 18 个 mode，0009 新增 `ci-unit`、`allowFailure`/`quick`） | `scripts/run-gates.ts`、`scripts/AGENTS.md`；聚合清单与调度语义已由 `test-strategy/05-ci-gates.md` 承载，机制级概述见 `system-overview/03-门禁与性能基准.md` | 逐 mode 的完整语义仍以 `run-gates.ts` 为权威，语料不逐条展开 |
-| 录制会话快照的所有权与规范化规则 | `snapshots/AGENTS.md`；所有权七条与规范化机制已由 `test-strategy/03-rules-ownership.md`、`test-strategy/04-snapshot-machinery.md` 承载 | 原登记撤销：义务已由 test-strategy 专题成页 |
-| Python 发行物（SDK / runtime 拆分、单文件可执行、wheel 的发行机制） | `python/README.md`、`python/development.md` | 测试面（pytest、单 exe 快照、installed-wheel 黑盒 CI）已由 `test-strategy/07-infrastructure.md` 承载；发行物拆分与打包机制仍未覆盖 |
+| 门禁系统自身的 mode 分类与阻断语义（`scripts/run-gates.ts` 的 18 个 mode，0009 新增 `ci-unit`、`allowFailure`/`quick`） | `scripts/run-gates.ts`、`scripts/AGENTS.md`；聚合清单与调度语义已由 `test-strategy/07-ci-gates.md` 承载，机制级概述见 `system-overview/03-门禁与性能基准.md` | 逐 mode 的完整语义仍以 `run-gates.ts` 为权威，语料不逐条展开 |
+| 录制会话快照的所有权与规范化规则 | `snapshots/AGENTS.md`；所有权七条与规范化机制已由 `test-strategy/06-rules-ownership.md`、`test-strategy/10-snapshot-machinery.md` 承载 | 原登记撤销：义务已由 test-strategy 专题成页 |
+| Python 发行物（SDK / runtime 拆分、单文件可执行、wheel 的发行机制） | `python/README.md`、`python/development.md` | 测试面（pytest、单 exe 快照、installed-wheel 黑盒 CI）已由 `test-strategy/09-infrastructure.md` 承载；发行物拆分与打包机制仍未覆盖 |
 | PR 历史的当前契约（官方 stack 对象、`gh stack merge`、lease 重写） | `AGENTS.md` 的「Choose PR history deliberately」、`dsh-merging-stacked-prs` skill | `_faq_on_digested/11` 记的是历史观察，非当前契约 |
 | GitHub 标签法与加权审批 | `AGENTS.md` 的 Labels 行、`docs`/`.github/issue-management/policy.mjs`、`.github/review-ownership/` | 同上 |
 | 根级政策文档 `SAFETY.md` / `BRAND_GUIDELINES.md` | 仓库根 | 非机制 |

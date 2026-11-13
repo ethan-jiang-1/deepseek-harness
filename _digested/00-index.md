@@ -53,7 +53,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `experimental/` | 可选能力与原型 | 已评估但未承诺产品支持的实验能力。**实验身份与「可选交付」相互独立**：可选包收编进本组，而非 experimental 的包才需要产品用途或显式分类（`scripts/product-package-policy.ts`）。 |
 | `tools-prompt-llm/` | 模型可见面 | 模型每一步看见什么：工具清单、系统提示词、历史投影怎么组装。 |
 | `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、headless、Web、ACP、SDK、桌面六个入口怎么复用同一台运行时。 |
-| `test-strategy/` | 测试体系 | DSH 怎么测：七层证据形态、录制会话快照、CI 门禁与防假绿、可靠性纪律与测试基建——`docs/testing.md` 测试政策的完整展开。 |
+| `test-strategy/` | 测试体系 | DSH 怎么测：测试资产怎么分布、怎么防漏、一个变更怎么选层与算够；外加快照机制、CI 门禁、可靠性纪律与插件项目契约。 |
 | `_coverage/` | 覆盖矩阵 | 维护索引：每个专题承诺回答什么、最后对到哪个源码 commit。 |
 | `harness-idea/` | 消化后的理解与判断 | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪。 |
 | `canon/` | 词、流程与生态惯例 | 宪章层：每个承重词的 repo 原文与它排除的写法、常规流程的名字与边界、生态做法的证据等级。写页或审页之前先查。 |
@@ -89,7 +89,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **想搞懂 CLI / headless / Web / 桌面 / ACP / SDK 怎么复用同一套 runtime spine** → [`surfaces-entrypoints/00-map.md`](./surfaces-entrypoints/00-map.md)
 - **想给 Web UI 加功能、或新增一个 `packages/client/*` 插件包** → [`two-tree-runtime/client/00-map.md`](./two-tree-runtime/client/00-map.md)
 - **想搞懂一个 `@Remote` 方法怎么变成 `ctx.remote.<ns>` 上的类型化 stub** → [`two-tree-runtime/remote/00-map.md`](./two-tree-runtime/remote/00-map.md)
-- **想搞懂 DSH 自己怎么测试（分层、快照、门禁、可靠性）** → [`test-strategy/00-map.md`](./test-strategy/00-map.md)
+- **想搞懂 DSH 自己怎么测试（资产分布、防漏、选层判据、快照、门禁、可靠性）** → [`test-strategy/00-map.md`](./test-strategy/00-map.md)
 - **想搞懂 dsh 为什么对读者友好（harness 思想）** → [`harness-idea/00-map.md`](./harness-idea/00-map.md)
 
 推荐主干顺序：

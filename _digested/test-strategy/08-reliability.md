@@ -1,6 +1,6 @@
-# 06 — 测试可靠性纪律：共享世界上让偶发失败无处藏身
+# 08 — 测试可靠性纪律：共享世界上让偶发失败无处藏身
 
-> 本篇消化 DSH 的测试可靠性体系：执行环境的不变量（`docs/testing.md` "How specs execute"）、编排层的兜底（[05](./05-ci-gates.md) 的可靠性面）、以及 `dsh-ci-test-reliability` 技能的纪律条款。flake 的定义、归因与修法都在这层。
+> 本篇消化 DSH 的测试可靠性体系：执行环境的不变量（`docs/testing.md` "How specs execute"）、编排层的兜底（[07](./07-ci-gates.md) 的可靠性面）、以及 `dsh-ci-test-reliability` 技能的纪律条款。flake 的定义、归因与修法都在这层。
 
 ## 现象是什么：共享执行世界 + 单向归因
 

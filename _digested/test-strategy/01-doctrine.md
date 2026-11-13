@@ -1,10 +1,10 @@
 # 01 — 思想与成文政策：55 行宪法与它的九条教义
 
-> 本篇消化 DSH 的成文测试政策 `docs/testing.md`（55 行、9 节、中英双语），以及 root `AGENTS.md` 里思想级的测试条款。分层细节见 [02](./02-tiers.md)，规矩与所有权见 [03](./03-rules-ownership.md)。
+> 本篇消化 DSH 的成文测试政策 `docs/testing.md`（55 行、9 节、中英双语），以及 root `AGENTS.md` 里思想级的测试条款。分层细节见 [02](./02-tiers.md)，资产数量与分布见 [03](./03-asset-census.md)，防漏机制见 [04](./04-anti-omission.md)，选层判据见 [05](./05-decision-procedure.md)，规矩与所有权见 [06](./06-rules-ownership.md)。
 
 ## 现象是什么：一个把测试政策压缩到 55 行的仓库
 
-DSH 仅单元测试就有 2150 个 spec 文件，而它的测试政策只有 55 行。开篇一句自述定位：
+DSH 仅单元测试就有两千多个 spec 文件，而它的测试政策只有 55 行。开篇一句自述定位：
 
 > "How this repo tests, tier by tier, and the rules that keep a green suite meaningful."
 
@@ -18,13 +18,13 @@ DSH 仅单元测试就有 2150 个 spec 文件，而它的测试政策只有 55 
 |---|---|---|
 | 政策 | `docs/testing.md` | 分层定义 + 跨层规则（本篇）；唯一测试策略权威，词预算 1,350 词列管（`wc -w` 口径） |
 | 常备条令 | root `AGENTS.md` + `packages/AGENTS.md` | 每个 session 都要在上下文里的测试条款（链接到政策）；包层复述 plugin exports / `ctx.get` / REAL-composition / HMR disposal |
-| 所有权 | `snapshots/AGENTS.md` | 快照树的归属规则（[03](./03-rules-ownership.md)） |
-| 可靠性纪律 | `.agents/skills/dsh-ci-test-reliability/` | 并发/资源/teardown/flake 分类（[06](./06-reliability.md)） |
-| 命令选取 | `.agents/skills/dsh-pre-push-checks/` | 推送前选哪些检查跑（[03](./03-rules-ownership.md)） |
+| 所有权 | `snapshots/AGENTS.md` | 快照树的归属规则（[06](./06-rules-ownership.md)） |
+| 可靠性纪律 | `.agents/skills/dsh-ci-test-reliability/` | 并发/资源/teardown/flake 分类（[08](./08-reliability.md)） |
+| 命令选取 | `.agents/skills/dsh-pre-push-checks/` | 推送前选哪些检查跑（[06](./06-rules-ownership.md)） |
 | 决策记录 | `.agents/notes/implemented/testing/`（**18 篇**） | 每条政策"为什么这么定、放弃了什么、要什么验证"的 rationale |
 | 事故 | `docs/postmortem/`（**4 篇**：0001 ACP default export / 0002 `!!js` / 0003 替代服务器 / 0004 Landlock 误分类） | 政策的反面教材；唯一允许 war-story 叙事的层 |
 | 操作步骤 | `docs/cookbook/` | 加包/加工具/加格式版本时的步骤与验证命令；`reviewing-persistence-type-changes` 进一步要求 type acknowledgement 的 `verification` 字段填真实 vitest 证据——"A recording command's `ok: true` does not replace these checks or the owner's behavior and migration tests" |
-| 局部契约 | `packages/test-support/*/README` 等各包 README | 该工具/该包的测试语义与已知限制（[07](./07-infrastructure.md)） |
+| 局部契约 | `packages/test-support/*/README` 等各包 README | 该工具/该包的测试语义与已知限制（[09](./09-infrastructure.md)） |
 | vendored 修改 | `vendor/README.md` | 每条本地修改注记覆盖它的 DSH 包测试；同步流程要求重跑 `pnpm run test && pnpm run build` |
 
 ![测试规矩的九个载体与加载时机：常备条令 / 按需加载 / 事故反面教材](./figures/rules-homes.svg)
@@ -45,7 +45,7 @@ DSH 仅单元测试就有 2150 个 spec 文件，而它的测试政策只有 55 
 
 说了什么：CI 的并发模型只隔离进程，不隔离端口、可预测路径、外部命名空间、继承的子进程；每个测试对它获取的每个资源负责到 teardown；**"单跑才绿"被定义为 spec 自身的缺陷**，不许赖 runner。
 
-为什么（解释）：DSH 的 CI 用共享 host/volume 的 self-hosted runner 跑大量并发 job，任何"我占了这个端口/路径/名字"的隐式假设都会变成别人的偶发失败。把"单跑才绿"定性为 spec 缺陷，是把 flake 的责任单向压给测试作者；DSH 的解法是**纪律条文 + 技能**而不是隔离基建。展开见 [06](./06-reliability.md)。
+为什么（解释）：DSH 的 CI 用共享 host/volume 的 self-hosted runner 跑大量并发 job，任何"我占了这个端口/路径/名字"的隐式假设都会变成别人的偶发失败。把"单跑才绿"定性为 spec 缺陷，是把 flake 的责任单向压给测试作者；DSH 的解法是**纪律条文 + 技能**而不是隔离基建。展开见 [08](./08-reliability.md)。
 
 ### 3. The with-key policy——"推理在这里是便宜的"
 
@@ -83,7 +83,7 @@ DSH 仅单元测试就有 2150 个 spec 文件，而它的测试政策只有 55 
 
 - **产品可见插件必须有 non-unit 的 REAL-composition 测试**："Hand-built `ctx.plugin(...)` suites are insufficient: boot test-only `cordis.yml` through Loader and app/process, mock only external services or nondeterministic inputs, and assert model-visible request/log, durable state, or user-visible output."——手搭插件组装的测试不算数，必须真的走 Loader 启动一份 test-only `cordis.yml`，断言到 model-visible 请求/日志、durable 状态或用户可见输出。
 - **guard 必须真的挡得住回归**："A guard only guards if the regression fails it."——对无 `inject` 的 bundle/composition 插件，default export 替换掉必需的 named exports 时 Loader smoke 依然绿；所以要求 `expect('default' in mod).toBe(false)` + `unwrapExports` round-trip 断言，并且 "**prove it: introduce the regression, watch red, revert**"——守卫测试要先亲手制造回归看它变红。
-- **real entry path = published artifact**："a package `bin` runs built `lib/bin.js` under plain `node`, exposing failures tsx masks (settle races, module resolution, swallowed load failures)."——bin 入口要在 built 产物上用 plain node 跑；保持 built smokes 绿；配置真缺失时必须断言非零退出。（注：政策此处点名的 `packages/examples/*/tests/built-bin.e2e.ts` 在基线树中已不存在，属文档过期；实际 built 冒烟清单见 [02](./02-tiers.md) 的"集成测试去了哪里"。）这些要求落到插件作者身上的完整台阶模型与实战样板，见 [08](./08-plugin-testing.md) 与 [09](./09-plugin-testing-playbook.md)。
+- **real entry path = published artifact**："a package `bin` runs built `lib/bin.js` under plain `node`, exposing failures tsx masks (settle races, module resolution, swallowed load failures)."——bin 入口要在 built 产物上用 plain node 跑；保持 built smokes 绿；配置真缺失时必须断言非零退出。（注：政策此处点名的 `packages/examples/*/tests/built-bin.e2e.ts` 在基线树中已不存在，属文档过期；实际 built 冒烟清单见 [02](./02-tiers.md) 的"集成测试去了哪里"。）这些要求落到插件作者身上的完整台阶模型与实战样板，见 [13](./13-plugin-testing.md) 与 [14](./14-plugin-testing-playbook.md)。
 
 为什么（解释）：这条是 postmortem 0001 的制度化答案。该事故里**两个加载路径 bug 同时漏网**：① 多余的 `export default` 让 Loader 的 `unwrapExports` 解析到裸函数、丢弃整个模块命名空间（inject/name/Config 是兄弟命名导出）→ fiber 空 inject → apply 首行就炸；② 可选服务经 traceable shadow 的属性读取走 ancestor-only fiber walk，而进程内测试的 flat root context 恰好掩盖了这个拓扑。事故复盘的原话点睛："no test exercised the plugin through its real load path or its real call topology"、"Coverage proves lines *ran*; it says nothing about whether the feature works *the way it ships*"。护栏里最硬的一条：无 key e2e 走真实 stdio 子进程，**且验证过恢复 `export default` 时它会变红**——prove-it-red 的实例。单测/tsx 启动会掩盖三类问题：settle 竞态、模块解析差异、被吞掉的加载失败。**"能跑"的证据要取自发布形态，而不是开发形态。**
 
@@ -107,7 +107,7 @@ DSH 仅单元测试就有 2150 个 spec 文件，而它的测试政策只有 55 
 
 说了什么：非平凡的模型可见/协议/人类可见改动，必须同 PR 增改一个 keyless 录制会话场景；四面分布在 `snapshots/{session,sdk,acp,web}/`；Web 渲染可显式借用另一场景的 canonical session；非录制会话驱动的期望输出留在 owner 本地 `tests/expected/`，不用 `*.snapshot.ts` 后缀；`packages/test-support/session-snapshot` 拥有共享存储规则；agent-loop / session-lifecycle / `SessionEventMap` 改动要同 PR 更新 TypeScript 与 Python 两个 SDK 投影；新 capability seam 与生命周期/转录变体要在**计划时**点名所有需要的层。
 
-为什么（解释）：快照场景是"组装后的完整转录"这一证据形态的唯一来源——包测试、e2e、mock 证据、rationale 都不能替代它（"does not replace the assembled transcript"）。机制展开见 [04](./04-snapshot-machinery.md)。
+为什么（解释）：快照场景是"组装后的完整转录"这一证据形态的唯一来源——包测试、e2e、mock 证据、rationale 都不能替代它（"does not replace the assembled transcript"）。机制展开见 [10](./10-snapshot-machinery.md)。
 
 ## 贯穿性思想（解释）
 

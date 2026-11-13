@@ -1,6 +1,6 @@
 # 11 — 快照机制的对外面：插件仓能拿到的发布包、夹具与接线事实
 
-> 本篇补 [04](./04-snapshot-machinery.md) 的一个视角缺口：04 站在**主仓语料消费者**一侧讲机制（世代、四面、manifest、sidecar、门禁）；本篇讲同一套机制**作为发布物**对仓外暴露了什么。与 [08–10](./08-plugin-testing.md) 同族，面向插件作者。只收 DSH 一手事实（核验点见 [`catalog.json`](../catalog.json)）；外部仓的实践校准、组织与价值判断在 `_faq_on_digested/21_recorded-session-snapshots/`，本篇不重复。
+> 本篇补 [10](./10-snapshot-machinery.md) 的一个视角缺口：[10](./10-snapshot-machinery.md) 站在**主仓语料消费者**一侧讲机制（世代、四面、manifest、sidecar、门禁）；本篇讲同一套机制**作为发布物**对仓外暴露了什么。与 [13–15](./13-plugin-testing.md) 同族，面向插件作者。只收 DSH 一手事实（核验点见 [`catalog.json`](../catalog.json)）；外部仓的实践校准、组织与价值判断在 `_faq_on_digested/21_recorded-session-snapshots/`，本篇不重复。
 
 ## 现象是什么：一个半公开的机制
 
@@ -10,7 +10,7 @@
 
 ## 硬事实一：夹具的接受面比主仓语料宽
 
-主仓提交的夹具是 **projected**（省略顶层 `seq`/`time` 包络，见 [04](./04-snapshot-machinery.md) 夹具格式一节）。但回放器的解析对 **complete**（原始带包络的运行日志）同样接受，唯一禁令是不能混：
+主仓提交的夹具是 **projected**（省略顶层 `seq`/`time` 包络，见 [10](./10-snapshot-machinery.md) 夹具格式一节）。但回放器的解析对 **complete**（原始带包络的运行日志）同样接受，唯一禁令是不能混：
 
 > `session snapshot line N cannot mix projected and complete body rows` — `packages/test-support/llm-replay/src/index.ts`（`parseSessionFixture` 的 bodyKind 检查）
 
@@ -49,7 +49,7 @@ export function apply(ctx: Context, config: Config = {}): void
 
 | 事实 | 数字 / 出处 |
 |---|---|
-| `snapshots/` 整树提交 | 基线树 **250 场景 / 1682 文件 / 9.36 MiB（9.81 MB）**（`git ls-tree -r -l` 字节口径；`du` 按 4KB 块会虚高到 ~14MB），折算 **~38KB/场景** |
+| `snapshots/` 整树提交 | 基线树 **9.36 MiB（9.81 MB）**（`git ls-tree -r -l` 字节口径；`du` 按 4KB 块会虚高到 ~14MB）；场景/文件数见 [03](./03-asset-census.md)，折算 **~38KB/场景** |
 | 最大单文件 | 95KB（`snapshots/session/cua-native/session.v4.jsonl`）；schema sidecar 最大 81KB（`snapshots/session/dynamic-tool-updates/tool-schemas.expected.json`） |
 | 按扩展名 | jsonl 6.1MB / json 2.2MB / md 0.9MB——全是逐行文本，packfile 再压缩 |
 | 运行时原始日志**不进** git | `.gitignore:14` 的 `.sessions/`——**录制原料不进，证据进** |
@@ -69,7 +69,7 @@ export function apply(ctx: Context, config: Config = {}): void
 ## 为什么这么定（解释）
 
 1. **为什么 test-support 包会发布**：产品按同一版本矩阵发布全家桶（prerelease 映射 `next` dist-tag，见 `scripts/release/families.ts` 的发现规则——只跳过 `private: true`）。发布是矩阵行为，不构成对外支持承诺；这也解释了「发布了却没有外部文档」的不对称。
-2. **为什么夹具接受面天然覆盖原始日志**：主仓自己的 writer-oracle 与迁移测试就要读未投影的原始日志（`writer.expected.jsonl` 一族，见 [04](./04-snapshot-machinery.md)）；外部「真跑一次留日志」能直接当夹具，是这个内部需求的副产品，不是为外部设计的接口。
+2. **为什么夹具接受面天然覆盖原始日志**：主仓自己的 writer-oracle 与迁移测试就要读未投影的原始日志（`writer.expected.jsonl` 一族，见 [10](./10-snapshot-machinery.md)）；外部「真跑一次留日志」能直接当夹具，是这个内部需求的副产品，不是为外部设计的接口。
 3. **为什么 patch 用 warn 而不是报错**：组合层对「部分 patch 不命中」采取容错（配置在 HMR 与版本演进中会漂移）；代价是接线错误静默失效。主仓自己用 corpus gate 与 `--dump-config` 核对习惯来补这一层——外部消费者没有这些门禁，所以这一条是外部接线最大的坑。
 
 ## 源码锚点

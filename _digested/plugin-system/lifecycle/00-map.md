@@ -73,7 +73,7 @@
 | 每个 profile 出厂带哪些插件 | [`runtime-profiles/`](../../runtime-profiles/00-map.md) |
 | 现成插件有什么、能不能直接复用 | [`inventory/`](../inventory/00-map.md) |
 | 一个能力怎么换实现而不改调用方 | [`capability-seams/`](../../capability-seams/00-map.md) |
-| 插件作者要交什么测试证据 | [`test-strategy/08`](../../test-strategy/08-plugin-testing.md) · [`09`](../../test-strategy/09-plugin-testing-playbook.md) · [`10`](../../test-strategy/10-plugin-testing-checklist.md) |
+| 插件作者要交什么测试证据 | [`test-strategy/13`](../../test-strategy/13-plugin-testing.md) · [`14`](../../test-strategy/14-plugin-testing-playbook.md) · [`15`](../../test-strategy/15-plugin-testing-contract.md) |
 | **装 / 更 / 卸 / 首启的机制与失败语义** | **本专题** |
 
 本专题不重写配置层顺序与 dump 保真，只链接 [`composition/`](../composition/00-map.md)；不重写 fiber 状态机，只链接 [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-五条原语对照源码.md)。

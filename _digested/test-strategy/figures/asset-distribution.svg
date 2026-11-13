@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#666"/>
+    </marker>
+  </defs>
+  <rect width="960" height="520" fill="#fafafa" rx="6"/>
+  <text x="480" y="34" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">资产分布：95.7% 的用例在最便宜的层，昂贵层只买结构性盲区</text>
+  <text x="480" y="56" text-anchor="middle" font-size="11" fill="#6b7280">口径：行首 it/test 声明 + 场景数；数字随源码演进，登记在 03-asset-census.md</text>
+
+  <!-- bar -->
+  <rect x="60" y="92" width="840" height="46" rx="6" fill="#e5e7eb"/>
+  <rect x="60" y="92" width="803.6" height="46" rx="6" fill="#1677ff"/>
+  <rect x="863.6" y="92" width="17.7" height="46" fill="#fa8c16"/>
+  <rect x="881.3" y="92" width="8.8" height="46" fill="#722ed1"/>
+  <rect x="890.1" y="92" width="7.2" height="46" fill="#52c41a"/>
+  <rect x="897.3" y="92" width="2.7" height="46" rx="2" fill="#8b5cf6"/>
+  <text x="90" y="120" font-size="14" font-weight="700" fill="#ffffff">Unit 95.67% · 27,757 cases</text>
+  <text x="846" y="120" text-anchor="end" font-size="11" fill="#ffffff">合计 29,013</text>
+
+  <!-- legend -->
+  <rect x="60" y="160" width="10" height="10" fill="#fa8c16"/>
+  <text x="76" y="169" font-size="11" fill="#ad6800">web 2.11% · 613 cases</text>
+  <rect x="250" y="160" width="10" height="10" fill="#722ed1"/>
+  <text x="266" y="169" font-size="11" fill="#531dab">e2e 1.04% · 303 cases</text>
+  <rect x="440" y="160" width="10" height="10" fill="#52c41a"/>
+  <text x="456" y="169" font-size="11" fill="#237804">snapshot 0.86% · 250 场景</text>
+  <rect x="650" y="160" width="10" height="10" fill="#8b5cf6"/>
+  <text x="666" y="169" font-size="11" fill="#5b21b6">expected 0.31% · 90 cases</text>
+
+  <!-- cost axis -->
+  <text x="60" y="224" font-size="12" font-weight="700" fill="#374151">成本（低 → 高）</text>
+  <line x1="170" y1="220" x2="900" y2="220" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <g font-size="10.5" fill="#374151">
+    <text x="185" y="240" text-anchor="middle">unit</text>
+    <text x="315" y="240" text-anchor="middle">expected</text>
+    <text x="455" y="240" text-anchor="middle">snapshot replay</text>
+    <text x="610" y="240" text-anchor="middle">web browser</text>
+    <text x="760" y="240" text-anchor="middle">real-API e2e</text>
+    <text x="880" y="240" text-anchor="middle">bench</text>
+  </g>
+
+  <!-- cards row 1 -->
+  <rect x="60" y="268" width="266" height="86" rx="8" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.2"/>
+  <text x="76" y="290" font-size="12" font-weight="700" fill="#1d4ed8">Unit · 宽底</text>
+  <text x="76" y="310" fill="#374151">2,150 文件 / 27,757 用例</text>
+  <text x="76" y="328" fill="#374151">进程内、无网络、可并行</text>
+  <text x="76" y="346" fill="#6b7280">per-file 100% 覆盖率门</text>
+
+  <rect x="342" y="268" width="266" height="86" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.2"/>
+  <text x="358" y="290" font-size="12" font-weight="700" fill="#ad6800">E2E 车道 · 窄</text>
+  <text x="358" y="310" fill="#374151">110 文件 / 303 用例</text>
+  <text x="358" y="328" fill="#374151">120s + retry 2 + 4 worker</text>
+  <text x="358" y="346" fill="#6b7280">独立 workflow；fork 不跑</text>
+
+  <rect x="624" y="268" width="276" height="86" rx="8" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.2"/>
+  <text x="640" y="290" font-size="12" font-weight="700" fill="#531dab">Snapshot · 组装证据</text>
+  <text x="640" y="310" fill="#374151">250 场景 / 1,682 文件</text>
+  <text x="640" y="328" fill="#374151">经 shipped dsh 起真进程</text>
+  <text x="640" y="346" fill="#6b7280">record 要 key，replay 无 key</text>
+
+  <!-- cards row 2 -->
+  <rect x="60" y="370" width="415" height="86" rx="8" fill="#f0fdf4" stroke="#52c41a" stroke-width="1.2"/>
+  <text x="76" y="392" font-size="12" font-weight="700" fill="#237804">Web browser · 只在浏览器里能看见的证据</text>
+  <text x="76" y="412" fill="#374151">190 文件 / 613 用例 + 5 个 snapshot 驱动</text>
+  <text x="76" y="430" fill="#374151">Chromium；picker 另跑 WebKit</text>
+  <text x="76" y="448" fill="#6b7280">构建 CSS + dist；CI 只读 replay</text>
+
+  <rect x="491" y="370" width="409" height="86" rx="8" fill="#f5f5f5" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="507" y="392" font-size="12" font-weight="700" fill="#5b21b6">Benchmarks · 独立成本形态</text>
+  <text x="507" y="412" fill="#374151">10 文件；编译产物 + plain Node</text>
+  <text x="507" y="430" fill="#374151">独占 runner + 3–5 样本</text>
+  <text x="507" y="448" fill="#6b7280">预算常量自身有校准测试</text>
+
+  <text x="480" y="492" text-anchor="middle" font-size="10.5" fill="#9ca3af">"昂贵层的用例数应按失败类计，而不是按功能数计" —— 判据见 05-decision-procedure.md</text>
+</svg>

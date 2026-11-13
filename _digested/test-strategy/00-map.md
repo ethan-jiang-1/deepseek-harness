@@ -1,66 +1,83 @@
-# Test Strategy · 测试思想、分层、快照与门禁
+# Test Strategy · 测试思想、资产分布、防漏与决策程序
 
 上游同步触及测试面时，按 [`_coverage/`](../_coverage/00-index.md) 的口径复核本专题；具体核验点见 [`catalog.json`](../catalog.json)。
 
 ## 一句话
 
-DSH 有 2150 个测试文件，测试政策却只有 55 行（`docs/testing.md`）——整份政策的定语是 "the rules that keep a green suite meaningful"（让绿有意义）。围绕这一句话，测试被组织成七层**证据形态**（不按单元/集成/端到端三分）、mock 只放在贵的边界、断言验证世界而非自报、证据取自真实入口、CI 专门设防假绿机制。
+DSH 的测试资产以千计（unit 用例以万计），测试政策却只有 55 行（`docs/testing.md`）——整份政策的定语是 "the rules that keep a green suite meaningful"（让绿有意义）。本专题不讲"测试金字塔"，而讲三件事：**资产怎么分布**、**怎么保证不漏**、**一个变更该配什么证据才算够**。
 
-## 这个专题回答什么
+## 三个问题，三篇入口
 
-DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些规矩、快照怎么运转、CI 门禁怎么编排、可靠性纪律是什么、测试基建有哪些。
+| 你的问题 | 入口 | 一句话答案 |
+|---|---|---|
+| **测试资产怎么分布？为什么便宜层承载最多？** | [`03-asset-census.md`](./03-asset-census.md) | 绝大多数用例在最便宜的 unit 层；昂贵层只买"unit 结构上看不见"的失败类（真模型、Loader 组装、浏览器、性能） |
+| **它如何保证"不漏东西"？从资产上能看出什么纪律？** | [`04-anti-omission.md`](./04-anti-omission.md) | 六个互不替代的检查面（空间、执行、类型、入口、断言、可见性）+ 复盘回路；漏被变成红灯、显式豁免或可见跳过 |
+| **怎么定测试面、怎么算够了、分布准不准？** | [`05-decision-procedure.md`](./05-decision-procedure.md) | 五步程序：分类 → 选最便宜但看得见的那层 → 证明会红 → 验世界 → 判七问并记账 |
 
-对象是 harness 本身：一个由模型厂自研自维护、日常研发主力包含 Coding Agent 的仓库，如何系统性地组织测试——测试思想、分层、规矩、快照机制、CI 门禁、可靠性纪律与基建，全部锚定本仓库的当前产品源码。
+写插件的人可以直接从 [`15-plugin-testing-contract.md`](./15-plugin-testing-contract.md) 开始：五级台阶、三种采用等级、十条契约、一份 PR 账本。
 
-![七层宪法层总览：证据形态与入口真实性](./figures/evidence-map.svg)
+## 结构（16 篇）
 
-## 规模基线（硬事实，按基线树实测）
-
-| 资产 | 数字 |
-|---|---|
-| unit spec | **2150** 个 `*.spec.{ts,tsx}`（packages 1518+298、apps 176+1、scripts 152、website 5），分布在 347 个 `tests/` 目录（含 spec 的 339；口径见 claims 与复测命令） |
-| e2e 车道 | **110** 个 `*.e2e.ts`（`vitest.e2e.config.ts` 实际 include 减去 exclude；另有 190 个 web e2e + 5 个 web snapshot + 1 个 inspector browser 归 web 车道） |
-| expected 驱动 | 21（apps/cli）+ 8（apps/web，归 web 车道） |
-| 快照场景 | **250** 个录制场景（session 150 / sdk 27 / acp 9 / web 64），`snapshots/` 全树 1682 个文件（1675 常规文件 + 7 个跨 profile sidecar 符号链接） |
-| 性能门 | 10 个 bench 文件（7 Host + 3 Client）+ 1 个 opt-in stress + 3 个手动 perf |
-| vitest 配置 | 8 份运行配置 + 1 份共享门面（`vitest.shared.ts`） |
-| 测试决策笔记 | **18 篇**（`.agents/notes/implemented/testing/`，另有 18 份 `.zh.md` 与 18 份 `.i18n.yaml` 配对）+ **4 篇** postmortem（`docs/postmortem/0001`-`0004`） |
-| 测试基建 | `packages/test-support/` 七件套 + `benchmarks/support/` + vitest setup 三件套 |
-| 政策测试 | approval-policy（`node --test`）/ issue-management（plain `node`）直跑 `.mjs` |
-| Python 侧 | `python/sdk/tests/`（pytest via uv，无 tox）+ `scripts/snapshots/python-sdk-single-exe/` 8 场景 |
-| CI 门禁编排 | `scripts/run-gates.ts` 18 个聚合模式；PR 必需 job 9 个 + 1 个观察性 |
-| 插件面 | 101 个包以 named export 导出 `inject`、57 个 client `ui-*` 包、612 个 `.client.spec`——插件作者的测试策略见 [08-10](./08-plugin-testing.md) |
-
-## 结构（12 篇机制参考）
+### 一、思想：为什么是这副形状
 
 | 问题 | 阅读入口 |
 |---|---|
-| 测试思想是什么、成文政策（宪法）在哪、指导怎么分布 | [`01-doctrine.md`](./01-doctrine.md) |
-| 有哪些层、每层测什么、后缀怎么选中层 | [`02-tiers.md`](./02-tiers.md) |
-| 立了哪些规矩、谁拥有什么证据 | [`03-rules-ownership.md`](./03-rules-ownership.md) |
-| 录制会话快照怎么运转 | [`04-snapshot-machinery.md`](./04-snapshot-machinery.md) |
-| CI 门禁怎么编排、平台矩阵怎么铺、防假绿怎么做 | [`05-ci-gates.md`](./05-ci-gates.md) |
-| 测试可靠性纪律是什么、flake 怎么归因 | [`06-reliability.md`](./06-reliability.md) |
-| 测试基建有哪些、各自职责与已知限制 | [`07-infrastructure.md`](./07-infrastructure.md) |
-| 写一个 DSH 插件，测试面怎么摆（政策要求） | [`08-plugin-testing.md`](./08-plugin-testing.md) |
-| 真实插件的测试组合长什么样（实战解剖） | [`09-plugin-testing-playbook.md`](./09-plugin-testing-playbook.md) |
-| 一个插件 PR 的最小证据集与 CI 行为（检查单） | [`10-plugin-testing-checklist.md`](./10-plugin-testing-checklist.md) |
-| 快照机制对插件仓暴露了什么（发布包、夹具双接受、接线语义、git 卫生、postmortem 校准） | [`11-snapshot-external-face.md`](./11-snapshot-external-face.md) |
-| `probe` 是什么、产出分叉/判断/事实、该归哪个专题、与 `trace`/`span` 怎么分 | [`12-probe-作为取证动作.md`](./12-probe-作为取证动作.md) |
+| 测试思想是什么、55 行政策说了什么、指导怎么分布 | [`01-doctrine.md`](./01-doctrine.md) |
+| 有哪些层、每层测什么、后缀/目录怎么选中层 | [`02-tiers.md`](./02-tiers.md) |
+
+### 二、资产与防漏：有多少、怎么防漏、怎么决策
+
+| 问题 | 阅读入口 |
+|---|---|
+| 各层有多少文件/用例、成本与 CI 必需性、为什么是"宽底窄塔尖" | [`03-asset-census.md`](./03-asset-census.md) |
+| 六种防漏机制、每种漏对应哪条机制、边界在哪 | [`04-anti-omission.md`](./04-anti-omission.md) |
+| 变更分类表、选层顺序、负控、七问判据、PR 证据账本 | [`05-decision-procedure.md`](./05-decision-procedure.md) |
+
+### 三、纪律与编排：谁拥有什么、什么时候红
+
+| 问题 | 阅读入口 |
+|---|---|
+| 立了哪些规矩、谁拥有什么证据（政策 / 快照树 / pre-push） | [`06-rules-ownership.md`](./06-rules-ownership.md) |
+| CI 门禁怎么编排、平台矩阵怎么铺、防假绿怎么做 | [`07-ci-gates.md`](./07-ci-gates.md) |
+| 测试可靠性纪律是什么、flake 怎么归因 | [`08-reliability.md`](./08-reliability.md) |
+| 测试基建有哪些、各自职责与已知限制 | [`09-infrastructure.md`](./09-infrastructure.md) |
+
+### 四、机制深潜：快照、对外面与 probe
+
+| 问题 | 阅读入口 |
+|---|---|
+| 录制会话快照怎么运转（世代、四面、record/refresh） | [`10-snapshot-machinery.md`](./10-snapshot-machinery.md) |
+| 快照机制对仓外暴露了什么（发布包、夹具、接线、git 卫生） | [`11-snapshot-external-face.md`](./11-snapshot-external-face.md) |
+| `probe` 是什么、产出什么、该归哪个专题、与 `trace`/`span` 怎么分 | [`12-probe-作为取证动作.md`](./12-probe-作为取证动作.md) |
+
+### 五、插件落地：政策、实战、契约
+
+| 问题 | 阅读入口 |
+|---|---|
+| 写一个 DSH 插件，测试面怎么摆（政策要求与五级台阶） | [`13-plugin-testing.md`](./13-plugin-testing.md) |
+| 真实插件的测试组合长什么样（五个类型解剖） | [`14-plugin-testing-playbook.md`](./14-plugin-testing-playbook.md) |
+| 我的插件仓该采用哪几条（契约、等级、账本、最小编排） | [`15-plugin-testing-contract.md`](./15-plugin-testing-contract.md) |
+
+## 规模基线
+
+数量、口径与复测命令只在 [`03-asset-census.md`](./03-asset-census.md) 维护；核验基线（tag / commit）只登记在 [`catalog.json`](../catalog.json)。本页不复制数字，以免下一轮同步出现第二份必须同时改、又可能改得不一致的地方。
+
+![七层宪法层总览：证据形态与入口真实性](./figures/evidence-map.svg)
 
 ## 阅读路径
 
-- **10 分钟**：读本文件 + [`01-doctrine.md`](./01-doctrine.md)。`docs/testing.md` 只有 55 行，值得整读；01 逐条消化它并给出测试指导在文档体系里的完整分布图。
-- **30 分钟**：加读 [`02-tiers.md`](./02-tiers.md)（分层全景与文件形态普查）与 [`03-rules-ownership.md`](./03-rules-ownership.md)（规矩与所有权）。
-- **插件作者专线**：[`08`](./08-plugin-testing.md)（政策对插件的要求）→ [`09`](./09-plugin-testing-playbook.md)（真实插件组合解剖）→ [`10`](./10-plugin-testing-checklist.md)（PR 检查单）→ [`11`](./11-snapshot-external-face.md)（快照机制的对外面）；货架与分类法在 [`plugin-inventory`](../plugin-system/inventory/00-map.md)。
-- **深潜**：按问题进 [`04`](./04-snapshot-machinery.md)（快照机制）、[`05`](./05-ci-gates.md)（CI 门禁与防假绿）、[`06`](./06-reliability.md)（可靠性纪律）、[`07`](./07-infrastructure.md)（基建与 Python 面）。
+- **15 分钟，抓住三个答案**：本页 → [`03`](./03-asset-census.md) 的账本与比例 → [`04`](./04-anti-omission.md) 的六面表 → [`05`](./05-decision-procedure.md) 的七问。`docs/testing.md` 只有 55 行，值得整读。
+- **30 分钟，理解为什么**：加读 [`01`](./01-doctrine.md)（九条教义）与 [`02`](./02-tiers.md)（层与选中机制）。
+- **插件作者专线**：[`13`](./13-plugin-testing.md)（政策要求）→ [`14`](./14-plugin-testing-playbook.md)（真实组合）→ [`15`](./15-plugin-testing-contract.md)（契约与账本）→ [`11`](./11-snapshot-external-face.md)（快照机制的对外面）；货架与分类法在 [`plugin-inventory`](../plugin-system/inventory/00-map.md)。
+- **深潜**：按问题进 [`07`](./07-ci-gates.md)（CI 与防假绿）、[`08`](./08-reliability.md)（可靠性）、[`09`](./09-infrastructure.md)（基建）、[`10`](./10-snapshot-machinery.md)（快照机制）、[`12`](./12-probe-作为取证动作.md)（probe）。
 
 ## 与其他专题的边界
 
 | 对象 | 关系 |
 |---|---|
-| [`system-overview/03-门禁与性能基准.md`](../system-overview/03-门禁与性能基准.md) | 门禁聚合器与性能基准树的机制概述；本专题 [`05`](./05-ci-gates.md) 不重复其家族图，深入 CI lane 结构、必需性与防假绿 |
-| [`harness-idea/`](../harness-idea/00-map.md) | 判断层（dsh 这种 harness 形态做对了什么）；本专题是机制消化层，测试相关的判断在那边 |
+| [`system-overview/03-门禁与性能基准.md`](../system-overview/03-门禁与性能基准.md) | 门禁聚合器与性能基准树的机制概述；本专题 [`07`](./07-ci-gates.md) 深入 CI lane 结构、必需性与防假绿，[`03`](./03-asset-census.md) 拥有资产数量 |
+| [`harness-idea/`](../harness-idea/00-map.md) | 判断层（dsh 这种 harness 形态做对了什么）；本专题是机制与决策层，测试相关的价值判断在那边 |
+| [`delegation-and-orchestration/completion-and-observation/07-…`](../delegation-and-orchestration/completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md) | 委派链的四层证据；仓库级测试政策与资产分布归本专题 |
 | [`_coverage/`](../_coverage/00-index.md) | 本专题的核验登记（承诺回答的问题、最近核验 commit） |
 | [`_change_log/`](../_change_log/00-index.md) | 上游同步记录；同步触及测试面时按影响评估复核本专题 |
 
@@ -68,6 +85,7 @@ DSH 怎么测：测试思想与成文政策在哪、有哪些层、立了哪些�
 
 - 消化文档，不是搬运：每篇给"它为什么这么定"的解释；硬事实 / 解释 分开标记。
 - 事实锚点：仓库相对路径 + 符号/文件名，锚定顶部基线 commit；关键规则保留英文原文短引用。
-- 不复述 `docs/testing.md` 全文——读者应直接读原文；本专题的价值在于把散在 policy / skill / Agent Note（18 篇）/ cookbook / 包 README / CI 配置 / 代码惯例里的测试体系拼成一张地图。
+- 不复述 `docs/testing.md` 全文——读者应直接读原文；本专题的价值在于把散在 policy / skill / Agent Note / cookbook / 包 README / CI 配置 / 代码惯例里的测试体系拼成一张地图，并给出可执行的决策程序。
+- 模板与判据是本专题的提炼，不冒充 DSH 的成文文件；DSH 的一手事实一律给源码入口。
 
 > 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

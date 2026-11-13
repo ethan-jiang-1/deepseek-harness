@@ -1,10 +1,10 @@
-# 04 — 快照机制：录制会话回放怎么做期望值
+# 10 — 快照机制：录制会话回放怎么做期望值
 
-> 本篇深挖七层里的 Snapshot 层（`pnpm run test:snapshot`）：机制、世代模型、四面分工、录制/刷新语义、夹具格式。政策依据见 [01](./01-doctrine.md) 教义 9，所有权见 [03](./03-rules-ownership.md)，CI 挂载见 [05](./05-ci-gates.md)。
+> 本篇深挖七层里的 Snapshot 层（`pnpm run test:snapshot`）：机制、世代模型、四面分工、录制/刷新语义、夹具格式。政策依据见 [01](./01-doctrine.md) 教义 9，所有权见 [06](./06-rules-ownership.md)，CI 挂载见 [07](./07-ci-gates.md)。
 
 ## 现象是什么：把一次真实会话变成无 key 的期望值
 
-Snapshot 层的定义（`docs/testing.md`）是 **keyless recorded-session replay**：录制时用真模型跑一次完整会话，把"用户输入 + 模型回放 + 持久化结果"固化成场景资产；CI 里无 key 回放——同一份输入喂给回放的模型流，断言持久化结果与期望一致。`snapshots/` 树在基线下有 1682 个文件（1675 常规文件 + 7 个跨 profile sidecar 符号链接），分四个面：`snapshots/session/`（headless）、`snapshots/sdk/`、`snapshots/acp/`、`snapshots/web/`。
+Snapshot 层的定义（`docs/testing.md`）是 **keyless recorded-session replay**：录制时用真模型跑一次完整会话，把"用户输入 + 模型回放 + 持久化结果"固化成场景资产；CI 里无 key 回放——同一份输入喂给回放的模型流，断言持久化结果与期望一致。`snapshots/` 树在基线下以千计文件、分四个面（规模与构成口径见 [03](./03-asset-census.md)）：`snapshots/session/`（headless）、`snapshots/sdk/`、`snapshots/acp/`、`snapshots/web/`。
 
 一句话定位：**with-key e2e 证明"现在还对真模型工作"，快照证明"组装后的完整转录没有意外变化"**。前者是活的，后者是固化的；两者互补，谁也不能替代谁（"package, e2e, mock-only, and rationale evidence does not replace the assembled transcript"）。
 
@@ -70,7 +70,7 @@ Web 渲染可以显式借用另一个场景的 canonical session（"a Web render
 
 ## 为什么这么定（解释）
 
-1. **"assembled transcript" 是不可替代的证据形态。** 单测证明组件行为，e2e 证明现在能跑，但"组装后的完整转录"（模型看到了什么、说了什么、落了什么盘）只有快照能固化。这就是为什么它被定为强制条件（[03](./03-rules-ownership.md) 条令 1）。
+1. **"assembled transcript" 是不可替代的证据形态。** 单测证明组件行为，e2e 证明现在能跑，但"组装后的完整转录"（模型看到了什么、说了什么、落了什么盘）只有快照能固化。这就是为什么它被定为强制条件（[06](./06-rules-ownership.md) 条令 1）。
 2. **世代模型让"期望"与"格式演进"解耦。** 会话格式是有版本的持久化契约；期望资产如果跟着格式重写，迁移覆盖就永远测不到"老会话在新版本下怎么读"。加后继不改前驱，等于给每代格式留了活的回归样本。
 3. **keyless 回放 = with-key 立场的 CI 落地。** [01](./01-doctrine.md) 教义 3 说"不限额真 API"；但 PR CI 没有 key。快照层把"真模型行为的证据"做成**可以无 key 验证的固化资产**——录制时花 key（本地/夜间），验证时零 key（每个 PR）。**真模型的证据进 CI，靠的是录制回放，不是 mock。**
 4. **mutating 场景的 `workspace.expected/` 是"verify the world"的静态化。** 转录期望与世界状态期望分开，且后者连录制流程都不能碰——证据的生产者不能是证据的修改者。
@@ -101,7 +101,7 @@ session JSONL 一行一事件、首行 header；身份与路径全部用类型�
 
 ## 存储规则与工具（`dsh-session-snapshot`）
 
-快照层的 owning 工具是 `packages/test-support/session-snapshot`（9 个源文件：index / harness / launcher / manifest / session-files / normalize / identity / workspace / suite）。职责（README）：封闭 manifest、类型化身份重绘、normalizer、workspace 比较、fixture 守卫、headless/SDK/ACP/Web 四类 owner 的协议适配器；包入口 import vitest，只能在 vitest 内用。所有权规则在 [03](./03-rules-ownership.md)；这里记超出 `docs/testing.md` 概述的机制（硬事实）：
+快照层的 owning 工具是 `packages/test-support/session-snapshot`（9 个源文件：index / harness / launcher / manifest / session-files / normalize / identity / workspace / suite）。职责（README）：封闭 manifest、类型化身份重绘、normalizer、workspace 比较、fixture 守卫、headless/SDK/ACP/Web 四类 owner 的协议适配器；包入口 import vitest，只能在 vitest 内用。所有权规则在 [06](./06-rules-ownership.md)；这里记超出 `docs/testing.md` 概述的机制（硬事实）：
 
 - **normalizer 的边界**：保留完整 header/事件 payload，省略顶层 seq/time envelope，擦系统提示与工具 schema bulk，`{{cwd}}` 替换生成的工作区路径。
 - **独立输出 oracle**：保留历史输入的场景里，canonical Session 文件不变、继续被选为回放输入；精确规范化后的 native writer 输出单独记录在 `writer.expected.jsonl` / `writer.<ordinal>.expected.jsonl`——它们是**输出比较基准，不是 replay 代际**。

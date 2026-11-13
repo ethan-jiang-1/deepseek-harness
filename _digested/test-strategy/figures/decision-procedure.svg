@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#666"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#1677ff"/>
+    </marker>
+  </defs>
+  <rect width="960" height="520" fill="#fafafa" rx="6"/>
+  <text x="480" y="34" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">测试决策程序：一次变更 → 一份可复核的证据账本</text>
+  <text x="480" y="56" text-anchor="middle" font-size="11" fill="#6b7280">程序的目的不是加仪式，而是在写代码之前就回答"哪层看得见这个失败类"</text>
+
+  <!-- input -->
+  <rect x="24" y="204" width="112" height="72" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+  <text x="80" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#374151">一次变更</text>
+  <text x="80" y="254" text-anchor="middle" font-size="10.5" fill="#6b7280">代码 / 配置 / 文档</text>
+
+  <!-- five steps -->
+  <g>
+    <rect x="168" y="180" width="132" height="120" rx="9" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.4"/>
+    <circle cx="188" cy="202" r="11" fill="#1677ff"/>
+    <text x="188" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">1</text>
+    <text x="234" y="208" font-size="13" font-weight="700" fill="#1d4ed8">分类</text>
+    <text x="182" y="232" font-size="10" fill="#374151">定位失败类：</text>
+    <text x="182" y="248" font-size="10" fill="#374151">schema / prompt /</text>
+    <text x="182" y="264" font-size="10" fill="#374151">loader / persistence</text>
+    <text x="182" y="284" font-size="10" fill="#6b7280">产出：风险类清单</text>
+  </g>
+
+  <g>
+    <rect x="322" y="180" width="132" height="120" rx="9" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.4"/>
+    <circle cx="342" cy="202" r="11" fill="#1677ff"/>
+    <text x="342" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">2</text>
+    <text x="388" y="208" font-size="13" font-weight="700" fill="#1d4ed8">选层</text>
+    <text x="336" y="232" font-size="10.5" fill="#374151">最便宜、但确实</text>
+    <text x="336" y="248" font-size="10.5" fill="#374151">能看见该失败类</text>
+    <text x="336" y="264" font-size="10.5" fill="#374151">的那一层</text>
+    <text x="336" y="284" font-size="10" fill="#6b7280">unit → 组合 → 快照</text>
+  </g>
+
+  <g>
+    <rect x="476" y="180" width="132" height="120" rx="9" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.4"/>
+    <circle cx="496" cy="202" r="11" fill="#fa8c16"/>
+    <text x="496" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">3</text>
+    <text x="542" y="208" font-size="13" font-weight="700" fill="#ad6800">证明会红</text>
+    <text x="490" y="232" font-size="10.5" fill="#374151">引入目标回归</text>
+    <text x="490" y="248" font-size="10.5" fill="#374151">→ 看到红 → 恢复</text>
+    <text x="490" y="264" font-size="10.5" fill="#374151">静态守卫：构造拒绝样例</text>
+    <text x="490" y="284" font-size="10" fill="#6b7280">不红的断言不是证据</text>
+  </g>
+
+  <g>
+    <rect x="630" y="180" width="132" height="120" rx="9" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.4"/>
+    <circle cx="650" cy="202" r="11" fill="#fa8c16"/>
+    <text x="650" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">4</text>
+    <text x="696" y="208" font-size="13" font-weight="700" fill="#ad6800">验世界</text>
+    <text x="644" y="232" font-size="10.5" fill="#374151">重读文件 / 重跑命令</text>
+    <text x="644" y="248" font-size="10.5" fill="#374151">查日志 / 持久状态</text>
+    <text x="644" y="264" font-size="10.5" fill="#374151">未改动文件逐字节相同</text>
+    <text x="644" y="284" font-size="10" fill="#6b7280">不信 agent 自报</text>
+  </g>
+
+  <g>
+    <rect x="784" y="180" width="152" height="120" rx="9" fill="#f0fdf4" stroke="#52c41a" stroke-width="1.4"/>
+    <circle cx="804" cy="202" r="11" fill="#52c41a"/>
+    <text x="804" y="206" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">5</text>
+    <text x="850" y="208" font-size="13" font-weight="700" fill="#237804">判够 + 记账</text>
+    <text x="798" y="232" font-size="10.5" fill="#374151">过七问；写 PR 账本</text>
+    <text x="798" y="248" font-size="10.5" fill="#374151">"显式未覆盖"必须登记</text>
+    <text x="798" y="264" font-size="10.5" fill="#374151">手动 lane 不进 required</text>
+    <text x="798" y="284" font-size="10" fill="#6b7280">分布自检：每条贵证据有理由</text>
+  </g>
+
+  <!-- arrows -->
+  <line x1="138" y1="240" x2="164" y2="240" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="300" y1="240" x2="318" y2="240" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="454" y1="240" x2="472" y2="240" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="608" y1="240" x2="626" y2="240" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="762" y1="240" x2="780" y2="240" stroke="#666" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- feedback loop -->
+  <path d="M860 300 L860 336 L234 336 L234 304" fill="none" stroke="#1677ff" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrow-blue)"/>
+  <text x="548" y="356" text-anchor="middle" font-size="10.5" fill="#1677ff">分布自检不通过 → 回到"选层"重新回答，而不是加一条更贵的测试</text>
+
+  <!-- seven questions -->
+  <rect x="24" y="382" width="912" height="112" rx="9" fill="#ffffff" stroke="#d1d5db" stroke-width="1.2"/>
+  <text x="44" y="406" font-size="12" font-weight="700" fill="#374151">"够了"七问（全部 yes 才算够）</text>
+  <g font-size="10.8" fill="#374151">
+    <text x="44" y="430">1 会在目标回归上变红吗？</text>
+    <text x="44" y="452">2 来自该类变更的真实入口吗？</text>
+    <text x="44" y="474">3 验证的是世界而不是自报吗？</text>
+    <text x="352" y="430">4 模型 / 协议 / 人可见输出被钉住了吗？</text>
+    <text x="352" y="452">5 在该类变更的最低层吗？</text>
+    <text x="352" y="474">6 跳过时是可见空缺吗？</text>
+    <text x="720" y="430">7 并发 / 平台 / teardown 下</text>
+    <text x="720" y="446">   可重复吗？</text>
+  </g>
+
+  <text x="480" y="510" text-anchor="middle" font-size="10.5" fill="#9ca3af">模板与实例见 05-decision-procedure.md；资产分布判据见 03-asset-census.md</text>
+</svg>

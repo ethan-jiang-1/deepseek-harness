@@ -1,6 +1,6 @@
-# 09 — 插件测试实战：五个真实插件的测试组合解剖
+# 14 — 插件测试实战：五个真实插件的测试组合解剖
 
-> 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[08](./08-plugin-testing.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录）与名词表，本篇按五个插件类型各解剖一套真实组合——每节给关键代码摘录与"移植到你的插件"一句。核验点见 [`catalog.json`](../catalog.json)。
+> 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[13](./13-plugin-testing.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录）与名词表，本篇按五个插件类型各解剖一套真实组合——每节给关键代码摘录与"移植到你的插件"一句。核验点见 [`catalog.json`](../catalog.json)。
 
 ## 现象是什么：组合的形状跟着"插件承诺"走
 
@@ -58,7 +58,7 @@ it('model calls todo_write: a tool/call, a non-error tool/result, and a todo/wri
 - **可选性**：`PATH: ''` 启动——"Loading the optional package must not probe or start a Codex binary"（可选依赖缺席时不探测、不启动）；
 - **拓扑**：Bundle default + 两个命名实例（`codex-primary`/`codex-secondary`）+ 各自的 capabilities JSON（`agentOptions`/`outputSchema`/`depthLimit`/`toolFilter`/`persona` 逐项断言——本例三实例全 false）+ `inheritsParentContext`；
 - **结构来自产品面**：patch 路径从 `package.json` 的 `dsh.bundle.patch` 现读，"Codex package must declare a Bundle patch" 缺失即 throw；
-- **CI 挂载**：此文件在 built-bin-smoke 门的 16 文件清单里（[05](./05-ci-gates.md)），CI 用 built `lib/` 以 `DSH_EXAMPLE_MODE=lib` 再跑一遍。
+- **CI 挂载**：此文件在 built-bin-smoke 门的 16 文件清单里（[07](./07-ci-gates.md)），CI 用 built `lib/` 以 `DSH_EXAMPLE_MODE=lib` 再跑一遍。
 
 可抄骨架：
 
@@ -122,7 +122,7 @@ class RecordingAdapter extends LlmAdapter {
 
 **移植到你的插件**：Recording/Cooperative 两个 adapter 直接可抄；超时、取消、坏 JSON 的路径各自一个用例。
 
-## 快照场景怎么"带上"一个插件（[04](./04-snapshot-machinery.md) 的插件视角）
+## 快照场景怎么"带上"一个插件（[10](./10-snapshot-machinery.md) 的插件视角）
 
 场景 patch `snapshots/session/agent-instructions/cordis.snapshot.yml` 的三手：
 
@@ -135,7 +135,7 @@ class RecordingAdapter extends LlmAdapter {
 ## 为什么这么定（解释）
 
 1. **组合的形状跟着"插件承诺"走**（见现象节）：先写承诺，再挑组合。
-2. **测试文件的注释密度是有意的**：tool-todo.spec 解释"为什么只 stand-in agent wrapper"，subagent-codex 解释"为什么 PATH 为空"——每个 stand-in 都写明自己证明不了什么，与 [07](./07-infrastructure.md) 的"mock 不自欺清单"同一条纪律落到测试代码里。
+2. **测试文件的注释密度是有意的**：tool-todo.spec 解释"为什么只 stand-in agent wrapper"，subagent-codex 解释"为什么 PATH 为空"——每个 stand-in 都写明自己证明不了什么，与 [09](./09-infrastructure.md) 的"mock 不自欺清单"同一条纪律落到测试代码里。
 
 ## 源码锚点
 

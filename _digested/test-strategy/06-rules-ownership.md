@@ -1,4 +1,4 @@
-# 03 — 规矩与所有权：谁拥有什么证据
+# 06 — 规矩与所有权：谁拥有什么证据
 
 > 本篇收集 DSH 测试体系里"操作级"的规矩：常备条令（root `AGENTS.md`）、快照树所有权（`snapshots/AGENTS.md`）、推送前检查选取（`dsh-pre-push-checks`）。思想级的教义见 [01](./01-doctrine.md)，分层见 [02](./02-tiers.md)。
 
@@ -51,7 +51,7 @@ DSH 的测试规矩不在一份文件里，而是按"谁需要什么时候看到
 4. **不重复已过的检查**："Do not manually repeat a passing check merely because commit or push follows."——尤其不许只为复述 pre-push hook 而在推送前再跑一次 typecheck。
 5. **聚焦覆盖率仍按门的标准**：`vitest run <owning tests> --coverage --coverage.include='packages/<group>/<pkg>/src/**'`；per-file 100% 在选定范围内仍适用；不 `--passWithNoTests`、不降阈值、不为隐藏未覆盖文件而收窄 include。
 6. **全套彩排仅三种情况**：用户显式要求、诊断 CI 失败、改动遍及全仓且无更小可信集。
-7. **插件作者的时间线**：本技能管"推送前跑什么"；插件测试面怎么摆、组合怎么抄、PR 要带什么证据，按 [`08`](./08-plugin-testing.md) → [`09`](./09-plugin-testing-playbook.md) → [`10`](./10-plugin-testing-checklist.md) 走。
+7. **插件作者的时间线**：本技能管"推送前跑什么"；插件测试面怎么摆、组合怎么抄、PR 要带什么证据，按 [`13`](./13-plugin-testing.md) → [`14`](./14-plugin-testing-playbook.md) → [`15`](./15-plugin-testing-contract.md) 走。
 8. **改写历史**：`--force-with-lease`（fetch 记录观察到的 OID，并发更新即中止）；raw `--force` 永不允许；`gh stack sync` 后四步验证（重查每分支头 → 检视 changed scope → 逐层跑证据 → 全过前不 merge）。
 9. **失败处理**："Do not push and hope CI differs."——环境特定失败要拿证据（精确命令/失败测试/平台不匹配），不许推上去赌 CI。
 

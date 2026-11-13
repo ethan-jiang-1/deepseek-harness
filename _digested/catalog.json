@@ -1350,16 +1350,16 @@
     {
       "dir": "test-strategy",
       "title": "测试体系",
-      "intent": "DSH 怎么测：七层证据、快照机制、CI 门禁、可靠性、插件作者测试面与快照对外面。",
+      "intent": "DSH 怎么测：资产分布与成本、防漏机制、选层决策程序、CI 门禁、快照机制，以及插件项目的测试契约。",
       "kind": "topic",
       "map": "00-map.md",
       "pages": [
         {
           "file": "00-map.md",
-          "title": "Test Strategy · 测试思想、分层、快照与门禁",
+          "title": "Test Strategy · 测试思想、资产分布、防漏与决策程序",
           "role": "map",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
@@ -1374,70 +1374,70 @@
           "file": "02-tiers.md",
           "title": "02 — 测试分层全景：七层宪法层与广义测试面",
           "role": "mechanism",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
-          "file": "03-rules-ownership.md",
-          "title": "03 — 规矩与所有权：谁拥有什么证据",
+          "file": "03-asset-census.md",
+          "title": "03 — 资产账本：自动化测试资产的分布与成本",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "04-anti-omission.md",
+          "title": "04 — 防漏：测试资产如何保证\"不漏东西\"",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "05-decision-procedure.md",
+          "title": "05 — 决策程序：怎么定测试面、怎么算够",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "06-rules-ownership.md",
+          "title": "06 — 规矩与所有权：谁拥有什么证据",
           "role": "mechanism",
           "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
           "status": "carried",
           "source": "topic"
         },
         {
-          "file": "04-snapshot-machinery.md",
-          "title": "04 — 快照机制：录制会话回放怎么做期望值",
+          "file": "07-ci-gates.md",
+          "title": "07 — CI 门禁与平台矩阵：编排、必需性与防假绿",
           "role": "mechanism",
           "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
           "status": "carried",
           "source": "topic"
         },
         {
-          "file": "05-ci-gates.md",
-          "title": "05 — CI 门禁与平台矩阵：编排、必需性与防假绿",
+          "file": "08-reliability.md",
+          "title": "08 — 测试可靠性纪律：共享世界上让偶发失败无处藏身",
           "role": "mechanism",
           "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
           "status": "carried",
           "source": "topic"
         },
         {
-          "file": "06-reliability.md",
-          "title": "06 — 测试可靠性纪律：共享世界上让偶发失败无处藏身",
+          "file": "09-infrastructure.md",
+          "title": "09 — 测试基建：test-support 七件套、横切 helper 与 Python 面",
           "role": "mechanism",
           "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
           "status": "carried",
           "source": "topic"
         },
         {
-          "file": "07-infrastructure.md",
-          "title": "07 — 测试基建：test-support 七件套、横切 helper 与 Python 面",
+          "file": "10-snapshot-machinery.md",
+          "title": "10 — 快照机制：录制会话回放怎么做期望值",
           "role": "mechanism",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
-          "source": "topic"
-        },
-        {
-          "file": "08-plugin-testing.md",
-          "title": "08 — 插件测试策略：政策对一个新插件的要求",
-          "role": "playbook",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
-          "source": "topic"
-        },
-        {
-          "file": "09-plugin-testing-playbook.md",
-          "title": "09 — 插件测试实战：五个真实插件的测试组合解剖",
-          "role": "playbook",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
-          "source": "topic"
-        },
-        {
-          "file": "10-plugin-testing-checklist.md",
-          "title": "10 — 插件作者检查单：一个插件 PR 的最小证据集",
-          "role": "playbook",
           "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
           "status": "carried",
           "source": "topic"
@@ -1457,6 +1457,30 @@
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
           "status": "reverified",
           "source": "topic"
+        },
+        {
+          "file": "13-plugin-testing.md",
+          "title": "13 — 插件测试策略：政策对一个新插件的要求",
+          "role": "playbook",
+          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
+          "status": "carried",
+          "source": "topic"
+        },
+        {
+          "file": "14-plugin-testing-playbook.md",
+          "title": "14 — 插件测试实战：五个真实插件的测试组合解剖",
+          "role": "playbook",
+          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
+          "status": "carried",
+          "source": "topic"
+        },
+        {
+          "file": "15-plugin-testing-contract.md",
+          "title": "15 — 插件项目测试契约：从 DSH 的五级台阶到你的仓",
+          "role": "playbook",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
         }
       ]
     },

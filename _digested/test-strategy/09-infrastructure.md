@@ -1,6 +1,6 @@
-# 07 — 测试基建：test-support 七件套、横切 helper 与 Python 面
+# 09 — 测试基建：test-support 七件套、横切 helper 与 Python 面
 
-> 本篇盘点 DSH 的测试基础设施：`packages/test-support/` 七件套、两个横切 helper、benchmarks 支撑、vitest setup 三件套、Python 侧。各工具服务哪些层见 [02](./02-tiers.md)；快照 owning 工具的规则细节见 [04](./04-snapshot-machinery.md)。
+> 本篇盘点 DSH 的测试基础设施：`packages/test-support/` 七件套、两个横切 helper、benchmarks 支撑、vitest setup 三件套、Python 侧。各工具服务哪些层见 [02](./02-tiers.md)；快照 owning 工具的规则细节见 [10](./10-snapshot-machinery.md)。
 
 ## 现象是什么：一个"待晋升"的基建组
 
@@ -10,7 +10,7 @@
 
 | 包 | 一句话 | 关键契约 |
 |---|---|---|
-| `session-snapshot` | 快照层 owning 工具 | 封闭 manifest、类型化身份重绘、normalizer、workspace 比较、fixture 守卫、四协议适配器；包入口 import vitest，只能在 vitest 内用（[04](./04-snapshot-machinery.md)） |
+| `session-snapshot` | 快照层 owning 工具 | 封闭 manifest、类型化身份重绘、normalizer、workspace 比较、fixture 守卫、四协议适配器；包入口 import vitest，只能在 vitest 内用（[10](./10-snapshot-machinery.md)） |
 | `agent-loop-testkit` | AgentLoop 依赖栈装配 | `mountAgentLoopTestDependencies()` 按固定顺序挂六服务（LLM→会话→投影注册表→系统提示词→工具注册表→agent 注册表），`options.workingDirectory` 打开时在系统提示词与工具注册表之间追加 `FsLocal`+`WorkingDirectory`（新 `ctx.workingDirectory` seam 的测试夹具）、**停在 AgentLoop 之前**（调用方控制 loop 加载）；不挂任何 LLM 适配器 |
 | `llm-mock-server` | 可脚本 Messages 兼容 HTTP/SSE 故障服务器 | 每个已接受 `/v1/messages` 请求按 FIFO 消费下一个行为（校验先于游标推进）；带种子加权 `random` 行为支持可复现混合故障压力 |
 | `llm-replay` | 无 key 回放插件 | `file/overrideFile/childFiles` 缺省取 `$DSH_SNAPSHOT_*`；嵌套 agent 按 first-call-order 绑定；`assertConsumed()` 把静默 underrun 变明确诊断 |

@@ -1,6 +1,6 @@
 # 02 — 测试分层全景：七层宪法层与广义测试面
 
-> 本篇回答"DSH 有哪些测试层、每层测什么、怎么被选中"。分层依据见 [01](./01-doctrine.md) 的"证据匹配面"；快照机制深挖见 [04](./04-snapshot-machinery.md)，CI 编排见 [05](./05-ci-gates.md)。
+> 本篇回答"DSH 有哪些测试层、每层测什么、怎么被选中"。分层依据见 [01](./01-doctrine.md) 的"证据匹配面"；快照机制深挖见 [10](./10-snapshot-machinery.md)，CI 编排见 [07](./07-ci-gates.md)。
 
 ## 现象是什么：不按"单元/集成/端到端"三分
 
@@ -10,7 +10,7 @@
 
 ## 后缀即层：文件名选中机制（硬事实）
 
-**一个测试文件属于哪一层，由它的后缀 + 所在目录唯一决定**，8 份根部 vitest 配置各自认领自己的模式：
+**一个测试文件属于哪一层，由它的后缀 + 所在目录唯一决定**，8 份根部运行配置各自认领自己的模式：
 
 | 后缀 / 位置 | 层 | 选中它的配置 |
 |---|---|---|
@@ -23,7 +23,7 @@
 | `apps/web/stress-tests/**/*.stress.ts` | Web 压力（opt-in） | `vitest.web-stress.config.ts` |
 | `benchmarks/**/*.bench.ts`、`*.bench.client.ts` | CI 性能门禁 | `vitest.bench.config.ts` |
 
-注意 e2e 配置显式 **exclude `*.expected.e2e.ts`**（归 expected 层）和 inspector 的 `client-browser.e2e.ts`（归 web 层）——层的边界在后缀文法里是互斥的。8 份配置全部用同一个 `tsconfig.base.json` 门面做 vite-tsconfig-paths 解析（源码平面，[01](./01-doctrine.md) 教义 7）。
+注意 e2e 配置显式 **exclude `*.expected.e2e.ts`**（归 expected 层）和 inspector 的 `client-browser.e2e.ts`（归 web 层）——层的边界在后缀文法里是互斥的。8 份运行配置全部用同一个 `tsconfig.base.json` 门面做 vite-tsconfig-paths 解析（源码平面，[01](./01-doctrine.md) 教义 7）。
 
 ![后缀 → 配置 → 车道的选中机制](./figures/suffix-to-lane.svg)
 
@@ -48,7 +48,7 @@
 ### 3. Real-API e2e——with-key，无 key 自跳过
 
 - 证据对象：live provider API——DeepSeek 模型 + 各 provider 自己 key 门控的冒烟（`EXA_API_KEY`、`PERPLEXITY_API_KEY`…）；各 suite 缺自己的 key 就 skip（"keyless CI stays green"）。
-- 执行形态：读根 `.env`；testTimeout 120s / hookTimeout 30s / **retry 2**（注释：真实模型调用的瞬态抖动——全体系唯一显式 retry 的层，见 [06](./06-reliability.md)）；`DSH_E2E_MAX_WORKERS` 默认 4；**无 coverage**（注释：单元层拥有覆盖率门——覆盖率不重复计税）。
+- 执行形态：读根 `.env`；testTimeout 120s / hookTimeout 30s / **retry 2**（注释：真实模型调用的瞬态抖动——全体系唯一显式 retry 的层，见 [08](./08-reliability.md)）；`DSH_E2E_MAX_WORKERS` 默认 4；**无 coverage**（注释：单元层拥有覆盖率门——覆盖率不重复计税）。
 - profile 级集成测试住 `apps/cli/tests/profiles/`；包特定组装留在包测试。
 
 ### 4. Owner-local expected——无录制往返的进程期望
@@ -66,7 +66,7 @@
 
 ### 6. Snapshot——录制会话回放（keyless）
 
-一句话机制：顶层场景的最高录制父代提供用户输入与模型回放，其持久化结果就是期望值。四面分工：headless 拥有一次性行为、SDK 拥有持久控制、ACP 拥有自动化协议行为、Web 在同一 Session 旁保留浏览器/ARIA 证据。执行形态：replay 并行、record/refresh 严格串行、只有 record 读 `.env`。细节全部在 [04](./04-snapshot-machinery.md)。
+一句话机制：顶层场景的最高录制父代提供用户输入与模型回放，其持久化结果就是期望值。四面分工：headless 拥有一次性行为、SDK 拥有持久控制、ACP 拥有自动化协议行为、Web 在同一 Session 旁保留浏览器/ARIA 证据。执行形态：replay 并行、record/refresh 严格串行、只有 record 读 `.env`。细节全部在 [10](./10-snapshot-machinery.md)。
 
 ### 7. Web browser snapshot——浏览器证据比对
 
@@ -111,24 +111,17 @@
 | 可擦写 `.ts` + plain Node（无 tsx、无 paths map） | 不加载 Cordis 的协议/OS fixture | fixture 逻辑本身，零转译层干扰 |
 | 编译 worker + 净化 env + plain Node | benchmarks | 纯净计时（四层拒绝机制见上） |
 
-## 文件形态普查（按基线树、各配置 include 模式实测）
+## 文件形态（数量与成本见 03）
 
-| 后缀 / 形态 | 计数 | 备注 |
-|---|---|---|
-| `*.spec.{ts,tsx}`（unit） | **2150** | packages 1518 `.ts` + 298 `.tsx`、apps 176+1、scripts 152、website 5 |
-| `*.e2e.ts`（e2e 车道） | **110** | 按 `vitest.e2e.config.ts` 的 include（`packages/*/*/tests/**`、`apps/{cli,desktop}/tests/**`）减 exclude（`*.expected.e2e.ts` 与 inspector 的 `client-browser.e2e.ts`）实测；物理总数 322，归 web 车道的 190 个与归 expected 层的 21 个不在内 |
-| `*.expected.e2e.ts` | **21**（apps/cli）+ 8（apps/web，归 web 车道） | 另有 1 个 `*.expected.spec.ts` 走 unit——"Package/script expectations use `test`"的实例 |
-| `*.snapshot.ts` 驱动 | **3** + 1 corpus | 场景数据面：snapshots/session **150**、sdk **27**、acp **9**、web **64** = **250 个录制场景** |
-| `*.bench.ts` / `*.bench.client.ts` | 7 + 3 | |
-| `*.perf.ts` / `*.perf.client.ts` | 2 / 1 | packages 下 1 个**不在任何配置 include 里**（纯手动诊断，"package-local `.perf.ts` stays diagnostic"的实例） |
-| `*.stress.ts` | 1 | opt-in |
-| `tests/harness.ts` | 10 | 共享 fixture，**刻意不被任何 include 选中** |
-| built 冒烟 | **16** | built-bin-smoke 门清单文件数；散在 e2e include 内，无 key、lib 缺失自跳（另有 1 个 built 命名的 `apps/web/tests/built-boot.expected.e2e.ts` 归 web 车道，不在该门） |
+层的边界与写法在本页；各层的文件数、用例数、成本与 CI 必需性统一登记在 [`03-asset-census.md`](./03-asset-census.md)，本页不复制数字。两条与"层"直接相关的形态事实：
+
+- **`tests/harness.ts` 刻意不被任何配置选中**——共享 fixture 放在 include 模式之外，import 它不会重复注册别人的 `describe`、不会重复真实 API 调用。
+- **built 冒烟散在 e2e include 内**，无 key、`lib/` 缺失自跳；它们由 built-bin-smoke 门以固定清单聚合，而不是靠另一个后缀。
 
 **写法惯例（硬事实）**：
 
 - **命名**：英文行为命题、现在时、**无 "should"**——`describe('disposal leaves the two-state status contract balanced')`、`it('removes contributions when the contributing fiber is disposed (HMR safety)')`。"Tests describe behavior, not correctness" 的文体化。
-- **HMR-safety 模式**（全仓 70 处 `(HMR safety)`）：子 fiber 注册贡献 → 断言存在 → `await fiber.dispose()` → 断言移除（服务自身 built-in 不受影响）。契约回归样板 `contract-regressions.spec.ts`（1522 行、14 个 describe）每条测试钉死一个边界/身份/生命周期契约，注释直接回指原始 bug（如 "The key assertion from the original bug report: after disposal, no assistant/attempt or assistant/message appears"）。
+- **HMR-safety 模式**（全仓实测 67 处 `(HMR safety)`）：子 fiber 注册贡献 → 断言存在 → `await fiber.dispose()` → 断言移除（服务自身 built-in 不受影响）。契约回归样板 `contract-regressions.spec.ts`（1522 行、14 个 describe）每条测试钉死一个边界/身份/生命周期契约，注释直接回指原始 bug（如 "The key assertion from the original bug report: after disposal, no assistant/attempt or assistant/message appears"）。
 - **tests/harness.ts 模式**：共享 fixture 刻意放在 include 模式之外——import 它不会重复注册别人的 `describe`、不会重复真实 API 调用；代码里有就地注释（`packages/fs/tool-fs/tests/harness.ts`："This helper lives outside the e2e glob so imports do not register tests"）。
 - **spec 与 e2e 的实际写法差**（抽样对比）：spec = 进程内真 Cordis 组合 + MockAdapter，断言事件序列 / registry 状态；e2e = `describe.skipIf(!process.env.DEEPSEEK_API_KEY)` 自跳过（e2e 车道 25 处：packages 13 + apps 12（主道 24），部分套件再加用例内双保险 throw，如 `packages/llm/llm-deepseek/tests/runtime.e2e.ts:184`）+ 真 provider + 120s 车道默认 testTimeout（个别 profile 用例显式提到 180s）+ **进程外读文件断言**（verify the world）+ session log 里真实 tool/call 名单核对，不信 agent 自述。
 - **client 组件 spec**：文件首行 `// @vitest-environment jsdom` pragma + testing-library + fake timers；断言用户可见行为而非 class 名。
@@ -142,7 +135,7 @@
 ## 源码锚点
 
 - `docs/testing.md` Tiers 节——七层的官方定义
-- 根部 8 份 `vitest.*.config.ts`——后缀→层的选中机制、各层执行参数
+- 根部 8 份运行配置（`vitest.config.ts` + 7 份 `vitest.*.config.ts`）——后缀→层的选中机制、各层执行参数
 - root `package.json` scripts + `scripts/run-gates.ts`——广义测试面全表
 - `packages/core/agent-loop/tests/contract-regressions.spec.ts`——契约回归样板
 - `benchmarks/AGENTS.md` + `benchmarks/support/{built-worker,calibration}.ts`——性能门纪律与预算校准
@@ -151,6 +144,6 @@
 
 ## 最小例证
 
-1. **后缀即层可证伪**：把一个 `*.spec.ts` 改名 `*.e2e.ts`，它立刻从 unit 层消失、出现在 e2e 层——include/exclude 模式互斥且穷尽了测试文件空间。
+1. **后缀即层可证伪**：把一个 `*.spec.ts` 改名 `*.e2e.ts`，它立刻从 unit 层消失、出现在 e2e 层——include/exclude 模式互斥，穷尽了 vitest 车道的测试文件空间。
 2. **覆盖例外是显式的**：读 `vitest.config.ts` 的豁免清单——每条带平台条件或 `TODO(gui)` 注释；pwsh 豁免的探测条件与套件自跳过条件写在同一处。
 3. **预算常量有测试**：读任一 `benchmarks/*.bench.ts` 的校准段——`expect(...).toBe(63)` 一类断言把预算数字本身钉进套件。

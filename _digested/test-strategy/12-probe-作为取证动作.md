@@ -2,7 +2,7 @@
 
 源码核验入口：`apps/desktop/src/login-shell-environment.ts`、`packages/subprocess/subprocess-local/src/{linux-scope,windows-job,index}.ts`、`packages/session/session-persistence-jsonl/src/index.ts`、`vitest.config.ts`、`docs/testing.md`。
 
-本页回答：**DSH 里的 `probe` 到底是什么、它产出什么、该归哪个专题。** 结论先给：probe 不是术语表里的对象，是一种**问事实的动作**；它的产物是**分叉**、**判断**或**事实**，从来不是测试资产。所以它不属于 `canon/GLOSSARY`（那收 DSH 承认的对象与机制），而是测试策略这一卷缺的那一维——**取证动作**。
+本页回答：**DSH 里的 `probe` 到底是什么、它产出什么、该归哪个专题。** 结论先给：probe 不是术语表里的对象，是一种**问事实的动作**；它的产物是**分叉**、**判断**或**事实**，从来不是测试资产。它在防漏体系里的位置是**证据选择器**——决定一条用例跑不跑、一个文件豁免不豁免、一个平台 skip 不 skip；选择器与它守护的判断必须同源（[04](./04-anti-omission.md) 的 M6）。所以它不属于 `canon/GLOSSARY`（那收 DSH 承认的对象与机制），而是测试策略这一卷缺的那一维——**取证动作**。
 
 ## 读完你能回答
 
@@ -56,7 +56,7 @@
 
 这里最重要的一条在产品纪律之外、在测试内部：
 
-> **探针与它守护的判断必须同源。** `vitest.config.ts` 那段的原话把失败模式说尽了——如果豁免用的探针比用例用的判据更宽，就会出现"用例其实要跑、却被豁免掉"的假绿。这正是本卷 [`05-ci-gates`](./05-ci-gates.md) 与 [`06-reliability`](./06-reliability.md) 反复讲的防假绿在 probe 上的具体形态。
+> **探针与它守护的判断必须同源。** `vitest.config.ts` 那段的原话把失败模式说尽了——如果豁免用的探针比用例用的判据更宽，就会出现"用例其实要跑、却被豁免掉"的假绿。这正是本卷 [`07-ci-gates`](./07-ci-gates.md) 与 [`08-reliability`](./08-reliability.md) 反复讲的防假绿在 probe 上的具体形态。
 
 第二条：**探不通时的默认动作是"跳过"，不是"通过"**。跳过是可见的空缺，通过是伪造的证据。二者在 CI 汇总里长得像，含义相反。
 

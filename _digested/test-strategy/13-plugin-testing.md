@@ -1,6 +1,6 @@
-# 08 — 插件测试策略：政策对一个新插件的要求
+# 13 — 插件测试策略：政策对一个新插件的要求
 
-> 本篇面向**插件作者**：DSH 出厂自带的包、`ctx` 服务与工具包数量以 [`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) 和 [`claims.json`](../harness-idea/claims.json) 的指标为准（工具包数取 `docs/tool-catalog.md` 的 Tool Package Map 行数）；本篇实测另统计两个与测试面相关的数：以 named export 形态导出 `inject` 的包（口径：`packages/*/*/src/index.ts` 含 `export const inject`）、client `ui-*` 包（`packages/client/ui-*`，不含 `extensions/ui-cordis`）——它们全部按同一套测试要求受审。数量随版本变化，复测命令见 [`02`](./02-tiers.md) 与 [`07`](./07-infrastructure.md)。[`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。
+> 本篇面向**插件作者**：DSH 出厂自带的包、`ctx` 服务与工具包数量以 [`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) 和 [`claims.json`](../harness-idea/claims.json) 的指标为准（工具包数取 `docs/tool-catalog.md` 的 Tool Package Map 行数）；本篇实测另统计两个与测试面相关的数：以 named export 形态导出 `inject` 的包（口径：`packages/*/*/src/index.ts` 含 `export const inject`）、client `ui-*` 包（`packages/client/ui-*`，不含 `extensions/ui-cordis`）——它们全部按同一套测试要求受审。数量随版本变化，复测命令见 [`02`](./02-tiers.md) 与 [`09`](./09-infrastructure.md)。[`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。
 
 ## 先对齐五个名词（本篇自足，不依赖其他篇）
 
@@ -33,7 +33,7 @@ expect(unwrapped.name).toBe('tool-lsp')                // name / inject 穿过 u
 expect(unwrapped.inject).toEqual(['tools', 'lsp', 'systemPrompt'])
 ```
 
-为什么这么严：postmortem 0001 的 bug #1——一个多余的 `export default` 让 Loader 的 `unwrapExports` 解析到裸函数、丢弃整个模块命名空间，Loader smoke 依然绿。全仓 45 个 spec 含此断言；`packages/AGENTS.md` 把它固化为包层常驻条令（[03](./03-rules-ownership.md)）。
+为什么这么严：postmortem 0001 的 bug #1——一个多余的 `export default` 让 Loader 的 `unwrapExports` 解析到裸函数、丢弃整个模块命名空间，Loader smoke 依然绿。全仓 45 个 spec 含此断言；`packages/AGENTS.md` 把它固化为包层常驻条令（[06](./06-rules-ownership.md)）。
 
 ## 台阶二：行为 spec（进程内，真依赖只 stand-in 最外层包装）
 
@@ -85,24 +85,24 @@ await ctx.loader.await()
 
 ## 台阶五：组装转录（model-visible 改动必须同 PR）
 
-插件会改模型请求/转录的（新工具、新 system prompt 注入、新投影事件），同 PR 加或更新 keyless 录制场景（[04](./04-snapshot-machinery.md)）。插件在快照里的出现方式是 **patch**：`snapshots/session/*/cordis.snapshot.yml` 用 `disabled: true` 禁掉真实 provider、用场景 `config:` 覆盖本插件参数——真实插件、场景配置、回放模型流。
+插件会改模型请求/转录的（新工具、新 system prompt 注入、新投影事件），同 PR 加或更新 keyless 录制场景（[10](./10-snapshot-machinery.md)）。插件在快照里的出现方式是 **patch**：`snapshots/session/*/cordis.snapshot.yml` 用 `disabled: true` 禁掉真实 provider、用场景 `config:` 覆盖本插件参数——真实插件、场景配置、回放模型流。
 
 ## 配套纪律（与台阶同交）
 
 - **mock 白名单**：插件测试里唯一常见 mock 是脚本化模型（`MockAdapter`，跨包经源码平面相对导入复用）；网络/时钟才可 mock。with-key e2e 用共享 harness 挂全真栈（`packages/fs/tool-fs/tests/harness.ts` 挂 AgentLoop + LlmDeepSeek + LocalFileSystem + FsPolicy + ToolFs），harness 放 include 之外（[02](./02-tiers.md)）。
 - **face 命名**：`.host.spec`（全仓 98 个）与 `.client.spec.*`（734 个，含 `.ts` 与 `.tsx`）后缀决定该文件被哪个 tsc face program 类型检查（[02](./02-tiers.md) "测试代码自身也过静态门"）；client 侧再加 `@vitest-environment jsdom` pragma。
 - **运行时不变量已整族退役**：本跨度 `f028f25667`（`refactor: remove runtime invariant plugins`）删除了每包的 `./invariant` companion、`InvariantRegistry`、`scripts/test-invariants.ts` 与 `verify-package-invariants`，**无继任**——插件不再发布 invariant 入口，运行时关系由类型与产品面测试守卫（升级路径见 `docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`）。
-- **README 限制清单**：`verify-package-readme-limitations` 门要求插件 README 带已知限制节——mock 证明不了什么，要写下来（[07](./07-infrastructure.md)）。
+- **README 限制清单**：`verify-package-readme-limitations` 门要求插件 README 带已知限制节——mock 证明不了什么，要写下来（[09](./09-infrastructure.md)）。
 
 ## 为什么这么定（解释）
 
 1. **台阶是按"事故成本"排的**。导出形态最便宜（一行断言）却挡住过最贵的事故（0001 生产炸裂）；REAL composition 最贵（boot 成本），所以放在行为 spec 之后只测"组装语义"（Config 与实例拓扑），不重复测行为。
-2. **两级 REAL composition 分工 = 组装语义与发布形态分离**。进程内 boot 快、可断言上下文内部状态；子进程 smoke 慢、只断言可观测 stdout——它顺带成为 built-bin-smoke 门（16 文件清单，[05](./05-ci-gates.md)）的一部分，在 CI 上用 built 产物再跑一遍。
+2. **两级 REAL composition 分工 = 组装语义与发布形态分离**。进程内 boot 快、可断言上下文内部状态；子进程 smoke 慢、只断言可观测 stdout——它顺带成为 built-bin-smoke 门（16 文件清单，[07](./07-ci-gates.md)）的一部分，在 CI 上用 built 产物再跑一遍。
 3. **Config 的"两脸跟随"断言是插件特有的**。库的配置测试只验行为分支；插件的配置还会流到**模型可见面**（description、prompt），所以可配置性证据必须同时覆盖两脸。
 
 ## 源码锚点
 
-- `packages/todo/tool-todo/tests/`——四件套全景（本篇与 [09](./09-plugin-testing-playbook.md) 的主样板）
+- `packages/todo/tool-todo/tests/`——四件套全景（本篇与 [14](./14-plugin-testing-playbook.md) 的主样板）
 - `packages/lsp/tool-lsp/tests/load-path.spec.ts:14`——导出形态守卫样板
 - `packages/subagent/subagent-codex/tests/loader-composition.e2e.ts`——子进程 REAL composition 样板
 - `packages/fs/tool-fs/tests/harness.ts`——with-key e2e 的全真栈 harness

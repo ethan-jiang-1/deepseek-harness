@@ -1,6 +1,6 @@
-# 05 — CI 门禁与平台矩阵：编排、必需性与防假绿
+# 07 — CI 门禁与平台矩阵：编排、必需性与防假绿
 
-> 本篇消化 DSH 的 CI 编排层：`scripts/run-gates.ts`（门禁注册表）、`.github/workflows/`（lane 结构）、Wine 与热备演练。分层定义见 [02](./02-tiers.md)，政策见 [01](./01-doctrine.md)，可靠性纪律见 [06](./06-reliability.md)。
+> 本篇消化 DSH 的 CI 编排层：`scripts/run-gates.ts`（门禁注册表）、`.github/workflows/`（lane 结构）、Wine 与热备演练。分层定义见 [02](./02-tiers.md)，政策见 [01](./01-doctrine.md)，可靠性纪律见 [08](./08-reliability.md)。
 > 门禁聚合器与 leaf 家族的机制概述由 [`system-overview/03-门禁与性能基准.md`](../system-overview/03-门禁与性能基准.md) 承载，本篇不重复家族图。
 
 ## 现象是什么：一个 1697 行的门禁注册表
@@ -69,7 +69,7 @@ native/system（`@deepseek-ai/node-addon-system`）有自己的平台×Node 矩�
 
 ### expected-filenames.yml / sandbox.yml / pi-ai-provider-e2e.yml
 
-- **expected-filenames**：PR 改动了文件名含 `golden` 的文件时触发，强制改名 `expected`——命名即所有权（[03](./03-rules-ownership.md)）。
+- **expected-filenames**：PR 改动了文件名含 `golden` 的文件时触发，强制改名 `expected`——命名即所有权（[06](./06-rules-ownership.md)）。
 - **sandbox**（master-only）：OS×sandbox 矩阵（bwrap / landlock×2 / seatbelt）每腿跑专属 e2e 并 **grep `Test Files 2 passed (2)`——自跳过即失败**；landlock 腿加跑 packed-install（pack→install→confine 发布路径演练）；另有 macOS `unit-darwin` 奇偶校验。
 - **pi-ai-provider-e2e**：仅手动 dispatch（花外部 provider token），双 key preflight。
 
@@ -89,8 +89,8 @@ DSH 的 CI 设计里有一组专门对付"测试自己骗自己"的机制，与 
 
 ## 与政策的一致性（解释）
 
-- root `AGENTS.md` 的 "CI owns exhaustive coverage and the platform matrix" 在这里兑现：本地按面选最小证据（[03](./03-rules-ownership.md) pre-push 纪律），穷尽与矩阵是 CI 的财产。矩阵 = OS（Linux/Windows/macOS/Wine）× Node（22.19/24.9/26）× runner 池（企业/自托管/blacksmith）× 浏览器（chromium/webkit）。
-- **自托管共享 host 的连锁反应**：testing.md "self-hosted runners share one host and one volume"（[06](./06-reliability.md)）在这里表现为大量"并发压低 + timeout 抬升"的调参（`DSH_SNAPSHOT_MAX_WORKERS=1`、coverage timeout 90000、consumers 的 web-snapshot 互斥）——编排层在替测试纪律兜底。
+- root `AGENTS.md` 的 "CI owns exhaustive coverage and the platform matrix" 在这里兑现：本地按面选最小证据（[06](./06-rules-ownership.md) pre-push 纪律），穷尽与矩阵是 CI 的财产。矩阵 = OS（Linux/Windows/macOS/Wine）× Node（22.19/24.9/26）× runner 池（企业/自托管/blacksmith）× 浏览器（chromium/webkit）。
+- **自托管共享 host 的连锁反应**：testing.md "self-hosted runners share one host and one volume"（[08](./08-reliability.md)）在这里表现为大量"并发压低 + timeout 抬升"的调参（`DSH_SNAPSHOT_MAX_WORKERS=1`、coverage timeout 90000、consumers 的 web-snapshot 互斥）——编排层在替测试纪律兜底。
 - **门禁注册表是单一事实源**：workflow 只引用 `check:ci:*` 模式名，本地与 CI 跑同一张图——"我本地复现 CI 失败"不需要重建 workflow。
 
 ## 源码锚点
