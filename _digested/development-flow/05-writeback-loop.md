@@ -24,7 +24,7 @@
 | **文档** | `docs/testing.md`、package README | 按需阅读 | 链接/预算/引用位置可机械检查 |
 | **skill** | `.agents/skills/dsh-*` | 显式调用 | 被 `verify-skill-invocation-metadata` 检查元数据，不检查判定质量 |
 | **常驻规则** | root `AGENTS.md` 的 standing orders | 每个会话都在上下文里 | 词预算门禁；但「遵守」本身不可检查 |
-| **门禁 / 类型** | `scripts/verify-*.ts`、`SessionEventMap`、品牌类型 | 提交时红灯 | 最硬：改错了就红 |
+| **门禁 / 类型** | `scripts/verify-*.ts`、`SessionEventMap`、品牌类型 | 提交时红灯 | 最硬：改错了就红；冻结层更进一步，在 `git commit` 当场拒绝 |
 
 事故（postmortem）本身不是一种形态，它是**来源**：`docs/postmortem/` 记录机制、为什么逃过检查、代价多大，然后向上滋养某一个或几个形态。`docs/postmortem/README.md` 的写作门槛正好对应这条：要**微妙**（不写下来别人会重新踩）、**系统性**（逃过检查的原因是测试/工装/约定上的缺口，不是笔误）、**重新发现的代价高**。
 
@@ -38,7 +38,7 @@ DSH 有一条明文要求：
 
 > Add or update an Agent Note in the same PR only for lasting decision rationale that code, tests, and existing documentation do not explain.
 
-但有门禁检查「这次改动有没有配套 note」吗？**没有。** 三个 note 门禁检查的都是**已经存在的 note 有没有违反形状规则**，没有一个检查「这个 PR 该不该带 note 而没带」。
+但有门禁检查「这次改动有没有配套 note」吗？**没有。** 全部 note 门禁（含冻结层那道 `pre-commit` 钩子，见 [08](./08-enforcement-sites.md)）检查的都是**已经存在的 note 有没有违反形状规则**，没有一个检查「这个 PR 该不该带 note 而没带」。
 
 所以准确的强制力分层是：
 

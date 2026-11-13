@@ -8,7 +8,7 @@ DSH 把「一个决定为什么是这样」做成了仓库里的一等语料：�
 
 本专题讲**流程本身**：这条路有哪几段、每段的判据是什么、哪一段有红灯、哪一段只靠人。至于「这套外置为什么让 agent 更容易参与」，那是判断层，归 [`harness-idea/`](../harness-idea/00-map.md)。
 
-## 三个问题，三篇入口
+## 八个问题，八篇入口
 
 | 你的问题 | 入口 | 一句话答案 |
 | --- | --- | --- |
@@ -19,6 +19,7 @@ DSH 把「一个决定为什么是这样」做成了仓库里的一等语料：�
 | **学到的东西怎么回到仓库？** | [`05-writeback-loop.md`](./05-writeback-loop.md) | 学习外置成规则/门禁/skill/note 四形态，存在性有强制、质量只有部分有 |
 | **命名和日常写法的规矩从哪来？** | [`07-naming-and-house-style.md`](./07-naming-and-house-style.md) | 三层命令文件、与 `docs/` 的管辖权对偶、动词命名五律、闭集章节词汇、链接代替叙述 |
 | **这套制度哪里没有闭环？** | [`06-honest-gaps.md`](./06-honest-gaps.md) | 语义判据无自动验证、改写纪律无检查、分类门禁不读 README——逐条列出并给出可证伪的观察 |
+| **这些规则究竟由谁执行、什么时候响？** | [`08-enforcement-sites.md`](./08-enforcement-sites.md) | `doc-sync` 只是六类执法者之一：git 钩子、十余道门禁的排除谓词、六份 skill、PR review 各管一段 |
 
 ## 主轴是怎么长出来的
 
@@ -40,6 +41,9 @@ DSH 把「一个决定为什么是这样」做成了仓库里的一等语料：�
 | 正文骨架与提案期禁行 | [`scripts/verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts) |
 | 三件套完整性、归档元数据、哈希封印 | [`scripts/archived-agent-notes.ts`](../../scripts/archived-agent-notes.ts)、[`verify-archived-agent-notes.ts`](../../scripts/verify-archived-agent-notes.ts) |
 | 归档四分法的判定程序与校准样例 | [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) |
+| 冻结层在什么时机被强制（`pre-commit` / `pre-merge-commit`） | [`lefthook.yml`](../../lefthook.yml) |
+| 「归档算不算源散文」这一判断 | [`scripts/repo-files.ts`](../../scripts/repo-files.ts) 的 `isArchivedAgentNotePath`，及三个各自写死前缀的门禁 |
+| 纪律的分片载体（六份 skill 各管一段） | `.agents/skills/dsh-{archive-agent-notes,code-review,find-simplifications,prose-standard,trim-cot-leakage,doc}/SKILL.md` |
 | 双语文档契约（pair 三文件、sidecar、切换器） | [`docs/i18n/README.md`](../../docs/i18n/README.md) |
 
 跨文件只允许「摘要 + 链接」；本专题不复制 `docs/i18n/README.md` 的配对契约，也不复制 README 的完整判据表。
@@ -50,6 +54,7 @@ DSH 把「一个决定为什么是这样」做成了仓库里的一等语料：�
 - **30 分钟，抓住纪律**：加读 [`03`](./03-transitions.md)（转换为什么不对称）与 [`04`](./04-forgetting.md)（忘记如何被写成判据）。
 - **要动手审计语料**：[`04`](./04-forgetting.md) 的四分法校准 → [`06`](./06-honest-gaps.md) 的缺口清单 → 回到 DSH 自己的 `dsh-archive-agent-notes` skill 执行。
 - **要写一篇 note**：`harness-idea/` 的 [`08`](../harness-idea/08-judgement-discipline.md) 讲出处纪律，本专题 [`02`](./02-gates.md) 讲骨架会拒绝什么，[`07`](./07-naming-and-house-style.md) 讲命名与措辞习惯。
+- **要判断「这条规则到底能不能拦住我」**：[`08`](./08-enforcement-sites.md) 的时机对照表——六类执法者按「什么时候会响」重排，编辑期那一格是空的。
 
 ## 边界
 

@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 520" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 580" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <defs>
     <marker id="a1" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0 0 L10 5 L0 10 Z" fill="#4b5563"/>
     </marker>
   </defs>
-  <rect width="980" height="520" fill="#fafafa" rx="6"/>
+  <rect width="980" height="580" fill="#fafafa" rx="6"/>
   <text x="490" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">忘记的纪律：四分法、判据、校准样例</text>
   <text x="490" y="54" text-anchor="middle" font-size="11" fill="#6b7280">判据只有两句英文明文，而方法被明文否定：rather than word count, age, or a target quota</text>
 
@@ -44,30 +44,36 @@
   <rect x="40" y="226" width="450" height="76" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1.4"/>
   <text x="56" y="248" font-weight="700" fill="#92400e">④ 拒绝（proposed 的唯一出路）</text>
   <text x="56" y="268" font-size="11" fill="#92400e">Never archive a proposed note —— 前提消失就驳回，并写理由</text>
-  <text x="56" y="288" font-size="11" fill="#92400e">理由写在 Status 行（岔折号后一句话），无门禁</text>
+  <text x="56" y="288" font-size="11" fill="#92400e">理由写在 Status 行（破折号后一句话），无门禁</text>
 
   <rect x="510" y="226" width="430" height="76" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.4"/>
   <text x="526" y="248" font-weight="700" fill="#7f1d1d">⑤ 保留/删除（rejected 的两种命运）</text>
   <text x="526" y="268" font-size="11" fill="#7f1d1d">只有仍能阻止一个可信错误时才留（8 篇里 7 篇是 simplification）</text>
   <text x="526" y="288" font-size="11" fill="#7f1d1d">不再阻止任何重提的可能 → 整只三件套删除</text>
 
-  <rect x="40" y="318" width="900" height="126" rx="8" fill="#fff" stroke="#d1d5db" stroke-width="1.2"/>
+  <rect x="40" y="318" width="900" height="182" rx="8" fill="#fff" stroke="#d1d5db" stroke-width="1.2"/>
   <text x="56" y="342" font-weight="700" fill="#1f2937">校准样例：让字数与判定方向交叉，证明体积不是判据</text>
-  <rect x="56" y="354" width="200" height="26" rx="4" fill="#fef2f2" stroke="#dc2626"/>
+  <rect x="56" y="354" width="330" height="26" rx="4" fill="#fef2f2" stroke="#dc2626"/>
   <text x="66" y="372" font-size="11" fill="#7f1d1d">删除：collapsed sidebar control rail</text>
-  <text x="264" y="372" font-size="11" font-weight="700" fill="#7f1d1d">533 词</text>
-  <rect x="56" y="386" width="200" height="26" rx="4" fill="#ecfdf5" stroke="#059669"/>
+  <text x="398" y="372" font-size="11" font-weight="700" fill="#7f1d1d">533 词</text>
+  <rect x="56" y="386" width="330" height="26" rx="4" fill="#ecfdf5" stroke="#059669"/>
   <text x="66" y="404" font-size="11" fill="#047857">保留：event-sourced sessions</text>
-  <text x="264" y="404" font-size="11" font-weight="700" fill="#047857">248 词</text>
-  <rect x="470" y="354" width="200" height="26" rx="4" fill="#fee2e2" stroke="#dc2626"/>
-  <text x="480" y="372" font-size="11" fill="#7f1d1d">删（rejected）：streaming workflow…</text>
-  <text x="678" y="372" font-size="11" font-weight="700" fill="#7f1d1d">972 词</text>
-  <rect x="470" y="386" width="200" height="26" rx="4" fill="#ecfdf5" stroke="#059669"/>
-  <text x="480" y="404" font-size="11" fill="#047857">留（rejected）：fold compaction split</text>
-  <text x="678" y="404" font-size="11" font-weight="700" fill="#047857">426 词</text>
-  <text x="56" y="432" font-size="11" fill="#6b7280">短的可留、长的一删，两两交叉 —— 这就是「校准」在此处的确切含义：给出能把两个方向都走通的样例，而不是给出阈值。</text>
+  <text x="398" y="404" font-size="11" font-weight="700" fill="#047857">248 词</text>
+  <rect x="56" y="418" width="330" height="26" rx="4" fill="#fee2e2" stroke="#dc2626"/>
+  <text x="66" y="436" font-size="11" fill="#7f1d1d">删除（rejected）：streaming workflow progress</text>
+  <text x="398" y="436" font-size="11" font-weight="700" fill="#7f1d1d">972 词</text>
+  <rect x="56" y="450" width="330" height="26" rx="4" fill="#ecfdf5" stroke="#059669"/>
+  <text x="66" y="468" font-size="11" fill="#047857">保留（rejected）：fold compaction package split</text>
+  <text x="398" y="468" font-size="11" font-weight="700" fill="#047857">426 词</text>
+  <text x="470" y="372" font-size="11" fill="#6b7280">前两行是同一生命周期内的对照：</text>
+  <text x="470" y="390" font-size="11" fill="#6b7280">更长的被删、更短的被留。</text>
+  <text x="470" y="418" font-size="11" fill="#6b7280">后两行是被否提案之间的对照：</text>
+  <text x="470" y="436" font-size="11" fill="#6b7280">更长的被删、更短的被留。</text>
+  <text x="470" y="462" font-size="11" fill="#6b7280">两组合起来，字数与判定方向</text>
+  <text x="470" y="480" font-size="11" fill="#6b7280">没有任何相关性。</text>
+  <text x="56" y="492" font-size="11" fill="#6b7280">这就是「校准」在此处的确切含义：给出能把两个方向都走通的样例，而不是给出阈值。</text>
 
-  <rect x="40" y="456" width="900" height="48" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2"/>
-  <text x="56" y="476" font-weight="700" fill="#0c4a6e">批量归档后两个数字同时变，而且方向相反</text>
-  <text x="56" y="494" font-size="11" fill="#0369a1">note 总数上升，而活跃 implemented/ 显著下降 —— 所以「删了多少文档」是一个问错的题。产物不是更少的文档，而是分层更清楚的文档。</text>
+  <rect x="40" y="510" width="900" height="48" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2"/>
+  <text x="56" y="530" font-weight="700" fill="#0c4a6e">批量归档后两个数字同时变，而且方向相反</text>
+  <text x="56" y="548" font-size="11" fill="#0369a1">note 总数上升，而活跃 implemented/ 显著下降 —— 所以「删了多少文档」是一个问错的题。产物不是更少的文档，而是分层更清楚的文档。</text>
 </svg>

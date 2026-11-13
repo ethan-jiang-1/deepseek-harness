@@ -58,12 +58,11 @@ skill 还要求判断「生成上下文」而不是只看文本：「Use current
 
 ### 提交自述的账本
 
-- 归档 **453** 个双语三件套（自述 417,882 英文词）；
-- 保留 **201** 篇，理由是所有权规则、负向保证、durable/wire 语义、安全规则、重新引入条件、仍具诱惑力的被否方案；
-- 驳回 **7** 篇提案（前提消失，或已以修改后的形态在别的记录下落地）；
-- 删除 **2** 篇不再能阻止可信错误的 rejected note；
-- 封印 **1,359** 个新冻结工件，既有封印不变；
-- 让 51 篇被后续活跃 note 完全取代的 implemented note 合并删除。
+- 归档 **453** 个双语三件套（自述 417,882 英文词），保留 **201** 篇；
+- 驳回 **7** 篇提案，删除 **2** 篇不再能阻止可信错误的 rejected note，合并删除 51 篇被后续活跃 note 完全取代的记录；
+- 封印 **1,359** 个新冻结工件，既有封印不变。
+
+保留 201 篇的理由正是下面四分法的「保留」判据：所有权规则、负向保证、durable/wire 语义、安全规则、重新引入条件、仍具诱惑力的被否方案。这次提交如何同时走完三条边，见 [`03`](./03-transitions.md#一次真实的走a7a5be1703)。
 
 ### 可复核的部分：无 rename 检测时的逐文件增删行
 
@@ -105,7 +104,7 @@ git show a7a5be1703 --format='' --numstat -M0 -- '.agents/notes/archived'
 
 ### 封印怎么被验
 
-`archived/manifest.json` 的 `files` 条目在基线 `b830ec95` 上是 **2,772** 条。它只增不改：`validateArchiveManifestExtension` 逐条比对基线与当前，任何一条缺失或哈希变化都报错；只有 `extendArchiveManifest` 允许追加。唯一例外是三对具名 before/after 哈希（见 [02](./02-gates.md#唯一被允许的封印例外)）。
+封印清单只增不改：`validateArchiveManifestExtension` 逐条比对基线与当前，任何一条缺失或哈希变化都报错；只有 `extendArchiveManifest` 允许追加。机制细节、当前条目数与唯一的三对具名例外都归 [`02`](./02-gates.md#三归档封印verify-archived-agent-notes)。
 
 ## 最容易误读的那个读数
 

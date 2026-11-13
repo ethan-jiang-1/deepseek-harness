@@ -1488,7 +1488,7 @@
       "dir": "development-flow",
       "kind": "topic",
       "title": "开发流程",
-      "intent": "DSH 的决策文档怎么立项、落地、忘记与回写：两轴路径编码、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与封印、命名与工程习惯、元环回写与诚实缺口。",
+      "intent": "DSH 的决策文档怎么立项、落地、忘记与回写：两轴路径编码、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与封印、命名与工程习惯、元环回写、六类执法者与诚实缺口。",
       "map": "00-map.md",
       "pages": [
         {
@@ -1550,6 +1550,14 @@
         {
           "file": "07-naming-and-house-style.md",
           "title": "07 — 命名、引用与家务规则：把「为什么不这么写」也写下来的工程习惯",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "08-enforcement-sites.md",
+          "title": "08 — 谁在强制：`doc-sync` 之外还有五类执法者",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
           "status": "reverified",

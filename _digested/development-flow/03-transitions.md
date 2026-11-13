@@ -104,19 +104,17 @@ const BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance
 - **删除**：三件套连根删除，并修好或删除入站链接。判据只有一条——「small UI adjustments or purely mechanical changes」。
 - **两侧的共同后果**：`archived/` 一旦封印就永久冻结；`verify-archived-agent-notes` 会拒绝任何封印哈希的变化，除非是 `archived-agent-notes.ts` 里那三对具名 before/after 哈希。
 
-## 一次真实的边：`a7a5be1703`
+## 一次真实的走：`a7a5be1703`
 
-这套转换纪律的样本不多，但有一个规模足够大的：`a7a5be1703`（`docs(notes): archive low-future-value Agent Notes`）在**一个提交**里同时走了全部三条边。它的提交信息自己就按边分了段：
+这套转换纪律的样本不多，但有一个规模足够大的：`a7a5be1703` 在**一个提交**里同时走了三条边。
 
-- **边三（归档）**：453 个双语三件套（417,882 英文词）移入 `archived/`；**保留 201 篇**，理由是「ownership rules, negative guarantees, durable or wire semantics, security rules, reintroduction conditions, or still-tempting rejected alternatives remain useful」。
-- **边一（拒绝）**：7 篇 proposal 被拒，理由是「premise is gone or whose work shipped in amended form」。
-- **删除**：2 篇 rejected note 被删，理由是「no longer prevent a plausible mistake」。
-- **边三（删除）**：51 篇被「a later active note」完全取代的 implemented note 被合并删除。
-- **封印**：1,359 个新冻结工件，既有封印不变。
+该提交的判据、四分法与逐字节复核归 [`04`](./04-forgetting.md)。本节只取它对**边**的启发，且每条都在别处有完整的家：
 
-同一个提交里还有第三类动作：**改写入站链接**（「Retarget every remaining inbound link to the archived path, and repair active prose that named an archived record as the owner of a live fact」）。这条值得单列，因为它说明归档是**一次跨仓的引用迁移**，不只是一次文件移动——语料侧的代价见 [`_change_log/0006`](../_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md) 里「20 处 note 归档断链」那段。
+- **三条边同时被走**：归档（边三）、拒绝（边一）、删 rejected（边一之后）、合并删除（边三的同级）。这说明四条通路不是文档里的假设——它们在同一个提交里全部发生过。
+- **归档带走了 51 篇「已被后续活跃 note 完全取代」的记录**：这是 [README 的 consolidation 规则](../../.agents/notes/README.md)（合并即删除）在实践中被真正用掉的证据。
+- **归档同时是一次跨仓引用迁移**：同一个提交重写了 242 篇入站链接并修正了点名归档记录的所有权句。引用为何能机器验证，见 [`07`](./07-naming-and-house-style.md)；语料侧的断链代价见 [`_change_log/0006`](../_change_log/0006-0.1.2-rc.1-to-0.1.5-rc.1.md)。
 
-> 那 7 篇被拒的提案如今在树上只剩 **1 篇**，其余在后续 `rc.1 → rc.5` 窗口里被删除——删除的条件是「不再阻止一个可信的错误」，与归档是两回事。归档保留的历史记录不会因为「不再有用」而消失，被拒的提案会。
+> 那 7 篇被拒的提案如今在树上只剩 **1 篇**，其余在后续 `rc.1 → rc.5` 窗口里被删除——删除的条件是「不再阻止一个可信的错误」，与归档是两回事。**归档保留的历史记录不会因为「不再有用」而消失，被拒的提案会。**
 
 ## 一张对照表
 

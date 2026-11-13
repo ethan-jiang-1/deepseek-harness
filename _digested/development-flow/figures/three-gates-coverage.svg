@@ -18,7 +18,8 @@
   <text x="62" y="216" fill="#374151">· 文件名不是 yyyy-mm-dd-topic.md</text>
   <text x="62" y="234" fill="#b91c1c">· INDEX.md（专用报错）</text>
   <text x="62" y="252" fill="#b91c1c">· docs/rfc、docs/rfcs 旧路径</text>
-  <text x="56" y="276" font-size="11" fill="#6b7280">.zh.md 被跳过（同一篇 note），配对归 pairing 门禁</text>
+  <text x="56" y="270" font-size="10" fill="#6b7280">.zh.md 被跳过（同一篇 note），</text>
+  <text x="56" y="284" font-size="10" fill="#6b7280">配对一致性归 translation-pairing 门禁</text>
 
   <rect x="345" y="76" width="290" height="212" rx="8" fill="#fff" stroke="#16a34a" stroke-width="1.6"/>
   <text x="361" y="100" font-weight="700" fill="#14532d">verify-agent-note-format</text>

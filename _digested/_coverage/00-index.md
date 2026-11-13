@@ -32,7 +32,7 @@
 | [`tools-prompt-llm/`](../tools-prompt-llm/00-map.md) | 模型每一步看见什么：工具清单、系统提示词、历史投影与内容块。 | 7 | 0 | 7 | 0 |
 | [`surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md) | 人/程序从哪里进：CLI、headless、Web、ACP、SDK、桌面，以及它们复用的 runtime spine。 | 4 | 2 | 2 | 0 |
 | [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：资产分布与成本、防漏机制、选层决策程序、CI 门禁、快照机制，以及插件项目的测试契约。 | 16 | 7 | 9 | 0 |
-| [`development-flow/`](../development-flow/00-map.md) | DSH 的决策文档怎么立项、落地、忘记与回写：两轴路径编码、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与封印、命名与工程习惯、元环回写与诚实缺口。 | 8 | 8 | 0 | 0 |
+| [`development-flow/`](../development-flow/00-map.md) | DSH 的决策文档怎么立项、落地、忘记与回写：两轴路径编码、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与封印、命名与工程习惯、元环回写、六类执法者与诚实缺口。 | 9 | 9 | 0 | 0 |
 | [`harness-idea/`](../harness-idea/00-map.md) | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。 | 10 | 0 | 10 | 0 |
 | [`canon/`](../canon/00-map.md) | 宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。 | 7 | 0 | 0 | 7 |
 
@@ -324,6 +324,7 @@
 | [`05-writeback-loop`](../development-flow/05-writeback-loop.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`06-honest-gaps`](../development-flow/06-honest-gaps.md) | analysis | 已核验 | b830ec950f | 页面声明 |
 | [`07-naming-and-house-style`](../development-flow/07-naming-and-house-style.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`08-enforcement-sites`](../development-flow/08-enforcement-sites.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `harness-idea/`
 

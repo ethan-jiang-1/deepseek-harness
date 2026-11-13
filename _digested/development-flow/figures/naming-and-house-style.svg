@@ -8,7 +8,7 @@
   <text x="56" y="120" font-size="11" fill="#374151">README.md　125 行　规范：树怎么长、每个状态背什么义务</text>
   <text x="56" y="138" font-size="11" fill="#374151">implemented/AGENTS.md　13 行　义务：事实实时更新，但决策只读</text>
   <text x="56" y="156" font-size="11" fill="#374151">archived/AGENTS.md　9 行　禁令：编辑/重排/翻译/修/删/移 全禁</text>
-  <text x="56" y="176" font-size="11" fill="#6b7280">后两份故意做小：各自只回答一个问题，且答案都在前两行</text>
+  <text x="56" y="176" font-size="11" fill="#6b7280">后两份故意做小：各只回答一个问题，答案都在前两行</text>
 
   <rect x="500" y="74" width="440" height="112" rx="8" fill="#fff" stroke="#059669" stroke-width="1.4"/>
   <text x="516" y="98" font-weight="700" fill="#065f46">② 与 docs/ 是管辖权对偶</text>
