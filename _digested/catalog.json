@@ -1485,6 +1485,79 @@
       ]
     },
     {
+      "dir": "development-flow",
+      "kind": "topic",
+      "title": "开发流程",
+      "intent": "DSH 的决策文档怎么立项、落地、忘记与回写：两轴路径编码、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与封印、命名与工程习惯、元环回写与诚实缺口。",
+      "map": "00-map.md",
+      "pages": [
+        {
+          "file": "00-map.md",
+          "title": "Development Flow · 决策怎么被写下来、落地、忘记与回写",
+          "role": "map",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "01-lifecycle.md",
+          "title": "01 — 一条决定活在哪：两个设计轴、三种义务、四个看似维度",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "02-gates.md",
+          "title": "02 — 哪些规则真的会红：三个 leaf 门禁的逐条规则",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "03-transitions.md",
+          "title": "03 — 状态之间怎么走：两套判据、一次最小化、一处门禁空白",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "04-forgetting.md",
+          "title": "04 — 忘记的纪律：四分法、校准样例与一次可复核的批量归档",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "05-writeback-loop.md",
+          "title": "05 — 学到的东西怎么回到仓库：元环与它的强制力梯度",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "06-honest-gaps.md",
+          "title": "06 — 这套制度哪里没有闭环：四条可证伪的缺口",
+          "role": "analysis",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        },
+        {
+          "file": "07-naming-and-house-style.md",
+          "title": "07 — 命名、引用与家务规则：把「为什么不这么写」也写下来的工程习惯",
+          "role": "mechanism",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
+          "source": "page"
+        }
+      ]
+    },
+    {
       "dir": "harness-idea",
       "title": "消化后的判断",
       "intent": "判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。",

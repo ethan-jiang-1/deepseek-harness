@@ -64,13 +64,9 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 
 ### 归档事件：连「决定忘记什么」也被写成了判据
 
-`a7a5be1703`（`docs(notes): archive low-future-value Agent Notes`，作者日期 2026-09-04）一次性把 452 篇英文 + 452 篇中文 implemented note 移入 `archived/`。它是本专题在跨度内读到的最强单点证据：判断纪律不只覆盖「记住什么」，也覆盖「忘记什么」，而且两条都有可复核的外部形态。
+`a7a5be1703`（`docs(notes): archive low-future-value Agent Notes`）是本专题在跨度内读到的最强单点证据：它一次性把 452 个双语三件套移入 `archived/`，而每一个文件都是「0 删除行、恰好新增一行 `Archived:`」。判断纪律不只覆盖「记住什么」，也覆盖「忘记什么」，而且两条都有可复核的外部形态。
 
-1. **判据成文，且明文排除体量与年龄。** [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md) 的归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明确要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。
-2. **动作最小，因此可证伪。** 对该提交的 452 个英文配对与 452 个中文配对逐字节比对：全部是「0 删除行、恰好新增一行 `Archived: 2026-09-04`」，正文零改动；同一提交里对其余 note 的改动只有归档政策列明的入站链接修复（链接目标改写），判断层面的改写只有 7 篇 proposed→rejected（拒绝，不是归档）。**「归档」与「修订」因此是两个可分辨的动作**，而不是同一次编辑的副产物——这正是本页对 `[推断]` 要求的可证伪性。
-3. **封印有机器门禁。** [`archived/manifest.json`](../../.agents/notes/archived/manifest.json) 的 seal 数 510 → 1884（0008 叙事口径的历史读数；`687f282e86` 基线实测 files 条目 2772）；[`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 注册在 [`scripts/run-gates.ts:854`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单；README:42 同时规定归档件永久冻结、不得当作现行权威。
-
-这也校正了一个容易误读的读数：同一窗口内 note 总数从 1704 涨到 1912，而活跃 `implemented/` 从 1288 降到 584——**归档没有消灭记录，只是把记录移进冻结层**；判断纪律的产物不是更少的文档，而是分层更清楚的文档。
+这套判据、四分法、封印机制与那次执行的完整论证——包括 `git show --numstat -M0` 为什么是看清动作真实形状的关键读法——现在归 [`development-flow/04-forgetting.md`](../development-flow/04-forgetting.md)。本节不再重复其细节，只把它当作本页「可证伪性」要求的一个实例：归档与修订在那个提交里是两个可分辨的动作，这正是本页对 `[推断]` 要求的形态。
 
 ## 核心 claim register
 
@@ -107,7 +103,7 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 - [`../../AGENTS.md`](../../AGENTS.md)（standing orders：可机械检查的规则优先）
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-33、40-41 行；当前状态散文与一个事实一个家）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
-- [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期与格式）
+- [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期与格式；它自身的机制消化在 [`development-flow/`](../development-flow/00-map.md)）
 - [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md) 与 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（均已归档，历史快照；两篇 note 记录的运行时 invariant 机制已在 `f028f25667` 整族退役，权威记录改为 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)）
 - [`../../docs/testing.md`](../../docs/testing.md)（第 9-10、35、37-41、53-55 行；覆盖门禁、元验证与 snapshot 政策）
 

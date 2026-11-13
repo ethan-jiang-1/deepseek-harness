@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 460" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="980" height="460" fill="#fafafa" rx="6"/>
+  <text x="490" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">同一个标题名在两个生命周期里意思不同，所以不允许跨用</text>
+  <text x="490" y="54" text-anchor="middle" font-size="11" fill="#6b7280">骨架是门禁强制的；这张表是 verify-agent-note-format 的 REQUIRED / BANNED_IMPLEMENTED 两份常量的直接翻译</text>
+
+  <rect x="40" y="74" width="900" height="46" rx="6" fill="#eef2ff" stroke="#818cf8" stroke-width="1.2"/>
+  <text x="56" y="96" font-weight="700" fill="#312e81">## Problem　永远第一节（三个生命周期都必需，且必须是 h2s[0]）</text>
+  <text x="56" y="113" font-size="11" fill="#4338ca">必须能脱离方案成立 —— README 说「written to stand without the solution」</text>
+
+  <rect x="40" y="134" width="290" height="196" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1.6"/>
+  <text x="185" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">proposed/</text>
+  <rect x="56" y="172" width="258" height="34" rx="5" fill="#fff" stroke="#d97706"/>
+  <text x="68" y="194" fill="#92400e">## Proposal　（将来时、计划、迁移步骤）</text>
+  <rect x="56" y="214" width="258" height="34" rx="5" fill="#fff" stroke="#d97706"/>
+  <text x="68" y="236" fill="#92400e">## Acceptance criteria　（承诺什么算完）</text>
+  <rect x="56" y="256" width="258" height="34" rx="5" fill="#fff" stroke="#d97706"/>
+  <text x="68" y="278" fill="#92400e">## Risks　（可能出错 + 自愿放弃什么）</text>
+  <text x="68" y="316" font-size="11" fill="#a16207">这三节在 implemented/ 里全部被禁</text>
+
+  <rect x="345" y="134" width="290" height="196" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="490" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">implemented/</text>
+  <rect x="361" y="172" width="258" height="34" rx="5" fill="#fff" stroke="#16a34a"/>
+  <text x="373" y="194" fill="#14532d">## Decision　（现在时，描述已落地现实）</text>
+  <rect x="361" y="214" width="258" height="34" rx="5" fill="#fff" stroke="#16a34a"/>
+  <text x="373" y="236" fill="#14532d">## Consequences　（代价 + 收益）</text>
+  <rect x="361" y="256" width="258" height="34" rx="5" fill="#fff" stroke="#16a34a"/>
+  <text x="373" y="278" fill="#166534">## Testing / Verification / Deferred / Related</text>
+  <text x="373" y="316" font-size="11" fill="#166534">可选，但必须是现在时的「现在钉住行为的是什么」</text>
+
+  <rect x="650" y="134" width="290" height="196" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="795" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#7f1d1d">rejected/</text>
+  <rect x="666" y="172" width="258" height="34" rx="5" fill="#fff" stroke="#dc2626"/>
+  <text x="678" y="194" fill="#7f1d1d">## Proposal　（必需）</text>
+  <rect x="666" y="214" width="258" height="34" rx="5" fill="#fff" stroke="#dc2626"/>
+  <text x="678" y="236" fill="#7f1d1d">## Acceptance criteria / ## Plan　（保留）</text>
+  <text x="678" y="272" font-size="11" fill="#7f1d1d">提案被拒时冻结原样；</text>
+  <text x="678" y="290" font-size="11" fill="#7f1d1d">判决只写在 Status 行上</text>
+  <text x="678" y="316" font-size="11" fill="#b91c1c">所以「同一标题这里禁、那里留」</text>
+
+  <rect x="40" y="348" width="900" height="46" rx="6" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.2"/>
+  <text x="56" y="370" font-weight="700" fill="#0c4a6e">## Alternatives considered　三个生命周期全部必需 —— 被否的方案和它为什么输</text>
+  <text x="56" y="387" font-size="11" fill="#0369a1">唯一豁免：2026-07-05 之前（FORMAT_ADOPTED）的旧文件可改用一个逐字固定的注释替代，日期晚于它就不再许可</text>
+
+  <text x="40" y="424" font-size="11" fill="#6b7280">门禁只检查标题在不在，不检查内容：## Decision 是不是现在时、Acceptance criteria 是否真被折进 Consequences，都没有红灯（见 06 缺口三）。</text>
+  <text x="40" y="442" font-size="11" fill="#6b7280">围栏内的同类标题不算文档结构 —— 门禁先剔除三反引号围栏再判定，所以示例不会误报。</text>
+</svg>

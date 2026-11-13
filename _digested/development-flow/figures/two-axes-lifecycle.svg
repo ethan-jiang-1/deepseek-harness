@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 520" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#4b5563"/>
+    </marker>
+    <marker id="arrow-thin" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+  <rect width="980" height="520" fill="#fafafa" rx="6"/>
+  <text x="490" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">Agent Note 的两个轴：路径就是状态</text>
+  <text x="490" y="54" text-anchor="middle" font-size="11" fill="#6b7280">{lifecycle}/{class}/yyyy-mm-dd-topic.md —— 没有 INDEX.md；一级目录是状态，二级目录是决策种类</text>
+
+  <text x="40" y="92" font-size="12" font-weight="700" fill="#4b5563">纵轴 · class（闭集 6 个，由 agent-note-tree.ts 与 README 双份维护）</text>
+
+  <rect x="40" y="104" width="150" height="34" rx="5" fill="#eef2ff" stroke="#818cf8" stroke-width="1.2"/>
+  <text x="115" y="126" text-anchor="middle" font-weight="700" fill="#3730a3">architecture</text>
+  <rect x="40" y="144" width="150" height="34" rx="5" fill="#eef2ff" stroke="#818cf8" stroke-width="1.2"/>
+  <text x="115" y="166" text-anchor="middle" font-weight="700" fill="#3730a3">process</text>
+  <rect x="40" y="184" width="150" height="34" rx="5" fill="#eef2ff" stroke="#818cf8" stroke-width="1.2"/>
+  <text x="115" y="206" text-anchor="middle" font-weight="700" fill="#3730a3">simplification</text>
+  <rect x="40" y="224" width="150" height="34" rx="5" fill="#eef2ff" stroke="#818cf8" stroke-width="1.2"/>
+  <text x="115" y="246" text-anchor="middle" font-weight="700" fill="#3730a3">feature</text>
+  <rect x="40" y="264" width="150" height="34" rx="5" fill="#eef2ff" stroke="#818cf8" stroke-width="1.2"/>
+  <text x="115" y="286" text-anchor="middle" font-weight="700" fill="#3730a3">bug-fix</text>
+  <rect x="40" y="304" width="150" height="34" rx="5" fill="#eef2ff" stroke="#818cf8" stroke-width="1.2"/>
+  <text x="115" y="326" text-anchor="middle" font-weight="700" fill="#3730a3">testing</text>
+
+  <text x="40" y="360" font-size="11" fill="#6b7280">refactor 被故意排除：</text>
+  <text x="40" y="376" font-size="11" fill="#6b7280">与 simplification 重合，</text>
+  <text x="40" y="392" font-size="11" fill="#6b7280">其判据「可观察行为是否改变」已覆盖。</text>
+
+  <text x="215" y="92" font-size="12" font-weight="700" fill="#4b5563">横轴 · lifecycle（状态，不是一个等级阶梯）</text>
+
+  <rect x="215" y="104" width="160" height="234" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1.6"/>
+  <text x="295" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">proposed/</text>
+  <text x="295" y="150" text-anchor="middle" fill="#92400e">将来时 · 允许 Plan</text>
+  <text x="295" y="170" text-anchor="middle" fill="#92400e">## Proposal</text>
+  <text x="295" y="190" text-anchor="middle" fill="#92400e">## Acceptance criteria</text>
+  <text x="295" y="210" text-anchor="middle" fill="#92400e">## Risks</text>
+  <text x="295" y="240" text-anchor="middle" font-size="11" fill="#92400e">义务：无</text>
+  <text x="295" y="260" text-anchor="middle" font-size="11" fill="#92400e">尽头：拒绝（永不归档）</text>
+  <text x="295" y="300" text-anchor="middle" font-size="11" fill="#a16207">门禁：状态行语法</text>
+  <text x="295" y="318" text-anchor="middle" font-size="11" fill="#a16207">+ 必需查询章节</text>
+
+  <rect x="410" y="104" width="180" height="234" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="500" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">implemented/</text>
+  <text x="500" y="150" text-anchor="middle" fill="#14532d">现在时 · 事实实时更新</text>
+  <text x="500" y="170" text-anchor="middle" fill="#14532d">## Decision</text>
+  <text x="500" y="190" text-anchor="middle" fill="#14532d">## Consequences</text>
+  <text x="500" y="210" text-anchor="middle" font-size="11" fill="#166534">（可加 Testing/Verification）</text>
+  <text x="500" y="240" text-anchor="middle" font-size="11" fill="#14532d">义务：随代码保持事实最新</text>
+  <text x="500" y="260" text-anchor="middle" font-size="11" fill="#b91c1c">但不得改写决策本身</text>
+  <text x="500" y="300" text-anchor="middle" font-size="11" fill="#166534">门禁：禁 Proposal / Plan /</text>
+  <text x="500" y="318" text-anchor="middle" font-size="11" fill="#166534">Migration plan / Acceptance criteria</text>
+
+  <rect x="625" y="104" width="150" height="234" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="700" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#7f1d1d">rejected/</text>
+  <text x="700" y="150" text-anchor="middle" fill="#7f1d1d">冻结的提案快照</text>
+  <text x="700" y="170" text-anchor="middle" fill="#7f1d1d">## Problem</text>
+  <text x="700" y="190" text-anchor="middle" fill="#7f1d1d">## Proposal</text>
+  <text x="700" y="210" text-anchor="middle" font-size="11" fill="#7f1d1d">（保留提案期章节）</text>
+  <text x="700" y="240" text-anchor="middle" font-size="11" fill="#7f1d1d">义务：只有防复发</text>
+  <text x="700" y="260" text-anchor="middle" font-size="11" fill="#7f1d1d">尽头：不再劝阻就删</text>
+  <text x="700" y="300" text-anchor="middle" font-size="11" fill="#b91c1c">门禁：状态行必须</text>
+  <text x="700" y="318" text-anchor="middle" font-size="11" fill="#b91c1c">rejected — &lt;一句理由&gt;</text>
+
+  <rect x="810" y="104" width="130" height="234" rx="8" fill="#e5e7eb" stroke="#4b5563" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <text x="875" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#111827">archived/</text>
+  <text x="875" y="150" text-anchor="middle" fill="#374151">永久冻结</text>
+  <text x="875" y="170" text-anchor="middle" font-size="11" fill="#374151">Status: implemented</text>
+  <text x="875" y="188" text-anchor="middle" font-size="11" fill="#374151">Archived: YYYY-MM-DD</text>
+  <text x="875" y="214" text-anchor="middle" font-size="11" fill="#374151">无 implemented/ 这一层</text>
+  <text x="875" y="240" text-anchor="middle" font-size="11" fill="#374151">义务：不得修改</text>
+  <text x="875" y="260" text-anchor="middle" font-size="11" fill="#b91c1c">不是现行权威</text>
+  <text x="875" y="300" text-anchor="middle" font-size="11" fill="#374151">门禁：三件套 +</text>
+  <text x="875" y="318" text-anchor="middle" font-size="11" fill="#374151">sha256 封印清单</text>
+
+  <line x1="375" y1="160" x2="404" y2="160" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="389" y="150" text-anchor="middle" font-size="10" fill="#4b5563">改写整篇</text>
+  <line x1="375" y1="250" x2="619" y2="250" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="497" y="243" text-anchor="middle" font-size="10" fill="#4b5563">只加一句理由（动作最小化）</text>
+  <line x1="590" y1="200" x2="804" y2="200" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="697" y="193" text-anchor="middle" font-size="10" fill="#4b5563">搬 + 加一行</text>
+  <path d="M500 338 L500 366 L875 366 L875 342" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow-thin)"/>
+  <text x="690" y="382" text-anchor="middle" font-size="10" fill="#6b7280">只描述小 UI 调整或纯机械改动 → 直接删除（不进 archived）</text>
+
+  <rect x="40" y="408" width="900" height="96" rx="8" fill="#fff" stroke="#d1d5db" stroke-width="1.2"/>
+  <text x="56" y="430" font-weight="700" fill="#1f2937">每个 class 里其实是同一篇 note 的三个侧面（不是第四个轴）</text>
+  <text x="56" y="454" font-size="11" fill="#374151">2026-06-13-capability-seams.md　→　英文正文，权威；文件名日期 = 主题首次被提出（per git history），归档不改名</text>
+  <text x="56" y="474" font-size="11" fill="#374151">2026-06-13-capability-seams.zh.md　→　中文对照；分类/格式门禁跳过它，但归档门禁反过来要求它必须存在</text>
+  <text x="56" y="494" font-size="11" fill="#374151">2026-06-13-capability-seams.i18n.yaml　→　按小节存哈希的一致性记录；改一侧不重录 = verify-translation-pairing 红</text>
+</svg>

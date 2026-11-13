@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 500" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <rect width="980" height="500" fill="#fafafa" rx="6"/>
+  <text x="490" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">三个 leaf 门禁：谁能判的就进红灯，判不了的交给人</text>
+  <text x="490" y="54" text-anchor="middle" font-size="11" fill="#6b7280">三者全部注册在 scripts/run-gates.ts 的 doc-sync quick 组（:852-854）；第四个相邻门禁是 verify-translation-pairing</text>
+
+  <rect x="40" y="76" width="290" height="212" rx="8" fill="#fff" stroke="#818cf8" stroke-width="1.6"/>
+  <text x="56" y="100" font-weight="700" fill="#3730a3">verify-agent-note-classification</text>
+  <text x="56" y="118" font-size="11" fill="#6b7280">27 行，逻辑全在 agent-note-tree.ts</text>
+  <text x="56" y="142" fill="#374151">管树的形状：</text>
+  <text x="62" y="162" fill="#374151">· 未知 lifecycle 目录</text>
+  <text x="62" y="180" fill="#374151">· 未知 class 目录（闭集 6 个）</text>
+  <text x="62" y="198" fill="#374151">· 深度不是 {lifecycle}/{class}/file.md</text>
+  <text x="62" y="216" fill="#374151">· 文件名不是 yyyy-mm-dd-topic.md</text>
+  <text x="62" y="234" fill="#b91c1c">· INDEX.md（专用报错）</text>
+  <text x="62" y="252" fill="#b91c1c">· docs/rfc、docs/rfcs 旧路径</text>
+  <text x="56" y="276" font-size="11" fill="#6b7280">.zh.md 被跳过（同一篇 note），配对归 pairing 门禁</text>
+
+  <rect x="345" y="76" width="290" height="212" rx="8" fill="#fff" stroke="#16a34a" stroke-width="1.6"/>
+  <text x="361" y="100" font-weight="700" fill="#14532d">verify-agent-note-format</text>
+  <text x="361" y="118" font-size="11" fill="#6b7280">94 行，规则最密的一处</text>
+  <text x="361" y="142" fill="#374151">管每篇正文的骨架：</text>
+  <text x="367" y="162" fill="#374151">· 头部四行（位置敏感）</text>
+  <text x="367" y="180" fill="#374151">· Status 行按目录精确匹配</text>
+  <text x="367" y="198" fill="#374151">· Status 全文件唯一</text>
+  <text x="367" y="216" fill="#374151">· 必需章节 + 首节必须是 ## Problem</text>
+  <text x="367" y="234" fill="#374151">· implemented 四条提案期标题禁行</text>
+  <text x="367" y="252" fill="#374151">· Alternatives 强制 + 期限豁免</text>
+  <text x="361" y="276" font-size="11" fill="#6b7280">围栏内的行被剔除，示例不误报</text>
+
+  <rect x="650" y="76" width="290" height="212" rx="8" fill="#fff" stroke="#dc2626" stroke-width="1.6"/>
+  <text x="666" y="100" font-weight="700" fill="#7f1d1d">verify-archived-agent-notes</text>
+  <text x="666" y="118" font-size="11" fill="#6b7280">115 + 204 行，守不可变</text>
+  <text x="666" y="142" fill="#374151">管冻结层：</text>
+  <text x="672" y="162" fill="#374151">· 根目录只许 AGENTS.md + manifest</text>
+  <text x="672" y="180" fill="#374151">· 六个 class 目录必须全部存在</text>
+  <text x="672" y="198" fill="#b91c1c">· 三件套缺一即 incomplete triplet</text>
+  <text x="672" y="216" fill="#374151">· Status + Archived 行（真实日历日期）</text>
+  <text x="672" y="234" fill="#374151">· 两侧归档日必须相同</text>
+  <text x="672" y="252" fill="#374151">· sidecar git blob SHA-1 双向校验</text>
+  <text x="666" y="276" font-size="11" fill="#6b7280">manifest：append-only，仅三对具名哈希可破例</text>
+
+  <rect x="40" y="306" width="470" height="88" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.4"/>
+  <text x="56" y="330" font-weight="700" fill="#065f46">有红灯的那一半（位置 · 骨架 · 封印）</text>
+  <text x="56" y="352" font-size="11" fill="#047857">形状错、状态行写错、章节缺了、归档日期早于文件名、封印哈希变了</text>
+  <text x="56" y="372" font-size="11" fill="#047857">→ 提交时直接红。这一层不需要人记得，也不需要 review。</text>
+
+  <rect x="520" y="306" width="420" height="88" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="536" y="330" font-weight="700" fill="#991b1b">没有红灯的那一半（内容 · 判断）</text>
+  <text x="536" y="352" font-size="11" fill="#b91c1c">事实是否实时更新 · 归档判据是否成立 · 这次该不该带 note</text>
+  <text x="536" y="372" font-size="11" fill="#b91c1c">→ 明文交给人和一个校准过的 skill；见 06 的四条缺口。</text>
+
+  <rect x="40" y="412" width="900" height="72" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+  <text x="56" y="436" font-weight="700" fill="#1f2937">一个容易漏掉的事实：分类门禁不读 README</text>
+  <text x="56" y="458" font-size="11" fill="#374151">agent-note-tree.ts 的注释说「closed classification rules live in .agents/notes/README.md」，但脚本从不读它；</text>
+  <text x="56" y="476" font-size="11" fill="#374151">AGENT_NOTE_CLASSES 与 README 的 Classification 表是两份人肉同步的副本 —— 只改一边，门禁不会红。</text>
+</svg>

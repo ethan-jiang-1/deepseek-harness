@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 460" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="up" viewBox="0 0 10 10" refX="5" refY="0" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 10 L5 0 L10 10 Z" fill="#4b5563"/>
+    </marker>
+  </defs>
+  <rect width="980" height="460" fill="#fafafa" rx="6"/>
+  <text x="490" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">元环：学到的东西怎么回到仓库，以及每一级的强制力</text>
+  <text x="490" y="54" text-anchor="middle" font-size="11" fill="#6b7280">五级回写阶梯，越往上越难绕过；右侧是「能指望它拦住什么」</text>
+
+  <rect x="60" y="80" width="230" height="44" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.4"/>
+  <text x="76" y="102" font-weight="700" fill="#374151">常驻规则</text>
+  <text x="76" y="118" font-size="11" fill="#6b7280">root AGENTS.md 的 standing orders</text>
+
+  <rect x="60" y="140" width="230" height="44" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.4"/>
+  <text x="76" y="162" font-weight="700" fill="#374151">文档</text>
+  <text x="76" y="178" font-size="11" fill="#6b7280">docs/ 与 package README</text>
+
+  <rect x="60" y="200" width="230" height="44" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.4"/>
+  <text x="76" y="222" font-weight="700" fill="#374151">note</text>
+  <text x="76" y="238" font-size="11" fill="#6b7280">.agents/notes/implemented/**</text>
+
+  <rect x="60" y="260" width="230" height="44" rx="6" fill="#fff" stroke="#9ca3af" stroke-width="1.4"/>
+  <text x="76" y="282" font-weight="700" fill="#374151">skill</text>
+  <text x="76" y="298" font-size="11" fill="#6b7280">.agents/skills/dsh-*</text>
+
+  <rect x="60" y="320" width="230" height="44" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="1.8"/>
+  <text x="76" y="342" font-weight="700" fill="#7f1d1d">门禁 / 类型</text>
+  <text x="76" y="358" font-size="11" fill="#b91c1c">scripts/verify-*.ts · SessionEventMap</text>
+
+  <line x1="175" y1="316" x2="175" y2="308" stroke="#4b5563" stroke-width="2" marker-end="url(#up)"/>
+  <line x1="175" y1="256" x2="175" y2="248" stroke="#4b5563" stroke-width="2" marker-end="url(#up)"/>
+  <line x1="175" y1="196" x2="175" y2="188" stroke="#4b5563" stroke-width="2" marker-end="url(#up)"/>
+  <line x1="175" y1="136" x2="175" y2="128" stroke="#4b5563" stroke-width="2" marker-end="url(#up)"/>
+  <text x="188" y="300" font-size="10" fill="#6b7280">发现还不够硬 → 往下沉</text>
+
+  <rect x="330" y="80" width="610" height="284" rx="8" fill="#fff" stroke="#d1d5db" stroke-width="1.2"/>
+  <text x="346" y="104" font-weight="700" fill="#1f2937">强制力梯度</text>
+  <rect x="346" y="116" width="578" height="34" rx="5" fill="#fef2f2" stroke="#dc2626"/>
+  <text x="358" y="138" font-size="11" fill="#7f1d1d">产生错了形状的 note → 红灯（classification / format）；归档动作做错 → 红灯（封印）</text>
+  <rect x="346" y="158" width="578" height="34" rx="5" fill="#fffbeb" stroke="#d97706"/>
+  <text x="358" y="180" font-size="11" fill="#92400e">该写 note 而没写 → 无红灯；写了但理由不成立 → 无红灯，且不可能有</text>
+  <rect x="346" y="200" width="578" height="34" rx="5" fill="#ecfdf5" stroke="#059669"/>
+  <text x="358" y="222" font-size="11" fill="#065f46">门禁自己会不会写错 → 有元验证（archived-agent-notes.spec.ts 等）与 doc-sync 聚合</text>
+
+  <text x="346" y="258" font-weight="700" fill="#1f2937">为什么允许后两行为空</text>
+  <text x="346" y="278" font-size="11" fill="#374151">「这次改动是否非平凡」与「这条理由值不值得记」都是语义判断，机械判不了；</text>
+  <text x="346" y="296" font-size="11" fill="#374151">如果强行要求「每次改动都带 note」，note 区会被琐碎记录淹没，</text>
+  <text x="346" y="314" font-size="11" fill="#374151">于是制度会变成「写了再删」的昂贵循环。</text>
+  <text x="346" y="338" font-size="11" fill="#374151">所以选的是：明文豁免（纯机械/本地 UI）+ 事后归档，而不是事前存在性检查。</text>
+
+  <rect x="60" y="384" width="880" height="60" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.2"/>
+  <text x="76" y="408" font-weight="700" fill="#1f2937">DSH 没有模型跨会话学习机制</text>
+  <text x="76" y="430" font-size="11" fill="#374151">规则不会因为本次做错而自动改进；它只能经由人（或 agent）在仓库改一个文件，并在下一个会话里被加载或被检查。学习的外置面就是这张阶梯。</text>
+</svg>

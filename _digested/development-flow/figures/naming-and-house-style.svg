@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="980" height="560" fill="#fafafa" rx="6"/>
+  <text x="490" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">DSH 做笔记的七个工程习惯</text>
+  <text x="490" y="54" text-anchor="middle" font-size="11" fill="#6b7280">大多不是门禁，而是「为什么不这么写」被一并写下来的结果</text>
+
+  <rect x="40" y="74" width="440" height="112" rx="8" fill="#fff" stroke="#818cf8" stroke-width="1.4"/>
+  <text x="56" y="98" font-weight="700" fill="#3730a3">① 三层命令文件，三种语气</text>
+  <text x="56" y="120" font-size="11" fill="#374151">README.md　125 行　规范：树怎么长、每个状态背什么义务</text>
+  <text x="56" y="138" font-size="11" fill="#374151">implemented/AGENTS.md　13 行　义务：事实实时更新，但决策只读</text>
+  <text x="56" y="156" font-size="11" fill="#374151">archived/AGENTS.md　9 行　禁令：编辑/重排/翻译/修/删/移 全禁</text>
+  <text x="56" y="176" font-size="11" fill="#6b7280">后两份故意做小：各自只回答一个问题，且答案都在前两行</text>
+
+  <rect x="500" y="74" width="440" height="112" rx="8" fill="#fff" stroke="#059669" stroke-width="1.4"/>
+  <text x="516" y="98" font-weight="700" fill="#065f46">② 与 docs/ 是管辖权对偶</text>
+  <text x="516" y="120" font-size="11" fill="#374151">docs/ 写当前状态，不允许解释理由（→ Agent Notes）</text>
+  <text x="516" y="138" font-size="11" fill="#374151">note 写为什么，不允许以当前状态自居（禁 Proposal/Plan/验收）</text>
+  <text x="516" y="156" font-size="11" fill="#374151">note 不受散文预算与受众分层约束：为「被查证」优化</text>
+  <text x="516" y="176" font-size="11" fill="#6b7280">两端都用排他语句写下来，不是靠默契</text>
+
+  <rect x="40" y="198" width="440" height="112" rx="8" fill="#fff" stroke="#d97706" stroke-width="1.4"/>
+  <text x="56" y="222" font-weight="700" fill="#92400e">③ 动词命名，且一名一义</text>
+  <text x="56" y="244" font-size="11" fill="#374151">命名是一个行为：prune- / fold- / retire- / collapse- / X-over-Y</text>
+  <text x="56" y="262" font-size="11" fill="#374151">落地一律 -stay/-retain/-keep；退役一律 -retire/-remove/-drop</text>
+  <text x="56" y="280" font-size="11" fill="#374151">链接文字因此自解释 —— 检索功能被命名承担，索引就不必存在</text>
+  <text x="56" y="300" font-size="11" fill="#6b7280">与 glossary 的 one-canonical-term 是同一条纪律在文件名上</text>
+
+  <rect x="500" y="198" width="440" height="112" rx="8" fill="#fff" stroke="#dc2626" stroke-width="1.4"/>
+  <text x="516" y="222" font-weight="700" fill="#7f1d1d">④ 日期是「主题首次被提出」</text>
+  <text x="516" y="244" font-size="11" fill="#374151">归档不改名：2026-06 的 note 在 2026-09 归档，名字仍是 06</text>
+  <text x="516" y="262" font-size="11" fill="#374151">归档日单独放 Archived: 行，不占用文件名位</text>
+  <text x="516" y="280" font-size="11" fill="#374151">没有任何 -v2 / -final / should-we- / 状态词</text>
+  <text x="516" y="300" font-size="11" fill="#6b7280">已有的状态机之外，不另建一套私有状态标记</text>
+
+  <rect x="40" y="322" width="440" height="112" rx="8" fill="#fff" stroke="#0284c7" stroke-width="1.4"/>
+  <text x="56" y="346" font-weight="700" fill="#0c4a6e">⑤ 章节词汇是闭集，而且跨状态不共享</text>
+  <text x="56" y="368" font-size="11" fill="#374151">## Problem 永远第一节，且必须脱离方案成立</text>
+  <text x="56" y="386" font-size="11" fill="#374151">## Acceptance criteria 在 implemented 里被禁、在 rejected 里被保留</text>
+  <text x="56" y="404" font-size="11" fill="#374151">## Alternatives considered 全部状态强制，只有期限精确的豁免</text>
+  <text x="56" y="424" font-size="11" fill="#6b7280">同一个标题名两种意思 → 干脆不允许它跨过去</text>
+
+  <rect x="500" y="322" width="440" height="112" rx="8" fill="#fff" stroke="#7c3aed" stroke-width="1.4"/>
+  <text x="516" y="346" font-weight="700" fill="#5b21b6">⑥ 引用写成真链接，禁止「见第 12 号」</text>
+  <text x="516" y="368" font-size="11" fill="#374151">因为用了相对 Markdown 链接，verify-md-links 能查断链</text>
+  <text x="516" y="386" font-size="11" fill="#374151">于是归档造成的引用折断会被立刻发现、当场修</text>
+  <text x="516" y="404" font-size="11" fill="#374151">a7a5be1703 同一提交里改了 242 篇入站链接，否则全红</text>
+  <text x="516" y="424" font-size="11" fill="#6b7280">「归档不破坏引用」不靠人记得，靠链接能机器验证</text>
+
+  <rect x="40" y="446" width="900" height="104" rx="8" fill="#fff" stroke="#4b5563" stroke-width="1.4"/>
+  <text x="56" y="470" font-weight="700" fill="#111827">⑦ 三条「不要」，各自有一个具体动机</text>
+  <text x="56" y="492" font-size="11" fill="#374151">不要集中索引 —— 重复路径已有的元数据；让无关修改争用同一文件（有红灯，专用报错）</text>
+  <text x="56" y="512" font-size="11" fill="#374151">不要 changelog 式改写 —— Rewrite stale facts in place; do not append change history（无红灯）</text>
+  <text x="56" y="532" font-size="11" fill="#374151">不要「说得漂亮就算」—— 每条论断都要能回答「哪份文件改掉后这句话变假」；## Decision 是说法，## Testing/Verification 才是证明</text>
+</svg>
