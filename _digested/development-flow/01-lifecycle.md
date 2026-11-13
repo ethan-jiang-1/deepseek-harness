@@ -66,31 +66,22 @@ if (segs.length !== 3 || cls === undefined || base === undefined) {
 | 3 | 三件套文件（`.md` / `.zh.md` / `.i18n.yaml`） | 每目录 N 篇 | 只能加文件，不能加目录 |
 | 4 | — | **不存在** | 出现即 `got depth 4` |
 
-24 个叶子目录，1271 篇英文正文（含 `.zh.md` 与 sidecar 共 2546 个文件），全部平摊在这里。实测**没有任何三级以下的目录**。
+叶子目录**最多**是 4×6=24 个，实际存在 **20** 个——`rejected/` 下只有 `architecture/` 与 `simplification/` 两个，其余四个 class 目录从未被创建（[01 矩阵](#设计出来的两个轴真的负载) 里 rejected 那列的 0 就是它们的缺席）。1271 篇英文正文（含 `.zh.md` 与 sidecar 共 2546 个文件）全部平摊在这 20 个目录里；实测**没有任何三级以下的目录**。
 
-### 实测负载：集中在四个目录
+### 实测负载：分布在 20 个目录，而不是均匀分布
 
-| 叶子目录 | 英文正文 |
-| --- | ---: |
-| `archived/feature/` | **306** |
-| `archived/architecture/` | 185 |
-| `archived/bug-fix/` | 182 |
-| `implemented/architecture/` | **180** |
-| `archived/process/` | 120 |
-| `archived/simplification/` | 92 |
-| `implemented/feature/` | 40 |
-| `archived/testing/` | 39 |
-| 其余 12 个目录 | 1–34 |
+逐目录的数字不在本页重列——它就是把[下面那张 class × lifecycle 矩阵](#设计出来的两个轴真的负载)换成目录视角。从这个视角能直接读出两件事：
 
-前四项占全树 853/1271 ≈ 67%。
+- **负载高度集中。** 最大的四个目录 `archived/feature`(306)、`archived/architecture`(185)、`archived/bug-fix`(182)、`implemented/architecture`(180) 合计 853 篇，占全树 853/1271 ≈ **67%**；最小的两个目录各只有 1 篇。
+- **目录的存在与否本身是信息。** 20 而非 24，缺的四个全在 `rejected/`——`rejected/` 只接纳过架构类与简化类的被否提案。**class 是每个 lifecycle 各自的一个槽位，不是全树共享的一层**；这也是为什么它不能当第二层的分类轴来「切话题」：切出来的每一格都要在四个状态里各存在一次。
 
 ### 为什么平摊能撑住：两条红利
 
 **红利一：路径即元数据。** 状态在深度 1、种类在深度 2，所以「活跃的架构决策」是一个目录名，不需要索引、不需要标签、不会与真实位置不同步。这就是上文「一个被明确禁止的东西」里那条 `INDEX.md` 禁令的本钱。
 
-**红利二：命名即摘要。** [07](./07-naming-and-house-style.md) 讲的动词命名法让文件名本身可读，所以 `ls` 的原始输出就是一份人能读的目录。
+**红利二：命名即摘要。** [07](./07-naming-and-house-style.md) 讲的动词命名法让单个文件名自解释——看到 `fold-session-persistence-interface` 就知道那条决定了什么，不必点开。这**只保证每一行可读，不保证几千行可读**，所以它撑住的其实是 grep 的结果质量，不是 `ls` 的输出质量。
 
-两条合起来，README 那句 `browse its lifecycle/class folders or search the repository` 才成立：**浏览退化为枚举，检索由仓库级搜索承担**，平摊不构成问题。
+两条合起来看：红利一让「找某一类决策」不需要索引，红利二让「搜到的每一条」一眼可判。README 那句 `browse its lifecycle/class folders or search the repository` 在这个层面成立——但它是在**目录还小**的前提下写的。
 
 ### 什么时候这两条会失效
 
@@ -115,7 +106,7 @@ if (segs.length !== 3 || cls === undefined || base === undefined) {
 
 所以准确的读法是：`browse its lifecycle/class folders or search the repository` 这句话在**小规模时是两条路**，在**当前规模下已经退化成一条**。这不是缺陷报告，而是维护者在考虑「要不要放开第四层」时必须先承认的现状——因为一旦承认 browse 已失效，`INDEX.md` 禁令的理由也要重新称量。
 
-这条现状与「判据没有门禁」是不同性质的：前者是**结构决定的可扩展上限**，后者是**判断无法机械化**。前者可以靠改结构解决，后者不能。
+这条现状与「判据没有门禁」是不同性质的：前者是**结构决定的可扩展上限**，后者是**判断无法机械化**。前者可以靠改结构解决，后者不能。它也与下文「处置频率」那条辅轴不冲突——那条说的是**分布随 class 变化**，这里说的是**目录容量不随 class 变化**：无论 class 长成什么样，每个叶子目录都只有一层。
 
 ## 三个看似维度、其实不是的东西
 

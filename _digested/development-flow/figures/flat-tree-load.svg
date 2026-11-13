@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <rect width="980" height="560" fill="#fafafa" rx="6"/>
-  <text x="490" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">树固定为三层：24 个叶子目录，1271 篇正文全平摊在里面</text>
+  <text x="490" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">树固定为三层：20 个叶子目录，1271 篇正文全平摊在里面</text>
   <text x="490" y="54" text-anchor="middle" font-size="11" fill="#6b7280">walkAgentNoteTree 第 68 行：深度不等于 3 一律拒绝 —— expected {lifecycle}/{class}/file.md</text>
 
   <text x="60" y="84" font-weight="700" fill="#1f2937">实际形状（基线 b830ec95，只数英文正文）</text>
@@ -25,16 +25,17 @@
   <text x="592" y="118" font-weight="700" fill="#7f1d1d">第 3 层 · 文件</text>
   <text x="592" y="140" font-size="10" fill="#991b1b">yyyy-mm-dd-</text>
   <text x="592" y="154" font-size="10" fill="#991b1b">topic.md</text>
-  <text x="592" y="176" font-size="10" fill="#b91c1c">第 4 层？</text>
-  <text x="592" y="192" font-size="10" fill="#b91c1c">深度 4 直接报错</text>
-  <text x="592" y="208" font-size="10" fill="#b91c1c">（无此可能）</text>
+  <text x="592" y="176" font-size="10" fill="#b91c1c">不存在第 4 层</text>
+  <text x="592" y="192" font-size="10" fill="#b91c1c">深度 4 即报错：</text>
+  <text x="592" y="208" font-size="10" fill="#b91c1c">got depth 4</text>
 
   <rect x="760" y="96" width="168" height="120" rx="8" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.3"/>
-  <text x="772" y="118" font-weight="700" fill="#0c4a6e">叶子总数</text>
-  <text x="772" y="142" font-size="22" font-weight="700" fill="#0369a1">4 × 6</text>
-  <text x="772" y="166" font-size="11" fill="#0369a1">= 24 个目录</text>
-  <text x="772" y="190" font-size="10" fill="#0369a1">1271 篇英文正文</text>
-  <text x="772" y="206" font-size="10" fill="#0369a1">全部平摊在这里</text>
+  <text x="772" y="118" font-weight="700" fill="#0c4a6e">叶子目录数</text>
+  <text x="772" y="146" font-size="22" font-weight="700" fill="#0369a1">20 / 24</text>
+  <text x="772" y="168" font-size="10" fill="#0369a1">上限 4×6，实际缺 4 个</text>
+  <text x="772" y="182" font-size="10" fill="#0369a1">（全部在 rejected/ 下）</text>
+  <text x="772" y="198" font-size="10" fill="#0369a1">1271 篇正文</text>
+  <text x="772" y="209" font-size="10" fill="#0369a1">全平摊在这里</text>
 
   <text x="60" y="252" font-weight="700" fill="#1f2937">负载集中在四个目录（每列长度正比于篇数）</text>
 
@@ -65,7 +66,7 @@
   <text x="620" y="362" font-size="10" fill="#374151">rejected/simplification</text>
   <text x="800" y="362" font-size="11" font-weight="700" fill="#4b5563">7</text>
 
-  <text x="80" y="384" font-size="10" fill="#6b7280">前四项占全树 853/1271 ≈ 67%。其余 16 个叶子目录合计 418 篇，单个最多 39 篇。</text>
+  <text x="80" y="384" font-size="10" fill="#6b7280">前四项占全树 853/1271 ≈ 67%，其余 16 个目录合计 418 篇；最小的两个目录各只有 1 篇。</text>
 
   <rect x="60" y="410" width="430" height="112" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="1.4"/>
   <text x="76" y="434" font-weight="700" fill="#92400e">为什么能这么平摊：两条红利</text>
@@ -82,5 +83,5 @@
   <text x="526" y="512" font-size="11" fill="#991b1b">· 而 INDEX.md 被明文禁止（有专用报错）</text>
 
   <rect x="60" y="534" width="890" height="18" rx="4" fill="#f3f4f6"/>
-  <text x="76" y="547" font-size="10" fill="#374151">结论：不是「平摊错了」，是 6 个 class 是原生的槽位、写入量按月线性增长 —— 分类的基数固定而条目数不固定，迟早交账。</text>
+  <text x="76" y="547" font-size="10" fill="#374151">结论：不是「平摊错了」—— 6 个 class 是原生的槽位，基数固定而条目数不固定，负载必然向少数目录集中。</text>
 </svg>
