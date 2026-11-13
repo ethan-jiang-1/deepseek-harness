@@ -52,9 +52,9 @@
   <text x="503" y="240" text-anchor="middle" font-size="11" fill="#14532d">义务：随代码保持事实最新</text>
   <text x="503" y="260" text-anchor="middle" font-size="11" fill="#b91c1c">但不得改写决策本身</text>
   <text x="503" y="294" text-anchor="middle" font-size="11" fill="#166534">门禁：四条提案期标题禁行</text>
-  <text x="503" y="312" text-anchor="middle" font-size="11" fill="#166534">Proposal · Plan ·</text>
-  <text x="503" y="324" text-anchor="middle" font-size="11" fill="#166534">Migration plan ·</text>
-  <text x="503" y="336" text-anchor="middle" font-size="11" fill="#166534">Acceptance criteria</text>
+  <text x="503" y="309" text-anchor="middle" font-size="11" fill="#166534">Proposal · Plan ·</text>
+  <text x="503" y="323" text-anchor="middle" font-size="11" fill="#166534">Migration plan ·</text>
+  <text x="503" y="337" text-anchor="middle" font-size="11" fill="#166534">Acceptance criteria</text>
 
   <rect x="625" y="104" width="150" height="234" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.6"/>
   <text x="700" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#7f1d1d">rejected/</text>
@@ -65,7 +65,7 @@
   <text x="700" y="240" text-anchor="middle" font-size="11" fill="#7f1d1d">义务：只有防复发</text>
   <text x="700" y="260" text-anchor="middle" font-size="11" fill="#7f1d1d">尽头：不再劝阻就删</text>
   <text x="700" y="300" text-anchor="middle" font-size="11" fill="#b91c1c">门禁：状态行必须</text>
-  <text x="700" y="318" text-anchor="middle" font-size="11" fill="#b91c1c">rejected — &lt;一句理由&gt;</text>
+  <text x="700" y="318" text-anchor="middle" font-size="10" fill="#b91c1c">rejected — &lt;理由&gt;</text>
 
   <rect x="810" y="104" width="136" height="234" rx="8" fill="#e5e7eb" stroke="#4b5563" stroke-width="1.6" stroke-dasharray="6 4"/>
   <text x="875" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#111827">archived/</text>

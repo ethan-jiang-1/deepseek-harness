@@ -2,6 +2,8 @@
 
 > 前几篇都在讲它成立的部分。本篇讲不成立的部分，而且**每条都给一个能把它推翻的观察**。这是本专题对自己的要求：说不出「哪份文件改掉后这句话变假」的判断，不该以肯定语气写出来。
 
+![五条缺口、各自的颠覆条件与严重度](./figures/gaps-register.svg)
+
 ## 缺口一：分类门禁不读 README（闭集的双份副本）
 
 **观察。** [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) 的注释声明规则归属：「Structural rules are shared with `agent-note-tree.ts`; the closed classification rules live in `.agents/notes/README.md`.」但该脚本从不读取 `README.md`。闭集 `AGENT_NOTE_CLASSES` 与 README 的 Classification 表是两份独立维护的字面副本。
@@ -39,7 +41,7 @@
 
 ## 缺口四：没有存在性门禁，也没有质量门禁
 
-**观察。** 三个 note 门禁检查的都是「已存在的 note 是否违反形状规则」。没有门禁检查「这次改动该带 note 而没带」，也没有门禁能检查「写下的理由是否成立」。
+**观察。** 全部 note 门禁检查的都是「已存在的 note 是否违反形状规则」（执法者有六类，见 [`08`](./08-enforcement-sites.md)）；没有门禁检查「这次改动该带 note 而没带」，也没有门禁能检查「写下的理由是否成立」。
 
 **这不是疏漏。** 判定「这次改动是不是非平凡」与「这条理由值不值得记」都是语义判断，机械无法从事。设计的应对是把成本问题交给两处成文豁免与一处事后纪律：
 
@@ -53,7 +55,7 @@
 
 ## 缺口五：执法者是六类，而本专题前几篇只数了一类
 
-**观察。** [`05`](./05-writeback-loop.md) 与 [`02`](./02-gates.md) 的强制力叙述都以 `doc-sync` 的三个 leaf 门禁为轴。实际上冻结层还有一道**独立的 git 钩子**门禁（`lefthook.yml` 的 `pre-commit` / `pre-merge-commit`，不受 `doc-sync` 分组影响），而归档层被十余道全仓门禁**主动排除**、只由三处各写死一份路径前缀的字面量实现（见 [`08`](./08-enforcement-sites.md)）。
+**观察。** [`05`](./05-writeback-loop.md) 与 [`02`](./02-gates.md) 的强制力叙述都以 `doc-sync` 的三个 leaf 门禁为轴。实际上冻结层还有一道**独立的 git 钩子**门禁（`lefthook.yml` 的 `pre-commit` / `pre-merge-commit`，不受 `doc-sync` 分组影响），而归档层被十余道全仓门禁**主动排除**，且「排除」这个判断由三处各自写死的路径前缀字面量实现（逐处列举见 [`08`](./08-enforcement-sites.md) 第三节）。
 
 **后果。** 只说 `doc-sync` 会把两件事读错：① 冻结层其实比活跃区更硬（钩子当场拒绝提交）；② 归档层的出站链接被**明文放弃检查**，而「归档不破坏引用」常被当成一项保证来引用。
 

@@ -25,10 +25,10 @@
   <rect x="364" y="214" width="260" height="34" rx="5" fill="#fff" stroke="#16a34a"/>
   <text x="376" y="236" font-size="11" fill="#14532d">## Consequences　（代价 + 收益）</text>
   <rect x="364" y="256" width="260" height="34" rx="5" fill="#fff" stroke="#16a34a"/>
-  <text x="376" y="272" font-size="10" fill="#166534">## Testing / Verification /</text>
-  <text x="376" y="286" font-size="10" fill="#166534">## Deferred / ## Related</text>
-  <text x="376" y="310" font-size="10" fill="#166534">可选；必须是现在时的</text>
-  <text x="376" y="322" font-size="10" fill="#166534">「现在钉住行为的是什么」</text>
+  <text x="376" y="268" font-size="10" fill="#166534">## Testing / ## Verification /</text>
+  <text x="376" y="282" font-size="10" fill="#166534">## Deferred / ## Related</text>
+  <text x="376" y="308" font-size="10" fill="#166534">可选；必须是现在时的</text>
+  <text x="376" y="324" font-size="10" fill="#166534">「现在钉住行为的是什么」</text>
 
   <rect x="650" y="134" width="292" height="196" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="1.6"/>
   <text x="795" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#7f1d1d">rejected/</text>

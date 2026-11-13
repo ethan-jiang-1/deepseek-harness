@@ -1,6 +1,6 @@
 # 08 — 谁在强制：`doc-sync` 之外还有五类执法者
 
-> 前七篇的强制力叙述集中在 `doc-sync` 的三个 leaf 门禁。但仓库里**不止一处**在强制 Agent Note 的纪律，而且这六类执法者的检查时机、检查对象、失败后果都不一样。把它们并列看清，「这套制度有多硬」才有一个准确的答案。生命周期机制归 [01](./01-lifecycle.md)，三个 leaf 门禁逐条规则归 [02](./02-gates.md)，缺口归 [06](./06-honest-gaps.md)。
+> 此前各篇把强制力的轴放在 `doc-sync` 的三个 leaf 门禁。但仓库里**不止一处**在强制 Agent Note 的纪律，而且这六类执法者的检查时机、检查对象、失败后果都不一样。把它们并列看清，「这套制度有多硬」才有一个准确的答案。生命周期机制归 [01](./01-lifecycle.md)，三个 leaf 门禁逐条规则归 [02](./02-gates.md)，缺口归 [06](./06-honest-gaps.md)。
 
 ## 六类执法者
 
@@ -13,9 +13,9 @@
 | **人读的 skill** | 判据、四分法、改写与回写纪律 | 人显式阅读 | 无 | `.agents/skills/dsh-*/SKILL.md` |
 | **PR review** | 「实现落地的 PR 里那篇 proposed 有没有被改写」 | 审阅时 | 要求修改 | [`.agents/skills/dsh-code-review/SKILL.md`](../../.agents/skills/dsh-code-review/SKILL.md) |
 
-## 一、`pre-commit` 上真的有一道 note 门禁G
+## 一、`pre-commit` 上真的有一道 note 门禁
 
-这是最容易漏掉的一条，因为前七篇讲的三道门禁都在 `doc-sync` 里，而 `doc-sync` 是**提交前**跑的，不是 git 钩子。`lefthook.yml` 里另有一道：
+这是最容易漏掉的一条，因为前几篇讲的三道门禁都在 `doc-sync` 里，而 `doc-sync` 是**提交前**跑的，不是 git 钩子。`lefthook.yml` 里另有一道：
 
 ```yaml
     - name: archived agent notes
@@ -52,9 +52,9 @@ export function isArchivedAgentNotePath(path: string): boolean
 
 所以「归档不破坏引用」这句要写准确：**指向归档的链接**是可机器验证的（归档目录本身存在于工作树，链接目标存在）；**归档发出的链接**被明文放弃检查。两者不是同一件事，混着说会把一个刻意留下的空白读成一项保证。
 
-## 三、`glob` 谓词分发：只有五道门禁认得归档层
+## 三、只有五处认得归档层，而且各写各的副本
 
-除 `repo-files.ts` 的排除谓词外，还有一组门禁用 glob 划分作用域，并且**只有少数几处显式处理了归档层**。全仓范围内认得它的只有五处：
+除 `repo-files.ts` 的排除谓词外，全仓显式处理归档层的只有五处——三处是脚本，一处是钩子 glob，一处是把它写成断言的测试：
 
 | 文件 | 怎么处理归档层 | 写法 |
 | --- | --- | --- |
@@ -70,13 +70,9 @@ export function isArchivedAgentNotePath(path: string): boolean
 
 这也解释了为什么 [06](./06-honest-gaps.md) 的缺口一（分类门禁不读 README）和缺口三（改写纪律无内容检查）迟迟没有补上：**补充检查的成本不是加一条规则，而是要决定「这条规则管不管归档层」**，而归档层一动就要走封印流程。
 
-## 四、活跃区里坐着一个「不许动」的例外
+顺带一个由此推出的行为：活跃正文**可以**链接归档 note（`active prose may still link into an archived note when it intentionally cites history`），但被链接的那篇是冻结的。同一句话的两半由两个执法者分管——「可以链」是散文自治，「链过去的东西别再改」是封印强制。
 
-`.agents/notes/archived/AGENTS.md` 是禁令清单，`implemented/AGENTS.md` 是义务清单，但活跃区里还有一类特殊文件：**已归档 note 的入站链接目标**。
-
-规则是：活跃正文**可以**链接到归档 note（`active prose may still link into an archived note when it intentionally cites history`），但被链接的那篇是冻结的。于是同一句话的两半来自不同的执法者——「可以链」由散文自治，「链过去的东西别再改」由封印强制。
-
-## 五、六份 skill 各管一段：纪律不集中
+## 四、六份 skill 各管一段：纪律不集中
 
 `.agents/skills/` 下没有任何一个 skill 拥有整条生命周期，而是六个各管一段，靠**互相指路**拼接：
 
@@ -91,13 +87,13 @@ export function isArchivedAgentNotePath(path: string): boolean
 
 读这六份 skill 能看出一件 [05](./05-writeback-loop.md) 没展开的事：**纪律的载体本身就是分片的**。`dsh-archive-agent-notes` 只在自己被调用时生效，`dsh-code-review` 只在 review 时生效——而 [05](./05-writeback-loop.md) 的阶梯把 skill 排在「按需阅读」这一档，正对应这个事实：**没有哪一份 skill 常驻上下文**，所以判据被反复指路、反复重述，而不是集中一次讲清。
 
-## 六、跨层回写：note 的理由进得了 `docs/`，进不了 `AGENTS.md`
+## 五、跨层回写：note 的理由进得了 `docs/`，进不了 `AGENTS.md`
 
 `docs/AGENTS.md` 的 Placement 行规定了理由的流向：
 
 > standing orders → root `AGENTS.md` **with a rationale link**
 
-也就是说：一条理由升格成常驻规则时，`AGENTS.md` 只写那句话，理由仍留在 note 里。反过来，`docs/` 的多数页面**不允许**解释理由：`docs/AGENTS.md` 的层级表把「decision rationale」列在 `docs/architecture.md` 的排除栏，指向 Agent Notes。真正把这条规则**写下来并带理由链接**的只有一处——`AGENTS.md` 里指向 `docs/architecture.md#application-launch` 的那条启动规则。
+也就是说：一条理由升格成常驻规则时，`AGENTS.md` 只写那句话，理由仍留在 note 里。反过来，`docs/` 的多数页面**不允许**解释理由：`docs/AGENTS.md` 的层级表把「decision rationale」列在 `docs/architecture.md` 的排除栏，指向 Agent Notes。按 Placement 行写成「一句规则 + 一个理由链接」的实例是 `AGENTS.md` 里指向 `docs/architecture.md#application-launch` 的那条启动规则；本页不主张它是唯一的。
 
 所以「回写」不是一条单向通道，而是三层之间的分工：
 
@@ -110,6 +106,8 @@ export function isArchivedAgentNotePath(path: string): boolean
 ## 一张时机对照表
 
 把六类执法者按**什么时候会响**重排，比按「管什么」排更能说明这套制度的形状：
+
+![六类执法者的触发时机，以及编辑期为什么一定是空的](./figures/enforcement-timeline.svg)
 
 | 时机 | 会响的执法者 | 不会响的 |
 | --- | --- | --- |

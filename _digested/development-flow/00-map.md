@@ -1,6 +1,6 @@
 # Development Flow · 决策怎么被写下来、落地、忘记与回写
 
-上游同步触及 `.agents/notes/`、`scripts/verify-agent-note-*.ts`、`scripts/archived-agent-notes.ts`、`.agents/skills/dsh-archive-agent-notes/` 时，按 [`_coverage/`](../_coverage/00-index.md) 的口径复核本专题；具体核验点见 [`catalog.json`](../catalog.json)。
+上游同步触及 `.agents/notes/`、`scripts/verify-agent-note-*.ts`、`scripts/archived-agent-notes.ts`、`.agents/skills/dsh-archive-agent-notes/` 或 `lefthook.yml` 的归档 job 时，按 [`_coverage/`](../_coverage/00-index.md) 的口径复核本专题；具体核验点见 [`catalog.json`](../catalog.json)。
 
 ## 一句话
 
@@ -17,8 +17,8 @@ DSH 把「一个决定为什么是这样」做成了仓库里的一等语料：�
 | **状态之间怎么走、走错了会怎样？** | [`03-transitions.md`](./03-transitions.md) | proposed→rejected 是一条最小化操作；proposed→implemented 要求改写整篇，而这道改写**只有一半有门禁** |
 | **什么时候该忘记？** | [`04-forgetting.md`](./04-forgetting.md) | 四分法（删除/保留/归档/拒绝）+ 明文排除体量与年龄 + 哈希封印；一次 452 篇的批量归档可被逐字节复核 |
 | **学到的东西怎么回到仓库？** | [`05-writeback-loop.md`](./05-writeback-loop.md) | 学习外置成规则/门禁/skill/note 四形态，存在性有强制、质量只有部分有 |
+| **这套制度哪里没有闭环？** | [`06-honest-gaps.md`](./06-honest-gaps.md) | 五条缺口：分类门禁不读 README、口径两个计数、改写纪律无内容检查、无存在性与质量门禁、执法者只数了一类——逐条附一个能把它推翻的观察 |
 | **命名和日常写法的规矩从哪来？** | [`07-naming-and-house-style.md`](./07-naming-and-house-style.md) | 三层命令文件、与 `docs/` 的管辖权对偶、动词命名五律、闭集章节词汇、链接代替叙述 |
-| **这套制度哪里没有闭环？** | [`06-honest-gaps.md`](./06-honest-gaps.md) | 语义判据无自动验证、改写纪律无检查、分类门禁不读 README——逐条列出并给出可证伪的观察 |
 | **这些规则究竟由谁执行、什么时候响？** | [`08-enforcement-sites.md`](./08-enforcement-sites.md) | `doc-sync` 只是六类执法者之一：git 钩子、十余道门禁的排除谓词、六份 skill、PR review 各管一段 |
 
 ## 主轴是怎么长出来的
@@ -55,7 +55,6 @@ DSH 把「一个决定为什么是这样」做成了仓库里的一等语料：�
 - **要动手审计语料**：[`04`](./04-forgetting.md) 的四分法校准 → [`06`](./06-honest-gaps.md) 的缺口清单 → 回到 DSH 自己的 `dsh-archive-agent-notes` skill 执行。
 - **要写一篇 note**：`harness-idea/` 的 [`08`](../harness-idea/08-judgement-discipline.md) 讲出处纪律，本专题 [`02`](./02-gates.md) 讲骨架会拒绝什么，[`07`](./07-naming-and-house-style.md) 讲命名与措辞习惯。
 - **要判断「这条规则到底能不能拦住我」**：[`08`](./08-enforcement-sites.md) 的时机对照表——六类执法者按「什么时候会响」重排，编辑期那一格是空的。
-
 ## 边界
 
 - 本专题不解释 Agent Note **该记什么内容**（那是每条 note 自己的事），只解释它的容器与处置规则。
