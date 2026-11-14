@@ -70,7 +70,7 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 **树的深度被钉死在三层，没有第四层。** `walkAgentNoteTree` 对深度用等号判断（[`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)）：`globSync` 虽然写 `**`，但走出来的路径只要不是恰好 `{lifecycle}/{class}/file.md` 三段就报 `expected {lifecycle}/{class}/file.md`。所以「按主题或按月再分子目录」这条路不通——不是没人想到，是门禁直接拒绝。
 
-叶子目录**上限** 4×6=24 个，实际存在 **20** 个：`rejected/` 下只有 `architecture/` 与 `simplification/`，其余四个 class 目录从未被创建。全树 1271 篇英文正文（含 `.zh.md` 与 sidecar 共 2546 个文件）全部平摊在这 20 个目录里，且负载高度集中——`archived/feature` 306 篇、`archived/architecture` 185、`archived/bug-fix` 182、`implemented/architecture` 180，前四项占 853/1271 ≈ 67%，而最小的两个目录各只有 1 篇。
+叶子目录**上限** 4×6=24 个，实际存在 **20** 个：`rejected/` 下只有 `architecture/` 与 `simplification/`，其余四个 class 目录从未被创建。20 个叶子目录合计承载 1270 篇英文正文（全树另有根级 `README.md` 等非 Note 文件若干，不含在内），且负载高度集中——`archived/feature` 306 篇、`archived/architecture` 185、`archived/bug-fix` 182、`implemented/architecture` 180，前四项占 853/1270 ≈ 67%，而最小的两个目录各只有 1 篇。
 
 这个取舍有明确的两面。**换来的是**「分类只有一套、且有校验收口」：`class` 是闭集 6、README 与源码双份维护，不存在「两个组重名算谁」的问题。**代价是**可浏览性随规模退化：`implemented/architecture` 按月是 8 / 26 / 28 / 88 / 30，2026-09 那一波强相关的架构决策在目录结构里不可见；180 篇里 `session-` 开头 8 篇、`desktop-` 与 `client-` 各 7 篇，本应聚在一起的一组被日期前缀均匀摊开。而补回可浏览性的唯一替代品 `INDEX.md` 恰好被明文禁止。所以 `browse its lifecycle/class folders or search the repository` 这句话在小规模时是两条路，在当前规模下已退化成检索一条。
 
