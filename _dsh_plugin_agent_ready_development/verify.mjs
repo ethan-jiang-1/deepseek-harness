@@ -49,6 +49,24 @@ const readerVolatileCountPatterns = [
 ]
 const allowedInventoryRoles = new Set(['map', 'mechanism', 'playbook', 'experiment', 'governance'])
 const allowedInventoryStatuses = new Set(['reverified', 'carried', 'unrecorded'])
+const volumeBoundaryMaps = [
+  '01-general-repo-harness/00-map.md',
+  '02-dsh-plugin-harness/00-map.md',
+  '03-dsh-sdlc-reference/00-map.md',
+]
+const requiredVolumeBoundaryHeadings = [
+  { pattern: /^##\s+.*适配场景/mu, label: '适配场景' },
+  { pattern: /^##\s+.*准入与禁入边界/mu, label: '准入与禁入边界' },
+  { pattern: /^##\s+.*版本更迭/mu, label: '版本更迭防跑偏判据' },
+]
+const volume1ContaminationPatterns = [
+  /\bwindow\.__ModuleLoader__\b/,
+  /\bTypertRemoteService\b/,
+  /\bdsh\.client\b/,
+  /\bBUNDLE_PREVIEWS\b/,
+  /\bpresentResult\b/,
+  /\btool\.call\.toolview\b/,
+]
 
 function corpusFiles(directory) {
   const files = []
@@ -369,9 +387,63 @@ function checkMarkdownTables(path, activeLines) {
 }
 
 function isGovernanceOrCoverageMarkdown(path) {
-  if (path === resolve(corpusRoot, 'CORPUS-CHARTER.md')) return true
+  if (path === resolve(corpusRoot, 'CORPUS-CHARTER.md') || path === resolve(corpusRoot, 'AGENTS.md')) return true
   const fromRoot = relative(corpusRoot, path).split(sep)
   return fromRoot[0] === '_coverage'
+}
+
+function checkVolumeBoundaryDiscipline(path, source) {
+  const relPath = relative(corpusRoot, path).replaceAll(sep, '/')
+  if (/^01-general-repo-harness\/(?!00-)\d{2}-.+\.md$/.test(relPath)) {
+    const lines = source.split('\n')
+    for (let index = 0; index < lines.length; index += 1) {
+      for (const pattern of volume1ContaminationPatterns) {
+        const match = lines[index].match(pattern)
+        if (match !== null) {
+          report(path, index + 1, `Volume 1 general chapter leaks DSH-plugin-specific implementation detail (${JSON.stringify(match[0])}); move plugin specifics to 02-dsh-plugin-harness/`)
+          break
+        }
+      }
+    }
+  } else if (/^03-dsh-sdlc-reference\/(?!00-)\d{2}-.+\.md$/.test(relPath)) {
+    if (!source.includes('> **外部借鉴切面**：')) {
+      report(path, undefined, 'Volume 3 reference page must include a top-level "> **外部借鉴切面**：" applicability boundary callout')
+    }
+  }
+}
+
+function checkAntiDriftGovernance() {
+  const agentsPath = resolve(corpusRoot, 'AGENTS.md')
+  if (!existsSync(agentsPath)) {
+    report(agentsPath, undefined, 'missing corpus-wide anti-drift standing instructions AGENTS.md')
+  } else {
+    const agentsSource = decodeText(agentsPath)
+    if (agentsSource !== undefined) {
+      for (const volumeDir of ['01-general-repo-harness/', '02-dsh-plugin-harness/', '03-dsh-sdlc-reference/']) {
+        if (!agentsSource.includes(volumeDir)) {
+          report(agentsPath, undefined, `AGENTS.md must define scope boundaries for ${JSON.stringify(volumeDir)}`)
+        }
+      }
+      if (!agentsSource.includes('拒绝四平八稳')) {
+        report(agentsPath, undefined, 'AGENTS.md must retain the high-signal anti-boilerplate rule ("拒绝四平八稳")')
+      }
+    }
+  }
+
+  for (const relMap of volumeBoundaryMaps) {
+    const mapPath = resolve(corpusRoot, relMap)
+    if (!existsSync(mapPath)) {
+      report(mapPath, undefined, `missing volume boundary charter ${JSON.stringify(relMap)}`)
+      continue
+    }
+    const mapSource = decodeText(mapPath)
+    if (mapSource === undefined) continue
+    for (const { pattern, label } of requiredVolumeBoundaryHeadings) {
+      if (!pattern.test(mapSource)) {
+        report(mapPath, undefined, `volume boundary charter 00-map.md is missing required anti-drift section (${label})`)
+      }
+    }
+  }
 }
 
 function checkForbiddenContent(path, source) {
@@ -394,6 +466,7 @@ function checkMarkdown(path, source) {
     }
   }
   checkForbiddenContent(path, source)
+  checkVolumeBoundaryDiscipline(path, source)
 
   const activeLines = activeMarkdownLines(source)
   checkMarkdownTables(path, activeLines)
@@ -914,6 +987,7 @@ for (const path of files) {
 }
 
 checkMarkdownInventory(markdownPaths)
+checkAntiDriftGovernance()
 
 for (const path of files) {
   if (extname(path) === '.svg' && !referencedSvgPaths.has(path)) report(path, undefined, 'SVG is not referenced by Markdown')

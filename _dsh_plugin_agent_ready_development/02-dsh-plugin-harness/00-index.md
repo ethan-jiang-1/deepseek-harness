@@ -50,7 +50,7 @@
 | [`04-plugin-repo-topologies.md`](./04-plugin-repo-topologies.md) | **三种插件仓拓扑、全栈构建与跨端 RPC**：单包 Host、Host + Web Client 双树包（双 `tsconfig` + 外部仓 `tsdown.config.ts` `window.__ModuleLoader__.load` 打包模板 + `TypertRemoteService` `@Remote` 五步闭环）、Capability Seam 多包与 `Volatile<T>` 活配置 |
 | [`05-cordis-contracts-and-model-experience.md`](./05-cordis-contracts-and-model-experience.md) | **Cordis 六大防坑契约与 Model Experience**：可直接喂给 Agent 的六条代码级红线（禁函数插件默认导出、禁模块可变单例、强制 Waterfall `next()`、异步排空卸载与提交点改状态、工具 Schema 极简与 KV Cache 记账、结构化错误分类） |
 | [`06-plugin-gate-and-ci-harness.md`](./06-plugin-gate-and-ci-harness.md) | **独立插件仓门禁、无 Key 回放与 CI 模板**：支持 Host+Client 双面校验的零依赖 `scripts/verify-plugin.mjs`、带 `PENDING` 缺失依赖点名的真实 `Loader`/HMR 竞态测试、`ScriptedLlmAdapter` 无 Key 回放 + 独立 `workspace.expected/` 与插件 `ci.yml` |
-| [`07-extension-recipes-and-host-services.md`](./07-extension-recipes-and-host-services.md) | **宿主可注入服务货架与五大扩展配方**：12+ 个官方宿主服务（`fs`/`shell`/`jobs`/`approval`/`sandbox`/`spill` 等）速查表，以及生产级 `defineTool`（PTC + CLI/Web 双轨卡片 + 后台任务 + V4 `MessageSourceMap`）、五层工具钩子、`ctx.commands`、`systemPrompt.section()` 与协议桥接配方 |
+| [`07-extension-recipes-and-host-services.md`](./07-extension-recipes-and-host-services.md) | **宿主可注入服务货架与五大扩展配方**：12+ 个官方宿主服务（`fs`/`shell`/`jobs`/`approval`/`sandboxPolicy`/`spillStore` 等）速查表，以及生产级 `defineTool`（PTC + CLI/Web 双轨卡片 + 后台任务 + V4 `MessageSourceMap`）、五层工具钩子、`ctx.commands`、`systemPrompt.section()` 与协议桥接配方 |
 | [`08-troubleshooting-and-postmortems.md`](./08-troubleshooting-and-postmortems.md) | **高频故障 1 分钟排障手册与四大真实事故复盘**：8 大插件症状速查表（`PENDING` 静默失活、Web 白屏缺 `__DSH_BOOT__`、`presentResult` Web 不生效、同 `id` 覆盖配置等）+ DSH 官方 Postmortem `0001`–`0004` 插件视角深度拆解 |
 
 ## 插件变更的事实归属与分层证据闭环
@@ -81,7 +81,7 @@
 2. **切勿拿纯 `tsc` 产物充当全栈插件的 `lib/client.js`，也切勿把 `dsh.client` 挂在子路径行上。** 浏览器端必须打包为 `window.__ModuleLoader__.load` lazy-CJS 工厂格式，且只有裸包名根 Loader 行会挂载浏览器模块（详见 [`04`](./04-plugin-repo-topologies.md)）。
 3. **切勿以为写了 `presentResult` 就能改变内置 Web 界面的工具卡片。** `presentCall`/`presentResult` 仅供 CLI/SDK 终端消费；Web 卡片消费的是 `output.presentationMeta` 与 `tool.call.toolview` 槽位（详见 [`07`](./07-extension-recipes-and-host-services.md)）。
 4. **切勿让录制或快照刷新脚本顺手覆盖独立预期（Oracle）或盲目提交刷新结果。** 盲刷录制会把 `UNKNOWN_TOOL` 等回归当成“新预期”固化入库（Postmortem `0002`，详见 [`08`](./08-troubleshooting-and-postmortems.md)）。
-5. **切勿模仿早年已退役的 `./invariant` 伴生导出，也切勿裸调 `fs`/`child_process` 绕过宿主底座。** 优先注入宿主现成服务（`ctx.fs`、`ctx.shell`、`ctx.jobs`、`ctx.approval`、`ctx.sandbox`），详见 [`07`](./07-extension-recipes-and-host-services.md)。
+5. **切勿模仿早年已退役的 `./invariant` 伴生导出，也切勿裸调 `fs`/`child_process` 绕过宿主底座。** 优先注入宿主现成服务（`ctx.fs`、`ctx.shell`、`ctx.jobs`、`ctx.approval`、`ctx.sandboxPolicy`），详见 [`07`](./07-extension-recipes-and-host-services.md)。
 6. **切勿生搬硬套 DSH 主仓内部的百包级行政流程。** DSH 主仓的 GitHub Project 状态机、加权评审积分、双语哈希配对与三序列同步发版服务于官方大仓（归档于 [卷三](../03-dsh-sdlc-reference/00-index.md)）；独立插件仓直接采用 [`06`](./06-plugin-gate-and-ci-harness.md) 的轻量高信噪比门禁与 CI。
 
 ## 相关入口

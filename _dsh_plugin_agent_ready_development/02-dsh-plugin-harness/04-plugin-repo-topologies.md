@@ -183,7 +183,7 @@ export class AuditController extends TypertRemoteService {
 }
 ```
 
-3. **第 3 步（在 `package.json` 暴露 `./typert` 与 `./remote` 契约入口）**：`@Remote` 必须位于 Loader 直接挂载的入口插件包内，并在 `package.json` 导出供网关与客户端消费的生成产物路径及 `@deepseek-ai/dsh-typert-protocol` 对等依赖（签名、错误码表或命名空间变更后需重新构建生成客户端声明与编解码器）：
+3. **第 3 步（在 `package.json` 暴露 `./typert` 与 `./remote` 契约入口并生成编解码产物）**：`@Remote` 必须位于 Loader 直接挂载的入口插件包内，并在 `package.json` 导出供网关与客户端消费的生成产物路径及 `@deepseek-ai/dsh-typert-protocol` 对等依赖（构建时通过 `@deepseek-ai/dsh-typert-generator` 分析 Host `ts.Program` 产出 `lib/typert.host.js` 与 `lib/typert.remote-client.js`；签名、错误码表或命名空间变更后必须重新生成）：
 
 ```json
 {
@@ -198,7 +198,7 @@ export class AuditController extends TypertRemoteService {
 }
 ```
 
-4. **第 4 步（Client 端 Store 注入 `remote.<ns>` 并按 `if (!result.ok)` 分支收窄）**：客户端插件同时声明 `inject = ['remote', 'remote.audit']`；调用 `ctx.remote.audit.get(...)` 永远返回不 reject 的 `RemoteResult<T>`（不要包防御性 `try/catch`，装配错误应当直接暴露崩溃）：
+4. **第 4 步（Client 端自挂载 `./remote` 契约并在子作用域内按 `if (!result.ok)` 收窄调用）**：看清一条外部独立插件与主仓内置核心包的关键差异——DSH 核心包的 `./remote` 由 `@deepseek-ai/dsh-api-remotes` 统一预挂载，而**外部或可选插件不在核心预挂载表里**（官方标杆见 [`packages/experimental/client-ui-cot-translation/src/client/mount.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/client-ui-cot-translation/src/client/mount.ts)）！因此外部插件 `./client` 顶层先声明 `export const inject = ['remote', 'slots']`（切勿在尚未挂载 `./remote` 前就把 `'remote.audit'` 写进顶层 `inject`，否则会死锁在 `PENDING`），在 `apply(ctx)` 中先执行 `const unmountRemote = await ctx.remote.$mount(remoteContribution)` 注册命名空间，再通过 `ctx.inject(['remote.audit', 'slots'], child => ...)` 进入消费子作用域并在卸载时先撤 UI、再 `await unmountRemote()`；调用 `child.remote.audit.get(...)` 永远返回不 reject 的 `RemoteResult<T>`（不要包防御性 `try/catch`，装配错误应当直接暴露崩溃）：
 
 > The result is a `RemoteResult<T>`, so branch on `if (!result.ok)` in place and discriminate by `code` rather than `instanceof` — a code branch narrows `details` on its own. An exception-flow site writes `throw result.error` (it is a real Error); whoever catches it uses `isRemoteFailure` to tell a Remote failure from a local defect and rethrows the defect.
 >

@@ -16,7 +16,7 @@
   <rect x="60" y="158" width="296" height="106" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
   <text x="80" y="182" font-size="11.5" font-weight="700" fill="#244e73">目录与导出面</text>
   <text x="80" y="204" font-size="11" fill="#526175">src/index.ts（inject · Config · apply）</text>
-  <text x="80" y="225" font-size="11" fill="#526175">cordis.yml（可直接被外部 include 的 Bundle）</text>
+  <text x="80" y="225" font-size="11" fill="#526175">cordis.patch.yml（dsh.bundle 自动叠加层）</text>
   <text x="80" y="246" font-size="11" fill="#526175">exports: { ".": "./lib/index.js" }</text>
   <rect x="60" y="278" width="296" height="78" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
   <text x="80" y="302" font-size="11.5" font-weight="700" fill="#244e73">编译器面</text>
@@ -32,13 +32,13 @@
   <text x="580" y="140" text-anchor="middle" font-size="11" fill="#675293">带专属 Web 卡片、侧栏或交互面板的插件</text>
   <rect x="432" y="158" width="296" height="106" rx="7" fill="#ffffff" stroke="#a89bc9"/>
   <text x="452" y="182" font-size="11.5" font-weight="700" fill="#513b85">三层源码物理隔离</text>
-  <text x="452" y="204" font-size="11" fill="#526175">src/node/：Node 服务、RPC 与会话事件写入</text>
-  <text x="452" y="225" font-size="11" fill="#526175">src/client/：浏览器 UI 组件与状态投影</text>
-  <text x="452" y="246" font-size="11" fill="#526175">src/shared/：纯数据协议（零 Node/DOM API）</text>
+  <text x="452" y="204" font-size="11" fill="#526175">src/index.ts：Host 服务、@Remote 与事件写入</text>
+  <text x="452" y="225" font-size="11" fill="#526175">src/client/：浏览器槽位 UI 与 tsdown 打包</text>
+  <text x="452" y="246" font-size="11" fill="#526175">src/types.ts：纯共享协议（零 Node/DOM API）</text>
   <rect x="432" y="278" width="296" height="78" rx="7" fill="#ffffff" stroke="#a89bc9"/>
   <text x="452" y="302" font-size="11.5" font-weight="700" fill="#513b85">显式双编译器面（Explicit Compiler Faces）</text>
   <text x="452" y="324" font-size="11" fill="#526175">根 tsconfig.json 设 files: []，仅作 references</text>
-  <text x="452" y="344" font-size="11" fill="#526175">tsconfig.node.json 与 tsconfig.client.json 互不串包</text>
+  <text x="452" y="344" font-size="11" fill="#526175">tsconfig.host.json 与 tsconfig.client.json 隔离</text>
   <rect x="432" y="370" width="296" height="74" rx="7" fill="#e6defc" stroke="#a89bc9"/>
   <text x="580" y="396" text-anchor="middle" font-size="11" font-weight="700" fill="#513b85">双入口导出铁律</text>
   <text x="580" y="418" text-anchor="middle" font-size="10.5" fill="#513b85">exports 分离 "." (Node) 与 "./client" (Web)</text>
@@ -78,6 +78,6 @@
   <text x="630" y="577" font-size="10.5" fill="#805915">执行旧实例全部 dispose 清退后重新运行 apply(ctx, newConfig)</text>
 
   <rect x="612" y="596" width="488" height="48" rx="7" fill="#edf8f1" stroke="#55a36f"/>
-  <text x="630" y="617" font-size="11.5" font-weight="700" fill="#1f6139">Schema.volatile() 字段变更 → 原地热提交</text>
+  <text x="630" y="617" font-size="11.5" font-weight="700" fill="#1f6139">.volatile()（Volatile&lt;T&gt;）字段变更 → 原地热提交</text>
   <text x="630" y="635" font-size="10.5" fill="#397a50">不卸载插件、不断在途连接，直接派发实例级 loader/volatile-update</text>
 </svg>

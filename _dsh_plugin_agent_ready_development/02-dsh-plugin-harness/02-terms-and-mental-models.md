@@ -55,7 +55,7 @@
 
 ### effect 与 disposer
 
-**Effect** 是绑定在插件 Fiber 上的受管副作用，**Disposer** 是卸载该副作用的清理函数。`ctx.on()`、`ctx.tools.register()` 等框架方法自带回卷；插件自建的定时器、子进程或网络连接必须包进 `ctx.effect()`，并在卸载时先关准入闸门、等待在途异步写入排空后再释放底层资源（完整 Quiescent Disposal 生成器模式见 [`05` §4](./05-cordis-contracts-and-model-experience.md)）。依据：DSH [Lifecycle 与 effects 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/02-lifecycle-and-effects.md)。
+**Effect** 是绑定在插件 Fiber 上的受管副作用，**Disposer** 是卸载该副作用的清理函数。`ctx.on()`、`ctx.tools.register()` 等框架方法自带回卷；插件自建的定时器、子进程或网络连接必须包进 `ctx.effect()`，并在卸载时先关准入闸门、等待在途异步写入排空后再释放底层资源（完整 Quiescent Disposal 生成器模式见 [`05` §契约四](./05-cordis-contracts-and-model-experience.md#契约四异步排空卸载quiescent-disposal与只在提交点发布状态)）。依据：DSH [Lifecycle 与 effects 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/02-lifecycle-and-effects.md)。
 
 ### HMR（热模块替换）
 
@@ -124,7 +124,7 @@
 
 ### keyless replay 与 oracle
 
-**Keyless scripted-turn replay（无 Key 脚本化回放）** 在独立插件仓中仅用确定性 `ScriptedLlmAdapter` 替换最外层模型网络请求，驱动真实 `AgentLoop` 跑完多步工具调用，再拿落盘产物与人工审定、只读保护的 **`workspace.expected/`（独立 Oracle）** 做字节级比对——既能在无 `DEEPSEEK_API_KEY` 的 PR CI 中 100% 复现，又严防录制刷新脚本把 `UNKNOWN_TOOL` 等回归错误顺手刷成“新标准答案”（完整代码见 [`06` §3](./06-plugin-gate-and-ci-harness.md)）。依据：DSH [外部世界验证](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#verify-the-world-not-the-self-report)。
+**Keyless scripted-turn replay（无 Key 脚本化回放）** 在独立插件仓中仅用确定性 `ScriptedLlmAdapter` 替换最外层模型网络请求，驱动真实 `AgentLoop` 跑完多步工具调用，再拿落盘产物与人工审定、只读保护的 **`workspace.expected/`（独立 Oracle）** 做字节级比对——既能在无 `DEEPSEEK_API_KEY` 的 PR CI 中 100% 复现，又严防录制刷新脚本把 `UNKNOWN_TOOL` 等回归错误顺手刷成“新标准答案”（完整代码见 [`06` §第三阶](./06-plugin-gate-and-ci-harness.md#第三阶基于公开-llmadapter-的无-key-脚本化会话回放--独立-workspaceexpected-oracle)）。依据：DSH [外部世界验证](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#verify-the-world-not-the-self-report)。
 
 ## 继续深入
 

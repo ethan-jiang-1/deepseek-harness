@@ -57,20 +57,23 @@
 
 ### 3. 长耗时后台任务接入 `ctx.jobs.start()` 与取消信号交接
 
-如果工具支持 `run_in_background: true`（例如启动长编译或日志监听），切忌自己用裸 `Promise` 悬在后台不管：应通过 `ctx.jobs.start({ kind, label, owner: exec.agent, run })` 注册给宿主任务中心，并遵守**信号交接铁律**——前台同步等待期间遵守传入的 `exec.signal`；**一旦 `ctx.jobs.start()` 成功发布并返回 `{ kind: 'background', jobId }`，后台任务内部必须改用任务自有的取消信号，而不再绑定外层当次工具调用的 `exec.signal`**（否则外层单步调用一结束就会把刚转入后台的活任务误杀！后台任务的生命周期此后归 `job_kill`、所属 `Agent` 销毁与宿主停机统一管辖）。
+如果工具支持 `run_in_background: true`（例如启动长编译或日志监听），切忌自己用裸 `Promise` 悬在后台不管：应调用 `const jobId = ctx.jobs.start({ kind, label, owner: exec.agent?.session.id, run })` 注册给宿主任务中心（`owner` 为可选 `SessionId`），再由工具返回 `{ kind: 'background', jobId }` 等业务结构，并遵守**信号交接铁律**——前台同步等待期间遵守传入的 `exec.signal`；**一旦 `ctx.jobs.start()` 成功发布任务，后台 `run` 内部必须改用任务自有的取消信号，而不再绑定外层当次工具调用的 `exec.signal`**（否则外层单步调用一结束就会把刚转入后台的活任务误杀！后台任务的生命周期此后归 `job_kill`、所属会话销毁与宿主停机统一管辖）。
 
-### 4. 异步向会话补发上下文：Session V4 必须扩展 `MessageSourceMap`
+### 4. 异步向会话补发上下文：Session V4 必须用 `createUserMessage` 并扩展 `MessageSourceMap`
 
-当后台监听器或外部回调需要往某个活会话追加一条供下一轮模型读取的通知时，调用 `agent.inject({ content, source: { kind: 'my-plugin' } })`（注意它只入账上下文，不会主动唤醒处于空闲态的 Agent，且需 `try/catch` 防御已销毁的 Agent）。**特别注意版本红线**：现行 Session Format V4 已彻底废弃早年的 `{ kind: 'plugin', plugin: '<name>' }` 通用包装并在准入时直接报错拒绝；你的插件必须通过 TypeScript declaration merging 向 `@deepseek-ai/dsh-llm` 的 `MessageSourceMap` 显式声明自己的 `kind` 键！
+当后台监听器或外部回调需要往某个活会话追加一条供下一轮模型读取的通知时，调用 `@deepseek-ai/dsh-llm` 的 `createUserMessage(...)` 构造带稳定 `MessageId` 的冻结消息后传入 `agent.inject(createUserMessage({ content, source: { kind: 'deploy-watcher', deploymentId } }))`（注意它只入账上下文，不会主动唤醒处于空闲态的 Agent，且需 `try/catch` 防御已销毁的 Agent）。**特别注意版本红线**：现行 Session Format V4 已彻底废弃早年的 `{ kind: 'plugin', plugin: '<name>' }` 通用包装并在准入时直接报错拒绝；你的插件必须通过 TypeScript declaration merging 向 `@deepseek-ai/dsh-llm` 的 `MessageSourceMap` 显式声明自己的 `kind` 键（可混合 `ContextFormed` 以携带折叠通知摘要）！
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
+import type { ContextFormed } from '@deepseek-ai/dsh-llm'
+import type {} from '@deepseek-ai/dsh-fs'
 import { defineTool } from '@deepseek-ai/dsh-tools'
+import type {} from '@deepseek-ai/dsh-working-directory'
 
-// 若需使用 agent.inject() 注入异步通知，必须合并声明专属 source kind（V4 严禁旧式 kind:'plugin'）
+// 若需使用 agent.inject(createUserMessage(...)) 注入异步通知，必须合并声明专属 source kind（V4 严禁旧式 kind:'plugin'）
 declare module '@deepseek-ai/dsh-llm' {
   interface MessageSourceMap {
-    'deploy-watcher': { readonly kind: 'deploy-watcher'; readonly deploymentId: string }
+    'deploy-watcher': { readonly kind: 'deploy-watcher'; readonly deploymentId: string } & ContextFormed
   }
 }
 
@@ -109,11 +112,16 @@ export function apply(ctx: Context) {
       if (!Number.isInteger(replicas) || replicas < 1) {
         throw new Error('replicas must be a positive integer')
       }
-      const cwd = ctx.workingDirectory.get(exec.agent.sessionId)
-      const targetPath = `${cwd}/deploy.${args.service}.json`
+      const cwd = exec.agent === undefined
+        ? undefined
+        : await ctx.workingDirectory.ensure(exec.agent, exec.signal)
+      const target = await ctx.fs.resolve(`deploy.${args.service}.json`, {
+        ...(cwd !== undefined ? { cwd } : {}),
+        signal: exec.signal,
+      })
       const payload = JSON.stringify({ service: args.service, replicas }, null, 2) + '\n'
-      await ctx.fs.writeTextFile({ path: targetPath, content: payload, signal: exec.signal })
-      return { manifestPath: targetPath, replicas }
+      await ctx.fs.writeText(target, payload, undefined, exec.signal)
+      return { manifestPath: ctx.fs.processPath(target), replicas }
     },
   }))
 }

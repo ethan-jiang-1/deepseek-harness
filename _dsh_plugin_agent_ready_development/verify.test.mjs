@@ -1,7 +1,7 @@
 /** Exercise the standalone corpus verifier through its real Node entry. */
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -127,4 +127,29 @@ reject('escaping relative link', '00-index.md',
 reject('missing local anchor', '00-index.md',
   source => `${source}\n[invalid](#nonexistent-verifier-test-anchor)\n`, /Markdown fragment does not exist/)
 reject('missing trailing newline', '00-index.md', source => source.trimEnd(), /must end with one trailing newline/)
+reject('missing anti-drift boundary section in volume 00-map.md', '01-general-repo-harness/00-map.md',
+  source => source.replace('## 准入与禁入边界', '## 普通目录说明'),
+  /volume boundary charter 00-map\.md is missing required anti-drift section \(准入与禁入边界\)/)
+reject('missing volume scope in corpus AGENTS.md', 'AGENTS.md',
+  source => source.replaceAll('02-dsh-plugin-harness/', 'removed-plugin-dir/'),
+  /AGENTS\.md must define scope boundaries for "02-dsh-plugin-harness\/"/)
+reject('DSH plugin implementation leaked into Volume 1 chapter', '01-general-repo-harness/05-executable-feedback.md',
+  source => `${source}\n在前端构建中使用 \`window.__ModuleLoader__.load\` 打包插件。\n`,
+  /Volume 1 general chapter leaks DSH-plugin-specific implementation detail/)
+reject('Volume 3 reference page missing external applicability callout', '03-dsh-sdlc-reference/01-agent-note-lifecycle.md',
+  source => source.replace('> **外部借鉴切面**：', '> **背景说明**：'),
+  /Volume 3 reference page must include a top-level "> \*\*外部借鉴切面\*\*：" applicability boundary callout/)
+{
+  const root = fixture()
+  rmSync(join(root, '01-general-repo-harness/00-map.md'))
+  const ledgerPath = join(root, '_coverage/00-corpus-maintenance.md')
+  writeFileSync(ledgerPath, readFileSync(ledgerPath, 'utf8').replace(/^\| `01-general-repo-harness\/00-map\.md` \|.*\n/m, ''))
+  const result = run(root)
+  assert.equal(result.status, 1, `deleted volume 00-map.md must exit 1\n${result.output}`)
+  assert.match(result.output, /missing volume boundary charter "01-general-repo-harness\/00-map\.md"/)
+  console.log('PASS reject: deleted volume boundary charter 00-map.md')
+}
+reject('missing high-signal anti-boilerplate rule in corpus AGENTS.md', 'AGENTS.md',
+  source => source.replaceAll('拒绝四平八稳', '保持温和笼统'),
+  /AGENTS\.md must retain the high-signal anti-boilerplate rule/)
 console.log(`Verifier acceptance tests passed; ${caseCount} isolated copies retained at ${testRoot}.`)

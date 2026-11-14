@@ -7,19 +7,20 @@
 ```text
 _dsh_plugin_agent_ready_development/
 ├── 00-index.md                  # 总入口：三类外部读者速通与完整落地处方、五条底层跃迁与实践总索引
-├── CORPUS-CHARTER.md            # 语料维护宪章：无版本外链、唯一基线家、单一事实归属与机器强制契约
-├── 01-general-repo-harness/     # 卷一（通用工程学 · 12 章 + 导航）：跨语言 Agent-Friendly Repo 设计与老仓改造（零 DSH 代码）
-├── 02-dsh-plugin-harness/       # 卷二（插件实战 · 8 章 + 导航）：独立 DSH 插件仓扩展配方、全栈打包/RPC 与专属门禁排障
-├── 03-dsh-sdlc-reference/       # 卷三（主仓字典 · 12 篇 + 导航）：DSH 主仓原生研发流程精确条款、六阶段串联与借鉴切面
-├── _coverage/                   # 唯一维护账本：核验版本基线、45 页入库双向清单、触发路径与历轮记录
-└── verify.mjs & verify.test.mjs # 零依赖自包含校验器与 25 项正负例回归测试
+├── AGENTS.md                    # 语料内容总约束：三卷互斥准入红线、高信噪比铁律与版本更迭防跑偏守则
+├── CORPUS-CHARTER.md            # 语料寻址宪章：无版本外链、唯一基线家、单一事实归属与机器强制契约
+├── 01-general-repo-harness/     # 卷一（通用工程学 · 12 章 + 边界契约）：跨语言 Agent-Friendly Repo 设计与老仓改造（零 DSH 代码）
+├── 02-dsh-plugin-harness/       # 卷二（插件实战 · 8 章 + 边界契约）：独立 DSH 插件仓扩展配方、全栈打包/RPC 与专属门禁排障
+├── 03-dsh-sdlc-reference/       # 卷三（主仓字典 · 12 篇 + 边界契约）：DSH 主仓原生研发流程精确条款、六阶段串联与借鉴切面
+├── _coverage/                   # 唯一维护账本：核验版本基线、全量入库页面双向清单、触发路径与历轮记录
+└── verify.mjs & verify.test.mjs # 零依赖自包含门禁（含三卷边界防跑偏检查）与正负例回归测试
 ```
 
 - **卷一 · [`01-general-repo-harness/`](./01-general-repo-harness/00-map.md)（通用 Agent-Friendly Repo 工程学，12 章）**：面向任意编程语言（Python / Go / Java / Rust / TypeScript）的技术负责人与架构师。**完全不要求你写一行 DSH 代码**——把 DSH 当作解剖标本，系统拆解知识归属、渐进披露、任务级 `SKILL.md`、爆炸半径阶梯、八类机械门禁、多仓平台可读性、防规格漂移，以及**新建空仓四件套模板（`10`）**与**存量老仓库不停工棘轮改造指南（`12`）**。
 - **卷二 · [`02-dsh-plugin-harness/`](./02-dsh-plugin-harness/00-map.md)（DSH 插件仓库开发与专属 Harness 实战，8 章）**：面向新建或维护独立 DSH 插件仓的开发者与 coding agent。不再重复通用大道理，直接给齐能力选型路由表、12+ 个宿主可注入服务货架、五大扩展原语配方（含 PTC 与 CLI/Web 双轨工具卡片）、三种标准拓扑（含外部仓 `window.__ModuleLoader__.load` 客户端打包模板与 `TypertRemoteService` 跨端 RPC）、Cordis 六条防坑铁律、插件专属 `verify-plugin.mjs`、无 Key 脚本化回放测试，以及 **8 大故障 1 分钟排障表与 Postmortem `0001`–`0004` 深度拆解**。
 - **卷三 · [`03-dsh-sdlc-reference/`](./03-dsh-sdlc-reference/00-map.md)（DSH 主仓原生研发条款与一手证据字典，12 篇）**：按全生命周期六阶段串联并逐题记录 DSH 主仓库在意图入口、Agent Note 生命周期、`Plan` 与权限隔离、证据路由、契约资产、语义评审、加权批准与多通道发布上的原始规则，每篇顶部均配有 **`> **外部借鉴切面**`** 帮你一秒区分主仓专属参数与可迁移工程不变量。
 
-> **维护宪章**：[`CORPUS-CHARTER.md`](./CORPUS-CHARTER.md)。改本目录前先读它——引用形态、版本号能写在哪、升级时改什么不改什么、每个事实的家在哪，以及为什么这些规则由 `verify.mjs` 机器强制执行。它优先于任何单轮记录。
+> **双重防跑偏约束（改本目录前必读）**：① **内容与三卷边界约束**见 [`AGENTS.md`](./AGENTS.md) 与各卷首部的 `00-map.md`（[`卷一`](./01-general-repo-harness/00-map.md) / [`卷二`](./02-dsh-plugin-harness/00-map.md) / [`卷三`](./03-dsh-sdlc-reference/00-map.md)）——锁死适配场景、准入/禁入红线与随 DSH 版本更迭重锤时的分拣标准，拒绝四平八稳的无边界信息；② **引用寻址与基线宪章**见 [`CORPUS-CHARTER.md`](./CORPUS-CHARTER.md)——规定 `master` 外链、唯一基线家与单一事实归属。两套约束均由 `verify.mjs` 机器强制执行。
 
 ## 对号入座：三类外部读者的“30 分钟速通”与“完整落地”路线图
 
@@ -81,8 +82,9 @@ DSH 没有正式宣布采用某套冠名方法论；本语料只以 DSH 固定�
 | [`01-general-repo-harness/`](./01-general-repo-harness/00-map.md) | **卷一（通用工程学，12 章 + 导航）**：解剖仓库如何成为面向 coding agent 的开发环境，提炼通用防腐化架构、八类门禁模式、新仓模板与存量老仓棘轮改造指南 | 仓库知识归属、Skills、机械门禁、动态自省、多仓协同、分类规则或防漂移/迁移模式演进时更新 |
 | [`02-dsh-plugin-harness/`](./02-dsh-plugin-harness/00-map.md) | **卷二（DSH 插件仓实战，8 章 + 导航）**：覆盖独立插件仓脚手架、宿主服务与五大扩展配方、全栈双树打包与跨端 RPC、Cordis 契约、专属门禁回放及排障复盘 | DSH 插件打包/加载契约、宿主服务、Host/Client 双树、Typert RPC、生命周期规则或 Postmortem 演进时复核 |
 | [`03-dsh-sdlc-reference/`](./03-dsh-sdlc-reference/00-map.md) | **卷三（主仓参考字典，12 篇 + 导航）**：按六阶段串联并精确记录 DSH 主仓变更主线各环节的条件、状态机与例外，框定外部借鉴切面 | 上游 workflows、policy、Note 规则、契约证据、评审或发布机制变化时按 `_coverage` 触发路径修订 |
-| [`_coverage/`](./_coverage/00-index.md) | **唯一维护账本**：登记当前核验版本基线、全量 45 页入库双向清单、已核验来源、重审触发路径与历轮修订记录 | 每次版本同步、新增/调整页面或升级校验规则时同步维护清单并追加日期记录 |
-| [`verify.mjs`](./verify.mjs) & [`verify.test.mjs`](./verify.test.mjs) | **零依赖自包含门禁与正负例回归测试**：守护编码、单尾换行、相对链接与锚点、表格列数、入库页面双向清单、轮次黑话与动态计数隔离、共享宪章哈希及 SVG 几何/无障碍规范 | 结构或校验规则演进时修改脚本，并在 `verify.test.mjs` 同步新增通过真实入口执行的正/负例断言 |
+| [`AGENTS.md`](./AGENTS.md) & [`CORPUS-CHARTER.md`](./CORPUS-CHARTER.md) | **内容边界总约束与引用寻址宪章**：`AGENTS.md` 锁死三卷互斥准入红线、高信噪比标准与版本重锤分拣法；`CORPUS-CHARTER.md` 锁死无版本外链与唯一基线归属 | 调整三卷职责边界或跨语料共享引用规则时修订（`CORPUS-CHARTER.md` 四份副本须哈希一致） |
+| [`_coverage/`](./_coverage/00-index.md) | **唯一维护账本**：登记当前核验版本基线、全量 46 页入库双向清单、已核验来源、重审触发路径与历轮修订记录 | 每次版本同步、新增/调整页面或升级校验规则时同步维护清单并追加日期记录 |
+| [`verify.mjs`](./verify.mjs) & [`verify.test.mjs`](./verify.test.mjs) | **零依赖自包含门禁与正负例回归测试**：守护三卷 `00-map.md` 边界契约、跨卷防污染、卷三借鉴切面框、外链锚点、表格列数、入库双向清单、轮次黑话隔离与 SVG 几何规范 | 结构或校验规则演进时修改脚本，并在 `verify.test.mjs` 同步新增通过真实入口执行的正/负例断言 |
 
 ## 验证
 

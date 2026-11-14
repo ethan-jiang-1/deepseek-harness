@@ -179,19 +179,30 @@ if (failures.length > 0) {
 
 ```ts
 import { FiberState, type Context } from '@deepseek-ai/cordis'
+import type {} from '@deepseek-ai/cordis-plugin-loader'
 import { expect } from 'vitest'
 
-/** 断言 Loader 内所有未禁用条目均已进入 ACTIVE；若卡在 PENDING，直接打印具体条目与缺失的 inject 服务名 */
+function formatFiberState(state: FiberState | undefined): string {
+  switch (state) {
+    case undefined: return 'UNMOUNTED'
+    case FiberState.PENDING: return 'PENDING'
+    case FiberState.LOADING: return 'LOADING'
+    case FiberState.ACTIVE: return 'ACTIVE'
+    case FiberState.FAILED: return 'FAILED'
+    case FiberState.UNLOADING: return 'UNLOADING'
+    case FiberState.DISPOSED: return 'DISPOSED'
+  }
+}
+
+/** 断言 Loader 内所有未禁用的叶子插件均已进入 ACTIVE；若卡在 PENDING，直接打印具体条目与缺失的 inject 服务名 */
 export function assertAllEntriesActive(ctx: Context): void {
   const stuck: string[] = []
   for (const entry of ctx.loader.entries()) {
-    if (entry.disabled) continue
+    if (entry.disabled || entry.options.group) continue
     if (entry.fiber?.state !== FiberState.ACTIVE) {
-      const stateName = entry.fiber ? FiberState[entry.fiber.state] : 'UNMOUNTED'
-      const declaredInject = Array.isArray(entry.plugin?.inject)
-        ? entry.plugin.inject.filter((key: string) => ctx.get(key) === undefined)
-        : []
-      stuck.push(`${entry.options.id ?? entry.options.name} -> state=${stateName}, missingInject=[${declaredInject.join(', ')}]`)
+      const stateName = formatFiberState(entry.fiber?.state)
+      const missingInject = Object.keys(entry.fiber?.inject ?? {}).filter(key => ctx.get(key) === undefined)
+      stuck.push(`${entry.options.id || entry.options.name} -> state=${stateName}, missingInject=[${missingInject.join(', ')}]`)
     }
   }
   expect(stuck, `以下插件条目未能激活:\n${stuck.join('\n')}`).toEqual([])
@@ -215,7 +226,7 @@ import { Context } from '@deepseek-ai/cordis'
 import AgentRegistry from '@deepseek-ai/dsh-agent'
 import AgentLoop from '@deepseek-ai/dsh-agent-loop'
 import { brandString } from '@deepseek-ai/dsh-brand'
-import LlmRuntime, { LlmAdapter, type GenerateOptions, type LlmResolvedModelInfo, type StreamChunk, type ToolCallId } from '@deepseek-ai/dsh-llm'
+import LlmRuntime, { createUserMessage, LlmAdapter, type GenerateOptions, type LlmResolvedModelInfo, type StreamChunk, type ToolCallId } from '@deepseek-ai/dsh-llm'
 import SessionStore, { type SessionId } from '@deepseek-ai/dsh-session'
 import SessionProjectionRegistry from '@deepseek-ai/dsh-session-projection'
 import SystemPrompt from '@deepseek-ai/dsh-system-prompt'
@@ -304,10 +315,10 @@ describe('keyless scripted-turn replay with independent workspace oracle', () =>
       agentOptions: { provider: 'scripted', model: 'scripted-v1' },
     })
 
-    handle.agent.followup({
+    handle.agent.followup(createUserMessage({
       content: [{ type: 'text', text: 'Create the release summary file.' }],
       source: { kind: 'user' },
-    })
+    }))
     await handle.agent.whenIdle()
 
     // 1. 断言模型实际看见的请求表面（锁住 Model Experience，防止工具 schema 意外漂移）

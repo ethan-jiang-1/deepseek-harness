@@ -54,6 +54,31 @@ Cordis 事件并非只有“广播通知”一种语义。插件注册监听器�
 2. **用单一组合生成器 `ctx.effect(function* () { ... })` 串行编排撤回顺序**：当一个函数式 Provider 插件既持有底层资源又向外暴露服务时，不要把资源注册和 `ctx.provide` 拆成两个独立的顶层调用（否则卸载时并发竞争），而是收进同一个 `ctx.effect(function* () { ... })` 中，严格 `yield` 每一步返回的原始 disposer，并把 `yield ctx.provide(name, service)` 放在最后——这样反序卸载时会先撤回服务、等待仍注册在 Cordis 上的依赖消费者收尾，然后再销毁先前申请的底层资源：
 
 ```ts
+import type { Context } from '@deepseek-ai/cordis'
+
+export interface Config {
+  endpoint: string
+}
+
+interface BackendConnection {
+  write(payload: Uint8Array): Promise<void>
+  close(): Promise<void>
+}
+
+declare function openBackendConnection(endpoint: string): BackendConnection
+
+class BackendClosedError extends Error {
+  constructor() {
+    super('auditSink is shutting down and no longer accepts writes')
+  }
+}
+
+declare module '@deepseek-ai/cordis' {
+  interface Context {
+    auditSink: { send(payload: Uint8Array): Promise<void> }
+  }
+}
+
 export function apply(ctx: Context, config: Config) {
   ctx.effect(function* () {
     let accepting = true

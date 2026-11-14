@@ -309,7 +309,7 @@ This repository ships an installable DeepSeek Harness (DSH) plugin bundle.
 - **Dependency faces:** depend on `@deepseek-ai/dsh-*` Service Definitions, never concrete providers. Declare host-shared packages (`@deepseek-ai/cordis`, consumed `@deepseek-ai/dsh-*` definitions) in BOTH `peerDependencies` and `devDependencies` with matching ranges; put runtime validators (`@deepseek-ai/schemastery`, `@deepseek-ai/dsh-brand`) in `dependencies`.
 - **Zero module singletons & required vs optional services:** never store mutable state in module globals (`let cache`, `globalThis`); own state on a `Service` or `agentCtx`. Read `inject`-declared services via `ctx.<name>` and optional services strictly via `ctx.get('<name>')`.
 - **Lifecycle & waterfall delegation:** bind every registration/resource to `ctx.on()` / `ctx.effect()` and await in-flight work before releasing cleanup dependencies. Cooperative `waterfall` listeners MUST `return next()`. Remember `dsh plugin remove` removes code/patch layers, not persisted user data.
-- **Validated Config & commit-point state:** expose deployment choices via Schemastery `Config` (`Config.volatile()` for settings UI); fail loud at load on invalid config; emit events and update derived views only at the commit point after operations succeed.
+- **Validated Config & commit-point state:** expose deployment choices via Schemastery `Config` (`.volatile()` / `Volatile<T>` for live settings UI); fail loud at load on invalid config; emit events and update derived views only at the commit point after operations succeed.
 
 ## Documentation & Verification Discipline
 
