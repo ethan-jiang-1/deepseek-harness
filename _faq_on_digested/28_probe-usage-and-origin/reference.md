@@ -1,124 +1,65 @@
-# 附录 · 全部出处
+# Reference · 源码入口、事故复盘与图表清单
 
-> 本篇的每一条结论对应的仓库路径与一手材料。行号随树漂移，故多以「文件 + 节名 / 符号名」定位；确需行号的地方按当时读数给出。核验基线见 [核验基线登记](../00-baseline.md)。
+本页汇总本组回答引用的 DSH 主仓源码、文档与图表位置，并附带外部插件仓 `probes/` 实践的背景说明。核验状态见 [核验基线登记](../00-baseline.md)。
 
-## 一、探针是什么 / 它不是产品机制（[01](./01-what-a-probe-is.md)、[03](./03-why-the-word.md)）
+---
 
-| 结论 | 出处 |
+## 一、DSH 核心机制、测试分层与事故复盘出处
+
+| 主题 | 主仓文件入口 |
 |---|---|
-| 产品树无「探针」机制；同名的是运行时自检 | `ctx.pluginRegistryProbe` 与 `registryProbe*` 配置——[`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md) 的 seam 表、[`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md) 的 Registry-probe 一节、[`docs/subsystems/boot.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/boot.md) 的 `ctx.pluginRegistryProbe` 节 |
-| 「并发比较公共安装源响应」 | [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md) 的服务表行 |
-| Sandbox 功能性探针仲裁多 runner 链 | [`docs/subsystems/sandbox.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/sandbox.md) 的首段合同句 |
-| `landlock --probe` 是启动器自检模式 | `packages/experimental/webworker-runtime/src/shell/process/landlock.ts`（`parseLandlockArguments`，`{ kind: 'probe' }`） |
-| 进程存活探针（`process.kill(target, 0)`） | `packages/boot/plugin-manager/src/run-tree.ts` 的 `run-tree` JSDoc |
-| 「探针不是门禁」的一句话定位 | 仓外 `ai_dsh_bsimulation` 的 AGENTS 目录表与 `probes/README.md` 首行「Probes are not gates」 |
-| 「探针结果是观察，不是成功主张」 | 仓外 `ai_dsh_bsimulation/probes/README.md` 末行 |
+| `model-visible ⟺ logged` 根规则 | [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)（Conventions 节）；架构决策见 [`.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md) |
+| 会话只追加事件日志、`request/header` 与 `system/message` 分离存储 | [`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md)（首段及 `The request header event: request/header` 节） |
+| 只有真实装配夹具才能锁住拼装后的系统提示词与工具集合；拒绝缩减会话日志破坏可重建性 | [`.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md) |
+| `@deepseek-ai/dsh-llm-replay` 回放挂载与 `replay.override.json` 四类异常注入 | [`packages/test-support/llm-replay/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/README.md) |
+| 测试分层（`test` / `test:coverage` / `test:e2e` / `test:expected` / `test:snapshot`）与“验证真实世界而非自我汇报”原则 | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)（`Tiers` 与 `Verify the world, not the self-report` 节） |
+| 快照目录所有权与 `workspace.expected/` 独立校验规范 | [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md) |
+| 沙箱 `confine` 失败即拒绝（fail-closed）不变量 | [`docs/subsystems/sandbox.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/sandbox.md) |
+| 事故复盘 0001：178 个单测全绿但发布装配漏掉 `inject` 导致功能不可用 | [`docs/postmortem/0001-acp-default-export-drops-inject.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0001-acp-default-export-drops-inject.md) |
+| 事故复盘 0002：配置禁用工具产生确定性 `UNKNOWN_TOOL` 报错，警示刷新快照不等于正确性审查 | [`docs/postmortem/0002-js-expression-disabled-filesystem-tools.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0002-js-expression-disabled-filesystem-tools.md) |
+| 事故复盘 0003：脱离真实后端只跑裸前端构建导致 GUI 验证失真 | [`docs/postmortem/0003-web-agent-gui-feedback-loop.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0003-web-agent-gui-feedback-loop.md) |
 
-## 二、与测试的分工（[02](./02-probe-vs-tests.md)）
+---
 
-| 结论 | 出处 |
+## 二、`01-four-real-probes.md` 四个实例的主仓原生材料
+
+| 实例 | 涉及的主仓夹具与源码路径 |
 |---|---|
-| 五层测试分层（unit / coverage / e2e / expected / snapshot / web） | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 的 Tiers 一节 |
-| 「覆盖率证明行跑过，不证明按发布形态工作」 | 同上，Coverage gate 条 |
-| 「只有真夹具能钉住组装后的提示词与工具集合」 | [`.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md) |
-| 「绿单测、坏产品」事故起点 | [`docs/postmortem/0001-acp-default-export-drops-inject.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0001-acp-default-export-drops-inject.md) |
-| 「验证世界，不是验证自报」 | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 的 Verify the world, not the self-report 一节 |
-| 快照是变更探测器、不是正确性 oracle | [FAQ 21](../21_recorded-session-snapshots/04-what-its-worth.md) |
+| **实例一 · 只读会话轨迹** | [`snapshots/session/bash-tool-turn/session.v4.jsonl`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/session/bash-tool-turn/session.v4.jsonl)、[`snapshots/session/bash-tool-turn/snapshot.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/session/bash-tool-turn/snapshot.yml) |
+| **实例二 · 请求侧存档与对比** | [`snapshots/web/minimal-preset/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/snapshots/web/minimal-preset)（`snapshot.yml`、`system-prompt.expected.md`、`tool-schemas.expected.json`）；对比样本 [`snapshots/web/fresh-round-trip/system-prompt.expected.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/web/fresh-round-trip/system-prompt.expected.md) 与 [`snapshots/web/optional-string-editor/system-prompt.expected.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/web/optional-string-editor/system-prompt.expected.md)；读取与校验函数 [`packages/test-support/session-snapshot/src/suite.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/session-snapshot/src/suite.ts)（`normalizedSystemPrompts`、`normalizedToolSchemas`、`systemPromptPrecedesRequests`、`UNKNOWN_TOOL` 守卫） |
+| **实例三 · 浏览器 ARIA 树** | [`snapshots/web/minimal-preset/ui.expected.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/web/minimal-preset/ui.expected.md)；采集与唯一刷新写入函数 [`apps/web/tests/scaffold.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/web/tests/scaffold.ts)（`captureStableAria`、`compareOrRefreshGolden`）；自动化页内目录选择器补丁 [`apps/web/tests/pin-browse-picker.overlay.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/web/tests/pin-browse-picker.overlay.yml) |
+| **实例四 · 故障注入与工作区校验** | [`snapshots/session/background-confinement-failure/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/snapshots/session/background-confinement-failure)（`snapshot.yml`、`replay.override.json`、`session.v4.jsonl`、[`workspace.expected/confinement-audit.json`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/session/background-confinement-failure/workspace.expected/confinement-audit.json)） |
 
-## 三、探针为什么成立的三条不变量（[04](./04-principles.md)）
+---
 
-| 结论 | 出处 |
-|---|---|
-| root 不变量 Model-visible ⟺ logged | 根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 的 Conventions 一节；展开见 [`.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md) |
-| `request/header` 记录 envelope 与组装后的工具 schema；`foldRequestHeader` 取最新快照 | [`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md) 的 The request header event: `request/header` 一节 |
-| 渲染后的 system prompt **不在** header，而是 surface 节点 0 的 `system/message` | 同上 |
-| 会话是 append-only 的事件日志，消息历史由日志派生 | [`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md) 首段 |
-| 给 session log 瘦身会破坏可重建性（已否决） | [`.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md) |
-| `dsh-llm-replay` 是发布包，用录制日志替掉真 adapter | [`packages/test-support/llm-replay/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/README.md) 的 Summary 与 Mounting it 两节 |
-| `replay.override.json` 表达日志重建不出来的四类失败 | 同上，Summary 一节 |
-| 快照同时是回放输入与期望输出 | [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md)；[FAQ 21](../21_recorded-session-snapshots/02-what-a-trajectory-is.md) |
+## 三、DSH 产品树内同名 `probe`（运行时自检 vs 开发诊断脚本）对照
 
-## 四、分类与写法（[05](./05-kinds.md)、[06](./06-how-to-write-one.md)）
-
-| 结论 | 出处 |
-|---|---|
-| 探针回答「did it actually ride in the request?」，循环六步 | 仓外 `ai_dsh_assistant/.agents/skills/repo-live-probe/SKILL.md` |
-| 「不调工具、只用眼前的上下文回答」的取证写法 | 同上，第 3 步与 Hard-won details |
-| 「工具使用会藏住常驻状态」 | 同上，Hard-won details 末条 |
-| one-shot 只有一个请求 | 同上，Hard-won details 首条 |
-| 会话按差分取、不按「最新」取 | 同上，第 4 步 |
-| 探针补丁必须镜像它替代的那一行；行 id 写错的静默失效 | 仓外 `ai_dsh_assistant/dev/probes/session/preset-runner-replay.patch.yml` 文件头注释 |
-| 裸脚本塞进 `file` 导致整行不 activate | 同上 |
-| session 探针表分「Proves / Does not prove」两列 | 仓外 `ai_dsh_bsimulation/probes/session/README.md` 的探针表 |
-| `BLOCKED` = exit 2，不冒充 PASS | 仓外 `ai_dsh_assistant/dev/probes/web/README.md` 的「前置：三类探针」节 |
-| 只留一张图（成功或失败，绝不并存） | 仓外 `ai_dsh_bsimulation/probes/README.md` 的 evidence rules |
-| 一次性探针进「战役」档、不进命令清单 | 仓外 `ai_dsh_assistant/dev/probes/web/README.md` 的「战役一次性探针」节 |
-| 能进场景的不新立脚本 | 同上「加一个新探针」节 |
-| 判据会被校准、旧判据会把正确行为判红 | 仓外 `ai_dsh_company/probes/session-context/date-rule-probe.mjs` 文件头 |
-| 三档退出码 0 / 1 / 2 的含义 | 同上；`ai_dsh_company/probes/team/claim-race-probe.mjs` 文件头 |
-| 通用驱动与仓库场景分两层、驱动可整段拷走 | 仓外 `ai_dsh_company/docs/guides/cdp-probe.md` 的「架构（两层）」表 |
-| 证据目录固定 + `verdict.json` + 截图 + console | 同上「本仓用法」节 |
-| 按意图选入口（先查组合，再验装配，再验 Web，最后真模型） | 仓外 `ai_dsh_assistant/docs/dev.md` 第六节 |
-| 红线先行 / 场景先行 | 仓外 `ai_dsh_company/docs/guides/dev-loop.md` 的「④ 证据是什么」行 |
-
-## 五、探针族的毕业路径（[04](./04-principles.md)、[08](./08-real-repos.md)）
-
-| 结论 | 出处 |
-|---|---|
-| L0–L4 证据阶梯，L4 按触发条件启用 | [FAQ 21](../21_recorded-session-snapshots/05-plugin-repo-organization.md)，图见 `21_recorded-session-snapshots/figures/ladder.svg` |
-| 「同一 model-visible 面第三次靠手工探针钉回归」是建基线的触发条件 | 同上（05 的触发条件表） |
-| 探针产物与快照产物形状相同，差别只在有无基线 | [FAQ 21](../21_recorded-session-snapshots/04-what-its-worth.md)、[08](./08-real-repos.md) 末节 |
-
-## 六、探针与探索式测试（[09](./09-exploratory-testing.md)）
-
-> 本篇是本目录里**唯一一节外部概念**：「探索式测试」不是 DSH 术语，也不是 DSH 对待测试的分层；下面只列 DSH 侧可核的落点。
-
-| 结论 | 出处 |
-|---|---|
-| 「验证世界，不是验证自报」（探索取证的根本依据） | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 的 Verify the world, not the self-report 一节 |
-| postmortem 0002：确定性转录被当成合法行为，刷新把它固化成正确 | [`docs/postmortem/0002-js-expression-disabled-filesystem-tools.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0002-js-expression-disabled-filesystem-tools.md) 第 19、34、46 行 |
-| 语义不可能必须由**独立于期望输出**的断言捕获 | 同上，第 46 行 |
-| `UNKNOWN_TOOL` 语义守卫（主仓已内置） | `packages/test-support/session-snapshot/src/suite.ts` |
-| 独立 oracle：`workspace.expected/` 终态树，录制流程不得改写 | [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md) |
-| 录制前先确认这次运行是对的 | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)； [FAQ 21/04](../21_recorded-session-snapshots/04-what-its-worth.md) |
-| postmortem 0003：agent 用裸 Vite 糊弄验收，轨迹是**事后取证**而非回归测试 | [`docs/postmortem/0003-web-agent-gui-feedback-loop.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0003-web-agent-gui-feedback-loop.md) |
-| 探索用到的四个接口：日志 / 请求侧 / 渲染 / 副作用 | 分别见本篇第一、三节，与 [07](./07-worked-examples.md) 的四个实例一一对应 |
-| 造条件的三条真实写法（视口 / 真并发 / 注入 hang・throw） | [FAQ 21/05](../21_recorded-session-snapshots/05-plugin-repo-organization.md)；仓外 `ai_dsh_company/probes/team/claim-race-probe.mjs` 、`ai_dsh_assistant/dev/probes/web/` |
-| 判据校准与被推翻的记录 | 仓外 `ai_dsh_company/probes/session-context/date-rule-probe.mjs` 文件头 |
-
-## 八、沉淀成资产（[11](./11-what-probes-deposit.md)）
-
-> 这一节的读数全部来自 `ai_dsh_company` 的 `entry-probe` 链，是一个仓的具体做法，不是 DSH 规范。
-
-| 结论 | 出处 |
-|---|---|
-| 五层沉淀物的真实文件与行数 | `run/entry-probe.patch.yml`（14）、`tools/lib/entry-probe.mjs`（129）、`snapshots/probes/entry-probe/<日期>/`、`checks/smoke/entry-probe-smoke.mjs`（163）、`tests/harness/session/entry-probe.spec.ts`（189，16 个 `it()`） |
-| 判据被抽成纯函数，探针与单测共用 | `tools/lib/entry-probe.mjs` 的 `ENTRY_QUESTIONS` / `evaluateEntryProbe()` / `assertCodingBaseline()` |
-| 标本带来源 SHA-256 与 session id | `snapshots/probes/entry-probe/2026-10-27/answer-*.md` 头部 |
-| 「语义审阅：未执行，不代表零过期或零矛盾」 | 同上头部 |
-| 真模型档自己声明 `不进 pnpm test` | `checks/smoke/entry-probe-smoke.mjs` 文件头第 2–6 行 |
-| 测试从事实源现拉答案，不抄第二份 | `tools/lib/entry-probe.mjs` 的 Q4 注释；`entry-probe.spec.ts` 的「AGENTS.md 簿记可解析」用例 |
-| 16 个用例逐条对应真实事故 | 同上 spec，尤其 `expectedTag`、`缺题蒙混`、`JSON 语法错误报位置` 三条 |
-| 场景必须声明 `workspace.expected/` 是 authored fixture，不是独立 oracle | `snapshots/README.md` 的规则一节 |
-| 「能进基线的不另立脚本」 | [08](./08-real-repos.md)；仓外 `ai_dsh_assistant/dev/probes/web/README.md`「加一个新探针」节 |
-
-## 七、图清单
-
-| 图 | 出处篇 | 画的是什么 |
+| 类别 | 主仓入口 | 实际用途 |
 |---|---|---|
-| [one-page.svg](./figures/one-page.svg) | [00](./00-ladder.md)、本页 | 黑箱链 + 五个下钩位置 + 一次运行的三种归宿 |
-| [ladder.svg](./figures/ladder.svg) | [00](./00-ladder.md) | 五级台阶，每级只多一件事，含两支可跳过的旁支 |
-| [probe-evidence-layers.svg](./figures/probe-evidence-layers.svg) | [02](./02-probe-vs-tests.md) | 四层证据各连什么、三个空洞、三条不变量、毕业路径 |
-| [anatomy-of-a-probe.svg](./figures/anatomy-of-a-probe.svg) | [07](./07-worked-examples.md) | 日志时间线上被打的四个点 |
-| [scenario-directory.svg](./figures/scenario-directory.svg) | [07](./07-worked-examples.md) | 一个场景目录与四道毕业门 |
-| [exploratory-loop.svg](./figures/exploratory-loop.svg) | [09](./09-exploratory-testing.md) | 六步探索循环 × 四个观测接口 × 搜索空间边界 |
-| [exploration-steps.svg](./figures/exploration-steps.svg) | [09](./09-exploratory-testing.md) | 六步逐步展开：你自己做的 / 探针交给你的 / 没有探针会怎样 |
-| [llm-in-the-loop.svg](./figures/llm-in-the-loop.svg) | [10](./10-probe-and-llm.md) | 七步责任带（LLM 蓝 / 探针绿 / 判定橙 / 人灰）+ 两个消费者对比 + 83 条实测 |
-| [deposit-layers.svg](./figures/deposit-layers.svg) | [11](./11-what-probes-deposit.md) | 一次运行掉出的五层资产 + 观测与资产的界线 + 16 个用例的来源 + 四道闸 |
+| 运行时安装源探测 | [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md)、[`docs/subsystems/boot.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/boot.md)、[`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md)（`ctx.pluginRegistryProbe` / `registryProbe*`） | 并发探测公共包仓库响应延迟，供安装器选源 |
+| 启动期 `PATH` 环境探测 | [`packages/host/directory-picker-auto/src/probe.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/host/directory-picker-auto/src/probe.ts) | Linux 下检查 `zenity` / `kdialog` 是否存在，缺失时平滑回退到页内目录浏览 |
+| 沙箱与进程自检 | [`packages/experimental/webworker-runtime/src/shell/process/landlock.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/webworker-runtime/src/shell/process/landlock.ts)（`--probe`）、[`packages/boot/plugin-manager/src/run-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/src/run-tree.ts)（`process.kill(target, 0)`） | 检查内核沙箱可用性与目标进程存活状态 |
+| 开发期跨进程 / ABI 取证脚本 | [`scripts/ssh-helper/probe.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/ssh-helper/probe.ts)、[`packages/subprocess/win32-process/verify/abi-probe.cpp`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subprocess/win32-process/verify/abi-probe.cpp)、[`packages/sandbox/sandbox-windows-acl/verify/abi-probe.cpp`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/sandbox/sandbox-windows-acl/verify/abi-probe.cpp) | 不进常规单测套件，专门拉起真实辅助进程或打印底层结构体偏移量供开发者复核 |
 
-## 证据薄弱处
+---
 
-- **四个插件仓的规模读数是本机静态计数**（`ls`/目录清点），不是产品指标，也会随各仓演进而变化。它们的作用是证明「不同的人独立收敛到同一套分层」，不是给出可引用的常量。
-- **外仓探针文件头里的花费数字**（`≈$0.05`、`≈$0.1–0.2`）是各自仓的当日读数，本篇只引用其量级判断（真模型探针按次计费），不作为定价依据。
-- **「探针」一词的跨领域词源**（硬件 / kprobe / liveness probe）是常识性归纳，非 DSH 文档内容；本篇用它说明「这个词不是 DSH 造的」，不涉及任何产品行为。
-- **11 节的五层沉淀链是单一仓的具体做法**（`ai_dsh_company/entry-probe`），行数是 2026-11-12 的静态读数；它证明「一个探针会长出这五层」，不证明每个仓都长成这样。
+## 四、本组配图索引
+
+| 图文件 | 引用页面 | 内容摘要 |
+|---|---|---|
+| [`figures/one-page.svg`](./figures/one-page.svg) | [`answer.md`](./answer.md) | 请求黑箱链、从低成本到高成本的五个下钩位置，以及产出的三种归宿 |
+| [`figures/probe-evidence-layers.svg`](./figures/probe-evidence-layers.svg) | [`answer.md`](./answer.md) | 单测 / 覆盖率 / 真 API e2e / 录制快照与探针的分工、三大测试盲区与三条底层不变量 |
+| [`figures/anatomy-of-a-probe.svg`](./figures/anatomy-of-a-probe.svg) | [`01-four-real-probes.md`](./01-four-real-probes.md) | `session.v4.jsonl` 事件时间轴与只读轨迹、请求侧 sidecar、ARIA 树、工作区校验四个取证接口 |
+| [`figures/llm-in-the-loop.svg`](./figures/llm-in-the-loop.svg) | [`02-how-it-works-and-boundaries.md`](./02-how-it-works-and-boundaries.md) | 探针闭环七步人机分工（Agent 读日志改尺子，确定性代码做判定，人类审基线 diff） |
+| [`figures/scenario-directory.svg`](./figures/scenario-directory.svg) | [`02-how-it-works-and-boundaries.md`](./02-how-it-works-and-boundaries.md) | `minimal-preset` 场景目录结构与探针“毕业”进快照基线前的四道安全门 |
+
+---
+
+## 五、关于外部插件仓 `probes/` 目录用法的补充说明
+
+虽然理解本文无需阅读任何外部仓库，但如果你在社区或内部衍生插件仓库（如早期多智能体与个人助手实验仓）里看到独立的 `probes/` 或 `dev/probes/` 目录，它们与 DSH 主仓的对应关系非常简单：
+
+- **为什么插件仓常建 `probes/` 而主仓只有 `snapshots/`**：主仓维护的是底层核心契约，探清后的场景大多直接固化进了 `snapshots/` CI 门禁；而业务插件仓迭代早期提示词、自定义 Web 面板与多角色交互变化极快，在尚未稳定到值得维护录制基线前，开发者习惯把一次性或按需手动运行的诊断脚本（如 `session` 装配检查、无头浏览器 CDP 截图检查）集中放在 `probes/` 下，并在目录 `README` 中声明“探针仅供排障观察，不进 `pnpm test` 门禁”。
+- **跨仓沉淀下来的共同习惯**：无论目录叫什么，成熟的插件仓最终都会收敛出正文中总结的几条工程纪律——将通用浏览器/会话驱动与业务判据分层、文件头注明“证明什么 / 不证明什么 / 何时运行”、前置条件缺失统一返回退出码 `2`（`BLOCKED`），以及当某条检查稳定后将其纯函数判据或快照搬入正式测试并清理旧脚本。
+
+> 核验状态见 [核验基线登记](../00-baseline.md)。

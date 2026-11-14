@@ -1,168 +1,89 @@
-# Answer · DSH 目录设计的总模型
+# Answer 01 · DSH 仓库全景导览：按职责边界分区、按可替换角色拆包、按三张图读运行时
 
-核验状态见 [核验基线登记](../00-baseline.md)。
+## 一句话结论
 
-## 一句话答案
+DSH 没有采用传统的 `controllers / services / utils` 技术分层目录，而是按**维护归属、可替换角色与发布边界**来摆代码：**所有可复用的能力都放在 `packages/<group>/<pkg>/` 里，第一层按业务领域分家，第二层按接口、实现、消费方和策略拆包；`bundle`、profile 与 preset 只负责用 YAML 把这些插件拼起来；`apps/` 只保留最薄的进程与页面启动壳**。
 
-DSH 的目录不是按“控制器、服务、工具类”这种实现层次来切，而是按**所有权、可替换角色、运行时组合和发布边界**来切：可复用产品能力放在 `packages/`，一项能力再拆成 Definition、Provider、Consumer 和策略插件；`bundle`、profile 与 agent preset 只选择这些插件如何组合；`apps/` 保留最终可执行入口；框架、原生组件、Python 发行物、性能门禁、文档和工程工具各有独立边界。
+想快速看懂这套目录，核心秘诀只有一条：**别拿“文件夹位置”去硬猜“运行时调用链”**——读 DSH 时，脑子里要同时分开**三张结构图**、**两个代码平面**和**三层运行作用域**。
 
-因此，熟悉 DSH 不能只背一棵目录树。需要同时看三张图：
+---
+
+## 一、顶层目录怎么记：按“谁维护、怎么发版”划成六块
+
+![DSH 仓库顶层职责分区](./figures/repository-zones.svg)
+
+不用一上来背三百多个包名，先把顶层十几个目录按职责边界归成六块就清爽了：
+
+| 分区 | 对应目录 | 一句话记住它管什么 |
+|---|---|---|
+| **1. 框架与原生底座** | `vendor/`、`native/` | 钉死上游版本并本地维护的 Cordis 插件框架，以及 Linux Landlock / POSIX `flock` 原生扩展；有独立同步与发版规矩，别当普通业务包随手改 |
+| **2. 可复用产品能力** | `packages/<group>/<pkg>/` | 仓库真正的主体：五十多个领域组承载接口定义、后端实现、模型工具、执行策略与前端插件；唯一例外是按成熟度收拢实验能力的 `experimental/` |
+| **3. 薄入口与默认组装** | `apps/`、`packages/bundle/` | `apps/` 只管命令行解析、拉起宿主与前端挂载点；默认装哪些插件全写在 `packages/bundle/*/cordis.patch.yml` 里 |
+| **4. 跨语言发行与性能门禁** | `python/`、`benchmarks/` | Python SDK 与捆绑运行时载体，以及由根 `vitest.bench.config.ts` 编排的仓库级性能门禁 |
+| **5. 文档与工程治理** | `docs/`、`website/`、`scripts/`、`.agents/`、`.github/` | 只写当前状态的权威文档（`website/` 只做路由投影）、生成器与校验门禁、架构决策记录（Agent Notes）与 CI 流水线 |
+| **6. 录制快照与可选配置** | `snapshots/`、`apps/cli/config/examples/`、`patches/` | 真实会话回放快照（JSONL）、用 `dsh --patch` 按需挂载的示例配置层，以及第三方依赖补丁 |
+
+为什么 `apps/` 薄得像层纸？因为 DSH 立了死规矩：**只有命名的 `dsh` profile 才能启动受支持的 Node 应用**（桌面端也只是由 Electron 私有宿主调同一套 `runProfile` 启动完整 Web 应用）。把业务逻辑全留在 `packages/`，才能让 Web、Headless、TypeScript/Python SDK、ACP 和 Desktop 五种形态共用同一套底层实现。
+
+---
+
+## 二、为什么包拆得这么碎？分清“三张图 + 两平面 + 三层运行树”
+
+在普通单体项目里，“目录里有某个模块 ≈ 主程序引用了它 ≈ 启动后它一定在跑”。DSH 因为“一切皆插件”，刻意拆开了这三件事：
 
 ![同一个 DSH 的三张结构图](./figures/three-trees.svg)
 
-| 视角 | 它回答的问题 | 权威来源 |
-|------|--------------|----------|
-| 仓库目录树 | 代码、文档、构建和发行物分别由谁维护 | 顶层目录、各组 README、`pnpm-workspace.yaml` |
-| package 依赖图 | 谁可以 import 谁，合同和实现如何解耦 | 各 `package.json`、[`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/module-graph.md) |
-| 运行时插件树 | 这一次进程实际挂了哪些服务、监听器、工具和入口 | bundle/profile/preset 的 Cordis 配置、`dsh --dump-config` |
+### 1. 静态目录 ≠ 依赖方向 ≠ 本次实际加载
 
-目录树提供位置，依赖图提供静态关系，插件树提供本次运行的事实。三者相互关联，但不能互相代替；详细解释见 [`01-three-trees.md`](./01-three-trees.md)。
+- **仓库目录树（在哪维护）**：`packages/fs/` 把文件读写相关的包放在一起，方便按领域找主人（先读组级 `packages/<group>/README.md`）。拿文件系统组举例，看名字后缀就能一眼认出各自的角色：
 
-## 仓库组织的五条原则
+  ```text
+  packages/fs/
+  ├── fs/                       # Service Definition：声明 ctx.fs 接口与 fs/* 事件
+  ├── fs-local/                 # Provider：基础本地文件系统实现
+  ├── fs-sandbox/               # Provider：套上工作区沙箱围栏的本地实现
+  ├── fs-observation-policy/    # Policy：监听 fs/* 事件强制“先读后改”与版本防覆盖
+  ├── tool-fs/                  # Consumer：向模型暴露 read / write / edit 工具
+  └── tool-fs-search/           # 相邻 Consumer：调 ctx.subprocess 跑 ripgrep 搜索
+  ```
 
-### 1. 产品能力按领域归组，不按技术层归组
+  但目录挨着不代表互相调用——同在 `fs/` 组里的 `tool-fs` 绝不会直接 import `fs-local`。
+- **包依赖图（谁认识谁的接口）**：工具消费方（`tool-fs`）和具体实现（`fs-local`、`fs-sandbox`、跨组的 `ssh/fs-ssh`）都只依赖中间的服务定义包（`fs`）。全仓静态依赖由 [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/module-graph.md) 自动生成。
+- **运行时插件树（这次到底挂了谁）**：包躺在磁盘上不代表进程加载了它。实际跑哪些插件，由 `bundle → profile → $DSH_HOME/cordis.patch.yml → --patch` 从空列表逐层合成；敲一行 `pnpm dsh --profile web --dump-config` 就能看到合成后的真实配置。
 
-`packages/fs/`、`packages/subagent/`、`packages/session/`、`packages/llm/` 各自拥有一个能力家族。某项能力需要接口、后端、模型工具、策略和 UI 时，这些角色优先放在同一个领域附近，而不是分别塞进全局 `services/`、`adapters/`、`tools/`、`controllers/` 目录。
+### 2. 源码平面 vs 产物平面（附双编译面）
 
-这使阅读者可以先找到“谁拥有这件事”，再在该组内辨认角色。组 README 负责给出 package 与 `ctx` key 的地图，根 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) 只维护组级索引（`session/` 与 `client/` 两个组的包表曾各有漏登记，已由本轮就地补齐，见 [`03-package-role-grammar.md`](./03-package-role-grammar.md)）。
+每个包手写代码都在 `src/`，测试在同级 `tests/`，构建产物输出到被 Git 忽略的 `lib/`。日常跑单测、类型检查和静态门禁时，工作区直接通过根 `tsconfig.base.json` 的 `paths` 映射到 `src/`，刚克隆下来的干净树不用先跑全量构建就能做检查；只有打包校验（如 `publint`）和面向构建产物的集成测试才读 `lib/`。因此**读代码永远从包的 `README.md → src/index.ts` 进，别去翻 `lib/`**。
 
-### 2. 可替换能力按角色拆 package
+另外，仓库的 TypeScript 编译严格拆成 **Host（`tsconfig.host.json`）** 和 **Client（`tsconfig.client.json`）** 两套独立程序：因为服务端和浏览器端都会往同名 Cordis `Context` 键上做声明合并，混进同一个 TS Program 会直接报类型冲突。
 
-一条完整 capability seam 通常包含 Service Definition、一个或多个 Provider、一个或多个 Consumer；策略可能通过事件作为独立插件参与。以文件系统为例，`fs` 定义 `ctx.fs`，`fs-local` 与 `fs-sandbox` 提供实现，`tool-fs` 把能力呈现给模型，`fs-observation-policy` 通过 `fs/*` 事件施加 read-before-edit 等策略。
+### 3. 运行时的三层结构：Host 树、Client 树与 Agent 作用域
 
-拆 package 的目的不是追求数量，而是让替换半径与依赖方向可见：Consumer 依赖 Definition，不依赖某个具体 Provider；组合层选择本次安装哪个 Provider。完整角色语法见 [`03-package-role-grammar.md`](./03-package-role-grammar.md)。
+当你敲下 `dsh web` 时，跑起来的并不是一锅扁平的全局插件汤，而是三层职责分明的运行空间：
 
-### 3. 实现、组合与入口分开
+1. **Host Cordis 树（Node 进程）**：挂载会话日志存储（`ctx.sessions`）、主循环（`ctx.agents`）、文件系统/沙箱/模型等进程级底座服务，以及 HTTP 与 RPC 网关。
+2. **Client Cordis 树（浏览器页面）**：`apps/web` 启动 `@deepseek-ai/dsh-client-web` 后，按 Host 推过来的客户端入口图在浏览器里再建一棵独立的 Cordis 树，让 `packages/client/ui-*` 往界面槽位（slots）和客户端资源模型（`ctx.resources` / `useResource`）注册组件。前后端通过类型化 Remote 与事件流对话，不共享 JS 内存。
+3. **Per-Agent 作用域（`scope` / `isolate`）**：同一个 Host 进程里可以同时开出 `standard`、`ptc`、`minimal`、`cordis` 等不同模式的会话。进程级 Provider 在根树共享；而“当前会话能用哪些工具、拼哪几段系统提示词、持有哪些会话私有状态”则由 [`packages/preset/`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/README.md) 隔离在各自的 agent scope 与 `isolate` 作用域里，互不串台。
 
-`packages/` 拥有可复用实现，`packages/bundle/` 拥有可安装的 Cordis patch 层，profile 与 agent preset 决定部署和单个 agent 的选择，`apps/` 拥有最终进程或浏览器入口。业务行为不应因为“从 CLI 启动”就写进 `apps/cli`，也不应因为“默认启用”就写进 bundle；入口和 bundle 只保留自己必须拥有的装配职责。
+---
 
-这条分离形成一条稳定链：
+## 三、新手最容易踩的五个直觉误区
 
-```text
-package 实现
-  → bundle 给出默认插件行
-  → profile / home / --patch 覆盖部署选择
-  → app 启动 Cordis Loader
-  → 形成这一次运行的插件树
-```
+1. **把 `packages/core/` 当成包办一切的“不可替换内核”**：`core/` 放的是主干接口（`session`、`tools`、`system-prompt`、`agent`），连默认驱动 `agent-loop` 自己也只是一个实现 `Agent` 接口的插件。加新功能优先挂事件或注册表，不要习惯性去改 `agent-loop`。
+2. **以为 `core/session` 和 `packages/session/` 重名打架**：`core/session` 管内存里的活事件流与模型上下文推导；`packages/session/` 管怎么落盘（JSONL 世代文件与格式迁移链）、怎么做增量状态投影、怎么起会话标题和发遥测；全文检索则独立在 `packages/session-query/`（SQLite FTS5）。
+3. **把 `packages/experimental/` 等同于“所有可选功能”**：`experimental/` 划分的是**成熟度**（尚在评估、无正式兼容承诺）；而“可选（optional）”说的是**需用户显式开启**——像 `ssh/`、`lsp/` 这类有明确维护承诺的可选能力留在各自领域组里，由 [`scripts/product-package-policy.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/product-package-policy.ts) 登记把关。
+4. **去 `website/` 里找文档源文件改**：官网目录不存独立正文，只靠 [`website/docs.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/website/docs.ts) 把 `docs/` 和包 `README` 投影成网页路由；`docs/*-catalog.md` 等生成目录也必须改源码后跑脚本刷新，严禁手改。
+5. **按字母顺序从 `packages/` 第一个包往下硬啃**：脱离具体组合配置去干读单个插件，只会看到满屏抽象接口。选定一条具体问题链追到底，15 分钟就能摸清脉络。
 
-启动链和 Web/Headless 差异见 [`04-composition-and-entrypoints.md`](./04-composition-and-entrypoints.md)。
-
-### 4. 发布和平台边界在顶层显式出现
-
-`vendor/` 是被钉住并本地维护的 Cordis 框架层；`native/system/` 是原生 system 原语（Landlock / POSIX flock）的源码与 npm 家族；`python/` 是 Python SDK 与捆绑 runtime；`website/` 是文档站投影和构建；`benchmarks/` 是仓库级性能门禁；`apps/` 是产品应用。它们的构建、发布和消费者不同，因此不强行藏进 `packages/`。
-
-顶层目录不是“杂项分类”，而是维护与发行责任的边界。详细地图见 [`02-top-level-zones.md`](./02-top-level-zones.md)。
-
-### 5. 源码、生成物、文档与研究材料不混在一起
-
-package 的手写源码位于 `src/`，测试位于同级 `tests/`，构建产物位于被忽略的 `lib/`；生成的跨包目录位于 `docs/`，生成脚本位于 `scripts/`。官网不复制一套 Markdown，而由 `website/docs.ts` 把权威文档投影到 VitePress 路由。
-
-`_digested/`、`_faq_on_digested/` 则是研究材料：它们帮助理解产品，但不构成产品 API、workspace package、官方站点或启动组合。把研究结论与产品权威来源分开，后续同步源码时才能知道哪些材料需要重新核验。
-
-## 顶层结构应该怎样记
-
-![DSH 仓库的职责分区](./figures/repository-zones.svg)
-
-不需要一开始记住每个 package，只需先记住六个区域：
-
-| 区域 | 主要目录 | 记忆方式 |
-|------|----------|----------|
-| 框架与平台基础 | `vendor/`、`native/` | DSH 依赖但独立维护或发布的底座 |
-| 产品能力 | `packages/` | 插件、服务合同、Provider、Consumer、策略 |
-| 应用与组合 | `apps/`、`packages/bundle/` | 入口启动组合，bundle 选择默认插件行 |
-| 门禁与跨语言发行 | `benchmarks/`、`python/` | 性能门禁和 Python 驱动/捆绑 runtime |
-| 文档与工程系统 | `docs/`、`website/`、`scripts/`、`.github/`、`.agents/` | 说明、生成、校验、CI、决策记录 |
-| 研究覆盖层 | `_digested/`、`_faq_on_digested/` | `ethan` 分支上的源码消化与二次研究 |
-
-## `packages/` 应该怎样记
-
-`packages/<group>/<pkg>/` 的两级结构中，第一层回答“哪个领域拥有它”，第二层回答“它在该领域扮演什么角色”。例如：
-
-```text
-packages/fs/                  # 文件系统能力家族
-├── fs/                       # Definition：ctx.fs 与 fs/*
-├── fs-local/                 # Provider：本地文件系统
-├── fs-sandbox/               # Provider：带 sandbox fence
-├── fs-observation-policy/    # Policy：事件监听器
-├── tool-fs/                  # Consumer：模型工具
-└── tool-fs-search/           # 相邻 Consumer：基于 subprocess + rg
-```
-
-这只是前两层。阅读运行时还要继续区分 `group → package → plugin → entry row → Fiber → Context/realm`；[第三章](./03-package-role-grammar.md#先把六个层级分开)逐层解释这些名称。
-
-几个常见但容易误读的组：
-
-- `packages/core/` 是产品 API 主干，不是容纳所有逻辑的“大核心”；`agent-loop` 只是 `Agent` 合同的默认驱动。
-- `packages/session/` 不是 `core/session` 的重复。`core/session` 拥有活的内存日志；`session/` 家族围绕它增加持久化、投影、标题和遥测。
-- `packages/host/` 与 `packages/client/` 是 Web GUI 的两半；`apps/web` 只是很薄的浏览器入口，`apps/cli` 的 web profile 负责启动 Host 并提供前端产物。
-- `packages/api/` 与 `packages/typert/` 负责 Host/Client 之间的类型化 Remote/RPC 机制，不是另一个独立产品入口。
-- 组合叶子不再有 `examples/` 包组：可选 overlay 是 `apps/cli/config/examples/*/cordis.yml`（产品资产，`dsh --patch` 才挂）；0.1.7 线起 agent preset 走声明式重设计——shipped preset 是 `packages/bundle/web-app/presets/{standard,ptc,minimal,cordis}.patch.yml`，声明与注册在 `packages/preset/agent-preset/` + `agent-preset-registry/`。
-- `packages/client/` 已不只是 Web 壳：`resources` 提供 `ctx.resources` 资源模型，`ui-dockkit` 是平台静态模块，右栏与文件树各由 `ui-sidebar-*` 拥有。
-- `packages/experimental/` 是唯一按成熟度而非领域划分的组：0011 跨度把 `hooks/`、`webhook/`、`runtime-diagnostics/` 三组解散，全部可选包并入，组内 47 包（包总数按深度精确口径 342、组数 52）。它的定位是 `evaluated capabilities without a product-support commitment`；experimental 与 optional 是两件事，组外的包需要产品用途或 `scripts/product-package-policy.ts` 的显式分类。
-- `packages/test-support/` 是跨 package 的测试基础设施；普通行为测试仍跟随自己的 package 放在 `tests/`。
-
-## 一个 package 内部应该怎样读
-
-普通 package 通常呈现以下结构：
-
-```text
-packages/<group>/<pkg>/
-├── package.json       # npm 名称、exports、依赖与发布面
-├── README.md          # 消费者合同、配置、扩展点、限制
-├── README.zh.md       # 配对中文文档
-├── src/
-│   ├── index.ts       # 服务或插件入口
-│   └── types.ts       # 仅类型；不是所有 package 都需要
-├── tests/             # 单元、集成或 real-composition 测试
-└── tsconfig.json      # package 自己的编译边界与项目引用
-```
-
-（早期版本的这棵树里还有一项 `src/invariant.ts`。运行时 invariant 机制已在 0011 跨度整族退役——`@deepseek-ai/dsh-invariants` 包、各包的 `./invariant` companion 与其测试、`scripts/test-invariants.ts`、`scripts/verify-package-invariants.ts`、`scripts/verify-built-package-invariants.mjs`、`run-gates.ts` 的 invariant 门禁与 `ctx.invariants` 服务都已删除；新树里 `/invariant` 路径数量为 0，退役权威是 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)。）
-
-`lib/` 是构建产物，不是读实现的起点。先读 `README.md` 确认角色，再读 `package.json` 看它依赖的是 Definition 还是具体 Provider，然后进入 `src/index.ts`；若行为跨包，再沿 `ctx` key、事件名和 bundle row 搜索。
-
-## 为什么这种结构初看很碎
-
-DSH 把传统单体里隐含的选择显式化了：哪个后端、哪条策略、哪些工具、哪个入口、哪个 agent scope，都不再藏在一个构造函数或全局依赖容器中。代价是 package 数量多，而且一个完整行为常跨过 Definition、Provider、Consumer、事件、session log 与组合配置。
-
-这种结构优化的是替换、卸载、独立测试和发布，而不是“在一个文件里看完所有事情”。正确的阅读单位不是单个目录，而是一个**能力家族加它的运行时组合**。生成的 module graph、组 README、`dsh --dump-config` 和本 FAQ 的阅读路线，就是用来恢复这条跨目录链的。
-
-## 第一次熟悉仓库的推荐顺序
-
-1. 读根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 的目录图和核心约束（它的 `packages/` 布局块曾写已不存在的 `self-modification/` 与 `support/`，实际是 `packages/extensions/` 与 `packages/test-support/`，该缺口已就地修正；以 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) 为准）。
-2. 读 [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)，建立 Cordis、composition、core、events、loop、session、seam 的顺序。
-3. 读 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md)，只识别 group，不背 package 清单。
-4. 从一个实际入口追踪：`apps/cli/src/bin.ts` → `profile-boot.ts` → bundle patch → 一个被挂载的 package（桌面入口例外，从 `apps/desktop` 的 Electron 主进程开始；desktop-host 经 `runProfile` 起完整 web 应用并监听 `127.0.0.1:19387`）。
-5. 再从一个能力追踪：group README → Definition → Provider → Consumer → bundle/preset row → 测试。
-6. Web 功能另走 Host/Client 路线；持久数据另走 `core/session` → `session/` 路线。
-
-可直接照着执行的路线和搜索命令见 [`05-reading-routes.md`](./05-reading-routes.md)。
-
-## 最重要的六个纠偏
-
-1. **磁盘上有 package，不等于本次运行加载了它。** Cordis 配置才决定活插件树。
-2. **依赖某个 package，不等于必须使用它的默认实现。** Consumer 应依赖 Definition，Provider 由组合选择。
-3. **`core` 不等于不可替换内核。** 它是稳定产品 API 主干，默认 loop 仍是插件。
-4. **`apps` 不等于业务逻辑层。** 它拥有进程/浏览器入口和启动事实，可复用行为回到 `packages/`。
-5. **bundle 不执行能力。** 它发布 Cordis patch 行，选择哪些插件以什么默认配置挂载。
-6. **官网目录不拥有文档正文。** `docs/` 和 package README 是来源，`website/` 负责投影与构建。
+---
 
 ## 继续阅读
 
-| 想解决的问题 | 下一篇 |
-|--------------|--------|
-| 三张树为什么不能混 | [`01-three-trees.md`](./01-three-trees.md) |
-| 每个顶层目录到底归谁 | [`02-top-level-zones.md`](./02-top-level-zones.md) |
-| package 名字和角色怎么对应 | [`03-package-role-grammar.md`](./03-package-role-grammar.md) |
-| 从 `dsh` 命令怎样到活插件树 | [`04-composition-and-entrypoints.md`](./04-composition-and-entrypoints.md) |
-| 现在打开仓库先看哪些文件 | [`05-reading-routes.md`](./05-reading-routes.md) |
+| 你想深入了解哪一块 | 去哪篇看 |
+|---|---|
+| 顶层十几个目录各自归谁管？为什么 `apps/` 这么薄？CLI、Web、Desktop 怎么从命令变成活进程？ | [`01-top-level-zones-and-thin-apps.md`](./01-top-level-zones-and-thin-apps.md) |
+| `packages/<group>/<pkg>/` 为什么要按接口/实现/工具/策略拆包？依赖方向、实验组与双编译面怎么配合？ | [`02-two-level-packages-and-seams.md`](./02-two-level-packages-and-seams.md) |
+| 想看懂对话主循环、查工具实现、写外部插件或追 Web 前后端通信，各自该顺着哪条路线读和改？ | [`03-reading-routes-by-goal.md`](./03-reading-routes-by-goal.md) |
+| 本文涉及的权威文档、核心包入口、自动生成目录与门禁脚本速查清单 | [`reference.md`](./reference.md) |
 
-## 核验入口
-
-- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)
-- [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md)
-- [`pnpm-workspace.yaml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/pnpm-workspace.yaml)
-- [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/module-graph.md)
-
-> **「三棵树」不是 DSH 的术语。** 它是对三个 repo 事实的合称：Repository layout、module dependency graph 与 plugin tree。
+> 注：文中的“三张图”是对仓库目录布局、包依赖图与运行时插件树的通俗合称，不是 DSH 源码里的字段名。核验状态见 [核验基线登记](../00-baseline.md)。

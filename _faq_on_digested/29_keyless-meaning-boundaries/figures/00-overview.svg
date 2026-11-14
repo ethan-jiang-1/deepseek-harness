@@ -3,9 +3,9 @@
   <text x="510" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2937">keyless 是什么：一页看完</text>
   <text x="510" y="60" text-anchor="middle" font-size="12" fill="#6b7280">四步从零建立概念。不需要先懂任何术语。</text>
 
-  <!-- ① 是什么 -->
+  <!-- ① 主力做法 -->
   <rect x="40" y="86" width="458" height="176" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.8"/>
-  <text x="60" y="112" font-size="14" font-weight="700" fill="#1d4ed8">① 它是什么</text>
+  <text x="60" y="112" font-size="14" font-weight="700" fill="#1d4ed8">① 主力做法：录制回放</text>
   <text x="60" y="136" font-size="12" fill="#1e3a8a">让真模型跑<tspan font-weight="700">一次</tspan>，把它的回答录下来；</text>
   <text x="60" y="156" font-size="12" fill="#1e3a8a">以后每次都放这段录像，其余全部照跑。</text>
 

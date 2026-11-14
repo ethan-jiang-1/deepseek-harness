@@ -117,7 +117,7 @@
 
   <rect x="40" y="536" width="360" height="180" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
   <text x="220" y="572" text-anchor="middle" font-size="40" font-weight="700" fill="#166534">83</text>
-  <text x="220" y="594" text-anchor="middle" font-size="11" fill="#334155">三个插件仓的探针脚本总数</text>
+  <text x="220" y="594" text-anchor="middle" font-size="11" fill="#334155">外部插件仓实测探针样本数</text>
   <line x1="76" y1="610" x2="364" y2="610" stroke="#86efac"/>
   <text x="220" y="636" text-anchor="middle" font-size="34" font-weight="700" fill="#991b1b">0</text>
   <text x="220" y="658" text-anchor="middle" font-size="11" fill="#991b1b">其中调用 LLM 做判定的</text>
@@ -141,5 +141,5 @@
   <text x="60" y="762" font-size="13" font-weight="700" fill="#92400e">所以准确的因果是反过来的</text>
   <text x="60" y="786" font-size="11" fill="#991b1b">✗ 不是「有了 LLM，探针才能判」</text>
   <text x="60" y="806" font-size="11" fill="#166534">✓ 而是「有了 LLM，探针产出的事实才有人读完、有人追问、有人回头改尺子」</text>
-  <text x="60" y="830" font-size="11" fill="#334155">没有 LLM，探针照样跑得出真事实 —— 但它和 console.log 没区别，因为没人愿意读第二遍。这类工具在 2022 年以前不存在，不是造不出，是造出来没人看。</text>
+  <text x="60" y="830" font-size="11" fill="#334155">没有 Agent 辅助时，上千行会话轨迹靠人肉眼翻极易漏看；有了 Agent 快速通读和连续追问，结构化取证的闭环效率才真正跑起来。</text>
 </svg>

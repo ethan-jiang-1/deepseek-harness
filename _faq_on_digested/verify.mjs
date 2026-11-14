@@ -385,10 +385,9 @@ const retiredTerms = [
 ]
 // Ambiguous only where the corpus defines its own distribution word: the topic that does says
 // `发行版` for a delivered Harness, so a second variant there reads as a third concept.
-const topicRetiredTerms = new Map([['24_publish-and-release/release', ['DSH 发行版']]])
+const topicRetiredTerms = new Map([['26_harness-distribution', ['DSH 发行版']]])
 const termPolicyMarker = 'term-policy'
-const topicScope = resolve(corpusRoot, '24_publish-and-release/release')
-const frozenTerminology = new Set(['24_publish-and-release/release/40-evidence/quality-review.md'])
+const frozenTerminology = new Set()
 function checkTerminology(path, source) {
   const localPath = relative(corpusRoot, path)
   if (frozenTerminology.has(localPath)) return

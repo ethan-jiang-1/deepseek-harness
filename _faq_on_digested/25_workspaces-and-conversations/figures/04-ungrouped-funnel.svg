@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>Ungrouped 是怎么被算出来的：漏斗与本机实测</title>
-  <desc>左侧漏斗：磁盘上的全部会话日志先减去 subagent 子会话，再按列表可见性筛选，剩下的主会话分为已被工作区账户认领与被认领之外两类；后者就是 Ungrouped。右侧列出四种来源，以及不会进入这个桶的四类会话。数字来自本机 $DSH_HOME 的实测。</desc>
+  <title>客户端筛选与 Ungrouped 差集漏斗</title>
+  <desc>左侧以一次真实 ~/.dsh 目录排查样本展示漏斗：磁盘全部会话目录先剔除 subagent 子会话与不可见项，剩下的可见主会话按是否在任意 Workspace 的 sessionIds 名册里一分为二，未被认领的差集即为 Ungrouped。右侧列出进入 Ungrouped 的四种常见原因与被提前过滤的四类会话。</desc>
 
   <rect width="1200" height="680" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Ungrouped 不是一条记录，是一个减法</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">可见会话 − 所有工作区账户里的会话 = Ungrouped；缺的任何一项都不会“自动归队”</text>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Ungrouped 不是后端分组，而是前端算出来的差集</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">侧栏可见主会话 − 所有活跃 Workspace 名册已认领会话 = Ungrouped（左列数字来自单机 ~/.dsh 实测案例）</text>
 
   <!-- funnel -->
-  <text x="40" y="92" font-size="12" font-weight="700" fill="#334155">本机实测漏斗</text>
+  <text x="40" y="92" font-size="12" font-weight="700" fill="#334155">筛选与差集漏斗（实测样本）</text>
 
   <rect x="40" y="104" width="470" height="62" rx="9" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="60" y="128" font-weight="700" fill="#334155">磁盘上的会话日志</text>
-  <text x="60" y="150" fill="#64748b" font-size="11">$DSH_HOME/sessions/--&lt;cwd&gt;--/&lt;id&gt;/，共 35 个 cwd 分区</text>
+  <text x="60" y="128" font-weight="700" fill="#334155">磁盘上的全部会话目录</text>
+  <text x="60" y="150" fill="#64748b" font-size="11">$DSH_HOME/sessions/--&lt;cwd&gt;--/&lt;id&gt;/（样本共 35 个目录分区）</text>
   <text x="492" y="142" text-anchor="end" font-size="22" font-weight="700" fill="#0f172a">3864</text>
 
   <path d="M275 166 L275 186" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr25a)"/>
@@ -20,75 +20,75 @@
   </defs>
 
   <rect x="40" y="188" width="470" height="52" rx="9" fill="#fef2f2" stroke="#fecaca"/>
-  <text x="60" y="210" fill="#991b1b" font-size="11">减去：subagent 子会话（origin=subagent，侧栏一律不显示）</text>
-  <text x="60" y="228" fill="#64748b" font-size="10.5">其中 19 条仍占着某个工作区的账户名额，但不渲染成行</text>
+  <text x="60" y="210" fill="#991b1b" font-size="11">减去：subagent 子会话（origin=subagent，侧栏一律隐藏）</text>
+  <text x="60" y="228" fill="#64748b" font-size="10.5">哪怕早期 bootstrap 扫入过个别子会话，前端可见性过滤也会拦掉</text>
   <text x="492" y="220" text-anchor="end" font-weight="700" fill="#991b1b">−2890</text>
 
   <path d="M275 240 L275 260" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr25a)"/>
 
   <rect x="40" y="262" width="470" height="52" rx="9" fill="#f1f5f9" stroke="#cbd5e1"/>
-  <text x="60" y="284" fill="#475569" font-size="11">减去：未选中的空白会话；没有 cwd 的冷会话不进列表</text>
-  <text x="60" y="302" fill="#64748b" font-size="10.5">本机无 _no-cwd；空白是投影字段，这里按 0 计（可能低估）</text>
-  <text x="492" y="294" text-anchor="end" font-weight="700" fill="#475569">−0</text>
+  <text x="60" y="284" fill="#475569" font-size="11">减去：无 cwd 的历史冷会话、未选中的空白会话</text>
+  <text x="60" y="302" fill="#64748b" font-size="10.5">冷列表查询要求带 cwd；运行时未选中的空白占位自动隐藏</text>
+  <text x="492" y="294" text-anchor="end" font-weight="700" fill="#475569">可见性过滤</text>
 
   <path d="M275 314 L275 334" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr25a)"/>
 
   <rect x="40" y="336" width="470" height="56" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="60" y="358" font-weight="700" fill="#3730a3">主会话（非 subagent 的日志）</text>
-  <text x="60" y="378" fill="#64748b" font-size="10.5">另有一批“空白”状态是投影缓存里的字段，不在日志头里</text>
+  <text x="60" y="358" font-weight="700" fill="#3730a3">参与侧栏分组的主会话</text>
+  <text x="60" y="378" fill="#64748b" font-size="10.5">由 deriveGroups 对照全部 Workspace 的 sessionIds 名册做分流</text>
   <text x="492" y="370" text-anchor="end" font-size="20" font-weight="700" fill="#3730a3">974</text>
 
   <path d="M275 392 L275 412" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr25a)"/>
 
   <rect x="40" y="414" width="226" height="82" rx="9" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="56" y="436" font-size="11" fill="#166534">被某个工作区账户认领</text>
+  <text x="56" y="436" font-size="11" fill="#166534">在某个 Workspace 名册内</text>
   <text x="153" y="468" text-anchor="middle" font-size="22" font-weight="700" fill="#166534">916</text>
-  <text x="153" y="486" text-anchor="middle" font-size="10" fill="#166534">画进对应的节</text>
+  <text x="153" y="486" text-anchor="middle" font-size="10" fill="#166534">归入对应工作区节</text>
 
   <rect x="284" y="414" width="226" height="82" rx="9" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="300" y="436" font-size="11" fill="#92400e">没有任何账户认领</text>
+  <text x="300" y="436" font-size="11" fill="#92400e">不在任何 Workspace 名册内</text>
   <text x="397" y="468" text-anchor="middle" font-size="22" font-weight="700" fill="#b45309">58</text>
-  <text x="397" y="486" text-anchor="middle" font-size="10" fill="#92400e">落到 Ungrouped</text>
+  <text x="397" y="486" text-anchor="middle" font-size="10" fill="#92400e">落入末尾 Ungrouped</text>
 
   <!-- breakdown -->
   <rect x="40" y="514" width="470" height="132" rx="9" fill="#ffffff" stroke="#e2e8f0"/>
-  <text x="60" y="538" font-size="11" font-weight="700" fill="#334155">这 58 条住在哪</text>
-  <text x="60" y="560" fill="#334155" font-size="11">31 条  deepseek-harness（这个目录明明有工作区）</text>
-  <text x="60" y="580" fill="#334155" font-size="11">25 条  ait_exam_4fun（这个目录没有工作区）</text>
-  <text x="60" y="600" fill="#334155" font-size="11"> 2 条  两个 worktree / 其他目录</text>
-  <text x="60" y="626" fill="#64748b" font-size="10.5">另外：31 个工作区共登记 935 个 id（含 19 个子会话）；归档 67；置顶 0。</text>
+  <text x="60" y="538" font-size="11" font-weight="700" fill="#334155">样本中 58 条未分组主会话的目录分布</text>
+  <text x="60" y="560" fill="#334155" font-size="11">· 31 条位于 deepseek-harness（该目录明明建有活跃 Workspace！）</text>
+  <text x="60" y="580" fill="#334155" font-size="11">· 25 条位于某独立实验目录（从未登记为 Workspace）</text>
+  <text x="60" y="600" fill="#334155" font-size="11">·  2 条位于临时 git worktree 目录</text>
+  <text x="60" y="626" fill="#64748b" font-size="10.5">前 31 条直接证实：分组只认显式挂接名册，不按目录路径实时匹配。</text>
 
   <!-- origins -->
-  <text x="560" y="92" font-size="12" font-weight="700" fill="#334155">四种来源</text>
+  <text x="560" y="92" font-size="12" font-weight="700" fill="#334155">掉进 Ungrouped 的四种常见原因</text>
 
   <rect x="560" y="104" width="600" height="72" rx="9" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="578" y="126" font-weight="700" fill="#92400e">① 工作区被删了，会话没删</text>
-  <text x="578" y="146" fill="#334155" font-size="11">删除只移除注册、顺序与账户；目录、文件、日志、正在跑的会话都不动；会话立刻失去归属。</text>
-  <text x="578" y="164" fill="#64748b" font-size="10.5">再把同一目录加回来 = 一条新的空工作区，旧会话不会自动回来（见 05 篇）</text>
+  <text x="578" y="126" font-weight="700" fill="#92400e">① bootstrap 之后由 CLI / SDK / 测试创建（最常见）</text>
+  <text x="578" y="146" fill="#334155" font-size="11">headless、脚本或共用 ~/.dsh 的插件测试只传 cwd 创建会话，未走带 workspaceId 的入口。</text>
+  <text x="578" y="164" fill="#64748b" font-size="10.5">一次性历史扫描早已结束，哪怕目录已有 Workspace 也不会自动补录进名册</text>
 
   <rect x="560" y="188" width="600" height="72" rx="9" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="578" y="210" font-weight="700" fill="#92400e">② bootstrap 之后创建，却没经过 attach</text>
-  <text x="578" y="230" fill="#334155" font-size="11">headless / SDK / 插件测试这类“只给 cwd”的创建方式，都属于这一类。</text>
-  <text x="578" y="248" fill="#64748b" font-size="10.5">本机 58 条的主因：bootstrap 只跑一次，之后没有任何“按目录补收”的机制</text>
+  <text x="578" y="210" font-weight="700" fill="#92400e">② 原所属 Workspace 被用户移除了</text>
+  <text x="578" y="230" fill="#334155" font-size="11">移除工作区只删登记与名册，保留会话日志；原成员立即变成无名册认领的可见会话。</text>
+  <text x="578" y="248" fill="#64748b" font-size="10.5">之后再把同一文件夹添加回来会生成新 UUID 空工作区，旧会话仍留在 Ungrouped</text>
 
   <rect x="560" y="272" width="600" height="72" rx="9" fill="#f1f5f9" stroke="#cbd5e1"/>
-  <text x="578" y="294" font-weight="700" fill="#475569">③ 会话的 cwd 失效，或与工作区路径不等</text>
-  <text x="578" y="314" fill="#334155" font-size="11">目录被移走、临时目录被清、符号链接改写，都会让它读不到成员资格。</text>
-  <text x="578" y="332" fill="#64748b" font-size="10.5">已入组的成员在 ENOENT 时会保留账户；但新 attach 一律拒绝</text>
+  <text x="578" y="294" font-weight="700" fill="#475569">③ 所在目录从未登记成 Workspace</text>
+  <text x="578" y="314" fill="#334155" font-size="11">在临时目录或新拉取仓库直接用命令行跑过会话，但从未在 GUI 里添加该文件夹。</text>
+  <text x="578" y="332" fill="#64748b" font-size="10.5">DSH 不会因为磁盘上出现新会话分区就擅自新建侧栏工作区</text>
 
   <rect x="560" y="356" width="600" height="72" rx="9" fill="#f1f5f9" stroke="#cbd5e1"/>
-  <text x="578" y="378" font-weight="700" fill="#475569">④ 目录从来没有被登记成工作区</text>
-  <text x="578" y="398" fill="#334155" font-size="11">首次启动时目录不存在、或首次之后才第一次使用的目录，都可能从未有过记录。</text>
-  <text x="578" y="416" fill="#64748b" font-size="10.5">目录存在与否，不会触发自动登记</text>
+  <text x="578" y="378" font-weight="700" fill="#475569">④ 挂接校验未通过或路径改写失配</text>
+  <text x="578" y="398" fill="#334155" font-size="11">创建会话后 attachSession 失败，或符号链接改指向另一个真实目录导致 realpath 不等。</text>
+  <text x="578" y="416" fill="#64748b" font-size="10.5">注：单纯把原目录删掉（ENOENT）不会踢出已入组老成员，只会拒绝新会话挂入</text>
 
   <!-- not here -->
   <rect x="560" y="442" width="600" height="204" rx="9" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="578" y="466" font-size="12" font-weight="700" fill="#334155">不会出现在 Ungrouped 里的四类</text>
-  <text x="578" y="490" fill="#334155" font-size="11">· subagent 子会话 — 侧栏可见性直接挡掉（tree.ts:244）</text>
-  <text x="578" y="512" fill="#334155" font-size="11">· 未选中的空白会话 — 只保留当前那一条“新会话”占位</text>
-  <text x="578" y="534" fill="#334155" font-size="11">· 没有 cwd 的冷会话 — 列表压根不取（list.ts:144）</text>
-  <text x="578" y="556" fill="#334155" font-size="11">· 已归档会话 — 默认筛选隐藏；它仍保留账户名额</text>
-  <text x="578" y="586" fill="#92400e" font-size="11">所以“我在 Ungrouped 看到插件测试”是准确的：插件测试通常非 subagent、</text>
-  <text x="578" y="604" fill="#92400e" font-size="11">非空白、有 cwd、且没有 attach —— 四条都满足，就只剩这一种去处。</text>
-  <text x="578" y="630" fill="#64748b" font-size="10.5">判定式：会话可见，且它不在任何 workspace.sessionIds 里。</text>
+  <text x="578" y="466" font-size="12" font-weight="700" fill="#334155">连 Ungrouped 都不会进的四类会话</text>
+  <text x="578" y="490" fill="#334155" font-size="11">· subagent 派生子会话 — 前端可见性直接过滤（origin = 'subagent'）</text>
+  <text x="578" y="512" fill="#334155" font-size="11">· 未选中的空白会话 — 仅保留当前正在查看的那一条新会话占位</text>
+  <text x="578" y="534" fill="#334155" font-size="11">· 无 cwd 的冷会话 — 服务端会话列表查询直接跳过</text>
+  <text x="578" y="556" fill="#334155" font-size="11">· 已归档会话 — 默认筛选下隐藏（切到“显示已归档”才灰显出现，仍保留原名册位置）</text>
+  <text x="578" y="586" fill="#92400e" font-size="11">为什么插件测试最容易刷屏 Ungrouped？因为测试直接调底层接口建出的恰恰是</text>
+  <text x="578" y="604" fill="#92400e" font-size="11">“非 subagent + 非空白 + 带 cwd + 未调 attach”的主会话，建议用独立 DSH_HOME 隔离。</text>
+  <text x="578" y="630" fill="#64748b" font-size="10.5">判定公式：可见主会话 ∧ ∀w ∈ workspaces, id ∉ w.sessionIds。</text>
 </svg>

@@ -1,109 +1,123 @@
-# Answer 08 · seam 成熟度：算出来的可替换率，和被它推翻的三个印象
+# Answer 08 · 插件生态成熟度：42.9% 的可替换率、三个常见误判与真实缺口清单
 
-## 方法与基线
+## 一句话结论
 
-机制结论以本仓库产品树为底（`docs/`、`packages/`、生成目录）；当前基线 `dsh-v0.2.1-rc.2`，commit `687f282e86`。本文最初写作时的基线是 `0.1.1-rc.2`（`b150a55…`），当时的行级漂移（如 `ctx.agentTeams`、`ctx.authorization` 这些晚于旧基线才出现的行）在 0006 同步后已并入基线。量化底座是 freshness-gated 的生成目录 [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md)，数字一律以点数当时的生成表为准。原文写下的两次读数是"当前树读数（commit `3b1a213e9e…`，即 08/09 两篇 FAQ 提交的父提交）"与编辑复核点 `bb90e237f2…`：两处实测都是 28 条 seam、11 条 P≥2、39.3%、15 条单 Provider、2 条零 Provider、3 条零 Consumer，对这两个时点而言并没有写错。本次上游同步复核（2026-09-16）发现：**这些读数在 OLD 基线 `a66e470204`（dsh-v0.1.2-rc.1）时就已经全部过期，而 OLD 与 NEW 的 seam 层读数完全一致**——29 条 seam、12 条 P≥2、14 条单 Provider、3 条零 Provider、2 条零 Consumer。也就是说，这是本文写作时点与 OLD 之间就已存在的**存量失真，不是 `a66e470204 → fb2c4b9e69` 本次跨度引入的**；跨度内只动了 core（39 → 42，seam 层五个数字 OLD = NEW）。下表已按 **NEW 基线读数（commit `fb2c4b9e69`，dsh-v0.1.5-rc.2，2026-09-16 实测）** 重写；0008 同步（2026-09-23）按 `46a7f68b09`（dsh-v0.1.7-rc.1）重测一轮并再次重写下表：**33 条 seam、15 条 P≥2、15 条单 Provider、3 条零 Provider、2 条零 Consumer**，总数从 72 涨到 89（54 core + 33 seam + 1 service + 1 bundle，生成表新增了 service 这一 role）。0009 同步（2026-09-25）按 `dsh-v0.2.0-rc.2` 重测：**总数 92（55 core + 33 seam + 3 service + 1 bundle）**，seam 层四个读数不动（33 / 15 / 15 / 3），零 Consumer 仍 2 条；service role 新增 `ctx.productAnalytics` 与 `ctx.otel`（Desktop 产品遥测面），core 新增 `ctx.schedule`（Schedule 转正进默认 Web composition）；`ctx.skills` 从 3 Provider 涨到 4（`sandbox-windows-acl` 以出厂 ACL 诊断技能成为第四个 Provider）。0011 同步按 `dsh-v0.2.1-rc.2` 重测（0012 复核按 `dsh-v0.2.1-rc.5` 重跑同一生成表，**四项读数与 0011 完全一致**，seam 层未发生漂移，故下表与本节数字不动，只把可信区间推进到 rc.5）：**总数 99（58 core + 35 seam + 5 service + 1 bundle）**，seam 层 **35 条、15 条 P≥2、17 条单 Provider、3 条零 Provider、2 条零 Consumer、可替换率 15/35 = 42.9%**；新增 `ctx.workingDirectory`（1/6）与 `ctx.worktrees`（1/1）两条 seam，`ctx.jobs` 的 C 从 6 降到 5、`ctx.web` 的 P 从 4 涨到 5，`ctx.invariants` 随运行时 invariant 机制整族退役而消失（core，旧读数 0/4）；service 侧新增 `ctx.cotTranslation` 与 `ctx.translator`，core 侧新增 `ctx.pluginMarket`、`ctx.remoteAccess`、`ctx.claudeCodeMods`、`ctx.webApp`。下文凡引用旧基线读数处均已同步推进，历史读数原样保留。
+打开由源码自动生成的 [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md)，当前 DSH 一共有 **99 个 `ctx` 服务**（`58 core + 35 seam + 5 service + 1 bundle`）。其中真正按“服务定义 + 实现方 + 消费方”三角色拆开、设计用来替换的 **capability seam 共 35 条**：
 
-要按图找现货（包组、服务、工具、可见性、四条出路），见 [`03-finding-existing-plugins.md`](./03-finding-existing-plugins.md)。
+- **15 条（42.9%）已有 2 个及以上 Provider**：集中分布在底层执行环境（shell / 文件系统 / 子进程 / 沙箱）、模型与搜索接入、子智能体委派和基础存储。这些底座再从头重造几乎没有收益。
+- **17 条只有单个 Provider，另有 3 条在生成表里显示为 0 Provider**。
+- **真正的外部生态缺口不在底层执行，而在外围连接与上层治理**：IM 与通知渠道（连官方 seam 都还没有，社区已经各自造了 8 套以上互不兼容的桥）、面向模型的长期记忆、丰富的人类审批交互与多方会签，以及跨会话可恢复的持久工作流。
 
-生成表（0011 基线 `dsh-v0.2.1-rc.2` 读数，0012 按 rc.5 复核无变化）共 **99 个 `ctx` 服务**，按其 role 列拆分：**58 core + 35 seam + 5 service + 1 bundle**（`ctx.agentLoop` 是 bundle；service 五个是 `ctx.productTelemetry`、`ctx.productAnalytics`、`ctx.otel`、`ctx.cotTranslation`、`ctx.translator`；0008/0009 两轮的对应 role 拆分见上一节的历史记录）。seam 才是"可替换能力"，本文只在 35 条 seam 上做成熟度计算，core 只在下文"诚实边界"里单独处理。
+下面先把这笔账摊开算清楚，再讲哪些直觉容易看走眼、哪些方向值得投入。如果想直接查“怎么在仓库里找现成能力”，可以直接跳读 [`01-finding-existing-capabilities.md`](./01-finding-existing-capabilities.md)。
 
-## 判据：供给侧与需求侧是两个独立的问题
+---
 
-- **供给侧（换得掉吗）**：Provider ≥2 且真实可互换。第二个真实 Provider 出现、Consumer 一行不改，是可替换（replaceable）的直接读数——E2B 组合即范例：`fs-e2b` 与 `subprocess-e2b` 注入同一 `ctx.e2b`，Consumer 不改换整个执行世界（[`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md)）。
-- **需求侧（换给谁）**：Consumer 覆盖的面数——模型工具、host wire（Remote / gateway 走浏览器）、hooks、内部组合（如 `bash-sandbox` 消费 `subprocess`）。面数 ≥2 说明该能力不是某个单点的私产。
-- **L0 可解性**：patch 一行换 provider 常见需求即可解决，说明 Definition 已稳定到不需要新代码。
-- **三条反向信号**：**自消费 seam**——Provider 与唯一 Consumer 是同一个包，等于还没有市场；**零 Provider seam**——Definition 立了、连默认实现都没有，API 形状仍可能在第一个实现落地时被改；**零 Consumer seam**——生成表 direct consumers 列为空（`sessionTelemetry`、`sessionTitle` 两条），两条各有出口（telemetry 离进程、title 经 projection），所以只算"待核查"信号，不作赤字结论；同组原先也为空的 `fileReferences` 在 OLD 之前已有 direct consumer `api-session-controller`。
-- **一条单位修正**：`ctx.approval` 不能用 Provider 数衡量。answerer 是 `approval/request` waterfall 的 listener，不注册成 Provider（生成表 P 列为空正是这条修正的读数）；它的成熟单位是 answerer 多样性 × 问题形状渲染，见"三个推翻"第 1 条。
+## 一、怎么衡量一条 seam 成不成熟？
 
-## 全景：35 条 seam 的 P/C 表（0011 基线读数 `dsh-v0.2.1-rc.2` 实测，0012 按 `dsh-v0.2.1-rc.5` 复核无变化；与 0009 基线相比新增 `ctx.workingDirectory`、`ctx.worktrees` 两行，`ctx.jobs` 的 C 减 1、`ctx.web` 的 P 加 1，`ctx.invariants` 随机制退役消失）
+在 DSH 里，单个插件不叫 seam，**Service Definition（定义接口）+ Service Provider（提供实现）+ Consumer（调用服务）** 三个角色齐备才叫一条 capability seam。判断它成不成熟，光数插件个数不够，得同时看供需两端：
 
-P = implementation 包数，C = direct consumer 包数，按生成表 implementations / direct consumers 两列逗号切分计数；下表按 P 升序、C 降序排列。
+- **供给端（真能无痛换掉吗）**：看有没有第 2 个真实 Provider，并且在切换时上游消费方一行代码不用改。最典型的正例是远程 SSH 执行环境：`fs-ssh`、`subprocess-ssh`、`sandbox-ssh` 共享同一个 [`ctx.ssh`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md) 连接，上层的 `tool-fs` 和 `tool-bash` 原封不动就能把工作目录切到远端机器。
+- **需求端（有多少地方在用）**：看消费方覆盖了几个平面（模型工具、前后端 Remote 通信、兼容桥、内部沙箱包装等）。消费面越多，说明接口越不是某一个工具的私有定制。
+- **三个需要警惕的信号**：
+  1. **自消费（`P = 1, C = 1` 且在同一个包）**：比如 `ctx.compaction`，接口和唯一调用方都在 `compaction-basic` 里，还没经历过外部实现的检验。
+  2. **零 Provider（`P = 0`）**：接口先立了，但要么实现机制不走 Provider 注册，要么第一个实现还没落地。
+  3. **表内零直连消费方（`C = 0`）**：不代表没人用，需看数据出口——例如 `ctx.sessionTelemetry` 直接往进程外发遥测，`ctx.sessionTitle` 通过会话投影间接消费。
 
-| seam | P | C | 标注 |
-|---|---|---|---|
-| `ctx.approval` | 0 | 3 | 零 Provider（answerer 走 waterfall，不作 Provider）；消费在工具与 ACP 面 |
-| `ctx.authorization` | 0 | 1 | 零 Provider（凭据获取流，晚于基线） |
-| `ctx.userQuestions` | 0 | 1 | 零 Provider（实现者在 UI 前端） |
-| `ctx.sessionPersistence` | 1 | 7 | 单 Provider（`4553c9d957` 移除 sqlite 后端后只剩 jsonl），7 个消费方 |
-| `ctx.workingDirectory` | 1 | 6 | 0011 新增：单 Session 执行目录投影；Provider 与 Definition 同包，消费方是 fs/bash/pwsh/working-directory 四个工具、subagent 与 SDK server |
-| `ctx.jobs` | 1 | 5 | 单 Provider，5 个消费方（bash/pwsh/terminal 三个工具与 job 工具、job Remote；0011 起 `tool-subagent` 不再直接消费） |
-| `ctx.attachments` | 1 | 4 | 单 Provider，4 个消费方（含 Remote 会话控制器与两个 llm 适配器） |
-| `ctx.credentials` | 1 | 3 | 配置面（`api-settings-controller` 的 Remote 投影 + 两个 llm 适配器） |
-| `ctx.deepseekAccount` | 1 | 2 | 单 Provider（0008 复核新增：deepseek-account 账号登录面，替代裸 API key） |
-| `ctx.sessionQuery` | 1 | 2 | 单后端（sqlite） |
-| `ctx.workflowEngine` | 1 | 2 | 单引擎（worker-thread） |
-| `ctx.worktrees` | 1 | 1 | 0011 新增：唯一实现是 experimental 的 `worktree`，且 Provider 与 Consumer 同族 |
-| `ctx.mcpResources` | 1 | 1 | 单 Provider（0008 复核新增：mcp-resources 按需发现/读取 MCP resources） |
-| `ctx.fileReferences` | 1 | 1 | 单 Provider，消费方 `api-session-controller`（Remote 面） |
-| `ctx.terminals` | 1 | 1 | 单后端（bash PTY） |
-| `ctx.compaction` | 1 | 1 | **自消费：P 与 C 同一包** |
-| `ctx.speechToText` | 1 | 1 | 单 Provider（0008 复核新增：voice-input 语音转写族） |
-| `ctx.spillStore` | 1 | 1 | 单后端（local） |
-| `ctx.lsp` | 1 | 1 | 单后端（stdio host） |
-| `ctx.sessionTelemetry` | 1 | 0 | 单后端，输出离开进程 |
-| `ctx.subprocess` | 2 | 7 | 组合件：本地/ssh，7 个消费方全在过程内 |
-| `ctx.computerUse` | 2 | 2 | 双 Provider（0008 复核新增：CUA driver 的 mcp 与 native 两后端） |
-| `ctx.sandbox` | 2 | 2 | 组合件（bash/terminal 的 confine 前包装） |
-| `ctx.ptcRuntime` | 2 | 2 | 双 Provider（0008 复核新增：接替退役的 `ctx.codeRuntime`，PTC 命名重构） |
-| `ctx.deepseekLlmApiExtensions` | 2 | 1 | 原文整行漏收的 seam（OLD 时已是 2/1） |
-| `ctx.storage` | 2 | 1 | 可替换（replaceable，json/sqlite 并列注册） |
-| `ctx.directoryPicker` | 2 | 1 | GUI-only seam（native/browse） |
-| `ctx.sessionTitle` | 2 | 0 | 双 provider，经 projection 间接消费 |
-| `ctx.shell` | 3 | 4 | 可替换（replaceable，bash-local/sandbox、pwsh-local） |
-| `ctx.browserUse` | 3 | 3 | 三 Provider（0008 复核新增：stagehand-native / chrome-devtools-mcp / playwright-mcp 驱动） |
-| `ctx.llm` | 3 | 2 | 含 1 个测试支持包（见下） |
-| `ctx.fs` | 3 | 1 | 可替换（replaceable，local/sandbox/ssh），消费 1 面 |
-| `ctx.skills` | 4 | 1 | 四 provider 但**语义不可互换**：`skill-filesystem` 是通用加载器，`skill-badge` 只提供一条官方 badge 技能且已从 base 的 `disabled: true` 行改为可选 bundle `badge-skill-bundle`（0011 起），`skill-office` 提供 office 文档技能，`sandbox-windows-acl` 只提供一条 Windows ACL 诊断技能（0009 复核新增） |
-| `ctx.web` | 5 | 1 | 四家搜索 + 一 fetch：`web-search-exa`/`-perplexity`/`-deepseek` 三同构，`web-deepseek-api` 一个包注册 DeepSeek Search 与 Fetch 两个 provider（0011 起），`web-fetch-http` 兜底（见下） |
-| `ctx.subagents` | 6 | 3 | 数量最多，语义只有三种位置 |
+---
 
-## 可替换率 = 42.9%，量"能不能换"，不量"换出差异"
+## 二、35 条 seam 全景：按成熟度分四档看
 
-15 / 35 = **42.9%**（P≥2 的 seam 占全部 seam 的比例）。它只回答一个问题：某条缝今天有没有第二个真实 Provider 可以无痛替换。至于"换掉之后有没有实质差异"，是另一个问题，没有干净的单数答案——下面四笔账说明的就是这个，它们不改变"能换"的分子，只改变"换了值不值"的解读：
+下面按生成表的 `implementations`（记为 `P`）和 `direct consumers`（记为 `C`）把 35 条 seam 分成四档，一眼就能看出官方把精力砸在了哪里。
 
-- `ctx.llm` 3 个里 `llm-replay` 是测试支持包——删掉它仍有 deepseek / pi-ai 两个生产 Provider，能换，但生产选择不是 3 个；
-- `ctx.web` 5 个是四个搜索 API + 一个 fetch，同一失效模式——能换，但换不出差异化；
-- `ctx.subagents` 6 个按执行位置只有三类语义（进程内 spawn / fork、进程外 ACP / Codex / Claude Code、SDK 驱动）——能换，但 6 不等于 6 种能力；
-- `ctx.shell` 3 个里 pwsh 与 bash 是不同语族，不是同一功能的可互换替代——这条的"商品化"要单独打折。
+### 1. 多实现已跑通（`P ≥ 2`，共 15 条）
 
-**"能换"（42.9%）与"换了有差异"是两件事；后者明显更低，且不该被压成一个拿来当标题的百分数。** 分布同样重要：多 Provider 集中在执行世界、持久化与 subagents——最难抄的基础设施；**单 Provider 区才是产品差异所在。"饱和"与"值钱"不重合**：饱和区是竞争者最该重造的，单 Provider 区才是官方该投资的。
+| 领域 | seam（`P / C`） | 实际构成说明 |
+|---|---|---|
+| **执行环境底座** | `ctx.shell`（3/4）、`ctx.fs`（3/1）、`ctx.subprocess`（2/7）、`ctx.sandbox`（2/2） | 本地直连、同环境进程沙箱（`sandbox-local`）与远程 SSH（`*-ssh`）并存；消费方无需关心底层在哪跑 |
+| **子智能体与执行引擎** | `ctx.subagents`（6/3）、`ctx.ptcRuntime`（2/2） | 子智能体覆盖进程内 spawn/fork、进程外 ACP/Codex/Claude Code 与 SDK 驱动；PTC 运行时支持两套后端 |
+| **模型与请求扩展** | `ctx.llm`（3/2）、`ctx.deepseekLlmApiExtensions`（2/1） | `llm-deepseek` + 多厂商路由 `llm-pi-ai` + 测试回放 `llm-replay`；官方 API 扩展支持多插件独立挂顶层字段 |
+| **外部感知与技能** | `ctx.web`（5/1）、`ctx.skills`（4/1）、`ctx.browserUse`（3/3）、`ctx.computerUse`（2/2） | Web 含多家搜索与抓取；浏览器驱动含 Stagehand / Chrome DevTools MCP / Playwright MCP；桌面操控含 MCP 与原生驱动 |
+| **存储与桌面交互** | `ctx.storage`（2/1）、`ctx.directoryPicker`（2/1）、`ctx.sessionTitle`（2/0） | 非会话存储支持 JSON 与 SQLite；目录选择器支持系统原生弹窗与网页内浏览（方便自动化测试） |
 
-## 被数字推翻的三个印象
+### 2. 单实现挑大梁的核心底座（`P = 1, C ≥ 2`，共 8 条）
 
-1. **审批不是"完整 seam 所以饱和"。** 生成表 Provider 列为空（0），direct consumer 3 个（`tools`、`tool-bash`、`acp`）——answerer 是 `approval/request` waterfall 的 listener（ACP 桥只为它自己的 agent 作答），GUI 的交互 answerer 经转发白名单里的 `approval/request` waterfall 到达浏览器（`packages/client/ui-approval/src/client/index.ts:104` 的 `ctx.remote.$on('approval/request', …)`，白名单条目见 `packages/api/remotes/src/remote-events.ts:28`），两者都不注册成 Provider。运行时语义确实完备——`asked/decided` 成对审计、缺 answerer fail-closed、取消语义与审计 id 认领（见 [`user-approval` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/interaction/user-approval/README.md) 与 [`Remote 转发白名单`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/api/remotes/src/remote-events.ts)）——但人类形状只有 diff/文字问答，无表单、多选项、确认单渲染；且 README 明说 sibling listener 的先后顺序不是策略优先级机制，**多方审批编排（谁先看、谁能否决）今天不支持**。真正的缺口是交互形状与多方治理，不是"地基"。
-2. **组织/团队编排不是空白。** `ctx.agentTeams`（core）+ tool 已进树（[note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/feature/2026-08-05-agent-teams.md)），晚于本文写作基线；第三方目录更早出现了该方向的项目。把它列进空白区是过期读数——上游每次同步后，空白判断必须随产品源码变更重核。
-3. **web 不算饱和。** 5 个 Provider 里四个搜索同构、Consumer 只有 `tool-web` 一个面、共用同一失效模式（vendor API 可用性）。准确评级是"商品化但无差异化"，不是"做完了"。
+这组虽然只有一个默认实现，但被多个模块重度依赖，接口已经非常稳定：
 
-## 饱和区：再造它必输的四个组合事实
+- **会话与目录核心**：`ctx.sessionPersistence`（1/7，移除早期 SQLite 后统一为 JSONL 日志）、`ctx.workingDirectory`（1/6，统一管理会话有效工作目录，供 fs/bash/pwsh/subagent/SDK 消费）、`ctx.sessionQuery`（1/2，SQLite 全文检索与浏览索引）。
+- **任务、附件与账号**：`ctx.jobs`（1/5，后台任务管理）、`ctx.attachments`（1/4，二进制附件）、`ctx.credentials`（1/3，凭据管理）、`ctx.deepseekAccount`（1/2，官方账号登录态）、`ctx.workflowEngine`（1/2，基于 worker thread 的编排引擎）。
 
-> 下面四项论证"竞争者要重造什么"，会带进 `sandboxPolicy`、`sessionProjections`、`ctx.agents` spine 几条 **core** 服务作为 seam 的相邻依赖——它们不计入 35 条 seam 的率，只说明重造这四块的门槛。
+### 3. 单点或演进中的单实现（`P = 1, C ≤ 1`，共 9 条）
 
-- **执行世界组合**（shell 3/4 + fs 3/1 + subprocess 2/7 + sandbox + sandboxPolicy）：resolve → confine → spawn 三层，本地 confinement 与 ssh 远程世界共存于同一套 Consumer（[`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md)、[`docs/subsystems/shell.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/shell.md)）。再造一个 shell 家族等于重做它的全部消费方。
-- **会话底座**（persistence 1/7 + query + projection + title）：竞争者要抄的不是某个存储后端，是 `SESSION_FORMAT_VERSION` 版本纪律、双 SDK 同 PR 投影、冷读阶梯（[`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md)）。
-- **LLM 注册面**：三 wire 协议 + pi-ai 的 route-per-provider 配置，"换 vendor 是配置不是代码"已在多 vendor 接入实践中实证。再造是重写适配层，边际为零。
-- **五入口复用 spine**：CLI / Web / Desktop / ACP / JSON-RPC 共用 `ctx.agents`，ACP 与 SDK 只是投影取舍不同（[`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 的 Application launch 节）。
+- **稳定单点能力**：`ctx.fileReferences`（1/1）、`ctx.terminals`（1/1，bash PTY）、`ctx.spillStore`（1/1，超长输出落盘）、`ctx.lsp`（1/1，语言服务器宿主）、`ctx.mcpResources`（1/1，按需发现与读取 MCP 资源）、`ctx.speechToText`（1/1，语音转写）。
+- **尚在演进或特殊出口**：`ctx.worktrees`（1/1，目前仅 experimental 的 `worktree` 包自产自销）、`ctx.compaction`（1/1，自消费）、`ctx.sessionTelemetry`（1/0，进程外遥测出口）。
 
-## 缺口区：按信号强度排序的 backlog，每行写明缺什么
+### 4. 零 Provider 特殊位（`P = 0`，共 3 条）
 
-1. [缺 Definition+Provider+Consumer] **渠道/通知——三个角色全都缺，且碎片化已经发生。** 全仓库无 IM/email channel 包；`schedule` 明说 session-local delivery only（[README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/schedule/schedule/README.md)）。外部实测：第三方为同一能力造了 **≥8 个互不兼容的实现**——三种 Telegram 桥、微信（含"聊天/监控/审批"）、飞书、9 渠道大杂烩 `dsh-im`，装法还不统一（`dsh plugin add` 与 `npx github:… install` 并存）。**无官方 Definition 的代价不是没人做，是市场各发明一遍互不互换的协议**（证据见 [research.md](./research.md)），这是全部缺口中信号最强、且已出现负外部性的一条。
-2. [缺 Definition（整条 seam）] **长期记忆——官方 seam 为零，却是第三方最热的品类。** `ctx` 服务里没有面向模型的记忆 seam（只有 storage/spill/sessionQuery 等底层）；外部互竞记忆产品至少 5 个（EverOS、MemOS、ReMe、memsearch、OpenViking），外加上下文看板。最热的第三方品类恰好长在官方最空的缝上：要么官方立 Definition 收敛，要么默认让生态各自为政。
-3. [缺 Consumer] **审批的人类形状与多方编排——缺 Consumer 面。** 运行时完备（上文），生成表列的 3 个 direct consumer（`tools`、`tool-bash`、`acp`）都在工具执行与自动化桥面，缺的是表单/多选项/确认单渲染器与 answerer 顺序语义；第三方已在用聊天做审批（research.md 渠道条），形状需求正在被市场自行定义。
-4. [不缺角色，缺转正 → **0008 复核：本跨度内已转正**] **E2B 已转正为 `packages/sandbox/` 生产组**（confinement seam + Linux/macOS/Windows 后端 + 共享 policy resolver + Windows ACL 后端四包；策略 `read-only`/`workspace-write`/`danger-full-access` 加用户批准的一次性提权升级，[组 README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/sandbox/README.md)）。上游只做了 same-world 本地 containment，容器/microVM/远程执行明确不注册进此 seam——生命周期、模板、部署平台仍留给生态。外网读数（E2B $21M、Daytona $24M 融资，市场把沙箱当逐项比价商品）保留为历史：seam 保持供应商中立的判断不变，本条从「缺口」改记为「可替换 Provider 成熟样本」。（[证据](./research.md)）
-5. [缺 Provider＋持久层] **workflow 持久化——缺第二 Provider 与持久层。** P=1（worker-thread），无跨会话可恢复的流程状态；而 Temporal 围绕 durable execution 两年两轮融资（$1.72B 估值 → $300M Series D, 2026-02）——这个缺口外部已按独立生意在下注（[证据](./research.md)）。
-6. [缺 Provider（host 侧）] **MCP host 侧——整包缺，但"宿主"已被中性化。** 本跨度内 `packages/mcp/` 已成组并新增 [`mcp-resources`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/mcp/mcp-resources/README.md)（按需发现/读取 MCP resources），但面向模型的 tools 宿主侧仍只有 [`mcp-client`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/mcp/mcp-client/README.md)（把外部 server 工具以 `mcp__…` 挂进 `ctx.tools`）。MCP 已捐赠给 Linux Foundation 治理的 Agentic AI Foundation，~10k server 且 tool-poisoning 实锤——真实差一点不在"宿主"：**经 `ctx.tools` 注册的 MCP 工具自动落在 model-visible ⟺ logged 不变式下，第三方工具免费获得审计**，这是纯客户端给不了的（[证据](./research.md)）。
-7. [缺 Consumer] **反馈回路——缺 Consumer。** `messageFeedback` 的反馈不回流进对话，评价→偏好→prompt 治理缺最后一段。
-8. [缺 Provider] **authorization 第一个 Provider。** 0 Provider 的新 seam（凭据获取流），Definition 尚未被任何实现压过。
+- `ctx.approval`（0/3）：**不是没实现，而是机制特殊**——审批应答方（Web UI 的审批卡片、ACP 桥）是通过监听 `approval/request` waterfall 响应的，不走常规 Provider 注册。
+- `ctx.userQuestions`（0/1）：提问界面的真实渲染与作答落在前端客户端。
+- `ctx.authorization`（0/1）：面向外部服务的授权获取流，目前刚立接口，还没有第一个正式 Provider。
 
-## 诚实边界
+---
 
-1. **"一切皆插件"不递归到底**：Cordis 根 Context、Boot、Loader 先于插件树存在，核心下沉成组合内核而不是消失。
-2. **插件化 ≠ 安全**：`plugin_manager` 安装与 runner 挂载是 opt-in、bash-equivalent trust，同进程代码挡不住直接 import Node API；0.1.7 线起模型侧的 `cordis_define`/`cordis_run` 已退役，持久安装收进 danger 权限门控的 `plugin_manager`。
-3. **model-visible ⟺ logged 是硬税**：任何让模型看见的新能力都要配日志重建规则与新的 `SessionEventMap` 成员（[`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md)）。
-4. **core 不是天花板**：58 个 core 里有两类——单一实现的 core 服务（如 `tokenMeter`、`toolResultPruner`：都是公开 ctx 键，唯一消费方是 `compaction-basic`，见 `docs/capability-seams.md:632-633`）与"还没人要求换"的候补 seam。生成器不区分这两类，只能按 role 列与各自 README 自述读；饱和/缺口判断只对 35 条 seam 有效。
+## 三、别被 42.9% 骗了：“能换”和“换了有差异”是两码事
 
-## 度量：数字怎么来的，下次怎么自动来
+`15 / 35 = 42.9%` 只说明这 15 条接缝在架构上验证过“插拔替换不断裂”，但如果问“换个 Provider 能不能带来产品体验上的实质差异”，水分必须挤掉：
 
-P/C 从生成表 implementations / direct consumers 两列按逗号切分计数，即得 42.9%、17 条单 Provider、3 条零 Provider（`authorization`、`userQuestions`、`approval`）。四个已知坑：provider 计数会掺进测试包与同构包（所以 42.9% 只能读作"至少能换"的下界，不能读作"已商品化"）；consumer 面数需要按消费包所属面二次分类，表列给不出；direct consumers 列为空不代表没人用（`sessionTelemetry` 的输出离开进程、`sessionTitle` 经 projection 被间接消费）；行集随上游漂移（`agentTeams`、`authorization` 是晚于写作基线的两行实例，0011 又新增 `workingDirectory`、`worktrees` 两行，`deepseekLlmApiExtensions` 则是原文整行漏收的一条 seam）。建议方向：把 provider 角色与 consumer 面分类并入 [`scripts/gen-doc-graphs.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/gen-doc-graphs.ts) 的输出闸门，让"可替换率"变成每次 rc 同步自动重算的一行数字，而不是一次性手工点数。
+1. **`ctx.llm` 的 3 个实现里含 1 个测试桩**：`llm-replay` 是给无密钥录制回放测试用的（见 [FAQ 29](../29_keyless-meaning-boundaries/answer.md)），真正面向生产的只有官方 `llm-deepseek` 和多模型聚合器 `llm-pi-ai`。
+2. **`ctx.web` 的 5 个实现高度同质**：Exa、Perplexity、DeepSeek 搜索加 HTTP 抓取，喂给同一个 `tool-web`，连挂掉的原因都一样（上游 API 超时或限流）。
+3. **`ctx.subagents` 的 6 个实现按运行位置只有三类**：本进程内派生（spawn/fork）、外部 CLI 代理进程（ACP / Claude Code / Codex）、SDK 宿主驱动。
+4. **`ctx.skills` 的 4 个实现并不是可互换替代品**：`skill-filesystem` 是通用目录加载器，而 `skill-office`、`skill-badge`、`sandbox-windows-acl` 只是借同一个注册口塞入各自的内置技能包。`ctx.shell` 里的 `bash` 和 `pwsh` 也是跨操作系统语族，不是同生态竞品。
 
-> **本页的指标不是 DSH 的字段。** 供给侧 / 需求侧、可替换率、饱和区 / 缺口区都是本篇按 `docs/capability-seams.md` 的 implementations 与 direct consumers 两列算出来的说法；repo 没有这两个指标，也没有这四个区。
+反过来看，这也揭示了一个很关键的判断：**多 Provider 区大多是基础设施（怎么跑命令、怎么调模型），而真正拉开产品差距的能力往往还在单 Provider 甚至零 seam 区。**
+
+---
+
+## 四、三个容易看走眼的直觉
+
+1. **“审批已经有完备机制了，所以不用管”——错在一半。**
+   `ctx.approval` 的底座确实很硬：请求与决定成对写审计日志、没挂应答器时自动 fail-closed 拒绝、支持中断取消（见 [`user-approval` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/interaction/user-approval/README.md)）。但它的人机交互形态还很窄：前端只有命令确认和 diff 预览，没有结构化表单、多选确认单；而且多个监听器之间没有策略编排（比如“先自动风控、高危再转人工群批”）。缺的不是底层安全栅栏，而是上层交互与审批流。
+2. **“多智能体团队编排还是空白”——印象过期了。**
+   `ctx.agentTeams`（core）和配套工具早已合入仓库（目前作为可选实验能力演进，见 [Agent Teams 决策记录](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/feature/2026-08-05-agent-teams.md) 与 [FAQ 27](../27_runtime-orchestration-choice/answer.md)）。
+3. **“造个新执行沙箱或新 LLM 适配器很有技术含量”——在 DSH 里性价比最低。**
+   执行链路（`resolve → confine → spawn`）、会话日志格式（`SESSION_FORMAT_VERSION` + 双语 SDK 同步投影）、多入口共享 `ctx.agents` 以及 `llm-pi-ai` 配置式接模型，这四块是官方打磨最深的地方。在外面重造一套只会背上沉重的维护债。
+
+---
+
+## 五、真正的生态缺口排在哪？（按外部需求信号排序）
+
+把源码现状和外部社区自发造轮子的热度（详见 [`research.md`](./research.md)）对在一起，缺口优先级非常清晰：
+
+1. **IM 与消息通知渠道（缺整条 seam：定义 + 实现 + 消费全空）**
+   官方没有任何微信、飞书、Telegram、Slack 通道包，[`schedule`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/schedule/schedule/README.md) 也明确只做当前会话内投递。结果社区里已经冒出至少 8 套互不兼容的聊天桥和通知插件，安装方式五花八门。没有官方统一接口的代价不是没人做，而是生态严重碎片化。
+2. **面向模型的长期记忆（缺整条 seam）**
+   官方只有底层键值存储（`storage`）、超长输出暂存（`spillStore`）和历史会话检索（`sessionQuery`），没有“跨会话提炼与召回用户记忆”的标准 seam；而外部社区最扎堆的恰恰是五花八门的记忆插件。
+3. **审批的结构化表单与多渠道/多方协同（缺上层消费与编排）**
+   社区里的微信桥已经在自己做“手机聊天批权限”了。把审批接进外部 IM、支持表单级确认与审批链，是紧挨着渠道缺口的刚需。
+4. **跨会话可恢复的持久工作流（`ctx.workflowEngine` 缺持久化后端）**
+   现有 `workflowEngine` 跑在内存 worker 线程里，进程重启就没法断点续跑长周期流程。
+5. **MCP 的治理与安全审计放大（有 `mcp-client` 和 `mcp-resources`，缺安全增强层）**
+   MCP 协议本身已经中立化，但外部 MCP server 质量参差不齐甚至存在提示词投毒风险。DSH 的天然优势是所有通过 `mcp-client` 挂进 `ctx.tools` 的外部工具，都会自动受 `model-visible ⟺ logged` 约束留痕——顺着这个底座做工具权限收口与审计视图，比单纯做个“MCP 连接器”更有价值。
+6. **会话评价回流与外部 OAuth 授权流**
+   `messageFeedback` 目前只收点赞点踩、还没闭环回流到偏好治理；`ctx.authorization` 的首个正式 Provider 也仍待落地。
+
+---
+
+## 六、四条诚实边界
+
+看“一切皆插件”时，别把下面四件事想当然：
+
+- **启动内核不在插件树里**：Cordis 根 `Context`、`Loader` 和 `app-boot` 先于所有插件存在，插件化是长在这个微内核之上的。
+- **装插件等于给本地执行权限**：持久安装插件走 `danger` 权限门控的 `plugin_manager`，插件跟宿主跑在同一个 Node 进程里，不是隔离沙箱。
+- **凡是给模型看的东西都要交“日志税”**：DSH 严守 `model-visible ⟺ logged`，新增任何模型可见输入都必须定义对应的会话事件并支持从日志完整重建（见 [`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md)）。
+- **58 个 `core` 服务不是永远不能换**：里面既像 `tokenMeter` 这种紧耦合内部组件，也有单纯因为“目前还没出现第二个实现需求”而暂居 `core` 的候补能力。
+
+---
+
+## 继续阅读
+
+| 你想了解什么 | 去哪篇看 |
+|---|---|
+| 动手写插件前，怎么查清仓库里已有的服务、工具和未默认开启的包？ | [`01-finding-existing-capabilities.md`](./01-finding-existing-capabilities.md) |
+| 外部社区的插件目录、渠道桥碎片化、记忆插件和行业融资数据从哪来的？ | [`research.md`](./research.md) |
+
+> 注：文中的“可替换率”“饱和区 / 缺口区”是本篇基于 [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md) 生成表做的统计归纳，不是 DSH 源码里的字段名。核验状态见 [核验基线登记](../00-baseline.md)。

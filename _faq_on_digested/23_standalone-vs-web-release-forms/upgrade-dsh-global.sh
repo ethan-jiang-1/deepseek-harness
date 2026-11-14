@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # upgrade-dsh-global.sh — 全局安装的 @deepseek-ai/dsh CLI 安全升级脚本。
 #
-# FAQ:_faq_on_digested/23_standalone-vs-web-release-forms/07_global-cli-upgrade.md(事实链、检查清单与回滚说明都在那里)。
+# FAQ:_faq_on_digested/23_standalone-vs-web-release-forms/03-isolated-lab-and-cli-upgrade.md(事实链、检查清单与回滚说明都在那里)。
 #
 # 用法:
 #   bash upgrade-dsh-global.sh              # 交互模式:每个关键动作逐项确认
@@ -228,7 +228,7 @@ else
 	err "在 npm/pnpm 全局目录下都没找到 ${PKG}。"
 	DSH_BIN="$(command -v dsh 2>/dev/null || true)"
 	if [ -n "$DSH_BIN" ]; then
-		err "但 PATH 里有 dsh:$DSH_BIN —— 安装方式可能变了,先回来更新 FAQ 23/07。"
+		err "但 PATH 里有 dsh:$DSH_BIN —— 安装方式可能变了,先回来更新 FAQ 23/03。"
 	fi
 	exit 1
 fi
@@ -374,7 +374,7 @@ else
 		fi
 	else
 		if ! pnpm add -g "$PKG@$TAG"; then
-			err 'pnpm add 失败,请把上面的报错贴给 FAQ 23/07 的维护者。'
+			err 'pnpm add 失败,请把上面的报错贴给 FAQ 23/03 的维护者。'
 			exit 1
 		fi
 	fi

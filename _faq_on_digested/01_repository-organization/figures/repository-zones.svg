@@ -4,7 +4,7 @@
   </defs>
   <rect width="1080" height="700" rx="8" fill="#fafafa"/>
   <text x="540" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#111827">DSH 仓库顶层目录按职责与发布边界分区</text>
-  <text x="540" y="54" text-anchor="middle" font-size="11" fill="#64748b">这些区域不是一条调用栈；它们分别管理框架、产品、装配、发行、工程和研究。</text>
+  <text x="540" y="54" text-anchor="middle" font-size="11" fill="#64748b">这些区域不是一条调用栈；它们分别管理框架底座、产品能力、装配入口、跨语言发行与工程资产。</text>
 
   <rect x="410" y="76" width="260" height="58" rx="10" fill="#1e293b"/>
   <text x="540" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">deepseek-harness/</text>
@@ -57,11 +57,11 @@
   <text x="60" y="618" fill="#64748b">patches/ 放 pnpm patchedDependencies 的补丁，vendored 源码仍在 vendor/。</text>
 
   <rect x="575" y="492" width="470" height="142" rx="12" fill="#fefce8" stroke="#fde047"/>
-  <text x="600" y="520" font-size="14" font-weight="700" fill="#854d0e">研究覆盖层 · ethan 分支</text>
-  <text x="600" y="550" font-weight="700" fill="#854d0e">_digested/ · _faq_on_digested/</text>
-  <text x="600" y="578" fill="#713f12">源码消化与跨专题 FAQ。</text>
-  <text x="600" y="598" fill="#a16207">非 pnpm workspace、非产品 runtime、非官方文档站来源。</text>
-  <text x="600" y="618" fill="#a16207">产品基线变化后，结论必须重新对照源码核验。</text>
+  <text x="600" y="520" font-size="14" font-weight="700" fill="#854d0e">快照与可选配置资产</text>
+  <text x="600" y="550" font-weight="700" fill="#854d0e">snapshots/ · apps/cli/config/examples/</text>
+  <text x="600" y="578" fill="#713f12">录制会话回放快照（session JSONL）与随安装包出货的可选配置层。</text>
+  <text x="600" y="598" fill="#a16207">快照专收会话驱动的真实组装用例；可选 overlay 通过 dsh --patch 显式挂载。</text>
+  <text x="600" y="618" fill="#a16207">两者都不承载可复用业务逻辑，通用能力一律抽回 packages/。</text>
 
   <rect x="35" y="654" width="1010" height="28" rx="7" fill="#fff" stroke="#cbd5e1"/>
   <text x="540" y="673" text-anchor="middle" font-size="11" fill="#475569">顶层目录先判断“谁维护、怎样发布”；运行时调用关系再看 package graph 与 Cordis composition。</text>

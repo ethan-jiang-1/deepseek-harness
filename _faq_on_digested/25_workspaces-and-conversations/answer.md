@@ -1,113 +1,93 @@
-# Answer 25 · 左侧那一列不是目录树，是一份登记簿的投影
+# Answer 25 · Workspace 不是物理目录锁，而是 `$DSH_HOME` 里的登记簿：会话靠显式挂接归组，Ungrouped 是前端做减法
 
-## 一分钟结论
+## 一句话结论
 
-**Workspace 是一条 Host 侧的持久记录，不是进程的启动目录。**
+想在 30 秒内理顺左侧边栏和工作目录的关系，记住三条核心机制就够了：
 
-一条记录只有四样东西：生成的 uuid、`fs.realpath` 规范化后的绝对路径、显示标题、一个有序的会话 id 数组（账户）。它存在 `$DSH_HOME/storages/workspace.json`，随 home 走，不随进程走；模型完全看不见它（不注册工具、不注入提示词、不写会话事件）。
+1. **`Workspace` 不是磁盘上的文件夹，也不是启动命令时的目录，而是 `$DSH_HOME/storages/workspace.json` 里的一条实体登记记录**：它拥有独立的稳定 UUID、显示标题、经 `fs.realpath` 规范化后的目录路径，以及一份有序的**已登记会话列表（`sessionIds`）**。模型对它完全无感知——不注册工具、不注入提示词、不写会话事件，零上下文开销。
+2. **四个经常被混为一谈的“目录与归属”各管一摊**：启动进程时的 `process.cwd()` 只做缺省兜底；会话创建时写死在日志头的 `SessionHeader.cwd` 锁定**原始项目与沙箱可写边界（`sandboxPolicy`）**；会话内可随 `working_directory` 工具切换的 `ctx.workingDirectory` 决定**当前轮工具执行的有效工作目录**；而左侧边栏分组只认 **`Workspace` 记录里的 `sessionIds` 名册**。
+3. **会话靠显式 `attach` 挂进工作区，`Ungrouped` 是前端实时算出来的差集**：目录路径一致只是入组校验的门票，只有真正调用过 `attachSession` 的会话才会进入 `sessionIds` 名册；后端根本不存在叫 `Ungrouped` 的分组，它是客户端用“侧栏可见主会话 − 所有活跃 Workspace 已认领的会话”做减法得出的兜底视图。
 
-**会话进组靠登记，不靠目录匹配。**
+想看底层存储结构、入组校验与会话中途切目录的完整联动，跳读 [`01-workspace-entity-and-sidebar-grouping.md`](./01-workspace-entity-and-sidebar-grouping.md)；想排查与清理本机 `$DSH_HOME` 里的未分组残留，直接看 [`02-diagnosing-and-cleaning-up-sessions.md`](./02-diagnosing-and-cleaning-up-sessions.md)。
 
-创建时带 `workspaceId`，Host 才把 `workspace.path` 写成会话的 `header.cwd`，再调用 `attachSession` 前插进账户；分叉会继承父会话的工作区；首次启动会按目录把历史会话扫进来一次。除此之外没有第五道门——把会话建在同一个目录下、重启 Host、刷新页面，都不会让一个未登记的会话自动归队。入组校验只有一张门票：日志头的 cwd 经 realpath 后必须等于工作区路径。
+---
 
-**Ungrouped 不是 Host 的记录，是 Client 的一个减法。**
+## 一、先拆清四个“目录与归属”概念
 
-左侧把“不在任何 `workspace.sessionIds` 里的可见会话”收进末尾的未分组桶，桶的 key 是空字符串，标签来自字典，顺序只存在浏览器本地。它不是回收站，也没有工作区菜单；里面的会话照样能打开、继续、分叉、归档。
+很多困惑都源于把“目录”当成了同一个变量。在 DSH 运行时里，下面四样东西的生命周期和职责完全独立：
 
-**产品代码只在两个地方读取启动目录**：创建会话既没给 `workspaceId` 也没给 `cwd` 时的默认值（`process.cwd()`），以及沙箱 `workspaceRoot` 的兜底。headless/CLI 是另一条路径，直接把启动目录当作会话 cwd，不经过工作区层。它从未进入左侧分组的数据流。
+| 概念 | 权威持有者 | 什么时候确定 / 会不会变 | 真正决定什么 | 会影响左侧分组吗？ |
+|---|---|---|---|---|
+| **1. 进程启动目录**<br/>`process.cwd()` | 操作系统进程 | 启动 `dsh` 命令时确定；换目录重启进程才变 | CLI / headless 会话的默认目录；API 建会话既未传 `workspaceId` 也未传 `cwd` 时的兜底值 | **不会**（换目录启动 `dsh web`，侧栏不变） |
+| **2. 原始项目与沙箱根**<br/>`SessionHeader.cwd` + [`sandboxPolicy`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/sandbox/sandbox-policy/README.md) | 会话日志头 | **创建会话时写入，此后终身不可变** | `workspace-write` 模式下沙箱免审可写的目录边界；挂入 `Workspace` 时的路径校验门票；日志磁盘分区名 | **只当门票**（路径相同但没挂接，照样进 `Ungrouped`） |
+| **3. 会话当前有效工作目录**<br/>[`ctx.workingDirectory`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/working-directory.md) | 会话事件流投影 | 初始等于 `SessionHeader.cwd`；会话中途可调 `working_directory({ cd })` 切换并写事件 | 相对路径文件读写、新启动的子进程、文件补全、`AGENTS.md` 指令与技能发现的当前目录（已打开的持久终端保留原进程目录） | **不会**（中途 `cd` 到别的仓库，既不换分组也不扩沙箱） |
+| **4. 侧栏工作区登记项**<br/>[`Workspace`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/workspace.md)（`ctx.workspaceRegistry`） | `$DSH_HOME/storages/workspace.json` | 用户添加/删除工作区或首次启动引导时变更；随 `$DSH_HOME` 持久保存 | 左侧边栏有哪些项目节、节的排列顺序，以及哪些会话属于哪个节（`sessionIds` 名册） | **直接决定** |
 
-![四个根](./figures/01-four-roots.svg)
+> **补充两个环境坐标**：
+> - **`$DSH_HOME`（默认 `~/.dsh`）**：同时装着 `storages/workspace.json` 和 `sessions/` 日志。切换 `DSH_HOME` 环境变量，才会整套切换侧栏工作区与会话历史（多环境隔离做法见 [FAQ 23](../23_standalone-vs-web-release-forms/answer.md)）。
+> - **首次启动的 `default-workspace`**：当工作区注册表和全部会话历史都为空时，GUI 会自动在 `<Documents>/deepseek-harness/default-workspace` 下建目录并登记默认工作区（界面按当前语言显示为“默认工作区”），同样与启动目录无关。
 
-## 两个假想，对了一半
+![四个常被混为一谈的目录与归属概念](./figures/01-four-roots.svg)
 
-| 假想 | 实际 | 差在哪 |
-|---|---|---|
-| H1：Workspace = 启动时的工作目录根 | 工作区是 home 里的一条登记记录；启动目录只是“缺省工厂” | 记录可以指向任何已存在的目录，与本次进程从哪启动无关；同一 home 下可以有几十个工作区 |
-| H2：Conversation 与这个根强相关 | 与本会话**登记进去的那个工作区**强相关；与启动目录无关 | 关系是写进账户的引用，不是对目录的实时查询；同一目录的会话可以一半在组里、一半在 Ungrouped |
+---
 
-这套设计并不古老：设计记录写明，在 workspace 实体出现之前，侧栏分组就是按 cwd 推导的视觉分组；现在归属是 workspace 自己的事实。**你的直觉对应的是旧实现。**
+## 二、为什么有的会话进了 Workspace，有的掉进 Ungrouped？
 
-把这两句话再压一下：
+会话日志在磁盘上虽然按 `--<normalized-cwd>--` 分目录存放，但**那只是文件存储布局，侧栏分组绝不扫描目录或实时比对路径**。
 
-> **目录是入组时的门票，账户才是成员资格；启动目录连门票都不是，它只是没票时的默认目的地。**
+一个会话要想出现在某个 `Workspace` 下面，必须走过**四道显式挂接门**之一，通过路径一致性校验（`realpath(header.cwd) === workspace.path`）后把 ID 写进该工作区的 `sessionIds` 名册：
 
-## 四个“根”各管什么
+1. **在 GUI 某个工作区下点新建**：前端传 `workspaceId`，后端把 `workspace.path` 写入新会话的 `SessionHeader.cwd`，随即调用 `attachSession` 前插进名册。
+2. **从已归组的会话分叉（Fork）**：子会话继承源会话的 `cwd`，并自动挂入源会话（或 `subagent` 最近的已归组祖先）所在的工作区。
+3. **每个 `$DSH_HOME` 一生一次的历史 `bootstrap`**：仅在 `workspace.json` 尚未初始化（`initialized === false`）的第一次启动时，宿主读取全部现存会话头，按规范化 `cwd` 自动建组归档；一旦写下 `initialized: true`，**后续重启永远不再按目录自动补收**。
+4. **宿主侧扩展显式调用 API**：例如外部集成插件先 `workspaceRegistry.create(path)`，建好会话后再显式调用 `workspace.attachSession(sessionId)`。
 
-| 名字 | 谁写 | 管什么 | 会不会决定左侧分组 |
-|---|---|---|---|
-| `process.cwd()` | 启动进程的人 | 缺省 cwd；沙箱兜底；headless 会话的全部目录 | **不会** |
-| `workspace.path` | 工作区记录（创建时 realpath） | 工作区身份；新建会话的 cwd 来源 | **会**（节的身份与顺序） |
-| `SessionHeader.cwd` | 会话创建时写入，此后不可变 | 入组门票；工具执行目录；沙箱可写边界 | **会**（但只通过账户引用） |
-| `$DSH_HOME` | 环境变量或默认 `~/.dsh` | 存放 `workspace.json` 与会话日志；决定“哪一套侧栏” | **间接**（换 home = 换一整套） |
+凡是没走这四道门的可见主会话——最典型的就是 **`bootstrap` 完成之后用 CLI / headless、SDK 脚本或共用 `~/.dsh` 的插件测试直接传 `cwd` 建出来的会话**，或者**原本所属的 Workspace 被用户从侧栏移除了**——在前端 [`deriveGroups`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-workspace/src/client/tree.ts) 计算分组时不属于任何 `sessionIds` 名册，就会统一落入最底部的 `Ungrouped`。（至于 `subagent` 子会话、未选中的空白占位会话、以及无 `cwd` 的冷会话，在进入分组前就会被过滤掉，连 `Ungrouped` 都不会进。）
 
-首启还有一个容易误认的默认值：当 registry 为空、且没有任何会话时，GUI 会调用 `initializeDefault`，把默认工作区建在 `<Documents>/deepseek-harness/default-workspace`，标题是固定段名 `default-workspace`，显示时再按当前语言本地化。它同样不是启动目录。
+![左侧边栏的数据来源与客户端分组投影](./figures/02-sidebar-anatomy.svg)
 
-## 六篇分读
+---
 
-| # | 分篇 | 一句话 |
-|---|---|---|
-| 01 | [记录模型](./01-what-a-workspace-is.md) | 一条记录、一个账户、一个 registry；持久形状、启动顺序、三条不变量 |
-| 02 | [四个根](./02-where-the-root-enters.md) | 进程根 / 登记根 / 会话根 / 数据根各管什么；启动目录真正出现的位置 |
-| 03 | [入组路径](./03-how-a-session-joins.md) | 四道门与一张门票；bootstrap 只跑一次；删除与重加；目录丢失时谁还留着 |
-| 04 | [Ungrouped](./04-ungrouped.md) | 一个减法；四种来源；为什么插件测试最容易掉进去；本机实测 |
-| 05 | [左侧解剖](./05-sidebar-anatomy.md) | 节顺序、行顺序、置顶、归档、空白会话、三种分组方式，谁算的 |
-| 06 | [怎么处置](./06-what-to-do.md) | 看到 Ungrouped 该做什么；插件作者、测试作者、普通用户的三种做法 |
+## 三、五个最容易踩空的直觉误区
 
-## 本机实测（2026-10-27，静态读取 `$DSH_HOME`）
+1. **“换个目录敲 `dsh web`，左边的项目就会跟着切过去”**
+   不会。Web / Desktop 侧栏读的是 `$DSH_HOME/storages/workspace.json`，启动目录 `process.cwd()` 根本不进侧栏数据流。想把新目录加进侧栏，直接在界面里点添加工作区即可。
+2. **“让模型在对话里切到另一个目录，沙箱写权限和侧栏分组也会跟着搬家”**
+   都不会。调用 `working_directory({ cd })` 只更新该会话的 `ctx.workingDirectory`，方便后续工具用相对路径读写；但 `sandboxPolicy` 的 `workspace-write` 边界和 `Workspace` 名册校验始终锚定创建时的 `SessionHeader.cwd`，越出原项目写文件照样会触发沙箱拦截与审批。
+3. **“在侧栏删掉一个 Workspace，会把本地代码或历史聊天记录删掉”**
+   绝对不会。`workspaceRegistry.delete` 是纯非破坏性操作：只移除这条登记记录、排序位置和名册引用，磁盘文件夹、源码文件和 `sessions/` 日志原封不动，原名册里的会话立刻变成 `Ungrouped`。
+4. **“误删了 Workspace，把同一个文件夹重新加回来就能找回原来的分组”**
+   不会自动找回。重新添加同一路径会生成一条全新 UUID、空 `sessionIds` 的新工作区；之所以不在启动时“按目录自动收编旧会话”，正是为了防止用户刚删掉的工作区在下次重启时又幽灵般复活。
+5. **“`Ungrouped` 是报错提示或回收站，掉进去的会话不能用了”**
+   完全不是。`Ungrouped` 里的会话在打开、继续聊天、分叉、置顶、归档上与普通会话没有任何区别；唯一的差异是没有绑定的 `Workspace` 实体，因此顶栏不显示重命名/删除菜单和路径悬浮卡，点它的新建会话按钮也不会有反应。
 
-这些数字只描述这台机器，不是产品常量；列出来是为了让“目录一样、命运不同”可核对。
+---
 
-| 读数 | 值 | 口径 |
-|---|---|---|
-| 工作区记录 | 31 | `workspace.json` 的 `workspaces` 表 |
-| 已登记会话 id | 935 | 31 条记录的 `sessionIds` 并集 |
-| 磁盘会话目录 | 3864 | `sessions/--<cwd>--/<id>/` 计数 |
-| 其中 subagent 子会话 | 2890 | 日志头 `origin=subagent` 或有 `parentSession` |
-| 主会话 | 974 | 总数减 subagent |
-| 主会话中已登记 | 916 | 与账户并集求交 |
-| 主会话中未登记 | **58** | 916 + 58 = 974 |
-| cwd 分区 | 35 | `sessions/` 下的 `--…--` 目录数 |
-| 归档 / 置顶 | 67 / 0 | 全局集合 |
+## 四、四个高频细节快答
 
-58 条的分布：**31 条在 `/Users/bowhead/deepseek-harness`**（这个目录明明有工作区），25 条在 `ait_exam_4fun`（这个目录没有工作区），2 条在两个 worktree 目录。这一条分布本身就是证据：如果分组是“按目录实时匹配”，前 31 条不可能留在 Ungrouped。
-
-## 快问快答
-
-| 问题 | 短答 |
+| 日常疑问 | 一句话真相 |
 |---|---|
-| 换一个目录启动 `dsh web`，左侧会变吗？ | 不会。记录在 home 里；启动目录只影响“没有 workspaceId 的会话”的缺省 cwd。 |
-| 删掉工作区，会话会没吗？ | 不会。只删注册、顺序与账户；目录、文件、日志、正在跑的会话都不动。会话立刻变成 Ungrouped。 |
-| 再把同一目录加回来，旧会话会回来吗？ | 不会。那是一条新的空工作区；bootstrap 不会重跑。 |
-| 把目录挪走再挪回来，成员资格会恢复吗？ | 已登记的成员在目录彻底丢失（ENOENT）时保留账户；目录回来就照旧显示。未登记的新会话不能靠挪目录入组。 |
-| Ungrouped 里的会话能继续用吗？ | 能。能打开、继续、分叉、归档；只是没有工作区菜单，也不会出现在某个“＋”下。 |
-| 为什么 Ungrouped 没有“…”菜单和悬浮卡片？ | 它没有 backing Workspace：没有标题、路径、创建时间，也没有可重命名/删除的对象。 |
-| 为什么空白会话只看到一条？ | 未选中的空白会话被可见性规则挡掉，只保留当前那一行“新会话”占位。 |
-| 为什么 subagent 不算进 Ungrouped？ | 侧栏可见性直接排除 `origin=subagent`；它们再“没归属”也不会渲染。 |
-| 同一个 home 开两个窗口，分组会同步吗？ | 会。记录与增量来自 Host 的同一条 `workspace/follow` 流；展开状态、本地顺序、筛选各窗口各自保存。 |
-| 换 `DSH_HOME` 会怎样？ | 换一整套：workspace 记录、会话日志、归档与置顶全在 home 里。 |
-| 左侧一行是“Conversation”吗？ | 行是 Session；Conversation 是打开会话后的事件装配层，不参与分组。 |
-| 两个目录同名会怎样？ | 注册表允许重名；通过 API 重命名会以 `workspace/name-conflict` 拒绝，客户端也会先拦截。 |
-| 工作区记录会进模型上下文吗？ | 不会。零 token；模型只感知会话自己的 cwd（沙箱边界与工具目录）。 |
+| **左侧一行代表 `Conversation` 吗？** | 左侧每一行是一个 **Session（会话）**；`Conversation` 是点开某行后把事件流渲染成聊天气泡的前端视图层，不参与侧栏分组。 |
+| **为什么跑了几千个 `subagent` 却没把 `Ungrouped` 撑爆？** | 侧栏可见性过滤直接排除了 `origin === 'subagent'` 的子会话、未选中的空白占位会话以及无 `cwd` 的历史冷会话，它们压根不参与差集计算。 |
+| **同一个 `$DSH_HOME` 开两个浏览器窗口，侧栏同步吗？** | 工作区增删改排、新建会话、置顶和归档通过 `workspace/follow` 流**实时同步**；展开折叠、分组视图模式和会话手动排序则**各窗口独立保存**。 |
+| **两个不同路径的文件夹重名（比如都叫 `app`）能同时加吗？** | 可以。底层按 `realpath` 判唯一，默认取末段目录名做标题时允许同名；但通过界面重命名工作区时会拦截与现有工作区重名（`workspace/name-conflict`）。 |
 
-## 一个反直觉的结论
+---
 
-**“Ungrouped 越来越多”不是分组坏了，而是登记模型在按设计工作。**
+## 五、诚实边界
 
-bootstrap 只在 `initialized = false` 时运行一次；之后没有任何“按目录补收”的后台任务。用 headless、SDK、插件测试、自动化脚本创建的会话，只带 cwd、不带账户，于是必然落在 Ungrouped。这不是遗漏，而是“归属由显式动作产生”的另一面：删除工作区之所以安全（不删会话、不删文件），正是因为它只动账户，不动任何实体。
+- **无跨进程文件锁**：`workspace.json` 走单文件 JSON 存储后端，没有跨进程写锁；切勿在 Host 运行期间手改该文件，也不要让多个独立 Host 进程并发读写同一个 `$DSH_HOME`。
+- **界面暂不支持拖拽改归属或跨端同步会话手动顺序**：当前 GUI 会话右键菜单提供分叉、置顶、归档和复制 ID，尚未提供“将未分组会话移入某工作区”的按钮；在节内上下拖拽会话只修改当前浏览器本地保存的手动顺序（`dsh.workspace.view.v5`），不会调用宿主的 `insertSessionBefore` 改写服务端名册。
+- **外部删改物理目录延迟感知**：`ctx.workspaceRegistry` 不常驻监听文件系统事件；外部进程删掉目录后，已入组老会话在读取时遇到 `ENOENT` 会保留名册位置（防临时移动目录导致掉组），但禁止新会话继续挂入，目录缺失状态在下一次查询或刷新时体现。
 
-代价是：**账户不会自愈**。想修复，只有三条路——显式 attach、重新建一条工作区再逐条登记、或者换一个新 home 从干净状态开始（见 [06](./06-what-to-do.md)）。
+---
 
-## 证据与边界
+## 继续阅读
 
-- 记录模型与生命周期：`packages/workspace/workspace/src/index.ts`（启动 199、创建 238、首启 258、删除 585、bootstrap 650）、`src/entity.ts:110`（attach）、`src/spec.ts:57`（持久形状）。
-- 会话创建：`packages/api/session-controller/src/commands.ts:111`（create）、`:124`（cwd 来源）、`:140`（attach）、`:300` 附近（fork attach）；`src/index.ts:163`（`process.cwd()` 缺省）。
-- 沙箱边界：`packages/sandbox/sandbox-policy/src/index.ts:168`；组合默认值 `packages/bundle/base/cordis.patch.yml:247`。
-- 左侧推导：`packages/client/ui-workspace/src/client/tree.ts:18`（UNGROUPED_KEY）、`:244`（可见性）、`:334`（分组）、`:436`（deriveGroups）。
-- 列表可见性：`packages/api/session-controller/src/list.ts:144`。
-- 产品合同：`docs/subsystems/workspace.md`、`packages/workspace/workspace/README.md`、`packages/api/workspace-controller/README.md`。
+| 你想了解什么 | 去哪篇看 |
+|---|---|
+| `workspace.json` 存储结构、四道入组门与五步校验、前端 `deriveGroups` 投影细节，以及启动跟随与中途切目录的完整时序 | [`01-workspace-entity-and-sidebar-grouping.md`](./01-workspace-entity-and-sidebar-grouping.md) |
+| 为什么日常 `~/.dsh` 会攒出几十个工作区与未分组会话（含 31 工作区 / 58 未分组会话实测拆解），以及分角色安全清理手册 | [`02-diagnosing-and-cleaning-up-sessions.md`](./02-diagnosing-and-cleaning-up-sessions.md) |
+| 子系统文档、前后端源码路径、历史决策记录（Agent Notes）与只读排查脚本汇总 | [`reference.md`](./reference.md) |
 
-边界：
-
-- 本机读数是一次静态扫描（日志头 + `workspace.json`），不是 GUI 的实时行数；UI 还会隐藏未选中的空白会话，所以“58”是可解释的上界。
-- 没有对远程访问裁剪、Desktop 多进程共享 home 的并发写做实测；05 篇只说明可见性过滤存在。
-- 工作区记录没有跨进程协调（JSON 后端没有锁）；同时开两个写同一 home 的 Host 不在本篇保证范围内。
+> 核验状态见 [核验基线登记](../00-baseline.md)。

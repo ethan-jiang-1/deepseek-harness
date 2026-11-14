@@ -43,7 +43,7 @@
   <text x="56" y="404" font-size="11" font-weight="700" fill="#78350f">$DSH_HOME/profiles/desktop</text>
   <text x="56" y="424" font-size="11" fill="#78350f">壳侧 bundled pnpm 执行安装</text>
   <text x="56" y="444" font-size="11" fill="#78350f">壳独占 profile 写锁</text>
-  <text x="56" y="464" font-size="10.5" fill="#854d0e">多条途径（见 04 篇）</text>
+  <text x="56" y="464" font-size="10.5" fill="#854d0e">六种装法（见 02 篇）</text>
 
   <rect x="500" y="380" width="420" height="96" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
   <text x="516" y="404" font-size="11" font-weight="700" fill="#78350f">$DSH_HOME/profiles/web（或 headless…）</text>

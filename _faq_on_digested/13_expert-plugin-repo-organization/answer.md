@@ -1,61 +1,85 @@
-# Answer 13 · 领域专家 DSH 插件的 repo 组织：五个决策、四个方案、一条推荐路径
+# Answer 13 · 领域专家插件仓组织：五个核心决策、四种仓库摆法与推荐演进路线
 
-## 一句话答案
+## 一句话结论
 
-专家插件的 repo 不是"一个目录怎么摆"的问题，而是五个决策的组合：**入口形态**（DSH 已有答案：preset + bundle，不要新程序）、**包粒度**（单包起步）、**DSH 源码放哪**（pinned submodule 进 repo）、**UI 走哪层**（卡片起步是 generic fallback，专属工具卡走 `tool.call.toolview` 槽、独立面板走 `dsh.client.inject`）、**spec 流程**（先借 DSH 的 docs-as-contract 纪律）。四个 repo 方案是这五个决策的不同取值组合；推荐**方案 A（独立 repo + pinned DSH submodule）为长期形态**，方案 B 留给改内置卡片组件本体与上游贡献，方案 C 只作过渡，方案 D 是 A 的规模化后继。
+做一套“上下文干净可控、带专属工具与业务流、可插拔安装”的领域专家套件，**既不需要 fork DSH，也不需要另写 CLI 可执行入口**：
+
+- **交付物形态已经由 DSH 定好**：对外发一个声明了 `dsh.bundle.patch` 的 **Bundle 包**，在 `cordis.patch.yml` 里 `insert` 一条 `@deepseek-ai/dsh-agent-preset` 插件行（把专属工具、提示词和技能关进会话级预设），再附上你的业务插件行即可。
+- **仓库布局首选“方案 A（独立仓库 + `vendor/dsh` 钉死发布 tag 的 Git 子模块）”**：第 0 天**单包起步**即可。它既保住了独立仓库的自由发版节奏，又让仓内的 Coding Agent 能直接翻阅 `vendor/dsh` 里的文档、类型和源码，是在 `pre-stable` 阶段兼顾开发效率与上游跟进的最优解。只有在改内置前端组件本体或向上游提新 seam 时才进 **方案 B（DSH 主仓内）**；一两个简单小工具可用 **方案 C（纯 npm 依赖）** 过渡；等长出第二个共享底座的专家时再平滑扩成 **方案 D（多专家单体仓）**。
 
 ![五个决策与四个方案的映射](./figures/decision-map.svg)
 
-## 决策 1 · 入口形态：preset + bundle，DSH 已经回答了
+---
 
-专家需要的"自己的工具、提示词、技能、隔离上下文"恰好是 agent preset 的定义：一个 `agent.cordis.yml` 目录，会话挂上它就运行它的工具/prompt sections/skills，其他会话不受影响（`ctx.agentPresets`，见 `packages/preset/README.md`）。可插拔性由 bundle 层承担：package.json 的 `dsh` 字段声明 `dsh.bundle.patch`（+ Web UI 时 `dsh.client.inject`），装进任何 profile。**不需要新的可执行入口**——DSH 的 shipped 应用（web/headless/sdk/sdk-minimal/acp）加 Electron Desktop 共用 `ctx.agents` spine，CLI 只是共享启动器；专家是这棵树上的组合物，不是新入口。
+## 一、一张决策矩阵看清：五个决策 × 四种仓库布局
 
-这不是本 FAQ 的发明，是整个第三方生态的事实契约：[research.md](./research.md) 核实的四个第三方插件（dsh-im、dsh-market、dsh-routing-suite、chatnode-wechat）全部用 `dsh.bundle.patch: "./cordis.patch.yml"` + `dsh plugin add`，awesome 列表的收录规则也是这两条。DSH 也把这条路径教成了正式课程：`docs/cordis-tutorial/`（七讲 keyless 可运行，末讲把模型可调用工具接进真实 harness services）与 `docs/user/develop/`（basic → framework → practice）——专家 repo 的探索路由把它们标为作者侧第一入口（[dev-loop](./dev-loop.md) 第 0 阶段）。
+前三种方案（A / B / C）本质上按**“DSH 宿主源码怎么引”**切分，而方案 D 是方案 A 在**“同一仓库养多个专家”**时的规模化形态：
 
-## 决策 2 · 包粒度：单包起步，缝出现第二消费方再拆
+| 决策维度 | 方案 A：独立仓 + `vendor/dsh`（推荐主力） | 方案 B：DSH 主仓 `packages/` 内生 | 方案 C：纯外部 npm 依赖 | 方案 D：多专家 Marketplace 单体仓 |
+|---|---|---|---|---|
+| **1. 入口与交付形态** | 独立 Bundle（`dsh.bundle.patch` 含 `agent-preset` 行），用户 `dsh plugin add` 安装 | 主仓工作区子包，随主仓内置 Bundle 挂载，**外部无法单独 `plugin add`** | 同方案 A | 多个独立自包含 Bundle + 可选市场索引 `marketplace.json` |
+| **2. 包粒度** | **单包起步**；内部复杂后再按发布边界拆子包 | 按主仓领域组规则拆包（见 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md)） | 单包为主 | `packages/<expert>` 同构多包 + `packages/shared-kit` 共享底座 |
+| **3. DSH 源码与 Agent 视野** | 子模块钉 release tag；**Agent 在仓内直接查文档与源码** | 仓库即 DSH 本体；视野最全，但背负主仓合并税 | 不进仓，仅看 `.d.ts`；**Agent 仓内探索断裂** | 同方案 A（全仓共用一份 `vendor/dsh`） |
+| **4. UI 表达上限** | 默认兜底卡 → `dsh.client`（`toolview` 槽 / 设置页 / 会话视图） | **唯一可直接修改内置前端组件本体与壳层布局** | 同方案 A | 同方案 A（通用 UI 小组件可下沉到共享层） |
+| **5. 规范与门禁流** | 轻装借用 `AGENTS.md` + `docs/` + `notes/` + 真装冒烟；多人再叠提案流 | 强制走主仓全套门禁（单文件 100% 覆盖率、`doc-sync`、录制快照） | 同方案 A，但缺源码对照，**打包真装冒烟最关键** | 模板化脚手架 + 清单一致性校验 + 共享层变更全量冒烟 |
 
-DSH 的 capability seam 语法（Definition / Provider / Consumer）是**演化目标**不是起步要求。生态证据：90%+ 的第三方插件是单包 repo。DSH 自己的纪律也反对预防性拆分——拆分只在角色独立演化时发生；FAQ 08 的判据更直接：Provider 与唯一 Consumer 同包 = 还没有市场。方案 A/D 树里的 `flows / tools / pack` 三个薄包**不是 seam 角色拆分**：依据是发布边界——pack 是唯一发布载体（自包含），flows/tools 是它背后的内部实现包；树按三包画只是把发布边界摆显眼，第 0 天收成一个包（生态主流的单包形态）同样合法，树不是起跑的硬要求。seam 级拆分（立自己的 Definition、允许别的 Consumer）等某条缝真的有第二个消费方再做。
+---
 
-## 决策 3 · DSH 源码放哪：四个方案的分水岭
+## 二、为什么这五个决策不需要你从头发明？
 
-这是"coding agent 能不能在 repo 内探索 DSH"的开关，也是四个方案的根本差异。question 把"repo 能看到 DSH 本身"列为"也希望"，本篇把它升格为一级判据——dev-loop 的整条开发环（驱动 agent、设计四问、逐层调试）都压在这条能力上，下文对方案 C 的否决均按此判据：
+1. **入口是 Bundle + `agent-preset`，而不是新程序**
+   DSH 的 Web、Desktop、Headless、SDK 与 ACP 共用同一套 `ctx.agents` 运行时，架构规则明令禁止插件包声明 `bin` 可执行入口（见 [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#application-launch)）。
+   作者交付的是 **Bundle**（详见 [FAQ 24](../24_plugin-publishing-and-data/answer.md)）；会话级独立上下文靠在 patch 里插入 `@deepseek-ai/dsh-agent-preset` 行实现——只有选中该预设的会话才会加载你的工具、提示词与技能，其他会话完全不受影响（注意：早期扫描 `.agent-presets` 或 `agent.cordis.yml` 目录的做法早已退役，[`agent-preset-registry`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset-registry/README.md) 只认插件行声明）。
 
-| 方案 | DSH 源码 | 一句话 |
-|---|---|---|
-| [A 独立 repo + pinned submodule](./option-a-standalone-with-pinned-dsh.md) ✅推荐 | submodule 钉 tag，并入 pnpm workspace | agent 探索 + 可复现 + 独立发布；生态已有完整先例（dsh-desktop、antfu/skills、DSH 自己的 `vendor/`） |
-| [B 在 DSH monorepo 里长](./option-b-in-dsh-monorepo.md) | 就是 DSH repo | 借力最大（门禁/snapshot/client），但身份变成"改 DSH"；留作 UI prototype 与上游贡献通道 |
-| [C 纯外部依赖](./option-c-external-dependency-only.md) | 不进 repo | 最干净但"repo 能看到 DSH 本身"落空；只作过渡 |
-| [D marketplace 式 monorepo](./option-d-marketplace-monorepo.md) | 同 A | 一窝专家 + 共享骨架 + registry；A 的规模化后继，非竞争者 |
+2. **第 0 天单包起步，出现第二个消费方再拆包**
+   社区 90% 以上的第三方插件都是单包仓库。DSH 的 `Definition / Provider / Consumer` 三角色拆包是演进目标而非起跑门槛（见 [FAQ 08](../08_plugin-seam-maturity/answer.md)）——当某条服务只有你自己这一个包消费时，提前拆成三四个子包只会徒增构建与发版负担。
 
-![host 源码共存模型：三种开发形态（catalog-only 见 research.md 第三节）](./figures/coexistence-models.svg)
+3. **方案 A 比方案 B 和方案 C 更适合严肃外部团队**
+   DSH 公开接口仍处于 `pre-stable` 阶段。选方案 C（不放源码），Coding Agent 查不到 [`docs/user/develop/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/user/develop) 和 [`extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/extension-cookbook.md)，写配置和钩子极易盲猜出错；选方案 B（住进主仓 fork），专家就失去了独立插件身份，每次上游发版都要重付合并复核税。方案 A 用只读 `vendor/dsh` 子模块钉住 release tag，把“Agent 就地查源码”“确定性跟进上游”和“独立发版节奏”三件事同时拿齐。
 
-生态已收敛出开发型 repo 的三种共存模型——**pinned vendor**（A）、**同仓 workspace**（B）、**纯外部依赖**（C）——另有不做开发的 catalog-only 分发形态（见 [research.md 第三节](./research.md)与上图）。另注意四方案不在同一根轴上：A/B/C 回答"DSH 源码放哪"，D 回答"一个 repo 装几个专家"（其源码答案=同 A）——这是"D 是 A 的规模化后继而非并列选项"的结构原因。选择依据就一条：**公开 API 仍 pre-stable，专家必须能低成本跟随上游**——pinned vendor 用 tag + SHA 簿记（antfu/skills 的 `GENERATION.md` 纪律）把跟随成本压到最低，且不放弃 agent 探索。
+4. **UI 表达分三层认领，别一步跳进宿主深水区**
+   - **第 1 阶（零前端代码）**：什么都不配时，内置 Web 端自动渲染通用兜底卡；工具可用 `output.presentationMeta` 将结构化结果持久化到 `result.meta`（注：工具上的 `presentCall` / `presentResult` 纯函数意图供非 Web 宿主或自定义客户端消费，**内置 Web 客户端不直接读取这两个函数**，见 [`adding-a-tool.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md#web-client-presentation)）。
+   - **第 2 阶（仓外 Web 扩展）**：在 `package.json` 声明 `dsh.client: { "platform": "web" }` 并导出构建产物 `./client`（见 [`dsh-client-modules`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/modules/README.md)）。专属工具卡注册到 `tool.call.toolview` 槽位；自定义设置页或会话视图走 `settings.section`、`ctx.uiConversation.views` 等公开槽位。
+   - **第 3 阶（树内改本体）**：只有确需改动内置卡片组件本体或壳层布局时，才临时进方案 B 验证并向上游提 PR。
 
-## 决策 4 · UI 表达：分层认领，不要一步到顶
+5. **先借 DSH 原生轻量纪律，多人或跨仓时再加 OpenSpec**
+   单人或小团队直接复用 DSH 的轻量闭环（见 [FAQ 06](../06_change-landing-path/answer.md)、[FAQ 07](../07_borrowing-dsh-harness-idea/answer.md)）：根 `AGENTS.md` 指路、`docs/` 只写当前状态合同、`notes/` 只记有取舍的架构决定。等引入多人异步方案评审，或准备向上游提交跨包新 seam 时，再叠加 OpenSpec 等重型提案流。
 
-- **Host presenter 层**：工具的 `presentCall`/`presentResult` card render intent + `presentationMeta`——纯函数、可 replay 的中性词汇表（`docs/cookbook/adding-a-tool.md`）。注意它的边界：内置 Web Client **不消费** presenter，不做事时 UI 显示 generic fallback 卡；presenter 的价值是把卡片状态定义为可从日志重建的纯投影，供任何 host UI 与自建 client 消费。
-- **Web 卡片 / 注入层**：让 Web 出现专属工具有两条 out-of-tree 通道——client 插件在 `tool.call.toolview` keyed slot 注册自己的工具卡（从 wire 事件 + `result.meta` 派生 props）；或 `dsh.client.inject` 注入整块 client 模块（自定义面板/设置页）。后者有第三方实证：dsh-market（tsdown）与 dsh-im（esbuild）都在独立 repo 里完成注入，DSH client 包只作 devDependency。
-- **树内定制**：直接改**内置 client 包的源码**（卡片组件本体、shell/layout、client-modules 深度组装）——这是方案 B 真正的独占面。注意"自定义 View"不在此列：第三方 View 经 `ctx.uiConversation.views` 的 selection/activation 通道注册，out-of-tree 可参与（`docs/subsystems/conversation.md`、`packages/client/ui-conversation/README.md`）；树内做的价值是深度组装与就地演进。做完要评估能否折回前两层。
+---
 
-## 决策 5 · spec 流程：先借 DSH 的，OpenSpec 留触发条件
+## 三、推荐演进路线与四条防翻车铁律
 
-DSH 的原生开发环（FAQ 11 结论：这是它"最自然"的习惯）搬到专家 repo 零依赖可用：根 `AGENTS.md`（常驻规则 + 布局 + 命令表）、`docs/` = 当前合同、`notes/` = 决策记录、行为测试 + 少量 snapshot。OpenSpec 的增量在显式的变更提案生命周期（`openspec/changes/` 的 proposal/design/tasks），触发条件：第二个贡献者进场，或要向 DSH 上游提 seam（那时方案 B 也一起上场）。
+### 推荐四步演进路线
 
-## 依赖与兼容纪律（从生态失败样本里学）
+1. **第 0 天起跑**：按**方案 A（单包 + `vendor/dsh` 子模块）**建仓，配好开发专用的 `DSH_HOME` 隔离脚本，用 `agent-preset` + 默认通用兜底卡先把核心领域流跑通。
+2. **需要定制 Web 视觉时**：留在方案 A，增加 `dsh.client` 构建导出，优先挂 `tool.call.toolview` 或现有客户端槽位；槽位真不够用再去方案 B 开分支提上游扩展点。
+3. **立项第二个领域专家且需共享底座时**：将单包平移进 `packages/<first-expert>/`，升级为**方案 D**。
+4. **多人协作或向上游贡献接口时**：多人协作留在方案 A/D 叠加显式提案流；向上游贡献公共 seam 定义时走方案 B。
 
-- `@deepseek-ai/cordis` 与用到的 `@deepseek-ai/dsh-*` 作 **peerDependencies**（dsh-market 姿态）；拒绝 chatnode-wechat 的精确钉死（pre-stable API 下每次上游同步都逼发版）。
-- expert-pack 声明 **`dsh.compatibility` 版本矩阵**（dsh-im 姿态），测试覆盖矩阵里的每个 DSH release。
-- 自包含：发布产物不得引用 repo 内 vendor/ 或共享目录（Claude Code 缓存安装的硬规则，`dsh plugin add` 的装包模型同理会奖励自包含）。
-- 测试走**真实安装形状**：源码 checkout 直跑之外，必须 `npm pack` → `dsh plugin add` 装进干净 profile 再跑一遍（OpenClaw 文档明示源码测试会掩盖依赖错误）。
-- 同步 `vendor/dsh` 用 SHA 簿记（submodule 钉 tag + 记录文件 + 升级脚本），不裸漂。
+### 从外部生态踩坑提炼的四条底线
 
-## 推荐路径
+1. **版本兼容认准 `engines.dsh` 与 `peerDependencies`**：DSH 安装器与启动器真正强制校验的是 `package.json` 的 `engines.dsh`（缺省回退校验 `@deepseek-ai/dsh*` 的 `peerDependencies` 范围，见 [`publish.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-bundle-manifest)）。共享宿主实例的包一律写进 `peerDependencies` + `devDependencies`；**切忌锁死在 `dependencies` 里**，也别误以为社区自发写的 `dsh.compatibility` 会被宿主自动拦截。
+2. **发布产物自包含 + 干净环境真装冒烟**：打包后的 `.tgz` 绝不能引用 `vendor/dsh` 或仓内未发布路径；发版前必须在临时空 `DSH_HOME` 里跑一遍 `pnpm pack` → `dsh plugin add` 冒烟。
+3. **日常与开发物理分家**：用 `DSH_HOME` 隔离开发折腾，绝不碰日常使用的 `~/.dsh`。
+4. **第 0 天锁死机器身份 ID，展示文字走多语言字典**：包名、插件行 `id`、工具 wire 名、事件名和 `preset id` 一旦落入用户配置或会话日志极难反悔；界面标题与简介交给本地化字典随时换皮。
 
-1. **第 0 天**：按方案 A 起 repo（包粒度按决策 2：单包起步即可）；专家全部行为压在 preset + bundle + presenter 层（generic fallback 卡起步）；`AGENTS.md` 写清入口链与 `vendor/dsh` 簿记。
-2. **需要专属 Web 卡片或独立 UI 面**：先试 `tool.call.toolview` 槽注册（单工具卡）或 `dsh.client.inject`（整块 UI 面）；两者不够再进方案 B 长树内卡片，验证后折回。
-3. **第二个专家立项且要复用骨架**：升方案 D（A 的结构原样变成子树）。
-4. **向 DSH 上游提 seam**：方案 B + OpenSpec 一起上；**仅引入第二贡献者**则留在 A，只加 OpenSpec。
+---
 
-每个方案的完整目录树、装法、取舍表与市场背书见各自文件（各自的"开发过程差异"一节只写形态带来的增量）；**插拔、调试、驱动 coding agent 的机制层与 DSH 推荐流程**收敛在 [dev-loop.md](./dev-loop.md)（机制层四方案共享；"专家 repo 落地"列按方案 A 的形状写给 A/C/D 家族，C/D 的增量就地标记；方案 B 的 repo 就是 DSH、流程即原生件，其特有环只在 option-b 的差异节），**官方安装的 DSH 与插件开发的隔离**（双 home）在 [dual-home-isolation.md](./dual-home-isolation.md)；全部外部证据与 URL 在 [research.md](./research.md)。
+## 四、三条诚实边界
 
-> **方案 A–D 是本篇的代号。** repo 没有这四个名字；对应机制分别是 `vendor/` 的 pinned source copy、monorepo workspace、外部 `@deepseek-ai/dsh-*` 依赖与 registry 目录。
+- **Preset 隔离的是上下文与工具可见性，不是安全沙箱**：预设里的插件与宿主跑在同一个 Node 进程里，拥有同等进程执行权限。
+- **`vendor/dsh` 同步纪律需要自己维护**：子模块不会自动升级，每次切换 tag 都应跑一遍类型检查与真装冒烟，及时消化 `pre-stable` 接口变更。
+- **别把主仓的大团队门禁原样照搬进单人小仓**：双语 `.i18n.yaml` 哈希配对和全量快照矩阵是服务 300+ 包主仓的，外部插件仓按需裁剪才能保持高频迭代。
+
+---
+
+## 继续阅读
+
+| 你想细看哪一部分 | 去哪篇看 |
+|---|---|
+| 四种仓库方案的目录树样板、最小配置正例、`vendor/dsh` 同步脚本与迁移条件 | [`01-four-repo-layouts.md`](./01-four-repo-layouts.md) |
+| 日常怎么免发版挂进 Profile 调试、热重载边界、`disabled: true` 排障注意与测试分层 | [`02-dev-and-debug-loop.md`](./02-dev-and-debug-loop.md) |
+| 怎么用双 `$DSH_HOME` 保护日常官方环境 + 哪些名字第 0 天定下就不能改 | [`03-isolation-and-naming.md`](./03-isolation-and-naming.md) |
+| 第三方 DSH 插件仓样本与 VS Code / Claude Code / OpenClaw / MCP 生态实证 | [`research.md`](./research.md) |
+
+> 注：文中的“方案 A–D”是本篇为方便对比起的代号，不是 DSH 源码里的专有名词。核验状态见 [核验基线登记](../00-baseline.md)。

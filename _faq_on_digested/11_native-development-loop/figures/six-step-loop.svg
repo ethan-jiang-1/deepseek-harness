@@ -63,5 +63,5 @@
 
   <rect x="24" y="478" width="1152" height="84" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
   <text x="600" y="508" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">一次交付 = 完整垂直切片</text>
-  <text x="600" y="536" text-anchor="middle" font-size="13" fill="#334155">代码 · 测试 · 文档 · Note · 快照 同 PR —— 写作基线 0a53fb55be：88% 的 PR 触及 .agents/notes/，Note 文件数中位数 ~9、众数 3（本次复算 12 / 6）</text>
+  <text x="600" y="536" text-anchor="middle" font-size="13" fill="#334155">代码 · 当前文档 · 行为证据同一 PR 交付（涉及持久取舍时同步交付 Agent Note 与快照）</text>
 </svg>

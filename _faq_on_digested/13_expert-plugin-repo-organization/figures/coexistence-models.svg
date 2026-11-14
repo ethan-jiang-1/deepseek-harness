@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="920" height="430" viewBox="0 0 920 430" font-family="Helvetica, Arial, sans-serif">
   <rect width="920" height="430" fill="#fafafa"/>
-  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">host 源码共存模型：三种开发形态（research.md 第三节，含第四种 catalog-only）</text>
+  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">宿主源码与插件仓库的三种共存模型</text>
 
   <g font-size="13" fill="#222">
     <!-- Model 1: same-repo workspace -->
@@ -41,12 +41,12 @@
     <rect x="640" y="173" width="220" height="40" rx="6" fill="#fff" stroke="#999"/>
     <text x="750" y="197" text-anchor="middle">npm 依赖 host SDK</text>
     <text x="750" y="238" text-anchor="middle" font-size="11.5">repo 最干净</text>
-    <text x="750" y="257" text-anchor="middle" font-size="11.5">peer + 兼容矩阵可救依赖面</text>
+    <text x="750" y="257" text-anchor="middle" font-size="11.5">engines.dsh + peer 管住依赖面</text>
     <text x="750" y="276" text-anchor="middle" font-size="11.5" fill="#a33">agent 探索跳出去，断链</text>
     <text x="750" y="303" text-anchor="middle" font-size="12" fill="#777">MCP servers · whalehub-dsh</text>
     <text x="750" y="321" text-anchor="middle" font-size="12" font-weight="bold" fill="#666">→ 方案 C（仅过渡）</text>
   </g>
 
-  <text x="460" y="366" text-anchor="middle" font-size="12.5" fill="#555">（第四种 catalog-only：repo 只钉别人的 repo 做分发索引 —— claude-plugins-official，不是开发形态，未画出）</text>
-  <text x="460" y="396" text-anchor="middle" font-size="12.5" fill="#777">依赖姿态对应：同仓用 workspace:；发布插件用 peerDependencies + dsh.compatibility 矩阵；UI 插件加 devDep + 自打包 client + dsh.client.inject</text>
+  <text x="460" y="366" text-anchor="middle" font-size="12.5" fill="#555">（第四种 catalog-only：仓库只聚合外部仓库指针做分发索引，如 claude-plugins-official，非开发形态）</text>
+  <text x="460" y="396" text-anchor="middle" font-size="12.5" fill="#777">依赖姿态：同仓用 workspace:；独立发布声明 engines.dsh + peerDependencies；Web UI 插件声明 dsh.client 并导出 ./client 产物</text>
 </svg>

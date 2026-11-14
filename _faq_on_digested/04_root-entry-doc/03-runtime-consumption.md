@@ -1,104 +1,77 @@
-# 03 · 运行时消费：注入、按需导航、预算与回收
+# 03 · 运行时消费：谁负责推入、谁负责拉取、超了谁回收？
 
-## 不是模型「主动读」，是运行时「注入」
+静态文档分好层之后，下一个现实问题是：**跑起来的时候，模型真的会按这张图走吗？**
 
-`dsh-agent-instructions`（`packages/context/agent-instructions`）是入口文档在运行时的第一推动力：
+DSH 在运行时没有赌模型“自己记得先去读 `AGENTS.md`”，而是把消费过程拆成了 **推入（push）→ 拉取（pull）→ 回收（recycle）** 三个明确分工的环节。
 
-> At the first eligible `agent/pre-step` of a session, the plugin composes the baseline and folds it into the entering batch right after the claimed messages.
->
-> —— `packages/context/agent-instructions/README.md:103`（Main flow）
+---
 
-> At the first request, derived history contains one durable user-role message with the bounded user-global and project instruction chain in broad-to-specific order. Resume reuses that message when its visible baseline is compatible.
->
-> —— `packages/context/agent-instructions/README.md:132`（Model Experience · Baseline context）
+## 一、推入（Push）：`dsh-agent-instructions` 负责把 `AGENTS.md` 送进上下文
 
-根 `AGENTS.md` 进入模型上下文不是靠模型「想起来去读」，而是插件在会话开始时注入一条 durable user 消息，用 `<system-reminder>` 框住。
+[`packages/context/agent-instructions`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md) 插件专门负责在合适时机把工作区指令链注入会话，分两次触发：
 
-## 两次注入：baseline 与 touch-driven
+### 1. 会话首步的 Baseline 注入
 
-1. **baseline**：每个 live session 的第一个 `agent/pre-step` 组合 baseline。加载顺序是 `$DSH_HOME/AGENTS.md`，再按从项目根到 `session.header.cwd` 的每个目录加载候选文件（基础候选 `AGENTS.md`、`CLAUDE.md`，外加叠加的 `AGENTS.local.md`、`CLAUDE.local.md`）。
-2. **touch-driven nested**：插件观察成功的 `read`/`write`/`edit` 调用；触达更深目录后，把该目录的 AGENTS.md 作为 Additional instructions 注入。
+在每个活跃会话的第一个合规 `agent/pre-step` 节点，插件会自动组装一条持久化的 user 角色消息（外包 `<system-reminder>` 标签），折入首轮送往模型的消息批。加载顺序从宽到窄依次是：
 
-> After a successful `read`, `write`, or `edit` call reaches a deeper directory, the next request includes the newly applicable instruction file; a changed file replaces its content, and a file that disappears or duplicates an earlier candidate produces a removal notice.
->
-> —— `packages/context/agent-instructions/README.md:34`（What the agent gets）
+1. 用户全局的 `$DSH_HOME/AGENTS.md`；
+2. 从项目根目录一路向下到当前会话工作目录（`session.header.cwd`）沿途各层的候选文件（`AGENTS.md`、`CLAUDE.md`，以及本地覆盖层 `AGENTS.local.md`、`CLAUDE.local.md`）。
 
-> **Refresh is touch-driven** — there is no watcher; external edits become visible on the next successful first-party `read`, `write`, or `edit`, when resume reconciles a visible baseline, or when an entering pre-step restores a shadowed baseline.
->
-> —— `packages/context/agent-instructions/README.md:220`（Known Limitations）
+会话恢复（resume）时，如果可见 baseline 仍然兼容，就直接复用这条已有消息，不会重改历史前缀、也不会白白打碎前序 KV Cache。
 
-这意味着 L2 区域入口在运行时是触达驱动的：模型没进 `packages/` 之前，`packages/AGENTS.md` 不在上下文里；一读 `packages/` 下的文件，它才被注入。
+### 2. 触达深层目录后的 Touch-Driven 追补注入
 
-顺序可控靠三条：
+模型还没碰 `packages/` 之前，像 `packages/AGENTS.md` 或 `packages/client/AGENTS.md` 这样的子目录规则**不会**提前塞进首轮上下文。
 
-- **预算**：`maxBytes` 是必填配置（`:64` 的 Config 表），渲染保留最具体文件优先，先丢更宽的文件、再截断最具体文件，并发出可见的 `Workspace instruction budget …` 通知（`:74`）。
-- **去重**：同目录里 trim 后内容相同的 `CLAUDE.md`/`AGENTS.md` 只渲染一次（`:34`）；路径未变且 digest 未变的文件不再注入（`:103`）。
-- **无 watcher**：外部改动只在下次成功的 `read`/`write`/`edit`、resume 重新对齐 baseline、或进入的 pre-step 恢复被遮蔽的 baseline 时才可见（`:220`；Summary 写作 `:12`）。这就是触达驱动的另一面：不触达，就不重新读。
+只有当模型通过一等文件工具（`read`、`write`、`edit`）成功触达某个更深的目录后，插件才会在下一步请求前把新命中的子目录 `AGENTS.md` 作为补充指令追加进来；如果此前读过的指令文件被修改或删除，下次触达时也会同步发出替换或移除提示。
 
-注入内容用 `<system-reminder>` 框住，明确声明这些是 workspace instructions，可作指引但不覆盖 system / developer / 直接用户指令（模板 `:136-151`；插件拥有完整 framing 的声明在 `:88`）。这是运行时对「AGENTS 是 standing orders 而不是不可违逆的法律」的编码，与静态层定位一致。
+这套注入机制靠四条硬规则保持可控：
 
-## 按需导航：注入只覆盖指令链，正文靠工具拉取
+- **`maxBytes` 必填字节上限**：部署配置必须显式声明 `maxBytes`。一旦整条指令链超出预算，渲染器优先保留**最具体（最深层）**的目录规则，先整份丢弃外层较宽泛的文件，万不得已才截断最具体文件，并附带一条模型可见的 `Workspace instruction budget ...` 告警指明哪些路径被省略或截断。
+- **同内容与未变更自动去重**：同一目录下 trim 后内容完全一致的 `CLAUDE.md` 与 `AGENTS.md` 只渲染一次；路径和内容摘要（digest）都没变过的文件绝不重复注入。
+- **不跑后台文件监听器（No file watcher）**：刷新完全由一等 `read`/`write`/`edit` 触达或会话恢复驱动，既省掉全盘 watch 的系统开销，又让每次上下文变化都有明确的步级因果可查。
+- **指令定位清晰**：外层 `<system-reminder>` 模板明确告诉模型“越具体的目录指引优先级越高，但工作区指引不能凌驾于 system、developer 或用户的直接指令之上”。
 
-`dsh-agent-instructions` 只注入 `AGENTS.md`/`CLAUDE.md` 指令链，不注入 package README、architecture、catalog、skill 正文。这些按需合同由模型用第一方工具主动拉取，而三个导航工具的提示词把纪律直接写进了工具：
+---
 
-> Use the read tool — not shell commands like cat — to inspect text files. Results include line numbers. Use offset and limit to continue reading large files.
->
-> —— `packages/fs/tool-fs/src/read.ts:74`（`text: ({ scope }) =>` 在 `:72`，正文在 `:74`）
+## 二、拉取（Pull）：包 README、生成目录与 Skill 正文靠工具按需取用
 
-> Use the grep tool — not shell grep or rg — to search file contents.
->
-> —— `packages/fs/tool-fs-search/src/grep.ts:280`
+`dsh-agent-instructions` **只**推送 `AGENTS.md` / `CLAUDE.md` 指令链，绝不自动推送任何 `package README`、`docs/architecture.md`、生成目录或 skill 正文。这些 L3–L5 层材料全部走按需拉取：
 
-只有在 `read` 也注册时，才追加 "Use read on a matched file when you need surrounding context."（同文件 `:281` 的条件分支）。
+### 1. 导航工具把“怎么查图”写进了工具提示词
 
-> Use the glob tool — not shell find — to discover files by path pattern. …
->
-> —— `packages/fs/tool-fs-search/src/glob.ts:302`
+DSH 的三个一等文件检索工具在各自的工具描述里直接立下了检索纪律（见 [`packages/fs/tool-fs/src/read.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs/src/read.ts) 与 [`packages/fs/tool-fs-search/src/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/fs/tool-fs-search/src)）：
 
-所以怎么走图在运行时是被工具提示词约束的：读文件用 read（带行号、可 offset/limit），搜内容用 grep，找文件用 glob。工具给的是结构化、有界的结果，而不是 shell 的自由文本。
+- 读文本文件用 `read`（不要调 shell `cat`），返回自带行号，大文件用 `offset` 和 `limit` 分段翻阅；
+- 搜内容用 `grep`（不要调 shell `grep` / `rg`），需要看命中行上下文时再配合 `read`；
+- 按路径模式找文件用 `glob`（不要调 shell `find`）。
 
-**skill：摘要先给，正文后取。** `dsh-tool-skill` 注入的 skill catalog 只含 name + description：
+这样模型去查 `docs/tool-catalog.md` 或 `docs/event-producer-consumer.md` 时，拿到的是有界、结构化的片段，而不是把几千行生成表一口气倒进上下文。
 
-> The catalog contains sorted skill `name` and normalized, XML-escaped `description` only; it omits bodies, paths, sources, providers, and routing hints.
->
-> —— `docs/subsystems/skills.md:229`
+### 2. 包 `README.md` 靠“注入路由 + 同改规矩”两头牵引
 
-只有模型调用 `skill({ name })` 时才加载完整正文（`docs/subsystems/skills.md:233`），且正文不进 registry 缓存、每次 `get()` 现取（同文件 `:192`）。这就是 L5 在运行时的实现：常驻的只是技能名 + 一句描述，正文按需、不缓存。
+既然包 `README.md` 不自动注入，怎么保证模型改某个包之前真会去读它？靠两条链路合围：
 
-**package README 是 pull 不是 push。** 注入只认 `AGENTS.md`/`CLAUDE.md` 候选，README 靠两条路径被拉到：① 注入的根/子树 AGENTS 把模型指到 `packages/<group>/<pkg>/README.md`（[01](./01-map-and-tiers.md) 的地图）；② 注入的 `packages/AGENTS.md:27` 要求在同一 commit 里更新 package README 与 JSDoc 合同，模型改某个包时这条 standing order 让它去读该包 README。诚实答案是：**指令链是 push 的，合同是 pull 的**——前者不靠自觉，后者靠 standing order + 路由把模型引到正确文件前。
+1. 已被自动注入的根 `AGENTS.md` 和 `packages/AGENTS.md` 把单包契约明确指路到 `packages/<group>/<pkg>/README.md`；
+2. 模型一读目标包下的源码，触达注入的 `packages/AGENTS.md` 就会提醒它“改行为必须在同一 commit 同步更新该包 `README.md` 与 JSDoc 契约”。为了对齐契约，模型自然会先 `read` 该包 `README.md`。
 
-## 回收：超预算的度量与剪裁
+说白了：**全局规矩走 push（防忘），单包契约走 pull（省窗口）。**
 
-注入有 `maxBytes`，整个上下文还有 `ctx.tokenMeter` 度量，超了由 compaction 回收：
+### 3. Skill 走“目录摘要常驻 + 正文现用现读”
 
-> Pressure compaction runs at the `agent/pre-step` waterfall before request derivation. … Region boundaries preserve tool-call/result pairing but not whole turns, allowing early closed steps of one oversized turn to compact.
->
-> —— `docs/subsystems/compaction.md:101`
+[`docs/subsystems/skills.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md) 对技能加载做了同样干净的两段式切分：
 
-> `@deepseek-ai/dsh-token-meter` exposes one detached replay snapshot for request pressure and positional surface pricing.
->
-> —— `docs/subsystems/token-meter.md:5`
+- 常驻进提示词的 skill catalog **只包含排序后的 `name` 和一句话 `description`**，不包含正文、文件路径或内部资源列表；
+- 只有当模型判断当前任务匹配并显式调用 `skill({ name })` 工具时，才实时读取完整 `SKILL.md` 正文与关联资源目录作为工具结果返回（且注册表不缓存完整正文，每次调用现取最新内容）。
 
-披露不是单向的：塞多了会被剪裁/摘要，而且不拆散一个 tool-call/result 配对。长任务里「读过但已过期」的内容会被回收，而不是无限增长。
+---
 
-## 静态预算与运行时预算是一回事
+## 三、回收（Recycle）：上下文涨超水位后怎么安全瘦身？
 
-[01](./01-map-and-tiers.md) 的字数预算（根 AGENTS ≤ 2080 词，manifest 口径）与本页的 `maxBytes` 是同一个约束的两端：静态层决定「每层最多放多少」，运行时层决定「每次最多注入多少」。两者都不度量「模型懂没懂」，而是度量容量——一个是文档容量，一个是上下文容量。
+就算按需拉取，长会话里读过的文件和工具输出还是会不断累积。运行时最后一环由 [`dsh-token-meter`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/token-meter.md) 与 [`compaction`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/compaction.md) 兜底：
 
-## README 怎么保证被读到、被维护
+- `ctx.tokenMeter` 基于回放快照持续度量当前请求压力与各位置面的 token 开销；
+- 当上下文压力触及阈值时，压力压缩（pressure compaction）会在 `agent/pre-step` 瀑布流阶段、正式派生本轮模型请求之前介入，将早期已经闭合的步骤折叠摘要；
+- 压缩切分边界严格保护 `tool/call` 与 `tool/result` 成对完整，同时允许在一个超长 turn 内部先行压缩早期已走完的步骤，避免单轮大重构把窗口撑爆。
 
-- **被读到**：运行时注入 + standing order 的合力（见上）。指令链 push、README pull。
-- **被维护**：靠门禁，不靠自觉。`packages/AGENTS.md:27` 要求 README 与 JSDoc 与行为同 commit 更新，`:28` 要求用 canonical Model Experience 格式记录 model/token/KV-cache 影响；两道机器兜底是 `doc-sync` 检查同步，以及 `dsh-code-review` / `dsh-prose-standard` 把「改了代码没改 README」判为问题。
-
-这与静态层「地图是机器检查的」是同一套逻辑，只是落点从地图移到了消费地图的行为。
-
-## 证据入口
-
-- [`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md)：Summary（12）、What the agent gets（32-34）、Configuration（36、44-48、62-68）、Observing the budget（72-74）、Design concept（86-88）、Main flow（101-103）、Model Experience / Baseline context（126-151）、Known Limitations（212、220）
-- [`packages/fs/tool-fs/src/read.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs/src/read.ts) 第 74 行
-- [`packages/fs/tool-fs-search/src/grep.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs-search/src/grep.ts) 第 280-281 行
-- [`packages/fs/tool-fs-search/src/glob.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs-search/src/glob.ts) 第 302 行
-- [`docs/subsystems/skills.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md) 第 192、229、233 行
-- [`docs/subsystems/compaction.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/compaction.md) 第 101 行
-- [`docs/subsystems/token-meter.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/token-meter.md) 第 5 行
-- [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md) 第 27-29 行
+至此，静态端的词数门禁与运行时端的 `maxBytes` + 按需工具拉取 + 压力压缩首尾相接，构成了完整的上下文容量闭环。

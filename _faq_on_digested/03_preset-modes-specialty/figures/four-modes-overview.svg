@@ -1,124 +1,124 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>四个内置模式：同一底座，各动一根轴</title>
-  <desc>顶部是共享宿主底座（Agent loop、ToolRuntime 管道、权限审批、会话日志），下面四张模式卡片：Standard 是不动轴的基线（31 个原生工具），PTC 动呈现层（wire 只剩 run_code + SDK），Minimal 动身份层（一句话系统提示词 + 3 个工具：持久 bash + read_image + working_directory），Creator 动扩展层（在 Standard 上加运行时检查、条件启用的 plugin_manager 和三个创作技能）。三根轴用颜色区分：紫=呈现层，橙=身份层，绿=扩展层，灰=不动。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 760" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>四个内置模式：共享同一套 Agent 底座，只靠四份声明式 patch 变出四种性格</title>
+  <desc>顶部是共享宿主底座（Agent loop、ToolRuntime 执行管道、权限审批、会话日志），下面四张模式卡片：Standard 给全套 31 个常规工具并刻意收起高危能力；PTC 把工具折叠进 run_code 代码沙盒但子调用仍走完整审批审计管道；Minimal 清空预设指令只留一句提示词、持久终端与基础压缩；Creator 按环境条件开放运行时检查、plugin_manager 与四个插件创作技能。</desc>
   <defs>
     <marker id="arrowGray" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
     </marker>
   </defs>
 
-  <rect width="1200" height="760" rx="8" fill="#f8fafc"/>
-  <text x="600" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">四个内置模式：同一底座，各动一根轴</text>
-  <text x="600" y="62" text-anchor="middle" font-size="13" fill="#64748b">四份 bundle patch（packages/bundle/web-app/presets/*.patch.yml）共享同一个宿主，特殊性不在工具清单加减，而在各自动的那根轴。</text>
+  <rect width="1260" height="760" rx="8" fill="#f8fafc"/>
+  <text x="630" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">四个内置模式：共享同一套 Agent 底座，四份 YAML 变出四种性格</text>
+  <text x="630" y="62" text-anchor="middle" font-size="13" fill="#64748b">四份预设补丁（packages/bundle/web-app/presets/*.patch.yml）不改一行 Agent 循环代码，只在不同维度上重新组装单个会话。</text>
 
   <!-- 共享底座 -->
-  <rect x="60" y="84" width="1080" height="64" rx="10" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="600" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">共享宿主底座（每个模式都一样）</text>
-  <text x="600" y="132" text-anchor="middle" font-size="12" fill="#475569">Agent loop · ToolRuntime 执行管道（pre-execute → guards → execute → post-execute → result） · 权限 / 审批 / 沙箱 · 会话日志</text>
+  <rect x="50" y="84" width="1160" height="64" rx="10" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="630" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">共享宿主底座（四个模式完全一致）</text>
+  <text x="630" y="132" text-anchor="middle" font-size="12" fill="#475569">Agent loop · ToolRuntime 执行管道（pre-execute → guards → execute → post-execute → result） · 权限审批与文件沙箱 · 会话日志</text>
 
-  <!-- 轴图例 -->
-  <text x="60" y="182" font-size="12" font-weight="700" fill="#334155">轴图例：</text>
-  <rect x="118" y="170" width="14" height="14" rx="3" fill="#7c3aed"/>
-  <text x="138" y="182" font-size="12" fill="#475569">呈现层（模型看见的工具表）</text>
-  <rect x="320" y="170" width="14" height="14" rx="3" fill="#ea580c"/>
-  <text x="340" y="182" font-size="12" fill="#475569">身份层（系统提示词 / 运行时上下文）</text>
-  <rect x="560" y="170" width="14" height="14" rx="3" fill="#16a34a"/>
-  <text x="580" y="182" font-size="12" fill="#475569">扩展层（把宿主自身当工作对象）</text>
-  <rect x="800" y="170" width="14" height="14" rx="3" fill="#64748b"/>
-  <text x="820" y="182" font-size="12" fill="#475569">不动（基线）</text>
+  <!-- 图例 -->
+  <text x="50" y="182" font-size="12" font-weight="700" fill="#334155">改动维度：</text>
+  <rect x="118" y="170" width="14" height="14" rx="3" fill="#64748b"/>
+  <text x="138" y="182" font-size="12" fill="#475569">常规满配基准（Standard）</text>
+  <rect x="310" y="170" width="14" height="14" rx="3" fill="#7c3aed"/>
+  <text x="330" y="182" font-size="12" fill="#475569">工具调用呈现方式（PTC）</text>
+  <rect x="510" y="170" width="14" height="14" rx="3" fill="#ea580c"/>
+  <text x="530" y="182" font-size="12" fill="#475569">系统提示词与外围辅助（Minimal）</text>
+  <rect x="750" y="170" width="14" height="14" rx="3" fill="#16a34a"/>
+  <text x="770" y="182" font-size="12" fill="#475569">宿主自检与扩展能力（Creator）</text>
 
   <!-- 连接线 -->
-  <line x1="200" y1="148" x2="200" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <line x1="500" y1="148" x2="500" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <line x1="800" y1="148" x2="800" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <line x1="1030" y1="148" x2="1030" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <line x1="185" y1="148" x2="185" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <line x1="480" y1="148" x2="480" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <line x1="775" y1="148" x2="775" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <line x1="1070" y1="148" x2="1070" y2="206" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
 
   <!-- Standard 卡片 -->
-  <rect x="60" y="210" width="260" height="470" rx="12" fill="#f1f5f9" stroke="#94a3b8"/>
-  <rect x="60" y="210" width="260" height="44" rx="12" fill="#64748b"/>
-  <text x="190" y="230" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">Standard mode</text>
-  <text x="190" y="246" text-anchor="middle" font-size="11" fill="#e2e8f0">preset id: standard · order 1 · 部署默认</text>
-  <rect x="140" y="264" width="100" height="22" rx="11" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="190" y="279" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">三轴都不动（基线）</text>
-  <text x="80" y="310" font-size="12" font-weight="700" fill="#334155">wire 工具表：31 个原生 schema</text>
-  <text x="80" y="332" font-size="12" fill="#475569">· shell / fs / 搜索 / jobs / schedule</text>
-  <text x="80" y="352" font-size="12" fill="#475569">· goal / plan / todo / ask-user</text>
-  <text x="80" y="372" font-size="12" fill="#475569">· delegation（subagent + workflow）</text>
-  <text x="80" y="392" font-size="12" fill="#475569">· skills / web / present / compaction</text>
-  <text x="80" y="424" font-size="12" font-weight="700" fill="#334155">身份：完整 persona + AGENTS.md</text>
-  <text x="80" y="444" font-size="12" fill="#475569">（64KB 上限）+ 运行时上下文</text>
-  <text x="80" y="476" font-size="12" font-weight="700" fill="#334155">刻意缺席：</text>
-  <text x="80" y="496" font-size="12" fill="#475569">cordis_*（无沙箱行约束）</text>
-  <text x="80" y="516" font-size="12" fill="#475569">mcp_*（进程外 spawn）</text>
-  <text x="80" y="536" font-size="12" fill="#475569">ralph（无人监督轮次）</text>
-  <text x="80" y="566" font-size="12" font-weight="700" fill="#16a34a">定位：日常任务的参照组合，</text>
-  <text x="80" y="586" font-size="12" font-weight="700" fill="#16a34a">目录被 e2e 逐项钉死</text>
+  <rect x="50" y="210" width="270" height="470" rx="12" fill="#f1f5f9" stroke="#94a3b8"/>
+  <rect x="50" y="210" width="270" height="44" rx="12" fill="#64748b"/>
+  <text x="185" y="230" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">Standard（标准模式）</text>
+  <text x="185" y="246" text-anchor="middle" font-size="11" fill="#e2e8f0">preset id: standard · order 1 · 新任务默认</text>
+  <rect x="115" y="264" width="140" height="22" rx="11" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="185" y="279" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">常规满配基准</text>
+  <text x="70" y="310" font-size="12" font-weight="700" fill="#334155">发给模型：31 个原生工具定义</text>
+  <text x="70" y="332" font-size="12" fill="#475569">· 单次终端 / 文件读写 / 搜索 / 后台任务</text>
+  <text x="70" y="352" font-size="12" fill="#475569">· 定时调度 / 目标 / 计划模式 / 待办</text>
+  <text x="70" y="372" font-size="12" fill="#475569">· 子智能体委派 + workflow 脚本编排</text>
+  <text x="70" y="392" font-size="12" fill="#475569">· 技能加载 / 联网检索 / 上下文压缩</text>
+  <text x="70" y="424" font-size="12" font-weight="700" fill="#334155">提示词输入：完整身份 + AGENTS.md</text>
+  <text x="70" y="444" font-size="12" fill="#475569">（64KB 上限）+ 时间与环境快照</text>
+  <text x="70" y="476" font-size="12" font-weight="700" fill="#334155">刻意收起的高危能力：</text>
+  <text x="70" y="496" font-size="12" fill="#475569">· cordis_*（执行模型 JS，无沙箱约束）</text>
+  <text x="70" y="516" font-size="12" fill="#475569">· mcp_*（在 ctx.shell 外独立拉起进程）</text>
+  <text x="70" y="536" font-size="12" fill="#475569">· ralph（无人值守自报完成循环）</text>
+  <text x="70" y="568" font-size="12" font-weight="700" fill="#16a34a">适合谁：日常编码、查资料、改文件主力，</text>
+  <text x="70" y="588" font-size="12" font-weight="700" fill="#16a34a">工具清单由 e2e 测试逐项锁死</text>
 
   <!-- PTC 卡片 -->
-  <rect x="360" y="210" width="260" height="470" rx="12" fill="#faf5ff" stroke="#c4b5fd"/>
-  <rect x="360" y="210" width="260" height="44" rx="12" fill="#7c3aed"/>
-  <text x="490" y="230" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">PTC mode</text>
-  <text x="490" y="246" text-anchor="middle" font-size="11" fill="#ede9fe">preset id: ptc · order 2</text>
-  <rect x="425" y="264" width="130" height="22" rx="11" fill="#ede9fe" stroke="#c4b5fd"/>
-  <text x="490" y="279" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">动呈现层（紫色轴）</text>
-  <text x="380" y="310" font-size="12" font-weight="700" fill="#334155">wire 工具表：1 个 run_code</text>
-  <text x="380" y="332" font-size="12" fill="#475569">+ 系统提示词里的生成 SDK（.d.ts）</text>
-  <text x="380" y="352" font-size="12" fill="#475569">+ 用法说明（并发/串行合同）</text>
-  <text x="380" y="384" font-size="12" font-weight="700" fill="#334155">机制：一行 agent-tool-</text>
-  <text x="380" y="404" font-size="12" font-weight="700" fill="#334155">presentation mode: ptc</text>
-  <text x="380" y="424" font-size="12" fill="#475569">同一进程可与 native Agent 并存</text>
-  <text x="380" y="456" font-size="12" font-weight="700" fill="#334155">不变的东西：</text>
-  <text x="380" y="476" font-size="12" fill="#475569">工具本体、权限审批、审计管道</text>
-  <text x="380" y="496" font-size="12" fill="#475569">子调用照走完整 pipeline</text>
-  <text x="380" y="528" font-size="12" font-weight="700" fill="#b91c1c">差异点：workflow 三件禁用</text>
-  <text x="380" y="548" font-size="12" fill="#7f1d1d">（官方仅陈述现状，未给理由）</text>
-  <text x="380" y="578" font-size="12" font-weight="700" fill="#16a34a">定位：批量调用 + 筛选/去重/</text>
-  <text x="380" y="598" font-size="12" font-weight="700" fill="#16a34a">统计/汇总型任务</text>
+  <rect x="345" y="210" width="270" height="470" rx="12" fill="#faf5ff" stroke="#c4b5fd"/>
+  <rect x="345" y="210" width="270" height="44" rx="12" fill="#7c3aed"/>
+  <text x="480" y="230" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">PTC（程序化工具调用）</text>
+  <text x="480" y="246" text-anchor="middle" font-size="11" fill="#ede9fe">preset id: ptc · order 2</text>
+  <rect x="405" y="264" width="150" height="22" rx="11" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="480" y="279" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">折叠工具调用方式</text>
+  <text x="365" y="310" font-size="12" font-weight="700" fill="#334155">发给模型：仅 1 个 run_code 工具</text>
+  <text x="365" y="332" font-size="12" fill="#475569">+ 系统提示词内嵌生成的 .d.ts SDK</text>
+  <text x="365" y="352" font-size="12" fill="#475569">+ 并发/串行调用规范说明</text>
+  <text x="365" y="384" font-size="12" font-weight="700" fill="#334155">核心开关：agent-tool-presentation</text>
+  <text x="365" y="404" font-size="12" fill="#475569">配置 mode: ptc；同进程内可与</text>
+  <text x="365" y="424" font-size="12" fill="#475569">普通模式会话并存，互不串工具表</text>
+  <text x="365" y="456" font-size="12" font-weight="700" fill="#334155">安全底线不变：</text>
+  <text x="365" y="476" font-size="12" fill="#475569">脚本里的每次 tools.xxx() 仍逐个走</text>
+  <text x="365" y="496" font-size="12" fill="#475569">完整权限审批与审计日志，仅回传汇总</text>
+  <text x="365" y="528" font-size="12" font-weight="700" fill="#b91c1c">额外差异：关闭 workflow 工具</text>
+  <text x="365" y="548" font-size="12" fill="#7f1d1d">（避免与 run_code 编排入口重叠）</text>
+  <text x="365" y="578" font-size="12" font-weight="700" fill="#16a34a">适合谁：批量读文件/扫日志后在代码里</text>
+  <text x="365" y="598" font-size="12" font-weight="700" fill="#16a34a">筛选、去重、统计，省往返与上下文</text>
 
   <!-- Minimal 卡片 -->
-  <rect x="660" y="210" width="260" height="470" rx="12" fill="#fff7ed" stroke="#fdba74"/>
-  <rect x="660" y="210" width="260" height="44" rx="12" fill="#ea580c"/>
-  <text x="790" y="230" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">Minimal mode</text>
-  <text x="790" y="246" text-anchor="middle" font-size="11" fill="#ffedd5">preset id: minimal · order 3</text>
-  <rect x="725" y="264" width="130" height="22" rx="11" fill="#ffedd5" stroke="#fdba74"/>
-  <text x="790" y="279" text-anchor="middle" font-size="11" font-weight="700" fill="#c2410c">动身份层（橙色轴）</text>
-  <text x="680" y="310" font-size="12" font-weight="700" fill="#334155">wire 工具表：3 个</text>
-  <text x="680" y="332" font-size="12" fill="#475569">bash（持久，Windows 为 pwsh）</text>
-  <text x="680" y="352" font-size="12" fill="#475569">read_image · working_directory</text>
-  <text x="680" y="384" font-size="12" font-weight="700" fill="#334155">系统提示词只剩一句：</text>
-  <text x="680" y="406" font-size="11" fill="#7f1d1d">"You are a helpful software</text>
-  <text x="680" y="422" font-size="11" fill="#7f1d1d">engineer assistant."</text>
-  <text x="680" y="444" font-size="12" fill="#475569">persona complete: true 抑制</text>
-  <text x="680" y="464" font-size="12" fill="#475569">其余一切 section</text>
-  <text x="680" y="496" font-size="12" font-weight="700" fill="#334155">清零：AGENTS.md、运行时上下文、</text>
-  <text x="680" y="516" font-size="12" font-weight="700" fill="#334155">skills、goal/plan、todo…</text>
-  <text x="680" y="548" font-size="12" fill="#b91c1c">长任务辅助仍缺：无 goal/plan/todo</text>
-  <text x="680" y="578" font-size="12" font-weight="700" fill="#16a34a">定位：对照实验基线（固定模型/</text>
-  <text x="680" y="598" font-size="12" font-weight="700" fill="#16a34a">权限/输入/起始状态做 A/B）</text>
+  <rect x="640" y="210" width="270" height="470" rx="12" fill="#fff7ed" stroke="#fdba74"/>
+  <rect x="640" y="210" width="270" height="44" rx="12" fill="#ea580c"/>
+  <text x="775" y="230" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">Minimal（极简模式）</text>
+  <text x="775" y="246" text-anchor="middle" font-size="11" fill="#ffedd5">preset id: minimal · order 3</text>
+  <rect x="695" y="264" width="160" height="22" rx="11" fill="#ffedd5" stroke="#fdba74"/>
+  <text x="775" y="279" text-anchor="middle" font-size="11" font-weight="700" fill="#c2410c">清空预设指令与外围工具</text>
+  <text x="660" y="310" font-size="12" font-weight="700" fill="#334155">发给模型：仅 3 个工具</text>
+  <text x="660" y="332" font-size="12" fill="#475569">· bash（持久终端，Windows 为 pwsh）</text>
+  <text x="660" y="352" font-size="12" fill="#475569">· read_image · working_directory</text>
+  <text x="660" y="384" font-size="12" font-weight="700" fill="#334155">系统提示词只剩一句话：</text>
+  <text x="660" y="406" font-size="11" fill="#7f1d1d">"You are a helpful software</text>
+  <text x="660" y="422" font-size="11" fill="#7f1d1d">engineer assistant."</text>
+  <text x="660" y="444" font-size="12" fill="#475569">complete: true 屏蔽其余一切提示词段</text>
+  <text x="660" y="476" font-size="12" font-weight="700" fill="#334155">砍掉：AGENTS.md、可选环境快照、</text>
+  <text x="660" y="496" font-size="12" font-weight="700" fill="#334155">Skills、Goal/Plan/Todo、Subagent</text>
+  <text x="660" y="520" font-size="12" fill="#475569">保留：基础上下文压缩（自动 + /compact）</text>
+  <text x="660" y="548" font-size="12" fill="#b91c1c">注意：工具少不代表对新手更简单</text>
+  <text x="660" y="578" font-size="12" font-weight="700" fill="#16a34a">适合谁：固定模型与工作区状态，测模型</text>
+  <text x="660" y="598" font-size="12" font-weight="700" fill="#16a34a">裸实力与 Harness 加成的 A/B 对照</text>
 
   <!-- Creator 卡片 -->
-  <rect x="960" y="210" width="260" height="470" rx="12" fill="#f0fdf4" stroke="#86efac"/>
-  <rect x="960" y="210" width="260" height="44" rx="12" fill="#16a34a"/>
-  <text x="1090" y="230" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">Creator mode</text>
-  <text x="1090" y="246" text-anchor="middle" font-size="11" fill="#dcfce7">preset id: cordis · order 4</text>
-  <rect x="1025" y="264" width="130" height="22" rx="11" fill="#dcfce7" stroke="#86efac"/>
-  <text x="1090" y="279" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">动扩展层（绿色轴）</text>
-  <text x="980" y="310" font-size="12" font-weight="700" fill="#334155">= Standard 全量，另加三件：</text>
-  <text x="980" y="332" font-size="12" fill="#475569">① cordis_inspect_list / query</text>
-  <text x="980" y="352" font-size="12" fill="#475569">　（只读运行时检查）</text>
-  <text x="980" y="372" font-size="12" fill="#475569">② plugin_manager（条件启用：</text>
-  <text x="980" y="392" font-size="12" fill="#475569">　!!js "!ctx.get('profileContext')"）</text>
-  <text x="980" y="412" font-size="12" fill="#475569">③ 三个创作技能（customSkillDirs</text>
-  <text x="980" y="432" font-size="12" fill="#475569">　追加，非替换；首载约 3.9KB）</text>
-  <text x="980" y="464" font-size="12" font-weight="700" fill="#334155">工作对象：DSH 自身</text>
-  <text x="980" y="484" font-size="12" fill="#475569">写插件 → 装 bundle patch →</text>
-  <text x="980" y="504" font-size="12" fill="#475569">影响 profile 此后所有会话</text>
-  <text x="980" y="536" font-size="12" font-weight="700" fill="#b91c1c">风险面：检查工具无沙箱行约束、</text>
-  <text x="980" y="556" font-size="12" font-weight="700" fill="#b91c1c">持久配置写入——由审批门兜底</text>
-  <text x="980" y="586" font-size="12" font-weight="700" fill="#16a34a">定位：all-plugin harness 的</text>
-  <text x="980" y="606" font-size="12" font-weight="700" fill="#16a34a">自举入口</text>
+  <rect x="935" y="210" width="275" height="470" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <rect x="935" y="210" width="275" height="44" rx="12" fill="#16a34a"/>
+  <text x="1072" y="230" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">Creator（创造模式）</text>
+  <text x="1072" y="246" text-anchor="middle" font-size="11" fill="#dcfce7">preset id: cordis · order 4</text>
+  <rect x="997" y="264" width="150" height="22" rx="11" fill="#dcfce7" stroke="#86efac"/>
+  <text x="1072" y="279" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">开放宿主自扩展入口</text>
+  <text x="955" y="310" font-size="12" font-weight="700" fill="#334155">= Standard 全套工具，另加三项：</text>
+  <text x="955" y="332" font-size="12" fill="#475569">① cordis_inspect_list / query</text>
+  <text x="955" y="352" font-size="12" fill="#475569">　（只读探查宿主服务、事件与配置树）</text>
+  <text x="955" y="372" font-size="12" fill="#475569">② plugin_manager / plugin_market</text>
+  <text x="955" y="392" font-size="12" fill="#475569">　（有 profileContext 时自动启用）</text>
+  <text x="955" y="412" font-size="12" fill="#475569">③ 四个创作技能（customSkillDirs 追加：</text>
+  <text x="955" y="432" font-size="12" fill="#475569">　插件开发/预设编排/语法参考/体验设计）</text>
+  <text x="955" y="464" font-size="12" font-weight="700" fill="#334155">工作对象变成 DSH 自己：</text>
+  <text x="955" y="484" font-size="12" fill="#475569">写插件或自定义模式 → 装入当前 profile</text>
+  <text x="955" y="504" font-size="12" fill="#475569">→ 跨会话持久生效</text>
+  <text x="955" y="536" font-size="12" font-weight="700" fill="#b91c1c">安全兜底：装插件等同宿主进程执行代码，</text>
+  <text x="955" y="556" font-size="12" font-weight="700" fill="#b91c1c">每次管理写操作强制走 danger 审批</text>
+  <text x="955" y="586" font-size="12" font-weight="700" fill="#16a34a">适合谁：用对话给 DSH 加工具、加界面，</text>
+  <text x="955" y="606" font-size="12" font-weight="700" fill="#16a34a">或拼装自己的第 5 种预设模式</text>
 
   <!-- 底部结论 -->
-  <rect x="60" y="700" width="1160" height="42" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="640" y="726" text-anchor="middle" font-size="13" fill="#1e40af">三根轴互不排斥：自定义 preset 可以同时动多根轴。内置四份 = 三个单轴极端 + 一个不动轴的基线；"创建自己的模式"没有新机制，就是再写一份 @deepseek-ai/dsh-agent-preset 声明。</text>
+  <rect x="50" y="700" width="1160" height="42" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="630" y="726" text-anchor="middle" font-size="13" fill="#1e40af">这些维度互不排斥：自定义预设完全可以自由组合，无需改宿主源码——再写一份 @deepseek-ai/dsh-agent-preset 声明即可。</text>
 </svg>

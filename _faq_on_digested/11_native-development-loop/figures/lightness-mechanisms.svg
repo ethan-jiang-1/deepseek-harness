@@ -23,8 +23,8 @@
   <rect x="420" y="96" width="360" height="420" rx="10" fill="#f0fdf4" stroke="#86efac"/>
   <path d="M420,136 L420,106 Q420,96 430,96 L770,96 Q780,96 780,106 L780,136 Z" fill="#15803d"/>
   <text x="600" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">反馈延迟 · 延迟工程分层</text>
-  <text x="442" y="176" font-size="14" font-weight="700" fill="#166534">hooks 管秒级本地缺陷</text>
-  <text x="442" y="198" font-size="12.5" fill="#475569">lint、空白、vendor；pre-push 增量 typecheck。</text>
+  <text x="442" y="176" font-size="14" font-weight="700" fill="#166534">本地 hooks 只拦高频硬伤</text>
+  <text x="442" y="198" font-size="12.5" fill="#475569">pre-commit 查格式与配对；pre-push 跑 typecheck。</text>
   <text x="442" y="246" font-size="14" font-weight="700" fill="#166534">最窄测试管分钟级行为证据</text>
   <text x="442" y="268" font-size="12.5" fill="#475569">只跑"会为回归而失败"的那一个。</text>
   <text x="442" y="316" font-size="14" font-weight="700" fill="#166534">CI owns 全量 + 平台矩阵</text>

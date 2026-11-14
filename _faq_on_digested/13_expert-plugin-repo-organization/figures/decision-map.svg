@@ -19,11 +19,11 @@
 
     <rect x="40" y="278" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
     <text x="52" y="299" font-weight="bold">4 UI 走哪层</text>
-    <text x="52" y="318">presenter → toolview 槽/inject → 树内</text>
+    <text x="52" y="318">默认兜底卡 → dsh.client 槽位 → 树内</text>
 
     <rect x="40" y="342" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
-    <text x="52" y="363" font-weight="bold">5 spec 流程</text>
-    <text x="52" y="382">借 DSH 的 docs/notes 纪律；OpenSpec 后置</text>
+    <text x="52" y="363" font-weight="bold">5 规范与研发流</text>
+    <text x="52" y="382">借 DSH 的 docs/notes 纪律；OpenSpec 按需后置</text>
   </g>
 
   <!-- Option column -->
@@ -85,8 +85,8 @@
 
     <path d="M115 512 L 115 576" stroke="#999" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
     <path d="M175 512 C 235 550, 380 558, 455 576" fill="none" stroke="#999" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
-    <text x="668" y="588" font-size="12" fill="#777">OpenSpec 触发与主形态正交，都从 A 出发</text>
-    <text x="668" y="606" font-size="12" fill="#777">（推荐路径 4：仅第二贡献者不进 B）</text>
+    <text x="668" y="588" font-size="12" fill="#777">提案流升级与仓库形态正交，都从 A 出发</text>
+    <text x="668" y="606" font-size="12" fill="#777">（多人协作留 A；向上游提 seam 才进 B）</text>
   </g>
 
   <defs>

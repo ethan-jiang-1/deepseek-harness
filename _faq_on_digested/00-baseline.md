@@ -1,6 +1,6 @@
 # 核验基线登记
 
-本页是本语料**唯一**的基线家（`CORPUS-CHARTER.md` §2）。各篇正文不再声明「当前基线」，只写「核验状态见维护清单」，或直接链回本页。
+本页是本语料**唯一**的基线家（`CORPUS-CHARTER.md` §2）。各篇正文不再声明「当前基线」，统一链回本页。
 
 判据很简单：同一基线的声明数应为 1。第 2 份起就是维护负债——每轮同步都会多一处要改，而且必然漂移成不一致。
 
@@ -9,41 +9,42 @@
 | 项 | 值 |
 |---|---|
 | `baseline` | `dsh-v0.2.1-rc.5`（commit `62adbb04417f3214eb4428c4ac28490d7ea0fdcf`） |
-| 登记日期 | 2026-11-10 |
-| 含义 | 本轮复核时产品树的检出口。**它不等于每篇的核验点**：各篇的 `verifiedAt` 见下表，可以早于 `baseline`，但必须按 `status` 标注，不得写成「已按当前基线核验」 |
+| 登记日期 | 2026-11-14 |
+| 含义 | 本轮全量重写与复核时产品树的检出口。各篇具体核验状态与外部/本机时点快照说明见下表 |
 
 ## 各篇核验状态
 
-`status` 取值：`reverified`（已按 `baseline` 逐条复核）、`carried`（沿用早期核验，结论未重跑）、`unrecorded`（未登记核验点）。
+`status` 取值：`reverified`（已按当前 `baseline` 工作树逐条复核源码与文档路径）、`carried`（沿用早期实测读数，仅做结构整理）、`unrecorded`（未登记核验点）。
 
 | 篇 | `verifiedAt` 时的基线 | `status` | 说明 |
 |---|---|---|---|
-| 01 目录组织 | `dsh-v0.2.1-rc.2` | carried | 结构与包组表按 rc.2 核；`packages/` 分区未变 |
-| 02 hooks | rc.2 线 | carried | 桥事件计数属外部文档读数，见该篇 research |
-| 03 preset 模式 | rc.2 | carried | 四份 preset 的 wire 工具表按 rc.2 重测 |
-| 04 根入口文档 | rc.2 线 | carried | 门禁与预算以 manifest 为准，manifest 本身随树走 |
-| 06 变更落位 | rc.2 | carried | 载体路径未变 |
-| 07 借鉴 DSH | rc.2 线 | carried | 迁移建议不依赖具体行号 |
-| 08 插件 seam | `dsh-v0.2.1-rc.5` | reverified | 生成表按 rc.5 重跑：35 seam / 15 P≥2 / 42.9% / 99 总数，与 rc.2 读数一致 |
-| 10 重度用户体感 | `dsh-v0.2.0-rc.2` 线 | carried | goal/plan 机制细节需按 rc.5 抽查 |
-| 11 原生开发闭环 | `dsh-v0.1.5-rc.2`（`fb2c4b9e69`） | carried | 制度类结论；git 量化读数未重算 |
-| 13 专家插件仓 | rc.2 线 | carried | 组织方案不依赖版本 |
-| 20 Agent Note 质量 | `dsh-v0.2.1-rc.2`（`687f282e86`） | reverified（计数） | 计数已按 2026-11-10 实测更新为活跃 692 / 归档 1848 |
-| 21 录制会话快照 | `dsh-v0.2.1-rc.2` | carried | `dsh-llm-replay` 结论未变 |
-| 22 规格漂移 | rc.2 | carried | 防护清单未变 |
-| 23 发布物形态 | 工作树 `8d8940e6a3`（产品树 `687f282e86`） | carried | 含 2026-10-25 本机实测读数 |
-| 24 发布与交付 | `dsh-v0.2.1-rc.3`（`1f81c047`） | carried | 包合同与六轴；`release/` 的 T 级实验日期见该目录 |
-| 25 Workspace | `dsh-v0.2.1-rc.3`（`1f81c047`） | carried | 含 2026-10-27 本机 `$DSH_HOME` 静态读数 |
-| 27 运行时编排 | `dsh-v0.2.1-rc.2` | carried | 五岔口与诊断表未变 |
-| 28 探针是什么 | `dsh-v0.2.1-rc.5` | reverified | 不变量与事件（`request/header` / `system/message`）按 rc.5 核；外仓 `probes/` 读数为 2026-11-10 本机静态清点 |
-| 29 keyless 的含义与边界 | `dsh-v0.2.1-rc.5` | reverified | 七篇结构（00 导览 + 01–05 正文 + answer 结论页）；判据、三档语义（含 refresh 写会话 fixture）、五类测试证据、两处哨兵假 key、与四类不调真模型的测试包均落在判据内的结论按 rc.5 核；postmortem 0001 读数引该篇原文；无计数类结论 |
+| 01 目录组织 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03` + `reference`；顶层目录、`desktop-host` 随机回环端口、`tsconfig.host/client` 双编译面按 rc.5 核 |
+| 02 hooks 对比 | `dsh-v0.2.1-rc.5` | reverified | DSH 原生拦截点（`agent/created`、`agent/pre-step`、`tools/*`）与实验桥实现按 rc.5 核；外部 CC/Codex 官方文档读数留档于 2026-09-22 |
+| 03 preset 模式 | `dsh-v0.2.1-rc.5` | reverified | 四份 `*.patch.yml`、`minimal-preset` 快照契约与 `cordis` 四个创作技能按 rc.5 核 |
+| 04 根入口文档 | `dsh-v0.2.1-rc.5` | reverified | `doc-budgets.manifest.json` 七项词数上限、`doc-sync` 门禁、`agent-instructions` 与 `compaction` 契约按 rc.5 核 |
+| 06 变更落位 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..04` + `reference`；Note 现行判据（`730bcc7c85`）、`rules.mjs` 与 `ci.yml` 按 rc.5 核 |
+| 07 借鉴 DSH | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..04` + `reference`；引用的 `AGENTS.md`、`defensive-patterns/README.md` 与门禁脚本按 rc.5 核 |
+| 08 插件 seam | `dsh-v0.2.1-rc.5` | reverified | 生成表按 rc.5 核（99 = 58 core + 35 seam + 5 service + 1 bundle，15 条 P≥2 = 42.9%），远程与扩展点对齐 `ctx.ssh` / `ctx.deepseekLlmApiExtensions` |
+| 10 重度用户体感 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03` + `reference`；校对了已内置的右栏/交付卡/Office 预览及已退回程序化 runner 的 `cordis_define` |
+| 11 原生开发闭环 | `dsh-v0.2.1-rc.5` | reverified | 拆清运行时产品姿态与仓内六步窄切片开发闭环，附新增工具走查，按 rc.5 核 |
+| 13 专家插件仓 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03` + `research`；对齐 `@deepseek-ai/dsh-agent-preset`、`dsh.client` 与 `engines.dsh` 现行校验逻辑 |
+| 20 Agent Note 质量 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03` + `reference`；准入判据、`verify-agent-note-format.ts`、`lefthook.yml` 与归档冻结机制按 rc.5 核 |
+| 21 录制会话快照 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03` + `reference`；`dsh-llm-replay`、`replay.override.json` 与 `postmortem 0001–0004` 按 rc.5 核 |
+| 22 规格漂移 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03` + `reference`；运行时投影/压缩、9 对生成器 `--check` 门禁与历史转向提交按 rc.5 核 |
+| 23 发布物形态 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03` + `reference`（保留 `upgrade-dsh-global.sh`）；启动器与发布规则按 rc.5 核，社区反馈为 2026-10-25 快照 |
+| 24 插件发布与数据 | `dsh-v0.2.1-rc.5` | reverified | 独立聚焦插件与智能体作者：`dsh.bundle.patch`、`engines.dsh`、随包 `SkillProvider` 与三块运行数据接口按 rc.5 核 |
+| 25 Workspace | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..02` + `reference`；`workspace.json`、`ctx.workingDirectory` 与 `deriveGroups` 按 rc.5 核，含 2026-10-27 本机案例读数 |
+| 26 定制工作台发行 | `dsh-v0.2.1-rc.5` | reverified | 由原 `24/release/` 独立成篇：以 Kanban Studio 串联 Profile 组装、`$DSH_HOME` 隔离、首启绑定与生命周期，按 rc.5 与隔离冒烟核 |
+| 27 运行时编排 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03`；`PTC`、`subagent`、`workflow`、`agent-team`、`goal`/`ralph`、`jobs`/`schedule` 契约按 rc.5 核 |
+| 28 探针工作法 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..02` + `reference`；4 个主仓夹具实例按 rc.5 实测核对，外仓 `probes/` 读数为 2026-11-10 本机清点 |
+| 29 keyless 边界 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..02`；唯一判据、哨兵假 Key、`refresh` 语义与五档测试证据按 rc.5 核 |
 
 ## 版本号能写在哪
 
-- **本页**：写当前基线，一处。
-- **正文引用历史 commit 作为证据**：可以，但必须明确标为历史（`OLD`、`历史`、删除线、或紧随 `_change_log` / 已归档决策记录），不得写成当前基线。
-- **正文引用外部文档的当日读数**：可以，写成「T（日期）」或「live-check 于某日」，不冒充基线。
-- **链接 URL**：一律 `blob/master/` 或 `tree/master/`；不把 tag / SHA 写进内容地址。事件与讨论的永久链接（`commit/`、`pull/`、`issues/`）可以固定 SHA。
+- **本页**：写当前基线，唯一一处。
+- **正文引用历史 commit 作为证据**：可以，但必须明确作为历史事件（如历史提交、已归档决策记录），不得写成当前基线。
+- **正文引用外部文档或本机抽样的当日读数**：可以，明确标出采样日期，不冒充仓库基线。
+- **链接 URL**：一律 `blob/master/` 或 `tree/master/`；不把 tag / SHA 写进内容地址。事件与讨论永久链接（`commit/`、`pull/`、`issues/`、`discussions/`）可固定编号或 SHA。
 
 ## 版本升级时改什么
 

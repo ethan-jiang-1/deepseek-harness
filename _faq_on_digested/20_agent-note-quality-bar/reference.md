@@ -1,133 +1,63 @@
-# 参考：每条结论的出处
+# Reference · Agent Note 权威规则、门禁脚本与真实样本索引
 
-分篇正文只给结论，出处散落在各页的「证据入口」里。这一页把它集中起来：**每个说法对应 DSH 仓库里的哪个文件、哪一行**。想核对原文、或者上游改动后来确认哪些页过期了，从这里查。
-
-## 怎么读这张表
-
-- 路径都相对于**本仓库根目录**（`deepseek-harness/`）。`.agents/notes/` 就是 Agent Note 制度的 owner 目录。
-- 行号按下面的基线测量。**规则文件如果被改过，行号会漂，路径不会**——所以先看路径，再用行号定位。
-- 标「实测」的条目是我在本仓库跑命令数出来的，不是规则原文；仓库每天都在长，这类数字最先过期。
-
-核验状态见 [核验基线登记](../00-baseline.md)。
-
-## 一、规则原文的 owner 文件
-
-| 说法 | 出处 | 位置 |
-|---|---|---|
-| Agent Note 是「agent 写的 RFC」，保留 rationale / alternatives / consequences / verification | [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/AGENTS.md) | 第 3 行 |
-| 每篇新 Note 必须做 supersession 检查；部分取代保持活跃并互链 | [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/AGENTS.md) | 第 5 行 |
-| 归档件是冻结快照，永不编辑、不得当作当前权威 | [`.agents/notes/archived/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/AGENTS.md) | 全文 |
-| 创建门槛：只为「代码、测试与现有文档都装不下的持久决定理由」写 Note | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | § When to write one（第 44 行起） |
-| 机械与局部编辑豁免，含局部 UI 呈现与交互 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | § When to write one |
-| 涉及持久化、协议、权限、跨组件状态归属、共享交互规则时仍回到持久价值判据 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | § When to write one |
-| 六个类型的定义、`architecture` 与 `process` 的分界 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | § Classification（第 21 行起） |
-| 保留 / 归档 / 删除的语义判据；「实现很小」不构成理由 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | § Archiving and deletion（第 36 行起） |
-| 三种状态的正文骨架（proposed / implemented / rejected 各自的必需章节） | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | § The body skeleton（第 76 行起） |
-| `## Risks` 是合法章节（第 88 行）；`## Consequences` 是 implemented 必需章节（第 100 行） | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | 第 88 / 100 行 |
-| rejected 保留提案期章节（含 `## Acceptance criteria`、`## Plan`） | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | § `rejected/`（第 105 行起） |
-| `## Alternatives considered` 强制 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | 第 109 行起 |
-| 生命周期之间如何移动、需要同时满足什么 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | 第 119 行起 |
-| 中文对侧的规则 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | 第 123 行起 |
-| implemented 侧写成当前状态的子树补充要求 | [`.agents/notes/implemented/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/AGENTS.md) | 全文 |
-| 路径语法、`Layout and naming` | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | § Layout and naming（第 7 行起） |
-
-## 二、门禁脚本（DSH 自己执行的检查）
-
-这些是**会以非零退出码失败**的脚本，都在 `scripts/` 下，由 `pnpm run doc-sync` 汇总调用。
-
-| 说法 | 出处 | 位置 |
-|---|---|---|
-| 头部三行精确匹配、全文只有一个 `Status:` 行 | [`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) | 头部解析段 |
-| 三种状态的精确正则（rejected 必须 `— ` 加理由） | [`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) | 第 29 行 `REQUIRED` 附近的 status 校验 |
-| `## Problem` 必须是第一个 h2 | [`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) | 正文骨架校验段 |
-| implemented 禁用标题正则 `Proposal\|Plan\|Migration plan\|Acceptance criteria` | [`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) | **第 36 行** |
-| 禁用标题的报错原文 | [`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) | 第 74 行 |
-| grandfather 注释只对 `2026-07-05` 之前的 Note 有效 | [`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) | **第 13 行** `FORMAT_ADOPTED`、第 82 行校验 |
-| 退役的 legacy 债务标记被拒 | [`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) | 第 19 行 `LEGACY_MARKERS`、第 84 行校验 |
-| 封闭的生命周期与类型目录、文件名日期格式、`INDEX.md` 禁令 | [`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts) | 第 48 / 54 / 68 / 72 / 76 行（各条报错） |
-| 上一条是**共享模块**，错误随 `verify-agent-note-format` 等门禁失败 | [`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) 第 38 行调用 `walkAgentNoteTree()` | — |
-| 格式与树门禁**跳过** `.zh.md` | [`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts) | 第 64 行 |
-| 三件套完整性、中英逐章节一致性 | [`scripts/verify-translation-pairing.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-translation-pairing.ts) | 全文 |
-| 章节键取**英文**标题 slug（第 223 行 `slug(headingText(enSection.heading))`），键的构成说明见第 187 行 | [`scripts/translation-pairing-record.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/translation-pairing-record.ts) | 第 187 / 223 行 |
-| 「标题文字本身会被翻译，因此不能参与跨语言对齐」这句理由 | [`scripts/translation-brief.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/translation-brief.ts) | **第 125 行**注释 |
-| 各门禁在总入口里如何挂载 | [`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/run-gates.ts) | `agent-note-format` 第 853 行、`archived-agent-notes` 第 854 行、`translation-pairing` 第 829 行 |
-| 归档件的冻结与三件套规则 | [`scripts/verify-archived-agent-notes.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-archived-agent-notes.ts) | 全文 |
-| 六类型调用的共享类型集合 | [`scripts/archived-agent-notes.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/archived-agent-notes.ts) | 第 5 行 import |
-
-## 三、追加要求的 skill
-
-skill 只追加**判断的语义部分**，不重复门禁能机械检查的东西。全部在 `.agents/skills/` 下。
-
-| 说法 | 出处 |
-|---|---|
-| 保留 / 归档 / 删除的分类判据、校准例子、不朝配额归档 | [`dsh-archive-agent-notes/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md) |
-| 不要为保住候选计数而创建重复 Note | [`dsh-find-simplifications/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-find-simplifications/SKILL.md) |
-| 保留 rationale / mechanisms / alternatives / consequences / 已交付的验证证据；删规划清单 | [`dsh-prose-standard/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/SKILL.md)（校准例子在 [`references/examples.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/references/examples.md)） |
-| 链接不能替代本地合同 | [`dsh-prose-standard/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/SKILL.md) |
-| 反模式：spec-speak、变更叙述、审查视角残留 | [`dsh-trim-cot-leakage/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/SKILL.md)（例子在 [`references/examples.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/references/examples.md)） |
-| review 侧如何看待 Note | [`dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md) |
-| 文档写作与预算 | [`dsh-doc/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-doc/SKILL.md) |
-| 破坏性变更要立刻写 upgrade guide | [`dsh-create-upgrade-guide/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-create-upgrade-guide/SKILL.md) |
-| 推送前该跑哪些检查 | [`dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md) |
-| 删除类提案的四件证据：消费者证据、被移除的维护成本、放弃的能力、可观察的验收条件；proposal 骨架含 `Acceptance criteria` 与 `Risks` | [`dsh-find-simplifications/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-find-simplifications/SKILL.md) 第 59 行 |
-| Note 的 change-story 可以用历史阶段名；`this cut` / `v1` / `today` 以及 Note 自身的修订史不行；`## Alternatives considered` 是 review 裁决的归宿 | [`dsh-trim-cot-leakage/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/SKILL.md) 第 35、37 行；[`references/examples.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/references/examples.md) 第 97、111 行 |
-| 升级指南超过 500 词时，多出来的理由移进 Agent Note | [`dsh-create-upgrade-guide/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-create-upgrade-guide/SKILL.md) 第 44 行 |
-| 实现了 proposed Note 的 PR 要在同一 diff 改写成现在时，并核对路径、名称与机制 | [`dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md) 第 55 行 |
-| 作者顺序适用于面向人的文档，不适用于 Agent Note；implemented 里的迁移计划与未来时态属于 slop | [`dsh-doc/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-doc/SKILL.md) 第 91、93 行 |
-| Note 相关改动在推送前跑 `pnpm run doc-sync` | [`dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md) 第 35 行 |
-| 文档结构规则不适用于 Agent Note | [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 第 7 行 |
-| tier 表把 rationale 指派给 Agent Note | [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 第 25 行 |
-| 写作规则仍要求应用 Agent Note 创建标准 | [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 第 41 行 |
-| slop 清单点名 implemented Note 里的 spec-speak | [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 第 73 行 |
-
-## 四、作为范例的真实文件
-
-正文引用的每个例子都是仓库里的真实文件，可以直接打开对照。
-
-| 用来说明什么 | 文件 |
-|---|---|
-| 出口 ③：小改动、但放宽了安全保证（171 词） | [`archived/feature/2026-09-16-sandbox-same-mode.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md) |
-| 出口 ③：一条看不出规律的长期约定（232 词） | [`archived/process/2026-09-22-workspace-release-ranges.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-09-22-workspace-release-ranges.md) |
-| rejected 的价值：防止重新开讼 | [`rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md) |
-| 「机械门禁优于散文约定」的实测结论 | [`archived/process/2026-06-11-quality-gates.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md) |
-| 多语言三件套的实际形态 | [`archived/feature/2026-09-16-sandbox-same-mode.i18n.yaml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.i18n.yaml)（同目录另有 `.md` 与 `.zh.md`） |
-| `.i18n.yaml` 的键形态：`/{H1 标题 slug}/{h2 标题 slug}` | 活跃 Note 的 sidecar，例如 [`implemented/feature/2026-06-15-ptc.i18n.yaml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/feature/2026-06-15-ptc.i18n.yaml) 里的 `/agent-note-ptc-mode-the-model-writes-typescript-against-the-tool-registry/decision`；归档件改用两侧文件的 git blob 哈希记录 |
-
-## 五、实测数字（会过期）
-
-这些是我在仓库里跑出来的，**不是规则原文**。过期风险最高，用前请复核。
-
-| 数字 | 怎么得到的 |
-|---|---|
-| 活跃 692 篇 = `proposed` 84 + `implemented` 592 + `rejected` 16；归档 1848 篇 | 数 `.agents/notes/` 下各生命周期目录的 Note（**不含** `.zh.md` 与 `.i18n.yaml`，也**不含目录自身的 `AGENTS.md`/`CLAUDE.md`/`README.md`**——后三者是导航与指令文件，不是 Note；`implemented` 的 592 可由六类分项 360+80+22+68+36+26 交叉验证，两数必须相等），2026-11-10 实测 |
-| implemented 各类型：architecture 360 / feature 80 / process 68 / testing 36 / simplification 26 / bug-fix 22 | 同上，按类型子目录分别计数；**`simplification` 是后来新增的第六类**，早期读数的六类分项不含它 |
-| 8 篇 implemented 仍带 `## Risks` | 全树 grep `^## Risks`，逐篇确认其在 `implemented/` 下 |
-| 16 篇活跃 Note 使用 grandfather 注释（另有 16 篇在归档树） | 全树 grep `agent-note-format: alternatives-not-recorded` |
-| 跨生命周期的改名全部以 `rejected/` 为目标（`proposed/` → `rejected/`），没有一处反向 | `git log --diff-filter=R --name-status -- .agents/notes` |
-| 2026-09-18 之后一个月：新增 Note ≈ 110，非合并提交 ≈ 914 | Note 按文件名日期计，提交按 `--no-merges` 计；重命名与合并会同时抬高两侧，只用于给量级感，不做逐年比较 |
-
-## 六、移植时的判断依据
-
-[06](./06-port-to-another-repo.md) 讲的移植（哪些必须照抄、哪些可以自己发明），**是本组 FAQ 依据下列仓库根部文件做的归纳**，不是某一篇文档里的现成清单——判断依据全部在仓库里可以逐条核对：
-
-| 判断 | 依据 |
-|---|---|
-| 哪些是**必须照抄的机制**：规则 owner 文件 + 会失败的门禁 + 三件套配对 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)、[`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/AGENTS.md)、[`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts)、[`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts) |
-| 哪些是 **DSH 自己的装载方式**：具体目录名（`.agents/notes/`）、具体类型名、多语言三件套 | 目录名与类型集合写在 [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) 与 [`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)；多语言政策写在 [`docs/i18n/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/i18n/README.md) |
-| 「文件说明现在，Note 说明为什么」这条分工 | [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 的 tier 表与 rationale 行 |
-| 为什么值得机械门禁而不是散文约定 | [`archived/process/2026-06-11-quality-gates.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md) |
-
-> 移植建议本身（八条照抄、五条可发明）属于本 FAQ 的**综合判断**，来源是上表这些文件的对照阅读，不是原文引用。
-
-## 七、本组页面自己的记录
-
-| 文件 | 说明 |
-|---|---|
-| [`question.md`](./question.md) | 问题与范围声明 |
-| [`answer.md`](./answer.md) | 一分钟版、目录清单、推荐顺序、术语速查 |
-| [`one-real-change.md`](./one-real-change.md) | 附录：一次真实改动的全程走查 |
-| [`07-where-skills-add-requirements.md`](./07-where-skills-add-requirements.md) | 三层分工；行号不在该页 |
+本页集中汇总 FAQ 20 引用到的全部 DSH 主仓规则文件、门禁脚本、配套技能（Skills）以及真实 Note / 提交样本，方便直接对照源码核查。
 
 ---
 
-核验状态见 [核验基线登记](../00-baseline.md)。
+## 一、核心规则与文档标准（Owner 文件）
+
+| 规范主题 | 仓库文件路径 | 负责定义什么 |
+|---|---|---|
+| **制度总纲** | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | 准入门槛与豁免范围、路径语法、6 个封闭分类、三态正文骨架、`Alternatives considered` 强制规则、完全取代合并条件、归档与删除准则 |
+| **子树常设指令** | [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/AGENTS.md) | Agent Note 定位（Agent 撰写的内部 RFC）、每新增一篇必触发的取代检查（Supersession Check） |
+| **已交付记录同步边界** | [`.agents/notes/implemented/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/AGENTS.md) | `implemented/` 记录随代码路径/名称/默认值同步更新事实的义务，以及严禁原地篡改历史决定的边界 |
+| **归档冻结规范** | [`.agents/notes/archived/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/AGENTS.md) | 归档三件套五步封存要求、永久只读禁令、出站链接免检说明及唯一授权历史哈希例外记录 |
+| **全仓静态文档分层** | [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) | `Document current state` 原则、文档分层职责表（把设计理由分流给 Agent Note）与 `implemented` 提案残留词（slop）禁令 |
+| **双语三件套契约** | [`docs/i18n/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/i18n/README.md) | 中英双语同权规则、`.md` + `.zh.md` + `.i18n.yaml` 同目录配对与哈希记录语义 |
+
+---
+
+## 二、机器门禁脚本与本地钩子
+
+以下检查统一挂载在 [`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/run-gates.ts)（通过 `pnpm run doc-sync` 运行），归档防篡改与翻译配对同时挂载在本地 Git 钩子中：
+
+| 检查项 | 脚本 / 配置文件 | 拦截什么违规行为 |
+|---|---|---|
+| **目录树与分类共享解析** | [`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts) | 校验顶层生命周期目录、6 个封闭分类目录、三层目录深度、`yyyy-mm-dd-*.md` 文件名语法，并拒绝集中式 `INDEX.md` |
+| **分类门禁入口** | [`scripts/verify-agent-note-classification.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-classification.ts) | 调用 `walkAgentNoteTree()` 对非法目录结构与未知分类以非零退出码报错 |
+| **正文格式与骨架门禁** | [`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) | 校验前四行头部语法、唯一 `Status:` 行、首节 `## Problem`、各状态必填章节、`implemented/` 禁用标题（`Proposal` / `Plan` / `Migration plan` / `Acceptance criteria`），以及 `2026-07-05` 前后 grandfather 注释合法性 |
+| **双语三件套配对门禁** | [`scripts/verify-translation-pairing.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-translation-pairing.ts)<br>[`scripts/translation-pairing-record.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/translation-pairing-record.ts)<br>[`scripts/translation-brief.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/translation-brief.ts) | 校验中英两侧章节深度与数量一致、机器头部标记保留英文、代码块逐字一致及 `.i18n.yaml` 哈希最新 |
+| **归档冻结校验门禁** | [`scripts/verify-archived-agent-notes.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-archived-agent-notes.ts)<br>[`scripts/archived-agent-notes.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/archived-agent-notes.ts) | 校验 `archived/{class}/` 封闭分类、完整三件套、`Archived: YYYY-MM-DD` 元数据行与只追加冻结内容哈希清单 |
+| **本地提交钩子** | [`lefthook.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/lefthook.yml) | 在 `pre-commit` 与 `pre-merge-commit` 阶段拦截对 `.agents/notes/archived/**` 的非法改动并检查暂存的 `.i18n.yaml` |
+
+---
+
+## 三、承担语义判断与跨载体协作的 Skills
+
+| 技能路径 | 在 Agent Note 治理中的职责 |
+|---|---|
+| [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md) | 留存、归档与整套删除的语义判据、正反校准样本（反驳按字数或年龄划线）及五步归档标准动作 |
+| [`.agents/skills/dsh-prose-standard/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/SKILL.md)<br>[`references/examples.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/references/examples.md) | 提案转正时保留动机/备选/后果/验证证据与覆盖缺口、删待办清单的尺度，以及“外链理由不得替代本地代码合同”规则 |
+| [`.agents/skills/dsh-trim-cot-leakage/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/SKILL.md)<br>[`references/examples.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/references/examples.md) | 清除会话推理残渣、把“Review 被拒”改写为永久技术理由进 `Alternatives considered`、禁止记录文件自身修订版本号 |
+| [`.agents/skills/dsh-find-simplifications/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-find-simplifications/SKILL.md) | 删减类提案必备的四项证据（调用方清点、省下的维护成本、放弃的能力、可观察验收）及禁止重复建 Note |
+| [`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md) | 审查实现 PR 时核对 `proposed/` 是否已同提交改写为现在时 `implemented/` 且路径/名称与代码一致 |
+| [`.agents/skills/dsh-create-upgrade-guide/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-create-upgrade-guide/SKILL.md) | 升级指南超过 500 词预算时，将深层设计理由剥离进对应 Agent Note |
+| [`.agents/skills/dsh-doc/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-doc/SKILL.md) & [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md) | 区分面向人类读者的文档结构与 Agent Note 骨架；推送涉及 Note 的改动前跑 `pnpm run doc-sync` |
+
+---
+
+## 四、正文引用的真实 Note 与历史提交样本
+
+| 说明要点 | 真实样本 / 永久事件链接 |
+|---|---|
+| 收紧准入门槛（废除“非平凡改动必写”旧规） | 历史提交 [`730bcc7c85`](https://github.com/deepseek-ai/deepseek-harness/commit/730bcc7c85)（`docs: require lasting rationale before creating agent notes`） |
+| 确立 6 个封闭领域分类子目录 | 历史提交 [`a767cd357f`](https://github.com/deepseek-ai/deepseek-harness/commit/a767cd357f)（PR [`#2280`](https://github.com/deepseek-ai/deepseek-harness/pull/2280)） |
+| 零 Note 合格交付参照（7 文件局部 UI 呈现调整） | 历史提交 [`5124a2a310`](https://github.com/deepseek-ai/deepseek-harness/commit/5124a2a310)（PR [`#5004`](https://github.com/deepseek-ai/deepseek-harness/pull/5004)） |
+| 小改动改安全边界 + 部分取代互链 + 快照同提交闭环 | 历史提交 [`2e15f2046c`](https://github.com/deepseek-ai/deepseek-harness/commit/2e15f2046c) 与封存成品 [`archived/feature/2026-09-16-sandbox-same-mode.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md)（171 词，同目录含 `.zh.md` 与 `.i18n.yaml`） |
+| 232 词短小精悍的满分四段骨架样本 | [`archived/process/2026-09-22-workspace-release-ranges.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-09-22-workspace-release-ranges.md) |
+| `rejected/` 防后人翻旧账踩假时钟坑的真实样本 | [`rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md) |
+| 活跃 Note 逐节哈希 sidecar 样本 | [`implemented/feature/2026-06-15-ptc.i18n.yaml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/feature/2026-06-15-ptc.i18n.yaml) |
+| 归档冻结制度与统一正文格式的设计理由 | [`implemented/process/2026-07-26-frozen-agent-note-archive.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/process/2026-07-26-frozen-agent-note-archive.md)、[`archived/process/2026-07-05-uniform-agent-note-format.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-05-uniform-agent-note-format.md) |
+| “Agent 遵守可执行门禁远胜于散文约定”的实证记录 | [`archived/process/2026-06-11-quality-gates.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md) |
+
+> 注：`03` 篇第四节关于外部项目“6 条必留灵魂与 4 项可裁包袱”的划分，是基于上表规则与门禁文件提炼的迁移建议，并非 DSH 源码内的字面清单。核验状态见 [核验基线登记](../00-baseline.md)。

@@ -1,109 +1,59 @@
-# 01 · 根入口的读者分流、常驻内核与生成索引
+# 01 · 根入口的读者分流、常驻内核与“一个事实一个家”
 
-## README 与 AGENTS 的分流
+## 一、`README.md` 对人，`AGENTS.md` 对模型，`CLAUDE.md` 不另起炉灶
 
-DSH 根目录最显眼的设计是：**README 对人，AGENTS 对模型。**
+DSH 根目录最直观的设计是把**人类访客**和**coding agent**从第一秒就分到两条不同的阅读轨道上：
 
-`README.md` 最后一段直接写出分流：
+- [`README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/README.md)（及 `README.zh.md`）面向人，讲清楚产品是什么、怎么跑起来、怎么参与开发；在开发小节末尾专门用一句 `For agents, follow AGENTS.md.` 把模型引走，避免模型把面向用户的宣传介绍当成改代码的工作规范。
+- `CLAUDE.md` 在根目录和 `packages/` 下都是指向同级 `AGENTS.md` 的符号链接（symlink），并由根规矩明令“只改真实文件 `AGENTS.md`”。这样无论外部工具默认认 `CLAUDE.md` 还是 `AGENTS.md`，读到的永远是同一份字节，从根上消灭双份规则漂移。
 
-> Start with the [development guide](docs/development.md) and [architecture documentation](docs/architecture.md).
->
-> For agents, follow [AGENTS.md](AGENTS.md).
->
-> —— `README.md:55-57`
+---
 
-这句把模型从「产品入口」送到「工作入口」，避免模型把 README 当成任务规则来读。`CLAUDE.md` 是 `AGENTS.md` 的 symlink，因此 Claude Code 自动读取的入口与通用 agent 入口是同一份事实，不会出现两套规则漂移。**分离的不只是文件，是两类读者各自的入口协议。**
+## 二、根 `AGENTS.md` 为什么是“路由地图”而不是“仓库摘要”？
 
-## 根 AGENTS.md：常驻上下文的 standing orders
+打开根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)，正文第一句话只有一行，却同时交底了系统心智模型和两条主干路由：
 
-根 `AGENTS.md` 第一段只有一句实质内容，却承担两条路由：
+- 系统本质：DeepSeek Harness 是一个全插件化的 Cordis agent harness；
+- 改代码前先去哪：动 `packages/` 之前先读 [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)（而 `architecture.md` 开头又自带前置分流：不熟 Cordis 先看 `cordis-primer.md` 或 `cordis-tutorial/`）；
+- 写文档前先去哪：遵循 [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)。
 
-> DeepSeek Harness is an all-plugin Cordis agent harness. Read [docs/architecture.md](docs/architecture.md) before changing `packages/`; follow [docs/AGENTS.md](docs/AGENTS.md) for documentation.
->
-> —— `AGENTS.md:3`
+紧接着的常驻章节全按“每会话必用、且别处替代不了”的标准筛选：
 
-前半句给出系统总模型（all-plugin Cordis agent harness），后半句给出两条工作路径：改 `packages/` 前读 architecture；写文档遵循 docs/AGENTS。
+1. **API 演进与会话持久化红线**：挑明公共 API 尚处 pre-stable（改接口必须同步改全仓调用方），但已发布会话格式只能平迁新增后继版本、绝不覆盖或删除既有世代，且只有 `dsh` profile 允许作为受支持应用入口启动。这几条直接挡住模型拿通用开源库经验瞎猜兼容性。
+2. **顶层仓库布局表（Repository layout）**：每个目录和包分组只用三五个词点明职责边界（如 `packages/core/` 管主干 API、`packages/preset/` 管会话级插件装配），给模型一张全局坐标网，而不是铺开几百个子目录。
+3. **标准命令速查表（Commands）**：直接列出 `pnpm run test`、`test:coverage`、`build:artifacts`、`doc-sync` 等动作及各自适用时机（比如本地按改动面跑最小验证集，不盲跑全量套件）。
+4. **工程规矩清单（Conventions）与防御模式入口**：每条规矩控制在 1–3 行，只讲行为硬约束（如“所有注册必须走 `ctx.effect()`”、“瀑布流监听器委托下游必须调 `next()`”、“模型可见输入必须进会话日志”），更深的语义全部挂相对链接跳往对应专题文档或 Agent Note。
 
-随后三节构成常驻内核：
+这就是**地图**与**摘要**的本质区别：摘要试图把所有知识浓缩塞进一段话，越写越厚；地图只保留“遇什么事守哪条底线、去哪个文件查详情”。根 `AGENTS.md` 之所以清爽，关键在于它明确拒绝承载教程、单包细节、完整类型签名和历史演变故事。
 
-1. **Pre-stable APIs and released Session data**：公共 API 处于 pre-stable，每个消费者要跟着更新；已提交的 session 格式世代只能由版本命名的后继承接，不移动、不覆盖、不删除；Application launch 进一步限定只有 `dsh` profile 能启动受支持的 Node 应用。它防止模型把旧经验当兼容承诺。
-2. **Repository layout**：每个顶层目录一行职责，例如 `packages/core/` 是 product API spine、`preset/` 是 per-session composition、`.agents/` 是 workflows 和 notes。模型看到的是分区职责，不是完整目录树。
-3. **Commands**：以命令动词表给出可执行动作，不解释原理。
+---
 
-之后的 `## Conventions` 是 standing orders：每条 1-3 行，说明规则并链接 home。例如 capability seam 规则链接到 `docs/glossary.md#capability-seam`，typed events 规则链接到 `.agents/notes/` 下的机制说明，不把完整语义复制进来。
+## 三、文档分层表（Tier Taxonomy）：解决“写在哪”也就解决了“去哪找”
 
-**为什么这是地图而不是摘要**：摘要回答「这个仓库是什么」，地图回答「我要去哪个文件」。根 AGENTS 的信息单元几乎都是「规则/区域/命令 + 一句话职责 + 指向权威文件的相对链接」。模型不需要记住全部内容，只需在上下文保留这张表然后按任务跳转。
+[`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 用一张分层归属表规定了**一个事实只住一个家（one home per fact）**——不属于当前层的细节一律外链，重复抄写直接视为文档噪音：
 
-**入口自带前置检查**：`docs/architecture.md` 第一段声明自己的前提——
-
-> Read this before changing anything under `packages/`. It assumes you know Cordis; if you do not, start with the [primer](cordis-primer.md) or the [tutorial](cordis-tutorial/index.md).
->
-> —— `docs/architecture.md:5`
-
-不懂 Cordis 时先走 primer/tutorial，而不是硬读 architecture。披露顺序因此不是靠读者自觉，而是被写进了入口。
-
-**根 AGENTS 拒绝承载什么**：教程、设计理由的完整复述、package 级细节、change history。根入口的可读性来自它拒绝承载的内容，而不是写得多么详细。
-
-## Tier taxonomy：把「哪里写」变成路由表
-
-`docs/AGENTS.md` 的 tier taxonomy 是文档组织的核心：
-
-> The tier taxonomy: one home per fact
->
-> Each fact has one home: the tier whose job it is; elsewhere, link there.
->
-> —— `docs/AGENTS.md:15-17`
-
-它明确划分每个 tier 的职责和「不属于这里」的内容：
-
-| Tier | 拥有什么 | 不拥有什么 |
+| 文档层级 | 唯一负责承载的事实 | 明确排除（外链到别处）的内容 |
 |---|---|---|
-| Root `AGENTS.md` | standing orders，每个 1-3 行并链接 home | stories、worked examples、restated detail |
-| `architecture.md` | 有序地图：composition、core packages、loop、seams、extension points | type definitions、package detail、decision rationale |
-| subsystems | type definitions、semantics、generated Cordis API | behavior narration |
-| Agent Notes | why、放弃了什么、验证 | migration plans、checklists、spec-speak |
-| `defensive-patterns/` | review 要执行的规则，按 artifact 分页 | type definitions（→ subsystems）、decision rationale（→ Agent Notes） |
-| cookbook | step-by-step how-tos + verify | design rationale |
-| Package README | 该包合同、config、semantics、limitations、Model Experience | JSDoc restatement、generated catalog restatement |
-| Generated reference | 穷举英文源，从源码生成并 freshness-gated | hand edits |
-| Skills | reusable workflows 与判定标准 | product/runtime contracts |
+| **根 `AGENTS.md`** | 每轮会话都要守的全局规矩（每条 1–3 行 + 权威链接）、目录与命令速查 | 背景故事、完整示例、下层细节复述 |
+| **`docs/architecture.md`** | 系统装配、核心包分工、agent 主循环、能力接缝与扩展点有序总图 | 具体 TypeScript 类型定义、单包配置项、历史选型争论 |
+| **`docs/subsystems/*.md`** | 跨包精确类型语义、状态流转契约、内嵌生成的 Cordis API 签名 | 大段使用教程或冗长的行为流水账 |
+| **`docs/defensive-patterns/`** | 代码审查与实现时按产物类别逐条核对的防御规则 | 类型定义（归 subsystems）与当初为什么立规矩（归 Agent Notes） |
+| **`docs/cookbook/`** | 新增工具、新增包、审查持久化改动等分步操作指南与验收命令 | 架构层面的取舍论证 |
+| **`.agents/notes/`** | 重大技术决策的起因、放弃的备选方案与复盘依据 | 当前使用说明、迁移待办清单 |
+| **`.agents/skills/`** | 可按需唤起的多步作业流程与评审检查单 | 产品运行期契约（不能把产品规范只藏在 skill 里） |
+| **`packages/*/*/README.md`** | 该包的职责契约、配置含义、Model Experience（模型/Token/KV 影响）与已知限制 | 逐函数重复 JSDoc，或手抄全局生成目录 |
+| **生成式目录（`docs/*-catalog.md` 等）** | 从源码提取的工具表、配置表、持久化表、事件图与依赖图 | 任何人工手改或解释性长文 |
 
-这解决了一个看似简单、实际很难的问题：**一个事实该写在哪里。** 当「哪里写」有唯一答案时，「去哪里找」也就有了唯一答案。模型遇到问题时的路由变成查表——怎么跑看 Commands/development/testing，改代码前看 architecture，精确类型定义看 subsystems/generated cordis API，为什么这样设计看 Agent Notes，一步步加包看 cookbook，某个包提供什么看 package README，全文搜 API/事件/配置看 generated catalogs。不是模型聪明地猜，而是文档体系把「猜」删掉了。
+一旦“写在哪里”有了唯一答案，模型遇到陌生任务时“去哪里查”也就不用靠猜了：改包看该包 `README.md`，看全局怎么串起来翻 `architecture.md`，查全仓谁发了某个事件搜 `event-producer-consumer.md`，查某条反直觉约束当初防什么坑翻 `.agents/notes/`。
 
-## 生成索引：穷举内容不占常驻上下文
+---
 
-DSH 最独特的一点：**需要穷举的参考内容不由人写，也不要求模型预读。** 这些文件是查询面，不是阅读面：
+## 四、为什么绝大多数包只有 `README.md` 而没有自己的 `AGENTS.md`？
 
-> <!-- Generated by scripts/gen-tool-catalog.ts — do not edit by hand.
->      Run `pnpm run gen-tool-catalog` to regenerate. -->
->
-> —— `docs/tool-catalog.md:1-2`
+翻看 `packages/` 目录会发现，除了统一的 [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md) 以及 `client/`、`web/`、`experimental/`、`schedule/` 等少数有特殊子域纪律的目录外，上百个具体插件包下面只有 `README.md`，并没有挨个放 `AGENTS.md`。
 
-同一形状的还有 `docs/config-catalog.md:1-2`（`gen-config-catalog`）与 `docs/event-producer-consumer.md:1-2`（`gen-doc-graphs`）。索引永远存在且与源码一致，但不进根 AGENTS 或 architecture 的预算，因为它按需加载。
+这不是漏写，而是分层规则的自然结果：
 
-## 大多数 package 没有 AGENTS.md：这是 tier 分工，不是缺口
-
-`packages/` 下实际只有少数 AGENTS.md（`packages/AGENTS.md`、`client/`、`web/`、`experimental/`、`schedule/`），绝大多数 package 只有 README.md。这是 tier taxonomy 的有意结果：
-
-- **子树规则由 `packages/AGENTS.md` 统一承载**，不需要每个包重复；
-- **每个包的合同由 package README 承载**，这是 tier taxonomy 明确规定的 home；
-- **group README 负责组内 package 与 `ctx` key 地图**，例如 `packages/README.md` 开头的 group 表。
-
-所以「给 coding agent 看的到底是什么」在静态层的答案是：路由规则看 `packages/AGENTS.md`，当前合同看 package README。agent 会不会主动读、DSH 怎么保证它被读到并被维护，是运行时问题，见 [03](./03-runtime-consumption.md)。
-
-## 链接必须是相对链接，且必须能解析
-
-> Use relative Markdown links for current files and tags or PR numbers for historical references. `verify-md-links` checks local targets. Reference validation (`scripts/verify-repository-references.ts`) rejects actual commit identifiers and disallowed organization URLs in maintained files.
->
-> —— `docs/AGENTS.md:77`（引文只去掉了原文的 Markdown 链接目标，文字未改）
-
-这对模型至关重要：地图上每一条边都被机器验证过。按图索骥失败时，不是模型理解错了，而是 CI 会先红。
-
-## 证据入口
-
-- [`README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/README.md) 第 55-59 行
-- [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 第 3 行、第 5-13 行、第 129 行起（`## Conventions`）
-- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 第 5 行
-- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 第 15-36 行（tier taxonomy）、第 21 行（Root AGENTS 定义）、第 77 行（repository references）
-- [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-catalog.md)、[`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md)、[`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/event-producer-consumer.md) 第 1-2 行
-- [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md) 第 28-29 行
+- 所有包共用的编码与文档纪律（如“改行为同 commit 更新包 README 与 JSDoc”、“按规范格式写 Model Experience”）统一收口在 `packages/AGENTS.md`；
+- 包组内有哪些包、占了哪些 `ctx` 服务键，归包组目录的 `README.md`（及 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md)）；
+- 单个包自己的接口契约与边界限制，唯一归宿就是该包的 `README.md`——既给人看，也给改这个包的模型看，没必要再拆出一份专供模型读的影子文件。

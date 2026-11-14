@@ -1,148 +1,90 @@
-# Answer · 借鉴 DSH Harness 思路：让 coding agent 不糊涂、不乱发挥
-
-> **DSH = DeepSeek Harness**——DeepSeek 的「一切皆插件」agent harness，仓库在 [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness)，CLI 与包名写作小写 `dsh`；本目录的「DSH」都指它，所有「DSH 原话」的链接都指向这个仓库。
+# Answer 07 · 借鉴 DSH 的仓库治理：三条低成本支柱、一张裁剪对照表与分步接入路线
 
 ## 一句话结论
 
-DSH 没有去训练「一个足够聪明、不会糊涂、不会乱发挥的 agent」；它做的是把这句话反过来——**让「读对、改对」变成阻力最小的路径，让「读错、改错」在离错误源头最近的地方被机器拒绝。** 而支撑这个反转的，是三条贯穿其开发全过程的立场；落到一笔变更上，则是一条从意图到交付的完整闭环。
+DSH 代码库主力就是由 Coding Agent 写出来的（见 [`quality-gates` 决策记录](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)）。它让 Agent 进项目不糊涂、不乱发挥的秘诀，不是指望模型“更懂事”，而是用工程结构把阻力方向反过来：**把隐性知识外置成可寻址地图（治读糊涂）、把正确做法铺成阻力最小的默认轨道（治改错地方）、把口头规矩变成秒级报错的机器检查（治夹带坏改动）**。
 
-## 这道题为什么难，答卷怎么构成
+普通项目完全不需要照搬它的 Cordis 插件树或几百个包的目录结构；花半天时间把最核心的地图、决策留痕和快检查立起来，就能拿走八成收益。
 
-「另一个项目想借鉴 DSH」不是一道能一句话答完的题——它同时问了两件性质不同的事：**理解上**，DSH 的可借鉴性不是某个机制，而是一整套彼此咬合的立场，拆开单个抄就会走形；**行动上**，普通项目的资源、架构和协作规模都不同，抄什么、不抄什么、先抄什么，需要一张可执行的路线图。一句话结论只给出了方向，没有给出这两个层面的完整答案。
+---
 
-所以这份答卷分成**道与术两段，用一个分水岭接起来**：
+## 一、先拆病根：Agent“糊涂”和“乱发挥”到底缺什么？
 
-- **道（01–05）回答「理解」**——五个大概念（变更闭环、归属、决策记录、静与动、正确路径），每篇按同一副骨架讲：为什么要有这道（agent 开发里哪类失败逼出了它）→ DSH 怎么应对 → DSH 怎么落地（真实文件与实例，最重的部分）→ 怎么迁移。道不落地就是虚无缥缈——所以每篇的落地段都配可以直接打开的 DSH 实物。
-- **术（07–12）回答「行动」**——执行态的六个专题（可执行反馈、迁移清单、入口链、Skills、运行时查询、披露管线），讲每个机制怎么具体做对，配写法标准和学走形检查。
-- **分水岭（06）**——道的概念齐了、动手还没开始的那个点：先拿一笔真实变更做垂直切片（诊断），再按 Phase 顺序施工。道告诉你「应该成为什么」，术告诉你「怎么一步步做到」；两段合起来，才是这个难题的完整答案。
+每次新开会话，Coding Agent 都是一个没参加过团队周会、也没听过茶水间讨论的“空降新人”。它翻车通常不是推理能力不够，而是仓库里缺了六类关键信号：
 
-本页的角色是**答卷的导读**：先给出精华（三条立场）和它们组织成的三层模型，再给三问自检、立即借/有压力再借/不要照搬的分寸，最后是阅读次序。各章细节不在这里展开。
+| 常见翻车表现 | 表面症状 | 仓库真正缺的工程信号 |
+|---|---|---|
+| 在目录里乱逛、抓不住重点 | 读糊涂 | 缺一份短小精悍、只做路由的根入口地图（`AGENTS.md`） |
+| 把兼容旧逻辑当成现行推荐接口照猫画虎 | 读糊涂 | 文档混杂了历史演进与现状，没守住“只写当前状态（`Document current state`）” |
+| 自信满满地重提上个月刚踩坑否决的方案 | 读糊涂 | 源码只写了“现在是什么”，没地方记“为什么不选 B（负知识）” |
+| 放着现成注册口不用，往核心主流程硬塞 `if-else` | 乱发挥 | 缺一张直接指到文件与接口的“需求目标 → 改动入口”路由表 |
+| 同类多步任务（如发版、迁移）每次漏掉不同步骤 | 乱发挥 | 缺按需读取的标准作业卡（`SKILL.md` / Cookbook） |
+| 代码先合了，文档没改、测试没钉住，下轮继续烂 | 乱发挥 | 缺“代码 + 现状文档 + 红灯测试”同 PR 闭环，以及非零退出的自动门禁 |
 
-## DSH 的精华：三条立场
+---
 
-要借鉴 DSH，先得说清它的精华到底是什么。不是插件架构，不是 TypeScript 单仓，甚至不是它的工具链——是三个所有普通项目都能检查自己有没有的立场：
+## 二、三条支柱：任何代码库都能直接借走的骨架
 
-1. **agent 是一等参与者。** DSH 的开发主力自称就是 coding agent。正因为它天然缺背景、会忘、会走捷径，整个仓库才被迫把知识外置成可发现的入口（`AGENTS.md`、包 README、决策记录），而不是靠资深成员的脑子和口口相传。写给 agent 读，和写给人读，是两种不同的纪律。
-2. **规则是可执行的代码。** 「文档要双语相等」「PR 要引用 Issue」「评审要求是什么」——全部接成仓库里跑得起来的检查（gates、policy 脚本、CI workflow），违规直接红在检查里。DSH 的原话：*Agents follow enforced gates far more reliably than prose conventions*。写在贡献指南里靠自觉的规则，和接在 CI 里会拦人的规则，是两种东西。
-3. **每类事实有唯一的 owner。** 意图归 Issue 或任务上下文、决定理由归 Agent Note、当前行为归源码与 README、回归证据归测试、交付状态归 GitHub——一处一个权威，不重复、不漂移。一处事实两个家，早晚分叉。
+抽掉 DSH 的业务与框架细节，真正跨语言、跨架构通用的就是三条腿：
 
-这三条立场落到一笔真实变更上的完整演示，就在本目录：跟着一笔真实提交（`5124a2a310`，模型选择器显示 model ID）从任务意图走到合并后知识归位，逐环打开上游可核对的产品文件——见 [`变更闭环`](./01-sdlc-change-loop.md)。
+1. **把知识外置成可寻址地图（一个事实一个家）**
+   根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 只放每轮必守的常驻红线、顶层目录一句话定位与常用命令（同时用 `ln -s AGENTS.md CLAUDE.md` 软链接兼容不同工具），细节一律用链接指向各自的权威归属地（[`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 的 `Each fact has one home`）。模块文档只写当前 HEAD 的真实合同；跨会话的持久设计取舍单独收进轻量决策记录，绝不混写。
+2. **把正确做法变成阻力最小的默认轨道**
+   在架构入口给出一张直白的“想实现什么 → 改哪个入口”两列表（见 [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#where-new-behavior-goes)），把高频复杂流程写成带触发条件的 `.agents/skills/` 作业卡（平时只暴露两行摘要省上下文，命中任务再读全文）；同时规定每次行为变更必须在同一个 PR 里交齐**代码、同步后的现状文档、以及能在旧代码上报红的测试**（见 [FAQ 06](../06_change-landing-path/answer.md)）。
+3. **把口头规矩变成秒级可执行反馈**
+   写在 Wiki 里的规范对 Agent 只是“温和建议”，跑在命令行里返回非零退出码的脚本才是硬边界（*Agents follow enforced gates far more reliably than prose conventions*）。本地钩子与日常开发循环只跑覆盖当前 diff 的秒级窄检查（见 [FAQ 11](../11_native-development-loop/answer.md)），把耗时的全量测试与构建矩阵留给远端 CI；每条新门禁上线前都先故意改坏一次，亲眼确认它会报红。
 
-## 三层模型：精华怎样组织成可借的形态
+### 动手前先用三个问题给自己的仓库把脉
 
-三条立场散落在机制的各个角落，DSH 用三个维度把它们组织起来。普通项目借鉴时，也按这三层自查：
+不确定先补哪条腿时，拿你们团队上周刚合入的一笔真实 PR 对照自问三句：
 
-| 层 | 回答什么 | DSH 的做法 | 借用的最小形态 |
+- **新会话进门找得到唯一权威出处吗？** 如果关掉聊天窗口，单靠仓库文件能不能在 30 秒内定位该改哪个模块、跑哪条命令、避开哪个历史死胡同？（答不出 → 先补**第 1 条腿**，见 [`01`](./01-repo-map-and-docs.md) 与 [`02`](./02-decision-notes-and-change-loop.md)）
+- **常见需求有明确的默认接线轨道吗？** 加一个新接口、新渠道或做一次迁移时，是有现成路由表与命令范本可照抄，还是每次都靠翻旧代码猜位置？（答不出 → 先补**第 2 条腿**，见 [`01`](./01-repo-map-and-docs.md) 与 [`04`](./04-step-by-step-adoption.md)）
+- **踩红线时是在本地几秒内报错，还是等人工 Review 才发现？** 那些每个月都在 PR 评论里重复提醒三次以上的格式、分层、漏改文档问题，有没有变成 `exit 1` 脚本？（答不出 → 先补**第 3 条腿**，见 [`03`](./03-executable-gates-and-tests.md)）
+
+---
+
+## 三、该抄什么 vs 别盲目照搬什么？（按仓库规模对号入座）
+
+借经验最怕“不分体量全盘照抄”。下面按**普通中小业务仓 / 独立插件仓**、**中大型多模块仓**与**自研 Agent 运行时**三档把账算清：
+
+| 维度 | 普通中小仓库立刻抄（高性价比） | 规模大了再按需借（有痛点再上） | 别盲目照搬（DSH 专属重装备） |
 |---|---|---|---|
-| **变更闭环（时间顺序）** | 一笔变更从「要得到什么」走到「怎样证明、谁来判断、交付后留下什么」，怎样接力 | 任务/Issue 的可观察验收 → 有条件的决定 → 代码、当前文档、回归证据同一变更交付 → 聚焦本地检查、CI、语义 review、merge | 先拿一笔真实变更按此走通（见 [`变更闭环`](./01-sdlc-change-loop.md) 的迁移表、[`落地总纲`](./06-step-by-step-guide.md) Phase 1 第二步） |
-| **知识与决定（归属）** | 下一任 agent 如何区分现在、理由、旧方案和计划 | 现状归代码/README，持久取舍归 owning Note，单次实施步骤归 Plan，行为证据归测试 | 简明 ADR、owner、状态与取代纪律（完整章见 [`决策记录`](./03-decision-notes.md)） |
-| **渐进披露（读取时机）** | 此刻该加载哪份最小权威资料，超预算怎么办 | 短常驻规则只负责路由，任务命中才读完整流程，按需读 owner；自建 agent host 再加注入预算和回收 | 入口文件短、只做路由（见 [`入口链`](./07-agents-entry-chain.md)） |
+| **入口与文档** | 短 `AGENTS.md` + `CLAUDE.md` 软链接；文档只写当前状态；给根入口定行数上限 | 子目录 `AGENTS.md`（仅限有专属红线的目录）；源码驱动的生成目录 + `--check` 新鲜度校验 | 中英文双语三件套与 `.i18n.yaml` 哈希配对锁（除非产品真有双语硬交付要求） |
+| **决策与交付闭环** | 代码 + 文档 + 红灯测试同 PR 交付；仅在有持久取舍时写简短 ADR，局部/UI 修改免写 | `proposed / implemented / rejected / archived` 四态演进与归档冻结检查 | 人类 PR 强制挂 Issue 校验机器人、加权审批规则、六分类子目录门禁 |
+| **扩展路由与流程** | 一页“目标 → 改动入口”两列表；重复超 3 次的复杂流程抽成 `SKILL.md` | 一条命令打印最终生效配置（类似 `dsh --profile web --dump-config`） | Cordis 插件树与三角色 `seam` 拆包（无多后端替换需求时拆碎包纯属负收益） |
+| **门禁与测试** | 本地按 diff 跑最窄单测；高频踩坑规矩写成 `exit 1` 快检查并做红灯验证 | 关键组装链路的无密钥录制回放快照（见 [FAQ 21](../21_recorded-session-snapshots/answer.md)） | 全仓单文件 100% 覆盖率硬门禁、TypeScript 与 Python 双 SDK 同步投影测试 |
+| **Agent 运行时内核** | *（普通业务应用直接跳过本行）* | 给内部 LLM 工具调用补 append-only 调用日志与统一错误归一化 | 完整 `model-visible ⟺ logged` 会话事件体系、按触达目录动态注入预算、保留配对的 `compaction` |
 
-三层不是依次建三个系统：**变更闭环管时间，知识归属管事实去向，渐进披露管读取时机和上下文成本**。最有用的检验方式，是拿一笔真实变更把三层一起跑一遍——三层在这笔变更上共同工作，才是「借鉴成功」的样子。
+---
 
-## 三问自检：症状层的快诊
+## 四、动手前先记住四条边界
 
-三层模型是「病因」，三问是「症状」。给自己项目打分时用这三问，定位卡在哪一层：
+1. **地图清晰 ≠ 系统变简单**：目录路由和生成清单只是降低了“找东西”的成本，模块本身的复杂度不会因此消失，别拿文档体系替过度拆包打掩护。
+2. **`SKILL.md` 是操作指南，不是门禁**：技能文档管的是“需要结合上下文做判断的步骤引导”；凡是黑白分明的底线（禁跨层引用、禁死链、格式校验），必须下沉到脚本或编译器。
+3. **CI 全绿 ≠ 声称的行为全有保护**：没做过“回退实现看测试红不红”检验的断言可能是摆设；自动化不好测的交互细节，在 PR 描述里老实标出验证缺口比凑假绿灯有用得多。
+4. **每多一份外置文档就多一笔维护税**：建任何索引表或规则文件前先问“源码改了谁负责防它过期”——配不上自动校验也没人定期审的清单，宁可不建。
 
-1. **知识外置了吗？** 规则、结构、改哪里、为什么这样设计、怎么做，是写进了可搜索、可检查的文件，还是只活在资深成员脑子里？（对应立场 1+3）
-2. **正确入口明确吗？** 一个新参与者能不能从任务目标出发，找到 owner、范本和升级条件，而不是每次都靠猜代码位置？（对应立场 1）
-3. **错误何时被发现？** 是编译/加载/本地测试/运行时/CI/review 就抓住，还是上线之后才爆？（对应立场 2）
+---
 
-「不糊涂」主要由第 1 问回答；「不乱发挥」由第 2、3 问回答。三问都绿，三条立场基本就位；三问里有红的，回三层模型找对应层补课。
+## 五、存量项目推荐按什么顺序引？（三步速览）
 
-## 立即借 / 有压力再借 / 不要照搬
+别停下业务搞一整周“文档运动”，按投入产出比从高到低分三步走（详细操作清单与改造前后对比见 [`04-step-by-step-adoption.md`](./04-step-by-step-adoption.md)）：
 
-- **立即借**（几乎零架构依赖，普通项目的第一桶金）：拿一笔真实变更跑通闭环（[`落地总纲`](./06-step-by-step-guide.md) Phase 1 第二步，对照表见 [`变更闭环`](./01-sdlc-change-loop.md)）；短 `AGENTS.md` 只放常驻规则（[`落地总纲`](./06-step-by-step-guide.md) Phase 2，实物见 [`归属`](./02-legibility-ownership.md) 落地实物节）；一个事实一个 owner、决策理由与当前文档分开（[`归属`](./02-legibility-ownership.md)；何时写决策记录见 [`决策记录`](./03-decision-notes.md)）；可机械规则接成 `exit non-zero` 检查并做负例控制（[`落地总纲`](./06-step-by-step-guide.md) Phase 5，六层反馈见 [`可执行反馈`](./09-executable-feedback.md)）。
-- **有压力再借**（确有对应压力才值得）：Skills 目录（同类任务反复出现；真实 Skill 文件的写法标准见 [`Skills`](./11-skills-as-procedural-memory.md) 落地实物节）；生成 catalog（声明面大到手工清单漂移）；注入预算与 compaction（上下文吃紧、长任务活不下来，[`披露管线`](./13-progressive-disclosure-pipeline.md)）。
-- **不要照搬**：插件图与 capability seam 全家桶（那是组合压力的产物）；DSH 的 Project/标签/加权批准制度（它有特定的协作规模前提）；双语 triplet 与 hash 配对（除非你的项目真的双语平等）。
+- **Day 1（1–2 小时，零代码侵入）**：建一份百行以内的根 `AGENTS.md`（配 `CLAUDE.md` 软链接），补一张 10 行“常见需求 → 改动入口”路由表，并在 `docs/adr/` 记下团队最怕新人重踩的 1–2 个被否决方案。
+- **Week 1（半天到一天，立住闭环）**：在 PR 模板推行“代码 + 现状文档 + 红灯测试”同提交交付；挑 Review 里最常嘴碎的 2–3 条死规矩写成秒级 `exit 1` 检查脚本，保持 `pre-commit` 钩子在 3 秒内跑完。
+- **Month 1+（按痛点选配，无痛点不加）**：只有当多步流程反复漏步骤、多层配置难排查或清单总过期时，才按需补 `.agents/skills/`、`--dump-config` 命令或生成目录。
 
-## 总览表：困惑类型 → 借用机制 → 落地动作
+---
 
-| 你的症状 | DSH 的机制 | 段位 | 落地动作（章节） |
-|---|---|---|---|
-| agent 交付了没法验证的半成品 | 变更闭环：实现+文档+证据同 PR，缺口如实标注 | 道 | 拿一笔真实变更按证据地图逐项核对（见 [`变更闭环`](./01-sdlc-change-loop.md)、[`落地总纲`](./06-step-by-step-guide.md) Phase 1 第二步） |
-| agent 读完还是抓不住主线 | 分层入口 + 根指令只放 standing orders | 道 | 写一份短 `AGENTS.md`（`CLAUDE.md` 用 symlink 指向它），只放常驻规则 + 布局 + 命令，其余 link 出去（见 [`入口链`](./07-agents-entry-chain.md)） |
-| agent 分不清「现在的事实」和「当初的理由」 | 当前文档 vs Agent Note 分开 | 道 | 决策理由单独进 `docs/adr/` 或 `notes/`，文档只写 now（见 [`归属`](./02-legibility-ownership.md)） |
-| agent 反复提出已否定的方案 | 负知识外置（rejected note、Known Limitations） | 道 | 记下「为什么不做 X」，而不是只记「做了什么」（见 [`归属`](./02-legibility-ownership.md)、[`决策记录`](./03-decision-notes.md)） |
-| 同一个事实存了两处、越跑越分叉 | 静/动分界：事实源唯一，其余派生 | 道 | 按「规则/配置/事实源/派生」四层给数据划家（见 [`静与动`](./04-static-vs-dynamic.md)） |
-| agent 改错地方 / 造出新接入方式 | 正确路径 + 参与阶梯 + 归属路由 | 道 | 写一张「目标 → 机制」归属表，cookbook 给出范本（见 [`正确路径`](./05-paved-road-and-ladder.md)） |
-| agent 做了坏事要等 review 才知道 | 可执行反馈：类型 / load / 测试 / snapshot / invariant / CI | 术 | 把可机械判断的规则做成 `exit non-zero` 的脚本，并证明负例会失败（见 [`可执行反馈`](./09-executable-feedback.md)） |
-| agent 一次读太多上下文、记不住 | 渐进披露 + 按需加载 Skill | 术 | 规则分层，任务命中才加载对应流程文档（见 [`Skills`](./11-skills-as-procedural-memory.md)） |
-| agent 每轮看到的上下文爆炸、长任务活不下来 | 按需注入 + 运行时组装 + compaction 回收 | 术 | 注入给预算/去重；catalog 只给摘要；超预算压缩且保留 tool-call/result 配对（见 [`披露管线`](./13-progressive-disclosure-pipeline.md)） |
-| agent 靠猜源码而不是问实际状态 | `--dump-config`、生成 catalog、inspect 工具 | 术 | 至少提供一条「查实际配置/注册项」的命令（见 [`运行时查询`](./12-runtime-inspection.md)） |
+## 继续阅读
 
-「段位」列对应三段式结构：**道（01–05）= 概念与落地实物，术（07–13）= 执行态细节**；评估维度 = 道五维 + 术五维（Phase 1 十维表）。
+| 你想落地哪一块 | 去哪篇看 |
+|---|---|
+| 怎么写短而准的 `AGENTS.md`、划清文档职责、控制字数膨胀并判断要不要上生成目录？ | [`01-repo-map-and-docs.md`](./01-repo-map-and-docs.md) |
+| 轻量决策记录（ADR）什么时候写、什么时候免写（附模板），同 PR 原子闭环怎么跑？ | [`02-decision-notes-and-change-loop.md`](./02-decision-notes-and-change-loop.md) |
+| 怎么把口头规范变成秒级报错脚本，合理切分本地钩子与 CI，并验证门禁真能拦住回归？ | [`03-executable-gates-and-tests.md`](./03-executable-gates-and-tests.md) |
+| 存量项目按 Day 1 / Week 1 / Month 1+ 怎么低成本推进？（含改造前后仓库结构实例对比） | [`04-step-by-step-adoption.md`](./04-step-by-step-adoption.md) |
+| 文中提到的 DSH 规则文件、门禁脚本、真实提交与延伸阅读总索引在哪？ | [`reference.md`](./reference.md) |
 
-## 三句话记住它
-
-- **DSH 的精华是三条立场：agent 一等参与、规则可执行、事实有唯一 owner。** 其余都是这三条落到具体机制后的形状。
-- **「不糊涂」靠外置与归属，「不乱发挥」靠正确路径加早失败——都不靠 agent 更聪明。**
-- **照搬的顺序是：先拿一笔真实变更跑通闭环，再立规矩的 owner，再接可执行反馈，最后才按需加 Skills 和运行时查询。**
-
-## 阅读次序：先道后术，道要落地
-
-**文件编号就是阅读顺序；标题不带序号，以后调整次序不会让标题和内容对不上号。** 各段的构成逻辑见上文「这道题为什么难，答卷怎么构成」；这里只给次序：
-
-### 道（01–05）：五个大概念
-
-1. [`变更闭环`](./01-sdlc-change-loop.md)——一笔变更从意图到归位；「借鉴成功」长什么样。
-2. [`归属`](./02-legibility-ownership.md)——一个事实一个 owner；知识的家。
-3. [`决策记录`](./03-decision-notes.md)——何时写 ADR、状态、取代与归档。
-4. [`静与动`](./04-static-vs-dynamic.md)——read-only 层与动态层的分界；agent 开发里最容易糊涂的数据与状态问题。
-5. [`正确路径`](./05-paved-road-and-ladder.md)——改哪里：归属表与参与阶梯。
-
-读完五篇，三条立场就落地成了五个可核对的概念。
-
-### 分水岭（06）：开始动手
-
-[`落地总纲`](./06-step-by-step-guide.md)——先按**道的五维 + 术的五维**做 Phase 1 的评估（十维打分 + 垂直切片实证），然后按评估结果一轮一轮打磨，直到「像回事」——新来一个 agent 不靠带路，能把一笔变更从意图走到归位。**读到这里就停下读书、开始干活；后面的术，做到哪读到哪。**
-
-### 术（07–13）：执行态的细节
-
-**前三篇是三巨头——harness 面向 agent 的顶顶重要的三条链**：入口链管 agent **读什么**（输入侧），执行链管 agent **做什么**（输出侧），反馈管 agent**做错了会不会被抓住**（验证侧）。三者咬合，agent 的每个动作都被覆盖：
-
-6. [`入口链`](./07-agents-entry-chain.md)——AGENTS.md 的文件态与会话态；agent 的第一印象。
-7. [`执行链`](./08-task-execution-chain.md)——一个 tool-call 从策略、审批、沙箱、执行到落日志的完整管线。
-8. [`反馈`](./09-executable-feedback.md)——五层反馈 + 负例控制，做 Phase 4 时读。
-
-其余四篇按需进站：
-
-9. [`迁移清单`](./10-transfer-playbook.md)——做完头几个 Phase 后核对：优先级与四个边界，防学走形。
-10. [`Skills`](./11-skills-as-procedural-memory.md)——做 Phase 6 时读：流程文档的写法标准。
-11. [`运行时查询`](./12-runtime-inspection.md)——做 Phase 7 时读：三个查询面与披露预算。
-12. [`披露管线`](./13-progressive-disclosure-pipeline.md)——上下文吃紧时读：注入、组装、回收、隔离。
-
-### 压尾（14 + reference/research，按需）
-
-[`问题框架`](./14-two-failures-as-missing-info.md)（「糊涂/乱发挥」翻译成信息缺口——全套材料的 why）、[`reference.md`](./reference.md)（各章上游证据总账——想核对时读）、`research.md`（整理过程账本）——想深挖时再进。
-
-一句话：**道五篇读懂概念和实物，06 动手，术做到哪读到哪。**
-
-## 补充入口
-
-- **想看 DSH 精华落成动作的完整演示**：读 [`变更闭环`](./01-sdlc-change-loop.md)——一笔真实提交从意图到归位的逐环对照表，三条立场全部在里头现过身；本 FAQ 的角色是把它和其余机制翻译成普通项目可迁移的动作。
-
-**证据与兜底**：各章声称的 DSH 事实，上游一手出处集中在 [`reference.md`](./reference.md)——按需核对，不读不影响理解（渐进披露用在 FAQ 自己身上）；[`research.md`](./research.md) 是整理过程的内部账本（复核历史与语料出处）。本目录自带 [`verify.mjs`](../verify.mjs)（UTF-8 / 换行 / 链接 / 锚点），修改后运行 `node _faq_on_digested/verify.mjs`；防漂移纪律的落地清单见 [`落地总纲`](./06-step-by-step-guide.md) Phase 8——这个 FAQ 讲的机制，自己也在用。
-
-**自包含**：整套目录可以单独拿走用。指向 DSH 仓库的引用全部是 GitHub 绝对 URL（指向 `master`，不带版本号）——任何人、任何机器都能点开核对，不需要 clone 这个仓库；目录间互链只在 `_faq_on_digested` 家族内部。抄走这套 FAQ 的人，唯一断不了的依赖就是公网。
-
-**按状态读（静态/动态轴）**：这条轴本身由 [`静与动`](./04-static-vs-dynamic.md) 拥有（四层分界 + 三条切换纪律）。偏静态的章——归属、正确路径、入口链文件态、Skills 仓库面；偏动态的章——静与动、运行时查询、披露管线、入口链会话态、Skills 模型可见面。根入口文档的静态设计细节归 [`04_root-entry-doc`](../04_root-entry-doc/answer.md)，运行时消费归 [`04_root-entry-doc` 的运行时半](../04_root-entry-doc/03-runtime-consumption.md)。
-
-## 继续阅读（按文件号索引，含段位与一句话定位）
-
-- [`01-sdlc-change-loop.md`](./01-sdlc-change-loop.md)：【道】变更闭环——一笔变更从意图走到归位
-- [`02-legibility-ownership.md`](./02-legibility-ownership.md)：【道】归属——一个事实一个 owner（含 one home 落地实物）
-- [`03-decision-notes.md`](./03-decision-notes.md)：【道】决策记录——何时写、状态、取代与归档、最小 ADR 模板
-- [`04-static-vs-dynamic.md`](./04-static-vs-dynamic.md)：【道】静与动——read-only 层与动态层的分界
-- [`05-paved-road-and-ladder.md`](./05-paved-road-and-ladder.md)：【道】正确路径——归属表实物 + 参与阶梯
-- [`06-step-by-step-guide.md`](./06-step-by-step-guide.md)：【分水岭】**一步一步怎么做——落地总纲**
-- [`07-agents-entry-chain.md`](./07-agents-entry-chain.md)：【术·三巨头】入口链——agent 读什么：AGENTS.md 文件态与会话态
-- [`08-task-execution-chain.md`](./08-task-execution-chain.md)：【术·三巨头】执行链——agent 做什么：tool-call 从策略到落日志的管线
-- [`09-executable-feedback.md`](./09-executable-feedback.md)：【术·三巨头】反馈——做错了会被抓住：五层反馈 + 负例控制
-- [`10-transfer-playbook.md`](./10-transfer-playbook.md)：【术】迁移清单——优先级与四个边界
-- [`11-skills-as-procedural-memory.md`](./11-skills-as-procedural-memory.md)：【术】Skills——程序化工作记忆（含 Skill 文件落地实物）
-- [`12-runtime-inspection.md`](./12-runtime-inspection.md)：【术】运行时查询——不靠猜源码
-- [`13-progressive-disclosure-pipeline.md`](./13-progressive-disclosure-pipeline.md)：【术】披露管线——静态 + 注入 + 组装 + 回收 + 隔离
-- [`14-two-failures-as-missing-info.md`](./14-two-failures-as-missing-info.md)：【背景】问题框架——糊涂/乱发挥的信息缺口
-- [`reference.md`](./reference.md)：各章上游证据总账（按需核对）
-- [`research.md`](./research.md)：整理过程账本（复核历史与语料出处）
+> 核验状态见 [核验基线登记](../00-baseline.md)。

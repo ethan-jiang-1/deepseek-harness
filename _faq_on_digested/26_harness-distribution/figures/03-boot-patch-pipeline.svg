@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" width="1200" height="660" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>启动流水线：Patch 叠层 → 模块解析 → Loader 激活</title>
+  <desc>bundle patch、profile patch、home patch、CLI overlay 合成树；bundle 解析先从 dsh 安装再从 profile；Loader 区分 required/optional/skipped bundle；dump 模式旁路。</desc>
+
+  <rect width="1200" height="660" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">启动流水线：Patch 叠层 → 模块解析 → Loader 激活</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">组合按固定次序覆盖；解析先内置再外部；失败按必需行 / 可选行 / 跳过 Bundle 分级处理</text>
+
+  <rect x="24" y="88" width="360" height="360" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+  <text x="44" y="116" font-size="12" font-weight="700" fill="#1e40af">① Patch 叠层顺序</text>
+  <text x="44" y="144" font-size="10" fill="#334155">1. bundle patches（按 bundles 数组顺序）</text>
+  <text x="44" y="172" font-size="10" fill="#334155">2. profile 级 cordis.patch.yml</text>
+  <text x="44" y="200" font-size="10" fill="#334155">3. 全局 $DSH_HOME/cordis.patch.yml</text>
+  <text x="44" y="228" font-size="10" fill="#334155">4. 命令行 CLI --patch（按参数顺序）</text>
+  <text x="44" y="262" font-size="9.5" fill="#64748b">后层覆盖前层；同名行 config 整份对象替换</text>
+  <text x="44" y="286" font-size="9.5" fill="#64748b">HMR 监听 profile / home 文件；增删包须重启</text>
+  <text x="44" y="320" font-size="9.5" fill="#b45309">从空根配置起步，不是深层字段合并</text>
+  <text x="44" y="344" font-size="9.5" fill="#64748b">未命中的 patch 目标会在 stderr 打印告警</text>
+
+  <rect x="420" y="88" width="330" height="360" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+  <text x="440" y="116" font-size="12" font-weight="700" fill="#1e40af">② Bundle 与依赖解析</text>
+  <text x="440" y="144" font-size="10" fill="#334155">先从运行中的 DSH 安装解析内置 Bundle</text>
+  <text x="440" y="172" font-size="10" fill="#334155">再从当前 Profile 的 node_modules 解析外部包</text>
+  <text x="440" y="200" font-size="10" fill="#334155">全局 $DSH_HOME 层只能覆盖，不能自带依赖包</text>
+  <text x="440" y="228" font-size="10" fill="#334155">跨 Profile 之间不共享 node_modules</text>
+  <text x="440" y="262" font-size="9.5" fill="#64748b">Bundle 缺失或不兼容：整包跳过并记入诊断</text>
+  <text x="440" y="286" font-size="9.5" fill="#64748b">其余健康 Bundle 保持原有顺序继续组装</text>
+  <text x="440" y="320" font-size="9.5" fill="#b45309">若被跳过的包承载必需服务，后续仍会报错退出</text>
+
+  <rect x="786" y="88" width="390" height="360" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
+  <text x="806" y="116" font-size="12" font-weight="700" fill="#1e40af">③ Loader 装载与失败分级</text>
+  <text x="806" y="144" font-size="10" fill="#334155">必需插件行失败 → 写启动日志并 exit 1</text>
+  <text x="806" y="172" font-size="10" fill="#334155">可选插件行失败 → 打印警告，服务照常启动</text>
+  <text x="806" y="200" font-size="10" fill="#334155">Bundle 级失败 → 跳过该包，报告 skippedBundles</text>
+  <text x="806" y="228" font-size="10" fill="#334155">Profile / 用户 Patch 语法损坏 → 直接失败</text>
+  <text x="806" y="262" font-size="9.5" fill="#64748b">诊断日志落在 $DSH_HOME/logs/startup-*.log</text>
+  <text x="806" y="286" font-size="9.5" fill="#64748b">必需行覆盖 agent-loop / webserver / web-runtime 等</text>
+  <text x="806" y="320" font-size="9.5" fill="#b45309">源码树直跑 Web 时若未构建前端产物会直接报错</text>
+
+  <rect x="24" y="480" width="1152" height="108" rx="10" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="44" y="508" font-size="12" font-weight="700" fill="#3730a3">配置自检旁路（Dump 模式）</text>
+  <text x="44" y="534" font-size="10" fill="#334155">--dump-default-config：仅查看 Bundle 层合成结果</text>
+  <text x="44" y="556" font-size="10" fill="#334155">--dump-config：完整叠加上 Profile / $DSH_HOME / CLI 层，并在注释标出每一行的来源</text>
+  <text x="44" y="578" font-size="10" fill="#334155">--dump-config-schema：导出配置 Schema（纯检查模式，不接受 --port 等运行期应用参数）</text>
+  <text x="700" y="534" font-size="9.5" fill="#64748b">注意：dump 证明“配置行已合成”，</text>
+  <text x="700" y="556" font-size="9.5" fill="#64748b">但不代替真实启动与插件激活验收。</text>
+
+  <path d="M 384 268 L 416 268" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 406 262 L 414 268 L 406 274" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M 750 268 L 782 268" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 772 262 L 780 268 L 772 274" stroke="#94a3b8" stroke-width="2" fill="none"/>
+
+  <text x="24" y="628" font-size="9.5" fill="#64748b">排障口诀：先跑 --dump-config 看行在不在、被哪一层覆盖；再起真实进程查 $DSH_HOME/logs/startup-*.log 看有没有模块缺失或激活失败。</text>
+</svg>

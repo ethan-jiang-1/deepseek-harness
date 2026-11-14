@@ -1,91 +1,93 @@
-# 答案：先读哪一篇
+# Answer 20 · Agent Note 实战标准：日常改动默认不写，严苛规矩专为管住 Coding Agent
 
-## 一分钟版
+## 一句话结论
 
-**Agent Note 是「为什么这样做、当时放弃了什么」的存档。** 代码说明现在做什么，测试说明什么行为被钉住，PR 说明这次改了什么——三样都说不清「为什么不是另一条路」的时候，才写一篇 Note。
+**大多数日常改动根本不用写 Agent Note；它之所以把目录、章节骨架、双语配对和归档冻结卡得这么死，不是形式主义，而是因为主笔和主要读者都是 Coding Agent——严规矩是为了防它制造流水账垃圾、翻旧账重踩老坑，以及拿过期方案当现行规范。**
 
-`.agents/notes/AGENTS.md` 给了它最省事的定义：**「Agent Notes 本质上是 agent 写的 RFC」**。它的格式、类型、生命周期，都是为了同时满足两个条件：
+记住下面三条铁律，就已经握住了这套制度的八成精髓：
 
-1. 写它们和读它们的主要是 **agent 而不是人**——所以必须是稳定、可检索、可机械检查的结构，而不是散文；
-2. 语料会**长期增长**（当前活跃 692 篇、归档 1848 篇）——所以必须有归档、删除和重复检查，否则两年后没人找得到东西。
-
-**最重要的一句话：大多数改动不需要 Note。** 2026-09-18 之后的一个月里新增约 110 篇 Note，同期非合并提交约 914 个。默认是不写，写是例外——判据见 [01](./01-should-i-write-one.md)。
-
-## 目录里都有什么
-
-编号只给**分篇正文**（01–07），`question.md` / `answer.md` 是入口，两个附录不带编号。这是全目录的清单：
-
-| 文件 | 种类 | 作用 |
-|---|---|---|
-| `question.md` | 入口 | 问题与范围声明；导航表只在本文维护 |
-| `answer.md` | 入口 | 就是本页：一分钟版、阅读路线、术语速查 |
-| `01` | 正文 | **要不要写**——先回答这个 |
-| `02` | 正文 | **怎么写**——文件里放什么 |
-| `03` | 正文 | **放在哪**——路径、六个类型怎么选、三件套 |
-| `04` | 正文 | **背后的思考**——为什么是这套制度 |
-| `05` – `07` | 正文 | 维护、移植、三层分工（行号只在 `reference.md`） |
-| `one-real-change.md` | 附录 | 抽一次真实改动走完全程；想先看全貌就读它 |
-| `reference.md` | 附录 | **全部出处**：每条结论对应的仓库路径、行号与实测口径 |
-| `figures/*.svg` | 素材 | 三张图，由对应正文嵌入 |
-
-**编号只覆盖 01–07，而且顺序就是推荐顺序：先决定要不要写，再学怎么写和放哪，然后才是背后的理由。** 两个附录刻意不带编号——`one-real-change.md` 是可选的纵切演示，`reference.md` 是查阅用的出处，都不该和正文抢位置。
-
-## 按什么顺序读
-
-**按顺序读就是最省力的路径**，每一步都为下一步做铺垫：
-
-| 顺序 | 读哪一篇 | 它回答的问题 |
-|---|---|---|
-| 1 | [01 该不该写一篇](./01-should-i-write-one.md) | 这次改动要不要写 Note？（多数不用） |
-| 2 | [02 怎么写得对](./02-what-goes-in-the-file.md) | 决定要写了，往文件里放什么？ |
-| 3 | [03 放在哪里](./03-note-triplets-on-disk.md) | 放哪个文件夹？六个类型怎么选？为什么是三个文件？ |
-| 4 | [04 背后的思考](./04-why-this-design.md) | 为什么要有状态、类型、归档这些手续？ |
-| 5 | [05 写完之后](./05-keep-archive-delete.md) | 旧 Note 什么时候该归档或删除？ |
-| 6 | [06 移植到别的仓库](./06-port-to-another-repo.md) | 我想在自己的仓库里也搞一套，抄哪些？ |
-| 7 | [07 三层分工](./07-where-skills-add-requirements.md) | 这条要求归规则、流程，还是消费？ |
-| — | [reference.md 全部出处](./reference.md) | 附录：想核对原文、或想知道某个数字怎么数出来的 |
-
-**多数人只走前三步：要不要写、怎么写、放哪里。** `04` 留到你心里冒出「何必这么麻烦」的时候再读——它专门回答这个。
-
-想先看全貌再去读分篇，就到附录 [跟着一次真实改动走一遍](./one-real-change.md)。
-
-## 术语速查
-
-第一次遇到这些词时回来查一眼：
-
-| 词 | 白话 |
-|---|---|
-| **Agent Note** | agent 自己写的 RFC：记录一个决定、它的备选方案和后果 |
-| **lifecycle（生命周期）** | Note 的状态文件夹：`proposed/` 待评审、`implemented/` 已交付、`rejected/` 已否决 |
-| **class（类型）** | 检索标签，六个：`feature`、`bug-fix`、`simplification`、`architecture`、`process`、`testing`。怎么选见 [03](./03-note-triplets-on-disk.md) |
-| **triplet（三件套）** | 一篇 Note 在磁盘上是三个文件：`.md` + `.zh.md` + `.i18n.yaml` |
-| **sidecar** | 指 `.i18n.yaml`：逐章节记录中英两版是否同步 |
-| **supersession（取代）** | 新 Note 顶掉旧 Note 的决定。完全取代才合并归档；部分取代两篇都留、互相链接 |
-| **grandfather 注释** | 2026-07-05 之前的老文件可以用一行注释代替 `## Alternatives considered`；新文件不允许 |
-| **seal** | 归档内容的只追加哈希清单。归档门禁用它拒绝事后改动 |
-| **gate（门禁）** | 会以非零退出码失败的脚本，如 `verify-agent-note-classification`、`verify-agent-note-format`、`verify-translation-pairing` |
-| **`doc-sync`** | 文档门禁总入口，上面这些门禁都在里面 |
-
-## 一句话记住三件事
-
-1. **写之前先问「我不写会怎样」。** 答案是「下一个人会重新提出一个已经被否掉的方案」，才写。
-2. **`## Alternatives considered` 不可省。** 记录决策却不记录它击败了什么，就是在邀请重新开讼——这是整套制度要防的那个失败。
-3. **写完之后它是活的。** 代码改名、换默认值，Note 跟着改；决策本身要反转，就另写一篇互链，不要偷偷改写历史。
-
-## 与相邻文档的分工
-
-| 想知道 | 去哪里（都在本仓库内） |
-|---|---|
-| Note 的制度原文：何时写、路径、骨架、归档 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) |
-| Note 的身份与 supersession 检查要求 | [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/AGENTS.md) |
-| 文档标准、tier 表与 slop 清单 | [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) |
-| 归档件的冻结规则 | [`.agents/notes/archived/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/AGENTS.md) |
-| 保留 / 归档 / 删除的判定流程与校准例子 | [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md) |
-| 多语言三件套政策 | [`docs/i18n/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/i18n/README.md) |
-| 会失败的门禁脚本 | [`scripts/verify-agent-note-classification.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-classification.ts)、[`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts)、[`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)、[`scripts/verify-translation-pairing.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-translation-pairing.ts) |
-
-本组 FAQ 只引用上面这类**仓库根部的内容**；它不引用任何其他 FAQ 目录或仓库外的下划线目录。
+1. **默认不写，写是例外**：代码说清“现在怎么做”，测试钉死“什么行为不能破”，PR 描述交代“这回改了啥”——只有这三样都装不下的**持久设计取舍**（尤其是放弃了什么备选方案），才需要写进 [`.agents/notes/`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)。
+2. **`## Alternatives considered` 是全篇灵魂**：只记结论不记“淘汰了哪条路、为什么淘汰”，半年后新人或下一个 Agent 看到那条看似更省事的捷径，一定会翻旧账再踩一遍坑。
+3. **活树跟代码同步，归档库永久焊死**：留在 `implemented/` 里的记录必须随代码改名、改默认值同步刷新事实（但推翻原决定必须另写新篇互链）；一旦使命完成移入 `archived/`，本地钩子与门禁会用哈希清单把它永久锁死，禁改也禁当现行规范引用。
 
 ---
 
-核验状态见 [核验基线登记](../00-baseline.md)。
+## 一、三秒钟先判：我这笔 PR 到底要不要写？
+
+动手前按下面三个问题顺次筛一遍——先看能不能免写，再看能不能更新现成记录，最后才考虑新建：
+
+1. **这次改动产生“新的持久取舍”了吗？没有就不用写（占绝大多数）。**
+   - 修既有设计覆盖下的普通 bug、局部 UI 呈现与交互微调、改文案、纯机械重构或重命名，一律豁免。
+   - 本次动机写进 PR 描述，当前接口更新包 `README` 与 `docs/`，行为靠单测或快照钉死。
+   - **真实参照**：历史提交 [`5124a2a310`](https://github.com/deepseek-ai/deepseek-harness/commit/5124a2a310)（PR [`#5004`](https://github.com/deepseek-ai/deepseek-harness/pull/5004)）改了 7 个文件调整模型列表呈现（显示 ID、悬停显示名称），零篇 Note 合格合入。
+2. **仓库里已经有哪篇 Note 管着这个决定了吗？有就原地更新，别重复新建。**
+   - 如果背后的设计决定没变，只是文件搬家、包改名、配置键或默认值变了，在同一个 PR 里把原 `implemented/` Note 里的旧名称刷新成现状即可。
+   - 注意不要往正文里加“v2 更新记录”，文件自身的修改历史归 Git 管。
+3. **不写下来，半年后维护者会不会按直觉改错？会就同 PR 新写一篇。**
+   - 当跨组件状态归属、持久化格式、通信协议、安全权限边界或工程约定立下了非显然的新规矩，且代码与现有文档解释不清“为什么不走另一条路”时，必须同提交落盘，并顺手搜全树检查是否取代了旧记录（Supersession Check）。
+   - **真实参照**：历史提交 [`2e15f2046c`](https://github.com/deepseek-ai/deepseek-harness/commit/2e15f2046c) 让已生效的沙箱模式免于重复审批，代码只改十几行、Note 正文仅 171 词，却挡住了后人把它当成权限校验漏洞“修”回去的风险。
+
+> **避开过期旧规**：如果你在早期资料里见过 `"Every non-trivial change MUST add or update at least one Agent Note"`，那是已被历史提交 [`730bcc7c85`](https://github.com/deepseek-ai/deepseek-harness/commit/730bcc7c85) 废止的老黄历——当时因为任何改动都能自称“非平凡”，导致仓库攒出一堆机械建档噪音，团队随后才把门槛收紧到“唯有持久设计理由才写”。
+
+---
+
+## 二、全景速览：三个状态、六个分类与一个冻结归档库
+
+凡是进入 `.agents/notes/` 的记录，路径统一编码为 `{生命周期}/{分类}/yyyy-mm-dd-topic-title.md`（日期取该议题首次提出的日期；目录内严禁新建集中式 `INDEX.md`，路径加全文检索就是唯一清单）。由于 DSH 主仓实行中英双语同权，每篇在磁盘上由 `.md` + `.zh.md` + `.i18n.yaml` 兄弟三件套组成：
+
+![三个状态、六个分类与一个冻结归档库](./figures/states-and-classes.svg)
+
+顺着生命周期看，每一站的规矩都非常干脆：
+
+| 目录位置 | 状态行语法 | 什么时候进 / 核心硬约束 |
+|---|---|---|
+| `proposed/{class}/` | `Status: proposed` | 体量大、动工前需先对齐方案时才写；骨架含 `Problem / Proposal / Alternatives considered / Acceptance criteria / Risks` |
+| `implemented/{class}/` | `Status: implemented` | 方案随代码交付（可直写，也可由 `proposed/` 转正）；**全文必须改写成现在时态**（`Decision / Consequences`），残留 `Proposal` 或 `Plan` 标题会被 [`verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts) 直接拦截 |
+| `rejected/{class}/` | `Status: rejected — <原因>` | 提案被否决但该错误方案仍很诱人时保留，状态行一句话点明死因；一旦诱惑前提消失，整套三件套直接删除 |
+| `archived/{class}/` | 仍为 `Status: implemented`<br>（下插 `Archived: YYYY-MM-DD`） | 仅收容已完成使命但仍有历史备查价值的 `implemented` 记录（`proposed` 绝不归档）；由 [`lefthook.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/lefthook.yml) 与只追加哈希清单永久锁死 |
+
+路径第二层的 `{class}` 从六个封闭名称里选：`architecture`（交付源码结构）、`feature`（面向用户/模型的新能力）、`process`（门禁/构建/协作工具链）、`testing`（测试策略与基建）、`simplification`（不增能力的删减收敛；仓库故意不设 `refactor`）、`bug-fix`（修缺陷或补事故复盘缺口）。
+
+一篇合格的 `implemented/` 正文只需要清爽的**四段骨架**（几百词即可，严禁凑字数）：
+
+```markdown
+# Agent Note: <标题>
+
+Status: implemented
+
+English | [中文](yyyy-mm-dd-topic-title.zh.md)
+
+## Problem                  ← 动机：不看解决方案也要能读懂原始处境
+## Decision                 ← 现在时态：实际交付的规则与边界（中间可插必要的协议/拓扑小节）
+## Alternatives considered  ← 强制必填：每个真实备选方案，以及淘汰它的技术原因
+## Consequences             ← 收益、付出的代价，以及钉死该行为的测试或门禁证据
+```
+
+---
+
+## 三、四个最容易踩的误区与诚实边界
+
+1. **“代码改动小就不用写，字数写得多就值得留”——完全反了**
+   去留只看**决策本身的未来指导价值**，跟代码行数和文章长短无关。在 [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md) 的校准案例里，248 词的事件溯源会话边界必须长期保留，而 533 词描述侧栏折叠导轨的 UI 记录、972 词但前提已失效的流式进度否决件，全都属于直接删除的对象。
+2. **“Note 是只读历史档案，写完就不能改”——混淆了活树与归档库**
+   `archived/` 确实一个字都不许动，但活跃树 `implemented/` 里的记录必须跟代码保持同步：包改名、换默认值时同 PR 刷新事实；唯独**推翻原设计决定**时不能原地涂改反悔，必须另写新篇并双向互链。
+3. **“想查某个服务怎么调，先去翻 Agent Note”——找错了门**
+   Agent Note 绝不是 API 说明书。查当前接口签名、配置项与默认行为，永远看源码类型、包 `README`、`docs/` 和生成目录（分工见 [FAQ 06](../06_change-landing-path/answer.md)）；代码注释也不能拿一句“详见某篇 Note”省掉调用方原地需要的行为说明。
+4. **“门禁跑绿就代表 Note 写得好，外部项目也得照搬三件套”——不必自我加戏**
+   门禁脚本只管标题骨架、目录合法性与双语哈希配对，抓不住“这笔改动根本不配写 Note”或“备选方案是硬凑的稻草人”，语义把关仍靠 `dsh-*` 技能与 Code Review。双语三件套与归档哈希锁纯粹是 DSH 大仓的配套，外部单语项目裁剪成单文件 Markdown 即可。
+
+---
+
+## 继续阅读
+
+无论你是**正在给 DSH 提 PR 想 5 分钟交差**（直接读 `01`），还是**想研究长效研发记忆、往自己团队搬一套轻量 ADR 制度**（重点读 `02` 与 `03`），都可按需直达：
+
+| 你想解决什么具体问题 | 去哪篇看 |
+|---|---|
+| **实操手册**：准入自检清单、6 个分类怎么选、四段骨架与 232 词短范本、提案转正改写与双语配对细节 | [`01-when-to-write-and-how.md`](./01-when-to-write-and-how.md) |
+| **后期治理**：活跃 Note 如何同步事实、新增必做的取代检查（Supersession）、留/封/删三条出路与五步归档冻结 | [`02-lifecycle-archiving-and-pruning.md`](./02-lifecycle-archiving-and-pruning.md) |
+| **制度内幕与移植**：防哪四种工程失忆、三层治理分工、两笔真实提交全程重放，以及外部项目极简裁剪模板 | [`03-why-so-strict-and-real-walkthrough.md`](./03-why-so-strict-and-real-walkthrough.md) |
+| **出处总表**：规则原文、门禁脚本、配套 Skill 与真实样本仓库链接汇总 | [`reference.md`](./reference.md) |
+| **横向延伸**：想把入口地图、决策记录与快门禁整套思路搬进外部仓库？ | [FAQ 07 · 借鉴 DSH 的 Harness 思路](../07_borrowing-dsh-harness-idea/answer.md) |
+
+> 核验状态见 [核验基线登记](../00-baseline.md)。

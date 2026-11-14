@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" width="1200" height="680" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>定制工作台的五层栈：谁拥有哪一层</title>
+  <desc>一份基于 DSH 的定制发行版的五层：运行时来源、Profile 组合、启动器、运行界面与设置状态；每层有明确的归属方。</desc>
+
+  <rect width="1200" height="680" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">定制工作台的五层栈：谁拥有哪一层</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">包能装上 ≠ 入口受支持 ≠ 数据已隔离；交付前必须逐层认领负责人</text>
+
+  <rect x="24" y="88" width="900" height="92" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+  <text x="44" y="116" font-size="13" font-weight="700" fill="#1e40af">① 运行时从哪来</text>
+  <text x="44" y="142" font-size="10" fill="#334155">npm 全局 CLI</text>
+  <text x="180" y="142" font-size="10" fill="#334155">Desktop 内置运行时</text>
+  <text x="340" y="142" font-size="10" fill="#334155">Python SDK wheel</text>
+  <text x="490" y="142" font-size="10" fill="#334155">容器镜像</text>
+  <text x="600" y="142" font-size="10" fill="#334155">源码检出树</text>
+  <text x="44" y="164" font-size="9.5" fill="#64748b">决定 Node 版本要求、安装包签名、自动更新渠道与底层二进制分发</text>
+  <rect x="944" y="88" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="960" y="116" font-size="10" font-weight="700" fill="#3730a3">归属方</text>
+  <text x="960" y="140" font-size="9.5" fill="#334155">DSH 官方 / 桌面壳 / 镜像维护方</text>
+  <text x="960" y="160" font-size="9.5" fill="#64748b">谁交付运行时，谁负责升级底座</text>
+
+  <rect x="24" y="200" width="900" height="92" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+  <text x="44" y="228" font-size="13" font-weight="700" fill="#1e40af">② Profile 组合层</text>
+  <text x="44" y="254" font-size="10" fill="#334155">$DSH_HOME/profiles/&lt;name&gt;</text>
+  <text x="330" y="254" font-size="10" fill="#334155">package.json + 有序 dsh.profile.bundles</text>
+  <text x="44" y="276" font-size="9.5" fill="#64748b">叠层顺序：bundle patches → profile patch → $DSH_HOME patch → CLI --patch</text>
+  <rect x="944" y="200" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="960" y="228" font-size="10" font-weight="700" fill="#3730a3">归属方</text>
+  <text x="960" y="252" font-size="9.5" fill="#334155">用户 / 定制工作台引导器 / Desktop</text>
+  <text x="960" y="272" font-size="9.5" fill="#64748b">同一 Profile 只能有一个写入权威</text>
+
+  <rect x="24" y="312" width="900" height="92" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+  <text x="44" y="340" font-size="13" font-weight="700" fill="#1e40af">③ 启动器（Launcher）</text>
+  <text x="44" y="366" font-size="10" fill="#334155">dsh --profile &lt;name&gt; / dsh web</text>
+  <text x="330" y="366" font-size="10" fill="#334155">薄引导脚本：设好环境变量后 exec dsh</text>
+  <text x="44" y="388" font-size="9.5" fill="#64748b">严禁自造绕过 dsh 的第二 Node 启动器；定制方只提供薄环境封装与 Profile</text>
+  <rect x="944" y="312" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="960" y="340" font-size="10" font-weight="700" fill="#3730a3">归属方</text>
+  <text x="960" y="364" font-size="9.5" fill="#334155">DSH 核心启动链路</text>
+  <text x="960" y="384" font-size="9.5" fill="#64748b">只有命名 Profile 是受支持的启动入口</text>
+
+  <rect x="24" y="424" width="900" height="92" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+  <text x="44" y="452" font-size="13" font-weight="700" fill="#1e40af">④ 交互面（Surface）</text>
+  <text x="44" y="478" font-size="10" fill="#334155">web</text>
+  <text x="120" y="478" font-size="10" fill="#334155">desktop</text>
+  <text x="220" y="478" font-size="10" fill="#334155">headless</text>
+  <text x="330" y="478" font-size="10" fill="#334155">sdk</text>
+  <text x="400" y="478" font-size="10" fill="#334155">acp</text>
+  <text x="470" y="478" font-size="10" fill="#334155">tui（实验）</text>
+  <text x="44" y="500" font-size="9.5" fill="#64748b">不同交互面支持的命令行参数、鉴权门禁、目录选择器与生命周期各不相同</text>
+  <rect x="944" y="424" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="960" y="452" font-size="10" font-weight="700" fill="#3730a3">归属方</text>
+  <text x="960" y="476" font-size="9.5" fill="#334155">对应 Surface 包 + 定制前端插槽</text>
+  <text x="960" y="496" font-size="9.5" fill="#64748b">区分 CLI 可创建模板与壳独占模板</text>
+
+  <rect x="24" y="536" width="900" height="92" rx="9" fill="#ffffff" stroke="#c7d2fe"/>
+  <text x="44" y="564" font-size="13" font-weight="700" fill="#1e40af">⑤ 设置与运行状态</text>
+  <text x="44" y="590" font-size="10" fill="#334155">bundle 默认值 → profile → $DSH_HOME → CLI → 环境变量 / 参数 → 浏览器状态</text>
+  <text x="44" y="612" font-size="9.5" fill="#b45309">高发陷阱：普通行 config 整份替换；写死字面量会让 --port 等命令行参数失效</text>
+  <rect x="944" y="536" width="232" height="92" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="960" y="564" font-size="10" font-weight="700" fill="#3730a3">归属方</text>
+  <text x="960" y="588" font-size="9.5" fill="#334155">按层隔离与认领</text>
+  <text x="960" y="608" font-size="9.5" fill="#64748b">独立工作台务必决定是否隔离 DSH_HOME</text>
+
+  <path d="M 474 180 L 474 196" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 468 188 L 474 198 L 480 188" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M 474 292 L 474 308" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 468 300 L 474 310 L 480 300" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M 474 404 L 474 420" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 468 412 L 474 422 L 480 412" stroke="#94a3b8" stroke-width="2" fill="none"/>
+  <path d="M 474 516 L 474 532" stroke="#94a3b8" stroke-width="2"/>
+  <path d="M 468 524 L 474 534 L 480 524" stroke="#94a3b8" stroke-width="2" fill="none"/>
+
+  <text x="24" y="656" font-size="9.5" fill="#64748b">核心铁律：只有 dsh 命名 Profile 是受支持的 Node 应用启动入口；外层包装脚本只设环境与参数，最终转交 dsh。</text>
+</svg>

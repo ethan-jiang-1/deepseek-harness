@@ -1,46 +1,90 @@
-# Answer 10 · 三条体感的机制判定：一条机制使然，一条混合，一条方向对但归因要拆开
+# Answer 10 · 三条反直觉体感的源码对位：外置状态循环、声明式自扩展与像素级反馈闭环
 
-## 方法与基线
+## 一句话结论
 
-用户原文是转述（见 [question.md](./question.md)），本篇不考据说话人，只把三条体感当成**待验证命题**，逐条对照源码与产品文档。机制结论以写作基线 DeepSeek Harness `dsh-v0.1.2-alpha.3`（commit `dd6322d6…`）为底；写作时的复核树是 `08b582ea02…`，本次同步已按 `dsh-v0.1.5-rc.2`（commit `fb2c4b9e69`）重核，0009 同步再按 `dsh-v0.2.0-rc.2`（commit `639ed01539`）重核，0011 同步按 `dsh-v0.2.1-rc.2`（commit `687f282e86`）重核，引用的行号以该树为准。调查方式：四路并行子代理分别深挖 workflow 编排、goal/plan/todo 三件套、vision 与预览产出物链路、定制扩展机制，captain 对其中的强论断逐条用 grep 抽查复核。0.1.5 复核的最大修正是写作时的一条强论断——"`ui-tool` 全包无 image 渲染分支"——已被跨度内交付推翻（见 [02 第二节](./02-self-built-previews.md)）。证据底稿在 [research.md](./research.md)。
+这位烧掉 10 亿 token 的重度用户之所以得出三条看似反直觉的结论——**“快小模型反而极好用”、“用好它总会顺手自己改造”、“少靠慢吞吞的大模型空想、多给截图实测”**——并不是偶然的个人偏好，而是正面撞上了 DSH 最核心的工程取向：**把跨步记忆、完成门禁、并发拆分与真实环境核验全部从模型脑子里剥离出来交给 Harness 管，只留给模型“把眼前这一小步做好”的窄任务**。
 
-三条体感恰好各落在 harness 的一层：**模型路由层**（第 1、3 条）、**驱动循环层**（第 1 条）、**宿主投影层**（第 2 条）。这个分层本身就是第一个发现：说话人没有把三件事混成一团"体验"，而 FAQ 的价值是把每一层拆到机制。
+当长跑的脚手架由外置系统兜底后，单步低延迟、前缀缓存友好且原生支持看图的快模型，自然在高频迭代的编码闭环里跑赢了靠单次长推理硬撑的慢速重模型。
 
-## 判定总表
+---
 
-| # | 体感 | 判定 | 一句话依据 |
-|---|---|---|---|
-| 1a | "快就是好，V4 Flash 足够优秀，思考开在 Max" | **机制使然 + 需补成本账** | Flash 是默认 catalog 首位、`reasoningEffort` 支持 `off\|low\|high\|max`（省略回退 `high`），且生效值落 `request/header`；但 max 档在长会话里背着 reasoning 回传税（[01](./01-fast-is-good.md#第二节-思考开在-max的机制与它-hidden-的-token-账)） |
-| 1b | "开箱已有 goal、plan" | **逐字成立** | `dsh-base` 第一层 bundle 就挂 `goal`/`goal-round-driver`/`tool-goal`/`tool-todo`/`tool-workflow`/`plan-mode`（`packages/bundle/base/cordis.patch.yml:323-445`） |
-| 1c | "用 plan 打造 dynamic workflow" | **可复述但需校正** | "dynamic workflow" 不是官方术语；官方原语是 `workflow` 工具（只接受 caller-supplied script）+ plan 模式（日志化评审姿态）+ goal 续轮（自动驾驶），三者零耦合，"dynamic" 发生在模型把批准后的 plan 翻译成一次性编排脚本的那一步（[01](./01-fast-is-good.md#第四节-dynamic-workflow这个造词的机制解读)） |
-| 1d | "重构 3 小时看到效果，在 codex 简直是做梦" | **机制上可解释，不代为裁判** | 3 小时的**下限**由 harness 结构给出：goal 轮次默认 256 轮自动续、workflow `parallel()/pipeline()` fan-out、异步 subagent、会话持久可恢复；harness 保证的是"不空转、可并行、可恢复"，上限仍归模型（[01](./01-fast-is-good.md#第五节-3-小时的下限与上限)） |
-| 2a | "多路并行、diff 预览、markdown 预览要自己打造" | **已存在，无需自造** | 并行有三层（workflow 编排 / 异步 subagent / 工具池 `maxParallelToolCalls`）；diff 与 markdown 渲染是官方 render intent + `ui-primitives` 已交付能力（[02](./02-self-built-previews.md#第一节-逐项判定用户清单里哪些已经是官方交付)） |
-| 2b | "word 预览、ppt 预览、codex 式右侧边栏产出物要自己打造" | **真缺口，且自建有硬税** | 无对应事件、无渲染器、无挂载点；且新增一种用户可见产物 = 新增 `SessionEventMap` 成员（默认 required-on-read），这是 `model-visible ⟺ logged` 制度的 UI 侧镜像（[02](./02-self-built-previews.md#第三节-真缺口与自建的硬税)） |
-| 2c | "官方已经有了很多实践，不多多试试" | **成立，且比说话人以为的更多** | 会话流业务卡（ConversationNodeDefinition）、布局槽（`shell.overlay`/`rightbar`）、`plugin_manager` 安装自己的 bundle、workflow 模板的 tool-ralph 模式，四条路全是官方铺好的（`cordis_define/cordis_run` 已在 0.1.7 线退役为程序化 runner）（[02](./02-self-built-previews.md#第四节-官方实践的位置)） |
-| 3 | "别用 V4 Pro，多用 vision" | **方向成立，机制修正三点** | vision 是 catalog 条目属性（0009 按 `dsh-v0.2.0-rc.2` 实测：默认 catalog 两条目中唯一 image-capable 的是 `deepseek-flash`，0.1.5 时的第二个 image 条目 `deepseek-v4-flash-vision-exp` 已随上游同步移除），不是所有模型都能看图；DSH 没有"指向 URL 看一眼"的能力——视觉入口只有文件路径；V4 Pro 并未被 harness 禁用，"别用"是经济学判断不是机制限制（[03](./03-flash-pro-vision.md)） |
+## 一、三条实战体感与当前源码机制逐条对表
 
-## 根本体验的层次：一条体验皮，三条根
+把早期流传的用户原话放到当前 DSH 仓库源码下核对，既能看清每条体感背后的真实机制，也能顺手刷新几处已经被官方补齐的演进事实：
 
-把三条体感放到足够深的机制上，得到的是一个三根结构，不是单一解释：
+| 重度用户体感 | 当前源码核对结论 | 对应的核心机制与现状校对 |
+|---|---|---|
+| **1. “快就是好：Flash 开 `max` 思考 + 开箱 `goal`/`plan` + 动态工作流”** | **核心机制完全吻合（需补算回传成本账）** | 默认主力 `deepseek-flash` 压低单步延迟，`max` 思考补足当步推理；跨步推进交给开箱挂载的 `goal` + `plan` + 即时脚本编排 `workflow` |
+| **2. “很多地方得顺手自己改造（并行、预览、右侧栏产出物）”** | **早期缺口大半已内置；“适合边用边改”确属基因** | 并行、Diff、右栏及 Office/PDF/表格预览现已内置；而 `.agents/skills/`、YAML Patch 与 Creator 模式确实让随手改造零门槛 |
+| **3. “别用 V4 Pro，多用 vision”** | **方向完全成立（本质是环境反馈与缓存经济学）** | `deepseek-flash` 原生支持看图，经 `read_image` 跑通像素级验真；任务拆薄后切纯文本重模型不仅性价比低，还会打碎前缀缓存 |
 
-- **体验皮（最贴近体感）**：goal/plan 把"长任务自主"从提示词层提升到状态与授权层——预算有上限、完成有证据门、阻塞有 3 轮下限、恢复必须过人手；"敢让它自己跑三小时"由此从模型勇气变成系统属性。完整展开见主篇 [04](./04-goal-plan-small-model.md)。
-- **根 1（日志基底）**：`goal/change`、`plan/mode`、`tool-workflow/*` 全是 `SessionEventMap` 成员，model-visible ⟺ logged 由「请求消息只来自 `session.deriveMessages()`、请求头随 `request/header` 落日志」保证（0.2.1 线起逐字比对的运行时不变式随机制整族退役）；goal 自己的设计笔记承认 *"session log is the only durable source of truth"*——goal/plan 自己就是日志的下游。凡是日志里已有的，体验就是现成的；凡是日志里没有的，就要连制度一起补（第 2 条的真缺口正是这面镜子）。
-- **根 2（委派 spine）**：`ctx.subagents` 以 6 个 Provider 居全部 seam 之首，goal 域 4 包 + workflow 组 3 包 + experimental agent-team——"分给很多小执行者、汇回一本日志"是官方投资最重的方向；时间维度（goal 轮次）× 空间维度（fan-out）两条拆分轴，把每个叶子节点切成小模型的最优工作区。
-- **根 3（组合层）**："开箱"二字住在这里——默认姿态是 bundle 层的组合决策；`packages/extensions`（原 self-modification）更进一步，让 harness 用自己改自己。
+拆开看每一条在代码里的具体落点：
 
-三条根缺一，体感都不成立；反例检验（patch 掉 goal/plan 后哪些体感会死、哪些存活）与展开见 [05](./05-other-roots.md)。这也对应「可读性不是 UI 恩赐，是日志结构的推论」这条判断。
+### 1. 体感一：`goal + plan` 外置状态循环，让快模型也能跑长跑稳
 
-## 诚实边界
+- **单步高强度推理 + 低延迟底座**：默认主力 [`deepseek-flash`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/llm/llm-deepseek/src/models.ts)（1M 上下文）单步吞吐快，开启 `reasoningEffort: max` 把算力集中投在当前一步的代码判断上。
+- **跨步纪律全由系统接管**：[`dsh-base`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml) 出厂即挂 [`goal`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/README.md)（默认最多 256 轮自动接力、每轮强制重读工作区真实现场而非轻信早期自述、自动轮前 3 轮禁止轻言 `blocked`）与 [`plan`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/plan/plan-mode/src/index.ts)（人类点按钮批过方案才动工，且切模式故意不改工具列表以保住前缀缓存）。
+- **“dynamic workflow”的真实面目**：仓库里并没有叫这个名字的固定开关——真实过程是模型把刚获批的计划当场写成一次性 JS 脚本喂给 [`workflow`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow/README.md)，通过 `parallel()` / `pipeline()` 并发扇出子智能体。
 
-1. **Codex 侧未验证。** "在 codex 简直是做梦"是对另一个产品的体感，本文不代为裁判；只指出一个有趣的对向事实：DSH 的 harness 级循环 Agent Note 自述 "Codex-shaped UX"（归档 note `.agents/notes/archived/feature/2026-07-16-harness-level-loop.md:115`；goal 工具笔记只说自己 "follow Codex's compact goal tool surface"，见 `2026-07-19-model-facing-goal-tools.md:15`），且 `packages/experimental/hooks-claude-code` 与 `hooks-codex` 为 Claude Code（7/30 事件）与 Codex（5/10 事件）的 hook 配置提供了兼容桥——DSH 对这两个竞品的姿态是吸收其 UX、兼容其生态，而不是无视。
-2. **"3 小时"是单一说不通不出错的样本。** 本篇解释了机制下限，但不为具体任务的耗时背书；速度还取决于任务结构（可并行度）、上下文新鲜度与 cache 命中（路由或前缀一变即失效，`packages/llm/llm-deepseek/README.md:177`）。
-3. **UI 缺口清单基于源码与 README，非运行时实测。** 写作时的一条强论断"`ui-tool` 全包无 `'image'` 分支"已被 0.1.5 的 image 卡交付推翻（`packages/client/ui-tool/src/client/tool/models/image-card-model.ts`、`tool.call.images` slot）；保留这条修正记录，是因为它正是"源码复核必须随同步重跑"的样本。
-4. **模型命名与档位是部署事实，不是 harness 承诺。** `deepseek-flash`（text+image）与 `deepseek-v4-pro`（text-only）是 `llm-deepseek` 省略 `models` 时的默认 catalog（`packages/llm/llm-deepseek/src/models.ts:8-23`、`packages/llm/llm-deepseek/README.md:53`；0009 复测——0.1.5 时的 `deepseek-v4-flash` 与 `deepseek-v4-flash-vision-exp` 两条目已移除），catalog 只提供建议，未列出 id 原样透传，上游换名时本篇的模型名会过期。0012 起官方 endpoint 的 api-key route 默认跟随官方 listing，内建两条目退为兜底；只有自定义 `models` 才把口径锁回内建。
+### 2. 体感二：声明式组装与 Creator 自扩展，让“边用边改”没有门槛
 
-## 分篇
+- **先校对现状（很多早期痛点现已开箱即用）**：三层多路并行、代码 Diff 与 Markdown 渲染、轮末变更审查与显式 `present` 交付卡（[`ui-deliverables`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-deliverables/README.md)）、右侧停靠栏（[`ui-sidebar-right`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-sidebar-right/README.md)），乃至右栏内的 **Word / PPT（本地转 PDF）、Excel（浏览器表格引擎）、PDF、图片与沙箱 HTML 预览**（[`ui-sidebar-documentpreview`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-sidebar-documentpreview/README.md) 配合 [`skill-office`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-office/README.md)）如今均已正式内置。
+- **为什么重度用户依然爱自己改**：DSH 把同款扩展能力全摆在了明面上——零代码写 `.agents/skills/` 固化工作流套路、写两行 `cordis.patch.yml` 开关内置面板（如打开 Web 右栏浏览器），直到切进 **Creator 模式**（`cordis` preset：用只读 `cordis_inspect_*` 查清宿主服务与前端实况槽位，配内置开发技能写包，再经审批门控的 [`plugin_manager`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md) 安装并通过 HMR 热生效；早期的纯内存试验工具 `cordis_define` / `cordis_run` 已退回底层程序化 runner）。
 
-- [04-goal-plan-small-model.md](./04-goal-plan-small-model.md) —— **主篇**：goal/plan 机制源码级全展开；"快而小模型为何优秀"的职责拆分论证（步内归 max 思考，步间归日志）。
-- [05-other-roots.md](./05-other-roots.md) —— **根的修正**：goal/plan 不是唯一根；日志基底、委派 spine、组合层三根结构与反例检验。
-- [01-fast-is-good.md](./01-fast-is-good.md) —— 证据篇（论断 1）：快的三层机制、"dynamic workflow" 造词解读、3 小时的下限与上限、max 档的 token 账。
-- [02-self-built-previews.md](./02-self-built-previews.md) —— 证据篇（论断 2）：预览清单逐项判定、真缺口、自建四条路、`model-visible ⟺ logged` 的 UI 硬税。
-- [03-flash-pro-vision.md](./03-flash-pro-vision.md) —— 证据篇（论断 3）：catalog 两条目、vision 验证回路、read_image 预算全链、Pro 的真实位置。
+### 3. 体感三：原生多模态附件流与真实环境反馈，替代纯文本空想推理
+
+- **像素级验真最省弯路**：前端排版、图表与文档外观的对错全在渲染后的像素里，纯文本思维链想得再深也算不出文字重叠。默认主力 `deepseek-flash` 原生声明图像输入能力，截图落盘后经 [`read_image`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs/README.md) 存入内容寻址附件库（缩放时自动附带原图坐标换算倍率），前端对话卡同步渲染同一张图供人机对账。
+- **路由与缓存经济学**：框架从未限制 `deepseek-v4-pro`，但在任务已被拆薄的前提下，切去纯文本重模型不仅丢了看图能力，更会在会话中途当场清零前缀缓存。
+
+---
+
+## 二、撑起表面体验的三根底层结构支柱
+
+做个简单的反例检验：如果在配置里把 `goal` 和 `plan` 关掉，“无人值守自动跑三小时”确实会停摆，但**多路并行拆解、崩溃断点恢复、确定性预览回放与随时打补丁改造**依然完好无损。这说明 `goal + plan` 只是最贴近用户感知的表层驾驶舱，真正托住全局的是底下三根基础设施支柱：
+
+### 1. 只追加会话日志底座（`ctx.sessionPersistence` + `model-visible ⟺ logged`）
+
+整个运行时只有一本权威账本：模型每轮看到的上下文一律从 `session.deriveMessages()` 派生，前端看到的每张卡片一律从日志事件纯函数投影；连 `goal/change`、`plan/mode`、`tool-workflow/*` 自己都只是日志里的普通事件。有了这根底座，快模型根本不需要靠参数死记三小时前的口头承诺，每轮直接读盘对账即可。
+
+### 2. 重兵投入的分层委派体系（`ctx.subagents` + `workflow` + `jobs` + `agent-team`）
+
+在 [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md) 的全部可替换接缝里，`ctx.subagents` 以 **6 个 Provider** 高居榜首（编排选型详见 [FAQ 27](../27_runtime-orchestration-choice/answer.md)）。`goal` 在**时间轴**上把长跑切成短轮次接力，委派体系在**空间轴**上把大活拆给干净上下文的子智能体并行干完再收回摘要——两把剪刀把每个叶节点都裁成了快小模型最擅长的窄切片。
+
+### 3. 声明式分层组装（Bundle → Profile Patch → Preset → CLI `--patch`）
+
+DSH 严守“新能力走插件，不改 `agent-loop` 内核”。所谓“开箱即有”，只是官方在基础 Bundle 与 Web Preset 里预先替你勾好了一张高配插件单（四大预设模式对比见 [FAQ 03](../03_preset-modes-specialty/answer.md)）；不顺手的地方随时用一层 YAML 覆写或装入新包，无需分叉改内核。
+
+---
+
+## 三、照抄这套打法前，先算清四笔诚实账
+
+老手的实战打法虽然顺手，但直接照搬前必须把下面四条真实边界摆在桌面上：
+
+1. **`max` 档思考背着沉重的“推理回传税”**
+
+   在 [`llm-deepseek`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/llm/llm-deepseek/README.md#model-experience) 的协议实现里，每一轮带推理的助手回复都会把完整思考原文原封不动回传进后续所有请求的历史前缀。几百轮重构跑下来之所以没破产，全靠未改动前缀命中 DeepSeek KV Cache——**一旦你在长会话中途频繁切模型或改工具列表，缓存从变更点起瞬间失效，账单会成倍暴涨**。
+
+2. **自建全新 UI 产物视图必须交“日志回放税”**
+
+   DSH 严禁前端脱离日志私塞内存状态（见 [`docs/cookbook/adding-a-tool.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md)）。给新工具做自定义预览卡，要么把纯函数派生的展示元数据存进 `tool/result.meta`，要么声明新的 `SessionEventMap` 事件并确保页面刷新与导出回放完全一致。
+
+3. **`goal` 管得住流程闸门，替不了客观验收标准**
+
+   框架能强制模型“自动续轮跑够 3 轮才准报阻塞”“标完成前先重读目标”，但 `complete` 终归是模型提交的主张——若测试脚本本身写得松，框架拦不住“挑局部绿灯交差”。同时，进程重启或会话分叉后自动续跑开关会故意归零（`disarmed`），必须等人类明确恢复才继续。
+
+4. **耗时对比与默认模型目录均属部署层事实**
+
+   “3 小时跑完 vs 竞品做梦”只是单方非受控体感，本文只拆解 DSH 减少空转的机制下限，不为跨产品跑分背书；默认模型目录（`deepseek-flash` 与 `deepseek-v4-pro`）也只是随上游列表演进的出厂建议配置，而非锁死在内核里的永久承诺。
+
+---
+
+## 继续阅读
+
+| 你想细看哪一块机制 | 去哪篇看 |
+|---|---|
+| `goal` 自动续轮、`plan` 零工具变动保缓存、`workflow` 即时脚本编排怎么配合放大快小模型？`max` 回传账怎么算？ | [`01-goal-plan-and-fast-models.md`](./01-goal-plan-and-fast-models.md) |
+| 哪些预览与侧栏面板现已内置？怎么用 Skill / Patch / Creator 模式顺手改造？`read_image` 五级图片压缩预算怎么跑？ | [`02-self-customization-and-vision.md`](./02-self-customization-and-vision.md) |
+| 为什么说 `goal/plan` 之下还有会话日志、委派体系与声明式组装三根底座支柱？关掉表层后各会发生什么？ | [`03-three-structural-roots.md`](./03-three-structural-roots.md) |
+| 本专题涉及的全部源码包路径、设计决策记录与外部反馈说明汇总 | [`reference.md`](./reference.md) |
+
+> 核验状态见 [核验基线登记](../00-baseline.md)。

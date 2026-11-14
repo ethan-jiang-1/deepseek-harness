@@ -12,7 +12,7 @@
 
   <rect width="1200" height="800" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">探针：证据层里的位置与撑住它的三条不变量</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">它不发名词，它是工作法 —— 产品树里没有这个机制，孔洞由「日志是合同」打开</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">它不是内置子系统，而是实证工作法 —— 会话日志把请求与事件完整落盘，外部脚本直接解析即可取证</text>
 
   <!-- Column headers -->
   <text x="40" y="92" font-size="12" font-weight="700" fill="#334155">四层证据：各连什么、缺什么</text>

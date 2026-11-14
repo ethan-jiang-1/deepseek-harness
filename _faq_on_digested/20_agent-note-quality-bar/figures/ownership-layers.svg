@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>Agent Note 质量要求的三层分工</title>
-  <desc>规则层由 .agents/notes/README.md 与子树 AGENTS.md 拥有，可机械检查的部分由 verify-agent-note-format 与 agent-note-tree 两个门禁执行；流程层由 dsh-archive-agent-notes、dsh-find-simplifications、dsh-prose-standard、dsh-trim-cot-leakage 承担语义判断；消费层由 dsh-doc、dsh-code-review、dsh-pre-push-checks、dsh-create-upgrade-guide 与 docs/AGENTS.md 规定引用方式与 review 检查点。没有任何一层叫「写 Note 的 skill」。</desc>
+  <title>Agent Note 质量要求的三层治理分工</title>
+  <desc>规则层由 .agents/notes/README.md 与子树 AGENTS.md 拥有，可机械检查的部分由 verify-agent-note-format、verify-agent-note-classification、verify-translation-pairing 与 verify-archived-agent-notes 门禁执行；流程层由 dsh-archive-agent-notes、dsh-find-simplifications、dsh-prose-standard、dsh-trim-cot-leakage 承担语义判断；消费层由 dsh-doc、dsh-code-review、dsh-pre-push-checks、dsh-create-upgrade-guide 与 docs/AGENTS.md 规定跨文档分工与审查要点。</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
@@ -8,62 +8,62 @@
   </defs>
 
   <rect width="1200" height="660" rx="8" fill="#f8fafc"/>
-  <text x="600" y="38" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">要求分三层，每层一个 owner</text>
-  <text x="600" y="62" text-anchor="middle" fill="#64748b">可机械判定的部分变成门禁，需要判断的部分留在 skill 与 review 里——所以没有一篇「写 Note 的 skill」。</text>
+  <text x="600" y="38" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">质量要求分三层治理，各管一摊不重复</text>
+  <text x="600" y="62" text-anchor="middle" fill="#64748b">能靠机器死查的格式全收进门禁脚本，需要动脑权衡的语义才留给 Skill 与 Code Review——所以仓库里根本没有「怎么写 Note」的 Skill。</text>
 
   <rect x="30" y="86" width="1140" height="150" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="52" y="114" font-size="14" font-weight="700" fill="#1e40af">① 规则层 · 唯一完整 owner</text>
+  <text x="52" y="114" font-size="14" font-weight="700" fill="#1e40af">① 规则与门禁层 · 管磁盘结构与必填骨架</text>
   <text x="1130" y="114" text-anchor="end" fill="#1e40af">.agents/notes/README.md + 各子树 AGENTS.md</text>
-  <text x="52" y="142" fill="#334155">何时写（持久决定理由 + 机械/局部 UI 豁免）｜路径语法 {生命周期}/{类型}/yyyy-mm-dd-topic.md｜两种正文骨架｜Alternatives considered 强制</text>
-  <text x="52" y="164" fill="#334155">闲置状态与类型的封闭集合｜生命周期移动即改写｜保持 current 但决策反转另写｜归档/删除判据｜新 Note 触发 supersession 检查</text>
+  <text x="52" y="142" fill="#334155">准入门槛（持久设计取舍 + 局部/机械改动豁免）｜路径语法 {lifecycle}/{class}/yyyy-mm-dd-topic.md｜各状态正文骨架｜Alternatives considered 必填</text>
+  <text x="52" y="164" fill="#334155">三个状态与六个分类的封闭集合｜提案转正改写现在时｜随代码更新事实但推翻决定另写｜新篇触发取代检查｜归档三件套永久冻结</text>
 
   <rect x="52" y="184" width="1096" height="34" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="66" y="206" fill="#1e3a8a">执行者：verify-agent-note-format（头部 / 骨架 / 禁用标题 / grandfather 注释）　·　agent-note-tree（状态与类型目录树 / 文件名日期 / INDEX.md 禁令）　·　均在 doc-sync 内</text>
+  <text x="66" y="206" fill="#1e3a8a">机器执行（doc-sync / lefthook）：verify-agent-note-format · verify-agent-note-classification · verify-translation-pairing · verify-archived-agent-notes</text>
 
   <line x1="600" y1="240" x2="600" y2="266" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="614" y="258" font-size="11" fill="#64748b">结构合法 ≠ 决定正确</text>
+  <text x="614" y="258" font-size="11" fill="#64748b">格式过关 ≠ 内容真有用</text>
 
   <rect x="30" y="272" width="1140" height="196" rx="10" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="52" y="300" font-size="14" font-weight="700" fill="#9a3412">② 流程层 · skill 只在四处分岔上追加语义判断</text>
+  <text x="52" y="300" font-size="14" font-weight="700" fill="#9a3412">② 语义流程层 · 四套 Skill 把关机器查不出的软判断</text>
 
   <rect x="52" y="314" width="262" height="136" rx="8" fill="#ffffff" stroke="#fed7aa"/>
   <text x="66" y="336" font-size="12" font-weight="700" fill="#9a3412">dsh-archive-agent-notes</text>
-  <text x="66" y="358" fill="#334155">保留 / 归档 / 删除的判定</text>
-  <text x="66" y="378" fill="#334155">按未来价值，不按字数年龄</text>
-  <text x="66" y="398" fill="#334155">不朝配额归档</text>
-  <text x="66" y="418" fill="#334155">封存件永久冻结</text>
-  <text x="66" y="438" fill="#64748b">含校准例子（533 词该删、248 词该留）</text>
+  <text x="66" y="358" fill="#334155">留活树 / 归档 / 直接删的语义判据</text>
+  <text x="66" y="378" fill="#334155">看未来决策价值，不按字数年龄</text>
+  <text x="66" y="398" fill="#334155">禁止凑配额归档</text>
+  <text x="66" y="418" fill="#334155">严格执行五步冻结封存</text>
+  <text x="66" y="438" fill="#64748b">配正反校准案例防一刀切</text>
 
   <rect x="330" y="314" width="262" height="136" rx="8" fill="#ffffff" stroke="#fed7aa"/>
   <text x="344" y="336" font-size="12" font-weight="700" fill="#9a3412">dsh-find-simplifications</text>
-  <text x="344" y="358" fill="#334155">proposal 四件必备证据：</text>
-  <text x="344" y="378" fill="#334155">具体消费者证据</text>
-  <text x="344" y="398" fill="#334155">被移除的维护成本</text>
-  <text x="344" y="418" fill="#334155">放弃的能力 · 可观察验收</text>
-  <text x="344" y="438" fill="#64748b">禁止为凑候选数建重复 Note</text>
+  <text x="344" y="358" fill="#334155">删减类提案必备四项证据：</text>
+  <text x="344" y="378" fill="#334155">调用方清点证据</text>
+  <text x="344" y="398" fill="#334155">实际省掉的维护负担</text>
+  <text x="344" y="418" fill="#334155">放弃的能力 · 可观察验收条件</text>
+  <text x="344" y="438" fill="#64748b">禁止为凑候选数重复建 Note</text>
 
   <rect x="608" y="314" width="262" height="136" rx="8" fill="#ffffff" stroke="#fed7aa"/>
   <text x="622" y="336" font-size="12" font-weight="700" fill="#9a3412">dsh-prose-standard</text>
-  <text x="622" y="358" fill="#334155">必须留下的命题：</text>
-  <text x="622" y="378" fill="#334155">rationale · 机制 · 备选方案</text>
-  <text x="622" y="398" fill="#334155">后果 · 已验证证据 · 覆盖缺口</text>
-  <text x="622" y="418" fill="#334155">删规划清单，不删钉住决定的证据</text>
-  <text x="622" y="438" fill="#64748b">链接不能替代本地合同</text>
+  <text x="622" y="358" fill="#334155">转正精简时必须保留：</text>
+  <text x="622" y="378" fill="#334155">真实动机 · 机制 · 备选方案</text>
+  <text x="622" y="398" fill="#334155">代价收益 · 验证证据 · 覆盖缺口</text>
+  <text x="622" y="418" fill="#334155">砍掉待办清单，保留测试钉死点</text>
+  <text x="622" y="438" fill="#64748b">外链理由不能替代代码本地合同</text>
 
   <rect x="886" y="314" width="262" height="136" rx="8" fill="#ffffff" stroke="#fed7aa"/>
   <text x="900" y="336" font-size="12" font-weight="700" fill="#9a3412">dsh-trim-cot-leakage</text>
-  <text x="900" y="358" fill="#334155">允许：合并 PR/issue 引用</text>
-  <text x="900" y="378" fill="#334155">历史阶段名 · 审查裁决改写成理由</text>
-  <text x="900" y="398" fill="#334155">严禁：索引式版本戳</text>
-  <text x="900" y="418" fill="#334155">自己的修订史（属于 git）</text>
-  <text x="900" y="438" fill="#64748b">由审查与语料审计执行</text>
+  <text x="900" y="358" fill="#334155">清理对话推理残渣：</text>
+  <text x="900" y="378" fill="#334155">把「评审被拒」改写成技术原因</text>
+  <text x="900" y="398" fill="#334155">严禁写「本版修改 / v2 新增」</text>
+  <text x="900" y="418" fill="#334155">文件自身修订史一律归 Git 管</text>
+  <text x="900" y="438" fill="#64748b">防把聊天上下文当永久事实落盘</text>
 
   <line x1="600" y1="468" x2="600" y2="494" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="614" y="486" font-size="11" fill="#64748b">谁引用它、审查时查什么</text>
+  <text x="614" y="486" font-size="11" fill="#64748b">与其他文档载体怎么交接</text>
 
   <rect x="30" y="500" width="1140" height="120" rx="10" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="52" y="528" font-size="14" font-weight="700" fill="#166534">③ 消费层 · 别的文档 tier 怎样与 Note 交接</text>
-  <text x="52" y="554" fill="#334155">dsh-create-upgrade-guide：指南超过 500 词，把 rationale 移进 Note，其余链符号、变脚本</text>
-  <text x="52" y="576" fill="#334155">dsh-code-review / dsh-pre-push-checks：实现 proposed Note 的 PR 必须同 diff 改写为现在式，并对照实现核对路径、名称与机制</text>
-  <text x="52" y="598" fill="#334155">dsh-doc 与 docs/AGENTS.md：文档结构规则不适用于 Note；tier 表把 rationale 指派给 Note；implemented 里的迁移计划与未来时态属于 slop</text>
+  <text x="52" y="528" font-size="14" font-weight="700" fill="#166534">③ 跨载体协作层 · docs/、升级指南与 PR 审查怎么对接 Note</text>
+  <text x="52" y="554" fill="#334155">docs/AGENTS.md 与 dsh-doc：docs/ 只写系统当前状态，把「为什么这样取舍」分流给 Agent Note；面向人类读者的文档排版规则不强套 Note</text>
+  <text x="52" y="576" fill="#334155">dsh-code-review 与 dsh-pre-push-checks：实现提案的 PR 必须同提交把 proposed 改写为现在时 implemented，并跑通 doc-sync</text>
+  <text x="52" y="598" fill="#334155">dsh-create-upgrade-guide：破坏性变更升级指南写迁移步骤（上限 500 词），超出的深层背景理由统一移入对应 Agent Note</text>
 </svg>

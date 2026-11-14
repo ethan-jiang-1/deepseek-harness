@@ -1,101 +1,98 @@
-# Answer · 窄证据切片闭环：DSH 最自然的开发习惯，以及"轻松"从哪来
+# Answer 11 · 把“省心”拆回两个主语：运行时不瞎打扰，开发时走窄切片闭环
 
-核验状态见 [核验基线登记](../00-baseline.md)。
+## 一句话结论
 
-## 结论先行
+觉得 DSH“轻松好用”，其实来自两套完全不同层面的设计——聊之前必须先把**“谁在觉得轻松”**拆开：
 
-DSH 支持很多开发习惯——spec-first、TDD、plan-first、全量验证仪式、goal 续轮长跑都装得下——但它最自然、阻力最小、被制度反复强化的那一个，可以概括成一个闭环：**核对现场 → 判定窄 diff → 原子修改 owner 面 → 跑"会为这次回归而失败"的最小证据 → 把新判断沉淀为门禁或 Agent Note → 只报告实际跑过的检查**。每次交付是一个完整垂直切片：一个 PR 同时携带代码、测试、文档、Note、快照预期。本 FAQ 把它命名为**窄证据切片闭环（narrow-evidence slice loop）**。
+1. **如果你是打开 Web 或 CLI 指挥 DSH 干活的用户**：你根本碰不到仓库里的门禁脚本或 Agent Note。你觉得省心，是因为 **DSH 的运行时产品姿态**——工作区内直接读写、只有越权提权才弹窗找你；能自己读代码查明白的事绝不反问你；改文件前强制先读防瞎改；进度有实时 Todo 面板和可选的 `/plan` 审批卡兜着；跑偏卡壳时先温和提醒而不是直接报错崩掉。
+2. **如果你是在 DSH 仓库里开发（指挥 Coding Agent 改代码、写插件的维护者）**：你觉得顺手，是因为仓库把 **“窄证据切片闭环”** 做成了最省力的默认轨道——`核对现场 → 圈定窄 diff → 改源头并自动派生 → 只跑针对本次回归的最小检查 → 机械规则进门禁 / 持久取舍进 Note → 老实报告跑过的命令`。人在外圈只管切小任务、审关键证据；繁琐的合规体力活由内圈的 Agent 和门禁消化掉。
 
-而"驾驭它写东西非常轻松、愉悦"的体感，根源不是约束少——恰恰相反，DSH 是约束密度极高的仓库。轻松来自**正确路径与最省力路径被制度性对齐**：忘了规则没关系，门禁会替你记得；验证文档没关系，每次要跑的检查只有一两个；改错了没关系，整个 PR 原样回滚，不需要外科手术。下面三、四、五节展开这三个机制来源；第六节用历史检验；第七节回答"为什么写工具/写插件也轻松"；第八节给代价与边界。
+下面把这两层分别摊开讲透，最后把它的真实代价和边界也摊在桌面上。想看从零写一个新工具走完闭环的实战推演，直接看 [`01-walkthrough-adding-a-tool.md`](./01-walkthrough-adding-a-tool.md)。
 
-值得先记录方法：这个问题本可以从早期的六层规格（现 06/09）或 10（goal/plan 三根）顺推，但那些是先入为主的输入——早期版本曾把"SDD"当成前提，而 [06/09 的"不能从仓库推出什么"](../06_change-landing-path/09-six-layers-and-limits.md) 明确说 DSH 官方从未如此自称。本篇的结论是从 skills 语料、git 历史、运行时默认行为三路独立重建的，最后才与那些输入对位。
+---
 
-## 第一节 闭环本身：六步
+## 一、对日常使用者（Web / CLI）：为什么指挥它干活不累？
 
-![窄证据切片闭环的六步流程：核对现场 → 判定窄 diff → 原子修改 owner 面 → 最小匹配证据 → 沉淀 gate/Note → 只报告实际跑过的；蛇形折回，底部是每次交付的完整垂直切片](./figures/six-step-loop.svg)
+普通用户面对的是 [`base`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml) + [`web-app`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/cordis.patch.yml) + 默认 [`standard`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/presets/standard.patch.yml) 模式组装出来的运行时。让人觉得“不用手把手盯着”的，是六条实打实的运行时设计：
 
-**第 1 步：核对现场，不信任记忆。** 所有 skills 的共同开场是先确认 checkout、分支、活着的 base，再谈任何判断：`pnpm --silent run change-scope --base <verified-base-ref>`，且"The command never guesses or fetches a base"（[dsh-pre-push-checks](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)）。被重写过的分支之后，"commit hashes and inline-comment anchors from before the rewrite are not current evidence"。这条习惯的根是仓库的认识论（见第七节）：**任何先前叙述——自己的、别人的、三小时前的——都不是权威**。
+1. **只在真正需要你拍板的地方打断你**
+   默认权限是 `workspace-write` 配 `ask`：工作区内的正常读写直接干，只有触发沙箱提权时才会弹出审批面板（`Reject` / `Allow once`）。同时，系统提示词给 `ask_user_question` 立了死规矩：**凡是翻代码能自己查清的事实一律自己查，严禁问用户“代码在哪”**（`"Resolve discoverable facts by inspection... Do not ask the user where code lives"`），而且明确规定“用户在闲聊里的附和不算数，正式审批才算数”。
+2. **引擎级强制“先看再改”，防盲目覆盖**
+   不管开没开计划模式，底层 [`fs-observation-policy`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/fs-observation-policy/src/index.ts) 都在生效：没先 `read` 过的文件调 `edit` 直接报 `FS_NOT_OBSERVED`，写文件也带版本校验防意外覆盖。
+3. **进度看得见，大活可先审方案**
+   多步任务有 [`todo_write`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/todo/tool-todo/src/index.ts) 实时刷新底栏进度条；遇到复杂改动，敲 `/plan` 进入计划模式后，模型交卷时在 Web 端渲染出专门的决策卡片（按钮是 `Approve` / `Refuse` / `Chat about it`），聊透批过再动手。
+4. **知识按需加载，不用人提前喂说明书**
+   [`tool-skill`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/src/index.ts) 采用两层加载：常驻上下文里只有带哈希去重的简短技能目录，匹配到具体任务（或用户敲 `/技能名`）时才把完整指令读进来。
+5. **卡壳时温和纠偏，后台子任务自动回交**
+   模型如果连续撞墙（比如反复调同一个被拒的命令），[`repeat-tool-reminder`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/guard/repeat-tool-reminder/src/index.ts) 会在第 3、5、8 次调用后逐级注入提醒帮它换思路，而不是一棍子中断整轮对话。派出去的 `subagent` 和 `subagent_fork` 在 Web 默认都是后台运行，跑完后由运行时自动把结论拼成通知塞回父会话（见 [`docs/subsystems/subagent.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/subagent.md)）。
+6. **发生过什么随时能复盘**
+   严格遵守 `model-visible ⟺ logged`：模型看到的每一个字都在会话日志里有据可查，不怕黑盒乱跑。
 
-**第 2 步：判定窄 diff。** 只看本次改动真正触达的行为面。change-scope 输出的 JSON 按 committed/staged/untracked 分层，review 与 push 共用同一份"这次改了什么"的事实（[dsh-code-review](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md) 第一步也是先跑 change-scope，"before reading the diff"）。
+一句话总结产品侧的省心：**脏活累活 Agent 自己查自己干，安全底线由引擎兜着，只在真正属于你的决定上敲你的门。**
 
-**第 3 步：原子修改 owner 面。** 改源头，不改编生物："Edit the owning source or scenario first, then regenerate every derivative"（[dsh-prose-standard](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/SKILL.md)）；"generated catalogs are never hand-edited; a move is atomic with every inbound link repaired in the same change"（[dsh-doc](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-doc/SKILL.md)，原 dsh-doc-standards 已并入）；同时，写下的每个字都以"HEAD 处的无会话读者"为唯一视角——[dsh-trim-cot-leakage](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/SKILL.md) 的一句测试："could a reader at HEAD, with no access to any session transcript, PR thread, or uncommitted draft, resolve every reference and verify every claim?" 禁止叙述自己的工作过程。
+---
 
-**第 4 步：最小匹配证据。** 这是最能定义这个习惯的一步。"There is no universal local baseline beyond the hooks. Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression"（pre-push-checks）；"Never default to the full suite or repeat a passing check for commit or push"（根 [AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)，原文限定 commit/push 场景）；甚至明令禁止重复劳动："do not run typecheck immediately before pushing solely to duplicate the pre-push hook"。coverage 也可以按文件显式圈定范围（vitest `--coverage.include` 指到单个源文件）。hooks 本身被刻意保持极窄：pre-commit 只做 staged lint/空白/vendor 清单，pre-push 只跑增量 typecheck（[development.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/development.md) 的 Git integrations 一节，理由明说："the hooks intentionally do not run tests, snapshots, documentation checks, builds, or hygiene"）。
+## 二、对仓库开发者与 Coding Agent：窄证据切片闭环
 
-这个「窄」有一条明确的例外，而且它恰好印证第 4 步的逻辑：`lefthook.yml` 还注册了 `archived agent notes`，同时挂在 `pre-commit` 与 `pre-merge-commit` 上——只要 staged 命中 `.agents/notes/archived/**`，`verify-archived-agent-notes.ts` 当场执行，提交被拒。也就是说，hooks 的极窄不是「少放点东西」，而是**只把最经不起错的那一层放进去**：归档 triplet 一旦封印就不能再编辑、移动或删除，改错无法在同一分支上就地扶正；而测试、快照、构建属于「多跑一次也不损失什么」的类别，留给 CI。（[lefthook.yml](https://github.com/deepseek-ai/deepseek-harness/blob/master/lefthook.yml)）
+切到“改 DSH 仓库或开发插件”的视角，画风就变了。[`quality-gates` 决策记录](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md) 第一句就交了底：**这个代码库主要是由 Coding Agent 开发的。** 仓库里的十几套 `dsh-*` 技能、门禁和 PR 历史共同指向一套内外双圈配合的工作流：
 
-**第 5 步：沉淀——二选一，或者什么都不加。** 新产生的判断只有两个合法去处：机械可查的，做成失败时非零退出的 gate（"Every mechanically checkable AGENTS.md promise gets a command that exits non-zero"，[quality-gates Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)）；语义判断的，写成 Agent Note（现行判据是 only-for，不是 MUST："Add or update an Agent Note in the same PR only for lasting decision rationale that code, tests, and existing documentation do not explain"，[Agent Note 规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md#when-to-write-one)；`730bcc7c85`（2026-09-17）之前的旧文 "Every non-trivial change MUST add or update at least one Agent Note in the same PR" 已被收窄，不要当现行规则引用。且 Alternatives considered 强制："A decision recorded without what it beat invites re-litigation"）。两个都不够格的，就什么都不加——accretion 是被点名防的敌人：文档有字数预算（超限走 relocate→condense→raise，[docs/AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)），Note 有归档校准（"word count and age are discovery aids, never archive criteria… Do not archive toward a quota"，[dsh-archive-agent-notes](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md)）。
+![两个回路：人类指挥者在外圈切窄片、审最小证据，Agent 执行者在内圈跑完六步闭环](./figures/two-loops.svg)
 
-**第 6 步：只报告实际跑过的。** "report only commands run"（AGENTS.md）；"Report pending checks as pending"（pre-push-checks）；"Report the inspected scope, clear changes, deliberate keeps, deferred cases, and checks actually run"（prose-standard）。报告与证据一一对应，不多说，不少说。
+内圈 Agent 每次迭代跑的是固定的 **六步闭环**：
 
-这六步就是每个 `dsh-*` skill 反复展开的同一个骨架——写作树上是 10 个 `dsh-*` skill（语料分析取其中 9 个，排除仅限用户显式调用的 dsh-translate-docs），到 `fb2c4b9e69` 已是 11 个：`dsh-doc` 合并了原 doc-standards 与 doc-site-sync，OLD 之前新增 `dsh-ci-test-reliability`，本次跨度新增 `dsh-speed-up-perf`。
+![窄证据切片闭环的六步流程](./figures/six-step-loop.svg)
 
-## 第二节 "轻松"的来源一：记忆外包——gate（门禁）替你记得规则
+1. **核对现场，不信记忆**：动手前先跑 `pnpm --silent run change-scope --base <verified-base-ref>` 看清当前分支与真实改动，绝不靠上一轮对话的印象或 rebase 前的旧 commit hash 下判断（见 [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)）。
+2. **圈定窄 diff**：一笔变更只专注解决一个独立问题，改前先看清到底触达了哪几个包和表面。
+3. **改源头，重生成派生物**：改代码的同时同步更新该包的 `README` 与 JSDoc；像 `tool-catalog.md`、`capability-seams.md` 这类生成目录一律跑生成器刷新，绝不手改；写下的每一句注释和文档都按“只看当前 HEAD、没看过聊天记录的读者能否读懂”来检验（见 [`dsh-trim-cot-leakage`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/SKILL.md)）。
+4. **只跑“会为这次回归报红”的最小检查**：本地绝不默认跑全量测试套件，只挑最窄的对应单测、`doc-sync` 或包构建；把耗时的全量覆盖率（`test:coverage`）和跨平台矩阵留给远端 CI。
+5. **把新判断沉淀对地方（或干脆不加）**：能用代码死查的规则写成非零退出的门禁脚本；代码、测试和现有文档都解释不了的**持久设计取舍**（尤其是放弃了哪些备选方案）写进 [Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md#when-to-write-one)；普通局部修改就什么额外记录都不加，防止文档膨胀。
+6. **老老实实只报跑过的命令**：PR 和汇报里跑了哪条命令就列哪条，没跑的标待定，绝不随口写“已全面测试”。
 
-![「轻松」的三个机制来源：记忆外包、反馈延迟最小、犯错代价低——三者合流使正确路径成为最省力路径（第二~四节总览）](./figures/lightness-mechanisms.svg)
+### 为什么这套闭环让人觉得“顺手、敢改”？
 
-人类开发者最大的负重是记忆：几百条约定、哪些门禁、哪些历史教训。DSH 把这份负重从（人或 agent 的）脑子里搬进了三类外部结构：
+![「轻松」的三个机制来源：记忆外包、反馈延迟分层、犯错代价低](./figures/lightness-mechanisms.svg)
 
-- **一次事实一个家**："Each fact has one home: the tier whose job it is; elsewhere, link there"（docs/AGENTS.md tier 表）。要找任何规则的权威出处，结构本身告诉你去哪。
-- **规则以 gate 形式存在**：quality-gates Note 的原话是整个仓库最有自我意识的一句——"Agents follow enforced gates far more reliably than prose conventions, and 'a lot of work' is not a cost argument when agents do the labor"（:11）。规则不依赖记忆，违反它的行为会被机器拒绝。
-- **程序按需加载**：skills 目录摘要常驻，全文只在任务匹配时经 `skill` 工具载入（两层披露，见 [research.md](./research.md) 运行时部分）。过程性知识也是"外包"的。
+- **不用靠脑子死记硬背硬性规矩**：每个事实只有一个权威存放处（`docs/AGENTS.md`）；类型、死链、双语哈希配对、归档文件冻结（`lefthook.yml` 在提交时直接拦截任何对 `.agents/notes/archived/**` 的改动）都做成了机器检查，踩线当场报错并给出修复提示。
+- **单步验证足够轻，人才愿意真跑**：改两个文件、跑单个包的 `vitest` 往往只要几秒钟。把每次迭代的反馈成本压下来，开发者和 Agent 才不会产生“太慢了干脆跳过检查直接推”的侥幸心理（这与 [FAQ 10](../10_heavy-user-impressions-vs-mechanisms/answer.md) 里“用快模型多跑几轮换总质量”是同一个工程思路）。
+- **犯错代价低，不对就整包撤回**：仓库代码还处于 `pre-stable` 阶段，不背历史兼容包袱；100% 覆盖率抓到未覆盖代码时，默认优先删死代码而不是硬凑测试；万一合进去发现方向歪了，团队习惯是**整个 PR 镜像回滚**（例如 PR `#2903` 一把将 `#2608` 涉及的 67 个代码、测试、文档、Note 文件原样退回），而不是在错底座上打补丁。
+- **反转一个常见误会——不是“先写厚规格书再写代码”**：外人翻 DSH 仓库看到齐全的 `docs/`、生成目录和 Agent Note，很容易以为这里是瀑布式的“规格先行（SDD）”。其实因果刚好反过来：**先有高频滚动的窄切片闭环和门禁，规格感是闭环跑了很多圈之后沉淀下来的结果**（静态载体的详细分工见 [FAQ 06](../06_change-landing-path/answer.md)）。
 
-反面教材同样在册：依赖政策 Note（[2026-07-26-dependencies-over-hand-rolling](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/process/2026-07-26-dependencies-over-hand-rolling.md)）复盘发现，一条从未写下的"别加依赖"规则被 agent 从代码模式里**推断**了出来，且"stricter than anyone decided"。仓库对"agent 会从模式里猜规则"这一性质有自觉，所以答案不是"多提醒"，而是：规则要么写成 gate，要么写成 Note，绝不留在空气里。
+---
 
-记忆外包的直接体感就是"轻松"：你不需要记住约定，你只需要让检查跑一遍。忘了会痛，但痛在秒级、带明确诊断信息，而不是在 review 或 CI 端爆出迟到半小时的模糊失败。
+## 三、分清三层边界：什么是强制的，什么是自觉的？
 
-## 第三节 "轻松"的来源二：反馈延迟被刻意压到最小
+把仓库经验往自己项目搬之前，一定要分清下面三层——它们并不是全都靠代码卡死的：
 
-闭环第 4 步不是道德姿态，是延迟工程。分层是明确的：hooks 管秒级本地缺陷，"narrowest available test" 管分钟级行为证据，"CI owns exhaustive coverage and the platform matrix"（AGENTS.md）。一次典型迭代的最小反馈是：改两三个文件 → 跑 owning 的 vitest 文件或 doc-sync → 秒到分钟级出结果。
+| 层级 | 具体包含什么 | 谁在管 |
+|---|---|---|
+| **1. Harness 运行时默认** | `workspace-write + ask` 权限、`read-before-edit` 校验、技能按需加载、后台子智能体自动回交、`lefthook.yml` 本地钩子、CI 门禁矩阵 | **代码与配置硬性执行** |
+| **2. 仓库贡献纪律** | “只跑最窄测试不跑全套”“只报实际跑过的命令”“涉及持久取舍写 Agent Note” | **`AGENTS.md` 与 `dsh-*` 技能引导**（你真在本地敲 `pnpm run test` 全量跑一遍，机器并不会拦你） |
+| **3. 团队历史惯例** | 代码+文档+测试同提交落地、出问题整 PR 回滚、分支演进中保留 checkpoint 或按需用 stacked PR / 普通独立 PR | **Git 历史里的协作习惯**（简单改动完全可以走普通单分支 PR，不必强套栈式 PR） |
 
-这个设计里藏着一个对 agent 经济学的直白理解：agent 跑测试没有"无聊成本"，但 wall clock 和 token 是真金白银；把反馈收窄到"会为这次回归而失败的那一个检查"，单次迭代成本就被压到最低——而迭代成本低，人才（和 agent）会真的去跑，规矩才守得住。宽仪式性验证反而会诱导跳过。这与 FAQ 10 论证"快而小的模型优秀"是同一个思想在开发层的投影：**把每一步的单位成本做小，然后用更多步数换总质量**。
+---
 
-还有一层：验证本身便宜。"We are DeepSeek — do not ration real-API tests. A no-key test proves plumbing; only a with-key run proves the agent works against a real model"（[testing.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 的 with-key policy）——连"真实模型验证"都不设配额。
+## 四、诚实摊牌：这套模式有哪些真实代价和局限？
 
-## 第四节 "轻松"的来源三：敢改——犯错的代价被结构性调低
+不把话说满，下面四笔账是在 DSH 里干活实打实会碰到的摩擦：
 
-第三个体感来源最少被明说，但证据最硬：
+1. **本地钩子比 CI 快得多，但绝不是“零延迟”**
+   `pre-commit` 跑 lint 和空白检查确实很快，但每次 `git push` 触发的 `pnpm run typecheck` 实际上会跑完整的宿主侧构建与客户端类型检查（[`lefthook.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/lefthook.yml) + `package.json`）。在 50 多个包的工作区里，冷缓存跑一次要几十秒到一两分钟，仓库自己的归档记录也明确拒绝承诺固定耗时。
+2. **门禁只能替你记“死规矩”，记不住“软判断”**
+   机器能抓类型错、格式错、覆盖率掉线，但抓不住“这笔改动到底该不该写 Agent Note”“你的切片是不是塞进了两件不相关的事”“注释是不是在复述代码”。这一半负担依然压在 `dsh-*` 技能阅读和人工/Agent Code Review 肩上。
+3. **真模型测试并不便宜，“不设配额”是为了防偷懒**
+   [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 里写着 `"We are DeepSeek — do not ration real-API tests"`。这句话千万别读成“调真模型很便宜”——恰恰因为带密钥的真模型 e2e 最慢也最花钱，团队才专门立规矩堵死“为了省 token 只跑 mock”的借口。
+4. **整包回滚有前提，垂直切片也有“宽度税”**
+   整 PR 无痛回滚只在后续没有别的 PR 改过同一批文件时才清爽（历史上也发生过 `#3326` 把回滚又二次撤回的折腾）。另外，哪怕只改几行对外行为，往往也要同步更新中英文 `README` 和 `.i18n.yaml` 配对文件——之所以大家不觉得苦，是因为这部分体力活主要由内圈的 Coding Agent 代劳了。
 
-- **整 PR 回滚文化**：git 历史里 merged slice 被 revert 时是整个切片反向——代码、测试、快照、Note 三件套、文档目录一起退（如 #2903 `577bb71418` 回滚 #2608 的全部六个面），没有 patch-forward hotfix 的模式。改错了，撤销是一次原子操作，不是考古。
-- **coverage gate 的删除解释权**："An uncovered line is often dead code the gate flags for deletion, not a missing test to bolt on"（testing.md 的 coverage gate 节）。100% 覆盖率在这里的默认读法是"这段代码该删"，不是"这段代码该补测"。
-- **tests are not golden truth**："Tests describe behavior, not correctness. Change obsolete behavior with its tests"（AGENTS.md）；Note 也不是金科玉律——被取代就 supersede、被归档就冻结（"Once sealed, every archived triplet is permanently frozen. … do not treat it as authority for current behavior"，[`.agents/notes/README.md:42`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)）。
-- **pre-stable 立场**：公开 API 尚未稳定（"Public APIs are pre-stable; update every consumer"），已发布的 Session 数据则受版本纪律保护——相邻迁移只能新增后继代，不得移动、覆盖或删除已提交代。前者仍然支持"删兼容 shim 换正确地基"；后者给"敢改"划出数据面的边界（[AGENTS.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 开篇的"Pre-stable APIs and released Session data"；原文引的"rename or repackage freely"随该节在本次跨度内更名而消失）。
+---
 
-这四条合起来的效果：仓库不供奉任何已有代码。新人（或新 agent）进场不需要"先读懂全部再动手"——窄 diff + 原子回滚 + 可重生成的目录，意味着大改动的风险被切成了一堆小赌注。**"敢改"才是"轻松"最深的那个来源**：轻松不是没有风险，而是风险被结构吸收了。
+## 继续阅读
 
-## 第五节 为什么"写东西"本身也轻松：声明本质，其余派生
+| 你想了解什么 | 去哪篇看 |
+|---|---|
+| 跟着一个具体需求（新增工具插件 vs 写技能/编排脚本），从头到尾走一遍六步闭环 | [`01-walkthrough-adding-a-tool.md`](./01-walkthrough-adding-a-tool.md) |
+| 一笔变更涉及的 Issue、Note、`docs/`、测试、CI 在仓库里各自住哪？ | [FAQ 06 · 变更落位路径](../06_change-landing-path/answer.md) |
+| 想把这套方法搬进自己的业务仓库，该先抄哪几样？ | [FAQ 07 · 借鉴 DSH 的 Harness 思路](../07_borrowing-dsh-harness-idea/answer.md) |
 
-上面说的是开发流程；把范围缩小到"在 DSH 上写一个工具/插件"，同样的哲学换了个出口。看 [adding-a-tool](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md) 的最小定义：一个 `defineTool` 声明了名字、schema、`execute`、`render` 之后，以下全部免费获得——args 类型化并在执行前自动验证；schema 自动流入 system prompt 组装；effect 式注册，dispose fiber 即注销；PTC 模式免费可达（"PTC mode reaches your tool for free"，生成的类型从同一 schema 推导）；UI 卡片由一个声明的 render intent（`generic`/`terminal`/`diff` + `locations`）派生，且是 `args` 的纯函数、重放安全。
-
-写的人在两种情况下（在仓库内开发 DSH、在仓库上写扩展）都只写一样东西：**不可派生的本质**。其余义务在仓库内由 gate 派生，其余能力在仓库面由 harness 派生。"生成物永不手编"（doc-standards）是同一原则的第三面：能从源头推导的，永远不维护第二份。诚实边界也要讲：声明之外仍有 DSL 表达不了、必须手检的约束（非空串、正数、跨字段规则——adding-a-tool.md 的 execute contract 明列），且契约面本身有 100 余行宽度；它不免费，而是"由 harness 执行、由 agent 消化、人只需在读契约时过一遍"。
-
-## 第六节 历史检验：这个习惯是真的，还是文档自我美化
-
-git 量化（upstream/master 最近 100 个 PR landing merge）给了强支持：
-
-- **88%** 的 PR 含 `.agents/notes/` 改动，**96%** 含测试，**86%** 含 docs/README，**90%** 含 src（写作基线 `0a53fb55be` 的最近 100 个 PR landing merge；本次同步在 `upstream/master` 新 tip 上按同一 merge-base 口径复点为 90/93/95/92，"96%" 两次都未复现）。Note 文件数的众数是 3 个（= 一个新三件套），中位数 ≈9（写作时口径；本次 merge-base 复算为中位数 12、众数 6，见 [user-experience-audit](./user-experience-audit.md) §3.7）；.md/.zh 对在 100 个 PR 中从不拆半（0 例）。例外恰好是制度豁免类：1 文件机械修复（#2760，25 行）、CI-only PR（#2798 仍带 2 个 Note 三件套与 spec 测试）。
-- 工作流 Note 自带引入 commit（"adopt native GitHub stack workflow" `9a07380c23`），merge-forward checkpoint 密度写作时记为约 1.8 次/PR（**本次未复现**：本仓为浅克隆，可复现口径下含 checkpoint 的提交体仅 20–26 处 / 395 个 landed PR merge），整 PR revert 常态化——**文档就是历史的转写**，不是愿望清单。
-- 作者身份几乎全是人（写作时 top: Tianyi Cui 5475 commits、Yichen Jiang 1680、imccyu 1556，Co-authored-by 仅 4 例；**本次在浅克隆上未复现**，实测 `upstream/master` 为 Tianyi Cui 1003 / imccyu 807 / Yichen Jiang 645，Co-authored-by 全史 15 例——差异可能同时来自浅克隆与统计口径）。但这条证据**不能**用来反驳"这套流程只对 agent 可行"：quality-gates Note 的第一句自述就是 "This codebase is developed primarily by coding agents"，且本仓库惯例是"机器辅助的活记在操作者名下"（research 第二路）——作者身份因此测不出人手与 agent 的占比，它最多证明"人在落地 PR"。正确的读法是分工论：执行面（跑检查、写三件套）按 agent 经济设计，指挥面（切窄片、审最小证据、整 PR 回滚）才是人类开发者的体验所在——见第八节修正。
-- 诚实的分歧也要记录：文档把 stacked-PR 写成统一工作流，但历史里并存三种实践——lettered worktree 系列（apire-a…f）、编号 native stacks（agent-profiles-1…8）、以及占多数的普通独立 `fix/`/`feat/` PR。习惯是真实且被实践的，但不是每一个 PR 都走满全部仪式；制度允许简单问题用简单路径。
-
-## 第七节 与 02/10 对位：纠正一个因果倒置，指出同一条认识论
-
-**对 FAQ 06/09 与 06（静态分层与落位路径）**：分层规格的静态结论站得住，但如果读成"DSH 先写 spec 再实现"，因果就反了。native 顺序是：**证据与门禁先行，spec 感是闭环的沉淀物**——gate 住了的事实进文档与生成目录，选择记录进 Note，行为钉进快照；"spec"从未作为上游文档存在，它是六步闭环运行足够多圈之后，从外部看起来的形状。02 自己其实已经触到这一点（"并非所有变更都机械地先有 proposed 文件"），本 FAQ 把它从脚注升格为结论。
-
-**对 FAQ 10（goal/plan 三根，10_heavy-user-impressions-vs-mechanisms）**：那篇解释的是运行时体感。本篇发现的是同构现象的深层根源：goal 轮提示词对模型宣告"权威只属于 workspace、工具结果与持久会话状态，模型三小时前的自述没有权威地位"（FAQ 10 的 04-goal-plan-small-model.md:26 所引 goal 轮提示词），trim-cot-leakage 对开发者宣告"HEAD 处的无会话读者必须能验证每一个 claim"，pre-push-checks 对所有人宣告"不信任记忆，核对现场"。这是**同一条认识论在运行时与开发时两个平面上的投影**：模型（或人）的自述永远不是权威，权威只在外部可验证状态里。所以"核对现场、窄证据、原子切片"不是被规定的习惯，而是在这个认识论下**唯一自洽的行事方式**——这就是"最 DSH native"的确切含义。
-
-顺带：委派 spine（FAQ 10 的 05-other-roots.md）与这个习惯的关系是"同源不同层"——委派把任务切小，窄证据把验证切小，两者共享"单位成本最小化"的取向，但前者是运行时能力，后者是开发制度，互不依赖。
-
-## 第八节 代价与边界
-
-- **gate 语料本身是要维护的代码**：quality-gates Note 的 Consequences 明说（"The gates themselves are code to maintain"）。闭环每沉淀一条规则，未来的每个 PR 都多付一点合规成本。
-- **垂直切片有宽度税**：双语文档三件套（.md + .zh.md + .i18n.yaml）加上生成目录更新，对小改动是重仪式——88% 切片率的另一面是每个切片要动中位数 ~9 个 Note 文件（写作时口径；本次 merge-base 复算为中位数 12、众数 6）。
-- **闭环只约束它覆盖的面**：本目录（`_faq_on_digested/`）就活在产品门禁之外——文件刻意不叫 `README.md`（躲开双语配对门禁），自带一个只查编码/换行/链接的 [verify.mjs](../verify.mjs)。值得注意的是连这个研究语料也把"最小检查"带了进来——这个习惯的传染性，本身就是它自然程度的旁证。
-- **六步闭环是执行者的回路，指挥者的回路在它外面**：本 FAQ 的六步描述的是在此仓库里干活的 agent 的默认路径；人类开发者的体验是它的上一层——切一个窄片、把意图说清、让 agent 走完六步、只审"会为这次回归而失败"的最小证据、错了整 PR 回滚。quality-gates Note 第一句自述 "This codebase is developed primarily by coding agents"，六步闭环本身就是按"agent 执行、人指挥与审查"分工设计的。所以"轻松"要分清两个主语：对 agent 是默认路径即正确路径；对人是"不用记规则、不用跑全套、改错可原子回滚、每笔交付只需审最小证据"——它对人省力的部分在指挥与审查面，不在执行面。
-
-![两个回路：人类指挥者回路在外圈（切窄片 → 说清意图 → 委派执行 → 审最小证据 → 通过/整 PR 回滚），agent 执行者六步闭环在内圈；「轻松」分主语落在两个回路上](./figures/two-loops.svg)
-- **它明确不优先的习惯**：spec-first 大文档（02 已论证无自我声明）、red-green-refactor 全员强制、全量验证 ritual、兼容 shim、手工维护生成目录。这些都能做，但每个都逆着制度的纹理。
-
-## 最接近的一句话
-
-**DSH 最自然的开发习惯是窄证据切片闭环：核对现场、判定窄 diff、原子修改 owner 面、跑会为这次回归而失败的最小证据、把新判断沉淀为 gate 或 Note、只报告实际跑过的——每笔交付是一个带测试、文档、Note、快照的完整垂直切片。"轻松愉悦"不是因为约束少，而是因为正确路径与最省力路径被制度对齐了：记忆在门禁里，反馈在秒级，错误可以原子回滚，而写的人只需声明不可派生的本质。**
+> 核验状态见 [核验基线登记](../00-baseline.md)。

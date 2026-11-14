@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
   <title>一个场景目录的形状：探针产出、毕业门槛与三种归宿</title>
-  <desc>左侧是 DSH 场景目录的真实文件清单，以 minimal-preset 为例：session.v4.jsonl 是会话轨迹，system-prompt.expected.md 是渲染后的提示词全文，tool-schemas.expected.json 是组装后的工具 schema，ui.expected.md 是真浏览器渲染出的可访问性树，snapshot.yml 是场景契约（声明 profile、composition、录音方式与 header class，pin true 表示这个场景独占拥有 sidecar）。中间是毕业门槛：写入基线之前的四道门，replay 模式下缺基线必须报错而不是自举，refresh 是唯一写入路径，不稳定字段必须令牌化，工作区 oracle 从不被 record 或 refresh 重写。右侧是三种归宿：当场判断、证据目录、毕业成基线，各自寿命不同。底部一句：探针买第一次的真相，基线买之后的防回归。</desc>
+  <desc>左侧是 DSH 场景目录的真实文件清单，以 minimal-preset 为例：session.v4.jsonl 是会话轨迹，system-prompt.expected.md 是渲染后的提示词全文，tool-schemas.expected.json 是组装后的工具 schema，ui.expected.md 是真浏览器渲染出的可访问性树，snapshot.yml 是场景契约（声明 profile、composition、录音方式与 header class，pin true 表示这个场景独占拥有 sidecar）。中间是毕业门槛：写入基线之前的四道门，replay 模式下缺基线必须报错而不是自举，refresh 是唯一写入路径，不稳定字段必须令牌化，工作区 oracle 从不被 record 或 refresh 重写。右侧是三种归宿：当场判断、证据目录、毕业成基线，各自寿命不同。底部一句：探针查清第一次的真实状态，基线守住后续改动不回退。</desc>
   <defs>
     <marker id="sg-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#0f766e"/></marker>
   </defs>
@@ -97,7 +97,7 @@
 
   <!-- Bottom line -->
   <line x1="40" y1="516" x2="1160" y2="516" stroke="#cbd5e1"/>
-  <text x="60" y="544" font-size="13" font-weight="700" fill="#0f766e">探针买第一次的真相，基线买之后的防回归</text>
+  <text x="60" y="544" font-size="13" font-weight="700" fill="#0f766e">探针查清第一次的真实状态，基线守住后续改动不回退</text>
   <text x="60" y="568" font-size="11" fill="#334155">不毕业的探针，永远只是一次调试 —— 每次都要人来读；太早毕业的基线，会把错误状态钉成「正确」——所以写入前必须有门。</text>
   <text x="60" y="592" font-size="11" fill="#334155">在 DSH 里这两件事共用同一份产物形状：一次真运行的记录。区别只在有没有 base —— 有 base 的那份叫 expected，没有的那份叫 observation。</text>
 

@@ -1,159 +1,52 @@
-# Reference · 证据入口总账
+# Reference 07 · DSH 权威文件入口与对照索引
 
-> **定位：证据账本。** 本目录各章声称的 DSH 事实，其上游一手出处集中登记在这里（核验基线 `dsh-v0.1.7-rc.1`，链接指向 `master`）。正文按渐进披露的原则不携带链接清单——想核对哪一章的事实，按章号来这里查；不核对就不必读。纯 FAQ 综合判断（施工顺序、优先级排序）在此如实标注「无独立上游证据」。整理过程的语料出处与复核历史在 [`research.md`](./research.md)（内部账本），与本页分工：research 记「这些结论怎么来的」，本页记「去哪里核对」。
+本页集中整理本组文章引用的 DSH 仓库一手规则文件、门禁脚本、真实历史提交与相关专题入口。指向 DSH 产品树的文件均采用默认分支 `master` 链接，可单独取阅核对。核验状态见 [核验基线登记](../00-baseline.md)。
 
-## 00 · DSH 原话索引（道十句 + 术十四句）
+---
 
-道五篇与术六篇的关键原话在正文中以「**DSH 原话 ·**」标记，句句带出处。想一口气读全（真正掌握 DSH，读它自己写下的这些句子）：
+## 一、仓库地图、文档分层与字数预算（对应 `01`）
 
-**道（概念的骨架）：**
+- **根指令入口与包级约定**：[`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)（常驻规则、目录布局、常用命令及 `CLAUDE.md` 软链接约定）、[`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md)、[`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md)
+- **架构总图与改动路由表**：[`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)（含 `Where new behavior goes` 扩展入口表与 `--dump-config` 配置树查看命令）、[`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md)
+- **文档分层标准（`One home per fact` 与 `Document current state`）**：[`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)
+- **常驻文档字数预算与棘轮门禁**：[`scripts/doc-budgets.manifest.json`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/doc-budgets.manifest.json)、[`scripts/verify-doc-budgets.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-doc-budgets.ts)
+- **自动生成目录实例**：[`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-catalog.md)、[`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md)、[`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md)
 
-| 篇 | 原话（出处文件） |
-|---|---|
-| 01 | Mechanical or local edits … are exempt.（`.agents/notes/README.md`） |
-| 01 | Match evidence to the surface … A guard only guards if the regression fails it.（根 `AGENTS.md`） |
-| 02 | Each fact has one home: the tier whose job it is; elsewhere, link there.（`docs/AGENTS.md`） |
-| 02 | Document current state.（`docs/AGENTS.md`） |
-| 03 | … does not qualify merely because its implementation is small.（`.agents/notes/README.md`） |
-| 03 | Before deletion, the owner must preserve every unique rationale …（`.agents/notes/README.md`） |
-| 04 | Publish state only at its commit point. … from one authoritative source.（`packages/AGENTS.md`） |
-| 04 | Model-visible ⟺ logged …（根 `AGENTS.md`） |
-| 05 | New behavior attaches to a documented extension point.（`docs/architecture.md`） |
-| 05 | There is no privileged core to patch …（`docs/architecture.md`） |
+---
 
-**术（实战的操作定义）：**
+## 二、决策记录（Agent Note）与同提交交付闭环（对应 `02`）
 
-| 篇 | 原话（出处文件） |
-|---|---|
-| 07 | `CLAUDE.md` symlinks `AGENTS.md` … edit the real file.（根 `AGENTS.md`） |
-| 07 | Rendering keeps the most specific files first … never exceed `maxBytes`.（`agent-instructions/README.md`） |
-| 08 | 拦执行链挂事件：Intercept a request, tool, or turn → use its `agent/*` or `tools/*` event.（`docs/architecture.md`） |
-| 08 | 工具实现的字段永不进模型请求：`output`/`execute`/… must never leak into a model request.（`docs/subsystems/tools.md`） |
-| 09 | This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions.（quality-gates Note） |
-| 09 | Every mechanically checkable AGENTS.md promise gets a command that exits non-zero. …（同上） |
-| 09 | Match evidence to the surface … Never default to the full suite.（根 `AGENTS.md`，全文版） |
-| 09 | A guard only guards if the regression fails it. … introduce the regression, watch red, revert.（`docs/testing.md`） |
-| 10 | This skill is guidance, not a complete checklist. …（`dsh-code-review/SKILL.md`） |
-| 10 | There is no privileged core to patch … registrations are effects that unwind.（`docs/architecture.md`） |
-| 10 | The vm prevents accidental global pollution; … not a security boundary.（cordis toolset Note） |
-| 11 | Skills: Reusable workflows and specialized decision standards.（`docs/AGENTS.md` tier 表） |
-| 11 | This catalog contains summaries only; do not infer or follow …（`tool-skill/README.md`） |
-| 12 | To see the tree your machine boots: `dsh --profile web --dump-config`.（`docs/architecture.md`） |
-| 12 | The vm … is not a security boundary.（cordis toolset Note） |
-| 13 | Spawn supplies no history; fork supplies its balanced seed.（`subagent-in-process-driver/README.md`） |
+- **决策记录生命周期、准入门槛与四段骨架**：[`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)
+- **归档与清理判定流程**：[`.agents/skills/dsh-archive-agent-notes/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md)
+- **PR 交付三栏模板**：[`.github/pull_request_template.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/pull_request_template.md)
+- **正反真实历史提交对照**：
+  - 局部 UI 呈现修改豁免决策记录（模型选择器显示原始 ID，7 文件原子闭环）：提交 [`5124a2a310`](https://github.com/deepseek-ai/deepseek-harness/commit/5124a2a310a904d28118609c41d89f26440b946b)（PR [`#5004`](https://github.com/deepseek-ai/deepseek-harness/pull/5004)）
+  - 含持久设计取舍与 5 条被否备选方案必写记录（静默超时回收卡死 `pnpm` 子进程）：提交 [`ccaa0dc11c`](https://github.com/deepseek-ai/deepseek-harness/commit/ccaa0dc11c) 与对应归档记录 [`2026-09-23-bounded-pnpm-runs.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/bug-fix/2026-09-23-bounded-pnpm-runs.md)
 
-各句的完整原文与上下文见各篇正文（每句都在「DSH 怎么应对/怎么做」节内）。
+---
 
-## 00b · DSH 文档地图：最重要的几个文档在哪里、目的是什么
+## 三、可执行快门禁、分层测试与按需技能（对应 `03`、`04`）
 
-想深入 DSH 本体时，按问题找文档。这几个是整个仓库的骨架文档，各自的目的一句话说清：
+- **为什么机械门禁优于散文约定**：归档决策记录 [`2026-06-11-quality-gates.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)
+- **顶层门禁聚合器与本地快钩子**：[`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/run-gates.ts)、[`lefthook.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/lefthook.yml)、归档记录 [`2026-07-22-fast-local-git-hooks.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
+- **测试分层、红灯对照与真实世界断言**：[`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)、[`docs/defensive-patterns/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/defensive-patterns/README.md)
+- **按需加载技能（Skills）与扩展操作手册**：[`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)、[`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)、[`packages/skill/tool-skill/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/README.md)、[`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/extension-cookbook.md)
 
-| 文档（链接指向 master） | 目的 | 什么时候读 |
-|---|---|---|
-| [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) | agent 每轮的常驻指令：布局、命令、约定——所有参与的第一入口 | 想看「agent 一等参与者」落到文件是什么样 |
-| [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) | 系统的有序地图：插件如何组成 dsh、新行为接哪里（「Read this before changing anything under `packages/`」） | 改代码前建立全局认知；归属表在这 |
-| [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) | 文档层的规则：tier 分工（one home）、字数预算、双语纪律 | 想理解 DSH 的知识为什么这样分层 |
-| [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) | 决策记录的规则：何时写、状态、取代与归档 | 想学决策记录的完整纪律（道 03 的原文出处） |
-| [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) | 测试政策：层级、真实入口、负例控制、快照义务 | 想学「证据与声称对齐」的完整标准（道 01 的原文出处） |
-| [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) | 包工作区地图：分组、每组拥有什么、约束它们的约定 | 从任务找 owner 的第二跳（根 AGENTS → 这里 → 包 README） |
-| [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md) | 一词一义：一个概念一个规范术语，实现细节留给包 README 和 Note | 读其它文档碰到术语分歧时来对表 |
-| [`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/extension-cookbook.md) | 每个扩展点的操作手册：怎么做、范本 | 照正确路径动手时（道 05 的配套） |
-| [`docs/defensive-patterns.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/defensive-patterns/README.md) | 踩过的坑变成的规则：每条是一个真出过的事故类 | 写生命周期/并发/子进程/清理代码之前 |
-| [`docs/cordis-primer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md) | Cordis 框架入门：插件、服务、事件、效果的机制 | 读 architecture 前不懂 Cordis 时先来这 |
-| [`docs/development.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/development.md) | 贡献者参考：环境搭建、日常工作流、CI 组织 | 要实际参与 DSH 开发时 |
+---
 
-三个使用提示：这张表是「按问题找文档」的索引，不是通读书单——没人需要全读；每个文档自己拥有自己的一类事实（正是道 02 讲的 one home），互相链接不复制；上游 evolve 后以核验基线复核（见 `research.md` 的说明）。
+## 四、自研 Agent 运行时机制参考（按需选读）
 
-## 01 · 变更闭环
+- **指令按触达目录动态注入与字节预算**：[`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md)、[`packages/context/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/README.md)
+- **工具执行统一管线与契约**：[`docs/tool-execution-pipeline.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-execution-pipeline.md)、[`docs/subsystems/tools.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/tools.md)
+- **系统提示词缓存友好组装、技能目录摘要与上下文压缩**：[`docs/subsystems/system-prompt.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/system-prompt.md)、[`docs/subsystems/skills.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md)、[`docs/subsystems/compaction.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/compaction.md)
+- **子智能体历史隔离与运行时只读检查边界**：[`packages/subagent/subagent-spawn-in-process/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent-spawn-in-process/README.md)、[`packages/extensions/tool-cordis/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/extensions/tool-cordis/README.md)、归档记录 [`2026-07-08-self-referential-cordis-toolset.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)
 
-- [提交 `5124a2a310`](https://github.com/deepseek-ai/deepseek-harness/commit/5124a2a310a904d28118609c41d89f26440b946b)：本页案例的上游一手证据（7 文件、+15/−14、断言反转）。
-- [组件测试](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-settings-models/tests/provider-form.client.spec.tsx)：案例的断言反转所在（第 612、753 行附近）。
-- [PR 模板](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/pull_request_template.md)：意图/变化/证据三分节的现行模板。
-- [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)：本地相关检查与 CI 分工的原始规则。
-- [测试策略](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：真实入口与“改动的验收路径必须拒绝无效用例”的原始要求（`AGENTS.md` 的 run-checks 条目）；[pre-push-checks](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md) 用 negative-control 形容这类证据。
+---
 
-## 02 · 归属
+## 五、本语料相关兄弟 FAQ
 
-- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)：文档 tier taxonomy 与 one home per fact。
-- [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md)：一词一义的术语纪律。
-- [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：决策记录的生命周期与负知识 home。
-
-## 03 · 决策记录
-
-- [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：DSH 决策记录的原始规则（豁免条款、取代、归档）。
-- [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md)：DSH 归档判断的校准工作流（按未来决策价值，不按字数年龄）。
-
-## 04 · 静与动
-
-- [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)：model-visible ⟺ logged 的原始规则。
-- [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md)：commit point 发布与单权威源派生。
-- [session log 机制](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/session-format-status.md)：格式版本与已发布会话数据的迁移纪律。
-- [system-prompt 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/system-prompt.md)：`PromptContext` 作为 cache-safe 的动态层——变化或被压缩时才重新记录快照。
-
-## 05 · 正确路径
-
-- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)：Where new behavior goes 归属表与扩展点。
-- [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md)：capability seam 三角色的规范定义。
-- [`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/extension-cookbook.md)：feature 到机制与操作指南的细化入口。
-
-## 06 · 落地总纲
-
-无独立上游证据——Phase 划分与验收标准是本 FAQ 的施工综合，不是 DSH 的既有制度。各 Phase 引用的 DSH 机制，上游出处按站查：Phase 1 → [01 变更闭环](#01--变更闭环)；Phase 2/3 → [02 归属](#02--归属)；Phase 4 → [05 正确路径](#05--正确路径)；Phase 5 → [09 可执行反馈](#09--可执行反馈)；Phase 6 → [11 Skills](#11--skills)；Phase 7 → [12 运行时查询](#12--运行时查询)。
-
-## 07 · 入口链
-
-- [根 `AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)：standing orders + 布局 + 命令的入口本体；`CLAUDE.md` symlink 及「edit the real file」的规则原文。
-- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)：tier taxonomy 表（根/子树 AGENTS.md 与包 README 的分工）与字数预算。
-- [`scripts/doc-budgets.manifest.json`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/doc-budgets.manifest.json)：字数预算的逐文件上限清单（根 `AGENTS.md` ≤1,950、`docs/AGENTS.md` ≤1,320、`docs/architecture.md` ≤2,410、`packages/AGENTS.md` ≤750 等 8 项）。
-- [`scripts/verify-doc-budgets.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-doc-budgets.ts)：预算门禁的执行语义（头注释）——只列出的 standing docs 受预算；上限只降不升、下降留 ≥5% headroom，上涨需按 `docs/AGENTS.md` 论证。
-- [`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md)：会话态加载的机制——touch-driven、`maxBytes` 预算、per-directory 去重、digest 抑制。
-
-（文件态设计的兄弟篇是 FAQ 04，会话态机制是 FAQ 05——家族互链，不是证据。）
-
-## 08 · 执行链
-
-- [docs/tool-execution-pipeline.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-execution-pipeline.md)：官方管线图——pre-execute/guards/approval/execute/fs 意图门/post-execute/归一化/finalize/tools/result 的完整顺序（`gen-doc-graphs.ts` 生成）。
-- [docs/subsystems/tools.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/tools.md)：`ToolDefinition` 完整契约——模型可见面 allowlist、`execute()` 的 canonical value 与取消纪律、`ToolOutputDefinition` 强制声明。
-- [docs/architecture.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)：「Intercept a request, tool, or turn → use its `agent/*` or `tools/*` event」——拦执行链挂事件的归属规则。
-- [docs/agent-lifecycle.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/agent-lifecycle.md)：agent 生命周期时序图——执行链在整轮中的位置。
-
-## 09 · 可执行反馈
-
-- [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：test tiers、真实入口、negative control、snapshot 义务。
-- [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据，而不是固定跑全套。
-- [`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/run-gates.ts)：仓库检查逻辑的聚合入口。
-
-## 10 · 迁移清单
-
-优先级排序、三问框架与四个边界是语料/FAQ 层的综合归纳，不是 DSH 的成文制度；四边界引用的 DSH 事实，上游一手出处：
-
-- [`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)：Skill 是 guidance、不替代语义 review（边界 2 的原始表述）。
-- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)：注册即效果、随插件卸载 unwind（边界 3 的原始表述）。
-- [`.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)：运行时查询不是安全边界（边界 4 的原始表述）。
-- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)：文档预算与 one home——「外置有维护成本」的 DSH 侧控制手段。
-
-## 11 · Skills
-
-- [`.agents/skills/dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)：Skill 作为 guidance、语义 review 输入和 finding 输出的实例。
-- [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选证据的实例。
-
-## 12 · 运行时查询
-
-- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)：ordered config layers 与 `--dump-config`。
-- [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-catalog.md)：从源码生成的工具 schema 与 opt-in 说明。
-- [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md)：生成的 Service Definition / Provider / Consumer 关系索引。
-
-## 13 · 披露管线
-
-- [`docs/subsystems/system-prompt.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/system-prompt.md)：`PromptSection` / `PromptContext`（cache-safe，变化才 log）/ `ctx.systemPrompt.tools` / `suppressRuntimeContext`。
-- [`docs/subsystems/skills.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md)：`SkillCatalogSnapshot` summary-only（name + description ≤500）、body on-demand。
-- [`docs/subsystems/compaction.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/compaction.md)：pressure/overflow 触发、tool-result pruning、tool-call/result 配对、token meter。
-- [`docs/subsystems/token-meter.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/token-meter.md)：`ctx.tokenMeter` 的估算与回放。
-- [`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md)：touch-driven 加载、`maxBytes`/`maxSourceBytes`、per-directory dedup、digest 抑制。
-- [`packages/context/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/README.md)：六个 context 插件的角色与 opt-in。
-- [`docs/cookbook/extension-cookbook.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/extension-cookbook.md)：`ctx.tools.restrict()` 的 ToolSearch / progressive disclosure 定位。
-- [`packages/subagent/subagent-in-process-driver/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent-spawn-in-process/README.md)：spawn 不带父历史、fork 只带 balanced seed。
-
-## 14 · 问题框架
-
-- DSH [`quality-gates` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)：仓库以 coding agent 为主、机械门禁优于 prose 约定的一手因果自述。
+- 根入口文档在 DSH 内部的静态设计与运行时消费全景：[FAQ 04 · 根入口文档](../04_root-entry-doc/answer.md)
+- DSH 主仓自身的变更载体分工与双案例深度拆解：[FAQ 06 · 变更落位路径](../06_change-landing-path/answer.md)
+- DSH 主仓内外双圈与六步窄证据切片闭环：[FAQ 11 · 原生开发闭环](../11_native-development-loop/answer.md)
+- Agent Note 制度细节与真实演进走查：[FAQ 20 · Agent Note 质量标准](../20_agent-note-quality-bar/answer.md)
+- 无密钥录制会话快照的原理与插件仓取舍：[FAQ 21 · 录制会话快照](../21_recorded-session-snapshots/answer.md)

@@ -85,5 +85,5 @@
   <text x="640" y="440" fill="#6d28d9" font-size="10.5">适合：成员持续互发、状态跨重启、任务需要排序。</text>
   <text x="640" y="466" fill="#94a3b8" font-size="10.5">容量：默认 16 个成员（profile 钉 8）、256 个任务。</text>
 
-  <text x="600" y="532" text-anchor="middle" font-size="11" fill="#64748b">一句话：workflow 的边只从脚本出发；team 的边是任意两点之间，而且还有一块共享的第三空间</text>
+  <text x="600" y="532" text-anchor="middle" font-size="11" fill="#64748b">一句话：workflow 的边只从脚本出发；team 的边连在任意成员之间，外加一块共享任务板</text>
 </svg>
