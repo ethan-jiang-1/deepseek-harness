@@ -32,11 +32,11 @@
 
 ## 二、基线只有一个家
 
-核验基线是必要的元信息：读者要能知道「这条结论是对着哪个版本核过的」。但它**只登记一次**：语料维护清单（`catalog.json`；等价实现是一个集中维护页，例如语料根下的 `00-baseline.md`）的 `baseline` 字段。
+核验基线是必要的元信息：读者要能知道「这条结论是对着哪个版本核过的」。但它**只登记一次**：语料维护清单（`catalog.json`，或语料唯一的集中维护页如 `00-baseline.md`、`_coverage/00-corpus-maintenance.md`）的基线声明处。
 
 - 页面不写**当前基线**（release tag / commit / 「本页基线：…」）。需要说明可信度时写「核验状态见维护清单」，或链到该页的核验记录。正文引用历史 commit 作为证据时，按 §4 标注为历史。
 - 每页的最后核验点登记在同一清单的 `verifiedAt`。它允许早于 `baseline`，但必须标为 `carried`，不得写成「与当前基线一致」。
-- 历史跨度、OLD 侧、某轮修了什么属于 `_change_log/`；机制页只写当前行为。
+- 历史跨度、OLD 侧、某轮修了什么属于 `_change_log/` 或维护账本的按轮记录；机制页只写当前行为。
 - 实测记录可以写日期，但不得把日期或版本号写成当前基线。
 
 判据：同一基线的声明数应为 1。第 2 份起就是维护负债——每轮同步都会多一处要改，而且必然漂移。页面里的每一次版本重复，都让「换版本」这个动作多一个假修订。
@@ -88,13 +88,16 @@ const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(
 
 | 事实 | 家 |
 |---|---|
-| 基线、页面清单、核验状态 | 语料维护清单（`catalog.json`；本语料的等价实现是 `00-baseline.md`） |
-| profile 组合、`PROFILE_TEMPLATES`、bundle 层叠 | `runtime-profiles/` |
-| 入口清单、CLI/SDK/ACP 契约、输出与退出、认证载体 | `surfaces-entrypoints/` |
-| 两棵树的运行时、client/remote 机制、Typert | `two-tree-runtime/` |
-| 插件的组合、生命周期、货架 | `plugin-system/` |
+| 基线、页面清单、核验状态 | 各自语料的唯一维护清单（`catalog.json`、`00-baseline.md` 或 `_coverage/00-corpus-maintenance.md`） |
+| 通用 Agent-Friendly 仓库工程学（知识归属、Skills、门禁模式、防漂移与新仓四件套模板） | `01-general-repo-harness/`（开发与插件 Harness 语料 · 卷一，不绑 DSH 代码） |
+| 独立 DSH 插件仓开发与专属 Harness（三种拓扑、Cordis 契约、插件门禁与无 Key 回放） | `02-dsh-plugin-harness/`（开发与插件 Harness 语料 · 卷二） |
+| DSH 主仓原生 SDLC 条款与一手证据字典（Note、Plan、CI、评审、加权批准、发布） | `03-dsh-sdlc-reference/`（开发与插件 Harness 语料 · 卷三） |
+| profile 组合、`PROFILE_TEMPLATES`、bundle 层叠 | `runtime-profiles/`（架构消化语料） |
+| 入口清单、CLI/SDK/ACP 契约、输出与退出、认证载体 | `surfaces-entrypoints/`（架构消化语料） |
+| 两棵树的运行时、client/remote 机制、Typert | `two-tree-runtime/`（架构消化语料） |
+| 插件的组合、生命周期、货架 | `plugin-system/`（架构消化语料） |
 | 包数、服务数、工具数 | `claims.json` 指标或 `docs/` 生成目录 |
-| 历史、退役、每轮改了什么 | `_change_log/` |
+| 历史、退役、每轮改了什么 | `_change_log/` 或 `_coverage/00-corpus-maintenance.md` 的历史轮次记录 |
 
 跨卷只允许「摘要 ≤3 行 + 链接」。同一张表、同一组数字、同一段对照不得在两卷并列维护：那会让下一轮同步出现两个必须同时改、又可能改得不一致的地方。
 
@@ -102,8 +105,8 @@ const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(
 
 - `00-map.md`：概念、问题入口、阅读顺序、边界。不放机制细节、基线、轮次注记。
 - 编号页：当前行为、不变量、失败面、源码入口。不放历史、计数、基线。
-- playbook / 实测页：可复现步骤与实测原文；日期标为 `T`，不得冒充当前基线。
-- 每页在清单里登记 `role`（`map` / `mechanism` / `playbook` / `experiment`）、`verifiedAt`、`status`（`reverified` / `carried` / `unrecorded`）。`carried` 不得写成「已按当前基线核验」。
+- playbook / 实测页：可复现步骤、脚手架模板与实测原文；日期标为 `T`，不得冒充当前基线。
+- 每页在清单里登记 `role`（`map` / `mechanism` / `playbook` / `experiment` / `governance`）、`verifiedAt`、`status`（`reverified` / `carried` / `unrecorded`）。`carried` 不得写成「已按当前基线核验」。
 
 ## 八、改语料前先自问
 

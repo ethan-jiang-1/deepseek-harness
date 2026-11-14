@@ -8,9 +8,9 @@
 
 ## 1. 专题定位
 
-`_dsh_plugin_agent_ready_development/` 是以 DSH 固定版本一手来源为依据的三卷互补语料：`repo-harness/` 提炼不依赖 DSH 代码的通用 Agent-Friendly Repository 工程学，`native-development-model/` 沉淀独立 DSH 插件仓库的专属开发模型与实战 Harness，`sdlc-reference/` 提供 DSH 主仓原生研发流程的精确条款与一手证据字典。它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法；三卷均独立依据 DSH 源码、文档、规则、Skills、workflow 和 git 历史，不依赖其它研究语料。
+`_dsh_plugin_agent_ready_development/` 是以 DSH 固定版本一手来源为依据的三卷互补语料：`01-general-repo-harness/` 提炼不依赖 DSH 代码的通用 Agent-Friendly Repository 工程学，`02-dsh-plugin-harness/` 沉淀独立 DSH 插件仓库的专属开发模型与实战 Harness，`03-dsh-sdlc-reference/` 提供 DSH 主仓原生研发流程的精确条款与一手证据字典。它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法；三卷均独立依据 DSH 源码、文档、规则、Skills、workflow 和 git 历史，不依赖其它研究语料。
 
-根落地页 `00-index.md` 是独立语料的介绍、五条底层认知跃迁、十二项可抽取工程实践总索引、双受众精准阅读路线（路线 A 通用仓库架构师 vs 路线 B 独立 DSH 插件作者）与三卷定位入口。`repo-harness/`（`01`–`11`）覆盖零历史 agent 参与回路、知识归属与双轨目录、Skills 程序性记忆、改动爆炸半径四级阶梯、可执行反馈与八类门禁、动态运行时四面镜、能力边界与语义盲区、仓库分类学、生态入口可读性、通用新仓四件套蓝图，以及长周期防规格漂移与决策新陈代谢；`native-development-model/`（`00`–`06`）覆盖原生开发闭环、Day-1 单包 Host Bundle 样板、核心心智词汇与 `Preset`/`Profile` 分界、DSH 会话压缩与存活矩阵、三种插件仓库拓扑与五层配置、Cordis 六条防御契约与 `Model Experience` 预算，以及独立插件仓 `verify-plugin.mjs` 门禁、无密钥会话回放与 CI/Skills 实战；`sdlc-reference/`（`01`–`12`）按问题提供 Agent Note、Issue/PR、`Plan`、门禁路由、散文标准、评审、堆叠 PR、Web seam 历史样本、意图入口、加权批准、多通道发布与契约证据的精确参考，并在每篇区分主仓专属参数与可迁移工程不变量。迁移到独立研究问答语料的历史案例不再作为本语料的前置卷。
+根落地页 `00-index.md` 是独立语料的介绍、三卷目录树、五条底层认知跃迁、十二项可抽取工程实践总索引、双受众精准阅读路线（路线 A 通用仓库架构师 vs 路线 B 独立 DSH 插件作者）与维护入口。`01-general-repo-harness/`（`01`–`11`）覆盖零历史 agent 参与回路、知识归属与双轨目录、Skills 程序性记忆、改动爆炸半径四级阶梯、可执行反馈与八类门禁、动态运行时四面镜、能力边界与语义盲区、仓库分类学、生态入口可读性、通用新仓四件套蓝图，以及长周期防规格漂移与决策新陈代谢；`02-dsh-plugin-harness/`（`00`–`06`）覆盖原生开发闭环、Day-1 单包 Host Bundle 样板、核心心智词汇与 `Preset`/`Profile` 分界、DSH 会话压缩与存活矩阵、三种插件仓库拓扑与五层配置、Cordis 六条防御契约与 `Model Experience` 预算，以及独立插件仓 `verify-plugin.mjs` 门禁、无密钥会话回放与 CI/Skills 实战；`03-dsh-sdlc-reference/`（`01`–`12`）按问题提供 Agent Note、Issue/PR、`Plan`、门禁路由、散文标准、评审、堆叠 PR、Web seam 历史样本、意图入口、加权批准、多通道发布与契约证据的精确参考，并在每篇区分主仓专属参数与可迁移工程不变量。迁移到独立研究问答语料的历史案例不再作为本语料的前置卷。
 
 每个目录都有落地页：卷目录用 `00-map.md`，其余目录用 `00-index.md`。三个主题目录的 `00-map.md` 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 `00-index.md` 还标明每张 SVG 的正文 owner。
 
@@ -40,7 +40,7 @@
 
 ## 3. 结构与叙事约束
 
-1. 三卷互补但独立：`native-development-model/` 只综合 owner、证据与交付判断的关系；`sdlc-reference/` 拥有精确条件、状态与例外；`repo-harness/` 拥有仓库入口、工具和反馈机制。任何一卷都不要求先读另一卷，也不把迁移到 FAQ 的历史案例当作前置知识。
+1. 三卷互补但独立且按 `01` → `02` → `03` 编号自明：`01-general-repo-harness/` 拥有跨语言通用仓库入口、工具、门禁与防漂移机制；`02-dsh-plugin-harness/` 拥有独立 DSH 插件仓的拓扑、Cordis 契约与专属验证门禁；`03-dsh-sdlc-reference/` 拥有 DSH 主仓变更主线的精确条件、状态与例外。任何一卷都不要求先读另一卷，也不把迁移到问答语料的历史案例当作前置知识。
 2. 重要术语在新手层首次出现时同时给出英文名称和中文解释；后文保留仓库与 GitHub 中可搜索的英文名称。
 3. 主链不把 Issue、proposed Note 和 Plan Mode 画成统一必经顺序；三者是条件入口，承载持久决定理由的变更的共同义务是 owning Agent Note（机械/局部编辑豁免，与上游收窄后的标准一致）。
 4. `.github/` 是远端执行面，而非只在 Issue 小节中出现：模板、trusted policy、Project lifecycle、PR CI、自动依赖 PR 和相邻发布 workflow 各自标明职责。
@@ -50,7 +50,7 @@
 8. Web seam 案例只证明 commit tree 中的 proposal、delivery bundle 和 implemented record，不证明 Issue、Plan、review、local commands 或 GitHub checks。
 9. 本页拥有独立研究语料的发行边界：这些文件不是 bilingual product docs 或 website source，不创建 pairing sidecar 或站点投影。
 10. 专题不引用其它研究语料，也不从其它语料加载校验逻辑；引用 DSH 时先在正文讲清结论，再用 blockquote 摘录关键原文，并标明 DSH 中的具体 owner 与可核对事实。
-11. `sdlc-reference/` 独立定义 DSH 主仓变更流的条件、状态与例外，不依赖迁出的 Tutorial；`repo-harness/` 独立回答 DSH 怎样帮助 coding agent 理解、修改和验证 DSH。两条平级叙事通过可选内部链接协作，不复制对方拥有的详细事实。
+11. `03-dsh-sdlc-reference/` 独立定义 DSH 主仓变更流的条件、状态与例外，不依赖迁出的 Tutorial；`01-general-repo-harness/` 独立回答仓库怎样帮助 coding agent 理解、修改和验证系统。各卷通过可选内部链接协作，不复制对方拥有的详细事实。
 12. Development Harness 从一个 fresh-agent 场景起步，再引入 legibility、procedural memory、paved road 与 inspectability；抽象术语不能成为新读者的前置条件。
 13. `.agents/skills/` 的 repository development Skills 与 `packages/skill/` 的 runtime Skill capability 分开说明；相似的按需知识思想不能被误写成共享同一 registry 或调用机制。
 14. Skills 拥有情境化工作流程，`AGENTS.md` 拥有 standing orders，repository gates 拥有确定性检查，`.github/` workflows 拥有远端调度，Agent Notes 拥有决定理由，current docs/source 拥有当前行为。
@@ -58,7 +58,7 @@
 
 ## 4. 图示
 
-现有 SVG 分属 [SDLC Reference](../sdlc-reference/figures/00-index.md)、[Development Harness](../repo-harness/figures/00-index.md) 和 [Native Development Model](../native-development-model/figures/00-index.md) 三个图示清单；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根 README 与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
+现有 SVG 分属 [通用仓库 Harness 图示清单](../01-general-repo-harness/figures/00-index.md)、[DSH 插件仓 Harness 图示清单](../02-dsh-plugin-harness/figures/00-index.md) 和 [DSH SDLC 参考图示清单](../03-dsh-sdlc-reference/figures/00-index.md)；各清单拥有文件名与正文映射。主题 Markdown 不跨目录引用图，根入口与 `_coverage/` 不拥有图。正文引用图后继续提供可搜索的机制与来源。每张 SVG 还提供与 `viewBox` 一致的固有尺寸，以及由 `role="img"`、`aria-labelledby="title desc"`、`title` 和 `desc` 组成的无障碍元数据。
 
 ## 5. 重审触发路径
 
@@ -97,44 +97,44 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 | `CORPUS-CHARTER.md` | governance | 2026-11-14 | reverified |
 | `_coverage/00-index.md` | map | 2026-11-14 | reverified |
 | `_coverage/00-corpus-maintenance.md` | governance | 2026-11-14 | reverified |
-| `repo-harness/00-map.md` | map | 2026-11-14 | reverified |
-| `repo-harness/00-index.md` | map | 2026-11-14 | reverified |
-| `repo-harness/01-follow-a-fresh-agent.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/02-legibility-and-ownership.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/03-skills-as-procedural-memory.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/04-paved-road-and-participation.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/05-executable-feedback.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/06-runtime-inspection.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/07-boundaries-and-costs.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/08-repository-taxonomy.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/09-plugin-author-entry.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/10-agent-ready-repo-blueprint.md` | playbook | 2026-11-14 | reverified |
-| `repo-harness/11-spec-drift-and-decision-metabolism.md` | mechanism | 2026-11-14 | reverified |
-| `repo-harness/figures/00-index.md` | map | 2026-11-14 | reverified |
-| `native-development-model/00-map.md` | map | 2026-11-14 | reverified |
-| `native-development-model/00-index.md` | map | 2026-11-14 | reverified |
-| `native-development-model/01-new-plugin-repository.md` | playbook | 2026-11-14 | reverified |
-| `native-development-model/02-terms-and-mental-models.md` | mechanism | 2026-11-14 | reverified |
-| `native-development-model/03-context-and-drift.md` | mechanism | 2026-11-14 | reverified |
-| `native-development-model/04-plugin-repo-topologies.md` | playbook | 2026-11-14 | reverified |
-| `native-development-model/05-cordis-contracts-and-model-experience.md` | mechanism | 2026-11-14 | reverified |
-| `native-development-model/06-plugin-gate-and-ci-harness.md` | playbook | 2026-11-14 | reverified |
-| `native-development-model/figures/00-index.md` | map | 2026-11-14 | reverified |
-| `sdlc-reference/00-map.md` | map | 2026-11-14 | reverified |
-| `sdlc-reference/00-index.md` | map | 2026-11-14 | reverified |
-| `sdlc-reference/01-agent-note-lifecycle.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/02-issue-pr-lifecycle.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/03-plan-and-sandbox.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/04-gates-and-local-checks.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/05-prose-doc-standards.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/06-review-and-human-role.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/07-push-merge-stacked-prs.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/08-example-web-seam.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/09-intake-and-work-items.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/10-approval-gate.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/11-release-sequences-and-publish-lanes.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/12-agent-contract-evidence.md` | mechanism | 2026-11-14 | reverified |
-| `sdlc-reference/figures/00-index.md` | map | 2026-11-14 | reverified |
+| `01-general-repo-harness/00-map.md` | map | 2026-11-14 | reverified |
+| `01-general-repo-harness/00-index.md` | map | 2026-11-14 | reverified |
+| `01-general-repo-harness/01-follow-a-fresh-agent.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/02-legibility-and-ownership.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/03-skills-as-procedural-memory.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/04-paved-road-and-participation.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/05-executable-feedback.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/06-runtime-inspection.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/07-boundaries-and-costs.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/08-repository-taxonomy.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/09-plugin-author-entry.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/10-agent-ready-repo-blueprint.md` | playbook | 2026-11-14 | reverified |
+| `01-general-repo-harness/11-spec-drift-and-decision-metabolism.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/figures/00-index.md` | map | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/00-map.md` | map | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/00-index.md` | map | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/01-new-plugin-repository.md` | playbook | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/02-terms-and-mental-models.md` | mechanism | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/03-context-and-drift.md` | mechanism | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/04-plugin-repo-topologies.md` | playbook | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/05-cordis-contracts-and-model-experience.md` | mechanism | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/06-plugin-gate-and-ci-harness.md` | playbook | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/figures/00-index.md` | map | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/00-map.md` | map | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/00-index.md` | map | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/01-agent-note-lifecycle.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/02-issue-pr-lifecycle.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/03-plan-and-sandbox.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/04-gates-and-local-checks.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/05-prose-doc-standards.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/06-review-and-human-role.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/07-push-merge-stacked-prs.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/08-example-web-seam.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/09-intake-and-work-items.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/10-approval-gate.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/11-release-sequences-and-publish-lanes.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/12-agent-contract-evidence.md` | mechanism | 2026-11-14 | reverified |
+| `03-dsh-sdlc-reference/figures/00-index.md` | map | 2026-11-14 | reverified |
 
 2026-08-24 的 repository-level 复核没有建立绿色 `doc-sync` 结果：`corepack pnpm run doc-sync` 完成 28 项中的 25 项，`doc-typecheck` 缺少 `lib/types/{index,invariant,startup}.js` 构建入口，documentation build 命中 host Corepack 的 `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`，translation pairing 因仓库 scope 包含本语料而拒绝 8 个 README。前两项需要目录外构建或工具链修复；pairing exclusion 由目录外的 `scripts/translation-pairing.manifest.json` 拥有。目录级检查通过不能替代这三项 repository-level 结果。
 
@@ -398,3 +398,12 @@ re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、
 - `node _dsh_plugin_agent_ready_development/verify.test.mjs` 通过：全部自包含正负例通过。
 - 全量 32 张 SVG 均经 `rsvg-convert` 渲染 PNG 并逐张通过看图工具完成视觉验收。
 - 全量源码反查与排版门禁通过：42 个 Markdown 文件对照本地 `dsh-v0.2.1-rc.5` 树逐条核验全部目录外 DSH URL 与 `#fragment`/`#L<n>` 锚点（0 失效）、全部带出处英文 blockquote 逐字比对（0 漂移）、AST 单物理行段落折行检查（0 违规）、禁用词扫描（0 违规），以及 `git diff --check -- _dsh_plugin_agent_ready_development` 通过。
+
+## 2026-11-14（三阶段）三卷目录重命名与共享维护宪章结构对齐
+
+基线不变（`dsh-v0.2.1-rc.5`）。动因：二阶段完成内容劈分后，存量目录名仍残留历史演进包袱——`native-development-model/` 未体现独立插件仓主语且易与原生模块或主仓流程混淆，文件系统字母序与逻辑卷序倒挂，`CORPUS-CHARTER.md` §6 的事实归属表也尚未收录本语料的三卷边界。
+
+本轮变更：
+
+1. **三卷子目录重命名**：`repo-harness/` → `01-general-repo-harness/`（跨语言通用 Agent-Friendly 仓库工程学），`native-development-model/` → `02-dsh-plugin-harness/`（独立 DSH 插件仓开发与专属 Harness 实战），`sdlc-reference/` → `03-dsh-sdlc-reference/`（DSH 主仓原生 SDLC 条款与一手证据参考字典）。历史记录段落中的旧目录名按宪章 §3 保留当时读数，现行导航、内部互链、§7 入库页面双向清单、`verify.mjs` 的 `owningFiguresDirectory` 与 `verify.test.mjs` 全部切换至新路径。
+2. **根入口与共享宪章更新**：`00-index.md` 增补顶层自明目录树并同步全部入口链接；`CORPUS-CHARTER.md` 在 §2、§6、§7 补齐 `_coverage/00-corpus-maintenance.md` 维护账本、`01-general-repo-harness/`、`02-dsh-plugin-harness/`、`03-dsh-sdlc-reference/` 三个事实归属家以及 `governance` 页面角色，并按宪章哈希一致性规则同步四份语料的 `CORPUS-CHARTER.md` 副本及外部入站链接。

@@ -303,9 +303,9 @@ const referencedSvgPaths = new Set()
 
 function owningFiguresDirectory(markdownPath) {
   const fromRoot = relative(corpusRoot, markdownPath).split(sep)
-  if (fromRoot[0] === 'native-development-model') return resolve(corpusRoot, 'native-development-model/figures')
-  if (fromRoot[0] === 'sdlc-reference') return resolve(corpusRoot, 'sdlc-reference/figures')
-  if (fromRoot[0] === 'repo-harness') return resolve(corpusRoot, 'repo-harness/figures')
+  if (fromRoot[0] === '01-general-repo-harness') return resolve(corpusRoot, '01-general-repo-harness/figures')
+  if (fromRoot[0] === '02-dsh-plugin-harness') return resolve(corpusRoot, '02-dsh-plugin-harness/figures')
+  if (fromRoot[0] === '03-dsh-sdlc-reference') return resolve(corpusRoot, '03-dsh-sdlc-reference/figures')
   return undefined
 }
 
