@@ -31,7 +31,7 @@
 
 最小 shipped 样本是 `@deepseek-ai/dsh-tool-present`（109 行，packages/deliverables/tool-present/src/index.ts）：`inject = ['tools', 'fs', 'sessionProjections', 'workingDirectory']`（:27），apply 里 `ctx.tools.register(defineTool({...}))` 注册 `present`（:39），文件解析、每会话交付状态与执行目录分别白拿 `ctx.fs`、`ctx.sessionProjections` 与 `ctx.workingDirectory`。一个功能插件＝name / Config / inject / apply 四件套（packages/AGENTS.md 的「Plugin exports」节），服务全部现成。
 
-两点核查纪律：生成表 `docs/capability-seams.md` 的消费者列对 agent 作用域注册的工具插件不完备（tool-present 不在 `ctx.tools` 消费者行里），以源码 `inject` 与 config-catalog 各节的 `inject` 行为准；插件的最小合同与发布纪律归 [`_dsh_plugin_agent_ready_development/01-general-repo-harness/09`](../../../_dsh_plugin_agent_ready_development/01-general-repo-harness/09-plugin-author-entry.md)。
+两点核查纪律：生成表 `docs/capability-seams.md` 的消费者列对 agent 作用域注册的工具插件不完备（tool-present 不在 `ctx.tools` 消费者行里），以源码 `inject` 与 config-catalog 各节的 `inject` 行为准；插件的最小合同与发布纪律归 [`_dsh_plugin_agent_ready_development/02-dsh-plugin-harness/01`](../../../_dsh_plugin_agent_ready_development/02-dsh-plugin-harness/01-new-plugin-repository.md)。
 
 ## 缺口清单：这些现在必须自写
 

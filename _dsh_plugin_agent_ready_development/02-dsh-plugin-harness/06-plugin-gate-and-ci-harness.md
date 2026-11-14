@@ -2,7 +2,7 @@
 
 ## 痛点破局：脱离 DSH 主仓内部基建后，外部插件仓怎么搭硬门禁
 
-阅读 DSH 主仓源码时，外部插件作者最常遇到一个现实落差：主仓拥有庞大的内部 `scripts/run-gates.ts` 与未对外作为通用脚手架发行的内部快照辅助包，独立插件仓不可能把那几十个内部脚本拷出来维护；但如果因此退回到“只跑 `tsc` 和两个手写 Mock 单测”，Coding Agent 写出的默认导出冲突、`peerDependencies` 漏镜像、`cordis.patch.yml` 断链、卸载竞态以及工具 Schema 漂移就会一路畅通无阻流进生产环境。
+阅读 DSH 主仓源码时，外部插件作者最常遇到一个现实落差：主仓拥有庞大的内部 `scripts/run-gates.ts` 与未对外作为通用脚手架发行的内部快照辅助包，独立插件仓不可能把那几十个内部脚本拷出来维护；但如果因此退回到“只跑 `tsc` 和两个手写 Mock 单测”，Coding Agent 写出的默认导出冲突、`peerDependencies` 漏镜像、`cordis.patch.yml` 断链、全栈插件 `lib/client.js` 打包格式错误、卸载竞态以及工具 Schema 漂移就会一路畅通无阻流进生产环境。
 
 本章给出专门面向**独立 DSH 插件仓**设计的**四阶自动化验证金字塔**——全部仅依赖 Node 内置模块与 DSH 公开发布的 `@deepseek-ai/*` 包，每一段代码均可直接复制进你的插件仓库投入运行。
 
@@ -14,14 +14,15 @@
 
 ## 第一阶：插件专属零依赖静态门禁 `scripts/verify-plugin.mjs`
 
-把 [`01`](./01-new-plugin-repository.md)、[`04`](./04-plugin-repo-topologies.md)、[`05`](./05-cordis-contracts-and-model-experience.md) 中最容易被 coding agent 写错的打包与契约规则，直接浓缩成一份不到 130 行、毫秒级跑完的纯 Node 内置脚本 `scripts/verify-plugin.mjs`。它一次性自动拦截六类插件致命伤：
+把 [`01`](./01-new-plugin-repository.md)、[`04`](./04-plugin-repo-topologies.md)、[`05`](./05-cordis-contracts-and-model-experience.md) 中最容易被 Coding Agent 写错的打包、双编译器面与契约规则，直接浓缩成一份不到 160 行、毫秒级跑完的纯 Node 内置脚本 `scripts/verify-plugin.mjs`。它一次性自动拦截七类插件致命伤：
 
 1. `package.json` 漏写 `"type": "module"`、漏配 `exports["."]` 或 `files` 未覆盖补丁文件；
 2. `@deepseek-ai/cordis` 及 `peerDependencies` 中的宿主共享包未在 `devDependencies` 中以相同版本范围镜像；
 3. `dsh.bundle.patch` 指向的 YAML 文件不存在，或把动态求值标签 `!!js` 误写成了单感叹号 `!js`；
-4. 函数式插件入口文件同时出现了具名 `export const inject` / `export function apply` 与致命的 `export default`；
-5. `README.md` 漏写 `## Model Experience` 或 `## Known Limitations and Deferred Work` 契约章节，或本地相对链接断链；
-6. 根 `AGENTS.md` 超出单屏词数预算（默认上限 500 词）。
+4. **全栈插件（声明了 `dsh.client`）专项门禁**：自动校验 `exports["./client"]`、`files` 中的 `lib/client.js`、`tsconfig.client.json` 双编译器面隔离、补丁中是否存在裸包名根行（防止挂在子路径上丢失浏览器面），以及构建后 `lib/client.js` 是否真正具备 `window.__ModuleLoader__.load` lazy-CJS 工厂包裹；
+5. 函数式插件入口文件同时出现了具名 `export const inject` / `export function apply` 与致命的 `export default`，或通过 `globalThis` / `Symbol.for` 挂载隐式单例；
+6. `README.md` 漏写 `## Model Experience` 或 `## Known Limitations and Deferred Work` 契约章节，或本地相对链接断链；
+7. 根 `AGENTS.md` 超出单屏词数预算（默认上限 500 词）。
 
 ```js
 #!/usr/bin/env node
@@ -38,7 +39,7 @@ function fail(file, line, rule, fixHint) {
   failures.push(`${line ? `${rel}:${line}` : rel}: [${rule}] ${fixHint}`)
 }
 
-// 1. 校验 package.json 插件导出、三层依赖镜像与 dsh.bundle 闭合
+// 1. 校验 package.json 插件导出、三层依赖镜像与 dsh.bundle / dsh.client 闭合
 const pkgPath = resolve(root, 'package.json')
 const pkg = JSON.parse(decoder.decode(readFileSync(pkgPath)))
 
@@ -61,6 +62,7 @@ for (const [depName, peerRange] of Object.entries(peers)) {
 }
 
 const publishedFiles = new Set(pkg.files ?? [])
+let patchText = ''
 const bundlePatch = pkg.dsh?.bundle?.patch
 if (bundlePatch) {
   const normalizedPatch = bundlePatch.replace(/^\.\//, '')
@@ -71,12 +73,31 @@ if (bundlePatch) {
     if (!publishedFiles.has(normalizedPatch)) {
       fail(pkgPath, 1, 'bundle-files', `files 清单漏列了 ${normalizedPatch}，会导致 npm 打包后用户安装报错`)
     }
-    const yamlLines = decoder.decode(readFileSync(absPatch)).split('\n')
-    yamlLines.forEach((line, i) => {
+    patchText = decoder.decode(readFileSync(absPatch))
+    patchText.split('\n').forEach((line, i) => {
       if (/(^|\s)!js\b/.test(line)) {
         fail(absPatch, i + 1, 'yaml-js-tag', '检测到非法的单感叹号 !js 标签；Cordis 动态表达式必须写作 !!js（且仅限 config 与 disabled 字段）')
       }
     })
+  }
+}
+
+if (pkg.dsh?.client) {
+  if (!pkg.exports?.['./client']?.default) {
+    fail(pkgPath, 1, 'client-export', '声明 dsh.client 时必须同步配置 exports["./client"].default 指向 "./lib/client.js"')
+  }
+  if (!publishedFiles.has('lib/client.js') && !publishedFiles.has('lib')) {
+    fail(pkgPath, 1, 'client-files', '声明 dsh.client 时 files 清单必须包含 "lib/client.js"，否则发包后 Web 端加载 404')
+  }
+  if (!existsSync(resolve(root, 'tsconfig.client.json'))) {
+    fail(pkgPath, 1, 'client-tsconfig', 'Host + Client 双树包必须拆分独立的 tsconfig.client.json，防止 Context 声明合并冲突')
+  }
+  if (patchText && !patchText.includes(pkg.name) || (patchText && !new RegExp(`name:\\s*['"]?${pkg.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]?(\\s|$)`, 'm').test(patchText))) {
+    fail(pkgPath, 1, 'client-bare-row', `dsh.client 只会挂载在裸包名 "${pkg.name}" 的根 Loader 行上；子路径导出行不会携带浏览器面`)
+  }
+  const builtClient = resolve(root, 'lib/client.js')
+  if (existsSync(builtClient) && !decoder.decode(readFileSync(builtClient)).includes('window.__ModuleLoader__.load')) {
+    fail(builtClient, 1, 'client-lazy-cjs', 'lib/client.js 不是合法的 window.__ModuleLoader__.load lazy-CJS 工厂产物（请使用 tsdown.config.ts 打包，切勿直接用 tsc 输出）')
   }
 }
 
@@ -307,9 +328,9 @@ describe('keyless scripted-turn replay with independent workspace oracle', () =>
 
 ## 第四阶：开箱即用的插件仓 `.github/workflows/ci.yml` 与 2 份专属 `SKILL.md`
 
-### 1. 插件仓标准 GitHub Actions 工作流（含隔离 `$DSH_HOME` 打包安装预演）
+### 1. 插件仓标准 GitHub Actions 工作流（含构建后二次校验与隔离 `$DSH_HOME` 安装预演）
 
-将以下工作流存为 `.github/workflows/ci.yml`，每次 PR 自动串起**静态门禁 → 类型检查 → 聚焦/回放测试 → 构建打包与干净 Profile 安装卸载预演**：
+将以下工作流存为 `.github/workflows/ci.yml`，每次 PR 自动串起**静态门禁 → 双面类型检查 → 聚焦/回放测试 → 构建产物门禁（含 `lib/client.js` 格式核验）→ 干净 Profile 安装卸载预演**：
 
 ```yaml
 name: Plugin CI
@@ -342,9 +363,10 @@ jobs:
       - name: Unit, Loader HMR & keyless scripted-turn replay
         run: pnpm run test
 
-      - name: Build, pack & clean DSH_HOME install rehearsal
+      - name: Build, artifact gate & clean DSH_HOME install rehearsal
         run: |
           pnpm run build
+          pnpm run verify
           TARBALL="$(pnpm pack | tail -n 1)"
           export DSH_HOME="$(mktemp -d)"
           npx dsh --profile ci-smoke --from-default-profile headless
@@ -386,13 +408,14 @@ description: Use before bumping version, updating engines.dsh or @deepseek-ai/* 
 
 1. Confirm `engines.dsh` and `@deepseek-ai/*` ranges in `peerDependencies` match the DSH versions actually tested in CI (mirroring exact ranges in `devDependencies`).
 2. Audit `git diff` against public surfaces (config keys, tool names/parameters, persisted session events): document any breaking change and update `README.md` (`## Model Experience`, data retention, `## Known Limitations and Deferred Work`).
-3. Run `pnpm run verify && pnpm run typecheck && pnpm run test && pnpm run build`, execute the clean `$DSH_HOME` tarball install rehearsal, and run live-API `test:e2e` if `DEEPSEEK_API_KEY` is available (reporting honestly if skipped).
+3. Run `pnpm run verify && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run verify`, execute the clean `$DSH_HOME` tarball install rehearsal, and run live-API `test:e2e` if `DEEPSEEK_API_KEY` is available (reporting honestly if skipped).
 ```
 
-把这四阶金字塔和两份轻量 Skill 装进独立插件仓后，哪怕主力开发者全是零历史启动的 coding agent，每一次提交也都在严密、快速、自包含的工程护栏内运行。
+把这四阶金字塔和两份轻量 Skill 装进独立插件仓后，哪怕主力开发者全是零历史启动的 Coding Agent，每一次提交也都在严密、快速、自包含的工程护栏内运行。
 
 ## 证据入口
 
 - DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 与 [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md)：真实入口组合测试、仅替换最外层 `LlmAdapter`、负例证明（Prove-Red）与只读 `workspace.expected/` Oracle 规范。
 - DSH [`docs/user/develop/practice/llm-adapter.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/practice/llm-adapter.md)、[`packages/core/agent/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent/README.md) 与 [`packages/core/agent-loop/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent-loop/README.md)：公开 `LlmAdapter` 流式协议、`ctx.agents.create()` / `followup()` / `whenIdle()` 驱动接口与最小核心服务组合栈。
+- DSH [`docs/cookbook/adding-a-remote-api.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-remote-api.md) 与 [`docs/cookbook/adding-a-settings-card.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-settings-card.md)：`TestRemote` 客户端测试替身与 `lib/client.js` 构建产物校验契约。
 - DSH [`docs/user/develop/basic/publish.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md) 与 [`.agents/skills/cordis-styling-nitpicking/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/cordis-styling-nitpicking/SKILL.md)：`dsh.bundle` 打包安装检查项与生命周期 P0 竞态审查方法。

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title id="title">跨仓库协同可读性：底座平台仓、独立扩展仓与合成运行环境</title>
+  <desc id="desc">展示任何支持 SDK、微服务底座或插件扩展的平台生态如何通过共享契约词汇、无凭据教程阶梯以及分发清单与运行环境清单二分法，让 Coding Agent 横跨多座仓库协同工作。</desc>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1120" height="560" rx="6" fill="#fafafa"/>
+  <text x="560" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">跨仓库协同可读性：平台底座仓 · 独立扩展/业务仓 · 合成运行环境</text>
+  <text x="560" y="52" text-anchor="middle" font-size="11" fill="#667085">通用多仓协同原则：运行时契约与领域词汇 100% 同构，各仓库内部治理规模按自身复杂度独立裁剪</text>
+
+  <rect x="20" y="76" width="340" height="292" rx="8" fill="#edf2f7" stroke="#94a3b8"/>
+  <text x="190" y="104" text-anchor="middle" font-size="13.5" font-weight="700" fill="#334155">1. 平台 / SDK 底座仓（契约真源）</text>
+  <text x="38" y="134" font-size="12" font-weight="600" fill="#334155">内外部同构的扩展原语</text>
+  <text x="46" y="152" font-size="11" fill="#64748b">官方模块与外部扩展共用同一协议，零特权后门</text>
+  <text x="38" y="182" font-size="12" font-weight="600" fill="#334155">零线上凭据的可运行教程阶梯</text>
+  <text x="46" y="200" font-size="11" fill="#64748b">本地目录几分钟跑通最小闭环，再进阶正式装配</text>
+  <text x="38" y="230" font-size="12" font-weight="600" fill="#334155">源码单向生成的公开契约目录</text>
+  <text x="46" y="248" font-size="11" fill="#64748b">接口签名、事件模式与配置表受新鲜度门禁保护</text>
+  <text x="38" y="278" font-size="12" font-weight="600" fill="#334155">显式划清多端运行时树边界</text>
+  <text x="46" y="296" font-size="11" fill="#64748b">提前隔离服务端、浏览器端或 Worker 的编译面</text>
+  <text x="46" y="344" font-size="10.5" fill="#64748b">对标：微服务框架仓 · 内部 SDK 仓 · 插件宿主仓</text>
+
+  <rect x="390" y="76" width="340" height="292" rx="8" fill="#fff5e6" stroke="#d99939"/>
+  <text x="560" y="104" text-anchor="middle" font-size="13.5" font-weight="700" fill="#744408">2. 独立扩展 / 下游业务仓（作者视角）</text>
+  <text x="408" y="134" font-size="12" font-weight="600" fill="#744408">严格沿用底座领域词汇表</text>
+  <text x="416" y="152" font-size="11" fill="#916d32">角色后缀与生命周期术语一致，跨仓检索零损耗</text>
+  <text x="408" y="182" font-size="12" font-weight="600" fill="#744408">只依赖抽象定义而非具体实现</text>
+  <text x="416" y="200" font-size="11" fill="#916d32">面向接口包编程，不绑死某一家底层 Provider</text>
+  <text x="408" y="230" font-size="12" font-weight="600" fill="#744408">只声明自身能力补丁（Module / Bundle）</text>
+  <text x="416" y="248" font-size="11" fill="#916d32">只描述本包贡献什么，不篡改宿主全局启动主干</text>
+  <text x="408" y="278" font-size="12" font-weight="600" fill="#744408">装配轻量自包含的开发 Harness</text>
+  <text x="416" y="296" font-size="11" fill="#916d32">单屏 AGENTS.md + 专属静态门禁 + 真实组装测试</text>
+  <text x="416" y="344" font-size="10.5" fill="#916d32">对标：下游业务服务仓 · 第三方插件仓 · 领域适配器</text>
+
+  <rect x="760" y="76" width="340" height="292" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="930" y="104" text-anchor="middle" font-size="13.5" font-weight="700" fill="#245d35">3. 合成运行环境（部署与终端视角）</text>
+  <text x="778" y="134" font-size="12" font-weight="600" fill="#245d35">独立的运行环境清单（Profile / Deploy）</text>
+  <text x="786" y="152" font-size="11" fill="#4f775a">由使用者决定按什么顺序叠加哪些能力包</text>
+  <text x="778" y="182" font-size="12" font-weight="600" fill="#245d35">一键导出最终合成配置快照</text>
+  <text x="786" y="200" font-size="11" fill="#4f775a">无需盲猜多层覆盖优先级，启动前即可核验生效树</text>
+  <text x="778" y="230" font-size="12" font-weight="600" fill="#245d35">兼容版本范围与安装副作用透明</text>
+  <text x="786" y="248" font-size="11" fill="#4f775a">机器校验宿主版本准入，如实披露构建脚本权限</text>
+  <text x="778" y="278" font-size="12" font-weight="600" fill="#245d35">代码卸载与持久业务数据解耦</text>
+  <text x="786" y="296" font-size="11" fill="#4f775a">移除扩展只剥离代码与配置层，保留用户落盘数据</text>
+  <text x="786" y="344" font-size="10.5" fill="#4f775a">铁律：作者管分发单元，用户管组装环境，绝不混同</text>
+
+  <line x1="360" y1="222" x2="388" y2="222" stroke="#475569" stroke-width="1.4" marker-end="url(#arr)"/>
+  <line x1="730" y1="222" x2="758" y2="222" stroke="#475569" stroke-width="1.4" marker-end="url(#arr)"/>
+
+  <path d="M930 370 L930 402 L190 402 L190 372" fill="none" stroke="#475569" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+  <text x="560" y="422" text-anchor="middle" font-size="11" fill="#667085">回挂同一套运行时契约：下游扩展与底座第一方模块在活系统中遵守完全相同的生命周期与状态纪律</text>
+
+  <rect x="20" y="438" width="1080" height="106" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="40" y="464" font-size="12.5" font-weight="700" fill="#1e293b">Coding Agent 横跨双仓工作时的“继承 vs 裁剪”分界线</text>
+  <text x="40" y="490" font-size="11" fill="#334155">必须 100% 对齐（运行时契约与词汇）：组件入口与清理协议 · 依赖抽象接口而非具体实现 · 分发单元与启动环境二分 · 多编译面隔离边界</text>
+  <text x="40" y="516" font-size="11" fill="#64748b">完全自主裁剪（仓库内部治理规模）：下游小仓无需照搬底座大仓的百包同步发版、双语哈希配对、看板自动状态机或历史代码归属积分制</text>
+</svg>

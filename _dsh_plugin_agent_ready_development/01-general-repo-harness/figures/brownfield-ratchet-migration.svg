@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="580" viewBox="0 0 1120 580" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title id="title">存量业务老仓库的不停工三阶段渐进改造与单调棘轮止血机制</title>
+  <desc id="desc">展示如何在不暂停业务交付、不推翻历史目录的前提下，用第 1 天导航止血、第 1 周指纹级单调棘轮锁债与第 1 个月高频返工提炼三步，将存量仓库改造为 Agent-Friendly Repo。</desc>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1120" height="580" rx="6" fill="#fafafa"/>
+  <text x="560" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">存量老仓库（Brownfield Repo）不停工改造：三阶段演进与指纹棘轮锁</text>
+  <text x="560" y="52" text-anchor="middle" font-size="11" fill="#667085">核心铁律：绝不因为“历史欠账还没清完”推迟上线门禁——先用精确指纹锁死新增恶化，再随日常触碰自然消债</text>
+
+  <rect x="20" y="76" width="340" height="270" rx="8" fill="#fff5e6" stroke="#d99939"/>
+  <text x="190" y="104" text-anchor="middle" font-size="13.5" font-weight="700" fill="#744408">阶段一 · Day 1 导航止血（2 小时）</text>
+  <text x="38" y="134" font-size="12" font-weight="600" fill="#744408">1. 立起 ≤150 行根 AGENTS.md</text>
+  <text x="46" y="152" font-size="11" fill="#916d32">写清真实目录分工、禁碰历史雷区与验证命令</text>
+  <text x="38" y="182" font-size="12" font-weight="600" fill="#744408">2. 补一页 15 行“新行为挂哪”路由表</text>
+  <text x="46" y="200" font-size="11" fill="#916d32">每个高频需求指名唯一推荐范本文件（防抄旧垃圾）</text>
+  <text x="38" y="230" font-size="12" font-weight="600" fill="#744408">3. 归档或删除已失效的过期设计文档</text>
+  <text x="46" y="248" font-size="11" fill="#916d32">立即消除误导 Agent 的冲突旧规格与废弃入口</text>
+  <text x="46" y="320" font-size="10.5" fill="#916d32">立竿见影：终结 Agent 全仓乱搜与照抄最烂旧文件</text>
+
+  <rect x="390" y="76" width="340" height="270" rx="8" fill="#edf2f7" stroke="#64748b"/>
+  <text x="560" y="104" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1e293b">阶段二 · Week 1 棘轮锁债（不停工）</text>
+  <text x="408" y="134" font-size="12" font-weight="600" fill="#1e293b">1. 上线秒级静态门禁 scripts/verify.mjs</text>
+  <text x="416" y="152" font-size="11" fill="#475569">先锁常驻文档词数预算、断链检查与生成物防手改</text>
+  <text x="408" y="182" font-size="12" font-weight="600" fill="#1e293b">2. 存量坏味道打入精确指纹基线</text>
+  <text x="416" y="200" font-size="11" fill="#475569">按 path + 语法摘要 + 计数登记，零改动冻结现状</text>
+  <text x="408" y="230" font-size="12" font-weight="600" fill="#1e293b">3. 单调递减：只设 --prune，不设 --add</text>
+  <text x="416" y="248" font-size="11" fill="#475569">新增违规立即变红；顺手修掉旧债必须同步削减基线</text>
+  <text x="416" y="320" font-size="10.5" fill="#475569">立竿见影：从今天起坏代码零新增，老债只减不增</text>
+
+  <rect x="760" y="76" width="340" height="270" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="930" y="104" text-anchor="middle" font-size="13.5" font-weight="700" fill="#245d35">阶段三 · Month 1 记忆与真入口闭环</text>
+  <text x="778" y="134" font-size="12" font-weight="600" fill="#245d35">1. 把“重复骂过两次的 PR 评论”变资产</text>
+  <text x="786" y="152" font-size="11" fill="#4f775a">机械可判的下沉门禁，多步判断提炼为按需 SKILL.md</text>
+  <text x="778" y="182" font-size="12" font-weight="600" fill="#245d35">2. 建立首条真实入口组装与只读预期测试</text>
+  <text x="786" y="200" font-size="11" fill="#4f775a">只替身外部网络/LLM/时钟，守住核心链路真行为</text>
+  <text x="778" y="230" font-size="12" font-weight="600" fill="#245d35">3. 开启决策记录（强制含被拒备选）</text>
+  <text x="786" y="248" font-size="11" fill="#4f775a">只为后续新发生的跨模块取舍建档，无需补写旧史</text>
+  <text x="786" y="320" font-size="10.5" fill="#4f775a">立竿见影：人工评审从抓低级返工回归核心语义把关</text>
+
+  <line x1="360" y1="210" x2="388" y2="210" stroke="#475569" stroke-width="1.4" marker-end="url(#arr)"/>
+  <line x1="730" y1="210" x2="758" y2="210" stroke="#475569" stroke-width="1.4" marker-end="url(#arr)"/>
+
+  <rect x="20" y="370" width="1080" height="190" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="40" y="398" font-size="13" font-weight="700" fill="#1e293b">为什么老仓止血必须用“指纹级单调棘轮”，而绝不能用“全仓总次数阈值”或“整文件豁免”？</text>
+
+  <rect x="40" y="416" width="505" height="124" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="58" y="442" font-size="12" font-weight="700" fill="#991b1b">错误做法：总数上限（maxWarnings: 300）或整文件白名单</text>
+  <text x="58" y="468" font-size="11" fill="#7f1d1d">· 置换漏洞：Agent 在 A 文件删掉 1 处旧违规，转头在 B 文件新写 1 处坏代码，</text>
+  <text x="58" y="488" font-size="11" fill="#7f1d1d">  总计数仍是 300，CI 照样绿灯放行（新债顶替旧债）。</text>
+  <text x="58" y="514" font-size="11" fill="#7f1d1d">· 破窗失守：一旦某大文件进了白名单，里面再塞多少新违规都彻底隐形。</text>
+
+  <rect x="575" y="416" width="505" height="124" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="593" y="442" font-size="12" font-weight="700" fill="#166534">正确做法：精确指纹棘轮（file + tokenHash + count）</text>
+  <text x="593" y="468" font-size="11" fill="#14532d">· 零置换空间：任何未登记文件、新语法指纹或单点次数上涨立即非零报错。</text>
+  <text x="593" y="492" font-size="11" fill="#14532d">· 强制同步收紧：旧债修掉后若未执行 --prune 削减基线，同样报错防额度残留。</text>
+  <text x="593" y="516" font-size="11" fill="#14532d">· 单向无后门：工具只提供 --prune 删减命令，物理上不提供“一键重刷基线”开关。</text>
+</svg>

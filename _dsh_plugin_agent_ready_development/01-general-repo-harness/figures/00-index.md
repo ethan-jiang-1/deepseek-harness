@@ -18,6 +18,7 @@
 | `feedback-layers.svg` | [`../05-executable-feedback.md`](../05-executable-feedback.md) |
 | `runtime-queries.svg` | [`../06-runtime-inspection.md`](../06-runtime-inspection.md) |
 | `content-maintenance-forms.svg` | [`../08-repository-taxonomy.md`](../08-repository-taxonomy.md) |
-| `plugin-three-structures.svg` | [`../09-plugin-author-entry.md`](../09-plugin-author-entry.md) |
+| `multi-repo-platform-legibility.svg` | [`../09-platform-and-multi-repo-legibility.md`](../09-platform-and-multi-repo-legibility.md) |
 | `human-steering-and-gates.svg` | [`../10-agent-ready-repo-blueprint.md`](../10-agent-ready-repo-blueprint.md) |
 | `anti-drift-metabolism.svg` | [`../11-spec-drift-and-decision-metabolism.md`](../11-spec-drift-and-decision-metabolism.md) |
+| `brownfield-ratchet-migration.svg` | [`../12-brownfield-repo-migration.md`](../12-brownfield-repo-migration.md) |

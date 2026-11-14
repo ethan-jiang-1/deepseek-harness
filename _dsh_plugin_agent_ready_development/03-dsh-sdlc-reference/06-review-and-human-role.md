@@ -4,6 +4,8 @@
 
 DSH 的 code review（代码评审）不是“机器查结构、人查语义”的固定人员分工。自动检查只能建立它们实际验证的属性；人或 agent 都可以按 `dsh-code-review` 做 semantic review（语义评审）；只有 interaction/approval（交互与审批）机制明确要求用户选择的动作不能由 agent 代答，超出既有授权的产品取舍也要请求方向。
 
+> **外部借鉴切面**：任何引入 Agent 自审或辅助 Code Review 的团队都应直接借鉴本页的三层职责切分——① 静态门禁与 CI 只证明“写出来的检查绿了”；② 语义评审（可由另一个独立上下文的 Review Agent 或人类执行）专门核对“实现是否真对上了原始意图、生命周期有无泄漏竞态、测试是否测在了真实入口上”，且一旦分支再推新提交旧评审结论自动失效；③ 超出授权的产品范围变更与受限动作审批永远交还人类。
+
 > The report identifies paths and dirty layers but does not replace semantic review. [...] Prioritize correctness, lifecycle, security, and broken required behavior over style; a short review with one substantiated blocker is better than a list of nits.
 >
 > — DSH [`dsh-code-review` skill 的开篇](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)。这里把 scope 工具、自动检查与语义判断明确分开。

@@ -4,6 +4,8 @@
 
 Plan Mode（计划模式）是可选、按 agent 记录的协作状态：激活时把 deployment-owned guidance（部署提供的引导文本）加进模型请求，`exit_plan_mode` 把完整计划交给用户审批。它不限制文件或命令；sandbox mode（沙箱模式）约束文件系统效果，approval policy（审批策略）处理调用方显式发起的具体动作请求，两者均独立于 plan state。
 
+> **外部借鉴切面**：设计任何包含“先计划后执行”的 Agent 产品或开发工作流时，务必直接复用「软提示引导（Plan Mode）与硬权限边界（Sandbox 文件隔离 / Approval 动作授权）彻底物理脱钩」这一核心架构铁律——永远不要指望提示词里写一句“请只读探索不要改文件”就能充当安全边界，硬限制必须由下层执行器独立强制。
+
 > Plan mode is soft guidance. Sandbox mode and approval policy enforce restrictions independently; neither reads or writes plan state, so deployments configure them separately.
 >
 > — DSH [`docs/subsystems/plan.md` 的开篇定义](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/plan.md)。这句话直接划开计划协作状态与强制权限机制。

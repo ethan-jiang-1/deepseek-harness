@@ -4,6 +4,8 @@
 
 DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 API、行为与限制进入 owning documentation（拥有该事实的文档）、README 或 JSDoc，rationale（决定理由）与 alternatives（备选方案）进入 Agent Notes，变更过程留在 git/PR。Bilingual pairing（双语配对）让两种语言同步演进，文档站从 manifest（清单）指定的 canonical Markdown source（规范 Markdown 源）投影；两者都不创建脱离原 owner 的第二套手编事实。
 
+> **外部借鉴切面**：必借三项高信噪比文档工程——① 「一个事实只住一个家」（其他位置一律用链接跳转而非复制粘贴）；② 源码注释与文档只用现在时陈述当前行为，严禁把 `used to`、`no longer`、`this PR` 等推理与变更过程残渣留进主干；③ 文档站直接从仓库内权威 Markdown 源单向投影，绝不维护第二套易失步的手编站点稿。中英逐行哈希双语配对属于主仓对外产品需求，一般仓库按需选用。
+
 > Each fact has one home: the tier whose job it is; elsewhere, link there.
 >
 > — DSH [`docs/AGENTS.md` 的 “The tier taxonomy”](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这条规则解释为什么当前行为、决定理由、操作步骤和生成目录必须分属不同 owner。

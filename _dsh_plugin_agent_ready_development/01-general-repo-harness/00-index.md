@@ -25,9 +25,9 @@ DeepSeek Harness（DSH）提供了另一种经过大规模自举检验的范式�
 | **3. 复杂非布尔型任务怎么操作？** | 把所有发版、选测、评审细节全塞进根提示词挤爆窗口，或完全靠人肉经验 | 按任务描述匹配才加载正文的程序化工作记忆（`.agents/skills/*/SKILL.md`） | [`03`](./03-skills-as-procedural-memory.md) |
 | **4. 写歪了谁在第一时间拦住我？** | 本地零门禁，等人类 code review 才指出跨层私引、类型强转和死文档 | 五层左移反馈 + 专治 Agent 八大恶习的确定性门禁 + 新增守卫“造回归看红再撤” | [`05`](./05-executable-feedback.md) |
 | **5. 静态源码看不出活状态怎么办？** | 多层配置叠加和动态注册全靠盲猜，出了问题改错层 | 动态可观测四面镜：合成配置导出、生成目录、只读活状态自省、仅追加事件日志 | [`06`](./06-runtime-inspection.md) |
-| **6. 半年后文档和代码怎么不腐烂？** | 旧方案原地涂改、注释写满 `used to`、过时设计堆积如山没人敢删 | 清理会话推理泄漏 + 决定不可原地改写只能取代 + 低未来价值记录封存归档 + 人类四方向控制面 | [`07`](./07-boundaries-and-costs.md)、[`10`](./10-agent-ready-repo-blueprint.md)、[`11`](./11-spec-drift-and-decision-metabolism.md) |
+| **6. 半年后文档和代码怎么不腐烂，存量老仓怎么不停工改造？** | 旧方案原地涂改、过时设计堆积如山，或因老债太多迟迟不敢上门禁 | 清理推理残渣 + 决定强制取代检查 + 人类四方向盘 + **存量老仓指纹级单调棘轮（只减不增）渐进改造** | [`07`](./07-boundaries-and-costs.md)、[`10`](./10-agent-ready-repo-blueprint.md)、[`11`](./11-spec-drift-and-decision-metabolism.md)、[`12`](./12-brownfield-repo-migration.md) |
 
-## 全卷 11 章阅读地图
+## 全卷 12 章阅读地图
 
 | 章节 | 核心主题与可带走的工程产物 |
 |---|---|
@@ -36,12 +36,13 @@ DeepSeek Harness（DSH）提供了另一种经过大规模自举检验的范式�
 | [`03-skills-as-procedural-memory.md`](./03-skills-as-procedural-memory.md) | **Skills 程序化工作记忆**：`AGENTS.md` / `SKILL.md` / `Gate` 三层职责矩阵，以及高信噪比 Skill 的触发词与边界写法 |
 | [`04-paved-road-and-participation.md`](./04-paved-road-and-participation.md) | **正确路径与爆炸半径阶梯**：L0 配置 → L1 叶子扩展点 → L2 可替换能力接缝（Seam）→ L3 核心主干的四级架构减震器与单一撤销协议 |
 | [`05-executable-feedback.md`](./05-executable-feedback.md) | **可执行反馈与八类反劣化门禁**：棘轮基线锁、拓扑锁、文档类型同构锁、词数预算锁等八大通用门禁模式与 Prove-Red 负例验证 |
-| [`06-runtime-inspection.md`](./06-runtime-inspection.md) | **动态可检查性四面镜**：为什么只读源码必会产生环境幻觉，以及如何为系统配备配置快照、生成目录、只读自省与可重建日志 |
+| [`06-runtime-inspection.md`](./06-runtime-inspection.md) | **动态可检查性四面镜**：跨技术栈对照（Python/Go/Web/AI），配备合成配置导出、生成目录、只读活状态自省与可重建事件账本 |
 | [`07-boundaries-and-costs.md`](./07-boundaries-and-costs.md) | **Harness 经济学与机器六大盲区**：三类参与门槛、四组致命等价误区，以及自动化门禁在原理上绝对查不到的六类语义空白 |
-| [`08-repository-taxonomy.md`](./08-repository-taxonomy.md) | **仓库分类学与防腐化代码契约**：顶层分区、五种内容维护形态，以及 16 类精确角色后缀、边界显式 `resolve` 与上下文成本记账 |
-| [`09-plugin-author-entry.md`](./09-plugin-author-entry.md) | **可扩展平台的生态可读性**：宿主平台如何用共享词汇表、无 Key 可运行教程阶梯与双清单二分法，让外部扩展仓也能被 Agent 无缝理解 |
-| [`10-agent-ready-repo-blueprint.md`](./10-agent-ready-repo-blueprint.md) | **通用落地总蓝图与四件套模板**：人类不可下放的四个方向控制面、Tier 1–3 规模裁剪阶梯，以及 `AGENTS.md` / ADR / `SKILL.md` / `verify.mjs` 完整起步骨架 |
+| [`08-repository-taxonomy.md`](./08-repository-taxonomy.md) | **仓库分类学与防腐化代码契约**：六类通用顶层分区、五种内容维护形态，以及 16 类精确角色后缀、边界显式 `resolve` 与上下文成本记账 |
+| [`09-platform-and-multi-repo-legibility.md`](./09-platform-and-multi-repo-legibility.md) | **跨仓库与可扩展平台生态可读性**：平台/SDK 底座仓如何通过同构原语、零密钥教程阶梯与契约/治理分离赋能下游独立仓库 |
+| [`10-agent-ready-repo-blueprint.md`](./10-agent-ready-repo-blueprint.md) | **新建仓库总蓝图与四件套模板**：人类不可下放的四个方向控制面、Tier 1–3 规模裁剪阶梯，以及 `AGENTS.md` / ADR / `SKILL.md` / `verify.mjs` 起步骨架 |
 | [`11-spec-drift-and-decision-metabolism.md`](./11-spec-drift-and-decision-metabolism.md) | **长周期防规格漂移与决策新陈代谢**：四种仓库老化病理、清理推理残渣（CoT Leakage）、强制取代检查与 DSH 归档 453 组决策记录的工业实证 |
+| [`12-brownfield-repo-migration.md`](./12-brownfield-repo-migration.md) | **存量业务老仓库不停工改造实战**：10 项 Agent 友好度自检打分表、Day-1/Week-1/Month-1 三阶段演进，以及零 `--add` 后门的精确指纹单调棘轮脚本 |
 
 ## 核心术语对照
 

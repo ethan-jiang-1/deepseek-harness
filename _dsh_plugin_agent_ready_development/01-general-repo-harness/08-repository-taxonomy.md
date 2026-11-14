@@ -10,20 +10,16 @@ Agent-Friendly Repo 的解法是把整座仓库建成一套**边界可验证的�
 
 ## 1. 顶层分区：每个目录都有点名道姓的规则 Owner
 
-在任何多模块仓库中，消除“新文件该往哪放”争议的最短路径，是为每一个顶层分区指定唯一一份成文规则文件。以 DSH 主仓为例，十类顶层分区各自拥有清晰的管辖权与门禁：
+在任何多模块仓库中，消除“新文件该往哪放”争议的最短路径，是为每一个顶层分区指定唯一一份成文规则文件。无论你维护的是 Python/Go 后端服务、全栈 Web 单仓还是多包平台，顶层目录都应按下面六类通用职责划清管辖权（右列展示 DSH 主仓的具体落点实例）：
 
-| 顶层分区 | 唯一承载的资产类别 | 权威规则 Owner |
-|---|---|---|
-| `packages/<group>/<pkg>` | 核心与扩展包源码（每个 `@deepseek-ai/dsh-*` 工作区包） | `packages/README.md` 分组总表与 `packages/AGENTS.md` |
-| `apps/` | 产品受支持的应用宿主入口（Web、Desktop、CLI 配置包） | 根 `AGENTS.md`（仅受支持的 `dsh` profile 可作为应用启动入口） |
-| `vendor/` | 固定版本并受仓库完全掌控的底层框架源码副本 | `vendor/README.md` 上游版本清单与穷举本地修改日志 |
-| `python/`、`native/` | 独立发布车道的跨语言 SDK/运行时与原生系统扩展源码 | `python/README.md`、`native/README.md` |
-| `docs/` | 全部手写、混合与源码生成的技术文档（含双语配对） | `docs/AGENTS.md` 层级分类法与预算规则 |
-| `.agents/` | 持久决策记录（Agent Notes）与按需任务工作流（Skills） | `.agents/notes/README.md` 与各 `SKILL.md` |
-| `.github/` | 远端事件编排面：CI/发布工作流、Issue 策略、模板与评审归属 | `.github/AGENTS.md` 与各 workflow 定义 |
-| `scripts/` | 仓库级确定性门禁（Gates）与源码驱动目录生成器 | `scripts/AGENTS.md` 与 `scripts/run-gates.ts` |
-| `snapshots/` | 仅限以会话 JSONL 兼作回放输入与持久化预期的测试资产 | `snapshots/AGENTS.md` |
-| `benchmarks/`、`website/`、`patches/` | 性能回归门禁、文档站点静态投影构建、第三方依赖补丁 | 各分区根目录 README |
+| 通用顶层分区角色 | 唯一承载的资产类别（Python / Go / TS 通用） | 权威规则 Owner 设计原则 | DSH 主仓对应分区样本 |
+|---|---|---|---|
+| **核心业务与能力模块区** | 按领域分组的可复用模块或子包源码（严禁堆大杂烩 `common/`） | 分组总表 `README.md` + 模块级编码约定 | `packages/<group>/<pkg>`（由 `packages/README.md` 与 `packages/AGENTS.md` 管辖） |
+| **受支持的应用启动入口区** | 正式对外交付的进程入口、部署配置与壳层组装（禁止散装私有启动脚本） | 根 `AGENTS.md` 或 `apps/README.md` 启动白名单 | `apps/`（仅受支持的 `dsh` profile 可启动产品应用） |
+| **外部/跨语言边界区** | 源码内嵌的受控第三方库（Vendoring）、多语言 SDK 或原生扩展 | 独立 `README.md`（Vendoring 强制维护上游 SHA 与穷举本地分叉日志） | `vendor/`、`python/`、`native/`、`patches/` |
+| **权威文档与站点投影区** | 架构路由图、模块契约、源码生成参考目录，以及可随时重建的文档站点 | `docs/AGENTS.md`（区分手写、生成与一次性构建投影） | `docs/` 与一次性静态投影 `website/` |
+| **Agent 记忆与远端编排区** | 持久决策记录（ADR/Notes）、按需任务工作流（Skills）与 CI/PR 事件编排 | 决策格式规范、各 `SKILL.md` 与 `.github/` 职责说明 | `.agents/`（Notes + Skills）与 `.github/` |
+| **确定性门禁与全局回放夹具区** | 仓库级静态校验器、目录生成器、性能基准与端到端会话回放夹具 | 门禁总入口脚本与顶层夹具准入红线（局部单测夹具留在所属模块旁） | `scripts/`、`benchmarks/`、仅收完整会话回放的 `snapshots/` |
 
 ## 2. 模块分组、演进承诺与单向依赖拓扑
 
@@ -79,7 +75,7 @@ coding agent 最常制造的事故之一，是分不清某个文件该手改还�
 
 ## 5. 跨仓库分类一致性为什么能成倍放大 Agent 效率
 
-当一个技术团队维护多座关联仓库（例如微服务群，或宿主平台与多个外部扩展仓库）时，统一的目录与维护形态分类会产生显著的复利效应：coding agent 在 A 仓建立的检索路径（去 `architecture.md` 找扩展落点、去决策目录查历史取舍、看清生成区标记不手改、在模块旁找期望夹具）无需重新摸索即可直接复用到 B 仓。宿主平台如何把这种可读性主动延伸给外部生态仓库，见 [第 9 章](./09-plugin-author-entry.md)。
+当一个技术团队维护多座关联仓库（例如微服务群，或宿主平台与多个外部扩展仓库）时，统一的目录与维护形态分类会产生显著的复利效应：coding agent 在 A 仓建立的检索路径（去 `architecture.md` 找扩展落点、去决策目录查历史取舍、看清生成区标记不手改、在模块旁找期望夹具）无需重新摸索即可直接复用到 B 仓。宿主平台如何把这种可读性主动延伸给外部生态仓库，见 [第 9 章](./09-platform-and-multi-repo-legibility.md)。
 
 ## 6. 从宏观目录深入到微观代码结构
 

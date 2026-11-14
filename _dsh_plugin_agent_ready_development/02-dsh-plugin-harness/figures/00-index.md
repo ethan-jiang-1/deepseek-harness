@@ -4,20 +4,22 @@
 
 ## 主入口
 
-从 [`../00-map.md`](../00-map.md) 进入本卷；图示由 [`00-index.md`](../00-index.md) 与 `01`–`06` 对应章节解释。
+从 [`../00-map.md`](../00-map.md) 进入本卷；图示由 [`00-index.md`](../00-index.md) 与 `01`–`08` 对应章节解释。
 
 ## 直接内容
 
 | 文件 | 正文 owner（拥有者） |
 |---|---|
 | `plugin-development-loop.svg` | [`../00-index.md`](../00-index.md) |
-| `plugin-repo-start.svg` | [`../01-new-plugin-repository.md`](../01-new-plugin-repository.md) |
-| `owner-and-evidence.svg` | [`../00-index.md`](../00-index.md) |
-| `plugin-lifecycle.svg` | [`../01-new-plugin-repository.md`](../01-new-plugin-repository.md) |
-| `evidence-routing.svg` | [`../00-index.md`](../00-index.md) |
 | `plugin-bundle-profile.svg` | [`../00-index.md`](../00-index.md) |
+| `owner-and-evidence.svg` | [`../00-index.md`](../00-index.md) |
+| `evidence-routing.svg` | [`../00-index.md`](../00-index.md) |
 | `acceptance-roles.svg` | [`../00-index.md`](../00-index.md) |
+| `plugin-three-structures.svg` | [`../01-new-plugin-repository.md`](../01-new-plugin-repository.md) |
+| `plugin-repo-start.svg` | [`../01-new-plugin-repository.md`](../01-new-plugin-repository.md) |
+| `plugin-lifecycle.svg` | [`../01-new-plugin-repository.md`](../01-new-plugin-repository.md) |
 | `context-discipline-layers.svg` | [`../03-context-and-drift.md`](../03-context-and-drift.md) |
 | `plugin-repo-topologies.svg` | [`../04-plugin-repo-topologies.md`](../04-plugin-repo-topologies.md) |
 | `cordis-defensive-contracts.svg` | [`../05-cordis-contracts-and-model-experience.md`](../05-cordis-contracts-and-model-experience.md) |
 | `plugin-verification-pyramid.svg` | [`../06-plugin-gate-and-ci-harness.md`](../06-plugin-gate-and-ci-harness.md) |
+| `plugin-extension-decision-tree.svg` | [`../07-extension-recipes-and-host-services.md`](../07-extension-recipes-and-host-services.md) |

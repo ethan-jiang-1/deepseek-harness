@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="600" viewBox="0 0 1120 600" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title id="title">DSH 插件五大能力扩展轨道与宿主现成服务底座</title>
+  <desc id="desc">按插件要解决的业务意图，路由到模型动作工具、工具拦截钩子、人类斜杠命令、Web 界面与跨端 RPC、协议驱动与模型适配器五条铺装轨道，并展示下层可直接注入复用的宿主服务货架。</desc>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+  </defs>
+  <rect width="1120" height="600" rx="6" fill="#fafafa"/>
+  <text x="560" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#172033">DSH 插件能力选型全景：五条标准扩展轨道与可注入宿主底座</text>
+  <text x="560" y="52" text-anchor="middle" font-size="11" fill="#667085">先选对原语轨道，再复用下层宿主现成服务（绝不魔改 agent-loop，也不裸调 Node API 绕过沙箱与审批）</text>
+
+  <rect x="330" y="70" width="460" height="44" rx="8" fill="#1e293b" stroke="#0f172a"/>
+  <text x="560" y="97" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">决策起点：谁触发动作？结果进不进模型上下文？改不改浏览器界面？</text>
+
+  <line x1="560" y1="114" x2="560" y2="132" stroke="#475569" stroke-width="1.4"/>
+  <line x1="122" y1="132" x2="998" y2="132" stroke="#475569" stroke-width="1.4"/>
+  <line x1="122" y1="132" x2="122" y2="152" stroke="#475569" stroke-width="1.4" marker-end="url(#arr)"/>
+  <line x1="341" y1="132" x2="341" y2="152" stroke="#475569" stroke-width="1.4" marker-end="url(#arr)"/>
+  <line x1="560" y1="132" x2="560" y2="152" stroke="#475569" stroke-width="1.4" marker-end="url(#arr)"/>
+  <line x1="779" y1="132" x2="779" y2="152" stroke="#475569" stroke-width="1.4" marker-end="url(#arr)"/>
+  <line x1="998" y1="132" x2="998" y2="152" stroke="#475569" stroke-width="1.4" marker-end="url(#arr)"/>
+
+  <rect x="20" y="154" width="204" height="252" rx="8" fill="#fff5e6" stroke="#d99939"/>
+  <text x="122" y="180" text-anchor="middle" font-size="12.5" font-weight="700" fill="#744408">轨道 1 · 模型动作工具</text>
+  <text x="34" y="204" font-size="11" font-weight="600" fill="#744408">模型按需自主调用</text>
+  <text x="34" y="226" font-size="10.5" fill="#916d32">· ctx.tools.register(defineTool)</text>
+  <text x="34" y="246" font-size="10.5" fill="#916d32">· 返回无损 JSON 直通 PTC</text>
+  <text x="34" y="266" font-size="10.5" fill="#916d32">· CLI 纯函数 presentResult</text>
+  <text x="34" y="286" font-size="10.5" fill="#916d32">· Web 靠 presentationMeta</text>
+  <text x="34" y="306" font-size="10.5" fill="#916d32">· 长任务挂 ctx.jobs.start</text>
+  <text x="34" y="384" font-size="10" fill="#744408">拓扑：单包 Host（加专属卡进双树）</text>
+
+  <rect x="239" y="154" width="204" height="252" rx="8" fill="#fef2f2" stroke="#e11d48"/>
+  <text x="341" y="180" text-anchor="middle" font-size="12.5" font-weight="700" fill="#9f1239">轨道 2 · 策略与观测钩子</text>
+  <text x="253" y="204" font-size="11" font-weight="600" fill="#9f1239">拦截/包装既有工具或步骤</text>
+  <text x="253" y="226" font-size="10.5" fill="#881337">· pre-execute：可重排准入</text>
+  <text x="253" y="246" font-size="10.5" fill="#881337">· tools.guard：单调最终否决</text>
+  <text x="253" y="266" font-size="10.5" fill="#881337">· execute：超时/重试包装</text>
+  <text x="253" y="286" font-size="10.5" fill="#881337">· post-execute：脱敏与转换</text>
+  <text x="253" y="306" font-size="10.5" fill="#881337">· tools/result：只读最终审计</text>
+  <text x="253" y="384" font-size="10" fill="#9f1239">拓扑：单包 Host（零 UI 负担）</text>
+
+  <rect x="458" y="154" width="204" height="252" rx="8" fill="#edf2f7" stroke="#64748b"/>
+  <text x="560" y="180" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1e293b">轨道 3 · 人类命令与提示词</text>
+  <text x="472" y="204" font-size="11" font-weight="600" fill="#1e293b">人直接触发 / 受管上下文</text>
+  <text x="472" y="226" font-size="10.5" fill="#475569">· ctx.commands：/slash 命令</text>
+  <text x="472" y="246" font-size="10.5" fill="#475569">· 直接操作 Agent 不耗模型轮</text>
+  <text x="472" y="266" font-size="10.5" fill="#475569">· systemPrompt.section 分段</text>
+  <text x="472" y="286" font-size="10.5" fill="#475569">· tools.restrict 作用域收窄</text>
+  <text x="472" y="306" font-size="10.5" fill="#475569">· ctx.skills：渐进披露目录</text>
+  <text x="472" y="384" font-size="10" fill="#1e293b">拓扑：单包 Host 或 Preset</text>
+
+  <rect x="677" y="154" width="204" height="252" rx="8" fill="#e8f5ed" stroke="#58a36d"/>
+  <text x="779" y="180" text-anchor="middle" font-size="12.5" font-weight="700" fill="#245d35">轨道 4 · 全栈界面与设置</text>
+  <text x="691" y="204" font-size="11" font-weight="600" fill="#245d35">向 Web GUI 贡献面板或表单</text>
+  <text x="691" y="226" font-size="10.5" fill="#4f775a">· 仅加设置项：Schema .volatile()</text>
+  <text x="691" y="246" font-size="10.5" fill="#4f775a">· 自定义视图：dsh.client 双树</text>
+  <text x="691" y="266" font-size="10.5" fill="#4f775a">· 通信：TypertRemoteService</text>
+  <text x="691" y="286" font-size="10.5" fill="#4f775a">· 前端挂 ctx.slots 派生 props</text>
+  <text x="691" y="306" font-size="10.5" fill="#4f775a">· 产物：__ModuleLoader__ 闭包</text>
+  <text x="691" y="384" font-size="10" fill="#245d35">拓扑：仅设置用 A；改视图用 B</text>
+
+  <rect x="896" y="154" width="204" height="252" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="998" y="180" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1e40af">轨道 5 · 协议桥与底层 Seam</text>
+  <text x="910" y="204" font-size="11" font-weight="600" fill="#1e40af">接入新模型、协议或多后端</text>
+  <text x="910" y="226" font-size="10.5" fill="#1d4ed8">· ctx.llm.registerAdapter</text>
+  <text x="910" y="246" font-size="10.5" fill="#1d4ed8">· 协议桥驱动 ctx.agents</text>
+  <text x="910" y="266" font-size="10.5" fill="#1d4ed8">· AgentHandle.dispose 排空</text>
+  <text x="910" y="286" font-size="10.5" fill="#1d4ed8">· 替换既有 Seam 的 Provider</text>
+  <text x="910" y="306" font-size="10.5" fill="#1d4ed8">· 多实现独立演进才建新 Seam</text>
+  <text x="910" y="384" font-size="10" fill="#1e40af">拓扑：单包 A 或多包 Seam C</text>
+
+  <rect x="20" y="428" width="1080" height="154" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="40" y="454" font-size="13" font-weight="700" fill="#1e293b">宿主现成可注入底座货架（通过 inject 声明即可站在巨人肩膀上，切勿重复造轮子）</text>
+  <text x="40" y="482" font-size="11" fill="#334155">· 文件与目录：ctx.fs（dsh-fs 受沙箱约束读写） · ctx.workingDirectory（dsh-working-directory 会话有效工作目录）</text>
+  <text x="40" y="506" font-size="11" fill="#334155">· 进程与后台任务：ctx.shell（dsh-shell） · ctx.subprocess（dsh-subprocess 进程树生命周期） · ctx.jobs（dsh-jobs 后台任务环）</text>
+  <text x="40" y="530" font-size="11" fill="#334155">· 安全与人机确认：ctx.approval（dsh-user-approval 单次高危审批） · ctx.sandboxPolicy（dsh-sandbox-policy） · ctx.credentials（dsh-credentials）</text>
+  <text x="40" y="554" font-size="11" fill="#334155">· 会话、存储与委派：ctx.sessions / ctx.sessionProjections · ctx.storageDomain（非会话持久键值） · ctx.subagents（子代理委派） · ctx.spillStore</text>
+</svg>

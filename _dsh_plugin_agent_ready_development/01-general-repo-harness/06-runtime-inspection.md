@@ -4,7 +4,14 @@
 
 在模块化程度较高的现代系统里，静态源码树只能回答“代码库理论上定义了哪些组件”，却无法回答“此刻在这台机器、这套环境配置、这个用户会话里究竟挂载了什么”。多层配置文件叠加、按条件启用的可选模块、运行时作用域隔离以及热加载，都会让实际生效的系统与静态目录树大相径庭。
 
-如果仓库不提供确定性的状态查询入口，coding agent 在排查问题或接入新功能时就只能靠全局 `grep` 盲猜配置优先级，极易改错层级或调用一个根本未激活的服务。真正成熟的 Agent-Friendly Repo 会为系统配齐**四面互补的动态可观测镜**，让 agent 用一次精准查询替代十轮盲猜。
+如果仓库不提供确定性的状态查询入口，coding agent 在排查问题或接入新功能时就只能靠全局 `grep` 盲猜配置优先级，极易改错层级或调用一个根本未激活的服务。真正成熟的 Agent-Friendly Repo 会为系统配齐**四面互补的动态可观测镜**，让 agent 用一次精准查询替代十轮盲猜：
+
+| 动态可观测镜 | 回答的核心问题 | Python / Go / Web 全栈项目的通用落地形态 | DSH 主仓的实证对标 |
+|---|---|---|---|
+| **第一面镜 · 合成配置导出** | 多层环境与补丁合并后，启动时到底加载什么？ | `app --print-effective-config`、`helm template`、`docker compose config` | `dsh --profile <name> --dump-config` |
+| **第二面镜 · 源码生成目录** | 全仓静态声明了哪些合法路由、事件或配置项？ | 从 OpenAPI/Protobuf/AST 自动导出并带新鲜度门禁的 `api-catalog.md` | `docs/tool-catalog.md`、`event-producer-consumer.md` 等生成目录 |
+| **第三面镜 · 只读活进程自省** | 此刻内存里实际激活了哪些组件、队列与监听器？ | 只读 `/debug/vars`、Admin Diagnostics CLI、Spring Actuator 只读端点 | `@deepseek-ai/dsh-tool-cordis` 的 `list` / `query` 只读工具 |
+| **第四面镜 · 仅追加事件账本** | 刚才那一轮故障发生时，系统实际收到了什么输入？ | 不可变审计事件流（Event Sourcing JSONL / WAL）+ 确定性重放器 | 遵守 `Model-visible ⟺ logged` 的仅追加 `session log` |
 
 ![从配置、生成索引到活运行时的查询面](./figures/runtime-queries.svg)
 

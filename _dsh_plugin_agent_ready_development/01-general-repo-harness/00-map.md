@@ -8,11 +8,11 @@
 
 ## 主入口
 
-从 [`00-index.md`](./00-index.md) 进入，可按 `01` 至 `11` 顺序通读，也可按痛点直接跳读对应专章。
+从 [`00-index.md`](./00-index.md) 进入，可按 `01` 至 `12` 顺序通读，也可按痛点直接跳读对应专章（新建仓库直奔 [`10`](./10-agent-ready-repo-blueprint.md)，改造存量业务老仓库直奔 [`12`](./12-brownfield-repo-migration.md)）。
 
 ## 直接内容
 
 | 路径 | 职责 |
 |---|---|
-| [`01-follow-a-fresh-agent.md`](./01-follow-a-fresh-agent.md) 至 [`11-spec-drift-and-decision-metabolism.md`](./11-spec-drift-and-decision-metabolism.md) | 覆盖零历史参与回路、知识归属与双轨索引、任务级 Skills、爆炸半径阶梯、八类反劣化门禁、动态可检查四面镜、机器盲区与成本、仓库分类学与代码契约、可扩展平台生态可读性、通用新仓蓝图与四件套模板，以及长周期防规格漂移与决策新陈代谢 |
-| [`figures/`](./figures/00-index.md) | 只服务本卷正文的 11 张架构与机制 SVG 图示 |
+| [`01-follow-a-fresh-agent.md`](./01-follow-a-fresh-agent.md) 至 [`12-brownfield-repo-migration.md`](./12-brownfield-repo-migration.md) | 覆盖零历史参与回路、知识归属与双轨索引、任务级 Skills、爆炸半径阶梯、八类反劣化门禁、动态可检查四面镜、机器盲区与成本、仓库分类学与代码契约、跨仓与平台生态协同、通用新仓蓝图与四件套模板、长周期防规格漂移与决策新陈代谢，以及存量老仓库不停工渐进改造实战 |
+| [`figures/`](./figures/00-index.md) | 只服务本卷正文的 12 张架构与机制 SVG 图示 |

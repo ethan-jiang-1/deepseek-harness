@@ -10,7 +10,7 @@
 
 `_dsh_plugin_agent_ready_development/` 是以 DSH 固定版本一手来源为依据的三卷互补语料：`01-general-repo-harness/` 提炼不依赖 DSH 代码的通用 Agent-Friendly Repository 工程学，`02-dsh-plugin-harness/` 沉淀独立 DSH 插件仓库的专属开发模型与实战 Harness，`03-dsh-sdlc-reference/` 提供 DSH 主仓原生研发流程的精确条款与一手证据字典。它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法；三卷均独立依据 DSH 源码、文档、规则、Skills、workflow 和 git 历史，不依赖其它研究语料。
 
-根落地页 `00-index.md` 是独立语料的介绍、三卷目录树、五条底层认知跃迁、十二项可抽取工程实践总索引、双受众精准阅读路线（路线 A 通用仓库架构师 vs 路线 B 独立 DSH 插件作者）与维护入口。`01-general-repo-harness/`（`01`–`11`）覆盖零历史 agent 参与回路、知识归属与双轨目录、Skills 程序性记忆、改动爆炸半径四级阶梯、可执行反馈与八类门禁、动态运行时四面镜、能力边界与语义盲区、仓库分类学、生态入口可读性、通用新仓四件套蓝图，以及长周期防规格漂移与决策新陈代谢；`02-dsh-plugin-harness/`（`00`–`06`）覆盖原生开发闭环、Day-1 单包 Host Bundle 样板、核心心智词汇与 `Preset`/`Profile` 分界、DSH 会话压缩与存活矩阵、三种插件仓库拓扑与五层配置、Cordis 六条防御契约与 `Model Experience` 预算，以及独立插件仓 `verify-plugin.mjs` 门禁、无密钥会话回放与 CI/Skills 实战；`03-dsh-sdlc-reference/`（`01`–`12`）按问题提供 Agent Note、Issue/PR、`Plan`、门禁路由、散文标准、评审、堆叠 PR、Web seam 历史样本、意图入口、加权批准、多通道发布与契约证据的精确参考，并在每篇区分主仓专属参数与可迁移工程不变量。迁移到独立研究问答语料的历史案例不再作为本语料的前置卷。
+根落地页 `00-index.md` 是独立语料的介绍、三卷目录树、三类外部读者的速通与完整落地处方、五条底层认知跃迁、十六项可抽取工程实践总索引与维护入口。`01-general-repo-harness/`（`01`–`12`）覆盖零历史 agent 参与回路、知识归属与双轨目录、Skills 程序性记忆、改动爆炸半径四级阶梯、可执行反馈与八类门禁、动态运行时四面镜、能力边界与语义盲区、仓库分类学、可扩展平台与多仓协同可读性、通用新仓四件套蓝图、长周期防规格漂移与决策新陈代谢，以及存量老仓库（Brownfield Repo）10 项体检打分表与三阶段指纹棘轮改造实战；`02-dsh-plugin-harness/`（`00`–`08`）覆盖插件能力一页选型路由与四层工程结构、Day-1 单包 Host Bundle 样板与安装脚本安全边界、插件核心心智词对（根 `ctx` vs `agent.ctx`、`Tool / Command / Skill`、`Typert @Remote`、`Volatile<T>`）、DSH 会话压缩与存活矩阵、三种插件仓库拓扑（含外部仓 `window.__ModuleLoader__.load` lazy-CJS 客户端打包模板与 `TypertRemoteService` 跨端 RPC）、Cordis 六条防御契约与 `Model Experience` 预算、独立插件仓双面 `verify-plugin.mjs` 门禁与无密钥会话回放 CI、12+ 个宿主可注入底座服务货架与五大扩展原语配方，以及 8 大高频故障 1 分钟排障速查表与 Postmortem `0001`–`0004` 插件视角深度复盘；`03-dsh-sdlc-reference/`（`01`–`12`）按研发全生命周期六阶段串联并逐题提供 Agent Note、Issue/PR、`Plan`、门禁路由、散文标准、评审、堆叠 PR、Web seam 历史样本、意图入口、加权批准、多通道发布与契约证据的精确参考，且全系 12 篇均配有顶层外部借鉴切面导读。迁移到独立研究问答语料的历史案例不再作为本语料的前置卷。
 
 每个目录都有落地页：卷目录用 `00-map.md`，其余目录用 `00-index.md`。三个主题目录的 `00-map.md` 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 `00-index.md` 还标明每张 SVG 的正文 owner。
 
@@ -75,7 +75,7 @@
 - 2026-09-24 深挖轮新增触发路径：`packages/README.md`、`packages/AGENTS.md`、`snapshots/AGENTS.md`、`vendor/README.md`、`scripts/{doc-budgets,translation-pairing}.manifest.json`、`docs/cordis-tutorial/**`、`docs/user/develop/**`、根 `README.md` 的 Run 节；
 - 2026-10-18 轮新增触发路径：`docs/defensive-patterns/**`、`docs/upgrade-guide/**`、`packages/experimental/README.md`、`docs/cli-help.md`、`scripts/gen-cli-help.ts`、`scripts/product-package-policy.ts`、`apps/desktop/windows-signing/**`；
 - 2026-10-18 轮新增触发路径（上下文纪律页）：`packages/compaction/**`、`packages/plan/plan-mode/**`、`packages/goal/**`、`packages/todo/tool-todo/**`、`packages/skill/tool-skill/**`、`packages/experimental/{session-search,tool-session-query}/**`、`packages/subagent/subagent-{fork,spawn}-in-process/**`、`docs/i18n/README.md`、`scripts/doc-budgets.manifest.json`、`scripts/verify-upgrade-guides.ts`；
-- 2026-11-14 轮新增触发路径（双受众劈分、插件仓三拓扑、Cordis 防御契约与插件门禁样板）：`scripts/verify-*.ts`（尤其是 `verify-no-unknown-casts.ts`、`verify-package-dependencies.ts`、`verify-doc-typecheck.ts`、`verify-export-jsdoc.ts`、`verify-concrete-terms.ts`、`verify-cordis-config.ts`、`verify-model-experience.ts`、`archived-agent-notes.ts`）、`docs/postmortem/0001-acp-default-export-drops-inject.md`、`docs/cookbook/{adding-a-package,adding-a-tool}.md`、`packages/preset/agent-preset/skills/agent-experience/SKILL.md`、`.agents/skills/{cordis-styling-nitpicking,dsh-archive-agent-notes,dsh-trim-cot-leakage}/SKILL.md`、`packages/test-support/test-harness/**`；
+- 2026-11-14 轮新增触发路径（双受众劈分、老仓棘轮改造、宿主服务货架、全栈客户端打包与跨端 RPC、Cordis 防御契约、插件门禁与四大事故复盘）：`scripts/verify-*.ts`（尤其是 `verify-no-unknown-casts.ts`、`verify-package-dependencies.ts`、`verify-doc-typecheck.ts`、`verify-export-jsdoc.ts`、`verify-concrete-terms.ts`、`verify-cordis-config.ts`、`verify-model-experience.ts`、`archived-agent-notes.ts`）、`.agents/notes/implemented/process/2026-09-19-no-unknown-casts.md`、`docs/postmortem/{0001-acp-default-export-drops-inject,0002-js-expression-disabled-filesystem-tools,0003-web-agent-gui-feedback-loop,0004-landlock-partial-notice-misclassified-child-failures}.md`、`docs/cookbook/{extension-cookbook,adding-a-package,adding-a-tool,adding-a-remote-api,adding-a-settings-card,adding-a-plugin-preview}.md`、`docs/capability-seams.md`、`docs/subsystems/commands.md`、`packages/client/{tsdown.client.ts,modules/README.md,web/src/platform.ts}`、`packages/preset/agent-preset/skills/agent-experience/SKILL.md`、`.agents/skills/{cordis-styling-nitpicking,dsh-archive-agent-notes,dsh-trim-cot-leakage}/SKILL.md`、`packages/test-support/test-harness/**`；
 - Web seam Agent Note 或专题引用的四个历史 commit 被重新解释时。
 
 Release-only workflow 的内部 job 变化不自动触发整篇复核；只有它改变专题描述的触发边界、required evidence 或 daily PR flow 时才进入范围。
@@ -107,9 +107,10 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 | `01-general-repo-harness/06-runtime-inspection.md` | mechanism | 2026-11-14 | reverified |
 | `01-general-repo-harness/07-boundaries-and-costs.md` | mechanism | 2026-11-14 | reverified |
 | `01-general-repo-harness/08-repository-taxonomy.md` | mechanism | 2026-11-14 | reverified |
-| `01-general-repo-harness/09-plugin-author-entry.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/09-platform-and-multi-repo-legibility.md` | mechanism | 2026-11-14 | reverified |
 | `01-general-repo-harness/10-agent-ready-repo-blueprint.md` | playbook | 2026-11-14 | reverified |
 | `01-general-repo-harness/11-spec-drift-and-decision-metabolism.md` | mechanism | 2026-11-14 | reverified |
+| `01-general-repo-harness/12-brownfield-repo-migration.md` | playbook | 2026-11-14 | reverified |
 | `01-general-repo-harness/figures/00-index.md` | map | 2026-11-14 | reverified |
 | `02-dsh-plugin-harness/00-map.md` | map | 2026-11-14 | reverified |
 | `02-dsh-plugin-harness/00-index.md` | map | 2026-11-14 | reverified |
@@ -119,6 +120,8 @@ Release-only workflow 的内部 job 变化不自动触发整篇复核；只有�
 | `02-dsh-plugin-harness/04-plugin-repo-topologies.md` | playbook | 2026-11-14 | reverified |
 | `02-dsh-plugin-harness/05-cordis-contracts-and-model-experience.md` | mechanism | 2026-11-14 | reverified |
 | `02-dsh-plugin-harness/06-plugin-gate-and-ci-harness.md` | playbook | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/07-extension-recipes-and-host-services.md` | playbook | 2026-11-14 | reverified |
+| `02-dsh-plugin-harness/08-troubleshooting-and-postmortems.md` | playbook | 2026-11-14 | reverified |
 | `02-dsh-plugin-harness/figures/00-index.md` | map | 2026-11-14 | reverified |
 | `03-dsh-sdlc-reference/00-map.md` | map | 2026-11-14 | reverified |
 | `03-dsh-sdlc-reference/00-index.md` | map | 2026-11-14 | reverified |
@@ -407,3 +410,14 @@ re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、
 
 1. **三卷子目录重命名**：`repo-harness/` → `01-general-repo-harness/`（跨语言通用 Agent-Friendly 仓库工程学），`native-development-model/` → `02-dsh-plugin-harness/`（独立 DSH 插件仓开发与专属 Harness 实战），`sdlc-reference/` → `03-dsh-sdlc-reference/`（DSH 主仓原生 SDLC 条款与一手证据参考字典）。历史记录段落中的旧目录名按宪章 §3 保留当时读数，现行导航、内部互链、§7 入库页面双向清单、`verify.mjs` 的 `owningFiguresDirectory` 与 `verify.test.mjs` 全部切换至新路径。
 2. **根入口与共享宪章更新**：`00-index.md` 增补顶层自明目录树并同步全部入口链接；`CORPUS-CHARTER.md` 在 §2、§6、§7 补齐 `_coverage/00-corpus-maintenance.md` 维护账本、`01-general-repo-harness/`、`02-dsh-plugin-harness/`、`03-dsh-sdlc-reference/` 三个事实归属家以及 `governance` 页面角色，并按宪章哈希一致性规则同步四份语料的 `CORPUS-CHARTER.md` 副本及外部入站链接。
+
+## 2026-11-14（四阶段）三卷边界深审归位、源码硬核缺口补完与对外认知脚手架
+
+基线不变（`dsh-v0.2.1-rc.5`）。动因：三卷目录改名并钉死定位后，重新以零上下文外部读者与真实独立插件仓开发视角通读全部正文并交叉比对 DSH 一手 `docs/cookbook/`、`docs/postmortem/0001`–`0004`、`docs/capability-seams.md`、`docs/subsystems/commands.md` 与 `packages/client/tsdown.client.ts`，清理跨卷历史残留、补齐外部全栈插件构建与通信硬核断层，并搭齐对外落地脚手架：
+
+1. **跨卷边界归位与对外叙事反转（`01/09` 重塑、`01/{06,08}` 调序、`02/01` 收编）**：将原 `01-general-repo-harness/09-plugin-author-entry.md` 中纯属 DSH 插件分发与安装的细节（`dsh.bundle` vs `dsh.profile` 的 `Nothing is both` 互斥、`engines.dsh` 对等依赖回退、`dsh plugin add` 安装期仅放行 `prepare` 脚本的安全边界，以及 `plugin-three-structures.svg`）完整迁回 `02-dsh-plugin-harness/01-new-plugin-repository.md`，并同步修正宿主工作区外部入站链接；卷一第 `09` 章改名为 `09-platform-and-multi-repo-legibility.md` 并重绘 `multi-repo-platform-legibility.svg`，提炼跨语言平台底座仓赋能下游扩展仓的四条通用准则；将 `01/06` 与 `01/08` 调整为先给 Python / Go / Web 全栈 / 通用 Monorepo 对标实现、再列 DSH 标本证据的对外视角。
+2. **卷一新增存量老仓库（Brownfield Repo）渐进改造实战（`01/12-brownfield-repo-migration.md` + `brownfield-ratchet-migration.svg`）**：面向持有数万行历史包袱的外部团队，提供 10 项仓库 Agent 友好度体检评分表、Day 1（150 行导航止血）→ Week 1（单调指纹棘轮锁债）→ Month 1（从高频返工评论提炼 `SKILL.md` 与首条真入口回放）不停工演练、仅开放 `--prune` 无一键刷新后门的零依赖 `scripts/ratchet-check.mjs` 完整源码，以及锚定 `2026-09-19-no-unknown-casts.md` 的 DSH 原生棘轮实证。
+3. **卷二补齐宿主现成服务货架、五大扩展配方与全栈客户端打包/RPC 闭环（新 `02/07`、升级 `02/{00,02,04,06}` + `plugin-extension-decision-tree.svg`）**：`02/00-index.md` 增设一页式「需求 → 扩展原语 → 拓扑 → 最窄证据」选型总表，`02/02` 补齐 `根 ctx vs 会话 agent.ctx`、`Tool vs Command vs Skill`、`presentResult vs presentationMeta`、`Typert @Remote`、`Volatile<T>` 词对；新建 `02/07-extension-recipes-and-host-services.md`，完整对齐 `docs/capability-seams.md` 梳理 12+ 个可注入宿主底座服务（`fs`/`shell`/`subprocess`/`jobs`/`approval`/`sandboxPolicy`/`spillStore` 等），并给出生产级 `defineTool`（无损 JSON 直通 PTC `await tools.<name>`、CLI `presentResult` 与 Web `presentationMeta` + `tool.call.toolview` 双轨真相、`ctx.jobs.start` 信号交接、Session V4 `MessageSourceMap` 声明合并）、五层工具钩子、`ctx.commands` 斜杠命令、`systemPrompt.section()` 与协议桥接配方；在 `02/04` 补齐外部独立仓构建 `lib/client.js` 必需的 `tsdown.config.ts`（`window.__ModuleLoader__.load` lazy-CJS 闭包、`PLATFORM_MODULES` 共享基线与裸包名根行挂载硬约束）、`TypertRemoteService` + `@Remote` + `RemoteErrorDetailsMap` 五步跨端通信、`Volatile<T>`（`.get()` + `.role('secret')`）及第三方插件无 `BUNDLE_PREVIEWS` 接口边界，并在 `02/06` 的 `verify-plugin.mjs` 中新增 `dsh.client` 双面产物校验。
+4. **卷二新增排障与四大真实事故复盘专章（`02/08`）+ 卷三与根入口全面搭桥（`03/00-index.md`、`03/{01,03,04,05,06,12}`、`00-index.md`）**：新建 `02/08-troubleshooting-and-postmortems.md`，提供 8 大高频插件症状 1 分钟排障速查表，并从插件作者防复发视角深度拆解 DSH 全部四份官方 Postmortem（`0001` 默认导出吞 `inject` 与 `ctx.get()` 可选依赖、`0002` YAML 动态求值边界与快照盲刷吞 `UNKNOWN_TOOL`、`0003` 裸 Vite 缺 `__DSH_BOOT__` 白屏与错端口假验收、`0004` 子进程非零退出码与沙箱良性前缀误拼）；在 `03/00-index.md` 增设研发全生命周期六阶段串联表，并为其余 6 篇尚缺导读框的参考页补齐 `> **外部借鉴切面**`（至此卷三 12 篇全覆盖）；在根 `00-index.md` 升级三类外部读者速通与完整落地处方及十六项工程实践总索引。
+
+验证：`node _dsh_plugin_agent_ready_development/verify.mjs`（45 Markdown、2 scripts、35 SVG）、`node _dsh_plugin_agent_ready_development/verify.test.mjs`、宿主工作区入站链接校验、全量引文/外链锚点/单行段落/禁词反查与 `git diff --check` 全部通过；新增与修改的 3 张 SVG 全部经 `rsvg-convert` 渲染 PNG 并通过看图工具完成视觉验收。

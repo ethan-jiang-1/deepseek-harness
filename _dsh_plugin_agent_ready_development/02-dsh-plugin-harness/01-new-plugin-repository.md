@@ -10,6 +10,14 @@
 
 图中四项工作是新仓建立基础设施的逻辑闭环（而非每次改一行代码都要手工重搭）：**真实 Loader 确实激活了插件 → 行为与文档各有明确归属 → 独立门禁与测试能拦截回归 → 打出的 `.tgz` 包在干净宿主环境可安装运行**。遇到生疏概念可随时查阅 [`02 · 术语与心智模型`](./02-terms-and-mental-models.md)。
 
+在动手建目录之前，先看清独立插件仓在整个 DSH 生态中的物理位置——**DSH 宿主仓定义共享原语与契约，独立插件仓打包分发 `dsh.bundle` 补丁层，终端用户的 `$DSH_HOME/profiles/<name>` 组装最终运行环境**：
+
+![DSH 仓库、插件仓库与运行时组合的三个结构](./figures/plugin-three-structures.svg)
+
+> A bundle is what you author and distribute; a profile is what a user boots with `dsh --profile <name>`. Nothing is both.
+>
+> — DSH [`docs/user/develop/basic/publish.md` 的 “Two concepts, two manifests”](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#two-concepts-two-manifests)。任何包都不能既是 Bundle 又是 Profile：你编写的插件包通过 `dsh.bundle` 声明自己向宿主贡献哪些配置行（也可作为不含 `dsh.bundle` 的普通模块供配置显式挂载），并通过 `engines.dsh`（缺省时回退检查 `@deepseek-ai/dsh*` peer dependency 范围）声明兼容的宿主版本。同时请注意**安装期安全边界**：用户通过 `dsh plugin add`（特别是从 GitHub 仓库源安装含 `prepare` 构建脚本的包）可能在工作区沙箱外触发构建脚本；pnpm 默认拦截未批准脚本，仅解除版本准入豁免也绝不隐式放行任何脚本执行——若你的包确实需要安装期脚本，务必在 `README.md` 中诚实披露（详见 DSH [GitHub 安装脚本限制](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#installing-from-github-the-build-script-catch)与[版本兼容豁免](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md#version-compatibility-and-exemptions)）。
+
 ## 1. 黄金单包目录树与三层依赖镜像规则
 
 切忌把 DSH 主仓容纳数百个包的 `packages/<group>/<pkg>` 深层目录照搬进单插件仓库。对于绝大多数独立发布的 Host 插件 Bundle，下面这套扁平单包结构清晰度最高、维护阻力最小：

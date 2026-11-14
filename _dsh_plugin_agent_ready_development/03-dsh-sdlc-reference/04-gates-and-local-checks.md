@@ -4,6 +4,8 @@
 
 DSH 把可机械检查的规则接到会失败的顶层命令；push 前按 outgoing diff（待推送差异）选择最小可信证据，Pull Request CI 再运行远端矩阵。Focused evidence（聚焦证据）与 exhaustive CI（穷举式 CI）是先后两层，不是二选一。
 
+> **外部借鉴切面**：可直接迁移「本地按待推送 diff 跑最窄相关检查（省时高反馈）+ 远端 PR CI 跑全量覆盖率与跨平台矩阵（兜底防漏）」的双层成本分工，以及「诚实报告实际运行过的命令，绝不宣称未跑过的套件已绿」的 Agent 汇报纪律；主仓内部的 `run-gates.ts` 分组拓扑与冻结归档 hook 无需原样照搬。
+
 > Match evidence to the surface: focused behavior tests, model/user-output snapshots, `doc-sync` for docs, built smokes for published paths, and real-API e2e for providers.
 >
 > — DSH [根 `AGENTS.md` 的 “Run relevant checks locally”](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md#run-relevant-checks-locally)。这条 standing order 定义本地证据按改动面选择，而不是默认运行全部检查。
