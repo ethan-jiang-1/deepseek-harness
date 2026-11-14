@@ -68,7 +68,7 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 路径树本身就是工作清单：仓库刻意不设集中式 `INDEX.md`（历史上的生成索引已被移除，理由写在 `.agents/notes/README.md` 的 “Layout and naming” 里），读者按 lifecycle/class 目录浏览或全库搜索；Note 之间的交叉引用只用相对 Markdown 链接，不用裸文字或编号。
 
-**树的深度被钉死在三层，没有第四层。** `walkAgentNoteTree` 对深度用等号判断（[`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)）：`globSync` 虽然写 `**`，但走出来的路径只要不是恰好 `{lifecycle}/{class}/file.md` 三段就报 `expected {lifecycle}/{class}/file.md`。所以「按主题或按月再分子目录」这条路不通——不是没人想到，是门禁直接拒绝。
+**树的深度被钉死在三层，没有第四层。** `walkAgentNoteTree` 把深度当等值判断而不是最小值（[`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)）：`globSync` 用 `**` 扫出任意深度，但只要路径不是恰好 `{lifecycle}/{class}/file.md` 三段，就报 `expected {lifecycle}/{class}/file.md (got depth N)`。所以按主题、按月或按子系统再分子目录都不行：它们不是被忽略，而是直接报错。
 
 叶子目录**上限** 4×6=24 个，实际存在 **20** 个：`rejected/` 下只有 `architecture/` 与 `simplification/`，其余四个 class 目录从未被创建。20 个叶子目录合计承载 1270 篇英文正文（全树另有根级 `README.md` 等非 Note 文件若干，不含在内），且负载高度集中——`archived/feature` 306 篇、`archived/architecture` 185、`archived/bug-fix` 182、`implemented/architecture` 180，前四项占 853/1270 ≈ 67%，而最小的两个目录各只有 1 篇。
 
