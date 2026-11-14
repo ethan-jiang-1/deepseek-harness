@@ -6,9 +6,9 @@
 
 | 结论 | 出处 |
 |---|---|
-| 产品树无「探针」机制；同名的是运行时自检 | `ctx.pluginRegistryProbe` 与 `registryProbe*` 配置——[`docs/capability-seams.md`](../../docs/capability-seams.md) 的 seam 表、[`docs/config-catalog.md`](../../docs/config-catalog.md) 的 Registry-probe 一节、[`docs/subsystems/boot.md`](../../docs/subsystems/boot.md) 的 `ctx.pluginRegistryProbe` 节 |
-| 「并发比较公共安装源响应」 | [`docs/capability-seams.md`](../../docs/capability-seams.md) 的服务表行 |
-| Sandbox 功能性探针仲裁多 runner 链 | [`docs/subsystems/sandbox.md`](../../docs/subsystems/sandbox.md) 的首段合同句 |
+| 产品树无「探针」机制；同名的是运行时自检 | `ctx.pluginRegistryProbe` 与 `registryProbe*` 配置——[`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md) 的 seam 表、[`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md) 的 Registry-probe 一节、[`docs/subsystems/boot.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/boot.md) 的 `ctx.pluginRegistryProbe` 节 |
+| 「并发比较公共安装源响应」 | [`docs/capability-seams.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md) 的服务表行 |
+| Sandbox 功能性探针仲裁多 runner 链 | [`docs/subsystems/sandbox.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/sandbox.md) 的首段合同句 |
 | `landlock --probe` 是启动器自检模式 | `packages/experimental/webworker-runtime/src/shell/process/landlock.ts`（`parseLandlockArguments`，`{ kind: 'probe' }`） |
 | 进程存活探针（`process.kill(target, 0)`） | `packages/boot/plugin-manager/src/run-tree.ts` 的 `run-tree` JSDoc |
 | 「探针不是门禁」的一句话定位 | 仓外 `ai_dsh_bsimulation` 的 AGENTS 目录表与 `probes/README.md` 首行「Probes are not gates」 |
@@ -18,25 +18,25 @@
 
 | 结论 | 出处 |
 |---|---|
-| 五层测试分层（unit / coverage / e2e / expected / snapshot / web） | [`docs/testing.md`](../../docs/testing.md) 的 Tiers 一节 |
+| 五层测试分层（unit / coverage / e2e / expected / snapshot / web） | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 的 Tiers 一节 |
 | 「覆盖率证明行跑过，不证明按发布形态工作」 | 同上，Coverage gate 条 |
-| 「只有真夹具能钉住组装后的提示词与工具集合」 | [`.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md`](../../.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md) |
-| 「绿单测、坏产品」事故起点 | [`docs/postmortem/0001-acp-default-export-drops-inject.md`](../../docs/postmortem/0001-acp-default-export-drops-inject.md) |
-| 「验证世界，不是验证自报」 | [`docs/testing.md`](../../docs/testing.md) 的 Verify the world, not the self-report 一节 |
+| 「只有真夹具能钉住组装后的提示词与工具集合」 | [`.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md) |
+| 「绿单测、坏产品」事故起点 | [`docs/postmortem/0001-acp-default-export-drops-inject.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0001-acp-default-export-drops-inject.md) |
+| 「验证世界，不是验证自报」 | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 的 Verify the world, not the self-report 一节 |
 | 快照是变更探测器、不是正确性 oracle | [FAQ 21](../21_recorded-session-snapshots/04-what-its-worth.md) |
 
 ## 三、探针为什么成立的三条不变量（[04](./04-principles.md)）
 
 | 结论 | 出处 |
 |---|---|
-| root 不变量 Model-visible ⟺ logged | 根 [`AGENTS.md`](../../AGENTS.md) 的 Conventions 一节；展开见 [`.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md) |
-| `request/header` 记录 envelope 与组装后的工具 schema；`foldRequestHeader` 取最新快照 | [`docs/subsystems/session.md`](../../docs/subsystems/session.md) 的 The request header event: `request/header` 一节 |
+| root 不变量 Model-visible ⟺ logged | 根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 的 Conventions 一节；展开见 [`.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md) |
+| `request/header` 记录 envelope 与组装后的工具 schema；`foldRequestHeader` 取最新快照 | [`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md) 的 The request header event: `request/header` 一节 |
 | 渲染后的 system prompt **不在** header，而是 surface 节点 0 的 `system/message` | 同上 |
-| 会话是 append-only 的事件日志，消息历史由日志派生 | [`docs/subsystems/session.md`](../../docs/subsystems/session.md) 首段 |
-| 给 session log 瘦身会破坏可重建性（已否决） | [`.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md`](../../.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md) |
-| `dsh-llm-replay` 是发布包，用录制日志替掉真 adapter | [`packages/test-support/llm-replay/README.md`](../../packages/test-support/llm-replay/README.md) 的 Summary 与 Mounting it 两节 |
+| 会话是 append-only 的事件日志，消息历史由日志派生 | [`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md) 首段 |
+| 给 session log 瘦身会破坏可重建性（已否决） | [`.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/testing/2026-07-06-pin-request-header-content-in-one-scenario.md) |
+| `dsh-llm-replay` 是发布包，用录制日志替掉真 adapter | [`packages/test-support/llm-replay/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/README.md) 的 Summary 与 Mounting it 两节 |
 | `replay.override.json` 表达日志重建不出来的四类失败 | 同上，Summary 一节 |
-| 快照同时是回放输入与期望输出 | [`snapshots/AGENTS.md`](../../snapshots/AGENTS.md)；[FAQ 21](../21_recorded-session-snapshots/02-what-a-trajectory-is.md) |
+| 快照同时是回放输入与期望输出 | [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md)；[FAQ 21](../21_recorded-session-snapshots/02-what-a-trajectory-is.md) |
 
 ## 四、分类与写法（[05](./05-kinds.md)、[06](./06-how-to-write-one.md)）
 
@@ -75,13 +75,13 @@
 
 | 结论 | 出处 |
 |---|---|
-| 「验证世界，不是验证自报」（探索取证的根本依据） | [`docs/testing.md`](../../docs/testing.md) 的 Verify the world, not the self-report 一节 |
-| postmortem 0002：确定性转录被当成合法行为，刷新把它固化成正确 | [`docs/postmortem/0002-js-expression-disabled-filesystem-tools.md`](../../docs/postmortem/0002-js-expression-disabled-filesystem-tools.md) 第 19、34、46 行 |
+| 「验证世界，不是验证自报」（探索取证的根本依据） | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 的 Verify the world, not the self-report 一节 |
+| postmortem 0002：确定性转录被当成合法行为，刷新把它固化成正确 | [`docs/postmortem/0002-js-expression-disabled-filesystem-tools.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0002-js-expression-disabled-filesystem-tools.md) 第 19、34、46 行 |
 | 语义不可能必须由**独立于期望输出**的断言捕获 | 同上，第 46 行 |
 | `UNKNOWN_TOOL` 语义守卫（主仓已内置） | `packages/test-support/session-snapshot/src/suite.ts` |
-| 独立 oracle：`workspace.expected/` 终态树，录制流程不得改写 | [`snapshots/AGENTS.md`](../../snapshots/AGENTS.md) |
-| 录制前先确认这次运行是对的 | [`docs/testing.md`](../../docs/testing.md)； [FAQ 21/04](../21_recorded-session-snapshots/04-what-its-worth.md) |
-| postmortem 0003：agent 用裸 Vite 糊弄验收，轨迹是**事后取证**而非回归测试 | [`docs/postmortem/0003-web-agent-gui-feedback-loop.md`](../../docs/postmortem/0003-web-agent-gui-feedback-loop.md) |
+| 独立 oracle：`workspace.expected/` 终态树，录制流程不得改写 | [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md) |
+| 录制前先确认这次运行是对的 | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)； [FAQ 21/04](../21_recorded-session-snapshots/04-what-its-worth.md) |
+| postmortem 0003：agent 用裸 Vite 糊弄验收，轨迹是**事后取证**而非回归测试 | [`docs/postmortem/0003-web-agent-gui-feedback-loop.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0003-web-agent-gui-feedback-loop.md) |
 | 探索用到的四个接口：日志 / 请求侧 / 渲染 / 副作用 | 分别见本篇第一、三节，与 [07](./07-worked-examples.md) 的四个实例一一对应 |
 | 造条件的三条真实写法（视口 / 真并发 / 注入 hang・throw） | [FAQ 21/05](../21_recorded-session-snapshots/05-plugin-repo-organization.md)；仓外 `ai_dsh_company/probes/team/claim-race-probe.mjs` 、`ai_dsh_assistant/dev/probes/web/` |
 | 判据校准与被推翻的记录 | 仓外 `ai_dsh_company/probes/session-context/date-rule-probe.mjs` 文件头 |

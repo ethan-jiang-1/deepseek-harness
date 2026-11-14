@@ -25,11 +25,11 @@
 
 ### 1.1 "feedback is seconds / 秒到分钟级"（§3）— 类别 **(B)/(C)** — **INFERRED, over-precise（推断，过度精确）**
 
-他们做什么：对 (C) 的 push，或 (B) 运行最窄测试或 `doc-sync`。来源机制：[`lefthook.yml:52-55`](../../lefthook.yml) pre-push 运行 `pnpm run typecheck`；`package.json` `typecheck` = `npm run build:lib:host && npm run typecheck:contracts-ready`，而 `build:lib:host` = `tsc -b tsconfig.host.json && tsdown --env.DSH_BUILD_FACE host`。
+他们做什么：对 (C) 的 push，或 (B) 运行最窄测试或 `doc-sync`。来源机制：[`lefthook.yml:52-55`](https://github.com/deepseek-ai/deepseek-harness/blob/master/lefthook.yml) pre-push 运行 `pnpm run typecheck`；`package.json` `typecheck` = `npm run build:lib:host && npm run typecheck:contracts-ready`，而 `build:lib:host` = `tsc -b tsconfig.host.json && tsdown --env.DSH_BUILD_FACE host`。
 
 - **反证。** "Seconds" 的表述将本地 hooks 作为反馈步骤，但唯一的 *始终开启的* push 时本地门禁是
   **完整的 host build + bundle + client typecheck**（`build:lib:host`），而不是亚秒级检查。Superseding note
-  [`2026-07-22-fast-local-git-hooks.md:35`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
+  [`2026-07-22-fast-local-git-hooks.md:35`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   明确说：*"Hook latency is observed in development and PR evidence rather than enforced by a
   timing test whose result would depend on host load and cache state."* 仓库**故意拒绝承诺持续时间**。
   所以"痛在秒级"（`answer.md:43`）和"秒到分钟级"（`answer.md:47`）
@@ -41,7 +41,7 @@
 
 ### 1.2 "each time only one or two checks / 一两个检查"（§结论, §1 step 4）— 类别 **(B)/(C)** — **PARTLY PROVEN, understates the automatic baseline（部分证实，低估了自动基线）**
 
-来源：[`dsh-pre-push-checks/SKILL.md:29`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（"There is no universal local baseline beyond the hooks. Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression"）。
+来源：[`dsh-pre-push-checks/SKILL.md:29`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)（"There is no universal local baseline beyond the hooks. Every behavior change needs the narrowest available test or purpose-built check that would fail for its regression"）。
 
 - **证实部分。** 对于单表面变更，*agent 选择*的证据确实是一两个检查（docs → `doc-sync`；package behavior → owning Vitest file；manifest → build + hygiene + smoke；`SKILL.md:31-35`）。
 - **反证。** "Only one or two" 省略了**始终开启的自动基线**：每次 commit
@@ -55,12 +55,12 @@
 
 ### 1.3 "forget the rules, the gates remember / 忘了规则没关系，门禁会替你记得"（§2）— 类别 **(B)/(C)** — **OVERSTATES the coverage the gates claim（夸大了门禁声称的覆盖范围）**
 
-来源：[`quality-gates` note:12-16](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)（"Agents follow enforced gates far more reliably than prose conventions…"）以及"Every mechanically checkable AGENTS.md promise gets a command that exits non-zero"的决策。
+来源：[`quality-gates` note:12-16](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)（"Agents follow enforced gates far more reliably than prose conventions…"）以及"Every mechanically checkable AGENTS.md promise gets a command that exits non-zero"的决策。
 
 - **证实部分。** 对于 *mechanically checkable* 子集——typecheck、per-file 100% coverage、lint、
   jscpd、knip/publint/constraints、doc-sync、translation-pairing、Note-format、whitespace、vendor manifest
   ——机器命令确实以非零退出。忘了*那些*确实会被抓住。
-- **反证 (a)。本地门禁的覆盖范围狭窄。** [`docs/development.md:147`](../../docs/development.md)：
+- **反证 (a)。本地门禁的覆盖范围狭窄。** [`docs/development.md:147`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/development.md)：
   *"the hooks intentionally do not run tests, snapshots, documentation checks, builds, or hygiene."*
   详尽的门禁集在 **CI** 中运行，即在 push 之后，即**慢**反馈——不是一个"记着"能帮你节省本地工作量的事情。
 - **反证 (b)。该主张对于它所推崇的循环是自否定的。** 六步闭环、
@@ -73,7 +73,7 @@
   本身是无门禁的 prose。
 - **反证 (c)。门禁的记忆在 CI，而引用的 note 本身将其标记为已取代。**
   Quality-gates note 的 hook/CI 对称性已被
-  [`fast-local-git-hooks`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
+  [`fast-local-git-hooks`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   取代（`:24`，"supersedes the hook/CI symmetry"），而 answer 引用 *quality-gates* note 时仿佛它
   描述了当前的 hook 集。当前的 hook 集是 `lefthook.yml`，比 quality-gates note 的 prose 暗示的更窄。
 - **裁定。** 对机械规则为真，且仅在本地狭窄 hook 子集上；作为 blanket "你可以忘记规则"**unsupported**。
@@ -98,13 +98,13 @@
 
 ### 1.5 "write only the non-derivable essence / 只写不可派生的本质"（§5）— 类别 **(C)**（tool 作者）— **PARTLY PROVEN, understates the "essence"（部分证实，低估了"本质"）**
 
-来源：[`adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)。
+来源：[`adding-a-tool.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md)。
 
 - **证实部分。** `defineTool` 提供了真正的免费价值：args 在 `execute` 之前就被类型化和验证
   （`adding-a-tool.md:42`），schemas 流入 system-prompt 组装（`:38`），注册是基于 effect 的
   （`:38`），Code Mode 从同一 schemas 免费到达（`:61-63`），UI card 从声明的 render intent 派生
   （`:71-83`）。"Generate, don't hand-edit"在
-  [`docs/AGENTS.md`](../../docs/AGENTS.md) 中得到确认（"Generated catalogs are never hand-edited"）。
+  [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 中得到确认（"Generated catalogs are never hand-edited"）。
 - **反证。** "只写不可派生的本质"低估了作者实际的表面。`execute()` 契约（`adding-a-tool.md:40-49`）密集：
   args-validated（但你仍然要手动检查 DSL 无法表达的非空字符串 / 正数 / 跨字段规则，`:42`）、
   identity-protection / 不 mutate 注册的定义（`:43`）、一个规范值 + `isError` 语义（`:45-46`）、
@@ -117,12 +117,12 @@
 ### 1.6 六步闭环（"核对现场 → 判定窄 diff → 原子修改 owner 面 → 最小匹配证据 → 沉淀 → 只报告实际跑过的"）（§1）— 类别 **(B)** — **PROVEN as a description of what skills say; NOT proven as "the most natural path"（作为 skills 陈述的描述被证实；未证实为"最自然的路径"）**
 
 - **作为抽象被证实。** 六步是
-  [`dsh-pre-push-checks`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（checkout/branch/base +
+  [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)（checkout/branch/base +
   "never guesses or fetches a base", `SKILL.md:19-25`；narrowest test, `:29`）、
-  [`dsh-code-review`](../../.agents/skills/dsh-code-review/SKILL.md)（change-scope first）、
-  [`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md) + `doc-standards`
-  （owning source then regenerate）、[`dsh-trim-cot-leakage`](../../.agents/skills/dsh-trim-cot-leakage/SKILL.md)
-  （HEAD, no-session reader test）、Agent-Note 规则（[`.agents/notes/README.md`](../../.agents/notes/README.md)）
+  [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)（change-scope first）、
+  [`dsh-prose-standard`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/SKILL.md) + `doc-standards`
+  （owning source then regenerate）、[`dsh-trim-cot-leakage`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/SKILL.md)
+  （HEAD, no-session reader test）、Agent-Note 规则（[`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)）
   和 `AGENTS.md:92`（"report only commands run"）的忠实投影。每个 skill 具体化了同一个骨架。
 - **作为排名未证实。** 问题是问哪条路径*最自然 / 最被强化*。Answer
   从*三个证据流的汇聚*推断出"窄证据切片闭环"，但没有为任何竞争对手分配一个可证伪的排名；
@@ -139,7 +139,7 @@
 
 - 在*机械*意义上得到支持：只运行最窄失败检查的 agent 每 token 做更多正确工作，
   CI 后盾覆盖了穷举性违规。这是一个连贯的设计主张，由
-  [`quality-gates:16`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)
+  [`quality-gates:16`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)
   和 `fast-local-git-hooks:10-20` 支持。
 - **反证。** 对齐仅适用于"正确"是*机械强制执行的*地方。当规则是 prose（循环顺序、Note 必要性判断、
   `report-only-commands-run`、tier 放置）时，最省力路径**不**自动是正确路径——
@@ -148,7 +148,7 @@
 
 ### 1.8 §3 "验证本身便宜 / validation is cheap"（§3, 第 51 行）— 类别 **(B)/(C)** — **unsupported gloss on the quoted source（对所引来源的不可支持的修饰）**
 
-来源：[`docs/testing.md:25`](../../docs/testing.md) — "We are DeepSeek — do not ration real-API tests. A no-key test proves plumbing; only a with-key run proves the agent works against a real model." Answer 引用此作为"验证本身便宜"的证据。
+来源：[`docs/testing.md:25`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) — "We are DeepSeek — do not ration real-API tests. A no-key test proves plumbing; only a with-key run proves the agent works against a real model." Answer 引用此作为"验证本身便宜"的证据。
 
 - **反证。** "Do not ration"是一个**反成本借口**的指示，而不是成本主张。它所指的——带 key 的真实 API e2e——
   是仓库中**最昂贵的**验证（真实模型、真实网络、真实延迟、真实金钱）。这个修饰颠倒了引用的意图。
@@ -185,30 +185,30 @@
 
 - **只在权威边界问，从不问检查可发现的事实。** Plan-mode 姿态节，answer 引用了它但也只是作为"姿态条款"，
   实际上是 (A) 面对的契约："A user's conversational agreement — including an answer confirming something you asked — **approves nothing**"
-  （[`packages/bundle/base/cordis.patch.yml:336`](../../packages/bundle/base/cordis.patch.yml)）；"Resolve
+  （[`packages/bundle/base/cordis.patch.yml:336`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml)）；"Resolve
   discoverable facts by inspection. Use `ask_user_question` only for user-owned choices or material
   ambiguity that inspection cannot answer. **Do not ask the user where code lives**"（`:311`）。工具自身的描述
   进一步缩小范围："when you need confirmation, a choice, or missing information"
-  （[`packages/interaction/tool-ask-user/src/index.ts:31`](../../packages/interaction/tool-ask-user/src/index.ts)）。
+  （[`packages/interaction/tool-ask-user/src/index.ts:31`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/interaction/tool-ask-user/src/index.ts)）。
   这是 (A) 体验感觉轻松的确切原因：**人只在为他们拥有的决策时被打断**，
   而检查可以解决的一切都由 agent 处理。
 - **按需而非预先的知识。** Skills 被广告为 hashed、deduped 的 catalog 摘要，
   仅在被调用时才完全加载
-  （[`packages/skill/tool-skill/src/index.ts`](../../packages/skill/tool-skill/src/index.ts)，`agent/pre-step`
+  （[`packages/skill/tool-skill/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/src/index.ts)，`agent/pre-step`
   catalog + hash-digest；用户的 `/name` 手势是确定性加载）。人类从不需事先阅读规则。
 - **使进度可读的脚手架。** Todo 列表（整表替换，
-  [`packages/todo/tool-todo/src/index.ts:45-66`](../../packages/todo/tool-todo/src/index.ts)）和
+  [`packages/todo/tool-todo/src/index.ts:45-66`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/todo/tool-todo/src/index.ts)）和
   plan-mode 门禁使 agent 的工作*可见且可步进*，而无需人驱动每一步。
 - **Advisory 而非致命的引导。** 重复调用提醒温和升级（`[3,5,8]`，
-  [`packages/guard/repeat-tool-reminder/src/index.ts:53`](../../packages/guard/repeat-tool-reminder/src/index.ts)）
+  [`packages/guard/repeat-tool-reminder/src/index.ts:53`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/guard/repeat-tool-reminder/src/index.ts)）
   且是 advisory（`:209-224`），注册在 post-execute 正是为了让*被拒绝的*调用获得指导。
   卡住 → 被引导，而非被杀。
 - **可读的最终交付。** `subagent` 调用在运行时接纳 child 后立即返回 `started subagent <childId>`；子会话结算时，运行时把 outcome 与 final message 放进 completion notice 交回父会话
-  （现行文案在 [`packages/subagent/tool-subagent/src/index.ts:215`](../../packages/subagent/tool-subagent/src/index.ts) 的 description，[`README.md:59-61`](../../packages/subagent/tool-subagent/README.md) 的 Managed delegation 节；settle 回交合同见 [`docs/subsystems/subagent.md:176`](../../docs/subsystems/subagent.md)；2026-11-09 按 rc.5 树复核本条）。
+  （现行文案在 [`packages/subagent/tool-subagent/src/index.ts:215`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/tool-subagent/src/index.ts) 的 description，[`README.md:59-61`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/tool-subagent/README.md) 的 Managed delegation 节；settle 回交合同见 [`docs/subsystems/subagent.md:176`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/subagent.md)；2026-11-09 按 rc.5 树复核本条）。
   rc.1 删除了独立的自足 `report` 工具（`tool-subagent-report`）。
   对 (A) 用户而言，最顶层的对应物仍是可读的完成报告，而不是六步循环。
 - **可重放性 / 对 transcript 的信任。** `model-visible ⟺ logged` 不变量
-  （[`AGENTS.md`](../../AGENTS.md) — "anything that reaches a model request must be reconstructable from the
+  （[`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) — "anything that reaches a model request must be reconstructable from the
   session log"）是让人信任并重新检查发生了什么的机制。这是一个关于*审计 agent* 的运行时不变量，
   不是关于*写代码*。
 
@@ -227,7 +227,7 @@
 >
 > **对于 agent (B) 和手动贡献者 (C)，** 轻松是一个*流程*属性：正确和
 > 便宜在*机械强制执行*的子集上重合。本地 hooks 保持狭窄（`lefthook.yml`,
-> [`docs/development.md:147`](../../docs/development.md)），agent 选择会为其回归而失败的最窄检查
+> [`docs/development.md:147`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/development.md)），agent 选择会为其回归而失败的最窄检查
 > （`dsh-pre-push-checks:29`）；变更的正确性被委派给 CI
 > 因此本地成本保持低。整 PR revert 是真实的（`#2903` 镜像 `#2608`, 67 文件），但只有在没有后续碰撞时才是干净的
 > 单次撤销。这**不是**一个"你可以忘记规则"的主张：门禁覆盖一个*机械*子集，而被推崇的六步循环本身是无门禁的 prose。
@@ -235,11 +235,11 @@
 >
 > **对于通过 Web/CLI 指挥 DSH 的人类 (A)，** 轻松是一个*产品*属性，不在 git 层中。
 > 人只在为他们拥有的决策时被打断（"conversational agreement approves nothing",
-> "do not ask where code lives", [`cordis.patch.yml:336,342`](../../packages/bundle/base/cordis.patch.yml)）；
+> "do not ask where code lives", [`cordis.patch.yml:336,342`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml)）；
 > 知识按需加载；工作被脚手架化（todo + plan）和引导（advisory guard）；结果由运行时在子会话 settle 时
 > 以 notice 交回父会话，而不是由子会话自己交一份报告
-> （[`continuation-messages.ts:130`](../../packages/subagent/subagent/src/continuation-messages.ts)、
-> [`docs/subsystems/subagent.md:176`](../../docs/subsystems/subagent.md)）。对 (A) 而言，
+> （[`continuation-messages.ts:130`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/src/continuation-messages.ts)、
+> [`docs/subsystems/subagent.md:176`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/subagent.md)）。对 (A) 而言，
 > "轻松"意味着 **"harness 处理流程，只在需要我选择时中断我。"**
 >
 > 两种"轻松"**不是**同一现象。如果问题是"为什么对一个人来说驾驶 DSH 很容易"，答案是其 **运行时姿态**，
@@ -260,7 +260,7 @@
    而不是成本主张；真实模型 e2e 是仓库中最昂贵的验证。
 6. **中立化"只写不可派生的本质"** 通过列出 tool 作者仍然写的内容（execute contract、
    `signal`、`isError`、带 purity rule 的纯 presenters）并命名 DSL 的限制
-   （[`adding-a-tool.md:40-49,87`](../../docs/cookbook/adding-a-tool.md)）。
+   （[`adding-a-tool.md:40-49,87`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md)）。
 7. **删除或限定精确的历史数值**，这些数值是方法依赖的或 answer 自己的研究标记为不可复现的：
    作者计数（answer 5475/1680/1556 vs research 5000/1666/1556 vs 实测 2433/869）、checkpoint 密度
    （answer "≈1.8/PR" vs research "≥1.4, 未能复现"）和 `fz@dsh.dev`
@@ -271,28 +271,28 @@
 ## 4. 核实附录（已读取的原始来源）
 
 - [`answer.md`](./answer.md), [`research.md`](./research.md), [`question.md`](./question.md) — 被审计的文本。
-- [`lefthook.yml`](../../lefthook.yml) — pre-commit jobs, pre-push typecheck。
-- [`package.json`](../../package.json) — `typecheck` = host build + client typecheck。
-- [`docs/development.md`](../../docs/development.md) — Git integrations, "hooks intentionally do not run…"。
-- [`docs/testing.md`](../../docs/testing.md) — coverage gate（"uncovered line often dead code"）、
+- [`lefthook.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/lefthook.yml) — pre-commit jobs, pre-push typecheck。
+- [`package.json`](https://github.com/deepseek-ai/deepseek-harness/blob/master/package.json) — `typecheck` = host build + client typecheck。
+- [`docs/development.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/development.md) — Git integrations, "hooks intentionally do not run…"。
+- [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) — coverage gate（"uncovered line often dead code"）、
   real-API policy（"do not ration"）。
-- [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md) — 最小形状、
+- [`docs/cookbook/adding-a-tool.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md) — 最小形状、
   execute contract、Code Mode free、purity hard rule。
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) — tier taxonomy、one-home-per-fact、"never hand-edited"。
-- [`AGENTS.md`](../../AGENTS.md) — "report only commands run", "Never default to the full suite"。
-- [`.agents/notes/archived/process/2026-06-11-quality-gates.md`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)
+- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) — tier taxonomy、one-home-per-fact、"never hand-edited"。
+- [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) — "report only commands run", "Never default to the full suite"。
+- [`.agents/notes/archived/process/2026-06-11-quality-gates.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)
   — "developed primarily by coding agents", "Every mechanically checkable…", "gates are code to maintain"。
-- [`.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md`](../../.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
+- [`.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-22-fast-local-git-hooks.md)
   — 当前 hook 集、取代 quality-gates、无延迟保证。
-- [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml) — plan-mode posture。
-- [`packages/interaction/tool-ask-user/src/index.ts`](../../packages/interaction/tool-ask-user/src/index.ts) — ask_user_question 契约。
-- [`packages/skill/tool-skill/src/index.ts`](../../packages/skill/tool-skill/src/index.ts) — 两层披露、catalog hash。
-- [`packages/core/system-prompt/src/index.ts`](../../packages/core/system-prompt/src/index.ts) — section order convention。
-- [`packages/workflow/tool-workflow/src/index.ts`](../../packages/workflow/tool-workflow/src/index.ts) — tool guidance lives in tool plugins。
-- [`packages/subagent/subagent/src/continuation-messages.ts`](../../packages/subagent/subagent/src/continuation-messages.ts) — settle notice（rc.1 起取代 `tool-subagent-report`）。
-- [`packages/subagent/tool-subagent/src/index.ts`](../../packages/subagent/tool-subagent/src/index.ts) — background-first delegation。
-- [`packages/guard/repeat-tool-reminder/src/index.ts`](../../packages/guard/repeat-tool-reminder/src/index.ts) — advisory thresholds。
-- [`packages/todo/tool-todo/src/index.ts`](../../packages/todo/tool-todo/src/index.ts) — todo as visible skeleton。
+- [`packages/bundle/base/cordis.patch.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml) — plan-mode posture。
+- [`packages/interaction/tool-ask-user/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/interaction/tool-ask-user/src/index.ts) — ask_user_question 契约。
+- [`packages/skill/tool-skill/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/src/index.ts) — 两层披露、catalog hash。
+- [`packages/core/system-prompt/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/system-prompt/src/index.ts) — section order convention。
+- [`packages/workflow/tool-workflow/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/tool-workflow/src/index.ts) — tool guidance lives in tool plugins。
+- [`packages/subagent/subagent/src/continuation-messages.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/src/continuation-messages.ts) — settle notice（rc.1 起取代 `tool-subagent-report`）。
+- [`packages/subagent/tool-subagent/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/tool-subagent/src/index.ts) — background-first delegation。
+- [`packages/guard/repeat-tool-reminder/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/guard/repeat-tool-reminder/src/index.ts) — advisory thresholds。
+- [`packages/todo/tool-todo/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/todo/tool-todo/src/index.ts) — todo as visible skeleton。
 - Git 历史（`upstream/master`, tip `0a53fb55be`）：reverts `#2903`/`#2608`（67-file mirror）、`#3000`、
   `#3054`、`#2577`、`#544`、`#3325`、`#3326`（re-revert）；作者计数；checkpoint mentions；
   `fz@dsh.dev` = 92；`Co-authored-by` = 4。

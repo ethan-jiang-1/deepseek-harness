@@ -12,19 +12,19 @@
 
 | 目录 | 拥有什么 | 不拥有什么 | 阅读入口 |
 |------|----------|------------|----------|
-| `vendor/` | 钉住的 Cordis、Loader、Include、HMR 及基础库源码；上游 commit 与本地修改清单 | DSH 产品能力；普通第三方 npm 依赖 | [`vendor/README.md`](../../vendor/README.md) |
-| `packages/` | `@deepseek-ai/dsh-*` 产品和支持 packages；Service、Provider、Consumer、策略、UI、bundle | 最终产品 bin；进程级运行配置 | [`packages/README.md`](../../packages/README.md) |
-| `apps/` | 最终应用入口：发布的 `dsh` CLI、浏览器 Vite entry，以及桌面 Electron 壳与它的私有 host | 可复用能力实现；完整业务模块 | [`apps/cli/README.md`](../../apps/cli/README.md)、`apps/web/src/main.ts`、[`apps/desktop/README.md`](../../apps/desktop/README.md) |
+| `vendor/` | 钉住的 Cordis、Loader、Include、HMR 及基础库源码；上游 commit 与本地修改清单 | DSH 产品能力；普通第三方 npm 依赖 | [`vendor/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/README.md) |
+| `packages/` | `@deepseek-ai/dsh-*` 产品和支持 packages；Service、Provider、Consumer、策略、UI、bundle | 最终产品 bin；进程级运行配置 | [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) |
+| `apps/` | 最终应用入口：发布的 `dsh` CLI、浏览器 Vite entry，以及桌面 Electron 壳与它的私有 host | 可复用能力实现；完整业务模块 | [`apps/cli/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md)、`apps/web/src/main.ts`、[`apps/desktop/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) |
 
 `vendor/` 被纳入 pnpm workspace，因为 DSH 要从源码构建并发布自己重命名后的 Cordis 框架层；但它仍保持单独的 upstream manifest、同步流程和本地修改日志。不要像普通 `packages/` 代码一样顺手重构它。
 
-`packages/` 是主产品层。绝大多数功能修改最终落在这里，但准确落点仍由能力所有者和角色决定，不是看到一个功能就新建 group。（0009 跨度事实：新增 `packages/telemetry/` 组承载共享的 Cordis OTel 上报通道；`packages/llm/` 把 DeepSeek 凭据拆成 `llm-deepseek-account` / `llm-deepseek-api-key`，并新增会话中途的动态工具更新投影，见 `.agents/notes/implemented/architecture/2026-09-20-dynamic-tool-updates.md`；`packages/client/` 新增 `shortcuts` + `ui-shortcuts`（快捷键编辑重做与侧栏提示）与 `ui-settings-session-log`（Session Log 上传偏好设置页）；`packages/util/` 新增 `code-language`（代码高亮语言表统一的数据源）；审批解释文案本地化（#4793）与按请求凭据区分欠费提示/充值入口（#4858）也属本跨度用户可见面；组清单以 [`packages/README.md`](../../packages/README.md) 为准。）
+`packages/` 是主产品层。绝大多数功能修改最终落在这里，但准确落点仍由能力所有者和角色决定，不是看到一个功能就新建 group。（0009 跨度事实：新增 `packages/telemetry/` 组承载共享的 Cordis OTel 上报通道；`packages/llm/` 把 DeepSeek 凭据拆成 `llm-deepseek-account` / `llm-deepseek-api-key`，并新增会话中途的动态工具更新投影，见 `.agents/notes/implemented/architecture/2026-09-20-dynamic-tool-updates.md`；`packages/client/` 新增 `shortcuts` + `ui-shortcuts`（快捷键编辑重做与侧栏提示）与 `ui-settings-session-log`（Session Log 上传偏好设置页）；`packages/util/` 新增 `code-language`（代码高亮语言表统一的数据源）；审批解释文案本地化（#4793）与按请求凭据区分欠费提示/充值入口（#4858）也属本跨度用户可见面；组清单以 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) 为准。）
 
 0011 跨度改的是 `packages/` 的分组口径本身：`hooks/`、`webhook/`、`runtime-diagnostics/` 三组解散，全部可选包迁入 `packages/experimental/`。按 `packages/<group>/<pkg>/package.json` 的深度精确口径计，包总数 316 → **342**、组数 55 → **52**、`packages/experimental/` 21 → **47** 包（本跨度删除 13 包、新增 39 包，其中 27 个落在 `packages/experimental/`）。计数必须用该口径：`git ls-files 'packages/*/*/package.json'` 会让 `*` 跨 `/` 匹配到 fixture 与 template，在 NEW 树上多算 9 个包。
 
 `apps/cli` 的职责是解析启动模式、组合 profile、提供进程级启动事实和收敛 shutdown；`apps/web` 只寻找 DOM mount point 并启动 client shell；`apps/desktop` 是 Electron 壳，`apps/desktop-host` 只负责组合并启动 `desktop` profile。入口保持薄，才能让 Web、Headless、SDK（含 `sdk-minimal`）与 ACP 复用相同的产品 packages——桌面是同一论点的第 5 个例证，它复用的正是 Web 那份 client 产物。
 
-桌面也是 `apps/` 里唯一**不**经 `dsh --profile` 启动的入口：CLI 用 `rejectElectronProfile()` 明确拒绝 `desktop` 这个 profile 名（`apps/cli/src/args.ts:83-86`），上游 [`docs/architecture.md`](../../docs/architecture.md) 也把桌面单列在 `## Desktop application`（`:51-55`），而不是并进 `## Application launch`（`:43-49`）。所以「`apps/` 保留最终可执行入口」这条描述仍然成立，但它不等于「`apps/` 里的每个入口都由 `dsh --profile` 启动」。（0009 跨度补充：桌面现自带一份经 Electron 可执行文件以 Node 模式运行的 CLI launcher，仅在应用退出后管理 `desktop` profile 与插件，不承担 profile 启动；见 `.agents/notes/implemented/feature/2026-09-27-desktop-cli-runtime.md`。）
+桌面也是 `apps/` 里唯一**不**经 `dsh --profile` 启动的入口：CLI 用 `rejectElectronProfile()` 明确拒绝 `desktop` 这个 profile 名（`apps/cli/src/args.ts:83-86`），上游 [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 也把桌面单列在 `## Desktop application`（`:51-55`），而不是并进 `## Application launch`（`:43-49`）。所以「`apps/` 保留最终可执行入口」这条描述仍然成立，但它不等于「`apps/` 里的每个入口都由 `dsh --profile` 启动」。（0009 跨度补充：桌面现自带一份经 Electron 可执行文件以 Node 模式运行的 CLI launcher，仅在应用退出后管理 `desktop` profile 与插件，不承担 profile 启动；见 `.agents/notes/implemented/feature/2026-09-27-desktop-cli-runtime.md`。）
 
 ## 组合、预设与可选 overlay
 
@@ -66,11 +66,11 @@ Schedule 在本轮换了归属：`packages/experimental/schedule-bundle` 退役�
 
 文档实行“一事实一归属”。高层架构只说明顺序、职责和扩展点；类型与事件语义属于 `docs/subsystems/`；package 消费合同属于 package README；生成 catalog 由 scripts 从源码再生；网站只投影这些来源。
 
-根 [`AGENTS.md`](../../AGENTS.md) 是顶层区域的文字总览。它的 `packages/` 布局块曾经有两处过期条目——列出的 `self-modification/` 与 `support/` 并不存在，实际归属是 `packages/extensions/`（自省与运行时挂载工具面）和 `packages/test-support/`（跨 package 测试基础设施）；该缺口已就地修正（根 `AGENTS.md:49`、`:68`，0011 复核重钉行号，原 0008 时点为 `:48`、`:68`，0009 时点为 `:50`、`:70`），组清单始终以 [`packages/README.md`](../../packages/README.md) 为准。
+根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 是顶层区域的文字总览。它的 `packages/` 布局块曾经有两处过期条目——列出的 `self-modification/` 与 `support/` 并不存在，实际归属是 `packages/extensions/`（自省与运行时挂载工具面）和 `packages/test-support/`（跨 package 测试基础设施）；该缺口已就地修正（根 `AGENTS.md:49`、`:68`，0011 复核重钉行号，原 0008 时点为 `:48`、`:68`，0009 时点为 `:50`、`:70`），组清单始终以 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) 为准。
 
 ## Workspace 与非 Workspace
 
-[`pnpm-workspace.yaml`](../../pnpm-workspace.yaml) 是 pnpm 实际成员清单，主要包括：
+[`pnpm-workspace.yaml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/pnpm-workspace.yaml) 是 pnpm 实际成员清单，主要包括：
 
 ```text
 vendor/*
@@ -126,11 +126,11 @@ TypeScript 特别区分 Host 与 Client 两个 compiler face。普通 package �
 
 ## 核验入口
 
-- [`pnpm-workspace.yaml`](../../pnpm-workspace.yaml)
-- [`docs/development.md`](../../docs/development.md#typescript-project-layout)
-- [`vendor/README.md`](../../vendor/README.md)
-- [`native/README.md`](../../native/README.md)
-- [`python/README.md`](../../python/README.md)
-- [`apps/desktop/README.md`](../../apps/desktop/README.md)
-- [`benchmarks/package.json`](../../benchmarks/package.json)
-- [`website/docs.ts`](../../website/docs.ts)
+- [`pnpm-workspace.yaml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/pnpm-workspace.yaml)
+- [`docs/development.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/development.md#typescript-project-layout)
+- [`vendor/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/README.md)
+- [`native/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/native/README.md)
+- [`python/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/python/README.md)
+- [`apps/desktop/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md)
+- [`benchmarks/package.json`](https://github.com/deepseek-ai/deepseek-harness/blob/master/benchmarks/package.json)
+- [`website/docs.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/website/docs.ts)

@@ -91,7 +91,7 @@ return { count: results.filter(Boolean).length, details: results }
 所以最小证据就是一次真实模型调用。每次迭代 5-30 秒（根据子 agent 数量）。DSH 对此的政策：
 
 > "A no-key test proves plumbing; only a with-key run proves the agent works against a real model"
-> （[docs/testing.md:25](../../docs/testing.md)）
+> （[docs/testing.md:25](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)）
 
 ---
 
@@ -245,7 +245,7 @@ DSH 运行时中：
 | workflow tool 的 DSL 契约 | `packages/workflow/tool-workflow/src/index.ts:161-164` |
 | skill 的两层披露机制 | `packages/skill/tool-skill/src/index.ts` |
 | skill 的目录结构 | `.agents/skills/` 下已有项目可做模板 |
-| Agent Note 格式 | [`.agents/notes/README.md`](../../.agents/notes/README.md) |
-| 真实模型测试政策 | [docs/testing.md:25](../../docs/testing.md) |
+| Agent Note 格式 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) |
+| 真实模型测试政策 | [docs/testing.md:25](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) |
 | 传统代码插件的结构和验证 | [`developer-journey-plugin.md`](./developer-journey-plugin.md) |
 | 完整实例（传统代码插件六步闭环） | [`developer-journey.md`](./developer-journey.md) |

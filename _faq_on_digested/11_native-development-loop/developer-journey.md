@@ -21,7 +21,7 @@
 | "UI 上能看到" | `presentCall` / `presentResult` 声明 card kind |
 | "日志卡片" | `generic` card + `locations`（指向源文件） |
 
-还不需要写代码。这一步只是把需求投射到仓库已有的概念上。所有术语都在 [docs/glossary.md](../../docs/glossary.md) 和 [cookbook/adding-a-tool.md](../../docs/cookbook/adding-a-tool.md) 里有一个家。
+还不需要写代码。这一步只是把需求投射到仓库已有的概念上。所有术语都在 [docs/glossary.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md) 和 [cookbook/adding-a-tool.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md) 里有一个家。
 
 **节省的意志力**：不需要自己发明架构——capability seam（Service Definition / Provider / Consumer）模式是强制的，
 tool 必须走 `defineTool`，UI card 必须走 `presentCall`/`presentResult` + 纯函数约束。正确路径已经被制度画好了。
@@ -34,7 +34,7 @@ tool 必须走 `defineTool`，UI card 必须走 `presentCall`/`presentResult` + 
 
 你打开：
 
-1. **[cookbook/adding-a-tool.md](../../docs/cookbook/adding-a-tool.md)** —— 101 行的参考。你发现全部"免费"的东西：
+1. **[cookbook/adding-a-tool.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md)** —— 101 行的参考。你发现全部"免费"的东西：
    - args 自动类型化 + 验证
    - schema 自动流入 system prompt
    - effect 式注册，dispose 即注销
@@ -42,7 +42,7 @@ tool 必须走 `defineTool`，UI card 必须走 `presentCall`/`presentResult` + 
    - UI card 从 render intent 派生
    - **但你仍然要手写**：`execute` 体内非空串校验、`signal` 取消、`isError` 语义、纯函数 presenter 的 purity hard rule
 
-2. **[docs/development.md](../../docs/development.md)** —— 确认新 package 的 tsconfig 注册流程。你发现
+2. **[docs/development.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/development.md)** —— 确认新 package 的 tsconfig 注册流程。你发现
    packages 分 Host/Client 两个 aggregate，一个普通 tool plugin 属于 Host，只需要加一行 `references` 到 `tsconfig.host.json`。
 
 3. **一个真实的最小 plugin 做模板** —— 你 `cat packages/goal/tool-goal/src/index.ts` 看了下结构。大概 345 行，
@@ -55,7 +55,7 @@ tool 必须走 `defineTool`，UI card 必须走 `presentCall`/`presentResult` + 
 
 ## 3. 第 2 步：判定窄 diff——真正要动的文件
 
-你要加的是一个**单 package 单 plugin**。照 [cookbook/adding-a-package.md](../../docs/cookbook/adding-a-package.md) 的 checklist，新 package 需要：
+你要加的是一个**单 package 单 plugin**。照 [cookbook/adding-a-package.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-package.md) 的 checklist，新 package 需要：
 
 ```
 packages/decision-log/tool-decision-log/
@@ -85,7 +85,7 @@ packages/decision-log/tool-decision-log/
 
 ## 4. 第 3 步：原子修改 owner 面——写源头，不编派生物
 
-你开始在 `src/index.ts` 里写工具的"不可派生本质"。以下是关键决策点，每一步都对应 [adding-a-tool.md](../../docs/cookbook/adding-a-tool.md) 的某条规则：
+你开始在 `src/index.ts` 里写工具的"不可派生本质"。以下是关键决策点，每一步都对应 [adding-a-tool.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md) 的某条规则：
 
 ### 4.1 定义 schema（参数的不可派生本质）
 
@@ -357,7 +357,7 @@ Pending: CI will run coverage gate + platform matrix.
 | output schema 设计成可编程 API | `output.schema` is a useful programmatic API（adding-a-tool.md:65） |
 | presenter 是纯函数 | `Purity — these run on live streaming AND on session-log REPLAY`（adding-a-tool.md:87） |
 | 只跑 owning test + typecheck + doc-sync | `Never default to the full suite`（AGENTS.md） |
-| 只记一条 Note，不记全部 | 增生（accretion）是被预算与归档制度点名的敌人（[2026-07-04-doc-tiers-and-budgets](../../.agents/notes/archived/process/2026-07-04-doc-tiers-and-budgets.md)、dsh-archive-agent-notes） |
+| 只记一条 Note，不记全部 | 增生（accretion）是被预算与归档制度点名的敌人（[2026-07-04-doc-tiers-and-budgets](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-04-doc-tiers-and-budgets.md)、dsh-archive-agent-notes） |
 | PR 描述列检查清单 | `report only commands run`（AGENTS.md） |
 | 错了整 PR 回滚 | git 历史证据（#2903 67-file mirror revert #2608） |
 | schema 默认放 execute 不放 schema | 契约设计原则：`Explicit > implicit at package boundaries`（AGENTS.md），且 token 经济：模型可见即成本 |

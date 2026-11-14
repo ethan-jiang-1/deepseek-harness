@@ -4,7 +4,7 @@
 
 ## 层顺序是固定的
 
-profile 的组合顺序（[`apps/cli/README.md:41`](../../apps/cli/README.md) 的 The tree composes over an empty root 列表）：
+profile 的组合顺序（[`apps/cli/README.md:41`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md) 的 The tree composes over an empty root 列表）：
 
 ```text
 bundle 自带 patch（按 dsh.profile.bundles 顺序）
@@ -32,7 +32,7 @@ bundle 自带 patch（按 dsh.profile.bundles 顺序）
 | 2 | 另起 profile 或换 home：`dsh --profile lab --from-default-profile web` / `DSH_HOME=… dsh web` | 整套组合 | Web / Desktop | 新 profile / 新 home 是另一套依赖与设置 |
 | 3 | 只改前端：`pnpm run dev:web` 持续重建 client bundle | client 插件层 | Web | 只重建前端产物，不动 Host 依赖 |
 
-> 开发桌面 / 源码 Web 的**官方条目**还会显示 `link:<工作区包目录>`：它同样写进 profile 依赖，只是来源是本地工作区而不是 npm。同一份 UI 里，打包版显示 `package@版本`，开发态显示 `link:…`（[`plugin-manager:50`](../../packages/boot/plugin-manager/README.md)）。
+> 开发桌面 / 源码 Web 的**官方条目**还会显示 `link:<工作区包目录>`：它同样写进 profile 依赖，只是来源是本地工作区而不是 npm。同一份 UI 里，打包版显示 `package@版本`，开发态显示 `link:…`（[`plugin-manager:50`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md)）。
 
 ## 可以直接抄的例子
 
@@ -54,7 +54,7 @@ pnpm run dev:desktop     # 默认 home: apps/desktop/.desktop-build/development/
 pnpm run start:desktop   # 复用已构建产物，不再 build
 ```
 
-overlay 的最小形态是「禁一行、插一行」，模板见 [`apps/web/tests/pin-browse-picker.overlay.yml`](../../apps/web/tests/pin-browse-picker.overlay.yml)：
+overlay 的最小形态是「禁一行、插一行」，模板见 [`apps/web/tests/pin-browse-picker.overlay.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/web/tests/pin-browse-picker.overlay.yml)：
 
 ```yaml
 - id: directory-picker
@@ -76,11 +76,11 @@ overlay 的最小形态是「禁一行、插一行」，模板见 [`apps/web/tes
 
 `disabled: true` 只是不加载该行，不改代码；升级不会覆盖你自己的 patch 文件（它们在 profile/home 层，不在安装包里），但**打包版桌面会忽略 `DSH_DESKTOP_PNPM_ENTRY`、`DSH_DESKTOP_DSH_DIR`、`DSH_DESKTOP_PRIMARY_RUNTIME_DIR` 这类开发期路径变量**，别指望用它们改打包后的行为。
 
-一个容易踩的副作用：设置页写的是 profile 的 `cordis.patch.yml`（`configEditor.documentPath`）。同一行一旦被 home 层 patch 或 `--patch` 覆盖，设置页会拒绝保存，并报 `Configuration for "<id>" is overridden by a home patch or command-line overlay`（[`config-editor/src/index.ts:140`](../../packages/boot/config-editor/src/index.ts)）。
+一个容易踩的副作用：设置页写的是 profile 的 `cordis.patch.yml`（`configEditor.documentPath`）。同一行一旦被 home 层 patch 或 `--patch` 覆盖，设置页会拒绝保存，并报 `Configuration for "<id>" is overridden by a home patch or command-line overlay`（[`config-editor/src/index.ts:140`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/config-editor/src/index.ts)）。
 
 ## 五个坑
 
-1. **npm 全局 CLI 管不了 desktop profile**。`dsh plugin --profile desktop …` 在 npm CLI 下被拒；先用桌面菜单装它自带的命令（[`apps/cli/README.md:20`](../../apps/cli/README.md)）。
+1. **npm 全局 CLI 管不了 desktop profile**。`dsh plugin --profile desktop …` 在 npm CLI 下被拒；先用桌面菜单装它自带的命令（[`apps/cli/README.md:20`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md)）。
 2. **「发布版」和「开发版」看到的官方源不同**。打包版是 `package@<版本>`，源码 Web / 开发桌面是 `link:<工作区目录>`；同一份 UI，装出来的东西不一样。
 3. **`--patch` 只对本次启动有效**。把它当长期方案的人，会在下一次重启后怀疑插件「自己坏了」。
 4. **另起 profile 不会继承 web 的设置**。`--from-default-profile` 是复制模板，不是复制你的配置；要迁移得自己搬 `cordis.patch.yml`。

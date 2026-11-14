@@ -2,11 +2,11 @@
 
 ## 一句话答案
 
-**有。** DSH 的 hooks 机制是两层结构：**原生层**——官方设计立场是「native hooks 不是包」，一个原生 hook 就是订阅规范生命周期事件的普通 Cordis 插件，产品本体是一套强类型的拦截扩展点 API（typed Decision）；**兼容层**——`dsh-hooks-claude-code` 与 `dsh-hooks-codex` 两个 opt-in 桥，把现成的 Claude Code / Codex `hooks.json` **原样**跑在 DSH 会话里（只支持 command 钩子子集：CC 7 个事件、Codex 5 个事件）。桥的存在意义是保住已有的 hooks.json 投资，不是能力上限——「Anything a bridge can do, a plain plugin can do directly — more powerfully」（[interception 扩展点 Note](../../.agents/notes/archived/feature/2026-06-30-interception-extension-points.md)）。
+**有。** DSH 的 hooks 机制是两层结构：**原生层**——官方设计立场是「native hooks 不是包」，一个原生 hook 就是订阅规范生命周期事件的普通 Cordis 插件，产品本体是一套强类型的拦截扩展点 API（typed Decision）；**兼容层**——`dsh-hooks-claude-code` 与 `dsh-hooks-codex` 两个 opt-in 桥，把现成的 Claude Code / Codex `hooks.json` **原样**跑在 DSH 会话里（只支持 command 钩子子集：CC 7 个事件、Codex 5 个事件）。桥的存在意义是保住已有的 hooks.json 投资，不是能力上限——「Anything a bridge can do, a plain plugin can do directly — more powerfully」（[interception 扩展点 Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-06-30-interception-extension-points.md)）。
 
 ## 第一节 · 原生层：hooks 的「DSH 形状」
 
-CC/Codex 的 hook 是「配置文件里的 shell 命令」；DSH 的原生 hook 是「插件树上的 TypeScript 监听器」，挂在同一条 tool 执行管道和 loop 边界上（`tools/pre-execute` → guards → `tools/execute` → dispatch → `tools/post-execute` → `finalizeContent` → `tools/result`，见 [tool 执行管道](../../docs/tool-execution-pipeline.md)）。每个点只有一种权力，这是和 CC/Codex 最大的形状差异——权力按阶段分，不靠监听器顺序：
+CC/Codex 的 hook 是「配置文件里的 shell 命令」；DSH 的原生 hook 是「插件树上的 TypeScript 监听器」，挂在同一条 tool 执行管道和 loop 边界上（`tools/pre-execute` → guards → `tools/execute` → dispatch → `tools/post-execute` → `finalizeContent` → `tools/result`，见 [tool 执行管道](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-execution-pipeline.md)）。每个点只有一种权力，这是和 CC/Codex 最大的形状差异——权力按阶段分，不靠监听器顺序：
 
 | 扩展点 | 对应 CC/Codex 事件 | 权力 |
 |---|---|---|
@@ -19,15 +19,15 @@ CC/Codex 的 hook 是「配置文件里的 shell 命令」；DSH 的原生 hook 
 | `tools/result` | 无对应（只读终观察者） | 只观察，失败被 contain，改不了结果 |
 | `agent/turn-stopping` | `Stop` | 通知；需要续步就 `agent.steer()` 带模型可见理由强制再走一步 |
 
-PreCompact/PostCompact、Notification、Codex `PermissionRequest` 明确在这套决策面之外（interception Note「Boundaries」节）。这套面的合同在 [`docs/subsystems/core.md#interception-decisions`](../../docs/subsystems/core.md#interception-decisions) 与 [interception Note](../../.agents/notes/archived/feature/2026-06-30-interception-extension-points.md)。
+PreCompact/PostCompact、Notification、Codex `PermissionRequest` 明确在这套决策面之外（interception Note「Boundaries」节）。这套面的合同在 [`docs/subsystems/core.md#interception-decisions`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/core.md#interception-decisions) 与 [interception Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-06-30-interception-extension-points.md)。
 
 ## 第二节 · 兼容层：两个桥
 
-两个桥把外部方言翻译到上面同一批扩展点，共享一个 `dsh-hook-protocol` 引擎，方言差异被压到**一个轴**（matcher 解释模式）加 payload/环境细节。机制级逐条出处已收敛在 [`packages/experimental/hook-protocol/README.md`](../../packages/experimental/hook-protocol/README.md)，这里只列比较需要的骨架：
+两个桥把外部方言翻译到上面同一批扩展点，共享一个 `dsh-hook-protocol` 引擎，方言差异被压到**一个轴**（matcher 解释模式）加 payload/环境细节。机制级逐条出处已收敛在 [`packages/experimental/hook-protocol/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/hook-protocol/README.md)，这里只列比较需要的骨架：
 
 - **支持的事件**：Claude Code 方言 7 个（`SessionStart`、`UserPromptSubmit`、`PreToolUse`、`PostToolUse`、`Stop`、`SubagentStart`、`SubagentStop`）；Codex 方言 5 个（无两个 Subagent 事件）（`packages/experimental/hooks-claude-code/src/config.ts:11`、`packages/experimental/hooks-codex/src/config.ts:11`）。
 - **决策能力**：Claude Code 方言 `PreToolUse` 支持 `ask`；Codex 方言只有 block——没有 pre-tool approval 或 rewrite 路径，这是刻意保真（「Dialect-shaped, not maximal」）。
-- **审计**：每次调用写一对 log-only 的 `hook/invoked` / `hook/result` 会话事件（按 `handlerId` 配对、必须落在打开的 turn 内），进会话日志但**不是 model-visible**——模型只看到决策的效果（[session 事件文档](../../docs/subsystems/session.md)）。
+- **审计**：每次调用写一对 log-only 的 `hook/invoked` / `hook/result` 会话事件（按 `handlerId` 配对、必须落在打开的 turn 内），进会话日志但**不是 model-visible**——模型只看到决策的效果（[session 事件文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md)）。
 - **合并**：`deny > ask > allow` 最严合并（most-restrictive merge），第一个 `continue:false` 的 stop sticky（`packages/experimental/hook-protocol/src/merge.ts:3`）。
 - **默认不挂**：六个 profile bundle 的 patch 层没有任何一行挂这两个桥，也没有 MCP 那样的动态挂载路径，只能显式 opt-in。两包与 `hook-protocol` 已随 0011 的实验包收编从 `packages/hooks/` 整组迁入 `packages/experimental/` 同名目录，`packages/hooks/` 组解散、组 README 无继任。
 
@@ -65,7 +65,7 @@ PreCompact/PostCompact、Notification、Codex `PermissionRequest` 明确在这�
 - **串行而非并行**：让 `hook/invoked`/`hook/result` 对在日志里相邻；最严合并（most-restrictive merge）与顺序无关，所以结果与参考引擎的并发语义等价，代价是时延。
 - **payload 保形不保真**：Codex 方言坚持 snake_case + `turn_id`/`model`/`permission_mode`，但 model 是配置静态值、permission_mode 恒 `"default"`、`stop_hook_active` 恒 `false`、非 shell 工具塌成 `tool_input:{command}`——方言的形状优先于运行时真值。
 - **Codex 方言不做命令替换、不注入插件环境**：保 Codex 方言；Claude Code 方言才做 `${CLAUDE_PLUGIN_ROOT}` 替换。
-- **`updatedInput` 不执行**：改写牵动 history/audit/presentation 一致性，归 [pre-tool-input-rewrite 提案](../../.agents/notes/proposed/feature/2026-06-30-pre-tool-input-rewrite.md)，协议层解析但只 log+warn。
+- **`updatedInput` 不执行**：改写牵动 history/audit/presentation 一致性，归 [pre-tool-input-rewrite 提案](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/proposed/feature/2026-06-30-pre-tool-input-rewrite.md)，协议层解析但只 log+warn。
 
 被点名的已知缺口（桥 README「Known Limitations」）：`SessionStart` detached 跑、上下文可能错过首个请求且无 `hook/*` 记录（turn 包围不变量）；`continue:false` 只审计；Stop 无环护栏。
 
@@ -82,5 +82,5 @@ PreCompact/PostCompact、Notification、Codex `PermissionRequest` 明确在这�
 
 ## 出处
 
-- DSH 机制：[`hook-protocol` README](../../packages/experimental/hook-protocol/README.md)（逐条源码行号在那里）、[hooks-claude-code README](../../packages/experimental/hooks-claude-code/README.md)、[hooks-codex README](../../packages/experimental/hooks-codex/README.md)；原 `packages/hooks/` 组 README 随组解散退役；[interception Note](../../.agents/notes/archived/feature/2026-06-30-interception-extension-points.md)。
+- DSH 机制：[`hook-protocol` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/hook-protocol/README.md)（逐条源码行号在那里）、[hooks-claude-code README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/hooks-claude-code/README.md)、[hooks-codex README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/hooks-codex/README.md)；原 `packages/hooks/` 组 README 随组解散退役；[interception Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-06-30-interception-extension-points.md)。
 - 外部：[research.md](./research.md)（CC `code.claude.com/docs/en/hooks`；Codex `learn.chatgpt.com/docs/hooks` 等，检索 2026-09-22）。

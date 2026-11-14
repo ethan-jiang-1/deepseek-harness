@@ -25,6 +25,6 @@ Claude Code 和 Codex 都有 hooks 机制：在 settings / config 里声明 shel
 
 ## 范围与基线
 
-DSH 侧机制结论以本仓库工作树为准（`ethan` 分支 `207b02e809946e7fe27b6aa9db93ebf4e7c74fbf`），与 FAQ 01/08 同源；上游合入后按产品源码变更复核。DSH 侧机制细节的逐条出处已收敛在 [`packages/experimental/hook-protocol/README.md`](../../packages/experimental/hook-protocol/README.md)，本篇在其上做跨生态比较，不重复抄源码行号。
+DSH 侧机制结论以本仓库工作树为准（`ethan` 分支 `207b02e809946e7fe27b6aa9db93ebf4e7c74fbf`），与 FAQ 01/08 同源；上游合入后按产品源码变更复核。DSH 侧机制细节的逐条出处已收敛在 [`packages/experimental/hook-protocol/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/hook-protocol/README.md)，本篇在其上做跨生态比较，不重复抄源码行号。
 
 外部两家的结论来自官方文档（检索时点与全部来源 URL 记在 [research.md](./research.md)）；外部文档随时间漂移，DSH 桥 README 各自声明了撰写时的对照基线（Claude Code 30 个事件、Codex 10 个事件），research.md 记录的是复核时的读数，两者可能不同。

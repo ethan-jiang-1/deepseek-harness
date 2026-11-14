@@ -2,7 +2,7 @@
 
 > **查询手册，不是读物。** 如果你现在只是想知道「为什么不叫它测试」，[00 第 1 级](./00-ladder.md) 那段就够了；本篇是给需要在评审里论证分工的人。
 >
-> 本篇的对照表是本篇的说法，不是 DSH 的分层。DSH 自己的测试分层（unit / coverage / e2e / expected / snapshot / web）定义在 [`docs/testing.md`](../../docs/testing.md)，下表把它们与探针放在一起只是为了让「谁答哪个问题」一眼可见。
+> 本篇的对照表是本篇的说法，不是 DSH 的分层。DSH 自己的测试分层（unit / coverage / e2e / expected / snapshot / web）定义在 [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)，下表把它们与探针放在一起只是为了让「谁答哪个问题」一眼可见。
 
 ![证据层全景：左列是四层证据各连什么、缺什么（单测连假世界、覆盖率证明行跑过、真 API e2e 连真模型但不确定、录制快照有基线可 diff）；中列是探针及其填的三个空洞（不知道期望值、被断言的是装配产物、要找的是缺席）；右列是撑住它的三条不变量；底部是毕业路径与三档退出码](./figures/probe-evidence-layers.svg)
 
@@ -16,7 +16,7 @@
 | **录制会话快照**（`test:snapshot`） | 真进程 + 回放模型流 | 高 | 有基线、可 diff | 需要前置搭建；只覆盖录下来的那条路径；维护成本随场景数线性增长 |
 | **探针** | 真的组合（进程 / 浏览器 / 真或回放的模型） | 低 | 无基线，产出**事实** | 不进 CI、不防回归、要人读 |
 
-前三行的定义都在主仓里：核心那句判据是「**覆盖率证明『行跑过』，不证明『按发布形态工作』**」（[`docs/testing.md`](../../docs/testing.md) 的 Tiers 一节）。这也是探针存在的第一层理由——**有些事实，测试这个词本身就不承诺**。
+前三行的定义都在主仓里：核心那句判据是「**覆盖率证明『行跑过』，不证明『按发布形态工作』**」（[`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 的 Tiers 一节）。这也是探针存在的第一层理由——**有些事实，测试这个词本身就不承诺**。
 
 ## 探针补的是哪三个空洞
 

@@ -29,17 +29,17 @@
 1. **能不能一段话自包含。** 不能，就先自己探索到能写清为止；派出去只会换来一次答非所问。判断标准很土：把 prompt 给一个不在场的人看，他能不能直接开工。
 2. **结果要不要回到当前对话。** 要，就委派并把结果带回来；不要、只是要它跑完，那属于后台平面，见 [05](./05-async-and-clock.md)。
 3. **需不需要这段对话的历史。** 需要 → `subagent_fork`；不需要 → `subagent`，省 token，也不把无关上下文和它的约束一起带过去。
-4. **深度预算够不够。** 委派深度默认 `maxDepth=1`（[subagent config](../../packages/subagent/subagent/src/index.ts):196），子代理不能再通过 `subagent` 派子代理；workflow 的 `agent()` 不传这个上限，但分支 child 仍按 parent+1 计深度，分支里再派活撞的是同一个绝对上限（见 [07](./07-why-this-shape.md)）。如果你的方案依赖「它自己再找几个帮手」，先改方案。
+4. **深度预算够不够。** 委派深度默认 `maxDepth=1`（[subagent config](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/src/index.ts):196），子代理不能再通过 `subagent` 派子代理；workflow 的 `agent()` 不传这个上限，但分支 child 仍按 parent+1 计深度，分支里再派活撞的是同一个绝对上限（见 [07](./07-why-this-shape.md)）。如果你的方案依赖「它自己再找几个帮手」，先改方案。
 
 ## 官方边界
 
-> Delegate a self-contained task to a subagent (a separate agent that works in its own context) to offload focused, independent work — research, a scoped implementation, an analysis — so it does not consume this conversation's context. The subagent returns its result, not its intermediate steps. — [`packages/subagent/tool-subagent/src/index.ts:129`](../../packages/subagent/tool-subagent/src/index.ts)
+> Delegate a self-contained task to a subagent (a separate agent that works in its own context) to offload focused, independent work — research, a scoped implementation, an analysis — so it does not consume this conversation's context. The subagent returns its result, not its intermediate steps. — [`packages/subagent/tool-subagent/src/index.ts:129`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/tool-subagent/src/index.ts)
 
-> Delegate a task to a subagent that inherits this conversation: a child agent seeded with all completed turns so far (it does not see the current in-flight turn). — [同文件:117](../../packages/subagent/tool-subagent/src/index.ts)
+> Delegate a task to a subagent that inherits this conversation: a child agent seeded with all completed turns so far (it does not see the current in-flight turn). — [同文件:117](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/tool-subagent/src/index.ts)
 
 workflow 那边还有一句反向边界，正好说明「一两个」是分水岭：
 
-> For one or two delegations, prefer plain subagent calls. — [`packages/workflow/tool-workflow/src/index.ts:329`](../../packages/workflow/tool-workflow/src/index.ts)
+> For one or two delegations, prefer plain subagent calls. — [`packages/workflow/tool-workflow/src/index.ts:329`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/tool-workflow/src/index.ts)
 
 ## 代价
 
@@ -51,7 +51,7 @@ workflow 那边还有一句反向边界，正好说明「一两个」是分水�
 | 组合 | — | 需要 `spawn` provider | 需要 `fork` provider |
 | 验收 | 自己看 | 要它回传证据 | 同左，且它知道背景 |
 
-一个容易被忽略的点：委派调用**不等待结果**，它返回 `started subagent <childId>`，结果通过完成通知回来（[tool-subagent README](../../packages/subagent/tool-subagent/README.md)）。所以「派出去」和「拿到结果」之间，你仍然可以做别的事——这也是它和 workflow 在前台行为上的差别之一。
+一个容易被忽略的点：委派调用**不等待结果**，它返回 `started subagent <childId>`，结果通过完成通知回来（[tool-subagent README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/tool-subagent/README.md)）。所以「派出去」和「拿到结果」之间，你仍然可以做别的事——这也是它和 workflow 在前台行为上的差别之一。
 
 ## 反例与失败形态
 

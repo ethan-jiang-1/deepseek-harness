@@ -6,11 +6,11 @@
 
 | 层 | 位置 | 拥有什么 | 谁执行 |
 |---|---|---|---|
-| 规则层 | [`.agents/notes/README.md`](../../.agents/notes/README.md) + 各子树 `AGENTS.md` | 何时写、路径语法、生命周期、正文骨架、Alternatives 强制、归档删除判据、移动改写 | `verify-agent-note-classification` + `verify-agent-note-format`（两者共用 `agent-note-tree` 的结构判定，均在 `doc-sync` 内） |
+| 规则层 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) + 各子树 `AGENTS.md` | 何时写、路径语法、生命周期、正文骨架、Alternatives 强制、归档删除判据、移动改写 | `verify-agent-note-classification` + `verify-agent-note-format`（两者共用 `agent-note-tree` 的结构判定，均在 `doc-sync` 内） |
 | 流程层 | `dsh-archive-agent-notes`、`dsh-find-simplifications`、`dsh-prose-standard`、`dsh-trim-cot-leakage` | 语义判断：结构合法之后，决定本身对不对 | 人 / agent 的语义 review |
 | 消费层 | `dsh-doc`、`dsh-code-review`、`dsh-pre-push-checks`、`dsh-create-upgrade-guide`、`docs/AGENTS.md` | 其他文档怎么引用 Note、review 查什么、理由写不下时倒到哪里 | review 与文档门禁 |
 
-**`.agents/skills/` 里没有一份「写 Agent Note」的 skill，这是分工不是遗漏**：可机械判定的部分已经变成 gate，不需要 skill；需要判断的部分才留在 skill 与 review 里。这正是 [`quality-gates` Note](../../.agents/notes/archived/process/2026-06-11-quality-gates.md) 记录的仓库立场。
+**`.agents/skills/` 里没有一份「写 Agent Note」的 skill，这是分工不是遗漏**：可机械判定的部分已经变成 gate，不需要 skill；需要判断的部分才留在 skill 与 review 里。这正是 [`quality-gates` Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md) 记录的仓库立场。
 
 ![Agent Note 质量要求的三层分工](./figures/ownership-layers.svg)
 

@@ -110,4 +110,4 @@ Status: implemented
 - `git show d01f5f73b7 -- docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md`
 - `git show e6fad266a6 -- docs/rfc/implemented/architecture/2026-06-24-web-capability-seam.md`（统一 RFC 格式：Proposal/Tests/Risks → Decision/Testing/Consequences）
 - `git show e8eddc7ef8 --name-status`（RFC → Agent Note 重命名）
-- [`.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md`](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)
+- [`.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md)

@@ -25,9 +25,9 @@
 
 ## 官方边界
 
-> Run a JavaScript workflow script that orchestrates subagents at scale. Use this for work that fans out across many independent pieces — an audit over many files, a migration, multi-angle research, adversarial verification of findings — where you write the orchestration as a script instead of delegating turn by turn. — [`packages/workflow/tool-workflow/src/index.ts:158`](../../packages/workflow/tool-workflow/src/index.ts)
+> Run a JavaScript workflow script that orchestrates subagents at scale. Use this for work that fans out across many independent pieces — an audit over many files, a migration, multi-angle research, adversarial verification of findings — where you write the orchestration as a script instead of delegating turn by turn. — [`packages/workflow/tool-workflow/src/index.ts:158`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/tool-workflow/src/index.ts)
 
-> Use the workflow tool ONLY when the user explicitly asks for a workflow or for large multi-agent orchestration... For one or two delegations, prefer plain subagent calls. — [同文件:329](../../packages/workflow/tool-workflow/src/index.ts)
+> Use the workflow tool ONLY when the user explicitly asks for a workflow or for large multi-agent orchestration... For one or two delegations, prefer plain subagent calls. — [同文件:329](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/tool-workflow/src/index.ts)
 
 注意第二句的两个限定：**用户显式要求**、**大规模**。官方给的不是「什么时候都行」，是「没有这两个信号就别用」。
 
@@ -61,9 +61,9 @@ return { kept: results.filter(Boolean).length }
 | `maxConcurrentAgents` | 0 → `min(16, CPU−2)` | FIFO 槽位，不是优先级队列 |
 | 整体超时 | 无 | 只有调用方的 abort 信号 |
 
-来源：[workflow-ptc config](../../packages/workflow/workflow-ptc/src/index.ts):108-110 与 `:142-144`、[workflow-ptc README](../../packages/workflow/workflow-ptc/README.md)。
+来源：[workflow-ptc config](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow-ptc/src/index.ts):108-110 与 `:142-144`、[workflow-ptc README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow-ptc/README.md)。
 
-代价集中在四处：**父对话只拿到最终结果**（中间过程你看不见，也无法中途纠偏）；**child 的完成不会通知父模型**（结果只在脚本内消化）；**运行不可恢复**（没有 journal，进程一重启就是重跑）；**没有保存的 workflow 定义**——每次运行都是模型现写脚本；复用只能把脚本留在会话或 skill 里让模型重写，不能注册成一个可调用的 workflow（[workflow README](../../packages/workflow/workflow/README.md):127-128）。
+代价集中在四处：**父对话只拿到最终结果**（中间过程你看不见，也无法中途纠偏）；**child 的完成不会通知父模型**（结果只在脚本内消化）；**运行不可恢复**（没有 journal，进程一重启就是重跑）；**没有保存的 workflow 定义**——每次运行都是模型现写脚本；复用只能把脚本留在会话或 skill 里让模型重写，不能注册成一个可调用的 workflow（[workflow README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow/README.md):127-128）。
 
 ## 反例与失败形态
 

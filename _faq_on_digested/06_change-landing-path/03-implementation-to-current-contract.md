@@ -57,11 +57,11 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
 
 ## 证据入口
 
-- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 27-29 行
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 40、44 行
-- [`docs/testing.md`](../../docs/testing.md) 第 27-55 行
-- [`docs/tool-catalog.md`](../../docs/tool-catalog.md) 第 1-2 行
-- [`docs/config-catalog.md`](../../docs/config-catalog.md) 第 1-2 行
+- [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md) 第 27-29 行
+- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 第 40、44 行
+- [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 第 27-55 行
+- [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-catalog.md) 第 1-2 行
+- [`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md) 第 1-2 行
 
 ## 5. 证据对照与红灯
 
@@ -81,4 +81,4 @@ tool-catalog、config-catalog、persistence-catalog、event-producer-consumer、
 
 ## 6. 本地检查与 PR CI 是两层
 
-本地检查针对当前待推送的 diff 选最小可信证据，push 前抓住相关回归；PR CI 在远端跑完整矩阵。两层不是二选一：本地快、有针对性；CI 统一、覆盖广。证据路由的精确方法见 [`dsh-pre-push-checks`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)。
+本地检查针对当前待推送的 diff 选最小可信证据，push 前抓住相关回归；PR CI 在远端跑完整矩阵。两层不是二选一：本地快、有针对性；CI 统一、覆盖广。证据路由的精确方法见 [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)。

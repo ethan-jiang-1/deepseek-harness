@@ -1,6 +1,6 @@
 # 开发结构 · 总览
 
-DSH 上一切皆插件（AGENTS.md 开篇 "all-plugin Cordis agent harness"；"everything is a plugin" 这一措辞现见 [`docs/i18n/style-samples.md:9`](../../docs/i18n/style-samples.md)）。插件分两个不同的品种：
+DSH 上一切皆插件（AGENTS.md 开篇 "all-plugin Cordis agent harness"；"everything is a plugin" 这一措辞现见 [`docs/i18n/style-samples.md:9`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/i18n/style-samples.md)）。插件分两个不同的品种：
 
 | | **传统代码插件** | **智能体工作流插件** |
 |---|---|---|

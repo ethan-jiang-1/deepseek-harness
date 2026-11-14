@@ -49,7 +49,7 @@
 
 ### 出口 ③：改动很小，但它放宽了一条安全保证
 
-[`archived/feature/2026-09-16-sandbox-same-mode.md`](../../.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md)（171 词）
+[`archived/feature/2026-09-16-sandbox-same-mode.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md)（171 词）
 
 `approveEscalation` 在请求的模式已经生效时直接返回——几行改动。但如果不写，下一个人看到「重复请求危险模式却不拒绝」，**很可能会把它当成权限校验的漏洞补上**。它命中了「未来会有人踩」，因为这次改动**动了既有决定的边界**，还顺带记下了部分取代关系：
 
@@ -57,7 +57,7 @@
 
 ### 出口 ③：一条看不出规律的长期约定
 
-[`archived/process/2026-09-22-workspace-release-ranges.md`](../../.agents/notes/archived/process/2026-09-22-workspace-release-ranges.md)（232 词）
+[`archived/process/2026-09-22-workspace-release-ranges.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-09-22-workspace-release-ranges.md)（232 词）
 
 为什么 `workspace:*` 和 `workspace:~` 混着用？因为发布节奏不同（DSH 包共用一个产品发布，vendor 与 native 各自独立）。没有这篇 Note，下一个人只会看到一堆看不出规律的范围符号，然后按直觉统一它们。
 
@@ -85,7 +85,7 @@
 
 ## 先检查出口 ②，再考虑 ③
 
-**仓库里已经有一篇 Note 拥有这个决定吗？** 有就更新它，不要新建。重复 Note 是明确禁止的——[`dsh-find-simplifications`](../../.agents/skills/dsh-find-simplifications/SKILL.md) 专门写了「do not create duplicate notes to preserve candidate counts」。
+**仓库里已经有一篇 Note 拥有这个决定吗？** 有就更新它，不要新建。重复 Note 是明确禁止的——[`dsh-find-simplifications`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-find-simplifications/SKILL.md) 专门写了「do not create duplicate notes to preserve candidate counts」。
 
 一个自检：**这篇 Note 会不会刚落地就够格归档？** 会的话，现在就走出口 ①。
 
@@ -113,8 +113,8 @@
 
 ## 证据入口
 
-- [`.agents/notes/README.md` § When to write one](../../.agents/notes/README.md)：门槛、豁免、重复与更新、完全取代的合并条件。
-- [`.agents/notes/README.md` § Archiving and deletion](../../.agents/notes/README.md)：为什么「实现很小」不是判据。
+- [`.agents/notes/README.md` § When to write one](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：门槛、豁免、重复与更新、完全取代的合并条件。
+- [`.agents/notes/README.md` § Archiving and deletion](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：为什么「实现很小」不是判据。
 - 提交 `730bcc7c85`（2026-09-17）：把「非平凡变更必须写」改写成「只有持久决定理由才写」。
 - 提交 `5124a2a310`（PR #5004）：一次完整、合格、不需要 Note 的交付。
 

@@ -27,4 +27,4 @@
 
 - 本文的每一条规范都能在仓库里指出 owner 文件与行号；找不到 owner 的说法（例如「Note 必须写够多少字」）被明确列为不存在的要求，而不是由本文补造。
 - 本文引用的是当前工作树，不是 DSH 的产品行为；上游改动规则文件后，行号与措辞需按该文件本身重新核对。
-- 归档时搬迁三件套、插入 `Archived:` 行、重录 sidecar 的步骤写在 [05](./05-keep-archive-delete.md)。校准例子和哈希清单的例外以 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 为准。
+- 归档时搬迁三件套、插入 `Archived:` 行、重录 sidecar 的步骤写在 [05](./05-keep-archive-delete.md)。校准例子和哈希清单的例外以 [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md) 为准。

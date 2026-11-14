@@ -36,7 +36,7 @@ export function apply(ctx: Context) {
 }
 ```
 
-**你需要手写**（来源：[`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)）：
+**你需要手写**（来源：[`docs/cookbook/adding-a-tool.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md)）：
 - `parameters` / `output.schema` — 数据契约
 - `execute` — 做什么（+ 手检 DSL 无法表达的约束，如非空串）
 - `render` — 模型看到什么
@@ -141,9 +141,9 @@ dsh plugin --profile <name> add ./dsh-plugin-my-tools
 
 | 问题 | 权威来源 |
 |---|---|
-| 新 package 目录布局 | [cookbook/adding-a-package.md](../../docs/cookbook/adding-a-package.md) |
-| tool execute/present 契约 | [cookbook/adding-a-tool.md](../../docs/cookbook/adding-a-tool.md) |
+| 新 package 目录布局 | [cookbook/adding-a-package.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-package.md) |
+| tool execute/present 契约 | [cookbook/adding-a-tool.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md) |
 | 如何加载外部 plugin | 打成声明 `dsh.bundle` 的包后用 `dsh plugin --profile <name> add <pkg>` 装进 profile；仓库内的包由 bundle/profile 的一行挂载（`apps/cli/src/args.ts:187-190`） |
 | workspace 依赖解析 | pnpm 自动 |
-| 外部 plugin 的 cordis.yml | [cordis-primer.md](../../docs/cordis-primer.md) |
+| 外部 plugin 的 cordis.yml | [cordis-primer.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md) |
 | 完整实例推演 | [`developer-journey.md`](./developer-journey.md)（`log_decision` 工具走完全程） |

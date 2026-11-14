@@ -12,11 +12,11 @@ goal/plan 的全部机制细节（[04 第二节、第三节](./04-goal-plan-smal
 - 持久化是商品化最彻底的 seam 之一：persistence 单后端（`4553c9d957` 移除 sqlite 后只剩 jsonl）、7 个消费方（[FAQ 08 的 P/C 表](../08_plugin-seam-maturity/answer.md)），fork/resume/transcript/telemetry 全部从同一条流派生。
 - 连 subagent 的**谱系**都是日志概念：会话导出把每个后代打包进 `subagents/<id>/session[.vN].jsonl`（`packages/session-query/session-log-export/src/archive.ts:8`），SDK 流按 `packages/sdk/protocol/README.md:47` 转发 *"every session in the runtime, unfiltered"*。
 
-这一层是运行时基底：插件图 + 事件流（[`docs/architecture.md`](../../docs/architecture.md)）。goal/plan 令人觉得是根，只因为它们离体验最近。
+这一层是运行时基底：插件图 + 事件流（[`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)）。goal/plan 令人觉得是根，只因为它们离体验最近。
 
 ## 第三节 根 2（DSH 最擅长最喜欢的）：委派（ctx.subagents）
 
-看官方把钱花在哪：`ctx.subagents` 有 **6 个 Provider**，是全部 35 条 seam 里数量最多的（[FAQ 08](../08_plugin-seam-maturity/answer.md)："数量最多，语义只有三种位置"——进程内 spawn/fork、进程外 ACP/Codex/Claude Code、SDK 驱动；机制见 [`packages/subagent/README.md`](../../packages/subagent/README.md)）。再数包：goal 域 4 个包、workflow 组 3 个（engine + workflow-ptc + tool-workflow）、experimental 的 agent-team（durable roster + task board；消息跟随目标会话）与 tool-agent-team、外加 `ctx.jobs` 后台任务。**"把一件事分给很多小执行者，再把结果汇回一本日志"是官方反复重仓的方向**——这个家族的包数超过任何其他领域。
+看官方把钱花在哪：`ctx.subagents` 有 **6 个 Provider**，是全部 35 条 seam 里数量最多的（[FAQ 08](../08_plugin-seam-maturity/answer.md)："数量最多，语义只有三种位置"——进程内 spawn/fork、进程外 ACP/Codex/Claude Code、SDK 驱动；机制见 [`packages/subagent/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/README.md)）。再数包：goal 域 4 个包、workflow 组 3 个（engine + workflow-ptc + tool-workflow）、experimental 的 agent-team（durable roster + task board；消息跟随目标会话）与 tool-agent-team、外加 `ctx.jobs` 后台任务。**"把一件事分给很多小执行者，再把结果汇回一本日志"是官方反复重仓的方向**——这个家族的包数超过任何其他领域。
 
 说它"最喜欢"还有一个现场证据：一个开箱 DSH 会话的 captain 默认工具箱里，编排家族（`subagent`/`subagent_fork`/`workflow`/goal 三件套/agent-teams/`job_*`）占据的席位远超其他任何能力族；`ralph` 在本跨度已从四份 preset 的默认目录退为可选 `ralph-bundle`。**DSH 的"native 姿态"就是编排者。**
 
@@ -24,7 +24,7 @@ goal/plan 的全部机制细节（[04 第二节、第三节](./04-goal-plan-smal
 
 ## 第四节 根 3：组合层——"开箱"的家
 
-第三条根最朴素：profile/bundle/patch 的层序组合（bundle 层 → profile patch → home patch → `--patch`，[`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md)）。"开箱已有 goal、plan"里的"开箱"二字就住在这层——默认姿态是组合层决策，不是内核属性。它也是三条根里唯一**用户可直接指挥**的层：`--patch` overlay、`dsh plugin add`、`cordis.patch.yml`，改体验不用改代码。这层还有 DSH 最自我指涉的爱好：`packages/extensions`（原 self-modification）让 agent 用 `plugin_manager` 安装自己的 bundle、用只读 inspect 工具自省运行时（`cordis_define/cordis_run` 已在 0.1.7 线退役为程序化 runner）——**harness 用自己改自己**，这是官方实践里最"native"的一块，也是第 2 条体感"要自己改造"最深的技术底气。
+第三条根最朴素：profile/bundle/patch 的层序组合（bundle 层 → profile patch → home patch → `--patch`，[`packages/boot/app-boot/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md)）。"开箱已有 goal、plan"里的"开箱"二字就住在这层——默认姿态是组合层决策，不是内核属性。它也是三条根里唯一**用户可直接指挥**的层：`--patch` overlay、`dsh plugin add`、`cordis.patch.yml`，改体验不用改代码。这层还有 DSH 最自我指涉的爱好：`packages/extensions`（原 self-modification）让 agent 用 `plugin_manager` 安装自己的 bundle、用只读 inspect 工具自省运行时（`cordis_define/cordis_run` 已在 0.1.7 线退役为程序化 runner）——**harness 用自己改自己**，这是官方实践里最"native"的一块，也是第 2 条体感"要自己改造"最深的技术底气。
 
 ## 第五节 三个根怎么拼成那三小时
 

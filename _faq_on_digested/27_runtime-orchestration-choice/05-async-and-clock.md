@@ -27,9 +27,9 @@
 
 ## 官方边界
 
-> Track every background job id you start. You are notified in-session when a job finishes — do not busy-poll or sleep on one; keep working on independent steps and do not duplicate a running job's work. — [`packages/jobs/tool-jobs/src/index.ts:254`](../../packages/jobs/tool-jobs/src/index.ts)
+> Track every background job id you start. You are notified in-session when a job finishes — do not busy-poll or sleep on one; keep working on independent steps and do not duplicate a running job's work. — [`packages/jobs/tool-jobs/src/index.ts:254`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/jobs/tool-jobs/src/index.ts)
 
-> Supply exactly one timing parameter: after_seconds, at, every_seconds, daily, weekly, or cron. — [`packages/schedule/tool-schedule/src/index.ts:185`](../../packages/schedule/tool-schedule/src/index.ts)
+> Supply exactly one timing parameter: after_seconds, at, every_seconds, daily, weekly, or cron. — [`packages/schedule/tool-schedule/src/index.ts:185`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/schedule/tool-schedule/src/index.ts)
 
 ## 代价
 
@@ -41,7 +41,7 @@
 | 归属 | 当前 turn | 启动它的 agent | 原会话 |
 | 取消 | 无（只能等） | `job_kill` | 删除提醒 |
 
-两个归属事实值得记住：jobs 属于启动它的 agent，别的 agent 看不到；schedule 的到期消息回到**原会话**，不是广播（[jobs README](../../packages/jobs/README.md)、[schedule 子系统](../../docs/subsystems/schedule.md)）。还有一条寿命：shipped 的 `jobs-local` 是进程内注册表，job 随 owner 或 harness 关闭而结束；跨重启还在的是已经写进 Session 的生命周期事件，不是 job 本身（[jobs-local README:12](../../packages/jobs/jobs-local/README.md)）。
+两个归属事实值得记住：jobs 属于启动它的 agent，别的 agent 看不到；schedule 的到期消息回到**原会话**，不是广播（[jobs README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/jobs/README.md)、[schedule 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/schedule.md)）。还有一条寿命：shipped 的 `jobs-local` 是进程内注册表，job 随 owner 或 harness 关闭而结束；跨重启还在的是已经写进 Session 的生命周期事件，不是 job 本身（[jobs-local README:12](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/jobs/jobs-local/README.md)）。
 
 ## 反例与失败形态
 

@@ -14,9 +14,9 @@
 |---|---|---|---|---|
 | 1 | Plugins 页 **Add plugin**（包名+版本 / Git / tarball / **绝对本地路径**） | 壳侧 bundled pnpm | `$DSH_HOME/profiles/desktop` | 先 `pluginManager.inspect` 读源；registry 探测 npm/npmmirror（1500 ms，缓存 5 分钟）；脚本被拦时列出待批准包；装完可 **Enable now** |
 | 2 | **Discover**（实验 bundle「Custom plugin markets」）+ index URL | 同上 | 同上 | 官方**不带任何 index 源**；市场是第三方 JSON |
-| 3 | **On-demand Official**（Official/Experimental 列表按需装） | 同上 | 同上 | 发布版装 `package@<运行的 DSH 版本>`；源码 Web / 开发桌面改成 `link:<工作区包目录>`（[`plugin-manager:50`](../../packages/boot/plugin-manager/README.md)） |
+| 3 | **On-demand Official**（Official/Experimental 列表按需装） | 同上 | 同上 | 发布版装 `package@<运行的 DSH 版本>`；源码 Web / 开发桌面改成 `link:<工作区包目录>`（[`plugin-manager:50`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md)） |
 | 4 | **Creator 模式 / `plugin_manager` 工具** | 模型发起，壳侧 pnpm 执行 | 同上 | 让 agent 写插件并安装；结果带 `nextStep`、重启原因 |
-| 5 | **Desktop 自带 CLI**：Manage dsh Command… → `dsh plugin --profile desktop add …` | Desktop runtime 的 pnpm | 同上 | **npm 全局 CLI 会拒绝** desktop profile（[`apps/cli/README.md:20`](../../apps/cli/README.md)） |
+| 5 | **Desktop 自带 CLI**：Manage dsh Command… → `dsh plugin --profile desktop add …` | Desktop runtime 的 pnpm | 同上 | **npm 全局 CLI 会拒绝** desktop profile（[`apps/cli/README.md:20`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md)） |
 | 6 | 手工改 profile（开发用） | 你自己 | 同上 | 壳持有 profile 写锁；改完重启或靠 HMR |
 
 边界引文：plugin-manager 的 Known Limitations 写「Desktop package operations remain owned by the Desktop shell」——哪怕从浏览器点到同一个 Plugins 页，Desktop 上的包操作仍由壳执行。

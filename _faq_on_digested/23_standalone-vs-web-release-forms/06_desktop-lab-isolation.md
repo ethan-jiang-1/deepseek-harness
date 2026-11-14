@@ -22,8 +22,8 @@ DSH_HOME="$HOME/.dsh-lab" "$BIN" --user-data-dir="$HOME/.dsh-lab/electron"
 
 | 结论 | 证据 |
 |---|---|
-| `DSH_HOME` 决定 Host 的数据根 | 源码：[`home-paths:135`](../../packages/util/home-paths/src/index.ts)、[`base cordis.patch.yml:141`](../../packages/bundle/base/cordis.patch.yml)、[`paths.ts:17`](../../apps/desktop/src/paths.ts) |
-| 启动时给的环境变量不会被登录 shell 覆盖 | 源码：[`login-shell-environment.ts`](../../apps/desktop/src/login-shell-environment.ts) 的 `LAUNCHER_OWNED_PREFIXES` |
+| `DSH_HOME` 决定 Host 的数据根 | 源码：[`home-paths:135`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/util/home-paths/src/index.ts)、[`base cordis.patch.yml:141`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml)、[`paths.ts:17`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/src/paths.ts) |
+| 启动时给的环境变量不会被登录 shell 覆盖 | 源码：[`login-shell-environment.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/src/login-shell-environment.ts) 的 `LAUNCHER_OWNED_PREFIXES` |
 | 单实例锁按 userData 隔离，`--user-data-dir` 可双开 | 源码：[Electron v44.7.0 `electron_api_app.cc`](https://github.com/electron/electron/blob/v44.7.0/shell/browser/api/electron_api_app.cc#L1064) 用 `chrome::DIR_USER_DATA` |
 | `open --env` 不传递变量 | 本机实测（2026-10-25）：script-app dump `env` 只看到 launchd 默认 `PATH` |
 | 命令在真机上跑通 | **未验证**：本机没有安装 Desktop（`/Applications` 下无该 App），所以命令与首启流程按源码与文档编写，未实跑 |
@@ -37,8 +37,8 @@ DSH_HOME="$HOME/.dsh-lab" "$BIN" --user-data-dir="$HOME/.dsh-lab/electron"
 
 两条都有源码依据：
 
-- `DSH_HOME`：`resolveDshHome()` 读 `DSH_HOME`（[`packages/util/home-paths/src/index.ts:135`](../../packages/util/home-paths/src/index.ts)）；Desktop 的路径全部挂在它下面（[`apps/desktop/src/paths.ts:17`](../../apps/desktop/src/paths.ts)）；Host 的 `sessions` / `storages` 由 base bundle 用 `dshHomePath(...)` 求值（[`packages/bundle/base/cordis.patch.yml:141`](../../packages/bundle/base/cordis.patch.yml)、`:185`）。
-- 环境能传到 Host：Electron 主进程把 `process.env` 作为基底，合并登录 shell 环境时**跳过** `DSH_*`（[`apps/desktop/src/login-shell-environment.ts`](../../apps/desktop/src/login-shell-environment.ts) 的 `LAUNCHER_OWNED_PREFIXES`），所以启动时给的值不会被 `.zshrc` 覆盖。
+- `DSH_HOME`：`resolveDshHome()` 读 `DSH_HOME`（[`packages/util/home-paths/src/index.ts:135`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/util/home-paths/src/index.ts)）；Desktop 的路径全部挂在它下面（[`apps/desktop/src/paths.ts:17`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/src/paths.ts)）；Host 的 `sessions` / `storages` 由 base bundle 用 `dshHomePath(...)` 求值（[`packages/bundle/base/cordis.patch.yml:141`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml)、`:185`）。
+- 环境能传到 Host：Electron 主进程把 `process.env` 作为基底，合并登录 shell 环境时**跳过** `DSH_*`（[`apps/desktop/src/login-shell-environment.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/src/login-shell-environment.ts) 的 `LAUNCHER_OWNED_PREFIXES`），所以启动时给的值不会被 `.zshrc` 覆盖。
 - 单实例锁：`RequestSingleInstanceLock` 用 `chrome::DIR_USER_DATA` 建 `ProcessSingleton`（[Electron v44.7.0 `electron_api_app.cc`](https://github.com/electron/electron/blob/v44.7.0/shell/browser/api/electron_api_app.cc#L1064)），而 `--user-data-dir` 改的正是这个目录。
 
 ## 为什么不用 `open --env`
@@ -97,14 +97,14 @@ pnpm run dev:desktop    # home: apps/desktop/.desktop-build/development/home
 pnpm run start:desktop  # 复用已构建产物
 ```
 
-它天生隔离：home、Electron browser data 都在 `.desktop-build/development/` 下，不碰 `~/.dsh`；插件页的官方条目还会直接 `link:` 到工作区包（[`plugin-manager:50`](../../packages/boot/plugin-manager/README.md)）。代价是要先构建、且是解包运行。
+它天生隔离：home、Electron browser data 都在 `.desktop-build/development/` 下，不碰 `~/.dsh`；插件页的官方条目还会直接 `link:` 到工作区包（[`plugin-manager:50`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md)）。代价是要先构建、且是解包运行。
 
 ## 直接双击图标会怎样（最常见的翻车点）
 
 **在没有实验实例运行时，双击会落到默认 `~/.dsh`，隔离失效。** 原因是三层叠加：
 
 1. 双击是 LaunchServices 启动，不继承你终端里的 `export DSH_HOME`；
-2. 就算写进 `.zshrc`，Desktop 合并登录 shell 环境时也**显式跳过 `DSH_*`**（`LAUNCHER_OWNED_PREFIXES`，见 [`login-shell-environment.ts`](../../apps/desktop/src/login-shell-environment.ts)）；
+2. 就算写进 `.zshrc`，Desktop 合并登录 shell 环境时也**显式跳过 `DSH_*`**（`LAUNCHER_OWNED_PREFIXES`，见 [`login-shell-environment.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/src/login-shell-environment.ts)）；
 3. 所以只有「启动器显式把变量放进进程环境」这一条路（方案 A/B/C）。
 
 **插件的隔离不会破，破的是数据隔离**——这决定了后果的严重程度：
@@ -158,11 +158,11 @@ dsh-prod web
 
 > 本节及下面的验证清单按**方案 A/B**写（默认 home = 生产，实验用 `~/.dsh-lab`）。如果你选了「反过来」，把文中的 `~/.dsh-lab` 读成实验侧的默认 `~/.dsh`，把生产侧读成 `~/.dsh-prod` 即可，命令结构一样。
 
-1. 新 home 下自动初始化 `profiles/desktop`（[`project-manager.ts:175`](../../apps/desktop/src/project-manager.ts) 的 `initProfile`）。
+1. 新 home 下自动初始化 `profiles/desktop`（[`project-manager.ts:175`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/src/project-manager.ts) 的 `initProfile`）。
 2. 因为新 home 没有 `.credentials.yaml`，会出现欢迎界面/API Key 页。三种选择：
    - 直接填一个**实验专用** Key（推荐，和生产计费/用量分开）；
    - 复制生产凭据（注意权限，见下）；
-   - `~/.dsh-lab/.env` 里写 `DEEPSEEK_API_KEY=...`——`.env` 会作为 user 环境层读入（[`app-boot:246`](../../packages/boot/app-boot/src/index.ts)），但桌面端优先级是「已保存凭据 > 环境」。
+   - `~/.dsh-lab/.env` 里写 `DEEPSEEK_API_KEY=...`——`.env` 会作为 user 环境层读入（[`app-boot:246`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/src/index.ts)），但桌面端优先级是「已保存凭据 > 环境」。
 3. 工作区列表是空的，把插件仓加进去即可；会话列表也是空的。
 
 复制凭据时保持权限，`credentials-local` 会拒绝 group/other 可读的文件：

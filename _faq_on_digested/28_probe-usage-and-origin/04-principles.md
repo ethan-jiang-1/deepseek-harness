@@ -2,7 +2,7 @@
 
 > **查询手册，不是读物。理解它不需要任何前置。** 但在爬完 [00](./00-ladder.md) 之前不建议读；它回答的是「为什么这件看起来不严谨的事成立」。
 >
-> 本篇的三条不变量都是 DSH 的真实规则，分别写在根 [`AGENTS.md`](../../AGENTS.md)、[`docs/subsystems/session.md`](../../docs/subsystems/session.md) 与 [`docs/testing.md`](../../docs/testing.md)。把它们串起来论证探针为什么成立，是本篇的推理。
+> 本篇的三条不变量都是 DSH 的真实规则，分别写在根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)、[`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md) 与 [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)。把它们串起来论证探针为什么成立，是本篇的推理。
 
 ## 原理一：model-visible ⟺ logged —— 请求侧是可重建的事实
 
@@ -12,7 +12,7 @@ DSH 的根规则里有一条不变量：
 
 这条规则本来是给持久化用的（会话 resumer、fork、SDK 投影都靠它），但它顺带解决了一个别处很难解决的问题：**「模型到底收到了什么」不再需要猜**。
 
-落到具体事件上（[`docs/subsystems/session.md`](../../docs/subsystems/session.md) 的 The request header event 一节）：
+落到具体事件上（[`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md) 的 The request header event 一节）：
 
 | 你想知道的事 | 它住在哪个事件 |
 |---|---|

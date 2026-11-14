@@ -68,6 +68,12 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 路径树本身就是工作清单：仓库刻意不设集中式 `INDEX.md`（历史上的生成索引已被移除，理由写在 `.agents/notes/README.md` 的 “Layout and naming” 里），读者按 lifecycle/class 目录浏览或全库搜索；Note 之间的交叉引用只用相对 Markdown 链接，不用裸文字或编号。
 
+**树的深度被钉死在三层，没有第四层。** `walkAgentNoteTree` 对深度用等号判断（[`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)）：`globSync` 虽然写 `**`，但走出来的路径只要不是恰好 `{lifecycle}/{class}/file.md` 三段就报 `expected {lifecycle}/{class}/file.md`。所以「按主题或按月再分子目录」这条路不通——不是没人想到，是门禁直接拒绝。
+
+叶子目录**上限** 4×6=24 个，实际存在 **20** 个：`rejected/` 下只有 `architecture/` 与 `simplification/`，其余四个 class 目录从未被创建。全树 1271 篇英文正文（含 `.zh.md` 与 sidecar 共 2546 个文件）全部平摊在这 20 个目录里，且负载高度集中——`archived/feature` 306 篇、`archived/architecture` 185、`archived/bug-fix` 182、`implemented/architecture` 180，前四项占 853/1271 ≈ 67%，而最小的两个目录各只有 1 篇。
+
+这个取舍有明确的两面。**换来的是**「分类只有一套、且有校验收口」：`class` 是闭集 6、README 与源码双份维护，不存在「两个组重名算谁」的问题。**代价是**可浏览性随规模退化：`implemented/architecture` 按月是 8 / 26 / 28 / 88 / 30，2026-09 那一波强相关的架构决策在目录结构里不可见；180 篇里 `session-` 开头 8 篇、`desktop-` 与 `client-` 各 7 篇，本应聚在一起的一组被日期前缀均匀摊开。而补回可浏览性的唯一替代品 `INDEX.md` 恰好被明文禁止。所以 `browse its lifecycle/class folders or search the repository` 这句话在小规模时是两条路，在当前规模下已退化成检索一条。
+
 > Cross-references between Agent Notes use relative markdown links [...] — never bare prose or numbers — so they are mechanically checkable and survive moves between folders. The active lifecycle tree is the working inventory: browse its lifecycle/class folders or search the repository. Do not add a centralized `INDEX.md`: it duplicates path metadata and makes unrelated note changes contend on one generated file.
 >
 > — DSH [`.agents/notes/README.md` 的 “Layout and naming”](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md#layout-and-naming)。相对链接让引用可被机械检查，也让 Note 在 lifecycle 目录间移动后链接仍然有效；集中索引会重复路径元数据，还让不相关的 Note 改动争用同一个生成文件，因此目录树代替索引。
@@ -100,7 +106,20 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 >
 > — DSH [`.agents/notes/README.md` 的 “Alternatives considered — mandatory”](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md#alternatives-considered--mandatory)。Agent Note 的存在理由是防止重新开讼：每篇 Note 固定携带“为什么不是另一条路”，让后续参与者从已知理由开始，而不是重新提出已被击败的方案。
 
-格式门禁只证明结构满足规则，不证明决定正确、替代方案真实或 shipped facts 与代码一致；这些仍需语义 review。没有一份「写 Agent Note」的 skill：路径和骨架由上面的门禁执行，留下还是归档的语义判断留在 [§6](#6-写完之后留下归档还是合并后删除) 的 skill。
+格式门禁只证明结构满足规则，不证明决定正确、替代方案真实或 shipped facts 与代码一致；这些仍需语义 review。
+
+纪律的载体本身是**分片的**：没有哪一份 skill 拥有整条生命周期，而是六份各管一段，靠互相指路拼接——
+
+| Skill | 管哪一段 |
+|---|---|
+| `dsh-archive-agent-notes` | 归档四分法、校准样例、三件套搬运、封印命令、报告口径 |
+| `dsh-code-review` | 「PR 实现了 proposed Note → 同一 diff 内移动并改写成现在时」并核对路径、名字、机制 |
+| `dsh-find-simplifications` | 写新 Note 前必做**有范围的取代检查**，并声明「代码巡检不等于全仓 Note 审计」 |
+| `dsh-prose-standard` | 全仓排除 `vendor/` 与 `.agents/notes/archived/`；implemented Note 保留理由与证据，删计划清单 |
+| `dsh-trim-cot-leakage` | 推理转录泄漏在 Note 里的形态；`#1470` 这类引用留在 README，不得挪进 Note |
+| `dsh-doc` | 手册类文档与 Note 的分工；写出当前状态，理由交给 Note |
+
+这一点与「Skill 不等于 gate」是同一条事实的两面：路径和骨架由门禁执行，语义判断留在 skill 里——而因为**没有哪份 skill 常驻上下文**，判据只能被反复指路、反复重述，而不是集中一次讲清。留下还是归档的语义判断留在 [§6](#6-写完之后留下归档还是合并后删除)。
 
 ## 5. `proposed → implemented` 是正文改写
 
@@ -145,7 +164,18 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 功能新增 Note 收进后来的移除 Note，还要多满足一组事实：该功能已从生产代码、配置、schema、持久化或线上格式、迁移和兼容行为中消失；当前文档不再把它写成可用；测试不再把它当成受支持行为。移除 owner 要保住原来的动机、为何不再成立、未完全移除的备选、放弃的能力、重新引入的条件，以及对「已经完全不存在」的验证。只去掉一种传输、默认值、实现或呈现，或者仍有持久数据与兼容处理，是部分取代，两边都留。
 
-归档不是改个文件夹名。一次归档移动完整的 `.md`、`.zh.md`、`.i18n.yaml`，路径是 `archived/{class}/`，中间没有 `implemented`。正文不改，只在两种语言的 `Status: implemented` 下插入同一行 `Archived: YYYY-MM-DD`，机械重录 sidecar，并处理活动 prose 的入站链接。`verify-archived-agent-notes` 把内容写入只追加的 hash manifest：`--write` 先证明既有封存仍匹配，再只追加新封存文件各自的哈希（[`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md)）；整组删除已封存记录时，其清单条目必须同步移除，否则 [`archived-agent-notes` 校验器](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/archived-agent-notes.ts) 报 `sealed artifact is missing`。封存后不得编辑、翻译、移动或删除。文档门禁跳过归档源文件，包括它们的出站链接；活动 prose 仍可以在有意引用历史时链进去。
+归档不是改个文件夹名。一次归档移动完整的 `.md`、`.zh.md`、`.i18n.yaml`，路径是 `archived/{class}/`，中间没有 `implemented`。正文不改，只在两种语言的 `Status: implemented` 下插入同一行 `Archived: YYYY-MM-DD`，机械重录 sidecar，并处理活动 prose 的入站链接。`verify-archived-agent-notes` 把内容写入只追加的 hash manifest：`--write` 先证明既有封存仍匹配，再只追加新封存文件各自的哈希（[`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md)）；整组删除已封存记录时，其清单条目必须同步移除，否则 [`archived-agent-notes` 校验器](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/archived-agent-notes.ts) 报 `sealed artifact is missing`。封存后不得编辑、翻译、移动或删除。
+
+归档层被门禁**主动排除**，这里要精确区分两件事。`scripts/repo-files.ts` 导出一个判断 `isArchivedAgentNotePath`（[`scripts/repo-files.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/repo-files.ts)），`doc-typecheck`、`verify-md-links`、`verify-md-wrap`、`verify-mermaid`、`verify-package-paths`、`verify-type-equiv` 把它当排除谓词使用。动机是明确的：冻结层是历史快照，按当前标准重排它就是篡改历史。
+
+- **归档发出的出站链接从不被检查。** `verify-md-links` 跳过归档层，所以归档 Note 里指向活跃 Note 的链接即使断了也不会红。`dsh-archive-agent-notes` 明说了这一点：「Do not claim archived outbound links are valid: the archive verifier intentionally never checks them.」
+- **指向归档的入站链接没有专门门禁。** 归档要求 repair or delete inbound links，但没有检查能在没有前置改动的情况下证明「该改的都改了」；实际保障来自 `verify-md-links` 会红加上归档提交当场改完。
+
+所以「归档不破坏引用」要写准确：指向归档的链接可机器验证（目标存在），归档发出的链接被明文放弃检查。两者不是同一件事，混着说会把一个刻意留下的空白读成一项保证。
+
+还有一个容易漏掉的实现事实：**「排除归档层」这个判断本身有多份副本**。除 `repo-files.ts` 的共享谓词外，`verify-concrete-terms`、`verify-public-repository-links`、`verify-repository-references` 各自写死了一份路径前缀字面量，谁也没引用那个共享谓词——改目录名要动四处。其余门禁（散文、预算、术语、catalog 一类）既不排除也不检查，因为它们本来就不扫 `.agents/`。
+
+活动 prose 仍可以在有意引用历史时链进归档 Note；被链的那篇是冻结的，于是同一句话的两半由两个执法者分管——「可以链」是散文自治，「链过去的东西别再改」是封印强制。
 
 `dsh-archive-agent-notes` 拥有上面这张表的语义判断。格式 gate 只证明结构合法，不代替这张表。Skill 为什么适合承载这类判断，见 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md)。
 

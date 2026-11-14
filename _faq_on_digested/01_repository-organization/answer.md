@@ -13,7 +13,7 @@ DSH 的目录不是按“控制器、服务、工具类”这种实现层次来�
 | 视角 | 它回答的问题 | 权威来源 |
 |------|--------------|----------|
 | 仓库目录树 | 代码、文档、构建和发行物分别由谁维护 | 顶层目录、各组 README、`pnpm-workspace.yaml` |
-| package 依赖图 | 谁可以 import 谁，合同和实现如何解耦 | 各 `package.json`、[`docs/module-graph.md`](../../docs/module-graph.md) |
+| package 依赖图 | 谁可以 import 谁，合同和实现如何解耦 | 各 `package.json`、[`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/module-graph.md) |
 | 运行时插件树 | 这一次进程实际挂了哪些服务、监听器、工具和入口 | bundle/profile/preset 的 Cordis 配置、`dsh --dump-config` |
 
 目录树提供位置，依赖图提供静态关系，插件树提供本次运行的事实。三者相互关联，但不能互相代替；详细解释见 [`01-three-trees.md`](./01-three-trees.md)。
@@ -24,7 +24,7 @@ DSH 的目录不是按“控制器、服务、工具类”这种实现层次来�
 
 `packages/fs/`、`packages/subagent/`、`packages/session/`、`packages/llm/` 各自拥有一个能力家族。某项能力需要接口、后端、模型工具、策略和 UI 时，这些角色优先放在同一个领域附近，而不是分别塞进全局 `services/`、`adapters/`、`tools/`、`controllers/` 目录。
 
-这使阅读者可以先找到“谁拥有这件事”，再在该组内辨认角色。组 README 负责给出 package 与 `ctx` key 的地图，根 [`packages/README.md`](../../packages/README.md) 只维护组级索引（`session/` 与 `client/` 两个组的包表曾各有漏登记，已由本轮就地补齐，见 [`03-package-role-grammar.md`](./03-package-role-grammar.md)）。
+这使阅读者可以先找到“谁拥有这件事”，再在该组内辨认角色。组 README 负责给出 package 与 `ctx` key 的地图，根 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) 只维护组级索引（`session/` 与 `client/` 两个组的包表曾各有漏登记，已由本轮就地补齐，见 [`03-package-role-grammar.md`](./03-package-role-grammar.md)）。
 
 ### 2. 可替换能力按角色拆 package
 
@@ -118,7 +118,7 @@ packages/<group>/<pkg>/
 └── tsconfig.json      # package 自己的编译边界与项目引用
 ```
 
-（早期版本的这棵树里还有一项 `src/invariant.ts`。运行时 invariant 机制已在 0011 跨度整族退役——`@deepseek-ai/dsh-invariants` 包、各包的 `./invariant` companion 与其测试、`scripts/test-invariants.ts`、`scripts/verify-package-invariants.ts`、`scripts/verify-built-package-invariants.mjs`、`run-gates.ts` 的 invariant 门禁与 `ctx.invariants` 服务都已删除；新树里 `/invariant` 路径数量为 0，退役权威是 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)。）
+（早期版本的这棵树里还有一项 `src/invariant.ts`。运行时 invariant 机制已在 0011 跨度整族退役——`@deepseek-ai/dsh-invariants` 包、各包的 `./invariant` companion 与其测试、`scripts/test-invariants.ts`、`scripts/verify-package-invariants.ts`、`scripts/verify-built-package-invariants.mjs`、`run-gates.ts` 的 invariant 门禁与 `ctx.invariants` 服务都已删除；新树里 `/invariant` 路径数量为 0，退役权威是 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)。）
 
 `lib/` 是构建产物，不是读实现的起点。先读 `README.md` 确认角色，再读 `package.json` 看它依赖的是 Definition 还是具体 Provider，然后进入 `src/index.ts`；若行为跨包，再沿 `ctx` key、事件名和 bundle row 搜索。
 
@@ -130,9 +130,9 @@ DSH 把传统单体里隐含的选择显式化了：哪个后端、哪条策略�
 
 ## 第一次熟悉仓库的推荐顺序
 
-1. 读根 [`AGENTS.md`](../../AGENTS.md) 的目录图和核心约束（它的 `packages/` 布局块曾写已不存在的 `self-modification/` 与 `support/`，实际是 `packages/extensions/` 与 `packages/test-support/`，该缺口已就地修正；以 [`packages/README.md`](../../packages/README.md) 为准）。
-2. 读 [`docs/architecture.md`](../../docs/architecture.md)，建立 Cordis、composition、core、events、loop、session、seam 的顺序。
-3. 读 [`packages/README.md`](../../packages/README.md)，只识别 group，不背 package 清单。
+1. 读根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 的目录图和核心约束（它的 `packages/` 布局块曾写已不存在的 `self-modification/` 与 `support/`，实际是 `packages/extensions/` 与 `packages/test-support/`，该缺口已就地修正；以 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) 为准）。
+2. 读 [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)，建立 Cordis、composition、core、events、loop、session、seam 的顺序。
+3. 读 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md)，只识别 group，不背 package 清单。
 4. 从一个实际入口追踪：`apps/cli/src/bin.ts` → `profile-boot.ts` → bundle patch → 一个被挂载的 package（桌面入口例外，从 `apps/desktop` 的 Electron 主进程开始；desktop-host 经 `runProfile` 起完整 web 应用并监听 `127.0.0.1:19387`）。
 5. 再从一个能力追踪：group README → Definition → Provider → Consumer → bundle/preset row → 测试。
 6. Web 功能另走 Host/Client 路线；持久数据另走 `core/session` → `session/` 路线。
@@ -160,9 +160,9 @@ DSH 把传统单体里隐含的选择显式化了：哪个后端、哪条策略�
 
 ## 核验入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)
-- [`packages/README.md`](../../packages/README.md)
-- [`pnpm-workspace.yaml`](../../pnpm-workspace.yaml)
-- [`docs/module-graph.md`](../../docs/module-graph.md)
+- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)
+- [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md)
+- [`pnpm-workspace.yaml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/pnpm-workspace.yaml)
+- [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/module-graph.md)
 
 > **「三棵树」不是 DSH 的术语。** 它是对三个 repo 事实的合称：Repository layout、module dependency graph 与 plugin tree。

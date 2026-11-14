@@ -24,4 +24,4 @@ DSH 在这一点上有明确设计。问题分两半，只答一半都不成立�
 
 ## 范围
 
-答静态设计与运行时消费两端。**不答**：具体某个 package README 该怎么写（见 [`docs/AGENTS.md`](../../docs/AGENTS.md)）、文档 tier 的完整分类表（那是 `docs/AGENTS.md` 的 home）、以及迁移到别的仓库的完整路线（见 [FAQ 07](../07_borrowing-dsh-harness-idea/question.md)）。
+答静态设计与运行时消费两端。**不答**：具体某个 package README 该怎么写（见 [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)）、文档 tier 的完整分类表（那是 `docs/AGENTS.md` 的 home）、以及迁移到别的仓库的完整路线（见 [FAQ 07](../07_borrowing-dsh-harness-idea/question.md)）。

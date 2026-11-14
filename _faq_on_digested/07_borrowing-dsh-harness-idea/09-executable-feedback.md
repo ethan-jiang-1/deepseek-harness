@@ -47,7 +47,7 @@
 
 关键纪律：**每层只拥有自己能观察的性质，绿色一层不代表其它层也绿。** coverage 绿不代表产品工作，snapshot 绿不代表 API 合理，review 也不该手工重复绿色 gate 已经精确拒绝的格式问题。
 
-DSH 曾有过第六层「运行时关系」：每个包发布 `./invariant` companion、把 package 拥有的权威关系注册进 `ctx.invariants`，`verify-package-invariants` 对空壳直接判 fail。0.2.1-rc.2 起这套机制整族退役（[升级指南](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)，归档记录 [省略空壳 companion 的判据](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）——留下的可迁移纪律是它当初的取舍：**有关系才有检查、没有可观察关系就写清省略理由，不拿空壳凑数**；`model-visible ⟺ logged` 这类规则改由 assembled-transcript snapshot、双 SDK 投影与 review 把关。
+DSH 曾有过第六层「运行时关系」：每个包发布 `./invariant` companion、把 package 拥有的权威关系注册进 `ctx.invariants`，`verify-package-invariants` 对空壳直接判 fail。0.2.1-rc.2 起这套机制整族退役（[升级指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)，归档记录 [省略空壳 companion 的判据](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）——留下的可迁移纪律是它当初的取舍：**有关系才有检查、没有可观察关系就写清省略理由，不拿空壳凑数**；`model-visible ⟺ logged` 这类规则改由 assembled-transcript snapshot、双 SDK 投影与 review 把关。
 
 ## 这样做：本地按 diff 选检查，不全跑
 

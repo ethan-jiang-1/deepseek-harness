@@ -18,7 +18,7 @@
 | 依赖目录 | `gen-dependency-catalog` | `verify-dependency-catalog` |
 | 官方 bundle 目录 | `gen-official-bundle-catalog` | `verify-official-bundle-catalog` |
 
-出处：`package.json:162`-`216`（`[源码]`）。`docs/AGENTS.md:33` 把这条讲成制度：生成目录是「Exhaustive English sources regenerated from source and freshness-gated」，**禁止手改生成源**（`[原文]`）。插件仓语料给出的理由是：生成目录的角色是 index——「agent 可以按名称查询完整集合，而不必相信一张人工维护、可能已经漂移的表」（[`repo-harness/02-legibility-and-ownership.md:45`](../../_dsh_plugin_agent_ready_development/repo-harness/02-legibility-and-ownership.md)，`[原文]`）。
+出处：`package.json:162`-`216`（`[源码]`）。`docs/AGENTS.md:33` 把这条讲成制度：生成目录是「Exhaustive English sources regenerated from source and freshness-gated」，**禁止手改生成源**（`[原文]`）。插件仓语料给出的理由是：生成目录的角色是 index——「agent 可以按名称查询完整集合，而不必相信一张人工维护、可能已经漂移的表」（[`repo-harness/02-legibility-and-ownership.md:45`](https://github.com/deepseek-ai/deepseek-harness/blob/master/_dsh_plugin_agent_ready_development/repo-harness/02-legibility-and-ownership.md)，`[原文]`）。
 
 ## 二、`doc-sync`：文档侧的集中入口
 

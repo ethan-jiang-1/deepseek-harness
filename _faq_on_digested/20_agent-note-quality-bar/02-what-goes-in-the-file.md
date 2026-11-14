@@ -26,7 +26,7 @@ English | [中文](yyyy-mm-dd-topic-title.zh.md)
 
 ## 最短的合格成品
 
-[`archived/process/2026-09-22-workspace-release-ranges.md`](../../.agents/notes/archived/process/2026-09-22-workspace-release-ranges.md) 全文 232 个词，四段齐全。摘出来看结构：
+[`archived/process/2026-09-22-workspace-release-ranges.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-09-22-workspace-release-ranges.md) 全文 232 个词，四段齐全。摘出来看结构：
 
 ```markdown
 ## Problem
@@ -77,7 +77,7 @@ exact ranges; packed-manifest tests check the emitted versions.
 |---|---|
 | Rejected in review: caching the resolved spec. We keep resolution per-call. | **Caching the resolved spec.** Rejected: the spec depends on per-call cwd, so a cache keyed by request would serve stale roots. |
 
-这条改法出自 [`dsh-trim-cot-leakage/references/examples.md`](../../.agents/skills/dsh-trim-cot-leakage/references/examples.md)，它明确把 Alternatives-considered 称作 review 裁决的**受认可归宿**：reviewer 和轮次不属于理由，理由本身属于。
+这条改法出自 [`dsh-trim-cot-leakage/references/examples.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/references/examples.md)，它明确把 Alternatives-considered 称作 review 裁决的**受认可归宿**：reviewer 和轮次不属于理由，理由本身属于。
 
 ### 旧 Note 的例外
 
@@ -91,7 +91,7 @@ exact ranges; packed-manifest tests check the emitted versions.
 
 ## implemented 里禁止出现的标题
 
-门禁的正则只有四个（[`verify-agent-note-format.ts:36`](../../scripts/verify-agent-note-format.ts)）：
+门禁的正则只有四个（[`verify-agent-note-format.ts:36`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts)）：
 
 ```js
 BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance criteria\b)/i
@@ -101,7 +101,7 @@ BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance crite
 
 > `## Proposal` is a proposal-era heading; an implemented Agent Note states what is (fold it into Decision/Consequences/Testing)
 
-原因出自 [`docs/AGENTS.md:73`](../../docs/AGENTS.md) 的 slop 清单：**implemented Note 里的 spec-speak**（"should"、迁移计划、验收清单）。
+原因出自 [`docs/AGENTS.md:73`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 的 slop 清单：**implemented Note 里的 spec-speak**（"should"、迁移计划、验收清单）。
 
 `## Risks` 不在禁用集里。**活跃 implemented 树里现在有 6 篇英文 Note 带着它正常通过了门禁**：`2026-06-15-ptc.md`、`2026-07-14-provider-routed-llm-adapters.md`、`2026-08-24-session-log-snapshot-corpus.md`、`2026-08-25-electron-desktop-packaging-and-updates.md`、`2026-09-17-windows-runtime-signature-cache.md`、`2026-10-02-plugin-market-index-format.md`。README 希望把残余风险折进 `## Consequences`，但**门禁不管**——折进去是写法偏好，不是硬要求。
 
@@ -117,7 +117,7 @@ BANNED_IMPLEMENTED = /^## (?:Proposal\b|Plan\b|Migration plan\b|Acceptance crite
 
 ## 需要保留什么、可以删什么
 
-[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md) 给了保留清单：
+[`dsh-prose-standard`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/SKILL.md) 给了保留清单：
 
 > **Agent Notes:** retain unique rationale, mechanisms, alternatives, consequences, shipped verification evidence, and named coverage gaps. Implemented Agent Notes state shipped reality in the present tense; remove planning checklists, not evidence of what pins the decision.
 
@@ -160,7 +160,7 @@ implemented Note 必须跟着已交付的事实走：
 
 ## 证据入口
 
-- [`.agents/notes/README.md` 的 "The file format"](../../.agents/notes/README.md)：头部块、三种骨架、Alternatives 强制、生命周期之间的移动。
-- [`implemented/AGENTS.md`](../../.agents/notes/implemented/AGENTS.md)：保持 current 的边界，以及「这不是重写决策的许可」。
-- [`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md) 与它的 [`references/examples.md`](../../.agents/skills/dsh-prose-standard/references/examples.md)：保留清单与修剪校准。
-- [`dsh-trim-cot-leakage/references/examples.md`](../../.agents/skills/dsh-trim-cot-leakage/references/examples.md)：review 裁决改写成理由的对照。
+- [`.agents/notes/README.md` 的 "The file format"](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：头部块、三种骨架、Alternatives 强制、生命周期之间的移动。
+- [`implemented/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/AGENTS.md)：保持 current 的边界，以及「这不是重写决策的许可」。
+- [`dsh-prose-standard`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/SKILL.md) 与它的 [`references/examples.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-prose-standard/references/examples.md)：保留清单与修剪校准。
+- [`dsh-trim-cot-leakage/references/examples.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/references/examples.md)：review 裁决改写成理由的对照。

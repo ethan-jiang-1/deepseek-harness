@@ -18,7 +18,7 @@
 
 ## 范围
 
-核验状态见 [核验基线登记](../00-baseline.md)。本 FAQ 解释组织原则和阅读方法，不逐个复述所有 package；完整 package 表以 [`packages/README.md`](../../packages/README.md) 和生成的 [`docs/module-graph.md`](../../docs/module-graph.md) 为准。
+核验状态见 [核验基线登记](../00-baseline.md)。本 FAQ 解释组织原则和阅读方法，不逐个复述所有 package；完整 package 表以 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) 和生成的 [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/module-graph.md) 为准。
 
 `_digested/` 和 `_faq_on_digested/` 是 `ethan` 分支上的研究覆盖层，不属于产品 pnpm workspace，也不会进入 DSH 运行时。正文会把它们标出来，避免和产品本体混读。
 

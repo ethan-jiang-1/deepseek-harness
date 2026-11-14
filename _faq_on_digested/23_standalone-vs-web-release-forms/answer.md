@@ -54,21 +54,21 @@ DSH 对外只有两种「装成应用」的发布物：**Desktop**（Electron �
 
 仓库内：
 
-- [`apps/desktop/README.md`](../../apps/desktop/README.md) — 形态、runtime、更新、CLI、Known limitations
-- [`apps/desktop/packaging/README.md`](../../apps/desktop/packaging/README.md) — 目标平台、签名、发行版命令
-- [`apps/desktop/publishing/README.md`](../../apps/desktop/publishing/README.md) — feed、固定下载、上传审计
-- [`apps/desktop/src/paths.ts`](../../apps/desktop/src/paths.ts) — desktop profile 与锁
-- [`apps/cli/README.md`](../../apps/cli/README.md) — 入口模式、profile、desktop 保留名
-- [`apps/cli/reference/README.md`](../../apps/cli/reference/README.md) — `web` 的 `--host/--port/--public-url/--trusted-host/--tls-*`
-- [`packages/util/home-paths/src/index.ts`](../../packages/util/home-paths/src/index.ts) — `DSH_HOME` 解析
-- [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml) — `sessions` / `storages` 根
-- [`packages/boot/plugin-manager/README.md`](../../packages/boot/plugin-manager/README.md) — 安装/启用/移除、发布版 vs 开发版的源
-- [`packages/client/ui-plugin-manager/README.md`](../../packages/client/ui-plugin-manager/README.md) — Plugins 页交互
-- [`docs/user/guide/plugin-market.md`](../../docs/user/guide/plugin-market.md) — 官方不带 index 源
-- [`docs/user/develop/basic/publish.md`](../../docs/user/develop/basic/publish.md) — `dsh plugin add`、`link:`、tarball
-- [`apps/web/tests/pin-browse-picker.overlay.yml`](../../apps/web/tests/pin-browse-picker.overlay.yml) — overlay 最小模板
-- [`apps/desktop-host/src/index.ts`](../../apps/desktop-host/src/index.ts) — 桌面入口的装载路径
-- [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md) — desktop profile 的组合与装载
+- [`apps/desktop/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) — 形态、runtime、更新、CLI、Known limitations
+- [`apps/desktop/packaging/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/packaging/README.md) — 目标平台、签名、发行版命令
+- [`apps/desktop/publishing/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/publishing/README.md) — feed、固定下载、上传审计
+- [`apps/desktop/src/paths.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/src/paths.ts) — desktop profile 与锁
+- [`apps/cli/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md) — 入口模式、profile、desktop 保留名
+- [`apps/cli/reference/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/reference/README.md) — `web` 的 `--host/--port/--public-url/--trusted-host/--tls-*`
+- [`packages/util/home-paths/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/util/home-paths/src/index.ts) — `DSH_HOME` 解析
+- [`packages/bundle/base/cordis.patch.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml) — `sessions` / `storages` 根
+- [`packages/boot/plugin-manager/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md) — 安装/启用/移除、发布版 vs 开发版的源
+- [`packages/client/ui-plugin-manager/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/README.md) — Plugins 页交互
+- [`docs/user/guide/plugin-market.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/guide/plugin-market.md) — 官方不带 index 源
+- [`docs/user/develop/basic/publish.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md) — `dsh plugin add`、`link:`、tarball
+- [`apps/web/tests/pin-browse-picker.overlay.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/web/tests/pin-browse-picker.overlay.yml) — overlay 最小模板
+- [`apps/desktop-host/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop-host/src/index.ts) — 桌面入口的装载路径
+- [`packages/boot/app-boot/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md) — desktop profile 的组合与装载
 
 外部（访问日期 2026-10-25）：
 

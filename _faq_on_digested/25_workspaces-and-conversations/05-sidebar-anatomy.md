@@ -4,7 +4,7 @@
 
 左侧的节、行、顺序、置顶、灰显、空白会话，分别来自 Host 还是浏览器？为什么“最近更新”和“手动排序”会给出不同顺序？换窗口、断线重连、删除工作区时，界面上的东西为什么会/不会消失？
 
-术语先对齐：左侧每一行是一个 **Session**（会话）。DSH 文档里的 **Conversation** 指客户端把会话事件装配成对话视图的那一层（[conversation.md](../../docs/subsystems/conversation.md)），它不参与分组，也不拥有工作区关系，只是“打开某一行之后怎么渲染”。下文说“行/会话”都指 Session。
+术语先对齐：左侧每一行是一个 **Session**（会话）。DSH 文档里的 **Conversation** 指客户端把会话事件装配成对话视图的那一层（[conversation.md](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/conversation.md)），它不参与分组，也不拥有工作区关系，只是“打开某一行之后怎么渲染”。下文说“行/会话”都指 Session。
 
 ## 数据从 Host 到界面的三段
 

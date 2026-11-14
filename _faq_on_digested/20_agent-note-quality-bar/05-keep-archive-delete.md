@@ -8,7 +8,7 @@
 
 **「这篇 Note 还能不能指导未来的工作？」** 能，就留在活跃树；不能但仍有历史价值，就归档；连历史价值都不值，就删掉。字数和年龄只是帮你发现候选，从来不是判据本身。
 
-这条判据由 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 拥有——它也是 `.agents/skills/` 里唯一一篇真正关于 Agent Note 的 skill。
+这条判据由 [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md) 拥有——它也是 `.agents/skills/` 里唯一一篇真正关于 Agent Note 的 skill。
 
 ## 四条分岔路
 
@@ -101,6 +101,6 @@ skill 给的两组例子，字数都是用来**反驳**「按篇幅判断」的�
 
 ## 证据入口
 
-- [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)：判定流程、五个归档动作、校准例子。
-- [`archived/AGENTS.md`](../../.agents/notes/archived/AGENTS.md)：冻结规则与唯一授权的 seal 例外。
-- [`.agents/notes/README.md` 的 "Archiving and deletion"](../../.agents/notes/README.md)：删除、归档、合并的完整条件。
+- [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md)：判定流程、五个归档动作、校准例子。
+- [`archived/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/AGENTS.md)：冻结规则与唯一授权的 seal 例外。
+- [`.agents/notes/README.md` 的 "Archiving and deletion"](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：删除、归档、合并的完整条件。

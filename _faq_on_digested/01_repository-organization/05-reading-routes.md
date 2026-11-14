@@ -10,11 +10,11 @@ DSH 的 package 数量多，按目录字母顺序阅读会失去运行时关系�
 
 ## 15 分钟建立全局坐标
 
-1. 看根 [`AGENTS.md`](../../AGENTS.md) 的 repository layout，只识别顶层区域；它的 `packages/` 块曾把 `self-modification/` 与 `support/` 列成组名（实际是 `packages/extensions/` 与 `packages/test-support/`），该缺口已就地修正，组清单以 [`packages/README.md`](../../packages/README.md) 为准。
-2. 看 [`docs/architecture.md`](../../docs/architecture.md) 的章节顺序：Cordis → profiles/bundles → core → events → turn → session → seams → extension points。
-3. 看 [`packages/README.md`](../../packages/README.md)，只记 group 与角色，不背所有 package。
-4. 打开 [`docs/module-graph.md`](../../docs/module-graph.md)，知道静态依赖有生成图，不需要靠猜。
-5. 打开 [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml)，感受“一个产品默认组合”如何引用 package。
+1. 看根 [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 的 repository layout，只识别顶层区域；它的 `packages/` 块曾把 `self-modification/` 与 `support/` 列成组名（实际是 `packages/extensions/` 与 `packages/test-support/`），该缺口已就地修正，组清单以 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md) 为准。
+2. 看 [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 的章节顺序：Cordis → profiles/bundles → core → events → turn → session → seams → extension points。
+3. 看 [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md)，只记 group 与角色，不背所有 package。
+4. 打开 [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/module-graph.md)，知道静态依赖有生成图，不需要靠猜。
+5. 打开 [`packages/bundle/base/cordis.patch.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml)，感受“一个产品默认组合”如何引用 package。
 
 完成后，你应能回答：产品能力大多在 `packages/`，入口在 `apps/`，默认装配在 bundle/profile，Cordis 在 `vendor/`，可选 overlay 组合在 `apps/cli/config/examples/`。
 
@@ -59,7 +59,7 @@ packages/<group>/README.md
 
 以 `tool-fs` 为例：
 
-1. [`packages/fs/README.md`](../../packages/fs/README.md) 给出角色表。
+1. [`packages/fs/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/README.md) 给出角色表。
 2. `packages/fs/fs` 定义 `ctx.fs` 和 `fs/*`。
 3. `fs-local`、`fs-sandbox`、`ssh/fs-ssh` 是 Provider 选择（e2b/fs-e2b 已随 0.1.7 线删除）。
 4. `tool-fs` 注册模型工具并调用 `ctx.fs`。
@@ -96,7 +96,7 @@ dsh-resource://<type>/… 地址
   → 帧流：首帧当前状态，之后每帧一次变化
 ```
 
-第二条是 0.1.5-rc.1 新增的路线：内容寻址的资源模型。看到组件里出现 `dsh-resource://` 地址或 `useResource` 时走它，看到直接的 Remote 调用时走第一条；机制与字段表见 [`docs/subsystems/client-resources.md`](../../docs/subsystems/client-resources.md)。
+第二条是 0.1.5-rc.1 新增的路线：内容寻址的资源模型。看到组件里出现 `dsh-resource://` 地址或 `useResource` 时走它，看到直接的 Remote 调用时走第一条；机制与字段表见 [`docs/subsystems/client-resources.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/client-resources.md)。
 
 具体步骤：
 
@@ -130,7 +130,7 @@ packages/core/session/src/types.ts
 - compaction replacement 是否只改变未来 surface，而保留 raw log。
 - 读取者遇到未知 required event 会如何处理。
 
-权威索引是生成的 [`docs/persistence-catalog.md`](../../docs/persistence-catalog.md) 和 [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)，机制解释见 [`docs/subsystems/session.md`](../../docs/subsystems/session.md) 与 [`docs/session-format-status.md`](../../docs/session-format-status.md)。
+权威索引是生成的 [`docs/persistence-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/persistence-catalog.md) 和 [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/event-producer-consumer.md)，机制解释见 [`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md) 与 [`docs/session-format-status.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/session-format-status.md)。
 
 ## 路线 E：从配置值读
 
@@ -168,7 +168,7 @@ package src/index.ts 的 apply / Service constructor
   → teardown and real-composition tests
 ```
 
-先读 [`docs/defensive-patterns/README.md`](../../docs/defensive-patterns/README.md) 和 [`docs/cordis-primer.md`](../../docs/cordis-primer.md)，再进入 `vendor/cordis/src/fiber.ts`。`vendor/` 有独立同步与本地修改纪律，不能因为问题最终落到 Cordis 就绕过 `vendor/README.md` 直接改。（0.1.7 线起 `docs/defensive-patterns.md` 单页改成目录：一页通用 bug 类加各域页面，凡钉版指向单页的要改到 `docs/defensive-patterns/README.md`。）
+先读 [`docs/defensive-patterns/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/defensive-patterns/README.md) 和 [`docs/cordis-primer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md)，再进入 `vendor/cordis/src/fiber.ts`。`vendor/` 有独立同步与本地修改纪律，不能因为问题最终落到 Cordis 就绕过 `vendor/README.md` 直接改。（0.1.7 线起 `docs/defensive-patterns.md` 单页改成目录：一页通用 bug 类加各域页面，凡钉版指向单页的要改到 `docs/defensive-patterns/README.md`。）
 
 ## 判断修改应该放哪里
 
@@ -179,7 +179,7 @@ package src/index.ts 的 apply / Service constructor
 | 新增模型工具 | owner group 的 `tool-*` Consumer；注册到 `ctx.tools` |
 | 新增执行策略、审批或观察 | 能覆盖所有调用路径的 capability event / executor / policy plugin |
 | 改 turn、step、inbox、request 或持久日志义务 | `core/agent` / `core/agent-loop` / `core/session` 的明确 owner；同步 architecture |
-| 新增 Web UI feature | `packages/client/ui-*`；Host API 和 authoritative state 回到各自 owner；内容是地址化资源时先声明协议并注册 provider（见 [`docs/subsystems/client-resources.md`](../../docs/subsystems/client-resources.md)） |
+| 新增 Web UI feature | `packages/client/ui-*`；Host API 和 authoritative state 回到各自 owner；内容是地址化资源时先声明协议并注册 provider（见 [`docs/subsystems/client-resources.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/client-resources.md)） |
 | 改产品默认启用项或默认 config | `packages/bundle/*` 或 profile/preset composition，不塞进实现分支 |
 | 改 CLI grammar、profile 解析或进程 shutdown | `apps/cli`，可复用 boot 合同回到 `packages/boot` |
 | 改桌面壳、桌面 profile 或 IPC 传输 | `apps/desktop` 与 `apps/desktop-host`；Host/Client 行为本身仍回到 `packages/` |
@@ -225,9 +225,9 @@ package src/index.ts 的 apply / Service constructor
 
 ## 核验入口
 
-- [`docs/architecture.md`](../../docs/architecture.md)
-- [`docs/module-graph.md`](../../docs/module-graph.md)
-- [`docs/config-catalog.md`](../../docs/config-catalog.md)
-- [`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md)
-- [`packages/README.md`](../../packages/README.md)
-- [`apps/cli/src/profile-boot.ts`](../../apps/cli/src/profile-boot.ts)
+- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)
+- [`docs/module-graph.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/module-graph.md)
+- [`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md)
+- [`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/event-producer-consumer.md)
+- [`packages/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/README.md)
+- [`apps/cli/src/profile-boot.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/src/profile-boot.ts)

@@ -50,7 +50,7 @@
 
 ## 范围与边界
 
-- 本组只回答「`keyless` 是什么意思、为什么存在、边界在哪」，**不重写**快照机制本身。录制/回放/刷新的完整流程、语料治理与强制政策以 [`docs/testing.md`](../../docs/testing.md) 与 [`snapshots/AGENTS.md`](../../snapshots/AGENTS.md) 为准。
+- 本组只回答「`keyless` 是什么意思、为什么存在、边界在哪」，**不重写**快照机制本身。录制/回放/刷新的完整流程、语料治理与强制政策以 [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 与 [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md) 为准。
 - 快照作为**可移植资产**（外仓能不能用、值多少、怎么组织）是另一个问题，见 [FAQ 21](../21_recorded-session-snapshots/answer.md)。
 - **取证动作**本身（探针、探前提/探失败/探历史）是另一个问题，见 [FAQ 28](../28_probe-usage-and-origin/answer.md)。
 - 引用源码时行号按核验基线，核验状态见 [核验基线登记](../00-baseline.md)。

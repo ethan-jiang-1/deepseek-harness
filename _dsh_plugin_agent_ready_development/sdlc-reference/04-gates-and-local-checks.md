@@ -17,10 +17,29 @@ DSH 把可机械检查的规则接到会失败的顶层命令；push 前按 outg
 | `package.json`、`scripts/run-gates.ts`、各 verifier/test | 定义检查逻辑、依赖、失败退出和聚合命令 |
 | `dsh-pre-push-checks` | 根据真实 outgoing scope 选择 push 前相关证据 |
 | `.github/workflows/ci.yml` | 定义 PR 触发、runner、权限、并发、缓存、job 依赖与结果聚合 |
-| Git hooks | pre-commit 修 staged lint 并查 whitespace/vendor metadata；pre-push 只跑 incremental typecheck |
+| Git hooks（[`lefthook.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/lefthook.yml)） | pre-commit 修 staged lint 并查 whitespace/vendor metadata；pre-push 只跑 incremental typecheck；另有冻结层归档门禁（见下） |
 | reviewer | 判断意图、设计、prose 和测试场景是否真的匹配；绿色检查不建立这些语义属性 |
 
 `.github/` 因而是流程的一部分，但不是检查清单的唯一 owner。Workflow 调用 `check:ci:*`，具体 gate inventory 继续由仓库脚本维护。
+
+**一个必须记住的例外：冻结层有一道自己的 git hook 门禁。** `lefthook.yml` 里除常规 job 外还注册了 `archived agent notes`，它同时挂在 `pre-commit` 与 `pre-merge-commit` 上：
+
+```yaml
+    - name: archived agent notes
+      glob: '.agents/notes/archived/**'
+      run: node_modules/.bin/tsx scripts/verify-archived-agent-notes.ts
+```
+
+它的语义与前一行那类「staged 修 lint」不同：
+
+| 维度 | 内容 |
+|---|---|
+| 触发条件 | 只有 staged 命中 `.agents/notes/archived/**` 才跑，**不受 `doc-sync` 分组影响** |
+| 失败后果 | 提交被拒（不是 CI 红灯，也不是「稍后再修」） |
+| 与 CI 的差别 | 钩子用默认基线（本地 `HEAD`），CI 注入受信的 `DSH_ARCHIVE_BASE_REF`。所以本地绿而 CI 红是可能的，方向是**本地更松**（`HEAD` 已含本次改动） |
+| 为什么放在钩子里 | 冻结层是全仓唯一「改错就无法用后续提交挽回」的语料，不值得等 CI |
+
+两侧的门禁同名但不是同一件事：`doc-sync` 里的 `verify-archived-agent-notes` 是全量语义检查，钩子里这次触发只为在改动发生的瞬间拒绝。
 
 Skill、repository gate、GitHub workflow 和 semantic review 的一般职责分工由 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md) 统一说明；本页只保留 push 前与 PR CI 的精确证据路由。
 

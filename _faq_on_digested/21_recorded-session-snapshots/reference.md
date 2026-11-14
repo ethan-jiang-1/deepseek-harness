@@ -96,8 +96,8 @@
 | 结论 | 出处 |
 |---|---|
 | 台阶 L0–L3 的定义与样板 | 本文 [05 的推荐阶梯](./05-plugin-repo-organization.md) 与其中列出的主仓样板 |
-| 插件 PR 的最小证据集 | [`docs/testing.md`](../../docs/testing.md)、[`snapshots/AGENTS.md`](../../snapshots/AGENTS.md) |
-| 主仓里插件通过 patch 进入快照场景 | 样板 [`snapshots/session/agent-instructions/cordis.snapshot.yml`](../../snapshots/session/agent-instructions/cordis.snapshot.yml)；机制见 [`docs/testing.md`](../../docs/testing.md) |
+| 插件 PR 的最小证据集 | [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)、[`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md) |
+| 主仓里插件通过 patch 进入快照场景 | 样板 [`snapshots/session/agent-instructions/cordis.snapshot.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/session/agent-instructions/cordis.snapshot.yml)；机制见 [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) |
 | 独立插件仓的组织、DSH 源码引入、spec 流程 | `_faq_on_digested/13_expert-plugin-repo-organization/answer.md` 与四个 option 分篇 |
 | 独立插件仓的开发 Harness 语料 | `_dsh_plugin_agent_ready_development/00-index.md` |
 | 独立 oracle 样板（独立于转录的外部事实） | `snapshots/session/background-confinement-failure/workspace.expected/confinement-audit.json` |

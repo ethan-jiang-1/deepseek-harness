@@ -23,7 +23,7 @@ DSH 没有一个单独的“人/agent 分工表”，但它把分工写进了权
 
 根 `AGENTS.md` 直接给 agent 下指令：
 
-> Before pushing, follow [dsh-pre-push-checks](../../.agents/skills/dsh-pre-push-checks/SKILL.md); report only commands run. After `gh stack sync`, validate immediately; do not merge before checks pass.
+> Before pushing, follow [dsh-pre-push-checks](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md); report only commands run. After `gh stack sync`, validate immediately; do not merge before checks pass.
 
 来源：`AGENTS.md:115`
 
@@ -33,11 +33,17 @@ DSH 没有一个单独的“人/agent 分工表”，但它把分工写进了权
 
 ### 2. 提案、计划、实现、合同同步
 
-Agent Note 规则要求变更本身带决策记录：
+Agent Note 的写入门槛有过一次收窄，两代规则不能混用。
+
+**2026-09-17 之前**（已被 `730bcc7c85` 改写）的要求是：
 
 > Every non-trivial change MUST add or update at least one Agent Note in the same PR.
 
-来源：`.agents/notes/README.md:46`
+**现行规则**（`.agents/notes/README.md:46`）是 only-for，而非 MUST：
+
+> Add or update an Agent Note in the same PR only for lasting decision rationale that code, tests, and existing documentation do not explain.
+
+差别不是措辞：旧判据「变更非平凡」无法执行——任何改动都能论证自己非平凡，结果是每个行为变更都机械建档；现行判据把行为变化、用户可见性、文件数量、新增测试**本身**都排除在理由之外。在别处看到 "Every non-trivial change MUST…" 时，那是收窄前的历史引文，不是现行规则，见 [FAQ 20 §关于「新标准 vs 旧标准」](../20_agent-note-quality-bar/01-should-i-write-one.md)。
 
 代码和文档同步是 agent 的交付义务：
 
@@ -65,7 +71,7 @@ Plan prompt 给 agent 的规则是：
 
 `exit_plan_mode` 把计划交给用户：
 
-> In plan mode it requires a complete markdown plan starting with a `#` heading and presents it for review through the [user-questions seam](../../docs/subsystems/user-questions.md). Approval returns `{ approved: true }`.
+> In plan mode it requires a complete markdown plan starting with a `#` heading and presents it for review through the [user-questions seam](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/user-questions.md). Approval returns `{ approved: true }`.
 
 来源：`docs/subsystems/plan.md:33`
 

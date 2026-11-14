@@ -127,9 +127,9 @@ console.log({ total, sub, noCwd })
 
 ## 六、相关阅读
 
-- 记录与生命周期：[`docs/subsystems/workspace.md`](../../docs/subsystems/workspace.md)
-- 包合同与失败模式：[`packages/workspace/workspace/README.md`](../../packages/workspace/workspace/README.md)
-- Host/Client 控制面：[`packages/api/workspace-controller/README.md`](../../packages/api/workspace-controller/README.md)
-- 会话日志布局：[`packages/session/session-persistence-jsonl/README.md`](../../packages/session/session-persistence-jsonl/README.md)
+- 记录与生命周期：[`docs/subsystems/workspace.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/workspace.md)
+- 包合同与失败模式：[`packages/workspace/workspace/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workspace/workspace/README.md)
+- Host/Client 控制面：[`packages/api/workspace-controller/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/api/workspace-controller/README.md)
+- 会话日志布局：[`packages/session/session-persistence-jsonl/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-persistence-jsonl/README.md)
 - 数据平面归属（workspace / home / session）：[FAQ 24 的 05 篇](../24_publish-and-release/05-data-planes.md)
 - `$DSH_HOME` 与发布形态：[FAQ 23](../23_standalone-vs-web-release-forms/answer.md)

@@ -33,7 +33,7 @@ DSH 特有的装载方式，小仓库完全可以不要：
 | 4 | 归档的哈希 seal 与只追加清单 | 小仓库靠 code review 就够 |
 | 5 | 门禁脚本本身 | 没有 CI 时，把上面八条写成一份 `notes/AGENTS.md` 常驻指令即可 |
 
-省掉第 5 条时要清醒：**没有执行者的文字约定，遵从度会显著下降。** DSH 把可机械判断的部分做成 gate，正是因为它自己的 agent 遵循可执行检查远好于遵循文字约定（[`quality-gates` Note](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)）。小仓库的替代方案通常是**一条便宜的脚本**——检查头部三行、`## Problem` 开头、必备章节、目录是否在允许清单里。这几条恰好就是 DSH 门禁里最有价值的部分，实现不到一百行。
+省掉第 5 条时要清醒：**没有执行者的文字约定，遵从度会显著下降。** DSH 把可机械判断的部分做成 gate，正是因为它自己的 agent 遵循可执行检查远好于遵循文字约定（[`quality-gates` Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)）。小仓库的替代方案通常是**一条便宜的脚本**——检查头部三行、`## Problem` 开头、必备章节、目录是否在允许清单里。这几条恰好就是 DSH 门禁里最有价值的部分，实现不到一百行。
 
 ## 最小的可运行版本
 
@@ -78,5 +78,5 @@ notes/
 
 ## 证据入口
 
-- [`.agents/notes/README.md`](../../.agents/notes/README.md) 与 [`.agents/notes/AGENTS.md`](../../.agents/notes/AGENTS.md)：八条照抄项的原文依据。
-- [`docs/AGENTS.md`](../../docs/AGENTS.md)：tier 表与「文件说明现在、rationale 进 Note」的分工依据。
+- [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) 与 [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/AGENTS.md)：八条照抄项的原文依据。
+- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)：tier 表与「文件说明现在、rationale 进 Note」的分工依据。

@@ -8,7 +8,7 @@
 
 ## 31 个 wire 工具怎么分组？
 
-[`shipped-composition.e2e.ts`](../../apps/web/tests/shipped-composition.e2e.ts) 的 `EXPECTED_TOOLS`（29 个）+ 固定在场的 ripgrep 对（`glob`/`grep`，走打包的 `@vscode/ripgrep` 二进制，与宿主无关）= **31 个**。按家族：
+[`shipped-composition.e2e.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/web/tests/shipped-composition.e2e.ts) 的 `EXPECTED_TOOLS`（29 个）+ 固定在场的 ripgrep 对（`glob`/`grep`，走打包的 `@vscode/ripgrep` 二进制，与宿主无关）= **31 个**。按家族：
 
 | 家族 | 工具 | 备注 |
 |---|---|---|
@@ -39,7 +39,7 @@
 
 1. **`planning` · `isolate: planMode`**——计划模式的 section 注册圈在自己的 realm，进入/退出 plan mode 不影响别的 scope 的提示词面。
 2. **`compaction` · `isolate: compaction, toolResultPruner`**——`compaction-basic` + `/compact` 命令 + tool-result pruner（阈值 8192 字符，头 4096 / 尾 1024 保留）。
-3. **`delegation` · `isolate: workflowEngine`**——subagent 池与 workflow 引擎共享一个 realm；workflow 跑的 JS 编排脚本经 `workflow-ptc` 引擎进沙箱 Node 进程（[`packages/workflow/workflow-ptc/README.md`](../../packages/workflow/workflow-ptc/README.md)）。Minimal 的 `isolate: terminals` 是同一机制的第四个用例。
+3. **`delegation` · `isolate: workflowEngine`**——subagent 池与 workflow 引擎共享一个 realm；workflow 跑的 JS 编排脚本经 `workflow-ptc` 引擎进沙箱 Node 进程（[`packages/workflow/workflow-ptc/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow-ptc/README.md)）。Minimal 的 `isolate: terminals` 是同一机制的第四个用例。
 
 ## 身份输入有哪些？（Minimal 清零前的"满配"）
 

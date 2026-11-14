@@ -18,7 +18,7 @@ DSH 把「一个决定为什么是这样」做成了仓库里的一等语料：�
 | **状态之间怎么走、走错了会怎样？** | [`03-transitions.md`](./03-transitions.md) | proposed→rejected 是一条最小化操作；proposed→implemented 要求改写整篇，而这道改写**只有一半有门禁** |
 | **什么时候该忘记？** | [`04-forgetting.md`](./04-forgetting.md) | 四分法（删除/保留/归档/拒绝）+ 明文排除体量与年龄 + 哈希封印；一次 452 篇的批量归档可被逐字节复核 |
 | **学到的东西怎么回到仓库？** | [`05-writeback-loop.md`](./05-writeback-loop.md) | 学习外置成规则/门禁/skill/note 四形态，存在性有强制、质量只有部分有 |
-| **这套制度哪里没有闭环？** | [`06-honest-gaps.md`](./06-honest-gaps.md) | 五条缺口：分类门禁不读 README、口径两个计数、改写纪律无内容检查、无存在性与质量门禁、执法者只数了一类——逐条附一个能把它推翻的观察 |
+| **这套制度哪里没有闭环？** | [`06-honest-gaps.md`](./06-honest-gaps.md) | 六条缺口：分类门禁不读 README、口径两个计数、改写纪律无内容检查、无存在性与质量门禁、执法者只数了一类、改过口径的旧引文无人识别——逐条附一个能把它推翻的观察 |
 | **命名和日常写法的规矩从哪来？** | [`07-naming-and-house-style.md`](./07-naming-and-house-style.md) | 三层命令文件、与 `docs/` 的管辖权对偶、动词命名五律、闭集章节词汇、链接代替叙述 |
 | **这些规则究竟由谁执行、什么时候响？** | [`08-enforcement-sites.md`](./08-enforcement-sites.md) | `doc-sync` 只是六类执法者之一：git 钩子、十余道门禁的排除谓词、六份 skill、PR review 各管一段 |
 

@@ -111,7 +111,7 @@ Electron 主进程（apps/desktop）
   窗口加载认证 URL；dsh-app:// 只承载壳自有页面；Node IPC 载生命周期 / update-tasks / platform-session
 ```
 
-~~旧的「无监听端口、`desktop.cordis.patch.yml` 覆盖层、`dsh-app://` 分帧字节管道、`__DSH_TRANSPORT__.openStream`」传输~~已随 0.1.7 线 desktop-host 重构退役（`wire.ts` 与覆盖层文件均不存在）；`dsh --profile desktop` 仍被 `apps/cli/src/args.ts:83` 显式拒绝，CLI 不是它的启动面。（0009 跨度补充：桌面新增自带 CLI launcher——经 Electron 可执行文件以 Node 模式走普通 CLI dispatcher，仅在应用退出后管理已初始化的 `desktop` profile 与插件包，拒绝把缺失的 `desktop` profile 当普通 profile 初始化；见 `apps/desktop-host/src/cli.ts` 与 `.agents/notes/implemented/feature/2026-09-27-desktop-cli-runtime.md`。）完整机制见 [`docs/architecture.md`](../../docs/architecture.md) 的 Desktop application 节。
+~~旧的「无监听端口、`desktop.cordis.patch.yml` 覆盖层、`dsh-app://` 分帧字节管道、`__DSH_TRANSPORT__.openStream`」传输~~已随 0.1.7 线 desktop-host 重构退役（`wire.ts` 与覆盖层文件均不存在）；`dsh --profile desktop` 仍被 `apps/cli/src/args.ts:83` 显式拒绝，CLI 不是它的启动面。（0009 跨度补充：桌面新增自带 CLI launcher——经 Electron 可执行文件以 Node 模式走普通 CLI dispatcher，仅在应用退出后管理已初始化的 `desktop` profile 与插件包，拒绝把缺失的 `desktop` profile 当普通 profile 初始化；见 `apps/desktop-host/src/cli.ts` 与 `.agents/notes/implemented/feature/2026-09-27-desktop-cli-runtime.md`。）完整机制见 [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 的 Desktop application 节。
 
 ## `dsh --profile headless` 怎样跨目录
 
@@ -166,14 +166,14 @@ base bundle 可以先插入全局工具，web-app bundle 再禁用其中部分�
 - 用户 patch 是否成功覆盖 bundle 默认值。
 - 两个 bundle 对同一稳定 row id 的作用顺序。
 
-dump 仍不是活插件图：它只合成 entry rows，不执行插件生命周期、不等待 inject、不观察运行时 HMR，也不证明 service 成功发布。要确认活关系，还需启动、日志或 runtime inspect（0011 跨度起不再有运行时 invariant 兜底：`@deepseek-ai/dsh-invariants` 与各包的 `./invariant` companion 已整族退役，见 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)）。
+dump 仍不是活插件图：它只合成 entry rows，不执行插件生命周期、不等待 inject、不观察运行时 HMR，也不证明 service 成功发布。要确认活关系，还需启动、日志或 runtime inspect（0011 跨度起不再有运行时 invariant 兜底：`@deepseek-ai/dsh-invariants` 与各包的 `./invariant` companion 已整族退役，见 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)）。
 
 ## 配置问题应该从哪里读
 
 按以下顺序：
 
 1. package README 与 `Config` schema：这个插件允许配置什么。
-2. [`docs/config-catalog.md`](../../docs/config-catalog.md)：生成的全仓配置引用。
+2. [`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md)：生成的全仓配置引用。
 3. bundle patch：产品默认值和 row id。
 4. profile/home/overlay：部署如何改默认值。
 5. `dsh --dump-config`：最终静态合成。
@@ -181,13 +181,13 @@ dump 仍不是活插件图：它只合成 entry rows，不执行插件生命周�
 
 ## 核验入口
 
-- [`apps/cli/src/bin.ts`](../../apps/cli/src/bin.ts)
-- [`apps/cli/src/profile-boot.ts`](../../apps/cli/src/profile-boot.ts)
-- [`apps/cli/README.md`](../../apps/cli/README.md)
-- [`apps/desktop/README.md`](../../apps/desktop/README.md)
-- [`apps/desktop-host/src/index.ts`](../../apps/desktop-host/src/index.ts)（0.1.7 线起 desktop profile 由 `loadProfileDirectory` 安装期组装，`config/desktop.cordis.patch.yml` 不复存在）
-- [`packages/boot/app-boot/README.md`](../../packages/boot/app-boot/README.md)
-- [`packages/bundle/README.md`](../../packages/bundle/README.md)
-- [`packages/bundle/base/cordis.patch.yml`](../../packages/bundle/base/cordis.patch.yml)
-- [`packages/bundle/web-app/cordis.patch.yml`](../../packages/bundle/web-app/cordis.patch.yml)
-- [`packages/client/web/README.md`](../../packages/client/web/README.md)
+- [`apps/cli/src/bin.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/src/bin.ts)
+- [`apps/cli/src/profile-boot.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/src/profile-boot.ts)
+- [`apps/cli/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md)
+- [`apps/desktop/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md)
+- [`apps/desktop-host/src/index.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop-host/src/index.ts)（0.1.7 线起 desktop profile 由 `loadProfileDirectory` 安装期组装，`config/desktop.cordis.patch.yml` 不复存在）
+- [`packages/boot/app-boot/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md)
+- [`packages/bundle/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/README.md)
+- [`packages/bundle/base/cordis.patch.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml)
+- [`packages/bundle/web-app/cordis.patch.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/cordis.patch.yml)
+- [`packages/client/web/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/web/README.md)

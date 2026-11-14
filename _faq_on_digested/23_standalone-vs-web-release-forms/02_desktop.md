@@ -19,25 +19,25 @@ dsh --version
 | `latest-mac.yml` | 不是 YAML（实测 404/HTML） | 该路径没有稳定 feed：目前只有 Nightly/RC 通道 |
 | 本机 `dsh --version` | `0.2.1-rc.2` | 全局 CLI 与桌面互不跟随 |
 
-版本策略不是「壳 1.0 + 内核 0.2」，而是**同版本整体发布**：Electron 与 `@deepseek-ai/dsh` 恒等版本，"A dsh upgrade is a Desktop release, even when the shell code is unchanged"（[`apps/desktop/README.md:115`](../../apps/desktop/README.md) 的 Release identity 行）。所以「桌面做得好不好」要按整个 dsh 的发版纪律评价。
+版本策略不是「壳 1.0 + 内核 0.2」，而是**同版本整体发布**：Electron 与 `@deepseek-ai/dsh` 恒等版本，"A dsh upgrade is a Desktop release, even when the shell code is unchanged"（[`apps/desktop/README.md:115`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) 的 Release identity 行）。所以「桌面做得好不好」要按整个 dsh 的发版纪律评价。
 
 ## 工程成熟度（能核的部分）
 
 | 维度 | 现状 | 出处 |
 |---|---|---|
-| 形态 | Electron 壳套完整 dsh Web 应用；渲染端从 `dsh-app://app/` 拿同一个 Web client；HTTP/WS 转发给已认证 Host；Node IPC 只承载生命周期 | [`apps/desktop/README.md:35`](../../apps/desktop/README.md) |
-| 运行环境 | `ELECTRON_RUN_AS_NODE=1` 跑 dsh；**不依赖系统 Node/pnpm** | [`apps/desktop/README.md:116`](../../apps/desktop/README.md) |
-| 离线载荷 | 自带 Python/Node/pnpm；`load_workspace_dependencies` 首次使用时离线安装；office 技能在 ASAR 外 | [`apps/desktop/README.md`](../../apps/desktop/README.md) `## Bundled workspace dependencies` |
-| 打包/签名 | macOS 签名+公证、Windows EV/硬件令牌签名、blockmap、产物哈希、完成记录后才允许上传 | [`apps/desktop/packaging/README.md`](../../apps/desktop/packaging/README.md)、[`windows-signing/README.md`](../../apps/desktop/windows-signing/README.md) |
-| 更新 | 启动异步查 feed，10 分钟 ±20% 抖动，失败退避到 1 小时；强制更新策略；安装前要求 Host 优雅停机 + 任务中断确认 + 失败回滚 | [`apps/desktop/README.md:272`](../../apps/desktop/README.md) 起 |
-| 退出 | 关窗=隐藏（Windows 首次确认）；退出前问 Host 会不会打断任务/提醒；托盘、单实例 | [`apps/desktop/README.md:73`](../../apps/desktop/README.md) |
-| CLI | 菜单 **Manage dsh Command…** 装命令（macOS 建 `/usr/local/bin/dsh`，Windows 写 PATH）；runtime 跟随桌面版本；**npm 全局 CLI 拒绝管理 desktop profile** | [`apps/desktop/README.md:59`](../../apps/desktop/README.md)、[`apps/cli/README.md:20`](../../apps/cli/README.md) |
-| 数据边界 | README 原话：与 CLI 共享 `$DSH_HOME` 的 sessions、settings、credentials、workspaces、storage；**不**共享可执行包、插件激活、lockfile、`node_modules`。但按当前实现，settings 服务通过 configEditor 写 profile 的 `cordis.patch.yml`（按 profile 分开），home 下只剩旧版 `settings.yaml` 的 `.imported` 遗留——这句可能是迁移前的表述 | [`apps/desktop/README.md:363`](../../apps/desktop/README.md) |
-| 遥测 | 桌面有产品分析（含 live application setting），Web 侧排除 | [`apps/desktop/README.md:33`](../../apps/desktop/README.md) |
+| 形态 | Electron 壳套完整 dsh Web 应用；渲染端从 `dsh-app://app/` 拿同一个 Web client；HTTP/WS 转发给已认证 Host；Node IPC 只承载生命周期 | [`apps/desktop/README.md:35`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) |
+| 运行环境 | `ELECTRON_RUN_AS_NODE=1` 跑 dsh；**不依赖系统 Node/pnpm** | [`apps/desktop/README.md:116`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) |
+| 离线载荷 | 自带 Python/Node/pnpm；`load_workspace_dependencies` 首次使用时离线安装；office 技能在 ASAR 外 | [`apps/desktop/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) `## Bundled workspace dependencies` |
+| 打包/签名 | macOS 签名+公证、Windows EV/硬件令牌签名、blockmap、产物哈希、完成记录后才允许上传 | [`apps/desktop/packaging/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/packaging/README.md)、[`windows-signing/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/windows-signing/README.md) |
+| 更新 | 启动异步查 feed，10 分钟 ±20% 抖动，失败退避到 1 小时；强制更新策略；安装前要求 Host 优雅停机 + 任务中断确认 + 失败回滚 | [`apps/desktop/README.md:272`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) 起 |
+| 退出 | 关窗=隐藏（Windows 首次确认）；退出前问 Host 会不会打断任务/提醒；托盘、单实例 | [`apps/desktop/README.md:73`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) |
+| CLI | 菜单 **Manage dsh Command…** 装命令（macOS 建 `/usr/local/bin/dsh`，Windows 写 PATH）；runtime 跟随桌面版本；**npm 全局 CLI 拒绝管理 desktop profile** | [`apps/desktop/README.md:59`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md)、[`apps/cli/README.md:20`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/README.md) |
+| 数据边界 | README 原话：与 CLI 共享 `$DSH_HOME` 的 sessions、settings、credentials、workspaces、storage；**不**共享可执行包、插件激活、lockfile、`node_modules`。但按当前实现，settings 服务通过 configEditor 写 profile 的 `cordis.patch.yml`（按 profile 分开），home 下只剩旧版 `settings.yaml` 的 `.imported` 遗留——这句可能是迁移前的表述 | [`apps/desktop/README.md:363`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) |
+| 遥测 | 桌面有产品分析（含 live application setting），Web 侧排除 | [`apps/desktop/README.md:33`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) |
 
 ## 明确缺口
 
-- **只绑 `127.0.0.1`**（[`apps/desktop/README.md:37`](../../apps/desktop/README.md)）：不对外监听；要远程访问就用 `dsh web` 配反代/隧道（[`public-deployments.md`](../../docs/user/guide/public-deployments.md)）。
+- **只绑 `127.0.0.1`**（[`apps/desktop/README.md:37`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md)）：不对外监听；要远程访问就用 `dsh web` 配反代/隧道（[`public-deployments.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/guide/public-deployments.md)）。
 - **没有稳定通道**：`latest-mac.yml` 在该路径下没有 feed 文件（实测 404/HTML），目前是 preview/RC 供版。
 - **Intel 构建滞后**：mac-x64 停在 rc.1。
 - **Windows on ARM**：解包启动能过，但 Python 载荷仍是 x64，`load_workspace_dependencies` 可能按 `process.arch` 拒绝。
@@ -68,11 +68,11 @@ dsh --version
 
 **没有。** 三处独立证据：
 
-1. [`apps/desktop/packaging/README.md:96`](../../apps/desktop/packaging/README.md) 原话："Linux is not a supported Desktop release target."
-2. 打包目标类型只有三个（[`apps/desktop/scripts/package-target.ts:50`](../../apps/desktop/scripts/package-target.ts)）：`'mac-arm64' | 'mac-x64' | 'win-x64'`；没有 `package:linux` 或 `upload:linux` 脚本。
-3. 发布侧同样只有三目标（[`apps/desktop/publishing/README.md`](../../apps/desktop/publishing/README.md)）；实测 `feeds/linux-x64/` 路径不存在。
+1. [`apps/desktop/packaging/README.md:96`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/packaging/README.md) 原话："Linux is not a supported Desktop release target."
+2. 打包目标类型只有三个（[`apps/desktop/scripts/package-target.ts:50`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/scripts/package-target.ts)）：`'mac-arm64' | 'mac-x64' | 'win-x64'`；没有 `package:linux` 或 `upload:linux` 脚本。
+3. 发布侧同样只有三目标（[`apps/desktop/publishing/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/publishing/README.md)）；实测 `feeds/linux-x64/` 路径不存在。
 
-electron-builder 配置里确实残留一个 `linux: { category, target: ['AppImage'] }` 段（[`electron-builder-config.mjs`](../../apps/desktop/scripts/electron-builder-config.mjs)），但没有任何脚本引用它、也没有产物与 feed——它是共享配置的脚手架，不是支持承诺。
+electron-builder 配置里确实残留一个 `linux: { category, target: ['AppImage'] }` 段（[`electron-builder-config.mjs`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/scripts/electron-builder-config.mjs)），但没有任何脚本引用它、也没有产物与 feed——它是共享配置的脚手架，不是支持承诺。
 
 Linux 用户今天的路是 **CLI/Web**：`npm i -g @deepseek-ai/dsh` + `dsh web`，功能面与桌面基本一致（没有托盘/自动更新/离线 Office 载荷）。
 

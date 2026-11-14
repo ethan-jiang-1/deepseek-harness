@@ -69,9 +69,9 @@ Issue 的家是 .github；
 
 ## 证据入口
 
-- [`.github/ISSUE_TEMPLATE/feature.md`](../../.github/ISSUE_TEMPLATE/feature.md)
-- [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 12、46、80-121 行
-- [`.github/issue-management/rules.mjs`](../../.github/issue-management/rules.mjs) 第 60-70、265 行
-- [`docs/subsystems/plan.md`](../../docs/subsystems/plan.md) 第 5、33 行
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 39、43 行
-- [`docs/testing.md`](../../docs/testing.md) 第 27-55 行
+- [`.github/ISSUE_TEMPLATE/feature.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/ISSUE_TEMPLATE/feature.md)
+- [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) 第 12、46、80-121 行
+- [`.github/issue-management/rules.mjs`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/issue-management/rules.mjs) 第 60-70、265 行
+- [`docs/subsystems/plan.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/plan.md) 第 5、33 行
+- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 第 39、43 行
+- [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 第 27-55 行

@@ -101,9 +101,9 @@ DSH 最独特的一点：**需要穷举的参考内容不由人写，也不要�
 
 ## 证据入口
 
-- [`README.md`](../../README.md) 第 55-59 行
-- [`AGENTS.md`](../../AGENTS.md) 第 3 行、第 5-13 行、第 129 行起（`## Conventions`）
-- [`docs/architecture.md`](../../docs/architecture.md) 第 5 行
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 15-36 行（tier taxonomy）、第 21 行（Root AGENTS 定义）、第 77 行（repository references）
-- [`docs/tool-catalog.md`](../../docs/tool-catalog.md)、[`docs/config-catalog.md`](../../docs/config-catalog.md)、[`docs/event-producer-consumer.md`](../../docs/event-producer-consumer.md) 第 1-2 行
-- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 28-29 行
+- [`README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/README.md) 第 55-59 行
+- [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 第 3 行、第 5-13 行、第 129 行起（`## Conventions`）
+- [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 第 5 行
+- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 第 15-36 行（tier taxonomy）、第 21 行（Root AGENTS 定义）、第 77 行（repository references）
+- [`docs/tool-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/tool-catalog.md)、[`docs/config-catalog.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/config-catalog.md)、[`docs/event-producer-consumer.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/event-producer-consumer.md) 第 1-2 行
+- [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md) 第 28-29 行

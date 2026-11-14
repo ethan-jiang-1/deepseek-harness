@@ -14,11 +14,11 @@
 
 | 做法 | 一句话 | 出处 |
 |---|---|---|
-| 按**维护形态**分区 | 手写 / 生成 / 混合 / 录制 / 投影五类，每类有命名的 owner、生成器或 verifier | [`repo-harness/08-repository-taxonomy.md:5`](../../_dsh_plugin_agent_ready_development/repo-harness/08-repository-taxonomy.md) |
-| **一个事实一个 owner** | 找到 owner 就改源头并同步消费者，不在第二处复制一份容易漂移的事实 | [`repo-harness/02-legibility-and-ownership.md:47`](../../_dsh_plugin_agent_ready_development/repo-harness/02-legibility-and-ownership.md) |
+| 按**维护形态**分区 | 手写 / 生成 / 混合 / 录制 / 投影五类，每类有命名的 owner、生成器或 verifier | [`repo-harness/08-repository-taxonomy.md:5`](https://github.com/deepseek-ai/deepseek-harness/blob/master/_dsh_plugin_agent_ready_development/repo-harness/08-repository-taxonomy.md) |
+| **一个事实一个 owner** | 找到 owner 就改源头并同步消费者，不在第二处复制一份容易漂移的事实 | [`repo-harness/02-legibility-and-ownership.md:47`](https://github.com/deepseek-ai/deepseek-harness/blob/master/_dsh_plugin_agent_ready_development/repo-harness/02-legibility-and-ownership.md) |
 | **清单由生成器产出** | agent 按名字查完整集合，不必相信一张人工维护、可能已漂移的表 | 同上 `:45` |
-| **决策与当前合同分层** | 为什么这样决定住 Note（含备选），现在是什么住 README / 文档 | [`08-repository-taxonomy.md:66`](../../_dsh_plugin_agent_ready_development/repo-harness/08-repository-taxonomy.md)；[FAQ 20](../20_agent-note-quality-bar/answer.md) |
-| **证据可重算** | 插件仓的最小证据集与快照阶梯见 FAQ 21；主仓的整层证据哲学见 [FAQ 07](../07_borrowing-dsh-harness-idea/answer.md) | [`_dsh_plugin_agent_ready_development/`](../../_dsh_plugin_agent_ready_development/00-index.md) |
+| **决策与当前合同分层** | 为什么这样决定住 Note（含备选），现在是什么住 README / 文档 | [`08-repository-taxonomy.md:66`](https://github.com/deepseek-ai/deepseek-harness/blob/master/_dsh_plugin_agent_ready_development/repo-harness/08-repository-taxonomy.md)；[FAQ 20](../20_agent-note-quality-bar/answer.md) |
+| **证据可重算** | 插件仓的最小证据集与快照阶梯见 FAQ 21；主仓的整层证据哲学见 [FAQ 07](../07_borrowing-dsh-harness-idea/answer.md) | [`_dsh_plugin_agent_ready_development/`](https://github.com/deepseek-ai/deepseek-harness/blob/master/_dsh_plugin_agent_ready_development/00-index.md) |
 
 会话侧（用 DSH 自己开发时）三条最实用：
 

@@ -9,7 +9,7 @@ Feature issue 模板（0.1.5 基线）只有两节：
 
 来源：`.github/ISSUE_TEMPLATE/feature.md:1-13`
 
-Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/archived/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板 frontmatter 只保留 `name`/`about`/`type`，验收条件与测试证据不再写进模板，改由 PR 的 Testing 节承载。Bug 模板要求概述、复现、当前行为、预期行为与环境。
+Idea 与 Research 模板已按[语义化模板决策](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板 frontmatter 只保留 `name`/`about`/`type`，验收条件与测试证据不再写进模板，改由 PR 的 Testing 节承载。Bug 模板要求概述、复现、当前行为、预期行为与环境。
 
 模板只问意图与可观察行为，不问内部类名或函数列表；这让后续设计可以变化，但不丢掉最初要解决的问题。
 
@@ -80,13 +80,13 @@ Plan   = 具体改哪里，怎么验证
 
 ## 证据入口
 
-- [`.github/ISSUE_TEMPLATE/feature.md`](../../.github/ISSUE_TEMPLATE/feature.md) 第 1-13 行
-- [`.github/ISSUE_TEMPLATE/bug.md`](../../.github/ISSUE_TEMPLATE/bug.md)
-- [`.github/ISSUE_TEMPLATE/task.md`](../../.github/ISSUE_TEMPLATE/task.md)
-- [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 12-14、46、83-88 行
-- [`.github/issue-management/rules.mjs`](../../.github/issue-management/rules.mjs) 第 60-70、252、265 行
-- [`docs/subsystems/plan.md`](../../docs/subsystems/plan.md) 第 5、33 行
-- [`packages/plan/plan-mode/README.md`](../../packages/plan/plan-mode/README.md) 第 93、171、184 行
+- [`.github/ISSUE_TEMPLATE/feature.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/ISSUE_TEMPLATE/feature.md) 第 1-13 行
+- [`.github/ISSUE_TEMPLATE/bug.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/ISSUE_TEMPLATE/bug.md)
+- [`.github/ISSUE_TEMPLATE/task.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/ISSUE_TEMPLATE/task.md)
+- [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) 第 12-14、46、83-88 行
+- [`.github/issue-management/rules.mjs`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/issue-management/rules.mjs) 第 60-70、252、265 行
+- [`docs/subsystems/plan.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/plan.md) 第 5、33 行
+- [`packages/plan/plan-mode/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/plan/plan-mode/README.md) 第 93、171、184 行
 
 ## 4. Agent Note 的生命周期与两笔对照
 

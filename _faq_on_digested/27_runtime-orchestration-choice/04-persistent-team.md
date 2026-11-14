@@ -24,15 +24,15 @@
 1. **成员之间要不要持续通信。** 要 → Team；只是父收集结果 → workflow。这是最硬的一条分界。
 2. **协调状态要不要持久。** 要 → Team（roster 与任务板是 Lead 日志里的 durable 事实）；一次性 → workflow。**消息不是 Team 的持久记录**：已接受的消息跟随目标 Agent 的普通持久化策略，新的发送不再写 `team/message/*`，历史记录只可解码、不再投递。
 3. **规模。** 几十个对象的批量 → workflow（默认最多 1000 个 child）；几个角色的协作 → Team（默认 16 成员，profile 钉 8）。
-4. **接不接受组合替换。** Team bundle 会 disable `tool-subagent`、`tool-subagent-fork`、`tool-subagent-control` 与 `tool-subagent-list-agents`（[agent-team-profile patch](../../packages/experimental/agent-team-profile/cordis.patch.yml):3-14）。接受不了，就别用。启用方式是装一个 bundle（`@deepseek-ai/dsh-experimental-agent-team-profile`，走 profile 或 Web 插件管理器）。
+4. **接不接受组合替换。** Team bundle 会 disable `tool-subagent`、`tool-subagent-fork`、`tool-subagent-control` 与 `tool-subagent-list-agents`（[agent-team-profile patch](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/agent-team-profile/cordis.patch.yml):3-14）。接受不了，就别用。启用方式是装一个 bundle（`@deepseek-ai/dsh-experimental-agent-team-profile`，走 profile 或 Web 插件管理器）。
 
 ## 官方边界
 
-> Task readiness never starts an owner. — [`packages/experimental/tool-agent-team/src/index.ts:41`](../../packages/experimental/tool-agent-team/src/index.ts)
+> Task readiness never starts an owner. — [`packages/experimental/tool-agent-team/src/index.ts:41`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/tool-agent-team/src/index.ts)
 
 > The Lead must wait for required teammates before giving the final answer. — 同文件:41
 
-> Any member can send to another member or the Lead. — [`packages/experimental/agent-team/README.md`](../../packages/experimental/agent-team/README.md)
+> Any member can send to another member or the Lead. — [`packages/experimental/agent-team/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/agent-team/README.md)
 
 第一句是这套机制里最容易被误解的地方：依赖解开只是「就绪」，不会把 owner 叫起来；派发仍然要 Lead 发消息。这也正是它和「中心调度器」的分界线——**引擎推导就绪，但不替你派工。**
 
@@ -65,7 +65,7 @@
 
 ## 一个容易被忽略的组合事实
 
-Team 与 workflow **可以共存**：bundle 禁的是 `subagent` 系列工具，workflow 保留 base 的 `spawn` provider，所以 Team 会话里的成员仍然可以用 workflow 做批量 fresh 扇出（[patch](../../packages/experimental/agent-team-profile/cordis.patch.yml) 只 disable 了 subagent 系列，没有动 workflow 行；workflow 启动 child 时不传这个上限，但分支 child 仍按 parent+1 计深度）。真正互斥的是 **Team 与普通 subagent 委派**，不是 Team 与 workflow。
+Team 与 workflow **可以共存**：bundle 禁的是 `subagent` 系列工具，workflow 保留 base 的 `spawn` provider，所以 Team 会话里的成员仍然可以用 workflow 做批量 fresh 扇出（[patch](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/agent-team-profile/cordis.patch.yml) 只 disable 了 subagent 系列，没有动 workflow 行；workflow 启动 child 时不传这个上限，但分支 child 仍按 parent+1 计深度）。真正互斥的是 **Team 与普通 subagent 委派**，不是 Team 与 workflow。
 
 ## 出口
 

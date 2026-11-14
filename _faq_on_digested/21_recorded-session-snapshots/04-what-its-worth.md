@@ -53,7 +53,7 @@
 
 ## 三、上限：它是**变更探测器**，不是**正确性 oracle**
 
-这是主仓用一次真实的、**被快照套件放过**的回归换来的教训（[postmortem 0002](../../docs/postmortem/0002-js-expression-disabled-filesystem-tools.md)）：
+这是主仓用一次真实的、**被快照套件放过**的回归换来的教训（[postmortem 0002](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0002-js-expression-disabled-filesystem-tools.md)）：
 
 > The snapshot suite passed because both outputs matched the refreshed fixtures; it proved deterministic replay of the regression rather than successful filesystem behavior. — 同文件:19
 
@@ -63,7 +63,7 @@
 
 那次事故里，七个文件系统场景调用了根本不存在的工具，日志里是 `UNKNOWN_TOOL`，而**快照刷新把它们当成了新的期望输出**——套件全绿。原因和 [01](./01-why-dsh-needs-it.md) 提到的残余风险是同一个：
 
-> One recorded session serving as both replay input and expected output can reproduce a bad model script consistently. — [2026-08-24 语料决策](../../.agents/notes/implemented/testing/2026-08-24-session-log-snapshot-corpus.md):78
+> One recorded session serving as both replay input and expected output can reproduce a bad model script consistently. — [2026-08-24 语料决策](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/testing/2026-08-24-session-log-snapshot-corpus.md):78
 
 **推论到插件仓**：如果你录制的是一次**已经坏了**的运行，你会把 bug 一致地固化下来，而且以后每次刷新都会继续为它背书。所以：
 
@@ -83,10 +83,10 @@
 
 | 事故 | 事后钉住它的回归面 | 是快照吗 |
 |---|---|---|
-| [0001](../../docs/postmortem/0001-acp-default-export-drops-inject.md) ACP 导出形态吃掉 `inject` | 真 Loader 子进程 e2e（`apps/cli/tests/profiles/acp/tests/acp.e2e.ts`，无需 key） | **否**——需要的是真子进程，不是回放会话 |
-| [0002](../../docs/postmortem/0002-js-expression-disabled-filesystem-tools.md) `!!js` 让文件系统工具永久禁用 | `verify-cordis-config` 静态门 + 显式 overlay + `UNKNOWN_TOOL` 语义守卫 | **快照是共谋**，修的是守卫 |
-| [0003](../../docs/postmortem/0003-web-agent-gui-feedback-loop.md) Web agent 用裸 Vite 糊弄验收 | 分层真路径 e2e（`apps/web/tests/vite-entry.e2e.ts` 等） | **否**——轨迹在这里是**事后取证的记录**，不是回归测试 |
-| [0004](../../docs/postmortem/0004-landlock-partial-notice-misclassified-child-failures.md) Landlock 提示行被误判为沙箱失败 | 原生边界单测 + `snapshots/session/partial-landlock-child-failure/` | **是**——这条才是快照作为组装回归 pin 的样例 |
+| [0001](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0001-acp-default-export-drops-inject.md) ACP 导出形态吃掉 `inject` | 真 Loader 子进程 e2e（`apps/cli/tests/profiles/acp/tests/acp.e2e.ts`，无需 key） | **否**——需要的是真子进程，不是回放会话 |
+| [0002](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0002-js-expression-disabled-filesystem-tools.md) `!!js` 让文件系统工具永久禁用 | `verify-cordis-config` 静态门 + 显式 overlay + `UNKNOWN_TOOL` 语义守卫 | **快照是共谋**，修的是守卫 |
+| [0003](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0003-web-agent-gui-feedback-loop.md) Web agent 用裸 Vite 糊弄验收 | 分层真路径 e2e（`apps/web/tests/vite-entry.e2e.ts` 等） | **否**——轨迹在这里是**事后取证的记录**，不是回归测试 |
+| [0004](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0004-landlock-partial-notice-misclassified-child-failures.md) Landlock 提示行被误判为沙箱失败 | 原生边界单测 + `snapshots/session/partial-landlock-child-failure/` | **是**——这条才是快照作为组装回归 pin 的样例 |
 
 **四篇里只有一篇把快照当作组装回归 pin。** 但 0003 揭示了另一种价值：那条会话日志是复盘时**唯一能还原现场的证据**——trajectory 的**取证价值**，和它作为**回归测试的价值**，是两件事。插件仓同样两者都能用。
 

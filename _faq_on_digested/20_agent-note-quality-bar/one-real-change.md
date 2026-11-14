@@ -6,7 +6,7 @@
 
 2026-09-16 的提交里，DSH 在沙箱审批逻辑上做了一处小改动：当模型请求的沙箱模式**已经生效**时，`approveEscalation` 直接返回，不再报错。
 
-改动本身是几行。[成品在这里](../../.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md)，全文 171 个词。下面按时间顺序重放。
+改动本身是几行。[成品在这里](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-09-16-sandbox-same-mode.md)，全文 171 个词。下面按时间顺序重放。
 
 ## 第 1 步：先问「要不要写」——走三个出口
 

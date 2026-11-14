@@ -126,7 +126,7 @@ harness 强制执行）。** 通过 `agent-instructions` 访问，它加载 AGEN
 | CI 拥有 coverage + platform matrix; coverage gate = test:coverage | `scripts/run-gates.ts:400-407`（`ciPrimaryGates` 中的 `...coverageGates()`）与 `:696-729`（`coverageGates` 的 `test:coverage` / `test:coverage-exempt-heavy`）；`ci.yml` lanes | Default（repo-level） |
 | "Narrowest test / never full suite" | `dsh-pre-push-checks/SKILL.md:29-41` | Contributor policy |
 | "Report only commands run" | `AGENTS.md`（SKILL.md:8, 33 携带 "CI owns …" 框架）；字面句子在 AGENTS.md | Contributor policy |
-| "Agent Note per non-trivial change" | `AGENTS.md`; `.agents/notes/README.md` | Contributor policy |
+| Agent Note 写法（only-for：只写代码、测试与现有文档解释不了的持久理由；非 "per non-trivial change"） | `.agents/notes/README.md#when-to-write-one`（`730bcc7c85` 前是 MUST 型旧判据，已收窄） | Contributor policy |
 | 整 PR revert / note 承载的切片 / merge-forward | git（`research.md` 第二路） | History convention |
 
 ## 6. 对 answer.md 的证伪与精炼

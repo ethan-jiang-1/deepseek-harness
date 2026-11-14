@@ -18,7 +18,7 @@
 ## 原话（按主题）
 
 - **认可「装成 App 就顺手了」**：一位用户说装完 "The same great harness as before but now is an app you just click on your dock to run"，并当场决定为 cmd +/- 调字号写一个插件——「插件即扩展」的自证。
-- **默认遥测是第一抱怨点**：评论给出可用关闭办法——首次启动前在 `$DSH_HOME/cordis.patch.yml` 写 `- id: desktop-product-telemetry / disabled: true`（同帖还提到 `product-analytics`；两行 id 可在 `packages/bundle/web-app/cordis.patch.yml` 核到）。与 [`apps/desktop/README.md:33`](../../apps/desktop/README.md) 的「Desktop analytics… Web usage is excluded」对得上。
+- **默认遥测是第一抱怨点**：评论给出可用关闭办法——首次启动前在 `$DSH_HOME/cordis.patch.yml` 写 `- id: desktop-product-telemetry / disabled: true`（同帖还提到 `product-analytics`；两行 id 可在 `packages/bundle/web-app/cordis.patch.yml` 核到）。与 [`apps/desktop/README.md:33`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/desktop/README.md) 的「Desktop analytics… Web usage is excluded」对得上。
 - **Electron 原罪论**：多条评论说 "all the AI harnesses are Electron crap"，认为这么简单的 UI 应该让 AI 写原生前端。
 - **插件信任**：有评论不愿装第三方插件（担心恶意代码、失修、质量参差），更想要开箱即用的精选集；同一段又承认「让 AI 给自己写插件」很香。两种心态并存，对应官方两套入口（On-demand Official vs Add plugin）。
 - **数据与地缘**：少数评论把「二进制来自中国 / 数据去向」当作反对理由；也有评论指出第三方站点 `deepseekharness.io` 靠 SEO 抢在官方前面，属「官方没给简单安装包」留下的空档。

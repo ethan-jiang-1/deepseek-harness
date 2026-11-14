@@ -24,7 +24,7 @@
 | **L3** | REAL composition：真 Loader 读临时 `cordis.yml` boot 你的插件，断言 Config 的**两脸**（模型可见措辞 + 接受行为） | **必做** | 中 | `tool-todo/tests/loader-composition.spec.ts` |
 | **L4** | **行为回归证据面**：会话回放（轨迹夹具）或渲染期望，无 key 重放比对 | **按需** | 中高（要维护） | `snapshots/session/deepseek-messages-invalid-tool-history/` |
 
-L0–L3 的样板与排序理由见上表；测试分层的政策背景见 [`docs/testing.md`](../../docs/testing.md)。本文只补 L4 的外部版本。
+L0–L3 的样板与排序理由见上表；测试分层的政策背景见 [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)。本文只补 L4 的外部版本。
 
 ## 采用次序：先做什么、后做什么
 
@@ -126,8 +126,8 @@ your-plugin-repo/
 ## 和已有组织方案怎么衔接
 
 - **[FAQ 13 专家插件 repo 组织](../13_expert-plugin-repo-organization/answer.md)** 回答的是「repo 放哪、DSH 源码怎么引、UI 怎么分层、spec 流程怎么走」；本篇是它没覆盖的一格：**测试证据里最贵的那一阶在外部仓怎么落地**。四个方案（A pinned submodule / B 树内 / C 纯外部 / D marketplace）都适用同一套 L0–L4 阶梯，落点按上表三情况选。
-- **方案 B 的 L4 直接按主仓形状写**：在 `snapshots/session/<你的场景>/` 下加场景、在 `cordis.snapshot.yml` 里用 patch 挂你的插件（主仓做法见 [`docs/testing.md`](../../docs/testing.md) 与 [`snapshots/AGENTS.md`](../../snapshots/AGENTS.md)）。**过渡路径**是从私有轨迹「翻译」成主仓场景，而不是把私有目录搬进去。
-- **[_dsh_plugin_agent_ready_development](../../_dsh_plugin_agent_ready_development/00-index.md)** 讲的是独立插件仓如何沿用 DSH 的开发机制（意图 / owner / 证据 / 交付判断）；本篇可以看作它在**测试证据**这一格上的补充。
+- **方案 B 的 L4 直接按主仓形状写**：在 `snapshots/session/<你的场景>/` 下加场景、在 `cordis.snapshot.yml` 里用 patch 挂你的插件（主仓做法见 [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md) 与 [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md)）。**过渡路径**是从私有轨迹「翻译」成主仓场景，而不是把私有目录搬进去。
+- **[_dsh_plugin_agent_ready_development](https://github.com/deepseek-ai/deepseek-harness/blob/master/_dsh_plugin_agent_ready_development/00-index.md)** 讲的是独立插件仓如何沿用 DSH 的开发机制（意图 / owner / 证据 / 交付判断）；本篇可以看作它在**测试证据**这一格上的补充。
 
 ## 这一篇要你记住的
 

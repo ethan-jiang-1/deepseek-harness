@@ -46,6 +46,6 @@
 
 ## 不在本组
 
-- 快照机制本身的完整流程、语料治理与强制政策 → [`docs/testing.md`](../../docs/testing.md)、[`snapshots/AGENTS.md`](../../snapshots/AGENTS.md)。
+- 快照机制本身的完整流程、语料治理与强制政策 → [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)、[`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md)。
 - 快照作为**可移植资产**（外仓能不能用、值多少、怎么组织）→ [FAQ 21](../21_recorded-session-snapshots/answer.md)。
 - **取证动作**本身（探针、探前提/探失败/探历史）→ [FAQ 28](../28_probe-usage-and-origin/answer.md)。

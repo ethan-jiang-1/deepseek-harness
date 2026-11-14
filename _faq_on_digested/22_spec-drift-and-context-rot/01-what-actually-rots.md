@@ -33,14 +33,14 @@ DSH 对规格漂移的命名比外部讨论更具体。`docs/AGENTS.md` 的 slop
 - **实现状态标注**：「Status rots; the repo layout and package manifests carry it.」
 - **手抄的目录、JSDoc、测试与包清单**：源码或生成器才是权威。
 
-插件仓语料把这件事总结得更狠：**大型仓库最常见的漂移不是代码错误，而是「东西放错了地方」——同一事实出现在第二份手写清单、生成的产物被手改、测试期望输出堆进无关目录**（[`repo-harness/08-repository-taxonomy.md:5`](../../_dsh_plugin_agent_ready_development/repo-harness/08-repository-taxonomy.md)，`[原文]`）。
+插件仓语料把这件事总结得更狠：**大型仓库最常见的漂移不是代码错误，而是「东西放错了地方」——同一事实出现在第二份手写清单、生成的产物被手改、测试期望输出堆进无关目录**（[`repo-harness/08-repository-taxonomy.md:5`](https://github.com/deepseek-ai/deepseek-harness/blob/master/_dsh_plugin_agent_ready_development/repo-harness/08-repository-taxonomy.md)，`[原文]`）。
 
 ## 方向反复：不是腐化，是「决定被版本化」
 
 「先往东、后来改往西」本身不是错误，是迭代的常态。出问题的是记录方式：如果把第一篇 spec 原地改成西向版本，那么**东向阶段的理由、放弃的备选、当时的约束全部消失**，团队既无法解释为什么现在这样，也无法判断将来该不该改回去。DSH 的规则把这件事拆成两条：
 
-- 事实（路径、包名、默认值）**原地更新**：「Rewrite stale facts in place; do not append change history.」（[`.agents/notes/implemented/AGENTS.md:7`](../../.agents/notes/implemented/AGENTS.md)，`[原文]`）
-- 决定（以及它的理由）**不可原地改写**：「A reversal of the decision or its rationale requires a new Agent Note and cross-link.」（[`.agents/notes/implemented/AGENTS.md:13`](../../.agents/notes/implemented/AGENTS.md)，`[原文]`）
+- 事实（路径、包名、默认值）**原地更新**：「Rewrite stale facts in place; do not append change history.」（[`.agents/notes/implemented/AGENTS.md:7`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/AGENTS.md)，`[原文]`）
+- 决定（以及它的理由）**不可原地改写**：「A reversal of the decision or its rationale requires a new Agent Note and cross-link.」（[`.agents/notes/implemented/AGENTS.md:13`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/AGENTS.md)，`[原文]`）
 
 这两条一起，才让「左晃右晃」变成可回溯的轨迹而不是丢失的历史。
 

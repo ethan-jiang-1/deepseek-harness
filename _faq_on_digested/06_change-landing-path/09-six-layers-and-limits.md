@@ -8,10 +8,10 @@
 |----|----------|----------|----------|
 | 意图 | GitHub Issue | 要改变什么可观察结果，怎样算完成 | Bug / Feature / Task 模板固定填写节；验收条件由 PR 的 Testing 节承载 |
 | 决策 | Agent Note（`proposed/` / `implemented/` / `rejected/`） | 为什么这样设计，什么方案输了，接受什么风险 | 固定 `Problem` / `Proposal`（或 `Decision`）/ `Alternatives considered` / `Acceptance criteria` / `Risks` 结构；格式由 `verify-agent-note-format` 检查 |
-| 实现计划 | Plan Mode 的 plan | 哪些子系统、API、schema、数据流、失败路径和测试要改 | 先只读勘察；`exit_plan_mode` 要求完整 Markdown 计划并取得明确批准（[plan-mode README](../../packages/plan/plan-mode/README.md)） |
+| 实现计划 | Plan Mode 的 plan | 哪些子系统、API、schema、数据流、失败路径和测试要改 | 先只读勘察；`exit_plan_mode` 要求完整 Markdown 计划并取得明确批准（[plan-mode README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/plan/plan-mode/README.md)） |
 | 当前合同 | 类型、配置 schema、事件声明、README、JSDoc、architecture/subsystem 文档 | 调用方和实现方现在必须遵守什么 | strict TypeScript、生成目录、类型等价、README/JSDoc 与文档同步检查 |
-| 行为证据 | 单元测试、真实组合测试、keyless snapshot、浏览器快照、real-API e2e | 真实入口和外部可见行为是否满足要求 | 测试矩阵、每文件覆盖率、负例、日志重建、快照 diff、真实 API smoke（[`docs/testing.md`](../../docs/testing.md)） |
-| 工程规则 | `AGENTS.md`、skills、脚本与 CI | 任何变更都不能破坏哪些仓库级约束 | 可机械检查的规则变成非零退出命令（[`scripts/run-gates.ts`](../../scripts/run-gates.ts)）；语义边界由 review 承担 |
+| 行为证据 | 单元测试、真实组合测试、keyless snapshot、浏览器快照、real-API e2e | 真实入口和外部可见行为是否满足要求 | 测试矩阵、每文件覆盖率、负例、日志重建、快照 diff、真实 API smoke（[`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)） |
+| 工程规则 | `AGENTS.md`、skills、脚本与 CI | 任何变更都不能破坏哪些仓库级约束 | 可机械检查的规则变成非零退出命令（[`scripts/run-gates.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/run-gates.ts)）；语义边界由 review 承担 |
 
 这六层不是一条必须逐层经过的流水线。它们的分工遵循“一个事实一个家”：Issue 不复制长期理由，Agent Note 不复制当前 API，README 不复制生成目录，测试也不替代设计理由。
 

@@ -63,15 +63,15 @@
 
 运行级这一列还分后端：local child 的 `interrupt_agent` 只取消当前 turn（`keepInbox`，Activation 保留，之后仍可冷恢复），`send_message` 与冷恢复也只对 local child 成立；external provider 的 child 只接受 `interrupt`，而且是整台处置、之后不可续。所以「运行级能改」在本地 child 上成立，在 Codex / Claude Code / ACP / SDK 这类后端上只是一次性刹车。
 
-**可逆性不对称，是选错代价不同的主要原因。** 选错 workflow，代价是一次运行——取消、重跑、换写法。选错 team，代价是一次组合替换：`subagent`/`subagent_fork` 与全局控制面会从模型视野里消失（[agent-team-profile 的 patch](../../packages/experimental/agent-team-profile/cordis.patch.yml):5-14），要退回去得改 profile。这个不对称决定了默认策略：**能浅就浅**。
+**可逆性不对称，是选错代价不同的主要原因。** 选错 workflow，代价是一次运行——取消、重跑、换写法。选错 team，代价是一次组合替换：`subagent`/`subagent_fork` 与全局控制面会从模型视野里消失（[agent-team-profile 的 patch](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/agent-team-profile/cordis.patch.yml):5-14），要退回去得改 profile。这个不对称决定了默认策略：**能浅就浅**。
 
-量级也在提醒同一件事。workflow 一次运行默认最多 1000 个 child、单次 `parallel`/`pipeline` 4096 项、并发默认取 `min(16, CPU−2)`（[workflow-ptc config](../../packages/workflow/workflow-ptc/src/index.ts):108-110 与 `:142-144`）；Team 默认 16 个成员（profile 钉 8）、256 个任务（[agent-team defaults](../../packages/experimental/agent-team/src/index.ts):42-43）。它们不是同一类工具的两个档位，而是两种规模完全不同的组织方式。
+量级也在提醒同一件事。workflow 一次运行默认最多 1000 个 child、单次 `parallel`/`pipeline` 4096 项、并发默认取 `min(16, CPU−2)`（[workflow-ptc config](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow-ptc/src/index.ts):108-110 与 `:142-144`）；Team 默认 16 个成员（profile 钉 8）、256 个任务（[agent-team defaults](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/agent-team/src/index.ts):42-43）。它们不是同一类工具的两个档位，而是两种规模完全不同的组织方式。
 
 ## 尺子三 · 选择住在哪
 
 前两把尺子描述「选项长什么样」，第三把描述「模型怎么知道有这些选项」。
 
-DSH 没有中心选择器：没有一份全局的「任务类型 → 原语」映射表，也没有把任务类型映射到原语的调度组件。容量层面的 FIFO 槽位、job registry、并发上限都在，但它们只决定「能同时跑多少」，不决定「该用哪个原语」。相反，**每个工具把使用边界写在自己的 description 和它注册的 prompt 段里**。仓库里把这叫 master convention：使用策略随工具插件走，不放进部署 persona（[tool-workflow 的注释与 prompt 段](../../packages/workflow/tool-workflow/src/index.ts):329）。包 README 与 `docs/` 是给人读的转述，不会被自动注入；模型可以读，但没有任何保证。
+DSH 没有中心选择器：没有一份全局的「任务类型 → 原语」映射表，也没有把任务类型映射到原语的调度组件。容量层面的 FIFO 槽位、job registry、并发上限都在，但它们只决定「能同时跑多少」，不决定「该用哪个原语」。相反，**每个工具把使用边界写在自己的 description 和它注册的 prompt 段里**。仓库里把这叫 master convention：使用策略随工具插件走，不放进部署 persona（[tool-workflow 的注释与 prompt 段](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/tool-workflow/src/index.ts):329）。包 README 与 `docs/` 是给人读的转述，不会被自动注入；模型可以读，但没有任何保证。
 
 后果有三个，都是可观察的：
 

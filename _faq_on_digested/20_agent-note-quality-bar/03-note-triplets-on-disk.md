@@ -76,11 +76,11 @@ pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/20
 
 ## 只想要英文？那这一层可以整层删掉
 
-三件套是 DSH 的项目政策（[`docs/i18n/README.md`](../../docs/i18n/README.md)），不是 Agent Note 制度的必需部分。单语仓库直接删掉 `.zh.md` 与 `.i18n.yaml`，把两个门禁拿掉即可——见 [06 移植](./06-port-to-another-repo.md)。
+三件套是 DSH 的项目政策（[`docs/i18n/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/i18n/README.md)），不是 Agent Note 制度的必需部分。单语仓库直接删掉 `.zh.md` 与 `.i18n.yaml`，把两个门禁拿掉即可——见 [06 移植](./06-port-to-another-repo.md)。
 
 ## 被测的目录树
 
-结构错误由 [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) 的 `walkAgentNoteTree()` 判定；该模块本身没有 CLI，是两个门禁（`verify-agent-note-classification` 与 `verify-agent-note-format`）共同调用的共享模块，错误经由它们以非零退出码失败：
+结构错误由 [`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts) 的 `walkAgentNoteTree()` 判定；该模块本身没有 CLI，是两个门禁（`verify-agent-note-classification` 与 `verify-agent-note-format`）共同调用的共享模块，错误经由它们以非零退出码失败：
 
 | 规则 | 违规时报错 |
 |---|---|
@@ -97,7 +97,7 @@ pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/20
 
 ## 头部与状态的语法
 
-前三行严格是 `# Agent Note: <title>`、空行、`Status: <status>`，第四行空行，且**全文只有这一个 `Status:` 行**（[`verify-agent-note-format.ts:23`](../../scripts/verify-agent-note-format.ts)）。三种状态的语法是精确正则，没有自由度：
+前三行严格是 `# Agent Note: <title>`、空行、`Status: <status>`，第四行空行，且**全文只有这一个 `Status:` 行**（[`verify-agent-note-format.ts:23`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts)）。三种状态的语法是精确正则，没有自由度：
 
 ```text
 proposed     /^Status: proposed$/
@@ -117,7 +117,7 @@ does not intercept `node:timers/promises`, so the swap costs deterministic fast 
 
 ## 中文侧：哪些保持英文，哪些必须翻译
 
-格式门禁**跳过** `.zh.md`（[`agent-note-tree.ts:64`](../../scripts/agent-note-tree.ts)），所以 `.zh.md` 的章节结构由配对门禁对齐。分四类：
+格式门禁**跳过** `.zh.md`（[`agent-note-tree.ts:64`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)），所以 `.zh.md` 的章节结构由配对门禁对齐。分四类：
 
 | 内容 | 中文侧怎么写 | 谁检查 |
 |---|---|---|
@@ -127,7 +127,7 @@ does not intercept `node:timers/promises`, so the swap costs deterministic fast 
 | `## Problem`、`## Decision`、`## Alternatives considered` 等章节标题 | **翻译**（`## 问题`、`## 决策`、`## 考虑过的替代方案`） | 配对门禁按**英文**标题生成 slug 键，两侧标题数量必须相等 |
 | fenced code block、生成区域 | **两侧逐字相同** | 配对门禁 |
 
-最后一行是关键，也最反直觉：`.i18n.yaml` 的键是**英文侧标题的 slug 路径**，形如 `/{H1 标题}/{h2 标题}`（真实值：`/agent-note-ptc-mode-the-model-writes-typescript-against-the-tool-registry/decision`），但被哈希的内容块来自两侧各自的文字——[`translation-brief.ts:125`](../../scripts/translation-brief.ts) 写明了为什么不能拿标题文字对齐：**「Depth only: heading TEXT is translated across a pair, so it cannot participate in cross-language alignment.」**
+最后一行是关键，也最反直觉：`.i18n.yaml` 的键是**英文侧标题的 slug 路径**，形如 `/{H1 标题}/{h2 标题}`（真实值：`/agent-note-ptc-mode-the-model-writes-typescript-against-the-tool-registry/decision`），但被哈希的内容块来自两侧各自的文字——[`translation-brief.ts:125`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/translation-brief.ts) 写明了为什么不能拿标题文字对齐：**「Depth only: heading TEXT is translated across a pair, so it cannot participate in cross-language alignment.」**
 
 真实对照（同一篇 Note 的两种语言；它归档后，两侧在 `Status:` 下各多一行同值的 `Archived: 2026-09-30`）：
 
@@ -147,12 +147,12 @@ English | [中文](….zh.md)                    [English](….md) | 中文
 ## 改名与移动
 
 - **在生命周期之间移动**：同一变更里改 `Status:` **并且**满足目标文件夹的骨架，否则门禁失败。`proposed/` → `implemented/` 是把 `## Proposal` 改写成现在时 `## Decision`，把验收与风险里仍有价值的事实折进 `## Consequences`（或陈述现在时事实的 `## Testing` / `## Verification`）；`proposed/` → `rejected/` 只在 `Status:` 加理由并冻结。
-- **rejected 保留提案期的正文。** 它只需要满足四样：头部块、`## Problem` 开头、含 `## Proposal`、有 Alternatives（[`.agents/notes/README.md:107`](../../.agents/notes/README.md)）——**`## Acceptance criteria`、`## Risks`、`## Plan` 都合法留着**，因为它们描述的是那个被否决的提案本身。`Status:` 行承载裁决。
+- **rejected 保留提案期的正文。** 它只需要满足四样：头部块、`## Problem` 开头、含 `## Proposal`、有 Alternatives（[`.agents/notes/README.md:107`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)）——**`## Acceptance criteria`、`## Risks`、`## Plan` 都合法留着**，因为它们描述的是那个被否决的提案本身。`Status:` 行承载裁决。
 - **类型选错了**：改目录即可，但三件套一起移动。
 - **归档**：见 [05](./05-keep-archive-delete.md)——那是唯一允许在正文里加一行 `Archived: YYYY-MM-DD` 的变更。
 
 ## 证据入口
 
-- [`.agents/notes/README.md` 的 "Layout and naming"](../../.agents/notes/README.md)：路径语法、日期语义、不用索引、相对链接。
-- [`docs/i18n/README.md`](../../docs/i18n/README.md)：三件套契约、sidecar 键与哈希语义。
-- [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)：上表每条报错的来源。注意它是被 `verify-agent-note-classification` 与 `verify-agent-note-format` 共同调用的共享模块，本身不是独立门禁。
+- [`.agents/notes/README.md` 的 "Layout and naming"](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：路径语法、日期语义、不用索引、相对链接。
+- [`docs/i18n/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/i18n/README.md)：三件套契约、sidecar 键与哈希语义。
+- [`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)：上表每条报错的来源。注意它是被 `verify-agent-note-classification` 与 `verify-agent-note-format` 共同调用的共享模块，本身不是独立门禁。

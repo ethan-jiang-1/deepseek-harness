@@ -9,20 +9,20 @@
 | 派发 | 引擎取节点 | 模型或 Lead 决定 |
 | 改图 | 图变即重算 | 图是活的，每次写入重全图校验 |
 
-外部叙事常把 DSH 描述成「Captain 规划 + Kahn 入度调度 + Reviewer 门禁」。逐条核对见 [`docs/subsystems/workflow.md`](../../docs/subsystems/workflow.md)、[`docs/subsystems/agent-team.md`](../../docs/subsystems/agent-team.md) 与 [`apps/cli/src/args.ts`](../../apps/cli/src/args.ts)：真实存在的是任务板依赖图、脚本控制流和归属树，缺的是中心 executor。本篇不重复那份核对，只说这个形状为什么合理。
+外部叙事常把 DSH 描述成「Captain 规划 + Kahn 入度调度 + Reviewer 门禁」。逐条核对见 [`docs/subsystems/workflow.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/workflow.md)、[`docs/subsystems/agent-team.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/agent-team.md) 与 [`apps/cli/src/args.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/src/args.ts)：真实存在的是任务板依赖图、脚本控制流和归属树，缺的是中心 executor。本篇不重复那份核对，只说这个形状为什么合理。
 
 ## 为什么
 
 **DSH 的设计假设是：重规划是常态。** 真实任务的依赖常常是做着做着才发现的：审到一半才知道哪两个文件耦合，迁移到一半才发现有个调用点绕过了抽象层。静态 DAG 表达不了这件事，于是要么假装图已知（然后频繁重规划），要么长出逃逸舱——而逃逸舱就是模型。
 
-DSH 的选择是不引入中心调度器：派发由模型、它写的脚本或 Lead 决定，只把**能机械保证**的部分留给引擎：图是否合法（写时校验）、任务是否就绪（读时推导）、状态转换是否允许（claim/reassign 准入）。派发和改图需要判断「接下来什么更值得做、失败了要不要重试、要不要改图」，那是概率判断，不是机械保证（写时校验、读时推导与准入分置见 [`docs/subsystems/workflow.md`](../../docs/subsystems/workflow.md)）。
+DSH 的选择是不引入中心调度器：派发由模型、它写的脚本或 Lead 决定，只把**能机械保证**的部分留给引擎：图是否合法（写时校验）、任务是否就绪（读时推导）、状态转换是否允许（claim/reassign 准入）。派发和改图需要判断「接下来什么更值得做、失败了要不要重试、要不要改图」，那是概率判断，不是机械保证（写时校验、读时推导与准入分置见 [`docs/subsystems/workflow.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/workflow.md)）。
 
 ## 深度换广度
 
 这套系统的默认值是浅的：
 
-- subagent 工具的委派深度默认 1 层（[subagent config](../../packages/subagent/subagent/src/index.ts):196）。这是**工具策略**，不是全局不变量：workflow 引擎启动 child 时不传这个上限，但分支 child 仍按 parent+1 计数。
-- workflow 脚本里没有嵌套的 `workflow()` 钩子（[workflow README](../../packages/workflow/workflow/README.md):128）；但 child 本身是完整 agent，如果它的 preset 里有 workflow 工具，理论上可以自己再调一层。
+- subagent 工具的委派深度默认 1 层（[subagent config](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/src/index.ts):196）。这是**工具策略**，不是全局不变量：workflow 引擎启动 child 时不传这个上限，但分支 child 仍按 parent+1 计数。
+- workflow 脚本里没有嵌套的 `workflow()` 钩子（[workflow README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/workflow/workflow/README.md):128）；但 child 本身是完整 agent，如果它的 preset 里有 workflow 工具，理论上可以自己再调一层。
 - Team 只有 Lead 能拉人，队友不能再拉队友。
 - 换来的是：workflow 一次默认最多 1000 个 child、单次调用 4096 项。
 

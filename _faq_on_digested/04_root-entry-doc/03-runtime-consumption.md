@@ -94,11 +94,11 @@
 
 ## 证据入口
 
-- [`packages/context/agent-instructions/README.md`](../../packages/context/agent-instructions/README.md)：Summary（12）、What the agent gets（32-34）、Configuration（36、44-48、62-68）、Observing the budget（72-74）、Design concept（86-88）、Main flow（101-103）、Model Experience / Baseline context（126-151）、Known Limitations（212、220）
-- [`packages/fs/tool-fs/src/read.ts`](../../packages/fs/tool-fs/src/read.ts) 第 74 行
-- [`packages/fs/tool-fs-search/src/grep.ts`](../../packages/fs/tool-fs-search/src/grep.ts) 第 280-281 行
-- [`packages/fs/tool-fs-search/src/glob.ts`](../../packages/fs/tool-fs-search/src/glob.ts) 第 302 行
-- [`docs/subsystems/skills.md`](../../docs/subsystems/skills.md) 第 192、229、233 行
-- [`docs/subsystems/compaction.md`](../../docs/subsystems/compaction.md) 第 101 行
-- [`docs/subsystems/token-meter.md`](../../docs/subsystems/token-meter.md) 第 5 行
-- [`packages/AGENTS.md`](../../packages/AGENTS.md) 第 27-29 行
+- [`packages/context/agent-instructions/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/context/agent-instructions/README.md)：Summary（12）、What the agent gets（32-34）、Configuration（36、44-48、62-68）、Observing the budget（72-74）、Design concept（86-88）、Main flow（101-103）、Model Experience / Baseline context（126-151）、Known Limitations（212、220）
+- [`packages/fs/tool-fs/src/read.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs/src/read.ts) 第 74 行
+- [`packages/fs/tool-fs-search/src/grep.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs-search/src/grep.ts) 第 280-281 行
+- [`packages/fs/tool-fs-search/src/glob.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/fs/tool-fs-search/src/glob.ts) 第 302 行
+- [`docs/subsystems/skills.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/skills.md) 第 192、229、233 行
+- [`docs/subsystems/compaction.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/compaction.md) 第 101 行
+- [`docs/subsystems/token-meter.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/token-meter.md) 第 5 行
+- [`packages/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md) 第 27-29 行

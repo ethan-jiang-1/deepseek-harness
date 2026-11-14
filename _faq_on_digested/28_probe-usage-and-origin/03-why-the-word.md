@@ -30,7 +30,7 @@
 | **PATH 探针** | 启动时采样一次环境事实，让下游据此选实现 | `packages/host/directory-picker-auto/src/probe.ts`——`hasLinuxChooserBinary()` 扫 `PATH` 找 `zenity` / `kdialog`，找不到就退回 `browse` 交互而不是每次 pick 都失败 |
 | **复现探针** | 开发期写的一次性脚本：起真外部进程，把线协议跑通一次，留下握手结果 | `scripts/ssh-helper/probe.ts`（`probeHelper()`：起真 helper、走私有 wire 做 `hello`/`close`、30 秒强杀）、`scripts/ssh-helper/worker-probe.ts`（在 Seatbelt 拒绝访问 checkout 的条件下跑 PTC worker）、`apps/web/tests/support/listen-probe.mjs`（monkey-patch `Server.prototype.listen` 记录监听） |
 | **取证探针** | 不 assert，只 dump 事实，靠人读 | `packages/subprocess/win32-process/verify/abi-probe.cpp` 与 `packages/sandbox/sandbox-windows-acl/verify/abi-probe.cpp`——打印 Windows 结构体的 sizeof 与 offsetof，README 给出 `g++ … && ./abi-probe.exe` 的运行命令。这是全仓最纯的一条探针 |
-| **诊断车道** | 有入口但不在 CI 主清单，产物给人看 | `package-local .perf.ts stays diagnostic`（[`docs/testing.md`](../../docs/testing.md)）、`apps/web/stress-tests/reasoning-chunks.stress.ts`、`dsh --profile … --dump-config`（只打印组装后的 profile 树然后退出，零模型请求） |
+| **诊断车道** | 有入口但不在 CI 主清单，产物给人看 | `package-local .perf.ts stays diagnostic`（[`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)）、`apps/web/stress-tests/reasoning-chunks.stress.ts`、`dsh --profile … --dump-config`（只打印组装后的 profile 树然后退出，零模型请求） |
 
 **所以准确的说法分两句**：
 

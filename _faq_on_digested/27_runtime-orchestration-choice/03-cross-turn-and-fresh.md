@@ -27,11 +27,11 @@
 
 ## 官方边界
 
-> Use it when the direct human request is a long-running objective, even if the user did not say "goal"; not for single-turn work. — [`packages/goal/tool-goal/src/index.ts:53`](../../packages/goal/tool-goal/src/index.ts)
+> Use it when the direct human request is a long-running objective, even if the user did not say "goal"; not for single-turn work. — [`packages/goal/tool-goal/src/index.ts:53`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/tool-goal/src/index.ts)
 
-> Use only when the direct human explicitly asks for Ralph or fresh-agent iteration. — [`packages/experimental/tool-ralph/src/index.ts:178`](../../packages/experimental/tool-ralph/src/index.ts)
+> Use only when the direct human explicitly asks for Ralph or fresh-agent iteration. — [`packages/experimental/tool-ralph/src/index.ts:178`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/tool-ralph/src/index.ts)
 
-> Completion and blockers are worker reports, not independent evaluation. — [同文件:408](../../packages/experimental/tool-ralph/src/index.ts)
+> Completion and blockers are worker reports, not independent evaluation. — [同文件:408](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/tool-ralph/src/index.ts)
 
 这三句合起来给出了一条少见但很清楚的官方分工：**普通长跑归 goal，fresh 迭代归 ralph，而 ralph 必须由人点名。**
 
@@ -45,7 +45,7 @@
 | 终止 | 人判断 | complete / blocked / 轮上限 | complete / blocked / 预算 |
 | 主要风险 | 忘了继续 | 目标漂移、上下文腐化 | 自报完成、轮次烧完 |
 
-两个数字值得记住：goal 的 `blocked` 机械门槛是**在 goal 自动续轮里已开始至少 3 轮**（[tool-goal:39](../../packages/goal/tool-goal/src/index.ts)、`:305-312`）；执行器只看 `roundsStarted`，不校验是不是同一阻塞条件，直接人类 turn 也不受这道门限制。模型可见的 guidance 仍要求「同一阻塞条件持续 3 轮」（`:120-121`），那是政策文本，靠模型遵守，不是执行器校验。ralph 的轮上限工具默认 256，optional bundle 把它钉到 64（[ralph-bundle patch](../../packages/experimental/ralph-bundle/cordis.patch.yml)）。
+两个数字值得记住：goal 的 `blocked` 机械门槛是**在 goal 自动续轮里已开始至少 3 轮**（[tool-goal:39](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/tool-goal/src/index.ts)、`:305-312`）；执行器只看 `roundsStarted`，不校验是不是同一阻塞条件，直接人类 turn 也不受这道门限制。模型可见的 guidance 仍要求「同一阻塞条件持续 3 轮」（`:120-121`），那是政策文本，靠模型遵守，不是执行器校验。ralph 的轮上限工具默认 256，optional bundle 把它钉到 64（[ralph-bundle patch](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/experimental/ralph-bundle/cordis.patch.yml)）。
 
 ## 反例与失败形态
 

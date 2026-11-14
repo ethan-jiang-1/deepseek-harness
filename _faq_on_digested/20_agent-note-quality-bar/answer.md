@@ -76,13 +76,13 @@
 
 | 想知道 | 去哪里（都在本仓库内） |
 |---|---|
-| Note 的制度原文：何时写、路径、骨架、归档 | [`.agents/notes/README.md`](../../.agents/notes/README.md) |
-| Note 的身份与 supersession 检查要求 | [`.agents/notes/AGENTS.md`](../../.agents/notes/AGENTS.md) |
-| 文档标准、tier 表与 slop 清单 | [`docs/AGENTS.md`](../../docs/AGENTS.md) |
-| 归档件的冻结规则 | [`.agents/notes/archived/AGENTS.md`](../../.agents/notes/archived/AGENTS.md) |
-| 保留 / 归档 / 删除的判定流程与校准例子 | [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) |
-| 多语言三件套政策 | [`docs/i18n/README.md`](../../docs/i18n/README.md) |
-| 会失败的门禁脚本 | [`scripts/verify-agent-note-classification.ts`](../../scripts/verify-agent-note-classification.ts)、[`scripts/verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts)、[`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)、[`scripts/verify-translation-pairing.ts`](../../scripts/verify-translation-pairing.ts) |
+| Note 的制度原文：何时写、路径、骨架、归档 | [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) |
+| Note 的身份与 supersession 检查要求 | [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/AGENTS.md) |
+| 文档标准、tier 表与 slop 清单 | [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) |
+| 归档件的冻结规则 | [`.agents/notes/archived/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/AGENTS.md) |
+| 保留 / 归档 / 删除的判定流程与校准例子 | [`.agents/skills/dsh-archive-agent-notes/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md) |
+| 多语言三件套政策 | [`docs/i18n/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/i18n/README.md) |
+| 会失败的门禁脚本 | [`scripts/verify-agent-note-classification.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-classification.ts)、[`scripts/verify-agent-note-format.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-agent-note-format.ts)、[`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)、[`scripts/verify-translation-pairing.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-translation-pairing.ts) |
 
 本组 FAQ 只引用上面这类**仓库根部的内容**；它不引用任何其他 FAQ 目录或仓库外的下划线目录。
 

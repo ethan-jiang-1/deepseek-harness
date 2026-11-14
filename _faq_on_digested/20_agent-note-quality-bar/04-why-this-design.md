@@ -33,7 +33,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 > Agents follow enforced gates far more reliably than prose conventions, and "a lot of work" is not a cost argument when agents do the labor.
 
-（出处：[`archived/process/2026-06-11-quality-gates.md`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)）
+（出处：[`archived/process/2026-06-11-quality-gates.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)）
 
 于是整套制度被**切成两半**：
 
@@ -56,7 +56,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 被否决的提案值得留档，当且仅当**它落选的那个诱惑仍然存在**。真实例子：
 
-[`rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md`](../../.agents/notes/rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md) 记录的是「用手写的、可取消的 `setTimeout` 包装，换掉 `node:timers/promises` 内置版本」。这个提案**看起来明显是净赚**——删掉大约 10 行手写代码，换上标准库。它输掉的理由只有一句话能说清：
+[`rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/rejected/simplification/2026-07-26-builtin-timer-promises-for-hand-rolled-sleeps.md) 记录的是「用手写的、可取消的 `setTimeout` 包装，换掉 `node:timers/promises` 内置版本」。这个提案**看起来明显是净赚**——删掉大约 10 行手写代码，换上标准库。它输掉的理由只有一句话能说清：
 
 > vitest's fake clock does not intercept `node:timers/promises`, so the swap costs deterministic fast tests for ~10 deleted lines
 
@@ -72,7 +72,7 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 ## 为什么有六个类型
 
-六个类型是**封闭集合**——[`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts) 拒绝任何不在这份名单里的目录，该错误随 `verify-agent-note-classification` 与格式门禁一起失败。它们的职责只有一个：**把检索范围从一千篇缩到几十篇**。
+六个类型是**封闭集合**——[`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts) 拒绝任何不在这份名单里的目录，该错误随 `verify-agent-note-classification` 与格式门禁一起失败。它们的职责只有一个：**把检索范围从一千篇缩到几十篇**。
 
 | 类型 | 覆盖范围 | implemented 侧数量 |
 |---|---|---|
@@ -127,12 +127,12 @@ Note 的格式不是美学选择，是这两个约束推出来的：
 
 ## 证据入口
 
-- [`.agents/notes/AGENTS.md`](../../.agents/notes/AGENTS.md)：Note 的身份（agent 写的 RFC）与 supersession 检查要求。
-- [`archived/process/2026-06-11-quality-gates.md`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)：「机械门禁优于散文约定」的实测结论。
-- [`scripts/agent-note-tree.ts`](../../scripts/agent-note-tree.ts)：状态与类型的封闭集合、允许清单、`INDEX.md` 禁令；由两个门禁共同调用的共享模块。
-- [`.agents/notes/README.md` 的 "Classification"](../../.agents/notes/README.md)：六个类型的定义与 architecture/process 分界。
+- [`.agents/notes/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/AGENTS.md)：Note 的身份（agent 写的 RFC）与 supersession 检查要求。
+- [`archived/process/2026-06-11-quality-gates.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)：「机械门禁优于散文约定」的实测结论。
+- [`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)：状态与类型的封闭集合、允许清单、`INDEX.md` 禁令；由两个门禁共同调用的共享模块。
+- [`.agents/notes/README.md` 的 "Classification"](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：六个类型的定义与 architecture/process 分界。
 - 提交 `a767cd357f`（2026-08-11）：把旧目录整体搬进类型子目录、确立这份名单的那次改动。
-- [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)：保留 / 归档 / 删除的判定与校准例子（含字数作为反证的那几个案例）。
+- [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md)：保留 / 归档 / 删除的判定与校准例子（含字数作为反证的那几个案例）。
 
 ---
 

@@ -5,7 +5,7 @@
 > ## Motivation
 > ## Behavior
 
-来源：`.github/ISSUE_TEMPLATE/feature.md:1-13`（Idea 与 Research 模板已按[语义化模板决策](../../.agents/notes/archived/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板不再承载验收与测试证据）
+来源：`.github/ISSUE_TEMPLATE/feature.md:1-13`（Idea 与 Research 模板已按[语义化模板决策](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-09-03-semantic-issue-templates-and-policy.md)取消并归入 Task；模板不再承载验收与测试证据）
 
 PR 模板：
 
@@ -34,9 +34,9 @@ Issue 引用的机器强制边界：
 
 来源：`.agents/notes/README.md:46`
 
-> Every non-trivial change MUST add or update at least one Agent Note in the same PR.
+> Add or update an Agent Note in the same PR only for lasting decision rationale that code, tests, and existing documentation do not explain.
 
-来源：`.agents/notes/README.md:46`
+来源：`.agents/notes/README.md:46`（现行判据。`730bcc7c85` 之前的旧文是 "Every non-trivial change MUST add or update at least one Agent Note in the same PR."，已被改写，不要当现行规则引用。）
 
 proposed 骨架：
 

@@ -93,7 +93,7 @@ llm-replay: fixture not fully consumed — …; the scenario drove fewer model c
 - 快照刷新把这些结果**当成新的期望输出**收下了；
 - 套件全绿，事故上线。
 
-> The snapshot framework treated any deterministic transcript as valid behavior. — [postmortem 0002](../../docs/postmortem/0002-js-expression-disabled-filesystem-tools.md):34
+> The snapshot framework treated any deterministic transcript as valid behavior. — [postmortem 0002](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0002-js-expression-disabled-filesystem-tools.md):34
 
 **落到插件仓的操作规则：录制/刷新之后，必须有人看 diff，并且必须有一条语义断言能独立于这个 diff 说「这不可能」**（旧事故的形态是「工具不存在」，你的插件会有自己的形态）。
 

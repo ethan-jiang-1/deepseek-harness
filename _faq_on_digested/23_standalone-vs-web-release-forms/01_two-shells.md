@@ -8,8 +8,8 @@
 
 | 说法 | 实际指 | 与「发布形态」的关系 |
 |---|---|---|
-| `sdk-minimal` 的 "standalone bundle" | 不叠 `dsh-base` 的独立树（[`docs/architecture.md`](../../docs/architecture.md) 的 `## Application launch`） | 无关：它是 profile，不是安装包 |
-| session 的 "standalone events" | 不属于任何 turn 的日志事件（[`docs/subsystems/session.md`](../../docs/subsystems/session.md)） | 无关 |
+| `sdk-minimal` 的 "standalone bundle" | 不叠 `dsh-base` 的独立树（[`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 的 `## Application launch`） | 无关：它是 profile，不是安装包 |
+| session 的 "standalone events" | 不属于任何 turn 的日志事件（[`docs/subsystems/session.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/session.md)） | 无关 |
 | 独立安装的 **Desktop App** | `apps/desktop` 的 Electron 壳 + 私有 Host 子进程 | 本文讨论的桌面形态 |
 
 ## 官方发布物（release artifact）只有两个

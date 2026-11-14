@@ -74,7 +74,7 @@ DSH 在这件事上的判断，按可迁移性排：
 
 ## 证据入口
 
-- [`docs/AGENTS.md`](../../docs/AGENTS.md) 第 15-36 行（tier taxonomy）、第 49-59 行（budget 与 relocate/condense/raise）、第 77 行（verify-md-links）
-- [`scripts/doc-budgets.manifest.json`](../../scripts/doc-budgets.manifest.json)：各常驻文档的实际 ceiling
-- [`scripts/verify-package-readme-summaries.ts`](../../scripts/verify-package-readme-summaries.ts)：package README Summary 的 100 词上限
-- [`package.json`](../../package.json)：`verify-doc-budgets`、`verify-md-links`、`verify-tool-catalog` 等脚本
+- [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md) 第 15-36 行（tier taxonomy）、第 49-59 行（budget 与 relocate/condense/raise）、第 77 行（verify-md-links）
+- [`scripts/doc-budgets.manifest.json`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/doc-budgets.manifest.json)：各常驻文档的实际 ceiling
+- [`scripts/verify-package-readme-summaries.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-package-readme-summaries.ts)：package README Summary 的 100 词上限
+- [`package.json`](https://github.com/deepseek-ai/deepseek-harness/blob/master/package.json)：`verify-doc-budgets`、`verify-md-links`、`verify-tool-catalog` 等脚本

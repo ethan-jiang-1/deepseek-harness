@@ -65,9 +65,9 @@ implemented Note（现在式决定）
 
 ## 证据入口
 
-- [`.agents/notes/README.md`](../../.agents/notes/README.md) 第 13、42、121 行
-- [`dsh-code-review`](../../.agents/skills/dsh-code-review/SKILL.md)
-- [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md)
+- [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md) 第 13、42、121 行
+- [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)
+- [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md)
 
 ## 5. GitHub checks、review 与 merge
 
