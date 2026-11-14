@@ -34,12 +34,13 @@ DSH 把可机械检查的规则接到会失败的顶层命令；push 前按 outg
 
 | 维度 | 内容 |
 |---|---|
-| 触发条件 | 只有 staged 命中 `.agents/notes/archived/**` 才跑，**不受 `doc-sync` 分组影响** |
+| 触发条件 | 只要 staged 命中 `.agents/notes/archived/**` 就跑 |
+| 扫描范围 | **全量**，不是只查 staged：命令没传 `{staged_files}`，也没用 `--cached` |
 | 失败后果 | 提交被拒（不是 CI 红灯，也不是「稍后再修」） |
-| 与 CI 的差别 | 钩子用默认基线（本地 `HEAD`），CI 注入受信的 `DSH_ARCHIVE_BASE_REF`。所以本地绿而 CI 红是可能的，方向是**本地更松**（`HEAD` 已含本次改动） |
+| 基线 | 本地默认基线是 `HEAD`，CI 注入受信的 `DSH_ARCHIVE_BASE_REF`。注意 `pre-commit` 在 commit **之前**跑，此时 `HEAD` 仍是父提交，所以两者比的是同一个东西——改动前的提交，**不存在本地比 CI 宽这回事** |
 | 为什么放在钩子里 | 冻结层是全仓唯一「改错就无法用后续提交挽回」的语料，不值得等 CI |
 
-两侧的门禁同名但不是同一件事：`doc-sync` 里的 `verify-archived-agent-notes` 是全量语义检查，钩子里这次触发只为在改动发生的瞬间拒绝。
+两侧跑的是同一个脚本、同一套规则，只是时机不同：`doc-sync` 里的 `verify-archived-agent-notes` 是全仓检查，钩子里的那次是在改动发生的瞬间拒绝。
 
 Skill、repository gate、GitHub workflow 和 semantic review 的一般职责分工由 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md) 统一说明；本页只保留 push 前与 PR CI 的精确证据路由。
 

@@ -173,7 +173,9 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 所以「归档不破坏引用」要写准确：指向归档的链接可机器验证（目标存在），归档发出的链接被明文放弃检查。两者不是同一件事，混着说会把一个刻意留下的空白读成一项保证。
 
-还有一个容易漏掉的实现事实：**「排除归档层」这个判断本身有多份副本**。除 `repo-files.ts` 的共享谓词外，`verify-concrete-terms`、`verify-public-repository-links`、`verify-repository-references` 各自写死了一份路径前缀字面量，谁也没引用那个共享谓词——改目录名要动四处。其余门禁（散文、预算、术语、catalog 一类）既不排除也不检查，因为它们本来就不扫 `.agents/`。
+还有一个容易漏掉的实现事实：**「排除归档层」这个判断本身有多份副本**。`repo-files.ts` 提供一个共享谓词 `isArchivedAgentNotePath`，`doc-typecheck`、`verify-md-links`、`verify-md-wrap`、`verify-mermaid`、`verify-package-paths`、`verify-type-equiv` 都引用它；但另有五个脚本根本没引用这个谓词，而是各自写死同一段路径字面量：`verify-concrete-terms`、`verify-public-repository-links`、`verify-repository-references`、`verify-no-unknown-casts`、`translation-pairing`。加上 `lefthook.yml` 自己的 glob，改归档目录名要同时动六处。
+
+注意不要把这条读成「归档层被所有门禁豁免」。准确的区分是：**本来会扫到 `.agents/` 的门禁**要么显式排除（就是上面这些），要么显式处理（`verify-archived-agent-notes` 专管封印）；而 `verify-doc-budgets` 这类门禁的默认作用域里根本没有 `.agents/`，谈不上排除，也谈不上检查。
 
 活动 prose 仍可以在有意引用历史时链进归档 Note；被链的那篇是冻结的，于是同一句话的两半由两个执法者分管——「可以链」是散文自治，「链过去的东西别再改」是封印强制。
 

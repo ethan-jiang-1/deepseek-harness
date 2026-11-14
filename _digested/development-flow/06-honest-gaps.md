@@ -55,11 +55,11 @@
 
 ## 缺口五：执法者是六类，而本专题前几篇只数了一类
 
-**观察。** [`05`](./05-writeback-loop.md) 与 [`02`](./02-gates.md) 的强制力叙述都以 `doc-sync` 的三个 leaf 门禁为轴。实际上冻结层还有一道**独立的 git 钩子**门禁（`lefthook.yml` 的 `pre-commit` / `pre-merge-commit`，不受 `doc-sync` 分组影响），而归档层被十余道全仓门禁**主动排除**，且「排除」这个判断由三处各自写死的路径前缀字面量实现（逐处列举见 [`08`](./08-enforcement-sites.md) 第三节）。
+**观察。** [`05`](./05-writeback-loop.md) 与 [`02`](./02-gates.md) 的强制力叙述都以 `doc-sync` 的三个 leaf 门禁为轴。实际上冻结层还有一道**独立的 git 钩子**门禁（`lefthook.yml` 的 `pre-commit` / `pre-merge-commit`，不受 `doc-sync` 分组影响），而归档层被十余道全仓门禁**主动排除**，且「排除」这个判断在共享谓词之外还有五份各自写死的路径前缀字面量，再加 `lefthook.yml` 的 glob（逐处列举见 [`08`](./08-enforcement-sites.md) 第三节）。
 
 **后果。** 只说 `doc-sync` 会把两件事读错：① 冻结层其实比活跃区更硬（钩子当场拒绝提交）；② 归档层的出站链接被**明文放弃检查**，而「归档不破坏引用」常被当成一项保证来引用。
 
-**可证伪。** 若 `lefthook.yml` 的归档 job 被移除、或 `isArchivedAgentNotePath` 成为三处前缀判断的唯一实现，这条缺口随之消失或转化。
+**可证伪。** 若 `lefthook.yml` 的归档 job 被移除、或那五处写死前缀全部改为引用 `isArchivedAgentNotePath`，这条缺口随之消失或转化。
 
 **严重度判断：中。** 这不是设计缺陷，是本专题自己的叙述缺口——把「最多的那一类」当成了「全部」。
 

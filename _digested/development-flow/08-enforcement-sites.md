@@ -52,21 +52,22 @@ export function isArchivedAgentNotePath(path: string): boolean
 
 所以「归档不破坏引用」这句要写准确：**指向归档的链接**是可机器验证的（归档目录本身存在于工作树，链接目标存在）；**归档发出的链接**被明文放弃检查。两者不是同一件事，混着说会把一个刻意留下的空白读成一项保证。
 
-## 三、只有五处认得归档层，而且各写各的副本
+## 三、有五个脚本各写各的副本，谁都没用共享谓词
 
-除 `repo-files.ts` 的排除谓词外，全仓显式处理归档层的只有五处——三处是脚本，一处是钩子 glob，一处是把它写成断言的测试：
+`repo-files.ts` 导出一个排除谓词 `isArchivedAgentNotePath`，有六个门禁引用它（`doc-typecheck`、`verify-md-links`、`verify-md-wrap`、`verify-mermaid`、`verify-package-paths`、`verify-type-equiv`）。但「归档层要排除」这个判断在共享谓词之外还有副本，而且写法各不相同：
 
 | 文件 | 怎么处理归档层 | 写法 |
 | --- | --- | --- |
-| [`scripts/ci-workflow.spec.ts`](../../scripts/ci-workflow.spec.ts) | 有一例测试断言「冻结层的 sidecar 归归档校验器管」，把分工写成了可执行的期望 | — |
 | [`scripts/verify-concrete-terms.ts`](../../scripts/verify-concrete-terms.ts) | 排除 | 自己的 `excludedPrefixes` 字面量 |
 | [`scripts/verify-public-repository-links.ts`](../../scripts/verify-public-repository-links.ts) | 排除 | 自己的 `archivedAgentNotePrefix` 字面量 |
 | [`scripts/verify-repository-references.ts`](../../scripts/verify-repository-references.ts) | 排除 | 自己的 `uncheckedPrefixes` 字面量 |
+| [`scripts/verify-no-unknown-casts.ts`](../../scripts/verify-no-unknown-casts.ts) | 排除 | 自己的 `isSource` 谓词里一行字面量 |
+| [`scripts/translation-pairing.ts`](../../scripts/translation-pairing.ts) | 排除 | 自己的 `TRANSLATION_SCOPE_GLOB_EXCLUDES` 与路径谓词，两处 |
 | `lefthook.yml` | 配对门禁排除，归档门禁专门覆盖 | glob |
 
-**这三个「排除」各自写死了同一段路径字面量，谁也没有引用 `repo-files.ts` 的谓词**——所以「归档层被排除」这件事本身也有一份以上的副本，改目录名要动四处。
+**这五个脚本都没引用那个共享谓词**。改归档目录名要同时动六处，而且每一处都是独立发现、独立维护的。
 
-其余门禁（含散文、预算、术语、catalog 一类）**既不排除也不检查**——它们根本不扫 `.agents/`。所以准确的说法不是「归档层被所有门禁豁免」，而是「归档层只被那些本来会扫到它的门禁显式豁免，其余门禁的默认作用域就不包含它」。
+另有一类不能说成「排除」：`verify-doc-budgets`、散文与 catalog 一族门禁的默认作用域里根本没有 `.agents/`，它们既不排除也不检查，因为本来就不看那里。所以准确的说法不是「归档层被所有门禁豁免」，而是「归档层只被那些本来会扫到它的门禁显式豁免，其余门禁的默认作用域就不包含它」。
 
 这也解释了为什么 [06](./06-honest-gaps.md) 的缺口一（分类门禁不读 README）和缺口三（改写纪律无内容检查）迟迟没有补上：**补充检查的成本不是加一条规则，而是要决定「这条规则管不管归档层」**，而归档层一动就要走封印流程。
 
