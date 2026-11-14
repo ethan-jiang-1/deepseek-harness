@@ -8,6 +8,8 @@
 
 ## 一、四种布局横向细表
 
+![宿主源码与插件仓库的三种共存模型](./figures/coexistence-models.svg)
+
 | 对比维度 | 方案 A：独立仓 + `vendor/dsh`（推荐主力） | 方案 B：DSH 主仓 `packages/` 内生 | 方案 C：纯外部 npm 依赖 | 方案 D：多专家 Marketplace 单体仓 |
 |---|---|---|---|---|
 | **DSH 源码怎么拿** | Git submodule 钉在明确 release tag | 仓库本身就是 DSH fork / 分支 | 不进仓，仅装 npm 包与 `.d.ts` | 同方案 A（共用一个 `vendor/dsh`） |

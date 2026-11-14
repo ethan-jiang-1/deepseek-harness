@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 670" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>静态五层文档地图与运行时上下文闭环</title>
+  <desc>左半场展示 DSH 的人机入口分流、L1–L5 五层文档归属与 verify-doc-budgets / doc-sync 硬门禁；右半场展示运行时 dsh-agent-instructions 自动推入（Push）、read/grep/glob/skill 按需拉取（Pull）与 tokenMeter + compaction 压力回收（Recycle）的上下文闭环。</desc>
+  <defs>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#16a34a"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#ea580c"/>
+    </marker>
+  </defs>
+
+  <rect width="1240" height="670" rx="8" fill="#f8fafc"/>
+  <text x="620" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">把文档地图做成工程对象：静态分层预算 ↔ 运行时推拉回收闭环</text>
+  <text x="620" y="56" text-anchor="middle" font-size="12.5" fill="#475569">一个事实只住一个家（One home per fact）：写作端靠词数上限与 CI 门禁防发胖，运行端靠自动推送、按需拉取与压力压缩管窗口。</text>
+
+  <!-- 左半场：静态五层说明书地图 -->
+  <rect x="36" y="78" width="548" height="514" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="60" y="106" font-size="15" font-weight="700" fill="#1e40af">静态半场：五层说明书地图 + 字数硬门禁</text>
+
+  <rect x="58" y="120" width="504" height="40" rx="7" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="310" y="145" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1e3a8a">人机分流：README.md 面向人 ｜ AGENTS.md 面向模型（CLAUDE.md 为软链接）</text>
+
+  <!-- L1 -->
+  <rect x="58" y="170" width="504" height="56" rx="7" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="76" y="193" font-weight="700" fill="#1e40af">L1 常驻路由内核 · 根 AGENTS.md（≤ 2,080 词）</text>
+  <text x="76" y="213" font-size="11.5" fill="#475569">顶层目录表 · 常用命令 · 1–3 行工程铁律 + 外跳链接（拒写长篇教程与摘要）</text>
+
+  <!-- L2 -->
+  <rect x="58" y="234" width="504" height="56" rx="7" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="76" y="257" font-weight="700" fill="#1e40af">L2 区域入口与子树规矩 · architecture.md + 子树 AGENTS.md</text>
+  <text x="76" y="277" font-size="11.5" fill="#475569">architecture.md（≤ 2,410 词）总图 · packages/**/AGENTS.md（≤ 600–810 词）</text>
+
+  <!-- L3 -->
+  <rect x="58" y="298" width="504" height="56" rx="7" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="76" y="321" font-weight="700" fill="#1e3a8a">L3 单包契约与实操手册 · packages/*/README + JSDoc + docs/</text>
+  <text x="76" y="341" font-size="11.5" fill="#475569">包摘要 ≤ 100 词 + Model Experience · subsystems / cookbook / 防御规范</text>
+
+  <!-- L4 -->
+  <rect x="58" y="362" width="504" height="56" rx="7" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="76" y="385" font-weight="700" fill="#1e3a8a">L4 自动生成穷举目录 · docs/*-catalog.md · module-graph</text>
+  <text x="76" y="405" font-size="11.5" fill="#475569">工具表、Config 表、事件生产/消费、持久化清单（源码自动提取，严禁手改）</text>
+
+  <!-- L5 -->
+  <rect x="58" y="426" width="504" height="56" rx="7" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="76" y="449" font-weight="700" fill="#1e3a8a">L5 流程技能与决策档案 · .agents/skills/ + .agents/notes/</text>
+  <text x="76" y="469" font-size="11.5" fill="#475569">多步作业检查单按需展开；重大架构取舍留痕（archived/ 目录清单冻结）</text>
+
+  <!-- 静态门禁底栏 -->
+  <rect x="58" y="494" width="504" height="82" rx="8" fill="#fefce8" stroke="#fde047"/>
+  <text x="310" y="518" text-anchor="middle" font-size="12.5" font-weight="700" fill="#854d0e">机器保鲜门禁：verify-doc-budgets + doc-sync</text>
+  <text x="310" y="540" text-anchor="middle" font-size="11.5" fill="#713f12">超预算规定动作：Relocate（归位外迁）→ Condense（瘦身）→ Raise（提额说明）</text>
+  <text x="310" y="560" text-anchor="middle" font-size="11" fill="#a16207">CI 自动拦截断链假锚点、生成表失步、TS 代码块编译报错与中英双语脱节</text>
+
+  <!-- 中间映射连接 -->
+  <path d="M562,228 L670,194" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <rect x="590" y="186" width="58" height="22" rx="11" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="619" y="201" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e40af">Push</text>
+
+  <path d="M562,390 L670,362" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <rect x="590" y="354" width="58" height="22" rx="11" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="619" y="369" text-anchor="middle" font-size="10.5" font-weight="700" fill="#166534">Pull</text>
+
+  <!-- 右半场：运行时上下文闭环 -->
+  <rect x="656" y="78" width="548" height="514" rx="12" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="680" y="106" font-size="15" font-weight="700" fill="#166534">运行时半场：上下文推拉与压力回收闭环</text>
+
+  <!-- 1. Push -->
+  <rect x="678" y="122" width="504" height="144" rx="9" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="700" y="148" font-size="13.5" font-weight="700" fill="#1e40af">① 推入（Push）· dsh-agent-instructions</text>
+  <text x="700" y="174" fill="#334155">· 首步基线：首个 agent/pre-step 自动注入 $DSH_HOME + 根 AGENTS.md</text>
+  <text x="700" y="196" fill="#334155">· 触达追补：模型用 read / write / edit 碰到深层目录后追补子目录 AGENTS.md</text>
+  <text x="700" y="218" fill="#475569">· 容量硬顶：必填 maxBytes 预算，超限优先保留最具体深层目录规则</text>
+  <text x="700" y="240" font-size="11" fill="#64748b">· 缓存友好：同内容 CLAUDE.md 自动去重；恢复会话直接复用前缀，不跑后台文件监听</text>
+
+  <line x1="930" y1="266" x2="930" y2="286" stroke="#16a34a" stroke-width="1.8" marker-end="url(#arrowGreen)"/>
+
+  <!-- 2. Pull -->
+  <rect x="678" y="290" width="504" height="144" rx="9" fill="#ffffff" stroke="#4ade80"/>
+  <text x="700" y="316" font-size="13.5" font-weight="700" fill="#166534">② 拉取（Pull）· 导航工具与两段式技能</text>
+  <text x="700" y="342" fill="#334155">· L3–L5 绝不盲目预塞：按路由用 glob / grep 定位命中行，再用 read 分页读取</text>
+  <text x="700" y="364" fill="#334155">· 包契约双牵引：常驻路由指路 + “改代码同 commit 更新包 README”纪律合围</text>
+  <text x="700" y="386" fill="#475569">· Skill 目录常驻极轻：提示词只挂排序后的 name 与一句话 description</text>
+  <text x="700" y="408" font-size="11" fill="#64748b">· 显式按需展开：仅在调用 skill({ name }) 时实时读取 SKILL.md 正文，不常驻缓存</text>
+
+  <line x1="930" y1="434" x2="930" y2="454" stroke="#ea580c" stroke-width="1.8" marker-end="url(#arrowOrange)"/>
+
+  <!-- 3. Recycle -->
+  <rect x="678" y="458" width="504" height="118" rx="9" fill="#fff7ed" stroke="#fb923c"/>
+  <text x="700" y="484" font-size="13.5" font-weight="700" fill="#9a3412">③ 回收（Recycle）· ctx.tokenMeter + compaction</text>
+  <text x="700" y="510" fill="#7c2d12">· 持续度量当前请求各位置面的 token 压力，触及水位线时自动介入</text>
+  <text x="700" y="532" fill="#7c2d12">· 在 agent/pre-step 阶段将早期已闭合步骤折叠为摘要（支持超长单轮内压缩）</text>
+  <text x="700" y="554" font-size="11" fill="#9a3412">· 切分边界严格保护 tool/call 与 tool/result 配对完整，防止破坏模型消息合法性</text>
+
+  <!-- 底部收束 -->
+  <rect x="36" y="608" width="1168" height="44" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="620" y="635" text-anchor="middle" font-size="12.5" fill="#0f172a">本质闭环：写作时的词数上限（doc-budgets.manifest.json）与运行时的 maxBytes + 按需拉取 + 压力压缩，管的是同一笔上下文容量账。</text>
+</svg>

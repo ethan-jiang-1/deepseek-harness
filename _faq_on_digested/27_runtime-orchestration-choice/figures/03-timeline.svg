@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>三种时间形状：继续、goal、ralph 的记忆与续跑方式</title>
-  <desc>三行时间线。第一行「继续」：人每次再发一条，轮次之间共享同一会话上下文，谁续由人决定。第二行「goal」：Goal Round Driver 在空闲后自动开下一轮，所有轮次共享同一会话与持久 goal 记录。第三行「ralph」：固定脚本每轮开一个全新 child，只把有界结构化报告传给下一轮，记忆靠 workspace 与报告，上下文每轮清零。底部结论：差别不是谁更长，而是记忆断在哪、谁负责续。</desc>
+  <title>三种跨轮推进方式：人工逐轮对话、goal、ralph 的记忆与续跑边界</title>
+  <desc>三行时间线。第一行「人工逐轮对话」：人类每轮审阅后再发下一条，轮次共享同一会话上下文。第二行「goal」：Goal Round Driver 在会话空闲后自动续轮，共享同一持久会话与 goal 记录。第三行「ralph」：人类点名启用，固定前台脚本每轮拉起全新空上下文 child，仅靠工作区真实文件与五字段有界报告接力。底部结论：核心差异在于谁负责推下一轮、记忆在哪里断开。</desc>
   <defs>
     <marker id="t1" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
@@ -8,32 +8,34 @@
   </defs>
 
   <rect width="1200" height="560" rx="8" fill="#f8fafc"/>
-  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">三种时间形状</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">差别不是谁更长，而是记忆断在哪、谁负责续</text>
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">三种跨轮推进方式：谁推下一轮 × 记忆断在哪</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">差别不在“谁跑得更久”，而在谁承担续轮决策、上一轮对话历史要不要带进下一轮</text>
 
-  <text x="52" y="118" font-size="14" font-weight="700" fill="#334155">继续</text>
-  <text x="52" y="138" font-size="10.5" fill="#94a3b8">人驱动</text>
+  <!-- Row 1: 人工逐轮对话 -->
+  <text x="48" y="116" font-size="13.5" font-weight="700" fill="#334155">人工逐轮对话</text>
+  <text x="48" y="136" font-size="10.5" fill="#64748b">人类审阅拍板</text>
 
   <rect x="210" y="96" width="150" height="40" rx="8" fill="#ffffff" stroke="#93c5fd"/>
   <text x="285" y="121" text-anchor="middle" font-size="11" fill="#1e40af">turn 1</text>
   <line x1="360" y1="116" x2="464" y2="116" stroke="#64748b" stroke-width="2" marker-end="url(#t1)"/>
-  <text x="412" y="106" text-anchor="middle" font-size="10" fill="#64748b">人再发一条</text>
+  <text x="412" y="106" text-anchor="middle" font-size="10" fill="#64748b">人工确认再发</text>
   <rect x="470" y="96" width="150" height="40" rx="8" fill="#ffffff" stroke="#93c5fd"/>
   <text x="545" y="121" text-anchor="middle" font-size="11" fill="#1e40af">turn 2</text>
   <line x1="620" y1="116" x2="724" y2="116" stroke="#64748b" stroke-width="2" marker-end="url(#t1)"/>
-  <text x="672" y="106" text-anchor="middle" font-size="10" fill="#64748b">人再发一条</text>
+  <text x="672" y="106" text-anchor="middle" font-size="10" fill="#64748b">人工确认再发</text>
   <rect x="730" y="96" width="150" height="40" rx="8" fill="#ffffff" stroke="#93c5fd"/>
   <text x="805" y="121" text-anchor="middle" font-size="11" fill="#1e40af">turn 3</text>
-  <text x="910" y="112" font-size="10.5" fill="#64748b">谁续：人</text>
-  <text x="910" y="130" font-size="10.5" fill="#64748b">上下文：一条连续累积</text>
+  <text x="904" y="112" font-size="10.5" fill="#475569">谁续轮：人类用户</text>
+  <text x="904" y="130" font-size="10.5" fill="#64748b">适合方向未定、每步需人把关</text>
 
-  <rect x="210" y="148" width="670" height="26" rx="6" fill="#dbeafe"/>
-  <text x="545" y="166" text-anchor="middle" font-size="10.5" fill="#1e40af">同一会话上下文（一路累积，靠 compaction 回收）</text>
+  <rect x="210" y="148" width="670" height="28" rx="6" fill="#dbeafe"/>
+  <text x="545" y="166" text-anchor="middle" font-size="10.5" fill="#1e40af">同一会话上下文连续累积（超长靠 compaction 自动压缩回收）</text>
 
   <line x1="40" y1="196" x2="1160" y2="196" stroke="#e2e8f0"/>
 
-  <text x="52" y="248" font-size="14" font-weight="700" fill="#b45309">goal</text>
-  <text x="52" y="268" font-size="10.5" fill="#94a3b8">driver 自动</text>
+  <!-- Row 2: goal -->
+  <text x="48" y="246" font-size="13.5" font-weight="700" fill="#b45309">goal</text>
+  <text x="48" y="266" font-size="10.5" fill="#64748b">Driver 空闲续轮</text>
 
   <rect x="210" y="226" width="150" height="40" rx="8" fill="#ffffff" stroke="#fbbf24"/>
   <text x="285" y="251" text-anchor="middle" font-size="11" fill="#92400e">round 1</text>
@@ -45,43 +47,45 @@
   <text x="672" y="236" text-anchor="middle" font-size="10" fill="#64748b">idle 后自动续</text>
   <rect x="730" y="226" width="150" height="40" rx="8" fill="#ffffff" stroke="#fbbf24"/>
   <text x="805" y="251" text-anchor="middle" font-size="11" fill="#92400e">round 3</text>
-  <text x="910" y="242" font-size="10.5" fill="#64748b">谁续：Goal Round Driver</text>
-  <text x="910" y="260" font-size="10.5" fill="#64748b">上下文：同一会话 + goal 记录</text>
+  <text x="904" y="242" font-size="10.5" fill="#475569">谁续轮：Goal Round Driver</text>
+  <text x="904" y="260" font-size="10.5" fill="#64748b">恢复旧会话后需显式 resume</text>
 
-  <rect x="210" y="278" width="670" height="26" rx="6" fill="#fef3c7"/>
-  <text x="545" y="296" text-anchor="middle" font-size="10.5" fill="#92400e">同一会话（持久）＋ goal 记录（跨轮、可 pause / resume）</text>
+  <rect x="210" y="278" width="670" height="28" rx="6" fill="#fef3c7"/>
+  <text x="545" y="296" text-anchor="middle" font-size="10.5" fill="#92400e">同一持久会话上下文 ＋ 持久 goal 记录（支持 pause / edit / resume，常规长跑主力）</text>
 
   <line x1="40" y1="326" x2="1160" y2="326" stroke="#e2e8f0"/>
 
-  <text x="52" y="378" font-size="14" font-weight="700" fill="#0f766e">ralph</text>
-  <text x="52" y="398" font-size="10.5" fill="#94a3b8">固定脚本</text>
+  <!-- Row 3: ralph -->
+  <text x="48" y="376" font-size="13.5" font-weight="700" fill="#0f766e">ralph（实验包）</text>
+  <text x="48" y="396" font-size="10.5" fill="#64748b">人类点名启用</text>
 
-  <text x="285" y="352" text-anchor="middle" font-size="9.5" fill="#0f766e">fresh child</text>
+  <text x="285" y="350" text-anchor="middle" font-size="9.5" fill="#0f766e">全新空上下文 child</text>
   <rect x="210" y="356" width="150" height="40" rx="8" fill="#ffffff" stroke="#5eead4"/>
   <text x="285" y="381" text-anchor="middle" font-size="11" fill="#0f766e">round 1</text>
   <line x1="360" y1="376" x2="464" y2="376" stroke="#64748b" stroke-width="2" marker-end="url(#t1)"/>
-  <text x="412" y="366" text-anchor="middle" font-size="10" fill="#64748b">只传有界报告</text>
-  <text x="545" y="352" text-anchor="middle" font-size="9.5" fill="#0f766e">fresh child</text>
+  <text x="412" y="366" text-anchor="middle" font-size="10" fill="#64748b">五字段有界报告</text>
+  <text x="545" y="350" text-anchor="middle" font-size="9.5" fill="#0f766e">全新空上下文 child</text>
   <rect x="470" y="356" width="150" height="40" rx="8" fill="#ffffff" stroke="#5eead4"/>
   <text x="545" y="381" text-anchor="middle" font-size="11" fill="#0f766e">round 2</text>
   <line x1="620" y1="376" x2="724" y2="376" stroke="#64748b" stroke-width="2" marker-end="url(#t1)"/>
-  <text x="672" y="366" text-anchor="middle" font-size="10" fill="#64748b">只传有界报告</text>
-  <text x="805" y="352" text-anchor="middle" font-size="9.5" fill="#0f766e">fresh child</text>
+  <text x="672" y="366" text-anchor="middle" font-size="10" fill="#64748b">五字段有界报告</text>
+  <text x="805" y="350" text-anchor="middle" font-size="9.5" fill="#0f766e">全新空上下文 child</text>
   <rect x="730" y="356" width="150" height="40" rx="8" fill="#ffffff" stroke="#5eead4"/>
   <text x="805" y="381" text-anchor="middle" font-size="11" fill="#0f766e">round 3</text>
-  <text x="910" y="372" font-size="10.5" fill="#64748b">谁续：固定脚本</text>
-  <text x="910" y="390" font-size="10.5" fill="#64748b">记忆：workspace + 报告</text>
+  <text x="904" y="372" font-size="10.5" fill="#475569">谁续轮：固定前台脚本（≤64 轮）</text>
+  <text x="904" y="390" font-size="10.5" fill="#64748b">记忆：工作区真实文件 + 报告</text>
 
-  <rect x="210" y="408" width="150" height="26" rx="6" fill="#ccfbf1"/>
-  <text x="285" y="426" text-anchor="middle" font-size="10" fill="#0f766e">新上下文</text>
-  <rect x="470" y="408" width="150" height="26" rx="6" fill="#ccfbf1"/>
-  <text x="545" y="426" text-anchor="middle" font-size="10" fill="#0f766e">新上下文</text>
-  <rect x="730" y="408" width="150" height="26" rx="6" fill="#ccfbf1"/>
-  <text x="805" y="426" text-anchor="middle" font-size="10" fill="#0f766e">新上下文</text>
+  <rect x="210" y="408" width="150" height="28" rx="6" fill="#ccfbf1"/>
+  <text x="285" y="426" text-anchor="middle" font-size="10" fill="#0f766e">独立空上下文</text>
+  <rect x="470" y="408" width="150" height="28" rx="6" fill="#ccfbf1"/>
+  <text x="545" y="426" text-anchor="middle" font-size="10" fill="#0f766e">独立空上下文</text>
+  <rect x="730" y="408" width="150" height="28" rx="6" fill="#ccfbf1"/>
+  <text x="805" y="426" text-anchor="middle" font-size="10" fill="#0f766e">独立空上下文</text>
 
-  <rect x="910" y="404" width="250" height="34" rx="8" fill="#f0fdfa" stroke="#5eead4"/>
-  <text x="1035" y="426" text-anchor="middle" font-size="10" fill="#0f766e">每轮清零，靠 workspace 接续</text>
+  <rect x="904" y="406" width="256" height="32" rx="8" fill="#f0fdfa" stroke="#5eead4"/>
+  <text x="1032" y="426" text-anchor="middle" font-size="10" fill="#0f766e">每轮彻底清零，防上轮试错污染判断</text>
 
-  <text x="600" y="500" text-anchor="middle" font-size="11" fill="#64748b">记忆断在哪里，决定了你能不能用「上一轮已经知道的东西」；谁负责续，决定了你要不要每次亲手推一把</text>
-  <text x="600" y="528" text-anchor="middle" font-size="10.5" fill="#94a3b8">继续：人推；goal：driver 推、上下文连续；ralph：脚本推、上下文断开</text>
+  <rect x="40" y="466" width="1120" height="68" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="600" y="492" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0f172a">选型口诀：常规跨轮长跑默认选 goal；只有人类显式要求每轮清空上下文重来时才启用 ralph</text>
+  <text x="600" y="516" text-anchor="middle" font-size="10.5" fill="#64748b">人工逐轮对话：人推 + 上下文连续 ｜ goal：Driver 自动推 + 上下文连续 ｜ ralph：脚本循环推 + 上下文每轮断开（自报完成需外部验真）</text>
 </svg>

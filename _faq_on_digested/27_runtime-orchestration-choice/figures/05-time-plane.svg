@@ -1,67 +1,68 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>时间平面：前台阻塞、后台 job 并行、schedule 到点</title>
-  <desc>三条时间线。前台：工具调用占据整段时间，模型闲置，直到结果返回才能继续。后台 job：由 bash、pwsh 或 workflow 发起，job 在后台跑，模型同时做别的事，完成时收到一条通知，官方纪律是不轮询、不 sleep。schedule：由时钟触发，到点只投一条 follow-up 消息回原会话，工作仍要在会话里发生。底部一句：前台是模型等，后台 job 是模型不等，schedule 是时钟等。</desc>
+  <title>时间等待分工：前台阻塞调用、后台 jobs 并行推进、定时 schedule 到点投递</title>
+  <desc>三条时间线对比等待成本归属。前台阻塞：工具占住整段时间，模型等待结果返回才能继续。后台 jobs：由 bash、pwsh 或 workflow 的 run_in_background 发起，模型同时推进其他独立工作，完成时系统自动投递通知（严禁 sleep 轮询，宿主退出即终止）。定时 schedule：由时钟触发，到点只往原会话投递一条跟进消息。</desc>
   <defs>
     <marker id="tm" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
     </marker>
-    <marker id="tmb" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
-      <path d="M0,0 L9,3.5 L0,7 Z" fill="#1d4ed8"/>
-    </marker>
   </defs>
 
   <rect width="1200" height="540" rx="8" fill="#f8fafc"/>
-  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">时间平面：谁在等</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">同样二十分钟，三种原语让不同的角色承担等待</text>
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">时间轴上的等待分工：长耗时与未来时刻交给谁等</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">这组机制不改变谁做决策，只改变二十分钟构建或一小时后的复查由谁承担等待</text>
 
-  <text x="52" y="118" font-size="14" font-weight="700" fill="#1d4ed8">前台</text>
-  <text x="52" y="138" font-size="10.5" fill="#94a3b8">模型阻塞</text>
+  <!-- Row 1 -->
+  <text x="48" y="118" font-size="14" font-weight="700" fill="#1d4ed8">前台阻塞</text>
+  <text x="48" y="138" font-size="10.5" fill="#64748b">模型原地等待</text>
 
   <rect x="200" y="100" width="560" height="36" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="480" y="123" text-anchor="middle" font-size="11" fill="#1e40af">工具调用阻塞整段时间</text>
-  <text x="776" y="123" font-size="10.5" fill="#1d4ed8">结果返回才继续</text>
-  <text x="200" y="160" font-size="10.5" fill="#64748b">这一整段里模型不能做别的；适合结果马上要用、且等得起的情况。</text>
+  <text x="480" y="123" text-anchor="middle" font-size="11" font-weight="700" fill="#1e40af">工具调用占住当前步，模型全程闲置等待</text>
+  <text x="778" y="123" font-size="10.5" fill="#1d4ed8">拿到结果后才走下一步</text>
+  <text x="200" y="160" font-size="10.5" fill="#64748b">适合：下一步推理立刻依赖命令输出，且执行耗时很短。</text>
 
   <line x1="40" y1="186" x2="1160" y2="186" stroke="#e2e8f0"/>
 
-  <text x="52" y="226" font-size="14" font-weight="700" fill="#b45309">后台 job</text>
-  <text x="52" y="246" font-size="10.5" fill="#94a3b8">模型不阻塞</text>
+  <!-- Row 2 -->
+  <text x="48" y="226" font-size="14" font-weight="700" fill="#b45309">后台 jobs</text>
+  <text x="48" y="246" font-size="10.5" fill="#64748b">进程内异步执行</text>
 
   <rect x="200" y="208" width="560" height="36" rx="8" fill="#fef3c7" stroke="#fbbf24"/>
-  <text x="480" y="231" text-anchor="middle" font-size="11" fill="#92400e">job 在后台跑</text>
+  <text x="480" y="231" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">run_in_background 挂入后台运行（bash / pwsh / workflow）</text>
   <line x1="760" y1="226" x2="800" y2="226" stroke="#64748b" stroke-width="2" marker-end="url(#tm)"/>
-  <rect x="806" y="208" width="200" height="36" rx="8" fill="#ffffff" stroke="#fbbf24"/>
-  <text x="906" y="231" text-anchor="middle" font-size="10.5" fill="#92400e">完成通知回到会话</text>
+  <rect x="806" y="208" width="224" height="36" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="918" y="231" text-anchor="middle" font-size="10.5" font-weight="700" fill="#92400e">结束时自动往当前会话发通知</text>
 
-  <rect x="210" y="262" width="110" height="26" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="265" y="279" text-anchor="middle" font-size="10" fill="#475569">做别的</text>
-  <rect x="330" y="262" width="110" height="26" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="385" y="279" text-anchor="middle" font-size="10" fill="#475569">做别的</text>
-  <rect x="450" y="262" width="110" height="26" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="505" y="279" text-anchor="middle" font-size="10" fill="#475569">做别的</text>
-  <text x="590" y="279" font-size="10.5" fill="#64748b">模型在 job 运行期间继续推进独立步骤</text>
+  <rect x="200" y="260" width="124" height="28" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="262" y="278" text-anchor="middle" font-size="10" fill="#475569">推进独立步骤 1</text>
+  <rect x="336" y="260" width="124" height="28" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="398" y="278" text-anchor="middle" font-size="10" fill="#475569">推进独立步骤 2</text>
+  <rect x="472" y="260" width="124" height="28" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="534" y="278" text-anchor="middle" font-size="10" fill="#475569">推进独立步骤 3</text>
+  <text x="614" y="278" font-size="10.5" fill="#64748b">← 后台运行期间主会话不阻塞，继续处理其他独立工作</text>
 
-  <text x="200" y="316" font-size="10.5" fill="#64748b">官方纪律：不 busy-poll、不 sleep；收尾前统一收 job。适合结果稍后才要、且可以并行做别的事。</text>
+  <text x="200" y="316" font-size="10.5" fill="#475569">三条纪律：严禁写 sleep 忙等轮询；交卷前核对后台结果；默认 jobs-local 为内存注册表，宿主进程退出即终止。</text>
 
   <line x1="40" y1="342" x2="1160" y2="342" stroke="#e2e8f0"/>
 
-  <text x="52" y="382" font-size="14" font-weight="700" fill="#0f766e">schedule</text>
-  <text x="52" y="402" font-size="10.5" fill="#94a3b8">时钟触发</text>
+  <!-- Row 3 -->
+  <text x="48" y="382" font-size="14" font-weight="700" fill="#0f766e">schedule</text>
+  <text x="48" y="402" font-size="10.5" fill="#64748b">墙上时钟唤醒</text>
 
   <circle cx="216" cy="386" r="15" fill="#ffffff" stroke="#0d9488"/>
   <line x1="216" y1="386" x2="216" y2="376" stroke="#0d9488" stroke-width="1.5"/>
   <line x1="216" y1="386" x2="223" y2="390" stroke="#0d9488" stroke-width="1.5"/>
-  <text x="216" y="416" text-anchor="middle" font-size="9.5" fill="#0f766e">到点</text>
+  <text x="216" y="416" text-anchor="middle" font-size="9.5" fill="#0f766e">设定时间</text>
 
   <line x1="234" y1="386" x2="846" y2="386" stroke="#5eead4" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="540" y="376" text-anchor="middle" font-size="10" fill="#0f766e">after_seconds / at / every_seconds / daily / weekly / cron</text>
   <line x1="850" y1="386" x2="850" y2="408" stroke="#64748b" stroke-width="2" marker-end="url(#tm)"/>
-  <rect x="740" y="412" width="240" height="36" rx="8" fill="#f0fdfa" stroke="#5eead4"/>
-  <text x="860" y="435" text-anchor="middle" font-size="10.5" fill="#0f766e">follow-up 投回原会话</text>
+  <rect x="726" y="412" width="268" height="36" rx="8" fill="#f0fdfa" stroke="#5eead4"/>
+  <text x="860" y="435" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0f766e">到点往原会话投递一条跟进消息</text>
 
-  <text x="200" y="470" font-size="10.5" fill="#64748b">到点只投一条消息，不是替你开工；工作仍然要在会话里发生。适合定时跟进、不是长任务调度。</text>
+  <text x="200" y="470" font-size="10.5" fill="#64748b">它是定投闹钟而非脱离会话的独立调度器：到点只负责敲门提醒，醒来跑什么工具仍由原会话里的模型决定。</text>
 
-  <line x1="200" y1="492" x2="1140" y2="492" stroke="#cbd5e1" stroke-width="1.5" marker-end="url(#tm)"/>
-  <text x="1140" y="510" text-anchor="end" font-size="10" fill="#94a3b8">时间 →</text>
+  <line x1="200" y1="494" x2="1140" y2="494" stroke="#cbd5e1" stroke-width="1.5" marker-end="url(#tm)"/>
+  <text x="1140" y="512" text-anchor="end" font-size="10" fill="#94a3b8">时间轴 →</text>
 
-  <text x="600" y="528" text-anchor="middle" font-size="10.5" fill="#64748b">一句话：前台是模型等，后台 job 是模型不等，schedule 是时钟等</text>
+  <text x="600" y="528" text-anchor="middle" font-size="11" fill="#475569">一句话：前台是模型干等，后台 jobs 是进程替模型等，schedule 是时钟到点敲门</text>
 </svg>

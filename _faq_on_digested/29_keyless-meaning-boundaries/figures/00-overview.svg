@@ -1,82 +1,77 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <rect width="1020" height="700" fill="#fafafa" rx="6"/>
-  <text x="510" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2937">keyless 是什么：一页看完</text>
-  <text x="510" y="60" text-anchor="middle" font-size="12" fill="#6b7280">四步从零建立概念。不需要先懂任何术语。</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>keyless 核心机制全貌：唯一判据、反直觉现象、三档流转与证明边界</title>
+  <desc>左上说明 keyless 的唯一判据（单次运行未向真实服务商发起网络请求）及主力录制回放做法（只替换模型请求一格）；右上解释四个反直觉现象（哨兵假 Key、refresh 写盘、低档 mock 含金量差异、record 属 with-key）；中间展示 record、snapshot、replay/refresh 的流转关系；底部基于仓库定义（docs/testing.md）划清 keyless 能证明与不能证明的边界。</desc>
+  <defs>
+    <marker id="ov-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#6d28d9"/>
+    </marker>
+  </defs>
 
-  <!-- ① 主力做法 -->
-  <rect x="40" y="86" width="458" height="176" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.8"/>
-  <text x="60" y="112" font-size="14" font-weight="700" fill="#1d4ed8">① 主力做法：录制回放</text>
-  <text x="60" y="136" font-size="12" fill="#1e3a8a">让真模型跑<tspan font-weight="700">一次</tspan>，把它的回答录下来；</text>
-  <text x="60" y="156" font-size="12" fill="#1e3a8a">以后每次都放这段录像，其余全部照跑。</text>
+  <rect width="1200" height="680" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">keyless 核心机制全貌：一条判据看懂用法与边界</text>
+  <text x="600" y="56" text-anchor="middle" fill="#64748b">唯一判据：这一遍测试运行下来，有没有向真实模型（或外部搜索等）服务商发起网络请求</text>
 
-  <rect x="60" y="172" width="418" height="34" rx="6" fill="#fff" stroke="#1677ff"/>
-  <text x="269" y="194" text-anchor="middle" font-size="11" fill="#4b5563">代码 → 组装请求 → 【<tspan fill="#a8071a" font-weight="700">模型</tspan>】→ 调工具 → 落盘</text>
+  <!-- Card 1: Core criterion & replay -->
+  <rect x="40" y="78" width="548" height="202" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.8"/>
+  <text x="64" y="106" font-size="13.5" font-weight="700" fill="#1d4ed8">① 包含关系与主力做法（replay ⊂ keyless）</text>
+  <text x="64" y="130" font-size="11" fill="#1e3a8a">不发真实服务商请求即为 keyless；其中证据最强的主力是录制会话回放：</text>
 
-  <rect x="60" y="214" width="418" height="34" rx="6" fill="#fff" stroke="#1677ff"/>
-  <text x="269" y="236" text-anchor="middle" font-size="11" fill="#4b5563">代码 → 组装请求 → 【<tspan fill="#1d4ed8" font-weight="700">录像</tspan>】→ 调工具 → 落盘</text>
+  <rect x="64" y="146" width="500" height="36" rx="6" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="314" y="169" text-anchor="middle" font-size="11" fill="#334155">真跑（with-key）：当前代码 → 真插件装配 → 【真实模型 API】 → 真工具 → 落盘</text>
 
-  <text x="60" y="264" font-size="10.5" fill="#6b7280">只有中间一格换了，其他一个都没动</text>
+  <rect x="64" y="192" width="500" height="36" rx="6" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="314" y="215" text-anchor="middle" font-size="11" fill="#1d4ed8">回放（keyless）：当前代码 → 真插件装配 → 【已入库模型流】 → 真工具 → 落盘</text>
 
-  <!-- ② 为什么 -->
-  <rect x="522" y="86" width="458" height="176" rx="10" fill="#fff1f0" stroke="#d4380d" stroke-width="1.8"/>
-  <text x="542" y="112" font-size="14" font-weight="700" fill="#a8071a">② 为什么非得这样</text>
-  <text x="542" y="136" font-size="11.5" fill="#7c2d12">两条路都走不通：</text>
-  <text x="542" y="160" font-size="11.5" fill="#7c2d12"><tspan font-weight="700">真调模型</tspan> → 要有 key。外部贡献者、机器人一个都没有</text>
-  <text x="542" y="180" font-size="11.5" fill="#7c2d12"><tspan font-weight="700">换成假的</tspan> → 假管道永远不会说真管道错了</text>
+  <text x="64" y="256" font-size="10.5" fill="#475569">整条执行链只换掉中间“模型网络请求”一格，Loader、沙箱、工具派发与持久化全部真跑。</text>
 
-  <rect x="542" y="196" width="418" height="52" rx="6" fill="#fff" stroke="#d4380d"/>
-  <text x="751" y="216" text-anchor="middle" font-size="11" fill="#a8071a">真实事故：178 个测试全绿 · 覆盖率 100% · 功能全崩</text>
-  <text x="751" y="236" text-anchor="middle" font-size="10.5" fill="#9a3412">（postmortem 0001：测试走的是手搭路径，绕开了真实加载）</text>
+  <!-- Card 2: 4 counter-intuitive facts -->
+  <rect x="612" y="78" width="548" height="202" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.8"/>
+  <text x="636" y="106" font-size="13.5" font-weight="700" fill="#0f172a">② 顺着唯一判据，解开四个常见疑惑</text>
+  <text x="636" y="134" font-size="11" fill="#334155">▸ 塞了 'keyless-*-no-call' 哨兵假 Key 仍是 keyless：既防缺变量触发</text>
+  <text x="636" y="154" font-size="10.5" fill="#64748b">  self-skip 静默跳过，又保证一旦误发线上请求立即因鉴权失败暴露。</text>
+  <text x="636" y="180" font-size="11" fill="#334155">▸ test:snapshot:refresh 会改写仓库快照文件，仍是 keyless：全程只消费</text>
+  <text x="636" y="200" font-size="10.5" fill="#64748b">  已入库模型流、不读 .env 不联网（keyless 衡量是否联网，不等于只读）。</text>
+  <text x="636" y="226" font-size="11" fill="#334155">▸ 手写 mock、loader-smoke、test:expected 也都算 keyless，但证据含金量</text>
+  <text x="636" y="246" font-size="10.5" fill="#b91c1c">  低于录制回放；切勿拿低档假桩绿灯宣称“模型交互已验证”。</text>
 
-  <!-- ③ 怎么运转 -->
-  <rect x="40" y="278" width="940" height="176" rx="10" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.8"/>
-  <text x="60" y="304" font-size="14" font-weight="700" fill="#531dab">③ 怎么运转：录制一次，验证无限次</text>
+  <!-- Card 3: 3-stage workflow -->
+  <rect x="40" y="298" width="1120" height="170" rx="10" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.8"/>
+  <text x="64" y="326" font-size="13.5" font-weight="700" fill="#5b21b6">③ 录制快照三步闭环：生产一次资产（with-key），消费无限次验证（keyless）</text>
 
-  <!-- record -->
-  <rect x="60" y="318" width="248" height="118" rx="8" fill="#fff" stroke="#722ed1" stroke-width="1.5"/>
-  <text x="184" y="342" text-anchor="middle" font-size="12.5" font-weight="700" fill="#531dab">record</text>
-  <text x="184" y="362" text-anchor="middle" font-size="10.5" fill="#6b21a8">真调模型跑一次</text>
-  <text x="184" y="382" text-anchor="middle" font-size="10.5" fill="#a8071a" font-weight="700">要 key · 花钱 · 只做一次</text>
-  <text x="184" y="406" text-anchor="middle" font-size="10.5" fill="#6b21a8">产出：一份记录</text>
-  <text x="184" y="424" text-anchor="middle" font-size="10" fill="#9ca3af">谁做：有 key 的人 / 夜间任务</text>
+  <rect x="64" y="342" width="312" height="108" rx="8" fill="#ffffff" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="220" y="366" text-anchor="middle" font-size="12.5" font-weight="700" fill="#5b21b6">1. record（生产新剧本）</text>
+  <text x="220" y="388" text-anchor="middle" font-size="10.5" fill="#b91c1c" font-weight="700">with-key · 读取 .env 调真模型</text>
+  <text x="220" y="408" text-anchor="middle" font-size="10.5" fill="#475569">新增场景或旧模型流对不上时串行录制</text>
+  <text x="220" y="430" text-anchor="middle" font-size="10" font-family="ui-monospace, monospace" fill="#6d28d9">pnpm run test:snapshot:record</text>
 
-  <!-- 箭头 -->
-  <path d="M316 377 L382 377" stroke="#722ed1" stroke-width="2.5"/>
-  <path d="M372 368 L386 377 L372 386" fill="none" stroke="#722ed1" stroke-width="2.5"/>
+  <line x1="380" y1="396" x2="432" y2="396" stroke="#6d28d9" stroke-width="2.2" marker-end="url(#ov-a)"/>
 
-  <!-- snapshot -->
-  <rect x="394" y="318" width="232" height="118" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
-  <text x="510" y="342" text-anchor="middle" font-size="12.5" font-weight="700" fill="#38761c">snapshot</text>
-  <text x="510" y="362" text-anchor="middle" font-size="10.5" fill="#4d7c0f">那份记录去噪后提交进仓库</text>
-  <text x="510" y="382" text-anchor="middle" font-size="10.5" fill="#166534">它<tspan font-weight="700">就是</tspan>一份 session log</text>
-  <text x="510" y="406" text-anchor="middle" font-size="10.5" fill="#4d7c0f">步骤：去噪 · 拆模型流 · 进 git</text>
-  <text x="510" y="424" text-anchor="middle" font-size="10" fill="#9ca3af">不是「比日志更多的东西」</text>
+  <rect x="440" y="342" width="312" height="108" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="596" y="366" text-anchor="middle" font-size="12.5" font-weight="700" fill="#166534">2. snapshots/（入库资产）</text>
+  <text x="596" y="388" text-anchor="middle" font-size="10.5" fill="#15803d" font-weight="700">本质就是去噪归一化后的会话日志</text>
+  <text x="596" y="408" text-anchor="middle" font-size="10.5" fill="#475569">剥离时间戳、替换 {{cwd}}、拆出提示词</text>
+  <text x="596" y="428" text-anchor="middle" font-size="10.5" fill="#475569">与工具 Schema sidecar 提交进 Git</text>
 
-  <!-- 箭头 -->
-  <path d="M634 377 L700 377" stroke="#722ed1" stroke-width="2.5"/>
-  <path d="M690 368 L704 377 L690 386" fill="none" stroke="#722ed1" stroke-width="2.5"/>
+  <line x1="756" y1="396" x2="808" y2="396" stroke="#6d28d9" stroke-width="2.2" marker-end="url(#ov-a)"/>
 
-  <!-- replay -->
-  <rect x="712" y="318" width="248" height="118" rx="8" fill="#fff" stroke="#1677ff" stroke-width="1.5"/>
-  <text x="836" y="342" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1d4ed8">replay</text>
-  <text x="836" y="362" text-anchor="middle" font-size="10.5" fill="#1e40af">拿它当剧本，<tspan font-weight="700">用今天的代码</tspan>重跑</text>
-  <text x="836" y="382" text-anchor="middle" font-size="10.5" fill="#38761c" font-weight="700">不要 key · 无限次</text>
-  <text x="836" y="406" text-anchor="middle" font-size="10.5" fill="#1e40af">真 profile · 真插件 · 真落盘</text>
-  <text x="836" y="424" text-anchor="middle" font-size="10" fill="#9ca3af">谁做：每个提交 PR 的人</text>
+  <rect x="816" y="342" width="320" height="108" rx="8" fill="#ffffff" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="976" y="366" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1d4ed8">3. replay / refresh（无密钥重跑）</text>
+  <text x="976" y="388" text-anchor="middle" font-size="10.5" fill="#166534" font-weight="700">keyless · 零外部请求 · 用当前代码真跑</text>
+  <text x="976" y="408" text-anchor="middle" font-size="10.5" fill="#475569">replay 并发只读守门；refresh 重算期望</text>
+  <text x="976" y="430" text-anchor="middle" font-size="10" font-family="ui-monospace, monospace" fill="#1d4ed8">test:snapshot / test:snapshot:refresh</text>
 
-  <!-- ④ 边界 -->
-  <rect x="40" y="470" width="940" height="130" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.8"/>
-  <text x="60" y="496" font-size="14" font-weight="700" fill="#ad6800">④ 它到哪为止：只证管道，不证智能体能干活</text>
-  <text x="60" y="520" font-size="11.5" fill="#7c2d12">原话（docs/testing.md:25）：<tspan font-family="ui-monospace, monospace" font-size="11">A no-key test proves plumbing; only a with-key run proves the agent works against a real model.</tspan></text>
+  <!-- Card 4: Proof boundary -->
+  <rect x="40" y="486" width="1120" height="168" rx="10" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.8"/>
+  <text x="64" y="514" font-size="13.5" font-weight="700" fill="#92400e">④ 证明边界 —— 仓库定义（docs/testing.md）：无密钥测试只证管道，真模型运行才证智能体能干活</text>
+  <text x="64" y="538" font-size="11" font-family="ui-monospace, monospace" fill="#b45309">"A no-key test proves plumbing; only a with-key run proves the agent works against a real model."</text>
 
-  <text x="60" y="550" font-size="11.5" fill="#166534" font-weight="700">✅ 它够用：</text>
-  <text x="60" y="570" font-size="11.5" fill="#166534">代码有没有搞坏组装 / 派发 / 落盘；模型有没有看到我新加的工具描述</text>
+  <rect x="64" y="554" width="528" height="80" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="84" y="578" font-size="11.5" font-weight="700" fill="#166534">✅ keyless 足够锁死的问题（管道与契约回归）</text>
+  <text x="84" y="600" font-size="10.5" fill="#334155">• 真实 Loader 装配与插件依赖注入是否完好（防 postmortem 0001）</text>
+  <text x="84" y="618" font-size="10.5" fill="#334155">• 系统提示词、工具 Schema、沙箱拦截、会话持久化与 Web ARIA 渲染是否漂移</text>
 
-  <text x="60" y="592" font-size="11.5" fill="#a8071a" font-weight="700">❌ 它不够（必须真调）：智能体能不能完成任务 · 新 prompt 是不是更好了 · 模型升级后还准不准</text>
-
-  <!-- 底注 -->
-  <rect x="40" y="616" width="940" height="62" rx="10" fill="#f3f4f6" stroke="#9ca3af"/>
-  <text x="60" y="640" font-size="12" font-weight="700" fill="#374151">最容易误会的三件事</text>
-  <text x="60" y="662" font-size="11.5" fill="#4b5563">① 不是「在底层简化地做」——跑同一个 profile、同一套真插件，只省一次网络请求</text>
-  <text x="60" y="678" font-size="11.5" fill="#4b5563">② 不是「看日志」——必须用今天的代码重新执行 ｜ ③ 不是「免费」——record 要花钱花 key，摊到无数次验证上</text>
+  <rect x="608" y="554" width="528" height="80" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="628" y="578" font-size="11.5" font-weight="700" fill="#991b1b">❌ keyless 绝对证不了的问题（必须跑 with-key test:e2e）</text>
+  <text x="628" y="600" font-size="10.5" fill="#334155">• 智能体面对真实在线模型能否自主选对工具并把任务干成</text>
+  <text x="628" y="618" font-size="10.5" fill="#334155">• 新提示词语义效果是否更好，以及线上模型版本升级后旧提示词是否已失效</text>
 </svg>

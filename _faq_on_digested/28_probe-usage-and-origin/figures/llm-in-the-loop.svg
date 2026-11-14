@@ -1,145 +1,108 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 880" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>LLM 在探针循环里的真实位置：负责读、追问、改尺子，不负责判</title>
-  <desc>图分三块。上方是一条横向的责任带，把一个完整诊断的七步按执行者着色：前三个动作「决定看什么、形成假设、造条件」是蓝色归 LLM；中间「取证」是绿色归探针机械执行；「判」是橙色归硬编码判据；「校准判据」又是蓝色归 LLM；「毕业写基线」是灰色归人加 LLM 审 diff。下方左侧是一个对照矩阵：同一份探针产出，人来读只问一次就累，LLM 来读能接着问第七个问题，并标出实测数字 83 条探针中 0 条调用 LLM 做判定、50 条判据写在文件头、59 条有三档退出码。下方右侧是一个红色的反面推演：如果把判定交给 LLM 会发生什么，同一份日志两次读出两个结论、不可复现、探针退化成另一次不确定的推理。底部一句话收束：探针负责让系统变得可读，LLM 负责让它值得追问。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>Coding Agent 在探针闭环中的角色分工：负责读日志与校准尺子，绝不负责做 Pass/Fail 裁判</title>
+  <desc>上半展示一次完整探针诊断的七个步骤及执行主体：Agent 负责读日志定位断点、提出假设、编写窄视口或多路并行构造条件；探针脚本机械运行取证；硬编码确定性判据负责裁决 Pass/Fail；Agent 协助校准过严或失准的旧判据；人工审阅 diff 后更新基线。下半左侧对比人工与 Agent 读取长轨迹的效率及 83 个真实探针统计（0 个调 LLM 做判定），右侧说明将判定交给大模型会因采样波动丧失可复现性。</desc>
   <defs>
     <marker id="llm-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#2563eb"/></marker>
     <marker id="llm-b" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#16a34a"/></marker>
     <marker id="llm-c" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#ea580c"/></marker>
-    <marker id="llm-d" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#475569"/></marker>
   </defs>
 
-  <rect width="1200" height="880" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">LLM 在探针循环里的真实位置</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">负责「读 · 追问 · 改尺子」，不负责「判」—— 判给模型，探针就失去唯一的严格性</text>
+  <rect width="1200" height="660" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Coding Agent 在探针循环里的分工边界</text>
+  <text x="600" y="56" text-anchor="middle" fill="#64748b">让 Agent 读千行日志、写构造脚本、校准尺子；把 Pass / Fail 裁决严格留给确定性代码</text>
 
-  <!-- legend -->
-  <rect x="40" y="76" width="14" height="14" rx="3" fill="#2563eb"/>
-  <text x="60" y="87" font-size="11" fill="#1d4ed8">LLM 做</text>
-  <rect x="140" y="76" width="14" height="14" rx="3" fill="#16a34a"/>
-  <text x="160" y="87" font-size="11" fill="#166534">探针机械执行</text>
-  <rect x="270" y="76" width="14" height="14" rx="3" fill="#ea580c"/>
-  <text x="290" y="87" font-size="11" fill="#92400e">硬编码判据</text>
-  <rect x="390" y="76" width="14" height="14" rx="3" fill="#475569"/>
-  <text x="410" y="87" font-size="11" fill="#334155">人</text>
+  <!-- Legend -->
+  <rect x="40" y="72" width="14" height="14" rx="3" fill="#2563eb"/>
+  <text x="60" y="83" font-size="11" fill="#1d4ed8">Coding Agent 擅长</text>
+  <rect x="190" y="72" width="14" height="14" rx="3" fill="#16a34a"/>
+  <text x="210" y="83" font-size="11" fill="#166534">探针脚本机械执行</text>
+  <rect x="336" y="72" width="14" height="14" rx="3" fill="#ea580c"/>
+  <text x="356" y="83" font-size="11" fill="#92400e">确定性代码判据（严禁调 LLM）</text>
+  <rect x="548" y="72" width="14" height="14" rx="3" fill="#475569"/>
+  <text x="568" y="83" font-size="11" fill="#334155">人类开发者把关</text>
 
-  <!-- ============ responsibility band ============ -->
-  <text x="40" y="118" font-size="12" font-weight="700" fill="#334155">① 一次完整诊断的七步，按执行者着色 —— 注意「判」是橙色的那一格</text>
+  <!-- 7-step band -->
+  <path d="M946 144 L946 124 Q946 118 938 118 L120 118 Q112 118 112 124 L112 142" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#llm-a)"/>
+  <text x="530" y="110" text-anchor="middle" font-size="10" fill="#1d4ed8">发现旧判据过严或失准后，修正尺子重新验证 —— Agent 让多轮追问成本降了两个数量级</text>
 
-  <!-- step 1 -->
-  <rect x="40" y="130" width="150" height="96" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-  <text x="115" y="154" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">决定看什么</text>
-  <text x="56" y="176" font-size="10" fill="#334155">读 24 行事件直方图</text>
-  <text x="56" y="193" font-size="10" fill="#334155">发现「没有 tool/result」</text>
-  <text x="115" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">LLM</text>
+  <rect x="40" y="146" width="146" height="88" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="113" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">① 读日志找断点</text>
+  <text x="113" y="192" text-anchor="middle" font-size="10" fill="#334155">揪出缺失 tool/result</text>
+  <text x="113" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">Agent</text>
 
-  <!-- step 2 -->
-  <rect x="202" y="130" width="150" height="96" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-  <text x="277" y="154" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">形成假设</text>
-  <text x="218" y="176" font-size="10" fill="#334155">controls 少了按钮</text>
-  <text x="218" y="193" font-size="10" fill="#334155">→ 联想到窄视口</text>
-  <text x="277" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">LLM</text>
+  <line x1="186" y1="190" x2="198" y2="190" stroke="#2563eb" stroke-width="1.8" marker-end="url(#llm-a)"/>
 
-  <!-- step 3 -->
-  <rect x="364" y="130" width="150" height="96" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-  <text x="439" y="154" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">造条件</text>
-  <text x="380" y="176" font-size="10" fill="#334155">setViewportSize(360)</text>
-  <text x="380" y="193" font-size="10" fill="#334155">Promise.all 双开门</text>
-  <text x="439" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">LLM</text>
+  <rect x="202" y="146" width="146" height="88" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="275" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">② 提出故障假设</text>
+  <text x="275" y="192" text-anchor="middle" font-size="10" fill="#334155">定位窄屏折叠或配置漏挂</text>
+  <text x="275" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">Agent</text>
 
-  <!-- step 4 -->
-  <rect x="526" y="130" width="150" height="96" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
-  <text x="601" y="154" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">取证</text>
-  <text x="542" y="176" font-size="10" fill="#334155">verdict + 截图 + 日志</text>
-  <text x="542" y="193" font-size="10" fill="#334155">机械、可复现</text>
-  <text x="601" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">探针</text>
+  <line x1="348" y1="190" x2="360" y2="190" stroke="#2563eb" stroke-width="1.8" marker-end="url(#llm-a)"/>
 
-  <!-- step 5 : the orange one -->
-  <rect x="688" y="122" width="170" height="112" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
-  <text x="773" y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">判</text>
-  <text x="708" y="172" font-size="10" fill="#334155">同一份夹具 + 同一份判据</text>
-  <text x="708" y="189" font-size="10" fill="#334155">→ 同一个结论</text>
-  <text x="708" y="208" font-size="10" font-weight="700" fill="#991b1b">唯一严格性在这里</text>
-  <text x="773" y="228" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">硬编码判据</text>
+  <rect x="364" y="146" width="150" height="88" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="439" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">③ 构造复现条件</text>
+  <text x="439" y="192" text-anchor="middle" font-size="10" fill="#334155">360px 窄视口 / 多路并行</text>
+  <text x="439" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">Agent</text>
 
-  <!-- step 6 -->
-  <rect x="870" y="130" width="150" height="96" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-  <text x="945" y="154" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">校准判据</text>
-  <text x="886" y="176" font-size="10" fill="#334155">「旧判据把正确行为</text>
-  <text x="886" y="193" font-size="10" fill="#334155">判红」→ 尺子错了</text>
-  <text x="945" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">LLM</text>
+  <line x1="514" y1="190" x2="526" y2="190" stroke="#2563eb" stroke-width="1.8" marker-end="url(#llm-a)"/>
 
-  <!-- step 7 -->
-  <rect x="1032" y="130" width="128" height="96" rx="8" fill="#f1f5f9" stroke="#475569" stroke-width="2"/>
-  <text x="1096" y="154" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">写基线</text>
-  <text x="1048" y="176" font-size="10" fill="#334155">人审 diff</text>
-  <text x="1048" y="193" font-size="10" fill="#334155">不可逆动作</text>
-  <text x="1096" y="216" text-anchor="middle" font-size="10" font-weight="700" fill="#334155">人</text>
+  <rect x="530" y="146" width="146" height="88" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.8"/>
+  <text x="603" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">④ 机械运行取证</text>
+  <text x="603" y="192" text-anchor="middle" font-size="10" fill="#334155">采集日志、ARIA 与产物</text>
+  <text x="603" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">探针脚本</text>
 
-  <!-- arrows -->
-  <line x1="192" y1="178" x2="198" y2="178" stroke="#2563eb" stroke-width="2" marker-end="url(#llm-a)"/>
-  <line x1="354" y1="178" x2="360" y2="178" stroke="#2563eb" stroke-width="2" marker-end="url(#llm-a)"/>
-  <line x1="516" y1="178" x2="522" y2="178" stroke="#2563eb" stroke-width="2" marker-end="url(#llm-a)"/>
-  <line x1="678" y1="178" x2="684" y2="178" stroke="#16a34a" stroke-width="2" marker-end="url(#llm-b)"/>
-  <line x1="860" y1="178" x2="866" y2="178" stroke="#ea580c" stroke-width="2" marker-end="url(#llm-c)"/>
-  <line x1="1022" y1="178" x2="1028" y2="178" stroke="#2563eb" stroke-width="2" marker-end="url(#llm-a)"/>
+  <line x1="676" y1="190" x2="688" y2="190" stroke="#16a34a" stroke-width="1.8" marker-end="url(#llm-b)"/>
 
-  <!-- loop back: step6 -> step1 -->
-  <path d="M945 122 L945 106 Q945 100 938 100 L122 100 Q115 100 115 106 L115 126" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#llm-a)"/>
-  <text x="530" y="97" text-anchor="middle" font-size="10" fill="#1d4ed8">改完尺子，回到第 1 步重新问 —— 这一圈是 LLM 独有的能力，探针自己转不动</text>
+  <rect x="692" y="140" width="166" height="100" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2.5"/>
+  <text x="775" y="166" text-anchor="middle" font-size="12.5" font-weight="700" fill="#92400e">⑤ 确定性裁决</text>
+  <text x="775" y="188" text-anchor="middle" font-size="10" fill="#334155">同输入 + 同判据 = 同退出码</text>
+  <text x="775" y="206" text-anchor="middle" font-size="10" font-weight="700" fill="#991b1b">严禁调模型拍脑袋</text>
+  <text x="775" y="226" text-anchor="middle" font-size="10" font-weight="700" fill="#92400e">硬编码代码判据</text>
 
-  <!-- ============ left: reader comparison ============ -->
-  <text x="40" y="278" font-size="12" font-weight="700" fill="#334155">② 同一份产出，两个消费者 —— 这就是「为什么是现在」</text>
+  <line x1="858" y1="190" x2="870" y2="190" stroke="#ea580c" stroke-width="1.8" marker-end="url(#llm-c)"/>
 
-  <rect x="40" y="290" width="560" height="196" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="58" y="314" font-size="12" font-weight="700" fill="#334155">消费者：人</text>
-  <text x="58" y="342" font-size="11" fill="#334155">24 行的会话日志</text>
-  <text x="58" y="360" font-size="11" fill="#166534">✓ 读得完</text>
-  <text x="58" y="378" font-size="11" fill="#991b1b">✗ 只会问一次就累了</text>
-  <line x1="58" y1="392" x2="582" y2="392" stroke="#e2e8f0"/>
-  <text x="58" y="414" font-size="11" fill="#334155">2400 行的完整轨迹</text>
-  <text x="58" y="432" font-size="11" fill="#991b1b">✗ 放弃，转去看界面（postmortem 0003 栽在这里）</text>
-  <text x="58" y="450" font-size="11" fill="#991b1b">✗ 「大概是产品坏了」—— 不会怀疑自己的判据</text>
-  <text x="58" y="472" font-size="11" fill="#64748b">每次翻日志：十几分钟</text>
+  <rect x="874" y="146" width="144" height="88" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="946" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">⑥ 校准误报尺子</text>
+  <text x="946" y="192" text-anchor="middle" font-size="10" fill="#334155">修正过严或失准判据</text>
+  <text x="946" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">Agent</text>
 
-  <rect x="616" y="290" width="544" height="196" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
-  <text x="634" y="314" font-size="12" font-weight="700" fill="#1d4ed8">消费者：LLM</text>
-  <text x="634" y="342" font-size="11" fill="#334155">24 行的会话日志</text>
-  <text x="634" y="360" font-size="11" fill="#1d4ed8">✓ 读得完，还能接着问第七个问题</text>
-  <line x1="634" y1="374" x2="1142" y2="374" stroke="#bfdbfe"/>
-  <text x="634" y="396" font-size="11" fill="#334155">2400 行的完整轨迹</text>
-  <text x="634" y="414" font-size="11" fill="#1d4ed8">✓ 扫一遍，列出三处异常</text>
-  <text x="634" y="432" font-size="11" fill="#1d4ed8">✓ 「旧判据假设了占位，但产品是惰性的 —— 尺子错了」</text>
-  <text x="634" y="454" font-size="11" fill="#64748b">每次翻日志：一次工具调用</text>
-  <text x="634" y="474" font-size="11" font-weight="700" fill="#991b1b">迭代成本差两个数量级 → 探针才第一次划得来</text>
+  <line x1="1018" y1="190" x2="1030" y2="190" stroke="#2563eb" stroke-width="1.8" marker-end="url(#llm-a)"/>
 
-  <!-- ============ bottom-left: the measurement ============ -->
-  <text x="40" y="524" font-size="12" font-weight="700" fill="#334155">③ 实测：83 条探针，判定交给 LLM 的有几条</text>
+  <rect x="1034" y="146" width="126" height="88" rx="8" fill="#f1f5f9" stroke="#475569" stroke-width="1.8"/>
+  <text x="1097" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">⑦ 审阅写基线</text>
+  <text x="1097" y="192" text-anchor="middle" font-size="10" fill="#334155">人工逐行审 diff</text>
+  <text x="1097" y="218" text-anchor="middle" font-size="10" font-weight="700" fill="#334155">人类把关</text>
 
-  <rect x="40" y="536" width="360" height="180" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
-  <text x="220" y="572" text-anchor="middle" font-size="40" font-weight="700" fill="#166534">83</text>
-  <text x="220" y="594" text-anchor="middle" font-size="11" fill="#334155">外部插件仓实测探针样本数</text>
-  <line x1="76" y1="610" x2="364" y2="610" stroke="#86efac"/>
-  <text x="220" y="636" text-anchor="middle" font-size="34" font-weight="700" fill="#991b1b">0</text>
-  <text x="220" y="658" text-anchor="middle" font-size="11" fill="#991b1b">其中调用 LLM 做判定的</text>
-  <text x="220" y="682" text-anchor="middle" font-size="10" fill="#64748b">50 条判据写在文件头 · 59 条有三档退出码</text>
-  <text x="220" y="700" text-anchor="middle" font-size="10" fill="#64748b">7 处 fetch 全是本地 CDP / localhost RPC</text>
+  <!-- Bottom Left: Efficiency + 83 stats -->
+  <rect x="40" y="262" width="544" height="264" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="64" y="290" font-size="13" font-weight="700" fill="#0f172a">为什么有了 Coding Agent，探针工作法格外高效？</text>
+  <text x="64" y="318" font-size="11" fill="#475569">▸ 人肉眼读日志：遇到两千行长轨迹极易漏看放弃，甚至只起裸前端误判正常（0003）。</text>
+  <text x="64" y="344" font-size="11" fill="#1d4ed8">▸ Agent 辅助读日志：秒级通读数千行事件流，把后端 tool/call 与前端 ARIA 树逐条</text>
+  <text x="64" y="366" font-size="11" fill="#1d4ed8">  交叉对账，还能识别惰性加载等合法行为、及时帮人修正写歪的旧判据。</text>
 
-  <!-- ============ bottom-right: counterfactual ============ -->
-  <rect x="420" y="536" width="740" height="180" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
-  <text x="440" y="562" font-size="12" font-weight="700" fill="#991b1b">④ 反面推演：如果真把判定交给 LLM</text>
+  <rect x="64" y="394" width="496" height="108" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="84" y="420" font-size="12" font-weight="700" fill="#166534">真实样本盘点：外部插件仓 83 个探针脚本实测统计</text>
+  <text x="84" y="446" font-size="11" font-weight="700" fill="#991b1b">• 调用大模型做 Pass / Fail 裁决的脚本数：0 个（严格为零）</text>
+  <text x="84" y="470" font-size="11" fill="#334155">• 文件头写清判据与适用边界：50 个 ｜ 严格区分 0 / 1 / 2 退出码：59 个</text>
+  <text x="84" y="490" font-size="10.5" fill="#64748b">• 脚本内全部本地请求均指向 CDP 浏览器端口或本地宿主 RPC，无在线推理裁决</text>
 
-  <text x="440" y="590" font-size="11" fill="#334155">▸ 同一份日志，今天读出一个结论，明天读出另一个</text>
-  <text x="440" y="612" font-size="11" fill="#334155">▸ 「同一份夹具 + 同一份判据 → 同一个结论」这条唯一严格性，消失</text>
-  <text x="440" y="634" font-size="11" fill="#334155">▸ 探针退化成「另一次不确定的推理」 —— 你不再有观测，你只是又跑了一次模型</text>
-  <text x="440" y="656" font-size="11" fill="#334155">▸ CI 上更糟：红了你不知道是产品坏了还是模型今天心情不同</text>
+  <!-- Bottom Right: Red line -->
+  <rect x="604" y="262" width="556" height="264" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.8"/>
+  <text x="628" y="290" font-size="13" font-weight="700" fill="#991b1b">绝对不能跨过的两条红线</text>
 
-  <rect x="440" y="668" width="700" height="34" rx="6" fill="#ffffff" stroke="#fca5a5"/>
-  <text x="454" y="690" font-size="11" font-weight="700" fill="#991b1b">反面证据在这儿：83 条真实探针里，没有一条这么做 —— 不是因为做不到，是因为做了没意义</text>
+  <text x="628" y="320" font-size="11.5" font-weight="700" fill="#7f1d1d">红线一：绝不在探针内调大模型判断 Pass 或 Fail</text>
+  <text x="628" y="346" font-size="11" fill="#334155">▸ 破坏唯一可复现性：同一份日志跑两次可能给出相反裁决，“同夹具 + 同判据 = 同结论”</text>
+  <text x="628" y="368" font-size="11" fill="#334155">  的工程底线当场失效；</text>
+  <text x="628" y="394" font-size="11" fill="#334155">▸ 污染排障信号：一旦报红，无法区分是插件真坏了还是模型采样波动导致评语变化。</text>
 
-  <!-- ============ bottom line ============ -->
-  <rect x="40" y="736" width="1120" height="112" rx="10" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
-  <text x="60" y="762" font-size="13" font-weight="700" fill="#92400e">所以准确的因果是反过来的</text>
-  <text x="60" y="786" font-size="11" fill="#991b1b">✗ 不是「有了 LLM，探针才能判」</text>
-  <text x="60" y="806" font-size="11" fill="#166534">✓ 而是「有了 LLM，探针产出的事实才有人读完、有人追问、有人回头改尺子」</text>
-  <text x="60" y="830" font-size="11" fill="#334155">没有 Agent 辅助时，上千行会话轨迹靠人肉眼翻极易漏看；有了 Agent 快速通读和连续追问，结构化取证的闭环效率才真正跑起来。</text>
+  <line x1="628" y1="418" x2="1136" y2="418" stroke="#fecaca"/>
+
+  <text x="628" y="446" font-size="11.5" font-weight="700" fill="#7f1d1d">红线二：绝不让 Agent 未经人工审阅直接覆盖测试基线</text>
+  <text x="628" y="472" font-size="11" fill="#334155">▸ 执行 refresh 刷新快照或更新 expected 基线前，必须由人逐行审阅 git diff，</text>
+  <text x="628" y="494" font-size="11" fill="#334155">  防止把报错输出或残缺界面静默固化成新的“合法标准答案”。</text>
+
+  <!-- Footer -->
+  <rect x="40" y="548" width="1120" height="86" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="64" y="578" font-size="12.5" font-weight="700" fill="#92400e">一句话分清人机职责：探针把黑盒运行变成可读事实，Agent 帮你高效读完并改准尺子，确定性代码一锤定音</text>
+  <text x="64" y="606" font-size="11" fill="#475569">复杂结构校验稳定后，把硬编码判据抽成纯函数配静态样本放进 pnpm test（毫秒级执行），再清理掉旧的临时探针脚本。</text>
 </svg>

@@ -1,88 +1,88 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
   <title>运行时编排选型全景：两层决策主体与五个实战岔口</title>
-  <desc>左侧按实战场景列出五个编排岔口：1 单轮内拆不拆出去（bash/PTC run_code、subagent、subagent_fork）；2 一两个还是一大批（多次 subagent、workflow 脚本）；3 要不要多角色对等协作（workflow 加人、Agent Team）；4 一轮收尾还是跨轮长跑（人工继续、goal、ralph）；5 长耗时或定时谁来等（前台阻塞、后台 jobs、schedule）。右侧上方说明启动会话前与会话运行中两层决策主体，下方指向非静态 DAG 取舍与跑偏症状迁移。</desc>
+  <desc>左侧按实战场景列出五个编排岔口：1 单轮内拆不拆出去（bash / PTC run_code、subagent、subagent_fork）；2 一两个还是一大批同构任务（subagent vs workflow 脚本）；3 单向汇总还是多角色对等协作（workflow vs Agent Team）；4 一轮收尾还是跨轮长跑（人工逐轮对话、goal、ralph）；5 长耗时或定时跟进交给谁等（前台阻塞、后台 jobs、schedule）。右侧说明启动会话前与会话运行中两层决策主体，以及非静态 DAG 取舍与跑偏换挡。</desc>
 
   <rect width="1200" height="620" rx="8" fill="#f8fafc"/>
   <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">运行时编排选型全景：两层决策主体 × 五个实战岔口</text>
-  <text x="600" y="60" text-anchor="middle" fill="#64748b">默认用最轻够用的一档把活干完；只在上下文、规模、对等通信或跨轮持续出现明确信号时再升级</text>
+  <text x="600" y="60" text-anchor="middle" fill="#64748b">默认用最轻够用的一档把活干完；只在上下文体积、同构规模、跨成员通信或跨轮持续出现明确信号时再升级</text>
 
   <rect x="40" y="84" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
   <rect x="40" y="84" width="6" height="86" rx="3" fill="#3b82f6"/>
   <circle cx="78" cy="127" r="15" fill="#eff6ff" stroke="#93c5fd"/>
   <text x="78" y="131" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">1</text>
-  <text x="104" y="116" font-size="13" font-weight="700" fill="#0f172a">单轮内拆不拆出去</text>
-  <text x="104" y="138" fill="#475569">「读十几个文件或批量过滤工具结果，别撑爆主对话」</text>
-  <text x="104" y="158" fill="#94a3b8" font-size="11">自己做 / PTC run_code · subagent（空上下文） · subagent_fork（带历史快照）</text>
-  <rect x="544" y="100" width="120" height="22" rx="11" fill="#eff6ff"/>
-  <text x="604" y="115" text-anchor="middle" font-size="10.5" fill="#1d4ed8">见 01 · 单轮拆分</text>
+  <text x="104" y="116" font-size="13" font-weight="700" fill="#0f172a">单轮内要不要拆出当前上下文</text>
+  <text x="104" y="138" fill="#475569">「读十几个文件或批量过滤工具输出，别把主对话塞爆」</text>
+  <text x="104" y="158" fill="#64748b" font-size="11">bash / PTC run_code（单轮内存消化） · subagent（空上下文） · subagent_fork（带历史快照）</text>
+  <rect x="536" y="98" width="126" height="24" rx="12" fill="#eff6ff"/>
+  <text x="599" y="114" text-anchor="middle" font-size="10.5" fill="#1d4ed8">见 01 · 单轮拆分</text>
 
   <rect x="40" y="182" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
   <rect x="40" y="182" width="6" height="86" rx="3" fill="#0d9488"/>
   <circle cx="78" cy="225" r="15" fill="#f0fdfa" stroke="#5eead4"/>
   <text x="78" y="229" text-anchor="middle" font-size="11" font-weight="700" fill="#0f766e">2</text>
-  <text x="104" y="214" font-size="13" font-weight="700" fill="#0f172a">一两个还是一大批同构任务</text>
-  <text x="104" y="236" fill="#475569">「四十个文件都要审 / 一轮 API 迁移要并发铺开汇总」</text>
-  <text x="104" y="256" fill="#94a3b8" font-size="11">1–2 个用 subagent · 大批同构用 workflow（pipeline / parallel / 手写循环）</text>
-  <rect x="544" y="198" width="120" height="22" rx="11" fill="#f0fdfa"/>
-  <text x="604" y="213" text-anchor="middle" font-size="10.5" fill="#0f766e">见 01 · 批量扇出</text>
+  <text x="104" y="214" font-size="13" font-weight="700" fill="#0f172a">派出去的是一两个，还是一大批同构项</text>
+  <text x="104" y="236" fill="#475569">「四十个文件都要审 / 一套新接口迁移要并发铺开汇总」</text>
+  <text x="104" y="256" fill="#64748b" font-size="11">1–2 个用 subagent · 5 个以上同构批处理用 workflow（pipeline / parallel / 手写循环）</text>
+  <rect x="536" y="196" width="126" height="24" rx="12" fill="#f0fdfa"/>
+  <text x="599" y="212" text-anchor="middle" font-size="10.5" fill="#0f766e">见 01 · 批量扇出</text>
 
   <rect x="40" y="280" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
   <rect x="40" y="280" width="6" height="86" rx="3" fill="#7c3aed"/>
   <circle cx="78" cy="323" r="15" fill="#f5f3ff" stroke="#c4b5fd"/>
   <text x="78" y="327" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">3</text>
-  <text x="104" y="312" font-size="13" font-weight="700" fill="#0f172a">需要多角色持续通信与任务板吗</text>
-  <text x="104" y="334" fill="#475569">「几个角色同时改同一仓库、互发消息、跨重启查进度」</text>
-  <text x="104" y="354" fill="#94a3b8" font-size="11">单向汇总用 workflow · 网状协作挂载 Agent Team（实验包，替换 subagent）</text>
-  <rect x="544" y="296" width="120" height="22" rx="11" fill="#f5f3ff"/>
-  <text x="604" y="311" text-anchor="middle" font-size="10.5" fill="#6d28d9">见 02 · 对等团队</text>
+  <text x="104" y="312" font-size="13" font-weight="700" fill="#0f172a">单向汇总就够，还是要多角色持续通信与任务板</text>
+  <text x="104" y="334" fill="#475569">「几个具名角色边改边对表、共享依赖任务板、跨重启保留协作态」</text>
+  <text x="104" y="354" fill="#64748b" font-size="11">星形单向汇总用 workflow · 网状协作在启动前挂载 agent-team-profile（替换 subagent）</text>
+  <rect x="536" y="294" width="126" height="24" rx="12" fill="#f5f3ff"/>
+  <text x="599" y="310" text-anchor="middle" font-size="10.5" fill="#6d28d9">见 02 · 对等团队</text>
 
   <rect x="40" y="378" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
   <rect x="40" y="378" width="6" height="86" rx="3" fill="#d97706"/>
   <circle cx="78" cy="421" r="15" fill="#fffbeb" stroke="#fcd34d"/>
   <text x="78" y="425" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">4</text>
-  <text x="104" y="410" font-size="13" font-weight="700" fill="#0f172a">一轮能收尾还是要跨轮长跑</text>
-  <text x="104" y="432" fill="#475569">「修完一版还有下一版，想自动续跑或每轮清空上下文」</text>
-  <text x="104" y="452" fill="#94a3b8" font-size="11">人工继续 · goal（同会话自动续轮） · ralph（点名启用，每轮全新 child）</text>
-  <rect x="544" y="394" width="120" height="22" rx="11" fill="#fffbeb"/>
-  <text x="604" y="409" text-anchor="middle" font-size="10.5" fill="#b45309">见 02 · 跨轮推进</text>
+  <text x="104" y="410" font-size="13" font-weight="700" fill="#0f172a">这一轮能收尾，还是要跨轮长跑</text>
+  <text x="104" y="432" fill="#475569">「一轮干不完，希望空闲自动接着跑，或每轮清空上下文重来」</text>
+  <text x="104" y="452" fill="#64748b" font-size="11">人工逐轮对话 · goal（同会话自动续轮） · ralph（人类点名启用，每轮全新空上下文）</text>
+  <rect x="536" y="392" width="126" height="24" rx="12" fill="#fffbeb"/>
+  <text x="599" y="408" text-anchor="middle" font-size="10.5" fill="#b45309">见 02 · 跨轮推进</text>
 
   <rect x="40" y="476" width="640" height="86" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
   <rect x="40" y="476" width="6" height="86" rx="3" fill="#475569"/>
   <circle cx="78" cy="519" r="15" fill="#f1f5f9" stroke="#cbd5e1"/>
   <text x="78" y="523" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">5</text>
-  <text x="104" y="508" font-size="13" font-weight="700" fill="#0f172a">长耗时等待或定时跟进交给谁</text>
-  <text x="104" y="530" fill="#475569">「CI 要跑二十分钟不想干等 / 到点提醒回原会话复查」</text>
-  <text x="104" y="550" fill="#94a3b8" font-size="11">前台阻塞 · 后台 jobs（完成通知回交，严禁轮询） · schedule（时钟投递）</text>
-  <rect x="544" y="492" width="120" height="22" rx="11" fill="#f1f5f9"/>
-  <text x="604" y="507" text-anchor="middle" font-size="10.5" fill="#334155">见 02 · 时间等待</text>
+  <text x="104" y="508" font-size="13" font-weight="700" fill="#0f172a">长耗时命令或定时复查交给谁来等</text>
+  <text x="104" y="530" fill="#475569">「构建跑二十分钟不想干等 / 一小时后回原会话看部署状态」</text>
+  <text x="104" y="550" fill="#64748b" font-size="11">前台阻塞 · 后台 jobs（完成通知回交，严禁 sleep 轮询） · schedule（时钟投递消息）</text>
+  <rect x="536" y="490" width="126" height="24" rx="12" fill="#f1f5f9"/>
+  <text x="599" y="506" text-anchor="middle" font-size="10.5" fill="#334155">见 02 · 时间等待</text>
 
   <rect x="710" y="84" width="450" height="478" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="732" y="116" font-size="14" font-weight="700" fill="#0f172a">先分清两层决策主体</text>
-  <text x="732" y="138" font-size="11" fill="#64748b">DSH 没有全局路由表；模型只能选当前配置暴露出来的工具</text>
+  <text x="732" y="116" font-size="14" font-weight="700" fill="#0f172a">先切开两层完全不同的决策主体</text>
+  <text x="732" y="138" font-size="11" fill="#64748b">DSH 没有全局中心路由器；未挂载的工具及其规则对模型不可见</text>
 
   <text x="732" y="172" font-size="12" font-weight="700" fill="#1d4ed8">① 启动会话前（人配运行环境）</text>
-  <text x="732" y="192" fill="#475569" font-size="11">选 Standard 原生工具还是 PTC 代码模式？</text>
-  <text x="732" y="210" fill="#94a3b8" font-size="10.5">装不装 agent-team-profile（会关掉普通 subagent）或 ralph-bundle？</text>
+  <text x="732" y="192" fill="#475569" font-size="11">选 Standard 原生工具预设，还是 PTC 代码预设（默认关 workflow）？</text>
+  <text x="732" y="210" fill="#64748b" font-size="10.5">挂不挂 agent-team-profile（会关掉普通 subagent）或 ralph-bundle？</text>
 
-  <text x="732" y="244" font-size="12" font-weight="700" fill="#0f766e">② 会话运行中（模型在工具箱里选）</text>
-  <text x="732" y="264" fill="#475569" font-size="11">用户点名优先 → 确定性活走 bash / run_code</text>
-  <text x="732" y="282" fill="#94a3b8" font-size="10.5">需模型判断时，看控制流归谁、上下文隔不隔离、要不要跨重启</text>
+  <text x="732" y="244" font-size="12" font-weight="700" fill="#0f766e">② 会话运行中（模型在已有工具箱里选）</text>
+  <text x="732" y="264" fill="#475569" font-size="11">用户显式点名优先 → 纯确定性操作走 bash / PTC run_code</text>
+  <text x="732" y="282" fill="#64748b" font-size="10.5">需模型判断时，按控制流归属、上下文隔离与跨重启要求选最轻一档</text>
 
-  <text x="732" y="316" font-size="12" font-weight="700" fill="#b45309">③ 量级天生不同，不能硬替</text>
-  <text x="732" y="336" fill="#475569" font-size="11">workflow 单次最多 1000 child · Team 8–16 成员</text>
-  <text x="732" y="354" fill="#94a3b8" font-size="10.5">subagent 默认只允许 1 层深度，鼓励宽扇出而非多层套娃</text>
+  <text x="732" y="316" font-size="12" font-weight="700" fill="#b45309">③ 默认配额与拓扑纪律</text>
+  <text x="732" y="336" fill="#475569" font-size="11">workflow 单次运行最多 1000 child · Team 默认 8–16 成员</text>
+  <text x="732" y="354" fill="#64748b" font-size="10.5">subagent 默认 maxDepth = 1，鼓励水平宽扇出而非多层嵌套套娃</text>
 
   <line x1="732" y1="380" x2="1138" y2="380" stroke="#e2e8f0"/>
 
-  <text x="732" y="410" font-size="13" font-weight="700" fill="#0f172a">机制取舍与故障排障</text>
+  <text x="732" y="408" font-size="13" font-weight="700" fill="#0f172a">架构取舍与排障换挡</text>
 
-  <rect x="732" y="426" width="406" height="54" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
-  <text x="748" y="448" font-size="12" font-weight="700" fill="#334155">02 后半 · 为什么不做成静态 YAML/JSON DAG？</text>
-  <text x="748" y="468" fill="#475569" font-size="10.5">重规划是常态：引擎只守无环与就绪不变量，派工权留给脚本与对话</text>
+  <rect x="732" y="424" width="406" height="56" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="750" y="446" font-size="12" font-weight="700" fill="#334155">02 后半 · 为什么不做静态 YAML/JSON DAG 引擎？</text>
+  <text x="750" y="466" fill="#475569" font-size="10.5">重规划是常态：引擎只守无环与就绪不变量，派工权留给脚本与对话</text>
 
-  <rect x="732" y="492" width="406" height="54" rx="8" fill="#fef2f2" stroke="#fecaca"/>
-  <text x="748" y="514" font-size="12" font-weight="700" fill="#b91c1c">03 · 选错的典型症状与平滑迁移路径</text>
-  <text x="748" y="534" fill="#7f1d1d" font-size="10.5">上下文撑爆、干等、互相踩文件、挂满 pending 没人动 → 对症换挡</text>
+  <rect x="732" y="492" width="406" height="56" rx="8" fill="#fef2f2" stroke="#fecaca"/>
+  <text x="750" y="514" font-size="12" font-weight="700" fill="#b91c1c">03 · 十种跑偏症状与半路换挡地图</text>
+  <text x="750" y="534" fill="#7f1d1d" font-size="10.5">上下文撑爆、干等、踩改同文件、任务板挂满没人动 → 对症换挡</text>
 
-  <text x="600" y="598" text-anchor="middle" font-size="11" fill="#64748b">不管选哪一档，「通知返回 / 状态变成 completed / worker 自报完成」都不等于业务正确，选型时必须同时定好验收动作</text>
+  <text x="600" y="598" text-anchor="middle" font-size="11" fill="#64748b">底线：无论通知送达、任务标为 completed 还是 ralph 子代理自报 complete，都只代表流程走到终态，验收必须靠外部命令或测试核实</text>
 </svg>

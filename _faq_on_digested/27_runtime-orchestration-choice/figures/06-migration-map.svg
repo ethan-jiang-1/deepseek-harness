@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>迁移地图：什么时候从哪个原语换到哪个，以及每次迁移丢什么</title>
-  <desc>实线是升级：自己做 → subagent（占上下文）、subagent → workflow（数量变多）、workflow → team（要协作）、继续 → goal（要跨轮）、goal → ralph（要 fresh）。虚线是降级或重开：team 回到 workflow（规模变大）、team 直接重开（工具面错了）。底部说明每次迁移都会丢掉一部分已有状态——上下文、协调状态或工具面。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 570" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>编排原语换挡地图：什么时候升级，每次换挡会丢掉什么</title>
+  <desc>上半为两条换挡路径。单轮拆分与协作链：多轮工具调（自己做）遇到纯代码批处理筛选可切 PTC (run_code)，遇到独立推理拆给 subagent，同构项扩至 5 个以上升为 workflow 脚本，需要多角色互发消息与持久任务板升为 agent-team（虚线可降级回 workflow，或工具面错配时重开会话切换 Profile）。跨轮推进链：人工逐轮对话 → goal（空闲自动续轮）→ ralph（每轮清空上下文）。下半说明每次换挡丢掉的已有状态与代价。</desc>
   <defs>
     <marker id="s1" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#475569"/>
@@ -8,67 +8,94 @@
     <marker id="s2" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#b91c1c"/>
     </marker>
+    <marker id="s3" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#2563eb"/>
+    </marker>
   </defs>
 
-  <rect width="1200" height="560" rx="8" fill="#f8fafc"/>
-  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">迁移地图</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">实线是升级或换挡，虚线是降级或重开；每条边都有一条对应的「你丢掉什么」</text>
+  <rect width="1200" height="570" rx="8" fill="#f8fafc"/>
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">编排原语换挡地图：瓶颈驱动升级与状态损耗</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">实线表示撞上容量或协作瓶颈后升级，虚线表示降级或重开会话；每次换挡都伴随明确的状态取舍</text>
 
-  <rect x="60" y="110" width="160" height="50" rx="10" fill="#ffffff" stroke="#93c5fd"/>
-  <text x="140" y="140" text-anchor="middle" font-size="12" fill="#1e3a8a">自己做</text>
+  <!-- Node: 多轮工具调 -->
+  <rect x="40" y="132" width="168" height="56" rx="10" fill="#ffffff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="124" y="156" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">多轮工具调（自己做）</text>
+  <text x="124" y="175" text-anchor="middle" font-size="10" fill="#64748b">同会话调原生工具 / bash</text>
 
-  <rect x="280" y="110" width="160" height="50" rx="10" fill="#ffffff" stroke="#5eead4"/>
-  <text x="360" y="140" text-anchor="middle" font-size="12" fill="#0f766e">subagent</text>
+  <!-- Branch 1: PTC (run_code) -->
+  <path d="M208,146 C240,146 244,111 280,111" fill="none" stroke="#2563eb" stroke-width="1.8" marker-end="url(#s3)"/>
+  <text x="244" y="102" text-anchor="middle" font-size="9.5" fill="#1d4ed8">确定性筛选</text>
 
-  <rect x="500" y="110" width="160" height="50" rx="10" fill="#ffffff" stroke="#fbbf24"/>
-  <text x="580" y="140" text-anchor="middle" font-size="12" fill="#92400e">workflow</text>
+  <rect x="284" y="84" width="180" height="54" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="374" y="107" text-anchor="middle" font-size="12" font-weight="700" fill="#1d4ed8">PTC (run_code)</text>
+  <text x="374" y="125" text-anchor="middle" font-size="10" fill="#3b82f6">沙箱内存循环 · 零新上下文</text>
+  <text x="480" y="108" font-size="10" fill="#64748b">← 启动前选 PTC 预设（默认关闭 workflow，保留 subagent）</text>
 
-  <rect x="720" y="110" width="160" height="50" rx="10" fill="#ffffff" stroke="#a78bfa"/>
-  <text x="800" y="140" text-anchor="middle" font-size="12" fill="#5b21b6">team</text>
+  <!-- Branch 2: subagent -> workflow -> agent-team -->
+  <path d="M208,172 C240,172 244,195 280,195" fill="none" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="244" y="212" text-anchor="middle" font-size="9.5" fill="#475569">需独立推理</text>
 
-  <rect x="280" y="270" width="160" height="50" rx="10" fill="#ffffff" stroke="#86efac"/>
-  <text x="360" y="300" text-anchor="middle" font-size="12" fill="#15803d">goal</text>
+  <rect x="284" y="168" width="180" height="54" rx="10" fill="#ffffff" stroke="#5eead4" stroke-width="1.5"/>
+  <text x="374" y="191" text-anchor="middle" font-size="12" font-weight="700" fill="#0f766e">subagent / fork</text>
+  <text x="374" y="209" text-anchor="middle" font-size="10" fill="#64748b">1–2 个独立任务 · 隔离子上下文</text>
 
-  <rect x="500" y="270" width="160" height="50" rx="10" fill="#ffffff" stroke="#f59e0b"/>
-  <text x="580" y="300" text-anchor="middle" font-size="12" fill="#92400e">ralph</text>
+  <line x1="464" y1="195" x2="528" y2="195" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="496" y="185" text-anchor="middle" font-size="9.5" fill="#475569">5+ 同构项</text>
 
-  <rect x="920" y="190" width="160" height="50" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-dasharray="5 4"/>
-  <text x="1000" y="220" text-anchor="middle" font-size="12" fill="#334155">重开 · 换 profile</text>
+  <rect x="532" y="168" width="172" height="54" rx="10" fill="#ffffff" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="618" y="191" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">workflow 脚本</text>
+  <text x="618" y="209" text-anchor="middle" font-size="10" fill="#64748b">星形宽扇出 · 纯内存运行</text>
 
-  <line x1="222" y1="135" x2="276" y2="135" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
-  <text x="249" y="124" text-anchor="middle" font-size="9.5" fill="#475569">占上下文</text>
+  <line x1="704" y1="195" x2="768" y2="195" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="736" y="185" text-anchor="middle" font-size="9.5" fill="#475569">要对等通信</text>
 
-  <line x1="442" y1="135" x2="496" y2="135" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
-  <text x="469" y="124" text-anchor="middle" font-size="9.5" fill="#475569">数量变多</text>
+  <rect x="772" y="168" width="176" height="54" rx="10" fill="#ffffff" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="860" y="191" text-anchor="middle" font-size="12" font-weight="700" fill="#5b21b6">agent-team</text>
+  <text x="860" y="209" text-anchor="middle" font-size="10" fill="#64748b">具名角色互发 + 持久任务板</text>
 
-  <line x1="662" y1="135" x2="716" y2="135" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
-  <text x="689" y="124" text-anchor="middle" font-size="9.5" fill="#475569">要协作</text>
+  <!-- Downgrade & Reopen -->
+  <path d="M860,224 C860,262 618,262 618,226" fill="none" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s2)"/>
+  <text x="739" y="270" text-anchor="middle" font-size="9.5" fill="#b91c1c">降级：协作定型后转为机械批处理</text>
 
-  <rect x="60" y="270" width="160" height="50" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="5 4"/>
-  <text x="140" y="300" text-anchor="middle" font-size="12" fill="#475569">继续</text>
-  <line x1="222" y1="295" x2="276" y2="295" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
-  <text x="249" y="284" text-anchor="middle" font-size="9.5" fill="#475569">要跨轮</text>
+  <line x1="948" y1="195" x2="1004" y2="195" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s2)"/>
+  <text x="976" y="185" text-anchor="middle" font-size="9.5" fill="#b91c1c">环境错配</text>
 
-  <line x1="442" y1="295" x2="496" y2="295" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
-  <text x="469" y="284" text-anchor="middle" font-size="9.5" fill="#475569">要 fresh</text>
+  <rect x="1008" y="168" width="152" height="54" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="1084" y="191" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">重开 · 切 Profile</text>
+  <text x="1084" y="209" text-anchor="middle" font-size="10" fill="#64748b">换回匹配工具面</text>
 
-  <path d="M800,162 C800,232 660,232 660,162" fill="none" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s2)"/>
-  <text x="730" y="252" text-anchor="middle" font-size="9.5" fill="#b91c1c">降级：规模变大 / 不需要协作</text>
+  <!-- Multi-turn row -->
+  <rect x="40" y="298" width="168" height="54" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="124" y="321" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">人工逐轮对话</text>
+  <text x="124" y="339" text-anchor="middle" font-size="10" fill="#64748b">每轮人工审阅拍板</text>
 
-  <line x1="882" y1="150" x2="916" y2="196" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s2)"/>
-  <text x="930" y="168" font-size="9.5" fill="#b91c1c">工具面错了</text>
+  <line x1="208" y1="325" x2="280" y2="325" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="244" y="315" text-anchor="middle" font-size="9.5" fill="#475569">空闲自动续轮</text>
 
-  <line x1="60" y1="360" x2="1160" y2="360" stroke="#e2e8f0"/>
+  <rect x="284" y="298" width="180" height="54" rx="10" fill="#ffffff" stroke="#86efac" stroke-width="1.5"/>
+  <text x="374" y="321" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">goal</text>
+  <text x="374" y="339" text-anchor="middle" font-size="10" fill="#64748b">同会话累积 + 持久记录</text>
 
-  <text x="60" y="392" font-size="12" font-weight="700" fill="#0f172a">读法</text>
-  <line x1="60" y1="414" x2="106" y2="414" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
-  <text x="116" y="418" font-size="10.5" fill="#475569">升级 / 换挡：约束与状态变重</text>
-  <line x1="280" y1="414" x2="326" y2="414" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s2)"/>
-  <text x="336" y="418" font-size="10.5" fill="#b91c1c">降级或重开</text>
+  <line x1="464" y1="325" x2="528" y2="325" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="496" y="315" text-anchor="middle" font-size="9.5" fill="#475569">人点名清零</text>
 
-  <text x="60" y="448" font-size="10.5" fill="#475569">每次迁移都会丢掉一部分已有状态：上下文（fresh 换掉历史）、协调状态（离开 Team 不再读任务板）、工具面（换 bundle 改变可见工具）。</text>
-  <text x="60" y="474" font-size="10.5" fill="#475569">实操原则：先切换「谁掌握下一步控制流」，再搬迁「上下文与任务清单」——控制流还在原地，光换工具只是换壳。</text>
-  <text x="60" y="500" font-size="10.5" fill="#94a3b8">「重开」不是失败：当工具面已经错了（装了 Team 才发现要 subagent），改 profile 比在会话里绕更便宜。</text>
+  <rect x="532" y="298" width="172" height="54" rx="10" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="618" y="321" text-anchor="middle" font-size="12" font-weight="700" fill="#92400e">ralph（实验包）</text>
+  <text x="618" y="339" text-anchor="middle" font-size="10" fill="#64748b">每轮空上下文 + 文件接力</text>
 
-  <text x="600" y="536" text-anchor="middle" font-size="10.5" fill="#64748b">迁移的判据不是一个更漂亮的名字，而是「这次迁移只该有一个理由」</text>
+  <!-- Legend inline -->
+  <line x1="760" y1="316" x2="802" y2="316" stroke="#475569" stroke-width="1.8" marker-end="url(#s1)"/>
+  <text x="812" y="320" font-size="10.5" fill="#475569">瓶颈驱动升级（约束与状态变重）</text>
+  <line x1="760" y1="340" x2="802" y2="340" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#s2)"/>
+  <text x="812" y="344" font-size="10.5" fill="#b91c1c">降级回批处理 / 果断重开会话</text>
+
+  <!-- Bottom summary card -->
+  <rect x="40" y="376" width="1120" height="142" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="64" y="402" font-size="12.5" font-weight="700" fill="#0f172a">每次换挡你会丢掉什么已有状态？</text>
+  <text x="64" y="426" font-size="11" fill="#334155">▸ 多轮工具调 → PTC (run_code) / subagent：纯代码筛选切 PTC 在单轮内存消化中间大文本；需独立推理派 subagent 则看不见子代理中间试错过程。</text>
+  <text x="64" y="448" font-size="11" fill="#334155">▸ subagent → workflow → agent-team：升 workflow 需现写聚合脚本且无断点恢复；升 agent-team 必须切 Profile 挂载 Bundle，普通 subagent 工具面随之关闭。</text>
+  <text x="64" y="470" font-size="11" fill="#334155">▸ 人工逐轮对话 → goal → ralph：升 goal 后方向完全由 objective 锚定（恢复旧会话后需显式 resume）；切 ralph 则每轮彻底丢弃对话记忆，靠文件与报告接力。</text>
+  <text x="64" y="494" font-size="11" fill="#64748b">▸ 发现工具面错配（如挂了 agent-team-profile 却只想调普通 subagent，或需在 Standard 与 PTC 预设间切换）：放弃当前会话重开往往比原地硬绕便宜得多。</text>
+
+  <text x="600" y="546" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0f766e">不要为了“听起来更高级”升级编排原语——只有撞上当前原语的真实瓶颈时再切换</text>
 </svg>

@@ -1,72 +1,94 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 680" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <rect width="1020" height="680" fill="#fafafa" rx="6"/>
-  <text x="510" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">replay 是「重演一遍」，不是「看一遍」</text>
-  <text x="510" y="57" text-anchor="middle" font-size="11.5" fill="#6b7280">最容易犯的误读。它必须跑 —— 用今天的代码，把同一件事重新执行一次。</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>录制会话回放机制拆解：用当前代码重演全套链路，而非静态读取旧日志</title>
+  <desc>上半对比静态看旧日志（无法验证今天的新代码）与 replay 重演（用当前工作区代码启动真实 dsh Profile、Cordis Loader、工具注册表与沙箱，仅由 dsh-llm-replay 拦截模型调用按序返回历史流）；中半列出回放期间真实执行与核对的五类产物（session.v4.jsonl、system-prompt.expected.md、tool-schemas.expected.json、ui.expected.md/协议流、workspace.expected/）；下半澄清 session log、snapshot、replay 三者的角色与因果关系。</desc>
+  <defs>
+    <marker id="rp-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+    <marker id="rp-b" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#2563eb"/>
+    </marker>
+  </defs>
 
-  <!-- 上：旁观 vs 重演 -->
-  <rect x="42" y="82" width="452" height="160" rx="9" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="7 4"/>
-  <text x="268" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#6b7280">✗ 旁观：看日志</text>
-  <rect x="62" y="124" width="412" height="30" rx="5" fill="#fff" stroke="#9ca3af"/>
-  <text x="268" y="144" text-anchor="middle" font-size="11" fill="#6b7280">日志文件 → 眼睛读 → 得出印象</text>
-  <text x="62" y="178" font-size="11.5" fill="#6b7280">读的是<tspan font-weight="700">旧代码</tspan>跑出的<tspan font-weight="700">旧日志</tspan>。</text>
-  <text x="62" y="198" font-size="11.5" font-weight="700" fill="#4b5563">你今天改的那一行，日志里根本不存在。</text>
-  <text x="62" y="224" font-size="11" fill="#9ca3af">→ 不产生新证据，发现不了本次改动的影响</text>
+  <rect width="1200" height="680" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">replay 底层运转拆解：用今天的代码重演，不是静态读录像</text>
+  <text x="600" y="56" text-anchor="middle" fill="#64748b">除了“模型吐出什么流式块”按历史剧本喂回，其余进程、Loader、沙箱、工具执行与落盘全部真刀真枪重跑</text>
 
-  <rect x="526" y="82" width="452" height="160" rx="9" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.8"/>
-  <text x="752" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">✓ 重演：跑一遍</text>
-  <rect x="546" y="124" width="412" height="30" rx="5" fill="#fff" stroke="#1677ff"/>
-  <text x="752" y="144" text-anchor="middle" font-size="11" fill="#1d4ed8">真代码 → 真跑 → 新日志 → 比对存档</text>
-  <text x="546" y="178" font-size="11.5" fill="#1e3a8a">用<tspan font-weight="700">今天的代码</tspan>按同样剧本再演一遍。</text>
-  <text x="546" y="198" font-size="11.5" font-weight="700" fill="#1e40af">任何改动都会体现在新日志里，逃不掉。</text>
-  <text x="546" y="224" font-size="11" fill="#4b5563">→ 产生新证据，这才是测试</text>
+  <!-- Top contrast -->
+  <rect x="40" y="78" width="536" height="150" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <text x="308" y="106" text-anchor="middle" font-size="13.5" font-weight="700" fill="#475569">✗ 常见误解：静态读取上次存下的旧日志</text>
+  <rect x="64" y="120" width="488" height="32" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="308" y="141" text-anchor="middle" font-size="11" fill="#64748b">历史快照文件 → 静态解析文本 → 根本没有运行今天的工作区代码</text>
+  <text x="64" y="176" font-size="11" fill="#475569">▸ 如果真是静态读旧文件，你今天改坏了一行工具派发或插件注入声明，</text>
+  <text x="64" y="198" font-size="11" font-weight="700" fill="#334155">  旧日志里压根没有今天的新代码，读一万遍也抓不住任何回归缺陷。</text>
 
-  <!-- 中：跑的是什么 -->
-  <rect x="42" y="256" width="936" height="96" rx="9" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.6"/>
-  <text x="62" y="280" font-size="12.5" font-weight="700" fill="#531dab">replay 真的会跑这些东西（只有一处不跑）</text>
-  <text x="62" y="304" font-size="11.5" fill="#3b0764">✅ 真插件树、真 Loader　　✅ 真 shell、真沙箱　　✅ 真的往磁盘写 session log　　✅ 真走工具注册表与派发</text>
-  <text x="62" y="326" font-size="11.5" font-weight="700" fill="#a8071a">❌ 唯一不做的：那一次模型网络请求 —— 这一段由 fixture 提供</text>
-  <text x="62" y="344" font-size="11" fill="#6b21a8">所以它的性质是「执行」：跑完一次，磁盘上真的多出东西。</text>
+  <rect x="604" y="78" width="556" height="150" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="882" y="106" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1d4ed8">✓ 真实机制：拿快照当剧本，驱动当前代码全链路重跑</text>
+  <rect x="628" y="120" width="508" height="32" rx="6" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="882" y="141" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">当前代码 → 真 Loader 装配 → dsh-llm-replay 喂流 → 真跑工具 → 比对新日志</text>
+  <text x="628" y="176" font-size="11" fill="#1e3a8a">▸ 在隔离临时目录里启动真实 dsh Profile（headless / sdk / acp / web）；</text>
+  <text x="628" y="198" font-size="11" font-weight="700" fill="#1e40af">▸ 任何拼装、派发、权限、沙箱或落盘改动都会写进新产物，当场触发逐行比对。</text>
 
-  <!-- 下：三样东西 -->
-  <text x="42" y="380" font-size="13" font-weight="700" fill="#374151">三样东西别混：产物 → 存档的产物 → 动作</text>
+  <!-- Middle: What runs & what gets checked -->
+  <rect x="40" y="246" width="1120" height="168" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.6"/>
+  <text x="64" y="274" font-size="13" font-weight="700" fill="#0f172a">一次 dsh-session-snapshot 回放中：替掉哪一格，严格核对哪五份产物？</text>
+  <text x="64" y="296" font-size="11" fill="#475569">唯一替换：dsh-llm-replay 拦截模型请求并按会话首次调用顺序推进剧本游标（pre-2xx 断流或挂起由可选的 replay.override.json 注入）；多发未录制请求立即报错。</text>
 
-  <rect x="42" y="394" width="286" height="128" rx="9" fill="#fff" stroke="#722ed1" stroke-width="1.6"/>
-  <text x="185" y="418" text-anchor="middle" font-size="13" font-weight="700" fill="#531dab">session log</text>
-  <text x="185" y="438" text-anchor="middle" font-size="10.5" fill="#6b21a8">跑完之后留下的记录</text>
-  <text x="185" y="460" text-anchor="middle" font-size="11" fill="#3b0764">模型收到什么、说了什么、</text>
-  <text x="185" y="477" text-anchor="middle" font-size="11" fill="#3b0764">每个工具调了什么、结果如何</text>
-  <rect x="60" y="490" width="250" height="22" rx="4" fill="#f9f0ff" stroke="#722ed1"/>
-  <text x="185" y="505" text-anchor="middle" font-size="10.5" font-weight="700" fill="#531dab">角色：产物</text>
+  <rect x="64" y="314" width="200" height="80" rx="8" fill="#f5f3ff" stroke="#c4b5fd"/>
+  <text x="164" y="338" text-anchor="middle" font-size="11" font-weight="700" fill="#5b21b6">session[.vN].jsonl</text>
+  <text x="164" y="358" text-anchor="middle" font-size="10" fill="#475569">核对归一化后的父子会话</text>
+  <text x="164" y="376" text-anchor="middle" font-size="10" fill="#475569">完整事件序列与结算状态</text>
 
-  <rect x="366" y="394" width="286" height="128" rx="9" fill="#f6ffed" stroke="#52c41a" stroke-width="1.8"/>
-  <text x="509" y="418" text-anchor="middle" font-size="13" font-weight="700" fill="#38761c">snapshot</text>
-  <text x="509" y="438" text-anchor="middle" font-size="10.5" fill="#4d7c0f">被选定、去噪、提交进仓的那份日志</text>
-  <text x="509" y="460" text-anchor="middle" font-size="11" fill="#166534">多做的三件事：去噪规范化、</text>
-  <text x="509" y="477" text-anchor="middle" font-size="11" fill="#166534">拆出模型流、进 git</text>
-  <rect x="384" y="490" width="250" height="22" rx="4" fill="#52c41a"/>
-  <text x="509" y="505" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">它仍然「就是日志」</text>
+  <rect x="278" y="314" width="208" height="80" rx="8" fill="#f0fdfa" stroke="#5eead4"/>
+  <text x="382" y="338" text-anchor="middle" font-size="11" font-weight="700" fill="#0f766e">system-prompt.expected.md</text>
+  <text x="382" y="358" text-anchor="middle" font-size="10" fill="#475569">pinsHeader 代表场景锁死</text>
+  <text x="382" y="376" text-anchor="middle" font-size="10" fill="#475569">system/message 完整提示词</text>
 
-  <rect x="690" y="394" width="288" height="128" rx="9" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.8"/>
-  <text x="834" y="418" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">replay</text>
-  <text x="834" y="438" text-anchor="middle" font-size="10.5" fill="#1e40af">拿 snapshot 当剧本重跑的动作</text>
-  <text x="834" y="460" text-anchor="middle" font-size="11" fill="#1e3a8a">真 profile、真插件、真落盘，</text>
-  <text x="834" y="477" text-anchor="middle" font-size="11" fill="#1e3a8a">只有模型流按剧本念</text>
-  <rect x="708" y="490" width="250" height="22" rx="4" fill="#1677ff"/>
-  <text x="833" y="505" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">角色：动作</text>
+  <rect x="500" y="314" width="212" height="80" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="606" y="338" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">tool-schemas.expected.json</text>
+  <text x="606" y="358" text-anchor="middle" font-size="10" fill="#475569">锁死 request/header 里组装</text>
+  <text x="606" y="376" text-anchor="middle" font-size="10" fill="#475569">暴露给模型的工具参数定义</text>
 
-  <path d="M330 458 L362 458" stroke="#9ca3af" stroke-width="2"/>
-  <path d="M352 451 L364 458 L352 465" fill="none" stroke="#9ca3af" stroke-width="2"/>
-  <path d="M654 458 L686 458" stroke="#9ca3af" stroke-width="2"/>
-  <path d="M676 451 L688 458 L676 465" fill="none" stroke="#9ca3af" stroke-width="2"/>
+  <rect x="726" y="314" width="200" height="80" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="826" y="338" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">ui.expected.md / 协议流</text>
+  <text x="826" y="358" text-anchor="middle" font-size="10" fill="#475569">核对真浏览器渲染 ARIA 树</text>
+  <text x="826" y="376" text-anchor="middle" font-size="10" fill="#475569">及 SDK / ACP 标准输出期望</text>
 
-  <!-- 关键纠正 -->
-  <rect x="42" y="540" width="936" height="70" rx="9" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.8"/>
-  <text x="62" y="564" font-size="12.5" font-weight="700" fill="#ad6800">所以「日志不够，才要 snapshot」是反的</text>
-  <text x="62" y="586" font-size="11.5" fill="#7c2d12">snapshot <tspan font-weight="700">就是</tspan>日志。恰恰相反 —— 因为日志本来就够，这套机制才立得起来。</text>
-  <text x="62" y="604" font-size="11.5" font-weight="700" fill="#9a3412">「模型可见 ⟺ 已记录」：日志重建不出来的部分，回放也救不了。</text>
+  <rect x="940" y="314" width="196" height="80" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="1038" y="338" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">workspace.expected/</text>
+  <text x="1038" y="358" text-anchor="middle" font-size="10" fill="#475569">核对临时工作区最终文件树</text>
+  <text x="1038" y="376" text-anchor="middle" font-size="10" fill="#991b1b">record / refresh 绝不覆盖</text>
 
-  <!-- 收尾 -->
-  <rect x="42" y="622" width="936" height="44" rx="9" fill="#f6ffed" stroke="#52c41a" stroke-width="1.6"/>
-  <text x="510" y="641" text-anchor="middle" font-size="12" font-weight="700" fill="#38761c">模型那句台词是录的，戏是真演的，演员也是今天的。</text>
-  <text x="510" y="659" text-anchor="middle" font-size="11" fill="#166534">这就是为什么 replay 值得跑 —— 不是为了回顾，是为了用今天的实现重演同一剧本，看结果变没变。</text>
+  <!-- Bottom: 3 concepts & causal direction -->
+  <text x="40" y="444" font-size="12.5" font-weight="700" fill="#334155">分清三个概念的角色与因果顺序（正因为日常会话日志本来完备，快照机制才立得住）</text>
+
+  <rect x="40" y="458" width="344" height="122" rx="10" fill="#ffffff" stroke="#a78bfa" stroke-width="1.6"/>
+  <text x="212" y="484" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">session log（日常运行产物）</text>
+  <text x="212" y="508" text-anchor="middle" font-size="10.5" fill="#334155">得益于 model-visible ⟺ logged 架构铁律，</text>
+  <text x="212" y="528" text-anchor="middle" font-size="10.5" fill="#334155">单次运行落盘的 JSONL 已完整包含请求与事件</text>
+  <rect x="112" y="544" width="200" height="22" rx="5" fill="#f5f3ff"/>
+  <text x="212" y="559" text-anchor="middle" font-size="10" font-weight="700" fill="#5b21b6">角色：单次运行的原始记录</text>
+
+  <line x1="388" y1="519" x2="420" y2="519" stroke="#64748b" stroke-width="2" marker-end="url(#rp-a)"/>
+
+  <rect x="428" y="458" width="344" height="122" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.8"/>
+  <text x="600" y="484" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">snapshot（归一化入库夹具）</text>
+  <text x="600" y="508" text-anchor="middle" font-size="10.5" fill="#334155">不是另造的新格式——就是剥离 seq/time、替换</text>
+  <text x="600" y="528" text-anchor="middle" font-size="10.5" fill="#334155">{{cwd}}、抽离提示词与工具 sidecar 后的日志</text>
+  <rect x="500" y="544" width="200" height="22" rx="5" fill="#dcfce7"/>
+  <text x="600" y="559" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">角色：跨机器可比的版本化剧本</text>
+
+  <line x1="776" y1="519" x2="808" y2="519" stroke="#2563eb" stroke-width="2" marker-end="url(#rp-b)"/>
+
+  <rect x="816" y="458" width="344" height="122" rx="10" fill="#eff6ff" stroke="#60a5fa" stroke-width="1.8"/>
+  <text x="988" y="484" text-anchor="middle" font-size="13" font-weight="700" fill="#1d4ed8">replay（无密钥重演动作）</text>
+  <text x="988" y="508" text-anchor="middle" font-size="10.5" fill="#334155">严校验夹具版本与完整性（拒绝残损夹具），</text>
+  <text x="988" y="528" text-anchor="middle" font-size="10.5" fill="#334155">合成确定性时钟，驱动今天的代码重跑并验真</text>
+  <rect x="888" y="544" width="200" height="22" rx="5" fill="#dbeafe"/>
+  <text x="988" y="559" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">角色：产生今日新证据的执行动作</text>
+
+  <!-- Footer -->
+  <rect x="40" y="600" width="1120" height="54" rx="8" fill="#f0fdfa" stroke="#5eead4" stroke-width="1.6"/>
+  <text x="600" y="624" text-anchor="middle" font-size="12" font-weight="700" fill="#0f766e">一句话总结：模型念的那句台词是录制的，但搭台、挂载插件、开沙箱、跑工具的演员全是今天的工作区真代码</text>
+  <text x="600" y="644" text-anchor="middle" font-size="10.5" fill="#475569">旧模型流仍有效而期望有意变化时跑 test:snapshot:refresh（keyless）；交互轮次或工具名改变时跑 test:snapshot:record（with-key）</text>
 </svg>

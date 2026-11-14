@@ -10,7 +10,7 @@
 
 打开真实提交 [`5124a2a310`](https://github.com/deepseek-ai/deepseek-harness/commit/5124a2a310)（`fix(web): show model IDs in monospace and names on hover (#5004)`），全提交一共改了 **7 个文件，`+15 / -14` 行**，没有一行多余动作，却把“实现 + 当前合同 + 行为证据”装得严丝合缝：
 
-![一笔真实变更的证据地图](./figures/evidence-map.svg)
+![DSH 变更落位全景与真实提交证据地图](./figures/evidence-map.svg)
 
 | 改动文件 | 它在交付包里承担什么角色 |
 |---|---|

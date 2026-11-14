@@ -14,7 +14,9 @@
   - **Plan Mode（`/plan`）**：会话内的可选规划模式，方案存在聊天历史里供用户点按钮拍板，不往仓库里提交计划文档。
 - **交付时按需附带的下游件**：
   - **`implemented/` Agent Note**：**现行规则并不是“非平凡改动必写”**，而是**只有当这次改动包含代码、测试和现有文档都解释不了的持久设计取舍（比如为什么选 A 放弃 B）时才写**；若之前写过 `proposed/`，必须在实现 PR 里挪过来并改写成现在时态。
-  - **语义 Code Review 与归档**：Review 负责把关机器查不出的设计合理性；失去未来参考价值的老 Note 后续再冻结进 `archived/`。
+  - **语义 Code Review 与归档**：Review 负责把关机器查不出的设计合理性；失去未来参考价值的老 Note 后续再冻结进 `archived/`（若破坏外部可感知契约，还须同步附上 [Upgrade Guide](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-create-upgrade-guide/SKILL.md)）。
+
+![DSH 变更落位全景与真实提交证据地图](./figures/evidence-map.svg)
 
 ---
 

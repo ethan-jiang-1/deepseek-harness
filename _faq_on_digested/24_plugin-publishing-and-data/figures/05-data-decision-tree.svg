@@ -1,119 +1,103 @@
-<svg width="960" height="940" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 940" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>数据落点决策树</title>
-  <desc>从“用户会怎么描述这块数据”出发，按用户可见、模型可见、跨重启、可重建、秘密、项目归属逐层判断，落到 DSH 原生能力。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 760" width="1020" height="760" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>运行期数据落点决策树</title>
+  <desc>从用户与模型视角出发，沿七步判断将任意插件数据精确映射到工作区 ctx.fs、会话日志与投影、浏览器存储、内存/临时溢出、ctx.credentials、Config.volatile() 或 ctx.storageDomain。</desc>
   <defs>
-    <marker id="arr24flow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arr24e" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
   </defs>
-  <rect width="960" height="940" fill="#fafafa" rx="6"/>
-  <text x="480" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">数据落点决策树：从用户问题走到原生能力</text>
-  <text x="480" y="55" text-anchor="middle" font-size="11" fill="#6b7280">沿“否”向下；每个“是”直接给出落点。默认单 Host、单 $DSH_HOME。</text>
+  <rect width="1020" height="760" rx="8" fill="#f8fafc"/>
+  <text x="510" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">运行期数据落点决策树：顺着七个问题找到唯一标准接口</text>
+  <text x="510" y="56" text-anchor="middle" font-size="11.5" fill="#475569">沿左侧主干按“否”向下排除，命中“是”立即落入右侧原生能力（一切运行数据均不进插件包目录）</text>
 
-  <rect x="50" y="80" width="430" height="44" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="68" y="107" font-size="11.5" font-weight="700" fill="#312e81">从“用户会怎么描述这块数据”开始，不要从表/文件开始</text>
+  <!-- Step 1 -->
+  <rect x="44" y="82" width="460" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="64" y="106" font-size="12" font-weight="700" fill="#0f172a">1. 是用户要直接打开、编辑、提交 Git 或带走的项目文件吗？</text>
+  <text x="64" y="128" font-size="10.5" fill="#64748b">例如生成的源码、文档、补丁、报表或项目内配置</text>
+  <line x1="504" y1="113" x2="586" y2="113" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="545" y="105" text-anchor="middle" font-size="10.5" font-weight="700" fill="#166534">是</text>
+  <rect x="594" y="82" width="382" height="62" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="614" y="106" font-size="12" font-weight="700" fill="#166534">工作区文件：ctx.workingDirectory + ctx.fs</text>
+  <text x="614" y="128" font-size="10.5" fill="#15803d">向聊天卡片交付配 present 工具（只记路径，不复制字节）</text>
 
-  <line x1="265" y1="124" x2="265" y2="145" stroke="#4b5563" marker-end="url(#arr24flow)"/>
+  <line x1="274" y1="144" x2="274" y2="168" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="290" y="160" font-size="10" fill="#475569">否</text>
 
-  <rect x="50" y="150" width="430" height="50" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="68" y="172" font-size="11.5" font-weight="700" fill="#334155">1. 用户要打开 / 编辑 / 带走吗？（非 secret）</text>
-  <text x="68" y="190" font-size="10" fill="#64748b">是用户能看见、能带走的一份普通文件吗？</text>
-  <line x1="480" y1="175" x2="612" y2="175" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="536" y="167" text-anchor="middle" font-size="9.5" fill="#15803d">是</text>
-  <rect x="620" y="145" width="290" height="60" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
-  <text x="638" y="168" font-size="11" font-weight="700" fill="#166534">工作区文件 + ctx.fs</text>
-  <text x="638" y="186" font-size="9.5" fill="#15803d">归属：项目 / 用户；交付用 present</text>
+  <!-- Step 2 -->
+  <rect x="44" y="174" width="460" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="64" y="198" font-size="12" font-weight="700" fill="#0f172a">2. 这份信息需要进入模型上下文，或随单条会话回放吗？</text>
+  <text x="64" y="220" font-size="10.5" fill="#64748b">铁律：凡进入模型请求的内容必须可从会话日志完整重建</text>
+  <line x1="504" y1="205" x2="586" y2="205" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="545" y="197" text-anchor="middle" font-size="10.5" font-weight="700" fill="#92400e">是</text>
+  <rect x="594" y="174" width="382" height="62" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="614" y="198" font-size="12" font-weight="700" fill="#92400e">会话日志：工具结果 / agent.inject() + 投影</text>
+  <text x="614" y="220" font-size="10.5" fill="#78350f">投影用 ctx.sessionProjections；大二进制走 ctx.attachments</text>
 
-  <line x1="265" y1="200" x2="265" y2="230" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="278" y="220" font-size="9.5" fill="#475569">否</text>
+  <line x1="274" y1="236" x2="274" y2="260" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="290" y="252" font-size="10" fill="#475569">否</text>
 
-  <rect x="50" y="235" width="430" height="50" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="68" y="257" font-size="11.5" font-weight="700" fill="#334155">2. 模型必须看见吗？</text>
-  <text x="68" y="275" font-size="10" fill="#64748b">它要进入模型请求 / 会话内容吗？</text>
-  <line x1="480" y1="260" x2="612" y2="260" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="536" y="252" text-anchor="middle" font-size="9.5" fill="#b45309">是</text>
-  <rect x="620" y="230" width="290" height="60" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="638" y="253" font-size="11" font-weight="700" fill="#92400e">已有事件 / 工具结果 + 投影</text>
-  <text x="638" y="271" font-size="9.5" fill="#b45309">不要新增 event 类型；投影只做派生</text>
+  <!-- Step 3 -->
+  <rect x="44" y="266" width="460" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="64" y="290" font-size="12" font-weight="700" fill="#0f172a">3. 只是当前浏览器窗口的纯 UI 视图偏好吗？</text>
+  <text x="64" y="312" font-size="10.5" fill="#64748b">例如侧栏宽度、面板折叠态、本地筛选器（Host 无需感知）</text>
+  <line x1="504" y1="297" x2="586" y2="297" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="545" y="289" text-anchor="middle" font-size="10.5" font-weight="700" fill="#334155">是</text>
+  <rect x="594" y="266" width="382" height="62" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="614" y="290" font-size="12" font-weight="700" fill="#0f172a">浏览器 localStorage（带包名前缀与版本号）</text>
+  <text x="614" y="312" font-size="10.5" fill="#475569">按访问 Origin 隔离，换端口即重置，严禁存业务真值</text>
 
-  <line x1="265" y1="285" x2="265" y2="315" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="278" y="305" font-size="9.5" fill="#475569">否</text>
+  <line x1="274" y1="328" x2="274" y2="352" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="290" y="344" font-size="10" fill="#475569">否</text>
 
-  <rect x="50" y="320" width="430" height="50" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="68" y="342" font-size="11.5" font-weight="700" fill="#334155">3. 只在浏览器里用吗？</text>
-  <text x="68" y="360" font-size="10" fill="#64748b">面板宽度、折叠、快捷键、最近选择</text>
-  <line x1="480" y1="345" x2="612" y2="345" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="536" y="337" text-anchor="middle" font-size="9.5" fill="#475569">是</text>
-  <rect x="620" y="315" width="290" height="60" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
-  <text x="638" y="338" font-size="11" font-weight="700" fill="#334155">localStorage / userData</text>
-  <text x="638" y="356" font-size="9.5" fill="#475569">自己管键、版本、清理；Host 看不见</text>
+  <!-- Step 4 -->
+  <rect x="44" y="358" width="460" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="64" y="382" font-size="12" font-weight="700" fill="#0f172a">4. 只是无需跨重启保留的运行态，或可随时重算的缓存吗？</text>
+  <text x="64" y="404" font-size="10.5" fill="#64748b">例如超长工具抓包临时输出、远端元数据本地缓存、派生索引</text>
+  <line x1="504" y1="389" x2="586" y2="389" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="545" y="381" text-anchor="middle" font-size="10.5" font-weight="700" fill="#334155">是</text>
+  <rect x="594" y="358" width="382" height="62" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="614" y="382" font-size="12" font-weight="700" fill="#0f172a">超长输出用 ctx.spillStore · 缓存用 dshCachePath</text>
+  <text x="614" y="404" font-size="10.5" fill="#475569">代码必须容忍目录被清空并在缺失时自动重建</text>
 
-  <line x1="265" y1="370" x2="265" y2="400" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="278" y="390" font-size="9.5" fill="#475569">否</text>
+  <line x1="274" y1="420" x2="274" y2="444" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="290" y="436" font-size="10" fill="#475569">否（需跨重启持久保留）</text>
 
-  <rect x="50" y="405" width="430" height="50" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="68" y="427" font-size="11.5" font-weight="700" fill="#334155">4. 跨重启还要在吗？</text>
-  <text x="68" y="445" font-size="10" fill="#64748b">进程退出、换会话、重开 Host 后还要读吗？</text>
-  <line x1="480" y1="430" x2="612" y2="430" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="536" y="422" text-anchor="middle" font-size="9.5" fill="#475569">否</text>
-  <rect x="620" y="400" width="290" height="60" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
-  <text x="638" y="423" font-size="11" font-weight="700" fill="#334155">内存 / 会话投影</text>
-  <text x="638" y="441" font-size="9.5" fill="#475569">进程一退就没了；不要当权威</text>
+  <!-- Step 5 -->
+  <rect x="44" y="450" width="460" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="64" y="474" font-size="12" font-weight="700" fill="#0f172a">5. 是 API Key、OAuth 令牌或 Webhook 签名密钥吗？</text>
+  <text x="64" y="496" font-size="10.5" fill="#64748b">任何敏感凭据都不得明文写进 patch、日志或普通存储表</text>
+  <line x1="504" y1="481" x2="586" y2="481" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="545" y="473" text-anchor="middle" font-size="10.5" font-weight="700" fill="#991b1b">是</text>
+  <rect x="594" y="450" width="382" height="62" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="614" y="474" font-size="12" font-weight="700" fill="#991b1b">凭据服务：ctx.credentials（.credentials.yaml）</text>
+  <text x="614" y="496" font-size="10.5" fill="#7f1d1d">配置只存引用，每次发起请求动态调 resolve() 防缓存在途失效</text>
 
-  <line x1="265" y1="455" x2="265" y2="485" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="278" y="475" font-size="9.5" fill="#475569">是</text>
+  <line x1="274" y1="512" x2="274" y2="536" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="290" y="528" font-size="10" fill="#475569">否</text>
 
-  <rect x="50" y="490" width="430" height="50" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="68" y="512" font-size="11.5" font-weight="700" fill="#334155">5. 能从别的事实重建吗？</text>
-  <text x="68" y="530" font-size="10" fill="#64748b">索引、摘要、统计、检查点、缓存</text>
-  <line x1="480" y1="515" x2="612" y2="515" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="536" y="507" text-anchor="middle" font-size="9.5" fill="#475569">能</text>
-  <rect x="620" y="485" width="290" height="60" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
-  <text x="638" y="508" font-size="11" font-weight="700" fill="#334155">dshCachePath / 派生域</text>
-  <text x="638" y="526" font-size="9.5" fill="#475569">可删；失效要能重建</text>
+  <!-- Step 6 -->
+  <rect x="44" y="542" width="460" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="64" y="566" font-size="12" font-weight="700" fill="#0f172a">6. 是用户在设置面板手动调节的开关、阈值或默认项吗？</text>
+  <text x="64" y="588" font-size="10.5" fill="#64748b">低频人工修改的参数，而非插件后台持续写入的数据行</text>
+  <line x1="504" y1="573" x2="586" y2="573" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="545" y="565" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e3a8a">是</text>
+  <rect x="594" y="542" width="382" height="62" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="614" y="566" font-size="12" font-weight="700" fill="#1e3a8a">插件配置：Config Schema + .volatile()</text>
+  <text x="614" y="588" font-size="10.5" fill="#1e40af">单 Profile 作用域，自动映射设置页并写回当前 Profile patch</text>
 
-  <line x1="265" y1="540" x2="265" y2="570" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="278" y="560" font-size="9.5" fill="#475569">不能</text>
+  <line x1="274" y1="604" x2="274" y2="628" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <text x="290" y="620" font-size="10" fill="#475569">否（插件自有持久状态）</text>
 
-  <rect x="50" y="575" width="430" height="50" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="68" y="597" font-size="11.5" font-weight="700" fill="#334155">6. 是秘密吗？</text>
-  <text x="68" y="615" font-size="10" fill="#64748b">token、API key、OAuth grant、密码</text>
-  <line x1="480" y1="600" x2="612" y2="600" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="536" y="592" text-anchor="middle" font-size="9.5" fill="#b91c1c">是</text>
-  <rect x="620" y="570" width="290" height="60" rx="8" fill="#fef2f2" stroke="#fecaca"/>
-  <text x="638" y="593" font-size="11" font-weight="700" fill="#991b1b">ctx.credentials</text>
-  <text x="638" y="611" font-size="9.5" fill="#b91c1c">只存引用；每次操作重新 resolve</text>
+  <!-- Step 7 -->
+  <rect x="44" y="634" width="460" height="62" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="64" y="658" font-size="12" font-weight="700" fill="#1e3a8a">7. 跨会话保留的插件内部账本、同步游标或历史统计</text>
+  <text x="64" y="680" font-size="10.5" fill="#1e40af">模型不可见、用户不直接编辑的结构化状态</text>
+  <line x1="504" y1="665" x2="586" y2="665" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24e)"/>
+  <rect x="594" y="634" width="382" height="62" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="614" y="658" font-size="12" font-weight="700" fill="#1e3a8a">托管存储域：ctx.storageDomain（JSON / SQLite）</text>
+  <text x="614" y="680" font-size="10.5" fill="#1e40af">路径键先做 SHA-256 摘要（限 [a-zA-Z0-9_-]+）；版本变更显式迁移</text>
 
-  <line x1="265" y1="625" x2="265" y2="655" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="278" y="645" font-size="9.5" fill="#475569">否</text>
-
-  <rect x="50" y="660" width="430" height="50" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="68" y="682" font-size="11.5" font-weight="700" fill="#334155">7. 用户要改这个值吗？</text>
-  <text x="68" y="700" font-size="10" fill="#64748b">开关、阈值、默认值、输出目录这类可调参数</text>
-
-  <path d="M480 685 H560 V672" fill="none" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="520" y="678" text-anchor="middle" font-size="9.5" fill="#1e3a8a">是</text>
-  <rect x="620" y="640" width="290" height="60" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
-  <text x="638" y="663" font-size="11" font-weight="700" fill="#1e3a8a">Config + .volatile()</text>
-  <text x="638" y="681" font-size="9.5" fill="#1e40af">profile 作用域；不是账号；不是数据表</text>
-
-  <line x1="265" y1="710" x2="265" y2="735" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="278" y="730" font-size="9.5" fill="#475569">否</text>
-
-  <rect x="50" y="745" width="430" height="50" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="68" y="767" font-size="11.5" font-weight="700" fill="#334155">8. 跟项目走吗？</text>
-  <text x="68" y="785" font-size="10" fill="#64748b">换项目就该换一套，还是跨项目都要在？</text>
-
-  <path d="M480 770 H560 V757" fill="none" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="520" y="750" text-anchor="middle" font-size="9.5" fill="#15803d">是</text>
-  <rect x="620" y="730" width="290" height="60" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
-  <text x="638" y="753" font-size="11" font-weight="700" fill="#166534">项目文件 / 项目键</text>
-  <text x="638" y="771" font-size="9.5" fill="#15803d">路径哈希；用户可删；不要复制进 home</text>
-
-  <path d="M480 770 H560 V822" fill="none" stroke="#4b5563" marker-end="url(#arr24flow)"/>
-  <text x="520" y="815" text-anchor="middle" font-size="9.5" fill="#1e3a8a">否</text>
-  <rect x="620" y="800" width="290" height="60" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
-  <text x="638" y="823" font-size="11" font-weight="700" fill="#1e3a8a">ctx.storageDomain + 稳定键</text>
-  <text x="638" y="841" font-size="9.5" fill="#1e40af">宿主账本；模型不可见；自己清理/迁移</text>
-
-  <rect x="50" y="880" width="860" height="34" rx="6" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="68" y="902" font-size="10.5" fill="#4338ca">包目录不是数据目录；用户内容不搬家；模型可见 ⟺ 已记录。</text>
+  <!-- Footer -->
+  <rect x="44" y="710" width="932" height="34" rx="6" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="510" y="732" text-anchor="middle" font-size="11" font-weight="700" fill="#3730a3">三条不变量：包目录永远只读 · 模型可见信息必落会话日志 · 全局路径一律走 resolveDshHome() 而非硬编码 ~/.dsh。</text>
 </svg>

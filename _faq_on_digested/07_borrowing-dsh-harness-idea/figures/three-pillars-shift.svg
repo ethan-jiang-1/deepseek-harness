@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 650" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">借鉴 DSH 的仓库治理：三条低成本工程支柱与三步接入路线</title>
+  <desc id="desc">对比缺乏工程信号时 Coding Agent 常见的三大翻车泥潭（读糊涂、乱发挥、靠人盯）与跨项目可迁移的三条治理支柱（可寻址地图、最小阻力默认轨道、秒级可执行门禁），并在底部给出 Day 1 到 Month 1+ 的分步接入路线。</desc>
+  <defs>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowSlate" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect width="1180" height="650" rx="8" fill="#f8fafc"/>
+  <text x="590" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">借鉴 DSH 的仓库治理：三条低成本支柱与分步接入路线</text>
+  <text x="590" y="62" text-anchor="middle" font-size="12.5" fill="#475569">普通项目无需照搬 Cordis 插件树与三百包结构；把地图、默认轨道与秒级门禁立起来即可拿走八成收益</text>
+
+  <!-- Left Column: Three Pitfalls -->
+  <rect x="36" y="88" width="468" height="392" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="56" y="116" font-size="15" font-weight="700" fill="#991b1b">缺乏工程信号时的三大翻车泥潭</text>
+
+  <rect x="56" y="132" width="428" height="102" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="76" y="158" font-size="14" font-weight="700" fill="#991b1b">1. 读糊涂：目录迷路与历史误读</text>
+  <text x="76" y="183" font-size="12" fill="#475569">缺短根入口地图；文档混写历史演进与当前状态</text>
+  <text x="76" y="206" font-size="12" fill="#475569">把旧兼容逻辑当推荐接口，反复重提已否决方案</text>
+
+  <rect x="56" y="248" width="428" height="102" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="76" y="274" font-size="14" font-weight="700" fill="#991b1b">2. 乱发挥：绕过扩展口硬改主干</text>
+  <text x="76" y="299" font-size="12" fill="#475569">缺“需求 → 改动入口”路由表与按需标准作业卡</text>
+  <text x="76" y="322" font-size="12" fill="#475569">往核心流程硬塞分支，只交代码漏改文档与测试</text>
+
+  <rect x="56" y="364" width="428" height="102" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="76" y="390" font-size="14" font-weight="700" fill="#991b1b">3. 靠人盯：口头规矩与全量慢测空转</text>
+  <text x="76" y="415" font-size="12" fill="#475569">团队规范只躺在 Wiki 里，对 Agent 只是温和建议</text>
+  <text x="76" y="438" font-size="12" fill="#475569">本地全套测试太慢没人跑，踩线拖到人工评审才发现</text>
+
+  <!-- Transition Arrows -->
+  <line x1="508" y1="183" x2="562" y2="183" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <line x1="508" y1="299" x2="562" y2="299" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <line x1="508" y1="415" x2="562" y2="415" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- Right Column: Three Transferable Pillars -->
+  <rect x="568" y="88" width="576" height="392" rx="10" fill="#ffffff" stroke="#93c5fd" stroke-width="2"/>
+  <text x="588" y="116" font-size="15" font-weight="700" fill="#1e3a8a">跨语言、跨架构可直接借走的三条治理支柱</text>
+
+  <rect x="588" y="132" width="536" height="102" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="608" y="158" font-size="14" font-weight="700" fill="#1e40af">支柱一：把知识外置成可寻址地图（一个事实一个家）</text>
+  <text x="608" y="183" font-size="12" fill="#334155">百行内根 AGENTS.md（配 CLAUDE.md 软链）只放红线与目录路由</text>
+  <text x="608" y="206" font-size="12" fill="#334155">模块文档只写当前状态合同；被否方案与持久取舍单独进轻量 ADR</text>
+
+  <rect x="588" y="248" width="536" height="102" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="608" y="274" font-size="14" font-weight="700" fill="#166534">支柱二：把正确做法铺成阻力最小的默认轨道</text>
+  <text x="608" y="299" font-size="12" fill="#334155">提供一页“常见需求 → 改动入口”两列表 + 按需加载的 SKILL.md 作业卡</text>
+  <text x="608" y="322" font-size="12" fill="#334155">每次行为变更在同一 PR 同步交付：代码 + 现状文档 + 会报红的测试</text>
+
+  <rect x="588" y="364" width="536" height="102" rx="8" fill="#f0fdfa" stroke="#5eead4"/>
+  <text x="608" y="390" font-size="14" font-weight="700" fill="#115e59">支柱三：把口头规矩变成秒级非零退出的可执行反馈</text>
+  <text x="608" y="415" font-size="12" fill="#334155">高频踩坑底线写成 exit 1 快检查脚本，上线前先故意改坏验证真能报红</text>
+  <text x="608" y="438" font-size="12" fill="#334155">本地只跑覆盖当前 diff 的秒级定向检查；耗时的全量矩阵留给远端 CI</text>
+
+  <!-- Bottom Strip: 3-Stage Adoption Ramp -->
+  <rect x="36" y="498" width="1108" height="128" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="56" y="526" font-size="14.5" font-weight="700" fill="#0f172a">存量项目分步接入路线（按投入产出比递进，不搞停工式“文档运动”）</text>
+
+  <rect x="56" y="540" width="332" height="72" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="74" y="564" font-size="13" font-weight="700" fill="#1e40af">第 1 天 · Day 1（1–2 小时，零侵入）</text>
+  <text x="74" y="590" font-size="11.5" fill="#334155">短 AGENTS.md + 10 行入口表 + 1–2 篇防踩坑 ADR</text>
+
+  <line x1="392" y1="576" x2="420" y2="576" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+  <rect x="424" y="540" width="332" height="72" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="442" y="564" font-size="13" font-weight="700" fill="#166534">第 1 周 · Week 1（半天到一天，立闭环）</text>
+  <text x="442" y="590" font-size="11.5" fill="#334155">PR 三件套同交 + 2–3 条秒级 exit 1 检查脚本</text>
+
+  <line x1="760" y1="576" x2="788" y2="576" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+  <rect x="792" y="540" width="332" height="72" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="810" y="564" font-size="13" font-weight="700" fill="#92400e">1 个月后 · Month 1+（有痛点再选配）</text>
+  <text x="810" y="590" font-size="11.5" fill="#334155">按需补 SKILL.md、生效配置打印或生成目录校验</text>
+</svg>

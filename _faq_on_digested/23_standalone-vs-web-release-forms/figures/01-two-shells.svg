@@ -1,55 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <rect width="960" height="520" fill="#fafafa" rx="6"/>
-  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">两个官方发布物：一个打包了运行环境，一个跑在你的 Node 上</text>
-  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">同一套产品代码、同一套 profile 组合；差别是谁提供 Node/pnpm、进程怎么起、插件装到哪。</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 570" width="1040" height="570" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>两份官方应用发布物对比</title>
+  <desc>Desktop 独立安装包自带 Electron、Node、pnpm 与 Python 载荷；CLI/Web 包复用开发者本机 Node 环境。两者共用同一产品代码与版本号，按 Profile 隔离插件与设置，按 $DSH_HOME 默认共享用户数据。</desc>
+  <rect width="1040" height="570" rx="8" fill="#f8fafc"/>
+  <text x="520" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">两份官方应用发布物：一套内核同版本发版，底座与落点各自分工</text>
+  <text x="520" y="56" text-anchor="middle" font-size="11.5" fill="#475569">运行同一套产品代码与 Profile 组装树；差异在于谁提供运行时底座、进程如何监听、插件写进哪个 Profile</text>
 
-  <rect x="40" y="78" width="420" height="56" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="250" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">Desktop（独立安装包）</text>
-  <text x="250" y="121" text-anchor="middle" font-size="10.5" fill="#1e40af">macOS arm64/x64 · Windows x64</text>
+  <!-- Column headers -->
+  <rect x="164" y="76" width="414" height="54" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="371" y="100" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1e3a8a">Desktop（独立桌面安装包）</text>
+  <text x="371" y="119" text-anchor="middle" font-size="11" fill="#1e40af">内置 Electron + Node + pnpm + Python 离线载荷</text>
 
-  <rect x="500" y="78" width="420" height="56" rx="8" fill="#dcfce7" stroke="#86efac"/>
-  <text x="710" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#14532d">CLI / Web（npm 安装）</text>
-  <text x="710" y="121" text-anchor="middle" font-size="10.5" fill="#166534">@deepseek-ai/dsh · dsh web / dsh --profile …</text>
+  <rect x="596" y="76" width="414" height="54" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="803" y="100" text-anchor="middle" font-size="13.5" font-weight="700" fill="#14532d">CLI / Web（npm 包 @deepseek-ai/dsh）</text>
+  <text x="803" y="119" text-anchor="middle" font-size="11" fill="#166534">复用本机 Node 环境 · dsh web / headless / sdk / acp</text>
 
-  <text x="40" y="166" font-size="12" font-weight="700" fill="#334155">打包物</text>
-  <text x="40" y="286" font-size="12" font-weight="700" fill="#334155">进程怎么起</text>
-  <text x="40" y="406" font-size="12" font-weight="700" fill="#334155">插件落点</text>
+  <!-- Row 1: 打包内容 -->
+  <rect x="28" y="144" width="118" height="84" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="87" y="183" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">打包内容</text>
+  <text x="87" y="202" text-anchor="middle" font-size="10" fill="#64748b">运行时归属</text>
 
-  <rect x="40" y="140" width="420" height="96" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
-  <text x="56" y="164" font-size="11" fill="#1e3a8a">dmg / exe + 更新 feed</text>
-  <text x="56" y="184" font-size="11" fill="#1e3a8a">自带 Node + pnpm + Python 载荷</text>
-  <text x="56" y="204" font-size="11" fill="#1e3a8a">整棵 dsh runtime 打进 app.asar</text>
-  <text x="56" y="224" font-size="10.5" fill="#1d4ed8">不解析你 nvm 里的全局 dsh</text>
+  <rect x="164" y="144" width="414" height="84" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="184" y="168" font-size="11" font-weight="700" fill="#1e3a8a">macOS dmg/zip · Windows NSIS exe 安装包</text>
+  <text x="184" y="188" font-size="11" fill="#334155">整棵 dsh 运行时封入 app.asar，附带 Office Python 依赖库</text>
+  <text x="184" y="208" font-size="10.5" fill="#475569">完全独立于开发者本机 Node 环境中的全局 dsh</text>
 
-  <rect x="500" y="140" width="420" height="96" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
-  <text x="516" y="164" font-size="11" fill="#166534">npm 包 @deepseek-ai/dsh</text>
-  <text x="516" y="184" font-size="11" fill="#166534">没有自带运行时：用你的 Node</text>
-  <text x="516" y="204" font-size="11" fill="#166534">包管理：你的 npm / pnpm</text>
-  <text x="516" y="224" font-size="10.5" fill="#15803d">升级就是 npm i -g，整包替换</text>
+  <rect x="596" y="144" width="414" height="84" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="616" y="168" font-size="11" font-weight="700" fill="#166534">轻量 npm 包（Python SDK wheel 内置同一启动器）</text>
+  <text x="616" y="188" font-size="11" fill="#334155">不打包 Node 二进制，直接运行本机 Node（^22.19 || &gt;=24）</text>
+  <text x="616" y="208" font-size="10.5" fill="#475569">全仓库唯一受支持的 Node 应用启动器入口</text>
 
-  <rect x="40" y="260" width="420" height="96" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
-  <text x="56" y="284" font-size="11" fill="#1e3a8a">Electron 壳 + desktop-host 子进程</text>
-  <text x="56" y="304" font-size="11" fill="#1e3a8a">绑 127.0.0.1，端口由 OS 分配</text>
-  <text x="56" y="324" font-size="11" fill="#1e3a8a">dsh-app:// 转发已认证请求</text>
-  <text x="56" y="344" font-size="10.5" fill="#1d4ed8">Node IPC 只承载生命周期</text>
+  <!-- Row 2: 进程与网络 -->
+  <rect x="28" y="242" width="118" height="84" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="87" y="281" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">进程与网络</text>
+  <text x="87" y="300" text-anchor="middle" font-size="10" fill="#64748b">监听边界</text>
 
-  <rect x="500" y="260" width="420" height="96" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
-  <text x="516" y="284" font-size="11" fill="#166534">node 进程直接跑 dsh</text>
-  <text x="516" y="304" font-size="11" fill="#166534">dsh web 起 HTTP/WS 服务（默认 3080）</text>
-  <text x="516" y="324" font-size="11" fill="#166534">headless / sdk / acp 是同一 launcher 的 profile</text>
-  <text x="516" y="344" font-size="10.5" fill="#15803d">浏览器是客户端，不是运行环境</text>
+  <rect x="164" y="242" width="414" height="84" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="184" y="266" font-size="11" font-weight="700" fill="#1e3a8a">Electron 主进程 + desktop-host 子进程</text>
+  <text x="184" y="286" font-size="11" fill="#334155">强制只绑 127.0.0.1 随机端口，经 dsh-app:// 认证转发</text>
+  <text x="184" y="306" font-size="10.5" fill="#475569">渲染层无裸 FS / Shell 权限；不承担远程服务端角色</text>
 
-  <rect x="40" y="380" width="420" height="96" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
-  <text x="56" y="404" font-size="11" font-weight="700" fill="#78350f">$DSH_HOME/profiles/desktop</text>
-  <text x="56" y="424" font-size="11" fill="#78350f">壳侧 bundled pnpm 执行安装</text>
-  <text x="56" y="444" font-size="11" fill="#78350f">壳独占 profile 写锁</text>
-  <text x="56" y="464" font-size="10.5" fill="#854d0e">六种装法（见 02 篇）</text>
+  <rect x="596" y="242" width="414" height="84" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="616" y="266" font-size="11" font-weight="700" fill="#166534">本机 node 进程直接拉起目标 Profile</text>
+  <text x="616" y="286" font-size="11" fill="#334155">dsh web 默认监听 3080，支持公网反代、TLS 与自定义端口</text>
+  <text x="616" y="306" font-size="10.5" fill="#475569">同时支持 headless 单次任务及 sdk / acp 标准流通信</text>
 
-  <rect x="500" y="380" width="420" height="96" rx="8" fill="#fef3c7" stroke="#fcd34d"/>
-  <text x="516" y="404" font-size="11" font-weight="700" fill="#78350f">$DSH_HOME/profiles/web（或 headless…）</text>
-  <text x="516" y="424" font-size="11" fill="#78350f">Host 侧 pnpm 执行安装</text>
-  <text x="516" y="444" font-size="11" fill="#78350f">dsh plugin --profile web add … 也是它</text>
-  <text x="516" y="464" font-size="10.5" fill="#854d0e">同一个 Plugins 页，落到不同 profile</text>
+  <!-- Row 3: 插件与设置 -->
+  <rect x="28" y="340" width="118" height="84" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="87" y="379" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">插件与设置</text>
+  <text x="87" y="398" text-anchor="middle" font-size="10" fill="#64748b">各自独立</text>
 
-  <text x="480" y="502" text-anchor="middle" font-size="10.5" fill="#6b7280">两者共享同一个 $DSH_HOME 的用户数据，但可执行包、插件激活、lockfile、node_modules 各自独立。</text>
+  <rect x="164" y="340" width="414" height="84" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="184" y="364" font-size="11" font-weight="700" fill="#92400e">$DSH_HOME/profiles/desktop（桌面壳独占写锁）</text>
+  <text x="184" y="384" font-size="11" fill="#334155">由内置 pnpm 安装，不依赖系统 PATH 上的包管理器</text>
+  <text x="184" y="404" font-size="10.5" fill="#78350f">npm 全局 CLI 被禁止启动或修改 desktop Profile</text>
+
+  <rect x="596" y="340" width="414" height="84" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="616" y="364" font-size="11" font-weight="700" fill="#92400e">$DSH_HOME/profiles/web（或 headless 等对应目录）</text>
+  <text x="616" y="384" font-size="11" fill="#334155">由宿主机 PATH 上的 pnpm 执行安装（Web 页或 dsh plugin）</text>
+  <text x="616" y="404" font-size="10.5" fill="#78350f">依赖树、锁文件与界面设置（cordis.patch.yml）与桌面端隔离</text>
+
+  <!-- Row 4: 升级与平台 -->
+  <rect x="28" y="438" width="118" height="72" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="87" y="471" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">升级与平台</text>
+  <text x="87" y="490" text-anchor="middle" font-size="10" fill="#64748b">支持矩阵</text>
+
+  <rect x="164" y="438" width="414" height="72" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="184" y="462" font-size="11" fill="#334155">后台轮询 Nightly 更新源，排空任务后替换并支持失败回滚</text>
+  <text x="184" y="484" font-size="10.5" fill="#475569">支持 macOS arm64/x64 与 Windows x64；Linux 官方不发桌面包</text>
+
+  <rect x="596" y="438" width="414" height="72" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="616" y="462" font-size="11" fill="#334155">手动执行 npm i -g @deepseek-ai/dsh@latest，指定旧版秒级回退</text>
+  <text x="616" y="484" font-size="10.5" fill="#475569">macOS / Linux / Windows 全平台通用（Linux 官方主力形态）</text>
+
+  <!-- Footer -->
+  <rect x="28" y="522" width="982" height="34" rx="6" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="519" y="544" text-anchor="middle" font-size="11" font-weight="700" fill="#3730a3">核心分界：可执行包、node_modules 与界面设置按 Profile 天然隔离；会话、凭据与工作区默认共用同一个 $DSH_HOME。</text>
 </svg>

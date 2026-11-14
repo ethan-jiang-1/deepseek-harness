@@ -1,59 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <defs>
-    <marker id="arr6" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
-  </defs>
-  <rect width="960" height="560" fill="#fafafa" rx="6"/>
-  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">一台机器，两套互不可见的环境：生产跑 web，实验跑 Desktop</text>
-  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">分界不是“哪个 App”，而是两个根：$DSH_HOME（数据）与 Electron userData（壳状态）。两个都换掉才算隔离。</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 580" width="1000" height="580" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>双根隔离：日常生产环境与独立实验 Desktop 并行运行</title>
+  <desc>同一台机器同时运行日常生产 dsh web 与实验 Desktop Lab，需成对分离 DSH_HOME 与 Electron --user-data-dir，解开 Profile 写锁与单实例进程锁。</desc>
+  <rect width="1000" height="580" rx="8" fill="#f8fafc"/>
+  <text x="500" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">一台机器两套环境并行：日常生产跑 Web，插件实验跑隔离 Desktop</text>
+  <text x="500" y="56" text-anchor="middle" font-size="11.5" fill="#475569">隔离边界不是“换个应用”，而是同时拆开两个根目录：DSH_HOME（Host 数据）与 Electron userData（渲染壳状态）</text>
 
-  <!-- left panel -->
-  <rect x="30" y="74" width="420" height="330" rx="10" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="50" y="100" font-size="13" font-weight="700" fill="#14532d">生产：dsh web（正经开发）</text>
-  <text x="50" y="120" font-size="10.5" fill="#166534">home = ~/.dsh　profile = web</text>
+  <!-- Left panel: Production -->
+  <rect x="36" y="76" width="440" height="320" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="56" y="104" font-size="13.5" font-weight="700" fill="#14532d">日常生产环境：dsh web（或默认 Desktop）</text>
+  <text x="56" y="124" font-size="11" fill="#166534">DSH_HOME = ~/.dsh · Profile = web</text>
 
-  <rect x="50" y="136" width="380" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="64" y="161" font-size="11" fill="#166534">profiles/web（插件与 bundle 组合）</text>
-  <rect x="50" y="186" width="380" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="64" y="211" font-size="11" fill="#166534">sessions/ · storages/（工作区表、域表；设置在各 profile）</text>
-  <rect x="50" y="236" width="380" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="64" y="261" font-size="11" fill="#166534">.credentials.yaml（生产 API Key / 账号）</text>
-  <rect x="50" y="286" width="380" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="64" y="311" font-size="11" fill="#166534">写锁：profiles/web/lock</text>
-  <rect x="50" y="336" width="380" height="46" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="64" y="358" font-size="11" fill="#166534">端口 3080（或你指定的端口）</text>
-  <text x="64" y="374" font-size="10.5" fill="#15803d">浏览器访问，不占 Electron</text>
+  <rect x="56" y="140" width="400" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="72" y="165" font-size="11" fill="#166534">~/.dsh/profiles/web（稳定插件依赖树与日常设置）</text>
 
-  <!-- right panel -->
-  <rect x="510" y="74" width="420" height="330" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="530" y="100" font-size="13" font-weight="700" fill="#1e3a8a">实验：Desktop lab（插件实验）</text>
-  <text x="530" y="120" font-size="10.5" fill="#1e40af">home = ~/.dsh-lab　profile = desktop</text>
+  <rect x="56" y="190" width="400" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="72" y="215" font-size="11" fill="#166534">~/.dsh/sessions/ · workspace.json（生产会话与工作区）</text>
 
-  <rect x="530" y="136" width="380" height="40" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
-  <text x="544" y="161" font-size="11" fill="#1e3a8a">profiles/desktop（实验插件，独立依赖树）</text>
-  <rect x="530" y="186" width="380" height="40" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
-  <text x="544" y="211" font-size="11" fill="#1e3a8a">sessions/ · storages/（实验会话；设置在各 profile）</text>
-  <rect x="530" y="236" width="380" height="40" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
-  <text x="544" y="261" font-size="11" fill="#1e3a8a">.credentials.yaml（可放实验 Key，或复制生产）</text>
-  <rect x="530" y="286" width="380" height="40" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
-  <text x="544" y="311" font-size="11" fill="#1e3a8a">写锁：profiles/desktop/lock</text>
-  <rect x="530" y="336" width="380" height="46" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
-  <text x="544" y="358" font-size="11" fill="#1e3a8a">Electron userData：~/.dsh-lab/electron</text>
-  <text x="544" y="374" font-size="10.5" fill="#1d4ed8">快捷键、desktop/settings.json、浏览器数据</text>
+  <rect x="56" y="240" width="400" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="72" y="265" font-size="11" fill="#166534">~/.dsh/.credentials.yaml（日常主力 API Key，0600 权限）</text>
 
-  <!-- boundary -->
-  <line x1="480" y1="86" x2="480" y2="392" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
-  <text x="480" y="412" text-anchor="middle" font-size="10.5" fill="#b45309">互不可见：两个 home + 两个 userData</text>
+  <rect x="56" y="290" width="400" height="40" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="72" y="315" font-size="11" fill="#166534">写锁：~/.dsh/profiles/web/lock</text>
 
-  <!-- locks -->
-  <rect x="30" y="426" width="420" height="52" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="46" y="448" font-size="11" font-weight="700" fill="#334155">锁一：profile 写锁（按 home）</text>
-  <text x="46" y="468" font-size="10.5" fill="#475569">两个 home 各有一把，互不阻塞</text>
-  <rect x="510" y="426" width="420" height="52" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="526" y="448" font-size="11" font-weight="700" fill="#334155">锁二：Electron 单实例锁（按 userData）</text>
-  <text x="526" y="468" font-size="10.5" fill="#475569">Electron v44 用 chrome::DIR_USER_DATA 做 ProcessSingleton</text>
+  <rect x="56" y="340" width="400" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="72" y="366" font-size="11" fill="#15803d">监听端口 3080（浏览器直接访问，不占用默认 Electron 锁）</text>
 
-  <!-- command strip -->
-  <rect x="30" y="490" width="900" height="56" rx="8" fill="#1e293b"/>
-  <text x="46" y="512" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="#e2e8f0">DSH_HOME="$HOME/.dsh-lab" "/Applications/DeepSeek Harness.app/Contents/MacOS/DeepSeek Harness" \</text>
-  <text x="46" y="532" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="#e2e8f0">  --user-data-dir="$HOME/.dsh-lab/electron"</text>
+  <!-- Center divider -->
+  <line x1="500" y1="84" x2="500" y2="392" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4"/>
+  <rect x="418" y="396" width="164" height="24" rx="12" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="500" y="412" text-anchor="middle" font-size="10.5" font-weight="700" fill="#92400e">双根拆开 · 互不可见</text>
+
+  <!-- Right panel: Lab -->
+  <rect x="524" y="76" width="440" height="320" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="544" y="104" font-size="13.5" font-weight="700" fill="#1e3a8a">隔离实验环境：Desktop Lab（测试半成品插件）</text>
+  <text x="544" y="124" font-size="11" fill="#1e40af">DSH_HOME = ~/.dsh-lab · Profile = desktop</text>
+
+  <rect x="544" y="140" width="400" height="40" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="560" y="165" font-size="11" fill="#1e3a8a">~/.dsh-lab/profiles/desktop（实验插件树，随时可删重建）</text>
+
+  <rect x="544" y="190" width="400" height="40" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="560" y="215" font-size="11" fill="#1e3a8a">~/.dsh-lab/sessions/ · storages/（空白实验会话，零污染）</text>
+
+  <rect x="544" y="240" width="400" height="40" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="560" y="265" font-size="11" fill="#1e3a8a">~/.dsh-lab/.credentials.yaml（填测试 Key 或 0600 复制）</text>
+
+  <rect x="544" y="290" width="400" height="40" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="560" y="315" font-size="11" fill="#1e3a8a">写锁：~/.dsh-lab/profiles/desktop/lock</text>
+
+  <rect x="544" y="340" width="400" height="42" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="560" y="366" font-size="11" fill="#1d4ed8">壳目录：--user-data-dir=~/.dsh-lab/electron（快捷键与缓存）</text>
+
+  <!-- Two locks row -->
+  <rect x="36" y="428" width="440" height="58" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="56" y="450" font-size="11.5" font-weight="700" fill="#0f172a">锁一：Profile 写锁（按 DSH_HOME 分离）</text>
+  <text x="56" y="470" font-size="10.5" fill="#475569">两个 Home 各持独立锁与存储；残余仅共享系统日志与 dsh:// 唤醒</text>
+
+  <rect x="524" y="428" width="440" height="58" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="544" y="450" font-size="11.5" font-weight="700" fill="#0f172a">锁二：Electron 单实例锁（按 userData 分离）</text>
+  <text x="544" y="470" font-size="10.5" fill="#475569">Electron 主进程 / 渲染壳按 userData 持 ProcessSingleton 锁双开</text>
+
+  <!-- Command strip -->
+  <rect x="36" y="498" width="928" height="64" rx="8" fill="#0f172a"/>
+  <text x="56" y="522" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="#e2e8f0">DSH_HOME="$HOME/.dsh-lab" "/Applications/DeepSeek Harness.app/Contents/MacOS/DeepSeek Harness" \</text>
+  <text x="56" y="544" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="#93c5fd">  --user-data-dir="$HOME/.dsh-lab/electron"</text>
 </svg>

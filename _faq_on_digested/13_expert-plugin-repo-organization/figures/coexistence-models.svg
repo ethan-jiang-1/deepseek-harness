@@ -1,52 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="430" viewBox="0 0 920 430" font-family="Helvetica, Arial, sans-serif">
-  <rect width="920" height="430" fill="#fafafa"/>
-  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">宿主源码与插件仓库的三种共存模型</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 490" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">宿主源码与插件仓库的三种共存模型</title>
+  <desc id="desc">对比同仓工作区（对应方案 B）、钉死版本的 vendor/dsh 子模块（对应方案 A 与形态 D，主力推荐）和纯外部 npm 依赖（对应方案 C）三种源码共存模型，并说明运行期双 DSH_HOME 物理隔离配套。</desc>
 
-  <g font-size="13" fill="#222">
-    <!-- Model 1: same-repo workspace -->
-    <rect x="40" y="70" width="260" height="250" rx="10" fill="#fff8e6" stroke="#c9a23f"/>
-    <text x="170" y="98" text-anchor="middle" font-weight="bold">同仓 workspace</text>
-    <rect x="60" y="115" width="220" height="46" rx="6" fill="#f6e7bd"/>
-    <text x="170" y="135" text-anchor="middle">host 源码</text>
-    <text x="170" y="152" text-anchor="middle" font-size="11">（就是本 repo）</text>
-    <rect x="60" y="173" width="220" height="40" rx="6" fill="#fff" stroke="#c9a23f"/>
-    <text x="170" y="197" text-anchor="middle">插件包（workspace:）</text>
-    <text x="170" y="238" text-anchor="middle" font-size="11.5">host 与插件永远同版本</text>
-    <text x="170" y="257" text-anchor="middle" font-size="11.5">agent 一棵树看全</text>
-    <text x="170" y="276" text-anchor="middle" font-size="11.5" fill="#a33">发布耦合</text>
-    <text x="170" y="303" text-anchor="middle" font-size="12" fill="#777">OpenClaw extensions/ · gemini-cli</text>
-    <text x="170" y="321" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a6d1f">→ 方案 B</text>
+  <rect width="1120" height="490" rx="8" fill="#f8fafc"/>
+  <text x="560" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">宿主源码与插件仓库的三种共存模型</text>
+  <text x="560" y="62" text-anchor="middle" font-size="12.5" fill="#475569">代码侧靠 vendor/dsh 子模块兼顾独立发版与 Agent 探索；运行侧靠独立 $DSH_HOME 保护日常环境</text>
 
-    <!-- Model 2: pinned vendor -->
-    <rect x="330" y="70" width="260" height="250" rx="10" fill="#e9f7ec" stroke="#3d8b4f" stroke-width="2"/>
-    <text x="460" y="98" text-anchor="middle" font-weight="bold">pinned vendor ✅</text>
-    <rect x="350" y="115" width="220" height="46" rx="6" fill="#cde9d4"/>
-    <text x="460" y="135" text-anchor="middle">专家包（自己的 repo）</text>
-    <text x="460" y="152" text-anchor="middle" font-size="11">独立发布节奏</text>
-    <rect x="350" y="173" width="220" height="40" rx="6" fill="#fff" stroke="#3d8b4f"/>
-    <text x="460" y="192" text-anchor="middle">vendor/ · submodule 钉 tag</text>
-    <text x="460" y="208" text-anchor="middle" font-size="11">+ SHA 簿记 + 升级脚本</text>
-    <text x="460" y="238" text-anchor="middle" font-size="11.5">agent 在 repo 内探索 DSH</text>
-    <text x="460" y="257" text-anchor="middle" font-size="11.5">可复现、可跟随 pre-stable 上游</text>
-    <text x="460" y="276" text-anchor="middle" font-size="11.5" fill="#a33">同步纪律自己扛</text>
-    <text x="460" y="303" text-anchor="middle" font-size="12" fill="#777">dsh-desktop · antfu/skills · DSH vendor/</text>
-    <text x="460" y="321" text-anchor="middle" font-size="12" font-weight="bold" fill="#2c6e3c">→ 方案 A（与 D 同底）</text>
+  <!-- Card 1: Same-Repo Workspace -->
+  <rect x="36" y="88" width="332" height="296" rx="10" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="202" y="116" text-anchor="middle" font-size="14.5" font-weight="700" fill="#92400e">1. 同仓工作区（宿主与插件同树）</text>
 
-    <!-- Model 3: external dep -->
-    <rect x="620" y="70" width="260" height="250" rx="10" fill="#f2f2f2" stroke="#999"/>
-    <text x="750" y="98" text-anchor="middle" font-weight="bold">纯外部依赖</text>
-    <rect x="640" y="115" width="220" height="46" rx="6" fill="#e0e0e0"/>
-    <text x="750" y="135" text-anchor="middle">专家包</text>
-    <text x="750" y="152" text-anchor="middle" font-size="11">无 host 源码</text>
-    <rect x="640" y="173" width="220" height="40" rx="6" fill="#fff" stroke="#999"/>
-    <text x="750" y="197" text-anchor="middle">npm 依赖 host SDK</text>
-    <text x="750" y="238" text-anchor="middle" font-size="11.5">repo 最干净</text>
-    <text x="750" y="257" text-anchor="middle" font-size="11.5">engines.dsh + peer 管住依赖面</text>
-    <text x="750" y="276" text-anchor="middle" font-size="11.5" fill="#a33">agent 探索跳出去，断链</text>
-    <text x="750" y="303" text-anchor="middle" font-size="12" fill="#777">MCP servers · whalehub-dsh</text>
-    <text x="750" y="321" text-anchor="middle" font-size="12" font-weight="bold" fill="#666">→ 方案 C（仅过渡）</text>
-  </g>
+  <rect x="56" y="132" width="292" height="42" rx="6" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="202" y="158" text-anchor="middle" font-size="12.5" font-weight="700" fill="#92400e">仓库本身即 DSH 分支 / Fork</text>
 
-  <text x="460" y="366" text-anchor="middle" font-size="12.5" fill="#555">（第四种 catalog-only：仓库只聚合外部仓库指针做分发索引，如 claude-plugins-official，非开发形态）</text>
-  <text x="460" y="396" text-anchor="middle" font-size="12.5" fill="#777">依赖姿态：同仓用 workspace:；独立发布声明 engines.dsh + peerDependencies；Web UI 插件声明 dsh.client 并导出 ./client 产物</text>
+  <rect x="56" y="184" width="292" height="42" rx="6" fill="#ffffff" stroke="#f59e0b"/>
+  <text x="202" y="210" text-anchor="middle" font-size="12" fill="#334155">插件作为 workspace:* 子包挂载</text>
+
+  <text x="56" y="252" font-size="11.5" fill="#334155">· 优势：Agent 一棵树看全源码与门禁</text>
+  <text x="56" y="276" font-size="11.5" fill="#334155">· 代价：发版强耦合，跟进上游需反复合并</text>
+  <text x="56" y="300" font-size="11.5" fill="#991b1b">· 限制：外部用户无法直接 dsh plugin add</text>
+  <text x="56" y="322" font-size="11" fill="#78350f">样本：OpenClaw extensions/ · gemini-cli</text>
+
+  <rect x="76" y="338" width="252" height="28" rx="14" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="202" y="356" text-anchor="middle" font-size="11.5" font-weight="700" fill="#92400e">→ 对应方案 B（特种施工通道）</text>
+
+  <!-- Card 2: Pinned Vendor Submodule -->
+  <rect x="394" y="88" width="332" height="296" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="560" y="116" text-anchor="middle" font-size="14.5" font-weight="700" fill="#166534">2. 钉死版本的 vendor/dsh（推荐）</text>
+
+  <rect x="414" y="132" width="292" height="42" rx="6" fill="#dcfce7" stroke="#86efac"/>
+  <text x="560" y="158" text-anchor="middle" font-size="12.5" font-weight="700" fill="#166534">专家插件独立仓库（自主发版节奏）</text>
+
+  <rect x="414" y="184" width="292" height="42" rx="6" fill="#ffffff" stroke="#16a34a"/>
+  <text x="560" y="210" text-anchor="middle" font-size="12" fill="#334155">vendor/dsh 子模块钉死 release tag</text>
+
+  <text x="414" y="252" font-size="11.5" fill="#334155">· 优势：Agent 在仓内直接查官方文档与源码</text>
+  <text x="414" y="276" font-size="11.5" fill="#334155">· 优势：确定性跟进 pre-stable 上游变更</text>
+  <text x="414" y="300" font-size="11.5" fill="#9a3412">· 纪律：用 sync-dsh 脚本换 tag 并跑类型检查</text>
+  <text x="414" y="322" font-size="11" fill="#15803d">样本：dsh-desktop · antfu/skills · DSH vendor/</text>
+
+  <rect x="434" y="338" width="252" height="28" rx="14" fill="#16a34a"/>
+  <text x="560" y="356" text-anchor="middle" font-size="11.5" font-weight="700" fill="#ffffff">→ 对应方案 A 与形态 D（主力推荐）</text>
+
+  <!-- Card 3: Pure External Dependency -->
+  <rect x="752" y="88" width="332" height="296" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="918" y="116" text-anchor="middle" font-size="14.5" font-weight="700" fill="#334155">3. 纯外部 npm 依赖（无宿主源码）</text>
+
+  <rect x="772" y="132" width="292" height="42" rx="6" fill="#e2e8f0" stroke="#cbd5e1"/>
+  <text x="918" y="158" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">专家插件独立仓（不含 DSH 源码）</text>
+
+  <rect x="772" y="184" width="292" height="42" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="918" y="210" text-anchor="middle" font-size="12" fill="#334155">仅安装 npm 包与 .d.ts 类型声明</text>
+
+  <text x="772" y="252" font-size="11.5" fill="#334155">· 优势：目录体积最轻，无子模块维护步骤</text>
+  <text x="772" y="276" font-size="11.5" fill="#334155">· 约束：靠 engines.dsh + peer 声明版本范围</text>
+  <text x="772" y="300" font-size="11.5" fill="#991b1b">· 短板：Agent 查不到实现与组合细节，易盲猜</text>
+  <text x="772" y="322" font-size="11" fill="#64748b">样本：MCP servers · whalehub-dsh</text>
+
+  <rect x="792" y="338" width="252" height="28" rx="14" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="918" y="356" text-anchor="middle" font-size="11.5" font-weight="700" fill="#334155">→ 对应方案 C（仅作简单工具过渡）</text>
+
+  <!-- Bottom Notes -->
+  <rect x="36" y="402" width="1048" height="68" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="560" y="428" text-anchor="middle" font-size="12" fill="#334155">补充说明：纯市场索引仓（仅聚合外部仓库指针做分发目录，如 claude-plugins-official）不含插件业务源码，不属研发仓库形态。</text>
+  <text x="560" y="452" text-anchor="middle" font-size="12" fill="#475569">运行期隔离配套：无论选哪种仓库模型，本机联调一律固定独立 DSH_HOME=~/dsh-dev，绝不污染日常使用的 ~/.dsh。</text>
 </svg>

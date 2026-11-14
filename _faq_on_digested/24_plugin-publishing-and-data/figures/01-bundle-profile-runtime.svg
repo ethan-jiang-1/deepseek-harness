@@ -1,76 +1,90 @@
-<svg width="960" height="600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>三层与五种贡献</title>
-  <desc>作者发布 bundle，用户组合 profile，运行时装载行；bundle 承载行为插件、智能体定义、技能、客户端模块与 MCP 配置。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 580" width="1040" height="580" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>作者发布 Bundle、用户组装 Profile 与运行时插件树</title>
+  <desc>Bundle 是作者唯一发布的扩展包（声明 dsh.bundle.patch 与 engines.dsh）；Profile 是用户运行期的组合目录；运行期装载为共享 Host 服务与按会话钉住版本的 Preset 子树，一切运行数据留在包外。</desc>
   <defs>
-    <marker id="arr24a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arr24a" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
   </defs>
-  <rect width="960" height="600" fill="#fafafa" rx="6"/>
-  <text x="480" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">三层：作者发布、用户组合、运行装载；bundle 是发布物，plugin 与 preset 是行，数据不在包里</text>
-  <text x="480" y="55" text-anchor="middle" font-size="11" fill="#6b7280">作者只写最左列；中间列由用户与安装器维护；右列是运行时真正发生的事。</text>
+  <rect width="1040" height="580" rx="8" fill="#f8fafc"/>
+  <text x="520" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">三层分工：作者发 Bundle、用户组 Profile、运行时挂插件树</text>
+  <text x="520" y="56" text-anchor="middle" font-size="11.5" fill="#475569">Bundle 是唯一安装启用单位，Plugin 与 Preset 是配置行，包内只放代码与只读定义，运行数据一律在包外</text>
 
-  <text x="44" y="88" font-size="11" font-weight="700" fill="#334155">作者层 · 发布</text>
-  <text x="352" y="88" font-size="11" font-weight="700" fill="#334155">用户层 · 组合</text>
-  <text x="664" y="88" font-size="11" font-weight="700" fill="#334155">运行层 · 装载</text>
+  <text x="44" y="88" font-size="12" font-weight="700" fill="#334155">① 作者层 · 打包发布</text>
+  <text x="380" y="88" font-size="12" font-weight="700" fill="#334155">② 用户层 · 组合管理</text>
+  <text x="716" y="88" font-size="12" font-weight="700" fill="#334155">③ 运行层 · 装载与外置数据</text>
 
-  <rect x="40" y="100" width="280" height="286" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
-  <text x="58" y="126" font-size="13" font-weight="700" fill="#1e3a8a">bundle 包（唯一发布物）</text>
-  <text x="58" y="148" font-size="10.5" fill="#1e40af">package.json 声明 dsh.bundle.patch</text>
+  <!-- Column 1: Bundle -->
+  <rect x="36" y="100" width="308" height="292" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="56" y="126" font-size="13.5" font-weight="700" fill="#1e3a8a">Bundle 包（唯一可启用发布物）</text>
+  <text x="56" y="146" font-size="10.5" fill="#1e40af">package.json：dsh.bundle.patch + engines.dsh</text>
+  <text x="56" y="163" font-size="10" fill="#3b82f6">（ESM + 可选 dsh.manifestVersion: 1）</text>
 
-  <rect x="58" y="162" width="244" height="34" rx="6" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="70" y="184" font-size="10.5" fill="#1e3a8a">行为插件行 → apply(ctx) / service</text>
-  <rect x="58" y="202" width="244" height="34" rx="6" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="70" y="224" font-size="10.5" fill="#1e3a8a">preset 行 → 一个智能体的定义</text>
-  <rect x="58" y="242" width="244" height="34" rx="6" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="70" y="264" font-size="10.5" fill="#1e3a8a">skill 资产 → SKILL.md + references</text>
-  <rect x="58" y="282" width="244" height="34" rx="6" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="70" y="304" font-size="10.5" fill="#1e3a8a">client 模块 → dsh.client + ./client</text>
-  <rect x="58" y="322" width="244" height="34" rx="6" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="70" y="344" font-size="10.5" fill="#1e3a8a">MCP client 行 → 外部工具</text>
-  <text x="58" y="376" font-size="10" fill="#6b7280">locale/icon 只是元数据；包本身不写用户数据。</text>
+  <rect x="56" y="176" width="268" height="34" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="70" y="198" font-size="10.5" fill="#1e3a8a">Host 行为插件行 → apply(ctx) / Service</text>
 
-  <rect x="340" y="100" width="280" height="286" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
-  <text x="358" y="126" font-size="13" font-weight="700" fill="#166534">profile 目录（用户侧）</text>
-  <text x="358" y="148" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" fill="#166534">$DSH_HOME/profiles/&lt;name&gt;/</text>
+  <rect x="56" y="216" width="268" height="34" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="70" y="238" font-size="10.5" fill="#1e3a8a">Preset 预设行 → dsh-agent-preset 智能体</text>
 
-  <rect x="358" y="162" width="244" height="52" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="370" y="182" font-size="10.5" fill="#166534">package.json</text>
-  <text x="370" y="201" font-size="9.5" fill="#15803d">依赖 + dsh.profile.bundles 顺序</text>
-  <rect x="358" y="220" width="244" height="52" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="370" y="240" font-size="10.5" fill="#166534">cordis.patch.yml</text>
-  <text x="370" y="259" font-size="9.5" fill="#15803d">用户覆盖层，在 bundle 层之后</text>
-  <rect x="358" y="278" width="244" height="52" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="370" y="298" font-size="10.5" fill="#166534">node_modules/</text>
-  <text x="370" y="317" font-size="9.5" fill="#15803d">pnpm 装的包，含你的 bundle</text>
-  <text x="358" y="352" font-size="10" fill="#6b7280">profile 不是发布物；作者不发它。</text>
-  <text x="358" y="370" font-size="10" fill="#6b7280">重新启用 bundle 会排到列表末尾。</text>
+  <rect x="56" y="256" width="268" height="34" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="70" y="278" font-size="10.5" fill="#1e3a8a">随包技能资源 → SKILL.md + SkillProvider</text>
 
-  <rect x="640" y="100" width="280" height="286" rx="10" fill="#fef3c7" stroke="#fcd34d"/>
-  <text x="658" y="126" font-size="13" font-weight="700" fill="#78350f">运行时插件树</text>
-  <text x="658" y="148" font-size="10.5" fill="#854d0e">Host 共享 loop + 每个会话的 preset</text>
+  <rect x="56" y="296" width="268" height="34" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="70" y="318" font-size="10.5" fill="#1e3a8a">前端与外部工具 → dsh.client / MCP 配置行</text>
 
-  <rect x="658" y="162" width="244" height="64" rx="6" fill="#ffffff" stroke="#fcd34d"/>
-  <text x="670" y="182" font-size="10.5" fill="#78350f">Host 行：服务、工具注册表、循环</text>
-  <text x="670" y="201" font-size="9.5" fill="#854d0e">sessions / persistence / sandbox / LLM</text>
-  <text x="670" y="218" font-size="9.5" fill="#854d0e">整个 profile 共享一份</text>
-  <rect x="658" y="234" width="244" height="64" rx="6" fill="#ffffff" stroke="#fcd34d"/>
-  <text x="670" y="254" font-size="10.5" fill="#78350f">preset 行：会话选中的定义</text>
-  <text x="670" y="273" font-size="9.5" fill="#854d0e">persona / 指令 / 工具 / 技能 / 策略</text>
-  <text x="670" y="290" font-size="9.5" fill="#854d0e">eager 激活、会话钉住 revision</text>
-  <rect x="658" y="306" width="244" height="52" rx="6" fill="#ffffff" stroke="#fcd34d"/>
-  <text x="670" y="326" font-size="10.5" fill="#78350f">数据：不在包里</text>
-  <text x="670" y="345" font-size="9.5" fill="#854d0e">workspace / $DSH_HOME / session 日志</text>
+  <text x="56" y="354" font-size="10" fill="#475569">另含 locale/*.json 与 icon 展示元数据；</text>
+  <text x="56" y="372" font-size="10" fill="#475569">无 dsh.bundle 时应用内安装会报 not-bundle 回滚。</text>
 
-  <line x1="320" y1="240" x2="336" y2="240" stroke="#4b5563" marker-end="url(#arr24a)"/>
-  <line x1="620" y1="240" x2="636" y2="240" stroke="#4b5563" marker-end="url(#arr24a)"/>
-  <text x="328" y="228" text-anchor="middle" font-size="9" fill="#4b5563">add</text>
-  <text x="628" y="228" text-anchor="middle" font-size="9" fill="#4b5563">boot</text>
+  <line x1="344" y1="246" x2="366" y2="246" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24a)"/>
 
-  <rect x="40" y="408" width="880" height="64" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="480" y="432" text-anchor="middle" font-size="12" font-weight="700" fill="#312e81">一个智能体 = Host 共享的 loop + 一个 preset 行 + 该会话的数据</text>
-  <text x="480" y="454" text-anchor="middle" font-size="10.5" fill="#4338ca">它不是一种新程序，也不是一个独立的可执行入口；它是这棵树上的组合物。</text>
+  <!-- Column 2: Profile -->
+  <rect x="372" y="100" width="296" height="292" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="392" y="126" font-size="13.5" font-weight="700" fill="#14532d">Profile 目录（运行期扩展位）</text>
+  <text x="392" y="146" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="#166534">$DSH_HOME/profiles/&lt;name&gt;/</text>
 
-  <rect x="40" y="492" width="880" height="84" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
-  <text x="60" y="516" font-size="11.5" font-weight="700" fill="#334155">Nothing is both</text>
-  <text x="60" y="538" font-size="10.5" fill="#475569">bundle 是作者发布的东西；profile 是用户启动的东西。plugin 是 patch 行；preset 是 patch 行；skill 是资源；数据是运行产物。</text>
-  <text x="60" y="560" font-size="10.5" fill="#475569">判断“算不算插件”不要看它是不是 npm 包，而要看它有没有进入安装 / 装载 / 选择 / 发现四条管道之一。</text>
+  <rect x="392" y="166" width="256" height="54" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="408" y="186" font-size="11" font-weight="700" fill="#166534">package.json</text>
+  <text x="408" y="205" font-size="10" fill="#334155">记录外部 dependencies 与有序 bundles 列表</text>
+
+  <rect x="392" y="228" width="256" height="54" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="408" y="248" font-size="11" font-weight="700" fill="#166534">cordis.patch.yml</text>
+  <text x="408" y="267" font-size="10" fill="#334155">用户覆盖层（保存修改，排在 Bundle 后）</text>
+
+  <rect x="392" y="290" width="256" height="54" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="408" y="310" font-size="11" font-weight="700" fill="#166534">node_modules/</text>
+  <text x="408" y="329" font-size="10" fill="#334155">由宿主机 pnpm 安装的 Bundle 及依赖树</text>
+
+  <text x="392" y="368" font-size="10" fill="#475569">注：禁用后重新启用 Bundle 会追加到列表末尾。</text>
+
+  <line x1="668" y1="246" x2="690" y2="246" stroke="#475569" stroke-width="1.5" marker-end="url(#arr24a)"/>
+
+  <!-- Column 3: Runtime -->
+  <rect x="696" y="100" width="308" height="292" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="716" y="126" font-size="13.5" font-weight="700" fill="#92400e">运行时插件树 + 包外数据</text>
+  <text x="716" y="146" font-size="10.5" fill="#78350f">共享底座服务 + 按会话选中的智能体</text>
+
+  <rect x="716" y="166" width="268" height="62" rx="6" fill="#ffffff" stroke="#fde68a"/>
+  <text x="732" y="186" font-size="11" font-weight="700" fill="#92400e">Host 根插件行（跨会话共享）</text>
+  <text x="732" y="205" font-size="10" fill="#334155">agent-loop / 会话持久化 / 沙箱 / 技能表；</text>
+  <text x="732" y="220" font-size="10" fill="#475569">dsh.client 包须挂根行才会被前端扫描</text>
+
+  <rect x="716" y="236" width="268" height="62" rx="6" fill="#ffffff" stroke="#fde68a"/>
+  <text x="732" y="256" font-size="11" font-weight="700" fill="#92400e">Preset 子树（按会话绑定）</text>
+  <text x="732" y="275" font-size="10" fill="#334155">组合专属 persona、工具白名单与技能；</text>
+  <text x="732" y="290" font-size="10" fill="#475569">热更新时活会话钉住旧 revision 不中断</text>
+
+  <rect x="716" y="306" width="268" height="62" rx="6" fill="#ffffff" stroke="#fde68a"/>
+  <text x="732" y="326" font-size="11" font-weight="700" fill="#92400e">运行期数据（100% 留在包外）</text>
+  <text x="732" y="345" font-size="10" fill="#334155">分别落入会话日志、$DSH_HOME 存储与工作区</text>
+
+  <!-- Formula banner -->
+  <rect x="36" y="410" width="968" height="58" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="520" y="434" text-anchor="middle" font-size="12.5" font-weight="700" fill="#312e81">一个运行中的智能体 = Host 共享底座 + 一条选中的 Preset 定义行 + 该会话在包外的运行数据</text>
+  <text x="520" y="454" text-anchor="middle" font-size="10.5" fill="#4338ca">智能体不是独立可执行程序，也没有专属包内数据目录；升级 Bundle 只替换定义与代码，不抹除用户状态</text>
+
+  <!-- Crisp Chinese boundary rule -->
+  <rect x="36" y="482" width="968" height="80" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="56" y="508" font-size="12" font-weight="700" fill="#0f172a">两者边界严格互斥：Bundle 只做打包期固化，Profile 只做运行期扩展</text>
+  <text x="56" y="530" font-size="10.5" fill="#334155">· 插件作者发布的是声明了 dsh.bundle.patch 的 npm / .tgz 包，绝不要在普通插件包里写属于用户侧的 dsh.profile 字段。</text>
+  <text x="56" y="548" font-size="10.5" fill="#334155">· 凡需与宿主共享单例的包（如 @deepseek-ai/cordis 及服务定义包）均写进 peerDependencies + devDependencies，避免装出双份实例。</text>
 </svg>

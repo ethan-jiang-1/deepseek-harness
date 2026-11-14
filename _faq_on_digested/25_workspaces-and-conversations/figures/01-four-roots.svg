@@ -1,95 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" width="1200" height="620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 590" width="1240" height="590" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title>四个常被混为一谈的目录与归属概念</title>
-  <desc>把四个目录与归属概念拆开：process.cwd() 只在无参兜底与 CLI 默认目录出现；SessionHeader.cwd 在创建时定死并锚定 sandboxPolicy 可写边界；ctx.workingDirectory 决定会话当前轮工具执行的有效目录且支持中途切换；Workspace 是 $DSH_HOME 里的登记实体，靠 sessionIds 名册决定左侧边栏分组。</desc>
+  <desc>拆清四个独立概念：process.cwd() 仅作启动缺省兜底；SessionHeader.cwd 在创建时定死并锚定沙箱边界与入组门票；ctx.workingDirectory 决定当前轮工具目录且可中途切换；Workspace 登记记录靠 sessionIds 名册决定左侧分组。</desc>
+  <rect width="1240" height="590" rx="8" fill="#f8fafc"/>
+  <text x="620" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">四个“目录与归属”概念各司其职，只有第四列决定左侧边栏分组</text>
+  <text x="620" y="56" text-anchor="middle" font-size="11.5" fill="#475569">启动目录只做无参兜底；会话中途切目录只改工具当前位置，既不扩大沙箱写边界，也不改变侧栏分组</text>
 
-  <rect width="1200" height="620" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">四个“目录与归属”概念各司其职，只有第四列直接决定左侧分组</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">启动目录只做缺省兜底；会话中途切目录只改工具当前位置，既不扩沙箱也不换分组</text>
+  <!-- Col 1: process.cwd() -->
+  <rect x="28" y="82" width="280" height="372" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="168" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">① 进程启动目录</text>
+  <text x="168" y="130" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#7f1d1d">process.cwd()</text>
+  <line x1="48" y1="144" x2="288" y2="144" stroke="#fecaca"/>
+  <text x="48" y="168" font-size="11" font-weight="700" fill="#991b1b">何时确定</text>
+  <text x="48" y="188" font-size="11" fill="#334155">启动 dsh 命令时由操作系统进程确定；</text>
+  <text x="48" y="206" font-size="10.5" fill="#64748b">换终端目录重启进程才会改变</text>
+  <text x="48" y="238" font-size="11" font-weight="700" fill="#991b1b">仅做三处缺省兜底</text>
+  <text x="48" y="260" font-size="10.5" fill="#334155">· CLI / headless 新建会话的默认目录</text>
+  <text x="48" y="282" font-size="10.5" fill="#334155">· API 建会话未传 workspaceId / cwd 时</text>
+  <text x="48" y="304" font-size="10.5" fill="#334155">· 早期无 cwd 冷会话的工作目录兜底</text>
+  <rect x="48" y="374" width="240" height="60" rx="8" fill="#fee2e2" stroke="#f87171"/>
+  <text x="168" y="398" text-anchor="middle" font-size="11.5" font-weight="700" fill="#991b1b">不参与左侧边栏分组</text>
+  <text x="168" y="418" text-anchor="middle" font-size="10" fill="#7f1d1d">换目录敲 dsh web，侧栏列表丝毫不变</text>
 
-  <!-- ① process.cwd() -->
-  <rect x="30" y="86" width="270" height="392" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="165" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">① 进程启动目录</text>
-  <text x="165" y="134" text-anchor="middle" font-size="11" fill="#7f1d1d" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">process.cwd()</text>
-  <line x1="52" y1="148" x2="278" y2="148" stroke="#fecaca"/>
-  <text x="52" y="172" font-size="11" font-weight="700" fill="#991b1b">它是什么</text>
-  <text x="52" y="192" fill="#334155">敲命令启动 dsh 进程时所在的目录</text>
-  <text x="52" y="210" fill="#64748b" font-size="11">换个终端目录重启进程就会变</text>
+  <!-- Col 2: SessionHeader.cwd -->
+  <rect x="328" y="82" width="280" height="372" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="468" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">② 原始项目与沙箱可写根</text>
+  <text x="468" y="130" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="#14532d">SessionHeader.cwd + sandboxPolicy</text>
+  <line x1="348" y1="144" x2="588" y2="144" stroke="#bbf7d0"/>
+  <text x="348" y="168" font-size="11" font-weight="700" fill="#166534">何时确定</text>
+  <text x="348" y="188" font-size="11" fill="#334155">创建会话时写入日志头；</text>
+  <text x="348" y="206" font-size="10.5" fill="#64748b">一旦落盘终身不可修改</text>
+  <text x="348" y="238" font-size="11" font-weight="700" fill="#166534">锚定三项硬边界</text>
+  <text x="348" y="260" font-size="10.5" fill="#334155">· workspace-write 沙箱免审可写边界</text>
+  <text x="348" y="282" font-size="10.5" fill="#334155">· 挂入 Workspace 时的 realpath 门票</text>
+  <text x="348" y="304" font-size="10.5" fill="#334155">· 磁盘 sessions/--&lt;cwd&gt;--/ 分区目录名</text>
+  <rect x="348" y="374" width="240" height="60" rx="8" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="468" y="398" text-anchor="middle" font-size="11.5" font-weight="700" fill="#166534">只当门票，不自动入组</text>
+  <text x="468" y="418" text-anchor="middle" font-size="10" fill="#14532d">同路径但未调 attach 仍落入 Ungrouped</text>
 
-  <text x="52" y="244" font-size="11" font-weight="700" fill="#991b1b">只做三处缺省兜底</text>
-  <text x="52" y="266" fill="#334155">· 建会话既没传 workspaceId</text>
-  <text x="64" y="282" fill="#334155">也没传 cwd 时的默认目录</text>
-  <text x="52" y="306" fill="#334155">· CLI / headless 启动会话的默认目录</text>
-  <text x="64" y="322" fill="#64748b" font-size="10.5">headless 组合不加载 workspace 插件</text>
-  <text x="52" y="346" fill="#334155">· 无 cwd 会话的沙箱与工作目录兜底</text>
+  <!-- Col 3: ctx.workingDirectory -->
+  <rect x="628" y="82" width="280" height="372" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="768" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">③ 会话当前有效工作目录</text>
+  <text x="768" y="130" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#78350f">ctx.workingDirectory</text>
+  <line x1="648" y1="144" x2="888" y2="144" stroke="#fde68a"/>
+  <text x="648" y="168" font-size="11" font-weight="700" fill="#92400e">何时确定</text>
+  <text x="648" y="188" font-size="11" fill="#334155">初始等于 SessionHeader.cwd；</text>
+  <text x="648" y="206" font-size="10.5" fill="#64748b">对话中途可调 working_directory 切换</text>
+  <text x="648" y="238" font-size="11" font-weight="700" fill="#92400e">决定本轮工具行为</text>
+  <text x="648" y="260" font-size="10.5" fill="#334155">· 相对路径文件读写与补全基准</text>
+  <text x="648" y="282" font-size="10.5" fill="#334155">· 新拉起子进程与 AGENTS.md / 技能扫描</text>
+  <text x="648" y="304" font-size="10" fill="#64748b">（已打开的持久终端保留原进程目录）</text>
+  <rect x="648" y="374" width="240" height="60" rx="8" fill="#fef3c7" stroke="#fbbf24"/>
+  <text x="768" y="398" text-anchor="middle" font-size="11.5" font-weight="700" fill="#92400e">中途 cd 不扩沙箱不换组</text>
+  <text x="768" y="418" text-anchor="middle" font-size="10" fill="#78350f">沙箱与侧栏归属仍钉在创建时的 ②</text>
 
-  <rect x="52" y="396" width="226" height="62" rx="8" fill="#fee2e2" stroke="#f87171"/>
-  <text x="165" y="420" text-anchor="middle" font-weight="700" fill="#991b1b">不参与左侧边栏分组</text>
-  <text x="165" y="440" text-anchor="middle" font-size="10.5" fill="#7f1d1d">换目录启动 dsh web，侧栏不会跟着切换</text>
+  <!-- Col 4: Workspace entity -->
+  <rect x="928" y="82" width="284" height="372" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="1070" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">④ 侧栏工作区登记实体</text>
+  <text x="1070" y="130" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#1e40af">Workspace (workspace.json)</text>
+  <line x1="948" y1="144" x2="1192" y2="144" stroke="#bfdbfe"/>
+  <text x="948" y="168" font-size="11" font-weight="700" fill="#1e3a8a">何时确定</text>
+  <text x="948" y="188" font-size="11" fill="#334155">保存在 $DSH_HOME/storages/ 下；</text>
+  <text x="948" y="206" font-size="10.5" fill="#64748b">含稳定 UUID、realpath、标题与 sessionIds</text>
+  <text x="948" y="238" font-size="11" font-weight="700" fill="#1e3a8a">三条核心规则</text>
+  <text x="948" y="260" font-size="10.5" fill="#334155">· 同一规范化路径最多登记一条记录</text>
+  <text x="948" y="282" font-size="10.5" fill="#334155">· 成员资格只认有序 sessionIds 名册</text>
+  <text x="948" y="304" font-size="10.5" fill="#334155">· 模型零感知；首启空库建默认工作区</text>
+  <rect x="948" y="374" width="244" height="60" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="1070" y="398" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1e3a8a">直接决定左侧边栏分组</text>
+  <text x="1070" y="418" text-anchor="middle" font-size="10" fill="#1e40af">切换 DSH_HOME 才会切换整套工作区</text>
 
-  <!-- ② SessionHeader.cwd + sandboxPolicy -->
-  <rect x="320" y="86" width="270" height="392" rx="10" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="455" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">② 原始项目与沙箱可写根</text>
-  <text x="455" y="134" text-anchor="middle" font-size="11" fill="#14532d" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">SessionHeader.cwd / sandboxPolicy</text>
-  <line x1="342" y1="148" x2="568" y2="148" stroke="#bbf7d0"/>
-  <text x="342" y="172" font-size="11" font-weight="700" fill="#166534">它是什么</text>
-  <text x="342" y="192" fill="#334155">会话创建时写进日志头的目录</text>
-  <text x="342" y="210" fill="#64748b" font-size="11">一旦落盘终身不可变</text>
-
-  <text x="342" y="244" font-size="11" font-weight="700" fill="#166534">锚定两件关键边界</text>
-  <text x="342" y="266" fill="#334155">· 沙箱可写根：workspace-write 模式</text>
-  <text x="354" y="282" fill="#334155">允许免审改文件的目录边界</text>
-  <text x="342" y="306" fill="#334155">· 入组校验门票：挂入 Workspace 时</text>
-  <text x="354" y="322" fill="#334155">realpath 必须等于 workspace.path</text>
-  <text x="342" y="346" fill="#334155">· 日志落盘分区名（--&lt;cwd&gt;--）</text>
-
-  <rect x="342" y="396" width="226" height="62" rx="8" fill="#dcfce7" stroke="#4ade80"/>
-  <text x="455" y="418" text-anchor="middle" font-weight="700" fill="#166534">有门票不等于已入组</text>
-  <text x="455" y="438" text-anchor="middle" font-size="10.5" fill="#166534">同 cwd 会话没调 attach 照样进 Ungrouped</text>
-
-  <!-- ③ ctx.workingDirectory -->
-  <rect x="610" y="86" width="270" height="392" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="745" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#92400e">③ 会话当前有效工作目录</text>
-  <text x="745" y="134" text-anchor="middle" font-size="11" fill="#78350f" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">ctx.workingDirectory</text>
-  <line x1="632" y1="148" x2="858" y2="148" stroke="#fde68a"/>
-  <text x="632" y="172" font-size="11" font-weight="700" fill="#92400e">它是什么</text>
-  <text x="632" y="192" fill="#334155">初始取 SessionHeader.cwd，会话中途</text>
-  <text x="632" y="210" fill="#64748b" font-size="11">可通过 working_directory 工具切换并记日志</text>
-
-  <text x="632" y="244" font-size="11" font-weight="700" fill="#92400e">跟着它走的运行时行为</text>
-  <text x="632" y="266" fill="#334155">· 相对路径文件读写与文件补全</text>
-  <text x="632" y="288" fill="#334155">· 新启动的子进程执行目录</text>
-  <text x="632" y="310" fill="#334155">· AGENTS.md 指令与技能发现</text>
-  <text x="632" y="334" fill="#64748b" font-size="10.5">注：已打开的持久终端保留各自进程目录</text>
-
-  <rect x="632" y="396" width="226" height="62" rx="8" fill="#fef3c7" stroke="#fbbf24"/>
-  <text x="745" y="418" text-anchor="middle" font-weight="700" fill="#92400e">中途切目录不换分组</text>
-  <text x="745" y="438" text-anchor="middle" font-size="10.5" fill="#78350f">沙箱根与侧栏归属仍钉在原始项目 ②</text>
-
-  <!-- ④ Workspace entity -->
-  <rect x="900" y="86" width="270" height="392" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="1035" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">④ 侧栏工作区登记记录</text>
-  <text x="1035" y="134" text-anchor="middle" font-size="11" fill="#1e3a8a" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">Workspace (workspace.json)</text>
-  <line x1="922" y1="148" x2="1148" y2="148" stroke="#bfdbfe"/>
-  <text x="922" y="172" font-size="11" font-weight="700" fill="#1e40af">它是什么</text>
-  <text x="922" y="192" fill="#334155">$DSH_HOME/storages/workspace.json</text>
-  <text x="922" y="210" fill="#64748b" font-size="11">里的实体：UUID + 路径 + 标题 + sessionIds</text>
-
-  <text x="922" y="244" font-size="11" font-weight="700" fill="#1e40af">三条核心规则</text>
-  <text x="922" y="266" fill="#334155">· 同一规范化路径最多一条记录</text>
-  <text x="922" y="288" fill="#334155">· 成员归属只认 sessionIds 名册</text>
-  <text x="922" y="310" fill="#334155">· 模型完全不可见（零上下文开销）</text>
-  <text x="922" y="334" fill="#64748b" font-size="10.5">首启空库默认建在 Documents/.../default-workspace</text>
-
-  <rect x="922" y="396" width="226" height="62" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="1035" y="418" text-anchor="middle" font-weight="700" fill="#1e40af">侧栏分组的唯一真相</text>
-  <text x="1035" y="438" text-anchor="middle" font-size="10.5" fill="#1e40af">换 $DSH_HOME 才会切换整套工作区与会话</text>
-
-  <!-- footer flow -->
-  <rect x="30" y="496" width="1140" height="98" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="52" y="520" font-size="11" font-weight="700" fill="#334155">两条典型创建路径的对比</text>
-  <text x="52" y="544" fill="#1e40af">在 GUI 某工作区点新建：</text>
-  <text x="190" y="544" fill="#334155">取 ④ 的 workspace.path → 写入 ② SessionHeader.cwd（初始化 ③） → 调 attachSession 记入 ④ 的 sessionIds 名册</text>
-  <text x="52" y="566" fill="#991b1b">CLI / SDK / 插件测试建会话：</text>
-  <text x="218" y="566" fill="#334155">取 ①（process.cwd()）或显式 cwd → 写入 ②（初始化 ③） → 未调 attachSession → 在侧栏落入 Ungrouped</text>
-  <text x="52" y="588" fill="#64748b">会话中途调用 working_directory({ cd })：只推进 ③（ctx.workingDirectory），② 沙箱边界与 ④ 侧栏分组均保持不变。</text>
+  <!-- Footer comparison -->
+  <rect x="28" y="472" width="1184" height="100" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="48" y="496" font-size="11.5" font-weight="700" fill="#0f172a">三条常见操作链的真实走向对比</text>
+  <text x="48" y="520" font-size="11" fill="#1e3a8a">· GUI 在某工作区点新建：取 ④ workspace.path → 写入 ② SessionHeader.cwd（初始化 ③） → 调 attachSession 写入 ④ sessionIds 名册（入组）。</text>
+  <text x="48" y="541" font-size="11" fill="#991b1b">· CLI / SDK / 插件测试建会话：取 ① process.cwd() 或显式 cwd → 写入 ②（初始化 ③） → 未调 attachSession → 在侧栏落入 Ungrouped。</text>
+  <text x="48" y="562" font-size="11" fill="#475569">· 会话中途调用 working_directory({ cd })：仅更新 ③ ctx.workingDirectory 并记事件，② 沙箱边界与 ④ 侧栏归属均保持原样。</text>
 </svg>

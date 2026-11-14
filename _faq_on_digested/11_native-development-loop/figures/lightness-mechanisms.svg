@@ -1,54 +1,73 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>"轻松"的三个机制来源</title>
-  <desc>三个机制来源：记忆外包（门禁替你记得规则）、反馈延迟最小（分层延迟）、犯错代价低（敢改）。三者合流使正确路径与最省力路径对齐；注意分主语——执行面的轻按 agent 经济设计，指挥面的轻才属于人。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">仓库研发“顺手敢改”的三个机制来源</title>
+  <desc id="desc">三个机制来源：记忆外包（门禁替人盯住死规矩）、反馈延迟分层（本地只跑最小检查，全量交 CI）、试错代价低（同 PR 原子回退，不背历史兼容包袱）。三者合流让正确路径成为阻力最小的默认路径。</desc>
 
-  <rect width="1200" height="640" rx="8" fill="#f8fafc"/>
-  <text x="600" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">"轻松"的三个机制来源</text>
-  <text x="600" y="64" text-anchor="middle" font-size="13" fill="#64748b">轻松不是因为约束少，而是正确路径与最省力路径被制度对齐。</text>
+  <rect width="1200" height="620" rx="8" fill="#f8fafc"/>
+  <text x="600" y="38" text-anchor="middle" font-size="21" font-weight="700" fill="#0f172a">仓库研发“顺手、敢改”的三个机制来源</text>
+  <text x="600" y="64" text-anchor="middle" font-size="13" fill="#475569">顺手不是因为没有规矩，而是工程制度把“正确的做法”铺成了阻力最小的默认路径</text>
 
-  <rect x="40" y="96" width="360" height="420" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <path d="M40,136 L40,106 Q40,96 50,96 L390,96 Q400,96 400,106 L400,136 Z" fill="#2563eb"/>
-  <text x="220" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">记忆外包 · 门禁替你记得规则</text>
-  <text x="62" y="176" font-size="14" font-weight="700" fill="#1d4ed8">一次事实一个家</text>
-  <text x="62" y="198" font-size="12.5" fill="#475569">要找某个规则的权威出处，结构告诉你去哪。</text>
-  <text x="62" y="246" font-size="14" font-weight="700" fill="#1d4ed8">规则以 gate 形式存在</text>
-  <text x="62" y="268" font-size="12.5" fill="#475569">违反被机器拒绝，不依赖记忆。</text>
-  <text x="62" y="316" font-size="14" font-weight="700" fill="#1d4ed8">程序按需加载</text>
-  <text x="62" y="338" font-size="12.5" fill="#475569">skills 目录摘要常驻，全文按需载入。</text>
-  <text x="62" y="386" font-size="14" font-weight="700" fill="#1d4ed8">反面教材在册</text>
-  <text x="62" y="408" font-size="12.5" fill="#475569">"别加依赖"从未成文却被 agent 推断且更严。</text>
-  <text x="62" y="452" font-size="12" fill="#1d4ed8">规则要么写成 gate，要么写成 Note，</text>
-  <text x="62" y="470" font-size="12" fill="#1d4ed8">绝不留在空气里。</text>
+  <!-- Column 1: Memory Outsourcing -->
+  <rect x="40" y="94" width="360" height="414" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <path d="M40,134 L40,104 Q40,94 50,94 L390,94 Q400,94 400,104 L400,134 Z" fill="#2563eb"/>
+  <text x="220" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">1. 记忆外包 · 门禁替你记死规矩</text>
 
-  <rect x="420" y="96" width="360" height="420" rx="10" fill="#f0fdf4" stroke="#86efac"/>
-  <path d="M420,136 L420,106 Q420,96 430,96 L770,96 Q780,96 780,106 L780,136 Z" fill="#15803d"/>
-  <text x="600" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">反馈延迟 · 延迟工程分层</text>
-  <text x="442" y="176" font-size="14" font-weight="700" fill="#166534">本地 hooks 只拦高频硬伤</text>
-  <text x="442" y="198" font-size="12.5" fill="#475569">pre-commit 查格式与配对；pre-push 跑 typecheck。</text>
-  <text x="442" y="246" font-size="14" font-weight="700" fill="#166534">最窄测试管分钟级行为证据</text>
-  <text x="442" y="268" font-size="12.5" fill="#475569">只跑"会为回归而失败"的那一个。</text>
-  <text x="442" y="316" font-size="14" font-weight="700" fill="#166534">CI owns 全量 + 平台矩阵</text>
-  <text x="442" y="338" font-size="12.5" fill="#475569">本地永远不全套。</text>
-  <text x="442" y="386" font-size="14" font-weight="700" fill="#166534">便宜才有人真跑</text>
-  <text x="442" y="408" font-size="12.5" fill="#475569">宽仪式验证反而诱导跳过。</text>
-  <text x="442" y="452" font-size="12" fill="#166534">把单位成本做小，用更多步数换总质量。</text>
-  <text x="442" y="470" font-size="12" fill="#166534">（与 FAQ 10 "快而小模型优秀"同思想）</text>
+  <text x="62" y="172" font-size="13.5" font-weight="700" fill="#1d4ed8">一个事实一个家</text>
+  <text x="62" y="194" font-size="12" fill="#475569">每条规范只有一个权威出处，根入口只负责指路。</text>
 
-  <rect x="800" y="96" width="360" height="420" rx="10" fill="#fff7ed" stroke="#fdba74"/>
-  <path d="M800,136 L800,106 Q800,96 810,96 L1150,96 Q1160,96 1160,106 L1160,136 Z" fill="#c2410c"/>
-  <text x="980" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">犯错代价低 · 敢改</text>
-  <text x="822" y="176" font-size="14" font-weight="700" fill="#9a3412">整 PR 回滚文化</text>
-  <text x="822" y="198" font-size="12.5" fill="#475569">#2903 用 67 文件镜像回滚 #2608，无 hotfix。</text>
-  <text x="822" y="246" font-size="14" font-weight="700" fill="#9a3412">coverage 的删除解释权</text>
-  <text x="822" y="268" font-size="12.5" fill="#475569">未覆盖的默认读法是"这段该删"。</text>
-  <text x="822" y="316" font-size="14" font-weight="700" fill="#9a3412">测试与 Note 都不是金科玉律</text>
-  <text x="822" y="338" font-size="12.5" fill="#475569">行为变了改测试；被取代就 supersede。</text>
-  <text x="822" y="386" font-size="14" font-weight="700" fill="#9a3412">pre-stable 立场</text>
-  <text x="822" y="408" font-size="12.5" fill="#475569">公开 API 尚未稳定；更新每个消费者。</text>
-  <text x="822" y="452" font-size="12" fill="#92400e">大改动的风险被切成小赌注；</text>
-  <text x="822" y="470" font-size="12" fill="#92400e">改错是原子操作，不是考古。</text>
+  <text x="62" y="238" font-size="13.5" font-weight="700" fill="#1d4ed8">黑白底线变成机器检查</text>
+  <text x="62" y="260" font-size="12" fill="#475569">死链、双语配对与归档冻结踩线即报错并给提示。</text>
 
-  <rect x="40" y="540" width="1120" height="76" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
-  <text x="600" y="568" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">三者合流 → 正确路径 = 最省力路径</text>
-  <text x="600" y="594" text-anchor="middle" font-size="12.5" fill="#334155">执行面的"轻"按 agent 经济设计；指挥面的"轻"才属于人——两个回路的划分见 two-loops 图。</text>
+  <text x="62" y="304" font-size="13.5" font-weight="700" fill="#1d4ed8">复杂流程按需加载</text>
+  <text x="62" y="326" font-size="12" fill="#475569">平时只驻留简短技能摘要，命中任务再读完整步骤。</text>
+
+  <text x="62" y="370" font-size="13.5" font-weight="700" fill="#1d4ed8">护栏防越界，但不绑死具体解法</text>
+  <text x="62" y="392" font-size="12" fill="#475569">底线要么进门禁要么进决策记录，绝不靠猜潜规则。</text>
+
+  <text x="62" y="450" font-size="12" font-weight="700" fill="#1e40af">不必靠人脑背诵几百条项目约定；</text>
+  <text x="62" y="470" font-size="12" font-weight="700" fill="#1e40af">该拦的由机器秒级拦下。</text>
+
+  <!-- Column 2: Layered Feedback Latency -->
+  <rect x="420" y="94" width="360" height="414" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <path d="M420,134 L420,104 Q420,94 430,94 L770,94 Q780,94 780,104 L780,134 Z" fill="#15803d"/>
+  <text x="600" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">2. 反馈分层 · 单步验证足够轻</text>
+
+  <text x="442" y="172" font-size="13.5" font-weight="700" fill="#166534">本地钩子只拦高频硬伤</text>
+  <text x="442" y="194" font-size="12" fill="#475569">提交时秒查格式与配对；推送前执行类型检查。</text>
+
+  <text x="442" y="238" font-size="13.5" font-weight="700" fill="#166534">定向单测秒级验证回归</text>
+  <text x="442" y="260" font-size="12" fill="#475569">只挑会为本次改动报红的测试，几秒内拿到结果。</text>
+
+  <text x="442" y="304" font-size="13" font-weight="700" fill="#166534">本地只跑改动相关最小检查，全量矩阵交给 CI</text>
+  <text x="442" y="326" font-size="12" fill="#475569">单文件 100% 覆盖率与跨平台构建统一交远端兜底。</text>
+
+  <text x="442" y="370" font-size="13.5" font-weight="700" fill="#166534">验证足够快，才没人跳过检查</text>
+  <text x="442" y="392" font-size="12" fill="#475569">笨重的全套本地仪式反而会诱导开发者心存侥幸。</text>
+
+  <text x="442" y="450" font-size="12" font-weight="700" fill="#166534">压低单步反馈成本，用高频小步换整体稳健</text>
+  <text x="442" y="470" font-size="12" font-weight="700" fill="#166534">（与 FAQ 10 快模型多轮接力同源）。</text>
+
+  <!-- Column 3: Low Cost of Reversal -->
+  <rect x="800" y="94" width="360" height="414" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+  <path d="M800,134 L800,104 Q800,94 810,94 L1150,94 Q1160,94 1160,104 L1160,134 Z" fill="#c2410c"/>
+  <text x="980" y="120" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">3. 犯错代价低 · 不对就整包撤回</text>
+
+  <text x="822" y="172" font-size="13.5" font-weight="700" fill="#9a3412">同 PR 原子回退，不用跨提交翻旧账</text>
+  <text x="822" y="194" font-size="12" fill="#475569">如 PR #2903 将 #2608 的 67 个文件整包退回。</text>
+
+  <text x="822" y="238" font-size="13.5" font-weight="700" fill="#9a3412">未覆盖代码优先删死分支</text>
+  <text x="822" y="260" font-size="12" fill="#475569">100% 覆盖率抓出死代码时优先精简而非硬凑测试。</text>
+
+  <text x="822" y="304" font-size="13.5" font-weight="700" fill="#9a3412">测试与决策记录随演进更新</text>
+  <text x="822" y="326" font-size="12" fill="#475569">行为变了同步改断言；旧决定被替代就明确标记。</text>
+
+  <text x="822" y="370" font-size="13.5" font-weight="700" fill="#9a3412">pre-stable 阶段轻装演进</text>
+  <text x="822" y="392" font-size="12" fill="#475569">仓内消费方一次性同步更新，不背旧兼容包袱。</text>
+
+  <text x="822" y="450" font-size="12" font-weight="700" fill="#9a3412">每次变更都控制在可独立撤回的窄切片内，</text>
+  <text x="822" y="470" font-size="12" font-weight="700" fill="#9a3412">试错方向歪了也能干净归零。</text>
+
+  <!-- Bottom Convergence Box -->
+  <rect x="40" y="528" width="1120" height="70" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+  <text x="600" y="556" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">三者合流 → 正确的工程路径 = 阻力最小的默认路径</text>
+  <text x="600" y="581" text-anchor="middle" font-size="12.5" fill="#334155">执行内圈按 Coding Agent 的快反馈节奏消化合规细节；指挥外圈让维护者把精力集中花在切窄片与审关键证据上。</text>
 </svg>

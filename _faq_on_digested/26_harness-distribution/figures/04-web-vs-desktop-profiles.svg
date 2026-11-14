@@ -1,40 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" width="1200" height="690" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 630" width="1160" height="630" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <title>Web 与 Desktop：同一份 Bundle，两个独立的 Profile</title>
-  <desc>同一套 base/web-app、同一个 Plugins 页；profile 名称、创建者、CLI 门禁、welcome-notice 与第三方桌面壳是真实分叉点。</desc>
+  <desc>对比同一份定制能力 Bundle 在 Web 形态（profiles/web 或自命名 Profile）与 Desktop 形态（profiles/desktop）下的安装入口、CLI 门禁与首屏组件差异。</desc>
+  <defs>
+    <marker id="arr26d" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#6366f1"/>
+    </marker>
+  </defs>
+  <rect width="1160" height="630" rx="8" fill="#f8fafc"/>
+  <text x="580" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Web 与 Desktop：同一份 Bundle，落入两个互不相通的 Profile</text>
+  <text x="580" y="56" text-anchor="middle" font-size="11.5" fill="#475569">应用内 Plugins 页是唯一“一句指引通吃双端”的安装入口；命令行写死 --profile web 会让桌面端用户装错目录</text>
 
-  <rect width="1200" height="690" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Web 与 Desktop：同一份 Bundle，两个独立的 Profile</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">应用内 Plugins 页能用同一句安装指引覆盖双端，命令行写死 --profile web 则在桌面端静默落空</text>
+  <!-- Shared Bundle header -->
+  <rect x="330" y="78" width="500" height="62" rx="9" fill="#eef2ff" stroke="#a5b4fc"/>
+  <text x="580" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#312e81">同一份标准定制 Bundle（如 @acme/kanban-bundle）</text>
+  <text x="580" y="125" text-anchor="middle" font-size="10.5" fill="#4338ca">共用同一套 dsh-base + dsh-web-app 底座、同一套 Patch 语法与同一套 Plugins 管理界面</text>
 
-  <rect x="360" y="88" width="480" height="64" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="600" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="#3730a3">同一份定制能力 Bundle</text>
-  <text x="600" y="138" text-anchor="middle" font-size="9.5" fill="#334155">base + web-app + kanban-bundle；Patch 与 Settings 声明同构</text>
+  <line x1="450" y1="140" x2="310" y2="170" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arr26d)"/>
+  <line x1="710" y1="140" x2="850" y2="170" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arr26d)"/>
 
-  <rect x="24" y="184" width="552" height="210" rx="10" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="44" y="212" font-size="12" font-weight="700" fill="#1e40af">Web 形态：profiles/web（或自命名 Profile）</text>
-  <text x="44" y="238" font-size="9.5" fill="#334155">由 CLI 首次按出厂模板初始化，或用 --from-default-profile 派生</text>
-  <text x="44" y="262" font-size="9.5" fill="#334155">支持命令行管理：dsh plugin --profile web add ...</text>
-  <text x="44" y="286" font-size="9.5" fill="#334155">支持命令行启动：dsh web / dsh --profile &lt;name&gt;</text>
-  <text x="44" y="310" font-size="9.5" fill="#334155">默认注册 welcome-notice 欢迎引导卡片</text>
-  <text x="44" y="334" font-size="9.5" fill="#64748b">应用内 Plugins 页直接操作当前正在运行的 Profile</text>
-  <text x="44" y="358" font-size="9.5" fill="#15803d">适合脚本自动化预装、容器镜像与团队自命名工作台</text>
+  <!-- Left: Web Profile -->
+  <rect x="28" y="174" width="536" height="214" rx="10" fill="#ffffff" stroke="#93c5fd"/>
+  <rect x="28" y="174" width="536" height="40" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="296" y="199" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">Web / CLI 形态：profiles/web（或自命名 Profile）</text>
 
-  <rect x="624" y="184" width="552" height="210" rx="10" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="644" y="212" font-size="12" font-weight="700" fill="#b45309">Desktop 形态：profiles/desktop（桌面壳独占）</text>
-  <text x="644" y="238" font-size="9.5" fill="#334155">由 Electron 桌面应用自身创建并持有生命周期</text>
-  <text x="644" y="262" font-size="9.5" fill="#991b1b">dsh --profile desktop → CLI 明确拒绝启动</text>
-  <text x="644" y="286" font-size="9.5" fill="#991b1b">dsh plugin --profile desktop add → CLI 明确拒绝修改</text>
-  <text x="644" y="310" font-size="9.5" fill="#334155">不注册 Web 侧的 welcome-notice，依赖它的首屏会少一块</text>
-  <text x="644" y="334" font-size="9.5" fill="#334155">应用内 Plugins 页同样直接操作当前运行的 desktop Profile</text>
-  <text x="644" y="358" font-size="9.5" fill="#b45309">Electron 壳状态另存于操作系统 userData（--user-data-dir）</text>
+  <text x="48" y="238" font-size="11" fill="#334155">· 创建者：CLI 首次按出厂模板初始化，或用 --from-default-profile 派生</text>
+  <text x="48" y="262" font-size="11" fill="#166534">· 命令行启动与改包：完全支持 dsh web 与 dsh plugin --profile &lt;name&gt;</text>
+  <text x="48" y="286" font-size="11" fill="#334155">· 应用内安装：浏览器 Plugins 页直接写回当前正在运行的 Web Profile</text>
+  <text x="48" y="310" font-size="11" fill="#334155">· 首启组件：默认注册 welcome-notice 欢迎卡片；通过 ?token= 种下 Cookie</text>
+  <text x="48" y="334" font-size="11" fill="#334155">· 目录选择器：本地可调原生选择框，远程/容器部署可切网页内目录浏览</text>
+  <text x="48" y="362" font-size="10.5" font-weight="700" fill="#1e40af">✓ 适合薄引导脚本封装、独立自命名工作台与团队容器镜像交付</text>
 
-  <rect x="24" y="414" width="1152" height="176" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="44" y="442" font-size="12" font-weight="700" fill="#991b1b">三处最容易静默踩空的分叉</text>
-  <text x="44" y="470" font-size="9.5" fill="#334155">① 让桌面端用户在终端跑 dsh plugin --profile web add X → 命令返回成功，但包进了 profiles/web，打开 Desktop 应用完全看不见。</text>
-  <text x="44" y="496" font-size="9.5" fill="#334155">② 在全局 $DSH_HOME/cordis.patch.yml 里插入只在某个 Profile 装过的可选包 → 切到另一 Profile 启动时报 ERR_MODULE_NOT_FOUND 警告并跳过该行。</text>
-  <text x="44" y="522" font-size="9.5" fill="#334155">③ 把首启引导强绑定在 welcome-notice 上 → Web 端正常显示，Desktop 端静默不渲染且没有任何报错。</text>
-  <text x="44" y="554" font-size="9.5" fill="#64748b">避免方式：面向普通用户统一引导在应用内 Plugins 页安装；CLI 自动化命令明确标注仅针对 Web 或对应的自定义命名 Profile。</text>
+  <!-- Right: Desktop Profile -->
+  <rect x="596" y="174" width="536" height="214" rx="10" fill="#ffffff" stroke="#fdba74"/>
+  <rect x="596" y="174" width="536" height="40" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="864" y="199" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">Desktop 桌面形态：profiles/desktop（桌面壳独占）</text>
 
-  <rect x="24" y="610" width="1152" height="56" rx="9" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="44" y="643" font-size="10" font-weight="700" fill="#3730a3">实践准则：日常扩展发一个通用 Bundle 走应用内安装；只有确需独立启动配置、独立默认目录与独立数据根时，才封装自命名 Profile 与隔离的 DSH_HOME。</text>
+  <text x="616" y="238" font-size="11" fill="#334155">· 创建者：由 Electron 桌面应用首次启动创建，运行期独占持有写锁</text>
+  <text x="616" y="262" font-size="11" fill="#991b1b">· CLI 门禁：禁止 CLI 启动 desktop；npm 全局 CLI 亦禁止修改 desktop 包</text>
+  <text x="616" y="286" font-size="11" fill="#166534">· 应用内安装：桌面窗口 Plugins 页调用内置 pnpm 直接装入 desktop Profile</text>
+  <text x="616" y="310" font-size="11" fill="#334155">· 首启组件：不注册 Web 侧的 welcome-notice（切勿把必填引导绑死在它上面）</text>
+  <text x="616" y="334" font-size="11" fill="#334155">· 壳级状态：窗口、快捷键与单实例锁另存系统 userData（--user-data-dir）</text>
+  <text x="616" y="362" font-size="10.5" font-weight="700" fill="#9a3412">! 重打包独立桌面安装包须自担双端公证签名与更新源，切勿过早投入</text>
+
+  <!-- Pitfalls box -->
+  <rect x="28" y="406" width="1104" height="148" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="48" y="432" font-size="12.5" font-weight="700" fill="#991b1b">交付文档最常踩空的三个静默分叉</text>
+  <text x="48" y="458" font-size="11" fill="#334155">① 安装指南只写一句 dsh plugin --profile web add X → 桌面端用户在终端照敲显示成功，但包进了 profiles/web，打开 Desktop 窗口一片空白。</text>
+  <text x="48" y="484" font-size="11" fill="#334155">② 试图往全局 $DSH_HOME/cordis.patch.yml 塞外部包实现“装一次双端通用” → 未装该包的另一端启动立刻报 ERR_MODULE_NOT_FOUND。</text>
+  <text x="48" y="510" font-size="11" fill="#334155">③ 把定制工作台的首启初始化强绑在 welcome-notice 扩展点上 → Web 浏览器正常弹出，Desktop 客户端静默跳过且不报任何错误。</text>
+  <text x="48" y="536" font-size="10.5" font-weight="700" fill="#7f1d1d">正确文档写法：首推“打开应用内 Plugins 页安装”；若附 CLI 命令，必须注明“仅供命令行 Web 或对应自命名 Profile 使用”。</text>
+
+  <!-- Footer -->
+  <rect x="28" y="570" width="1104" height="42" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="580" y="596" text-anchor="middle" font-size="11" font-weight="700" fill="#3730a3">演进阶梯：第 1 档发单包 Bundle 走应用内安装 → 第 2 档配薄脚本 + 独立 DSH_HOME 自命名 Profile → 第 3 档团队托管容器镜像。</text>
 </svg>

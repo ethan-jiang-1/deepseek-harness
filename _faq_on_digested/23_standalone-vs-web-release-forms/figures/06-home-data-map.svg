@@ -1,86 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <rect width="960" height="640" fill="#fafafa" rx="6"/>
-  <text x="480" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">$DSH_HOME 里到底有什么：一半按 home 共享，一半按 profile 分开</text>
-  <text x="480" y="52" text-anchor="middle" font-size="11" fill="#6b7280">“数据侧共享”指的只是上半部分；设置与插件依赖在下半部分，本来就各 profile 各一份。</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 630" width="1000" height="630" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>$DSH_HOME 目录全景地图：Home 级共享项与 Profile 级独立项</title>
+  <desc>拆解默认 ~/.dsh 内部结构：上半区会话、工作区注册表、凭据、附件、缓存与离线运行时按 Home 共享；下半区 profiles/&lt;name&gt; 下的插件依赖树与界面设置按 Profile 各自独立；工作区代码仓与 Electron userData 位于 Home 之外。</desc>
+  <rect width="1000" height="630" rx="8" fill="#f8fafc"/>
+  <text x="500" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">$DSH_HOME 全景地图：哪些按 Home 共享，哪些按 Profile 独立</text>
+  <text x="500" y="54" text-anchor="middle" font-size="11.5" fill="#475569">默认“数据互通”仅指上半区；界面设置与第三方插件依赖在下半区本来就按 Profile 各存一份</text>
 
-  <!-- outer home box -->
-  <rect x="30" y="70" width="900" height="454" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="46" y="94" font-size="12" font-weight="700" fill="#334155">~/.dsh（一个 home，实测权限 0700）</text>
+  <!-- Outer $DSH_HOME box -->
+  <rect x="32" y="70" width="936" height="440" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="52" y="94" font-size="12.5" font-weight="700" fill="#0f172a">$DSH_HOME（默认 ~/.dsh，目录权限 0700）</text>
 
-  <!-- shared -->
-  <rect x="44" y="104" width="872" height="176" rx="8" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="60" y="126" font-size="12" font-weight="700" fill="#14532d">按 home 共享：同一 home 下的 web / desktop 等所有 profile 都读同一份</text>
+  <!-- Shared upper zone -->
+  <rect x="48" y="106" width="904" height="178" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="66" y="128" font-size="12" font-weight="700" fill="#14532d">按 Home 共享：同一 $DSH_HOME 下的 web / desktop / headless 等所有 Profile 共同读写</text>
 
-  <rect x="60" y="136" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="74" y="153" font-size="11" font-weight="700" fill="#166534">sessions/</text>
-  <text x="74" y="169" font-size="10" fill="#15803d">会话日志，按工作区归档</text>
+  <rect x="66" y="140" width="278" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="82" y="158" font-size="11" font-weight="700" fill="#166534">sessions/</text>
+  <text x="82" y="174" font-size="10" fill="#475569">按工作区归档的压缩会话日志与锁</text>
 
-  <rect x="344" y="136" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="358" y="153" font-size="11" font-weight="700" fill="#166534">storages/</text>
-  <text x="358" y="169" font-size="10" fill="#15803d">KV 域表：workspace.json、投影缓存…</text>
+  <rect x="361" y="140" width="278" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="377" y="158" font-size="11" font-weight="700" fill="#166534">storages/*.json</text>
+  <text x="377" y="174" font-size="10" fill="#475569">workspace.json 工作区表及插件存储域</text>
 
-  <rect x="628" y="136" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="642" y="153" font-size="11" font-weight="700" fill="#166534">.credentials.yaml</text>
-  <text x="642" y="169" font-size="10" fill="#15803d">凭据（0600，宽权限会被拒读）</text>
+  <rect x="656" y="140" width="278" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="672" y="158" font-size="11" font-weight="700" fill="#166534">.credentials.yaml</text>
+  <text x="672" y="174" font-size="10" fill="#475569">API Key 与账号凭据（强制 0600 权限）</text>
 
-  <rect x="60" y="186" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="74" y="203" font-size="11" font-weight="700" fill="#166534">attachments/</text>
-  <text x="74" y="219" font-size="10" fill="#15803d">附件二进制（v1/）</text>
+  <rect x="66" y="190" width="278" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="82" y="208" font-size="11" font-weight="700" fill="#166534">attachments/ · cache/</text>
+  <text x="82" y="224" font-size="10" fill="#475569">内容寻址二进制附件与可重建缓存</text>
 
-  <rect x="344" y="186" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="358" y="203" font-size="11" font-weight="700" fill="#166534">cache/</text>
-  <text x="358" y="219" font-size="10" fill="#15803d">可重建缓存（缩略图等；插件也可用）</text>
+  <rect x="361" y="190" width="278" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="377" y="208" font-size="11" font-weight="700" fill="#166534">dsh-runtimes/</text>
+  <text x="377" y="224" font-size="10" fill="#475569">Desktop 离线解压的 Python/Node 载荷</text>
 
-  <rect x="628" y="186" width="272" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="642" y="203" font-size="11" font-weight="700" fill="#166534">.anonymous-user-id</text>
-  <text x="642" y="219" font-size="10" fill="#15803d">匿名身份 / 遥测 ID</text>
+  <rect x="656" y="190" width="278" height="42" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="672" y="208" font-size="11" font-weight="700" fill="#166534">logs/ · .anonymous-user-id</text>
+  <text x="672" y="224" font-size="10" fill="#475569">CLI 启动诊断日志与匿名统计标识</text>
 
-  <rect x="60" y="236" width="272" height="34" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="74" y="258" font-size="10.5" fill="#166534">logs/（启动诊断，非 Desktop 日志）</text>
+  <rect x="66" y="240" width="868" height="32" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="82" y="260" font-size="10.5" fill="#166534">可选全局覆盖：.env（环境变量）与根级 cordis.patch.yml（跨该 Home 下全部 Profile 生效，优先级高于单 Profile 设置）</text>
 
-  <rect x="344" y="236" width="272" height="34" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="358" y="258" font-size="10.5" fill="#166534">dsh-runtimes/（Desktop 的 Python/Node 载荷）</text>
+  <!-- Per-profile lower zone -->
+  <rect x="48" y="298" width="904" height="196" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="66" y="320" font-size="12" font-weight="700" fill="#1e3a8a">按 Profile 独立：profiles/&lt;name&gt;/，web 与 desktop 各管一摊、互不覆盖</text>
 
-  <rect x="628" y="236" width="272" height="34" rx="6" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="642" y="258" font-size="10.5" fill="#166534">.env 与 home 层 cordis.patch.yml（可选）</text>
+  <rect x="66" y="332" width="424" height="146" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="84" y="354" font-size="11.5" font-weight="700" fill="#1e3a8a">profiles/web/（及 headless 等 CLI Profile）</text>
+  <text x="84" y="376" font-size="10.5" fill="#334155">· package.json + pnpm-lock.yaml + node_modules/</text>
+  <text x="84" y="396" font-size="10.5" fill="#334155">· cordis.patch.yml：Web 端界面设置与插件启停开关</text>
+  <text x="84" y="416" font-size="10.5" fill="#334155">· compatibility.json（精确版本豁免）与市场索引缓存</text>
+  <text x="84" y="438" font-size="10" fill="#64748b">装坏插件或改设置只影响当前 Profile</text>
 
-  <!-- divider -->
-  <line x1="44" y1="292" x2="916" y2="292" stroke="#94a3b8" stroke-dasharray="6 4"/>
-  <text x="480" y="288" text-anchor="middle" font-size="10" fill="#64748b">↑ 共享 / ↓ 分开</text>
+  <rect x="510" y="332" width="424" height="146" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="528" y="354" font-size="11.5" font-weight="700" fill="#1e3a8a">profiles/desktop/（桌面端专属 Profile）</text>
+  <text x="528" y="376" font-size="10.5" fill="#334155">· 同构的独立依赖树、锁文件与已启用 bundles 列表</text>
+  <text x="528" y="396" font-size="10.5" fill="#334155">· cordis.patch.yml：Desktop 界面设置（与 Web 不互通）</text>
+  <text x="528" y="416" font-size="10.5" fill="#334155">· lock：运行期间由 Electron 壳独占持有 Profile 写锁</text>
+  <text x="528" y="438" font-size="10" fill="#64748b">切换 DSH_HOME 后首次启动会自动初始化新目录</text>
 
-  <!-- per profile -->
-  <rect x="44" y="302" width="872" height="212" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="60" y="324" font-size="12" font-weight="700" fill="#1e3a8a">按 profile 分开：profiles/&lt;name&gt;/，web 与 desktop 各一份，互不影响</text>
+  <!-- Outside $DSH_HOME -->
+  <rect x="32" y="524" width="936" height="90" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="52" y="546" font-size="12" font-weight="700" fill="#334155">位于 $DSH_HOME 之外的三处关联状态</text>
 
-  <rect x="60" y="334" width="408" height="168" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
-  <text x="74" y="356" font-size="11.5" font-weight="700" fill="#1e3a8a">profiles/web（生产）</text>
-  <text x="74" y="378" font-size="10.5" fill="#1e40af">package.json · pnpm-lock.yaml · node_modules</text>
-  <text x="74" y="396" font-size="10.5" fill="#1e40af">　→ 该 profile 独立的插件依赖树</text>
-  <text x="74" y="416" font-size="10.5" fill="#1e40af">cordis.patch.yml → 设置 + 插件开关</text>
-  <text x="74" y="434" font-size="10.5" fill="#1e40af">　（settings 服务就是写这个文件）</text>
-  <text x="74" y="454" font-size="10.5" fill="#1e40af">.plugin-manager/logs · .dsh-market/</text>
-  <text x="74" y="472" font-size="10.5" fill="#1e40af">compatibility.json · cordis.patch.yml.bak-*</text>
+  <rect x="52" y="556" width="288" height="44" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="68" y="574" font-size="10.5" font-weight="700" fill="#334155">工作区项目源码目录</text>
+  <text x="68" y="591" font-size="10" fill="#64748b">硬盘上的真实代码库，实验请挂测试目录</text>
 
-  <rect x="488" y="334" width="408" height="168" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
-  <text x="502" y="356" font-size="11.5" font-weight="700" fill="#1e3a8a">profiles/desktop（实验）</text>
-  <text x="502" y="378" font-size="10.5" fill="#1e40af">同样的结构，另一套依赖与另一份设置</text>
-  <text x="502" y="396" font-size="10.5" fill="#1e40af">　→ 换 home 后整套重建</text>
-  <text x="502" y="416" font-size="10.5" fill="#1e40af">cordis.patch.yml → 实验插件与实验设置</text>
-  <text x="502" y="434" font-size="10.5" fill="#1e40af">　（不会改到 web 的设置）</text>
-  <text x="502" y="454" font-size="10.5" fill="#1e40af">.plugin-manager/logs · .dsh-market/</text>
-  <text x="502" y="472" font-size="10.5" fill="#1e40af">写锁：profiles/desktop/lock</text>
-  <text x="502" y="490" font-size="10" fill="#64748b">Electron 的键位/壳设置在 userData，不在 home</text>
+  <rect x="356" y="556" width="288" height="44" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="372" y="574" font-size="10.5" font-weight="700" fill="#334155">Electron userData 目录</text>
+  <text x="372" y="591" font-size="10" fill="#64748b">快捷键、壳设置与单实例锁（--user-data-dir）</text>
 
-  <!-- outside -->
-  <rect x="30" y="534" width="900" height="92" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
-  <text x="46" y="556" font-size="12" font-weight="700" fill="#334155">不在 home 里，但同样算“状态”</text>
-  <rect x="46" y="566" width="270" height="46" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
-  <text x="60" y="584" font-size="10.5" fill="#475569">工作区里的文件本身（你的仓库）</text>
-  <text x="60" y="601" font-size="10" fill="#64748b">会话按它们的路径归档，不复制这些文件</text>
-  <rect x="332" y="566" width="270" height="46" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
-  <text x="346" y="584" font-size="10.5" fill="#475569">Electron userData（键位、壳设置、浏览器数据）</text>
-  <text x="346" y="601" font-size="10" fill="#64748b">~/.dsh-lab/electron 之类</text>
-  <rect x="618" y="566" width="282" height="46" rx="6" fill="#ffffff" stroke="#e2e8f0"/>
-  <text x="632" y="584" font-size="10.5" fill="#475569">~/Library/Logs/DeepSeek Harness（桌面日志）</text>
-  <text x="632" y="601" font-size="10" fill="#64748b">两个实例共享</text>
+  <rect x="660" y="556" width="288" height="44" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="676" y="574" font-size="10.5" font-weight="700" fill="#334155">跨工具共享 ~/.agents 与桌面日志</text>
+  <text x="676" y="591" font-size="10" fill="#64748b">技能由 DSH_AGENTS_HOME 控制；系统日志共享</text>
 </svg>

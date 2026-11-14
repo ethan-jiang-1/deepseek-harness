@@ -1,56 +1,93 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="560" viewBox="0 0 1150 560" role="img" aria-labelledby="title desc">
-  <title id="title">主例的证据地图</title>
-  <desc id="desc">从重建的任务描述走到源码、当前文档、行为证据和 PR，每一步标注已在提交观察、教学重建或需查 GitHub 的证据等级。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">DSH 变更落位与证据地图</title>
+  <desc id="desc">对比每次行为变更必交的中间原子三件套（实现代码、当前状态合同、会报红的行为证据）与两头按需启用的前置规划和后置决策载体，并以真实提交 5124a2a310 对照落盘产物。</desc>
   <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-      <path d="M0 0 L10 5 L0 10 Z" fill="#4b5563"/>
+    <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#2563eb"/>
     </marker>
   </defs>
-  <rect width="1150" height="560" fill="#ffffff"/>
-  <text x="575" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#172033">一笔真实变更的证据地图</text>
-  <text x="575" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#5f6b7a">模型选择器显示 model ID（提交 5124a2a310，PR #5004）</text>
 
-  <g font-family="Arial, sans-serif">
-    <rect x="40" y="110" width="330" height="120" rx="8" fill="#fef9ec" stroke="#d99939" stroke-width="1.5"/>
-    <text x="60" y="140" font-size="16" font-weight="700" fill="#744408">任务描述（教学重建）</text>
-    <text x="60" y="166" font-size="13" fill="#475569">症状：同名模型在选择器里无法区分</text>
-    <text x="60" y="188" font-size="13" fill="#475569">预期：每行显示 model ID，悬停看名称</text>
-    <rect x="60" y="202" width="96" height="18" rx="9" fill="#f4e3c0"/>
-    <text x="108" y="215" text-anchor="middle" font-size="11" fill="#744408">教学重建</text>
+  <rect width="1180" height="620" rx="8" fill="#f8fafc"/>
+  <text x="590" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">DSH 变更落位全景：中间“原子三件套”必交，两头载体按需启用</text>
+  <text x="590" y="62" text-anchor="middle" font-size="12.5" fill="#475569">上方为全仓通用交付契约；下方以真实提交 5124a2a310（PR #5004，7 个文件）对照实际落盘产物</text>
 
-    <rect x="430" y="110" width="330" height="120" rx="8" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
-    <text x="450" y="140" font-size="16" font-weight="700" fill="#173f67">源码 + 当前文档</text>
-    <text x="450" y="166" font-size="13" fill="#475569">ModelListEditor.tsx · ModelsSection.module.css</text>
-    <text x="450" y="188" font-size="13" fill="#475569">README.md / README.zh.md + i18n 配对</text>
-    <rect x="450" y="202" width="110" height="18" rx="9" fill="#d7e7f7"/>
-    <text x="505" y="215" text-anchor="middle" font-size="11" fill="#173f67">已在提交观察</text>
+  <!-- Left: Optional Upstream -->
+  <rect x="36" y="88" width="280" height="228" rx="10" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="56" y="116" font-size="15" font-weight="700" fill="#92400e">前置阶段：上游规划载体</text>
+  <rect x="56" y="128" width="236" height="22" rx="11" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="174" y="143" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">按需补齐的前置阶段（小改动可省）</text>
+  <text x="56" y="176" font-size="12" fill="#334155">· Issue：人类非草稿 PR 送审时关联</text>
+  <text x="56" y="204" font-size="12" fill="#334155">· Plan Mode：会话内拍板，不进 Git</text>
+  <text x="56" y="232" font-size="12" fill="#334155">· proposed/：跨子系统大方案先评审</text>
+  <text x="56" y="294" font-size="11.5" fill="#78350f">局部修补与明确需求可直接进入中间闭环</text>
 
-    <rect x="820" y="110" width="290" height="120" rx="8" fill="#edf8f1" stroke="#55a36f" stroke-width="1.5"/>
-    <text x="840" y="140" font-size="16" font-weight="700" fill="#1f6139">行为证据</text>
-    <text x="840" y="166" font-size="13" fill="#475569">组件测试（断言反转）</text>
-    <text x="840" y="188" font-size="13" fill="#475569">Web e2e（真实浏览器）</text>
-    <rect x="840" y="202" width="110" height="18" rx="9" fill="#d8efe1"/>
-    <text x="895" y="215" text-anchor="middle" font-size="11" fill="#1f6139">已在提交观察</text>
+  <!-- Arrow Left -> Center -->
+  <line x1="316" y1="202" x2="340" y2="202" stroke="#64748b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
 
-    <path d="M370 170 H425" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
-    <path d="M760 170 H815" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Center: Mandatory Atomic Trio -->
+  <rect x="344" y="88" width="492" height="228" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="366" y="116" font-size="15.5" font-weight="700" fill="#1e3a8a">中间“原子三件套”（同一个 PR 同步落地）</text>
+  <rect x="694" y="98" width="122" height="24" rx="12" fill="#2563eb"/>
+  <text x="755" y="114" text-anchor="middle" font-size="11" font-weight="700" fill="#ffffff">每次行为变更必交</text>
 
-    <rect x="40" y="290" width="500" height="180" rx="8" fill="#fbfcfe" stroke="#b7c4d4"/>
-    <text x="60" y="320" font-size="15" font-weight="700" fill="#28384d">同一个提交（5124a2a310）</text>
-    <text x="60" y="348" font-size="13" fill="#526175">7 个文件 · +15 / −14</text>
-    <text x="60" y="374" font-size="13" fill="#526175">实现、当前文档、行为证据一起交付；</text>
-    <text x="60" y="398" font-size="13" fill="#526175">双语 README 相等性由 i18n hash 配对钉住。</text>
-    <text x="60" y="428" font-size="13" fill="#8c5b1d">提交里没有 Agent Note —— 局部呈现豁免。</text>
+  <rect x="364" y="134" width="452" height="50" rx="8" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="382" y="155" font-size="13" font-weight="700" fill="#1e40af">1. 实现代码</text>
+  <text x="382" y="174" font-size="12" fill="#475569">packages/ · apps/ · python/ 等源码与配置</text>
 
-    <rect x="600" y="290" width="510" height="180" rx="8" fill="#fbfcfe" stroke="#b7c4d4"/>
-    <text x="620" y="320" font-size="15" font-weight="700" fill="#28384d">git tree 之外</text>
-    <text x="620" y="348" font-size="13" fill="#526175">PR #5004 的页面、CI 结果、review、批准</text>
-    <text x="620" y="372" font-size="13" fill="#526175">当时的 Issue 与任务上下文</text>
-    <text x="620" y="396" font-size="13" fill="#526175">作者实际运行过的命令</text>
-    <rect x="620" y="412" width="110" height="18" rx="9" fill="#e9edf3"/>
-    <text x="675" y="425" text-anchor="middle" font-size="11" fill="#3d4a5c">需查 GitHub</text>
+  <rect x="364" y="192" width="452" height="50" rx="8" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="382" y="213" font-size="13" font-weight="700" fill="#1e40af">2. 当前状态合同（只写当前 HEAD 真相）</text>
+  <text x="382" y="232" font-size="12" fill="#475569">双语 README + i18n 配对 · JSDoc · docs/ · 自动生成目录</text>
 
-    <path d="M290 230 V285" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
-    <path d="M965 230 V285" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow)"/>
-  </g>
+  <rect x="364" y="250" width="452" height="50" rx="8" fill="#ffffff" stroke="#93c5fd"/>
+  <text x="382" y="271" font-size="13" font-weight="700" fill="#1e40af">3. 会在旧代码上报红的行为证据</text>
+  <text x="382" y="290" font-size="12" fill="#475569">定向单测 · 真实 Loader 组装测试 · 按需更新录制会话快照</text>
+
+  <!-- Arrow Center -> Right -->
+  <line x1="836" y1="202" x2="860" y2="202" stroke="#64748b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+
+  <!-- Right: Conditional Downstream -->
+  <rect x="864" y="88" width="280" height="228" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="884" y="116" font-size="15" font-weight="700" fill="#334155">后置与伴随：按条件启用</text>
+  <rect x="884" y="128" width="214" height="22" rx="11" fill="#e2e8f0" stroke="#cbd5e1"/>
+  <text x="991" y="143" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">命中条件才写（局部改动免写）</text>
+  <text x="884" y="176" font-size="12" fill="#334155">· implemented/：仅持久取舍才写</text>
+  <text x="884" y="204" font-size="12" fill="#334155">· Upgrade Guide：破坏外部契约必补</text>
+  <text x="884" y="232" font-size="12" fill="#334155">· CI + Review：9 项必过检查与评审</text>
+  <text x="884" y="294" font-size="11.5" fill="#475569">过时决策后续再冻结进 archived/</text>
+
+  <!-- Connector down to real commit -->
+  <line x1="590" y1="316" x2="590" y2="342" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+  <!-- Bottom: Concrete Commit Walkthrough -->
+  <rect x="36" y="346" width="1108" height="248" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="60" y="376" font-size="15" font-weight="700" fill="#0f172a">真实小改实例：模型选择器显示原始 ID（提交 5124a2a310 · PR #5004 · 共 7 个文件 +15 / -14）</text>
+
+  <!-- Sub-card 1 -->
+  <rect x="60" y="394" width="356" height="148" rx="8" fill="#f0f9ff" stroke="#7dd3fc"/>
+  <text x="80" y="422" font-size="14" font-weight="700" fill="#0369a1">代码 + 当前文档（5 个文件）</text>
+  <text x="80" y="450" font-size="11.5" fill="#334155">ModelListEditor.tsx · ModelsSection.module.css</text>
+  <text x="80" y="476" font-size="12" fill="#334155">双语 README 与 i18n 哈希配对同步刷新</text>
+  <rect x="80" y="502" width="136" height="24" rx="12" fill="#e0f2fe" stroke="#7dd3fc"/>
+  <text x="148" y="518" text-anchor="middle" font-size="11" font-weight="700" fill="#0369a1">真实提交里已落盘</text>
+
+  <!-- Sub-card 2 -->
+  <rect x="436" y="394" width="344" height="148" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="456" y="422" font-size="14" font-weight="700" fill="#15803d">会报红的行为证据（2 个文件）</text>
+  <text x="456" y="450" font-size="11.5" fill="#334155">provider-form.client.spec.tsx（反转断言）</text>
+  <text x="456" y="476" font-size="12" fill="#334155">models-settings.e2e.ts（真实浏览器勾选）</text>
+  <rect x="456" y="502" width="136" height="24" rx="12" fill="#dcfce7" stroke="#86efac"/>
+  <text x="524" y="518" text-anchor="middle" font-size="11" font-weight="700" fill="#15803d">真实提交里已落盘</text>
+
+  <!-- Sub-card 3 -->
+  <rect x="800" y="394" width="320" height="148" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="820" y="422" font-size="14" font-weight="700" fill="#334155">两头按需项与 Git 树外记录</text>
+  <text x="820" y="450" font-size="12" fill="#475569">局部 UI 改动豁免 Agent Note（0 篇合规）</text>
+  <text x="820" y="476" font-size="12" fill="#475569">非破坏性变更免写 Upgrade Guide</text>
+  <rect x="820" y="502" width="216" height="24" rx="12" fill="#e2e8f0"/>
+  <text x="928" y="518" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">Issue 与 PR 评审记录存于 GitHub</text>
+
+  <text x="590" y="574" text-anchor="middle" font-size="12" fill="#475569">结论：中间“实现代码 + 当前合同 + 红灯测试”每次原子同交；两头的规划提案、决策记录与升级指南均按条件启用。</text>
 </svg>

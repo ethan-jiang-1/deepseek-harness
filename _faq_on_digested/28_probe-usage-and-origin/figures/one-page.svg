@@ -1,158 +1,107 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>探针一页图：一条看不见的请求链，五个可以下钩的地方</title>
-  <desc>整张图分三块。上半是问题：你写的代码，要经过装配、序列化、网络才能到模型，模型再经过流、工具、会话才能变成你看到的界面；中间这几段你在外面看不见。中间是五个可以下钩的地方，从下往上成本递增：钩在一份已有日志上（只读，秒级）、钩在请求侧的两个 sidecar 上、钩在真进程的装配上、钩在真浏览器的渲染上、钩在工作区的副作用上；每个钩子标出它捞回来什么。下半是证据的生命周期：一次运行留下的记录，要么当场判断（分钟），要么进证据目录（天到月），要么配上基线毕业成防线（长期）；底部一句话是探针的本质和它害怕的东西。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 690" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>一条请求链上的五个探针取证位置与三种归宿</title>
+  <desc>上半展示从插件源码、Cordis 装配、模型请求、会话日志落盘到界面渲染与工作区副作用的完整链路；中半按成本从低到高列出五个取证位置（只读现成日志、查请求侧存档、真进程加回放、真浏览器 ARIA 树、故障注入查外部状态）；下半展示产出的三种归宿（临时调试排完即删、本地证据归档、把探针沉淀成回归基线）。</desc>
   <defs>
     <marker id="one-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#0f766e"/></marker>
-    <marker id="one-b" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#94a3b8"/></marker>
-    <marker id="one-c" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#b91c1c"/></marker>
-    <linearGradient id="one-fade" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#e2e8f0"/><stop offset="0.5" stop-color="#cbd5e1"/><stop offset="1" stop-color="#e2e8f0"/>
-    </linearGradient>
+    <marker id="one-b" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/></marker>
   </defs>
 
-  <rect width="1200" height="900" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="19" font-weight="700" fill="#0f172a">探针一页图</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">一条你看不见的请求链，和五个可以下钩的地方</text>
+  <rect width="1200" height="690" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">探针工作法全景：五个取证位置与三种归宿</text>
+  <text x="600" y="56" text-anchor="middle" fill="#64748b">与其对着几十层动态插件源码盲猜拼装结果，不如按成本从低到高直接读取真实运行产物</text>
 
-  <!-- ============ PART 1: the invisible chain ============ -->
-  <text x="40" y="92" font-size="12" font-weight="700" fill="#334155">① 你写的东西要经过好几段才变成「模型看到的」和「你看到的」，中间几段是黑箱</text>
+  <!-- Band 1: Chain -->
+  <text x="40" y="88" font-size="12" font-weight="700" fill="#334155">① 为什么光读静态源码不够：从插件代码到最终效果隔着多段动态拼装</text>
 
-  <rect x="40" y="102" width="150" height="58" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="115" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">你写的代码</text>
-  <text x="115" y="145" text-anchor="middle" font-size="10" fill="#64748b">插件 · 注入 · 工具</text>
+  <rect x="40" y="100" width="168" height="50" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="124" y="129" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0f172a">插件源码与配置</text>
 
-  <rect x="206" y="102" width="150" height="58" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-dasharray="5 3"/>
-  <text x="281" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">装配</text>
-  <text x="281" y="145" text-anchor="middle" font-size="10" fill="#94a3b8">拼系统提示词、汇总工具</text>
+  <line x1="208" y1="125" x2="228" y2="125" stroke="#64748b" stroke-width="1.8" marker-end="url(#one-b)"/>
 
-  <rect x="372" y="102" width="150" height="58" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-dasharray="5 3"/>
-  <text x="447" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">序列化 + 网络</text>
-  <text x="447" y="145" text-anchor="middle" font-size="10" fill="#94a3b8">变成请求字节</text>
+  <rect x="232" y="100" width="192" height="50" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-dasharray="5 3"/>
+  <text x="328" y="129" text-anchor="middle" font-size="11.5" font-weight="700" fill="#334155">Loader 合成提示词与工具</text>
 
-  <rect x="538" y="102" width="150" height="58" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
-  <text x="613" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">模型</text>
-  <text x="613" y="145" text-anchor="middle" font-size="10" fill="#b45309">另一边，不受你控制</text>
+  <line x1="424" y1="125" x2="444" y2="125" stroke="#64748b" stroke-width="1.8" marker-end="url(#one-b)"/>
 
-  <rect x="704" y="102" width="150" height="58" rx="8" fill="#f1f5f9" stroke="#cbd5e1" stroke-dasharray="5 3"/>
-  <text x="779" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">流 · 工具 · 会话</text>
-  <text x="779" y="145" text-anchor="middle" font-size="10" fill="#94a3b8">事件一条条追加</text>
+  <rect x="448" y="100" width="184" height="50" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.8"/>
+  <text x="540" y="129" text-anchor="middle" font-size="11.5" font-weight="700" fill="#92400e">模型请求 / llm-replay</text>
 
-  <rect x="870" y="102" width="150" height="58" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="945" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">你看到的界面</text>
-  <text x="945" y="145" text-anchor="middle" font-size="10" fill="#64748b">客户端的渲染</text>
+  <line x1="632" y1="125" x2="652" y2="125" stroke="#64748b" stroke-width="1.8" marker-end="url(#one-b)"/>
 
-  <rect x="1036" y="102" width="124" height="58" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="1098" y="126" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">世界变成</text>
-  <text x="1098" y="145" text-anchor="middle" font-size="10" fill="#64748b">什么样了</text>
+  <rect x="656" y="100" width="192" height="50" rx="8" fill="#f1f5f9" stroke="#94a3b8" stroke-dasharray="5 3"/>
+  <text x="752" y="129" text-anchor="middle" font-size="11.5" font-weight="700" fill="#334155">工具派发与 JSONL 落盘</text>
 
-  <line x1="192" y1="131" x2="202" y2="131" stroke="#94a3b8" stroke-width="2" marker-end="url(#one-b)"/>
-  <line x1="358" y1="131" x2="368" y2="131" stroke="#94a3b8" stroke-width="2" marker-end="url(#one-b)"/>
-  <line x1="524" y1="131" x2="534" y2="131" stroke="#b45309" stroke-width="2" marker-end="url(#one-b)"/>
-  <line x1="690" y1="131" x2="700" y2="131" stroke="#b45309" stroke-width="2" marker-end="url(#one-b)"/>
-  <line x1="856" y1="131" x2="866" y2="131" stroke="#94a3b8" stroke-width="2" marker-end="url(#one-b)"/>
-  <line x1="1022" y1="131" x2="1032" y2="131" stroke="#94a3b8" stroke-width="2" marker-end="url(#one-b)"/>
+  <line x1="848" y1="125" x2="868" y2="125" stroke="#64748b" stroke-width="1.8" marker-end="url(#one-b)"/>
 
-  <rect x="206" y="168" width="480" height="24" rx="6" fill="url(#one-fade)"/>
-  <text x="446" y="184" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">中间这几段，你在外面看不见 —— 代码读得再细也读不出来</text>
+  <rect x="872" y="100" width="288" height="50" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="1016" y="129" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0f172a">Web 界面渲染 ＋ 工作区外部终态</text>
 
-  <text x="706" y="184" font-size="11" fill="#991b1b">模型看到什么 ≠ 你想让它看到的 ｜ 界面显示什么 ≠ 数据库里是什么</text>
+  <!-- Band 2: Five hooks -->
+  <text x="40" y="186" font-size="12" font-weight="700" fill="#334155">② 五个取证位置（成本从左到右递增——永远先用最轻的一档，够回答问题就停）</text>
 
-  <!-- ============ PART 2: five hooks ============ -->
-  <text x="40" y="222" font-size="12" font-weight="700" fill="#334155">② 探针就是往这条链上下一钩：五个位置，从最便宜的开始</text>
+  <rect x="40" y="202" width="212" height="142" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="1.8"/>
+  <text x="58" y="226" font-size="12" font-weight="700" fill="#166534">① 只读现成日志</text>
+  <text x="58" y="250" font-size="10.5" fill="#334155">查事件序列、callId 成对</text>
+  <text x="58" y="268" font-size="10.5" fill="#334155">与 isError: false</text>
+  <text x="58" y="298" font-size="10" fill="#64748b">成本：秒级 · 零进程启动</text>
+  <text x="58" y="320" font-size="10" font-weight="700" fill="#166534">答：到底跑到哪一步断了</text>
 
-  <!-- hook line -->
-  <line x1="60" y1="266" x2="1140" y2="266" stroke="#0f766e" stroke-width="1" stroke-dasharray="3 4"/>
+  <rect x="267" y="202" width="212" height="142" rx="8" fill="#f0fdfa" stroke="#5eead4" stroke-width="1.8"/>
+  <text x="285" y="226" font-size="12" font-weight="700" fill="#0f766e">② 查请求侧存档</text>
+  <text x="285" y="250" font-size="10.5" fill="#334155">system/message 提示词</text>
+  <text x="285" y="268" font-size="10.5" fill="#334155">+ request/header 工具集</text>
+  <text x="285" y="298" font-size="10" fill="#64748b">成本：秒级 · 纯文本 diff</text>
+  <text x="285" y="320" font-size="10" font-weight="700" fill="#0f766e">答：模型实际收到了什么</text>
 
-  <!-- Hook 1 -->
-  <path d="M120 246 L120 290 L132 300 L144 290 L144 246" fill="none" stroke="#16a34a" stroke-width="2.5"/>
-  <rect x="60" y="312" width="200" height="126" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
-  <text x="76" y="334" font-size="12" font-weight="700" fill="#166534">① 钩在日志上</text>
-  <text x="76" y="353" font-size="10" fill="#334155">不解压以外的任何动作</text>
-  <text x="76" y="372" font-size="10" fill="#166534">捞回来：事件直方图、工具名、</text>
-  <text x="76" y="387" font-size="10" fill="#166534">call/result 成对、turnEnded</text>
-  <text x="76" y="410" font-size="10" fill="#64748b">成本：秒级 · 零成本</text>
-  <text x="76" y="426" font-size="10" fill="#64748b">回答：它到底跑到了哪一步</text>
+  <rect x="494" y="202" width="212" height="142" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.8"/>
+  <text x="512" y="226" font-size="12" font-weight="700" fill="#1d4ed8">③ 真进程 + 录制回放</text>
+  <text x="512" y="250" font-size="10.5" fill="#334155">dsh 真 Profile + llm-replay</text>
+  <text x="512" y="268" font-size="10.5" fill="#334155">固定模型流重跑全套装配</text>
+  <text x="512" y="298" font-size="10" fill="#64748b">成本：秒级 · 无密钥 keyless</text>
+  <text x="512" y="320" font-size="10" font-weight="700" fill="#1d4ed8">答：改配置后装配对不对</text>
 
-  <!-- Hook 2 -->
-  <path d="M330 246 L330 290 L342 300 L354 290 L354 246" fill="none" stroke="#0d9488" stroke-width="2.5"/>
-  <rect x="270" y="312" width="200" height="126" rx="8" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
-  <text x="286" y="334" font-size="12" font-weight="700" fill="#0f766e">② 钩在请求侧</text>
-  <text x="286" y="353" font-size="10" fill="#334155">system/message + request/header</text>
-  <text x="286" y="372" font-size="10" fill="#0f766e">捞回来：提示词全文、</text>
-  <text x="286" y="387" font-size="10" fill="#0f766e">工具 schema 数组</text>
-  <text x="286" y="410" font-size="10" fill="#64748b">成本：秒级 · 需要夹具</text>
-  <text x="286" y="426" font-size="10" fill="#64748b">回答：模型收到了什么</text>
+  <rect x="721" y="202" width="212" height="142" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.8"/>
+  <text x="739" y="226" font-size="12" font-weight="700" fill="#92400e">④ 真浏览器 ARIA 树</text>
+  <text x="739" y="250" font-size="10.5" fill="#334155">无头 Chrome 连真实后端</text>
+  <text x="739" y="268" font-size="10.5" fill="#334155">采集可见语义树与控制台</text>
+  <text x="739" y="298" font-size="10" fill="#64748b">成本：十余秒 · 需本地浏览器</text>
+  <text x="739" y="320" font-size="10" font-weight="700" fill="#92400e">答：前端卡片真画出来了吗</text>
 
-  <!-- Hook 3 -->
-  <path d="M540 246 L540 290 L552 300 L564 290 L564 246" fill="none" stroke="#2563eb" stroke-width="2.5"/>
-  <rect x="480" y="312" width="200" height="126" rx="8" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
-  <text x="496" y="334" font-size="12" font-weight="700" fill="#1d4ed8">③ 钩在装配上</text>
-  <text x="496" y="353" font-size="10" fill="#334155">起真进程，回放替掉模型</text>
-  <text x="496" y="372" font-size="10" fill="#1d4ed8">捞回来：真装配出的日志</text>
-  <text x="496" y="387" font-size="10" fill="#1d4ed8">（回复录死，只剩装配一个变量）</text>
-  <text x="496" y="410" font-size="10" fill="#64748b">成本：秒级 · 无 key</text>
-  <text x="496" y="426" font-size="10" fill="#64748b">回答：装配对了没有</text>
+  <rect x="948" y="202" width="212" height="142" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.8"/>
+  <text x="966" y="226" font-size="12" font-weight="700" fill="#991b1b">⑤ 注入异常查副作用</text>
+  <text x="966" y="250" font-size="10.5" fill="#334155">构造断流或沙箱缺失，核对</text>
+  <text x="966" y="268" font-size="10.5" fill="#334155">spawnCalls:0 与磁盘终态</text>
+  <text x="966" y="298" font-size="10" fill="#64748b">成本：最高 · 独立外部预期</text>
+  <text x="966" y="320" font-size="10" font-weight="700" fill="#991b1b">答：危险操作真没偷跑吗</text>
 
-  <!-- Hook 4 -->
-  <path d="M750 246 L750 290 L762 300 L774 290 L774 246" fill="none" stroke="#b45309" stroke-width="2.5"/>
-  <rect x="690" y="312" width="200" height="126" rx="8" fill="#fffbeb" stroke="#fcd34d" stroke-width="2"/>
-  <text x="706" y="334" font-size="12" font-weight="700" fill="#92400e">④ 钩在渲染上</text>
-  <text x="706" y="353" font-size="10" fill="#334155">起真浏览器，改视口造条件</text>
-  <text x="706" y="372" font-size="10" fill="#92400e">捞回来：可访问性树、</text>
-  <text x="706" y="387" font-size="10" fill="#92400e">控制台错误、截图</text>
-  <text x="706" y="410" font-size="10" fill="#64748b">成本：十几秒 · 要 Chrome</text>
-  <text x="706" y="426" font-size="10" fill="#64748b">回答：人眼看到了什么</text>
+  <line x1="40" y1="368" x2="1160" y2="368" stroke="#cbd5e1"/>
 
-  <!-- Hook 5 -->
-  <path d="M960 246 L960 290 L972 300 L984 290 L984 246" fill="none" stroke="#991b1b" stroke-width="2.5"/>
-  <rect x="900" y="312" width="200" height="126" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
-  <text x="916" y="334" font-size="12" font-weight="700" fill="#991b1b">⑤ 钩在副作用上</text>
-  <text x="916" y="353" font-size="10" fill="#334155">看工作区被改成了什么样</text>
-  <text x="916" y="372" font-size="10" fill="#991b1b">捞回来：独立 oracle</text>
-  <text x="916" y="387" font-size="10" fill="#991b1b">{"confineCalls":1,"spawnCalls":0}</text>
-  <text x="916" y="410" font-size="10" fill="#64748b">成本：最贵 · 要造条件</text>
-  <text x="916" y="426" font-size="10" fill="#64748b">回答：不该发生的事发生了吗</text>
+  <!-- Band 3: Lifecycle -->
+  <text x="40" y="396" font-size="12" font-weight="700" fill="#334155">③ 探针产出的三种归宿 —— 只有配齐基线沉淀入库，才能成为长期回归防线</text>
 
-  <text x="60" y="466" font-size="11" fill="#0f766e">从 ① 往 ⑤ 成本递增、可复现递减 —— 所以永远先问「① 够不够」</text>
-  <text x="60" y="484" font-size="11" fill="#991b1b">⑤ 的证据最结实，因为「它不存在」比「它存在」更难伪造：采信文件与计数，不采信模型的自述</text>
+  <rect x="40" y="412" width="340" height="94" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="60" y="436" font-size="12" font-weight="700" fill="#0f172a">A · 临时调试：定位单次故障，排完即删</text>
+  <text x="60" y="460" font-size="10.5" fill="#475569">排查偶发配置乌龙或摸底接口格式，看清即结案</text>
+  <text x="60" y="484" font-size="10" fill="#64748b">寿命：分钟级 · 不留快照维护负担</text>
 
-  <!-- ============ PART 3: lifecycle ============ -->
-  <line x1="40" y1="510" x2="1160" y2="510" stroke="#cbd5e1"/>
-  <text x="40" y="536" font-size="12" font-weight="700" fill="#334155">③ 一次运行留下的东西有三种归宿 —— 只有毕业成基线才能长期防回归</text>
+  <line x1="382" y1="459" x2="404" y2="459" stroke="#64748b" stroke-width="2" marker-end="url(#one-b)"/>
 
-  <rect x="40" y="550" width="340" height="96" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="58" y="572" font-size="12" font-weight="700" fill="#334155">A · 当场判断</text>
-  <text x="58" y="592" font-size="10" fill="#64748b">只在这次输出里，读完就没了</text>
-  <text x="58" y="610" font-size="10" fill="#334155">例：数一数事件、看一眼 diff</text>
-  <text x="58" y="632" font-size="10" fill="#64748b">寿命：分钟 · 成本：最低</text>
+  <rect x="408" y="412" width="340" height="94" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="428" y="436" font-size="12" font-weight="700" fill="#0f172a">B · 本地证据归档：保留供开发期复核</text>
+  <text x="428" y="460" font-size="10.5" fill="#475569">按 sessionId 存日志、verdict.json 与截图供对账</text>
+  <text x="428" y="484" font-size="10" fill="#64748b">寿命：天至周级 · 按需手动复跑，不塞进日常 CI</text>
 
-  <rect x="404" y="550" width="340" height="96" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="422" y="572" font-size="12" font-weight="700" fill="#334155">B · 进证据目录</text>
-  <text x="422" y="592" font-size="10" fill="#64748b">落到固定路径，带 verdict + 截图</text>
-  <text x="422" y="610" font-size="10" fill="#334155">例：排查完保留供复跑</text>
-  <text x="422" y="632" font-size="10" fill="#64748b">寿命：天到月 · 别人能复核</text>
+  <line x1="750" y1="459" x2="772" y2="459" stroke="#0f766e" stroke-width="2" marker-end="url(#one-a)"/>
 
-  <rect x="768" y="550" width="392" height="96" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
-  <text x="786" y="572" font-size="12" font-weight="700" fill="#166534">C · 毕业成基线（这才是投资）</text>
-  <text x="786" y="592" font-size="10" fill="#334155">提交进 git，从此由 diff 说话</text>
-  <text x="786" y="610" font-size="10" fill="#166534">例：system-prompt / tool-schemas / ui / oracle</text>
-  <text x="786" y="632" font-size="10" fill="#64748b">寿命：长期 · 改坏了直接红</text>
+  <rect x="776" y="412" width="384" height="94" rx="8" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="796" y="436" font-size="12" font-weight="700" fill="#166534">C · 把探针沉淀成回归基线（毕业进门禁）</text>
+  <text x="796" y="460" font-size="10.5" fill="#334155">经动态字段令牌化与健康校验后提交 snapshots/ 或单测</text>
+  <text x="796" y="484" font-size="10" fill="#166534">寿命：长期 · 后续改动一旦漂移即刻由 diff 报警</text>
 
-  <line x1="384" y1="598" x2="400" y2="598" stroke="#94a3b8" stroke-width="2" marker-end="url(#one-b)"/>
-  <line x1="748" y1="598" x2="764" y2="598" stroke="#16a34a" stroke-width="2" marker-end="url(#one-a)"/>
-
-  <rect x="40" y="662" width="1120" height="52" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="60" y="684" font-size="11" font-weight="700" fill="#92400e">B → C 之间有一道门，这是整套方法最要紧的一步：</text>
-  <text x="60" y="703" font-size="11" fill="#334155">写入前必须健康（页面真加载完、控制台干净、不缺字段）；replay 模式下缺基线必须报错，绝不能悄悄自举新的 —— 把错状态写成基线，比没有基线更糟。</text>
-
-  <!-- ============ bottom ============ -->
-  <rect x="40" y="730" width="1120" height="70" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
-  <text x="60" y="754" font-size="13" font-weight="700" fill="#0f766e">一句话：探针 = 在你说不清的那一刻，往这条链上下一个钩，把看不见变成可复核</text>
-  <text x="60" y="776" font-size="11" fill="#334155">调试是你在找答案（手是慌的）；探针是你在制造证据（你知道要问哪一句，只是还不知道答案）。</text>
-  <text x="60" y="793" font-size="11" fill="#991b1b">它唯一害怕的东西：静默失效 —— 钩子没挂上，模型照常回答，探针看着绿。所以钩之前先证明钩子真挂上了。</text>
-
-  <rect x="40" y="812" width="1120" height="66" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="60" y="834" font-size="11" font-weight="700" fill="#334155">为什么这些钩子挂得上：DSH 把请求侧和事件流都写进了日志</text>
-  <text x="60" y="853" font-size="11" fill="#334155">model-visible ⟺ logged —— 任何到达模型请求的东西都必须能从会话日志重建；于是探针不需要产品额外留后门，直接解析日志文件即可取证。</text>
-  <text x="60" y="871" font-size="11" fill="#64748b">这也是它便宜、且能反复跑的原因：一次真运行 = 一份可离线解析的存档 = 想读几次读几次。</text>
+  <!-- Bottom summary -->
+  <rect x="40" y="530" width="1120" height="132" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="1.8"/>
+  <text x="64" y="558" font-size="12.5" font-weight="700" fill="#0f766e">实操三条准则：怎么把“黑盒猜测”变成 10 秒铁证</text>
+  <text x="64" y="584" font-size="11" fill="#334155">1. 先跑零网络开销的 pnpm dsh --profile ... --dump-config 确认插件行激活，再用最小单轮运行解剖落盘事件；</text>
+  <text x="64" y="608" font-size="11" fill="#334155">2. 验证外部真实世界而非模型自我汇报（Verify the world, not the self-report），以磁盘终态与独立审计计数为准；</text>
+  <text x="64" y="632" font-size="11" fill="#334155">3. 把探针沉淀成回归基线前，必须人工核实当次运行健康无报错（严防把 UNKNOWN_TOOL 坏轨迹刷入仓库），并清理旧探针脚本。</text>
 </svg>

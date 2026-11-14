@@ -10,6 +10,8 @@
 
 下面先把这笔账摊开算清楚，再讲哪些直觉容易看走眼、哪些方向值得投入。如果想直接查“怎么在仓库里找现成能力”，可以直接跳读 [`01-finding-existing-capabilities.md`](./01-finding-existing-capabilities.md)。
 
+![DSH 插件接缝全景：三角色契约与 35 条 Seam 四档成熟度](./figures/seam-anatomy-and-maturity.svg)
+
 ---
 
 ## 一、怎么衡量一条 seam 成不成熟？

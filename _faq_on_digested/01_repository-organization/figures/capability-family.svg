@@ -1,67 +1,97 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 610" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>以文件系统为例的包角色切分</title>
+  <desc>Service Definition（packages/fs/fs）位于中心，左侧是三个实现方 Provider（fs-local、fs-sandbox、跨组的 ssh/fs-ssh），右侧是工具消费方（tool-fs 与不扩张接口的 tool-fs-search），下方是监听 fs/* 事件的策略插件 fs-observation-policy，顶部由组装层选定本次组合。</desc>
   <defs>
-    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
-    <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#ea580c"/></marker>
-    <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#7c3aed"/></marker>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrowOrange" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#ea580c"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#7c3aed"/>
+    </marker>
   </defs>
-  <rect width="1080" height="610" rx="8" fill="#fafafa"/>
-  <text x="540" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#111827">一个 capability family：Definition 在中间，Provider 与 Consumer 分开</text>
-  <text x="540" y="54" text-anchor="middle" font-size="11" fill="#64748b">以文件系统为例；组合层选择本次 Provider、Policy 和模型呈现。</text>
 
-  <rect x="390" y="76" width="300" height="62" rx="10" fill="#f3e8ff" stroke="#c4b5fd"/>
-  <text x="540" y="101" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">Composition</text>
-  <text x="540" y="122" text-anchor="middle" fill="#7c3aed">bundle · profile · agent preset</text>
-  <path d="M450,138 C390,150 285,148 240,164" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowPurple)"/>
-  <path d="M630,138 C700,150 815,148 850,164" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowPurple)"/>
-  <path d="M540,138 C540,240 490,315 520,378" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowPurple)"/>
+  <rect width="1160" height="620" rx="8" fill="#f8fafc"/>
+  <text x="580" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">拆包逻辑示例（文件系统）：接口居中，实现、消费与策略解耦</text>
+  <text x="580" y="56" text-anchor="middle" font-size="12.5" fill="#475569">扩展插件只依赖中间的服务定义包；只有顶部的组装层（bundle / profile / preset）才会同时点名具体实现。</text>
 
-  <rect x="35" y="170" width="310" height="286" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="190" y="198" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">Service Providers</text>
-  <text x="190" y="218" text-anchor="middle" fill="#2563eb">实现同一个 ctx.fs 合同</text>
-  <rect x="62" y="240" width="256" height="54" rx="7" fill="#fff" stroke="#60a5fa"/>
-  <text x="82" y="263" font-weight="700" fill="#1e3a8a">packages/fs/fs-local</text>
-  <text x="82" y="282" fill="#2563eb">本地文件系统 Provider</text>
-  <rect x="62" y="308" width="256" height="62" rx="7" fill="#fff" stroke="#60a5fa"/>
-  <text x="82" y="331" font-weight="700" fill="#1e3a8a">packages/fs/fs-sandbox</text>
-  <text x="82" y="350" font-size="11" fill="#2563eb">本地 IO + sandbox mode/workspace fence</text>
-  <text x="82" y="365" font-size="10" fill="#64748b">仍提供 ctx.fs</text>
-  <rect x="62" y="384" width="256" height="54" rx="7" fill="#fff" stroke="#60a5fa"/>
-  <text x="82" y="407" font-weight="700" fill="#1e3a8a">packages/ssh/fs-ssh</text>
-  <text x="82" y="426" fill="#2563eb">共享 ctx.ssh 连接的远程文件系统 Provider</text>
+  <!-- 顶部：组装层 -->
+  <rect x="370" y="76" width="420" height="62" rx="10" fill="#f3e8ff" stroke="#c4b5fd"/>
+  <text x="580" y="101" text-anchor="middle" font-size="13.5" font-weight="700" fill="#6d28d9">组装层（Composition）</text>
+  <text x="580" y="122" text-anchor="middle" fill="#7c3aed">bundle · profile · agent preset（拍板本次挂哪几个包）</text>
 
-  <rect x="390" y="172" width="300" height="160" rx="12" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
-  <text x="540" y="203" text-anchor="middle" font-size="15" font-weight="700" fill="#14532d">Service Definition</text>
-  <text x="540" y="228" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">packages/fs/fs</text>
-  <rect x="424" y="247" width="232" height="62" rx="7" fill="#fff" stroke="#86efac"/>
-  <text x="540" y="269" text-anchor="middle" fill="#15803d">ctx.fs · targets · results</text>
-  <text x="540" y="289" text-anchor="middle" fill="#15803d">atomic mutation · fs/* policy events</text>
-  <line x1="345" y1="310" x2="382" y2="310" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="364" y="297" text-anchor="middle" font-size="10" fill="#475569">implements</text>
+  <path d="M460,138 C390,152 290,150 230,166" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowPurple)"/>
+  <path d="M700,138 C770,152 870,150 930,166" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowPurple)"/>
+  <path d="M580,138 C580,245 535,320 560,380" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowPurple)"/>
 
-  <rect x="735" y="170" width="310" height="176" rx="12" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="890" y="198" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">Consumer</text>
-  <rect x="762" y="222" width="256" height="92" rx="7" fill="#fff" stroke="#fb923c"/>
-  <text x="890" y="245" text-anchor="middle" font-weight="700" fill="#9a3412">packages/fs/tool-fs</text>
-  <text x="890" y="267" text-anchor="middle" fill="#c2410c">注册 read / read_image / write / edit</text>
-  <text x="890" y="287" text-anchor="middle" fill="#c2410c">向 ctx.fs 发请求，向 ctx.tools 注册</text>
-  <line x1="735" y1="278" x2="698" y2="278" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="717" y="265" text-anchor="middle" font-size="10" fill="#475569">consumes</text>
+  <!-- 左侧：Service Providers -->
+  <rect x="36" y="172" width="336" height="328" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="204" y="200" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">服务实现方（Service Providers）</text>
+  <text x="204" y="220" text-anchor="middle" fill="#2563eb">对外提供同一个 ctx.fs 服务接口</text>
 
-  <rect x="390" y="386" width="300" height="116" rx="12" fill="#fefce8" stroke="#fde047"/>
-  <text x="540" y="413" text-anchor="middle" font-size="14" font-weight="700" fill="#854d0e">Policy plugin</text>
-  <text x="540" y="438" text-anchor="middle" font-weight="700" fill="#854d0e">packages/fs/fs-observation-policy</text>
-  <text x="540" y="461" text-anchor="middle" fill="#a16207">监听 fs/*：observed state · read-before-edit</text>
-  <text x="540" y="482" text-anchor="middle" fill="#a16207">不提供另一个 service，不绑死 Consumer</text>
-  <line x1="540" y1="386" x2="540" y2="340" stroke="#ea580c" stroke-width="2" marker-end="url(#arrowOrange)"/>
-  <text x="552" y="365" font-size="10" fill="#ea580c">attaches policy</text>
+  <rect x="58" y="238" width="292" height="64" rx="7" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="78" y="261" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1e3a8a">packages/fs/fs-local</text>
+  <text x="78" y="284" fill="#2563eb">最基础的本地磁盘读写实现</text>
 
-  <rect x="735" y="386" width="310" height="116" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="5 4"/>
-  <text x="890" y="413" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">相邻 Consumer，不扩张 Definition</text>
-  <text x="890" y="438" text-anchor="middle" font-weight="700" fill="#334155">packages/fs/tool-fs-search</text>
-  <text x="890" y="461" text-anchor="middle" fill="#475569">glob / grep 通过 ctx.subprocess 运行 ripgrep</text>
-  <text x="890" y="482" text-anchor="middle" fill="#64748b">搜索工作流不强迫所有 ctx.fs Provider 实现</text>
+  <rect x="58" y="316" width="292" height="76" rx="7" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="78" y="339" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1e3a8a">packages/fs/fs-sandbox</text>
+  <text x="78" y="361" fill="#2563eb">套入工作区沙箱围栏与写权限检查</text>
+  <text x="78" y="380" font-size="11" fill="#64748b">消费方无需感知，依然调用同一个 ctx.fs</text>
 
-  <rect x="35" y="535" width="1010" height="48" rx="9" fill="#fff" stroke="#cbd5e1"/>
-  <text x="540" y="556" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">目录组织表达依赖方向：Provider → Definition ← Consumer；Composition 才依赖具体选择。</text>
-  <text x="540" y="575" text-anchor="middle" font-size="11" fill="#64748b">同组表示共同领域，不表示互相直接 import；跨组 Provider 可以跟随其真正的 runtime owner。</text>
+  <rect x="58" y="406" width="292" height="76" rx="7" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="78" y="429" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#1e3a8a">packages/ssh/fs-ssh</text>
+  <text x="78" y="451" fill="#2563eb">复用 ctx.ssh 连接读写远端机器文件</text>
+  <text x="78" y="470" font-size="11" fill="#64748b">因共享 SSH 连接底座，维护归属在 ssh/ 组</text>
+
+  <!-- 中间上：Service Definition -->
+  <rect x="420" y="172" width="320" height="164" rx="12" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
+  <text x="580" y="202" text-anchor="middle" font-size="15" font-weight="700" fill="#14532d">服务定义（Service Definition）</text>
+  <text x="580" y="226" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" fill="#166534">packages/fs/fs</text>
+
+  <rect x="444" y="242" width="272" height="74" rx="7" fill="#ffffff" stroke="#86efac"/>
+  <text x="580" y="266" text-anchor="middle" fill="#15803d">声明 ctx.fs 接口、请求与返回类型</text>
+  <text x="580" y="287" text-anchor="middle" fill="#15803d">原子写入语义 · fs/* 策略事件</text>
+  <text x="580" y="306" text-anchor="middle" font-size="11" fill="#475569">（纯契约层，不含任何磁盘 IO 代码）</text>
+
+  <!-- 实现箭头 -->
+  <line x1="372" y1="278" x2="412" y2="278" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="392" y="266" text-anchor="middle" font-size="10.5" fill="#475569">实现</text>
+
+  <!-- 右侧上：Consumer -->
+  <rect x="788" y="172" width="336" height="164" rx="12" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="956" y="200" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">模型工具消费方（Consumer）</text>
+
+  <rect x="810" y="218" width="292" height="98" rx="7" fill="#ffffff" stroke="#fb923c"/>
+  <text x="956" y="242" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#9a3412">packages/fs/tool-fs</text>
+  <text x="956" y="265" text-anchor="middle" fill="#c2410c">向 ctx.tools 注册 read / write / edit 等</text>
+  <text x="956" y="286" text-anchor="middle" fill="#c2410c">内部只调 ctx.fs，不绑死本地或远端后端</text>
+  <text x="956" y="305" text-anchor="middle" font-size="11" fill="#64748b">（兄弟包 tool-str-replace-editor 同理）</text>
+
+  <!-- 调用箭头 -->
+  <line x1="788" y1="278" x2="748" y2="278" stroke="#475569" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="768" y="266" text-anchor="middle" font-size="10.5" fill="#475569">调用</text>
+
+  <!-- 中间下：Policy -->
+  <rect x="420" y="384" width="320" height="116" rx="12" fill="#fefce8" stroke="#fde047"/>
+  <text x="580" y="411" text-anchor="middle" font-size="14" font-weight="700" fill="#854d0e">策略守卫（Policy）</text>
+  <text x="580" y="435" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#854d0e">packages/fs/fs-observation-policy</text>
+  <text x="580" y="458" text-anchor="middle" fill="#a16207">监听 fs/*：未读先改报 FS_NOT_OBSERVED</text>
+  <text x="580" y="479" text-anchor="middle" font-size="11" fill="#713f12">校验观察版本防覆盖，不侵入工具业务代码</text>
+
+  <line x1="580" y1="384" x2="580" y2="344" stroke="#ea580c" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <text x="626" y="368" text-anchor="middle" font-size="10.5" fill="#ea580c">监听事件</text>
+
+  <!-- 右侧下：相邻 Consumer -->
+  <rect x="788" y="384" width="336" height="116" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="5 4"/>
+  <text x="956" y="411" text-anchor="middle" font-size="14" font-weight="700" fill="#334155">相邻消费方（不乱扩接口）</text>
+  <text x="956" y="435" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#334155">packages/fs/tool-fs-search</text>
+  <text x="956" y="458" text-anchor="middle" fill="#475569">glob / grep 调 ctx.subprocess 跑内置 ripgrep</text>
+  <text x="956" y="479" text-anchor="middle" font-size="11" fill="#64748b">不强迫每个 ctx.fs 实现方手写全文搜索</text>
+
+  <!-- 底部铁律 -->
+  <rect x="36" y="526" width="1088" height="72" rx="9" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="580" y="552" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">静态依赖铁律：Provider ──▶ Definition ◀── Consumer（同组代表同一领域，绝不直接互引具体实现）</text>
+  <text x="580" y="576" text-anchor="middle" fill="#475569">看包名后缀即可认门：裸名是定义（fs），带后端后缀是实现（-local / -sandbox / -ssh），tool-* / ui-* 是消费方，*-policy 是策略。</text>
 </svg>

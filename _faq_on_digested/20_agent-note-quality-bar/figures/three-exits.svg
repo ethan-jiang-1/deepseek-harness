@@ -1,71 +1,84 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 610" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
   <title>Note 落地后的三条生命周期出路：同步留存、归档冻结与整套删除</title>
-  <desc>针对活跃树中的旧 Agent Note，按未来决策价值分三条出路：一是留在 implemented 活跃树并随代码改名或改默认值同步更新事实；二是决策已完整落地且不再指导未来改动但仍有历史价值时，三件套移入 archived 永久冻结；三是纯局部 UI 微调、机械搬迁或前提已失效的 rejected 记录，连同双语三件套直接删除并修复入站链接。</desc>
+  <desc>活跃树中的旧 Agent Note 按未来决策价值分三条出路：一是仍能指导未来改动或防重踩坑的 implemented 与 rejected 记录，留在活跃树并随代码刷新事实；二是已完整落地且不再指导后续改动、但仍有历史备查价值的 implemented 记录，三件套迁入 archived 永久冻结；三是完全被新篇合并取代、旧规误建的局部 UI 或纯机械搬迁、以及诱惑前提已失效的 rejected 记录，连同双语三件套直接删除并修平入站链接。</desc>
   <defs>
-    <marker id="a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
-      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
-    </marker>
-    <marker id="aBlue" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+    <marker id="te-blue" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#1d4ed8"/>
     </marker>
-    <marker id="aSlate" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+    <marker id="te-slate" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#475569"/>
     </marker>
-    <marker id="aRed" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+    <marker id="te-red" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#b91c1c"/>
     </marker>
   </defs>
 
-  <rect width="1200" height="600" rx="8" fill="#f8fafc"/>
+  <rect width="1200" height="610" rx="8" fill="#f8fafc"/>
   <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">落地之后怎么管：活跃 Note 的三条出路</text>
-  <text x="600" y="60" text-anchor="middle" fill="#64748b">唯一判据是「这篇记录还能不能指导未来的改动、防住未来的错误」——字数与年龄只是排查线索，绝非去留标准。</text>
+  <text x="600" y="60" text-anchor="middle" fill="#64748b">唯一标尺是「还能不能指导未来改动、防住未来错误」——绝不按字数多少、文件新旧或凑配额划线</text>
 
-  <rect x="40" y="82" width="1120" height="52" rx="10" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="600" y="114" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">活跃树里的既有 Note（implemented/ 或 rejected/）　→　按未来决策价值分流</text>
+  <rect x="40" y="82" width="1120" height="48" rx="10" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="600" y="111" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">活跃树里的既有记录（implemented/ 或 rejected/）　→　按未来指导价值语义分流</text>
 
-  <line x1="600" y1="134" x2="600" y2="158" stroke="#64748b" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="600" y1="130" x2="600" y2="152" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="218" y1="152" x2="982" y2="152" stroke="#94a3b8" stroke-width="2"/>
 
-  <line x1="230" y1="166" x2="230" y2="206" stroke="#1d4ed8" stroke-width="2" marker-end="url(#aBlue)"/>
-  <line x1="600" y1="166" x2="600" y2="206" stroke="#475569" stroke-width="2" marker-end="url(#aSlate)"/>
-  <line x1="970" y1="166" x2="970" y2="206" stroke="#b91c1c" stroke-width="2" marker-end="url(#aRed)"/>
-  <line x1="40" y1="160" x2="1160" y2="160" stroke="#cbd5e1" stroke-width="2"/>
+  <line x1="218" y1="152" x2="218" y2="168" stroke="#1d4ed8" stroke-width="2"/>
+  <rect x="98" y="168" width="240" height="24" rx="12" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="218" y="184" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">仍能指导未来改动或防踩老坑</text>
+  <line x1="218" y1="192" x2="218" y2="212" stroke="#1d4ed8" stroke-width="2" marker-end="url(#te-blue)"/>
 
-  <text x="230" y="188" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">仍能指导未来改动或防踩老坑</text>
-  <text x="600" y="188" text-anchor="middle" font-size="11" font-weight="700" fill="#475569">使命已完成，但留有历史决策价值</text>
-  <text x="970" y="188" text-anchor="middle" font-size="11" font-weight="700" fill="#b91c1c">纯机械/局部 UI，或否决前提已过时</text>
+  <line x1="600" y1="152" x2="600" y2="168" stroke="#475569" stroke-width="2"/>
+  <rect x="470" y="168" width="260" height="24" rx="12" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="600" y="184" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">使命已完成，但留有架构史备查价值</text>
+  <line x1="600" y1="192" x2="600" y2="212" stroke="#475569" stroke-width="2" marker-end="url(#te-slate)"/>
 
-  <rect x="40" y="212" width="370" height="196" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="225" y="242" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">① 留在活跃树 · 随代码同步事实</text>
-  <text x="225" y="268" text-anchor="middle" fill="#334155">职责边界、安全底线、持久化/协议约定、</text>
-  <text x="225" y="288" text-anchor="middle" fill="#334155">备选方案或重引入条件仍在生效</text>
-  <text x="225" y="318" text-anchor="middle" fill="#475569">改包名/路径/默认值 → 同 PR 原地刷新</text>
-  <text x="225" y="338" text-anchor="middle" fill="#475569">推翻原决定 → 另写新篇并双向互链</text>
-  <rect x="60" y="356" width="330" height="40" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="225" y="381" text-anchor="middle" font-size="11" fill="#1e40af">实例：248 词的事件溯源会话边界长期留存</text>
+  <line x1="982" y1="152" x2="982" y2="168" stroke="#b91c1c" stroke-width="2"/>
+  <rect x="852" y="168" width="260" height="24" rx="12" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="982" y="184" text-anchor="middle" font-size="11" font-weight="700" fill="#b91c1c">完全合并 / 旧规噪音 / 否决前提失效</text>
+  <line x1="982" y1="192" x2="982" y2="212" stroke="#b91c1c" stroke-width="2" marker-end="url(#te-red)"/>
 
-  <rect x="435" y="212" width="330" height="196" rx="10" fill="#f1f5f9" stroke="#94a3b8"/>
-  <text x="600" y="242" text-anchor="middle" font-size="15" font-weight="700" fill="#334155">② 封存进 archived/ · 永久冻结</text>
-  <text x="600" y="268" text-anchor="middle" fill="#334155">仅限完整落地的 implemented 记录</text>
-  <text x="600" y="288" text-anchor="middle" fill="#334155">（proposed 过时只转 rejected 或删）</text>
-  <text x="600" y="318" text-anchor="middle" fill="#475569">搬三件套 + 插 Archived: 行 + 录哈希</text>
-  <text x="600" y="338" text-anchor="middle" fill="#475569">lefthook 与门禁锁死，禁止事后涂改</text>
-  <rect x="455" y="356" width="290" height="40" rx="6" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="600" y="381" text-anchor="middle" font-size="11" fill="#334155">实例：重复沙箱模式落地稳固后封存入库</text>
+  <rect x="40" y="218" width="356" height="206" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="218" y="246" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">① 留在活跃树 · 同步事实</text>
+  <text x="218" y="272" text-anchor="middle" font-size="11" fill="#334155">职责归属、安全底线、持久化/协议语义、</text>
+  <text x="218" y="292" text-anchor="middle" font-size="11" fill="#334155">备选死因或重引入条件仍在生效</text>
+  <text x="218" y="320" text-anchor="middle" font-size="11" fill="#475569">• implemented：改包名/默认值同 PR 刷新</text>
+  <text x="218" y="340" text-anchor="middle" font-size="11" fill="#475569">• 推翻原决定：禁涂改旧篇，新开互链</text>
+  <text x="218" y="360" text-anchor="middle" font-size="11" fill="#475569">• rejected：诱惑仍在就继续留树站岗</text>
+  <rect x="60" y="374" width="316" height="36" rx="6" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="218" y="396" text-anchor="middle" font-size="11" font-weight="600" fill="#1e40af">校准：248 词事件溯源边界常驻活跃树</text>
 
-  <rect x="790" y="212" width="370" height="196" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="975" y="242" text-anchor="middle" font-size="15" font-weight="700" fill="#991b1b">③ 整套删除 · 拒绝拿归档当垃圾场</text>
-  <text x="975" y="268" text-anchor="middle" fill="#334155">旧规下误建的小 UI 调整、纯机械搬迁，</text>
-  <text x="975" y="288" text-anchor="middle" fill="#334155">或诱惑已消失的过时 rejected 记录</text>
-  <text x="975" y="318" text-anchor="middle" fill="#475569">.md + .zh.md + .i18n.yaml 一起删</text>
-  <text x="975" y="338" text-anchor="middle" fill="#475569">同步修平或移除活跃文档的入站链接</text>
-  <rect x="810" y="356" width="330" height="40" rx="6" fill="#fee2e2" stroke="#f87171"/>
-  <text x="975" y="381" text-anchor="middle" font-size="11" fill="#991b1b">实例：533 词侧栏小控件与 972 词过期否决件直删</text>
+  <rect x="422" y="218" width="356" height="206" rx="10" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="600" y="246" text-anchor="middle" font-size="15" font-weight="700" fill="#334155">② 封存进 archived/ · 永久焊死</text>
+  <text x="600" y="272" text-anchor="middle" font-size="11" fill="#334155">仅限已完整落地的 implemented 记录</text>
+  <text x="600" y="292" text-anchor="middle" font-size="11" fill="#334155">（过时 proposed 只转 rejected 或直删）</text>
+  <text x="600" y="320" text-anchor="middle" font-size="11" fill="#475569">• 移三件套 + 插 Archived: 日期（正文不动）</text>
+  <text x="600" y="340" text-anchor="middle" font-size="11" fill="#475569">• 切换整文件哈希 + 追加防篡改清单</text>
+  <text x="600" y="360" text-anchor="middle" font-size="11" fill="#475569">• 单向修平入站链接，移出 .rgignore 默认搜索</text>
+  <rect x="442" y="374" width="316" height="36" rx="6" fill="#e2e8f0" stroke="#94a3b8"/>
+  <text x="600" y="396" text-anchor="middle" font-size="11" font-weight="600" fill="#334155">校准：重复沙箱模式边界焊稳后封存入库</text>
 
-  <rect x="40" y="430" width="1120" height="66" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="60" y="456" font-size="12" font-weight="700" fill="#92400e">硬规定：每新增一篇 Note，必须在同一 PR 搜全树做取代检查（Supersession Check）</text>
-  <text x="60" y="480" fill="#475569">新方案完全取代旧决定时，须把旧篇独有理由、备选与验证吸收完毕并修平链接后再归档/合并；部分取代则保留两篇活跃并双向互链。</text>
+  <rect x="804" y="218" width="356" height="206" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="982" y="246" text-anchor="middle" font-size="15" font-weight="700" fill="#991b1b">③ 整套删除 · 不拿归档当回收站</text>
+  <text x="982" y="272" text-anchor="middle" font-size="11" fill="#334155">彻底失去保留价值的三类记录直接清场：</text>
+  <text x="982" y="296" text-anchor="middle" font-size="11" fill="#475569">• 100% 被新篇吸收独有理由后的旧记录</text>
+  <text x="982" y="316" text-anchor="middle" font-size="11" fill="#475569">• 旧规误建的局部 UI 微调与纯机械搬迁</text>
+  <text x="982" y="336" text-anchor="middle" font-size="11" fill="#475569">• 诱惑前提已消失的过时 rejected 否决件</text>
+  <text x="982" y="356" text-anchor="middle" font-size="11" fill="#475569">• .md + .zh.md + .i18n.yaml 一起删并修链</text>
+  <rect x="824" y="374" width="316" height="36" rx="6" fill="#fee2e2" stroke="#f87171"/>
+  <text x="982" y="396" text-anchor="middle" font-size="11" font-weight="600" fill="#991b1b">校准：533 词侧栏导轨与 972 词旧否决件直删</text>
 
-  <rect x="40" y="512" width="1120" height="60" rx="10" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="60" y="538" font-size="12" font-weight="700" fill="#166534">防误删校准：代码改动小 ≠ 该删除</text>
-  <text x="60" y="560" fill="#475569">只要记录的是真实行为取舍、性能权衡、权限边界或长效命名约定，哪怕正文只有一百多词，也绝不属于「机械改动删除」范围。</text>
+  <rect x="40" y="442" width="548" height="144" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="62" y="468" font-size="13" font-weight="700" fill="#92400e">硬动作：每新增一篇 Note 同 PR 必做取代检查（Supersession Check）</text>
+  <text x="62" y="492" font-size="11" fill="#334155">趁新方案作者最清楚重叠边界时当场搜活跃树，严禁留下新旧两篇结论打架：</text>
+  <text x="62" y="514" font-size="11" fill="#475569">• 完全取代：新篇吸收旧篇独有动机、备选、代价与测试缺口后，归档或合并删旧篇</text>
+  <text x="62" y="534" font-size="11" fill="#475569">• 部分取代：只要仍有残留兼容层或幸存规则，新旧两篇同时留存并双向互链</text>
+  <text x="62" y="560" font-size="11" font-weight="600" fill="#92400e">为什么不等年底大扫除？因为失忆的 Coding Agent 搜到哪篇就会信哪篇。</text>
+
+  <rect x="612" y="442" width="548" height="144" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="634" y="468" font-size="13" font-weight="700" fill="#166534">防误删红线：代码改动小 ≠ 机械改动</text>
+  <text x="634" y="492" font-size="11" fill="#334155">清退只看「是否确立了非显然的行为或工程边界」，绝不按代码行数一刀切：</text>
+  <text x="634" y="514" font-size="11" fill="#475569">• 哪怕只改十几行代码、正文仅 171 词（如放宽重复沙箱审批），也是真决策</text>
+  <text x="634" y="534" font-size="11" fill="#475569">• 小 bug 边界、性能权衡、权限规则与长效命名约定，一律禁止按机械记录误删</text>
+  <text x="634" y="560" font-size="11" font-weight="600" fill="#166534">字数再长但只记局部样式（533 词）该删；字数再短但钉死边界（248 词）必留。</text>
 </svg>

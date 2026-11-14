@@ -1,90 +1,85 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" width="1200" height="650" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <title>Host 启动引导、Client 增量跟随与会话内切目录联动</title>
-  <desc>Host 启动时打开 workspace 存储域、恢复未完成的两步写、校验状态，仅在 initialized 为 false 时做一次历史 bootstrap。Client 通过 workspace/follow 先收完整 baseline 再跟增量，现算侧栏分组。会话中途调用 working_directory 切换目录只写入会话事件并更新工具当前目录，不触发工作区变更。</desc>
-
-  <rect width="1200" height="650" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">启动引导、实时跟随与中途切目录：各自走哪条链？</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">Host 启动一次成形，Client 靠流式 baseline + 增量投影；会话内切目录走独立的会话事件流</text>
-
-  <!-- Host column -->
-  <rect x="40" y="84" width="530" height="446" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
-  <text x="60" y="110" font-size="13" font-weight="700" fill="#1e40af">Host 启动时序（每个 $DSH_HOME 一份 workspace.json）</text>
-  <text x="60" y="128" font-size="10.5" fill="#1e40af">packages/workspace/workspace/src/index.ts</text>
-
-  <rect x="60" y="142" width="490" height="56" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="76" y="164" font-size="11" font-weight="700" fill="#1e3a8a">1  等待持久化就绪，打开 workspace 存储域（v2）</text>
-  <text x="76" y="184" fill="#475569" font-size="10.5">强制依赖 storageDomain 与 sessionPersistence，防止误判历史为空</text>
-
-  <path d="M305 198 L305 210" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arr25b)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" width="1200" height="640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>Host 启动引导、Client 增量跟随与会话中途切目录联动</title>
+  <desc>Host 启动时等待持久化就绪、恢复两步写标记、校验完整性并在首次初始化时完成历史 bootstrap；Client 通过 workspace/follow 接收 baseline 与增量帧现算分组；对话中途调用 working_directory 仅写会话事件，不改沙箱根与工作区分组。</desc>
   <defs>
-    <marker id="arr25b" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#60a5fa"/></marker>
+    <marker id="arr25e1" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arr25e2" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#22c55e"/>
+    </marker>
   </defs>
+  <rect width="1200" height="640" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">从启动引导、流式跟随到中途切目录：三条运行链互不串台</text>
+  <text x="600" y="56" text-anchor="middle" font-size="11.5" fill="#475569">Host 启动一次成形；Client 靠 baseline + 增量帧实时投影；会话内切目录走独立的会话事件流</text>
 
-  <rect x="60" y="212" width="490" height="56" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="76" y="234" font-size="11" font-weight="700" fill="#1e3a8a">2  恢复中断的两步写（pendingMutation）</text>
-  <text x="76" y="254" fill="#475569" font-size="10.5">创建中断则回滚、删除中断则补完；无标记却表与顺序不一致直接报错停机</text>
+  <!-- Left: Host Boot Sequence -->
+  <rect x="36" y="82" width="546" height="432" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="58" y="108" font-size="13" font-weight="700" fill="#1e3a8a">Host 启动引导链（每个 $DSH_HOME 一份 workspace.json）</text>
+  <text x="58" y="126" font-size="10" fill="#1e40af">packages/workspace/workspace/src/index.ts</text>
 
-  <path d="M305 268 L305 280" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arr25b)"/>
+  <rect x="58" y="140" width="502" height="54" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="76" y="162" font-size="11" font-weight="700" fill="#1e3a8a">1. 等待 storageDomain 与 sessionPersistence 双双就绪</text>
+  <text x="76" y="181" font-size="10" fill="#475569">绝不把“持久化尚未挂载”误判成“历史为空”而提前锁定初始化标记</text>
 
-  <rect x="60" y="282" width="490" height="56" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="76" y="304" font-size="11" font-weight="700" fill="#1e3a8a">3  全量完整性校验</text>
-  <text x="76" y="324" fill="#475569" font-size="10.5">检查重复规范路径、同一会话跨组重复挂接、workspaceIds 顺序漂移</text>
+  <line x1="309" y1="194" x2="309" y2="208" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr25e1)"/>
 
-  <path d="M305 338 L305 350" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arr25b)"/>
+  <rect x="58" y="212" width="502" height="54" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="76" y="234" font-size="11" font-weight="700" fill="#1e3a8a">2. 恢复崩溃中断的两步写（pendingMutation）与完整性校验</text>
+  <text x="76" y="253" font-size="10" fill="#475569">创建中断回滚、删除中断补完；无标记却表与 workspaceIds 失配则报错停机</text>
 
-  <rect x="60" y="352" width="490" height="82" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="76" y="374" font-size="11" font-weight="700" fill="#1e3a8a">4  仅当 initialized === false：历史 bootstrap</text>
-  <text x="76" y="394" fill="#1e3a8a" font-size="10.5">只读全部 SessionHeader（id / cwd / createdAt），按规范化现存目录分组建工作区，</text>
-  <text x="76" y="412" fill="#1e3a8a" font-size="10.5">最新会话所在组排最前；全部落盘后最后写 initialized: true（中断可安全续跑）。</text>
-  <text x="76" y="428" fill="#1e3a8a" font-size="10.5">一旦置为 true，今后重启永远不再重扫目录收编旧会话。</text>
+  <line x1="309" y1="266" x2="309" y2="280" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr25e1)"/>
 
-  <path d="M305 434 L305 446" stroke="#60a5fa" stroke-width="1.5" marker-end="url(#arr25b)"/>
+  <rect x="58" y="284" width="502" height="78" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="76" y="306" font-size="11" font-weight="700" fill="#1e3a8a">3. 仅当 initialized === false：执行一生一次的历史 bootstrap</text>
+  <text x="76" y="326" font-size="10" fill="#1e3a8a">只读全部会话头（id / cwd / createdAt），按现存规范化路径分组建工作区；</text>
+  <text x="76" y="344" font-size="10" fill="#1e40af">全部写完才置 initialized: true，此后重启永不再按目录重扫收编</text>
 
-  <rect x="60" y="448" width="490" height="56" rx="8" fill="#ffffff" stroke="#c7d2fe"/>
-  <text x="76" y="470" font-size="11" font-weight="700" fill="#1e3a8a">5  构建内存缓存并对外提供 ctx.workspaceRegistry</text>
-  <text x="76" y="490" fill="#475569" font-size="10.5">后续只有显式 create / delete / attachSession / 置顶 / 归档才会改动状态</text>
+  <line x1="309" y1="362" x2="309" y2="376" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arr25e1)"/>
 
-  <!-- Client column -->
-  <rect x="610" y="84" width="550" height="446" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
-  <text x="630" y="110" font-size="13" font-weight="700" fill="#166534">Client 持续跟随（每个窗口独立维护本地视图偏好）</text>
-  <text x="630" y="128" font-size="10.5" fill="#166534">packages/api/workspace-controller · packages/client/ui-workspace</text>
+  <rect x="58" y="380" width="502" height="54" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="76" y="402" font-size="11" font-weight="700" fill="#1e3a8a">4. 暴露 ctx.workspaceRegistry 并守卫归档准入</text>
+  <text x="76" y="421" font-size="10" fill="#475569">归档前派发 session-activity 检查在途轮次/子任务，默认拒绝藏匿活任务</text>
 
-  <rect x="630" y="142" width="510" height="56" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="646" y="164" font-size="11" font-weight="700" fill="#14532d">1  建立 workspace/follow 流订阅</text>
-  <text x="646" y="184" fill="#475569" font-size="10.5">首帧必收完整 baseline（items + workspaceIds + archived + pinned）</text>
+  <rect x="58" y="446" width="502" height="52" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="76" y="468" font-size="10.5" font-weight="700" fill="#334155">首启空库引导：工作区与会话全空时，GUI 在文稿目录建 default-workspace</text>
+  <text x="76" y="486" font-size="10" fill="#64748b">删掉默认工作区后同样记录状态，不会在下次启动时强行重建</text>
 
-  <path d="M885 198 L885 210" stroke="#4ade80" stroke-width="1.5" marker-end="url(#arr25c)"/>
-  <defs>
-    <marker id="arr25c" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#4ade80"/></marker>
-  </defs>
+  <!-- Right: Client Follow Sequence -->
+  <rect x="618" y="82" width="546" height="432" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="640" y="108" font-size="13" font-weight="700" fill="#166534">Client 流式跟随链（每个窗口独立保存本地视图偏好）</text>
+  <text x="640" y="126" font-size="10" fill="#15803d">packages/api/workspace-controller · packages/client/ui-workspace</text>
 
-  <rect x="630" y="212" width="510" height="56" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="646" y="234" font-size="11" font-weight="700" fill="#14532d">2  消费有序增量帧</text>
-  <text x="646" y="254" fill="#475569" font-size="10.5">按 upsert / remove / order / archived / pinned（及权限变更 replace）更新模型</text>
+  <rect x="640" y="140" width="502" height="54" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="658" y="162" font-size="11" font-weight="700" fill="#14532d">1. 订阅 workspace/follow，首帧接收完整 baseline 快照</text>
+  <text x="658" y="181" font-size="10" fill="#475569">一次对齐全部工作区实体、workspaceIds 顺序、已置顶与已归档集合</text>
 
-  <path d="M885 268 L885 280" stroke="#4ade80" stroke-width="1.5" marker-end="url(#arr25c)"/>
+  <line x1="891" y1="194" x2="891" y2="208" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arr25e2)"/>
 
-  <rect x="630" y="282" width="510" height="56" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="646" y="304" font-size="11" font-weight="700" fill="#14532d">3  竞态防护与断线换代</text>
-  <text x="646" y="324" fill="#475569" font-size="10.5">已删除工作区加本地墓碑防旧响应复活；断线重连直接用新一代 baseline 整份替换</text>
+  <rect x="640" y="212" width="502" height="54" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="658" y="234" font-size="11" font-weight="700" fill="#14532d">2. 持续消费增量帧（upsert / remove / order / archived / pinned）</text>
+  <text x="658" y="253" font-size="10" fill="#475569">权限收缩时收 replace 整包替换；断线重连直接用新 baseline 覆盖自愈</text>
 
-  <path d="M885 338 L885 350" stroke="#4ade80" stroke-width="1.5" marker-end="url(#arr25c)"/>
+  <line x1="891" y1="266" x2="891" y2="280" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arr25e2)"/>
 
-  <rect x="630" y="352" width="510" height="82" rx="8" fill="#dcfce7" stroke="#4ade80"/>
-  <text x="646" y="374" font-size="11" font-weight="700" fill="#14532d">4  deriveGroups 合成侧栏树</text>
-  <text x="646" y="394" fill="#14532d" font-size="10.5">融合工作区名册、会话摘要列表与实时运行/待审批状态，算出各节与末尾 Ungrouped；</text>
-  <text x="646" y="412" fill="#14532d" font-size="10.5">叠加本窗口持久化的分组模式、展开状态与本地手动排序。</text>
-  <text x="646" y="428" fill="#14532d" font-size="10.5">多开窗口共享同一套分组归属，仅展开折叠与手动行序各自独立。</text>
+  <rect x="640" y="284" width="502" height="78" rx="8" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="658" y="306" font-size="11" font-weight="700" fill="#14532d">3. deriveGroups 合成侧栏分组树 + 本地视图叠加</text>
+  <text x="658" y="326" font-size="10" fill="#14532d">融合会话摘要与运行状态算出各工作区节与末尾 Ungrouped；</text>
+  <text x="658" y="344" font-size="10" fill="#166534">叠加本窗口 localStorage 的展开折叠、分组模式与节内手动行序</text>
 
-  <path d="M885 434 L885 446" stroke="#4ade80" stroke-width="1.5" marker-end="url(#arr25c)"/>
+  <line x1="891" y1="362" x2="891" y2="376" stroke="#22c55e" stroke-width="1.5" marker-end="url(#arr25e2)"/>
 
-  <rect x="630" y="448" width="510" height="56" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
-  <text x="646" y="470" font-size="11" font-weight="700" fill="#14532d">5  点开某行会话进入对话视图</text>
-  <text x="646" y="490" fill="#475569" font-size="10.5">对话内容与当前有效工作目录从该会话自身的事件流投影，与工作区列表解耦</text>
+  <rect x="640" y="380" width="502" height="54" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="658" y="402" font-size="11" font-weight="700" fill="#14532d">4. 删除墓碑防在途竞态复活</text>
+  <text x="658" y="421" font-size="10" fill="#475569">客户端为刚删除的工作区保留本地标记，防止晚到的旧请求把已删节写回</text>
 
-  <!-- bridge: mid-turn workingDirectory interaction -->
-  <rect x="40" y="546" width="1120" height="84" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="60" y="570" font-size="12" font-weight="700" fill="#92400e">跨轮运行联动：当会话中途调用 working_directory({ cd: "../other-repo" }) 时发生什么？</text>
-  <text x="60" y="592" fill="#334155" font-size="11">1. ctx.workingDirectory 校验目录存在后写入会话事件 working-directory/change，向模型下一轮注入新的 Current working directory 上下文；相对路径工具与新子进程切过去。</text>
-  <text x="60" y="612" fill="#991b1b" font-size="11">2. SessionHeader.cwd 保持不变 → sandboxPolicy 可写根仍在原项目，workspace/follow 不发任何事件，左侧该会话依然稳稳留在原 Workspace 节内。</text>
+  <rect x="640" y="446" width="502" height="52" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="658" y="468" font-size="10.5" font-weight="700" fill="#334155">点开会话行：进入独立的 Conversation 事件流投影视图</text>
+  <text x="658" y="486" font-size="10" fill="#64748b">聊天消息与当前有效工作目录从该会话自身日志派生，与侧栏分组解耦</text>
+
+  <!-- Bottom: Mid-turn working_directory({ cd }) -->
+  <rect x="36" y="530" width="1128" height="92" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="58" y="556" font-size="12.5" font-weight="700" fill="#92400e">对话中途联动：模型调用 working_directory({ cd: "../repo-b" }) 时发生什么？</text>
+  <text x="58" y="580" font-size="10.5" fill="#334155">1. 会话事件链：ctx.workingDirectory 校验目标目录存在 → 追加 working-directory/change 事件 → 下一轮注入新工作目录提示，相对路径工具与新子进程切至 repo-b。</text>
+  <text x="58" y="602" font-size="10.5" font-weight="700" fill="#991b1b">2. 沙箱与工作区链纹丝不动：SessionHeader.cwd 仍锁在原 repo-a → 越界改 repo-b 文件照常触发沙箱审批，workspace.json 零写入，侧栏稳留原工作区节！</text>
 </svg>

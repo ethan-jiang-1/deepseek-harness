@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>探针在证据层里的位置：它填的三个空洞，与撑住它的三条不变量</title>
-  <desc>左列是四层证据各连什么、缺什么：单测连假世界、确定性高但只证明预想的路由；覆盖率证明行跑过但不证明按发布形态工作；真 API e2e 连真模型但不确定、要 key；录制会话快照有基线可 diff 但只覆盖录下的路径。中列是探针及其填的三个空洞：还不知道期望值是什么、被断言的是装配之后的产物、要找的是缺席而不是不相等。右列是撑住这三件事的三条不变量：model-visible 与 logged 等价让请求侧可重建、日志可解析且有版本让黑盒可观测、确定性来自固定输入而非固定输出。底部是毕业路径：探针跑一次读出事实，人写成判据，判据加固定夹具成为断言，配上基线成为快照；以及三档退出码 0 通过、1 发现、2 环境未就绪的分工。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>探针与四层正式测试的分工、三大盲区及三条 DSH 底层不变量</title>
+  <desc>左列展示单元测试、覆盖率门禁、录制会话快照与真 API e2e 四层正式测试各自验证的对象与局限；中列展示探针填补的三个盲区（尚无期望基线、验证多插件真实装配产物、排查某项缺席），强调探针跑在真实 Profile 插件组装之上而非手写裸脚本；右列展示支撑探针可信的三条 DSH 不变量（model-visible 与 logged 等价、结构化版本日志分离存储提示词与工具、llm-replay 固定模型流）。底部说明探针毕业为回归门禁的条件、三档机器退出码（0/1/2 BLOCKED）以及三类静默假绿防线。</desc>
   <defs>
     <marker id="pb-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#0f766e"/>
@@ -10,133 +10,88 @@
     </marker>
   </defs>
 
-  <rect width="1200" height="800" rx="8" fill="#f8fafc"/>
-  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">探针：证据层里的位置与撑住它的三条不变量</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">它不是内置子系统，而是实证工作法 —— 会话日志把请求与事件完整落盘，外部脚本直接解析即可取证</text>
+  <rect width="1200" height="680" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">探针在测试体系中的分工与三条底层不变量</text>
+  <text x="600" y="56" text-anchor="middle" fill="#64748b">探针跑在真实 Profile 插件组装之上，不是脱离宿主手写裸调用脚本——靠会话日志与外部产物拿铁证</text>
 
-  <!-- Column headers -->
-  <text x="40" y="92" font-size="12" font-weight="700" fill="#334155">四层证据：各连什么、缺什么</text>
-  <text x="440" y="92" font-size="12" font-weight="700" fill="#0f766e">探针：填的三个空洞</text>
-  <text x="820" y="92" font-size="12" font-weight="700" fill="#92400e">撑住它的三条不变量</text>
+  <text x="40" y="88" font-size="12" font-weight="700" fill="#334155">① 四层正式测试：各管哪一段</text>
+  <text x="430" y="88" font-size="12" font-weight="700" fill="#0f766e">② 探针（Probe）：填补三个测试盲区</text>
+  <text x="820" y="88" font-size="12" font-weight="700" fill="#92400e">③ 支撑探针可信的三条 DSH 不变量</text>
 
-  <!-- Left column -->
-  <rect x="40" y="104" width="360" height="66" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="58" y="126" font-size="12" font-weight="700" fill="#334155">单测</text>
-  <text x="58" y="145" font-size="11" fill="#64748b">连假世界 · 确定性高 · 断言精确</text>
-  <text x="58" y="162" font-size="11" fill="#b91c1c">缺：只证明预想的路由，不证明发布形态能工作</text>
+  <!-- Col 1: 4 test tiers -->
+  <rect x="40" y="100" width="356" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="58" y="122" font-size="12" font-weight="700" fill="#0f172a">单元测试（test）</text>
+  <text x="58" y="142" font-size="10.5" fill="#475569">验单函数分支；盲区：抓不住多插件漏注入与装配错位</text>
 
-  <rect x="40" y="180" width="360" height="66" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="58" y="202" font-size="12" font-weight="700" fill="#334155">覆盖率门禁</text>
-  <text x="58" y="221" font-size="11" fill="#64748b">证明「这行跑过」</text>
-  <text x="58" y="238" font-size="11" fill="#b91c1c">缺：100% 绿、产品完全不能用的事故真实发生过</text>
+  <rect x="40" y="172" width="356" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="58" y="194" font-size="12" font-weight="700" fill="#0f172a">覆盖率门禁（test:coverage）</text>
+  <text x="58" y="214" font-size="10.5" fill="#475569">只证代码行跑过；100% 绿仍可能发布入口崩溃（0001）</text>
 
-  <rect x="40" y="256" width="360" height="66" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="58" y="278" font-size="12" font-weight="700" fill="#334155">真 API e2e</text>
-  <text x="58" y="297" font-size="11" fill="#64748b">连真模型 · 看世界不看措辞</text>
-  <text x="58" y="314" font-size="11" fill="#b91c1c">缺：要 key、烧配额、结果不可复现</text>
+  <rect x="40" y="244" width="356" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="58" y="266" font-size="12" font-weight="700" fill="#0f172a">录制会话快照（test:snapshot · keyless）</text>
+  <text x="58" y="286" font-size="10.5" fill="#475569">真进程 + 回放流比对基线；盲区：只覆盖已录制路径</text>
 
-  <rect x="40" y="332" width="360" height="66" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="58" y="354" font-size="12" font-weight="700" fill="#334155">录制会话快照</text>
-  <text x="58" y="373" font-size="11" fill="#64748b">真进程 + 回放模型 · 有基线可 diff</text>
-  <text x="58" y="390" font-size="11" fill="#b91c1c">缺：只覆盖录下来的那条路径</text>
+  <rect x="40" y="316" width="356" height="62" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="58" y="338" font-size="12" font-weight="700" fill="#0f172a">真模型端到端（test:e2e · with-key）</text>
+  <text x="58" y="358" font-size="10.5" fill="#475569">验真模型决策；盲区：需 API Key 且采样措辞有波动</text>
 
-  <!-- Center column: probe -->
-  <rect x="440" y="104" width="340" height="294" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
-  <text x="610" y="130" text-anchor="middle" font-size="14" font-weight="700" fill="#0f766e">探针 probe</text>
-  <text x="610" y="150" text-anchor="middle" font-size="11" fill="#134e4a">一次性 · 驱动真组合 · 产出事实 · 不承诺稳定</text>
+  <!-- Col 2: Probe -->
+  <rect x="430" y="100" width="356" height="278" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
+  <text x="608" y="126" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0f766e">探针工作法（无预设基线的实证运行）</text>
+  <text x="608" y="145" text-anchor="middle" font-size="10.5" fill="#115e59">可跑 keyless 回放或真模型，先把真实状态摊在桌面上</text>
 
-  <rect x="458" y="164" width="304" height="66" rx="8" fill="#ffffff" stroke="#99f6e4"/>
-  <text x="474" y="185" font-size="11" font-weight="700" fill="#0f766e">空洞① 期望值还不知道</text>
-  <text x="474" y="203" font-size="11" fill="#334155">写断言 = 先猜答案再验答案</text>
-  <text x="474" y="220" font-size="11" fill="#334155">探针只做前半步：跑一遍，把事实摊开</text>
+  <rect x="450" y="158" width="316" height="62" rx="8" fill="#ffffff" stroke="#99f6e4"/>
+  <text x="468" y="180" font-size="11" font-weight="700" fill="#0f766e">盲区① 还不知道标准答案长什么样</text>
+  <text x="468" y="200" font-size="10.5" fill="#334155">不靠盲猜写断言，先跑一遍真实装配拿到实际输出</text>
 
-  <rect x="458" y="238" width="304" height="66" rx="8" fill="#ffffff" stroke="#99f6e4"/>
-  <text x="474" y="259" font-size="11" font-weight="700" fill="#0f766e">空洞② 装配之后无断言点</text>
-  <text x="474" y="277" font-size="11" fill="#334155">拼好的 system prompt、汇总的工具集合</text>
-  <text x="474" y="294" font-size="11" fill="#334155">不是任何函数的返回值，是装配的产物</text>
+  <rect x="450" y="228" width="316" height="62" rx="8" fill="#ffffff" stroke="#99f6e4"/>
+  <text x="468" y="250" font-size="11" font-weight="700" fill="#0f766e">盲区② 待验对象是多插件叠合后的产物</text>
+  <text x="468" y="270" font-size="10.5" fill="#334155">最终系统提示词与工具集只在完整 Profile 装配后成形</text>
 
-  <rect x="458" y="312" width="304" height="66" rx="8" fill="#ffffff" stroke="#99f6e4"/>
-  <text x="474" y="333" font-size="11" font-weight="700" fill="#0f766e">空洞③ bug 是「缺席」不是「不相等」</text>
-  <text x="474" y="351" font-size="11" fill="#334155">段落没注入、工具没进清单、横幅没出现</text>
-  <text x="474" y="368" font-size="11" fill="#334155">为无穷多种缺席写期望，写不完</text>
+  <rect x="450" y="298" width="316" height="62" rx="8" fill="#ffffff" stroke="#99f6e4"/>
+  <text x="468" y="320" font-size="11" font-weight="700" fill="#0f766e">盲区③ 排查“某项缺席”而非返回值不等</text>
+  <text x="468" y="340" font-size="10.5" fill="#334155">快速定位规则段未注入、工具未暴露或前端卡片漏画</text>
 
-  <line x1="404" y1="250" x2="434" y2="250" stroke="#0f766e" stroke-width="2" marker-end="url(#pb-a)"/>
-  <line x1="786" y1="250" x2="814" y2="250" stroke="#b45309" stroke-width="2" marker-end="url(#pb-b)"/>
+  <line x1="398" y1="239" x2="424" y2="239" stroke="#0f766e" stroke-width="2" marker-end="url(#pb-a)"/>
+  <line x1="788" y1="239" x2="814" y2="239" stroke="#b45309" stroke-width="2" marker-end="url(#pb-b)"/>
 
-  <!-- Right column: invariants -->
-  <rect x="820" y="104" width="340" height="90" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="838" y="126" font-size="12" font-weight="700" fill="#92400e">① model-visible ⟺ logged</text>
-  <text x="838" y="145" font-size="11" fill="#334155">任何到达模型请求的东西都能从会话日志重建</text>
-  <text x="838" y="163" font-size="11" fill="#334155">⇒「模型收到了什么」是可复核的事实，不是猜</text>
-  <text x="838" y="182" font-size="11" fill="#92400e">没有它 ⇒ 探针退化成「模型说它看到了」</text>
+  <!-- Col 3: 3 invariants -->
+  <rect x="820" y="100" width="340" height="84" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="838" y="122" font-size="12" font-weight="700" fill="#92400e">① model-visible ⟺ logged</text>
+  <text x="838" y="142" font-size="10.5" fill="#334155">凡进入模型请求的内容均落盘，可离线完整重建</text>
+  <text x="838" y="162" font-size="10.5" fill="#b45309">无需改框架源码打日志，也不用外挂抓包代理</text>
 
-  <rect x="820" y="204" width="340" height="108" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="838" y="226" font-size="12" font-weight="700" fill="#92400e">② 日志可解析、有版本</text>
-  <text x="838" y="245" font-size="11" fill="#334155">request/header —— envelope + 组装后的工具 schema</text>
-  <text x="838" y="263" font-size="11" fill="#334155">system/message —— 渲染后的 system prompt（不在 header）</text>
-  <text x="838" y="281" font-size="11" fill="#334155">⇒ 黑盒可观测，产品不需要为探针开接口</text>
-  <text x="838" y="300" font-size="11" fill="#92400e">两个地方、两种事件 —— 混着读必然读出假结论</text>
+  <rect x="820" y="196" width="340" height="90" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="838" y="218" font-size="12" font-weight="700" fill="#92400e">② 带版本的公开日志（两处分离存储）</text>
+  <text x="838" y="238" font-size="10.5" fill="#334155">system/message 存提示词；request/header 存工具集</text>
+  <text x="838" y="258" font-size="10.5" fill="#b91c1c">切忌去 request/header 翻 system 字段误判漏挂</text>
 
-  <rect x="820" y="322" width="340" height="76" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="838" y="344" font-size="12" font-weight="700" fill="#92400e">③ 确定性来自固定输入</text>
-  <text x="838" y="363" font-size="11" fill="#334155">dsh-llm-replay 用录好的模型流替掉真 adapter</text>
-  <text x="838" y="381" font-size="11" fill="#334155">⇒ 真装配 + 假模型 + 可复跑</text>
+  <rect x="820" y="298" width="340" height="80" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="838" y="320" font-size="12" font-weight="700" fill="#92400e">③ dsh-llm-replay 锁定模型输入流</text>
+  <text x="838" y="340" font-size="10.5" fill="#334155">替换线上适配器，零密钥重现 100% 真实插件装配</text>
+  <text x="838" y="360" font-size="10.5" fill="#64748b">异常分支可用 replay.override.json 精确注入故障</text>
 
-  <line x1="40" y1="424" x2="1160" y2="424" stroke="#cbd5e1" stroke-width="1"/>
+  <!-- Graduation + Exit codes -->
+  <rect x="40" y="398" width="1120" height="132" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="60" y="424" font-size="12.5" font-weight="700" fill="#0f172a">为什么探针本身不是 CI 门禁？—— 区别在于“有没有提交期望基线”，而非能不能 keyless</text>
+  <text x="60" y="446" font-size="11" fill="#475569">回放探针与无头浏览器探针同样可以无密钥（keyless）运行；但未固化 *.expected.* 基线前，它只是探索性取证，配齐归一化基线与断言后即“毕业”为回归快照或单测。</text>
 
-  <!-- Graduation path -->
-  <text x="40" y="452" font-size="12" font-weight="700" fill="#334155">毕业路径：探针读到的事实如何变成不再叫探针的东西</text>
+  <rect x="60" y="464" width="340" height="48" rx="6" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="78" y="484" font-size="11" font-weight="700" fill="#166534">退出码 0 ＝ 环境正常且符合判据</text>
+  <text x="78" y="501" font-size="10" fill="#475569">自动化或 Agent 可继续推进下一步</text>
 
-  <rect x="40" y="468" width="212" height="70" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="146" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">① 探针跑一次</text>
-  <text x="146" y="512" text-anchor="middle" font-size="11" fill="#64748b">产出事实：字节数、在场/缺席</text>
-  <text x="146" y="528" text-anchor="middle" font-size="11" fill="#64748b">无基线，第一次是发现</text>
+  <rect x="420" y="464" width="340" height="48" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="438" y="484" font-size="11" font-weight="700" fill="#991b1b">退出码 1 ＝ 观测结果违背判据（抓到缺陷）</text>
+  <text x="438" y="501" font-size="10" fill="#475569">立即保留现场日志与证据，停手定位</text>
 
-  <rect x="272" y="468" width="212" height="70" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="378" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">② 人写成判据</text>
-  <text x="378" y="512" text-anchor="middle" font-size="11" fill="#64748b">「这段应当在、约占 N 字节」</text>
-  <text x="378" y="528" text-anchor="middle" font-size="11" fill="#64748b">判据会错，要带校准日期</text>
+  <rect x="780" y="464" width="360" height="48" rx="6" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="798" y="484" font-size="11" font-weight="700" fill="#92400e">退出码 2 ＝ 环境未就绪（BLOCKED）</text>
+  <text x="798" y="501" font-size="10" fill="#475569">缺 Chrome / Key / zstd 显式报错，严禁静默退 0</text>
 
-  <rect x="504" y="468" width="212" height="70" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="610" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">③ 判据 + 固定夹具</text>
-  <text x="610" y="512" text-anchor="middle" font-size="11" fill="#64748b">= 一条断言</text>
-  <text x="610" y="528" text-anchor="middle" font-size="11" fill="#64748b">同一份夹具两次跑应当一致</text>
-
-  <rect x="736" y="468" width="212" height="70" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="842" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">④ 配上基线</text>
-  <text x="842" y="512" text-anchor="middle" font-size="11" fill="#64748b">快照 / 渲染期望</text>
-  <text x="842" y="528" text-anchor="middle" font-size="11" fill="#64748b">漂了由 diff 说话</text>
-
-  <rect x="968" y="468" width="192" height="70" rx="8" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="1064" y="492" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">⑤ 毕业</text>
-  <text x="1064" y="512" text-anchor="middle" font-size="11" fill="#166534">不再是探针</text>
-  <text x="1064" y="528" text-anchor="middle" font-size="11" fill="#334155">别再让它游荡</text>
-
-  <line x1="252" y1="503" x2="268" y2="503" stroke="#94a3b8" stroke-width="2" marker-end="url(#pb-a)"/>
-  <line x1="484" y1="503" x2="500" y2="503" stroke="#94a3b8" stroke-width="2" marker-end="url(#pb-a)"/>
-  <line x1="716" y1="503" x2="732" y2="503" stroke="#94a3b8" stroke-width="2" marker-end="url(#pb-a)"/>
-  <line x1="948" y1="503" x2="964" y2="503" stroke="#16a34a" stroke-width="2" marker-end="url(#pb-a)"/>
-
-  <!-- Exit codes -->
-  <rect x="40" y="560" width="1120" height="92" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="60" y="584" font-size="12" font-weight="700" fill="#334155">退出码是给机器的合同，不是给人的提示 —— 三档对应三种不同的动作</text>
-  <rect x="60" y="596" width="352" height="42" rx="6" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="76" y="616" font-size="11" font-weight="700" fill="#166534">0 = 判据成立</text>
-  <text x="76" y="632" font-size="11" fill="#334155">agent 继续</text>
-  <rect x="424" y="596" width="352" height="42" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="440" y="616" font-size="11" font-weight="700" fill="#991b1b">1 = 判据不成立（这是发现）</text>
-  <text x="440" y="632" font-size="11" fill="#334155">停下、报告、按判据处置</text>
-  <rect x="788" y="596" width="352" height="42" rx="6" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="804" y="616" font-size="11" font-weight="700" fill="#92400e">2 = 环境未就绪（BLOCKED）</text>
-  <text x="804" y="632" font-size="11" fill="#334155">换环境重试，不当作失败</text>
-
-  <line x1="40" y1="670" x2="1160" y2="670" stroke="#cbd5e1" stroke-width="1"/>
-
-  <!-- Bottom line -->
-  <text x="40" y="696" font-size="11" fill="#64748b">探针不能替代的四件事：回归防线（没基线就没有 diff）、CI 信号（要浏览器 / key，永不 keyless）、正确性判决（它给事实，判断在人）、模型自主选择（回放里的回复是录制的）。</text>
-  <text x="40" y="720" font-size="11" fill="#64748b">探针唯一的严格性：同一份夹具 + 同一份判据 ⇒ 同一个结论。守住它，探针比任何自报都可信；守不住，它就是一个会撒谎的仪表。</text>
-
-  <rect x="40" y="736" width="1120" height="46" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="60" y="758" font-size="12" font-weight="700" fill="#991b1b">探针价值的三个因子：事实可信度 × 判据清晰度 × 它自己会不会撒谎 —— 任一项为 0，产出就是 0，而且看上去和满分没有区别。</text>
-  <text x="60" y="775" font-size="11" fill="#334155">三种静默失效：行 id 写错（不报错，真实 adapter 照答）、裸脚本塞进 file（整行不 activate）、工具使用藏住常驻状态（证明的是工具不是提示词）。</text>
+  <!-- Guardrails against silent false greens -->
+  <rect x="40" y="546" width="1120" height="110" rx="10" fill="#fef2f2" stroke="#fecaca"/>
+  <text x="60" y="572" font-size="12" font-weight="700" fill="#991b1b">动手写探针严防三类“静默假绿”</text>
+  <text x="60" y="594" font-size="11" fill="#334155">1. --patch 写错目标条目 id 导致补丁未挂载、原装模型照常接管 → 动跑前先用 dsh --profile ... --dump-config 或查 request/header 核实；</text>
+  <text x="60" y="616" font-size="11" fill="#334155">2. 测常驻提示词时未封死工具调用，模型顺手调 read / bash 现查文件答对 → 单轮指令必须写明“禁止调用任何工具，没看到直说 NONE”；</text>
+  <text x="60" y="638" font-size="11" fill="#334155">3. 脱离真实 Profile 宿主手写裸调用脚本，漏掉配置层叠与插件冲突 → 探针必须经真实 dsh 入口或 Loader 装配拉起，并先故意改坏一次验红。</text>
 </svg>

@@ -1,88 +1,94 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>录制会话快照对 DSH 插件开发的价值：一页看懂</title>
-  <desc>三列并排。左列（蓝）主仓为什么离不开它：起点是 postmortem 0001，178 个单测全绿、100% 行覆盖率，ACP 桥上线却彻底瘫痪；它锁定的是组装之后的完整会话转录——模型实际收到了什么、输出了什么、落了什么盘，并能在无密钥 CI 里逐字节复现。中列（绿）插件仓怎么复用：@deepseek-ai/dsh-llm-replay 是公开发布在 npm 上的标准 Cordis 插件，直接接受未经投影的原始明文运行日志，能解决三类问题——锁定请求头与轨迹回归、稳定复现模型流相关 bug、验证提示词与工具定义变更。右列（琥珀与红）代价与硬上限：主仓多世代语料配额制度不要照抄，业务语义断言必须自己写，而且快照只是变更探测器而非正确性裁判——postmortem 0002 中一次快照刷新曾把 UNKNOWN_TOOL 报错录成新基线并全绿放行。底部是插件测试推进顺序：前 3 步（导出与模块检查、行为与清理单测、真实 Loader 装配测试）默认必做，第 4 步（DOM 渲染期望或录制会话回放）命中触发条件再按需启用。</desc>
+  <title>录制会话快照对 DSH 插件开发的价值：一页总览</title>
+  <desc>三列并排总结录制会话快照对插件开发的决策要点。左列说明主仓为什么离不开它：源自 postmortem 0001（178 个单测全绿、100% 行覆盖率但生产不可用），锁住真实组装后的完整会话转录并在无密钥 CI 中确定性重放。中列说明插件仓可复用公开 npm 包 @deepseek-ai/dsh-llm-replay，直接读取原始明文 session.jsonl，解决多步跨版回归、偶发流 bug 复现与模型可见面核验三类问题。右列说明维护代价与硬上限：主仓多世代配额制度不要照抄，且快照只是变更探测器而非正确性裁判（postmortem 0002）。底部展示插件测试四步推进阶梯。</desc>
   <defs>
     <marker id="ov-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+    <marker id="ov-g" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#16a34a"/>
     </marker>
   </defs>
 
   <rect width="1200" height="640" rx="8" fill="#f8fafc"/>
   <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">录制会话快照与插件开发：一页总览</text>
-  <text x="600" y="58" text-anchor="middle" fill="#64748b">核心原则：回放机制随时可拿，主仓配额制度别抄，正确性判断绝不能外包</text>
+  <text x="600" y="58" text-anchor="middle" fill="#64748b">核心铁律：回放机制随时可拿，主仓配额制度别抄，正确性判断绝不能外包</text>
 
   <rect x="40" y="80" width="360" height="336" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="220" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">① 主仓为什么离不开它</text>
-  <line x1="64" y1="124" x2="376" y2="124" stroke="#bfdbfe" stroke-width="1"/>
-  <text x="64" y="150" font-size="11" font-weight="700" fill="#1e40af">起点：postmortem 0001 真实事故</text>
-  <text x="64" y="172" fill="#334155">178 个单测全绿、100% 行覆盖率，</text>
-  <text x="64" y="190" fill="#334155">dsh --profile acp 生产环境完全不可用</text>
-  <text x="64" y="208" fill="#64748b" font-size="11">根因：手搭单测绕过了真实 Loader 装载与进程拓扑</text>
-  <text x="64" y="240" font-size="11" font-weight="700" fill="#1e40af">无可替代的独特证据</text>
-  <rect x="64" y="252" width="312" height="62" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="220" y="276" text-anchor="middle" font-weight="700" fill="#1e40af">真实组装后的完整会话转录</text>
-  <text x="220" y="296" text-anchor="middle" fill="#334155" font-size="11">模型实际收到的请求头 / 输出流 / 工具调用与落盘</text>
-  <text x="64" y="340" font-size="11" font-weight="700" fill="#1e40af">真运行保真度 + 夹具确定性</text>
-  <text x="64" y="362" fill="#334155">人工带密钥真跑一次，落盘提交进 Git</text>
-  <text x="64" y="380" fill="#64748b" font-size="11">CI 无密钥只读重放，PR 里逐行审阅文本 diff</text>
-  <text x="64" y="404" fill="#64748b" font-size="11">顺带检验历史版本会话格式的向前兼容读取</text>
+  <text x="220" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">① 主仓为什么离不开它</text>
+  <line x1="64" y1="122" x2="376" y2="122" stroke="#bfdbfe" stroke-width="1"/>
+  <text x="64" y="148" font-size="11" font-weight="700" fill="#1e40af">导火索：postmortem 0001 生产瘫痪</text>
+  <text x="64" y="170" font-size="11" fill="#334155">178 个单测全绿、100% 行覆盖率，</text>
+  <text x="64" y="188" font-size="11" fill="#334155">dsh --profile acp 发版后彻底不可用</text>
+  <text x="64" y="208" font-size="11" fill="#64748b">根因：手搭单测绕过了真实配置装载与子进程链</text>
+  <text x="64" y="238" font-size="11" font-weight="700" fill="#1e40af">无可替代的独特证据</text>
+  <rect x="64" y="250" width="312" height="62" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="220" y="274" text-anchor="middle" font-weight="700" fill="#1e40af">真实组装后的完整会话转录</text>
+  <text x="220" y="295" text-anchor="middle" font-size="11" fill="#334155">系统提示词 / 请求头工具表 / 输出流 / 落盘事件</text>
+  <text x="64" y="338" font-size="11" font-weight="700" fill="#1e40af">真运行保真度 + 无密钥确定性</text>
+  <text x="64" y="360" font-size="11" fill="#334155">本地带密钥真跑一次，审阅后提交进 Git</text>
+  <text x="64" y="380" font-size="11" fill="#64748b">CI 零密钥逐字节重放，PR 逐行审文本 diff</text>
+  <text x="64" y="400" font-size="11" fill="#64748b">主仓顺带守护历史会话格式的向前兼容读取</text>
 
   <rect x="420" y="80" width="360" height="336" rx="10" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="600" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">② 插件仓能复用什么</text>
-  <line x1="444" y1="124" x2="756" y2="124" stroke="#bbf7d0" stroke-width="1"/>
-  <text x="444" y="150" font-size="11" font-weight="700" fill="#166534">基础：回放器是公开 npm 插件</text>
-  <text x="444" y="172" fill="#334155">@deepseek-ai/dsh-llm-replay</text>
-  <text x="444" y="190" fill="#64748b" font-size="11">版本须与目标 dsh CLI 严格对齐</text>
-  <text x="444" y="208" fill="#64748b" font-size="11">直接接受未经投影脱敏的原始明文 session.jsonl</text>
-  <text x="444" y="240" font-size="11" font-weight="700" fill="#166534">能解决的三类实际问题</text>
-  <rect x="444" y="252" width="312" height="46" rx="8" fill="#dcfce7" stroke="#4ade80"/>
-  <text x="460" y="272" fill="#166534" font-weight="700">A · 多步轨迹与跨版本回归</text>
-  <text x="460" y="290" fill="#334155" font-size="11">固定组装后的完整转录，升级 DSH 时防行为漂移</text>
-  <rect x="444" y="304" width="312" height="46" rx="8" fill="#dcfce7" stroke="#4ade80"/>
-  <text x="460" y="324" fill="#166534" font-weight="700">B · 偶发模型流 Bug 稳定复现</text>
-  <text x="460" y="342" fill="#334155" font-size="11">固定输出流仍复现 = 代码缺陷；支持异常/取消注入</text>
-  <rect x="444" y="356" width="312" height="46" rx="8" fill="#dcfce7" stroke="#4ade80"/>
-  <text x="460" y="376" fill="#166534" font-weight="700">C · 锁定模型可见输入（request/header）</text>
-  <text x="460" y="394" fill="#334155" font-size="11">逐字核对注入的系统提示词与工具 JSON Schema</text>
+  <text x="600" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">② 外部插件仓怎么复用</text>
+  <line x1="444" y1="122" x2="756" y2="122" stroke="#bbf7d0" stroke-width="1"/>
+  <text x="444" y="148" font-size="11" font-weight="700" fill="#166534">底座：回放器是公开 npm 插件</text>
+  <text x="444" y="170" font-size="11" fill="#334155">@deepseek-ai/dsh-llm-replay（锁同 CLI 版本）</text>
+  <text x="444" y="190" font-size="11" fill="#64748b">直接接受未经脱敏投影的原始明文 session.jsonl</text>
+  <text x="444" y="210" font-size="11" fill="#64748b">两层薄 --patch 即可打通录制与无密钥回放</text>
+  <text x="444" y="238" font-size="11" font-weight="700" fill="#166534">能解决的三类真问题</text>
+  <rect x="444" y="250" width="312" height="46" rx="8" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="462" y="270" font-weight="700" fill="#166534">A · 多步编排与跨版本回归</text>
+  <text x="462" y="288" font-size="11" fill="#334155">固定完整会话轨迹，随 DSH 升版防行为漂移</text>
+  <rect x="444" y="302" width="312" height="46" rx="8" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="462" y="322" font-weight="700" fill="#166534">B · 偶发模型流 Bug 稳定锁死</text>
+  <text x="462" y="340" font-size="11" fill="#334155">固定流仍复现即坐实代码缺陷；支持异常/取消注入</text>
+  <rect x="444" y="354" width="312" height="46" rx="8" fill="#dcfce7" stroke="#4ade80"/>
+  <text x="462" y="374" font-weight="700" fill="#166534">C · 锁定组装后的模型可见面</text>
+  <text x="462" y="392" font-size="11" fill="#334155">逐字比对 system/message 与 request/header</text>
 
   <rect x="800" y="80" width="360" height="336" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="980" y="110" text-anchor="middle" font-size="14" font-weight="700" fill="#b45309">③ 维护代价与硬上限</text>
-  <line x1="824" y1="124" x2="1136" y2="124" stroke="#fde68a" stroke-width="1"/>
-  <text x="824" y="150" font-size="11" font-weight="700" fill="#92400e">别照抄：主仓重型语料治理</text>
-  <text x="824" y="172" fill="#334155">多世代保留配额、四入口分工、corpus 门禁、</text>
-  <text x="824" y="190" fill="#334155">强绑 vitest 的 dsh-session-snapshot</text>
-  <text x="824" y="208" fill="#64748b" font-size="11">这些服务于数百场景的大仓，小插件仓照搬纯属负担</text>
-  <text x="824" y="240" font-size="11" font-weight="700" fill="#92400e">必须自备：独立业务与外部状态断言</text>
-  <text x="824" y="262" fill="#334155">工作区文件是否真改对、哪些错误绝不该出现，</text>
-  <text x="824" y="280" fill="#334155">必须由独立于会话日志的断言来把关</text>
+  <text x="980" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#b45309">③ 维护代价与硬上限</text>
+  <line x1="824" y1="122" x2="1136" y2="122" stroke="#fde68a" stroke-width="1"/>
+  <text x="824" y="148" font-size="11" font-weight="700" fill="#92400e">别照抄：主仓重型语料配额制度</text>
+  <text x="824" y="170" font-size="11" fill="#334155">多世代并存配额、四入口目录分工、</text>
+  <text x="824" y="188" font-size="11" fill="#334155">强绑 vitest 的 dsh-session-snapshot</text>
+  <text x="824" y="208" font-size="11" fill="#64748b">外部插件仓重录直接覆盖单文件，不背历史包袱</text>
+  <text x="824" y="238" font-size="11" font-weight="700" fill="#92400e">必须自备：独立外部终态与禁区断言</text>
+  <text x="824" y="260" font-size="11" fill="#334155">磁盘文件是否真写对、哪些错误码绝不该出现，</text>
+  <text x="824" y="278" font-size="11" fill="#334155">必须靠会话文本之外的独立断言把关</text>
 
-  <rect x="824" y="298" width="312" height="100" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="980" y="322" text-anchor="middle" font-weight="700" fill="#991b1b">硬上限：变更探测器 ≠ 正确性裁判</text>
-  <text x="980" y="344" text-anchor="middle" fill="#334155" font-size="11">postmortem 0002：7 个场景报 UNKNOWN_TOOL，</text>
-  <text x="980" y="361" text-anchor="middle" fill="#334155" font-size="11">快照刷新把故障录成新期望输出，套件照样全绿</text>
-  <text x="980" y="384" text-anchor="middle" fill="#991b1b" font-size="11" font-weight="700">刷新只是重生成夹具，代替不了人工正确性审查</text>
+  <rect x="824" y="296" width="312" height="104" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="980" y="320" text-anchor="middle" font-weight="700" fill="#991b1b">硬上限：变更探测器 ≠ 正确性裁判</text>
+  <text x="980" y="342" text-anchor="middle" font-size="11" fill="#334155">postmortem 0002：7 个场景报 UNKNOWN_TOOL，</text>
+  <text x="980" y="360" text-anchor="middle" font-size="11" fill="#334155">一次盲目刷新把故障录成新基线，测试照样全绿</text>
+  <text x="980" y="384" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">刷新只是重产夹具，绝不能替代正确性审查</text>
 
   <line x1="600" y1="416" x2="600" y2="444" stroke="#64748b" stroke-width="2" marker-end="url(#ov-a)"/>
 
-  <rect x="40" y="452" width="1120" height="150" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
-  <text x="60" y="478" font-size="13" font-weight="700" fill="#334155">插件测试推进阶梯：前 3 步默认必做，第 4 步命中触发条件再启用</text>
+  <rect x="40" y="450" width="1120" height="162" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="62" y="476" font-size="13" font-weight="700" fill="#334155">插件测试推进阶梯：先把前 3 步低成本底座做齐，命中触发条件再开第 4 步</text>
 
-  <rect x="60" y="492" width="240" height="52" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="180" y="514" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">1 · 导出形态检查</text>
-  <text x="180" y="532" text-anchor="middle" font-size="11" fill="#64748b">禁 default 导出，防丢 inject</text>
+  <rect x="62" y="492" width="232" height="54" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="178" y="515" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">1 · 导出形态检查</text>
+  <text x="178" y="534" text-anchor="middle" font-size="11" fill="#64748b">禁 default 导出，防丢 inject</text>
+  <line x1="298" y1="519" x2="318" y2="519" stroke="#64748b" stroke-width="1.5" marker-end="url(#ov-a)"/>
 
-  <rect x="316" y="492" width="240" height="52" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="436" y="514" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">2 · 行为与卸载单测</text>
-  <text x="436" y="532" text-anchor="middle" font-size="11" fill="#64748b">挂真依赖测逻辑，测 dispose 清理</text>
+  <rect x="324" y="492" width="232" height="54" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="440" y="515" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">2 · 行为与清理单测</text>
+  <text x="440" y="534" text-anchor="middle" font-size="11" fill="#64748b">挂真依赖测分支，验卸载无残留</text>
+  <line x1="560" y1="519" x2="580" y2="519" stroke="#64748b" stroke-width="1.5" marker-end="url(#ov-a)"/>
 
-  <rect x="572" y="492" width="256" height="52" rx="8" fill="#ffffff" stroke="#94a3b8"/>
-  <text x="700" y="514" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">3 · 真实 Loader 装配测试</text>
-  <text x="700" y="532" text-anchor="middle" font-size="11" fill="#64748b">读 cordis.yml 启动，验配置与拓扑</text>
+  <rect x="586" y="492" width="244" height="54" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="708" y="515" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">3 · 真实 Loader 装配测试</text>
+  <text x="708" y="534" text-anchor="middle" font-size="11" fill="#64748b">读 cordis.yml 启动，验配置与拓扑</text>
+  <line x1="834" y1="519" x2="854" y2="519" stroke="#16a34a" stroke-width="1.5" marker-end="url(#ov-g)"/>
 
-  <rect x="844" y="492" width="296" height="52" rx="8" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
-  <text x="992" y="514" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">4 · 渲染期望 / 录制会话回放（按需）</text>
-  <text x="992" y="532" text-anchor="middle" font-size="11" fill="#166534">改 UI 先上 DOM 期望；改模型输入再上回放</text>
+  <rect x="860" y="492" width="278" height="54" rx="8" fill="#dcfce7" stroke="#4ade80" stroke-width="2"/>
+  <text x="999" y="515" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">4 · 渲染期望 / 会话回放（按需）</text>
+  <text x="999" y="534" text-anchor="middle" font-size="11" fill="#166534">UI 优先 DOM 期望；编排再上回放</text>
 
-  <text x="60" y="576" font-size="12" font-weight="700" fill="#334155">一句话口诀：机制可以拿，制度不要抄，判断不能外包。</text>
-  <text x="60" y="594" fill="#475569" font-size="11">带密钥的真模型 e2e 验证「今天对线上模型还能跑通」，无密钥录制回放验证「组装转录没有意外漂移」——两者互补，互不替代。</text>
+  <text x="62" y="574" font-size="12" font-weight="700" fill="#334155">分工互补：带密钥真模型 e2e 验证「今天对线上模型还能调通」，无密钥录制回放验证「组装转录没有意外漂移」。</text>
+  <text x="62" y="594" font-size="11" fill="#475569">夹具须明文进 Git 供 PR 逐行 diff（禁开 Git LFS）；临时 .sessions/ 目录与未脱敏用户日志一律写进 .gitignore。</text>
 </svg>

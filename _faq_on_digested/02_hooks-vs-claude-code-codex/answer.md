@@ -9,6 +9,8 @@
 
 一句话定性：**兼容桥是为了保住你已有的 `hooks.json` 脚本投资，而不是 DSH 的能力上限；桥能做的所有事，原生插件都能直接做，而且更强、更稳。**（设计取舍详见 [interception extension points Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-06-30-interception-extension-points.md)。）
 
+![DSH 的两层 Hooks 架构：原生进程内拦截链与外部兼容桥](./figures/hooks-two-layers.svg)
+
 ---
 
 ## 一、先看长什么样：兼容桥 vs 原生插件

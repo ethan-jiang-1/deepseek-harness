@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">重度用户三条反直觉体感与 DSH 三层源码机制对位图</title>
+  <desc id="desc">将 10 亿 token 重度用户的三条体感（快小模型跑长程、顺手自改造、多看图验真）逐层映射到表层驾驶舱与运行期护栏（goal、plan、workflow、read_image、预算控制），再下沉到只追加会话日志、分层并发委派与声明式组装三根底层结构支柱。</desc>
+  <defs>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowSlate" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect width="1180" height="640" rx="8" fill="#f8fafc"/>
+  <text x="590" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">三条反直觉体感的源码对位：从用户感知到底层三根结构支柱</text>
+  <text x="590" y="60" text-anchor="middle" font-size="12.5" fill="#475569">把跨步记忆、完成门禁、并发拆分与视觉核验交给 Harness，只留给快模型“把眼前这一小步做好”的窄任务</text>
+
+  <!-- Row 1: 3 User Impressions -->
+  <rect x="36" y="84" width="356" height="114" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="56" y="112" font-size="13.5" font-weight="700" fill="#1e40af">体感一：快小模型跑长程反而更稳</text>
+  <text x="56" y="138" font-size="11.5" fill="#334155">deepseek-flash + max 思考压低单步延迟</text>
+  <text x="56" y="162" font-size="11.5" fill="#334155">跨步推进交给开箱 goal / plan / workflow</text>
+  <text x="56" y="184" font-size="11" fill="#2563eb">单步深想 + 外置状态循环</text>
+
+  <rect x="412" y="84" width="356" height="114" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="432" y="112" font-size="13.5" font-weight="700" fill="#166534">体感二：顺手就能边用边改工作台</text>
+  <text x="432" y="138" font-size="11.5" fill="#334155">并行、Diff 与右栏文档预览现已正式内置</text>
+  <text x="432" y="162" font-size="11.5" fill="#334155">Skill / Patch / Creator 模式零门槛自扩展</text>
+  <text x="432" y="184" font-size="11" fill="#15803d">好默认配置 + 明面上的扩展口</text>
+
+  <rect x="788" y="84" width="356" height="114" rx="10" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5"/>
+  <text x="808" y="112" font-size="13.5" font-weight="700" fill="#92400e">体感三：多给截图实测，少靠空想</text>
+  <text x="808" y="138" font-size="11.5" fill="#334155">read_image 原生看图跑通像素级视觉验真</text>
+  <text x="808" y="162" font-size="11.5" fill="#334155">中途不乱切纯文本重模型，死保前缀缓存</text>
+  <text x="808" y="184" font-size="11" fill="#b45309">真实环境反馈 + 缓存经济学</text>
+
+  <!-- Connectors Row 1 -> Row 2 -->
+  <line x1="214" y1="198" x2="280" y2="228" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <line x1="590" y1="198" x2="590" y2="228" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+  <line x1="966" y1="198" x2="900" y2="228" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+  <!-- Row 2: Surface Cockpit & Runtime Guards -->
+  <rect x="36" y="232" width="542" height="142" rx="10" fill="#ffffff" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="56" y="260" font-size="14" font-weight="700" fill="#1e3a8a">表层驾驶舱：plan 审批拍板 + goal 自动续轮状态机</text>
+  <text x="56" y="288" font-size="12" fill="#334155">· plan-mode：方案卡点 Approve 才动工；切模式不改工具表以保缓存</text>
+  <text x="56" y="314" font-size="12" fill="#334155">· goal：最多 256 轮接力 · 每轮重注目标并核验真实现场 · 前 3 轮禁早退</text>
+  <text x="56" y="340" font-size="11.5" fill="#475569">· 重启或分叉后自动续跑开关强制归零（disarmed），须人类恢复才继续</text>
+
+  <rect x="602" y="232" width="542" height="142" rx="10" fill="#ffffff" stroke="#64748b" stroke-width="1.5"/>
+  <text x="622" y="260" font-size="14" font-weight="700" fill="#0f172a">运行期即时编排、视觉验真与确定性护栏</text>
+  <text x="622" y="288" font-size="12" fill="#334155">· workflow：把获批方案当场写成一次性 JS 脚本并发扇出子任务</text>
+  <text x="622" y="314" font-size="12" fill="#334155">· read_image + 右栏预览：内容寻址存图、附缩放坐标倍率、人机对账</text>
+  <text x="622" y="340" font-size="11.5" fill="#475569">· 确定性护栏：先读后改校验 + spill 落盘 / 结果修剪 / compaction 控预算</text>
+
+  <!-- Connectors Row 2 -> Row 3 -->
+  <line x1="214" y1="374" x2="214" y2="424" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+  <line x1="590" y1="374" x2="590" y2="424" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+  <line x1="966" y1="374" x2="966" y2="424" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+  <!-- Row 3: 3 Structural Pillars -->
+  <text x="44" y="412" font-size="13" font-weight="700" fill="#0f172a">托住全局的三根底层基础设施支柱（反例验证：关掉 goal / plan 后依然完好无损）</text>
+
+  <rect x="36" y="428" width="356" height="144" rx="10" fill="#eef2ff" stroke="#818cf8" stroke-width="1.5"/>
+  <text x="56" y="456" font-size="13.5" font-weight="700" fill="#312e81">1. 只追加 JSONL 会话日志底座</text>
+  <text x="56" y="482" font-size="11.5" fill="#334155">ctx.sessionPersistence（支撑 7 大消费方）</text>
+  <text x="56" y="506" font-size="11.5" fill="#334155">严守 model-visible ⟺ logged 唯一持久权威</text>
+  <text x="56" y="530" font-size="11.5" fill="#334155">跨步记忆外置落盘，前端卡片纯函数回放</text>
+  <text x="56" y="554" font-size="11" font-weight="700" fill="#4338ca">断电不丢现场，小模型无需硬背历史</text>
+
+  <rect x="412" y="428" width="356" height="144" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="1.5"/>
+  <text x="432" y="456" font-size="13.5" font-weight="700" fill="#115e59">2. 重兵投入的分层委派体系</text>
+  <text x="432" y="482" font-size="11.5" fill="#334155">ctx.subagents（6 实现）+ workflow + jobs</text>
+  <text x="432" y="506" font-size="11.5" fill="#334155">空间轴切窄子任务，主会话只收精炼结论</text>
+  <text x="432" y="530" font-size="11.5" fill="#334155">subagent_fork 默认继承路由以复用缓存</text>
+  <text x="432" y="554" font-size="11" font-weight="700" fill="#0f766e">每个叶节点噪音最少、验收标准最单一</text>
+
+  <rect x="788" y="428" width="356" height="144" rx="10" fill="#fdf4ff" stroke="#e879f9" stroke-width="1.5"/>
+  <text x="808" y="456" font-size="13.5" font-weight="700" fill="#86198f">3. 声明式分层组装与热扩展</text>
+  <text x="808" y="482" font-size="11.5" fill="#334155">Bundle → Profile → Preset → --patch</text>
+  <text x="808" y="506" font-size="11.5" fill="#334155">出厂预装完整护栏，按 id 覆写无需改内核</text>
+  <text x="808" y="530" font-size="11.5" fill="#334155">Creator 模式查槽位 + plugin_manager 热装</text>
+  <text x="808" y="554" font-size="11" font-weight="700" fill="#a21caf">同时解释“开箱即用”与“随手好改”</text>
+
+  <!-- Footer Summary -->
+  <rect x="36" y="588" width="1108" height="34" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="590" y="610" text-anchor="middle" font-size="12" fill="#334155">双轴剪刀合流：goal 在时间轴切短轮次 × 委派体系在空间轴切窄切片 + 持久日志与前缀缓存保护 = 快模型始终跑在高效甜点区</text>
+</svg>

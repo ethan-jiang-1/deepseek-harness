@@ -1,79 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 620" width="1040" height="620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>Desktop 与全局 dsh 的隔离与共享边界</title>
+  <desc>Desktop 应用与开发者本机 Node 环境的全局 dsh 在可执行层、插件依赖与界面设置上天然隔离，但在用户数据层默认共用 ~/.dsh。彻底隔离需同时指定 DSH_HOME 与 --user-data-dir。</desc>
   <defs>
-    <marker id="arr2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arr23b" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#64748b"/>
+    </marker>
   </defs>
-  <rect width="960" height="600" fill="#fafafa" rx="6"/>
-  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">Desktop 与全局 dsh：可执行侧天然隔离，数据侧默认共享</text>
-  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">想“完全独立”，要动两个根：$DSH_HOME（数据）与 --user-data-dir（壳状态）；应用内没有开关。</text>
+  <rect width="1040" height="620" rx="8" fill="#f8fafc"/>
+  <text x="520" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Desktop 与全局 CLI：可执行与设置按 Profile 隔离，数据按 $DSH_HOME 共享</text>
+  <text x="520" y="56" text-anchor="middle" font-size="11.5" fill="#475569">想在同一台机器彻底分家并同时双开，必须成对重定位 DSH_HOME（Host 数据）与 --user-data-dir（Electron 壳状态）</text>
 
-  <!-- left column -->
-  <rect x="40" y="76" width="400" height="46" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="240" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">全局 npm dsh（nvm 里那个）</text>
+  <!-- Left column: CLI / Web -->
+  <rect x="36" y="76" width="466" height="174" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="36" y="76" width="466" height="42" rx="10" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="269" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">全局 CLI / Web（开发者本机 Node 环境）</text>
+  <text x="56" y="142" font-size="11" fill="#334155">· 可执行位置：本机 Node 全局目录（如 nvm / fnm / pnpm global）</text>
+  <text x="56" y="164" font-size="11" fill="#334155">· 包管理器：复用系统 PATH 上的 npm / pnpm</text>
+  <text x="56" y="186" font-size="11" fill="#334155">· 插件与界面设置：$DSH_HOME/profiles/web/（独立依赖树与 patch）</text>
+  <text x="56" y="210" font-size="10.5" fill="#64748b">注：唯一终端交集是桌面菜单可选导出的 /usr/local/bin/dsh（点 Remove 即恢复）</text>
+  <text x="56" y="232" font-size="10.5" font-weight="700" fill="#0f766e">✓ 升级或装坏插件绝不波及右侧 Desktop</text>
 
-  <rect x="40" y="134" width="400" height="54" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
-  <text x="56" y="156" font-size="11" fill="#334155">可执行：~/.nvm/.../node_modules/@deepseek-ai/dsh</text>
-  <text x="56" y="176" font-size="11" fill="#334155">包管理：你自己的 npm / pnpm</text>
+  <!-- Right column: Desktop -->
+  <rect x="538" y="76" width="466" height="174" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <rect x="538" y="76" width="466" height="42" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="771" y="102" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">Desktop 桌面应用（独立打包运行时）</text>
+  <text x="558" y="142" font-size="11" fill="#1e3a8a">· 可执行位置：应用包内 app.asar/dsh（不读取全局 @deepseek-ai/dsh）</text>
+  <text x="558" y="164" font-size="11" fill="#1e3a8a">· 包管理器：应用内置 pnpm + 离线 Python 载荷（不依赖系统环境）</text>
+  <text x="558" y="186" font-size="11" fill="#1e3a8a">· 插件与界面设置：$DSH_HOME/profiles/desktop/（Electron 独占写锁）</text>
+  <text x="558" y="210" font-size="10.5" fill="#1e40af">注：Electron 壳快捷键、窗口状态与单实例锁另存系统 userData 目录</text>
+  <text x="558" y="232" font-size="10.5" font-weight="700" fill="#1d4ed8">✓ 与内核同版本号发版，拥有独立插件树与设置层</text>
 
-  <rect x="40" y="198" width="400" height="44" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
-  <text x="56" y="225" font-size="11" fill="#334155">profile：~/.dsh/profiles/web（dsh web 等）</text>
+  <!-- Arrows into shared DSH_HOME -->
+  <line x1="269" y1="250" x2="269" y2="278" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr23b)"/>
+  <line x1="771" y1="250" x2="771" y2="278" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr23b)"/>
 
-  <!-- right column -->
-  <rect x="520" y="76" width="400" height="46" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="720" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">Desktop 应用</text>
+  <!-- Shared DSH_HOME band -->
+  <rect x="36" y="282" width="968" height="122" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="56" y="308" font-size="13" font-weight="700" fill="#92400e">默认共用的数据根：$DSH_HOME（未重定位时两边均指向 ~/.dsh）</text>
+  <text x="56" y="328" font-size="10.5" fill="#78350f">作为同一工作台的两种入口时开箱互通；若拿其中一边做破坏性实验，未拆根就会直接读写同一批生产会话与工作区</text>
 
-  <rect x="520" y="134" width="400" height="54" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
-  <text x="536" y="156" font-size="11" fill="#1e3a8a">自带 runtime：app.asar/dsh（不解析全局 dsh）</text>
-  <text x="536" y="176" font-size="11" fill="#1e3a8a">包管理：bundled pnpm（不依赖系统 pnpm）</text>
+  <rect x="56" y="342" width="176" height="44" rx="6" fill="#ffffff" stroke="#fde68a"/>
+  <text x="144" y="362" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">sessions/</text>
+  <text x="144" y="378" text-anchor="middle" font-size="10" fill="#78350f">全部会话事件日志</text>
 
-  <rect x="520" y="198" width="400" height="44" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
-  <text x="536" y="225" font-size="11" fill="#1e3a8a">profile：profiles/desktop（壳写锁）</text>
+  <rect x="244" y="342" width="176" height="44" rx="6" fill="#ffffff" stroke="#fde68a"/>
+  <text x="332" y="362" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">storages/</text>
+  <text x="332" y="378" text-anchor="middle" font-size="10" fill="#78350f">workspace.json 与插件表</text>
 
-  <!-- exclusive markers -->
-  <text x="240" y="262" text-anchor="middle" font-size="10.5" fill="#64748b">↑ 这一侧完全独立：包、依赖、lockfile、node_modules 都不共享</text>
-  <text x="720" y="262" text-anchor="middle" font-size="10.5" fill="#64748b">↑ 右侧同理：包、依赖、lockfile 都不共享</text>
+  <rect x="432" y="342" width="176" height="44" rx="6" fill="#ffffff" stroke="#fde68a"/>
+  <text x="520" y="362" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">.credentials.yaml</text>
+  <text x="520" y="378" text-anchor="middle" font-size="10" fill="#78350f">API Key 与登录凭据</text>
 
-  <!-- shared band -->
-  <rect x="40" y="284" width="880" height="128" rx="10" fill="#fef9c3" stroke="#fde047"/>
-  <text x="60" y="312" font-size="13" font-weight="700" fill="#713f12">$DSH_HOME（默认两边共享；默认 ~/.dsh）</text>
-  <text x="60" y="332" font-size="10.5" fill="#854d0e">两边都能读写，所以“装 Desktop 会不会污染全局”要分两层看：可执行层不会，用户数据层会。</text>
-  <rect x="60" y="346" width="160" height="34" rx="6" fill="#fefce8" stroke="#facc15"/>
-  <text x="140" y="368" text-anchor="middle" font-size="11" fill="#713f12">会话 sessions/</text>
-  <rect x="232" y="346" width="160" height="34" rx="6" fill="#fefce8" stroke="#facc15"/>
-  <text x="312" y="368" text-anchor="middle" font-size="11" fill="#713f12">storages/ 工作区表</text>
-  <rect x="404" y="346" width="160" height="34" rx="6" fill="#fefce8" stroke="#facc15"/>
-  <text x="484" y="368" text-anchor="middle" font-size="11" fill="#713f12">凭据 .credentials.yaml</text>
-  <rect x="576" y="346" width="160" height="34" rx="6" fill="#fefce8" stroke="#facc15"/>
-  <text x="656" y="368" text-anchor="middle" font-size="11" fill="#713f12">附件 attachments/</text>
-  <rect x="748" y="346" width="152" height="34" rx="6" fill="#fefce8" stroke="#facc15"/>
-  <text x="824" y="368" text-anchor="middle" font-size="11" fill="#713f12">.anonymous-user-id</text>
-  <text x="60" y="400" font-size="10.5" fill="#854d0e">cache/ 与 logs/ 同样按 home。可执行包、插件激活、lockfile、node_modules 不共享；设置写在各自 profile 的 cordis.patch.yml，也不共享。</text>
+  <rect x="620" y="342" width="176" height="44" rx="6" fill="#ffffff" stroke="#fde68a"/>
+  <text x="708" y="362" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">attachments/ · cache/</text>
+  <text x="708" y="378" text-anchor="middle" font-size="10" fill="#78350f">二进制附件与派生缓存</text>
 
-  <!-- arrows from columns into band -->
-  <line x1="60" y1="242" x2="60" y2="282" stroke="#4b5563" marker-end="url(#arr2)"/>
-  <line x1="900" y1="242" x2="900" y2="282" stroke="#4b5563" marker-end="url(#arr2)"/>
+  <rect x="808" y="342" width="176" height="44" rx="6" fill="#ffffff" stroke="#fde68a"/>
+  <text x="896" y="362" text-anchor="middle" font-size="11" font-weight="700" fill="#92400e">dsh-runtimes/ · logs/</text>
+  <text x="896" y="378" text-anchor="middle" font-size="10" fill="#78350f">解压载荷与诊断日志</text>
 
-  <!-- how to isolate -->
-  <rect x="40" y="428" width="430" height="118" rx="8" fill="#ecfdf5" stroke="#6ee7b7"/>
-  <text x="56" y="452" font-size="12" font-weight="700" fill="#065f46">要独立环境：给它一个独立 DSH_HOME</text>
-  <text x="56" y="472" font-size="10.5" fill="#065f46">Desktop 继承进程环境，login shell 里的 DSH_* 不覆盖已继承值；</text>
-  <text x="56" y="490" font-size="10.5" fill="#065f46">Finder 启动不继承你的 export，要从终端直接起二进制：</text>
-  <text x="56" y="512" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" fill="#064e3b">DSH_HOME=$PWD/desk-home \</text>
-  <text x="56" y="530" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9.5" fill="#064e3b">  "/Applications/DeepSeek Harness.app/Contents/MacOS/DeepSeek Harness"</text>
+  <!-- Two isolation boxes -->
+  <rect x="36" y="420" width="474" height="112" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="56" y="444" font-size="12" font-weight="700" fill="#166534">隔离第 1 步：从启动器直接注入独立 DSH_HOME</text>
+  <text x="56" y="465" font-size="10.5" fill="#334155">Finder / Dock 双击图标不继承终端 .zshrc 变量，macOS open --env 亦不可靠；</text>
+  <text x="56" y="483" font-size="10.5" fill="#334155">直接拉起可执行二进制传入 DSH_*，登录 Shell 合并逻辑会优先保留启动器值：</text>
+  <text x="56" y="505" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" fill="#14532d">DSH_HOME="$HOME/.dsh-lab" "/Applications/.../MacOS/DeepSeek Harness" ...</text>
 
-  <rect x="490" y="428" width="430" height="118" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="506" y="452" font-size="12" font-weight="700" fill="#7f1d1d">做不到的部分</text>
-  <text x="506" y="472" font-size="10.5" fill="#7f1d1d">Electron userData（键位、desktop/settings.json、浏览器数据）</text>
-  <text x="506" y="490" font-size="10.5" fill="#7f1d1d">没有应用内开关，只能用 --user-data-dir 指到别处；</text>
-  <text x="506" y="508" font-size="10.5" fill="#7f1d1d">DSH_DESKTOP_USER_DATA_DIR 仅开发态生效。</text>
-  <text x="506" y="526" font-size="10.5" fill="#7f1d1d">单实例锁也按 userData：不换它就只能跑一个。</text>
+  <rect x="530" y="420" width="474" height="112" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="550" y="444" font-size="12" font-weight="700" fill="#991b1b">隔离第 2 步：同时传 --user-data-dir 解开单实例锁</text>
+  <text x="550" y="465" font-size="10.5" fill="#334155">Electron 的 ProcessSingleton 单实例锁与壳配置绑定在 userData 目录上；</text>
+  <text x="550" y="483" font-size="10.5" fill="#334155">漏传 --user-data-dir 会直接唤醒已开窗口退出，漏改 DSH_HOME 则会双窗同写生产库！</text>
+  <text x="550" y="505" font-size="10" fill="#991b1b">注：DSH_DESKTOP_USER_DATA_DIR 仅源码开发启动器有效，正式包必须传 --user-data-dir</text>
 
-  <!-- targets strip -->
-  <rect x="40" y="556" width="212" height="30" rx="6" fill="#ecfdf5" stroke="#6ee7b7"/>
-  <text x="52" y="576" font-size="10.5" fill="#065f46">mac-arm64 ✓ 主线同步发版</text>
-  <rect x="262" y="556" width="212" height="30" rx="6" fill="#fffbeb" stroke="#fcd34d"/>
-  <text x="274" y="576" font-size="10.5" fill="#78350f">mac-x64 ✓ 支持（构建偶有滞后）</text>
-  <rect x="484" y="556" width="212" height="30" rx="6" fill="#ecfdf5" stroke="#6ee7b7"/>
-  <text x="496" y="576" font-size="10.5" fill="#065f46">win-x64 ✓ 主线同步发版</text>
-  <rect x="706" y="556" width="214" height="30" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="718" y="576" font-size="10.5" fill="#7f1d1d">linux ✗ 官方不支持（用 CLI/Web）</text>
+  <!-- Bottom platform support strip -->
+  <rect x="36" y="548" width="248" height="54" rx="8" fill="#ecfdf5" stroke="#6ee7b7"/>
+  <text x="52" y="570" font-size="11" font-weight="700" fill="#065f46">mac-arm64 · win-x64 ✓</text>
+  <text x="52" y="588" font-size="10" fill="#047857">Desktop 主力同步发版（含预编译模块）</text>
+
+  <rect x="296" y="548" width="232" height="54" rx="8" fill="#fffbeb" stroke="#fcd34d"/>
+  <text x="312" y="570" font-size="11" font-weight="700" fill="#92400e">mac-x64（Intel）✓</text>
+  <text x="312" y="588" font-size="10" fill="#78350f">官方签名公证支持，构建推进偶有滞后</text>
+
+  <rect x="540" y="548" width="224" height="54" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="556" y="570" font-size="11" font-weight="700" fill="#991b1b">win32-arm64 ✗</text>
+  <text x="556" y="588" font-size="10" fill="#7f1d1d">无原生安装包（内置离线载荷固定 x64）</text>
+
+  <rect x="776" y="548" width="228" height="54" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="792" y="570" font-size="11" font-weight="700" fill="#334155">Linux 全架构 ✗（用 CLI/Web）</text>
+  <text x="792" y="588" font-size="10" fill="#475569">无桌面包；装 npm 包跑 dsh web</text>
 </svg>

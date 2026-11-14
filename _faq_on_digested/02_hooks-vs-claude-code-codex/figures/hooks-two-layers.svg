@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 640" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <title>DSH 的两层 Hooks 架构：原生进程内拦截链与外部兼容桥</title>
+  <desc>上方主干道为 DSH 原生进程内拦截流水线（agent/created、agent/pre-step、tools/pre-execute、ctx.tools.guard、tools/execute、tools/post-execute、tools/result、agent/turn-stopping）；下方侧挂桥为实验态 dsh-hooks-claude-code（7 事件）与 dsh-hooks-codex（5 事件），右侧标明未桥接事件与五条保留边界。</desc>
+  <defs>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <rect width="1240" height="640" rx="8" fill="#f8fafc"/>
+  <text x="620" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">DSH 的两层 Hooks 架构：原生进程内拦截链 vs 外部兼容桥</text>
+  <text x="620" y="56" text-anchor="middle" font-size="12.5" fill="#475569">新需求直接写强类型 Cordis 插件（零子进程开销）；存量 hooks.json 经实验态兼容桥翻译挂载到同一批原生扩展点。</text>
+
+  <!-- 上半：原生进程内拦截链 -->
+  <rect x="36" y="76" width="1168" height="196" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="60" y="106" font-size="14.5" font-weight="700" fill="#1e40af">原生层（写新逻辑走这里）：普通 TypeScript Cordis 插件</text>
+  <rect x="736" y="86" width="448" height="28" rx="14" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="960" y="104" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1e3a8a">强类型 ctx 服务访问 · ctx.effect() 自动热卸载 · 零进程拉起开销</text>
+
+  <!-- 8 个阶段节点 -->
+  <rect x="56" y="128" width="124" height="86" rx="8" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="118" y="152" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="700" fill="#1e3a8a">agent/created</text>
+  <text x="118" y="176" text-anchor="middle" font-size="11.5" fill="#1e40af">初始化通知</text>
+  <text x="118" y="198" text-anchor="middle" font-size="10.5" fill="#64748b">agent.inject()</text>
+
+  <line x1="180" y1="171" x2="191" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <rect x="193" y="128" width="126" height="86" rx="8" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="256" y="152" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="700" fill="#1e3a8a">agent/pre-step</text>
+  <text x="256" y="176" text-anchor="middle" font-size="11.5" fill="#1e40af">每步前瀑布流</text>
+  <text x="256" y="198" text-anchor="middle" font-size="10.5" fill="#64748b">改写输入或拒收</text>
+
+  <line x1="319" y1="171" x2="330" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <rect x="332" y="128" width="138" height="86" rx="8" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="401" y="152" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="700" fill="#1e3a8a">tools/pre-execute</text>
+  <text x="401" y="176" text-anchor="middle" font-size="11.5" fill="#1e40af">审批拦截瀑布流</text>
+  <text x="401" y="198" text-anchor="middle" font-size="10.5" fill="#64748b">allow / deny / ask</text>
+
+  <line x1="470" y1="171" x2="481" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <rect x="483" y="128" width="132" height="86" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="549" y="152" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="700" fill="#1e3a8a">ctx.tools.guard()</text>
+  <text x="549" y="176" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1e40af">单调只拒硬护栏</text>
+  <text x="549" y="198" text-anchor="middle" font-size="10.5" fill="#1e3a8a">顺序无关防绕过</text>
+
+  <line x1="615" y1="171" x2="626" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <rect x="628" y="128" width="120" height="86" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="688" y="152" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="700" fill="#1e3a8a">tools/execute</text>
+  <text x="688" y="176" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1e40af">包裹工具执行</text>
+  <text x="688" y="198" text-anchor="middle" font-size="10.5" fill="#1e3a8a">超时统计→调实现</text>
+
+  <line x1="748" y1="171" x2="759" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <rect x="761" y="128" width="142" height="86" rx="8" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="832" y="152" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="700" fill="#1e3a8a">tools/post-execute</text>
+  <text x="832" y="176" text-anchor="middle" font-size="11.5" fill="#1e40af">结果后处理瀑布流</text>
+  <text x="832" y="198" text-anchor="middle" font-size="10.5" fill="#64748b">拦截替换 / 附上下文</text>
+
+  <line x1="903" y1="171" x2="914" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <rect x="916" y="128" width="116" height="86" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="974" y="152" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="700" fill="#1e3a8a">tools/result</text>
+  <text x="974" y="176" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1e40af">只读终态观察</text>
+  <text x="974" y="198" text-anchor="middle" font-size="10.5" fill="#1e3a8a">异常隔离不改值</text>
+
+  <line x1="1032" y1="171" x2="1043" y2="171" stroke="#2563eb" stroke-width="1.5" marker-end="url(#arrowBlue)"/>
+
+  <rect x="1045" y="128" width="140" height="86" rx="8" fill="#ffffff" stroke="#60a5fa"/>
+  <text x="1115" y="152" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" font-weight="700" fill="#1e3a8a">agent/turn-stopping</text>
+  <text x="1115" y="176" text-anchor="middle" font-size="11.5" fill="#1e40af">回合收尾前触发</text>
+  <text x="1115" y="198" text-anchor="middle" font-size="10.5" fill="#64748b">steer() 强制续轮</text>
+
+  <text x="620" y="252" text-anchor="middle" font-size="11.5" fill="#1e3a8a">深蓝底色三个节点（ctx.tools.guard · tools/execute · tools/result）为 DSH 原生独有细粒度切面，外部两家 shell hooks 均无直接对应。</text>
+
+  <!-- 中间桥接连线 -->
+  <path d="M124,372 C124,325 118,315 118,220" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowPurple)"/>
+  <path d="M270,372 C270,325 256,315 256,220" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowPurple)"/>
+  <path d="M416,372 C416,325 401,315 401,220" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowPurple)"/>
+  <path d="M562,372 C562,310 832,320 832,220" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowPurple)"/>
+  <path d="M708,372 C708,302 1115,316 1115,220" fill="none" stroke="#7c3aed" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrowPurple)"/>
+
+  <rect x="446" y="286" width="352" height="24" rx="12" fill="#f3e8ff" stroke="#c4b5fd"/>
+  <text x="622" y="302" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">由 dsh-hook-protocol 将外部子进程钩子桥接到原生阶段</text>
+
+  <!-- 下左：外部兼容桥（实验态） -->
+  <rect x="36" y="326" width="760" height="240" rx="12" fill="#faf5ff" stroke="#c4b5fd"/>
+  <text x="58" y="355" font-size="14" font-weight="700" fill="#6d28d9">兼容桥层（实验态，需显式挂载）：hooks-claude-code（7 事件）· hooks-codex（5 事件）</text>
+
+  <rect x="56" y="372" width="136" height="58" rx="7" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="124" y="395" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#5b21b6">SessionStart</text>
+  <text x="124" y="415" text-anchor="middle" font-size="11" fill="#6d28d9">注入会话初始上下文</text>
+
+  <rect x="202" y="372" width="136" height="58" rx="7" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="270" y="395" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" fill="#5b21b6">UserPromptSubmit</text>
+  <text x="270" y="415" text-anchor="middle" font-size="11" fill="#6d28d9">阻断或附加上下文</text>
+
+  <rect x="348" y="372" width="136" height="58" rx="7" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="416" y="395" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#5b21b6">PreToolUse</text>
+  <text x="416" y="415" text-anchor="middle" font-size="10.5" fill="#6d28d9">阻断（CC 含 ask）</text>
+
+  <rect x="494" y="372" width="136" height="58" rx="7" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="562" y="395" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#5b21b6">PostToolUse</text>
+  <text x="562" y="415" text-anchor="middle" font-size="10.5" fill="#6d28d9">拦截反馈或附上下文</text>
+
+  <rect x="640" y="372" width="136" height="58" rx="7" fill="#ffffff" stroke="#c4b5fd"/>
+  <text x="708" y="395" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-weight="700" fill="#5b21b6">Stop</text>
+  <text x="708" y="415" text-anchor="middle" font-size="10.5" fill="#6d28d9">steer() 强制续轮</text>
+
+  <rect x="56" y="444" width="720" height="44" rx="7" fill="#ede9fe" stroke="#c4b5fd"/>
+  <text x="416" y="471" text-anchor="middle" font-size="11.5" fill="#5b21b6">Claude Code 桥额外覆盖第 6–7 个事件：SubagentStart（进程内子代理注入）· SubagentStop（只读观察；Codex 桥不含）</text>
+
+  <rect x="56" y="500" width="720" height="50" rx="7" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="416" y="521" text-anchor="middle" font-size="11.5" font-weight="700" fill="#334155">执行与审计语义：仅执行 command 子进程 · 同事件按配置顺序串行（按 deny &gt; ask &gt; allow 最严合并）</text>
+  <text x="416" y="540" text-anchor="middle" font-size="11" fill="#64748b">回合内每次调用成对写入 hook/invoked 与 hook/result 审计日志，对模型上下文完全透明</text>
+
+  <!-- 下右：未桥接事件与刻意保留的限制 -->
+  <rect x="816" y="326" width="388" height="240" rx="12" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="838" y="355" font-size="14" font-weight="700" fill="#9a3412">未桥接事件与 5 条刻意保留的边界</text>
+
+  <text x="838" y="388" font-weight="700" fill="#7c2d12">· 不进兼容桥的事件（归专用插件）：</text>
+  <text x="852" y="410" font-size="11.5" fill="#9a3412">PreCompact · Notification · PermissionRequest</text>
+
+  <text x="838" y="442" font-weight="700" fill="#7c2d12">· 显式跳过的处理器与动作：</text>
+  <text x="852" y="464" font-size="11.5" fill="#9a3412">1. 跳过非 command 类型（prompt / agent / http / mcp）</text>
+  <text x="852" y="486" font-size="11.5" fill="#9a3412">2. updatedInput 仅打告警，不改写工具入参</text>
+  <text x="852" y="508" font-size="11.5" fill="#9a3412">3. continue: false 仅记录，不强停整轮会话</text>
+  <text x="852" y="530" font-size="11.5" fill="#9a3412">4. transcript_path 恒空；5. Stop 脚本需自备收敛条件</text>
+
+  <!-- 底部选型栏 -->
+  <rect x="36" y="582" width="1168" height="40" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="620" y="607" text-anchor="middle" font-size="12.5" fill="#334155">选型定性：兼容桥保住已有 hooks.json 脚本资产；凡是新建安全护栏、审计或动态上下文注入，直接写原生 Cordis 插件更稳更强。</text>
+</svg>

@@ -1,115 +1,114 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>两个回路：指挥者在外，执行者在内</title>
-  <desc>人类指挥者的回路在外面：切窄片、说清意图、委派执行、审最小证据，通过则合并、偏离则整 PR 回滚。agent 执行者的六步闭环在里面。右侧说明"轻松"分主语，并给出仓库自述与两个回路的接口。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 620" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">主仓研发的内外双环：人类切窄片审证据，Coding Agent 跑六步闭环</title>
+  <desc id="desc">外圈是人类维护者的指挥回路：切窄片（代码、测试、文档同 PR，跨切面决策按需补 Note）、说清意图、委派执行、审最小证据并决定合入或整包回滚；内圈是 Coding Agent 的六步窄证据切片闭环。右侧区分日常用户与仓库维护者两个主语并标明双环交接契约。</desc>
   <defs>
     <marker id="arrowBlue" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#2563eb"/>
     </marker>
-    <marker id="arrowGray" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+    <marker id="arrowSlate" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
       <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
     </marker>
   </defs>
 
-  <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
-  <text x="600" y="38" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">两个回路：指挥者在外，执行者在内</text>
-  <text x="600" y="64" text-anchor="middle" font-size="13" fill="#64748b">六步闭环是 agent 的执行回路；人类开发者的体验在它外面一圈——轻松要分两个主语。</text>
+  <rect width="1180" height="620" rx="8" fill="#f8fafc"/>
+  <text x="590" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">主仓研发的内外双环：人类切窄片审证据，Agent 跑六步闭环</text>
+  <text x="590" y="62" text-anchor="middle" font-size="12.5" fill="#475569">日常使用的省心来自运行时产品姿态；仓库开发的顺手则来自“外圈掌方向、内圈扛合规”的双环分工</text>
 
-  <text x="40" y="92" font-size="12" font-weight="700" fill="#1e40af">人类指挥者的回路（外圈）</text>
-  <line x1="240" y1="160" x2="258" y2="160" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
-  <line x1="460" y1="160" x2="478" y2="160" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
-  <line x1="680" y1="160" x2="698" y2="160" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
-  <line x1="800" y1="212" x2="800" y2="236" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  <!-- Outer Loop: Human Maintainer -->
+  <text x="40" y="92" font-size="12.5" font-weight="700" fill="#1e40af">人类维护者的指挥外圈</text>
 
-  <rect x="40" y="105" width="200" height="110" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <circle cx="64" cy="128" r="11" fill="#2563eb"/>
-  <text x="64" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">1</text>
-  <text x="140" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">切窄片</text>
-  <text x="140" y="162" text-anchor="middle" font-size="12" fill="#334155">一个垂直切片：</text>
-  <text x="140" y="182" text-anchor="middle" font-size="12" fill="#334155">代码+测试+文档+Note</text>
-  <text x="140" y="202" text-anchor="middle" font-size="12" fill="#334155">同 PR</text>
+  <rect x="36" y="104" width="186" height="108" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="129" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">1. 切窄片</text>
+  <text x="129" y="158" text-anchor="middle" font-size="11.5" fill="#334155">代码 + 测试 + 文档同 PR</text>
+  <text x="129" y="180" text-anchor="middle" font-size="11" fill="#475569">（跨切面决策按需补 Note）</text>
 
-  <rect x="260" y="105" width="200" height="110" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <circle cx="284" cy="128" r="11" fill="#2563eb"/>
-  <text x="284" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">2</text>
-  <text x="360" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">说清意图</text>
-  <text x="360" y="162" text-anchor="middle" font-size="12" fill="#334155">只声明不可派生的</text>
-  <text x="360" y="182" text-anchor="middle" font-size="12" fill="#334155">本质；衍生面交给</text>
-  <text x="360" y="202" text-anchor="middle" font-size="12" fill="#334155">制度生成</text>
+  <line x1="222" y1="158" x2="238" y2="158" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
 
-  <rect x="480" y="105" width="200" height="110" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <circle cx="504" cy="128" r="11" fill="#2563eb"/>
-  <text x="504" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">3</text>
-  <text x="580" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">委派执行</text>
-  <text x="580" y="162" text-anchor="middle" font-size="12" fill="#334155">agent 走完六步</text>
-  <text x="580" y="182" text-anchor="middle" font-size="12" fill="#334155">闭环（第一节）</text>
-  <text x="580" y="202" text-anchor="middle" font-size="12" fill="#334155">门禁替它记得规则</text>
+  <rect x="242" y="104" width="186" height="108" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="335" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">2. 说清意图</text>
+  <text x="335" y="158" text-anchor="middle" font-size="11.5" fill="#334155">只声明目标与验收边界</text>
+  <text x="335" y="180" text-anchor="middle" font-size="11" fill="#475569">派生物交给生成器刷新</text>
 
-  <rect x="700" y="105" width="200" height="110" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
-  <circle cx="724" cy="128" r="11" fill="#2563eb"/>
-  <text x="724" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">4</text>
-  <text x="800" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#1e40af">审最小证据</text>
-  <text x="800" y="162" text-anchor="middle" font-size="12" fill="#334155">只看"会为这次回归</text>
-  <text x="800" y="182" text-anchor="middle" font-size="12" fill="#334155">而失败"的那个检查</text>
-  <text x="800" y="202" text-anchor="middle" font-size="12" fill="#334155">+ 对应报告</text>
+  <line x1="428" y1="158" x2="444" y2="158" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
 
-  <rect x="700" y="240" width="200" height="110" rx="10" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="800" y="268" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">通过？</text>
-  <text x="800" y="296" text-anchor="middle" font-size="12" fill="#7f1d1d">通过 → 合并</text>
-  <text x="800" y="318" text-anchor="middle" font-size="12" fill="#7f1d1d">偏离 → 整 PR 回滚</text>
-  <text x="800" y="340" text-anchor="middle" font-size="11" fill="#b91c1c">↺ 撤销一次原子操作，回到①</text>
+  <rect x="448" y="104" width="186" height="108" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="541" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">3. 委派执行</text>
+  <text x="541" y="158" text-anchor="middle" font-size="11.5" fill="#334155">Agent 在内圈跑六步闭环</text>
+  <text x="541" y="180" text-anchor="middle" font-size="11" fill="#475569">门禁与技能替它盯硬规则</text>
 
-  <text x="40" y="270" font-size="12" font-weight="700" fill="#334155">agent 执行者的回路（内圈 = 第一节六步）</text>
+  <line x1="634" y1="158" x2="650" y2="158" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>
 
-  <rect x="270" y="417" width="120" height="66" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
-  <text x="330" y="444" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">执行者 = agent</text>
-  <text x="330" y="468" text-anchor="middle" font-size="11.5" fill="#334155">六步闭环</text>
+  <rect x="654" y="104" width="186" height="108" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <text x="747" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#991b1b">4. 审证据并拍板</text>
+  <text x="747" y="158" text-anchor="middle" font-size="11.5" fill="#334155">核对会报红的最小证据</text>
+  <text x="747" y="180" text-anchor="middle" font-size="11" fill="#991b1b">通过合入 · 跑偏整 PR 回滚</text>
 
-  <line x1="390" y1="304" x2="410" y2="370" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <line x1="460" y1="405" x2="460" y2="505" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <line x1="408" y1="540" x2="392" y2="580" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <line x1="266" y1="592" x2="252" y2="545" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <line x1="200" y1="505" x2="200" y2="405" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
-  <line x1="252" y1="370" x2="268" y2="308" stroke="#64748b" stroke-width="2" marker-end="url(#arrowGray)"/>
+  <!-- Handoff arrows between Outer and Inner loops -->
+  <line x1="541" y1="212" x2="541" y2="242" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrowBlue)"/>
+  <line x1="747" y1="246" x2="747" y2="216" stroke="#2563eb" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrowBlue)"/>
 
-  <rect x="270" y="283" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
-  <text x="330" y="305" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">① 核对现场</text>
-  <rect x="400" y="358" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
-  <text x="460" y="380" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">② 判定窄 diff</text>
-  <rect x="400" y="508" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
-  <text x="460" y="530" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">③ 原子改 owner</text>
-  <rect x="270" y="583" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
-  <text x="330" y="605" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">④ 最小证据</text>
-  <rect x="140" y="508" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
-  <text x="200" y="530" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">⑤ 沉淀 gate/Note</text>
-  <rect x="140" y="358" width="120" height="34" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
-  <text x="200" y="380" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">⑥ 只报跑过的</text>
+  <!-- Inner Loop: Coding Agent -->
+  <rect x="36" y="246" width="804" height="292" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="60" y="276" font-size="14" font-weight="700" fill="#0f172a">Coding Agent 的执行内圈（固定六步窄证据切片闭环）</text>
 
-  <rect x="930" y="105" width="230" height="190" rx="10" fill="#f0fdf4" stroke="#86efac"/>
-  <text x="950" y="132" font-size="15" font-weight="700" fill="#166534">"轻松"分主语</text>
-  <text x="950" y="162" font-size="13" font-weight="700" fill="#15803d">对人（指挥者）</text>
-  <text x="950" y="182" font-size="12" fill="#334155">· 记规则交给门禁</text>
-  <text x="950" y="200" font-size="12" fill="#334155">· 只审最小证据</text>
-  <text x="950" y="218" font-size="12" fill="#334155">· 改错整 PR 回滚</text>
-  <text x="950" y="248" font-size="13" font-weight="700" fill="#15803d">对 agent（执行者）</text>
-  <text x="950" y="268" font-size="12" fill="#334155">· 默认即正确路径</text>
-  <text x="950" y="286" font-size="12" fill="#334155">· 反馈秒级 · 判断沉淀</text>
+  <!-- Top row of inner 6-step ring -->
+  <rect x="60" y="298" width="228" height="78" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="80" y="326" font-size="13" font-weight="700" fill="#1e40af">① 核对现场</text>
+  <text x="80" y="352" font-size="11.5" fill="#475569">查当前分支与真实 diff，不信记忆</text>
 
-  <rect x="930" y="315" width="230" height="140" rx="10" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="950" y="342" font-size="15" font-weight="700" fill="#9a3412">仓库自述</text>
-  <text x="950" y="370" font-size="12" fill="#334155">"developed primarily by</text>
-  <text x="950" y="388" font-size="12" fill="#334155">coding agents"（quality-gates</text>
-  <text x="950" y="406" font-size="12" fill="#334155">Note 的 Problem 段第一句）</text>
-  <text x="950" y="430" font-size="11.5" fill="#78350f">作者统计测不出 agent 占比：</text>
-  <text x="950" y="448" font-size="11.5" fill="#78350f">机器辅助的活记在操作者名下。</text>
+  <line x1="288" y1="337" x2="318" y2="337" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
 
-  <rect x="930" y="475" width="230" height="140" rx="10" fill="#eef2ff" stroke="#a5b4fc"/>
-  <text x="950" y="502" font-size="15" font-weight="700" fill="#3730a3">两个回路的接口</text>
-  <text x="950" y="532" font-size="13" font-weight="700" fill="#4f46e5">人 → agent</text>
-  <text x="950" y="552" font-size="12" fill="#334155">窄片意图（不可派生的本质）</text>
-  <text x="950" y="580" font-size="13" font-weight="700" fill="#4f46e5">agent → 人</text>
-  <text x="950" y="600" font-size="12" fill="#334155">最小证据报告（只报跑过的）</text>
+  <rect x="324" y="298" width="228" height="78" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="344" y="326" font-size="13" font-weight="700" fill="#3730a3">② 圈定窄 diff</text>
+  <text x="344" y="352" font-size="11.5" fill="#475569">一笔变更只解决一个独立问题</text>
 
-  <rect x="40" y="632" width="850" height="52" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
-  <text x="465" y="654" text-anchor="middle" font-size="12.5" fill="#334155">人声明窄片意图 → agent 走六步 → 人只审最小证据；</text>
-  <text x="465" y="676" text-anchor="middle" font-size="11.5" fill="#64748b">其余（三件套、双语配对、全套门禁）都在执行面内部消化。</text>
+  <line x1="552" y1="337" x2="582" y2="337" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+  <rect x="588" y="298" width="228" height="78" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="608" y="326" font-size="13" font-weight="700" fill="#115e59">③ 改源头并重生成</text>
+  <text x="608" y="352" font-size="11.5" fill="#475569">同步文档注释，脚本刷新生成目录</text>
+
+  <line x1="702" y1="376" x2="702" y2="424" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+  <!-- Bottom row of inner 6-step ring (right to left) -->
+  <rect x="588" y="430" width="228" height="78" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="608" y="458" font-size="13" font-weight="700" fill="#166534">④ 跑最小匹配检查</text>
+  <text x="608" y="484" font-size="11.5" fill="#475569">只挑会为本次回归报红的定向测试</text>
+
+  <line x1="588" y1="469" x2="558" y2="469" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+  <rect x="324" y="430" width="228" height="78" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="344" y="458" font-size="13" font-weight="700" fill="#9a3412">⑤ 判断沉淀归属</text>
+  <text x="344" y="484" font-size="11.5" fill="#475569">硬规则进门禁，持久取舍才写 Note</text>
+
+  <line x1="324" y1="469" x2="294" y2="469" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+  <rect x="60" y="430" width="228" height="78" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="80" y="458" font-size="13" font-weight="700" fill="#334155">⑥ 如实报已跑命令</text>
+  <text x="80" y="484" font-size="11.5" fill="#475569">跑过什么列什么，全量矩阵交 CI</text>
+
+  <line x1="174" y1="430" x2="174" y2="382" stroke="#64748b" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrowSlate)"/>
+
+  <!-- Right Sidebar: Two Subjects & Interface -->
+  <rect x="864" y="104" width="280" height="208" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="884" y="132" font-size="14.5" font-weight="700" fill="#166534">把“省心”拆回两个主语</text>
+  <text x="884" y="160" font-size="12.5" font-weight="700" fill="#15803d">1. 日常使用者（Web / CLI）</text>
+  <text x="884" y="182" font-size="11.5" fill="#334155">工作区内直接读写，越权才弹窗；</text>
+  <text x="884" y="202" font-size="11.5" fill="#334155">强制先读后改，技能按需加载。</text>
+  <text x="884" y="234" font-size="12.5" font-weight="700" fill="#15803d">2. 仓库维护者（主仓研发）</text>
+  <text x="884" y="256" font-size="11.5" fill="#334155">人只管切窄切片、审关键证据；</text>
+  <text x="884" y="276" font-size="11.5" fill="#334155">双语配对与门禁细节由内圈消化。</text>
+
+  <rect x="864" y="330" width="280" height="208" rx="10" fill="#eef2ff" stroke="#a5b4fc" stroke-width="1.5"/>
+  <text x="884" y="358" font-size="14.5" font-weight="700" fill="#3730a3">内外双环的交接契约</text>
+  <text x="884" y="388" font-size="12.5" font-weight="700" fill="#4f46e5">人 → Agent（派活输入）</text>
+  <text x="884" y="410" font-size="11.5" fill="#334155">窄片意图与不可推导的业务边界</text>
+  <text x="884" y="442" font-size="12.5" font-weight="700" fill="#4f46e5">Agent → 人（交卷输出）</text>
+  <text x="884" y="464" font-size="11.5" fill="#334155">原子三件套 + 实跑过的命令清单</text>
+  <text x="884" y="500" font-size="11" fill="#475569">注：主仓主力代码由 Agent 完成，提交</text>
+  <text x="884" y="518" font-size="11" fill="#475569">记在操作者名下（见 quality-gates 记录）</text>
+
+  <!-- Bottom Summary -->
+  <rect x="36" y="556" width="1108" height="44" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="590" y="583" text-anchor="middle" font-size="12" fill="#334155">核心机制：人在外圈把大改动切成可独立回滚的小切片并把关语义证据；Agent 在内圈按六步闭环交付代码、当前文档与红灯测试。</text>
 </svg>

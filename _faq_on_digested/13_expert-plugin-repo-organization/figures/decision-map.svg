@@ -1,97 +1,102 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="920" height="670" viewBox="0 0 920 670" font-family="Helvetica, Arial, sans-serif">
-  <rect width="920" height="670" fill="#fafafa"/>
-  <text x="460" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#222">FAQ 13 · 五个决策 × 四个方案</text>
-
-  <!-- Decision column -->
-  <text x="60" y="72" font-size="14" font-weight="bold" fill="#555">决策（DSH 已有载体）</text>
-  <g font-size="13" fill="#222">
-    <rect x="40" y="86" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
-    <text x="52" y="107" font-weight="bold">1 入口形态</text>
-    <text x="52" y="126">agent preset + dsh.bundle（非新程序）</text>
-
-    <rect x="40" y="150" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
-    <text x="52" y="171" font-weight="bold">2 包粒度</text>
-    <text x="52" y="190">单包起步；缝有第二消费方再拆</text>
-
-    <rect x="40" y="214" width="300" height="52" rx="8" fill="#fdeeea" stroke="#c9654a"/>
-    <text x="52" y="235" font-weight="bold">3 DSH 源码放哪（分水岭）</text>
-    <text x="52" y="254">不进 / pinned submodule / 同仓</text>
-
-    <rect x="40" y="278" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
-    <text x="52" y="299" font-weight="bold">4 UI 走哪层</text>
-    <text x="52" y="318">默认兜底卡 → dsh.client 槽位 → 树内</text>
-
-    <rect x="40" y="342" width="300" height="52" rx="8" fill="#e8f0fe" stroke="#4a76c9"/>
-    <text x="52" y="363" font-weight="bold">5 规范与研发流</text>
-    <text x="52" y="382">借 DSH 的 docs/notes 纪律；OpenSpec 按需后置</text>
-  </g>
-
-  <!-- Option column -->
-  <text x="620" y="72" font-size="14" font-weight="bold" fill="#555">方案（repo 形态）</text>
-  <g font-size="13" fill="#222">
-    <rect x="470" y="86" width="410" height="74" rx="8" fill="#e9f7ec" stroke="#3d8b4f" stroke-width="2"/>
-    <text x="482" y="108" font-weight="bold" fill="#2c6e3c">A 独立 repo + pinned DSH submodule ✅推荐</text>
-    <text x="482" y="127">submodule 钉 tag 并入 workspace；agent 可探索</text>
-    <text x="482" y="146">先例：dsh-desktop / antfu/skills / DSH 自身 vendor/</text>
-
-    <rect x="470" y="172" width="410" height="64" rx="8" fill="#fff8e6" stroke="#c9a23f"/>
-    <text x="482" y="194" font-weight="bold">B 在 DSH monorepo 里长</text>
-    <text x="482" y="213">门禁/snapshot/client 全借力；UI prototype 与上游贡献</text>
-
-    <rect x="470" y="248" width="410" height="58" rx="8" fill="#f2f2f2" stroke="#999"/>
-    <text x="482" y="270" font-weight="bold">C 纯外部依赖，DSH 不进 repo</text>
-    <text x="482" y="289">干净但 agent 探索断裂；只作过渡</text>
-
-    <rect x="470" y="318" width="410" height="58" rx="8" fill="#eef3fb" stroke="#7a8bb5"/>
-    <text x="482" y="340" font-weight="bold">D marketplace 式多专家 monorepo</text>
-    <text x="482" y="359">A 的规模化后继：共享骨架 + registry</text>
-  </g>
-
-  <!-- Arrows: decision 3 drives options -->
-  <path d="M340 240 C 400 240, 410 200, 470 160" fill="none" stroke="#c9654a" stroke-width="2" marker-end="url(#ar)"/>
-  <path d="M340 240 L 470 204" fill="none" stroke="#c9654a" stroke-width="2" marker-end="url(#ar)"/>
-  <path d="M340 240 L 470 277" fill="none" stroke="#c9654a" stroke-width="2" marker-end="url(#ar)"/>
-  <path d="M340 240 C 400 240, 410 330, 470 347" fill="none" stroke="#c9654a" stroke-width="2" marker-end="url(#ar)"/>
-
-  <!-- Upgrade path -->
-  <text x="60" y="440" font-size="14" font-weight="bold" fill="#555">推荐路径与升级触发</text>
-  <g font-size="12.5" fill="#333">
-    <rect x="40" y="454" width="150" height="58" rx="8" fill="#e9f7ec" stroke="#3d8b4f" stroke-width="2"/>
-    <text x="115" y="478" text-anchor="middle" font-weight="bold">A 起步</text>
-    <text x="115" y="497" text-anchor="middle">preset + 卡片层</text>
-
-    <path d="M190 483 L 268 483" stroke="#666" stroke-width="2" marker-end="url(#ar)"/>
-    <text x="229" y="472" text-anchor="middle" font-size="11" fill="#777">UI 超卡片层</text>
-
-    <rect x="270" y="454" width="150" height="58" rx="8" fill="#fff8e6" stroke="#c9a23f"/>
-    <text x="345" y="478" text-anchor="middle" font-weight="bold">B prototype</text>
-    <text x="345" y="497" text-anchor="middle">树内卡片，验证后折回</text>
-
-    <path d="M190 460 C 300 420, 480 420, 563 451" fill="none" stroke="#666" stroke-width="2" marker-end="url(#ar)"/>
-    <text x="380" y="418" text-anchor="middle" font-size="11" fill="#777">第二个专家立项</text>
-
-    <rect x="494" y="454" width="150" height="58" rx="8" fill="#eef3fb" stroke="#7a8bb5"/>
-    <text x="569" y="478" text-anchor="middle" font-weight="bold">D 一窝专家</text>
-    <text x="569" y="497" text-anchor="middle">A 结构变子树</text>
-
-    <!-- OpenSpec triggers: orthogonal to the main-form ladder, both fire from A -->
-    <rect x="40" y="578" width="260" height="64" rx="8" fill="#f2f2f2" stroke="#999"/>
-    <text x="170" y="602" text-anchor="middle" font-weight="bold">A + OpenSpec</text>
-    <text x="170" y="622" text-anchor="middle">仅第二贡献者：主 repo 留 A</text>
-
-    <rect x="340" y="578" width="300" height="64" rx="8" fill="#f2f2f2" stroke="#999"/>
-    <text x="490" y="602" text-anchor="middle" font-weight="bold">B + OpenSpec</text>
-    <text x="490" y="622" text-anchor="middle">向 DSH 上游提 seam：临时贡献分支</text>
-
-    <path d="M115 512 L 115 576" stroke="#999" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
-    <path d="M175 512 C 235 550, 380 558, 455 576" fill="none" stroke="#999" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ar)"/>
-    <text x="668" y="588" font-size="12" fill="#777">提案流升级与仓库形态正交，都从 A 出发</text>
-    <text x="668" y="606" font-size="12" fill="#777">（多人协作留 A；向上游提 seam 才进 B）</text>
-  </g>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 690" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">领域专家插件仓组织：五个核心决策、四种仓库布局与推荐演进路线</title>
+  <desc id="desc">左侧列出五个无需重造轮子的核心决策（入口形态、包粒度、DSH 宿主源码引入方式、UI 分层、规范与门禁流）；右侧对应方案 A、B、C 与形态 D 四种仓库布局；底部给出从方案 A 单包起步按痛点触发的三条演进分支。</desc>
   <defs>
-    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
-      <path d="M0,0 L8,3.5 L0,7 Z" fill="#666"/>
+    <marker id="arrowOrange" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#ea580c"/>
+    </marker>
+    <marker id="arrowSlate" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">
+      <path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/>
     </marker>
   </defs>
+
+  <rect width="1160" height="690" rx="8" fill="#f8fafc"/>
+  <text x="580" y="38" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">领域专家插件仓组织：五个核心决策 × 四种仓库布局</text>
+  <text x="580" y="62" text-anchor="middle" font-size="12.5" fill="#475569">前三种方案按“DSH 宿主源码怎么引”切分，形态 D 为多专家规模化终局；第 0 天首选单包方案 A 起步</text>
+
+  <!-- Left Column: 5 Core Decisions -->
+  <text x="44" y="92" font-size="13" font-weight="700" fill="#1e3a8a">五个核心决策（复用 DSH 已有机制）</text>
+
+  <rect x="36" y="104" width="430" height="56" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="56" y="126" font-size="13" font-weight="700" fill="#1e40af">1. 入口与交付形态</text>
+  <text x="56" y="147" font-size="11.5" fill="#334155">发 dsh.bundle + 插入 agent-preset 行（禁自建 bin）</text>
+
+  <rect x="36" y="168" width="430" height="56" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="56" y="190" font-size="13" font-weight="700" fill="#1e40af">2. 包粒度</text>
+  <text x="56" y="211" font-size="11.5" fill="#334155">第 0 天单包起步；出现第二个消费方或后端时再拆包</text>
+
+  <rect x="36" y="232" width="430" height="56" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="56" y="254" font-size="13" font-weight="700" fill="#9a3412">3. DSH 宿主源码怎么引（核心分水岭）</text>
+  <text x="56" y="275" font-size="11.5" fill="#7c2d12">vendor/dsh 子模块钉 tag · 主仓同树 · 纯外部 npm</text>
+
+  <rect x="36" y="296" width="430" height="56" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="56" y="318" font-size="13" font-weight="700" fill="#1e40af">4. UI 表达走哪一层</text>
+  <text x="56" y="339" font-size="11.5" fill="#334155">默认通用兜底卡 → dsh.client 公开槽位 → 树内改本体</text>
+
+  <rect x="36" y="360" width="430" height="56" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="56" y="382" font-size="13" font-weight="700" fill="#1e40af">5. 规范与研发门禁流</text>
+  <text x="56" y="403" font-size="11.5" fill="#334155">借用 AGENTS.md + docs/ + notes/；多人按需加提案流</text>
+
+  <!-- Connectors: Decision 3 -> 4 Repo Layouts -->
+  <path d="M466,260 C505,260 510,145 546,145" fill="none" stroke="#ea580c" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <path d="M466,260 C505,260 510,230 546,230" fill="none" stroke="#ea580c" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <path d="M466,260 C505,260 510,308 546,308" fill="none" stroke="#ea580c" stroke-width="2" marker-end="url(#arrowOrange)"/>
+  <path d="M466,260 C505,260 510,386 546,386" fill="none" stroke="#ea580c" stroke-width="2" marker-end="url(#arrowOrange)"/>
+
+  <!-- Right Column: 4 Repository Layouts -->
+  <text x="558" y="92" font-size="13" font-weight="700" fill="#166534">四种仓库布局形态</text>
+
+  <rect x="550" y="104" width="574" height="82" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="570" y="128" font-size="13.5" font-weight="700" fill="#166534">方案 A：独立仓库 + vendor/dsh 子模块钉死发布 tag（推荐主力）</text>
+  <text x="570" y="151" font-size="11.5" fill="#334155">独立发版节奏 + Coding Agent 在仓内直接检索官方文档、配置与源码</text>
+  <text x="570" y="172" font-size="11" fill="#15803d">同款先例：dsh-desktop · antfu/skills · DSH 主仓自身的 vendor/ 管理</text>
+
+  <rect x="550" y="196" width="574" height="68" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+  <text x="570" y="220" font-size="13.5" font-weight="700" fill="#92400e">方案 B：DSH 主仓 packages/ 内生（特种施工通道）</text>
+  <text x="570" y="244" font-size="11.5" fill="#334155">唯一可直接改内置前端本体或向上游提新 seam；外部无法直接 plugin add</text>
+
+  <rect x="550" y="274" width="574" height="68" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="570" y="298" font-size="13.5" font-weight="700" fill="#334155">方案 C：纯外部 npm 依赖，宿主源码不进仓（仅极简过渡）</text>
+  <text x="570" y="322" font-size="11.5" fill="#475569">仓库最轻，但 Agent 探索断在 .d.ts 类型层；高度依赖打包真装冒烟兜底</text>
+
+  <rect x="550" y="352" width="574" height="68" rx="8" fill="#eef2ff" stroke="#818cf8"/>
+  <text x="570" y="376" font-size="13.5" font-weight="700" fill="#312e81">形态 D：多专家共享底座的单体仓（方案 A 的规模化演进）</text>
+  <text x="570" y="400" font-size="11.5" fill="#334155">packages/&lt;expert&gt; 同构多包 + shared-kit 共享底座 + 可选市场索引</text>
+
+  <!-- Bottom Section: Evolution Roadmap -->
+  <rect x="36" y="440" width="1088" height="226" rx="10" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="58" y="468" font-size="14.5" font-weight="700" fill="#0f172a">推荐演进路线与正交升级触发条件（均从方案 A 起步）</text>
+
+  <!-- Origin: Plan A -->
+  <rect x="58" y="488" width="276" height="156" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="78" y="516" font-size="14" font-weight="700" fill="#166534">第 0 天起点：方案 A 单包</text>
+  <text x="78" y="542" font-size="11.5" fill="#334155">· 单包 Bundle + vendor/dsh 钉 tag</text>
+  <text x="78" y="566" font-size="11.5" fill="#334155">· 独立开发 DSH_HOME 物理隔离</text>
+  <text x="78" y="590" font-size="11.5" fill="#334155">· 优先用兜底卡与 dsh.client 槽位</text>
+  <text x="78" y="618" font-size="11" font-weight="700" fill="#15803d">90% 外部专家团队的长期稳态</text>
+
+  <!-- Branch Arrows & Labels -->
+  <path d="M334,520 L488,510" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrowSlate)"/>
+  <text x="411" y="504" text-anchor="middle" font-size="11" fill="#475569">第 2 个专家立项</text>
+
+  <line x1="334" y1="566" x2="488" y2="566" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrowSlate)"/>
+  <text x="411" y="556" text-anchor="middle" font-size="11" fill="#475569">多人异步协作</text>
+
+  <path d="M334,612 L488,622" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arrowSlate)"/>
+  <text x="411" y="636" text-anchor="middle" font-size="11" fill="#475569">改内置本体 / 提 seam</text>
+
+  <!-- Target 1: Form D -->
+  <rect x="492" y="486" width="608" height="48" rx="8" fill="#eef2ff" stroke="#818cf8"/>
+  <text x="512" y="507" font-size="12.5" font-weight="700" fill="#312e81">形态 D：多专家共享底座的单体仓</text>
+  <text x="512" y="525" font-size="11.5" fill="#475569">将单包平移进 packages/&lt;first-expert&gt;/，沉淀 shared-kit 并保持各专家发布包自包含</text>
+
+  <!-- Target 2: Form A + Proposal Flow -->
+  <rect x="492" y="542" width="608" height="48" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="512" y="563" font-size="12.5" font-weight="700" fill="#334155">形态 A（多人协作再按需加变更提案）</text>
+  <text x="512" y="581" font-size="11.5" fill="#475569">主仓库形态仍留在方案 A 或形态 D，在流程上叠加 notes/proposed/ 或 OpenSpec</text>
+
+  <!-- Target 3: Form B Temporary Branch -->
+  <rect x="492" y="598" width="608" height="48" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+  <text x="512" y="619" font-size="12.5" font-weight="700" fill="#92400e">方案 B 临时分支（验证后业务代码折回方案 A）</text>
+  <text x="512" y="637" font-size="11.5" fill="#78350f">仅在必须修改内置前端组件或向 DSH 官方提交公共 capability seam 时启用</text>
 </svg>

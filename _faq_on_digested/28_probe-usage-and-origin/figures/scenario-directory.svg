@@ -1,107 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
-  <title>一个场景目录的形状：探针产出、毕业门槛与三种归宿</title>
-  <desc>左侧是 DSH 场景目录的真实文件清单，以 minimal-preset 为例：session.v4.jsonl 是会话轨迹，system-prompt.expected.md 是渲染后的提示词全文，tool-schemas.expected.json 是组装后的工具 schema，ui.expected.md 是真浏览器渲染出的可访问性树，snapshot.yml 是场景契约（声明 profile、composition、录音方式与 header class，pin true 表示这个场景独占拥有 sidecar）。中间是毕业门槛：写入基线之前的四道门，replay 模式下缺基线必须报错而不是自举，refresh 是唯一写入路径，不稳定字段必须令牌化，工作区 oracle 从不被 record 或 refresh 重写。右侧是三种归宿：当场判断、证据目录、毕业成基线，各自寿命不同。底部一句：探针查清第一次的真实状态，基线守住后续改动不回退。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" letter-spacing="0">
+  <title>标准场景目录结构、沉淀快照基线的四道安全门与三条去路</title>
+  <desc>左列以 snapshots/web/minimal-preset/ 为例展示标准场景目录内的会话轨迹、系统提示词、工具 Schema、浏览器 ARIA 树与 snapshot.yml 契约文件；中列展示探针沉淀为快照基线前必须通过的四道安全门（显式 refresh 唯一写路径、动态字段令牌化、写入前运行健康检查、workspace.expected 独立维护不自动覆盖）；右列展示探针产出的三条去路（一次性排障即删、沉淀进 snapshots/、抽纯函数进 pnpm test）。</desc>
   <defs>
-    <marker id="sg-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#0f766e"/></marker>
+    <marker id="sg-a" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#16a34a"/></marker>
+    <marker id="sg-b" viewBox="0 0 9 7" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0,0 L9,3.5 L0,7 Z" fill="#64748b"/></marker>
   </defs>
 
-  <rect width="1200" height="700" rx="8" fill="#f8fafc"/>
-  <text x="600" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">一个场景目录的形状：探针产出、毕业门槛、三种归宿</text>
-  <text x="600" y="55" text-anchor="middle" fill="#64748b">所有的 native 证据都长成这个形状 —— 一份轨迹 + 若干 sidecar + 一份契约</text>
+  <rect width="1200" height="650" rx="8" fill="#f8fafc"/>
+  <text x="600" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">从探针观察到快照基线：目录长相、四道门与三条去路</text>
+  <text x="600" y="56" text-anchor="middle" fill="#64748b">探针取回的原始产物与主仓 snapshots/ 同构；区别只在于是否经过归一化与安全校验锁入 Git 基线</text>
 
-  <text x="40" y="90" font-size="12" font-weight="700" fill="#334155">① 目录里到底有什么</text>
-  <text x="470" y="90" font-size="12" font-weight="700" fill="#b45309">② 写入基线前的四道门</text>
-  <text x="880" y="90" font-size="12" font-weight="700" fill="#1d4ed8">③ 产出最后去哪</text>
+  <text x="40" y="88" font-size="12" font-weight="700" fill="#334155">① 毕业后的标准场景目录长什么样</text>
+  <text x="436" y="88" font-size="12" font-weight="700" fill="#b45309">② 沉淀进基线前必须守住的四道门</text>
+  <text x="864" y="88" font-size="12" font-weight="700" fill="#1d4ed8">③ 查清问题后探针的三条去路</text>
 
-  <!-- Column 1: directory -->
-  <rect x="40" y="102" width="410" height="392" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="58" y="126" font-size="11" font-weight="700" fill="#334155">snapshots/web/minimal-preset/</text>
+  <!-- Col 1: Directory -->
+  <rect x="40" y="100" width="376" height="404" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="60" y="126" font-size="11.5" font-weight="700" fill="#0f172a">snapshots/web/minimal-preset/</text>
 
-  <text x="58" y="152" font-size="11" fill="#0f766e">├─ session.v4.jsonl</text>
-  <text x="80" y="170" font-size="10" fill="#64748b">会话轨迹 · 24 行类型化事件 · 令牌化形式</text>
+  <text x="60" y="156" font-size="11" font-weight="700" fill="#0f766e">├─ session.v4.jsonl</text>
+  <text x="80" y="176" font-size="10.5" fill="#475569">归一化会话轨迹（含 {{system}} 与 {{tools}} 占位符）</text>
 
-  <text x="58" y="194" font-size="11" fill="#0f766e">├─ system-prompt.expected.md</text>
-  <text x="80" y="212" font-size="10" fill="#64748b">渲染后的系统提示词全文（来自 system/message）</text>
-  <text x="80" y="227" font-size="10" fill="#b45309">本场景这一份只有一行：</text>
-  <text x="80" y="241" font-size="10" fill="#334155">You are a helpful software engineer assistant.</text>
+  <text x="60" y="206" font-size="11" font-weight="700" fill="#0f766e">├─ system-prompt.expected.md</text>
+  <text x="80" y="226" font-size="10.5" fill="#475569">来自 system/message 的完整渲染后系统提示词</text>
 
-  <text x="58" y="264" font-size="11" fill="#0f766e">├─ tool-schemas.expected.json</text>
-  <text x="80" y="282" font-size="10" fill="#64748b">组装后的工具 schema（来自 request/header）</text>
-  <text x="80" y="297" font-size="10" fill="#334155">bash / read_image / working_directory</text>
+  <text x="60" y="256" font-size="11" font-weight="700" fill="#0f766e">├─ tool-schemas.expected.json</text>
+  <text x="80" y="276" font-size="10.5" fill="#475569">来自 request/header 的完整工具 JSON Schema 数组</text>
 
-  <text x="58" y="320" font-size="11" fill="#0f766e">├─ ui.expected.md</text>
-  <text x="80" y="338" font-size="10" fill="#64748b">真浏览器渲染的可访问性树（31 行）</text>
-  <text x="80" y="353" font-size="10" fill="#334155">- button "Bash printf '…'" [expanded]</text>
+  <text x="60" y="306" font-size="11" font-weight="700" fill="#0f766e">├─ ui.expected.md</text>
+  <text x="80" y="326" font-size="10.5" fill="#475569">真浏览器采集的 31 行 ARIA 可访问性语义节点树</text>
 
-  <text x="58" y="376" font-size="11" fill="#0f766e">└─ snapshot.yml</text>
-  <text x="80" y="394" font-size="10" fill="#64748b">场景契约：profile / composition / recording</text>
-  <text x="80" y="409" font-size="10" fill="#64748b">header.class + pin: true（独占拥有 sidecar）</text>
+  <text x="60" y="356" font-size="11" font-weight="700" fill="#0f766e">└─ snapshot.yml</text>
+  <text x="80" y="376" font-size="10.5" fill="#475569">声明 profile、录制策略与 header.pin: true 独占展开</text>
+  <text x="80" y="394" font-size="10" fill="#64748b">（涉及副作用的场景另带独立 workspace.expected/）</text>
 
-  <rect x="58" y="426" width="374" height="54" rx="6" fill="#f0fdfa" stroke="#99f6e4"/>
-  <text x="72" y="446" font-size="10" fill="#0f766e">同一场景的四个文件互相对应：</text>
-  <text x="72" y="463" font-size="10" fill="#334155">日志里的 tool/call ↔ 界面里的 Bash 卡片；日志的 step 数 ↔ "2 steps"</text>
+  <rect x="60" y="418" width="336" height="66" rx="8" fill="#f0fdfa" stroke="#99f6e4"/>
+  <text x="78" y="442" font-size="10.5" font-weight="700" fill="#0f766e">多切面证据彼此咬合对账：</text>
+  <text x="78" y="462" font-size="10.5" fill="#334155">后端日志里的 tool/call ↔ 前端 ARIA 里的 Bash 展开卡片</text>
 
-  <!-- Column 2: gates -->
-  <rect x="470" y="102" width="390" height="392" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
+  <!-- Col 2: 4 Gates -->
+  <rect x="436" y="100" width="404" height="404" rx="10" fill="#fffbeb" stroke="#fcd34d"/>
 
-  <text x="488" y="128" font-size="11" font-weight="700" fill="#92400e">门一 · refresh 是唯一写入路径</text>
-  <text x="488" y="146" font-size="10" fill="#334155">replay 模式缺基线 → 报错并给出修复命令</text>
-  <text x="488" y="161" font-size="10" fill="#92400e">绝不悄悄自举一份新的</text>
-  <rect x="488" y="170" width="354" height="46" rx="6" fill="#ffffff" stroke="#fbbf24"/>
-  <text x="500" y="187" font-size="9" fill="#334155">mode === 'refresh' ? writeFile(...) : expect(payload).toBe(readFile(...))</text>
-  <text x="500" y="203" font-size="9" fill="#991b1b">missing golden → throw new Error('… run DSH_SNAPSHOT=refresh …')</text>
+  <rect x="456" y="118" width="364" height="82" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="474" y="140" font-size="11" font-weight="700" fill="#92400e">门一 · 显式 refresh 是唯一写盘路径</text>
+  <text x="474" y="160" font-size="10.5" fill="#334155">日常 replay 缺基线必须直接抛错，严禁悄悄自举生成；</text>
+  <text x="474" y="180" font-size="10" font-family="ui-monospace, monospace" fill="#b45309">only DSH_SNAPSHOT=refresh | record writes golden</text>
 
-  <text x="488" y="240" font-size="11" font-weight="700" fill="#92400e">门二 · 不稳定字段必须令牌化</text>
-  <text x="488" y="258" font-size="10" fill="#334155">{{clock}} {{duration}} {{throughput}} {{cwd}} {{tools}}</text>
-  <text x="488" y="274" font-size="10" fill="#92400e">不进令牌 = 基线天天红</text>
+  <rect x="456" y="212" width="364" height="66" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="474" y="234" font-size="11" font-weight="700" fill="#92400e">门二 · 动态字段彻底令牌化</text>
+  <text x="474" y="254" font-size="10.5" fill="#334155">将时间、耗时、路径替换为 {{clock}} / {{duration}} / {{cwd}}</text>
 
-  <text x="488" y="300" font-size="11" font-weight="700" fill="#92400e">门三 · 录制前必须健康</text>
-  <text x="488" y="318" font-size="10" fill="#334155">readyState 必须完成 · 控制台必须干净</text>
-  <text x="488" y="334" font-size="10" fill="#334155">页面不许是白的 · 网络不许有失败</text>
+  <rect x="456" y="290" width="364" height="82" rx="8" fill="#ffffff" stroke="#fbbf24"/>
+  <text x="474" y="312" font-size="11" font-weight="700" fill="#92400e">门三 · 刷新前先核实当次运行真没坏</text>
+  <text x="474" y="332" font-size="10.5" fill="#334155">校验无 UNKNOWN_TOOL、无控制台报错与白屏，人工审 diff</text>
+  <text x="474" y="352" font-size="10" fill="#b91c1c">警钟：postmortem 0002 险些把工具被禁的坏轨迹刷成新基线</text>
 
-  <text x="488" y="360" font-size="11" font-weight="700" fill="#92400e">门四 · 工作区 oracle 独立维护</text>
-  <text x="488" y="378" font-size="10" fill="#334155">workspace.expected/ 是独立 oracle</text>
-  <text x="488" y="394" font-size="10" fill="#92400e">record 与 refresh 从不重写它</text>
-  <text x="488" y="412" font-size="10" fill="#64748b">模型散文和工具结果文本不证明外部效果</text>
+  <rect x="456" y="384" width="364" height="98" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="474" y="406" font-size="11" font-weight="700" fill="#991b1b">门四 · 外部副作用预期（workspace.expected/）独立锁死</text>
+  <text x="474" y="428" font-size="10.5" fill="#334155">真实目录终态与审计计数由人工独立编写维护；</text>
+  <text x="474" y="448" font-size="10.5" fill="#991b1b">record 与 refresh 命令永远不会自动覆盖重写它，</text>
+  <text x="474" y="468" font-size="10" fill="#64748b">确保外部世界校验绝不被被测程序自己的输出带偏。</text>
 
-  <rect x="488" y="430" width="354" height="50" rx="6" fill="#fef2f2" stroke="#fca5a5"/>
-  <text x="500" y="450" font-size="10" fill="#991b1b">为什么要有门：写入一个坏状态，等于把错误钉成"正确"</text>
-  <text x="500" y="467" font-size="10" fill="#334155">此后的每次比对都会以它为基准通过 —— 比没有基线更糟</text>
+  <!-- Col 3: 3 Destinations -->
+  <rect x="864" y="100" width="296" height="120" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="884" y="126" font-size="12" font-weight="700" fill="#0f172a">去路 A · 排完即删</text>
+  <text x="884" y="148" font-size="10.5" fill="#475569">针对一次性配置乌龙或第三方接口摸底</text>
+  <text x="884" y="168" font-size="10.5" fill="#475569">修完 bug 直接清理，不进测试套件</text>
+  <text x="884" y="196" font-size="10" fill="#64748b">维护成本：零</text>
 
-  <!-- Column 3: destinations -->
-  <rect x="880" y="102" width="280" height="128" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="898" y="126" font-size="12" font-weight="700" fill="#334155">当场判断</text>
-  <text x="898" y="146" font-size="10" fill="#64748b">只存在于这次输出里</text>
-  <text x="898" y="163" font-size="10" fill="#334155">数一数事件、看一眼 diff</text>
-  <text x="898" y="184" font-size="10" fill="#0f766e">寿命：分钟</text>
-  <text x="898" y="204" font-size="10" fill="#64748b">用完即弃，不需要留任何东西</text>
-  <text x="898" y="220" font-size="10" fill="#64748b">最便宜的一档</text>
+  <rect x="864" y="236" width="296" height="128" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+  <text x="884" y="262" font-size="12" font-weight="700" fill="#166534">去路 B · 毕业进 snapshots/</text>
+  <text x="884" y="284" font-size="10.5" fill="#334155">适合高频迭代怕改坏的提示词拼装、</text>
+  <text x="884" y="304" font-size="10.5" fill="#334155">工具暴露集合与关键前端卡片渲染</text>
+  <text x="884" y="328" font-size="10" font-weight="700" fill="#166534">过完左侧四道门后入库，由 CI diff 守门</text>
+  <text x="884" y="346" font-size="10" fill="#64748b">毕业后删除旧探针脚本，避免双份维护</text>
 
-  <rect x="880" y="242" width="280" height="118" rx="10" fill="#ffffff" stroke="#cbd5e1"/>
-  <text x="898" y="266" font-size="12" font-weight="700" fill="#334155">证据目录</text>
-  <text x="898" y="286" font-size="10" fill="#64748b">固定路径 + verdict.json + 截图</text>
-  <text x="898" y="303" font-size="10" fill="#334155">consoleErrors / networkFailures / 失败图</text>
-  <text x="898" y="324" font-size="10" fill="#1d4ed8">寿命：天到月</text>
-  <text x="898" y="344" font-size="10" fill="#64748b">排查完保留供复跑，不进任何门禁</text>
+  <rect x="864" y="380" width="296" height="124" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.8"/>
+  <text x="884" y="406" font-size="12" font-weight="700" fill="#1d4ed8">去路 C · 抽纯函数进 pnpm test</text>
+  <text x="884" y="428" font-size="10.5" fill="#334155">若探针沉淀了复杂的结构或合规校验逻辑：</text>
+  <text x="884" y="448" font-size="10.5" fill="#334155">抽成不启进程、不连网络的纯函数，</text>
+  <text x="884" y="468" font-size="10.5" fill="#1d4ed8">把真实样本存为静态夹具，毫秒级跑单测</text>
 
-  <rect x="880" y="372" width="280" height="122" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
-  <text x="898" y="396" font-size="12" font-weight="700" fill="#166534">毕业成基线</text>
-  <text x="898" y="416" font-size="10" fill="#64748b">提交进 git，从此由 diff 说话</text>
-  <text x="898" y="433" font-size="10" fill="#334155">system-prompt / tool-schemas / ui / oracle</text>
-  <text x="898" y="454" font-size="10" fill="#166534">寿命：长期</text>
-  <text x="898" y="474" font-size="10" fill="#64748b">改坏了就是一次 expect 失败</text>
-  <text x="898" y="488" font-size="10" fill="#64748b">失败信息就是逐行 diff</text>
+  <line x1="842" y1="300" x2="860" y2="300" stroke="#16a34a" stroke-width="2" marker-end="url(#sg-a)"/>
 
-  <line x1="862" y1="300" x2="876" y2="300" stroke="#94a3b8" stroke-width="2" marker-end="url(#sg-a)"/>
-  <line x1="862" y1="440" x2="876" y2="440" stroke="#16a34a" stroke-width="2" marker-end="url(#sg-a)"/>
-
-  <!-- Bottom line -->
-  <line x1="40" y1="516" x2="1160" y2="516" stroke="#cbd5e1"/>
-  <text x="60" y="544" font-size="13" font-weight="700" fill="#0f766e">探针查清第一次的真实状态，基线守住后续改动不回退</text>
-  <text x="60" y="568" font-size="11" fill="#334155">不毕业的探针，永远只是一次调试 —— 每次都要人来读；太早毕业的基线，会把错误状态钉成「正确」——所以写入前必须有门。</text>
-  <text x="60" y="592" font-size="11" fill="#334155">在 DSH 里这两件事共用同一份产物形状：一次真运行的记录。区别只在有没有 base —— 有 base 的那份叫 expected，没有的那份叫 observation。</text>
-
-  <rect x="40" y="616" width="1120" height="62" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="2"/>
-  <text x="60" y="640" font-size="12" font-weight="700" fill="#0f766e">一句话记住这个目录：</text>
-  <text x="60" y="662" font-size="11" fill="#334155">session.v4.jsonl 说「系统内部发生了什么」· system-prompt 与 tool-schemas 说「模型收到了什么」· ui.expected 说「人眼看到了什么」· workspace.expected 说「世界被改成了什么样」</text>
+  <!-- Bottom takeaway -->
+  <rect x="40" y="528" width="1120" height="96" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="1.8"/>
+  <text x="64" y="556" font-size="12.5" font-weight="700" fill="#0f766e">一句话记住四个文件各自替你盯住哪一层事实：</text>
+  <text x="64" y="580" font-size="11" fill="#334155">session.v4.jsonl 记录「会话内部流转了什么」 · system-prompt / tool-schemas 记录「模型收到了什么」 · ui.expected.md 记录「用户眼睛看到了什么」</text>
+  <text x="64" y="602" font-size="11" fill="#334155">workspace.expected/ 记录「外部真实世界被改成了什么样」—— 探针负责第一次看清真相，基线负责往后每一次改动不退步。</text>
 </svg>
