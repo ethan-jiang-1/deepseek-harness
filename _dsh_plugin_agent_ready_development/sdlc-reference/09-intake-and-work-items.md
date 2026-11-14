@@ -4,6 +4,8 @@
 
 DSH 的变更意图没有统一入口：外部反馈进入 GitHub Discussions（仓库暂不接受外部 PR），内部工作项以 Bug / Feature / Task 三种 Issue 模板进入并挂到 GitHub Project 的生命周期状态机；proposed Agent Note、代码内的 FIXME/TODO 与 Dependabot 依赖 PR 是另外三类真实存在的意图载体。policy 只在特定时机强制元数据，"这个意图值不值得做"始终是语义判断。
 
+> **外部借鉴切面**：必借「Issue 模板只问外部可观察行为、最小复现与交付物，不预设内部类名或实现路径」以及「仓库内 `proposed/` RFC 与分级 `FIXME` 作为合法非 Issue 意图载体」；暂不接受外部 PR、Project 看板自动流转与主仓标签枚举属于团队治理边界，独立仓按需取舍。
+
 > We are sorry that we cannot accept external pull requests at the moment. However, contributing code to this repository is far from the only way to help. [...] Identify and report issues or bugs in GitHub Discussions:
 >
 > — DSH [`CONTRIBUTING.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/CONTRIBUTING.md)。这段话同时划定两件事：代码变更只由内部团队与 coding agent 完成；外部输入的通道是 Discussions 加 upvote，由团队监控并用于排期。
@@ -64,7 +66,7 @@ Inbox → Backlog → Ready → In progress → In review → Done 与 No action
 
 Intent 不都长成 Issue。仓库里还有三类被规则认可的载体：
 
-- **proposed Agent Note**：`.agents/notes/AGENTS.md` 开头写道 "Agent Notes are effectively RFCs written by agents: durable proposals and decision records"。重大未来工作以 `proposed/<class>/yyyy-mm-dd-topic.md` 存在，正文含 Problem / Proposal / Alternatives considered / Acceptance criteria / Risks；当前活动树有 42 篇英文提案（六个 class 目录齐全），它们是可以被 review、被拒绝、被实现的"仓库内意图"。规则见 [Agent Note lifecycle](./01-agent-note-lifecycle.md)。
+- **proposed Agent Note**：`.agents/notes/AGENTS.md` 开头写道 "Agent Notes are effectively RFCs written by agents: durable proposals and decision records"。重大未来工作以 `proposed/<class>/yyyy-mm-dd-topic.md` 存在，正文含 Problem / Proposal / Alternatives considered / Acceptance criteria / Risks；六个 class 目录均可承载尚未实施的仓库内提案，它们是可以被 review、被拒绝、被实现的正式意图载体。规则见 [Agent Note lifecycle](./01-agent-note-lifecycle.md)。
 - **代码内的 TODO 标记**：`docs/development.md` 定义三档——`FIXME`（"an issue that should block a new release"，发布不应带着未决 FIXME 出门）、`TODO`（尽快修）、`XXX`（低优先级，无承诺）。
 - **Dependabot 依赖 PR**：按 ecosystem 自动创建，预置 `kind/dependency` 与 `area/infra`（见 [Reference 02](./02-issue-pr-lifecycle.md) §6）。
 
@@ -72,7 +74,7 @@ Intent 不都长成 Issue。仓库里还有三类被规则认可的载体：
 
 ## 7. 意图怎样到达 coding agent
 
-仓库没有 Issue→agent 的自动分派机制。coding agent 拿到工作靠三层东西：根 `AGENTS.md` 与 21 个子树 `AGENTS.md` 的常设指令；`.agents/skills/` 下 19 个 Skill 的 frontmatter `description`（多数以 "Use …" 开头，各自自述适用条件）按任务匹配加载；以及会话自身的任务上下文（例如 `pnpm dsh --profile headless "task"` 把任务作为 prompt 字符串交给 headless profile）。Plan Mode、goal、todo 等会话机制属于运行时协作状态，见 [Plan 与 sandbox](./03-plan-and-sandbox.md)，不是仓库工作项。
+仓库没有 Issue→agent 的自动分派机制。coding agent 拿到工作靠三层东西：根 `AGENTS.md` 与各子树 `AGENTS.md` 的常设指令；`.agents/skills/` 下各 Skill 的 frontmatter `description`（多数以 "Use …" 开头，各自自述适用条件）按任务匹配加载；以及会话自身的任务上下文（例如 `pnpm dsh --profile headless "task"` 把任务作为 prompt 字符串交给 headless profile）。Plan Mode、goal、todo 等会话机制属于运行时协作状态，见 [Plan 与 sandbox](./03-plan-and-sandbox.md)，不是仓库工作项。
 
 ## 证据入口
 

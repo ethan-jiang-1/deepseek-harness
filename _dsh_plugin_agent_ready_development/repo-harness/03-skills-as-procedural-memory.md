@@ -1,92 +1,65 @@
-# 03 · Skills：把判断过程变成可调用知识
+# 03 · Skills：把复杂判断封装成按需加载的程序化工作记忆
 
-## 规则与检查之间还缺一层
+## 常驻规则与布尔门禁之间缺失的中间层
 
-`AGENTS.md` 适合保存每轮都需要的规则，repository gate（仓库检查）适合对确定条件给出通过或失败。但许多开发任务不能只靠一句规则或一个布尔结果完成，例如：怎样选择最小可信的 push 前证据、怎样审查 lifecycle race（生命周期竞态）、怎样判断 Agent Note 应保留还是归档。
+在建设 Agent-Friendly Repo 时，团队最容易陷入两极分化：要么把所有操作细节全塞进根 `AGENTS.md`，导致每次新会话还没开始干活就被迫吞下几千词与当前任务无关的流程噪音；要么只靠 `lint` 和单测给布尔红绿灯，把“推送前该挑哪组最小测试”“怎样排查异步生命周期竞态”“旧设计文档该留还是该封存”这类无法写成单条正则的工程判断继续留在老员工脑子里。
 
-这些任务需要读取上下文、应用判断标准、执行若干步骤并报告结果。DSH 把这类知识放进 development Skill（开发 Skill）。
+这类任务的共同特征是：**触发具有情境性、过程包含多步调查与权衡、产出需要诚实交代验证边界**。DSH 在常驻规则（`AGENTS.md`）与机械门禁（repository gates）之间，专门设立了 `.agents/skills/` 层来承载这种 **procedural memory（程序化工作记忆）**。
 
 > Skills (`.agents/skills/`) | Reusable workflows and specialized decision standards
 >
-> — DSH [`docs/AGENTS.md` 的层级表](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这一定义把 Skill 定位为可复用工作流和专门判断标准，而不是产品 API 或运行时行为的 owner。
+> — DSH [`docs/AGENTS.md` 的层级表](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)。这一定义把 Skill 精确锚定为“可复用工作流与专门判断标准”的权威归属，既不挤占每轮必读的常驻预算，也不冒充产品运行时 API 文档。
 
 ![规则、Skills、检查与 GitHub workflow 的职责分工](./figures/skill-and-enforcement.svg)
 
-## 先分清两种 Skill
+## 六类仓库知识载体的严格分工
 
-DSH 仓库同时出现两类同名概念，读者必须先区分：
+在任何引入 Skill 机制的仓库里，第一步都是划清它与其余五类载体的边界——好的 Skill 只链接上游事实与下游脚本，绝不把别的载体复制一遍：
 
-| 名称 | 位置 | 服务对象 | 作用 |
+| 知识载体 | 核心回答的问题 | 上下文加载时机 | 绝不能越界替代什么 |
 |---|---|---|---|
-| repository development Skills | `.agents/skills/` | 修改 DSH 的 coding agent | 提供任务触发条件、判断标准、操作流程和验证要求 |
-| runtime Skill capability | `packages/skill/` | 运行在 DSH 中的产品 agent | 发现、选择并加载项目、用户或 provider 提供的 Skill 内容 |
-
-二者都使用“按需加载任务知识”的思想，但不是同一套执行机制。前者属于仓库开发环境；后者是 DSH 产品本身的 Service Definition、filesystem provider 和 model-facing consumer。不能用产品包 README 替代仓库开发 Skill，也不能把 `.agents/skills/` 当成 `ctx.skills` 的完整运行时 API 与行为说明。
-
-## DSH 的 development Skills 覆盖哪些判断
-
-固定基线中的仓库 Skills 可以按任务分成五组（0011 复核更新：`.agents/skills/` 现为 19 个目录、16 个 `dsh-` 前缀；0011 跨度新增 `cordis-styling-nitpicking`、`dsh-error-handling`、`dsh-official-plugin-artwork`、`dsh-responsive-ui`；0009 跨度新增 `dsh-create-upgrade-guide`，`agent-experience/SKILL.md` 是指向 `packages/preset/agent-preset/skills/agent-experience/SKILL.md` 的符号链接、内容本体在 agent-preset 包；0008 跨度曾新增 `dsh-client-ui-ux` 与 `agent-experience`）：
-
-| 任务组 | Skills |
-|---|---|
-| 决策语料与简化 | `dsh-archive-agent-notes`、`dsh-find-simplifications`、`agent-experience` |
-| 文档、表达与发布 | `dsh-doc`、`dsh-prose-standard`、`dsh-trim-cot-leakage`、`dsh-translate-docs`、`dsh-create-upgrade-guide` |
-| 客户端界面与美术 | `dsh-client-ui-ux`、`dsh-responsive-ui`、`dsh-official-plugin-artwork` |
-| 错误处理 | `dsh-error-handling` |
-| 交付、评审与证据可靠性 | `dsh-pre-push-checks`、`dsh-code-review`、`dsh-merging-stacked-prs`、`dsh-ci-test-reliability`、`dsh-speed-up-perf`、`cordis-styling-nitpicking`、`record-browser-gif` |
-
-这不是要求 agent 每轮加载全部 Skill。每个 `SKILL.md` 的 frontmatter（文件头元数据）用 `name` 和 `description` 说明适用任务；命中任务后才读取完整正文及其必要 references 或 scripts。不同 agent host 如何发现和触发仓库 Skill，可以不同；DSH 仓库拥有的是 Skill 内容及其适用范围。
-
-## 一个 Skill 怎样参与任务
-
-典型调用过程可以压缩为五步：
-
-1. **Match（匹配）**：任务名称或语义符合 Skill description。
-2. **Load（加载）**：在采取任务动作前读完整 `SKILL.md`，不能从摘要猜工作流。
-3. **Resolve sources（解析来源）**：Skill 指向 standing rules、docs、Agent Notes 或脚本，agent 读取任务所需 owner。
-4. **Apply judgment（应用判断）**：按实际 diff、风险和状态选择动作；Skill 可以明确排除范围和停止条件。
-5. **Verify and report（验证并报告）**：运行适用检查，只报告真正执行过的证据和仍存在的边界。
-
-这个过程把 procedural memory（程序化工作记忆）从某位资深参与者的习惯，变成可发现、可复用、可审查的仓库文件。
-
-## Skill 不等于 gate
+| **`AGENTS.md`** | 每轮改动都必须无条件遵守哪些硬红线与路由入口？ | 会话启动或进入对应目录子树时常驻加载 | 特定低频任务的多步排查手册 |
+| **`SKILL.md`** | 遇到某类专门任务时，按什么顺序调查、权衡、验证并汇报？ | 任务语义命中 frontmatter `description` 时才按需加载 | 可写成非零退出码的确定性 pass/fail 检查 |
+| **Repository Gate / Script** | 某条可机械判定的不变量此刻是否成立？ | 本地提交前、聚焦自检或 CI 跑批时执行 | 代码意图合理性与架构取舍优劣 |
+| **`.github/` Workflow** | 在什么事件、权限隔离、操作系统矩阵下调度哪些检查？ | 远端推送、PR 触发或人工派发时执行 | 检查逻辑本身（逻辑应留在仓库脚本以便本地复现） |
+| **架构文档 / 模块 README** | 系统此刻对外提供什么接口、遵循什么不变式？ | 修改或调用对应模块时按需读取 | 历史方案比较或临时评审清单 |
+| **决策记录（ADR / Agent Note）** | 当年为什么选 A 拒 B、什么前提变了才重议？ | 触碰反直觉约束或准备推翻既有设计时读取 | 当前 API 用法或分步执行操作流 |
 
 > This skill is guidance, not a complete checklist. [...] The report identifies paths and dirty layers but does not replace semantic review.
 >
-> — DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)。这段原文明确限制了 Skill 的强制力：它组织判断，但不把语义 review 降成机械清单。
+> — DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)。这段自我设限点明了 Skill 的本质：它帮 coding agent 收敛注意力、排定调查次序，但绝不把需要理解业务意图的语义评审降格成机械打勾。
 
-| 载体 | 擅长回答 | 不能替代 |
-|---|---|---|
-| `AGENTS.md` | 每轮必须遵守什么 | 情境化长流程 |
-| Skill | 面对某类任务怎样调查、判断和验证 | 确定性 pass/fail 与产品 API/行为 |
-| repository script / gate | 一个可机械条件是否满足 | 意图和设计质量 |
-| `.github/` workflow | 何时、以何权限、在哪个 runner 执行检查 | 检查逻辑本身和本地判断 |
-| Agent Note | 为什么选择这一决定 | 具体执行步骤 |
-| current docs / README | 系统现在怎样工作 | 决策历史和临时 review 流程 |
+## 一个高信噪比开发 Skill 的五步执行闭环与四条写法准则
 
-好的 Skill 会链接这些 owner，而不是复制它们。规则改变时更新规则 owner；脚本接口改变时更新脚本和调用 Skill；产品行为改变时更新源码与当前文档。
+当 coding agent 在仓库中遇到匹配任务时，标准调用闭环分为五步：**Match（按描述匹配）→ Load（动手前先读完整 `SKILL.md`）→ Resolve owners（顺着链接读取当前规则与源码权威文件）→ Apply judgment（结合实际 diff 与风险施用判断标准）→ Verify & Report（执行匹配的门禁与测试，如实报告已跑命令与未覆盖边界）**。为了让任意 agent host 都能稳定走通这五步，编写仓库级 `SKILL.md` 时可直接复用四条工程准则：
 
-## Runtime Skill capability 为什么仍值得对照
-
-DSH 产品的 `ctx.skills` 把 provider discovery（提供方发现）、scope（作用域）、invocation policy（调用策略）和 model-facing loading（模型侧加载）分开。`dsh-tool-skill` 先给模型名称与描述目录，只有选中后才加载正文；这把上下文成本控制在当前任务需要的范围内。
+1. **`description` 只写触发时机与问题症状，不写空泛宣传语。** Agent 决定要不要加载一份 Skill，全看 YAML frontmatter 里的两行 `description`。应直接点名触发动作与典型坏味道（例如“在推送、强推或宣称检查通过前用于按改动面选择最小测试集”“在审查异步卸载、单例状态与清理顺序时使用”），让匹配零歧义。
+2. **严禁凭目录摘要脑补步骤，未加载正文前不得声称已遵循。** 目录只负责路由发现，完整正文与同目录 `references/`、`scripts/` 才拥有操作约束——正如 DSH 在工具侧对模型立下的同一条渐进披露铁律：
 
 > This catalog contains summaries only; do not infer or follow a skill's instructions until it has been loaded.
 >
-> — DSH [`@deepseek-ai/dsh-tool-skill` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/README.md)。这段产品侧提示与仓库开发 Skill 的组织目标相似：摘要负责发现，完整正文才拥有指令。
+> — DSH [`@deepseek-ai/dsh-tool-skill` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/README.md)。无论在产品运行时还是仓库开发侧，“摘要管发现、全文管执行”都是控制上下文窗口膨胀而不丢精度的核心机制。
 
-这种相似说明 DSH 在产品运行时和仓库开发中都重视按需知识，但不能据此声称两者共享同一 registry 或调用策略。
+3. **显式写清禁区（Exclusions）与过矫陷阱（Overcorrection Traps）。** 告诉 agent 什么能做只完成了一半；真正老练的 Skill 还会明确标出绝对不能误伤的边界（例如清理注释残渣时严禁触碰 `vendor/` 与已封存归档树、严禁把真实的静态检查豁免理由当成废话删掉）。
+4. **要求结构化、可核验的交付报告。** 在 Skill 末尾规定汇报格式——例如必须列出实际跑过的命令、每个发现项的文件行号与所有权证据，以及因缺少凭据或跨平台环境而留给远端 CI 验证的边界，从源头掐断 agent“没跑硬说全绿”的幻觉。
 
-## Skills 的边界
+## DSH 实证：开发侧 Skills 全景与同名概念辨析
 
-Skill 仍是 prose（文字指令）：agent 可能误读、漏读或在不匹配的任务上调用。高风险规则若可机械判断，仍应下沉到类型、gate 或顶层脚本检查；不能机械判断的部分由 Skill 缩小问题，再由 semantic review 复核。
+在阅读 DSH 源码时，要先区分两套同样采用“渐进披露”思想但服务对象完全不同的设施：**仓库开发 Skills**（位于 `.agents/skills/`，服务于修改代码库的 coding agent）与 **产品运行时 Skill 能力**（位于 `packages/skill/`，由 Service Definition、本地文件系统 Provider 与模型侧 `skill` 工具组成，服务于终端用户的会话代理）。两者互不共享注册表。
 
-因此 Skills 的价值不是“自动执行一切”，而是让复杂判断有稳定入口、明确来源、可重复过程和诚实的适用边界。
+DSH 主仓 `.agents/skills/` 将高频复杂判断收敛为五组专门工作流（其中 `agent-experience/SKILL.md` 通过符号链接指向 `packages/preset/agent-preset/skills/agent-experience/SKILL.md`，让仓库开发代理与产品内置预设复用同一套工具定义精简准则；通用新建仓库起步只需挑最痛的 2–3 个场景编写，模板见 [第 10 章](./10-agent-ready-repo-blueprint.md)）：
+
+| 任务领域 | DSH 仓库开发 Skills 样本 | 封装的核心判断逻辑 |
+|---|---|---|
+| **决策新陈代谢与简化** | `dsh-archive-agent-notes`、`dsh-find-simplifications`、`agent-experience` | 按“未来决策指导价值”而非字数或年龄裁决去留；识别死代码与过度抽象；压缩工具上下文开销 |
+| **文档、表达与破坏性变更** | `dsh-doc`、`dsh-prose-standard`、`dsh-trim-cot-leakage`、`dsh-translate-docs`、`dsh-create-upgrade-guide` | 维护单事实归属与双语行对齐；剥离会话推理残渣；在破坏外部可感知表面时同步产出升级指南 |
+| **界面体验与视觉资产** | `dsh-client-ui-ux`、`dsh-responsive-ui`、`dsh-official-plugin-artwork` | 约束视觉 token 复用、窄屏防截断与键盘可达性、官方图标比例与设计师准入 |
+| **故障与恢复契约** | `dsh-error-handling` | 区分可自愈业务错误与配置期致命错误，明确错误归属、隔离半径与用户可行动提示 |
+| **交付选测、评审与性能** | `dsh-pre-push-checks`、`dsh-code-review`、`dsh-merging-stacked-prs`、`dsh-ci-test-reliability`、`dsh-speed-up-perf`、`cordis-styling-nitpicking`、`record-browser-gif` | 按 diff 选最小可信本地检查、堆叠 PR 同步校验、排查并发/时钟/端口抖动、审计插件生命周期竞态、录制真实界面演示 |
 
 ## 证据入口
 
-- DSH [`.agents/skills/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/.agents/skills)：固定基线中的仓库 development Skills 全集。
-- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)：Skill 作为 guidance、语义 review 输入和 finding 输出的具体实例。
-- DSH [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)：按 outgoing scope 选择证据而不是固定跑全套的实例。
-- DSH [`@deepseek-ai/dsh-skill` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill/README.md)：产品 runtime Skill registry 的 Service Definition 与 provider/consumer 边界。
-- DSH [`@deepseek-ai/dsh-skill-filesystem` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-filesystem/README.md)：产品侧本地 Skill 根目录、格式和发现规则。
-- DSH [`@deepseek-ai/dsh-tool-skill` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/README.md)：产品侧 Skill catalog 与按需加载的 model-facing consumer。
+- DSH [`.agents/skills/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/.agents/skills)：仓库开发 Skills 全集与 frontmatter 触发描述实例。
+- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md) 与 [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)：将语义审查聚焦与按改动范围选测写成可复用判断流程的代表样本。
+- DSH [`dsh-trim-cot-leakage`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-trim-cot-leakage/SKILL.md) 与 [`dsh-archive-agent-notes`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-archive-agent-notes/SKILL.md)：显式声明禁区、过矫陷阱与语义归档判据的高阶 Skill 范本。
+- DSH [`@deepseek-ai/dsh-skill` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill/README.md)、[`@deepseek-ai/dsh-skill-filesystem` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-filesystem/README.md) 与 [`@deepseek-ai/dsh-tool-skill` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/README.md)：产品运行时侧渐进披露目录与按需加载能力的对照实现。

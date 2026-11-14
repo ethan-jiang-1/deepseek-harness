@@ -48,21 +48,23 @@
   <text x="1060" y="297" text-anchor="middle" font-size="12" fill="#6d4d4d">验证外部模型与服务行为</text>
   <text x="1060" y="329" text-anchor="middle" font-size="12" fill="#9b4545">未运行 ≠ provider 已验证</text>
 
-  <path d="M140 355 V405 H600 V450" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
-  <path d="M370 355 V405" fill="none" stroke="#475569" stroke-width="1.4"/>
-  <path d="M600 355 V405" fill="none" stroke="#475569" stroke-width="1.4"/>
-  <path d="M830 355 V405 H600" fill="none" stroke="#475569" stroke-width="1.4"/>
-  <path d="M1060 355 V405 H830" fill="none" stroke="#475569" stroke-width="1.4"/>
-  <text x="600" y="433" text-anchor="middle" font-size="12" fill="#64748b">安装 smoke 与真实 API 可组合执行，但一个通过不代表另一个通过</text>
+  <path d="M140 355 V386 H1060 V355" fill="none" stroke="#475569" stroke-width="1.4"/>
+  <path d="M370 355 V386" fill="none" stroke="#475569" stroke-width="1.4"/>
+  <path d="M600 355 V386" fill="none" stroke="#475569" stroke-width="1.4"/>
+  <path d="M830 355 V386" fill="none" stroke="#475569" stroke-width="1.4"/>
+  <path d="M600 386 V406" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <rect x="330" y="408" width="540" height="30" rx="15" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="600" y="428" text-anchor="middle" font-size="12" fill="#475569">安装 smoke 与真实 API 可组合执行，但一个通过不代表另一个通过</text>
+  <path d="M600 438 V462" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
 
-  <rect x="365" y="450" width="470" height="105" rx="10" fill="#f8fafc" stroke="#94a3b8"/>
-  <text x="600" y="483" text-anchor="middle" font-size="16" font-weight="700" fill="#334155">PR CI / 本地检查</text>
-  <text x="600" y="511" text-anchor="middle" font-size="12" fill="#526175">建立机械属性：实际执行的测试、构建、格式和平台结果</text>
-  <text x="600" y="535" text-anchor="middle" font-size="12" fill="#64748b">绿灯只证明它执行的断言</text>
+  <rect x="365" y="464" width="470" height="105" rx="10" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="600" y="497" text-anchor="middle" font-size="16" font-weight="700" fill="#334155">PR CI / 本地检查</text>
+  <text x="600" y="525" text-anchor="middle" font-size="12" fill="#526175">建立机械属性：实际执行的测试、构建、格式和平台结果</text>
+  <text x="600" y="549" text-anchor="middle" font-size="12" fill="#64748b">绿灯只证明它执行的断言</text>
 
-  <path d="M600 555 V600" fill="none" stroke="#0f766e" stroke-width="1.7" marker-end="url(#arrow-teal)"/>
-  <rect x="330" y="600" width="540" height="92" rx="10" fill="#fff0f0" stroke="#d26a6a"/>
-  <text x="600" y="631" text-anchor="middle" font-size="16" font-weight="700" fill="#8b3030">语义评审</text>
-  <text x="600" y="657" text-anchor="middle" font-size="12" fill="#6d4d4d">意图 ↔ 实现 ↔ 当前文档 ↔ 证据 ↔ 发布形态</text>
-  <text x="600" y="679" text-anchor="middle" font-size="12" fill="#9b4545">判断“这笔变更是否真的满足用户声称”</text>
+  <path d="M600 569 V612" fill="none" stroke="#0f766e" stroke-width="1.7" marker-end="url(#arrow-teal)"/>
+  <rect x="330" y="614" width="540" height="92" rx="10" fill="#fff0f0" stroke="#d26a6a"/>
+  <text x="600" y="645" text-anchor="middle" font-size="16" font-weight="700" fill="#8b3030">语义评审</text>
+  <text x="600" y="671" text-anchor="middle" font-size="12" fill="#6d4d4d">意图 ↔ 实现 ↔ 当前文档 ↔ 证据 ↔ 发布形态</text>
+  <text x="600" y="693" text-anchor="middle" font-size="12" fill="#9b4545">判断“这笔变更是否真的满足用户声称”</text>
 </svg>

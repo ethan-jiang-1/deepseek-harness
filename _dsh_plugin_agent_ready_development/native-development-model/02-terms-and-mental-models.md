@@ -1,233 +1,174 @@
-# DSH 插件开发术语：给第一次进入生态的读者
+# 02 · DSH 插件核心心智模型与防误判词典
 
 ## 怎样使用本页
 
-这是本卷的入门词汇解释，不是 API 清单。每个词回答“是什么、开发插件时为什么会遇到、最容易误解什么”。框架术语遵循 DSH 一手文档；owner、切片、oracle 等常见工程词按本卷上下文说明，不把它们包装成 DSH 新增的正式职位或方法。
+本页不是按字母排序的枯燥 API 手册，而是面向插件架构师与 coding agent 的**防误判概念锚点库**：每个词条用三句话讲透**“它到底是什么 → 写插件时在什么场景撞上它 → Agent 最容易犯什么代码级误判及一行自检法”**。
 
-首次阅读先了解 **Plugin、Context、Loader、inject、effect、HMR、owner**，再读 bundle/profile 与测试证据。遇到类型、参数或准确状态时，回到对应的一手参考，而不是把本页当实现规格。
+首次进入 DSH 插件生态时，建议按 **一（运行时原语）→ 二（组合与分发）→ 三（变更与控制边界）→ 四（测试证据与验收）** 的顺序扫读一遍；需要精确方法签名时直接跳往词条末尾链接的一手文档。
 
-## 快速查词
+## 快速查词索引
 
-| 你正在遇到的问题 | 术语入口 |
+| 你正在判断的具体工程问题 | 直达词条 |
 |---|---|
-| 插件究竟是什么，运行在哪？ | [DSH 与 Cordis](#dsh-与-cordis)、[Plugin 与 applyctx](#plugin-与-applyctx)、[Context](#contextctx)、[Service](#service服务) |
-| 配置如何变成运行中的插件？ | [Loader](#loader加载器)、[inject](#inject依赖声明)、[Config](#config插件配置)、[composition](#composition组合) |
-| 保存文件后为何更新，如何清理？ | [effect 与 disposer](#effect-与-disposer)、[HMR](#hmr热模块替换)、[PENDING](#pending等待依赖) |
-| 我应该改哪里、记录什么？ | [owner](#owner归属与权威来源)、[Agent Note](#agent-note决定记录)、[完整变更切片](#完整变更切片)、[contract](#contract使用义务) |
-| bundle、profile 和插件是一回事吗？ | [bundle](#bundle配置分发包)、[profile](#profile可启动组合)、[patch 与 overlay](#patch-与-overlay)、[发布产物](#published-artifact发布产物) |
-| plan、goal 与权限是什么关系？ | [Plan Mode](#plan-mode计划模式)、[goal](#goal会话目标)、[sandbox 与 approval policy](#sandbox-与-approval-policy) |
-| 什么证据可以信？ | [real composition](#real-composition真实组合)、[snapshot](#snapshot录制会话测试)、[oracle](#oracle独立预期)、[e2e 与 smoke](#e2e-与-smoke) |
-| 测试通过，是否就完成了？ | [gate 与 CI](#gate-与-ci)、[semantic review](#semantic-review语义评审)、[approval](#approval批准)、[merge 与 release](#merge-与-release) |
+| 插件到底长什么样，挂载在哪里？ | [DSH 与 Cordis](#dsh-与-cordis)、[Plugin 与 apply(ctx)](#plugin-与-applyctx)、[Context（ctx）](#contextctx)、[Service（服务）](#service服务) |
+| 配置文件怎样变成活插件，为什么没报错却没生效？ | [Loader（加载器）](#loader加载器)、[inject（依赖声明）](#inject依赖声明)、[PENDING（等待依赖）](#pending等待依赖)、[Config（插件配置）](#config插件配置) |
+| 热重载和卸载怎样回卷资源，怎样算完整能力接缝？ | [effect 与 disposer](#effect-与-disposer)、[HMR（热模块替换）](#hmr热模块替换)、[Event 与 Tool](#event-与-tool)、[Capability seam](#capability-seam可替换能力) |
+| `bundle`、`profile`、`preset` 和 `patch` 到底谁管哪一层？ | [composition（组合）](#composition组合)、[bundle（配置分发包）](#bundle配置分发包)、[profile 与 preset](#profile-与-preset进程入口-vs-会话能力)、[patch 与 overlay](#patch-与-overlay)、[发布产物](#published-artifact发布产物) |
+| 改功能时谁是 owner，`Plan`、`Goal` 与权限沙箱什么关系？ | [owner](#owner归属与权威来源)、[Agent Note](#agent-note决定记录)、[完整变更切片](#完整变更切片)、[contract](#contract使用义务)、[Plan Mode](#plan-mode计划模式)、[goal](#goal会话目标)、[sandbox 与 approval](#sandbox-与-approval-policy) |
+| 怎样证明插件真能工作，而不是自欺欺人的假绿测试？ | [real composition](#real-composition真实组合)、[snapshot](#snapshot录制会话测试)、[oracle](#oracle独立预期)、[e2e 与 smoke](#e2e-与-smoke)、[gate 与 CI](#gate-与-ci)、[semantic review](#semantic-review语义评审)、[approval](#approval批准)、[merge 与 release](#merge-与-release) |
 
 ## 一、插件怎样运行
 
 ### DSH 与 Cordis
 
-**DSH（DeepSeek Harness）**是把模型、工具、会话、权限与用户界面组合起来的 agent harness。**Cordis**是其底层插件框架，负责插件加载、服务依赖、事件通信和生命周期。写 DSH 插件，既要使用 Cordis 的框架机制，也要遵守自己接入的 DSH 服务或事件的接口义务。
-
-不要把 Cordis 当成另一种模型，也不要把 harness 理解为单独的一段提示词。DSH 的行为来自插件与配置的真实组合。依据：DSH [Cordis primer](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md)。
+**DSH（DeepSeek Harness）** 是将模型调用、工具管线、持久会话日志、安全沙箱与多端交互界面全部以插件形态组装起来的 Agent Harness；**Cordis** 则是其底层的依赖注入、类型事件与 Fiber 生命周期框架。写 DSH 插件同时受两层约束：用 Cordis 管理加载与资源回卷，按 DSH 服务契约接入模型与会话。
+- **Agent 高频误判与自检**：把 DSH 当成一段系统提示词模板，或绕过 `ctx` 直接手调底层模块内部文件；自检：检查 `import` 是否只指向 `@deepseek-ai/cordis` 与公开的 `@deepseek-ai/dsh-*` 包名。依据：DSH [Cordis primer](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md)。
 
 ### Plugin 与 apply(ctx)
 
-**Plugin（插件）**是加载后向 Context 贡献行为的模块。函数式插件的 `apply(ctx)` 是加载时调用的入口，不是模型每轮都会调用的工具。它可以注册工具、监听事件、提供服务，或安装其他贡献。
-
-DSH 包规则区分两种导出：函数式插件使用具名导出的 `name`、`inject`、`Config`、`apply`，不同时加默认导出；service 插件默认导出其 Service class。最小教程不是所有包的唯一形态。混用两类导出可能让 Loader 丢失函数插件的 namespace 和依赖声明。依据：DSH [包规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md)与 [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md)。
+**Plugin（插件）** 是挂载后向当前 `Context` 注册工具、监听事件或暴露服务的模块；函数式插件的 `apply(ctx, config)` 在**插件激活时执行一次**（而非模型每轮对话调用一次）。DSH 严格区分两种互斥导出形式：函数式插件具名导出 `name`、`inject`、`Config`、`apply`（严禁加 `export default`）；Service 插件通过 `export default class ... extends Service` 暴露新服务。
+- **Agent 高频误判与自检**：在函数式插件末尾画蛇添足写 `export default apply`，导致 `Loader.unwrapExports` 只取 `.default` 而丢掉具名 `inject` 与 `Config`（真实事故见 [`0001-acp-default-export-drops-inject`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0001-acp-default-export-drops-inject.md)，双形态样板见 [新仓起步 §2](./01-new-plugin-repository.md#2-建立最小可加载插件)）；自检：单测首行断言 `expect('default' in myFunctionPlugin).toBe(false)`。依据：DSH [包规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md)与 [首次插件指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md)。
 
 ### Context（ctx）
 
-**Context**是插件访问服务、注册能力与绑定生命周期的对象，代码中通常叫 `ctx`。例如 `ctx.tools` 表示工具服务，不是插件的随意全局变量；`ctx.on()` 注册事件监听，`ctx.effect()` 管理可撤销的注册或资源。
-
-Context 不等于模型的对话上下文窗口。这里的 `ctx` 是运行时对象；模型收到的 messages、prompt sections 和工具 schemas 是另一层信息。可选服务使用 `ctx.get(name)`，不能把未声明注入的 `ctx.<name>` 当成总能访问的属性。依据：DSH [Cordis primer](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md)与 [包规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md)。
+**Context（`ctx`）** 是运行时服务索引、事件总线与生命周期作用域句柄（如 `ctx.tools`、`ctx.sessions`，或限定在单个 Agent 会话上的 `agent.ctx`），**绝不是送给大语言模型的对话上下文窗口（Prompt Context）**。
+- **Agent 高频误判与自检**：未在 `inject` 中声明某服务就直接读 `ctx.foo`（当该服务为可选时）；自检：必需依赖写进 `inject` 后读 `ctx.foo`，可选依赖一律显式调用 `ctx.get('foo')` 并处理 `undefined`。依据：DSH [Cordis primer](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-primer.md)与 [包规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md)。
 
 ### Service（服务）
 
-**Service**是通过稳定的 Context key 提供能力的运行时对象，例如工具注册和执行服务、模型服务或会话服务。插件通过声明依赖消费服务，不应为了调用能力直接耦合某个具体 provider 的内部文件。
-
-它不一定是网络微服务；一个同进程 registry 也可以是 Cordis Service。依据：DSH [Services 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/03-services.md)。
+**Service** 是占据稳定 `ctx.<key>` 槽位的同进程运行时能力对象（如 `ctx.tools` 工具注册与执行管道、`ctx.llm` 模型流式网关）。插件通过服务键解耦调用方与具体实现，无需关心背后挂的是本地实现还是远端实现。
+- **Agent 高频误判与自检**：把运行态可变缓存写在模块顶层 `const cache = new Map()` 而不是收进 Service 实例字段；自检：搜索插件源码顶层是否存在非冻结的可变集合或 `let` 状态。依据：DSH [Services 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/03-services.md)。
 
 ### Loader（加载器）
 
-**Loader**把配置中的插件条目解析、挂载并组成运行中的应用。它处理模块引用、entry identity、配置变化和插件生命周期。开发时说“走真实 Loader”，指让配置与模块经过真实加载路径，而不是在测试里手工拼出一个看起来相似的 Context。
-
-Loader 不等于 TypeScript 编译器，也不保证用户行为已正确。路径能解析、插件能加载，仅建立加载这一项事实。依据：DSH [Composition 与 HMR 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md)。
+**Loader** 负责解析 `cordis.yml` / 补丁层中的条目、加载模块、管理条目身份（`id`）、应用配置变更并驱动插件 Fiber 的启停。所谓“走真实 Loader 测试”，就是让 YAML 配置经过真实 `Loader` + `Include` 解析挂载，而非在测试里手工 `new Context()` 后直调 `ctx.plugin(fn)`。
+- **Agent 高频误判与自检**：以为 `tsc` 编译通过且手工 `ctx.plugin` 单测变绿就证明插件可被宿主加载；自检：至少有一条测试经 `context.loader.create({ name: 'cordis:include', ... })` 启动插件。依据：DSH [Composition 与 HMR 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md)。
 
 ### inject（依赖声明）
 
-**inject**声明插件运行前需要哪些服务，例如 `tools`。框架等待所需服务就绪后加载插件，所以加载顺序由依赖关系表达，不靠作者手工排列一串初始化调用。
-
-它不是 npm dependencies 的替代品：npm dependencies 让模块能解析，inject 声明运行时服务就绪的条件，不创建 provider，也不保证等待会结束。两种依赖都要验证。依据：DSH [首次插件指南的依赖声明](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md#declare-dependencies)。
+**`inject`** 声明插件激活前必须就绪的 Cordis 服务键名数组（如 `export const inject = ['tools', 'sessions']`）。它只控制运行时激活条件与顺序，**既不自动安装 npm 包，也不替宿主实例化缺失的 Provider**。
+- **Agent 高频误判与自检**：改代码新增了 `ctx.llm` 调用，却漏往 `inject` 数组追加 `'llm'`，导致启动竞态偶发空指针；自检：逐一核对 `apply` 体内访问的所有 `ctx.<service>` 键是否 100% 出现在 `inject` 中。依据：DSH [依赖声明指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md#declare-dependencies)。
 
 ### PENDING（等待依赖）
 
-**PENDING**是 Cordis 插件实例等待依赖的生命周期状态。配置中缺少提供必需服务的插件时，消费者可以一直等待，甚至没有输出；这不一定立即抛出错误，因为 provider 可能稍后加载。
-
-因此，“没看到错误”不等于“插件已运行”。新仓 smoke 应确认插件实际激活并产生目标结果；排查不加载的问题时，先核对 inject 与 provider 是否齐全。依据：DSH [不加载插件的诊断](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md#diagnosing-a-plugin-that-never-loads)。
-
-排查顺序也可以固定下来：先用 `dsh --profile <name> --dump-config` 看组合出来的层与行，再看启动 stderr 的 `did not activate`、`skippedBundles` 与 `PENDING` 点名，最后看 `$DSH_HOME/profiles/<name>/.plugin-manager/logs/` 的 pnpm 输出。顺序反过来，容易把“没装进去”误判成“装了没生效”。依据：DSH [启动诊断](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md#profiles) 与 [插件管理日志](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/README.md)。
+**`PENDING`** 是插件 Fiber 等待 `inject` 所需服务上线时的合法挂起态。当配置树里漏挂上游服务提供方时，消费方插件不会抛异常崩溃，而是安静停在 `PENDING`（因为框架允许上游稍后动态挂载）。
+- **Agent 高频误判与自检**：看到进程启动零报错就以为插件已经跑起来了；标准三步排障顺序是：先跑 `dsh --profile <name> --dump-config` 核对合成配置行 → 再看启动 stderr 的 `did not activate`、`skippedBundles` 与 `PENDING` 点名 → 最后查 `$DSH_HOME/profiles/<name>/.plugin-manager/logs/` 安装日志。依据：DSH [不加载插件诊断](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md#diagnosing-a-plugin-that-never-loads)与 [启动诊断](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/README.md#profiles)。
 
 ### Config（插件配置）
 
-**Config**定义插件接受的配置数据与验证方式。部署方会改变的选择应通过配置表达，而不是藏在代码常量、默认分支或仅测试可调用的钩子里。
-
-Config 不等于全部 `cordis.yml`：一个插件的 Config 只拥有该插件的选择；整个文件还包含模块名、entry id、disabled、group 等加载元数据。依据：DSH [配置教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/05-config.md)与 [根级开发规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)。
-
-选配置放哪一层，和写 Config 同样重要。DSH 的层序是：Config schema 默认值 → bundle patch → profile patch（`cordis.patch.yml`）→ home patch → `--patch`，越后的层越优先。只有标了 `Config.volatile()` 的字段才会进入设置表单，表单写入落在当前 profile 的 patch；把用户可改的字段留在非 volatile 的 bundle 默认值里，设置页不会出现。把 `!!js` 表达式写成字面值，`--port` 这类启动参数会静默失效。依据：DSH [设置服务](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/settings.md)、[添加设置卡](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-settings-card.md) 与 [加载顺序](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-loading-order)。
+**`Config`** 是插件用 `@deepseek-ai/schemastery` 定义并校验的专属配置对象。DSH 配置按五层顺序叠加，越靠后优先级越高：**`Config` Schema 默认值 → Bundle patch → Profile patch（`cordis.patch.yml`）→ Home patch → 命令行 `--patch`**。只有显式标记了 `Config.volatile()` 的字段才会出现在图形设置页表单中（修改后落入当前 profile patch）。
+- **Agent 高频误判与自检**：把需要用户在设置界面实时修改的字段写成普通非 `volatile` 字段，或把 YAML 动态求值标签 `!!js` 误写成单感叹号 `!js`（详见 [`04` §4](./04-plugin-repo-topologies.md)）。依据：DSH [设置服务](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/settings.md)、[添加设置卡](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-settings-card.md) 与 [加载顺序](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-loading-order)。
 
 ### effect 与 disposer
 
-**Effect**在这里指生命周期可撤销的注册或资源管理，不是 UI 框架的 render effect。**Disposer**是撤销它的清理函数：移除监听、取消定时器、关闭连接、撤回工具注册等。`ctx.effect()` 可以取得资源并返回 disposer；`ctx.on()` 等框架 helper 会把注册与清理关联起来。
-
-“用过 ctx”不代表随手创建的所有资源自动受控。自己创建的连接、timer 或后台工作必须有明确的清理 owner；插件卸载后不应留下仍运行的旧资源。依据：DSH [Lifecycle 与 effects 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/02-lifecycle-and-effects.md)。
+**Effect** 是绑定在插件 Fiber 上的受管副作用，**Disposer** 是卸载该副作用的清理函数。`ctx.on()`、`ctx.tools.register()` 等框架方法自带回卷；插件自己启动的定时器、子进程、WebSocket 或临时文件句柄则必须包进 `ctx.effect(() => { ...; return () => cleanup() })`。
+- **Agent 高频误判与自检**：在 `disposer` 里只发了 `abort()` 信号却没有 `await` 在途异步写入排空，导致底层连接在消费者写完前提前关闭（完整的 Quiescent Disposal 模式见 [`05` §4](./05-cordis-contracts-and-model-experience.md)）。依据：DSH [Lifecycle 与 effects 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/02-lifecycle-and-effects.md)。
 
 ### HMR（热模块替换）
 
-**HMR = Hot Module Replacement**。在 Cordis 插件开发中，它通过卸载旧实例、清理 effects、加载新代码并再次执行入口，替换正在运行的插件，通常无需重启整个应用。是否自动发生，取决于 HMR 插件、监听路径和所需的开发构建链是否实际配置并运行。
-
-HMR 不等于浏览器刷新，也不意味着任意文件保存都能更新当前产品。源码插件、构建 bundle 与 GUI shell 的更新路径可能不同；先确认自己修改的是哪一层。**HMR-safety test**是卸载贡献实例并验证注册已移除的测试，不必真的启动文件 watcher 才能验证基本清理义务。依据：DSH [HMR 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md#hot-module-replacement)与 [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)。
+**HMR（Hot Module Replacement）** 在 Cordis 中指卸载旧插件 Fiber（执行全部 disposer）、重新加载新代码并再次执行 `apply(ctx)`，无需重启整个宿主进程。测试套件中的 **HMR-safety test** 不必真起文件监听器，只需调用 `await targetFiber.dispose()` 并断言注册表零残留、重新挂载不报重复注册错误即可。依据：DSH [HMR 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md#hot-module-replacement)与 [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)。
 
 ### Event 与 Tool
 
-**Event**是插件或服务间的通信点；不同 dispatch mode 决定监听器怎样观察、委派、串行或并行执行。**Tool**是模型可发现并调用的能力，有名称、描述、参数与结果，并经过真实工具执行管线。工具 `description` 是模型看到的选择策略（DSH cookbook 把该字段注为 “what the model sees”）；包 README 与 JSDoc 是仓库内文档，不会自动进入模型请求。
-
-事件监听器不是模型工具；把函数写出来也不等于模型已经能调用它。工具 schema、注册、执行、结果和日志必须一起核对。依据：DSH [事件教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/04-events.md)、[接入 Harness 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/07-into-the-harness.md)、[adding-a-tool cookbook 的 minimal shape](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md#the-minimal-shape)与 [architecture 的 Turn flow](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#turn-flow)。
+**Event** 是进程内插件与服务间的类型化通知或拦截管道（分 `emit`、`waterfall`、`parallel`、`serial`、`bail` 五种模式）；**Tool** 是暴露给大语言模型按需调用的外部动作接口（经 `defineTool` 定义并走 `ctx.tools` 管线执行）。工具的 `description` 与参数描述直接进入模型请求前缀，而包 `README.md` 和源码 JSDoc 只留在仓库给开发者看。
+- **Agent 高频误判与自检**：在 `waterfall` 监听器里做完观察或注解后忘记 `return next()`，把下游所有监听器静默截断（详见 [`05` §3](./05-cordis-contracts-and-model-experience.md)）。依据：DSH [事件教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/04-events.md)与 [添加工具食谱](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md#the-minimal-shape)。
 
 ### Capability seam（可替换能力）
 
-DSH 的 **capability seam**包含 Service Definition、Service Provider 与 Consumer 三种角色：定义能力词汇与接口、实现能力、消费能力。它指完整可替换能力，不是某一个包，也不泛指任意模块边界。
-
-独立插件可能成为已有能力的 provider 或 consumer；不一定需要建立新 seam，也不必为了三种角色机械拆成三个包。依据：DSH [规范术语](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md#capability-seam)。
+**Capability seam** 是由 **Service Definition（纯契约与类型）+ Service Provider（底层实现）+ Consumer（面向接口调用的消费方）** 三角色共同构成的完整可替换能力边界。大多数独立插件只是既有 Seam（如 `dsh-tools`、`dsh-llm`）的 Consumer 或新 Provider，无需动辄新建三包结构；何时才需要拆成多包 Seam 见 [`04` §3](./04-plugin-repo-topologies.md)。依据：DSH [规范术语](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md#capability-seam)。
 
 ## 二、怎样组合与分发
 
 ### composition（组合）
 
-**Composition**是选定插件、provider、依赖与配置，让它们成为一个可运行整体。`cordis.yml`、bundle 和 profile 都参与不同层次的组合；单个插件源码不是完整应用。
-
-“真实组合测试”不是测试所有插件的所有功能，而是按你的用户行为，让相关插件经过实际加载和执行路径。依据：DSH [Composition 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md)。
+**Composition** 是把选定的核心服务、Provider 与扩展插件连同各自配置组装成一个可运行整体的过程。单个插件文件无法脱离上游服务独自成军；所谓真实组合验证，就是按真实业务链路把最小必需的上游服务与你的插件一起交给 `Loader` 启动测试。依据：DSH [Composition 教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cordis-tutorial/06-composition-and-hmr.md)。
 
 ### bundle（配置分发包）
 
-**Bundle**是带 `dsh.bundle` manifest 的 npm package，贡献一个配置层。该层的 patch 可以插入或覆盖插件行，引用随包交付的插件模块。
+**Bundle** 是在 `package.json` 中声明了 `dsh.bundle` 字段、自带一份 YAML 配置补丁层的 npm 包（不代表用打包器把所有依赖揉成单文件）。用户执行 `dsh plugin add` 安装 Bundle 时，宿主不仅安装 npm 依赖，还会把它的配置补丁层自动叠进目标 Profile；没有声明 `dsh.bundle` 的普通插件包安装后不会自动激活任何行。依据：DSH [两个概念、两个 manifest](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#two-concepts-two-manifests)。
 
-Bundle 不是运行中的 profile，也不只是把 JavaScript 打成一个文件的“bundler 输出”。普通 npm 包如果没有 bundle 声明，安装依赖并不自动激活其配置层。依据：DSH [两个概念、两个 manifest](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#two-concepts-two-manifests)。
+### profile 与 preset（进程入口 vs 会话能力）
 
-### profile（可启动组合）
+插件作者最容易混淆这三个以 B/P 开头的组合词——尤其是 **`Profile` 与 `Preset` 根本不在同一个粒度上**：
 
-**Profile**描述用户启动的 DSH 组合：使用哪些 bundles、按什么顺序叠加、最后如何应用用户 patch。Profile manifest 与 bundle manifest 拥有不同职责。
-
-Profile 不等于一个插件，也不等于给某位 agent 的人格定义。修改用户的 profile 是部署组合操作，修改插件代码是实现操作。依据：DSH [发布指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)。
+- **Profile（进程级启动环境）**：声明 `dsh.profile`，决定用户执行 `dsh --profile <name>` 启动整个 Node 宿主进程时按什么顺序叠加哪些 Bundles（例如内置的 `web`、`headless`、`sdk`、`acp`）。任何包都不能既是 Bundle 又是 Profile。
+- **Preset（单会话 Agent 能力预设）**：运行在一个已启动进程内部，利用 `Agent.ctx`（会话级作用域上下文）决定**某一个具体 Session 的 Agent** 挂载哪些工具集、系统提示词片段与技能目录（而不会污染同一宿主进程里的相邻会话）；官方发布的预设由对应的 Bundle 携带。
+- **Agent 高频误判与自检**：只想给特定类型的子代理或某类会话增减工具，却去改进程级的 Profile 配置；自检：改整机启动装什么看 `Profile`/`Bundle`，改单个会话 Agent 拿什么能力看 `Preset` 与 `agent.ctx`。依据：DSH [发布指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)、[agent preset 说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset/README.md) 与 [`dsh-agent` 作用域说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent/README.md)。
 
 ### patch 与 overlay
 
-**Patch**在本语境指修改插件配置树的数据，如插入或覆盖条目；**overlay**常指开发或部署时加在基础组合上的配置覆盖层。它们不是 Git patch，也不是直接修改宿主源码。
-
-两条机械规则要先记住：按 `id` 覆盖已有 row 时，patch 替换的是该行的**整个 `config`**，不是逐字段深合并，想保留的键必须一起重写；`insert` 则加新行。列出的 bundle 若没有 `dsh.bundle` 声明，启动失败而不是静默跳过。依据：DSH [加载顺序与覆盖](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-loading-order)。
-
-不要把 patch 文件所在目录当成全部模块引用的新工作目录。官方本地开发示例明确要求绝对插件路径，因为额外 patch 不改变 profile 的模块解析目录；bundle patch 的相对路径另有规则。依据：DSH [本地挂载指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md#register-it-in-cordisyml)与 [bundle patch 规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-bundle-manifest)。
+**Patch / Overlay** 指叠加在基础配置树之上的插件增删改指令（如 `insert` 插入新行，或按相同 `id` 覆盖已有行）。必须死记两条硬语义：第一，**按相同 `id` 覆盖已有插件行时，替换的是该行的整个 `config` 对象而非深合并**——原配置里仍需保留的字段必须显式一并写出；第二，通过 `--patch` 传入外部覆盖文件时，宿主模块解析基准目录保持不变，本地未安装的开发插件在外部 patch 中应使用绝对路径。依据：DSH [加载顺序与覆盖](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md#the-loading-order)与 [本地挂载指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/index.md#register-it-in-cordisyml)。
 
 ### published artifact（发布产物）
 
-**发布产物**是用户实际获取并运行的构建包、模块、配置与资源，而不是开发者的源码工作区。Built/packed smoke 要验证这个形态，以发现源码环境掩盖的依赖、解析和漏打包问题。
-
-Source checkout 测试通过不证明安装包可用；peer dependency 范围也不是已经测试过的兼容范围。依据：DSH [真实入口测试政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#test-the-real-entry-path)与 [插件打包指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/user/develop/basic/publish.md)。
+**发布产物** 是经 `pnpm pack` 或发版流水线打出的真实交付包（仅含 `files` 白名单内的编译后 `lib/`、类型声明、补丁 YAML 与静态资源），而非开发机上装满 `devDependencies` 和源码的仓库目录。源码测试全绿绝不证明发布产物闭合。依据：DSH [真实入口测试政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#test-the-real-entry-path)。
 
 ## 三、怎样组织一次变更
 
 ### owner（归属与权威来源）
 
-**Owner**在 DSH 文档中不是统一的人类职位。它可以指某类事实的权威维护位置、某个行为的拥有插件或服务，也可以指资源与测试场景的维护责任。关键问题是“谁拥有这个事实或行为，正确修改应该发生在哪里”。
-
-例如插件 README 拥有当前使用义务，源码拥有实现，测试场景拥有输入和断言，Agent Note 拥有其他材料无法解释的持久取舍。这里的“一个事实一个家”不等于“一项功能一个文件”。人的项目负责人或本仓库用户也可能被称为 owner，必须看上下文，不能混为一类。依据：DSH [文档层级](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)与 [包的 owner 规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md)。
+**Owner** 在本体系中首先指**某类事实在仓库里的唯一权威文件，或某项运行时状态/资源的唯一管理实例**（只有在谈项目职责时才指人类维护者）。找到 owner 意味着直接去源头修改并更新引用方，绝不在第二个文件手抄副本。依据：DSH [文档层级表](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md#the-tier-taxonomy-one-home-per-fact)与 [包级归属规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/AGENTS.md)。
 
 ### Agent Note（决定记录）
 
-**Agent Note**保存代码、测试和已有文档不能充分说明的持久决定理由，包括真实替代方案、为何未采用、代价与需要保留的验证。它服务未来维护者，不是每次变更都要填写的过程表。
-
-`proposed` 表达待实现前评审的提案，`implemented` 描述已交付决定，`rejected` 保存仍有防错价值的否决，`archived` 是冻结历史。Implemented Note 不是当前 API 的唯一说明，proposed 目录也不是通用任务看板。依据：DSH [Agent Note 规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)。
+**Agent Note（或插件仓自建的轻量 ADR）** 专门记录代码、类型和模块 `README.md` 无法自明的持久取舍、被拒备选方案与代价；机械重构与局部小修免写。通用模板与长周期取代/归档法则见 [卷一第 10 章](../repo-harness/10-agent-ready-repo-blueprint.md) 与 [第 11 章](../repo-harness/11-spec-drift-and-decision-metabolism.md)。依据：DSH [Agent Note 规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)。
 
 ### 完整变更切片
 
-本卷的**完整切片**是一次范围清楚的用户行为变更，同时携带受影响的实现、文档、配置消费者与证据。它是对 DSH 交付原则的归纳，不是官方产品对象。
-
-“窄”指行为范围清楚，不指只准改一个文件；“完整”也不表示每次都要跑全部测试。依据：DSH [根级验证与文档规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)与 [聚焦证据 Skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)。
+**完整变更切片** 指围绕一个清晰的用户可观察结果，把实现源码、导出类型、`README.md`（含 `Model Experience`）、配置补丁与回归证据放在同一个提交/PR 里一次性闭环交付，不留半拉子工程。依据：DSH [根级开发规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md)。
 
 ### contract（使用义务）
 
-**Contract**是调用者、实现者或维护者依赖的前置条件、结果保证、失败行为、生命周期或兼容承诺。例如“所需服务就绪后加载”“卸载时撤销注册”“错误配置明确失败”。
-
-它不是必须存在的一份 spec 文件，也不是任意模块形状的别名。插件 contract 通常分布在类型、JSDoc、README、源码与行为测试中。依据：DSH [文档规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)。
+**Contract（契约）** 是调用方、实现方或宿主共同依赖的前置条件、后置结果、错误码、卸载清理保证与持久化兼容性承诺，分散承载于 TypeScript 签名、JSDoc、`README.md` 与测试断言中（写文档和注释时切忌把普通返回字段含糊地泛称为“contract”）。依据：DSH [文档标准](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)。
 
 ### Plan Mode（计划模式）
 
-**Plan Mode**是可选的会话协作状态：为模型加入部署提供的计划引导，通过 `exit_plan_mode` 交给用户审阅完整计划。它回答本次准备怎样实施，可包含假设、影响面和验证安排。
-
-Plan Mode 本身不禁止文件、进程或网络操作。计划认可不是扩大操作权限；文件效果由接入的 sandbox 执行约束，具体动作的显式审批由调用方与 approval 服务执行，与 plan state 无关。依据：DSH [Plan subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/plan.md)。
+**Plan Mode** 是供会话代理先拟定实施计划并通过 `exit_plan_mode` 交人类确认的软协作状态。**批准 Plan 绝不授予任何文件系统写权限或免除高危动作审批**——硬边界始终由下方的 Sandbox 与 Approval 服务独立把守。依据：DSH [Plan 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/plan.md)。
 
 ### goal（会话目标）
 
-**Goal**是绑定到既有 Session 的一个持久完成目标，可跨轮、恢复和重启保留。Goal 服务保存状态；何时续轮由其他 consumer/driver 决定，不是 goal 服务自己安排工作。持久相位有 `active`、`paused`、`blocked`、`complete`；`blocked` 是停止续跑的另一种相位，不是完成，带一个稳定的阻塞 code 与说明（`resume` 可在剩余轮预算内重新开始）。
-
-`complete` 是目标状态，不是独立完成认证。Goal 不是 feature 看板、并行目标数据库或任意需求的自动评估器。依据：DSH [规范词汇](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md#goal)、[goal 生命周期](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/goal/README.md#drive-the-lifecycle)与 [goal 限制](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/goal/README.md#known-limitations-and-deferred-work)。
+**Goal** 是绑定在单个 Session 上的跨轮持久目标状态（含 `active`、`paused`、`blocked`、`complete` 四种相位；续轮调度由独立的 driver 消费执行）。再次强调：**模型自己把 Goal 标为 `complete` 只是更新了一条会话状态，绝不构成代码已通过验证的客观证据**。依据：DSH [规范词汇](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md#goal)与 [`dsh-goal` 说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/goal/README.md)。
 
 ### sandbox 与 approval policy
 
-**Sandbox mode**只约束文件系统效果（filesystem effects），不定义网络访问或进程可见性限制。**Approval policy**只处理调用方显式提交给 `ctx.approval.request()` 的具体动作请求：`ask` 委派给已组合的答复链，无可用答复时返回 `unavailable`；`never` 不询问，直接返回 `rejected`。调用方仅在 `allowed-once` 时执行获准的那一次动作，其余结果均拒绝执行。
-
-它们不判断方案质量，也不是自动拦截所有网络或进程操作的全局授权层；未接入审批服务的操作不会因此自动受控。不要因为用户批准 Plan 就认为文件、网络或进程操作都获准。依据：DSH [sandbox subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/sandbox.md)与 [approval subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/approval.md)。
+**Sandbox mode** 仅约束文件系统副作用范围（不自动拦截网络或进程可见性）；**Approval policy** 仅裁决业务代码显式送入 `ctx.approval.request()` 的具体高危动作（仅当返回 `allowed-once` 时才放行当次操作，`never` 策略直接返回 `rejected`）。如果你的插件自身执行高危外部写操作或命令，必须主动接入宿主沙箱或审批服务，框架不会凭空替未接入的裸 Node 调用加锁。依据：DSH [Sandbox 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/sandbox.md)与 [Approval 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/approval.md)。
 
 ## 四、怎样验证与判断完成
 
 ### real composition（真实组合）
 
-**真实组合测试**让相关插件通过真实 Loader、配置和应用/进程入口运行，只 mock 外部服务或非确定性输入，再从模型请求、持久状态或用户可见结果断言行为。
-
-它不是“完全不能 mock”，也不是只有单元测试全部通过就算集成。DSH 主仓对 product-visible 插件要求 non-unit real composition；独立仓借用的是这项验证原则，不自动得到主仓的测试基础设施。依据：DSH [真实入口政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#test-the-real-entry-path)。
+**真实组合测试** 通过真实 `Loader` 读取配置挂载插件及其依赖服务，只对最外层的网络模型 API 或非确定性时钟做替身（如脚本化 `LlmAdapter`），从真实的模型请求载荷、会话事件或落盘文件断言结果。依据：DSH [真实入口测试政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#test-the-real-entry-path)。
 
 ### snapshot（录制会话测试）
 
-DSH 本卷谈的 **snapshot** 主要是 recorded-session scenario：提交的 Session JSONL 提供用户输入、模型回放与预期持久结果，相关界面还可以保留协议或渲染证据。**Replay**回放已有数据验证结果；**record/refresh**按指定方式更新录制资产。
-
-它不是泛指任何截图，也不是仅让测试框架重新生成一个文本文件。DSH 主仓要求每个非平凡（non-trivial）的模型、协议或用户可见变化在同一 PR 中新增或更新 keyless recorded-session scenario；独立仓建议采用可重复的组装后输出证据，自行适配场景并明确未覆盖之处。非会话驱动的 UI 或 CLI expected output 由所属 app/package/script 维护。**Keyless**表示回放验证无需真实 API key，不表示首次录制或真实模型能力测试都无需 key。依据：DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#when-a-snapshot-test-is-required)与 [录制场景规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md)。
+在本语境下，**snapshot** 特指 **keyless recorded-session（无 Key 会话回放测试）**：用确定性的模型响应流驱动完整会话管线，锁死插件对系统提示词、工具 Schema、工具返回渲染和持久化事件的影响，在没有线上 `DEEPSEEK_API_KEY` 的常规 CI 中也能 100% 复现验证（独立插件仓的轻量无 Key 回放实现见 [`06` §3](./06-plugin-gate-and-ci-harness.md)）。依据：DSH [快照测试要求](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#when-a-snapshot-test-is-required)与 [`snapshots/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md)。
 
 ### oracle（独立预期）
 
-**Oracle**是测试判定结果的依据，例如应出现的文件内容、外部命令结果或已审阅的 expected tree。这是通用测试词，不是 DSH 新服务名。
-
-“独立”指不能让被测输出的更新动作顺便改掉判断标准。DSH 的 workspace 变更场景重新读取实际工作区并比较 `workspace.expected/`；record/refresh 不改写该目录。模型自报“我写好了”不是文件已正确写出的证据。依据：DSH [外部世界断言](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#verify-the-world-not-the-self-report)与 [snapshot owner 规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md)。
+**Oracle（独立预期基准）** 是独立于被测代码之外的正确答案真源（例如人工审定并只读保护的 `workspace.expected/` 目录树）。刷新录制快照时绝不能让脚本顺手覆盖 `workspace.expected/`，否则测试就退化成了“拿今天刚跑出来的错误输出当标准答案”。依据：DSH [外部世界验证](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#verify-the-world-not-the-self-report)。
 
 ### e2e 与 smoke
 
-**E2e（end-to-end）**从支持的外部入口走到可观察结果，验证跨越相关组成部分的行为。DSH 的 **real-API e2e**还使用真实 provider API，与只替换模型边界的 keyless 回放不同。
-
-**Smoke**是范围较小但路径真实的冒烟检查，例如安装后通过支持的 profile 完成一个可观察任务。Smoke 不等于完整覆盖；没有 key 而 self-skip 的测试也不能报成已验证真实模型。依据：DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)。
+**Smoke（冒烟）** 用最小真实路径验证打包安装与启动激活未断链；**real-API e2e** 则连上真实线上模型检验工具描述是否真能被大模型正确理解并调用。无 API Key 时自动跳过的 `test:e2e` 必须在交付报告中如实注记为“已跳过”，严禁混报为已验证通过。依据：DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)。
 
 ### gate 与 CI
 
-**Gate**是能执行、违反规则时非零退出的检查；**CI**是自动触发、在规定环境运行这些检查并汇总结果的持续集成流程。测试、构建、格式与依赖一致性都可以进入对应检查。
-
-Gate 是判断逻辑，CI 还拥有何时、在哪运行。绿灯只证明已执行的检查通过，不证明任意自然语言需求都满足。独立仓须选择自己的检查，不会自动继承 DSH 主仓的矩阵。依据：DSH [开发与 CI 文档](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/development.md)。
+**Gate（门禁）** 是本地即可秒级运行、违规即非零退出并打印修复坐标的确定性脚本（如插件仓的 `scripts/verify-plugin.mjs`）；**CI** 则是在干净隔离容器中自动执行构建、门禁、测试与 tarball 安装预演的远端流水线。依据：DSH [开发与 CI 指南](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/development.md)。
 
 ### semantic review（语义评审）
 
-**语义评审**把意图、实现、当前文档、持久理由和测试证据对齐，判断它们是否真的说明了同一个用户结果。它需要追踪真实入口、失败路径、生命周期与未覆盖的声称，可由具备上下文的人或 agent 完成。
-
-它不是再跑一次 linter，也不能仅凭“CI 全绿”下结论。依据：DSH [code review Skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)。
+**语义评审** 由具备上下文的人类（辅以专门审查 Skill）聚焦核查机器门禁够不着的部分：需求意图是否跑偏、异步卸载是否存在竞态、错误提示是否对用户可行动、破坏性变更是否交代了迁移路径。依据：DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)。
 
 ### approval（批准）
 
-**批准**有不同语境：PR review/approval 规则决定当前变更是否满足合并资格；用户操作授权决定受限动作能否执行；Plan review 决定是否接受实施方案。
-
-三者不能混用。DSH 主仓的 weighted approval 是 PR 门槛，不是插件质量评分或权限系统；独立插件仓可以选择自己的 review 规则。依据：DSH [review ownership](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/review-ownership/README.md)与 [approval subsystem](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/approval.md)。
+区分三种完全不同层面的 **approval**：代码仓库的 PR 合并审批、会话中的 `Plan Mode` 方案确认，以及运行时的 `ctx.approval.request()` 敏感动作放行——三者互不替代。依据：DSH [评审归属说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/review-ownership/README.md)与 [Approval 子系统](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/approval.md)。
 
 ### merge 与 release
 
-**Merge**把变更并入目标分支；**release**产生用户可取得的版本和发布产物。合并后仍可能没有构建、打包、发布或安装验证。
+**Merge（合并主干）≠ Release（正式发版）**。代码合入默认分支只更新了源码树；只有经过版本升级、完整构建打包、产物校验与显式发布后，外部用户的 `dsh plugin add` 才会拿到新版本。依据：DSH [发布流程参考](../sdlc-reference/11-release-sequences-and-publish-lanes.md)。
 
-因此 merge 不等于 release，源码在主分支也不等于用户安装的产物已更新。独立插件仓对自己的版本、构建产物和兼容承诺负责。依据：DSH [发布流程参考](../sdlc-reference/11-release-sequences-and-publish-lanes.md)。
+## 继续深入
 
-## 继续阅读
-
-- [开发模型总览](./00-index.md)：把这些词放回完整开发闭环。
-- [新仓起步](./01-new-plugin-repository.md)：从最小插件到真实组合与安装验证。
-- [上下文纪律](./03-context-and-drift.md)：压缩、按需加载、取代与归档怎样接住 spec 堆积与方向反复。
-- DSH [规范 glossary](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md)：进一步了解 scope、turn、step、goal round 等规范术语；本页不维护第二份 API 词典。
+- [`03-context-and-drift.md`](./03-context-and-drift.md)：深入 DSH 会话日志投影、Compaction 遮蔽与插件跨恢复状态存活规律。
+- [`04-plugin-repo-topologies.md`](./04-plugin-repo-topologies.md) 与 [`05-cordis-contracts-and-model-experience.md`](./05-cordis-contracts-and-model-experience.md)：插件仓拓扑选型与六条 Cordis 代码级防坑铁律。
+- DSH [`docs/glossary.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/glossary.md)：查询 `Turn`、`Step`、`Goal round`、`Scope` 等宿主规范定义。

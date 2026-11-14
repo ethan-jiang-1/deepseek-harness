@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">长周期规格漂移的四种死法与双轨决策代谢</title>
+  <desc id="desc">顶部展示长周期仓库四种规格腐化形态，中部展示当前事实原地覆盖与历史决定不可变取代归档的双轨代谢机制，底部给出零历史 HEAD-only 检验标准。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#475569"/></marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#276da8"/></marker>
+    <marker id="arrow-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#b66d12"/></marker>
+  </defs>
+  <rect width="1120" height="680" fill="#ffffff"/>
+  <text x="560" y="36" text-anchor="middle" font-size="21" font-weight="700" fill="#172033">规格漂移与决策代谢：高频 Agent 迭代下怎样防止上下文腐败</text>
+  <text x="560" y="61" text-anchor="middle" font-size="12" fill="#5f6b7a">分开治理“系统现在是什么”与“当年为什么不选另一条路”，用门禁挡住时间态残留与矛盾堆积</text>
+
+  <rect x="44" y="88" width="242" height="118" rx="8" fill="#fff0f0" stroke="#c86b6b"/>
+  <text x="165" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#8f3535">死法 1 · 时间态腐败</text>
+  <text x="165" y="139" text-anchor="middle" font-size="11" fill="#526175">正文堆满 previously / no longer</text>
+  <text x="165" y="160" text-anchor="middle" font-size="11" fill="#526175">把手册写成按时间追加的补丁账</text>
+  <text x="165" y="185" text-anchor="middle" font-size="10.5" fill="#8f3535">后果：Agent 误把废止行为当现行契约</text>
+
+  <rect x="307" y="88" width="242" height="118" rx="8" fill="#fff0f0" stroke="#c86b6b"/>
+  <text x="428" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#8f3535">死法 2 · 思维链残留</text>
+  <text x="428" y="139" text-anchor="middle" font-size="11" fill="#526175">注释留着 (decision 3) / 本轮修复</text>
+  <text x="428" y="160" text-anchor="middle" font-size="11" fill="#526175">依赖已消失的聊天记录与评审楼层</text>
+  <text x="428" y="185" text-anchor="middle" font-size="10.5" fill="#8f3535">后果：零历史会话无法解析悬空暗语</text>
+
+  <rect x="570" y="88" width="242" height="118" rx="8" fill="#fff0f0" stroke="#c86b6b"/>
+  <text x="691" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#8f3535">死法 3 · 矛盾决定堆积</text>
+  <text x="691" y="139" text-anchor="middle" font-size="11" fill="#526175">只增写新 ADR，不清理被推翻旧篇</text>
+  <text x="691" y="160" text-anchor="middle" font-size="11" fill="#526175">两份活跃文档对同一机制下相反指令</text>
+  <text x="691" y="185" text-anchor="middle" font-size="10.5" fill="#8f3535">后果：检索命中哪篇完全看运气</text>
+
+  <rect x="833" y="88" width="242" height="118" rx="8" fill="#fff0f0" stroke="#c86b6b"/>
+  <text x="954" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#8f3535">死法 4 · 索引与计数失步</text>
+  <text x="954" y="139" text-anchor="middle" font-size="11" fill="#526175">手工维护 INDEX.md 或写死包数量</text>
+  <text x="954" y="160" text-anchor="middle" font-size="11" fill="#526175">每次无关提交都争抢索引或造成失真</text>
+  <text x="954" y="185" text-anchor="middle" font-size="10.5" fill="#8f3535">后果：目录沦为误导 Agent 的假地图</text>
+
+  <path d="M296 206 V244" fill="none" stroke="#276da8" stroke-width="1.6" marker-end="url(#arrow-blue)"/>
+  <path d="M824 206 V244" fill="none" stroke="#b66d12" stroke-width="1.6" marker-end="url(#arrow-amber)"/>
+
+  <rect x="44" y="250" width="496" height="278" rx="10" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+  <text x="292" y="280" text-anchor="middle" font-size="16" font-weight="700" fill="#173f67">轨道 A · 当前事实层：原地覆盖（Overwrite in Place）</text>
+  <text x="292" y="303" text-anchor="middle" font-size="11.5" fill="#39709f">载体：AGENTS.md · docs/ · package README · JSDoc · 生成目录</text>
+  <rect x="70" y="322" width="444" height="54" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="90" y="344" font-size="12" font-weight="700" fill="#173f67">1. 纯现在式状态写作 + 推理残留清洗</text>
+  <text x="90" y="364" font-size="11" fill="#526175">直接陈述当前行为、约束与失败语义；删除“旧版曾如何”与未落盘草稿编号</text>
+  <rect x="70" y="388" width="444" height="54" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="90" y="410" font-size="12" font-weight="700" fill="#173f67">2. 字数预算硬顶（Word Budget Ceiling）</text>
+  <text x="90" y="430" font-size="11" fill="#526175">常驻入口设硬上限；新增一条规则必须压缩冗余旧句，逼迫高密度表达</text>
+  <rect x="70" y="454" width="444" height="54" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="90" y="476" font-size="12" font-weight="700" fill="#173f67">3. 双轨零漂移目录（Generated Freshness / Path Tree）</text>
+  <text x="90" y="496" font-size="11" fill="#526175">代码注册面靠生成器 + Freshness 门禁锁死；文档树靠目录结构自明，禁手写总表</text>
+
+  <rect x="580" y="250" width="496" height="278" rx="10" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
+  <text x="828" y="280" text-anchor="middle" font-size="16" font-weight="700" fill="#744408">轨道 B · 历史决定层：取代与封印（Supersede &amp; Seal）</text>
+  <text x="828" y="303" text-anchor="middle" font-size="11.5" fill="#805915">载体：proposed/ · implemented/ · rejected/ · archived/ 决策记录</text>
+  <rect x="606" y="322" width="444" height="54" rx="7" fill="#ffffff" stroke="#d9ad65"/>
+  <text x="626" y="344" font-size="12" font-weight="700" fill="#744408">1. 交付即改写现在时 + 强制备选方案</text>
+  <text x="626" y="364" font-size="11" fill="#526175">proposed 落地同一 PR 迁入 implemented 并删未来时态；必写 Alternatives 防翻案</text>
+  <rect x="606" y="388" width="444" height="54" rx="7" fill="#ffffff" stroke="#d9ad65"/>
+  <text x="626" y="410" font-size="12" font-weight="700" fill="#744408">2. 强制取代检查（Supersession Check）</text>
+  <text x="626" y="430" font-size="11" fill="#526175">换决定绝不篡改旧文：部分取代双向互链；完全取代吸收独有理由后删除或归档旧篇</text>
+  <rect x="606" y="454" width="444" height="54" rx="7" fill="#edf8f1" stroke="#55a36f"/>
+  <text x="626" y="476" font-size="12" font-weight="700" fill="#1f6139">3. 归档哈希封印（Append-Only Seal Manifest）</text>
+  <text x="626" y="496" font-size="11" fill="#397a50">低价值旧决定迁入 archived/ 并写入 SHA-256 清单：永久冻结、退出活树</text>
+
+  <path d="M292 528 V558" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M828 528 V558" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="44" y="562" width="1032" height="86" rx="9" fill="#172033"/>
+  <text x="560" y="594" text-anchor="middle" font-size="15" font-weight="700" fill="#f8fafc">HEAD-Only 终极验收标准：仓库只靠当前文件树就能自证完整上下文</text>
+  <text x="560" y="622" text-anchor="middle" font-size="12" fill="#cbd5e1">零历史 Agent 拿到 HEAD 快照时：当前手册无过时叙事、活动决策树无彼此打架的旧结论、冻结归档层有明确边界与哈希封印</text>
+</svg>

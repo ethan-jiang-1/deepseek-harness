@@ -1,5 +1,6 @@
 /** Self-contained integrity checks for the Agent-ready Development corpus. */
 
+import { createHash } from 'node:crypto'
 import {
   existsSync,
   readFileSync,
@@ -25,10 +26,29 @@ const forbiddenResearchReferences = [
   '_digested',
   '_faq_on_digested',
 ]
-// Corpus links track the upstream default branch, never a release tag: evidence stays readable across
-// synchronization rounds and a version bump produces no corpus diff. Release tags, commit hashes, and
-// short names other than the default branch stay rejected so every link resolves to a maintained file.
-const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:blob|tree)\/master(?:[/?#]|$)/
+// Corpus file links track the upstream default branch (`master`), never a release tag or branch SHA,
+// while immutable event permalinks (`/commit/`, `/pull/`, `/issues/`, `/discussions/`) stay allowed per CORPUS-CHARTER.md.
+const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(?:(?:blob|tree)\/master(?:[/?#]|$)|(?:commit|discussions|issues|pull)\/)/
+const siblingCharterDirectories = ['_digested', '_faq_on_digested', '_misc']
+const forbiddenContentPatterns = [
+  { pattern: new RegExp(`${'prove'}${'nance'}`, 'i'), reason: 'contains banned origin label' },
+  { pattern: /github\.com\/deepseek-harness\b/i, reason: 'uses wrong GitHub organization (expected deepseek-ai/deepseek-harness)' },
+  { pattern: /该死的代码/u, reason: 'contains literal mistranslation of dead code ("该死的代码")' },
+]
+const readerAuditLeakagePatterns = [
+  /\b00(?:0[7-9]|1\d)\s*(?:轮|复核|跨度|注记|独立反查)/u,
+  /\brc\.\d+\s*轮复核/u,
+  /(?:产品源码|专题|本页)基线\s*[：:]/u,
+  /现行(?:源码与文档)?核验基线/u,
+  /本轮已(?:逐一|完成|复核|核对)/u,
+]
+const readerVolatileCountPatterns = [
+  /\b(?:[0-9]+|[一二三四五六七八九十百]+)\s*个\s*(?:rescoped\s+Cordis\s*包|子树|repository\s+development\s+Skills)/iu,
+  /proposed\s*目录有\s*[0-9]+\s*篇/u,
+  /implemented\s*[0-9]+.*archived\s*[0-9]+/iu,
+]
+const allowedInventoryRoles = new Set(['map', 'mechanism', 'playbook', 'experiment', 'governance'])
+const allowedInventoryStatuses = new Set(['reverified', 'carried', 'unrecorded'])
 
 function corpusFiles(directory) {
   const files = []
@@ -289,6 +309,81 @@ function owningFiguresDirectory(markdownPath) {
   return undefined
 }
 
+function parseTableCells(rawLine) {
+  const stripped = rawLine.replace(/^ {0,3}(?:>\s*)*/, '').trim()
+  if (!stripped.includes('|')) return undefined
+  const masked = maskInlineCode(stripped)
+  const pipePositions = []
+  for (let index = 0; index < masked.length; index += 1) {
+    if (masked[index] === '\\') {
+      index += 1
+      continue
+    }
+    if (masked[index] === '|') pipePositions.push(index)
+  }
+  if (pipePositions.length === 0) return undefined
+  let start = 0
+  let end = stripped.length
+  if (pipePositions[0] === 0) start = 1
+  if (pipePositions.at(-1) === stripped.length - 1 && pipePositions.at(-1) >= start) end = stripped.length - 1
+  const cells = []
+  let cellStart = start
+  for (const pos of pipePositions) {
+    if (pos < start || pos >= end) continue
+    cells.push(stripped.slice(cellStart, pos).trim())
+    cellStart = pos + 1
+  }
+  cells.push(stripped.slice(cellStart, end).trim())
+  return cells
+}
+
+function isDelimiterRow(cells) {
+  return cells !== undefined
+    && cells.length > 0
+    && cells.every(cell => /^:?-{1,}:?$/.test(cell))
+}
+
+function checkMarkdownTables(path, activeLines) {
+  for (let index = 0; index < activeLines.length - 1; index += 1) {
+    const header = activeLines[index]
+    const next = activeLines[index + 1]
+    if (next.line !== header.line + 1) continue
+    const headerCells = parseTableCells(header.text)
+    const delimiterCells = parseTableCells(next.text)
+    if (headerCells === undefined || !isDelimiterRow(delimiterCells)) continue
+    const expectedColumns = headerCells.length
+    if (delimiterCells.length !== expectedColumns) {
+      report(path, next.line, `Markdown table delimiter has ${delimiterCells.length} column(s), expected ${expectedColumns}`)
+    }
+    index += 2
+    while (index < activeLines.length && activeLines[index].line === activeLines[index - 1].line + 1) {
+      const rowCells = parseTableCells(activeLines[index].text)
+      if (rowCells === undefined) break
+      if (rowCells.length !== expectedColumns) {
+        report(path, activeLines[index].line, `Markdown table row has ${rowCells.length} column(s), expected ${expectedColumns}`)
+      }
+      index += 1
+    }
+    index -= 1
+  }
+}
+
+function isGovernanceOrCoverageMarkdown(path) {
+  if (path === resolve(corpusRoot, 'CORPUS-CHARTER.md')) return true
+  const fromRoot = relative(corpusRoot, path).split(sep)
+  return fromRoot[0] === '_coverage'
+}
+
+function checkForbiddenContent(path, source) {
+  const lines = source.split('\n')
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index]
+    for (const { pattern, reason } of forbiddenContentPatterns) {
+      if (pattern.test(line)) report(path, index + 1, reason)
+    }
+  }
+}
+
 function checkMarkdown(path, source) {
   // The shared charter is governance, not corpus content: it is byte-identical in every
   // sibling corpus and names corpus-level conventions such as `_change_log/`. Content pages
@@ -298,8 +393,30 @@ function checkMarkdown(path, source) {
       if (source.includes(forbidden)) report(path, undefined, `references sibling research corpus ${JSON.stringify(forbidden)}`)
     }
   }
+  checkForbiddenContent(path, source)
 
-  for (const { line, text } of activeMarkdownLines(source)) {
+  const activeLines = activeMarkdownLines(source)
+  checkMarkdownTables(path, activeLines)
+
+  const checkReaderLeakage = !isGovernanceOrCoverageMarkdown(path)
+  for (const { line, text } of activeLines) {
+    if (checkReaderLeakage) {
+      const proseOnly = maskInlineCode(text)
+      for (const pattern of readerAuditLeakagePatterns) {
+        const match = proseOnly.match(pattern) ?? text.match(pattern)
+        if (match !== null) {
+          report(path, line, `reader page leaks internal round/baseline audit note (${JSON.stringify(match[0])}); move maintenance history to _coverage/00-corpus-maintenance.md`)
+          break
+        }
+      }
+      for (const pattern of readerVolatileCountPatterns) {
+        const match = proseOnly.match(pattern)
+        if (match !== null) {
+          report(path, line, `reader page hardcodes volatile master-repo count (${JSON.stringify(match[0])}); state invariant rules instead`)
+          break
+        }
+      }
+    }
     for (const url of markdownUrls(text)) {
       if (isExternal(url)) {
         if (!dshExternalUrl.test(url)) report(path, line, `external link must target the DSH repository: ${JSON.stringify(url)}`)
@@ -437,11 +554,104 @@ function findTagEnd(source, start) {
   return -1
 }
 
+function decodeXmlEntities(text) {
+  return text
+    .replaceAll('&amp;', '&')
+    .replaceAll('&lt;', '<')
+    .replaceAll('&gt;', '>')
+    .replaceAll('&quot;', '"')
+    .replaceAll('&apos;', "'")
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(Number.parseInt(hex, 16)))
+    .replace(/&#([0-9]+);/g, (_, dec) => String.fromCodePoint(Number.parseInt(dec, 10)))
+}
+
+function estimateSvgTextWidth(text, fontSize) {
+  let units = 0
+  for (const ch of text) {
+    const cp = ch.codePointAt(0)
+    if (
+      (cp >= 0x2e80 && cp <= 0x9fff)
+      || (cp >= 0xf900 && cp <= 0xfaff)
+      || (cp >= 0xfe30 && cp <= 0xfe4f)
+      || (cp >= 0xff01 && cp <= 0xff60)
+      || (cp >= 0xffe0 && cp <= 0xffe6)
+    ) {
+      units += 1.0
+    } else if ('mwMW@%'.includes(ch)) {
+      units += 0.72
+    } else if ('ilI1.,:;|!\'"`()[]{} '.includes(ch)) {
+      units += 0.34
+    } else {
+      units += 0.54
+    }
+  }
+  return units * fontSize
+}
+
+function parseTranslateOffset(transform) {
+  if (!transform) return { dx: 0, dy: 0, nonTranslate: false }
+  let dx = 0
+  let dy = 0
+  let stripped = transform
+  for (const match of transform.matchAll(/translate\(\s*(-?\d+(?:\.\d+)?)(?:[\s,]+(-?\d+(?:\.\d+)?))?\s*\)/g)) {
+    dx += Number(match[1])
+    dy += Number(match[2] ?? 0)
+    stripped = stripped.replace(match[0], '')
+  }
+  return { dx, dy, nonTranslate: stripped.trim() !== '' }
+}
+
+function checkSvgTextGeometry(path, viewBox, rects, texts) {
+  if (viewBox === undefined || viewBox.length !== 4 || viewBox[2] <= 0 || viewBox[3] <= 0) return
+  const [vbX, vbY, vbW, vbH] = viewBox
+  const cardRects = rects.filter(rect => rect.w >= 90 && rect.h >= 20 && !(rect.w >= vbW * 0.95 && rect.h >= vbH * 0.95))
+
+  for (const item of texts) {
+    const content = decodeXmlEntities(item.rawText).replace(/\s+/g, ' ').trim()
+    if (content === '') continue
+    const width = estimateSvgTextWidth(content, item.fontSize)
+    const rotateMatch = item.transform.match(/rotate\(\s*(-?90)\b/)
+    if (rotateMatch !== null) {
+      const top = item.anchor === 'middle' ? item.y - width / 2 : item.y - width
+      const bottom = item.anchor === 'middle' ? item.y + width / 2 : item.y
+      if (item.x - item.fontSize < vbX - 2 || item.x + item.fontSize > vbX + vbW + 2 || top < vbY - 2 || bottom > vbY + vbH + 2) {
+        report(path, item.line, `rotated SVG <text> (${JSON.stringify(content)}) overflows viewBox bounds`)
+      }
+      continue
+    }
+    if (item.hasNonTranslate) continue
+
+    const left = item.anchor === 'middle' ? item.x - width / 2 : item.anchor === 'end' ? item.x - width : item.x
+    const right = item.anchor === 'middle' ? item.x + width / 2 : item.anchor === 'end' ? item.x : item.x + width
+    if (left < vbX - 2 || right > vbX + vbW + 2 || item.y < vbY || item.y > vbY + vbH) {
+      report(path, item.line, `SVG <text> (${JSON.stringify(content)}) overflows viewBox bounds [${vbX}, ${vbX + vbW}]`)
+      continue
+    }
+
+    const enclosing = cardRects
+      .filter(rect => item.x >= rect.x && item.x <= rect.x + rect.w && item.y >= rect.y && item.y <= rect.y + rect.h)
+      .sort((a, b) => (a.w * a.h) - (b.w * b.h))[0]
+    if (enclosing !== undefined && (left < enclosing.x - 2 || right > enclosing.x + enclosing.w + 2)) {
+      report(path, item.line, `SVG <text> (${JSON.stringify(content)}) overflows enclosing <rect> [${enclosing.x}, ${enclosing.x + enclosing.w}]`)
+    }
+  }
+}
+
 function checkSvg(path, source) {
+  for (const forbidden of forbiddenResearchReferences) {
+    if (source.includes(forbidden)) report(path, undefined, `references sibling research corpus ${JSON.stringify(forbidden)}`)
+  }
+  checkForbiddenContent(path, source)
+
   const stack = []
+  const rects = []
+  const texts = []
+  let activeText
+  let rootViewBox
   let rootSeen = false
   let rootClosed = false
   let index = 0
+  const nonRenderedContainers = new Set(['defs', 'clipPath', 'mask', 'marker', 'symbol'])
 
   while (index < source.length) {
     const open = source.indexOf('<', index)
@@ -449,6 +659,7 @@ function checkSvg(path, source) {
     const value = source.slice(index, textEnd)
     checkEntities(path, source, value, index)
     if (stack.length === 0 && value.trim() !== '') report(path, xmlLocation(source, index), 'text appears outside the root element')
+    if (activeText !== undefined) activeText.rawText += value
     if (open === -1) break
 
     if (source.startsWith('<!--', open)) {
@@ -495,8 +706,12 @@ function checkSvg(path, source) {
     if (tag.startsWith('/')) {
       const name = tag.match(/^\/\s*([A-Za-z_:][A-Za-z0-9_.:-]*)\s*$/)?.[1]
       if (name === undefined) report(path, xmlLocation(source, open), 'invalid XML closing tag')
-      else if (stack.at(-1) !== name) report(path, xmlLocation(source, open), `closing </${name}> does not match <${stack.at(-1) ?? 'none'}>`)
+      else if (stack.at(-1)?.name !== name) report(path, xmlLocation(source, open), `closing </${name}> does not match <${stack.at(-1)?.name ?? 'none'}>`)
       else {
+        if (name === 'text' && activeText !== undefined) {
+          texts.push(activeText)
+          activeText = undefined
+        }
         stack.pop()
         if (stack.length === 0) rootClosed = true
       }
@@ -520,18 +735,153 @@ function checkSvg(path, source) {
       if (name !== 'svg') report(path, xmlLocation(source, open), `root element must be <svg>, got <${name}>`)
     }
     const attributes = parseAttributes(path, source, tag.slice(nameStart + name.length), open + 1 + nameStart + name.length, isRoot)
-    if (isRoot && attributes !== undefined) checkSvgRoot(path, source, attributes)
-    if (!selfClosing) stack.push(name)
-    else if (isRoot) rootClosed = true
+    if (isRoot && attributes !== undefined) {
+      checkSvgRoot(path, source, attributes)
+      const parsedVb = attributes.get('viewBox')?.trim().split(/\s+/).map(Number)
+      if (parsedVb?.length === 4 && parsedVb.every(Number.isFinite)) rootViewBox = parsedVb
+    }
+
+    const parentState = stack.at(-1)
+    const ownFontSize = Number(attributes?.get('font-size'))
+    const effectiveFontSize = Number.isFinite(ownFontSize) && ownFontSize > 0 ? ownFontSize : (parentState?.fontSize ?? 14)
+    const ownTransform = attributes?.get('transform') ?? ''
+    const parsedTransform = parseTranslateOffset(ownTransform)
+    const dx = (parentState?.dx ?? 0) + parsedTransform.dx
+    const dy = (parentState?.dy ?? 0) + parsedTransform.dy
+    const hasNonTranslate = Boolean(parentState?.hasNonTranslate || parsedTransform.nonTranslate)
+    const combinedTransform = [parentState?.transform ?? '', ownTransform].filter(Boolean).join(' ')
+    const inNonRendered = stack.some(entry => nonRenderedContainers.has(entry.name)) || nonRenderedContainers.has(name)
+
+    if (!inNonRendered && attributes !== undefined) {
+      if (name === 'rect') {
+        const rx = Number(attributes.get('x') ?? 0)
+        const ry = Number(attributes.get('y') ?? 0)
+        const rw = Number(attributes.get('width') ?? NaN)
+        const rh = Number(attributes.get('height') ?? NaN)
+        if (Number.isFinite(rx) && Number.isFinite(ry) && Number.isFinite(rw) && Number.isFinite(rh) && !hasNonTranslate) {
+          rects.push({ x: rx + dx, y: ry + dy, w: rw, h: rh })
+        }
+      } else if (name === 'text' && !selfClosing) {
+        const tx = Number(attributes.get('x') ?? NaN)
+        const ty = Number(attributes.get('y') ?? NaN)
+        if (Number.isFinite(tx) && Number.isFinite(ty)) {
+          activeText = {
+            line: xmlLocation(source, open),
+            x: tx + dx,
+            y: ty + dy,
+            fontSize: effectiveFontSize,
+            anchor: attributes.get('text-anchor') ?? parentState?.anchor ?? 'start',
+            transform: combinedTransform,
+            hasNonTranslate,
+            rawText: '',
+          }
+        }
+      }
+    }
+
+    if (!selfClosing) {
+      stack.push({
+        name,
+        fontSize: effectiveFontSize,
+        anchor: attributes?.get('text-anchor') ?? parentState?.anchor ?? 'start',
+        dx,
+        dy,
+        hasNonTranslate,
+        transform: combinedTransform,
+      })
+    } else if (isRoot) {
+      rootClosed = true
+    }
     index = end + 1
   }
 
   if (!rootSeen) report(path, undefined, 'has no root <svg> element')
-  if (stack.length > 0) report(path, undefined, `unclosed XML tag <${stack.at(-1)}>`)
+  if (stack.length > 0) report(path, undefined, `unclosed XML tag <${stack.at(-1).name}>`)
+  else checkSvgTextGeometry(path, rootViewBox, rects, texts)
+}
+
+function checkMarkdownInventory(markdownPaths) {
+  const maintenancePath = resolve(corpusRoot, '_coverage/00-corpus-maintenance.md')
+  if (!existsSync(maintenancePath)) {
+    report(maintenancePath, undefined, 'missing corpus maintenance ledger _coverage/00-corpus-maintenance.md')
+    return
+  }
+  const source = decodeText(maintenancePath)
+  if (source === undefined) return
+  const activeLines = activeMarkdownLines(source)
+  let tableFound = false
+  const recordedPaths = new Map()
+  const actualSet = new Set(markdownPaths)
+
+  for (let index = 0; index < activeLines.length - 1; index += 1) {
+    const header = activeLines[index]
+    const next = activeLines[index + 1]
+    if (next.line !== header.line + 1) continue
+    const headerCells = parseTableCells(header.text)
+    const delimiterCells = parseTableCells(next.text)
+    if (
+      headerCells === undefined
+      || !isDelimiterRow(delimiterCells)
+      || headerCells.length !== 4
+      || headerCells[0] !== '页面路径'
+      || headerCells[1] !== 'role'
+      || headerCells[2] !== 'verifiedAt'
+      || headerCells[3] !== 'status'
+    ) {
+      continue
+    }
+    tableFound = true
+    index += 2
+    while (index < activeLines.length && activeLines[index].line === activeLines[index - 1].line + 1) {
+      const rowLine = activeLines[index].line
+      const cells = parseTableCells(activeLines[index].text)
+      if (cells === undefined) break
+      if (cells.length === 4) {
+        const rawRel = cells[0].replace(/^`+|`+$/g, '').trim()
+        const role = cells[1].replace(/^`+|`+$/g, '').trim()
+        const verifiedAt = cells[2].replace(/^`+|`+$/g, '').trim()
+        const status = cells[3].replace(/^`+|`+$/g, '').trim()
+        if (!allowedInventoryRoles.has(role)) {
+          report(maintenancePath, rowLine, `invalid inventory role ${JSON.stringify(role)} for ${JSON.stringify(rawRel)}`)
+        }
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(verifiedAt)) {
+          report(maintenancePath, rowLine, `invalid inventory verifiedAt date ${JSON.stringify(verifiedAt)} for ${JSON.stringify(rawRel)}`)
+        }
+        if (!allowedInventoryStatuses.has(status)) {
+          report(maintenancePath, rowLine, `invalid inventory status ${JSON.stringify(status)} for ${JSON.stringify(rawRel)}`)
+        }
+        const resolved = resolve(corpusRoot, rawRel)
+        if (!pathInsideCorpus(resolved) || extname(resolved) !== '.md') {
+          report(maintenancePath, rowLine, `inventory entry must name a corpus Markdown path: ${JSON.stringify(rawRel)}`)
+        } else if (recordedPaths.has(resolved)) {
+          report(maintenancePath, rowLine, `duplicate inventory entry for ${JSON.stringify(rawRel)}`)
+        } else {
+          recordedPaths.set(resolved, rowLine)
+          if (!actualSet.has(resolved)) {
+            report(maintenancePath, rowLine, `inventory entry does not exist on disk: ${JSON.stringify(rawRel)}`)
+          }
+        }
+      }
+      index += 1
+    }
+    break
+  }
+
+  if (!tableFound) {
+    report(maintenancePath, undefined, 'missing canonical page inventory table (| 页面路径 | role | verifiedAt | status |)')
+    return
+  }
+
+  for (const mdPath of markdownPaths) {
+    if (!recordedPaths.has(mdPath)) {
+      report(maintenancePath, undefined, `Markdown file is missing from _coverage/00-corpus-maintenance.md inventory: ${JSON.stringify(relative(corpusRoot, mdPath).replaceAll(sep, '/'))}`)
+    }
+  }
 }
 
 const files = corpusFiles(corpusRoot)
 const directories = corpusDirectories(corpusRoot)
+const markdownPaths = []
 let markdownCount = 0
 let scriptCount = 0
 let svgCount = 0
@@ -553,6 +903,7 @@ for (const path of files) {
   checkFileEnding(path, source)
   if (extname(path) === '.md') {
     markdownCount += 1
+    markdownPaths.push(path)
     checkMarkdown(path, source)
   } else if (extname(path) === '.svg') {
     svgCount += 1
@@ -562,8 +913,23 @@ for (const path of files) {
   }
 }
 
+checkMarkdownInventory(markdownPaths)
+
 for (const path of files) {
   if (extname(path) === '.svg' && !referencedSvgPaths.has(path)) report(path, undefined, 'SVG is not referenced by Markdown')
+}
+
+const localCharterPath = resolve(corpusRoot, 'CORPUS-CHARTER.md')
+if (existsSync(localCharterPath)) {
+  const localCharterHash = createHash('sha256').update(readFileSync(localCharterPath)).digest('hex')
+  for (const sibling of siblingCharterDirectories) {
+    const siblingCharterPath = resolve(repositoryRoot, sibling, 'CORPUS-CHARTER.md')
+    if (!existsSync(siblingCharterPath)) continue
+    const siblingHash = createHash('sha256').update(readFileSync(siblingCharterPath)).digest('hex')
+    if (siblingHash !== localCharterHash) {
+      report(localCharterPath, undefined, `CORPUS-CHARTER.md diverges from ${sibling}/CORPUS-CHARTER.md`)
+    }
+  }
 }
 
 if (failures.length > 0) {

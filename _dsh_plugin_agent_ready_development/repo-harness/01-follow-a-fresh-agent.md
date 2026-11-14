@@ -1,77 +1,74 @@
-# 01 · 跟着一个 fresh coding agent（新编码代理）进入 DSH
+# 01 · 零历史 Agent 参与回路：从陌生仓库到可核验交付
 
-## 场景
+## 零上下文进场是 Agent 时代的默认常态
 
-假设一个从未参与 DSH 的 coding agent 收到任务：“新增一个会出现在模型请求中的工具，并让 Web 界面正确展示它。”这个场景不是某个历史 PR 的复述，而是用 DSH 固定基线的规则串起一次典型参与过程。
+人类工程师入职后会留在团队里积累默会知识，而 coding agent 每开启一个新会话，面对的都是一座“第一次见”的陌生代码库。如果仓库假设参与者脑子里已经装好了架构红线、历史踩坑与提交流程，fresh agent（零历史进场的编码代理）就只能靠全仓盲搜和统计直觉去猜——猜错位置、漏改关联文档、或者写出一套看似能跑实则违背生命周期约定的补丁。
 
-目标不是记住所有命令，而是看清一个新参与者如何连续回答六个问题：先读什么、代码放哪、为什么这样放、采用哪项工作流程、什么算完成，以及结果怎样进入主分支。
+观察一座仓库是否真正具备 **Development Harness（仓库开发 Harness）**，最直接的方法就是跟踪一个零历史 agent 接手一次真实需求（例如：“新增一项面向调用方或模型的能力，并让前端界面正确展示它”）时，仓库结构如何一步步接住它的六个核心疑问：先读什么、代码挂哪、旧坑在哪、按什么步骤做、怎么自证做对，以及做完后给下一轮留下什么。
 
-![fresh coding agent 从任务进入仓库反馈回路](./figures/fresh-agent-loop.svg)
+![零历史 coding agent 从接手任务到沉淀仓库记忆的六步闭环](./figures/fresh-agent-loop.svg)
 
-## 1. 先建立最小地图
+下面把这六步拆开：每一节先看 DSH 主仓的具体接应机制，再提炼出适用于任何技术栈仓库的通用结构设计。
 
-agent 从根级 `AGENTS.md` 得到常驻规则和仓库布局；任务涉及 `packages/`，所以继续读 `docs/architecture.md` 和 `packages/AGENTS.md`。它不需要先遍历全部包，因为 architecture 的“Where new behavior goes”已经把目标映射到扩展机制。
+## 1. 建立有界最小地图（Bounded Entry Map）
+
+Agent 进场的第一步不是遍历成百上千个源码目录，而是读取根目录受词数预算保护的 `AGENTS.md` 获取全局红线与顶层分区表；发现任务涉及核心包目录后，再顺指针读取 `docs/architecture.md` 与对应子树的 `AGENTS.md`。在架构页里，一张显式的“新行为归属路由表（Where new behavior goes）”直接把需求意图映射到标准扩展接缝，当场阻止 agent 去乱改核心主干循环。
 
 > New behavior attaches to a documented extension point. Changing the loop itself updates this map.
 >
-> — DSH [`docs/architecture.md` 的行为归属表](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#where-new-behavior-goes)。原文说明新增行为先寻找已有扩展点；修改 `agent-loop` 是需要额外说明的例外。
+> — DSH [`docs/architecture.md` 的行为归属表](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md#where-new-behavior-goes)。这句契约把“优先走既定扩展点、动主干必须同步改地图”变成了架构入口处的第一道分流阀。
 
-表中“Add a model-facing capability”指向 `ctx.tools`。因此 agent 的第一项设计判断不是“在哪个 loop 函数里插代码”，而是“这个功能是否属于工具注册”。如果需求其实是一项可替换能力，它还需要检查 Service Definition、Provider、Consumer 三个角色，而不能把一个工具包误称为完整 capability seam（能力接缝）。
+**通用仓库迁移法则**：任何项目的根 `AGENTS.md` 都应控制在一屏可读的词数内，并指向一页不讲废话的 `docs/architecture.md`；架构页里必须有一张**「常见需求类型 → 标准挂载入口 / 严禁直接硬改的核心文件」映射表**，让 agent 在写第一行代码前就站对车道。
 
-## 2. 找到当前事实和决定 owner
+## 2. 分离读取“当前事实”与“历史取舍理由”
 
-agent 接着读取 adding-a-tool cookbook（添加工具操作指南）、工具包 README、相关 JSDoc 和相邻生产实现。它们回答当前接口、配置、错误和展示责任。若任务改变了已有设计决定，agent 再查拥有该决定的 Agent Note；Note 回答“为什么”和“放弃了什么”，不替代当前源码和 README。
+找准扩展机制后，agent 需要弄懂接口细节与边界条件。此时最怕读到一份把“三年前的设计设想”和“现在的真实签名”搅在一起的过期综合文档。DSH 强制把信息拆成互不越界的三类载体：
 
-这一步把资料分成三类：
+| 仓库载体 | Agent 从中精确获取什么 | 明确禁止混入什么 |
+|---|---|---|
+| `architecture` / `cookbook`（操作手册） | 新行为挂在哪个扩展面、按哪几步标准工序接入 | 冗长的历史争论或具体模块的参数细节 |
+| 模块 `README` / 导出 `JSDoc` / 源码与类型 | 当前真实接口签名、配置项、失败语义与资源释放责任 | “以前怎么做、后来哪次提交改了”的演进故事 |
+| 活跃决策记录（`Agent Note` / ADR） | 为什么选当前方案、哪些看似诱人的备选方案已被击败及原因 | 充当现行 API 的唯一说明书 |
 
-| 资料 | 当前任务从中取得什么 |
-|---|---|
-| architecture / cookbook | 行为应该落在哪个机制、按什么入口实施 |
-| package README / JSDoc / source | 当前调用方式、失败行为和所有权 |
-| Agent Note | 决策理由、替代方案和不可随意恢复的旧路径 |
+这种物理隔离的收益极其直接：**Agent 既不会从过时的设计故事里抄出早已废弃的 API，也不会因为只看当前源码而把前人特意绕开的死胡同重新发明一遍。**
 
-这种分工的意义是：agent 不从一个过时的设计故事猜当前 API，也不从当前代码反推已经丢失的设计理由。
+## 3. 按任务特征动态加载程序化工作记忆（Skills）
 
-## 3. 为具体任务加载 Skills
+根级 `AGENTS.md` 只放每轮必守的常驻硬指令（standing orders）。一旦任务进入带有多分支判断的具体工序——例如重构文档体系、根据待推送差异挑选最小可信测试、或执行深度的代码生命周期审查——agent 就按目录摘要匹配并加载对应的 `.agents/skills/<name>/SKILL.md`（如 `dsh-doc`、`dsh-pre-push-checks`、`dsh-code-review`）。
 
-根级规则只适合放每轮都需要的 standing orders（常驻指令）。当任务进入文档结构、push 前检查或 PR review 等具体场景时，agent 加载对应 development Skill：例如 `dsh-doc`、`dsh-pre-push-checks` 和 `dsh-code-review`。
+Skill 既不是聊天记录，也不是死板的布尔脚本：它把资深维护者做某类专门工作时的**先决背景读取清单、高频陷阱排查顺序、豁免边界与诚实报告模板**固化成可按需展开的模块，用完即退，平时零上下文占用。完整设计方法见 [03 · Skills 专章](./03-skills-as-procedural-memory.md)。
 
-Skill 不替 agent 决定产品需求，也不自动证明实现正确。它把该任务的输入、检查顺序、例外和输出格式集中起来，让 agent 不必从多份规则重新拼装流程。Skills 的完整分工见 [Skills 专章](./03-skills-as-procedural-memory.md)。
+## 4. 组装完整的垂直交付切片（Vertical Delivery Slice）
 
-## 4. 完成一个交付组合
+散养状态下的 coding agent 最常交出的半成品是“功能代码跑通了，但文档没改、配置清单漏登记、测试只测了手写 mock、重大设计转向只留在对话气泡里”。成熟的仓库 Harness 会明确定义一次合格交付的闭合边界：
 
-“工具能运行”只是实现的一部分。当前接口、文档和行为证据随变更一起更新；只有代码、测试和已有文档不能解释的持久决定理由，才需要 owning Agent Note。本节描述 DSH 主仓要求；独立插件仓可采用这些验证原则，但需自行维护测试入口与交付规则。
-
-1. 源码和类型实现功能，并通过 `ctx.effect()` 或注册表 disposer 保持生命周期归属。
-2. package README 和 JSDoc 说明参数、结果、失败、模型可见内容和展示意图。
-3. unit tests 抓住局部行为与卸载；产品可见插件必须有 non-unit real composition。每个非平凡（non-trivial）的模型、协议或用户可见变化还必须在同一 PR 中新增或更新 keyless recorded-session scenario；真实组合与录制场景可由同一测试覆盖，但不能自动互相替代。
-4. 需要决定记录时，owning Agent Note 记录决定、替代方案和后果；机械或局部编辑不因此被要求新建 Note。
+1. **生产实现与生命周期归属**：业务代码与严格类型到位，且所有注册项、监听器或后台句柄都绑定在统一的销毁协议上。
+2. **现行契约文档同步**：同一笔提交内同步更新模块 README、公开导出 JSDoc 与受影响的生成目录，确保文档永远描述 `HEAD` 此刻的真实行为。
+3. **直达真实入口的行为证据**：不仅有覆盖分支与卸载清理的局部单测，还必须包含走真实配置加载器或应用入口的集成/回放验证，并用独立预期（oracle）检验外部世界结果。
+4. **按需沉淀持久决策记录**：如果本笔改动引入了代码、测试和现行文档无法自解释的长期架构取舍，同一笔提交内新增或更新决策记录；纯机械修改或局部呈现调整则明确豁免，不制造文书噪音。
 
 > Add or update an Agent Note in the same PR only for lasting decision rationale that code, tests, and existing documentation do not explain.
 >
-> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md#when-to-write-one)。这条规则把设计记忆纳入同一个交付单元，而不是把它留在某一轮 agent 的上下文里。
+> — DSH [`.agents/notes/README.md` 的 “When to write one”](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md#when-to-write-one)。把决策记忆绑进同一个原子交付切片，同时用清晰豁免门槛卡死形式主义灌水。
 
-## 5. 让错误尽早出现
+## 5. 靠左移分层门禁在本地完成自我纠偏
 
-实现过程中，TypeScript 先检查静态接口，配置加载检查可解析的误配置，unit tests 检查局部行为，focused local checks（聚焦本地检查）覆盖待推送差异。每一层只证明自己观察到的性质。
+如果仓库没有本地快速可执行检查，agent 每次犯低级错误都要推上远端等十几分钟 CI 甚至等人类 reviewer 来抓，反馈回路既慢又贵。在 DSH 中，错误被按成本从左向右逐层拦截：
 
-agent 不应因为一个检查为绿就跳过其它层：coverage 只能说明代码执行过，snapshot 才能固定组装后的外部输出，semantic review（语义评审）仍要判断实现是否符合需求和设计 owner。证据分层见 [可执行反馈](./05-executable-feedback.md)。
+- **毫秒/秒级静态与配置层**：严格编译器检查接口与穷举分支，加载器校验配置合法性，仓库静态门禁（依赖拓扑、导出契约、链接与预算锁）给出带 `文件:行号 + 修复提示` 的非零退出报错；
+- **聚焦行为与真实组装层**：根据本次改动触及的真实表面（outgoing scope），定向运行所属单元套件、真实入口组合与录制回放，不靠盲跑全量套件充数；
+- **语义评审层**：前面各层只证明各自观测到的机械属性，最终由人或独立评审 agent 对齐任务意图、架构边界与安全假设。分层门禁模式详见 [05 · 可执行反馈](./05-executable-feedback.md)。
 
-## 6. 把结果交给 GitHub 协作
+## 6. 远端共享校验与跨会话持久交接
 
-Push 和 Pull Request（PR）把本地交付组合放进 GitHub Flow。`.github/` 中的 workflow 决定远端触发、权限、runner 和检查聚合；repository scripts 拥有实际检查逻辑；reviewer 检查自动化不能判断的意图、生命周期、安全与表述。
+本地切片自检通过后进入版本库与协作流水线（如 `.github/workflows/`）：仓库脚本定义“检查什么规则”，远端流水线定义“在受信任权限与跨平台矩阵下如何穷举重验并汇总准入状态”（详见 [卷三：流程参考](../sdlc-reference/00-index.md)）。
 
-这部分的精确 policy 和失败状态由 [SDLC Reference](../sdlc-reference/00-index.md) 拥有。Development Harness 只强调一件事：远端反馈不是仓库知识之外的附加步骤，它是同一套规则的另一个执行环境。
-
-## 任务完成后留下了什么
-
-任务结束后，后续 agent 不需要读取本次任务的对话。它可以从当前源码和 README 得到行为，从 Agent Note 得到理由，从测试和 snapshots 得到可重复证据，从 Skills 得到任务流程，从 PR 与 CI 得到远端状态。这就是 development harness 的可观察结果：参与知识留在仓库和协作系统中，而不是只留在参与者记忆里。
+更关键的是**这次会话销毁之后仓库里留下了什么**：当明天另一个完全失忆的 fresh agent 接手后续需求时，它根本不需要翻看今天的聊天转录——它从源码与 README 读到最新行为，从决策记录读到今天的取舍与弃案，从测试与录制资产获得防退化护栏，从 `SKILL.md` 复用标准工序。**把单次对话里的临时智力成果持续结晶为仓库结构本身，正是 Agent-Friendly Repo 越用越顺手、而非越改越腐烂的核心秘密。**
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)：工具注册、seam、session event 与 loop 修改的归属入口。
-- DSH [`adding-a-tool cookbook`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md)：新增模型工具的真实实施入口和验证义务。
-- DSH [Testing policy](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：产品可见插件的真实组合要求，以及非平凡模型、协议或用户可见变化的录制场景义务。
-- DSH [`Agent Note rules`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：决策记录的职责、生命周期与格式。
-- DSH [`dsh-pre-push-checks`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md)：怎样从 outgoing diff 选择相关本地证据，并把穷举矩阵留给 CI。
-- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)：review 需要覆盖的语义、生命周期、安全和真实入口问题。
+- DSH [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 与 [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)：根级常驻指令与“新行为挂哪里”的架构路由表。
+- DSH [`docs/cookbook/adding-a-tool.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-tool.md)：把单一功能类型的实现、呈现与验证要求串成标准工序的 cookbook 实例。
+- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：局部单测、真实入口组装与录制回放的分层证据要求。
+- DSH [`.agents/notes/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/README.md)：持久决策记录的触发判据、局部改动豁免与格式规范。
+- DSH [`.agents/skills/dsh-pre-push-checks/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md) 与 [`dsh-code-review/SKILL.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)：聚焦选测与语义评审两项关键开发 Skill。

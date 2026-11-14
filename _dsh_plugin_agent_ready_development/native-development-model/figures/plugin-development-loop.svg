@@ -1,63 +1,65 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
   <title id="title">独立 DSH 插件仓的原生开发闭环</title>
-  <desc id="desc">流程从用户可观察结果开始，经过 owner 定位、条件性决策、实现与文档、匹配证据、语义评审，回到可重新发现的当前状态；Issue、Agent Note 和 Plan 是按需使用的承载物。</desc>
+  <desc id="desc">流程从用户可观察结果开始，经过 owner 定位、条件性决策、实现与文档、匹配证据、语义评审，沉淀为仓库记忆并回到下一轮顶层意图入口。</desc>
   <defs>
     <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#475569"/></marker>
     <marker id="arrow-accent" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#0f766e"/></marker>
   </defs>
   <rect width="1200" height="760" fill="#ffffff"/>
-  <text x="600" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">独立 DSH 插件仓的原生开发闭环</text>
-  <text x="600" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">先定义可观察结果，再让 owner、证据和评审互相核对；不是固定的 test-first 阶段序列</text>
+  <text x="585" y="38" text-anchor="middle" font-size="24" font-weight="700" fill="#172033">独立 DSH 插件仓的原生开发闭环</text>
+  <text x="585" y="65" text-anchor="middle" font-size="13" fill="#5f6b7a">先定义可观察结果，再让 owner、证据和评审互相核对；不是刻板的 test-first 顺序</text>
 
-  <rect x="425" y="92" width="350" height="70" rx="10" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
-  <text x="600" y="121" text-anchor="middle" font-size="16" font-weight="700" fill="#744408">用户可观察结果</text>
-  <text x="600" y="145" text-anchor="middle" font-size="12" fill="#805915">意图、外部行为与完成条件</text>
+  <rect x="410" y="92" width="350" height="70" rx="10" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
+  <text x="585" y="121" text-anchor="middle" font-size="16" font-weight="700" fill="#744408">用户与模型可观察结果</text>
+  <text x="585" y="145" text-anchor="middle" font-size="12" fill="#805915">意图、外部行为与验收条件</text>
 
-  <path d="M425 127 H330 V205" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <path d="M775 127 H870 V205" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M410 127 H225 V205" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M760 127 H945 V205" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <rect x="70" y="205" width="330" height="132" rx="10" fill="#edf5ff" stroke="#5791c9"/>
-  <text x="235" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#173f67">1 · 找到行为 owner</text>
-  <text x="235" y="265" text-anchor="middle" font-size="12" fill="#526175">插件 / service / config / consumer</text>
-  <text x="235" y="287" text-anchor="middle" font-size="12" fill="#526175">当前文档与接口义务</text>
-  <text x="235" y="314" text-anchor="middle" font-size="12" fill="#39709f">改源头，同步受影响派生物</text>
+  <rect x="60" y="205" width="330" height="132" rx="10" fill="#edf5ff" stroke="#5791c9"/>
+  <text x="225" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#173f67">1 · 定位行为 Owner</text>
+  <text x="225" y="265" text-anchor="middle" font-size="12" fill="#526175">插件入口 / Service / Config / 消费方</text>
+  <text x="225" y="287" text-anchor="middle" font-size="12" fill="#526175">选定包拓扑（单包 / 双树 / Seam）</text>
+  <text x="225" y="314" text-anchor="middle" font-size="12" fill="#39709f">改权威源头，同步派生物</text>
 
-  <rect x="800" y="205" width="330" height="132" rx="10" fill="#f3efff" stroke="#8269bd"/>
-  <text x="965" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#513b85">2 · 判断承载方式</text>
-  <text x="965" y="265" text-anchor="middle" font-size="12" fill="#526175">Issue / task context：意图</text>
-  <text x="965" y="287" text-anchor="middle" font-size="12" fill="#526175">Agent Note：持久取舍（按需）</text>
-  <text x="965" y="309" text-anchor="middle" font-size="12" fill="#526175">Plan：本次会话计划（按需）</text>
+  <rect x="780" y="205" width="330" height="132" rx="10" fill="#f3efff" stroke="#8269bd"/>
+  <text x="945" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#513b85">2 · 判断承载方式</text>
+  <text x="945" y="265" text-anchor="middle" font-size="12" fill="#526175">Issue / 任务输入：外部验收标准</text>
+  <text x="945" y="287" text-anchor="middle" font-size="12" fill="#526175">ADR / Agent Note：持久取舍（按需）</text>
+  <text x="945" y="309" text-anchor="middle" font-size="12" fill="#526175">Plan：当次会话实施计划（按需）</text>
 
-  <path d="M235 337 V390 H600 V430" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
-  <path d="M965 337 V390 H600 V430" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M225 337 V388 H572 V428" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <path d="M945 337 V388 H598 V428" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-  <rect x="390" y="430" width="420" height="118" rx="10" fill="#e8f7f3" stroke="#319795" stroke-width="1.5"/>
-  <text x="600" y="462" text-anchor="middle" font-size="16" font-weight="700" fill="#125f5b">3 · 同批形成完整交付切片</text>
-  <text x="600" y="489" text-anchor="middle" font-size="12" fill="#3f5f62">实现 + 用户文档 + 配置消费者 + 行为证据</text>
-  <text x="600" y="512" text-anchor="middle" font-size="12" fill="#3f5f62">必要时更新 owning Note 的 shipped reality</text>
+  <rect x="375" y="430" width="420" height="118" rx="10" fill="#e8f7f3" stroke="#319795" stroke-width="1.5"/>
+  <text x="585" y="462" text-anchor="middle" font-size="16" font-weight="700" fill="#125f5b">3 · 同批形成原子交付切片</text>
+  <text x="585" y="489" text-anchor="middle" font-size="12" fill="#3f5f62">Cordis 防御实现 + README Model Experience + 配置与类型</text>
+  <text x="585" y="512" text-anchor="middle" font-size="12" fill="#3f5f62">同笔变更带上会为目标回归变红的验证证据</text>
 
-  <path d="M600 548 V570 H230 V592" fill="none" stroke="#0f766e" stroke-width="1.7" marker-end="url(#arrow-accent)"/>
+  <path d="M585 548 V570 H220 V592" fill="none" stroke="#0f766e" stroke-width="1.7" marker-end="url(#arrow-accent)"/>
 
-  <rect x="65" y="592" width="330" height="112" rx="10" fill="#fff8e8" stroke="#d6a636"/>
-  <text x="230" y="623" text-anchor="middle" font-size="15" font-weight="700" fill="#76530a">4 · 跑匹配证据</text>
-  <text x="230" y="648" text-anchor="middle" font-size="12" fill="#665a3e">局部测试 / 真实 Loader 组合</text>
-  <text x="230" y="670" text-anchor="middle" font-size="12" fill="#665a3e">snapshot / e2e / package smoke</text>
-  <text x="230" y="692" text-anchor="middle" font-size="12" fill="#8a6d25">断言必须会拒绝目标回归</text>
+  <rect x="55" y="592" width="330" height="112" rx="10" fill="#fff8e8" stroke="#d6a636"/>
+  <text x="220" y="623" text-anchor="middle" font-size="15" font-weight="700" fill="#76530a">4 · 跑四级插件门禁</text>
+  <text x="220" y="648" text-anchor="middle" font-size="12" fill="#665a3e">verify-plugin 静态契约 + 真实 Loader/HMR</text>
+  <text x="220" y="670" text-anchor="middle" font-size="12" fill="#665a3e">Keyless 会话回放 + pack 安装冒烟</text>
+  <text x="220" y="692" text-anchor="middle" font-size="12" fill="#8a6d25">断言外部世界，拒绝自报假阳性</text>
 
-  <rect x="435" y="592" width="330" height="112" rx="10" fill="#fff0f0" stroke="#d26a6a"/>
-  <text x="600" y="623" text-anchor="middle" font-size="15" font-weight="700" fill="#8b3030">5 · 做语义评审</text>
-  <text x="600" y="648" text-anchor="middle" font-size="12" fill="#6d4d4d">意图 ↔ 实现 ↔ 文档 ↔ 证据</text>
-  <text x="600" y="670" text-anchor="middle" font-size="12" fill="#6d4d4d">检查真实入口与未覆盖的声称</text>
-  <text x="600" y="692" text-anchor="middle" font-size="12" fill="#9b4545">机器绿灯不等于语义完成</text>
+  <rect x="420" y="592" width="330" height="112" rx="10" fill="#fff0f0" stroke="#d26a6a"/>
+  <text x="585" y="623" text-anchor="middle" font-size="15" font-weight="700" fill="#8b3030">5 · 做语义评审</text>
+  <text x="585" y="648" text-anchor="middle" font-size="12" fill="#6d4d4d">意图 ↔ 生命周期清退 ↔ 文档 ↔ 证据</text>
+  <text x="585" y="670" text-anchor="middle" font-size="12" fill="#6d4d4d">核查瀑布流 next() 与 Token 预算</text>
+  <text x="585" y="692" text-anchor="middle" font-size="12" fill="#9b4545">机器绿灯不代替设计合理性判断</text>
 
-  <rect x="805" y="592" width="330" height="112" rx="10" fill="#eef7ef" stroke="#62a36d"/>
-  <text x="970" y="623" text-anchor="middle" font-size="15" font-weight="700" fill="#326b3c">6 · 交付后可重新发现</text>
-  <text x="970" y="648" text-anchor="middle" font-size="12" fill="#526a56">源码 / README：现在是什么</text>
-  <text x="970" y="670" text-anchor="middle" font-size="12" fill="#526a56">Note：为什么这样选（若有）</text>
-  <text x="970" y="692" text-anchor="middle" font-size="12" fill="#46744d">tests：什么固定住它</text>
+  <rect x="785" y="592" width="330" height="112" rx="10" fill="#eef7ef" stroke="#62a36d"/>
+  <text x="950" y="623" text-anchor="middle" font-size="15" font-weight="700" fill="#326b3c">6 · 沉淀为可重发现状态</text>
+  <text x="950" y="648" text-anchor="middle" font-size="12" fill="#526a56">源码 / README：系统现在是什么</text>
+  <text x="950" y="670" text-anchor="middle" font-size="12" fill="#526a56">决策记录：为什么淘汰备选（若有）</text>
+  <text x="950" y="692" text-anchor="middle" font-size="12" fill="#46744d">测试与门禁：什么锁住它不退化</text>
 
-  <path d="M395 648 H435" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
-  <path d="M765 648 H805" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
-  <path d="M1135 704 C1135 735 65 735 65 704" fill="none" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arrow-accent)"/>
-  <text x="600" y="748" text-anchor="middle" font-size="12" fill="#0f766e">下一笔变更从当前 owner 和证据继续，而不是从旧对话重新猜</text>
+  <path d="M385 648 H416" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <path d="M750 648 H781" fill="none" stroke="#475569" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <path d="M1115 648 H1148 V112 H765" fill="none" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="6 5" marker-end="url(#arrow-accent)"/>
+  <text x="1172" y="380" text-anchor="middle" font-size="11" fill="#0f766e" transform="rotate(-90 1172 380)">下一笔变更回到顶层意图入口</text>
+  <text x="585" y="740" text-anchor="middle" font-size="12" fill="#0f766e">下一位 Agent 从更新后的权威源与可执行证据起步，而不是从旧对话续猜</text>
 </svg>

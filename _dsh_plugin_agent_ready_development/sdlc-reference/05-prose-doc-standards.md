@@ -18,9 +18,9 @@ DSH 把“现在是什么”和“为什么这样决定”分开维护：当前 
 | 子树 `AGENTS.md`（`packages/`、`docs/`、`.agents/notes/`） | 只属于该子树的 orders |
 | `docs/architecture.md` | 组合、主干、扩展点与 capability seam 的有序地图 |
 | `docs/subsystems/` | 子系统 types、semantics 与生成的 Cordis API |
-| `docs/persistence-changes/` | 持久化类型变更的唯一 ack 入口：类型变更声明、发布对比与历史格式 schema（`docs/AGENTS.md:28` 的 Persistence history 行，0008 跨度新增） |
+| `docs/persistence-changes/` | 持久化类型变更的唯一 ack 入口：类型变更声明、发布对比与历史格式 schema（`docs/AGENTS.md` 的 Persistence history 行） |
 | `.agents/notes/` | 现行决策记录：为什么、放弃了什么、需要什么验证 |
-| `docs/defensive-patterns/` | 本仓库在 review 中执行的规则，按 artifact 分页：一页通用 bug 类，加各域页面（0011 跨度新增） |
+| `docs/defensive-patterns/` | 本仓库在 review 中执行的规则，按 artifact 分页：一页通用 bug 类，加各域页面 |
 | `docs/postmortem/` | 事故故事——唯一允许 war story 叙事的层 |
 | `docs/cookbook/` | 带编号验证步骤的 how-to |
 | `docs/user/` | 面向产品的指南，由文档站发布 |
@@ -39,7 +39,7 @@ Durable prose 直接陈述当前 actor、行为、条件、时机、modality、�
 
 `dsh-prose-standard` 的编辑单位是完整命题，而不是词数。删改前要保留每个 load-bearing clause；短文本若丢掉 negative guarantee、exception 或 consequence，仍然是退化。
 
-`dsh-trim-cot-leakage` 用一个判定问题检查作者视角：读者只拿到 HEAD、没有会话 transcript、PR thread 或未提交 draft 时，能否解析每个引用并核验每个 claim？不能就把仍有价值的事实改写成 repository vantage，其余 session narration 删除。
+`dsh-trim-cot-leakage` 用一个判定问题检查作者视角：读者只拿到 HEAD、没有会话 transcript、PR thread 或未提交 draft 时，能否解析每个引用并核验每个 claim？不能就把仍有价值的事实改写成 repository vantage，其余 session narration 删除（工程化清洗原则与检查表见 [规格漂移与决策代谢](../repo-harness/11-spec-drift-and-decision-metabolism.md)）。
 
 ## 3. 文档变更的最短闭环
 
@@ -57,7 +57,7 @@ Durable prose 直接陈述当前 actor、行为、条件、时机、modality、�
 
 `dsh-translate-docs` 是显式用户调用的扩展 workflow，不会因普通文档编辑自动运行。它用于 briefing-driven 更新或新 pair 的整篇翻译；普通审阅也不能以“需要翻译”为由自行触发它。Archived Agent Notes 的 triplet 已冻结，不属于翻译工作。
 
-这些 Skills 在各自任务中拥有具体判断步骤；Skill 作为程序化工作记忆的共同角色见 [Skills 专章](../repo-harness/03-skills-as-procedural-memory.md)。
+这些 Skills 在各自任务中拥有具体判断步骤；Skill 作为程序化工作记忆的共同角色见 [程序化记忆：Skills](../repo-harness/03-skills-as-procedural-memory.md)。
 
 ## 5. 文档站只做投影
 

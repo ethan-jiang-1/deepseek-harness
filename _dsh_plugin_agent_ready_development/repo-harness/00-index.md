@@ -1,74 +1,65 @@
-# Development Harness · DSH 如何帮助 agent 修改 DSH
+# 通用 Agent-Friendly Repo 工程学：把仓库建成 Coding Agent 的开发 Harness
 
-## 两种 Harness
+## 为什么传统代码库一遇上 Agent 就会迅速退化
 
-DeepSeek Harness（DSH）首先是一个 coding harness（编码代理运行框架）：它把模型、工具、会话和交互组合成可运行的 agent。这个专题关心它的另一面：DSH 也把自己的仓库组织成 development harness（开发 Harness），让不熟悉项目的 coding agent 能找到规则、定位修改位置、选择工作方法、验证结果，并把决定留给后续参与者。
+大多数传统代码库是为“长期在职的人类工程师”设计的：架构边界靠老员工口头传授，目录里塞满历史遗留的 `utils/` 与过期设计文档，评审靠资深同事人肉盯风格与隐性副作用。一旦把主力编码工作交给每次从零上下文启动的 coding agent，这类仓库会在几周内出现典型的结构性退化——agent 在错误位置硬插分支、重复提出半年前已被否决的方案、用宽泛类型强转糊弄编译器、造出一堆只测 mock 的假绿单测，并在注释里留下满地推理残渣。
 
-这不是说仓库能够自动完成开发，也不是说 agent 不再需要判断。更准确的说法是：DSH 把尽可能多的参与知识从个人经验移入可搜索文件、类型、检查命令和运行时状态，让剩余判断有明确输入和反馈。
-
-本卷独立解释 DSH 主仓怎样支持贡献者，再归纳外部插件仓可选择的做法。根或子目录的 `AGENTS.md` 是 agent 常驻指令；Agent Note 是代码、测试与当前文档无法解释的持久决定记录；Skill 是按任务加载的工作方法；gate 是会返回通过或失败的可执行检查；owner 指事实的权威维护位置或行为/资源职责的拥有者，不是固定职位。各章继续解释其条件，不要求先读另外两卷。
-
-独立插件仓可采用知识归属、短入口与真实行为证据，但不自动继承 DSH 主仓的目录拓扑、GitHub 状态、CI 矩阵或发布制度。只想找到外部插件作者的运行与安装路径，可直接读[插件作者入口](./09-plugin-author-entry.md)。
+DeepSeek Harness（DSH）提供了另一种经过大规模自举检验的范式：它不仅是一个运行编码代理的产品框架（runtime coding harness），更把自己的代码库打造成了一座严密的 **Repository Development Harness（仓库开发 Harness）**——把原本锁在资深工程师脑子里的导航地图、职责边界、情境化工作流、确定性门禁和历史负知识全部外置为机器可检索、可校验的仓库结构。
 
 > This codebase is developed primarily by coding agents. Agents follow enforced gates far more reliably than prose conventions [...].
 >
-> — DSH [`Mechanical quality gates over prose guidelines` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)。这段原文说明 DSH 为什么把可机械判断的规则落实为检查，而不只依赖文字约定。
+> — DSH [`Mechanical quality gates over prose guidelines` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)。这句判断道破了 Agent-Friendly Repo 的第一定律：不要指望 agent 靠“自觉”遵守冗长文档，而要用清晰的信息拓扑降低它找对路的阻力，用非零退出的确定性门禁封死它走歪路的通道。
 
-![DSH 同时提供运行时 Harness 与仓库开发 Harness](./figures/two-harnesses.svg)
+![DSH 同时提供运行时编码 Harness 与仓库开发 Harness](./figures/two-harnesses.svg)
 
-## Development Harness 解决什么问题
+本卷把这套仓库级工程学从 DSH 具体业务中完整抽离出来。无论你维护的是后端微服务、基础设施、前端应用还是 AI 系统，都可以直接复用本卷的架构模型与起步模板；如果你正在开发独立的 DSH 插件仓库，读完本卷核心思想后可直接切入 [卷二：DSH 插件仓库开发与专属 Harness](../native-development-model/00-index.md) 获取全套插件拓扑与专属门禁代码。
 
-一个 fresh coding agent（初次进入这个项目的编码代理）进入大型仓库时，通常缺少五类信息：必须遵守什么、系统由什么组成、改动应该落在哪里、当前任务应采用什么工作流程，以及怎样知道自己真的做对了。
+## 一座合格的仓库开发 Harness 必须回答哪六个问题
 
-DSH 分别给出可查入口：
+当一个没有任何历史对话记忆的 fresh coding agent 接手任务时，仓库结构本身必须以最低的上下文开销回答以下六个正交问题：
 
-| 问题 | DSH 中的主要回答 |
+| Agent 面临的生存问题 | 传统仓库的常见失效形态 | Agent-Friendly Repo 的结构化设施 | 本卷对应专章 |
+|---|---|---|---|
+| **1. 我该先读什么、新代码挂哪？** | 根目录只有一份营销向 README，agent 全仓乱搜、把新逻辑硬塞进核心主循环 | 受词数预算保护的分层 `AGENTS.md` + `architecture.md` 行为路由表 + 四级改动爆炸半径阶梯 | [`01`](./01-follow-a-fresh-agent.md)、[`04`](./04-paved-road-and-participation.md) |
+| **2. 当前事实与历史取舍去哪查？** | 设计文档与现行 API 混写，或靠手工维护总目录导致多分支频繁冲突 | “一个事实一个家”：源码/README 只写现在 + 源码生成索引 + 路径树即清单的决策记录（含强制备选方案） | [`02`](./02-legibility-and-ownership.md)、[`08`](./08-repository-taxonomy.md) |
+| **3. 复杂非布尔型任务怎么操作？** | 把所有发版、选测、评审细节全塞进根提示词挤爆窗口，或完全靠人肉经验 | 按任务描述匹配才加载正文的程序化工作记忆（`.agents/skills/*/SKILL.md`） | [`03`](./03-skills-as-procedural-memory.md) |
+| **4. 写歪了谁在第一时间拦住我？** | 本地零门禁，等人类 code review 才指出跨层私引、类型强转和死文档 | 五层左移反馈 + 专治 Agent 八大恶习的确定性门禁 + 新增守卫“造回归看红再撤” | [`05`](./05-executable-feedback.md) |
+| **5. 静态源码看不出活状态怎么办？** | 多层配置叠加和动态注册全靠盲猜，出了问题改错层 | 动态可观测四面镜：合成配置导出、生成目录、只读活状态自省、仅追加事件日志 | [`06`](./06-runtime-inspection.md) |
+| **6. 半年后文档和代码怎么不腐烂？** | 旧方案原地涂改、注释写满 `used to`、过时设计堆积如山没人敢删 | 清理会话推理泄漏 + 决定不可原地改写只能取代 + 低未来价值记录封存归档 + 人类四方向控制面 | [`07`](./07-boundaries-and-costs.md)、[`10`](./10-agent-ready-repo-blueprint.md)、[`11`](./11-spec-drift-and-decision-metabolism.md) |
+
+## 全卷 11 章阅读地图
+
+| 章节 | 核心主题与可带走的工程产物 |
 |---|---|
-| 必须遵守什么 | 根级与子目录 `AGENTS.md` |
-| 系统由什么组成 | architecture、glossary、subsystem docs 和 generated catalogs |
-| 为什么这样设计 | Agent Notes 及其 alternatives（替代方案） |
-| 当前任务怎样做 | `.agents/skills/` 中的 development Skills |
-| 怎样证明完成 | 类型、测试、snapshots、repository gates 和 GitHub CI |
+| [`01-follow-a-fresh-agent.md`](./01-follow-a-fresh-agent.md) | **零历史 Agent 六步回路**：解剖单次任务如何走完“入口地图 → 事实/理由分离 → 加载 Skill → 垂直切片 → 左移反馈 → 记忆留存” |
+| [`02-legibility-and-ownership.md`](./02-legibility-and-ownership.md) | **可读性与知识归属**：五问五归属、当前状态与负知识物理分家，以及“源码生成目录 vs 路径树即清单”的双轨索引设计 |
+| [`03-skills-as-procedural-memory.md`](./03-skills-as-procedural-memory.md) | **Skills 程序化工作记忆**：`AGENTS.md` / `SKILL.md` / `Gate` 三层职责矩阵，以及高信噪比 Skill 的触发词与边界写法 |
+| [`04-paved-road-and-participation.md`](./04-paved-road-and-participation.md) | **正确路径与爆炸半径阶梯**：L0 配置 → L1 叶子扩展点 → L2 可替换能力接缝（Seam）→ L3 核心主干的四级架构减震器与单一撤销协议 |
+| [`05-executable-feedback.md`](./05-executable-feedback.md) | **可执行反馈与八类反劣化门禁**：棘轮基线锁、拓扑锁、文档类型同构锁、词数预算锁等八大通用门禁模式与 Prove-Red 负例验证 |
+| [`06-runtime-inspection.md`](./06-runtime-inspection.md) | **动态可检查性四面镜**：为什么只读源码必会产生环境幻觉，以及如何为系统配备配置快照、生成目录、只读自省与可重建日志 |
+| [`07-boundaries-and-costs.md`](./07-boundaries-and-costs.md) | **Harness 经济学与机器六大盲区**：三类参与门槛、四组致命等价误区，以及自动化门禁在原理上绝对查不到的六类语义空白 |
+| [`08-repository-taxonomy.md`](./08-repository-taxonomy.md) | **仓库分类学与防腐化代码契约**：顶层分区、五种内容维护形态，以及 16 类精确角色后缀、边界显式 `resolve` 与上下文成本记账 |
+| [`09-plugin-author-entry.md`](./09-plugin-author-entry.md) | **可扩展平台的生态可读性**：宿主平台如何用共享词汇表、无 Key 可运行教程阶梯与双清单二分法，让外部扩展仓也能被 Agent 无缝理解 |
+| [`10-agent-ready-repo-blueprint.md`](./10-agent-ready-repo-blueprint.md) | **通用落地总蓝图与四件套模板**：人类不可下放的四个方向控制面、Tier 1–3 规模裁剪阶梯，以及 `AGENTS.md` / ADR / `SKILL.md` / `verify.mjs` 完整起步骨架 |
+| [`11-spec-drift-and-decision-metabolism.md`](./11-spec-drift-and-decision-metabolism.md) | **长周期防规格漂移与决策新陈代谢**：四种仓库老化病理、清理推理残渣（CoT Leakage）、强制取代检查与 DSH 归档 453 组决策记录的工业实证 |
 
-这些文件并非越多越好。关键在于每类事实有 owner（拥有者），读者可以从短入口逐步进入详细来源，而不必先通读整个仓库。
+## 核心术语对照
 
-## 阅读路径
-
-本专题先走一遍具体任务，再拆解背后的机制：
-
-| 章节 | 读完能回答 |
-|---|---|
-| [`01-follow-a-fresh-agent.md`](./01-follow-a-fresh-agent.md) | 一个新 agent 如何从任务进入 DSH 并完成闭环 |
-| [`02-legibility-and-ownership.md`](./02-legibility-and-ownership.md) | 规则、当前事实、决策理由和负知识分别住在哪里 |
-| [`03-skills-as-procedural-memory.md`](./03-skills-as-procedural-memory.md) | Skills 为什么不是普通文档，也不是自动门禁 |
-| [`04-paved-road-and-participation.md`](./04-paved-road-and-participation.md) | 插件结构怎样给不同半径的修改提供明确入口 |
-| [`05-executable-feedback.md`](./05-executable-feedback.md) | 类型、测试、CI 与 review 怎样逐层发现错误 |
-| [`06-runtime-inspection.md`](./06-runtime-inspection.md) | agent 怎样查询实际配置和活运行时，而不是只猜源码 |
-| [`07-boundaries-and-costs.md`](./07-boundaries-and-costs.md) | 哪些原则可以迁移，哪些 DSH 成本不能忽略 |
-| [`08-repository-taxonomy.md`](./08-repository-taxonomy.md) | 什么放在哪里：顶层分区、包分组与内容的五种维护形态 |
-| [`09-plugin-author-entry.md`](./09-plugin-author-entry.md) | DSH 为外部插件作者提供的文档 tier、bundle/profile 组合词汇与 Host/Client 两条插件加载路径 |
-
-第一次阅读建议按顺序进行。只想理解复杂 PR 怎样经过 GitHub 时，应进入 [SDLC Reference](../sdlc-reference/00-index.md)；那里讲流程的精确条件，这里讲仓库为什么能让 agent 参与这些流程。
-
-## 核心术语
-
-| English | 中文理解 | 本专题中的含义 |
+| English | 中文概念 | 在通用仓库 Harness 中的精确含义 |
 |---|---|---|
-| development harness | 开发 Harness | 帮助参与者理解、修改和验证一个代码库的仓库级机制 |
-| legibility | 可读性 | 新参与者建立正确心智模型并找到事实 owner 的难度 |
-| knowledge externalization | 知识外置 | 把个人经验变成可搜索、可检查或可执行的仓库知识 |
-| procedural memory | 程序化工作记忆 | 面向特定任务、带适用条件和验证步骤的工作方法 |
-| paved road | 正确路径 | 仓库为常见修改提供的首选入口、范本和反馈组合 |
-| inspectability | 可检查性 | 查询实际配置、注册项和运行状态的能力 |
+| development harness | 仓库开发 Harness | 帮助 coding agent 与人类低摩擦理解、修改、验证并沉淀记忆的仓库级结构与工具总和 |
+| legibility | 仓库可读性 | 零历史参与者在有限上下文窗口内建立正确局部模型并定位唯一事实 owner 的难易度 |
+| progressive disclosure | 渐进披露 | 常驻上下文只付短指令与目录的代价，详细规则、API 与任务 SOP 按需逐层加载 |
+| procedural memory | 程序化工作记忆 | 封装在 `SKILL.md` 中、带明确触发条件、调查步骤与停止边界的可复用任务工作流 |
+| paved road | 铺装正确路径 | 仓库为高频改动预先铺设的标准扩展接缝、参考范本与配套验证车道 |
+| negative control (prove-red) | 负例控制（先看红） | 新增门禁或防回归守卫时，亲手注入目标缺陷确认检查变红报错后再撤回的必经证明 |
 
-英文词保留下来，是因为它们能够直接对应 DSH 文件、类型和命令；中文解释负责先建立含义。
+## 证据呈现约定
 
-## 怎样阅读证据
-
-正文先讲清结论，再摘录 DSH 原文作为引子。页面末尾的“证据入口”会标明具体 DSH 文件及它能证明的事实。现行机制的外部链接指向 DSH 仓库的 `master` 分支，不带版本号；本文归纳出的解释不会伪装成 DSH 的正式自述。
+本卷每章均遵循“先讲清通用工程原理与迁移方法，再以 Markdown blockquote 逐字摘录 DSH 一手英文原文佐证，并在章末列出可回溯源码路径”的结构。外链统一指向 DSH `master` 分支；核验基线版本统一登记在[语料维护页](../_coverage/00-corpus-maintenance.md)。
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)：产品插件树、事件扩展点、会话日志和新行为归属表。
-- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)：不同文档层级、Skills 与 Agent Notes 的职责分工。
-- DSH [`quality-gates Agent Note`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)：coding-agent 生产方式与机械检查选择之间的一手因果说明。
+- DSH [`AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/AGENTS.md) 与 [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)：根级常驻指令、单一事实归属层级表与词数预算治理。
+- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)：系统分层地图与“新行为挂在哪里”的路由入口。
+- DSH [`Mechanical quality gates over prose guidelines` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-06-11-quality-gates.md)：面向 coding agent 优先建设确定性机械门禁的决策原点。

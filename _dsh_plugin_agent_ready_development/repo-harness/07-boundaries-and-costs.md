@@ -1,70 +1,66 @@
-# 07 · 边界、成本与可迁移原则
+# 07 · Harness 经济学：维护成本、四组等价误区与机器六大盲区
 
-## Development Harness 没有消除复杂度
+## 仓库开发 Harness 拆解了复杂度，但没有让复杂度凭空消失
 
-DSH 展示的是怎样组织复杂参与知识，而不是怎样让复杂系统变简单。一个 fresh agent 仍需要读 TypeScript、理解需求、选择修改半径并判断证据是否充分；Development Harness 把这些判断分解、提供 owner 和反馈，但不替代它们。
+把导航、工作流和门禁外置进仓库后，团队很容易产生另一种幻觉：只要规则和脚本铺得够满，coding agent 就能全自动交付完美系统，人类再也不用操心。事实恰恰相反——**Repository Development Harness 的本质是重组参与知识的加载成本与错误发现时机，而不是消灭软件工程本身的认知难度**。
 
-可以把参与成本分成三类：
+任何参与者（无论是零历史 coding agent 还是新入职工程师）改一座真实代码库时，都同时面对三类性质截然不同的门槛：
 
-| 成本 | 含义 | DSH 的处理 |
-|---|---|---|
-| knowledge barrier（知识门槛） | 不知道规则、位置和历史决定 | AGENTS、architecture、catalogs、Agent Notes 与 Skills 外置知识 |
-| literacy barrier（识读门槛） | 不会 TypeScript、GitHub、Cordis 或配置语法 | tutorial、cookbook、范本和 L0 配置入口降低部分成本 |
-| judgment barrier（判断门槛） | 不知道哪种设计、证据或风险判断正确 | Skills 缩小问题，tests/gates 提供反馈，review 最终复核 |
+| 参与门槛 | 阻力来源 | 仓库开发 Harness 能做到什么 | 绝对不能夸大承诺什么 |
+|---|---|---|---|
+| **1. 知识门槛（Knowledge Barrier）** | 不知道规矩在哪、新功能挂哪、当年为什么否掉某方案 | 通过 `AGENTS.md`、架构路由表、生成目录、决策记录与 Skills **大幅削平（可压降 80% 以上）** | 不能替读者跳过阅读目标模块契约的过程 |
+| **2. 识读门槛（Literacy Barrier）** | 对所用编程语言、并发模型、配置语法或领域协议不熟 | 通过分层教程、标准生产范本（Paved Road）和 L0 配置入口降低上手摩擦 | 不能消除异步竞态、类型系统与分布式边界本身的精确性要求 |
+| **3. 判断门槛（Judgment Barrier）** | 不确定哪种抽象拆法更耐演进、测试证据是否真正覆盖风险 | 用 Skills 提供调查框架、用多层门禁排除低级错误，把人类注意力聚焦到核心取舍 | **永远无法由机器自证完成**——最终意图对齐与风险承担仍归人类 |
 
-第一类可以大幅减少，后两类只能被支持，不能宣称消失。
+## 四组最容易踩坑的“致命等价误区”
 
-## 四个不能混淆的边界
+在推广 Agent-Friendly Repo 时，必须向团队和 agent 反复重申四条绝不能画等号的物理边界：
 
-1. **可读不等于简单。** Catalog、统一术语和 owner 让复杂系统可查询，但包、事件和生命周期仍然复杂。
-2. **Skill 不等于 enforcement（强制执行）。** Skill 是 guidance；可机械规则仍需类型、脚本或 gate，语义仍需 review。
-3. **Plugin disposal 不等于 transaction rollback（事务回滚）。** disposer 撤销拥有的注册与资源，不会自动补偿已经发生的外部写入。
-4. **Runtime inspection 不等于 security sandbox（安全沙箱）。** `tool-cordis` 只读查询活运行时；vm 隔离只防意外全局污染，注入的 filesystem、shell、network service 仍有真实权限。
+1. **可读（Legible）≠ 简单（Simple）。** 生成目录、角色后缀词典与单一事实归属让拥有上百个包的系统变得“可精准定位”，但多会话并发、跨进程通信与异步卸载本身依然复杂。
+2. **Skill 引导（Guidance）≠ 门禁强制（Enforcement）。** `SKILL.md` 依然是自然语言散文，agent 在长上下文下仍可能漏步或误判；凡是可确定性判定的底线必须下沉为退出码非零的静态检查或测试，凡是涉及架构取舍的结论必须经过语义评审。
+3. **组件卸载（Disposal）≠ 事务回滚（Transaction Rollback）。** 统一清理协议（disposer）只保证回收当前组件注册在内存里的服务、监听器和句柄，绝不会自动撤销已经发出去的 HTTP 请求、已经修改的外部数据库或已经落盘的用户文件。
+4. **运行时自省或 `vm` 隔离 ≠ 安全沙箱（Security Sandbox）。** 只读查询工具不能修改业务状态，动态求值所用的独立 `vm` 上下文也仅仅隔离了全局变量污染，绝非权限围栏：
 
 > The vm prevents accidental global pollution; injected filesystem, shell, and network services still have real authority, so it is not a security boundary.
 >
-> — DSH [`self-referential Cordis toolset` Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)（0.1.7 线改写为 "Cordis runtime inspection and runner isolation"）。这段原文限定了运行时查询能力的安全含义。
+> — DSH [`Cordis runtime inspection and runner isolation` 已归档 Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)。只要把具备真实 I/O 能力的服务句柄传给一段代码，它就拥有真实的宿主权限；安全隔离必须依靠专门的进程沙箱与审批策略。
 
-## 知识外置本身有维护成本
+## 机器门禁在原理上绝对查不到的六类语义盲区
 
-类型、文档、Agent Notes、Skills、生成目录、tests 和 CI 都需要维护。重复记录会漂移，过长的 standing instructions 会耗尽上下文，无意义的 gate 会制造假安全感，过细的 Skill 会把普通判断固化成仪式。
+既然可机械检查的规则都已经接进了门禁，那么“CI 全绿”到底还漏掉了什么？梳理 DSH 全套现行门禁的自述边界后，可以精确锁定**自动化检查在原理上覆盖不到的六块语义盲区**——它们正是人类 Code Review 必须亲自接管的责任清单：
 
-DSH 用一个事实一个 owner、生成 freshness、文档预算、Agent Note lifecycle 和 negative-control testing 控制这些成本。它们降低维护风险，但不能让外置知识免费。
+1. **跨文档与跨语言叙述的语义矛盾。** 门禁能核对链接不断、锚点存在、章节结构一致、生成区未手改，却无法判断两段合法散文是否在说相反的话。就连 DSH 最严密的双语配对门禁也在文档中坦白了这一极限：
 
-## 为什么 DSH 的完整结构不适合照搬到所有项目
+> It checks hashes and Markdown structure; it cannot judge whether the two sides say the same thing, or whether the wording is accurate, well-termed, and natural — that is the reviewer's half of the contract, per translation-rules.md.
+>
+> — DSH [`docs/i18n/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/i18n/README.md)。哈希一致只证明“有人确认过这对文本”，确认本身是否忠实准确，全靠评审把关。
 
-DSH 同时面对多 profile、多 provider、per-session scope、动态插件生命周期、持久事件投影和多个产品入口。这类 composition pressure（组合压力）使 Plugin、Fiber、Effect、seam 和大量机器检查值得投入。
+2. **“这次改动算不算非平凡（Non-trivial）”、该不该补决策记录。** 决策记录格式门禁只能检查已存在文件的标题和状态行，绝不可能识别一个没有写决策记录的 PR 是不是偷偷改了跨包契约：
 
-较小项目若只有一个 loop、少量固定 adapter 和单一入口，可能只需要清晰 architecture map、少数 standing rules、任务 Skills 和针对性 tests。学习 DSH 的第一步应是知识归属与反馈纪律，而不是复制全部包结构。
+> Review enforces the semantic boundary. No automated gate attempts to classify a diff as trivial or non-trivial, so this policy adds no gate stage or runtime.
+>
+> — DSH [`Require an Agent Note for every non-trivial change` 已归档 Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)。同样，某篇既有文档里的描述是否已被新代码推翻但语法依然合法，也只能靠人或语义审查发现。
 
-## 用三个问题检验一个 Development Harness
+3. **破坏性变更“有没有漏写升级指南”。** 例如 DSH 的 [`scripts/verify-upgrade-guides.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-upgrade-guides.ts) 只校验已创建的升级指南路径、frontmatter、必需小节与 500 词上限；如果开发者破坏了外部配置表面却压根没新建指南文件，或者整个 `docs/upgrade-guide` 目录为空，脚本会直接返回零违规通过。
+4. **散文里手写的字面数字与机器配置之间的暗中脱节。** 门禁读取的是结构化配置清单（如 `scripts/doc-budgets.manifest.json` 里的实际 `ceiling`），但不会去解析散文段落里手写的说明性数字（例如 `docs/AGENTS.md` 正文把常驻预算描述为写作 `target`，数值与 manifest 里的硬 `ceiling` 并不相同）。任何写进散文正文的硬编码计数，天然游离在静态门禁之外。
+5. **长程执行过程中的目标语义跑偏。** 运行时没有独立的“真理裁判器”能自动识别 agent 当前忙活的代码是不是已经偏离了用户最初的业务意图；DSH 的持久目标模块（[`packages/goal/goal/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/goal/README.md) 与 [`goal-round-driver` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/goal-round-driver/README.md)）明确只负责状态持久化与续轮调度，把“做得对不对”留给真实测试证据与顶层人类监督。
+6. **未入库或随回滚一并删除的探索转向。** 仓库治理机制只管得住已经落进工作树的文件：在对话里讨论过但未提 Issue 也未写决策记录的方案否定，在仓库里不会留下任何防重犯护栏；随功能回滚一并删除的文档与记录也只存在于底层 Git 历史对象中。
 
-下面三问是本文从 DSH 归纳出的评估框架，不是 DSH 官方术语：
+## Harness 自身的维护经济学：投入必须匹配组合压力
 
-1. **规则住在哪里？** 只在人脑，还是进入可搜索文档、类型、生成索引和可执行检查？
-2. **正确入口是否明确？** 新参与者能否从目标找到 owner、范本和升级条件，还是每次都要猜代码位置？
-3. **错误何时被发现？** 编译、load、局部测试、运行时、push 前、CI、review，还是生产之后？
+外置每一条规则、每一份生成目录和每一个门禁都要持续付维护税：常驻文档超重会挤占上下文窗口，过细的门禁会拖慢重构，没人清理的决策记录会淹没检索结果。DSH 之所以愿意承担全套基础设施成本，是因为它同时承受着多端入口、上百个插件包、多语言 SDK 同步和持久化格式兼容的极高 **composition pressure（组合压力）**。
 
-这三问分别测量 knowledge externalization（知识外置）、paved road（正确路径）和 feedback latency（反馈延迟）。它们可以用于其它仓库，而不要求其它仓库采用 Cordis 或“一切皆插件”。
+如果你维护的是一个只有单一入口、三五个模块的轻量服务，照搬重型体系只会自我内耗。在动手建设前，先用下面三个成本收益问题给你的仓库做一次体检（按项目规模分 Tier 1–3 渐进裁剪的具体清单与起步模板见 [第 10 章](./10-agent-ready-repo-blueprint.md)）：
 
-## 值得优先迁移的原则
+1. **团队高频返工的知识住在哪里？** 是每次在 PR 评论区重复教同一遍，还是已经放进了单点权威文件并配上了非零退出的检查？
+2. **新需求的落点用不用猜？** 一个零历史 coding agent 能否在两跳链接内找到扩展点、标杆文件与必跑测试？
+3. **错误在第几分钟暴露？** 是在本地保存/提交后的几秒内带 `file:line` 报错拦截，还是等半小时 CI 甚至三天后人工 review 才被打回？
 
-| 优先级 | 可迁移做法 | 原因 |
-|---|---|---|
-| 1 | 一个事实一个 owner，根指令只放 standing orders | 先减少冲突和上下文浪费 |
-| 2 | 为常见任务提供短入口、范本和明确升级条件 | 先降低“改哪里”的判断成本 |
-| 3 | 把可机械规则接入真实接受路径，并证明负例会失败 | 先让反馈可信 |
-| 4 | 用 Skills 保存需要上下文判断的工作流程 | 让复杂任务不依赖个人记忆 |
-| 5 | 在确有动态组合压力时引入可查询 plugin graph 和完整 seams | 让架构成本与真实需求匹配 |
-
-## 最终判断
-
-DSH 作为 Development Harness 的突出之处，不是拥有最多规则，而是把不同知识放在不同 owner，并把可机械部分连接到实际执行。Coding agent 因而可以从有限入口逐步获取上下文，在明确扩展点上修改系统，通过多层反馈修正错误，再把决定和证据留给后续参与者。
+把资源精准投在“高频重犯、机器可判、报错即导航”的刀刃上，同时让人类 reviewer 死守上面那六块机器盲区——这就是 Agent-Friendly Repo 最健康的经济学平衡点。
 
 ## 证据入口
 
-- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md)：插件组合、事件日志、seam 和行为归属所面对的组合复杂度。
-- DSH [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)：一个事实一个 owner、上下文预算和文档维护纪律。
-- DSH [`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md)：Skill 的 guidance 边界和 semantic review 责任。
-- DSH [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：真实入口、negative control 和不同证据层的限制。
-- DSH [`@deepseek-ai/dsh-tool-cordis` README 的 “Known Limitations and Deferred Work”](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/extensions/tool-cordis/README.md#known-limitations-and-deferred-work)：动态自省工具的能力边界（只读检查；不能调用业务方法、配置插件或执行生成代码）。
+- DSH [`docs/architecture.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/architecture.md) 与 [`docs/AGENTS.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/AGENTS.md)：高组合压力系统的分层复杂度与文档维护预算边界。
+- DSH [`Cordis runtime inspection and runner isolation` 已归档 Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md) 与 [`@deepseek-ai/dsh-tool-cordis` README](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/extensions/tool-cordis/README.md#known-limitations-and-deferred-work)：运行时只读自省与 `vm` 隔离不构成安全沙箱的明确声明。
+- DSH [`docs/i18n/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/i18n/README.md)、[`Require an Agent Note for every non-trivial change` 已归档 Agent Note](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md) 与 [`scripts/verify-upgrade-guides.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-upgrade-guides.ts)：双语结构门禁、非平凡变更界定与升级指南门禁各自声明的机器检查上限。
+- DSH [`packages/goal/goal/README.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/goal/goal/README.md)、[`dsh-code-review`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-code-review/SKILL.md) 与 [`docs/testing.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：长程运行状态与人类语义评审、外部世界验证的责任分界。

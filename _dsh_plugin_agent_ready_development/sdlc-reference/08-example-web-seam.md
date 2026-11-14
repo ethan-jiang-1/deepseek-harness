@@ -4,6 +4,8 @@
 
 Web capability seam（Web 能力 seam）的 git 历史直接证明了“提案 → 代码/文档/测试交付 + implemented 记录”这一核心段；它没有仓库内证据证明对应 Issue、Plan Mode、GitHub review 或当时运行的 checks，不能被当作现行全流程的完整样本。
 
+> **外部借鉴切面**：代码库考古时，Git 提交树只能证明「哪些源码、文档、测试与决策记录在同一原子切片落地」，不能反推当时的 Issue 讨论、会话计划、评审线程或历史门禁规则；核验现行规范永远以 `HEAD` 的权威 owner 与可执行校验器为准。
+
 > The model-facing API must stay stable while backends change. [...] Providers do not register tools. Providers register capabilities.
 >
 > — DSH Web capability seam Agent Note 的 [“Problem”](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md#problem) 与 [“Decision”](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.md#decision)。这两句给出案例真正拥有的设计问题和已交付决定；git 历史只用来核对它在各 commit 中处于什么状态。
@@ -64,7 +66,7 @@ Web capability seam（Web 能力 seam）的 git 历史直接证明了“提案 �
 
 复核者需要含上述历史对象的 DSH checkout；只有 release tree 或浅克隆不保证这些对象存在。按表中的准确标题和带时区时间定位提交，确认唯一匹配后检查该提交的文件树、diff 与父提交；不要用相近标题替代。检查重点分别是 proposal 文件、同笔交付的源码/README/tests、implemented 正文格式，以及目录迁移。
 
-本轮已逐一核对这四个本地历史对象的时间、标题与对应文件；独立发行不携带这些 Git 对象。无法取得对应历史时，四个样本应标为未复核，现行机制仍以 DSH `master` 分支的一手来源为准。
+含完整 Git 历史的仓库检出可逐一核对这四个历史对象的时间、标题与对应文件；独立源码快照或浅克隆不携带这些历史 Git 对象。无法取得对应历史时，四个样本应视为待复核，现行机制仍以 DSH `master` 分支的一手来源为准。
 
 ## 证据入口
 

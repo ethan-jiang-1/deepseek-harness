@@ -42,7 +42,7 @@ DSH 把可机械检查的规则接到会失败的顶层命令；push 前按 outg
 
 两侧跑的是同一个脚本、同一套规则，只是时机不同：`doc-sync` 里的 `verify-archived-agent-notes` 是全仓检查，钩子里的那次是在改动发生的瞬间拒绝。
 
-Skill、repository gate、GitHub workflow 和 semantic review 的一般职责分工由 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md) 统一说明；本页只保留 push 前与 PR CI 的精确证据路由。
+Skill、repository gate、GitHub workflow 和 semantic review 的一般职责分工由 [程序化记忆：Skills](../repo-harness/03-skills-as-procedural-memory.md) 统一说明；本页只保留 push 前与 PR CI 的精确证据路由。
 
 ## 2. 先解析 outgoing scope
 
@@ -64,7 +64,7 @@ pnpm --silent run change-scope --base <verified-base-ref>
 | manifest、public export、build config、worker/bin、built runtime | `build:artifacts` 产出后跑 `build:check`（或一次 `build` 同时做两步）、相关 hygiene 与 built-artifact smoke |
 | real provider 或 agent behavior | 有 credentials 时运行对应 e2e target，绝不输出 secrets |
 
-该表描述 DSH 主仓要求。产品可见插件还必须通过 Loader 与 app/process 的 non-unit real-composition 测试；普通示例、局部单测、真实 API e2e 与决定记录均不能自动替代非平凡模型、协议或用户可见变更的 recorded-session 场景。安装 smoke 证明发布产物可加载执行，真实 provider e2e 证明外部 API 交互；二者各有观察对象。
+该表描述 DSH 主仓要求。产品可见插件还必须通过 Loader 与 app/process 的 non-unit real-composition 测试（独立插件仓的完整脚手架见 [插件门禁与 CI Harness](../native-development-model/06-plugin-gate-and-ci-harness.md)）；普通示例、局部单测、真实 API e2e 与决定记录均不能自动替代非平凡模型、协议或用户可见变更的 recorded-session 场景。安装 smoke 证明发布产物可加载执行，真实 provider e2e 证明外部 API 交互；二者各有观察对象。
 
 agent 看见的请求、可回放会话和外部世界各自固定什么、例外是什么、哪份原文拥有规则，由 [Reference 12](./12-agent-contract-evidence.md) 说明。本页只保留 outgoing diff 到命令的路由。
 

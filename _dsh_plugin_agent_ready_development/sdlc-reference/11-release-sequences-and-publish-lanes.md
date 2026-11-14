@@ -4,6 +4,8 @@
 
 merge 到 master 不触发任何发布。上线是一条显式的人工链：本地 `release:*` bump 把版本写进 manifest 并 commit（观察到的形态是经 `rel/*` 分支的 PR 合入 master）→ 人从 master 打 `dsh-v*` tag → 人手动 dispatch publish workflow（`npm-publish` 等 protected environment 审批）→ registry 按"三态"决定实际发布内容。发布前的 rehearsal（pack + packed-install 探针）反而无凭据地跑在每个 PR 和 master push 上；docs、Python、native、Desktop 各有独立 lane。
 
+> **外部借鉴切面**：强烈建议独立插件仓与通用包仓库直接复用两项机制——① 每个 PR 无凭据运行 `pack` + 一次性消费者真实安装冒烟（把打包与导出损坏挡在合并前）；② 版本号先落库合入主干，再由人工打 tag 触发受保护环境发布，并用 registry `sha512` 三态保证幂等重跑与防漏升版。多语言家族序列与 EV 硬件签名仅主仓需要。
+
 > The version lands in the manifests, the lockfile follows, and a human creates the tag after the commit merges. CI never writes to the repository.
 >
 > — DSH [`scripts/release/bump.ts` 的文件头](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/release/bump.ts)。发布版本永远先落在仓库里，CI 只检查和上传，从不回写版本。
@@ -15,7 +17,7 @@ merge 到 master 不触发任何发布。上线是一条显式的人工链：本
 | 序列 | 成员 | 版本基线 | tag | 打包 / 发布 workflow |
 |---|---|---|---|---|
 | dsh | `packages/*/*` 与 `apps/*` 的 publish set（private 例外见 denylist note；private 包只跟版本不发布） | 全家一个版本，落在根 `package.json`（由静态 gate 强制全员一致；当前核验版本见[维护页](../_coverage/00-corpus-maintenance.md)） | `dsh-v<version>` | [`release.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/release.yml) / [`release-publish.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/release-publish.yml) |
-| vendored framework | `vendor/` 九个 rescoped Cordis 包 | 每包自己的版本行 | `vendor-<package>-v<version>`（每包一个） | [`release-vendor.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/release-vendor.yml) / [`release-vendor-publish.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/release-vendor-publish.yml) |
+| vendored framework | `vendor/` 下的 rescoped Cordis 家族包 | 每包自己的版本行 | `vendor-<package>-v<version>`（每包一个） | [`release-vendor.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/release-vendor.yml) / [`release-vendor-publish.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/release-vendor-publish.yml) |
 | native | `native/system/packages/*` | 自己的版本线 | `node-addon-system-v<version>` | [`node-addon-system-release.yml`](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/workflows/node-addon-system-release.yml) |
 
 三条序列共享一个 npm scope（`@deepseek-ai`）但互不等待：发布 dsh 不会重发 vendor，反之亦然。Python 与 Desktop 是另外两条 lane（§5）。本地命令对应 `package.json` 的 `release:dsh`、`release:vendor`、`release:verify`、`release:pack`、`release:verify-packed-install`、`release:publish`。
@@ -24,7 +26,7 @@ merge 到 master 不触发任何发布。上线是一条显式的人工链：本
 
 `pnpm run release:dsh <version>`（或显式 `x.y.z[-rc.N]`）写版本进 publish set、全部 private dsh 包与 workspace 根，跑 `pnpm install --lockfile-only`，然后 commit 为 `release(dsh): <version>`。基线历史显示这个 commit 经独立分支进入 master：`rel/dsh-0.1.7-rc.1` → PR #5073 → merge commit（由 tag `dsh-v0.1.7-rc.1` 定位）。bump 完成时打印的指引正是 "After this merges to master, tag it: `git tag <tag> <merge commit> && git push origin <tag>`"。
 
-tag 节奏可以从历史直接读出（截至核验基线共 35 个 `dsh-v*` tag，`git tag -l | wc -l`；rc.5 轮复核：rc.2 基线时为 32 个，此后新增 `dsh-v0.2.1-rc.3`、`dsh-v0.2.1-rc.4`、`dsh-v0.2.1-rc.5`；0011 轮复核：0.2.0-rc.2 基线时为 25 个，此后新增 `dsh-v0.2.1-alpha.1`…`alpha.5`、`dsh-v0.2.1-rc.1`、`dsh-v0.2.1-rc.2`；0009 轮复核：0.1.7-rc.1 基线时为 22 个，此后新增 `dsh-v0.1.7-rc.2`、`dsh-v0.2.0-rc.1`、`dsh-v0.2.0-rc.2`）：`dsh-v0.1.5-rc.1..rc.2` 之间 4 个 commit、`rc.2..rc.3` 之间 3 个（基本就是 bump commit 加少量随行修复），而 `dsh-v0.1.7-alpha.2..rc.1` 之间 156 个 commit（功能合流后打 RC）。相邻 tag 间隔从几小时到约 11 天。release tag 直接打在 release PR 的 merge commit 上，样本里距前一个 merge commit 约 19–41 分钟（`dsh-v0.1.5-rc.1`=23m48s、`dsh-v0.1.5-rc.2`=40m34s、`dsh-v0.1.7-rc.1`=19m27s；0010 轮重测，0009 轮的「24–41」读数与「19 来自 release-commit 端点」的归因均不可复现）；release PR 本体是单个 `release(dsh): <version>` commit（`2026-09-23 · release(dsh): 0.1.7-rc.1`，312 个文件全是版本号 bump）。dist-tag 规则：`alpha`/`canary` 映射到同名 dist-tag，其余 prerelease（含 `rc`）→ `next`，稳定版 → npm 默认 `latest`。
+tag 节奏可以从历史样本直接读出：`dsh-v0.1.5-rc.1..rc.2` 之间仅 4 个 commit、`rc.2..rc.3` 之间仅 3 个（主要是 bump commit 加少量随行修复），而 `dsh-v0.1.7-alpha.2..rc.1` 之间合流了 156 个 commit 后打 RC；相邻 tag 间隔从数小时到约十余天不等。release tag 直接打在 release PR 的 merge commit 上，在三个历史样本里距前一个 merge commit 约 19–41 分钟（`dsh-v0.1.5-rc.1`=23m48s、`dsh-v0.1.5-rc.2`=40m34s、`dsh-v0.1.7-rc.1`=19m27s）；release PR 本体是单个 `release(dsh): <version>` commit（例如 `2026-09-23 · release(dsh): 0.1.7-rc.1` 只包含版本号 bump）。dist-tag 规则：`alpha`/`canary` 映射到同名 dist-tag，其余 prerelease（含 `rc`）→ `next`，稳定版 → npm 默认 `latest`。
 
 ## 3. rehearsal 与 publish 是两个 workflow
 
@@ -57,7 +59,7 @@ Publish 不读"这次发哪些包"的清单，而是对每个 tarball 查询 reg
 
 ## 6. 没有 CHANGELOG：发布历史住在哪里
 
-仓库没有 `CHANGELOG.md`。跨 tag 的发布历史由两处承载：[`docs/persistence-changes/releases/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/persistence-changes/releases)（基线时收录 26 个 alpha/RC tag 及其相邻转换，每 tag 一页加 `manifest.json`，由 keyless 的 `verify-persistence-releases` 校验），以及 `.agents/notes/` 的决定记录。发布本身有售后义务：当一次产品发布首次携带更高的 Session format，发布操作者要确认发布与 tagged writer，然后在同一双语更新中推进 [`docs/session-format-status.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/session-format-status.md#updating-the-record) 的 release record 与 evidence tag——"do not advance this release record before publication"。
+仓库没有 `CHANGELOG.md`。跨 tag 的发布历史由两处承载：[`docs/persistence-changes/releases/`](https://github.com/deepseek-ai/deepseek-harness/tree/master/docs/persistence-changes/releases)（每个已发布版本一页加 `manifest.json`，记录相邻 tag 间的持久化转换，由 keyless 的 `verify-persistence-releases` 校验），以及 `.agents/notes/` 的决定记录。发布本身有售后义务：当一次产品发布首次携带更高的 Session format，发布操作者要确认发布与 tagged writer，然后在同一双语更新中推进 [`docs/session-format-status.md`](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/session-format-status.md#updating-the-record) 的 release record 与 evidence tag——"do not advance this release record before publication"。
 
 ## 7. master-only 检查与发布的关系
 

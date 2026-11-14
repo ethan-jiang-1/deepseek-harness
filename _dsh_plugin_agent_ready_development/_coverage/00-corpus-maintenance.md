@@ -1,6 +1,6 @@
 # `_dsh_plugin_agent_ready_development` 语料证据与维护说明
 
-> 复核日期：2026-11-01。现行源码与文档核验基线：release tag `dsh-v0.2.1-rc.5`。本页记录核验范围、结构约束和重审路径，不复制教学正文。核验基线只标明本轮对着哪个版本核实，不代表永久兼容承诺。
+> 复核日期：2026-11-14。现行源码与文档核验基线：release tag `dsh-v0.2.1-rc.5`。本页记录核验范围、结构约束和重审路径，不复制教学正文。核验基线只标明本轮对着哪个版本核实，不代表永久兼容承诺。
 
 当前引用政策：**链接不带版本**。目录外引用一律指向 DSH 仓库的 `master` 分支，使一条引用在各轮同步之间保持同一 URL，版本升级不产生语料 diff；核验版本记在本页与 [`00-index.md`](../00-index.md)，不写进每条 URL。历史证据用 release tag、PR、日期与准确提交标题定位，不在维护文件中写 Git commit 标识。这一政策在 0013 轮生效：此前链接钉在 release tag 上，每轮同步产生约 320 行纯 URL 替换，而那些目标文件在相邻 tag 之间多数逐字节相同，版本号在链接里不承载信息。配对清单仍证明 DSH 主仓的发现与排除机制，但本地新增排除项不是发布版本事实。语料自身不继承 DSH 主仓的配对制度。
 
@@ -8,9 +8,9 @@
 
 ## 1. 专题定位
 
-`_dsh_plugin_agent_ready_development/` 是以 DSH 固定版本一手来源为依据的三卷互补语料：`native-development-model/` 综合原生开发流程中的关系，`sdlc-reference/` 提供精确条件与例外，`repo-harness/` 解释仓库如何帮助 coding agent 参与。它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法；三卷均独立依据 DSH 源码、文档、规则、Skills、workflow 和 git 历史，不依赖其它研究语料。
+`_dsh_plugin_agent_ready_development/` 是以 DSH 固定版本一手来源为依据的三卷互补语料：`repo-harness/` 提炼不依赖 DSH 代码的通用 Agent-Friendly Repository 工程学，`native-development-model/` 沉淀独立 DSH 插件仓库的专属开发模型与实战 Harness，`sdlc-reference/` 提供 DSH 主仓原生研发流程的精确条款与一手证据字典。它不声称 DSH 正式采用一套名为 Spec-driven Development 的方法；三卷均独立依据 DSH 源码、文档、规则、Skills、workflow 和 git 历史，不依赖其它研究语料。
 
-根落地页 `00-index.md` 是独立语料的介绍、三卷定位与维护入口。`native-development-model/00-index.md` 说明 owner、证据、交付判断之间的关系，并由 `03-context-and-drift.md` 补上长会话与长期项目的上下文纪律（压缩与遮蔽、按需加载、取代与归档、机器边界），不增加额外阶段或产物；`sdlc-reference/` 按问题提供意图入口、Agent Note、Plan、检查、agent 契约证据、评审、批准、合并、发布与历史证据的精确参考；`repo-harness/` 说明 fresh agent 入口、知识归属、Skills、参与路径、可执行反馈、运行时查询、仓库分类学和插件作者入口。迁移到独立研究 FAQ 的历史案例不再作为本语料的前置卷。
+根落地页 `00-index.md` 是独立语料的介绍、五条底层认知跃迁、十二项可抽取工程实践总索引、双受众精准阅读路线（路线 A 通用仓库架构师 vs 路线 B 独立 DSH 插件作者）与三卷定位入口。`repo-harness/`（`01`–`11`）覆盖零历史 agent 参与回路、知识归属与双轨目录、Skills 程序性记忆、改动爆炸半径四级阶梯、可执行反馈与八类门禁、动态运行时四面镜、能力边界与语义盲区、仓库分类学、生态入口可读性、通用新仓四件套蓝图，以及长周期防规格漂移与决策新陈代谢；`native-development-model/`（`00`–`06`）覆盖原生开发闭环、Day-1 单包 Host Bundle 样板、核心心智词汇与 `Preset`/`Profile` 分界、DSH 会话压缩与存活矩阵、三种插件仓库拓扑与五层配置、Cordis 六条防御契约与 `Model Experience` 预算，以及独立插件仓 `verify-plugin.mjs` 门禁、无密钥会话回放与 CI/Skills 实战；`sdlc-reference/`（`01`–`12`）按问题提供 Agent Note、Issue/PR、`Plan`、门禁路由、散文标准、评审、堆叠 PR、Web seam 历史样本、意图入口、加权批准、多通道发布与契约证据的精确参考，并在每篇区分主仓专属参数与可迁移工程不变量。迁移到独立研究问答语料的历史案例不再作为本语料的前置卷。
 
 每个目录都有落地页：卷目录用 `00-map.md`，其余目录用 `00-index.md`。三个主题目录的 `00-map.md` 只说明本层职责、直接内容与主入口，各自的 `00-index.md` 拥有面向读者的完整导读和阅读顺序；图示目录的 `00-index.md` 还标明每张 SVG 的正文 owner。
 
@@ -75,16 +75,66 @@
 - 2026-09-24 深挖轮新增触发路径：`packages/README.md`、`packages/AGENTS.md`、`snapshots/AGENTS.md`、`vendor/README.md`、`scripts/{doc-budgets,translation-pairing}.manifest.json`、`docs/cordis-tutorial/**`、`docs/user/develop/**`、根 `README.md` 的 Run 节；
 - 2026-10-18 轮新增触发路径：`docs/defensive-patterns/**`、`docs/upgrade-guide/**`、`packages/experimental/README.md`、`docs/cli-help.md`、`scripts/gen-cli-help.ts`、`scripts/product-package-policy.ts`、`apps/desktop/windows-signing/**`；
 - 2026-10-18 轮新增触发路径（上下文纪律页）：`packages/compaction/**`、`packages/plan/plan-mode/**`、`packages/goal/**`、`packages/todo/tool-todo/**`、`packages/skill/tool-skill/**`、`packages/experimental/{session-search,tool-session-query}/**`、`packages/subagent/subagent-{fork,spawn}-in-process/**`、`docs/i18n/README.md`、`scripts/doc-budgets.manifest.json`、`scripts/verify-upgrade-guides.ts`；
+- 2026-11-14 轮新增触发路径（双受众劈分、插件仓三拓扑、Cordis 防御契约与插件门禁样板）：`scripts/verify-*.ts`（尤其是 `verify-no-unknown-casts.ts`、`verify-package-dependencies.ts`、`verify-doc-typecheck.ts`、`verify-export-jsdoc.ts`、`verify-concrete-terms.ts`、`verify-cordis-config.ts`、`verify-model-experience.ts`、`archived-agent-notes.ts`）、`docs/postmortem/0001-acp-default-export-drops-inject.md`、`docs/cookbook/{adding-a-package,adding-a-tool}.md`、`packages/preset/agent-preset/skills/agent-experience/SKILL.md`、`.agents/skills/{cordis-styling-nitpicking,dsh-archive-agent-notes,dsh-trim-cot-leakage}/SKILL.md`、`packages/test-support/test-harness/**`；
 - Web seam Agent Note 或专题引用的四个历史 commit 被重新解释时。
 
 Release-only workflow 的内部 job 变化不自动触发整篇复核；只有它改变专题描述的触发边界、required evidence 或 daily PR flow 时才进入范围。
 
 ## 6. 验证
 
-- 独立发行只需 Node：在语料目录运行 `node verify.mjs`；验证规则变更再运行 `node verify.test.mjs` 与 `node --check verify.mjs`、`node --check verify.test.mjs`。负例测试通过完整临时副本调用真实入口，检查固定发布标签、图示归属、越界链接、锚点与文件结束规则。
-- 在 DSH checkout 内维护时，附加运行 `pnpm run verify-md-links`、`pnpm run verify-md-wrap`、`pnpm run test:docs` 与 `git diff --check`；这些宿主命令不是独立发行依赖。本语料遵守宿主引用门禁：现行证据使用固定 release tag，历史样本保留非 commit 标识的定位方式。
-- 修改 SVG 后渲染受影响文件，检查 XML、尺寸、文字与连线。源码几何检查和成功渲染不等于视觉验收，未用可看图工具确认时明确记录限制。
+- 独立发行只需 Node：在语料目录运行 `node verify.mjs`；验证规则变更再运行 `node verify.test.mjs` 与 `node --check verify.mjs`、`node --check verify.test.mjs`。校验器与负例测试覆盖外部链接白名单、入库页面双向清单、图示归属与文本越界估算、表格列数一致性、正文轮次/基线/动态计数防回流、兄弟宪章哈希比对与文件结尾规则。
+- 在 DSH checkout 内维护时，附加运行宿主链接、单行段落折行、引文逐字回对与 `git diff --check`；这些宿主检查不是独立发行依赖。按 [`CORPUS-CHARTER.md`](../CORPUS-CHARTER.md)，目录外内容链接指向 `master`，不可变已发生事件使用 `/commit/`、`/pull/`、`/issues/`、`/discussions/` 永久链接。
+- 修改 SVG 后必须将受影响文件渲染为位图并逐张通过看图工具做视觉验收，同时通过 `verify.mjs` 的 XML、尺寸与文本容器边界检查；未用看图工具确认时明确记录限制。
 - Repository-level 完整文档校验为 `pnpm run doc-sync`。检查失败时区分语料内缺陷、目录外已有违规、构建前提与工具链问题，记录 exact command 与错误；不得把目录级通过写成全库绿色证据，也不能把命中本语料的报错全部称为目录外问题。
+
+## 7. 入库页面清单（双向锁）
+
+下表按 [`CORPUS-CHARTER.md`](../CORPUS-CHARTER.md) §4 与 §7 登记本语料全部入库 Markdown 页面，`verify.mjs` 强制下表与磁盘文件树双向一一对应：
+
+| 页面路径 | role | verifiedAt | status |
+|---|---|---|---|
+| `00-index.md` | map | 2026-11-14 | reverified |
+| `CORPUS-CHARTER.md` | governance | 2026-11-14 | reverified |
+| `_coverage/00-index.md` | map | 2026-11-14 | reverified |
+| `_coverage/00-corpus-maintenance.md` | governance | 2026-11-14 | reverified |
+| `repo-harness/00-map.md` | map | 2026-11-14 | reverified |
+| `repo-harness/00-index.md` | map | 2026-11-14 | reverified |
+| `repo-harness/01-follow-a-fresh-agent.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/02-legibility-and-ownership.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/03-skills-as-procedural-memory.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/04-paved-road-and-participation.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/05-executable-feedback.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/06-runtime-inspection.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/07-boundaries-and-costs.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/08-repository-taxonomy.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/09-plugin-author-entry.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/10-agent-ready-repo-blueprint.md` | playbook | 2026-11-14 | reverified |
+| `repo-harness/11-spec-drift-and-decision-metabolism.md` | mechanism | 2026-11-14 | reverified |
+| `repo-harness/figures/00-index.md` | map | 2026-11-14 | reverified |
+| `native-development-model/00-map.md` | map | 2026-11-14 | reverified |
+| `native-development-model/00-index.md` | map | 2026-11-14 | reverified |
+| `native-development-model/01-new-plugin-repository.md` | playbook | 2026-11-14 | reverified |
+| `native-development-model/02-terms-and-mental-models.md` | mechanism | 2026-11-14 | reverified |
+| `native-development-model/03-context-and-drift.md` | mechanism | 2026-11-14 | reverified |
+| `native-development-model/04-plugin-repo-topologies.md` | playbook | 2026-11-14 | reverified |
+| `native-development-model/05-cordis-contracts-and-model-experience.md` | mechanism | 2026-11-14 | reverified |
+| `native-development-model/06-plugin-gate-and-ci-harness.md` | playbook | 2026-11-14 | reverified |
+| `native-development-model/figures/00-index.md` | map | 2026-11-14 | reverified |
+| `sdlc-reference/00-map.md` | map | 2026-11-14 | reverified |
+| `sdlc-reference/00-index.md` | map | 2026-11-14 | reverified |
+| `sdlc-reference/01-agent-note-lifecycle.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/02-issue-pr-lifecycle.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/03-plan-and-sandbox.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/04-gates-and-local-checks.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/05-prose-doc-standards.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/06-review-and-human-role.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/07-push-merge-stacked-prs.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/08-example-web-seam.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/09-intake-and-work-items.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/10-approval-gate.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/11-release-sequences-and-publish-lanes.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/12-agent-contract-evidence.md` | mechanism | 2026-11-14 | reverified |
+| `sdlc-reference/figures/00-index.md` | map | 2026-11-14 | reverified |
 
 2026-08-24 的 repository-level 复核没有建立绿色 `doc-sync` 结果：`corepack pnpm run doc-sync` 完成 28 项中的 25 项，`doc-typecheck` 缺少 `lib/types/{index,invariant,startup}.js` 构建入口，documentation build 命中 host Corepack 的 `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`，translation pairing 因仓库 scope 包含本语料而拒绝 8 个 README。前两项需要目录外构建或工具链修复；pairing exclusion 由目录外的 `scripts/translation-pairing.manifest.json` 拥有。目录级检查通过不能替代这三项 repository-level 结果。
 
@@ -308,3 +358,43 @@ re-pin 轮之后另做一轮**按维度**的独立反查（全量引用反查、
 核对后未改动的部分：三卷的 owner/证据/评审主线、`sdlc-reference/` 的主仓制度、图示与既有引用政策不变。
 
 验证：`node _dsh_plugin_agent_ready_development/verify.mjs` 通过（37 Markdown、2 scripts、27 SVG）；`node _dsh_plugin_agent_ready_development/verify.test.mjs` 通过（11 个 case）。新增的三条外链（`packages/goal/goal/README.md#drive-the-lifecycle`、`docs/cookbook/adding-a-tool.md#the-minimal-shape`、`docs/architecture.md#turn-flow`）已按本地 rc.5 树核对路径与锚点；未重跑全量外部引用反查。
+
+## 2026-11-14 的双受众升级：Agent-Friendly Repo 蓝图、独立插件仓实战样板与正文去考古化
+
+基线不变（`dsh-v0.2.1-rc.5`）。动因：从真实使用者视角系统审阅整套语料后，明确读者集中于两类人群——**不写 DSH 代码但借鉴 Agent-Friendly Repo / Development Harness 思想的团队架构师**，以及**新建独立 DSH 插件仓并落地轻量开发 Harness 的插件作者**。原有三卷骨架与一手事实扎实，但存在四处使用体验断层：根入口缺少高维第一性洞察与双受众分流表；`repo-harness` 未把散落在 `scripts/verify-*.ts`、`adding-a-package.md`、`defensive-patterns`、`Model Experience` 里的防 Agent 写腐化武器库抽成可迁移模式，也缺少总装蓝图与裁剪阶梯；`native-development-model/01` 停在文字清单，缺可直接复制的目录骨架、`package.json` 依赖镜像、真实 `Loader` 组装测试与 `pnpm pack` 冒烟样板；十余篇面向读者的正文残留内部复核轮次编号与易随版本漂移的动态计数。
+
+本轮在不打乱既有三卷目录结构、不破坏任何存量文件名与章节锚点的前提下完成五组升级：
+
+1. **顶层思想提炼与双轨路由（`00-index.md`、`sdlc-reference/00-index.md`、`repo-harness/{00-map,00-index}.md`）**：根落地页新增「干活主力变成 Agent、人类只握方向盘」的五条底层洞察、十项可迁移工程实践总表（问题场景 → DSH 原生机制 → 通用迁移套路 → 章节入口）与双受众阅读路线（路线 A 纯思想借鉴 vs 路线 B 独立 DSH 插件开发）；`sdlc-reference/00-index.md` 的 12 篇参考目录补上「外部借鉴定位」列（`通用高价值迁移` / `插件仓按需裁剪` / `仅主仓治理样本`），消除非 DSH 读者误把主仓专属重武器当成通用必选项的困惑。
+2. **Agent-Friendly Repo 核心武器库与收官蓝图（`repo-harness/05`、`08`、新 `10-agent-ready-repo-blueprint.md` 及新图 `figures/human-steering-and-gates.svg`）**：`repo-harness/05` 新增专治 coding agent 八类高频恶习的机械门禁模式表（棘轮防退化基线锁、模块依赖拓扑锁、文档代码块编译与类型同构锁、导出契约与禁用空泛词锁、配置与声明闭包锁、穷举生成目录新鲜度锁、常驻文档词数预算锁、封存归档防篡改锁）；`repo-harness/08` 新增防代码腐化的三道模块契约防线（`adding-a-package.md` 的 16 类职责后缀与禁 `utils/helpers/common`、内部静态类型信任与边界显式 `resolve(request): Spec` 及提交点才改共享状态、包级 `Model Experience` 预算与 `agent-experience` 按需披露）；新增第 10 章总装蓝图，收束人类不可下放的四个方向控制面、Tier 1/2/3 规模裁剪阶梯、通用根 `AGENTS.md` 起步骨架与零第三方依赖的 Node `scripts/verify.mjs` 最小门禁骨架，并在 `repo-harness/02`、`03` 补交叉指针。
+3. **独立 DSH 插件仓最后一公里实战样板（`native-development-model/01`、`02`、`repo-harness/09`）**：`native-development-model/01` 补齐单包 bundle 目录树、带 `dsh.bundle`/`engines.dsh`/`peerDependencies` 与 `devDependencies` 同版本镜像的 `package.json` 样板、Function Plugin（禁 `export default`，锚定事故复盘 `0001-acp-default-export-drops-inject.md`）与 Service Plugin 代码骨架、仅依赖公开包（`@deepseek-ai/cordis`、`@deepseek-ai/dsh-system-prompt`、`@deepseek-ai/dsh-tools`、`vitest`）的真实 `Loader` + `Include` + `fiber.dispose()` HMR 清理测试样板、`pnpm pack` → `--from-default-profile` → `dsh plugin add` → `--dump-config` → `remove` 五步本地冒烟命令链，以及 40 行独立插件仓 `AGENTS.md` 起步模板。
+4. **正文去考古化与引文逐字精修（14 篇正文）**：将散落在 `00-index.md`、`repo-harness/{01,03,06,07}`、`sdlc-reference/{00-index,02,03,05,10,11}`、`native-development-model/03` 中的内部轮次注记（`0008/0009/0010/0011 复核`、`rc.5 轮复核`、正文基线头）与易漂移的实时计数全部收敛回本维护账本，正文改写为耐腐化的定性契约陈述；同步把 `native-development-model/{00-index,03}` 两处历史分号截断引文及 `repo-harness/10` 新引文核对恢复为 100% 逐字原文。
+5. **自包含校验器升级（`verify.mjs`、`verify.test.mjs`）**：按共享宪章 `CORPUS-CHARTER.md` §4 允许 `/commit/`、`/pull/`、`/issues/`、`/discussions/` 四类不可变事件永久链接；新增 GFM 表格列数一致性检查、面向读者的正文轮次/基线注记防回流检查，以及宿主多语料并存时共享宪章 `CORPUS-CHARTER.md` 的 SHA-256 一致性校验。
+
+验证：
+
+- `node --check _dsh_plugin_agent_ready_development/verify.mjs` 与 `node --check _dsh_plugin_agent_ready_development/verify.test.mjs` 通过。
+- `node _dsh_plugin_agent_ready_development/verify.mjs` 通过：38 Markdown、2 scripts、28 SVG。
+- `node _dsh_plugin_agent_ready_development/verify.test.mjs` 通过：16 个自包含正负例全部通过（含新增的不可变事件链接正例，以及表格列数错位、正文轮次注记回流、正文基线头回流、兄弟宪章哈希不一致四个负例）。
+- 新图 `repo-harness/figures/human-steering-and-gates.svg` 经 `rsvg-convert` 渲染为 2× PNG 并通过看图工具逐项视觉验收，确认容器留白、中英混排字距、双向箭头与底部闭环条无裁切、无重叠。
+- 全量源码反查与排版门禁通过：对全部 38 个 Markdown 文件对照本地 `dsh-v0.2.1-rc.5` 树逐条核验 467 处目录外 DSH URL 与 116 个 `#fragment`/`#L<n>` 锚点（0 失效）、72 处带出处 blockquote 逐字比对（0 漂移）、AST 单物理行段落折行检查（0 违规）、禁用词与错误组织名扫描（0 违规），以及 `git diff --check -- _dsh_plugin_agent_ready_development` 通过。
+
+## 2026-11-14（二阶段）结构彻底劈分、四篇新专章、全量 32 张 SVG 视觉整修与双向清单门禁
+
+基线不变（`dsh-v0.2.1-rc.5`）。动因：一阶段完成后继续按“全文件零死角覆盖 + 结构彻底劈分 + 全量配图逐张渲染挑刺”的高标准推进，解决原先卷一与卷二边界缠绕、独立 DSH 插件仓工程深度偏薄、存量 SVG 文字越界/穿字/误译以及部分章节残留动态硬数字的问题。
+
+本阶段完成五项结构级升级：
+
+1. **卷一（`repo-harness/`，扩至 11 篇）彻底去插件细节化并新增防漂移专章**：将 `Preset`/`Profile` 等 DSH 插件机制迁回卷二；重写 `01`（通用零历史 Agent 六步回路）、`04`（通用 L0–L3 改动爆炸半径阶梯与单一撤销协议）、`06`（动态可观测四面镜）、`07`（删去重复迁移表，深挖机器门禁查不到的 6 类语义盲区与 Harness 经济学）、`09`（平台生态入口可读性设计），扩充 `10` 为开箱即用的新仓四件套模板（`AGENTS.md` + `scripts/verify.mjs` + 轻量决策记录模板 + 通用任务 `SKILL.md` 模板）；新增 `11-spec-drift-and-decision-metabolism.md` 与配图 `figures/anti-drift-metabolism.svg`，系统拆解高频 Agent 迭代下的四种老化死法、事实原地覆盖、推理残渣（CoT Leakage）清洗与决定取代/归档新陈代谢。
+2. **卷二（`native-development-model/`，从 4 篇扩编至 `00`–`06` 共 7 篇）重装升级为独立插件仓实战手册**：`01` 聚焦 Day-1 最小单包 Host Bundle 快速通关；`02` 收编 `Preset vs Profile` 分界与一行自检；`03` 聚焦 DSH 会话日志、Compaction 遮蔽、`resume/fork/spawn` 存活矩阵与 `SessionEventMap` 义务；新增 `04-plugin-repo-topologies.md`（单包 Host / Host+Client 双树双编译器面 / Capability Seam 多包三种标准拓扑与五层配置 `Config.volatile()`）、`05-cordis-contracts-and-model-experience.md`（Cordis 六条防坑铁律、Waterfall `next()`、静默排空卸载与 `Model Experience` 注意力预算）、`06-plugin-gate-and-ci-harness.md`（零依赖 `scripts/verify-plugin.mjs` 完整模板、带 `PENDING` 诊断的 Loader/HMR 测试、基于 `ScriptedLlmAdapter` 与独立 `workspace.expected/` 的无密钥会话回放、插件仓 GitHub Actions `ci.yml` 与两份插件专属 `SKILL.md`），并新增三张配套架构图。
+3. **卷三（`sdlc-reference/`，全量 12 篇逐页精审）去漂移与外部借鉴切面补齐**：清除 `01` 与 `09` 中易随主仓演进腐化的实时计数（Note 各状态篇数、子树 `AGENTS.md` 数、Skills 目录数、rescoped 包硬编码数字），为 `02`、`07`、`08`、`09`、`10`、`11` 补齐「主仓专属参数 vs 可迁移工程不变量」切面提示，更新三卷精确互链。
+4. **全量 32 张 SVG 逐张渲染 PNG 与视觉精修**：修复 14 张存量 SVG 的容器越界、连线穿字、双向重叠箭头与机械误译（含修正 `three-red-cases.svg` 中对 `dead code` 的字面错译为“待删除的死代码”，修复两卷 `evidence-routing.svg` 的穿字竖线与窄卡文字溢出等），绘制 4 张新架构 SVG，并将全部 32 张 SVG 经 `rsvg-convert` 渲染为 PNG 后逐张目视确认零越界、零穿字、零重叠、零误译。
+5. **维护清单双向锁与 `verify.mjs` 强化**：在本页 §7 建立全部 42 个入库 Markdown 页面的双向清单（`role` / `verifiedAt` / `status`）；升级 `verify.mjs` 强制文件树与 §7 清单双向一致、静态估算全部 SVG `<text>` 相对外包 `<rect>` 与 `viewBox` 的边界防越界、拦截误译与会话视角残留及硬编码动态计数回流，并在 `verify.test.mjs` 补齐对应正负例。
+
+验证：
+
+- `node --check _dsh_plugin_agent_ready_development/verify.mjs` 与 `node --check _dsh_plugin_agent_ready_development/verify.test.mjs` 通过。
+- `node _dsh_plugin_agent_ready_development/verify.mjs` 通过：42 Markdown、2 scripts、32 SVG。
+- `node _dsh_plugin_agent_ready_development/verify.test.mjs` 通过：全部自包含正负例通过。
+- 全量 32 张 SVG 均经 `rsvg-convert` 渲染 PNG 并逐张通过看图工具完成视觉验收。
+- 全量源码反查与排版门禁通过：42 个 Markdown 文件对照本地 `dsh-v0.2.1-rc.5` 树逐条核验全部目录外 DSH URL 与 `#fragment`/`#L<n>` 锚点（0 失效）、全部带出处英文 blockquote 逐字比对（0 漂移）、AST 单物理行段落折行检查（0 违规）、禁用词扫描（0 违规），以及 `git diff --check -- _dsh_plugin_agent_ready_development` 通过。

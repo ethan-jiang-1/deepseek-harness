@@ -39,7 +39,7 @@
   <circle cx="96" cy="656" r="18" fill="#334155"/>
   <text x="96" y="662" text-anchor="middle" font-size="16" font-weight="700" fill="#f8fafc">5</text>
   <text x="164" y="636" font-size="16" font-weight="700" fill="#334155">覆盖率变红，先看要不要删</text>
-  <text x="164" y="662" font-size="13" fill="#334155">没覆盖到的行经常是该死的代码。行覆盖证明行跑过，不证明功能按发布形态工作</text>
+  <text x="164" y="662" font-size="13" fill="#334155">未覆盖行往往是待删除的死代码。行覆盖证明行跑过，不证明功能按发布形态工作</text>
   <text x="164" y="688" font-size="12" fill="#64748b">变异测试仍是 proposed，还不是现行门禁</text>
 
   <rect x="32" y="736" width="1056" height="76" rx="8" fill="#172033"/>

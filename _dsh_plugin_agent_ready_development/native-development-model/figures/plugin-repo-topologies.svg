@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="700" viewBox="0 0 1160 700" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">独立 DSH 插件仓的三种标准拓扑与五层配置热更新分流</title>
+  <desc id="desc">三列对比单包 Host 插件、Host+Client 双树全栈插件（含双 tsconfig 编译器面隔离）与 Capability Seam 多包工作区；底部展示五层配置合成及普通字段重挂与 volatile 热更新分流。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#475569"/></marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#2f8550"/></marker>
+    <marker id="arrow-amber" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#b66d12"/></marker>
+  </defs>
+  <rect width="1160" height="700" fill="#ffffff"/>
+  <text x="580" y="36" text-anchor="middle" font-size="21" font-weight="700" fill="#172033">独立 DSH 插件仓：三种标准拓扑与配置热更新分流</text>
+  <text x="580" y="61" text-anchor="middle" font-size="12" fill="#5f6b7a">按运行时边界与演化独立性选择最小够用拓扑；切勿在第一天盲目照搬主仓百包结构</text>
+
+  <rect x="36" y="88" width="344" height="378" rx="10" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+  <text x="208" y="118" text-anchor="middle" font-size="15.5" font-weight="700" fill="#173f67">拓扑 A · 单包 Host 插件</text>
+  <text x="208" y="140" text-anchor="middle" font-size="11" fill="#39709f">80% 工具、钩子、提示词与后端能力首选</text>
+  <rect x="60" y="158" width="296" height="106" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="80" y="182" font-size="11.5" font-weight="700" fill="#244e73">目录与导出面</text>
+  <text x="80" y="204" font-size="11" fill="#526175">src/index.ts（inject · Config · apply）</text>
+  <text x="80" y="225" font-size="11" fill="#526175">cordis.yml（可直接被外部 include 的 Bundle）</text>
+  <text x="80" y="246" font-size="11" fill="#526175">exports: { ".": "./lib/index.js" }</text>
+  <rect x="60" y="278" width="296" height="78" rx="7" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="80" y="302" font-size="11.5" font-weight="700" fill="#244e73">编译器面</text>
+  <text x="80" y="324" font-size="11" fill="#526175">单一 tsconfig.json（NodeNext + strict）</text>
+  <text x="80" y="344" font-size="11" fill="#526175">源码平面与构建产物 lib/ 严格分离</text>
+  <rect x="60" y="370" width="296" height="74" rx="7" fill="#dcecff" stroke="#8bb3d7"/>
+  <text x="208" y="396" text-anchor="middle" font-size="11" font-weight="700" fill="#173f67">何时升级拓扑？</text>
+  <text x="208" y="418" text-anchor="middle" font-size="10.5" fill="#244e73">需要自定义 Web GUI 面板 → 升拓扑 B</text>
+  <text x="208" y="435" text-anchor="middle" font-size="10.5" fill="#244e73">多后端可插拔实现 → 升拓扑 C</text>
+
+  <rect x="408" y="88" width="344" height="378" rx="10" fill="#f3efff" stroke="#8269bd" stroke-width="1.5"/>
+  <text x="580" y="118" text-anchor="middle" font-size="15.5" font-weight="700" fill="#513b85">拓扑 B · Host + Client 双树全栈</text>
+  <text x="580" y="140" text-anchor="middle" font-size="11" fill="#675293">带专属 Web 卡片、侧栏或交互面板的插件</text>
+  <rect x="432" y="158" width="296" height="106" rx="7" fill="#ffffff" stroke="#a89bc9"/>
+  <text x="452" y="182" font-size="11.5" font-weight="700" fill="#513b85">三层源码物理隔离</text>
+  <text x="452" y="204" font-size="11" fill="#526175">src/node/：Node 服务、RPC 与会话事件写入</text>
+  <text x="452" y="225" font-size="11" fill="#526175">src/client/：浏览器 UI 组件与状态投影</text>
+  <text x="452" y="246" font-size="11" fill="#526175">src/shared/：纯数据协议（零 Node/DOM API）</text>
+  <rect x="432" y="278" width="296" height="78" rx="7" fill="#ffffff" stroke="#a89bc9"/>
+  <text x="452" y="302" font-size="11.5" font-weight="700" fill="#513b85">显式双编译器面（Explicit Compiler Faces）</text>
+  <text x="452" y="324" font-size="11" fill="#526175">根 tsconfig.json 设 files: []，仅作 references</text>
+  <text x="452" y="344" font-size="11" fill="#526175">tsconfig.node.json 与 tsconfig.client.json 互不串包</text>
+  <rect x="432" y="370" width="296" height="74" rx="7" fill="#e6defc" stroke="#a89bc9"/>
+  <text x="580" y="396" text-anchor="middle" font-size="11" font-weight="700" fill="#513b85">双入口导出铁律</text>
+  <text x="580" y="418" text-anchor="middle" font-size="10.5" fill="#513b85">exports 分离 "." (Node) 与 "./client" (Web)</text>
+  <text x="580" y="435" text-anchor="middle" font-size="10.5" fill="#513b85">编译期直接拒绝浏览器树误引 node:fs</text>
+
+  <rect x="780" y="88" width="344" height="378" rx="10" fill="#eaf7f6" stroke="#3b9a91" stroke-width="1.5"/>
+  <text x="952" y="118" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1d5f59">拓扑 C · Capability Seam 多包</text>
+  <text x="952" y="140" text-anchor="middle" font-size="11" fill="#2f7770">同一稳定模型工具面背后支持多套 Provider</text>
+  <rect x="804" y="158" width="296" height="106" rx="7" fill="#ffffff" stroke="#73aaa5"/>
+  <text x="824" y="182" font-size="11.5" font-weight="700" fill="#1d5f59">完整三角色拆分（pnpm workspace）</text>
+  <text x="824" y="204" font-size="11" fill="#526175">Definition 包：声明抽象 Service 与注册表</text>
+  <text x="824" y="225" font-size="11" fill="#526175">Provider 包（1..N）：对接具体外部 API / 引擎</text>
+  <text x="824" y="246" font-size="11" fill="#526175">Consumer 包：暴露稳定模型 Tool 与 Prompt</text>
+  <rect x="804" y="278" width="296" height="78" rx="7" fill="#ffffff" stroke="#73aaa5"/>
+  <text x="824" y="302" font-size="11.5" font-weight="700" fill="#1d5f59">依赖流向不变量</text>
+  <text x="824" y="324" font-size="11" fill="#526175">Provider → Definition ← Consumer</text>
+  <text x="824" y="344" font-size="11" fill="#526175">Provider 绝不直接注册模型可见工具</text>
+  <rect x="804" y="370" width="296" height="74" rx="7" fill="#d5efec" stroke="#73aaa5"/>
+  <text x="952" y="396" text-anchor="middle" font-size="11" font-weight="700" fill="#1d5f59">架构收益</text>
+  <text x="952" y="418" text-anchor="middle" font-size="10.5" fill="#1d5f59">切换底层供应商时模型侧 Schema 零抖动</text>
+  <text x="952" y="435" text-anchor="middle" font-size="10.5" fill="#1d5f59">录制会话与提示词缓存保持稳定</text>
+
+  <rect x="36" y="490" width="1088" height="178" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="580" y="518" text-anchor="middle" font-size="15" font-weight="700" fill="#172033">五层配置合成与运行期更新分流（Configuration Resolution &amp; Volatile Split）</text>
+
+  <rect x="60" y="538" width="490" height="106" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="305" y="562" text-anchor="middle" font-size="12.5" font-weight="700" fill="#334155">启动前合成链（dsh --dump-config 可直接观测最终结果）</text>
+  <text x="305" y="588" text-anchor="middle" font-size="11" fill="#475569">1. 插件 Config 默认值 → 2. Bundle → 3. Profile</text>
+  <text x="305" y="610" text-anchor="middle" font-size="11" fill="#475569">→ 4. $DSH_HOME/cordis.patch.yml → 5. CLI --patch 覆盖层</text>
+  <text x="305" y="631" text-anchor="middle" font-size="10.5" fill="#64748b">!!js 延迟表达式仅允许出现在插件 config 与条目 disabled 字段</text>
+
+  <path d="M550 568 H606" fill="none" stroke="#b66d12" stroke-width="1.6" marker-end="url(#arrow-amber)"/>
+  <path d="M550 618 H606" fill="none" stroke="#2f8550" stroke-width="1.6" marker-end="url(#arrow-green)"/>
+
+  <rect x="612" y="538" width="488" height="48" rx="7" fill="#fff5e6" stroke="#d99939"/>
+  <text x="630" y="559" font-size="11.5" font-weight="700" fill="#744408">普通配置字段变更 → 完整重挂 Fiber</text>
+  <text x="630" y="577" font-size="10.5" fill="#805915">执行旧实例全部 dispose 清退后重新运行 apply(ctx, newConfig)</text>
+
+  <rect x="612" y="596" width="488" height="48" rx="7" fill="#edf8f1" stroke="#55a36f"/>
+  <text x="630" y="617" font-size="11.5" font-weight="700" fill="#1f6139">Schema.volatile() 字段变更 → 原地热提交</text>
+  <text x="630" y="635" font-size="10.5" fill="#397a50">不卸载插件、不断在途连接，直接派发实例级 loader/volatile-update</text>
+</svg>

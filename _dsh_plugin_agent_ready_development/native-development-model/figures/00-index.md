@@ -1,10 +1,10 @@
-# DSH 原生开发模型图示
+# DSH 插件开发与专属 Harness 图示
 
-本目录保存 `native-development-model/` 正文使用的 SVG 图示。图示只表达关系与流程骨架；具体条件、状态和例外由正文与 DSH 固定版本的一手来源拥有。
+本目录保存 `native-development-model/` 正文使用的 SVG 图示。图示只表达关系与流程骨架；具体条件、状态和例外由正文与 DSH 一手来源拥有。
 
 ## 主入口
 
-从 [`../00-map.md`](../00-map.md) 进入本卷；图示由 [`00-index.md`](../00-index.md)、[`01-new-plugin-repository.md`](../01-new-plugin-repository.md) 与 [`03-context-and-drift.md`](../03-context-and-drift.md) 解释。
+从 [`../00-map.md`](../00-map.md) 进入本卷；图示由 [`00-index.md`](../00-index.md) 与 `01`–`06` 对应章节解释。
 
 ## 直接内容
 
@@ -18,3 +18,6 @@
 | `plugin-bundle-profile.svg` | [`../00-index.md`](../00-index.md) |
 | `acceptance-roles.svg` | [`../00-index.md`](../00-index.md) |
 | `context-discipline-layers.svg` | [`../03-context-and-drift.md`](../03-context-and-drift.md) |
+| `plugin-repo-topologies.svg` | [`../04-plugin-repo-topologies.md`](../04-plugin-repo-topologies.md) |
+| `cordis-defensive-contracts.svg` | [`../05-cordis-contracts-and-model-experience.md`](../05-cordis-contracts-and-model-experience.md) |
+| `plugin-verification-pyramid.svg` | [`../06-plugin-gate-and-ci-harness.md`](../06-plugin-gate-and-ci-harness.md) |

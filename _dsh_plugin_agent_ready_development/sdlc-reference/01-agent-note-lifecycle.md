@@ -17,7 +17,7 @@
 | `proposed` 交付时正文怎样改写 | [§5](#5-proposed--implemented-是正文改写) |
 | 留下、归档，还是合并后删除 | [§6](#6-写完之后留下归档还是合并后删除) |
 
-本页拥有成为 Note 的判据、状态转换和写完之后的三条结局。[Reference 03](./03-plan-and-sandbox.md) 拥有一次会话里的 Plan。[Reference 05](./05-prose-doc-standards.md) 拥有「系统现在做什么」。[Reference 09](./09-intake-and-work-items.md) 拥有 Issue 与 proposed Note 作为意图载体的分工。长会话与长期项目里压缩、按需加载、取代与归档的使用面，见 [上下文纪律](../native-development-model/03-context-and-drift.md)。
+本页拥有成为 Note 的判据、状态转换和写完之后的三条结局。[Reference 03](./03-plan-and-sandbox.md) 拥有一次会话里的 Plan。[Reference 05](./05-prose-doc-standards.md) 拥有「系统现在做什么」。[Reference 09](./09-intake-and-work-items.md) 拥有 Issue 与 proposed Note 作为意图载体的分工。长期演进仓库如何用取代检查、归档封印与推理残留清洗抵御规格腐败，见 [规格漂移与决策代谢](../repo-harness/11-spec-drift-and-decision-metabolism.md)；单次运行期会话如何分层压缩与存活状态，见 [运行时上下文与抗漂移](../native-development-model/03-context-and-drift.md)。
 
 ## 1. 什么会成为一篇 Note
 
@@ -70,9 +70,9 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 **树的深度被钉死在三层，没有第四层。** `walkAgentNoteTree` 把深度当等值判断而不是最小值（[`scripts/agent-note-tree.ts`](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/agent-note-tree.ts)）：`globSync` 用 `**` 扫出任意深度，但只要路径不是恰好 `{lifecycle}/{class}/file.md` 三段，就报 `expected {lifecycle}/{class}/file.md (got depth N)`。所以按主题、按月或按子系统再分子目录都不行：它们不是被忽略，而是直接报错。
 
-叶子目录**上限** 4×6=24 个，实际存在 **20** 个：`rejected/` 下只有 `architecture/` 与 `simplification/`，其余四个 class 目录从未被创建。20 个叶子目录合计承载 1270 篇英文正文（全树另有根级 `README.md` 等非 Note 文件若干，不含在内），且负载高度集中——`archived/feature` 306 篇、`archived/architecture` 185、`archived/bug-fix` 182、`implemented/architecture` 180，前四项占 853/1270 ≈ 67%，而最小的两个目录各只有 1 篇。
+四个顶层目录（三个活动 `lifecycle` 加 `archived/`）乘以六个封闭 `class`，令全树叶子目录**硬上限固定为 4×6=24 个**（从未出现对应记录的组合如部分 `rejected/<class>/` 按需缺省，不预先建空目录）。随着项目演进，负载天然向高频类别高度集中——`archived/feature`、`archived/architecture`、`archived/bug-fix` 与 `implemented/architecture` 往往各自承载成百上千篇记录，而低频类别可能只有寥寥数篇。
 
-这个取舍有明确的两面。**换来的是**「分类只有一套、且有校验收口」：`class` 是闭集 6、README 与源码双份维护，不存在「两个组重名算谁」的问题。**代价是**可浏览性随规模退化：`implemented/architecture` 按月是 8 / 26 / 28 / 88 / 30，2026-09 那一波强相关的架构决策在目录结构里不可见；180 篇里 `session-` 开头 8 篇、`desktop-` 与 `client-` 各 7 篇，本应聚在一起的一组被日期前缀均匀摊开。而补回可浏览性的唯一替代品 `INDEX.md` 恰好被明文禁止。所以 `browse its lifecycle/class folders or search the repository` 这句话在小规模时是两条路，在当前规模下已退化成检索一条。
+这个取舍有明确的两面。**换来的是**「分类只有一套、且有校验收口」：`class` 是闭集 6、README 与源码双份维护，不存在「两个组重名算谁」或并发 PR 争抢同一索引文件的问题。**代价是**目录可浏览性随规模退化：高频目录里同一子系统（如 `session-`、`desktop-`、`client-`）或同一时期的关联架构决策被 `yyyy-mm-dd-` 日期前缀打散在扁平列表里，而补回目录导航的集中式 `INDEX.md` 恰好被明文禁止。因此 `browse its lifecycle/class folders or search the repository` 在小规模仓库里是并行的两条路，进入大规模演进期后实际主要依赖全文与文件名检索。
 
 > Cross-references between Agent Notes use relative markdown links [...] — never bare prose or numbers — so they are mechanically checkable and survive moves between folders. The active lifecycle tree is the working inventory: browse its lifecycle/class folders or search the repository. Do not add a centralized `INDEX.md`: it duplicates path metadata and makes unrelated note changes contend on one generated file.
 >
@@ -179,7 +179,7 @@ DSH 自己的定义是：Agent Note 是 agent 写的 RFC，保存决定或提案
 
 活动 prose 仍可以在有意引用历史时链进归档 Note；被链的那篇是冻结的，于是同一句话的两半由两个执法者分管——「可以链」是散文自治，「链过去的东西别再改」是封印强制。
 
-`dsh-archive-agent-notes` 拥有上面这张表的语义判断。格式 gate 只证明结构合法，不代替这张表。Skill 为什么适合承载这类判断，见 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md)。
+`dsh-archive-agent-notes` 拥有上面这张表的语义判断。格式 gate 只证明结构合法，不代替这张表。Skill 为什么适合承载这类判断，见 [程序化记忆：Skills](../repo-harness/03-skills-as-procedural-memory.md)。
 
 ## 证据入口
 

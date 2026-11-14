@@ -40,7 +40,7 @@ Skill 是 guidance，不是完整 checklist；review 优先 correctness、lifecy
 - config、defaults、errors、wire fields、events 和 public behavior 同 diff 更新 owning README/JSDoc；
 - spine 或 capability seam 的 public types 同步 subsystem/type-equivalence owner；
 - registry contribution 具有 disposal evidence；
-- 共享状态挂在 service 或实例上，不新增全局 `current` / `active` / `selection` 单例，也不新增 `Symbol.for` / `globalThis` / `window.__X__` 旁路；业务规则留在自己的包里，通过注册面或投影数据接入，不写进 runtime、controller、manager 或 API dispatch 层；
+- 共享状态挂在 service 或实例上，不新增全局 `current` / `active` / `selection` 单例，也不新增 `Symbol.for` / `globalThis` / `window.__X__` 旁路；业务规则留在自己的包里，通过注册面或投影数据接入，不写进 runtime、controller、manager 或 API dispatch 层（独立插件仓的正反例与实现模式见 [Cordis 防御契约与模型体验](../native-development-model/05-cordis-contracts-and-model-experience.md)）；
 - 作者运行覆盖 diff 的相关本地证据，CI 提供远端矩阵。
 
 ## 4. 高风险语义检查

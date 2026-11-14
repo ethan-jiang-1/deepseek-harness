@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="680" viewBox="0 0 1120 680" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">人类四个方向控制面与仓库开发 Harness 执行闭环</title>
+  <desc id="desc">上方展示人类保留的四个方向控制面（意图定义、方案与权限分离、长程目标改向、独立预期与人工发布），下方展示 coding agent 在常驻指令、单一真源、机械门禁和真实入口测试护航下的主力执行回路。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#475569"/></marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#276da8"/></marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0 0 L8 3 L0 6 Z" fill="#2f8550"/></marker>
+  </defs>
+  <rect width="1120" height="680" fill="#ffffff"/>
+
+  <text x="560" y="38" text-anchor="middle" font-size="21" font-weight="700" fill="#172033">Agent 干主力活、人握方向盘：四个控制面与仓库护栏</text>
+  <text x="560" y="64" text-anchor="middle" font-size="12" fill="#5f6b7a">人类守住机器无法自证的意图、边界与验收；仓库用分类归属与非零退出门禁接住日常执行质量</text>
+
+  <rect x="48" y="88" width="1024" height="194" rx="10" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+  <text x="72" y="116" font-size="15" font-weight="700" fill="#173f67">Human-on-the-Loop · 人类不可下放的四个方向控制面</text>
+  <text x="1048" y="116" text-anchor="end" font-size="11" fill="#39709f">只管结果、取舍、边界与放行，不替 Agent 盯机械格式</text>
+
+  <rect x="70" y="132" width="226" height="132" rx="8" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="183" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#173f67">1 · 意图与可观察验收</text>
+  <text x="183" y="182" text-anchor="middle" font-size="11" fill="#526175">定义外部行为、失败表现与边界</text>
+  <text x="183" y="202" text-anchor="middle" font-size="11" fill="#526175">不预先锁死内部函数或文件名</text>
+  <rect x="86" y="222" width="194" height="26" rx="5" fill="#dcecff" stroke="#8bb3d7"/>
+  <text x="183" y="239" text-anchor="middle" font-size="10" fill="#244e73">Issue · 任务验收条件</text>
+
+  <rect x="320" y="132" width="226" height="132" rx="8" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="433" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#173f67">2 · 重大取舍与权限分离</text>
+  <text x="433" y="182" text-anchor="middle" font-size="11" fill="#526175">审阅备选方案与实施前 Plan</text>
+  <text x="433" y="202" text-anchor="middle" font-size="11" fill="#526175">硬权限由沙箱与审批独立把关</text>
+  <rect x="336" y="222" width="194" height="26" rx="5" fill="#dcecff" stroke="#8bb3d7"/>
+  <text x="433" y="239" text-anchor="middle" font-size="10" fill="#244e73">Note · Plan ≠ Sandbox / Approval</text>
+
+  <rect x="570" y="132" width="226" height="132" rx="8" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="683" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#173f67">3 · 长程目标续接与改向</text>
+  <text x="683" y="182" text-anchor="middle" font-size="11" fill="#526175">跨恢复显式 rearm 才继续推进</text>
+  <text x="683" y="202" text-anchor="middle" font-size="11" fill="#526175">遇外部阻碍停在 blocked 等人决策</text>
+  <rect x="586" y="222" width="194" height="26" rx="5" fill="#dcecff" stroke="#8bb3d7"/>
+  <text x="683" y="239" text-anchor="middle" font-size="10" fill="#244e73">Goal · blocked · update_goal</text>
+
+  <rect x="820" y="132" width="226" height="132" rx="8" fill="#ffffff" stroke="#8bb3d7"/>
+  <text x="933" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#173f67">4 · 独立预期与发布扳机</text>
+  <text x="933" y="182" text-anchor="middle" font-size="11" fill="#526175">核验独立 Oracle 与语义一致性</text>
+  <text x="933" y="202" text-anchor="middle" font-size="11" fill="#526175">合并后由人显式打 tag 触发发布</text>
+  <rect x="836" y="222" width="194" height="26" rx="5" fill="#dcecff" stroke="#8bb3d7"/>
+  <text x="933" y="239" text-anchor="middle" font-size="10" fill="#244e73">Oracle · Semantic Review · Tag</text>
+
+  <path d="M183 282 V334" fill="none" stroke="#276da8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="195" y="313" font-size="11" fill="#244e73">注入目标与边界</text>
+
+  <path d="M433 282 V334" fill="none" stroke="#276da8" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <text x="445" y="313" font-size="11" fill="#244e73">批准计划与权限</text>
+
+  <path d="M683 338 V286" fill="none" stroke="#2f8550" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="695" y="313" font-size="11" fill="#245d35">上报阻塞与分歧</text>
+
+  <path d="M933 338 V286" fill="none" stroke="#2f8550" stroke-width="2" marker-end="url(#arrow-green)"/>
+  <text x="945" y="313" font-size="11" fill="#245d35">呈交可重算证据</text>
+
+  <rect x="48" y="340" width="1024" height="236" rx="10" fill="#edf8f1" stroke="#55a36f" stroke-width="1.5"/>
+  <text x="72" y="368" font-size="15" font-weight="700" fill="#1f6139">Coding Agent 主力执行舱 · 仓库 Development Harness 四道护栏</text>
+  <text x="1048" y="368" text-anchor="end" font-size="11" fill="#397a50">把经验外置进文件与脚本，让报错消息直接驱动下一轮自修</text>
+
+  <rect x="70" y="386" width="226" height="168" rx="8" fill="#ffffff" stroke="#87bd99"/>
+  <text x="183" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#1f6139">A · 渐进披露入口</text>
+  <text x="183" y="436" text-anchor="middle" font-size="11" fill="#526175">短根 AGENTS.md 守词数预算</text>
+  <text x="183" y="456" text-anchor="middle" font-size="11" fill="#526175">生成目录提供穷举精确索引</text>
+  <text x="183" y="476" text-anchor="middle" font-size="11" fill="#526175">匹配任务才按需加载 SKILL.md</text>
+  <rect x="86" y="510" width="194" height="28" rx="5" fill="#dff2e5" stroke="#87bd99"/>
+  <text x="183" y="528" text-anchor="middle" font-size="10" fill="#245d35">保护注意力 · 零冗余复读</text>
+
+  <path d="M296 470 H314" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="320" y="386" width="226" height="168" rx="8" fill="#ffffff" stroke="#87bd99"/>
+  <text x="433" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#1f6139">B · 单一真源与代码契约</text>
+  <text x="433" y="436" text-anchor="middle" font-size="11" fill="#526175">一个事实一个家 · 只写当前态</text>
+  <text x="433" y="456" text-anchor="middle" font-size="11" fill="#526175">16 类角色词禁造含糊 Manager</text>
+  <text x="433" y="476" text-anchor="middle" font-size="11" fill="#526175">边界显式 resolve · 提交点发布</text>
+  <rect x="336" y="510" width="194" height="28" rx="5" fill="#dff2e5" stroke="#87bd99"/>
+  <text x="433" y="528" text-anchor="middle" font-size="10" fill="#245d35">防多处漂移 · 防架构腐化</text>
+
+  <path d="M546 470 H564" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="570" y="386" width="226" height="168" rx="8" fill="#ffffff" stroke="#87bd99"/>
+  <text x="683" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#1f6139">C · 非零退出机械门禁</text>
+  <text x="683" y="436" text-anchor="middle" font-size="11" fill="#526175">棘轮基线 · 依赖拓扑 · 新鲜度</text>
+  <text x="683" y="456" text-anchor="middle" font-size="11" fill="#526175">文档代码块与源码类型同构锁</text>
+  <text x="683" y="476" text-anchor="middle" font-size="11" fill="#526175">新增守卫必须先看红灯再撤回</text>
+  <rect x="586" y="510" width="194" height="28" rx="5" fill="#dff2e5" stroke="#87bd99"/>
+  <text x="683" y="528" text-anchor="middle" font-size="10" fill="#245d35">报错即导航 · 本地毫秒级拦截</text>
+
+  <path d="M796 470 H814" fill="none" stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <rect x="820" y="386" width="226" height="168" rx="8" fill="#ffffff" stroke="#87bd99"/>
+  <text x="933" y="412" text-anchor="middle" font-size="13" font-weight="700" fill="#1f6139">D · 真实装配与世界断言</text>
+  <text x="933" y="436" text-anchor="middle" font-size="11" fill="#526175">--dump-config 与只读活态查询</text>
+  <text x="933" y="456" text-anchor="middle" font-size="11" fill="#526175">走真实 Loader 与打包产物冒烟</text>
+  <text x="933" y="476" text-anchor="middle" font-size="11" fill="#526175">验证外部世界而非相信模型自报</text>
+  <rect x="836" y="510" width="194" height="28" rx="5" fill="#dff2e5" stroke="#87bd99"/>
+  <text x="933" y="528" text-anchor="middle" font-size="10" fill="#245d35">消灭假绿单测 · 锁住真实交付</text>
+
+  <rect x="78" y="600" width="964" height="46" rx="8" fill="#fff7e8" stroke="#d5a54e"/>
+  <text x="560" y="620" text-anchor="middle" font-size="12" font-weight="700" fill="#744d0f">按规模演进：Day-1 先立「短 AGENTS + 架构图 + 最小 verify + 负知识决策记录 + 真实入口测试」五件套</text>
+  <text x="560" y="638" text-anchor="middle" font-size="11" fill="#805915">待多模块、多维护者或多发版线出现真实组合压力时，再渐进引入生成目录、棘轮门禁与发布预演</text>
+</svg>

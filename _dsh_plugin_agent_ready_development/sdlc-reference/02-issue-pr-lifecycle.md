@@ -6,9 +6,11 @@
 
 本页拥有 `.github/` 的精确事件与 policy；它为什么构成仓库 Development Harness 的远端反馈层，见 [可执行反馈](../repo-harness/05-executable-feedback.md)。
 
+> **外部借鉴切面**：可跨语言直接复用两项工程边界——① 校验 PR 元数据时检出默认分支的可信策略实现，绝不执行待审 PR 分支里的校验脚本；② CI workflow 只负责并发、权限与运行器编排，实际检查清单由仓库顶层脚本唯一拥有。GitHub Project 状态机与主仓标签枚举属于内部团队治理参数，独立仓库按协作规模裁剪。
+
 > Decide whether the human-review policy applies to a PR.
 >
-> — DSH [`.github/issue-management/rules.mjs` 的 `requiresPullRequestPolicy()` JSDoc](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/issue-management/rules.mjs)（0008 复核改注：函数实现在 `rules.mjs:60`，`policy.mjs` 现只是分发入口；早期基线它住在 `policy.mjs`）。适用条件由函数体 `return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)` 给出，见下节代码块；它说明 policy 管的是“已经进入 review 的人类作者 PR”，不是所有 PR，也不是 reviewer 身份。
+> — DSH [`.github/issue-management/rules.mjs` 的 `requiresPullRequestPolicy()` JSDoc](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/issue-management/rules.mjs)（`policy.mjs` 为 CLI 分发入口，条件与校验函数实现在 `rules.mjs`）。适用条件由函数体 `return !isDraft && !automated && (reviewRequestCount > 0 || reviewCount > 0)` 给出，见下节代码块；它说明 policy 管的是“已经进入 review 的人类作者 PR”，不是所有 PR，也不是 reviewer 身份。
 
 ![GitHub 事件如何进入 policy、Project 和 CI](./figures/github-event-flow.svg)
 
@@ -61,7 +63,7 @@ Inbox → Backlog → Ready → In progress → In review → Done 与 No action
 
 具体 job 分层、required 聚合、本地证据与 Windows 信号的关系由 [Evidence routing](./04-gates-and-local-checks.md) 统一说明；本页只保留 PR 事件怎样进入 CI，以及 workflow 与仓库检查逻辑怎样分工。
 
-真实 API e2e 使用独立 workflow 和 secrets 条件，并支持手动 dispatch（`.github/workflows/e2e.yml:31` 的 `workflow_dispatch`；0008 复核注记：旧文提到的 E2B provider e2e 已随 0.1.7 线 E2B 组退役消失，现行为 DeepSeek 官方 API 真实请求）。它们为适用变更提供真实 provider 证据，不是无凭据 PR CI 的通用替代。
+真实 API e2e 使用独立 workflow 和 secrets 条件，并支持手动 dispatch（`.github/workflows/e2e.yml` 的 `workflow_dispatch`，针对 DeepSeek 官方 API 发起真实请求）。它们为适用变更提供真实 provider 证据，不是无凭据 PR CI 的通用替代。
 
 ## 6. 自动 PR 和发布流程属于相邻分支
 

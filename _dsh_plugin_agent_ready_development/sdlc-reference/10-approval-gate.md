@@ -4,6 +4,8 @@
 
 一个 PR 能不能合，由三层互补门禁共同回答：issue-management policy 校验进入 review 的人类 PR 的 metadata（Reference 02）；`weighted-approval` workflow 把批准分数发布成 commit status，branch rules 要求它 success（本页）；semantic review 由人或 agent 按 `dsh-code-review` 判断语义（Reference 06）。分数由 write/admin 评审人的固定权重（1 或 2 分，1 分批准可被 blame 归属加权放大）与作者历史信用（封顶 1.1 分）组成，`/delegate` 命令可把一位评审人的积分转给另一位。
 
+> **外部借鉴切面**：本页记录多维护者大型仓库如何用默认分支可信工作流、`git blame` 生产代码归属权重与 `/delegate` 委托构建防篡改合并门槛（`pull_request_target` 绝不检出或执行 PR 代码是值得借鉴的 GitHub Actions 安全范式）；独立插件仓或中小型仓库无需复制这套积分制。
+
 > The `weighted-approval` workflow publishes an approval score for branch rules. Reviewers are chosen manually; an eligible delegation command requests review from its recipient.
 >
 > — DSH [`.github/review-ownership/README.md` 的 Summary](https://github.com/deepseek-ai/deepseek-harness/blob/master/.github/review-ownership/README.md)。仓库把"谁批准、批准多少分"做成了可复核的评分系统，而不是单一的 approve 按钮。
@@ -50,7 +52,7 @@
 
 ## 5. merge 在历史上呈现的形态
 
-在可复核的 git 历史窗口内（2026-07-30 之后的产品线，约 8300 个 commit），产品变更的主落地形态是 **GitHub merge commit**：约三分之一的 commit 是 merge，PR merge 标题携带 PR 号（例如 `dsh-v0.1.7-rc.1` "Merge pull request #5073 from deepseek-harness/rel/dsh-0.1.7-rc.1"）。次要形态是自定义标题的 2 父 merge（PR #5061 的交付提交 "fix(plugins): deny incompatible bundles … (#5061)"）与少数 squash 成单 commit 的落地。PR 大小分布很宽：最近 100 个 PR merge 的样本中，commit 数中位数为 3、众数为 2（约五分之一的 PR 是单 commit；0009 独立反查重测，旧读「众数 1、约三分之一」为该轮样本口径误差），大 PR 可达数十个 commit。review 中途把 master merge-forward 进分支是常规操作（`2026-09-23 · Merge master into fix/zoom-rerender` "Merge master into fix/zoom-rerender"）。分支命名并存两类前缀：类型前缀（`feat/`、`fix/`、`rel/`）与执行者命名空间（`worktree/`、`codex/`、`turtle/`、`ihsiang/`），常带日期后缀（`fix/preset-ui-20260921`）。依赖式 PR 栈的落地纪律见 [Reference 07](./07-push-merge-stacked-prs.md)。
+在可复核的 git 历史窗口内（2026-07-30 起的产品提交样本），产品变更的主落地形态是 **GitHub merge commit**：约三分之一的 commit 是 merge，PR merge 标题携带 PR 号（例如 `dsh-v0.1.7-rc.1` "Merge pull request #5073 from deepseek-harness/rel/dsh-0.1.7-rc.1"）。次要形态是自定义标题的 2 父 merge（PR #5061 的交付提交 "fix(plugins): deny incompatible bundles … (#5061)"）与少数 squash 成单 commit 的落地。PR 大小分布很宽：在 2026-09 采样的连续 100 个 PR merge 中，commit 数中位数为 3、众数为 2（约五分之一的 PR 是单 commit），大 PR 可达数十个 commit。review 中途把 master merge-forward 进分支是常规操作（`2026-09-23 · Merge master into fix/zoom-rerender` "Merge master into fix/zoom-rerender"）。分支命名并存两类前缀：类型前缀（`feat/`、`fix/`、`rel/`）与执行者命名空间（`worktree/`、`codex/`、`turtle/`、`ihsiang/`），常带日期后缀（`fix/preset-ui-20260921`）。依赖式 PR 栈的落地纪律见 [Reference 07](./07-push-merge-stacked-prs.md)。
 
 ## 6. 三道门禁各管什么
 

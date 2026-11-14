@@ -20,7 +20,7 @@ DSH 原文把这个参与者叫做 agent，把进模型的内容叫做 model-vis
 | 绿灯、语义评审、批准分数、goal complete 各建立什么 | [§5](#5-完成判断仍分属不同位置) | 推动顺序图的底栏指向这里 |
 | 要核对的事实去哪份原文 | [§6](#6-按图索骥) | — |
 
-本页拥有三件资产的条件、例外和原文位置，并按上面这张表组织。[Reference 04](./04-gates-and-local-checks.md) 拥有「这次 diff 跑哪条命令」。[Reference 06](./06-review-and-human-role.md) 拥有语义评审是否判断场景对上了意图。[Reference 10](./10-approval-gate.md) 拥有批准分数。独立插件仓可以借用这三件资产的分工，并自己建立测试入口；主仓的 CI 矩阵不会因此变成插件仓的制度。
+本页拥有三件资产的条件、例外和原文位置，并按上面这张表组织。[Reference 04](./04-gates-and-local-checks.md) 拥有「这次 diff 跑哪条命令」。[Reference 06](./06-review-and-human-role.md) 拥有语义评审是否判断场景对上了意图。[Reference 10](./10-approval-gate.md) 拥有批准分数。独立插件仓如何落地这三件资产的测试脚手架（静态契约门禁、真实 Loader 组合与无密钥 `ScriptedLlmAdapter` + `workspace.expected/` 回放），见 [插件门禁与 CI Harness](../native-development-model/06-plugin-gate-and-ci-harness.md)；主仓的 CI 矩阵不会自动变成插件仓的制度。
 
 ## 1. 模型只占不确定边界
 

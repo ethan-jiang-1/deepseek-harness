@@ -22,7 +22,7 @@ Plan guidance 可以要求 agent 只读探索，但文字要求本身不阻止�
 
 ## 2. coding preset 定义计划质量
 
-`packages/bundle/web-app/presets/ptc.patch.yml`（0.1.7 线起 shipped preset 由 bundle 携带）给 `dsh-plan-mode` 的 `section`（激活时渲染为 `plan:policy` prompt section）要求：
+`packages/bundle/web-app/presets/ptc.patch.yml`（随 Web 应用 bundle 交付的内置 preset）给 `dsh-plan-mode` 的 `section`（激活时渲染为 `plan:policy` prompt section）要求：
 
 - 先只读探索，不改文件、不运行会重写文件的 formatter/codegen、不提交；
 - 计划包含目标与成功标准、按 subsystem 分组的修改、public API/schema/data-flow 变化、失败与边界、测试、验收和显式假设；

@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="700" viewBox="0 0 1160 700" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif">
+  <title id="title">DSH 插件开发的六条 Cordis 防御契约与模型体验边界</title>
+  <desc id="desc">二乘三矩阵展示副作用归属、瀑布流委托、显式两段式解析、静默排空卸载、模型可见必入志以及模型注意力预算六条插件编码铁律。</desc>
+  <rect width="1160" height="700" fill="#ffffff"/>
+  <text x="580" y="36" text-anchor="middle" font-size="21" font-weight="700" fill="#172033">Cordis 防御契约与模型体验：Coding Agent 写插件最易踩的六道红线</text>
+  <text x="580" y="61" text-anchor="middle" font-size="12" fill="#5f6b7a">把容易在热重载、并发取消与长会话回放时爆雷的隐性约定，全部收口为可静态扫描与可测试的显式契约</text>
+
+  <rect x="36" y="92" width="344" height="232" rx="10" fill="#edf5ff" stroke="#5791c9" stroke-width="1.5"/>
+  <circle cx="64" cy="126" r="15" fill="#276da8"/>
+  <text x="64" y="131" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">1</text>
+  <text x="224" y="130" text-anchor="middle" font-size="14" font-weight="700" fill="#173f67">注册即副作用（Effect Ownership）</text>
+  <text x="60" y="164" font-size="11.5" fill="#173f67" font-weight="700">正例：一切外部资源与注册进 ctx.effect()</text>
+  <text x="60" y="186" font-size="11" fill="#526175">• Service.register() 必须返回幂等 disposer</text>
+  <text x="60" y="207" font-size="11" fill="#526175">• 状态挂在 Service 或会话实例，随 Fiber 生灭</text>
+  <line x1="60" y1="224" x2="356" y2="224" stroke="#8bb3d7"/>
+  <text x="60" y="246" font-size="11" fill="#8f3535" font-weight="700">反例红线（静态门禁直接拦截）：</text>
+  <text x="60" y="268" font-size="10.5" fill="#526175">× 模块级 let activeInstance / globalThis / Symbol.for</text>
+  <text x="60" y="288" font-size="10.5" fill="#526175">× 裸调 setInterval / process.on 脱离卸载托管</text>
+
+  <rect x="408" y="92" width="344" height="232" rx="10" fill="#f3efff" stroke="#8269bd" stroke-width="1.5"/>
+  <circle cx="436" cy="126" r="15" fill="#6950a4"/>
+  <text x="436" y="131" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">2</text>
+  <text x="596" y="130" text-anchor="middle" font-size="14" font-weight="700" fill="#513b85">瀑布流显式委托（Waterfall next）</text>
+  <text x="432" y="164" font-size="11.5" fill="#513b85" font-weight="700">正例：观察或增强后显式 return next()</text>
+  <text x="432" y="186" font-size="11" fill="#526175">• 链式钩子靠调用 next() 把控制权交给下游</text>
+  <text x="432" y="207" font-size="11" fill="#526175">• 事件扩展必写 @mode 与完整 @param JSDoc</text>
+  <line x1="432" y1="224" x2="728" y2="224" stroke="#a89bc9"/>
+  <text x="432" y="246" font-size="11" fill="#8f3535" font-weight="700">反例红线（导致下游插件静默失灵）：</text>
+  <text x="432" y="268" font-size="10.5" fill="#526175">× 监听器末尾漏写 return next() 无意截断责任链</text>
+  <text x="432" y="288" font-size="10.5" fill="#526175">× 闭合判别联合 switch 漏写 default: assertNever</text>
+
+  <rect x="780" y="92" width="344" height="232" rx="10" fill="#fff5e6" stroke="#d99939" stroke-width="1.5"/>
+  <circle cx="808" cy="126" r="15" fill="#b66d12"/>
+  <text x="808" y="131" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">3</text>
+  <text x="968" y="130" text-anchor="middle" font-size="14" font-weight="700" fill="#744408">显式两段式解析（resolve → run）</text>
+  <text x="804" y="164" font-size="11.5" fill="#744408" font-weight="700">正例：部署可变参数全进 Schemastery Config</text>
+  <text x="804" y="186" font-size="11" fill="#526175">• 边界入口先调 resolve(request): Spec 补齐契约</text>
+  <text x="804" y="207" font-size="11" fill="#526175">• 误配置在加载期立即抛错（Fail Loud at Load）</text>
+  <line x1="804" y1="224" x2="1100" y2="224" stroke="#d9ad65"/>
+  <text x="804" y="246" font-size="11" fill="#8f3535" font-weight="700">反例红线（破坏宿主 Profile 可配置性）：</text>
+  <text x="804" y="268" font-size="10.5" fill="#526175">× 代码深处硬编码 timeout = 30000 或隐式 ?? 兜底</text>
+  <text x="804" y="288" font-size="10.5" fill="#526175">× 跨边界不透明 ID 裸用 string（未加 Branded&lt;T&gt;）</text>
+
+  <rect x="36" y="346" width="344" height="232" rx="10" fill="#edf8f1" stroke="#55a36f" stroke-width="1.5"/>
+  <circle cx="64" cy="380" r="15" fill="#2f8550"/>
+  <text x="64" y="385" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">4</text>
+  <text x="224" y="384" text-anchor="middle" font-size="14" font-weight="700" fill="#1f6139">静默排空卸载（Quiescent Disposal）</text>
+  <text x="60" y="418" font-size="11.5" fill="#1f6139" font-weight="700">正例：先发中止信号，再等在途任务归零</text>
+  <text x="60" y="440" font-size="11" fill="#526175">• disposer 触发 AbortController + Promise.allSettled</text>
+  <text x="60" y="461" font-size="11" fill="#526175">• 依赖方彻底静默后，底层连接池才释放句柄</text>
+  <line x1="60" y1="478" x2="356" y2="478" stroke="#87bd99"/>
+  <text x="60" y="500" font-size="11" fill="#8f3535" font-weight="700">反例红线（引发热重载竞态崩溃）：</text>
+  <text x="60" y="522" font-size="10.5" fill="#526175">× fire-and-forget 异步清理未等待子进程/写入排空</text>
+  <text x="60" y="542" font-size="10.5" fill="#526175">× 空白 catch {} 吞掉错误（单句 try 必命名错误原因）</text>
+
+  <rect x="408" y="346" width="344" height="232" rx="10" fill="#eaf7f6" stroke="#3b9a91" stroke-width="1.5"/>
+  <circle cx="436" cy="380" r="15" fill="#237a72"/>
+  <text x="436" y="385" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">5</text>
+  <text x="596" y="384" text-anchor="middle" font-size="14" font-weight="700" fill="#1d5f59">模型可见 ⟺ 入志（Logged Context）</text>
+  <text x="432" y="418" font-size="11.5" fill="#1d5f59" font-weight="700">正例：SessionEventMap 事件 + 纯函数投影</text>
+  <text x="432" y="440" font-size="11" fill="#526175">• 新增模型可见输入先追加自定义或可选 ignorable 事件</text>
+  <text x="432" y="461" font-size="11" fill="#526175">• resume / fork / compaction 自动从日志确定性恢复</text>
+  <line x1="432" y1="478" x2="728" y2="478" stroke="#73aaa5"/>
+  <text x="432" y="500" font-size="11" fill="#8f3535" font-weight="700">反例红线（上下文在重启与压缩后蒸发）：</text>
+  <text x="432" y="522" font-size="10.5" fill="#526175">× 从进程内存直接往 messages 数组偷偷塞系统提示</text>
+  <text x="432" y="542" font-size="10.5" fill="#526175">× 随意变动静态 System Prompt 击穿前缀 KV 缓存</text>
+
+  <rect x="780" y="346" width="344" height="232" rx="10" fill="#fff0f0" stroke="#c86b6b" stroke-width="1.5"/>
+  <circle cx="808" cy="380" r="15" fill="#a94747"/>
+  <text x="808" y="385" text-anchor="middle" font-size="12.5" font-weight="700" fill="#ffffff">6</text>
+  <text x="968" y="384" text-anchor="middle" font-size="14" font-weight="700" fill="#8f3535">模型注意力预算（Model Experience）</text>
+  <text x="804" y="418" font-size="11.5" fill="#8f3535" font-weight="700">正例：把 LLM 当注意力稀缺的首席消费者</text>
+  <text x="804" y="440" font-size="11" fill="#526175">• 工具描述写清何时调/何时不调；大输出走 Spill 落盘</text>
+  <text x="804" y="461" font-size="11" fill="#526175">• 结构化错误直接告诉模型下一步怎么改参数重试</text>
+  <line x1="804" y1="478" x2="1100" y2="478" stroke="#c86b6b"/>
+  <text x="804" y="500" font-size="11" fill="#8f3535" font-weight="700">反例红线（挤爆窗口、诱发死循环瞎试）：</text>
+  <text x="804" y="522" font-size="10.5" fill="#526175">× 单次工具返回数万字符原始日志直灌会话历史</text>
+  <text x="804" y="542" font-size="10.5" fill="#526175">× package README 漏写 ## Model Experience 契约节</text>
+
+  <rect x="36" y="602" width="1088" height="68" rx="9" fill="#172033"/>
+  <text x="580" y="630" text-anchor="middle" font-size="14.5" font-weight="700" fill="#f8fafc">契约闭环：不在评审里靠人眼背诵，全部接入下一章的四级插件自动化门禁</text>
+  <text x="580" y="653" text-anchor="middle" font-size="11.5" fill="#cbd5e1">契约 1·3·6 由 verify-plugin.mjs 静态扫描拦截；契约 2·4 由 Loader/HMR 组合测试验证；契约 5·6 由无密钥会话回放锁定</text>
+</svg>

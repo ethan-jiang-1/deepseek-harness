@@ -12,4 +12,4 @@
 
 | 路径 | 职责 |
 |---|---|
-| [`00-corpus-maintenance.md`](./00-corpus-maintenance.md) | 记录固定 DSH 基线、语料结构决定、图示归属和重审触发路径 |
+| [`00-corpus-maintenance.md`](./00-corpus-maintenance.md) | 记录固定 DSH 基线、入库页面双向清单、语料结构决定、图示归属和重审触发路径 |

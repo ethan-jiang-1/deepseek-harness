@@ -8,7 +8,9 @@
 >
 > — DSH [`dsh-merging-stacked-prs` skill 的开篇](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-merging-stacked-prs/SKILL.md)。这条规则确定官方 stack object 才拥有依赖顺序、retarget 和 merge 状态。
 
-本页展开两个交付 Skills 的精确操作；它们为什么以 Skill 而不是 standing rule 或 gate 承载，见 [Development Harness 的 Skills 章节](../repo-harness/03-skills-as-procedural-memory.md)。
+本页展开两个交付 Skills 的精确操作；它们为什么以 Skill 而不是 standing rule 或 gate 承载，见 [程序化记忆：Skills](../repo-harness/03-skills-as-procedural-memory.md)。
+
+> **外部借鉴切面**：「分支改写必须携带显式旧 OID 租约（`--force-with-lease=<branch>:<oid>`），禁止裸 `--force`」与「缺陷回到引入层修正而非向上叠补丁 PR」是通用高价值协作纪律；官方 Stacked PR 工作流适用于多代理或多人拆栈并行，单分支交付的小型插件仓无需启用。
 
 ![官方 stack 从识别、刷新、验证到落地](./figures/stack-landing.svg)
 
