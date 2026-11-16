@@ -74,11 +74,11 @@
 
 | 来源 | 提供了什么 |
 |---|---|
-| [`_faq_on_digested/07_borrowing-dsh-harness-idea/14-two-failures-as-missing-info.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/14-two-failures-as-missing-info.md) | **七个信息缺口（information gap）**（01 §1）、"不赌聪明赌成本结构"的反转 |
-| [`…/07/06-step-by-step-guide.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/06-step-by-step-guide.md) | 十维评估表、Phase 2–8 的产出与验收、垂直切片（vertical slice）走查五问 |
-| [`…/07/09-executable-feedback.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/09-executable-feedback.md) | 六层反馈表、"检查必须先被证明会失败"、学走形（degradation）的检查 |
-| [`…/07/10-transfer-playbook.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/10-transfer-playbook.md) | 迁移优先级、"四个不能混淆的边界"、外置知识的维护成本（maintenance cost）表 |
-| [`…/07/answer.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/answer.md) | 三条立场、三层模型、症状 → 机制总览表 |
+| [`_faq_on_digested/07_borrowing-dsh-harness-idea/answer.md` §一](../../_faq_on_digested/07_borrowing-dsh-harness-idea/answer.md) | **信息缺口（information gap）**总表（六个缺口 → 症状 → 缺的工程信号）、"不赌聪明赌成本结构"的反转 |
+| [`…/07/04-step-by-step-adoption.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/04-step-by-step-adoption.md) | 三阶段渐进落地路线图、开工前用真实 PR 做垂直切片（vertical slice）体检、改造前后对照 |
+| [`…/07/03-executable-gates-and-tests.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/03-executable-gates-and-tests.md) | 可执行快门禁与分层测试、"检查必须先被证明会失败"、学走形（degradation）的检查 |
+| [`…/07/answer.md` §四](../../_faq_on_digested/07_borrowing-dsh-harness-idea/answer.md) · [`…/07/04` §二](../../_faq_on_digested/07_borrowing-dsh-harness-idea/04-step-by-step-adoption.md) | "四个不能混淆的边界"、迁移优先级、外置知识的维护成本（maintenance cost） |
+| [`…/07/answer.md`](../../_faq_on_digested/07_borrowing-dsh-harness-idea/answer.md) | 三条立场、三条支柱、症状 → 机制总览表 |
 | [`_faq_on_digested/11_native-development-loop/answer.md`](../../_faq_on_digested/11_native-development-loop/answer.md) | **窄证据切片（slice）闭环六步**（01 §3 的第二层）、"轻松"的三个机制来源、代价与边界 |
 | [`…/11/question.md`](../../_faq_on_digested/11_native-development-loop/question.md) | 上述闭环的问题框架与范围声明 |
 | [`_dsh_plugin_agent_ready_development/00-index.md`](../../_dsh_plugin_agent_ready_development/00-index.md) | 三个视角的分工与语料自身的结构纪律 |
