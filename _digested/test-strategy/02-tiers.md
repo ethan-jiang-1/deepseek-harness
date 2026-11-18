@@ -35,7 +35,7 @@
 - **强制模式一：HMR-safety**。"Every registry gets an HMR-safety test (dispose the contributing fiber, assert cleanup)"——每个注册表都必须有"卸载贡献 fiber 后断言清理干净"的测试。这是 all-plugin 架构的独有要求：插件能热插拔，注册就必须可撤销。
 - **强制模式二：契约回归永久化**。边界、错误路径、事件顺序、并发竞态优先；契约回归测试是永久资产（样板 `packages/core/agent-loop/tests/contract-regressions.spec.ts`）。
 - **执行形态**：两个内联 project（`thread-safe` / `process-bound`）全部 `pool: 'forks'`——理由写在注释里：Node 24 的 CJS lexer 在 worker 线程上崩溃。8 个动进程级全局状态的套件（session-persistence-jsonl、subagent-acp、process-exit、spawn、time-context、llm-pi-ai adapter、app-boot、workflow-ptc）单独成 `process-bound` project；`execArgv` 按能力带 `--no-webstorage`（`allowedNodeEnvironmentFlags` 认可该 flag 时才加）防进程级 Web Storage 遮蔽 jsdom。`.tsx` 客户端组件用每文件 `@vitest-environment` pragma 声明 jsdom。
-- setup 三件套：`scripts/test-proxy-environment.ts`、`test-dom-environment.ts`、`test-official-listing-guard.ts`（`scripts/test-invariants.ts` 已随运行时 invariant 机制整族退役，commit `f028f25667`）。
+- setup 三件套：`scripts/test-proxy-environment.ts`、`test-dom-environment.ts`、`test-official-listing-guard.ts`。
 
 ### 2. Coverage gate——per-file 100%，死代码探测器
 
@@ -121,7 +121,7 @@
 **写法惯例（硬事实）**：
 
 - **命名**：英文行为命题、现在时、**无 "should"**——`describe('disposal leaves the two-state status contract balanced')`、`it('removes contributions when the contributing fiber is disposed (HMR safety)')`。"Tests describe behavior, not correctness" 的文体化。
-- **HMR-safety 模式**（全仓实测 67 处 `(HMR safety)`）：子 fiber 注册贡献 → 断言存在 → `await fiber.dispose()` → 断言移除（服务自身 built-in 不受影响）。契约回归样板 `contract-regressions.spec.ts`（1522 行、14 个 describe）每条测试钉死一个边界/身份/生命周期契约，注释直接回指原始 bug（如 "The key assertion from the original bug report: after disposal, no assistant/attempt or assistant/message appears"）。
+- **HMR-safety 模式**（全仓实测 72 处 `(HMR safety)`）：子 fiber 注册贡献 → 断言存在 → `await fiber.dispose()` → 断言移除（服务自身 built-in 不受影响）。契约回归样板 `contract-regressions.spec.ts`（1522 行、14 个 describe）每条测试钉死一个边界/身份/生命周期契约，注释直接回指原始 bug（如 "The key assertion from the original bug report: after disposal, no assistant/attempt or assistant/message appears"）。
 - **tests/harness.ts 模式**：共享 fixture 刻意放在 include 模式之外——import 它不会重复注册别人的 `describe`、不会重复真实 API 调用；代码里有就地注释（`packages/fs/tool-fs/tests/harness.ts`："This helper lives outside the e2e glob so imports do not register tests"）。
 - **spec 与 e2e 的实际写法差**（抽样对比）：spec = 进程内真 Cordis 组合 + MockAdapter，断言事件序列 / registry 状态；e2e = `describe.skipIf(!process.env.DEEPSEEK_API_KEY)` 自跳过（e2e 车道 25 处：packages 13 + apps 12（主道 24），部分套件再加用例内双保险 throw，如 `packages/llm/llm-deepseek/tests/runtime.e2e.ts:184`）+ 真 provider + 120s 车道默认 testTimeout（个别 profile 用例显式提到 180s）+ **进程外读文件断言**（verify the world）+ session log 里真实 tool/call 名单核对，不信 agent 自述。
 - **client 组件 spec**：文件首行 `// @vitest-environment jsdom` pragma + testing-library + fake timers；断言用户可见行为而非 class 名。

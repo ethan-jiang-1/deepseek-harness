@@ -41,8 +41,6 @@ return { kind: 'create', objective: input }  // 其余所有输入 = 创建；�
 
 ### 路径三：Goal Round Driver — 不创建，只延续
 
-（路径四：Host Remote `goals.create`，`packages/goal/goal/src/index.ts` 的 `@Remote('create')`——进程外 client 直接调用，不受 tool/command 面限制。）
-
 Goal Round Driver（`goal-round-driver/src/index.ts`）不会自动创建 goal。`drive()` 在 `readyToDrive()`（`:140`）与持久化检查点（`:142-154`）都通过之后在 attempt 结算之后检查 goal（`:164-165`）：
 
 ```ts
@@ -51,6 +49,10 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 ```
 
 没有 goal 就静默返回。它只负责在 active + armed 的 goal 下自动推进下一轮。
+
+### 路径四：Host Remote `goals.create`
+
+`GoalService` 通过 `@Remote('create')`（`packages/goal/goal/src/index.ts`）经 `goalsRemote` 暴露给进程外客户端（如 Web UI、CLI 测试或嵌入式调用方），直接创建或编辑 goal，不经过 tool 或斜杠命令面的授权门槛。
 
 ### 四条路径一览
 
@@ -112,7 +114,7 @@ Goal 的所有变更通过 session log 的 `goal/change` 事件持久化。系�
 - 同一会话、同一时间只允许一个 goal（completed 后可替换）
 - 回放时从 session log 的 `goal/change` 事件重建 goal 状态
 - `roundsStarted` 由 goal 来源（`source.kind === 'goal'`）的 `user/message` 推进，fold 严格验证 round 归属（`packages/goal/goal/src/fold.ts:321-332`）
-- activation 变化不写 log，但会发进程内事件 `goal/activation-changed`（带 `sessionId` 与当前 goal 的 `{id, revision, activation}`，无 goal 时省略 `goal` 字段）——`GoalService.setActivation()` 在 activation **真正变化**时广播（`goal/src/index.ts:495-516`，类型 `packages/goal/goal/src/types.ts:74-87`，Cordis 声明合并同文件 `:143-152`）；session-start 边（串行 `agent/created`）的重置、`disarm()` 与 `goal/change` 折叠三条路径都改走这个方法
+- activation 变化不写 log，但会发进程内事件 `goal/activation-changed`（带 `sessionId` 与当前 goal 的 `{id, revision, activation}`，无 goal 时省略 `goal` 字段）——`GoalService.setActivation()` 在 activation **真正变化**时广播（`goal/src/index.ts:495-516`，类型 `packages/goal/goal/src/types.ts:74-87`，Cordis 声明合并同文件 `:143-152`）；session-start 边（串行 `agent/created`）的重置、`disarm()` 与 `goal/change` 折叠三条路径都调用该方法完成同步
 
 ### 默认配置
 

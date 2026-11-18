@@ -1,6 +1,6 @@
 # Persistent Teams with a Shared Task Board · 持久团队与共享任务板
 
-源码核验入口：`packages/experimental/tool-agent-team/src/index.ts`（`POLICY` 与九个成员级工具）、`packages/experimental/agent-team-profile/cordis.patch.yml` 与 `README.md`、`packages/experimental/agent-team/src/index.ts`（服务上限）、`packages/boot/app-boot/src/profile.ts`（OPTIONAL_BUNDLES）。
+源码核验入口：`packages/experimental/tool-agent-team/src/index.ts`（`teamPolicy` / `team:policy` 与九个成员级工具）、`packages/experimental/agent-team-profile/cordis.patch.yml` 与 `README.md`、`packages/experimental/agent-team/src/index.ts`（服务上限）、`packages/boot/app-boot/src/profile.ts`（OPTIONAL_BUNDLES）。
 
 本页回答：启用 agent-teams 的组合代价是什么（你换掉了什么）？Lead 的实际工作流怎么串九个工具？`team:policy` 里的协作纪律有哪些？机制（TeamService、journal、投影、九工具注册、UI 落点）见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)；选择语义（仅显式要求、与 subagent 控制面互斥）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；队友创建复用的 spawn/fork 语义见 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
@@ -35,7 +35,7 @@
 | insert `agent-team` + `tool-agent-team` + `ui-agent-team` | TeamService、九工具、Web 会话头部的 Team 动作（名册/任务板/队友导航，读投影无 RPC） |
 | **workflow 不动** | Workflow 保留 base 的 `spawn` provider——脚本扇出 fresh children 照常可用 |
 
-服务上限（`packages/experimental/agent-team/src/index.ts:55`-`90`；profile 把 `maxMembers` 钉回 8）：`maxMembers` 代码默认 16 / profile 钉 8、`maxTasks` 256、`maxMessageBytes` 65536、`disposalTimeoutMs` 5000。**团队面需要持久 session 存储才激活**（机制见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）。
+服务上限（`packages/experimental/agent-team/src/index.ts:42`-`45` 默认常量、`:59`-`64` `TeamService.Config`；profile 把 `maxMembers` 钉回 8）：`maxMembers` 代码默认 16 / profile 钉 8、`maxTasks` 256、`maxMessageBytes` 65536、`disposalTimeoutMs` 5000。**团队面需要持久 session 存储才激活**（机制见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）。
 
 ## Lead 的工作流：九个工具怎么串
 
@@ -51,14 +51,14 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
   → Lead 等齐 required teammates → 最终答案
 ```
 
-驾驶座要点（工具描述与 `POLICY`，`packages/experimental/tool-agent-team/src/index.ts:34`-`41`、`:185`-`:400`）：
+驾驶座要点（工具描述与 `teamPolicy`，`packages/experimental/tool-agent-team/src/index.ts:34`-`41`、`:192`-`400`）：
 
 - **`send_message` 成功即接纳**："A successful send does not mean the recipient has processed it."——steer 运行中目标于最近 step 边界、start/resume inactive 目标；送达的 peer 消息以稳定 message id + sender 名开头；
 - **`wait_agent` 只观察不唤醒**："Wait for the next teammate status, mailbox, or shared-task change **after this call starts**. This never wakes inactive members and returns noProgress immediately when no other member is running or provisioning. **Re-list after wakeup or timeout instead of polling.**"（`timeout_ms` 10000–3600000，默认 30000）；等待前先 `list_agents` 确认有 running/provisioning 的队友，inactive 的先用 `send_message` 唤醒（`NO_ACTIVE_PEER_MESSAGE`，`:45`）；
 - **任务板是 CAS 工作流**："Shared-task workflow is list, get, **claim with the current revision**, perform the work, then complete."——`team_task_update` 用 `expected_revision` 做前置条件（"Compare-and-set a shared task action using the latest revision"，`:371`）；`team_task_list` 返回 readiness/owner/revision/blockers/**write-scope warnings**；
 - **任务就绪不自动开工**："**Task readiness never starts an owner.**"——依赖解开只是就绪，owner 不会因此开 turn，要 `send_message` 去叫。
 
-**可写接口**（`packages/experimental/tool-agent-team/src/index.ts:185`-`:400`）：
+**可写接口**（`packages/experimental/tool-agent-team/src/index.ts:192`-`400`）：
 
 ```json
 { "description": "审计 01-05 页引用", "context": "fresh" }
@@ -158,12 +158,12 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 | 路径 | 一句话 |
 |------|--------|
-| `packages/experimental/tool-agent-team/src/index.ts:34`-`41` | `POLICY` 全文：写域纪律、FS_STALE_VERSION 协议、状态词汇、收尾门槛 |
-| `packages/experimental/tool-agent-team/src/index.ts:185`-`:400` | 九个成员级工具的描述（spawn/wait/task 族） |
+| `packages/experimental/tool-agent-team/src/index.ts:34`-`41` | `teamPolicy` / `'team:policy'`（`:174`）：写域纪律、FS_STALE_VERSION 协议、状态词汇、收尾门槛 |
+| `packages/experimental/tool-agent-team/src/index.ts:192`-`400` | 九个成员级工具的描述（spawn/wait/task 族） |
 | `packages/experimental/tool-agent-team/src/index.ts:45` | `NO_ACTIVE_PEER_MESSAGE`：wait 前先唤醒的指令 |
 | `packages/experimental/agent-team-profile/cordis.patch.yml` | 组合代价：四个 disable 行（`:4`-`14`）+ insert 三插件（`:16`-`32`） |
 | `packages/experimental/agent-team-profile/README.md:49` | "subagent 与 fork 工具被 disable；Workflow 保留 spawn" |
-| `packages/experimental/agent-team/src/index.ts:55`-`90` | 服务上限（maxMembers 16/8、maxTasks 256 等） |
+| `packages/experimental/agent-team/src/index.ts:42`-`64` | 服务上限默认常量（`:42`-`45`）与 `TeamService.Config`（`:59`-`64`：maxMembers 16/8、maxTasks 256 等） |
 | `packages/experimental/agent-team/README.md:12` | 持久语义一句话（crashes/reloads/interruptions） |
 | `packages/boot/app-boot/src/profile.ts:223`-`236` | OPTIONAL_BUNDLES 成员 |
-| `_digested/experimental/02-agent-teams.md` | 机制深挖（引用不重复） |
+| [`../../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md) | 机制深挖（引用不重复） |

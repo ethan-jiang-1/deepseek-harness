@@ -4,13 +4,13 @@
 
 ## 一句话
 
-Web Client 是浏览器侧一棵由独立载入的插件组装成的 Cordis 应用（`docs/subsystems/web-client.md:5`）；它复用四块基础设施 —— Client Modules 载插件图、API Gateway 做类型化 Host 通信、Slots 组合 React、Conversation 把 Session 窗口变成目标自有的视图 —— 其余规则都是在这四块之上规定「谁拥有一份状态、谁能 import 谁、一个值走哪条通道」。
+Web Client 是浏览器侧一棵由独立载入的插件组装成的 Cordis 应用（[`docs/subsystems/web-client.md`](../../../docs/subsystems/web-client.md)）；它复用四块基础设施 —— Client Modules 载插件图、API Gateway 做类型化 Host 通信、Slots 组合 React、Conversation 把 Session 窗口变成目标自有的视图 —— 其余规则都是在这四块之上规定「谁拥有一份状态、谁能 import 谁、一个值走哪条通道」。
 
 `packages/client/` 的包目录数量以 [`claims.json`](../../harness-idea/claims.json) 的 `client-package-total` 指标为准；这个数只用来判断「一个目录还是一个族包」，每次同步都会变，不要当常量引用。
 
 ## 和 Host 树的不对称
 
-Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mutation 结果，Client model 维护最新可用的本地投影并编码「延迟响应与替换基线如何合并」；`presentation component` 永远不接收 Cordis `ctx`、transport 对象或另一个 feature 插件的实现（`docs/subsystems/web-client.md:20`）；Host 控制器拥有耐久状态，Client model 只保留可用的本地投影（`:54`）。刷新 / 重连从持久化再 hydrate，仍然读同一条 session 的事件——**client 没有第二份 append-only log**（[`../remote/streams/01`](../remote/streams/01-一条-emit-两条出站链路.md)）。
+Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mutation 结果，Client model 维护最新可用的本地投影并编码「延迟响应与替换基线如何合并」；`presentation component` 永远不接收 Cordis `ctx`、transport 对象或另一个 feature 插件的实现（[`docs/subsystems/web-client.md`](../../../docs/subsystems/web-client.md)）。刷新 / 重连从持久化再 hydrate，仍然读同一条 session 的事件——**client 没有第二份 append-only log**（[`../remote/streams/01`](../remote/streams/01-一条-emit-两条出站链路.md)）。
 
 ## 四问：四个孙目录
 

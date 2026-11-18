@@ -4,6 +4,8 @@
 
 本篇是「流式输出如何入 log」的家：**没有顶层 `assistant/chunk` 事件**——一次模型 attempt 只提交一条 settlement，流内嵌其中。
 
+![流：llm.stream → 内存累积 chunk → 结算 assistant/message ｜ assistant/attempt](./figures/chunk-to-message.svg)
+
 ## 一次 attempt 一条 settlement
 
 `assistant/message`（surface）携带 `stream: AssistantStreamRecord[]`，与 assembled message、可选 `usage`、可选 `interrupted: true` 并列（`packages/core/session/src/types.ts`）；`assistant/attempt`（log-only）是 `{ turn, step, stream }`，保存 failed / retried / cancelled / stream-error 且没有 surface message 的 attempt。`assistant/message` 不带 chunk 的 `sourceEventSeqs`。
@@ -43,7 +45,7 @@ Web 的 follow adapter 订阅这些 frame 做打字机效果，重建时用 `exp
 
 ## consumer 合同
 
-`dsh-token-meter` 不再按引用的 chunk seq 重组 provider 输出，改为 `assembleAssistantStream(event.data.stream).blocks()`（`packages/llm/token-meter/src/index.ts:10`、`:337`）。
+`dsh-token-meter` 直接通过 `assembleAssistantStream(event.data.stream).blocks()` 从 settlement 的内嵌 `stream` 重组 blocks（`packages/llm/token-meter/src/index.ts:10`、`:337`）。
 
 ## 与 session 格式迁移的边界
 

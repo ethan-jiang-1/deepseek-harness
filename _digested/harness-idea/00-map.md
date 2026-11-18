@@ -23,11 +23,11 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 - **02 拆「读懂」**（[`02-legibility.md`](./02-legibility.md)）：静态可读性来自八个机制，共同保证「全部参与知识都以字面形式存在」，并且负知识、上下文入口也被外置。
 - **03 拆「做对」**（[`03-paved-road.md`](./03-paved-road.md)）：正确路径来自扩展点路由、控制权语义、生命周期归属、门禁、以及**门禁自身被测试**的元验证。
 - **04 参与阶梯**（[`04-participation-paths.md`](./04-participation-paths.md)）：从改配置到改 loop，不同参与半径有不同的门、合同与检查半径；一次贡献还有完整生命周期。
-- **05 动态可读性**（[`05-dynamic-legibility.md`](./05-dynamic-legibility.md)）：dsh 不只可读，还可查询、可试验——`dump-config`、生成目录、两只读 `cordis_inspect_*` 工具与 `plugin_manager` 安装让读者能问运行时（0.1.7 线起 define/run 生命周期退到程序化 runner）。
+- **05 动态可读性**（[`05-dynamic-legibility.md`](./05-dynamic-legibility.md)）：dsh 不只可读，还可查询、可试验——`dump-config`、生成目录、两只读 `cordis_inspect_*` 工具、`plugin_manager` 安装与程序化 runner 共同构成可查询的运行时面。
 - **06 技术选型与语言贴合**（[`06-tech-and-language-fit.md`](./06-tech-and-language-fit.md)）：回答「dsh 的技术为什么容易被 coding agent 消化」——先验密度、语义贴合、低密度承重件本地化，三层共同作用。
 - **07 边界、成本与适用条件**（[`07-boundaries-costs-fit.md`](./07-boundaries-costs-fit.md)）：合同面被多重消费；原则与智能无关但形状与生产方式和组合压力有关；诚实列出 dsh 的成本与「何时不该学它」。
 - **08 判断纪律**（[`08-judgement-discipline.md`](./08-judgement-discipline.md)）：本专题自己的知识从哪来、如何标出处、如何做反事实检验，并给出核心 claim register。
-- **09 反馈环路**（[`09-feedback-loop.md`](./09-feedback-loop.md)，后续补篇）：轮内环保真不裁决、会话环先账后投影、元环把学习做成仓库的构建系统问题；对照 loop engineering 的七项能力要求给出 Eval 薄层的诚实边界。
+- **09 反馈环路**（[`09-feedback-loop.md`](./09-feedback-loop.md)）：轮内环保真不裁决、会话环先账后投影、元环把学习做成仓库的构建系统问题；对照 Eval 薄层给出反馈环路边界。
 
 推荐顺序即构思顺序。机制编号只为引用方便：边界故意重叠，不是拼图。
 
@@ -102,13 +102,13 @@ dsh 做对的核心，不是「实现了一个聪明的 agent loop」，而是�
 
 推荐顺序：`01` → `02` → `03` → `04` → `05` → `06` → `07` → `08` → `09`。每篇末尾列证据入口；判断与证据分离，判断是消化后的立场，证据是 DSH 官方源码、文档与 Agent Note 的引用。
 
-## 我的判断
+## 核心判断
 
 - **判断一：prose 是索引，执行才是保证。** dsh 的规则文档（`docs/`、`AGENTS.md`）写得克制，是因为每一条关键规则都有机器可执行的落点：`verify-export-jsdoc`、`doc-typecheck`、coverage 门禁、`verify-archived-agent-notes`。文档负责「告诉你往哪看」，系统负责「证明你做对了」。
-- **判断二：「模型可见 ⟺ 已记录」现在由类型与投影纪律保证，不再有运行时断言。** `0.1.7-rc.1` 线上它是 `dsh-agent-loop/invariant` 这个运行时检查在 loop 每次 `llm/stream` 上独立重建请求并与日志比对；`f028f25667`（remove runtime invariant plugins）把运行时 invariant 机制整族删除，该实例一并消失，`ctx.invariants` 服务随之不存在。现行的执行面是 `SessionEventMap` 的 required-on-read、`deriveMessages()` 投影与根 `AGENTS.md` 条令的叠加，退役依据见 [`03`](./03-paved-road.md) 机制六。
-- **判断三（反转但有分级）：LLM 读得懂 dsh 不是设计目标，是生产方式残留。** [`2026-06-11-quality-gates`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md) 的 Problem 段第一句是仓库对自身生产方式的自述；`639ed01539` 基线里 `docs/architecture.md` 曾有「推荐用 agent 探索代码库」一句，它在 `3f35ca7b5b` 被撤下，现行 `docs/architecture.md` 与 zh 版都不再出现该句。但「开发主力就是 agent」应标为第一方自述，不等同于外部普查；本专题按“自述 + 机制推断”处理。
+- **判断二：「模型可见 ⟺ 已记录」由静态类型与投影纪律保证，不设运行时断言层。** 仓库不提供独立的 `ctx.invariants` 运行时断言服务或 `./invariant` 入口；该契约由 `SessionEventMap` 的 required-on-read 约束、`deriveMessages()` 纯函数投影与根 `AGENTS.md` 条令共同承担，依据见 [`03`](./03-paved-road.md) 机制六。
+- **判断三（因果方向反转且需分级）：LLM 读得懂 dsh 首要是生产方式产物。** [`2026-06-11-quality-gates`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md) 的 Problem 段第一句是仓库对自身生产方式的自述；现行 [`docs/architecture.md`](../../docs/architecture.md) 开篇只保留阅读顺序与 Cordis 前置说明。「开发主力就是 agent」应标为第一方自述，不等同于外部普查；本专题按“自述 + 机制推断”处理。
 - **判断四：dsh 的形状还要过「组合压力」检验。** 生产方式解释它为什么是 agent 形状，组合压力解释这个形状何时值得模仿。两者都是判断，不是源码能直接证明的定律（[`07`](./07-boundaries-costs-fit.md)）。
-- **判断五：本专题自己也要过分布纪律。** 框架性通式（知识外置、paved road、三问检验）落在 LM 喜欢的分布内，谁都能写；挖出来的事实（因果反转、vendor manifest 门禁、required-on-read、note 语料库的出处、运行时 invariant 连「显式空断言」都裁掉后整族退役）在分布外，必须带出处。执行办法在 [`08`](./08-judgement-discipline.md)。
+- **判断五：本专题自己也要过分布纪律。** 框架性通式（知识外置、paved road、三问检验）落在 LM 喜欢的分布内，谁都能写；挖出来的事实（因果反转、vendor manifest 门禁、required-on-read、note 语料库的出处、约束收敛到提交前门禁与类型）在分布外，必须带出处。执行办法在 [`08`](./08-judgement-discipline.md)。
 
 ## 判断纪律（摘要）
 

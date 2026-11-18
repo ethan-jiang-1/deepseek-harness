@@ -53,11 +53,9 @@ Agent loop 位于两者之间：从插件图取模型、工具、提示词与会
 
 quality-gates note 是仓库的第一方自我描述；本专题不把它当作外部普查结论，只作为生产方式自述。因此因果写成「生产方式自称 + 可解释的机制」，不再写成斩钉截铁的既成事实。
 
-### `[原文]` architecture 的 agent 推荐句已撤下
+### `[原文]` architecture 开篇定位为阅读路径指南
 
-`639ed01539` 基线的 [`docs/architecture.md`](../../docs/architecture.md):7 曾有「We recommend using an agent to explore the codebase and understand its architecture.」一句，本专题曾把它当作判断三的「事后注脚」侧证据。它在 `3f35ca7b5b` 被删除，现行 `docs/architecture.md` 与 `docs/architecture.zh.md` 都不再出现该句；因此判断三的因果源头现在只由 quality-gates note 单独支撑，**「它是后来的注脚、不是设计源头」这一侧只剩历史意义**。
-
-现行 `docs/architecture.md` 开篇只保留阅读顺序与 Cordis 前置说明（第 5 行，原句为：Read this before changing anything under packages. It assumes you know Cordis; if you do not, start with the primer or the tutorial；原文的 primer / tutorial 两处链接在此省略），不再出现任何面向 agent 的推荐句。
+现行 [`docs/architecture.md`](../../docs/architecture.md) 开篇只保留阅读顺序与 Cordis 前置说明（第 5 行，原句为：Read this before changing anything under packages. It assumes you know Cordis; if you do not, start with the primer or the tutorial；原文的 primer / tutorial 两处链接在此省略），未出现面向 agent 的探索推荐句；判断三主要由 archived 的 `quality-gates` 第一方自述与结构事实共同支撑。
 
 ## 参与规则的三层载体
 

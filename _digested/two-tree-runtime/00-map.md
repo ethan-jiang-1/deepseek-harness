@@ -29,7 +29,7 @@ Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一�
 
 | 目录 | 回答什么 | 什么时候打开 |
 |------|----------|--------------|
-| [`framework/`](./framework/00-map.md) | 两棵树共用的框架本体：五原语、waterfall、Loader/Include、24 条 vendor 本地修改 | 写 `apply`、挂监听、改配置行、依赖卸载时序 |
+| [`framework/`](./framework/00-map.md) | 两棵树共用的框架本体：五原语、waterfall、Loader/Include、vendor 本地修改 | 写 `apply`、挂监听、改配置行、依赖卸载时序 |
 | [`client/`](./client/00-map.md) | 浏览器那棵树：六层与依赖链、模块身份、浏览器启动、谁拥有状态、slot 与 conversation、插件纪律 | 加 UI、加 client 包、查「这条状态该住哪」「包为什么没启动」 |
 | [`remote/`](./remote/00-map.md) | 两棵树之间的线：`@Remote` 声明 → build 产物 → Gateway 派发 → Client mount；载体、认证、流 | 加一个跨边界方法、加一种推给浏览器的事实、查认证或重连 |
 

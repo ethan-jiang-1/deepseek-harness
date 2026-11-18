@@ -78,7 +78,7 @@ export function taskReady(state: TeamState, task: TeamTaskSnapshot): boolean {
 
 ## 归属树的机械细节：一棵树的三种表示
 
-归属树不是一个数据结构，是**三种并存表示**，各自为一种查询模式优化（`packages/subagent/subagent/src/activation.ts:39`-`111` 的 Activation 字段声明；`390fbe8852` 前在 `continuation-activation.ts`）：
+归属树不是一个数据结构，是**三种并存表示**，各自为一种查询模式优化（`packages/subagent/subagent/src/activation.ts:39`-`111` 的 Activation 字段声明）：
 
 | 表示 | 存在哪 | 回答什么查询 | 为什么是这种形态 |
 |------|--------|-------------|----------------|

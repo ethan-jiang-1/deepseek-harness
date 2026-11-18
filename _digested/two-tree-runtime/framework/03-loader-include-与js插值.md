@@ -56,9 +56,9 @@ Loader 在 `internal/config` 上挂了全局监听器：先 `next()` 拿到下�
 
 **不跨 include 边界。** 外层列表改不了子 Include 文件里的 id。这就是为什么用户 overlay 必须叠在同一 Include 上，而不是再套一层文件却指望 id 穿透。
 
-## Include 内部的串行化（applyQueue 已删除，现存 writeQueue）
+## Include 内部的持久化写队列（`writeQueue`）
 
-Include 的激活没有事务性重放：`vendor/loader/src/config/entry.ts` 的 detached `Entry.init()` 完成观察者处理两种结局、fiber 保留激活错误供显式审计。现存的串行点是**持久化写队列**：`writeQueue`（`vendor/include/src/index.ts:176`，`:323-328` 的链式 `then`）把配置文件的防抖写串起来、瞬时可重试、终态失败由 `Include.stop()` 重抛（vendor 清单第 14 条）。HMR 的模块替换与配置刷新改由产品侧 `packages/boot/hmr` 的同一条操作队列串行（见 [`../plugin-system/composition/03-user-patch-hmr.md`](../../plugin-system/composition/03-user-patch-hmr.md)），不再依赖 include 内部的 apply 队列。
+Include 的激活没有事务性重放：`vendor/loader/src/config/entry.ts` 的 detached `Entry.init()` 由完成观察者处理两种结局，fiber 保留激活错误供显式审计。Include 内部的串行点是**持久化写队列**：`writeQueue`（`vendor/include/src/index.ts:176`，`:323-328` 的链式 `then`）把配置文件的防抖写串起来，瞬时错误可重试，终态失败由 `Include.stop()` 重抛（vendor 清单第 14 条）。HMR 的模块替换与配置刷新由产品侧 `packages/boot/hmr` 的操作队列串行（见 [`../plugin-system/composition/03-user-patch-hmr.md`](../../plugin-system/composition/03-user-patch-hmr.md)）。
 
 ## 和 composition 专题的分工
 

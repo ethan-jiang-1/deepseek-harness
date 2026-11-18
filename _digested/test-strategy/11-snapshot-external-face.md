@@ -4,7 +4,7 @@
 
 ## 现象是什么：一个半公开的机制
 
-`packages/test-support/` 的两个快照支撑包都是 **npm 公开发布物**：`package.json` 里 `publishConfig.access: "public"`、无 `private`，版本随产品矩阵（当前 `0.2.1-rc.5`；`@deepseek-ai/dsh-llm-replay`、`@deepseek-ai/dsh-session-snapshot`）。`docs/user/develop/` 与 `docs/cookbook/` 没有面向外部的使用文档；`docs/cookbook/adding-a-session-format-version.md:85` 与 `upgrade-guide/v0.2.1-alpha.1/session-title-adapters/guide.md:16` 只是顺带提及。
+`packages/test-support/` 的两个快照支撑包都是 **npm 公开发布物**：`package.json` 里 `publishConfig.access: "public"`、无 `private`，版本随产品矩阵同步发布（`@deepseek-ai/dsh-llm-replay`、`@deepseek-ai/dsh-session-snapshot`）。`docs/user/develop/` 与 `docs/cookbook/` 没有面向外部的使用文档；`docs/cookbook/adding-a-session-format-version.md:85` 与 `upgrade-guide/v0.2.1-alpha.1/session-title-adapters/guide.md:16` 只是顺带提及。
 
 一句话定性：**能装、能挂、能自带夹具，但没有面向外部作者的文档。** 主仓把它们当内部测试基建使用并随矩阵发布；外部消费是「事实可行」，不是「官方支持面」。
 
@@ -87,4 +87,4 @@ export function apply(ctx: Context, config: Config = {}): void
 
 1. **双接受可检索**：`grep -n "cannot mix projected and complete" packages/test-support/llm-replay/src/index.ts`——错误串本身就是规则原文。
 2. **patch 未命中只是 warn 可复现**：读 `vendor/include/src/index.ts` 的 `warn('patch: entry %C not found', id)`——没有任何 throw 路径。
-3. **体积口径可复现**：`git ls-tree -r -l b830ec950faba0a46dda564be3e2d854afed94f1 snapshots | awk '{s+=$4} END {print s/1024}'` ≈ 9585 KB；换 `du -sh` 会得到虚高的块口径（~14MB）。
+3. **体积口径可复现**：`git ls-tree -r -l HEAD snapshots | awk '{s+=$4} END {print s/1024}'` ≈ 9585 KB；换 `du -sh` 会得到虚高的块口径（~14MB）。

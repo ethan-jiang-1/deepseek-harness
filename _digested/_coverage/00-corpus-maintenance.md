@@ -8,6 +8,28 @@
 
 ---
 
+## M12 · 2026-11-18 · 全仓源码核验纠偏 + SVG 几何重绘 + 漏扫专题收口 + 门禁硬化
+
+**性质**：对 M1–M11 后的 `_digested/` 做全仓逐专题源码核对、图表几何审查与门禁补盲（严格限于 `_digested/`）。
+
+1. **P0 源码事实纠偏与页内破损修复**：
+   - `capability-seams/04`、`00-map`、`three-roles.svg` / `roles-split.svg`：修正 `TypertRemoteService` Host Remote 控制面（`ctx.<key>`、Scoped Remote `request.agent` 校验、`apply` 挂载入口与 `ctx.directoryPickerController`），样本包改用 `dsh-user-approval`（`dsh-llm` 为注册表形态 Definition）。
+   - `plugin-system/composition/03`、`04`、`00-map`：修正 HMR 刷新走 `hmr.reconcileProfile()` → `recomposeProfile()`（区分 `config-editor` 的 `reconcileProfilePatches`），及 `initializeProfileFromDefault` / `rejectElectronProfile` 对 `desktop` 的语义；`runtime-profiles/01-web` 修正 desktop preset 来自 `dsh-web-app` `presets/*.patch.yml` 与 `agent-preset-registry`。
+   - `agent-loop/02`：修正 `RoundAttempt` 实际状态模型（`phase: 'queued' | 'claimed' | 'admitted'` + 正交布尔字段）与 host pause 竞态栅栏精确条件；`harness-idea/04` 清除 H1 前残留引用碎片。
+   - `tools-prompt-llm/`（01–06 + map + `chunk-to-message.svg`）：修正 PTC deferred image 的 `source: { kind: 'ptc-mode' }`、工具增删无条件写 `developer/message`、`Schemastery` 配置校验、`complete: true` 位于 `assemble()` 及 `request-pricing.ts` 常量；完成 `02`（工具管道/审批/timeout）与 `05`（chunk 到 settlement）拆分迁页并重写 `03` 为当前态。
+   - `surfaces-entrypoints/03`：修正 `packages/bundle/web-app/cordis.patch.yml` 的 desktop 条件行数（3 处）并解除引文误绑。
+2. **SVG 几何修复与图更新**（11 张，全量 SVG 几何检查 0 问题）：修复文字越界、箭头穿字、双栏碰撞与节点裁切（`class-map.svg`、`gaps-register.svg`、`two-axes-lifecycle.svg`、`flat-tree-load.svg`、`canon-loop.svg`、`initiator-boundary.svg`、`loading-paths.svg`、`team-anatomy.svg`、`six-layers.svg` 补入 `桌面`、`chunk-to-message.svg` 剥离无关工具线）；按 L0–L12 依赖主干重绘 `_digested/figures/topics.svg`。
+3. **跨专题清理与漏扫收口**：
+   - `system-overview/00-map` / `01`：将 `experimental/webhook` 剥离 7 包核心主干列表；清除 `01` 中 `#3087/#3325/#2948` 与跨度增量叙事并补齐 `## 源码入口`；`surfaces-entrypoints/00-map`、`agent-loop/00-map` 与 `two-tree-runtime/*` map 清零仓库 `:line` 钉死（全语料 `00-map.md` `:line` 钉死归 0）。
+   - `two-tree-runtime/`、`plugin-system/`、`session-and-loop/`、`agent-loop/`：清除残留 `NEW/OLD`、`applyQueue 已删除`、重复节、过时版本/跨度注记。
+   - 深扫 `test-strategy/`、`development-flow/`、`harness-idea/`：修正 `(HMR safety)` 实测计数（`67` → `72`）、补全 `docs/testing.md` 行数指针、`development-flow/00-map`（`十个问题，九篇入口`）与 `06`（`六条缺口`）、`08-reliability` 与 `07-naming-and-house-style` 引文漂移、`harness-idea/02` 的 `notes/README.md` `only-for` 口径，清除未标历史的轮次/commit/外部本地路径残留。
+   - `experimental/` & `delegation-and-orchestration/`：修正 `experimental/04` 对 `isReleaseMemberDirectory` 与 `checkExperimentalDependencyIsolation` 的阐释并补 `## 源码入口`；`experimental/02` 补 `wait_agent` 的 `noProgress` 短路与 JSON UTF-8 字节预算；`delegation-primitives/06` 替换虚构 `POLICY` 符号为 `teamPolicy` / `team:policy` 并校对行号。
+4. **文档治理与 `verify.mjs` 硬化**：
+   - 协调 `REDESIGN.md`（L0–L12、Wave 1–6、187 页、`00-index` 对齐）并修正 `canon/GLOSSARY.md:31` 为 `**原文**`。
+   - `verify.mjs` 硬化：`checkCanonQuotes` 对齐 `**原文**` 范围而不误拦纯中译 `**译**`；`checkMapLinks` 改为强制 Markdown 链接语法；`checkBaselineDeclarations` 增拦 `<sha> 基线` / `NEW 基线` / `当前 0.2.x-rc.x`；新增 `checkCorpusHygiene` 强制 `00-map.md` 无 `:line`、无 `~~`、无 `NEW/OLD`、无维护轮次叙事、SVG `<text>` 无 `**...**`。9 组变异自测均按预期报红、还原后全绿；`catalog.json` 仅为本轮逐行对过源码的 16 页更新 `reverified`（其余保留 `carried`）。
+
+---
+
 ## M11 · 2026-11-18 · 抽查三专题 + 基线声明门禁扩展
 
 **性质**：补齐 M9/M10 之后剩余的三处「只抽查未深挖」专题（development-flow / test-strategy / harness-idea），并按宪章 §2 加一道机器检查。

@@ -21,9 +21,9 @@
   <text x="795" y="106" text-anchor="middle" font-size="11" fill="#c2410c">surfaceOp append · 内嵌 stream</text>
   <rect x="40" y="148" width="880" height="164" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
   <text x="480" y="176" text-anchor="middle" font-size="12" fill="#374151">deriveMessages 使用 assembled message；逐 chunk 事实用 expandAssistantStream() 展开内嵌 stream。</text>
-  <text x="480" y="198" text-anchor="middle" font-size="12" fill="#374151">空 content 的 assistant/message（例如仅带 usage 的 max-tokens）投影为 null。</text>
-  <text x="480" y="226" text-anchor="middle" font-size="12" fill="#374151">tool timeout 挂在 tools/execute；审批走 approval/request。</text>
-  <text x="480" y="248" text-anchor="middle" font-size="12" fill="#374151">pre-execute 的 ask 缺少 answerer 时否决。</text>
-  <text x="480" y="276" text-anchor="middle" font-size="12" fill="#374151">agent/request-error 返回 retry：同一 step 再 stream，不新开 step。</text>
+  <text x="480" y="200" text-anchor="middle" font-size="12" fill="#374151">空 content 的 assistant/message（例如仅带 usage 的 max-tokens）投影为 null。</text>
+  <text x="480" y="226" text-anchor="middle" font-size="12" fill="#374151">异常 / 无可见内容取消写入 log-only 的 assistant/attempt（同样内嵌 stream）。</text>
+  <text x="480" y="250" text-anchor="middle" font-size="12" fill="#374151">agent/request-error 返回 retry：同一 step 再 stream，不新开 step。</text>
+  <text x="480" y="276" text-anchor="middle" font-size="12" fill="#374151">实时展示走 process-local 的 agent/assistant-stream 帧，与持久结算解耦。</text>
   <text x="480" y="298" text-anchor="middle" font-size="11" fill="#6b7280">ACP 只发 committed message；usage 跟 assistant/message 走。</text>
 </svg>

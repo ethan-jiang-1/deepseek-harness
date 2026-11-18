@@ -9,29 +9,29 @@
 
 | 专题 | 范围 | 页数 | 已核验 | 沿用 | 未登记 |
 |---|---|---:|---:|---:|---:|
-| [`system-overview/`](../system-overview/00-map.md) | 按下回车之后，插件怎么拼成一次能跑的对话；扩展点、单 loop 对照与门禁/基准。 | 4 | 0 | 4 | 0 |
+| [`system-overview/`](../system-overview/00-map.md) | 按下回车之后，插件怎么拼成一次能跑的对话；扩展点、单 loop 对照与门禁/基准。 | 4 | 2 | 2 | 0 |
 | [`two-tree-runtime/`](../two-tree-runtime/00-map.md) | 同一套 Cordis 在 Node 与浏览器各长一棵树，中间是类型化的线；一条会话事件穿过两棵树。 | 3 | 3 | 0 | 0 |
 | [`two-tree-runtime/framework/`](../two-tree-runtime/framework/00-map.md) | 两棵树共用的框架本体：五原语、waterfall、Loader/Include、vendor 本地修改。 | 6 | 2 | 4 | 0 |
 | [`two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) | 分层与单向依赖、模块身份与激活、浏览器启动、状态所有权、资源与视图、插件纪律。 | 16 | 5 | 11 | 0 |
 | [`two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md) | Typert 声明、Gateway 派发、载体与认证、两条出站链路与 wire 校验。 | 9 | 6 | 3 | 0 |
-| [`runtime-profiles/`](../runtime-profiles/00-map.md) | 一次启动装入什么：五个 launcher profile 与 desktop 应用自有 profile 的组合、差异与装载路径。 | 7 | 2 | 5 | 0 |
+| [`runtime-profiles/`](../runtime-profiles/00-map.md) | 一次启动装入什么：五个 launcher profile 与 desktop 应用自有 profile 的组合、差异与装载路径。 | 7 | 3 | 4 | 0 |
 | [`session-and-loop/`](../session-and-loop/00-map.md) | 会话存在哪、怎么读回来：事件映射、inbox/turn 时序、换 loop 的半径、格式世代。 | 5 | 0 | 5 | 0 |
-| [`agent-loop/`](../agent-loop/00-map.md) | 一次对话怎么推进与收尾：turn/step/activity/goal 边界、goal 状态机与自动续轮。 | 5 | 0 | 5 | 0 |
+| [`agent-loop/`](../agent-loop/00-map.md) | 一次对话怎么推进与收尾：turn/step/activity/goal 边界、goal 状态机与自动续轮。 | 5 | 1 | 4 | 0 |
 | [`delegation-and-orchestration/`](../delegation-and-orchestration/00-map.md) | 入门三页 + 两条座位：驾驶座看原语机制与选择，作者座看组合、合同、终态与观测；含九条陷阱与源码入口。 | 4 | 4 | 0 | 0 |
-| [`delegation-and-orchestration/delegation-primitives/`](../delegation-and-orchestration/delegation-primitives/00-map.md) | 每个原语是什么、保证什么、隔离什么、谁推进、怎么结算。 | 8 | 2 | 6 | 0 |
+| [`delegation-and-orchestration/delegation-primitives/`](../delegation-and-orchestration/delegation-primitives/00-map.md) | 每个原语是什么、保证什么、隔离什么、谁推进、怎么结算。 | 8 | 3 | 5 | 0 |
 | [`delegation-and-orchestration/primitive-selection/`](../delegation-and-orchestration/primitive-selection/00-map.md) | 官方边界句、互路由、升级阶梯、没说清的部分。 | 4 | 3 | 1 | 0 |
 | [`delegation-and-orchestration/preset-composition-and-contract-placement/`](../delegation-and-orchestration/preset-composition-and-contract-placement/00-map.md) | 能力面怎么组合、怎么收窄、合同放哪、深度与通知怎么叠加。 | 7 | 7 | 0 | 0 |
 | [`delegation-and-orchestration/completion-and-observation/`](../delegation-and-orchestration/completion-and-observation/00-map.md) | 五个完成时刻、谱系、状态三分、workflow 可复现性，及后续图投影与证据分层。 | 8 | 4 | 4 | 0 |
 | [`delegation-and-orchestration/design-perspectives/`](../delegation-and-orchestration/design-perspectives/00-map.md) | 为什么是这个形状、外部叙事逐条对照、九条陷阱。 | 5 | 3 | 2 | 0 |
 | [`capability-seams/`](../capability-seams/00-map.md) | 同一能力有多个实现时怎么换而不改调用方；从 bash 到 SSH、MCP、hooks 与新执行面。 | 11 | 11 | 0 | 0 |
 | [`plugin-system/`](../plugin-system/00-map.md) | 插件系统的三个轴：有什么、怎么成树、怎么走完一生；对外暴露另见 two-tree-runtime。 | 1 | 1 | 0 | 0 |
-| [`plugin-system/composition/`](../plugin-system/composition/00-map.md) | 一份 profile 怎么叠成运行中的插件树；dump、HMR、启动窗口与首屏交接。 | 6 | 1 | 5 | 0 |
+| [`plugin-system/composition/`](../plugin-system/composition/00-map.md) | 一份 profile 怎么叠成运行中的插件树；dump、HMR、启动窗口与首屏交接。 | 6 | 3 | 3 | 0 |
 | [`plugin-system/lifecycle/`](../plugin-system/lifecycle/00-map.md) | 插件从打包到卸载的七段；安装、启动、首启、配置、诊断、信任与端到端。 | 13 | 5 | 8 | 0 |
 | [`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) | 现成包、服务与工具的横切清单、复用出路与分类法。 | 6 | 0 | 6 | 0 |
 | [`experimental/`](../experimental/00-map.md) | 已评估但未承诺产品支持的实验能力：Python 子进程、Agent Teams、Inspector。 | 5 | 3 | 2 | 0 |
-| [`tools-prompt-llm/`](../tools-prompt-llm/00-map.md) | 模型每一步看见什么：工具清单、系统提示词、历史投影与内容块。 | 7 | 0 | 7 | 0 |
+| [`tools-prompt-llm/`](../tools-prompt-llm/00-map.md) | 模型每一步看见什么：工具清单、系统提示词、历史投影与内容块。 | 7 | 7 | 0 | 0 |
 | [`surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md) | 人/程序从哪里进：CLI、headless、Web、ACP、SDK、桌面，以及它们复用的 runtime spine。 | 4 | 2 | 2 | 0 |
-| [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：资产分布与成本、防漏机制、选层决策程序、CI 门禁、快照机制，以及插件项目的测试契约。 | 16 | 7 | 9 | 0 |
+| [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：资产分布与成本、防漏机制、选层决策程序、CI 门禁、快照机制，以及插件项目的测试契约。 | 16 | 8 | 8 | 0 |
 | [`development-flow/`](../development-flow/00-map.md) | DSH 的决策文档怎么立项、落地、忘记与回写：两轴路径编码、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与封印、命名与工程习惯、元环回写、六类执法者与诚实缺口。 | 10 | 10 | 0 | 0 |
 | [`harness-idea/`](../harness-idea/00-map.md) | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。 | 10 | 0 | 10 | 0 |
 | [`canon/`](../canon/00-map.md) | 宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。 | 7 | 7 | 0 | 0 |
@@ -42,8 +42,8 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../system-overview/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
-| [`01-扩展表非显然落点`](../system-overview/01-扩展表非显然落点.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`00-map`](../system-overview/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-扩展表非显然落点`](../system-overview/01-扩展表非显然落点.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`02-对照单一loop`](../system-overview/02-对照单一loop.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
 | [`03-门禁与性能基准`](../system-overview/03-门禁与性能基准.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
 
@@ -106,7 +106,7 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../runtime-profiles/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`01-web`](../runtime-profiles/01-web.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
+| [`01-web`](../runtime-profiles/01-web.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`02-headless`](../runtime-profiles/02-headless.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
 | [`03-sdk`](../runtime-profiles/03-sdk.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
 | [`04-sdk-minimal`](../runtime-profiles/04-sdk-minimal.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
@@ -129,7 +129,7 @@
 |---|---|---|---|---|
 | [`00-map`](../agent-loop/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
 | [`01-goal-lifecycle`](../agent-loop/01-goal-lifecycle.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`02-goal-round-driver`](../agent-loop/02-goal-round-driver.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`02-goal-round-driver`](../agent-loop/02-goal-round-driver.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`03-activity-vs-goal-boundaries`](../agent-loop/03-activity-vs-goal-boundaries.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
 | [`04-agent-runtime-identity`](../agent-loop/04-agent-runtime-identity.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
 
@@ -152,7 +152,7 @@
 | [`03-fresh-agent-iteration-loop-and-round-handoff`](../delegation-and-orchestration/delegation-primitives/03-fresh-agent-iteration-loop-and-round-handoff.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
 | [`04-cross-round-goals-and-the-round-driver`](../delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
 | [`05-background-jobs-and-wall-clock-schedules`](../delegation-and-orchestration/delegation-primitives/05-background-jobs-and-wall-clock-schedules.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`06-persistent-teams-with-a-shared-task-board`](../delegation-and-orchestration/delegation-primitives/06-persistent-teams-with-a-shared-task-board.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`06-persistent-teams-with-a-shared-task-board`](../delegation-and-orchestration/delegation-primitives/06-persistent-teams-with-a-shared-task-board.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`07-shipped-mount-state`](../delegation-and-orchestration/delegation-primitives/07-shipped-mount-state.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `delegation-and-orchestration/primitive-selection/`
@@ -228,8 +228,8 @@
 | [`00-map`](../plugin-system/composition/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
 | [`01-boot-时序`](../plugin-system/composition/01-boot-时序.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
 | [`02-dump-与boot-保真`](../plugin-system/composition/02-dump-与boot-保真.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`03-user-patch-hmr`](../plugin-system/composition/03-user-patch-hmr.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`04-profile-创建与保留名`](../plugin-system/composition/04-profile-创建与保留名.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`03-user-patch-hmr`](../plugin-system/composition/03-user-patch-hmr.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`04-profile-创建与保留名`](../plugin-system/composition/04-profile-创建与保留名.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`05-启动窗口与首屏交接`](../plugin-system/composition/05-启动窗口与首屏交接.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `plugin-system/lifecycle/`
@@ -275,13 +275,13 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../tools-prompt-llm/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
-| [`01-section顺序与前缀`](../tools-prompt-llm/01-section顺序与前缀.md) | mechanism | 沿用 | 687f282e86 | 页面声明 |
-| [`02-管道审批timeout与chunk`](../tools-prompt-llm/02-管道审批timeout与chunk.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
-| [`03-system-prompt作为surface节点`](../tools-prompt-llm/03-system-prompt作为surface节点.md) | mechanism | 沿用 | 687f282e86 | 页面声明 |
-| [`04-in-history提示词替换`](../tools-prompt-llm/04-in-history提示词替换.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
-| [`05-chunk到settlement`](../tools-prompt-llm/05-chunk到settlement.md) | mechanism | 沿用 | 687f282e86 | 页面声明 |
-| [`06-文件块与内容块投影`](../tools-prompt-llm/06-文件块与内容块投影.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`00-map`](../tools-prompt-llm/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-section顺序与前缀`](../tools-prompt-llm/01-section顺序与前缀.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`02-工具管道审批与timeout`](../tools-prompt-llm/02-工具管道审批与timeout.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`03-system-prompt作为surface节点`](../tools-prompt-llm/03-system-prompt作为surface节点.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`04-in-history提示词替换`](../tools-prompt-llm/04-in-history提示词替换.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`05-chunk到settlement`](../tools-prompt-llm/05-chunk到settlement.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`06-文件块与内容块投影`](../tools-prompt-llm/06-文件块与内容块投影.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `surfaces-entrypoints/`
 
@@ -304,7 +304,7 @@
 | [`05-decision-procedure`](../test-strategy/05-decision-procedure.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`06-rules-ownership`](../test-strategy/06-rules-ownership.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
 | [`07-ci-gates`](../test-strategy/07-ci-gates.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`08-reliability`](../test-strategy/08-reliability.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`08-reliability`](../test-strategy/08-reliability.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`09-infrastructure`](../test-strategy/09-infrastructure.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
 | [`10-snapshot-machinery`](../test-strategy/10-snapshot-machinery.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
 | [`11-snapshot-external-face`](../test-strategy/11-snapshot-external-face.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |

@@ -33,7 +33,7 @@
 5. **等待**：Lead 用 `wait_agent` 等下一次团队变化（名册 / 消息接纳 / 任务更新），而不是轮询；超时后重读当前状态。
 6. **收尾**：`reviewer` 的依赖解锁后 claim 审查任务；Lead 汇总。
 
-**边界**：`ready` 或 task `completed` 只表示状态提交，不等于业务完成；`wait_agent` 只报告是否超时，不返回结论；中断（`interrupt_agent`）只停当前 turn，不释放任务所有权也不删排队消息。驾驶座视角的完整工作流与协作纪律见 [`../delegation-and-orchestration/delegation-primitives/06-persistent-teams-with-a-shared-task-board.md`](../delegation-and-orchestration/delegation-primitives/06-persistent-teams-with-a-shared-task-board.md)。
+**边界**：`ready` 或 task `completed` 只表示状态提交，不等于业务完成；`wait_agent` 只报告是否超时（没有其他 `running`/`provisioning` 成员时立即返回带 `noProgress: { reason: 'no-active-peer' }` 的短路结果），不返回结论；中断（`interrupt_agent`）只停当前 turn，不释放任务所有权也不删排队消息。驾驶座视角的完整工作流与协作纪律见 [`../delegation-and-orchestration/delegation-primitives/06-persistent-teams-with-a-shared-task-board.md`](../delegation-and-orchestration/delegation-primitives/06-persistent-teams-with-a-shared-task-board.md)。
 
 ## 状态住在 Lead 的日志里
 
@@ -46,11 +46,11 @@
 
 ## 成员之间怎么协作
 
-**直接消息。** 任意成员可发给另一成员或 Lead；每次发送要么返回目标 inbox 的 `MessageId`，要么 throw。运行中的目标在最近 step 边界收到 steer，inactive 目标被启动或冷恢复。**成功 = inbox 接纳**，不是模型已处理；Team 不保留未接纳的发送意图、不在重启后重试新消息、不去重显式重发。每条消息都是某次成员工具调用经服务发出的——服务方法收 exact live calling `Agent`，自身不产生消息；内容按完整 sender-framed UTF-8 计 `maxMessageBytes` 上限（对等消息以发送者名字开头，名字计入预算）。
+**直接消息。** 任意成员可发给另一成员或 Lead；每次发送要么返回目标 inbox 的 `MessageId`，要么 throw。运行中的目标在最近 step 边界收到 steer，inactive 目标被启动或冷恢复。**成功 = inbox 接纳**，不是模型已处理；Team 不保留未接纳的发送意图、不在重启后重试新消息、不去重显式重发。每条消息都是某次成员工具调用经服务发出的——服务方法收 exact live calling `Agent`，自身不产生消息；大小校验按序列化后 JSON 的 UTF-8 字节数 `Buffer.byteLength(JSON.stringify(content), 'utf8')` 与 `maxMessageBytes` 比较（对等消息以发送者名字开头，名字计入预算）。
 
 **共享任务板。** 任何成员可加任务（标题、详情、可选依赖、可选文件提示）；依赖全部完成才可 claim。任务有 owner：claim 开工、complete 完成、release 放回、reopen 重开；Lead 可指派给任何成员。每次变更都是 **compare-and-set**：基于过期副本的更新被拒（`TEAM_TASK_STALE_REVISION`），两个成员不会悄悄覆盖彼此。文件提示（`writeScopes`）在进行中任务路径重叠时**只警告、从不阻塞**。删除的任务留 tombstone 供回放与 id 稳定，不占 `maxTasks`、不出现在 active 列表。
 
-**等待与中断。** 成员可 `wait_agent` 等下一次团队变化（名册 / 消息接纳 / 任务更新 / 活状态），只报告是否超时，调用方随后重读当前状态——代替轮询。Lead 可中断 teammate 当前 turn（`keepInbox`）：不删排队消息、不动任务所有权。
+**等待与中断。** 成员可 `wait_agent` 等下一次团队变化（名册 / 消息接纳 / 任务更新 / 活状态），没有其它 `running` 或 `provisioning` 成员时立即返回 `noProgress: { reason: 'no-active-peer' }` 短路；正常等待只报告是否超时，调用方随后重读当前状态——代替轮询。Lead 可中断 teammate 当前 turn（`keepInbox`）：不删排队消息、不动任务所有权。
 
 ## 模型看见什么：九个工具与两段 prompt
 

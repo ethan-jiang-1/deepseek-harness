@@ -65,7 +65,7 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 
 - required-on-read 在编译期拒绝未知事件类型；
 - 误配置在 load 时 fail loud；
-- `plugin_manager` 的安装校验与 runner 的 guarded registration 会在边界处指出违反的规则（`cordis_define` / `cordis_run` 模型工具已在 0.1.7 线退役，见 [`05`](./05-dynamic-legibility.md)）。
+- `plugin_manager` 的安装校验与 runner 的 guarded registration 会在边界处指出违反的规则（见 [`05`](./05-dynamic-legibility.md)）。
 
 错误发生在源头、消息指明违反的规则。agent 不需要猜测「哪里错了」，只需要按错误消息修。每轮试错都有信息增量。
 
@@ -73,23 +73,17 @@ agent 的工作方式是「写 → 跑 → 读错误 → 改」。这个循环�
 >
 > —— `AGENTS.md:136`（当时核验 `687f282e86…`）
 
-## 机制六：运行时 invariant 机制已整族退役
+## 机制六：规则约束落于静态门禁与类型投影
 
-`0.1.2-rc.1` 曾把这一层收窄成一条纪律：**invariant 只登记「独立观察会分叉」的运行时关系**——publish `./invariant` 仅在该包有可独立观察、会分叉的关系时成立，它检查有所有权的关系（权威事件流或可变数据），不检查 service 存在性、不检查插件元数据；空/忽略 reporter 判 fail（`verify-package-invariants` 强制）。这条纪律在 `dsh-v0.2.1-rc.2` 跨度内结束：commit `f028f25667`（`refactor: remove runtime invariant plugins`，1355 文件、−15409 行）把机制整族删除。
+dsh **不**维护独立的运行时 invariant 断言层：仓库中不存在 `@deepseek-ai/dsh-invariants`、`ctx.invariants` 服务或任何 `./invariant` 路径。
 
-被删除的东西：
+「**模型可见 ⟺ 已记录**」这条不变量由三道编译前 / 提交前与投影机制共同承担：
 
-- `@deepseek-ai/dsh-invariants` 包本身，以及每个包的 `./invariant` companion 与其测试——**新树里 `/invariant` 路径数量为 0**；
-- `scripts/test-invariants.ts` + `.spec.ts`、`scripts/verify-package-invariants.ts`、`scripts/verify-built-package-invariants.mjs` + `.spec.ts`；
-- [`scripts/run-gates.ts`](../../scripts/run-gates.ts) 里的 invariant 门禁、`INVARIANT` 编码的 listener rethrow 路径与 scoped-event resolver 生成器；
-- `ctx.invariants` 服务（NEW 基线生成表的 99 个服务里已无此项）；
-- 根 `AGENTS.md` 的「Runtime invariants assert owned relationships」条令整条，`packages/AGENTS.md` 同步移除。
+- `SessionEventMap` 的 required-on-read 类型纪律；
+- `deriveMessages()` 从 session log 到模型消息的纯函数投影；
+- 根 [`AGENTS.md:137`](../../AGENTS.md) 常驻条令与静态检查（具体退场背景见升级指南 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)）。
 
-上一轮收缩中「有真实分叉关系因而幸存」的 `dsh-agent-loop/invariant`——在 loop 构建的每次 `llm/stream` 上独立重建请求并与日志比对——也在这轮删除里消失，**运行时 invariant 机制不再有任何幸存实例**。权威记录是升级指南 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)，两篇机制 note（[`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md)、[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)）都已归档为历史快照。
-
-对 digest 这是一条两段实证：`0.1.2-rc.1` 先证明「连显式空断言都会被上游当噪音裁掉」——可执行化的正确形状是「只在有真关系处断言」，不是「处处有断言」；`f028f25667` 再证明「有真关系」也不足以让运行时断言层留下。它承担的那条关系（**模型可见 ⟺ 已记录**）现在由 `SessionEventMap` 的 required-on-read、`deriveMessages()` 投影与根 [`AGENTS.md:137`](../../AGENTS.md) 条令共同承担，没有运行时比对。
-
-因此「门禁管提交前，invariant 管运行时」的双线读法在当前树上只剩一条线：**提交前的门禁**。规则要可执行，就得落在门禁与类型上；运行时断言层是这段历史的上一形态。
+对 harness 设计而言，这条约束的落点很明确：可机械执行的保证尽量前移到**提交前门禁、类型系统与纯投影**，而不是依赖运行期额外的比对层。
 
 ## 机制七：门禁即教学，且门禁自身被测试
 
@@ -121,9 +115,7 @@ dsh 把「正确」编码进系统的**形状**与**检查**：扩展点路由�
 - [`docs/architecture.md`](../../docs/architecture.md)（第 69、142 行；事件域与扩展表）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）
 - [`docs/cookbook/adding-a-tool.md`](../../docs/cookbook/adding-a-tool.md)（tool 合同与最小 shape）
-- [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)（运行时 invariant 机制整族退役的权威记录；原 `packages/core/agent-loop/src/invariant.ts` 实例随之删除，无继任）
-- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（已归档，历史快照；`0.1.2-rc.1` 废除空 companion 的裁定）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md)（已归档，历史快照；第 24、30 行。两篇 note 记录的机制已在 `f028f25667` 整族退役）
+- [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)（无运行时 invariant 机制的迁移说明；两篇相关历史 note 为 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md) 与 [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md)，均已归档）
 - [`../../.agents/skills/dsh-pre-push-checks/SKILL.md`](../../.agents/skills/dsh-pre-push-checks/SKILL.md)（选门禁的判断被外置成 guidance）
 - [`../../docs/testing.md`](../../docs/testing.md)（第 9、35、37-41、53-55 行；coverage、元验证、真实入口与 snapshot 政策）
 - [`../../AGENTS.md`](../../AGENTS.md)（第 133、136、137、143 行；注册即效果、waterfall、model-visible、fail loud）

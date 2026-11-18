@@ -64,7 +64,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 |------|------|------|--------|
 | **seam**（含独占注册位变体） | 三角色齐全：Definition + 可替换 Provider + Consumer | `ctx.shell`、`ctx.fs`、`ctx.subagents`；注册位：`ctx.browserUse` | [`01`](./01-三角色与分包装.md) |
 | **core 服务**（可带适配器消费者） | 有 `ctx.<key>` 但只有一份实现；来源适配器不是 Provider | `ctx.schedule`、`ctx.ssh` 连接、`ctx.webhookRuntime` + GitHub 适配器 | [`04`](./04-新增seam与Remote.md) |
-| **Remote 通信协议** | 没有 Host 侧 `ctx.<key>`、没有 Cordis Service，按 wire 分界 | `packages/api/remotes/` + Typert | [`04`](./04-新增seam与Remote.md) |
+| **Remote 通信协议** | 按 wire 分界而非多 Provider 竞聘位：Host 侧服务继承 `TypertRemoteService`（占 `ctx.<key>`，如 `ctx.sessionController`、`ctx.goals`），Client 侧挂在 `ctx.remote.<ns>` 上 | `TypertRemoteService` + `packages/typert/` + `packages/api/remotes/` | [`04`](./04-新增seam与Remote.md) |
 | **刻意的进程级库** | 连 `ctx` 键都不设：每进程一条答案，没有更窄的作用域可授予 | `packages/util/http-proxy/` | [`06`](./06-外发代理策略.md) |
 
 「为什么这些能力刻意不成 seam」和「为什么这很重要」在 [`04-新增seam与Remote.md`](./04-新增seam与Remote.md) 展开；进程级外发代理是「刻意不成 seam 的库」的样本，见 [`06-外发代理策略.md`](./06-外发代理策略.md)。

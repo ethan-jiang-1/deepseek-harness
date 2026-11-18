@@ -28,7 +28,7 @@
 | `exchange`／交互段 | **原文**「…接纳真人输入的轮次起，到下一个这样的轮次为止；由通知（子 agent 完成、Goal Round、定时任务等）唤醒的轮次归入前面的交互段」（[glossary.zh](../../docs/glossary.zh.md)） | Chat 折叠的边界；通知唤醒的轮次归入前面的交互段 | 「会话片段」 |
 | `goal`／Goal Round | **原文**「附着在现有会话上的单个持久完成目标……为当前目标接纳的一次续行周期」（[glossary.zh](../../docs/glossary.zh.md)） | 持久目标与其续行 | 「任务」「计划」 |
 | `human command`／人类命令 | **原文**「以斜杠开头的指令，由面向人类的适配器通过 `ctx.commands` 解释并执行，不会成为模型消息」（[glossary.zh](../../docs/glossary.zh.md)） | 人与模型的另一条入口 | 「命令工具」「斜杠工具」 |
-| session log／会话日志 | **译**「the session log remains its source of truth」（[glossary](../../docs/glossary.md)） | 追加写的持久事实 | 「聊天记录」「transcript」 |
+| session log／会话日志 | **原文**「the session log remains its source of truth」（[glossary](../../docs/glossary.md)） | 会话日志是唯一真相源头；追加写的持久事实 | 「聊天记录」「transcript」 |
 | projection／投影 | **原文**「registered units fold committed events incrementally, host consumers read one typed state with `stateOf()`」（[architecture](../../docs/architecture.md)） | 由日志折叠出的当前值，可重建 | 「摘要」「缓存」 |
 | storage domain | **原文**「the Consumer data form … the backend contract's only Consumer and the typed API everything else uses」（[storage](../../docs/subsystems/storage.md)） | 三层分工里的中间层：hub（`ctx.storage`）选后端，data form（`ctx.storageDomain`）拥有语义，插件只碰 data form | 「数据库」（那是后端 json/sqlite）「插件数据根」 |
 

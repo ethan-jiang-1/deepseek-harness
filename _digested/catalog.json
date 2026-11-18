@@ -16,16 +16,16 @@
           "file": "00-map.md",
           "title": "System · 整机介绍",
           "role": "map",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "01-扩展表非显然落点.md",
           "title": "Architecture 扩展表的非显然落点",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -374,7 +374,7 @@
           "title": "web — 浏览器 GUI",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -495,8 +495,8 @@
           "file": "02-goal-round-driver.md",
           "title": "Goal Round Driver — 自动续轮的 loop engineering",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -617,8 +617,8 @@
           "file": "06-persistent-teams-with-a-shared-task-board.md",
           "title": "持久团队与共享任务板",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -1008,16 +1008,16 @@
           "file": "03-user-patch-hmr.md",
           "title": "用户 patch 的 HMR",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "04-profile-创建与保留名.md",
           "title": "profile 创建与保留名",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -1260,56 +1260,56 @@
           "file": "00-map.md",
           "title": "Tools, prompt, LLM · 模型可见面",
           "role": "map",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "01-section顺序与前缀.md",
           "title": "Prompt section 顺序与前缀稳定",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
-          "file": "02-管道审批timeout与chunk.md",
+          "file": "02-工具管道审批与timeout.md",
           "title": "工具管道、审批与 timeout",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "03-system-prompt作为surface节点.md",
           "title": "system prompt 作为 surface 节点",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "04-in-history提示词替换.md",
           "title": "in-history 提示词替换",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "05-chunk到settlement.md",
           "title": "chunk 到 settlement",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "06-文件块与内容块投影.md",
           "title": "文件块与内容块投影",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         }
       ]
@@ -1430,8 +1430,8 @@
           "file": "08-reliability.md",
           "title": "08 — 测试可靠性纪律：共享世界上让偶发失败无处藏身",
           "role": "mechanism",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {

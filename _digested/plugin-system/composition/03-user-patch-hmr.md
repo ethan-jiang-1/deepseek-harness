@@ -1,12 +1,12 @@
 # 用户 patch 的 HMR
 
-源码核验入口：`packages/boot/hmr/src/index.ts`（hmr 插件本体）、`packages/boot/app-boot/src/index.ts` 的 `reconcileProfilePatches`、`packages/boot/app-boot/src/profile-resolution/`（模块解析拦截层）、`apps/cli/tests/profile-hmr.spec.ts`。
+源码核验入口：`packages/boot/hmr/src/index.ts`（hmr 插件本体）、`packages/boot/app-boot/src/index.ts` 的 `recomposeProfile`（及 `config-editor` 使用的 `reconcileProfilePatches`）、`packages/boot/app-boot/src/profile-resolution/`（模块解析拦截层）、`apps/cli/tests/profile-hmr.spec.ts`。
 
 boot 叠完的树不是一次性的。profile 的 `cordis.patch.yml`、home 层 patch 与 profile 的 `package.json` 改了要热更新；失败的候选不能把正在服务的树拆掉；bundle 层和 `--patch` / launcher overlays 不许被用户文件挤掉。
 
 ## 机制形状
 
-现机制：**`hmr` 插件自己监视三份文件，经 `reconcileProfilePatches` 原子换入新 patch 集**，模块热替换与配置重载共用同一条串行队列（`packages/boot/hmr/src/index.ts:1` "Serialized module and profile-configuration reloads"）。换代的来龙去脉（旧 launcher 侧 compose/watch 字段随事务性 Cordis 重载一并退役）见 [`../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md)。
+**`hmr` 插件自己监视三份文件，经 `hmr.reconcileProfile()` 调 `recomposeProfile` 原子换入新 patch 集与运行时解析表**，模块热替换与配置重载共用同一条串行队列（`packages/boot/hmr/src/index.ts:1` "Serialized module and profile-configuration reloads"）。（`config-editor` 写配置走不重算 resolution 的 `reconcileProfilePatches`。）换代背景见 [`../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md)。
 
 ## hmr 插件看哪三份文件
 
@@ -22,13 +22,13 @@ boot 叠完的树不是一次性的。profile 的 `cordis.patch.yml`、home 层 
 
 ![热更新只换用户层](./figures/live-recompose.svg)
 
-任一被监视文件变化 → `refresh()`（`:388-405`）：
+任一被监视文件变化 → `refresh()`（`:388-405`）→ `this.reconcileProfile()`（`:399`；定义 `:925-971`）：
 
 1. 重读三份文件内容做指纹比对，无变化直接返回；ENOENT 视为该层为空。
-2. `readProfilePatches('dsh', profile)` 组出完整 patch 列表（bundle 层 + 用户两层由 profile 读取函数统一装配，bundle 与 overlay 不会被用户文件挤掉）。
-3. `reconcileProfilePatches(root, patches, 'dsh')`（`packages/boot/app-boot/src/index.ts:322-436`，实现拆在 `:328` 起的 `recompose`）：从根 Include 的当前 config 拆掉旧 `patches`、保留其余 Include 选项，`prepareProfilePatches` 后 `entry.update({ config: { …includeConfig, patches } })` 一次提交（`:388-392`）；等旧 fiber 收束、loader 静止后清点失活条目。
-4. **失败大声**：只对「本次新引入」的失活条目抛错（`:399-407`）——启动时就坏的条目不会因为一次无关刷新把进程打死；先前已存在的失败以 warning 逐条记录（返回值）。
-5. 成功后 `ctx.emit('app-boot/config-reload')`（`:411`；声明 `app-boot/src/index.ts:54`；消费方如 `SettingsForms` 以它作失效信号，`packages/settings/settings/src/index.ts:234`）。
+2. `readProfilePatches('dsh', profile)` 组出完整 patch 列表（bundle 层 + 用户两层由 profile 读取函数统一装配，bundle 与 overlay 不会被用户文件挤掉），并对比已加载模块与磁盘文件状态。
+3. `recomposeProfile(this.ownerContext.root, patches, 'dsh', { requiredIds, running })`（`:969`；`packages/boot/app-boot/src/index.ts:307-311`，实现拆在 `:328` 起的 `recompose(..., true)`）：更新运行时解析表并从根 Include 提交完整 `patches`，重启先前活跃或导入失败的条目；等旧 fiber 收束、loader 静止后清点失活条目。
+4. **失败大声**：只对「本次新引入或变化」的失活条目抛错（`app-boot/src/index.ts` 的新/变化失败判定）——启动时就坏的条目不会因为一次无关刷新把进程打死；先前已存在的失败以 warning 逐条记录（返回值）。
+5. 成功后发出配置重载相关通知与事件（如 `SettingsForms` 监听并刷新表单，见 `packages/settings/settings/src/index.ts`）。
 
 模块热替换与这条配置链共用 `watchConfig(filename, refresh)`（`:289`，同队列、重复路径抛错；watcher 失败记日志不致命）与 `hmr.runExclusive`（plugin-manager / config-editor 的写路径都从这条队列过，`packages/boot/plugin-manager/src/index.ts:852`、`packages/boot/config-editor/src/index.ts:153`）。
 

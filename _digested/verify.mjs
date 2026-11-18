@@ -662,14 +662,15 @@ function checkCanonQuotes() {
     const lines = source.split('\n')
     for (let index = 0; index < lines.length; index += 1) {
       const line = lines[index]
-      if (/^\s*\|/.test(line) && (line.includes('**原文**') || line.includes('**译**'))) {
+      if (/^\s*\|/.test(line) && line.includes('**原文**')) {
         for (const cell of line.split('|')) {
-          if (cell.includes('**原文**') || cell.includes('**译**')) checkSegment(path, index + 1, cell)
+          if (cell.includes('**原文**')) checkSegment(path, index + 1, cell)
         }
       } else if (line.includes('**它怎么说**')) {
         checkSegment(path, index + 1, line.split('**它怎么说**')[1])
-      } else if (line.includes('**原文**') || line.includes('**译**')) {
-        checkSegment(path, index + 1, line.split(/\*\*(?:原文|译)\*\*/)[1])
+      } else if (line.includes('**原文**')) {
+        const match = line.match(/\*\*原文\*\*([\s\S]*?)(?=\*\*|$)/)
+        if (match !== null) checkSegment(path, index + 1, match[1])
       }
     }
   }
@@ -1058,7 +1059,7 @@ function checkCoverage() {
   }
 }
 
-/** Every page must be linked from its topic map. */
+/** Every page must be linked from its topic map via a Markdown link. */
 function checkMapLinks() {
   if (catalog === null) return
   for (const topic of catalog.topics) {
@@ -1068,9 +1069,10 @@ function checkMapLinks() {
     const source = readFileSync(mapPath, 'utf8')
     for (const page of topic.pages) {
       if (page.file === topic.map) continue
-      const base = page.file.split('/').pop()
-      if (!source.includes(page.file) && !source.includes(base)) {
-        report(mapPath, undefined, `topic map does not link ${page.file}`)
+      const escaped = page.file.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const linkPattern = new RegExp(`\\]\\((?:\\.\\/)?${escaped}(?:#[^)]*)?\\)`)
+      if (!linkPattern.test(source)) {
+        report(mapPath, undefined, `topic map does not link ${page.file} with Markdown link syntax`)
       }
     }
   }
@@ -1129,11 +1131,53 @@ function checkBaselineDeclarations(files) {
     if (rel.startsWith('_change_log/') || rel.startsWith('_coverage/')) continue
     const lines = readFileSync(path, 'utf8').split('\n')
     for (let index = 0; index < lines.length; index += 1) {
-      if (/(产品源码基线|专题基线)[：:]/.test(lines[index])) {
+      const line = lines[index]
+      if (/(产品源码基线|专题基线)[：:]/.test(line)) {
         report(path, index + 1, 'page-level baseline declaration is retired; register the page in catalog.json instead')
       }
-      if (/基线\s*`?[0-9a-f]{7,40}/.test(lines[index])) {
-        report(path, index + 1, 'a commit id is presented as a baseline; call it 当时核验 (citation-time verification point) and keep the only baseline in catalog.json')
+      if (/基线\s*`?[0-9a-f]{7,40}/.test(line) || /[0-9a-f]{7,40}`?\s+基线/.test(line) || /\bNEW\s*基线/.test(line)) {
+        report(path, index + 1, 'a commit or NEW tag is presented as a baseline; keep the only baseline in catalog.json')
+      }
+      if (/当前\s*`?0\.2\.[0-9]+-rc\.[0-9]+/.test(line)) {
+        report(path, index + 1, 'inline RC baseline label in mechanism page; keep versions in catalog.json')
+      }
+    }
+  }
+}
+
+/**
+ * Current-state corpus hygiene checks outside governance/ledger directories:
+ * (1) 00-map.md pages must not pin repo file:line anchors;
+ * (2) no strikethroughs (~~), NEW/OLD markers, or span/round narration;
+ * (3) SVGs must not leak Markdown **bold** markers inside <text> nodes.
+ */
+function checkCorpusHygiene(files) {
+  for (const path of files) {
+    const rel = relative(corpusRoot, path)
+    if (extname(path) === '.svg') {
+      const lines = readFileSync(path, 'utf8').split('\n')
+      for (let index = 0; index < lines.length; index += 1) {
+        if (/<text[^>]*>.*\*\*.*\*\*/.test(lines[index])) {
+          report(path, index + 1, 'SVG <text> contains literal Markdown **bold** markers')
+        }
+      }
+      continue
+    }
+    if (extname(path) !== '.md') continue
+    if (rel === '00-index.md' || rel === 'CORPUS-CHARTER.md' || rel === 'REDESIGN.md') continue
+    if (rel.startsWith('_change_log/') || rel.startsWith('_coverage/')) continue
+    for (const { line, text } of activeMarkdownLines(readFileSync(path, 'utf8'))) {
+      if (rel.endsWith('00-map.md') && /(?:packages|apps|scripts|docs|vendor|\.agents)\/[^\s)`#:]+:\d+/.test(text)) {
+        report(path, line, 'topic 00-map.md must not pin repo :line numbers; use file + symbol only')
+      }
+      if (/~~/.test(text)) {
+        report(path, line, 'strikethrough (~~) is retired outside _change_log/ and _coverage/')
+      }
+      if (/\b(NEW|OLD)\b/.test(text)) {
+        report(path, line, 'historical span token NEW/OLD belongs in _change_log/, not mechanism pages')
+      }
+      if (/本跨度/.test(text) || /(?:^|\D)(?:0006|0007|0008|0009)\s*(?:起|复核|时代|独立反查|是复核)/.test(text)) {
+        report(path, line, 'maintenance round narration belongs in _change_log/ or _coverage/, not mechanism pages')
       }
     }
   }
@@ -1166,6 +1210,7 @@ checkMapLinks()
 checkTables(files)
 checkCharterCopies()
 checkBaselineDeclarations(files)
+checkCorpusHygiene(files)
 claimRegister = checkClaimRegister()
 checkOrphanPages()
 checkRetiredTerms(files)

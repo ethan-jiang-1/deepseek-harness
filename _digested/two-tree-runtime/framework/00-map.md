@@ -40,7 +40,7 @@ dsh 里最容易踩的事件合同就是 waterfall。它是 around-middleware，
 
 [`vendor/README.md`](../../../vendor/README.md) 是本地修改的权威清单。Harness 直接依赖其中的 effect 卸载时序、Include 的解析保护与持久化写、共享 patch 算法和延迟配置插值；profile 组合、dump 与 HMR 都建立在这些行为上。产品依赖和对应源码见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
 
-> **vendor**：cordis 4.0.5；本地修改逐条清单与版本列见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)，拟升级计划见 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。逐跨度的清单变化账目归 [`../../_change_log/`](../../_change_log/00-index.md)。
+> **vendor**：本地修改逐条清单、包发布版本列与拟升级计划见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md) 与 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。
 
 ## 源码入口
 

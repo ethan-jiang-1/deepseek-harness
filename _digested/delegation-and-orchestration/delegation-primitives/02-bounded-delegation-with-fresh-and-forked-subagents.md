@@ -140,8 +140,8 @@ Activation 所有权图（`packages/subagent/subagent/src/activation.ts:39`-`111
 | `docs/subsystems/subagent.md` | seam 权威文档：能力旗标、start request、seed、深度、权限、interrupt、settle notice |
 | `packages/subagent/subagent/src/types.ts` | `SubagentStartRequest`/`SubagentCapabilities`/provider 接口（`:123`-`201`、`:316`-`340`） |
 | `packages/subagent/subagent/src/index.ts` | 服务注册、`start`/`startActivation`（`:216`、`:269`-`300`）、capability 校验（`:631`-`655`）、`maxDepth` 默认 1（`:196`）、`maxActiveSubagents` 默认 8（`:197`） |
-| `packages/subagent/subagent/src/manager.ts` | continuation manager + Activation 注册表（`390fbe8852` 合并两者）：物化、sendMessage 双向路由、coldResume、容量池、interrupt、settled 判定与 settle notice |
-| `packages/subagent/subagent/src/activation.ts` | Activation 类型与 ActivationPool（`390fbe8852` 由 `activation-driver.ts` 改名） |
+| `packages/subagent/subagent/src/manager.ts` | continuation manager 与 Activation 注册表：物化、sendMessage 双向路由、coldResume、容量池、interrupt、settled 判定与 settle notice |
+| `packages/subagent/subagent/src/activation.ts` | Activation 类型与 ActivationPool |
 | `packages/subagent/subagent/src/child-agent.ts` | childSessionMeta、applyChildComposition（preset join）、delegated policy 捕获 |
 | `packages/subagent/subagent/src/depth.ts` | 双字段深度取大、单调 floor |
 | `packages/subagent/subagent/src/descriptor.ts` | 版本 3 descriptor：冷恢复身份，不快照 merge-extensible 字段 |

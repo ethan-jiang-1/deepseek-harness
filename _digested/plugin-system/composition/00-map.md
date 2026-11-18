@@ -4,7 +4,7 @@
 
 一次正在跑的 `dsh` 是 boot 时按层**叠出来的插件树**。profile 是 Harness home 里的具名组合，bundle 是可安装的 patch 层，用户的 `cordis.patch.yml` 叠在所有 bundle 之上。仓库里没有一份「最终 cordis.yml」代表你机器上的树——**那棵树是算出来的**。
 
-先修概念：Cordis 的 Loader / Include / patch 算法在 [`../../two-tree-runtime/framework/`](../../two-tree-runtime/framework/00-map.md)；五个 launcher profile 各自装什么在 [`../../runtime-profiles/`](../../runtime-profiles/00-map.md)；本专题拥有**层叠算法与 patch 语义本身**，以及 boot、dump、HMR、profile 创建这条装载机制线。
+先修概念：Cordis 的 Loader / Include / patch 算法在 [`../../two-tree-runtime/framework/`](../../two-tree-runtime/framework/00-map.md)；各 launcher profile（五个内置模板 + desktop）各自装什么在 [`../../runtime-profiles/`](../../runtime-profiles/00-map.md)；本专题拥有**层叠算法与 patch 语义本身**，以及 boot、dump、HMR、profile 创建这条装载机制线。
 
 ## 从空列表开始叠
 
@@ -28,7 +28,7 @@
 - **profile**：`$DSH_HOME/profiles/<name>`（未设 `DSH_HOME` 则为 `~/.dsh`）。里面有 `package.json`（`dsh.profile.bundles` + 树外插件）和用户自己的 `cordis.patch.yml`。
 - **bundle**：npm 包，清单里写 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`。`dsh-base` 是 base-backed 组合的第一层。可安装能力分两个档位：`OPTIONAL_BUNDLES` 随安装出货、默认关断（清单归 [`../../experimental/00-map.md`](../../experimental/00-map.md)）；`ON_DEMAND_BUNDLES`（Codex / Claude Code provider）按需安装（机制归 [`../../capability-seams/03-subagent后台与产品provider.md`](../../capability-seams/03-subagent后台与产品provider.md)）。
 - **模板**：五个内置 profile（web / headless / sdk / sdk-minimal / acp）首次使用自动初始化；模板清单与各 profile 差异的**家**在 [`../../runtime-profiles/00-map.md`](../../runtime-profiles/00-map.md)。其它名字必须先初始化，否则 fail loud；`--from-default-profile` 与保留名的机制见 [`04-profile-创建与保留名.md`](./04-profile-创建与保留名.md)。
-- **preset**：会话级声明，id 与显示名**分离**——preset 行只带 id，shipped 显示文案经 locale 键解析（`packages/preset/agent-preset-registry/src/display.ts`），用户自建 preset 的自由文本名不做本地化。四个 shipped preset 是 `standard` / `ptc` / `minimal` / `cordis`（`cordis` 的显示名是 **Creator mode / 创造模式**，`packages/client/ui-agent-preset/src/client/locales.ts`；**PTC** = 用 `run_code` 跑模型写的脚本、再由脚本扇出子代理的模式，原称 code-mode）；声明以 `presets/*.patch.yml` 随 `dsh-web-app` 携带。PTC 相对 standard 的实质差异：对 workflow 面 `isolate.workflowEngine: true`、disable `workflow-ptc` 行（不发布 `run_code` 之外的第二个编排面），并 disable `tool-plugin-manager` / `tool-plugin-market`。preset 的组合与收窄归 [`../../delegation-and-orchestration/preset-composition-and-contract-placement/`](../../delegation-and-orchestration/preset-composition-and-contract-placement/00-map.md)。
+- **preset**：会话级声明，id 与显示名**分离**——preset 行只带 id，shipped 显示文案经 locale 键解析（`packages/preset/agent-preset-registry/src/display.ts`），用户自建 preset 的自由文本名不做本地化。四个 shipped preset 是 `standard` / `ptc` / `minimal` / `cordis`（`cordis` 的显示名是 **Creator mode / 创造模式**，`packages/client/ui-agent-preset/src/client/locales.ts`；**PTC** = 用 `run_code` 跑模型写的脚本、再由脚本扇出子代理的模式），声明以 `presets/*.patch.yml` 随 `dsh-web-app` 携带，具体组合与隔离差异归 [`../../delegation-and-orchestration/preset-composition-and-contract-placement/`](../../delegation-and-orchestration/preset-composition-and-contract-placement/00-map.md)。
 - **启动环境分层**：进程继承 > 项目 `.env` > home `.env`；bootstrap-only 变量不许来自项目 `.env`（home 层只豁免四个代理名）。分层机制与凭据来源链归 [`01-boot-时序.md`](./01-boot-时序.md)；代理豁免的证据链归 [`../../capability-seams/06-外发代理策略.md`](../../capability-seams/06-外发代理策略.md)。
 
 `cordis:group` 与 Include 一起注册，使 provider 和 Consumer 可以处于同一个 **`isolate` realm**（隔离域：同一 key 在其中独立实例化的一套服务实例域）；agent preset 的服务隔离依赖这一点。
@@ -51,7 +51,7 @@
 |------|------|
 | [`01-boot-时序.md`](./01-boot-时序.md) | `runProfile` → `prepareProfile` → `boot()`；两段失败标签；`installFailLoud`；启动环境分层 |
 | [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md) | 同一 `applyEntryPatches`；dump 不含 launcher 派生层；`!!js` 不求值 |
-| [`03-user-patch-hmr.md`](./03-user-patch-hmr.md) | `hmr` 插件监视 profile/home patch 与包清单，`reconcileProfilePatches` 调和；新失败大声、旧失败保留好树 |
+| [`03-user-patch-hmr.md`](./03-user-patch-hmr.md) | `hmr` 插件监视 profile/home patch 与包清单，`recomposeProfile` 调和；新失败大声、旧失败保留好树 |
 | [`04-profile-创建与保留名.md`](./04-profile-创建与保留名.md) | `--from-default-profile` 的复制语义与独占抢占；与 `dsh plugin` 初始化路径的分工；`desktop` 保留名 |
 | [`05-启动窗口与首屏交接.md`](./05-启动窗口与首屏交接.md) | 六段流水线；作者四窗 A–D；首屏五步；硬限制与自证配方 |
 

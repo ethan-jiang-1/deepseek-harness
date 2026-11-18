@@ -12,25 +12,15 @@ Loop 管推进，结束却分好几层：Loop 不是「模型回答完就结束�
 |----|---------|-------|---------|
 | **step** | 一次模型请求 + 它所调用的工具 | 模型不再调工具 / `max-tokens` / error | `step/end` 事件 |
 | **turn** | 一个输入被抽干（可含多个 step） | 工具结果 `concludesTurn` / `agent/turn-stopping` 无人 `steer` | `turn/end` 事件 |
-| **driver activity** | 一段连续运行的 agent 活动（从一次唤醒到重新 idle 的整段，可含多个 turn） | Agent 回到 idle，且 inbox 无待唤醒消息；整段活动运行在以该 agent 为 initiator 的因果边界内（`packages/core/agent-loop/src/agent.ts:234`） | `agent/status === 'idle'` |
+| **driver activity** | 一段连续运行的 agent 活动（从一次唤醒到重新 idle 的整段，可含多个 turn） | Agent 回到 idle，且 inbox 无待唤醒消息；整段活动运行在以该 agent 为 initiator 的因果边界内（`packages/core/agent-loop/src/agent.ts`） | `agent/status === 'idle'` |
 | **goal** | 一个持久目标达成或被放弃 | 模型调用 `update_goal` complete/blocked，或 round-driver 自动 block | `goal/change` 事件 |
 
 **Agent idle 不代表任务完成**——它只说明此刻没有待处理的消息。Goal 如果还是 `active + armed`，Goal Round Driver 会在 idle 时自动发起下一轮。
 
-## 产生 Goal 的四条路径
+## 它不是什么
 
-DSH 没有隐藏的意图理解引擎。Goal 经四条路径产生：
-
-| 路径 | 触发器 | 代码入口 | 典型场景 |
-|------|--------|---------|---------|
-| **Human `/goal`** | 用户手敲 `/goal 重构整个模块` | `packages/goal/command-goal/` | 你明确想设一个持久目标 |
-| **Model `create_goal`** | LLM 在 turn 中调用 `create_goal` tool | `packages/goal/tool-goal/` | 你给了一个需求，模型判断这是长期任务、主动创建 goal |
-| **Goal Round Driver** | 不创建，只延续。在 active + armed goal 下按 idle → 下一轮 | `packages/goal/goal-round-driver/` | 自动续轮，不会自动创建 |
-| **Host Remote `goals.create`** | 进程外 client 直接调用 | `GoalService` 的 `@Remote('create')`（`packages/goal/goal/src/index.ts:646-650`），经 `goalsRemote` 暴露（`packages/api/remotes/src/client/index.ts:12`） | 自动化、测试与嵌入式客户端 |
-
-**「需求进去后 DSH 理解为 ongoing goal」是模型通过 `create_goal` tool 做到的**，不是系统自动推断的。
-
-引导住在两处：`create_goal` tool 的 description（「Use it when the direct human request is a long-running objective, even if the user did not say 'goal'; not for single-turn work.」）与 system prompt 的 `tool:goal` section（「create_goal may infer goal intent from a direct human request in any language.」）。模型据此判断需求需要跨多轮、自主调用 `create_goal`；随后 Goal Round Driver 在 agent 每次 idle 时自动推下一轮，形成持续到 objective 达成的效果。两条引导的原文与授权守卫见 [`01-goal-lifecycle.md`](./01-goal-lifecycle.md)。
+- **没有隐藏的意图理解引擎**：长任务不是系统隐式猜测出来的，而是模型阅读 `create_goal` tool description 与 `tool:goal` system prompt section 后主动调用 `create_goal` 创建，或经 `/goal`、`goals.create`（`@Remote`）触发；四条路径的完整细节、原文引导与授权守卫见 [`01-goal-lifecycle.md`](./01-goal-lifecycle.md)。
+- **不拥有底层 turn / step 驱动接口**：turn 开闭、inbox（`followup` / `steer` / `inject`）与必写 session 事件属于 `dsh-agent` 与 `dsh-agent-loop`（归 [`../session-and-loop/`](../session-and-loop/00-map.md)），本专题聚焦「goal 状态机 + Round Driver 在 idle 之后如何续轮 + initiator 因果边界」。
 
 ## Goal 状态机
 
@@ -78,9 +68,11 @@ Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/se
 | `packages/goal/goal/src/fold.ts` | 严格的纯函数 fold（回放时重建 goal 状态） |
 | `packages/goal/tool-goal/src/authority.ts` | 谁可以操作 goal：direct human 或当前 goal round；subagent 被拒绝 |
 | `packages/bundle/base/cordis.patch.yml` | `goal`、`goal-round-driver`、`command-goal`、`tool-goal` 都在 base bundle 的 insert 里 |
-| `_digested/session-and-loop/00-map.md` | turn/step 基础词汇和事件骨架 |
-| `_digested/session-and-loop/02-inbox-与turn-时序.md` | turn() 内部时序、claim、pre-step |
-| `_digested/delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md` | goal 的驾驶座用法：objective 写法、轮预算、终结纪律、wrapup 收尾 |
+
+## 边界
+
+- **turn / step / inbox 内部机制**：[`../session-and-loop/00-map.md`](../session-and-loop/00-map.md) 与 [`../session-and-loop/02-inbox-与turn-时序.md`](../session-and-loop/02-inbox-与turn-时序.md)（本专题不展开 `claim` 与 request header 构造）。
+- **驾驶座与委派用法**：[`../delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md`](../delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md)（objective 写法、轮预算、终结纪律、wrapup 收尾）。
 
 ## 症状 → 页
 

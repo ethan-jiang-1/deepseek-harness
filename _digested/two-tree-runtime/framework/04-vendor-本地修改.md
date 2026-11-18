@@ -31,7 +31,7 @@ setup 期间插件会再 `ctx.on` / `ctx.effect`。若此时有人开始卸（�
 
 ## watcher 就绪与 `ignoreInitial` 分工
 
-清单第 9 条（原队列条目的现位置）：主 watcher `ignoreInitial: true`，避免把 boot 刚读过的文件再宣布一遍；watch base 先 realpath、框架模块先分类挂监听再报就绪、config 路径按 canonical 与配置两种拼写比对（Windows 短名与别名下保住模块缓存身份）。**profile patch 的精确监视归产品侧 `packages/boot/hmr/src/watch-config.ts`**（其自身 `ignoreInitial: false`——登记时已在磁盘的用户 patch 要 apply 一次）。include 源里没有 apply 队列，仅剩持久化写队列 `writeQueue`。
+清单第 9 条：主 watcher `ignoreInitial: true`，避免把 boot 刚读过的文件再宣布一遍；watch base 先 realpath、框架模块先分类挂监听再报就绪、config 路径按 canonical 与配置两种拼写比对（Windows 短名与别名下保住模块缓存身份）。**profile patch 的精确监视归产品侧 `packages/boot/hmr/src/watch-config.ts`**（其自身 `ignoreInitial: false`——登记时已在磁盘的用户 patch 要 apply 一次）。include 内部的串行点是持久化写队列 `writeQueue`。
 
 ## 持久化防抖写（第 14 条）
 
@@ -47,23 +47,21 @@ Include 的配置文件写串行化并跟踪：瞬时 `EACCES`/`EBUSY`/`EPERM` r
 
 清单第 18 条。`disabled` 是唯一插值的 metadata。原始节点留在 options，写回仍是 `!!js`。
 
-## vendor 4.0.5：版本与两次跨度的真实变化
+## vendor 版本与关键本地修改
 
-`vendor/cordis` 现为 **4.0.5**；各包发布版本（以 `vendor/*/package.json` 为准）：cordis 4.0.5、loader 1.0.6、include 1.0.10、group 1.0.5、timer 1.1.7、hmr 1.0.20、logger-console 1.0.5、schemastery 3.18.5、cosmokit 1.8.6。vendor 源码的逐跨度变化账目（哪轮新增/重写了哪些本地修改条目）见 [`../../_change_log/`](../../_change_log/00-index.md)；当前拟升级计划见 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。
+`vendor/cordis` 现为 **4.0.5**；各包发布版本（以 `vendor/*/package.json` 为准）：cordis 4.0.5、loader 1.0.6、include 1.0.10、group 1.0.5、timer 1.1.7、hmr 1.0.20、logger-console 1.0.5、schemastery 3.18.5、cosmokit 1.8.6；拟升级计划见 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。
 
 - **#16**：`cordis/package.json` 把 `src` 加进 `files`（cordis 声明 `"./src/*"` exports，tarball 缺 src 会发布指空文件的 export map；release 变更判定也读 `files`）。
 - **#20**：`loader/src/config/entry.ts` fiber identity——保存 registry 结果 context 里的原始 fiber 而不是 PromiseLike 包装，配置更新与服务通知因此改同一份生命周期状态，同时更新 provider 与 consumer 不会把 consumer 钉在 `PENDING`。
 - **#21**：`cordis/src/logger.ts` exporter disposal——每个 disposer 持有自己的注册 id，移除早先的 exporter 不会删掉后来的 console / telemetry exporter。
 - **#22**：volatile config（cosmokit + schemastery + cordis + loader 四处）：cosmokit 提供不可变引用与框架代持的 commit（`deepEqual` 把两个引用视为相等、数组逐位比较、URL 按 href 归一）；schemastery 增加 `.volatile()`、默认值/可选推断、引用感知 simplify；loader 的 `Entry.update` 对 active fiber 上的纯 volatile 变更走 `equalExceptVolatile`（`config/diff.ts`）+ `Entry._commitVolatile` 重解析并发出实例本地的 `loader/volatile-update`（`loader/src/index.ts` 声明），普通值变化仍走普通 remount。
-- **#23**：`loader/src/config/entry.ts` 模块身份——保存每个 entry 的原始 import 结果（`moduleNamespace`），取在插件导出归一化**之前**；HMR 用它匹配 Node 已缓存的模块命名空间，并在成功重载后更新该字段（commit `b1c5f861b6`，`loader/README.md` 记录这个新增字段）。
-- **#24**：`timer/locale/{en,zh}.json` 显示元数据——Settings 插件清单用的中英文标题与描述；`timer/package.json` 导出并发布这两份 locale 资源（commit `c7d61ecc11`）。
+- **#23**：`loader/src/config/entry.ts` 模块身份——保存每个 entry 的原始 import 结果（`moduleNamespace`），取在插件导出归一化**之前**；HMR 用它匹配 Node 已缓存的模块命名空间，并在成功重载后更新该字段（`loader/README.md` 记录这个字段）。
+- **#24**：`timer/locale/{en,zh}.json` 显示元数据——Settings 插件清单用的中英文标题与描述；`timer/package.json` 导出并发布这两份 locale 资源。
 
 **拟升级 cordis rc.11**：[`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)（状态 proposed）把升级拆成独立可评审的 PR：先升 Core 并做最小跨包兼容，再分别完成 Loader / Include / vendor HMR；每个 PR 记录它对本篇 24 条本地修改的处置（retire / partial / retain）。计划本身不含运行时改动，也不批准其中留下的开放决定。
 
-**上游同步要求**：同步时**必须**按逐条清单重放或退役每条本地修改，并按下面那条双核对规则确认版本列。
-
-版本核对提醒仍然成立：[`vendor/README.md`](../../../vendor/README.md) manifest 的版本列（`1.8.1` / `3.18.0` / `4.0.0-rc.7` / `1.0.0-rc.5` / `1.0.4` / `1.0.0` / `1.1.2` / `1.0.15` / `1.0.0`）与各 `vendor/*/package.json`（`1.8.6` / `3.18.5` / `4.0.5` / `1.0.6` / `1.0.10` / `1.0.5` / `1.1.7` / `1.0.20` / `1.0.5`）**按设计就不同**：manifest 那一列记录的是 pinned 上游快照版本，`package.json` 的 `version` 是本仓的发布版本（`docs/rescope.md:25`；`scripts/release/families.ts` 的 vendor family 只 bump `vendor/*/package.json`）。不要把两列不一致读成漏同步。
+版本核对规则：[`vendor/README.md`](../../../vendor/README.md) manifest 的版本列（`1.8.1` / `3.18.0` / `4.0.0-rc.7` / `1.0.0-rc.5` / `1.0.4` / `1.0.0` / `1.1.2` / `1.0.15` / `1.0.0`）与各 `vendor/*/package.json`（`1.8.6` / `3.18.5` / `4.0.5` / `1.0.6` / `1.0.10` / `1.0.5` / `1.1.7` / `1.0.20` / `1.0.5`）**按设计就不同**：manifest 那一列记录的是 pinned 上游快照版本，`package.json` 的 `version` 是本仓的发布版本（`docs/rescope.md:25`；`scripts/release/families.ts` 的 vendor family 只 bump `vendor/*/package.json`）。不要把两列不一致读成漏同步。
 
 ## 上游同步要求
 
-上游合入等价行为时，退役 [`vendor/README.md`](../../../vendor/README.md) 中对应的本地修改，并同步更新本页的产品依赖。产品包不得绕过这些修改另写一套 Cordis 生命周期。
+上游合入等价行为时，退役 [`vendor/README.md`](../../../vendor/README.md) 中对应的本地修改，并同步更新本页的产品依赖，同时按上述版本核对规则确认两列版本号。产品包不得绕过这些修改另写一套 Cordis 生命周期。

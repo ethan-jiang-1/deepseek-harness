@@ -58,10 +58,10 @@
 ```text
 L0  词与关系：组合词群 / 时间词群 / 能力词群                        [canon/00-map]
 L1  harness 旧图景 → 一切皆插件树（Cordis ctx/service/effect）     [system-overview]
-L2  组合：profile/bundle/preset/patch/row → composition            [plugin-system/composition + runtime-profiles]
+L2  组合：profile/bundle/preset/patch/row → composition            [plugin-system/ → composition + runtime-profiles]
 L3  能力：seam 三角色 / core / Remote / 注册位                      [capability-seams]
-L4  事实：session log / surface 事件 / projection / 模型可见⟺已记录  [session-and-loop]
-L5  时间与驱动：turn/step/exchange/round；四层结束边界；goal/driver  [session-and-loop + agent-loop]
+L4  事实与循环：session log / surface / projection / turn & step   [session-and-loop]
+L5  目标驱动：四层结束边界 / goal 状态机 / Round Driver            [agent-loop]
 L6  模型可见面：prompt section / tool schema / 管道 / adapter        [tools-prompt-llm]
 L7  两棵树：Host/Client / Typert Remote / 状态所有权                 [two-tree-runtime]
 L8  入口：六入口三命令平面                                           [surfaces-entrypoints]
@@ -129,9 +129,9 @@ map 禁止：行号级机制、历史/PR/commit/删除线、硬计数（计数�
 - 色板：蓝 #dbeafe/#1e40af（结构/Host）、绿 #dcfce7/#166534（provider/成功）、紫 #f3e8ff/#6d28d9（client/投影）、橙 #fff7ed/#9a3412（操作/警示）、红 #fee2e2/#b91c1c（拒绝/退役）、灰 #f3f4f6/#374151（中性）。
 - 背景 #fafafa rx6；箭头 marker #4b5563；面板 rx8-12。
 - 每张图对应一个概念（关系/流程/对比），标题即概念命题；图内文字是命题不是引文（引文门禁只管 md 标注引文）。
-- 覆盖规划：每个 L0–L13 概念至少一张主图（多数已有）；缺口由审计补（如 class 分类、canon 组合/时间词已补）。
+- 覆盖规划：每个 L0–L12 概念至少一张主图（均已就位）。
 
-## 七、结构性修复决策（待用户确认）
+## 七、结构性修复决策（已定稿）
 
 **D1 canon 角色**：定为「词与证据纪律的参考层 + 三组关系图入门」。概念的系统教学归各机制专题（引入家），canon 不重复展开机制；canon/00-map 的三组关系图保留作快速入门，GLOSSARY 是查词参考。canon 文件号（00/GLOSSARY/02/03/04/10/11）保持不变（避免全语料断链），导航以 map 为准。
 
@@ -147,17 +147,17 @@ map 禁止：行号级机制、历史/PR/commit/删除线、硬计数（计数�
 
 ## 八、执行顺序（依赖序，分波）
 
-**进度**（逐轮记录见 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md) 的 M1–M9）：
-Wave 1 ✅ · Wave 2 ✅ · Wave 3 ✅ · Wave 4 基本完成（test-strategy 抽查合格、development-flow 含新 09 页、canon 02/10 去重、harness-idea 轻触） · Wave 5 ✅（删除线归零、轮次注记清零、计数收口到 claims、00-index 改概念依赖主干） · Wave 6 首轮完成（7 处矛盾 + 5 项 top fix 已修，正在做验证性复读）。
+**进度**（逐轮记录见 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md)）：
+Wave 1–6 及全仓事实纠偏已全部完成：P0 源码事实错误与矛盾、SVG 几何与过时图、漏扫主题与陈旧计数/行号、统一 map 解剖与 `verify.mjs` 硬化 gate 均已合入并通过全量检查。
 
 
-- **Wave 0 标准固化**：把第四/六节标准写成 corpus 内的简短作者指南（放 `_digested/00-index.md` 增节或独立指南），让后续重写有统一尺子。
-- **Wave 1 脊柱**：system-overview → plugin-system/composition + runtime-profiles → capability-seams → session-and-loop → agent-loop。（L0–L5，概念地基；含 D2/D3/D4/D5 sweep 在这几专题先行示范。）
+- **Wave 0 标准固化**：在 [`00-index.md`](./00-index.md) 与本设计稿确立 L0–L12 概念依赖顺序与统一页面解剖。
+- **Wave 1 脊柱**：system-overview → plugin-system/ → runtime-profiles → capability-seams → session-and-loop → agent-loop。（L1–L5）
 - **Wave 2 模型面与运行时**：tools-prompt-llm → two-tree-runtime（framework/client/remote）→ surfaces-entrypoints。（L6–L8）
-- **Wave 3 编排与执行**：delegation-and-orchestration（精修，已 Tier A）→ capability-seams 06-10 → experimental。（L9–L11）
-- **Wave 4 元层**：test-strategy → development-flow（含 class 独立页 09）→ canon（按 D1 定稿）→ harness-idea（精修）。（L12–L13 + 横切）
-- **Wave 5 全语料 sweep 收口**：D2/D3/D4/D5 在剩余专题统一执行；00-index 阅读路径改为概念依赖序；图覆盖补齐。
-- **Wave 6 新人验证**：以新人身份沿 L0→L13 端到端读，记录每处理解断点并修复；跑 verify.mjs + render-indexes + 引文门禁。
+- **Wave 3 编排与执行**：delegation-and-orchestration → capability-seams 06-10 → experimental。（L3/L9–L10）
+- **Wave 4 元层**：test-strategy → development-flow → canon → harness-idea。（L0/L11–L12）
+- **Wave 5 全语料 sweep 收口**：全仓清理删除线、历史叙述、行号级 map 漂移，并将 `00-index.md` 改为 L0–L12 概念依赖序。
+- **Wave 6 验证与门禁硬化**：沿 L0–L12 端到端核验源码事实、修复 SVG 几何与图内容、硬化 `verify.mjs`（地图 Markdown 链接、基线声明、地图行号禁令、退役词 / 删除线 / `**...**` 机械校验）。
 
 每波结束跑校验、记 change_log、更新 catalog/coverage。
 
@@ -174,11 +174,11 @@ Wave 1 ✅ · Wave 2 ✅ · Wave 3 ✅ · Wave 4 基本完成（test-strategy �
 6. 图是否对应概念、符合 style guide？
 7. 源码入口是否文件+符号（不钉行号）？
 
-**新人读法验证（Wave 6）**：模拟一个熟 harness 不熟 DSH 的读者，从 00-index 沿概念依赖序读 L0→L13，每跳记录「这里我卡住了吗/为什么」，断点即修复项。可用只读子代理扮演新人逐专题报告理解断点。
+**新人读法验证（Wave 6）**：模拟一个熟 harness 不熟 DSH 的读者，从 `00-index.md` 沿概念依赖序读 L0→L12，每跳记录理解断点并对齐仓库源码与文档。
 
 ## 十、风险与边界
 
-- **规模**：26 专题 185 页，全量重写不现实也无必要；Tier A 精修、Tier B/C 提升到标准、sweep 去噪。改的是结构与噪声，不是推翻已正确的机制内容。
+- **规模**：26 专题 187 页，全量重写不现实也无必要；Tier A 精修、Tier B/C 提升到标准、sweep 去噪。改的是结构与噪声，不是推翻已正确的机制内容。
 - **断链**：任何移动/改名原子修复入站链接；canon 文件号不动（D1）。
 - **引文**：canon 引文逐字门禁不被破坏；历史 sweep 不得把标注引文当历史删掉。
 - **判断层**：harness-idea 的判断是消化立场，sweep 只清噪声与残留，不改判断本身。

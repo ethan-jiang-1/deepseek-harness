@@ -17,7 +17,7 @@
 3. **注入**：构造下一条 round 消息（`<goal_round>` prompt，source 带 goalId/revision/round），`agent.followup()` 入列开新 turn；pre-step 上用预约（reservation）逐字段验证这条消息仍与 goal 匹配，验证失败作废重排。
 4. **结算**：模型工作到 `update_goal complete/blocked`（经授权检查 + wrapup 收尾）或给出 final message；turn 结束回 idle，drive() 重查 goal——active+armed 就再来一轮，否则循环停止。
 
-**attempt 是 driver 的轮次预约状态机**（注意与 session 侧「一次模型请求尝试」的 `assistant/attempt` 事件同名不同义）：`queued`（已构造预约、消息在队）→ `claimed`（pre-step 刚认领）→ 结束为 `stale`（验证失败被作废，下轮重构造）或 `cancelled`。session-start 边会清空全部残留，让新会话不从上一会话的调度残留起步。
+**attempt（`RoundAttempt`）是 driver 的轮次预约状态**（注意与 session 侧「一次模型请求尝试」的 `assistant/attempt` 事件同名不同义；`packages/goal/goal-round-driver/src/index.ts:30-36`）：它的 `phase` 只有三段单调推进——`queued`（已构造预约、消息入队）→ `claimed`（`agent/inbox/claimed` 刚认领）→ `admitted`（`session/event` `'user/message'` 真正落盘），外加两个正交的布尔旗标：`stale: boolean`（排队中遇到竞争 `next-turn` 插入、pre-step 验证失败或卸载时置 `true`）与 `cancelled: boolean`（`agent/inbox/discarded` 或 `claimed`/`admitted` 后 `turn/end { kind: 'aborted' }` 时置 `true`）。session-start 边会清空全部残留，让新会话不从上一会话的调度残留起步。
 
 结束条件、并发安全、host pause 与 revision 栅栏见后两节；下面是带源码锚点的完整流程树：
 
@@ -178,17 +178,17 @@ while (state.requested && !state.stopping) {
 
 多种事件都能触发 `requestDrive`：`agent/status` idle、`goal/changed`、pre-step 验证失败后重新排程。但它们都走同一条串行队列。
 
-`requestDrive` 现在把整个 `while` 循环包进 `ctx.agents.withoutInitiator(...)`（第 231 行）：driver 的调度任务不属于任何 agent 的因果边界，所以 host 侧的 pause 判定（下一节）不会把这个后台任务误认成模型自己的 turn。
+`requestDrive` 把整个 `while` 循环包进 `ctx.agents.withoutInitiator(...)`（第 231 行）：driver 的调度任务不属于任何 agent 的因果边界，所以 host 侧的 pause 判定（下一节）不会把这个后台任务误认成模型自己的 turn。
 
 ## host pause 与 revision 栅栏
 
-`goal/changed` 监听器（第 302-313 行）现在解构 `change`，在一个事件里做三件事：
+`goal/changed` 监听器（第 302-313 行）解构 `change`，在一个事件里做三件事：
 
 1. 置 `state.needsCheckpoint = true` 并 `requestDrive(state)`——所有 mutation 的共同反应。
 2. 若 `change.operation === 'pause'` 且 agent 正在 `running`，且 `ctx.agents.currentInitiator() !== agent`（第 308-310 行），执行 `agent.cancel({ kind: 'user' }, { keepInbox: true })`。Web 按钮在 agent initiator 边界之外运行，所以 host 的 Pause 会**中止正在跑的 turn**；模型自己的 `update_goal pause` 在自身 turn 内运行（`currentInitiator() === agent`），正常跑完自己的 turn，不被中止。`keepInbox` 保留待处理输入。
 3. 其它 mutation 只做 checkpoint 标记与重新排程。
 
-idle 分支的 pause 竞态栅栏随之收紧：旧判据只要求 attempt 处于 `queued`/`claimed`/`cancelled` 且 goal 仍 active + armed；新判据额外要求 `attempt.goalId === goal.id && attempt.revision === goal.revision`（第 283-286 行）。resume 会 bump revision，所以「pause → 在被中止的 turn 收敛到 idle 之前立刻 resume」不会被过期 attempt 二次 pause。测试分别覆盖 host pause 中止（`packages/goal/goal-round-driver/tests/goal-round-driver.spec.ts:353-370`）、pause 后立即 resume（同文件 `:372-389`）、model pause 跑完自己的 turn（同文件 `:391-418`，断言 `turn/end` 含 `completed` 不含 `aborted`）。
+idle 分支的 pause 竞态栅栏条件（`packages/goal/goal-round-driver/src/index.ts:283-286`）：仅在 `attempt` 满足 `(attempt.phase === 'queued' || attempt.phase === 'claimed' || attempt.cancelled)`、goal 仍为 `active + armed`，且**同时满足 `attempt.goalId === goal.id && attempt.revision === goal.revision`** 时才触发 `ctx.goals.pause(...)`。由于 resume 会递增 revision，「pause → 在被中止的 turn 收敛到 idle 之前立刻 resume」时旧 attempt 的 revision 不匹配，不会被误判再次 pause。测试分别覆盖 host pause 中止（`packages/goal/goal-round-driver/tests/goal-round-driver.spec.ts:353-370`）、pause 后立即 resume（同文件 `:372-389`）、model pause 跑完自己的 turn（同文件 `:391-418`，断言 `turn/end` 含 `completed` 不含 `aborted`）。
 
 ## 持久化检查点
 

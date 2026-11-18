@@ -30,7 +30,7 @@
 
 两条对照起来，规则就完整了：**`docs/` 写当前状态，note 写为什么；`docs/` 不允许解释理由，note 不允许以当前状态自居。** 一句话版本在 `docs/AGENTS.md` 的 Placement 行：「bugs → postmortems; rationale → Agent Notes; procedures → cookbooks; type definitions → subsystems; package contracts → READMEs; standing orders → root `AGENTS.md` with a rationale link」。
 
-这也解释了一条容易被当成排版的规则：`docs/AGENTS.md:7` 说「These rules apply to human-facing documentation; Agent Notes remain outside their scope.」——note **不受**散文预算、字数上限、受众分层那一套约束。它们不为「被读过」而优化，而为「被查证过」而优化。
+这也解释了一条容易被当成排版的规则：`docs/AGENTS.md:7` 说「These rules apply to human-facing documentation;」并紧接着指明 Agent Notes 「remain outside their scope.」——note **不受**散文预算、字数上限、受众分层那一套约束。它们不为「被读过」而优化，而为「被查证过」而优化。
 
 ## 命名法：五条现出来的规律
 

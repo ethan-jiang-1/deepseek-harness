@@ -111,4 +111,3 @@ dsh 没有任何「模型从历史会话学习」的机制：跨会话持久的�
 - `packages/goal/goal-round-driver/src/index.ts:183-192`、`packages/goal/tool-goal/src/index.ts:263-330`、`packages/todo/tool-todo/src/index.ts:123-131`、`packages/plan/plan-mode/src/index.ts:456-467`（三种状态回注的裁决者）
 - `packages/core/session/src/repair.ts:32-41,53-98,209`（定影文案、closers 与入口）、`packages/feedback/README.md:12,28`（单向信号）
 - [`docs/testing.md:33-40`](../../docs/testing.md)（元验证条文）、[`AGENTS.md:11,146`](../../AGENTS.md)（升级指南 standing order、no-unknown 规则）、[`scripts/run-gates.ts:391,395,838,858`](../../scripts/run-gates.ts)（防漂移门禁）、[`.agents/notes/README.md:46,111`](../../.agents/notes/README.md)（note 纪律）、[`docs/postmortem/0001-acp-default-export-drops-inject.md`](../../docs/postmortem/0001-acp-default-export-drops-inject.md)（事故→规则实例）
-- 对照框架（不作证据）：`ai_dev_sdlc_aidc/02_research/01_agent_engineering/loop_engineering/digested/09-feedback-harness-interface.md`（控制链与七项能力要求的研究归纳）

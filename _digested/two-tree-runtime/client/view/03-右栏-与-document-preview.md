@@ -51,7 +51,7 @@
 | `sidebar.right.pane.tab.title` | keyed by `id`，Session scope | chip 标题；没有条目时用开 tab 时捕获的 `title(address)` 文本 |
 | `sidebar.right.tab.guide` | chain，Session scope | 替换 guide tab 的内容而不替换 tab；第一个不 decline 的条目接管 |
 | `sidebar.right.tab.guide.entry` | keyed，Session scope | 一个 provider 的 guide 卡片；缺省回落到标准卡片 |
-| `sidebar.right.tab.guide.actions` | list，root scope | guide 的 More 菜单行；有注册才显示 More（rc.3 新增） |
+| `sidebar.right.tab.guide.actions` | list，root scope | guide 的 More 菜单行；有注册才显示 More |
 | `sidebar.right.tab.menu.item` | list，Session scope | 内容级动作，追加在 kit 自己的布局动作之后；动作型条目必须调 owner 的 `dismiss()` |
 | `sidebar.right.tab.document` | keyed by document `id`，Session scope | document tab 里被选中的文件渲染器；父级拥有共享的加载与工具栏 |
 

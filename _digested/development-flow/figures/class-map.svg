@@ -1,74 +1,73 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <defs>
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
-  <rect width="980" height="560" fill="#fafafa" rx="6"/>
-  <text x="490" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">class：先问「这条决定改变的是什么」</text>
-  <text x="490" y="50" text-anchor="middle" font-size="11" fill="#6b7280">闭集 6 个，编码在路径第二层。决定的记录：2026-06-20-agent-note-classification（已归档，现行合同在 .agents/notes/README.md 的 Classification 节）。</text>
+  <rect width="960" height="580" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">class：先问「这条决定改变的是什么」</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">闭集 6 个，编码在路径第二层。引入决定：2026-06-20-agent-note-classification（已归档，现行合同在 .agents/notes/README.md Classification 节）。</text>
 
-  <rect x="70" y="72" width="380" height="30" rx="15" fill="#f3f4f6" stroke="#d1d5db"/>
-  <text x="260" y="92" text-anchor="middle" font-size="12" fill="#374151">这条 Agent Note 记的是什么性质的决定？</text>
+  <rect x="290" y="68" width="380" height="30" rx="12" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="480" y="88" text-anchor="middle" font-size="12" fill="#374151">这条 Agent Note 记的是什么性质的决定？</text>
 
-  <rect x="40" y="132" width="430" height="356" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="255" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">改的是交付的源码（shipped source）</text>
-  <text x="255" y="176" text-anchor="middle" font-size="11" fill="#2563eb">运行时行为或产品结构</text>
+  <line x1="380" y1="98" x2="250" y2="124" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="580" y1="98" x2="710" y2="124" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
 
-  <line x1="260" y1="102" x2="255" y2="128" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="30" y="128" width="440" height="388" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="250" y="152" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">改的是交付源码（shipped source）</text>
+  <text x="250" y="170" text-anchor="middle" font-size="11" fill="#2563eb">影响运行时行为或产品结构</text>
 
-  <rect x="60" y="190" width="190" height="66" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="155" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">feature</text>
-  <text x="155" y="230" text-anchor="middle" font-size="11" fill="#1e3a8a">新的用户/模型可见能力</text>
-  <text x="155" y="246" text-anchor="middle" font-size="10" fill="#3b5bdb">例：approval-seam、persistent-pty-sessions</text>
+  <rect x="46" y="184" width="200" height="72" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="146" y="204" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">feature</text>
+  <text x="146" y="222" text-anchor="middle" font-size="11" fill="#1e3a8a">新的用户 / 模型可见能力</text>
+  <text x="146" y="242" text-anchor="middle" font-size="10" fill="#3b5bdb">例：approval-seam、pty-sessions</text>
 
-  <rect x="262" y="190" width="190" height="66" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="357" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">bug-fix</text>
-  <text x="357" y="230" text-anchor="middle" font-size="11" fill="#1e3a8a">修正缺陷 / 补上复盘暴露的缺口</text>
-  <text x="357" y="246" text-anchor="middle" font-size="10" fill="#3b5bdb">例：session-open-read-coordination</text>
+  <rect x="254" y="184" width="200" height="72" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="354" y="204" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">bug-fix</text>
+  <text x="354" y="222" text-anchor="middle" font-size="11" fill="#1e3a8a">修正缺陷 / 补复盘暴露缺口</text>
+  <text x="354" y="242" text-anchor="middle" font-size="10" fill="#3b5bdb">例：session-open-read-coord</text>
 
-  <rect x="60" y="266" width="190" height="66" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="155" y="288" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">simplification</text>
-  <text x="155" y="306" text-anchor="middle" font-size="11" fill="#1e3a8a">删代码 / 收面，不加能力</text>
-  <text x="155" y="322" text-anchor="middle" font-size="10" fill="#3b5bdb">例：jsonl-only-session-persistence</text>
+  <rect x="46" y="266" width="200" height="72" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="146" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">simplification</text>
+  <text x="146" y="304" text-anchor="middle" font-size="11" fill="#1e3a8a">删代码 / 收面，不加能力</text>
+  <text x="146" y="324" text-anchor="middle" font-size="10" fill="#3b5bdb">例：jsonl-only-persistence</text>
 
-  <rect x="262" y="266" width="190" height="66" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="357" y="288" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">architecture</text>
-  <text x="357" y="306" text-anchor="middle" font-size="11" fill="#1e3a8a">交付源码的结构：包怎么关联、词汇是什么</text>
-  <text x="357" y="322" text-anchor="middle" font-size="10" fill="#3b5bdb">例：capability-seams、event-sourced-sessions</text>
+  <rect x="254" y="266" width="200" height="72" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="354" y="286" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">architecture</text>
+  <text x="354" y="304" text-anchor="middle" font-size="11" fill="#1e3a8a">包关联与运行时词汇结构</text>
+  <text x="354" y="324" text-anchor="middle" font-size="10" fill="#3b5bdb">例：capability-seams、sessions</text>
 
-  <rect x="60" y="346" width="392" height="56" rx="8" fill="#fef9c3" stroke="#eab308" stroke-dasharray="5 3"/>
-  <text x="256" y="368" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">refactor 故意不在闭集里</text>
-  <text x="256" y="386" text-anchor="middle" font-size="11" fill="#a16207">与 simplification 几乎全重合；判别式「可观察行为是否改变？」后者已经编码。</text>
+  <rect x="46" y="350" width="408" height="58" rx="8" fill="#fef9c3" stroke="#eab308" stroke-dasharray="5 3"/>
+  <text x="250" y="372" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">refactor 故意不在闭集里</text>
+  <text x="250" y="392" text-anchor="middle" font-size="11" fill="#a16207">与 simplification 几乎重合；「行为是否改变」后者已编码。</text>
 
-  <text x="256" y="428" text-anchor="middle" font-size="11" fill="#1e3a8a">feature 的特判：只有功能从生产代码、配置、schema、持久化/wire、</text>
-  <text x="256" y="446" text-anchor="middle" font-size="11" fill="#1e3a8a">迁移、兼容行为里全部消失，才能被移除 note 吸收合并（部分取代不算）。</text>
-  <text x="256" y="472" text-anchor="middle" font-size="11" fill="#6b7280">simplification 是唯一拒绝率可读的类（rejected 里 7 篇全在此）。</text>
+  <text x="250" y="432" text-anchor="middle" font-size="11" fill="#1e3a8a">feature 的合并特判：只有功能从生产代码、配置、schema、</text>
+  <text x="250" y="450" text-anchor="middle" font-size="11" fill="#1e3a8a">持久化/wire、迁移、兼容行为里全部消失，才可被移除 note 吸收。</text>
+  <text x="250" y="478" text-anchor="middle" font-size="11" fill="#6b7280">rejected/ 8 篇中 7 篇在 simplification，仅 1 篇在 architecture。</text>
 
-  <rect x="510" y="132" width="430" height="200" rx="12" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="725" y="158" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">围绕代码的工装（around the code）</text>
-  <text x="725" y="176" text-anchor="middle" font-size="11" fill="#c2410c">不改变运行时行为</text>
+  <rect x="490" y="128" width="440" height="218" rx="12" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="710" y="152" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">围绕代码的工装（around the code）</text>
+  <text x="710" y="170" text-anchor="middle" font-size="11" fill="#c2410c">不改变产品运行时行为</text>
 
-  <line x1="260" y1="102" x2="725" y2="128" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
+  <rect x="506" y="184" width="200" height="72" rx="8" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="606" y="204" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">process</text>
+  <text x="606" y="222" text-anchor="middle" font-size="11" fill="#7c2d12">门禁、包管理、vendoring 等</text>
+  <text x="606" y="242" text-anchor="middle" font-size="10" fill="#9a3412">例：node-engine-floor</text>
 
-  <rect x="530" y="190" width="190" height="66" rx="8" fill="#ffedd5" stroke="#fb923c"/>
-  <text x="625" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">process</text>
-  <text x="625" y="230" text-anchor="middle" font-size="11" fill="#7c2d12">工具、政策、工作流：门禁、包管理、vendoring</text>
-  <text x="625" y="246" text-anchor="middle" font-size="10" fill="#9a3412">例：node-engine-floor、frozen-agent-note-archive</text>
+  <rect x="714" y="184" width="200" height="72" rx="8" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="814" y="204" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">testing</text>
+  <text x="814" y="222" text-anchor="middle" font-size="11" fill="#7c2d12">测试基础设施与测试策略</text>
+  <text x="814" y="242" text-anchor="middle" font-size="10" fill="#9a3412">例：real-api-e2e-ci</text>
 
-  <rect x="732" y="190" width="190" height="66" rx="8" fill="#ffedd5" stroke="#fb923c"/>
-  <text x="827" y="212" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">testing</text>
-  <text x="827" y="230" text-anchor="middle" font-size="11" fill="#7c2d12">测试基础设施与策略</text>
-  <text x="827" y="246" text-anchor="middle" font-size="10" fill="#9a3412">例：real-api-e2e-ci、session-log-snapshot-corpus</text>
+  <text x="710" y="286" text-anchor="middle" font-size="11" fill="#7c2d12">本分类决定自己就是一篇 process note——</text>
+  <text x="710" y="304" text-anchor="middle" font-size="11" fill="#7c2d12">它改的是仓库怎么组织，不是 harness 运行时做什么。</text>
 
-  <text x="725" y="286" text-anchor="middle" font-size="11" fill="#7c2d12">本分类决定自己就是一篇 process note——它改的是仓库怎么组织，</text>
-  <text x="725" y="304" text-anchor="middle" font-size="11" fill="#7c2d12">不是 harness 运行时做什么。</text>
+  <rect x="490" y="362" width="440" height="154" rx="10" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="710" y="388" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">architecture / process 的分界线</text>
+  <text x="510" y="412" font-size="11" fill="#374151">「architecture is about the source we ship;</text>
+  <text x="510" y="430" font-size="11" fill="#374151">process is the surrounding tooling and workflow.」</text>
+  <text x="710" y="458" text-anchor="middle" font-size="11" fill="#6b7280">拿不准时问：改动落在产品本身，还是围绕产品的工装？</text>
+  <text x="710" y="480" text-anchor="middle" font-size="11" fill="#6b7280">新增 class 是 deliberate act：须同改 agent-note-tree.ts 与 README。</text>
 
-  <rect x="510" y="348" width="430" height="140" rx="10" fill="#f3f4f6" stroke="#d1d5db"/>
-  <text x="725" y="374" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">architecture / process 的分界线</text>
-  <text x="530" y="398" font-size="11" fill="#374151">「architecture is about the source we ship;</text>
-  <text x="530" y="416" font-size="11" fill="#374151">process is the surrounding tooling and workflow.」</text>
-  <text x="725" y="444" text-anchor="middle" font-size="11" fill="#6b7280">拿不准时问：这条决定改的是产品本身，还是围绕产品的工装？</text>
-  <text x="725" y="466" text-anchor="middle" font-size="11" fill="#6b7280">加一个 class 是 deliberate act：改 agent-note-tree.ts 与 README，缺一被门禁拒。</text>
-
-  <rect x="40" y="516" width="900" height="30" rx="6" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="490" y="536" text-anchor="middle" font-size="11" fill="#3730a3">闭集由 scripts/agent-note-tree.ts 的 AGENT_NOTE_CLASSES 与 README 双份维护；verify-agent-note-classification 拒绝任何未知目录。</text>
+  <rect x="30" y="532" width="900" height="32" rx="8" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="480" y="553" text-anchor="middle" font-size="11" fill="#3730a3">闭集由 scripts/agent-note-tree.ts 的 AGENT_NOTE_CLASSES 与 README 双份维护；verify-agent-note-classification 拒绝未知目录。</text>
 </svg>

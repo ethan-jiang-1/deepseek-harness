@@ -11,11 +11,12 @@
   <rect x="50" y="116" width="400" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
   <text x="250" y="139" text-anchor="middle" font-size="12" fill="#1e40af">住在 $DSH_HOME/profiles/&lt;name&gt;，由 loadProfile 发现</text>
   <line x1="250" y1="152" x2="250" y2="172" stroke="#4b5563" marker-end="url(#arr)"/>
-  <rect x="50" y="174" width="400" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="250" y="197" text-anchor="middle" font-size="12" fill="#1e40af">PROFILE_TEMPLATES 登记五个模板（web/headless/sdk/sdk-minimal/acp）</text>
-  <line x1="250" y1="210" x2="250" y2="230" stroke="#4b5563" marker-end="url(#arr)"/>
-  <rect x="50" y="232" width="400" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="250" y="255" text-anchor="middle" font-size="12" fill="#1e40af">shipped 归一化（normalizeShippedProfile）后进 loadProfileDirectory</text>
+  <rect x="50" y="174" width="400" height="42" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="250" y="192" text-anchor="middle" font-size="11" fill="#1e40af">PROFILE_TEMPLATES 登记五个模板</text>
+  <text x="250" y="208" text-anchor="middle" font-size="11" fill="#1e40af">（web / headless / sdk / sdk-minimal / acp）</text>
+  <line x1="250" y1="216" x2="250" y2="232" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="50" y="234" width="400" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="250" y="257" text-anchor="middle" font-size="11" fill="#1e40af">normalizeShippedProfile 归一化后进 loadProfileDirectory</text>
   <text x="50" y="298" font-size="11" fill="#1e3a8a">从模板派生自定义 profile：dsh --from-default-profile &lt;模板&gt;，</text>
   <text x="50" y="316" font-size="11" fill="#1e3a8a">暂存目录组装 + 原子改名；重复执行是重建不是报错。</text>
   <text x="50" y="344" font-size="11" fill="#2563eb">desktop 名被保留：CLI 一律拒绝（boot/dump 恒拒，plugin 子命令仅</text>

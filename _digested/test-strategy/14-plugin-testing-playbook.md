@@ -17,8 +17,6 @@
 | `loader-composition.spec.ts` | Config 真实可配置性 | 进程内真 `Loader`+`Include` boot 临时 `cordis.yml`；同一个 flag 断言**两脸**：模型可见 description 措辞随 `allowParallelInProgress` 变、并行写被拒/放行 |
 | `projection.spec.ts` | 投影提供者 + HMR-safety | `todos` projection 的读路径；dispose 贡献 fiber 断言清理（`(HMR safety)`） |
 
-（本跨度删掉了第五个文件 `invariant.spec.ts`：运行时 invariant 机制整族退役，commit `f028f25667`，无继任——插件不再发布 `./invariant` 入口。）
-
 台阶映射：`tool-todo.spec` 与 `integration.spec` 是**台阶二的两遍**（直调注册入口 / 穿 loop 端到端）；`projection.spec` 是台阶三；`loader-composition.spec` 是台阶四的进程内级；`todo-write` 录制场景（`snapshots/session/todo-write/`）兑现台阶五。分工逻辑：**三遍测的不是同一个对象**——工具体、事件序列、组装语义各归各，不是重复。
 
 `integration.spec.ts` 的可抄骨架（挂栈 → 脚本化模型 → 对 session log 断言）：

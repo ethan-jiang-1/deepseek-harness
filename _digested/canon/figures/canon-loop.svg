@@ -21,8 +21,8 @@
   <text x="720" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">标「原文」收进 canon；给中译时标「译」并附原文</text>
   <text x="720" y="114" text-anchor="middle" font-size="11" fill="#15803d">这是唯一能推出 DSH 行为的一档</text>
 
-  <line x1="450" y1="135" x2="508" y2="165" stroke="#4b5563" marker-end="url(#arr)"/>
-  <text x="479" y="158" text-anchor="middle" font-size="11" fill="#9a3412">不能</text>
+  <line x1="450" y1="135" x2="508" y2="175" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="464" y="172" text-anchor="middle" font-size="11" fill="#9a3412">不能</text>
   <rect x="510" y="145" width="420" height="60" rx="8" fill="#fff7ed" stroke="#fdba74"/>
   <text x="720" y="169" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">二选一：改写成「外部生态常说」并定级，或删掉</text>
   <text x="720" y="189" text-anchor="middle" font-size="11" fill="#c2410c">外部说法只能证明「有人这么说」，不能推出 DSH 的行为</text>

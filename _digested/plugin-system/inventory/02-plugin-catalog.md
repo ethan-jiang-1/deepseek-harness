@@ -97,7 +97,7 @@
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
 | llm | Def seam `ctx.llm` | base+min | — | Provider 无关流式服务 seam |
-| llm-deepseek | adapter Impl | —（base 两行挂载） | — | DeepSeek Messages adapter；0012 起还承载官方 `/models` listing、缓存与 catalog 解析（两条 DeepSeek route 共用） |
+| llm-deepseek | adapter Impl | —（base 两行挂载） | — | DeepSeek Messages adapter，并承载官方 `/models` listing、缓存与 catalog 解析（两条 DeepSeek route 共用） |
 | llm-deepseek-api-key | 入口行 | base+min | 3 | api-key 认证、发现；官方 endpoint 上跟随 `/models` listing（可自定义 catalog 关闭） |
 | llm-deepseek-account | 入口行 | base | 3 | 账户认证发现 |
 | llm-pi-ai | adapter Impl（休眠） | base | 56 | 零 routes 直到 settings 提供 profiles |
@@ -215,7 +215,7 @@
 | tool-subagent | Tool 多实例 | base+preset | 7 | `subagent`/`subagent_fork`＋`ctx.subagentModelSelection` |
 | tool-subagent-control | Tool×3 | base+preset | — | `send_message`/`interrupt_agent`/`list_agents` |
 
-`subagent-in-process-driver` 已在 0.2.1 线整包解散并入 `subagent`（激活生命周期统一，见 [`_change_log`](../../_change_log/0011-0.2.0-rc.2-to-0.2.1-rc.2.md)）；Codex 与 Claude Code 两个后端改由官方按需安装通道出货（`ON_DEMAND_BUNDLES`，`packages/boot/app-boot/src/official-bundle-packages.ts`），preset 不再有占位 disabled 行。
+in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code 两个后端由官方按需安装通道出货（`ON_DEMAND_BUNDLES`，`packages/boot/app-boot/src/official-bundle-packages.ts`），preset 中不设占位 disabled 行。
 
 ## jobs/（3 包）
 
@@ -546,4 +546,4 @@ UI 插件（57）：
 for d in packages/*/*/; do [ -f "$d/package.json" ] && basename "$d"; done | while read n; do grep -q "$n" _digested/inventory/02-plugin-catalog.md || echo "missing: $n"; done
 ```
 
-0009 独立反查时该扫描曾抓到 32 个缺名包（缩写引用与整组漏节），已全部补齐；此后新增包只要落一个组行即保持零缺失。但它是 **basename 级**匹配、有假阴性：包名（如 `acp`、`client`、`protocol`、`server`）在本页其他行出现即漏报——0010 轮实证 sdk/、acp/ 两组曾借此整组漏节（4 包零落点），复核时必须辅以「按 `##` 节清点组数与每组包数」的分组核对，不能只信本命令的零输出。
+该扫描是 **basename 级**匹配，存在假阴性：常见词包名（如 `acp`、`client`、`protocol`、`server`）一旦出现在本页其他说明行就会漏报。复核时必须辅以「按 `##` 节清点组数与每组包数」的分组核对，不能只信该命令的零输出。

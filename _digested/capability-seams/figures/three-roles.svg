@@ -36,8 +36,8 @@
   <text x="660" y="220" font-size="12" fill="#5b21b6">tool-schema、UI、传输</text>
   <text x="660" y="238" font-size="12" fill="#5b21b6">放在 Consumer 里</text>
   <text x="660" y="270" font-size="11" fill="#7c3aed">不要放进 Definition</text>
-  <text x="660" y="290" font-size="11" fill="#7c3aed">一个包可以兼多个角色</text>
-  <text x="660" y="306" font-size="11" fill="#7c3aed">（dsh-llm 兼 Definition+Consumer）</text>
+  <text x="660" y="290" font-size="11" fill="#7c3aed">一个包可兼两角：如 dsh-user-approval</text>
+  <text x="660" y="306" font-size="11" fill="#7c3aed">同包兼 Definition 与实现</text>
 
   <text x="480" y="352" text-anchor="middle" font-size="12" fill="#374151">教科书：packages/shell = dsh-shell + local/sandbox providers + dsh-tool-bash。</text>
   <text x="480" y="374" text-anchor="middle" font-size="12" fill="#374151">看到新的 ctx.&lt;key&gt; 先问：spine 服务、一条 seam、还是 bundle 组合点？</text>

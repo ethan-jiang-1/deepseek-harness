@@ -39,7 +39,7 @@ provider 是 `{ protocol, open(address, { signal }) }`（同文件 `:71-85`）�
 
 ## workspaceFiles 服务
 
-Host 提供 `ctx.workspaceFiles`，生成的 `workspaceFiles` Remote namespace 让客户端读同一个服务。每个方法都在 wire 上带 Session 身份，客户端从不自己命名 root；Host 读活的 Session header，冷 Session 走 persistence 的 `stat`，不激活 Agent、不读事件体、也不借用父 Session 的 root。五个 `@Remote` 方法（`packages/api/workspace-files/src/index.ts:233` 的 `read`、`:257` 的 `readBytes`、`:290` 的 `stat`、`:303` 的 `list`、`:340` 的 `changes`；旧语料记的「七个方法」里的 `readAll` / `readRelated` 不是 Host 方法——完整读与关联文件读是 Client 侧用 `readBytes` 的无 `range` / `baseFile` 形态组合出来的）：
+Host 提供 `ctx.workspaceFiles`，生成的 `workspaceFiles` Remote namespace 让客户端读同一个服务。每个方法都在 wire 上带 Session 身份，客户端从不自己命名 root；Host 读活的 Session header，冷 Session 走 persistence 的 `stat`，不激活 Agent、不读事件体、也不借用父 Session 的 root。五个 `@Remote` 方法如下（完整读与关联文件读在 Client 侧由 `readBytes` 的无 `range` / `baseFile` 形态组合而成，不是独立 Host 方法；`packages/api/workspace-files/src/index.ts:233` 的 `read`、`:257` 的 `readBytes`、`:290` 的 `stat`、`:303` 的 `list`、`:340` 的 `changes`）：
 
 | 方法 | 返回 |
 |------|------|

@@ -67,28 +67,27 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 - `AGENTS.md` 直接陈述不变量：waterfall 监听器必须 `next()` 委托、注册即效果、模型可见 ⟺ 已记录、显式优于隐式。
 - 文档标准禁止「previously / now / renamed」这类变迁史；当前状态散文（current-state prose），一个事实一个家（[`docs/AGENTS.md`](../../docs/AGENTS.md)）。
-- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模**三个数并报**（用 `git ls-tree` 在 [`catalog.json`](../catalog.json) 的 baseline 上重算；prose 不手写固定总数）：总量、活跃 `implemented/`、冻结 `archived/`，分别由 [`claims.json`](./claims.json) 的 `notes-md-total`、`notes-implemented-md`、`notes-archived-md` 三项给出当前值。缺一个都会读错形状——只报总量会把「按未来决策价值裁剪」读成膨胀，只报活跃数会读成收缩；实际是同一批记录分了活跃与冻结两层，而**冻结层不是现行权威**：归档政策明文禁止把 `archived/` 当作当前行为的依据。所以「非平凡改动必须带 note」这条规则的现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:41`](../../docs/AGENTS.md)，[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照）只作为这条规则的来源记录被引用。note 记的是「为什么、放弃了什么、怎么验证」，每条有分类、双语、归档纪律。
-- **记忆本身也有 gate**：连「决定忘记什么」都被写成了成文判据 + 可复用流程 + 机器封印。判据在 [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md)：归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明文要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。封印是 [`archived/manifest.json`](../../.agents/notes/archived/manifest.json)（seal 数 510 → 1884 为 0008 叙事口径的历史读数；`687f282e86` 基线实测 files 条目 2772）加 [`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 门禁，后者注册在 [`scripts/run-gates.ts:854`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单。
+- **设计意图住在 Agent Notes——一个被政策管辖的一等语料库**：语料库规模**三个数并报**（用 `git ls-tree` 在 [`catalog.json`](../catalog.json) 的 baseline 上重算；prose 不手写固定总数）：总量、活跃 `implemented/`、冻结 `archived/`，分别由 [`claims.json`](./claims.json) 的 `notes-md-total`、`notes-implemented-md`、`notes-archived-md` 三项给出当前值。缺一个都会读错形状——只报总量会把「按未来决策价值裁剪」读成膨胀，只报活跃数会读成收缩；实际是同一批记录分了活跃与冻结两层，而**冻结层不是现行权威**：归档政策明文禁止把 `archived/` 当作当前行为的依据。规则原文是「只为代码、测试与既有文档尚未解释的持久决策理由新增或更新 note（机械或局部改动豁免）」，现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:41`](../../docs/AGENTS.md)（[`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md) 已归档，作为历史记录）。note 记的是「为什么、放弃了什么、怎么验证」，每条有分类、双语、归档纪律。
+- **记忆本身也有 gate**：连「决定忘记什么」都被写成了成文判据 + 可复用流程 + 机器封印。判据在 [`.agents/notes/README.md:36-42`](../../.agents/notes/README.md)：归档条件是「shipped decision is complete and its rationale is unlikely to guide future work」，保留条件逐条列出（alternatives / ownership boundary / negative guarantee / durable-or-wire semantics / security rule / reintroduction condition），并明文要求走校准过的 [`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 流程，而不是「word count, age, or a target quota」。封印是 [`archived/manifest.json`](../../.agents/notes/archived/manifest.json) 加 [`verify-archived-agent-notes`](../../scripts/verify-archived-agent-notes.ts) 门禁，后者注册在 [`scripts/run-gates.ts:854`](../../scripts/run-gates.ts) 的 quick gate 里，校验闭合 class 树、三元组完整性、archive 元数据、sidecar 哈希与 append-only 清单。
 
 为什么这一条对 agent 可读性致命重要：**「为什么」恰好是 fresh agent 最不可能自己生成的知识。** 它可以从代码推出「是什么」，但推不出「为什么不是另一种做法」；被拒方案写在 note 里，agent 才能不重蹈覆辙。
 
 ## 机制七：负知识也被外置
 
-fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的路**。dsh 有四类显式负知识：
+fresh agent 最贵的错误不是「不会做」，而是**重走已经否掉的路**。dsh 有三类显式负知识：
 
 - `rejected/` Agent Notes 保留被否提案及其失败理由；
 - `archived/` 冻结历史，不当现行权威，文档门禁也跳过它；
-- `./invariant` companion 曾是一种负知识：带 `No runtime invariant:` 标记的空文件表示「这里没有可观察的运行时关系」是显式结论。它在两个阶段被上游拆掉——`0.1.2-rc.1` 先裁定空 companion 是噪音并全部删除，改由省略 + 写进 README 承担（[`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)，已归档）；`f028f25667` 再把运行时 invariant 机制整族删除，`./invariant` 与新树里任何 `/invariant` 路径都不再存在；
-- package README 的 `## Known Limitations and Deferred Work` 由 `verify-package-readme-limitations` 门禁检查。
+- package README 的 `## Known Limitations and Deferred Work` 由 `verify-package-readme-limitations` 门禁检查（各包也不设空置的 `./invariant` 运行时文件）。
 
-负知识让读者能查到「这里没有检查」和「这条路已被否掉」，而不是靠试错重新发现。
+负知识让读者能查到「这条路已被否掉」以及已知限制范围，而不是靠试错重新发现。
 
 ## 机制八：上下文预算内的渐进入口
 
 coding agent 的真实约束不只有「读不读得懂」，还有**上下文预算内能否找到对的入口**。dsh 的文档 tier 为此分层：
 
-- 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（预算 `scripts/doc-budgets.manifest.json` 的 2080 词；0009 线为 1960，本跨度上调），细节链接到 home；
-- [`docs/architecture.md`](../../docs/architecture.md) 是 2,410 词预算内（0.1.7 线 doc-budgets 上调）的有序地图；
+- 根 [`AGENTS.md`](../../AGENTS.md) 只放 standing orders（词数受 [`scripts/doc-budgets.manifest.json`](../../scripts/doc-budgets.manifest.json) 门禁约束），细节链接到 home；
+- [`docs/architecture.md`](../../docs/architecture.md) 同样在字数预算内保持有序地图；
 - 生成的 catalog 提供穷举查询，不要求读者通读；
 - skills 提供可调用的程序化工作流，如 [`dsh-doc`](../../.agents/skills/dsh-doc/SKILL.md)、[`dsh-prose-standard`](../../.agents/skills/dsh-prose-standard/SKILL.md)。
 - 双语文档由配对门禁管理：`docs/AGENTS.md` 要求“Pairs update together”，`verify-translation-pairing` 把英文/中文/记录三方钉在一起。
@@ -101,7 +100,7 @@ coding agent 的真实约束不只有「读不读得懂」，还有**上下文�
 
 > **Document current state.** Keep history in commits, PRs, Agent Notes, postmortems, or scoped persistence records. Other prose names live mechanisms, not changes or stack positions.
 >
-> —— `docs/AGENTS.md:40`（当时核验 `687f282e86…`；原句首为 "Document current state, not change history" 的旧版措辞已在本次跨度内改写）
+> —— `docs/AGENTS.md:40`（当时核验 `687f282e86…`）
 
 ## 可读 ≠ 简单
 

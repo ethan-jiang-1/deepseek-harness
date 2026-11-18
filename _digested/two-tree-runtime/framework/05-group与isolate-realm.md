@@ -33,7 +33,7 @@
 
 - **要同一进程里跑两套「同名不同实现」的子树**：例如一个子系统想用自己的 `shell` / `logger` 提供方，而不动全局的那一个——这是 isolate。
 - **要一组 entry 一起装卸、一起被 patch**：这是 group。它不改变服务解析，只改变组合单元。
-- **不要用它做 per-agent 隔离**：agent 的作用域是 `agent.ctx` 与 `core/scope` 的事（见 [`../../capability-seams/`](../../capability-seams/00-map.md) 的 scope 一节），isolate 是配置期的子树划分，不是运行期的 per-agent 上下文。
+- **不要用它做 per-agent 隔离**：agent 的作用域是 `agent.ctx` 与 `core/scope` 的事（见 [`../../session-and-loop/00-map.md`](../../session-and-loop/00-map.md) 的 scope 说明），isolate 是配置期的子树划分，不是运行期的 per-agent 上下文。
 
 ## 插件作者视角
 

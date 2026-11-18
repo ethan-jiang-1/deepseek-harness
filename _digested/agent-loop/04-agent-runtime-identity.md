@@ -42,7 +42,7 @@ loop 在 `wakeDriver()` 里用 `this.loopCtx.agents.withInitiator(this, () => th
 
 ## initiator 作为 pause 来源判据
 
-`goal/changed` 监听器现在解构 `change`，并用 initiator 判定 pause 的来源（`packages/goal/goal-round-driver/src/index.ts:302-313`）：
+`goal/changed` 监听器解构 `change`，并用 initiator 判定 pause 的来源（`packages/goal/goal-round-driver/src/index.ts:302-313`）：
 
 ```ts
 if (change.operation === 'pause' && agent.status === 'running'
@@ -58,4 +58,4 @@ if (change.operation === 'pause' && agent.status === 'running'
 
 ## 与四层边界的关系
 
-activity 层因此多了一个此前没有的边界语义：它不只是「一段连续运行的 agent 活动」，还是一段有 initiator 归属的活动。step / turn / goal 三层的结束条件不受影响，唯一新增的关停路径是 `goal/changed` 触发的 host pause——由 driver 主动调用 `agent.cancel`。四层划分与「idle 不等于完成」的结论不变，见 [`03-activity-vs-goal-boundaries.md`](./03-activity-vs-goal-boundaries.md) 与 [`00-map.md`](./00-map.md)。
+activity 层兼具「运行连续性」与「initiator 归属」两重语义。除了回到 idle 且 inbox 无待唤醒消息外，host pause 会经 `goal/changed` 主动触发 `agent.cancel` 收敛正在运行的 turn；step / turn / goal 三层的结束条件保持不变。四层划分与「idle 不等于完成」的完整说明见 [`03-activity-vs-goal-boundaries.md`](./03-activity-vs-goal-boundaries.md) 与 [`00-map.md`](./00-map.md)。

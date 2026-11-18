@@ -54,7 +54,7 @@ dsh --profile rescue --from-default-profile web --dump-config
 - 根命令 action（`apps/cli/src/args.ts:183`）——同时覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`。
 - `plugin` 子命令（`apps/cli/src/args.ts:199`）——CLI 不能 `pnpm add` 进这个 profile。
 
-装载路径也不一样：desktop 不走 `loadProfile` 的 Harness home 发现与 shipped 归一化，而是走 `loadProfileDirectory` + 共享的 `runProfile`（[`../../runtime-profiles/06-desktop.md`](../../runtime-profiles/06-desktop.md)：desktop-host 经 `runProfile` 起完整 web 应用）。`--from-default-profile` 与它无关——它只认五个 shipped 模板名；`initializeProfileFromDefault` 对 `desktop` 目标名报「shipped and cannot be a custom profile target」同款错误语义，CLI 入口则更早被 `rejectElectronProfile` 拦下。
+装载路径也不一样：desktop 不走 `loadProfile` 的 Harness home 发现与 shipped 归一化，而是走 `loadProfileDirectory` + 共享的 `runProfile`（[`../../runtime-profiles/06-desktop.md`](../../runtime-profiles/06-desktop.md)：desktop-host 经 `runProfile` 起完整 web 应用）。`--from-default-profile` 的源模板只认 `PROFILE_TEMPLATES` 里那五个 shipped 模板（`initializeProfileFromDefault` 若收到 `--from-default-profile desktop` 会报 `unknown default profile "desktop"`，`apps/cli/src/profile-boot.ts:117-122`），而目标名去重检查只拦 `Object.keys(PROFILE_TEMPLATES)`——CLI 里拦住 `--profile desktop` 与 `--from-default-profile ...` 目标名 `desktop` 的，都是更早调用的 `rejectElectronProfile`（`apps/cli/src/args.ts:83-87`）。
 
 ## 源码入口
 

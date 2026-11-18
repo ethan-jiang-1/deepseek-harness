@@ -41,14 +41,14 @@ fork 的 inherited prefix 只表示创建时复制到 child 的已完成父历�
 
 ## Activation：Session 不变，runtime epoch 可更换
 
-continuable Activation 保存 `childId`、live `parent`、delivery、执行资源（`AgentHandle` 或外部 controller）、活体 ancestry、owned children 与结算句柄；provider 与谱系不在 Activation 里，冷恢复时从 descriptor 与 child header 读（`packages/subagent/subagent/src/activation.ts:39`-`111`；`390fbe8852` 前在 `continuation-activation.ts`）。其中：
+continuable Activation 保存 `childId`、live `parent`、delivery、执行资源（`AgentHandle` 或外部 controller）、活体 ancestry、owned children 与结算句柄；provider 与谱系不在 Activation 里，冷恢复时从 descriptor 与 child header 读（`packages/subagent/subagent/src/activation.ts:39`-`111`）。其中：
 
 - `parentSession` 用于在 handle 释放后定位持久 direct parent；
 - `ancestry: WeakSet<Agent>` 只回答某个 live caller 是否属于当次 materialization 观察到的祖先链，不能枚举父节点；
 - `ownedChildren: Set<SessionId>` 用于生命周期闭包，非空会阻止 child settlement；
 - Activation registry 的 `resident` 是进程内表，不写入 Session，新的 Activation 可以复用同一个 child Session id。
 
-child 的投递、释放和处置通过 per-child lock 串行化。`startActivation` 在首个 inbox prompt 被接受后返回 `{ childId, messageId? }`（`messageId` 仅本地 backend 有）；创建、持久化、权限捕获或提交失败时回滚 Activation 和 parent ownership，不返回可用 id（`packages/subagent/subagent/src/manager.ts:744`-`800`；`390fbe8852` 把原 `continuation.ts` 并入 `manager.ts`）。
+child 的投递、释放和处置通过 per-child lock 串行化。`startActivation` 在首个 inbox prompt 被接受后返回 `{ childId, messageId? }`（`messageId` 仅本地 backend 有）；创建、持久化、权限捕获或提交失败时回滚 Activation 和 parent ownership，不返回可用 id（`packages/subagent/subagent/src/manager.ts:744`-`800`）。
 
 ## 权限：持久来源与活体来源必须同时成立
 

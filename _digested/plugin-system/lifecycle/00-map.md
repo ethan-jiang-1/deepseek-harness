@@ -100,7 +100,7 @@
 | `packages/boot/app-boot/src/plugin-compatibility.ts` | `engines.dsh` / peer 准入判定，不导入插件代码 |
 | `packages/boot/app-boot/src/profile-compatibility.ts` | `compatibility.json` 的读取与豁免写入 |
 | `packages/boot/app-boot/src/compatibility-preflight.ts` | 组合期逐行准入，拒绝的行变成 detached `disabled: true` |
-| `packages/boot/app-boot/src/index.ts` | `boot`（`:1200`）、`recomposeProfile`（`:307`）、`reconcileProfilePatches`（`:322`）、`auditStartupEntries`（`:1153`） |
+| `packages/boot/app-boot/src/index.ts` | `boot`、`recomposeProfile`、`reconcileProfilePatches`、`auditStartupEntries` |
 | `packages/boot/plugin-manager/src/index.ts` | `listBundles` / `installBundle` / `removeBundle` / `setBundleEnabled` |
 | `apps/cli/src/plugin.ts` | `dsh plugin`：初始化 profile、跑 pnpm、按已安装状态对账 bundles |
 | `apps/desktop/src/project-manager.ts` | desktop profile 准备与原生恢复（`sanitizeProfile`） |

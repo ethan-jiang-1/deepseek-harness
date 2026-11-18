@@ -1,8 +1,3 @@
-
-> **seam** — a *swappable capability* with three roles: a **Service Definition** (…never a TypeScript `interface`), one or more **Service Providers**, and one or more **Consumers** that inject the service.
->
-> —— `docs/glossary.md:9`（当时核验 `687f282e86…`）
-| L3 loop / session 合同 | `agent-loop`、`SessionEventMap` | 改驱动、加持久事件、改请求头语义 | loop 义务、日志投影、版本机制 | 门禁、双 SDK 投影、snapshot、architecture 同步 |
 # 参与阶梯（participation ladder）：从改配置到改 loop
 
 ## 问题

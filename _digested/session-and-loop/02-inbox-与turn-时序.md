@@ -26,7 +26,7 @@
 
 idle 时 wakeup **一定**开 turn 边界，即使消息随后被清掉。只有 latch 住的重放会在队列不再持有 wake 时被抑制。维护中或已 abort 的驱动把 `wakeRequested` latch 住，收敛后再 `wakeDriver`。`runMaintenance` 期间 `status` 仍是 `idle`。`disposed` 原因不 latch，teardown 不等模型 turn。
 
-runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造一条 `UserMessage`（v4 起 source 写 `kind: 'runtime-context'` 并携带 `form: 'snapshot', sections`，`packages/core/agent-loop/src/runtime-context.ts:13-16,152-163`——v3 的 `source.plugin` 属性已随 v4 改名），只在文本相对上次保留快照有变化时给出候选。它与 pre-step 的 enter 批次解耦：pre-step 下游只求值候选（`packages/core/agent-loop/src/agent.ts:274-284`），真正落盘由 `step()` 在每次 attempt 的 dispatch 前完成（`:411-414`、`:438-440`）。`inject` 是插件往 `next-step` 塞材料、不唤醒；两者都会在获准后变成 `user/message`，入队路径不同。
+runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造一条 `UserMessage`（source 写 `kind: 'runtime-context'` 并携带 `form: 'snapshot', sections`，`packages/core/agent-loop/src/runtime-context.ts:13-16,152-163`），只在文本相对上次保留快照有变化时给出候选。它与 pre-step 的 enter 批次解耦：pre-step 下游只求值候选（`packages/core/agent-loop/src/agent.ts:274-284`），真正落盘由 `step()` 在每次 attempt 的 dispatch 前完成（`:411-414`、`:438-440`）。`inject` 是插件往 `next-step` 塞材料、不唤醒；两者都会在获准后变成 `user/message`，入队路径不同。
 
 `cancel({ keepInbox })`：默认 `inbox.clear()`（先 next-step 再 next-turn）。`keepInbox` 只 abort 活动，不记 canceled splice。
 
@@ -74,10 +74,8 @@ llm.stream / preparedCall.stream（整个 for-await 包在 try/catch）
 
 ## `system/message` 与请求上下文
 
-system prompt 不再是 `request/header` 字段，而是 surface 事件 `system/message { turn, step, message }`（`packages/core/session/src/types.ts:331`）。每个会话的第一条 `system/message` 成为受保护的 surface 节点 0；`request/header` 里不再有 `system`，`headerEquals` 只比 config、adapterDefaults 与 tools（`packages/core/session/src/request-header.ts:21-30,43-52`）。
+system prompt 承载在 surface 事件 `system/message { turn, step, message }`（`packages/core/session/src/types.ts:331`）中。每个会话的第一条 `system/message` 成为受保护的 surface 节点 0；`request/header` 不含 `system`，`headerEquals` 只比 config、adapterDefaults 与 tools（`packages/core/session/src/request-header.ts:21-30,43-52`）。
 
 `SystemPromptProjection.project()` 有三条路由（`packages/core/agent-loop/src/runtime-context.ts:88-110`）：没有任何 system 节点 → append 一条；route 不具备 in-history 能力、开了新 series、或渲染为空 → 归一化（清空后续非空节点，必要时改写头部）；具备 in-history 能力的 route → 内容变化时 append 一条新节点。`request/context.systemPromptUpdate`（`packages/core/session/src/types.ts:263`）记录 route 能力：`'in-history'` 表示该 route 把任意位置的最后一条 `system` 消息当作有效 system prompt。
 
-## `claim` 与 architecture 的对应
-
-architecture 写「claim next-step 加上一条排队消息」。源码是：第一步 `target = 'next-turn'`（抽空 next-step **并且**取一条 next-turn）；后续 step 只 claim next-step。inject 的材料若在第一步之前就已经在 next-step 里，会和这条 followup **同一 step** 进入模型。
+`turn()` 第一步先从 `next-turn` claim 一条排队消息并同步抽空 `next-step`（inject 的材料若此前已入 `next-step`，会和该条 `followup` 在**同一 step** 进入模型）；后续 step 只 claim `next-step`。

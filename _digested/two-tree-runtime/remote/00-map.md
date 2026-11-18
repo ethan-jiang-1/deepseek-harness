@@ -4,7 +4,7 @@
 
 ## 一句话
 
-`Typert` 把「Host 上一个 Cordis Service 的方法」变成「Client 上一个具体函数」，全程只过三段：业务包在**声明期**用 `@Remote` / `@RemoteScope` 标注方法、把 Cordis 服务键绑成 wire `namespace`；**build 期** generator 从 Host 的 `ts.Program` 抽出 `TypeGraph`，为同一份契约发出 Host 反射与 Host-for-Client 投影；**运行期** Host 的 `ctx.typertGateway` 按 descriptor 解析活的 Service 并派发，Client 的 `ctx.remote.$mount()` 把同一份 descriptor 装成 `remote.<namespace>` 子服务上的具体方法。descriptor 是两侧本地反射、从不上线，wire 只传 endpoint 与 `{ args }`（`docs/subsystems/typert.md:41`、`docs/api-gateway.md:126`）。
+`Typert` 把「Host 上一个 Cordis Service 的方法」变成「Client 上一个具体函数」，全程只过三段：业务包在**声明期**用 `@Remote` / `@RemoteScope` 标注方法、把 Cordis 服务键绑成 wire `namespace`；**build 期** generator 从 Host 的 `ts.Program` 抽出 `TypeGraph`，为同一份契约发出 Host 反射与 Host-for-Client 投影；**运行期** Host 的 `ctx.typertGateway` 按 descriptor 解析活的 Service 并派发，Client 的 `ctx.remote.$mount()` 把同一份 descriptor 装成 `remote.<namespace>` 子服务上的具体方法。descriptor 是两侧本地反射、从不上线，wire 只传 endpoint 与 `{ args }`（[`docs/subsystems/typert.md`](../../../docs/subsystems/typert.md)、[`docs/api-gateway.md`](../../../docs/api-gateway.md)）。
 
 ![声明期 → build 期 → 运行期](./figures/three-stages.svg)
 
@@ -23,16 +23,16 @@
 
 | 面 | owner | 事实 |
 |----|-------|------|
-| 声明（装饰器、绑定、协议 map、descriptor 类型） | `packages/typert/protocol` | 只声明类型与装饰器标记，不做 TypeScript 分析、不注册 Cordis 服务（`docs/api-gateway.md:88`、`packages/typert/protocol/README.md:12`） |
-| 生成 | `packages/typert/generator` | build 期严格分析 Remote 签名、类型图、lookup、Context 与源位置，再发 Host 与 Host-for-Client 产物（`docs/api-gateway.md:89`） |
-| `ctx.typert` 实现（core） | `packages/typert/registry` | 存 Host descriptor、schema 与包注册，并持有 lookup / Context provider（`docs/api-gateway.md:90`、`docs/capability-seams.md:647`） |
-| 自动注册 | `packages/typert/loader` | 消费 `ctx.loader` 与 `ctx.typert`，只发现、不实现 registry（`packages/typert/README.md:28`、`packages/typert/loader/README.md:28`） |
-| `ctx.typertGateway` 实现（core） | `packages/api/gateway` | 认领 endpoint、解析对象或 Context、调用活 Service、校验请求与返回值（`docs/api-gateway.md:92`、`docs/capability-seams.md:648`） |
-| 非 owner Peer 的访问控制（core） | `packages/api/remote-access` | 按资源 kind 的 role 策略判定一次调用，过滤 list 结果，并给每个 Peer 一条访问快照（`docs/api-gateway.md:93`、`docs/subsystems/typert.md:287-357`） |
-| Client `ctx.remote` 与 namespace 子服务 | `packages/api/gateway/src/client` | mount 生成 descriptor、发起/校验/取消调用（`docs/api-gateway.md:94`） |
-| 选择与 mount 哪些 namespace | `packages/api/remotes/src/client` | 显式选择应用允许的 `/remote` 贡献，并带入对应声明合并（`docs/api-gateway.md:95`） |
-| 业务方法契约与 namespace 键 | 各业务包（如 `api-session-controller` 的 `session`、`goal`） | 拥有 `@Remote` 方法与自己的 `/typert`、`/remote` 导出（`packages/api/session-controller/src/index.ts:158`、`packages/goal/goal/package.json:33-40`） |
-| RPC carrier | `packages/client/connection` | 提供 RPC、request correlation、信任边界、取消、响应信封与 `/api` HTTP 桥（`docs/api-gateway.md:96`） |
+| 声明（装饰器、绑定、协议 map、descriptor 类型） | `packages/typert/protocol` | 只声明类型与装饰器标记，不做 TypeScript 分析、不注册 Cordis 服务（`docs/api-gateway.md`、`packages/typert/protocol/README.md`） |
+| 生成 | `packages/typert/generator` | build 期严格分析 Remote 签名、类型图、lookup、Context 与源位置，再发 Host 与 Host-for-Client 产物（`docs/api-gateway.md`） |
+| `ctx.typert` 实现（core） | `packages/typert/registry` | 存 Host descriptor、schema 与包注册，并持有 lookup / Context provider（`docs/api-gateway.md`、`docs/capability-seams.md`） |
+| 自动注册 | `packages/typert/loader` | 消费 `ctx.loader` 与 `ctx.typert`，只发现、不实现 registry（`packages/typert/README.md`、`packages/typert/loader/README.md`） |
+| `ctx.typertGateway` 实现（core） | `packages/api/gateway` | 认领 endpoint、解析对象或 Context、调用活 Service、校验请求与返回值（`docs/api-gateway.md`、`docs/capability-seams.md`） |
+| 非 owner Peer 的访问控制（core） | `packages/api/remote-access` | 按资源 kind 的 role 策略判定一次调用，过滤 list 结果，并给每个 Peer 一条访问快照（`docs/api-gateway.md`、`docs/subsystems/typert.md`） |
+| Client `ctx.remote` 与 namespace 子服务 | `packages/api/gateway/src/client` | mount 生成 descriptor、发起/校验/取消调用（`docs/api-gateway.md`） |
+| 选择与 mount 哪些 namespace | `packages/api/remotes/src/client` | 显式选择应用允许的 `/remote` 贡献，并带入对应声明合并（`docs/api-gateway.md`） |
+| 业务方法契约与 namespace 键 | 各业务包（如 `api-session-controller` 的 `session`、`goal`） | 拥有 `@Remote` 方法与自己的 `/typert`、`/remote` 导出（`packages/api/session-controller/src/index.ts`、`packages/goal/goal/package.json`） |
+| RPC carrier | `packages/client/connection` | 提供 RPC、request correlation、信任边界、取消、响应信封与 `/api` HTTP 桥（`docs/api-gateway.md`） |
 
 ## 插件作者视角
 

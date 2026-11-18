@@ -1,62 +1,96 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" font-family="system-ui, sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 610" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
   <defs>
     <marker id="tarr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
-  <rect width="960" height="600" fill="#fafafa" rx="6"/>
-  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">消化阅读主干：先建立整机图，再进入一层</text>
+  <rect width="960" height="610" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">消化阅读主干：L0–L12 按概念依赖建立心智模型</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">第一次通读按 L0 → L12 顺序只读各专题 00-map.md；遇到具体机制再按任务或问题进编号正文。</text>
 
-  <rect x="300" y="50" width="360" height="52" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="480" y="72" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">system-overview/  整机六层</text>
-  <text x="480" y="90" text-anchor="middle" font-size="11" fill="#2563eb">everything is a plugin · 事件域 · 扩展点</text>
-  <line x1="480" y1="102" x2="480" y2="124" stroke="#4b5563" marker-end="url(#tarr)"/>
+  <rect x="30" y="68" width="280" height="58" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="170" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#111827">L0 · canon/</text>
+  <text x="170" y="112" text-anchor="middle" font-size="11" fill="#4b5563">三组词（组合 / 时间 / 能力）与证据纪律</text>
 
-  <rect x="80" y="130" width="380" height="60" rx="8" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="270" y="152" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">two-tree-runtime/  两棵树</text>
-  <text x="270" y="170" text-anchor="middle" font-size="11" fill="#c2410c">framework/ · client/ · remote/</text>
-  <rect x="500" y="130" width="380" height="60" rx="8" fill="#dcfce7" stroke="#86efac"/>
-  <text x="690" y="152" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">plugin-system/  插件系统</text>
-  <text x="690" y="170" text-anchor="middle" font-size="11" fill="#16a34a">composition/ · lifecycle/ · inventory/</text>
+  <line x1="310" y1="97" x2="338" y2="97" stroke="#4b5563" marker-end="url(#tarr)"/>
 
-  <line x1="270" y1="190" x2="270" y2="218" stroke="#4b5563"/>
-  <line x1="690" y1="190" x2="690" y2="218" stroke="#4b5563"/>
-  <line x1="270" y1="218" x2="690" y2="218" stroke="#4b5563"/>
-  <line x1="480" y1="218" x2="480" y2="232" stroke="#4b5563" marker-end="url(#tarr)"/>
+  <rect x="340" y="68" width="280" height="58" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="480" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">L1 · system-overview/</text>
+  <text x="480" y="112" text-anchor="middle" font-size="11" fill="#2563eb">Cordis 五词 · 插件树 + 事件流 · 六层叠加</text>
 
-  <rect x="300" y="236" width="360" height="52" rx="8" fill="#ccfbf1" stroke="#5eead4"/>
-  <text x="480" y="258" text-anchor="middle" font-size="13" font-weight="700" fill="#115e59">session-and-loop/  会话与驱动</text>
-  <text x="480" y="276" text-anchor="middle" font-size="11" fill="#0f766e">session log · 世代迁移 · turn/step · 可替换 loop</text>
-  <line x1="480" y1="288" x2="480" y2="310" stroke="#4b5563" marker-end="url(#tarr)"/>
+  <line x1="620" y1="97" x2="648" y2="97" stroke="#4b5563" marker-end="url(#tarr)"/>
 
-  <rect x="80" y="314" width="380" height="52" rx="8" fill="#f3e8ff" stroke="#d8b4fe"/>
-  <text x="270" y="336" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">capability-seams/  可替换能力</text>
-  <text x="270" y="354" text-anchor="middle" font-size="11" fill="#7c3aed">Definition · Provider · Consumer</text>
-  <rect x="500" y="314" width="380" height="52" rx="8" fill="#e0e7ff" stroke="#a5b4fc"/>
-  <text x="690" y="336" text-anchor="middle" font-size="13" font-weight="700" fill="#3730a3">tools-prompt-llm/  模型可见面</text>
-  <text x="690" y="354" text-anchor="middle" font-size="11" fill="#4f46e5">prompt 组装 · tool 管道 · LLM adapter</text>
+  <rect x="650" y="68" width="280" height="58" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="790" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">L2 · plugin-system/ + runtime-profiles/</text>
+  <text x="790" y="112" text-anchor="middle" font-size="11" fill="#15803d">composition 叠层 · 五个 profile · 生命周期</text>
 
-  <line x1="270" y1="366" x2="270" y2="392" stroke="#4b5563"/>
-  <line x1="690" y1="366" x2="690" y2="392" stroke="#4b5563"/>
-  <line x1="270" y1="392" x2="690" y2="392" stroke="#4b5563"/>
-  <line x1="480" y1="392" x2="480" y2="406" stroke="#4b5563" marker-end="url(#tarr)"/>
+  <line x1="790" y1="126" x2="790" y2="148" stroke="#4b5563"/>
+  <line x1="790" y1="148" x2="170" y2="148" stroke="#4b5563"/>
+  <line x1="170" y1="148" x2="170" y2="164" stroke="#4b5563" marker-end="url(#tarr)"/>
 
-  <rect x="220" y="410" width="520" height="52" rx="8" fill="#e2e8f0" stroke="#94a3b8"/>
-  <text x="480" y="432" text-anchor="middle" font-size="13" font-weight="700" fill="#1e293b">surfaces-entrypoints/  人对机器的入口</text>
-  <text x="480" y="450" text-anchor="middle" font-size="11" fill="#475569">CLI · headless · Web · ACP · SDK · 桌面复用同一套 runtime spine</text>
+  <rect x="30" y="166" width="280" height="58" rx="8" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="170" y="190" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">L3 · capability-seams/</text>
+  <text x="170" y="210" text-anchor="middle" font-size="11" fill="#7c3aed">三角色 seam · core / Remote / 进程库四形状</text>
 
-  <text x="30" y="498" font-size="12" font-weight="700" fill="#6b7280">横向专题（按问题进入，不在主干顺序里）</text>
-  <rect x="30" y="510" width="170" height="60" rx="7" fill="#fef9c3" stroke="#fde047"/>
-  <text x="115" y="532" text-anchor="middle" font-size="12" font-weight="700" fill="#854d0e">runtime-profiles/</text>
-  <text x="115" y="550" text-anchor="middle" font-size="10.5" fill="#a16207">启动装入什么</text>
-  <rect x="212" y="510" width="170" height="60" rx="7" fill="#fce7f3" stroke="#f9a8d4"/>
-  <text x="297" y="532" text-anchor="middle" font-size="10.5" font-weight="700" fill="#9d174d">delegation-and-orchestration/</text>
-  <text x="297" y="550" text-anchor="middle" font-size="10.5" fill="#be185d">委派、组合与观测</text>
-  <rect x="394" y="510" width="170" height="60" rx="7" fill="#f1f5f9" stroke="#cbd5e1"/>
-  <text x="479" y="532" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">experimental/</text>
-  <text x="479" y="550" text-anchor="middle" font-size="10.5" fill="#475569">未承诺支持的实验面</text>
-  <rect x="576" y="510" width="170" height="60" rx="7" fill="#ecfdf5" stroke="#a7f3d0"/>
-  <text x="661" y="532" text-anchor="middle" font-size="12" font-weight="700" fill="#065f46">test-strategy/</text>
-  <text x="661" y="550" text-anchor="middle" font-size="10.5" fill="#047857">证据分层与门禁</text>
-  <rect x="758" y="510" width="170" height="60" rx="7" fill="#eef2ff" stroke="#c7d2fe"/>
-  <text x="843" y="532" text-anchor="middle" font-size="12" font-weight="700" fill="#3730a3">harness-idea/</text>
-  <text x="843" y="550" text-anchor="middle" font-size="10.5" fill="#4338ca">判断、边界与成本</text>
+  <line x1="310" y1="195" x2="338" y2="195" stroke="#4b5563" marker-end="url(#tarr)"/>
+
+  <rect x="340" y="166" width="280" height="58" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="480" y="190" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">L4 · session-and-loop/</text>
+  <text x="480" y="210" text-anchor="middle" font-size="11" fill="#2563eb">session log · surface · projection · scope</text>
+
+  <line x1="620" y1="195" x2="648" y2="195" stroke="#4b5563" marker-end="url(#tarr)"/>
+
+  <rect x="650" y="166" width="280" height="58" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="790" y="190" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">L5 · agent-loop/</text>
+  <text x="790" y="210" text-anchor="middle" font-size="11" fill="#2563eb">四层结束边界 · Goal 状态机与自动续轮</text>
+
+  <line x1="790" y1="224" x2="790" y2="246" stroke="#4b5563"/>
+  <line x1="790" y1="246" x2="170" y2="246" stroke="#4b5563"/>
+  <line x1="170" y1="246" x2="170" y2="262" stroke="#4b5563" marker-end="url(#tarr)"/>
+
+  <rect x="30" y="264" width="280" height="58" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="170" y="288" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">L6 · tools-prompt-llm/</text>
+  <text x="170" y="308" text-anchor="middle" font-size="11" fill="#15803d">提示词与 schema 组装 · 四条 tools/* 管道</text>
+
+  <line x1="310" y1="293" x2="338" y2="293" stroke="#4b5563" marker-end="url(#tarr)"/>
+
+  <rect x="340" y="264" width="280" height="58" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="480" y="288" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">L7 · two-tree-runtime/</text>
+  <text x="480" y="308" text-anchor="middle" font-size="11" fill="#c2410c">Host / Client 两棵树 · Typert Remote</text>
+
+  <line x1="620" y1="293" x2="648" y2="293" stroke="#4b5563" marker-end="url(#tarr)"/>
+
+  <rect x="650" y="264" width="280" height="58" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="790" y="288" text-anchor="middle" font-size="13" font-weight="700" fill="#374151">L8 · surfaces-entrypoints/</text>
+  <text x="790" y="308" text-anchor="middle" font-size="11" fill="#4b5563">六个产品入口与三条命令平面</text>
+
+  <line x1="790" y1="322" x2="790" y2="344" stroke="#4b5563"/>
+  <line x1="790" y1="344" x2="170" y2="344" stroke="#4b5563"/>
+  <line x1="170" y1="344" x2="170" y2="360" stroke="#4b5563" marker-end="url(#tarr)"/>
+
+  <rect x="30" y="362" width="280" height="58" rx="8" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="170" y="386" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">L9 · delegation-and-orchestration/</text>
+  <text x="170" y="406" text-anchor="middle" font-size="11" fill="#7c3aed">原语阶梯 · 驾驶座与作者座</text>
+
+  <line x1="310" y1="391" x2="338" y2="391" stroke="#4b5563" marker-end="url(#tarr)"/>
+
+  <rect x="340" y="362" width="280" height="58" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="480" y="386" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">L10 · experimental/</text>
+  <text x="480" y="406" text-anchor="middle" font-size="11" fill="#c2410c">实验合同与隔离 · Agent Teams 等</text>
+
+  <line x1="620" y1="391" x2="648" y2="391" stroke="#4b5563" marker-end="url(#tarr)"/>
+
+  <rect x="650" y="362" width="280" height="58" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="790" y="386" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">L11 · test-strategy + development-flow</text>
+  <text x="790" y="406" text-anchor="middle" font-size="11" fill="#15803d">宽底测试体系 · Agent Note 决策 SDLC</text>
+
+  <line x1="790" y1="420" x2="790" y2="444" stroke="#4b5563"/>
+  <line x1="790" y1="444" x2="480" y2="444" stroke="#4b5563"/>
+  <line x1="480" y1="444" x2="480" y2="458" stroke="#4b5563" marker-end="url(#tarr)"/>
+
+  <rect x="240" y="460" width="480" height="54" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="480" y="484" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">L12 · harness-idea/</text>
+  <text x="480" y="502" text-anchor="middle" font-size="11" fill="#2563eb">判断层：知识外置语法为什么成立 · 边界、成本与反馈环路</text>
+
+  <rect x="30" y="534" width="900" height="56" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="480" y="556" text-anchor="middle" font-size="11" fill="#374151">plugin-system/inventory（货架清单）与 lifecycle（打包到卸载七段）可随 L2 按需展开；</text>
+  <text x="480" y="574" text-anchor="middle" font-size="11" fill="#374151">sandbox / subprocess / ssh / 代理等执行世界可随 L3（capability-seams/06-09）按需深潜。</text>
 </svg>

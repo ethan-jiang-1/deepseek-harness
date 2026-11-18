@@ -1,6 +1,6 @@
 # 不是 seam 的能力：Schedule、Webhook 与 API Remote
 
-> [`00-map`](./00-map.md) 给出了四种能力形状。本篇用三个真实样本讲清「不是三角色 seam」的那几种：**Schedule** 是有 `ctx` 键但没有第二实现的 core 服务；**Webhook** 是 core 服务加来源适配器；**API Remote** 干脆没有 `ctx` 键，是按通信协议切的 BFF 分界。末尾补上三个 core 服务与反馈事件的当前落点——它们说明同一个 `ctx` 键可以是 core、是 seam、也可以是完全不切角色的自足插件。传统三角色见 [`01-三角色与分包装.md`](./01-三角色与分包装.md)。
+> [`00-map`](./00-map.md) 给出了四种能力形状。本篇用三个真实样本讲清「不是三角色 seam」的那几种：**Schedule** 是有 `ctx` 键但没有第二实现的 core 服务；**Webhook** 是 core 服务加来源适配器；**API Remote** 是按通信协议切出 Client stub 的 BFF 暴露模式（Host 侧仍是 `TypertRemoteService`、通常仍占一个 `ctx` 键，但没有可替换的 Provider 竞聘位）。末尾补上三个 core 服务与反馈事件的当前落点——它们说明同一个 `ctx` 键可以是 core、是 seam、也可以是完全不切角色的自足插件。传统三角色见 [`01-三角色与分包装.md`](./01-三角色与分包装.md)。
 
 源码核验入口：`packages/schedule/schedule/`、`packages/schedule/tool-schedule/`、`packages/experimental/webhook/`、`packages/experimental/webhook-github/`、`packages/api/remotes/`、`packages/typert/`、`packages/feedback/`、`packages/client/file-upload/`、`packages/api/workspace-files/`。
 
@@ -24,19 +24,19 @@
 
 **API Remote 控制器**架构承载 BFF 面的 RPC 路由——unary 与 **stream** 方法都支持（`packages/typert/protocol/src/types.ts` 的 `RemoteStream<Out, In>` 与 `RemoteStreamHandle` send/end/dispose 定义流式 Remote；客户端生成器为 stream 方法产出流式 stub）。
 
-这不是传统 seam：它没有 `ctx.<key>`、没有 Cordis Service 定义、没有 Provider 可替换性。它是一个**通信协议模式**：
+这不是三角色 seam：它不是「一个 Definition 配多个可替换 Provider」的竞聘位，而是按**进程间通信边界**切的协议暴露模式。Host 侧控制器本身仍是继承 `TypertRemoteService` 的 Cordis `Service`（占 Host 侧 `ctx.<key>`，如 `ctx.sessionController`、`ctx.workspaceFiles`、`ctx.goals`），但 Client 侧拿到的不是该服务本身，而是 Typert 生成并由 `ctx.remote.$mount()` 装成 `ctx.remote.<ns>` 的类型化 stub：
 
 | 角色 | 它是什么 | 落点 |
 |------|----------|------|
-| **Remote 声明** | Host 侧声明控制器及其 schema | `packages/api/remotes/src/*.ts` |
-| **Client stub** | Typert 生成器自动导出的 client 侧类型安全 stub | `packages/api/remotes/src/client/` |
-| **Transit** | 类型安全的序列化 / 反序列化 | `packages/typert/` |
+| **Remote 控制器 / 服务** | Host 侧继承 `TypertRemoteService`、用 `@Remote` 标出 wire 方法的 Cordis Service | 各业务包（`packages/api/*-controller/`、`packages/api/workspace-files/`、`packages/goal/goal/`、`packages/llm/llm/` 等） |
+| **事件白名单与 Client 主装配** | 非 session 转发事件白名单 `API_REMOTE_FORWARDED_EVENTS` 与 `/remote` 主 `$mount` 装配表 | `packages/api/remotes/src/remote-events.ts`、`packages/api/remotes/src/client/index.ts` |
+| **Transit 与生成器** | build 期从 `ts.Program` 生成 Host 反射与 Client stub，运行期做类型安全序列化 | `packages/typert/` |
 
 ### Remote 控制器覆盖的域
 
-settings（含 credentials 子命名空间）、subagent control、agent preset registry、workspace-controller、session-controller 等域由 Remote 控制器提供，`client/*` 消费这些 Remote namespace。装配清单是 `packages/api/remotes/src/client/index.ts` 的 `ctx.remote.$mount` 贡献数组（以该文件为准，本页不手抄）。注意**贡献数 ≠ wire namespace 数**：一条贡献可以导出多个 namespace，`session-controller` 一个包就导出 `session`、`fileReferences` 与 `skills` 三个；goal / llm / message-feedback 等是原生 Remote（Service 本身即 `TypertRemoteService`），不是迁移产物。
+settings（含 credentials 子命名空间）、subagent control、agent preset registry、workspace-controller、session-controller 等域由 Remote 控制器提供，`client/*` 消费这些 Remote namespace。装配清单是 `packages/api/remotes/src/client/index.ts` 的 `ctx.remote.$mount` 贡献数组（以该文件为准，本页不手抄）。注意**贡献数 ≠ wire namespace 数**：一条贡献可以导出多个 namespace，`session-controller` 一个包就导出 `session`、`fileReferences` 与 `skills` 三个；`goal` / `llm` / `message-feedback` / `schedule` 等本身也是 `TypertRemoteService`（占各自原有的 `ctx.<key>` 并向 Client 暴露 `@Remote` 方法）。
 
-directory-picker **不是** Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端，见生成表；决策见已归档的 [`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/archived/architecture/2026-07-28-directory-picker-capability-seam.md)）。
+directory-picker 需要按两个面分开说：`ctx.directoryPicker` 本身是 `ctx.directoryPicker` Service seam（native/browse 后端，见生成表；决策见已归档的 [`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/archived/architecture/2026-07-28-directory-picker-capability-seam.md)），同时由 `packages/api/workspace-controller/src/directory-picker.ts` 的 `DirectoryPickerController`（`ctx.directoryPickerController`）把抽象 seam 暴露成 `ctx.remote.directoryPicker` wire 动词。
 
 ## 三个 core 服务与反馈事件的落点
 

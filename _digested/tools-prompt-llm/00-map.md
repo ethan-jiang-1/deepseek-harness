@@ -36,24 +36,24 @@ tool/call（入 log）
 tool/result（入 log）
 ```
 
-参数在进入 `pre-execute` 前已经解析、记录并冻结；这条事件只作 `allow` / `deny` / `ask` 决策，不改写参数。监听器调用 `next()` 表示委托下游，也可以直接返回自己拥有的决定。完整序列以 [`docs/tool-execution-pipeline.md`](../../docs/tool-execution-pipeline.md) 为准（含 monotonic guards 与定义拥有的内容投影两段）；审批、timeout 与 settlement 的展开在本专题 [`02`](./02-管道审批timeout与chunk.md)。
+参数在进入 `pre-execute` 前已经解析、记录并冻结；这条事件只作 `allow` / `deny` / `ask` 决策，不改写参数。监听器调用 `next()` 表示委托下游，也可以直接返回自己拥有的决定。完整序列以 [`docs/tool-execution-pipeline.md`](../../docs/tool-execution-pipeline.md) 为准（含 monotonic guards 与定义拥有的内容投影两段）；审批、timeout 与动态工具面更新的展开在本专题 [`02`](./02-工具管道审批与timeout.md)，chunk 与 settlement 归 [`05`](./05-chunk到settlement.md)。
 
 和人相关的两条容易混：
 
 - **审批 / permission / ask-user** 挂在 interaction 与这条管道上，仍然是模型 turn 的一部分。
 - **人敲的 slash command** 走 `ctx.commands`，**不经过模型 turn**。那是另一个平面，见 [surfaces](../surfaces-entrypoints/00-map.md)。
 
-tool 的 UI 渲染意图是设计的一部分，一开始就要定：call-time 三种 `generic` / `terminal` / `diff`（`packages/core/tools/src/presentation.ts:46` 的 `ToolCallView`），result-time 另有 `search` / `read` / `web`，共六种（`:140` 的 `ToolResultView`）。展示方法是 `args` 的纯函数。
+tool 的 UI 渲染意图是设计的一部分，一开始就要定：call-time 三种 `generic` / `terminal` / `diff`（`packages/core/tools/src/presentation.ts` 的 `ToolCallView`），result-time 另有 `search` / `read` / `web`，共六种（同文件的 `ToolResultView`）。`presentCall` 是 `args` 的纯函数，`presentResult` 是 `(args, result)` 的纯函数。
 
 ## 按问题找
 
 | 你的问题 | 去哪 |
 |---|---|
 | system prompt 顺序为什么重要 / 前缀稳定 | [`01`](./01-section顺序与前缀.md) |
-| 审批挂哪、timeout 归谁、一次尝试怎么结算 | [`02`](./02-管道审批timeout与chunk.md) |
+| 审批挂哪、timeout 归谁、会话中途工具面怎么更新 | [`02`](./02-工具管道审批与timeout.md) |
 | system prompt 怎么落日志 | [`03`](./03-system-prompt作为surface节点.md) |
 | flash 模型的提示词替换 / in-history | [`04`](./04-in-history提示词替换.md) |
-| chunk 时序与耐久回放 | [`05`](./05-chunk到settlement.md) |
+| 一次 attempt 怎么结算、chunk 时序与耐久回放 | [`05`](./05-chunk到settlement.md) |
 | 图像/文件怎么进消息 | [`06`](./06-文件块与内容块投影.md) |
 
 ## 源码入口
@@ -75,7 +75,7 @@ tool 的 UI 渲染意图是设计的一部分，一开始就要定：call-time �
 | 文件 | 内容 |
 |------|------|
 | [`01-section顺序与前缀.md`](./01-section顺序与前缀.md) | `order` 约定、complete section、KV 前缀 |
-| [`02-管道审批timeout与chunk.md`](./02-管道审批timeout与chunk.md) | 调用管道（`pre-execute` / `execute` / `post-execute`）与 `approval/request`；timeout 归属；会话中途的工具面更新；preparing 帧；`ptc-dispatch-log` |
+| [`02-工具管道审批与timeout.md`](./02-工具管道审批与timeout.md) | 调用管道（`pre-execute` / `execute` / `post-execute`）与 `approval/request`；timeout 归属；会话中途的工具面更新；preparing 帧；`ptc-dispatch-log` |
 | [`03-system-prompt作为surface节点.md`](./03-system-prompt作为surface节点.md) | `system/message` 事件形状、header 去掉 `system`、三种投影路由、node 0 保护、「稳定前缀」的新载体 |
 | [`04-in-history提示词替换.md`](./04-in-history提示词替换.md) | `SystemPromptUpdate = 'in-history'` 能力面、decision rule、清空语义、log 与 token 记账 |
 | [`05-chunk到settlement.md`](./05-chunk到settlement.md) | 一次 attempt 一条 settlement、step() 结算序列、紧凑 `AssistantStreamRecord`、实时帧与耐久回放、耐久性代价 |
