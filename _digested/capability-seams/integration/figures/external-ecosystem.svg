@@ -1,0 +1,27 @@
+<svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Harness -->
+  <rect x="20" y="50" width="120" height="250" fill="#f0f0f0" stroke="#333"/>
+  <text x="80" y="40" text-anchor="middle" font-weight="bold">Local Harness</text>
+
+  <!-- MCP Bridge -->
+  <rect x="200" y="50" width="200" height="100" fill="#e8f5e9" stroke="#333"/>
+  <text x="300" y="75" text-anchor="middle" font-weight="bold">MCP Bridge</text>
+  <text x="300" y="100" text-anchor="middle">Server Tools -> ctx.tools</text>
+  <text x="300" y="120" text-anchor="middle" font-size="12">Naming: mcp__&lt;server&gt;__&lt;name&gt;</text>
+
+  <!-- Hooks Bridge -->
+  <rect x="200" y="200" width="200" height="100" fill="#fff3e0" stroke="#333"/>
+  <text x="300" y="225" text-anchor="middle" font-weight="bold">Hooks Bridge</text>
+  <text x="300" y="250" text-anchor="middle">拦截扩展点 (Pre/Post Tool)</text>
+  <text x="300" y="270" text-anchor="middle" font-size="12">Merge: deny &gt; ask &gt; allow</text>
+
+  <!-- External -->
+  <rect x="500" y="100" width="100" height="200" fill="#fff" stroke="#333" stroke-dasharray="5,5"/>
+  <text x="550" y="200" text-anchor="middle" font-weight="bold">External</text>
+
+  <!-- Connections -->
+  <line x1="140" y1="100" x2="200" y2="100" stroke="#666" stroke-width="2"/>
+  <line x1="140" y1="250" x2="200" y2="250" stroke="#666" stroke-width="2"/>
+  <line x1="400" y1="100" x2="500" y2="150" stroke="#666" stroke-width="2"/>
+  <line x1="400" y1="250" x2="500" y2="200" stroke="#666" stroke-width="2"/>
+</svg>

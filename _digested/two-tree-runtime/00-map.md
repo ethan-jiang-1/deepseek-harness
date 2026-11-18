@@ -23,7 +23,15 @@ Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一�
 | 跨边界调用 | 被 `@Remote` 标注的方法 | `ctx.remote.<namespace>.<method>`，`rpcId` 由 Connection 铸 |
 | 卸载 | fiber 撤销它拥有的 effect | 同上；再加 module graph 里的贡献随 owner 消失 |
 
-不对称的那一条也要写清楚：**Host 拥有真相，Client 只投影**。`presentation component` 永远拿不到 `ctx`，业务数据住在对象层而不进 store（[`client/state/01`](./client/state/01-谁拥有一份状态.md)）。
+## 谁拥有真相？
+
+Host 拥有真相（Source of Truth），Client 仅拥有 **投影（Projection）** 与 **视图状态（View State）**。
+
+*   **架构约束**: 严禁在 Client 端 `store` 中存储任何需要持久化或作为系统判定依据的“真业务数据”。Client 端的所有状态变更，均必须通过 `Remote` 机制从 Host 同步或反向提交至 Host 处理。
+
+## 两棵树之间的连接：Remote
+
+Remote 不仅仅是一条“线”，它是基于 [`Typert`](./remote/typert/00-map.md) 实现的**类型安全跨域通信机制**。它保证了 Host 的方法声明在 Client 端以类型安全的 `stub` 形式存在，从而将两棵树在类型系统层面缝合在一起。
 
 ## 三格
 

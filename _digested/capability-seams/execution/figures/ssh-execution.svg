@@ -1,0 +1,29 @@
+<svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Harness -->
+  <rect x="20" y="50" width="120" height="200" fill="#f0f0f0" stroke="#333"/>
+  <text x="80" y="40" text-anchor="middle" font-weight="bold">Local Harness</text>
+  <rect x="30" y="70" width="100" height="40" fill="#fff" stroke="#333"/>
+  <text x="80" y="95" text-anchor="middle">ctx.fs</text>
+  <rect x="30" y="130" width="100" height="40" fill="#fff" stroke="#333"/>
+  <text x="80" y="155" text-anchor="middle">ctx.subproc</text>
+  <rect x="30" y="190" width="100" height="40" fill="#fff" stroke="#333"/>
+  <text x="80" y="215" text-anchor="middle">ctx.sandbox</text>
+
+  <!-- SSH Connector -->
+  <line x1="140" y1="150" x2="450" y2="150" stroke="#666" stroke-width="4" stroke-dasharray="5,5"/>
+  <text x="300" y="140" text-anchor="middle" fill="#666">SSH Channel(s)</text>
+
+  <!-- Remote Host -->
+  <rect x="450" y="50" width="120" height="200" fill="#e0f7fa" stroke="#333"/>
+  <text x="510" y="40" text-anchor="middle" font-weight="bold">Remote Host</text>
+  <rect x="460" y="70" width="100" height="40" fill="#fff" stroke="#333"/>
+  <text x="510" y="95" text-anchor="middle">Helper FS</text>
+  <rect x="460" y="130" width="100" height="40" fill="#fff" stroke="#333"/>
+  <text x="510" y="155" text-anchor="middle">Helper Subproc</text>
+  <rect x="460" y="190" width="100" height="40" fill="#fff" stroke="#333"/>
+  <text x="510" y="215" text-anchor="middle">Helper Sandbox</text>
+
+  <!-- Watchpoints -->
+  <circle cx="300" cy="150" r="10" fill="red"/>
+  <text x="300" y="270" text-anchor="middle" font-size="12">Watchpoint: ControlPersist/Multiplexing</text>
+</svg>

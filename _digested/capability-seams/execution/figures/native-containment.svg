@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 450" font-family="system-ui, -apple-system, sans-serif" font-size="11">
+  <rect width="1000" height="450" fill="#ffffff" rx="10"/>
+  <text x="500" y="30" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">Native Containment：受管范围诊断视图</text>
+
+  <!-- Linux Path -->
+  <rect x="30" y="70" width="300" height="320" rx="6" fill="#f0fdf4" stroke="#4ade80" stroke-width="2"/>
+  <text x="180" y="100" text-anchor="middle" font-weight="700" fill="#166534">Linux: systemd scope</text>
+  <text x="50" y="140" fill="#475569" font-weight="600">Watchpoints:</text>
+  <text x="50" y="160" fill="#334155">• Unit 状态 (Load/Active)?</text>
+  <text x="50" y="180" fill="#334155">• Bootstrap 执行原子性?</text>
+  <text x="50" y="200" fill="#334155">• FD 清理与环境注入?</text>
+
+  <!-- Windows Path -->
+  <rect x="350" y="70" width="300" height="320" rx="6" fill="#eff6ff" stroke="#60a5fa" stroke-width="2"/>
+  <text x="500" y="100" text-anchor="middle" font-weight="700" fill="#1e40af">Windows: Job Object</text>
+  <text x="370" y="140" fill="#475569" font-weight="600">Watchpoints:</text>
+  <text x="370" y="160" fill="#334155">• Runner IPC 握手?</text>
+  <text x="370" y="180" fill="#334155">• Kill-on-close 句柄持有?</text>
+  <text x="370" y="200" fill="#334155">• 进程句柄回收?</text>
+
+  <!-- Fallback/Native -->
+  <rect x="670" y="70" width="300" height="320" rx="6" fill="#fff7ed" stroke="#fb923c" stroke-width="2"/>
+  <text x="820" y="100" text-anchor="middle" font-weight="700" fill="#9a3412">Fallback & Native</text>
+  <text x="690" y="140" fill="#475569" font-weight="600">Watchpoints:</text>
+  <text x="690" y="160" fill="#334155">• 回退策略的降级边界?</text>
+  <text x="690" y="180" fill="#334155">• Native flock 锁冲突?</text>
+  <text x="690" y="200" fill="#334155">• 进程后代终止的完全性?</text>
+</svg>

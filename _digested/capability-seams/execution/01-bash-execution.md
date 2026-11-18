@@ -1,10 +1,20 @@
-# 一次 bash：从 tool 调用到 sandbox argv
+# Bash 执行：五层防御与原子失败合同
 
-> 模型发出一个 tool call，最后变成一个操作系统进程——中间隔着解析、准入、审批、默认化、遏制五层政策。本篇顺着 shell 家族把这条链追完，并给出每一层的失败合同。读懂它，你就知道「退出码 1」「超时被杀」「审批被拒」分别在哪一层结算、模型各自看见什么。seam 的角色分工见 [`01`](./01-三角色与分包装.md)，受管范围的平台实现见 [`07`](./07-原生containment与native-system.md)。
+> **架构师视角**：对于 Agent 而言，Bash 不是简单的执行，它是最容易被攻击面（Attack Surface）攻击的弱点。这份文档展示了 DSH 如何通过五层严密的防御链，将“不受控的 Bash 命令”转化为“可观测的、有边界的任务”。
 
 源码核验入口：`packages/shell/tool-bash/`、`packages/shell/shell/`、`packages/shell/bash-local/`、`packages/shell/bash-sandbox/`、`packages/shell/tool-bash-persistent/`、`packages/terminal/terminal-bash/`、`packages/sandbox/sandbox/`、`packages/subprocess/`。
 
 ![一次 bash：tool → resolve → confine → spawn](./figures/bash-spawn-trace.svg)
+
+## 五层防御链视图
+
+Bash 启动不是一条简单的 `spawn()`，它是以下五层政策的防御性叠加：
+
+1. **调用前奏 (`tools/pre-execute`)**: 准入决策，不碰参数。
+2. **升权审批 (`ctx.approval`)**: **架构关键点**——该审批不属于执行本身，它属于“意图的合法性”。
+3. **Spec 解析与执行 (`ctx.shell.resolve`)**: 将业务抽象转化为执行规约（Spec）。
+4. **运行时遏制 (`ctx.sandbox.confine`)**: **防御核心**——将命令强制约束在安全边界内。
+5. **进程产生 (`ctx.subprocess.spawn`)**: 基础设施实施，确保进程逃逸可观测。
 
 ## 调用链
 
@@ -17,23 +27,19 @@
 7. **bash-sandbox**（子类）：在 spawn 前 `ctx.sandbox.confine(argv, policy)`，用包装后的 argv 再交给 subprocess。Windows 走另一套 ACL runner，合同仍是 confine → spawn。
 8. body 结算后进入 `tools/post-execute`，随后 `tool/result` 入 log。
 
-## `execute` 与 `result()` 的失败合同
+## 原子的失败合同：为什么“退出码 1”不是崩？
 
-`ShellExecutor` 只有一个执行方法 `execute(spec)`：准备期（解析/准入）可 throw；启动后前台投影 `result()` **只**对基础设施失败 reject，非零退出、超时杀、abort 杀都 **resolve** 成 `ShellRunResult`。Consumer 把结果写成模型可见文本，不要把退出码 1 当成 harness 崩溃。
+`ShellExecutor` 的失败被严格定义为三层结构，确保 Agent 具有自我修复能力（Self-Healing）。
 
-`onExpiry: 'none'` 保留 handle，后台进程没有 timeout。handle 的 `done` 结算且**永不 reject**：provider 在给出直接结果之前失败时结算为 `killed`，stderr 上是一条 stage-neutral 注记（`subprocess failed before reporting an outcome: …`，由 `packages/shell/bash-local/src/index.ts` 构造并经 stderr reader 送出；合同措辞见 `packages/shell/shell/src/types.ts` 的 `ShellProcess.done`）。仍在跑的后台进程在组合拆除时停掉并等待。有 subprocess seam 时，这个边界是 `ctx.subprocess` 的 dispose——executor 单独 HMR 不会把活进程带走。
+| 失败形态 | 归属面 | 架构决策 | 认知映射 |
+|---|---|---|---|
+| **准备期失败** | 应用逻辑 | Throw，不触发工具执行 | `tool/result` 指示 Error |
+| **应用执行逻辑失败** | 业务逻辑 | Resolve 为 `ShellRunResult` | 正常工具结果（如 exitCode: 1） |
+| **基础设施失败** | harness 设施 | Reject / Killed | 描述性注记，不崩 harness |
 
-把本页引子的承诺兑现成一张表——失败种类在哪一层结算、模型看到什么：
+**架构哲学**: 绝大多数 Bash 执行后的错误都是“应用逻辑错误”。将所有非零退出码都标记为 Harness 崩溃，会导致 Agent 的自我修复能力（Self-Healing）彻底丧失。
 
-| 失败种类 | 在哪结算 | 模型看到什么 |
-|---|---|---|
-| 准备期失败（参数校验、`tools/pre-execute` deny、缺 answerer 的 ask、升权审批被拒） | `execute` throw，不进 body | `tool/result` 的 `isError` 文本（如 `Error: <reason>`） |
-| 命令非零退出 | 前台投影 `result()` **resolve** 成 `ShellRunResult`（带 exitCode） | 描述性结果文本：**退出码 1 不是 harness 崩溃**（`render.ts:19-21`） |
-| 超时被杀 | resolve（`ShellRunResult.timeoutMs` 记录当时限） | 描述性结果文本 |
-| abort 取消 | `waitOnJob` 或前台检测到 `result.aborted` 后 `throw toolAborted()`（`index.ts:319-320,529`） | `tool/result` 的 `isError: true`（`Error: tool call aborted`） |
-| provider 基础设施失败（结果未知） | `done` 结算 `killed` / 生成出错 | 注记或 `isError` 文本；harness 不崩溃 |
-
-具体的文案由 Consumer（`dsh-tool-bash` 的 `renderResult` / `presentBashResult`）拥有；这张表的承重事实是**命令非零退出与超时不以异常形式到达模型**——它们都是正常工具结果文本，只有准备期拒绝、基础设施失败与 abort 取消走 `isError`。
+在 provider 给出直接结果之前失败时结算为 `killed`，stderr 上是一条 stage-neutral 注记（`subprocess failed before reporting an outcome: …`）。
 
 ## 政策挂在哪
 
