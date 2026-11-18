@@ -49,11 +49,11 @@
 
 | 文件 | 内容 |
 |------|------|
-| [`01-boot-时序.md`](./01-boot-时序.md) | `runProfile` → `prepareProfile` → `boot()`；两段失败标签；`installFailLoud`；启动环境分层 |
-| [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md) | 同一 `applyEntryPatches`；dump 不含 launcher 派生层；`!!js` 不求值 |
+| [`01-boot-sequence.md`](./01-boot-sequence.md) | `runProfile` → `prepareProfile` → `boot()`；两段失败标签；`installFailLoud`；启动环境分层 |
+| [`02-dump-and-boot-fidelity.md`](./02-dump-and-boot-fidelity.md) | 同一 `applyEntryPatches`；dump 不含 launcher 派生层；`!!js` 不求值 |
 | [`03-user-patch-hmr.md`](./03-user-patch-hmr.md) | `hmr` 插件监视 profile/home patch 与包清单，`recomposeProfile` 调和；新失败大声、旧失败保留好树 |
-| [`04-profile-创建与保留名.md`](./04-profile-创建与保留名.md) | `--from-default-profile` 的复制语义与独占抢占；与 `dsh plugin` 初始化路径的分工；`desktop` 保留名 |
-| [`05-启动窗口与首屏交接.md`](./05-启动窗口与首屏交接.md) | 六段流水线；作者四窗 A–D；首屏五步；硬限制与自证配方 |
+| [`04-profile-creation-and-reserved-names.md`](./04-profile-creation-and-reserved-names.md) | `--from-default-profile` 的复制语义与独占抢占；与 `dsh plugin` 初始化路径的分工；`desktop` 保留名 |
+| [`05-startup-window-and-first-screen-handoff.md`](./05-startup-window-and-first-screen-handoff.md) | 六段流水线；作者四窗 A–D；首屏五步；硬限制与自证配方 |
 
 ## 源码入口
 
