@@ -23,18 +23,18 @@
 | [`delegation-and-orchestration/preset-composition-and-contract-placement/`](../delegation-and-orchestration/preset-composition-and-contract-placement/00-map.md) | 能力面怎么组合、怎么收窄、合同放哪、深度与通知怎么叠加。 | 7 | 7 | 0 | 0 |
 | [`delegation-and-orchestration/completion-and-observation/`](../delegation-and-orchestration/completion-and-observation/00-map.md) | 五个完成时刻、谱系、状态三分、workflow 可复现性，及后续图投影与证据分层。 | 8 | 4 | 4 | 0 |
 | [`delegation-and-orchestration/design-perspectives/`](../delegation-and-orchestration/design-perspectives/00-map.md) | 为什么是这个形状、外部叙事逐条对照、九条陷阱。 | 5 | 3 | 2 | 0 |
-| [`capability-seams/`](../capability-seams/00-map.md) | 同一能力有多个实现时怎么换而不改调用方；从 bash 到 SSH、MCP、hooks 与新执行面。 | 11 | 0 | 11 | 0 |
+| [`capability-seams/`](../capability-seams/00-map.md) | 同一能力有多个实现时怎么换而不改调用方；从 bash 到 SSH、MCP、hooks 与新执行面。 | 11 | 11 | 0 | 0 |
 | [`plugin-system/`](../plugin-system/00-map.md) | 插件系统的三个轴：有什么、怎么成树、怎么走完一生；对外暴露另见 two-tree-runtime。 | 1 | 1 | 0 | 0 |
 | [`plugin-system/composition/`](../plugin-system/composition/00-map.md) | 一份 profile 怎么叠成运行中的插件树；dump、HMR、启动窗口与首屏交接。 | 6 | 1 | 5 | 0 |
 | [`plugin-system/lifecycle/`](../plugin-system/lifecycle/00-map.md) | 插件从打包到卸载的七段；安装、启动、首启、配置、诊断、信任与端到端。 | 13 | 5 | 8 | 0 |
 | [`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) | 现成包、服务与工具的横切清单、复用出路与分类法。 | 6 | 0 | 6 | 0 |
-| [`experimental/`](../experimental/00-map.md) | 已评估但未承诺产品支持的实验能力：Python 子进程、Agent Teams、Inspector。 | 4 | 0 | 4 | 0 |
+| [`experimental/`](../experimental/00-map.md) | 已评估但未承诺产品支持的实验能力：Python 子进程、Agent Teams、Inspector。 | 5 | 3 | 2 | 0 |
 | [`tools-prompt-llm/`](../tools-prompt-llm/00-map.md) | 模型每一步看见什么：工具清单、系统提示词、历史投影与内容块。 | 7 | 0 | 7 | 0 |
 | [`surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md) | 人/程序从哪里进：CLI、headless、Web、ACP、SDK、桌面，以及它们复用的 runtime spine。 | 4 | 2 | 2 | 0 |
 | [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：资产分布与成本、防漏机制、选层决策程序、CI 门禁、快照机制，以及插件项目的测试契约。 | 16 | 7 | 9 | 0 |
-| [`development-flow/`](../development-flow/00-map.md) | DSH 的决策文档怎么立项、落地、忘记与回写：两轴路径编码、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与封印、命名与工程习惯、元环回写、六类执法者与诚实缺口。 | 9 | 9 | 0 | 0 |
+| [`development-flow/`](../development-flow/00-map.md) | DSH 的决策文档怎么立项、落地、忘记与回写：两轴路径编码、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与封印、命名与工程习惯、元环回写、六类执法者与诚实缺口。 | 10 | 10 | 0 | 0 |
 | [`harness-idea/`](../harness-idea/00-map.md) | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。 | 10 | 0 | 10 | 0 |
-| [`canon/`](../canon/00-map.md) | 宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。 | 7 | 0 | 0 | 7 |
+| [`canon/`](../canon/00-map.md) | 宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。 | 7 | 7 | 0 | 0 |
 
 ## 页面明细
 
@@ -203,17 +203,17 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../capability-seams/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
-| [`01-三角色与分包装`](../capability-seams/01-三角色与分包装.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`02-一次bash从tool到sandbox`](../capability-seams/02-一次bash从tool到sandbox.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`03-subagent后台与产品provider`](../capability-seams/03-subagent后台与产品provider.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`04-新增seam与Remote`](../capability-seams/04-新增seam与Remote.md) | mechanism | 沿用 | 687f282e86 | 页面声明 |
-| [`05-subagent-catalog与host交付`](../capability-seams/05-subagent-catalog与host交付.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`06-外发代理策略`](../capability-seams/06-外发代理策略.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`07-原生containment与native-system`](../capability-seams/07-原生containment与native-system.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`08-外部生态桥：MCP与hooks`](../capability-seams/08-外部生态桥：MCP与hooks.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`09-ssh远程执行族`](../capability-seams/09-ssh远程执行族.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`10-新执行面与编排seam`](../capability-seams/10-新执行面与编排seam.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`00-map`](../capability-seams/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-三角色与分包装`](../capability-seams/01-三角色与分包装.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`02-一次bash从tool到sandbox`](../capability-seams/02-一次bash从tool到sandbox.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`03-subagent后台与产品provider`](../capability-seams/03-subagent后台与产品provider.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`04-新增seam与Remote`](../capability-seams/04-新增seam与Remote.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`05-subagent-catalog与host交付`](../capability-seams/05-subagent-catalog与host交付.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`06-外发代理策略`](../capability-seams/06-外发代理策略.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`07-原生containment与native-system`](../capability-seams/07-原生containment与native-system.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`08-外部生态桥：MCP与hooks`](../capability-seams/08-外部生态桥：MCP与hooks.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`09-ssh远程执行族`](../capability-seams/09-ssh远程执行族.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`10-新执行面与编排seam`](../capability-seams/10-新执行面与编排seam.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 
 ### `plugin-system/`
 
@@ -265,10 +265,11 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../experimental/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
+| [`00-map`](../experimental/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
 | [`01-code-runtime-python`](../experimental/01-code-runtime-python.md) | experiment | 沿用 | 687f282e86 | 专题声明 |
-| [`02-agent-teams`](../experimental/02-agent-teams.md) | experiment | 沿用 | 687f282e86 | 专题声明 |
+| [`02-agent-teams`](../experimental/02-agent-teams.md) | experiment | 已核验 | b830ec950f | 专题声明 |
 | [`03-inspector`](../experimental/03-inspector.md) | experiment | 沿用 | 687f282e86 | 专题声明 |
+| [`04-实验合同与隔离`](../experimental/04-实验合同与隔离.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `tools-prompt-llm/`
 
@@ -325,6 +326,7 @@
 | [`06-honest-gaps`](../development-flow/06-honest-gaps.md) | analysis | 已核验 | b830ec950f | 页面声明 |
 | [`07-naming-and-house-style`](../development-flow/07-naming-and-house-style.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`08-enforcement-sites`](../development-flow/08-enforcement-sites.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`09-class-六个决策种类`](../development-flow/09-class-六个决策种类.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `harness-idea/`
 
@@ -345,13 +347,13 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../canon/00-map.md) | map | 未登记 | — | — |
-| [`GLOSSARY`](../canon/GLOSSARY.md) | analysis | 未登记 | — | — |
-| [`02-judgements`](../canon/02-judgements.md) | analysis | 未登记 | — | — |
-| [`03-retired`](../canon/03-retired.md) | analysis | 未登记 | — | — |
-| [`04-writing`](../canon/04-writing.md) | analysis | 未登记 | — | — |
-| [`10-process`](../canon/10-process.md) | analysis | 未登记 | — | — |
-| [`11-ecosystem`](../canon/11-ecosystem.md) | analysis | 未登记 | — | — |
+| [`00-map`](../canon/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`GLOSSARY`](../canon/GLOSSARY.md) | analysis | 已核验 | b830ec950f | 页面声明 |
+| [`02-judgements`](../canon/02-judgements.md) | analysis | 已核验 | b830ec950f | 页面声明 |
+| [`03-retired`](../canon/03-retired.md) | analysis | 已核验 | b830ec950f | 页面声明 |
+| [`04-writing`](../canon/04-writing.md) | analysis | 已核验 | b830ec950f | 页面声明 |
+| [`10-process`](../canon/10-process.md) | analysis | 已核验 | b830ec950f | 页面声明 |
+| [`11-ecosystem`](../canon/11-ecosystem.md) | analysis | 已核验 | b830ec950f | 页面声明 |
 <!-- catalog:coverage:end -->
 
 ## 状态说明

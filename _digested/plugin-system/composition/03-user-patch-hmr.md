@@ -4,9 +4,9 @@
 
 boot 叠完的树不是一次性的。profile 的 `cordis.patch.yml`、home 层 patch 与 profile 的 `package.json` 改了要热更新；失败的候选不能把正在服务的树拆掉；bundle 层和 `--patch` / launcher overlays 不许被用户文件挤掉。
 
-## 0.1.7 线的机制换代
+## 机制形状
 
-旧机制是 launcher 侧的 `composeLive` + `watchUserPatches` + `patchReload: live` 字段（compose 闭包每次重读两层、夹住用户层、失败保留上一棵好树）。0.1.7 线随「事务性 Cordis 重载」的退役整体换掉（commit `e07f41d5fd` 回滚事务重载、`2abb542a22` 适配非事务 Loader，2026-09-09；note `2026-09-09-nontransactional-loader.md`）：~~`composeLive` / `watchUserPatches` / `patchReload` / `hmr/config-update-failed` / `hmr.registerConfig`~~ 在源码中已全部不存在（重建的 vendor hmr 库文件除外）。现机制：**`hmr` 插件自己监视三份文件，经 `reconcileProfilePatches` 原子换入新 patch 集**，模块热替换与配置重载共用同一条串行队列（`packages/boot/hmr/src/index.ts:1` "Serialized module and profile-configuration reloads"）。
+现机制：**`hmr` 插件自己监视三份文件，经 `reconcileProfilePatches` 原子换入新 patch 集**，模块热替换与配置重载共用同一条串行队列（`packages/boot/hmr/src/index.ts:1` "Serialized module and profile-configuration reloads"）。换代的来龙去脉（旧 launcher 侧 compose/watch 字段随事务性 Cordis 重载一并退役）见 [`../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md)。
 
 ## hmr 插件看哪三份文件
 
@@ -16,7 +16,7 @@ boot 叠完的树不是一次性的。profile 的 `cordis.patch.yml`、home 层 
 - home 层 patch（`$DSH_HOME/cordis.patch.yml`）；
 - profile 的 `package.json`（bundle 清单变更也触发重载——`:384` 的 `manifestPath`、`:385` 的两个 patch 路径，`refresh(manifestOnly)` 对 bundle 变化单独比对 `:389-390`）。
 
-**前提是应用就绪**：`appReady` 不在场直接抛 `Profile HMR requires application readiness`（`:369-370`）。`appReady` 由 launcher 经 `provideCmdline({ ready })` 提供并注入 `ctx.provide('appReady', …)`（`packages/boot/cmdline/src/index.ts:88`），`runProfile` 在 `ctx.fiber` ACTIVE 且 loader 在场时 commit（`apps/cli/src/profile-boot.ts:295/:341-344`）。这个前提就是 0.1.7 线把 headless / sdk-app / acp-app 显式 disable hmr 行之外的第二道闸：**desktop**（desktop-host 经 `runProfile` 起 profile、`profileContext` 在场但调用侧不传 `ready`）与 webworker 宿主的 HMR 初始化会命中这条抛错而不挂 watcher（desktop-host 进程自身经 IPC `{type:'ready'}` 向壳报告就绪，`apps/desktop-host/src/index.ts:104`，与 `appReady` 是两条不同的就绪信号）。
+**前提是应用就绪**：`appReady` 不在场直接抛 `Profile HMR requires application readiness`（`:369-370`）。`appReady` 由 `runProfile` 内部创建并提交——`createAppReady()`（`apps/cli/src/profile-boot.ts:295`）、经 `provideCmdline({ ready })` 注入（`:334-337`）、在 `ctx.fiber` ACTIVE 且 loader 在场时 commit（`:341-344`）。因此凡是走 `runProfile` 的宿主都满足这个前提：五个 launcher profile 如此，**desktop 的应用自有 profile 也如此**（desktop-host 经同一条 `runProfile` 起 profile，`apps/desktop-host/src/index.ts:25`，profile patch 热更行为与 web 相同，见 [`../../runtime-profiles/06-desktop.md`](../../runtime-profiles/06-desktop.md)）。这道闸真正拦的是绕过 `runProfile`、自行挂 `hmr` 行的嵌入式宿主；一次性 profile（headless / sdk-app / acp-app）则在自己的 bundle patch 里显式 `disabled: true` 该行（`packages/bundle/headless/cordis.patch.yml` 等），不依赖这道闸。
 
 ## 刷新做什么
 

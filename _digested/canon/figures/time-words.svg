@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 410" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="410" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">时间的词：exchange 包 turn，turn 包 step，round 在外层驱动</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">四个词是嵌套与驱动关系，不是「回合」的四种叫法。</text>
+
+  <line x1="50" y1="80" x2="630" y2="80" stroke="#6d28d9" stroke-width="1.5"/>
+  <line x1="50" y1="80" x2="50" y2="88" stroke="#6d28d9" stroke-width="1.5"/>
+  <line x1="630" y1="80" x2="630" y2="88" stroke="#6d28d9" stroke-width="1.5"/>
+  <text x="340" y="72" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">exchange（交互段）</text>
+
+  <rect x="60" y="95" width="170" height="92" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="145" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">turn · 真人输入启动</text>
+  <circle cx="100" cy="145" r="7" fill="#2563eb"/><circle cx="145" cy="145" r="7" fill="#2563eb"/><circle cx="190" cy="145" r="7" fill="#2563eb"/>
+  <line x1="107" y1="145" x2="138" y2="145" stroke="#2563eb"/><line x1="152" y1="145" x2="183" y2="145" stroke="#2563eb"/>
+  <text x="145" y="172" text-anchor="middle" font-size="11" fill="#1e3a8a">step × n（排空已接纳输入）</text>
+
+  <rect x="250" y="95" width="170" height="92" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="335" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">turn · 通知唤醒</text>
+  <circle cx="290" cy="145" r="7" fill="#2563eb"/><circle cx="335" cy="145" r="7" fill="#2563eb"/>
+  <line x1="297" y1="145" x2="328" y2="145" stroke="#2563eb"/>
+  <text x="335" y="172" text-anchor="middle" font-size="11" fill="#1e3a8a">子 agent 完成 / Goal / 定时</text>
+
+  <rect x="440" y="95" width="170" height="92" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="525" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">turn · 通知唤醒</text>
+  <circle cx="480" cy="145" r="7" fill="#2563eb"/><circle cx="525" cy="145" r="7" fill="#2563eb"/><circle cx="570" cy="145" r="7" fill="#2563eb"/>
+  <line x1="487" y1="145" x2="518" y2="145" stroke="#2563eb"/><line x1="532" y1="145" x2="563" y2="145" stroke="#2563eb"/>
+  <text x="525" y="172" text-anchor="middle" font-size="11" fill="#1e3a8a">仍属前面这个 exchange</text>
+
+  <line x1="645" y1="66" x2="645" y2="200" stroke="#9ca3af" stroke-dasharray="4 3"/>
+  <line x1="660" y1="80" x2="920" y2="80" stroke="#6d28d9" stroke-width="1.5"/>
+  <line x1="660" y1="80" x2="660" y2="88" stroke="#6d28d9" stroke-width="1.5"/>
+  <line x1="920" y1="80" x2="920" y2="88" stroke="#6d28d9" stroke-width="1.5"/>
+  <text x="790" y="72" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">下一个 exchange</text>
+  <rect x="670" y="95" width="170" height="92" rx="8" fill="#ede9fe" stroke="#d8b4fe"/>
+  <text x="755" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">turn · 真人输入启动</text>
+  <circle cx="710" cy="145" r="7" fill="#7c3aed"/><circle cx="755" cy="145" r="7" fill="#7c3aed"/>
+  <line x1="717" y1="145" x2="748" y2="145" stroke="#7c3aed"/>
+  <text x="755" y="172" text-anchor="middle" font-size="11" fill="#5b21b6">Chat 在此折叠上一段</text>
+
+  <rect x="30" y="225" width="440" height="105" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="250" y="250" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">step（步骤）放大</text>
+  <rect x="60" y="265" width="150" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="135" y="288" text-anchor="middle" font-size="12" fill="#1e40af">一次模型请求</text>
+  <line x1="210" y1="283" x2="248" y2="283" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="250" y="265" width="180" height="36" rx="6" fill="#dcfce7" stroke="#86efac"/>
+  <text x="340" y="288" text-anchor="middle" font-size="12" fill="#166534">由响应引发的工具执行</text>
+  <text x="250" y="320" text-anchor="middle" font-size="11" fill="#2563eb">turn 内部的一步；不叫「迭代」「循环次数」。</text>
+
+  <rect x="500" y="225" width="430" height="105" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="715" y="250" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">round（策略层迭代）</text>
+  <path d="M 545 285 A 18 18 0 1 1 563 303" fill="none" stroke="#c2410c" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="600" y="283" font-size="12" fill="#9a3412">承载一个轮次的外层策略迭代：</text>
+  <text x="600" y="303" font-size="12" fill="#c2410c">Goal Round 为目标接纳一次续行周期，</text>
+  <text x="600" y="320" font-size="11" fill="#7c2d12">Ralph Round 同理。round 驱动 turn，两者不可互换。</text>
+
+  <rect x="30" y="350" width="900" height="40" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="480" y="375" text-anchor="middle" font-size="12" fill="#374151">turn 是推进单位，step 是 turn 内一步，exchange 是 Chat 折叠边界，round 是外层策略迭代——四个词各有所指。</text>
+</svg>

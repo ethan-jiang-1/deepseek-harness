@@ -2,7 +2,7 @@
 
 ## 一句话
 
-旧基线让任意 `Context` 通过反向属性 `ctx.agent` 找回 Agent；新基线删掉这条关联，身份只在拥有它的地方显式传递——`AgentSetup(agentCtx, agent)`、`CreateAgentOptions.parentAgent` / `ResumeAgentOptions.parentAgent`，以及 loop 用 `withInitiator` 划出的因果边界。这条边界从「日志归属」升级成了**权限判据**：goal round driver 靠它区分 host 的 Pause 与模型自己的 `update_goal pause`。
+Context 上**没有**反向的 `ctx.agent` 属性；身份只在拥有它的地方显式传递——`AgentSetup(agentCtx, agent)`、`CreateAgentOptions.parentAgent` / `ResumeAgentOptions.parentAgent`，以及 loop 用 `withInitiator` 划出的因果边界。这条边界是**权限判据**：goal round driver 靠它区分 host 的 Pause 与模型自己的 `update_goal pause`。
 
 ## 源码核验入口
 
@@ -12,16 +12,14 @@
 | `packages/core/agent-loop/src/index.ts` | factory：以 `parentAgent` enter 子 Agent |
 | `packages/core/agent-loop/src/agent.ts` | `wakeDriver()` 用 `withInitiator` 包住整段 activity |
 | `packages/goal/goal-round-driver/src/index.ts` | host pause / model pause 的分支判据 |
-| `packages/subagent/tool-subagent/src/index.ts` | 子级 model-selection 继承改从 Session 读父 |
+| `packages/subagent/tool-subagent/src/index.ts` | 子级 model-selection 继承从 Session 读父 |
 | `packages/core/agent/src/runtime-types.ts` | scoped event 的 payload 自带 Agent（`:261`、`:280`） |
 
-## 删掉的反向关联
+## 为什么没有 `ctx.agent`
 
-旧基线在 `Context` 上声明可选的 `agent` 反向属性并注册 `ctx.accessor('agent', …)`，任何拿到 Context 的代码都能反推 Agent。问题是 Context 与 Agent 回答两个不同的问题：Context 是注册与生命周期所有者，Agent 是这次操作的身份（选哪个 Session、谁是运行时属主、事件主体是谁、权限归谁、wire 身份是谁）。反向属性把两者混为一谈，还逼出三种补偿机制——Host Remote 转发从路由 subject 反查 Context、创建路径从调用方 Context 推断运行时父属、适配器维护反向身份扫描。
+Context 与 Agent 回答两个不同的问题：Context 是注册与生命周期所有者，Agent 是这次操作的身份（选哪个 Session、谁是运行时属主、事件主体是谁、权限归谁、wire 身份是谁）。反向属性（任何拿到 Context 的代码都能反查 Agent）会把两者混为一谈，并逼出补偿机制——Host Remote 转发从路由 subject 反查、创建路径从调用方 Context 推断父属、适配器维护反向身份扫描。
 
-新基线只按显式身份解析：Typert 的 lookup 与 host context provider 都以 wire 字段 `agentId` 为输入，`resolve: sessionId => this.get(sessionId)`（`packages/core/agent/src/index.ts:259-271`；session-controller 的异步版本 `packages/api/session-controller/src/agent.ts:188-192`）。`agent.ctx` 仍是注册与生命周期所有者，但不再暴露任何反向 Agent 属性。
-
-决策记录在仍现行的 note `.agents/notes/implemented/architecture/2026-08-31-explicit-agent-runtime-identity.md`；它只取代 [2026-07-15 initiator 作用域决策](../../.agents/notes/implemented/architecture/2026-07-15-agent-initiator-scope.md) 里的「反向 Context 关联 / 隐式运行时属主推导」部分，注册作用域与 initiator 私有链的理由仍然独立成立。
+因此身份只按显式解析：Typert 的 lookup 与 host context provider 都以 wire 字段 `agentId` 为输入，`resolve: sessionId => this.get(sessionId)`（`packages/core/agent/src/index.ts`；session-controller 有异步版本）。`agent.ctx` 仍是注册与生命周期所有者，但不暴露任何反向 Agent 属性。决策记录：[`2026-08-31-explicit-agent-runtime-identity`](../../.agents/notes/implemented/architecture/2026-08-31-explicit-agent-runtime-identity.md)（显式身份传递）与 [`2026-07-15-agent-initiator-scope`](../../.agents/notes/implemented/architecture/2026-07-15-agent-initiator-scope.md)（注册作用域与 initiator 私有链，独立成立）。
 
 ## 身份显式传递
 
@@ -35,6 +33,8 @@
 同一条原则决定了 subagent 的 model-selection 继承目标：`selectForSession(session)` 从 `ctx.get('sessions')` 读父 Session（`packages/subagent/tool-subagent/src/index.ts:413-441`），而不是从 Agent registry 反查父 Agent；委派工具的装载签名因此变成 `apply(ctx, config, session?)`（`:146`），由直接 `AgentSetup` 显式传入尚未发布的 Session。host 侧的消息交付同样显式带 parent：`deliverSubagentPrompt(parent, childId, …)`（`packages/subagent/subagent/src/internal.ts:42-55`）。机制细节见 [`../capability-seams/05-subagent-catalog与host交付.md`](../capability-seams/05-subagent-catalog与host交付.md)。
 
 ## initiator 边界
+
+![initiator 边界：谁在边界内、谁在边界外](./figures/initiator-boundary.svg)
 
 `withInitiator(agent, operation)` 把一段进程内操作标记为「继承自这个 Agent」，`currentInitiator()` 读当前边界，`withoutInitiator(operation)` 显式清除归属（`packages/core/agent/src/index.ts:329`、`:297`、`:344`）。契约写明 presence 既不是存活证明也不是授权——它只回答因果归属。
 
@@ -54,7 +54,7 @@ if (change.operation === 'pause' && agent.status === 'running'
 - **host 发起**的 pause（Web 按钮等 agent initiator 边界之外的路径）满足 `currentInitiator() !== agent`，于是正在跑的 turn 被 `agent.cancel` 直接中止——Pause 成为真正的「现在停下」，而不只是「别再开新一轮」。`keepInbox` 保留待处理输入。
 - **模型自己**的 `update_goal pause` 在自身 turn 内运行，`currentInitiator() === agent`，于是正常跑完当前 turn，pause 从下一轮起生效。
 
-initiator 在产品语义里并非全新判据：`goalToolExecution` 早就在 OLD 基线用 `ctx.agents.currentInitiator() !== agent` 拒绝「不在自己 active driver 内」的 goal tool 调用（`packages/goal/tool-goal/src/authority.ts:52-58`，本跨度未改）。driver 这条分支的新意在于：它用同一个 API 区分**两个都合法的发起者**（host 与 model）并据此决定是否中止正在跑的 turn，而不只是拒绝越权调用。相关的 goal 工具授权（`requireDirectHuman` / `completionAuthority`）仍基于 live agent 与 initiator（`packages/goal/tool-goal/src/authority.ts:110-117`），本跨度未改判据。被中止的 turn 与随后的 resume 时序（revision 栅栏）见 [`02-goal-round-driver.md`](./02-goal-round-driver.md) 的「host pause 与 revision 栅栏」。
+同一个 initiator API 服务两类判据：`goalToolExecution` 用 `currentInitiator() !== agent` 拒绝「不在自己 active driver 内」的 goal tool 调用（`packages/goal/tool-goal/src/authority.ts`）；driver 的 pause 分支则用它区分**两个都合法的发起者**（host 与 model），据此决定是否中止正在跑的 turn。goal 工具授权（`requireDirectHuman` / `completionAuthority`）基于 live agent 与 initiator，是另一层判据。被中止的 turn 与随后的 resume 时序（revision 栅栏）见 [`02-goal-round-driver.md`](./02-goal-round-driver.md) 的「host pause 与 revision 栅栏」。
 
 ## 与四层边界的关系
 

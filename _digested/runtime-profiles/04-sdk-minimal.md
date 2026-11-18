@@ -2,7 +2,7 @@
 
 ## 一句话
 
-`sdk-minimal` 是 SDK 的极简版本，工具面大幅收窄，由 Python SDK 的极简示例与 sdk-minimal smoke 场景显式选用（**SDK 的默认 profile 仍是 `sdk`**，`dsh --profile sdk-minimal`）。模型看到**三个工具**：一个由平台选定的持久 shell（非 win32 → `persistent-bash`；win32 → `persistent-pwsh`）、`read_image`、`working_directory`；没有 subagent、skill、todo、web search。
+`sdk-minimal` 是 SDK 的极简版本，工具面大幅收窄，由 Python SDK 的极简示例与 sdk-minimal smoke 场景显式选用（**SDK 的默认 profile 仍是 `sdk`**，`dsh --profile sdk-minimal`）。模型看到的工具面收窄到一个由平台选定的持久 shell（非 win32 → `persistent-bash`；win32 → `persistent-pwsh`）加 `read_image` 与 `working_directory`，以 [`scripts/snapshots/python-sdk-single-exe/minimal/`](../../scripts/snapshots/python-sdk-single-exe/minimal/) 的 model-visible 快照为准；没有 subagent、skill、todo、web search。
 
 ## 怎么跑
 
@@ -36,12 +36,12 @@ dsh --profile sdk-minimal
 | `subprocess` | `@deepseek-ai/dsh-subprocess-local` | `:76-77` | 子进程管理 |
 | `pty` | `@deepseek-ai/dsh-terminal` | `:79-80` | 持久 PTY |
 | `terminal-bash` / `terminal-pwsh` | `@deepseek-ai/dsh-terminal-bash` | `:82-86`、`:88-93` | win32 平台孪生行：`disabled: !!js process.platform === 'win32'` / `!== 'win32'`，各带 `timeoutMs: 300000`（pwsh 侧另有 `shellDialect: pwsh`） |
-| 内核块 | 见下 | `:95-138` | `timer`、`llm`、`session`、`session-title`、`system-prompt`、`tools`、`mcp-resources`、`agent`、`llm-retry`、`jobs`、`agent-loop`（`invariants` / `session-invariant` / `agent-invariant` / `scope-invariant` / `agent-loop-invariant` 五行 0011 随运行时 invariant 机制整族退役删除，无继任） |
+| 内核块 | 见下 | `:95-138` | `timer`、`llm`、`session`、`session-title`、`system-prompt`、`tools`、`mcp-resources`、`agent`、`llm-retry`、`jobs`、`agent-loop` |
 | `persistent-bash` | `@deepseek-ai/dsh-tool-bash-persistent` | `:140-152` | 非 win32 的持久 bash shell（5 分钟 timeout，状态跨命令保持） |
 | `persistent-pwsh` | `@deepseek-ai/dsh-tool-pwsh-persistent` | `:154-166` | win32 的持久 PowerShell（5 分钟 timeout） |
 | `sessions` | `@deepseek-ai/dsh-session-persistence-jsonl` | `:168-172` | JSONL 持久化，`compression: none` |
 
-两处 `description` 里的网络说明不一致：bash 侧写「Network access depends on the task environment. Prefer configured mirrors/proxies when they are available.」（`:148`），pwsh 侧写「You don't have access to the internet via this tool.」（`:162`）。两处不一致，改文案时一起看。
+两行持久 shell 的 `description` 给出**不一致的网络说明**：bash 侧写「Network access depends on the task environment. Prefer configured mirrors/proxies when they are available.」，pwsh 侧写「You don't have access to the internet via this tool.」——同一组合里模型按平台读到相反的网络预期，这是当前组合的已知文案不一致。
 
 `tool-str-replace-editor` 不在 minimal 组合里：它提供第二个文件改写接口，并把完整 schema 塞进每次 minimal 请求，而 shell 已经能查文件、改文件；`fs-local` 以 `filesystem` 行在树里，供 `working-directory` 与只开 `read_image` 的 `tool-fs` 使用；`tool-str-replace-editor` 仍没有 minimal 行。
 
@@ -51,9 +51,9 @@ dsh --profile sdk-minimal
 |------|-----|-------------|
 | `maxTokensAsSuccess` | `true`（环境变量控制） | `false` |
 | `tool-bash` | 普通 foreground bash | 平台选定的持久 shell（PTY，5 分钟） |
-| 模型可见工具数 | base 的完整工具面 | **3 个**（`bash` 或 `pwsh` + `read_image` + `working_directory`） |
+| 模型可见工具面 | base 的完整工具面 | 平台选定的持久 shell + `read_image` + `working_directory`（以 model-visible 快照为准） |
 | `tool-fs` | `read` / `write` / `edit` 完整工具 + `tool-fs-search` | 有行但只开 `readImage`（`read` / `write` / `edit` 均为 `false`），即只暴露 `read_image`；文本读写一律走 shell |
-| `str_replace_editor` | **无**（base 在 0008 跨度下线该行；要它必须显式 `insert`） | **无**（同上） |
+| `str_replace_editor` | **无**（不在 shipped 组合；要它必须显式 `insert`） | **无**（同上） |
 | 文件系统服务 | 有（base 的 `fs-sandbox`、`fs-observation-policy`） | 有 `filesystem`（`fs-local`）与 `attachment-local`，但没有 `fs-sandbox` / `fs-observation-policy` 这两层策略 |
 | `subagent` | 有 | **无** |
 | `tool-todo` | 有 | **无** |
@@ -67,7 +67,7 @@ dsh --profile sdk-minimal
 
 ## 独特之处
 
-- **Python SDK 极简示例与 sdk-minimal smoke 显式选用的组合**：`scripts/smoke-python-runtime.py` 的 `sdk-minimal` 场景把 model-visible 输出钉在 `scripts/snapshots/python-sdk-single-exe/minimal/model-visible.json`（win32 对应 `minimal/win-x64/model-visible.json`）。当前 Linux/macOS 三条请求各广告 `bash`、`read_image`、`working_directory` 三个工具，win-x64 各广告 `pwsh`、`read_image`、`working_directory`；系统段仍只有 `You are a helpful software engineer assistant.`。SDK 的默认 profile 不是它，而是 `sdk`（`python/sdk` 的默认值；`sdk-minimal` 由示例与 smoke 显式选择）。
+- **Python SDK 极简示例与 sdk-minimal smoke 显式选用的组合**：`scripts/smoke-python-runtime.py` 的 `sdk-minimal` 场景把 model-visible 输出钉在 `scripts/snapshots/python-sdk-single-exe/minimal/model-visible.json`（win32 对应 `minimal/win-x64/model-visible.json`）。当前 Linux/macOS 的请求各广告 `bash`、`read_image`、`working_directory`，win-x64 各广告 `pwsh`、`read_image`、`working_directory`；系统段仍只有 `You are a helpful software engineer assistant.`。SDK 的默认 profile 不是它，而是 `sdk`（`python/sdk` 的默认值；`sdk-minimal` 由示例与 smoke 显式选择）。
 - **工具面最窄的 Profile**：模型只看到一个平台选定的持久 shell，加上 `read_image` 与 `working_directory` 两个不带文件改写权的工具。
 - **`danger-full-access`**：没有沙箱保护，仅用于 disposable checkout 或容器。`workspaceRoot: !!js process.cwd()` 仍成立——它只是 sandbox-policy 的根；`filesystem`（`fs-local`）在树里，但仍没有文件改写工具，也没有 `fs-sandbox` / `fs-observation-policy` 策略层。
 - **持久 PTY**：bash / pwsh 状态跨命令保持（`cd` 后 pwd 仍在新目录），5 分钟 timeout。
@@ -83,7 +83,7 @@ dsh --profile sdk-minimal
 | `packages/bundle/sdk-app/src/index.ts` | `sdk-app-startup` 的 `profile` config 与 `--help` 命令语法 |
 | `packages/boot/app-boot/src/profile.ts` | `PROFILE_TEMPLATES['sdk-minimal']` |
 | `scripts/smoke-python-runtime.py` | smoke 测试（含 `minimal/model-visible.json` 快照） |
-| `scripts/snapshots/python-sdk-single-exe/minimal/` | model-visible 快照（每请求三个工具；含 `win-x64/`） |
+| `scripts/snapshots/python-sdk-single-exe/minimal/` | model-visible 快照（每请求广告的工具清单；含 `win-x64/`） |
 | `python/development.md` | 开发说明 |
 | `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |
 

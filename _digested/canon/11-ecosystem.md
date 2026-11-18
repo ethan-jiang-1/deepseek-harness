@@ -1,6 +1,6 @@
 # 11 · 外部说法的定级与写法
 
-DSH 之外的说法（第三方包、作者声明、社区文章）不是 DSH 的合同。这篇只定一件事：**怎么说它们，才不会被读成 DSH 的机制**。外部事实本身归各专题，不在这里复述。
+> 读 DSH 时你会遇到两类说法：repo 自己写的，和生态里流传的（第三方包 README、作者声明、社区文章）。后者听起来常常像 DSH 的机制，但它们不是 DSH 的合同。这篇只定一件事：**怎么说它们，才不会被读成 DSH 的机制**。外部事实本身归各专题，不在这里复述。
 
 ## 两条已有原文支撑的边界
 
@@ -8,7 +8,7 @@ DSH 之外的说法（第三方包、作者声明、社区文章）不是 DSH �
 
 **因此怎么写**：讲哪个应用拥有 profile 时，用 `application-owned` 这个说法和入口名，不要泛化成「应用层」。
 
-**它怎么说**：「A bundle is not a row.」（[app-boot](../../packages/boot/app-boot/README.md)，上下文见 `skippedBundles` 一段）
+**它怎么说**：「A bundle is not a row」（[app-boot](../../packages/boot/app-boot/README.md)，上下文见 `skippedBundles` 一段）
 
 **因此怎么写**：bundle 与 row 是两个层级；说「装了就有功能」时，要落到 row 是否启用。
 

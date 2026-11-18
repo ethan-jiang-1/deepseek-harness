@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">启用 Agent Teams：组合切换与成员 scope 的工具遮蔽</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">一个可选 bundle 同时改两件事：profile 里换工具行，成员 scope 里遮蔽同名全局工具。</text>
+
+  <rect x="30" y="70" width="440" height="290" rx="12" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="250" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">agent-team-profile 的组合切换</text>
+  <rect x="50" y="114" width="400" height="76" rx="8" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="250" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#b91c1c">disable（直接委派工具退场）</text>
+  <text x="70" y="158" font-size="11" fill="#991b1b">tool-subagent / tool-subagent-fork</text>
+  <text x="70" y="176" font-size="11" fill="#991b1b">tool-subagent-control / tool-subagent-list-agents</text>
+  <line x1="250" y1="190" x2="250" y2="210" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="50" y="212" width="400" height="76" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="250" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">insert（团队三行）</text>
+  <text x="70" y="256" font-size="11" fill="#14532d">agent-team（服务）+ tool-agent-team（九工具）</text>
+  <text x="70" y="274" font-size="11" fill="#14532d">+ ui-agent-team（Web 名册 / 任务板）</text>
+  <text x="250" y="316" text-anchor="middle" font-size="11" fill="#9a3412">底层 Subagent 服务与 spawn/fork provider 保留，</text>
+  <text x="250" y="334" text-anchor="middle" font-size="11" fill="#9a3412">供 teammate 创建与 workflow 使用。</text>
+
+  <rect x="500" y="70" width="430" height="290" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="715" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">成员 scope 的工具遮蔽</text>
+  <rect x="520" y="114" width="390" height="76" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="715" y="136" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">全局 scope（宿主 / 非 Team 子代理）</text>
+  <text x="540" y="158" font-size="11" fill="#4b5563">list_agents / send_message / interrupt_agent</text>
+  <text x="540" y="176" font-size="11" fill="#4b5563">= continuable 子代理控制，默认目录</text>
+  <line x1="715" y1="190" x2="715" y2="210" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="727" y="204" font-size="10" fill="#374151">同名遮蔽</text>
+  <rect x="520" y="212" width="390" height="94" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="715" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">Team 成员 scope</text>
+  <text x="540" y="256" font-size="11" fill="#1e3a8a">同名三工具换成 Team 版 + spawn_teammate / wait_agent</text>
+  <text x="540" y="274" font-size="11" fill="#1e3a8a">+ team_task_create / list / get / update</text>
+  <text x="540" y="292" font-size="11" fill="#2563eb">+ prompt 段 team:policy / team:identity</text>
+  <text x="715" y="334" text-anchor="middle" font-size="11" fill="#1e3a8a">maybeInstall 按 Team membership 装；非成员跳过，仍用全局定义。</text>
+
+  <text x="480" y="384" text-anchor="middle" font-size="12" fill="#374151">启用代价：该 profile 的直接委派工具被团队工具取代——这是组合互斥，不是 bug。</text>
+</svg>

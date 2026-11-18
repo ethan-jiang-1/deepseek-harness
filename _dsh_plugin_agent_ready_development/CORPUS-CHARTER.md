@@ -92,7 +92,8 @@ const dshExternalUrl = /^https:\/\/github\.com\/deepseek-ai\/deepseek-harness\/(
 | 通用 Agent-Friendly 仓库工程学（知识归属、Skills、门禁模式、防漂移与新仓四件套模板） | `01-general-repo-harness/`（开发与插件 Harness 语料 · 卷一，不绑 DSH 代码） |
 | 独立 DSH 插件仓开发与专属 Harness（三种拓扑、Cordis 契约、插件门禁与无 Key 回放） | `02-dsh-plugin-harness/`（开发与插件 Harness 语料 · 卷二） |
 | DSH 主仓原生 SDLC 条款与一手证据字典（Note、Plan、CI、评审、加权批准、发布） | `03-dsh-sdlc-reference/`（开发与插件 Harness 语料 · 卷三） |
-| profile 组合、`PROFILE_TEMPLATES`、bundle 层叠 | `runtime-profiles/`（架构消化语料） |
+| 组合层叠算法与 patch 语义（层序、dump/boot、HMR 机制） | `plugin-system/composition/`（架构消化语料） |
+| per-profile 组合事实、`PROFILE_TEMPLATES` 模板清单、各 profile 差异与独有插件 | `runtime-profiles/`（架构消化语料） |
 | 入口清单、CLI/SDK/ACP 契约、输出与退出、认证载体 | `surfaces-entrypoints/`（架构消化语料） |
 | 两棵树的运行时、client/remote 机制、Typert | `two-tree-runtime/`（架构消化语料） |
 | 插件的组合、生命周期、货架 | `plugin-system/`（架构消化语料） |

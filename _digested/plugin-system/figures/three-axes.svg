@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">插件系统的三个轴：有什么 / 怎么变成活树 / 怎么走完一生</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">三轴共用一个父目录，因为它们回答的是同一个问题在不同阶段的侧面；真实问题经常跨轴。</text>
+
+  <rect x="30" y="72" width="280" height="200" rx="12" fill="#eef2ff" stroke="#818cf8"/>
+  <text x="170" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#3730a3">inventory · 有什么</text>
+  <text x="170" y="122" text-anchor="middle" font-size="11" fill="#4338ca">现成给了哪些包、服务与工具</text>
+  <text x="50" y="152" font-size="11" fill="#3730a3">能力在哪、以什么形态给、怎么拿</text>
+  <text x="50" y="174" font-size="11" fill="#3730a3">动手写之前先查有没有现货</text>
+  <rect x="50" y="192" width="240" height="30" rx="6" fill="#e0e7ff" stroke="#a5b4fc"/>
+  <text x="170" y="212" text-anchor="middle" font-size="11" fill="#3730a3">数量以 inventory 页为准</text>
+  <text x="170" y="246" text-anchor="middle" font-size="11" fill="#6b7280">「有没有现成的」</text>
+
+  <rect x="340" y="72" width="280" height="200" rx="12" fill="#dcfce7" stroke="#86efac"/>
+  <text x="480" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#166534">composition · 怎么成树</text>
+  <text x="480" y="122" text-anchor="middle" font-size="11" fill="#15803d">一份 profile 怎么叠成运行中的树</text>
+  <text x="360" y="152" font-size="11" fill="#14532d">层叠顺序、dump 保真、HMR</text>
+  <text x="360" y="174" font-size="11" fill="#14532d">启动窗口与首屏交接</text>
+  <rect x="360" y="192" width="240" height="30" rx="6" fill="#bbf7d0" stroke="#4ade80"/>
+  <text x="480" y="212" text-anchor="middle" font-size="11" fill="#14532d">装了为什么没生效</text>
+  <text x="480" y="246" text-anchor="middle" font-size="11" fill="#6b7280">「现在树上有什么」</text>
+
+  <rect x="650" y="72" width="280" height="200" rx="12" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="790" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">lifecycle · 怎么走完一生</text>
+  <text x="790" y="122" text-anchor="middle" font-size="11" fill="#c2410c">从打包到卸载要经过哪几段</text>
+  <text x="670" y="152" font-size="11" fill="#7c2d12">每段结尾什么不可逆</text>
+  <text x="670" y="174" font-size="11" fill="#7c2d12">安装 / 更新 / 卸载 / 首启</text>
+  <rect x="670" y="192" width="240" height="30" rx="6" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="790" y="212" text-anchor="middle" font-size="11" fill="#7c2d12">七段与不可逆边界</text>
+  <text x="790" y="246" text-anchor="middle" font-size="11" fill="#6b7280">「装进去之后会怎样」</text>
+
+  <rect x="30" y="288" width="900" height="96" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="50" y="312" font-weight="700" fill="#1f2937">三条跨轴不变量（违反它们是最常见的落地失败）</text>
+  <text x="50" y="336" font-size="11" fill="#374151">① 组成是算出来的——没有一份「最终 cordis.yml」，手改根文件下次启动被覆盖。</text>
+  <text x="50" y="356" font-size="11" fill="#374151">② 准入只在宿主拥有的边界上发生——版本门在写依赖前拒、行级准入在挂树前拒、卸载只回收代码。</text>
+  <text x="50" y="374" font-size="11" fill="#374151">③ 一次性由数据担保，不由生命周期担保——fiber 会反复重进，用内存变量当「首启」重载即重跑。</text>
+</svg>

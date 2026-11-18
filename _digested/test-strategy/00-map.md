@@ -4,7 +4,7 @@
 
 ## 一句话
 
-DSH 的测试资产以千计（unit 用例以万计），测试政策却只有 55 行（`docs/testing.md`）——整份政策的定语是 "the rules that keep a green suite meaningful"（让绿有意义）。本专题不讲"测试金字塔"，而讲三件事：**资产怎么分布**、**怎么保证不漏**、**一个变更该配什么证据才算够**。
+DSH 的测试资产以千计（unit 用例以万计），测试政策本身却极短——整份政策的定语是 "the rules that keep a green suite meaningful"（让绿有意义）；具体行数与资产计数归 [`03`](./03-asset-census.md)。本专题不讲"测试金字塔"，而讲三件事：**资产怎么分布**、**怎么保证不漏**、**一个变更该配什么证据才算够**。
 
 ## 三个问题，三篇入口
 
@@ -22,7 +22,7 @@ DSH 的测试资产以千计（unit 用例以万计），测试政策却只有 5
 
 | 问题 | 阅读入口 |
 |---|---|
-| 测试思想是什么、55 行政策说了什么、指导怎么分布 | [`01-doctrine.md`](./01-doctrine.md) |
+| 测试思想是什么、政策本身说了什么、指导怎么分布 | [`01-doctrine.md`](./01-doctrine.md) |
 | 有哪些层、每层测什么、后缀/目录怎么选中层 | [`02-tiers.md`](./02-tiers.md) |
 
 ### 二、资产与防漏：有多少、怎么防漏、怎么决策
@@ -62,11 +62,13 @@ DSH 的测试资产以千计（unit 用例以万计），测试政策却只有 5
 
 数量、口径与复测命令只在 [`03-asset-census.md`](./03-asset-census.md) 维护；核验基线（tag / commit）只登记在 [`catalog.json`](../catalog.json)。本页不复制数字，以免下一轮同步出现第二份必须同时改、又可能改得不一致的地方。
 
-![七层宪法层总览：证据形态与入口真实性](./figures/evidence-map.svg)
+七层（本专题的说法：从「政策怎么写」到「真实世界里跑过没有」的七种证据形态，各证各的、互不替代）总览：
+
+![七层总览：证据形态与入口真实性](./figures/evidence-map.svg)
 
 ## 阅读路径
 
-- **15 分钟，抓住三个答案**：本页 → [`03`](./03-asset-census.md) 的账本与比例 → [`04`](./04-anti-omission.md) 的六面表 → [`05`](./05-decision-procedure.md) 的七问。`docs/testing.md` 只有 55 行，值得整读。
+- **15 分钟，抓住三个答案**：本页 → [`03`](./03-asset-census.md) 的账本与比例 → [`04`](./04-anti-omission.md) 的六面表 → [`05`](./05-decision-procedure.md) 的七问。`docs/testing.md` 本身很短（行数见 [`03`](./03-asset-census.md)），值得整读。
 - **30 分钟，理解为什么**：加读 [`01`](./01-doctrine.md)（九条教义）与 [`02`](./02-tiers.md)（层与选中机制）。
 - **插件作者专线**：[`13`](./13-plugin-testing.md)（政策要求）→ [`14`](./14-plugin-testing-playbook.md)（真实组合）→ [`15`](./15-plugin-testing-contract.md)（契约与账本）→ [`11`](./11-snapshot-external-face.md)（快照机制的对外面）；货架与分类法在 [`plugin-inventory`](../plugin-system/inventory/00-map.md)。
 - **深潜**：按问题进 [`07`](./07-ci-gates.md)（CI 与防假绿）、[`08`](./08-reliability.md)（可靠性）、[`09`](./09-infrastructure.md)（基建）、[`10`](./10-snapshot-machinery.md)（快照机制）、[`12`](./12-probe-作为取证动作.md)（probe）。

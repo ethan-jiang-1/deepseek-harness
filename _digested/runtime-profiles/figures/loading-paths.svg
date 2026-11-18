@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="430" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">profile 的两种所有者：launcher 发现，应用自带目录</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">同一套 bundle 层叠与装载函数；差别在目录从哪来、谁被允许打开它。</text>
+
+  <rect x="30" y="70" width="440" height="310" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="250" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">launcher profile（五个，dsh --profile &lt;name&gt;）</text>
+  <rect x="50" y="116" width="400" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="250" y="139" text-anchor="middle" font-size="12" fill="#1e40af">住在 $DSH_HOME/profiles/&lt;name&gt;，由 loadProfile 发现</text>
+  <line x1="250" y1="152" x2="250" y2="172" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="50" y="174" width="400" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="250" y="197" text-anchor="middle" font-size="12" fill="#1e40af">PROFILE_TEMPLATES 登记五个模板（web/headless/sdk/sdk-minimal/acp）</text>
+  <line x1="250" y1="210" x2="250" y2="230" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="50" y="232" width="400" height="36" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="250" y="255" text-anchor="middle" font-size="12" fill="#1e40af">shipped 归一化（normalizeShippedProfile）后进 loadProfileDirectory</text>
+  <text x="50" y="298" font-size="11" fill="#1e3a8a">从模板派生自定义 profile：dsh --from-default-profile &lt;模板&gt;，</text>
+  <text x="50" y="316" font-size="11" fill="#1e3a8a">暂存目录组装 + 原子改名；重复执行是重建不是报错。</text>
+  <text x="50" y="344" font-size="11" fill="#2563eb">desktop 名被保留：CLI 一律拒绝（boot/dump 恒拒，plugin 子命令仅</text>
+  <text x="50" y="362" font-size="11" fill="#2563eb">Desktop 自带 carrier 放行）——它属于右边那条路径。</text>
+
+  <rect x="490" y="70" width="440" height="310" rx="12" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="710" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">应用自有 profile（loadProfileDirectory 直装）</text>
+  <rect x="510" y="116" width="400" height="36" rx="6" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="710" y="139" text-anchor="middle" font-size="12" fill="#9a3412">装载一个已初始化的绝对目录，不经 Harness home 发现</text>
+  <line x1="710" y1="152" x2="710" y2="172" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="510" y="174" width="400" height="36" rx="6" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="710" y="197" text-anchor="middle" font-size="12" fill="#9a3412">不做 shipped 归一化、不认 PROFILE_TEMPLATES</text>
+  <line x1="710" y1="210" x2="710" y2="230" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="510" y="232" width="400" height="36" rx="6" fill="#ffedd5" stroke="#fb923c"/>
+  <text x="710" y="255" text-anchor="middle" font-size="12" fill="#9a3412">由应用选定 bin 名、目录与安装锚点</text>
+  <text x="510" y="298" font-size="11" fill="#7c2d12">现行唯一实例：Electron desktop——$DSH_HOME/profiles/desktop</text>
+  <text x="510" y="316" font-size="11" fill="#7c2d12">仍在 home 路径下，但没有 CLI 能打开它；desktop-host 用</text>
+  <text x="510" y="334" font-size="11" fill="#7c2d12">loadProfileDirectory 装载，再交 runProfile 起完整 web 应用。</text>
+  <text x="510" y="362" font-size="11" fill="#c2410c">「A bundle is not a row」：装载路径之外，准入只认行与 bundle 各自的合同。</text>
+
+  <rect x="30" y="396" width="900" height="26" rx="6" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="480" y="413" text-anchor="middle" font-size="11" fill="#374151">两条路径最终都进同一条 runProfile：叠 bundle 层、装出网代理、boot、挂应用插件树。</text>
+</svg>

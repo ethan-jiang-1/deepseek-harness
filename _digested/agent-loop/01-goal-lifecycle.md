@@ -1,14 +1,14 @@
-# Goal 生命周期：创建、状态机与三种路径
+# Goal 生命周期：创建、状态机与四条路径
 
 ## 源码核验入口
 
 `packages/goal/goal/src/index.ts`（`GoalService`）、`packages/goal/goal/src/types.ts`（类型）、`packages/goal/goal/src/fold.ts`（fold 验证）、`packages/goal/tool-goal/src/index.ts`（模型 tool）、`packages/goal/command-goal/src/index.ts`（human 命令）。
 
-## 你的核心问题：goal 是怎么被创建的？
+## goal 是怎么被创建的
 
-DSH 没有隐藏的「意图理解引擎」来自动创建 goal。goal 通常经以下方式产生；另有 Host Remote `goals.create`（`packages/goal/goal/src/index.ts:646-650`），进程外 client 可直接调用，不受 tool/command 面限制：
+DSH 没有隐藏的「意图理解引擎」来自动创建 goal。goal 经四条路径产生——模型 tool、human 命令、Host Remote、以及「不创建只延续」的 round driver：
 
-### 路径一：模型通过 `create_goal` tool 创建 ← 你看到的效果
+### 路径一：模型通过 `create_goal` tool 创建
 
 `packages/goal/tool-goal/src/index.ts:207-232` 注册了 `create_goal` tool。关键的引导在于 tool 的 `description`（第 51-54 行）：
 
@@ -18,7 +18,7 @@ DSH 没有隐藏的「意图理解引擎」来自动创建 goal。goal 通常经
 
 > "**create_goal may infer goal intent from a direct human request in any language.**"
 
-**这就是你体验到的效果**：你给了一个需求（比如「把这个模块重构了」），模型在自己的 system prompt 里看到 `tool:goal` 的政策说明，判断这是长期任务，**自己调用** `create_goal` tool。不是系统自动推断的，是 LLM 在 tool description 引导下自主决策。
+效果：用户给出一个需求（比如「把这个模块重构了」），模型在 system prompt 里看到 `tool:goal` 的政策说明，判断这是长期任务，**自己调用** `create_goal` tool——不是系统自动推断，是 LLM 在 tool description 引导下的自主决策。
 
 `create_goal` 执行前还有一个守卫（`authority.ts`）：
 
@@ -41,6 +41,8 @@ return { kind: 'create', objective: input }  // 其余所有输入 = 创建；�
 
 ### 路径三：Goal Round Driver — 不创建，只延续
 
+（路径四：Host Remote `goals.create`，`packages/goal/goal/src/index.ts` 的 `@Remote('create')`——进程外 client 直接调用，不受 tool/command 面限制。）
+
 Goal Round Driver（`goal-round-driver/src/index.ts`）不会自动创建 goal。`drive()` 在 `readyToDrive()`（`:140`）与持久化检查点（`:142-154`）都通过之后在 attempt 结算之后检查 goal（`:164-165`）：
 
 ```ts
@@ -50,13 +52,14 @@ if (goal === undefined || goal.phase !== 'active' || goal.activation !== 'armed'
 
 没有 goal 就静默返回。它只负责在 active + armed 的 goal 下自动推进下一轮。
 
-### 所以答案很明确
+### 四条路径一览
 
-| 你做的 | 系统反应 | 路径 |
+| 输入 | 系统反应 | 路径 |
 |--------|---------|------|
 | `/goal 重构这个模块` | 立刻创建，主动回显 | Human 命令 |
-| 你说「把这个模块重构了」 | 模型判断是长期任务，调用 `create_goal` | 模型 tool（你看到的效果） |
-| 什么都没说 | 不会自动创建任何 goal | 无 |
+| 用户说「把这个模块重构了」 | 模型判断是长期任务，调用 `create_goal` | 模型 tool |
+| 进程外 client 调 `goals.create` | 直接创建 | Host Remote |
+| 什么都没说 | 不会自动创建任何 goal；已有的 active+armed goal 由 driver 续轮 | round driver（只延续） |
 
 ## Goal 状态机
 

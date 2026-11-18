@@ -4,7 +4,7 @@
 
 ## 一句话
 
-Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一套 Cordis 在两端各长一棵插件树**：Node 那棵拥有权威状态，浏览器那棵拥有视图与投影，中间是一条类型化的线（Typert + Remote）。同一个 `ctx`、同一批原语、同一种 `apply(ctx, config)` 写法，区别只在树上的服务与模块从哪来。
+Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一套 Cordis 在两端各长一棵插件树**：Node 那棵拥有权威状态，浏览器那棵拥有视图与投影，中间是一条类型化的线（Typert + Remote）。同一个 `ctx`、同一批 Cordis 原语（Context / Plugin / Fiber / Event / Effect，见 [`framework/01`](./framework/01-五条原语对照源码.md)）、同一种 `apply(ctx, config)` 写法，区别只在树上的服务与模块从哪来。
 
 ![一套框架、两棵树、一条线](./figures/two-trees.svg)
 

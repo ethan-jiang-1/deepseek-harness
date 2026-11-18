@@ -13,7 +13,7 @@
 
 ## 八类能力：你想干什么 ↔ dsh 给了什么
 
-每一类末尾列出它覆盖的包组——52 个组全部有着落，读完即知全量分布；逐包明细回 [`02`](./02-plugin-catalog.md)。
+每一类末尾列出它覆盖的包组——全部包组都有着落，读完即知全量分布（组数见 `claims.json` 的 `package-group-total`）；逐包明细回 [`02`](./02-plugin-catalog.md)。
 
 ### ① 跑一轮对话（循环、目标、计划、待办）
 
@@ -41,7 +41,7 @@
 
 ### ⑦ 人与界面（浏览器半边 + 程序化入口）
 
-67 个 `client` 包画 Web 界面（ui-* 罗盘行）；`host`/`api` 组是 Remote 控制器与 webserver，`api/remote-access` 决定非 owner Peer 能调哪些 Remote 方法；`interaction` 管审批与提问（`ui-approval`/`ui-user-questions` 接管 waterfall）；`deliverables` 呈现终件；`feedback` 记赞踩；`settings`/`config-editor` 管配置面；程序化入口走 `sdk`（JSON-RPC）或 `acp`。**覆盖组**：client、host、api、interaction、feedback、deliverables、settings、workspace、sdk、acp。
+`client` 组的包画 Web 界面（ui-* 罗盘行）；`host`/`api` 组是 Remote 控制器与 webserver，`api/remote-access` 决定非 owner Peer 能调哪些 Remote 方法；`interaction` 管审批与提问（`ui-approval`/`ui-user-questions` 接管 waterfall）；`deliverables` 呈现终件；`feedback` 记赞踩；`settings`/`config-editor` 管配置面；程序化入口走 `sdk`（JSON-RPC）或 `acp`。**覆盖组**：client、host、api、interaction、feedback、deliverables、settings、workspace、sdk、acp。
 
 ### ⑧ 扩展机制与运营（「插件」本身的插件）
 

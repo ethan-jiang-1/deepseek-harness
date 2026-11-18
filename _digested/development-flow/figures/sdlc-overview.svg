@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="440" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一条决定的 SDLC：提案 → 落地 → 维护 → 忘记，学到的再回写</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">路径就是状态：{lifecycle}/{class}/yyyy-mm-dd-topic.md。形状有门禁，判断靠校准过的判据与人。</text>
+
+  <rect x="30" y="80" width="240" height="96" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="150" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">proposed/ · 提案</text>
+  <text x="150" y="128" text-anchor="middle" font-size="11" fill="#2563eb">允许将来时与验收标准</text>
+  <text x="150" y="148" text-anchor="middle" font-size="11" fill="#1e3a8a">Problem → Proposal → Acceptance → Risks</text>
+  <text x="150" y="166" text-anchor="middle" font-size="11" fill="#1e3a8a">过时即拒绝，永不归档</text>
+
+  <line x1="270" y1="128" x2="348" y2="128" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="309" y="118" text-anchor="middle" font-size="10" fill="#374151">改写整篇</text>
+
+  <rect x="350" y="80" width="250" height="96" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="475" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">implemented/ · 落地与维护</text>
+  <text x="475" y="128" text-anchor="middle" font-size="11" fill="#15803d">必须现在时；事实随代码实时更新</text>
+  <text x="475" y="148" text-anchor="middle" font-size="11" fill="#14532d">决策本身只读；翻案要写新 note</text>
+  <text x="475" y="166" text-anchor="middle" font-size="11" fill="#14532d">Problem → Decision → … → Consequences</text>
+
+  <line x1="600" y1="128" x2="678" y2="128" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="639" y="118" text-anchor="middle" font-size="10" fill="#374151">四分法判定</text>
+
+  <rect x="680" y="80" width="250" height="96" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="805" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">archived/ · 冻结历史</text>
+  <text x="805" y="128" text-anchor="middle" font-size="11" fill="#7c3aed">正文零改动，只加一行 Archived:</text>
+  <text x="805" y="148" text-anchor="middle" font-size="11" fill="#5b21b6">三件套 + 哈希封印，只增不改</text>
+  <text x="805" y="166" text-anchor="middle" font-size="11" fill="#5b21b6">git commit 当场拒绝篡改</text>
+
+  <line x1="150" y1="176" x2="150" y2="214" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="162" y="200" font-size="10" fill="#374151">加一句理由</text>
+  <rect x="30" y="216" width="240" height="70" rx="10" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="150" y="242" text-anchor="middle" font-size="12" font-weight="700" fill="#b91c1c">rejected/ · 提案快照</text>
+  <text x="150" y="262" text-anchor="middle" font-size="11" fill="#991b1b">仍能阻止可信错误才保留，否则删除</text>
+
+  <line x1="475" y1="176" x2="475" y2="214" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="487" y="200" font-size="10" fill="#374151">小 UI / 纯机械</text>
+  <rect x="350" y="216" width="250" height="70" rx="10" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="475" y="242" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">删除 · 三件套连根</text>
+  <text x="475" y="262" text-anchor="middle" font-size="11" fill="#4b5563">修好入站链接；历史只剩 git</text>
+
+  <rect x="30" y="318" width="900" height="96" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="50" y="344" font-size="13" font-weight="700" fill="#9a3412">回写环：学习发生在仓库里，不在模型里</text>
+  <text x="50" y="368" font-size="11" fill="#c2410c">事故 / 发现 / 评审 → note · 文档 · skill · 常驻规则 · 门禁/类型（强制力递增）</text>
+  <text x="50" y="390" font-size="11" fill="#7c2d12">下一个会话加载规则，或提交时红灯；存在性与质量没有门禁，靠明文豁免 + 事后归档控制成本</text>
+  <line x1="805" y1="176" x2="805" y2="316" stroke="#9a3412" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+  <text x="815" y="250" font-size="10" fill="#9a3412">冻结层越硬，活跃区越敢删</text>
+</svg>

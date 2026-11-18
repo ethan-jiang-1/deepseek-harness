@@ -1,24 +1,20 @@
 # Inbox、唤醒与 turn 时序
 
-源码核验入口：`packages/core/agent-loop/src/inbox.ts`（实现已从 `packages/core/agent/src/inbox.ts` 搬来，该文件已删除；但 `Inbox` 契约仍由 `dsh-agent` 导出——定义在 `packages/core/agent/src/runtime-types.ts:48`，经 `packages/core/agent/src/index.ts:18` 的 `export *` 透出，`packages/api/session-controller/tests/control-queue.host.spec.ts:2` 仍在 import；测试用 `dsh-agent-loop-testkit` 的结构化 stub）、`packages/core/agent/src/types.ts`（`InboxTarget` 与 `inbox` projection 键）、`packages/core/agent/src/runtime-types.ts`、`packages/core/agent-loop/src/agent.ts` `ReactLoopAgent`、`packages/core/agent-loop/src/assistant-stream.ts`。
+源码核验入口：`packages/core/agent-loop/src/inbox.ts`（`Inbox` 契约由 `dsh-agent` 的 `runtime-types.ts` 导出）、`packages/core/agent/src/types.ts`（`InboxTarget` 与 `inbox` projection 键）、`packages/core/agent-loop/src/agent.ts` 的 `ReactLoopAgent`、`packages/core/agent-loop/src/assistant-stream.ts`；测试用 `dsh-agent-loop-testkit` 的结构化 stub。
 
 本篇说明默认驱动中的 inbox 队列、claim，以及 `pre-step` 拒绝后仍关闭持久 turn 的时序。
 
 ![两个队列，三种入口](./figures/inbox-wake.svg)
 
-## 两个列表，一份持久 splice
+## 两个队列，三种入口
 
-`InboxTarget`：`'next-turn'` | `'next-step'`。队列是标准 `inbox` projection 的折叠状态，projection 建 cell 时折的是 **`session.snapshotEvents()` 的整段内存日志**（`packages/session/session-projection/src/index.ts:604,619,665` 的 `buildCell`），不是 `ownEvents()`；`session.ownEvents()` / `isOwnSeq()` 只是给普通消费者提供「本条会话自有后缀」的视图。**种子（fork 继承前缀）里的 splice 会进子会话队列**：`packages/core/agent-loop/tests/inbox.spec.ts:139,157-158,164-165` 的 "projects inherited inbox events in a forked session" 直接断言 `childInbox.nextTurn` 含继承项，且父项与自有项按序共存。
+`InboxTarget` 只有两个：`'next-turn'` 与 `'next-step'`。**队列是持久事实**——它是标准 `inbox` projection 对整份日志的折叠状态，不是内存里的临时列表；入队只是 append 一条 `agent/inbox/spliced` 事件，出队（claim）append `agent/inbox/claimed`。三件由此而来的事：
 
-`splice` 只 append 一条 `agent/inbox/spliced`；队列本身是标准 `inbox` projection 的折叠状态（`packages/core/agent-loop/src/inbox.ts:27-65`）。`Session.append()` 返回时 projection 已更新，live 通知（`agent/inbox/inserted` / `discarded`）在其后发出（`packages/core/agent-loop/src/inbox.ts:238-244`）。**pre-splice 的 `session/event` 视图不存在**：要拿被删消息请监听 `agent/inbox/claimed` / `discarded`（`packages/core/agent/src/runtime-types.ts:288,299,307`），不要依赖同步观察者里的旧列表。
+- **pre-splice 的 `session/event` 视图不存在**：要拿被删消息请监听 `agent/inbox/claimed` / `discarded`，不要依赖同步观察者里的旧列表。
+- **种子（fork 继承前缀）里的 splice 会进子会话队列**：fork 出的 child inbox 含继承项，父项与自有项按序共存（`packages/core/agent-loop/tests/inbox.spec.ts` 的 "projects inherited inbox events in a forked session" 断言）。
+- `claim(target, turn)`（**认领**：把消息从持久队列取出、准备进本次请求）：抽空 `next-step`；若 `target === 'next-turn'` 再取 `next-turn` 的头一条，逐条发 `agent/inbox/claimed`。loop 的 step 边界操作，不是插件扩展点。
 
-`claim(target, turn)`：抽空 `next-step`；若 `target === 'next-turn'` 再取 `next-turn` 的头一条。返回值按这个顺序，并逐条发 `agent/inbox/claimed`（`packages/core/agent-loop/src/inbox.ts:111-116`）。loop 的 step 边界操作，不是插件扩展点。
-
-迟到的问题回答也走同一条队列：timed `ask_user_question` 在前台等待超时先结算 `pending`（问题保持可答，`packages/interaction/tool-ask-user/src/timed.ts:150-188` 的两种结算形状），用户随后的提交由 `dsh-user-questions` 的 answer RPC 构造一条 `user-question-reply` 消息 `steer` 进 `next-step`，claim 与获准后落 `user/message` 的路径和其它输入完全相同（`packages/interaction/user-questions/src/index.ts:164-206`）。
-
-## 三个公开入口
-
-`ReactLoopAgent.send(message, target, wakeup)`：
+`ReactLoopAgent.send(message, target, wakeup)` 三个公开入口：
 
 | 方法 | target | wakeup | 典型用途 |
 |------|--------|--------|----------|
@@ -33,6 +29,12 @@ idle 时 wakeup **一定**开 turn 边界，即使消息随后被清掉。只有
 runtime context **不是** `inject`。`RuntimeContextProjection.project()` 造一条 `UserMessage`（v4 起 source 写 `kind: 'runtime-context'` 并携带 `form: 'snapshot', sections`，`packages/core/agent-loop/src/runtime-context.ts:13-16,152-163`——v3 的 `source.plugin` 属性已随 v4 改名），只在文本相对上次保留快照有变化时给出候选。它与 pre-step 的 enter 批次解耦：pre-step 下游只求值候选（`packages/core/agent-loop/src/agent.ts:274-284`），真正落盘由 `step()` 在每次 attempt 的 dispatch 前完成（`:411-414`、`:438-440`）。`inject` 是插件往 `next-step` 塞材料、不唤醒；两者都会在获准后变成 `user/message`，入队路径不同。
 
 `cancel({ keepInbox })`：默认 `inbox.clear()`（先 next-step 再 next-turn）。`keepInbox` 只 abort 活动，不记 canceled splice。
+
+## 折叠细节与同队特例
+
+projection 建 cell 时折的是 `session.snapshotEvents()` 的整段内存日志（`packages/session/session-projection/src/index.ts` 的 `buildCell`；**cell** = 一个 agent 的 inbox 折叠单元），不是 `ownEvents()`——后者只是给普通消费者提供「本条会话自有后缀」的视图。live 通知（`agent/inbox/inserted` / `discarded`）在 `Session.append()` 返回、projection 已更新之后发出。
+
+迟到的问题回答也走同一条队列：timed `ask_user_question` 在前台等待超时先结算 `pending`（问题保持可答），用户随后的提交由 `dsh-user-questions` 的 answer RPC 构造一条 `user-question-reply` 消息 `steer` 进 `next-step`，claim 与获准后落 `user/message` 的路径和其它输入完全相同。
 
 ## `turn()` 里实际发生的事
 
@@ -66,7 +68,7 @@ llm.stream / preparedCall.stream（整个 for-await 包在 try/catch）
   有 → executeToolCalls；可往 next-step splice 上下文
 ```
 
-每次 attempt 在 `live.push` 之前先刷新 runtime context、再结算 system prompt：`SystemPromptProjection.project()` 决定这一轮提交哪些 `system/message` 节点，然后才发请求（`packages/core/agent-loop/src/agent.ts:411-424`）。attempt 内内存累积与 process-local 帧见 `packages/core/agent-loop/src/assistant-stream.ts:59-63`；结算点见 `packages/core/agent-loop/src/agent.ts:462-494`。loop 曾用 invariant companion 断言请求不再带 `options.system`；该 companion（`packages/core/agent-loop/src/invariant.ts`）已随 `f028f25667`（`refactor: remove runtime invariant plugins`）删除且无继任，断言面不再存在（升级路径见 `docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`）。
+每次 attempt 在 `live.push` 之前先刷新 runtime context、再结算 system prompt：`SystemPromptProjection.project()` 决定这一轮提交哪些 `system/message` 节点，然后才发请求（`packages/core/agent-loop/src/agent.ts:411-424`）。attempt 内内存累积与 process-local 帧见 `packages/core/agent-loop/src/assistant-stream.ts`；结算点见 `packages/core/agent-loop/src/agent.ts` 的 attempt 结算段。
 
 请求头：`request/header` 在 dispatch 前写入，只承载 config、adapterDefaults 与 tools。对截至某次请求的日志前缀取最后一份，即可重建当时的 config 与 tools；system prompt 从当前有效的 `system/message` 节点取。`request/context` 只在路由、容量或 `systemPromptUpdate` 能力变时写，不参与 header 相等。
 

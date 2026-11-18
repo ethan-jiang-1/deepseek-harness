@@ -33,13 +33,14 @@ const application = runProfile({
 
 `runProfile`（`apps/cli/src/profile-boot.ts:271-352`）正是为这类应用自有 profile 留的口：desktop 传入自己的 profile 与安装锚点（`apps/desktop-host/src/index.ts:27-28`）、`patchFiles: []`（`:29`），并把打包 pnpm 与 Electron Node 模式可执行交给 `packageManager`（`:31-41`，`ELECTRON_RUN_AS_NODE: '1'` 在 `:36`），只作用于插件包操作。`composeProfile` 对应用自有 profile 不做模板初始化，只重写空根配置、直接用已装载的 profile（`apps/cli/src/profile-boot.ts:230`）。
 
-desktop 与 CLI 组合的三处差异：
+desktop 与 CLI 组合的差异只有一处活的，其余同源：
 
 - **安装锚点不同**：CLI 用自身 `apps/cli` 的 `package.json`（`apps/cli/src/profile-boot.ts:77`），desktop 用签名 runtime 树里的 `node_modules/@deepseek-ai/dsh/package.json`（`apps/desktop-host/src/index.ts:22`）。同一 `loadProfileDirectory`，解析出的 bundle 位置不同。
-- **~~`desktop.cordis.patch.yml` 应用私有覆盖层~~（0.1.7 线随 desktop-host 重构退役）**：旧基线 desktop 在 profile 层之上再叠一份应用私有 patch，disable `webserver` / `web-startup` 等七行、换成无端口的分帧字节管道。现 host 经共享 `runProfile` 起完整 web 应用（webserver 也在树里，`packages/bundle/web-app/cordis.patch.yml:179-188`），`patchFiles: []` 表示没有应用私有 overlay（`apps/desktop-host/src/index.ts:29`）；组合差异改为 Electron 壳侧的资源投递与请求转发（见「进程模型」「传输与认证」）。
-- **~~`agent-presets` roots 改写~~（0.1.7 线退役）**：旧机制把 preset 行的 `roots` 改指 dsh 安装内的 `config/agent-presets`。现组合的 preset 行由 `dsh-web-app` bundle 自带（`agent-preset-registry`，`packages/bundle/web-app/cordis.patch.yml:590-594`），host 不再做任何 roots 改写（现文件 122 行）。
+- **没有应用私有 overlay**：host 以 `patchFiles: []` 经共享 `runProfile` 起完整 web 应用——webserver 等行全在树里（`packages/bundle/web-app/cordis.patch.yml`），preset 行由 bundle 自带（`agent-preset-registry`），host 不改写任何 roots。与 web 的差异都在壳侧：资源投递、请求转发与认证交接（见「进程模型」「传输与认证」）。
 
 ## 进程模型
+
+![桌面三进程拓扑](../two-tree-runtime/figures/desktop-shape.svg)
 
 ```text
 Electron shell
@@ -75,7 +76,7 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 | 端口 | `webserver` 绑 `127.0.0.1:3080`（`ctx.webStartup.port ?? 3080`） | 同一 `webserver` 行；host 以 `--host 127.0.0.1 --port 0` 启动，端口由 OS 分配后经 ready URL 交给壳；`webserver.config.port` patch 可覆盖（`docs/architecture.md:53`） |
 | 浏览器 | `web-startup` 解析 `--open`，`web-runtime` 打印 URL、可自动打开 | host 以 `--no-open` 启动；URL 走 IPC 交给壳，无浏览器启动 |
 | 目录选择 | `directory-picker` auto 行按主机事实解析 native / browse | 同一行共享；native 面的对话框由壳的窗口 IPC 承担（`apps/desktop/src/directory-picker.ts:10-30`） |
-| 运行时 patch 重载 | base bundle 的 `hmr` 行（有 `profileContext` 即挂载）监视 profile 与 home 两份 `cordis.patch.yml` 并 reconcile | 同左：desktop 也经 `runProfile`，`profileContext` 在场，同一 watcher 生效（`packages/bundle/base/cordis.patch.yml:28-32`；`packages/boot/hmr/src/index.ts:925` 的 `reconcileProfile`）。~~patchReload: live~~（0.1.7 线退役：patch 重载语义从 profile 文件机制改为 base bundle 的 `hmr` 行） |
+| 运行时 patch 重载 | base bundle 的 `hmr` 行（有 `profileContext` 即挂载）监视 profile 与 home 两份 `cordis.patch.yml` 并 reconcile | 同左：desktop 也经 `runProfile`，`profileContext` 在场，同一 watcher 生效（机制见 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)） |
 | `agent-preset` | `agent-preset-registry`，`default: standard` | 同左（同一 bundle 层） |
 | client 图 | `packages/client/` 经 `window.__DSH_BOOT__` 注入 | 同一套：静态 dist 由壳从打包资源直接发出，`/plugins/` bundle 经 `dsh-app://app` 转发到 Host |
 
@@ -90,9 +91,9 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 
 桌面复用 web 的 HTTP + cookie 认证，只是载体换成 Electron 壳：host 把认证 URL 经 IPC 报回、壳做一次 token→cookie、`dsh-app://app` 的请求转发到 Host。这部分属于**入口契约**，单点在 [`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)；本页不重复。profile 装载侧独有的差异只有安装锚点（签名 runtime 树里的 `node_modules/@deepseek-ai/dsh/package.json`）与 `patchFiles: []`。
 
-## 与出网代理：分歧已消除
+## 与出网代理
 
-0.1.7 线之前的基线结论「desktop-host 不装代理、`.env` 代理对 desktop 不生效」已随 desktop-host 重构失效：host 调用的 `runProfile` 在第一个插件挂载前就 `installProxyFromEnvironment`（`apps/cli/src/profile-boot.ts:276-279`），shutdown 时还原（`:283-290`）。desktop 的环境快照同样来自 `loadLayeredEnv('dsh')`（`apps/desktop-host/src/index.ts:26`），所以 `$DSH_HOME/.env` 里豁免的四个代理名对 desktop 与 CLI 生效路径一致。note [`2026-08-27-outbound-proxy-policy`](../../.agents/notes/implemented/architecture/2026-08-27-outbound-proxy-policy.md) 的结论（`runProfile` 一处安装覆盖每个 profile）现在对 desktop 成立；其论据「`loadLayeredEnv` 只有一个调用者」已过时——现在有三个（`apps/cli/src/bin.ts:36`、`apps/desktop-host/src/index.ts:26`、`packages/experimental/webworker-runtime/src/worker-host.ts:436`）。逐调用点证据见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/06-外发代理策略.md)。
+desktop 与 CLI 同经 `runProfile`：第一个插件挂载前 `installProxyFromEnvironment`、shutdown 时还原（`apps/cli/src/profile-boot.ts`）；环境快照同样来自 `loadLayeredEnv('dsh')`，所以 `$DSH_HOME/.env` 里豁免的代理名对 desktop 与 CLI 生效路径一致。逐调用点证据见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/06-外发代理策略.md)。
 
 ## 源码入口
 
@@ -100,7 +101,7 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 |------|------|
 | `apps/desktop/` | Electron 壳：单实例锁、窗口、`dsh-app://` 协议、请求转发与认证、profile 准备与原生恢复、更新 |
 | `apps/desktop-host/` | Electron 私有的 Node 子进程入口：`loadProfileDirectory` + `runProfile` + Office / 平台会话 / 更新任务插件（`private: true`，不随公开包发布） |
-| `apps/desktop-host/src/index.ts` | 装载与启动序列全文（122 行）；IPC 消息与 64×1024 字符诊断上限 |
+| `apps/desktop-host/src/index.ts` | 装载与启动序列全文；IPC 消息与 64×1024 字符诊断上限 |
 | `apps/desktop/src/host-process.ts` | 壳侧子进程生命周期：spawn、stdio、超时升级、IPC 事件校验 |
 | `apps/desktop/src/paths.ts` | `$DSH_HOME/profiles/desktop` 与 lock |
 | `apps/desktop/src/project-manager.ts` | profile 准备 / 原生恢复 / 写锁；web 模板 bundle 写 manifest |
@@ -109,4 +110,4 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 | `apps/cli/src/profile-boot.ts` | 共享 `runProfile`：代理安装、组合、shutdown |
 | `docs/architecture.md` | `## Application launch`（`:41-47`）与 `## Desktop application`（`:49-53`） |
 
-依据 note（在 `implemented/`）：[`2026-09-10-desktop-web-wrapper`](../../.agents/notes/implemented/architecture/2026-09-10-desktop-web-wrapper.md)（本页结构的直接来源）、[`2026-09-11-desktop-electron-node-runtime`](../../.agents/notes/archived/architecture/2026-09-11-desktop-electron-node-runtime.md)（Electron 即 Node 运行时，`--expose-internals`）、[`2026-09-08-desktop-bundled-runtime-and-external-plugins`](../../.agents/notes/implemented/architecture/2026-09-08-desktop-bundled-runtime-and-external-plugins.md)（捆绑 runtime 与外部插件分存）、[`2026-08-25-electron-desktop-packaging-and-updates`](../../.agents/notes/implemented/architecture/2026-08-25-electron-desktop-packaging-and-updates.md)（发布身份、签名、更新资格）、[`2026-08-27-outbound-proxy-policy`](../../.agents/notes/implemented/architecture/2026-08-27-outbound-proxy-policy.md)（代理结论）。
+决策记录：[`2026-09-10-desktop-web-wrapper`](../../.agents/notes/implemented/architecture/2026-09-10-desktop-web-wrapper.md)（host 经 runProfile 起 web 应用）、[`2026-09-11-desktop-electron-node-runtime`](../../.agents/notes/archived/architecture/2026-09-11-desktop-electron-node-runtime.md)（Electron 即 Node 运行时，已归档）、[`2026-09-08-desktop-bundled-runtime-and-external-plugins`](../../.agents/notes/implemented/architecture/2026-09-08-desktop-bundled-runtime-and-external-plugins.md)（捆绑 runtime 与外部插件分存）、[`2026-08-25-electron-desktop-packaging-and-updates`](../../.agents/notes/implemented/architecture/2026-08-25-electron-desktop-packaging-and-updates.md)（发布身份、签名、更新资格）。

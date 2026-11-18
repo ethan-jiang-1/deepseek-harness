@@ -8,11 +8,21 @@
 
 普通 Agent Loop 是 `while (hasToolCalls)`——模型调完工具、给出最终回复，就停了。但长期任务需要**跨越多次 turn 的持久推进**：本次模型只完成一部分，下次继续。Goal Round Driver 就是 DSH 里负责这个「继续」的组件。
 
-你感受到的「ongoing goal 效果超级好」的本质就是这个：一次需求进去 → 模型创建 goal → 然后系统自动一轮又一轮直到完成。这就是 DSH 版本的 loop engineering。
+效果：一次需求进去 → 模型创建 goal → 系统自动一轮又一轮直到完成。这就是 DSH 版本的 loop engineering。
 
-## 一轮完整的 goal round 生命周期
+## 一轮 goal round 的四段
 
-下面是最典型的一次 goal round 从触发到结束的完整流程：
+1. **触发**：agent 回到 idle → `agent/status` 事件唤醒 driver；`requestDrive` 经串行队列进入 `drive()`。
+2. **校验**：fiber 存活、agent 仍 idle、无 competing 消息、持久化检查点已刷、goal 为 active + armed、子代理已收敛、round 未达上限——任一不满足即静默返回；达上限则自动 block（`round-limit`）。
+3. **注入**：构造下一条 round 消息（`<goal_round>` prompt，source 带 goalId/revision/round），`agent.followup()` 入列开新 turn；pre-step 上用预约（reservation）逐字段验证这条消息仍与 goal 匹配，验证失败作废重排。
+4. **结算**：模型工作到 `update_goal complete/blocked`（经授权检查 + wrapup 收尾）或给出 final message；turn 结束回 idle，drive() 重查 goal——active+armed 就再来一轮，否则循环停止。
+
+**attempt 是 driver 的轮次预约状态机**（注意与 session 侧「一次模型请求尝试」的 `assistant/attempt` 事件同名不同义）：`queued`（已构造预约、消息在队）→ `claimed`（pre-step 刚认领）→ 结束为 `stale`（验证失败被作废，下轮重构造）或 `cancelled`。session-start 边会清空全部残留，让新会话不从上一会话的调度残留起步。
+
+结束条件、并发安全、host pause 与 revision 栅栏见后两节；下面是带源码锚点的完整流程树：
+
+## 一轮完整的 goal round 生命周期（参考树）
+
 
 ```
 goal round N

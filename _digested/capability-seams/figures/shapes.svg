@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <rect width="960" height="400" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">看到一个新的能力，先问它是哪种形状——只有第一种是 seam</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">判据是有没有「可替换的第二实现」，以及分界是按能力合同还是按通信协议。</text>
+
+  <rect x="30" y="70" width="435" height="140" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="247" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">三角色 seam</text>
+  <text x="46" y="122" font-size="12" fill="#1e40af">Definition + 可替换 Provider + Consumer 齐全</text>
+  <text x="46" y="144" font-size="12" fill="#2563eb">换 provider 不改 Consumer；组合层决定挂哪个</text>
+  <text x="46" y="170" font-size="11" fill="#1e3a8a">例：ctx.shell / ctx.fs / ctx.subagents / ctx.web</text>
+  <text x="46" y="190" font-size="11" fill="#1e3a8a">变体：独占注册位（ctx.browserUse，最多一个 provider）</text>
+
+  <rect x="495" y="70" width="435" height="140" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="712" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">core 服务（可带适配器消费者）</text>
+  <text x="511" y="122" font-size="12" fill="#166534">有 ctx.&lt;key&gt;，但只有一份实现，没有可替换性</text>
+  <text x="511" y="144" font-size="12" fill="#15803d">适配器是来源翻译，不是 Service Provider</text>
+  <text x="511" y="170" font-size="11" fill="#14532d">例：ctx.schedule（自足插件）</text>
+  <text x="511" y="190" font-size="11" fill="#14532d">例：ctx.webhookRuntime + webhook-github 适配器</text>
+
+  <rect x="30" y="230" width="435" height="140" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="247" y="256" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">Remote 通信协议（非 seam）</text>
+  <text x="46" y="282" font-size="12" fill="#6d28d9">没有 ctx.&lt;key&gt;、没有 Cordis Service 定义</text>
+  <text x="46" y="304" font-size="12" fill="#7c3aed">Host 声明控制器 → 生成 Client stub → Typert 序列化</text>
+  <text x="46" y="330" font-size="11" fill="#5b21b6">例：packages/api/remotes/ 的 BFF 面</text>
+  <text x="46" y="350" font-size="11" fill="#5b21b6">样本：ctx.officeToPdf 直接继承 TypertRemoteService</text>
+
+  <rect x="495" y="230" width="435" height="140" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="712" y="256" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">刻意不成 seam 的进程级库</text>
+  <text x="511" y="282" font-size="12" fill="#9a3412">每个进程只有一条答案，没有第二实现可换</text>
+  <text x="511" y="304" font-size="12" fill="#c2410c">也没有比进程更窄的作用域可以授予</text>
+  <text x="511" y="330" font-size="11" fill="#7c2d12">例：packages/util/http-proxy 外发代理策略</text>
+  <text x="511" y="350" font-size="11" fill="#7c2d12">「做成 seam」是考虑过并否决的方案</text>
+</svg>

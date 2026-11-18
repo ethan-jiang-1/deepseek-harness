@@ -30,7 +30,7 @@
 
 `config.toolOrder` 排 schema 名字；未列出的走保留名 `TOOL_ORDER_REST`。provider 返回这个保留名会让 assembly 失败。
 
-**环境事实的活样本**：`packages/context/harness-dev-context/`（0.2.1 线新增）注册 `harness:source`（section order 10000）与 `app:web-surface`（10100）两条 section，文本是**去值**的固定指引，checkout 路径与 Web GUI URL 只经 `systemPrompt.context()` 出现在 `HARNESS_SOURCE` 200 / `WEB_SURFACE` 210 两条 runtime context 里（`src/index.ts:141`-`:164`，`inject = ['systemPrompt', 'sessionProjections', 'webApp']`）。因此换 checkout、换端口或换安装都不改写 system prompt 前缀。该包另注册 `harnessDevLegacyPrompt` projection（`:129`-`:135`）记住本 Session 已准入的含值段落，section 文本优先复用它们（`:136`-`:145`、`:153`-`:157`），升级后 resume 也不会重写已记录的 prompt。
+**环境事实的活样本**：`packages/context/harness-dev-context/` 注册 `harness:source`（section order 10000）与 `app:web-surface`（10100）两条 section，文本是**去值**的固定指引，checkout 路径与 Web GUI URL 只经 `systemPrompt.context()` 出现在 `HARNESS_SOURCE` 200 / `WEB_SURFACE` 210 两条 runtime context 里（`src/index.ts:141`-`:164`，`inject = ['systemPrompt', 'sessionProjections', 'webApp']`）。因此换 checkout、换端口或换安装都不改写 system prompt 前缀。该包另注册 `harnessDevLegacyPrompt` projection（`:129`-`:135`）记住本 Session 已准入的含值段落，section 文本优先复用它们（`:136`-`:145`、`:153`-`:157`），升级后 resume 也不会重写已记录的 prompt。
 
 ## `complete` 与 waterfall
 

@@ -40,7 +40,7 @@ dsh 里最容易踩的事件合同就是 waterfall。它是 around-middleware，
 
 [`vendor/README.md`](../../../vendor/README.md) 是本地修改的权威清单。Harness 直接依赖其中的 effect 卸载时序、Include 的解析保护与持久化写、共享 patch 算法和延迟配置插值；profile 组合、dump 与 HMR 都建立在这些行为上。产品依赖和对应源码见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
 
-> **vendor 4.0.5**（0011 复核更新）：本地修改清单现为 **24** 条——0008 跨度新增 #16（cordis 发布 src）/ #20（entry fiber identity）/ #21（logger exporter disposal）/ #22（volatile config 四件套），第 8/9/12 条随 0.1.7 线事务重载退役而重写；0011 跨度再新增 #23（loader 保留 entry 的模块命名空间身份）与 #24（timer 的中英文显示文案），并首次写下拟升级计划 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)（目标 cordis `4.0.0-rc.11`，分 PR 落地、逐条决定退役或保留）。发布版本 cordis 4.0.5 / loader 1.0.6 / include 1.0.10 / schemastery 3.18.5 / cosmokit 1.8.6 / group 1.0.5 / timer 1.1.7 / hmr 1.0.20 / logger-console 1.0.5。0006 时「vendor 零改动」的结论已被 0008 跨度推翻，下一次同步须逐条重放。具体修改内容见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
+> **vendor**：cordis 4.0.5；本地修改逐条清单与版本列见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)，拟升级计划见 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。逐跨度的清单变化账目归 [`../../_change_log/`](../../_change_log/00-index.md)。
 
 ## 源码入口
 

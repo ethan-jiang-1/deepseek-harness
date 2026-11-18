@@ -20,7 +20,7 @@
 
 > Events are the extension points, and picking the right domain is the first decision in most changes.
 >
-> —— `docs/architecture.md:69`（基线 `687f282e86…`）
+> —— `docs/architecture.md:69`（当时核验 `687f282e86…`）
 
 ## LLM 是合同面的探针之一
 
@@ -57,11 +57,11 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 > A running `dsh` is a plugin tree composed at boot from ordered layers.
 >
-> —— `docs/architecture.md:15`（基线 `687f282e86…`）
+> —— `docs/architecture.md:15`（当时核验 `687f282e86…`）
 
 > **seam** — a *swappable capability* with three roles: a **Service Definition** (…never a TypeScript `interface`), one or more **Service Providers**, and one or more **Consumers** that inject the service.
 >
-> —— `docs/glossary.md:9`（基线 `687f282e86…`）
+> —— `docs/glossary.md:9`（当时核验 `687f282e86…`）
 
 所以准确的说法不是「与智能无关」，而是：**原则与智能无关；形状与生产方式有关；形状的性价比与组合压力有关。**
 
@@ -116,7 +116,7 @@ LLM 于是成为合同面的探针——之一，不是唯一，也不是最严�
 
 > There is no privileged core to patch: you extend dsh by mounting a plugin beside the others, and registrations are effects that unwind when their plugin unloads.
 >
-> —— `docs/architecture.md:11`（基线 `687f282e86…`）
+> —— `docs/architecture.md:11`（当时核验 `687f282e86…`）
 
 ## 结论
 

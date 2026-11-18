@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="420" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">同一次 prompt 变化，两条不同的替换语义</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">route 声明 SystemPromptUpdate = 'in-history' 时分路；不声明就走 replace。消息历史是缓存前缀，改写它等于让缓存失效。</text>
+
+  <rect x="30" y="72" width="430" height="120" rx="10" fill="#f3f4f6" stroke="#9ca3af"/>
+  <text x="245" y="98" text-anchor="middle" font-size="13" font-weight="700" fill="#374151">变化前</text>
+  <rect x="50" y="108" width="390" height="26" rx="4" fill="#e5e7eb" stroke="#9ca3af"/>
+  <text x="245" y="126" text-anchor="middle" font-size="11" fill="#374151">message 0：system prompt（旧）</text>
+  <rect x="50" y="140" width="390" height="26" rx="4" fill="#e5e7eb" stroke="#9ca3af"/>
+  <text x="245" y="158" text-anchor="middle" font-size="11" fill="#374151">message 1..n：已缓存的历史</text>
+
+  <line x1="245" y1="192" x2="245" y2="216" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="257" y="208" font-size="10" fill="#6b7280">prompt 变了（工具增删、persona、环境事实）</text>
+
+  <rect x="30" y="222" width="430" height="170" rx="10" fill="#fee2e2" stroke="#fca5a5"/>
+  <text x="245" y="248" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">replace（未声明能力 / pi-ai 全部 route）</text>
+  <rect x="50" y="258" width="390" height="26" rx="4" fill="#fecaca" stroke="#f87171"/>
+  <text x="245" y="276" text-anchor="middle" font-size="11" fill="#991b1b">message 0：system prompt（新）← 原地重写</text>
+  <rect x="50" y="290" width="390" height="26" rx="4" fill="#e5e7eb" stroke="#9ca3af"/>
+  <text x="245" y="308" text-anchor="middle" font-size="11" fill="#374151">message 1..n：历史（不变）</text>
+  <text x="50" y="336" font-size="11" fill="#991b1b">代价：第一条消息被改写，前缀缓存整体失效。</text>
+  <text x="50" y="356" font-size="11" fill="#991b1b">收益：wire 上永远只有一个 system，语义最简单。</text>
+  <text x="50" y="378" font-size="11" fill="#b91c1c">默认行为——「唯一内置声明者」只约束内建 catalog。</text>
+
+  <rect x="500" y="72" width="430" height="320" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="715" y="98" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">in-history（声明了能力的 route）</text>
+  <rect x="520" y="108" width="390" height="26" rx="4" fill="#e5e7eb" stroke="#9ca3af"/>
+  <text x="715" y="126" text-anchor="middle" font-size="11" fill="#374151">message 0：system prompt（旧，保持不动）</text>
+  <rect x="520" y="140" width="390" height="26" rx="4" fill="#e5e7eb" stroke="#9ca3af"/>
+  <text x="715" y="158" text-anchor="middle" font-size="11" fill="#374151">message 1..n：已缓存的历史（保持不动）</text>
+  <rect x="520" y="172" width="390" height="26" rx="4" fill="#bbf7d0" stroke="#4ade80"/>
+  <text x="715" y="190" text-anchor="middle" font-size="11" font-weight="700" fill="#14532d">+ 追加一条新的 system 消息（新 prompt）</text>
+  <text x="715" y="218" text-anchor="middle" font-size="11" fill="#15803d">模型把任意位置的最后一条 system 当作生效 prompt</text>
+  <text x="520" y="244" font-size="11" fill="#14532d">收益：已缓存前缀不被改写，变化只追加在尾部。</text>
+  <text x="520" y="264" font-size="11" fill="#14532d">代价：wire 上出现多条 system，需要 route 侧契约支持。</text>
+  <text x="520" y="290" font-size="11" fill="#166534">空渲染的语义：清空后续非空节点（不是「保留旧值」）。</text>
+  <text x="520" y="316" font-size="11" fill="#166534">内置唯一声明者：deepseek-flash；listing 可覆盖内建模式</text>
+  <text x="520" y="336" font-size="11" fill="#166534">（省略/null 保留内建，其他值按 leading-only 移除）。</text>
+  <text x="520" y="362" font-size="11" fill="#15803d">与工具面的 toolUpdate 是兄弟能力，同一 listing 面覆盖。</text>
+
+  <text x="480" y="408" text-anchor="middle" font-size="11" fill="#6b7280">判据只一条：这条 route 把「任意位置最后一条 system」当生效 prompt 吗？是 → in-history；否 → replace。</text>
+</svg>

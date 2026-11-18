@@ -18,7 +18,7 @@ loop engineering 的讨论把一轮循环拆成控制链：目标 → 行动 →
 
 > Non-zero exits are reported, not errored — the model decides how to react; only infrastructure failures (spawn errors, aborts) surface as isError results.
 >
-> —— `packages/shell/tool-bash/src/render.ts:19-21`（基线 `687f282e86…`）
+> —— `packages/shell/tool-bash/src/render.ts:19-21`（当时核验 `687f282e86…`）
 
 这条注释划出了本专题在反馈问题上读到的最重要分界。`isError=true` 的来源是封闭清单：工具体抛错、pre-execute 审批拒绝、post-execute 策略 block、guard 超时、调度中止的合成结果（`packages/core/tools/src/index.ts:1520-1535,1781-1790`；`packages/guard/timeout-policy/src/index.ts:41-48`；`packages/core/agent-loop/src/tool-calls.ts:250-260`）。其余一切——非零退出、被信号杀死、超时被杀、stderr 段、沙箱拒绝、输出截断——都以 `[exit code: N]` 一类标记拼进普通 text（`tool-bash/render.ts:43-61`）。分界原则不是「失败与否」，是**失败发生在谁的辖区**：命令级失败是环境事实，基础设施失败才是 harness 自己的错。
 

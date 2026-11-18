@@ -12,7 +12,7 @@
 |------|----|--------|----------|
 | 1. 立地图 | 本页＋漏斗图 | 5 分钟 | 组装三层（bundle → profile → preset）的心智模型 |
 | 2. 走场景 | [`01 八类能力与场景`](./01-capability-tour.md) | 15 分钟 | 全部能力分八类的地图＋六个「不用写插件」的场景走一遍 |
-| 3. 按需查表 | [`02 图鉴`](./02-plugin-catalog.md) · [`03 清单`](./03-reference-lists.md) | 按需 | 343 包逐组明细；99 服务 / 工具 / bundle / preset / skills 横切清单 |
+| 3. 按需查表 | [`02 图鉴`](./02-plugin-catalog.md) · [`03 清单`](./03-reference-lists.md) | 按需 | 逐组包明细；服务 / 工具 / bundle / preset / skills 横切清单（全局计数见 `harness-idea/claims.json` 的包与工具指标） |
 | 4. 动手前 | [`04 出路与缺口`](./04-reuse-paths-and-gaps.md) | 10 分钟 | 四条出路选型＋必须自写的缺口白名单 |
 | 深挖 | [`05 分类与思考`](./05-taxonomy-and-design.md) | 20 分钟 | 九形态 × 四 role 的分类法与背后的设计决定 |
 

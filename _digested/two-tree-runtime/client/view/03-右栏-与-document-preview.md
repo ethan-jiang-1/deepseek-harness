@@ -24,7 +24,7 @@
 | 字段 | 含义 |
 |------|------|
 | `id` | 实现身份，跨所有注册唯一（通常写包名）；body 与 title 都挂在这个 key 下 |
-| `kind` | 类型的判别式，也就是 `openTab` 的名字。不唯一：扩展可以接管 builtin 的 kind。出货 kind 是 `guide` / `text` / `files`，0009 起新增 `browser`（builtin，多实例，仅 desktop 挂载，`ui-sidebar-browser`）与 `subagentchat`（builtin，寻址子 agent 会话）；另有 `terminal`（multiple）、`plan`、`scheduleTask`、`changes-review` 四个 builtin 也挂在默认 web-app，共 9 种（`docs/subsystems/sidebar-right.md:41`、`:143-147` 只列前五种；experimental 的 `session-inspector-log` 另计） |
+| `kind` | 类型的判别式，也就是 `openTab` 的名字。不唯一：扩展可以接管 builtin 的 kind。builtin kind 含 `guide` / `text` / `files`、`browser`（多实例，仅 desktop 挂载，`ui-sidebar-browser`）与 `subagentchat`（寻址子 agent 会话）；另有 `terminal`（multiple）、`plan`、`scheduleTask`、`changes-review` 四个 builtin 也挂在默认 web-app，共 9 种（`docs/subsystems/sidebar-right.md:41`、`:143-147` 只列前五种；experimental 的 `session-inspector-log` 另计） |
 | `patterns` | 可选，识别哪些资源地址；按 kind 打开的页面类型不写。含 `:` 的模式匹配整个地址，不含的匹配 URL path 的任意层级。大小写不敏感，语法是 picomatch 的 POSIX 方言 |
 | `priority` | 三个字面带（`packages/client/ui-sidebar-right/src/client/tab-registry.ts:49` 的 `SidebarRightTabPriority`）：`extension`（默认且最高）、`builtin`、`fallback` |
 | `canOpen(address)` | 可选的同步否决，每次路由决策都跑 |

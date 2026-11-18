@@ -4,7 +4,7 @@
 
 ## 一句话
 
-货架不是平铺的 `packages/` 目录：343 个包按「能力怎么进入运行时」切成九种形态、按「服务在总线上的身份」分成四种 role。分类本身就是 DSH 的设计决定清单——每一刀背后都有一个可以单独检验的承诺。
+货架不是平铺的 `packages/` 目录：全部包按「能力怎么进入运行时」切成九种形态、按「服务在总线上的身份」分成四种 role（包总量见 `harness-idea/claims.json` 的 `package-total`）。分类本身就是 DSH 的设计决定清单——每一刀背后都有一个可以单独检验的承诺。
 
 ![插件分类全景](./figures/plugin-taxonomy.svg)
 
@@ -14,11 +14,11 @@
 
 **Impl（Provider 实现）回答「谁在兑现合同」。** 同一 Def 可以有本地、沙箱、远程、进程外多个 Impl（bash-sandbox、fs-ssh、ptc-runtime-python）。第二个真实 Provider 出现而 Consumer 一行不改，是该能力商品化的直接读数（[`_faq_on_digested/08`](../../../_faq_on_digested/08_plugin-seam-maturity/answer.md) 的供给侧判据）。
 
-**Tool（模型可见工具）回答「模型看见什么」。** `defineTool` 注册进 `ctx.tools`，schema 自动进 prompt 组装。工具名稳定、Provider 可换：`web_search` 一直叫 `web_search`，后端可从官方搜索换成 exa。33 个工具包的全集与逐 profile 暴露见 [`03`](./03-reference-lists.md)。
+**Tool（模型可见工具）回答「模型看见什么」。** `defineTool` 注册进 `ctx.tools`，schema 自动进 prompt 组装。工具名稳定、Provider 可换：`web_search` 一直叫 `web_search`，后端可从官方搜索换成 exa。全部工具包的全集与逐 profile 暴露见 [`03`](./03-reference-lists.md)（工具包计数见 `claims.json` 的 `tool-package-count`）。
 
 **cmd（人类命令）回答「人从哪里进」。** `/goal`、`/compact`、`/export` 与模型工具共用同一运行时但入口分离——人不说话也能用上运行时，模型不经过命令层。
 
-**UI（client 半边）回答「浏览器里放什么」。** host 行与 `dsh.client` 罗盘行成对出现；设置页按 Host namespace 一页一行（`ui-settings-*` 系列与 `ui-settings-plugins` 的罗盘页互补）。67 个 client 包遵守 Client composition discipline：模块物化顺序与 Cordis 激活顺序是两回事（`packages/client/AGENTS.md`）。
+**UI（client 半边）回答「浏览器里放什么」。** host 行与 `dsh.client` 罗盘行成对出现；设置页按 Host namespace 一页一行（`ui-settings-*` 系列与 `ui-settings-plugins` 的罗盘页互补）。全部 client 包遵守 Client composition discipline（计数见 `claims.json` 的 `client-package-total`）：模块物化顺序与 Cordis 激活顺序是两回事（`packages/client/AGENTS.md`）。
 
 **adapter（LLM 接入）回答「模型从哪来」。** `ctx.llm` 的 Provider，可休眠挂载——`llm-pi-ai` 雏形零 routes，settings 出现 `llm-pi-ai:` 段才注册多 Provider。第三家 Provider 的接入位现成，不用改 loop。
 
@@ -26,7 +26,7 @@
 
 **lib（纯库）回答「哪些不是插件」。** util 组 18 包零运行时依赖，被 import 不被挂载。货架上必须有这一栏，否则「343 个包」会被误读成「343 个插件位」。
 
-**驱动（启动胶水）回答「谁把服务接成通路」。** `goal-round-driver`、`browser-use-runtime` 这类包不注册面向模型的能力，只把现成服务接成一条执行路径——出路四（写胶水插件）的官方参照物。0.2.1 线把 `subagent-in-process-driver` 整包解散、驱动逻辑并入 `subagent`，是这条形态的边界案例：驱动可以只是一条 seam 的内部实现。
+**驱动（启动胶水）回答「谁把服务接成通路」。** `goal-round-driver`、`browser-use-runtime` 这类包不注册面向模型的能力，只把现成服务接成一条执行路径——出路四（写胶水插件）的官方参照物。边界案例：驱动逻辑也可以只是某条 seam 的内部实现，而不独立成包（`subagent` 的进程内 driver 即如此）。
 
 | 形态 | 回答的问题 | 典型例子 | 判据 |
 |---|---|---|---|

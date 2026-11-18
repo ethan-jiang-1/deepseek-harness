@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="430" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">组合的词：profile 叠 bundle，bundle 贡献 row，patch 改 row</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">这五个词是层级关系，不是「配置」的五种叫法。从外往里读。</text>
+
+  <rect x="30" y="70" width="450" height="300" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="255" y="98" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">profile · 一次启动的具名组合</text>
+  <text x="255" y="116" text-anchor="middle" font-size="11" fill="#2563eb">住在 $DSH_HOME/profiles/&lt;name&gt;</text>
+
+  <rect x="55" y="132" width="400" height="40" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="255" y="157" text-anchor="middle" font-size="12" fill="#1e40af">有序 bundle 层：dsh-base → dsh-web-app → …</text>
+  <rect x="55" y="180" width="400" height="34" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="255" y="202" text-anchor="middle" font-size="12" fill="#1e40af">profile 自己的 cordis.patch.yml</text>
+  <rect x="55" y="222" width="400" height="34" rx="6" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="255" y="244" text-anchor="middle" font-size="12" fill="#1e40af">home patch → --patch overlay</text>
+  <line x1="255" y1="256" x2="255" y2="276" stroke="#4b5563" marker-end="url(#arr)"/>
+  <rect x="55" y="278" width="400" height="44" rx="6" fill="#dcfce7" stroke="#86efac"/>
+  <text x="255" y="297" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">算出 composition：一组 row（cordis 配置行）</text>
+  <text x="255" y="314" text-anchor="middle" font-size="11" fill="#15803d">每个 bundle 贡献若干行；--dump-config 报告它</text>
+  <text x="255" y="352" text-anchor="middle" font-size="11" fill="#1e3a8a">层叠算出来的配置集合叫 composition，不叫「配置树」。</text>
+
+  <rect x="510" y="70" width="420" height="92" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="720" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">patch / row</text>
+  <text x="526" y="120" font-size="12" fill="#9a3412">patch 按 id 定位一行，整份替换它的 config，</text>
+  <text x="526" y="140" font-size="12" fill="#c2410c">或插入新行。不是深合并、不是字段覆盖。</text>
+
+  <rect x="510" y="174" width="420" height="92" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
+  <text x="720" y="200" text-anchor="middle" font-size="13" font-weight="700" fill="#6d28d9">preset</text>
+  <text x="526" y="224" font-size="12" fill="#6d28d9">会话级声明（Standard / PTC / Minimal / Creator）。</text>
+  <text x="526" y="244" font-size="12" fill="#7c3aed">preset patch 在声明的 config.plugins 内部做同样操作。</text>
+
+  <rect x="510" y="278" width="420" height="92" rx="10" fill="#dcfce7" stroke="#86efac"/>
+  <text x="720" y="304" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">roster</text>
+  <text x="526" y="328" font-size="12" fill="#166534">profile 读回自己叠放了哪些 bundle</text>
+  <text x="526" y="348" font-size="12" fill="#15803d">（字段 dsh.profile.bundles）——「装进去了」的证据。</text>
+
+  <text x="480" y="402" text-anchor="middle" font-size="12" fill="#374151">bundle 是分发单位（声明 dsh.bundle.patch），row 是配置里的一行；「A bundle is not a row」。</text>
+</svg>

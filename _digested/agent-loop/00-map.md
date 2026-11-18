@@ -12,14 +12,14 @@ Loop 管推进，结束却分好几层：Loop 不是「模型回答完就结束�
 |----|---------|-------|---------|
 | **step** | 一次模型请求 + 它所调用的工具 | 模型不再调工具 / `max-tokens` / error | `step/end` 事件 |
 | **turn** | 一个输入被抽干（可含多个 step） | 工具结果 `concludesTurn` / `agent/turn-stopping` 无人 `steer` | `turn/end` 事件 |
-| **driver activity** | 一段连续运行的 agent 活动 | Agent 回到 idle，且 inbox 无待唤醒消息；整段活动运行在以该 agent 为 initiator 的因果边界内（`packages/core/agent-loop/src/agent.ts:234`） | `agent/status === 'idle'` |
+| **driver activity** | 一段连续运行的 agent 活动（从一次唤醒到重新 idle 的整段，可含多个 turn） | Agent 回到 idle，且 inbox 无待唤醒消息；整段活动运行在以该 agent 为 initiator 的因果边界内（`packages/core/agent-loop/src/agent.ts:234`） | `agent/status === 'idle'` |
 | **goal** | 一个持久目标达成或被放弃 | 模型调用 `update_goal` complete/blocked，或 round-driver 自动 block | `goal/change` 事件 |
 
 **Agent idle 不代表任务完成**——它只说明此刻没有待处理的消息。Goal 如果还是 `active + armed`，Goal Round Driver 会在 idle 时自动发起下一轮。
 
-## 创建 Goal 的四条路径
+## 产生 Goal 的四条路径
 
-DSH 没有隐藏的意图理解引擎。Goal 通常经以下路径产生，另有 Host Remote 直调：
+DSH 没有隐藏的意图理解引擎。Goal 经四条路径产生：
 
 | 路径 | 触发器 | 代码入口 | 典型场景 |
 |------|--------|---------|---------|
@@ -28,69 +28,34 @@ DSH 没有隐藏的意图理解引擎。Goal 通常经以下路径产生，另�
 | **Goal Round Driver** | 不创建，只延续。在 active + armed goal 下按 idle → 下一轮 | `packages/goal/goal-round-driver/` | 自动续轮，不会自动创建 |
 | **Host Remote `goals.create`** | 进程外 client 直接调用 | `GoalService` 的 `@Remote('create')`（`packages/goal/goal/src/index.ts:646-650`），经 `goalsRemote` 暴露（`packages/api/remotes/src/client/index.ts:12`） | 自动化、测试与嵌入式客户端 |
 
-**你遇到的「需求进去后 DSH 理解为 ongoing goal」——这是模型（LLM）通过 `create_goal` tool 做到的**，不是系统自动推断的。
+**「需求进去后 DSH 理解为 ongoing goal」是模型通过 `create_goal` tool 做到的**，不是系统自动推断的。
 
-`create_goal` tool 的 description（`packages/goal/tool-goal/src/index.ts:51-54`）：
-
-> "**Use it when the direct human request is a long-running objective, even if the user did not say 'goal';** not for single-turn work."
-
-加上 system prompt 里 `tool:goal` section（order 2400，`packages/core/system-prompt/src/index.ts:151` 的 `SECTION_ORDERS.TOOL_GOAL`）进一步引导：
-
-> "create_goal may infer goal intent from a direct human request in any language."
-
-所以**模型自己**读了你的需求、判断它需要跨多轮、自主调用 `create_goal`。然后 Goal Round Driver 在 agent 每次 idle 时自动推下一轮，形成持续到 objective 达成的效果。
+引导住在两处：`create_goal` tool 的 description（「Use it when the direct human request is a long-running objective, even if the user did not say 'goal'; not for single-turn work.」）与 system prompt 的 `tool:goal` section（「create_goal may infer goal intent from a direct human request in any language.」）。模型据此判断需求需要跨多轮、自主调用 `create_goal`；随后 Goal Round Driver 在 agent 每次 idle 时自动推下一轮，形成持续到 objective 达成的效果。两条引导的原文与授权守卫见 [`01-goal-lifecycle.md`](./01-goal-lifecycle.md)。
 
 ## Goal 状态机
 
-```
-create() ──→ active (armed)
-                │
-     ┌──────┬──┴────┬────────┐
-     │      │       │        │
-     ▼      ▼       ▼        ▼
-  pause()  complete()  block()  round-driver 触发下一轮
-     │      │         │           │
-     ▼      ▼         ▼           └─→ active (再次)
-  paused  complete  blocked
-     │                 │
-     └── resume() ─────┘ ──→ active (re-armed)
+![Goal 状态机：phase × activation](./figures/goal-state-machine.svg)
 
-  complete 是终态：不可 resume，只能被 create() 替换（新 goal id）
-  paused 的 resume 只能由 human 发起（模型 update_goal resume 抛 GOAL_TOOL_RESUME_PAUSED）
+两根轴不要混：`phase`（active / paused / blocked / complete）持久化于 session log；`activation`（armed / disarmed）是进程内状态，从不持久化。`complete` 是终态，不可 resume，只能被 `create()` 替换（新 goal id）；`paused` 的 resume 只能由 human 发起（模型 `update_goal` resume 抛 `GOAL_TOOL_RESUME_PAUSED`）。每个转换的允许集、权限与 CAS 机制见 [`01-goal-lifecycle.md`](./01-goal-lifecycle.md)。
+
+## 分层与职责
+
+```text
+goal-round-driver   ← 监听 idle + active·armed goal，followup() 注入下一轮
+agent-loop          ← turn/step 驱动：claim → pre-step → step → turn-stopping
+dsh-agent           ← Agent 接口：AgentRegistry / AgentFactory / inbox 契约
+session             ← 仅追加事件流（turn/*、step/*、surface、tool/*、goal/change）
 ```
 
-详细的状态机、每个转换的代码入口、CAS 机制见 [`01-goal-lifecycle.md`](./01-goal-lifecycle.md)。
-
-## Agent Loop 的完整代码栈
-
-```
-┌─────────────────────────────────────────┐
-│            goal-round-driver            │  ← 自动续轮
-│  监听 agent/status === 'idle' + goal    │
-│  通过 followup() 注入下一轮 prompt      │
-├─────────────────────────────────────────┤
-│           agent-loop                    │  ← turn/step 驱动
-│  turn() → claim → pre-step → step()    │
-│  → tool-execute → turn-stopping        │
-├─────────────────────────────────────────┤
-│           dsh-agent                     │  ← Agent 接口
-│  AgentRegistry / AgentFactory          │
-│  inbox 契约 / status / followup / steer│
-├─────────────────────────────────────────┤
-│           session                       │  ← 仅追加事件流
-│  turn/* / step/* / user/message /      │
-│  system/message / assistant/* /        │
-│  tool/* / goal/change                  │
-└─────────────────────────────────────────┘
-```
+下面三层的接口与时序归 [`../session-and-loop/`](../session-and-loop/00-map.md)；本专题拥有最上面一层与「idle 之后谁在推进」。
 
 ## 阅读路径
 
-下面先读 goal 的完整生命周期（含你的核心问题的详细答案），再读 Goal Round Driver 的自动续轮机制，最后读四层结束边界如何配合。
+推荐顺序：先读 goal 的完整生命周期，再读 Goal Round Driver 的自动续轮机制，然后读四层结束边界如何配合，最后读 Agent 运行时身份。
 
 | 文件 | 内容 |
 |------|------|
-| [`01-goal-lifecycle.md`](./01-goal-lifecycle.md) | Goal 状态机、三种创建路径详解、「模型推断 vs 手动敲」的透彻答案 |
+| [`01-goal-lifecycle.md`](./01-goal-lifecycle.md) | Goal 状态机、四条产生路径（模型 tool / human 命令 / Host Remote / 只延续的 driver）、授权两档 |
 | [`02-goal-round-driver.md`](./02-goal-round-driver.md) | Round Driver 如何监听 idle、注入 round prompt、pre-step 验证 |
 | [`03-activity-vs-goal-boundaries.md`](./03-activity-vs-goal-boundaries.md) | step/turn/activity/goal 四层分别在哪结束、崩溃恢复时序 |
 | [`04-agent-runtime-identity.md`](./04-agent-runtime-identity.md) | Agent 运行时身份如何显式传递、initiator 边界为何成为权限判据 |
@@ -117,6 +82,13 @@ Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/se
 | `_digested/session-and-loop/02-inbox-与turn-时序.md` | turn() 内部时序、claim、pre-step |
 | `_digested/delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md` | goal 的驾驶座用法：objective 写法、轮预算、终结纪律、wrapup 收尾 |
 
-`packages/goal/goal/src/invariant.ts` 已随 `f028f25667`（`refactor: remove runtime invariant plugins`）删除，**无继任**：goal stream 的运行时 invariant 断言面不再存在，回放一致性由 `fold.ts` 的纯函数重放本身承担（升级路径见 `docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`）。
+## 症状 → 页
+
+| 你看到的现象 | 去哪 |
+|---|---|
+| agent 回了话但任务没完、过一会儿又自己动了 | 本页四层边界 + [`03`](./03-activity-vs-goal-boundaries.md) |
+| goal 重启后不自动续轮 | [`03`](./03-activity-vs-goal-boundaries.md) 的 restart-rearm 语义 |
+| 模型能不能改/暂停/完成 goal 分不清 | [`01`](./01-goal-lifecycle.md) 的授权两档表 |
+| round driver 什么时候注入、什么时候不注入 | [`02`](./02-goal-round-driver.md) |
 
 > 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

@@ -4,158 +4,79 @@
 
 Runtime Profile 决定一个 `dsh` 进程**启动时装入什么**：浏览器应用、一次性无界面任务、JSON-RPC 服务、极简 SDK 还是自动化 ACP 服务。会话存在哪里、用哪个模型、是否接沙箱和审批，也在这里定下来。
 
-这是**进程级的宿主形态**，不是某个会话的工具开关。同一个 Web 进程可以承载多个 Session，每个 Session 自己选 Agent Preset；Profile 只管这棵进程插件树最初长什么样。
+先立一对最容易混的区分：**Profile 是进程级的宿主形态，Preset 是会话级的工具组合**。同一个 Web 进程可以承载多个 Session，每个 Session 自己选 Agent Preset；Profile 只管这棵进程插件树最初长什么样（preset 的机制归 [`../plugin-system/composition/`](../plugin-system/composition/00-map.md)）。
 
-下面五个是 **launcher profile**（`dsh --profile <name>`）。此外还有一个**应用自有 profile**（Electron 的 `desktop`），组合方式同源但装载路径不同，见「应用自有 profile」一节与 [`06-desktop.md`](./06-desktop.md)。
+## 两种所有者，一条装载终点
 
-## 五个宿主形态
+![profile 的两种所有者：launcher 发现，应用自带目录](./figures/loading-paths.svg)
 
-五个 Runtime Profile **都是 launcher profile**（`dsh --profile <name>`），统一走 bundle 层叠路径。`PROFILE_TEMPLATES`（`packages/boot/app-boot/src/profile.ts:179-195`）登记：
+- **launcher profile**（五个，`dsh --profile <name>`）：住在 `$DSH_HOME/profiles/<name>`，由 `loadProfile` 发现；模板登记在 `PROFILE_TEMPLATES`（`packages/boot/app-boot/src/profile.ts`），本专题是模板清单与各 profile 差异的唯一家。
+- **应用自有 profile**：`loadProfileDirectory(binName, dir, installAnchor, options)` 直装一个已初始化的绝对目录——不经 home 发现、不做 shipped 归一化、不认模板。现行唯一实例是 Electron 的 `desktop`（`desktop` 名被保留，CLI 一律拒绝），见 [`06-desktop.md`](./06-desktop.md)。
 
-```ts
-web:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app']
-headless:  ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']
-sdk:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-sdk-app']
-sdk-minimal: ['@deepseek-ai/dsh-sdk-minimal']  // 独立树，不叠 base
-acp:       ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
-```
-
-（这里按阅读顺序列；源码声明顺序是 `acp` / `web` / `headless` / `sdk` / `sdk-minimal`，顺序无语义。）
-
-从模板派生自定义 profile 用 `dsh --from-default-profile <模板>`（[`../plugin-system/composition/04-profile-创建与保留名.md`](../plugin-system/composition/04-profile-创建与保留名.md)）；`desktop` 名被 Electron 保留、CLI 一律拒绝。该选项在暂存目录里组装模板副本、原子改名覆盖目标目录；重复执行同一条命令是重建而不是报错。
-
-| 名称 | 是什么 | 命令 | 启动机制 | stdout | 进程常驻？ |
-|------|--------|------|----------|--------|-----------|
-| **web** | 浏览器 GUI + HTTP 服务 | `dsh --profile web` | profile 目录 + bundle 层叠 | 用户终端 | 常驻 |
-| **headless** | 一次性 CLI 任务 | `dsh --profile headless "task"` | profile 目录 + bundle 层叠 | 用户终端 | 回答完退出 |
-| **sdk** | JSON-RPC SDK 服务 | `dsh --profile sdk` | profile 目录 + bundle 层叠 | JSON-RPC 帧 | 常驻 |
-| **sdk-minimal** | JSON-RPC · 工具面收窄 | `dsh --profile sdk-minimal` | profile 目录 + bundle 层叠 | JSON-RPC 帧 | 常驻 |
-| **acp** | Agent Client Protocol 服务 | `dsh --profile acp` | profile 目录 + bundle 层叠 | ACP 帧 | 常驻 |
-
-> **历史背景**：在 `0.1.2-alpha.1`（#3248）之前，sdk 和 acp 走独立 app 二进制（`dsh-jsonrpc-agent`、`dsh-acp-demo`），不经过 launcher profile（`dsh-v0.1.1-rc.2:packages/examples/jsonrpc-demo/package.json:16-18`、`dsh-v0.1.1-rc.2:packages/examples/acp-demo/package.json:16-18`，两个目录在 `46a7f68b09` 已不存在）。从 `0.1.2-alpha.1` 起它们被统一到 `dsh --profile <name>`。旧二进制不再存在；SDK 最小示例使用 `sdk-minimal` profile。所有 profile 现在共享同一套 bundle 层叠、profile 目录、`dsh plugin` 管理等基础设施。
-
-## 共同基底
-
-web / headless / sdk / acp 与桌面这五个 base-backed 组合共享 `dsh-base`。`sdk-minimal` 是唯一不叠 base 的独立树，下表按 base 陈述的来源对它不成立；它自己的清单与偏离见 [`04-sdk-minimal.md`](./04-sdk-minimal.md)，表中括注只标它与 base 的差异，不表示其余行都存在于它的树里。
-
-| 领域 | 概念级共同能力 | 来源 |
-|------|---------------|------|
-| LLM 运行时 | 模型适配器、重试 | `dsh-base` 的 `llm`、`llm-deepseek`、`llm-retry` |
-| 出网检索 | 搜索 / 抓取 provider 与模型面工具 | `dsh-base` 的 `web`、`web-search-deepseek`、`web-deepseek-api`（DeepSeek Search/Fetch API provider）、`web-fetch-http` |
-| 会话 | 事件日志、持久化、投影 | `dsh-base` 的 `session`、`session-persistence-jsonl`、`session-projection` |
-| Agent 核心 | 注册表、loop、提示词 | `dsh-base` 的 `agent`、`agent-loop`、`system-prompt` |
-| 工作目录 | 会话当前执行目录 | `dsh-base` 的 `working-directory`、`tool-working-directory`（新 seam `ctx.workingDirectory` 与 `working_directory` 工具，0009 后新增） |
-| 工具管线 | 注册、执行、审批 | `dsh-base` 的 `tools`、`tool-*` |
-| 沙箱与策略 | 文件系统策略、弹窗审批 | `dsh-base` 的 `sandbox`、`sandbox-policy`、`approval`（sdk-minimal 的 sandbox 策略为 `danger-full-access`，不挂 base 的 `fs-sandbox` 与 `approval`；`filesystem` 仍以 `fs-local` 挂上，见 [`04-sdk-minimal.md`](./04-sdk-minimal.md)） |
-| 子进程 | 进程树管理 | `dsh-base` 的 `subprocess` |
-| 子 agent | 后台 / fork 子 agent | `dsh-base` 的 `subagent`、`tool-subagent`（sdk-minimal 无） |
-| Goal | 持久完成目标 | `dsh-base` 的 `goal`、`goal-round-driver`、`tool-goal`（sdk 继承 base；仅 sdk-minimal 无） |
-| 文件系统 | 受限文件访问 | `dsh-base` 的 `fs-sandbox`、`fs-observation-policy` |
-
-**消息通道**：子代理回传统一为 settle notice + `send_message` steer；fork continuable 没有 child-only section 的 KV 前缀代价。
-
-**进程级重用**：这些宿主形态都通过 `ctx.agents` 驱动 agent，从 `session/event` 渲染或投影；入口层的契约（从哪进、对调用方保证什么）单点在 [`../surfaces-entrypoints/00-map.md`](../surfaces-entrypoints/00-map.md)。不是多套 Agent 实现。
-
-### Bundle 层叠（所有 profile 共享）
+两组数数法别混，都是五但成员不同：**launcher profile** 是 web / headless / sdk / sdk-minimal / acp；**base-backed 组合**是 web / headless / sdk / acp / desktop。差异在两端：sdk-minimal 是独立树不叠 base（所以在 launcher 里、不在 base-backed 里），desktop 由 Electron 直装（所以在 base-backed 里、不在 launcher 里）。
 
 ```text
-空 entry list
-  + 每个 bundle 的 cordis.patch.yml（profile 里写的顺序）
-  + 该 profile 的 cordis.patch.yml
-  + Harness home 的 cordis.patch.yml
-  + 命令行 --patch
-  + telemetry 开关（层叠完成后由 profile-boot 应用）
+web:          ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app']
+headless:     ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless']
+sdk:          ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-sdk-app']
+sdk-minimal:  ['@deepseek-ai/dsh-sdk-minimal']   // 独立树，不叠 base
+acp:          ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
 ```
 
-## 应用自有 profile
+（按阅读顺序列；源码声明顺序无语义。层叠算法本身——空 entry list 起、bundle 层、profile patch、home patch、`--patch` overlay——的家在 [`../plugin-system/composition/`](../plugin-system/composition/00-map.md)。）
 
-launcher profile 住在 Harness home，由 `loadProfile` 经 `$DSH_HOME/profiles/<name>` 发现并做 shipped 归一化。另有第二种所有者：**应用自己持有的 profile 目录**，用 `loadProfileDirectory(binName, dir, installAnchor, options)`（`packages/boot/app-boot/src/profile.ts:740-774`）直接装载一个**已初始化的绝对目录**——不经过 Harness home 发现、不做 shipped 归一化、也不认 `PROFILE_TEMPLATES`。`loadProfile` 现在只是「解析目录 → `normalizeShippedProfile` → `loadProfileDirectory`」（`:789-806`；目录缺 manifest 时先 `initProfile`（`:794-801`），装载前再 `removeLinkProjections`（`:803`））。导出见 `packages/boot/app-boot/src/index.ts`。
-
-目前的唯一实例是 Electron 的 `desktop`：`$DSH_HOME/profiles/desktop` 这个路径**仍然**在 Harness home 下、仍然叫 `profiles/<name>`，但没有 CLI 能打开它——`desktop` 不是 `PROFILE_TEMPLATES` 成员，CLI 的 boot / dump 入口被 `rejectElectronProfile` 拒绝，`plugin` 子命令默认也拒绝、仅 Desktop 自带 carrier 以 `manageDesktopProfile` 放行（`apps/cli/src/args.ts:83`、`:199`）。它由 `apps/desktop-host/` 用 `loadProfileDirectory` 装载，再交给共享的 `runProfile` 起 web 应用（0.1.7 线起；~~旧的「叠私有覆盖层、自己调 boot()、不走 runProfile」~~已随 desktop-host 重构退役）。
-
-组合本身与 web 同源（`dsh-base` + `dsh-web-app`；desktop-host 不再叠任何 cordis 覆盖层），差异在启动方式与宿主环境：webserver 以 `--host 127.0.0.1 --port 0` 启动、绑定端口由 OS 分配后经认证 URL 交给 Electron 窗口、包管理走 Electron-as-Node。细节见 [`06-desktop.md`](./06-desktop.md)。
+从模板派生自定义 profile 用 `dsh --from-default-profile <模板>`；创建路径与保留名的机制见 [`../plugin-system/composition/04-profile-创建与保留名.md`](../plugin-system/composition/04-profile-创建与保留名.md)。
 
 ## 决定 Profile 差异的三条轴
 
-### 1. 进程生命周期
+| 名称 | 是什么 | 命令 | stdout | 常驻？ |
+|------|--------|------|--------|--------|
+| **web** | 浏览器 GUI + HTTP 服务 | `dsh --profile web` | 用户终端 | 常驻 |
+| **headless** | 一次性 CLI 任务 | `dsh --profile headless "task"` | 最终 assistant 文本（`--json` 转 NDJSON 事件） | 回答完退出 |
+| **sdk** | JSON-RPC SDK 服务 | `dsh --profile sdk` | JSON-RPC 帧 | 常驻 |
+| **sdk-minimal** | JSON-RPC · 独立树收窄 | `dsh --profile sdk-minimal` | JSON-RPC 帧 | 常驻 |
+| **acp** | Agent Client Protocol 服务 | `dsh --profile acp` | ACP 帧 | 常驻 |
 
-| Profile | 生命周期 |
-|---------|---------|
-| web | 常驻 HTTP 服务，等 browser 连接和关闭 |
-| headless | 回答一条任务，打印最终消息，exit 0 |
-| sdk / sdk-minimal | 常驻 stdio JSON-RPC 服务，`shutdown` 请求 exit 0 |
-| acp | 常驻 stdio ACP 服务，stdin end 或 dispose exit 0 |
+三条轴解释这五个形态为什么不同：
 
-### 2. stdout 的归属
+1. **进程生命周期**：web 常驻等浏览器；headless 回答一条任务即退出；sdk / sdk-minimal / acp 是常驻 stdio 协议服务，`shutdown` 请求或 stdin end 才退出。
+2. **stdout 的归属**：headless / sdk / sdk-minimal / acp 的 stdout 是**纯数据管道**（最终回复或协议帧），不能装 stdout logger，否则污染输出；web 的 stdout 给用户，可以装。
+3. **运行时 patch 重载（HMR）**：web 支持（自定义 launcher profile 默认同样开启）；headless / sdk / sdk-minimal / acp 显式禁用——一次性任务与已开始的协议不支持中途重组。机制（三份被监视文件、原子换入、appReady 前提）归 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)。
 
-stdout 给谁，决定了能不能装 logger、能不能写 HMR 信息：
+## 共同基底与独有层
 
-| Profile | stdout 用途 | 是否能装 logger |
-|---------|------------|---------------|
-| web | 用户可见（启动 URL、日志） | 可以 |
-| headless | 最终 assistant 回复，纯数据管道 | **不能**装 stdout logger，否则污染最终回复 |
-| sdk / sdk-minimal | JSON-RPC 协议帧，纯数据管道 | **不能**装 stdout logger，否则污染协议 |
-| acp | ACP 协议帧，纯数据管道 | **不能**装 stdout logger |
+web / headless / sdk / acp 与桌面这五个 base-backed 组合共享 `dsh-base`：LLM 运行时、出网检索、session 与持久化、agent 核心、工作目录、工具管线、沙箱与审批、subagent、goal、文件系统。`sdk-minimal` 是唯一不叠 base 的独立树（工具面收窄到一个持久 shell 加两个工具），见 [`04-sdk-minimal.md`](./04-sdk-minimal.md)。
 
-### 3. 运行时 patch 重载（HMR）
-
-| Profile | 运行时 patch 重载 |
-|---------|-----------------|
-| web | **支持**（`hmr` 插件监视 profile patch 与包清单，`HmrService.reconcileProfile()`（`packages/boot/hmr/src/index.ts:925`）调 app-boot 的 `recomposeProfile` 完成重组合，新失败抛错回滚，见 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)） |
-| headless | startup-only（一次性任务，重载无意义；bundle 行显式 `disabled: true`，`packages/bundle/headless/cordis.patch.yml:33`） |
-| sdk / sdk-minimal | startup-only（协议已开始，重载打散生命周期；sdk-app 行 `packages/bundle/sdk-app/cordis.patch.yml:24`） |
-| acp | startup-only（同 SDK，`packages/bundle/acp-app/cordis.patch.yml:23`） |
-
-机制说明：base bundle 的 `hmr` 行用 `disabled: !!js "!ctx.get('profileContext')"` 门控（`packages/bundle/base/cordis.patch.yml:27-32`），只在 launcher profile 语境下默认开启；一次性协议的 profile 显式禁用它。
-
-`headless`、`sdk`、`sdk-minimal` 和 `acp` 只在启动时应用一次。
-
-## 各 Profile 的独有插件
-
-| Profile | 独有插件 / bundle |
-|---------|------------------|
-| **web** | `dsh-web-app` bundle：webserver、web-runtime、client-*（浏览器壳、wire、slots、ui-*）、session-controller 等 Remote 控制器、directory-picker、plugin-inventory、preset patch（agent-presets 已退役、重设计为声明式 agent-preset；storage/sandbox/typert-gateway 等基础设施在 base）。Web 组合还带 `open-in-app` / `ui-open-in-app` / `workspace-files`、`file-upload`、`resources` / `ui-sidebar-right` / `ui-sidebar-documentpreview` / `ui-sidebar-files`、`schedule` / `ui-schedule`、`harness-dev-context`、`ui-secret-mask`、`ui-deepseek-model-label-1017` 等行，详见 [`01-web.md`](./01-web.md) |
-| **headless** | `dsh-headless` bundle：`headless-startup`（命令行解析）、`headless-runner`（驱动任务、打印结果） |
-| **sdk** | `dsh-sdk-app` bundle：base + 薄协议层（persona override + `sdk-app-startup`（带 `config.profile: sdk`）+ `sdk-jsonrpc-server`，`inject: [sdkAppStartup, loader]`）；不反向禁用 base 工具，另按环境条件插入 `workspace-dependencies` 与 `skill-office` |
-| **sdk-minimal** | `dsh-sdk-minimal` bundle：独立树不叠 base——工具面收窄到**平台选定的一个持久 shell**（非 win32 `persistent-bash` / win32 `persistent-pwsh`）加 `read_image` 与 `working_directory` 两个工具；无 subagent、todo、skill、web 搜索（compaction 与 token-meter 随 0011 的目录上下文收编进树内） |
-| **acp** | `dsh-acp-app` bundle：base + 薄自动化层（persona override + `acp-app-startup` + `acp`，`inject: [acpAppStartup]`）；持久化/检查点/查询在 base，不自持 |
-
-共同点：base 的默认编辑器面是 `read` / `write` / `edit`（`tool-fs`）；`tool-str-replace-editor` 不在 shipped bundle 里，任何 profile 想要 `str_replace_editor` 都必须显式 `insert`（仓库里的显式例子是 `snapshots/sdk/persistent-tools/cordis.yml:6-7`）。base-backed 各 bundle 的 `system-prompt` 只设 `personaPrefix`（模型介绍），shipped 组合不设 `personaSuffix`；会话当前执行目录由 `ctx.workingDirectory` 作必需的用户上下文供给（升级指南 [`working-directory`](../../docs/upgrade-guide/v0.2.1-alpha.1/working-directory/guide.md)）。
-
-## 阅读路径
-
-如果对「一个进程怎么启动」还不太清楚，先读 `plugin-system/composition/00-map.md`。如果想知道 ACP 和 SDK 协议的具体保证，读 `surfaces-entrypoints/02-acp与jsonrpc.md`。下面每个文件的正文深入 Profile 各自的机制。
+各 profile 在 base 之上叠什么、独有哪些行，一页一个：
 
 | 文件 | 内容 |
 |------|------|
-| [`01-web.md`](./01-web.md) | web profile：浏览器 GUI、HTTP 服务、browser client |
-| [`02-headless.md`](./02-headless.md) | headless profile：一次性 CLI 任务 |
-| [`03-sdk.md`](./03-sdk.md) | SDK profile：JSON-RPC 服务 |
-| [`04-sdk-minimal.md`](./04-sdk-minimal.md) | SDK minimal 变体：工具面收窄 |
-| [`05-acp.md`](./05-acp.md) | ACP profile：自动化协议服务 |
-| [`06-desktop.md`](./06-desktop.md) | desktop：Electron 应用自有 profile（第五个 base-backed bundle 组合，CLI 不可达） |
+| [`01-web.md`](./01-web.md) | web：浏览器 GUI、host/client 两半的分层组合 |
+| [`02-headless.md`](./02-headless.md) | headless：一次性任务的执行机制 |
+| [`03-sdk.md`](./03-sdk.md) | sdk：JSON-RPC 协议层 |
+| [`04-sdk-minimal.md`](./04-sdk-minimal.md) | sdk-minimal：独立树的完整组合事实 |
+| [`05-acp.md`](./05-acp.md) | acp：自动化协议层 |
+| [`06-desktop.md`](./06-desktop.md) | desktop：Electron 应用自有 profile（组合同 web，启动方式不同） |
+
+web 与 desktop 的「两棵树」形状（host 半边 + 浏览器半边）归 [`../two-tree-runtime/`](../two-tree-runtime/00-map.md)；桌面三进程拓扑的图在 [`../two-tree-runtime/figures/desktop-shape.svg`](../two-tree-runtime/figures/desktop-shape.svg)。
+
+## 按问题找
+
+| 你的问题 | 去哪 |
+|---|---|
+| 这个进程怎么启动、装了什么 | 本页 + 对应 profile 页 |
+| 层叠算法 / patch 语义 / HMR 机制 | [`../plugin-system/composition/`](../plugin-system/composition/00-map.md) |
+| 人从哪个入口进来、入口对调用方保证什么 | [`../surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md)（两专题双向单点委托） |
+| 改了 patch 为什么没生效 | [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md) + 本页第三轴 |
+| 装了为什么没启用 | [`../plugin-system/lifecycle/`](../plugin-system/lifecycle/00-map.md) 的症状定位表 |
 
 ## 源码入口
 
 | 路径 | 角色 |
 |------|------|
-| `packages/boot/app-boot/src/profile.ts` | `PROFILE_TEMPLATES`、`initProfile`、`loadProfile`、`loadProfileDirectory`、launcher 层的 profile 发现 |
-| `packages/util/package-manifest/` | `DshManifest`、`DshBundleManifest` 等 profile / bundle manifest 类型（从 `app-boot` 迁出） |
-| `packages/util/http-proxy/` | `installProxyFromEnvironment`：launcher 在任何行 mount 之前装的进程级出网代理 |
-| `packages/session/working-directory/`、`packages/session/tool-working-directory/` | 新 seam `ctx.workingDirectory` 与 `working_directory` 工具：会话当前执行目录（`Session.header.cwd` 只留原始项目身份）；base 与 sdk-minimal 都显式挂 |
-| `packages/web/web-deepseek-api/` | `deepseek-search-api` / `deepseek-fetch-api` 两个 provider，共享一份凭据与 API base（base 的 `web-deepseek-api` 行） |
-| `packages/bundle/base/cordis.patch.yml` | 所有 launcher profile（除 sdk-minimal 外）共有的核心插件清单 |
-| `packages/bundle/web-app/cordis.patch.yml` | web 特有的 browser + host 插件 |
-| `packages/bundle/headless/cordis.patch.yml` | headless 特有的 task runner |
-| `packages/bundle/sdk-app/cordis.patch.yml` | SDK JSON-RPC 协议层 |
-| `packages/bundle/sdk-app/src/index.ts` | `sdk-app-startup` 的 `profile` config（只用于 `--help` 命令语法渲染） |
-| `packages/bundle/sdk-minimal/cordis.patch.yml` | SDK 最小化 bundle（独立树） |
-| `packages/bundle/acp-app/cordis.patch.yml` | ACP 协议层 |
-| `packages/sdk/server/src/index.ts` | JSON-RPC SDK server 插件 |
-| `packages/acp/acp/src/index.ts` | ACP 桥插件 |
-| `apps/desktop/`、`apps/desktop-host/` | Electron 桌面应用与应用私有的 profile 装载入口（保留名 `desktop`） |
-| `_digested/plugin-system/composition/00-map.md` | 启动组合机制（profile 目录、bundle 层叠） |
-| `_digested/plugin-system/composition/04-profile-创建与保留名.md` | profile 创建路径与 `desktop` 保留名 |
-| `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |
+| `packages/boot/app-boot/src/profile.ts` | `PROFILE_TEMPLATES`、`initProfile`、`loadProfile`、`loadProfileDirectory` |
+| `packages/bundle/base/cordis.patch.yml` | base-backed 组合共享的核心插件清单 |
+| `packages/bundle/{web-app,headless,sdk-app,sdk-minimal,acp-app}/cordis.patch.yml` | 各 profile 特有层 |
+| `packages/util/http-proxy/` | launcher 在任何行 mount 之前装的进程级出网代理（机制见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/06-外发代理策略.md)） |
 
 > 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

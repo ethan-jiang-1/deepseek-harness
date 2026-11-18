@@ -13,19 +13,42 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 
 下面的分层来自 [`docs/architecture.md`](../../docs/architecture.md)。非显然扩展落点和「单一 loop」对照见文末机制参考。
 
+## 先修：Cordis 的五个词
+
+下面这些词在本页与后面每个专题都会出现；它们不是比喻，是运行时里真实的类型。
+
+| 词 | 是什么 | 一句话判据 |
+|---|---|---|
+| `ctx`（Context） | 插件之间共享的上下文对象。插件不互相 import，只通过 `ctx` 交换能力 | 「这东西我能不能用」= 「它挂没挂到我的 ctx 上」 |
+| **Service** | 挂在 `ctx.<key>` 上的能力对象（抽象类或注册表）。别的插件 inject 这个 key 就能用 | 看到 `ctx.tools`、`ctx.sessions`、`ctx.shell` 都是 Service |
+| **Fiber** | 一个**已挂载插件实例**的生命周期单位。依赖变化时 fiber 会重进（dispose 后重新 apply） | 「首启只跑一次」不能用内存变量——fiber 会重进 |
+| **effect** | 通过 `ctx.effect()` 登记的副作用：它返回 disposer，fiber 卸载时自动撤销 | 注册工具、监听事件、开定时器都必须走 effect，否则会泄漏 |
+| **Loader** | 把配置行变成 fiber 的组件：读 `cordis.yml` / patch 层，逐行 import 并 apply | profile/bundle/patch 那套层叠最终交给它执行 |
+
+三个直接推论，后面会反复用到：**（1）** 一个 `ctx.<key>` 在同一 isolate realm 内只有一个实现，换实现靠换组合行；**（2）** 卸载只回收代码与 effect，不清理插件写进持久化的数据；**（3）** 插件做的事要么是注册（有 disposer），要么是 append 事实（进 session log），两者都不会在 reload 后凭空消失或残留。
+
+机制细节归 [`../two-tree-runtime/framework/00-map.md`](../two-tree-runtime/framework/00-map.md)（五原语对照源码）与 [`../plugin-system/composition/00-map.md`](../plugin-system/composition/00-map.md)（Loader 怎么叠层）。
+
 ## 先看整机
 
 ![一台正在跑的 dsh：六层叠加](./figures/six-layers.svg)
 
-这六层是**叠加**，不是六选一。
+这六层是**叠加**，不是六选一，自下而上是：
 
-- **profile** 决定这一次进程里树上挂了哪些插件（第 2 层）。
-- **seam** 决定某项能力由谁实现（第 4 层）。
-- **loop** 只消费已经挂上的服务和事件（第 5 层）。它不是整台机器。
+| 层 | 是什么 |
+|---|---|
+| 1 | **Cordis 运行时基座**：`new Context()` 建立的 root Fiber、服务反射、插件注册表、事件与日志器 |
+| 2 | **组合**：profile / bundle / patch 层叠出的这一棵插件树 |
+| 3 | **产品主干服务**：session、system prompt、tools、agents 这些 `ctx` 服务 |
+| 4 | **能力 seam**：文件、进程、模型、沙箱等可替换能力的 Definition + Provider |
+| 5 | **turn loop**：默认驱动插件，只消费已经挂上的服务和事件——它不是整台机器 |
+| 6 | **入口与投影**：CLI / Web / ACP / SDK / 桌面各自如何驱动 `ctx.agents` 并读 `session/event` |
+
+三条最容易被误解的对应关系：**profile** 决定第 2 层挂哪些插件；**seam** 决定第 4 层某项能力由谁实现；**loop** 在第 5 层，只消费不拥有。
 
 从下往上看，是运行时如何撑起产品；从上往下看，是不同入口如何复用同一套 runtime spine 和事件语义。
 
-「一切皆插件」描述的是产品能力的组织方式，不是无限递归的启动过程。`new Context()` 直接建立 root Fiber、服务反射、插件注册表、事件服务和日志器；`boot()` 随后安装 Loader，再挂载配置中的应用插件树。第 1 层是插件系统的运行时基座，第 2 层以上才是一次进程的可变产品组合。
+「一切皆插件」描述的是产品能力的组织方式，不是无限递归的启动过程：第 1 层由 `new Context()` 直接建立，`boot()` 随后安装 Loader、再挂载配置中的应用插件树；第 2 层以上才是一次进程的可变组合。
 
 ## 活插件图与耐久事件流
 
@@ -58,7 +81,7 @@ Cordis 先建立运行时基座；产品能力由插件树组合。
 三个域的关键区别：
 
 1. `turn/*`、`step/*`、`user/message`、`assistant/*`、`tool/*` 是**持久会话事件**。其余大多是三个域里的实时扩展点。
-2. `agent/pre-step`、`agent/request`、`llm/stream`、以及四条 `tools/*` 是 **waterfall**：`next()` 把决定委托给下游；不调用就是由当前监听器短路并拥有结果。
+2. `agent/pre-step`、`agent/request`、`llm/stream` 与四条 `tools/*` waterfall（`pre-execute` / `execute` / `post-execute` 在调用管道上，`ptc-dispatch-log` 观察 PTC 子调度；`tools/result` 是同步通知，不是 waterfall）是 **waterfall**：`next()` 把决定委托给下游；不调用就是由当前监听器短路并拥有结果。
 3. `agent/turn-stopping` 是 **serial**，没有 `next()`；监听器可用 `agent.steer()` 增加下一步工作，驱动随后重读 inbox。
 
 ## 每层回答什么，细节去哪读

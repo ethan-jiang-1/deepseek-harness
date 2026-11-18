@@ -2,9 +2,7 @@
 
 这个目录是对 DeepSeek Harness 源码的**消化分析**：从 TypeScript 源码出发，理解机制、架构和设计意图。它不是用户指南，也不是给 upstream 的补丁。
 
-> **产品源码审计基线**：以 [`catalog.json`](./catalog.json) 的 `baseline` 为准；当前渲染值见 [`_coverage/00-index.md`](./_coverage/00-index.md)。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐页复核。合入记录与**执行口径与可照做的同步操作手册**的唯一权威在 [`_change_log/00-index.md`](./_change_log/00-index.md)（`ethan` = 目标 release tag 的原样 + 6 项本地独有内容，按内容级而非路径级验收，没有 merge 这回事）。0008 轮语料维护的**独立复核**见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)；0009 轮的**独立反查**见 [`_change_log/0009-independent-recheck.md`](./_change_log/0009-independent-recheck.md)。本地维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个语料目录、`.pi/`、`scripts/verify-repository-references.{ts,spec.ts}` 的本地补丁，以及 `_misc/` 下**不入库**的 `_model_vendors/`（多 vendor 研究笔记，高频改动且可能含账号/密钥材料，忽略规则在 `_misc/.gitignore`）。`_misc` 为低重要性杂项：`_references` 冻结存档只随轮更新基线行，`_scratch` 不跟踪内容。
-
-> **维护宪章**：[`CORPUS-CHARTER.md`](./CORPUS-CHARTER.md)。改本目录前先读它——引用形态、版本号能写在哪、升级时改什么不改什么、以及为什么这些规则是强制而不是建议。它优先于任何单轮记录。
+> **改这个目录之前**：[`CORPUS-CHARTER.md`](./CORPUS-CHARTER.md)（引用形态、基线唯一家、升级时改什么不改什么）；基线值看 [`catalog.json`](./catalog.json)。维护与同步的细节在文末「维护须知」。
 
 ## 30 秒看懂
 
@@ -15,16 +13,6 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 每个专题的 `00-map.md` 是按主干顺序阅读的**概念导读**，只建立职责、关系和阅读入口；同目录编号正文是按问题查找的**机制参考**，记录状态对象、算法、失败行为和源码入口。图放在该专题的 `figures/`。
 
 文件不叫 `README.md`：仓库的 bilingual pairing 门禁会把任意 `README.md` 当成产品文档语料。研究目录用 `00-index.md` / `00-map.md`。
-
-## 分支纪律
-
-| 分支 | 上面有什么 |
-|------|------------|
-| `master` | 干净的 upstream 镜像。不放研究材料，不改产品代码。 |
-| `ethan` | 研究分支。源码整树照搬 upstream tag；研究材料位于 `_digested/`、`_dsh_plugin_agent_ready_development/`、`_faq_on_digested/` 与 `_misc/`。 |
-| `ethan2` | `ethan` 的工作副本，两者在每次同步后保持指向同一提交。 |
-
-同步方式（权威口径见 [`_change_log/00-index.md`](./_change_log/00-index.md) 的「同步操作手册」）：把产品源码**整树对齐到当前发布版本的 release tag**（取 [`catalog.json`](./catalog.json) 的 `baseline.tag`；不做内容合并、不跟 master 分支头、除 6 项本地独有内容外不留任何本地源码补丁），再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。旧口径「非快进 merge + 逐冲突解决」在 0008 退役。**不要读成「跟 master 分支头」**——master 上未发版的提交不属于目标版本；具体领先量记在当轮 `_change_log`。
 
 ## 与同级目录的关系
 
@@ -54,7 +42,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `tools-prompt-llm/` | 模型可见面 | 模型每一步看见什么：工具清单、系统提示词、历史投影怎么组装。 |
 | `surfaces-entrypoints/` | 人对机器的入口 | 人从哪里进去：CLI、headless、Web、ACP、SDK、桌面六个入口怎么复用同一台运行时。 |
 | `test-strategy/` | 测试体系 | DSH 怎么测：测试资产怎么分布、怎么防漏、一个变更怎么选层与算够；外加快照机制、CI 门禁、可靠性纪律与插件项目契约。 |
-| `development-flow/` | 开发流程 | 决策文档怎么走完全程：`.agents/notes/` 的两轴路径、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与哈希封印、元环回写与四条诚实缺口。 |
+| `development-flow/` | 决策 SDLC | 一条决定怎么走完全程：提案 → 落地 → 维护 → 忘记 → 回写。`.agents/notes/` 的两轴路径、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与哈希封印、元环回写与六条可证伪缺口。 |
 | `_coverage/` | 覆盖矩阵 | 维护索引：每个专题承诺回答什么、最后对到哪个源码 commit。 |
 | `harness-idea/` | 消化后的理解与判断 | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪。 |
 | `canon/` | 词、流程与生态惯例 | 宪章层：每个承重词的 repo 原文与它排除的写法、常规流程的名字与边界、生态做法的证据等级。写页或审页之前先查。 |
@@ -73,12 +61,15 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 
 ![消化阅读主干](./figures/topics.svg)
 
+下面三节分工：**本节**按「你脑子里的问题」找专题；下一节给第一次通读的线性顺序；再下一节按「你要做的事」找入口。
+
 - **熟悉 agent / plugin 运行时，但不熟 dsh** → [`system-overview/00-map.md`](./system-overview/00-map.md)
 - **想先搞懂 Cordis 在这棵树里到底是什么** → [`two-tree-runtime/framework/00-map.md`](./two-tree-runtime/framework/00-map.md)；两棵树怎么分工见 [`two-tree-runtime/00-map.md`](./two-tree-runtime/00-map.md)，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
 - **想搞懂 `dsh --profile web` 怎么变成进程的** → [`runtime-profiles/00-map.md`](./runtime-profiles/00-map.md)
 - **想搞懂插件系统本身（怎么成树、怎么走完一生、现成有什么）** → [`plugin-system/00-map.md`](./plugin-system/00-map.md)
 - **要确认一个词 DSH 到底怎么讲，或动笔前对一遍引用纪律** → [`canon/00-map.md`](./canon/00-map.md)
 - **想搞懂一轮对话怎么跑** → [`session-and-loop/00-map.md`](./session-and-loop/00-map.md)
+- **想搞懂 idle 之后谁在推进、goal 为什么自动续轮** → [`agent-loop/00-map.md`](./agent-loop/00-map.md)
 - **第一次接触委派工具、连术语都不熟** → [`delegation-and-orchestration/01-one-task-five-ways.md`](./delegation-and-orchestration/01-one-task-five-ways.md) → [`02` 词与平面](./delegation-and-orchestration/02-terms-and-planes.md) → [`03` 新手十二问](./delegation-and-orchestration/03-newcomer-questions.md)
 - **想搞懂 DSH 给了哪些工作编排原语、什么时候用哪个** → [`delegation-and-orchestration/00-map.md`](./delegation-and-orchestration/00-map.md) 的「四条读法」
 - **要写一个会委派/会组合的插件、或想知道一条链为什么会断/怎么证明** → [`delegation-and-orchestration/00-map.md`](./delegation-and-orchestration/00-map.md) 的「症状 → 页」与作者座两个子专题
@@ -92,22 +83,31 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **想搞懂 DSH 自己怎么测试（资产分布、防漏、选层判据、快照、门禁、可靠性）** → [`test-strategy/00-map.md`](./test-strategy/00-map.md)
 - **想搞懂 dsh 为什么对读者友好（harness 思想）** → [`harness-idea/00-map.md`](./harness-idea/00-map.md)
 
-推荐主干顺序：
+## 第一次通读：按概念依赖的主干
 
-```text
-system-overview/
-  → two-tree-runtime/
-  → plugin-system/
-  → session-and-loop/
-  → capability-seams/ 或 tools-prompt-llm/
-  → surfaces-entrypoints/
-```
+专题不是并列的货架：每个专题都假设读者已经建立前一步的心智模型。第一次读按这张表走，**只读每个专题的 `00-map.md`**（概念导读），遇到具体机制再进编号正文：
 
-按推荐顺序读 `00-map.md`，遇到具体机制再进入编号正文。专题承诺的核验范围以 [`_coverage/00-index.md`](./_coverage/00-index.md) 为准；未列问题不隐含完整覆盖。跨专题研究放在 `_faq_on_digested/`。
+| 步 | 读 | 读完之后你应该能回答 |
+|---|---|---|
+| L0 | [`canon/00-map.md`](./canon/00-map.md) | DSH 的三个承重词群（组合 / 时间 / 能力）分别指什么、彼此什么关系 |
+| L1 | [`system-overview/00-map.md`](./system-overview/00-map.md) | 这台机器是「插件树 + 事件流」，loop 只是树上的一个插件 |
+| L2 | [`plugin-system/`](./plugin-system/00-map.md) → [`plugin-system/composition/`](./plugin-system/composition/00-map.md) → [`runtime-profiles/`](./runtime-profiles/00-map.md) | profile 怎么叠成树、五个 profile 各装什么 |
+| L3 | [`capability-seams/00-map.md`](./capability-seams/00-map.md) | 一项能力怎么做到「换后端不改调用方」 |
+| L4 | [`session-and-loop/00-map.md`](./session-and-loop/00-map.md) | 事实存在哪（session log）、什么是 surface、turn/step 怎么划分 |
+| L5 | [`agent-loop/00-map.md`](./agent-loop/00-map.md) | idle 之后谁在推进、四层结束边界的区别 |
+| L6 | [`tools-prompt-llm/00-map.md`](./tools-prompt-llm/00-map.md) | 模型每一步看见什么、工具调用走哪条管道 |
+| L7 | [`two-tree-runtime/00-map.md`](./two-tree-runtime/00-map.md) | Web 为什么是两棵树、状态归谁 |
+| L8 | [`surfaces-entrypoints/00-map.md`](./surfaces-entrypoints/00-map.md) | 人从六个入口进来时，共用的是哪一套运行时 |
+| L9 | [`delegation-and-orchestration/00-map.md`](./delegation-and-orchestration/00-map.md) | 拆解/委派/编排有哪些原语、什么时候用哪个 |
+| L10 | [`experimental/00-map.md`](./experimental/00-map.md) | 「实验合同」是什么、为什么有些能力默认关 |
+| L11 | [`test-strategy/00-map.md`](./test-strategy/00-map.md) → [`development-flow/00-map.md`](./development-flow/00-map.md) | DSH 怎么证明自己没坏、一条决定怎么走完全程 |
+| L12 | [`harness-idea/00-map.md`](./harness-idea/00-map.md) | 这套形状为什么对参与者友好、代价在哪 |
+
+同一层内多个条目按箭头顺序读。`canon` 之后的每一步都可以回头查 canon 的词表。专题承诺的核验范围以 [`_coverage/00-index.md`](./_coverage/00-index.md) 为准；未列问题不隐含完整覆盖。跨专题研究放在 `_faq_on_digested/`。
 
 ## 按任务找
 
-不同任务该进哪个专题，比按目录顺序读快：
+已经知道要做什么时，从这张表直接进：
 
 | 你要做的事 | 从哪进 |
 |---|---|
@@ -129,6 +129,24 @@ node _digested/render-indexes.mjs   # 从 catalog.json 重生成覆盖矩阵
 node _digested/verify.mjs
 ```
 
-`verify.mjs` 校验：Markdown / SVG / 校验脚本的严格 UTF-8 与单个结尾换行、Markdown 相对链接和锚点、SVG 的 XML 结构与实体、外部链接近 `master`、`catalog.json` 与文件树双向一致、覆盖矩阵与 catalog 渲染一致、Markdown 表列数与表头一致、四份宪章副本逐字一致，以及 `claims.json` 的 claim 与计数指标。
+`verify.mjs` 校验：Markdown / SVG / 校验脚本的严格 UTF-8 与单个结尾换行、Markdown 相对链接和锚点、SVG 的 XML 结构与实体、外部链接近 `master`、`catalog.json` 与文件树双向一致、覆盖矩阵与 catalog 渲染一致、Markdown 表列数与表头一致、四份宪章副本逐字一致、canon 标注引文与所引 repo 文件逐字一致，以及 `claims.json` 的 claim 与计数指标。
 
 宿主门禁的关系：仓库根的 `verify-repository-references` 拒绝维护文件里出现真实 commit 标识符，但**研究语料已被显式豁免**（`scripts/verify-repository-references.ts:20` 的 `researchPrefixes` 覆盖本目录与 `_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/`），因为本语料仍需要引用历史 commit 作为证据与 `_change_log/` 记录。该门禁对本目录预期为**绿**；它仍对语料做组织 URL 检查。本目录的权威校验器仍是上面的 `verify.mjs`。
+
+## 维护须知
+
+这一节是给维护者的，不是阅读入口。
+
+## 分支纪律
+
+| 分支 | 上面有什么 |
+|------|------------|
+| `master` | 干净的 upstream 镜像。不放研究材料，不改产品代码。 |
+| `ethan` | 研究分支。源码整树照搬 upstream tag；研究材料位于 `_digested/`、`_dsh_plugin_agent_ready_development/`、`_faq_on_digested/` 与 `_misc/`。 |
+| `ethan2` | `ethan` 的工作副本，两者在每次同步后保持指向同一提交。 |
+
+同步方式（权威口径见 [`_change_log/00-index.md`](./_change_log/00-index.md) 的「同步操作手册」）：把产品源码**整树对齐到当前发布版本的 release tag**（取 [`catalog.json`](./catalog.json) 的 `baseline.tag`；不做内容合并、不跟 master 分支头、除 6 项本地独有内容外不留任何本地源码补丁），再按 `_change_log/` 审计过期结论；完成后把另一条分支快进到同一提交。旧口径「非快进 merge + 逐冲突解决」在 0008 退役。**不要读成「跟 master 分支头」**——master 上未发版的提交不属于目标版本；具体领先量记在当轮 `_change_log`。
+
+> **产品源码审计基线**：以 [`catalog.json`](./catalog.json) 的 `baseline` 为准；当前渲染值见 [`_coverage/00-index.md`](./_coverage/00-index.md)。每次同步产品源码后，在 [`_change_log/`](./_change_log/00-index.md) 记录范围，并按 [`_coverage/`](./_coverage/00-index.md) 逐页复核。合入记录与**执行口径与可照做的同步操作手册**的唯一权威在 [`_change_log/00-index.md`](./_change_log/00-index.md)（`ethan` = 目标 release tag 的原样 + 6 项本地独有内容，按内容级而非路径级验收，没有 merge 这回事）。0008 轮语料维护的**独立复核**见 [`_change_log/0008-independent-recheck.md`](./_change_log/0008-independent-recheck.md)；0009 轮的**独立反查**见 [`_change_log/0009-independent-recheck.md`](./_change_log/0009-independent-recheck.md)。本地维护 `_digested/`、`_faq_on_digested/`、`_dsh_plugin_agent_ready_development/`、`_misc/` 四个语料目录、`.pi/`、`scripts/verify-repository-references.{ts,spec.ts}` 的本地补丁，以及 `_misc/` 下**不入库**的 `_model_vendors/`（多 vendor 研究笔记，高频改动且可能含账号/密钥材料，忽略规则在 `_misc/.gitignore`）。`_misc` 为低重要性杂项：`_references` 冻结存档只随轮更新基线行，`_scratch` 不跟踪内容。
+
+语料自身的维护轮次（读者反馈驱动的重写、redesign 波次、门禁新增）记在 [`_coverage/00-corpus-maintenance.md`](./_coverage/00-corpus-maintenance.md)；本目录的结构目标与执行顺序见 [`REDESIGN.md`](./REDESIGN.md)。

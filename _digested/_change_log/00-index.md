@@ -34,6 +34,8 @@
 - [`0014-delegation-corpus-onboarding.md`](./0014-delegation-corpus-onboarding.md)——同基线内容修订（委派专题新增入门三页、28 页统一骨架、10 张新图；跨语料对齐 FAQ 27 的委派深度口径与基线，FAQ 22 引文锚点）
 - [`0015-test-strategy-corpus-reorg.md`](./0015-test-strategy-corpus-reorg.md)——同基线内容修订（测试专题 13 页重排为 16 页：新增资产账本、防漏机制、决策程序三页，重写插件契约页；新增 2 张图；计数收拢到 03）
 
+> **分工**：本目录只收**产品源码同步**记录（upstream release tag 对齐、跨度审计与修复）。语料自身的维护轮次（读者反馈驱动的重写、redesign 波次、门禁新增）记在 [`../_coverage/00-corpus-maintenance.md`](../_coverage/00-corpus-maintenance.md)，与本目录互不混写。
+
 编号递增。`0000` 只记录开始消化时的 checkout；同步记录从 `0001` 起。记录里的路径与页面名是**当轮**的样子；页面后来迁移或改名时，现行入口以 [`catalog.json`](../catalog.json) 与 [`_coverage`](../_coverage/00-index.md) 为准，不改写历史记录。
 
 **选基线的口径（0012 定稿）**：只同步**已发布版本的内容**，目标是当前版本的 **release tag**（取 [`../catalog.json`](../catalog.json) 的 `baseline.tag`）。alpha / beta 不追；0.2.1 线尚未 final，所以取最后一个 RC。0006 曾按 npm `latest` 选到 `0.1.5-rc.1`，0007 起改成「最后一个 RC」，沿用至今。

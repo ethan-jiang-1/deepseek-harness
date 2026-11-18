@@ -7,20 +7,24 @@
   <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">Consumer 依赖 Definition；组合层选择相互一致的 provider。</text>
 
   <rect x="30" y="72" width="435" height="306" rx="12" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="247" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">E2B：共享远程生命周期 owner</text>
+  <text x="247" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#1e40af">SSH：一条连接，三个既有 seam 的远程 provider</text>
   <rect x="150" y="120" width="195" height="58" rx="8" fill="#dbeafe" stroke="#60a5fa"/>
-  <text x="247" y="145" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">ctx.e2b</text>
-  <text x="247" y="164" text-anchor="middle" font-size="11" fill="#2563eb">同一个 SDK sandbox handle</text>
+  <text x="247" y="145" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">ctx.ssh（dsh-ssh）</text>
+  <text x="247" y="164" text-anchor="middle" font-size="11" fill="#2563eb">连接事实 + helper 摘要验证</text>
   <line x1="205" y1="178" x2="140" y2="210" stroke="#4b5563" marker-end="url(#arr)"/>
+  <line x1="247" y1="178" x2="247" y2="210" stroke="#4b5563" marker-end="url(#arr)"/>
   <line x1="290" y1="178" x2="355" y2="210" stroke="#4b5563" marker-end="url(#arr)"/>
-  <rect x="52" y="214" width="175" height="70" rx="8" fill="#dcfce7" stroke="#86efac"/>
-  <text x="139" y="240" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">fs-e2b → ctx.fs</text>
-  <text x="139" y="262" text-anchor="middle" font-size="11" fill="#15803d">远程 Linux 目录树</text>
-  <rect x="267" y="214" width="175" height="70" rx="8" fill="#dcfce7" stroke="#86efac"/>
-  <text x="354" y="240" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">subprocess-e2b</text>
-  <text x="354" y="262" text-anchor="middle" font-size="11" fill="#15803d">→ ctx.subprocess</text>
-  <text x="247" y="316" text-anchor="middle" font-size="12" fill="#1e3a8a">两者等待同一 handle，因而共享目录与进程世界。</text>
-  <text x="247" y="342" text-anchor="middle" font-size="11" fill="#2563eb">Host 上的 agent、session、LLM 与日志不会迁入 E2B。</text>
+  <rect x="52" y="214" width="125" height="70" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="114" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">fs-ssh</text>
+  <text x="114" y="262" text-anchor="middle" font-size="11" fill="#15803d">→ ctx.fs</text>
+  <rect x="185" y="214" width="125" height="70" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="247" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">subprocess-ssh</text>
+  <text x="247" y="262" text-anchor="middle" font-size="11" fill="#15803d">→ ctx.subprocess</text>
+  <rect x="318" y="214" width="125" height="70" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="380" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">sandbox-ssh</text>
+  <text x="380" y="262" text-anchor="middle" font-size="11" fill="#15803d">→ ctx.sandbox</text>
+  <text x="247" y="316" text-anchor="middle" font-size="12" fill="#1e3a8a">三者注入同一份 ctx.ssh，共享远端目录树与进程世界。</text>
+  <text x="247" y="342" text-anchor="middle" font-size="11" fill="#2563eb">helper 在远端复用本地 fs/subprocess/sandbox 包；opt-in，无 bundle 出货。</text>
 
   <rect x="495" y="72" width="435" height="306" rx="12" fill="#fff7ed" stroke="#fdba74"/>
   <text x="712" y="100" text-anchor="middle" font-size="14" font-weight="700" fill="#9a3412">本地 confinement：只包装一次 spawn</text>
@@ -38,5 +42,5 @@
   <text x="712" y="366" text-anchor="middle" font-size="11" fill="#9a3412">它不绑定或迁移 ctx.fs，也不等于远程执行世界。</text>
 
   <rect x="30" y="398" width="900" height="38" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
-  <text x="480" y="422" text-anchor="middle" font-size="12" fill="#374151">远程组合换 fs + subprocess provider；本地 sandbox 只改变 shell spawn 的 argv。两者都不要求 Consumer fork 实现。</text>
+  <text x="480" y="422" text-anchor="middle" font-size="12" fill="#374151">远程组合换 fs + subprocess + sandbox 的 provider；本地 sandbox 只改变 shell spawn 的 argv。两者都不要求 Consumer fork 实现。</text>
 </svg>

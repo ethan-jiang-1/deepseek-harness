@@ -2,69 +2,123 @@
 
 ## 一句话
 
-一条 **seam** 是可替换的**完整能力**，必须有三个角色：Service Definition、Service Provider、Consumer。单独一个角色不是 seam。加一项能力，意味着把三者一并设计。
+一条 **seam** 是一项可替换的**完整能力**，由三个角色共同构成：Service Definition、Service Provider、Consumer。换一个 Provider，整面产品跟着换实现，Consumer 一行不改——这是 DSH 把「能力」做成插件竞聘位的方式。
 
-扩展插件依赖 Definition，绝不依赖具体 Provider。这就是「换一个后端，整面产品跟着变，Consumer 不用改」的原因。
+## 先看你熟悉的问题
 
-## 三角色
+在多数 agent harness 里，「跑一条命令」是这样的：bash 工具的实现里直接写着怎么 spawn 进程。想换执行后端——本地换成沙箱、沙箱换成远程机器——通常只有两条路：fork 一份工具实现，或者把「在哪执行」做成参数层层透传。前者让同一个能力长出两份会各自漂移的代码；后者让每个调用方都认识它本不该认识的部署细节。
+
+DSH 的答案是第三条路：**能力本身是一个可替换单元**。工具只认识「执行一条命令」这项能力的合同；本地执行、沙箱执行、远程执行是同一份合同的三个实现，由启动组合决定挂哪一个。工具、UI、模型看到的 schema 全都不动。
+
+这个可替换单元在 DSH 里叫 **seam**。本专题讲它怎么构成、怎么换、以及哪些能力**刻意不做成** seam。
+
+## 读懂本专题需要的三个概念
+
+DSH 的进程里运行着一棵 Cordis 插件树：对话循环、读写文件、跑命令、接模型、画 Web 界面，都是树上的插件。插件之间通过一个共享上下文 `ctx` 协作——一个插件把服务注册到 `ctx.<key>`，别的插件注入这个 key 来使用它。这棵树和它的运行时机制归 [`system-overview/`](../system-overview/00-map.md) 与 [`two-tree-runtime/`](../two-tree-runtime/00-map.md)；这里只需要记住：**`ctx.<key>` 是插件之间唯一可注入的能力接口**。插件之间还有第二条合同面——typed events 与 waterfall（事件合同，归 [`two-tree-runtime/framework/`](../two-tree-runtime/framework/00-map.md)）；seam 锚在 `ctx.<key>` 上，事件通道是另一类扩展点。
+
+一条 seam 就是围绕一个 `ctx.<key>` 的三种分工：
 
 ![一条 seam 的三个角色](./figures/three-roles.svg)
 
-| 角色 | 它是什么 | 典型落点 |
+| 角色 | 它是什么 | shell 家族的落点 |
 |------|----------|----------|
-| **Service Definition** | 声明 `ctx.<key>` 和词汇的 Cordis `Service`（抽象类或注册表，不是 `interface`） | `dsh-shell` 的 `ShellExecutor` |
-| **Service Provider** | 实现它 | `dsh-bash-local` / `dsh-bash-sandbox` / `dsh-pwsh-local` |
-| **Consumer** | 注入并使用；常见是面向模型的 tool | `dsh-tool-bash` |
+| **Service Definition** | 声明 `ctx.<key>` 和词汇类型的 Cordis `Service`（抽象类或注册表，不是 TypeScript `interface`） | `dsh-shell` 的 `ShellExecutor` |
+| **Service Provider** | 实现这份合同的一个包 | `dsh-bash-local` / `dsh-bash-sandbox` / `dsh-pwsh-local` |
+| **Consumer** | 注入并使用服务的插件，常见是面向模型的 tool | `dsh-tool-bash` |
 
-一个包可以兼多个角色——`dsh-llm` 同时拥有 Definition 和 Adapter 注册点，而它的 Consumer 是 loop 本身（`agent-loop`、`compaction-basic`）。角色分包装，是因为它们会独立演化；合在一个包里，是因为它们就是同一件事。
+三条规则决定了 seam 的形状：
 
-**设计 Definition 时对着所有当前 Consumer。** tool-schema、Loader、UI、传输、某个 provider 的癖好，放在 Consumer 或 provider 里。反味：一个公开服务方法只有一个内部调用者——那多半该是私有闭包，不该抬成合同。
+1. **Consumer 只依赖 Definition，绝不依赖具体 Provider。** 这是「换后端不改调用方」的全部原因。
+2. **每个 isolate realm 内，一个 `ctx.<key>` 同一时刻只有一个 Definition 实现。** 同一 realm 里加载第二个同名服务按 Cordis 重复服务失败；换实现靠组合层换行，不是两个 executor 同时挂。**realm 是关键限定**：preset 的服务行可以 `isolate` 出独立实例域，同一 key 在父子 realm 各有一份。
+3. **三角色齐全才叫 seam。** 单独一个角色只是其中一员；说某个包时用它的角色名，不用 seam 称呼它（[`docs/glossary.md`](../../docs/glossary.md) 的 `capability-seam` 条）。
 
-看到新的 `ctx.<key>`，先问它是 spine 服务、一条 seam、还是 bundle 组合点。只有三角色齐全才叫 seam。
+一个包可以兼多个角色：`dsh-user-approval` 在同一包里承担 approval seam 的 Definition 与具体实现——「一次审批决定」的定义与实现是同一关注点。角色分包装，是因为它们会独立演化；合在一个包里，是因为它们就是同一件事。注意 `dsh-llm` **不是**合包样本：它的 Adapter 注册点就是注册表形态的 Definition 本身，Consumer（`agent-loop`、`compaction-basic`）在别的包。判断细节见 [`01-三角色与分包装.md`](./01-三角色与分包装.md)。
 
-跨度 0006（`0.1.2-rc.1` → `0.1.5-rc.1`）新增 `ctx.fileUploads` / `ctx.workspaceFiles` / `ctx.sessionFeedback` 三个 **core** 服务、**0 个新 seam**，并把 `ctx.messageFeedback` 迁到 canonical Session log；三个键的 owner、消费者与判定见 [`04-新增seam与Remote.md`](./04-新增seam与Remote.md)。
+## 换实现时，什么不动
 
-## 远程执行世界与本地 confinement
+文件读写和进程执行共享**一个执行世界**。把本地 provider 换成远程 provider，换的是组合里的几行，不是工具源码：
 
-![E2B 远程执行世界与本地 argv confinement](./figures/execution-world.svg)
+![本地 confinement 与远程执行世界是两种机制](./figures/execution-world.svg)
 
-在 E2B 组合里，`dsh-fs-e2b` 与 `dsh-subprocess-e2b` 注入同一个 `ctx.e2b`，因此共享一棵远程 Linux 目录树和进程世界。依赖 `ctx.fs` / `ctx.subprocess` 的 Consumer 随 provider 组合切换，不必为远程再 fork 一份实现。**（0008 复核：E2B 组已随 `dsh-v0.1.7-rc.1` 删除——本地遏制转正为 `packages/sandbox/` 组，远程执行族的新落点是 `packages/ssh/` 组；本段保留为 provider 组合卖点的机制记录，接替面见 [`09-ssh远程执行族.md`](./09-ssh远程执行族.md)）**
+这张图里有两种容易混淆的机制：
 
-本地 shell 经 `ctx.subprocess` spawn；`ctx.sandbox` 在 spawn 前包装 argv。这种 confinement 约束一次本地进程启动，不会自行迁移 `ctx.fs`，也不等于一套完整的远程执行世界。Consumer 面对的是 Definition，不是「我在哪台机器上」。0.1.7 线的远程接替面没有发明新的私有世界键：`packages/ssh/` 的 `fs-ssh` / `subprocess-ssh` / `sandbox-ssh` 三个 provider 共享一条部署自有的 `ctx.ssh` 连接，把三个既有 seam 各自实现到远端主机，helper 在远端就地复用本地的 fs / subprocess / sandbox 包；该组合 opt-in，任何 bundle 都不出货。机制见 [`09-ssh远程执行族.md`](./09-ssh远程执行族.md)。
+- **远程执行世界**：`fs-ssh` / `subprocess-ssh` / `sandbox-ssh` 三个 provider 共享一条 `ctx.ssh` 连接，把三个既有 seam 各自实现到远端主机。依赖 `ctx.fs` / `ctx.subprocess` 的 Consumer 随组合切换，不必为远程 fork 一份实现。
+- **本地 confinement**：`ctx.sandbox` 在 spawn 前包装 argv，约束一次本地进程启动。它不迁移 `ctx.fs`，也不等于一套远程执行世界。
 
-subagent 是同一模式的另一个例子：一个接口后面，可以是进程内 child agent，也可以是经 ACP 或 JSON-RPC 驱动的独立进程。产品 Codex / Claude Code provider 不在 `dsh-base` 里默认安装；它们是独立 Bundle，随 Profile 选中后各自注册一个 dormant 默认 provider，并把委派工具注册成 Host 全局工具（`ON_DEMAND_BUNDLES`，`packages/boot/app-boot/src/official-bundle-packages.ts:5`-`:6`）。preset 只决定「这个 agent 看见哪个委派工具」，不再用 `backgroundMode` 选路由——0.2.1 线所有委派都走受管 activation，工具返回 `{ kind: 'activation', subagentId }`，结果以父级完成通知送达（upgrade guide [`subagent-activations`](../../docs/upgrade-guide/v0.2.1-alpha.1/subagent-activations/guide.md)）。见 [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md)；parent-owned direct-child 目录与宿主 Queue / Steer 交付见 [`05-subagent-catalog与host交付.md`](./05-subagent-catalog与host交付.md)。
+Consumer 面对的是 Definition，不是「我在哪台机器上」。机制见 [`09-ssh远程执行族.md`](./09-ssh远程执行族.md)；一次本地 bash 的完整链路见 [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md)。
 
-> **subagent model routing**：上游 #2868 给 `SubagentProvider` 增加可选 `agentRouteDefaults`（`packages/subagent/subagent/src/types.ts:330`），dsh-sdk provider 据此声明配置化的 route 默认值（`deepseek-official` / `deepseek-v4-flash`，`packages/subagent/subagent-dsh-sdk/src/index.ts:126`）。调用未指名 provider/model 时落到这组 provider 默认，不是「继承父 agent」；机制是逐调用 `agentOptions` 白名单（provider / model / reasoningEffort / maxTokens）加 route preflight（`packages/subagent/tool-subagent/src/index.ts:308` 的 `preflightChildLlmRoute` 调用），没有「SDK 内置路由」这个对应物。`subagent-dsh-sdk` 无 `prepareContinuable`（`packages/subagent/subagent/src/types.ts:355`），它是 external provider，执行一次、不收后续消息。详见 [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md)。
+subagent 是同一模式的另一个例子：一个接口后面，可以是进程内 child agent，也可以是经 ACP 或 JSON-RPC 驱动的独立进程，还可以是产品 CLI（Codex / Claude Code）的按需 bundle。见 [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md)。
 
-## 不是 seam 的调度：schedule（host 作用域持久提醒）
+## 不是每个能力都是 seam
 
-`packages/schedule/schedule/` 提供 host-wide durable reminders，不是 seam——没有 Definition/Provider 可分包装；生成表里是 core role（`ctx.schedule`，单一 owner，`docs/capability-seams.md:682`）。模型经 `schedule_create` / `schedule_list` / `schedule_update` / `schedule_delete` 四个工具管理一次性或固定间隔提醒，到期以 scheduled user message 回到原会话；任务独立于 Session activation 持久化，重启后仍投递。Web 组合直接挂 `schedule` 与 `ui-schedule` 两行，工具行由 preset 声明（`minimal` 不声明）。平台合同、通知经济学与交付时序见 [`../delegation-and-orchestration/delegation-primitives/05-background-jobs-and-wall-clock-schedules.md`](../delegation-and-orchestration/delegation-primitives/05-background-jobs-and-wall-clock-schedules.md)；本页只记它为什么不是 seam。
+看到一个新的 `ctx.<key>`，先问它是哪种形状。DSH 里至少有四种，只有第一种是 seam：
 
-## core 而非 seam：Webhook
+![seam 之外的三种能力形状](./figures/shapes.svg)
 
-`packages/experimental/webhook/` 和 `packages/experimental/webhook-github/` 提供了 webhook ingress 能力（0.2.1 线随可选包收编整族从 `packages/webhook/` 迁入 `experimental/`，包名不变）：
+判定程序只有两问：
 
-- **core 服务**（`experimental/webhook/`）：`ctx.webhookRuntime` — 认证投递分发、Workspace Session 创建。生成表把它的 role 列写成 `core`、implementation 列为 [`webhook`](../../packages/experimental/webhook)（[`docs/capability-seams.md:709`](../../docs/capability-seams.md)）；`docs/architecture.md` 的核心包表不再收录它，扩展点表仍给出「注册受信规则 + 挂 provider adapter」一行（[`docs/architecture.md:151`](../../docs/architecture.md)）
-- **消费者 / 适配器**（`experimental/webhook-github/`）：`inject: ['webServer', 'webhookRuntime', 'credentials']`（`packages/experimental/webhook-github/src/index.ts:14`），验签后调 `ctx.webhookRuntime.dispatch(delivery)`（`src/handler.ts:115`）
-- **规则注册方**：受信插件在 `ctx.webhookRuntime` 上注册进程内规则，返回非 null 结果即变成普通的 Workspace-backed Session
+1. **这个能力有第二个可替换的实现吗？** 没有 → 它是 core 服务（连 `ctx.<key>` 都不设的，是刻意的进程级库）。
+2. **它的分界按什么切？** 按通信协议（Host 声明控制器、Client 消费生成的 stub）→ Remote；按进程内能力合同 → seam。seam 有一个变体：**独占注册位**——Definition 只提供一个名字槽，同一部署最多一个 provider，provider 自带工具（`ctx.browserUse` / `ctx.computerUse`，见 [`10`](./10-新执行面与编排seam.md)）。
 
-注意产品文档里的「provider adapter」指的是 **webhook 来源适配器**，不是 capability seam 的 Service Provider 角色——`ctx.webhookRuntime` 没有第二个实现包，因此它是 **core 服务 + 适配器消费者**，不是三角色 seam（FAQ 08 的 35 条 seam 表也不含它）。
+| 形状 | 判据 | 例子 | 机制页 |
+|------|------|------|--------|
+| **seam**（含独占注册位变体） | 三角色齐全：Definition + 可替换 Provider + Consumer | `ctx.shell`、`ctx.fs`、`ctx.subagents`；注册位：`ctx.browserUse` | [`01`](./01-三角色与分包装.md) |
+| **core 服务**（可带适配器消费者） | 有 `ctx.<key>` 但只有一份实现；来源适配器不是 Provider | `ctx.schedule`、`ctx.ssh` 连接、`ctx.webhookRuntime` + GitHub 适配器 | [`04`](./04-新增seam与Remote.md) |
+| **Remote 通信协议** | 没有 Host 侧 `ctx.<key>`、没有 Cordis Service，按 wire 分界 | `packages/api/remotes/` + Typert | [`04`](./04-新增seam与Remote.md) |
+| **刻意的进程级库** | 连 `ctx` 键都不设：每进程一条答案，没有更窄的作用域可授予 | `packages/util/http-proxy/` | [`06`](./06-外发代理策略.md) |
 
-## 非三角色 seam：API Remote 架构
+「为什么这些能力刻意不成 seam」和「为什么这很重要」在 [`04-新增seam与Remote.md`](./04-新增seam与Remote.md) 展开；进程级外发代理是「刻意不成 seam 的库」的样本，见 [`06-外发代理策略.md`](./06-外发代理策略.md)。
 
-**API Remote 控制器**是一个**不是传统三角色**的新模式：`packages/api/remotes/` + `packages/typert/` 提供 Remote 控制器架构，`packages/host/apiproxy/` 已整体删除。
+## 阅读顺序
 
-| 角色 | 它是什么 | 典型落点 |
-|------|----------|----------|
-| **Remote 声明** | Host 侧声明 Remote 控制器及其 schema（typert generator） | `packages/api/remotes/` |
-| **Client stub** | 生成器自动导出的 client 侧 stub | `packages/api/remotes/src/client/` |
-| **Transit** | 类型安全的序列化/反序列化层 | `packages/typert/` |
+**教科书路径**（第一次读，顺着 shell 家族走一遍）：
 
-Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定义。它纯粹是 BFF 层的**通信协议模式**：Host 提供一组 Remote 控制器、Client 消费生成的 stub，双方通过 Typert 的 schema 保持类型安全。
+```text
+01 三角色与分包装        为什么是三个包，什么时候可以合
+  → 02 一次 bash         从模型 JSON 到进程 argv 的完整链路与失败合同
+  → 09 SSH 远程执行族    同一条 seam 怎么搬到另一台机器
+```
 
-迁移路径：settings（含 credentials 子命名空间）、subagent control、agent-presets（0.1.7 线随 preset 重设计退役，改述：shipped 声明迁 `packages/bundle/web-app/presets/*.patch.yml`）、workspace-controller、session-controller 已从 apiproxy 迁移到 Remote；`packages/host/apiproxy/` 包已整体删除。directory-picker 不是 Remote——它是 `ctx.directoryPicker` Service seam（native/browse 后端，[`docs/capability-seams.md:704`](../../docs/capability-seams.md)；决策见已归档的 [`2026-07-28-directory-picker-capability-seam`](../../.agents/notes/archived/architecture/2026-07-28-directory-picker-capability-seam.md)）。
+**按问题找**：
 
-教科书路径：顺着 `packages/shell/` 走完 Definition → provider → `dsh-tool-bash`。组级 README 拥有「这个组有哪些包、对应哪个 `ctx` key」——本专题不手抄完整包表，完整图在生成的 [`docs/capability-seams.md`](../../docs/capability-seams.md)。
+| 你的问题 | 去哪 |
+|----------|------|
+| 角色什么时候必须分包装？新 `ctx.<key>` 怎么判定形状？ | [`01-三角色与分包装.md`](./01-三角色与分包装.md) |
+| 一次 bash 经过哪些政策层？退出码 1 算不算 harness 崩溃？ | [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md) |
+| 委派怎么执行、产品 provider 怎么挂、模型路由怎么解析？ | [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md) |
+| schedule / webhook / Remote 为什么不是 seam？ | [`04-新增seam与Remote.md`](./04-新增seam与Remote.md) |
+| 父会话怎么找回自己的孩子？宿主消息怎么送达？ | [`05-subagent-catalog与host交付.md`](./05-subagent-catalog与host交付.md) |
+| 外发流量怎么走代理？哪些通道刻意直连？ | [`06-外发代理策略.md`](./06-外发代理策略.md) |
+| 子进程怎么被保证终止？native 绑定做了什么？ | [`07-原生containment与native-system.md`](./07-原生containment与native-system.md) |
+| 外部 MCP server 和 CC/Codex hooks 怎么接进来？ | [`08-外部生态桥：MCP与hooks.md`](./08-外部生态桥：MCP与hooks.md) |
+| 远程执行世界怎么共享一条连接？ | [`09-ssh远程执行族.md`](./09-ssh远程执行族.md) |
+| 浏览器/桌面控制、语音、账号、交付物等新面长什么样？ | [`10-新执行面与编排seam.md`](./10-新执行面与编排seam.md) |
+
+## 本专题的承重不变量
+
+1. **Consumer 只依赖 Definition，绝不依赖具体 Provider**——换后端不改调用方的原因（见上）。
+2. **每个 isolate realm 内，一个 `ctx.<key>` 同一时刻只有一个实现**；换实现靠组合层换行（cross-realm 隔离见上）。
+3. **三角色齐全才叫 seam**；判定程序见「不是每个能力都是 seam」。
+4. **退出码 1 不是 harness 崩溃**：非零退出、超时、取消都 resolve 成结果，只有基础设施失败走 killed 结算（[`02`](./02-一次bash从tool到sandbox.md) 的失败表）。
+5. **Definition 对着所有当前 Consumer 设计**；tool-schema、UI、传输放 Consumer 或 provider（[`01`](./01-三角色与分包装.md)）。
+
+## 症状 → 页
+
+| 你看到的现象 | 去哪 |
+|---|---|
+| 想换一个能力的后端（本地/沙箱/远程） | [`01`](./01-三角色与分包装.md) → [`09`](./09-ssh远程执行族.md) |
+| 工具报退出码 1，分不清是不是崩了 | [`02`](./02-一次bash从tool到sandbox.md) 的失败表 |
+| 委派出去的子代理收不到后续消息 | [`03`](./03-subagent后台与产品provider.md) |
+| 外发流量没走代理 | [`06`](./06-外发代理策略.md) |
+| 子进程杀不干净 | [`07`](./07-原生containment与native-system.md) |
+| MCP 工具没出现 / hook 没触发 | [`08`](./08-外部生态桥：MCP与hooks.md) |
+
+## 边界
+
+- 模型可见的 tool 管道（注册、审批、timeout、chunk）归 [`tools-prompt-llm/`](../tools-prompt-llm/00-map.md)；本专题只讲能力合同与 provider。
+- 组合怎么叠成活树、bundle/profile 怎么交付归 [`plugin-system/`](../plugin-system/00-map.md) 与 [`runtime-profiles/`](../runtime-profiles/00-map.md)。
+- 委派原语的选择与用法归 [`delegation-and-orchestration/`](../delegation-and-orchestration/00-map.md)；本专题只讲 subagent 作为 seam 的合同面。
+- 完整的包 / key / 实现 / 消费者图是生成的 [`docs/capability-seams.md`](../../docs/capability-seams.md)，本专题不手抄包表；组级 README 拥有「这个组有哪些包」。
 
 ## 源码入口
 
@@ -72,39 +126,15 @@ Remote 不是传统 seam 因为它没有 `ctx.<key>`、没有 Cordis Service 定
 |------|------|
 | [`docs/glossary.md`](../../docs/glossary.md) `capability-seam` | 术语合同 |
 | [`docs/capability-seams.md`](../../docs/capability-seams.md) | 生成的包 / key / 实现 / 消费者图 |
-| `packages/shell/` | 范本家族 |
-| `packages/fs/`、`packages/subprocess/` | 执行世界的文件与进程能力 |
-| `packages/subprocess/subprocess-local/` | 受管范围的本地 provider：Linux scope / Windows Job / 显式回退 |
+| `packages/shell/` | 教科书范本家族 |
+| `packages/fs/`、`packages/subprocess/`、`packages/sandbox/` | 执行世界的文件、进程与本地遏制能力 |
+| `packages/ssh/` | 一条 `ctx.ssh` core 连接 + 三个既有 seam（fs / subprocess / sandbox）各自的远程 provider（opt-in） |
+| `packages/subagent/` | 差异极大的 provider，同一接口 |
+| `packages/interaction/user-approval/` | 一包兼 Definition 与 Provider 的样本（approval seam）；`packages/llm/` 是注册表形态 Definition 的样本 |
 | `packages/util/http-proxy/` | 进程级外发代理策略（库，刻意不是 seam） |
 | `native/system/` | Landlock launcher 与 POSIX flock 的原生绑定 |
-| `packages/sandbox/` | 本地进程 argv confinement |
-| `packages/ssh/` | `ctx.ssh` 连接与 fs/subprocess/sandbox 三个既有 seam 的远程 provider（opt-in） |
-| `packages/browser-use/`、`packages/computer-use/` | 两个执行面的独占注册位；driver 全在 `packages/experimental/`，见 [`10-新执行面与编排seam.md`](./10-新执行面与编排seam.md) |
-| `packages/llm/` | Definition 与 Consumer 可同包 |
-| `packages/subagent/` | 差异极大的 provider，同一接口 |
-| `packages/experimental/ptc-runtime-python/` | PTC runtime 的第二 provider（CPython 子进程后端；0.1.7 线自 `code-runtime-python` 随 PTC 命名重构改名，`ctx.codeRuntime` → `ctx.ptcRuntime`），见 [`../experimental/01-code-runtime-python.md`](../experimental/01-code-runtime-python.md) |
-| `packages/schedule/schedule/` | agent 作用域持久提醒的 host 服务（`ctx.schedule`，非 seam） |
-| `packages/schedule/tool-schedule/` | `schedule_*` 四个模型可见工具（0.2.1 线自 `schedule` 包拆出） |
-| `packages/experimental/webhook/` | `ctx.webhookRuntime` 认证投递（0.2.1 线迁入 `experimental/`） |
-| `packages/api/remotes/` | Remote 控制器（非传统 seam） |
-| `packages/typert/` | 类型安全的 Remote 序列化 |
+| `packages/mcp/`、`packages/experimental/hook-protocol/` 等 | 外部生态桥 |
+| `packages/api/remotes/`、`packages/typert/` | Remote 控制器与类型安全序列化（非传统 seam） |
 | [`2026-06-13-capability-seams`](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.md) | 为什么这样切 |
-
-## 机制级正文
-
-| 文件 | 内容 |
-|------|------|
-| [`01-三角色与分包装.md`](./01-三角色与分包装.md) | 分包装的味道；换远程执行世界时 tool 源码不动 |
-| [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md) | resolve → confine → spawn；run 的失败合同；受管范围与原生 containment |
-| [`03-subagent后台与产品provider.md`](./03-subagent后台与产品provider.md) | 受管 activation 取代前台 / Job 委派；产品 provider 的 host 平面 opt-in |
-| [`04-新增seam与Remote.md`](./04-新增seam与Remote.md) | Schedule（刻意不成 seam）与 Webhook（`core` 服务 + 适配器消费者）两个对照；API Remote 非三角色通信模式；三个新 core 服务 |
-| [`05-subagent-catalog与host交付.md`](./05-subagent-catalog与host交付.md) | parent-owned direct-child 目录（`subagent/catalog` + projection）；宿主消息的 Queue / Steer 双交付 |
-| [`06-外发代理策略.md`](./06-外发代理策略.md) | 进程级外发代理库；唯一安装点、`.env` 豁免与 egress 证据 |
-| [`07-原生containment与native-system.md`](./07-原生containment与native-system.md) | 受管范围、Linux scope / Windows Job 两条 native 路径；flock 与 session 写租约 |
-| [`08-外部生态桥：MCP与hooks.md`](./08-外部生态桥：MCP与hooks.md) | MCP client 把外部 server 的 tools 注入 `ctx.tools`；CC/Codex hook 桥、共享 wire protocol 与 `tools/pre-execute` 拦截点；两者皆 opt-in |
-| [`09-ssh远程执行族.md`](./09-ssh远程执行族.md) | E2B 的接替面：一条 `ctx.ssh` 连接、helper 摘要验证与 TLS-PSK 流；`fs-ssh` / `subprocess-ssh` / `sandbox-ssh` 把三个既有 seam 搬到远端；全 opt-in |
-| [`10-新执行面与编排seam.md`](./10-新执行面与编排seam.md) | 执行面与编排新面地图：`browserUse` / `computerUse` 独占注册位（全 experimental driver）、`speechToText`、`deepseekAccount`、`mcpResources`、`officeToPdf`、deliverables 事件族、plugin_manager + config-editor；0.2.1 线新增 `remoteAccess` / `workingDirectory` / `worktrees` / `pluginMarket` / `translator` / `cotTranslation` / `claudeCodeMods` / `webApp` 与 `web-deepseek-api` |
-
-模型可见的 tool 管道在 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。
 
 > 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

@@ -56,7 +56,7 @@ Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mut
 3. [`docs/subsystems/slots.md`](../../../docs/subsystems/slots.md)：四 share 来源表、标准 hooks、inject 隔间、层级树与扩展规则。
 4. [`docs/subsystems/client-modules.md`](../../../docs/subsystems/client-modules.md)：`WebBootGraph` wire、scan、bundle route、`rebuilt()` 与缓存修订。
 5. [`docs/subsystems/conversation.md`](../../../docs/subsystems/conversation.md)：Context/Location/View 归属、身份与重放、window 更新三条路径、publication。
-6. [`docs/web-styling.md`](../../../docs/web-styling.md)：token 与样式归属、组件规则、改系统流程；统一圆角刻度与适用面另见 [`docs/ui-radius.md`](../../../docs/ui-radius.md)（0009 新增）。
+6. [`docs/web-styling.md`](../../../docs/web-styling.md)：token 与样式归属、组件规则、改系统流程；统一圆角刻度与适用面另见 [`docs/ui-radius.md`](../../../docs/ui-radius.md)。
 7. [`packages/client/hmr/README.md`](../../../packages/client/hmr/README.md)：重载链的两半、失败策略与 `pollIntervalMs`。
 8. 三道 gate：[`scripts/verify-client-packages.ts`](../../../scripts/verify-client-packages.ts)（模块请求与环）、[`scripts/verify-client-domain-graph.ts`](../../../scripts/verify-client-domain-graph.ts)（包内层级）、[`scripts/verify-client-ui-i18n.ts`](../../../scripts/verify-client-ui-i18n.ts)（文案归属）。
 

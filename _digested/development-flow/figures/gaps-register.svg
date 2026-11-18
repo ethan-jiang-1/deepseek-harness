@@ -49,10 +49,10 @@
   <text x="656" y="464" font-size="11" fill="#92400e">把「最多的那一类」当成了「全部」</text>
 
   <rect x="40" y="490" width="900" height="70" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
-  <text x="56" y="512" font-weight="700" fill="#7f1d1d">⑥ 改过口径的规则，旧引文没有任何门禁能识别</text>
+  <text x="56" y="512" font-weight="700" fill="#7f1d1d">⑥ 改过口径的规则，旧引文的逐字门禁只覆盖 canon 标注引文</text>
   <text x="56" y="532" font-size="11" fill="#991b1b">「Every non-trivial change MUST add or update at least one Agent Note」已被 730bcc7c85 收窄为 only-for，旧文仍在四处被当现行规则引用</text>
-  <text x="56" y="550" font-size="11" fill="#6b7280">推翻它：出现校验「被引句子在目标当前内容里仍逐字存在」的门禁——哪怕只覆盖 AGENTS.md 与 .agents/notes/README.md</text>
+  <text x="56" y="550" font-size="11" fill="#6b7280">canon 标注引文已有 checkCanonQuotes 逐字门禁；其余语料与行号锚定引文仍无覆盖</text>
   <text x="700" y="512" font-weight="700" fill="#92400e">严重度 中</text>
-  <text x="700" y="532" font-size="11" fill="#92400e">门禁只验证「文件与行号存在」，</text>
-  <text x="700" y="550" font-size="11" fill="#92400e">从没验证「这句还是那个文件里的话」</text>
+  <text x="700" y="532" font-size="11" fill="#92400e">canon 标注引文已逐字校验；</text>
+  <text x="700" y="550" font-size="11" fill="#92400e">其余引文仍只验文件与行号存在</text>
 </svg>

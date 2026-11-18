@@ -4,8 +4,8 @@
  * Validates strict UTF-8 and one trailing LF for corpus text, relative
  * Markdown links and fragments, every SVG figure's XML and entities, the
  * catalog/file-tree bijection and generated coverage matrix, Markdown table
- * shapes, charter-copy equality, and the harness-idea claim register in
- * harness-idea/claims.json.
+ * shapes, charter-copy equality, canon evidence quotes against their cited
+ * repo files, and the harness-idea claim register in harness-idea/claims.json.
  */
 
 import { execFileSync } from 'node:child_process'
@@ -599,6 +599,82 @@ function checkRetiredTerms(files) {
   }
 }
 
+/**
+ * Canon evidence quotes must stay verbatim in their cited repo files. A quote
+ * marked 原文/译 in a GLOSSARY cell, or stated under 它怎么说 on a prose page,
+ * is split on ellipses and every fragment must be an exact substring of the
+ * cited target's current content. Ellipses mark truncation; no other
+ * normalization applies, so bold markers and link syntax inside a quote must
+ * be carried verbatim or the quote must be re-cut to a contiguous plain span.
+ * This is the narrow mitigation for the stale-citation gap: repo decoration
+ * drift (bold, links, punctuation) breaks a quote even when the target file
+ * and line still resolve.
+ */
+function checkCanonQuotes() {
+  const canonDir = resolve(corpusRoot, 'canon')
+  if (!existsSync(canonDir) || !statSync(canonDir).isDirectory()) return
+  const pairPattern = /「([^」]*)」|（\[([^\]]*)\]\(([^)]+)\)[^）]*）/g
+  const targetCache = new Map()
+
+  function targetContent(canonPath, linkPath) {
+    const target = resolve(dirname(canonPath), linkPath)
+    if (!pathInsideRepository(target)) return { error: `quote source escapes the repository: ${JSON.stringify(linkPath)}` }
+    if (!existsSync(target) || !statSync(target).isFile()) return { error: `quote source does not exist: ${JSON.stringify(linkPath)}` }
+    if (!targetCache.has(target)) targetCache.set(target, readFileSync(target, 'utf8'))
+    return { content: targetCache.get(target) }
+  }
+
+  function checkSegment(canonPath, line, segment) {
+    const pending = []
+    pairPattern.lastIndex = 0
+    for (const match of segment.matchAll(pairPattern)) {
+      if (match[1] !== undefined) {
+        pending.push(match[1])
+        continue
+      }
+      const linkPath = match[3]
+      const { content, error } = targetContent(canonPath, linkPath)
+      if (error !== undefined) {
+        report(canonPath, line, error)
+      } else {
+        for (const quote of pending) {
+          const fragments = quote.split(/…+/).map(fragment => fragment.trim()).filter(fragment => fragment.length >= 2)
+          if (fragments.length === 0) report(canonPath, line, `evidence quote has no checkable fragment: ${JSON.stringify(quote)}`)
+          for (const fragment of fragments) {
+            if (!content.includes(fragment)) {
+              report(canonPath, line, `evidence quote is not verbatim in ${JSON.stringify(linkPath)}: ${JSON.stringify(fragment)}`)
+            }
+          }
+        }
+      }
+      pending.length = 0
+    }
+    for (const quote of pending) {
+      report(canonPath, line, `evidence quote has no source link: ${JSON.stringify(quote)}`)
+    }
+  }
+
+  for (const entry of readdirSync(canonDir).sort()) {
+    if (!entry.endsWith('.md')) continue
+    const path = resolve(canonDir, entry)
+    const source = decodeText(path)
+    if (source === undefined) continue
+    const lines = source.split('\n')
+    for (let index = 0; index < lines.length; index += 1) {
+      const line = lines[index]
+      if (/^\s*\|/.test(line) && (line.includes('**原文**') || line.includes('**译**'))) {
+        for (const cell of line.split('|')) {
+          if (cell.includes('**原文**') || cell.includes('**译**')) checkSegment(path, index + 1, cell)
+        }
+      } else if (line.includes('**它怎么说**')) {
+        checkSegment(path, index + 1, line.split('**它怎么说**')[1])
+      } else if (line.includes('**原文**') || line.includes('**译**')) {
+        checkSegment(path, index + 1, line.split(/\*\*(?:原文|译)\*\*/)[1])
+      }
+    }
+  }
+}
+
 
 // 出处标记与 08-judgement-discipline.md 的出处分级表一致：本专题不使用外部
 // 资料作为证据，事实一律以 DSH 官方文件与基线为准。
@@ -953,7 +1029,10 @@ function checkCatalog(files) {
   for (const path of files) {
     if (extname(path) !== '.md') continue
     const rel = relative(corpusRoot, path)
-    if (rel === '00-index.md' || rel === 'CORPUS-CHARTER.md') continue
+    // Corpus-governance documents (index, charter, redesign plan) sit outside
+    // the topic catalog; round records live under _change_log/ (upstream syncs)
+    // and _coverage/ (corpus-self maintenance ledger).
+    if (rel === '00-index.md' || rel === 'CORPUS-CHARTER.md' || rel === 'REDESIGN.md') continue
     if (rel.startsWith('_change_log/') || rel.startsWith('_coverage/')) continue
     expected.set(path, rel)
   }
@@ -1035,17 +1114,26 @@ function checkCharterCopies() {
   }
 }
 
-/** Page-level baseline declarations are retired; the catalog owns the baseline. */
+/**
+ * Page-level baseline declarations are retired; the catalog owns the baseline.
+ * Two shapes are rejected: the labelled declaration (产品源码基线：/专题基线：)
+ * and a bare commit id presented as a baseline. Citation-time verification
+ * points are legitimate but must read 当时核验 (see harness-idea), so a
+ * baseline wording around a hex id is a second home for the one baseline fact.
+ */
 function checkBaselineDeclarations(files) {
   for (const path of files) {
     if (extname(path) !== '.md') continue
     const rel = relative(corpusRoot, path)
-    if (rel === '00-index.md' || rel === 'CORPUS-CHARTER.md') continue
+    if (rel === '00-index.md' || rel === 'CORPUS-CHARTER.md' || rel === 'REDESIGN.md') continue
     if (rel.startsWith('_change_log/') || rel.startsWith('_coverage/')) continue
     const lines = readFileSync(path, 'utf8').split('\n')
     for (let index = 0; index < lines.length; index += 1) {
       if (/(产品源码基线|专题基线)[：:]/.test(lines[index])) {
         report(path, index + 1, 'page-level baseline declaration is retired; register the page in catalog.json instead')
+      }
+      if (/基线\s*`?[0-9a-f]{7,40}/.test(lines[index])) {
+        report(path, index + 1, 'a commit id is presented as a baseline; call it 当时核验 (citation-time verification point) and keep the only baseline in catalog.json')
       }
     }
   }
@@ -1081,6 +1169,7 @@ checkBaselineDeclarations(files)
 claimRegister = checkClaimRegister()
 checkOrphanPages()
 checkRetiredTerms(files)
+checkCanonQuotes()
 
 if (failures.length > 0) {
   console.error(`_digested verification failed with ${failures.length} problem(s):`)

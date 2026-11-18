@@ -74,7 +74,7 @@ export function taskReady(state: TeamState, task: TeamTaskSnapshot): boolean {
 | workflow 用图灵完备代码而非 DAG DSL 的完整取舍记录（dynamic-workflows note 的 alternatives 节） | **已答**（下文「模型文本是数据」） |
 | 确定性/概率性边界与 harness-idea 专题的连接 | **已答**（下文 Kahn 对比末段） |
 | 外部 Kahn 与 DSH DFS 校验的形式化对比（线性化 vs 合法性、入度队列 vs 就绪过滤） | **已答**（下文「Kahn 与 DFS 的形式化对比」） |
-| ~~图视角下全部原语的统一重述~~ | **已答**（「Agent 是原子」节：Agent 视角与图视角的合并重述） |
+| 图视角下全部原语的统一重述 | 已答（「Agent 是原子」节：Agent 视角与图视角的合并重述） |
 
 ## 归属树的机械细节：一棵树的三种表示
 

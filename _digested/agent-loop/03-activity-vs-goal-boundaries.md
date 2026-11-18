@@ -62,7 +62,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 
 ## 崩溃恢复
 
-进程崩溃时，session log 里有 `turn/start` 但没有匹配的 `turn/end`。补 closer 的实现从「持久化协调器的职责」改成由两个消费点各自调用同一个可复用函数 `interruptedTurnClosers`（`packages/core/session/src/repair.ts:209`；该函数在 OLD 基线已存在，OLD 的调用点是 `git show a66e470204:packages/session/session-persistence/src/coordinator.ts` 第 1080 行），两侧各调一次：
+进程崩溃时，session log 里有 `turn/start` 但没有匹配的 `turn/end`。补 closer 由两个消费点各自调用同一个可复用函数 `interruptedTurnClosers`（`packages/core/session/src/repair.ts`），两侧各调一次：
 
 ```
 turn/start (turn=5)
@@ -98,7 +98,7 @@ Goal 与 Agent Loop 之间没有直接耦合：driver 不 import loop 内部，l
 5. `turn/end` — `max-tokens` 触发 disarm；`aborted` 把 claimed/admitted 的 attempt 标记 cancelled
 6. `agent/error` — 触发 disarm
 7. `agent/inbox/inserted` / `claimed` / `discarded` — competing / stale 簿记
-8. `agent/created`（session-start 边）— driver 在 `goal-round-driver/src/index.ts:268-273` 消费它，清空 `attempt` / `competingQueued` / `needsCheckpoint`，让新会话不从上一会话的调度残留里起步（事件由 `AgentRegistry.announce()` 串行发出，`packages/core/agent/src/index.ts:539-561`；旧名 `agent/session-start` 已随 0.1.7 线退役）
+8. `agent/created`（session-start 边）— driver 在 `goal-round-driver/src/index.ts:268-273` 消费它，清空 `attempt` / `competingQueued` / `needsCheckpoint`，让新会话不从上一会话的调度残留里起步（事件由 `AgentRegistry.announce()` 串行发出，`packages/core/agent/src/index.ts:539-561`）
 
 `goal/activation-changed` **不在这条清单里**：`GoalService.setActivation()` 在 activation 真正变化时广播的进程内事件（`goal/src/index.ts:495-516`），driver 不消费它；消费方是 Web goal bar（经 Remote 白名单转发，`packages/api/remotes/src/remote-events.ts:39`；订阅点 `packages/client/ui-goal/src/client/index.ts:125`）
 

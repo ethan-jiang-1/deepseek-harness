@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 320" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+  </defs>
+  <rect width="960" height="320" fill="#fafafa" rx="6"/>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一句话能不能以 DSH 的名义写：grep 判据</text>
+  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">canon 只收 DSH 说过的话。每条「原文」必须能在 repo 里原样搜到；搜不到就换写法或删掉。</text>
+
+  <rect x="30" y="80" width="180" height="70" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="120" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#111827">写下一句关于 DSH 的话</text>
+  <text x="120" y="128" text-anchor="middle" font-size="11" fill="#4b5563">机制、流程、或生态做法</text>
+  <line x1="210" y1="115" x2="248" y2="115" stroke="#4b5563" marker-end="url(#arr)"/>
+
+  <rect x="250" y="80" width="200" height="70" rx="8" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="350" y="108" text-anchor="middle" font-size="12" font-weight="700" fill="#1e40af">repo 里能逐字 grep 到吗？</text>
+  <text x="350" y="128" text-anchor="middle" font-size="11" fill="#2563eb">docs / README / AGENTS / 源码</text>
+
+  <line x1="450" y1="100" x2="508" y2="100" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="479" y="92" text-anchor="middle" font-size="11" fill="#166534">能</text>
+  <rect x="510" y="70" width="420" height="60" rx="8" fill="#dcfce7" stroke="#86efac"/>
+  <text x="720" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">标「原文」收进 canon；给中译时标「译」并附原文</text>
+  <text x="720" y="114" text-anchor="middle" font-size="11" fill="#15803d">这是唯一能推出 DSH 行为的一档</text>
+
+  <line x1="450" y1="135" x2="508" y2="165" stroke="#4b5563" marker-end="url(#arr)"/>
+  <text x="479" y="158" text-anchor="middle" font-size="11" fill="#9a3412">不能</text>
+  <rect x="510" y="145" width="420" height="60" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="720" y="169" text-anchor="middle" font-size="12" font-weight="700" fill="#9a3412">二选一：改写成「外部生态常说」并定级，或删掉</text>
+  <text x="720" y="189" text-anchor="middle" font-size="11" fill="#c2410c">外部说法只能证明「有人这么说」，不能推出 DSH 的行为</text>
+
+  <rect x="30" y="230" width="900" height="60" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="50" y="254" font-size="12" fill="#374151">本语料自己的分类、指标、阶梯、类比不进 canon——它们在自己的专题里定义，最多引用这里。</text>
+  <text x="50" y="276" font-size="12" fill="#374151">冲突时以 repo 为准：canon 的任何一条与 docs/glossary.md 或源码不一致，改 canon，不改 repo。</text>
+</svg>

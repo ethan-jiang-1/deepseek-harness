@@ -1,12 +1,12 @@
 # 02 — 哪些规则真的会红：三个 leaf 门禁的逐条规则
 
-> 本篇把 `.agents/notes/README.md` 的成文纪律翻译成**可执行的检查**：哪一条有红灯、红灯在什么条件下亮、哪一条只有一句话而没有检查。三个门禁都注册在 `doc-sync` 的 quick 组里（[`scripts/run-gates.ts:852-854`](../../scripts/run-gates.ts)）。
+> SDLC 管线的「机器执法」一页。对熟悉 CI 的读者，这三个门禁可以类比成 schema 校验：一个管**位置**（树形状），一个管**骨架**（正文结构），一个管**封印**（冻结层不可变）。它们都不读语义——判断「这条理由值不值得记」从来不在门禁的职责里。本篇把 `.agents/notes/README.md` 的成文纪律翻译成**可执行的检查**：哪一条有红灯、红灯在什么条件下亮、哪一条只有一句话而没有检查。三个门禁都注册在 `doc-sync` 的 quick 组里（[`scripts/run-gates.ts`](../../scripts/run-gates.ts) 的 `agent-note-classification` / `agent-note-format` / `archived-agent-notes` 三行）。
 
 ## 职责表
 
 | 门禁 | 管什么 | 相关文件 |
 | --- | --- | --- |
-| `verify-agent-note-classification` | 树的形状：生命周期闭集、class 闭集、目录深度、文件名格式、`INDEX.md` 禁令、旧路径禁令 | [`verify-agent-note-classification.ts`](../../scripts/verify-agent-note-classification.ts)（27 行）+ [`agent-note-tree.ts`](../../scripts/agent-note-tree.ts)（84 行） |
+| `verify-agent-note-classification` | 树的形状：生命周期闭集、class 闭集、目录深度、文件名格式、`INDEX.md` 禁令、旧路径禁令 | [`verify-agent-note-classification.ts`](../../scripts/verify-agent-note-classification.ts)（27 行）+ [`agent-note-tree.ts`](../../scripts/agent-note-tree.ts)（83 行） |
 | `verify-agent-note-format` | 每篇正文的骨架：头部四行、`Status:` 语法、必需章节、提案期禁行、Alternatives 强制、废标记禁令 | [`verify-agent-note-format.ts`](../../scripts/verify-agent-note-format.ts)（94 行） |
 | `verify-archived-agent-notes` | 冻结层：class 树、三件套完整性、归档元数据、sidecar 哈希、append-only 封印清单 | [`verify-archived-agent-notes.ts`](../../scripts/verify-archived-agent-notes.ts)（115 行）+ [`archived-agent-notes.ts`](../../scripts/archived-agent-notes.ts)（204 行） |
 

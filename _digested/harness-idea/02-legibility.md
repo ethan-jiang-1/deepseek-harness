@@ -12,13 +12,13 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 > A fiber is one loaded plugin instance: its lifecycle state, validated config, and registered effects. `ctx.fiber` is the current fiber, and `ctx.effect()` delegates to it.
 >
-> —— `docs/cordis-api/fiber.md:6`（基线 `687f282e86…`）
+> —— `docs/cordis-api/fiber.md:6`（当时核验 `687f282e86…`）
 
 这比「词汇表统一」更深一层：同一套原语贯穿工具、provider、策略、UI、loop，所以学会一个插件形状，就能在整棵树上迁移。
 
 > Domain vocabulary for DeepSeek Harness uses one canonical term per concept.
 >
-> —— `docs/glossary.md:5`（基线 `687f282e86…`）
+> —— `docs/glossary.md:5`（当时核验 `687f282e86…`）
 
 ## 机制二：一词一义，文档与代码没有翻译层
 
@@ -28,7 +28,7 @@ coding agent 与人类读者的关键差别，不是「完全不能问」——d
 
 > **Typed events use declaration merging** and merge-extensible maps. … `SessionEventMap` members are required-on-read unless the envelope carries `ignorable: true`. Bump `SESSION_FORMAT_VERSION` only when existing discriminators cannot prevent unsafe interpretation; same-version changes require safe reader behavior.
 >
-> —— `AGENTS.md:134`（基线 `687f282e86…`）
+> —— `AGENTS.md:134`（当时核验 `687f282e86…`）
 
 ## 机制三：合同外显为类型
 
@@ -49,7 +49,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 > Services declare event names through TypeScript declaration merging, then dispatch them as `emit`, `waterfall`, `parallel`, `serial`, or `bail` depending on whether listeners observe, wrap, fan out, run in order, or stop at the first bail value.
 >
-> —— `docs/cordis-primer.md:12`（基线 `687f282e86…`）
+> —— `docs/cordis-primer.md:12`（当时核验 `687f282e86…`）
 
 ## 机制五：结构同构，生成目录不漂移
 
@@ -58,7 +58,7 @@ agent 在陌生代码库里最贵的操作是回答「**这段代码放哪**」�
 
 > Package READMEs document model, token, and KV-cache effects using the canonical Model Experience format.
 >
-> —— `packages/AGENTS.md:28`（基线 `687f282e86…`）
+> —— `packages/AGENTS.md:28`（当时核验 `687f282e86…`）
 - 目录（`tool-catalog`、`config-catalog`、`persistence-catalog`、`module-graph`、`graph-atlas`、`event-producer-consumer`、`capability-seams`、`cordis-api`）全部**从源码生成、freshness-gated**：读文档就是读代码。
 
 手抄目录是文档漂移的源头。dsh 把「目录」交给生成器，「目录」就不再是知识负担，而是索引。生成器同时也是「合同面被机器消费」的第一个实例：机器读，所以漂移当场断掉。
@@ -95,13 +95,13 @@ coding agent 的真实约束不只有「读不读得懂」，还有**上下文�
 
 > **Pairs update together**: Terminology-guided, single-pass active-agent work repositions first-use annotations, preserves untouched prose, and re-records; `dsh-translate-docs` remains user-invoked.
 >
-> —— `docs/AGENTS.md:45`（基线 `687f282e86…`）
+> —— `docs/AGENTS.md:45`（当时核验 `687f282e86…`）
 
 `verify-doc-budgets` 把字数预算钉成门禁。可读性因此来自组织，不来自把系统做小；正确读法是查表，不是通读。
 
 > **Document current state.** Keep history in commits, PRs, Agent Notes, postmortems, or scoped persistence records. Other prose names live mechanisms, not changes or stack positions.
 >
-> —— `docs/AGENTS.md:40`（基线 `687f282e86…`；原句首为 "Document current state, not change history" 的旧版措辞已在本次跨度内改写）
+> —— `docs/AGENTS.md:40`（当时核验 `687f282e86…`；原句首为 "Document current state, not change history" 的旧版措辞已在本次跨度内改写）
 
 ## 可读 ≠ 简单
 

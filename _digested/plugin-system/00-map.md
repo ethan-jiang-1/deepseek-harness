@@ -6,6 +6,8 @@
 
 ## 三个轴
 
+![插件系统的三个轴：有什么 / 怎么变成活树 / 怎么走完一生](./figures/three-axes.svg)
+
 | 轴 | 回答的问题 | 入口 | 什么时候读 |
 |---|---|---|---|
 | **composition** | 一份 profile 怎么叠成运行中的插件树；dump 保真、HMR、启动窗口、首屏交接 | [`composition/00-map.md`](./composition/00-map.md) | 要改启动行为、要理解「装了为什么没生效」 |

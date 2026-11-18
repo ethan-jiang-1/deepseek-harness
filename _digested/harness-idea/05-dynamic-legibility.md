@@ -18,7 +18,7 @@
 
 静态索引只覆盖源码平面；运行时可能还有临时插件、pending fiber、实际服务提供者（service provider）。[`2026-07-08-self-referential-cordis-toolset`](../../.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md)（已归档，历史快照）给了模型一组**只读**的 inspect 工具——注意该 note 早期版本里列的名字（cordis_inspect、cordis_mount、cordis_unmount）已经过期，0.1.7 线（#4745）起只注册两个只读名字：`cordis_inspect_list`、`cordis_inspect_query`（`packages/extensions/tool-cordis/src/index.ts:23,42`；`docs/tool-catalog.md`），变更类工具退役、持久安装归 plugin_manager（详见下文试验面一节）。
 
-两个只读工具各有分工：`cordis_inspect_list` 列当前有哪些 Provider 与插件；`cordis_inspect_query` 按 `platform`（host / client）+ `provider` + `method`（+ 可选 `input`）向某个 Provider 的 manifest 方法发起**参数化查询**（两工具的注册与分工，`packages/extensions/tool-cordis/src/index.ts:23,42`）。~~旧 `cordis_inspect_self`（列全部 Plugin / 返回源码与诊断）~~（0.1.7 线随 #4745 收缩退役；名字只残留在 slot-catalog 帮助文案与 UI 测试的旧 key 清单里）。旧版那种「一次调用列出 `plugins`/`services`/`tools`/`api`/`events`/`temporary` 各节」的单一 `cordis_inspect` 已不存在。
+两个只读工具各有分工：`cordis_inspect_list` 列当前有哪些 Provider 与插件；`cordis_inspect_query` 按 `platform`（host / client）+ `provider` + `method`（+ 可选 `input`）向某个 Provider 的 manifest 方法发起**参数化查询**（两工具的注册与分工，`packages/extensions/tool-cordis/src/index.ts:23,42`）。**负知识**：没有「一次调用列出全部 `plugins`/`services`/`tools`/`api`/`events`/`temporary` 各节」的单一 inspect 工具，也没有列全部 Plugin 并返回源码的 `cordis_inspect_self`——运行时自省被收缩成上面两条按 Provider 参数化查询的原语。
 
 它服务的 API 目录不是手写表，而是由源码生成、freshness-gated 的 catalog（`pnpm run verify-cordis-catalog`，`doc-sync` 的一员），运行时再与 live runtime 求交集。**读者不是只能读文档，还能问系统「现在有什么、签名是什么」。**
 
@@ -36,7 +36,7 @@
 
 > The vm prevents accidental global pollution; injected filesystem, shell, and network services still have real authority, so it is not a security boundary.
 >
-> —— `.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md:16`（已归档，历史快照；基线 `687f282e86…`；该 note 已被上游整篇重写为 "Cordis runtime inspection and runner isolation"，与两工具现状对齐，0007 登记的脱节缺口随之关闭）
+> —— `.agents/notes/archived/feature/2026-07-08-self-referential-cordis-toolset.md:16`（已归档，历史快照；当时核验 `687f282e86…`；该 note 已被上游整篇重写为 "Cordis runtime inspection and runner isolation"，与两工具现状对齐，0007 登记的脱节缺口随之关闭）
 
 `[原文]` 同时要记住它是 **opt-in、bash-equivalent trust**：能自动 install 与「可信」是两件事，这条面也不应进默认产品组合。
 
@@ -52,11 +52,11 @@
 
 > **Model-visible means logged.** Every model request must be reconstructable from the log. New model-visible inputs require session events.
 >
-> —— `docs/architecture.md:124`（基线 `687f282e86…`；`0.1.7-rc.1` 线上的后续句 "and a runtime invariant asserts it" 已随机制退役删除）
+> —— `docs/architecture.md:124`（当时核验 `687f282e86…`；`0.1.7-rc.1` 线上的后续句 "and a runtime invariant asserts it" 已随机制退役删除）
 
 > The loop builds each request from logged state. `EpochHeader` records call config, ... and records the authoritative returned tool order ... through full `request/header` snapshots. The rendered prompt is derived history — the `system/message` at surface node 0, plus any later system node an `in-history` route appended — so the header and the derived history together make the request reconstructable from the session log.
 >
-> —— `docs/subsystems/llm-streaming.md:761`（基线 `687f282e86…`）
+> —— `docs/subsystems/llm-streaming.md:761`（当时核验 `687f282e86…`）
 
 ## 结论
 

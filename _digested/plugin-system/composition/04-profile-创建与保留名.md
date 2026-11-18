@@ -12,9 +12,9 @@ profile 目录不是手写的：五个 shipped 名首次使用自动建，自定
 | `--from-default-profile <模板>` | launcher 父选项（boot 与 dump 都认） | 复制 `<模板>` 的 bundles |
 | `dsh plugin --profile <name> …` | 缺 `package.json` 时先初始化 | shipped 名取模板，否则 `DEFAULT_PROFILE_BUNDLES`（只 `@deepseek-ai/dsh-base`） |
 
-三条路径最终都落到 `initProfile`（`packages/boot/app-boot/src/profile.ts:262-281`）：写 `package.json`（`dsh.profile.bundles`、空 `dependencies`）、空 `cordis.patch.yml`（内容就是模板注释加 `[]`）、hoisted 的 `pnpm-workspace.yaml`。已有文件一律不覆盖。（~~旧表里的 `patchReload` 列~~——0.1.7 线该字段连同 `DEFAULT_PROFILE_PATCH_RELOAD` 一起删除：manifest 只剩 bundle 列表，patch 重载改由 `hmr` 插件按 `profileContext` 门控承担，见 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)。）
+三条路径最终都落到 `initProfile`（`packages/boot/app-boot/src/profile.ts:262-281`）：写 `package.json`（`dsh.profile.bundles`、空 `dependencies`）、空 `cordis.patch.yml`（内容就是模板注释加 `[]`）、hoisted 的 `pnpm-workspace.yaml`。已有文件一律不覆盖；manifest 只含 bundle 列表——patch 重载由 `hmr` 插件按 `profileContext` 门控承担，见 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)。
 
-`PROFILE_TEMPLATES` 仍是那五个、内容仍是 bundle-only（`packages/boot/app-boot/src/profile.ts:179-195`）：`acp`、`web`、`headless`、`sdk`、`sdk-minimal`。rc.1 没有增删改名，新增的是从模板**派生**自定义 profile 的选项；另有 `OPTIONAL_BUNDLES`（12 条，`profile.ts:223-236`）：`session-search`、`ralph-bundle`、`terminal-bundle`、`badge-skill-bundle`、`session-titles-bundle`、`agent-team-profile`、`voice-input-bundle`、`cot-translation-bundle`、`auto-review`、`inspector-profile`、`plugin-market-bundle`、`tool-worktree`；它们随安装出货、默认关断，由插件管理面逐条开关。0009 时的 `schedule-bundle` 已退役（`RETIRED_BUNDLES`，`profile.ts:206-210`），Schedule 改为直接进 Web 组合（见 [`../../runtime-profiles/01-web.md`](../../runtime-profiles/01-web.md)）。与它并列的还有另一个档位 `ON_DEMAND_BUNDLES`（`packages/boot/app-boot/src/official-bundle-packages.ts`，2 条：`subagent-claude-code`、`subagent-codex`）——按需安装，不随安装出货。
+`PROFILE_TEMPLATES` 五个模板均为 bundle-only（`acp` / `web` / `headless` / `sdk` / `sdk-minimal`；清单与各 profile 差异的家在 [`../../runtime-profiles/00-map.md`](../../runtime-profiles/00-map.md)）；从模板**派生**自定义 profile 用 `--from-default-profile`。可安装能力分两个档位：`OPTIONAL_BUNDLES` 随安装出货、默认关断（成员清单的家在 [`../../experimental/00-map.md`](../../experimental/00-map.md)）；`ON_DEMAND_BUNDLES` 按需安装（机制见 [`../../capability-seams/03-subagent后台与产品provider.md`](../../capability-seams/03-subagent后台与产品provider.md)）。已退役的 bundle 由 `RETIRED_BUNDLES` 登记（如 `schedule-bundle`；Schedule 现直接进 Web 组合）。
 
 ## `--from-default-profile`：原子替换一次，然后独立
 
@@ -54,7 +54,7 @@ dsh --profile rescue --from-default-profile web --dump-config
 - 根命令 action（`apps/cli/src/args.ts:183`）——同时覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`。
 - `plugin` 子命令（`apps/cli/src/args.ts:199`）——CLI 不能 `pnpm add` 进这个 profile。
 
-装载路径也不一样：desktop 不走 `loadProfile` 的 Harness home 发现与 shipped 归一化，而是走 `loadProfileDirectory` + 共享的 `runProfile`（[`../../runtime-profiles/06-desktop.md`](../../runtime-profiles/06-desktop.md)；0.1.7 线起 desktop-host 经 `runProfile` 起完整 web 应用）。`--from-default-profile` 与它无关——它只认五个 shipped 模板名；`initializeProfileFromDefault` 对 `desktop` 目标名报「shipped and cannot be a custom profile target」同款错误语义，CLI 入口则更早被 `rejectElectronProfile` 拦下。
+装载路径也不一样：desktop 不走 `loadProfile` 的 Harness home 发现与 shipped 归一化，而是走 `loadProfileDirectory` + 共享的 `runProfile`（[`../../runtime-profiles/06-desktop.md`](../../runtime-profiles/06-desktop.md)：desktop-host 经 `runProfile` 起完整 web 应用）。`--from-default-profile` 与它无关——它只认五个 shipped 模板名；`initializeProfileFromDefault` 对 `desktop` 目标名报「shipped and cannot be a custom profile target」同款错误语义，CLI 入口则更早被 `rejectElectronProfile` 拦下。
 
 ## 源码入口
 
@@ -71,7 +71,7 @@ dsh --profile rescue --from-default-profile web --dump-config
 
 ## launcher 的父选项归属
 
-launcher 参数在 0.1.7 线改为 **positional 直通**：解析器把首个非 flag、非 `plugin` 的 positional 展开成 `['--profile', ...argv]`（`apps/cli/src/args.ts:206-208`），旧 `rejectParentOptions` / `allowUnknownOption` 机制已不存在。因此 `dsh web --from-default-profile x` 现在被**接受**为 launcher 选项（与直通前 `apps/cli/tests/args.spec.ts` 钉过的 pass-through 语义相反方向），而 `dsh --from-default-profile x web` 在解析期报 `--profile <name> is required`（flag 出现在 positional 展开之前、没有显式 `--profile` 可绑定）。两种拼写的效果差异以 `parseDshArgs` 的实际展开为准，写脚本时显式用 `--profile <name> --from-default-profile <模板>` 最稳。
+launcher 参数支持 **positional 直通**：解析器把首个非 flag、非 `plugin` 的 positional 展开成 `['--profile', ...argv]`（`apps/cli/src/args.ts` 的 `parseDshArgs`）。因此 `dsh web --from-default-profile x` 被接受为 launcher 选项，而 `dsh --from-default-profile x web` 在解析期报 `--profile <name> is required`（flag 出现在 positional 展开之前、没有显式 `--profile` 可绑定）。两种拼写的效果以 `parseDshArgs` 的实际展开为准，写脚本时显式用 `--profile <name> --from-default-profile <模板>` 最稳。
 
 ## 自证配方
 

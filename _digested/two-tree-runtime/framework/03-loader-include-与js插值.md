@@ -58,7 +58,7 @@ Loader 在 `internal/config` 上挂了全局监听器：先 `next()` 拿到下�
 
 ## Include 内部的串行化（applyQueue 已删除，现存 writeQueue）
 
-~~Group 的事务性 `update` 不可重入；Include 把初始 apply、refresh、HMR 触发的再 apply 全部经 `applyQueue` 串行~~（0.1.7 线事务重载退役，`applyQueue` 已从 include 源删除；本段留作机制记录，编号所指的旧「第 12 条」现指向 activation observer——`vendor/loader/src/config/entry.ts` 的 detached `Entry.init()` 完成观察者，两种结局都处理、fiber 保留激活错误供显式审计）。现存的串行点是**持久化写队列**：`writeQueue`（`vendor/include/src/index.ts:176`，`:323-328` 的链式 `then`）把配置文件的防抖写串起来、瞬时可重试、终态失败由 `Include.stop()` 重抛（vendor 清单第 14 条）。HMR 的模块替换与配置刷新改由产品侧 `packages/boot/hmr` 的同一条操作队列串行（见 [`../plugin-system/composition/03-user-patch-hmr.md`](../../plugin-system/composition/03-user-patch-hmr.md)），不再依赖 include 内部的 apply 队列。
+Include 的激活没有事务性重放：`vendor/loader/src/config/entry.ts` 的 detached `Entry.init()` 完成观察者处理两种结局、fiber 保留激活错误供显式审计。现存的串行点是**持久化写队列**：`writeQueue`（`vendor/include/src/index.ts:176`，`:323-328` 的链式 `then`）把配置文件的防抖写串起来、瞬时可重试、终态失败由 `Include.stop()` 重抛（vendor 清单第 14 条）。HMR 的模块替换与配置刷新改由产品侧 `packages/boot/hmr` 的同一条操作队列串行（见 [`../plugin-system/composition/03-user-patch-hmr.md`](../../plugin-system/composition/03-user-patch-hmr.md)），不再依赖 include 内部的 apply 队列。
 
 ## 和 composition 专题的分工
 

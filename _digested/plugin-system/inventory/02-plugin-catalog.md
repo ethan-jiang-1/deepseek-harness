@@ -1,6 +1,6 @@
-# 02 · 插件货架：343 包逐组图鉴
+# 02 · 插件货架：逐组图鉴
 
-快照式清单；核验状态见 [`catalog.json`](../../catalog.json)，覆盖矩阵由它生成。组序与 [`packages/README.md`](../../../packages/README.md) 一致。总量：343 包、52 个包组（含 experimental）。
+快照式清单；核验状态见 [`catalog.json`](../../catalog.json)，覆盖矩阵由它生成。组序与 [`packages/README.md`](../../../packages/README.md) 一致。**全局总量不在此手抄**——以 `harness-idea/claims.json` 的 `package-total` 与 `package-group-total` 指标为准（由 `verify.mjs` 对基线重算）。
 
 枚举口径是深度精确的 `^packages/[^/]+/[^/]+/package\.json$`（`_digested/verify.mjs` 的 `gitPackageOwners`）；`Config` 列是该包声明式配置的顶层字段数，取自生成目录 [`docs/config-catalog.md`](../../../docs/config-catalog.md)。
 

@@ -17,9 +17,9 @@ CLI、headless、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`
 | **Web** | host 半边（API / HTTP）+ browser 半边（壳、wire、slots、`ui-*`） | `dsh-base` + `dsh-web-app` |
 | **ACP** | 自动化用的 Agent Client Protocol 服务器 | `dsh --profile acp`（launcher profile） |
 | **JSON-RPC SDK** | 进程外协议、TS client、树上的 server 插件 | `dsh --profile sdk` 或 `sdk-minimal` |
-| **Desktop** | Electron 壳 + 私有 host 子进程，复用 Web 的 client 产物与完整 web 应用（webserver 以 `--host 127.0.0.1 --port 0` 启动、端口由 OS 分配，认证 URL 交给窗口） | `dsh-base` + `dsh-web-app`（经 desktop-host 的 `runProfile`；0.1.7 线起，~~私有 `desktop.cordis.patch.yml` 覆盖层~~已退役） |
+| **Desktop** | Electron 壳 + 私有 host 子进程，复用 Web 的 client 产物与完整 web 应用（webserver 以 `--host 127.0.0.1 --port 0` 启动、端口由 OS 分配，认证 URL 交给窗口） | `dsh-base` + `dsh-web-app`（经 desktop-host 的 `runProfile`，无应用私有覆盖层） |
 
-**产品入口是 6 个，`dsh` launcher profile 仍是 5 个**（`web` / `headless` / `sdk` / `sdk-minimal` / `acp`，`packages/boot/app-boot/src/profile.ts:179-195` 的 `PROFILE_TEMPLATES`），两组不一一对应：CLI 是 bin 不是 profile，Desktop 是应用不是 profile，而 Headless 同时是入口和 profile。headless 的 profile 组合与一次性语义见 [`../runtime-profiles/02-headless.md`](../runtime-profiles/02-headless.md)，桌面见 [`03-桌面入口.md`](./03-桌面入口.md)。
+**产品入口是 6 个，`dsh` launcher profile 仍是 5 个**（`web` / `headless` / `sdk` / `sdk-minimal` / `acp`；模板清单与各 profile 差异的家在 [`../runtime-profiles/00-map.md`](../runtime-profiles/00-map.md)），两组不一一对应：CLI 是 bin 不是 profile，Desktop 是应用不是 profile，而 Headless 同时是入口和 profile。headless 的 profile 组合与一次性语义见 [`../runtime-profiles/02-headless.md`](../runtime-profiles/02-headless.md)，桌面见 [`03-桌面入口.md`](./03-桌面入口.md)。
 
 ![入口与 launcher profile 是两套计数](./figures/entry-surfaces-count.svg)
 
@@ -27,7 +27,7 @@ CLI、headless、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`
 
 桌面是唯一不经 `dsh` CLI 启动的产品面：`dsh --profile desktop` 被 `apps/cli/src/args.ts:83` 的 `rejectElectronProfile()` 显式拒绝（大小写变体一并拦下；boot / dump 入口恒拒，`plugin` 子命令仅 Desktop 自带 carrier 以 `manageDesktopProfile` 放行，见 [`03-桌面入口.md`](./03-桌面入口.md)），上游文档也把它从 `## Application launch`（`docs/architecture.md:41-47`）分到 `## Desktop application`（`:49-53`，其中 `:53` 明写 Desktop 默认监听 OS 分配的端口、配置可覆盖）。把桌面与前五个入口并列算作第 6 个入口是语料的口径选择，不是上游文档的原话。
 
-加 UI 或编辑器集成：驱动 `ctx.agents`，从 `session/event` 渲染。加 Web Chat 节点：注册 `ConversationNodeDefinition` + keyed renderer。加 Web 设置卡：按 0.1.7 线的 live configuration forms 机制——Config schema 声明 live 字段、跨插件贡献走 `plugins.detail.actions`/`badge`/`section` slots、companion 包经 `ctx.configForms.whileServed` 注册（旧 `installSection`/`settings.plugin.item` 已删），见 [`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md)。加右栏内容类型：声明资源协议 + 注册 provider + keyed `sidebar.right.pane.tab`，见 [`two-tree-runtime/client/view/03`](../two-tree-runtime/client/view/03-右栏-与-document-preview.md)。不要在入口里再实现一套 loop。
+加 UI 或编辑器集成：驱动 `ctx.agents`，从 `session/event` 渲染。加 Web Chat 节点：注册 `ConversationNodeDefinition` + keyed renderer。加 Web 设置卡：走 live configuration forms——Config schema 声明 live 字段、跨插件贡献走 `plugins.detail.actions`/`badge`/`section` slots、companion 包经 `ctx.configForms.whileServed` 注册，见 [`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md)。加右栏内容类型：声明资源协议 + 注册 provider + keyed `sidebar.right.pane.tab`，见 [`two-tree-runtime/client/view/03`](../two-tree-runtime/client/view/03-右栏-与-document-preview.md)。不要在入口里再实现一套 loop。
 
 源码启动（`pnpm dsh`）把 workspace 包映射到 TypeScript 源；它碰到的模块必须保持 ESM。built 路径则是普通 Node 解析。两条启动面不要混着假设。
 
@@ -74,7 +74,7 @@ CLI、headless、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`
 |------|------|
 | [`01-启动面与session流.md`](./01-启动面与session流.md) | tsx ESM vs `lib/bin.js`；三条启动面与 `bin.ts` 的分发；headless 一次性入口的输出契约；session 流与认证的正文在 `two-tree-runtime/remote` |
 | [`02-acp与jsonrpc.md`](./02-acp与jsonrpc.md) | ACP 只把 committed 事实表达成标准语义更新；SDK 推 Context 内全部耐久事实 |
-| [`03-桌面入口.md`](./03-桌面入口.md) | Electron 壳 + 私有 host；desktop-host 经 `runProfile` 起完整 web 应用（`127.0.0.1` 上由 OS 分配端口的认证 URL，0.1.7 线起；~~dsh-app 分帧字节管道~~已退役）；打包与更新 |
+| [`03-桌面入口.md`](./03-桌面入口.md) | Electron 壳 + 私有 host；desktop-host 经 `runProfile` 起完整 web 应用（`127.0.0.1` 上由 OS 分配端口的认证 URL）；`dsh-app://` 载体、认证与打包更新 |
 
 客户端的资源模型、右栏、slots 与 Typert/Remote 不在本卷：正文在 [`../two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) 与 [`../two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md)。本卷只保留「人从哪个入口进来、进来之后怎么启动」这条线。
 

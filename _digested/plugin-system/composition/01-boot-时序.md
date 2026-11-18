@@ -12,7 +12,7 @@
 
 `runProfile` 做五件事，再把树交给插件自己过一辈子（或一次性 runner 自己退出）：
 
-0. `installProxyFromEnvironment`：在任何行 mount **之前**按启动环境快照装进程级出网代理（`apps/cli/src/profile-boot.ts:276-279`，dispose 在 shutdown 链 `:283-290`）。Node 内建 `fetch` 自己不看 `HTTP_PROXY`，不装就每个 profile 都直连；从 launcher 快照而非 `process.env` 解析，`.env` 层里声明的代理才生效。它不是 patch 层，`--dump-config` 里没有。desktop-host 经 `runProfile` 起树，所以桌面同样被这条路覆盖（0.1.7 线起「桌面不走代理」的旧分歧已不存在）。
+0. `installProxyFromEnvironment`：在任何行 mount **之前**按启动环境快照装进程级出网代理（`apps/cli/src/profile-boot.ts:276-279`，dispose 在 shutdown 链 `:283-290`）。Node 内建 `fetch` 自己不看 `HTTP_PROXY`，不装就每个 profile 都直连；从 launcher 快照而非 `process.env` 解析，`.env` 层里声明的代理才生效。它不是 patch 层，`--dump-config` 里没有。desktop-host 经 `runProfile` 起树，所以桌面同样被这条路覆盖。
 1. `composeProfile`：**先算 runtime resolution**（`composeProfile` 第一步 `await createRuntimeResolution(...)`）、加载 profile、叠层、加 launcher 派生补丁。
 2. `installFailLoud`：后挂失败时先报错、再还终端、再 `exit(1)`。
 3. `boot(NAME, rootConfig, structuredClone(allPatches), prepare)`；`prepare` 里 `provide('profileContext')`、启动环境快照与 `PluginPackages`（resolution 交给解析拦截层）。
@@ -26,9 +26,9 @@
 
 原因：Loader 的树写回会把已经组合好的行烤进这个文件。下次再当根 include，bundle 的 `insert` 会插第二遍。dump 也锚定同一份空文件，boot 和 dump 才共用同一个 base。
 
-## 模块解析：runtime-resolution 拦截层（0.1.7 线起）
+## 模块解析：runtime-resolution 拦截层
 
-~~`healProfilesModuleFallback` 在 `composeProfile` 内把安装闭包 BFS 链到 `$DSH_HOME/profiles/node_modules`~~（0.1.7 线退役，全仓 src 无此符号；0.1.5 的 `.dsh-module-fallback` link 投影由 `removeLinkProjections` 在装载期清除，`packages/boot/app-boot/src/profile.ts:293-300`）。现机制是**解析拦截**，不写任何文件：`composeProfile` 先经 `createRuntimeResolution`（`profile.ts:449-482`，入参 `installAnchor` + profile）算出一份不可变的 `RuntimeResolution`，随 `composed.resolution` 交给 boot 后由 `PluginPackages` 服务装到 Node 的 ESM + CJS 解析器上（`packages/boot/app-boot/src/profile-resolution/resolver.ts` 的 `installRuntimeInterception`）。解析顺序：profile 本地 `node_modules` 命中优先，其次是安装锚（installation manifest 的 deps+peers 闭包，`collectInstallationScopePackages`），再按声明者位置找 linked root（profile `node_modules` 下指向共享树之外的 symlink，`linkedProfileRoots`）；missing peer（cordis 等）也由这层补齐，全部插件共享同一解析结果。bundle 解析仍是**安装锚点优先**，列出的包没有 `dsh.bundle` 声明 → fail loud，不会默默跳过。
+残留的 `.dsh-module-fallback` link 投影由 `removeLinkProjections` 在装载期清除（`packages/boot/app-boot/src/profile.ts`）。模块解析机制是**解析拦截**，不写任何文件：`composeProfile` 先经 `createRuntimeResolution`（`profile.ts:449-482`，入参 `installAnchor` + profile）算出一份不可变的 `RuntimeResolution`，随 `composed.resolution` 交给 boot 后由 `PluginPackages` 服务装到 Node 的 ESM + CJS 解析器上（`packages/boot/app-boot/src/profile-resolution/resolver.ts` 的 `installRuntimeInterception`）。解析顺序：profile 本地 `node_modules` 命中优先，其次是安装锚（installation manifest 的 deps+peers 闭包，`collectInstallationScopePackages`），再按声明者位置找 linked root（profile `node_modules` 下指向共享树之外的 symlink，`linkedProfileRoots`）；missing peer（cordis 等）也由这层补齐，全部插件共享同一解析结果。bundle 解析仍是**安装锚点优先**，列出的包没有 `dsh.bundle` 声明 → fail loud，不会默默跳过。
 
 ## 层列表：用户层之上还有 launcher 派生
 
@@ -46,7 +46,7 @@ bundle patches（dsh.profile.bundles 声明顺序）
 
 `resolveTelemetryPatch`：环境变量**任意非空**（含 `'0'` / `'false'`）都关掉。组合里没有 `session-telemetry-otel` 这一行就不生成补丁。隐私开关宁可误关，不误开。
 
-**（0.1.7 线重写）** shipped preset root 机制已随 preset 声明式重设计退役：shipped presets 改由 bundle 携带（`packages/bundle/web-app/presets/*.patch.yml`），`agent-preset` 包不再有 `SHIPPED_PRESET_ROOT` / `includeShippedRoot` / `USER_PRESET_DIR` 的 discovery 常量；用户侧声明进 profile YAML。此段保留 0.1.5 线机制的原文记录。
+shipped presets 由 bundle 携带（`packages/bundle/web-app/presets/*.patch.yml`），没有独立的 preset root discovery；用户侧声明进 profile YAML。preset 重设计的迁移记录见 [`../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md)。
 
 ## `boot()` 本身
 

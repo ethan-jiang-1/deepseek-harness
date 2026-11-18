@@ -6,11 +6,11 @@
 
 组合差异（bundle 行、工具面、stdout 归属）见 [`../runtime-profiles/03-sdk.md`](../runtime-profiles/03-sdk.md) 与 [`05-acp.md`](../runtime-profiles/05-acp.md)；本页只写对调用方的协议保证。
 
-下面两节的保证清单沿用上一轮的页面记录，逐条锚点以当前树为准；SDK 的请求面是 7 个（见下），ACP 的方法面与能力广告以 `packages/acp/acp/README.md` 为准。
+SDK 的请求面是 `initialize` / `session/prompt` / `session/resume` / `session/wait` / `session/working-directory` get 与 set / `shutdown`；ACP 的方法面与能力广告以 `packages/acp/acp/README.md` 为准。
 
 ## ACP：自动化适配器，不是 IDE
 
-`dsh-acp` 在 stdio 上用 `createAcpAgentApp(...).onRequest(...).connect(stream)` 接线（@agentclientprotocol/sdk 1.4.0；`packages/acp/acp/src/index.ts:382-395`，stdout/stdin 经 `ndJsonStream` 接线 `:378-381`），驱动 `ctx.agents`。stdout 只给协议帧。它**不是** UI 集成，也不是 capability seam。
+`dsh-acp` 在 stdio 上用 `createAcpAgentApp(...).onRequest(...).connect(stream)` 接线（`@agentclientprotocol/sdk`，版本见 `packages/acp/acp/package.json`；`packages/acp/acp/src/index.ts`，stdout/stdin 经 `ndJsonStream` 接线），驱动 `ctx.agents`。stdout 只给协议帧。它**不是** UI 集成，也不是 capability seam。
 
 **保证：**
 
@@ -27,7 +27,7 @@
 
 - 删除、fork、`session/load`（transcript replay）。`session/resume` 恢复持久 log 但不重放旧 update。
 - 音频、embedded resources、非空 `additionalDirectories`。图像仅 PNG / JPEG / WebP / GIF，且依赖 attachment store 与声明了 image input 的精确 route。
-- 把 raw provider delta（`assistant/chunk`）、retry attempt 或 DSH 展示面（plan、title、todo、terminal、编辑器导航）打到线上。线上只有 committed 事实的语义投影，raw chunk 另有 process-local 的 `agent/assistant-stream` 帧不落盘，走别的入口观察。
+- 把逐 token 的 provider delta、retry attempt 或 DSH 展示面（plan、title、todo、terminal、编辑器导航）打到线上。线上只有 committed 事实的语义投影；实时 delta 另有 process-local 的 `agent/assistant-stream` 帧不落盘，走别的入口观察。
 - prompt 级的 turn 结局。操作区间从 prompt 进入 inbox 起到 idle 与输出投递都静默；`max-tokens` 映射为 `max_tokens`（`packages/acp/acp/src/codec.ts:18-19`），其余终止原因按 `turnEndToStopReason` 映射；相关模型错误也在同一静默边界才拒 prompt。
 - 编辑器导航、commands、modes、elicitation 等交互式 UI surfaces。
 
@@ -57,7 +57,7 @@
 
 Python SDK（`python/sdk`）是同一 stdio JSON-RPC wire 的第二个官方客户端：它镜像 `packages/sdk/protocol` 的消息 shapes 而不 import TypeScript 包，并由 `python/sdk-runtime` 打包同版本的 `dsh` CLI、以 `--profile sdk` 启动。本页只讲 server 侧的投影，客户端形态见 [`python/sdk/README.md`](../../python/sdk/README.md)。
 
-SDK 是无过滤透传层，线上词汇表由 session 格式决定（`SESSION_FORMAT_VERSION` 现值 `4`，`packages/core/session/src/types.ts:90`）：`assistant/chunk` 已归零、`assistant/message` 内嵌 `data.stream`，并新增 `assistant/attempt` / `system/message` / `feedback/*` / `command/*` / `tool/ptc-dispatch*`。那是 session-format 专题的事实，这里只记它由 SDK 透传。
+SDK 是无过滤透传层，线上词汇表由 session 格式决定（写者版本与事件词表的家：[`../session-and-loop/04-格式世代与迁移.md`](../session-and-loop/04-格式世代与迁移.md)）；本页只记它由 SDK 透传。
 
 ## 对照
 

@@ -23,14 +23,14 @@
 | `ctx.userQuestions` | 0 | 1 | interaction/user-questions | **零 Provider**：回答端在 Web 侧 |
 | `ctx.authorization` | 0 | 1 | credentials/authorization | **零 Provider**：凭据获取流（缺口清单） |
 | `ctx.sessionPersistence` | 1 | 7 | session/session-persistence | 单 Provider（JSONL），7 个消费方 |
-| `ctx.workingDirectory` | 1 | 6 | session/working-directory | 0.2.1 线新增：单 Session 执行目录投影 |
+| `ctx.workingDirectory` | 1 | 6 | session/working-directory | 单 Session 执行目录投影 |
 | `ctx.jobs` | 1 | 5 | jobs/jobs | 单 Provider，消费集中在 job 工具与 job Remote |
 | `ctx.attachments` | 1 | 4 | attachment/attachment | 单 Provider |
 | `ctx.credentials` | 1 | 3 | credentials/credentials | env-over-.env |
 | `ctx.deepseekAccount` | 1 | 2 | credentials/deepseek-account | 账号登录态 |
 | `ctx.sessionQuery` | 1 | 2 | session-query/session-query | 单后端（sqlite） |
 | `ctx.workflowEngine` | 1 | 2 | workflow/workflow | worker-thread 单引擎 |
-| `ctx.worktrees` | 1 | 1 | experimental/worktree | 0.2.1 线新增：Provider 与 Consumer 同族、显式实验组合 |
+| `ctx.worktrees` | 1 | 1 | experimental/worktree | Provider 与 Consumer 同族、显式实验组合 |
 | `ctx.mcpResources` | 1 | 1 | mcp/mcp-resources | 跨包：impl 在 `mcp-client`，consumer 在 `mcp-resources`（生成表 :624） |
 | `ctx.fileReferences` | 1 | 1 | context/file-reference | 跨包：impl 在 `file-reference-local`，consumer 在 `api-session-controller`（生成表 :667） |
 | `ctx.compaction` | 1 | 1 | compaction/compaction | 自消费 |
@@ -55,11 +55,11 @@
 | `ctx.web` | 5 | 1 | web/web | deepseek / http / exa / perplexity / deepseek-api |
 | `ctx.subagents` | 6 | 3 | subagent/subagent | in-process×2 / acp / codex / claude-code / dsh-sdk |
 
-P≥2 的 seam 换 Provider 不改调用方；P=0 与自消费（P、C 同包）是成熟度警戒信号——完整信号分析见 [`_faq_on_digested/08`](../../../_faq_on_digested/08_plugin-seam-maturity/answer.md)。可替换率 15/35 = 42.9%（上一轮 0009 复核为 15/33）。
+P≥2 的 seam 换 Provider 不改调用方；P=0 与自消费（P、C 同包）是成熟度警戒信号。可替换率 = 有 ≥2 个 Provider 或 P:C 齐全的 seam 数 / 全部 seam 数，逐行数据以本页表为准；成熟度信号分析见 [`_faq_on_digested/08`](../../../_faq_on_digested/08_plugin-seam-maturity/answer.md)。
 
 ## 3.2 模型可见工具 — 每个 profile 实际暴露什么
 
-33 个工具包的模型可见名以生成目录 [`docs/tool-catalog.md`](../../../docs/tool-catalog.md):18-50 的 Tool Package Map 为真源（2026-11-02 数得该表 33 行）；bundle 档位的声明源是 `packages/boot/app-boot/src/profile.ts:223`（随装出货、默认关）与 `packages/boot/app-boot/src/official-bundle-packages.ts:4`（按需安装）；base 层的工具面示例见 `packages/bundle/base/cordis.patch.yml:486`；preset 的声明式 patch 在 `packages/bundle/web-app/presets/`（`standard` / `ptc` / `minimal` 等），seam 的 P/C 机械提取见生成目录 `docs/capability-seams.md:614` 起的服务表；工具目录的入口表头在 `docs/tool-catalog.md:12`；下表按 bundle patch 行推每 profile 的实际暴露。
+工具包的模型可见名以生成目录 [`docs/tool-catalog.md`](../../../docs/tool-catalog.md):18-50 的 Tool Package Map 为真源；bundle 档位的声明源是 `packages/boot/app-boot/src/profile.ts:223`（随装出货、默认关）与 `packages/boot/app-boot/src/official-bundle-packages.ts:4`（按需安装）；base 层的工具面示例见 `packages/bundle/base/cordis.patch.yml:486`；preset 的声明式 patch 在 `packages/bundle/web-app/presets/`（`standard` / `ptc` / `minimal` 等），seam 的 P/C 机械提取见生成目录 `docs/capability-seams.md:614` 起的服务表；工具目录的入口表头在 `docs/tool-catalog.md:12`；下表按 bundle patch 行推每 profile 的实际暴露。
 
 | profile | 暴露 |
 |---|---|

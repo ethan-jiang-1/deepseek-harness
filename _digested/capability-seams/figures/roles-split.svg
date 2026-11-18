@@ -23,6 +23,6 @@
   <rect x="40" y="218" width="880" height="122" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
   <text x="60" y="246" font-size="12" fill="#374151">合包合法：dsh-llm 的 Definition 与 Consumer 同包，因为消息词汇由同一包拥有。</text>
   <text x="60" y="270" font-size="12" fill="#374151">反味：Definition 开始认识 tool 字段，或公开方法只有一个内部调用者。</text>
-  <text x="60" y="294" font-size="12" fill="#374151">换 ssh/远程：替换 ctx.subprocess 与 ctx.fs provider；E2B 已退役。</text>
+  <text x="60" y="294" font-size="12" fill="#374151">换远程执行世界：组合里换 ctx.subprocess / ctx.fs / ctx.sandbox 的 ssh provider，共享一条 ctx.ssh 连接。</text>
   <text x="60" y="318" font-size="12" fill="#374151">dsh-tool-bash / dsh-tool-fs / LSP 仍只注入各自的 Definition。</text>
 </svg>

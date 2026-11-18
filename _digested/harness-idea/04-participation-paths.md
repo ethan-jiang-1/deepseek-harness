@@ -1,7 +1,7 @@
 
 > **seam** — a *swappable capability* with three roles: a **Service Definition** (…never a TypeScript `interface`), one or more **Service Providers**, and one or more **Consumers** that inject the service.
 >
-> —— `docs/glossary.md:9`（基线 `687f282e86…`）
+> —— `docs/glossary.md:9`（当时核验 `687f282e86…`）
 | L3 loop / session 合同 | `agent-loop`、`SessionEventMap` | 改驱动、加持久事件、改请求头语义 | loop 义务、日志投影、版本机制 | 门禁、双 SDK 投影、snapshot、architecture 同步 |
 # 参与阶梯（participation ladder）：从改配置到改 loop
 
@@ -22,7 +22,7 @@ dsh 把这些路径做成**参与阶梯（participation ladder）**，而不是�
 
 > **seam** — a *swappable capability* with three roles: a **Service Definition** (…never a TypeScript `interface`), one or more **Service Providers**, and one or more **Consumers** that inject the service.
 >
-> —— `docs/glossary.md:9`（基线 `687f282e86…`）
+> —— `docs/glossary.md:9`（当时核验 `687f282e86…`）
 
 
 阶梯的要点不是「层级越高越难」，而是**每层都有明确的升级条件**：L0 解决不了才去 L1；扩展点表达不了才设计 seam；只有改变循环合同本身才改 L3。这正是 [`03`](./03-paved-road.md) 的四问路由在参与者视角的投影。
@@ -38,7 +38,7 @@ Profile 是进程级组合，Preset 是会话级组合；一个 Web 进程可以
 
 > Give one session a different capability set | compose an agent preset; a service row there needs an `isolate` realm.
 >
-> —— `docs/architecture.md:146`（基线 `687f282e86…`）
+> —— `docs/architecture.md:146`（当时核验 `687f282e86…`）
 
 ## 部署时替换是系统能力，不是源码习惯
 
@@ -46,11 +46,11 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 > A running `dsh` is a plugin tree composed at boot from ordered layers.
 >
-> —— `docs/architecture.md:15`（基线 `687f282e86…`）
+> —— `docs/architecture.md:15`（当时核验 `687f282e86…`）
 
 > Layers apply to an empty entry list: the profile's ordered bundles, its `cordis.patch.yml`, the home patch, then `--patch` overlays. A patch targets a row by id and replaces its whole config, or inserts new rows.
 >
-> —— `docs/architecture.md:25`（基线 `687f282e86…`）
+> —— `docs/architecture.md:25`（当时核验 `687f282e86…`）
 
 - 配置从空 entry list 开始，按 Bundle → Profile patch → home patch → `--patch` 的顺序叠加；顺序就是数据。
 - 后层按 entry id 整份替换 config，或插入新行。
@@ -65,7 +65,7 @@ L0 最容易被低估。dsh 的 Profile / Bundle / Patch 不是「配置文件�
 
 > **Apply the Agent Note creation criteria.** Mechanical/local edits are exempt, including local UI changes; keep existing owning notes accurate.
 >
-> —— `docs/AGENTS.md:41`（基线 `687f282e86…`）
+> —— `docs/AGENTS.md:41`（当时核验 `687f282e86…`）
 
 ```text
 Issue 意图与预期行为（验收证据在 PR 的 Testing 节）

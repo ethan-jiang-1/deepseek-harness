@@ -1,8 +1,8 @@
 # 一次 bash：从 tool 调用到 sandbox argv
 
-源码核验入口：`packages/shell/tool-bash/`、`packages/shell/shell/`、`packages/shell/bash-local/`、`packages/shell/bash-sandbox/`、`packages/shell/tool-bash-persistent/`、`packages/terminal/terminal-bash/`、`packages/sandbox/sandbox/`、`packages/subprocess/`。
+> 模型发出一个 tool call，最后变成一个操作系统进程——中间隔着解析、准入、审批、默认化、遏制五层政策。本篇顺着 shell 家族把这条链追完，并给出每一层的失败合同。读懂它，你就知道「退出码 1」「超时被杀」「审批被拒」分别在哪一层结算、模型各自看见什么。seam 的角色分工见 [`01`](./01-三角色与分包装.md)，受管范围的平台实现见 [`07`](./07-原生containment与native-system.md)。
 
-教科书路径：顺着 shell 家族把一次 spawn 追完。Consumer 始终面对 Definition。
+源码核验入口：`packages/shell/tool-bash/`、`packages/shell/shell/`、`packages/shell/bash-local/`、`packages/shell/bash-sandbox/`、`packages/shell/tool-bash-persistent/`、`packages/terminal/terminal-bash/`、`packages/sandbox/sandbox/`、`packages/subprocess/`。
 
 ![一次 bash：tool → resolve → confine → spawn](./figures/bash-spawn-trace.svg)
 
@@ -19,27 +19,39 @@
 
 ## `execute` 与 `result()` 的失败合同
 
-`ShellExecutor` 只有一个执行方法 `execute(spec)`：准备期（解析/准入）可 throw；启动后 `result()` **只**对基础设施失败 reject，非零退出、超时杀、abort 杀都 **resolve** 成 `ShellRunResult`。Consumer 把结果写成模型可见文本，不要把退出码 1 当成 harness 崩溃。
+`ShellExecutor` 只有一个执行方法 `execute(spec)`：准备期（解析/准入）可 throw；启动后前台投影 `result()` **只**对基础设施失败 reject，非零退出、超时杀、abort 杀都 **resolve** 成 `ShellRunResult`。Consumer 把结果写成模型可见文本，不要把退出码 1 当成 harness 崩溃。
 
-`onExpiry: 'none'` 保留 handle，后台进程没有 timeout。`done` 结算且**永不 reject**：provider 在给出直接结果之前失败时结算为 `killed`，stderr 上是一条 stage-neutral 注记（`subprocess failed before reporting an outcome: …`，`packages/shell/bash-local/src/index.ts:338` 构造该文本，`:294` 的 stderr reader 把它送出去；合同措辞见 `packages/shell/shell/src/types.ts:196`-`:197`）。仍在跑的后台进程在组合拆除时停掉并等待。有 subprocess seam 时，这个边界是 `ctx.subprocess` 的 dispose——executor 单独 HMR 不会把活进程带走。
+`onExpiry: 'none'` 保留 handle，后台进程没有 timeout。handle 的 `done` 结算且**永不 reject**：provider 在给出直接结果之前失败时结算为 `killed`，stderr 上是一条 stage-neutral 注记（`subprocess failed before reporting an outcome: …`，由 `packages/shell/bash-local/src/index.ts` 构造并经 stderr reader 送出；合同措辞见 `packages/shell/shell/src/types.ts` 的 `ShellProcess.done`）。仍在跑的后台进程在组合拆除时停掉并等待。有 subprocess seam 时，这个边界是 `ctx.subprocess` 的 dispose——executor 单独 HMR 不会把活进程带走。
+
+把本页引子的承诺兑现成一张表——失败种类在哪一层结算、模型看到什么：
+
+| 失败种类 | 在哪结算 | 模型看到什么 |
+|---|---|---|
+| 准备期失败（参数校验、`tools/pre-execute` deny、缺 answerer 的 ask、升权审批被拒） | `execute` throw，不进 body | `tool/result` 的 `isError` 文本（如 `Error: <reason>`） |
+| 命令非零退出 | 前台投影 `result()` **resolve** 成 `ShellRunResult`（带 exitCode） | 描述性结果文本：**退出码 1 不是 harness 崩溃** |
+| 超时被杀 | resolve（`ShellRunResult.timeoutMs` 记录当时限） | 描述性结果文本 |
+| abort 取消（有已送达前缀） | resolve（前缀定稿，`interrupted` 语义） | 前缀输出 + 取消说明 |
+| provider 基础设施失败（结果未知） | `done` 结算 `killed`，stderr stage-neutral 注记 | 注记文本；harness 不崩溃 |
+
+具体的文案由 Consumer（`dsh-tool-bash` 的 `presentResult`）拥有；这张表的承重事实是**右列没有一个以异常形式到达模型**——非零退出、超时、取消都是结果，不是错误。
 
 ## 政策挂在哪
 
 | 层 | 管什么 |
 |----|--------|
 | `tools/pre-execute` | hooks 等：准不准进 body |
-| Consumer `execute` 里的 `approveEscalation` | sandbox 升权；走 `ctx.approval`，不在 `ShellExecutor` 上；tool-fs 复用同一条升级链（`packages/fs/tool-fs/src/sandbox.ts:16` 导入同一组 `ESCALATION_TARGETS` / `approveEscalation`，`:45` 决定 schema 广告的升级目标，`:88`-`:98` 逐调用经 `ctx.approval` 解析；`packages/sandbox/sandbox/src/escalation.ts:3` 明说该编排骨架由每个 sandbox-enforcing tool family（tool-bash、tool-fs）共享） |
+| Consumer `execute` 里的 `approveEscalation` | sandbox 升权；走 `ctx.approval`，不在 `ShellExecutor` 上。tool-fs 复用同一条升级链：`packages/fs/tool-fs/src/sandbox.ts` 导入同一组 `ESCALATION_TARGETS` / `approveEscalation`，schema 广告的升级目标与逐调用审批都由它决定；`packages/sandbox/sandbox/src/escalation.ts` 明说该编排骨架由每个 sandbox-enforcing tool family（tool-bash、tool-fs）共享 |
 | `approval/request` | 审批 seam；缺 answerer fail-closed |
 | `ctx.sandbox.confine` | argv 怎么包（bwrap / seatbelt / windows-acl） |
 | `ctx.shell.resolve` | cwd、timeout 默认与上限（实现拥有的 caps） |
-| `ctx.subprocess.spawn` | 真正创建进程（本地或远程（subprocess-ssh））；provider 在 spawn 前选定受管范围，普通句柄不再暴露 pid |
+| `ctx.subprocess.spawn` | 真正创建进程（本地或远程 subprocess-ssh）；provider 在 spawn 前选定受管范围，普通句柄不再暴露 pid |
 | tool `timeoutMs` + timeout-policy | 整次 tool 调用的协作截止 |
 
 local executor 注释写：command defaulting、deadline 分类、模型友好终端环境、后台 stdout/stderr 合并，归它；执行政策不归它。
 
-## 受管范围与原生 containment
+## 受管范围
 
-`ctx.subprocess` 的公开句柄不再有 `pid`（`packages/subprocess/subprocess/src/types.ts:169` 的 `SubprocessHandle`）：`spawn` 同步返回，target identity 是 provider 私有事实（`packages/subprocess/subprocess/src/index.ts:97`-`:99`）；`terminate()` 与 `waitForExit()` 作用于同一个 provider 选定的**受管范围**，provider 无法再观察该范围时 `waitForExit()` throw（`packages/subprocess/subprocess/src/types.ts:193`）。这是相对旧基线「进程组/进程树」语义的替换——一条子进程可以 `setsid`、reparent 或活过直接父进程，从而离开任何单一进程关系描述的范围；唯一保留 `pid` 的是终端句柄（`packages/subprocess/subprocess/src/types.ts:259`），PTY 身份与前台 inspection 需要它。
+`ctx.subprocess` 的公开句柄不再有 `pid`（`packages/subprocess/subprocess/src/types.ts` 的 `SubprocessHandle`）：`spawn` 同步返回，target identity 是 provider 私有事实；`terminate()` 与 `waitForExit()` 作用于同一个 provider 选定的**受管范围**，provider 无法再观察该范围时 `waitForExit()` throw。原因：一条子进程可以 `setsid`、reparent 或活过直接父进程，从而离开任何单一进程关系描述的范围。唯一保留 `pid` 的是终端句柄（`SubprocessTerminalHandle`），PTY 身份与前台 inspection 需要它。
 
 Linux 上合格的普通与 PTY 启动进入 user-systemd transient scope 加一次性 bootstrap，Windows 上合格的普通启动进入私有 runner 拥有的 kill-on-close Job；macOS 普通启动、Windows ConPTY 等未支持宿主回退到 PGID / `taskkill /T` / identity-fenced PTY 观察，并给出一条 provider 生命期警告（逃出可观察关系的后代不保证被终止或推迟 `waitForExit()`）。选中 native 路径后的失败不重放目标，避免执行两次。两条 native 路径、回退边界与 `native/system` 的 landlock-run + flock 双能力见 [`07-原生containment与native-system.md`](./07-原生containment与native-system.md)。
 
