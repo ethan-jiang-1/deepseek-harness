@@ -48,7 +48,7 @@ guard 家族（`packages/guard/`，base bundle 默认启用）处理两个经典
 
 ## 机制四：反馈先落账，再进上下文
 
-会话环的第一定律是「模型可见 ⟺ 已记录」在反馈面上的应用：每一条进模型的反馈都先是一次事件追加。人的三类输入共用一条管道——`followup`（下一 turn 唤醒）、`steer`（下一 step 插入）、`inject`（下一步不唤醒），统一经 inbox splice 进队，落 `user/message` 事件（`packages/core/agent-loop/src/agent.ts:154-176,423-425`）。审批是 turn-enclosed 事件对（`approval/asked` + `approval/decided`，裸事件在恢复时是 crash-tail 垃圾，`packages/interaction/user-approval/src/index.ts:215-234`）；提问的回答以 `user-question-reply` 来源 steer 回注（`packages/interaction/user-questions/src/index.ts:165-206`）；后台任务结束发 notice，空闲则唤醒开新 turn、忙碌则注入下一步（`packages/jobs/tool-jobs/src/index.ts:296-308`）。
+会话环的第一定律是「模型可见 ⟺ 已记录」在反馈面上的应用：每一条进模型的反馈都先是一次事件追加。人的三类输入共用一条管道——`followup`（下一 turn 唤醒）、`steer`（下一 step 插入）、`inject`（下一步不唤醒），统一经 inbox splice 进队，落 `user/message` 事件（`packages/core/agent-loop/src/agent.ts:154-176,426-440`）。审批是 turn-enclosed 事件对（`approval/asked` + `approval/decided`，裸事件在恢复时是 crash-tail 垃圾，`packages/interaction/user-approval/src/index.ts:215-234`）；提问的回答以 `user-question-reply` 来源 steer 回注（`packages/interaction/user-questions/src/index.ts:165-206`）；后台任务结束发 notice，空闲则唤醒开新 turn、忙碌则注入下一步（`packages/jobs/tool-jobs/src/index.ts:296-308`）。
 
 「状态回注」这个形状在 dsh 里有三个实现，裁决者各不相同——这是读懂其反馈分权的关键表格 `[源码]`：
 
@@ -90,7 +90,7 @@ dsh 没有任何「模型从历史会话学习」的机制：跨会话持久的�
 - **外置判断为 skill**：COT 泄漏、CI flake 诊断都从踩坑变成可复用的诊断流程（`.agents/skills/dsh-trim-cot-leakage/SKILL.md:8`、`dsh-ci-test-reliability`）；
 - **写事故报告**：`docs/postmortem/0001-acp-default-export-drops-inject.md`（178 绿测 + 100% 覆盖下 ACP 全挂）→ `docs/testing.md` 的「Test the real entry path」规则——postmortem 是唯一允许 war-story 的 tier。
 
-且回写本身被检查：`doc-sync` 聚合 60+ 门禁管文档与代码同步；note 新增强制 supersession check；归档件封进 SHA-256 append-only manifest；元验证条文要求「A guard only guards if the regression fails it … prove it: introduce the regression, watch red, revert」，e2e 要「re-runs the command or re-reads the file externally; a keyword probe on the agent's own output lets a cheating agent pass」（`docs/testing.md:40,33-35`）。诚实缺口也登记在案：升级指南的「破坏必须立即写 guide」只有 standing order（`AGENTS.md:11`），`verify-upgrade-guides`（`run-gates.ts:858`）只查已存在 guide 的格式，**不查该写未写**——元环上唯一没有机器存在性强制的一段 `[源码]`。
+且回写本身被检查：`doc-sync` 聚合 43 个叶子门禁管文档与代码同步；note 新增强制 supersession check；归档件封进 SHA-256 append-only manifest；元验证条文要求「A guard only guards if the regression fails it … prove it: introduce the regression, watch red, revert」，e2e 要「re-runs the command or re-reads the file externally; a keyword probe on the agent's own output lets a cheating agent pass」（`docs/testing.md:40,33-35`）。诚实缺口也登记在案：升级指南的「破坏必须立即写 guide」只有 standing order（`AGENTS.md:11`），`verify-upgrade-guides`（`run-gates.ts:858`）只查已存在 guide 的格式，**不查该写未写**——元环上唯一没有机器存在性强制的一段 `[源码]`。
 
 ## 边界：DSH 的 Eval 层是薄的
 

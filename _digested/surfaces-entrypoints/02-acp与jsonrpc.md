@@ -1,6 +1,8 @@
 # ACP 与 JSON-RPC 各自保证什么
 
-源码核验入口：`packages/acp/acp/README.md`、`packages/sdk/server/README.md`。
+> **为什么单独有这一页**：当外部程序（IDE、编辑器插件或 TypeScript/Python SDK）要通过标准输入/输出从进程外驱动 DSH 时，仓库同时提供 ACP 与 JSON-RPC 两套 stdio 协议入口。两者看似都在传 session 请求和流式更新，但面向的调用者与承诺相反：**ACP 按标准化代理协议只暴露已提交的语义更新，SDK JSON-RPC 则向下游敞开完整耐久事件流**。选错协议或按其中一套的假设去接另一套，会直接导致状态缺失或能力错配。本页专门把两条协议面对调用方的明确承诺逐条对齐。
+>
+> 源码核验入口：`packages/acp/acp/README.md`、`packages/sdk/server/README.md`。
 
 两个都是进程外驱动 Harness runtime 的协议入口，可以挂在不同的插件组合上。它们复用 `ctx.agents` 和 session 语义，但输出保证相反：一个只把 committed 事实重新表达成标准语义更新，一个推送完整耐久流。
 

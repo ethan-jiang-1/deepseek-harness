@@ -1,6 +1,8 @@
 # 03 · 五张横切清单：按「要什么」查
 
-快照式清单；核验状态见 [`catalog.json`](../../catalog.json)，覆盖矩阵由它生成。[`02-plugin-catalog.md`](./02-plugin-catalog.md) 按包组纵着看，本页按能力类型横着看。
+> **为什么单独有这一页**：真实干活时，人往往不是按源码目录找包，而是带着一个横向问题来的——*“系统里到底暴露了哪些 `ctx.*` 服务、哪些有第二实现可以替换？一个工具或一条 CLI 命令归哪个包？不同 profile 实际让模型看见哪些工具？”* 如果只有 [`02-plugin-catalog.md`](./02-plugin-catalog.md) 那种按目录纵着排的大图鉴，回答这类横向问题得来回翻几十个组。本页因此专门从仓库生成目录抽出**五张横切检索表**，把跨包分散的接口面、seam 供给度、工具与命令收在同一页里。
+>
+> **怎么读这页才不觉得 overwhelming**：把它当成「按需求反查源码包」的索引——只需要哪张表（查 `ctx` 服务、查模型工具暴露面、还是查人类 `/command`），直接跳到对应 `3.x` 小节看即可，不需要一次通背 99 个服务。核验状态见 [`catalog.json`](../../catalog.json)。
 
 ## 3.1 ctx 服务清单 — 99 = 58 core + 35 seam + 5 service + 1 bundle
 
@@ -64,7 +66,7 @@ P≥2 的 seam 换 Provider 不改调用方；P=0 与自消费（P、C 同包）
 | profile | 暴露 |
 |---|---|
 | **base**（headless / acp-app / sdk-app 原样继承） | `bash`/`pwsh` 平台门控（base:281-287）；`job_output/job_list/job_kill`（289-290）；`edit/read/read_image/write`（295-296）；`glob/grep`（298-299）；`skill`（314-315）；`working_directory`（169-170）；`todo_write`（437-438）；`create_goal/get_goal/update_goal`（444-445）；`subagent`＋`subagent_fork`＋`send_message/interrupt_agent/list_agents`（374-392）；`workflow`（405-406）；`web_search/web_fetch`（486-487）；MCP 资源 3 工具（492-493）。出厂关闭：`plugin_manager`（16-18）。**base 不产生 `run_code`**：`tools` 的 `mode` 默认 `native`，只有声明 `agent-tool-presentation mode: ptc` 的 preset 才把能力收进它 |
-| **web-app** | Host 面把上述 agent 工具行整体 disabled（web-app:477-581），改由每会话 preset 提供；preset 注册表 default=standard（586-589） |
+| **web-app** | Host 面把上述 agent 工具行整体 disabled（web-app:482-585），改由每会话 preset 提供；preset 注册表 default=standard（590-594） |
 | **web 预设 standard（出厂默认）** | base 全集＋`ask_user_question`＋`present`＋`exit_plan_mode`＋`schedule_create/list/update/delete`；`plugin_manager` 与 `plugin_market` 行 disabled |
 | **web 预设 ptc** | 同 standard，但 `agent-tool-presentation mode: ptc` 把能力收进 `run_code` 绑定；`workflow` 关 |
 | **web 预设 minimal** | persona `complete: true`；`tool-fs` 收成只读 `read_image`；持久 `bash`/`pwsh`；compaction＋`/compact`；无 goal / web / subagent / skill / schedule |
@@ -86,13 +88,13 @@ P≥2 的 seam 换 Provider 不改调用方；P=0 与自消费（P、C 同包）
 | 官方按需安装 ×2 | `dsh-subagent-claude-code`、`dsh-subagent-codex`（`ON_DEMAND_BUNDLES`，`packages/boot/app-boot/src/official-bundle-packages.ts`）——与 OPTIONAL_BUNDLES 是两个档位：按需安装 vs 随装默认关 |
 | 显式安装 | 裸 `inspector` 插件包不在 OPTIONAL_BUNDLES 里（`scripts/optional-bundles.spec.ts:100-102`）；出货的那个 bundle 是 `inspector-profile` |
 
-profile→bundle 组装：acp=[base,acp-app]、web=[base,web-app]、headless=[base,headless]、sdk=[base,sdk-app]、sdk-minimal=[sdk-minimal]（profile.ts:179-193）；打包安装特有的 headless 变体 [base, web-app, headless]（:196-198）；`dsh plugin add` 初始化缺省 [base]（:213）。退役 bundle 记在 `RETIRED_BUNDLES`（现只有 `dsh-experimental-schedule-bundle`，其 schedule/ui-schedule 行已由 web-app 承担）。
+profile→bundle 组装：acp=[base,acp-app]、web=[base,web-app]、headless=[base,headless]、sdk=[base,sdk-app]、sdk-minimal=[sdk-minimal]（profile.ts:179-195）；打包安装特有的 headless 变体 [base, web-app, headless]（:198-200）；`dsh plugin add` 初始化缺省 [base]（:213）。退役 bundle 记在 `RETIRED_BUNDLES`（现只有 `dsh-experimental-schedule-bundle`，其 schedule/ui-schedule 行已由 web-app 承担）。
 
 ## 3.4 preset 清单（四模式）
 
 | preset | 自动的轴 |
 |---|---|
-| standard（1，出厂默认，web-app:589） | 全工具带＋workflows（workflow-ptc / tool-workflow 开）＋原生工具呈现 |
+| standard（1，出厂默认，web-app:590-594） | 全工具带＋workflows（workflow-ptc / tool-workflow 开）＋原生工具呈现 |
 | ptc（2） | **呈现轴**：`mode: ptc` → 能力收进 `run_code`；workflow 关 |
 | minimal（3） | **persona 轴**（`complete: true`＋`includeRuntimeContext: false`）＋**shell 轴**（持久 PTY bash/pwsh 替代一次性工具）＋只读 fs 面 |
 | cordis（4） | **creator 轴**：＋`cordis_inspect_*`、`plugin_manager`/`plugin_market` 工具、creator skills 目录（customSkillDirs 指向 dsh-agent-preset/skills） |

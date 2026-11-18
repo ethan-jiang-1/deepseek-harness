@@ -39,7 +39,7 @@
 
 这是全页最重要的架构事实：**durable log, derived state**。Team 不另设存储——
 
-- 名册与任务变更往 Lead Session 追加 `team/member` / `team/task` 事件，**flush 成功才算操作成功**（`TeamJournal.appendAndFlush`，`src/journal.ts`）。历史的 `team/message/queued` / `team/message/delivered` 记录仍可读，但不再写入；成员消息的持久化跟随目标 Agent 的普通策略。
+- 名册与任务变更往 Lead Session 追加 `team/member` / `team/task` 事件，**flush 成功才算操作成功**（`TeamJournal.appendAndFlush`，`src/journal.ts`）。历史的 `team/message/queued` / `team/message/delivered` 记录仍可读，Team 不写入这两种事件；成员消息的持久化跟随目标 Agent 的普通策略。
 - 四类事件都是 **log-only**：不进对话面，派生模型历史不受协调记录影响。
 - 浏览器端读 Lead Session 的 `agentTeam` 投影（`ctx.root.sessionProjections.register(teamProjectionDefinition)`，`src/index.ts`），**不做任何 Team RPC**。
 - 崩溃恢复挂 `agent/created`（session-start 边）：把未终结的 provisioning 记录对照 child 自己持久化的 Session 判成 active / failed。

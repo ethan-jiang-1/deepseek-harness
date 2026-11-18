@@ -61,8 +61,8 @@
   <text x="788" y="196" fill="#333">真实跑一遍必需 lane</text>
   <text x="788" y="226" font-weight="700" fill="#4c1d95">"换池子会炸"的风险</text>
   <text x="788" y="246" font-weight="700" fill="#4c1d95">被持续证伪</text>
-  <text x="788" y="282" fill="#666">linux / windows / macos</text>
-  <text x="788" y="302" fill="#666">三条热备腿</text>
+  <text x="788" y="282" fill="#666">linux / windows 现役；</text>
+  <text x="788" y="302" fill="#666">macos 已标 if: false</text>
 
   <!-- bottom -->
   <rect x="30" y="356" width="920" height="76" rx="10" fill="#fff" stroke="#d4380d" stroke-dasharray="6 3"/>

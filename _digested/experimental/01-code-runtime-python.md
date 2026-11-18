@@ -2,11 +2,13 @@
 
 # ptc-runtime-python：CPython 子进程后端
 
-本页是 experimental 专题的第一个面——「换 provider」形状的定位与启用总述见 [`00-map.md`](./00-map.md)；本页只讲机制，全部行锚对 `_coverage/` 所列核验 commit 成立。
+> **为什么单独有这一页**：同样是 `ctx.ptcRuntime`，把默认的 Node 运行时换成 Python 不只是换一个语言解释器——它同时要保证「模型写的代码进同一套沙箱、宿主的同步工具挂进受限的 `fd 3`、而且不能靠写临时 `.py` 启动脚本来让同 UID 代码钻空子」。本页作为 experimental 专题的「换 provider」代表样本，讲清在不改动上层 PTC 工具与消费者一行的前提下，CPython 后端怎么兑现 `PtcRuntime` 合同、如何启动进程与传输帧，并标注其平台限制（如显式拒绝 Windows）。
+
+本页聚焦机制与行号细节，定位与启用总述见 [`00-map.md`](./00-map.md)。
 
 ## seam 合同
 
-它实现 `packages/ptc-runtime/ptc-runtime/` 的 `PtcRuntime` Service Definition——抽象类 `PtcRuntime extends Service`（`packages/ptc-runtime/ptc-runtime/src/index.ts:104`），构造器把实例注册成服务名 `ptcRuntime`（同文件 `:146`），`ctx.ptcRuntime` 由 `declare module` 声明（`:91`）；抽象面只有两个信息性描述字段 `language` / `isolation`（`:114`/`:122`）和一个 `run(spec)`（`:162`），语言可移植性由跨后端共享的保留词与保留全局集合承担（`PORTABLE_RESERVED_WORDS` `:78`、`RESERVED_BINDING_GLOBALS` `:42`）。`PythonPtcRuntime extends PtcRuntime`（`packages/experimental/ptc-runtime-python/src/index.ts:744`）声明 `language = 'python'`、`isolation = 'process'`（`:756`-`:757`），并在构造器直接拒绝 Windows——POSIX rlimits、位置 fd 3、负 PID 进程组信号在 Windows 都不存在（`:784`）。
+它实现 `packages/ptc-runtime/ptc-runtime/` 的 `PtcRuntime` Service Definition——抽象类 `PtcRuntime extends Service`（`packages/ptc-runtime/ptc-runtime/src/index.ts:104`），构造器把实例注册成服务名 `ptcRuntime`（同文件 `:146`），`ctx.ptcRuntime` 由 `declare module` 声明（`:91`）；抽象面包含 `abstract resolve(request): PtcRunSpec`（`:155`）与 `run(spec)`（`:162`），外加两个信息性描述字段 `language` / `isolation`（`:114`/`:122`）及默认字段（`programFormat`、`release`、`executionInstructions`、`sandboxMode`、`timeout`，`:125`-`:143`），语言可移植性由跨后端共享的保留词与保留全局集合承担（`PORTABLE_RESERVED_WORDS` `:78`、`RESERVED_BINDING_GLOBALS` `:42`）。`PythonPtcRuntime extends PtcRuntime`（`packages/experimental/ptc-runtime-python/src/index.ts:744`）声明 `language = 'python'`、`isolation = 'process'`（`:756`-`:757`），并在构造器直接拒绝 Windows——POSIX rlimits、位置 fd 3、负 PID 进程组信号在 Windows 都不存在（`:784`）。
 
 ## 与默认 node provider 的关系
 
@@ -14,11 +16,11 @@
 
 ## 进程模型
 
-每次 `run()` 起一个全新 CPython 3.10+ 子进程（无常驻内核、无跨 run 状态），`spawn(argv[0], …, { detached: true })` 用四根 pipe 让 fd 3 成为协议通道（`packages/experimental/ptc-runtime-python/src/index.ts:1165`-`:1169`），子进程环境只暴露 `TMPDIR`（`pythonEnvironment()` `:444`）。**受信 Python 源码不再落盘**：`src/launch.ts` 的 `PYTHON_BOOTSTRAP_LOADER`（`:5`-`:12`）是一段极小解释器入口，`bootstrapInput()` 读包内 `py/protocol.py` 与 `py/bootstrap.py` 编码后经子进程 stdin 送入（`:20`-`:23`），宿主用 `child.stdin.end(input)` 写入（`index.ts:2337`）——沙箱可见的临时目录里不再有可被同 UID 模型代码改写的启动脚本，写入失败直接以 `failed to load python bootstrap` 结算为 `worker-exit`（`:2331`-`:2336`）。`pythonBin` 在 load 时一次性解析并冻结：绝对路径就地验证、basename 搜 `PATH`（跳过空段与相对段，杜绝静默落到平台默认 PATH）、可执行普通文件检查加五秒强杀期限的 CPython ≥3.10 版本探针（`resolvePythonBin` `:407`、`validatePythonBin` `:448`、`MIN_CPYTHON` `:437`、`PYTHON_PROBE_TIMEOUT_MS` `:440`）。程序在共享文件系统沙箱下运行：插件 `inject = ['sandbox', 'sandboxPolicy']`（`:745`），每次 run 先解析 sandbox policy（`:982`）再算好受限 argv 交给 `ctx.sandbox`（`:1026`），拿不到围栏时以 `sandbox-unavailable` 结算。
+每次 `run()` 起一个全新 CPython 3.10+ 子进程（无常驻内核、无跨 run 状态），`spawn(argv[0], …, { detached: true })` 用四根 pipe 让 fd 3 成为协议通道（`packages/experimental/ptc-runtime-python/src/index.ts:1165`-`:1169`），子进程环境只暴露 `TMPDIR`（`pythonEnvironment()` `:444`）。**受信 Python 源码不落盘**：`src/launch.ts` 的 `PYTHON_BOOTSTRAP_LOADER`（`:5`-`:12`）是一段极小解释器入口，`bootstrapInput()` 读包内 `py/protocol.py` 与 `py/bootstrap.py` 编码后经子进程 stdin 送入（`:20`-`:23`），宿主用 `child.stdin.end(input)` 写入（`index.ts:2337`）——沙箱可见的临时目录里不存在可被同 UID 模型代码改写的启动脚本，写入失败直接以 `failed to load python bootstrap` 结算为 `worker-exit`（`:2330`-`:2335`）。`pythonBin` 在 load 时一次性解析并冻结：绝对路径就地验证、basename 搜 `PATH`（跳过空段与相对段，杜绝静默落到平台默认 PATH）、可执行普通文件检查加五秒强杀期限的 CPython ≥3.10 版本探针（`resolvePythonBin` `:407`、`validatePythonBin` `:448`、`MIN_CPYTHON` `:437`、`PYTHON_PROBE_TIMEOUT_MS` `:440`）。程序在共享文件系统沙箱下运行：插件 `inject = ['sandbox', 'sandboxPolicy']`（`:745`），每次 run 先解析 sandbox policy（`:982`）再算好受限 argv 交给 `ctx.sandbox.confine`（`:1030`），拿不到围栏时以 `sandbox-unavailable` 结算。
 
 ## stdio 帧协议
 
-帧在子进程 fd 3 上走 JSON-lines，一行一对象，stdout/stderr 留给程序自己的输出（`PROTOCOL_FD = 3`，`packages/experimental/ptc-runtime-python/src/protocol.ts:18`）。host→child：`boot` 首帧携带全部上限与命名空间声明（`:47`），`boot-ack` 之后的 `run` 只带程序体（`:63`-`:65`）；child→host：`boot-ack` / `call` / `log` / `done`（`:71`、`:76`、`:92`、`:132`），宿主对每个**顺序合法**的 `call` 回一个 `reply`（`:146`/`:154`）；重复或乱序的 id 静默丢弃（同文件 `:77` "the host answers each id at most once and ignores duplicates"）。`done.error.kind` 有 `exception` / `invalid-output` / `output-limit` / `timeout` 四种（`:116`）；wall/CPU 预算、abort、进程死亡由宿主侧观察，不走帧。子进程侧的结算帧由 `py/bootstrap.py` 的 `send_done` 写出（`:1328`、`:1440`）——裸 except 兜底改写一帧本地捕获的字面量 done，程序重绑模块全局也丢不掉结算帧。宿主把每个入站帧当敌意输入逐字段重建：`validateChildFrame` 重建不干净就返回 `undefined` 静默丢弃（`protocol.ts:661`），伪造的 `done` 可以同时携带 `value` 和 `error`，所以消费者必须先查 `error`、置位时忽略 `value`（同文件 `:128`）。
+帧在子进程 fd 3 上走 JSON-lines，一行一对象，stdout/stderr 留给程序自己的输出（`PROTOCOL_FD = 3`，`packages/experimental/ptc-runtime-python/src/protocol.ts:18`）。host→child：`boot` 首帧携带全部上限与命名空间声明（`:47`），`boot-ack` 之后的 `run` 只带程序体（`:64`-`:67`）；child→host：`boot-ack` / `call` / `log` / `done`（`:71`、`:76`、`:92`、`:132`），宿主对每个**顺序合法**的 `call` 回一个 `reply`（`:146`/`:154`）；重复或乱序的 id 静默丢弃（同文件 `:77` "the host answers each id at most once and ignores duplicates"）。`done.error.kind` 有 `exception` / `invalid-output` / `output-limit` / `timeout` 四种（`:116`）；wall/CPU 预算、abort、进程死亡由宿主侧观察，不走帧。子进程侧的结算帧由 `py/bootstrap.py` 的 `send_done` 写出（`:1328`、`:1440`）——裸 except 兜底改写一帧本地捕获的字面量 done，程序重绑模块全局也丢不掉结算帧。宿主把每个入站帧当敌意输入逐字段重建：`validateChildFrame` 重建不干净就返回 `undefined` 静默丢弃（`protocol.ts:661`），伪造的 `done` 可以同时携带 `value` 和 `error`，所以消费者必须先查 `error`、置位时忽略 `value`（同文件 `:128`）。
 
 ## 上限与失败行为
 

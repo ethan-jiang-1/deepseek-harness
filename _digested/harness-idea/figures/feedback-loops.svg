@@ -84,7 +84,7 @@
   <text x="334" y="600" text-anchor="middle" font-size="10" fill="#333">·postmortem（同 PR）</text>
   <rect x="440" y="540" width="164" height="76" rx="6" fill="#fff" stroke="#b07818"/>
   <text x="522" y="564" text-anchor="middle" font-size="13" font-weight="bold" fill="#5c3a08">元验证把关</text>
-  <text x="522" y="584" text-anchor="middle" font-size="10" fill="#333">doc-sync 60+ 门禁、</text>
+  <text x="522" y="584" text-anchor="middle" font-size="10" fill="#333">doc-sync 43 个叶子门禁、</text>
   <text x="522" y="600" text-anchor="middle" font-size="10" fill="#333">guard 必须红过才有效</text>
   <rect x="628" y="540" width="164" height="76" rx="6" fill="#fff" stroke="#b07818"/>
   <text x="710" y="564" text-anchor="middle" font-size="13" font-weight="bold" fill="#5c3a08">规则生效</text>

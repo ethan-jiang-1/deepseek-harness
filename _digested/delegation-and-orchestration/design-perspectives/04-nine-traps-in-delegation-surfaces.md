@@ -1,8 +1,8 @@
 # Nine Traps in Delegation Surfaces · 委派面的九个陷阱
 
-源码核验入口：本页不引入新机制，只把 [`../preset-composition-and-contract-placement/`](../preset-composition-and-contract-placement/00-map.md) 与 [`../completion-and-observation/`](../completion-and-observation/00-map.md) 已核验的事实折成反模式；每条给出机制页与一句判据。
+> 本页回答：**在 DSH 上搭委派面时，最常犯、最难自查的九个错误是什么？看到什么信号就该停下来？**
 
-本页回答：**在 DSH 上搭委派面时，最常犯、最难自查的九个错误是什么？看到什么信号就该停下来？**
+> 源码核验入口：本页不引入新机制，只把 [`../preset-composition-and-contract-placement/`](../preset-composition-and-contract-placement/00-map.md) 与 [`../completion-and-observation/`](../completion-and-observation/00-map.md) 已核验的事实折成反模式；每条给出机制页与一句判据。
 
 ## 读完你能回答
 

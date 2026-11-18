@@ -53,7 +53,7 @@
 ## 源码锚点
 
 - `packages/test-support/README.zh.md` + 七个子包 README（各含使用规则与已知限制）
-- `packages/test-support/session-snapshot/src/`——9 文件分工（harness/launcher/manifest/session-files/normalize/identity/workspace/suite）
+- `packages/test-support/session-snapshot/src/`——9 文件分工（harness/identity/index/launcher/manifest/normalize/session-files/suite/workspace）
 - `packages/test-support/llm-replay/tests/session-format-corpus.spec.ts`——三棵树的语料校验
 - `packages/test-support/loader-smoke/tests/fixtures/production-profile.ts`——profile 集成 driver
 - `python/sdk/tests/test_smoke_model.py` / `test_account_provider_snapshot.py`

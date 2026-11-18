@@ -30,7 +30,7 @@
 
 child header 与 `subagent/descriptor` 仍是恢复与组合的权威；目录只负责「父如何枚举与恢复自己的 direct child」。
 
-**核对边界。** `dsh-chunked-list` 有自己的行为测试（`packages/util/chunked-list/tests/chunked-list.spec.ts`），本页只引它的块容量与遍历顺序，不复述其测试。`subagentCatalog` 投影在生产代码里**没有 `stateOf` 读取点**：除注册点外只出现在 `SessionProjectionMap` 的类型合并（`packages/subagent/subagent/src/projection-types.ts`）与测试（`tests/catalog.spec.ts`、`tests/service.spec.ts` 的 `snapshot` / `stateOf` 断言）；Web 端已有消费者：`packages/client/ui-subagent/src/client/SubagentHeaderLineage.tsx` 与 `packages/client/ui-workspace/src/client/tree.ts` 都读 `values.subagentCatalog`。
+**核对边界。** `dsh-chunked-list` 有自己的行为测试（`packages/util/chunked-list/tests/chunked-list.spec.ts`），本页只引它的块容量与遍历顺序，不复述其测试。`subagentCatalog` 投影在 Host 侧的 `packages/subagent/subagent/src/list-children.ts:46`、Client 侧的 `packages/api/session-controller/src/client/sessions/` 以及 Web UI 消费者（`packages/client/ui-subagent/src/client/SubagentHeaderLineage.tsx`、`packages/client/ui-workspace/src/client/tree.ts`）中都有直接 `values.subagentCatalog` 读取点；测试侧另有 `tests/catalog.spec.ts` 与 `tests/service.spec.ts` 的 `snapshot` / `stateOf` 断言。
 
 ## 宿主消息的 Queue / Steer 双交付
 

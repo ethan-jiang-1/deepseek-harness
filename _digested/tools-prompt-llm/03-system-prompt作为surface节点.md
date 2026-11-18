@@ -1,6 +1,8 @@
 # system prompt 作为 surface 节点
 
-源码核验入口：`packages/core/session/src/types.ts` 的事件定义、`packages/core/session/src/request-header.ts`、`packages/core/agent-loop/src/runtime-context.ts`、`packages/core/agent-loop/src/agent.ts` 的 `buildRequest`。
+> **为什么单独有这一页**：多数 harness 把 system prompt 当成每个请求的隐式前缀参数或 header 字段，不进对话历史。但在 DSH 里，随着会话中途技能切换或工具更新，system prompt 自己也在演化；如果不把生效的 system prompt 写进事件日志，回放历史请求或审计「当时模型究竟看到了哪一版系统提示」时就会丢失证据。本页说明 system prompt 为什么被提升为一等 surface 事件（node 0 的 `system/message`），以及它怎样和 `request/header` 分工，做到**既完整可重建，又不破坏旧对话历史**。
+>
+> 源码核验入口：`packages/core/session/src/types.ts` 的事件定义、`packages/core/session/src/request-header.ts`、`packages/core/agent-loop/src/runtime-context.ts`、`packages/core/agent-loop/src/agent.ts` 的 `buildRequest`。
 
 本篇说明渲染后的 system prompt 如何作为一条普通 surface 会话事件 `system/message` 存进日志并占据 surface node 0，以及对应的投影路由与前缀稳定性。
 

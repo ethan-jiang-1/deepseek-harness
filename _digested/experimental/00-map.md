@@ -8,9 +8,9 @@
 
 根 `AGENTS.md` 的仓库布局行写 `experimental/  evaluated capabilities without a product-support commitment`，并把成熟度与出货彻底解耦：「…is independent of optional delivery; nonexperimental packages need product use or an explicit classification」（[AGENTS](../../AGENTS.md)，分类脚本 `scripts/product-package-policy.ts`）。
 
-三个词的分工由组 README 定义（`packages/experimental/README.md#status`）：**Experimental**＝完整公开能力仍在评估、无支持承诺；**Optional**＝由用户显式选择；**Official**＝项目维护并列入插件页——三者互不蕴含，发布、默认安装与 GUI 露出都不决定成熟度。所以「agent-team 还是 experimental 吗」这类问题的答案是看合同状态，不是看它装没装、能不能一键开：Agent Teams 四包仍在 experimental 组，同时以可选 bundle 出货（见下文与 [`02-agent-teams.md`](./02-agent-teams.md)）。
+三个词的分工由组 README 定义（`packages/experimental/README.md#status`）：**Experimental**＝完整公开能力仍在评估、无支持承诺；**Optional**＝由用户显式选择；**Official**＝项目维护并列入插件页——三者互不蕴含，发布、默认安装与 GUI 露出都不决定成熟度。是否仍属 experimental 只看合同状态与包边界，不看安装便利性：Agent Teams 四包位于 `experimental` 组内，同时以可选 bundle 出货（见下文与 [`02-agent-teams.md`](./02-agent-teams.md)）。
 
-这份合同由政策和门禁执行：命名与发布政策、private 名单、三道隔离检查、以及反向的「非实验包必须有产品用途」检查都在 [`04-实验合同与隔离.md`](./04-实验合同与隔离.md)。一句话版本：默认前缀 `@deepseek-ai/dsh-experimental-`（少数保留旧 npm 名），**全组 public**、release 包不得点名实验包、shipped 组合零挂载。
+这份合同由政策和门禁执行：命名与发布政策、private 名单、三道隔离检查、以及反向的「非实验包必须有产品用途」检查都在 [`04-实验合同与隔离.md`](./04-实验合同与隔离.md)。一句话版本：默认前缀 `@deepseek-ai/dsh-experimental-`（少数保留旧 npm 名），**全组 public**、非实验发布包不依赖实验包（仅 CLI `@deepseek-ai/dsh` 经豁免在 `dependencies` 中携带 12 个 `OPTIONAL_BUNDLES`）、shipped 组合默认不启用。
 
 产品包对实验面的合同差异在**消化侧**同样成立：产品包的机制页对的是有 release 门禁、快照锚定和 catalog 生成撑着的公开合同，而实验合同本身允许在两次上游同步之间改名、重组甚至消失——所以本专题的行锚只保证对「最近核验」那个 commit 成立，漂移时按 `_coverage/` 矩阵整专题复核。
 
@@ -58,7 +58,7 @@
 | Agent Teams | 服务进产品能力组，Web UI 进 `packages/client/`，profile bundle 转正或内化 | 上游 Dev Note 已把 nested teams、cross-process mailbox、worktree 隔离列为未承诺方向——毕业前这些不影响现有合同 |
 | 会话检索 / 持久终端 / ralph / 徽章 / 标题 | 各自产品组（session-query、terminal、workflow、skill、session） | 它们本来就是从这些组移出的包，opt bundle 只是启用通道 |
 | hook 桥 / webhook | boot 或独立产品组 | 桥接面已经有稳定的线协议（hook-protocol）；webhook 的 `ctx.webhookRuntime` 是 core 服务 |
-| 插件市场 | boot + util + client 三包分别晋升 | 索引格式（`util/plugin-market-index`）与 Host 服务（`boot/plugin-market`）已有独立合同 |
+| 插件市场 | 仅 `plugin-market-bundle` 自身随转正迁出或退休 | `util/plugin-market-index`、`boot/plugin-market` 与 `client/ui-plugin-market` 已在各自产品组内，唯 `plugin-market-bundle` 留在 experimental 作为可选开关包 |
 | 桌面 / 浏览器控制 | browser-use / computer-use 组已有产品组壳（driver 转正即换前缀） | 家族形状与现有产品组的对应关系；无上游时间表 |
 | worktree | `ctx.worktrees` 已是三角色齐备的 seam，整族迁出即可 | Provider 与 Consumer 同族是当前的发育阶段 |
 | voice-input / auto-review / cot-translation | speech-to-text 定义与 sensevoice provider 分开晋升；auto-review 进 guard/feedback 一侧 | 家族形状与现有产品组的对应关系；无上游时间表 |

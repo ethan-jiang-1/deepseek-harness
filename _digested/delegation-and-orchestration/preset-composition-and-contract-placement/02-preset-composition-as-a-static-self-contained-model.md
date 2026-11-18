@@ -1,8 +1,8 @@
 # Preset Composition as a Static Self-Contained Model · preset 作为静态自包含模型
 
-源码核验入口：`packages/preset/agent-preset/src/index.ts`、`packages/preset/agent-preset-registry/src/{index,definition}.ts`、`packages/preset/agent-preset/README.md`、`packages/bundle/base/cordis.patch.yml`、`apps/cli`（`--dump-config`）。
+> 本页回答：**一个 preset 到底声明了什么？它是模型还是投影？能力面藏在哪、怎么被证明？** 通道差异见 [`composition/01`](./01-channel-capability-differences-and-inheritance.md)，收窄见 [`composition/03`](./03-worker-profiles-and-the-only-narrowing-lever.md)，合同见 [`composition/04`](./04-contract-placement-between-policy-and-engine.md)。
 
-本页回答：**一个 preset 到底声明了什么？它是模型还是投影？能力面藏在哪、怎么被证明？** 通道差异见 [`composition/01`](./01-channel-capability-differences-and-inheritance.md)，收窄见 [`composition/03`](./03-worker-profiles-and-the-only-narrowing-lever.md)，合同见 [`composition/04`](./04-contract-placement-between-policy-and-engine.md)。
+> 源码核验入口：`packages/preset/agent-preset/src/index.ts`、`packages/preset/agent-preset-registry/src/{index,definition}.ts`、`packages/preset/agent-preset/README.md`、`packages/bundle/base/cordis.patch.yml`、`apps/cli`（`--dump-config`）。
 
 ## 读完你能回答
 

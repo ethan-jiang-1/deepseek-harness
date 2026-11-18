@@ -1,8 +1,8 @@
 # Unspecified Gaps and Contradictions in Usage Policy · 用法政策里没说清的部分
 
-源码核验入口：`packages/workflow/workflow/README.md`、`packages/workflow/tool-workflow/src/index.ts`、`packages/subagent/tool-subagent/src/index.ts`、`packages/goal/tool-goal/src/index.ts`、`packages/jobs/tool-jobs/src/index.ts`、`packages/interaction/tool-ask-user/src/index.ts`、`packages/bundle/base/cordis.patch.yml`。
+> 本页回答：官方选择语义**哪里没说、哪里互相矛盾、哪里只是 prompt 约束而非机械约束**？这些空白对插件作者意味着什么？逐原语边界句见 [`selection/01`](./01-per-primitive-usage-sentences-from-tool-descriptions.md)，路由见 [`selection/02`](./02-cross-primitive-routing-and-the-official-upgrade-order.md)。
 
-本页回答：官方选择语义**哪里没说、哪里互相矛盾、哪里只是 prompt 约束而非机械约束**？这些空白对插件作者意味着什么？逐原语边界句见 [`selection/01`](./01-per-primitive-usage-sentences-from-tool-descriptions.md)，路由见 [`selection/02`](./02-cross-primitive-routing-and-the-official-upgrade-order.md)。
+> 源码核验入口：`packages/workflow/workflow/README.md`、`packages/workflow/tool-workflow/src/index.ts`、`packages/subagent/tool-subagent/src/index.ts`、`packages/goal/tool-goal/src/index.ts`、`packages/jobs/tool-jobs/src/index.ts`、`packages/interaction/tool-ask-user/src/index.ts`、`packages/bundle/base/cordis.patch.yml`。
 
 ## 读完你能回答
 

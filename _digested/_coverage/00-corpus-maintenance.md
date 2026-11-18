@@ -8,6 +8,23 @@
 
 ---
 
+## M13 · 2026-11-18 · 6 分片逐页全仓一致性复核与验收收口
+
+**性质**：对 M12 之后全部 26 个专题 / 187 篇 catalog 页面、配图 SVG 与 `harness-idea/claims.json` 做 6 路独立源码对照复核（严格限于 `_digested/`），修正剩余事实、计数、行号与图面缺陷，完成全语料 `reverified` 验收。
+
+1. **Spine 与运行面专题（Shards A/B/C）**：
+   - `system-overview/`、`session-and-loop/`、`agent-loop/`、`tools-prompt-llm/`、`surfaces-entrypoints/`、`experimental/`：修正 `SettingsForms.configure()` Host/Client 职责、`withoutDeveloperMessages()` / `developer/message` 折叠、`goal-round-driver` 行号与 `restart-rearm.svg`、flat `ContentBlock[]` 结构、`web-document.ts` 行号及 `@deepseek-ai/dsh` `OPTIONAL_BUNDLES` 豁免范围，清理遗留迁移叙述与不存在脚本名。
+   - `plugin-system/` 与 `runtime-profiles/`：按源码核实 `base`（96）+ `web-app`（91）= 187 条 YAML insert 行、`skippedBundles` 静默跳过/警告语义、32 个包的 `Config` 顶层字段数、`recomposeProfile` / `workspaceRegistry.create` 入口，以及 `apps/cli/src/profile-boot.ts:78` 等行号。
+   - `two-tree-runtime/`：修正 `apps/desktop-host/src/index.ts`、`typert/protocol` / `gateway` / `connection` 行号，校准 `gateway-dispatch.svg` 中步骤 ⑥（解析 receiver Context）与 ⑦（逐个解析参数）的时序顺序。
+2. **委派、Capability Seam 与过程元专题（Shards D/E/F）**：
+   - `delegation-and-orchestration/`：移除 `delegation-primitives/02` 中虚构的 `one-shot start()` / `observeRun` 及 `06` 中不存在的 `explicit-ask` 门槛，修正 `fork-in-process` 行号与 `settleRunResult` `stopReason` 类型、`team-session-walkthrough.svg`、`jobs/src/types.ts`、`manager.ts` 与 `graph-essence-three-layers.svg`。
+   - `capability-seams/` 与 `development-flow/`：按 `tool-bash/src/{index.ts,render.ts}` 修正前台 `jobs` 接管与 `result.aborted` → `toolAborted()`（`isError: true`）失败口径；补充 `subagentCatalog` 在 Host/Client 生产消费点与 `snapshots/session/browser-use-*` 显式挂载；修正 `implemented/architecture` 去日期前缀计数（`8/7/7`）及 `a7a5be1703` 实测树差异（`452` 组三件套 / `1,356` 文件 + `manifest.json`、全仓 `246` 篇非 `.zh.md` Markdown 改写）。
+   - `test-strategy/` 与 `harness-idea/`：修正 `active-stream-reconnect` 预算（`≤125ms`）与 8 个 benchmark 子目录、`lefthook.yml` 实际 pre-commit hook、`LOCAL_PARALLELISM_CAP = 12` / `PROGRAM_MODE_CAP = 8`、`serial-macos`（`if: false`）、`session-snapshot/src` 9 文件、`load-path.spec.ts` `inject` 列表、`subagent-codex/loader-composition.e2e.ts` 4 项能力、`doc-sync` `43` 个叶子门禁与 `agent.ts:426-440`；修复 `scenario-anatomy.svg` 嵌套 `<text>` 等 SVG 越界/重叠缺陷。
+3. **叶节点开篇铺垫与阅读体验重排**：排查全部非 map 叶节点页面中「一上来先丢源码路径或直接甩出浓缩大表/摘要」的问题（覆盖 `session-and-loop/01-04`、`agent-loop/01-04`、`system-overview/01-03`、`tools-prompt-llm/01-06`、`surfaces-entrypoints/01-03`、`runtime-profiles/01-06`、`experimental/01,03`、`plugin-system/{composition/01-03,inventory/01-05}`、`two-tree-runtime/` 31 篇机制叶页、`test-strategy/12` 及 `delegation-and-orchestration/*/` 27 篇子页）：统一先立「为什么单立这一页、解决什么痛点与分工、怎么读下文」的中文铺垫，再接 `源码核验入口` 与高密度细节/图表。全仓 161 篇叶节点页面已清零「首段即路径清单或冷摘要」开局。
+4. **账本与基线确认**：`catalog.json` 全部 26 专题 / 187 篇页面同步推进至基线 `b830ec950faba0a46dda564be3e2d854afed94f1`（`status: "reverified"`）。
+
+---
+
 ## M12 · 2026-11-18 · 全仓源码核验纠偏 + SVG 几何重绘 + 漏扫专题收口 + 门禁硬化
 
 **性质**：对 M1–M11 后的 `_digested/` 做全仓逐专题源码核对、图表几何审查与门禁补盲（严格限于 `_digested/`）。

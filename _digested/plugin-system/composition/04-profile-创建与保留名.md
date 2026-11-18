@@ -27,7 +27,7 @@ dsh --profile rescue --from-default-profile web --dump-config
 
 - **模板名必须在 `PROFILE_TEMPLATES` 里**，否则报错并列出全部合法模板（`profile-boot.ts:117-122`）。
 - **目标名不能是 shipped 名**，比较大小写不敏感——`Web` 这类变体在大小写不敏感文件系统上会落到 shipped 目录（`:123-130`）——想要 shipped 组合就直接用它，不必派生。
-- **替换而非独占抢占**：先 `mkdirSync(dirname(dir), { recursive: true })`，在目标旁建暂存目录 `.<name>.staging-*`（两次改名必须落在同一文件系统），把新副本 `initProfile` 进暂存区，再把目标改名为 `previous`、把新副本改名为目标（`:131-146`）。目标此前的一切——含依赖与用户 patch——随 `previous` 一起删除；重复执行同一条命令因此是「重建」，不再以「profile 已存在」失败。
+- **替换而非独占抢占**：先 `mkdirSync(dirname(dir), { recursive: true })`，在目标旁建暂存目录 `.<name>.staging-*`（两次改名必须落在同一文件系统），把新副本 `initProfile` 进暂存区，再把目标改名为 `previous`、把新副本改名为目标（`:131-146`）。目标此前的一切——含依赖与用户 patch——随 `previous` 一起删除；重复执行同一条命令会原地原子重建目标 profile，而非以「profile 已存在」失败。
 - **只复制 bundles**，然后调 `initProfile(fresh, template.bundles)` 写出空依赖与空用户 patch（`:137`）。不读同名 shipped profile 的本地状态，也不写任何继承字段；模板列表之后再变也不会回写已建 profile。
 - **失败回滚与并发**：新副本改名失败时，若目标已被并发重建（Windows 报 EPERM 而非 EEXIST/ENOTEMPTY，故按目标状态判定）则以「was recreated concurrently」报错（`:147-153`）；否则把 `previous` 改回目标，回滚也失败时抛 `AggregateError` 并指出旧 profile 还留在暂存目录（`:154-165`）。替换成功后暂存目录清理失败只写 stderr 警告，不让已完成的替换看起来失败（`:171-177`）。
 - **初始化先于 bundle 解析与 boot 提交**：所以后续 boot 失败时 profile 留在盘上（已是新副本），重试时省掉该选项。
@@ -52,7 +52,7 @@ dsh --profile rescue --from-default-profile web --dump-config
 `rejectElectronProfile`（`apps/cli/src/args.ts:83-87`）大小写不敏感地把任何 `desktop` 变体判为 Electron 专属并 `program.error`，两个调用点覆盖 CLI 的全部入口：
 
 - 根命令 action（`apps/cli/src/args.ts:183`）——同时覆盖 boot 与 `--dump-config` / `--dump-default-config` / `--dump-config-schema`。
-- `plugin` 子命令（`apps/cli/src/args.ts:199`）——CLI 不能 `pnpm add` 进这个 profile。
+- `plugin` 子命令（`apps/cli/src/args.ts:199`）——公共 `dsh` CLI（`manageDesktopProfile = false`）同样拒绝在该 profile 上运行 `pnpm`；仅桌面应用自带载体以 `manageDesktopProfile: true` 在桌面退出后放行 `dsh plugin --profile desktop`（`apps/desktop-host/src/cli.ts:16`）。
 
 装载路径也不一样：desktop 不走 `loadProfile` 的 Harness home 发现与 shipped 归一化，而是走 `loadProfileDirectory` + 共享的 `runProfile`（[`../../runtime-profiles/06-desktop.md`](../../runtime-profiles/06-desktop.md)：desktop-host 经 `runProfile` 起完整 web 应用）。`--from-default-profile` 的源模板只认 `PROFILE_TEMPLATES` 里那五个 shipped 模板（`initializeProfileFromDefault` 若收到 `--from-default-profile desktop` 会报 `unknown default profile "desktop"`，`apps/cli/src/profile-boot.ts:117-122`），而目标名去重检查只拦 `Object.keys(PROFILE_TEMPLATES)`——CLI 里拦住 `--profile desktop` 与 `--from-default-profile ...` 目标名 `desktop` 的，都是更早调用的 `rejectElectronProfile`（`apps/cli/src/args.ts:83-87`）。
 
@@ -81,4 +81,4 @@ dsh plugin --profile demo list                                          # 初始
 dsh --profile desktop --dump-config                                     # 应被拒绝
 ```
 
-判据：`--from-default-profile` 会删掉原有依赖与用户 patch；它不是升级。`desktop` 名字两个入口都拒绝。
+判据：`--from-default-profile` 会删掉原有依赖与用户 patch；它不是升级。公共 `dsh` CLI 在启动与 `plugin` 两个入口均拒绝 `desktop`（`manageDesktopProfile = false`）。

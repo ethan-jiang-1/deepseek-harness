@@ -1,8 +1,8 @@
 # Background Jobs and Wall-Clock Schedules · 后台作业与时钟平面
 
-源码核验入口：`packages/jobs/jobs/`（`README.md`/`src/index.ts`）、`packages/jobs/jobs-local/`、`packages/jobs/tool-jobs/src/index.ts` 与 `README.md`、`packages/shell/tool-bash/src/index.ts`、`packages/schedule/schedule/`（`README.md`）、`packages/schedule/tool-schedule/src/index.ts`、`packages/schedule/README.md`、`packages/boot/app-boot/src/profile.ts`、`packages/bundle/web-app/cordis.patch.yml`。
+> 本页回答：JobRegistry 这个后台作业平台给了什么保证（id、隔离、结算、通知）？谁是 producer？"何时转后台"的官方边界？schedule 的时序语义与交付形态？工具描述里的跟踪纪律（不忙轮询、收尾前收集）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；workflow 与 subagent 两个 producer 的接入细节见 [`01`](./01-scripted-workflow-and-sandboxed-fan-out.md) 与 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
-本页回答：JobRegistry 这个后台作业平台给了什么保证（id、隔离、结算、通知）？谁是 producer？"何时转后台"的官方边界？schedule 的时序语义与交付形态？工具描述里的跟踪纪律（不忙轮询、收尾前收集）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；workflow 与 subagent 两个 producer 的接入细节见 [`01`](./01-scripted-workflow-and-sandboxed-fan-out.md) 与 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
+> 源码核验入口：`packages/jobs/jobs/`（`README.md`/`src/index.ts`）、`packages/jobs/jobs-local/`、`packages/jobs/tool-jobs/src/index.ts` 与 `README.md`、`packages/shell/tool-bash/src/index.ts`、`packages/schedule/schedule/`（`README.md`）、`packages/schedule/tool-schedule/src/index.ts`、`packages/schedule/README.md`、`packages/boot/app-boot/src/profile.ts`、`packages/bundle/web-app/cordis.patch.yml`。
 
 ## 读完你能回答
 

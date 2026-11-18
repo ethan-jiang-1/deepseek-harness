@@ -1,5 +1,7 @@
 # Agent 运行时身份：显式属主与 initiator 权限判据
 
+> **为什么单独有这一页**：写插件或改遥测/权限逻辑时，人很自然会想从手里拿到的 `ctx` 上顺手取一个 `ctx.agent`——但 DSH 刻意拒绝在 `Context` 上挂任何反向属性，否则服务注册域与单次会话身份一旦搅在一起，Host 转发、子代理归属和权限校验都会被迫靠猜。本页解释**为什么没有 `ctx.agent`、运行时身份如何通过显式参数与 `withInitiator` 因果边界传递**；读懂这一页，才不会在扩展点里写错属主或绕破权限门。
+
 ## 一句话
 
 Context 上**没有**反向的 `ctx.agent` 属性；身份只在拥有它的地方显式传递——`AgentSetup(agentCtx, agent)`、`CreateAgentOptions.parentAgent` / `ResumeAgentOptions.parentAgent`，以及 loop 用 `withInitiator` 划出的因果边界。这条边界是**权限判据**：goal round driver 靠它区分 host 的 Pause 与模型自己的 `update_goal pause`。
@@ -23,7 +25,7 @@ Context 与 Agent 回答两个不同的问题：Context 是注册与生命周期
 
 ## 身份显式传递
 
-- `AgentSetup` 的签名是 `(agentCtx: Context, agent: Agent)`（`packages/core/agent/src/index.ts:50-53`）：setup 回调同时拿到「注册落在哪个 Context」与「这次操作属于哪个 Agent」，不再需要从前者推后者。父创建子时，setup 回调的 Agent 参数是**子**，因果父由 initiator 边界报告。
+- `AgentSetup` 的签名是 `(agentCtx: Context, agent: Agent)`（`packages/core/agent/src/index.ts:50-53`）：setup 回调同时拿到「注册落在哪个 Context」与「这次操作属于哪个 Agent」，无需从前者推后者。父创建子时，setup 回调的 Agent 参数是**子**，因果父由 initiator 边界报告。
 - `CreateAgentOptions.parentAgent`（`:67`）与 `ResumeAgentOptions.parentAgent`（`:129`）是运行时子属关系的唯一入口。
 - `AgentRegistry.register()` 固定以 root 身份进入：`yield this.enter(agent, undefined)`（`:439-441`）。也就是说，已构造 Agent 的注册永远是运行时 root；子属关系只能经 `parentAgent` 建立——loop 侧的调用点是 `loopCtx.agents.enter(agent, parentAgent)`（`packages/core/agent-loop/src/index.ts:657`）。
 - 后果：`AgentRegistry.roots()` 与 `isOwnedBy()` 看的是 live 属主，不是 durable 的 `parentSession` metadata。一个 fork 或 resume 出来的 Session 在没有 live Agent 拥有它时就是运行时 root，而 `SubagentContinuationManager` 建立的 continuable child 即使在私有插件 Context 里创建，也因为有精确 `parentAgent`（`packages/subagent/subagent/src/manager.ts:908`、`:915`，冷 resume 与新建两条路径都传）而不被当成顶层。

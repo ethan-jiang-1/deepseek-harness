@@ -67,7 +67,7 @@ DSH 的测试规矩不在一份文件里，而是按"谁需要什么时候看到
 ## 源码锚点
 
 - root `AGENTS.md`——上述条款原文（Testing policy / Plan unit… / Both SDKs… / Run relevant checks locally 三节）
-- `lefthook.yml`——hooks 的物理实现（pre-commit 只挂 translation pairing / archived notes / staged lint / third-party notices / whitespace / vendor manifest guard；pre-push 只跑增量 typecheck）
+- `lefthook.yml`——hooks 的物理实现（pre-commit 只挂 translation pairing / archived notes / staged lint / whitespace / pi-ai provider metadata / vendor manifest guard；pre-push 只跑增量 typecheck）
 - `snapshots/AGENTS.md`——快照树所有权
 - `.agents/skills/dsh-pre-push-checks/SKILL.md`——推送前检查选取
 - `.agents/skills/record-browser-gif/SKILL.md`——GUI PR 的 GIF 证据规矩

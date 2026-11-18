@@ -1,8 +1,8 @@
 # Cross-Round Goals and the Round Driver · 跨轮 goal 与 Round Driver
 
-源码核验入口：`packages/goal/tool-goal/src/index.ts`（工具 schema 与政策 guidance）、`packages/goal/tool-goal/src/wrapup.ts`（终结收尾指令）、`packages/goal/goal-round-driver/src/prompt.ts`（轮 prompt）、`packages/goal/goal/src/index.ts`（服务 Config）、`packages/goal/command-goal/src/index.ts`（`/goal` 命令）、`.agents/notes/archived/feature/2026-07-16-harness-level-loop.md`（两策略决策）。
+> 本页回答：作为 goal 的使用者（驾驶座），objective 该怎么写、轮预算怎么定、complete/blocked 怎么判定、`/goal` 命令面有什么、resume 之后怎么重新武装？**机制不重复**：goal 状态机与 CAS 见 [`../agent-loop/01-goal-lifecycle.md`](../../agent-loop/01-goal-lifecycle.md)，Round Driver 的自动续轮见 [`../agent-loop/02-goal-round-driver.md`](../../agent-loop/02-goal-round-driver.md)，四层结束边界见 [`../agent-loop/03-activity-vs-goal-boundaries.md`](../../agent-loop/03-activity-vs-goal-boundaries.md)；什么时候选 goal（而不是 subagent/workflow/ralph）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
 
-本页回答：作为 goal 的使用者（驾驶座），objective 该怎么写、轮预算怎么定、complete/blocked 怎么判定、`/goal` 命令面有什么、resume 之后怎么重新武装？**机制不重复**：goal 状态机与 CAS 见 [`../agent-loop/01-goal-lifecycle.md`](../../agent-loop/01-goal-lifecycle.md)，Round Driver 的自动续轮见 [`../agent-loop/02-goal-round-driver.md`](../../agent-loop/02-goal-round-driver.md)，四层结束边界见 [`../agent-loop/03-activity-vs-goal-boundaries.md`](../../agent-loop/03-activity-vs-goal-boundaries.md)；什么时候选 goal（而不是 subagent/workflow/ralph）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
+> 源码核验入口：`packages/goal/tool-goal/src/index.ts`（工具 schema 与政策 guidance）、`packages/goal/tool-goal/src/wrapup.ts`（终结收尾指令）、`packages/goal/goal-round-driver/src/prompt.ts`（轮 prompt）、`packages/goal/goal/src/index.ts`（服务 Config）、`packages/goal/command-goal/src/index.ts`（`/goal` 命令）、`.agents/notes/archived/feature/2026-07-16-harness-level-loop.md`（两策略决策）。
 
 ## 读完你能回答
 

@@ -1,8 +1,8 @@
 # 测试阶梯与三道 client gate
 
-核验入口：[`packages/client/AGENTS.md`](../../../../packages/client/AGENTS.md) 的 testing ladder 与 coverage 段、[`docs/testing.md`](../../../../docs/testing.md)。
-
-这一页把「改一行 UI 要跑什么」排成三级，并列出三道 client gate 各自拦什么；选窄一级，不要默认全量。
+> **为什么单独有这一页**：改了几行客户端 UI 或样式后，最纠结的是验证尺度——每改一行就跑整仓全套检查会慢到没法迭代，但只跑单测又可能漏掉前端包依赖边界、多语言未入字典或路由解析断裂，等到 CI 才全红。本页把客户端日常验证按代价排成三级阶梯，并点破三道专用 `verify-client-*` 门禁各自真正在防什么，让你每次改动都能选到**刚好够覆盖影响面、又最省时间**的那一档检查。
+>
+> 核验入口：[`packages/client/AGENTS.md`](../../../../packages/client/AGENTS.md) 的 testing ladder 与 coverage 段、[`docs/testing.md`](../../../../docs/testing.md)。
 
 ## 测试阶梯
 

@@ -32,16 +32,16 @@
           "file": "02-对照单一loop.md",
           "title": "对照「单一 loop + tools 数组」",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "03-门禁与性能基准.md",
           "title": "门禁聚合与性能基准树",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         }
       ]
@@ -98,32 +98,32 @@
           "file": "01-五条原语对照源码.md",
           "title": "五条原语对照源码",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "02-waterfall-与事件合同.md",
           "title": "waterfall 与事件合同",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "03-loader-include-与js插值.md",
           "title": "Loader、Include 与 `!!js` 插值",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "04-vendor-本地修改.md",
           "title": "vendor 本地修改：产品踩在哪些补丁上",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -156,7 +156,7 @@
           "title": "export 与包内目录",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -164,7 +164,7 @@
           "title": "依赖、构建期环境与三处注册面",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -172,7 +172,7 @@
           "title": "样式与本地化",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -180,7 +180,7 @@
           "title": "测试阶梯与三道 client gate",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -188,7 +188,7 @@
           "title": "谁拥有一份状态",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -196,7 +196,7 @@
           "title": "资源模型与 holder 生命周期",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -220,7 +220,7 @@
           "title": "六层与单向依赖链",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -228,7 +228,7 @@
           "title": "模块身份：baseline、`external` 与激活顺序",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -252,7 +252,7 @@
           "title": "slot 与 props 纪律",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -260,7 +260,7 @@
           "title": "Conversation Node 纪律",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -268,7 +268,7 @@
           "title": "右栏与 document preview",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         }
       ]
@@ -301,7 +301,7 @@
           "title": "认证与浏览器宿主",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -325,7 +325,7 @@
           "title": "一条 emit，两条出站链路",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -333,7 +333,7 @@
           "title": "三类帧与 wire 校验",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -382,7 +382,7 @@
           "title": "headless — 一次性 CLI 任务",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -390,7 +390,7 @@
           "title": "sdk — JSON-RPC SDK 服务",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -398,7 +398,7 @@
           "title": "sdk-minimal — JSON-RPC 极简变体",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -406,7 +406,7 @@
           "title": "acp — Agent Client Protocol 自动化服务",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -430,40 +430,40 @@
           "file": "00-map.md",
           "title": "Session and loop · 会话与驱动",
           "role": "map",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "01-session-event-map.md",
           "title": "SessionEventMap、required-on-read 与版本",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "02-inbox-与turn-时序.md",
           "title": "Inbox、唤醒与 turn 时序",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "03-换loop的半径.md",
           "title": "`dsh-agent` 与 `dsh-agent-loop`：换 loop 的半径",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "04-格式世代与迁移.md",
           "title": "Session 格式世代与迁移",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         }
       ]
@@ -479,16 +479,16 @@
           "file": "00-map.md",
           "title": "Agent Loop · 推进、边界与 Goal 驱动",
           "role": "map",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "01-goal-lifecycle.md",
           "title": "Goal 生命周期：创建、状态机与三种路径",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -503,16 +503,16 @@
           "file": "03-activity-vs-goal-boundaries.md",
           "title": "四层结束边界 — step / turn / activity / goal",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "04-agent-runtime-identity.md",
           "title": "Agent 运行时身份：显式属主与 initiator 权限判据",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         }
       ]
@@ -577,40 +577,40 @@
           "file": "01-scripted-workflow-and-sandboxed-fan-out.md",
           "title": "脚本化 workflow 与沙箱扇出",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "02-bounded-delegation-with-fresh-and-forked-subagents.md",
           "title": "有界委派：fresh 与 fork",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "03-fresh-agent-iteration-loop-and-round-handoff.md",
           "title": "ralph：fresh-agent 循环与轮间传递",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "04-cross-round-goals-and-the-round-driver.md",
           "title": "跨轮 goal 与 Round Driver",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "05-background-jobs-and-wall-clock-schedules.md",
           "title": "后台作业与时钟平面",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -650,8 +650,8 @@
           "file": "01-per-primitive-usage-sentences-from-tool-descriptions.md",
           "title": "逐原语边界句",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -756,8 +756,8 @@
           "file": "01-acceptance-visibility-quiescence-and-disposal.md",
           "title": "接受、可见、静止与处置",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -772,16 +772,16 @@
           "file": "03-session-lineage-and-agent-incarnation.md",
           "title": "Session 谱系与 Agent 实例",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "04-persistent-facts-derived-projections-and-live-authority.md",
           "title": "持久事实、派生投影与活体权限",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -796,8 +796,8 @@
           "file": "06-workflow-reproducibility-cancellation-and-missing-results.md",
           "title": "workflow 可复现性、取消与缺失结果",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -829,16 +829,16 @@
           "file": "01-graph-computation-essence-invariant-derivation-and-execution.md",
           "title": "图计算的本质",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "02-external-narratives-versus-source-truth.md",
           "title": "外部叙事与源码真相",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -984,24 +984,24 @@
           "file": "00-map.md",
           "title": "Composition · 启动组合",
           "role": "map",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "01-boot-时序.md",
           "title": "`boot()` 时序",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "02-dump-与boot-保真.md",
           "title": "dump 与 boot 保真",
           "role": "mechanism",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -1041,64 +1041,64 @@
           "file": "00-map.md",
           "title": "Plugin lifecycle · 插件生命周期",
           "role": "map",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "01-打包.md",
           "title": "打包：bundle 与 profile 的二分",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "02-分发.md",
           "title": "分发：包怎么到达机器",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "03-安装.md",
           "title": "安装：写盘的那一步",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "04-启动.md",
           "title": "启动：从层列表到 ACTIVE 审计",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "05-特殊初始化.md",
           "title": "特殊初始化：只发生一次的事",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "06-更新与启停.md",
           "title": "更新与启停：变化怎么落到运行中的树",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "07-卸载与数据留存.md",
           "title": "卸载与数据留存：删掉什么、留下什么",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
@@ -1154,48 +1154,48 @@
           "file": "00-map.md",
           "title": "Plugin inventory · 现成插件货架",
           "role": "map",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         },
         {
           "file": "01-capability-tour.md",
           "title": "01 · 八类能力与场景：新人 20 分钟消化路径",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "02-plugin-catalog.md",
           "title": "02 · 插件货架：343 包逐组图鉴",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "03-reference-lists.md",
           "title": "03 · 五张横切清单：按「要什么」查",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "04-reuse-paths-and-gaps.md",
           "title": "04 · 复用四条出路与缺口清单",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "05-taxonomy-and-design.md",
           "title": "05 · 插件分类与设计思考",
           "role": "mechanism",
-          "verifiedAt": "1f81c047fc48fa190a683e469daa699857e9afe8",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "page"
         }
       ]
@@ -1219,8 +1219,8 @@
           "file": "01-code-runtime-python.md",
           "title": "ptc-runtime-python：CPython 子进程后端",
           "role": "experiment",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -1235,8 +1235,8 @@
           "file": "03-inspector.md",
           "title": "Inspector：CDP 调试面",
           "role": "experiment",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -1334,7 +1334,7 @@
           "title": "源码启动、built bin 与 launcher profile",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -1342,7 +1342,7 @@
           "title": "ACP 与 JSON-RPC 各自保证什么",
           "role": "mechanism",
           "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
-          "status": "carried",
+          "status": "reverified",
           "source": "matrix"
         },
         {
@@ -1374,8 +1374,8 @@
           "file": "01-doctrine.md",
           "title": "01 — 思想与成文政策：55 行宪法与它的九条教义",
           "role": "mechanism",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -1414,16 +1414,16 @@
           "file": "06-rules-ownership.md",
           "title": "06 — 规矩与所有权：谁拥有什么证据",
           "role": "mechanism",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "07-ci-gates.md",
           "title": "07 — CI 门禁与平台矩阵：编排、必需性与防假绿",
           "role": "mechanism",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -1438,24 +1438,24 @@
           "file": "09-infrastructure.md",
           "title": "09 — 测试基建：test-support 七件套、横切 helper 与 Python 面",
           "role": "mechanism",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "10-snapshot-machinery.md",
           "title": "10 — 快照机制：录制会话回放怎么做期望值",
           "role": "mechanism",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "11-snapshot-external-face.md",
           "title": "11 — 快照机制的对外面：插件仓能拿到的发布包、夹具与接线事实",
           "role": "mechanism",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -1470,16 +1470,16 @@
           "file": "13-plugin-testing.md",
           "title": "13 — 插件测试策略：政策对一个新插件的要求",
           "role": "playbook",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
           "file": "14-plugin-testing-playbook.md",
           "title": "14 — 插件测试实战：五个真实插件的测试组合解剖",
           "role": "playbook",
-          "verifiedAt": "639ed015397290b3745d163aafe02ffee4aa3f84",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "topic"
         },
         {
@@ -1592,80 +1592,80 @@
           "file": "00-map.md",
           "title": "Harness idea · dsh 作为 harness 的思想",
           "role": "map",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "01-role-and-substrate.md",
           "title": "Harness 的职责与基底：插件图、事件流与五个运行时问题",
           "role": "analysis",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "02-legibility.md",
           "title": "可读性（legibility）从哪来：为什么 coding agent 容易读懂 dsh",
           "role": "analysis",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "03-paved-road.md",
           "title": "为什么懂了就做对：正确路径（paved road）是阻力最小的路径",
           "role": "analysis",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "04-participation-paths.md",
           "title": "参与阶梯（participation ladder）：从改配置到改 loop",
           "role": "analysis",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "05-dynamic-legibility.md",
           "title": "动态可读性（dynamic legibility）：dsh 可以回答，也可以试验",
           "role": "analysis",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "06-tech-and-language-fit.md",
           "title": "技术选型与语言贴合：dsh 为什么容易被 coding agent 消化",
           "role": "analysis",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "07-boundaries-costs-fit.md",
           "title": "边界、成本与适用条件：原则与智能无关，形状与压力有关",
           "role": "analysis",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "08-judgement-discipline.md",
           "title": "判断纪律：本专题自己的知识从哪来，凭什么可信",
           "role": "analysis",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         },
         {
           "file": "09-feedback-loop.md",
           "title": "反馈如何闭环：harness 报告，模型裁决，仓库学习",
           "role": "analysis",
-          "verifiedAt": "687f282e8625c6b8d11ff58211a90524be2e4317",
-          "status": "carried",
+          "verifiedAt": "b830ec950faba0a46dda564be3e2d854afed94f1",
+          "status": "reverified",
           "source": "matrix"
         }
       ]

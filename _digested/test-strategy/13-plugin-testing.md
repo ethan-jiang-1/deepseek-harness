@@ -30,7 +30,7 @@ expect('default' in toolLsp).toBe(false)
 const unwrapped = loader.unwrapExports(toolLsp) as Record<string, unknown>
 expect(unwrapped).toBe(toolLsp)                        // round-trip：Loader 不丢命名空间
 expect(unwrapped.name).toBe('tool-lsp')                // name / inject 穿过 unwrapExports 仍在
-expect(unwrapped.inject).toEqual(['tools', 'lsp', 'systemPrompt'])
+expect(unwrapped.inject).toEqual(['tools', 'lsp', 'systemPrompt', 'workingDirectory'])
 ```
 
 为什么这么严：postmortem 0001 的 bug #1——一个多余的 `export default` 让 Loader 的 `unwrapExports` 解析到裸函数、丢弃整个模块命名空间，Loader smoke 依然绿。全仓 45 个 spec 含此断言；`packages/AGENTS.md` 把它固化为包层常驻条令（[06](./06-rules-ownership.md)）。
@@ -58,7 +58,7 @@ ctx.tools.execute({ signal, callId, name: 'todo_write', arguments: args, agent }
 
 ## 台阶三：注册表生命周期（HMR-safety 是强制模式）
 
-"Every registry gets an HMR-safety test (dispose the contributing fiber, assert cleanup)"——全仓 72 处 `(HMR safety)`。插件作者要证明：dispose 掉自己的 fiber，贡献消失，服务自身 built-in 不受影响。样板：`packages/todo/tool-todo/tests/projection.spec.ts`。
+"Every registry gets an HMR-safety test (dispose the contributing fiber, assert cleanup)"——全仓测试文件实测 67 处 / 56 个 spec·e2e 文件（不含 `lib/` 共 70 处）含 `(HMR safety)`。插件作者要证明：dispose 掉自己的 fiber，贡献消失，服务自身 built-in 不受影响。样板：`packages/todo/tool-todo/tests/projection.spec.ts`。
 
 ## 台阶四：REAL composition（两级，分工不同）
 

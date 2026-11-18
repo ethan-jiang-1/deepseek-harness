@@ -1,8 +1,8 @@
 # Acceptance, Visibility, Quiescence and Disposal · 接受、可见、静止与处置
 
-源码核验入口：`packages/core/session/src/types.ts`、`packages/core/agent/src/`、`packages/subagent/subagent/src/{manager,activation,continuation-messages}.ts`、`packages/jobs/jobs/src/`。
+> 本页回答：一个请求从被接受到“业务上完成”之间，到底有几个不同的时刻？本页补齐本组里最容易混淆的词：一个请求被接受，不等于模型已经看见；模型看见，不等于 turn 已经静止；资源终态，也不等于结果已经被消费。不同原语把这些时刻交给不同的日志、投影、inbox、句柄和 Host 存储。
 
-本页回答：一个请求从被接受到“业务上完成”之间，到底有几个不同的时刻？本页补齐本组里最容易混淆的词：一个请求被接受，不等于模型已经看见；模型看见，不等于 turn 已经静止；资源终态，也不等于结果已经被消费。不同原语把这些时刻交给不同的日志、投影、inbox、句柄和 Host 存储。
+> 源码核验入口：`packages/core/session/src/types.ts`、`packages/core/agent/src/`、`packages/subagent/subagent/src/{manager,activation,continuation-messages}.ts`、`packages/jobs/jobs/src/`。
 
 ## 读完你能回答
 
@@ -50,7 +50,7 @@ goal round 需要先通过 idle、竞争输入、目标 phase、activation 和 r
 
 ### Jobs
 
-Job producer 负责执行资源，JobRegistry 负责 id、状态、输出 ring、读取游标和通知。`running → stopping` 不是资源已经停止；`JobHooks.done` 只有在 producer 释放资源后才应 resolve。`job_output` 的 `result` 只在结算后的第一次消费性读取中返回；`readAt` 是非消费读取，供观察者使用。settled 事件的 `awaited` 字段说明是否已有 waiter 收集结算，不说明模型已经读取结果（`packages/jobs/jobs/src/types.ts:104`-`:117`、`:160`-`:217`）。
+Job producer 负责执行资源，JobRegistry 负责 id、状态、输出 ring、读取游标和通知。`running → stopping` 不是资源已经停止；`JobHooks.done` 只有在 producer 释放资源后才应 resolve。`job_output` 的 `result` 只在结算后的第一次消费性读取中返回；`readAt` 是非消费读取，供观察者使用。settled 事件的 `awaited` 字段说明是否已有 waiter 收集结算，不说明模型已经读取结果（`packages/jobs/jobs/src/types.ts:158`-`:171`、`:215`-`:225`、`:261`-`:273`）。
 
 ### Agent Teams 消息与任务
 
@@ -88,7 +88,7 @@ schedule 的到期流程先恢复目标 Session，再把 `schedule` follow-up �
 
 | 路径 | 关注点 |
 |------|--------|
-| `packages/jobs/jobs/src/types.ts:104`-`:217` | producer 资源、registry 状态、消费读取与 awaited |
+| `packages/jobs/jobs/src/types.ts:158`-`:273` | `JobHooks.done`、消费读取 `result` 与 settled `awaited` |
 | `.agents/notes/implemented/simplification/2026-09-26-team-direct-inbox.md`、`packages/experimental/agent-team/src/projection.ts:117`-`124` | Team 直投 inbox；历史 mailbox 记录只保留解码与投影 |
 | `packages/schedule/schedule/src/runtime.ts:85`-`:165` | Session flush 与任务 retire/advance 的非原子窗口 |
 | `packages/workflow/tool-workflow/src/index.ts:89`-`:149` | workflow 观察记录不影响执行结算 |

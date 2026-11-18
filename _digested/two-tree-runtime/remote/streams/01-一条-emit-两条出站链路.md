@@ -1,8 +1,8 @@
 # 一条 emit，两条出站链路
 
-核验入口：[`packages/api/session-controller/`](../../../../packages/api/session-controller/README.md)、[`packages/api/remotes/src/remote-events.ts`](../../../../packages/api/remotes/src/remote-events.ts)（Host 事件转发白名单）。
-
-这一页把一次 `emit('session/event')` 拆成两条互不相同的出站链路：session 事件走 follow 流，非 session 事件走白名单转发。
+> **为什么单独有这一页**：看到 Host 既有 `Session.follow` 流、又有跨进程的 Cordis 事件转发，新手常会疑惑：**新加了一种 Host 事件后，浏览器到底走哪条通道收到它？难道同一事件会在两处重复推送吗？** 事实上两者职责完全不重叠：会话内持久化事件的连续视图走 `follow` 流，跨 Session 的非持久化通知事件才走严格静态白名单转发。分清这条岔路口，才不会把本该进 session log 的状态错塞进事件白名单，或反过来在事件白名单里漏加订阅。
+>
+> 核验入口：[`packages/api/session-controller/`](../../../../packages/api/session-controller/README.md)、[`packages/api/remotes/src/remote-events.ts`](../../../../packages/api/remotes/src/remote-events.ts)（Host 事件转发白名单）。
 
 ## emit 之后：两条链路
 

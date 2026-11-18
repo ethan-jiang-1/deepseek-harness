@@ -25,7 +25,7 @@ CLI、headless、Web、ACP、JSON-RPC 与桌面复用同一套 runtime spine、`
 
 > **入口形状**：sdk 与 acp 不是独立 app 二进制，而是 `dsh --profile` 下的 launcher profile。所有入口统一走 bundle 层叠。详见 [`../runtime-profiles/00-map.md`](../runtime-profiles/00-map.md)。
 
-桌面是唯一不经 `dsh` CLI 启动的产品面：`dsh --profile desktop` 被 `apps/cli/src/args.ts` 的 `rejectElectronProfile()` 显式拒绝（大小写变体一并拦下；boot / dump 入口恒拒，`plugin` 子命令仅 Desktop 自带 carrier 以 `manageDesktopProfile` 放行，见 [`03-桌面入口.md`](./03-桌面入口.md)），上游文档也把它从 `docs/architecture.md` 的 `## Application launch` 分到 `## Desktop application`（明写 Desktop 默认监听 OS 分配的端口、配置可覆盖）。把桌面与前五个入口并列算作第 6 个入口是语料的口径选择，不是上游文档的原话。
+桌面是唯一不经 `dsh` CLI 启动的产品面：`dsh --profile desktop` 被 `apps/cli/src/args.ts` 的 `rejectElectronProfile()` 显式拒绝（大小写变体一并拦下；boot / dump 入口恒拒，`plugin` 子命令仅 Desktop 自带 carrier 以 `manageDesktopProfile` 放行，见 [`03-桌面入口.md`](./03-桌面入口.md)），上游文档也把它从 `docs/architecture.md` 的 `## Application launch` 分到 `## Desktop application`（明写 Desktop 默认监听 OS 分配的端口、配置可覆盖）。
 
 加 UI 或编辑器集成：驱动 `ctx.agents`，从 `session/event` 渲染。加 Web Chat 节点：注册 `ConversationNodeDefinition` + keyed renderer。加 Web 设置卡：走 live configuration forms——Config schema 声明 live 字段、跨插件贡献走 `plugins.detail.actions`/`badge`/`section` slots、companion 包经 `ctx.configForms.whileServed` 注册，见 [`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md)。加右栏内容类型：声明资源协议 + 注册 provider + keyed `sidebar.right.pane.tab`，见 [`two-tree-runtime/client/view/03`](../two-tree-runtime/client/view/03-右栏-与-document-preview.md)。不要在入口里再实现一套 loop。
 

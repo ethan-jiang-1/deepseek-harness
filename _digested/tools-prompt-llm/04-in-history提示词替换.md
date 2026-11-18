@@ -1,6 +1,8 @@
 # in-history 提示词替换
 
-源码核验入口：`packages/llm/llm/src/types.ts`、`packages/llm/llm/src/index.ts` 的 `normalizeModelInfo`、`packages/llm/llm-deepseek/src/models.ts` 的 catalog、`packages/core/agent-loop/src/runtime-context.ts:88-103`。
+> **为什么单独有这一页**：会中一旦改了 system prompt（例如切换模式或加载指令），最直接的做法是回到消息列表第 0 条原地覆盖——但原地改写 message 0 会直接打穿整个对话的前缀缓存，导致此前几万 token 的历史全部重算。不同 LLM route 对「历史消息里再出现一条 system 消息」能力不同：有的能直接认最后一条，有的只能读开头第 0 条。如果上层不区分模型能力直接硬追或硬改，就会出现行为错乱或白丢缓存。本页把这条**按 `systemPromptUpdate` 能力分路**的逻辑讲清楚，让你知道什么时候会改重写头、什么时候只追加尾巴。
+>
+> 源码核验入口：`packages/llm/llm/src/types.ts`、`packages/llm/llm/src/index.ts` 的 `normalizeModelInfo`、`packages/llm/llm-deepseek/src/models.ts` 的 catalog、`packages/core/agent-loop/src/runtime-context.ts:88-103`。
 
 本篇写一条**按模型能力分路**的替换语义：同一次 prompt 变化，不 capable 的 route 要重写 message 0，capable 的 route 可以把新 prompt 追加在已缓存历史之后。
 
@@ -31,7 +33,7 @@
 | `in-history` | 新 series 开始 | 先给非空后继节点记空替换，再按需重写第一个节点；有效文本相同且无节点被清空时不发 node 操作，series 由 header 侧独立决定 |
 | 任意 | rendering 为空 | 先给非空后继节点记空替换，再按需清空 head；没有任何 prompt 版本留在 derived messages |
 
-`startsSeries` 为 true 的三种情况：`agent/pre-step` 决定声明 `startsRequestSeries`；surface `replaceGeneration` 相对于上次请求动了（compaction 或任何其他替换）；可见 tool schema 集变了——这条只在 route 未声明 `toolUpdate` 模式时成立（`packages/core/agent-loop/src/agent.ts:420`），声明了模式的 route 由历史更新机制接管工具面变化。**provider/model 换本身不是 series start**：目标 route capable 时变化走 append，而 route 换本来就已错过缓存，不必再归一化。
+`startsSeries` 为 true 的三种情况：`agent/pre-step` 决定声明 `startsRequestSeries`；surface `contentGeneration` 相对于上次请求动了（`packages/core/agent-loop/src/agent.ts:419,633`）；可见 tool schema 集变了——这条只在 route 未声明 `toolUpdate` 模式时成立（`packages/core/agent-loop/src/agent.ts:420`），声明了模式的 route 由历史更新机制接管工具面变化。**provider/model 换本身不是 series start**：目标 route capable 时变化走 append，而 route 换本来就已错过缓存，不必再归一化。
 
 空渲染会清掉**所有**活动 system node，不只是最新的，否则更早的 prompt 会「复活」。dormant 的空尾节点既不提供有效文本，也不需要重复替换；空 head 且无活动后继节点就表示「无 prompt」。
 

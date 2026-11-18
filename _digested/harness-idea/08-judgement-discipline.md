@@ -39,7 +39,7 @@
 
 ## 反事实标记的操作化
 
-写判断时不再只自问一句，而是问三档：
+写判断时按三档追问：
 
 1. **裸模型档**：一个没有任何仓库上下文的 fresh agent 会不会自然写出这句？会 → 是通式，标注 `[框架]`，压缩。
 2. **检索档**：给 fresh agent 仓库路径和检索工具，它能否在合理时间内从一手材料找到同一句？能 → 这是可检索事实，价值在整理，出处必须可点。
@@ -60,13 +60,13 @@
 7. **独立复现**：用另一份无上下文 prompt 做对照生成，或用只有 repo 路径的 agent 做检索对照；
 8. **可证伪性**：每条 `[推断]` 都能回答「哪份文件改掉后这句话变假」。
 
-dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 是检索索引，gates 是提交前验证（运行时 invariant 层已在 `f028f25667` 整族退役），rejected notes 是负样本，archive 是遗忘策略，skills 是程序化判断。本专题应当吃自己的药。
+dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 是检索索引，gates 是提交前验证（运行时 invariant 层现已整族退役），rejected notes 是负样本，archive 是遗忘策略，skills 是程序化判断。本专题应当吃自己的药。
 
 ### 归档事件：连「决定忘记什么」也被写成了判据
 
-`a7a5be1703`（`docs(notes): archive low-future-value Agent Notes`）是本专题在跨度内读到的最强单点证据：它一次性把 452 个双语三件套移入 `archived/`，而每一个文件都是「0 删除行、恰好新增一行 `Archived:`」。判断纪律不只覆盖「记住什么」，也覆盖「忘记什么」，而且两条都有可复核的外部形态。
+`docs(notes): archive low-future-value Agent Notes` 这次全量归档审计是本专题读到的最强单点证据：它一次性把 452 个双语三件套移入 `archived/`，而每一个文件都是「0 删除行、恰好新增一行 `Archived:`」。判断纪律不只覆盖「记住什么」，也覆盖「忘记什么」，而且两条都有可复核的外部形态。
 
-这套判据、四分法、封印机制与那次执行的完整论证——包括 `git show --numstat -M0` 为什么是看清动作真实形状的关键读法——现在归 [`development-flow/04-forgetting.md`](../development-flow/04-forgetting.md)。本节不再重复其细节，只把它当作本页「可证伪性」要求的一个实例：归档与修订在那个提交里是两个可分辨的动作，这正是本页对 `[推断]` 要求的形态。
+这套判据、四分法、封印机制与那次执行的完整论证——包括 `git show --numstat -M0 -- '.agents/notes/archived'` 与 `--no-renames` 为什么是看清动作真实形状的关键读法——归 [`development-flow/04-forgetting.md`](../development-flow/04-forgetting.md)。本节聚焦把它当作本页「可证伪性」要求的一个实例：归档与修订在那次审计里是两个可分辨的动作，这正是本页对 `[推断]` 要求的形态。
 
 ## 核心 claim register
 
@@ -78,7 +78,7 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 | C2 | dsh 的基底是插件图 + 事件流，loop 位于两者之间 | `[源码]` | [`docs/architecture.md`](../../docs/architecture.md) · [`2026-07-05-reconstructable-requests`](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.md) | 源码显示 loop 不写日志或直接构造应用状态 |
 | C3 | quality-gates note 自称开发主力是 coding agent，并选择 gates over prose | `[原文]` | [`2026-06-11-quality-gates`](../../.agents/notes/archived/process/2026-06-11-quality-gates.md)（已归档，历史快照） | 原文被修改或删除且不再指向当前门禁 |
 | C4 | 没有部落知识通道 → 知识必须外置 | `[推断]` | 本文因果节 | 找到同时期、同压力、但知识未外置的纯 agent 仓库 |
-| C5 | dsh 的 agent 读者定位来自生产方式自述，不是 architecture 的设计声明；architecture 那句推荐句已在 `3f35ca7b5b` 撤下 | `[推断]` | quality-gates note 的时间先后 | 找到更早的官方设计记录把 agent 读者当作源头 |
+| C5 | dsh 的 agent 读者定位来自生产方式自述，不是 architecture 的设计声明；architecture 早期那句探索推荐句已在现行版中撤下 | `[推断]` | quality-gates note 的时间先后 | 找到更早的官方设计记录把 agent 读者当作源头 |
 | C6 | 关键规则由门禁与类型系统变成可执行检查；运行时 invariant 机制已整族退役，无幸存实例 | `[源码]` | [`scripts/run-gates.ts`](../../scripts/run-gates.ts) · [`AGENTS.md`](../../AGENTS.md) | 关键规则存在且长期只有 prose、无红灯 |
 | C7 | 正确路径分四层：patch / 扩展点 / seam / loop | `[推断]` | [`docs/architecture.md`](../../docs/architecture.md) · [`extension-cookbook`](../../docs/cookbook/extension-cookbook.md) · [`AGENTS.md`](../../AGENTS.md) | dsh 官方或源码显示某层参与不成立 |
 | C8 | pnpm note 明确把生态熟悉度作为 package manager 选型理由 | `[原文]` | [`2026-06-16-pnpm-over-yarn`](../../.agents/notes/archived/process/2026-06-16-pnpm-over-yarn.md)（已归档，历史快照） | pnpm note 被修订，删除了 agent 生态熟悉度作为理由 |
@@ -104,7 +104,7 @@ dsh 自己就是这么做的：Agent Notes 是外部记忆，generated catalogs 
 - [`docs/AGENTS.md`](../../docs/AGENTS.md)（第 15、19-33、40-41 行；当前状态散文与一个事实一个家）
 - [`docs/glossary.md`](../../docs/glossary.md)（第 5 行；一词一义）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（Agent Note 生命周期与格式；它自身的机制消化在 [`development-flow/`](../development-flow/00-map.md)）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md) 与 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（均已归档，历史快照；两篇 note 记录的运行时 invariant 机制已在 `f028f25667` 整族退役，权威记录改为 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md) 与 [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（均已归档，历史快照；两篇 note 记录的运行时 invariant 机制已整族退役，权威说明为 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md)）
 - [`../../docs/testing.md`](../../docs/testing.md)（第 9-10、35、37-41、53-55 行；覆盖门禁、元验证与 snapshot 政策）
 
 ## 本专题内部产物（非 DSH 证据）

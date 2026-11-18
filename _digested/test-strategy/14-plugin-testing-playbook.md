@@ -54,8 +54,8 @@ it('model calls todo_write: a tool/call, a non-error tool/result, and a todo/wri
 `packages/subagent/subagent-codex/tests/loader-composition.e2e.ts` 单文件单用例，断言密度极高：
 
 - **可选性**：`PATH: ''` 启动——"Loading the optional package must not probe or start a Codex binary"（可选依赖缺席时不探测、不启动）；
-- **拓扑**：Bundle default + 两个命名实例（`codex-primary`/`codex-secondary`）+ 各自的 capabilities JSON（`agentOptions`/`outputSchema`/`depthLimit`/`toolFilter`/`persona` 逐项断言——本例三实例全 false）+ `inheritsParentContext`；
-- **结构来自产品面**：patch 路径从 `package.json` 的 `dsh.bundle.patch` 现读，"Codex package must declare a Bundle patch" 缺失即 throw；
+- **拓扑**：Bundle default + 两个命名实例（`codex-primary`/`codex-secondary`）+ 各自的 capabilities JSON（`agentOptions`/`agentPreset`/`outputSchema`/`depthLimit` 逐项断言——本例三实例全 false）+ `inheritsParentContext`；
+- **结构来自产品面**：直接传入同目录 `fixtures/loader/codex.patch.yml` 给 `driver.ts` 装配验证（不另外读 `package.json` 的 `dsh.bundle.patch`）；
 - **CI 挂载**：此文件在 built-bin-smoke 门的 16 文件清单里（[07](./07-ci-gates.md)），CI 用 built `lib/` 以 `DSH_EXAMPLE_MODE=lib` 再跑一遍。
 
 可抄骨架：
@@ -64,7 +64,7 @@ it('model calls todo_write: a tool/call, a non-error tool/result, and a todo/wri
 const { stdout, stderr } = await runLoaderSmoke({
   label: 'subagent-codex Loader composition',
   binScript: driver, libBinScript: driver,        // driver.ts 是测试自己的极简入口
-  configPath, binArgs: [configPath, bundlePatchPath],
+  configPath, binArgs: [configPath],
   env: { PATH: '' },                              // 可选依赖缺席时不得探测/启动
 })
 expect(stderr).toBe('')

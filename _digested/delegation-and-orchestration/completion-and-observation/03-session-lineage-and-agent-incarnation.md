@@ -1,8 +1,8 @@
 # Session Lineage and Agent Incarnation · Session 谱系与 Agent 实例
 
-源码核验入口：`packages/core/session/src/types.ts:95`-`132`、`packages/subagent/subagent/src/{child-agent,manager,list-children}.ts`、`packages/core/agent/src/`。
+> 本页回答：Session、Agent、Activation、provider 各是什么？冷恢复后哪些身份与边还在、权限属于谁？
 
-本页回答：Session、Agent、Activation、provider 各是什么？冷恢复后哪些身份与边还在、权限属于谁？
+> 源码核验入口：`packages/core/session/src/types.ts:95`-`132`、`packages/subagent/subagent/src/{child-agent,manager,list-children}.ts`、`packages/core/agent/src/`。
 
 ## 读完你能回答
 
@@ -48,7 +48,7 @@ continuable Activation 保存 `childId`、live `parent`、delivery、执行资�
 - `ownedChildren: Set<SessionId>` 用于生命周期闭包，非空会阻止 child settlement；
 - Activation registry 的 `resident` 是进程内表，不写入 Session，新的 Activation 可以复用同一个 child Session id。
 
-child 的投递、释放和处置通过 per-child lock 串行化。`startActivation` 在首个 inbox prompt 被接受后返回 `{ childId, messageId? }`（`messageId` 仅本地 backend 有）；创建、持久化、权限捕获或提交失败时回滚 Activation 和 parent ownership，不返回可用 id（`packages/subagent/subagent/src/manager.ts:744`-`800`）。
+child 的投递、释放和处置通过 per-child lock 串行化。`startActivation` 在首个 inbox prompt 被接受后返回 `{ childId, messageId? }`（`messageId` 仅本地 backend 有）；创建、持久化、权限捕获或提交失败时回滚 Activation 和 parent ownership，不返回可用 id（`packages/subagent/subagent/src/manager.ts:379`-`476`、`:982`-`990`）。
 
 ## 权限：持久来源与活体来源必须同时成立
 
@@ -90,6 +90,6 @@ in-process spawn/fork 可以使用 parent Session、child header、Agent scope �
 | `packages/subagent/subagent/src/child-agent.ts:135`-`155` | child header 与持久谱系 |
 | `packages/subagent/subagent/src/child-agent.ts:248`-`290` | 委派权限捕获与 durable policy 事件 |
 | `packages/subagent/subagent/src/activation.ts:39`-`111` | Activation epoch、ancestry 与 owned children |
-| `packages/subagent/subagent/src/manager.ts:744`-`800` | continuable 创建、持有与回滚 |
+| `packages/subagent/subagent/src/manager.ts:379`-`476` | continuable 创建（`startLocal`）、持有与回滚（`:982`-`990`） |
 | `packages/subagent/subagent/src/manager.ts:1250`-`1330` | lineage 授权与不经 provider 的冷恢复 |
 | `packages/session-query/session-query/src/tracing.ts:132`-`:150` | Session lineage 追溯与循环检测 |

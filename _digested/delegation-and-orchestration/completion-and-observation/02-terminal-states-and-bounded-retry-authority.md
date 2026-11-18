@@ -1,8 +1,8 @@
 # Terminal States and Bounded Retry Authority · 终态与有界重试权威
 
-源码核验入口：`packages/subagent/subagent/src/{types,lifecycle,activation,manager,continuation-messages,out-of-process}.ts`、`packages/workflow/workflow-ptc/src/runtime.ts`、`packages/workflow/tool-workflow/src/index.ts`、`packages/jobs/`。
+> 本页回答：**一次委派/一次 run 结束时到底有哪几种下场？父代理怎么知道？谁有权重试、最多几次、什么不该重试？** 五个“完成时刻”的区分见 [`observation/01`](./01-acceptance-visibility-quiescence-and-disposal.md)，workflow 的不可复现性见 [`observation/06`](./06-workflow-reproducibility-cancellation-and-missing-results.md)。
 
-本页回答：**一次委派/一次 run 结束时到底有哪几种下场？父代理怎么知道？谁有权重试、最多几次、什么不该重试？** 五个“完成时刻”的区分见 [`observation/01`](./01-acceptance-visibility-quiescence-and-disposal.md)，workflow 的不可复现性见 [`observation/06`](./06-workflow-reproducibility-cancellation-and-missing-results.md)。
+> 源码核验入口：`packages/subagent/subagent/src/{types,lifecycle,activation,manager,continuation-messages,out-of-process}.ts`、`packages/workflow/workflow-ptc/src/runtime.ts`、`packages/workflow/tool-workflow/src/index.ts`、`packages/jobs/`。
 
 ## 读完你能回答
 

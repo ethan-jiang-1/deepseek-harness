@@ -1,5 +1,7 @@
 # 四层结束边界 — step / turn / activity / goal
 
+> **为什么单独有这一页**：排查「为什么 agent 已经输出总结了却还在继续跑」或「为什么按了一次 abort 只停掉当前请求却没取消整个目标」时，绝大多数误解都源于把「停止」想成单个开关。在 DSH 里，停止按四个正交层级分别结算——**一次请求步（step）、一次对话轮（turn）、一段连续活动（activity）、整个目标生命周期（goal）**。本页把四层的驱动者、终结条件和可见事件并排摆开，帮你在写中断逻辑或排错时精准定位该停在哪一层。
+
 ## 源码核验入口
 
 `packages/core/agent-loop/src/agent.ts`（step、turn、activity）、`packages/goal/goal-round-driver/src/index.ts`（goal 层）、`packages/goal/goal/src/index.ts`（goal 状态持久化）。
@@ -56,7 +58,7 @@ DSH 把一层层边界分开，每一层由不同的组件负责，终结条件�
 | `{ kind: 'max-tokens' }` | 输出达到 token 上限 | **disarm** goal！不再自动续轮 | 消息截断 |
 | `{ kind: 'aborted', reason }` | 被取消（`user` / `parent` / `hook` / `disposed`；反序列化的旧记录可带 `legacy`） | attempt 标记 cancelled，driver 重新评估 | 中途打断 |
 | `{ kind: 'blocked' }` | pre-step 拒绝，无 step 被处理 | 不特别处理（pre-step hook 可能已 block goal） | 未产生回复 |
-| `{ kind: 'error', error }` | 执行出错 | disarm（经 `agent/error` 事件，`goal-round-driver/src/index.ts:246-249`） | 错误提示 |
+| `{ kind: 'error', error }` | 执行出错 | disarm（经 `agent/error` 事件，`goal-round-driver/src/index.ts:262-265`） | 错误提示 |
 
 `aborted.reason` 的类型是 `TurnEndCancelCause`：`AgentCancelCause`（`user` / `parent` / `hook` / `disposed`）再加上 `{ kind: 'legacy' }`，后者只出现在导入的旧记录里（`packages/core/session/src/types.ts:189-197`）。
 

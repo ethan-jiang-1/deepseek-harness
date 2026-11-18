@@ -1,5 +1,7 @@
 # Goal 生命周期：创建、状态机与四条路径
 
+> **为什么单独有这一页**：很多长任务系统把「目标」当成提示词里的一句口头约定，结果跑几步就忘、或重启后分不清到底是在继续还是重来。在 DSH 里，`Goal` 是带完整持久状态机的运行时一等对象——**什么时候能建、谁能改状态、为什么暂停后不能直接由模型自行恢复**，全部由规则和事件日志锁死。本页先把整个生命周期和三条防错界线立出来，读完你就能看懂「一个长目标究竟怎么生、怎么卡、怎么结束」；需要核对源码行号时看下面的入口表或直接进各路径小节。
+
 ## 源码核验入口
 
 `packages/goal/goal/src/index.ts`（`GoalService`）、`packages/goal/goal/src/types.ts`（类型）、`packages/goal/goal/src/fold.ts`（fold 验证）、`packages/goal/tool-goal/src/index.ts`（模型 tool）、`packages/goal/command-goal/src/index.ts`（human 命令）。
@@ -41,7 +43,7 @@ return { kind: 'create', objective: input }  // 其余所有输入 = 创建；�
 
 ### 路径三：Goal Round Driver — 不创建，只延续
 
-Goal Round Driver（`goal-round-driver/src/index.ts`）不会自动创建 goal。`drive()` 在 `readyToDrive()`（`:140`）与持久化检查点（`:142-154`）都通过之后在 attempt 结算之后检查 goal（`:164-165`）：
+Goal Round Driver（`goal-round-driver/src/index.ts`）不会自动创建 goal。`drive()` 在 `readyToDrive()`（`:148`，定义 `:111-117`）与持久化检查点（`:150-162`）都通过之后在 attempt 结算之后检查 goal（`:172-173`）：
 
 ```ts
 const goal = currentGoal(state)

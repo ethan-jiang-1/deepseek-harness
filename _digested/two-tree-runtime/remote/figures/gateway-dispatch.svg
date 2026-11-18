@@ -27,12 +27,12 @@
   <text x="538" y="124" font-size="10.5" fill="#c2410c">参数校验之后、任何 lookup 或 Context 解析之前；list 结果经 allows() 过滤</text>
 
   <rect x="520" y="158" width="380" height="64" rx="9" fill="#dcfce7" stroke="#86efac"/>
-  <text x="538" y="183" font-size="12.5" font-weight="700" fill="#166534">⑦ 逐个解析参数</text>
-  <text x="538" y="204" font-size="10.5" fill="#15803d">JSON 值 / lookup（按 wire id 解析回对象）/ Context 投影</text>
+  <text x="538" y="183" font-size="12.5" font-weight="700" fill="#166534">⑥ 解析 receiver Context</text>
+  <text x="538" y="204" font-size="10.5" fill="#15803d">从该 Context 取 descriptor.service，并校验绑定</text>
 
   <rect x="520" y="238" width="380" height="64" rx="9" fill="#dcfce7" stroke="#86efac"/>
-  <text x="538" y="263" font-size="12.5" font-weight="700" fill="#166534">⑥ 解析 receiver Context</text>
-  <text x="538" y="284" font-size="10.5" fill="#15803d">从该 Context 取 descriptor.service，并校验绑定</text>
+  <text x="538" y="263" font-size="12.5" font-weight="700" fill="#166534">⑦ 逐个解析参数</text>
+  <text x="538" y="284" font-size="10.5" fill="#15803d">JSON 值 / lookup（按 wire id 解析回对象）/ Context 投影</text>
 
   <rect x="520" y="318" width="380" height="64" rx="9" fill="#f3f4f6" stroke="#d1d5db"/>
   <text x="538" y="343" font-size="12.5" font-weight="700" fill="#374151">⑧ 追加信号并调用</text>
@@ -48,5 +48,5 @@
 
   <rect x="60" y="402" width="840" height="52" rx="8" fill="#ffffff" stroke="#e5e7eb"/>
   <text x="78" y="424" font-size="10.5" fill="#374151">失败码都在 gateway/* 下：definition-unavailable（③）、signature-invalid（unary 与 stream 用错通道）、peer-disposed（调用方已卸）、uplink-overflow。</text>
-  <text x="78" y="444" font-size="10.5" fill="#6b7280">无法识别的异常折成 gateway/internal；结构上可识别的 RemoteError 连同 code 与 details 原样透传（docs/subsystems/typert.md:266、:410-428）。</text>
+  <text x="78" y="444" font-size="10.5" fill="#6b7280">无法识别的异常折成 gateway/internal；结构上可识别的 RemoteError 连同 code 与 details 原样透传（docs/subsystems/typert.md:383、:410-431）。</text>
 </svg>

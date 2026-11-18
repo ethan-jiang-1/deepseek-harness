@@ -1,6 +1,6 @@
 # 对照「单一 loop + tools 数组」
 
-本篇面向熟悉“单一 loop + tools 数组”架构的读者，映射原有职责在 dsh 中的归属。
+> **为什么单独有这一页**：绝大多数熟悉 agent 框架的开发者，心智模型里装的都是「一个 `while` 循环调 LLM，手边挂一个 `tools[]` 数组和一个 `messages[]` 列表」。用这套心智直接读 DSH 很容易处处撞墙——找不到把 `tools` 传给 loop 的入口、看不懂为什么改一个设置能换掉工具实现、也摸不清改行为该改哪里。与其等你在源码里逐个踩空，不如单立这一页做一次**直白的心智搬家**：先把你在旧框架里写的每一行常见代码对照成 DSH 的对应插件/服务，再交代迁过来时最容易违反的三条不变量；读完下表之后，再去对应专题深挖机制才不迷路。
 
 ![从单一 loop 迁过来时东西落在哪](./figures/vs-single-loop.svg)
 
@@ -16,8 +16,8 @@
 | CLI `main()` 里 `await loop.run(prompt)` | 各入口都经 `ctx.agents` → `followup`。CLI / Web / Desktop / ACP / SDK 可以处于不同进程和插件树，但复用 `Agent` 接口与 session 语义。 |
 | 加功能 = 改 `agent.ts` 中间那段 | 对照 [`01-扩展表非显然落点.md`](./01-扩展表非显然落点.md) 找挂点。改 loop 要同步改 architecture.md。 |
 | 换模型 = 换那个 `openai.chat.completions` 调用 | `ctx.llm` 登记 adapter。请求词汇在 `dsh-llm`，不在 loop。 |
-| 子 agent = 递归调用同一个 loop 函数 | `ctx.subagents` seam：provider 可以运行进程内 child，也可以通过 ACP / JSON-RPC 驱动独立进程。选哪个后端由 `tool-subagent` 的 `provider`（无默认值的必需字段）与 Web 设置里的插件偏好决定——进程内 child 可续跑，外部后端单次执行自动回报。Codex / Claude Code 这类产品 provider 走官方按需安装通道（`ON_DEMAND_BUNDLES`），装进 profile 后各自注册一个 provider；preset 里不再有占位 disabled 行。见 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/03-subagent后台与产品provider.md)。session header 的 lineage 不会自动建立 scope 父链；进程内 child 可加入父 agent 正在使用的同一 preset generation，但不继承父 agent 自有层。 |
-| 配置 = 一大份 JSON | 空 `cordis.yml` + 有序 patch 层（bundle → profile → home → `--patch`，`docs/architecture.md:27`；同语料 [`plugin-system/composition/00-map.md`](../plugin-system/composition/00-map.md) 同序）。 |
+| 子 agent = 递归调用同一个 loop 函数 | `ctx.subagents` seam：provider 可以运行进程内 child，也可以通过 ACP / JSON-RPC 驱动独立进程。选哪个后端由 `tool-subagent` 的 `provider`（无默认值的必需字段）与 Web 设置里的插件偏好决定——进程内 child 可续跑，外部后端单次执行自动回报。Codex / Claude Code 这类产品 provider 走官方按需安装通道（`ON_DEMAND_BUNDLES`），装进 profile 后各自注册一个 provider，preset 中不含占位 disabled 行。见 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/03-subagent后台与产品provider.md)。session header 的 lineage 不会自动建立 scope 父链；进程内 child 可加入父 agent 正在使用的同一 preset generation，但不继承父 agent 自有层。 |
+| 配置 = 一大份 JSON | 空 `cordis.yml` + 有序 patch 层（bundle → profile → home → `--patch`，`docs/architecture.md:27`；参见 [`plugin-system/composition/00-map.md`](../plugin-system/composition/00-map.md)）。 |
 
 ## 三条最容易带错的不变量
 

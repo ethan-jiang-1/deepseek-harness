@@ -4,6 +4,8 @@
 
 `dsh --profile acp` 启动一个常驻 stdio ACP 服务，供进程外程序化客户端（另一个 Harness 实例的 `dsh-subagent-acp`、标准 ACP 客户端）驱动 agent。stdout 是纯协议帧，不能装 logger。
 
+**为什么单独设这一形态**：外部 IDE 或父代理按标准 ACP 协议接入时，需要按会话工作目录隔离和协议化的交互语义，而不是 DSH 自家的 JSON-RPC 原始事件流。单独设立 `acp` profile，让同一套底层 `dsh-base` 能力在组装层切换成 ACP 适配器和静默 stdout，避免把协议差异写进 `agent-loop`。
+
 ## 怎么跑
 
 ```sh
@@ -29,9 +31,9 @@ acp 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-acp-app`）�
 | `hmr` `disabled: true` | 协议开始后不做运行时 patch 重载（`packages/bundle/acp-app/cordis.patch.yml:22-23`） |
 | `insert` | `acp-app-startup` + `acp`（ACP 桥；bundle `inject: [acpAppStartup]`，插件自身 `inject: ['agents','llm','sessionPersistence','sessions']`，config 定 provider/model，`:15-20`） |
 
-JSONL 持久化（`session-persistence-jsonl`）、`session-checkpoint-policy`、`session-query-sqlite` 都在 `dsh-base`——acp-app 不自持，digest 旧版写的「effect 卸载顺序：先拆查询 → 检查点 → 持久化」那层不存在。
+JSONL 持久化（`session-persistence-jsonl`）、`session-checkpoint-policy`、`session-query-sqlite` 都在 `dsh-base`——acp-app 不自持这些服务。
 
-**与 base 不一致的默认模型**：`acp` 行硬编码 `provider: deepseek-official` / `model: deepseek-v4-flash`（`packages/bundle/acp-app/cordis.patch.yml:19-20`），而 base 的 `agent-default-model` 用 `deepseek-flash`（`packages/bundle/base/cordis.patch.yml:94`）。advisory catalog 是两条目（`packages/llm/llm-deepseek/src/models.ts:8-23`：`deepseek-flash`（name `DeepSeek-V4.1-Flash`）与 `deepseek-v4-pro`），`deepseek-v4-flash` **不在默认 catalog 里**——acp 硬编码的 id 仍可用（未列 id 经 passthrough 作 text-only 路由提交，GUI 选择才要求 catalog 条目，`packages/llm/llm-deepseek/README.md:53`），所以这里是「catalog 条目 + passthrough id」的搭配；同一个仓库里两处默认值不统一，改模型目录时需同时看这两处。0012 起官方 endpoint 的 api-key route 默认跟随官方 listing，模型选择器的可选集合由当前 listing 决定，内建两条目只在 listing 不可用时兜底。
+**与 base 不一致的默认模型**：`acp` 行硬编码 `provider: deepseek-official` / `model: deepseek-v4-flash`（`packages/bundle/acp-app/cordis.patch.yml:19-20`），而 base 的 `agent-default-model` 用 `deepseek-flash`（`packages/bundle/base/cordis.patch.yml:94`）。advisory catalog 是两条目（`packages/llm/llm-deepseek/src/models.ts:8-23`：`deepseek-flash`（name `DeepSeek-V4.1-Flash`）与 `deepseek-v4-pro`），`deepseek-v4-flash` **不在默认 catalog 里**——acp 硬编码的 id 仍可用（未列 id 经 passthrough 作 text-only 路由提交，GUI 选择才要求 catalog 条目，`packages/llm/llm-deepseek/README.md:53`），所以这里是「catalog 条目 + passthrough id」的搭配；同一个仓库里两处默认值不统一，改模型目录时需同时看这两处。官方 endpoint 的 api-key route 默认跟随官方 listing，模型选择器的可选集合由当前 listing 决定，内建两条目只在 listing 不可用时兜底。
 
 ## 进程模型
 

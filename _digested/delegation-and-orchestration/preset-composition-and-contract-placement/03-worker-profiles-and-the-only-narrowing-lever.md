@@ -1,8 +1,8 @@
 # Worker Profiles and the Only Narrowing Lever · worker 组合与唯一的收窄杠杆
 
-源码核验入口：`packages/subagent/tool-subagent/src/preset-selection.ts` 与 `src/index.ts`、`packages/subagent/subagent/src/{child-agent,manager,descriptor,depth}.ts`、`packages/preset/agent-preset-registry/src/{index,definition}.ts`、`packages/core/tools/src/index.ts`。
+> 本页回答：**怎么让子代理比父“更窄”？DSH 给不给 per-agent 的工具白名单？为什么子代理常常拿到父的全部工具？** 通道差异见 [`composition/01`](./01-channel-capability-differences-and-inheritance.md)，preset 是什么见 [`composition/02`](./02-preset-composition-as-a-static-self-contained-model.md)。
 
-本页回答：**怎么让子代理比父“更窄”？DSH 给不给 per-agent 的工具白名单？为什么子代理常常拿到父的全部工具？** 通道差异见 [`composition/01`](./01-channel-capability-differences-and-inheritance.md)，preset 是什么见 [`composition/02`](./02-preset-composition-as-a-static-self-contained-model.md)。
+> 源码核验入口：`packages/subagent/tool-subagent/src/preset-selection.ts` 与 `src/index.ts`、`packages/subagent/subagent/src/{child-agent,manager,descriptor,depth}.ts`、`packages/preset/agent-preset-registry/src/{index,definition}.ts`、`packages/core/tools/src/index.ts`。
 
 ## 读完你能回答
 

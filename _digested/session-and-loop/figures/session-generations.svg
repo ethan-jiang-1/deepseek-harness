@@ -3,7 +3,7 @@
     <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
   </defs>
   <rect width="960" height="500" fill="#fafafa" rx="6"/>
-  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">格式世代：写者常量 3，三条相邻边，读准备与写发布分离</text>
+  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">格式世代：写者常量 4，四条相邻边，读准备与写发布分离</text>
   <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">build-static catalog：profile 挂载不能增删或重排任何一条边，历史可读性不依赖挂载插件。</text>
 
   <rect x="40" y="72" width="180" height="120" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
@@ -32,7 +32,7 @@
   <line x1="540" y1="132" x2="568" y2="132" stroke="#4b5563" marker-end="url(#arr)"/>
 
   <rect x="570" y="72" width="130" height="120" rx="10" fill="#f3e8ff" stroke="#d8b4fe"/>
-  <text x="635" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">v2 → v3 → v4（v4 见 04 页）</text>
+  <text x="635" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">v2 → v3 → v4</text>
   <text x="586" y="126" font-size="11" fill="#7c3aed">规范信封</text>
   <text x="586" y="146" font-size="11" fill="#7c3aed">system 成节点</text>
   <text x="586" y="166" font-size="11" fill="#7c3aed">PTC 改名</text>

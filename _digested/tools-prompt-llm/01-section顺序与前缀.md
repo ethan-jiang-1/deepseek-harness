@@ -1,6 +1,8 @@
 # Prompt section 顺序与前缀稳定
 
-源码核验入口：`packages/core/system-prompt/src/index.ts`。
+> **为什么单独有这一页**：写插件时最容易犯的顺手错误，是直接注册一个高优先级 section 把当前路径、Web 端口或动态配置插在 prompt 开头，以为只是多加了两行字。在现代 LLM 推理里，这会**让整段公共前缀的 KV cache 在第一步就分叉作废**，把本来可复用的首段全部拖成每次重算。本页单独讲清 `SystemPrompt` 的 `order` 分段设计——哪些固定身份必须在最前面、为什么环境事实和 `personaSuffix` 被故意压到 `10000+` 尾部、以及动态运行时上下文为什么根本不进 system prompt。
+>
+> 源码核验入口：`packages/core/system-prompt/src/index.ts`。
 
 模型每一步的 system 文本是注册表当场拼的。顺序就是 KV cache 能不能命中前缀的机械原因。
 

@@ -1,8 +1,8 @@
 # Delegation Graph as a Node-and-Edge Projection · 委派图：节点与边的只读投影
 
-源码核验入口：`packages/subagent/subagent/src/{catalog,descriptor,list-children,manager}.ts`、`packages/workflow/tool-workflow/src/index.ts:73`-`148`、`packages/experimental/agent-team/src/{journal,projection,types}.ts`、`packages/jobs/jobs/src/types.ts:53`-`66`、`packages/core/session/src/types.ts:95`-`132`。
+> 本页回答：**一条混合链（spawn → workflow → spawn → team）的状态图从哪来、能保证什么、缺数据时怎么标？** 五个完成时刻见 [`observation/01`](./01-acceptance-visibility-quiescence-and-disposal.md)，状态三分见 [`observation/04`](./04-persistent-facts-derived-projections-and-live-authority.md)。
 
-本页回答：**一条混合链（spawn → workflow → spawn → team）的状态图从哪来、能保证什么、缺数据时怎么标？** 五个完成时刻见 [`observation/01`](./01-acceptance-visibility-quiescence-and-disposal.md)，状态三分见 [`observation/04`](./04-persistent-facts-derived-projections-and-live-authority.md)。
+> 源码核验入口：`packages/subagent/subagent/src/{catalog,descriptor,list-children,manager}.ts`、`packages/workflow/tool-workflow/src/index.ts:73`-`148`、`packages/experimental/agent-team/src/{journal,projection,types}.ts`、`packages/jobs/jobs/src/types.ts:53`-`66`、`packages/core/session/src/types.ts:95`-`132`。
 
 ## 读完你能回答
 

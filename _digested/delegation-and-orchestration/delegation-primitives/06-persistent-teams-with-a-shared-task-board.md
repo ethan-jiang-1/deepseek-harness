@@ -1,8 +1,8 @@
 # Persistent Teams with a Shared Task Board · 持久团队与共享任务板
 
-源码核验入口：`packages/experimental/tool-agent-team/src/index.ts`（`teamPolicy` / `team:policy` 与九个成员级工具）、`packages/experimental/agent-team-profile/cordis.patch.yml` 与 `README.md`、`packages/experimental/agent-team/src/index.ts`（服务上限）、`packages/boot/app-boot/src/profile.ts`（OPTIONAL_BUNDLES）。
+> 本页回答：启用 agent-teams 的组合代价是什么（你换掉了什么）？Lead 的实际工作流怎么串九个工具？`team:policy` 里的协作纪律有哪些？机制（TeamService、journal、投影、九工具注册、UI 落点）见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)；选择语义（按部署启用与协作面互斥规则）见 [`selection/02`](../primitive-selection/02-cross-primitive-routing-and-the-official-upgrade-order.md)；队友创建复用的 spawn/fork 语义见 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
-本页回答：启用 agent-teams 的组合代价是什么（你换掉了什么）？Lead 的实际工作流怎么串九个工具？`team:policy` 里的协作纪律有哪些？机制（TeamService、journal、投影、九工具注册、UI 落点）见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)；选择语义（仅显式要求、与 subagent 控制面互斥）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；队友创建复用的 spawn/fork 语义见 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
+> 源码核验入口：`packages/experimental/tool-agent-team/src/index.ts`（`teamPolicy` / `team:policy` 与九个成员级工具）、`packages/experimental/agent-team-profile/cordis.patch.yml` 与 `README.md`、`packages/experimental/agent-team/src/index.ts`（服务上限）、`packages/boot/app-boot/src/profile.ts`（OPTIONAL_BUNDLES）。
 
 ## 读完你能回答
 
@@ -71,7 +71,7 @@ spawn_teammate（仅 Lead；context: fresh 无 Lead 历史 / fork 继承已完�
 
 ## 子 Agent 能否继续启动子 Agent？
 
-这里要区分 **Team teammate**、普通 subagent 和 workflow child：Agent Teams 的 `spawn_teammate` 不是一个所有成员都能调用的递归委派工具，只有 Lead 有权创建具名 teammate；队友不能用它再创建下一层 Team 成员。profile 同时禁用了普通 `subagent` / `subagent_fork` 工具，但保留了底层 Subagent service 和 `workflow` 的 `spawn` provider，因此一个 teammate 在其工具面确实可用 workflow 时，仍可能通过 workflow 的 `agent()` 创建一次性的 fresh child；这不是新的持久 teammate，也不继承 Team 的长期协调身份。`tool-agent-team` 对每个成员注册同一组九个 Team 工具，但服务层仍执行 Lead-only 权限；one-shot child 在刚发布的短窗口内可能暂时看见 Team 工具，调用会在身份确认后被拒绝；这是实现边界，不属于 Team 的持久协调身份。
+这里要区分 **Team teammate**、普通 subagent 和 workflow child：Agent Teams 的 `spawn_teammate` 不是一个所有成员都能调用的递归委派工具，只有 Lead 有权创建具名 teammate；队友不能用它再创建下一层 Team 成员。profile 同时禁用了普通 `subagent` / `subagent_fork` 工具，但保留了底层 Subagent service 和 `workflow` 的 `spawn` provider，因此一个 teammate 在其工具面确实可用 workflow 时，仍可能通过 workflow 的 `agent()` 创建一次性的 fresh child；这不是新的持久 teammate，也不继承 Team 的长期协调身份。对于 workflow 创建的 one-shot child，`setup()` 阶段在 `agent/created` 触发前即写入 `'subagent/descriptor'`，因此 `TeamRoster.tryMembership(agent)` 在安装 Team 工具时直接返回 `undefined`，不会把 Team 工具挂到 ordinary/workflow subagent 上。
 
 因此，**“能不能再扇出”取决于入口和 provider，不是由 Team 任务板自动递归**：Lead 可以创建具名 teammate；队友不能创建 teammate；workflow 可以按自身脚本和容量限制启动 fresh child；任务 `ready` 也不会自动启动任何 owner。若要让某个队友再使用 workflow，Lead 应在初始 prompt 或消息中明确它的工作范围、输入、输出和验收条件，并把最终结果带回任务板或消息中。
 
@@ -115,7 +115,7 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 **你会看到什么**（Web 会话头部的 Team 动作，读 Lead Session 投影）：名册里两个 auditor 的状态行 provisioning → running → inactive（注意 `inactive` 不代表完成——状态词汇表）；任务板上两个 audit 从 pending 走到 completed、fix 从 blocked → ready → in_progress → completed；写域若有重叠会显示警告。
 
-**任意一步崩溃**：消息与任务板都在 Lead Session 的事件日志里（四个 log-only 事件 + 投影，见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）——重启后队友 resume 时收到排队的消息，任务板原样；对照外部叙事虚构的 `dsh rollback --task`：真实的恢复语义是**会话级持久**，不是任务级回滚。走查中每条规则的出处：explicit-ask/唤醒/收尾门槛在 `packages/experimental/tool-agent-team/src/index.ts:31`-`37`；CAS 与工具描述在 `:177`-`:400`；fork 种子在 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
+**任意一步崩溃**：消息与任务板都在 Lead Session 的事件日志里（四个 log-only 事件 + 投影，见 [`../experimental/02-agent-teams.md`](../../experimental/02-agent-teams.md)）——重启后队友 resume 时收到排队的消息，任务板原样；对照外部叙事虚构的 `dsh rollback --task`：真实的恢复语义是**会话级持久**，不是任务级回滚。走查中每条规则的出处：协作、唤醒与收尾门槛在 `packages/experimental/tool-agent-team/src/index.ts:34`-`42`（特别是 `:41`）；CAS 与工具描述在 `:192`-`:400`；fork 种子在 [`02`](./02-bounded-delegation-with-fresh-and-forked-subagents.md)。
 
 ## POLICY 的协作纪律（共享文件系统是核心假设）
 
@@ -136,7 +136,7 @@ Agent Teams 没有独立的 Reviewer、Evaluator 或质量门禁。一个 teamma
 
 | 维度 | subagent/fork | workflow | agent-teams |
 |------|--------------|----------|-------------|
-| 触发 | 常规委派（一两次优先） | 用户显式要求大规模编排 | 用户显式要求 teams/teammates |
+| 触发 | 常规委派（一两次优先） | 用户显式要求大规模编排 | 启用 team bundle 且需长驻协作与共享任务板（模型政策声明 `Agent Teams is available in this session`） |
 | 协调状态 | 无（one-shot）或 inbox（continuable） | 脚本内（随 run 消失） | **持久任务板 + 双向邮箱（跨崩溃）** |
 | 成员生命 | 一次或可续 | run 内 | **长驻具名队友（可 offline/resume）** |
 | 与 subagent 工具 | — | 保留 spawn provider | **互斥替代**（工具行 disable；Subagent 服务保留） |

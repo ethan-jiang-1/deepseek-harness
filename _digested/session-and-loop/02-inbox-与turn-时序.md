@@ -1,8 +1,8 @@
 # Inbox、唤醒与 turn 时序
 
-源码核验入口：`packages/core/agent-loop/src/inbox.ts`（`Inbox` 契约由 `dsh-agent` 的 `runtime-types.ts` 导出）、`packages/core/agent/src/types.ts`（`InboxTarget` 与 `inbox` projection 键）、`packages/core/agent-loop/src/agent.ts` 的 `ReactLoopAgent`、`packages/core/agent-loop/src/assistant-stream.ts`；测试用 `dsh-agent-loop-testkit` 的结构化 stub。
-
-本篇说明默认驱动中的 inbox 队列、claim，以及 `pre-step` 拒绝后仍关闭持久 turn 的时序。
+> **为什么单独有这一页**：表面上看，给 agent 发消息无非是「塞进队列等下一轮跑」；但在真实运行里，用户输入、后台子代理回传、`inject` 注入和 `RuntimeContext` 快照可能在任意时刻到达——如果把「唤醒下一轮」「插话当前轮」「静默注入材料」混成一条内存队列，或把 `pre-step` 拒绝与崩溃中止写混，就会丢消息、错 turn 边界，甚至把内存队列漏掉的输入带不进 fork/resume。本页单独拆解**默认驱动从入队认领到单次流式结算的完整时序**，帮你在写 hook、发 steer/inject 或追查“为什么这条消息没进本步/进了下一步”时有一张精确的状态钟。
+>
+> 源码核验入口：`packages/core/agent-loop/src/inbox.ts`（`Inbox` 契约由 `dsh-agent` 的 `runtime-types.ts` 导出）、`packages/core/agent/src/types.ts`（`InboxTarget` 与 `inbox` projection 键）、`packages/core/agent-loop/src/agent.ts` 的 `ReactLoopAgent`、`packages/core/agent-loop/src/assistant-stream.ts`；测试用 `dsh-agent-loop-testkit` 的结构化 stub。
 
 ![两个队列，三种入口](./figures/inbox-wake.svg)
 
@@ -47,7 +47,7 @@ projection 建 cell 时折的是 `session.snapshotEvents()` 的整段内存日�
 7. 有结束原因且 `next-step` 为空时，`serial('agent/turn-stopping')`（没有 `next()`）；监听器可 `agent.steer()`，驱动随后重读 inbox，有新工作就继续下一 step。
 8. `finally` 里 `turn/end`。loop **不等** turn 边界上的 flush；checkpoint 策略另挂。
 
-`turn/end` 的 `interrupted` 只用于补写崩溃孤儿 turn，补写者是 **agent-loop 的 resume** 与 **session-query 的冷读**两个消费点（`packages/core/session/src/types.ts:216-222`），不是持久化后端；loop 在正常路径从不发这个标记。别和 `assistant/message.interrupted` 混：那是 loop 在取消时主动写的前缀定稿（见 `step()` 一节），不是 `turn/end` 的字段。v1→v2 迁移会在 bounded legacy 重启模式下**补写**一条 interrupted 的 `turn/end`（`.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.md:87`），那是历史修复，不是 loop 行为。
+`turn/end` 的 `interrupted` 只用于补写崩溃孤儿 turn，补写者是 **agent-loop 的 resume** 与 **session-query 的冷读**两个消费点（`packages/core/session/src/types.ts:216-222`），不是持久化后端；loop 在正常路径从不发这个标记。别和 `assistant/message.interrupted` 混：那是 loop 在取消时主动写的前缀定稿（见 `step()` 一节），不是 `turn/end` 的字段。v1→v2 迁移会在 bounded legacy 重启模式下**补写**一条 interrupted 的 `turn/end`（`.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.md:90-92`），那是历史修复，不是 loop 行为。
 
 ## `step()` 与历史
 

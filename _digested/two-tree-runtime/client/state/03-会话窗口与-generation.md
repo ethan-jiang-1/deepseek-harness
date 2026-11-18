@@ -1,8 +1,8 @@
 # 会话窗口与 generation
 
-核验入口：[`docs/subsystems/web-client.md`](../../../../docs/subsystems/web-client.md) 的「Sessions」、[`packages/api/session-controller/README.md`](../../../../packages/api/session-controller/README.md)、[`packages/api/session-controller/src/client/sessions/`](../../../../packages/api/session-controller/src/client/sessions/)（`service.ts` / `manager.ts` / `session.ts`）。
-
-这一页讲浏览器侧那份会话状态：它由哪三个对象分担、一份窗口怎么被整段替换、断线之后为什么能接着读。
+> **为什么单独有这一页**：浏览器端展示长会话时，既不能每次重连都全量覆盖让滚动条和输入框闪烁重挂，又不能在 WebSocket 断线或历史分页拉取时靠局部补丁慢慢拼出空洞或错序。DSH 用「三层对象分工（`ClientSessions` / `SessionManager` / `Session`）+ 整段可替换的连续事件窗口 + `generation`」解开了这组矛盾。本页专门把这三个对象的边界以及 generation 换代时窗口如何衔接说透，理解它才能明白为什么界面不闪烁、断线后又能无缺口续接。
+>
+> 核验入口：[`docs/subsystems/web-client.md`](../../../../docs/subsystems/web-client.md) 的「Sessions」、[`packages/api/session-controller/README.md`](../../../../packages/api/session-controller/README.md)、[`packages/api/session-controller/src/client/sessions/`](../../../../packages/api/session-controller/src/client/sessions/)（`service.ts` / `manager.ts` / `session.ts`）。
 
 ## 三个对象
 

@@ -1,8 +1,8 @@
 # dump 与 boot 保真
 
-源码核验入口：`apps/cli/src/dump-config.ts`、`packages/boot/app-boot/src/index.ts` `renderConfigDump`、`packages/boot/app-boot/src/profile.ts` `composeEntries`、`packages/boot/app-boot/tests/config-dump.spec.ts`。
-
-`--dump-config` 与 boot 共用空根、`applyEntryPatches` 和 YAML dialect；dump 的层列表比 `runProfile` 少 launcher 派生的那一层（telemetry switch），并且不求值 `!!js`。
+> **为什么单独有这一页**：调配置或写 patch 时，`dsh --dump-config` 是最常用的诊断命令；但很多人会困惑：**为什么不能简单写个脚本把几份 `cordis.patch.yml` 合并打印，而非要共用 `applyEntryPatches`？又为什么 `--dump-config` 的输出比真正启动少一层补丁，也不求值 `!!js`？** 本页解释 `--dump-config` 究竟在向谁保真——它保真的不是「运行态每一条额外补丁」，而是「所有 patch 层展平后单次索引匹配的语义」，读懂这一页才不会把 dump 输出误当成运行态全部行为，也不会踩中整块替换 group 后子补丁被 skip 的坑。
+>
+> 源码核验入口：`apps/cli/src/dump-config.ts`、`packages/boot/app-boot/src/index.ts` `renderConfigDump`、`packages/boot/app-boot/src/profile.ts` `composeEntries`、`packages/boot/app-boot/tests/config-dump.spec.ts`。
 
 ![共用 applyEntryPatches；dump 的层列表 ≠ runProfile 的层列表](./figures/dump-vs-boot.svg)
 

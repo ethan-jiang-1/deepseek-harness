@@ -1,8 +1,8 @@
 # Contract Placement between Policy and Engine · 合同归属：政策与引擎
 
-源码核验入口：`packages/core/system-prompt/src/index.ts`、`packages/skill/skill-filesystem/src/index.ts`、`packages/skill/tool-skill/`、`packages/bundle/base/cordis.patch.yml`、`packages/workflow/tool-workflow/src/index.ts:324`-`326`、`packages/subagent/tool-subagent/src/index.ts:113`-`137`。
+> 本页回答：**一条委派规则该写在哪，才能既被模型看见、又不在下一轮漂移？** 载体有四种：工具 description、常驻 prompt section、按需 skill、人读 docs。它们的可见性、成本与生命周期不同，混用就是漂移的来源。
 
-本页回答：**一条委派规则该写在哪，才能既被模型看见、又不在下一轮漂移？** 载体有四种：工具 description、常驻 prompt section、按需 skill、人读 docs。它们的可见性、成本与生命周期不同，混用就是漂移的来源。
+> 源码核验入口：`packages/core/system-prompt/src/index.ts`、`packages/skill/skill-filesystem/src/index.ts`、`packages/skill/tool-skill/`、`packages/bundle/base/cordis.patch.yml`、`packages/workflow/tool-workflow/src/index.ts:324`-`326`、`packages/subagent/tool-subagent/src/index.ts:113`-`137`。
 
 ## 读完你能回答
 

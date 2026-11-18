@@ -9,31 +9,31 @@
 
 | 专题 | 范围 | 页数 | 已核验 | 沿用 | 未登记 |
 |---|---|---:|---:|---:|---:|
-| [`system-overview/`](../system-overview/00-map.md) | 按下回车之后，插件怎么拼成一次能跑的对话；扩展点、单 loop 对照与门禁/基准。 | 4 | 2 | 2 | 0 |
+| [`system-overview/`](../system-overview/00-map.md) | 按下回车之后，插件怎么拼成一次能跑的对话；扩展点、单 loop 对照与门禁/基准。 | 4 | 4 | 0 | 0 |
 | [`two-tree-runtime/`](../two-tree-runtime/00-map.md) | 同一套 Cordis 在 Node 与浏览器各长一棵树，中间是类型化的线；一条会话事件穿过两棵树。 | 3 | 3 | 0 | 0 |
-| [`two-tree-runtime/framework/`](../two-tree-runtime/framework/00-map.md) | 两棵树共用的框架本体：五原语、waterfall、Loader/Include、vendor 本地修改。 | 6 | 2 | 4 | 0 |
-| [`two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) | 分层与单向依赖、模块身份与激活、浏览器启动、状态所有权、资源与视图、插件纪律。 | 16 | 5 | 11 | 0 |
-| [`two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md) | Typert 声明、Gateway 派发、载体与认证、两条出站链路与 wire 校验。 | 9 | 6 | 3 | 0 |
-| [`runtime-profiles/`](../runtime-profiles/00-map.md) | 一次启动装入什么：五个 launcher profile 与 desktop 应用自有 profile 的组合、差异与装载路径。 | 7 | 3 | 4 | 0 |
-| [`session-and-loop/`](../session-and-loop/00-map.md) | 会话存在哪、怎么读回来：事件映射、inbox/turn 时序、换 loop 的半径、格式世代。 | 5 | 0 | 5 | 0 |
-| [`agent-loop/`](../agent-loop/00-map.md) | 一次对话怎么推进与收尾：turn/step/activity/goal 边界、goal 状态机与自动续轮。 | 5 | 1 | 4 | 0 |
+| [`two-tree-runtime/framework/`](../two-tree-runtime/framework/00-map.md) | 两棵树共用的框架本体：五原语、waterfall、Loader/Include、vendor 本地修改。 | 6 | 6 | 0 | 0 |
+| [`two-tree-runtime/client/`](../two-tree-runtime/client/00-map.md) | 分层与单向依赖、模块身份与激活、浏览器启动、状态所有权、资源与视图、插件纪律。 | 16 | 16 | 0 | 0 |
+| [`two-tree-runtime/remote/`](../two-tree-runtime/remote/00-map.md) | Typert 声明、Gateway 派发、载体与认证、两条出站链路与 wire 校验。 | 9 | 9 | 0 | 0 |
+| [`runtime-profiles/`](../runtime-profiles/00-map.md) | 一次启动装入什么：五个 launcher profile 与 desktop 应用自有 profile 的组合、差异与装载路径。 | 7 | 7 | 0 | 0 |
+| [`session-and-loop/`](../session-and-loop/00-map.md) | 会话存在哪、怎么读回来：事件映射、inbox/turn 时序、换 loop 的半径、格式世代。 | 5 | 5 | 0 | 0 |
+| [`agent-loop/`](../agent-loop/00-map.md) | 一次对话怎么推进与收尾：turn/step/activity/goal 边界、goal 状态机与自动续轮。 | 5 | 5 | 0 | 0 |
 | [`delegation-and-orchestration/`](../delegation-and-orchestration/00-map.md) | 入门三页 + 两条座位：驾驶座看原语机制与选择，作者座看组合、合同、终态与观测；含九条陷阱与源码入口。 | 4 | 4 | 0 | 0 |
-| [`delegation-and-orchestration/delegation-primitives/`](../delegation-and-orchestration/delegation-primitives/00-map.md) | 每个原语是什么、保证什么、隔离什么、谁推进、怎么结算。 | 8 | 3 | 5 | 0 |
-| [`delegation-and-orchestration/primitive-selection/`](../delegation-and-orchestration/primitive-selection/00-map.md) | 官方边界句、互路由、升级阶梯、没说清的部分。 | 4 | 3 | 1 | 0 |
+| [`delegation-and-orchestration/delegation-primitives/`](../delegation-and-orchestration/delegation-primitives/00-map.md) | 每个原语是什么、保证什么、隔离什么、谁推进、怎么结算。 | 8 | 8 | 0 | 0 |
+| [`delegation-and-orchestration/primitive-selection/`](../delegation-and-orchestration/primitive-selection/00-map.md) | 官方边界句、互路由、升级阶梯、没说清的部分。 | 4 | 4 | 0 | 0 |
 | [`delegation-and-orchestration/preset-composition-and-contract-placement/`](../delegation-and-orchestration/preset-composition-and-contract-placement/00-map.md) | 能力面怎么组合、怎么收窄、合同放哪、深度与通知怎么叠加。 | 7 | 7 | 0 | 0 |
-| [`delegation-and-orchestration/completion-and-observation/`](../delegation-and-orchestration/completion-and-observation/00-map.md) | 五个完成时刻、谱系、状态三分、workflow 可复现性，及后续图投影与证据分层。 | 8 | 4 | 4 | 0 |
-| [`delegation-and-orchestration/design-perspectives/`](../delegation-and-orchestration/design-perspectives/00-map.md) | 为什么是这个形状、外部叙事逐条对照、九条陷阱。 | 5 | 3 | 2 | 0 |
+| [`delegation-and-orchestration/completion-and-observation/`](../delegation-and-orchestration/completion-and-observation/00-map.md) | 五个完成时刻、谱系、状态三分、workflow 可复现性，及后续图投影与证据分层。 | 8 | 8 | 0 | 0 |
+| [`delegation-and-orchestration/design-perspectives/`](../delegation-and-orchestration/design-perspectives/00-map.md) | 为什么是这个形状、外部叙事逐条对照、九条陷阱。 | 5 | 5 | 0 | 0 |
 | [`capability-seams/`](../capability-seams/00-map.md) | 同一能力有多个实现时怎么换而不改调用方；从 bash 到 SSH、MCP、hooks 与新执行面。 | 11 | 11 | 0 | 0 |
 | [`plugin-system/`](../plugin-system/00-map.md) | 插件系统的三个轴：有什么、怎么成树、怎么走完一生；对外暴露另见 two-tree-runtime。 | 1 | 1 | 0 | 0 |
-| [`plugin-system/composition/`](../plugin-system/composition/00-map.md) | 一份 profile 怎么叠成运行中的插件树；dump、HMR、启动窗口与首屏交接。 | 6 | 3 | 3 | 0 |
-| [`plugin-system/lifecycle/`](../plugin-system/lifecycle/00-map.md) | 插件从打包到卸载的七段；安装、启动、首启、配置、诊断、信任与端到端。 | 13 | 5 | 8 | 0 |
-| [`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) | 现成包、服务与工具的横切清单、复用出路与分类法。 | 6 | 0 | 6 | 0 |
-| [`experimental/`](../experimental/00-map.md) | 已评估但未承诺产品支持的实验能力：Python 子进程、Agent Teams、Inspector。 | 5 | 3 | 2 | 0 |
+| [`plugin-system/composition/`](../plugin-system/composition/00-map.md) | 一份 profile 怎么叠成运行中的插件树；dump、HMR、启动窗口与首屏交接。 | 6 | 6 | 0 | 0 |
+| [`plugin-system/lifecycle/`](../plugin-system/lifecycle/00-map.md) | 插件从打包到卸载的七段；安装、启动、首启、配置、诊断、信任与端到端。 | 13 | 13 | 0 | 0 |
+| [`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) | 现成包、服务与工具的横切清单、复用出路与分类法。 | 6 | 6 | 0 | 0 |
+| [`experimental/`](../experimental/00-map.md) | 已评估但未承诺产品支持的实验能力：Python 子进程、Agent Teams、Inspector。 | 5 | 5 | 0 | 0 |
 | [`tools-prompt-llm/`](../tools-prompt-llm/00-map.md) | 模型每一步看见什么：工具清单、系统提示词、历史投影与内容块。 | 7 | 7 | 0 | 0 |
-| [`surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md) | 人/程序从哪里进：CLI、headless、Web、ACP、SDK、桌面，以及它们复用的 runtime spine。 | 4 | 2 | 2 | 0 |
-| [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：资产分布与成本、防漏机制、选层决策程序、CI 门禁、快照机制，以及插件项目的测试契约。 | 16 | 8 | 8 | 0 |
+| [`surfaces-entrypoints/`](../surfaces-entrypoints/00-map.md) | 人/程序从哪里进：CLI、headless、Web、ACP、SDK、桌面，以及它们复用的 runtime spine。 | 4 | 4 | 0 | 0 |
+| [`test-strategy/`](../test-strategy/00-map.md) | DSH 怎么测：资产分布与成本、防漏机制、选层决策程序、CI 门禁、快照机制，以及插件项目的测试契约。 | 16 | 16 | 0 | 0 |
 | [`development-flow/`](../development-flow/00-map.md) | DSH 的决策文档怎么立项、落地、忘记与回写：两轴路径编码、三生命周期义务、三个 leaf 门禁、状态转换的改写纪律、归档四分法与封印、命名与工程习惯、元环回写、六类执法者与诚实缺口。 | 10 | 10 | 0 | 0 |
-| [`harness-idea/`](../harness-idea/00-map.md) | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。 | 10 | 0 | 10 | 0 |
+| [`harness-idea/`](../harness-idea/00-map.md) | 判断层：dsh 这种 harness 形态做对了什么、边界与成本在哪、反馈如何回写。 | 10 | 10 | 0 | 0 |
 | [`canon/`](../canon/00-map.md) | 宪章层：每个承重词的 repo 原文、它排除的写法、常规流程的名字与边界，以及生态做法的证据等级。 | 7 | 7 | 0 | 0 |
 
 ## 页面明细
@@ -44,8 +44,8 @@
 |---|---|---|---|---|
 | [`00-map`](../system-overview/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
 | [`01-扩展表非显然落点`](../system-overview/01-扩展表非显然落点.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
-| [`02-对照单一loop`](../system-overview/02-对照单一loop.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`03-门禁与性能基准`](../system-overview/03-门禁与性能基准.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`02-对照单一loop`](../system-overview/02-对照单一loop.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`03-门禁与性能基准`](../system-overview/03-门禁与性能基准.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 
 ### `two-tree-runtime/`
 
@@ -60,10 +60,10 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../two-tree-runtime/framework/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`01-五条原语对照源码`](../two-tree-runtime/framework/01-五条原语对照源码.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`02-waterfall-与事件合同`](../two-tree-runtime/framework/02-waterfall-与事件合同.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`03-loader-include-与js插值`](../two-tree-runtime/framework/03-loader-include-与js插值.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`04-vendor-本地修改`](../two-tree-runtime/framework/04-vendor-本地修改.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`01-五条原语对照源码`](../two-tree-runtime/framework/01-五条原语对照源码.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`02-waterfall-与事件合同`](../two-tree-runtime/framework/02-waterfall-与事件合同.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`03-loader-include-与js插值`](../two-tree-runtime/framework/03-loader-include-与js插值.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`04-vendor-本地修改`](../two-tree-runtime/framework/04-vendor-本地修改.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`05-group与isolate-realm`](../two-tree-runtime/framework/05-group与isolate-realm.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `two-tree-runtime/client/`
@@ -71,21 +71,21 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../two-tree-runtime/client/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`rules/01-export-与包内目录`](../two-tree-runtime/client/rules/01-export-与包内目录.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`rules/02-依赖-构建期环境与三处注册面`](../two-tree-runtime/client/rules/02-依赖-构建期环境与三处注册面.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`rules/03-样式与本地化`](../two-tree-runtime/client/rules/03-样式与本地化.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`rules/04-测试阶梯与三道-gate`](../two-tree-runtime/client/rules/04-测试阶梯与三道-gate.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`state/01-谁拥有一份状态`](../two-tree-runtime/client/state/01-谁拥有一份状态.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`state/02-资源模型与-holder-生命周期`](../two-tree-runtime/client/state/02-资源模型与-holder-生命周期.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`rules/01-export-与包内目录`](../two-tree-runtime/client/rules/01-export-与包内目录.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`rules/02-依赖-构建期环境与三处注册面`](../two-tree-runtime/client/rules/02-依赖-构建期环境与三处注册面.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`rules/03-样式与本地化`](../two-tree-runtime/client/rules/03-样式与本地化.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`rules/04-测试阶梯与三道-gate`](../two-tree-runtime/client/rules/04-测试阶梯与三道-gate.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`state/01-谁拥有一份状态`](../two-tree-runtime/client/state/01-谁拥有一份状态.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`state/02-资源模型与-holder-生命周期`](../two-tree-runtime/client/state/02-资源模型与-holder-生命周期.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`state/03-会话窗口与-generation`](../two-tree-runtime/client/state/03-会话窗口与-generation.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`state/04-workspace-模型`](../two-tree-runtime/client/state/04-workspace-模型.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
-| [`tree/01-六层与单向依赖链`](../two-tree-runtime/client/tree/01-六层与单向依赖链.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`tree/02-模块身份与激活顺序`](../two-tree-runtime/client/tree/02-模块身份与激活顺序.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`tree/01-六层与单向依赖链`](../two-tree-runtime/client/tree/01-六层与单向依赖链.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`tree/02-模块身份与激活顺序`](../two-tree-runtime/client/tree/02-模块身份与激活顺序.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`tree/03-浏览器启动与首屏交接`](../two-tree-runtime/client/tree/03-浏览器启动与首屏交接.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`tree/04-客户端热更新与模块缓存`](../two-tree-runtime/client/tree/04-客户端热更新与模块缓存.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
-| [`view/01-slot-与-props-纪律`](../two-tree-runtime/client/view/01-slot-与-props-纪律.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`view/02-conversation-node-纪律`](../two-tree-runtime/client/view/02-conversation-node-纪律.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`view/03-右栏-与-document-preview`](../two-tree-runtime/client/view/03-右栏-与-document-preview.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`view/01-slot-与-props-纪律`](../two-tree-runtime/client/view/01-slot-与-props-纪律.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`view/02-conversation-node-纪律`](../two-tree-runtime/client/view/02-conversation-node-纪律.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`view/03-右栏-与-document-preview`](../two-tree-runtime/client/view/03-右栏-与-document-preview.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 
 ### `two-tree-runtime/remote/`
 
@@ -93,11 +93,11 @@
 |---|---|---|---|---|
 | [`00-map`](../two-tree-runtime/remote/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
 | [`connection/01-载体-rpcId-与逻辑流`](../two-tree-runtime/remote/connection/01-载体-rpcId-与逻辑流.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
-| [`connection/02-认证与浏览器宿主`](../two-tree-runtime/remote/connection/02-认证与浏览器宿主.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`connection/02-认证与浏览器宿主`](../two-tree-runtime/remote/connection/02-认证与浏览器宿主.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`gateway/01-Host-派发与访问控制`](../two-tree-runtime/remote/gateway/01-Host-派发与访问控制.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`gateway/02-客户端-mount-与装配`](../two-tree-runtime/remote/gateway/02-客户端-mount-与装配.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
-| [`streams/01-一条-emit-两条出站链路`](../two-tree-runtime/remote/streams/01-一条-emit-两条出站链路.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`streams/02-三类帧与-wire-校验`](../two-tree-runtime/remote/streams/02-三类帧与-wire-校验.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`streams/01-一条-emit-两条出站链路`](../two-tree-runtime/remote/streams/01-一条-emit-两条出站链路.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`streams/02-三类帧与-wire-校验`](../two-tree-runtime/remote/streams/02-三类帧与-wire-校验.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`typert/01-声明期-装饰器与-namespace`](../two-tree-runtime/remote/typert/01-声明期-装饰器与-namespace.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`typert/02-类型图与两族产物`](../two-tree-runtime/remote/typert/02-类型图与两族产物.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
@@ -107,31 +107,31 @@
 |---|---|---|---|---|
 | [`00-map`](../runtime-profiles/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
 | [`01-web`](../runtime-profiles/01-web.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
-| [`02-headless`](../runtime-profiles/02-headless.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
-| [`03-sdk`](../runtime-profiles/03-sdk.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
-| [`04-sdk-minimal`](../runtime-profiles/04-sdk-minimal.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
-| [`05-acp`](../runtime-profiles/05-acp.md) | mechanism | 沿用 | b830ec950f | 专题声明 |
+| [`02-headless`](../runtime-profiles/02-headless.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`03-sdk`](../runtime-profiles/03-sdk.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`04-sdk-minimal`](../runtime-profiles/04-sdk-minimal.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`05-acp`](../runtime-profiles/05-acp.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`06-desktop`](../runtime-profiles/06-desktop.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `session-and-loop/`
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../session-and-loop/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
-| [`01-session-event-map`](../session-and-loop/01-session-event-map.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`02-inbox-与turn-时序`](../session-and-loop/02-inbox-与turn-时序.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`03-换loop的半径`](../session-and-loop/03-换loop的半径.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`04-格式世代与迁移`](../session-and-loop/04-格式世代与迁移.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`00-map`](../session-and-loop/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-session-event-map`](../session-and-loop/01-session-event-map.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`02-inbox-与turn-时序`](../session-and-loop/02-inbox-与turn-时序.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`03-换loop的半径`](../session-and-loop/03-换loop的半径.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`04-格式世代与迁移`](../session-and-loop/04-格式世代与迁移.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 
 ### `agent-loop/`
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../agent-loop/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
-| [`01-goal-lifecycle`](../agent-loop/01-goal-lifecycle.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`00-map`](../agent-loop/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-goal-lifecycle`](../agent-loop/01-goal-lifecycle.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`02-goal-round-driver`](../agent-loop/02-goal-round-driver.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
-| [`03-activity-vs-goal-boundaries`](../agent-loop/03-activity-vs-goal-boundaries.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`04-agent-runtime-identity`](../agent-loop/04-agent-runtime-identity.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`03-activity-vs-goal-boundaries`](../agent-loop/03-activity-vs-goal-boundaries.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`04-agent-runtime-identity`](../agent-loop/04-agent-runtime-identity.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 
 ### `delegation-and-orchestration/`
 
@@ -147,11 +147,11 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../delegation-and-orchestration/delegation-primitives/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`01-scripted-workflow-and-sandboxed-fan-out`](../delegation-and-orchestration/delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`02-bounded-delegation-with-fresh-and-forked-subagents`](../delegation-and-orchestration/delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`03-fresh-agent-iteration-loop-and-round-handoff`](../delegation-and-orchestration/delegation-primitives/03-fresh-agent-iteration-loop-and-round-handoff.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`04-cross-round-goals-and-the-round-driver`](../delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`05-background-jobs-and-wall-clock-schedules`](../delegation-and-orchestration/delegation-primitives/05-background-jobs-and-wall-clock-schedules.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`01-scripted-workflow-and-sandboxed-fan-out`](../delegation-and-orchestration/delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`02-bounded-delegation-with-fresh-and-forked-subagents`](../delegation-and-orchestration/delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`03-fresh-agent-iteration-loop-and-round-handoff`](../delegation-and-orchestration/delegation-primitives/03-fresh-agent-iteration-loop-and-round-handoff.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`04-cross-round-goals-and-the-round-driver`](../delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`05-background-jobs-and-wall-clock-schedules`](../delegation-and-orchestration/delegation-primitives/05-background-jobs-and-wall-clock-schedules.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`06-persistent-teams-with-a-shared-task-board`](../delegation-and-orchestration/delegation-primitives/06-persistent-teams-with-a-shared-task-board.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`07-shipped-mount-state`](../delegation-and-orchestration/delegation-primitives/07-shipped-mount-state.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
@@ -160,7 +160,7 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../delegation-and-orchestration/primitive-selection/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`01-per-primitive-usage-sentences-from-tool-descriptions`](../delegation-and-orchestration/primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`01-per-primitive-usage-sentences-from-tool-descriptions`](../delegation-and-orchestration/primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`02-cross-primitive-routing-and-the-official-upgrade-order`](../delegation-and-orchestration/primitive-selection/02-cross-primitive-routing-and-the-official-upgrade-order.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`03-unspecified-gaps-and-contradictions-in-usage-policy`](../delegation-and-orchestration/primitive-selection/03-unspecified-gaps-and-contradictions-in-usage-policy.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
@@ -181,12 +181,12 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../delegation-and-orchestration/completion-and-observation/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`01-acceptance-visibility-quiescence-and-disposal`](../delegation-and-orchestration/completion-and-observation/01-acceptance-visibility-quiescence-and-disposal.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`01-acceptance-visibility-quiescence-and-disposal`](../delegation-and-orchestration/completion-and-observation/01-acceptance-visibility-quiescence-and-disposal.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`02-terminal-states-and-bounded-retry-authority`](../delegation-and-orchestration/completion-and-observation/02-terminal-states-and-bounded-retry-authority.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
-| [`03-session-lineage-and-agent-incarnation`](../delegation-and-orchestration/completion-and-observation/03-session-lineage-and-agent-incarnation.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`04-persistent-facts-derived-projections-and-live-authority`](../delegation-and-orchestration/completion-and-observation/04-persistent-facts-derived-projections-and-live-authority.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`03-session-lineage-and-agent-incarnation`](../delegation-and-orchestration/completion-and-observation/03-session-lineage-and-agent-incarnation.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`04-persistent-facts-derived-projections-and-live-authority`](../delegation-and-orchestration/completion-and-observation/04-persistent-facts-derived-projections-and-live-authority.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`05-delegation-graph-node-and-edge-projection`](../delegation-and-orchestration/completion-and-observation/05-delegation-graph-node-and-edge-projection.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
-| [`06-workflow-reproducibility-cancellation-and-missing-results`](../delegation-and-orchestration/completion-and-observation/06-workflow-reproducibility-cancellation-and-missing-results.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`06-workflow-reproducibility-cancellation-and-missing-results`](../delegation-and-orchestration/completion-and-observation/06-workflow-reproducibility-cancellation-and-missing-results.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`07-evidence-layers-declaration-mount-mechanism-behaviour`](../delegation-and-orchestration/completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `delegation-and-orchestration/design-perspectives/`
@@ -194,8 +194,8 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../delegation-and-orchestration/design-perspectives/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`01-graph-computation-essence-invariant-derivation-and-execution`](../delegation-and-orchestration/design-perspectives/01-graph-computation-essence-invariant-derivation-and-execution.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`02-external-narratives-versus-source-truth`](../delegation-and-orchestration/design-perspectives/02-external-narratives-versus-source-truth.md) | mechanism | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`01-graph-computation-essence-invariant-derivation-and-execution`](../delegation-and-orchestration/design-perspectives/01-graph-computation-essence-invariant-derivation-and-execution.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`02-external-narratives-versus-source-truth`](../delegation-and-orchestration/design-perspectives/02-external-narratives-versus-source-truth.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`03-why-primitives-instead-of-a-central-scheduler`](../delegation-and-orchestration/design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`04-nine-traps-in-delegation-surfaces`](../delegation-and-orchestration/design-perspectives/04-nine-traps-in-delegation-surfaces.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
@@ -225,9 +225,9 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../plugin-system/composition/00-map.md) | map | 沿用 | 687f282e86 | 页面声明 |
-| [`01-boot-时序`](../plugin-system/composition/01-boot-时序.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
-| [`02-dump-与boot-保真`](../plugin-system/composition/02-dump-与boot-保真.md) | mechanism | 沿用 | 687f282e86 | 专题声明 |
+| [`00-map`](../plugin-system/composition/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-boot-时序`](../plugin-system/composition/01-boot-时序.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`02-dump-与boot-保真`](../plugin-system/composition/02-dump-与boot-保真.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`03-user-patch-hmr`](../plugin-system/composition/03-user-patch-hmr.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`04-profile-创建与保留名`](../plugin-system/composition/04-profile-创建与保留名.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`05-启动窗口与首屏交接`](../plugin-system/composition/05-启动窗口与首屏交接.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
@@ -236,14 +236,14 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../plugin-system/lifecycle/00-map.md) | map | 沿用 | 1f81c047fc | 页面声明 |
-| [`01-打包`](../plugin-system/lifecycle/01-打包.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
-| [`02-分发`](../plugin-system/lifecycle/02-分发.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
-| [`03-安装`](../plugin-system/lifecycle/03-安装.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
-| [`04-启动`](../plugin-system/lifecycle/04-启动.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
-| [`05-特殊初始化`](../plugin-system/lifecycle/05-特殊初始化.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
-| [`06-更新与启停`](../plugin-system/lifecycle/06-更新与启停.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
-| [`07-卸载与数据留存`](../plugin-system/lifecycle/07-卸载与数据留存.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`00-map`](../plugin-system/lifecycle/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-打包`](../plugin-system/lifecycle/01-打包.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`02-分发`](../plugin-system/lifecycle/02-分发.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`03-安装`](../plugin-system/lifecycle/03-安装.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`04-启动`](../plugin-system/lifecycle/04-启动.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`05-特殊初始化`](../plugin-system/lifecycle/05-特殊初始化.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`06-更新与启停`](../plugin-system/lifecycle/06-更新与启停.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
+| [`07-卸载与数据留存`](../plugin-system/lifecycle/07-卸载与数据留存.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`08-首启与产品初始化`](../plugin-system/lifecycle/08-首启与产品初始化.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`09-配置与设置面`](../plugin-system/lifecycle/09-配置与设置面.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`10-诊断地图`](../plugin-system/lifecycle/10-诊断地图.md) | playbook | 已核验 | b830ec950f | 页面声明 |
@@ -254,21 +254,21 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../plugin-system/inventory/00-map.md) | map | 沿用 | 1f81c047fc | 页面声明 |
-| [`01-capability-tour`](../plugin-system/inventory/01-capability-tour.md) | mechanism | 沿用 | 1f81c047fc | 矩阵沿用 |
-| [`02-plugin-catalog`](../plugin-system/inventory/02-plugin-catalog.md) | mechanism | 沿用 | 1f81c047fc | 矩阵沿用 |
-| [`03-reference-lists`](../plugin-system/inventory/03-reference-lists.md) | mechanism | 沿用 | 1f81c047fc | 矩阵沿用 |
-| [`04-reuse-paths-and-gaps`](../plugin-system/inventory/04-reuse-paths-and-gaps.md) | mechanism | 沿用 | 1f81c047fc | 矩阵沿用 |
-| [`05-taxonomy-and-design`](../plugin-system/inventory/05-taxonomy-and-design.md) | mechanism | 沿用 | 1f81c047fc | 页面声明 |
+| [`00-map`](../plugin-system/inventory/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
+| [`01-capability-tour`](../plugin-system/inventory/01-capability-tour.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`02-plugin-catalog`](../plugin-system/inventory/02-plugin-catalog.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`03-reference-lists`](../plugin-system/inventory/03-reference-lists.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`04-reuse-paths-and-gaps`](../plugin-system/inventory/04-reuse-paths-and-gaps.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`05-taxonomy-and-design`](../plugin-system/inventory/05-taxonomy-and-design.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `experimental/`
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../experimental/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`01-code-runtime-python`](../experimental/01-code-runtime-python.md) | experiment | 沿用 | 687f282e86 | 专题声明 |
+| [`01-code-runtime-python`](../experimental/01-code-runtime-python.md) | experiment | 已核验 | b830ec950f | 专题声明 |
 | [`02-agent-teams`](../experimental/02-agent-teams.md) | experiment | 已核验 | b830ec950f | 专题声明 |
-| [`03-inspector`](../experimental/03-inspector.md) | experiment | 沿用 | 687f282e86 | 专题声明 |
+| [`03-inspector`](../experimental/03-inspector.md) | experiment | 已核验 | b830ec950f | 专题声明 |
 | [`04-实验合同与隔离`](../experimental/04-实验合同与隔离.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `tools-prompt-llm/`
@@ -288,8 +288,8 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../surfaces-entrypoints/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`01-启动面与session流`](../surfaces-entrypoints/01-启动面与session流.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
-| [`02-acp与jsonrpc`](../surfaces-entrypoints/02-acp与jsonrpc.md) | mechanism | 沿用 | b830ec950f | 矩阵沿用 |
+| [`01-启动面与session流`](../surfaces-entrypoints/01-启动面与session流.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
+| [`02-acp与jsonrpc`](../surfaces-entrypoints/02-acp与jsonrpc.md) | mechanism | 已核验 | b830ec950f | 矩阵沿用 |
 | [`03-桌面入口`](../surfaces-entrypoints/03-桌面入口.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 
 ### `test-strategy/`
@@ -297,20 +297,20 @@
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
 | [`00-map`](../test-strategy/00-map.md) | map | 已核验 | b830ec950f | 页面声明 |
-| [`01-doctrine`](../test-strategy/01-doctrine.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`01-doctrine`](../test-strategy/01-doctrine.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`02-tiers`](../test-strategy/02-tiers.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`03-asset-census`](../test-strategy/03-asset-census.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`04-anti-omission`](../test-strategy/04-anti-omission.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
 | [`05-decision-procedure`](../test-strategy/05-decision-procedure.md) | mechanism | 已核验 | b830ec950f | 页面声明 |
-| [`06-rules-ownership`](../test-strategy/06-rules-ownership.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`07-ci-gates`](../test-strategy/07-ci-gates.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`06-rules-ownership`](../test-strategy/06-rules-ownership.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`07-ci-gates`](../test-strategy/07-ci-gates.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`08-reliability`](../test-strategy/08-reliability.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
-| [`09-infrastructure`](../test-strategy/09-infrastructure.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`10-snapshot-machinery`](../test-strategy/10-snapshot-machinery.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
-| [`11-snapshot-external-face`](../test-strategy/11-snapshot-external-face.md) | mechanism | 沿用 | 639ed01539 | 专题声明 |
+| [`09-infrastructure`](../test-strategy/09-infrastructure.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`10-snapshot-machinery`](../test-strategy/10-snapshot-machinery.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
+| [`11-snapshot-external-face`](../test-strategy/11-snapshot-external-face.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
 | [`12-probe-作为取证动作`](../test-strategy/12-probe-作为取证动作.md) | mechanism | 已核验 | b830ec950f | 专题声明 |
-| [`13-plugin-testing`](../test-strategy/13-plugin-testing.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
-| [`14-plugin-testing-playbook`](../test-strategy/14-plugin-testing-playbook.md) | playbook | 沿用 | 639ed01539 | 专题声明 |
+| [`13-plugin-testing`](../test-strategy/13-plugin-testing.md) | playbook | 已核验 | b830ec950f | 专题声明 |
+| [`14-plugin-testing-playbook`](../test-strategy/14-plugin-testing-playbook.md) | playbook | 已核验 | b830ec950f | 专题声明 |
 | [`15-plugin-testing-contract`](../test-strategy/15-plugin-testing-contract.md) | playbook | 已核验 | b830ec950f | 页面声明 |
 
 ### `development-flow/`
@@ -332,16 +332,16 @@
 
 | 页面 | 角色 | 状态 | 最近核验 | 来源 |
 |---|---|---|---|---|
-| [`00-map`](../harness-idea/00-map.md) | map | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`01-role-and-substrate`](../harness-idea/01-role-and-substrate.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`02-legibility`](../harness-idea/02-legibility.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`03-paved-road`](../harness-idea/03-paved-road.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`04-participation-paths`](../harness-idea/04-participation-paths.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`05-dynamic-legibility`](../harness-idea/05-dynamic-legibility.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`06-tech-and-language-fit`](../harness-idea/06-tech-and-language-fit.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`07-boundaries-costs-fit`](../harness-idea/07-boundaries-costs-fit.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`08-judgement-discipline`](../harness-idea/08-judgement-discipline.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
-| [`09-feedback-loop`](../harness-idea/09-feedback-loop.md) | analysis | 沿用 | 687f282e86 | 矩阵沿用 |
+| [`00-map`](../harness-idea/00-map.md) | map | 已核验 | b830ec950f | 矩阵沿用 |
+| [`01-role-and-substrate`](../harness-idea/01-role-and-substrate.md) | analysis | 已核验 | b830ec950f | 矩阵沿用 |
+| [`02-legibility`](../harness-idea/02-legibility.md) | analysis | 已核验 | b830ec950f | 矩阵沿用 |
+| [`03-paved-road`](../harness-idea/03-paved-road.md) | analysis | 已核验 | b830ec950f | 矩阵沿用 |
+| [`04-participation-paths`](../harness-idea/04-participation-paths.md) | analysis | 已核验 | b830ec950f | 矩阵沿用 |
+| [`05-dynamic-legibility`](../harness-idea/05-dynamic-legibility.md) | analysis | 已核验 | b830ec950f | 矩阵沿用 |
+| [`06-tech-and-language-fit`](../harness-idea/06-tech-and-language-fit.md) | analysis | 已核验 | b830ec950f | 矩阵沿用 |
+| [`07-boundaries-costs-fit`](../harness-idea/07-boundaries-costs-fit.md) | analysis | 已核验 | b830ec950f | 矩阵沿用 |
+| [`08-judgement-discipline`](../harness-idea/08-judgement-discipline.md) | analysis | 已核验 | b830ec950f | 矩阵沿用 |
+| [`09-feedback-loop`](../harness-idea/09-feedback-loop.md) | analysis | 已核验 | b830ec950f | 矩阵沿用 |
 
 ### `canon/`
 

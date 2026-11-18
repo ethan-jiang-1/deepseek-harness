@@ -1,8 +1,8 @@
 # 右栏与 document preview
 
-核验入口：[`docs/subsystems/client-resources.md`](../../../../docs/subsystems/client-resources.md)、[`docs/subsystems/sidebar-right.md`](../../../../docs/subsystems/sidebar-right.md)、[`packages/client/resources/README.md`](../../../../packages/client/resources/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-09-05-client-resource-model.md`、`.agents/notes/archived/architecture/2026-09-05-sidebar-tab-types-and-navigation.md`（已归档，只作历史）、`.agents/notes/archived/architecture/2026-09-07-workspace-files-dual-face-package.md`（已归档，只作历史）。
-
-这一页讲两种「用地址读内容」的消费面：资源协议（`dsh-resource://`）与右栏的 tab / slot 体系；holder 生命周期在 [`../state/02`](../state/02-资源模型与-holder-生命周期.md)。
+> **为什么单独有这一页**：左边聊天流里的文件链接、工具预览或审批细节，点击后都要在右栏打开对应的 tab 和预览区；如果各业务包各自维护右栏状态、各写一套布局容器和文件拉取逻辑，tab 切换、分栏停靠与资源释放很快就会冲突。本页把「右栏停靠容器怎么由几个核心包协同分工」以及「文档预览如何通过 `dsh-resource://` 地址和 viewer tab 打开」串成一页，说明资源协议在界面视图层的具体落点（底层 holder 生命周期归 [`../state/02`](../state/02-资源模型与-holder-生命周期.md)）。
+>
+> 核验入口：[`docs/subsystems/client-resources.md`](../../../../docs/subsystems/client-resources.md)、[`docs/subsystems/sidebar-right.md`](../../../../docs/subsystems/sidebar-right.md)、[`packages/client/resources/README.md`](../../../../packages/client/resources/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-09-05-client-resource-model.md`、`.agents/notes/archived/architecture/2026-09-05-sidebar-tab-types-and-navigation.md`（已归档，只作历史）、`.agents/notes/archived/architecture/2026-09-07-workspace-files-dual-face-package.md`（已归档，只作历史）。
 
 ## 右栏
 

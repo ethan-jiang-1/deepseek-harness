@@ -73,7 +73,7 @@ git ls-tree -r --name-only HEAD .agents/notes \
 
 1. **`simplification` 的拒绝率 7/20，其它 class 近乎为零。**「删掉 X」是最容易被否掉的诱惑；把它单独归类，等于建了一个「曾经想删但被否掉」的清单，防止反复重提。
 2. **`implemented/` 里 `architecture` 占 180/296。** 架构决策大多落地并长期留任；`process`（34）与 `testing`（18）更多是「讲清一次即可归档」。
-3. **`implemented/architecture` 的时间切片在目录结构里不可见**：按月是 2026-06 起的 8 / 26 / 28 / **88** / 30——2026-09 那一波彼此强相关的架构决策（其中 `session-` 前缀 24 篇、`desktop-` 21 篇、`client-` 21 篇）被日期前缀均匀摊开。这是 [01](./01-lifecycle.md#什么时候这两条会失效)「平摊红利何时失效」的证据。
+3. **`implemented/architecture` 的时间切片在目录结构里不可见**：按月是 2026-06 起的 8 / 26 / 28 / **88** / 30——2026-09 那一波彼此强相关的架构决策（其中去日期前缀后 `session-` 8 篇、`desktop-` 7 篇、`client-` 7 篇）被日期前缀均匀摊开。这是 [01](./01-lifecycle.md#什么时候这两条会失效)「平摊红利何时失效」的证据。
 
 **处置频率的诚实读法**：把 `implemented/` 与 `archived/` 合并看，六类规模是 architecture 365、feature 346、bug-fix 193、process 154、simplification 105、testing 57，活跃:冻结约 1:3。这**描述已观测到的分布，不构成规则**——README 的归档判据没有一处按 class 区分（判据逐篇：rationale、alternatives、负向保证、durable/wire 语义、所有权边界、安全规则、重新引入条件）。想从矩阵推出「architecture 的 note 该留久一点」，在门禁里找不到依据。
 

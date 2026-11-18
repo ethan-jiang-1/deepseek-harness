@@ -48,7 +48,7 @@ export function isArchivedAgentNotePath(path: string): boolean
 | --- | --- |
 | **动机** | 冻结层是历史快照，按当前标准重排它是**篡改历史**；把归档纳入散文检查会逼着人去改一个明令不许改的层。 |
 | **代价一** | **归档层的出站链接从不被检查。** `verify-md-links` 跳过它，所以归档 note 里指向活跃 note 的链接即使断了也不会红。[`dsh-archive-agent-notes`](../../.agents/skills/dsh-archive-agent-notes/SKILL.md) 甚至明说了这一点：「Do not claim archived outbound links are valid: the archive verifier intentionally never checks them.」 |
-| **代价二** | **入站链接没有门禁保护。** 归档要「repair or delete inbound links」，但没有任何检查能在没有前置改动的情况下证明「该改的都改了」；实际保障来自 `verify-md-links` 会红 + 那一次提交改完了 242 篇（见 [07](./07-naming-and-house-style.md#引用习惯链接代替叙述)）。 |
+| **代价二** | **入站链接没有门禁保护。** 归档要「repair or delete inbound links」，但没有任何检查能在没有前置改动的情况下证明「该改的都改了」；实际保障来自 `verify-md-links` 会红 + 那一次提交改完了全仓 246 篇非 `.zh.md` Markdown（见 [07](./07-naming-and-house-style.md#引用习惯链接代替叙述)）。 |
 
 所以「归档不破坏引用」这句要写准确：**指向归档的链接**是可机器验证的（归档目录本身存在于工作树，链接目标存在）；**归档发出的链接**被明文放弃检查。两者不是同一件事，混着说会把一个刻意留下的空白读成一项保证。
 

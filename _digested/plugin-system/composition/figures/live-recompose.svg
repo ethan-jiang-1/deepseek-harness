@@ -4,7 +4,7 @@
   </defs>
   <rect width="960" height="400" fill="#fafafa" rx="6"/>
   <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">热更新重放完整 patch 列表；用户层不挤掉 bundle 与 overlay</text>
-  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">refresh() → readProfilePatches → reconcileProfilePatches → entry.update · hmr.runExclusive 串行</text>
+  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">refresh() → hmr.reconcileProfile → recomposeProfile → entry.update · runExclusive 串行</text>
 
   <rect x="40" y="68" width="880" height="52" rx="8" fill="#dcfce7" stroke="#86efac"/>
   <text x="480" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">bundle patches + profile patch + home patch（每次 refresh 重读）</text>
@@ -20,6 +20,6 @@
 
   <rect x="40" y="268" width="880" height="100" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
   <text x="60" y="296" font-size="12" fill="#374151">refresh() 先做三份文件指纹比对；无变化直接返回，ENOENT 视为该层为空。</text>
-  <text x="60" y="320" font-size="12" fill="#374151">readProfilePatches 组完整列表（bundle + profile + home + overlays + telemetry）→ reconcileProfilePatches 拆旧 patches、prepare、entry.update 一次提交。</text>
+  <text x="60" y="320" font-size="12" fill="#374151">hmr.reconcileProfile 重读全层并用最新 resolution 调 recomposeProfile → 拆旧 patches、prepare、entry.update 提交。</text>
   <text x="60" y="344" font-size="12" fill="#374151">候选失败不提交：旧树继续服务；只有本次新引入的失活条目抛错。</text>
 </svg>

@@ -99,7 +99,7 @@ subagent 是同一模式的另一个例子：一个接口后面，可以是进�
 1. **Consumer 只依赖 Definition，绝不依赖具体 Provider**——换后端不改调用方的原因（见上）。
 2. **每个 isolate realm 内，一个 `ctx.<key>` 同一时刻只有一个实现**；换实现靠组合层换行（cross-realm 隔离见上）。
 3. **三角色齐全才叫 seam**；判定程序见「不是每个能力都是 seam」。
-4. **退出码 1 不是 harness 崩溃**：非零退出、超时、取消都 resolve 成结果，只有基础设施失败走 killed 结算（[`02`](./02-一次bash从tool到sandbox.md) 的失败表）。
+4. **退出码 1 不是 harness 崩溃**：命令非零退出与超时都 resolve 成非错误结果文本，abort 取消与准备期失败走 `isError`，基础设施失败走 killed 结算（[`02`](./02-一次bash从tool到sandbox.md) 的失败表）。
 5. **Definition 对着所有当前 Consumer 设计**；tool-schema、UI、传输放 Consumer 或 provider（[`01`](./01-三角色与分包装.md)）。
 
 ## 症状 → 页

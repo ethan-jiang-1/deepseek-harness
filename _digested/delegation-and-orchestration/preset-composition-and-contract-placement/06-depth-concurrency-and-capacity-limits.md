@@ -1,8 +1,8 @@
 # Depth, Concurrency and Capacity Limits · 深度、并发与容量边界
 
-源码核验入口：`packages/subagent/subagent/src/{index,child-agent,depth}.ts`、`packages/workflow/workflow-ptc/src/{index,runtime}.ts`、`packages/jobs/jobs-local/src/index.ts`、`packages/experimental/agent-team/src/{index,roster,task-board}.ts`。
+> 本页回答：一条链的纵向深度与横向容量分别由什么限制、哪一个先触发？DSH 的编排限制不是一个统一的“任务预算”。不同层分别限制递归深度、活体 Agent 数、workflow 并发、单次项目数、总子代理调用、owner 的后台 job 数量，以及 teams 的成员、任务和 mailbox 容量。一个组合请求的实际上限由这些边界中最先触发的一层决定。
 
-本页回答：一条链的纵向深度与横向容量分别由什么限制、哪一个先触发？DSH 的编排限制不是一个统一的“任务预算”。不同层分别限制递归深度、活体 Agent 数、workflow 并发、单次项目数、总子代理调用、owner 的后台 job 数量，以及 teams 的成员、任务和 mailbox 容量。一个组合请求的实际上限由这些边界中最先触发的一层决定。
+> 源码核验入口：`packages/subagent/subagent/src/{index,child-agent,depth}.ts`、`packages/workflow/workflow-ptc/src/{index,runtime}.ts`、`packages/jobs/jobs-local/src/index.ts`、`packages/experimental/agent-team/src/{index,roster,task-board}.ts`。
 
 ## 读完你能回答
 

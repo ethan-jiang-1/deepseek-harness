@@ -1,8 +1,8 @@
 # Scripted Workflow and Sandboxed Fan-out · 脚本化 workflow 与沙箱扇出
 
-源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/workflow/src/index.ts`、`packages/workflow/workflow-ptc/src/`（`index.ts`/`runtime.ts`/`host.ts`/`guest.ts`/`meta.ts`/`realm.ts`）、`packages/core/tools/src/json-schema.ts`、`packages/jobs/jobs/src/index.ts`、`packages/experimental/tool-ralph/src/index.ts`、`packages/bundle/base/cordis.patch.yml`、`docs/subsystems/workflow.md`。
+> 本页回答：模型写的 workflow 编排脚本在什么进程里跑、能调用什么钩子、失败如何结算、结果如何持久化？工具的选择边界（什么时候该用）不在本页，见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
 
-本页回答：模型写的 workflow 编排脚本在什么进程里跑、能调用什么钩子、失败如何结算、结果如何持久化？工具的选择边界（什么时候该用）不在本页，见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
+> 源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/workflow/workflow/src/index.ts`、`packages/workflow/workflow-ptc/src/`（`index.ts`/`runtime.ts`/`host.ts`/`guest.ts`/`meta.ts`/`realm.ts`）、`packages/core/tools/src/json-schema.ts`、`packages/jobs/jobs/src/index.ts`、`packages/experimental/tool-ralph/src/index.ts`、`packages/bundle/base/cordis.patch.yml`、`docs/subsystems/workflow.md`。
 
 ## 读完你能回答
 
@@ -123,9 +123,9 @@ VM 上下文 `createContext({})` 后只注入五个冻结函数（`agent`/`paral
 
 ## 归属与持久记录
 
-`WorkflowStartRequest.parent` **必填**——脚本起的每个 child 都归属到这个 live Agent，cwd、谱系与深度经 subagent seam 传递（`packages/workflow/workflow/src/runtime-types.ts:30`-`31`）。工具层取 `exec.agent` 作 parent，无调用 agent 即 fail loud（`packages/workflow/tool-workflow/src/index.ts:407`-`413`）；host 每次 `agent()` 经 `this.subagents.startActivation({ provider, label, delivery: 'caller', signal, request: { prompt, parent: this.parent, ... } })` 发布 child（`packages/workflow/workflow-ptc/src/host.ts:197`-`211`）；本地 run 在 child session 的 `parentSession` header 记录父会话 id（`docs/subsystems/subagent.md:389`）。引擎在 start 时捕获 `subagents`/`ptcRuntime` 服务句柄，引擎卸载不撤销已接受的 run；调用方必须 dispose 每个 run（`packages/workflow/workflow-ptc/src/index.ts:154`-`156`；`packages/workflow/workflow/README.md:53`）。
+`WorkflowStartRequest.parent` **必填**——脚本起的每个 child 都归属到这个 live Agent，cwd、谱系与深度经 subagent seam 传递（`packages/workflow/workflow/src/runtime-types.ts:30`-`31`）。工具层取 `exec.agent` 作 parent，无调用 agent 即 fail loud（`packages/workflow/tool-workflow/src/index.ts:407`-`413`）；host 每次 `agent()` 经 `this.subagents.startActivation({ provider, label, delivery: 'caller', signal, request: { prompt, parent: this.parent, ... } })` 发布 child（`packages/workflow/workflow-ptc/src/host.ts:200`-`220`）；本地 run 在 child session 的 `parentSession` header 记录父会话 id（`docs/subsystems/subagent.md:389`）。引擎在 start 时捕获 `subagents`/`ptcRuntime` 服务句柄，引擎卸载不撤销已接受的 run；调用方必须 dispose 每个 run（`packages/workflow/workflow-ptc/src/index.ts:154`-`156`；`packages/workflow/workflow/README.md:53`）。
 
-持久 Chat 记录（只顶层 transport 调用记录，嵌套不记，`packages/workflow/tool-workflow/src/index.ts:440`-`442`、`packages/workflow/tool-workflow/README.md:174`）：`tool-workflow/run-start` 在 run 被接受后写入；成员 start/end 按 `runId + seq` 配对；`tool-workflow/run-end` 只在结果已知且 disposal 静默后写入；首次 append 失败即停写该 run，日志保持空或合法前缀（`docs/subsystems/workflow.md:124`）。`packages/workflow/tool-workflow` 的 record 校验在 live commit 前与 Session 装载时校验同一协议：一 run 一 start、正数唯一成员序列、成员配对、无 open member 结束的 run 结尾（`docs/subsystems/workflow.md:126`）。
+持久 Chat 记录（只顶层 transport 调用记录，嵌套不记，`packages/workflow/tool-workflow/src/index.ts:443`-`445`、`packages/workflow/tool-workflow/README.md:174`）：`tool-workflow/run-start` 在 run 被接受后写入；成员 start/end 按 `runId + seq` 配对；`tool-workflow/run-end` 只在结果已知且 disposal 静默后写入；首次 append 失败即停写该 run，日志保持空或合法前缀（`docs/subsystems/workflow.md:124`）。`packages/workflow/tool-workflow` 的 record 校验在 live commit 前与 Session 装载时校验同一协议：一 run 一 start、正数唯一成员序列、成员配对、无 open member 结束的 run 结尾（`docs/subsystems/workflow.md:126`）。
 
 ## 后台模式：接入 jobs 体系
 
@@ -155,7 +155,7 @@ live output 经 mirror 订阅引擎事件写进 job 的 output ring（`packages/
 
 | 路径 | 一句话 |
 |------|--------|
-| `packages/workflow/tool-workflow/src/index.ts` | 工具注册、DESCRIPTION、参数 schema、Config、前台生命周期（abort 桥 `:444`-`448`、dispose `:465`-`479`） |
+| `packages/workflow/tool-workflow/src/index.ts` | 工具注册、DESCRIPTION、参数 schema、Config、前台生命周期（abort 桥 `:447`-`451`、dispose `:468`-`482`） |
 | `packages/workflow/tool-workflow/src/record.ts` | 后台 mirror：引擎事件 → job output ring |
 | `packages/workflow/workflow/src/index.ts` | `WorkflowEngine` Service Definition、`WorkflowError` fatal 纪律（`:121`-`148`）、事件容器化 |
 | `packages/workflow/workflow/src/runtime-types.ts` | `WorkflowStartRequest`（parent 必填）与 `WorkflowRun`/`WorkflowResult` |

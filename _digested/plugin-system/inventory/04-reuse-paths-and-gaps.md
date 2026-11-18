@@ -1,6 +1,6 @@
 # 04 · 复用四条出路与缺口清单
 
-查到现货之后，按代价从低到高有四条出路；每条给带行号的真实例子。都走不通时，末节的缺口清单说明哪些能力现在必须自写。
+> **为什么单独有这一页**：知道仓里有某个能力之后，新手最常见的冲动还是去 fork 包或新写一个插件——往往是因为不知道「改字段」「disabled + insert 一对行」就能无痛替换，也不清楚哪些能力目前确实还没补全只能自写。本页把「查到现货之后怎么办」按改造成本从低到高排成四条真实出路（配好行号样本），并在文末给出已确认的空白清单，帮你把新写代码的决定留在前三步都走不通之后。
 
 ![复用决策树](./figures/reuse-paths.svg)
 
@@ -19,7 +19,7 @@
 1. **搜索换 Exa**：disabled `web-search-deepseek` 行＋insert `@deepseek-ai/dsh-web-search-exa` 行（packages/web/web-search-exa/README.md:40 的挂载示例；出厂对照 base:473-487）——`web_search`/`web_fetch` 的模型可见名不变（tool-catalog.md:50）。
 2. **LLM 双轨**：`llm-pi-ai` 以休眠态随 base 挂载，settings 出现 `llm-pi-ai:` 段即注册多 Provider routes（base:128-136）；默认模型在 `agent-default-model` 行改（base:90-94）。
 3. **`--patch` 覆盖**：`apps/web/tests/pin-browse-picker.overlay.yml:7-13` 的 disable＋insert 对换目录挑选后端。
-4. **OPTIONAL_BUNDLES 一键开**：十二个实验 bundle 在 Web 插件页（或 `plugin_manager` 工具）开关，无需改文件（profile.ts:223-236）；`tool-ralph` 与 `tool-terminal`、`tool-session-query`、`tool-worktree` 的打开方式都是各自 bundle，base 层不再有注释示例。
+4. **OPTIONAL_BUNDLES 一键开**：十二个实验 bundle 在 Web 插件页（或 `plugin_manager` 工具）开关，无需改文件（profile.ts:223-236）；`tool-ralph` 与 `tool-terminal`、`tool-session-query`、`tool-worktree` 均在各自实验 bundle 中启用（`base` 层不含占位或注释示例）。
 
 机制（为什么换 Provider 不用改 Consumer）归 [`capability-seams/`](../../capability-seams/00-map.md)。
 

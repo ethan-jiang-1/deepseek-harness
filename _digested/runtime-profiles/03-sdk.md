@@ -4,6 +4,8 @@
 
 `dsh --profile sdk` 启动一个常驻 stdio JSON-RPC 服务，供进程外 SDK 客户端（TypeScript、Python）驱动 Harness agent。stdout 是纯协议帧，不能装 logger。
 
+**为什么单独设这一形态**：把 agent 嵌进外部 TypeScript 或 Python 应用时，调用方既不要浏览器 UI，也接受不了文本 log 污染 stdio 协议管道，但仍希望保留完整耐久事件流和工具能力。`sdk` 因此单独隔离出一条 `dsh-base + dsh-sdk-app` 组合：禁用冲突日志输出、打开面向程序化调用方的 JSON-RPC 服务，与面向跨生态标准化代理协议的 `acp` 各司其职。
+
 ## 怎么跑
 
 ```sh

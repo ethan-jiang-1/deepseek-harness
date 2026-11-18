@@ -1,8 +1,8 @@
 # Shipped Mount State · shipped 组合里的默认开关
 
-源码核验入口：`packages/bundle/base/cordis.patch.yml`、`packages/bundle/web-app/cordis.patch.yml`、`packages/boot/app-boot/src/profile.ts`、`packages/boot/app-boot/src/official-bundle-packages.ts`、`packages/experimental/ralph-bundle/cordis.patch.yml`。
+> 本页回答：**阶梯上每一级在 shipped 组合里是开箱即用，还是要显式打开？** 这是「充分利用 DSH」的第一手事实，也是判断“模型为什么看不见某个原语”的起点。
 
-本页回答：**阶梯上每一级在 shipped 组合里是开箱即用，还是要显式打开？** 这是「充分利用 DSH」的第一手事实，也是判断“模型为什么看不见某个原语”的起点。
+> 源码核验入口：`packages/bundle/base/cordis.patch.yml`、`packages/bundle/web-app/cordis.patch.yml`、`packages/boot/app-boot/src/profile.ts`、`packages/boot/app-boot/src/official-bundle-packages.ts`、`packages/experimental/ralph-bundle/cordis.patch.yml`。
 
 ## 读完你能回答
 

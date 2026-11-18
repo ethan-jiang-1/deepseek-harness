@@ -1,8 +1,8 @@
 # Cross-Primitive Routing and the Official Upgrade Order · 跨原语路由与官方升级阶梯
 
-源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/experimental/tool-ralph/src/index.ts`、`packages/goal/tool-goal/src/index.ts`、`packages/subagent/subagent-fork-in-process/README.md`、`packages/experimental/agent-team-profile/README.md`、`packages/todo/tool-todo/README.md`、`packages/jobs/README.md`、`packages/bundle/base/cordis.patch.yml`。
+> 本页回答：原语之间**官方怎么互相路由**？从轻到重的升级顺序有没有明文证据？为什么 DSH 把路由放在工具里而不是中心调度器（设计后果见 [`perspectives/03`](../design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md)）？逐原语边界句见 [`selection/01`](./01-per-primitive-usage-sentences-from-tool-descriptions.md)，空白见 [`selection/03`](./03-unspecified-gaps-and-contradictions-in-usage-policy.md)。
 
-本页回答：原语之间**官方怎么互相路由**？从轻到重的升级顺序有没有明文证据？为什么 DSH 把路由放在工具里而不是中心调度器（设计后果见 [`perspectives/03`](../design-perspectives/03-why-primitives-instead-of-a-central-scheduler.md)）？逐原语边界句见 [`selection/01`](./01-per-primitive-usage-sentences-from-tool-descriptions.md)，空白见 [`selection/03`](./03-unspecified-gaps-and-contradictions-in-usage-policy.md)。
+> 源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/experimental/tool-ralph/src/index.ts`、`packages/goal/tool-goal/src/index.ts`、`packages/subagent/subagent-fork-in-process/README.md`、`packages/experimental/agent-team-profile/README.md`、`packages/todo/tool-todo/README.md`、`packages/jobs/README.md`、`packages/bundle/base/cordis.patch.yml`。
 
 ## 读完你能回答
 

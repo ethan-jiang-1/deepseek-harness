@@ -4,6 +4,8 @@
 
 `sdk-minimal` 是 SDK 的极简版本，工具面大幅收窄，由 Python SDK 的极简示例与 sdk-minimal smoke 场景显式选用（**SDK 的默认 profile 仍是 `sdk`**，`dsh --profile sdk-minimal`）。模型看到的工具面收窄到一个由平台选定的持久 shell（非 win32 → `persistent-bash`；win32 → `persistent-pwsh`）加 `read_image` 与 `working_directory`，以 [`scripts/snapshots/python-sdk-single-exe/minimal/`](../../scripts/snapshots/python-sdk-single-exe/minimal/) 的 model-visible 快照为准；没有 subagent、skill、todo、web search。
 
+**为什么单独设这一形态**：其它四个 CLI profile 全都从 `dsh-base` 继承几十条默认插件行再做局部开关；当外挂场景或轻量运行时只想验证「持久 shell + 最小上下文」而不想把整套工具/检索/委派生态都背上时，靠在 `base` 上逐行写 `disabled` 会既脆弱又难审计。`sdk-minimal` 是全仓唯一**不叠 `dsh-base`、独立从零 insert 一棵窄树**的示例，也是理解「如何脱离默认大套件单独配小运行时」的最佳对照。
+
 ## 怎么跑
 
 ```sh

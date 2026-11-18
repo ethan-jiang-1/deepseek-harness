@@ -51,7 +51,7 @@ Agent loop 位于两者之间：从插件图取模型、工具、提示词与会
 
 ### `[推断]` 「primarily」是自述，不是普查
 
-quality-gates note 是仓库的第一方自我描述；本专题不把它当作外部普查结论，只作为生产方式自述。因此因果写成「生产方式自称 + 可解释的机制」，不再写成斩钉截铁的既成事实。
+quality-gates note 是仓库的第一方自我描述；本专题不把它当作外部普查结论，只作为生产方式自述。因此把因果明确标为「生产方式自称 + 可解释的机制」，而非未验证的行业普查结论。
 
 ### `[原文]` architecture 开篇定位为阅读路径指南
 
@@ -65,7 +65,7 @@ quality-gates note 是仓库的第一方自我描述；本专题不把它当作�
 | 文档（prose） | 是 | 是 | 否 | 会（漂移） | 只有人类读者与 LLM 读者 |
 | 系统本身（类型、事件、表、模板、门禁、运行时检查） | 是 | 是 | 是 | 漂移更早撞上机器 | 编译器、门禁、生成器、双 SDK、harness 自身、人类与 LLM 读者 |
 
-注意最后一行不再写「系统不会漂移」：系统也会漂移，只是被多个机器消费者消费，漂移更早暴露。dsh 三层都用，但把关键规则下沉到第三层：
+注意最后一行并不是「系统不会漂移」：系统也会漂移，只是被多个机器消费者消费，漂移更早暴露。dsh 三层都用，但把关键规则下沉到第三层：
 
 - **归属**：[`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 的扩展表「目标 → 机制」（行数见 [`claims.json`](./claims.json) 的 N3）直接回答「这段代码放哪」；[`extension cookbook`](../../docs/cookbook/extension-cookbook.md) 还有更细的 feature → mechanism 表。
 - **合同**：Service Definition 是 Cordis `Service`（抽象类或注册表，不是 `interface`）；事件经声明合并成为类型化 map；`SessionEventMap` 成员默认 required-on-read。

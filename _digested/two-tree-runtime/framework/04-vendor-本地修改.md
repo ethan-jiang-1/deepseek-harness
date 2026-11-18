@@ -1,8 +1,8 @@
 # vendor 本地修改：产品踩在哪些补丁上
 
-源码核验入口：[`vendor/README.md`](../../../vendor/README.md)「Local modifications」（现 **24** 条编号条目）及其列出的 vendored 文件，以及拟升级计划 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。上游同步必须逐条重放或退役；本篇只解释 dsh 组合模型直接依赖的修改。
-
-这些修改支撑 profile 叠层、dump 保真、profile patch 热更新与 volatile 配置。
+> **为什么单独有这一页**：`vendor/` 目录下是固定版本的 Cordis 源码拷贝，但 DSH 对它打了多处本地补丁——如果同步上游 Cordis 版本时漏掉哪怕一两处（比如 `Fiber.effect()` 的登记时机、patch 解析钩子或 volatile 配置行为），上层的 `--dump-config` 保真、HMR 热重载或会话隔离就会突然失灵。本页整理了 DSH 组合模型直接踩在哪些 `vendor/` 补丁之上，帮助维护者看清「升级或修改 vendor 时不能丢的承重假定」。
+>
+> 源码核验入口：[`vendor/README.md`](../../../vendor/README.md)「Local modifications」（现 **24** 条编号条目）及其列出的 vendored 文件，以及拟升级计划 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。上游同步必须逐条重放或退役；本篇只解释 dsh 组合模型直接依赖的修改。
 
 ## 先登记 effect wrapper，再跑 setup
 

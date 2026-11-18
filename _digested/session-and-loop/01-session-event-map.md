@@ -1,8 +1,10 @@
 # SessionEventMap 与 required-on-read
 
-源码核验入口：`packages/core/session/src/types.ts`、`known-event-types.ts`、`.agents/notes/implemented/architecture/2026-08-10-session-log-version-mechanism.md`、`.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.md`、`docs/session-format-status.md`、`.agents/notes/archived/architecture/2026-08-31-session-sequence-and-log-offset-brands.md`。
-
-本篇说明事件信封、五类 surface 事件、未知类型的读时拒绝，以及 `SESSION_FORMAT_VERSION` 的递增条件；格式世代、相邻迁移链与读准备/写发布时序见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
+> **为什么单独有这一页**：多数 agent 系统在内存里维护一份可读可写的 `messages[]`，需要存盘时再整体序列化；DSH 相反，把**只追加的事件日志**当成唯一真实来源，下一次请求发给模型的历史、UI 展示的对话树、以及跨版本兼容性判断全部从同一份 log 投影出来。想在不损坏持久化历史、也不漏掉模型可见上下文的前提下新增事件或读懂日志，必须先把「log 里存了什么、哪些进模型请求、遇到不认识的事件何时该报错」立成一张清晰地图。
+>
+> **读法与分工**：先读「一份 log 是什么」区分“记录事实”和“投影消息”，再按需检索核心事件表；跨版本格式升级与迁移规则不在本页展开，见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
+>
+> 源码核验入口：`packages/core/session/src/types.ts`、`packages/core/session/src/known-event-types.ts`、[`2026-08-10-session-log-version-mechanism`](../../.agents/notes/implemented/architecture/2026-08-10-session-log-version-mechanism.md)、[`2026-08-31-released-session-format-migrations`](../../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.md)、[`docs/session-format-status.md`](../../docs/session-format-status.md)、[`2026-08-31-session-sequence-and-log-offset-brands`](../../.agents/notes/archived/architecture/2026-08-31-session-sequence-and-log-offset-brands.md)。
 
 ![信封：type / seq / time / data](./figures/event-envelope.svg)
 
@@ -29,7 +31,7 @@
 | `todo/write` | 否（log-only UI；非 loop 写——`packages/todo/tool-todo/src/index.ts:199`） |
 | `workspace/changes` | 否（log-only；非 loop 写——turn 结束时的 git 快照对比：每文件行数摘要 + per-file 对比，payload `{ turn }`；写者 `packages/deliverables/workspace-changes/src/recorder.ts:351`，投影经 `registerMessageProjection` 挂 summary；无 git 或工作目录在仓库外时退化为文件工具改动清单） |
 | `image/offload` | 否（log-only 的表面修复决策；非 loop 写——路由以 `IMAGE_OFFLOAD_REQUIRED` 拒绝请求时选中最旧的保留图片出现并重试，不占重试预算，payload `{ targets }`；写者 `packages/compaction/compaction-image-offload/src/image-offload.ts:44`，后续请求对这些出现发占位文本） |
-| `developer/message` | 是（surface；第五类：开发者的可见消息，空节点保留位置不产生模型消息；provider/UI 显式拒绝不能表达的 developer 历史） |
+| `developer/message` | 是（surface；第五类：于指定 turn/step 准入的增量会话变化消息，如工具增删，空节点保留位置不产生模型消息） |
 | `session/end-seed` | 否（种子与 live 的分界；非 loop 写——合法写者 = Session 构造器 + `buildForkSeed`（fork seed 可自带 tagged end-seed marker 与 child-owned synthetic closers，marker 不必在 `firstLiveSeq`，`packages/core/session/src/types.ts:403-428`）；appender `packages/core/session/src/index.ts:695-697`） |
 
 `SurfaceEventType` 有五类：`system/message`、`user/message`、`assistant/message`、`tool/result`、`developer/message`（闭集，`packages/core/session/src/types.ts`）。只有它们可以带 `surfaceOp`；`assistant/message` **独占禁止** `sourceEventSeqs`，其余四类可引用非空、唯一、严格更早的 seq 集合。编译器在 `Session.append` 调用点强制：log-only 事件不许带 surface 字段。
@@ -43,7 +45,7 @@
 - 没有标记 → 拒绝重建整份会话。未识别的 required 事件可能改变其余 log 怎么读（`session/end-seed` 是现成例子）。
 - `ignorable: true` → 可以跳过。写者只给「丢了也不影响重建」的信息性记录打这个标。
 
-默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型请求的消息由 surface 类型投影（`developer/message` 以 `developer` role 进入 `deriveMessages()`；不能表达该 role 的 provider 显式拒绝，`llm-pi-ai` 把 developer 事件折进 system 消息并解析其 tool-addition/tool-removal），config、adapterDefaults 与 tools 由 `request/header` 折叠，system prompt 取当前有效的 `system/message` 节点；`request/context` 不参与请求重建。真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
+默认 required：忘了标记会**过度拒绝**（不方便）；默认 ignorable 会**静默掏空**再 resume（安全事故）。模型请求的消息由 surface 类型投影：`developer/message` 以 `developer` role 进入 `deriveMessages()`，未声明 `toolUpdate` 支持的 route 通过 `withoutDeveloperMessages()` 从请求中省略该类消息（`packages/llm/llm/src/content.ts:430-436`），而 `llm-deepseek` 与 `llm-pi-ai` 将其折进 `{ role: 'system', ... }` 消息且仅拒绝不支持的内容块类型（`packages/llm/llm-deepseek/src/serialize.ts:91-101`、`packages/llm/llm-pi-ai/src/context.ts:171-200`）；config、adapterDefaults 与 tools 由 `request/header` 折叠，system prompt 取当前有效的 `system/message` 节点；`request/context` 不参与请求重建。真正危险的未知量是那些改变怎么读其余 log 的非 surface 事件。
 
 required 与否**只由信封的 `ignorable` 决定**，不按事件「注册时间」区分：`known-event-types.ts` 只是一个扁平的名字集合（文件头部 JSDoc 自述），读侧按 `event.ignorable !== true` 判定必知，种子事件的信封校验同样只接受 `true`。**跨历史格式边时规则更严**：未知事件即使带 `ignorable: true` 也拒迁，因为基数保持型迁移必须证明每个被保留的 payload 在目标世代仍语义有效（[`2026-08-31-alpha-historical-unknown-event-refusal`](../../.agents/notes/implemented/architecture/2026-08-31-alpha-historical-unknown-event-refusal.md)）。
 

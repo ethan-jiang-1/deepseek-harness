@@ -1,8 +1,10 @@
 # 12 — probe：探针是一种取证动作，不是测试资产
 
-源码核验入口：`apps/desktop/src/login-shell-environment.ts`、`packages/subprocess/subprocess-local/src/{linux-scope,windows-job,index}.ts`、`packages/session/session-persistence-jsonl/src/index.ts`、`vitest.config.ts`、`docs/testing.md`。
-
-本页回答：**DSH 里的 `probe` 到底是什么、它产出什么、该归哪个专题。** 结论先给：probe 不是术语表里的对象，是一种**问事实的动作**；它的产物是**分叉**、**判断**或**事实**，从来不是测试资产。它在防漏体系里的位置是**证据选择器**——决定一条用例跑不跑、一个文件豁免不豁免、一个平台 skip 不 skip；选择器与它守护的判断必须同源（[04](./04-anti-omission.md) 的 M6）。所以它不属于 `canon/GLOSSARY`（那收 DSH 承认的对象与机制），而是测试策略这一卷缺的那一维——**取证动作**。
+> **为什么单独有这一页**：翻看测试与启动代码时，到处能见到叫 `probe` 的函数——环境探针、`hasPwsh`、覆盖率豁免 `probe`，甚至 e2e 注释里的 `keyword probe`。新手常迷茫：**`probe` 到底是不是一种测试框架概念，为什么词典（`canon/GLOSSARY`）不收它，而有些探测条件写错一点就会制造整份测试「假绿」？** 本页把分散的几十处 `probe` 抽成一个清晰的「取证动作」模型，厘清它和 `trace`/`span` 的边界，以及为什么「豁免用的探针与跳过用例的判据必须同源」。
+>
+> 本页回答：**DSH 里的 `probe` 到底是什么、它产出什么、该归哪个专题。** 结论先给：probe 不是术语表里的对象，是一种**问事实的动作**；它的产物是**分叉**、**判断**或**事实**，从来不是测试资产。它在防漏体系里的位置是**证据选择器**——决定一条用例跑不跑、一个文件豁免不豁免、一个平台 skip 不 skip；选择器与它守护的判断必须同源（[04](./04-anti-omission.md) 的 M6）。
+>
+> 源码核验入口：`apps/desktop/src/login-shell-environment.ts`、`packages/subprocess/subprocess-local/src/{linux-scope,windows-job,index}.ts`、`packages/session/session-persistence-jsonl/src/index.ts`、`vitest.config.ts`、`docs/testing.md`。
 
 ## 读完你能回答
 
@@ -49,10 +51,10 @@
 
 | 用法 | 出处 | 判据 |
 |---|---|---|
-| `keyword probe` | `docs/testing.md:35` | 只读 agent 自己的输出 → **可以作弊**。e2e 必须外部门再跑一遍命令 / 再读文件，或断言未改动的文件逐字节相同 |
+| `keyword probe` | `docs/testing.md:35`、`coding-task.e2e.ts:75` | 只读 agent 自己的输出 → **可以作弊**。e2e 必须外部门再跑一遍命令 / 再读文件，或断言未改动的文件逐字节相同 |
 | host 能力探 | `executor.spec.ts` 的 `hasPwsh`、`source-tool.built.e2e.ts` 的 sandbox probe | 探不通 → 该用例**自我跳过**，不是失败 |
 | 覆盖率豁免探 | `vitest.config.ts:117`-`:120` | 豁免条件和用例跳过必须**用同一个判据**：`probe` 跑的是用例自己的 `resolvePwshPath()`，"a mismatched narrower probe could exempt the file on hosts whose suites actually run" |
-| `acceptance probe` | `tool-todo/tests/projection.spec.ts:3`、`coding-task.e2e.ts:75` | 用例本身作为"某个领域已可验收"的探针 |
+| `acceptance probe` | `tool-todo/tests/projection.spec.ts:3` | 用例本身作为"某个领域已可验收"的探针 |
 
 这里最重要的一条在产品纪律之外、在测试内部：
 

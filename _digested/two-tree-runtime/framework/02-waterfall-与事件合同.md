@@ -1,8 +1,8 @@
 # waterfall 与事件合同
 
-源码核验入口：`vendor/cordis/src/events.ts` `EventsService.waterfall`、`packages/core/agent-loop/src/agent.ts`、`packages/core/agent/src/runtime-types.ts`。
-
-本篇说明 waterfall 的组合算法，并区分 `agent/pre-step` 与 `agent/turn-stopping`。
+> **为什么单独有这一页**：DSH 里几乎所有「可插拔政策」——审批拦不拦、工具执行怎么包装、请求错误要不要重试——都挂在 Cordis 的 `waterfall` 事件链上。新手写的中间件最常犯两类错：一是只为了打日志或改参数，却忘了调用 `next()` 把整条链路静默短路；二是搞混 `waterfall` 与 `serial` 的行为差异（比如拿 `agent/turn-stopping` 和 `agent/pre-step` 当成同一种语义）。本页先把 `waterfall` 的套娃算法和具体事件契约对照展开，写出安全的事件监听就不会盲猜。
+>
+> 源码核验入口：`vendor/cordis/src/events.ts` `EventsService.waterfall`、`packages/core/agent-loop/src/agent.ts`、`packages/core/agent/src/runtime-types.ts`。
 
 ## 框架算法
 

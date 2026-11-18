@@ -1,8 +1,8 @@
 # export 与包内目录
 
-核验入口：[`packages/client/AGENTS.md`](../../../../packages/client/AGENTS.md) 的 export 与包内目录两节。
-
-这两节是同一个问题的两面：包对外露什么（export），包内部怎么分域（目录）。
+> **为什么单独有这一页**：写浏览器插件包时，最顺手的习惯就是往 `src/client/index.ts`（即 `/client` 出口）多导几个 helper、组件或 store 给别的包复用了事——但在 Cordis 动态加载体系里，这么做会把两个本来可独立热插拔、独立构建优化的 feature 包偷偷焊死成强耦合，最后连卸载顺序和 tree-shaking 都失效。本页把「包对外允许露什么」和「包内部如何按域拆分」两条看似琐碎、实则决定 UI 树边界的硬纪律合在一起说清，改动客户端代码或加 export 前先看它一眼就不容易返工。
+>
+> 核验入口：[`packages/client/AGENTS.md`](../../../../packages/client/AGENTS.md) 的 export 与包内目录两节。
 
 ## export 纪律（`/client` 入口）
 

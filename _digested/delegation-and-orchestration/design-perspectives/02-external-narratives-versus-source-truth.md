@@ -1,8 +1,8 @@
 # External Narratives versus Source Truth · 外部叙事与源码真相
 
-源码核验入口：`docs/architecture.md:43`（应用启动面）、`packages/experimental/auto-review/README.md`、`packages/telemetry/otel/README.md`、`packages/bundle/base/cordis.patch.yml`、`docs/subsystems/workflow.md`、`AGENTS.md`，以及本组各页已核验的事实。
+> 本页回答：流传的二手分析（把 DSH 描绘成「Captain 规划 + Kahn 入度调度 + Reviewer 门禁 + DAG 看板 + task 级 rollback」的中心化 Task DAG 引擎）逐条对照源码，哪些真、哪些是风格化、哪些不存在？判定三态：✅ 真实 / 🟡 风格化（有真实对应物，形态不同）/ ❌ 不存在。
 
-本页回答：流传的二手分析（把 DSH 描绘成「Captain 规划 + Kahn 入度调度 + Reviewer 门禁 + DAG 看板 + task 级 rollback」的中心化 Task DAG 引擎）逐条对照源码，哪些真、哪些是风格化、哪些不存在？判定三态：✅ 真实 / 🟡 风格化（有真实对应物，形态不同）/ ❌ 不存在。
+> 源码核验入口：`docs/architecture.md:43`（应用启动面）、`packages/experimental/auto-review/README.md`、`packages/telemetry/otel/README.md`、`packages/bundle/base/cordis.patch.yml`、`docs/subsystems/workflow.md`、`AGENTS.md`，以及本组各页已核验的事实。
 
 ## 读完你能回答
 

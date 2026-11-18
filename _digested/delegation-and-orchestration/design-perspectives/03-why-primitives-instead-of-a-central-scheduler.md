@@ -1,8 +1,8 @@
 # Why Primitives Instead of a Central Scheduler · 为什么是原语而不是中心调度器
 
-源码核验入口：`packages/workflow/tool-workflow/src/index.ts:324`-`325`、`packages/todo/tool-todo/src/index.ts`、`packages/jobs/tool-jobs/src/index.ts:251`、`packages/subagent/tool-subagent/src/index.ts:113`-`137`、`packages/bundle/base/cordis.patch.yml`。
+> 本页回答：DSH 为什么不做一个读任务、把工作分派到原语上的**中心调度器**？这个形状对插件作者意味着什么？逐原语边界句见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)，官方空白见 [`selection/03`](../primitive-selection/03-unspecified-gaps-and-contradictions-in-usage-policy.md)。
 
-本页回答：DSH 为什么不做一个读任务、把工作分派到原语上的**中心调度器**？这个形状对插件作者意味着什么？逐原语边界句见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)，官方空白见 [`selection/03`](../primitive-selection/03-unspecified-gaps-and-contradictions-in-usage-policy.md)。
+> 源码核验入口：`packages/workflow/tool-workflow/src/index.ts:324`-`325`、`packages/todo/tool-todo/src/index.ts`、`packages/jobs/tool-jobs/src/index.ts:251`、`packages/subagent/tool-subagent/src/index.ts:113`-`137`、`packages/bundle/base/cordis.patch.yml`。
 
 ## 读完你能回答
 

@@ -1,8 +1,8 @@
 # Per-Primitive Usage Sentences from Tool Descriptions · 逐原语边界句
 
-源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/subagent/tool-subagent/src/index.ts`、`packages/goal/tool-goal/src/index.ts`、`packages/experimental/tool-ralph/src/index.ts`、`packages/todo/tool-todo/src/index.ts`、`packages/jobs/tool-jobs/src/index.ts`、`packages/schedule/tool-schedule/src/index.ts`、`packages/interaction/tool-ask-user/src/index.ts`、`packages/plan/plan-mode/src/index.ts`、`packages/experimental/tool-agent-team/src/index.ts`、`packages/bundle/base/cordis.patch.yml`。
+> 本页回答：每一级原语的**官方边界句**是什么？这些句子住在哪个模型可见面（工具 description 还是 systemPrompt section），逐字怎么写？路由与阶梯见 [`selection/02`](./02-cross-primitive-routing-and-the-official-upgrade-order.md)，官方没说清的部分见 [`selection/03`](./03-unspecified-gaps-and-contradictions-in-usage-policy.md)，机制见 [`primitives/`](../delegation-primitives/00-map.md)。
 
-本页回答：每一级原语的**官方边界句**是什么？这些句子住在哪个模型可见面（工具 description 还是 systemPrompt section），逐字怎么写？路由与阶梯见 [`selection/02`](./02-cross-primitive-routing-and-the-official-upgrade-order.md)，官方没说清的部分见 [`selection/03`](./03-unspecified-gaps-and-contradictions-in-usage-policy.md)，机制见 [`primitives/`](../delegation-primitives/00-map.md)。
+> 源码核验入口：`packages/workflow/tool-workflow/src/index.ts`、`packages/subagent/tool-subagent/src/index.ts`、`packages/goal/tool-goal/src/index.ts`、`packages/experimental/tool-ralph/src/index.ts`、`packages/todo/tool-todo/src/index.ts`、`packages/jobs/tool-jobs/src/index.ts`、`packages/schedule/tool-schedule/src/index.ts`、`packages/interaction/tool-ask-user/src/index.ts`、`packages/plan/plan-mode/src/index.ts`、`packages/experimental/tool-agent-team/src/index.ts`、`packages/bundle/base/cordis.patch.yml`。
 
 ## 读完你能回答
 

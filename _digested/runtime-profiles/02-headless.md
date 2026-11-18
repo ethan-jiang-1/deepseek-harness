@@ -4,6 +4,8 @@
 
 `dsh --profile headless "run the tests"` 回答一条任务，打印最终 assistant 消息，然后退出；输出与退出码契约见 [`../surfaces-entrypoints/01-启动面与session流.md`](../surfaces-entrypoints/01-启动面与session流.md)。没有 HTTP 服务、没有 browser、没有常驻进程。
 
+**为什么单独设这一形态**：脚本化流水线、CI 验证和终端单发任务不需要常驻 HTTP 服务、多会话切换或 67 个浏览器 UI 包。`headless` 在 `dsh-base` 之上只叠一层极薄的 CLI 执行外壳，因此是观察「不带产品 GUI 时最小 agent 工具树长什么样」的基准样本；看懂它与 `web` 的差，才能分辨哪些能力属于核心 runtime、哪些只是 Web 包装。
+
 ## 怎么跑
 
 ```sh

@@ -1,8 +1,8 @@
 # Persistent Facts, Derived Projections and Live Authority · 持久事实、派生投影与活体权限
 
-源码核验入口：`packages/core/session/src/types.ts`、`packages/subagent/subagent/src/{catalog,projection}.ts`、`packages/experimental/agent-team/src/{journal,projection}.ts`、`packages/jobs/jobs/src/types.ts:53`-`66`。
+> 本页回答：编排状态里哪些是持久事实、哪些是派生投影、哪些只是内存权限？各自的恢复与失效规则是什么？
 
-本页回答：编排状态里哪些是持久事实、哪些是派生投影、哪些只是内存权限？各自的恢复与失效规则是什么？
+> 源码核验入口：`packages/core/session/src/types.ts`、`packages/subagent/subagent/src/{catalog,projection}.ts`、`packages/experimental/agent-team/src/{journal,projection}.ts`、`packages/jobs/jobs/src/types.ts:53`-`66`。
 
 ## 读完你能回答
 

@@ -40,7 +40,7 @@
     },
     {
       "id": "C5",
-      "claim": "dsh 的 agent 读者定位来自生产方式自述（quality-gates note），不是 architecture 文档的设计声明；`docs/architecture.md` 那句「推荐用 agent 探索代码库」已在 3f35ca7b5b 撤下",
+      "claim": "dsh 的 agent 读者定位来自生产方式自述（quality-gates note），不是 architecture 文档的设计声明；`docs/architecture.md` 早期那句「推荐用 agent 探索代码库」已在现行版撤下",
       "status": "推断",
       "sources": [
         "docs/architecture.md",
@@ -50,7 +50,7 @@
     },
     {
       "id": "C6",
-      "claim": "关键规则由门禁与类型系统变成可执行检查；运行时 invariant 机制已整族退役（f028f25667 起没有任何幸存实例）",
+      "claim": "关键规则由门禁与类型系统变成可执行检查；运行时 invariant 机制已整族退役（现行仓库中无幸存实例）",
       "status": "源码",
       "sources": [
         "scripts/run-gates.ts",

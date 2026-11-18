@@ -2,6 +2,8 @@
 
 ## 一句话
 
+**为什么单独设这一形态**：Electron 桌面版跑的就是完整 Web 应用，却不能直接复用 `web` profile 或 CLI 启动路径——原因在于桌面需要把进程生命周期锁、OS 随机端口分配与插件安装清单归由 Electron 壳独占托管，防止用户用 `dsh --profile desktop` 绕开锁文件并发写坏桌面配置。
+
 `desktop` 是第五个「base + 产品层」的 bundle 组合（web / headless / sdk / acp 之后；`sdk-minimal` 是不叠 base 的独立树，不算在内），也是唯一的**应用自有 profile**：它不进 `PROFILE_TEMPLATES`、不走 `dsh` CLI、没有 `--profile desktop` 这条路。Electron 壳启动一个 Electron Node 模式的私有子进程（`apps/desktop-host/`，下称 host），host 用 `loadProfileDirectory` 装载 `$DSH_HOME/profiles/desktop`，再经**共享的** `runProfile` 起完整的 web 应用（webserver 以 `--host 127.0.0.1 --port 0` 启动、端口由 OS 分配），把认证 URL 经 Node IPC 报回壳进程（`apps/desktop-host/src/index.ts:23`、`:25-42`、`:103-104`）。壳窗口加载 `dsh-app://app/` 的打包 Web 入口，把页面里的应用请求转发给这个已认证 Host。
 
 ## 归属：保留名 + 独占目录
@@ -35,7 +37,7 @@ const application = runProfile({
 
 desktop 与 CLI 组合的差异只有一处活的，其余同源：
 
-- **安装锚点不同**：CLI 用自身 `apps/cli` 的 `package.json`（`apps/cli/src/profile-boot.ts:77`），desktop 用签名 runtime 树里的 `node_modules/@deepseek-ai/dsh/package.json`（`apps/desktop-host/src/index.ts:22`）。同一 `loadProfileDirectory`，解析出的 bundle 位置不同。
+- **安装锚点不同**：CLI 用自身 `apps/cli` 的 `package.json`（`apps/cli/src/profile-boot.ts:78`），desktop 用签名 runtime 树里的 `node_modules/@deepseek-ai/dsh/package.json`（`apps/desktop-host/src/index.ts:22`）。同一 `loadProfileDirectory`，解析出的 bundle 位置不同。
 - **没有应用私有 overlay**：host 以 `patchFiles: []` 经共享 `runProfile` 起完整 web 应用——webserver 等行全在树里（`packages/bundle/web-app/cordis.patch.yml`），preset 行由 bundle 自带（`agent-preset-registry`），host 不改写任何 roots。与 web 的差异都在壳侧：资源投递、请求转发与认证交接（见「进程模型」「传输与认证」）。
 
 ## 进程模型

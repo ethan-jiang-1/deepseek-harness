@@ -1,10 +1,12 @@
 # 02 · 插件货架：逐组图鉴
 
-快照式清单；核验状态见 [`catalog.json`](../../catalog.json)，覆盖矩阵由它生成。组序与 [`packages/README.md`](../../../packages/README.md) 一致。**全局总量不在此手抄**——以 `harness-idea/claims.json` 的 `package-total` 与 `package-group-total` 指标为准（由 `verify.mjs` 对基线重算）。
+> **为什么单独有这一页**：动手加新能力或重构某个包时，最浪费时间的事莫过于重复造一个仓库里早就写好、只是没挂进当前 profile 的现成插件。仓内几百个包按功能域散在 `packages/<group>/<pkg>` 里，逐个翻 `README` 既慢又看不出「哪个默认开、哪个只配了没启用、哪个只是纯库」。本页把全仓全部包按目录树顺序整理成**可读的图鉴词典**——并标明每个包的形态、可见层与 `Config` 字段数。
+>
+> **怎么读这页才不觉得 overwhelming**：不要从头通读这 500 多行表！首次接入先读 [`01-capability-tour.md`](./01-capability-tour.md) 建立八类地图；日常只把它当辞典，先扫下面的「新人最高频的十个包」确立直觉，再用组名定位你要找的区块，最后带着包名去查 [`04`](./04-reuse-paths-and-gaps.md) 的启用或改配置路径。
 
-枚举口径是深度精确的 `^packages/[^/]+/[^/]+/package\.json$`（`_digested/verify.mjs` 的 `gitPackageOwners`）；`Config` 列是该包声明式配置的顶层字段数，取自生成目录 [`docs/config-catalog.md`](../../../docs/config-catalog.md)。
+> **口径与核验**：快照式清单，核验状态见 [`catalog.json`](../../catalog.json)（覆盖矩阵由它生成）；组序与 [`packages/README.md`](../../../packages/README.md) 一致，枚举口径为 `^packages/[^/]+/[^/]+/package\.json$`（`_digested/verify.mjs` 的 `gitPackageOwners`），`Config` 列是 [`docs/config-catalog.md`](../../../docs/config-catalog.md) 中的顶层字段数。全局总量以 `harness-idea/claims.json` 的 `package-total` 与 `package-group-total` 为准。
 
-**这页是图鉴，不是教程**：先读 [`01-capability-tour.md`](./01-capability-tour.md) 建立八类地图，再按组回来查。新人最高频的十个包：
+新人最高频的十个包：
 
 | 包 | 干什么 | 在哪层 |
 |---|---|---|
@@ -42,14 +44,14 @@
 
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
-| gateway | Remote 分派 | base | 0 | 生成 Remote 命名空间与 unary 调用 |
-| session-controller | Remote 控制器 | web | 0 | Session 命令/冷读/跟随 |
-| settings-controller | Remote 控制器 | web | 0 | settings/credentials 投影，读恒脱敏 |
+| gateway | Remote 分派 | base | 2 | 生成 Remote 命名空间与 unary 调用 |
+| session-controller | Remote 控制器 | web | 2 | Session 命令/冷读/跟随 |
+| settings-controller | Remote 控制器 | web | 1 | settings/credentials 投影，读恒脱敏 |
 | workspace-controller | Remote 控制器 | web | 2 | Workspace 命令＋目录挑选通道 |
-| workspace-files | Remote 服务 | web | 0 | 工作区文件受限读/列目录/变更流 |
+| workspace-files | Remote 服务 | web | 4 | 工作区文件受限读/列目录/变更流 |
 | account-controller | Remote 控制器 | web | — | 账户操作投影 |
-| job-controller | Remote 控制器 | web | 0 | 单 job 观测流 |
-| terminal-controller | Remote 控制器 | web | 0 | 用户终端进程＋屏幕恢复 |
+| job-controller | Remote 控制器 | web | 2 | 单 job 观测流 |
+| terminal-controller | Remote 控制器 | web | 12 | 用户终端进程＋屏幕恢复 |
 | remote-access | Def `ctx.remoteAccess`＋策略注册 | base | — | 非 owner Peer 的方法级访问判定、列表过滤与逐 Peer 快照 |
 | remotes | BFF 组装 | web | — | Remote 装配 |
 
@@ -82,7 +84,7 @@
 
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
-| message-feedback | Def `ctx.messageFeedback` | web | 0 | 消息级赞/踩入日志 |
+| message-feedback | Def `ctx.messageFeedback` | web | 1 | 消息级赞/踩入日志 |
 | command-feedback | Def `ctx.sessionFeedback`＋cmd | base | — | 会话级反馈记录 |
 
 ## telemetry/ 与 identity/（2 包）
@@ -98,9 +100,9 @@
 |---|---|---|---|---|
 | llm | Def seam `ctx.llm` | base+min | — | Provider 无关流式服务 seam |
 | llm-deepseek | adapter Impl | —（base 两行挂载） | — | DeepSeek Messages adapter，并承载官方 `/models` listing、缓存与 catalog 解析（两条 DeepSeek route 共用） |
-| llm-deepseek-api-key | 入口行 | base+min | 3 | api-key 认证、发现；官方 endpoint 上跟随 `/models` listing（可自定义 catalog 关闭） |
-| llm-deepseek-account | 入口行 | base | 3 | 账户认证发现 |
-| llm-pi-ai | adapter Impl（休眠） | base | 56 | 零 routes 直到 settings 提供 profiles |
+| llm-deepseek-api-key | 入口行 | base+min | 1 | api-key 认证、发现；官方 endpoint 上跟随 `/models` listing（可自定义 catalog 关闭） |
+| llm-deepseek-account | 入口行 | base | 1 | 账户认证发现 |
+| llm-pi-ai | adapter Impl（休眠） | base | 1 | 零 routes 直到 settings 提供 profiles |
 | llm-retry | 策略 | base+min | 0 | Provider 路由重试 |
 | deepseek-llm-api-extensions | Def seam | base+min | — | 官方 API 附加字段注册 seam |
 | plugin-package-inventory-deepseek | Impl | base+min | 1 | 活跃插件清单注入官方请求 |
@@ -113,7 +115,7 @@
 | subprocess | Def seam `ctx.subprocess` | — | — | 进程执行 seam |
 | subprocess-local | Impl | base+min | — | 本地实现 |
 | win32-process | lib | — | — | Windows 进程支撑 |
-| ssh | Def `ctx.ssh` | — | 14 | 远程连接（族共享） |
+| ssh | Def `ctx.ssh` | — | 9 | 远程连接（族共享） |
 | fs-ssh / subprocess-ssh / sandbox-ssh | Impl×3 | — | — | 三个 seam 的远端实现 |
 | ssh-helper-runtime | lib（远端 helper 载体） | — | — | 内嵌 Node 运行时的 SSH helper 可执行体，免在远端装 Node |
 | shell | Def seam `ctx.shell` | — | — | bash 执行器 seam |
@@ -131,7 +133,7 @@
 | terminal | Def seam `ctx.terminals` | min | — | 持久终端 seam |
 | terminal-bash | Impl | min+preset(minimal) | 16 | bash PTY 实现 |
 | ptc-runtime | Def seam `ctx.ptcRuntime` | — | — | 代码运行 seam |
-| ptc-runtime-node | Impl | base | 14 | worker-thread 后端（`run_code`） |
+| ptc-runtime-node | Impl | base | 9 | worker-thread 后端（`run_code`） |
 
 ## 浏览器与桌面控制（2 包）
 
@@ -166,25 +168,25 @@
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
 | lsp | Def seam `ctx.lsp` | — | — | 语言服务 seam |
-| lsp-stdio | Impl | — | 12 | stdio host 实现（未挂载） |
+| lsp-stdio | Impl | — | 1 | stdio host 实现（未挂载） |
 | tool-lsp | Tool `lsp` | — | 3 | 未挂载；无 Provider 时报 LSP_UNAVAILABLE |
 
 ## skill/（5 包）
 
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
-| skill | Def seam `ctx.skills` | base | 0 | Provider 目录合并 |
+| skill | Def seam `ctx.skills` | base | 1 | Provider 目录合并 |
 | skill-filesystem | Impl | base+preset | 12 | 项目/自定义/用户根磁盘 skill |
 | skill-office | Impl | sdk-app（门控） | 3 | Word/PPT/Excel 工作流 skill |
 | tool-skill | Tool `skill` | base+preset | 1 | 目录渲染＋加载 |
-| tool-workspace-dependencies | Tool | sdk-app（门控） | 0 | `load_workspace_dependencies` 内置运行时路径 |
+| tool-workspace-dependencies | Tool | sdk-app（门控） | 2 | `load_workspace_dependencies` 内置运行时路径 |
 
 ## compaction/（5 包）
 
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
 | compaction | Def seam `ctx.compaction` | — | — | 历史压缩 seam |
-| compaction-basic | Impl | base+preset | 13 | 阈值压缩实现 |
+| compaction-basic | Impl | base+preset | 2 | 阈值压缩实现 |
 | compaction-tool-result-pruner | Def＋消费 | base+preset | 3 | `ctx.toolResultPruner` 工具结果裁剪 |
 | command-compact | cmd `/compact` | base | — | 人类显式压缩命令 |
 | compaction-image-offload | 策略 | base | — | 图片预算替换重试 |
@@ -197,7 +199,7 @@
 | file-reference-local | Impl | web | 3 | 本地实现 |
 | session-reference | Def `ctx.sessionReferenceResolver` | web | 4 | 会话引用解析 |
 | agent-instructions | 注入 | base+preset | 5 | AGENTS.md/CLAUDE.md 注入 |
-| time-context | 注入 | preset(standard/ptc/cordis) | 2 | 时间上下文（随 preset 声明，不再由 schedule-bundle 带入） |
+| time-context | 注入 | preset(standard/ptc/cordis) | 2 | 时间上下文（随 preset 声明） |
 | tmux-context | 注入 | — | 1 | tmux 状态上下文（opt-in） |
 | harness-dev-context | 注入 | web | — | Web GUI 的 checkout 与 GUI URL 运行时上下文（值不进 system prompt） |
 
@@ -212,7 +214,7 @@
 | subagent-codex | Impl | —（官方按需 bundle） | 5 | Codex 后端 |
 | subagent-claude-code | Impl | —（官方按需 bundle） | 5 | Claude Code 后端 |
 | subagent-dsh-sdk | Impl | — | 12 | 经 SDK 的子 DSH 运行时 |
-| tool-subagent | Tool 多实例 | base+preset | 7 | `subagent`/`subagent_fork`＋`ctx.subagentModelSelection` |
+| tool-subagent | Tool 多实例 | base+preset | 5 | `subagent`/`subagent_fork`＋`ctx.subagentModelSelection` |
 | tool-subagent-control | Tool×3 | base+preset | — | `send_message`/`interrupt_agent`/`list_agents` |
 
 in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code 两个后端由官方按需安装通道出货（`ON_DEMAND_BUNDLES`，`packages/boot/app-boot/src/official-bundle-packages.ts`），preset 中不设占位 disabled 行。
@@ -237,7 +239,7 @@ in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code �
 
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
-| web | Def seam `ctx.web` | base | 0 | 搜索/抓取 Provider 注册 |
+| web | Def seam `ctx.web` | base | 2 | 搜索/抓取 Provider 注册 |
 | web-search-deepseek | Impl | base | 7 | 官方搜索（出厂） |
 | web-deepseek-api | Impl | base | 5 | DeepSeek Search/Fetch API 直连 provider（`deepseek-search-api`/`deepseek-fetch-api`） |
 | web-fetch-http | Impl | base | 5 | 匿名 HTTP(S) 抓取（出厂） |
@@ -299,9 +301,9 @@ in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code �
 | tool-cordis | Tool×2 | preset(cordis) | — | `cordis_inspect_list/query` 只读工具 |
 | ui-cordis | UI | web | — | 插件卡片 |
 | mcp-resources | Def seam＋Tool×3 | base+min | — | MCP resources 按需 list/read |
-| mcp-client | Impl | — | 22 | 把任一 MCP 服务器的工具接进 ctx.tools |
+| mcp-client | Impl | — | 10 | 把任一 MCP 服务器的工具接进 ctx.tools |
 
-`hook-protocol` 与两个 hooks 桥接包已整组并入 experimental（`packages/hooks/` 组解散），见下文 experimental 一节。
+hooks 三个桥接包（`hook-protocol`/`hooks-claude-code`/`hooks-codex`）位于 [`experimental/`](../../experimental/00-map.md)，详见下文。
 
 ## experimental/（47 包——合同随时会变，机制页见 [`experimental/`](../../experimental/00-map.md)）
 
@@ -315,14 +317,14 @@ in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code �
 | ralph-bundle | 重复委派 | bundle（私有 workflow 引擎＋工具） | opt | — |
 | skill-badge | 徽章 | Impl `ctx.skills` | —（badge-skill-bundle 带出） | — |
 | badge-skill-bundle | 徽章 | bundle | opt | — |
-| session-title-all-prompts-llm | 会话标题 | Impl `ctx.sessionTitle` | —（session-titles-bundle 带出） | 0 |
+| session-title-all-prompts-llm | 会话标题 | Impl `ctx.sessionTitle` | —（session-titles-bundle 带出） | 2 |
 | session-titles-bundle | 会话标题 | bundle（禁用首条 prompt provider） | opt | — |
 | hook-protocol | hooks 桥 | lib（线协议） | — | — |
 | hooks-claude-code / hooks-codex | hooks 桥 | 桥接插件 | — | 5 / 4 |
 | webhook | webhook | Def `ctx.webhookRuntime` | — | — |
-| webhook-github | webhook | 消费方适配 | — | 0 |
+| webhook-github | webhook | 消费方适配 | — | 4 |
 | translator | 思维链翻译 | Def `ctx.translator`（service） | —（cot-translation-bundle 带出） | 8 |
-| client-ui-cot-translation | 思维链翻译 | Def `ctx.cotTranslation`＋UI | —（同上） | 4 |
+| client-ui-cot-translation | 思维链翻译 | Def `ctx.cotTranslation`＋UI | —（同上） | 2 |
 | cot-translation-bundle | 思维链翻译 | bundle | opt | — |
 | speech-to-text | 语音输入 | Def seam `ctx.speechToText` | — | 2 |
 | speech-to-text-sensevoice | 语音输入 | Impl（本地 ONNX） | — | 23 |
@@ -330,8 +332,8 @@ in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code �
 | client-ui-voice-input | 语音输入 | UI | — | — |
 | voice-input-bundle | 语音输入 | bundle | opt | — |
 | plugin-market-bundle | 插件市场 | bundle（plugin-market ＋ Discover 页） | opt | — |
-| agent-team | Agent Teams | Def `ctx.agentTeams` | — | 0 |
-| tool-agent-team | Agent Teams | Tool×9 | — | 0 |
+| agent-team | Agent Teams | Def `ctx.agentTeams` | — | 4 |
+| tool-agent-team | Agent Teams | Tool×9 | — | 3 |
 | client-ui-agent-team | Agent Teams | UI | — | — |
 | agent-team-profile | Agent Teams | bundle | opt | — |
 | auto-review | 自动审查 | tools/pre-execute 审查插件 | opt | — |
@@ -344,7 +346,7 @@ in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code �
 | computer-use-cua-driver-native | 桌面控制 | Impl `ctx.computerUse` | — | — |
 | browser-use-playwright-mcp | 浏览器控制 | Impl `ctx.browserUse` | — | 0 |
 | browser-use-chrome-devtools-mcp | 浏览器控制 | Impl `ctx.browserUse` | — | 0 |
-| browser-use-stagehand-native | 浏览器控制 | Impl `ctx.browserUse`（6 工具） | — | 11 |
+| browser-use-stagehand-native | 浏览器控制 | Impl `ctx.browserUse`（6 工具） | — | 8 |
 | browser-use-runtime | 浏览器控制 | lib（mountSessionMcp） | — | — |
 | inspector | 调试 | Def `ctx.inspector` | —（inspector-profile 带出） | 1 |
 | session-inspector | 调试 | UI | —（同上） | — |
@@ -362,8 +364,8 @@ in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code �
 | session-persistence-jsonl | Impl | base+min | 3 | JSONL+zstd 实现 |
 | session-projection | Def | base+min | — | 投影注册 |
 | session-projection-cache | Def | base | 2 | 投影缓存 |
-| session-title | Def seam | base+min | 0 | 标题生成面 |
-| session-title-first-prompt-llm | Impl | base | 0 | 首条 prompt 标题 Provider |
+| session-title | Def seam | base+min | 3 | 标题生成面 |
+| session-title-first-prompt-llm | Impl | base | 2 | 首条 prompt 标题 Provider |
 | session-title-llm | lib | — | — | 标题共享逻辑 |
 | session-log-deepseek | Impl | base+min | 2 | 上传通道（delivery-accepted 事件） |
 | session-checkpoint-policy | 策略 | base | — | checkpoint 时机 |
@@ -383,7 +385,7 @@ in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code �
 |---|---|---|---|---|
 | session-query | Def seam `ctx.sessionQuery` | — | — | 会话检索 seam |
 | session-query-sqlite | Impl | base | 8 | SQLite FTS5（出厂 `openAt: never` 关） |
-| session-log-export | cmd | web | 0 | `/export` 导出 |
+| session-log-export | cmd | web | 1 | `/export` 导出 |
 
 ## settings / credentials / storage / workspace（11 包）
 
@@ -419,8 +421,8 @@ in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code �
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
 | commands | Def `ctx.commands` | base | — | `/` 命令注册 |
-| permission-presets | Def | base | 6 | read-only / workspace-write / danger-full-access 三档表 |
-| user-approval | Def seam `ctx.approval` | base | 0 | **零 Provider**（审批回答器在 UI 侧） |
+| permission-presets | Def | base | 2 | read-only / workspace-write / danger-full-access 三档表 |
+| user-approval | Def seam `ctx.approval` | base | 1 | **零 Provider**（审批回答器在 UI 侧） |
 | user-questions | Def seam `ctx.userQuestions` | base | — | **零 Provider**（headless 要自答回答器） |
 | tool-ask-user | Tool `ask_user_question` | preset | 2 | 模型提问入口（timed 变体） |
 
@@ -439,13 +441,13 @@ in-process 子代理驱动集成在 `subagent` 包内；Codex 与 Claude Code �
 
 | 包 | 形态 | 可见 | Config | 职责 |
 |---|---|---|---|---|
-| webserver | Def `ctx.webServer` | web | 8 | HTTP 服务（127.0.0.1:3080 回退） |
+| webserver | Def `ctx.webServer` | web | 6 | HTTP 服务（127.0.0.1:3080 回退） |
 | frontend-static | 静态分发 | web | 1 | 前端 dist |
 | directory-picker | Def seam | — | — | 目录挑选 seam |
 | directory-picker-native | Impl | — | — | 原生对话框后端 |
 | directory-picker-browse | Impl | — | 1 | 浏览器后端 |
 | directory-picker-auto | Impl | web | — | 自动选择后端 |
-| open-in-app | 打开器 | web | 0 | Open In… 宿主解析 |
+| open-in-app | 打开器 | web | 3 | Open In… 宿主解析 |
 | plugin-inventory | 只读投影 | web | — | Loader 只读插件清单 |
 | product-telemetry-otel | Def `ctx.productTelemetry` | web | 11 | 桌面遥测 OTLP |
 
@@ -536,14 +538,14 @@ UI 插件（57）：
 | llm-replay | Impl `ctx.llm` | 回放 adapter（Config 20） |
 | util/ 18 包（atomic-write、brand、chunked-list、code-language、crypto、deque、home-paths、http-proxy、launch-environment、lazy-require、native-command、output-retention、package-manifest、plugin-market-index、time、timeout、values、workspace-path） | lib | 零依赖支撑，不挂载 |
 
-`runtime-diagnostics/invariants` 已随 `ctx.invariants` 一起退役（commit `f028f25667`），该组不再存在。
+仓库内不设 `runtime-diagnostics/invariants` 或 `ctx.invariants` 服务。
 
 ## 覆盖复核方式
 
 本页与文件系统的一致性可机械复核（每次 upstream 同步后重跑）：
 
 ```sh
-for d in packages/*/*/; do [ -f "$d/package.json" ] && basename "$d"; done | while read n; do grep -q "$n" _digested/inventory/02-plugin-catalog.md || echo "missing: $n"; done
+for d in packages/*/*/; do [ -f "$d/package.json" ] && basename "$d"; done | while read n; do grep -q "$n" _digested/plugin-system/inventory/02-plugin-catalog.md || echo "missing: $n"; done
 ```
 
 该扫描是 **basename 级**匹配，存在假阴性：常见词包名（如 `acp`、`client`、`protocol`、`server`）一旦出现在本页其他说明行就会漏报。复核时必须辅以「按 `##` 节清点组数与每组包数」的分组核对，不能只信该命令的零输出。

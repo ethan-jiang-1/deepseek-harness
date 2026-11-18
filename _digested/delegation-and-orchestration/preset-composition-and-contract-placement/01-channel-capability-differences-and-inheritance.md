@@ -1,8 +1,8 @@
 # Channel Capability Differences and Inheritance · 通道能力差异与继承
 
-源码核验入口：`packages/subagent/tool-subagent/src/preset-selection.ts`、`packages/subagent/subagent/src/{types,index,manager,child-agent,depth}.ts`、`packages/subagent/subagent-spawn-in-process/src/index.ts`、`packages/subagent/subagent-fork-in-process/src/index.ts`、`packages/workflow/workflow-ptc/src/{runtime,host}.ts`、`packages/experimental/agent-team/src/{types,roster}.ts`。
+> 本页回答：**同样是「把活交给别人」，spawn / fork / workflow 分支 / team 成员这四条通道，换掉的到底是什么？** 机制细节见 [`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)、[`primitives/01`](../delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md)、[`primitives/06`](../delegation-primitives/06-persistent-teams-with-a-shared-task-board.md)；深度与容量的完整叠加见 [`composition/06`](./06-depth-concurrency-and-capacity-limits.md)。
 
-本页回答：**同样是「把活交给别人」，spawn / fork / workflow 分支 / team 成员这四条通道，换掉的到底是什么？** 机制细节见 [`primitives/02`](../delegation-primitives/02-bounded-delegation-with-fresh-and-forked-subagents.md)、[`primitives/01`](../delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md)、[`primitives/06`](../delegation-primitives/06-persistent-teams-with-a-shared-task-board.md)；深度与容量的完整叠加见 [`composition/06`](./06-depth-concurrency-and-capacity-limits.md)。
+> 源码核验入口：`packages/subagent/tool-subagent/src/preset-selection.ts`、`packages/subagent/subagent/src/{types,index,manager,child-agent,depth}.ts`、`packages/subagent/subagent-spawn-in-process/src/index.ts`、`packages/subagent/subagent-fork-in-process/src/index.ts`、`packages/workflow/workflow-ptc/src/{runtime,host}.ts`、`packages/experimental/agent-team/src/{types,roster}.ts`。
 
 ## 读完你能回答
 

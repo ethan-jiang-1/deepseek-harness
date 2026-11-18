@@ -1,6 +1,8 @@
 # 源码启动、built bin 与 launcher profile
 
-源码核验入口：根 `package.json` 的 `dsh` script、`apps/cli/package.json` 的 `bin`、`apps/cli/src/bin.ts`、`apps/cli/src/args.ts`、`packages/boot/app-boot/src/profile.ts`。
+> **为什么单独有这一页**：同是「跑起 DSH」，开发态的 `pnpm dsh`、发布后的 `dsh` bin、headless 自动化管道和 Electron 桌面壳走的是截然不同的模块解析与启动纪律：源码态必须全 ESM 供 `tsx` 解析 `src/`，发行态只读 built `lib/`，而 `desktop` 则根本拒绝走 `dsh --profile desktop`。若不把三条启动通路和 CLI 启动前的边界一次对齐，很容易把源码态特例带进发布包，或在测试发布路径时跑错入口。
+>
+> 源码核验入口：根 `package.json` 的 `dsh` script、`apps/cli/package.json` 的 `bin`、`apps/cli/src/bin.ts`、`apps/cli/src/args.ts`、`packages/boot/app-boot/src/profile.ts`。
 
 本页只写启动面与 headless 的入口契约；各 profile 的 bundle 组合、`PROFILE_TEMPLATES` 与装载细节见 [`../runtime-profiles/00-map.md`](../runtime-profiles/00-map.md)。
 

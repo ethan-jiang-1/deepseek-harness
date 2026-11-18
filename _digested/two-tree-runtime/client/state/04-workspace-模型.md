@@ -1,8 +1,8 @@
 # workspace 模型
 
-核验入口：[`docs/subsystems/web-client.md`](../../../../docs/subsystems/web-client.md) 的「Workspaces」、[`packages/api/workspace-controller/README.md`](../../../../packages/api/workspace-controller/README.md)、[`packages/api/workspace-controller/src/client/`](../../../../packages/api/workspace-controller/src/client/)（`model.ts` / `service.ts`）。
-
-会话窗口之外的另一份客户端状态：workspace 行、它们的顺序、归档与 pin。它和会话窗口共用同一套「完整 baseline + 增量 + generation 整体替换」的写法。
+> **为什么单独有这一页**：除了单条聊天会话内的消息窗口，Web 客户端还要维护左侧栏里所有 Workspace 的排序、展开/归档、pin 置顶会话以及创建/移除等列表操作。如果只用一次性的 HTTP 拉取加本地乐观更新，并发流更新和单次请求回调很容易把列表顺序打乱。本页单独说明 workspace 模型为什么沿用与会话窗口同源的「完整 baseline + 增量 + 序号消解」套路，以及它和 UI 插件之间如何分工。
+>
+> 核验入口：[`docs/subsystems/web-client.md`](../../../../docs/subsystems/web-client.md) 的「Workspaces」、[`packages/api/workspace-controller/README.md`](../../../../packages/api/workspace-controller/README.md)、[`packages/api/workspace-controller/src/client/`](../../../../packages/api/workspace-controller/src/client/)（`model.ts` / `service.ts`）。
 
 ## 两个对象
 

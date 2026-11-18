@@ -117,8 +117,8 @@ dsh 不简单：机制多、包多、事件多。但「可读」来自组织，�
 - [`2026-07-19-require-agent-notes-for-non-trivial-changes`](../../.agents/notes/archived/process/2026-07-19-require-agent-notes-for-non-trivial-changes.md)（已归档，历史快照；note 语料库规则的历史来源。现行 owner 是 [`notes/README.md:46`](../../.agents/notes/README.md) 与 [`docs/AGENTS.md:41`](../../docs/AGENTS.md)）
 - [`../../.agents/notes/README.md`](../../.agents/notes/README.md)（第 36-42、46 行；归档判据与记忆的 gate）
 - [`../../.agents/notes/archived/manifest.json`](../../.agents/notes/archived/manifest.json) / [`../../scripts/verify-archived-agent-notes.ts`](../../scripts/verify-archived-agent-notes.ts)（冻结清单与封印门禁）
-- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（已归档，历史快照；`0.1.2-rc.1` 废除空 companion 的裁定，当时是现行权威）
-- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md)（已归档，历史快照；第 24 行。两份 note 记录的运行时 invariant 机制已在 `f028f25667` 整族退役，权威记录改由 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md) 承担）
+- [`2026-08-28-omit-unneeded-invariant-companions`](../../.agents/notes/archived/simplification/2026-08-28-omit-unneeded-invariant-companions.md)（已归档，历史快照；当年废除空 companion 的裁定记录）
+- [`2026-07-19-package-invariant-runtime-contracts`](../../.agents/notes/archived/architecture/2026-07-19-package-invariant-runtime-contracts.md)（已归档，历史快照；第 20-23 行。两份 note 记录的运行时 invariant 机制已整族退役，权威说明改由 [`docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md`](../../docs/upgrade-guide/v0.2.0-rc.2/remove-runtime-invariants/guide.md) 承担）
 - [`docs/cordis-primer.md`](../../docs/cordis-primer.md#cordis-waterfall-semantics)（waterfall 合同）
 - [`docs/development.md`](../../docs/development.md#typescript-project-layout) / [`../../packages/AGENTS.md`](../../packages/AGENTS.md)（包结构同构：aggregate 布局与命名规则）
 - [`docs/cookbook/extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md)（feature → mechanism 表）

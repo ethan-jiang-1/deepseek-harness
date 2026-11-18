@@ -1,8 +1,8 @@
 # group 与 isolate realm
 
-核验入口：[`vendor/group/README.md`](../../../vendor/group/README.md)、[`vendor/group/src/index.ts`](../../../vendor/group/src/index.ts)、[`vendor/cordis/src/context.ts`](../../../vendor/cordis/src/context.ts)（`isolate`，`:115-121`）、[`docs/cordis-tutorial/06-composition-and-hmr.md`](../../../docs/cordis-tutorial/06-composition-and-hmr.md)（`:21`）。
-
-这两个词经常被混着用，其实管的是两件事：**group** 把一串 entry 当一个单元装卸，**isolate** 让同一个服务名在子树里解析到另一个实例。
+> **为什么单独有这一页**：读配置补丁或看 `mountPreset` 时，`group` 和 `isolate` 经常成对出现，结果很多人把它们混为一谈——以为放进一个 `group` 里服务就天然隔离了，或者不知道什么时候必须加 `isolate` 才能让两个并发 session 各用各的 preset 工具。实际上两件事正交：**`group` 管一串条目的生命周期成批装卸，`isolate` 管同名 `ctx` 服务向哪里解析而不污染兄弟/根节点**。分清这两个正交原语，配置多层隔离组合时才不会误漏。
+>
+> 核验入口：[`vendor/group/README.md`](../../../vendor/group/README.md)、[`vendor/group/src/index.ts`](../../../vendor/group/src/index.ts)、[`vendor/cordis/src/context.ts`](../../../vendor/cordis/src/context.ts)（`isolate`，`:115-121`）、[`docs/cordis-tutorial/06-composition-and-hmr.md`](../../../docs/cordis-tutorial/06-composition-and-hmr.md)（`:21`）。
 
 ![group 与 isolate](./figures/isolate-realm.svg)
 

@@ -1,8 +1,8 @@
 # 资源模型与 holder 生命周期
 
-核验入口：[`docs/subsystems/client-resources.md`](../../../../docs/subsystems/client-resources.md)、[`docs/subsystems/sidebar-right.md`](../../../../docs/subsystems/sidebar-right.md)、[`packages/client/resources/README.md`](../../../../packages/client/resources/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-09-05-client-resource-model.md`、`.agents/notes/archived/architecture/2026-09-05-sidebar-tab-types-and-navigation.md`（已归档，只作历史）、`.agents/notes/archived/architecture/2026-09-07-workspace-files-dual-face-package.md`（已归档，只作历史）。
-
-给 Web UI 加内容不是「找一个 slot 注册组件」，而是「声明一条资源协议 → 注册该协议的 provider → 用地址读」。右栏是这套模型的第一个消费者：一个地址只有一条流，谁持有谁负责释放。
+> **为什么单独有这一页**：想在 Web 右栏打开一个预览页（比如文件diff、HTML 预览或自定义工具结果），很多人会下意识去找 UI slot 直接往里挂 React 组件并自己发 RPC 拉数据——结果右栏切 tab、多个面板打开同一份资源、或者会话切换时，订阅泄漏和流重开就会一起冒出来。DSH 的做法是反过来把「内容定位」做成统一的 `dsh-resource://` 协议与带引用计数的 holder 生命周期。本页讲清协议声明、provider 解析与 holder 释放在其中的配合，说明「按地址消费外部内容」为什么必须独立于具体视图插件。
+>
+> 核验入口：[`docs/subsystems/client-resources.md`](../../../../docs/subsystems/client-resources.md)、[`docs/subsystems/sidebar-right.md`](../../../../docs/subsystems/sidebar-right.md)、[`packages/client/resources/README.md`](../../../../packages/client/resources/README.md)。决策记录：`.agents/notes/implemented/architecture/2026-09-05-client-resource-model.md`、`.agents/notes/archived/architecture/2026-09-05-sidebar-tab-types-and-navigation.md`（已归档，只作历史）、`.agents/notes/archived/architecture/2026-09-07-workspace-files-dual-face-package.md`（已归档，只作历史）。
 
 ![资源地址的四态与 holder 生命周期](../figures/resource-lifecycle.svg)
 

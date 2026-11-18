@@ -12,7 +12,7 @@
 2. 工具注册表解析并冻结参数；`tools/pre-execute` 只作 allow / deny / ask 决策。deny 或缺 answerer 的 ask 不进 body。
 3. `tools/execute` 包住下面的 tool body。timeout 政策读 **tool** 的 `timeoutMs`；checkpoint 也在这一层先 flush。
 4. `dsh-tool-bash` `execute`：`resolveSandboxPolicy` → 校验 args → **升权审批在这里**（`approveEscalation` + `ctx.approval`，不是 Definition 方法）→ 收成 `ShellExecRequest` → `ctx.shell.resolve` 得到 Spec。`stdin` / `env` / `stdoutMaxBytes` 不进模型 schema。
-5. 前台 `ctx.shell.execute(spec)`；后台用 `resolve({ onExpiry: 'none' })` + `execute` 保留 handle。
+5. 当存在 `ctx.jobs` 且开启 `promote` 时，前台也先通过 `resolve({ ...request, onExpiry: 'none' })` 注册可接管任务并等待完成；无 `ctx.jobs` 或入池被拒时，直接走 `ctx.shell.execute(spec)`。
 6. **bash-local**：`spawnSpec` 把 Spec 映成 `bash -c …` 的 `SubprocessSpawnSpec`，`this.ctx.subprocess.spawn(...)`。环境先合并 `ENV_OVERRIDES`（`NO_COLOR=1`、`TERM=dumb`、`PAGER=cat`、`GIT_PAGER=cat`），调用方显式 env 仍能盖掉。
 7. **bash-sandbox**（子类）：在 spawn 前 `ctx.sandbox.confine(argv, policy)`，用包装后的 argv 再交给 subprocess。Windows 走另一套 ACL runner，合同仍是 confine → spawn。
 8. body 结算后进入 `tools/post-execute`，随后 `tool/result` 入 log。
@@ -28,12 +28,12 @@
 | 失败种类 | 在哪结算 | 模型看到什么 |
 |---|---|---|
 | 准备期失败（参数校验、`tools/pre-execute` deny、缺 answerer 的 ask、升权审批被拒） | `execute` throw，不进 body | `tool/result` 的 `isError` 文本（如 `Error: <reason>`） |
-| 命令非零退出 | 前台投影 `result()` **resolve** 成 `ShellRunResult`（带 exitCode） | 描述性结果文本：**退出码 1 不是 harness 崩溃** |
+| 命令非零退出 | 前台投影 `result()` **resolve** 成 `ShellRunResult`（带 exitCode） | 描述性结果文本：**退出码 1 不是 harness 崩溃**（`render.ts:19-21`） |
 | 超时被杀 | resolve（`ShellRunResult.timeoutMs` 记录当时限） | 描述性结果文本 |
-| abort 取消（有已送达前缀） | resolve（前缀定稿，`interrupted` 语义） | 前缀输出 + 取消说明 |
-| provider 基础设施失败（结果未知） | `done` 结算 `killed`，stderr stage-neutral 注记 | 注记文本；harness 不崩溃 |
+| abort 取消 | `waitOnJob` 或前台检测到 `result.aborted` 后 `throw toolAborted()`（`index.ts:319-320,529`） | `tool/result` 的 `isError: true`（`Error: tool call aborted`） |
+| provider 基础设施失败（结果未知） | `done` 结算 `killed` / 生成出错 | 注记或 `isError` 文本；harness 不崩溃 |
 
-具体的文案由 Consumer（`dsh-tool-bash` 的 `presentResult`）拥有；这张表的承重事实是**右列没有一个以异常形式到达模型**——非零退出、超时、取消都是结果，不是错误。
+具体的文案由 Consumer（`dsh-tool-bash` 的 `renderResult` / `presentBashResult`）拥有；这张表的承重事实是**命令非零退出与超时不以异常形式到达模型**——它们都是正常工具结果文本，只有准备期拒绝、基础设施失败与 abort 取消走 `isError`。
 
 ## 政策挂在哪
 

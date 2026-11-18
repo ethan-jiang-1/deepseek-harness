@@ -1,8 +1,8 @@
 # Ownership, Depth Budget and Notification Channels · 归属链、深度预算与通知通道
 
-源码核验入口：本页是专题综合页——**不引入新机制**，把 [`primitives/01`](../delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md)-[`primitives/06`](../delegation-primitives/06-persistent-teams-with-a-shared-task-board.md) 已核验的事实组合成协同模式；新增的直接源码引用只有三处：`packages/workflow/workflow-ptc/src/host.ts:200`-`212`（扇出归属）、`packages/goal/tool-goal/src/wrapup.ts:27`/`:37`（收尾禁工具）、`packages/jobs/tool-jobs/src/index.ts:254`（收 job 纪律）。
+> 本页回答：原语叠起来用时，结构性的事实是什么？哪些协同形态被源码直接支撑？收尾时要守哪些跨原语纪律？选择语义（单原语什么时候用）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
 
-本页回答：原语叠起来用时，结构性的事实是什么？哪些协同形态被源码直接支撑？收尾时要守哪些跨原语纪律？选择语义（单原语什么时候用）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)。
+> 源码核验入口：本页是专题综合页——**不引入新机制**，把 [`primitives/01`](../delegation-primitives/01-scripted-workflow-and-sandboxed-fan-out.md)-[`primitives/06`](../delegation-primitives/06-persistent-teams-with-a-shared-task-board.md) 已核验的事实组合成协同模式；新增的直接源码引用只有三处：`packages/workflow/workflow-ptc/src/host.ts:200`-`212`（扇出归属）、`packages/goal/tool-goal/src/wrapup.ts:27`/`:37`（收尾禁工具）、`packages/jobs/tool-jobs/src/index.ts:254`（收 job 纪律）。
 
 ## 读完你能回答
 

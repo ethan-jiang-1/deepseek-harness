@@ -64,5 +64,5 @@
   <text x="58" y="546" font-size="11" fill="#333">child 拿到新的 flat scope（不继承父注册）；权限在第一个 await 前捕获（approval 钉 never）；深度 = parent + 1</text>
   <text x="58" y="564" font-size="10.5" fill="#8c8c8c">测试旁证：subagent-fork-in-process.spec.ts:78（seeds every completed parent turn）· :122（mid-turn excludes the open turn）· :168（不返回种子里的父输出）</text>
 
-  <text x="40" y="606" font-size="10.5" fill="#8c8c8c">源码核验：subagent-fork-in-process/src/index.ts:46-91 · subagent/src/catalog.ts:120-124 · docs/subsystems/subagent.md:168</text>
+  <text x="40" y="606" font-size="10.5" fill="#8c8c8c">源码核验：subagent-fork-in-process/src/index.ts:46-83 · subagent/src/catalog.ts:120-124 · docs/subsystems/subagent.md:168</text>
 </svg>

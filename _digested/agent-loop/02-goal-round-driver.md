@@ -1,5 +1,7 @@
 # Goal Round Driver — 自动续轮的 loop engineering
 
+> **为什么单独有这一页**：普通 loop 在一次回复没有 `toolCall` 时就停下，但真正麻烦的是「模型停了、目标还没完」：怎么安全地在进程空闲时自动排下一轮，同时防止用户突然插话、多条续轮消息撞车、或者宿主崩溃重启后把用户已经停下的目标又自动唤醒？这正是 `Goal Round Driver` 独立于 `agent-loop` 存在的原因。本页先把它的工作流和 `RoundAttempt` 状态机拆给你看，免得把「一轮预约（attempt）」和 session 层的 `assistant/attempt` 事件混为一谈。
+
 ## 源码核验入口
 
 `packages/goal/goal-round-driver/src/index.ts`（driver 完整实现）、`packages/goal/goal-round-driver/src/prompt.ts`（round prompt）、`packages/goal/tool-goal/src/wrapup.ts`（terminal wrapup）、`packages/goal/tool-goal/src/authority.ts`（权限守卫）。
@@ -118,7 +120,7 @@ goal round N
   │
   ├─ 9. 场景 A/B：模型标记完成/阻塞（tool-goal/src/index.ts:291 起的 authority 检查、:313-331 的 complete/block 与 wrapup）
   │      │
-  │      ├─ completionAuthority() 检查（`packages/goal/tool-goal/src/authority.ts:110-117`）
+  │      ├─ completionAuthority() 检查（`packages/goal/tool-goal/src/authority.ts:111-118`）
   │      │   ├─ direct human input？→ 允许
   │      │   └─ goal round？→ 检查 isMatchingGoalRound
   │      │      → 当前 turn 中有带 correct goalId/revision/round 的 goal 消息

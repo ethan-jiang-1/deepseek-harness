@@ -1,8 +1,10 @@
 # 工具管道、审批与 timeout
 
-源码核验入口：`packages/core/tools/src/index.ts` 事件、`packages/core/tools/src/ptc.ts`、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
+> **为什么单独有这一页**：一个工具写好 `execute` 注册进 `ctx.tools` 只是起点；真正上线时，权限拦截、人机审批、强制超时、以及对话中途动态加载工具都要同时插到一次调用的生命周期里。如果这些政策各自去包一层工具函数，或者审批把权限硬编码进工具源码，整套工具面立刻无法组合。本页讲清 DSH 如何用**三条固定顺序的 waterfall 钩子**与独立的 `approval`/`timeout` 插件把调用治理统一起来，并说明运行中新增工具时如何安全通知模型。
+>
+> 源码核验入口：`packages/core/tools/src/index.ts` 事件、`packages/core/tools/src/ptc.ts`、`packages/guard/timeout-policy/`、`packages/interaction/user-approval/`、`packages/core/agent-loop/src/agent.ts` `step()`。
 
-本篇说明工具监听器挂哪、审批在哪条 seam、timeout 归谁，以及会话中途的工具面更新怎么入历史；流式 chunk 如何沉淀为 settlement 归 [`05`](./05-chunk到settlement.md)，图像与文件如何进消息归 [`06`](./06-文件块与内容块投影.md)。
+本篇分工：调用治理与中途工具面更新看本页；流式 chunk 如何沉淀为 settlement 归 [`05`](./05-chunk到settlement.md)，图像与文件如何进消息归 [`06`](./06-文件块与内容块投影.md)。
 
 ## `tools/*` 调用管道的三条，加上一条 `approval/*`
 

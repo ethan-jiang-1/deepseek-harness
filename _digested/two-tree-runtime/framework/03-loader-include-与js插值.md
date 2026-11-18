@@ -1,8 +1,8 @@
 # Loader、Include 与 `!!js` 插值
 
-源码核验入口：`vendor/loader/src/index.ts`、`vendor/loader/src/config/entry.ts`、`vendor/loader/src/config/utils.ts`、`vendor/include/src/index.ts`。
-
-本篇说明 `!!js` 的求值时机和 context，以及 patch 如何命中同一列表中刚 insert 的行。
+> **为什么单独有这一页**：看 `packages/bundle/*/cordis.patch.yml` 时，会反复见到 `!!js` 条件表达式和各种通过 `id` / `$insert` 打进前一层列表的补丁语法。如果在不理解底层的环境下写补丁，就会疑惑为什么 `!!js` 里只读得到环境变量、或者为什么在同一个补丁文件里想追加完一行立刻修改它必须遵循特定位置约定。本页专门拆解 `vendor/loader` 与 `vendor/include` 的解析求值规则，让你写/读 profile patch 时心里有确定依据。
+>
+> 源码核验入口：`vendor/loader/src/index.ts`、`vendor/loader/src/config/entry.ts`、`vendor/loader/src/config/utils.ts`、`vendor/include/src/index.ts`。
 
 ## YAML 里的 `!!js` 变成什么
 

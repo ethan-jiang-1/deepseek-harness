@@ -1,8 +1,8 @@
 # 三类帧与 wire 校验
 
-核验入口：[`packages/api/session-controller/`](../../../../packages/api/session-controller/README.md)、[`packages/api/remotes/src/remote-events.ts`](../../../../packages/api/remotes/src/remote-events.ts)（Host 事件转发白名单）。
-
-这一页拆开 follow 流里的三类帧，以及客户端拿到 wire 事件之后还要过的那道逐字段白名单。
+> **为什么单独有这一页**：在浏览器端添加一种新的 `session` 事件时，经常遇到一种非常隐蔽的现象：Host 日志文件里明明写了全部字段，浏览器 `Session` 窗口拿到后某个字段却神奇消失了，也不报任何错。原因正在于 `follow` 通道只下发**三类规定帧**，并且客户端接收边界横着一道逐字段白名单 `assertSessionWireEvent`——未显式放行的字段直接被裁掉。本页拆开这三类帧与 wire 白名单，让你明确在扩展会话事件时客户端入口还差哪一步同步。
+>
+> 核验入口：[`packages/api/session-controller/`](../../../../packages/api/session-controller/README.md)、[`packages/api/remotes/src/remote-events.ts`](../../../../packages/api/remotes/src/remote-events.ts)（Host 事件转发白名单）。
 
 ## 三类帧
 

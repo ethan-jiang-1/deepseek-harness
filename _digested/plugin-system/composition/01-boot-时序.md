@@ -1,8 +1,8 @@
 # `boot()` 时序
 
-源码核验入口：`apps/cli/src/profile-boot.ts`（含 `installProxyFromEnvironment` 调用）、`packages/util/http-proxy/`、`packages/boot/app-boot/src/index.ts`、`packages/boot/app-boot/src/profile.ts`。
-
-一次 `dsh --profile` 先准备磁盘上的空根，再计算层列表，由 `boot()` 挂载 Include，最后审计每一行是否激活。启动失败分两段标签；boot 结算后出现的 rejection 由 `installFailLoud` 处理。
+> **为什么单独有这一页**：平时说「启动一个 profile」，直觉像直接读一份 YAML 把插件装进 Cordis；但实际排查启动报错、环境变量代理不生效、或某个包静默没起来时，必须搞清 CLI 入口 `runProfile` 与底层 `boot()` 之间的完整交接顺序——比如网络代理为什么必须在 mount 前按启动快照装好、runtime resolution 为什么排在装包前、以及启动失败究竟归哪段标签处理。本页把这条启动链路从第一行到 `appReady` 按时间先后拆明。
+>
+> 源码核验入口：`apps/cli/src/profile-boot.ts`（含 `installProxyFromEnvironment` 调用）、`packages/util/http-proxy/`、`packages/boot/app-boot/src/index.ts`、`packages/boot/app-boot/src/profile.ts`。
 
 ![一次 dsh --profile 怎么变成一棵活树](./figures/boot-sequence.svg)
 
@@ -28,7 +28,7 @@
 
 ## 模块解析：runtime-resolution 拦截层
 
-残留的 `.dsh-module-fallback` link 投影由 `removeLinkProjections` 在装载期清除（`packages/boot/app-boot/src/profile.ts`）。模块解析机制是**解析拦截**，不写任何文件：`composeProfile` 先经 `createRuntimeResolution`（`profile.ts:449-482`，入参 `installAnchor` + profile）算出一份不可变的 `RuntimeResolution`，随 `composed.resolution` 交给 boot 后由 `PluginPackages` 服务装到 Node 的 ESM + CJS 解析器上（`packages/boot/app-boot/src/profile-resolution/resolver.ts` 的 `installRuntimeInterception`）。解析顺序：profile 本地 `node_modules` 命中优先，其次是安装锚（installation manifest 的 deps+peers 闭包，`collectInstallationScopePackages`），再按声明者位置找 linked root（profile `node_modules` 下指向共享树之外的 symlink，`linkedProfileRoots`）；missing peer（cordis 等）也由这层补齐，全部插件共享同一解析结果。bundle 解析仍是**安装锚点优先**，列出的包没有 `dsh.bundle` 声明 → fail loud，不会默默跳过。
+残留的 `.dsh-module-fallback` link 投影由 `removeLinkProjections` 在装载期清除（`packages/boot/app-boot/src/profile.ts`）。模块解析机制是**解析拦截**，不写任何文件：`composeProfile` 先经 `createRuntimeResolution`（`profile.ts:449-482`，入参 `installAnchor` + profile）算出一份不可变的 `RuntimeResolution`，随 `composed.resolution` 交给 boot 后由 `PluginPackages` 服务装到 Node 的 ESM + CJS 解析器上（`packages/boot/app-boot/src/profile-resolution/resolver.ts` 的 `installRuntimeInterception`）。解析顺序：profile 本地 `node_modules` 命中优先，其次是安装锚（installation manifest 的 deps+peers 闭包，`collectInstallationScopePackages`），再按声明者位置找 linked root（profile `node_modules` 下指向共享树之外的 symlink，`linkedProfileRoots`）；missing peer（cordis 等）也由这层补齐，全部插件共享同一解析结果。bundle 解析是**安装锚点优先**；列出的包若缺少 `dsh.bundle` 声明或读取失败，会被记入 `skippedBundles` 并在启动时通过 `reportSkippedBundles` 打印一次警告。
 
 ## 层列表：用户层之上还有 launcher 派生
 
@@ -46,7 +46,7 @@ bundle patches（dsh.profile.bundles 声明顺序）
 
 `resolveTelemetryPatch`：环境变量**任意非空**（含 `'0'` / `'false'`）都关掉。组合里没有 `session-telemetry-otel` 这一行就不生成补丁。隐私开关宁可误关，不误开。
 
-shipped presets 由 bundle 携带（`packages/bundle/web-app/presets/*.patch.yml`），没有独立的 preset root discovery；用户侧声明进 profile YAML。preset 重设计的迁移记录见 [`../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md`](../../_change_log/0008-0.1.5-rc.2-to-0.1.7-rc.1.md)。
+shipped presets 由 bundle 携带（`packages/bundle/web-app/presets/*.patch.yml`），没有独立的 preset root discovery；用户侧声明进 profile YAML。
 
 ## `boot()` 本身
 

@@ -4,6 +4,8 @@
 
 `dsh --profile web` 启动一个常驻 HTTP 服务，提供完整的浏览器 IDE（会话、聊天、文件、设置、工具栏、插件管理）。是 DSH 产品中最完整的宿主形态。
 
+**为什么单独设这一形态**：与只跑单次任务的 `headless` 或纯 stdio 协议入口不同，`web` 在 `dsh-base` 之上整层叠出 `dsh-web-app`（UI 控制器、浏览器前端、设置卡片、插件管理器与预设开关），让同一套 agent runtime 既服务人类交互界面，又把 agent 工具的选择权从固定启动配置下放到每个会话的 `preset` 里——想改界面、设置表单或浏览器行为时，对照本页的叠层差异能第一时间定位它多装了什么、又关掉了 base 的哪些默认行。
+
 ## 怎么跑
 
 ```sh
@@ -22,7 +24,7 @@ dsh --profile web --patch my.yml       # 叠加 patch
 | 层 | 从哪里来 | 作用 |
 |----|---------|------|
 | `dsh-base` | `packages/bundle/base/` | 所有 profile 共享的核心插件（LLM、session、tools、agent-loop、sandbox、subagent、goal、web 搜索等） |
-| `dsh-web-app` | `packages/bundle/web-app/` | Web 特有层：overrides base 行 + 插入 browser client、HTTP server、storage、preset patch（旧 agent-presets 已退役，改为声明式 agent-preset + agent-preset-registry；shipped presets 以 `presets/*.patch.yml` 随 bundle 携带） |
+| `dsh-web-app` | `packages/bundle/web-app/` | Web 特有层：overrides base 行 + 插入 browser client、HTTP server、storage、声明式 `agent-preset` + `agent-preset-registry`；shipped presets 以 `presets/*.patch.yml` 随 bundle 携带 |
 
 ### `dsh-web-app` 的 override 行
 
@@ -31,9 +33,9 @@ dsh --profile web --patch my.yml       # 叠加 patch
 | `system-prompt` | 设 persona prefix：`personaPrefix`（`You are a coding agent powered by the {{model}} model.`，`:17-20`）。shipped 组合不设 `personaSuffix`；执行目录由 `ctx.workingDirectory` 供给 |
 | `session-query-sqlite` | 设 `:memory:` + `openAt: never`（按需才开 SQLite） |
 | `tools` | 透传 `DSH_TOOLS_MODE` 环境变量 |
-| `tool-bash`, `tool-pwsh`, `tool-fs`, `tool-skill`, `tool-goal` 等 | **disable** 由会话级 preset 接管的 model-facing 工具行（由 bundle 携带的 preset patch 承担）；`working_directory` 是例外——base 的 `tool-working-directory` 行保留在 host 平面。base 双开 `search`+`fetch`（#3382）后，`tool-web` 的语义是 host 行整行 disable、由 preset 按档位组合两工具（base patch 注释与行，`packages/bundle/base/cordis.patch.yml:454-466,486-490`）；shipped 各 preset 的 `tool-web` 均 `fetch: true`，可作对照 |
+| `tool-bash`, `tool-pwsh`, `tool-fs`, `tool-skill`, `tool-goal` 等 | **disable** 由会话级 preset 接管的 model-facing 工具行（由 bundle 携带的 preset patch 承担）；`working_directory` 是例外——base 的 `tool-working-directory` 行保留在 host 平面。base 分别挂出 `search` 与 `fetch` 后，`tool-web` 的 host 行整行 disable、由 preset 按档位组合两工具（base patch 注释与行，`packages/bundle/base/cordis.patch.yml:454-466,486-490`）；shipped 各 preset 的 `tool-web` 均 `fetch: true`，可作对照 |
 
-web-app 的 disable 名单里**没有** `tool-str-replace-editor`：它和 base 的那一行都不在 shipped bundle 里，web-app 自己的 disable 行也随之删除。
+`tool-str-replace-editor` 不在 `web-app` 的 disable 名单中（它与 `base` 均不挂载该插件）。
 
 `hmr` 不在上表：web-app 自身没有 `hmr` 行，模块热更新的 disable 来自 base 层（`packages/bundle/base/cordis.patch.yml:27-32`）；Web 的 client 侧热重载由独立的 `client-hmr` 行负责（`packages/bundle/web-app/cordis.patch.yml:218-219`）。
 

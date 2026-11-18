@@ -1,8 +1,8 @@
 # chunk 到 settlement
 
-源码核验入口：`packages/core/session/src/types.ts` 的 assistant 事件、`packages/llm/llm/src/assistant-stream.ts`、`packages/core/agent-loop/src/{agent,assistant-stream}.ts`、`packages/llm/token-meter/src/index.ts`。
-
-本篇是「流式输出如何入 log」的家：**没有顶层 `assistant/chunk` 事件**——一次模型 attempt 只提交一条 settlement，流内嵌其中。
+> **为什么单独有这一页**：模型流式输出成千上万个 delta chunk 时，如果每收一个 chunk 就往事件日志 append 一行，session 文件会在长对话里膨胀百倍并拖垮冷加载与回放；但如果只落最终拼接好的文本，用户中断时的残句、流错误现场和逐 token 时序又无从查证。DSH 用一条反直觉但关键的设计解这个矛盾：**没有顶层 `assistant/chunk` 日志事件**，一次模型 attempt 只落一条包含内嵌 `stream` 数组的结算事件（`assistant/message` 或 log-only 的 `assistant/attempt`）。理解这一层拆分，才能读懂 UI 流式展示、重试记账和 `interrupted` 语义为什么各走各的路。
+>
+> 源码核验入口：`packages/core/session/src/types.ts` 的 assistant 事件、`packages/llm/llm/src/assistant-stream.ts`、`packages/core/agent-loop/src/{agent,assistant-stream}.ts`、`packages/llm/token-meter/src/index.ts`。
 
 ![流：llm.stream → 内存累积 chunk → 结算 assistant/message ｜ assistant/attempt](./figures/chunk-to-message.svg)
 

@@ -1,8 +1,8 @@
 # 用户 patch 的 HMR
 
-源码核验入口：`packages/boot/hmr/src/index.ts`（hmr 插件本体）、`packages/boot/app-boot/src/index.ts` 的 `recomposeProfile`（及 `config-editor` 使用的 `reconcileProfilePatches`）、`packages/boot/app-boot/src/profile-resolution/`（模块解析拦截层）、`apps/cli/tests/profile-hmr.spec.ts`。
-
-boot 叠完的树不是一次性的。profile 的 `cordis.patch.yml`、home 层 patch 与 profile 的 `package.json` 改了要热更新；失败的候选不能把正在服务的树拆掉；bundle 层和 `--patch` / launcher overlays 不许被用户文件挤掉。
+> **为什么单独有这一页**：修改自己的 `cordis.patch.yml` 或 `$DSH_HOME/cordis.patch.yml` 时，DSH 能在不重启进程的情况下把新组合热换入正在服务的插件树；但这立刻引出三个关键安全问题：**只看这几份文件热重算时，会不会把底层的 bundle 或 `--patch` 覆盖掉？如果新改的 YAML 写错了，会不会把当前活着的 Web/桌面进程直接拆崩？又是谁与模块级热替换共用串行锁避免竞态？** 本页专门梳理这套热重载与「候选失败不伤活树」的原子换入机制。
+>
+> 源码核验入口：`packages/boot/hmr/src/index.ts`（hmr 插件本体）、`packages/boot/app-boot/src/index.ts` 的 `recomposeProfile`（及 `config-editor` 使用的 `reconcileProfilePatches`）、`packages/boot/app-boot/src/profile-resolution/`（模块解析拦截层）、`apps/cli/tests/profile-hmr.spec.ts`。
 
 ## 机制形状
 

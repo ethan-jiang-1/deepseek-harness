@@ -59,7 +59,7 @@
 
 ### 5. Benchmarks——用户路径性能门
 
-- `benchmarks/` 按用户路径分组（不镜像包树），每组一个门：session-open（200 turns × 625 deltas = 127,400 事件）、agent-continuation、terminal-io（128KiB vs 4MiB 容量比 32×，ingest 时间比 ≤4×）、active-stream-reconnect（10 万 delta 重建 ≤63ms）、conversation-fold（50 万 delta 压 1,600 compact records，fold ≤40ms）、long-session-browser（Playwright + 240-turn 浏览器历史）。
+- `benchmarks/` 有 8 个用户路径子目录（`active-stream-reconnect`、`agent-continuation`、`conversation-fold`、`long-session-browser`、`session-corpus`、`session-open`、`terminal-io`、`user-text`），主要性能门如下：`session-open`（200 turns × 625 deltas = 127,400 事件）、`agent-continuation`、`terminal-io`（128KiB vs 4MiB 容量比 32×，ingest 时间比 ≤4×）、`active-stream-reconnect`（10 万 delta 重建 ≤125ms；`REFERENCE_REPLACE_MS = 50`、`REPLACE_BUDGET_MS = 125`）、`conversation-fold`（50 万 delta 压 1,600 compact records，fold ≤40ms）、`long-session-browser`（Playwright + 240-turn 浏览器历史）。
 - **"timed code runs under plain Node, never TSX" 的四层落实**：① `tsdown` 编译 worker 且 `neverBundle: [/^@deepseek-ai\//]`（工作区包保持 external、解析到 built lib/）；② spawn 前从子进程 env **删除 `NODE_OPTIONS` 与 `TSX_TSCONFIG_PATH`**；③ `assertBuiltBenchmarkRuntime` 三重拒绝（非 `.dsh-build/` 入口、execArgv 出现 tsx loader、包入口没 resolve 成 `/lib/*.js`）；④ `maxWorkers: 1` + 串行，测量不共享 CPU。
 - **预算是审查过的源常量，环境变量不得覆盖**：`CI_TIME_SCALE = 2`（x64 CI 相对 arm64 参考机）× `PERFORMANCE_BUDGET_HEADROOM = 1.25`；每个 bench 带内嵌校准测试，用录制的 hosted 采样断言预算常量本身（如 `expect(REOPEN_OPEN_BUDGET_MS).toBe(63)`）并拒绝合成回归样例——**预算数字自己也有测试**。
 - 合成固定输入（禁止真实会话/用户材料/网络）；参考机期望与 CI time scale 分开记录；堆预算独立于计时（如 retained heap ≤16MiB）。
@@ -121,7 +121,7 @@
 **写法惯例（硬事实）**：
 
 - **命名**：英文行为命题、现在时、**无 "should"**——`describe('disposal leaves the two-state status contract balanced')`、`it('removes contributions when the contributing fiber is disposed (HMR safety)')`。"Tests describe behavior, not correctness" 的文体化。
-- **HMR-safety 模式**（全仓实测 72 处 `(HMR safety)`）：子 fiber 注册贡献 → 断言存在 → `await fiber.dispose()` → 断言移除（服务自身 built-in 不受影响）。契约回归样板 `contract-regressions.spec.ts`（1522 行、14 个 describe）每条测试钉死一个边界/身份/生命周期契约，注释直接回指原始 bug（如 "The key assertion from the original bug report: after disposal, no assistant/attempt or assistant/message appears"）。
+- **HMR-safety 模式**（全仓测试文件实测 67 处 / 56 个 spec·e2e 文件，不含 `lib/` 共 70 处 `(HMR safety)`）：子 fiber 注册贡献 → 断言存在 → `await fiber.dispose()` → 断言移除（服务自身 built-in 不受影响）。契约回归样板 `contract-regressions.spec.ts`（1522 行、14 个 describe）每条测试钉死一个边界/身份/生命周期契约，注释直接回指原始 bug（如 "The key assertion from the original bug report: after disposal, no assistant/attempt or assistant/message appears"）。
 - **tests/harness.ts 模式**：共享 fixture 刻意放在 include 模式之外——import 它不会重复注册别人的 `describe`、不会重复真实 API 调用；代码里有就地注释（`packages/fs/tool-fs/tests/harness.ts`："This helper lives outside the e2e glob so imports do not register tests"）。
 - **spec 与 e2e 的实际写法差**（抽样对比）：spec = 进程内真 Cordis 组合 + MockAdapter，断言事件序列 / registry 状态；e2e = `describe.skipIf(!process.env.DEEPSEEK_API_KEY)` 自跳过（e2e 车道 25 处：packages 13 + apps 12（主道 24），部分套件再加用例内双保险 throw，如 `packages/llm/llm-deepseek/tests/runtime.e2e.ts:184`）+ 真 provider + 120s 车道默认 testTimeout（个别 profile 用例显式提到 180s）+ **进程外读文件断言**（verify the world）+ session log 里真实 tool/call 名单核对，不信 agent 自述。
 - **client 组件 spec**：文件首行 `// @vitest-environment jsdom` pragma + testing-library + fake timers；断言用户可见行为而非 class 名。

@@ -16,7 +16,7 @@ DSH 的 CI 不是一堆散装的 workflow 步骤，而是一个**可编程门禁
 | `needs` | 前置门必须 passed 才启动 |
 | `after` | 无论成败都要等它 settle（用于互斥资源共享） |
 | `allowFailure` | 保留失败结果但不阻塞（观察性门的实现） |
-| 有界并发 | 默认 min(门数, CPU)；本地模式（check-all/hygiene/doc-sync/doc-quick）cap 4 |
+| 有界并发 | 默认 `min(门数, budget)`（CI 取 CPU，本地 `LOCAL_PARALLELISM_CAP = 12`）；`check-all` / `hygiene` / `doc-sync` / `doc-quick` 再受 `PROGRAM_MODE_CAP = 8` 上限约束 |
 | `DSH_GATE_FAIL_FAST=1` | 首败中止并**杀整棵进程树**（POSIX 进程组负 pid、Windows `taskkill /T /F`、5s SIGKILL 升级） |
 
 ci- 模式（ci-unit 除外）统一注入 worker 环境变量（oxlint/publint 并发=CPU/2、**快照文件 worker=1**（`DSH_SNAPSHOT_MAX_WORKERS`，文件级串行）、场景内回放并发仍为 shared（`DSH_SNAPSHOT_MAX_CONCURRENCY`）、覆盖分区=插桩份额 ≈2/3 等），保证"本地跑同一模式"与 CI 同参数。
@@ -56,7 +56,7 @@ ci- 模式（ci-unit 除外）统一注入 worker 环境变量（oxlint/publint 
 ### ci-master.yml（push master + 手动 dispatch，不进 PR 面板）
 
 - **windows（Wine）**：ubuntu + Wine 跑 `scripts/wine-windows-gates.sh`——在 Linux 上用真 win-x64 Node 跑两个 blocking 门。工作树不动（tracked+untracked-unignored 全部 tar 快照进 scratch）；Wine 专属覆盖（hoisted linker + win32-x64 supportedArchitectures）只附加到快照的 pnpm-workspace.yaml，`--frozen-lockfile` 仍有效；Node zip 下载并 SHA-256 校验；pnpm hoisted rename race 最多干净重试 3 次；Wine 下 Node 不能接管道 stdio，全部经文件。
-- **serial-linux-selfhosted / serial-windows / serial-macos**：**热备演练**——每次 master push 在持久 VM 上**全串行**（一切并发=1）跑必需 lane（`check:ci:linux-primary` / `check:ci:windows-complete`），持续证明备用环境能接管必需 lane。
+- **serial-linux-selfhosted / serial-windows**（另有已停用的 `serial-macos`，`if: false` / `macos-latest` / `check:ci`）：**热备演练**——每次 master push 在持久 VM 上**全串行**（一切并发=1）跑必需 lane（`check:ci:linux-primary` / `check:ci:windows-complete`），持续证明备用环境能接管必需 lane。
 - **runner 基准矩阵**：手动 dispatch，4~96 核 × Linux/Windows，分别测单 lane 与整合拓扑的 wall-clock。
 
 ### e2e.yml（真 DeepSeek API）
@@ -100,7 +100,7 @@ DSH 的 CI 设计里有一组专门对付"测试自己骗自己"的机制，与 
 - `scripts/run-coverage-partitions.ts` + `scripts/coverage-partitions.ts`——分区→blob→合并判门
 - `scripts/run-web-snapshots.ts`——HMR 串行先行再并行
 - `scripts/wine-windows-gates.sh`——Wine 门（快照树 / hoisted / SHA-256 / 重试）
-- `.github/workflows/ci.yml`（含 all-checks-passed L700-726、failover 变量注释）
+- `.github/workflows/ci.yml`（含 `all-checks-passed` L737-763、failover 变量注释）
 - `.github/workflows/ci-master.yml`、`e2e.yml`、`sandbox.yml`、`expected-filenames.yml`、`pi-ai-provider-e2e.yml`、`node-addon-system.yml`
 - `benchmarks/AGENTS.md` 与 `benchmarks/support/{built-worker,calibration}.ts`
 

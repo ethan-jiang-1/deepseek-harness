@@ -17,7 +17,7 @@
 - **id 命中：整份替换**该行 `config`。想保留的字段必须重写，没有深合并。
 - **`insert`：加新行。** 同一次列表里，后面的 patch 必须能打到前面刚 insert 的行（这是 vendor Include 的本地修改之一）。
 
-列出的 bundle 若没有 `dsh.bundle` 声明，启动失败，不会默默跳过；Patch 文件必须是列表，要保留一个空层写 `[]`。这套 id/insert 算法的实现与 `!!js` 求值时序归 [`../../two-tree-runtime/framework/03-loader-include-与js插值.md`](../../two-tree-runtime/framework/03-loader-include-与js插值.md)。
+列出的 bundle 若没有 `dsh.bundle` 声明（或解析 / 兼容性 / patch 读取失败），会被 `loadProfileDirectory` 跳过并记入 `skippedBundles`，启动时通过 `reportSkippedBundles` 警告一次，不会悄无声息或卡死剩余 bundle（profile 清单或用户 patch 解析失败才直接终止启动）；Patch 文件必须是列表，要保留一个空层写 `[]`。这套 id/insert 算法的实现与 `!!js` 求值时序归 [`../../two-tree-runtime/framework/03-loader-include-与js插值.md`](../../two-tree-runtime/framework/03-loader-include-与js插值.md)。
 
 `--dump-config` 展示用户可编辑层、launcher 派生层只在启动时追加——dump 与 boot 的保真差异归 [`02-dump-与boot-保真.md`](./02-dump-与boot-保真.md)。
 

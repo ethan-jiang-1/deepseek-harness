@@ -1,6 +1,6 @@
 # 01 · 八类能力与场景：新人 20 分钟消化路径
 
-本页是专题的**教程层**——先建立地图、走完场景，再回 [`02`](./02-plugin-catalog.md)（图鉴）与 [`03`](./03-reference-lists.md)（清单）按需查表。分类思考的深挖在 [`05`](./05-taxonomy-and-design.md)。
+> **为什么单独有这一页**：面对上百个分散在几十个子目录下的 `@deepseek-ai/dsh-*` 包，直接去翻图鉴表格只会让人淹没在包名里，既分不清哪些开箱就有、哪些只是可替换后端，也抓不到能力之间的组装关系。这一页刻意把全部包先按「你想让系统完成什么事」收拢成 **8 类日常场景**，帮你先建立一张心智地图与三种到货档位的判断；有了这张地图之后，再去 [`02`](./02-plugin-catalog.md)（逐组图鉴）与 [`03`](./03-reference-lists.md)（横切清单）按需查表就不会迷路（分类与设计思考见 [`05`](./05-taxonomy-and-design.md)）。
 
 ## 心智模型先立住（4 句话）
 
@@ -47,7 +47,7 @@
 
 `boot` 组管启动（profile、hmr、plugin-manager、config-editor）与插件市场（`plugin-market`＋`util/plugin-market-index`＋`ui-plugin-market`，随 plugin-market-bundle 默认关）；`bundle`/`preset` 组是交付与模式单位；`extensions` 的 cordis-host-runner 支持运行时动态插件；`mcp-client` 把任一 MCP 服务器的工具接进来；`guard` 防重复调用与超时；`identity`/`telemetry`/otel 是运营遥测；`test-support`/`util`/`typert` 是支撑层（不挂载）。**覆盖组**：boot、bundle、preset、extensions、mcp、guard、identity、telemetry、test-support、util、typert。
 
-`packages/hooks/` 组已解散、`hook-protocol`/`hooks-claude-code`/`hooks-codex` 三个桥接包整组并入 [`experimental/`](../../experimental/00-map.md)；`packages/runtime-diagnostics/` 组随 `invariants` 删除（commit `f028f25667`）而消失，`ctx.invariants` 服务不再存在。`webhook` 两个包同样迁入 experimental。
+hooks 三个桥接包（`hook-protocol`/`hooks-claude-code`/`hooks-codex`）与 `webhook` 两个包均归属 [`experimental/`](../../experimental/00-map.md) 组；仓库内不设 `packages/runtime-diagnostics/`、`ctx.invariants` 服务或独立 `packages/hooks/` 组。
 
 ## 六个场景走一遍（每个都是「你以为要写插件，其实不用」）
 
@@ -56,7 +56,7 @@
 | **A. 让模型能上网** | 「写个搜索工具插件？」 | 什么都不写：`web_search`/`web_fetch` 在 base 层出厂即有；设 `DEEPSEEK_API_KEY` 即用官方搜索 | base:473-487 |
 | **B. 换搜索引擎** | 「改源码或写新工具？」 | patch 两行：disabled `web-search-deepseek`＋insert `web-search-exa`——`web_search` 名字不变，模型无感 | web-search-exa/README.md:40 |
 | **C. 会话全文搜索** | 「写个检索插件？」 | 一行配置：`session-query-sqlite` 的 `openAt: never` 改 `first-search`，SQLite FTS5 立即可用 | base:157-161 |
-| **D. 定时提醒** | 「写个 cron 插件？」 | 什么都不写：`schedule`＋`ui-schedule` 已随每个 Web profile 出厂，`schedule_*` 四工具由 standard/ptc/cordis preset 声明（`minimal` 不声明）；旧 `schedule-bundle` 进 `RETIRED_BUNDLES`，载入 profile 时自动摘除 | web-app:135-141、398-399；presets/standard.patch.yml:35-36 |
+| **D. 定时提醒** | 「写个 cron 插件？」 | 什么都不写：`schedule`＋`ui-schedule` 已随每个 Web profile 出厂，`schedule_*` 四工具由 standard/ptc/cordis preset 声明（`minimal` 不声明）；旧 `schedule-bundle` 在 `RETIRED_BUNDLES` 中于载入时自动摘除 | web-app:135-140、398-399；presets/standard.patch.yml:35-36 |
 | **E. 插件市场** | 「自己写个索引抓取？」 | Web 插件页开 `plugin-market-bundle`（OPTIONAL_BUNDLES 之一）：`plugin-market` 读并校验索引，Discover 页安装，`plugin_market` 工具给模型 | profile.ts:223-236 |
 | **F. 无 GUI 部署要审批** | 这才是真的要写 | `ctx.approval` 零 Provider，headless 部署需自写一个 `approval/request` waterfall 监听插件——先查 [`04`](./04-reuse-paths-and-gaps.md) 缺口清单再动手 | docs/capability-seams.md:691 |
 

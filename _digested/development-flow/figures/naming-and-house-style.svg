@@ -42,7 +42,7 @@
   <text x="516" y="346" font-weight="700" fill="#5b21b6">⑥ 引用写成真链接，禁止「见第 12 号」</text>
   <text x="516" y="368" font-size="11" fill="#374151">因为用了相对 Markdown 链接，verify-md-links 能查断链</text>
   <text x="516" y="386" font-size="11" fill="#374151">于是归档造成的引用折断会被立刻发现、当场修</text>
-  <text x="516" y="404" font-size="11" fill="#374151">a7a5be1703 同一提交里改了 242 篇入站链接，否则全红</text>
+  <text x="516" y="404" font-size="11" fill="#374151">a7a5be1703 同一提交里改了 246 篇非 .zh.md 入站链接，否则全红</text>
   <text x="516" y="424" font-size="11" fill="#6b7280">「归档不破坏引用」不靠人记得，靠链接能机器验证</text>
 
   <rect x="40" y="446" width="900" height="104" rx="8" fill="#fff" stroke="#4b5563" stroke-width="1.4"/>

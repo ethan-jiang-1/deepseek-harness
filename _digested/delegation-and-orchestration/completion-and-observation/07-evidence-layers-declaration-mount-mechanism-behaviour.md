@@ -1,8 +1,8 @@
 # Evidence Layers: Declaration, Mount, Mechanism and Behaviour · 证据分层
 
-源码核验入口：`packages/preset/agent-preset-registry/src/{index,definition}.ts`、`apps/cli`（`--dump-config`）、`packages/core/session/src/types.ts:241`-`247`、`packages/core/agent-loop/src/agent.ts:616`-`699`、`packages/subagent/subagent/src/{catalog,descriptor}.ts`。
+> 本页回答：**怎么证明一条委派链真的按你写的组合工作？每一层证据能证明什么、不能证明什么？** 图的字段来源见 [`observation/05`](./05-delegation-graph-node-and-edge-projection.md)，终态见 [`observation/02`](./02-terminal-states-and-bounded-retry-authority.md)。
 
-本页回答：**怎么证明一条委派链真的按你写的组合工作？每一层证据能证明什么、不能证明什么？** 图的字段来源见 [`observation/05`](./05-delegation-graph-node-and-edge-projection.md)，终态见 [`observation/02`](./02-terminal-states-and-bounded-retry-authority.md)。
+> 源码核验入口：`packages/preset/agent-preset-registry/src/{index,definition}.ts`、`apps/cli`（`--dump-config`）、`packages/core/session/src/types.ts:241`-`247`、`packages/core/agent-loop/src/agent.ts:616`-`699`、`packages/subagent/subagent/src/{catalog,descriptor}.ts`。
 
 ## 读完你能回答
 
