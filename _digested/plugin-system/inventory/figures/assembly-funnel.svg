@@ -1,39 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="system-ui" font-size="12">
+  <rect width="600" height="400" fill="#ffffff" rx="6"/>
+  <text x="300" y="30" text-anchor="middle" font-weight="700">DSH 插件能力组装漏斗</text>
+
+  <rect x="150" y="60" width="300" height="80" fill="#dcfce7" stroke="#86efac" rx="6"/>
+  <text x="300" y="100" text-anchor="middle" font-weight="700">1. Bundle (打包)</text>
+  <text x="300" y="120" text-anchor="middle" font-size="11">出厂单位，代码仓库资产</text>
+
+  <path d="M 300 140 L 300 170" stroke="#666" marker-end="url(#arr)"/>
+
+  <rect x="150" y="180" width="300" height="80" fill="#dbeafe" stroke="#93c5fd" rx="6"/>
+  <text x="300" y="220" text-anchor="middle" font-weight="700">2. Profile (组装)</text>
+  <text x="300" y="240" text-anchor="middle" font-size="11">配置层叠，应用形态 (web/sdk)</text>
+
+  <path d="M 300 260 L 300 290" stroke="#666" marker-end="url(#arr)"/>
+
+  <rect x="150" y="300" width="300" height="80" fill="#fff7ed" stroke="#fbbf24" rx="6"/>
+  <text x="300" y="340" text-anchor="middle" font-weight="700">3. Preset (模式)</text>
+  <text x="300" y="360" text-anchor="middle" font-size="11">会话级声明 (standard/ptc/cordis)</text>
+
   <defs>
-    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#666"/></marker>
   </defs>
-  <rect width="960" height="470" fill="#fafafa" rx="6"/>
-  <text x="480" y="28" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">组装漏斗：343 个包怎么收敛成一次启动</text>
-  <text x="480" y="48" text-anchor="middle" font-size="11" fill="#6b7280">包 → bundle（交付）→ profile（组合）→ preset（会话级）→ 一棵运行树。三层各管一件事，互不越权。</text>
-
-  <rect x="36" y="66" width="890" height="72" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="62" y="92" font-size="13" font-weight="700" fill="#1e40af">343 个包（52 组 + experimental 47 包）</text>
-  <text x="62" y="112" fill="#1e3a8a">每一个都是潜在货架单品：99 个 ctx 服务、33 个工具包、67 个 client 包、其余为实现 / 库 / 驱动 / 测试支撑</text>
-  <text x="62" y="130" fill="#6b7280">全量清单见 02-plugin-catalog.md（能力导览见 01）；形态判定见 plugin-taxonomy.svg</text>
-
-  <line x1="480" y1="138" x2="480" y2="160" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="500" y="154" fill="#6b7280">打包成 patch 层</text>
-
-  <rect x="96" y="162" width="770" height="72" rx="10" fill="#dcfce7" stroke="#86efac"/>
-  <text x="122" y="188" font-size="13" font-weight="700" fill="#166534">20 个 bundle：6 个 profile bundle ＋ 12 个 OPTIONAL_BUNDLES ＋ 2 个 ON_DEMAND_BUNDLES</text>
-  <text x="122" y="208" fill="#14532d">base/web-app/headless/acp-app/sdk-app/sdk-minimal ＋ 12 个 OPTIONAL_BUNDLES ＋ claude-code/codex</text>
-  <text x="122" y="226" fill="#6b7280">bundle 只做交付：一个 patch 文件＋package.json 的 dsh.bundle 声明；不参与启动选择</text>
-
-  <line x1="480" y1="234" x2="480" y2="256" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="500" y="250" fill="#6b7280">按 profile 模板叠加</text>
-
-  <rect x="156" y="258" width="650" height="72" rx="10" fill="#fef3c7" stroke="#fcd34d"/>
-  <text x="182" y="284" font-size="13" font-weight="700" fill="#92400e">5 个 launcher profile 组装模板（profile.ts:179-195）</text>
-  <text x="182" y="304" fill="#78350f">web=[base,web-app]　headless=[base,headless]　sdk=[base,sdk-app]　acp=[base,acp-app]　sdk-minimal=[sdk-minimal]（不叠 base）</text>
-  <text x="182" y="322" fill="#6b7280">特例：打包安装的 headless 变体 [base,web-app,headless]（:198-200）；plugin add 初始化 [base]（:213）</text>
-
-  <line x1="480" y1="330" x2="480" y2="352" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arr)"/>
-  <text x="500" y="346" fill="#6b7280">会话级再选一次</text>
-
-  <rect x="216" y="354" width="530" height="60" rx="10" fill="#ede9fe" stroke="#c4b5fd"/>
-  <text x="242" y="378" font-size="13" font-weight="700" fill="#5b21b6">1 棵运行树（web 为例）＋ 4 个 preset 之一</text>
-  <text x="242" y="398" fill="#4c1d95">base(96)＋web-app(91)＝187 条 insert 行；agent 工具由四 preset 之一提供</text>
-
-  <rect x="36" y="428" width="890" height="30" rx="8" fill="#ffffff" stroke="#d1d5db"/>
-  <text x="480" y="448" text-anchor="middle" fill="#374151">所以「dsh 出厂有什么」永远是三问合答：bundle 给了什么（patch 行）× profile 叠了哪些（模板）× preset 选了哪个（会话级）——本专题 02 页就是这三问的查表。</text>
 </svg>

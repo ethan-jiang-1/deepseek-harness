@@ -1,130 +1,34 @@
-# 03 · 五张横切清单：按「要什么」查
+# 五张横切清单
 
-> **为什么单独有这一页**：真实干活时，人往往不是按源码目录找包，而是带着一个横向问题来的——*“系统里到底暴露了哪些 `ctx.*` 服务、哪些有第二实现可以替换？一个工具或一条 CLI 命令归哪个包？不同 profile 实际让模型看见哪些工具？”* 如果只有 [`02-plugin-catalog.md`](./02-plugin-catalog.md) 那种按目录纵着排的大图鉴，回答这类横向问题得来回翻几十个组。本页因此专门从仓库生成目录抽出**五张横切检索表**，把跨包分散的接口面、seam 供给度、工具与命令收在同一页里。
->
-> **怎么读这页才不觉得 overwhelming**：把它当成「按需求反查源码包」的索引——只需要哪张表（查 `ctx` 服务、查模型工具暴露面、还是查人类 `/command`），直接跳到对应 `3.x` 小节看即可，不需要一次通背 99 个服务。核验状态见 [`catalog.json`](../../catalog.json)。
+> [!IMPORTANT]
+> 本专题作为「反查索引」，将分散在各包的 `ctx` 服务、模型工具与命令收拢至此，避免重复造轮子。
 
-## 3.1 ctx 服务清单 — 99 = 58 core + 35 seam + 5 service + 1 bundle
+## 清单索引
 
-真源是生成目录 [`docs/capability-seams.md`](../../../docs/capability-seams.md):612-712 的表格（角色列可用 awk 复核 58/35/5/1）。
-
-**非 seam 的 6 条（core/service/bundle 概览）：**
-
-| 服务 | role | 说明 |
-|---|---|---|
-| `ctx.agentLoop` | bundle | 唯一具体循环 |
-| `ctx.cotTranslation` / `ctx.translator` | service ×2 | 推理翻译的会话侧服务与匿名翻译端点 |
-| `ctx.productAnalytics` / `ctx.otel` / `ctx.productTelemetry` | service ×3 | 桌面分析 / OTLP 遥测 / 产品遥测 |
-| 其余 58 条 | core | 主干服务，逐行见生成表 |
-
-**35 条 seam 全景（P＝实现包数，C＝直接消费包数，按生成表逗号切分；P 升序、C 降序）：**
-
-| seam | P | C | owner | 备注 |
-|---|---|---|---|---|
-| `ctx.approval` | 0 | 3 | interaction/user-approval | **零 Provider**：回答器走 waterfall（缺口清单） |
-| `ctx.userQuestions` | 0 | 1 | interaction/user-questions | **零 Provider**：回答端在 Web 侧 |
-| `ctx.authorization` | 0 | 1 | credentials/authorization | **零 Provider**：凭据获取流（缺口清单） |
-| `ctx.sessionPersistence` | 1 | 7 | session/session-persistence | 单 Provider（JSONL），7 个消费方 |
-| `ctx.workingDirectory` | 1 | 6 | session/working-directory | 单 Session 执行目录投影 |
-| `ctx.jobs` | 1 | 5 | jobs/jobs | 单 Provider，消费集中在 job 工具与 job Remote |
-| `ctx.attachments` | 1 | 4 | attachment/attachment | 单 Provider |
-| `ctx.credentials` | 1 | 3 | credentials/credentials | env-over-.env |
-| `ctx.deepseekAccount` | 1 | 2 | credentials/deepseek-account | 账号登录态 |
-| `ctx.sessionQuery` | 1 | 2 | session-query/session-query | 单后端（sqlite） |
-| `ctx.workflowEngine` | 1 | 2 | workflow/workflow | worker-thread 单引擎 |
-| `ctx.worktrees` | 1 | 1 | experimental/worktree | Provider 与 Consumer 同族、显式实验组合 |
-| `ctx.mcpResources` | 1 | 1 | mcp/mcp-resources | 跨包：impl 在 `mcp-client`，consumer 在 `mcp-resources`（生成表 :624） |
-| `ctx.fileReferences` | 1 | 1 | context/file-reference | 跨包：impl 在 `file-reference-local`，consumer 在 `api-session-controller`（生成表 :667） |
-| `ctx.compaction` | 1 | 1 | compaction/compaction | 自消费 |
-| `ctx.terminals` | 1 | 1 | terminal/terminal | 单后端（bash PTY） |
-| `ctx.lsp` | 1 | 1 | lsp/lsp | 单后端（stdio） |
-| `ctx.speechToText` | 1 | 1 | experimental/speech-to-text | 唯一实现是实验性 SenseVoice |
-| `ctx.spillStore` | 1 | 1 | spill/spill | 单后端（local） |
-| `ctx.sessionTelemetry` | 1 | 0 | session/session-telemetry | 输出离进程（otel） |
-| `ctx.subprocess` | 2 | 7 | subprocess/subprocess＋ssh/subprocess-ssh | local＋ssh 双实现 |
-| `ctx.computerUse` | 2 | 2 | computer-use/computer-use | 实现全在 experimental |
-| `ctx.sandbox` | 2 | 2 | sandbox/sandbox | bwrap / Landlock / Seatbelt |
-| `ctx.ptcRuntime` | 2 | 2 | ptc-runtime/ptc-runtime | node ＋ python 双后端 |
-| `ctx.deepseekLlmApiExtensions` | 2 | 1 | llm/deepseek-llm-api-extensions | 官方 API 附加字段注册 |
-| `ctx.storage` | 2 | 1 | storage/storage | json（出厂）/ sqlite |
-| `ctx.directoryPicker` | 2 | 1 | host/directory-picker | native / browse |
-| `ctx.sessionTitle` | 2 | 0 | session/session-title | first-prompt / all-prompts 两个 Provider |
-| `ctx.shell` | 3 | 4 | shell/shell | bash / pwsh × local / sandbox |
-| `ctx.browserUse` | 3 | 3 | browser-use/browser-use | 实现全在 experimental |
-| `ctx.llm` | 3 | 2 | llm/llm | deepseek ＋ 休眠 pi-ai ＋ replay |
-| `ctx.fs` | 3 | 1 | fs/fs | local / sandbox / ssh |
-| `ctx.skills` | 4 | 1 | skill/skill | filesystem / office / badge / windows-acl |
-| `ctx.web` | 5 | 1 | web/web | deepseek / http / exa / perplexity / deepseek-api |
-| `ctx.subagents` | 6 | 3 | subagent/subagent | in-process×2 / acp / codex / claude-code / dsh-sdk |
-
-P≥2 的 seam 换 Provider 不改调用方；P=0 与自消费（P、C 同包）是成熟度警戒信号。可替换率 = 有 ≥2 个 Provider 或 P:C 齐全的 seam 数 / 全部 seam 数，逐行数据以本页表为准；成熟度信号分析见 [`_faq_on_digested/08`](../../../_faq_on_digested/08_plugin-seam-maturity/answer.md)。
-
-## 3.2 模型可见工具 — 每个 profile 实际暴露什么
-
-工具包的模型可见名以生成目录 [`docs/tool-catalog.md`](../../../docs/tool-catalog.md):18-50 的 Tool Package Map 为真源；bundle 档位的声明源是 `packages/boot/app-boot/src/profile.ts:223`（随装出货、默认关）与 `packages/boot/app-boot/src/official-bundle-packages.ts:4`（按需安装）；base 层的工具面示例见 `packages/bundle/base/cordis.patch.yml:486`；preset 的声明式 patch 在 `packages/bundle/web-app/presets/`（`standard` / `ptc` / `minimal` 等），seam 的 P/C 机械提取见生成目录 `docs/capability-seams.md:614` 起的服务表；工具目录的入口表头在 `docs/tool-catalog.md:12`；下表按 bundle patch 行推每 profile 的实际暴露。
-
-| profile | 暴露 |
+| 需求侧面 | 索引表 |
 |---|---|
-| **base**（headless / acp-app / sdk-app 原样继承） | `bash`/`pwsh` 平台门控（base:281-287）；`job_output/job_list/job_kill`（289-290）；`edit/read/read_image/write`（295-296）；`glob/grep`（298-299）；`skill`（314-315）；`working_directory`（169-170）；`todo_write`（437-438）；`create_goal/get_goal/update_goal`（444-445）；`subagent`＋`subagent_fork`＋`send_message/interrupt_agent/list_agents`（374-392）；`workflow`（405-406）；`web_search/web_fetch`（486-487）；MCP 资源 3 工具（492-493）。出厂关闭：`plugin_manager`（16-18）。**base 不产生 `run_code`**：`tools` 的 `mode` 默认 `native`，只有声明 `agent-tool-presentation mode: ptc` 的 preset 才把能力收进它 |
-| **web-app** | Host 面把上述 agent 工具行整体 disabled（web-app:482-585），改由每会话 preset 提供；preset 注册表 default=standard（590-594） |
-| **web 预设 standard（出厂默认）** | base 全集＋`ask_user_question`＋`present`＋`exit_plan_mode`＋`schedule_create/list/update/delete`；`plugin_manager` 与 `plugin_market` 行 disabled |
-| **web 预设 ptc** | 同 standard，但 `agent-tool-presentation mode: ptc` 把能力收进 `run_code` 绑定；`workflow` 关 |
-| **web 预设 minimal** | persona `complete: true`；`tool-fs` 收成只读 `read_image`；持久 `bash`/`pwsh`；compaction＋`/compact`；无 goal / web / subagent / skill / schedule |
-| **web 预设 cordis（creator）** | standard＋`cordis_inspect_list/query`＋`plugin_manager`、`plugin_market` 启用（`profileContext` 门控）＋creator skills 目录 |
-| **sdk-app** | base 全集＋`load_workspace_dependencies` 与 office skill（DSH_PRIMARY_RUNTIME 门控，sdk-app:30-41） |
-| **sdk-minimal** | 只读 `read_image`（44-50）＋`working_directory`（55-56）＋MCP 资源 3 工具（123-124）＋持久 `bash`/`pwsh`（140-166）＋compaction；无 goal / web / subagent / skill，也不产生 `run_code`（未挂 `agent-tool-presentation`） |
+| 核心 `ctx` 服务 | 3.1节 (99条全集) |
+| 模型工具暴露面 | 3.2节 (按 profile) |
+| Bundle 清单 | 3.3节 (组装定义) |
+| Preset 模式 | 3.4节 (四种模式) |
+| 技能组件 | 3.5节 (开发工具) |
 
-## 3.3 bundle 清单
+## 3.1 ctx 服务清单 (Watchpoints)
 
-| bundle | 说明 |
-|---|---|
-| `dsh-base` | 共享核心 patch 层，五个 launcher profile 里四个都叠它 |
-| `dsh-web-app` | 浏览器层＋`presets/` 四文件（insert 行明细见 [`runtime-profiles/01`](../../runtime-profiles/01-web.md)） |
-| `dsh-headless` | 一次性任务层，无 Host/HTTP/Web |
-| `dsh-acp-app` | ACP stdio 层 |
-| `dsh-sdk-app` | SDK stdio 层 |
-| `dsh-sdk-minimal` | 独立全树（不叠 base） |
-| OPTIONAL_BUNDLES ×12 | session-search、ralph-bundle、terminal-bundle、badge-skill-bundle、session-titles-bundle、agent-team-profile、voice-input-bundle、cot-translation-bundle、auto-review、inspector-profile、plugin-market-bundle、tool-worktree（profile.ts:223-236；Web 插件页一键开关） |
-| 官方按需安装 ×2 | `dsh-subagent-claude-code`、`dsh-subagent-codex`（`ON_DEMAND_BUNDLES`，`packages/boot/app-boot/src/official-bundle-packages.ts`）——与 OPTIONAL_BUNDLES 是两个档位：按需安装 vs 随装默认关 |
-| 显式安装 | 裸 `inspector` 插件包不在 OPTIONAL_BUNDLES 里（`scripts/optional-bundles.spec.ts:100-102`）；出货的那个 bundle 是 `inspector-profile` |
+*   **[Watchpoint]**：若 P:C 比率异常或 P=0，检查是否缺少 Provider 注册或该服务仅用于占位。
 
-profile→bundle 组装：acp=[base,acp-app]、web=[base,web-app]、headless=[base,headless]、sdk=[base,sdk-app]、sdk-minimal=[sdk-minimal]（profile.ts:179-195）；打包安装特有的 headless 变体 [base, web-app, headless]（:198-200）；`dsh plugin add` 初始化缺省 [base]（:213）。退役 bundle 记在 `RETIRED_BUNDLES`（现只有 `dsh-experimental-schedule-bundle`，其 schedule/ui-schedule 行已由 web-app 承担）。
+## 3.2 模型工具可见性
 
-## 3.4 preset 清单（四模式）
+不同 `profile` 暴露的工具集差异：
+*   **base**：默认全集。
+*   **web**：Host 端移除工具，按 Preset 重新编排。
+*   **minimal**：仅挂载最精简工具集。
 
-| preset | 自动的轴 |
-|---|---|
-| standard（1，出厂默认，web-app:590-594） | 全工具带＋workflows（workflow-ptc / tool-workflow 开）＋原生工具呈现 |
-| ptc（2） | **呈现轴**：`mode: ptc` → 能力收进 `run_code`；workflow 关 |
-| minimal（3） | **persona 轴**（`complete: true`＋`includeRuntimeContext: false`）＋**shell 轴**（持久 PTY bash/pwsh 替代一次性工具）＋只读 fs 面 |
-| cordis（4） | **creator 轴**：＋`cordis_inspect_*`、`plugin_manager`/`plugin_market` 工具、creator skills 目录（customSkillDirs 指向 dsh-agent-preset/skills） |
+## 3.3 交付单元 (Bundle)
 
-四模式逐行实差的机制解剖在 [`_faq_on_digested/03`](../../../_faq_on_digested/03_preset-modes-specialty/answer.md)。
+*   `dsh-base`：核心 patch 层。
+*   `dsh-web-app`：Web 交互层。
+*   `dsh-headless`：一次性任务。
 
-## 3.5 skills 清单（19 个）
-
-`.agents/skills/*/SKILL.md` 经 skill-filesystem 的项目根发现加载：
-
-| skill | 用途一句话 |
-|---|---|
-| agent-experience | 模型可见工具定义与上下文加载的信息可发现性设计 |
-| cordis-styling-nitpicking | Cordis 插件的单例状态、未撤销副作用与清理依赖审查 |
-| dsh-archive-agent-notes | Agent Notes 的增删归档审查 |
-| dsh-ci-test-reliability | 测试/夹具的 CI 非确定性设计与诊断 |
-| dsh-client-ui-ux | client 包 GUI 变更的设计与评审 |
-| dsh-code-review | 本仓库 PR 评审定向 |
-| dsh-create-upgrade-guide | 破坏性面变更的升级指南撰写 |
-| dsh-doc | 文档/README/网站创建审计迁移 |
-| dsh-error-handling | 失败、恢复、重试、后台任务与用户可见错误报告的写法 |
-| dsh-find-simplifications | 证据支撑的简化提案 |
-| dsh-merging-stacked-prs | 依赖 PR stack 的官方落地 |
-| dsh-official-plugin-artwork | 官方（含实验）插件图标与功能预览图 |
-| dsh-pre-push-checks | push 前最小检查集合选择 |
-| dsh-prose-standard | 仓库散文写作/评审/修剪标准 |
-| dsh-responsive-ui | 响应式 client 布局、截断、悬停与焦点行为 |
-| dsh-speed-up-perf | 性能调查与基准 |
-| dsh-translate-docs | 双语文档工作流（用户显式调用） |
-| dsh-trim-cot-leakage | 推理残留式散文清理 |
-| record-browser-gif | GUI PR 的 GIF 证据录制 |
-
-creator 预设经 customSkillDirs 追加 dsh-agent-preset/skills 的 4 个 skill；skill-office 的 3 个 Office skill 与 sandbox-windows-acl 的 1 个诊断 skill 是资产形态（各包 assets/）。
+> [!NOTE]
+> 查看 `catalog.json` 获取最新的包数与覆盖状态。
