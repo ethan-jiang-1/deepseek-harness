@@ -1,47 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 550" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <defs>
-    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
-  </defs>
-  <rect width="960" height="550" fill="#fafafa" rx="6"/>
-  <text x="480" y="26" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2937">一次 dsh --profile 怎么变成一棵活树</text>
-  <text x="480" y="46" text-anchor="middle" font-size="11" fill="#6b7280">apps/cli/src/profile-boot.ts runProfile · packages/boot/app-boot/src/index.ts boot()</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="monospace" font-size="11">
+  <rect width="960" height="400" fill="#fafafa" rx="4"/>
+  <text x="480" y="20" text-anchor="middle" font-weight="700" font-size="14">Boot Sequence: RunProfile -> Boot()</text>
 
-  <rect x="40" y="64" width="280" height="200" rx="10" fill="#dcfce7" stroke="#86efac"/>
-  <text x="180" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">1. prepareProfile</text>
-  <text x="56" y="118" font-size="11" fill="#15803d">loadProfile（缺模板则 init）</text>
-  <text x="56" y="136" font-size="11" fill="#15803d">重写 profiles/&lt;name&gt;/cordis.yml</text>
-  <text x="56" y="154" font-size="11" fill="#15803d">成空列表 []</text>
-  <text x="56" y="182" font-size="11" fill="#14532d">Watcher: 是否覆盖旧root?</text>
+  <!-- 阶段 1 -->
+  <rect x="20" y="40" width="280" height="340" fill="#f0fdf4" stroke="#22c55e" rx="4"/>
+  <text x="30" y="60" font-weight="700" fill="#166534">1. prepareProfile</text>
+  <text x="30" y="80" fill="#15803d">Target: profiles/&lt;name&gt;/cordis.yml</text>
+  <text x="30" y="100" fill="#15803d">Action: writeFileSync([])</text>
+  <text x="30" y="120" fill="#14532d">Entry: loadProfileDirectory</text>
+  <text x="30" y="140" fill="#14532d">Path: apps/cli/src/profile-boot.ts</text>
+  <text x="30" y="160" fill="red" font-weight="700">W: 是否被旧root覆盖?</text>
 
-  <line x1="320" y1="164" x2="358" y2="164" stroke="#4b5563" marker-end="url(#arr)"/>
+  <!-- 阶段 2 -->
+  <rect x="340" y="40" width="280" height="340" fill="#eff6ff" stroke="#3b82f6" rx="4"/>
+  <text x="350" y="60" font-weight="700" fill="#1e40af">2. composeProfile</text>
+  <text x="350" y="80" fill="#2563eb">Sequence: Bundle -> Profile -> Home -> Argv</text>
+  <text x="350" y="100" fill="#1e40af">Apply: applyEntryPatches()</text>
+  <text x="350" y="120" fill="#2563eb">Telemetry: DSH_TELEMETRY_DISABLED</text>
+  <text x="350" y="140" fill="#1e3a8a" font-weight="700">W: 冲突覆盖策略: ID匹配?</text>
 
-  <rect x="360" y="64" width="280" height="200" rx="10" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="500" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#1e40af">2. composeProfile</text>
-  <text x="376" y="118" font-size="11" fill="#2563eb">removeLinkProjections</text>
-  <text x="376" y="136" font-size="11" fill="#1e40af">bundle patches（声明顺序）</text>
-  <text x="376" y="154" font-size="11" fill="#2563eb">+ profile cordis.patch.yml</text>
-  <text x="376" y="172" font-size="11" fill="#2563eb">+ home cordis.patch.yml</text>
-  <text x="376" y="190" font-size="11" fill="#2563eb">+ --patch 文件</text>
-  <text x="376" y="218" font-size="11" fill="#1e3a8a">Watcher: 冲突覆盖策略?</text>
+  <!-- 阶段 3 -->
+  <rect x="660" y="40" width="280" height="340" fill="#fff7ed" stroke="#f97316" rx="4"/>
+  <text x="670" y="60" font-weight="700" fill="#9a3412">3. boot()</text>
+  <text x="670" y="80" fill="#c2410c">Ctx: provide('dshHomePath')</text>
+  <text x="670" y="100" fill="#c2410c">Loader: mountRootInclude()</text>
+  <text x="670" y="120" fill="#c2410c">Audit: auditStartupEntries()</text>
+  <text x="670" y="140" fill="#7c2d12" font-weight="700">W: Fiber 状态 (Active/Failed?)</text>
+  <text x="670" y="160" fill="#7c2d12">Stage: plugin tree failed to load</text>
 
-  <line x1="640" y1="164" x2="678" y2="164" stroke="#4b5563" marker-end="url(#arr)"/>
-
-  <rect x="680" y="64" width="240" height="200" rx="10" fill="#fff7ed" stroke="#fdba74"/>
-  <text x="800" y="92" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">3. boot()</text>
-  <text x="696" y="118" font-size="11" fill="#9a3412">new Context</text>
-  <text x="696" y="136" font-size="11" fill="#c2410c">provide dshHomePath</text>
-  <text x="696" y="154" font-size="11" fill="#c2410c">plugin(Loader)</text>
-  <text x="696" y="172" font-size="11" fill="#c2410c">prepare</text>
-  <text x="696" y="190" font-size="11" fill="#c2410c">mountRootInclude</text>
-  <text x="696" y="208" font-size="11" fill="#c2410c">loader.await()</text>
-  <text x="696" y="226" font-size="11" fill="#c2410c">auditStartupEntries</text>
-  <text x="696" y="248" font-size="11" fill="#7c2d12">Watcher: Fiber状态?</text>
-
-  <rect x="40" y="288" width="880" height="220" rx="10" fill="#f8fafc" stroke="#e2e8f0"/>
-  <text x="60" y="316" font-size="13" font-weight="700" fill="#111827">两段失败标签</text>
-  <text x="60" y="340" font-size="12" fill="#374151">1. prepare 之前：host preparation failed。</text>
-  <text x="60" y="362" font-size="12" fill="#374151">2. mountRootInclude 之后：plugin tree failed to load。</text>
-  <text x="60" y="390" font-size="12" fill="#374151">Watcher: 最深 cause stack追踪?</text>
-  <text x="60" y="420" font-size="12" fill="#374151">auditStartupEntries：disabled 跳过；FAILED 等原错误保留；PENDING 点名。</text>
-  <text x="60" y="450" font-size="12" fill="#374151">Loader 失败：dispose 树后抛异常。</text>
 </svg>

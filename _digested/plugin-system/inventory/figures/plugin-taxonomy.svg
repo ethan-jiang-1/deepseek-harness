@@ -1,24 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="system-ui" font-size="12">
-  <rect width="600" height="400" fill="#ffffff" rx="6"/>
-  <text x="300" y="30" text-anchor="middle" font-weight="700">DSH 插件能力组装漏斗</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="monospace" font-size="11">
+  <rect width="800" height="500" fill="#ffffff" rx="4"/>
+  <text x="400" y="20" text-anchor="middle" font-weight="700" font-size="14">Plugin Taxonomy &amp; Design Decisions</text>
 
-  <rect x="150" y="60" width="300" height="80" fill="#dcfce7" stroke="#86efac" rx="6"/>
-  <text x="300" y="100" text-anchor="middle" font-weight="700">1. Bundle (打包)</text>
-  <text x="300" y="120" text-anchor="middle" font-size="11">出厂单位，代码仓库资产</text>
+  <rect x="20" y="40" width="240" height="400" fill="#fef2f2" stroke="#ef4444" rx="4"/>
+  <text x="30" y="60" font-weight="700">Service Roles (4)</text>
+  <text x="30" y="80">Def: 接口声明(Runtime)</text>
+  <text x="30" y="100">Impl: Provider 实现</text>
+  <text x="30" y="120">Tool: 模型工具注册</text>
+  <text x="30" y="140">cmd: 人类控制命令</text>
 
-  <path d="M 300 140 L 300 170" stroke="#666" marker-end="url(#arr)"/>
+  <rect x="280" y="40" width="240" height="400" fill="#eff6ff" stroke="#3b82f6" rx="4"/>
+  <text x="290" y="60" font-weight="700">Implementation Forms (9)</text>
+  <text x="290" y="80">Def, Impl, Tool, cmd</text>
+  <text x="290" y="100">UI, adapter, bundle, lib, driver</text>
+  <text x="290" y="350" fill="red" font-weight="700">W: 职责是否内聚?</text>
 
-  <rect x="150" y="180" width="300" height="80" fill="#dbeafe" stroke="#93c5fd" rx="6"/>
-  <text x="300" y="220" text-anchor="middle" font-weight="700">2. Profile (组装)</text>
-  <text x="300" y="240" text-anchor="middle" font-size="11">配置层叠，应用形态 (web/sdk)</text>
-
-  <path d="M 300 260 L 300 290" stroke="#666" marker-end="url(#arr)"/>
-
-  <rect x="150" y="300" width="300" height="80" fill="#fff7ed" stroke="#fbbf24" rx="6"/>
-  <text x="300" y="340" text-anchor="middle" font-weight="700">3. Preset (模式)</text>
-  <text x="300" y="360" text-anchor="middle" font-size="11">会话级声明 (standard/ptc/cordis)</text>
-
-  <defs>
-    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#666"/></marker>
-  </defs>
+  <rect x="540" y="40" width="240" height="400" fill="#fef9c3" stroke="#eab308" rx="4"/>
+  <text x="550" y="60" font-weight="700">Visibility/Maturity</text>
+  <text x="550" y="80">Base (出厂默认)</text>
+  <text x="550" y="100">Opt (安装即用，默认关)</text>
+  <text x="550" y="120">On-demand (按需安装)</text>
+  <text x="550" y="350" fill="red" font-weight="700">W: 门控表达式正确?</text>
 </svg>

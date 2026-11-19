@@ -1,25 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 400" font-family="system-ui" font-size="12">
-  <rect width="700" height="400" fill="#fafafa" rx="6"/>
-  <text x="350" y="30" text-anchor="middle" font-weight="700">Harness Home &amp; Profile 管理</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="monospace" font-size="11">
+  <rect width="800" height="400" fill="#fafafa" rx="4"/>
+  <text x="400" y="20" text-anchor="middle" font-weight="700" font-size="14">Profile Home Structure</text>
 
-  <rect x="50" y="70" width="200" height="250" fill="#fff" stroke="#333"/>
-  <text x="150" y="90" text-anchor="middle" font-weight="700">Harness Home (~/.dsh)</text>
-  <text x="70" y="120">profiles/</text>
-  <text x="80" y="140">  - desktop (reserved)</text>
-  <text x="80" y="160">  - web (shipped)</text>
-  <text x="80" y="180">  - custom/</text>
+  <rect x="20" y="40" width="300" height="340" fill="#fff" stroke="#333" rx="4"/>
+  <text x="30" y="60" font-weight="700">Harness Home (~/.dsh)</text>
+  <text x="30" y="80">/profiles/&lt;name&gt;/</text>
+  <text x="40" y="100"> - package.json (manifest)</text>
+  <text x="40" y="120"> - cordis.patch.yml (用户层)</text>
+  <text x="40" y="140"> - cordis.yml (root - 自动覆盖)</text>
+  <text x="30" y="180">/staging/ (原子替换空间)</text>
 
-  <rect x="350" y="70" width="250" height="250" fill="#e0f2fe" stroke="#0284c7"/>
-  <text x="475" y="90" text-anchor="middle" font-weight="700">创建流</text>
-  <text x="370" y="120">1. Template copy</text>
-  <text x="370" y="140">2. Staging (原子切换)</text>
-  <text x="370" y="160">3. initProfile()</text>
-
-  <circle cx="475" cy="200" r="10" fill="red"/>
-  <text x="475" y="230" text-anchor="middle" font-size="11">Watcher: 原子替换一致性?</text>
-
-  <line x1="250" y1="195" x2="350" y2="195" stroke="#666" marker-end="url(#arr)"/>
-  <defs>
-    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#666"/></marker>
-  </defs>
+  <rect x="350" y="40" width="400" height="340" fill="#eff6ff" stroke="#3b82f6" rx="4"/>
+  <text x="360" y="60" font-weight="700">Initialization Workflow</text>
+  <text x="360" y="90">1. Template Copy (Init)</text>
+  <text x="360" y="110">2. Staging Atomic Swap</text>
+  <text x="360" y="130">3. initProfile() 清理</text>
+  <text x="360" y="250" fill="red" font-weight="700">W: 并发重建冲突检测?</text>
+  <text x="360" y="270" fill="red" font-weight="700">W: Staging 目录清理失败?</text>
 </svg>

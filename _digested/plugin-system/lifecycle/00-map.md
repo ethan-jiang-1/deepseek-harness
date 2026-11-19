@@ -20,13 +20,13 @@
 
 | # | 段 | 这一段结束后不可逆的东西 | 正文 | 深挖入口（机制在别的专题） |
 |---|----|--------------------------|------|------------------------------|
-| ① | **打包** | 包发布后 `name@version` 固定，作者改不了用户机器上的那一份 | [`01-打包.md`](./01-打包.md) | [`inventory/05`](../inventory/05-taxonomy-and-design.md) 的形态分类 |
-| ② | **分发** | 包已在机器上，但还没有任何 profile 引用它 | [`02-分发.md`](./02-分发.md) | — |
-| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-安装.md`](./03-安装.md) | [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-五条原语对照源码.md) 的 fiber 与 inject |
-| ④ | **启动** | 行被挂进活树，`ctx` 服务开始对外提供 | [`04-启动.md`](./04-启动.md) | [`composition/05`](../composition/05-启动窗口与首屏交接.md) 的启动窗口与首屏交接 |
-| ⑤ | **特殊初始化** | 只跑一次的导入或版本戳写入完成，旧状态被改名、被接受或被拒绝 | [`05-特殊初始化.md`](./05-特殊初始化.md) | [`session-and-loop/04`](../../session-and-loop/04-格式世代与迁移.md) 的格式世代 |
-| ⑥ | **更新与启停** | 选择列表顺序改变，配置优先级随之改变 | [`06-更新与启停.md`](./06-更新与启停.md) | [`composition/03`](../composition/03-user-patch-hmr.md) 的 HMR 事务 |
-| ⑦ | **卸载** | 代码与 patch 层消失，数据留下 | [`07-卸载与数据留存.md`](./07-卸载与数据留存.md) | — |
+| ① | **打包** | 包发布后 `name@version` 固定，作者改不了用户机器上的那一份 | [`01-packaging.md`](./01-packaging.md) | [`inventory/05`](../inventory/05-taxonomy-and-design.md) 的形态分类 |
+| ② | **分发** | 包已在机器上，但还没有任何 profile 引用它 | [`02-distribution.md`](./02-distribution.md) | — |
+| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-installation.md`](./03-installation.md) | [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-五条原语对照源码.md) 的 fiber 与 inject |
+| ④ | **启动** | 行被挂进活树，`ctx` 服务开始对外提供 | [`04-startup.md`](./04-startup.md) | [`composition/05`](../composition/05-startup-window-and-first-screen-handoff.md) 的启动窗口与首屏交接 |
+| ⑤ | **特殊初始化** | 只跑一次的导入或版本戳写入完成，旧状态被改名、被接受或被拒绝 | [`05-special-initialization.md`](./05-special-initialization.md) | [`session-and-loop/04`](../../session-and-loop/04-格式世代与迁移.md) 的格式世代 |
+| ⑥ | **更新与启停** | 选择列表顺序改变，配置优先级随之改变 | [`06-update-and-stop.md`](./06-update-and-stop.md) | [`composition/03`](../composition/03-user-patch-hmr.md) 的 HMR 事务 |
+| ⑦ | **卸载** | 代码与 patch 层消失，数据留下 | [`07-uninstallation-and-retention.md`](./07-uninstallation-and-retention.md) | — |
 
 这张表是**时间轴**；「深挖入口」一列是**结构轴**上的专题。两者不合并：时间轴回答「什么时候做什么」，结构轴回答「它到底怎么实现」。当某一段的机制正文超过三页时，那一段才值得在 `lifecycle/` 下开子目录；在那之前，深挖留在原专题，避免把两种轴混成一个目录。
 
@@ -80,15 +80,15 @@
 
 ## 阅读路径
 
-- 想知道「我写的包怎么变成用户机器上的一行插件」→ [`01`](./01-打包.md) → [`02`](./02-分发.md) → [`03`](./03-安装.md)
-- 想知道「装坏了会怎样、会不会把进程打死」→ [`04`](./04-启动.md) 的失败矩阵，再看 [`03`](./03-安装.md) 的失败表
-- 想知道「升级 DSH 之后插件的旧数据还认不认」→ [`05`](./05-特殊初始化.md) → [`07`](./07-卸载与数据留存.md)
-- 想知道「为什么在 Plugins 页点一下，配置就变了」→ [`03`](./03-安装.md) → [`06`](./06-更新与启停.md)
-- 想知道「没有 first-run 钩子时，首启该怎么做」→ [`08`](./08-首启与产品初始化.md)
-- 想知道「这个配置值该写在哪一层」→ [`09`](./09-配置与设置面.md)
-- 想知道「从零到跑起来最短要几步」→ [`12`](./12-从零到一个能跑的插件.md)
-- 想知道「插件没生效到底卡在哪」→ [`10`](./10-诊断地图.md)
-- 想知道「谁能在哪执行代码、sandbox 到底管不管插件」→ [`11`](./11-信任与执行边界.md)
+- 想知道「我写的包怎么变成用户机器上的一行插件」→ [`01-packaging.md`](./01-packaging.md) → [`02-distribution.md`](./02-distribution.md) → [`03-installation.md`](./03-installation.md)
+- 想知道「装坏了会怎样、会不会把进程打死」→ [`04-startup.md`](./04-startup.md) 的失败矩阵，再看 [`03-installation.md`](./03-installation.md) 的失败表
+- 想知道「升级 DSH 之后插件的旧数据还认不认」→ [`05-special-initialization.md`](./05-special-initialization.md) → [`07-uninstallation-and-retention.md`](./07-uninstallation-and-retention.md)
+- 想知道「为什么在 Plugins 页点一下，配置就变了」→ [`03-installation.md`](./03-installation.md) → [`06-update-and-stop.md`](./06-update-and-stop.md)
+- 想知道「没有 first-run 钩子时，首启该怎么做」→ [`08-first-run-initialization.md`](./08-first-run-initialization.md)
+- 想知道「这个配置值该写在哪一层」→ [`09-configuration-and-settings.md`](./09-configuration-and-settings.md)
+- 想知道「从零到跑起来最短要几步」→ [`12-minimal-plugin-bootstrapping.md`](./12-minimal-plugin-bootstrapping.md)
+- 想知道「插件没生效到底卡在哪」→ [`10-diagnostic-map.md`](./10-diagnostic-map.md)
+- 想知道「谁能在哪执行代码、sandbox 到底管不管插件」→ [`11-trust-and-execution-boundaries.md`](./11-trust-and-execution-boundaries.md)
 
 ## 源码入口
 

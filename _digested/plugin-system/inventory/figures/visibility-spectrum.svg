@@ -1,24 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="system-ui" font-size="12">
-  <rect width="600" height="400" fill="#ffffff" rx="6"/>
-  <text x="300" y="30" text-anchor="middle" font-weight="700">DSH 插件能力组装漏斗</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" font-family="monospace" font-size="11">
+  <rect width="800" height="200" fill="#fafafa" rx="4"/>
+  <text x="400" y="20" text-anchor="middle" font-weight="700" font-size="14">Visibility Spectrum</text>
 
-  <rect x="150" y="60" width="300" height="80" fill="#dcfce7" stroke="#86efac" rx="6"/>
-  <text x="300" y="100" text-anchor="middle" font-weight="700">1. Bundle (打包)</text>
-  <text x="300" y="120" text-anchor="middle" font-size="11">出厂单位，代码仓库资产</text>
+  <rect x="50" y="60" width="200" height="100" fill="#dcfce7" stroke="#166534" rx="4"/>
+  <text x="60" y="80" font-weight="700">Base (出厂默认)</text>
+  <text x="60" y="100">Visible: 所有 launcher</text>
 
-  <path d="M 300 140 L 300 170" stroke="#666" marker-end="url(#arr)"/>
+  <rect x="300" y="60" width="200" height="100" fill="#fff7ed" stroke="#9a3412" rx="4"/>
+  <text x="310" y="80" font-weight="700">Optional (Opt-in)</text>
+  <text x="310" y="100">Action: 安装即用, 默认关</text>
 
-  <rect x="150" y="180" width="300" height="80" fill="#dbeafe" stroke="#93c5fd" rx="6"/>
-  <text x="300" y="220" text-anchor="middle" font-weight="700">2. Profile (组装)</text>
-  <text x="300" y="240" text-anchor="middle" font-size="11">配置层叠，应用形态 (web/sdk)</text>
+  <rect x="550" y="60" width="200" height="100" fill="#fef2f2" stroke="#991b1b" rx="4"/>
+  <text x="560" y="80" font-weight="700">On-demand (按需)</text>
+  <text x="560" y="100">Action: 运行时自动下载</text>
 
-  <path d="M 300 260 L 300 290" stroke="#666" marker-end="url(#arr)"/>
-
-  <rect x="150" y="300" width="300" height="80" fill="#fff7ed" stroke="#fbbf24" rx="6"/>
-  <text x="300" y="340" text-anchor="middle" font-weight="700">3. Preset (模式)</text>
-  <text x="300" y="360" text-anchor="middle" font-size="11">会话级声明 (standard/ptc/cordis)</text>
-
-  <defs>
-    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#666"/></marker>
-  </defs>
+  <text x="50" y="180" fill="red" font-weight="700">W: 门控逻辑是否准确?</text>
 </svg>

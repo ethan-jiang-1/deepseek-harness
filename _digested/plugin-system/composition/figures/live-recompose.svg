@@ -1,24 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" font-family="system-ui" font-size="12">
-  <rect width="600" height="300" fill="#fafafa" rx="6"/>
-  <text x="300" y="30" text-anchor="middle" font-weight="700">热更新流：只换用户补丁层</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="monospace" font-size="11">
+  <rect width="800" height="300" fill="#fafafa" rx="4"/>
+  <text x="400" y="20" text-anchor="middle" font-weight="700" font-size="14">HMR: 原子重组合流</text>
 
-  <rect x="50" y="60" width="150" height="150" fill="#fef3c7" stroke="#fbbf24"/>
-  <text x="125" y="100" text-anchor="middle">磁盘文件</text>
-  <text x="125" y="120" text-anchor="middle" font-size="11">(patch 变化)</text>
+  <rect x="20" y="50" width="200" height="200" fill="#fef3c7" stroke="#fbbf24" rx="4"/>
+  <text x="30" y="70" font-weight="700">File Watcher</text>
+  <text x="30" y="90">Patches: .patch.yml</text>
+  <text x="30" y="110">Manifest: package.json</text>
 
-  <line x1="200" y1="135" x2="250" y2="135" stroke="#666" marker-end="url(#arr)"/>
+  <line x1="230" y1="150" x2="280" y2="150" stroke="#666" marker-end="url(#arr)"/>
 
-  <rect x="250" y="60" width="150" height="150" fill="#dcfce7" stroke="#86efac"/>
-  <text x="325" y="120" text-anchor="middle">hmr 插件</text>
-  <text x="325" y="140" text-anchor="middle" font-size="11">reconcileProfile()</text>
-  <text x="325" y="250" font-size="11" fill="red">Watcher: 原子切换锁定?</text>
+  <rect x="290" y="50" width="200" height="200" fill="#dcfce7" stroke="#22c55e" rx="4"/>
+  <text x="300" y="70" font-weight="700">HMR Service</text>
+  <text x="300" y="90">reconcileProfile()</text>
+  <text x="300" y="110">SerialQueue: 排队重算</text>
+  <text x="300" y="180" fill="red" font-weight="700">W: 竞态锁定超时?</text>
 
-  <line x1="400" y1="135" x2="450" y2="135" stroke="#666" marker-end="url(#arr)"/>
+  <line x1="500" y1="150" x2="550" y2="150" stroke="#666" marker-end="url(#arr)"/>
 
-  <rect x="450" y="60" width="100" height="150" fill="#dbeafe" stroke="#93c5fd"/>
-  <text x="500" y="130" text-anchor="middle">活着的树</text>
+  <rect x="560" y="50" width="200" height="200" fill="#dbeafe" stroke="#3b82f6" rx="4"/>
+  <text x="570" y="70" font-weight="700">Active Tree</text>
+  <text x="570" y="90">recomposeProfile()</text>
+  <text x="570" y="110">Result: 原子换入</text>
+  <text x="570" y="160" fill="red" font-weight="700">W: 上一棵树回滚?</text>
 
   <defs>
-    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4b5563"/></marker>
+    <marker id="arr" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4 Z" fill="#666"/></marker>
   </defs>
 </svg>

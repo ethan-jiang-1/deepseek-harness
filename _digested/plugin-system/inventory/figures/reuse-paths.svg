@@ -1,24 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" font-family="system-ui" font-size="12">
-  <rect width="600" height="400" fill="#ffffff" rx="6"/>
-  <text x="300" y="30" text-anchor="middle" font-weight="700">DSH 插件能力组装漏斗</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" font-family="monospace" font-size="11">
+  <rect width="800" height="400" fill="#fafafa" rx="4"/>
+  <text x="400" y="20" text-anchor="middle" font-weight="700" font-size="14">Reuse Decision Tree</text>
 
-  <rect x="150" y="60" width="300" height="80" fill="#dcfce7" stroke="#86efac" rx="6"/>
-  <text x="300" y="100" text-anchor="middle" font-weight="700">1. Bundle (打包)</text>
-  <text x="300" y="120" text-anchor="middle" font-size="11">出厂单位，代码仓库资产</text>
+  <rect x="20" y="50" width="180" height="300" fill="#fff" stroke="#333" rx="4"/>
+  <text x="30" y="70" font-weight="700">1. 配置调整</text>
+  <text x="30" y="90">ENV / YAML PATCH</text>
+  <text x="30" y="110">成本: 最低</text>
 
-  <path d="M 300 140 L 300 170" stroke="#666" marker-end="url(#arr)"/>
+  <rect x="220" y="50" width="180" height="300" fill="#fff" stroke="#333" rx="4"/>
+  <text x="230" y="70" font-weight="700">2. Provider 替换</text>
+  <text x="230" y="90">Disable + Insert</text>
+  <text x="230" y="110">成本: 低</text>
+  <text x="230" y="130" fill="red" font-weight="700">W: 索引覆盖冲突?</text>
 
-  <rect x="150" y="180" width="300" height="80" fill="#dbeafe" stroke="#93c5fd" rx="6"/>
-  <text x="300" y="220" text-anchor="middle" font-weight="700">2. Profile (组装)</text>
-  <text x="300" y="240" text-anchor="middle" font-size="11">配置层叠，应用形态 (web/sdk)</text>
+  <rect x="420" y="50" width="180" height="300" fill="#fff" stroke="#333" rx="4"/>
+  <text x="430" y="70" font-weight="700">3. 挂现成包</text>
+  <text x="430" y="90">dsh plugin add</text>
+  <text x="430" y="110">成本: 中</text>
 
-  <path d="M 300 260 L 300 290" stroke="#666" marker-end="url(#arr)"/>
-
-  <rect x="150" y="300" width="300" height="80" fill="#fff7ed" stroke="#fbbf24" rx="6"/>
-  <text x="300" y="340" text-anchor="middle" font-weight="700">3. Preset (模式)</text>
-  <text x="300" y="360" text-anchor="middle" font-size="11">会话级声明 (standard/ptc/cordis)</text>
-
-  <defs>
-    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#666"/></marker>
-  </defs>
+  <rect x="620" y="50" width="160" height="300" fill="#fff" stroke="#333" rx="4"/>
+  <text x="630" y="70" font-weight="700">4. 自写胶水</text>
+  <text x="630" y="90">Consumer 逻辑</text>
+  <text x="630" y="110">成本: 最高</text>
+  <text x="630" y="250" fill="red" font-weight="700">W: 违背分装纪律?</text>
 </svg>
