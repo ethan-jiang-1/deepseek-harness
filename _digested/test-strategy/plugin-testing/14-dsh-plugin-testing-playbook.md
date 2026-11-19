@@ -1,3 +1,21 @@
+# 14-dsh-plugin-testing-playbook.md: 插件测试实战组合
+
+## 概念 (Concept)
+插件的测试不仅仅是单元测试，它是五级证据台阶的组合。本篇解剖真实插件的测试套件结构。
+
+![插件证据阶梯](./figures/plugin-evidence-ladder.svg)
+
+## 背后思考 (Insight)
+*   **证据分层**：插件的核心价值在于与宿主容器（Cordis）的集成。
+*   **组装验证**：只有真实启动插件的 `composition` 测试，才能证明其在发布形态下的正确性。
+
+## 工程实践推荐 (Practice)
+*   **五级台阶**：从 L0（单测）到 L4（发布冒烟），严格遵循每一层的契约。
+
+## 参考 (Reference)
+*   [插件测试政策](./13-dsh-plugin-testing-policy.md)
+*   [插件仓契约](./15-dsh-plugin-testing-contract.md)
+
 # 14 — 插件测试实战：五个真实插件的测试组合解剖
 
 > 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[13](./13-plugin-testing.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录）与名词表，本篇按五个插件类型各解剖一套真实组合——每节给关键代码摘录与"移植到你的插件"一句。核验点见 [`catalog.json`](../catalog.json)。

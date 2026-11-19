@@ -79,6 +79,7 @@ _faq_on_digested/
 | 27 | [Agent 跑到一半，该调 `subagent`、`workflow`、`PTC`、`goal` 还是 `agent-team`？运行时编排怎么选？](./27_runtime-orchestration-choice/question.md) | [运行时编排选型手册：先切开会话前环境装配与会话中模型选工具两层主体，再用一张全候选对比表走通五个实战岔口、正交叠用模式与异常/迁移排障](./27_runtime-orchestration-choice/answer.md) |
 | 28 | [常听人说“打个探针看一眼”，探针是 DSH 的内置机制，还是一套排障工作法？](./28_probe-usage-and-origin/question.md) | [探针实证工作法：厘清源码同名 `probe` 自检函数与围绕会话日志取证的工作法，结合 `system/message` / `request/header` 分离等细节拆解 4 个主仓真实探针实例与防自欺铁律](./28_probe-usage-and-origin/answer.md) |
 | 29 | [`keyless` 在 DSH 测试体系里到底按什么判据界定？它能证明什么、证不了什么？](./29_keyless-meaning-boundaries/question.md) | [`keyless` 唯一判据与边界：只看单次运行有没向真实模型服务商发请求（塞 `*-no-call` 假 Key、跑 `refresh` 写盘都算 `keyless`），解析 `record + replay` 如何破除组装盲区及五档测试证据上限](./29_keyless-meaning-boundaries/answer.md) |
+| 30 | [Schemastery 是什么？它在 DSH 插件系统中起什么作用？](./30_schemastery-basics/question.md) | [Schemastery：DSH 声明式模式定义与边界校验基石：统一配置校验、类型强制修整与插件边界安全校验](./30_schemastery-basics/answer.md) |
 
 ### 历史编号演进说明
 

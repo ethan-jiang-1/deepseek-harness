@@ -1,3 +1,22 @@
+# 13-dsh-plugin-testing-policy.md: 插件测试政策
+
+## 概念 (Concept)
+DSH 插件测试不仅是业务校验，更是**生产环境集成验证**。插件作者必须遵循五级台阶模型，将导出守卫、行为 spec、生命周期、REAL composition 和组装转录串联起来。
+
+![插件证据阶梯](./figures/plugin-evidence-ladder.svg)
+
+## 背后思考 (Insight)
+*   **发布即组装**：插件的生产环境行为（包括注入、装配）在非发布形态下往往是不可见的，必须通过 REAL composition 测试来显性化。
+*   **导出即约束**：导出的类型形态是 Cordis 框架加载的关键契约，必须通过“导出守卫”强制保护。
+
+## 工程实践推荐 (Practice)
+*   **五级台阶**：从 L0（单测）到 L4（发布冒烟），严格遵循每一层的契约。
+*   **严格遵循“五步走”**：导出形态守卫 → 行为 spec → 注册表生命周期 → REAL composition → 组装转录。
+
+## 参考 (Reference)
+*   [插件测试 playbook](./14-dsh-plugin-testing-playbook.md)
+*   [插件仓契约](./15-dsh-plugin-testing-contract.md)
+
 # 13 — 插件测试策略：政策对一个新插件的要求
 
 > 本篇面向**插件作者**：DSH 出厂自带的包、`ctx` 服务与工具包数量以 [`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) 和 [`claims.json`](../harness-idea/claims.json) 的指标为准（工具包数取 `docs/tool-catalog.md` 的 Tool Package Map 行数）；本篇实测另统计两个与测试面相关的数：以 named export 形态导出 `inject` 的包（口径：`packages/*/*/src/index.ts` 含 `export const inject`）、client `ui-*` 包（`packages/client/ui-*`，不含 `extensions/ui-cordis`）——它们全部按同一套测试要求受审。数量随版本变化，复测命令见 [`02`](./02-tiers.md) 与 [`09`](./09-infrastructure.md)。[`plugin-system/inventory/`](../plugin-system/inventory/00-map.md) 讲"货架上有什么、九形态 × 四 role 怎么分"；本篇讲"你写一个新插件，测试面怎么摆"。政策教义见 [01](./01-doctrine.md)，分层与车道见 [02](./02-tiers.md)。

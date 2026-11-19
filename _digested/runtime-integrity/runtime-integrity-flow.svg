@@ -1,0 +1,30 @@
+<svg width="600" height="300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- Boxes -->
+  <rect x="50" y="50" width="150" height="50" rx="5" fill="#e1f5fe" stroke="#0277bd" />
+  <text x="125" y="80" text-anchor="middle" font-size="14">用户配置 (YAML)</text>
+
+  <rect x="250" y="50" width="150" height="50" rx="5" fill="#fff3e0" stroke="#ef6c00" />
+  <text x="325" y="80" text-anchor="middle" font-size="14">Schemastery Schema</text>
+
+  <rect x="450" y="150" width="120" height="50" rx="5" fill="#e8f5e9" stroke="#2e7d32" />
+  <text x="510" y="180" text-anchor="middle" font-size="14">插件运行</text>
+
+  <rect x="250" y="150" width="150" height="50" rx="5" fill="#fce4ec" stroke="#c2185b" />
+  <text x="325" y="180" text-anchor="middle" font-size="14">运行时安检员 (Validator)</text>
+
+  <!-- Arrows -->
+  <path d="M 200 75 L 240 75" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 325 100 L 325 140" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <path d="M 400 175 L 440 175" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Labels -->
+  <text x="330" y="125" text-anchor="start" font-size="12" fill="#d32f2f">校验 &amp; Coercion</text>
+  <text x="50" y="130" font-size="12" fill="#555">Fail-Fast:</text>
+  <text x="50" y="145" font-size="12" fill="#555">不符则拒绝启动</text>
+</svg>
