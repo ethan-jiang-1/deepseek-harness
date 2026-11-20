@@ -38,6 +38,7 @@
 | 27 运行时编排 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03`；`PTC`、`subagent`、`workflow`、`agent-team`、`goal`/`ralph`、`jobs`/`schedule` 契约按 rc.5 核 |
 | 28 探针工作法 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..02` + `reference`；4 个主仓夹具实例按 rc.5 实测核对，外仓 `probes/` 读数为 2026-11-10 本机清点 |
 | 29 keyless 边界 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..02`；唯一判据、哨兵假 Key、`refresh` 语义与五档测试证据按 rc.5 核 |
+| 30 Schemastery 与质量实践 | `dsh-v0.2.1-rc.5` | reverified | 2026-11-20 对照本地实现、调用者和测试重写；相关产品源码与本基线无差异；覆盖解析语义、Standard Schema、volatile、设置/投影/目录及主仓质量措施的范围与局限，实验和测试记录见专题研究页 |
 
 ## 版本号能写在哪
 
