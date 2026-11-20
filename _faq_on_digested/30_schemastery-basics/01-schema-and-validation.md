@@ -1,5 +1,9 @@
 # 01 · Schema 的结构与解析语义
 
+## 本篇解决什么问题
+
+本篇供编写 Config 时查阅：确认 schema 实际接受什么、返回什么、是否改写输入。这里的“解析”包括校验、填默认值和转换；不等于读取 YAML，也不保证纯函数。工具调用 JSON Schema 的经验可以帮助理解数据约束，但具体空值、分支与未知字段语义需要重新核对。
+
 ## 从一个可调用声明开始
 
 Schemastery schema 同时具有执行能力和可读取结构。它调用解析器检查数据，又保留字段和元数据，供 DSH 的其他组件读取。本篇只看库本身：把未经处理的输入称为 raw 值，把校验、默认填充或转换后的结果称为解析值；二者不一定相同，解析也不一定保持输入不变。
@@ -27,6 +31,8 @@ Config({ endpoint: 'https://example.com', retries: '5' })
 Config({ retries: 2 })
 // 抛出 ValidationError：endpoint 缺少必填值。
 ```
+
+上例只是一份库用法演示，`endpoint` 并非本篇新建的 DSH 插件配置。逐段读 `retries`：`number()` 检查数字，`step(1)` 限制整数步长，`min(0)` 要求至少为零，`default(3)` 给缺值提供默认值。“元数据”指 schema 附带的默认值、范围、说明等信息；resolver（解析器）则是执行具体节点规则的函数。
 
 `Config` 是函数对象。`Config(raw)` 返回解析结果；`Config.dict` 能找到字段，字段的 `meta` 保存默认值、范围和角色。构造器将函数接到 `Schema.prototype`，调用时转交给 `Schema.resolve()`，见[实例构造](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/schemastery/src/index.ts#L254)与[解析入口](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/schemastery/src/index.ts#L515)。
 

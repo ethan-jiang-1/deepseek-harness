@@ -189,4 +189,26 @@ pnpm exec vitest run packages/boot/app-boot/tests/schemastery-json-schema.spec.t
 pnpm exec vitest run scripts/volatile-config.spec.ts scripts/loader-config-diff.spec.ts scripts/loader-volatile-update.spec.ts packages/settings/settings/tests/configuration.spec.ts packages/boot/app-boot/tests/schemastery-json-schema.spec.ts --maxWorkers 2
 ```
 
+## 14. 图解与开发迭代说明的补充核验
+
+2026-11-20 的补充编辑重新阅读 Shell 配置消费、Loader 即时提交、Settings 写入与 ConfigEditor 恢复实现，并按测试政策、录制会话实现和实际失败用例组织开发质量矩阵。新增四张 SVG：配置消费者、即时更新时间线、迭代证据分工与设置写入。图中 Shell 的时间语义只指 `resolve(request)` 捕获的超时；其他字段仍须分别追踪读取时点。
+
+本次重新执行第 13 节同一条五文件 Vitest 命令，169 项通过，退出码 `0`；默认值、必填、未知字段保留、空值与 volatile 例子另用 Node 源码断言通过。四张 SVG 均通过 XML 解析并用 `rsvg-convert` 渲染检查；专题 248 处 master 源码引用的本地目标与行号范围有效。上述检查不代表已重新执行历史版本或真实模型任务。
+
+本次 `pnpm run test:docs` 的 21 项检查、`pnpm run doc-sync` 的 43 项检查均通过；`pnpm run lint` 为 0 错误，另报告其他包中一条未使用禁用指令警告。语料全目录校验两次均发现并行编辑中的第 31 专题有未落地图片和锚点，第二次共 7 项；本专题没有报错。随后在内存中保持原校验规则、仅把发现范围限定到本专题，9 份 Markdown 的链接、锚点与术语校验通过，`git diff --check` 也通过；未修改校验器文件。既往各节的执行记录保留其原有范围，不合并重复测试计数。
+
+## 15. 面向 DSH 新读者的解释与 Skills / Notes 消化
+
+本次补充先梳理插件代码、组合行、活跃实例与业务操作的区别，再就地解释 profile、bundle、patch、Host/Client、原生图、投影、revision、构建产物与录制配套文件。它们用于说明现有实现，未新增配置 API 或产品行为。
+
+相关材料按问题消化：配置归属与 volatile 决定解释为何减少第二份设置存储和额外通知；非事务 Loader 决定说明等待不等于激活成功；投影政策说明有输出不等于完整验证；测试观察决定解释为何从被观察操作开始等待。Skills 提供调查与评审要求，现行源码和用例才支持具体行为断言。正文新增的操作 A/B 暂停和资源替换验收属于测试设计建议，未声称已执行所有业务场景。
+
+新增重点依据是[观察等待决定](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/testing/2026-09-27-observation-waits-on-observed-state.md)与当前 [observingChild 实现](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/plugin-manager/tests/operations.spec.ts#L620)，以及[测试可靠性指导](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-ci-test-reliability/SKILL.md)、[错误处理指导](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-error-handling/SKILL.md)、[生命周期审查指导](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/cordis-styling-nitpicking/SKILL.md)。通知提交顺序核对 Loader Entry，释放并发核对 Cordis Fiber；没有把 Skill 的评审要求当作已覆盖所有插件的自动保证。
+
+本次定向执行下列命令，3 个文件、124 项测试通过，退出码 `0`；其中非法配置诊断来自失败夹具。另以源码断言核验整数步长例子的默认、零、负数及小数输入。FAQ 全目录自检已通过，先前第 31 专题并行编辑造成的链接错误已消失；`test:docs` 的 21 项检查、`doc-sync` 的 43 项检查通过，`git diff --check` 通过。先前测试记录各自保留，不把重复执行计数相加。
+
+```sh
+pnpm exec vitest run scripts/loader-volatile-update.spec.ts packages/settings/settings/tests/configuration.spec.ts packages/boot/plugin-manager/tests/operations.spec.ts --maxWorkers 2
+```
+
 > 核验状态见 [核验基线登记](../00-baseline.md)。

@@ -1,6 +1,25 @@
 # 05 · 从配置演变中提炼插件开发纪律
 
-## 为什么还要读历史
+## 怎样使用本篇
+
+本篇面向准备修改插件配置的开发者：先决定值由谁拥有、何时生效、失败后保留什么，再选择实现与证据。Note 是仓库保存长期设计取舍的文档，Skill 是 Agent 开发时加载的操作指导；它们帮助调查与评审，实际行为仍由源码和执行中的检查决定。下面先列一次改动需要交代的事项，后续各节解释这些判断的原仓依据。
+
+| 开发阶段 | 需要得到的具体结果 | 读哪一节 |
+|---|---|---|
+| 定义需求 | 输入从哪来、写到哪、重启从哪恢复 | 一：配置归属 |
+| 选择更新方式 | 旧实例是否继续有效，新值何时被操作采用 | 二、三：更新入口与生命周期 |
+| 实现校验 | 哪些步骤可以执行转换，何时提交状态 | 四：比较、解析与提交 |
+| 设计可发现信息 | 输出哪些规则，哪些规则无法准确表达 | 五：投影能力与局限 |
+| 处理失败 | 磁盘、raw 配置、运行引用和实例的最终状态 | 六：恢复范围 |
+| 验证与评审 | 真实入口断言、反例、独立效果判据 | 七、八：开发动作与验收矩阵 |
+
+## 先明确本篇反复使用的几个动作
+
+配置的“归属”指谁定义规则、谁有权写入、重启从哪里恢复；“继承”指当前没有用户覆盖时采用基础组合的值；“重挂”指释放旧插件实例及其注册、监听等资源后重新启动；“提交”指把已验证的新值正式提供给运行中的消费者。“协调”是重新组合配置并让 Loader 应用变化。这些动作发生在不同组件，不能用“改配置”一词省略它们的顺序和失败责任。
+
+后文涉及 HMR（Hot Module Replacement，热替换），指开发中让运行环境响应代码或配置变化的机制；app boot 指应用启动过程；Include 是从文件加载组合的组件。阅读历史时只需抓住一个问题：一个更新是否必须依赖这些外围入口额外发通知，才能让已有实例读到新值？
+
+## 历史依据怎样帮助当前设计
 
 显性声明让配置规则可见，但长期质量还取决于开发者要维护多少份规则、多少条更新路径，以及失败后系统究竟保住了什么。本页接在[配置使用链](./02-dsh-consumers-and-lifecycle.md)之后，围绕 Schemastery 的类型、解析、volatile、Settings 和投影，提炼可以迁移到插件仓的做法。当前实现的测试明细统一在[验证证据](./03-repo-quality-practices.md)，这里集中解释为什么这样设计、付出什么代价，以及插件作者怎样决策。历史提交用于说明问题与取舍；当前机制仍以源码、测试和现行文档为准。[历史研究记录](./history-research.md)保留查证范围与出处。
 
@@ -70,6 +89,18 @@ JSON Schema 投影的历史 [#4705](https://github.com/deepseek-ai/deepseek-harn
 
 插件评审可以要求一句精确的失败说明：失败后，旧运行值、raw config、磁盘文件、插件实例分别是什么状态，谁负责恢复，调用者是否可以继续。随后让测试检查这些状态；只断言抛错或打印日志不够。
 
+### 具体看一个通知失败：为什么不能把提交和业务完成混为一谈
+
+Loader 的即时更新先校验完整候选、更新所有引用，再发 `loader/volatile-update` 通知。如果监听器失败，[实现](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/loader/src/config/entry.ts#L181)记录错误，不撤销已提交值；[volatile 决定](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-09-18-volatile-config-references.md)也明确监听器完成不是提交条件。因此某个消费者若想收到通知后重建连接，不能仅凭“收到事件”就报告连接重建完成，更不能假定自己抛错会把所有配置恢复原样。
+
+对按操作读取的超时，消费者可以在新操作解析时取得当前值。对需要重建资源的字段，则要先判断它是否适合即时更新；若确需独立重配置操作，负责资源的服务还要定义完成、失败和降级状态。这里吸取的是[错误处理 Skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-error-handling/SKILL.md)的判断：捕获异常只限制异常传播，状态是否恢复只能由拥有它的组件确认。不能用“已经 catch 并写日志”代替对运行结果的解释。
+
+### 普通字段触发重挂时，还要看正在运行的操作
+
+即时更新避免了不必要的实例替换，但普通字段变化仍可能重挂。重挂涉及两个结果：不再接受新工作，以及已接受的工作如何完成或取消。服务发出 `abort()` 只表示要求取消，旧操作可能还要发最后一条事件或写入最终结果；若它依赖的监听器、存储或连接已提前关闭，清理仍可能失败。
+
+[生命周期审查 Skill](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/cordis-styling-nitpicking/SKILL.md)要求沿旧操作的最后一次依赖使用追踪清理，而不是依据依赖声明或注册顺序猜测安全。当前实现会并发启动部分释放动作，声明了 `inject` 并不自动证明依赖资源活到消费者清理结束。对有进行中工作的插件，可以在测试中暂停旧操作，开始替换实例，检查其最终输出所需资源仍可用，再释放操作并等待清理结束。这是针对生命周期风险的测试设计建议；已有 [Loader 混合更新用例](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/loader-volatile-update.spec.ts#L85)证明旧实例释放与引用替换，不能把它扩大解释为每一种业务资源清理都已验证。
+
 ## 七、Skills 怎样把这些思考变成开发动作
 
 在本专题里，Note、Skill 与测试承担不同职责：Note 保留为什么选择及放弃什么；Skill 提醒下一次开发怎样调查和验证；源码与实际执行的检查决定要求是否被强制落实。Skill 文本本身不是新的自动保证。
@@ -80,6 +111,7 @@ JSON Schema 投影的历史 [#4705](https://github.com/deepseek-ai/deepseek-harn
 | [错误处理](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-error-handling/SKILL.md) | 捕获异常不等于恢复状态；让状态所有者定义失败后的保证，测试最终状态与可见结果 |
 | [生命周期审查](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/cordis-styling-nitpicking/SKILL.md) | 配置触发重挂时，检查旧操作是否已结束、资源与监听者是否活到清理完成，不能仅以发出 abort 为完成 |
 | [文档核验](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-doc/SKILL.md) | 对 Config 示例实际解析或挂载；读取 Note 与教程不替代运行，生成目录不替代语义验证 |
+| [测试可靠性](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-ci-test-reliability/SKILL.md) | 等待被断言的状态，以可控暂停安排并发，隔离临时资源并等清理结束；反例应触发预期失败 |
 | [按范围选择验证](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md) | 根据字段、Loader、设置、模型输入或发布入口的影响选择证据，减少无关全量运行并避免漏测真实入口 |
 
 可迁移到小插件仓的是一段可执行的开发流程：修改前画清配置读写路径；设计时减少重复来源与额外更新步骤；实现时明确生命周期和失败保证；验证时从发布入口观察实际消费者；评审时核对能力损失与独立预期。只有反复出现且可机械判定的遗漏，才继续固化为脚本。
