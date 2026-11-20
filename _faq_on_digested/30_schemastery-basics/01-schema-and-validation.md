@@ -2,7 +2,7 @@
 
 ## 从一个可调用声明开始
 
-Schemastery schema 同时具有执行能力和可读取结构。它调用解析器检查数据，又保留字段和元数据，供 DSH 的其他组件读取。
+Schemastery schema 同时具有执行能力和可读取结构。它调用解析器检查数据，又保留字段和元数据，供 DSH 的其他组件读取。本篇只看库本身：把未经处理的输入称为 raw 值，把校验、默认填充或转换后的结果称为解析值；二者不一定相同，解析也不一定保持输入不变。
 
 下面只演示库的行为，不启动插件、不访问网络、不修改 profile。例子已通过当前源码的内存实验核验。
 
@@ -95,7 +95,7 @@ Schemastery 的两个主要泛型参数可概括为 `Schema<S, T>`：`S` 描述�
 | `.min()`、`.max()`、`.step()`、`.pattern()` | 相应类型或容器解析器使用限制；单位依节点类型而定 |
 | `.description()`、`.role()`、`.hidden()` | 保存说明和展示信息，消费者决定如何使用 |
 | `.role('secret')` | DSH 设置脱敏器识别这个角色，不给任意日志提供全局脱敏 |
-| `.volatile()` | 解析时建稳定引用；即时更新还需要 Loader 与业务消费者 |
+| `.volatile()` | 解析时创建引用；Loader 在合格更新中保留旧引用身份，业务仍需按操作读取 |
 
 跨字段关系、引用服务是否存在、资源是否可用，仍要在拥有信息的位置检查。例如 [repeat-tool-reminder](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/guard/repeat-tool-reminder/src/index.ts#L164) 在 schema 基础校验之后，继续验证阈值与预览长度。当前库没有 `.check()` 或 `.coercion()` 方法，不应根据其他库的 API 推断这里已有对应行为。
 

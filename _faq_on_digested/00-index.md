@@ -12,7 +12,7 @@
 
 ## 自包含与目录结构
 
-每篇回答只依赖两类材料：DSH 仓库内的一手内容（`docs/`、`packages/`、`apps/`、根规则与生成目录）和本目录自己的文件，**不链接、不依赖 `_digested/`**。
+机制结论以 DSH 仓库内的一手内容（`docs/`、`packages/`、`apps/`、根规则与生成目录）和本目录自己的文件为依据，**不链接、不依赖 `_digested/`**。独立外仓可作为注明采样状态的案例：必要事实在正文讲清，本机源路径集中在研究页，不把外仓可达性当作读懂 FAQ 的前提。
 
 每个专题子目录统一采用单主入口结构：
 
@@ -80,6 +80,7 @@ _faq_on_digested/
 | 28 | [常听人说“打个探针看一眼”，探针是 DSH 的内置机制，还是一套排障工作法？](./28_probe-usage-and-origin/question.md) | [探针实证工作法：厘清源码同名 `probe` 自检函数与围绕会话日志取证的工作法，结合 `system/message` / `request/header` 分离等细节拆解 4 个主仓真实探针实例与防自欺铁律](./28_probe-usage-and-origin/answer.md) |
 | 29 | [`keyless` 在 DSH 测试体系里到底按什么判据界定？它能证明什么、证不了什么？](./29_keyless-meaning-boundaries/question.md) | [`keyless` 唯一判据与边界：只看单次运行有没向真实模型服务商发请求（塞 `*-no-call` 假 Key、跑 `refresh` 写盘都算 `keyless`），解析 `record + replay` 如何破除组装盲区及五档测试证据上限](./29_keyless-meaning-boundaries/answer.md) |
 | 30 | [Schemastery 是什么，DSH 又怎样把相关质量做好？](./30_schemastery-basics/question.md) | [可执行配置声明：类型与运行时解析、Standard Schema、volatile 即时更新、设置与 JSON Schema 分工；附主仓真实装配/失败恢复/文档防漂移做法，以及对质量体系归纳的逐项核验](./30_schemastery-basics/answer.md) |
+| 31 | [怎样定义、配置和验证 Agent Preset，并在长期开发中维持高质量？](./31_preset-quality/question.md) | [从组合正确到行为质量：preset 生命周期、通用验证与取证路径、独立行为与结果判据、借鉴 DSH 原生纪律的持续开发与升级防退化，company-pack 作为实证案例；区分运行机制、已有证据和建议实践](./31_preset-quality/answer.md) |
 
 ### 历史编号演进说明
 

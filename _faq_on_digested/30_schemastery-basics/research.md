@@ -169,4 +169,24 @@ pnpm exec vitest run packages/boot/app-boot/tests/schemastery-json-schema.spec.t
 
 文档交付还执行了本语料自检、`pnpm run test:docs`、`pnpm run doc-sync`、`pnpm run lint` 和 `git diff --check`，均退出 `0`。其中快速文档检查 21 项、完整文档检查 43 项通过；lint 为 0 错误、1 条既有未使用禁用注释警告。另逐条检查本专题的 GitHub 源码引用目标在本地存在、引用行号未越界；这类链接检查不替代正文事实核验。
 
+## 12. 配置影响模型输入时的补充证据
+
+本节补充配置消费链末端的验证范围；没有新增测试运行。配置影响工具声明、提示词或请求参数时，Agent 循环从 Session 派生逻辑请求，录制场景以 sidecar 保留组装后的提示词和工具 schema，便于核对配置的实际作用。见[请求头与请求构造](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent-loop/src/agent.ts#L626-L702)、[输入固定规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/session-snapshot/README.md#L85-L87)。
+
+[回放](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/src/index.ts#L1044-L1119)固定历史模型输出，实际执行当前 Harness 与工具，检查录制轨迹上的回归；它不重新评价当前模型如何理解修改后的输入。配置变更若声称改善模型表现，需要真实模型与独立任务效果证据，不能只用回放通过作结论。
+
+[测试政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#L53-L55)要求非平凡的模型、协议或用户可见变化更新组装后的录制场景；[工作区预期规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md#L15)另要求修改场景独立验收完整文件树。二者在适用时累加，不是替代关系。[record 与 refresh](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/session-snapshot/README.md#L81-L87)分别生成新模型轨迹与复用旧轨迹重算输出，刷新不自动证明新预期正确。
+
+[配置事故复盘](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0002-js-expression-disabled-filesystem-tools.md#L7-L46)记录工具未挂载却被刷新接受为新预期的错误，以及随后增加的静态配置和未知工具结果检查。它为本篇“从真实事故补持续回归”的建议提供具体依据；历史事故中的表达式能力描述不替代当前 Loader 规则。
+
+## 13. 历史研究与当前回归验证
+
+围绕配置来源、volatile 提交、投影与恢复的历史查证见[历史研究记录](./history-research.md)，可迁移的设计和验收建议见[第五分篇](./05-practical-design-disciplines.md)。历史研究区分提交直接记载和推断；当前活动 Note 不是冻结历史，历史论断以精确提交查证为准。全历史遍历遇缺失 Git 对象，不能声称完整考古；本轮未补拉或改变历史。
+
+本轮另执行以下定向回归，退出码 `0`，5 个文件、169 项测试通过。此运行验证当前解析、diff、Loader 更新、设置与投影，不是重新执行历史版本。测试输出包含预期非法配置夹具的激活失败诊断，以及 Vite 路径插件提示。
+
+```sh
+pnpm exec vitest run scripts/volatile-config.spec.ts scripts/loader-config-diff.spec.ts scripts/loader-volatile-update.spec.ts packages/settings/settings/tests/configuration.spec.ts packages/boot/app-boot/tests/schemastery-json-schema.spec.ts --maxWorkers 2
+```
+
 > 核验状态见 [核验基线登记](../00-baseline.md)。

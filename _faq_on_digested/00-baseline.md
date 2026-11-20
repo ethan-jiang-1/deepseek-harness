@@ -38,7 +38,8 @@
 | 27 运行时编排 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..03`；`PTC`、`subagent`、`workflow`、`agent-team`、`goal`/`ralph`、`jobs`/`schedule` 契约按 rc.5 核 |
 | 28 探针工作法 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..02` + `reference`；4 个主仓夹具实例按 rc.5 实测核对，外仓 `probes/` 读数为 2026-11-10 本机清点 |
 | 29 keyless 边界 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..02`；唯一判据、哨兵假 Key、`refresh` 语义与五档测试证据按 rc.5 核 |
-| 30 Schemastery 与质量实践 | `dsh-v0.2.1-rc.5` | reverified | 2026-11-20 对照本地实现、调用者和测试重写；相关产品源码与本基线无差异；覆盖解析语义、Standard Schema、volatile、设置/投影/目录及主仓质量措施的范围与局限，实验和测试记录见专题研究页 |
+| 30 Schemastery 与质量实践 | `dsh-v0.2.1-rc.5` | reverified | 2026-11-20 对照本地实现、调用者和测试重写；相关产品源码与本基线无差异；覆盖解析语义、Standard Schema、volatile、设置/投影/目录及主仓质量措施的范围与局限；补查 Git、Note 与 Skills，提炼配置开发纪律，历史研究注明缺失对象限制；实验与测试记录见专题研究页 |
+| 31 Preset 长期质量 | `dsh-v0.2.1-rc.5` | reverified | 2026-11-20 按通用验证、行为验收与持续开发重组，补核 DSH 原生测试选择/真实入口/快照/Notes 纪律与案例质量环实际审计；核对声明、注册/审计、revision 保留、会话/子会话选择、skill 生命周期及定向测试；外部 company-pack 为当日本机只读采样（HEAD `936123a6fbff828fde99e99886dacaa2956d959e`，工作树干净），未运行其检查或真模型场景，部署仓行为语料未审计；本仓核对起点为 `51b7d623fe9b1b39873b106ae53a8843d5fd861e`，已核对的 preset/subagent/session-controller/skill 与测试政策相对集中基线无产品差异；7 文件 116 项定向测试及文档检查通过，精确范围见研究页 |
 
 ## 版本号能写在哪
 

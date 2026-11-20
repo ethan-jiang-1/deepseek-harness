@@ -1,18 +1,24 @@
 # 02 · DSH 的实际消费链与生命周期
 
-## 插件启动：Cordis 消费的是 Standard Schema
+## 先沿一个配置值走完使用链
 
-Schemastery 是 DSH 主要使用的配置库，Cordis 的通用插件协议则接受同步 Standard Schema 校验器。二者有直接集成，但不能视为同一个概念。
+本篇回答“声明写好之后，谁真正使用它”。以 Shell 超时为例：组合文件提供数字，Loader 加载插件行，Cordis 校验后创建执行器；执行器在新操作开始时读取配置。用户在线修改时，设置服务校验修改、写 profile patch，再由 Loader 更新运行实例。最后，后续操作才用到新值。
+
+这里有三份需要区分的数据：文件中的原始配置（raw config）、schema 解析后的运行配置、一次操作已经捕获的参数。它们有不同的更新时间，失败时也可能处于不同状态。不能把“文件保存了”“运行值变了”和“进行中的操作变了”混为一谈。
+
+## 插件启动：Cordis 通过统一接口调用校验器
+
+Standard Schema 是校验库提供给消费者的统一调用协议，不是另一份配置文件，也不是 JSON Schema。Schemastery 实现它，Cordis 按协议取得解析值或错误；因此框架不必硬编码每个校验库的调用方式。DSH 主要使用 Schemastery，而 Cordis 的基础协议可以接受其他同步实现。
 
 [Cordis 的 resolveConfig](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/fiber.ts#L42)会调用 `runtime.Config['~standard'].validate(config)`：没有 Config 时原样返回，有 issues 时生成配置错误，成功时采用 `result.value`。当前明确拒绝异步结果。Schemastery 提供了对应的[Standard Schema 适配](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/schemastery/src/index.ts#L290)。
 
-首次激活的顺序是：依赖可以满足，经过 `internal/config` 处理配置，执行校验，然后进入插件 `apply` 或服务构造函数。PENDING 插件可能尚未校验。服务插件通过类的 `static Config` 提供声明，函数插件通常通过模块的具名导出提供。真实启动入口见[Fiber 激活](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/fiber.ts#L641)。
+Cordis 用 fiber 管理一次插件挂载的状态和资源。首次激活的顺序是：依赖可以满足，经过内部 `internal/config` hook 处理配置，执行校验，然后进入插件 `apply` 或服务构造函数。仍在等待依赖的 PENDING 实例可能尚未校验。服务插件通过类的 `static Config` 提供声明，函数插件通常通过模块的具名导出提供。真实启动入口见[Fiber 激活](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/cordis/src/fiber.ts#L641)。
 
 这解释了两种不同支持范围：其他同步 Standard Schema 库可以满足 Cordis 的基础启动校验；DSH 的原生图检查、配置投影与设置服务却进一步依赖 Schemastery 的结构。比如[配置收集器](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/src/config-schema/collect.ts#L200)会把非原生 Schemastery Config 标为 unsupported。不能只说“换库完全等价”，也不能说“Cordis 强制只能用 Schemastery”。
 
 ## 即时配置：声明、更新和读取是三个动作
 
-`.volatile()` 的价值是让部分配置变成稳定引用，运行中的消费者可以继续持有它，而引用里的值由 Loader 更新。它在当前 DSH 中已经有实际消费者。
+`.volatile()` 让字段的解析结果成为带 `.get()` 的引用，而非直接的数字或字符串。满足即时更新条件时，Loader 保留已有实例和引用，只替换引用中的值，消费者便可继续持有该引用。这里“稳定”指同一活跃实例的更新过程；独立调用两次 `Config(raw)` 不会自动共享引用。
 
 ```javascript
 const Config = Schema.object({
@@ -26,7 +32,9 @@ config.retries.get() // 3
 
 Loader 在活跃实例、上下文未变、只改变 config 等条件成立时，比较普通字段，解析并校验候选；普通有效值仍相同才提交到已有引用，并按变化路径通知所属实例。无效候选保留运行中的旧引用值；普通字段变化、依赖更换等仍可能进入正常更新和重挂流程，见[Entry 更新实现](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/loader/src/config/entry.ts#L141)。
 
-因此，业务需要在操作开始时读取 `.get()`；需要一致快照时，在该操作内捕获需要的值。不能永久缓存启动时读到的普通值，也不能把通知理解为框架已等待业务资源重新配置完毕。
+普通配置修改可能需要重挂：旧实例释放它拥有的监听、服务和其他 effects，新实例再按新配置启动。依赖更换、代码替换也有自己的生命周期；即时更新是满足条件时保留实例的特定路径，不是绕开所有重挂。
+
+因此，业务需要在操作开始时读取 `.get()`；需要一致快照时，在该操作内捕获需要的值。操作 A 若已经捕获旧超时，更新引用不自动改变 A；操作 B 在更新后读取，才能使用新超时。这是消费者应设计的时间语义，不是 `.volatile()` 自动改写全部进行中任务。不能永久缓存启动时读到的普通值，也不能把通知理解为框架已等待业务资源重新配置完毕。
 
 还有一个重要限制：字段必须处于固定对象路径，或将整个容器作为一个即时值。不能在数组、字典、union/intersect 等动态分支内部随意分散引用，也不能在一个即时值里嵌套另一个即时值。声明校验见[volatile 路径检查](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/schemastery/src/index.ts#L488)。
 
@@ -49,11 +57,26 @@ Shell 能展示从页面控件到实际请求参数的连接，而不只停留�
 
 当前设置服务直接从活跃插件的 Config 提取字段，持久化落到 profile patch。它不是另外维护一份与 Config 独立的设置字段定义。
 
+保存还有一个会影响后续升级的实际语义：patch 的 `config` 整块替换该 entry 的配置，不是字段级合并。编辑一个字段也可能把当时的普通字段和其他即时字段写入覆盖层，固定它们的继承结果；以后 bundle 修改这些默认值，不会穿过这份覆盖。单字段 reset 恢复当前继承值，整个 entry reset 才移除其配置覆盖。依据见[配置所有权决定](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-09-19-profile-owned-live-configuration.md#L15)。因此“保存有效”与“继续继承未来默认值”是两个不同承诺。
+
 [volatileForm](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/settings/settings/src/schema.ts#L19)沿对象路径保留即时字段，去掉供表单使用时不需要的引用标记，并处理 secret 默认值。[describe](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/settings/settings/src/index.ts#L302)输出原生 schema、有效值、继承值、用户值和修订号；远程响应由[settings-controller](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/api/settings-controller/src/index.ts#L97)要求脱敏。
 
 Client 的 [SettingsSchemaService](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-settings/src/client/schema.ts#L45)通过 `new Schema(serialized)` 重建，再调用 schema 校验草稿。页面显示什么控件，则由产品组件决定；[插件页面配置清单](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/client/ui-plugin-manager/src/client/config-ledger.ts#L40)读取 Slots 注册情况，Shell 页面也是手写字段。
 
 所以更准确的描述是：DSH 复用了 schema 传输、读取、草稿校验和修改基础设施，产品拥有具体页面。当前查到的生产路径不足以支持“任何 Config 都自动生成完整表单”或“没有自定义页面就自动提供 JSON 编辑器”的结论。Host 里虽有 `autoGenerate` 字段，不能仅凭它的名称推断生产 Client 已实现相应渲染。
+
+## 不同入口失败时，保住的状态不同
+
+前面出现的“失败保留旧值”需要限定对象。下面说明主仓已定义的行为，不能合并成一个全局回滚承诺。
+
+| 入口与失败 | 运行状态 | raw 配置或磁盘 |
+|---|---|---|
+| Loader 尝试即时更新，候选校验失败 | 旧引用中的值保留 | 新 raw config 可留在 entry；不表示文件编辑被撤回 |
+| 普通 Loader 更新后，新插件激活失败 | 可留下失败实例或部分应用的树 | Loader 不自动恢复整棵旧配置树 |
+| Settings 保存前校验失败，或写入会被高层遮蔽 | 不提交这次设置修改 | 拒绝持久化该候选 |
+| Settings 写 patch 后应用失败 | ConfigEditor 尝试恢复旧 patch 并重新协调 | 这是该写入操作的局部恢复；恢复本身仍可能失败 |
+
+依据是[volatile 更新决定](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-09-18-volatile-config-references.md#L31)、[非事务 Loader 决定](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/simplification/2026-09-09-nontransactional-loader.md#L15)与[ConfigEditor 写入实现](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/config-editor/src/index.ts#L87)。这也解释了为什么只等待加载结束，不足以证明所有插件成功激活；具体应用还需检查它依赖的实例与服务。
 
 ## 三种常被混淆的输出
 

@@ -1,10 +1,12 @@
 # 03 · 主仓怎样把质量要求变成可检查的事实
 
-## 我的判断：重点是对照运行中的事实
+## 研究范围：围绕 Schemastery 看 DSH 怎样长期维护配置质量
 
-DSH 的质量做法有明显的软件工程基础：运行时校验、集成测试、生成文件检查、兼容性管理都不是 Agent 独有技术。值得借鉴的是它们如何围绕全插件运行时与模型交互组织起来，尤其是**声明是否真的被消费、功能是否真的从交付入口启动、模型实际看见什么、外部效果是否真的发生**。
+这里要回答的是：DSH 自身开发时，怎样长期保障 Schemastery 相关配置的正确性，以及以后开发自己的 DSH 插件可以借鉴什么。显性声明和抽象让规则更容易定位；质量还要看类型、解析、Loader、消费者、设置保存和文档是否持续一致。
 
-Schemastery 是其中的配置解析环节。它能拒绝错误字段值，却不能独自证明插件装配正确、修改安全提交、提示词有效或任务完成。下面分别看主仓怎样补这些证据，以及仍有哪些上限。
+本篇沿一条配置的完整使用链展开：声明的规则有没有被准确记录，真实入口有没有消费，更新失败时保留什么，保存后是否生效，相关事故怎样转成以后的回归检查。运行时机制是被验证的对象，重点是主仓怎样开发和维护它们。
+
+[本地验证流程](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/skills/dsh-pre-push-checks/SKILL.md#L27)要求按影响选择证据，而不是每次运行全部套件。对这个专题，意味着分别使用解析测试、真实 Loader 测试、设置持久化测试和文档生成检查；配置影响模型输入时再补对应会话证据。下面同时交代每项检查的作用与上限。
 
 ## 一、让配置规则有归属，再验证归属没有被绕开
 
@@ -36,7 +38,7 @@ DSH 插件既有运行时 schema，也有静态 Config 类型。两份声明如�
 
 现在的[测试政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#L37)要求产品可见插件拥有真实组合测试，并进一步区分源码测试与发布产物测试。源码中的包映射能跑通，不自动证明用户安装后的构建入口也能跑通。
 
-对 Schemastery 的即时配置，可以分清两类证据：
+对 Schemastery 的即时配置，可以分清三层证据：
 
 | 证据 | 实际检查什么 |
 |---|---|
@@ -74,40 +76,28 @@ DSH 插件既有运行时 schema，也有静态 Config 类型。两份声明如�
 
 我的判断是，这类测试比只增加“合法值返回 true”的单测更有工程价值，因为它检验了跨组件共同承诺。恢复操作仍可能面对磁盘故障或再次激活失败；当前实现不等于对进程崩溃、任意外部副作用提供完整事务保证。
 
-## 六、模型可见变化要留下可重建、可比较的证据
+## 六、配置影响模型时，再补模型可见证据
 
-配置会影响工具集、提示词和请求参数。如果只检查 Config 解析结果，就无法证明最终发给模型的内容正确。
+Schemastery 解析正确，还不能证明配置变化最终产生了正确的工具声明或提示词。只有配置确实影响这些内容时，才需要继续追查模型请求，不必把所有 Agent 质量问题都放进配置专题。
 
-DSH 的[录制会话规范](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md#L5)要求从真实 CLI/profile 进入，并为提示词和工具 schema 保留可读 sidecar；涉及工作区修改时，单独比较完整预期文件树，record/refresh 不改写这份独立预期。模型自称成功、工具结果文字声称成功，都不能替代外部效果检查。
+DSH 从会话日志（Session）构造模型请求，并为录制场景保留提示词、工具 schema 的可读配套文件（sidecar）。这里的录制快照是可重跑的会话轨迹，不是界面截图。这样评审配置改动时，可以比较实际组装后的输入，而不是只看 Config 对象。依据见[请求构造](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent-loop/src/agent.ts#L626)与[输入固定规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/session-snapshot/README.md#L85)。
 
-这种做法有两个用途：一是让当前代码按历史模型输出重新走真实流程；二是让模型可见输入和持久化结果的变化进入评审 diff。[测试政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#L53)要求非平凡的模型、协议或用户可见变化在同一 PR 更新相应场景。
+[测试政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#L53)要求非平凡的模型、协议或用户可见变化在同一 PR 更新组装后的录制场景。涉及工作区修改时，还要[独立比较预期文件树](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md#L15)，不能把回放与实际效果验收当成二选一。
 
-但录制回放使用固定的模型输出，不会重新测量当前线上模型的智能或回答风格。DSH 自己的[真实 API 测试政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#L23)明确区分无密钥流程证据与真实模型运行。我的判断是：应把这两种证据组合使用，不能以回放确定性代替语义正确性。
+这里的证据上限也明确：固定模型输出的回放可以检查配置消费和流程回归，不能判断新提示词是否让当前模型更会完成任务。如果配置改动声称改善模型表现，还需要真实模型运行和独立任务验收。完整测试分工见 [FAQ 29](../29_keyless-meaning-boundaries/answer.md)。
 
-## 七、实际发现的粗糙处同样值得记录
+## 七、真实事故怎样变成长期检查
 
-主仓有严格规则，并不意味着规则、实现、注释和教程始终一致。本次追查已经发现可以具体复核的差异。
+[文件系统工具事故复盘](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/postmortem/0002-js-expression-disabled-filesystem-tools.md#L7)直接说明为什么配置语法、真实装配和语义验收缺一不可：当时组合中的表达式没有按作者预想的位置求值，工具始终未注册；快照刷新又把 `UNKNOWN_TOOL` 接受为新预期，测试仍然通过。
 
-| 观察 | 依据 | 对质量判断的意义 |
-|---|---|---|
-| `required()` 注释暗示默认值能补救，但实现先拒绝缺值 | [声明注释](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/schemastery/src/index.ts#L159)、[实现](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/schemastery/src/index.ts#L533)、[测试](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/boot/app-boot/tests/schemastery-json-schema.spec.ts#L25) | 注释必须与实现和测试交叉核实 |
-| 设置教程提到 `.check()`，当前 Schemastery 未定义这个 API | [教程](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/cookbook/adding-a-settings-card.zh.md#L30)、[库的声明与实现](https://github.com/deepseek-ai/deepseek-harness/blob/master/vendor/schemastery/src/index.ts#L135) | 文档完整和链接有效不等于操作示例真实可用 |
-| 来源检查只识别特定单行写法 | [检查器](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/verify-config-source-ownership.ts#L22) | 执行器的覆盖范围要单独检查 |
-| Config 目录只检查字段存在性 | [字段查找](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/gen-config-catalog.ts#L399) | 不能升级为类型与运行时语义全等的保证 |
+修复不仅调整组合，还增加了静态配置检查和拒绝未知工具结果的守卫。可借鉴的是这个开发闭环：从真实配置事故识别错误类别，再让以后同类修改触发明确失败。它不是 Schemastery 字段校验能独自发现的问题，因为错误发生在配置如何被 Loader 消费、功能有没有真正挂载。
 
-这些发现不是对整套做法的否定。它们说明可靠的评价应该同时列出执行机制、反例和覆盖上限；自动检查继续补充人工判断，人工判断也继续检查自动化没有覆盖的事实。
+[record 与 refresh](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/session-snapshot/README.md#L81)也因此必须区分：record 产生新的真实模型轨迹，refresh 用旧轨迹重算当前实现的输出。刷新结果进入 diff 供人判断，不等于已经证明改动正确。独立效果预期不能跟着刷新一起改写。
 
-## 八、插件作者可以怎样借鉴
+本次研究还发现较小但真实的漂移：`required()` 注释暗示默认值能补救，而实现先拒绝缺值；设置教程使用当前库没有的 `.check()`。具体证据见[解析语义](./01-schema-and-validation.md)与[研究记录](./research.md)。链接有效、目录新鲜不代表教程语义正确，因此涉及 Schema 操作的说明仍应对照实现并实际运行。
 
-不必把主仓所有门禁搬过去。先围绕自己的一个配置变化形成最小完整证据，再根据真实事故和风险扩展。
+## 八、从验证事实进入设计实践
 
-1. 在拥有配置的插件中定义 schema 与类型，明确默认值、必填项和额外业务检查。
-2. 写能拒绝错误输入的窄测试，覆盖最可能被误用的规则，而不重复每条普通赋值。
-3. 通过真实 Loader/发布入口加载一次，检查导出、依赖与配置确实被消费。
-4. 若支持即时设置，检查实际消费者、引用身份、失败保留、磁盘和重启恢复。
-5. 若改变模型或用户可见行为，检查真实组装结果，并选择对应回放或外部效果证据；需要证明真实模型能力时再跑真实 API。
-6. 对反复出现的机械遗漏建立有反例测试的检查器，并把其范围写清；其余判断留在明确的评审标准中。
-
-借鉴的核心是让“这次改动为什么可信”有可重算的回答；配置 schema、检查脚本和覆盖率都只是其中一部分。对更宏观的质量归纳，见[逐项评估](./04-assessing-quality-claims.md)。
+本篇集中回答当前主仓有哪些执行中的检查、它们覆盖什么。为什么配置所有权和更新入口形成今天的设计、哪些能力被主动放弃，以及以后插件开发怎样采用这些纪律，统一见[配置开发实践](./05-practical-design-disciplines.md)。
 
 > 核验状态见[核验基线登记](../00-baseline.md)。
