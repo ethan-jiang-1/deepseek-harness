@@ -33,4 +33,4 @@
 | `packages/subagent/subagent/src/internal.ts` | 宿主 Queue/Steer 私有协议实现 |
 
 > [!NOTE]
-> 目录决策原文：[`2026-09-01-parent-owned-subagent-catalog`](../../.agents/notes/implemented/architecture/2026-09-01-parent-owned-subagent-catalog.md)。
+> 目录决策原文：[`2026-09-01-parent-owned-subagent-catalog`](../../../.agents/notes/implemented/architecture/2026-09-01-parent-owned-subagent-catalog.md)。

@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="876" viewBox="0 0 960 876" role="img" aria-labelledby="title desc">
+  <title id="title">工具更新：同一份耐久记录，三种路由投影</title>
+  <desc id="desc">示例从已注册工具 search 切换到 fetch。agent-loop 先记录 request/header 的完整 schema 快照，再记录只引用名称的 developer 增删消息。Session 从这些记录折叠当前声明序列的 toolHistory，新增工具的定义来自消息 headerSeq 指向的历史 header。给定同一完整历史，in-history 输出 search 与延迟加载的 fetch 定义，以及增加 fetch、移除 search 的消息；addition-only 输出延迟加载的当前 fetch 定义和增加 fetch 的消息；未声明工具更新能力的路由输出完整当前 fetch 定义，移除 deferLoading 并过滤 developer 消息。图示输出位于 adapter 序列化之前。startsSeries 另由 loop 决定，可能使后续请求使用新的声明序列。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 9 4.5 0 9Z" fill="#52647b"/></marker>
+    <style>
+      text { font-family: system-ui, -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif; fill: #203149; font-size: 18px; }
+      .title { font-size: 27px; font-weight: 750; }
+      .heading { font-size: 20px; font-weight: 700; }
+      .code { font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace; font-size: 18px; }
+      .small { font-size: 16px; fill: #52647b; }
+      .edge { fill: none; stroke: #52647b; stroke-width: 2; marker-end: url(#arrow); }
+      .rule { stroke: #d8e0eb; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect width="960" height="876" rx="16" fill="#f7f9fc"/>
+  <text x="32" y="41" class="title">工具更新：记录相同，路由收到的内容不同</text>
+  <text x="32" y="68" class="small">固定同一完整声明历史比较输出；tools 与 messages 一起投影，再由 adapter 编码。</text>
+
+  <rect x="32" y="94" width="248" height="176" rx="12" fill="#eaf2ff" stroke="#9bbde9"/>
+  <text x="52" y="126" class="heading">① 当前注册工具</text>
+  <text x="52" y="162" class="code">ctx.tools</text>
+  <text x="52" y="202" class="code">{ search }</text>
+  <text x="52" y="241" class="code">{ fetch }</text>
+  <path d="M164 196H204V234H161" class="edge"/>
+
+  <path d="M280 181H319" class="edge"/>
+  <rect x="322" y="94" width="606" height="176" rx="12" fill="#f0ebff" stroke="#b8a7e9"/>
+  <text x="342" y="126" class="heading">② Session log · 先快照，再记录增删</text>
+  <text x="342" y="162" class="code">request/header H₀ → tools: [search]</text>
+  <text x="342" y="194" class="code">request/header H₁ → tools: [fetch]</text>
+  <text x="342" y="232" class="code">developer → [+fetch, −search]</text>
+  <text x="342" y="256" class="small">headerSeq → H₁；消息引用名称，schema 留在 header。</text>
+
+  <path d="M154 270V299" class="edge"/>
+  <path d="M625 270V299" class="edge"/>
+  <rect x="32" y="302" width="896" height="112" rx="12" fill="#fff" stroke="#b9c7d8"/>
+  <text x="52" y="334" class="heading">③ 投影输入 · 当前 tools + messages + toolHistory</text>
+  <text x="52" y="370" class="code">current: [fetch]    history.tools: [search]</text>
+  <text x="52" y="396" class="small">toolHistory 从耐久记录折叠；updates 的新增定义从 H₁ 取 fetch schema。</text>
+
+  <text x="480" y="450" text-anchor="middle" class="heading">projectToolUpdates · 按目标路由能力分支</text>
+  <path d="M480 414V423" class="edge"/>
+  <path d="M480 460V473H177V495" class="edge"/>
+  <path d="M480 460V495" class="edge"/>
+  <path d="M480 473H783V495" class="edge"/>
+
+  <rect x="32" y="498" width="290" height="192" rx="12" fill="#e9f7f1" stroke="#84bca7"/>
+  <text x="52" y="531" class="heading">④ in-history</text>
+  <line x1="52" y1="547" x2="302" y2="547" class="rule"/>
+  <text x="52" y="578" class="code">tools:</text>
+  <text x="52" y="607" class="code">[search, fetch*]</text>
+  <text x="52" y="641" class="code">messages 中保留</text>
+  <text x="52" y="671" class="code">[+fetch, −search]</text>
+
+  <rect x="335" y="498" width="290" height="192" rx="12" fill="#eaf2ff" stroke="#9bbde9"/>
+  <text x="355" y="531" class="heading">⑤ addition-only</text>
+  <line x1="355" y1="547" x2="605" y2="547" class="rule"/>
+  <text x="355" y="578" class="code">tools: [fetch*]</text>
+  <text x="355" y="607">删去失活 search 定义</text>
+  <text x="355" y="641" class="code">messages 中仅保留</text>
+  <text x="355" y="671" class="code">[+fetch]</text>
+
+  <rect x="638" y="498" width="290" height="192" rx="12" fill="#f0f2f6" stroke="#bac4d1"/>
+  <text x="658" y="531" class="heading">⑥ 未声明 toolUpdate</text>
+  <line x1="658" y1="547" x2="908" y2="547" class="rule"/>
+  <text x="658" y="578" class="code">tools: [fetch]</text>
+  <text x="658" y="607" class="code">移除 deferLoading</text>
+  <text x="658" y="641" class="code">messages 中过滤</text>
+  <text x="658" y="671">所有 developer 消息</text>
+
+  <text x="32" y="721" class="small">* deferLoading: true；由历史 addition 激活。各列只展示工具更新，普通历史消息照常保留。</text>
+
+  <rect x="32" y="742" width="896" height="110" rx="12" fill="#fff6e8" stroke="#dfbb7a"/>
+  <text x="52" y="773" class="heading" fill="#7b4f16">诊断点 Watchpoints</text>
+  <text x="52" y="804" class="small">日志有更新，wire 没有 → 查路由能力与 adapter 编码。</text>
+  <text x="510" y="804" class="small">旧工具定义缺失 → 查历史 header / headerSeq。</text>
+  <text x="52" y="833" class="small">removal 只在 in-history 保留；失活定义仍在历史。</text>
+  <text x="510" y="833" class="small">startsSeries 另由 loop 决定 → 查声明序列。</text>
+</svg>

@@ -31,14 +31,15 @@
 | **1 声明面** | preset 的 YAML / `--dump-config` 打出的入口列表 | 你**写下**了什么组合（行、配置、顺序） | 会话实际拿到的工具面；模型会不会用 | 零模型、可进 `pnpm test` 的纯解析/比对 |
 | **2 装配** | `agentPresets.register` 的激活结果、`broken` 行、`session/create` 真挂载 | 这棵子树能立起来、依赖在场、服务能解析 | 运行时每个 Agent 的工具面；行为 | 零模型，但要真入口（host/CLI） |
 | **3 实际工具面** | `request/header` 的 `tools` 字段（`EpochHeader.tools`） | 这次请求真实发给模型的工具 schema 集合 | 模型选得对不对、用得好不好 | 需要一次真实请求（可录制回放） |
-| **4 行为** | 真模型会话/探针的调用序列与参数 | 模型在给定提示下**会**怎么选、怎么用 | 稳定性（单次 ≠ 稳定）；生产分布 | 真模型、按次计费、不进 CI |
-| （产品层）**5 呈现** | 真页面 / 金样 / 客户端投影 | 用户看到的流程与状态 | 数据本身是否正确（要靠 1–4） | 浏览器/宿主，单独门禁 |
+| **4 行为** | 真模型会话/探针的调用序列与参数 | 模型在给定提示下怎么选、怎么用 | 最终成果正确；稳定性（单次 ≠ 稳定）；生产分布 | 真模型，所需凭据与执行环境须明确 |
+| **成果验收** | 独立文件期望、领域计算、权威来源与验收任务 | 指定版本的产物是否满足独立判据 | 未覆盖任务的稳定性、未来修改的质量 | 按成果类型选择自动检查与人工判断 |
+| **呈现验收** | 真页面 / 金样 / 客户端投影 | 用户看到的流程与状态 | 底层数据与领域结论的正确性 | 浏览器/宿主，单独门禁 |
 
 ### 每层的落点
 
-1. **声明面**：`--dump-config` 是 boot-free 的入口列表 YAML（`apps/cli` 的 dump 路径；`packages/boot/app-boot/src/config-schema/document.ts:158` 的说明）；preset 定义的字段与子行在 `packages/preset/agent-preset-registry/src/definition.ts:5`-`11`。它能核对“写下的组合”，不能核对“会话里真的有什么”。
+1. **声明面**：`--dump-config` 是 boot-free 的入口列表 YAML，preset 定义包含组合字段与子行。它能核对“写下的组合”，不能核对“会话里真的有什么”；机制与源码见 [dump 与 boot](../../plugin-system/composition/02-dump-and-boot-fidelity.md)。
 2. **装配**：注册表会在注册时 eager 激活并挂载；激活失败被收敛成 `broken` 并记日志（`agent-preset-registry/src/index.ts:106`-`118`）。`session/create` 能证明“这棵树能起一个 Agent”，不证明工具面。
-3. **实际工具面**：`request/header` 的 `tools` 由 `buildRequest` 写入（`packages/core/agent-loop/src/agent.ts:616`-`699`；字段定义 `packages/core/session/src/types.ts:241`-`247`）。它是**每次请求**的快照，能回答“这一刻模型看到了哪些工具”，也能发现“声明了但没注册/被遮蔽”的差异。
+3. **实际工具面**：`buildRequest` 在初次、恢复、内容变化或新 series 时写入完整 `request/header`；相同 header 不必每次重复。沿请求前缀读取最近快照，可重建该次请求使用的工具 schema，发现“声明了但没注册／被遮蔽”的差异。具体时点由 [Agent 请求装配](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/agent-loop/src/agent.ts)与 [EpochHeader](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/session/src/types.ts)定义。
 4. **行为**：真模型探针要写清假设与判据（例如“委派前是否加载了 policy skill”“选的通道是否符合合同”），一次只证一个假设；失败/未触发如实记。
 5. **呈现**：UI 的正确性由“数据是否正确 + 呈现是否符合金样”两部分组成；金样只冻结后者。
 
@@ -50,6 +51,14 @@
 - **自然型**：只给任务，不点名通道或 worker，用来证明**提示面内化**（模型自己会选对）。
 
 混跑会把两类故障混成一类：强制型失败是“链路坏了”，自然型失败是“提示面歪了”。报告时分开写，不要把一次混合会话当成两层都通过。
+
+## 路由成功之后，仍要验收成果
+
+工具和 worker 选择正确，只证明执行路线。模型声称已完成、内部 verifier 输出通过、委派图出现完整节点，都不能替代独立的成果检查。内部 verifier 本身也是产品的一部分，需要验证它能发现错误，并确认裁决对应的是当前产物版本。
+
+需要分别检查“资料不足时避免编造”和“资料充分时能够完成”；只测前者可能奖励一律拒绝。领域输出应采用独立计算、来源或人工判据，文件修改应比较实际外部结果。调用轨迹、结果内容和多次任务稳定性分别报告，不把一次选对工具计成任务质量认证。
+
+[测试决策流](../../test-strategy/execution/05-dsh-testing-decision-procedure.md)拥有按行为选择证据的方法，[会话快照](../../test-strategy/mechanisms/10-dsh-snapshot-machinery.md)拥有独立工作区期望与固定决策回放的说明。这里的任务成对检查是验收建议，不是引擎自动评分机制。
 
 ## UI 是验收面（模式，不是 DSH 的词）
 
@@ -86,7 +95,8 @@ DSH 没有“验证 UI”的引擎能力；能成立的做法是把呈现当成�
 | 这个 preset 能挂起来、依赖齐全 | 2（真入口） |
 | 子代理这次真的拿到了这些工具 | 3 |
 | 模型会在该委派时委派、在结束时收尾 | 4（按假设多次） |
-| 用户在页面上看到的状态不是编的 | 3 + 5（数据 + 呈现分开证） |
+| 指定版本的文件或领域成果符合要求 | 独立成果验收；模型自报和内部 verifier 也须核查 |
+| 用户在页面上看到的状态有事实依据 | 持久数据投影 + 呈现验收，分别检查 |
 
 ## 失败面
 
@@ -97,6 +107,7 @@ DSH 没有“验证 UI”的引擎能力；能成立的做法是把呈现当成�
 | “fake 测试过了，所以 provider 没问题” | fake 绕过了真实 provider 的能力位与错误路径 |
 | “跑了一次真模型，绿了” | 单次证据；稳定性未证 |
 | “金样过了，所以数据对” | 金样冻结呈现，不校验数据来源 |
+| “工具选对、verifier 通过，所以成果正确” | 仍需独立判据，并绑定被审产物版本 |
 
 ## 常见误解
 
@@ -113,7 +124,7 @@ DSH 没有“验证 UI”的引擎能力；能成立的做法是把呈现当成�
 |------|--------|
 | `packages/preset/agent-preset-registry/src/index.ts:106`-`118` | 声明校验、激活失败收敛为 `broken` |
 | `packages/preset/agent-preset-registry/src/definition.ts:5`-`11` | 声明面字段全集 |
-| `packages/boot/app-boot/src/config-schema/document.ts:158` | `--dump-config` 的语义（入口列表 YAML） |
+| [CLI YAML dump](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/src/dump-config.ts) | `--dump-config` 的入口列表与 boot-free 输出 |
 | `packages/core/session/src/types.ts:241`-`247` | `EpochHeader.tools`：实际工具面 |
 | `packages/core/agent-loop/src/agent.ts:616`-`699` | `request/header` 的构建与写入 |
 | `packages/subagent/subagent/src/catalog.ts`、`descriptor.ts` | 会话侧可回读的子代身份 |

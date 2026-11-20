@@ -10,9 +10,9 @@
 
 | 问题 | 立题前的落点 | 现在 |
 |------|--------------|------|
-| 一个包凭什么成为插件？装进去时改了哪几个文件？ | 只有 `inventory/` 一行货架注脚 | [`01`](./01-打包.md) · [`03`](./03-安装.md) |
-| 装坏一个插件，进程会死吗？半截的安装留下什么？ | 只有 boot 时序里的结算审计 | [`04`](./04-启动.md) 失败矩阵、[`03`](./03-安装.md) 失败表 |
-| 插件卸载后，Session、workspace、设置还在不在？ | 无落点 | [`07`](./07-卸载与数据留存.md) |
+| 一个包凭什么成为插件？装进去时改了哪几个文件？ | 只有 `inventory/` 一行货架注脚 | [`01`](./01-packaging.md) · [`03`](./03-installation.md) |
+| 装坏一个插件，进程会死吗？半截的安装留下什么？ | 只有 boot 时序里的结算审计 | [`04`](./04-startup.md) 失败矩阵、[`03`](./03-installation.md) 失败表 |
+| 插件卸载后，Session、workspace、设置还在不在？ | 无落点 | [`07`](./07-uninstallation-and-retention.md) |
 
 ## 七段与各自的不可逆边界
 
@@ -22,10 +22,10 @@
 |---|----|--------------------------|------|------------------------------|
 | ① | **打包** | 包发布后 `name@version` 固定，作者改不了用户机器上的那一份 | [`01-packaging.md`](./01-packaging.md) | [`inventory/05`](../inventory/05-taxonomy-and-design.md) 的形态分类 |
 | ② | **分发** | 包已在机器上，但还没有任何 profile 引用它 | [`02-distribution.md`](./02-distribution.md) | — |
-| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-installation.md`](./03-installation.md) | [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-五条原语对照源码.md) 的 fiber 与 inject |
+| ③ | **安装** | profile 的 `dependencies` 与 `dsh.profile.bundles` 被改写 | [`03-installation.md`](./03-installation.md) | [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-cordis-primitives-and-source-ownership.md) 的 fiber 与 inject |
 | ④ | **启动** | 行被挂进活树，`ctx` 服务开始对外提供 | [`04-startup.md`](./04-startup.md) | [`composition/05`](../composition/05-startup-window-and-first-screen-handoff.md) 的启动窗口与首屏交接 |
-| ⑤ | **特殊初始化** | 只跑一次的导入或版本戳写入完成，旧状态被改名、被接受或被拒绝 | [`05-special-initialization.md`](./05-special-initialization.md) | [`session-and-loop/04`](../../session-and-loop/04-格式世代与迁移.md) 的格式世代 |
-| ⑥ | **更新与启停** | 选择列表顺序改变，配置优先级随之改变 | [`06-update-and-stop.md`](./06-update-and-stop.md) | [`composition/03`](../composition/03-user-patch-hmr.md) 的 HMR 事务 |
+| ⑤ | **特殊初始化** | 只跑一次的导入或版本戳写入完成，旧状态被改名、被接受或被拒绝 | [`05-special-initialization.md`](./05-special-initialization.md) | [`session-and-loop/04`](../../session-and-loop/04-session-format-generations-and-migrations.md) 的格式世代 |
+| ⑥ | **更新与启停** | 选择列表顺序改变，配置优先级随之改变 | [`06-update-and-stop.md`](./06-update-and-stop.md) | [`composition/03`](../composition/03-user-patch-hmr.md) 的 HMR 阶段与失败状态 |
 | ⑦ | **卸载** | 代码与 patch 层消失，数据留下 | [`07-uninstallation-and-retention.md`](./07-uninstallation-and-retention.md) | — |
 
 这张表是**时间轴**；「深挖入口」一列是**结构轴**上的专题。两者不合并：时间轴回答「什么时候做什么」，结构轴回答「它到底怎么实现」。当某一段的机制正文超过三页时，那一段才值得在 `lifecycle/` 下开子目录；在那之前，深挖留在原专题，避免把两种轴混成一个目录。
@@ -44,11 +44,11 @@
 
 | 症状 | 先查 | 依据 |
 |------|------|------|
-| 装了，但 Plugins 页里没有 | 包没有 `dsh.bundle` 声明，被当成普通依赖 | [`02`](./02-分发.md) 的 `not-a-bundle` |
-| 在列表里，但行没有激活 | 版本门拒绝了它；看 `incompatible-version` 与 `compatibility.json` | [`03`](./03-安装.md) · [`04`](./04-启动.md) |
-| 行挂上了，服务不可用 | fiber 停在 `PENDING`，缺一个 provider | [`04`](./04-启动.md) |
-| 改了配置不生效 | `hmr` 行被关断、`appReady` 缺失，或这是 startup-only 的 profile | [`05`](./05-特殊初始化.md) · [`06`](./06-更新与启停.md) |
-| 卸载了，数据还在 | 没有数据卸载契约，这是默认行为 | [`07`](./07-卸载与数据留存.md) |
+| 装了，但 Plugins 页里没有 | 包没有 `dsh.bundle` 声明，被当成普通依赖 | [`02`](./02-distribution.md) 的 `not-a-bundle` |
+| 在列表里，但行没有激活 | 版本门拒绝了它；看 `incompatible-version` 与 `compatibility.json` | [`03`](./03-installation.md) · [`04`](./04-startup.md) |
+| 行挂上了，服务不可用 | fiber 停在 `PENDING`，缺一个 provider | [`04`](./04-startup.md) |
+| 改了配置不生效 | `hmr` 行被关断、`appReady` 缺失，或这是 startup-only 的 profile | [`05`](./05-special-initialization.md) · [`06`](./06-update-and-stop.md) |
+| 卸载了，数据还在 | 没有数据卸载契约，这是默认行为 | [`07`](./07-uninstallation-and-retention.md) |
 
 ## 三个 profile 分叉点
 
@@ -69,14 +69,15 @@
 | 问题 | 去哪 |
 |------|------|
 | fiber 状态机、effect 撤销顺序、waterfall 合同 | [`two-tree-runtime/framework/`](../../two-tree-runtime/framework/00-map.md) |
-| 配置层顺序、dump 保真、patch 算法 | [`composition/`](../composition/00-map.md) |
+| 配置来源、patch 顺序、dump 与 boot 的差别 | [`composition/`](../composition/00-map.md) |
+| 配置解析、volatile 读取、Settings 保存与继承 | [`09-configuration-and-settings.md`](./09-configuration-and-settings.md)；解析消费者见 [`runtime-integrity/`](../../runtime-integrity/00-index.md) |
 | 每个 profile 出厂带哪些插件 | [`runtime-profiles/`](../../runtime-profiles/00-map.md) |
 | 现成插件有什么、能不能直接复用 | [`inventory/`](../inventory/00-map.md) |
 | 一个能力怎么换实现而不改调用方 | [`capability-seams/`](../../capability-seams/00-map.md) |
-| 插件作者要交什么测试证据 | [`test-strategy/13`](../../test-strategy/13-plugin-testing.md) · [`14`](../../test-strategy/14-plugin-testing-playbook.md) · [`15`](../../test-strategy/15-plugin-testing-contract.md) |
+| 插件作者要交什么测试证据 | [`test-strategy/13`](../../test-strategy/plugin-testing/13-dsh-plugin-testing-policy.md) · [`14`](../../test-strategy/plugin-testing/14-dsh-plugin-testing-playbook.md) · [`15`](../../test-strategy/plugin-testing/15-dsh-plugin-testing-contract.md) |
 | **装 / 更 / 卸 / 首启的机制与失败语义** | **本专题** |
 
-本专题不重写配置层顺序与 dump 保真，只链接 [`composition/`](../composition/00-map.md)；不重写 fiber 状态机，只链接 [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-五条原语对照源码.md)。
+配置层叠和 dump 保真归 [`composition/`](../composition/00-map.md)，Config 解析归 [`runtime-integrity/`](../../runtime-integrity/00-index.md)，运行读取、Settings 保存和重置归本专题 [`09`](./09-configuration-and-settings.md)；fiber 状态机归 [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-cordis-primitives-and-source-ownership.md)。
 
 ## 阅读路径
 

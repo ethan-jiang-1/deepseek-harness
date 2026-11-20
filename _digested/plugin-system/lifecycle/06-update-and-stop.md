@@ -63,7 +63,7 @@ bundle 开关（`setBundleEnabled`，`packages/boot/plugin-manager/src/index.ts:
 
 - 本次刷新**新引入**的失活条目 → 抛错。
 - 启动时就存在的失败 → 逐条 warning，返回给调用方，不打断进程。
-- **apply 之前**的候选失败（解析 / 预检 / `entry.update` 拒绝）不提交，正在服务的树继续用旧 patch 集；`entry.update` 已换入新一代后清点出新引入失活，则报错但已提交，不回滚。
+- 在 `entry.update()` 被调用前，解析、组合或预检失败不会应用候选；调用前临时停下的行会尝试恢复。进入 `entry.update()` 后，Loader 开始应用新配置；若 update 或随后的激活检查失败，调用方可能收到错误，但机制不承诺把整棵树、磁盘文件或插件外部副作用全局回滚。状态细分见 [`composition/03`](../composition/03-user-patch-hmr.md)。
 
 成功后 `emit('app-boot/config-reload')`，事件不带 diff 也不带解析后的配置。机制细节见 [`composition/03`](../composition/03-user-patch-hmr.md)。
 
@@ -79,6 +79,6 @@ headless、sdk、acp 的 `hmr` 行显式关断（[`00-map`](./00-map.md) 的分�
 
 ## 本页的边界
 
-「变化之后树里发生了什么」是 Cordis 的 effect 语义，见 [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-五条原语对照源码.md)。本页只管「谁写的、写到哪、什么时候生效」。
+「变化之后树里发生了什么」是 Cordis 的 effect 语义，见 [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-cordis-primitives-and-source-ownership.md)。本页只管「谁写的、写到哪、什么时候生效」。
 
-下一段：[`07-卸载与数据留存.md`](./07-卸载与数据留存.md)。
+下一段：[`07-卸载与数据留存.md`](./07-uninstallation-and-retention.md)。

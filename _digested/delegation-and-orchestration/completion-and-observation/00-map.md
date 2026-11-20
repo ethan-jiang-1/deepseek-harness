@@ -20,7 +20,7 @@
 | [`04`](./04-persistent-facts-derived-projections-and-live-authority.md) | 持久事实、派生 projection、内存 authority（状态三分法） |
 | [`05`](./05-delegation-graph-node-and-edge-projection.md) | 委派图能画什么：持久源、节点/边字段、三个缺口词 |
 | [`06`](./06-workflow-reproducibility-cancellation-and-missing-results.md) | workflow 结果为什么不可复现；取消与 `null`/`missing` |
-| [`07`](./07-evidence-layers-declaration-mount-mechanism-behaviour.md) | 四层证据各证什么；fake 只证明 fake；挂载绿 ≠ 行为绿 |
+| [`07`](./07-evidence-layers-declaration-mount-mechanism-behaviour.md) | 声明、挂载、请求工具与行为分别如何取证；路由之后的独立成果验收 |
 
 ![五个终态到一次有界重试](./figures/terminal-state-retry.svg)
 

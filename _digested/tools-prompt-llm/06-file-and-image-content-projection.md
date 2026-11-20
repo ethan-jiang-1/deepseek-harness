@@ -1,0 +1,46 @@
+# 文件块与内容块投影
+
+> **为什么单独有这一页**：用户在聊天里上传一个 PDF/代码文件，或者模型要看一张图，看起来都像在消息里塞了一个附件——但真把二进制大文件或模型不支持的模态原样发给各家 provider，轻则请求报错、重则让整条历史会话从此打不开。DSH 为此严格区分「消息里存什么内容块（`FileBlock` / `ImageBlock`）」和「发请求时真正送给模型的输入模态」，并且规定**文件从不原生直传任何 provider，必须投影为带可读路径提示的 handle 文本**。本页把这套不对称投影与容错降级讲清楚，避免在写附件或多模态扩展时踩坑。
+>
+> 源码核验入口：`packages/llm/llm/src/types.ts` 的 `FileBlock`、`packages/llm/llm/src/content.ts` 的投影函数、`packages/llm/llm/src/index.ts` 的 dispatch 边界、`packages/attachment/attachment/src/types.ts` 的 `FileAttachmentRef`。
+
+文件引用在每次请求中都变成 handle 文本；图像则按路由模态、已记录的卸载选择与预算决定发送图像还是占位文本。蓝色步骤只改本次请求，紫色 `image/offload` 决定会影响选中出现处的后续请求。
+
+![文件 handle 与图像模态及卸载的请求投影](./figures/attachment-request-projection.svg)
+
+## 两种东西
+
+`FileBlock` 是内容块的一种，`type: 'file'`，载荷是一个 `FileAttachmentRef`（`packages/llm/llm/src/types.ts:98`）。`FileAttachmentRef` 是内容寻址的耐久引用：`attachmentId` 是逐字节存储内容的 sha256，另有清洗过的显示名与精确字节数；它**不是**文件系统路径，也不是 bearer URL（`packages/attachment/attachment/src/types.ts:39-45`）。本地 provider 把逐字节副本存在 attachment store 里，并用 `fileHostPath` 暴露宿主路径（`packages/attachment/attachment-local/src/index.ts:244`）。
+
+**文件从不原生发给任何 provider。** `projectFilesToText`（`packages/llm/llm/src/content.ts:199`）在每次 dispatch 前**无条件**把扁平消息 `content` 数组中的 file block 替换成确定性 handle 文本。dispatch 边界的调用在 `packages/llm/llm/src/index.ts:1096`-`:1100`，注释写明「Files are never dispatched natively: every route receives handle text」（`:1096`）；同一边界还接了工具面投影 `projectToolUpdates`（`:1107`-`:1108`，机制见 [`02-tool-pipeline-approval-and-timeouts.md`](./02-tool-pipeline-approval-and-timeouts.md) 的「会话中途的工具面更新」一节）。
+
+## handle 文本的两条分支
+
+`fileHandleText(ref, readonlyPath)`（`packages/llm/llm/src/content.ts:151`）生成同一份确定性文本：文件名、字节数、`sha256:` 前 8 位，以及读取指引「按需用文件工具读这个只读副本；改之前先复制到可写位置；委派文件工作要把这个保存路径写进 delegation prompt，只有共享同一执行环境的子代理能读」。
+
+路径无法解析时换成显式的 no-path 文本：说明当前执行环境访问不到可读路径，要求模型**报告该限制、不要声称读过**。路径解析走 `LlmRuntime.fileReadPath`（`packages/llm/llm/src/index.ts:1043`）→ `ctx.attachments.fileHostPath` + `ctx.fs.processPathFromHostPath` 的结构化面；引用本身损坏时降级成 no-path handle，而不是让同一份日志之后的每个请求都失败。
+
+`LlmRuntime.fileRequestText`（`packages/llm/llm/src/index.ts:702`）对外暴露同一文本，供 UI 与 token 记账使用（`dsh-token-meter` 用它估算文件 handle 的 token，`packages/llm/token-meter/src/index.ts:152,200-204`）。
+
+## 与图像投影的不对称
+
+**文件是无条件的，图像是条件式的**：
+
+- 文件：任何 route 都只收到 handle 文本，没有原生 file 内容。
+- 图像：仅当 `inputModalities` 已声明且不含 `image` 时，共享 dispatch 才调用 `projectImagesForTextModel`；其他情况将图像交给 adapter 校验能力并准备 provider 图像载荷（`packages/llm/llm/src/index.ts` 的 dispatch 投影、`packages/llm/llm-deepseek/src/images.ts` 的 `prepareImages`）。
+
+两者共用的内容块扫描分别是 `contentHasFile`（`packages/llm/llm/src/content.ts:136`）与 `contentHasImage`（同文件 `:126`），均遍历消息的扁平 `content` 数组（工具结果以 `role: 'tool'` 消息的扁平块承载）。
+
+## 模态与内容块不是一回事
+
+`MODALITY_GATE` 仍只有 `text` 与 `image` 两项（`packages/llm/llm-pi-ai/src/catalog.ts:48-54`），`MODALITIES` 就是这两个 key。所以「OpenRouter 的 video 输入无法在 DSH 声明」这类结论仍成立；同时 `file` 是**内容块种类**，不是模型输入模态——它不进入 `inputModalities`，也不改变任何 route 的模态门。
+
+图像预算与超预算处置是本页的承重合同：
+
+- **预算**：`maxRequestFilesBytes` 默认 128 MiB、`maxInlineRequestImageBytes` 默认 20 MiB、`maxImagesPerRequest` 默认 600（`packages/llm/llm-deepseek/src/request-pricing.ts:20,22` 与 `defaults.ts:10`，配置由 `config.ts` 接入）。
+- **超预算**：route 用 `requiredImageOffload` 算出还需省略的最早保留图像出现处数量，并抛 `IMAGE_OFFLOAD_REQUIRED`。已挂载的 `compaction-image-offload` 从当前输入中选择出现处，append 耐久 `image/offload` 事件；事件的 `targets` 按消息 `seq` 与 `imageIndexes` 选中出现处，派生消息据此标 `offloaded: true` 并重试（`packages/compaction/compaction-image-offload/src/` 的 `offloadOldestImages`、`imageOffloadProjection`）。图像 adapter 在请求准备时用 `projectOffloadedImages` / `offloadedImageText` 将这些出现处转为占位文本（`packages/llm/llm-deepseek/src/images.ts`、`packages/llm/llm-pi-ai/src/context.ts`）。卸载选择写入 durable log，附件引用和其他未选中出现处仍可保留。
+- **DeepSeek Files API**：多模态 route 的图像载荷可序列化成 `{type:'image', source:{type:'file', file_id}}`（`packages/llm/llm-deepseek/src/serialize.ts`）；这是图像传输引用。图像请求版本经 `DeepSeekFileStore` 上传、按 `variantId` 索引复用并带过期与配额回收；解析失败回退 base64 data URL；provider 拒绝 file id 时 invalidate 该映射并在同一请求重试一次；413 映射为 `INVALID_REQUEST`。模型要在 catalog 声明 `inputModalities` 含 `image` 才收图像输入（门控在 adapter 准备时）。
+- **编码阶梯**：`attachment-local` 的 `encoding` / `normalization` / `compression-limiter` / `request-image` 承担统一 encoding ladder——`saveImage` 返回 canonical ref 与 source facts；alpha 感知选 webp/jpeg；只有「干净、单帧、无元数据」的输入直通；`maxBytes` 是质量阶梯的目标而非硬上限。
+- **PTC defer**：PTC 模式下子工具结果里的 image block 不嵌进 `run_code` 的程序输出——成功的 image-bearing result 在 run 结束后经 `exec.deferContext` 转为 `{ kind: 'ptc-mode' }` source 的 user message（`packages/core/tools/src/ptc.ts:641-646`），进入下一轮获准请求；`read_image` 只把图像放进自己的 tool result。
+
+多 vendor 场景下，这条「文件只以 handle 文本出去」的事实不变。

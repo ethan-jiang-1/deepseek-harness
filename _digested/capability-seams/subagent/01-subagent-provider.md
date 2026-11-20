@@ -39,4 +39,4 @@
 | `packages/subagent/subagent-dsh-sdk/src/index.ts` | DSH SDK 模型路由解析 |
 
 > [!NOTE]
-> 更多有关 Subagent 目录枚举与 Host 交互的详情，见 [`05-subagent-catalog与host交付.md`](./05-subagent-catalog与host交付.md)。
+> 更多有关 Subagent 目录枚举与 Host 交互的详情，见 [`02-subagent-catalog.md`](./02-subagent-catalog.md)。

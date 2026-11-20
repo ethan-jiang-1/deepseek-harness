@@ -2,7 +2,7 @@
 
 > **为什么单独有这一页**：多数 agent 系统在内存里维护一份可读可写的 `messages[]`，需要存盘时再整体序列化；DSH 相反，把**只追加的事件日志**当成唯一真实来源，下一次请求发给模型的历史、UI 展示的对话树、以及跨版本兼容性判断全部从同一份 log 投影出来。想在不损坏持久化历史、也不漏掉模型可见上下文的前提下新增事件或读懂日志，必须先把「log 里存了什么、哪些进模型请求、遇到不认识的事件何时该报错」立成一张清晰地图。
 >
-> **读法与分工**：先读「一份 log 是什么」区分“记录事实”和“投影消息”，再按需检索核心事件表；跨版本格式升级与迁移规则不在本页展开，见 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
+> **读法与分工**：先读「一份 log 是什么」区分“记录事实”和“投影消息”，再按需检索核心事件表；跨版本格式升级与迁移规则不在本页展开，见 [`04-session-format-generations-and-migrations.md`](./04-session-format-generations-and-migrations.md)。
 >
 > 源码核验入口：`packages/core/session/src/types.ts`、`packages/core/session/src/known-event-types.ts`、[`2026-08-10-session-log-version-mechanism`](../../.agents/notes/implemented/architecture/2026-08-10-session-log-version-mechanism.md)、[`2026-08-31-released-session-format-migrations`](../../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.md)、[`docs/session-format-status.md`](../../docs/session-format-status.md)、[`2026-08-31-session-sequence-and-log-offset-brands`](../../.agents/notes/archived/architecture/2026-08-31-session-sequence-and-log-offset-brands.md)。
 
@@ -38,6 +38,10 @@
 
 `surfaceOp`：`'append'` 接到尾巴；`{ op: 'replace', startSeq, endSeq }` 换掉一段有序 surface（compaction 与 system 节点改写用）。端点按**当前 surface 顺序**、含端点解释，不是数值 seq 顺序；replace 节点的 `sourceEventSeqs` 必须覆盖被挡住的每一个 surface 节点。
 
+下图并列展示原始日志与当前节点：四条事件都是 `user/message`，`[2, 1]` 可以按当前顺序整体替换为 `[3]`；系统头保护单独标注（[折叠实现](../../packages/core/session/src/surface.ts)、[范围测试](../../packages/core/session/tests/surface.spec.ts)）。
+
+![原始日志、当前 surface 与替换范围](./figures/surface-replacement-trace.svg)
+
 ## required-on-read
 
 信封上的 `ignorable?: true`。缺省 = **required**。读者碰到不认识的 `type`：
@@ -55,7 +59,7 @@ required 与否**只由信封的 `ignorable` 决定**，不按事件「注册时
 
 ## 持久化与版本权威
 
-当前持久化 **JSONL-only**：`session-persistence-jsonl` 用 zstd 拼接多帧容器压缩，支持追加与批量恢复。写者版本（`SESSION_FORMAT_VERSION`，钉在每个 `SessionHeader` 上）、bump 规则（写者决定、加普通事件不 bump）、读方向（更新拒、更旧迁）、世代不可变承诺与读准备/写发布时序的唯一家是 [`04-格式世代与迁移.md`](./04-格式世代与迁移.md)。
+当前持久化 **JSONL-only**：`session-persistence-jsonl` 用 zstd 拼接多帧容器压缩，支持追加与批量恢复。写者版本（`SESSION_FORMAT_VERSION`，钉在每个 `SessionHeader` 上）、bump 规则（写者决定、加普通事件不 bump）、读方向（更新拒、更旧迁）、世代不可变承诺与读准备/写发布时序的唯一家是 [`04-session-format-generations-and-migrations.md`](./04-session-format-generations-and-migrations.md)。
 
 ## 完整记录不等于完整发送
 

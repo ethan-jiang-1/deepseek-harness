@@ -25,7 +25,7 @@ acp:          ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
 
 （按阅读顺序列；源码声明顺序无语义。层叠算法本身——空 entry list 起、bundle 层、profile patch、home patch、`--patch` overlay——的家在 [`../plugin-system/composition/`](../plugin-system/composition/00-map.md)。）
 
-从模板派生自定义 profile 用 `dsh --from-default-profile <模板>`；创建路径与保留名的机制见 [`../plugin-system/composition/04-profile-创建与保留名.md`](../plugin-system/composition/04-profile-创建与保留名.md)。
+从模板派生自定义 profile 用 `dsh --from-default-profile <模板>`；创建路径与保留名的机制见 [`../plugin-system/composition/04-profile-创建与保留名.md`](../plugin-system/composition/04-profile-creation-and-reserved-names.md)。
 
 ## 决定 Profile 差异的三条轴
 
@@ -41,7 +41,7 @@ acp:          ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-acp-app']
 
 1. **进程生命周期**：web 常驻等浏览器；headless 回答一条任务即退出；sdk / sdk-minimal / acp 是常驻 stdio 协议服务，`shutdown` 请求或 stdin end 才退出。
 2. **stdout 的归属**：headless / sdk / sdk-minimal / acp 的 stdout 是**纯数据管道**（最终回复或协议帧），不能装 stdout logger，否则污染输出；web 的 stdout 给用户，可以装。
-3. **运行时 patch 重载（HMR）**：web 支持（自定义 launcher profile 默认同样开启）；headless / sdk / sdk-minimal / acp 显式禁用——一次性任务与已开始的协议不支持中途重组。机制（三份被监视文件、原子换入、appReady 前提）归 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)。
+3. **运行时 patch 重载（HMR）**：web 支持（自定义 launcher profile 默认同样开启）；headless / sdk / sdk-minimal / acp 显式禁用——一次性任务与已开始的协议不支持中途重组。监视与串行重组见 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)；是否应用新代与失败后状态取决于失败发生阶段。
 
 ## 共同基底与独有层
 
@@ -77,6 +77,6 @@ web 与 desktop 的「两棵树」形状（host 半边 + 浏览器半边）归 [
 | `packages/boot/app-boot/src/profile.ts` | `PROFILE_TEMPLATES`、`initProfile`、`loadProfile`、`loadProfileDirectory` |
 | `packages/bundle/base/cordis.patch.yml` | base-backed 组合共享的核心插件清单 |
 | `packages/bundle/{web-app,headless,sdk-app,sdk-minimal,acp-app}/cordis.patch.yml` | 各 profile 特有层 |
-| `packages/util/http-proxy/` | launcher 在任何行 mount 之前装的进程级出网代理（机制见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/06-外发代理策略.md)） |
+| `packages/util/http-proxy/` | launcher 在任何行 mount 之前装的进程级出网代理（机制见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/integration/01-egress-proxy.md)） |
 
 > 承重词按 [`canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

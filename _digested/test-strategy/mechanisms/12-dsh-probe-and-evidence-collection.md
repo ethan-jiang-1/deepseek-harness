@@ -2,7 +2,7 @@
 
 > **为什么单独有这一页**：翻看测试与启动代码时，到处能见到叫 `probe` 的函数——环境探针、`hasPwsh`、覆盖率豁免 `probe`，甚至 e2e 注释里的 `keyword probe`。新手常迷茫：**`probe` 到底是不是一种测试框架概念，为什么词典（`canon/GLOSSARY`）不收它，而有些探测条件写错一点就会制造整份测试「假绿」？** 本页把分散的几十处 `probe` 抽成一个清晰的「取证动作」模型，厘清它和 `trace`/`span` 的边界，以及为什么「豁免用的探针与跳过用例的判据必须同源」。
 >
-> 本页回答：**DSH 里的 `probe` 到底是什么、它产出什么、该归哪个专题。** 结论先给：probe 不是术语表里的对象，是一种**问事实的动作**；它的产物是**分叉**、**判断**或**事实**，从来不是测试资产。它在防漏体系里的位置是**证据选择器**——决定一条用例跑不跑、一个文件豁免不豁免、一个平台 skip 不 skip；选择器与它守护的判断必须同源（[04](./04-anti-omission.md) 的 M6）。
+> 本页回答：**DSH 里的 `probe` 到底是什么、它产出什么、该归哪个专题。** 结论先给：probe 不是术语表里的对象，是一种**问事实的动作**；它的产物是**分叉**、**判断**或**事实**，从来不是测试资产。它在防漏体系里的位置是**证据选择器**——决定一条用例跑不跑、一个文件豁免不豁免、一个平台 skip 不 skip；选择器与它守护的判断必须同源（[04](../execution/04-dsh-testing-anti-omission-mechanisms.md) 的 M6）。
 >
 > 源码核验入口：`apps/desktop/src/login-shell-environment.ts`、`packages/subprocess/subprocess-local/src/{linux-scope,windows-job,index}.ts`、`packages/session/session-persistence-jsonl/src/index.ts`、`vitest.config.ts`、`docs/testing.md`。
 
@@ -58,7 +58,7 @@
 
 这里最重要的一条在产品纪律之外、在测试内部：
 
-> **探针与它守护的判断必须同源。** `vitest.config.ts` 那段的原话把失败模式说尽了——如果豁免用的探针比用例用的判据更宽，就会出现"用例其实要跑、却被豁免掉"的假绿。这正是本卷 [`07-ci-gates`](./07-ci-gates.md) 与 [`08-reliability`](./08-reliability.md) 反复讲的防假绿在 probe 上的具体形态。
+> **探针与它守护的判断必须同源。** `vitest.config.ts` 那段的原话把失败模式说尽了——如果豁免用的探针比用例用的判据更宽，就会出现"用例其实要跑、却被豁免掉"的假绿。这正是本卷 [`07-ci-gates`](../execution/07-dsh-ci-gates-and-reliability.md) 与 [`08-reliability`](../execution/08-dsh-testing-reliability-and-flake-analysis.md) 反复讲的防假绿在 probe 上的具体形态。
 
 第二条：**探不通时的默认动作是"跳过"，不是"通过"**。跳过是可见的空缺，通过是伪造的证据。二者在 CI 汇总里长得像，含义相反。
 
@@ -69,7 +69,7 @@
 - `traceSession` / `traceEvent`（`packages/session-query/session-query/src/tracing.ts`）只读：前者沿 `parentSession` 给祖先链与递归子树，后者给 `replacedBy` 链、被遮蔽事件与 `sourceEventSeqs` 派生事件。答案是"这条事件从哪来、被谁换掉、影响谁"。
 - `ctx.otel` 是 **OTLP logs** 出口，不是 traces。全仓 `traceparent`、`setSpan`、`tracer`、`propagation.getActive()` **零命中**——DSH 没有分布式 tracing。
 
-机制不在这里展开：谱系与替换链见 [`../delegation-and-orchestration/completion-and-observation/03-session-lineage-and-agent-incarnation.md`](../delegation-and-orchestration/completion-and-observation/03-session-lineage-and-agent-incarnation.md)，出口与消费者见 [`../plugin-system/inventory/02-plugin-catalog.md`](../plugin-system/inventory/02-plugin-catalog.md) 的 `otel` 与 `session-telemetry-otel` 行。
+机制不在这里展开：谱系与替换链见 [`../delegation-and-orchestration/completion-and-observation/03-session-lineage-and-agent-incarnation.md`](../../delegation-and-orchestration/completion-and-observation/03-session-lineage-and-agent-incarnation.md)，出口与消费者见 [`../plugin-system/inventory/02-plugin-catalog.md`](../../plugin-system/inventory/02-plugin-catalog.md) 的 `otel` 与 `session-telemetry-otel` 行。
 
 ## 四、要不要把当前场景叫"探针"：一个判据
 
@@ -83,9 +83,9 @@
 
 ## 五、为什么不收进 `canon/GLOSSARY`
 
-按 [`../canon/00-map.md`](../canon/00-map.md) 与 [`../canon/GLOSSARY.md`](../canon/GLOSSARY.md) 的收词规则：词表收的是 **DSH 承认的对象与机制**，每行必须能 grep 到**原文**。`probe` 虽然 grep 得到几十处，但它是**函数名和局部变量的前缀**，不是 DSH 定义的对象——没有 `Probe` 类型、没有 `ctx.probe` 服务、没有 glossary 条目。把它写进词表，等于凭空给 DSH 造一个机制。
+按 [`../canon/00-map.md`](../../canon/00-map.md) 与 [`../canon/GLOSSARY.md`](../../canon/GLOSSARY.md) 的收词规则：词表收的是 **DSH 承认的对象与机制**，每行必须能 grep 到**原文**。`probe` 虽然 grep 得到几十处，但它是**函数名和局部变量的前缀**，不是 DSH 定义的对象——没有 `Probe` 类型、没有 `ctx.probe` 服务、没有 glossary 条目。把它写进词表，等于凭空给 DSH 造一个机制。
 
-按 [`../canon/03-retired.md`](../canon/03-retired.md) 的加一行条件（"已在正文出现过、且让人误以为它是 DSH 的东西" + "能给出 DSH 原词替换"），中文自造的**「观测探针」**确实够格：它把上面三件事糊成一个词，本页就是替换后的说法。
+按 [`../canon/03-retired.md`](../../canon/03-retired.md) 的加一行条件（"已在正文出现过、且让人误以为它是 DSH 的东西" + "能给出 DSH 原词替换"），中文自造的**「观测探针」**确实够格：它把上面三件事糊成一个词，本页就是替换后的说法。
 
 ## 源码入口
 
@@ -103,5 +103,5 @@
 ## 边界
 
 - 本页只拥有**判据**：probe 产出什么、归谁、要不要叫这个名。每个探针的机制仍在各自专题。
-- 探前提一节的产品用例只点到"产物是分支"；containment 的选路细节见 [`../capability-seams/07-原生containment与native-system.md`](../capability-seams/07-原生containment与native-system.md)。
+- 探前提一节的产品用例只点到"产物是分支"；containment 的选路细节见 [`../capability-seams/07-原生containment与native-system.md`](../../capability-seams/execution/02-native-containment.md)。
 - 本页不主张"probe 越多越好"。DSH 的 default 是**不探**：能力可选时在 use site 探一次（`docs/cordis-tutorial/03-services.md:82`），能力必需时用 `inject` 声明硬依赖，而不是探。

@@ -14,10 +14,10 @@
 
 | 目录 | 段 | 内容 |
 |------|----|------|
-| [`typert/`](./typert/) | 声明期 + build 期 | [`01`](./typert/01-声明期-装饰器与-namespace.md) 装饰器、namespace 键、声明合并、四个包与三个 `core` 服务（`ctx.typert`、`ctx.typertGateway`、`ctx.remoteAccess`）；[`02`](./typert/02-类型图与两族产物.md) `TypeGraph`、`typert.host.*` / `typert.remote-client.*`、`typert-contracts` 门禁、SRC 弱化路径 |
-| [`gateway/`](./gateway/) | 运行期（Host 侧 + Client 侧） | [`01`](./gateway/01-Host-派发与访问控制.md) 注册、registry、派发顺序与 `ctx.remoteAccess`；[`02`](./gateway/02-客户端-mount-与装配.md) `$mount` 与 `api/remotes` 的装配清单 |
-| [`connection/`](./connection/) | 载体 | [`01`](./connection/01-载体-rpcId-与逻辑流.md) 信封、`rpcId`、`POST /api/<ns>/<method>`、mux 与 uplink；[`02`](./connection/02-认证与浏览器宿主.md) process-token URL、`dsh-auth-` cookie、桌面宿主 |
-| [`streams/`](./streams/) | 会话流 | [`01`](./streams/01-一条-emit-两条出站链路.md) `session/event` 与 `$events` 白名单两条出站链路；[`02`](./streams/02-三类帧与-wire-校验.md) follow 的三类帧与客户端 wire 校验 |
+| [`typert/`](./typert/) | 声明期 + build 期 | [`01`](./typert/01-remote-declarations-decorators-and-namespaces.md) 装饰器、namespace 键、声明合并、四个包与三个 `core` 服务（`ctx.typert`、`ctx.typertGateway`、`ctx.remoteAccess`）；[`02`](./typert/02-type-graphs-and-generated-host-client-artifacts.md) `TypeGraph`、`typert.host.*` / `typert.remote-client.*`、`typert-contracts` 门禁、SRC 弱化路径 |
+| [`gateway/`](./gateway/) | 运行期（Host 侧 + Client 侧） | [`01`](./gateway/01-host-remote-dispatch-and-access-control.md) 注册、registry、派发顺序与 `ctx.remoteAccess`；[`02`](./gateway/02-client-remote-namespace-mounting-and-assembly.md) `$mount` 与 `api/remotes` 的装配清单 |
+| [`connection/`](./connection/) | 载体 | [`01`](./connection/01-connection-carriers-rpc-identifiers-and-multiplexed-streams.md) 信封、`rpcId`、`POST /api/<ns>/<method>`、mux 与 uplink；[`02`](./connection/02-browser-authentication-and-host-admission.md) process-token URL、`dsh-auth-` cookie、桌面宿主 |
+| [`streams/`](./streams/) | 会话流 | [`01`](./streams/01-session-follow-and-host-event-forwarding.md) `session/event` 与 `$events` 白名单两条出站链路；[`02`](./streams/02-follow-frame-types-and-session-wire-validation.md) follow 的三类帧与客户端 wire 校验 |
 
 ## 谁定义、谁提供、谁消费
 
@@ -38,20 +38,20 @@
 
 **加一个能被浏览器调用的方法**，按顺序做五件事：
 
-1. 在 Host Service 的 public 非 static 方法上标 `@Remote`（导出名不同就写 `@Remote('create')`，逻辑流写 `@Remote({ mode: 'stream' })`）——未被标记的方法不会进入生成的 Client 类型，也不能经 `ctx.remote` 调用（[`typert/01`](./typert/01-声明期-装饰器与-namespace.md)）。
+1. 在 Host Service 的 public 非 static 方法上标 `@Remote`（导出名不同就写 `@Remote('create')`，逻辑流写 `@Remote({ mode: 'stream' })`）——未被标记的方法不会进入生成的 Client 类型，也不能经 `ctx.remote` 调用（[`typert/01`](./typert/01-remote-declarations-decorators-and-namespaces.md)）。
 2. 让包在 `package.json` 里声明 `./typert` 与 `./remote`，两者都指向 `lib/` 下的生成文件；只依赖 `@deepseek-ai/dsh-typert-protocol` 这个轻量协议包。
-3. 重跑 `pnpm run build:lib`——改了签名就必须重跑，只改方法体不用（[`typert/02`](./typert/02-类型图与两族产物.md)）。
+3. 重跑 `pnpm run build:lib`——改了签名就必须重跑，只改方法体不用（[`typert/02`](./typert/02-type-graphs-and-generated-host-client-artifacts.md)）。
 4. 在 `packages/api/remotes` 的 Client 端装配清单里加一行，否则这个方法对整个应用不可见——「哪些 Host 方法对某个 Client 可见」是 build 期选定的，不是运行时发现。
-5. 真正读该 namespace 的业务包，在自己的 `inject` 里同时声明 `remote` 与 `remote.<namespace>`（[`gateway/02`](./gateway/02-客户端-mount-与装配.md)）。
+5. 真正读该 namespace 的业务包，在自己的 `inject` 里同时声明 `remote` 与 `remote.<namespace>`（[`gateway/02`](./gateway/02-client-remote-namespace-mounting-and-assembly.md)）。
 
-**让一条 Host 事实到达浏览器**，先判断它属于哪条链路：session 事件走 `follow` 流，非 session 事件要进 `API_REMOTE_FORWARDED_EVENTS` 白名单——白名单里没有 `session/event`，也不该加（[`streams/01`](./streams/01-一条-emit-两条出站链路.md)）。
+**让一条 Host 事实到达浏览器**，先判断它属于哪条链路：session 事件走 `follow` 流，非 session 事件要进 `API_REMOTE_FORWARDED_EVENTS` 白名单——白名单里没有 `session/event`，也不该加（[`streams/01`](./streams/01-session-follow-and-host-event-forwarding.md)）。
 
 三个最常见的坑：把 descriptor 当成上线数据（它只在本进程）；以为加 `@Remote` 就够（还要 export 声明、重建、装配三处）；在 Client 端手写 fetch 绕开 `ctx.remote`（取消、`rpcId` 与信任都在 carrier 里，绕开就全丢了）。
 
 ## 边界
 
-- ACP 与 JSON-RPC SDK 是另外两条协议线，不是这条 Remote：[`../../surfaces-entrypoints/02-acp与jsonrpc.md`](../../surfaces-entrypoints/02-acp与jsonrpc.md)。
-- `ctx.remote` 的客户端用法（谁拥有状态、怎么投影）在 [`../client/state/01`](../client/state/01-谁拥有一份状态.md)；本目录只讲线本身。
+- ACP 与 JSON-RPC SDK 是另外两条协议线，不是这条 Remote：[`../../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md`](../../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md)。
+- `ctx.remote` 的客户端用法（谁拥有状态、怎么投影）在 [`../client/state/01`](../client/state/01-client-state-ownership-and-react-bindings.md)；本目录只讲线本身。
 - 类型系统的生成前置（`tsconfig` face 聚合、`build:artifacts` 顺序）在 [`../../docs/development.md`](../../../docs/development.md) 与 gate 脚本；本目录只列与 Remote 契约直接相关的三个门禁。
 
 ## 上游阅读顺序

@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1088" viewBox="0 0 960 1088" role="img" aria-labelledby="title desc">
+  <title id="title">附件请求投影：文件 handle 与图像卸载走不同路径</title>
+  <desc id="desc">耐久消息保存 FileBlock 与 ImageBlock 的结构化附件引用，attachmentId 不是路径。共享 LLM dispatch 对每个 FileBlock 无条件调用 projectFilesToText：经 attachment provider 的宿主路径及 filesystem provider 的执行环境映射，得到可读路径 handle 或无路径 handle，模型收到文本而非文件正文。显式不含 image 的路由收到 text-only 图像占位；其他路由交给 adapter 校验图像能力。图像 adapter 将已 offloaded 的出现处转为文本，其余准备请求版本并检查数量和实际编码字节预算。超预算返回 IMAGE_OFFLOAD_REQUIRED，已挂载的 compaction-image-offload 插件挑选最早保留的输入图像出现处，append image/offload 事件，按消息 seq 和 imageIndexes 持久选择，再重试。被选中的出现处在派生消息中标记 offloaded，后续请求发送占位文本，附件字节和原消息记录保持可重建。DeepSeek 的 file_id 是原生图像载荷的传输引用，与 FileBlock 不同。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 9 4.5 0 9Z" fill="#52647b"/></marker>
+    <marker id="repair" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 9 4.5 0 9Z" fill="#936824"/></marker>
+    <style>
+      text { font-family: system-ui, -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif; fill: #203149; font-size: 18px; }
+      .title { font-size: 25px; font-weight: 750; }
+      .heading { font-size: 20px; font-weight: 700; }
+      .code { font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace; font-size: 18px; }
+      .small { font-size: 16px; fill: #52647b; }
+      .edge { fill: none; stroke: #52647b; stroke-width: 2; marker-end: url(#arrow); }
+      .repair { fill: none; stroke: #936824; stroke-width: 2.2; marker-end: url(#repair); }
+    </style>
+  </defs>
+  <rect width="960" height="1088" rx="16" fill="#f7f9fc"/>
+  <text x="32" y="41" class="title">附件如何进请求：文件转 handle，图像看模态与预算</text>
+  <text x="32" y="68" class="small">蓝色：仅请求期投影　　紫色：耐久引用或决定　　箭头：输入怎样变成模型收到的内容</text>
+
+  <rect x="32" y="94" width="896" height="86" rx="12" fill="#f0ebff" stroke="#b8a7e9"/>
+  <text x="52" y="126" class="heading">① 耐久消息保存结构化引用</text>
+  <text x="52" y="158" class="code">FileBlock → FileAttachmentRef     ImageBlock → ImageAttachmentRef</text>
+  <text x="895" y="126" text-anchor="end" class="small">attachmentId ≠ 路径</text>
+
+  <path d="M124 180V225" class="edge"/>
+  <text x="32" y="212" class="heading">文件 · 所有路由</text>
+  <rect x="32" y="228" width="180" height="178" rx="12" fill="#f0ebff" stroke="#b8a7e9"/>
+  <text x="52" y="263" class="heading">② 文件引用</text>
+  <text x="52" y="300" class="code">FileBlock</text>
+  <text x="52" y="336">原样存储的副本</text>
+  <text x="52" y="373" class="small">名称 · 字节 · 摘要</text>
+  <path d="M212 317H247" class="edge"/>
+
+  <rect x="250" y="228" width="300" height="178" rx="12" fill="#eaf2ff" stroke="#9bbde9"/>
+  <text x="270" y="263" class="heading">解析当前执行环境路径</text>
+  <text x="270" y="302" class="code">attachments.fileHostPath</text>
+  <path d="M400 315V330" class="edge"/>
+  <text x="270" y="352" class="code">fs 执行环境路径映射</text>
+  <text x="270" y="373" class="small">processPathFromHostPath</text>
+  <text x="270" y="390" class="small">projectFilesToText 无条件执行</text>
+
+  <path d="M550 274H597" class="edge"/>
+  <path d="M550 362H597" class="edge"/>
+  <rect x="600" y="228" width="328" height="80" rx="12" fill="#eaf2ff" stroke="#9bbde9"/>
+  <text x="620" y="260" class="heading">有路径 → 只读 handle 文本</text>
+  <text x="620" y="288" class="small">名称 / 大小 / 摘要 / 路径 / 按需读</text>
+  <rect x="600" y="326" width="328" height="80" rx="12" fill="#eaf2ff" stroke="#9bbde9"/>
+  <text x="620" y="358" class="heading">无路径 → 限制说明文本</text>
+  <text x="620" y="386" class="small">需要正文时报告限制，不得声称已读</text>
+  <path d="M928 268H944V443H931" class="edge"/>
+  <path d="M928 366H944" fill="none" stroke="#52647b" stroke-width="2"/>
+  <rect x="600" y="420" width="328" height="48" rx="10" fill="#e9f7f1" stroke="#84bca7"/>
+  <text x="620" y="441" font-weight="700" fill="#215994">handle 文本 → 模型</text>
+  <text x="620" y="461" class="small">正文需文件工具另读</text>
+
+  <path d="M32 180H17V525H29" class="edge"/>
+  <text x="32" y="477" class="heading">图像 · 按路由分支</text>
+  <rect x="32" y="495" width="180" height="166" rx="12" fill="#f0ebff" stroke="#b8a7e9"/>
+  <text x="52" y="530" class="heading">③ 图像引用</text>
+  <text x="52" y="568" class="code">ImageBlock</text>
+  <text x="52" y="604">规范化图像副本</text>
+  <text x="52" y="638" class="small">可带 offloaded 标记</text>
+  <path d="M212 578H247" class="edge"/>
+
+  <rect x="250" y="495" width="225" height="166" rx="12" fill="#eaf2ff" stroke="#9bbde9"/>
+  <text x="270" y="530" class="heading">④ 路由输入模态</text>
+  <text x="270" y="566" class="code">inputModalities</text>
+  <text x="270" y="604" class="small">明确不含 image ↗</text>
+  <text x="270" y="638" class="small">含 image / 未声明 ↘</text>
+
+  <path d="M475 539H512V520H549" class="edge"/>
+  <rect x="552" y="484" width="376" height="74" rx="12" fill="#eaf2ff" stroke="#9bbde9"/>
+  <text x="572" y="515" class="heading">text-only 占位 → 模型文本输入</text>
+  <text x="572" y="542" class="small">projectImagesForTextModel · 仅本次请求</text>
+
+  <path d="M475 621H549" class="edge"/>
+  <rect x="552" y="586" width="376" height="142" rx="12" fill="#eaf2ff" stroke="#9bbde9"/>
+  <text x="572" y="619" class="heading">⑤ adapter 校验图像能力与预算</text>
+  <text x="572" y="651" class="small">已 offloaded → 占位文本，跳过图像载荷</text>
+  <text x="572" y="682">其余：请求版本 → 数量 / 编码字节</text>
+  <text x="572" y="712" font-weight="700" fill="#215994">预算内 → 原生图像载荷 → 模型</text>
+
+  <path d="M740 728V770H241V809" class="repair"/>
+  <text x="346" y="756" class="code" fill="#805718">超预算：IMAGE_OFFLOAD_REQUIRED</text>
+  <rect x="32" y="812" width="418" height="128" rx="12" fill="#f0ebff" stroke="#b8a7e9"/>
+  <text x="52" y="846" class="heading">⑥ 已挂载卸载插件 → append</text>
+  <text x="52" y="879" class="code">image/offload → targets[]</text>
+  <text x="52" y="911" class="small">各项按 seq + imageIndexes 选最早输入出现处</text>
+  <path d="M450 875H507" class="repair"/>
+  <rect x="510" y="812" width="418" height="128" rx="12" fill="#eaf2ff" stroke="#9bbde9"/>
+  <text x="530" y="846" class="heading">重试 · 选中出现处 → 占位文本</text>
+  <text x="530" y="879" class="code">offloaded: true → offloadedImageText</text>
+  <text x="530" y="911" class="small">有路径附只读指引；无路径提示重新附图</text>
+
+  <rect x="32" y="965" width="896" height="99" rx="12" fill="#fff6e8" stroke="#dfbb7a"/>
+  <text x="52" y="995" class="heading" fill="#7b4f16">诊断点 Watchpoints</text>
+  <text x="52" y="1025" class="small">文件内容未读 → handle 只给地址；检查路径映射。</text>
+  <text x="510" y="1025" class="small">图像持续缺失 → 查耐久 image/offload 选择。</text>
+  <text x="52" y="1051" class="small">卸载只选出现处；同一附件的其他出现处可保留。</text>
+  <text x="510" y="1051" class="small">DeepSeek file_id 属图像传输，与 FileBlock 区分。</text>
+</svg>

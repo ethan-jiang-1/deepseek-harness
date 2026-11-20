@@ -102,4 +102,4 @@ DSH_HOME=$H dsh --profile demo --no-open --port 0 2>&1 | grep -q 'did not activa
 
 ## 边界
 
-层的叠法与 dump 保真在 [`../composition/00-map.md`](../composition/00-map.md)；安装的写盘面与失败表在 [`03-安装.md`](./03-安装.md)；准入与失败矩阵在 [`04-启动.md`](./04-启动.md)；配置该写哪一层在 [`09-配置与设置面.md`](./09-配置与设置面.md)。
+层的叠法与 dump 保真在 [`../composition/00-map.md`](../composition/00-map.md)；安装的写盘面与失败表在 [`03-安装.md`](./03-installation.md)；准入与失败矩阵在 [`04-启动.md`](./04-startup.md)；配置该写哪一层在 [`09-配置与设置面.md`](./09-configuration-and-settings.md)。

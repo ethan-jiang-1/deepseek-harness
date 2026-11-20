@@ -12,7 +12,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 
 每个专题的 `00-map.md` 是按主干顺序阅读的**概念导读**，只建立职责、关系和阅读入口；同目录编号正文是按问题查找的**机制参考**，记录状态对象、算法、失败行为和源码入口。图放在该专题的 `figures/`。
 
-文件不叫 `README.md`：仓库的 bilingual pairing 门禁会把任意 `README.md` 当成产品文档语料。研究目录用 `00-index.md` / `00-map.md`。
+文件名使用描述性英文短语，保留有阅读顺序意义的编号；名称应写出主题与机制，中文用于正文和图中解释。研究目录用 `00-index.md` / `00-map.md`，避免 `README.md` 触发产品文档的双语配对门禁。
 
 ## 与同级目录的关系
 
@@ -33,6 +33,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | `system-overview/` | 总体系统专题 | 按下回车之后，这些插件怎么拼成一次能跑的对话——先读这。 |
 | `two-tree-runtime/` | 两个运行时 | 同一套 Cordis 在 Node 与浏览器各长一棵插件树，中间是类型化的线：`framework/` 框架本体、`client/` 浏览器那棵树、`remote/` 两棵树之间。写插件、加 slot、加 `@Remote` 方法都从这里进。 |
 | `runtime-profiles/` | 运行时配置 | 五种官方启动方式（web / headless / sdk / sdk-minimal / acp）各自带哪些插件、差在哪。 |
+| `runtime-integrity/` | 插件配置 | 插件 Config 的 Schemastery 解析、Cordis 激活校验及 DSH 消费者的保证范围。 |
 | `session-and-loop/` | 会话与驱动 | 对话存在哪、怎么读回来：session log 的格式、世代与投影。 |
 | `agent-loop/` | 推进、边界与 Goal 驱动 | 一次对话怎么推进与收尾：turn/step 边界、goal 状态机、自动续轮。 |
 | `delegation-and-orchestration/` | 委派与编排（入门三页 + 三类读者，5 个子专题） | **入门层**：`01` 五种交付、`02` 词与三个平面、`03` 新手十二问——不熟 DSH 的读者从这里进。**驾驶座**：DSH 给了哪些把工作拆解、委派、编排、推进到完成的原语（todo → subagent → workflow → ralph → goal → jobs → schedule → agent-teams），各自保证什么、什么时候用哪个。**作者座**：能力面怎么组合与收窄、合同放哪、深度与通知怎么叠加、终态与图怎么观测。子专题：`delegation-primitives/`（机制）、`primitive-selection/`（选择）、`preset-composition-and-contract-placement/`（组合与合同）、`completion-and-observation/`（终态与观测）、`design-perspectives/`（判断）。写「会委派的插件」或组 preset 从这里进。 |
@@ -66,6 +67,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **熟悉 agent / plugin 运行时，但不熟 dsh** → [`system-overview/00-map.md`](./system-overview/00-map.md)
 - **想先搞懂 Cordis 在这棵树里到底是什么** → [`two-tree-runtime/framework/00-map.md`](./two-tree-runtime/framework/00-map.md)；两棵树怎么分工见 [`two-tree-runtime/00-map.md`](./two-tree-runtime/00-map.md)，官方入门仍是 [`docs/cordis-primer.md`](../docs/cordis-primer.md)
 - **想搞懂 `dsh --profile web` 怎么变成进程的** → [`runtime-profiles/00-map.md`](./runtime-profiles/00-map.md)
+- **想写或诊断插件 Config、判断 dump/schema/UI 分别证明什么** → [`runtime-integrity/00-index.md`](./runtime-integrity/00-index.md) → [`plugin-system/lifecycle/09-configuration-and-settings.md`](./plugin-system/lifecycle/09-configuration-and-settings.md)
 - **想搞懂插件系统本身（怎么成树、怎么走完一生、现成有什么）** → [`plugin-system/00-map.md`](./plugin-system/00-map.md)
 - **要确认一个词 DSH 到底怎么讲，或动笔前对一遍引用纪律** → [`canon/00-map.md`](./canon/00-map.md)
 - **想搞懂一轮对话怎么跑** → [`session-and-loop/00-map.md`](./session-and-loop/00-map.md)
@@ -73,7 +75,7 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 - **第一次接触委派工具、连术语都不熟** → [`delegation-and-orchestration/01-one-task-five-ways.md`](./delegation-and-orchestration/01-one-task-five-ways.md) → [`02` 词与平面](./delegation-and-orchestration/02-terms-and-planes.md) → [`03` 新手十二问](./delegation-and-orchestration/03-newcomer-questions.md)
 - **想搞懂 DSH 给了哪些工作编排原语、什么时候用哪个** → [`delegation-and-orchestration/00-map.md`](./delegation-and-orchestration/00-map.md) 的「四条读法」
 - **要写一个会委派/会组合的插件、或想知道一条链为什么会断/怎么证明** → [`delegation-and-orchestration/00-map.md`](./delegation-and-orchestration/00-map.md) 的「症状 → 页」与作者座两个子专题
-- **想搞懂磁盘上的 session 文件怎么跨格式世代读** → [`session-and-loop/04-格式世代与迁移.md`](./session-and-loop/04-格式世代与迁移.md)
+- **想搞懂磁盘上的 session 文件怎么跨格式世代读** → [`session-and-loop/04-session-format-generations-and-migrations.md`](./session-and-loop/04-session-format-generations-and-migrations.md)
 - **想加能力或换后端** → [`capability-seams/00-map.md`](./capability-seams/00-map.md)
 - **想研究实验与可选能力** → [`experimental/00-map.md`](./experimental/00-map.md)
 - **想搞懂模型看见什么** → [`tools-prompt-llm/00-map.md`](./tools-prompt-llm/00-map.md)
@@ -119,6 +121,21 @@ dsh 的进程里运行的是一棵**插件树**：对话循环、读写文件、
 | 换掉一个能力的实现（文件、命令、模型、浏览器） | [`capability-seams/`](./capability-seams/00-map.md) |
 | 加 Web UI / 客户端投影 | [`two-tree-runtime/client/`](./two-tree-runtime/client/00-map.md) |
 | 决定模型每一步看见什么 | [`tools-prompt-llm/`](./tools-prompt-llm/00-map.md) |
+
+## 遇到难点先看图
+
+这些图用具体输入、状态变化与诊断点解释机制；进入对应页面后再查完整规则和源码：
+
+| 容易混淆的问题 | 图文入口 |
+|---|---|
+| 插件已挂载，为什么还没有解析 Config？ | [依赖等待与激活校验](./runtime-integrity/01-schemastery-configuration-and-usage.md) |
+| 缺省、null、错类型和未知键分别怎样处理？ | [精确解析路径](./runtime-integrity/02-coercion-and-fail-fast-mechanisms.md) |
+| intersect、union 与 transform 会怎样共享输入？ | [组合结果与输入回写](./runtime-integrity/04-advanced-algebraic-patterns.md) |
+| 日志只追加，模型历史为什么能被替换？ | [当前 surface 的替换示例](./session-and-loop/01-session-event-map.md) |
+| 同一次工具增删，为什么不同模型收到的输入不同？ | [工具更新的路由投影](./tools-prompt-llm/02-tool-pipeline-approval-and-timeouts.md) |
+| 上传了文件或图像，模型实际收到什么？ | [附件到请求的投影与卸载](./tools-prompt-llm/06-file-and-image-content-projection.md) |
+| 同一个 preset id，为什么父子 Agent 与新 Agent 的组合不同？ | [修订保留与释放时间图](./delegation-and-orchestration/preset-composition-and-contract-placement/02-preset-composition-as-a-static-self-contained-model.md) |
+| 只改一个设置，为什么以后不再跟随 bundle 默认值？ | [完整覆盖与 reset 的结果](./plugin-system/lifecycle/09-configuration-and-settings.md) |
 
 ## 验证
 

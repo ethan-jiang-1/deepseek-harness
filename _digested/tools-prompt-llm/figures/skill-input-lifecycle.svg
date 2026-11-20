@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 480" font-family="system-ui, -apple-system, 'PingFang SC', sans-serif" font-size="13">
+  <defs><marker id="a" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#64748b"/></marker></defs>
+  <rect width="1080" height="480" rx="8" fill="#f8fafc"/>
+  <text x="540" y="32" text-anchor="middle" font-size="19" font-weight="700" fill="#0f172a">Skill 输入：目录摘要、当次正文与历史记录分开观察</text>
+  <rect x="30" y="65" width="285" height="150" rx="9" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="50" y="96" font-weight="700" fill="#1e40af">发现候选 → 发布目录</text>
+  <text x="50" y="126">按 Agent 的 cwd / scope 解析</text>
+  <text x="50" y="151">digest 使用名称与发布的描述</text>
+  <text x="50" y="183" fill="#9a3412">诊断：目录没有保存正文快照</text>
+  <path d="M315 140 H370" fill="none" stroke="#64748b" marker-end="url(#a)"/>
+  <rect x="375" y="65" width="310" height="150" rx="9" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="395" y="96" font-weight="700" fill="#166534">两条正文加载入口</text>
+  <text x="395" y="126">模型选择 skill 工具调用</text>
+  <text x="395" y="151">用户 /name → 确定性指令注入</text>
+  <text x="395" y="183" fill="#9a3412">诊断：各自检查 invocation 权限</text>
+  <path d="M685 140 H740" fill="none" stroke="#64748b" marker-end="url(#a)"/>
+  <rect x="745" y="65" width="305" height="150" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="765" y="96" font-weight="700" fill="#9a3412">当前 provider.get()</text>
+  <text x="765" y="126">Filesystem 重新读取当前文件</text>
+  <text x="765" y="151">正文单独变化，目录可保持不变</text>
+  <text x="765" y="183" fill="#9a3412">诊断：revision 不固定文件正文</text>
+  <path d="M900 215 V265" fill="none" stroke="#64748b" marker-end="url(#a)"/>
+  <rect x="30" y="270" width="1020" height="165" rx="9" fill="#fff" stroke="#cbd5e1"/>
+  <text x="50" y="302" font-weight="700" fill="#0f172a">进入 Session：工具结果或带 skill-invocation 来源的 user/message</text>
+  <text x="50" y="333" fill="#334155">后续文件更新不会重写旧日志；同一会话可记录先后加载的不同正文。</text>
+  <text x="50" y="363" fill="#334155">当前请求保留哪些全文，由 surface 投影与压缩决定；持久记录与当前可见性分开检查。</text>
+  <text x="50" y="400" fill="#9a3412">诊断：核对实际加载消息与请求记录，不能仅用 preset id、revision 或目录摘要推断方法版本。</text>
+</svg>

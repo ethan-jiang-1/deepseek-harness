@@ -7,16 +7,22 @@
 ## 读完你能回答
 
 - 一个 preset 到底声明了什么，能力面藏在哪几处？
-- 为什么「能力清单」必须从声明派生，而不能手写？
-- 改了 preset，为什么跑着的 Agent 没变？
+- 描述性能力清单与独立验收期望，为什么要分别维护？
+- 改了 preset，为什么跑着的 Agent 仍保留旧组合，但不一定保留所有旧输入？
 
 ## 心智模型
 
-核心判断：**preset 是一份静态、自包含的声明，Agent 在创建时 join 一次。**
+核心判断：**preset 声明一株自包含的插件子树，Agent 绑定其中一代 revision。静态的是组合定义。**
 
 - 声明 = `id` + `plugins` 子列表；没有 hidden 标志，也没有工具过滤字段。
-- Agent 加入的是「那一代 revision」；显式给 id（哪怕等于父的 id）挂的是当前可用修订，不是父那一代。
-- 所以改 preset 影响之后创建的 Agent，不影响已经跑着的会话。
+- 新的显式选择使用当前可用修订；给子代理显式传 id（哪怕等于父的 id）也如此。省略子代理的 preset 时，继承父 Agent 已绑定的精确修订，详见 [`composition/01`](./01-channel-capability-differences-and-inheritance.md)。
+- 编辑声明不会把已有 Agent 换到新组合；旧实现仅在进程内按引用保留，重启冷恢复使用该 id 的当前定义。
+
+组合 revision 不冻结所有模型输入：例如磁盘 skill 的目录摘要可以不变，下一次加载却读到新版正文，之前加载的文本仍留在历史。输入更新与历史的关系见[skill 输入生命周期](../../tools-prompt-llm/07-skill-input-lifecycle.md)。
+
+![同一 preset 身份下，新旧修订随 Agent 引用并存](./figures/preset-revision-lifetimes.svg)
+
+沿时间向右读：定义更新后，显式选择取当前修订，省略 preset 的子代理仍加入父代；只有退役修订的最后一个引用释放后才卸载旧组合。图中的 v1 / v2 仅用于区分修订，不是公开版本号。
 
 ## 一句话
 
@@ -32,7 +38,7 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | 定义里的字段只有 `id / name / description / order / plugins` | `packages/preset/agent-preset-registry/src/definition.ts:5`-`11` |
 | 声明行的 `id` 给 Loader 编辑用；`config.id` 才是 session 保存的 preset 身份 | `packages/preset/agent-preset/README.md:48` |
 | 定义 **eagerly 加载**：注册即激活、即挂载；激活失败留在名册里可见 | `agent-preset/README.md:12`；`agent-preset-registry/src/index.ts:77`、`:98`-`110` |
-| 编辑会退役旧修订；**跑着的 Agent 保留引用**，新 Agent 才看到新定义（仅同进程；重启后冷恢复用该 id 的当前定义） | `agent-preset/README.md:78`；`agent-preset-registry/README.md:56`、`:93`、`:99` |
+| 编辑会退役旧修订；**已有 Agent 保留引用**，后续显式选择使用当前定义，继承子代理继续用父修订（仅同进程；重启冷恢复用该 id 的当前定义） | `agent-preset/README.md:78`；`agent-preset-registry/README.md:56`、`:93`、`:99` |
 | **没有运行期继承**：没有 `extends`/`base`/parent 字段；用户覆盖是整份子列表替换，不合并 | `definition.ts:5`-`11`；`agent-preset-registry/README.md:99` |
 | 唯一的分层是加载期 YAML patch 在 `config.plugins` 内做操作 | `docs/architecture.md:25` |
 | 注册表不扫目录、不接受 preset 路径 | `agent-preset-registry/README.md:46` |
@@ -72,21 +78,28 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 - **会话开始后不能换**：session 已启动再选 preset 会被拒（`agent-preset/locked`），未知 id 与非法声明分别报 `agent-preset/not-found` / `agent-preset/invalid`（`agent-preset-registry/src/index.ts:207`、`:243`、`:353`）。
 - **坏声明不会拖垮整棵名册**：激活失败被记成 `broken` 并告警，已有 Agent 保留它们正在用的组合（`index.ts:106`-`118`）。
 
-## 三个消费者，一份真相
+## 声明、描述性清单与独立验收
 
-同一个组合事实会被三种东西消费，它们必须指向同一份声明：
+Loader 从组合声明挂载子插件；描述「当前组合写了什么」的清单也应从同一声明生成，避免另存一份容易漂移的副本。实际注册到 Agent 的工具仍须通过挂载后的工具查询或请求记录核对。
 
-1. **Loader**：真正把子插件挂成运行时（`agent-preset-registry` 的 mount）。
-2. **人读的清单/矩阵**：如果手写第二份，下一轮改 YAML 就会漂移。
-3. **测试**：只有被测试消费的声明才不是第四份副本（见 [`observation/07`](../completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)）。
+**验收期望由需求拥有，必须独立于被测声明维护。** 如果从同一份 YAML 同时生成实际集合和期望集合，误删必需工具时两边会一起减少，测试仍能通过。验收时应区分以下证据：
 
-`--dump-config` 是 keyless 的声明面证据：它打印 boot-free 的入口列表 YAML，用来核对“写下的组合”。但**它不证明会话实际拿到的工具面**——那是 `request/header.tools`（`packages/core/session/src/types.ts:241`-`247` 的 `EpochHeader.tools`）记录的东西。两者混用会得出“声明对 = 行为对”的假结论。
+| 要回答的问题 | 依据 | 能发现什么 |
+|---|---|---|
+| 当前声明了哪些插件 | 从组合生成的清单、boot-free dump | 声明内容与生成清单的漂移 |
+| Agent 实际得到哪些工具 | 挂载后的工具集合、`request/header.tools` | 注册缺失、作用域错误、实际请求差异 |
+| 产品必须保有哪些能力 | 独立维护的精确期望与验收场景 | 声明本身误删或误配了必需能力 |
+
+原生 [Web 组合测试（文件名沿用旧名）](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/tests/web-agent-presets.e2e.ts#L288-L306)独立写明 `standard` 的精确工具集合，并排除依赖宿主 ripgrep 的 `glob` / `grep`；[minimal 测试](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/tests/web-agent-presets.e2e.ts#L347-L365)另行固定 prompt、`bash / read_image / working_directory` 与服务位置。必需能力发生有意变化时，声明和验收期望需要分别审查。
+
+`--dump-config` 只提供 boot-free 的声明证据；它不证明会话实际取得的工具、模型如何选择工具或成果是否正确。各层证据的区别见 [`observation/07`](../completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)。
 
 ## 失败面
 
 | 现象 | 机制 |
 |---|---|
-| 改了 preset，正在跑的 Agent 没变 | 旧修订被引用；编辑只影响之后创建的 Agent（`README.md:78`） |
+| 改了 preset，正在跑的 Agent 没换组合 | 旧修订仍被引用；新的显式选择使用当前定义，省略 preset 的子代理继承父修订 |
+| revision 与 skill 目录没变，加载的正文却变了 | revision 固定组合；磁盘正文在加载时读取，详见[skill 输入生命周期](../../tools-prompt-llm/07-skill-input-lifecycle.md) |
 | 用户覆盖后内置新增行不见了 | 覆盖是整份子列表替换，不自动合入内置更新（`agent-preset-registry/README.md:99`） |
 | preset 激活失败但名册里还在 | 失败定义保留可见（`agent-preset-registry/README.md:2`；`registry/src/index.ts:77`） |
 | 以为 preset 能隐藏内部 worker | 没有 hidden 标志；`AgentPresetRow` 只有 `id/isDefault/name/description/broken`（`agent-preset-registry/src/types.ts:8`-`19`）；`order` 属于 `AgentPreset`（`preset.ts:4`-`10`），不在对外行类型里 |
@@ -94,19 +107,19 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 
 ## 推论与模式（不是 DSH 的词）
 
-- **把组合当投影，而不是当源**：如果你的仓库需要“能力清单”，让它由组合派生（生成或测试读取），不要手写第二份；否则它会在下一次改 YAML 时变成谎言。
-- **一处声明、三类消费者**：Loader 消费它、人读清单从它生成、测试从它断言。发现第二份期望矩阵就停。
-- **改动的作用域是“之后创建的 Agent”**：把 preset 当成不可变修订理解，才能解释为什么热改不生效、为什么跑着的子代仍用旧修订。
+- **描述性清单从声明派生**：生成器描述当前组合，运行时查询核对实际贡献；两者不能代替需求验收。
+- **验收期望保持独立**：必需工具、scope 与 prompt 由产品要求固定，避免被测声明的错误同步进入期望。
+- **revision 固定声明组合**：区分当前选择与父修订继承；动态 skill 正文等输入仍按各自机制更新。
 - **运行期没有继承，所以重复是结构性的**：想消除重复只能在构建期做（模板/生成器），并且生成物要被回读校验；不要在运行期等一个不存在的 base。
 
 ## 常见误解
 
 | 你以为 | 实际上 |
 |---|---|
-| preset 是运行时开关 | 静态声明；改动只影响之后创建的 Agent |
+| 改声明会更新所有已有会话 | 已绑定 Agent 保留旧组合；动态输入另有生命周期 |
 | preset 之间是继承树 | 每份自包含，组合是 join，不是继承 |
-| 能力清单可以手写 | 必须从声明派生，否则与实际挂载漂移 |
-| 给子代理同名 preset 会跟随父的修订 | 显式给 id 挂的是当前可用修订 |
+| 所有能力期望都必须从声明生成 | 描述性清单从声明生成；必需能力的验收期望独立维护 |
+| 给子代理同名 preset 会跟随父的修订 | 显式给 id 挂当前修订；省略才继承父的精确修订 |
 
 ## 待证（不要写成已证）
 
@@ -128,3 +141,5 @@ preset 不是一份能力清单，而是**一株静态、自包含、eager 加�
 | `packages/preset/agent-preset-registry/README.md:99`、`:60` | 重启后冷恢复使用该 id 的当前定义；旧修订不跨进程保留 |
 | `packages/bundle/web-app/README.md:91`、`:123` | 用户编辑落点与 shipped preset 的 patch 文件 |
 | `packages/bundle/web-app/presets/standard.patch.yml:6`-`127` | standard preset 的子行全貌（七类职责） |
+| [Web preset 组合测试（文件名沿用旧名）](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/tests/web-agent-presets.e2e.ts#L288-L365) | 独立的精确工具、prompt 与服务位置期望 |
+| [skill 正文更新测试](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/tests/tool-skill.spec.ts#L660-L684) | 目录不变时仍按需读取新版正文 |

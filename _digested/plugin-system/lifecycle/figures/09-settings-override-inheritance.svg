@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 884" role="img" aria-labelledby="title desc">
+  <title id="title">Settings 单字段保存、完整覆盖与继承</title>
+  <desc id="desc">示例有普通字段 ordinary 和 volatile 字段 count，没有更高层覆盖。bundle 初值为 ordinary A、count 2；只编辑 count 为 7，也会保存 ordinary A、count 7 的完整 profile config。bundle 更新为 ordinary B、count 3 后，profile 仍整体覆盖为 A、7。reset count 得到 A、3，因普通字段 A 仍不同于 inherited 的 B，覆盖继续存在；若普通字段已经为 B，reset 得到完整的 B、3，config-editor 会删除 config 覆盖，之后继续继承。判断完整相等使用原始配置，不只比较表单可见字段。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#64748b"/></marker>
+    <style>
+      text { font-family: system-ui, -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif; fill: #0f172a; font-size: 15px; }
+      .title { font-size: 24px; font-weight: 700; }
+      .label { font-size: 17px; font-weight: 650; }
+      .muted { fill: #475569; font-size: 14px; }
+      .small { font-size: 13px; }
+      .code { font-family: 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 15px; }
+      .blue { fill: #1d4ed8; }
+      .amber { fill: #9a3412; }
+      .green { fill: #166534; }
+      .line { fill: none; stroke: #64748b; stroke-width: 1.8; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1160" height="884" rx="12" fill="#f8fafc"/>
+  <text x="40" y="40" class="title">改一个字段，可能固定整个 config 的未来取值</text>
+  <text x="40" y="67" class="muted">示例：ordinary 是普通字段，count 是 volatile 字段；没有 home / --patch 覆盖。</text>
+
+  <text x="40" y="112" class="label">① 初始：没有 profile 覆盖</text>
+  <text x="410" y="112" class="label">② 只编辑 count → 7</text>
+  <text x="780" y="112" class="label">③ bundle 更新，覆盖仍在</text>
+  <path d="M365 106 H396" class="line"/>
+  <path d="M735 106 H766" class="line"/>
+
+  <text x="40" y="154" class="muted">bundle config</text>
+  <rect x="40" y="166" width="340" height="48" rx="7" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="210" y="196" text-anchor="middle" class="code">{ordinary:A, count:2}</text>
+  <text x="410" y="154" class="muted">bundle config</text>
+  <rect x="410" y="166" width="340" height="48" rx="7" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="580" y="196" text-anchor="middle" class="code">{ordinary:A, count:2}</text>
+  <text x="780" y="154" class="muted">bundle config（新的继承值）</text>
+  <rect x="780" y="166" width="340" height="48" rx="7" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+  <text x="950" y="196" text-anchor="middle" class="code blue">{ordinary:B, count:3}</text>
+
+  <path d="M210 214 V255" class="line"/>
+  <path d="M580 214 V255" class="line"/>
+  <path d="M950 214 V255" class="line"/>
+  <rect x="40" y="258" width="340" height="68" rx="7" fill="#fff" stroke="#cbd5e1" stroke-dasharray="5 4"/>
+  <text x="210" y="286" text-anchor="middle" class="muted">profile 无 config 覆盖</text>
+  <text x="210" y="310" text-anchor="middle" class="small">沿用下层配置</text>
+  <rect x="410" y="258" width="340" height="68" rx="7" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="580" y="282" text-anchor="middle" class="small amber">profile 保存完整 config</text>
+  <text x="580" y="310" text-anchor="middle" class="code">{ordinary:A, count:7}</text>
+  <path d="M750 292 H776" class="line"/>
+  <rect x="780" y="258" width="340" height="68" rx="7" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="950" y="282" text-anchor="middle" class="small amber">profile 整份替换 bundle config</text>
+  <text x="950" y="310" text-anchor="middle" class="code">{ordinary:A, count:7}</text>
+
+  <path d="M210 326 V363" class="line"/>
+  <path d="M580 326 V363" class="line"/>
+  <path d="M950 326 V363" class="line"/>
+  <rect x="40" y="366" width="340" height="60" rx="7" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="210" y="389" text-anchor="middle" class="small green">当前有效值</text>
+  <text x="210" y="414" text-anchor="middle" class="code">{ordinary:A, count:2}</text>
+  <rect x="410" y="366" width="340" height="60" rx="7" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="580" y="389" text-anchor="middle" class="small amber">当前有效值</text>
+  <text x="580" y="414" text-anchor="middle" class="code">{ordinary:A, count:7}</text>
+  <rect x="780" y="366" width="340" height="60" rx="7" fill="#fff7ed" stroke="#fb923c" stroke-width="1.8"/>
+  <text x="950" y="389" text-anchor="middle" class="small amber">下层新值未穿透完整覆盖</text>
+  <text x="950" y="414" text-anchor="middle" class="code">{ordinary:A, count:7}</text>
+
+  <line x1="40" y1="454" x2="1120" y2="454" stroke="#cbd5e1"/>
+  <text x="40" y="487" class="label">reset count：恢复当前继承值 3，再比较完整原始配置</text>
+  <text x="40" y="514" class="muted">同一个字段 reset，是否删除覆盖还取决于其他字段。</text>
+
+  <rect x="40" y="538" width="520" height="90" rx="8" fill="#fff" stroke="#fdba74"/>
+  <text x="60" y="564" class="label amber">普通字段仍为 A</text>
+  <text x="60" y="590" class="code">next      = {ordinary:A, count:3}</text>
+  <text x="60" y="614" class="code">inherited = {ordinary:B, count:3}</text>
+  <path d="M300 628 V672" class="line"/>
+  <rect x="270" y="637" width="60" height="25" rx="5" fill="#fff7ed"/>
+  <text x="300" y="656" text-anchor="middle" class="code amber">≠</text>
+  <rect x="40" y="676" width="520" height="74" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="60" y="704" class="label amber">保留完整 config：A、3</text>
+  <text x="60" y="731">未来 bundle 更新仍被这份覆盖挡住。</text>
+
+  <rect x="600" y="538" width="520" height="90" rx="8" fill="#fff" stroke="#86efac"/>
+  <text x="620" y="564" class="label green">例外：普通字段已与继承值相同</text>
+  <text x="620" y="590" class="code">next      = {ordinary:B, count:3}</text>
+  <text x="620" y="614" class="code">inherited = {ordinary:B, count:3}</text>
+  <path d="M860 628 V672" class="line"/>
+  <rect x="830" y="637" width="60" height="25" rx="5" fill="#f0fdf4"/>
+  <text x="860" y="656" text-anchor="middle" class="code green">=</text>
+  <rect x="600" y="676" width="520" height="74" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="620" y="704" class="label green">editor 删除 config 覆盖</text>
+  <text x="620" y="731">当前取 B、3；之后继续继承下层配置。</text>
+
+  <text x="40" y="790" class="label amber">Watchpoints · 默认值没跟进时先看这里</text>
+  <text x="40" y="818">① 检查 profile 是否保存了完整 config；改一个字段也可能固定普通字段、密钥与表达式。</text>
+  <text x="40" y="845">② 删除覆盖取决于完整 next 与 inherited 相等；只比较表单可见值不足以判断。</text>
+  <text x="40" y="872" class="muted">移除整个 config 覆盖可恢复持续继承；Settings 整表 reset 仍保留普通配置。</text>
+</svg>

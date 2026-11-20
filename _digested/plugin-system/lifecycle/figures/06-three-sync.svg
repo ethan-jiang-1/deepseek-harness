@@ -12,8 +12,8 @@
   <rect x="40" y="216" width="1100" height="104" rx="10" fill="#fff8e5" stroke="#eac54f"/>
   <text x="62" y="244" font-size="14" font-weight="700" fill="#9a6700">② 配置写入：hmr.runExclusive 串行队列</text>
   <text x="62" y="270" font-size="12" fill="#424a53">模块热替换 / profile patch 重载 / 行开关 / 配置编辑器 → 同一条队列</text>
-  <text x="62" y="292" font-size="12" fill="#cf222e">失败策略：只有本次新引入的失活条目才抛错；已存在的失败降级为 warning</text>
-  <text x="62" y="312" font-size="11.5" fill="#6e7781">候选失败不提交：正在服务的树继续用旧 patch 集</text>
+  <text x="62" y="292" font-size="12" fill="#cf222e">激活审计：新增 / 变化失败或要求启用的条目失活会拒绝；未变化的旧失败返回 warning</text>
+  <text x="62" y="312" font-size="11.5" fill="#6e7781">诊断：Include 更新前可拒绝候选并恢复停止的条目；更新开始后的激活失败报错，不全局回滚</text>
 
   <rect x="40" y="336" width="1100" height="104" rx="10" fill="#e8f5ec" stroke="#8fd19e"/>
   <text x="62" y="364" font-size="14" font-weight="700" fill="#1a7f37">③ 树内变更：effect 的作用域</text>

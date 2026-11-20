@@ -1,71 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">CI 结果必须区分不同跳过和失败</title>
+  <desc id="desc">缺凭据的本地跳过、可信事件的凭据预检失败、gate 依赖跳过、必需 job 聚合和观察性结果具有不同含义。自动化不捕获所有遗漏。</desc>
   <rect width="960" height="470" fill="#fafafa" rx="6"/>
-  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">防假绿五机制：证据链上任何"悄悄少测了"的路径都被封死</text>
-  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">与 verify-the-world 教义同源——CI 专门设防"测试自己骗自己"。</text>
+  <text x="480" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">CI 结果的含义取决于执行条件与聚合范围</text>
+  <text x="480" y="56" text-anchor="middle" fill="#4b5563">未运行不构成行为证据；各检查只执行已登记的判据，不能自动发现全部遗漏。</text>
 
-  <!-- card 1 -->
-  <rect x="30" y="76" width="176" height="250" rx="10" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
-  <text x="118" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#a8071a">缺 key 硬失败</text>
-  <text x="118" y="126" text-anchor="middle" font-size="11" fill="#a8071a">e2e.yml preflight</text>
-  <text x="44" y="156" fill="#333">with-key lane 的 key</text>
-  <text x="44" y="176" fill="#333">缺失不降级为</text>
-  <text x="44" y="196" fill="#333">"全 skip 的绿"，</text>
-  <text x="44" y="216" fill="#333">而是显式红</text>
-  <text x="44" y="252" fill="#666">self-skip 保留给</text>
-  <text x="44" y="272" fill="#666">secretless CI 与</text>
-  <text x="44" y="292" fill="#666">keyless 贡献者，</text>
-  <text x="44" y="312" fill="#666">但必需 lane 不适用</text>
+  <rect x="25" y="80" width="170" height="238" rx="10" fill="#fff7e6" stroke="#fa8c16"/>
+  <text x="110" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#ad6800">允许的无 key 跳过</text>
+  <text x="40" y="140" fill="#374151">本地 / secretless</text>
+  <text x="40" y="164" fill="#374151">真实 API suite 可跳过</text>
+  <text x="40" y="194" fill="#374151">不可信 PR 的模型 job</text>
+  <text x="40" y="218" fill="#374151">可按条件不运行</text>
+  <text x="40" y="263" fill="#7c2d12">结论：未获模型证据</text>
+  <text x="40" y="290" fill="#4b5563">来源：e2e 配置与 workflow</text>
 
-  <!-- card 2 -->
-  <rect x="216" y="76" width="176" height="250" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
-  <text x="304" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#ad6800">自跳过即失败</text>
-  <text x="304" y="126" text-anchor="middle" font-size="11" fill="#ad6800">sandbox.yml grep 守卫</text>
-  <text x="230" y="156" fill="#333">跑之前先数"应该过</text>
-  <text x="230" y="176" fill="#333">的文件数"，套件悄悄</text>
-  <text x="230" y="196" fill="#333">自跳过会被拦下</text>
-  <text x="230" y="232" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12">grep "Test Files</text>
-  <text x="230" y="252" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="#7c2d12">2 passed (2)"</text>
-  <text x="230" y="282" fill="#666">每条 sandbox 腿</text>
-  <text x="230" y="302" fill="#666">必须证明专属 e2e 真跑</text>
+  <rect x="210" y="80" width="170" height="238" rx="10" fill="#fff1f0" stroke="#d4380d"/>
+  <text x="295" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#a8071a">可信 job 缺 key</text>
+  <text x="225" y="140" fill="#374151">job 应获授权凭据</text>
+  <text x="225" y="164" fill="#374151">预检发现凭据缺失</text>
+  <text x="225" y="194" fill="#374151">使 job 明确失败</text>
+  <text x="225" y="218" fill="#374151">避免全跳过后报成功</text>
+  <text x="225" y="263" fill="#a8071a">结论：配置未满足</text>
+  <text x="225" y="290" fill="#4b5563">来源：e2e.yml preflight</text>
 
-  <!-- card 3 -->
-  <rect x="402" y="76" width="176" height="250" rx="10" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
-  <text x="490" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#38761c">skipped 判红</text>
-  <text x="490" y="126" text-anchor="middle" font-size="11" fill="#38761c">all-checks-passed 聚合</text>
-  <text x="416" y="156" fill="#333">单一 required check 把</text>
-  <text x="416" y="176" fill="#333">skipped 与 failure</text>
-  <text x="416" y="196" fill="#333">同等对待——</text>
-  <text x="416" y="226" font-weight="700" fill="#1d4e13">"没跑"不算"过了"</text>
-  <text x="416" y="262" fill="#666">9 个必需 job 的</text>
-  <text x="416" y="282" fill="#666">failure / cancelled /</text>
-  <text x="416" y="302" fill="#666">skipped 三条件判红</text>
+  <rect x="395" y="80" width="170" height="238" rx="10" fill="#e6f4ff" stroke="#1677ff"/>
+  <text x="480" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">gate 依赖跳过</text>
+  <text x="410" y="140" fill="#374151">依赖失败或 fail-fast</text>
+  <text x="410" y="164" fill="#374151">会记录 gate 为 skipped</text>
+  <text x="410" y="194" fill="#374151">阻塞 gate 失败 / 跳过</text>
+  <text x="410" y="218" fill="#374151">使 aggregate 失败</text>
+  <text x="410" y="263" fill="#1d4ed8">结论：检查未完成</text>
+  <text x="410" y="290" fill="#4b5563">来源：run-gates.ts</text>
 
-  <!-- card 4 -->
-  <rect x="588" y="76" width="176" height="250" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
-  <text x="676" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#1d4ed8">观察性显式化</text>
-  <text x="676" y="126" text-anchor="middle" font-size="11" fill="#1d4ed8">allowFailure · 不进 needs</text>
-  <text x="602" y="156" fill="#333">不能稳定跑的门</text>
-  <text x="602" y="176" fill="#333">（windows-coverage、</text>
-  <text x="602" y="196" fill="#333">windows observational）</text>
-  <text x="602" y="216" fill="#333">不混进必需判定，</text>
-  <text x="602" y="246" font-weight="700" fill="#1e3a8a">但结果保留可见</text>
-  <text x="602" y="282" fill="#666">不许假装它不存在，</text>
-  <text x="602" y="302" fill="#666">也不许让它假装绿</text>
+  <rect x="580" y="80" width="170" height="238" rx="10" fill="#f6ffed" stroke="#52c41a"/>
+  <text x="665" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#38761c">PR 必需 job 聚合</text>
+  <text x="595" y="140" fill="#374151">verdict 检查 needs</text>
+  <text x="595" y="164" fill="#374151">列出的失败 / 取消 /</text>
+  <text x="595" y="194" fill="#374151">跳过使 verdict 失败</text>
+  <text x="595" y="218" fill="#374151">依其运行条件执行</text>
+  <text x="595" y="263" fill="#38761c">范围：已列依赖 job</text>
+  <text x="595" y="290" fill="#4b5563">来源：ci.yml</text>
 
-  <!-- card 5 -->
-  <rect x="774" y="76" width="176" height="250" rx="10" fill="#f9f0ff" stroke="#722ed1" stroke-width="1.5"/>
-  <text x="862" y="106" text-anchor="middle" font-size="14" font-weight="700" fill="#531dab">热备演练</text>
-  <text x="862" y="126" text-anchor="middle" font-size="11" fill="#531dab">serial-* master push</text>
-  <text x="788" y="156" fill="#333">备用执行环境在持久</text>
-  <text x="788" y="176" fill="#333">VM 上全串行（并发=1）</text>
-  <text x="788" y="196" fill="#333">真实跑一遍必需 lane</text>
-  <text x="788" y="226" font-weight="700" fill="#4c1d95">"换池子会炸"的风险</text>
-  <text x="788" y="246" font-weight="700" fill="#4c1d95">被持续证伪</text>
-  <text x="788" y="282" fill="#666">linux / windows 现役；</text>
-  <text x="788" y="302" fill="#666">macos 已标 if: false</text>
+  <rect x="765" y="80" width="170" height="238" rx="10" fill="#f9f0ff" stroke="#722ed1"/>
+  <text x="850" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#531dab">显式观察性结果</text>
+  <text x="780" y="140" fill="#374151">gate 声明 allowFailure</text>
+  <text x="780" y="164" fill="#374151">保留失败结果</text>
+  <text x="780" y="194" fill="#374151">不使所属聚合失败</text>
+  <text x="780" y="218" fill="#374151">不能算阻塞验收通过</text>
+  <text x="780" y="263" fill="#531dab">范围：显式允许项</text>
+  <text x="780" y="290" fill="#4b5563">来源：run-gates.ts</text>
 
-  <!-- bottom -->
-  <rect x="30" y="356" width="920" height="76" rx="10" fill="#fff" stroke="#d4380d" stroke-dasharray="6 3"/>
-  <text x="490" y="386" text-anchor="middle" font-size="13" font-weight="700" fill="#a8071a">同一件事的五个侧面：runner 可信、skip 可见、少测必红</text>
-  <text x="490" y="412" text-anchor="middle" font-size="12" fill="#374151">加上 runner 池 failover 变量与 e2e 钉死官方端点，编排层在替测试纪律兜底——本地跑同一张 run-gates 图，"我本地复现 CI 失败"不需要重建 workflow。</text>
+  <rect x="25" y="346" width="910" height="96" rx="10" fill="#fff" stroke="#d4380d" stroke-dasharray="6 3"/>
+  <text x="45" y="374" font-size="13" font-weight="700" fill="#a8071a">诊断点：成功退出后，仍核对目标用例是否实际执行、结果由什么判据决定</text>
+  <text x="45" y="400" fill="#374151">名称过滤、平台条件和缺依赖可能留下空缺；报告实际运行与跳过，需求和成果另行验收。</text>
+  <text x="45" y="423" fill="#374151">完整语义见 execution/07-dsh-ci-gates-and-reliability.md；本图不承诺全部漏测自动判红。</text>
 </svg>

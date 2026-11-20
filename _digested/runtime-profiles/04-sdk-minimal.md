@@ -87,6 +87,6 @@ dsh --profile sdk-minimal
 | `scripts/smoke-python-runtime.py` | smoke 测试（含 `minimal/model-visible.json` 快照） |
 | `scripts/snapshots/python-sdk-single-exe/minimal/` | model-visible 快照（每请求广告的工具清单；含 `win-x64/`） |
 | `python/development.md` | 开发说明 |
-| `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |
+| `_digested/surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md` | ACP vs JSON-RPC 协议保证对照 |
 
 依据 note（均在 `archived/`）：[`2026-09-03-minimal-profiles-persistent-shell-only`](../../.agents/notes/archived/simplification/2026-09-03-minimal-profiles-persistent-shell-only.md)、[`2026-09-05-base-default-file-editor`](../../.agents/notes/archived/simplification/2026-09-05-base-default-file-editor.md)、[`2026-08-11-minimal-profiles-bare-two-tool-runtime`](../../.agents/notes/archived/feature/2026-08-11-minimal-profiles-bare-two-tool-runtime.md)；[`2026-08-24-standalone-sdk-minimal-profile`](../../.agents/notes/archived/architecture/2026-08-24-standalone-sdk-minimal-profile.md) 与 [`2026-08-23-python-sdk-dsh-profile-runtime`](../../.agents/notes/archived/architecture/2026-08-23-python-sdk-dsh-profile-runtime.md) 同样只作历史。目录上下文收编见升级指南 [`working-directory`](../../docs/upgrade-guide/v0.2.1-alpha.1/working-directory/guide.md)。

@@ -95,7 +95,7 @@ Host 与 Client 的分工是固定的：`workspaceRegistry.create`（`packages/w
 
 ## 首屏与配置呈现
 
-首屏链路与失败信号由 [`../composition/05-启动窗口与首屏交接.md`](../composition/05-启动窗口与首屏交接.md) 单点拥有（五步：打印入口 → 303 + cookie → 发 HTML → 注入 `__DSH_BOOT__` → client 两段式启动）；本节只讲首启状态，不重复那五步。
+首屏链路与失败信号由 [`../composition/05-启动窗口与首屏交接.md`](../composition/05-startup-window-and-first-screen-handoff.md) 单点拥有（五步：打印入口 → 303 + cookie → 发 HTML → 注入 `__DSH_BOOT__` → client 两段式启动）；本节只讲首启状态，不重复那五步。
 
 配置呈现有四种**合法**手段，选一个，别叠加：
 
@@ -160,4 +160,4 @@ sleep 5; ls -la "$DSH_HOME"/<your-data-subpath>
 
 ## 本页的边界
 
-宿主侧的一次性机制（profile 首建、`settings.yaml` 导入、存储版本、desktop 运行树）在 [`05-特殊初始化.md`](./05-特殊初始化.md)；启动窗口与本页的「窗口 C/D」定义在 [`../composition/05-启动窗口与首屏交接.md`](../composition/05-启动窗口与首屏交接.md)；配置层与 patch 语义在 [`../composition/00-map.md`](../composition/00-map.md)。
+宿主侧的一次性机制（profile 首建、`settings.yaml` 导入、存储版本、desktop 运行树）在 [`05-特殊初始化.md`](./05-special-initialization.md)；启动窗口与本页的「窗口 C/D」定义在 [`../composition/05-启动窗口与首屏交接.md`](../composition/05-startup-window-and-first-screen-handoff.md)；配置层与 patch 语义在 [`../composition/00-map.md`](../composition/00-map.md)。

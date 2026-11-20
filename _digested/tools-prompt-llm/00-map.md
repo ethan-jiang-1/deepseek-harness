@@ -19,9 +19,9 @@
 
 | 决策点 | 架构契约 | 归属页 |
 |---|---|---|
-| 工具执行流 | 遵循 Pipeline 契约（pre → execute → post） | [`02`](./02-工具管道审批与timeout.md) |
-| 系统提示词稳定性 | 前缀稳定，section 按顺序组装 | [`01`](./01-section顺序与前缀.md) |
-| 模型可见数据 | 所有模型看见的数据，必须能在 session log  reconstruct | [`03`](./03-system-prompt作为surface节点.md) |
+| 工具执行流 | 遵循 Pipeline 契约（pre → execute → post） | [`02`](./02-tool-pipeline-approval-and-timeouts.md) |
+| 系统提示词稳定性 | 前缀稳定，section 按顺序组装 | [`01`](./01-prompt-section-order-and-prefix-stability.md) |
+| 模型可见数据 | 所有模型看见的数据，必须能在 session log  reconstruct | [`03`](./03-system-prompts-as-session-surface-nodes.md) |
 
 ## 阅读路径与机制查找
 
@@ -29,12 +29,13 @@
 
 | 你的问题 | 去哪 |
 |---|---|
-| system prompt 顺序 / 前缀 | [`01`](./01-section顺序与前缀.md) |
-| 调用管道细节 / 审批 / timeout | [`02`](./02-工具管道审批与timeout.md) |
-| session 投影细节 | [`03`](./03-system-prompt作为surface节点.md) |
-| 提示词替换 (In-history) | [`04`](./04-in-history提示词替换.md) |
-| 结算与回放 | [`05`](./05-chunk到settlement.md) |
-| 图像/文件块 | [`06`](./06-文件块与内容块投影.md) |
+| system prompt 顺序 / 前缀 | [`01`](./01-prompt-section-order-and-prefix-stability.md) |
+| 调用管道细节 / 审批 / timeout | [`02`](./02-tool-pipeline-approval-and-timeouts.md) |
+| session 投影细节 | [`03`](./03-system-prompts-as-session-surface-nodes.md) |
+| 提示词替换 (In-history) | [`04`](./04-in-history-system-prompt-updates.md) |
+| 结算与回放 | [`05`](./05-streaming-chunks-and-attempt-settlement.md) |
+| 图像/文件块 | [`06`](./06-file-and-image-content-projection.md) |
+| Skill 目录没变，正文或实际方法却变了 | [`07`](./07-skill-input-lifecycle.md)：发现、两条加载路径、正文更新与历史保留 |
 
 ---
 > 承重词按 `canon/GLOSSARY.md` 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

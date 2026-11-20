@@ -18,7 +18,7 @@ DSH 的进程里运行着一棵 Cordis 插件树：对话循环、读写文件�
 
 一条 seam 就是围绕一个 `ctx.<key>` 的三种分工：
 
-![一条 seam 的三个角色](./figures/three-roles.svg)
+![一条 seam 的三个角色](./core/figures/three-roles.svg)
 
 | 角色 | 它是什么 | shell 家族的落点 |
 |------|----------|----------|
@@ -32,20 +32,20 @@ DSH 的进程里运行着一棵 Cordis 插件树：对话循环、读写文件�
 2. **每个 isolate realm 内，一个 `ctx.<key>` 同一时刻只有一个 Definition 实现。** 同一 realm 里加载第二个同名服务按 Cordis 重复服务失败；换实现靠组合层换行，不是两个 executor 同时挂。**realm 是关键限定**：preset 的服务行可以 `isolate` 出独立实例域，同一 key 在父子 realm 各有一份。
 3. **三角色齐全才叫 seam。** 单独一个角色只是其中一员；说某个包时用它的角色名，不用 seam 称呼它（[`docs/glossary.md`](../../docs/glossary.md) 的 `capability-seam` 条）。
 
-一个包可以兼多个角色：`dsh-user-approval` 在同一包里承担 approval seam 的 Definition 与具体实现——「一次审批决定」的定义与实现是同一关注点。角色分包装，是因为它们会独立演化；合在一个包里，是因为它们就是同一件事。注意 `dsh-llm` **不是**合包样本：它的 Adapter 注册点就是注册表形态的 Definition 本身，Consumer（`agent-loop`、`compaction-basic`）在别的包。判断细节见 [`01-三角色与分包装.md`](./01-三角色与分包装.md)。
+一个包可以兼多个角色：`dsh-user-approval` 在同一包里承担 approval seam 的 Definition 与具体实现——「一次审批决定」的定义与实现是同一关注点。角色分包装，是因为它们会独立演化；合在一个包里，是因为它们就是同一件事。注意 `dsh-llm` **不是**合包样本：它的 Adapter 注册点就是注册表形态的 Definition 本身，Consumer（`agent-loop`、`compaction-basic`）在别的包。判断细节见 [`01-three-roles.md`](./core/01-three-roles.md)。
 
 ## 换实现时，什么不动
 
 文件读写和进程执行共享**一个执行世界**。把本地 provider 换成远程 provider，换的是组合里的几行，不是工具源码：
 
-![本地 confinement 与远程执行世界是两种机制](./figures/execution-world.svg)
+![本地 confinement 与远程执行世界是两种机制](./execution/figures/execution-world.svg)
 
 这张图里有两种容易混淆的机制：
 
 - **远程执行世界**：`fs-ssh` / `subprocess-ssh` / `sandbox-ssh` 三个 provider 共享一条 `ctx.ssh` 连接，把三个既有 seam 各自实现到远端主机。依赖 `ctx.fs` / `ctx.subprocess` 的 Consumer 随组合切换，不必为远程 fork 一份实现。
 - **本地 confinement**：`ctx.sandbox` 在 spawn 前包装 argv，约束一次本地进程启动。它不迁移 `ctx.fs`，也不等于一套远程执行世界。
 
-Consumer 面对的是 Definition，不是「我在哪台机器上」。机制见 [`03-ssh-execution.md`](./execution/03-ssh-execution.md)；一次本地 bash 的完整链路见 [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md)。
+Consumer 面对的是 Definition，不是「我在哪台机器上」。机制见 [`03-ssh-execution.md`](./execution/03-ssh-execution.md)；一次本地 bash 的完整链路见 [`01-bash-execution.md`](./execution/01-bash-execution.md)。
 
 subagent 是同一模式的另一个例子：一个接口后面，可以是进程内 child agent，也可以是经 ACP 或 JSON-RPC 驱动的独立进程，还可以是产品 CLI（Codex / Claude Code）的按需 bundle。见 [`01-subagent-provider.md`](./subagent/01-subagent-provider.md)。
 

@@ -1,77 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 656" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12">
-  <defs>
-    <marker id="arrow-h" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M0 0 L10 5 L0 10 Z" fill="#666"/>
-    </marker>
-  </defs>
-  <rect width="960" height="656" fill="#fafafa" rx="6"/>
-  <text x="480" y="32" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2937">测试规矩住在哪：按"谁需要什么时候看到它"分布</text>
-  <text x="480" y="54" text-anchor="middle" font-size="11" fill="#6b7280">政策—命令—理由各只有一个家；testing.md 是枢纽：每个 tier 链到 owning note，每条规则链到 rationale。</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 530" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">测试规则、执行与证据的归属</title>
+  <desc id="desc">政策说明所需证据，脚本与工作流执行检查，树内指令维护资产，技能指导选择和可靠性。评审仍需检查需求及独立结果。</desc>
+  <rect width="960" height="530" fill="#fafafa" rx="6"/>
+  <text x="480" y="32" text-anchor="middle" font-size="18" font-weight="700" fill="#1f2937">测试规则按职责维护，引用指向各自的家</text>
+  <text x="480" y="56" text-anchor="middle" fill="#4b5563">政策、实际执行、场景资产与评审分别取证；规则写在文档里不代表已经运行。</text>
 
-  <!-- hub: the policy -->
-  <rect x="210" y="72" width="540" height="60" rx="10" fill="#e6f4ff" stroke="#1677ff" stroke-width="1.5"/>
-  <text x="480" y="96" text-anchor="middle" font-size="13" font-weight="700" fill="#1677ff">docs/testing.md —— 55 行政策，唯一测试策略权威</text>
-  <text x="480" y="118" text-anchor="middle" fill="#1d4ed8">定"什么算证据"；命令的家在 root AGENTS.md 的 Commands 节</text>
-  <line x1="480" y1="132" x2="480" y2="162" stroke="#666" stroke-width="2" marker-end="url(#arrow-h)"/>
+  <rect x="35" y="80" width="280" height="150" rx="10" fill="#e6f4ff" stroke="#1677ff"/>
+  <text x="55" y="107" font-size="14" font-weight="700" fill="#1d4ed8">政策与常备指令</text>
+  <text x="55" y="135" fill="#374151">docs/testing.md：分层与必需证据</text>
+  <text x="55" y="159" fill="#374151">root / packages AGENTS.md：</text>
+  <text x="55" y="181" fill="#374151">范围内要求，链接详细维护处</text>
+  <text x="55" y="209" fill="#4b5563">回答：什么结论需要什么证据？</text>
 
-  <!-- band 1: always in context -->
-  <text x="48" y="184" font-size="13" font-weight="700" fill="#1d4ed8">常备条令 —— 每个 session 都在上下文里（每条 1~3 行，链接到它的家）</text>
-  <rect x="48" y="196" width="216" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="64" y="220" font-weight="700" fill="#374151">root AGENTS.md</text>
-  <text x="64" y="240" fill="#666">Commands 节：命令的家</text>
-  <text x="64" y="258" fill="#666">Testing policy 常驻条款</text>
-  <text x="64" y="276" fill="#666">（快照强制 · 证据匹配面）</text>
-  <rect x="276" y="196" width="216" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="292" y="220" font-weight="700" fill="#374151">packages/AGENTS.md</text>
-  <text x="292" y="240" fill="#666">plugin exports 形态 · ctx.get</text>
-  <text x="292" y="258" fill="#666">REAL-composition 要求</text>
-  <text x="292" y="276" fill="#666">注册贡献 HMR 可撤销</text>
-  <rect x="504" y="196" width="216" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="520" y="220" font-weight="700" fill="#374151">snapshots/AGENTS.md</text>
-  <text x="520" y="240" fill="#666">快照树归属七条</text>
-  <text x="520" y="258" fill="#666">（只收 session 驱动场景）</text>
-  <rect x="732" y="196" width="216" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="748" y="220" font-weight="700" fill="#374151">组级 AGENTS 家族</text>
-  <text x="748" y="240" fill="#666" font-size="11">experimental · schedule · web</text>
-  <text x="748" y="258" fill="#666" font-size="11">client · benchmarks · scripts</text>
-  <text x="748" y="276" fill="#666" font-size="11">tests 树内 profiles 规则</text>
+  <rect x="340" y="80" width="280" height="150" rx="10" fill="#f6ffed" stroke="#52c41a"/>
+  <text x="360" y="107" font-size="14" font-weight="700" fill="#38761c">实际执行</text>
+  <text x="360" y="135" fill="#374151">package.json：命令入口</text>
+  <text x="360" y="159" fill="#374151">scripts/run-gates.ts：依赖与结果</text>
+  <text x="360" y="181" fill="#374151">workflows：平台、条件与凭据</text>
+  <text x="360" y="209" fill="#4b5563">回答：检查是否选中并真正运行？</text>
 
-  <!-- band 2: load on demand -->
-  <text x="48" y="336" font-size="13" font-weight="700" fill="#38761c">按需加载 —— 做到那件事时才读</text>
-  <rect x="48" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="60" y="372" font-weight="700" fill="#374151">技能 skills</text>
-  <text x="60" y="392" fill="#666" font-size="11">dsh-ci-test-reliability</text>
-  <text x="60" y="410" fill="#666" font-size="11">dsh-pre-push-checks</text>
-  <text x="60" y="428" fill="#666" font-size="11">record-browser-gif</text>
-  <rect x="223" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="235" y="372" font-weight="700" fill="#374151">Agent Notes · 18 篇</text>
-  <text x="235" y="392" fill="#666">rationale 的家</text>
-  <text x="235" y="410" fill="#666">为什么这么定</text>
-  <text x="235" y="428" fill="#666">放弃了什么</text>
-  <rect x="398" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="410" y="372" font-weight="700" fill="#374151">docs/cookbook/</text>
-  <text x="410" y="392" fill="#666">加包 · 加工具</text>
-  <text x="410" y="410" fill="#666">加格式版本</text>
-  <text x="410" y="428" fill="#666">的步骤与验证</text>
-  <rect x="573" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="585" y="372" font-weight="700" fill="#374151">各包 README</text>
-  <text x="585" y="392" fill="#666">该工具的</text>
-  <text x="585" y="410" fill="#666">测试语义</text>
-  <text x="585" y="428" fill="#666">与已知限制</text>
-  <rect x="748" y="348" width="163" height="108" rx="8" fill="#fff" stroke="#9ca3af" stroke-width="1.5"/>
-  <text x="760" y="372" font-weight="700" fill="#374151">vendor/README.md</text>
-  <text x="760" y="392" fill="#666">每条本地修改</text>
-  <text x="760" y="410" fill="#666">由哪些测试覆盖</text>
-  <text x="760" y="428" fill="#666" font-size="11">同步重跑 test + build</text>
+  <rect x="645" y="80" width="280" height="150" rx="10" fill="#fff7e6" stroke="#fa8c16"/>
+  <text x="665" y="107" font-size="14" font-weight="700" fill="#ad6800">场景资产与局部行为</text>
+  <text x="665" y="135" fill="#374151">snapshots/AGENTS.md：资产归属</text>
+  <text x="665" y="159" fill="#374151">包 README / owning tests：</text>
+  <text x="665" y="181" fill="#374151">具体行为、场景和独立期望</text>
+  <text x="665" y="209" fill="#4b5563">回答：期望由谁维护，比较什么？</text>
 
-  <!-- postmortems: feed upward into policy and standing orders -->
-  <rect x="48" y="480" width="864" height="84" rx="10" fill="#fff1f0" stroke="#d4380d" stroke-width="1.5"/>
-  <text x="64" y="506" font-weight="700" fill="#a8071a">postmortem · 4 篇 —— 政策的反面教材，唯一允许 war-story 叙事的层（0001 ACP / 0002 !!js / 0003 替代服务器 / 0004 Landlock）</text>
-  <text x="64" y="528" fill="#333">0001 的教训同时滋养两层常驻规则：policy 条款（with-key 冒烟、"test the real entry path"）+ packages/AGENTS（plugin exports 形态、ctx.get）</text>
-  <text x="64" y="550" font-weight="700" fill="#a8071a">↑ 事故 → 制度化：漏网之鱼催生的护栏，最终住进上面两层</text>
+  <rect x="35" y="252" width="430" height="124" rx="10" fill="#fff" stroke="#9ca3af"/>
+  <text x="55" y="280" font-size="14" font-weight="700" fill="#374151">按需读取的操作方法</text>
+  <text x="55" y="309" fill="#374151">dsh-pre-push-checks：按变更选择本地检查</text>
+  <text x="55" y="333" fill="#374151">dsh-ci-test-reliability：资源、并发与清理</text>
+  <text x="55" y="357" fill="#4b5563">cookbook 提供操作步骤；不复制完整政策和清单。</text>
 
-  <!-- bottom: one-line duty table -->
-  <rect x="48" y="588" width="864" height="52" rx="8" fill="#fff" stroke="#9ca3af" stroke-dasharray="5 3"/>
-  <text x="480" y="610" text-anchor="middle" font-size="11" font-weight="700" fill="#374151">一句话分工：policy 定"什么算证据" · skill 定"怎么写得可靠、怎么选命令" · cookbook 定"步骤" · AGENTS 定"每个会话必记的几行"</text>
-  <text x="480" y="630" text-anchor="middle" font-size="11" fill="#666">note 定"为什么这么定、放弃了什么" · README/树规则定"这个工具的具体规则" · vendor/README 定"每条本地修改的测试覆盖" · postmortem 定"哪类漏网催生哪些护栏"</text>
+  <rect x="490" y="252" width="435" height="124" rx="10" fill="#fff" stroke="#9ca3af"/>
+  <text x="510" y="280" font-size="14" font-weight="700" fill="#374151">设计与事故依据</text>
+  <text x="510" y="309" fill="#374151">Agent Notes：设计取舍及理由</text>
+  <text x="510" y="333" fill="#374151">postmortem：故障、证据与防止复发的要求</text>
+  <text x="510" y="357" fill="#4b5563">当前行为与已执行检查，仍回到政策和实现核对。</text>
+
+  <rect x="35" y="401" width="890" height="99" rx="10" fill="#fff" stroke="#d4380d" stroke-dasharray="6 3"/>
+  <text x="55" y="429" font-size="13" font-weight="700" fill="#a8071a">诊断点：规则存在、检查通过和成果合格是不同事实</text>
+  <text x="55" y="454" fill="#374151">漏跑检查查执行入口；快照归属查树内指令；需求与领域结果由独立验收判断。</text>
+  <text x="55" y="478" fill="#374151">页内导航见 execution/06-dsh-testing-rules-ownership.md；机制细节链接各自维护处。</text>
 </svg>

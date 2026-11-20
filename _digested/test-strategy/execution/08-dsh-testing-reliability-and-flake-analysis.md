@@ -15,4 +15,4 @@ DSH 的测试可靠性纪律建立在“共享执行环境”基础上：进程�
 
 ## 参考 (Reference)
 *   [CI 门禁与可靠性](./07-dsh-ci-gates-and-reliability.md)
-*   [测试教义](./01-dsh-testing-philosophy-and-doctrine.md)
+*   [测试教义](../philosophy/01-dsh-testing-philosophy-and-doctrine.md)

@@ -30,7 +30,7 @@
 | `<profile>/compatibility.json` | **不动** | **不动** | **不动** |
 | `<profile>/.plugin-manager/logs/` | 追加诊断日志 | 同上 | 同上 |
 
-`cordis.patch.yml` 不动的理由与配置优先级有关：bundle 层是出厂组合，用户 patch 只记录「与 bundle 的偏离」。行级开关确实会写这个文件，但那属于启停，见 [`06-更新与启停.md`](./06-更新与启停.md)。
+`cordis.patch.yml` 不动的理由与配置优先级有关：bundle 层是出厂组合，用户 patch 只记录「与 bundle 的偏离」。行级开关确实会写这个文件，但那属于启停，见 [`06-更新与启停.md`](./06-update-and-stop.md)。
 
 ## 版本门在哪一步拒绝
 
@@ -43,7 +43,7 @@
 
 也就是说 registry 通道的拒绝是干净的，git 通道的拒绝是「撤销式」的，而已允许过的构建脚本副作用可能留下。请求里带的 `enabled: false` 同样要过这道门。
 
-被拒绝的行在启动时另有处理：启动期准入独立执行一次（[`04-启动.md`](./04-启动.md)）。一次安装里**没有改动**的坏依赖不会阻塞无关操作——那次安装只记一条点名它的 warning，把它拒之门外的是**启动**，不是安装。
+被拒绝的行在启动时另有处理：启动期准入独立执行一次（[`04-启动.md`](./04-startup.md)）。一次安装里**没有改动**的坏依赖不会阻塞无关操作——那次安装只记一条点名它的 warning，把它拒之门外的是**启动**，不是安装。
 
 ## 精确豁免
 
@@ -76,7 +76,7 @@ profile 是共享资源：Plugins 页、`plugin_manager`、`dsh plugin`、HMR �
 
 管理面的可调项都是 Config 字段而不是常量（`registry`、`fallbackRegistries`、`inspectTimeoutMs`、`githubConnectionTimeoutMs`、`outputBytes`、`lockWaitMs`、`idleTimeoutMs`），符合仓库「部署可变的取值必须是可校验的配置字段」这条规则。
 
-配置写入也取同一把 profile 写锁：`config-editor.edit()` 在 `hmr.runExclusive` 内先 `withFileLock(<profile>/package.json)`（`packages/boot/config-editor/src/index.ts:93`，默认等 2000ms；与 `plugin-manager.change()` 是同一个 `<file>.lock`），行开关经 `change()` 也取这把锁，两者的取锁顺序相反。见 [`06-更新与启停.md`](./06-更新与启停.md)。
+配置写入也取同一把 profile 写锁：`config-editor.edit()` 在 `hmr.runExclusive` 内先 `withFileLock(<profile>/package.json)`（`packages/boot/config-editor/src/index.ts:93`，默认等 2000ms；与 `plugin-manager.change()` 是同一个 `<file>.lock`），行开关经 `change()` 也取这把锁，两者的取锁顺序相反。见 [`06-更新与启停.md`](./06-update-and-stop.md)。
 
 ## 安装是授权执行代码
 
@@ -90,6 +90,6 @@ profile 是共享资源：Plugins 页、`plugin_manager`、`dsh plugin`、HMR �
 
 ## 本页的边界
 
-页面只写安装、启停、卸载各自的写盘面。profile 目录怎么被创建、`--from-default-profile` 的复制语义见 [`composition/04`](../composition/04-profile-创建与保留名.md)。装完之后怎么变成活树见 [`04-启动.md`](./04-启动.md)。
+页面只写安装、启停、卸载各自的写盘面。profile 目录怎么被创建、`--from-default-profile` 的复制语义见 [`composition/04`](../composition/04-profile-creation-and-reserved-names.md)。装完之后怎么变成活树见 [`04-启动.md`](./04-startup.md)。
 
-下一段：[`04-启动.md`](./04-启动.md)。
+下一段：[`04-启动.md`](./04-startup.md)。

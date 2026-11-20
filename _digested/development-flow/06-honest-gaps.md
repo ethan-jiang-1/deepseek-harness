@@ -21,7 +21,7 @@
 | 口径 | 实现 | 值 |
 | --- | --- | --- |
 | 古早指标 `notes-md-total` / `notes-implemented-md` / `notes-archived-md` | `git ls-tree -r --name-only <commit> .agents/notes` 后筛 `.md`，**含 `.zh.md`** | 2546 / 594 / 1849 |
-| 本专题 [09](./09-class-六个决策种类.md) 的分类矩阵 | 只数英文正文 `.md`（排除 `.zh.md` 与 `AGENTS.md`） | 各 class 的 42 / 296 / 8 / 924 |
+| 本专题 [09](./09-agent-note-decision-classification.md) 的分类矩阵 | 只数英文正文 `.md`（排除 `.zh.md` 与 `AGENTS.md`） | 各 class 的 42 / 296 / 8 / 924 |
 
 两组的差值正好是中文对照文件的数量，所以**它们都不是错的**，但混用会得出荒谬结论（例如把「296 篇活跃」和「594 篇活跃」同时当真）。
 

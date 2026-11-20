@@ -32,7 +32,7 @@ Context 与 Agent 回答两个不同的问题：Context 是注册与生命周期
 
 ### 对 subagent 的直接后果
 
-同一条原则决定了 subagent 的 model-selection 继承目标：`selectForSession(session)` 从 `ctx.get('sessions')` 读父 Session（`packages/subagent/tool-subagent/src/index.ts:413-441`），而不是从 Agent registry 反查父 Agent；委派工具的装载签名因此变成 `apply(ctx, config, session?)`（`:146`），由直接 `AgentSetup` 显式传入尚未发布的 Session。host 侧的消息交付同样显式带 parent：`deliverSubagentPrompt(parent, childId, …)`（`packages/subagent/subagent/src/internal.ts:42-55`）。机制细节见 [`../capability-seams/05-subagent-catalog与host交付.md`](../capability-seams/05-subagent-catalog与host交付.md)。
+同一条原则决定了 subagent 的 model-selection 继承目标：`selectForSession(session)` 从 `ctx.get('sessions')` 读父 Session（`packages/subagent/tool-subagent/src/index.ts:413-441`），而不是从 Agent registry 反查父 Agent；委派工具的装载签名因此变成 `apply(ctx, config, session?)`（`:146`），由直接 `AgentSetup` 显式传入尚未发布的 Session。host 侧的消息交付同样显式带 parent：`deliverSubagentPrompt(parent, childId, …)`（`packages/subagent/subagent/src/internal.ts:42-55`）。机制细节见 [`../capability-seams/02-subagent-catalog.md`](../capability-seams/subagent/02-subagent-catalog.md)。
 
 ## initiator 边界
 

@@ -40,4 +40,4 @@
 | `packages/ssh/sandbox-ssh/src/index.ts` | `ctx.sandbox` 远程 Provider 实现 |
 
 > [!NOTE]
-> 上游决策记录于 [`2026-09-11-posix-ssh-runtime.md`](../../.agents/notes/implemented/architecture/2026-09-11-posix-ssh-runtime.md)。
+> 上游决策记录于 [`2026-09-11-posix-ssh-runtime.md`](../../../.agents/notes/implemented/architecture/2026-09-11-posix-ssh-runtime.md)。

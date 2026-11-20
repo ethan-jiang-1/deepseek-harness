@@ -10,7 +10,7 @@
 
 - profile 目录与锁：`$DSH_HOME/profiles/desktop` 及其下的 `lock`（`apps/desktop/src/paths.ts:17-21`）。`DesktopProjectManager.withLock` 持有该锁完成全部 profile 写事务，并回收陈旧进程留下的死锁文件（`apps/desktop/src/project-manager.ts:93-130`）。
 - 组合起点：`WEB_PROFILE = PROFILE_TEMPLATES.web`，desktop profile 的 `dsh.profile.bundles` 就是 web 那两个 bundle（`apps/desktop/src/project-manager.ts:32`；manifest 在 `:142`、`:167` 直接写入，`:175` 经 `initProfile`；模板定义 `packages/boot/app-boot/src/profile.ts:179-195`）。用户插件由主窗口 Plugins 页经共享 Web Plugin Manager 追加进同一 manifest（`apps/desktop/README.md:168`）。
-- CLI 的 boot / dump / `plugin` 入口拒绝 `desktop`（`rejectElectronProfile` 与 `manageDesktopProfile` 例外的入口证据见 [`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)）；本页只记 profile 事实：`desktop` **不是** `PROFILE_TEMPLATES` 成员，`--from-default-profile desktop` 以「unknown default profile」被拒（`apps/cli/src/profile-boot.ts:117-122`）。
+- CLI 的 boot / dump / `plugin` 入口拒绝 `desktop`（`rejectElectronProfile` 与 `manageDesktopProfile` 例外的入口证据见 [`../surfaces-entrypoints/03-desktop-electron-shell-and-private-host.md`](../surfaces-entrypoints/03-desktop-electron-shell-and-private-host.md)）；本页只记 profile 事实：`desktop` **不是** `PROFILE_TEMPLATES` 成员，`--from-default-profile desktop` 以「unknown default profile」被拒（`apps/cli/src/profile-boot.ts:117-122`）。
 
 `docs/architecture.md` 把这条归属单独写在 `## Desktop application`（`:49-53`），`:53` 原文是「Desktop listens on an OS-assigned port by default; profile configuration can override it.」；`## Application launch`（`:41-47`）仍然只列 5 个 CLI profile、不计 Desktop。
 
@@ -63,7 +63,7 @@ Electron shell
 
 壳侧准备不跑 pnpm：`applyRelease` 只校验 `desktop-runtime.json` 描述符、迁移 profile 的 pnpm 设置、`createPluginProfile`（`:255-281` 的 `initProfile` 补齐缺失的 manifest / 空 user patch / pnpm workspace 文件）并摘除旧 link 后端写下的 `.dsh-module-fallback` 投影（`apps/desktop/src/project-manager.ts:83-91`、`:173-176`；`packages/boot/app-boot/src/profile.ts:283-301` 的 `removeLinkProjections`）。
 
-Node IPC 的生命周期与控制消息（`ready`、`fatal`、`shutdown`、`quit-inspection`、`update-tasks`、`platform-session`）属于入口契约，单点在 [`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)；本页只保留 profile 装载与组合差异。
+Node IPC 的生命周期与控制消息（`ready`、`fatal`、`shutdown`、`quit-inspection`、`update-tasks`、`platform-session`）属于入口契约，单点在 [`../surfaces-entrypoints/03-desktop-electron-shell-and-private-host.md`](../surfaces-entrypoints/03-desktop-electron-shell-and-private-host.md)；本页只保留 profile 装载与组合差异。
 
 Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runtimeDir, source, root })`，`root` 固定为 `$DSH_HOME/dsh-runtimes/dsh-primary-runtime`（离线 Python / pnpm 载荷的安装根），`source` 是随包的 runtime 载荷目录（`argv[4]` 或 `<runtimeDir>/../runtime/primary-runtime`），`office-skills` 取其同级（`apps/desktop-host/src/index.ts:95-99`；`office.ts:28-38`）。断连即停：`process.once('disconnect', stop)`（`apps/desktop-host/src/index.ts:91`）。
 
@@ -91,11 +91,11 @@ Office 组合由 host 在 boot 之后挂载：`ctx.plugin(desktopOffice, { runti
 
 ## 传输与认证
 
-桌面复用 web 的 HTTP + cookie 认证，只是载体换成 Electron 壳：host 把认证 URL 经 IPC 报回、壳做一次 token→cookie、`dsh-app://app` 的请求转发到 Host。这部分属于**入口契约**，单点在 [`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)；本页不重复。profile 装载侧独有的差异只有安装锚点（签名 runtime 树里的 `node_modules/@deepseek-ai/dsh/package.json`）与 `patchFiles: []`。
+桌面复用 web 的 HTTP + cookie 认证，只是载体换成 Electron 壳：host 把认证 URL 经 IPC 报回、壳做一次 token→cookie、`dsh-app://app` 的请求转发到 Host。这部分属于**入口契约**，单点在 [`../surfaces-entrypoints/03-desktop-electron-shell-and-private-host.md`](../surfaces-entrypoints/03-desktop-electron-shell-and-private-host.md)；本页不重复。profile 装载侧独有的差异只有安装锚点（签名 runtime 树里的 `node_modules/@deepseek-ai/dsh/package.json`）与 `patchFiles: []`。
 
 ## 与出网代理
 
-desktop 与 CLI 同经 `runProfile`：第一个插件挂载前 `installProxyFromEnvironment`、shutdown 时还原（`apps/cli/src/profile-boot.ts`）；环境快照同样来自 `loadLayeredEnv('dsh')`，所以 `$DSH_HOME/.env` 里豁免的代理名对 desktop 与 CLI 生效路径一致。逐调用点证据见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/06-外发代理策略.md)。
+desktop 与 CLI 同经 `runProfile`：第一个插件挂载前 `installProxyFromEnvironment`、shutdown 时还原（`apps/cli/src/profile-boot.ts`）；环境快照同样来自 `loadLayeredEnv('dsh')`，所以 `$DSH_HOME/.env` 里豁免的代理名对 desktop 与 CLI 生效路径一致。逐调用点证据见 [`../capability-seams/06-外发代理策略.md`](../capability-seams/integration/01-egress-proxy.md)。
 
 ## 源码入口
 

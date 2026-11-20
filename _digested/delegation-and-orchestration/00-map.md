@@ -117,7 +117,7 @@
 ## 与其他专题的关系
 
 - goal 的状态机与 Round Driver 深挖在 [`../agent-loop/00-map.md`](../agent-loop/00-map.md)。
-- subagent 的 seam 与多后端在 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/03-subagent后台与产品provider.md)。
+- subagent 的 seam 与多后端在 [`../capability-seams/03-subagent后台与产品provider.md`](../capability-seams/subagent/01-subagent-provider.md)。
 - Teams 的服务、任务图与 mailbox 机制在 [`../experimental/02-agent-teams.md`](../experimental/02-agent-teams.md)。
 - 客户端 / 两棵树的 UI 机制在 [`../two-tree-runtime/client/00-map.md`](../two-tree-runtime/client/00-map.md)。
 - 插件组合与生命周期在 [`../plugin-system/00-map.md`](../plugin-system/00-map.md)。

@@ -95,7 +95,7 @@ dsh --profile web
 
 ## 独特之处
 
-- **shipped 模板中唯一支持运行时 patch 重载的 Profile**：`hmr` 插件监视 profile patch 与包清单并原子换入新 patch 集，新失败抛错回滚（机制归 [`../plugin-system/composition/03-user-patch-hmr.md`](../plugin-system/composition/03-user-patch-hmr.md)）。该「唯一」限 shipped 模板——base 行按 `profileContext` 门控，自定义 launcher profile 默认同样开启。
+- **shipped CLI 模板中唯一默认开启运行时 patch 重载的 Profile**：`hmr` 串行协调 patch 与 bundle 清单变化；应用前可拒绝候选并恢复预先停止的条目，应用后的激活失败报错但不全局回滚，详见[用户 patch 的 HMR](../plugin-system/composition/03-user-patch-hmr.md)。自定义 launcher profile 默认同样开启，desktop 的配置见[对应页面](./06-desktop.md)。
 - **CLI launcher profile 中唯一有 browser 侧的 Profile**：browser 半边（`packages/client/`）通过 `window.__DSH_BOOT__` 初始化，经 `dsh.client` 插件罗盘构造核。Electron desktop 复用**同一套** web 组合与匹配的 client 图（desktop-host 经 `runProfile` 起 `desktop` profile），但它不是 CLI launcher profile（[`06-desktop.md`](./06-desktop.md)）。
 - **CLI launcher profile 中唯一使用会话级 preset 的 Profile**：session 级别选择 standard / ptc / minimal / cordis，host 平面除 `working_directory` 外不直接挂 model-facing 工具。（desktop 共享同一 `dsh-web-app` 层携带的 `presets/*.patch.yml` 并经 `agent-preset-registry` 按会话挂载，host 只经 `loadProfileDirectory` 装载 profile 本身的 bundle 与 `cordis.patch.yml`，不额外改写根配置。）
 - **stdout 给用户**：可以装 logger、打印 URL、输出诊断信息。
@@ -111,4 +111,4 @@ dsh --profile web
 | `packages/client/` | 浏览器半边 |
 | `packages/host/` | API gateway + HTTP |
 | `_digested/plugin-system/composition/00-map.md` | 启动组合机制 |
-| `_digested/surfaces-entrypoints/01-启动面与session流.md` | host/client 共享 session 流 |
+| `_digested/surfaces-entrypoints/01-source-and-built-launchers-and-headless-output.md` | host/client 共享 session 流 |

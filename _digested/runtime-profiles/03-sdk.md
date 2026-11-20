@@ -15,7 +15,7 @@ dsh --profile sdk
 
 sdk 是 `PROFILE_TEMPLATES` 中的一个名字（`dsh-base` + `dsh-sdk-app`）。走 bundle 层叠。源码启动走 `pnpm dsh --profile sdk`。
 
-协议方法面与对调用方的保证见 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md)；本页只写 profile 组合与启动。
+协议方法面与对调用方的保证见 [`../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md`](../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md)；本页只写 profile 组合与启动。
 
 ## 组合构成
 
@@ -53,7 +53,7 @@ dsh --profile sdk
 
 - **stdout 是纯数据管道**：任何 stdout logger 都会污染协议帧。诊断只能走 stderr。
 - **协议层接线**：bundle `inject: [sdkAppStartup, loader]`；server 按 sessionId get-or-create agent，经 `ctx.agents` 驱动。
-- **推送全部耐久事实**：事件映射、子 Session 通知与 `local` 过滤的单点在 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md)；本页只记它是 sdk-app 的组合后果。
+- **推送全部耐久事实**：事件映射、子 Session 通知与 `local` 过滤的单点在 [`../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md`](../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md)；本页只记它是 sdk-app 的组合后果。
 - **`initialize.maxTokens`** 可变成 SDK 创建的 agent 及其后代的输出上限。
 - **无 per-prompt 结果**：`session/prompt` 立刻返回 `messageId`（inbox 准入 id），不等 idle。自动化区间由客户端自己定义。
 - **startup-only 重载**：协议开始后 patch 重载会打散生命周期。
@@ -68,4 +68,4 @@ dsh --profile sdk
 | `packages/sdk/client/` | TypeScript 客户端 |
 | `packages/bundle/sdk-app/cordis.patch.yml` | SDK 应用的 bundle 组合 |
 | `packages/bundle/sdk-app/src/index.ts` | `sdk-app-startup` 的 `profile` config 与 `--help` 命令语法 |
-| `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证对照 |
+| `_digested/surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md` | ACP vs JSON-RPC 协议保证对照 |

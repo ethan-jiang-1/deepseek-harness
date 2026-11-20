@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 640" role="img" aria-labelledby="title desc">
+  <title id="title">Config 的校验时点：先满足依赖，再开始激活</title>
+  <desc id="desc">一个依赖 storage 服务、要求 count 为数字的插件，以字符串 3 挂载。缺少服务时 Fiber 等待且尚未解析 Config；服务到位后，配置经过 internal/config 和同步 Standard Schema，校验问题阻止 apply。成功值才交给插件继续初始化。诊断需分开观察依赖、校验和插件执行。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#64748b"/></marker>
+    <style>
+      text { font-family: system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif; font-size: 15px; fill: #1e293b; }
+      .title { font-size: 23px; font-weight: 700; }
+      .heading { font-size: 16px; font-weight: 700; }
+      .small { font-size: 13px; fill: #475569; }
+      .watch { font-size: 14px; fill: #9a3412; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; }
+      .line { fill: none; stroke: #64748b; stroke-width: 1.8; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1120" height="640" rx="12" fill="#f8fafc"/>
+  <text x="560" y="37" text-anchor="middle" class="title">挂载成功，为什么还没有发现错误配置？</text>
+  <text x="560" y="64" text-anchor="middle" class="small">Cordis 是插件运行框架；Fiber 是一个插件实例的生命周期记录。</text>
+
+  <rect x="30" y="92" width="1060" height="69" rx="9" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="49" y="120" class="heading">例子：插件需要 storage 服务，Config 要求 count 为数字</text>
+  <text x="49" y="145" class="mono">inject = ['storage']     count: Schema.number().required()     raw = { count: '3' }</text>
+
+  <rect x="30" y="198" width="235" height="116" rx="9" fill="#fff" stroke="#94a3b8"/>
+  <text x="48" y="227" class="heading">挂载插件与原始配置</text>
+  <text x="48" y="255" class="mono">ctx.plugin(plugin, raw)</text>
+  <text x="48" y="289" class="small">先建立 Fiber，交给依赖管理</text>
+  <path d="M265 254H301" class="line"/>
+
+  <rect x="309" y="198" width="235" height="116" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="327" y="227" class="heading">必需服务尚未到位</text>
+  <text x="327" y="255">PENDING = 等待依赖</text>
+  <text x="327" y="289" class="watch">此时还没解析 Config</text>
+  <path d="M544 254H580" class="line"/>
+  <text x="562" y="184" text-anchor="middle" class="small">服务到位</text>
+
+  <rect x="588" y="198" width="502" height="116" rx="9" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="607" y="227" class="heading">开始一次激活：先解析，再执行</text>
+  <text x="607" y="255" class="mono">internal/config  →  Config['~standard'].validate</text>
+  <text x="607" y="289" class="small">配置钩子依次处理输入 → Standard Schema 同步返回 value 或 issues</text>
+
+  <path d="M719 314V353" class="line"/>
+  <text x="702" y="340" text-anchor="end" class="small">本例：issues</text>
+  <path d="M960 314V353" class="line"/>
+  <text x="977" y="340" class="small">合法输入：value</text>
+
+  <rect x="588" y="361" width="243" height="115" rx="9" fill="#fff1f2" stroke="#fda4af"/>
+  <text x="606" y="390" class="heading">字符串 '3' 不是数字</text>
+  <text x="606" y="418" class="mono">expected number</text>
+  <text x="606" y="451" class="watch">本次 apply 不执行</text>
+
+  <rect x="849" y="361" width="241" height="115" rx="9" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="867" y="390" class="heading">例如改为 { count: 3 }</text>
+  <text x="867" y="418">解析值交给 apply</text>
+  <text x="867" y="451" class="small">初始化资源仍可能失败</text>
+
+  <rect x="30" y="361" width="514" height="115" rx="9" fill="#fff" stroke="#cbd5e1" stroke-dasharray="5 4"/>
+  <text x="49" y="390" class="heading">两个独立的观察点</text>
+  <text x="49" y="418">① 没有校验错误：先确认必需服务是否可用</text>
+  <text x="49" y="451">② 没有 apply 效果：再确认配置是否解析成功</text>
+
+  <rect x="30" y="510" width="1060" height="98" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="49" y="540" class="heading">诊断：分开记录依赖状态、校验结果和插件执行</text>
+  <text x="49" y="568" class="watch">Promise 校验结果也会被拒绝；导出异步校验器不会延后等待。</text>
+  <text x="49" y="591" class="small">这里决定本次插件能否激活；整机启动和在线更新的失败处置由上层 Loader / HMR 决定。</text>
+</svg>

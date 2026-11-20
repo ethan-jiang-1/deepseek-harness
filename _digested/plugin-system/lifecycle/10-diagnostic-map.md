@@ -46,7 +46,7 @@
 |---|---|
 | **判定** | 先看 `--dump-config` 的层注释（谁最后覆盖了它）；再看该行是不是被写成了**字面值**（覆盖掉 `!!js` 表达式后，`--port` 这类参数就失效）；最后看 `hmr` 行是否启用 |
 | **信号** | `--port 0` 不生效但**无报错**；或 HMR 抛 `Profile HMR requires application readiness` |
-| **修复** | 把值改到正确的层（见 [`09`](./09-配置与设置面.md)）；保留 `!!js` 表达式；启用 `hmr` 行 |
+| **修复** | 把值改到正确的层（见 [`09`](./09-configuration-and-settings.md)）；保留 `!!js` 表达式；启用 `hmr` 行 |
 
 ### 5 · 首屏 401 或白屏
 
@@ -97,4 +97,4 @@ ls -t "$DSH_HOME/profiles/$P/.plugin-manager/logs" | head -3
 
 ## 边界
 
-失败**分级**（optional 警告 / required 停止 / 游离 async 致命）在 [`04-启动.md`](./04-启动.md)；安装失败后的状态（哪些回滚、哪些保留）在 [`03-安装.md`](./03-安装.md)；首屏五步的机制在 [`../composition/05-启动窗口与首屏交接.md`](../composition/05-启动窗口与首屏交接.md)。
+失败**分级**（optional 警告 / required 停止 / 游离 async 致命）在 [`04-启动.md`](./04-startup.md)；安装失败后的状态（哪些回滚、哪些保留）在 [`03-安装.md`](./03-installation.md)；首屏五步的机制在 [`../composition/05-启动窗口与首屏交接.md`](../composition/05-startup-window-and-first-screen-handoff.md)。

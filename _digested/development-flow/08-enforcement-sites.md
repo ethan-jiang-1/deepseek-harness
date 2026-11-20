@@ -123,5 +123,5 @@ export function isArchivedAgentNotePath(path: string): boolean
 ## 边界
 
 - 本篇不重复 [02](./02-gates.md) 的逐条规则，只回答「这些规则由谁、在何时、以什么后果执行」。
-- `doc-sync` 门禁的聚合树与 quick/full 分组归 [`test-strategy/07-ci-gates.md`](../test-strategy/07-ci-gates.md)，本篇只取与 note 有关的那一段。
+- `doc-sync` 门禁的聚合树与 quick/full 分组归 [`test-strategy/07-dsh-ci-gates-and-reliability.md`](../test-strategy/execution/07-dsh-ci-gates-and-reliability.md)，本篇只取与 note 有关的那一段。
 - `translation-pairing` 的配对契约归 [`docs/i18n/README.md`](../../docs/i18n/README.md)。

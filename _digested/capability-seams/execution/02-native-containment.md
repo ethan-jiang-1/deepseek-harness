@@ -1,8 +1,8 @@
 # 原生 containment：受管范围与 native/system
 
-> 「把子进程杀掉」听起来简单，其实不是：一条子进程可以 `setsid` 自立门户、reparent 给 init、或者活过直接父进程——任何用「进程组」或「进程树」描述的范围都拦不住它。DSH 的 `ctx.subprocess` 因此把公开语义从进程关系换成 **provider 私有选定的受管范围（managed range）**：终止与等待都作用于这个范围，范围怎么建立由平台决定。本篇讲两条 native 路径（Linux systemd scope、Windows kill-on-close Job）、回退边界，以及 `native/system` 提供的两个原生能力。一次 bash 的完整链路见 [`02`](./02-一次bash从tool到sandbox.md)。
+> 「把子进程杀掉」听起来简单，其实不是：一条子进程可以 `setsid` 自立门户、reparent 给 init、或者活过直接父进程——任何用「进程组」或「进程树」描述的范围都拦不住它。DSH 的 `ctx.subprocess` 因此把公开语义从进程关系换成 **provider 私有选定的受管范围（managed range）**：终止与等待都作用于这个范围，范围怎么建立由平台决定。本篇讲两条 native 路径（Linux systemd scope、Windows kill-on-close Job）、回退边界，以及 `native/system` 提供的两个原生能力。一次 bash 的完整链路见 [`02`](./01-bash-execution.md)。
 
-核验入口：`packages/subprocess/`、`native/system/`、`packages/session/session-persistence-jsonl/`。上游决策全文见 [`2026-08-28-subprocess-native-containment.md`](../../.agents/notes/archived/architecture/2026-08-28-subprocess-native-containment.md)（已归档，现行实现以源码为准）。
+核验入口：`packages/subprocess/`、`native/system/`、`packages/session/session-persistence-jsonl/`。上游决策全文见 [`2026-08-28-subprocess-native-containment.md`](../../../.agents/notes/archived/architecture/2026-08-28-subprocess-native-containment.md)（已归档，现行实现以源码为准）。
 
 ## 公开语义：受管范围
 
@@ -55,4 +55,4 @@ flock 的消费者是 session 持久化：`packages/session/session-persistence-
 | `native/system/packages/entry/src/flock.ts` | `tryLockExclusive` |
 | `packages/session/session-persistence-jsonl/src/lease.ts` | 利用 flock 的 session 写租约 |
 
-一次 bash 的完整链路与失败合同见 [`02-一次bash从tool到sandbox.md`](./02-一次bash从tool到sandbox.md)；外发代理对子进程环境的叠加见 [`06-外发代理策略.md`](./06-外发代理策略.md)；session 持久化的格式世代与迁移机制归 session-and-loop 专题，见 [`../session-and-loop/00-map.md`](../session-and-loop/00-map.md)。
+一次 bash 的完整链路与失败合同见 [`01-bash-execution.md`](./01-bash-execution.md)；外发代理对子进程环境的叠加见 [`01-egress-proxy.md`](../integration/01-egress-proxy.md)；session 持久化的格式世代与迁移机制归 session-and-loop 专题，见 [`../session-and-loop/00-map.md`](../../session-and-loop/00-map.md)。

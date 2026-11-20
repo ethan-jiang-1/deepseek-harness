@@ -50,7 +50,7 @@ session             ← 仅追加事件流（turn/*、step/*、surface、tool/*�
 | [`03-activity-vs-goal-boundaries.md`](./03-activity-vs-goal-boundaries.md) | step/turn/activity/goal 四层分别在哪结束、崩溃恢复时序 |
 | [`04-agent-runtime-identity.md`](./04-agent-runtime-identity.md) | Agent 运行时身份如何显式传递、initiator 边界为何成为权限判据 |
 
-Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/session-and-loop/02-inbox-与turn-时序.md`](../session-and-loop/02-inbox-与turn-时序.md) 覆盖，这里不再重复。
+Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/session-and-loop/02-inbox-wakeup-and-turn-timing.md`](../session-and-loop/02-inbox-wakeup-and-turn-timing.md) 覆盖，这里不再重复。
 
 ## 源码入口
 
@@ -71,7 +71,7 @@ Agent Loop 内部（turn/step/inbox/claim）的详细时序已在 [`_digested/se
 
 ## 边界
 
-- **turn / step / inbox 内部机制**：[`../session-and-loop/00-map.md`](../session-and-loop/00-map.md) 与 [`../session-and-loop/02-inbox-与turn-时序.md`](../session-and-loop/02-inbox-与turn-时序.md)（本专题不展开 `claim` 与 request header 构造）。
+- **turn / step / inbox 内部机制**：[`../session-and-loop/00-map.md`](../session-and-loop/00-map.md) 与 [`../session-and-loop/02-inbox-wakeup-and-turn-timing.md`](../session-and-loop/02-inbox-wakeup-and-turn-timing.md)（本专题不展开 `claim` 与 request header 构造）。
 - **驾驶座与委派用法**：[`../delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md`](../delegation-and-orchestration/delegation-primitives/04-cross-round-goals-and-the-round-driver.md)（objective 写法、轮预算、终结纪律、wrapup 收尾）。
 
 ## 症状 → 页

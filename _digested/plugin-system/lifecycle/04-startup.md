@@ -19,7 +19,7 @@ bundle 被跳过不等于剩下的组合还能工作。层里少一个 provider�
 
 profile 行有两种名字形态：裸包名与文件 URL。patch 加载把 `insert` 行里的绝对路径与补丁相对的 `./`、`../` 转成 file URL，而已有行的名字断言与替换 `config` 保持字面（`packages/boot/app-boot/README.md` 的 profile 节）。
 
-解析不靠往 profile 里写 fallback 链接：launcher 先算出一份不可变的运行时解析表，再把它装到 Node 的 ESM 与 CJS 解析器上。解析顺序是 profile 本地 `node_modules` 优先，其次安装锚，再按声明者位置找 linked root。boot 时序见 [`composition/01`](../composition/01-boot-时序.md)。
+解析不靠往 profile 里写 fallback 链接：launcher 先算出一份不可变的运行时解析表，再把它装到 Node 的 ESM 与 CJS 解析器上。解析顺序是 profile 本地 `node_modules` 优先，其次安装锚，再按声明者位置找 linked root。boot 时序见 [`composition/01`](../composition/01-boot-sequence.md)。
 
 ## 结算审计
 
@@ -34,7 +34,7 @@ profile 行有两种名字形态：裸包名与文件 URL。patch 加载把 `ins
 | `PENDING` | 在该 fiber 自己的 `ctx` 上点名还缺哪个服务 |
 | 其它 | 原样写进诊断 |
 
-fiber 的六态（`PENDING` / `LOADING` / `ACTIVE` / `FAILED` / `UNLOADING` / `DISPOSED`）由 Cordis 定义，见 [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-五条原语对照源码.md)。审计只看落在树上的那一瞬间，不看中间态。
+fiber 的六态（`PENDING` / `LOADING` / `ACTIVE` / `FAILED` / `UNLOADING` / `DISPOSED`）由 Cordis 定义，见 [`two-tree-runtime/framework/01`](../../two-tree-runtime/framework/01-cordis-primitives-and-source-ownership.md)。审计只看落在树上的那一瞬间，不看中间态。
 
 ![失败矩阵：三列与两条致命行](./figures/04-failure-matrix.svg)
 
@@ -78,4 +78,4 @@ fiber 的六态（`PENDING` / `LOADING` / `ACTIVE` / `FAILED` / `UNLOADING` / `D
 
 配置层顺序、`insert` 与 id 命中的替换规则、`--dump-config` 的保真性都在 [`composition/`](../composition/00-map.md)。本页只管「一行能不能活、活不了会怎样」。
 
-下一段：[`05-特殊初始化.md`](./05-特殊初始化.md)。
+下一段：[`05-特殊初始化.md`](./05-special-initialization.md)。

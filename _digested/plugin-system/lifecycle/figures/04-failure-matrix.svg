@@ -11,8 +11,11 @@
 
   <rect x="410" y="50" width="370" height="300" fill="#fef3c7" stroke="#d97706" rx="4"/>
   <text x="420" y="70" font-weight="700">Runtime (HMR/Async)</text>
-  <text x="420" y="90">1. Async Rejection (Log)</text>
-  <text x="420" y="110">2. New Row Fail (Exit 1)</text>
-  <text x="420" y="130">3. Old Fail (Warn only)</text>
-  <text x="420" y="200" fill="red" font-weight="700">W: 上一棵树状态保持?</text>
+  <text x="420" y="90">1. Watch refresh rejection: log</text>
+  <text x="420" y="110">2. New / changed activation failure: reject</text>
+  <text x="420" y="130">3. Unchanged old failure: warn</text>
+  <text x="420" y="155">Pre-apply: restore stopped rows</text>
+  <text x="420" y="175">Applying: no global tree rollback</text>
+  <text x="420" y="220" fill="red" font-weight="700">W: 核对当前树与失败阶段</text>
+  <text x="420" y="245">刷新拒绝不表示旧树恢复或进程退出。</text>
 </svg>

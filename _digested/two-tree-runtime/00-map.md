@@ -4,13 +4,13 @@
 
 ## 一句话
 
-Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一套 Cordis 在两端各长一棵插件树**：Node 那棵拥有权威状态，浏览器那棵拥有视图与投影，中间是一条类型化的线（Typert + Remote）。同一个 `ctx`、同一批 Cordis 原语（Context / Plugin / Fiber / Event / Effect，见 [`framework/01`](./framework/01-五条原语对照源码.md)）、同一种 `apply(ctx, config)` 写法，区别只在树上的服务与模块从哪来。
+Web 与桌面跑的不是「一个运行时加一个前端」，而是**同一套 Cordis 在两端各长一棵插件树**：Node 那棵拥有权威状态，浏览器那棵拥有视图与投影，中间是一条类型化的线（Typert + Remote）。同一个 `ctx`、同一批 Cordis 原语（Context / Plugin / Fiber / Event / Effect，见 [`framework/01`](./framework/01-cordis-primitives-and-source-ownership.md)）、同一种 `apply(ctx, config)` 写法，区别只在树上的服务与模块从哪来。
 
 ![一套框架、两棵树、一条线](./figures/two-trees.svg)
 
 ## 为什么合成一个专题
 
-因为分开讲会把同一件事讲成两件：`@deepseek-ai/cordis` 在浏览器侧是 `PLATFORM_MODULES` 里的静态模块（[`client/tree/02`](./client/tree/02-模块身份与激活顺序.md)），在两棵树里是同一份 vendor；`ctx.effect()` 的撤销时序、waterfall 的 `next()` 合同、Loader 的 patch 算法，写两边插件时是同一套（[`framework/`](./framework/00-map.md)）。真正属于某一侧的，是「谁拥有状态」和「模块怎么到」。
+因为分开讲会把同一件事讲成两件：`@deepseek-ai/cordis` 在浏览器侧是 `PLATFORM_MODULES` 里的静态模块（[`client/tree/02`](./client/tree/02-module-identity-external-imports-and-service-activation.md)），在两棵树里是同一份 vendor；`ctx.effect()` 的撤销时序、waterfall 的 `next()` 合同、Loader 的 patch 算法，写两边插件时是同一套（[`framework/`](./framework/00-map.md)）。真正属于某一侧的，是「谁拥有状态」和「模块怎么到」。
 
 同一个问题在两边的答案，是这张表的全部意义：
 
@@ -31,7 +31,7 @@ Host 拥有真相（Source of Truth），Client 仅拥有 **投影（Projection�
 
 ## 两棵树之间的连接：Remote
 
-Remote 不仅仅是一条“线”，它是基于 [`Typert`](./remote/typert/00-map.md) 实现的**类型安全跨域通信机制**。它保证了 Host 的方法声明在 Client 端以类型安全的 `stub` 形式存在，从而将两棵树在类型系统层面缝合在一起。
+Remote 不仅仅是一条“线”，它是基于 [`Typert`](./remote/typert/01-remote-declarations-decorators-and-namespaces.md) 实现的**类型安全跨域通信机制**。它保证了 Host 的方法声明在 Client 端以类型安全的 `stub` 形式存在，从而将两棵树在类型系统层面缝合在一起。
 
 ## 三格
 
@@ -41,11 +41,11 @@ Remote 不仅仅是一条“线”，它是基于 [`Typert`](./remote/typert/00-
 | [`client/`](./client/00-map.md) | 浏览器那棵树：六层与依赖链、模块身份、浏览器启动、谁拥有状态、slot 与 conversation、插件纪律 | 加 UI、加 client 包、查「这条状态该住哪」「包为什么没启动」 |
 | [`remote/`](./remote/00-map.md) | 两棵树之间的线：`@Remote` 声明 → build 产物 → Gateway 派发 → Client mount；载体、认证、流 | 加一个跨边界方法、加一种推给浏览器的事实、查认证或重连 |
 
-桌面不是第三棵树：Electron 壳起一个私有 host，host 经 `runProfile` 起完整 web 应用，窗口加载同一份 client 产物——还是 Host 树 + Client 树，只是启动方式不同（[`02-桌面-同一个形状的第三个落脚点.md`](./02-桌面-同一个形状的第三个落脚点.md)、[`../surfaces-entrypoints/03-桌面入口.md`](../surfaces-entrypoints/03-桌面入口.md)）。headless / sdk / sdk-minimal / acp 则只有 Host 树，本专题描述的是「有两个端点时」的形状。
+桌面不是第三棵树：Electron 壳起一个私有 host，host 经 `runProfile` 起完整 web 应用，窗口加载同一份 client 产物——还是 Host 树 + Client 树，只是启动方式不同（[`02-desktop-processes-and-host-client-trees.md`](./02-desktop-processes-and-host-client-trees.md)、[`../surfaces-entrypoints/03-desktop-electron-shell-and-private-host.md`](../surfaces-entrypoints/03-desktop-electron-shell-and-private-host.md)）。headless / sdk / sdk-minimal / acp 则只有 Host 树，本专题描述的是「有两个端点时」的形状。
 
 ## 先看一条事件怎么走
 
-[`01-一条会话事件穿过两棵树.md`](./01-一条会话事件穿过两棵树.md)：拿 `assistant/message` 从 Host 的 `append` 走到 Chat 卡片，七跳加六个丢事件的位置。查「这条数据为什么没出现在界面上」时先看它，再进对应的格。
+[`01-session-events-from-host-log-to-client-renderer.md`](./01-session-events-from-host-log-to-client-renderer.md)：拿 `assistant/message` 从 Host 的 `append` 走到 Chat 卡片，七跳加六个丢事件的位置。查「这条数据为什么没出现在界面上」时先看它，再进对应的格。
 
 ## 插件作者视角
 
@@ -53,20 +53,20 @@ Remote 不仅仅是一条“线”，它是基于 [`Typert`](./remote/typert/00-
 
 | 你要做的事 | 从这页开始 | 接着读 |
 |---|---|---|
-| 写第一个 Host 插件 | [`framework/01`](./framework/01-五条原语对照源码.md) | [`../plugin-system/lifecycle/12-从零到一个能跑的插件.md`](../plugin-system/lifecycle/12-从零到一个能跑的插件.md) |
-| 起一个 `packages/client/<name>` 包 | [`client/rules/02`](./client/rules/02-依赖-构建期环境与三处注册面.md) | [`client/rules/01`](./client/rules/01-export-与包内目录.md)（export 与包内目录）、[`client/tree/03`](./client/tree/03-浏览器启动与首屏交接.md)（它怎么被启动） |
-| 往界面加一个位置或按钮 | [`client/view/01`](./client/view/01-slot-与-props-纪律.md) | [`client/tree/01`](./client/tree/01-六层与单向依赖链.md)（这个位置属于哪一层） |
-| 让 Host 的一个方法对浏览器可调 | [`remote/typert/01`](./remote/typert/01-声明期-装饰器与-namespace.md) | [`remote/gateway/02`](./remote/gateway/02-客户端-mount-与装配.md)（谁把它挂成 `ctx.remote`） |
-| 让 Host 的某条事实到达浏览器 | [`remote/streams/01`](./remote/streams/01-一条-emit-两条出站链路.md) | [`remote/gateway/01`](./remote/gateway/01-Host-派发与访问控制.md)（授权与派发）；全程七跳见 [`01`](./01-一条会话事件穿过两棵树.md) |
-| 加一种右栏内容 / 一条文件预览 | [`client/view/03`](./client/view/03-右栏-与-document-preview.md) | [`client/state/02`](./client/state/02-资源模型与-holder-生命周期.md)（资源协议与 holder） |
+| 写第一个 Host 插件 | [`framework/01`](./framework/01-cordis-primitives-and-source-ownership.md) | [`../plugin-system/lifecycle/12-minimal-plugin-bootstrapping.md`](../plugin-system/lifecycle/12-minimal-plugin-bootstrapping.md) |
+| 起一个 `packages/client/<name>` 包 | [`client/rules/02`](./client/rules/02-client-dependencies-build-environment-and-package-registration.md) | [`client/rules/01`](./client/rules/01-client-exports-and-package-domain-structure.md)（export 与包内目录）、[`client/tree/03`](./client/tree/03-browser-boot-and-first-render-handoff.md)（它怎么被启动） |
+| 往界面加一个位置或按钮 | [`client/view/01`](./client/view/01-slot-registration-and-derived-component-props.md) | [`client/tree/01`](./client/tree/01-client-layers-and-one-way-dependencies.md)（这个位置属于哪一层） |
+| 让 Host 的一个方法对浏览器可调 | [`remote/typert/01`](./remote/typert/01-remote-declarations-decorators-and-namespaces.md) | [`remote/gateway/02`](./remote/gateway/02-client-remote-namespace-mounting-and-assembly.md)（谁把它挂成 `ctx.remote`） |
+| 让 Host 的某条事实到达浏览器 | [`remote/streams/01`](./remote/streams/01-session-follow-and-host-event-forwarding.md) | [`remote/gateway/01`](./remote/gateway/01-host-remote-dispatch-and-access-control.md)（授权与派发）；全程七跳见 [`01`](./01-session-events-from-host-log-to-client-renderer.md) |
+| 加一种右栏内容 / 一条文件预览 | [`client/view/03`](./client/view/03-sidebar-tabs-resource-navigation-and-document-preview.md) | [`client/state/02`](./client/state/02-resource-addresses-providers-and-holder-lifetimes.md)（资源协议与 holder） |
 
-三条反例，比正例更省时间：**不要在入口里再实现一套 loop**；**不要把业务数据放进 entry 的 store**；**不要直接 import 另一个 feature 包的值**（跨包只共享 `import type` 与窄静态 owner，[`client/rules/01`](./client/rules/01-export-与包内目录.md)）。
+三条反例，比正例更省时间：**不要在入口里再实现一套 loop**；**不要把业务数据放进 entry 的 store**；**不要直接 import 另一个 feature 包的值**（跨包只共享 `import type` 与窄静态 owner，[`client/rules/01`](./client/rules/01-client-exports-and-package-domain-structure.md)）。
 
 ## 阅读路径
 
 主干：`framework/01` → `client/tree/01` → `client/state/01` → `remote/00-map`。这三跳刚好对应「同一套原语 / 一棵树怎么分层 / 两棵树怎么同步」。
 
-按问题查：写插件看上面的表；查「为什么浏览器拿不到某个值」先看 `client/state/01` 的所有权，再看 `remote/` 的线；查「装了为什么没生效」看 [`../plugin-system/`](../plugin-system/00-map.md)，本专题不重复组合与生命周期。查「桌面为什么和 Web 不一样」看 [`02-桌面`](./02-桌面-同一个形状的第三个落脚点.md)。
+按问题查：写插件看上面的表；查「为什么浏览器拿不到某个值」先看 `client/state/01` 的所有权，再看 `remote/` 的线；查「装了为什么没生效」看 [`../plugin-system/`](../plugin-system/00-map.md)，本专题不重复组合与生命周期。查「桌面为什么和 Web 不一样」看 [`02-桌面`](./02-desktop-processes-and-host-client-trees.md)。
 
 ## 自检与同步
 

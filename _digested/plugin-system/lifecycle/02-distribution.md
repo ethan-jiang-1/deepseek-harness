@@ -15,7 +15,7 @@
 | `tarball` | `./hello-0.1.0.tgz` | `file:` |
 | `git` | `github:you/hello-plugin#<sha>` | git 地址原样记录 |
 
-四条通道的差异集中在两点：**取的是产物还是源码**，以及**批准发生在什么时候**。registry 与 tarball 是预构建产物，装完即可用；`path` 与 `git` 取的是源码，前者依赖检出里已有的 `lib/`，后者必须在安装期跑 `prepare`（[`01-打包.md`](./01-打包.md)）。构建批准在任何通道上都可能被要，但只有 `git` 必然触发。
+四条通道的差异集中在两点：**取的是产物还是源码**，以及**批准发生在什么时候**。registry 与 tarball 是预构建产物，装完即可用；`path` 与 `git` 取的是源码，前者依赖检出里已有的 `lib/`，后者必须在安装期跑 `prepare`（[`01-打包.md`](./01-packaging.md)）。构建批准在任何通道上都可能被要，但只有 `git` 必然触发。
 
 官方按需安装的来源由运行中的 Host 给出（`packages/boot/plugin-manager/src/official-install-target.ts`）：发布安装提供 `package@<当前 DSH 版本>`，源码 Web 与开发态 Desktop 提供 `link:<工作区包目录>`。所以同一次点击在两种部署里装到的东西不同——即使版本号相同，registry 副本与另一个检出之间也可能需要互相替换。
 
@@ -58,4 +58,4 @@ git 地址在启动 pnpm 之前先做一次 `git ls-remote`（`packages/boot/plu
 
 包的信任来源、市场索引的内容治理、以及某个具体实验能力该不该启用，都不在本页。前两者由部署方决定，后者见 [`experimental/00-map.md`](../../experimental/00-map.md)。
 
-下一段：[`03-安装.md`](./03-安装.md)。
+下一段：[`03-安装.md`](./03-installation.md)。

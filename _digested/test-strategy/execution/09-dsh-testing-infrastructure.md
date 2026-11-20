@@ -13,11 +13,11 @@ DSH 的测试基建不是一个杂物间，而是一个“待晋升”的过渡�
 
 ## 参考 (Reference)
 *   [CI 门禁](./07-dsh-ci-gates-and-reliability.md)
-*   [插件测试 playbook](./14-dsh-plugin-testing-playbook.md)
+*   [插件测试 playbook](../plugin-testing/14-dsh-plugin-testing-playbook.md)
 
 # 测试基建：test-support 七件套、横切 helper 与 Python 面
 
-> 本篇盘点 DSH 的测试基础设施：`packages/test-support/` 七件套、两个横切 helper、benchmarks 支撑、vitest setup 三件套、Python 侧。各工具服务哪些层见 [02](./02-dsh-testing-tiers-and-selection.md)；快照 owning 工具的规则细节见 [10](./10-dsh-snapshot-machinery.md)。
+> 本篇盘点 DSH 的测试基础设施：`packages/test-support/` 七件套、两个横切 helper、benchmarks 支撑、vitest setup 三件套、Python 侧。各工具服务哪些层见 [02](../philosophy/02-dsh-testing-tiers-and-selection.md)；快照 owning 工具的规则细节见 [10](../mechanisms/10-dsh-snapshot-machinery.md)。
 
 ## 现象是什么：一个"待晋升"的基建组
 

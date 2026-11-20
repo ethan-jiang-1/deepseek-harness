@@ -54,17 +54,17 @@ dsh --profile acp
 
 ## 与 SDK 的核心差异
 
-面向调用方的差异（prompt 返回、线上内容、取消、审批、图像）见 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md) 的正文与对照表；本页只记组合后果：两者都是 `dsh-base` 上的薄协议层，都 override `system-prompt` 的 `personaPrefix` 并关掉 `session-title-llm`。`dsh-acp-app` 另硬编码默认 model（`deepseek-official` / `deepseek-v4-flash`），`dsh-sdk-app` 另按环境条件插入 `workspace-dependencies` 与 `skill-office`——sdk 的工具面是 base 加这两行，不是原样继承。
+面向调用方的差异（prompt 返回、线上内容、取消、审批、图像）见 [`../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md`](../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md) 的正文与对照表；本页只记组合后果：两者都是 `dsh-base` 上的薄协议层，都 override `system-prompt` 的 `personaPrefix` 并关掉 `session-title-llm`。`dsh-acp-app` 另硬编码默认 model（`deepseek-official` / `deepseek-v4-flash`），`dsh-sdk-app` 另按环境条件插入 `workspace-dependencies` 与 `skill-office`——sdk 的工具面是 base 加这两行，不是原样继承。
 
 ## 独特之处
 
 - **标准化协议**：ACP 是 Agent Client Protocol 标准实现，为跨平台 agent 互操作设计。
-- **只投递 committed 事实**：ACP 语义更新、图像准入与 raw delta 边界的单点在 [`../surfaces-entrypoints/02-acp与jsonrpc.md`](../surfaces-entrypoints/02-acp与jsonrpc.md)；本页只记它是 acp-app 的组合后果。
+- **只投递 committed 事实**：ACP 语义更新、图像准入与 raw delta 边界的单点在 [`../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md`](../surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md)；本页只记它是 acp-app 的组合后果。
 - **每会话一个 in-flight prompt**：`session/prompt` 排他，不能同时有两个 prompt 互窜。
 - **图像处理**：支持 PNG / JPEG / WebP / GIF，inline base64 准入后丢弃，日志只留 attachment 引用。图像投递前再读并校验完整性。
 - **审批转发**：`approval/request` 事件转发为 `session/request_permission` 到客户端，客户端可自动答。
 - **startup-only 重载**：协议开始后不能在运行时重载 patch。
-- **stdout 是纯数据管道**：任何 stdout logger 都会污染 ACP 协议帧。判据不是警告/信息级别，而是写 `console` 的哪个方法——`console.info`/`console.log` 落 stdout，`console.warn`/`console.error` 落 stderr。`llm-deepseek-account` 的目录诊断走 `console.error`（`.info` 是**成功加载也会触发**的常规通道，`packages/llm/llm-deepseek-account/src/index.ts:57-58`）；`mcp-client` 的 resources 列表在未声明 capability 时直接返回空页而不调 SDK——SDK 的 fallback 会写 `console.debug`（详见 [`capability-seams/08`](../capability-seams/08-外部生态桥：MCP与hooks.md)）。回归见 `apps/cli/tests/profiles/acp/tests/stdout.expected.e2e.ts`。
+- **stdout 是纯数据管道**：任何 stdout logger 都会污染 ACP 协议帧。判据不是警告/信息级别，而是写 `console` 的哪个方法——`console.info`/`console.log` 落 stdout，`console.warn`/`console.error` 落 stderr。`llm-deepseek-account` 的目录诊断走 `console.error`（`.info` 是**成功加载也会触发**的常规通道，`packages/llm/llm-deepseek-account/src/index.ts:57-58`）；`mcp-client` 的 resources 列表在未声明 capability 时直接返回空页而不调 SDK——SDK 的 fallback 会写 `console.debug`（详见 [`capability-seams/08`](../capability-seams/integration/02-external-ecosystem.md)）。回归见 `apps/cli/tests/profiles/acp/tests/stdout.expected.e2e.ts`。
 
 ## 源码入口
 
@@ -75,4 +75,4 @@ dsh --profile acp
 | `packages/acp/acp/src/codec.ts` | turn 结局到 ACP stopReason 编解码 |
 | `packages/bundle/acp-app/cordis.patch.yml` | ACP 应用的 bundle 组合 |
 | `packages/test-support/session-snapshot/` | 快照测试工具（含 ACP 场景的 suite/normalize） |
-| `_digested/surfaces-entrypoints/02-acp与jsonrpc.md` | ACP vs JSON-RPC 协议保证详细对照 |
+| `_digested/surfaces-entrypoints/02-acp-and-jsonrpc-protocol-guarantees.md` | ACP vs JSON-RPC 协议保证详细对照 |

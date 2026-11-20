@@ -30,9 +30,9 @@
 | 关注维度 | 阅读入口 |
 |---|---|
 | 会话日志结构与重建 | [`01-session-event-map.md`](./01-session-event-map.md) |
-| 运行时推进机制 (Turn/Step) | [`02-inbox-与turn-时序.md`](./02-inbox-与turn-时序.md) |
-| loop 的扩展与定制 | [`03-换loop的半径.md`](./03-换loop的半径.md) |
-| 持久化与世代迁移 | [`04-格式世代与迁移.md`](./04-格式世代与迁移.md) |
+| 运行时推进机制 (Turn/Step) | [`02-inbox-wakeup-and-turn-timing.md`](./02-inbox-wakeup-and-turn-timing.md) |
+| loop 的扩展与定制 | [`03-agent-loop-replacement-and-compatibility.md`](./03-agent-loop-replacement-and-compatibility.md) |
+| 持久化与世代迁移 | [`04-session-format-generations-and-migrations.md`](./04-session-format-generations-and-migrations.md) |
 
 ---
 > 承重词按 `canon/GLOSSARY.md` 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。
@@ -42,9 +42,9 @@
 | 你的问题 | 去哪 |
 |---|---|
 | 事件有哪些、哪些进模型历史、未知类型怎么拒 | [`01`](./01-session-event-map.md) |
-| followup / steer / inject 差在哪、turn 内部时序 | [`02`](./02-inbox-与turn-时序.md) |
-| 换一个 loop 要满足什么 | [`03`](./03-换loop的半径.md) |
-| 旧 session 文件打不开 / 格式世代怎么迁移 | [`04`](./04-格式世代与迁移.md) 的读方向四语义 |
+| followup / steer / inject 差在哪、turn 内部时序 | [`02`](./02-inbox-wakeup-and-turn-timing.md) |
+| 换一个 loop 要满足什么 | [`03`](./03-agent-loop-replacement-and-compatibility.md) |
+| 旧 session 文件打不开 / 格式世代怎么迁移 | [`04`](./04-session-format-generations-and-migrations.md) 的读方向四语义 |
 | idle 之后谁在推进、goal 为什么自动续轮 | [`../agent-loop/00-map.md`](../agent-loop/00-map.md) |
 | scope / preset 祖先层怎么过滤工具 | 本页 scope chain 节 + [`../plugin-system/composition/`](../plugin-system/composition/00-map.md) |
 
@@ -69,9 +69,9 @@
 | 文件 | 内容 |
 |------|------|
 | [`01-session-event-map.md`](./01-session-event-map.md) | 信封、surface 五类、required-on-read 与 ignorable |
-| [`02-inbox-与turn-时序.md`](./02-inbox-与turn-时序.md) | followup / steer / inject；claim；拒绝仍关 turn；settlement 与 `system/message` |
-| [`03-换loop的半径.md`](./03-换loop的半径.md) | `AgentFactory`、日志与事件义务、默认组合替换点 |
-| [`04-格式世代与迁移.md`](./04-格式世代与迁移.md) | 世代、相邻迁移链、权威与门禁、读方向与读准备/写发布 |
+| [`02-inbox-wakeup-and-turn-timing.md`](./02-inbox-wakeup-and-turn-timing.md) | followup / steer / inject；claim；拒绝仍关 turn；settlement 与 `system/message` |
+| [`03-agent-loop-replacement-and-compatibility.md`](./03-agent-loop-replacement-and-compatibility.md) | `AgentFactory`、日志与事件义务、默认组合替换点 |
+| [`04-session-format-generations-and-migrations.md`](./04-session-format-generations-and-migrations.md) | 世代、相邻迁移链、权威与门禁、读方向与读准备/写发布 |
 
 下一专题：[`../agent-loop/00-map.md`](../agent-loop/00-map.md)（idle 之后谁在推进）、[`../capability-seams/00-map.md`](../capability-seams/00-map.md) 或 [`../tools-prompt-llm/00-map.md`](../tools-prompt-llm/00-map.md)。
 

@@ -27,7 +27,7 @@
 
 ## 两道准入与挂树失败
 
-这两段的机制正文在 [`04-启动.md`](../lifecycle/04-启动.md)，这里只记对「窗口」的影响：
+这两段的机制正文在 [`04-启动.md`](../lifecycle/04-startup.md)，这里只记对「窗口」的影响：
 
 - **bundle 级失败 = 整包跳过**，选择不变，记入 `skippedBundles`。作者看不到自己的行，也不会有运行时错误。
 - **行级只有兼容冲突才被拒**（denial 在 `packages/boot/app-boot/src/compatibility-preflight.ts:100-101`），其它失败留给 Loader 诊断；`:180` 是 `prepareProfilePatches` 应用插入 patch 的阶段。
@@ -52,7 +52,7 @@
 | 2 token 换 cookie | `connection` 的 `authorizeIndex` | 单 token、GET、路径 `/`、authority 合法 → **303 + `set-cookie: dsh-auth-<authority>`**（`packages/client/connection/src/browser-auth.ts:263`–`:288`） | token 错/多值 → 401（`:299-303`） |
 | 3 发 HTML | `frontend-static` + `webserver` | index 响应**先过 `connection` 认证**，再走 `renderIndex`：先渲染结构化注入行，再跑原始 tap（`packages/host/webserver/src/index.ts:584`） | 缺路径 404、越界 403、非 GET/HEAD 405 |
 | 4 注入启动图 | `client-modules` | 一个 `global` 注入行把 entry 图写成 `globalThis.__DSH_BOOT__`（`packages/client/modules/src/index.ts:592`；行种类见 `packages/host/webserver/src/injections.ts:17`） | client 侧直接报 `window.__DSH_BOOT__ is missing or not an object` |
-| 5 client 两段式启动 | `dsh-client-web` | 模块段 → 插件段 → **每个 entry 激活后**才把 DOM 交给 UI 渲染器（`packages/client/web/src/boot.ts:49`、`packages/client/web/README.md:38`、`:73`）；浏览器侧的六步与失败面见 [`../../two-tree-runtime/client/tree/03-浏览器启动与首屏交接.md`](../../two-tree-runtime/client/tree/03-浏览器启动与首屏交接.md) | 任一 entry 导入失败或停在非活跃态 → 聚合错误，**整页停在 boot page** |
+| 5 client 两段式启动 | `dsh-client-web` | 模块段 → 插件段 → **每个 entry 激活后**才把 DOM 交给 UI 渲染器（`packages/client/web/src/boot.ts:49`、`packages/client/web/README.md:38`、`:73`）；浏览器侧的六步与失败面见 [`../../two-tree-runtime/client/tree/03-browser-boot-and-first-render-handoff.md`](../../two-tree-runtime/client/tree/03-browser-boot-and-first-render-handoff.md) | 任一 entry 导入失败或停在非活跃态 → 聚合错误，**整页停在 boot page** |
 
 这条链的设计判断值得记住：**认证在 HTML 之前**，所以未认证请求拿不到任何页面骨架；**注入在渲染之中**，所以插件贡献的是结构化行而不是字符串拼接；**挂 UI 在全部 entry 激活之后**，所以「半个界面」不会出现——失败是全页可见的，不是静默缺失。
 
@@ -122,4 +122,4 @@ curl -s -b '<cookie>' http://127.0.0.1:<port>/ | grep -o '__DSH_BOOT__' | head -
 
 ## 本页的边界
 
-层序与 patch 语义归 [`00-map.md`](./00-map.md)，patch 算法实现归 [`../../two-tree-runtime/framework/03-loader-include-与js插值.md`](../../two-tree-runtime/framework/03-loader-include-与js插值.md)，运行时重载归 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)；准入与失败矩阵归 [`../lifecycle/04-启动.md`](../lifecycle/04-启动.md)；首启与产品初始化归 [`../lifecycle/08-首启与产品初始化.md`](../lifecycle/08-首启与产品初始化.md)。本页只回答「什么时候能做什么」。
+层序与 patch 语义归 [`00-map.md`](./00-map.md)，patch 算法实现归 [`../../two-tree-runtime/framework/03-loader-include-and-javascript-expression-timing.md`](../../two-tree-runtime/framework/03-loader-include-and-javascript-expression-timing.md)，运行时重载归 [`03-user-patch-hmr.md`](./03-user-patch-hmr.md)；准入与失败矩阵归 [`../lifecycle/04-启动.md`](../lifecycle/04-startup.md)；首启与产品初始化归 [`../lifecycle/08-首启与产品初始化.md`](../lifecycle/08-first-run-initialization.md)。本页只回答「什么时候能做什么」。

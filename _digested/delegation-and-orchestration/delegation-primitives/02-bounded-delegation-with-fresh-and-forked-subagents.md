@@ -1,6 +1,6 @@
 # Bounded Delegation with Fresh and Forked Subagents · 有界委派：fresh 与 fork
 
-> 本页回答：一次委派到底隔离了什么、fork 继承了什么、one-shot 与 continuable 差在哪、控制面（`send_message`/`interrupt_agent`/`list_agents`）的边界规则是什么？工具描述里的选择语义（什么时候用）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；seam 的 provider 结构、catalog 投影与 host Queue/Steer 交付见 [`../capability-seams/03-subagent后台与产品provider.md`](../../capability-seams/03-subagent后台与产品provider.md) 与 [`../capability-seams/05-subagent-catalog与host交付.md`](../../capability-seams/05-subagent-catalog与host交付.md)，本页不重复。
+> 本页回答：一次委派到底隔离了什么、fork 继承了什么、one-shot 与 continuable 差在哪、控制面（`send_message`/`interrupt_agent`/`list_agents`）的边界规则是什么？工具描述里的选择语义（什么时候用）见 [`selection/01`](../primitive-selection/01-per-primitive-usage-sentences-from-tool-descriptions.md)；seam 的 provider 结构、catalog 投影与 host Queue/Steer 交付见 [`../capability-seams/03-subagent后台与产品provider.md`](../../capability-seams/subagent/01-subagent-provider.md) 与 [`../capability-seams/05-subagent-catalog与host交付.md`](../../capability-seams/subagent/02-subagent-catalog.md)，本页不重复。
 
 > 源码核验入口：`docs/subsystems/subagent.md`、`packages/subagent/subagent/src/`（`types.ts`/`index.ts`/`manager.ts`/`activation.ts`/`child-agent.ts`/`depth.ts`）、`packages/subagent/tool-subagent/src/index.ts`、`packages/subagent/tool-subagent-control/src/`、`packages/subagent/subagent-fork-in-process/src/`、`packages/bundle/base/cordis.patch.yml`、`packages/bundle/web-app/presets/cordis.patch.yml`。
 
@@ -24,7 +24,7 @@
 
 ## 一次 start 与 provider 能力
 
-seam 的角色分工、`SubagentStartRequest` 的五个能力旗标、provider 只准备创建 spec 与冷恢复不走 provider 的完整解剖归 [`../capability-seams/03`](../../capability-seams/03-subagent后台与产品provider.md)；本页只记驾驶座后果：多个具名 provider 共存，缺能力旗标即 `UNSUPPORTED_CAPABILITY` 拒绝；provider 卸载阻断新 start、不撤销已接受的 run；每个 child 拿新的 flat scope。
+seam 的角色分工、`SubagentStartRequest` 的五个能力旗标、provider 只准备创建 spec 与冷恢复不走 provider 的完整解剖归 [`../capability-seams/03`](../../capability-seams/subagent/01-subagent-provider.md)；本页只记驾驶座后果：多个具名 provider 共存，缺能力旗标即 `UNSUPPORTED_CAPABILITY` 拒绝；provider 卸载阻断新 start、不撤销已接受的 run；每个 child 拿新的 flat scope。
 
 ## fork 继承什么：balanced completed-turn 前缀
 

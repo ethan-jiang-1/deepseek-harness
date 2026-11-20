@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 800" role="img" aria-labelledby="title desc">
+  <title id="title">只追加的日志如何产生当前有序 surface</title>
+  <desc id="desc">四条 user/message 事件依次写入：seq 0 是 a，seq 1 是 b，seq 2 替换 seq 0，seq 3 再替换当前顺序中的 seq 2 到 seq 1。surface 从 [0,1] 变成 [2,1]，再变成 [3]，原始日志仍保留全部四条事件。replace 按当前 surface 位置定位端点，sourceEventSeqs 必须覆盖被替换的节点。示例没有 system/message；保护规则只适用于当前 surface 的首节点是 system/message 的情形，与事件 seq 是否为 0 无关。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#64748b"/></marker>
+    <marker id="blue-arrow" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><path d="M0 0 L9 3.5 L0 7 Z" fill="#2563eb"/></marker>
+    <style>
+      text { font-family: system-ui, -apple-system, 'PingFang SC', 'Noto Sans CJK SC', sans-serif; fill: #0f172a; font-size: 15px; }
+      .title { font-size: 24px; font-weight: 700; }
+      .muted { fill: #475569; font-size: 14px; }
+      .label { font-size: 17px; font-weight: 650; }
+      .code { font-family: 'SFMono-Regular', Menlo, Consolas, monospace; font-size: 15px; }
+      .small { font-size: 13px; }
+      .blue { fill: #1d4ed8; }
+      .amber { fill: #9a3412; }
+      .line { fill: none; stroke: #64748b; stroke-width: 1.8; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1160" height="800" rx="12" fill="#f8fafc"/>
+  <text x="40" y="40" class="title">日志只追加，模型消息按当前 surface 重建</text>
+  <text x="40" y="66" class="muted">最小示例：四条事件都是 user/message；seq 是事件身份，方括号表示当前节点顺序。</text>
+
+  <text x="40" y="108" class="label">原始日志</text>
+  <text x="148" y="108" class="muted">按 seq 追加；后来的替换仍是一条新事件</text>
+  <path d="M280 190 H318" class="line"/>
+  <path d="M560 190 H598" class="line"/>
+  <path d="M840 190 H878" class="line"/>
+  <rect x="40" y="128" width="240" height="146" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="58" y="157" class="label blue">seq 0 · a</text>
+  <text x="58" y="184" class="code">surfaceOp: append</text>
+  <text x="58" y="246" class="muted">原始 user message</text>
+  <rect x="320" y="128" width="240" height="146" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="338" y="157" class="label blue">seq 1 · b</text>
+  <text x="338" y="184" class="code">surfaceOp: append</text>
+  <text x="338" y="246" class="muted">原始 user message</text>
+  <rect x="600" y="128" width="240" height="146" rx="10" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="618" y="157" class="label amber">seq 2 · summary</text>
+  <text x="618" y="184" class="code">replace 0..0</text>
+  <text x="618" y="213" class="small">sourceEventSeqs: [0]</text>
+  <text x="618" y="246" class="muted">引用并覆盖原来的 a</text>
+  <rect x="880" y="128" width="240" height="146" rx="10" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="898" y="157" class="label" fill="#166534">seq 3 · summary 2</text>
+  <text x="898" y="184" class="code">replace 2..1</text>
+  <text x="898" y="213" class="small">sourceEventSeqs: [2, 1]</text>
+  <text x="898" y="246" class="muted">引用当前两个节点</text>
+
+  <path d="M160 274 V333 M440 274 V333 M720 274 V333 M1000 274 V333" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="4 5"/>
+  <rect x="40" y="294" width="474" height="28" rx="6" fill="#f8fafc"/>
+  <text x="40" y="314" class="label">每条事件折叠后，当前 surface 的状态</text>
+  <path d="M280 397 H318" class="line"/>
+  <path d="M560 397 H598" class="line"/>
+  <path d="M840 397 H878" class="line"/>
+  <rect x="40" y="334" width="240" height="116" rx="10" fill="#fff" stroke="#cbd5e1"/>
+  <text x="160" y="362" text-anchor="middle" class="code">[0]</text>
+  <rect x="66" y="378" width="188" height="48" rx="6" fill="#dbeafe"/>
+  <text x="160" y="408" text-anchor="middle">seq 0 · a</text>
+  <rect x="320" y="334" width="240" height="116" rx="10" fill="#fff" stroke="#cbd5e1"/>
+  <text x="440" y="362" text-anchor="middle" class="code">[0, 1]</text>
+  <rect x="338" y="378" width="96" height="48" rx="6" fill="#dbeafe"/>
+  <rect x="446" y="378" width="96" height="48" rx="6" fill="#dbeafe"/>
+  <text x="386" y="408" text-anchor="middle">0 · a</text>
+  <text x="494" y="408" text-anchor="middle">1 · b</text>
+  <rect x="600" y="334" width="240" height="116" rx="10" fill="#fff" stroke="#fb923c" stroke-width="1.8"/>
+  <text x="720" y="362" text-anchor="middle" class="code amber">[2, 1]</text>
+  <rect x="618" y="378" width="116" height="48" rx="6" fill="#ffedd5"/>
+  <rect x="746" y="378" width="76" height="48" rx="6" fill="#dbeafe"/>
+  <text x="676" y="398" text-anchor="middle" class="small">2 · summary</text>
+  <text x="676" y="416" text-anchor="middle" class="small amber">start</text>
+  <text x="784" y="398" text-anchor="middle" class="small">1 · b</text>
+  <text x="784" y="416" text-anchor="middle" class="small amber">end</text>
+  <path d="M618 434 H822" stroke="#ea580c" stroke-width="2.5"/>
+  <rect x="880" y="334" width="240" height="116" rx="10" fill="#fff" stroke="#86efac"/>
+  <text x="1000" y="362" text-anchor="middle" class="code">[3]</text>
+  <rect x="906" y="378" width="188" height="48" rx="6" fill="#dcfce7"/>
+  <text x="1000" y="408" text-anchor="middle">3 · summary 2</text>
+  <text x="720" y="478" text-anchor="middle" class="small amber">范围沿当前顺序包含 2、1；不按 seq 数值排序</text>
+
+  <path d="M40 202 H22 V553 H40" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="40" y="516" width="660" height="100" rx="10" fill="#fff" stroke="#cbd5e1"/>
+  <text x="60" y="543" class="label">日志读取 / 持久化 / 审计</text>
+  <rect x="60" y="560" width="130" height="34" rx="5" fill="#eff6ff"/>
+  <rect x="202" y="560" width="130" height="34" rx="5" fill="#eff6ff"/>
+  <rect x="344" y="560" width="156" height="34" rx="5" fill="#fff7ed"/>
+  <rect x="512" y="560" width="168" height="34" rx="5" fill="#f0fdf4"/>
+  <text x="125" y="583" text-anchor="middle" class="small">0 · a</text>
+  <text x="267" y="583" text-anchor="middle" class="small">1 · b</text>
+  <text x="422" y="583" text-anchor="middle" class="small">2 · summary</text>
+  <text x="596" y="583" text-anchor="middle" class="small">3 · summary 2</text>
+  <path d="M1000 450 V514" fill="none" stroke="#2563eb" stroke-width="2" marker-end="url(#blue-arrow)"/>
+  <rect x="920" y="474" width="160" height="24" rx="4" fill="#f8fafc"/>
+  <text x="1000" y="491" text-anchor="middle" class="small blue">deriveMessages()</text>
+  <rect x="760" y="516" width="360" height="100" rx="10" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="780" y="543" class="label blue">此时的模型消息</text>
+  <rect x="780" y="560" width="320" height="34" rx="5" fill="#dcfce7"/>
+  <text x="940" y="583" text-anchor="middle" class="code">[ user: "summary 2" ]</text>
+
+  <text x="40" y="656" class="label amber">Watchpoints · 替换从哪里查错</text>
+  <text x="40" y="685">① 两个端点都必须仍在当前 surface；sourceEventSeqs 必须覆盖范围内的全部节点。</text>
+  <text x="40" y="713">② 新事件只改变当前节点列表；原始日志中的旧消息、旧替换事件继续保留。</text>
+  <line x1="40" y1="733" x2="1120" y2="733" stroke="#cbd5e1"/>
+  <text x="40" y="758" class="muted">独立规则：首个 surface 位置若是 system/message，只能由 system/message 单点改写。</text>
+  <text x="40" y="780" class="muted">本例 seq 0 是 user/message，不受系统头保护；“首位置”与“事件 seq 0”是两回事。</text>
+</svg>

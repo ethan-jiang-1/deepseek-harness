@@ -1,6 +1,6 @@
 # 02 — 测试分层全景：七层宪法层与广义测试面
 
-> 本篇回答"DSH 有哪些测试层、每层测什么、怎么被选中"。分层依据见 [01](./01-doctrine.md) 的"证据匹配面"；快照机制深挖见 [10](./10-snapshot-machinery.md)，CI 编排见 [07](./07-ci-gates.md)。
+> 本篇回答"DSH 有哪些测试层、每层测什么、怎么被选中"。分层依据见 [01](./01-dsh-testing-philosophy-and-doctrine.md) 的"证据匹配面"；快照机制深挖见 [10](../mechanisms/10-dsh-snapshot-machinery.md)，CI 编排见 [07](../execution/07-dsh-ci-gates-and-reliability.md)。
 
 ## 现象是什么：不按"单元/集成/端到端"三分
 
@@ -23,7 +23,7 @@
 | `apps/web/stress-tests/**/*.stress.ts` | Web 压力（opt-in） | `vitest.web-stress.config.ts` |
 | `benchmarks/**/*.bench.ts`、`*.bench.client.ts` | CI 性能门禁 | `vitest.bench.config.ts` |
 
-注意 e2e 配置显式 **exclude `*.expected.e2e.ts`**（归 expected 层）和 inspector 的 `client-browser.e2e.ts`（归 web 层）——层的边界在后缀文法里是互斥的。8 份运行配置全部用同一个 `tsconfig.base.json` 门面做 vite-tsconfig-paths 解析（源码平面，[01](./01-doctrine.md) 教义 7）。
+注意 e2e 配置显式 **exclude `*.expected.e2e.ts`**（归 expected 层）和 inspector 的 `client-browser.e2e.ts`（归 web 层）——层的边界在后缀文法里是互斥的。8 份运行配置全部用同一个 `tsconfig.base.json` 门面做 vite-tsconfig-paths 解析（源码平面，[01](./01-dsh-testing-philosophy-and-doctrine.md) 教义 7）。
 
 ![后缀 → 配置 → 车道的选中机制](./figures/suffix-to-lane.svg)
 
@@ -48,7 +48,7 @@
 ### 3. Real-API e2e——with-key，无 key 自跳过
 
 - 证据对象：live provider API——DeepSeek 模型 + 各 provider 自己 key 门控的冒烟（`EXA_API_KEY`、`PERPLEXITY_API_KEY`…）；各 suite 缺自己的 key 就 skip（"keyless CI stays green"）。
-- 执行形态：读根 `.env`；testTimeout 120s / hookTimeout 30s / **retry 2**（注释：真实模型调用的瞬态抖动——全体系唯一显式 retry 的层，见 [08](./08-reliability.md)）；`DSH_E2E_MAX_WORKERS` 默认 4；**无 coverage**（注释：单元层拥有覆盖率门——覆盖率不重复计税）。
+- 执行形态：读根 `.env`；testTimeout 120s / hookTimeout 30s / **retry 2**（注释：真实模型调用的瞬态抖动——全体系唯一显式 retry 的层，见 [08](../execution/08-dsh-testing-reliability-and-flake-analysis.md)）；`DSH_E2E_MAX_WORKERS` 默认 4；**无 coverage**（注释：单元层拥有覆盖率门——覆盖率不重复计税）。
 - profile 级集成测试住 `apps/cli/tests/profiles/`；包特定组装留在包测试。
 
 ### 4. Owner-local expected——无录制往返的进程期望
@@ -66,7 +66,7 @@
 
 ### 6. Snapshot——录制会话回放（keyless）
 
-一句话机制：顶层场景的最高录制父代提供用户输入与模型回放，其持久化结果就是期望值。四面分工：headless 拥有一次性行为、SDK 拥有持久控制、ACP 拥有自动化协议行为、Web 在同一 Session 旁保留浏览器/ARIA 证据。执行形态：replay 并行、record/refresh 严格串行、只有 record 读 `.env`。细节全部在 [10](./10-snapshot-machinery.md)。
+录制的模型流固定已有决策，当前 loop、工具、请求装配和持久化重新执行；日志、请求 sidecar 与独立工作区期望分别比较。回放通过不能证明当前模型会遵守新 persona 或 skill。Headless、SDK、ACP、Web 各自保留对应产品入口的证据，机制与写模式统一见[会话快照](../mechanisms/10-dsh-snapshot-machinery.md)。
 
 ### 7. Web browser snapshot——浏览器证据比对
 
@@ -87,13 +87,13 @@
 | 静态质量 | `typecheck` / `lint` / `duplication` / `hygiene` | 类型/风格/克隆检测/发布卫生 |
 | 发布面 | `check:ci:artifacts` / `check:ci:consumers` | publint、node-next-types、built-bin-smoke |
 
-**政策测试为什么用 `node --test` 而不是 vitest**：被测对象是 `.github/` 下的 GitHub 自动化脚本——纯 `.mjs`，生产路径是 Actions 运行器里系统 Node 直接执行；测试用同一解释器、零依赖（`node:test` + 内建 `t.mock.method`），且 `.github/` 本来就不在任何 vitest include 模式内。**测试运行器与生产运行器同构**——这是 [01](./01-doctrine.md) 教义 6（测真实入口）在测试基建自身上的应用。
+**政策测试为什么用 `node --test` 而不是 vitest**：被测对象是 `.github/` 下的 GitHub 自动化脚本——纯 `.mjs`，生产路径是 Actions 运行器里系统 Node 直接执行；测试用同一解释器、零依赖（`node:test` + 内建 `t.mock.method`），且 `.github/` 本来就不在任何 vitest include 模式内。**测试运行器与生产运行器同构**——这是 [01](./01-dsh-testing-philosophy-and-doctrine.md) 教义 6（测真实入口）在测试基建自身上的应用。
 
 ## "集成测试"去了哪里（解释）
 
 经典 integration test 在 DSH 被拆成三种**入口真实性递增**的证据：
 
-1. **REAL-composition 测试**：boot 一份 test-only `cordis.yml`，走真 Loader、真 app/process 组装，mock 只限外部服务与非确定输入（[01](./01-doctrine.md) 教义 6a）。测的是"组装后插件还工作"。
+1. **REAL-composition 测试**：boot 一份 test-only `cordis.yml`，走真 Loader、真 app/process 组装，mock 只限外部服务与非确定输入（[01](./01-dsh-testing-philosophy-and-doctrine.md) 教义 6a）。测的是"组装后插件还工作"。
 2. **Profile 级集成测试**（`apps/cli/tests/profiles/`）：启动 shipped profile 跑真实任务流。测的是"发布形态的组装"。
 3. **Built smokes**：`bin` 走 built `lib/bin.js` + plain node 冒烟。实际清单：`apps/cli/tests/built-bin.e2e.ts`（1330 行，`runBuiltBin()` 用 execa 直接跑 `apps/cli/lib/bin.js`，30 个用例：参数错误、profile 生命周期标记、patch 热重载、mock-backed ACP turn、config dump）+ 各包 `built-lib.e2e.ts`（lsp-stdio、api/job-controller、api/remotes、experimental/{agent-team,inspector,webworker-packer}、ptc-runtime-node 等）；CI 的 built-bin-smoke 门聚合 **16** 个 built 消费者 e2e 文件（13 个 built 命名 + keyless-smoke + subagent-{codex,claude-code} 的 loader-composition；`DSH_EXAMPLE_MODE=lib`）。`packages/lsp/lsp-stdio/tests/built-lib.e2e.ts` 的头注释说得最直白："plain Node imports … by name through their exports maps … Unit tests use `src/`; **this pins the downstream `lib/` path**. Skips when `lib/` is absent; CI runs it after the build"。
    > 注：`docs/testing.md` 引用的 `packages/examples/*/tests/built-bin.e2e.ts` 在基线树中**已不存在**——文档过期，实际清单以本条为准。
@@ -102,7 +102,7 @@
 
 ## 启动模式即证据（解释）
 
-一个子进程怎么被启动，本身就是被测契约的一部分（[01](./01-doctrine.md) 教义 7/8）：
+一个子进程怎么被启动，本身就是被测契约的一部分（[01](./01-dsh-testing-philosophy-and-doctrine.md) 教义 7/8）：
 
 | 启动模式 | 谁用 | 证明什么 |
 |---|---|---|
@@ -113,7 +113,7 @@
 
 ## 文件形态（数量与成本见 03）
 
-层的边界与写法在本页；各层的文件数、用例数、成本与 CI 必需性统一登记在 [`03-asset-census.md`](./03-asset-census.md)，本页不复制数字。两条与"层"直接相关的形态事实：
+层的边界与写法在本页；各层的文件数、用例数、成本与 CI 必需性统一登记在 [`03-asset-census.md`](../execution/03-dsh-testing-asset-census.md)，本页不复制数字。两条与"层"直接相关的形态事实：
 
 - **`tests/harness.ts` 刻意不被任何配置选中**——共享 fixture 放在 include 模式之外，import 它不会重复注册别人的 `describe`、不会重复真实 API 调用。
 - **built 冒烟散在 e2e include 内**，无 key、`lib/` 缺失自跳；它们由 built-bin-smoke 门以固定清单聚合，而不是靠另一个后缀。

@@ -17,7 +17,7 @@
 
 `patch` 是 `string | string[]`：一个文件，或一份**有序**文件列表，逐个相对包根解析，作为一个层顺次应用（`types.ts:71`）。文档给的例子是两个文件合成一层（`base.patch.yml` 加 `web.patch.yml`）；层内顺序由声明给出，不靠目录遍历。
 
-`bundles` 是**有序**名字列表，用安装后的包名（`types.ts:77`）。顺序即层顺序，后面改顺序会改配置优先级，见 [`06-更新与启停.md`](./06-更新与启停.md)。
+`bundles` 是**有序**名字列表，用安装后的包名（`types.ts:77`）。顺序即层顺序，后面改顺序会改配置优先级，见 [`06-更新与启停.md`](./06-update-and-stop.md)。
 
 `dsh` 键下还有第三个角色 `dsh.client`（`types.ts:81`），声明客户端模块的平台、注入与构建信息。它不改变上面的二分：客户端包仍是包，仍然通过某个 bundle 的行进入组合。
 
@@ -31,7 +31,7 @@
 2. 没有 `engines.dsh` 时，逐个检查名字为 `@deepseek-ai/dsh` 或 `@deepseek-ai/dsh-*` 的 peer 范围（`:63`–`:73`）。peer 上的 `workspace:^` / `workspace:~` / `workspace:*` 视为等于当前运行时版本。
 3. **空串与非法范围一律算不满足**；`engines.dsh` 里写 `workspace:` 也非法（`:50`–`:52`）。预发布版本参与匹配。
 
-`engines.dsh` 是唯一的范围声明，没有第二个放宽写法。运行期的精确豁免走 `compatibility.json`（[`03-安装.md`](./03-安装.md)），那是「拒绝之后的人工例外」，不是让插件自己声明更宽的适用范围。
+`engines.dsh` 是唯一的范围声明，没有第二个放宽写法。运行期的精确豁免走 `compatibility.json`（[`03-安装.md`](./03-installation.md)），那是「拒绝之后的人工例外」，不是让插件自己声明更宽的适用范围。
 
 ## 三种交付形态，三种信任代价
 
@@ -50,7 +50,7 @@ git 这条路的两个前提是一对：
 - **作者**必须提供自包含的 `prepare` 脚本，从 `src/` 直接产出发布入口，不能假设存在同仓 monorepo 检出或 dev-only 上下文。
 - **用户**必须显式允许构建。pnpm ≥10 会拒绝运行 git 依赖的 `prepare`，第一次 `add` 失败，`dsh` 指出去 profile 的 `pnpm-workspace.yaml` 补 `allowBuilds` 再重跑。
 
-这个允许是「安装期在本机执行该包代码」的授权，**不属于任何 sandbox 的范围**。所以配套建议是钉 commit（`github:you/hello-plugin#<sha>`），或干脆发预构建产物绕开这条路。插件管理器的构建批准是同一条边界的另一个入口，见 [`03-安装.md`](./03-安装.md)。
+这个允许是「安装期在本机执行该包代码」的授权，**不属于任何 sandbox 的范围**。所以配套建议是钉 commit（`github:you/hello-plugin#<sha>`），或干脆发预构建产物绕开这条路。插件管理器的构建批准是同一条边界的另一个入口，见 [`03-安装.md`](./03-installation.md)。
 
 ## 身份与命名
 
@@ -62,4 +62,4 @@ git 这条路的两个前提是一对：
 
 仓库自己的发布序列（版本号顺序、发布通道、制品集合）是另一套流程，不属于插件生命周期；需要时看 [`_dsh_plugin_agent_ready_development/03-dsh-sdlc-reference/11-release-sequences-and-publish-lanes.md`](../../../_dsh_plugin_agent_ready_development/03-dsh-sdlc-reference/11-release-sequences-and-publish-lanes.md)。本页只写到「包作为交付单位成立」为止。
 
-下一段：[`02-分发.md`](./02-分发.md)。
+下一段：[`02-分发.md`](./02-distribution.md)。

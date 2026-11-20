@@ -20,7 +20,7 @@
 
   <!-- Fallback/Native -->
   <rect x="670" y="70" width="300" height="320" rx="6" fill="#fff7ed" stroke="#fb923c" stroke-width="2"/>
-  <text x="820" y="100" text-anchor="middle" font-weight="700" fill="#9a3412">Fallback & Native</text>
+  <text x="820" y="100" text-anchor="middle" font-weight="700" fill="#9a3412">Fallback &amp; Native</text>
   <text x="690" y="140" fill="#475569" font-weight="600">Watchpoints:</text>
   <text x="690" y="160" fill="#334155">• 回退策略的降级边界?</text>
   <text x="690" y="180" fill="#334155">• Native flock 锁冲突?</text>

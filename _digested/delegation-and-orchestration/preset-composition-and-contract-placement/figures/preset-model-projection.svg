@@ -8,8 +8,8 @@
     </marker>
   </defs>
 
-  <text x="40" y="38" font-size="17" font-weight="bold" fill="#262626">preset 是投影，不是能力清单</text>
-  <text x="40" y="60" font-size="12" fill="#8c8c8c">同一个组合事实要被 Loader、测试、人读清单消费；谁再手写一份“期望矩阵”，谁就是下一轮漂移的来源</text>
+  <text x="40" y="38" font-size="17" font-weight="bold" fill="#262626">preset 声明组合，验收独立固定必需能力</text>
+  <text x="40" y="60" font-size="12" fill="#8c8c8c">Loader 与描述性清单使用同一声明；验收期望由需求拥有，独立核对实际工具、prompt 与作用域</text>
 
   <rect x="70" y="92" width="420" height="58" rx="8" fill="#fafafa" stroke="#bfbfbf" stroke-width="1.5" stroke-dasharray="6 4"/>
   <text x="280" y="116" font-size="13" font-weight="bold" fill="#595959" text-anchor="middle">能力模型（可选：你自己维护的声明层）</text>
@@ -28,44 +28,45 @@
 
   <rect x="70" y="298" width="420" height="58" rx="8" fill="#f6ffed" stroke="#52c41a" stroke-width="1.5"/>
   <text x="280" y="322" font-size="13" font-weight="bold" fill="#237804" text-anchor="middle">运行中的 Agent（组合稳定）</text>
-  <text x="280" y="342" font-size="10.5" fill="#237804" text-anchor="middle">编辑只影响之后创建的 Agent；跑着的保留旧修订引用</text>
+  <text x="280" y="338" font-size="10.5" fill="#237804" text-anchor="middle">已有 Agent 保留组合；显式选择当前代，子代理可继承父代</text>
+  <text x="280" y="351" font-size="10" fill="#595959" text-anchor="middle">revision 不冻结所有输入：skill 正文加载时读取</text>
 
   <line x1="280" y1="356" x2="280" y2="394" stroke="#595959" stroke-width="1.5" marker-end="url(#a2)"/>
-  <text x="292" y="380" font-size="10.5" fill="#8c8c8c">每次请求记一次</text>
+  <text x="292" y="380" font-size="10.5" fill="#8c8c8c">从请求前缀重建</text>
 
   <rect x="70" y="398" width="420" height="58" rx="8" fill="#fff7e6" stroke="#fa8c16" stroke-width="1.5"/>
   <text x="280" y="422" font-size="13" font-weight="bold" fill="#ad4e00" text-anchor="middle">request/header.tools（实际工具面）</text>
-  <text x="280" y="442" font-size="10.5" fill="#ad4e00" text-anchor="middle">声明在这里被证实或证伪；这是“会话真的看到了什么”</text>
+  <text x="280" y="442" font-size="10.5" fill="#ad4e00" text-anchor="middle">重建该次请求的完整工具集合；与独立期望比较</text>
 
   <line x1="280" y1="456" x2="280" y2="494" stroke="#595959" stroke-width="1.5" marker-end="url(#a2)"/>
   <text x="292" y="480" font-size="10.5" fill="#8c8c8c">再往上才是行为</text>
 
   <rect x="70" y="498" width="420" height="54" rx="8" fill="#f5f5f5" stroke="#8c8c8c" stroke-width="1.5"/>
   <text x="280" y="520" font-size="13" font-weight="bold" fill="#262626" text-anchor="middle">行为证据（真模型探针）</text>
-  <text x="280" y="538" font-size="10.5" fill="#8c8c8c" text-anchor="middle">单次只证明一次；稳定性是另一个待证</text>
+  <text x="280" y="538" font-size="10.5" fill="#8c8c8c" text-anchor="middle">模型如何选择需真模型探针；成果正确还需独立验收</text>
 
   <rect x="560" y="190" width="430" height="66" rx="8" fill="#fafafa" stroke="#8c8c8c" stroke-width="1.5"/>
   <text x="775" y="214" font-size="13" font-weight="bold" fill="#262626" text-anchor="middle">消费者一：Loader</text>
   <text x="775" y="234" font-size="10.5" fill="#8c8c8c" text-anchor="middle">把 config.plugins 挂成运行时；激活失败收敛为 broken</text>
 
   <rect x="560" y="278" width="430" height="66" rx="8" fill="#fafafa" stroke="#8c8c8c" stroke-width="1.5"/>
-  <text x="775" y="302" font-size="13" font-weight="bold" fill="#262626" text-anchor="middle">消费者二：测试 / 矩阵</text>
-  <text x="775" y="322" font-size="10.5" fill="#8c8c8c" text-anchor="middle">读 YAML 断言“这个 preset 有/没有哪些行”；keyless 可跑</text>
+  <text x="775" y="302" font-size="13" font-weight="bold" fill="#262626" text-anchor="middle">验收测试：独立的精确期望</text>
+  <text x="775" y="322" font-size="10.5" fill="#8c8c8c" text-anchor="middle">原生 Web 测试固定必需工具、prompt 与服务位置</text>
 
   <rect x="560" y="366" width="430" height="66" rx="8" fill="#fafafa" stroke="#8c8c8c" stroke-width="1.5"/>
-  <text x="775" y="390" font-size="13" font-weight="bold" fill="#262626" text-anchor="middle">消费者三：人读清单 / UI 名册</text>
+  <text x="775" y="390" font-size="13" font-weight="bold" fill="#262626" text-anchor="middle">描述性清单 / UI 名册</text>
   <text x="775" y="410" font-size="10.5" fill="#8c8c8c" text-anchor="middle">从声明派生展示；没有 hidden 标志，内部 preset 也会出现</text>
 
   <path d="M490 214 L560 214" stroke="#595959" stroke-width="1.5" marker-end="url(#a2)"/>
-  <path d="M490 302 L560 302" stroke="#595959" stroke-width="1.5" marker-end="url(#a2)"/>
-  <path d="M490 390 L560 390" stroke="#595959" stroke-width="1.5" marker-end="url(#a2)"/>
+  <path d="M490 442 L530 442 L530 302 L560 302" fill="none" stroke="#595959" stroke-width="1.5" marker-end="url(#a2)"/>
+  <path d="M490 246 L516 246 L516 390 L560 390" fill="none" stroke="#595959" stroke-width="1.5" marker-end="url(#a2)"/>
 
   <rect x="560" y="474" width="430" height="78" rx="8" fill="#fff1f0" stroke="#cf1322" stroke-width="2" stroke-dasharray="7 4"/>
   <circle cx="580" cy="492" r="11" fill="#cf1322"/>
   <text x="580" y="497" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">×</text>
-  <text x="790" y="498" font-size="13" font-weight="bold" fill="#cf1322" text-anchor="middle">反模式：手写第二份“期望矩阵”</text>
-  <text x="775" y="518" font-size="10.5" fill="#cf1322" text-anchor="middle">它不被任何代码消费，改 YAML 时必然漂移；</text>
-  <text x="775" y="536" font-size="10.5" fill="#cf1322" text-anchor="middle">正确做法是让这份清单由 YAML 生成，或被测试消费。</text>
+  <text x="790" y="498" font-size="13" font-weight="bold" fill="#cf1322" text-anchor="middle">诊断点：期望也从被测 YAML 生成？</text>
+  <text x="775" y="518" font-size="10.5" fill="#cf1322" text-anchor="middle">误删必需工具时，实际与期望一起减少，测试仍绿。</text>
+  <text x="775" y="536" font-size="10.5" fill="#cf1322" text-anchor="middle">清单可生成；必需能力须独立固定并审查。</text>
 
-  <text x="40" y="582" font-size="11" fill="#8c8c8c">读法：从左上的“模型”到左下的“行为”，每一层只证明自己；右侧三个消费者必须读同一份 YAML，不能各自再写一份。</text>
+  <text x="40" y="582" font-size="11" fill="#8c8c8c">读法：声明、实际请求、模型行为与成果分别取证；生成清单减少描述漂移，独立验收发现声明错误。</text>
 </svg>

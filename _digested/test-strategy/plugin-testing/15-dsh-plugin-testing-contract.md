@@ -1,6 +1,6 @@
 # 15 — 插件项目测试契约：从 DSH 的五级台阶到你的仓
 
-> 本页面向**写 DSH 插件的人**（无论插件在 DSH 仓内还是你自己的仓）。它把 DSH 的测试纪律压缩成一份可复制的契约：五级台阶、三种采用等级、十条条款、一份 PR 账本、一套最小编排。台阶在 DSH 仓里的原始形态见 [13](./13-plugin-testing.md)，真实插件解剖见 [14](./14-plugin-testing-playbook.md)，通用决策程序见 [05](./05-decision-procedure.md)。
+> 本页面向**写 DSH 插件的人**（无论插件在 DSH 仓内还是你自己的仓）。它把 DSH 的测试纪律压缩成一份可复制的契约：五级台阶、三种采用等级、十条条款、一份 PR 账本、一套最小编排。台阶在 DSH 仓里的原始形态见 [13](./13-dsh-plugin-testing-policy.md)，真实插件解剖见 [14](./14-dsh-plugin-testing-playbook.md)，通用决策程序见 [05](../execution/05-dsh-testing-decision-procedure.md)。
 
 ## 先对齐四个名词（本页自足）
 
@@ -65,12 +65,12 @@
 - **README 已知限制**：插件 README 必须带 `## Known Limitations and Deferred Work` 节——`verify-package-readme-limitations` 查的是这一节的结构，内容是否具体到机制靠评审；它也是"这个 mock/替身证明不了什么"的自白。
 - **若动 `cordis.yml`**：shipped 配置里的 bare 插件必须出现在 resolver manifest 的 `dependencies`；`!!js` 只允许出现在 plugin `config` 与 entry `disabled`——`verify-cordis-config` 会查（postmortem 0002 的直接产物）。
 - **若破发布面**：CLI / profile / `cordis.yml` 键 / 持久化数据 / SDK wire / 公开入口的破坏性变化，同 PR 写 `docs/upgrade-guide/v<版本>/<条目>/guide.md`。
-- **本地选最小证据**：按 [`dsh-pre-push-checks`](../../.agents/skills/dsh-pre-push-checks/SKILL.md) 选 owning 测试，不默认全量；全套彩排仅三种情况（用户显式要求、诊断 CI、改动遍及全仓）。
-- **先查货架**：能力是否已有现成插件、你的插件属于哪一形态，先看 [`plugin-system/inventory/`](../plugin-system/inventory/00-map.md)，避免重复造。
+- **本地选最小证据**：按 [`dsh-pre-push-checks`](../../../.agents/skills/dsh-pre-push-checks/SKILL.md) 选 owning 测试，不默认全量；全套彩排仅三种情况（用户显式要求、诊断 CI、改动遍及全仓）。
+- **先查货架**：能力是否已有现成插件、你的插件属于哪一形态，先看 [`plugin-system/inventory/`](../../plugin-system/inventory/00-map.md)，避免重复造。
 
 ## 插件 PR 的证据账本（模板）
 
-> 通用版见 [05](./05-decision-procedure.md)；这一份把台阶编号写进账本，便于逐级对表。
+> 通用版见 [05](../execution/05-dsh-testing-decision-procedure.md)；这一份把台阶编号写进账本，便于逐级对表。
 
 ```md
 ## 插件测试账本
@@ -140,7 +140,7 @@ L2:  以上全部
 
 | DSH 的机制 | 小仓可承受的等价物 | 保留的判据 |
 |---|---|---|
-| 宽底 unit 层（规模见 [03](./03-asset-census.md)） | 每包 5–15 个 spec，覆盖行为枚举与错误路径 | 廉价层承载行为空间 |
+| 宽底 unit 层（规模见 [03](../execution/03-dsh-testing-asset-census.md)） | 每包 5–15 个 spec，覆盖行为枚举与错误路径 | 廉价层承载行为空间 |
 | per-file 100% 覆盖率（全仓 `src`） | 对 `src` 开 per-file 阈值；不可达处逐条豁免 | 未执行代码必须可见 |
 | 录制会话场景语料 + 自研 harness | 一个 JSON 转录金样 + 一个最小 replay/比较 helper | 组装证据不可由单测替代 |
 | 多个必需 CI job + 平台矩阵 | 1–2 个必需 job + 可选 OS 矩阵 | 必需性按失败类，不按仓库大小 |

@@ -77,4 +77,4 @@ dsh --profile <p> --dump-config | grep -E 'publicUrl|trustedHost' | head
 
 ## 边界
 
-安装失败的处置在 [`03-安装.md`](./03-安装.md)；首屏认证链在 [`../composition/05-启动窗口与首屏交接.md`](../composition/05-启动窗口与首屏交接.md)；异常分类与恢复在 [`10-诊断地图.md`](./10-诊断地图.md)。
+安装失败的处置在 [`03-安装.md`](./03-installation.md)；首屏认证链在 [`../composition/05-启动窗口与首屏交接.md`](../composition/05-startup-window-and-first-screen-handoff.md)；异常分类与恢复在 [`10-诊断地图.md`](./10-diagnostic-map.md)。

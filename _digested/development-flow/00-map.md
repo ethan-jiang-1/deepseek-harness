@@ -39,7 +39,7 @@ DSH 把「一个决定为什么是这样」做成了仓库里的一等语料：�
 | 你的问题 | 入口 | 一句话答案 |
 | --- | --- | --- |
 | **一条决定活在哪、状态怎么表达？** | [`01-lifecycle.md`](./01-lifecycle.md) | 路径就是状态：`{lifecycle}/{class}/yyyy-mm-dd-topic.md`，两个正交轴相乘，禁止集中索引 |
-| **六个 class 怎么判定？refactor 为什么没有？** | [`09-class-六个决策种类.md`](./09-class-六个决策种类.md) | 先问「改变的是什么」：改交付源码的四个类 + 围绕代码的两个类；refactor 与 simplification 重合，判别式已编码；附 class × lifecycle 矩阵 |
+| **六个 class 怎么判定？refactor 为什么没有？** | [`09-agent-note-decision-classification.md`](./09-agent-note-decision-classification.md) | 先问「改变的是什么」：改交付源码的四个类 + 围绕代码的两个类；refactor 与 simplification 重合，判别式已编码；附 class × lifecycle 矩阵 |
 | **note 太多了，能不能再分子目录？** | [`01-lifecycle.md`](./01-lifecycle.md#树的深度被钉死在三层所以子目录怎么组织这个问题不存在) | 不能：深度必须是 3，20 个叶子目录平摊千篇级负载；放弃第四层换来「分类只有一套且有校验收口」 |
 | **哪些规则真的会红？** | [`02-gates.md`](./02-gates.md) | 三个 leaf 门禁各自管一段；能机械判的进红灯，判不了的明文交给人和一个校准过的 skill |
 | **状态之间怎么走、走错了会怎样？** | [`03-transitions.md`](./03-transitions.md) | proposed→rejected 是一条最小化操作；proposed→implemented 要求改写整篇，而这道改写**只有一半有门禁** |

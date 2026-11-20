@@ -66,11 +66,11 @@ if (segs.length !== 3 || cls === undefined || base === undefined) {
 | 3 | 三件套文件（`.md` / `.zh.md` / `.i18n.yaml`） | 每目录 N 篇 | 只能加文件，不能加目录 |
 | 4 | — | **不存在** | 出现即 `got depth 4` |
 
-叶子目录**最多**是 4×6=24 个，实际存在 **20** 个——`rejected/` 下只有 `architecture/` 与 `simplification/` 两个，其余四个 class 目录从未被创建（[09 的 class × lifecycle 矩阵](./09-class-六个决策种类.md#真实负载class--lifecycle-矩阵)里 rejected 那列的 0 就是它们的缺席）。这 20 个叶子目录合计承载 **1270** 篇英文正文，全部平摊其中（`.md` 与 `.zh.md` 的成对计数口径见 [`06`](./06-honest-gaps.md) 缺口二）；实测**没有任何三级以下的目录**。
+叶子目录**最多**是 4×6=24 个，实际存在 **20** 个——`rejected/` 下只有 `architecture/` 与 `simplification/` 两个，其余四个 class 目录从未被创建（[09 的 class × lifecycle 矩阵](./09-agent-note-decision-classification.md#真实负载class--lifecycle-矩阵)里 rejected 那列的 0 就是它们的缺席）。这 20 个叶子目录合计承载 **1270** 篇英文正文，全部平摊其中（`.md` 与 `.zh.md` 的成对计数口径见 [`06`](./06-honest-gaps.md) 缺口二）；实测**没有任何三级以下的目录**。
 
 ### 实测负载：分布在 20 个目录，而不是均匀分布
 
-完整的 class × lifecycle 计数矩阵与复现命令在 [09](./09-class-六个决策种类.md#真实负载class--lifecycle-矩阵)；目录视角只补两条矩阵读不出的观察：
+完整的 class × lifecycle 计数矩阵与复现命令在 [09](./09-agent-note-decision-classification.md#真实负载class--lifecycle-矩阵)；目录视角只补两条矩阵读不出的观察：
 
 - **负载高度集中。** 最大的四个目录 `archived/feature`、`archived/architecture`、`archived/bug-fix`、`implemented/architecture` 合计约占全部英文正文的 **67%**；最小的两个目录各只有 1 篇。
 - **目录的存在与否本身是信息。** 20 而非 24，缺的四个全在 `rejected/`——`rejected/` 只接纳过架构类与简化类的被否提案。**class 是每个 lifecycle 各自的一个槽位，不是全树共享的一层**；这也是为什么它不能当第二层的分类轴来「切话题」：切出来的每一格都要在四个状态里各存在一次。
@@ -126,10 +126,10 @@ if (segs.length !== 3 || cls === undefined || base === undefined) {
 
 ## 各轴的负载与语义强度
 
-class 的判定问题、architecture / process 分界线、refactor 缺席、feature 合并删除特判，以及 class × lifecycle 计数矩阵（含复现命令、时间切片与处置频率的诚实读法），都单篇成页：[`09-class-六个决策种类.md`](./09-class-六个决策种类.md)。本页只保留位置语义。
+class 的判定问题、architecture / process 分界线、refactor 缺席、feature 合并删除特判，以及 class × lifecycle 计数矩阵（含复现命令、时间切片与处置频率的诚实读法），都单篇成页：[`09-agent-note-decision-classification.md`](./09-agent-note-decision-classification.md)。本页只保留位置语义。
 
 ## 边界
 
 - 本篇不解释门禁怎么实现，见 [02](./02-gates.md)。
 - 「一篇 note 应该写什么内容」不在这里：容器管形状，内容归每篇 note 自己与 `docs/AGENTS.md` 的散文标准。
-- 数量以 [09](./09-class-六个决策种类.md#真实负载class--lifecycle-矩阵) 的矩阵为准；`claims.json` 的 `notes-*` 指标口径不同（含 `.zh.md`），两者不要混用，见 [06](./06-honest-gaps.md#缺口二口径缺口同一批文件的两个计数)。
+- 数量以 [09](./09-agent-note-decision-classification.md#真实负载class--lifecycle-矩阵) 的矩阵为准；`claims.json` 的 `notes-*` 指标口径不同（含 `.zh.md`），两者不要混用，见 [06](./06-honest-gaps.md#缺口二口径缺口同一批文件的两个计数)。

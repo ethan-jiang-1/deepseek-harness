@@ -8,7 +8,7 @@ Harness 把 Cordis 源码放进 `vendor/`，rescoped 成 `@deepseek-ai/cordis`�
 
 ## 这一层管什么
 
-Host 的 Node 树和浏览器的 Client 树**用的是同一份 `@deepseek-ai/cordis`**：Client 侧的 `PLATFORM_MODULES` 把它作为静态平台模块发给每个动态 bundle（见 [`../client/tree/02-模块身份与激活顺序.md`](../client/tree/02-模块身份与激活顺序.md)）。所以原语、事件合同、Loader 与 Include 的解析规则，写两边的插件时是同一套。
+Host 的 Node 树和浏览器的 Client 树**用的是同一份 `@deepseek-ai/cordis`**：Client 侧的 `PLATFORM_MODULES` 把它作为静态平台模块发给每个动态 bundle（见 [`../client/tree/02-module-identity-external-imports-and-service-activation.md`](../client/tree/02-module-identity-external-imports-and-service-activation.md)）。所以原语、事件合同、Loader 与 Include 的解析规则，写两边的插件时是同一套。
 
 这里只讲「两棵树共用的部分」。树各自怎么长见 [`../client/00-map.md`](../client/00-map.md)，两棵树之间怎么说话见 [`../remote/00-map.md`](../remote/00-map.md)，整体形状见 [`../00-map.md`](../00-map.md)。
 
@@ -38,9 +38,9 @@ dsh 里最容易踩的事件合同就是 waterfall。它是 around-middleware，
 
 ![三件必须分开的事](./figures/vendor-stack.svg)
 
-[`vendor/README.md`](../../../vendor/README.md) 是本地修改的权威清单。Harness 直接依赖其中的 effect 卸载时序、Include 的解析保护与持久化写、共享 patch 算法和延迟配置插值；profile 组合、dump 与 HMR 都建立在这些行为上。产品依赖和对应源码见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md)。
+[`vendor/README.md`](../../../vendor/README.md) 是本地修改的权威清单。Harness 直接依赖其中的 effect 卸载时序、Include 的解析保护与持久化写、共享 patch 算法和延迟配置插值；profile 组合、dump 与 HMR 都建立在这些行为上。产品依赖和对应源码见 [`04-vendored-framework-modifications-and-product-dependencies.md`](./04-vendored-framework-modifications-and-product-dependencies.md)。
 
-> **vendor**：本地修改逐条清单、包发布版本列与拟升级计划见 [`04-vendor-本地修改.md`](./04-vendor-本地修改.md) 与 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。
+> **vendor**：本地修改逐条清单、包发布版本列与拟升级计划见 [`04-vendored-framework-modifications-and-product-dependencies.md`](./04-vendored-framework-modifications-and-product-dependencies.md) 与 [`vendor/cordis-rc11-upgrade-plan.md`](../../../vendor/cordis-rc11-upgrade-plan.md)。
 
 ## 源码入口
 
@@ -59,13 +59,13 @@ dsh 里最容易踩的事件合同就是 waterfall。它是 around-middleware，
 
 | 文件 | 内容 |
 |------|------|
-| [`01-五条原语对照源码.md`](./01-五条原语对照源码.md) | Plugin / Context / inject / Events / Effects 对到 `vendor/cordis/src/` |
-| [`02-waterfall-与事件合同.md`](./02-waterfall-与事件合同.md) | `waterfall` 源码算法；`agent/pre-step` vs `agent/turn-stopping` |
-| [`03-loader-include-与js插值.md`](./03-loader-include-与js插值.md) | `!!js` 两处求值；`applyEntryPatches` 为何能叠 bundle |
-| [`04-vendor-本地修改.md`](./04-vendor-本地修改.md) | 产品依赖的 vendor 修改及其后果 |
-| [`05-group与isolate-realm.md`](./05-group与isolate-realm.md) | group 与 isolate：组合单元 vs 服务作用域 |
+| [`01-cordis-primitives-and-source-ownership.md`](./01-cordis-primitives-and-source-ownership.md) | Plugin / Context / inject / Events / Effects 对到 `vendor/cordis/src/` |
+| [`02-waterfall-delegation-and-event-dispatch.md`](./02-waterfall-delegation-and-event-dispatch.md) | `waterfall` 源码算法；`agent/pre-step` vs `agent/turn-stopping` |
+| [`03-loader-include-and-javascript-expression-timing.md`](./03-loader-include-and-javascript-expression-timing.md) | `!!js` 两处求值；`applyEntryPatches` 为何能叠 bundle |
+| [`04-vendored-framework-modifications-and-product-dependencies.md`](./04-vendored-framework-modifications-and-product-dependencies.md) | 产品依赖的 vendor 修改及其后果 |
+| [`05-entry-groups-and-isolated-service-realms.md`](./05-entry-groups-and-isolated-service-realms.md) | group 与 isolate：组合单元 vs 服务作用域 |
 
-Profile / boot 时序见 [`../plugin-system/composition/01-boot-时序.md`](../../plugin-system/composition/01-boot-时序.md)。
+Profile / boot 时序见 [`../plugin-system/composition/01-boot-sequence.md`](../../plugin-system/composition/01-boot-sequence.md)。
 
 ## 插件作者视角
 
@@ -73,11 +73,11 @@ Profile / boot 时序见 [`../plugin-system/composition/01-boot-时序.md`](../.
 
 | 你正在做的事 | 打开 | 会踩的坑 |
 |---|---|---|
-| 写 `apply(ctx, config)`、决定能力挂在哪 | [`01`](./01-五条原语对照源码.md) | 注册不放进 `ctx.effect()`，卸载后贡献还在；Consumer 直接 import 具体 Provider 而不是拿 `ctx.<key>` |
-| 监听或拦截一条事件 | [`02`](./02-waterfall-与事件合同.md) | waterfall 里不调 `next()`，下游全被短路；把 serial 的 `agent/turn-stopping` 当 waterfall 写 |
-| 在自己的 `cordis.patch.yml` 里加行、改 bundle | [`03`](./03-loader-include-与js插值.md) | 以为 `!!js` 在任意字段都求值（只有两处）；patch 目标 id 写错导致整行被替换 |
-| 依赖帧卸载时序、配置热更、持久化写 | [`04`](./04-vendor-本地修改.md) | 上游 Cordis 没这个行为——同步 vendor 时会被改回去 |
+| 写 `apply(ctx, config)`、决定能力挂在哪 | [`01`](./01-cordis-primitives-and-source-ownership.md) | 注册不放进 `ctx.effect()`，卸载后贡献还在；Consumer 直接 import 具体 Provider 而不是拿 `ctx.<key>` |
+| 监听或拦截一条事件 | [`02`](./02-waterfall-delegation-and-event-dispatch.md) | waterfall 里不调 `next()`，下游全被短路；把 serial 的 `agent/turn-stopping` 当 waterfall 写 |
+| 在自己的 `cordis.patch.yml` 里加行、改 bundle | [`03`](./03-loader-include-and-javascript-expression-timing.md) | 以为 `!!js` 在任意字段都求值（只有两处）；patch 目标 id 写错导致整行被替换 |
+| 依赖帧卸载时序、配置热更、持久化写 | [`04`](./04-vendored-framework-modifications-and-product-dependencies.md) | 上游 Cordis 没这个行为——同步 vendor 时会被改回去 |
 
-最短路径：先读 [`01`](./01-五条原语对照源码.md) 的五原语表，再照 [`../plugin-system/lifecycle/12-从零到一个能跑的插件.md`](../../plugin-system/lifecycle/12-从零到一个能跑的插件.md) 走一遍最小插件；本层只解释「为什么这样写才成立」。
+最短路径：先读 [`01`](./01-cordis-primitives-and-source-ownership.md) 的五原语表，再照 [`../plugin-system/lifecycle/12-minimal-plugin-bootstrapping.md`](../../plugin-system/lifecycle/12-minimal-plugin-bootstrapping.md) 走一遍最小插件；本层只解释「为什么这样写才成立」。
 
 > 承重词按 [`canon/GLOSSARY.md`](../../canon/GLOSSARY.md) 的 DSH 原文用；本页自己的分类与指标不是 DSH 的词。

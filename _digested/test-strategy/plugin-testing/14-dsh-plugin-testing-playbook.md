@@ -18,7 +18,7 @@
 
 # 14 — 插件测试实战：五个真实插件的测试组合解剖
 
-> 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[13](./13-plugin-testing.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录）与名词表，本篇按五个插件类型各解剖一套真实组合——每节给关键代码摘录与"移植到你的插件"一句。核验点见 [`catalog.json`](../catalog.json)。
+> 本篇读仓库里的真插件测试套件，提炼可照抄的组合模式。[13](./13-dsh-plugin-testing-policy.md) 给出台阶模型（导出守卫 → 行为 spec → 注册生命周期 → REAL composition → 组装转录）与名词表，本篇按五个插件类型各解剖一套真实组合——每节给关键代码摘录与"移植到你的插件"一句。核验点见 [`catalog.json`](../../catalog.json)。
 
 ## 现象是什么：组合的形状跟着"插件承诺"走
 
@@ -31,7 +31,7 @@
 | 文件 | 测什么 | 关键手法 |
 |---|---|---|
 | `tool-todo.spec.ts` | 注册后的工具行为 | 挂真 `ToolRuntime`/`SystemPrompt`/`SessionProjectionRegistry`，**只把 parent Agent 换成带真 Session 的假包装**；从 `ctx.tools.execute()` 真入口调 `todo_write`，断言 schema 形状、参数校验、错误结果、session log 副作用 |
-| `integration.spec.ts` | 穿过 agent-loop 的端内行为 | `mountAgentLoopTestDependencies(ctx)` 挂全依赖栈 + 从 `core/agent-loop/tests/mock-adapter.ts` 复用 `MockAdapter` 脚本化模型回复（源码平面跨包导入，[02](./02-tiers.md)） |
+| `integration.spec.ts` | 穿过 agent-loop 的端内行为 | `mountAgentLoopTestDependencies(ctx)` 挂全依赖栈 + 从 `core/agent-loop/tests/mock-adapter.ts` 复用 `MockAdapter` 脚本化模型回复（源码平面跨包导入，[02](../philosophy/02-dsh-testing-tiers-and-selection.md)） |
 | `loader-composition.spec.ts` | Config 真实可配置性 | 进程内真 `Loader`+`Include` boot 临时 `cordis.yml`；同一个 flag 断言**两脸**：模型可见 description 措辞随 `allowParallelInProgress` 变、并行写被拒/放行 |
 | `projection.spec.ts` | 投影提供者 + HMR-safety | `todos` projection 的读路径；dispose 贡献 fiber 断言清理（`(HMR safety)`） |
 
@@ -74,7 +74,7 @@ it('model calls todo_write: a tool/call, a non-error tool/result, and a todo/wri
 - **可选性**：`PATH: ''` 启动——"Loading the optional package must not probe or start a Codex binary"（可选依赖缺席时不探测、不启动）；
 - **拓扑**：Bundle default + 两个命名实例（`codex-primary`/`codex-secondary`）+ 各自的 capabilities JSON（`agentOptions`/`agentPreset`/`outputSchema`/`depthLimit` 逐项断言——本例三实例全 false）+ `inheritsParentContext`；
 - **结构来自产品面**：直接传入同目录 `fixtures/loader/codex.patch.yml` 给 `driver.ts` 装配验证（不另外读 `package.json` 的 `dsh.bundle.patch`）；
-- **CI 挂载**：此文件在 built-bin-smoke 门的 16 文件清单里（[07](./07-ci-gates.md)），CI 用 built `lib/` 以 `DSH_EXAMPLE_MODE=lib` 再跑一遍。
+- **CI 挂载**：此文件在 built-bin-smoke 门的 16 文件清单里（[07](../execution/07-dsh-ci-gates-and-reliability.md)），CI 用 built `lib/` 以 `DSH_EXAMPLE_MODE=lib` 再跑一遍。
 
 可抄骨架：
 
@@ -111,7 +111,7 @@ expect(JSON.parse(stdout)).toEqual({ providers: ['codex', 'codex-primary', 'code
 - `signal restoration`：包装后 caller signal 在 post-execute 恢复；
 - `TOOL_TIMEOUT replacement (deadline wins)`：deadline 先到→工具结果被替换为 `TOOL_TIMEOUT`；provider abort 先到→保留 registry ABORTED（"upstream cancel, not our timeout"）；两者竞态的先后序各有独立用例。
 
-guard 插件的测试对象不是"它做了什么"而是"**它什么时不做**"（透传/恢复/保留）——分支矩阵必须含"不触发"的负例。这正是 [01](./01-doctrine.md) 教义 6b "A guard only guards if the regression fails it" 的测试形态：每个分支都对应一条会被某回归破坏的边界。
+guard 插件的测试对象不是"它做了什么"而是"**它什么时不做**"（透传/恢复/保留）——分支矩阵必须含"不触发"的负例。这正是 [01](../philosophy/01-dsh-testing-philosophy-and-doctrine.md) 教义 6b "A guard only guards if the regression fails it" 的测试形态：每个分支都对应一条会被某回归破坏的边界。
 
 **移植到你的插件**：先列"不触发"负例（透传/恢复/保留），再列触发分支；竞态两序各一个用例。
 
@@ -122,7 +122,7 @@ guard 插件的测试对象不是"它做了什么"而是"**它什么时不做**"
 - **RecordingAdapter**：子类化真 `LlmAdapter`，按脚本产出 `StreamChunk` 并记录收到的 `GenerateOptions`——断言模型请求本身（消息形状、signal）而不只是最终结果；
 - **CooperativeAdapter**：挂起直到 signal，以 `signal.reason` reject——精确演练取消路径的 reason 传播；
 - **Config 校验与超时码分开测**：`resolveSessionTitleLlmConfig` 的边界（`timeoutMs` 不得超过 `MAX_TIMER_DELAY_MS`，逐条 toThrow）与超时结果码 `SESSION_TITLE_TIMEOUT_CODE` 各有断言；
-- **keyless spec + with-key e2e 成对**：provider 插件 `session-title-first-prompt-llm`（其 src 使用本包的共享 LLM 标题机制）在 `provider.e2e.ts` 用 `describe.skipIf(!DEEPSEEK_API_KEY)` 对真模型跑——离线证明逻辑、在线证明"对真模型工作"（[01](./01-doctrine.md) 教义 3 的成对形态）。
+- **keyless spec + with-key e2e 成对**：provider 插件 `session-title-first-prompt-llm`（其 src 使用本包的共享 LLM 标题机制）在 `provider.e2e.ts` 用 `describe.skipIf(!DEEPSEEK_API_KEY)` 对真模型跑——离线证明逻辑、在线证明"对真模型工作"（[01](../philosophy/01-dsh-testing-philosophy-and-doctrine.md) 教义 3 的成对形态）。
 
 可抄骨架：
 
@@ -138,20 +138,20 @@ class RecordingAdapter extends LlmAdapter {
 
 **移植到你的插件**：Recording/Cooperative 两个 adapter 直接可抄；超时、取消、坏 JSON 的路径各自一个用例。
 
-## 快照场景怎么"带上"一个插件（[10](./10-snapshot-machinery.md) 的插件视角）
+## 快照场景怎么"带上"一个插件（[10](../mechanisms/10-dsh-snapshot-machinery.md) 的插件视角）
 
 场景 patch `snapshots/session/agent-instructions/cordis.snapshot.yml` 的三手：
 
 1. `disabled: true` 禁掉真实 provider（`dsh-llm-deepseek-api-key`）——回放模型流接管；
 2. 场景 `config:` 覆盖被测插件的参数（`agent-instructions.maxBytes: 65536`、`projectRootMarkers`）；
-3. 基础设施插件经 `!!js` 表达式落位（`session-persistence-jsonl.root: !!js dshHomePath('sessions')`——cordis.yml 允许 `!!js` 于 plugin `config`，[01](./01-doctrine.md)）。
+3. 基础设施插件经 `!!js` 表达式落位（`session-persistence-jsonl.root: !!js dshHomePath('sessions')`——cordis.yml 允许 `!!js` 于 plugin `config`，[01](../philosophy/01-dsh-testing-philosophy-and-doctrine.md)）。
 
 结果：**真实插件 + 场景配置 + 回放模型流**进 250 个录制场景——插件的 model-visible 面在每个 PR 被无 key 复验。
 
 ## 为什么这么定（解释）
 
 1. **组合的形状跟着"插件承诺"走**（见现象节）：先写承诺，再挑组合。
-2. **测试文件的注释密度是有意的**：tool-todo.spec 解释"为什么只 stand-in agent wrapper"，subagent-codex 解释"为什么 PATH 为空"——每个 stand-in 都写明自己证明不了什么，与 [09](./09-infrastructure.md) 的"mock 不自欺清单"同一条纪律落到测试代码里。
+2. **测试文件的注释密度是有意的**：tool-todo.spec 解释"为什么只 stand-in agent wrapper"，subagent-codex 解释"为什么 PATH 为空"——每个 stand-in 都写明自己证明不了什么，与 [09](../execution/09-dsh-testing-infrastructure.md) 的"mock 不自欺清单"同一条纪律落到测试代码里。
 
 ## 源码锚点
 

@@ -1,30 +1,94 @@
-<svg width="600" height="300" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 830" role="img" aria-labelledby="title desc">
+  <title id="title">Config 的解析与消费：每条路径回答不同问题</title>
+  <desc id="desc">原始配置在依赖满足后通过同步 Standard Schema 解析，再进入插件。原生图另供序列化、JSON Schema 投影、静态目录和设置消费；各消费方均有独立限制。YAML dump 和 live Inspect 不证明激活或任务成功。</desc>
   <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
-    </marker>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#64748b"/></marker>
+    <style>
+      text { font-family: system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif; fill: #1e293b; font-size: 14px; }
+      .title { font-size: 23px; font-weight: 700; }
+      .heading { font-size: 16px; font-weight: 650; }
+      .small { font-size: 13px; fill: #475569; }
+      .watch { fill: #9a3412; font-size: 13px; }
+      .line { fill: none; stroke: #64748b; stroke-width: 1.7; marker-end: url(#arrow); }
+      .card { fill: white; stroke: #94a3b8; stroke-width: 1.2; }
+    </style>
   </defs>
+  <rect width="1120" height="830" fill="#f8fafc" rx="12"/>
+  <text x="560" y="37" text-anchor="middle" class="title">Config：解析与消费各自承担什么</text>
+  <text x="560" y="62" text-anchor="middle" class="small">类型接口在编译后消失；运行时 Config 是可调用解析器，也是可检查的声明图。</text>
 
-  <!-- Boxes -->
-  <rect x="50" y="50" width="150" height="50" rx="5" fill="#e1f5fe" stroke="#0277bd" />
-  <text x="125" y="80" text-anchor="middle" font-size="14">用户配置 (YAML)</text>
+  <rect x="370" y="84" width="380" height="65" rx="9" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="560" y="110" text-anchor="middle" class="heading">插件导出的原生 Config</text>
+  <text x="560" y="133" text-anchor="middle" class="small">同一对象：Standard Schema 入口 + 节点与元数据</text>
 
-  <rect x="250" y="50" width="150" height="50" rx="5" fill="#fff3e0" stroke="#ef6c00" />
-  <text x="325" y="80" text-anchor="middle" font-size="14">Schemastery Schema</text>
+  <rect x="36" y="186" width="268" height="107" rx="9" class="card"/>
+  <text x="54" y="214" class="heading">原始配置</text>
+  <text x="54" y="239">层叠与表达式求值后的输入</text>
+  <text x="54" y="266" class="watch">诊断：声明值 ≠ 解析值 ≠ 操作参数</text>
+  <rect x="370" y="186" width="380" height="107" rx="9" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="390" y="214" class="heading">Cordis：依赖满足 → 同步解析</text>
+  <text x="390" y="239">internal/config → ~standard.validate</text>
+  <text x="390" y="266" class="watch">诊断：issues 阻止本次激活；异步结果被拒绝</text>
+  <rect x="816" y="186" width="268" height="107" rx="9" class="card"/>
+  <text x="834" y="214" class="heading">插件收到解析结果</text>
+  <text x="834" y="239">继续检查资源与业务可用性</text>
+  <text x="834" y="266" class="watch">诊断：通过解析 ≠ 成功启动</text>
+  <path d="M304 235H362" class="line"/>
+  <path d="M560 149V178" class="line"/>
+  <path d="M750 235H808" class="line"/>
 
-  <rect x="450" y="150" width="120" height="50" rx="5" fill="#e8f5e9" stroke="#2e7d32" />
-  <text x="510" y="180" text-anchor="middle" font-size="14">插件运行</text>
+  <text x="36" y="331" class="heading">读取同一声明的其他路径</text>
+  <text x="1084" y="331" text-anchor="end" class="small">产物可复用；每条路径的保证不同</text>
+  <path d="M370 117H22V350H1084" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <path d="M158 350V369" class="line"/>
+  <path d="M426 350V369" class="line"/>
+  <path d="M694 350V369" class="line"/>
+  <path d="M962 350V369" class="line"/>
 
-  <rect x="250" y="150" width="150" height="50" rx="5" fill="#fce4ec" stroke="#c2185b" />
-  <text x="325" y="180" text-anchor="middle" font-size="14">运行时安检员 (Validator)</text>
+  <rect x="36" y="377" width="244" height="174" rx="9" class="card"/>
+  <text x="53" y="405" class="heading">原生序列化</text>
+  <text x="53" y="431">toJSON → uid / refs</text>
+  <text x="53" y="455">重建节点与元数据</text>
+  <text x="53" y="484" class="watch">不是 JSON Schema</text>
+  <text x="53" y="507" class="watch">回调文本不恢复原闭包</text>
+  <text x="53" y="530" class="watch">只重建受信任声明</text>
 
-  <!-- Arrows -->
-  <path d="M 200 75 L 240 75" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <path d="M 325 100 L 325 140" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <path d="M 400 175 L 440 175" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="304" y="377" width="244" height="174" rx="9" class="card"/>
+  <text x="321" y="405" class="heading">JSON Schema 投影</text>
+  <text x="321" y="431">输入约束与 x-cordis 诊断</text>
+  <text x="321" y="455">供编辑器、schema dump</text>
+  <text x="321" y="484" class="watch">不执行 transform / validator</text>
+  <text x="321" y="507" class="watch">看 complete 与 limitations</text>
+  <text x="321" y="530" class="watch">default 注解不会填入运行值</text>
 
-  <!-- Labels -->
-  <text x="330" y="125" text-anchor="start" font-size="12" fill="#d32f2f">校验 &amp; Coercion</text>
-  <text x="50" y="130" font-size="12" fill="#555">Fail-Fast:</text>
-  <text x="50" y="145" font-size="12" fill="#555">不符则拒绝启动</text>
+  <rect x="572" y="377" width="244" height="174" rx="9" class="card"/>
+  <text x="589" y="405" class="heading">静态配置目录</text>
+  <text x="589" y="431">源码声明 → 字段与路径</text>
+  <text x="589" y="455">辅助检查类型中的成员</text>
+  <text x="589" y="484" class="watch">路径存在 ≠ 类型完全等价</text>
+  <text x="589" y="507" class="watch">无法解析时为 unknown</text>
+  <text x="589" y="530" class="watch">不是运行配置验收</text>
+
+  <rect x="840" y="377" width="244" height="174" rx="9" class="card"/>
+  <text x="857" y="405" class="heading">Settings 与产品 UI</text>
+  <text x="857" y="431">volatile 表单、普通值与脱敏</text>
+  <text x="857" y="455">卡片和交互由产品实现</text>
+  <text x="857" y="484" class="watch">导出 Config 不会自动有 UI</text>
+  <text x="857" y="507" class="watch">草稿通过 ≠ 保存生效</text>
+  <text x="857" y="530" class="watch">读取时点与持久化另有归属</text>
+
+  <rect x="36" y="574" width="512" height="83" rx="9" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="54" y="601" class="heading">YAML dump：组合之后声明了什么</text>
+  <text x="54" y="625">不 boot、不求值 !!js；不是 Config 或激活验收。</text>
+  <text x="54" y="646" class="small">schema dump 会导入受信任模块，但仍不 apply 插件。</text>
+  <rect x="572" y="574" width="512" height="83" rx="9" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="590" y="601" class="heading">live Inspect：当前 Loader entry 与声明</text>
+  <text x="590" y="625">共享 JSON Schema 投影；不执行原生校验。</text>
+  <text x="590" y="646" class="small">不覆盖运行时创建的 Agent preset 树。</text>
+
+  <rect x="36" y="680" width="1048" height="121" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="54" y="708" class="heading">诊断时先确定失败在哪一层</text>
+  <text x="54" y="734">解析结果不对 → 查 null / default / unknown / 分支次序 / 输入回写。</text>
+  <text x="54" y="758">改了却不生效 → 查消费者读取时点、配置继承与保存；转配置生命周期页。</text>
+  <text x="54" y="782">更新后部分失活 → 查 HMR 的应用阶段与恢复范围；串行更新不等于全局事务。</text>
 </svg>

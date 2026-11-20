@@ -21,7 +21,7 @@
   <text x="84" y="320" font-size="11" fill="#8c8c8c">作用域</text>
   <text x="84" y="340" font-size="12" fill="#262626">有委派能力的角色；leaf 不需要</text>
   <text x="84" y="368" font-size="11" fill="#8c8c8c">成本</text>
-  <text x="84" y="388" font-size="12" fill="#262626">按需加载；受 8192 字符裁剪约束</text>
+  <text x="84" y="388" font-size="12" fill="#262626">加载增加上下文；工具结果可在压缩时裁剪</text>
 
   <rect x="560" y="92" width="420" height="300" rx="10" fill="#fff7e6" stroke="#fa8c16" stroke-width="2"/>
   <text x="770" y="122" font-size="15" font-weight="bold" fill="#ad4e00" text-anchor="middle">引擎事实（Engine）</text>
@@ -58,15 +58,16 @@
 
   <rect x="532" y="454" width="220" height="96" rx="8" fill="#ffffff" stroke="#d9d9d9" stroke-width="1.5"/>
   <text x="548" y="478" font-size="12" font-weight="bold" fill="#262626">skill</text>
-  <text x="548" y="498" font-size="10.5" fill="#595959">模型调用时才进入上下文</text>
-  <text x="548" y="516" font-size="10.5" fill="#595959">适合：长流程、references</text>
-  <text x="548" y="534" font-size="10.5" fill="#8c8c8c">结果受 8192 裁剪</text>
+  <text x="548" y="498" font-size="10.5" fill="#595959">模型调用 / 用户显式调用</text>
+  <text x="548" y="516" font-size="10.5" fill="#595959">正文按需加载；适合长流程</text>
+  <text x="548" y="534" font-size="10.5" fill="#8c8c8c">工具结果在压力 / 溢出时可裁</text>
 
   <rect x="768" y="454" width="212" height="96" rx="8" fill="#fafafa" stroke="#d9d9d9" stroke-width="1.5" stroke-dasharray="5 4"/>
   <text x="784" y="478" font-size="12" font-weight="bold" fill="#8c8c8c">docs / README</text>
-  <text x="784" y="498" font-size="10.5" fill="#8c8c8c">不进入模型上下文</text>
+  <text x="784" y="498" font-size="10.5" fill="#8c8c8c">不自动注入；模型可主动 read</text>
   <text x="784" y="516" font-size="10.5" fill="#8c8c8c">适合：维护面、审计</text>
-  <text x="784" y="534" font-size="10.5" fill="#8c8c8c">把合同写这里 = 模型看不到</text>
+  <text x="784" y="534" font-size="10.5" fill="#8c8c8c">写在这里不保证模型已经读到</text>
 
-  <text x="60" y="582" font-size="11" fill="#8c8c8c">判据：这句话在升 pin 时会变吗？会 → 引擎段；不会 → 政策段。两段都不能住进 docs。</text>
+  <text x="60" y="572" font-size="11" fill="#8c8c8c">诊断点：用户显式加载是指令注入；模型调用返回工具结果。8192 是 base 候选阈值，触发压缩后才按头尾裁剪。</text>
+  <text x="60" y="589" font-size="10.5" fill="#8c8c8c">按拥有者分开政策与引擎说明；必须在行动前可见的规则放入常驻段，执行限制由代码保证。</text>
 </svg>

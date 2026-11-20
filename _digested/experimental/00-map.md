@@ -10,7 +10,7 @@
 
 三个词的分工由组 README 定义（`packages/experimental/README.md#status`）：**Experimental**＝完整公开能力仍在评估、无支持承诺；**Optional**＝由用户显式选择；**Official**＝项目维护并列入插件页——三者互不蕴含，发布、默认安装与 GUI 露出都不决定成熟度。是否仍属 experimental 只看合同状态与包边界，不看安装便利性：Agent Teams 四包位于 `experimental` 组内，同时以可选 bundle 出货（见下文与 [`02-agent-teams.md`](./02-agent-teams.md)）。
 
-这份合同由政策和门禁执行：命名与发布政策、private 名单、三道隔离检查、以及反向的「非实验包必须有产品用途」检查都在 [`04-实验合同与隔离.md`](./04-实验合同与隔离.md)。一句话版本：默认前缀 `@deepseek-ai/dsh-experimental-`（少数保留旧 npm 名），**全组 public**、非实验发布包不依赖实验包（仅 CLI `@deepseek-ai/dsh` 经豁免在 `dependencies` 中携带 12 个 `OPTIONAL_BUNDLES`）、shipped 组合默认不启用。
+这份合同由政策和门禁执行：命名与发布政策、private 名单、三道隔离检查、以及反向的「非实验包必须有产品用途」检查都在 [`04-experimental-package-policy-and-isolation.md`](./04-experimental-package-policy-and-isolation.md)。一句话版本：默认前缀 `@deepseek-ai/dsh-experimental-`（少数保留旧 npm 名），**全组 public**、非实验发布包不依赖实验包（仅 CLI `@deepseek-ai/dsh` 经豁免在 `dependencies` 中携带 12 个 `OPTIONAL_BUNDLES`）、shipped 组合默认不启用。
 
 产品包对实验面的合同差异在**消化侧**同样成立：产品包的机制页对的是有 release 门禁、快照锚定和 catalog 生成撑着的公开合同，而实验合同本身允许在两次上游同步之间改名、重组甚至消失——所以本专题的行锚只保证对「最近核验」那个 commit 成立，漂移时按 `_coverage/` 矩阵整专题复核。
 
@@ -72,7 +72,7 @@
 | [`01-code-runtime-python.md`](./01-code-runtime-python.md)（文件名沿用改名前旧名，正文按 `ptc-runtime-python` 重锚） | `ctx.ptcRuntime` 的 CPython 子进程后端：seam 合同、fd-3 帧协议、上限与失败行为 |
 | [`02-agent-teams.md`](./02-agent-teams.md) | `ctx.agentTeams` 服务、Lead Session log 持久化、九个成员级工具、统一 profile bundle 与 Web UI |
 | [`03-inspector.md`](./03-inspector.md) | Inspector 四个子目录、暴露面、CDP 连接方式与鉴权 |
-| [`04-实验合同与隔离.md`](./04-实验合同与隔离.md) | 命名与发布政策、private 名单、三道隔离门禁、反向的产品用途检查 |
+| [`04-experimental-package-policy-and-isolation.md`](./04-experimental-package-policy-and-isolation.md) | 命名与发布政策、private 名单、三道隔离门禁、反向的产品用途检查 |
 
 四页共同回答一个问题：public-by-default（private 名单为空）但合同随时会变的实验能力在 DSH 里长什么样、怎么挂进来、毕业时往哪走；其余家族以本页家族表为地图，机制页待有需要再补。
 

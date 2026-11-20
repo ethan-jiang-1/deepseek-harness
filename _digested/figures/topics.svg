@@ -91,6 +91,6 @@
   <text x="480" y="502" text-anchor="middle" font-size="11" fill="#2563eb">判断层：知识外置语法为什么成立 · 边界、成本与反馈环路</text>
 
   <rect x="30" y="534" width="900" height="56" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
-  <text x="480" y="556" text-anchor="middle" font-size="11" fill="#374151">plugin-system/inventory（货架清单）与 lifecycle（打包到卸载七段）可随 L2 按需展开；</text>
-  <text x="480" y="574" text-anchor="middle" font-size="11" fill="#374151">sandbox / subprocess / ssh / 代理等执行世界可随 L3（capability-seams/06-09）按需深潜。</text>
+  <text x="480" y="556" text-anchor="middle" font-size="11" fill="#374151">L2 按需：plugin-system/inventory（货架）· lifecycle（生命周期）· runtime-integrity（Config 解析与消费）。</text>
+  <text x="480" y="574" text-anchor="middle" font-size="11" fill="#374151">L3 按需：capability-seams/execution（sandbox / subprocess / ssh 等执行世界）。</text>
 </svg>

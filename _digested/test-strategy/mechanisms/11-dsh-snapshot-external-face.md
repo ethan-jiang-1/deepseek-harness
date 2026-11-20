@@ -1,90 +1,42 @@
-# 11 — 快照机制的对外面：插件仓能拿到的发布包、夹具与接线事实
+# 11 · 快照机制的对外面：发布包、夹具与接线
 
-> 本篇补 [10](./10-snapshot-machinery.md) 的一个视角缺口：[10](./10-snapshot-machinery.md) 站在**主仓语料消费者**一侧讲机制（世代、四面、manifest、sidecar、门禁）；本篇讲同一套机制**作为发布物**对仓外暴露了什么。与 [13–15](./13-plugin-testing.md) 同族，面向插件作者。只收 DSH 一手事实（核验点见 [`catalog.json`](../catalog.json)）；外部仓的实践校准、组织与价值判断在 `_faq_on_digested/21_recorded-session-snapshots/`，本篇不重复。
+外部插件仓可以消费公开发布的 `@deepseek-ai/dsh-llm-replay` 和 `@deepseek-ai/dsh-session-snapshot`，但安装包本身不会提供该仓的场景、真实入口或验收判据。本页说明发布与接线事实；固定决策、当前执行、sidecar、独立工作区期望和写模式由[快照机制](./10-dsh-snapshot-machinery.md)统一解释。
 
-## 现象是什么：一个半公开的机制
+## 发布与夹具输入
 
-`packages/test-support/` 的两个快照支撑包都是 **npm 公开发布物**：`package.json` 里 `publishConfig.access: "public"`、无 `private`，版本随产品矩阵同步发布（`@deepseek-ai/dsh-llm-replay`、`@deepseek-ai/dsh-session-snapshot`）。`docs/user/develop/` 与 `docs/cookbook/` 没有面向外部的使用文档；`docs/cookbook/adding-a-session-format-version.md:85` 与 `upgrade-guide/v0.2.1-alpha.1/session-title-adapters/guide.md:16` 只是顺带提及。
+两个 test-support 包都声明 `publishConfig.access: "public"`，随产品版本矩阵发布。公开发布说明它们可被仓外依赖，不能据此把主仓内部场景目录和脚本视为稳定的外部接口；使用方式与限制以各包说明和导出为准。
 
-一句话定性：**能装、能挂、能自带夹具，但没有面向外部作者的文档。** 主仓把它们当内部测试基建使用并随矩阵发布；外部消费是「事实可行」，不是「官方支持面」。
+回放器接受投影后的 Session JSONL，也接受带完整包络的原始日志；单份夹具不能混用两种正文表示，首行必须是带合法版本的 Session 对象。历史输入通过格式目录向前迁移，较新格式不能交给较旧运行时处理。版本与世代规则见[机制页](./10-dsh-snapshot-machinery.md#世代历史输入与当前-writer)。
 
-## 硬事实一：夹具的接受面比主仓语料宽
+普通回放文件必须是解析器能读取的明文 JSONL。会话持久化可压缩，不能把压缩文件直接作为文本夹具；导出或配置为明文后，仍需检查版本、规范化与场景资产。`file` 接受 Session 日志，裸 `ReplayEntry[]` 脚本属于 `overrideFile` 的整脚本替换形态。
 
-主仓提交的夹具是 **projected**（省略顶层 `seq`/`time` 包络，见 [10](./10-snapshot-machinery.md) 夹具格式一节）。但回放器的解析对 **complete**（原始带包络的运行日志）同样接受，唯一禁令是不能混：
+## 挂载与消费诊断
 
-> `session snapshot line N cannot mix projected and complete body rows` — `packages/test-support/llm-replay/src/index.ts`（`parseSessionFixture` 的 bodyKind 检查）
+`dsh-llm-replay` 是具名导出的 function 插件，注入 `llm`，配置字段为 `file`、`overrideFile`、`childFiles`、`providers`、`paceMs`。显式配置优先于对应环境变量，因此可由普通 Cordis 组合挂载。`providers` 非空时注册回放 adapter；为空时通过 `llm/stream` waterfall 截获模型流。
 
-**机制推论：「录制」不需要任何 DSH 内部工具**——真跑一次、留下明文日志，这份日志本身就是可回放夹具。三个前提都不是默认满足的：
+编程式 `installLlmReplay` 返回的 `assertConsumed()` 能检查录制脚本是否全部消费；普通插件挂载不暴露这个句柄。外部测试驱动需要自己选择可观察的完成与消费条件，不能只凭进程退出就断言全部录制步骤发生。
 
-1. **明文。** 会话持久化默认 `compression: 'zstd'`（`packages/session/session-persistence-jsonl/README.md` 的配置表），而回放器只 `readFileSync` 后逐行 `JSON.parse`——读不了 `.zstd`。`compression: 'none'` 才有明文；另一条恒为明文的路是 Web 会话导出（`session-log-export` 经持久化层读取后重新序列化）。
-2. **header 带整数 `version`。** 无版本号的 header 被严格恢复拒绝（`Session format version must be a non-negative safe integer`）。
-3. **夹具不比运行时新。** 历史版本经 build-static format catalog 在内存里向前迁移后再回放；反过来不行。
+## 与组合层交界的接线问题
 
-另一个解析边界：**首行必须是 JSON 对象**（`session snapshot line 1 must be a JSON object`）。把裸 `ReplayEntry[]` 脚本塞进 `file` 会在第一行报错——裸脚本的正确位置是 `overrideFile`（整脚本替换形态）。
-
-## 硬事实二：挂载面就是一个普通 function 插件
-
-`dsh-llm-replay` 是最标准的具名导出形态，无 default export：
-
-```ts
-export const name = 'llm-replay'
-export const inject = ['llm']
-export function apply(ctx: Context, config: Config = {}): void
-```
-
-`Config` 五字段 `file / overrideFile / childFiles / providers / paceMs`，环境变量只是缺省（`apply` 里 `config.file ?? process.env.DSH_SNAPSHOT_FILE`，`overrideFile`、`childFiles` 同理）——**不经 snapshot harness、纯靠 config 也能挂**。两种安装形态：`providers` 非空时注册路由式回放 adapter（模型发现可用、零 provider I/O）；为空时装 catch-all `llm/stream` waterfall，短路所有 provider。`assertConsumed()`（把「静默少消费」变成明确诊断）只在编程式 `installLlmReplay` 上暴露，Cordis 插件形态拿不到。
-
-## 硬事实三：接线语义在与组合层的交界上
-
-这部分是外部使用最容易踩的坑，全部可对到基线源码：
-
-- **`llm-deepseek` 与 `llm-deepseek-account` 都是 base bundle 的 adapter 挂载行**（`packages/bundle/base/cordis.patch.yml:525`、`:528`）。要替换 provider，相关挂载行必须**全部** `disabled: true`——只加一个同名新行不等于替换，真 adapter 仍在组合里注册并接流。
-- **patch 未命中是警告，不是报错**：vendor include 对不存在的行 id 只 `warn('patch: entry %C not found')`，name 不匹配也只 warn 并跳过（`vendor/include/src/index.ts`）。写错 id/name 时组合照常启动——`--dump-config` 是核对 patch 是否真落位的手段（`apps/cli/src/args.ts` 的 `--patch` 可重复、叠加在 profile 层之后）。
-- **overlay 的 `config:` 是逐顶层键整键替换**（vendor include 的 `target[key] = value`），不是深合并——录制/回放 overlay 里要把该插件需要的 config 键写全。
-- **`session-title-first-prompt-llm` 也 inject `llm`**（`packages/session/session-title-first-prompt-llm/src/index.ts`）——它同样是一条 `llm/stream` 消费方，在回放里按 first-call 序占用脚本位；不想让它吃位就在回放 overlay 里显式禁用（标题会走 fallback）。
-
-![外部挂 llm-replay 的三个接线坑：挂载行没禁干净 / patch 未命中只 warn / overlay 整键替换](./figures/external-wiring-pitfalls.svg)
-
-## 硬事实四：git 卫生与实测占用（基线树实测）
-
-| 事实 | 数字 / 出处 |
+| 症状 | 核查对象 |
 |---|---|
-| `snapshots/` 整树提交 | 基线树 **9.36 MiB（9.81 MB）**（`git ls-tree -r -l` 字节口径；`du` 按 4KB 块会虚高到 ~14MB）；场景/文件数见 [03](./03-asset-census.md)，折算 **~38KB/场景** |
-| 最大单文件 | 95KB（`snapshots/session/cua-native/session.v4.jsonl`）；schema sidecar 最大 81KB（`snapshots/session/dynamic-tool-updates/tool-schemas.expected.json`） |
-| 按扩展名 | jsonl 6.1MB / json 2.2MB / md 0.9MB——全是逐行文本，packfile 再压缩 |
-| 运行时原始日志**不进** git | `.gitignore:14` 的 `.sessions/`——**录制原料不进，证据进** |
-| diff 人工过目是成文义务 | `snapshots/AGENTS.md`：「every resulting JSONL, prompt, schema, protocol, UI, and workspace diff is reviewed before commit」 |
+| 仍有真实 provider 接流 | 相关真实 adapter 挂载行是否都禁用，回放 adapter／waterfall 是否在预期组合中 |
+| 加了 patch，实际组合未变 | 挂载行的 id／name 与生效顺序；dump 只核查组合，不证明运行激活和配置有效 |
+| overlay 后配置字段丢失 | `config` 的整键替换规则，不能按深合并推断结果 |
+| 模型脚本被意外提前消费 | 标题生成等其他 `llm/stream` 消费者是否也在组合内 |
 
-## 校准：快照层在证据体系里的位置（四篇 postmortem 对照）
+组合与 dump 的完整语义归[组合专题](../../plugin-system/composition/00-map.md)和[dump／boot 对照](../../plugin-system/composition/02-dump-and-boot-fidelity.md)。外部驱动应通过真实产品入口运行；把模型流替换成回放，不应同时把被测工具换成只返回成功的替身。
 
-| 事故 | 事后钉住它的回归面 | 是快照吗 |
-|---|---|---|
-| `docs/postmortem/0001`（多余 default export 吃掉 `inject`） | 无 key 真 Loader 子进程 e2e（`apps/cli/tests/profiles/acp/tests/acp.e2e.ts`） | 否——需要的是真实装载路径 |
-| `docs/postmortem/0002`（`!!js` 让文件系统工具永久禁用） | `verify-cordis-config` 静态门 + `UNKNOWN_TOOL` 语义守卫 | **快照是共谋**：「A snapshot refresh is fixture production, not correctness review.」 |
-| `docs/postmortem/0003`（Web agent 用裸 Vite 糊弄验收） | 分层真路径 e2e | 否——会话日志在这里是**事后取证记录**，不是回归面 |
-| `docs/postmortem/0004`（Landlock 提示行误判为沙箱失败） | 原生边界单测 + `snapshots/session/partial-landlock-child-failure/` | **是**——唯一以快照为组装回归 pin 的一篇 |
+## 外部仓如何采用
 
-**四篇里只有一篇。** 快照层证明的是「这份转录下的真实装配、循环、日志与已声明效果」；它不向模型发请求，因此不证明真实模型会遵守新写的 persona 或 skill，也推不出未录制行为——那是 with-key e2e 的职责。
+发布包提供机制，场景所有权和独立结果仍属于消费仓。先选择该仓要验证的真实入口和失败类，再决定回放与真实模型证据各承担什么；主仓私有脚本、行政规则和完整 CI 矩阵不会随依赖安装自动获得。
 
-## 为什么这么定（解释）
+开发脚手架与门禁建议见[独立插件仓的 CI Harness](../../../_dsh_plugin_agent_ready_development/02-dsh-plugin-harness/06-plugin-gate-and-ci-harness.md)，本页结论不依赖该延伸材料。主仓的验收要求见[测试决策流](../execution/05-dsh-testing-decision-procedure.md)。
 
-1. **为什么 test-support 包会发布**：产品按同一版本矩阵发布全家桶（prerelease 映射 `next` dist-tag，见 `scripts/release/families.ts` 的发现规则——只跳过 `private: true`）。发布是矩阵行为，不构成对外支持承诺；这也解释了「发布了却没有外部文档」的不对称。
-2. **为什么夹具接受面天然覆盖原始日志**：主仓自己的 writer-oracle 与迁移测试就要读未投影的原始日志（`writer.expected.jsonl` 一族，见 [10](./10-snapshot-machinery.md)）；外部「真跑一次留日志」能直接当夹具，是这个内部需求的副产品，不是为外部设计的接口。
-3. **为什么 patch 用 warn 而不是报错**：组合层对「部分 patch 不命中」采取容错（配置在 HMR 与版本演进中会漂移）；代价是接线错误静默失效。主仓自己用 corpus gate 与 `--dump-config` 核对习惯来补这一层——外部消费者没有这些门禁，所以这一条是外部接线最大的坑。
+## 源码核验入口
 
-## 源码锚点
-
-- `packages/test-support/llm-replay/package.json`、`packages/test-support/session-snapshot/package.json`——发布状态
-- `packages/test-support/llm-replay/src/index.ts`——`parseSessionFixture`（双接受 / 首行对象 / version）、`apply`（config ?? env）、`name`/`inject`、`installLlmReplay` 与 `assertConsumed`
-- `packages/bundle/base/cordis.patch.yml:525,528`——两个真实 adapter 挂载行
-- `vendor/include/src/index.ts`——`patch: entry %C not found` 的 warn、name mismatch 跳过、config 逐键整替换
-- `packages/session/session-title-first-prompt-llm/src/index.ts`——`inject` 含 `llm`
-- `packages/session/session-persistence-jsonl/README.md`——`compression` 默认 `'zstd'`
-- `.gitignore:14`、`snapshots/AGENTS.md`——git 卫生与 diff 评审义务
-- `docs/postmortem/0001`–`0004`——校准表
-
-## 最小例证
-
-1. **双接受可检索**：`grep -n "cannot mix projected and complete" packages/test-support/llm-replay/src/index.ts`——错误串本身就是规则原文。
-2. **patch 未命中只是 warn 可复现**：读 `vendor/include/src/index.ts` 的 `warn('patch: entry %C not found', id)`——没有任何 throw 路径。
-3. **体积口径可复现**：`git ls-tree -r -l HEAD snapshots | awk '{s+=$4} END {print s/1024}'` ≈ 9585 KB；换 `du -sh` 会得到虚高的块口径（~14MB）。
+- [回放包元数据](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/package.json)、[快照包元数据](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/session-snapshot/package.json)：公开发布与导出。
+- [回放实现](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/src/index.ts)：`parseSessionFixture`、`apply`、`installLlmReplay` 与消费断言；[包说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/README.md)维护配置用法。
+- [快照包说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/session-snapshot/README.md)：适配器、资产与存储要求。
+- [基础组合](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/base/cordis.patch.yml)、[标题消费者](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-title-first-prompt-llm/src/index.ts)：回放之外仍可能存在的模型调用方。
+- [持久化说明](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/session/session-persistence-jsonl/README.md)：压缩与日志存储；[测试政策](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md)：真实入口与外部结果断言。

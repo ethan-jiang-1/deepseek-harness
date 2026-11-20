@@ -10,7 +10,7 @@ Web Client 是浏览器侧一棵由独立载入的插件组装成的 Cordis 应�
 
 ## 和 Host 树的不对称
 
-Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mutation 结果，Client model 维护最新可用的本地投影并编码「延迟响应与替换基线如何合并」；`presentation component` 永远不接收 Cordis `ctx`、transport 对象或另一个 feature 插件的实现（[`docs/subsystems/web-client.md`](../../../docs/subsystems/web-client.md)）。刷新 / 重连从持久化再 hydrate，仍然读同一条 session 的事件——**client 没有第二份 append-only log**（[`../remote/streams/01`](../remote/streams/01-一条-emit-两条出站链路.md)）。
+Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mutation 结果，Client model 维护最新可用的本地投影并编码「延迟响应与替换基线如何合并」；`presentation component` 永远不接收 Cordis `ctx`、transport 对象或另一个 feature 插件的实现（[`docs/subsystems/web-client.md`](../../../docs/subsystems/web-client.md)）。刷新 / 重连从持久化再 hydrate，仍然读同一条 session 的事件——**client 没有第二份 append-only log**（[`../remote/streams/01`](../remote/streams/01-session-follow-and-host-event-forwarding.md)）。
 
 ## 四问：四个孙目录
 
@@ -18,30 +18,30 @@ Host 拥有真相，Client 只投影：Host controller 决定耐久状态与 mut
 
 | 目录 | 回答 | 文件 |
 |------|------|------|
-| [`tree/`](./tree/) | 这棵树怎么分层、模块与激活怎么走、怎么启动 | [`01-六层与单向依赖链`](./tree/01-六层与单向依赖链.md)、[`02-模块身份与激活顺序`](./tree/02-模块身份与激活顺序.md)、[`03-浏览器启动与首屏交接`](./tree/03-浏览器启动与首屏交接.md)、[`04-客户端热更新与模块缓存`](./tree/04-客户端热更新与模块缓存.md) |
-| [`state/`](./state/) | 谁拥有一份状态、一个值活多久 | [`01-谁拥有一份状态`](./state/01-谁拥有一份状态.md)、[`02-资源模型与-holder-生命周期`](./state/02-资源模型与-holder-生命周期.md)、[`03-会话窗口与-generation`](./state/03-会话窗口与-generation.md)、[`04-workspace-模型`](./state/04-workspace-模型.md) |
-| [`view/`](./view/) | 值怎么变成画面、扩展位怎么声明 | [`01-slot-与-props-纪律`](./view/01-slot-与-props-纪律.md)、[`02-conversation-node-纪律`](./view/02-conversation-node-纪律.md)、[`03-右栏-与-document-preview`](./view/03-右栏-与-document-preview.md) |
-| [`rules/`](./rules/) | 谁能 import 谁、起包要补什么 | [`01-export-与包内目录`](./rules/01-export-与包内目录.md)、[`02-依赖-构建期环境与三处注册面`](./rules/02-依赖-构建期环境与三处注册面.md)、[`03-样式与本地化`](./rules/03-样式与本地化.md)、[`04-测试阶梯与三道-gate`](./rules/04-测试阶梯与三道-gate.md) |
+| [`tree/`](./tree/) | 这棵树怎么分层、模块与激活怎么走、怎么启动 | [`01-client-layers-and-one-way-dependencies`](./tree/01-client-layers-and-one-way-dependencies.md)、[`02-module-identity-external-imports-and-service-activation`](./tree/02-module-identity-external-imports-and-service-activation.md)、[`03-browser-boot-and-first-render-handoff`](./tree/03-browser-boot-and-first-render-handoff.md)、[`04-client-hot-reload-and-module-cache-revisions`](./tree/04-client-hot-reload-and-module-cache-revisions.md) |
+| [`state/`](./state/) | 谁拥有一份状态、一个值活多久 | [`01-client-state-ownership-and-react-bindings`](./state/01-client-state-ownership-and-react-bindings.md)、[`02-resource-addresses-providers-and-holder-lifetimes`](./state/02-resource-addresses-providers-and-holder-lifetimes.md)、[`03-session-event-windows-and-reconnect-generations`](./state/03-session-event-windows-and-reconnect-generations.md)、[`04-workspace-baselines-updates-and-command-ordering`](./state/04-workspace-baselines-updates-and-command-ordering.md) |
+| [`view/`](./view/) | 值怎么变成画面、扩展位怎么声明 | [`01-slot-registration-and-derived-component-props`](./view/01-slot-registration-and-derived-component-props.md)、[`02-conversation-node-definitions-and-incremental-rendering`](./view/02-conversation-node-definitions-and-incremental-rendering.md)、[`03-sidebar-tabs-resource-navigation-and-document-preview`](./view/03-sidebar-tabs-resource-navigation-and-document-preview.md) |
+| [`rules/`](./rules/) | 谁能 import 谁、起包要补什么 | [`01-client-exports-and-package-domain-structure`](./rules/01-client-exports-and-package-domain-structure.md)、[`02-client-dependencies-build-environment-and-package-registration`](./rules/02-client-dependencies-build-environment-and-package-registration.md)、[`03-theme-tokens-styling-and-localized-copy`](./rules/03-theme-tokens-styling-and-localized-copy.md)、[`04-client-test-ladder-and-structural-gates`](./rules/04-client-test-ladder-and-structural-gates.md) |
 
 ## 插件作者视角
 
 | 你要做的事 | 先读 | 再读 |
 |---|---|---|
-| 起一个 `packages/client/<name>` 包 | [`rules/02`](./rules/02-依赖-构建期环境与三处注册面.md)（三处注册面缺一不可） | [`rules/01`](./rules/01-export-与包内目录.md)（export 与目录） |
-| 查「我的包为什么没启动 / 停在 boot page」 | [`tree/03`](./tree/03-浏览器启动与首屏交接.md) | [`tree/02`](./tree/02-模块身份与激活顺序.md)（模块身份与激活顺序） |
-| 往界面加一个扩展位或按钮 | [`view/01`](./view/01-slot-与-props-纪律.md) | [`tree/01`](./tree/01-六层与单向依赖链.md)（这个位置属于哪一层） |
-| 让 Conversation 多一种节点 | [`view/02`](./view/02-conversation-node-纪律.md) | [`view/01`](./view/01-slot-与-props-纪律.md) |
-| 加一种右栏内容或一条文件预览 | [`view/03`](./view/03-右栏-与-document-preview.md) | [`state/02`](./state/02-资源模型与-holder-生命周期.md) |
-| 读 Host 的状态、调 Host 的命令 | [`state/01`](./state/01-谁拥有一份状态.md) | [`../remote/gateway/02`](../remote/gateway/02-客户端-mount-与装配.md) |
-| 加样式或用户可见文案 | [`rules/03`](./rules/03-样式与本地化.md) | — |
-| 查「会话或工作区状态为什么不对」 | [`state/03`](./state/03-会话窗口与-generation.md)（会话窗口与重连） | [`state/04`](./state/04-workspace-模型.md)（workspace 行、归档与 pin） |
-| 查「改了代码为什么没生效」 | [`tree/04`](./tree/04-客户端热更新与模块缓存.md)（HMR 与缓存修订） | [`rules/02`](./rules/02-依赖-构建期环境与三处注册面.md)（模块身份改了要重启） |
+| 起一个 `packages/client/<name>` 包 | [`rules/02`](./rules/02-client-dependencies-build-environment-and-package-registration.md)（三处注册面缺一不可） | [`rules/01`](./rules/01-client-exports-and-package-domain-structure.md)（export 与目录） |
+| 查「我的包为什么没启动 / 停在 boot page」 | [`tree/03`](./tree/03-browser-boot-and-first-render-handoff.md) | [`tree/02`](./tree/02-module-identity-external-imports-and-service-activation.md)（模块身份与激活顺序） |
+| 往界面加一个扩展位或按钮 | [`view/01`](./view/01-slot-registration-and-derived-component-props.md) | [`tree/01`](./tree/01-client-layers-and-one-way-dependencies.md)（这个位置属于哪一层） |
+| 让 Conversation 多一种节点 | [`view/02`](./view/02-conversation-node-definitions-and-incremental-rendering.md) | [`view/01`](./view/01-slot-registration-and-derived-component-props.md) |
+| 加一种右栏内容或一条文件预览 | [`view/03`](./view/03-sidebar-tabs-resource-navigation-and-document-preview.md) | [`state/02`](./state/02-resource-addresses-providers-and-holder-lifetimes.md) |
+| 读 Host 的状态、调 Host 的命令 | [`state/01`](./state/01-client-state-ownership-and-react-bindings.md) | [`../remote/gateway/02`](../remote/gateway/02-client-remote-namespace-mounting-and-assembly.md) |
+| 加样式或用户可见文案 | [`rules/03`](./rules/03-theme-tokens-styling-and-localized-copy.md) | — |
+| 查「会话或工作区状态为什么不对」 | [`state/03`](./state/03-session-event-windows-and-reconnect-generations.md)（会话窗口与重连） | [`state/04`](./state/04-workspace-baselines-updates-and-command-ordering.md)（workspace 行、归档与 pin） |
+| 查「改了代码为什么没生效」 | [`tree/04`](./tree/04-client-hot-reload-and-module-cache-revisions.md)（HMR 与缓存修订） | [`rules/02`](./rules/02-client-dependencies-build-environment-and-package-registration.md)（模块身份改了要重启） |
 
 三个最常见的返工：**业务数据放进 entry 的 store**（store 只装查看/交互状态，sessions、frames、connections 留在对象层）；**在组件里直接订阅或 `useSyncExternalStore`**（一切变化都经 framework hook 进来）；**为让测试编译而放宽公开 API**（同包测试直接 import 内部路径）。
 
 ## 一棵树，四块基础设施
 
-`Client Modules` 决定插件图与同步 import 能不能物化，Cordis service `inject` 决定插件什么时候激活——两者不可互换（[`tree/02`](./tree/02-模块身份与激活顺序.md)）。`ctx.slots` 是组合的唯一入口，`ctx.remote.<namespace>` 是跨边界调用的唯一入口，资源协议是「用地址读一份内容」的唯一入口。
+`Client Modules` 决定插件图与同步 import 能不能物化，Cordis service `inject` 决定插件什么时候激活——两者不可互换（[`tree/02`](./tree/02-module-identity-external-imports-and-service-activation.md)）。`ctx.slots` 是组合的唯一入口，`ctx.remote.<namespace>` 是跨边界调用的唯一入口，资源协议是「用地址读一份内容」的唯一入口。
 
 ## 边界
 

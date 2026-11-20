@@ -1,29 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 300" font-family="monospace" font-size="11">
-  <rect width="800" height="300" fill="#fafafa" rx="4"/>
-  <text x="400" y="20" text-anchor="middle" font-weight="700" font-size="14">HMR: 原子重组合流</text>
-
-  <rect x="20" y="50" width="200" height="200" fill="#fef3c7" stroke="#fbbf24" rx="4"/>
-  <text x="30" y="70" font-weight="700">File Watcher</text>
-  <text x="30" y="90">Patches: .patch.yml</text>
-  <text x="30" y="110">Manifest: package.json</text>
-
-  <line x1="230" y1="150" x2="280" y2="150" stroke="#666" marker-end="url(#arr)"/>
-
-  <rect x="290" y="50" width="200" height="200" fill="#dcfce7" stroke="#22c55e" rx="4"/>
-  <text x="300" y="70" font-weight="700">HMR Service</text>
-  <text x="300" y="90">reconcileProfile()</text>
-  <text x="300" y="110">SerialQueue: 排队重算</text>
-  <text x="300" y="180" fill="red" font-weight="700">W: 竞态锁定超时?</text>
-
-  <line x1="500" y1="150" x2="550" y2="150" stroke="#666" marker-end="url(#arr)"/>
-
-  <rect x="560" y="50" width="200" height="200" fill="#dbeafe" stroke="#3b82f6" rx="4"/>
-  <text x="570" y="70" font-weight="700">Active Tree</text>
-  <text x="570" y="90">recomposeProfile()</text>
-  <text x="570" y="110">Result: 原子换入</text>
-  <text x="570" y="160" fill="red" font-weight="700">W: 上一棵树回滚?</text>
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 540" font-family="system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="12" role="img" aria-labelledby="title desc">
+  <title id="title">HMR 串行重组与 Include 更新分界</title>
+  <desc id="desc">文件通知经过串行队列。解析或准备失败可拒绝候选；开始 Include 更新后，激活失败会报错，但没有全树回滚。</desc>
   <defs>
-    <marker id="arr" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4 Z" fill="#666"/></marker>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#64748b"/></marker>
   </defs>
+  <rect width="1000" height="540" fill="#fafafa" rx="6"/>
+  <text x="500" y="30" text-anchor="middle" font-weight="700" font-size="17" fill="#1f2937">HMR：串行协调，按应用阶段处理失败</text>
+  <text x="500" y="52" text-anchor="middle" fill="#64748b">诊断点：失败发生在 entry.update 开始之前，还是之后？</text>
+
+  <rect x="25" y="80" width="270" height="118" fill="#fef3c7" stroke="#fbbf24" rx="8"/>
+  <text x="42" y="105" font-weight="700" fill="#92400e">1 · 文件输入</text>
+  <text x="42" y="129" fill="#78350f">profile / home 的 cordis.patch.yml</text>
+  <text x="42" y="151" fill="#78350f">profile package.json 的 bundle 列表</text>
+  <text x="42" y="177" fill="#78350f">重读输入，用内容指纹跳过重复</text>
+  <line x1="295" y1="138" x2="332" y2="138" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="335" y="80" width="290" height="118" fill="#dcfce7" stroke="#86efac" rx="8"/>
+  <text x="352" y="105" font-weight="700" fill="#166534">2 · runExclusive 串行队列</text>
+  <text x="352" y="129" fill="#14532d">等待 appReady，再 reconcileProfile</text>
+  <text x="352" y="151" fill="#14532d">配置写入 / 配置重载 / 模块替换</text>
+  <text x="352" y="177" fill="#14532d">失败后队列可继续；串行不等于回滚</text>
+  <line x1="625" y1="138" x2="662" y2="138" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+
+  <rect x="665" y="80" width="310" height="118" fill="#dbeafe" stroke="#93c5fd" rx="8"/>
+  <text x="682" y="105" font-weight="700" fill="#1e40af">3 · 读取与准备候选</text>
+  <text x="682" y="129" fill="#1e3a8a">解析 patch，计算 / 发布解析映射</text>
+  <text x="682" y="151" fill="#1e3a8a">准备组合，可能预先停止相关条目</text>
+  <text x="682" y="177" fill="#1e3a8a">尚未开始 Include 更新</text>
+
+  <path d="M820,198 V232 H260 V264" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="285" y="224" fill="#b91c1c">读取 / 准备失败，拒绝候选</text>
+  <rect x="25" y="267" width="450" height="151" fill="#f0fdf4" stroke="#86efac" rx="8"/>
+  <text x="43" y="294" font-weight="700" fill="#166534">应用前 · 现有 patch 集保留</text>
+  <text x="43" y="321" fill="#14532d">解析失败时现有树不变；准备阶段失败时，</text>
+  <text x="43" y="344" fill="#14532d">放回预先移除的行，重启此前停止的条目。</text>
+  <text x="43" y="377" fill="#92400e">诊断：恢复也可能失败并记 warning；</text>
+  <text x="43" y="399" fill="#92400e">不保证实例身份或外部副作用复原。</text>
+
+  <path d="M820,198 V264" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="834" y="233" fill="#1d4ed8">准备完成</text>
+  <rect x="505" y="267" width="470" height="151" fill="#fff1f2" stroke="#fda4af" rx="8"/>
+  <text x="523" y="294" font-weight="700" fill="#9f1239">应用开始 · applying = true → entry.update</text>
+  <text x="523" y="321" fill="#881337">Loader 更新、重启条目，再审计激活状态。</text>
+  <text x="523" y="348" fill="#881337">新增 / 变化的失败：抛错，不全局恢复旧树。</text>
+  <text x="523" y="375" fill="#881337">审计通过：emit app-boot/config-reload；</text>
+  <text x="523" y="399" fill="#881337">未变化的旧失败可作为 warning 返回。</text>
+
+  <rect x="25" y="449" width="950" height="63" fill="#f8fafc" stroke="#cbd5e1" stroke-dasharray="5 3" rx="8"/>
+  <text x="43" y="475" fill="#334155">诊断：刷新报错后，检查当前 Loader 条目与激活诊断；不能由“报错”推断旧插件仍在运行。</text>
+  <text x="43" y="497" fill="#334155">Settings 自行尝试恢复旧 patch 文件并再次协调；该入口的局部补救不扩展为 HMR 全树事务。</text>
 </svg>

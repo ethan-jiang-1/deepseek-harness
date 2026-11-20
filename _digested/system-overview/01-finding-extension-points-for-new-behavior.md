@@ -1,0 +1,53 @@
+# Architecture 扩展表的非显然落点
+
+> **为什么单独有这一页**：根文档 [`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 已经维护了一份详尽的「加新功能应该挂到哪」扩展表；常规工具、命令、shell 或文件系统按那张表直接找 `ctx` 服务键就够了。但有四类日常高频改动——**按会话选型 preset、往聊天流加 UI 节点、给插件加 Web 设置卡片、定义新持久事件**——靠直觉读表最容易挂错地方（比如只在内存里改设置、或者忘了通知浏览器与生成器）。因此本页不抄全表，只把最容易找偏的四处「非显然落点」挑出来讲透。
+>
+> 常规登记点以 [`docs/architecture.md`](../../docs/architecture.md#where-new-behavior-goes) 和对应 package README 为准；同目录另有单点指南（如 [settings 卡片](../../docs/cookbook/adding-a-settings-card.md)），但 [`extension-cookbook.md`](../../docs/cookbook/extension-cookbook.md) 的索引表并不包含它。
+>
+> 源码核验入口：[`packages/preset/agent-preset/`](../../packages/preset/agent-preset/)、[`packages/client/ui-conversation/`](../../packages/client/ui-conversation/)、[`packages/client/ui-settings-plugins/`](../../packages/client/ui-settings-plugins/)、[`packages/core/session/src/known-event-types.ts`](../../packages/core/session/src/known-event-types.ts)、[`packages/core/agent/`](../../packages/core/agent/)、[`packages/core/agent-loop/`](../../packages/core/agent-loop/)。
+
+## 每个 session 的能力组合
+
+Agent preset 挂在 `agent.ctx` 的 scope 上。preset 中发布服务的行必须处于 `cordis:group` 的 `isolate` realm；`mountPreset` 会拒绝泄漏到进程根 realm 的服务，避免两个 session 共享本应隔离的实现。
+
+初始 preset 写入 session header 的 `agentPreset`。空 session 改选 preset 时另写 `agent-preset/selected`，重建时以最后一次选择为准；只读 header 会把会话恢复到错误的工具和提示词组合。
+
+## Web Client Chat 节点
+
+Chat 节点属于浏览器侧 Cordis 树，Host 没有对应的节点注册表。插件把事件到节点状态的 Definition 经 `ctx.uiConversation.events.register(definition)` 登记——服务键是 `'uiConversation'`（[`packages/client/ui-conversation/src/client/conversation/assembly.ts`](../../packages/client/ui-conversation/src/client/conversation/assembly.ts) 以该键注册服务，[`event-registry.ts`](../../packages/client/ui-conversation/src/client/conversation/event-registry.ts) 的重复登记报错文案即写 `uiConversation.events.register(...)`）——再把 keyed renderer 登记到 `conversation.chat.node` slot。`conversationViews` 不是 `ctx` 键，也不是登记步骤：它是 conversation slot 的 hooks 快照（[`contract/slots.ts`](../../packages/client/ui-conversation/src/client/contract/slots.ts) 的 `conversationViews: ObservableSnapshot<readonly ViewTab[]>`）。
+
+## 插件自有 settings 卡片
+
+Web 设置页的 Plugins 段按命名空间键卡片。机制是 **live configuration forms**：插件在 Config schema 里声明 live 字段，Host 半边由 `SettingsForms` 服务（`packages/settings/settings/src/index.ts:266` 的 `SettingsForms.configure()`，`ctx.settings`）把 Config 投影成表单并持有实例级 UI policy；浏览器半边由 `ctx.configForms.whileServed`（`packages/client/ui-settings/src/client/config-form.ts:225,258`）注册 companion 页并经 settings Remote 控制器读取与保存，保存即写 profile patch，非法值文件与运行值都不变；跨插件贡献走 `plugins.detail.actions` / `plugins.detail.badge` / `plugins.detail.section` slots，companion 包把页面登记进 `plugins.item`（[`docs/cookbook/adding-a-settings-card.md`](../../docs/cookbook/adding-a-settings-card.md)）。配置卡片的挂接走 slots 与 companion 页。
+
+## 持久 session 事件
+
+新事件通过声明合并扩展 `SessionEventMap`。随后运行 `pnpm run gen-persistence-catalog`，让生成的 `KNOWN_SESSION_EVENT_TYPES` 与声明同步；持久化读取会拒绝未知且未标记 `ignorable: true` 的事件。**跨历史格式边时更严**：未知事件即使带 `ignorable: true` 也一律拒迁（`.agents/notes/implemented/architecture/2026-08-31-alpha-historical-unknown-event-refusal.md`），因为基数保持型迁移必须证明被保留 payload 在目标世代仍语义有效。结构性变化（header 形状、信封、核心事件语义、surface 机制）要新增相邻边，并把 `SESSION_FORMAT_VERSION` 与 catalog 一起更新；权威与流程见 [`docs/session-format-status.md`](../../docs/session-format-status.md) 与 [`../session-and-loop/04-session-format-generations-and-migrations.md`](../session-and-loop/04-session-format-generations-and-migrations.md)。渲染和模型历史都从日志重建，不能把持久事实只留在插件内存里。
+
+> **ignorable 机制**：仅影响纯粹信息性、丢失不影响日志重构的事件。信封可选带 `ignorable?: true`（`packages/core/session/src/types.ts:502-512`）；读侧遇到未知类型且未标 `ignorable: true` 时拒绝解释整份日志（`packages/session/session-persistence/src/storage-contract.ts:74-80`）。
+
+## API Remote 架构
+
+Remote 请求由 `packages/api/remotes/` + `packages/typert/` 组成的 **Remote 控制器**体系承载。这不是传统 seam（三角色），而是 BFF 层模式：Host 侧声明 Remote 控制器及其 schema，Typert 生成器自动导出 client stub；Client 侧（浏览器或 SDK）消费生成的 stub。已由 Remote 控制器承载的域包括 settings（含 credentials 子命名空间）、subagent control、agent preset registry、workspace-controller、session-controller 与 `workspace-files`（Host 服务 + Client `file` 资源 provider 双面）。directory-picker 要按两个面分开说：`ctx.directoryPicker` 是 Service seam（[`packages/host/directory-picker/`](../../packages/host/directory-picker/src/index.ts) 的 Service Definition），不是 Remote；另有 `ctx.directoryPickerController` 是 Host Remote 控制器（[`packages/api/workspace-controller/`](../../packages/api/workspace-controller/src/directory-picker.ts)，namespace `directoryPicker`）。
+
+浏览器可用的 Remote namespace 在客户端装配入口 `apply`（`packages/api/remotes/src/client/index.ts:185-198`）通过 `ctx.remote.$mount(...)` 挂载，除核心控制面与权限/附件能力外，也包含 `sessionFeedback`（`@deepseek-ai/dsh-command-feedback/remote`）、`fileUploads`（`@deepseek-ai/dsh-client-file-upload/remote`）与 `workspaceFiles`（`@deepseek-ai/dsh-api-workspace-files/remote`）（同文件 `:22`、`:23`、`:30`，装配于 `:192-194`）。Scoped Remote 事件转发时由请求直接携带 `Agent`：`packages/api/remotes/src/index.ts:59-68` 读取 `request.agent`，缺失或不等于 carrier 时抛 `must carry its Agent directly`；Gateway 侧 `startRemoteEvent` 则用 `source.context.agentId` 校验并写入分发帧，并用 `source.context.subject` 投影请求（`packages/api/gateway/src/index.ts:625`、`:630`、`:663`）。
+
+## 应用启动规则
+
+`docs/architecture.md` 的 **Application Launch** 规则（配合 `scripts/verify-application-entrypoints` 门禁）：所有支持的 Node 应用必须从 `dsh` CLI + 具名 profile 启动。Vendored CLI、仅构建/测试可执行文件、进程内直接插件挂载都不是 Harness 应用启动器。
+
+## 实时拦截与 loop 例外
+
+实时拦截使用事件声明指定的派发模式。`agent/pre-step`、`agent/request`、`agent/request-error`、`llm/stream` 与四条 `tools/*` waterfall（`pre-execute` / `execute` / `post-execute` 在调用管道上，`ptc-dispatch-log` 观察 PTC 子调度；`tools/result` 是同步通知，不是 waterfall）是 waterfall；`agent/turn-stopping` 是 serial，监听器可用 `agent.steer()` 提交续跑工作，驱动在关闭 turn 前重读 inbox。具体模式见 [`../two-tree-runtime/framework/02-waterfall-delegation-and-event-dispatch.md`](../two-tree-runtime/framework/02-waterfall-delegation-and-event-dispatch.md)。
+
+`ctx.agents` 拥有公开的 `Agent` / `AgentFactory` 接口；默认 `dsh-agent-loop` 只是其中一个 factory provider。只有改变 turn 开闭、inbox 语义或必写 session 事件等驱动合同，才需要修改 loop，并同步更新 architecture 地图；替换默认驱动的义务见 [`../session-and-loop/03-agent-loop-replacement-and-compatibility.md`](../session-and-loop/03-agent-loop-replacement-and-compatibility.md)。
+
+## 源码入口
+
+| 对象 | 源码位置 | 说明 |
+|------|----------|------|
+| `SessionEventEnvelope` / `ignorable` | [`packages/core/session/src/types.ts`](../../packages/core/session/src/types.ts#L502-L512) | 信息性事件可选标记 |
+| 未知事件拒读检查 | [`packages/session/session-persistence/src/storage-contract.ts`](../../packages/session/session-persistence/src/storage-contract.ts#L74-L80) | 非 `ignorable` 未知类型直接拒绝 |
+| Client Remote 挂载入口 `apply` | [`packages/api/remotes/src/client/index.ts`](../../packages/api/remotes/src/client/index.ts#L185-L198) | 装配浏览器可见的 Remote namespace |
+| Scoped Remote 请求载体校验 | [`packages/api/remotes/src/index.ts`](../../packages/api/remotes/src/index.ts#L59-L68) | 要求请求直接携带 `Agent` |
+| Gateway `startRemoteEvent` | [`packages/api/gateway/src/index.ts`](../../packages/api/gateway/src/index.ts#L622-L664) | `agentId` 校验与 `subject` 投影 |

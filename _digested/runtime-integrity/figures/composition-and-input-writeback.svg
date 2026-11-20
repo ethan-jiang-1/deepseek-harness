@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 850" role="img" aria-labelledby="title desc">
+  <title id="title">复合解析的三种关系：合并、选择与输入回写</title>
+  <desc id="desc">intersect 的所有分支解析同一输入，结果合并时已有键优先。union 按次序返回首个成功分支。transform 作为对象属性时可把适配值写回原始对象；示例中分支 A 先将字符串 3 转为数字 3，再因缺 token 失败，分支 B 因看到已改写的数字而通过。失败分支不是事务。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#64748b"/></marker>
+    <style>
+      text { font-family: system-ui, -apple-system, 'PingFang SC', 'Noto Sans SC', sans-serif; font-size: 15px; fill: #1e293b; }
+      .title { font-size: 23px; font-weight: 700; }
+      .heading { font-size: 16px; font-weight: 700; }
+      .small { font-size: 13px; fill: #475569; }
+      .watch { font-size: 14px; fill: #9a3412; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; }
+      .line { fill: none; stroke: #64748b; stroke-width: 1.8; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1120" height="850" rx="12" fill="#f8fafc"/>
+  <text x="560" y="37" text-anchor="middle" class="title">分支共享输入：合并与选择都不是配置覆盖</text>
+  <text x="560" y="64" text-anchor="middle" class="small">这些关系发生在一次 schema 解析内；profile / patch 的层叠由另一套组合机制处理。</text>
+
+  <rect x="30" y="92" width="1060" height="206" rx="10" fill="#fff" stroke="#cbd5e1"/>
+  <text x="49" y="122" class="heading">① intersect：全部通过后合并结果，已有键优先</text>
+  <rect x="49" y="169" width="140" height="64" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="119" y="195" text-anchor="middle">同一输入</text>
+  <text x="119" y="219" text-anchor="middle" class="mono">{}</text>
+  <path d="M189 201H218V163H241" class="line"/>
+  <path d="M218 201V237H241" class="line"/>
+  <rect x="249" y="140" width="290" height="50" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="267" y="171">A：port 默认 80 → { port: 80 }</text>
+  <rect x="249" y="214" width="290" height="50" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="267" y="245">B：port 默认 81 → { port: 81 }</text>
+  <path d="M539 165H568V201H605" class="line"/>
+  <path d="M539 239H568V201" fill="none" stroke="#64748b" stroke-width="1.8"/>
+  <rect x="613" y="169" width="198" height="64" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="712" y="195" text-anchor="middle">先保留 A 已有的键</text>
+  <text x="712" y="219" text-anchor="middle" class="mono">{ port: 80 }</text>
+  <text x="843" y="180" class="watch">检查分支次序</text>
+  <text x="843" y="207" class="small">同名字段仍须逐支通过</text>
+  <text x="843" y="233" class="small">建议字段只声明一次</text>
+  <text x="49" y="282" class="small">这里的 object 分支用内部 strict 模式提取声明字段；普通顶层 intersect 最后仍补回额外键。</text>
+
+  <rect x="30" y="318" width="1060" height="177" rx="10" fill="#fff" stroke="#cbd5e1"/>
+  <text x="49" y="348" class="heading">② union：按顺序尝试，首个成功即返回</text>
+  <rect x="49" y="375" width="140" height="60" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="119" y="410" text-anchor="middle" class="mono">{}</text>
+  <path d="M189 405H241" class="line"/>
+  <rect x="249" y="375" width="290" height="60" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="267" y="400">A：label 常量默认 'first'</text>
+  <text x="267" y="423" class="small">本分支成功</text>
+  <path d="M539 405H605" class="line"/>
+  <rect x="613" y="375" width="198" height="60" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="712" y="400" text-anchor="middle">直接返回</text>
+  <text x="712" y="423" text-anchor="middle" class="mono">{ label: 'first' }</text>
+  <text x="843" y="400" class="watch">B：默认 'second' 不运行</text>
+  <text x="843" y="426" class="small">不检查是否唯一匹配</text>
+  <text x="49" y="477" class="small">模式标签应明确且必填；普通 object 仍保留额外键，匹配成功不等于字段互斥。</text>
+
+  <rect x="30" y="515" width="1060" height="211" rx="10" fill="#fff" stroke="#cbd5e1"/>
+  <text x="49" y="545" class="heading">③ transform：属性适配可改写输入；后面的 union 分支会读到它</text>
+  <rect x="49" y="572" width="194" height="100" rx="8" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="67" y="601">调用前 raw</text>
+  <text x="67" y="631" class="mono">{ count: '3' }</text>
+  <text x="67" y="655" class="small">同一个对象进入 union</text>
+  <path d="M243 622H273" class="line"/>
+  <rect x="281" y="572" width="243" height="100" rx="8" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="299" y="601">A：先解析 count</text>
+  <text x="299" y="631" class="mono">transform(string, Number)</text>
+  <text x="299" y="655" class="small">返回数字；适配值写回 raw</text>
+  <path d="M524 622H554" class="line"/>
+  <rect x="562" y="572" width="243" height="100" rx="8" fill="#fff1f2" stroke="#fda4af"/>
+  <text x="580" y="601">A：随后因缺 token 失败</text>
+  <text x="580" y="631" class="mono">raw = { count: 3 }</text>
+  <text x="580" y="655" class="watch">回写不会随分支失败撤销</text>
+  <path d="M805 622H835" class="line"/>
+  <rect x="843" y="572" width="228" height="100" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="861" y="601">B：count 要求 number</text>
+  <text x="861" y="631">读到 3 → 通过</text>
+  <text x="861" y="655" class="small">结果与 raw 都是数字</text>
+  <text x="49" y="706" class="small">普通 transform 可调用 callback 两次，分别计算结果与适配值；callback 本身纯净也不阻止解析器回写。</text>
+
+  <rect x="30" y="752" width="1060" height="67" rx="9" fill="#fff7ed" stroke="#fdba74"/>
+  <text x="49" y="781" class="heading">诊断：单看返回值不够，还要比较解析前后的 raw</text>
+  <text x="49" y="805" class="watch">转换只作确定计算；需保留原始 JSON 时先克隆。preserve 只抑制本层适配，不撤销 inner 已造成的修改。</text>
+</svg>

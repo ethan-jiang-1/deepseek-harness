@@ -2,9 +2,34 @@
 
 这个目录页记录 `_digested/` **自身的维护轮次**：读者反馈驱动的重写、redesign 波次、门禁新增。它按轮追加，只说明这轮改了什么、为什么；机制页本身永远只写当前态。
 
-与 [`../_change_log/00-index.md`](./00-index.md) 的分工：**那边只收产品源码同步**（upstream release tag 对齐、跨度审计与修复）；语料自身的重组与重写记在这里。两边都不进 `catalog.json` 的核验矩阵。
+与 [`../_change_log/00-index.md`](../_change_log/00-index.md) 的分工：**那边只收产品源码同步**（upstream release tag 对齐、跨度审计与修复）；语料自身的重组与重写记在这里。两边都不进 `catalog.json` 的核验矩阵。
 
 > 核验基线：[`../catalog.json`](../catalog.json) 的 `baseline`（唯一声明处）。各轮引用的行号与计数以该轮执行时的树为准；正文不复制基线。
+
+---
+
+## M15 · 2026-11-20 · 难点诊断配图与英文文件名
+
+**性质**：面向熟悉 AI Agent、尚不熟悉 DSH 的读者，补充具体状态示例与诊断入口；产品源码与发布基线不变。
+
+1. **八张诊断 SVG**：[Config 激活时点](../runtime-integrity/01-schemastery-configuration-and-usage.md)、[精确解析](../runtime-integrity/02-coercion-and-fail-fast-mechanisms.md)、[组合与输入回写](../runtime-integrity/04-advanced-algebraic-patterns.md)、[surface 替换](../session-and-loop/01-session-event-map.md)、[工具更新路由投影](../tools-prompt-llm/02-tool-pipeline-approval-and-timeouts.md)、[附件请求投影](../tools-prompt-llm/06-file-and-image-content-projection.md)、[preset 修订保留](../delegation-and-orchestration/preset-composition-and-contract-placement/02-preset-composition-as-a-static-self-contained-model.md)、[Settings 完整覆盖与 reset](../plugin-system/lifecycle/09-configuration-and-settings.md)。各图嵌入机制归属页，附导读与诊断点；[总索引](../00-index.md#遇到难点先看图)按读者的问题提供入口。
+2. **英文命名与导航**：将剩余 47 个中文文件名迁移为描述性英文，保留编号、同级位置与中文正文；同步 251 个 Markdown 链接及 catalog 路径，保留全部核验元数据，由生成器重建覆盖矩阵。修复另外 39 条既有断链与 1 处 SVG 实体错误；历史账本中的旧名原文保留，现用链接迁往新址。总索引明确英文命名规则。
+3. **图文一致性**：工具更新区分耐久记录与 route 的 `tools` / `messages` 投影，移除「addition-only 工具只能增不能撤」的错误概括；附件页补齐模态未声明时的 adapter 校验、卸载出现处的耐久选择与 adapter 占位投影，并明确 DeepSeek `file_id` 所属的图像载荷。
+
+**验证**：八图均通过 XML、可访问性标题与说明检查，使用 `rsvg-convert` 渲染并逐图目视复核。Config 示例直接针对当前源码执行；现有定向用例通过（工具投影 10 项、preset 修订 9 项、surface 与 Settings 3 项，其余用例因筛选未执行）。`pnpm run test:docs` 21 项、`pnpm run doc-sync` 43 项通过，无跳过；`pnpm run lint` 通过，保留未改动实验插件的一条无用禁用注释警告。覆盖矩阵新鲜度、文件编码与结尾换行、`git diff --check` 通过。全量 `verify.mjs` 只剩既有根文档 `AGENTS.md` 与 `CONCEPT_INDEX.md` 未登记两项，断链与 SVG XML 诊断归零；文件名扫描无非 ASCII 名称。
+
+---
+
+## M14 · 2026-11-20 · Config、preset 验收与模型输入的归属校正
+
+**性质**：将 FAQ 30/31 中有源码与测试支撑的结论归入机制专题；产品源码与发布基线不变。
+
+1. **Config 与设置**：重写 [runtime-integrity](../runtime-integrity/00-index.md) 的 Config／同步 Standard Schema、精确解析、消费方和复合声明；[配置与设置](../plugin-system/lifecycle/09-configuration-and-settings.md)补全 volatile 读取时点、整份配置持久化、默认值继承与两种 reset；[HMR](../plugin-system/composition/03-user-patch-hmr.md)按应用前后区分失败状态，移除全树事务回滚承诺。
+2. **Preset 与输入**：[preset 组合](../delegation-and-orchestration/preset-composition-and-contract-placement/02-preset-composition-as-a-static-self-contained-model.md)区分生成清单与独立必需能力期望；新增 [skill 输入生命周期](../tools-prompt-llm/07-skill-input-lifecycle.md)，说明目录摘要、两条加载路径、当前正文、历史记录与当前 surface 可见性；[证据分层](../delegation-and-orchestration/completion-and-observation/07-evidence-layers-declaration-mount-mechanism-behaviour.md)区分声明、装配、请求、模型行为与成果验收。
+3. **测试与回放**：[测试专题](../test-strategy/00-map.md)明确固定模型决策与当前实现重跑的范围、独立工作区期望、世代保留、跳过与聚合语义；配套更新诊断 SVG。完整领域评测设计留在 FAQ 延伸阅读。
+4. **导航与核验记录**：登记 runtime-integrity 五页与 skill 新页，修复 41 个 catalog 旧路径及范围内 Markdown 链接；机械迁址保留原核验元数据，仅本轮实质复核页面更新至当前 HEAD。覆盖矩阵由生成器重建。
+
+**验证**：`pnpm run test:docs`（21 项）、`pnpm run doc-sync`（43 项）通过，均无跳过；`pnpm run lint` 通过，有一条未改动实验插件中的无用禁用注释警告。相关 Schemastery、配置更新、preset、skill 与 replay 定向测试通过。生成矩阵检查、69 个改动文件的 UTF-8／结尾换行与 `git diff --check`、16 张改动 SVG 的 XML 校验通过，并渲染检查主要诊断图。全量 `verify.mjs` 从开始时 387 项降至 42 项；剩余为范围外的 39 条断链、1 条 SVG 实体错误及 2 份既有根文档未登记，逐项对比均已存在于基线；六个修订专题内无剩余诊断。
 
 ---
 

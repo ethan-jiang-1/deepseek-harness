@@ -55,7 +55,7 @@ DSH 有一条明文要求：
 
 ## 回写被元验证把关
 
-「门禁自己会不会写错」也有检查。测试期的三条元验证（[`test-strategy/04-anti-omission.md`](../test-strategy/04-anti-omission.md)、[`07-ci-gates.md`](../test-strategy/07-ci-gates.md)）保证门禁本身有 spec；对 note 治理这条链，元验证的具体形态是：
+「门禁自己会不会写错」也有检查。测试期的三条元验证（[`test-strategy/04-dsh-testing-anti-omission-mechanisms.md`](../test-strategy/execution/04-dsh-testing-anti-omission-mechanisms.md)、[`07-dsh-ci-gates-and-reliability.md`](../test-strategy/execution/07-dsh-ci-gates-and-reliability.md)）保证门禁本身有 spec；对 note 治理这条链，元验证的具体形态是：
 
 - `scripts/archived-agent-notes.spec.ts` 覆盖封印助手（解析、渲染、扩展、三件套校验）；
 - `doc-sync` 把三个 leaf 门禁与 `translation-pairing` 一起跑，所以一次 note 改动会同时撞上形状、配对两组规则；
