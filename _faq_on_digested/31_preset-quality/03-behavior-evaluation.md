@@ -14,7 +14,7 @@
 | 委派到正确能力 | 父会话委派不同职责任务 | 子会话实际 preset、工具和产出，而非显示名称 |
 | 能自行选择协作方式 | 给出业务目标和约束，省略路线答案 | 合理分工、有效交接与完整结果；允许产品认可的多种方案 |
 
-权限类承诺还要找到执行限制的拥有者。工具不暴露、执行器拒绝、系统沙箱拒绝分别取证；不要求调用一个根本未注册的工具，也不把某次文件未变解释为普遍不可写。[定义分篇](./01-definition-and-lifecycle.md#进阶查阅可见性服务实例与执行权限分别验证)说明机制范围。
+权限类承诺还要找到执行限制的拥有者。工具不暴露、执行器拒绝、系统沙箱拒绝分别取证；不要求调用一个根本未注册的工具，也不把某次文件未变解释为普遍不可写。[定义分篇](./06-lifecycle-reference.md#进阶查阅可见性服务实例与执行权限分别验证)说明机制范围。
 
 ## 一套贯穿的审查任务
 
@@ -52,6 +52,16 @@
 | 独立结果断言 | 文件、计算、来源和业务结论是否满足要求 | 全部设计取舍与人工责任 |
 
 DSH 对写入场景要求独立维护完整工作区期望，录制与刷新不重写该期望。插件仓借鉴的是[独立验收原则](https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/testing.md#tiers)，还需自己的入口、资产和驱动；安装 replay 包不等于已有覆盖。更新录制时，同时审查模型输入与执行输出，不能把新错误顺手录成正确答案。
+
+## 方法怎样加载，也是一项行为质量要求
+
+DSH 的方法设计强调先给足够选择的摘要，再按任务加载细节；description 太模糊会导致漏选，正文一次塞太多又会增加无关上下文。质量目标应同时包含方法可发现、按需到达、正确执行与总体工作量，不能只看首轮 token 少了多少。[agent-experience 的设计原则](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset/skills/agent-experience/SKILL.md)。
+
+原生 Office 方法提供了具体实例：简短 `office` 路由引向编辑、渲染、重算和导出方法；格式编辑不预载全部操作指引。方法 provider 只在加载相应操作正文时附加配置中的执行路径，实际操作复用普通 shell 的权限和进程管理。它由 SDK、Desktop 的专属组合提供，不能假定默认 Web 已启用。[路由正文](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-office/assets/office/SKILL.md)、[按需提供代码](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-office/src/index.ts#L69-L94)、[设计取舍](https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-09-27-progressive-office-skills.md)。
+
+开发测试检查每步真实请求的内容：最初有目录摘要，加载路由后尚无格式库细节，再加载 Word 方法后才出现 `python-docx`；渲染操作又不应带入无关编辑正文。另有上下文预算断言，以及恢复和 fork 后所需指引仍在的断言。这里的预算用字符长度估算，不是供应商精确 token 计费。[逐步请求测试](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-office/tests/progressive-loading.spec.ts)、[预算测试](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/skill-office/tests/skill-office.spec.ts#L20-L36)。
+
+这些确定性测试固定了加载选择，证明输入按设计逐步出现；自主选择是否合理仍需真模型任务。进一步比较时，还要检查检索和重复读取、错误选择、总调用与最终质量，不能仅因文本缩短就宣布改进。对其他 preset，可借鉴的是按任务拆方法、把必需约束放在动作之前、让检查覆盖请求内容和结果；无需复制 Office 的方法清单。
 
 ## 检查长任务的输入是否仍足够
 

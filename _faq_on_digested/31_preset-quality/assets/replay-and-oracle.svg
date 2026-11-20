@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="565" viewBox="0 0 1120 565" role="img" aria-labelledby="title desc">
+<title id="title">无 Key 回放：固定模型输出，重新执行当前程序</title><desc id="desc">原生 recorded-session 测试；真实模型决策的变化另做验收；注意：场景 patch 可固定权限和外部服务；一次回放不代表生产默认配置或 OS 隔离均被验证。</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8Z" fill="#64748b"/></marker></defs>
+<rect width="1120" height="565" rx="20" fill="#f8fafc"/>
+<g font-family="PingFang SC, Microsoft YaHei, sans-serif">
+<text x="40" y="49" font-size="26" font-weight="700" fill="#0f172a">无 Key 回放：固定模型输出，重新执行当前程序</text>
+<text x="40" y="82" font-size="16" fill="#475569">原生 recorded-session 测试；真实模型决策的变化另做验收</text>
+<path d="M350 195L400 195" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M715 195L765 195" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M925 280L925 340" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M195 495L195 515L925 515L925 500" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M715 420L765 420" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="40" y="120" width="310" height="160" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.4"/>
+<text x="60" y="153" font-size="19" font-weight="700" fill="#7c3aed">固定的测试输入</text>
+<text x="60" y="185" font-size="16" fill="#334155">选定 Session 中的用户任务</text>
+<text x="60" y="212" font-size="16" fill="#334155">录制或编写的 Assistant 流</text>
+<text x="60" y="239" font-size="16" fill="#334155">包含工具名称、调用参数</text>
+<rect x="405" y="120" width="310" height="160" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="425" y="153" font-size="19" font-weight="700" fill="#2563eb">当前真实实现</text>
+<text x="425" y="185" font-size="16" fill="#334155">dsh profile + 场景 patch</text>
+<text x="425" y="212" font-size="16" fill="#334155">当前 prompt / tools / loop</text>
+<text x="425" y="239" font-size="16" fill="#334155">真实工具重新读写临时工作区</text>
+<rect x="770" y="120" width="310" height="160" rx="12" fill="#ecfdf5" stroke="#047857" stroke-width="1.4"/>
+<text x="790" y="153" font-size="19" font-weight="700" fill="#047857">本次实际结果</text>
+<text x="790" y="185" font-size="16" fill="#334155">当前模型输入与新 Session</text>
+<text x="790" y="212" font-size="16" fill="#334155">stdout / 协议或 UI 输出</text>
+<text x="790" y="239" font-size="16" fill="#334155">最终用户工作区</text>
+<rect x="40" y="345" width="310" height="150" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.4"/>
+<text x="60" y="378" font-size="19" font-weight="700" fill="#7c3aed">已审查的轨迹期望</text>
+<text x="60" y="410" font-size="16" fill="#334155">Session 事件与 prompt 文件</text>
+<text x="60" y="437" font-size="16" fill="#334155">结构化 tool schema 文件</text>
+<text x="60" y="464" font-size="16" fill="#334155">refresh 可按规则更新，需审查</text>
+<rect x="405" y="345" width="310" height="150" rx="12" fill="#fff7ed" stroke="#c2410c" stroke-width="1.4"/>
+<text x="425" y="378" font-size="19" font-weight="700" fill="#c2410c">独立的交付期望</text>
+<text x="425" y="410" font-size="16" fill="#334155">workspace.expected/</text>
+<text x="425" y="437" font-size="16" fill="#334155">完整内容、链接与空目录比较</text>
+<text x="425" y="464" font-size="16" fill="#334155">record / refresh 不重写</text>
+<rect x="770" y="345" width="310" height="150" rx="12" fill="#ecfdf5" stroke="#047857" stroke-width="1.4"/>
+<text x="790" y="378" font-size="19" font-weight="700" fill="#047857">比较后得出结论</text>
+<text x="790" y="410" font-size="16" fill="#334155">同一模型决策下是否退化？</text>
+<text x="790" y="437" font-size="16" fill="#334155">外部结果是否符合独立期望？</text>
+<text x="790" y="464" font-size="16" fill="#334155">当前模型是否选对：尚需真测</text>
+<text x="40" y="537" font-size="15" fill="#475569">注意：场景 patch 可固定权限和外部服务；一次回放不代表生产默认配置或 OS 隔离均被验证。</text>
+</g></svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="530" viewBox="0 0 1120 530" role="img" aria-labelledby="title desc">
+<title id="title">Preset 质量：沿实际交付过程设置观察点</title><desc id="desc">原生运行路径 + 测试观察；不是统一评分系统；阅读顺序：能加载 → 能力和输入符合预期 → 执行可回归 → 领域结果可接受</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8Z" fill="#64748b"/></marker></defs>
+<rect width="1120" height="530" rx="20" fill="#f8fafc"/>
+<g font-family="PingFang SC, Microsoft YaHei, sans-serif">
+<text x="40" y="49" font-size="26" font-weight="700" fill="#0f172a">Preset 质量：沿实际交付过程设置观察点</text>
+<text x="40" y="82" font-size="16" fill="#475569">原生运行路径 + 测试观察；不是统一评分系统</text>
+<path d="M350 195L400 195" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M715 195L765 195" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M195 275L195 330" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M560 275L560 330" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M925 275L925 330" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="40" y="120" width="310" height="155" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="60" y="153" font-size="19" font-weight="700" fill="#2563eb">1 交付组合</text>
+<text x="60" y="185" font-size="16" fill="#334155">profile 叠加 bundle / patch</text>
+<text x="60" y="212" font-size="16" fill="#334155">preset 声明 persona、工具、skill</text>
+<text x="60" y="239" font-size="16" fill="#334155">Loader 导入，依赖就绪后激活</text>
+<rect x="405" y="120" width="310" height="155" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.4"/>
+<text x="425" y="153" font-size="19" font-weight="700" fill="#7c3aed">2 形成模型输入</text>
+<text x="425" y="185" font-size="16" fill="#334155">按具体 Agent 组装 prompt / tools</text>
+<text x="425" y="212" font-size="16" fill="#334155">目录摘要发布，方法正文按需加载</text>
+<text x="425" y="239" font-size="16" fill="#334155">Session 记录模型可见输入</text>
+<rect x="770" y="120" width="310" height="155" rx="12" fill="#ecfdf5" stroke="#047857" stroke-width="1.4"/>
+<text x="790" y="153" font-size="19" font-weight="700" fill="#047857">3 决策与执行</text>
+<text x="790" y="185" font-size="16" fill="#334155">模型产生文本与工具调用</text>
+<text x="790" y="212" font-size="16" fill="#334155">真实工具和策略执行</text>
+<text x="790" y="239" font-size="16" fill="#334155">文件、日志与交付物产生</text>
+<rect x="40" y="335" width="310" height="140" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="60" y="368" font-size="19" font-weight="700" fill="#2563eb">观察：组合正确</text>
+<text x="60" y="400" font-size="16" fill="#334155">Config 校验 + 激活诊断</text>
+<text x="60" y="427" font-size="16" fill="#334155">精确工具集、服务与目录断言</text>
+<rect x="405" y="335" width="310" height="140" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.4"/>
+<text x="425" y="368" font-size="19" font-weight="700" fill="#7c3aed">观察：输入正确</text>
+<text x="425" y="400" font-size="16" fill="#334155">完整 prompt / schema 比较</text>
+<text x="425" y="427" font-size="16" fill="#334155">检查实际目录、正文与资料</text>
+<rect x="770" y="335" width="310" height="140" rx="12" fill="#ecfdf5" stroke="#047857" stroke-width="1.4"/>
+<text x="790" y="368" font-size="19" font-weight="700" fill="#047857">观察：行为与结果</text>
+<text x="790" y="400" font-size="16" fill="#334155">固定轨迹回放 + 真模型任务</text>
+<text x="790" y="427" font-size="16" fill="#334155">独立文件、计算与领域验收</text>
+<text x="40" y="502" font-size="15" fill="#475569">阅读顺序：能加载 → 能力和输入符合预期 → 执行可回归 → 领域结果可接受</text>
+</g></svg>

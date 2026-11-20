@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="545" viewBox="0 0 1120 545" role="img" aria-labelledby="title desc">
+<title id="title">Preset 开发：让行为改动带着相应证据交付</title><desc id="desc">依据 DSH 原生纪律整理的工作方式；外部项目自行接入场景与 CI；分工：本地按影响选最窄检查；pre-push 类型检查；CI 承担规定的全面检查与平台验证。</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8Z" fill="#64748b"/></marker></defs>
+<rect width="1120" height="545" rx="20" fill="#f8fafc"/>
+<g font-family="PingFang SC, Microsoft YaHei, sans-serif">
+<text x="40" y="49" font-size="26" font-weight="700" fill="#0f172a">Preset 开发：让行为改动带着相应证据交付</text>
+<text x="40" y="82" font-size="16" fill="#475569">依据 DSH 原生纪律整理的工作方式；外部项目自行接入场景与 CI</text>
+<path d="M350 195L400 195" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M715 195L765 195" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M925 270L925 330" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M770 405L720 405" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M405 405L355 405" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M195 335L195 275" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="40" y="120" width="310" height="150" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="60" y="153" font-size="19" font-weight="700" fill="#2563eb">1 明确行为差异</text>
+<text x="60" y="185" font-size="16" fill="#334155">任务、条件、允许动作与结果</text>
+<text x="60" y="212" font-size="16" fill="#334155">保留正常正例 + 失败反例</text>
+<text x="60" y="239" font-size="16" fill="#334155">找准 persona / skill / 执行器</text>
+<rect x="405" y="120" width="310" height="150" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.4"/>
+<text x="425" y="153" font-size="19" font-weight="700" fill="#7c3aed">2 选择与实现相应检查</text>
+<text x="425" y="185" font-size="16" fill="#334155">组合变化：真实 Loader 装配</text>
+<text x="425" y="212" font-size="16" fill="#334155">输入变化：prompt / schema / log</text>
+<text x="425" y="239" font-size="16" fill="#334155">决策变化：当前模型任务</text>
+<rect x="770" y="120" width="310" height="150" rx="12" fill="#ecfdf5" stroke="#047857" stroke-width="1.4"/>
+<text x="790" y="153" font-size="19" font-weight="700" fill="#047857">3 验证结果与检查本身</text>
+<text x="790" y="185" font-size="16" fill="#334155">固定轨迹：真实工具执行</text>
+<text x="790" y="212" font-size="16" fill="#334155">领域结果：独立计算和交付验收</text>
+<text x="790" y="239" font-size="16" fill="#334155">重要守卫：反例必须能失败</text>
+<rect x="40" y="335" width="310" height="140" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="60" y="368" font-size="19" font-weight="700" fill="#2563eb">6 从真实失败补充回归</text>
+<text x="60" y="400" font-size="16" fill="#334155">保留失败输入、产物与约束</text>
+<text x="60" y="427" font-size="16" fill="#334155">定位缺口，修改真正拥有处</text>
+<text x="60" y="454" font-size="16" fill="#334155">不把所有事故堆进 persona</text>
+<rect x="405" y="335" width="310" height="140" rx="12" fill="#fff7ed" stroke="#c2410c" stroke-width="1.4"/>
+<text x="425" y="368" font-size="19" font-weight="700" fill="#c2410c">5 交付与恢复</text>
+<text x="425" y="400" font-size="16" fill="#334155">记录输入版本、结果和未测项</text>
+<text x="425" y="427" font-size="16" fill="#334155">新旧会话按真实时点验证</text>
+<text x="425" y="454" font-size="16" fill="#334155">数据降级须遵守兼容承诺</text>
+<rect x="770" y="335" width="310" height="140" rx="12" fill="#ecfdf5" stroke="#047857" stroke-width="1.4"/>
+<text x="790" y="368" font-size="19" font-weight="700" fill="#047857">4 审查全部相关差异</text>
+<text x="790" y="400" font-size="16" fill="#334155">输入、Session、工作区分开看</text>
+<text x="790" y="427" font-size="16" fill="#334155">产物路径再测 built exports</text>
+<text x="790" y="454" font-size="16" fill="#334155">模型质量、错误与成本逐例看</text>
+<text x="40" y="517" font-size="15" fill="#475569">分工：本地按影响选最窄检查；pre-push 类型检查；CI 承担规定的全面检查与平台验证。</text>
+</g></svg>

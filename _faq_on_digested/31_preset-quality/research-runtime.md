@@ -62,7 +62,7 @@ Preset 本身不直接向模型贡献一段“preset 信息”；实际可见工
 
 Scope 控制注册及事件可见性；`isolate` 控制 service instances。Preset 自己提供 service 必须让 provider 与 consumers 在同一隔离 group；root service leak 会拒绝 mount。普通 agent.ctx service lookup 不因此自动指向 entry-local isolated 服务；`agentPresets.serviceFor` 是显式读取保留 composition 的方法，不能据此宣称所有 service lookup 自动隔离。Host consumers 要用的服务放 Host。来源：[skill L76–80](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset/skills/editing-cordis-compositions/SKILL.md#L76-L80)、[README L56–60](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset-registry/README.md#L56-L60)、[serviceFor L319–327](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/agent-preset-registry/src/index.ts#L319-L327)。
 
-Persona 是其中一个 scoped 插件：prefix / suffix shadow deployment persona；`complete: true` 使 prefix 成为完整 system prompt，抑制其他 sections；`includeRuntimeContext: false` 抑制该 scope 的动态 runtime-context。这会影响工具使用指导能否进入 prompt，不能只检查工具插件是否安装。来源：[persona config / apply L29–74](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/persona/src/index.ts#L29-L74)。实际 shipped minimal 就配置了 complete=true、includeRuntimeContext=false，且有按平台 disabled 的 shell 行；名称 minimal 本身不能推导具体行为。来源：[minimal patch L10–16](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/presets/minimal.patch.yml#L10-L16)、[平台行 L40–69](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/presets/minimal.patch.yml#L40-L69)。
+Persona 是其中一个 scoped 插件：prefix / suffix shadow deployment persona；`complete: true` 使 prefix 成为完整 system prompt，抑制其他 sections；`includeRuntimeContext: false` 抑制该 scope 的可选 runtime-context，`required: true` 的操作上下文仍保留；`complete` 也不删除工具 schema 或独立 pre-step 注入的上下文。精确过滤规则见 [system-prompt L670–686](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/system-prompt/src/index.ts#L670-L686)，minimal 仍发送工作目录的断言见 [Web snapshot L81–92](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/web/tests/minimal-preset.snapshot.ts#L81-L92)。这会影响工具使用指导能否进入 prompt，不能只检查工具插件是否安装。来源：[persona config / apply L29–74](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/preset/persona/src/index.ts#L29-L74)。实际 shipped minimal 就配置了 complete=true、includeRuntimeContext=false，且有按平台 disabled 的 shell 行；名称 minimal 本身不能推导具体行为。来源：[minimal patch L10–16](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/presets/minimal.patch.yml#L10-L16)、[平台行 L40–69](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/bundle/web-app/presets/minimal.patch.yml#L40-L69)。
 
 独立 child 最终 request 只带 selected preset 的工具，parent 工具保持原 composition；runtime result tool 还可叠加，因此 preset 列表也不等于最终工具全集。来源：[selected tools test L154–178](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/tests/continuation-presets.spec.ts#L154-L178)、[structured result tool test L122–140](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/subagent/subagent/tests/activation-presets.spec.ts#L122-L140)。
 
@@ -113,3 +113,55 @@ pnpm exec vitest run packages/preset/persona/tests/persona.spec.ts packages/pres
 - “运行时验证通过就是 Agent 长期质量认证”：当前审计检查可装配性，不评分任务质量。
 
 上述误解的逐项依据位于前面相应段落，避免 FAQ 将维护建议写成新 API 或产品承诺。
+
+## 9. 本轮补充核验与执行记录
+
+本节记录 2026-11-20 本次补充，不覆盖第 7 节先前执行记录。原生定义、组合和质量机制以本地工作树为依据；已执行 `git fetch origin` 并比较相关路径。`origin/master` 与本工作树存在差异，包括 preset 空白会话重复选择优化和 snapshot 实现更新；没有将远端内容覆盖当前工作树，也不把移动的 master 链接当成本次版本锁。核验版本仍由[集中登记](../00-baseline.md)拥有。
+
+### 新增的一手证据
+
+| 主题 | 精确原生出处 | 本次确认的范围 |
+|---|---|---|
+| shipped Web 组合 | [bootWeb L99–227](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/tests/web-agent-presets.e2e.ts#L99-L227)、[能力断言 L288–373](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/tests/web-agent-presets.e2e.ts#L288-L373) | 实际 base/Web 配置经 Loader 加载；精确工具集、minimal prompt 与服务查找 |
+| skill 分层与加载 | [Web 测试 L591–650](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/cli/tests/web-agent-presets.e2e.ts#L591-L650) | global 与 preset/cwd 层合并；provider 可见与具备模型 loader 是不同条件 |
+| skill 目录与正文 | [tool-skill L128–253](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/src/index.ts#L128-L253)、[测试 L660–684](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/skill/tool-skill/tests/tool-skill.spec.ts#L660-L684) | 目录按摘要变化发布 durable context；只改正文不重发目录，下次读取新正文；用户显式调用有独立输入路径 |
+| complete 与必需上下文 | [system-prompt L652–686](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/system-prompt/src/index.ts#L652-L686)、[minimal 请求 L81–92](https://github.com/deepseek-ai/deepseek-harness/blob/master/apps/web/tests/minimal-preset.snapshot.ts#L81-L92) | 完整 system section 不删除 tools；runtime suppression 保留 required contexts |
+| 回放来源 | [llm-replay 提取 L451–502](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/src/index.ts#L451-L502)、[运行 L1021–1104](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/llm-replay/src/index.ts#L1021-L1104) | 固定 Assistant 流，不由 adapter 逐次校验完整 prompt；输入由快照断言比较 |
+| 当前程序重新执行 | [headless 启动 L1274–1304](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/session/headless.snapshot.ts#L1274-L1304)、[比较 L1410–1452](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/session/headless.snapshot.ts#L1410-L1452) | 当前 dsh profile 重跑真实工具，比较新日志、输入及完整工作区 |
+| 独立结果期望 | [workspace 捕获](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/session-snapshot/src/workspace.ts)、[存储规则](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/AGENTS.md) | 文本/二进制内容、链接、空目录；非全部文件系统元数据；record/refresh 不写回 expected |
+| 测试 patch 范围 | [普通回放 patch](https://github.com/deepseek-ai/deepseek-harness/blob/master/snapshots/session/text-turn/cordis.snapshot.yml) | 替换模型并使用 passthrough sandbox runner；不声称验证生产全部默认配置或 OS confinement |
+| source / artifact | [loader-smoke L98–130](https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/test-support/loader-smoke/src/index.ts#L98-L130)、[consumer gates L518–555](https://github.com/deepseek-ai/deepseek-harness/blob/master/scripts/run-gates.ts#L518-L555) | 源码路径行为反馈和普通 Node/built exports 消费验证分别存在 |
+
+`llm-replay` 的返回 handle 提供 `assertConsumed()`，但不能据此称所有 profile 都自动在 teardown 执行该检查；本次所读插件 `apply` 不保留该 handle。真实场景的完整 Session 比较仍能发现轨迹差异。本文没有把这个辅助 API 扩大为普遍承诺。
+
+### 本轮额外执行
+
+```sh
+pnpm exec vitest run packages/preset/persona/tests/persona.spec.ts packages/skill/tool-skill/tests/tool-skill.spec.ts packages/preset/agent-preset-registry/tests/composition-inventory.spec.ts
+pnpm exec vitest run --config vitest.e2e.config.ts apps/cli/tests/web-agent-presets.e2e.ts -t 'composes the full agent|composes the exact RL prompt|merges the global skill layer|shows a minimal agent'
+```
+
+第一项 exit 0，3 文件 45 项通过（persona 12、tool-skill 32、composition-inventory 1）；第二项 exit 0，4 项通过、32 项因名称过滤未运行。第二项验证真实组合，使用确定性测试输入，不是有 Key 的真实模型评测；它依赖当前已有构建，本轮未重新 build。未执行浏览器产品测试、录制/refresh、真实 API 或完整测试套件。
+
+另执行以下原生回放：
+
+```sh
+pnpm run test:snapshot snapshots/session/headless.snapshot.ts -t 'replays (fs-write|skill-load) through dsh --profile headless$'
+```
+
+exit 0，2 项通过、164 项因过滤未运行，耗时 4.54s。前两次使用错误名称过滤，166 项均未执行；它们不计入通过证据，核对 `scenarioTest` 的实际名称后才运行上述两项。未执行 record/refresh 或真实模型推理。
+
+补读 `.agents/skills` 的模型体验、组合编辑、按影响选检查与测试可靠性指导，以及 active Notes 中的指引归属、Host 服务归属、渐进 Office 方法、请求记录与 Session 回放决策；只吸收能够由当前代码和测试确认的理由，不把内部流程复制为外部项目义务。正文用工具指引归属、token meter 放置、逐步方法输入三个实例解释设计取舍。
+
+补充执行：
+
+```sh
+pnpm exec vitest run packages/skill/skill-office/tests/skill-office.spec.ts packages/skill/skill-office/tests/progressive-loading.spec.ts
+pnpm exec vitest run --config vitest.e2e.config.ts apps/cli/tests/web-agent-presets.e2e.ts -t 'keeps the token meter and its context-meter projections on the host plane'
+```
+
+两命令均 exit 0：Office 2 文件 14 项通过，Host token meter 1 项通过、35 项因过滤未运行。后者仍有测试启动范围内 `harness-dev-context` 等待 `webApp` 的诊断，不影响被测断言。上述 Office 场景固定加载选择，不能当成真模型自主方法选择证据。
+
+五张 SVG 使用 Chromium 实际渲染并检查文字范围；图源均为静态 SVG，无外部脚本或资源。结构复审将学习路径调整为对象与职责、原生 skill 开发走查、行为验收、持续迭代；较密的验证实现与生命周期独立为查阅篇。同步修正生命周期图：按 ID 解析当前定义的框限定为进程重启后的普通会话恢复，不泛化到继承父组合的 child 冷恢复。
+
+已运行 `pnpm run test:docs`（21 项通过）、`pnpm run doc-sync`（43 项通过）、`pnpm run lint`（0 errors，1 项现有 unused oxlint-disable warning），以及 FAQ 自检与 `git diff --check`。后续结构调整仅改变本 FAQ 的 Markdown 与 SVG，最终再次执行其完整性和图文检查；未改产品或测试代码。

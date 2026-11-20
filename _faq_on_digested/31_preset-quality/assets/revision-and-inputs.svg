@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="555" viewBox="0 0 1120 555" role="img" aria-labelledby="title desc">
+<title id="title">修改以后，究竟哪部分输入会改变？</title><desc id="desc">三种生命周期：活跃插件组合、动态 skill、已经写入的会话历史；A / B 是解释用标签。完整复现还需方法、事实、模型和部署配置；只记录 preset ID 不足够。</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0L10 4L0 8Z" fill="#64748b"/></marker></defs>
+<rect width="1120" height="555" rx="20" fill="#f8fafc"/>
+<g font-family="PingFang SC, Microsoft YaHei, sans-serif">
+<text x="40" y="49" font-size="26" font-weight="700" fill="#0f172a">修改以后，究竟哪部分输入会改变？</text>
+<text x="40" y="82" font-size="16" fill="#475569">三种生命周期：活跃插件组合、动态 skill、已经写入的会话历史</text>
+<path d="M350 195L400 195" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M715 195L765 195" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M530 410L585 410" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="40" y="125" width="310" height="150" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="60" y="158" font-size="19" font-weight="700" fill="#2563eb">定义 A 正在运行</text>
+<text x="60" y="190" font-size="16" fill="#334155">旧 Agent 保留组合 A</text>
+<text x="60" y="217" font-size="16" fill="#334155">默认 child 继承父的确切组合</text>
+<text x="60" y="244" font-size="16" fill="#334155">同一 revision 由多个 Agent 共享</text>
+<rect x="405" y="125" width="310" height="150" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.4"/>
+<text x="425" y="158" font-size="19" font-weight="700" fill="#2563eb">同一 ID 更新为定义 B</text>
+<text x="425" y="190" font-size="16" fill="#334155">新绑定 Agent 使用 B</text>
+<text x="425" y="217" font-size="16" fill="#334155">旧 Agent 仍可继续使用 A</text>
+<text x="425" y="244" font-size="16" fill="#334155">A 最后一个引用释放后清理</text>
+<rect x="770" y="125" width="310" height="150" rx="12" fill="#fff7ed" stroke="#c2410c" stroke-width="1.4"/>
+<text x="790" y="158" font-size="19" font-weight="700" fill="#c2410c">重启后的普通会话恢复</text>
+<text x="790" y="190" font-size="16" fill="#334155">按所记 preset ID 找当前定义</text>
+<text x="790" y="217" font-size="16" fill="#334155">不会保存旧插件实现 A</text>
+<text x="790" y="244" font-size="16" fill="#334155">目标缺失或损坏则显式失败</text>
+<rect x="40" y="335" width="490" height="150" rx="12" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.4"/>
+<text x="60" y="368" font-size="19" font-weight="700" fill="#7c3aed">磁盘方法：不是组合 revision 的内容快照</text>
+<text x="60" y="400" font-size="16" fill="#334155">摘要变化可在后续步骤发布目录更新</text>
+<text x="60" y="427" font-size="16" fill="#334155">只改正文：下次 skill 加载读取新内容</text>
+<text x="60" y="454" font-size="16" fill="#334155">目录更新不代表旧正文已从历史删除</text>
+<rect x="590" y="335" width="490" height="150" rx="12" fill="#ecfdf5" stroke="#047857" stroke-width="1.4"/>
+<text x="610" y="368" font-size="19" font-weight="700" fill="#047857">会话历史：记录实际到达模型的输入</text>
+<text x="610" y="400" font-size="16" fill="#334155">旧 skill 正文已作为工具结果进入历史</text>
+<text x="610" y="427" font-size="16" fill="#334155">新载入内容与旧输入可能同时存在</text>
+<text x="610" y="454" font-size="16" fill="#334155">验收更新时同时考虑干净会话与旧会话</text>
+<text x="40" y="527" font-size="15" fill="#475569">A / B 是解释用标签。完整复现还需方法、事实、模型和部署配置；只记录 preset ID 不足够。</text>
+</g></svg>

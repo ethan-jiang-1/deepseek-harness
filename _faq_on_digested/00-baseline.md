@@ -39,7 +39,7 @@
 | 28 探针工作法 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..02` + `reference`；4 个主仓夹具实例按 rc.5 实测核对，外仓 `probes/` 读数为 2026-11-10 本机清点 |
 | 29 keyless 边界 | `dsh-v0.2.1-rc.5` | reverified | 重组为 `answer` + `01..02`；唯一判据、哨兵假 Key、`refresh` 语义与五档测试证据按 rc.5 核 |
 | 30 Schemastery 与质量实践 | `dsh-v0.2.1-rc.5` | reverified | 2026-11-20 对照本地实现、调用者和测试重写；相关产品源码与本基线无差异；覆盖解析语义、Standard Schema、volatile、设置/投影/目录及主仓质量措施的范围与局限；补查 Git、Note 与 Skills，提炼配置开发纪律，历史研究注明缺失对象限制；实验与测试记录见专题研究页 |
-| 31 Preset 长期质量 | `dsh-v0.2.1-rc.5` | reverified | 2026-11-20 按通用验证、行为验收与持续开发重组，补核 DSH 原生测试选择/真实入口/快照/Notes 纪律与案例质量环实际审计；核对声明、注册/审计、revision 保留、会话/子会话选择、skill 生命周期及定向测试；外部 company-pack 为当日本机只读采样（HEAD `936123a6fbff828fde99e99886dacaa2956d959e`，工作树干净），未运行其检查或真模型场景，部署仓行为语料未审计；本仓核对起点为 `51b7d623fe9b1b39873b106ae53a8843d5fd861e`，已核对的 preset/subagent/session-controller/skill 与测试政策相对集中基线无产品差异；7 文件 116 项定向测试及文档检查通过，精确范围见研究页 |
+| 31 Preset 长期质量 | `dsh-v0.2.1-rc.5` | reverified | 2026-11-20 按通用验证、行为验收与持续开发重组，补核 DSH 原生测试选择/真实入口/快照/Notes 纪律与案例质量环实际审计；核对声明、注册/审计、revision 保留、会话/子会话选择、skill 生命周期及定向测试；外部 company-pack 为当日本机只读采样（HEAD `936123a6fbff828fde99e99886dacaa2956d959e`，工作树干净），未运行其检查或真模型场景，部署仓行为语料未审计；本仓核对起点为 `51b7d623fe9b1b39873b106ae53a8843d5fd861e`，已核对的 preset/subagent/session-controller/skill 与测试政策相对集中基线无产品差异；先前 7 文件 116 项定向测试及文档检查通过；本轮进一步按原生 standard/minimal 配置、实际 Web 组合、模型流回放与独立工作区期望重写，补 skill 目录/正文和必需 runtime context 语义、source/artifact 检查及五张 SVG，并按对象职责/一次开发/行为验收/持续迭代重排，机制与生命周期独立查阅；额外 45 项机制测试、5 项真实组合测试、14 项 Office 方法测试和 2 项原生无 Key 回放通过；吸收 active Notes/Skills 的指引归属、共享服务与渐进加载取舍，未运行真模型评测；精确执行范围见研究页 |
 
 ## 版本号能写在哪
 
